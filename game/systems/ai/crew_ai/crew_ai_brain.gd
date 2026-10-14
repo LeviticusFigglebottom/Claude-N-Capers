@@ -72,6 +72,9 @@ var _pitch: float = 0.0
 var _following: bool = false
 ## Settled at `cover_point` this tick (crouches there).
 var _in_cover: bool = false
+## Held at a door this bot may not open (this tick), and for how long in a row (s).
+var _door_blocked: bool = false
+var _blocked_s: float = 0.0
 var _path: PackedVector3Array = PackedVector3Array()
 var _path_idx: int = 0
 var _path_goal: Vector3 = Vector3.INF
@@ -303,6 +306,7 @@ func _think(delta: float) -> CrewIntent:
 		return _idle_intent()
 	var i: CrewIntent = CrewIntent.new()
 	_in_cover = false
+	_door_blocked = false
 	if task == &"revive" and ordered_revive_target() == null:
 		task = &""
 	_tick_scan(delta)
@@ -356,6 +360,10 @@ func _think(delta: float) -> CrewIntent:
 		var local: Vector3 = Basis(Vector3.UP, _yaw).inverse() * wish
 		i.move = Vector2(local.x, -local.z).limit_length(1.0)
 		i.sprint = target_enemy == null and goal_dist > tweak.sprint_beyond_m
+	_blocked_s = _blocked_s + delta if _door_blocked else 0.0
+	if _blocked_s >= tweak.warp_after_blocked_s and _warp_to_leader():
+		_blocked_s = 0.0
+		wish = Vector3.ZERO
 	# D-111 (PD2 bots crouch behind cover): settled at the cover point while loud.
 	i.crouch = _in_cover and mobile and wish.length() <= 0.01 and _rt.went_loud
 	_weapon_controls(i, eye, delta, interacting)
@@ -526,6 +534,22 @@ func _trailing(p_wish: Vector3) -> bool:
 				Vector2(wish.x, wish.z)) > 0.0:
 			return true
 	return false
+
+
+## PD2 bot warp: teleport to this bot's formation slot by the leader (snapped to the navmesh) when the leader is
+## beyond warp_min_dist_m. Returns true when it warped.
+func _warp_to_leader() -> bool:
+	var leader: CrewController = _pick_leader()
+	if leader == null or _flat_dist(leader.global_position, _crew.global_position) < tweak.warp_min_dist_m:
+		return false
+	var to: Vector3 = _formation_slot(leader)
+	var nav: RID = _crew.get_world_3d().navigation_map if _crew.is_inside_tree() else RID()
+	if nav.is_valid() and NavigationServer3D.map_get_iteration_id(nav) > 0:
+		to = NavigationServer3D.map_get_closest_point(nav, to)
+	_rt.teleport_crew(_crew.slot, Transform3D(Basis(Vector3.UP, leader.look_yaw), to + Vector3(0.0, 0.05, 0.0)))
+	_path = PackedVector3Array()
+	Log.info(&"crew_ai", "bot %d warped to the leader (blocked by a door it cannot open)" % _crew.slot)
+	return true
 
 
 ## Walk intent toward world direction `wish` (unit or zero) at the current look yaw.
@@ -785,7 +809,10 @@ func _door_hold(pos: Vector3) -> bool:
 	var door: Door = hit.get("door") as Door
 	if door == null or float(hit["distance"]) > tw.npc_door_reach_m:
 		return false
-	door.npc_open(_crew)
+	if not door.can_npc_open(_crew):
+		_door_blocked = true  # relocked / BARRED: hold, and warp to the leader after warp_after_blocked_s
+	else:
+		door.npc_open(_crew)
 	return true
 
 
