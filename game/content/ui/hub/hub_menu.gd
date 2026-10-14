@@ -241,10 +241,16 @@ func _station_card(s: HubStation) -> Button:
 		start_here.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
 		start_here.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		start_here.visible = false
-		# AU-4 (lane 2 audit): as a third column it narrowed the description to "...". It sits over the title
-		# now, so the description wraps over the card's full width.
-		text.add_child(start_here)
-		text.move_child(start_here, 0)
+		start_here.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		# AU-4 (lane 2 audit): as a third column it narrowed the description to "...". It shares the title's
+		# line now (no taller card), so the description wraps over the card's full width.
+		var head: HBoxContainer = UiBuild.hbox(UiTokens.S3)
+		head.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		text.add_child(head)
+		text.move_child(head, 0)
+		title.reparent(head)
+		title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		head.add_child(start_here)
 	# A Button does not grow with its children: follow the content so a two-line description stays
 	# inside the card (lane 13 16:10 capture: the second line spilled under the next card).
 	m.minimum_size_changed.connect(func() -> void:

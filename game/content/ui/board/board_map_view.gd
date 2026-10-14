@@ -205,20 +205,25 @@ func _draw() -> void:
 
 
 ## AU-5 (lane 2 audit): a district name sat under contract pins (HARBOR, DOCKS). The name keeps its centre
-## when that is clear, else moves up or down in label-height steps to the nearest spot clear of every pin.
+## when that is clear, else moves up or down in label-height steps (then also sideways) to the nearest spot
+## clear of every pin.
 static func label_box(center: Vector2, label_size: Vector2, blockers: Array[Rect2]) -> Rect2:
 	var base: Rect2 = Rect2(center - label_size * 0.5, label_size)
-	for k: int in range(0, 9):
-		var dy: float = label_size.y * 1.2 * float((k + 1) / 2) * (1.0 if k % 2 == 1 else -1.0)
-		var r: Rect2 = Rect2(base.position + Vector2(0, dy), base.size)
-		var clear: bool = true
-		for b: Rect2 in blockers:
-			if b.intersects(r):
-				clear = false
-				break
-		if clear:
-			return r
-	return base
+	var best: Rect2 = base
+	var best_overlap: float = INF
+	for dx: float in [0.0, -0.6, 0.6]:
+		for k: int in range(0, 9):
+			var dy: float = label_size.y * 1.2 * float((k + 1) / 2) * (1.0 if k % 2 == 1 else -1.0)
+			var r: Rect2 = Rect2(base.position + Vector2(dx * label_size.x, dy), base.size)
+			var overlap: float = 0.0
+			for b: Rect2 in blockers:
+				overlap += b.intersection(r).get_area() if b.intersects(r) else 0.0
+			if overlap <= 0.0:
+				return r
+			if overlap < best_overlap:
+				best_overlap = overlap
+				best = r
+	return best  # a district full of pins: the spot they cover least
 
 
 func _px(poly: PackedVector2Array) -> PackedVector2Array:
