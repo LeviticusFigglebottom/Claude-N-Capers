@@ -209,3 +209,21 @@ func _scalar(id: StringName) -> Dictionary:
 		if StringName(sc.get("id", &"")) == id:
 			return sc
 	return {}
+
+
+## Lead (lift prep): every GN objective id has its briefing line and its HUD label, both from
+## `objective.gallery_night.<id>` (the hack's loud text is `hack_loud`), with no raw key or "{arg}" left.
+func test_every_objective_has_briefing_and_hud_text() -> void:
+	var ids: Array[StringName] = []
+	ids.assign(_def.objectives)
+	for id: StringName in _def.briefing_objectives + _def.briefing_optional + [&"hack_loud"]:
+		if not ids.has(id):
+			ids.append(id)
+	var lines: Array[Dictionary] = BriefingModel.objective_lines(HEIST, ids)
+	for i: int in range(ids.size()):
+		var key: StringName = StringName("objective.%s.%s" % [HEIST, ids[i]])
+		assert_true(StringTable.has(key), "%s has a string" % key)
+		var brief: String = String(lines[i]["text"])
+		assert_false(brief.contains("{") or brief.begins_with("objective."), "briefing line for %s: %s" % [ids[i], brief])
+		var hud: String = ObjectivesPanel.objective_text({"id": ids[i], "text_key": key, "args": {}})
+		assert_false(hud.contains("{") or hud.begins_with("objective.") or hud == "", "HUD label for %s: %s" % [ids[i], hud])
