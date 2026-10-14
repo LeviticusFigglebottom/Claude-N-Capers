@@ -81,8 +81,8 @@ static func make_variants() -> HeistVariantTable:
 			"effects": {"force_active": {"group": &"safe_state", "slot": &"safe_open"}}},
 		{"id": &"estate_consignment", "chance": 0.06, "good": true,
 			"effects": {"force_active": {"group": &"estate", "slot": &"estate_bag"}}},
-		{"id": &"drill_relock", "chance": 0.10, "good": false,
-			"effects": {"extra_device_jams": 1, "max_device_jams": 4, "min_difficulty": Enums.Difficulty.BRUTAL}},
+		{"id": &"drill_relock", "chance": 0.10, "good": false, "min_difficulty": Enums.Difficulty.BRUTAL,
+			"effects": {"extra_device_jams": 1, "max_device_jams": 4}},
 		{"id": &"nervous_manager", "chance": 0.05, "good": false,
 			"effects": {"force_active": {"group": &"manager_present", "slot": &"mgr_in"}, "manager_alarm_direct": true}},
 	]
