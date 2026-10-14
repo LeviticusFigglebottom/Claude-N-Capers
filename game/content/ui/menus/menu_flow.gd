@@ -879,6 +879,7 @@ func _leave_heist(keep_session: bool = false) -> void:
 		_hud = null
 	visible = true
 	if keep_session and is_coop():
+		lobby.state.end_round()  # C11: the next Start is a new heist (the old launch order is spent)
 		lobby.set_ready(false)
 		show_lobby()
 		return
