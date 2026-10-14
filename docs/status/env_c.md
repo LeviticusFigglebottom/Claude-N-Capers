@@ -26,7 +26,8 @@ Owner key: [D] characters/animation (ENV D), [C] props/maps/materials (ENV C, or
    (`curator_inspect`, `cower_stand`, `cower_seated`, `walk_text`, `smoke`, `desk_work`), parked FP left-hand cup
    (needs B's LeftHandIK move on ~20 weapons), SKIN_TONE_FIX fold into `_body.SKIN_TONES[4]`
    (tools/blender/characters/_outfit_palette.py:194); DB cartel gunmen (QC-36) delivered but not wired in the map [A/C].
-6. [C] **ND G3 backlog:** lit "Harbor Savings & Loan" sign, cash-brick pallet in the vault cage, teller personal touches.
+6. [C] **Roller-door kit** (Gallery Night LD roller is a baked-closed placeholder; DB rollers are greybox visuals).
+7. [C] **ND G3 backlog:** lit "Harbor Savings & Loan" sign, cash-brick pallet in the vault cage, teller personal touches.
 
 ## 2026-10-14 06:40 ET: IN PROGRESS (ENV C)
 ### Done since 02:40 (all pushed; most on trunk)

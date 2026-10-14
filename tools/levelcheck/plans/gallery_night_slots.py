@@ -80,7 +80,7 @@ SLOTS: List[Tuple[str, str, float, str, str, float, float, float, float, str]] =
     ("canvas_widow", "widow_sallow", 1.0, "U", "UG2", 0.3, 25.0, 0.0, -90.0, "UG2 W wall (plan L (1, 25))"),
     ("canvas_widow", "widow_founders", 1.0, "G", "WG", 0.3, 16.0, 0.0, -90.0, "WG W wall (plan L (1, 16))"),
     ("canvas_widow", "widow_conservation", 0.7, "U", "CS", 36.0, 8.0, 0.0, -90.0, "CS main easel, frame off"),
-    ("canvas_saint", "saint_maritime", 1.0, "U", "UG3", 43.7, 15.0, 0.0, 90.0, "UG3 E wall (plan L (42, 15))"),
+    ("canvas_saint", "saint_maritime", 1.0, "U", "UG3", 43.7, 16.0, 0.0, 90.0, "UG3 E wall, z 16 so the partition screen hides it from C10 (lead r127)"),
     ("canvas_saint", "saint_harbour", 1.0, "G", "EG", 43.7, 18.0, 0.0, 90.0, "EG E wall (plan L (43, 18))"),
     ("canvas_saint", "saint_store", 0.7, "B", "AS", 26.0, 16.0, 0.0, 0.0, "AS rack screen (plan L (26, 16))"),
     ("sensor_net", "sensors_treasury", 0.5, "U", "SV", 25.0, 2.0, 0.0, 0.0, "logic slot: Argus alarm group = the TR frame"),
