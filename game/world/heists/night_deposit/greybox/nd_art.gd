@@ -115,6 +115,10 @@ const BASEBOARD_H: float = 0.125
 const BASEBOARD_D: float = 0.015
 const CORNICE_H: float = 0.22
 const CORNICE_D: float = 0.05
+## Visual tile edge (m) for the big horizontal surfaces (floors, ceilings, roof, grade) of these merged visual groups
+## (gh_mesh.tile_groups: the Compatibility renderer's 8-lights-per-mesh limit). Visual only; colliders and navmesh unchanged.
+const SLAB_TILE: float = 6.0
+const TILED_GROUPS: Array[String] = ["Interior", "Shell", "Street"]
 
 var acc: RefCounted = M.new()
 var _mats: Dictionary = {}
@@ -123,6 +127,8 @@ var _walls: Array[Array] = []
 
 
 func setup() -> void:
+	for g: String in TILED_GROUPS:
+		acc.tile_groups[g] = SLAB_TILE
 	for id: String in LIBRARY:
 		var m: Material = load(MAT_DIR + id + ".tres") as Material
 		_mats[id] = m
