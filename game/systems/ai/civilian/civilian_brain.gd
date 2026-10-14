@@ -31,9 +31,10 @@ enum Mode { IDLE, WANDER, RUN_TO_CALL, CALLING, FLEE, COWER, DOWN, TIED, DEAD, L
 ## Idle activities that may wander (seated / queued / desk civilians stay put).
 const WANDER_ACTIVITIES: Array[StringName] = [&"", &"idle", &"browse", &"phone", &"mug", &"text"]
 ## D-069 adds mug (walks with it: mug_walk), mop, phone_seated (characters.md v1.7 ambient clips).
-## D-103 (characters.md v1.9) adds inspect (curator_inspect at a hung work), text (walks texting: walk_text).
+## D-103 (characters.md v1.9) adds inspect (curator_inspect at a hung work), text (walks texting: walk_text);
+## D-111 the bar / club / bank loops: bartender, bartender_pour, bouncer, dance (dance_a/b/c), teller.
 const KNOWN_ACTIVITIES: Array[StringName] = [&"browse", &"phone", &"desk_work", &"queue", &"sit", &"mug", &"mop",
-	&"phone_seated", &"inspect", &"text"]
+	&"phone_seated", &"inspect", &"text", &"bartender", &"bartender_pour", &"bouncer", &"dance", &"teller"]
 ## Seated activities: a panicked civilian still in its seat cowers there (cower_seated) instead of running.
 const SEATED_ACTIVITIES: Array[StringName] = [&"sit", &"phone_seated"]
 ## Within this of its seat (m) a seated civilian counts as still seated.

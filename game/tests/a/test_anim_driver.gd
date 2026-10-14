@@ -351,6 +351,53 @@ func test_npc_reload_cue_plays_the_reload_clip() -> void:
 	assert_eq(d.clip, &"reload_pistol", "pistol reload")
 
 
+## D-111: a crew member placing / fixing a drill plays drill_place; a downed body that moves plays downed_crawl.
+func test_drill_place_and_downed_crawl() -> void:
+	var crew: CrewController = (load(CrewController.SCENE_PATH) as PackedScene).instantiate() as CrewController
+	crew.setup(0, {"peer_id": 0, "is_ai": true, "display_name": "Bot"}, null)
+	var visual: Node3D = crew.get_node(^"Visual") as Node3D
+	for c: Node in visual.get_children():
+		c.free()
+	visual.add_child(_test_rig())
+	add_child(crew)
+	_nodes.append(crew)
+	await wait_frames(2)
+	var d: AnimDriver = _drv(crew)
+	EventBus.interaction_started.emit(0, crew.slot, &"place_drill")
+	d.tick(0.016)
+	assert_eq(d.clip, &"drill_place", "placing a drill")
+	EventBus.interaction_cancelled.emit(0, crew.slot)
+	crew.crew_state = Enums.CrewState.DOWNED
+	d.tick(0.016)
+	assert_eq(d.clip, &"downed", "downed and still")
+	crew.velocity = Vector3(0.3, 0, 0)
+	d.tick(0.016)
+	assert_eq(d.clip, &"downed_crawl", "downed and moved: crawl")
+
+
+## D-111 ambient loops: bartender / bouncer / teller activities and `dance` (a / b / c, stable per NPC name).
+func test_bar_club_bank_ambient_clips() -> void:
+	var cases: Array = [[&"bartender", &"bartender_wipe"], [&"bartender_pour", &"bartender_pour"],
+		[&"bouncer", &"bouncer_idle"], [&"teller", &"teller_count"]]
+	for c: Array in cases:
+		var npc: NpcBase = _npc(&"civilian")
+		npc.get_node("Brain").set(&"anim_hint", c[0])
+		_drv(npc).tick(0.016)
+		assert_eq(_drv(npc).clip, c[1], "%s -> %s" % [c[0], c[1]])
+	var dances: Dictionary = {}
+	for i: int in range(9):
+		var n: NpcBase = _npc(&"civilian")
+		n.name = "Dancer_%d" % i
+		n.get_node("Brain").set(&"anim_hint", &"dance")
+		_drv(n).tick(0.016)
+		dances[_drv(n).clip] = true
+	assert_true(dances.size() >= 2, "dancers vary (%s)" % [dances.keys()])
+	for k: Variant in dances:
+		assert_true(k in [&"dance_a", &"dance_b", &"dance_c"], "a dance loop: %s" % k)
+	assert_true(CivilianBrain.KNOWN_ACTIVITIES.has(&"dance") and CivilianBrain.KNOWN_ACTIVITIES.has(&"bartender"),
+		"civilian activities")
+
+
 func test_noop_on_capsule_visual() -> void:
 	var npc: NpcBase = _npc(&"special", false)  # no EnemyDef / role character (NpcVisuals): the capsule stays
 	assert_true(AnimDriver.of(npc) == null, "no driver for the capsule placeholder")
