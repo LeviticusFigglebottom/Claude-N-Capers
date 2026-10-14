@@ -2876,6 +2876,8 @@ item.mask_base.sunburst.name,Sunburst
 item.mask_base.geo.name,Facet
 item.mask_base.robot.name,Tin Sentinel
 item.mask_base.jester.name,Jester
+item.mask_base.lion.name,Lion
+item.mask_base.kraken.name,Kraken
 item.mask.silent_partner.name,Silent Partner
 item.mask.silent_partner.desc,"A pale owl in mint and graphite. Earned by crews who walk the Ledger out without a single alarm."
 item.mask.dock_boss.name,Dock Boss
@@ -2894,6 +2896,8 @@ achievement.career_criminal.name,Career Criminal
 achievement.career_criminal.desc,"Win 100 heists. Unlocks the Knight mask base."
 achievement.top_of_the_ladder.name,Top of the Ladder
 achievement.top_of_the_ladder.desc,"Reach reputation level 100. Unlocks the Chrome material."
+achievement.deep_water.name,Deep Water
+achievement.deep_water.desc,"Complete Dockside Burn. Unlocks the Kraken mask."
 achievement.dock_work.name,Dock Work
 achievement.dock_work.desc,"Complete Dockside Burn five times. Unlocks the Urban Camo weapon finish."
 achievement.harbour_master.name,Harbour Master

@@ -39,10 +39,10 @@ signal loadout_applied(stats: WeaponStats)
 const LAYOUT_PATH: String = "res://content/data/range/range_layout.tres"
 const DUMMIES_PATH: String = "res://content/data/range/range_dummies.tres"
 const TWEAK_PATH: String = "res://content/data/range/range_tweak.tres"
-## D-111: ENV C's range dressing (lights, surfaces, props) and indoor Environment. Optional: until they exist
-## the range keeps its greybox look and the sun.
-const DRESSING_PATH: String = G.RANGE_DIR + "range_dressing.gd"
-const ENVIRONMENT_PATH: String = G.RANGE_DIR + "range_environment.tres"
+## D-111: ENV C's range dressing class (lights, surfaces, props; `static build(layout, parent)` and
+## `static environment() -> Environment`), found by its global class name, not a path into C's folder.
+## Optional: until it exists the range keeps its greybox look and the sun.
+const DRESSING_CLASS: StringName = &"RangeDressing"
 ## Re-run the readout when the shooter moved this far (m).
 const READOUT_MOVE_EPS_M: float = 0.1
 
@@ -462,17 +462,18 @@ static func _put_weapon(l: Loadout, def: WeaponDef) -> void:
 
 
 ## D-111: ENV C dresses the space on top of the builder's level (RangeDressing.build(layout, parent)) and
-## supplies the indoor Environment; an indoor range has no sun. A no-op until C's files exist.
+## supplies the indoor Environment (RangeDressing.environment()); an indoor range has no sun. A no-op until
+## the class exists.
 func _dress(parent: Node3D) -> void:
-	if ResourceLoader.exists(DRESSING_PATH):
-		var dressing: Script = load(DRESSING_PATH) as Script
-		if dressing != null and dressing.has_method(&"build"):
-			dressing.call(&"build", layout, parent)
-	if ResourceLoader.exists(ENVIRONMENT_PATH):
-		var we: WorldEnvironment = get_node_or_null(^"WorldEnvironment") as WorldEnvironment
-		var env: Environment = load(ENVIRONMENT_PATH) as Environment
-		if we != null and env != null:
-			we.environment = env
-			var sun: DirectionalLight3D = get_node_or_null(^"Sun") as DirectionalLight3D
-			if sun != null:
-				sun.visible = false
+	var dressing: Script = UiNav.global_class(DRESSING_CLASS)
+	if dressing == null:
+		return
+	if dressing.has_method(&"build"):
+		dressing.call(&"build", layout, parent)
+	var env: Environment = dressing.call(&"environment") as Environment if dressing.has_method(&"environment") else null
+	var we: WorldEnvironment = get_node_or_null(^"WorldEnvironment") as WorldEnvironment
+	if we != null and env != null:
+		we.environment = env
+		var sun: DirectionalLight3D = get_node_or_null(^"Sun") as DirectionalLight3D
+		if sun != null:
+			sun.visible = false
