@@ -1,0 +1,8 @@
+asset: prop_canvas_orchard_crate
+script: tools/blender/props/gallery.py
+params: {"cat": {"kind": "painting", "prefab": "loot_spawn", "surface": "wood"}, "fn": "canvas_crate", "pid": "orchard"}
+seed: 2955469069  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_canvas_orchard_crate
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 8000

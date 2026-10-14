@@ -1,0 +1,8 @@
+asset: prop_door_roller_steel_w360_h450
+script: tools/blender/props/gallery.py
+params: {"cat": {"kind": "industrial_door", "leaf_script": "shutter", "prefab": "door", "surface": "metal"}, "fn": "shutter_reveal", "h": 4.5, "handles": true, "hood": 0.42, "slat": "metal_grey", "t": 0.4, "w": 3.6}
+seed: 1335678997  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_door_roller_steel_w360_h450
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 8000
