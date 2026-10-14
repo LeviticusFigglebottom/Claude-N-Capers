@@ -32,10 +32,10 @@ const STAT_BAR_MAX: Dictionary = {"damage": 200.0, "mag": 100.0, "total_ammo": 4
 ## PO-4 Detection Risk colour bands (%): green up to DR_LOW, amber up to DR_HIGH, red above.
 const DR_LOW: int = 20
 const DR_HIGH: int = 45
+## D-111 (style.md §11): six key stats; threat, total ammo and reload live in the Workshop's full sheet.
 const STAT_ROWS: Array[Array] = [
 	["damage", &"ui.stat.damage"], ["accuracy", &"ui.stat.accuracy"], ["stability", &"ui.stat.stability"],
-	["concealment", &"ui.stat.concealment"], ["threat", &"ui.stat.threat"], ["mag", &"ui.stat.magazine"],
-	["total_ammo", &"ui.stat.total_ammo"], ["rof", &"ui.stat.rate_of_fire"], ["reload", &"ui.stat.reload"],
+	["concealment", &"ui.stat.concealment"], ["mag", &"ui.stat.magazine"], ["rof", &"ui.stat.rate_of_fire"],
 ]
 
 ## Profile slot (SaveService) this screen edits.
@@ -82,12 +82,11 @@ var launch_button: Button
 var back_button: Button
 var skills_button: Button
 var perks_button: Button
-var masks_button: Button
 var workshop_button: Button
 ## The workshop while it is open over this screen (B4-17), else null.
 var workshop: WorkshopScreen = null
-var skills_summary_label: Label
-var perk_summary_label: Label
+## D-111: names the weapon the stat panel describes (the secondary; the primary's sheet is in the Workshop).
+var stats_weapon_label: Label
 var _stat_value_labels: Dictionary = {}
 var _stat_delta_labels: Dictionary = {}
 var _stat_bars: Dictionary = {}
@@ -134,6 +133,8 @@ func build_ui() -> void:
 	primary_slot.pressed.connect(open_workshop)
 	weapon_option = _row(weapons, &"ui.loadout.secondary", &"pistol")
 	_mods_box = _card_grid(left, 3)
+	# D-111: mods are edited in the Workshop (primary and secondary); the slots stay as the loadout's picks.
+	_mods_box.visible = false
 	left.add_child(_section(&"ui.loadout.section.gear"))
 	var gear: GridContainer = _card_grid(left)
 	melee_option = _row(gear, &"ui.loadout.melee", &"knife")
@@ -143,10 +144,9 @@ func build_ui() -> void:
 	left.add_child(_section(&"ui.loadout.section.crew"))
 	var crew: GridContainer = _card_grid(left)
 	mask_option = _row(crew, &"ui.loadout.mask", &"masks")
-	masks_button = UiBuild.button(&"ui.masks.open")
-	masks_button.custom_minimum_size = Vector2(150, 0)
-	masks_button.pressed.connect(_on_progression.bind(masks_requested))
-	mask_option.get_parent().add_child(masks_button)
+	if not compact_mode:  # D-111: the mask tile opens the bench (the separate Masks button is gone)
+		mask_option.pressed.disconnect(mask_option.open_picker)
+		mask_option.pressed.connect(_on_progression.bind(masks_requested))
 	heister_option = _row(crew, &"ui.loadout.heister", &"crew")
 	heister_swatch = ColorRect.new()
 	heister_swatch.custom_minimum_size = Vector2(8, 0)
@@ -158,7 +158,9 @@ func build_ui() -> void:
 	heister_portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	heister_portrait.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	heister_option.get_parent().add_child(heister_portrait)
-	cols.add_child(_build_stats_panel())
+	var stats_panel: PanelContainer = _build_stats_panel()
+	stats_panel.size_flags_vertical = Control.SIZE_SHRINK_BEGIN  # D-111: hugs its rows, no empty box below
+	cols.add_child(stats_panel)
 	var nav: HBoxContainer = UiBuild.hbox(16)
 	root.add_child(nav)
 	back_button = UiBuild.ghost(UiBuild.button(&"ui.menu.back"))
@@ -182,7 +184,7 @@ func build_ui() -> void:
 	nav.add_child(push)
 	nav.add_child(launch_button)
 	launch_button.visible = not hub_mode
-	for b: Button in [skills_button, perks_button, workshop_button, masks_button]:
+	for b: Button in [skills_button, perks_button, workshop_button]:
 		b.visible = not compact_mode
 	_fill_options()
 	_rebuild_mod_rows()
@@ -200,7 +202,13 @@ func _build_stats_panel() -> PanelContainer:
 	stats_mode_button = UiBuild.ghost(UiBuild.button(&"ui.stats.with_skills"))
 	stats_mode_button.size_flags_horizontal = Control.SIZE_SHRINK_END
 	stats_mode_button.pressed.connect(toggle_stats_mode)
-	v.add_child(stats_mode_button)
+	var top: HBoxContainer = UiBuild.hbox(UiTokens.S3)
+	v.add_child(top)
+	stats_weapon_label = UiBuild.caption(&"")
+	stats_weapon_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	stats_weapon_label.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	top.add_child(stats_weapon_label)
+	top.add_child(stats_mode_button)
 	v.add_child(grid)
 	for row: Array in STAT_ROWS:
 		grid.add_child(UiBuild.caption(StringName(row[1])))
@@ -225,10 +233,6 @@ func _build_stats_panel() -> PanelContainer:
 	v.add_child(detection_risk_label)
 	concealment_label = UiBuild.label(&"", UiBuild.DIM)
 	v.add_child(concealment_label)
-	skills_summary_label = UiBuild.label(&"", UiBuild.DIM)
-	perk_summary_label = UiBuild.label(&"", UiBuild.DIM)
-	v.add_child(skills_summary_label)
-	v.add_child(perk_summary_label)
 	return UiBuild.panel(v)
 
 
@@ -426,14 +430,7 @@ func commit_to_profile() -> void:
 
 
 func _refresh_progression_summary(l: Loadout) -> void:
-	var total: int = SkillPoints.points_for_level(profile.level)
-	skills_summary_label.text = UiText.t(&"ui.loadout.skills_summary",
-			{"spent": SkillPoints.spent_total(l.skills), "total": total})
-	if l.perk_deck == &"":
-		perk_summary_label.text = UiText.t(&"ui.loadout.perk_none")
-	else:
-		perk_summary_label.text = UiText.t(&"ui.loadout.perk_summary",
-				{"deck": UiText.t(StringName("%s.name" % l.perk_deck)), "cards": l.perk_deck_cards})
+	stats_weapon_label.text = UiText.t(UiText.item_key(l.secondary)) if l.secondary != &"" else ""
 
 
 func _on_progression(request: Signal) -> void:
@@ -551,8 +548,9 @@ func _rebuild_focus() -> void:
 	var types: Array = mod_options.keys()
 	types.sort()
 	for t: Variant in types:
-		focus_chain.append(mod_options[t] as Control)
-	for c: Control in [melee_option, armor_option, deployable_option, throwable_option, mask_option, masks_button,
+		if _mods_box.visible:
+			focus_chain.append(mod_options[t] as Control)
+	for c: Control in [melee_option, armor_option, deployable_option, throwable_option, mask_option,
 			heister_option, stats_mode_button, launch_button,
 			skills_button, perks_button, workshop_button, back_button]:
 		if (c != launch_button or not hub_mode) and (c.visible or not compact_mode):
@@ -564,7 +562,7 @@ func _rebuild_focus() -> void:
 		primary_slot.focus_neighbor_bottom = primary_slot.get_path_to(weapon_option)
 		UiNav.chain_horizontal([melee_option, armor_option] as Array[Control], false)
 		UiNav.chain_horizontal([deployable_option, throwable_option] as Array[Control], false)
-		UiNav.chain_horizontal([mask_option, masks_button, heister_option] as Array[Control], false)
+		UiNav.chain_horizontal([mask_option, heister_option] as Array[Control], false)
 		var mods: Array[Control] = []
 		var mod_types: Array = mod_options.keys()
 		mod_types.sort()

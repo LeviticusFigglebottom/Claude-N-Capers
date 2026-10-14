@@ -188,6 +188,7 @@ UiBuild wires focus / press on every Button it makes, so screens get them for fr
 The one-page sheet for the menu declutter pass. §1–§5 still hold. These rules decide what each screen *removes*.
 
 **Budget.** A menu screen shows at most **7 interactive things** in its body, plus Back and one primary action.
+A uniform grid of like items (stations, armor, swatches) counts as one.
 It shows at most **3 text sizes** (H1, one of Lead/H2, and Body/Caption) and **one accent**: brass for money and
 the commit button, cyan only for focus. A per-heist accent is allowed only on that heist's strip.
 
