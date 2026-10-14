@@ -3,13 +3,14 @@
 ## Writes <out>/<weapon>_<pose>.png and <out>/hold_sheet.png (rows = weapons, cols = poses).
 ##   xvfb-run -a -s "-screen 0 640x360x24" /opt/godot/godot --rendering-driver opengl3 --audio-driver Dummy \
 ##     --fixed-fps 60 --resolution 640x360 --path game res://tests/p/_review/hold_capture.tscn -- --out=/abs/dir \
-##     [--weapons=weapon.kestrel_p9,...]
+##     [--weapons=weapon.kestrel_p9,...] [--heist=glasshouse]   (a lit map behind the silhouette; default unit map)
 ## Owner: ENV P.
 extends Node
 
 const POSES: PackedStringArray = ["hip", "turn", "walk", "sprint", "ads_mid", "ads"]
 
 var _out: String = "user://hold_capture"
+var _heist: StringName = &""
 var _weapons: PackedStringArray = ["weapon.kestrel_p9", "weapon.hornet_9", "weapon.corsair_ar", "weapon.mule_12",
 	"weapon.anvil_lmg", "weapon.heron_308"]
 
@@ -21,6 +22,7 @@ func _ready() -> void:
 		match kv[0]:
 			"out": _out = v
 			"weapons": _weapons = v.split(",")
+			"heist": _heist = StringName(v)
 	DirAccess.make_dir_recursive_absolute(_out)
 	var rows: Array[Array] = []
 	for wid: String in _weapons:
@@ -42,10 +44,17 @@ func _weapon(wid: StringName) -> Array:
 		l.primary = wid
 		l.primary_mods = [] as Array[StringName]
 		l.resolved_primary = LoadoutResolver.resolve_weapon(wid, l.primary_mods)
-	var rt: HeistRuntime = await HeistLauncher.launch(&"unit_map", 42, Enums.Difficulty.ROUTINE, self,
-		{"map_packed": ATestMaps.basic(0, 0), "crew_ai": false, "loadouts": {0: l}})
+	var rt: HeistRuntime = null
+	if _heist == &"":
+		rt = await HeistLauncher.launch(&"unit_map", 42, Enums.Difficulty.ROUTINE, self,
+			{"map_packed": ATestMaps.basic(0, 0), "crew_ai": false, "loadouts": {0: l}})
+	else:  # a lit street behind the silhouette (the crew's own spawn)
+		rt = await HeistLauncher.launch(_heist, 1002, Enums.Difficulty.ROUTINE, self,
+			{"ai_teammates": 0, "crew_ai": false, "loadouts": {0: l}})
+		rt.isolate_npc(null)
 	var c: CrewController = rt.crew_controller(0) as CrewController
-	rt.teleport_crew(0, Transform3D(Basis.IDENTITY, Vector3(0, 0.05, 10)))
+	if _heist == &"":
+		rt.teleport_crew(0, Transform3D(Basis.IDENTITY, Vector3(0, 0.05, 10)))
 	var inp: PInputDriver = PInputDriver.new(self)
 	inp.capture_mouse()
 	await inp.hold(&"mask_up", Tweak.crew().mask_up_time_s + 0.3)
