@@ -9,6 +9,8 @@ const MARKER_GROUP: StringName = &"range_marker"
 ## D-111: the per-target labels (distance, dummy name, HP) fade out past this distance from the camera;
 ## far away they were unreadable specks that cluttered the view. Area titles and lane markers stay.
 const LABEL_FADE_M: float = 30.0
+## Lane line segment length (m): short enough that each piece gets its nearest lights.
+const LANE_SEGMENT_M: float = 8.0
 
 
 ## Floors, walls, lane lines and the bench under `parent`. Returns {"floors": int, "walls": int}.
@@ -164,9 +166,15 @@ static func _build_lane_lines(layout: RangeLayout, tweak: RangeTweak, root: Node
 	var mat: StandardMaterial3D = _flat_mat(tweak.lane_line_color)
 	var n: int = layout.lane_count()
 	var len_m: float = -layout.far_z_m
+	# ENV C (range dressing): one 100 m+ strip is lit by at most 8 lights in Compatibility, so it lit unevenly
+	# under the per-lane strip lights; LANE_SEGMENT_M pieces each take their nearest lights.
+	var segs: int = maxi(ceili(len_m / LANE_SEGMENT_M), 1)
+	var seg_len: float = len_m / float(segs)
 	for i: int in range(n + 1):
 		var x: float = layout.lane_x(0) - layout.lane_width_m * 0.5 + float(i) * layout.lane_width_m
-		root.add_child(_strip(Vector3(layout.lane_line_width_m, 0.01, len_m), Vector3(x, 0.005, -len_m * 0.5), mat))
+		for k: int in range(segs):
+			var zc: float = -seg_len * (float(k) + 0.5)
+			root.add_child(_strip(Vector3(layout.lane_line_width_m, 0.01, seg_len), Vector3(x, 0.005, zc), mat))
 
 
 static func _build_bench(layout: RangeLayout, tweak: RangeTweak, parent: Node3D) -> void:
