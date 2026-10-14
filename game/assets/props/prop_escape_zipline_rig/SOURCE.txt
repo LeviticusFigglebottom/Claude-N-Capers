@@ -1,0 +1,8 @@
+asset: prop_escape_zipline_rig
+script: tools/blender/props/escape.py
+params: {"cat": {"kind": "zipline", "prefab": "escape_zone", "surface": "metal"}, "fn": "zipline_rig"}
+seed: 3167205359  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_escape_zipline_rig
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 12000

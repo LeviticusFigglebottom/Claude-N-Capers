@@ -1,0 +1,8 @@
+asset: prop_escape_lift_fitout
+script: tools/blender/props/escape.py
+params: {"cat": {"kind": "lift", "light": {"angle": 27, "color": "#F4EEE4", "energy": 2.0, "pos": [0.0, 2.54, 0.0], "range": 2.75, "type": "spot"}, "prefab": "escape_zone", "surface": "metal"}, "fn": "lift_fitout"}
+seed: 1762939801  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_escape_lift_fitout
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 12000

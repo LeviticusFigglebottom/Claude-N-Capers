@@ -1,0 +1,6 @@
+[gd_scene format=3]
+
+[node name="EscapeBoatMarker" type="Node3D"]
+metadata/escape_vehicle = &"moored_boat"
+
+[node name="Body" type="Node3D" parent="."]
