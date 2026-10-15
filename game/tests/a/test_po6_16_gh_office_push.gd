@@ -62,6 +62,9 @@ func test_po6_16_gh_police_enter_manager_office() -> void:
 		last_alive = units.size()
 		if inside > 0 and first_in < 0.0:
 			first_in = t
+		if _shots_dir() != "" and inside > 0 and inside >= units.size() - 1 and dir.assault_phase == Enums.AssaultPhase.SUSTAIN:
+			await _shot("po6_16_gh_office_crew_view_t%d" % roundi(t))
+			return  # windowed evidence run: llvmpipe is ~60x slower than real time, stop at the first capture
 		print("[DIAG] t=%5.1f phase=%s alive=%d cap=%d spawned=%d assault_spawned=%d pool=%d inside=%d deep=%d" % [t,
 			Enums.AssaultPhase.keys()[dir.assault_phase], units.size(), dir.police_budget(), dir.spawned_total,
 			dir.assault_spawned, dir._force_pool(), inside, deep])
@@ -94,7 +97,6 @@ func test_po6_16_gh_police_enter_manager_office() -> void:
 					print("[DIAG]     wall=%s floor=%s stun=%s cols=%s near=%s yield=%s" % [u.is_on_wall(), u.is_on_floor(),
 						u.is_stunned(), cols, near, m.yielding()])
 	print("[DIAG] first cop inside office at t=%.1f" % first_in)
-	await _shot("po6_16_gh_office_crew_view")
 	assert_true(first_in >= 0.0 and first_in <= 30.0, "police inside the office within 30 s of the alarm (%.1f)" % first_in)
 	assert_eq(dir.assault_phase, Enums.AssaultPhase.SUSTAIN, "still sustaining")
 	assert_true(last_alive >= dir.police_budget() - 1, "force at its cap (%d / %d)" % [last_alive, dir.police_budget()])
@@ -102,9 +104,13 @@ func test_po6_16_gh_police_enter_manager_office() -> void:
 
 
 ## Windowed evidence only (headless: no-op): PO6_16_SHOTS=<dir> saves the crew 0 view (facing ManagerDoor).
+func _shots_dir() -> String:
+	return "" if DisplayServer.get_name() == "headless" else OS.get_environment("PO6_16_SHOTS")
+
+
 func _shot(nm: String) -> void:
-	var out: String = OS.get_environment("PO6_16_SHOTS")
-	if out == "" or DisplayServer.get_name() == "headless":
+	var out: String = _shots_dir()
+	if out == "":
 		return
 	Engine.time_scale = 1.0
 	await wait_frames(10)
