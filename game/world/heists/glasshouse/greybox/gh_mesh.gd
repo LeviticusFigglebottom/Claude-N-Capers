@@ -19,6 +19,13 @@ const TILE_MIN_SPAN: float = 1.0
 ## iy = 2 m height band, so a floor, the ceiling under it and the roof above never share an instance's 8 lights).
 ## Visual only: colliders and the navmesh never see these meshes.
 var tile_groups: Dictionary = {}
+## Opt-in wall tiling (needs the group in tile_groups too), group -> run (m) along the wall a vertical quad must exceed;
+## shorter ones stay in the group's merged mesh. An axis-aligned vertical quad of a listed group is cut at the same
+## world grid (x or z = k * tile along the wall, y = k * TILE_BAND_Y) and each piece goes to the group
+## "<group>_T<ix>_<iy>_<iz>_<Z|X><p|n><plane cm>" (one MeshInstance3D per wall plane, facing and cell), so a wall far
+## from the merged mesh's 8 lights gets the lights around its own tile. Trim-strip keys are not cut in y (their V spans
+## the whole face). Visual only, like tile_groups.
+var wall_tile_groups: Dictionary = {}
 ## group -> { material key -> PackedVector3Array/normals/uvs }
 var _groups: Dictionary = {}
 ## material key -> Material
@@ -62,6 +69,8 @@ func quad(group: String, key: String, a: Vector3, b: Vector3, c: Vector3, d: Vec
 	if key == "":
 		return
 	if tile_groups.has(group) and absf(n.y) > 0.999 and _tile_quad(group, key, [a, b, c, d], n):
+		return
+	if wall_tile_groups.has(group) and maxf(absf(n.x), absf(n.z)) > 0.999 and _tile_wall(group, key, [a, b, c, d], n):
 		return
 	var pts: Array[Vector3] = [a, b, c, d]
 	if (b - a).cross(d - a).dot(n) < 0.0:
@@ -123,6 +132,48 @@ func _tile_quad(group: String, key: String, q: Array[Vector3], n: Vector3) -> bo
 			var cell: String = "%s_T%d_%d_%d" % [group, floori((x0 + x1) * 0.5 / tile), floori(y / TILE_BAND_Y),
 				floori((z0 + z1) * 0.5 / tile)]
 			quad(cell, key, Vector3(x0, y, z0), Vector3(x1, y, z0), Vector3(x1, y, z1), Vector3(x0, y, z1), n)
+	return true
+
+
+## wall_tile_groups: splits an axis-aligned vertical rectangle (normal +-x or +-z) at the world tile grid along the
+## wall and the height bands into per-plane cell groups. Returns false for any other shape or a short run.
+func _tile_wall(group: String, key: String, q: Array[Vector3], n: Vector3) -> bool:
+	var tile: float = float(tile_groups.get(group, 0.0))
+	if tile <= 0.0:
+		return false
+	var along_x: bool = absf(n.z) > 0.999
+	var lo: Vector3 = q[0]
+	var hi: Vector3 = q[0]
+	for p: Vector3 in q:
+		lo = lo.min(p)
+		hi = hi.max(p)
+	var lo_a: float = lo.x if along_x else lo.z
+	var hi_a: float = hi.x if along_x else hi.z
+	var depth: float = (hi.z - lo.z) if along_x else (hi.x - lo.x)
+	if depth > 1e-6 or hi.y - lo.y < 1e-6 or hi_a - lo_a <= maxf(float(wall_tile_groups[group]), 1e-6):
+		return false
+	for p2: Vector3 in q:
+		var pa: float = p2.x if along_x else p2.z
+		if (absf(pa - lo_a) > 1e-6 and absf(pa - hi_a) > 1e-6) or (absf(p2.y - lo.y) > 1e-6 and absf(p2.y - hi.y) > 1e-6):
+			return false
+	var cs: Array[float] = _cuts(lo_a, hi_a, tile)
+	var ys: Array[float] = [lo.y, hi.y] if _strips.has(key) else _cuts(lo.y, hi.y, TILE_BAND_Y)
+	var fixed: float = lo.z if along_x else lo.x
+	for i: int in range(cs.size() - 1):
+		for j: int in range(ys.size() - 1):
+			var a0: float = cs[i]
+			var a1: float = cs[i + 1]
+			var y0: float = ys[j]
+			var y1: float = ys[j + 1]
+			# Its own instance per wall plane and cell: the renderer picks the 8 lights for an instance's AABB, so a thin
+			# wall-face AABB keeps the lights of the room in front of it instead of those of a whole 6 m slab cell.
+			var mid: Vector3 = Vector3((a0 + a1) * 0.5, 0.0, fixed) if along_x else Vector3(fixed, 0.0, (a0 + a1) * 0.5)
+			var cell: String = "%s_T%d_%d_%d_%s%s%d" % [group, floori(mid.x / tile), floori((y0 + y1) * 0.5 / TILE_BAND_Y),
+				floori(mid.z / tile), "Z" if along_x else "X", "p" if (n.z if along_x else n.x) > 0.0 else "n", roundi(fixed * 100.0)]
+			if along_x:
+				quad(cell, key, Vector3(a0, y0, fixed), Vector3(a1, y0, fixed), Vector3(a1, y1, fixed), Vector3(a0, y1, fixed), n)
+			else:
+				quad(cell, key, Vector3(fixed, y0, a0), Vector3(fixed, y0, a1), Vector3(fixed, y1, a1), Vector3(fixed, y1, a0), n)
 	return true
 
 

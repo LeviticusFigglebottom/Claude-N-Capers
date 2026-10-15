@@ -171,3 +171,32 @@ func test_police_only_island_without_link_fails() -> void:
 func test_one_way_island_without_police_only_meta_fails() -> void:
 	var res: Dictionary = await _police_island(true, false)
 	_expect_fail(res, "reachability", "IslandPolice")
+
+
+## Lead D-113 ruling: meta `lc_ignore` (cable / FX-only meshes) hides a node and its subtree from levelcheck.
+func test_lc_ignore_meta_hides_fx_meshes() -> void:
+	var floating_cable: Callable = func(m: HeistMap) -> void:
+		var mi: MeshInstance3D = MeshInstance3D.new()
+		mi.name = "ZiplineCable"
+		var cm: CylinderMesh = CylinderMesh.new()
+		cm.top_radius = 0.01
+		cm.bottom_radius = 0.01
+		cm.height = 6.0
+		mi.mesh = cm
+		mi.position = Vector3(40.0, 3.0, 0.0)
+		mi.set_meta(&"kind", "cable")
+		m.get_node("Props").add_child(mi)
+	var res: Dictionary = await _validate(GOOD, "greybox", floating_cable, false, ["floating"])
+	_expect_fail(res, "floating", "ZiplineCable")
+	var ignored: Callable = func(m: HeistMap) -> void:
+		floating_cable.call(m)
+		m.get_node("Props/ZiplineCable").set_meta(&"lc_ignore", true)
+	res = await _validate(GOOD, "greybox", ignored, false, ["floating"])
+	_expect_only(res, [])
+	var parent: Node3D = Node3D.new()
+	var child: Node3D = Node3D.new()
+	parent.add_child(child)
+	assert_false(LcUtil.lc_ignored(child))
+	parent.set_meta(&"lc_ignore", true)
+	assert_true(LcUtil.lc_ignored(child), "an ignored ancestor hides the subtree")
+	parent.free()

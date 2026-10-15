@@ -2,6 +2,99 @@
 
 Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min; this file says where to resume.
 
+## HANDOFF 2026-10-14
+**Branch head:** (this commit, on env/p-play) the handoff notes on top of 69211232 (vm_light_probe material
+isolation). Trunk merged at r198; nothing red. No wip branches.
+
+**Done since last trunk merge (not yet on trunk):**
+- 035eee7f: D's per-set long-gun support grips in FpViewmodelTweak.set_left_hand_grip_offset (rifle, shotgun, lmg,
+  sniper, break_action, lever, shotgun_box: values from D's LONG_GUN_GRIPS in tools/blender/characters/_arms_clips.py);
+  test_p_grip_offset is per set. Green: p_grip_offset 2, po4_feel 10, p1_01 12, p1_03 5, po4_viewmodel 1,
+  p_finger_clip 3 (self-check threshold relaxed to 2x + 30 for the new grip). Merge with D's char_arms_fp push
+  (the clip and these offsets belong together).
+- b5703ddb, 69211232: tests/p/_review/vm_light_probe.tscn (the FP black-gun probe, see In progress).
+
+**In progress:**
+- FP "black gun" (lead priority, PO "untextured gun"), 90%. Cause found: the gun's MATERIAL. Proof (Glasshouse,
+  Corsair, mean luminance 0-255 of weapon-only viewmodel pixels; Compatibility and Forward+ agree): shipped 8
+  (Forward+ 11); unshaded 87; the arms' skin material on the gun 83-87 (so lights / layers / shadows / normals / env
+  are fine); skin material + ONE gun texture: ORM 23, albedo 39, normal 80 (Forward+ on lavapipe, full run: shipped 11, arms
+  material 87, +ORM 34, +albedo 41, +normal 85, no ORM 22, env colour 8.7: same picture). C's library ORMs give anodized
+  aluminium / blued steel / bare steel / brass metal = 1.0 (rough 0.35-0.39); a metal only reflects, and the FP
+  viewmodel (and dim interiors) give it almost nothing to reflect. Sent to C (owner of world/materials + texgen):
+  coated finishes (anodize, bluing, cerakote) as dielectric (metal 0-0.15, rough 0.45-0.55, anodized black albedo
+  ~0.2 sRGB), bare steel / brass / chrome stay metallic. C agreed and recorded it as In progress #4 in docs/status/env_c.md (env/c-worlds 6b533f0b) for the next C session. Next: (1) the env_bgcolor / env_bgcol_amb variants are NOT measured yet (my run timed out sharing the CPU):
+  rerun `vm_light_probe.tscn` ALONE (opengl3, ~15-20 min, timeout >= 2400 s) and read those lines: a transparent BG_COLOR (alpha 0) with
+  REFLECTION_SOURCE_BG in the viewmodel environment (crew_view.gd _build_viewmodel_camera) gives metals a
+  reflection while the overlay stays transparent: if it lifts the gun without changing the coverage px, add it
+  there (P owns crew_view.gd) as a viewmodel_reflection_color tweak; (2) after C's material change, rerun the probe
+  and render the Glasshouse before/after (hold_capture --heist=glasshouse --closeup) for the PO.
+- PFingerClip (support-hand skin vs gun), 100% tool / waiting on D: game/tests/p/p_finger_clip.gd +
+  test_p_finger_clip.gd (report-only "[FINGERS]" lines). Trunk r192 numbers: thumb inside the gun 4-12 mm on every
+  long gun, index up to 6.4 mm; middle/ring/pinky clean. Next: when D's new char_arms_fp lands, rerun; when clean
+  turn test_report_long_guns into an assert (e.g. 0 vertices deeper than 2 mm).
+- D-113 FP muzzle flash, 10%: API agreed with C (muzzle_flash.tscn: flash(size, suppressed, weapon_class := &"",
+  variant := -1), burst_end(), fp_scale(on), children Sparks / Wisp kept visible, Smoke hidden). Waiting on C's
+  scene. Next: in fp_viewmodel_fx.gd flash(): pass the set's class (map anim_set -> pistol/rifle/shotgun/lmg/
+  sniper/smg in FpViewmodelTweak), call fp_scale(true) once on _make_flash, call burst_end() ~0.25 s after the last
+  shot (tick), keep po4_feel / d105 green, send a windowed sequence.
+- Lit hold sheet + close-ups on trunk (PO "before"), 0%: superseded by the black-gun fix; run after it.
+
+**Queued next:**
+1. Black-gun viewmodel reflection (above) + before/after (lead priority 2026-10-14 20:00).
+2. Lit hold sheet + close-ups after D's grip clip and C's materials (lead r190/r192 asks).
+3. D-113 FP flash once C's scene lands (lead D-113).
+4. GN loud pass rerun with A's door warp 0680ddab + Po5Pilot barred-door fix (gn_pass.tscn), check CREW_STACK
+   gone and the loud objectives progress (lead GN-P1).
+5. D-111 coverage rerun when A's anim triggers land (directional hit react, death variants, 8-way, start/stop,
+   crew crouch): anim_coverage runs + nd_stealth_pass (now with intimidate/tie/swap) (lead D-111).
+
+**Cross-env dependencies:** C: weapon material fix, muzzle_flash.tscn (D-113). D: char_arms_fp long-gun grip clip
+(must merge with 035eee7f). A: anim triggers (D-111), door warp 0680ddab, Po5Pilot barred-door fix, GN last-call
+cue / loud first objective (routed by the lead). B: Jay in roster.tres.
+
+**How to validate your area:**
+- Unit: `godot --headless --path game res://tests/framework/runner.tscn -- --dir=p --filter=<name>` (dir is the
+  env letter, not a path). Viewmodel guard set: test_po4_feel, test_p1_01, test_p1_03, test_po4_viewmodel,
+  test_p_interact_lower, test_p_grip_offset, test_p_finger_clip, plus a/test_fp_viewmodel, b/test_pp_left_hand_ik,
+  d/test_arms. Run `godot --headless --path game --import` first after any merge (new class_names).
+- Windowed (xvfb-run -a -s "-screen 0 960x540x24", add --rendering-driver opengl3 for speed; Forward+ works on
+  lavapipe but is ~3x slower): hold_capture.tscn (--weapons, --heist, --closeup), vm_light_probe.tscn,
+  gn_pass.tscn (real menus, GN stealth to last call then A's auto_loud), anim_coverage.tscn (rides A's PO-5 flows:
+  --po5-flow=..., --anim-out), nd_stealth_pass.tscn (--anim-out, --obs-out), po_observer (on the root via the boot
+  scenes), spike_probe.tscn, nav_path_probe.tscn, coop_fx_capture. All headers carry their usage lines.
+- Before push: gdlint changed files, tools/ci/check_ownership.py p, tools/ci/check_banned.py.
+
+**Gotchas:**
+- llvmpipe renders a lit heist at minutes per frame: every windowed tool turns RenderingServer.render_loop_enabled
+  off between shots; never run two windowed runs at once (both crawl).
+- `pkill -f` / `awk '/pattern/'` kill lines match your own shell when the pattern is in the command: kill by pid
+  from a separate command.
+- Modifier (IK / HandRestore) results are only in the skeleton pose inside Skeleton3D.skeleton_updated.
+- Godot front faces wind clockwise: the outward normal is (c - a) x (b - a).
+- The FP weapon hangs under the arms skeleton (weapon bone): "arms meshes" must exclude weapon_visual's subtree.
+- GN: the PUBLIC MapZone Area3D sits at the origin (use its CollisionShape3D children); last call flips the
+  same zone node to RESTRICTED.
+- HeistRuntime.npcs() returns the living only (group G.NPC for the dead).
+
+**Your session id:** session_01FYVVhNtxKAoQmyfnZ9rb3t (ENV P).
+
+## 2026-10-14 19:45 UTC: support-hand clip probe, GN-P1 round 187 pass, Marten + Jay, per-set grip offset
+- Per-set left-hand grip offset (1738fe7e; A's line on trunk r192): D's PD2 long-gun wrist for 7 sets.
+- PFingerClip / test_p_finger_clip (190327b8): finger skin vs gun mesh in the real game pose (CPU skinning in
+  skeleton_updated, nearest face + 3-axis parity; self-check: grip 4.5 cm left -> 44 -> 262 inside). Trunk r192,
+  hip ~= ADS, inside vertices / depth: thumb Condor 58 / 12.1 mm, Mule 43 / 10.0, Anvil 24 / 10.6, Reaper 18 / 10.8,
+  Bastion 45 / 9.9 (index 33 / 6.4), Corsair 36 / 7.7, Brute 30 / 6.3 (index 8 / 5.9), Shrike 13 / 3.8; middle /
+  ring / pinky 0 everywhere. Thumb on the near side + index tip (D). Report-only until D is green, then an assert.
+- GN-P1 round 187 (gn_pass.tscn, real menus, seed 1792002290, 2 runs): last call works (warning subtitle,
+  Public -> RESTRICTED at 480 s, patrons out); a guest who stays is spotted (force mask) then guard_radio alarm
+  (D-075). Open: objective still "Case the gala" + no off-limits cue after last call (A/B); AI crew stacked
+  0.01 m apart at (22.2, 0, 30.5) for 300+ s loud (A); loud first objective "Find the listed canvases" (A?);
+  A's pilot cannot route round the barred ArtDoorEG (harness).
+- Marten (5d638e84) and Jay (d2386db1) wired (sleeves + bodies), test_p_roster_wiring reads B's roster.
+- nd_stealth_pass: render loop off between shots, intimidate + tie, weapon swap (D-111 coverage, not rerun yet).
+- Open: lit GH hold sheet + close-ups on trunk (hold_capture --closeup, rendering; llvmpipe minutes per frame).
+
 ## 2026-10-14 18:30 UTC: D-111 animation coverage, long-gun hold diagnosis
 Probe: tests/p/_review/anim_coverage.tscn (rides A's PO-5 flows) + nd_stealth_pass.tscn, `--anim-out=DIR`. Runs:
 GH stealth (676 s), GH loud (partial, to bag 1), ND loud (partial, ~390 s heist), ND stealth (direct launch). Bodies:

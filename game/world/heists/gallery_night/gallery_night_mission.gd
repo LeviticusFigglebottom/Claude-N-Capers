@@ -41,6 +41,8 @@ const GUESTS_GONE_S: float = 60.0
 ## find_canvases: radius of the "walk within 4 m" check around each active list slot (doc §Objectives 2).
 const FIND_RADIUS_M: float = 4.0
 const RARE_CURATOR_TIPSY: StringName = &"curator_tipsy"
+## Last call relabels the casing objective (B: "Stay out of sight: the gala's over").
+const OBJ_CASING_LAST_CALL: StringName = &"objective.gallery_night.casing_last_call"
 const ASSET_INTEL_LIST: StringName = &"asset.intel_list"
 ## Doors the mission relocks / opens: objective tag first (ENV C to tag them), else these map paths.
 const TAG_BRONZE: StringName = &"bronze_doors"
@@ -285,6 +287,10 @@ func _on_last_call() -> void:
 		return
 	_last_call = true
 	say(&"vo.mercer.gallery_night_last_call")
+	# P's GN pass (b): the objective tells the player the halls are off limits now (B's string).
+	if objective_state(&"casing") == Enums.ObjectiveState.ACTIVE:
+		add_objective(&"casing", OBJ_CASING_LAST_CALL, Enums.ObjectiveState.ACTIVE,
+			{"marker_tags": [TAG_CASING], "optional": true})
 	# QC-51: the gala's PUBLIC rooms become RESTRICTED; guests walk out by the portico (stragglers stay on); the
 	# bronze doors and an open court pair close and relock LOCKPICK; waitstaff leave by the dock later.
 	set_zone_kinds(MapZone.Kind.PUBLIC, MapZone.Kind.RESTRICTED)
@@ -432,6 +438,9 @@ func _go_loud() -> void:
 	_lockdown = true
 	activate(&"lockdown")
 	complete(&"lockdown")
+	# Doc §Objectives Loud: no finding in loud (P's GN pass (e): it led the list); the canvas markers stay on
+	# [centrepiece] / [canvases].
+	_complete_once(&"find_canvases")
 	say(&"vo.mercer.gallery_night_lockdown")
 	for n: Node in find_tagged(TAG_SHUTTER):
 		_bar(n)

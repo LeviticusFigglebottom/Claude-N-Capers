@@ -3,6 +3,79 @@
 Owner: ENV D. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## HANDOFF 2026-10-14
+
+**Branch head:** env/d-art at the commit that adds this section (on top of 8ac1e97e). It adds this handoff, plus the
+shotgun and LMG lit Glasshouse grip captures.
+
+**Done since last trunk merge (not yet on trunk):**
+- This commit: `game/assets/characters/_review/grip_glasshouse_{plowman_12,rampart_lmg}_{hip,ads}{,_crop}.png`
+  (in-game, Glasshouse, using P's per-set offsets). In ADS the LMG's shroud hides the hand completely; that crop shows
+  only the sight. Everything else (51a3ce84 grip, 8ac1e97e Corsair captures, skirt fix 07542fe7) is on trunk as of r202.
+
+**In progress:**
+1. **Long-gun support grip (PO spec, `docs/handoff/in_progress.md` §D), about 80%.** 51a3ce84 is on trunk.
+   - What it does: `LONG_GUN_GRIPS` in `tools/blender/characters/_arms_clips.py` holds one `SupportGrip` per set
+     (along, palm, shift, thumb_opp, ring_pinky, offset). `offset` must equal P's
+     `FpViewmodelTweak.set_left_hand_grip_offset[set]`; P landed these in r202.
+   - Test: `test_arms._check_support_skin_clear` (skin vs the per-4 mm section convex hull, 2 mm) is green.
+   - P's PFingerClip on r202 is stricter (real triangles plus ray parity). Inside vertices / depth: Condor index
+     70 / 4.4 mm, Bastion thumb 2 / 3.8 mm and index 15 / 1.9 mm, Corsair thumb 2 / 3.0 mm, Reaper thumb 11 / 1.9 mm,
+     Brute 12 / 1.2 mm, Shrike 6 / 1.2 mm, Mule 2 / 0.3 mm, Anvil 0.
+   - Why: my grips were tuned on the reference guns in `test_arms.REF_WEAPON` (heron_308, corsair_ar...). The Condor
+     and Bastion share a set with those but have different fore-ends.
+   - Next step: run P's `test_p_finger_clip` on every gun of each set. Tune the worst gun per set with the Blender
+     optimizer (scratch tool, below), moving the thumb a little lower and outward and opening the sniper index.
+     Re-run test_arms, then hand P the new offsets. Acceptance: PFingerClip 0 vertices deeper than 2 mm, as a hard
+     assert. Not captured yet: the sniper (heron_308) Glasshouse frames, because the run was stopped at the handoff.
+2. **SMG re-time for B's fore-end markers, 0%. This blocks B's whole branch.**
+   - B's env/b-content f8f17c7a moved LeftHandIK under the fore-end for hornet_9 (Godot (0, 0.016, -0.150)),
+     lancet_45 and tern_556. wasp_pdw keeps its vertical grip.
+   - d/test_arms goes red on smg_idle / smg_ads_idle (palm 0.052 m off) until D re-times.
+   - Next step: merge origin/env/b-content into env/d-art. Set `_arms_sets.py` smg `left_ik` to the hornet marker
+     (Blender (0, 0.150, 0.016)). Add an `"smg"` `SupportGrip`, starting from the rifle's (centred markers take the
+     long-gun branch in `Kit.__init__` automatically, `abs(left_ik.x) < 0.005`). Tune it with the optimizer
+     (`OPT=smg`), rebuild char_arms_fp, run the FP set below, and send P the smg offset. Merge B and D together.
+
+**Queued next:**
+1. SMG re-time (above): unblocks B. Lead ruling 2026-10-14: hornet-family gets the same under-fore-end grip.
+2. Grip PFingerClip pass (above): the PO's #2 complaint, spec in `docs/handoff/in_progress.md` §D.
+3. Sniper Glasshouse grip captures, plus shotgun and LMG again after item 2.
+4. GN-D1 leftovers per `docs/process/next_heist.md` §3/§3b (gala clips are delivered; re-check against the contract
+   if A asks).
+
+**Cross-env dependencies:**
+- B: the SMG markers (f8f17c7a) merge together with the D SMG re-time.
+- P: owns `fp_viewmodel_tweak.tres` (per-set grip offsets) and PFingerClip. Every grip change means new offsets for P.
+- A: `fp_left_hand_ik.gd` reads `grip_offset(set_id)` (trunk r191 20a4f404).
+
+**How to validate your area:**
+- `gdlint` on changed .gd; `python3 tools/ci/check_ownership.py d`; `python3 tools/ci/check_banned.py`.
+- FP arms: `bash tools/ci/run_tests.sh d test_arms`; `p test_po4_feel`, `p test_p1_01`, `p test_p1_03`,
+  `p test_po4_viewmodel_classes`, `p test_p_grip_offset`, `p test_p_finger_clip` (report);
+  `a test_fp_viewmodel`; `b test_pp_left_hand_ik`.
+- Rebuild: `python3 tools/blender/build.py --category characters --asset char_arms_fp`, then
+  `bash tools/blender/characters/assemble.sh`, then `/opt/godot/godot --headless --path game --import`. Revert the
+  unrelated `*_lod.res` churn that assemble leaves behind.
+- Windowed: `game/tests/p/_review/hold_capture.tscn -- --out=DIR --weapons=... --heist=glasshouse` (P's). Glasshouse
+  runs about 1 fps on llvmpipe, so a full pose set takes about 25 min per gun. For hip + ADS only, force the mask
+  (`CrewController.set_masked(true)`) and skip walk/turn/sprint.
+- Grip optimizer (scratch, not in the repo): a Blender script that skins the posed Arms, scores finger/thumb
+  vertices against the weapon BVH and the same section hull as test_arms, and coordinate-descends `SupportGrip`
+  parameters. Rewrite it from this description if the scratch is gone. It uses `CL.Kit.__init__` monkeypatching
+  plus `CL.state_fns(sk, s)`, `solver.solve(realize(...))`, `A.apply_frame`, `weapon_of`.
+
+**Gotchas:**
+- `test_arms._check_long_gun_support_grip` was defined but never called until 51a3ce84. Check that new `_check_*`
+  helpers are actually called (gdlint caps public test methods at 20).
+- An AABB section check counts empty corners under round or twin-barrel fore-ends; the convex hull is the right
+  test. Mesh signed distance misses fingertips curled into the barrel-underside step (break action).
+- A grip's wrist `offset` changes whenever its parameters change; P's tweak must change in the same merge.
+- Never commit P's `fp_viewmodel_tweak.tres` from env/d-art (ownership), even when it is patched locally for captures.
+- Masks: after any crew head change, regenerate `_crew_face_envelope.json` and refit every mask in the SAME commit.
+
+**Your session id:** session_01EZDt9WkE187YkB8ANEbuhb
+
 ## 2026-10-14: seated deaths (D-110, lead-approved)
 - `death_seated_slump` (48 f, impact@22) and `death_seated_fall` (60 f, impact@34) in char_anim_humanoid, built in
   `_anim_d304.py`; SOURCE `seated_deaths` + `death_end_poses`. Both start from desk_work frame 0 on the npc chair and the

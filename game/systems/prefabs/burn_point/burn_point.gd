@@ -16,6 +16,10 @@ enum Stage { IDLE, BURNING, WARNING, LIT }
 const PLACEHOLDER: PackedScene = preload("res://systems/prefabs/burn_point/burn_point_placeholder.tscn")
 const KIND: StringName = &"thermite"
 const GROUP: StringName = &"fire_volume"
+## Fire light while burning (visual only).
+const FIRE_LIGHT_ENERGY: float = 1.6
+const FIRE_LIGHT_RANGE_M: float = 4.0
+const FIRE_LIGHT_HEIGHT_M: float = 0.9
 
 @export var requires_loot: StringName = &"loot.thermite"
 ## -1 = InteractionTweak.burn_duration_s.
@@ -51,6 +55,7 @@ func effective_duration() -> float:
 
 
 func _prefab_ready() -> void:
+	set_process(false)  # the fire light flickers only while burning
 	interactable.kind = &"place_thermite"
 	interactable.allowed_with_bag = true
 	interactable.extra_check = func(crew: Node) -> StringName:
@@ -175,6 +180,32 @@ func _show_fire(on: bool) -> void:
 	var f: Node3D = visual_node("Fire") as Node3D
 	if f != null:
 		f.visible = on
+	_fire_light(on)
+
+
+## A warm flickering OmniLight while burning (ENV C's ask; visual only, deterministic flicker, no RNG).
+func _fire_light(on: bool) -> void:
+	var l: OmniLight3D = get_node_or_null(^"FireLight") as OmniLight3D
+	if l == null and on:
+		l = OmniLight3D.new()
+		l.name = "FireLight"
+		l.light_color = Color(1.0, 0.55, 0.2)
+		l.omni_range = FIRE_LIGHT_RANGE_M
+		l.shadow_enabled = false
+		add_child(l)
+		l.position = Vector3(0.0, FIRE_LIGHT_HEIGHT_M, 0.0)
+	if l != null:
+		l.visible = on
+	set_process(on)
+
+
+func _process(_delta: float) -> void:
+	var l: OmniLight3D = get_node_or_null(^"FireLight") as OmniLight3D
+	if l == null or not l.visible:
+		set_process(false)
+		return
+	var t: float = Time.get_ticks_msec() / 1000.0
+	l.light_energy = FIRE_LIGHT_ENERGY * (1.0 + 0.18 * sin(t * 17.0) + 0.11 * sin(t * 31.0 + 1.3))
 
 
 func _net_state() -> Dictionary:

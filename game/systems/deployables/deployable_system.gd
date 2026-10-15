@@ -128,11 +128,22 @@ func _on_crew_spawned(slot: int, crew: Node) -> void:
 			if def == null:
 				Log.warn(&"deployables", "slot %d: unknown deployable %s" % [slot, id])
 				continue
+			if not _gate_ok(slot, id):
+				continue
 			if def.kind == &"armor_bag" and not _setup_armor_bag(c):
 				continue
 			rows.append({"id": id, "count": count_for(slot, def)})
 	_inv[slot] = rows
 	_sync(slot)
+
+
+## A gated deployable (DeployableGate) without its FLAG gives no unit, so a stale save cannot carry one.
+static func _gate_ok(slot: int, id: StringName) -> bool:
+	var flag: StringName = DeployableGate.required_flag(id)
+	if flag == &"" or Modifiers.flag(slot, flag):
+		return true
+	Log.warn(&"deployables", "slot %d: %s needs %s" % [slot, id, flag])
+	return false
 
 
 ## QB-58: an armor bag needs deploy.armor_bag; the bag keeps the loadout armor, the crew member

@@ -200,6 +200,10 @@ func goto(target: Vector3, arrive_m: float = 0.8, timeout_s: float = 60.0, sprin
 				corner = p
 				break
 		var door: Door = door_ahead(corner) if doors else null
+		if door != null and _door_blocked(door):
+			inp.release(&"move_forward")
+			d.note("pilot: goto blocked by %s (%s); giving up this leg" % [door.name, _door_why(door)])
+			break  # P (GN loud): the lockdown-BARRED art door; pushing into it stalled the flow from t=480
 		if door != null:
 			inp.release(&"move_forward")
 			await open_door(door)
@@ -433,7 +437,7 @@ func door_ahead(corner: Vector3 = Vector3.INF) -> Door:
 	for n: Node in crew.get_tree().get_nodes_in_group(G.INTERACTABLE):
 		var c: InteractableComponent = n as InteractableComponent
 		var door: Door = c.owner_node() as Door if c != null else null
-		if door == null or door.is_open or not c.enabled or _door_tries.get(door, 0) >= 3:
+		if door == null or door.is_open:
 			continue
 		var to: Vector3 = c.global_position - crew.global_position
 		if absf(to.y - 1.0) > 1.2:
@@ -450,6 +454,17 @@ func door_ahead(corner: Vector3 = Vector3.INF) -> Door:
 					continue
 			return door
 	return null
+
+
+## A closed door on the route the crew cannot open now (BARRED / VAULT / ELECTRONIC, a keycard without a card) or
+## that already beat three attempts.
+func _door_blocked(door: Door) -> bool:
+	return _door_tries.get(door, 0) >= 3 or _door_why(door) != InteractableComponent.BLOCK_NONE
+
+
+func _door_why(door: Door) -> StringName:
+	var comp: InteractableComponent = door.get_node_or_null(^"Interactable") as InteractableComponent
+	return comp.availability(crew) if comp != null and comp.enabled else &"disabled"
 
 
 func open_door(door: Door) -> bool:
