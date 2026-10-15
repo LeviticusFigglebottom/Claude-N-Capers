@@ -106,6 +106,17 @@ LONG_GUN_GRIPS: dict[str, SupportGrip] = {
 }
 
 
+#: PO6-11b (ENV P, lead round 207): the isosceles pistol / revolver support hand. The palm heel fills the grip's left
+#: side, the fingers wrap over the firing hand's fingers with the index under the trigger guard, the thumb forward
+#: along the frame under the slide. Fitted like LONG_GUN_GRIPS, with the firing hand's skin as a contact surface too.
+PISTOL_GRIPS: dict[str, SupportGrip] = {
+    "pistol": SupportGrip((0.5, 0.5, -0.6), (0.75, 0.05, 0.25), (-0.007, 0.004, 0.001), -38.39, 0.0,
+                         (-0.043, 0.0195, 0.0169), thumb=(4.0, 0.0, 4.0), fingers=(0.729, 0.736, 0.623, 0.523)),
+    "revolver": SupportGrip((0.45, 0.45, -0.7), (1.2, 0.05, 0.25), (0.002, 0.0, 0.002), -34.95, 0.0,
+                           (-0.0322, 0.0259, 0.0183), thumb=(4.0, 12.0, 4.0), fingers=(0.83, 0.72, 0.635, 0.462)),
+}
+
+
 def cup_shape(g: SupportGrip) -> HandShape:
     """The long-gun support hand: fingers closed round the fore-end (ring and pinky more), the thumb open along it."""
     shape = hand_shape("grip", g.curl)
@@ -131,7 +142,11 @@ class Kit:
         self.sk, self.s = sk, s
         m = s.markers
         self.grip = grip_hand(sk, pole=s.pole_r)
-        if s.support == "pistol":
+        if s.support == "pistol" and s.name in PISTOL_GRIPS:
+            g = PISTOL_GRIPS[s.name]
+            self.support = hand_at(sk, "L", "w", np.asarray(m["left_ik"], float) + np.asarray(g.shift), g.along,
+                                   g.palm, s.pole_l, cup_shape(g), share=0.45, off=0.016)
+        elif s.support == "pistol":
             self.support = hand_at(sk, "L", "w", m["left_ik"], (0.55, 0.45, -0.70), (0.85, 0.05, 0.25),
                                    s.pole_l, "support", share=0.45, off=0.016)
         elif s.support == "vgrip" and "left_palm" in m:   # a vertical front grip, palm on LeftHandIK (D2-04)

@@ -3,6 +3,14 @@
 Owner: ENV D. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-15 (later): PO6-18 deaths, PO6-11b pistol support hand, Wasp SMG refit
+- **PO6-18** (3fb66f28): death_crouch, death_kneel_cuffed, death_kneel (from surrender f48), death_prone,
+  death_downed. Each starts on its source frame and the root stays fixed; checked in test_anims
+  `_check_pose_deaths`. Evidence: `_review/po6_18_*`.
+- **SMG refit including wasp_pdw** (b33ddb77) on B's 871b6646 finger ridge; P's smg offset is
+  (-0.0492, -0.0297, 0.0004).
+- **PO6-11b** (8ede90c9): `PISTOL_GRIPS`, fitted against the gun and the firing hand's skin. Evidence: `_review/po6_11b/`.
+
 ## 2026-10-15: PO6-09 support hand, SMG re-time, PO6-19 ragdolls (D-114; LEAD session_01XAPqmFJ32zHKLK9Sezymym)
 - **PO6-09** (fcd702b7, evidence 6524e268): the "finger detached from the hand" was the support thumb. Rigid hand
   weights kept the whole thumb tube on thumb_01, and thumb_opp -30 lifted it onto the handguard's top edge, away
