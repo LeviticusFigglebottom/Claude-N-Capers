@@ -927,7 +927,7 @@ func _tick_scan(delta: float) -> void:
 			var d: float = eye.distance_to(p)
 			# L4.4 / P3 gate: a Stinger tasing a crew member is shot first (killing it breaks the tase).
 			var score: float = d * (tweak.tasing_stinger_score_mult if _is_tasing_crew(npc) else 1.0)
-			if d > tweak.engage_range_m or score >= best_d or not _sees_any(eye, npc):
+			if d > Tweak.crew().ai_engage_range_m or score >= best_d or not _sees_any(eye, npc):
 				continue
 			best = npc
 			best_d = score
@@ -962,7 +962,7 @@ func _sees_any(eye: Vector3, npc: NpcBase) -> bool:
 
 ## Any hostile NPC in combat within cover_search_radius_m + engage range of the leader (enemies are known).
 func _enemies_near(leader: CrewController) -> bool:
-	var r: float = tweak.cover_search_radius_m + tweak.engage_range_m * 0.5
+	var r: float = tweak.cover_search_radius_m + Tweak.crew().ai_engage_range_m * 0.5
 	for role: StringName in HOSTILE_ROLES:
 		for n: Variant in _rt.npcs(role):
 			if not is_instance_valid(n):
@@ -981,9 +981,12 @@ func _has_los(from: Vector3, to: Vector3) -> bool:
 
 func _roll_aim() -> void:
 	var rng: RandomNumberGenerator = GameRng.stream(RNG_STREAM)
-	_aim_head = rng.randf() < tweak.head_aim_chance
+	var ct: CrewTweak = Tweak.crew()
+	_aim_head = rng.randf() < ct.ai_head_aim_chance
 	var v: Vector3 = Vector3(rng.randf_range(-1.0, 1.0), rng.randf_range(-1.0, 1.0), rng.randf_range(-1.0, 1.0))
-	_aim_offset = v.limit_length(1.0) * tweak.aim_error_m
+	var dist: float = _crew.global_position.distance_to(target_enemy.global_position) \
+		if target_enemy != null and is_instance_valid(target_enemy) else 0.0
+	_aim_offset = v.limit_length(1.0) * (ct.ai_aim_error_m + ct.ai_aim_error_per_m * dist)  # PO6-15: range falloff
 
 
 func _aim_point(npc: NpcBase) -> Vector3:
@@ -1010,10 +1013,10 @@ func _weapon_controls(i: CrewIntent, eye: Vector3, delta: float, interacting: bo
 		elif target_enemy != null:
 			var to: Vector3 = _aim_point(target_enemy) - eye
 			var view: Vector3 = _view_dir()
-			if w.can_fire() and _since_acquire >= tweak.reaction_time_s and _shot_left <= 0.0 \
+			if w.can_fire() and _since_acquire >= Tweak.crew().ai_reaction_time_s and _shot_left <= 0.0 \
 					and not _fire_latch and view.angle_to(to) <= deg_to_rad(tweak.fire_cone_deg):
 				fire = true
-				_shot_left = tweak.shot_interval_s
+				_shot_left = Tweak.crew().ai_shot_interval_s
 		elif mag < int(ceil(float(w.mag_size(ws)) * tweak.tactical_reload_frac)) and w.reserve(ws) > 0:
 			reload = true
 	i.fire = fire
