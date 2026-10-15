@@ -126,6 +126,14 @@ static var _gen: int = 0
 @export var viewmodel_key_light_energy: float = 0.7
 @export var viewmodel_key_light_color: Color = Color(1.0, 0.96, 0.9)
 @export var viewmodel_key_light_euler_deg: Vector3 = Vector3(-35.0, 25.0, 0.0)
+## PO6-10 (LEAD ruling 2026-10-15): a fill light on the first-person GUN only (CrewView.VIEWMODEL_GUN_LAYER), riding
+## the viewmodel camera: the coated finishes are dielectric now but their albedo stays near-black, so the gun reads
+## as a silhouette next to the arms. Lifts it toward the arms' luminance without touching the arms. 0 energy = off.
+## Direction: euler degrees in camera space (light shines along -Z).
+@export var viewmodel_gun_fill_energy: float = 1.5
+@export var viewmodel_gun_fill_color: Color = Color(0.95, 0.97, 1.0)
+@export var viewmodel_gun_fill_specular: float = 0.6
+@export var viewmodel_gun_fill_euler_deg: Vector3 = Vector3(-20.0, -15.0, 0.0)
 ## PO-4 (PD2): per-shot muzzle light at the weapon's Muzzle, on the world layer + CrewView.VIEWMODEL_LIT_LAYER, so
 ## it lights the arms, the gun and the surroundings. 0 energy = off. Suppressed guns use the multiplier.
 @export var muzzle_light_energy: float = 1.25
