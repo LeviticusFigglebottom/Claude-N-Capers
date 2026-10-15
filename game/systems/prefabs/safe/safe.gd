@@ -14,6 +14,10 @@
 ##             and an L3.6 blast (`Explosion.apply`, c4_blast_radius_m / c4_blast_damage) at the lock
 ##             attributed to the crew member who placed it (so it never hurts the crew)
 ## A drill_point whose `target` is this safe also works (`open_by_device()`).
+## PO6-01: when such a drill_point is a descendant of this safe and its device kind is one of `methods`
+## (Glasshouse SafeDrill), the safe's own drill/saw method places THAT device (its runner, visual and
+## duration): one interact on either the safe or the drill spot places one visible drill. Before, the
+## safe ran a second, invisible runner of its own (place cue, no drill) and the spot then took another.
 ## QC-37 (gameplay_prefabs G.SAW_TARGET): with &"saw" in `methods` the handheld saw also cuts the lock:
 ## `saw_cut(s)` adds up to InteractionTweak.hand_saw_safe_s[size], then the lock is beaten (beaten_by &"saw").
 ## A2-08 KEYCARD: with &"keycard" in `methods` the safe is opened by a keycard_reader (the safe's
@@ -90,6 +94,8 @@ var _place_time: float = 0.0
 var _c4_by_net_id: int = 0
 ## Method chosen when the current hold started.
 var _session_method: StringName = &""
+## PO6-01: the child drill_point whose runner this safe shares (null = the safe owns `runner`).
+var _device_point: DrillPoint = null
 
 
 func _placeholder_scene() -> PackedScene:
@@ -111,7 +117,10 @@ func _collision_source_node() -> String:
 
 func _prefab_ready() -> void:
 	_place_time = interactable.interaction_time_s
-	if methods.has(&"drill") or methods.has(&"saw"):
+	_device_point = _own_device_point()
+	if _device_point != null:
+		runner = _device_point.runner  # ticked, shown and finished (open_target -> open_by_device) by the point
+	elif methods.has(&"drill") or methods.has(&"saw"):
 		runner = DeviceRunner.new(self, &"drill" if methods.has(&"drill") else &"saw")
 		runner.finished.connect(open_by_device)
 	var first: StringName = &""
@@ -205,7 +214,7 @@ func _by_size(t: PackedFloat32Array, fallback: float) -> float:
 
 
 func _physics_process(delta: float) -> void:
-	if runner != null:
+	if runner != null and _device_point == null:
 		runner.tick(delta)
 	if timer_left < 0.0 or not Net.is_authority():
 		return
@@ -222,7 +231,7 @@ func _physics_process(delta: float) -> void:
 
 
 func _exit_tree() -> void:
-	if runner != null:
+	if runner != null and _device_point == null:
 		runner.shutdown()
 
 
@@ -235,7 +244,7 @@ func _pick(crew: Node) -> Array:
 	if runner != null and runner.state != DeviceRunner.State.IDLE:
 		if runner.state == DeviceRunner.State.JAMMED:
 			return [&"fix", InteractableComponent.BLOCK_NONE]
-		return [&"", InteractableComponent.BLOCK_STATE]
+		return [&"", DrillPoint.BLOCK_RUNNING if runner.state == DeviceRunner.State.RUNNING else InteractableComponent.BLOCK_STATE]
 	var first_block: StringName = &""
 	for m: StringName in METHOD_ORDER:
 		if not methods.has(m):
@@ -326,6 +335,8 @@ func _on_completed(crew: Node) -> void:
 	match m:
 		&"fix":
 			runner.fix(slot)
+		&"drill", &"saw" when _device_point != null:
+			runner.place(slot, _device_point.effective_duration())
 		&"drill":
 			runner.place(slot, drill_duration())
 		&"saw":
@@ -422,6 +433,23 @@ func _bind_reader() -> void:
 	if not methods.has(&"keycard"):
 		Log.warn(LOG_CHANNEL, "%s: `reader` set but `methods` has no &\"keycard\"" % name)
 	r.bind_target(self)
+
+
+## PO6-01: a DrillPoint descendant (outside `Visual`) that targets this safe with a device kind in `methods`.
+func _own_device_point() -> DrillPoint:
+	var stack: Array[Node] = []
+	for c: Node in get_children():
+		if c != visual_root:
+			stack.append(c)
+	while not stack.is_empty():
+		var n: Node = stack.pop_back()
+		var dp: DrillPoint = n as DrillPoint
+		if dp != null and dp.runner != null and methods.has(dp.device_kind()) and not dp.target.is_empty() \
+				and dp.get_node_or_null(dp.target) == self:
+			return dp
+		for c: Node in n.get_children():
+			stack.append(c)
+	return null
 
 
 ## Loot prefabs inside this safe (descendants outside `Visual`).
