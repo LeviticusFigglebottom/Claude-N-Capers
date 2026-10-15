@@ -58,6 +58,10 @@ func test_s11_2_alarm_panics_civilians() -> void:
 
 func test_s7_5_idle_activity_and_wander() -> void:
 	await _launch(0, 0)
+	var seat: Node3D = Node3D.new()  # PO6-06: a seated activity needs a seating prop's `Seat` marker under it
+	seat.name = "Seat"
+	_rt.map.add_child(seat)
+	seat.global_position = Vector3(0, 0.5, 0)
 	var sit: NpcBase = _rt.spawn_npc(&"civilian", Transform3D(Basis.IDENTITY, Vector3(0, 0.05, 0)), {"idle_activity": &"sit"})
 	await wait_physics_frames(1)
 	assert_eq((sit.get_node(^"Brain") as CivilianBrain).anim_hint, &"sit", "idle activity -> anim hint")

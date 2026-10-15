@@ -11,6 +11,8 @@
 ##   PO-10 reservation: a point is not offered while another live NPC of this heist is heading to it (its
 ##   NpcMotor target; released when it arrives, re-targets or dies) or stands on it
 ##   (StealthTweak.civilian_wander_taken_m), so two civilians never walk to the same point at once.
+## - Seats (PO6-06): the `Seat` markers of the map's seating props (chairs, stools, sofas, camera stations:
+##   SEAT_NODE, the point the seated clips put the root under); `seat_near` tells a seated civilian it has one.
 ## - Hostage count (S7.2): civilians in G.HOSTAGE; emits hostage_count_changed [R] on change.
 ## Self-installed as the runtime service SERVICE by the first CivilianBrain (`ensure`), like
 ## ShoutSystem; HeistRuntime may create it directly later.
@@ -29,6 +31,8 @@ const WANDER_TAGS: Array[StringName] = [TAG_CIVILIAN, TAG_STAFF]
 const COWER_TAG: StringName = &"cower"
 ## PatrolPoint tags naming a staff area (`staff_floor`, `staff_boh`, `staff_upper`...).
 const STAFF_AREA_PREFIX: String = "staff_"
+## PO6-06: name of the seat marker a seating prop carries (prop glbs, camera station visuals).
+const SEAT_NODE: StringName = &"Seat"
 ## Script class names of the prefabs civilians use, and the alarm reason each one raises.
 const PREFAB_REASONS: Dictionary[StringName, StringName] = {
 	&"Phone": REASON_PHONE, &"AlarmButton": REASON_BUTTON,
@@ -42,6 +46,10 @@ var _prefabs: Array[Node3D] = []
 var _wander_points: Array[PatrolPoint] = []
 ## D-103 (Gallery Night `cower_stand`): PatrolPoints tagged COWER_TAG, 0.21 m off a wall, -Z facing out.
 var _cower_points: Array[PatrolPoint] = []
+## PO6-06: every SEAT_NODE marker in the map (scanned on the first seat_near, apart from _scan so a seat check
+## at spawn does not freeze the point lists before tests / missions add points).
+var _seats: Array[Node3D] = []
+var _seats_scanned: bool = false
 ## Cower point -> instance id of the civilian that claimed it.
 var _cower_claims: Dictionary[PatrolPoint, int] = {}
 
@@ -284,6 +292,22 @@ func claim_cower_point(npc: Node, from: Vector3, away_from: Vector3, radius: flo
 	return best
 
 
+## PO6-06: the map seat whose marker is within `radius` (m, horizontal) of `pos` on its floor
+## (|dy| <= floor_dy), nearest first; null when none.
+func seat_near(pos: Vector3, radius: float, floor_dy: float) -> Node3D:
+	_scan_seats()
+	var best: Node3D = null
+	var best_d: float = radius
+	for s: Node3D in _seats:
+		if not is_instance_valid(s) or absf(s.global_position.y - pos.y) > floor_dy:
+			continue
+		var d: float = Vector2(s.global_position.x - pos.x, s.global_position.z - pos.z).length()
+		if d <= best_d:
+			best_d = d
+			best = s
+	return best
+
+
 func release_cower(npc: Node) -> void:
 	var id: int = npc.get_instance_id()
 	for p: PatrolPoint in _cower_claims.keys():
@@ -309,6 +333,19 @@ func _scan() -> void:
 					break
 		elif PREFAB_REASONS.has(_class_of(n)) and n is Node3D:
 			_prefabs.append(n as Node3D)
+		for c: Node in n.get_children():
+			stack.append(c)
+
+
+func _scan_seats() -> void:
+	if _seats_scanned or _runtime == null:
+		return
+	_seats_scanned = true
+	var stack: Array[Node] = [_runtime.map if _runtime.map != null else _runtime]
+	while not stack.is_empty():
+		var n: Node = stack.pop_back()
+		if n.name == SEAT_NODE and n is Node3D:
+			_seats.append(n as Node3D)
 		for c: Node in n.get_children():
 			stack.append(c)
 
