@@ -7924,7 +7924,7 @@
    -0.0,
    -3.5583,
    6.5167,
-   2.874,
+   2.92,
    10.3378
   ],
   "clear": 0.0,
@@ -7942,6 +7942,7 @@
    "RopeR",
    "Rotor",
    "RotorBlades",
+   "SniperKneel",
    "SniperSeat",
    "Spotlight",
    "TailRotor",
