@@ -30,11 +30,11 @@ func _run() -> void:
 		Modifiers.set_source(s, &"po6_17.immune", {&"defense.damage_taken_mult": 0.0})
 	_rt.teleport_crew(0, Transform3D(Basis.IDENTITY, Vector3(5.0, 0.05, 10.5)))
 	_inject_markers()
-	for n: Node in _rt.find_children("*", "Node3D", true, false):
-		if n is FpViewmodel:
-			(n as Node3D).visible = false  # third-person review shots
+	for n: Node in _rt.find_children("*", "CanvasLayer", true, false):
+		(n as CanvasLayer).visible = false  # third-person review shots: no FP viewmodel overlay / HUD
 	_cam = Camera3D.new()
 	_cam.fov = 60.0
+	_cam.cull_mask &= ~CrewView.VIEWMODEL_LAYER
 	_rt.add_child(_cam)
 	_rt.stealth.raise_alarm(&"capture", 0)
 	var dir: AssaultDirector = _rt.service(G.SVC_DIRECTOR) as AssaultDirector
