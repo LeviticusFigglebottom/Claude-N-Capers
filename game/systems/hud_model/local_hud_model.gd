@@ -139,6 +139,8 @@ const EXTRA_PROPERTIES: Array[StringName] = [&"tracked_slot_resolved", &"mask_pr
 @export var pager_marker_up_m: float = 1.2
 ## PO6-03: height of a device row's world_pos above the device (m).
 @export var device_panel_up_m: float = 0.45
+## PO6-03: how far a device row's world_pos sits out of the lock face (m), so panels clear the safe door.
+@export var device_panel_out_m: float = 0.25
 ## Poll rate of the runtime (presentation only).
 @export var poll_hz: float = 10.0
 ## A client-side detection row with no detection_progress update for this long is dropped.
@@ -231,7 +233,9 @@ var objective_markers: Array[Dictionary] = []
 ## One row per placed device while running / jammed / paused (removed when done):
 ## {"net_id": int, "kind": StringName (&"drill"/&"thermal"/&"saw"/&"hack"), "world_pos": Vector3 (panel anchor),
 ##  "progress": float 0..1, "time_left_s": float (run time left, jams excluded), "duration_s": float,
-##  "state": StringName (&"running"/&"jammed"/&"paused"), "fix_prompt_key": StringName (&"" unless jammed)}.
+##  "state": StringName (&"running"/&"jammed"/&"paused"), "fix_prompt_key": StringName (&"" unless jammed),
+##  "auto_restart_in_s": float (>= 0 while a jammed device's auto-restart is pending, else -1)}.
+## kinds also &"c4" (armed fuse) and &"time_lock" (Safe timers).
 ## Objective rows carry "device_net_id" (-1 = none): the device serving that ACTIVE objective.
 var devices: Array[Dictionary] = []
 # --- assault_changed
@@ -680,8 +684,11 @@ func _poll_devices() -> void:
 			elif st == &"running":
 				p = minf(p + (now - float(seen[1])) / dur, 0.999)
 		var anchor: Node3D = info["anchor"]
+		var outward: Vector3 = anchor.global_basis.z.normalized() * float(info["out"]) * device_panel_out_m
 		out.append({
-			"net_id": id, "kind": StringName(info["kind"]), "world_pos": anchor.global_position + Vector3.UP * device_panel_up_m,
+			"net_id": id, "kind": StringName(info["kind"]),
+			"world_pos": anchor.global_position + Vector3.UP * device_panel_up_m + outward,
+			"auto_restart_in_s": snappedf(float(info["restart_in"]), 0.1),
 			"progress": snappedf(p, 0.001), "time_left_s": snappedf(maxf(1.0 - p, 0.0) * dur, 0.1), "duration_s": dur,
 			"state": st, "fix_prompt_key": StringName(info["fix_key"]) if st == &"jammed" else &"",
 		})
@@ -692,7 +699,8 @@ func _poll_devices() -> void:
 	_assign(&"devices", out)
 
 
-## {kind, state, progress, duration, anchor, target, fix_key} of a timed device node, {} if it is none.
+## {kind, state, progress, duration, anchor, target, fix_key, restart_in, out} of a timed device node ({} = none).
+## kinds: drill / thermal / saw (DeviceRunner), hack (HackTerminal), c4 / time_lock (Safe timers).
 static func _device_info(n: Node) -> Dictionary:
 	var ht: HackTerminal = n as HackTerminal
 	if ht != null:
@@ -701,12 +709,17 @@ static func _device_info(n: Node) -> Dictionary:
 			hs = &"paused"
 		var hd: float = ht.duration if ht.duration > 0.0 else ht.effective_duration()
 		return {"kind": &"hack", "state": hs, "progress": ht.progress, "duration": hd, "anchor": ht, "target": null,
-			"fix_key": &"ui.prompt.restart_hack"}
+			"fix_key": &"ui.prompt.restart_hack", "restart_in": -1.0, "out": 0.0}
+	var safe: Safe = n as Safe
+	if safe != null and safe.timer_left >= 0.0 and safe.stage in [Safe.Stage.C4_ARMED, Safe.Stage.TIME_LOCK_RUNNING]:
+		var c4: bool = safe.stage == Safe.Stage.C4_ARMED
+		var total: float = maxf(Tweak.interaction().c4_fuse_s if c4 else safe.time_lock_s, 0.01)
+		return {"kind": &"c4" if c4 else &"time_lock", "state": &"running", "progress": 1.0 - safe.timer_left / total,
+			"duration": total, "anchor": safe, "target": safe, "fix_key": &"", "restart_in": -1.0, "out": -1.0}
 	var r: Variant = n.get(&"runner")
 	if not (r is DeviceRunner):
 		return {}
 	var dr: DeviceRunner = r as DeviceRunner
-	var safe: Safe = n as Safe
 	if safe != null and safe._device_point != null:
 		return {}  # PO6-01: the shared runner is listed once, under its drill point
 	var kind: StringName = dr.kind
@@ -719,8 +732,10 @@ static func _device_info(n: Node) -> Dictionary:
 			anchor = dp.device_node
 		target = dp.get_node_or_null(dp.target) if not dp.target.is_empty() else null
 	var ds: StringName = [&"idle", &"running", &"jammed", &"done"][int(dr.state)]
+	# Out of the lock face: a DrillPoint's -Z points into the lock, a Safe's door faces -Z.
 	return {"kind": kind, "state": ds, "progress": dr.progress, "duration": dr.duration, "anchor": anchor,
-		"target": target, "fix_key": &"ui.prompt.fix_drill"}
+		"target": target, "fix_key": &"ui.prompt.fix_drill", "out": 1.0 if dp != null else -1.0,
+		"restart_in": dr.restart_left if dr.state == DeviceRunner.State.JAMMED and dr.restart_left >= 0.0 else -1.0}
 
 
 ## True when an objective's marker nodes are the device, its target, or within 2 m of the device.
