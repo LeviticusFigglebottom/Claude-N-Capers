@@ -19,4 +19,4 @@
 | po6_18_po6_19_gh_hostage_slumped_corpse_shot.jpg | PO6-18/19 | the cuffed hostage slumped from the kneel to the floor, then the corpse shot twice: blood at the hit point |
 | po6_17_turret_van.jpg | PO6-17 | GH loud, van at C's TurretVan_1 spot (injected until C's markers reach trunk): driving in / parked, squad out / roof turret deployed and firing (placeholder van + turret) |
 | po6_17_heli.jpg | PO6-17 | GH heli over HeliDrop_2 (alley): ropes out, a cop on the rope / circling with the Longshot at the door (red laser) |
-| po6_17_breach.jpg | PO6-17 | GH breach (runtime fallback = ENTRY point EntryShopBayC, fx only, until C's Breach_<n> land): cop planting the charge / blast / after |
+| po6_17_breach.jpg | PO6-17 | GH breach on ENV C's Breach_3 geometry (manager office wall): intact / blown open (hole + smoke) / the squad stepping through into the office |
