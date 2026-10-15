@@ -30,7 +30,7 @@ func before_each() -> void:
 
 func after_each() -> void:
 	Engine.time_scale = 1.0
-	Tweak.stealth().pager_release_resumes = true
+	Tweak.stealth().pager_release_resumes = false  # the default (D-114 §4 amended)
 	for c: Array in _conns:
 		var sig: Signal = c[0]
 		if sig.is_connected(c[1]):
@@ -220,7 +220,8 @@ func test_po6_08_stale_session_does_not_keep_it_frozen() -> void:
 	c.process_mode = Node.PROCESS_MODE_INHERIT
 
 
-func test_po6_08_legacy_release_rule_still_alarms() -> void:
+## D-114 §4 as amended (the default): an early release with no juggle fails the pager after the grace.
+func test_po6_08_default_release_alarms_after_grace() -> void:
 	Engine.time_scale = 4.0
 	Tweak.stealth().pager_release_resumes = false
 	var r: Array = await _kill_and_wait_pager()
@@ -228,8 +229,59 @@ func test_po6_08_legacy_release_rule_still_alarms() -> void:
 	await wait_until(func() -> bool: return not _of(&"pager_answer_started").is_empty(), 2.0)
 	_release(0)
 	await wait_physics_frames(3)
-	assert_eq(_of(&"pager_failed").size(), 1, "S5.4 legacy: failed")
-	assert_eq(_of(&"alarm_raised").size(), 1, "S5.4 legacy: alarm")
+	assert_true(_of(&"pager_failed").is_empty(), "inside the juggle grace: not failed yet")
+	await wait_seconds(Tweak.stealth().pager_juggle_window_s + 0.3)
+	assert_eq(_of(&"pager_failed").size(), 1, "S5.4: failed after the grace")
+	if _of(&"pager_failed").size() == 1:
+		assert_eq(_of(&"pager_failed")[0][2], &"released")
+	assert_eq(_of(&"alarm_raised").size(), 1, "S5.4: alarm")
+
+
+## PO6-08 juggle (D-114 §4 amended): releasing pager A and starting pager B within the grace keeps A alive;
+## A resumes its remaining window (it must still be answered) and nothing alarms.
+func test_po6_08_juggle_resumes_released_pager() -> void:
+	Engine.time_scale = 2.0
+	Tweak.stealth().pager_release_resumes = false
+	var g1: NpcBase = _rt.npcs(&"guard")[0] as NpcBase
+	var g2: NpcBase = _rt.spawn_npc(&"guard", Transform3D(Basis.IDENTITY, GUARD_POS + Vector3(1.2, 0, 0)), {})
+	var c: CrewController = _ready_crew(0, Vector3(0.6, 0, 1.2))
+	await wait_physics_frames(2)
+	g1.die({}, c.net_id)
+	g2.die({}, c.net_id)
+	var ok: bool = await wait_until(func() -> bool: return _of(&"pager_started").size() >= 2, 8.0)
+	assert_true(ok, "two pagers beep")
+	if not ok:
+		return
+	var pid_a: int = _pid_of(g1)
+	_hold(0, g1)
+	await wait_until(func() -> bool: return not _of(&"pager_answer_started").is_empty(), 2.0)
+	await wait_seconds(1.0)
+	var frozen_a: float = _window_of(pid_a)
+	_release(0)  # juggle: let go of A, then hold on B inside the grace
+	await wait_physics_frames(2)
+	_hold(0, g2)
+	await wait_until(func() -> bool: return _of(&"pager_answer_started").size() >= 2, 2.0)
+	await wait_seconds(Tweak.stealth().pager_juggle_window_s + 0.5)
+	assert_true(_of(&"pager_failed").is_empty(), "juggled: A did not fail")
+	assert_true(_of(&"alarm_raised").is_empty(), "juggled: no alarm")
+	var left_a: float = _window_of(pid_a)
+	assert_true(left_a > 0.0 and left_a < frozen_a, "A resumed its countdown (%.2f < %.2f)" % [left_a, frozen_a])
+	_release(0)
+
+
+## PO6-08: the window of one pager by id (-1 = gone).
+func _window_of(pid: int) -> float:
+	for row: Dictionary in _pagers().pager_entries():
+		if int(row.get("pager_id", -1)) == pid:
+			return float(row.get("time_left", -1.0))
+	return -1.0
+
+
+func _pid_of(g: NpcBase) -> int:
+	for row: Dictionary in _pagers().pager_entries():
+		if int(row.get("guard_net_id", -1)) == g.net_id:
+			return int(row.get("pager_id", -1))
+	return -1
 
 
 func test_po6_08_no_unowned_looping_pager_cue() -> void:
