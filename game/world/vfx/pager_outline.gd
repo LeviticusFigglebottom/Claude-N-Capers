@@ -1,25 +1,44 @@
 ## PO6-20: PD2-style yellow contour on a guard body whose pager is live, visible through walls within RANGE_M of
 ## the local camera. Owner: ENV C. Child of VfxDirector; presentation only, driven by the replicated facts:
 ## pager_started(pager_id, guard_net_id) outlines Ids.lookup(guard_net_id)'s `Visual` meshes; pager_answered /
-## pager_failed of that pager_id removes it. The look is a fresnel rim drawn as a material_overlay with depth test off
-## (so it reads as a contour through walls, not a filled silhouette).
+## pager_failed of that pager_id removes it. The look: a stencil-masked shell (a bold band just outside the
+## silhouette) with a soft glow and a gentle pulse, depth test off so it shows through walls (lead r213).
 class_name PagerOutline
 extends Node
 
 const RANGE_M: float = 15.0
 const COLOR: Color = Color(1.0, 0.84, 0.12)
-const SHADER_CODE: String = """
+## Two passes on the overlay: MASK writes stencil 1 over the body (no colour), SHELL is the body pushed out along its
+## normals, drawn only where the stencil is not 1, i.e. a bold band around the silhouette, through walls.
+const MASK_CODE: String = """
 shader_type spatial;
-render_mode unshaded, blend_add, depth_test_disabled, cull_back, shadows_disabled;
-uniform vec4 color : source_color = vec4(1.0, 0.84, 0.12, 1.0);
-uniform float power = 2.6;
-uniform float strength = 1.6;
+render_mode unshaded, blend_add, depth_test_disabled, depth_draw_never, cull_back, shadows_disabled;
+stencil_mode write, compare_always, 1;
 void fragment() {
-	float rim = pow(1.0 - clamp(abs(dot(NORMAL, VIEW)), 0.0, 1.0), power);
-	ALBEDO = color.rgb * strength;
-	ALPHA = clamp(rim * color.a * strength, 0.0, 1.0);
+	ALBEDO = vec3(0.0);
 }
 """
+const SHELL_CODE: String = """
+shader_type spatial;
+render_mode unshaded, blend_add, depth_test_disabled, depth_draw_never, cull_back, shadows_disabled;
+stencil_mode read, compare_not_equal, 1;
+uniform vec4 color : source_color = vec4(1.0, 0.84, 0.12, 1.0);
+uniform float width_m = 0.06;
+uniform float pulse = 0.18;
+uniform float strength = 1.5;
+void vertex() {
+	float k = 1.0 + pulse * sin(TIME * 4.2);
+	VERTEX += NORMAL * width_m * k;
+}
+void fragment() {
+	float rim = 1.0 - clamp(abs(dot(NORMAL, VIEW)), 0.0, 1.0);
+	float glow = 0.75 + 0.25 * sin(TIME * 4.2);
+	ALBEDO = color.rgb * strength * glow;
+	ALPHA = clamp((0.55 + 0.45 * rim) * color.a, 0.0, 1.0);
+}
+"""
+## Shell thickness (m): ~3-4 px at 10 m on a 720p view.
+const WIDTH_M: float = 0.06
 
 ## Test hook: the camera position used for the range check (else the viewport's current camera).
 var camera_override: Node3D = null
@@ -33,11 +52,19 @@ var _outlined: Dictionary[GeometryInstance3D, bool] = {}
 
 func _init() -> void:
 	name = "PagerOutline"
-	var sh: Shader = Shader.new()
-	sh.code = SHADER_CODE
+	var mask: Shader = Shader.new()
+	mask.code = MASK_CODE
+	var shell: Shader = Shader.new()
+	shell.code = SHELL_CODE
 	_material = ShaderMaterial.new()
-	_material.shader = sh
-	_material.set_shader_parameter(&"color", COLOR)
+	_material.shader = mask
+	_material.render_priority = 0
+	var shell_mat: ShaderMaterial = ShaderMaterial.new()
+	shell_mat.shader = shell
+	shell_mat.render_priority = 1
+	shell_mat.set_shader_parameter(&"color", COLOR)
+	shell_mat.set_shader_parameter(&"width_m", WIDTH_M)
+	_material.next_pass = shell_mat
 
 
 func connect_event_bus() -> void:
