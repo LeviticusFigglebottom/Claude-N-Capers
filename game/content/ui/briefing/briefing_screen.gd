@@ -237,14 +237,20 @@ func _fill_objectives() -> void:
 	if objectives.is_empty():
 		objectives_box.add_child(UiBuild.label(&"ui.briefing.objectives_none", UiBuild.DIM))
 	# PO-4: a timeline: a rail with a node per step (the first, where you start, filled brass).
+	var more: int = int(model.get("objectives_more", 0))
 	for i: int in range(objectives.size()):
+		if more > 0 and i == objectives.size() - 1:
+			# D-117 §5: the steps left out sit between the lead steps and the final one.
+			var m: Label = UiBuild.label(&"ui.briefing.objectives_more", UiBuild.DIM, {"count": more})
+			m.name = "ObjectivesMore"
+			objectives_box.add_child(m)
 		var row: HBoxContainer = UiBuild.hbox(UiTokens.S3)
 		var node: TimelineNode = TimelineNode.new()
 		node.first = i == 0
 		node.last = i == objectives.size() - 1
 		row.add_child(node)
 		var l: Label = UiBuild.label(&"ui.briefing.objective_line", &"", {
-			"index": i + 1, "text": String((objectives[i] as Dictionary)["text"]),
+			"index": int((objectives[i] as Dictionary).get("index", i + 1)), "text": String((objectives[i] as Dictionary)["text"]),
 		})
 		l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		l.size_flags_horizontal = Control.SIZE_EXPAND_FILL

@@ -179,7 +179,10 @@ func test_briefing_subset() -> void:
 	assert_eq(_def.briefing_objectives[_def.briefing_objectives.size() - 1], &"escape")
 	assert_true(StringTable.has(_def.briefing_loud_key), "loud line string")
 	var m: Dictionary = BriefingModel.build(HEIST, Enums.Difficulty.HAZARDOUS, _def)
-	assert_eq((m["objectives"] as Array).size(), _def.briefing_objectives.size())
+	var capped: Dictionary = BriefingModel.cap_objectives(Array(_def.briefing_objectives),
+			BriefingModel.ui_data().briefing_lead_steps)
+	assert_eq((m["objectives"] as Array).size(), (capped["shown"] as Array).size(), "D-117 §5 cap")
+	assert_eq(int(m["objectives_more"]), int(capped["more"]))
 	assert_ne(String(m["loud_text"]), "")
 	assert_eq((m["optional"] as Array).size(), _def.briefing_optional.size())
 

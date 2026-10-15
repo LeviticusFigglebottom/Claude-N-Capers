@@ -534,6 +534,7 @@ func _on_mask_changed(_mask_id: StringName) -> void:
 func _menu_profile() -> PlayerProfile:
 	if profile == null:
 		profile = SaveService.load_profile(profile_slot)
+	HeistCatalog.progress_profile = profile  # D-117 §2: Lethal / Cataclysm unlock from career wins
 	return profile
 
 

@@ -67,6 +67,7 @@ static func build(heist_id: StringName, difficulty: int, def: HeistDef = null,
 	# the optional extras go under their own sub-head. Empty briefing_objectives = every objective.
 	if h != null and not h.briefing_objectives.is_empty():
 		objectives = Array(h.briefing_objectives)
+	var capped: Dictionary = cap_objectives(objectives, d.briefing_lead_steps)
 	var loud_key: StringName = h.briefing_loud_key if h != null else &""
 	var optional: Array = Array(h.briefing_optional) if h != null else []
 	var loot: Array = Array(h.loot) if h != null else Array(ph.get("loot", []))
@@ -80,7 +81,8 @@ static func build(heist_id: StringName, difficulty: int, def: HeistDef = null,
 		"subtitle_key": StringName("heist.%s.subtitle" % heist_id),
 		"contact": contact,
 		"briefing_text": briefing_text(heist_id, briefing_src),
-		"objectives": objective_lines(heist_id, objectives),
+		"objectives": _numbered(objective_lines(heist_id, capped["shown"] as Array), capped["numbers"] as Array),
+		"objectives_more": int(capped["more"]),
 		"loud_text": UiText.t(loud_key) if loud_key != &"" and is_key(String(loud_key)) else "",
 		"optional": objective_lines(heist_id, optional),
 		"loot": loot_lines(loot, difficulty),
@@ -90,6 +92,27 @@ static func build(heist_id: StringName, difficulty: int, def: HeistDef = null,
 		"escape_options": escape_lines(escapes),
 		"voice_lines": voice_lines(heist_id, contact),
 	}
+
+
+## D-117 §5: the first `lead` objectives plus the final one (keeping its real step number) when the list is longer
+## than lead + 1. {shown: Array, numbers: Array[int] (1-based), more: int (steps left out)}. lead <= 0 = all.
+static func cap_objectives(objectives: Array, lead: int) -> Dictionary:
+	var n: int = objectives.size()
+	var numbers: Array = range(1, n + 1)
+	if lead <= 0 or n <= lead + 1:
+		return {"shown": objectives.duplicate(), "numbers": numbers, "more": 0}
+	var shown: Array = objectives.slice(0, lead)
+	shown.append(objectives[n - 1])
+	var nums: Array = numbers.slice(0, lead)
+	nums.append(n)
+	return {"shown": shown, "numbers": nums, "more": n - lead - 1}
+
+
+static func _numbered(lines: Array, numbers: Array) -> Array:
+	for i: int in range(mini(lines.size(), numbers.size())):
+		if lines[i] is Dictionary:
+			(lines[i] as Dictionary)["index"] = int(numbers[i])
+	return lines
 
 
 ## HeistDef.briefing is literal text, or a strings.csv key (a translated key wins). Empty falls back

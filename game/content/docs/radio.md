@@ -14,10 +14,11 @@ happened, in text (no speech synthesis). Code: `content/radio/` (`ContactRadio`,
 | Night Deposit | `contact.accountant` | `accountant` |
 | Shadow Ledger | `contact.accountant` | `accountant` |
 | Dockside Burn | `contact.reyes` (Hollis "Hammer" Reyes) | `reyes` |
+| Gallery Night | `contact.vance` (Odile Vance) | `vance` |
 
 `RadioTweak.speaker_overrides` (`heist id -> contact id`) replaces it per heist (e.g. put Mercer on a heist) and
-`fallback_contact` (`contact.mercer`) covers a heist without a known contact. Generic radio lines exist for all four
-speakers (`vance`, `reyes`, `accountant`, `mercer`), so either change is data only.
+`fallback_contact` (`contact.mercer`) covers a heist without a known contact. Generic radio lines exist for every
+speaker (`vance`, `reyes`, `accountant`, `mercer`), so either change is data only.
 
 ## Fact -> radio event
 
