@@ -50,6 +50,8 @@ var marks: MarkedTargets
 var objective_markers: ObjectiveMarkers
 ## PO6-03: PD2 device timer panels (drill / saw / hack ...) at the devices.
 var device_timers: DeviceTimers
+## PO6-20: a waypoint over every guard with a live pager.
+var pager_waypoints: PagerWaypoints
 var interaction: InteractionPanel
 ## PP-A-1: guard-domination prompt (above the interaction prompt).
 var dominate: DominatePrompt
@@ -128,8 +130,8 @@ func set_crew_heisters(map: Dictionary) -> void:
 
 
 func widgets() -> Array[HudWidget]:
-	return [chevrons, marks, objective_markers, device_timers, interaction, dominate, vitals, ammo, pager, objectives, assault,
-			teammates, status, custody, captain, stamina, scoreboard, hint, mask_ring, onboarding, hit_feedback,
+	return [chevrons, marks, objective_markers, device_timers, pager_waypoints, interaction, dominate, vitals, ammo,
+			pager, objectives, assault, teammates, status, custody, captain, stamina, scoreboard, hint, mask_ring, onboarding, hit_feedback,
 			damage_direction, low_health, downed, hostages]
 
 
@@ -140,6 +142,7 @@ func _build() -> void:
 	marks = _place(MarkedTargets.new(), Control.PRESET_FULL_RECT, Vector2.ZERO, Vector2.ZERO) as MarkedTargets
 	objective_markers = _place(ObjectiveMarkers.new(), Control.PRESET_FULL_RECT, Vector2.ZERO, Vector2.ZERO) as ObjectiveMarkers
 	device_timers = _place(DeviceTimers.new(), Control.PRESET_FULL_RECT, Vector2.ZERO, Vector2.ZERO) as DeviceTimers
+	pager_waypoints = _place(PagerWaypoints.new(), Control.PRESET_FULL_RECT, Vector2.ZERO, Vector2.ZERO) as PagerWaypoints
 	chevrons = _place(DetectionChevrons.new(), Control.PRESET_FULL_RECT, Vector2.ZERO, Vector2.ZERO) as DetectionChevrons
 	crosshair = UiBuild.label(&"ui.hud.crosshair", UiBuild.HUD)
 	crosshair.modulate.a = 0.0  # lead ruling: no crosshair until masked (PD2)
