@@ -61,6 +61,10 @@ func _run() -> void:
 	cam.look_at(civ.global_position + Vector3(0, 0.5, 0))
 	await _wait(1.5)
 	await _shot("04_hostage_kneel_cuffed")
+	# A real shot is heard (S3.1 gunshot noise): bystanders (the jeweler) panic like in play.
+	var shooter: CrewController = rt.crew_controller(0) as CrewController
+	rt.make_noise(civ.global_position + Vector3(0, 1, 0), Tweak.stealth().gunshot_player_radius_m, &"gunshot",
+		shooter.net_id)
 	civ.take_hit({"amount": 5000.0, "direction": -safe.global_basis.x, "type": Enums.DamageType.BULLET})
 	await _wait(2.0)
 	var d: AnimDriver = AnimDriver.of(civ)
