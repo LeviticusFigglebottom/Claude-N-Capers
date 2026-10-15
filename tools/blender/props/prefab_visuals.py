@@ -9,7 +9,7 @@ Exact node names per prefab; no collision (prefabs own it). Blender +Y = Godot -
 * alarm_button, phone: no required nodes (`Panel`/`Button`, `Base`/`Handset`).
 * camera_station: `Desk`, `Screens` (screen faces only), `Monitors`, `Seat` (operator faces the
   screens, Godot +Z).
-* body_container (dumpster): `Body`, `Lid` (pivot on the back top edge), `Inside`.
+* body_container (dumpster, GN crate / cart): `Body`, `Lid` (pivot on the back top edge), `Inside`.
 * ladder (fire-escape drop ladder): `Top`, `Bottom` markers, climb side -Z.
 * secure_zone van: `Body`, `DoorL`, `DoorR` (rear door hinges), `DropAnchor`; rear faces -Z.
 * loot bag: `Bag` (pivot bottom-centre), light / medium / heavy.
@@ -33,6 +33,12 @@ VARIANTS = {
     # D-063: the operator's sit_chair_watch / desk_work anims use a 0.74 m desk and a 0.47 m seat
     "prop_camera_station_bank": {"fn": "camera_station", "h": 0.74, "seat": 0.47, "cat": {"prefab": "camera_station", "kind": "camera_station"}},
     "prop_dumpster": {"fn": "dumpster", "cat": {"prefab": "body_container", "kind": "dumpster"}},
+    # GN-C2 (Gallery Night BODY_HIDE indoors): an empty lidded packing crate (FR, FS, PL) and a janitor's lidded
+    # linen / waste cart (J); same nodes as the dumpster.
+    "prop_crate_hide": {"fn": "hide_box", "style": "crate", "size": (1.3, 0.8, 0.85),
+                        "cat": {"prefab": "body_container", "kind": "crate"}},
+    "prop_cart_hide": {"fn": "hide_box", "style": "cart", "size": (1.0, 0.65, 0.95),
+                       "cat": {"prefab": "body_container", "kind": "cart"}},
     "prop_ladder_fire_escape_h300": {"fn": "ladder", "h": 3.0, "cat": {"prefab": "ladder", "kind": "ladder"}},
     "prop_ladder_fire_escape_h420": {"fn": "ladder", "h": 4.2, "cat": {"prefab": "ladder", "kind": "ladder"}},
     "prop_ladder_wall_h400": {"fn": "ladder_wall", "h": 4.0, "cat": {"prefab": "ladder", "kind": "ladder"}},
@@ -307,6 +313,70 @@ def _dumpster(k: Kit, p: dict) -> None:
         lp.cyl(0.02, 0.06, (x, 0.0, 0.0), "metal_dark", axis="X", segs=10)
     lm.build()
     k.empty("Inside", (0.0, 0.0, 0.5))
+
+
+# ------------------------------------------------------------------------- hide box (crate / cart)
+
+def _hide_box(k: Kit, p: dict) -> None:
+    """Lidded body container: `Body`, `Lid` (pivot on the back top edge), `LidMesh`, `Inside`.
+
+    crate: pine boards on a batten frame, a stencilled label on the front; cart: a grey plastic tub on casters
+    with a push handle at the back.
+    """
+    w, d, h = p["size"]
+    crate = p["style"] == "crate"
+    shell = "wood_pine" if crate else "plastic_grey"
+    lid_key = "wood_pine" if crate else "plastic_black"
+    t = 0.022 if crate else 0.03
+    z0 = 0.0 if crate else 0.16
+    body = k.obj("Body")
+    hard = body.part(bevel=0.003 if crate else 0.01, segments=1)
+    run = body.part(bevel=0.0)
+    hard.bx((-w / 2 + t, -d / 2 + t, z0), (w / 2 - t, d / 2 - t, z0 + t), shell)
+    for sy in (-1, 1):
+        y0, y1 = sorted((sy * d / 2, sy * (d / 2 - t)))
+        hard.bx((-w / 2, y0, z0), (w / 2, y1, h - 0.03), shell)
+    for sx in (-1, 1):
+        x0, x1 = sorted((sx * w / 2, sx * (w / 2 - t)))
+        hard.bx((x0, -d / 2 + t, z0), (x1, d / 2 - t, h - 0.03), shell)
+    if crate:
+        # battens: a band round the foot and the rim, corner posts
+        for zb in (0.0, h - 0.11):
+            for sy in (-1, 1):
+                y0, y1 = sorted((sy * (d / 2 + 0.018), sy * d / 2))
+                run.bx((-w / 2, y0, zb), (w / 2, y1, zb + 0.08), "wood_pine")
+            for sx in (-1, 1):
+                x0, x1 = sorted((sx * (w / 2 + 0.018), sx * w / 2))
+                run.bx((x0, -d / 2, zb), (x1, d / 2, zb + 0.08), "wood_pine")
+        for sx in (-1, 1):
+            for sy in (-1, 1):
+                x0, x1 = sorted((sx * (w / 2 + 0.018), sx * (w / 2 - 0.06)))
+                y0, y1 = sorted((sy * (d / 2 + 0.018), sy * (d / 2 - 0.06)))
+                run.bx((x0, y0, 0.0), (x1, y1, h - 0.03), "wood_pine")
+        run.bx((-0.2, d / 2 + 0.018, h * 0.45), (0.2, d / 2 + 0.02, h * 0.45 + 0.14), "paper")
+    else:
+        for sx in (-1, 1):
+            for sy in (-1, 1):
+                x, y = sx * (w / 2 - 0.1), sy * (d / 2 - 0.1)
+                run.bx((x - 0.04, y - 0.04, 0.1), (x + 0.04, y + 0.04, z0), "metal_dark")
+                run.cyl(0.05, 0.035, (x, y, 0.05), "rubber", axis="X", segs=14)
+        for sx in (-1, 1):
+            hx = sx * (w / 2 - 0.08)
+            run.rod((hx, -d / 2 - 0.01, h - 0.2), (hx, -d / 2 - 0.1, h + 0.05), 0.012, "steel", segs=8)
+        run.rod((-(w / 2 - 0.08), -d / 2 - 0.1, h + 0.05), (w / 2 - 0.08, -d / 2 - 0.1, h + 0.05), 0.014, "steel",
+                segs=8)
+    body.build()
+    lid = k.empty("Lid", (0.0, -d / 2, h - 0.03))
+    lm = k.obj("LidMesh", parent=lid)
+    lp = lm.part(bevel=0.003 if crate else 0.008, segments=1)
+    lp.bx((-w / 2, 0.0, 0.0), (w / 2, d, 0.03), lid_key)
+    if crate:
+        for x in (-w / 2 + 0.08, 0.0, w / 2 - 0.08):
+            lp.bx((x - 0.04, 0.02, 0.03), (x + 0.04, d - 0.02, 0.05), "wood_pine")
+    else:
+        lp.bx((-0.15, d - 0.02, -0.04), (0.15, d + 0.02, 0.03), "plastic_black")
+    lm.build()
+    k.empty("Inside", (0.0, 0.0, z0 + 0.3))
 
 
 # ------------------------------------------------------------------------------------ ladder
