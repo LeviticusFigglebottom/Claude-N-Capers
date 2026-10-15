@@ -6,13 +6,15 @@ Read it at the start of every work session.
 ## Sessions
 | Role | Session id | Branch | Focus now |
 |---|---|---|---|
-| LEAD | session_014E3p2DmSYTneJjytGwKKfc | claude/dreamy-hamilton-pc7vck | merges, rulings, contracts, gates |
-| ENV P | session_01FYVVhNtxKAoQmyfnZ9rb3t | env/p-play | PO-2 mouse capture, PO-1 casing exit, PO-3 bumps |
-| ENV B | session_0159qCTRV9CsDQs465nGSW28 | env/b-content | PO-4 UI/UX overhaul (style spec first) |
-| ENV C | session_013uMHd1Npqkx1reY1pJMaye | env/c-worlds | D-104: levelcheck groundwork, PP-C-1 walk test fix, Gallery Night plan/doc; greybox at freeze-lift |
-| ENV A | session_015kTjrZsUFn7gLqNVwAXdkh | env/a-core | PO-5 end-to-end windowed playthrough + blockers |
+| LEAD | session_01XAPqmFJ32zHKLK9Sezymym | claude/dreamy-hamilton-pc7vck | D-114 PO list: merges, rulings, gates |
+| ENV A | session_01P3gsmbSxRgc9fxN9YHL5Gz | env/a-core | PO6-01/02/08/05/04/06/14/18/16/19/17 |
+| ENV B | session_013tiw1JiUaB4yH2AEpjsm1f | env/b-content | PO6-12 range, PO6-03 drill timer, PO6-13 brakes; held branch |
+| ENV C | session_013Lwe5Wx7JGrnrjs7cbRcr2 | env/c-worlds | PO6-07 audio loops, PO6-13 flash, PO6-10 black gun; A helper slices |
+| ENV D | session_016xjLH3KQNyUH4ZRyseSDR6 | env/d-art | PO6-09 finger gap/grip, SMG re-time, death clips + PhysicalBones |
+| ENV P | session_01VxQPFh6PypoyUxg94gmMGH | env/p-play | PO6-11 pistol hold/ADS, PO6-15 bot strength, FP flash |
 
 ## Trunk / merge rounds
+- 2026-10-15 17:12: **new LEAD + 5 fresh env sessions** (D-114). PO playtest list `docs/process/po_playtest_2026-10-15.md` (PO6-01..19) is top priority for all envs. Trunk 57145cc8.
 - 2026-10-14 22:20: **round 203 ON ORIGIN** (handoff complete): env/d-art a6802365 (D HANDOFF section, shotgun/LMG lit grip captures; docs/images only). All 5 env HANDOFF sections on trunk. Held: env/b-content (D SMG re-time 0%).
 - 2026-10-14 21:45: **round 202 ON ORIGIN** (handoff): env/d-art 8ac1e97e (per-set long-gun support grip to PO reference, vertex hull clip test in test_arms, skirt seated fix) + env/p-play fc0a3494 (matching per-set grip offsets, handoff notes) + env/c-worlds 6b533f0b (handoff). Lead: p po4_feel 10, p1_01 12, p1_03 5, grip_offset 2, finger_clip 3 (worst: Condor index 4.4 mm, Bastion thumb 3.8 mm; was 4-12 mm), po4_viewmodel 1; d test_arms 18, scenes 9, crew 7; a fp_viewmodel 15; b left_hand_ik 1. Still HELD: env/b-content (needs D SMG re-time).
 - 2026-10-14 21:30: **round 201 ON ORIGIN** (handoff): env/c-worlds 8a725315 (GH/ND 6 m x 2 m wall tiles per wall plane; SL/DB 256-cap before/after shots; C HANDOFF). WIP parked on wip/c-sldb-props (SL/DB prop art, ~45%). Lead: validate_all ALL 5 PASS; c glasshouse 14, night_deposit 19, determinism 1; integration heist_readiness 2; banned/gdlint/ownership clean. Remaining handoff: D.
