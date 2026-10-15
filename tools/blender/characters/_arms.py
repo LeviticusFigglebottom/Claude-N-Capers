@@ -173,7 +173,7 @@ def hand_part(params: dict) -> dict:
             if not weights[fp]:
                 weights[fp] = avg(list(f))
             k += 1
-    weights = [_top4(w) for w in weights]
+    weights = _thenar_blend([_top4(w) for w in weights], sub.verts, float(p["height"]))
     uvs = body.face_uvs(sub.faces, sub.face_region, sub.face_mat, sub.face_side, sub.verts, float(p["height"]))
     verts = [tuple(v) for v in sub.verts]
     faces = [tuple(f) for f in sub.faces]
@@ -181,6 +181,35 @@ def hand_part(params: dict) -> dict:
     face_uv: list = list(uvs)
     return {"verts": verts, "faces": faces, "mats": mats, "uvs": face_uv, "weights": weights,
             "height": float(p["height"])}
+
+
+#: PO6-09 (PO 2026-10-15, "a finger is detached from the hand"): the body's rigid (power-6) hand weights put the whole
+#: thumb tube, root included, on ``thumb_01``, so when the support grip swings the thumb out along a fore-end the tube
+#: leaves the palm and a gap opens between the thumb and the hand. Over the metacarpal's first ``THENAR_SPAN`` the
+#: thumb weight ramps in from ``THENAR_ROOT`` (the rest goes to ``hand``): the thenar web stretches between palm and
+#: thumb instead of tearing.
+THENAR_ROOT = 0.0
+THENAR_SPAN = 1.0
+
+
+def _thenar_blend(weights: list[dict], verts, height: float) -> list[dict]:
+    segs = rig.bone_segments(height)
+    out = []
+    for w, v in zip(weights, verts):
+        for sfx, _sx in rig.SIDES:
+            tb, hb = f"thumb_01.{sfx}", f"hand.{sfx}"
+            x = w.get(tb, 0.0)
+            if x <= 0.0:
+                continue
+            a, t = np.array(segs[tb][0]), np.array(segs[tb][1])
+            d = t - a
+            u = float(np.clip((np.array(v) - a) @ d / float(d @ d) / THENAR_SPAN, 0.0, 1.0))
+            k = THENAR_ROOT + (1.0 - THENAR_ROOT) * u * u * (3.0 - 2.0 * u)
+            w = dict(w)
+            w[tb] = x * k
+            w[hb] = w.get(hb, 0.0) + x * (1.0 - k)
+        out.append(_top4(w))
+    return out
 
 
 def arm_loops(params: dict, slim: bool = True) -> dict:
