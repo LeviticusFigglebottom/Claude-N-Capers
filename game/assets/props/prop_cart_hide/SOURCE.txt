@@ -1,0 +1,8 @@
+asset: prop_cart_hide
+script: tools/blender/props/prefab_visuals.py
+params: {"cat": {"kind": "cart", "prefab": "body_container"}, "fn": "hide_box", "size": [1.0, 0.65, 0.95], "style": "cart"}
+seed: 2700255422  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_cart_hide
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 12000

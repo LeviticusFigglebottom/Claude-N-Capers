@@ -497,7 +497,7 @@ stair cores** for > 2 floors ✓; fire exits = both stairs; the longest travel t
 | Cleaner (L42) | 0–1 | `cleaners` ≥ 2 | `civ_cleaner_l42` | `browse` (cleaning) | `staff`, `staff_clean_l42` |
 | IT contractor | 0–1 | `server_room` = `srv_contractor` | `civ_it` | `phone` (standing at the racks; no seat in K11, PO6-06) | `staff`, `staff_it` |
 | Helena Moor | 0–1 | `late_partner` = `moor_late` | `civ_partner` | `phone` | `staff`, `staff_partner` |
-| Victor Kessler | 0–1 | rare `kessler_sleepover` | `civ_kessler` | `sit` (reading in bed) | — (stays in M5) |
+| Victor Kessler | 0–1 | rare `kessler_sleepover` | `civ_kessler` | `sit` (reading in the bedside armchair: on its `Seat` at (3.0, 12.3), back to the M5 south wall, PO6-06 / D-063 npc seat) | — (stays in M5) |
 
 **Totals per difficulty** (guard counts from `guard_post`/`guard_extra` picks, `difficulty_add`):
 

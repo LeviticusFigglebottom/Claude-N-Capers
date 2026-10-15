@@ -51,12 +51,12 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## floating: Nothing floats
 
-- 359 props checked
+- 360 props checked
 
 
 ## clipping: Nothing clips
 
-- 359 props, 57 doors checked
+- 360 props, 57 doors checked
 
 
 ## scale: Human scale
@@ -289,8 +289,8 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## furniture_logic: Furniture arranged plausibly
 
-- classified: counter 6, chair 58, table 8, desk 15, wall_unit 8, lounge_seat 3
-- 61 seats, 29 tables/desks/counters, 57 doors checked
+- classified: counter 6, chair 58, table 8, desk 15, wall_unit 8, lounge_seat 4
+- 62 seats, 29 tables/desks/counters, 57 doors checked
 
 - WARN `Variants/Group_gondola/Slot_gon_north_l42/CradleDeck` @ (33.00, 7.85, -0.20): door_clear: in the clear zone of door `Gameplay/Doors/StudyFacadeDoor` (1.0 / 1.0 m each side, leaf width 0.90 m) by 0.74 m (gameplay prefab / variant content: review)
 - WARN `Variants/Group_gondola/Slot_gon_west_l41/CradleDeck` @ (-0.20, 3.45, 2.65): door_clear: in the clear zone of door `Gameplay/Doors/K1FacadeDoor` (1.0 / 1.0 m each side, leaf width 0.90 m) by 0.74 m (gameplay prefab / variant content: review)

@@ -394,8 +394,9 @@ func build_variants(variants: Node3D) -> void:
 
 
 ## Cartel posts (doc roster): two gunmen per post on graph `Cartel`, starting unalerted.
-## TODO(QC-36): ENV A's `enemy.cartel_gunman` (no pager, not dominatable, wakes on noise); until it
-## ships the runtime spawns ordinary guards at these GUARD points. meta enemy_id names the intended def.
+## QC-36 (shipped, ENV A): the `cartel` tag makes HeistRuntime spawn a cartel gunman (role cartel, npc_cartel.tscn,
+## CartelBrain: no pager, never dominated, wakes on noise / sight / damage, holds its post from COVER TacticalPoints)
+## with enemy.cartel_gunman (CartelBrain.ENEMY_DEF) at these GUARD points. meta enemy_id is documentation only.
 func _variants_cartel(variants: Node3D) -> void:
 	var g: Node3D = _group(variants, "guard_post")
 	var posts: Array = L.CARTEL_POSTS.keys()
