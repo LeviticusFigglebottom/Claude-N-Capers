@@ -174,6 +174,17 @@ static func equip(crew: Node, ws: int) -> bool:
 	return w != null and w.has_method(&"equip") and bool(w.call(&"equip", ws))
 
 
+## PO6-12: replay the draw of the equipped weapon on the first-person arms (ENV P's FpViewmodel.play_draw, env/p-play
+## 2b8e1f7e); a no-op without the arms or before that method exists.
+static func play_draw(crew: Node) -> void:
+	if crew == null or not is_instance_valid(crew):
+		return
+	var view: CrewView = CrewView.of(crew)
+	var fp: Object = view.fp_viewmodel() if view != null else null
+	if fp != null and fp.has_method(&"play_draw"):
+		fp.call(&"play_draw")
+
+
 ## PO6-12: call `cb(slot: int)` on every weapon switch of the crew (CrewWeapons.equipped_changed).
 static func connect_equipped(crew: Node, cb: Callable) -> void:
 	var w: Object = crew.get(&"weapons") as Object if crew != null and is_instance_valid(crew) else null

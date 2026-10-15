@@ -375,7 +375,8 @@ func _apply_loadout() -> void:
 		# CrewController.set_loadout re-arms and re-equips the primary (CrewView rebuilds the FP weapon on the arms);
 		# then the crew switches to the slot under test with its own equip (holster + draw).
 		RangeCrewBridge.push_loadout(crew, resolved)
-		RangeCrewBridge.equip(crew, _test_slot())
+		if not RangeCrewBridge.equip(crew, _test_slot()):
+			RangeCrewBridge.play_draw(crew)  # same slot: still show the new weapon being drawn
 	_sync_weapon()
 
 
