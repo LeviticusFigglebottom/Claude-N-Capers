@@ -65,3 +65,18 @@ func test_po6_04_safe_opened_stops_running_drill() -> void:
 	await wait_physics_frames(2)
 	assert_eq(safe.runner.state, DeviceRunner.State.DONE, "drill stopped")
 	assert_eq(_facts, [&"finished"] as Array[StringName], "one device_finished stops the loop")
+
+
+## D-115 (DB-5 / SL-1): a safe's drill_duration_s / saw_duration_s override its size's run time.
+func test_d115_safe_run_time_overrides() -> void:
+	var safe: Safe = ATestMaps.add_prefab(_rt, "safe", Vector3(-3, 0, -4), func(n: Node) -> void:
+		(n as Safe).methods = [&"drill", &"saw"] as Array[StringName]
+		(n as Safe).size = Safe.Size.LARGE) as Safe
+	await wait_physics_frames(1)
+	var by_size: float = safe.drill_duration()
+	safe.drill_duration_s = 120.0
+	safe.saw_duration_s = 90.0
+	assert_eq(safe.drill_duration(), 120.0, "drill override")
+	assert_eq(safe.saw_duration(), 90.0, "saw override")
+	safe.drill_duration_s = -1.0
+	assert_eq(safe.drill_duration(), by_size, "back to the size table")

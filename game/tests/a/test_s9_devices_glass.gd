@@ -97,7 +97,7 @@ func test_po12_drill_device_visible_spins_and_jams() -> void:
 	dp.runner.place(0, dp.effective_duration())
 	await wait_frames(2)
 	assert_true(dp.device_node != null and dp.device_node.is_visible_in_tree(), "placed: device visible")
-	assert_eq(dp.interactable.availability(null), DrillPoint.BLOCK_RUNNING, "running: a named reason, not ui.blocked.state")
+	assert_false(dp.interactable.enabled, "running: the spot offers nothing (lead r215: no place prompt, timer panel only)")
 	var meshes: Array[Node] = dp.device_node.find_children("*", "MeshInstance3D", true, false) if dp.device_node else []
 	assert_true(meshes.size() >= 2, "device has visible meshes (%d)" % meshes.size())
 	var bit: Node3D = dp.device_node.find_child("Bit", true, false) as Node3D if dp.device_node else null
