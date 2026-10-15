@@ -286,6 +286,7 @@ func test_po6_17_turret_van_deploys_shoots_and_can_be_destroyed() -> void:
 	assert_true(van.turret.position.y > -0.01, "turret raised")
 	assert_true(van.door_l.rotation.y < -1.5, "rear door open")
 	assert_true(ev.units.size() >= 1, "squad dismounted")
+	assert_eq(ev.units[0].get_meta(AnimDriver.META_ANIM_OVERRIDE, &""), &"van_exit", "van_exit clip")
 	var shot: bool = await wait_until(func() -> bool: return van.turret.hits_landed > 0, 8.0)
 	print("[PO6-17] turret shots %d hits %d" % [van.turret.shots_fired, van.turret.hits_landed])
 	assert_true(shot, "turret shoots the crew")
@@ -316,7 +317,7 @@ func test_po6_17_heli_rappels_a_squad_at_the_drop_and_carries_a_sniper() -> void
 	Engine.time_scale = 2.0
 	var heli: AssaultHeli = ev.run(&"heli", {"orbit_s": 0.5, "speed_mps": 40.0, "approach_m": 40.0, "hover_height_m": 8.0,
 		"sniper_s": 3.0, "squad": [&"enemy.tac_light", &"enemy.tac_light"], "drop_interval_s": 0.3,
-		"rappel_speed_mps": 5.0}) as AssaultHeli
+		"rappel_speed_mps": 5.0}, "HeliDrop_1") as AssaultHeli
 	assert_true(heli != null, "heli spawned")
 	var hover: bool = await wait_until(func() -> bool: return heli.stage == AssaultHeli.Stage.HOVER, 10.0)
 	assert_true(hover, "heli hovers over the drop")
@@ -324,16 +325,23 @@ func test_po6_17_heli_rappels_a_squad_at_the_drop_and_carries_a_sniper() -> void
 	var roping: bool = await wait_until(func() -> bool:
 		for u: NpcBase in ev.units:
 			var m: NpcMotor = u.get_node_or_null(^"Motor") as NpcMotor
-			if m != null and m.rappelling:
+			if m != null and m.rappelling and u.get_meta(AnimDriver.META_ANIM_OVERRIDE, &"") == &"rappel_descend":
 				return true
 		return false, 4.0)
-	assert_true(roping, "a unit is on the rope (rappel clip)")
+	assert_true(roping, "a unit is on the rope (rappel_descend clip)")
 	var down: bool = await wait_until(func() -> bool: return heli.drop_done, 8.0)
 	assert_true(down, "squad down")
 	var drop: Vector3 = Vector3(-6.0, 0.0, -9.0)
+	var landing: bool = await wait_until(func() -> bool:
+		return ev.units.any(func(u: NpcBase) -> bool: return u.get_meta(AnimDriver.META_ANIM_OVERRIDE, &"") == &"rappel_land"), 1.0)
+	assert_true(landing, "rappel_land on touchdown")
+	await wait_until(func() -> bool:  # rappel_land_s, then the motor resumes
+		return ev.units.all(func(u: NpcBase) -> bool:
+			var mm: NpcMotor = u.get_node_or_null(^"Motor") as NpcMotor
+			return mm == null or mm.is_physics_processing()), 3.0)
 	var landed: int = 0
 	for u: NpcBase in ev.units:
-		if u.enemy_def != null and u.enemy_def.id == &"enemy.longshot":
+		if not is_instance_valid(u) or (u.enemy_def != null and u.enemy_def.id == &"enemy.longshot"):
 			continue
 		var m2: NpcMotor = u.get_node_or_null(^"Motor") as NpcMotor
 		var flat: float = Vector2(u.global_position.x - drop.x, u.global_position.z - drop.z).length()
@@ -349,6 +357,7 @@ func test_po6_17_heli_rappels_a_squad_at_the_drop_and_carries_a_sniper() -> void
 	assert_true(sniper.global_position.distance_to(heli.seat_transform().origin) < 0.6, "pinned to the seat")
 	var brain: LongshotBrain = sniper.get_node(^"Brain") as LongshotBrain
 	assert_true(brain.is_perched(), "perched on the heli perch")
+	assert_true(String(sniper.get_meta(AnimDriver.META_ANIM_OVERRIDE, &"")).begins_with("heli_door_"), "heli_door clip")
 	var wr: WeakRef = weakref(heli)
 	var gone: bool = await wait_until(func() -> bool:
 		var h: AssaultHeli = wr.get_ref() as AssaultHeli
@@ -376,6 +385,9 @@ func test_po6_17_breach_blows_open_and_squad_enters() -> void:
 	assert_true(b != null and b.stage == AssaultBreach.Stage.WARNING, "warning")
 	assert_true(b.charge_mesh.visible, "charge shown")
 	assert_true(intact.visible and not blown.visible, "still intact in the warning")
+	var placing: bool = await wait_until(func() -> bool:
+		return ev.units.any(func(u: NpcBase) -> bool: return u.get_meta(AnimDriver.META_ANIM_OVERRIDE, &"") == &"breach_place"), 0.8)
+	assert_true(placing, "the first squad unit plants the charge (breach_place)")
 	var went: bool = await wait_until(func() -> bool: return b.is_blown(), 3.0)
 	assert_true(went, "blown")
 	assert_false(intact.visible, "Intact hidden")

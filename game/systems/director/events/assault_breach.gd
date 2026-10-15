@@ -26,6 +26,10 @@ var charge_light: OmniLight3D = null
 var link: NavigationLink3D = null
 var breach_kind: String = "wall"
 var size: Vector2 = Vector2(1.0, 2.2)
+## Window / ceiling rope (world ends, Vector3.INF = none), set by the runner on the server, replicated.
+var rope_top: Vector3 = Vector3.INF
+var rope_bottom: Vector3 = Vector3.INF
+var rope_mesh: MeshInstance3D = null
 var _blink_t: float = 0.0
 
 
@@ -55,6 +59,9 @@ func _build() -> void:
 	charge_light.light_energy = 0.0
 	charge_mesh.add_child(charge_light)
 	charge_mesh.visible = false
+	rope_mesh = AssaultEventEntity.cylinder("Rope", 0.02, 1.0, Color(0.1, 0.09, 0.08))
+	rope_mesh.visible = false
+	add_child(rope_mesh)
 
 
 ## Same names / frame as C's breach scenes (opening on the room-side surface, -Z into the room).
@@ -196,6 +203,42 @@ func blow() -> void:
 	Explosion.apply(self, at, p_float("radius_m", 4.5), p_float("damage", 60.0), 0, &"breach_c4")
 	blown.emit(self)
 	end_event()
+
+
+## Server: hang the rope between two world points (or clear it with Vector3.INF).
+func set_rope(top: Vector3, bottom: Vector3) -> void:
+	rope_top = top
+	rope_bottom = bottom
+	_show_rope()
+
+
+func _show_rope() -> void:
+	if rope_mesh == null:
+		return
+	rope_mesh.visible = rope_top != Vector3.INF and rope_bottom != Vector3.INF and rope_top.distance_to(rope_bottom) > 0.2
+	if not rope_mesh.visible or not rope_mesh.is_inside_tree():
+		return
+	var d: Vector3 = rope_top - rope_bottom
+	(rope_mesh.mesh as CylinderMesh).height = d.length()
+	var y: Vector3 = d.normalized()
+	var x: Vector3 = y.cross(Vector3.FORWARD if absf(y.z) < 0.9 else Vector3.RIGHT).normalized()
+	rope_mesh.global_transform = Transform3D(Basis(x, y, x.cross(y)), (rope_top + rope_bottom) * 0.5)
+
+
+func _net_state() -> Dictionary:
+	var d: Dictionary = {"stage": stage}
+	if rope_top != Vector3.INF:
+		d["rt"] = rope_top
+		d["rb"] = rope_bottom
+	return d
+
+
+func _apply_net_state(d: Dictionary) -> void:
+	super._apply_net_state(d)
+	if d.has("rt") or d.has("rb"):
+		rope_top = d.get("rt", rope_top) as Vector3
+		rope_bottom = d.get("rb", rope_bottom) as Vector3
+		_show_rope()
 
 
 func _open_link() -> void:

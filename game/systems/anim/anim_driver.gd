@@ -107,7 +107,14 @@ const FALLBACK_CLIPS: Dictionary = {
 	&"hit_react_back": &"hit_react", &"hit_react_left": &"hit_react", &"hit_react_right": &"hit_react",
 	&"death_front_b": &"death_front", &"death_back_b": &"death_back", &"death_side": &"death_back",
 	&"curator_inspect": &"browse", &"cower_stand": &"cower", &"cower_seated": &"cower", &"walk_text": &"walk",
+	# PO6-17 assault events (ENV D clips; played through NpcBase meta META_ANIM_OVERRIDE).
+	&"rappel_hang": &"climb_ladder", &"rappel_descend": &"climb_ladder", &"rappel_land": &"idle_alert",
+	&"heli_door_idle": &"aim_rifle", &"heli_door_aim": &"aim_rifle", &"van_exit": &"walk",
+	&"breach_place": &"interact_mid", &"breach_standback": &"crouch_idle",
 }
+## PO6-17: an NPC meta (StringName clip) that wins over every NPC state / brain hint while set (host). The
+## assault-event runner sets it for scripted moments: rope descent, landing, heli door, van exit, breach charge.
+const META_ANIM_OVERRIDE: StringName = &"anim_override"
 ## EnemyDef.params key: the unit's own walk clip (Bulwark shield_walk, Wrecker dozer_walk), played instead
 ## of walk while moving at walking speed (above it: run / sprint).
 const WALK_CLIP_PARAM: String = "anim_walk_clip"
@@ -440,6 +447,15 @@ func _crew_state_clip() -> StringName:
 	return sc
 
 
+## PO6-17 META_ANIM_OVERRIDE, else the QC-41 rope descent (characters.md v1.8 `rappel` loop), else &"".
+func _scripted_clip() -> StringName:
+	var ov: Variant = _npc.get_meta(META_ANIM_OVERRIDE, &"")
+	if ov is StringName and ov != &"" and _npc.alive:
+		return ov
+	var motor: NpcMotor = _body.get_node_or_null(^"Motor") as NpcMotor
+	return &"rappel" if motor != null and motor.rappelling else &""
+
+
 func _state_clip() -> StringName:
 	if _crew != null:
 		return _crew_state_clip()
@@ -447,9 +463,9 @@ func _state_clip() -> StringName:
 		return &""
 	if _npc.is_stunned():
 		return &"tased"
-	var motor: NpcMotor = _body.get_node_or_null(^"Motor") as NpcMotor
-	if motor != null and motor.rappelling:
-		return &"rappel"  # QC-41 descent (characters.md v1.8 `rappel` loop)
+	var scripted: StringName = _scripted_clip()
+	if scripted != &"":
+		return scripted
 	if Net.is_authority() and _hint() != &"":
 		return &""  # the host's brain hint is authoritative; the fallbacks below are for clients
 	var out: StringName = &""

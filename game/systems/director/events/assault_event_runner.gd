@@ -28,6 +28,13 @@ const RNG: StringName = &"assault_events"
 const DEFAULT_TWEAK: String = "res://systems/director/assault_events_tweak.tres"
 const PAIR_RADIUS_M: float = 12.0
 const WALK_SPEED_MPS: float = 2.2
+## ENV D PO6-17 clip names (characters.md; AnimDriver.FALLBACK_CLIPS until they land).
+const CLIP_RAPPEL_HANG: StringName = &"rappel_hang"
+const CLIP_RAPPEL_DESCEND: StringName = &"rappel_descend"
+const CLIP_RAPPEL_LAND: StringName = &"rappel_land"
+const CLIP_VAN_EXIT: StringName = &"van_exit"
+const CLIP_BREACH_PLACE: StringName = &"breach_place"
+const CLIP_BREACH_STANDBACK: StringName = &"breach_standback"
 
 var director: AssaultDirector = null
 var tweak: AssaultEventsTweak = null
@@ -202,8 +209,9 @@ func _run_van(p: Dictionary, marker: String) -> AssaultEventEntity:
 			basis = Basis.looking_at(-to_crew.normalized(), Vector3.UP)  # +Z (nose) toward the crew
 		xf = Transform3D(basis, sp.global_position)
 	var van: AssaultTurretVan = AssaultTurretVan.new()
-	van.on_dismount = func(ids: Array, exit: Transform3D) -> void: _queue_squad(ids, exit, [], AssaultEventsTweak.KIND_TURRET_VAN,
-		van, p.get("squad_interval_s", 0.7))
+	var exit_legs: Array[Dictionary] = [{"hold_s": tweak.van_exit_s, "anim": CLIP_VAN_EXIT}]
+	van.on_dismount = func(ids: Array, exit: Transform3D) -> void: _queue_squad(ids, exit, exit_legs,
+		AssaultEventsTweak.KIND_TURRET_VAN, van, p.get("squad_interval_s", 0.7))
 	_add_entity(van, AssaultEventsTweak.KIND_TURRET_VAN, p, xf)
 	van.start(xf)
 	return van
@@ -288,17 +296,21 @@ func _on_heli_hover(heli: AssaultHeli, drop: Dictionary, p: Dictionary) -> void:
 			event_started.emit(AssaultEventsTweak.KIND_BREACH, breach, breach.global_position)
 	_heli_ropes[heli] = 0
 	var interval: float = float(p.get("drop_interval_s", 0.9))
+	var speed: float = float(p.get("rappel_speed_mps", 3.0))
 	for i: int in range(ids.size()):
 		var a: Vector3 = anchors[i % anchors.size()]
 		var land: Vector3 = _floor_below(a, float(drop["pos"].y))
-		var legs: Array[Dictionary] = [{"to": land, "rappel": true, "speed": float(p.get("rappel_speed_mps", 3.0)), "landed": true}]
+		var face: Vector3 = _flat(heli.global_position - a)  # hang outside the door, facing the rope / cabin
+		face = face.normalized() if face.length() > 0.05 else -heli.global_basis.x
+		var bottom: Vector3 = Vector3(a.x, land.y, a.z)
+		var top_y: float = a.y - tweak.rope_chest_height_m - 0.3
+		var legs: Array[Dictionary] = [{"to": _rope_root(a, bottom, top_y, face), "rappel": true, "speed": speed}]
+		legs.append({"to": _rope_root(a, bottom, land.y, face), "rappel": true, "speed": speed, "landed": true})
+		legs.append({"hold_s": tweak.rappel_land_s, "anim": CLIP_RAPPEL_LAND})
 		if breach != null:
-			var above: Vector3 = breach.global_position + breach.global_basis.z.normalized() * 0.9
-			legs.append({"to": breach.point("EntryPoint"), "rappel": false})
-			legs.append({"to": above, "rappel": false, "wait_breach": breach})
-			legs.append({"to": breach.point("ExitPoint"), "rappel": true, "speed": 3.5})
+			legs.append_array(_ceiling_legs(breach, Vector3.ZERO, true))
 		_queue.append({"t": interval * i, "id": StringName(ids[i]),
-			"xf": Transform3D(heli.global_basis, a - Vector3(0, 1.7, 0)), "legs": legs,
+			"xf": Transform3D(Basis.looking_at(face, Vector3.UP), legs[0]["to"]), "legs": legs, "face": face,
 			"kind": AssaultEventsTweak.KIND_HELI, "owner": heli})
 		_heli_ropes[heli] = int(_heli_ropes[heli]) + 1
 	if ids.is_empty():
@@ -398,44 +410,96 @@ func _run_breach(p: Dictionary, marker: String) -> AssaultEventEntity:
 	_add_entity(b, AssaultEventsTweak.KIND_BREACH, p, best.global_transform.orthonormalized())
 	b.blown.connect(_on_breach_blown.bind(p))
 	b.start()
+	_queue_breach_placer(b, p)
 	return b
+
+
+## Ceiling: the rope hangs from above the hole down through it to ExitPoint; units (optionally walking over from
+## the breach's roof EntryPoint first) clip on above the hole, wait for the blast, slide down, land.
+func _ceiling_legs(b: AssaultBreach, off: Vector3, walk_in: bool) -> Array[Dictionary]:
+	var up: Vector3 = b.global_basis.z.normalized()
+	var face: Vector3 = b.global_basis.y.normalized()
+	var top: Vector3 = b.global_position + up * (1.0 + tweak.rope_chest_height_m)
+	var bottom: Vector3 = b.point("ExitPoint")
+	b.set_rope(top, bottom)
+	var hang_y: float = b.global_position.y + up.y * 0.7
+	var legs: Array[Dictionary] = []
+	if walk_in:
+		legs.append({"to": b.point("EntryPoint"), "rappel": false})
+	legs.append({"to": _rope_root(top, bottom, hang_y, face) + off, "rappel": false, "face": face})
+	legs.append({"to": _rope_root(top, bottom, hang_y, face) + off, "wait_breach": b, "anim": CLIP_RAPPEL_HANG})
+	legs.append({"to": _rope_root(top, bottom, bottom.y, face) + off, "rappel": true, "speed": 3.5})
+	legs.append({"hold_s": tweak.rappel_land_s, "anim": CLIP_RAPPEL_LAND})
+	return legs
 
 
 func _on_breach_blown(b: AssaultBreach, p: Dictionary) -> void:
 	var ids: Array = p.get("squad", []) as Array
+	var kind: String = b.breach_kind if not bool(p.get("fx_only", false)) else "fx"
+	if bool(p.get("_placer", false)) and not ids.is_empty():
+		ids = ids.slice(1)  # the charge placer is already there (it walks in with the squad)
 	if ids.is_empty():
 		return
 	var delay: float = float(p.get("squad_delay_s", 0.8))
 	var interval: float = float(p.get("squad_interval_s", 0.5))
 	var side: Vector3 = b.global_basis.x.normalized()
+	var into: Vector3 = -b.global_basis.z.normalized()
 	for i: int in range(ids.size()):
 		var off: Vector3 = side * 0.7 * ceilf(float(i) * 0.5) * (1.0 if i % 2 == 1 else -1.0)
 		var legs: Array[Dictionary] = []
 		var spawn: Vector3
-		match b.breach_kind if not bool(p.get("fx_only", false)) else "fx":
+		var face: Vector3 = _flat(into).normalized() if _flat(into).length() > 0.05 else Vector3.FORWARD
+		match kind:
 			"window":
+				# Down the rope from the parapet to sill height, then swing in through the opening.
+				var anchor: Vector3 = b.point("RopeAnchor")
 				var entry: Vector3 = b.point("EntryPoint")
-				spawn = b.point("RopeAnchor") - Vector3(0, 1.7, 0)
-				legs = [{"to": entry + Vector3(0, 2.0, 0), "rappel": true}, {"to": b.point("ExitPoint") + off * 0.5, "rappel": true}]
+				b.set_rope(anchor, entry)
+				spawn = _rope_root(anchor, entry, anchor.y - tweak.rope_chest_height_m - 0.3, face)
+				legs = [{"to": _rope_root(anchor, entry, entry.y + 2.0, face), "rappel": true},
+					{"to": b.point("ExitPoint") + off * 0.5, "rappel": true},
+					{"hold_s": tweak.rappel_land_s, "anim": CLIP_RAPPEL_LAND}]
 			"ceiling":
-				spawn = b.global_position + b.global_basis.z.normalized() * 0.9
-				legs = [{"to": b.point("ExitPoint") + off * 0.5, "rappel": true, "speed": 3.5}]
+				legs = _ceiling_legs(b, off * 0.4, false)
+				face = b.global_basis.y.normalized()
+				spawn = legs[0]["to"]
 			"fx":
 				spawn = b.global_position + off
 			_:
 				spawn = b.point("EntryPoint") + off
-		_queue.append({"t": delay + interval * i, "id": StringName(ids[i]),
-			"xf": Transform3D(b.global_basis, spawn), "legs": legs, "kind": AssaultEventsTweak.KIND_BREACH, "owner": b})
+		_queue.append({"t": delay + interval * i, "id": StringName(ids[i]), "face": face,
+			"xf": Transform3D(Basis.looking_at(_flat(face).normalized() if _flat(face).length() > 0.05 else Vector3.FORWARD,
+				Vector3.UP), spawn), "legs": legs, "kind": AssaultEventsTweak.KIND_BREACH, "owner": b})
+
+
+## A wall / fx breach: the squad's first unit plants the charge at warning start (breach_place, then crouches
+## back in breach_standback until the blast; it walks in with the squad).
+func _queue_breach_placer(b: AssaultBreach, p: Dictionary) -> void:
+	var ids: Array = p.get("squad", []) as Array
+	if ids.is_empty() or b.breach_kind != "wall":
+		return
+	var face: Vector3 = _flat(-b.global_basis.z)
+	face = face.normalized() if face.length() > 0.05 else Vector3.FORWARD
+	var stand: Vector3 = b.point("EntryPoint") if not bool(p.get("fx_only", false)) else b.global_position - face * 0.9
+	var aside: Vector3 = stand + b.global_basis.x.normalized() * 0.9
+	p["_placer"] = true
+	var legs: Array[Dictionary] = [{"hold_s": tweak.breach_place_s, "anim": CLIP_BREACH_PLACE},
+		{"to": aside, "rappel": false, "face": face},
+		{"to": aside, "wait_breach": b, "anim": CLIP_BREACH_STANDBACK}]
+	_queue.append({"t": 0.0, "id": StringName(ids[0]), "face": face,
+		"xf": Transform3D(Basis.looking_at(face, Vector3.UP), stand), "legs": legs,
+		"kind": AssaultEventsTweak.KIND_BREACH, "owner": b})
 
 
 # --- Units ---------------------------------------------------------------------------------------
 
 func _queue_squad(ids: Array, xf: Transform3D, legs: Array[Dictionary], kind: StringName, owner: Node, interval: float) -> void:
 	var side: Vector3 = xf.basis.x.normalized()
+	var face: Vector3 = _flat(-xf.basis.z)
 	for i: int in range(ids.size()):
 		var off: Vector3 = side * 0.8 * ceilf(float(i) * 0.5) * (1.0 if i % 2 == 1 else -1.0)
 		_queue.append({"t": interval * i, "id": StringName(ids[i]), "xf": Transform3D(xf.basis, xf.origin + off),
-			"legs": legs, "kind": kind, "owner": owner})
+			"legs": legs, "kind": kind, "owner": owner, "face": face.normalized() if face.length() > 0.05 else Vector3.ZERO})
 
 
 func _tick_queue(delta: float) -> void:
@@ -453,7 +517,8 @@ func _tick_queue(delta: float) -> void:
 			_rope_done(owner)
 			continue
 		if not legs.is_empty():
-			_guides.append({"npc": npc, "legs": legs, "i": 0, "owner": owner, "started": false})
+			_guides.append({"npc": npc, "legs": legs, "i": 0, "owner": owner, "started": false,
+				"face": q.get("face", Vector3.ZERO), "hold": 0.0})
 
 
 func _under_cap() -> bool:
@@ -473,8 +538,10 @@ func _spawn_unit(id: StringName, xf: Transform3D, kind: StringName) -> NpcBase:
 	return npc
 
 
-## Guided legs (rope descent / a short walk the navmesh cannot do). The unit's NpcMotor is paused and its
-## `rappelling` flag drives the `rappel` clip on descending legs; the motor resumes at the last leg.
+## Guided legs (rope descent / a short walk the navmesh cannot do / a timed clip in place). The unit's NpcMotor
+## is paused (its `rappelling` flag on descending legs); clips go through AnimDriver.META_ANIM_OVERRIDE (ENV D's
+## PO6-17 names: rappel_hang / rappel_descend / rappel_land / van_exit / breach_place / breach_standback, with
+## fallbacks in AnimDriver.FALLBACK_CLIPS). Leg keys: to, rappel, speed, landed, wait_breach, face, anim, hold_s.
 func _tick_guides(delta: float) -> void:
 	for gi: int in range(_guides.size() - 1, -1, -1):
 		var g: Dictionary = _guides[gi]
@@ -489,32 +556,76 @@ func _tick_guides(delta: float) -> void:
 		if not bool(g["started"]):
 			g["started"] = true
 			motor.set_physics_process(false)
-		var legs: Array[Dictionary] = g["legs"]
-		var leg: Dictionary = legs[int(g["i"])]
-		var wait: AssaultBreach = leg.get("wait_breach") as AssaultBreach
-		if wait != null and is_instance_valid(wait) and not wait.is_blown():
-			motor.rappelling = false
-			npc.velocity = Vector3.ZERO
-			continue
-		motor.rappelling = bool(leg.get("rappel", false))
-		var to: Vector3 = leg["to"]
-		var speed: float = float(leg.get("speed", 3.0 if motor.rappelling else WALK_SPEED_MPS))
-		var d: Vector3 = to - npc.global_position
-		var step: float = speed * delta
-		npc.velocity = Vector3.ZERO
-		if d.length() > step:
-			npc.global_position += d.normalized() * step
-			var flat: Vector3 = _flat(d)
-			if not motor.rappelling and flat.length() > 0.05:
-				npc.global_basis = Basis.looking_at(flat.normalized(), Vector3.UP)
-			continue
-		npc.global_position = to
-		if bool(leg.get("landed", false)):
-			_land(g)
-		g["i"] = int(g["i"]) + 1
-		if int(g["i"]) >= legs.size():
-			_release(npc, motor)
-			_guides.remove_at(gi)
+			_face(npc, g.get("face", Vector3.ZERO) as Vector3)
+		if _step_leg(g, npc, motor, delta):
+			g["i"] = int(g["i"]) + 1
+			g["hold"] = 0.0
+			if int(g["i"]) >= (g["legs"] as Array).size():
+				_release(npc, motor)
+				_guides.remove_at(gi)
+
+
+## Advance the current leg; true when it is done.
+func _step_leg(g: Dictionary, npc: NpcBase, motor: NpcMotor, delta: float) -> bool:
+	var leg: Dictionary = (g["legs"] as Array)[int(g["i"])]
+	npc.velocity = Vector3.ZERO
+	if leg.has("face"):
+		_face(npc, leg["face"] as Vector3)
+	if leg.has("hold_s"):
+		motor.rappelling = false
+		_set_anim(npc, StringName(leg.get("anim", &"")))
+		g["hold"] = float(g["hold"]) + delta
+		return float(g["hold"]) >= float(leg["hold_s"])
+	var wait: AssaultBreach = leg.get("wait_breach") as AssaultBreach
+	if wait != null and is_instance_valid(wait) and not wait.is_blown():
+		motor.rappelling = false
+		_set_anim(npc, StringName(leg.get("anim", &"")))
+		return false
+	if leg.has("wait_breach"):
+		return true  # the wait is over (its position was reached by the leg before)
+	var rope: bool = bool(leg.get("rappel", false))
+	motor.rappelling = rope
+	_set_anim(npc, CLIP_RAPPEL_DESCEND if rope else StringName(leg.get("anim", &"")))
+	var to: Vector3 = leg["to"]
+	var speed: float = float(leg.get("speed", 3.0 if rope else WALK_SPEED_MPS))
+	var d: Vector3 = to - npc.global_position
+	var step: float = speed * delta
+	if d.length() > step:
+		npc.global_position += d.normalized() * step
+		if not rope:
+			npc.velocity = d.normalized() * speed  # locomotion clip (the paused motor does not move it)
+			if not leg.has("face"):
+				_face(npc, d)
+		return false
+	npc.global_position = to
+	if bool(leg.get("landed", false)):
+		_land(g)
+	return true
+
+
+func _face(npc: NpcBase, dir: Vector3) -> void:
+	var f: Vector3 = _flat(dir)
+	if f.length() > 0.05:
+		npc.global_basis = Basis.looking_at(f.normalized(), Vector3.UP)
+
+
+## AnimDriver.META_ANIM_OVERRIDE (&"" clears it).
+static func _set_anim(npc: NpcBase, clip: StringName) -> void:
+	if clip == &"":
+		if npc.has_meta(AnimDriver.META_ANIM_OVERRIDE):
+			npc.remove_meta(AnimDriver.META_ANIM_OVERRIDE)
+	elif npc.get_meta(AnimDriver.META_ANIM_OVERRIDE, &"") != clip:
+		npc.set_meta(AnimDriver.META_ANIM_OVERRIDE, clip)
+
+
+## Root of a unit on the rope top -> bottom at root height `root_y`, facing `face`: chest + hand offset forward
+## lies on the rope line (ENV D's rappel clips hold the hands rope_hand_offset_m in front of the chest).
+func _rope_root(top: Vector3, bottom: Vector3, root_y: float, face: Vector3) -> Vector3:
+	var chest_y: float = root_y + tweak.rope_chest_height_m
+	var t: float = clampf((top.y - chest_y) / maxf(top.y - bottom.y, 0.001), 0.0, 1.0)
+	var p: Vector3 = top.lerp(bottom, t)
+	var f: Vector3 = _flat(face).normalized() if _flat(face).length() > 0.01 else Vector3.ZERO
+	return Vector3(p.x, root_y, p.z) - f * tweak.rope_hand_offset_m
 
 
 func _release(npc: NpcBase, motor: NpcMotor) -> void:
@@ -522,6 +633,7 @@ func _release(npc: NpcBase, motor: NpcMotor) -> void:
 	motor.set_physics_process(true)
 	if is_instance_valid(npc):
 		npc.velocity = Vector3.ZERO
+		_set_anim(npc, &"")
 
 
 ## A heli rope unit is down (or gone): the heli leaves once all are.

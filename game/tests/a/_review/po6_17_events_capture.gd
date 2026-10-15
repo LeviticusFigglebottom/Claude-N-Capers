@@ -30,6 +30,9 @@ func _run() -> void:
 		Modifiers.set_source(s, &"po6_17.immune", {&"defense.damage_taken_mult": 0.0})
 	_rt.teleport_crew(0, Transform3D(Basis.IDENTITY, Vector3(5.0, 0.05, 10.5)))
 	_inject_markers()
+	for n: Node in _rt.find_children("*", "Node3D", true, false):
+		if n is FpViewmodel:
+			(n as Node3D).visible = false  # third-person review shots
 	_cam = Camera3D.new()
 	_cam.fov = 60.0
 	_rt.add_child(_cam)
@@ -38,6 +41,7 @@ func _run() -> void:
 	while not dir.running:
 		await get_tree().physics_frame
 	var ev: AssaultEventRunner = dir.events
+	RenderingServer.render_loop_enabled = false
 	await _van(ev)
 	await _heli(ev)
 	await _breach(ev)
@@ -78,13 +82,16 @@ func _wait(seconds: float) -> void:
 		await get_tree().physics_frame
 
 
+## Rendering is paused between grabs (llvmpipe frames are slow and the simulation is capped per frame).
 func _grab() -> Image:
-	for i: int in range(2):
+	RenderingServer.render_loop_enabled = true
+	for i: int in range(3):
 		await get_tree().process_frame
 	await RenderingServer.frame_post_draw
 	var img: Image = get_viewport().get_texture().get_image()
 	img.convert(Image.FORMAT_RGB8)
 	img.resize(TILE.x, TILE.y)
+	RenderingServer.render_loop_enabled = false
 	return img
 
 
@@ -104,9 +111,18 @@ func _van(ev: AssaultEventRunner) -> void:
 	tiles.append(await _grab())
 	while van.stage != AssaultTurretVan.Stage.ACTIVE:
 		await get_tree().physics_frame
+	var fill: OmniLight3D = OmniLight3D.new()  # review fill light (night street)
+	fill.omni_range = 12.0
+	fill.light_energy = 2.0
+	_rt.add_child(fill)
+	fill.global_position = van.global_transform * Vector3(3.0, 5.0, -2.0)
 	_look(Vector3(6.5, 1.7, 15.0), van.global_position + Vector3(0, 2.0, 0))
 	await _wait(2.5)
 	tiles.append(await _grab())
+	_look(van.global_transform * Vector3(5.0, 5.0, -7.0), van.turret.global_position + Vector3(0, 0.8, 0))
+	await _wait(0.5)
+	tiles.append(await _grab())
+	fill.queue_free()
 	print("po6_17_capture: turret shots %d hits %d, squad %d" % [van.turret.shots_fired, van.turret.hits_landed, ev.units.size()])
 	_save(tiles, "po6_17_turret_van.jpg")
 
@@ -115,8 +131,12 @@ func _heli(ev: AssaultEventRunner) -> void:
 	var heli: AssaultHeli = ev.run(&"heli", {"orbit_s": 2.0, "speed_mps": 28.0, "approach_m": 70.0, "sniper_s": 20.0},
 		"HeliDrop_2") as AssaultHeli
 	var tiles: Array[Image] = []
+	var t0: int = Time.get_ticks_msec()
 	while heli.stage < AssaultHeli.Stage.HOVER:
 		await get_tree().physics_frame
+		if Time.get_ticks_msec() - t0 > 5000:
+			t0 = Time.get_ticks_msec()
+			print("po6_17_capture: heli stage %d at %s" % [heli.stage, heli.global_position])
 	await _wait(1.6)
 	_look(Vector3(18.0, 2.0, -12.0), heli.global_position + Vector3(0, -4.0, 0))
 	tiles.append(await _grab())

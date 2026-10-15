@@ -25,6 +25,16 @@ const KINDS: Array[StringName] = [KIND_TURRET_VAN, KIND_HELI, KIND_BREACH]
 ## Events allowed to run at once (a van with a live turret, a heli on station, a breach in its warning).
 @export var max_active: int = 2
 
+@export_group("Rope / clips (ENV D PO6-17 clips)")
+## Rope units hang so that chest + rope_hand_offset_m forward lies on the rope line (the clip holds the hands
+## there): root = rope point at (root height + rope_chest_height_m) - facing x rope_hand_offset_m.
+@export var rope_chest_height_m: float = 1.3
+@export var rope_hand_offset_m: float = 0.10
+## One-shot clip lengths (s): rappel_land ~30 f, van_exit ~36 f, breach_place ~45 f (`place` @ ~28 f).
+@export var rappel_land_s: float = 1.0
+@export var van_exit_s: float = 1.2
+@export var breach_place_s: float = 1.5
+
 @export_group("Rows")
 ## heist_id (StringName) -> {"events": Array[Dictionary]} (see the header).
 @export var heists: Dictionary = {}

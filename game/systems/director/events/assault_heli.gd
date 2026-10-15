@@ -17,6 +17,9 @@ enum Stage { APPROACH, ORBIT, TO_DROP, HOVER, SNIPER, LEAVE, GONE }
 
 const ROTOR_RPS: float = 6.0
 const TAIL_RPS: float = 24.0
+## ENV D PO6-17 clips for the door sniper (AnimDriver.FALLBACK_CLIPS -> aim_rifle until they land).
+const CLIP_DOOR_IDLE: StringName = &"heli_door_idle"
+const CLIP_DOOR_AIM: StringName = &"heli_door_aim"
 
 
 var model: Node3D = null
@@ -175,8 +178,12 @@ func _pin_passenger() -> void:
 	if passenger_perch != null and is_instance_valid(passenger_perch):
 		passenger_perch.global_position = xf.origin
 	if passenger != null and is_instance_valid(passenger) and passenger.alive:
-		passenger.global_position = xf.origin - Vector3(0, 0.45, 0)  # sitting: hips on the bench
+		passenger.global_position = xf.origin  # ENV D heli_door_* clips: root at SniperSeat, kneeling on the sill
 		passenger.velocity = Vector3.ZERO
+		var lb: LongshotBrain = passenger.get_node_or_null(^"Brain") as LongshotBrain
+		var clip: StringName = CLIP_DOOR_AIM if lb != null and lb.laser_active else CLIP_DOOR_IDLE
+		if passenger.get_meta(AnimDriver.META_ANIM_OVERRIDE, &"") != clip:
+			passenger.set_meta(AnimDriver.META_ANIM_OVERRIDE, clip)
 
 
 func _step(delta: float) -> void:
