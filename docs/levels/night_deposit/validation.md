@@ -10,22 +10,31 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | contract_nodes | PASS | 0 | 0 |
 | cameras | PASS | 0 | 0 |
 | secure_zones | PASS | 0 | 0 |
-| floating | PASS | 0 | 12 |
+| floating | PASS | 0 | 14 |
 | clipping | PASS | 0 | 0 |
 | orientation | PASS | 0 | 0 |
 | scale | PASS | 0 | 0 |
+| slopes | PASS | 0 | 0 |
 | navmesh | PASS | 0 | 0 |
+| barred_doors | PASS | 0 | 0 |
 | reachability | PASS | 0 | 0 |
 | walkthrough | PASS | 0 | 0 |
 | patrols | PASS | 0 | 0 |
 | lasers | PASS | 0 | 0 |
+| camera_spine | skipped | 0 | 0 |
+| camera_screen | skipped | 0 | 0 |
 | materials | PASS | 0 | 0 |
 | zfight | PASS | 0 | 0 |
 | lights | PASS | 0 | 0 |
+| viewmodel_lit | PASS | 0 | 0 |
 | density | PASS | 0 | 0 |
 | variety | PASS | 0 | 0 |
 | bounds | PASS | 0 | 0 |
 | perf | PASS | 0 | 0 |
+| door_frame_gap | PASS | 0 | 0 |
+| frame_proud | PASS | 0 | 0 |
+| seam_gaps | PASS | 0 | 0 |
+| furniture_logic | PASS | 0 | 0 |
 
 ## contract_nodes: Contract nodes
 
@@ -42,10 +51,10 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## floating: Nothing floats
 
-- 591 props checked
+- 587 props checked
 
-- WARN `Gameplay/Atms/AtmCash1` @ (22.30, 0.45, 16.47): prop has no geometry or collision; skipped
-- WARN `Gameplay/Atms/AtmCash2` @ (23.40, 0.45, 16.47): prop has no geometry or collision; skipped
+- WARN `Gameplay/Atms/AtmCash1` @ (22.30, 0.90, 16.88): prop has no geometry or collision; skipped
+- WARN `Gameplay/Atms/AtmCash2` @ (23.40, 0.90, 16.88): prop has no geometry or collision; skipped
 - WARN `Gameplay/Atms/AtmSaw1` @ (22.18, 0.62, 16.85): prop has no geometry or collision; skipped
 - WARN `Gameplay/Atms/AtmSaw2` @ (23.28, 0.62, 16.85): prop has no geometry or collision; skipped
 - WARN `Gameplay/Vault/Box1` @ (9.77, -2.75, 12.15): prop has no geometry or collision; skipped
@@ -56,10 +65,12 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 - WARN `Gameplay/Vault/Box6` @ (18.23, -2.75, 13.69): prop has no geometry or collision; skipped
 - WARN `Gameplay/Vault/Box7` @ (18.23, -2.75, 15.52): prop has no geometry or collision; skipped
 - WARN `Gameplay/Vault/Box8` @ (18.23, -2.75, 17.34): prop has no geometry or collision; skipped
+- WARN `Variants/Group_escape/Slot_esc_boat_quay/BoatEscapeE2` @ (8.50, -1.20, 34.70): prop has no geometry or collision; skipped
+- WARN `Variants/Group_escape/Slot_esc_van_lot/VanEscapeE1` @ (3.50, 0.00, -1.50): prop has no geometry or collision; skipped
 
 ## clipping: Nothing clips
 
-- 591 props, 36 doors checked
+- 587 props, 36 doors checked
 
 
 ## orientation: Flush and oriented
@@ -110,43 +121,55 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 - `Geometry/Building/Stair/Flight2`: ramp collision enveloping the steps (max 0.182 m above the treads)
 - `Geometry/Building/Stair/Flight2`: 11 risers, -4.000 -> -2.000 m
 - `Geometry/Building/Stair/Flight2` rails: -X wall, rail tops [0.89, 0.89, 0.89, 0.90, 0.90] m above nosing, max drop 0.00 m; +X wall, rail tops [0.89, 0.89, 0.89, 0.90, 0.90] m above nosing, max drop 0.00 m
+- stair chain: `Geometry/Building/Stair/Flight2` -> `Geometry/Building/Stair/Flight1` joined by a landing at -2.000 m
+
+
+## slopes: No walkable slope < 50° outside the play mesh
+
+- 429 x 282 columns (0.25 m), 66583 surface samples, 0 collider(s) with reachable walkable surfaces outside play
 
 
 ## navmesh: Navmesh
 
-- navmesh: 1830 polygons, cell 0.10/0.10 m
-- 173 markers checked
+- navmesh: 1832 polygons, cell 0.10/0.10 m
+- 172 markers checked
 | room | walkable samples | covered | coverage |
 |---|---|---|---|
-| `Rooms/RoomG1` | 91 | 89 | 98% |
+| `Rooms/RoomG1` | 93 | 90 | 97% |
 | `Rooms/RoomG2` | 7 | 7 | 100% |
-| `Rooms/RoomG3` | 54 | 54 | 100% |
+| `Rooms/RoomG3` | 51 | 51 | 100% |
 | `Rooms/RoomG4` | 24 | 24 | 100% |
 | `Rooms/RoomG5` | 38 | 38 | 100% |
-| `Rooms/RoomG6` | 57 | 57 | 100% |
+| `Rooms/RoomG6` | 58 | 58 | 100% |
 | `Rooms/RoomG7` | 102 | 102 | 100% |
-| `Rooms/RoomG8` | 35 | 35 | 100% |
+| `Rooms/RoomG8` | 25 | 25 | 100% |
 | `Rooms/RoomG9` | 564 | 564 | 100% |
 | `Rooms/RoomG10` | 17 | 17 | 100% |
 | `Rooms/RoomG11` | 27 | 27 | 100% |
 | `Rooms/RoomG12` | 15 | 15 | 100% |
-| `Rooms/RoomG13` | 45 | 45 | 100% |
-| `Rooms/RoomB1` | 91 | 90 | 99% |
-| `Rooms/RoomB2` | 61 | 61 | 100% |
+| `Rooms/RoomG13` | 46 | 46 | 100% |
+| `Rooms/RoomB1` | 92 | 91 | 99% |
+| `Rooms/RoomB2` | 63 | 63 | 100% |
 | `Rooms/RoomB13` | 4 | 4 | 100% |
-| `Rooms/RoomB3` | 52 | 52 | 100% |
-| `Rooms/RoomB4` | 38 | 38 | 100% |
+| `Rooms/RoomB3` | 50 | 50 | 100% |
+| `Rooms/RoomB4` | 40 | 40 | 100% |
 | `Rooms/RoomB5` | 102 | 102 | 100% |
-| `Rooms/RoomB6` | 156 | 156 | 100% |
+| `Rooms/RoomB6` | 152 | 152 | 100% |
 | `Rooms/RoomB7` | 51 | 51 | 100% |
 | `Rooms/RoomB8` | 55 | 55 | 100% |
 | `Rooms/RoomB9` | 188 | 188 | 100% |
 | `Rooms/RoomB10` | 51 | 51 | 100% |
-| `Rooms/RoomB11` | 39 | 39 | 100% |
+| `Rooms/RoomB11` | 38 | 38 | 100% |
 | `Rooms/RoomB12` | 79 | 79 | 100% |
 | `Rooms/RoomB14` | 2 | 2 | 100% |
 | `Rooms/RoomX1` | 659 | 659 | 100% |
 | `Rooms/RoomX2` | 734 | 734 | 100% |
+
+
+## barred_doors: BARRED doorways are closed in the navmesh
+
+- 4 BARRED door(s) checked
+- variant-slot BARRED doors not checked (one bake for every variant): `Variants/Group_vent_open/Slot_vent_locked/AreawayGrate`
 
 
 ## reachability: Reachability (per variant)
@@ -177,12 +200,12 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## materials: Materials and texel density
 
-- 2044 surfaces checked
+- 2702 surfaces checked
 
 
 ## zfight: Z-fighting
 
-- 418165 triangles checked
+- 419691 triangles checked
 
 
 ## lights: Lighting is deliberate
@@ -190,26 +213,31 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 - 175 lights, 143 fixture meshes
 
 
+## viewmodel_lit: Interior key lights light the viewmodel (D-095)
+
+- 121 interior key light(s) in 27 room(s); 0 lack `viewmodel_lit`
+
+
 ## density: Dressing density
 
 | room | kit | props | m² | per m² |
 |---|---|---|---|---|
-| `Rooms/RoomG1` | sally_port | 23 | 42.0 | 0.55 |
-| `Rooms/RoomG3` | security_office_bank | 19 | 24.0 | 0.79 |
-| `Rooms/RoomG4` | break_room | 28 | 24.0 | 1.17 |
+| `Rooms/RoomG1` | sally_port | 22 | 42.0 | 0.52 |
+| `Rooms/RoomG3` | security_office_bank | 20 | 24.0 | 0.83 |
+| `Rooms/RoomG4` | break_room | 27 | 24.0 | 1.12 |
 | `Rooms/RoomG5` | electrical_closet | 11 | 18.0 | 0.61 |
-| `Rooms/RoomG6` | storage_supplies | 17 | 30.0 | 0.57 |
+| `Rooms/RoomG6` | storage_supplies | 16 | 30.0 | 0.53 |
 | `Rooms/RoomG7` | corridor_service | 14 | 39.0 | 0.36 |
 | `Rooms/RoomG8` | teller_line | 36 | 52.5 | 0.69 |
-| `Rooms/RoomG9` | banking_hall | 36 | 202.0 | 0.18 |
-| `Rooms/RoomG11` | office_loan | 22 | 22.5 | 0.98 |
+| `Rooms/RoomG9` | banking_hall | 37 | 202.0 | 0.18 |
+| `Rooms/RoomG11` | office_loan | 21 | 22.5 | 0.93 |
 | `Rooms/RoomG12` | office_manager_bank | 24 | 20.0 | 1.20 |
 | `Rooms/RoomG13` | atm_vestibule | 14 | 20.0 | 0.70 |
-| `Rooms/RoomB1` | cash_transfer | 18 | 42.0 | 0.43 |
-| `Rooms/RoomB2` | locker_room | 18 | 29.8 | 0.61 |
+| `Rooms/RoomB1` | cash_transfer | 19 | 42.0 | 0.45 |
+| `Rooms/RoomB2` | locker_room | 17 | 29.8 | 0.57 |
 | `Rooms/RoomB13` | restroom_wc | 7 | 6.2 | 1.12 |
 | `Rooms/RoomB3` | plant_room | 16 | 30.0 | 0.53 |
-| `Rooms/RoomB4` | server_room | 22 | 30.0 | 0.73 |
+| `Rooms/RoomB4` | server_room | 23 | 30.0 | 0.77 |
 | `Rooms/RoomB5` | corridor_service | 21 | 39.0 | 0.54 |
 | `Rooms/RoomB6` | storage_archive | 50 | 87.5 | 0.57 |
 | `Rooms/RoomB7` | corridor_inspection | 11 | 25.0 | 0.44 |
@@ -217,9 +245,9 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `Rooms/RoomB9` | vault_main | 21 | 100.0 | 0.21 |
 | `Rooms/RoomB10` | corridor_inspection | 10 | 25.0 | 0.40 |
 | `Rooms/RoomB11` | count_room | 25 | 32.5 | 0.77 |
-| `Rooms/RoomB12` | depository | 10 | 30.0 | 0.33 |
+| `Rooms/RoomB12` | depository | 9 | 30.0 | 0.30 |
 | `Rooms/RoomB14` | janitor_closet | 3 | 3.8 | 0.80 |
-| `Rooms/RoomX1` | exterior_lot | 23 | 595.0 | 0.04 |
+| `Rooms/RoomX1` | exterior_lot | 22 | 595.0 | 0.04 |
 | `Rooms/RoomX2` | exterior_harbor | 35 | 1121.4 | 0.03 |
 
 
@@ -261,35 +289,57 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 | camera | draw calls | triangles | shadow lights |
 |---|---|---|---|
-| `TopDownSite` | 691 | 352758 | 6 |
-| `TopDownBuilding` | 1431 | 708926 | 6 |
-| `ExtHarborFacade` | 1582 | 727208 | 6 |
-| `ExtAtmCorner` | 1696 | 764220 | 6 |
-| `ExtLotSallyPort` | 1153 | 501228 | 6 |
-| `ExtQuaySteps` | 70 | 37498 | 2 |
-| `ExtWharfLane` | 1526 | 676158 | 6 |
-| `HallFromVestibule` | 1315 | 504740 | 6 |
-| `CompassLandmark` | 1599 | 628024 | 6 |
-| `HallGuardPost` | 1064 | 390120 | 5 |
-| `TellerWorkroom` | 1542 | 594696 | 6 |
-| `StaffCorridor` | 1269 | 528018 | 6 |
-| `SecurityRoom` | 421 | 164444 | 3 |
-| `SallyPort` | 866 | 321258 | 3 |
-| `StairCore` | 445 | 188392 | 3 |
-| `BasementCorridor` | 1473 | 572030 | 6 |
-| `Antechamber` | 1108 | 405798 | 5 |
-| `VaultInterior` | 352 | 174824 | 4 |
-| `CountDepository` | 634 | 292662 | 3 |
-| `RecordsRoom` | 402 | 212086 | 3 |
-| `PlantAreaway` | 324 | 154644 | 2 |
-| `ManagerOffice` | 572 | 216694 | 0 |
-| `AtmVestibule` | 1757 | 725798 | 6 |
-| `CranePerch` | 1722 | 764584 | 6 |
-| `BreakRoom` | 481 | 186654 | 3 |
-| `SuppliesStore` | 230 | 118316 | 1 |
-| `LoanOffice` | 382 | 144278 | 1 |
-| `CashTransfer` | 188 | 85008 | 1 |
-| `LockerRoom` | 350 | 147458 | 2 |
-| `ServerRoom` | 591 | 235136 | 3 |
-| `InspectionPassage` | 423 | 208246 | 3 |
+| `TopDownSite` | 1360 | 353026 | 6 |
+| `TopDownBuilding` | 1978 | 716688 | 6 |
+| `ExtHarborFacade` | 2184 | 735832 | 6 |
+| `ExtAtmCorner` | 2321 | 772368 | 6 |
+| `ExtLotSallyPort` | 1575 | 505968 | 6 |
+| `ExtQuaySteps` | 101 | 37532 | 2 |
+| `ExtWharfLane` | 2102 | 687296 | 6 |
+| `HallFromVestibule` | 1707 | 518324 | 6 |
+| `CompassLandmark` | 2099 | 635472 | 6 |
+| `HallGuardPost` | 1421 | 399054 | 5 |
+| `TellerWorkroom` | 2030 | 602328 | 6 |
+| `StaffCorridor` | 1699 | 534526 | 6 |
+| `SecurityRoom` | 526 | 167174 | 3 |
+| `SallyPort` | 1078 | 326998 | 3 |
+| `StairCore` | 592 | 199240 | 3 |
+| `BasementCorridor` | 1919 | 586410 | 6 |
+| `Antechamber` | 1401 | 414208 | 5 |
+| `VaultInterior` | 494 | 170936 | 4 |
+| `CountDepository` | 903 | 287070 | 3 |
+| `RecordsRoom` | 558 | 212358 | 3 |
+| `PlantAreaway` | 441 | 156816 | 2 |
+| `ManagerOffice` | 721 | 220842 | 0 |
+| `AtmVestibule` | 2279 | 738750 | 6 |
+| `CranePerch` | 2312 | 771364 | 6 |
+| `BreakRoom` | 588 | 189240 | 3 |
+| `SuppliesStore` | 323 | 114060 | 1 |
+| `LoanOffice` | 491 | 147440 | 1 |
+| `CashTransfer` | 224 | 83802 | 1 |
+| `LockerRoom` | 441 | 150128 | 2 |
+| `ServerRoom` | 730 | 241340 | 3 |
+| `InspectionPassage` | 602 | 209032 | 3 |
+
+
+## door_frame_gap: Doors and windows fill their wall openings (no gaps, no clipping)
+
+- 40 door / window prefab(s) measured; gap > 0.02 m and clip > 0.01 m fail
+- leaf bullet surfaces (D-105, Door.leaf_surface_id): glass 2, metal 23, wood 11; 0 look glass / metal but resolve to wood (WARN)
+
+
+## frame_proud: Door / window frame colliders are flush with the wall (no proud or narrowing collision)
+
+- 40 door / window prefab(s), 36 with frame colliders; proud > 0.01 m and narrowing > 0.01 m fail; worst proud 0.000 m, narrowing 0.000 m
+
+
+## seam_gaps: No see-through slits at wall corners, junctions, floors and ceilings
+
+- 27 room(s), 120 box side(s) scanned; slits > 0.02 m fail
+
+
+## furniture_logic: Furniture arranged plausibly
+
+- classified: counter 7, chair 4, table 6, desk 7, wall_unit 28, stool 4, visitor_chair 4, desk_chair 7, monitor 3
+- 19 seats, 20 tables/desks/counters, 36 doors checked
 

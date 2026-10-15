@@ -284,11 +284,11 @@ func _build_depository(gp: Node3D) -> void:
 	var safe: Node3D = prefab(dp, "safe", "DepositorySafe", Vector3(21.47, L.BASE, 17.0), -90.0,
 		{"size": "enum:MEDIUM", "methods": [&"saw", &"drill"] as Array[StringName], "objective_tag": &"depository"},
 		null, {"kind": "safe"})
-	# Night-drop bags: loot markers sit on the floor, so the stack stands in front of the safe and the
-	# mission enables it when the safe opens (Safe only gates loot parented under it).
+	# Night-drop bags (PO6-05): inside the safe at its LootAnchor (safe-local (0, 0.142, 0)), so the Safe hides them
+	# until it opens; the UsePoint stays in front of the safe on the floor.
 	if safe != null:
-		prefab(dp, "loot_spawn", "NightDropBags", Vector3(22.6, L.BASE, 18.3), -90.0,
-			{"loot_id": &"loot.cash", "count": 4, "objective_tag": &"depository_loot"})
+		prefab(safe, "loot_spawn", "NightDropBags", Vector3(0.0, 0.142, 0.0), 0.0,
+			{"loot_id": &"loot.cash", "count": 4, "objective_tag": &"depository_loot"}, Vector3(22.6, L.BASE, 18.3))
 	# Chute from the G13 night drop down to the safe (Geometry, ceiling to the top of the safe body).
 	box(n("Geometry/Building"), "DepositoryChute", Vector3(21.15, L.BASE + 1.395, 16.75), Vector3(21.55, L.BASE_CEIL, 17.25), "steel")
 
