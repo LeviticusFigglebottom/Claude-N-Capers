@@ -82,13 +82,13 @@ func _stand_at(crew: CrewController, dp: DrillPoint, off: float = STAND_OFF_M) -
 
 func _aim(crew: CrewController, dp: DrillPoint) -> void:
 	var d: Vector3 = (dp.global_position + Vector3.UP * 0.3 - crew.eye_position()).normalized()
-	var i: CrewIntent = CrewIntent.new()
-	i.look_yaw = atan2(-d.x, -d.z)
-	i.look_pitch = asin(clampf(d.y, -1.0, 1.0))
-	crew.look_yaw = i.look_yaw
-	crew.look_pitch = i.look_pitch
-	crew.apply_intent(i)
-	crew.teleport(crew.global_transform)  # PlayerInput re-reads the crew's facing on teleport (PI-06)
+	var yaw: float = atan2(-d.x, -d.z)
+	# teleport() takes the yaw from the basis and zeroes the pitch; PlayerInput re-reads both (PI-06), then
+	# add_look tilts it down onto the drill.
+	crew.teleport(Transform3D(Basis(Vector3.UP, yaw), crew.global_position))
+	var pin: PlayerInput = crew.get_node_or_null(^"PlayerInput") as PlayerInput
+	if pin != null:
+		pin.add_look(0.0, asin(clampf(d.y, -1.0, 1.0)))
 
 
 func _crew() -> CrewController:
