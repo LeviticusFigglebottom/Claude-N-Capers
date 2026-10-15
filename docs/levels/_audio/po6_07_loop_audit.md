@@ -56,3 +56,6 @@ All `.import` files have `loop=false` (326/326); loop flags are runtime-only (`A
 zero looping players; pager beep/radio leave nothing looping after answer or failure; siren stops at FADE and does
 not get restarted by the delayed timer; held-trigger loop stops on release; caps, downed picker and captain death stop
 their loops.
+
+## Golden Hour loud-run log (lead r205)
+`po6_07_gh_loud_run.txt`: `CAPER_AUDIO_REVIEW=1 tools/ci/run_tests.sh c/_review gh_audio` (real HeistLauncher run, seed 1001, bots). Launch 1: guard killed, pager beep -> radio on answer start -> nothing looping after `pager_answered`. Launch 2: guard radio alarm -> bell, siren from ANTICIPATION, bell ends after its 120 s (time_scale 4), siren stops at FADE; 0 looping players after.

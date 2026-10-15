@@ -1,6 +1,7 @@
 ## PO6-07 evidence (lead r205): a real Golden Hour run through HeistLauncher with bots: kill a guard, answer the
-## pager, go loud, run the first assault wave to FADE. Logs every keyed loop start/stop and the number of pooled
-## players playing a looping stream, then asserts the pager beep/radio and the siren are gone when their state ends.
+## pager (launch 1), then go loud and run the first assault wave to FADE (launch 2). Logs every keyed loop
+## start/stop and the number of pooled players playing a looping stream, then asserts the pager beep/radio and
+## the siren are gone when their state ends.
 ## Slow (one assault wave at time_scale 4), so it only runs with CAPER_AUDIO_REVIEW=1:
 ##   CAPER_AUDIO_REVIEW=1 GODOT=/opt/godot/godot bash tools/ci/run_tests.sh c/_review gh_audio
 ## Log: user://po6_07_gh_audio_log.txt (path printed). Owner: ENV C.
@@ -47,9 +48,21 @@ func test_gh_pager_and_siren_stop() -> void:
 		await _teardown(rt)
 		return
 	_connect_facts()
-	_log("launched %s seed %d" % [HEIST, SEED])
+	_log("launch 1 (pager; the guard is isolated) %s seed %d" % [HEIST, SEED])
 	await _pager_phase(rt, crew)
-	await _loud_phase(rt, crew)
+	await _teardown(rt)
+	# isolate_npc despawned every witness, so the loud half runs on a fresh launch (as test_p1_vertical_slice 08).
+	rt = await _launcher.call(&"launch", HEIST, SEED, Enums.Difficulty.ROUTINE, self, {"ai_teammates": 3})
+	crew = rt.call(&"crew_controller", 0) as Node3D
+	await wait_until(func() -> bool: return crew == null or BotUtil.nav_ready(crew), 10.0)
+	await wait_physics_frames(2)
+	map = rt.get(&"map")
+	_cue = map.find_child("CuePlayer", true, false) as CuePlayer if map != null else null
+	_last_keys = []
+	_last_looping = -1
+	_log("launch 2 (loud) %s seed %d" % [HEIST, SEED])
+	if _cue != null:
+		await _loud_phase(rt, crew)
 	_save()
 	await _teardown(rt)
 
@@ -112,8 +125,16 @@ func _loud_phase(rt: Object, crew: Node3D) -> void:
 	var phases: Array[int] = []
 	var on_phase: Callable = func(p: int, _w: int) -> void: phases.append(p)
 	EventBus.assault_phase_changed.connect(on_phase)
+	var guards: Array = rt.call(&"npcs", &"guard")
+	if not guards.is_empty():
+		var seen_v: Variant = BotUtil.find_clear_point(guards[0], 6.0, false)
+		if seen_v != null:
+			rt.call(&"teleport_crew", 0, seen_v)
+	var m: CrewIntent = CrewIntent.new()
+	m.mask_up = true
+	rt.call(&"set_bot_intent", 0, m)
+	await _watch_seconds(1.2)
 	var f: CrewIntent = CrewIntent.new()
-	f.mask_up = true
 	f.fire = true
 	f.look_pitch = deg_to_rad(30.0)
 	f.look_yaw = crew.rotation.y

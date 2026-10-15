@@ -1,0 +1,32 @@
+[   2.61 s] launch 1 (pager; the guard is isolated) glasshouse seed 1001
+[   2.62 s] state loops=[] looping_players=0
+[   7.49 s] fact pager_started 1 guard 59
+[   7.49 s] fact audio_cue_requested cue.pager_beep
+[   7.50 s] loop START pager_beep_1
+[   7.50 s] state loops=[&"pager_beep_1"] looping_players=1
+[   8.51 s] fact pager_answer_started 1 slot 0
+[   8.51 s] fact audio_cue_requested cue.pager_radio
+[   8.53 s] loop START pager_radio_1
+[   8.53 s] loop STOP  pager_beep_1
+[   8.53 s] state loops=[&"pager_radio_1"] looping_players=1
+[  18.51 s] fact pager_answered 1 slot 0
+[  18.55 s] loop STOP  pager_radio_1
+[  18.55 s] state loops=[] looping_players=0
+[  20.56 s] CHECK after answer: loops=[] looping_players=0
+[  21.82 s] launch 2 (loud) glasshouse seed 1001
+[  21.82 s] state loops=[] looping_players=0
+[  27.44 s] fact alarm_raised guard_radio
+[  27.45 s] fact assault_phase_changed CONTROL wave 1
+[  27.48 s] loop START alarm
+[  27.48 s] state loops=[&"alarm"] looping_players=1
+[  32.69 s] fact assault_phase_changed ANTICIPATION wave 1
+[  32.70 s] loop START siren
+[  32.70 s] state loops=[&"siren", &"alarm"] looping_players=2
+[  40.21 s] fact assault_phase_changed BUILD wave 1
+[  48.96 s] fact assault_phase_changed SUSTAIN wave 1
+[  57.70 s] loop STOP  alarm
+[  57.70 s] state loops=[&"siren"] looping_players=1
+[  61.96 s] fact assault_phase_changed FADE wave 1
+[  61.97 s] loop STOP  siren
+[  61.97 s] state loops=[] looping_players=0
+[  62.47 s] CHECK after FADE: loops=[] looping_players=0
