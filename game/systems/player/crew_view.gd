@@ -342,6 +342,7 @@ func refresh_weapon(animated: bool = false) -> void:
 	_viewmodel = wv
 	if fp != null:
 		wv.setup(def, LoadoutResolver.applied_mods(def, mod_ids))
+		wv.apply_loadout_finish(_crew.loadout)  # B7-04 finish on the FP gun too (ENV B PO6-12 ask)
 		var keep: Node3D = old if old != null and fp.is_ancestor_of(old) else null
 		if old != null and keep == null:
 			_free_node(old)
@@ -352,6 +353,7 @@ func refresh_weapon(animated: bool = false) -> void:
 		wv.position = Tweak.crew().viewmodel_offset
 		cam.add_child(wv)
 		wv.setup(def, LoadoutResolver.applied_mods(def, mod_ids))
+		wv.apply_loadout_finish(_crew.loadout)
 	_crew.weapon_visual = wv
 	WeaponPartsAnimator.attach(wv, _crew.weapons)  # B4-18: Breech / Lever / String / Blade / Rotor
 	_apply_casing_visibility()

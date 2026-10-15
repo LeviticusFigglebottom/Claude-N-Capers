@@ -453,6 +453,12 @@ func _lower_for_interaction() -> void:
 
 
 ## The equipped weapon's draw over its gameplay equip time (bag pickup, end of an interaction).
+## PO6-12 (ENV B range): replay the equipped weapon's `draw` (ready@ on the gameplay equip time), e.g. when a pick
+## lands in the slot already in the hands. Presentation only.
+func play_draw() -> void:
+	_draw_weapon()
+
+
 func _draw_weapon() -> void:
 	var equip_s: float = _equip_time()
 	_end_action()
