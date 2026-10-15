@@ -316,7 +316,7 @@ func test_po6_17_heli_rappels_a_squad_at_the_drop_and_carries_a_sniper() -> void
 	var ev: AssaultEventRunner = await _launch()
 	Engine.time_scale = 2.0
 	var heli: AssaultHeli = ev.run(&"heli", {"orbit_s": 0.5, "speed_mps": 40.0, "approach_m": 40.0, "hover_height_m": 8.0,
-		"sniper_s": 3.0, "squad": [&"enemy.tac_light", &"enemy.tac_light"], "drop_interval_s": 0.3,
+		"sniper_s": 30.0, "squad": [&"enemy.tac_light", &"enemy.tac_light"], "drop_interval_s": 0.3,
 		"rappel_speed_mps": 5.0}, "HeliDrop_1") as AssaultHeli
 	assert_true(heli != null, "heli spawned")
 	var hover: bool = await wait_until(func() -> bool: return heli.stage == AssaultHeli.Stage.HOVER, 10.0)
@@ -349,8 +349,11 @@ func test_po6_17_heli_rappels_a_squad_at_the_drop_and_carries_a_sniper() -> void
 		if flat < 2.5 and u.global_position.y < 0.6 and m2.is_physics_processing() and not m2.rappelling:
 			landed += 1
 	assert_eq(landed, 2, "both rappellers landed at the drop and walk on")
-	var sniping: bool = await wait_until(func() -> bool: return heli.passenger != null, 6.0)
+	# The sniper window is long (30 s) so a loaded batch cannot see the heli leave before the checks below.
+	var sniping: bool = await wait_until(func() -> bool: return is_instance_valid(heli) and heli.passenger != null, 6.0)
 	assert_true(sniping, "Longshot seated")
+	if not sniping:
+		return
 	var sniper: NpcBase = heli.passenger
 	assert_eq(sniper.enemy_def.id, &"enemy.longshot", "Longshot def")
 	await wait_physics_frames(5)
@@ -358,6 +361,7 @@ func test_po6_17_heli_rappels_a_squad_at_the_drop_and_carries_a_sniper() -> void
 	var brain: LongshotBrain = sniper.get_node(^"Brain") as LongshotBrain
 	assert_true(brain.is_perched(), "perched on the heli perch")
 	assert_true(String(sniper.get_meta(AnimDriver.META_ANIM_OVERRIDE, &"")).begins_with("heli_door_"), "heli_door clip")
+	heli.stage_time = 999.0  # end the (long) sniper window now
 	var wr: WeakRef = weakref(heli)
 	var gone: bool = await wait_until(func() -> bool:
 		var h: AssaultHeli = wr.get_ref() as AssaultHeli

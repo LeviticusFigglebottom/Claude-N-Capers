@@ -22,7 +22,7 @@ heists = {
 }, {
 "cooldown_s": 90.0,
 "kind": &"heli",
-"max_per_heist": 2,
+"max_per_heist": 1,
 "min_wave": 1,
 "params": {},
 "weight": 1.2
