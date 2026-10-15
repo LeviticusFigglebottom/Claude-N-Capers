@@ -1,0 +1,140 @@
+## PO6-11 hip -> ADS -> hip sequence capture (windowed): per weapon, real input on the unit map: hip idle, hip walk,
+## then frames through the ADS transition and its settle, then back out to the hip.
+## Writes <out>/<weapon>_<nn>_<label>.png and <out>/ads_seq_sheet.png (rows = weapons, cols = frames), and prints
+## `[ADSSEQ] <weapon> <label> grip=<weapon bone, camera space> aim=<AimPoint, camera space>` per frame.
+##   xvfb-run -a -s "-screen 0 640x360x24" /opt/godot/godot --rendering-driver opengl3 --audio-driver Dummy \
+##     --fixed-fps 60 --resolution 640x360 --path game res://tests/p/_review/ads_seq_capture.tscn -- --out=/abs/dir \
+##     [--weapons=weapon.kestrel_p9,...]
+## Owner: ENV P.
+extends Node
+
+## Physics ticks after pressing aim (in), and after releasing it (out), at which a frame is saved.
+const IN_TICKS: Array[int] = [2, 4, 6, 8, 11, 15, 22, 40]
+const OUT_TICKS: Array[int] = [4, 8, 30]
+
+var _out: String = "user://ads_seq"
+var _weapons: PackedStringArray = ["weapon.kestrel_p9", "weapon.warden_45", "weapon.wren_380", "weapon.sparrow_mp",
+	"weapon.marshal_357", "weapon.corsair_ar"]
+
+
+func _ready() -> void:
+	for a: String in OS.get_cmdline_user_args():
+		var kv: PackedStringArray = a.trim_prefix("--").split("=", true, 1)
+		var v: String = kv[1] if kv.size() > 1 else ""
+		match kv[0]:
+			"out": _out = v
+			"weapons": _weapons = v.split(",")
+	DirAccess.make_dir_recursive_absolute(_out)
+	RenderingServer.render_loop_enabled = false
+	var rows: Array[Array] = []
+	for wid: String in _weapons:
+		rows.append(await _weapon(StringName(wid)))
+	_sheet(rows)
+	RenderingServer.render_loop_enabled = true
+	print("[ADSSEQ] RESULT DONE weapons=%d sheet=%s/ads_seq_sheet.png" % [rows.size(), _out])
+	get_tree().quit(0)
+
+
+func _weapon(wid: StringName) -> Array:
+	var def: WeaponDef = ContentDB.weapon(wid)
+	var secondary: bool = def != null and def.slot == Enums.WeaponSlot.SECONDARY
+	var l: Loadout = CrewWeapons.build_loadout(null).duplicate() as Loadout
+	if secondary:
+		l.secondary = wid
+		l.secondary_mods = [] as Array[StringName]
+		l.resolved_secondary = LoadoutResolver.resolve_weapon(wid, l.secondary_mods)
+	else:
+		l.primary = wid
+		l.primary_mods = [] as Array[StringName]
+		l.resolved_primary = LoadoutResolver.resolve_weapon(wid, l.primary_mods)
+	var rt: HeistRuntime = await HeistLauncher.launch(&"unit_map", 42, Enums.Difficulty.ROUTINE, self,
+		{"map_packed": ATestMaps.basic(0, 0), "crew_ai": false, "loadouts": {0: l}})
+	var c: CrewController = rt.crew_controller(0) as CrewController
+	rt.teleport_crew(0, Transform3D(Basis.IDENTITY, Vector3(0, 0.05, 10)))
+	var inp: PInputDriver = PInputDriver.new(self)
+	inp.capture_mouse()
+	await inp.hold(&"mask_up", Tweak.crew().mask_up_time_s + 0.3)
+	await inp.tap(&"slot_secondary" if secondary else &"slot_primary")
+	await _ticks(120)
+	var name: String = String(wid).trim_prefix("weapon.")
+	var imgs: Array[Image] = []
+	imgs.append(await _shot(c, name, imgs.size(), "hip"))
+	inp.press(&"move_forward")
+	await _ticks(40)
+	imgs.append(await _shot(c, name, imgs.size(), "walk"))
+	inp.release(&"move_forward")
+	await _ticks(60)
+	inp.press(&"aim")
+	var t: int = 0
+	for k: int in IN_TICKS:
+		await _ticks(k - t)
+		t = k
+		imgs.append(await _shot(c, name, imgs.size(), "in%d" % k))
+	inp.release(&"aim")
+	t = 0
+	for k: int in OUT_TICKS:
+		await _ticks(k - t)
+		t = k
+		imgs.append(await _shot(c, name, imgs.size(), "out%d" % k))
+	inp.release_all()
+	rt.teardown()
+	for _i: int in 3:
+		await get_tree().process_frame
+	return imgs
+
+
+func _shot(c: CrewController, name: String, idx: int, label: String) -> Image:
+	RenderingServer.render_loop_enabled = true
+	await get_tree().process_frame
+	await RenderingServer.frame_post_draw
+	await RenderingServer.frame_post_draw
+	var img: Image = get_viewport().get_texture().get_image()
+	RenderingServer.render_loop_enabled = false
+	img.save_png("%s/%s_%02d_%s.png" % [_out, name, idx, label])
+	var cam: Camera3D = get_viewport().get_camera_3d()
+	var vm: FpViewmodel = FpViewmodel.of(cam) if cam != null else null
+	if vm != null and vm.weapon_attach != null and cam != null:
+		var inv: Transform3D = cam.global_transform.affine_inverse()
+		var aim: Node3D = vm.weapon_visual.get_marker(WeaponVisual.AIM_POINT) if vm.weapon_visual != null else null
+		var muz: Node3D = vm.weapon_visual.get_marker(&"Muzzle") if vm.weapon_visual != null else null
+		var bore: Vector3 = (inv.basis * (muz.global_position - aim.global_position)).normalized() \
+			if muz != null and aim != null else Vector3.ZERO
+		var up: Vector3 = inv.basis * vm.weapon_attach.global_basis.y.normalized()
+		print("[ADSSEQ] %s %s ads=%.2f grip=%s aim=%s yaw=%.1f pitch=%.1f roll=%.1f" % [name, label, vm.ads_weight,
+			inv * vm.weapon_attach.global_position, inv * aim.global_position if aim != null else Vector3.INF,
+			rad_to_deg(atan2(-bore.x, -bore.z)), rad_to_deg(asin(clampf(bore.y, -1.0, 1.0))),
+			rad_to_deg(atan2(-up.x, up.y))])
+		var mk: Node3D = vm.weapon_visual.get_marker(&"LeftHandIK") if vm.weapon_visual != null else null
+		var hb: int = vm.skeleton.find_bone("hand.L")
+		if mk != null and hb >= 0:
+			var hand: Transform3D = vm.skeleton.global_transform * vm.skeleton.get_bone_global_pose(hb)
+			var rel: Transform3D = mk.global_transform.orthonormalized().affine_inverse() * hand.orthonormalized()
+			print("[ADSSEQ] %s %s wrist_in_marker=%s hand_rel_euler=%s ik=%.2f" % [name, label, rel.origin,
+				rel.basis.get_euler() * (180.0 / PI), vm.left_hand_ik.ik.influence if vm.left_hand_ik != null else -1.0])
+	elif c == null:
+		print("[ADSSEQ] %s %s no crew" % [name, label])
+	return img
+
+
+func _ticks(n: int) -> void:
+	for _i: int in n:
+		await get_tree().physics_frame
+
+
+func _sheet(rows: Array[Array]) -> void:
+	if rows.is_empty() or (rows[0] as Array).is_empty():
+		return
+	var cell: Image = (rows[0] as Array)[0]
+	var w: int = cell.get_width() / 2
+	var h: int = cell.get_height() / 2
+	var cols: int = 0
+	for r: Array in rows:
+		cols = maxi(cols, r.size())
+	var sheet: Image = Image.create(w * cols, h * rows.size(), false, Image.FORMAT_RGBA8)
+	for y: int in rows.size():
+		for x: int in (rows[y] as Array).size():
+			var img: Image = ((rows[y] as Array)[x] as Image).duplicate() as Image
+			img.convert(Image.FORMAT_RGBA8)
+			img.resize(w, h, Image.INTERPOLATE_BILINEAR)
+			sheet.blit_rect(img, Rect2i(0, 0, w, h), Vector2i(x * w, y * h))
+	sheet.save_png("%s/ads_seq_sheet.png" % _out)

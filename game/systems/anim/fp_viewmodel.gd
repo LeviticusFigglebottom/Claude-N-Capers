@@ -141,6 +141,7 @@ var _weapon_bone: int = -1
 ## PO-13: hand.L bone and its clip orientation relative to the weapon bone (HandCapture -> HandRestore).
 var _hand_bone: int = -1
 var _hand_rel: Basis = Basis.IDENTITY
+var _hand_rel_set: bool = false
 var _mag_bone: int = -1
 var _bob_phase: float = 0.0
 ## Linear ADS progress behind the eased ads_weight.
@@ -156,6 +157,10 @@ var _muzzle_light: OmniLight3D = null
 var _flash_left: float = 0.0
 var _flash_peak: float = 0.0
 var _align: Vector3 = Vector3.ZERO
+## PO6-11: eased per-set hip pose rotation (deg) and the ADS settle spring (position, velocity) chasing ads_weight.
+var _set_rot: Vector3 = Vector3.ZERO
+var _settle: float = 0.0
+var _settle_v: float = 0.0
 ## D-105: the per-shot kick (x = back m, y = pitch deg) as an exact critically damped spring (position, velocity).
 var _kick: Vector2 = Vector2.ZERO
 ## PO pass: seconds left before a running interaction lowers the weapon (-1 = none pending).
@@ -542,6 +547,11 @@ func _breathing() -> Vector2:
 func _capture_hand() -> void:
 	if skeleton == null or _hand_bone < 0 or _weapon_bone < 0:
 		return
+	# PO6-11: mid ADS blend the clip's hand orientation is a blend artefact; keep the one from hip / full ADS.
+	if _hand_rel_set and ads_weight > 0.001 and ads_weight < 0.999 \
+			and FpViewmodelTweak.data().left_hand_hold_rel_sets.has(anim_set):
+		return
+	_hand_rel_set = true
 	_hand_rel = skeleton.get_bone_global_pose(_weapon_bone).basis.orthonormalized().inverse() \
 		* skeleton.get_bone_global_pose(_hand_bone).basis.orthonormalized()
 
@@ -889,6 +899,7 @@ func _set_weapon(wv: WeaponVisual, set_id: StringName) -> void:
 	weapon_visual = wv
 	anim_set = set_id
 	clip = &""
+	_hand_rel_set = false
 	for ch: StringName in CHANNELS:
 		parts[ch] = 0.0
 		_key_start[ch] = 0.0
@@ -1006,8 +1017,11 @@ func _update_offset(delta: float, tw: FpViewmodelTweak) -> void:
 	var set_now: StringName = _playing_set()
 	var hip: Vector3 = tw.set_hip_offset.get(set_now, Vector3.ZERO)
 	var want: Vector3 = hip.lerp(Vector3(0.0, 0.0, float(tw.set_ads_offset_z.get(set_now, 0.0))), ads_weight)
+	var want_rot: Vector3 = (tw.set_hip_rot_deg.get(set_now, Vector3.ZERO) as Vector3) * (1.0 - ads_weight)
+	_set_rot = want_rot if _set_off_init else _set_rot.move_toward(want_rot, tw.set_offset_rate * 60.0 * delta)
 	_set_off = want if _set_off_init else _set_off.move_toward(want, tw.set_offset_rate * delta)
 	_set_off_init = false
+	_tick_settle(delta, tw)
 	off += _set_off
 	off.y -= sin(PI * clampf(ads_weight, 0.0, 1.0)) * tw.ads_dip_m  # PO-13: the arc into / out of the sights
 	_base_offset = off
@@ -1075,10 +1089,44 @@ func _late_align() -> void:
 	var fs: CrewFpStates = _crew.fp_states if _crew != null and is_instance_valid(_crew) else null
 	var s_off: Vector3 = fs.vm_offset if fs != null else Vector3.ZERO  # P-FP-STATES: downed / tased / kicked hold
 	var s_rot: Vector3 = fs.vm_rot_deg if fs != null else Vector3.ZERO
-	position = _base_offset + a + Vector3(0.0, 0.0, _kick.x) + s_off
 	var breath: Vector2 = _breathing()
-	rotation = Vector3(deg_to_rad(_kick.y + _sway.y + breath.y + s_rot.x), deg_to_rad(_sway.x + breath.x + s_rot.y),
-		deg_to_rad(-_sway.x + s_rot.z))
+	var b: Basis = Basis.from_euler(Vector3(deg_to_rad(_kick.y + _sway.y + breath.y + s_rot.x),
+		deg_to_rad(_sway.x + breath.x + s_rot.y), deg_to_rad(-_sway.x + s_rot.z)))
+	# PO6-11: hip pose, ADS arc and settle turn the arms about the firing hand (the weapon bone, this frame's pose).
+	var pose: Vector3 = _pose_rot_deg(tw)
+	var pivot_off: Vector3 = Vector3.ZERO
+	var r: Basis = Basis.IDENTITY
+	if pose != Vector3.ZERO and skeleton != null and _weapon_bone >= 0 and skeleton.is_inside_tree():
+		var q: Vector3 = global_transform.affine_inverse() \
+			* (skeleton.global_transform * skeleton.get_bone_global_pose(_weapon_bone).origin)
+		r = Basis.from_euler(pose * (PI / 180.0))
+		pivot_off = q - r * q
+	transform = Transform3D(b * r, _base_offset + a + Vector3(0.0, 0.0, _kick.x) + s_off + b * pivot_off)
+
+
+## PO6-11: the arms' extra rotation (deg, x pitch, y yaw, z roll) about the firing hand: the set's hip pose, the ADS
+## arc roll and the settle pitch.
+func _pose_rot_deg(tw: FpViewmodelTweak) -> Vector3:
+	var set_now: StringName = _playing_set()
+	var r: Vector3 = _set_rot
+	r.z += sin(PI * clampf(ads_weight, 0.0, 1.0)) * float(tw.set_ads_arc_roll_deg.get(set_now, 0.0))
+	r.x += (_settle - ads_weight) * tw.ads_settle_pitch_deg * float(tw.ads_settle_set_mult.get(set_now, 1.0))
+	return r
+
+
+## PO6-11: advance the ADS settle spring (exact enough at frame rate: semi-implicit Euler, capped step).
+func _tick_settle(delta: float, tw: FpViewmodelTweak) -> void:
+	if tw.ads_settle_pitch_deg == 0.0 or tw.ads_settle_hz <= 0.0:
+		_settle = ads_weight
+		_settle_v = 0.0
+		return
+	var w: float = TAU * tw.ads_settle_hz
+	var left: float = delta
+	while left > 0.0:
+		var h: float = minf(left, 1.0 / 120.0)
+		_settle_v += (w * w * (ads_weight - _settle) - 2.0 * tw.ads_settle_damping * w * _settle_v) * h
+		_settle += _settle_v * h
+		left -= h
 
 
 ## PI-21: vertical arms lag from the camera's step smoothing (m): the arms dip after a step up and float after
