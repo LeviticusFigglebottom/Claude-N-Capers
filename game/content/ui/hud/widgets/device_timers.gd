@@ -257,18 +257,22 @@ func _draw() -> void:
 		var jammed: bool = bool(d["jammed"])
 		var paused: bool = bool(d.get("paused", false))
 		var accent: Color = tweak.device_jam_color if jammed else (UiTokens.WARN if paused else tweak.objective_color)
-		var w: float = PANEL_W * s
+		var fs: int = maxi(roundi(UiTokens.FONT_SMALL * s), 11)
+		var big: int = maxi(roundi(UiTokens.FONT_LEAD * s), 13)
+		var pad: float = 8.0 * s
+		var main: String = String(d["jam_text"]) if jammed else String(d["time_text"])
+		if paused:
+			main = UiText.t(&"ui.hud.device.paused")
+		# PO6-03 GH capture: "DRILL" ran into "JAMMED" in a fixed-width panel; it grows to fit name + gap + main text.
+		var need: float = _font.get_string_size(String(d["label"]), HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x \
+				+ _font.get_string_size(main, HORIZONTAL_ALIGNMENT_LEFT, -1, big).x + 4.0 * pad
+		var w: float = maxf(PANEL_W * s, need)
+		d["width"] = w
 		var h: float = PANEL_H * s
 		var r: Rect2 = Rect2(c - Vector2(w * 0.5, h), Vector2(w, h))
 		draw_rect(r, Color(UiTokens.INK_0, UiTokens.HUD_PANEL_ALPHA + 0.15))
 		draw_rect(r, accent, false, maxf(2.0 * s, 1.0))
-		var fs: int = maxi(roundi(UiTokens.FONT_SMALL * s), 11)
-		var big: int = maxi(roundi(UiTokens.FONT_LEAD * s), 13)
-		var pad: float = 8.0 * s
 		_text(Vector2(r.position.x + pad, r.position.y + pad + fs), String(d["label"]), fs, UiTokens.PAPER_DIM, false)
-		var main: String = String(d["jam_text"]) if jammed else String(d["time_text"])
-		if paused:
-			main = UiText.t(&"ui.hud.device.paused")
 		_text(Vector2(r.end.x - pad, r.position.y + pad + big * 0.9), main, big,
 				accent if jammed or paused else UiTokens.PAPER, true)
 		var bar: Rect2 = Rect2(r.position.x + pad, r.end.y - pad - 6.0 * s, w - 2.0 * pad, maxf(6.0 * s, 3.0))
