@@ -85,7 +85,8 @@ set_left_hand_grip_offset = Dictionary[StringName, Vector3]({
 &"sniper": Vector3(-0.0382, -0.0094, 0.0371),
 &"break_action": Vector3(-0.0351, 0.0002, 0.037),
 &"lever": Vector3(-0.0435, 0.0015, 0.0388),
-&"shotgun_box": Vector3(-0.0479, 0.0015, 0.03)
+&"shotgun_box": Vector3(-0.0479, 0.0015, 0.03),
+&"smg": Vector3(-0.0492, -0.0297, 0.0004)
 })
 left_hand_ik_rate = 8.0
 reload_scale_min = 0.75
