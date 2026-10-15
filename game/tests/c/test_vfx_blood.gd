@@ -118,6 +118,20 @@ func test_signal_bleed_pool_grows_and_stops() -> void:
 	assert_eq(_d.blood.splats.live, 1, "bagging leaves a small smear")
 
 
+## PO6-19: A re-sends bleed_changed(true) when the ragdoll settles > 0.5 m away; the body keeps one pool, moved there.
+func test_repeated_bleed_start_moves_the_one_pool() -> void:
+	_d.blood_from_signals = true
+	_d.on_bleed_changed(50, true, Vector3(0.0, 0.0, 0.5), 1.0)
+	_d.on_bleed_changed(50, true, Vector3(0.1, 0.0, 0.5), 1.0)
+	assert_eq(_d.blood.pools.live, 1, "a start near the pool keeps it")
+	_d.on_bleed_changed(50, true, Vector3(1.2, 0.0, 0.5), 1.0)
+	assert_eq(_d.blood.pools.live, 1, "a start elsewhere restarts the body's one pool")
+	var pool: Node3D = _d.blood.pool_of(50)
+	assert_true(pool != null and pool.visible, "the pool is live")
+	assert_near(pool.global_position.x, 1.2, 0.05, "at the settled position")
+	assert_true(_d.blood.pools.is_growing(pool), "growing again")
+
+
 func test_fallback_npc_killed_pool_and_death_splatter() -> void:
 	_d.blood_from_signals = false
 	_d.on_npc_killed(5, 1, {})

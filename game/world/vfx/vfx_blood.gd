@@ -146,7 +146,8 @@ func splatter(from: Vector3, dir: Vector3, k: float, rng: RandomNumberGenerator 
 		VfxSettings.BLOOD_FADE_S, alpha)
 
 
-## bleed_changed: start (or keep) a growing pool at `position`; stop freezes it. Full gore only.
+## bleed_changed: start (or keep) a growing pool at `position`; stop freezes it. A start more than POOL_SAME_M away
+## restarts the body's pool there (one pool per body). Full gore only.
 func bleed(body_id: int, bleeding: bool, position: Vector3, rate: float) -> void:
 	var b: Array = _bodies.get(body_id, [])
 	var pool: Node3D = pool_of(body_id)
@@ -159,7 +160,8 @@ func bleed(body_id: int, bleeding: bool, position: Vector3, rate: float) -> void
 	if pool != null and (b[2] as Vector3).distance_to(position) <= POOL_SAME_M:
 		return
 	if pool != null:
-		pools.stop_growing(pool)
+		# PO6-19: a repeated start for the same body (the ragdoll settled elsewhere) restarts its one pool there.
+		pools.release(pool)
 	var rng: RandomNumberGenerator = GameRng.stream(RNG_STREAM)
 	var floor_hit: Dictionary = _ray(position + Vector3.UP * 0.6, position + Vector3.DOWN * VfxSettings.BLOOD_DRIP_RANGE_M)
 	var p: Vector3 = floor_hit.get("position", position)

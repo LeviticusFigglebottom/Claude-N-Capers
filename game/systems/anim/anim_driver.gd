@@ -275,6 +275,8 @@ func _process_step(delta: float) -> void:
 func tick(delta: float) -> void:
 	if player == null or _body == null or not is_instance_valid(player):
 		return
+	if _npc != null and NpcRagdoll.owns_pose(_npc):
+		return  # PO6-19: the ragdoll owns the pose (paused player, baked skeleton, rig yaw kept)
 	delta = maxf(delta, 0.0001)
 	var tw: AnimTweak = AnimTweak.data()
 	_update_velocity(delta, tw)
@@ -415,7 +417,8 @@ func refresh_weapon() -> void:
 		if l != null:
 			mod_ids = l.primary_mods if ws == Enums.WeaponSlot.PRIMARY else l.secondary_mods
 	elif _npc != null and _npc.enemy_def != null:
-		def = _weapon_def(_npc.enemy_def.weapon)
+		# NPC weapon ids (weapon.npc_*) have no model of their own: ENV B's mapping to an armory model (PO6-16 review).
+		def = NpcWeaponModels.weapon_def(_npc.enemy_def.weapon)
 	weapon_kind = _kind_for(def)
 	var socket: Node3D = rig.get_node_or_null(^"Skeleton3D/HandR/Socket") as Node3D if rig != null else null
 	if def == null or def.model == null or socket == null:

@@ -298,8 +298,10 @@ func room_surfaces() -> void:
 			if String(fin[0]) != "":
 				acc.quad("Interior", String(fin[0]), Vector3(x0, y0, z0), Vector3(x1, y0, z0), Vector3(x1, y0, z1),
 					Vector3(x0, y0, z1), Vector3.UP)
-			acc.quad("Interior", String(fin[2]), Vector3(x0, y1, z0), Vector3(x1, y1, z0), Vector3(x1, y1, z1),
-				Vector3(x0, y1, z1), Vector3.DOWN)
+			for r2: Rect2 in _ceiling_rects(x0, z0, x1, z1, y1):
+				acc.quad("Interior", String(fin[2]), Vector3(r2.position.x, y1, r2.position.y),
+					Vector3(r2.end.x, y1, r2.position.y), Vector3(r2.end.x, y1, r2.end.y), Vector3(r2.position.x, y1, r2.end.y),
+					Vector3.DOWN)
 		if id == "G8":
 			continue
 		var box0: Array = (r[4] as Array)[0]
@@ -309,6 +311,20 @@ func room_surfaces() -> void:
 			_trim_room_box(b2, floor_y, floor_y, floor_y + BASEBOARD_H, BASEBOARD_D, "trim_baseboard")
 			if id in CORNICE_ROOMS:
 				_trim_room_box(b2, floor_y, ceil_y - CORNICE_H, ceil_y, CORNICE_D, "trim_crown_cornice")
+
+
+## A room's ceiling rectangle (x, z) minus the PO6-17 ceiling breach holes at that height (four strips around a hole).
+func _ceiling_rects(x0: float, z0: float, x1: float, z1: float, y: float) -> Array[Rect2]:
+	var r: Rect2 = Rect2(x0, z0, x1 - x0, z1 - z0)
+	for b: Array in L.ASSAULT_BREACHES:
+		var p: Vector3 = b[3]
+		var sz: Vector2 = b[5]
+		var hole: Rect2 = Rect2(p.x - sz.x * 0.5, p.z - sz.y * 0.5, sz.x, sz.y)
+		if String(b[1]) != "ceiling" or not is_equal_approx(p.y, y) or not r.encloses(hole):
+			continue
+		return [Rect2(x0, z0, hole.position.x - x0, z1 - z0), Rect2(hole.end.x, z0, x1 - hole.end.x, z1 - z0),
+			Rect2(hole.position.x, z0, sz.x, hole.position.y - z0), Rect2(hole.position.x, hole.end.y, sz.x, z1 - hole.end.y)]
+	return [r]
 
 
 ## Trim strip along every wall face of a room box where the wall is solid over [ya, yb].

@@ -27,6 +27,10 @@ func _brain(npc: NpcBase) -> CivilianBrain:
 func test_gn_seated_civilian_cowers_in_the_seat() -> void:
 	await _launch()
 	_rt.teleport_crew(0, Transform3D(Basis.IDENTITY, Vector3(0, 0.05, 4)))
+	var seat: Node3D = Node3D.new()  # PO6-06: a seated activity needs a seating prop's `Seat` marker under it
+	seat.name = "Seat"
+	_rt.map.add_child(seat)
+	seat.global_position = Vector3(0, 0.5, -2)
 	var seated: NpcBase = _rt.spawn_npc(&"civilian", Transform3D(Basis.IDENTITY, Vector3(0, 0.05, -2)), {"idle_activity": &"sit"})
 	await wait_physics_frames(2)
 	var at: Vector3 = seated.global_position

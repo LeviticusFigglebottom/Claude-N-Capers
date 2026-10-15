@@ -90,6 +90,9 @@ extends Resource
 ## S9.8 ◇ hold to lockpick a SMALL safe (× interaction.lockpick_speed_mult; needs
 ## interaction.can_lockpick_safes).
 @export var safe_lockpick_s: float = 10.0
+## PO6-04 ◇ (D-114 §1): the slow, silent lockpick fallback on a safe with `Safe.lockpick_fallback`
+## (anyone, stealth only), by Safe.Size (SMALL, MEDIUM, LARGE), × interaction.lockpick_speed_mult.
+@export var safe_lockpick_fallback_s: PackedFloat32Array = PackedFloat32Array([20.0, 40.0, 60.0])
 ## S9.4 saw run time on a safe by Safe.Size (SMALL, MEDIUM, LARGE): "same as drills" ◇.
 @export var safe_saw_duration_s: PackedFloat32Array = PackedFloat32Array([60.0, 120.0, 180.0])
 ## ◇ C4 on a safe: hold to place, fuse, explosion noise radius (S4.3 explosion).

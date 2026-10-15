@@ -20,7 +20,7 @@ const ANIM_SET_FIRE_FAMILY: Dictionary[StringName, StringName] = {&"akimbo": &"p
 ## loops are owned by a node: they stop when it leaves the tree (map unload, pool freed) or on heist end.
 const LOOP_STOP_OWNERS: Dictionary[StringName, String] = {
 	&"cue.pager_beep": "pager_answer_started / pager_answered / pager_failed (A: PagerSystem); cap",
-	&"cue.pager_radio": "pager_answered / pager_failed (A: PagerSystem); answer cancel; cap",
+	&"cue.pager_radio": "pager_answer_released / pager_answered / pager_failed (A: PagerSystem); cap",
 	&"cue.alarm_bell": "alarm_bell_duration_s timer / heist_ended / heist_loaded",
 	&"cue.alarm_bell_glasshouse": "alarm_bell_duration_s timer / heist_ended / heist_loaded",
 	&"cue.police_siren_far": "assault_phase_changed FADE/CONTROL/NONE (A: assault director) / heist_ended",
@@ -298,6 +298,7 @@ func _connect_event_bus() -> void:
 	EventBus.npc_alert_state_changed.connect(_on_npc_alert_state_changed)
 	EventBus.pager_started.connect(_on_pager_started)
 	EventBus.pager_answer_started.connect(_on_pager_answer_started)
+	EventBus.pager_answer_released.connect(_on_pager_answer_released)
 	EventBus.pager_answered.connect(_on_pager_answered)
 	EventBus.pager_failed.connect(_on_pager_failed)
 	EventBus.interaction_started.connect(_on_interaction_started)
@@ -419,6 +420,14 @@ func _on_pager_started(pager_id: int, guard_net_id: int) -> void:
 func _on_pager_answer_started(pager_id: int, _crew_slot: int) -> void:
 	stop_loop(_pager_key(pager_id, false))
 	start_loop(_pager_key(pager_id, true), &"cue.pager_radio", NO_POSITION, _pager_guard.get(pager_id, 0))
+
+
+## Released early (D-114 §4 as amended): the radio stops and the beep resumes until the pager is answered or fails.
+func _on_pager_answer_released(pager_id: int, _crew_slot: int) -> void:
+	if not _pager_guard.has(pager_id):
+		return
+	stop_loop(_pager_key(pager_id, true))
+	start_loop(_pager_key(pager_id, false), &"cue.pager_beep", NO_POSITION, _pager_guard[pager_id])
 
 
 func _on_pager_answered(pager_id: int, _crew_slot: int, _answered_total: int) -> void:

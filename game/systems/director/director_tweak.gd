@@ -45,6 +45,11 @@ extends Resource
 @export var control_alive_max: int = 4
 ## BUILD / SUSTAIN: a group every interval / DifficultyDef.assault_intensity, up to enemy_cap alive.
 @export var assault_group_interval_s: float = 5.0
+## PO6-16 ◇ (D-114 §5 horde pacing, L1.1 SUSTAIN / L1.4 groups; PD2 group AI re-spawns whenever the force is
+## under the task's force): while alive police < police_budget() in BUILD / SUSTAIN, the next group comes after
+## this interval instead (same / (intensity x stage x drama) scaling), so losses are replaced within seconds
+## and the force stays near its cap. 0 = off (assault_group_interval_s always).
+@export var assault_refill_interval_s: float = 1.5
 @export var assault_groups: Array[SpawnGroupDef] = []
 ## Spawning with no valid point is retried after this delay.
 @export var no_point_retry_s: float = 1.0

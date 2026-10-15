@@ -214,8 +214,9 @@ func damage_at(ws: int, distance: float) -> float:
 	if s == null:
 		return 0.0
 	var slot: int = _crew.slot if _crew != null else -1
+	var ai: float = Tweak.crew().ai_damage_mult if _crew != null and _crew.is_ai else 1.0  # PO6-15: PD2 bots hit soft
 	return s.stats.damage * CombatSystem.falloff_mult(s.stats, distance) \
-		* Modifiers.mult(slot, &"weapon.damage_mult", s.qualifier)
+		* Modifiers.mult(slot, &"weapon.damage_mult", s.qualifier) * ai
 
 
 ## info.headshot_bonus (damage.md QB-26): WeaponStats.headshot_mult (bonus, default 1.0) x the

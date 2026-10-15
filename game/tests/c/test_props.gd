@@ -26,6 +26,8 @@ const PREFAB_NODES: Dictionary = {
 	"throwable": ["Body"],
 	"alarm_button": [],
 	"phone": [],
+	# PO6-17 assault events: per-asset contract nodes in test_assault_event_props.gd
+	"assault_event": [],
 }
 const MESH_NODES: Array[String] = ["Led", "Screens", "Bag", "Bit", "Body"]
 const EPS: float = 0.004
@@ -101,6 +103,8 @@ func test_prefab_visuals_have_contract_nodes() -> void:
 			var frame: Node = n.find_child("Frame", true, false)
 			assert_true(frame != null and frame.get_node_or_null(^"Collision") is StaticBody3D, "%s: Frame/Collision StaticBody3D" % id)
 			assert_eq(bodies.size(), 1, "%s: only the frame collides" % id)
+		elif prefab == "assault_event" and String(id).begins_with("prop_breach_"):
+			pass  # PO6-17: breach points are architecture (the Intact infill collides), test_assault_event_props.gd
 		else:
 			assert_eq(bodies.size(), 0, "%s: prefab visuals carry no collision (the prefab owns it)" % id)
 		n.free()
@@ -150,7 +154,7 @@ func test_pivots_follow_the_contract() -> void:
 		var bb: AABB = PropCatalog.aabb(StringName(String(id)))
 		var mount: String = String(e["mount"])
 		var prefab: String = String(e["prefab"])
-		if prefab in ["door", "window", "drill", "ladder", "throwable"]:
+		if prefab in ["door", "window", "drill", "ladder", "throwable", "assault_event"]:
 			continue
 		if mount == "wall":
 			assert_near(bb.end.z, 0.0, EPS, "%s: wall item back at the pivot" % id)

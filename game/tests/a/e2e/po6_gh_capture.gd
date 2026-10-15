@@ -1,6 +1,7 @@
 ## PO6 windowed evidence (D-086), Golden Hour: the workshop safe closed (no loot visible, PO6-05), the drill
 ## placed once (PO6-01), the safe open with its loot inside (PO6-05), a kneeling cuffed hostage and the same
-## hostage after a lethal hit, dead in place (PO6-18). PNGs go to --cap-out. Owner: ENV A.
+## hostage after a lethal hit, dead in place (PO6-18), the settled corpse shot twice (blood at the hit points, PO6-19).
+## PNGs go to --cap-out. Owner: ENV A.
 ##   xvfb-run -a -s "-screen 0 1280x720x24" /opt/godot/godot --path game --resolution 960x540 \
 ##     res://tests/a/e2e/po6_gh_capture.tscn -- --cap-out=/abs/dir
 extends Node
@@ -60,11 +61,29 @@ func _run() -> void:
 	cam.look_at(civ.global_position + Vector3(0, 0.5, 0))
 	await _wait(1.5)
 	await _shot("04_hostage_kneel_cuffed")
+	# A real shot is heard (S3.1 gunshot noise): bystanders (the jeweler) panic like in play.
+	var shooter: CrewController = rt.crew_controller(0) as CrewController
+	rt.make_noise(civ.global_position + Vector3(0, 1, 0), Tweak.stealth().gunshot_player_radius_m, &"gunshot",
+		shooter.net_id)
 	civ.take_hit({"amount": 5000.0, "direction": -safe.global_basis.x, "type": Enums.DamageType.BULLET})
 	await _wait(2.0)
 	var d: AnimDriver = AnimDriver.of(civ)
 	print("[PO6CAP] hostage death clip %s" % (d.clip if d != null else &"-"))
 	await _shot("05_hostage_shot_dies_in_place")
+	# PO6-19: the corpse, once settled, shot twice in the back: blood at the hit points (C's blood_hit VFX).
+	await _wait(4.0)
+	var chest: Vector3 = civ.global_position + Vector3(0, 0.25, 0)
+	var rd: NpcRagdoll = NpcRagdoll.of(civ)
+	if rd != null and not rd.bodies.is_empty():
+		chest = rd.bodies[0].global_position + Vector3(0, 0.1, 0)
+	for i: int in 2:
+		civ.take_hit(Damage.info(30.0, Enums.DamageType.BULLET, Enums.HitZone.BODY, &"weapon.kestrel_p9",
+			chest + Vector3(0.08 * i, 0, 0), Vector3(0, -0.6, -1).normalized()))
+		await _wait(0.4)
+	cam.global_position = chest + safe.global_basis * Vector3(0.9, 1.3, -1.3)
+	cam.look_at(chest)
+	await _wait(1.0)
+	await _shot("06_corpse_shot_blood_at_hit")
 	print("[PO6CAP] done: %s" % _out)
 	get_tree().quit(0)
 
