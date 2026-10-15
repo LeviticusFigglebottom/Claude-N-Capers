@@ -3,7 +3,7 @@
 ## Skeleton3D.skeleton_updated, the only moment modifier results are in the pose). The Arms mesh is skinned on the
 ## CPU (bone global pose x bind pose, up to 8 weights); every vertex whose strongest bone is a left finger / thumb
 ## bone is tested against the gun's triangles near the hand: the nearest face's side gives "inside" candidates,
-## confirmed by ray parity along three axes (majority), depth = distance to the nearest face (so at most half the
+## confirmed by ray parity along six directions (all must hit, 4 of 6 odd), depth = distance to the nearest face (so at most half the
 ## part's thickness: "inside" counts are the measure, depth only says how far past the skin). Owner: ENV P.
 class_name PFingerClip
 extends RefCounted
@@ -164,17 +164,23 @@ static func _nearest(p: Vector3, tris: PackedVector3Array) -> Array:
 	return [] if best_d == INF else [best_d, best_side]
 
 
-## Ray parity along +X, +Y, +Z: inside when at least two rays cross the surface an odd number of times.
+## Ray parity along +-X, +-Y, +-Z (slightly skewed off the axes): inside only when every ray hits the gun (a point
+## inside a closed part is enclosed on all sides) and at least 4 of the 6 cross the surface an odd number of times.
+## Round 213: three positive rays alone called a pinky vertex below the Mule's fore-end "inside" (+Y and +Z crossed
+## the gun 3 times, -X / +X / -Y / -Z hit nothing): 31.7 mm "deep" while outside.
 static func _inside_parity(p: Vector3, tris: PackedVector3Array) -> bool:
 	var odd: int = 0
-	for dir: Vector3 in [Vector3(1, 0.0013, 0.0007), Vector3(0.0011, 1, 0.0009), Vector3(0.0008, 0.0012, 1)]:
-		var hits: int = 0
-		for t: int in range(0, tris.size(), 3):
-			if Geometry3D.ray_intersects_triangle(p, dir, tris[t], tris[t + 1], tris[t + 2]) != null:
-				hits += 1
-		if hits % 2 == 1:
-			odd += 1
-	return odd >= 2
+	for axis: Vector3 in [Vector3(1, 0.0013, 0.0007), Vector3(0.0011, 1, 0.0009), Vector3(0.0008, 0.0012, 1)]:
+		for sgn: float in [1.0, -1.0]:
+			var hits: int = 0
+			for t: int in range(0, tris.size(), 3):
+				if Geometry3D.ray_intersects_triangle(p, axis * sgn, tris[t], tris[t + 1], tris[t + 2]) != null:
+					hits += 1
+			if hits == 0:
+				return false
+			if hits % 2 == 1:
+				odd += 1
+	return odd >= 4
 
 
 static func _closest_on_tri(p: Vector3, a: Vector3, b: Vector3, c: Vector3) -> Vector3:
