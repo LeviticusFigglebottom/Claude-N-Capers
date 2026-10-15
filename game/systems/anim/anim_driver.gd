@@ -591,14 +591,22 @@ func _ambient_hint(h: StringName) -> StringName:
 	return h
 
 
+## PO6-18 / D-114 §7: a kneeling / cuffed / crouched / prone / downed body dies from that pose: its pose death,
+## or (rig without it) the pose itself, frozen where it is. &"" = a standing body.
+func _pose_death_clip(tw: AnimTweak) -> StringName:
+	if not tw.death_by_pose.has(_alive_clip):
+		return &""
+	var posed: StringName = tw.death_by_pose[_alive_clip]
+	if player == null or player.has_animation("%s/%s" % [LIBRARY, posed]):
+		return posed
+	_death_hold = true
+	return _alive_clip
+
+
 func _pick_death_clip(tw: AnimTweak) -> StringName:
-	# PO6-18 / D-114 §7: a kneeling / cuffed / crouched / prone / downed body dies from that pose.
-	if tw.death_by_pose.has(_alive_clip):
-		var posed: StringName = tw.death_by_pose[_alive_clip]
-		if player == null or player.has_animation("%s/%s" % [LIBRARY, posed]):
-			return posed
-		_death_hold = true
-		return _alive_clip  # no pose death on this rig: freeze the pose where it is
+	var posed: StringName = _pose_death_clip(tw)
+	if posed != &"":
+		return posed
 	var dir: Vector3 = _hit_dir
 	if dir == Vector3.ZERO and _npc != null:
 		dir = _npc.last_damage.get("direction", Vector3.ZERO)
