@@ -1500,6 +1500,9 @@ item.mask_pattern.starburst.name,Starburst
 objective.glasshouse.casing,Case the store
 objective.glasshouse.keycard,Find the manager's keycard
 objective.glasshouse.code,Find the safe code
+objective.glasshouse.extra_bags,Secure more than two bags
+objective.glasshouse.salon,Search the salon
+objective.glasshouse.display_cases,Smash the display cases
 objective.glasshouse.workshop_door,Get into the workshop
 objective.glasshouse.safe,Open the safe
 objective.glasshouse.safe_loot,Bag the consignment
@@ -2817,6 +2820,9 @@ voice.vo.mercer.radio_loot_secured_3,That's one more counted.
 voice.vo.vance.glasshouse_radio_casing,Seen enough of the showroom? Good. The pretty things are in the back.
 voice.vo.vance.glasshouse_radio_keycard,The manager's keycard. He really should keep better company.
 voice.vo.vance.glasshouse_radio_code,"The code. Written on a sticky note, I imagine. Jewelers are so sentimental."
+voice.vo.vance.glasshouse_radio_extra_bags,"More than my minimum. You do spoil me."
+voice.vo.vance.glasshouse_radio_salon,"The salon. Clients leave the nicest things in their coats."
+voice.vo.vance.glasshouse_radio_display_cases,"The cases. Loud, but honest work."
 voice.vo.vance.glasshouse_radio_workshop_door,"The workshop. Mind the tools, darling, they're worth more than you are."
 voice.vo.vance.glasshouse_radio_safe,"The safe's open. Steady hands, please. Those are estate pieces."
 voice.vo.vance.glasshouse_radio_safe_loot_new,"Bag the consignment. All of it, if you love me."

@@ -170,7 +170,7 @@ func test_glasshouse_objectives_follow_the_design_doc() -> void:
 		assert_has(_table, "objective.glasshouse.%s" % t)
 	# D-114 §1 / PO6-04: the silent stealth route adds a `code` step (A's mission); the doc's Objectives section is
 	# the lead's to update, so the key is allowed here until then.
-	var added: Array[String] = ["code"]
+	var added: Array[String] = ["code", "extra_bags", "salon", "display_cases"]  # D-117 §4 optional extras too
 	for k: String in _table.keys():
 		if k.begins_with("objective.glasshouse."):
 			var tag: String = k.trim_prefix("objective.glasshouse.")
