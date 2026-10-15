@@ -163,7 +163,7 @@ check.revolver_ads_idle: reach_err=0.0mm step=0.0deg
 check.revolver_bash: reach_err=0.0mm step=27.0deg
 check.revolver_draw: reach_err=0.0mm step=14.6deg
 check.revolver_fire: reach_err=0.0mm step=14.2deg
-check.revolver_fire_ads: reach_err=0.0mm step=9.0deg
+check.revolver_fire_ads: reach_err=0.0mm step=8.7deg
 check.revolver_holster: reach_err=0.0mm step=14.6deg
 check.revolver_idle: reach_err=0.0mm step=0.1deg
 check.revolver_reload: reach_err=0.0mm step=123.0deg

@@ -172,6 +172,9 @@ class Kit:
                                    s.pole_l, hand_shape("grip", 0.80), share=0.55, off=0.018)
         self.support_ads = self.support.copy()
         self.support_ads.pole = unit(np.asarray(s.pole_l_ads, float))
+        self.grip_ads = self.grip.copy()
+        if s.pole_r_ads is not None:
+            self.grip_ads.pole = unit(np.asarray(s.pole_r_ads, float))
         self.down = hand_at(sk, "L", "c", (-0.20, 0.03, -0.60), (0.15, 0.35, -0.92), (0.95, 0.0, 0.25),
                             (-0.5, -0.6, -0.4), "relaxed", share=0.5)
         self.ready = hand_at(sk, "L", "c", (-0.10, 0.16, -0.40), (0.35, 0.60, -0.70), (0.90, -0.10, 0.40),
@@ -281,7 +284,7 @@ def _sway(st: State, f: int, N: int, amp: float = 1.0, ads: bool = False) -> Non
 
 
 def _static(kit: Kit, s: FPSet, wf, blade: float, ads: bool = False) -> list[Key]:
-    return [K(0, wf, kit.support_ads if ads else kit.support, kit.grip, blade=blade)]
+    return [K(0, wf, kit.support_ads if ads else kit.support, kit.grip_ads if ads else kit.grip, blade=blade)]
 
 
 def clip_idle(kit: Kit, s: FPSet, N: int):
