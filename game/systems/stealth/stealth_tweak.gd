@@ -109,6 +109,10 @@ extends Resource
 @export var pager_window_s: float = 12.0
 @export var pager_answer_s: float = 10.0
 @export var pager_max_answers: int = 4
+## PO6-08 (D-114 §4): the response window freezes while anyone holds the answer; when the last holder
+## lets go early the window RESUMES from where it froze (true). false = the old S5.4 rule (letting go
+## early raises the alarm immediately).
+@export var pager_release_resumes: bool = false  # LEAD: PO 2026-10-15 early release = alarm
 
 @export_group("Civilians (S3.1, S7)")
 @export var intimidate_duration_s: float = 45.0

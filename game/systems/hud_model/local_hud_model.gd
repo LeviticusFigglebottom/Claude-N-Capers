@@ -89,6 +89,8 @@ signal player_mode_changed()
 signal dominate_prompt_changed()
 ## ui_hud v1.8 (D-089): objective_markers changed.
 signal objective_markers_changed(markers: Array[Dictionary])
+## PO6-03 (ui_hud v1.9): placed timed devices (drills, thermal drills, saws, hack terminals).
+signal devices_changed()
 
 ## S1.1 "Suspicious actions not allowed" prompt (strings.csv key, ENV B).
 const SUSPICIOUS_PROMPT_KEY: StringName = &"ui.prompt.suspicious_not_allowed"
@@ -128,10 +130,13 @@ const GROUP_SIGNAL: Dictionary[StringName, StringName] = {
 	&"player_mode": &"player_mode_changed",
 	&"dominate_target": &"dominate_prompt_changed", &"dominate_window_s": &"dominate_prompt_changed",
 	&"objective_markers": &"objective_markers_changed",
+	&"devices": &"devices_changed",
 }
 ## Extra (non-contract) properties included in snapshot().
 const EXTRA_PROPERTIES: Array[StringName] = [&"tracked_slot_resolved", &"mask_progress", &"heist_phase", &"local_net_id"]
 
+## PO6-03: height of a device row's world_pos above the device (m).
+@export var device_panel_up_m: float = 0.45
 ## Poll rate of the runtime (presentation only).
 @export var poll_hz: float = 10.0
 ## A client-side detection row with no detection_progress update for this long is dropped.
@@ -220,6 +225,13 @@ var objectives: Array[Dictionary] = []
 ## [{"id": StringName, "text_key": StringName, "position": Vector3, "state": int}] for ACTIVE objectives
 ## whose data carries `marker_tags` (map objective_tags); one entry per tagged node in the map.
 var objective_markers: Array[Dictionary] = []
+# --- devices_changed (PO6-03, ui_hud v1.9)
+## One row per placed device while running / jammed / paused (removed when done):
+## {"net_id": int, "kind": StringName (&"drill"/&"thermal"/&"saw"/&"hack"), "world_pos": Vector3 (panel anchor),
+##  "progress": float 0..1, "time_left_s": float (run time left, jams excluded), "duration_s": float,
+##  "state": StringName (&"running"/&"jammed"/&"paused"), "fix_prompt_key": StringName (&"" unless jammed)}.
+## Objective rows carry "device_net_id" (-1 = none): the device serving that ACTIVE objective.
+var devices: Array[Dictionary] = []
 # --- assault_changed
 ## Enums.AssaultPhase
 var assault_phase: int = Enums.AssaultPhase.NONE
@@ -288,6 +300,12 @@ var _reload_total: float = 0.0
 ## ({"next": poll index, "tries": int}). Resolved ids are never re-queried until their data changes.
 var _marker_sig: Dictionary[StringName, String] = {}
 var _marker_retry: Dictionary[StringName, Dictionary] = {}
+## PO6-03: net ids of known timed devices; client extrapolation [progress, seen_at_s, state] per id;
+## the runtime last scanned for devices; objective id -> serving device net id.
+var _device_ids: Dictionary[int, bool] = {}
+var _device_seen: Dictionary[int, Array] = {}
+var _devices_scanned_rt: HeistRuntime = null
+var _objective_device: Dictionary[StringName, int] = {}
 var _marker_poll: int = 0
 var _connections: Array[Array] = []
 
@@ -305,6 +323,7 @@ func _ready() -> void:
 	_listen(EventBus.pager_failed, _on_pager_failed)
 	_listen(EventBus.ecm_started, _on_ecm_started)
 	_listen(EventBus.ecm_ended, _on_ecm_ended)
+	_listen(EventBus.device_started, _on_device_started)
 	_listen(EventBus.objective_updated, _on_objective_updated)
 	_listen(EventBus.special_spawned, _on_special_spawned)
 	_listen(EventBus.npc_killed, _on_npc_killed)
@@ -377,6 +396,7 @@ func refresh() -> void:
 	_poll_detection(slot)
 	_poll_marks_and_timers(slot)
 	_publish_pagers()
+	_poll_devices()
 	_poll_objectives()
 	_poll_warnings(c)
 	_poll_dominate(c)
@@ -549,6 +569,7 @@ func _poll_objectives() -> void:
 		list.append({
 			"id": StringName(o["id"]), "text_key": StringName(o["text_key"]),
 			"args": (o.get("args", {}) as Dictionary).duplicate(true), "state": int(o["state"]),
+			"device_net_id": int(_objective_device.get(StringName(o["id"]), -1)),
 		})
 	_assign(&"objectives", list)
 	_poll_markers(src)
@@ -616,6 +637,105 @@ func _poll_markers(src: Array[Dictionary]) -> void:
 				out.append({"id": oid, "text_key": StringName(o2["text_key"]), "position": n3.global_position,
 					"state": int(o2["state"])})
 	_assign(&"objective_markers", out)
+
+
+## PO6-03: device rows from the known device net ids (EventBus device_started on every peer, plus one scan of
+## the interactables when the runtime binds, for late joiners). Clients extrapolate a running device's
+## progress between replicated snapshots (HeistNetSync mirrors runner / hack state at its own rate).
+func _poll_devices() -> void:
+	if _runtime == null:
+		_assign(&"devices", [] as Array[Dictionary])
+		return
+	if _devices_scanned_rt != _runtime:
+		_devices_scanned_rt = _runtime
+		_device_seen.clear()
+		for comp: Node in get_tree().get_nodes_in_group(G.INTERACTABLE):
+			var owner_node: Node = comp.get_parent()
+			if owner_node != null and _runtime.is_ancestor_of(owner_node) and _device_info(owner_node).size() > 0:
+				_device_ids[NetIds.of(owner_node)] = true
+	var now: float = Time.get_ticks_msec() / 1000.0
+	var out: Array[Dictionary] = []
+	var obj_dev: Dictionary[StringName, int] = {}
+	for id: int in _device_ids.keys():
+		var n: Node3D = Ids.lookup(id) as Node3D
+		if n == null or not is_instance_valid(n) or not n.is_inside_tree():
+			_device_ids.erase(id)
+			_device_seen.erase(id)
+			continue
+		var info: Dictionary = _device_info(n)
+		if info.is_empty():
+			continue
+		var st: StringName = info["state"]
+		if st == &"done" or st == &"idle":
+			_device_seen.erase(id)
+			continue
+		var dur: float = maxf(float(info["duration"]), 0.01)
+		var p: float = float(info["progress"])
+		if not Net.is_authority():
+			var seen: Array = _device_seen.get(id, [])
+			if seen.is_empty() or not is_equal_approx(float(seen[0]), p) or StringName(seen[2]) != st:
+				_device_seen[id] = [p, now, st]
+			elif st == &"running":
+				p = minf(p + (now - float(seen[1])) / dur, 0.999)
+		var anchor: Node3D = info["anchor"]
+		out.append({
+			"net_id": id, "kind": StringName(info["kind"]), "world_pos": anchor.global_position + Vector3.UP * device_panel_up_m,
+			"progress": snappedf(p, 0.001), "time_left_s": snappedf(maxf(1.0 - p, 0.0) * dur, 0.1), "duration_s": dur,
+			"state": st, "fix_prompt_key": StringName(info["fix_key"]) if st == &"jammed" else &"",
+		})
+		for oid: StringName in _marker_nodes:
+			if _serves(_marker_nodes[oid], n, info["target"]):
+				obj_dev[oid] = id
+	_objective_device = obj_dev
+	_assign(&"devices", out)
+
+
+## {kind, state, progress, duration, anchor, target, fix_key} of a timed device node, {} if it is none.
+static func _device_info(n: Node) -> Dictionary:
+	var ht: HackTerminal = n as HackTerminal
+	if ht != null:
+		var hs: StringName = [&"idle", &"running", &"jammed", &"done"][int(ht.state)]
+		if hs == &"running" and ht.is_paused():
+			hs = &"paused"
+		var hd: float = ht.duration if ht.duration > 0.0 else ht.effective_duration()
+		return {"kind": &"hack", "state": hs, "progress": ht.progress, "duration": hd, "anchor": ht, "target": null,
+			"fix_key": &"ui.prompt.restart_hack"}
+	var r: Variant = n.get(&"runner")
+	if not (r is DeviceRunner):
+		return {}
+	var dr: DeviceRunner = r as DeviceRunner
+	var safe: Safe = n as Safe
+	if safe != null and safe._device_point != null:
+		return {}  # PO6-01: the shared runner is listed once, under its drill point
+	var kind: StringName = dr.kind
+	var dp: DrillPoint = n as DrillPoint
+	var anchor: Node3D = n as Node3D
+	var target: Node = n if safe != null else null
+	if dp != null:
+		kind = dp.device_kind()
+		if dp.device_node != null and is_instance_valid(dp.device_node):
+			anchor = dp.device_node
+		target = dp.get_node_or_null(dp.target) if not dp.target.is_empty() else null
+	var ds: StringName = [&"idle", &"running", &"jammed", &"done"][int(dr.state)]
+	return {"kind": kind, "state": ds, "progress": dr.progress, "duration": dr.duration, "anchor": anchor,
+		"target": target, "fix_key": &"ui.prompt.fix_drill"}
+
+
+## True when an objective's marker nodes are the device, its target, or within 2 m of the device.
+static func _serves(markers: Array, device: Node3D, target: Variant) -> bool:
+	for v: Variant in markers:
+		if not is_instance_valid(v):
+			continue
+		var m: Node3D = v as Node3D
+		if m == device or (target != null and is_instance_valid(target) and m == target):
+			return true
+		if m.is_inside_tree() and m.global_position.distance_to(device.global_position) <= 2.0:
+			return true
+	return false
+
+
+func _on_device_started(device_net_id: int, _kind: StringName, _duration: float) -> void:
+	_device_ids[device_net_id] = true
 
 
 func _poll_warnings(c: CrewController) -> void:
@@ -772,7 +892,10 @@ func _poll_custody(c: CrewController, slot: int) -> void:
 func _tick_timers(delta: float) -> void:
 	for pid: int in _pagers:
 		var e: Dictionary = _pagers[pid]
-		e["time_left"] = maxf(float(e["time_left"]) - delta, 0.0)
+		if bool(e.get("answering", false)):
+			e["progress"] = minf(float(e.get("progress", 0.0)) + delta / maxf(float(e.get("answer_s", 1.0)), 0.001), 1.0)
+		else:  # PO6-08 (D-114 §4): the window is frozen while answering
+			e["time_left"] = maxf(float(e["time_left"]) - delta, 0.0)
 	for eid: int in _ecms.keys():
 		_ecms[eid] = maxf(_ecms[eid] - delta, 0.0)
 	for oid: int in _detection.keys():
@@ -909,8 +1032,10 @@ func _on_pager_started(pager_id: int, guard_net_id: int) -> void:
 
 func _on_pager_answer_started(pager_id: int, crew_slot: int) -> void:
 	var e: Dictionary = _pagers.get(pager_id, {"pager_id": pager_id, "guard_net_id": 0})
-	e["answering"] = true
-	e["time_left"] = Tweak.stealth().pager_answer_s * Modifiers.mult(crew_slot, &"stealth.pager_answer_speed_mult")
+	e["answering"] = true  # PO6-08: time_left (the window) stays frozen; the answer fills `progress`
+	e["time_left"] = float(e.get("time_left", Tweak.stealth().pager_window_s))
+	e["answer_s"] = Tweak.stealth().pager_answer_s * Modifiers.mult(crew_slot, &"stealth.pager_answer_speed_mult")
+	e["progress"] = 0.0
 	_pagers[pager_id] = e
 	_publish_pagers()
 	_flush()

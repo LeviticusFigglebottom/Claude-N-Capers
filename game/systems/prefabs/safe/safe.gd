@@ -34,6 +34,12 @@
 ## started, cannot be paused or interrupted.
 ## Opening swings `Door` and enables the loot inside: any SmallLoot / LootSpawn / GameplayPrefab
 ## child with an Interactable is disabled until then.
+## PO6-05 contents: that loot lives INSIDE the body. At ready (every peer, so no replication needed) a
+## content whose origin is outside `interior_aabb()` (e.g. the map put it on the floor in front of the
+## door) is snapped to the visual's `LootAnchor`; every content is hidden (not drawn, not aimable) and
+## disabled while the safe is shut. `swing_open` (server, or a client applying the replicated `opened`)
+## shows them and re-enables the ones still usable. The interaction LOS treats the safe's own body as
+## see-through for its contents (InteractionSystem._has_los).
 class_name Safe
 extends GameplayPrefab
 
@@ -43,6 +49,8 @@ enum Stage { LOCKED, C4_ARMED, TIME_LOCK, TIME_LOCK_RUNNING, OPEN }
 
 const PLACEHOLDER: PackedScene = preload("res://systems/prefabs/safe/safe_placeholder.tscn")
 const C4_ITEM: StringName = &"item.c4"
+## PO6-05: wall thickness kept between the body's outer AABB and the contents (m).
+const CONTENT_WALL_MARGIN_M: float = 0.02
 ## Preference when several methods are usable by the same crew member.
 const METHOD_ORDER: Array[StringName] = [&"code", &"lockpick", &"drill", &"saw", &"c4"]
 ## method -> [kind, prompt_key].
@@ -137,8 +145,7 @@ func _prefab_ready() -> void:
 	interactable.started.connect(_on_started)
 	interactable.cancelled.connect(func(_c: Node) -> void: _session_method = &"")
 	interactable.completed.connect(_on_completed)
-	for p: GameplayPrefab in _inner_loot():
-		p.interactable.enabled = false
+	_stow_contents()
 	_bind_reader()
 	if methods.has(&"saw"):
 		add_to_group(G.SAW_TARGET)
@@ -189,7 +196,8 @@ func swing_open() -> void:
 	if interactable != null:
 		interactable.enabled = false
 	for p: GameplayPrefab in _inner_loot():
-		p.interactable.enabled = true
+		p.visible = true
+		p.interactable.enabled = _content_usable(p)
 
 
 ## Drill time by `size` (s).
@@ -450,6 +458,43 @@ func _own_device_point() -> DrillPoint:
 		for c: Node in n.get_children():
 			stack.append(c)
 	return null
+
+
+## PO6-05: the loot inside (descendants outside `Visual`, not the drill point).
+func contents() -> Array[GameplayPrefab]:
+	return _inner_loot()
+
+
+## PO6-05: the safe's hollow, in this prefab's space: the `Body` meshes' AABB shrunk by
+## CONTENT_WALL_MARGIN_M (empty AABB when the visual has no `Body` mesh).
+func interior_aabb() -> AABB:
+	var body: AABB = merged_mesh_aabb(visual_node("Body"))
+	if not body.has_volume():
+		return AABB()
+	return body.grow(-CONTENT_WALL_MARGIN_M)
+
+
+## PO6-05: snap stray contents to `LootAnchor`, then hide + disable all of them until the door opens.
+func _stow_contents() -> void:
+	var interior: AABB = interior_aabb()
+	var anchor: Node3D = visual_node("LootAnchor") as Node3D
+	for p: GameplayPrefab in _inner_loot():
+		if interior.has_volume() and anchor != null and not interior.has_point(xform_to_self(p).origin):
+			Log.warn(LOG_CHANNEL, "%s: content %s sits outside the safe body; moved to LootAnchor" % [name, p.name])
+			var up_xf: Transform3D = xform_to_self(p.use_point) if p.use_point != null else Transform3D.IDENTITY
+			p.transform = xform_to_self(p.get_parent()).affine_inverse() * xform_to_self(anchor)
+			if p.use_point != null:
+				p.use_point.transform = xform_to_self(p).affine_inverse() * up_xf  # the authored (navmesh) spot
+		if not opened:
+			p.visible = false
+			p.interactable.enabled = false
+
+
+## A content that is taken, emptied or still locked behind its own device stays disabled on open.
+static func _content_usable(p: GameplayPrefab) -> bool:
+	if p.get(&"taken") == true or p.get(&"locked") == true:
+		return false
+	return not (&"remaining" in p) or int(p.get(&"remaining")) > 0
 
 
 ## Loot prefabs inside this safe (descendants outside `Visual`).

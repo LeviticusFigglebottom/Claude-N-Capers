@@ -77,7 +77,7 @@ func test_s1_2_mask_up_hold_is_irreversible() -> void:
 	_rt.set_bot_intent(0, i)
 	await wait_seconds(Tweak.crew().mask_up_time_s + 0.2)
 	assert_true(c.masked, "masked after full hold")
-	assert_eq(masked_events, [0] as Array[int], "crew_masked once")
+	assert_eq(masked_events.count(0), 1, "crew_masked once for the player (D-111: waiting bots copy the leader's mask)")
 	assert_eq(_rt.phase, Enums.HeistPhase.STEALTH, "first mask: CASING -> STEALTH")
 	_rt.set_bot_intent(0, CrewIntent.new())
 	await wait_physics_frames(3)

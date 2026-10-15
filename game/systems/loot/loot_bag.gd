@@ -35,6 +35,10 @@ var hidden_from_stealth: bool = false
 var secured: bool = false
 ## True between a throw and the first contact.
 var in_flight: bool = false
+## PO6-14: slot of the crew member who last threw this bag (-1 = not thrown / picked up since), and the
+## seconds since that throw (INF when not thrown). Server only; AI teammates catch/pick up thrown bags.
+var thrown_by_slot: int = -1
+var since_thrown_s: float = INF
 ## Seconds at rest inside a SECURE_LOOT zone (LootManager).
 var rest_time: float = 0.0
 ## BodyContainer currently hiding this bag, or null.
@@ -86,6 +90,8 @@ func attach(crew: CrewController) -> void:
 	carrier = crew
 	moved = true
 	in_flight = false
+	thrown_by_slot = -1
+	since_thrown_s = INF
 	rest_time = 0.0
 	set_hidden(false, null)
 	freeze = true
@@ -111,6 +117,9 @@ func release(pos: Vector3, velocity: Vector3, thrown: bool) -> void:
 	linear_velocity = velocity
 	angular_velocity = Vector3.ZERO
 	in_flight = thrown
+	since_thrown_s = 0.0 if thrown else INF
+	if not thrown:
+		thrown_by_slot = -1
 	rest_time = 0.0
 	if interactable != null:
 		interactable.enabled = true
@@ -143,6 +152,8 @@ func _physics_process(_delta: float) -> void:
 
 func _physics_step(_delta: float) -> void:
 	if carrier == null:
+		if since_thrown_s < INF:
+			since_thrown_s += _delta
 		return
 	if not is_instance_valid(carrier) or not carrier.is_inside_tree():
 		release(global_position, Vector3.ZERO, false)

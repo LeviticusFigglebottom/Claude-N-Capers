@@ -133,6 +133,7 @@ func drop_bag(crew: CrewController, thrown: bool) -> LootBag:
 		thrown = false
 		pos.y += _tw.drop_height_m
 	bag.release(pos, vel, thrown)
+	bag.thrown_by_slot = crew.slot if thrown else -1
 	_emit(&"loot_dropped", [bag.net_id, crew.slot, thrown])
 	if thrown:
 		_cue(&"cue.bag_throw", pos, bag.net_id)

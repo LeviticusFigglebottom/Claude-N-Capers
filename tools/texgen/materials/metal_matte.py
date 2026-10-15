@@ -14,6 +14,7 @@ def generate(ctx: Ctx) -> Maps:
     r0, r1 = ctx.p("rough")
     rough = ops.lerp(r0, r1, ops.remap01(grain + 0.5 * low))
     h = 0.000008 * grain
-    m = Maps(albedo, rough, np.ones(ctx.shape), h)
+    # PO6-10: a coated (cerakote-style) finish is a dielectric; coat_metal = 1.0 keeps bare matte metal.
+    m = Maps(albedo, rough, np.full(ctx.shape, float(ctx.p("coat_metal", 1.0))), h)
     weather(ctx, m, wear_lighten=0.1, wear_rough=0.4)
     return m

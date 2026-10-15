@@ -207,6 +207,8 @@ func cancel(slot: int) -> void:
 	if is_instance_valid(comp):
 		comp.cancelled.emit(crew)
 		_emit(&"interaction_cancelled", [comp.owner_net_id(), slot])
+	else:  # PO6-07: the object was freed mid-hold; the fact still stops its hold cues
+		_emit(&"interaction_cancelled", [int(s.get("owner_id", 0)), slot])
 	session_changed.emit(slot)
 
 
@@ -228,7 +230,7 @@ func _start(crew: CrewController, comp: InteractableComponent, aimed: bool) -> v
 	var dur: float = comp.duration_for(crew)
 	_sessions[slot] = {
 		"comp": comp, "crew": crew, "progress": 0.0, "duration": dur,
-		"start_pos": crew.global_position, "aimed": aimed,
+		"start_pos": crew.global_position, "aimed": aimed, "owner_id": comp.owner_net_id(),
 	}
 	_blocked.erase(slot)
 	comp.started.emit(crew)
@@ -292,7 +294,19 @@ func _has_los(crew: CrewController, eye: Vector3, comp: InteractableComponent) -
 		return true
 	var col: Node = hit.get("collider")
 	var owner: Node = comp.owner_node()
-	return col != null and owner != null and (col == owner or owner.is_ancestor_of(col))
+	return col != null and owner != null and (col == owner or owner.is_ancestor_of(col) or _container_hit(col, owner))
+
+
+## PO6-05: the hit belongs to the prefab that holds the target (an open safe's body around the loot
+## inside it), so it does not block the target. Closed safes hide their contents, so this never reaches
+## through a shut door.
+static func _container_hit(col: Node, owner: Node) -> bool:
+	var n: Node = col
+	while n != null:
+		if n is GameplayPrefab:
+			return n.is_ancestor_of(owner)
+		n = n.get_parent()
+	return false
 
 
 func _emit(sig: StringName, args: Array) -> void:
