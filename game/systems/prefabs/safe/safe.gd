@@ -139,9 +139,11 @@ func _prefab_ready() -> void:
 	_device_point = _own_device_point()
 	if _device_point != null:
 		runner = _device_point.runner  # ticked, shown and finished (open_target -> open_by_device) by the point
+		runner.state_changed.connect(_on_shared_device_state)
 	elif methods.has(&"drill") or methods.has(&"saw"):
 		runner = DeviceRunner.new(self, &"drill" if methods.has(&"drill") else &"saw")
 		runner.finished.connect(open_by_device)
+		runner.state_changed.connect(_on_shared_device_state)
 	var first: StringName = &""
 	for m: StringName in METHOD_ORDER:
 		if methods.has(m):
@@ -475,6 +477,14 @@ func _bind_reader() -> void:
 	if not methods.has(&"keycard"):
 		Log.warn(LOG_CHANNEL, "%s: `reader` set but `methods` has no &\"keycard\"" % name)
 	r.bind_target(self)
+
+
+## Lead (r215 GH capture): while its device (shared or own) runs the safe body offers no prompt (only the timer
+## panel); jammed it offers "fix" (_pick), idle its methods.
+func _on_shared_device_state(s: int) -> void:
+	if opened or interactable == null:
+		return
+	interactable.enabled = s != DeviceRunner.State.RUNNING and s != DeviceRunner.State.DONE
 
 
 ## PO6-01: a DrillPoint descendant (outside `Visual`) that targets this safe with a device kind in `methods`.
