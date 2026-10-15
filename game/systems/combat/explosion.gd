@@ -37,10 +37,36 @@ static func apply(ctx: Node3D, position: Vector3, radius: float, damage: float, 
 		var dir: Vector3 = (center - position).normalized() if d > 0.001 else Vector3.DOWN
 		var info: Dictionary = Damage.info(amount, Enums.DamageType.EXPLOSION, Enums.HitZone.BODY,
 			weapon_id, center, dir, attacker_net_id)
+		info["blast_center"] = position  # PO6-19: the ragdoll push (outward from the centre, with falloff)
+		info["blast_radius"] = radius
 		var res: Dictionary = CombatSystem.deliver_hit(target, info, attacker_net_id).duplicate()
 		res["victim"] = target
 		out.append(res)
+	var victims: Array = []
+	for r: Dictionary in out:
+		victims.append(r["victim"])
+	push_corpses(ctx, position, radius, attacker_net_id, weapon_id, tw, victims)
 	return out
+
+
+## PO6-19: corpses (G.BODY NPCs) in the blast and in its LOS take a ragdoll push (no damage, no result);
+## `skip` = this blast's victims (just killed: their death push already counts it).
+static func push_corpses(ctx: Node3D, position: Vector3, radius: float, attacker_net_id: int, weapon_id: StringName,
+		tw: CombatTweak, skip: Array = []) -> void:
+	for n: Node in ctx.get_tree().get_nodes_in_group(G.BODY):
+		var npc: NpcBase = n as NpcBase
+		if npc == null or npc.alive or skip.has(npc) or NpcRagdoll.of(npc) == null:
+			continue
+		var center: Vector3 = npc.global_position + Vector3.UP * 0.3
+		var d: float = center.distance_to(position)
+		if d > radius or not blast_los(ctx, position, center, npc, tw):
+			continue
+		var dir: Vector3 = (center - position).normalized() if d > 0.001 else Vector3.UP
+		var info: Dictionary = Damage.info(0.0, Enums.DamageType.EXPLOSION, Enums.HitZone.BODY, weapon_id, center, dir,
+			attacker_net_id)
+		info["blast_center"] = position
+		info["blast_radius"] = radius
+		NpcRagdoll.of(npc).corpse_hit(info)
 
 
 ## L3.6: damage x (1 - d/r)^pow, 0 outside the radius.

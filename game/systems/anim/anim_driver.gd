@@ -275,6 +275,8 @@ func _process_step(delta: float) -> void:
 func tick(delta: float) -> void:
 	if player == null or _body == null or not is_instance_valid(player):
 		return
+	if _npc != null and NpcRagdoll.owns_pose(_npc):
+		return  # PO6-19: the ragdoll owns the pose (paused player, baked skeleton, rig yaw kept)
 	delta = maxf(delta, 0.0001)
 	var tw: AnimTweak = AnimTweak.data()
 	_update_velocity(delta, tw)
