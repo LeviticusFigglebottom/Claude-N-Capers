@@ -1,12 +1,17 @@
 ## Lockable safe / vault (S9.8). Owner: ENV A. Opened by any of `methods`:
 ## &"drill", &"saw" (S9.4), &"c4", &"lockpick" (SMALL only, needs interaction.can_lockpick_safes),
 ## &"code" (S9.7, `code_group` known to the crew).
+## PO6-04 (D-114 §1 "lockpicking is a slow fallback"): with `lockpick_fallback` and &"lockpick" in `methods`,
+## anyone may pick the lock of a safe of ANY size while the heist is not loud, silently but slowly
+## (InteractionTweak.safe_lockpick_fallback_s by `size`, × interaction.lockpick_speed_mult). The skill's
+## SMALL-safe lockpick (safe_lockpick_s) is unchanged and wins when it applies. Loud: blocked (the drill).
 ## Visual: `Body`, `Door` (pivot at hinge), `DrillPoint` marker (-Z into the lock), `LootAnchor`.
 ## Floor object: pivot bottom-centre, door on the front (-Z).
 ## One `Interactable` serves every method. For each crew member it offers the first usable method
 ## in METHOD_ORDER (code, lockpick, drill, saw, c4) and sets `kind` / `prompt_key` / hold time:
 ##   code      kind &"enter_code"   keypad_s; blocked `ui.blocked.code_unknown` until a note is read
 ##   lockpick  kind &"lockpick"     safe_lockpick_s × interaction.lockpick_speed_mult
+##             (`lockpick_fallback`, no skill / not SMALL: safe_lockpick_fallback_s[size] × the same mult)
 ##   drill/saw kind &"place_drill" / &"place_saw": DeviceRunner (time by `size` from
 ##             safe_drill_duration_s / safe_saw_duration_s; jams -> kind &"fix_drill", drill_fix_s)
 ##   c4        kind &"place_c4"     c4_place_s, consumes `item.c4`; after c4_fuse_s it blows the lock:
@@ -66,6 +71,8 @@ const METHOD_UI: Dictionary = {
 
 @export var size: Size = Size.MEDIUM
 @export var methods: Array[StringName] = [&"drill"]
+## PO6-04: anyone may lockpick this safe (any size, stealth only, slow); see the header.
+@export var lockpick_fallback: bool = false
 ## S9.7: code group for the &"code" method.
 @export var code_group: StringName = &""
 ## S9.8: vault time lock in s (0 = none), see the header.
@@ -195,6 +202,12 @@ func swing_open() -> void:
 		door.rotation.y = -deg_to_rad(Tweak.interaction().safe_door_open_deg)
 	if interactable != null:
 		interactable.enabled = false
+	# PO6-04: opened another way (code, keycard, lockpick): the unused drill spot stops offering "place the drill".
+	if _device_point != null and _device_point.interactable != null and _device_point.runner != null \
+			and _device_point.runner.state == DeviceRunner.State.IDLE:
+		_device_point.interactable.enabled = false
+	if runner != null:
+		runner.abort()  # a drill still running / jammed on a safe opened another way stops (server)
 	for p: GameplayPrefab in _inner_loot():
 		p.visible = true
 		p.interactable.enabled = _content_usable(p)
@@ -284,7 +297,7 @@ func _method_block(m: StringName, crew: Node) -> StringName:
 				return CodeRegistry.BLOCK_CODE_UNKNOWN
 			ok = code_group != &"" and reg != null
 		&"lockpick":
-			ok = size == Size.SMALL and c != null and Modifiers.flag(c.slot, &"interaction.can_lockpick_safes")
+			ok = c != null and (_skilled_lockpick(c.slot) or (lockpick_fallback and not _loud()))
 		&"drill", &"saw":
 			ok = runner != null and runner.kind == m
 		&"c4":
@@ -292,6 +305,17 @@ func _method_block(m: StringName, crew: Node) -> StringName:
 				return InteractableComponent.BLOCK_ITEM
 			ok = c != null
 	return InteractableComponent.BLOCK_NONE if ok else InteractableComponent.BLOCK_STATE
+
+
+## S9.8: the skill's lockpick (SMALL safes, interaction.can_lockpick_safes).
+func _skilled_lockpick(slot: int) -> bool:
+	return size == Size.SMALL and slot >= 0 and Modifiers.flag(slot, &"interaction.can_lockpick_safes")
+
+
+## PO6-04: the heist is loud (the fallback lockpick is a stealth route).
+func _loud() -> bool:
+	var rt: HeistRuntime = HeistRuntime.of(self)
+	return rt != null and (rt.phase == Enums.HeistPhase.LOUD or rt.went_loud)
 
 
 func _availability(crew: Node) -> StringName:
@@ -309,7 +333,9 @@ func _duration_for(crew: Node, base: float) -> float:
 		&"code":
 			return tw.keypad_s
 		&"lockpick":
-			return tw.safe_lockpick_s * (Modifiers.mult(slot, &"interaction.lockpick_speed_mult") if slot >= 0 else 1.0)
+			var pick_s: float = tw.safe_lockpick_s if _skilled_lockpick(slot) \
+					else _by_size(tw.safe_lockpick_fallback_s, tw.safe_lockpick_s)
+			return pick_s * (Modifiers.mult(slot, &"interaction.lockpick_speed_mult") if slot >= 0 else 1.0)
 		&"c4":
 			return tw.c4_place_s
 		&"fix":

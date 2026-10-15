@@ -277,9 +277,11 @@ func _ports(size: float, variant: int, rng: RandomNumberGenerator) -> void:
 		if not last_brake:
 			continue
 		var radial: Vector3 = Vector3.RIGHT if i == 0 else Vector3.LEFT
+		if last_shape == &"shotgun":  # ENV B's shotgun comps vent up-and-out (~45 deg), not square to the side
+			radial = (radial + Vector3.UP).normalized()
 		var a: float = deg_to_rad(PORT_ANGLE) * rng.randf_range(0.92, 1.05)
 		var d: Vector3 = (Vector3.FORWARD * cos(a) + radial * sin(a)).normalized()
-		var x: Vector3 = d.cross(Vector3.UP).normalized()
+		var x: Vector3 = d.cross(radial.cross(Vector3.FORWARD)).normalized()
 		var plen: float = PORT_JET.y * size * rng.randf_range(0.8, 1.2)
 		var wid: float = PORT_JET.x * size * rng.randf_range(0.85, 1.15)
 		q.transform = Transform3D(Basis(x * wid, d * plen, x.cross(d).normalized()), Vector3(0.0, 0.0, PORT_BACK * size))

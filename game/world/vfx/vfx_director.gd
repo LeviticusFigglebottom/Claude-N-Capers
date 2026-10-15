@@ -67,6 +67,8 @@ var impacts: VfxImpacts
 var decals: VfxDecals
 var tracers: TracerFx
 var muzzles: MuzzleFx
+## PO6-20: yellow contour on guards with a live pager.
+var pager_outline: PagerOutline
 var lights: VfxLights
 var shells: ShellFx
 var explosions: ExplosionFx
@@ -98,7 +100,8 @@ func _init() -> void:
 	shells = ShellFx.new()
 	explosions = ExplosionFx.new()
 	blood = VfxBlood.new()
-	for n: Node in [impacts, decals, tracers, muzzles, lights, shells, explosions, blood]:
+	pager_outline = PagerOutline.new()
+	for n: Node in [impacts, decals, tracers, muzzles, lights, shells, explosions, blood, pager_outline]:
 		add_child(n)
 	apply_settings()
 
@@ -117,6 +120,7 @@ func _ready() -> void:
 		for pair: Array in _blood_handlers():
 			if EventBus.has_signal(pair[0]) and not EventBus.is_connected(pair[0], pair[1]):
 				EventBus.connect(pair[0], pair[1])
+		pager_outline.connect_event_bus()
 
 
 func _exit_tree() -> void:
@@ -128,6 +132,7 @@ func _exit_tree() -> void:
 		EventBus.shot_fx.disconnect(on_shot_fx)
 	if EventBus.explosion_fx.is_connected(on_explosion_fx):
 		EventBus.explosion_fx.disconnect(on_explosion_fx)
+	pager_outline.disconnect_event_bus()
 	for pair: Array in _blood_handlers(true):
 		if EventBus.has_signal(pair[0]) and EventBus.is_connected(pair[0], pair[1]):
 			EventBus.disconnect(pair[0], pair[1])
@@ -312,6 +317,7 @@ func clear() -> void:
 	shells.clear()
 	explosions.clear()
 	blood.clear()
+	pager_outline.clear()
 	_groups.clear()
 	_cadence.clear()
 	_cue_pending.clear()

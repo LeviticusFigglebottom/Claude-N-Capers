@@ -44,6 +44,9 @@ const BLOCK_CIVILIAN: StringName = &"ui.blocked.civilian"
 @export var priority: int = 0
 ## Pager juggling (S5.4): several crew members may hold this at once.
 @export var allow_multiple: bool = false
+## PO6-20: aim tolerance radius (m) around the component: aiming anywhere within it counts as aiming at
+## it (a body on the floor, not one point). 0 = a point target.
+@export var aim_radius_m: float = 0.0
 ## Interaction allowed while carrying a bag.
 @export var allowed_with_bag: bool = true
 ## Prefab root this action belongs to (net_id owner). Empty = parent.

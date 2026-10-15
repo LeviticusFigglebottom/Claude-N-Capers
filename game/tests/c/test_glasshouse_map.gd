@@ -199,9 +199,14 @@ func test_safe_loot_locked_in_safe() -> void:
 	assert_true(loot is GameplayPrefab, "SafeLoot is parented under WorkshopSafe")
 	assert_true(_map.get_node_or_null("Gameplay/Workshop/SafeLoot") == null, "no SafeLoot sibling outside the safe")
 	if loot is Node3D and safe is Node3D:
-		var p: Vector3 = (safe as Node3D).transform * (loot as Node3D).position
-		var d: float = (p - Vector3(6.5, 0.0, 1.2)).length()
-		assert_true(d < 0.01, "SafeLoot keeps its Workshop-local position (off by %.3f m)" % d)
+		# PO6-05: the loot sits at the large safe's LootAnchor (inside the body); its UsePoint stays on the
+		# floor 1.54 m in front of the safe (Workshop-local (6.5, 0, 2.1)).
+		assert_true((loot as Node3D).position.is_equal_approx(Vector3(0.0, 0.142, 0.0)), "SafeLoot at the LootAnchor")
+		var up: Node3D = (loot as Node3D).get_node_or_null("UsePoint") as Node3D
+		if up != null:
+			var p: Vector3 = (safe as Node3D).transform * (loot as Node3D).transform * up.position
+			var d: float = (p - Vector3(6.5, 0.0, 2.1)).length()
+			assert_true(d < 0.01, "SafeLoot UsePoint keeps its Workshop-local spot (off by %.3f m)" % d)
 	var slots: Array[Node] = _map.find_children("Slot_cam_*", "VariantSlot", true, false)
 	assert_eq(slots.size(), 6, "six camera slots")
 	for n: Node in slots:

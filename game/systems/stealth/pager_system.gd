@@ -16,7 +16,9 @@
 ## (release, look-away, going down, leaving) the pager waits StealthTweak.pager_juggle_window_s (frozen):
 ## if one of the released answerers starts answering ANOTHER live pager in that time (a juggle), or anyone
 ## picks this one up again, it resumes its remaining window; otherwise pager_failed(&"released") + alarm.
-## StealthTweak.pager_release_resumes = true skips the alarm (the window always resumes).
+## StealthTweak.pager_release_resumes = true (opt-in, not the default) skips the alarm: the window resumes at once.
+## Either resume (opt-in, or a juggled pager leaving its grace) emits pager_answer_released(pager_id, slot) [R]
+## (events.md v1.4), on which CuePlayer swaps the radio loop back to the beep.
 ## Audio (D-114 §3): the looping cue.pager_beep / cue.pager_radio are owned by CuePlayer, keyed per
 ## pager on the pager_* facts (started -> beep, answer_started -> radio, answered/failed -> stop both).
 ## This service never requests a looping pager cue through audio_cue_requested (nobody could stop it).
@@ -124,10 +126,13 @@ func pager_entries() -> Array[Dictionary]:
 		var holders: Dictionary = p["holders"]
 		var answering: bool = not holders.is_empty()
 		var answer: Vector2 = _answer_state(p) if answering else Vector2(0.0, 0.0)
+		var where: Vector3 = guard.global_position if guard != null and guard.is_inside_tree() else Vector3.ZERO
+		if is_instance_valid(p["comp"]) and (p["comp"] as Node3D).is_inside_tree():
+			where = (p["comp"] as Node3D).global_position - Vector3.UP * _tw.pager_prompt_up_m  # PO6-20: the body
 		out.append({
 			"pager_id": pid, "guard_net_id": int(p["guard_net_id"]), "time_left": float(p["time_left"]),
 			"answering": answering, "answer_left": answer.x, "progress": answer.y,
-			"world_pos": guard.global_position if guard != null and guard.is_inside_tree() else Vector3.ZERO,
+			"world_pos": where,
 		})
 	return out
 
@@ -166,6 +171,8 @@ func _physics_process(delta: float) -> void:
 				_reconcile_holders(pid, [] as Array[int])
 				if not _pagers.has(pid):
 					continue
+				if is_instance_valid(p["comp"]):
+					_follow_body(p, p["comp"] as InteractableComponent)
 				if float(p.get("grace_left", -1.0)) >= 0.0:  # released early: juggle grace (frozen)
 					p["grace_left"] = float(p["grace_left"]) - delta
 					if float(p["grace_left"]) < 0.0:
@@ -191,7 +198,9 @@ func _activate(pid: int) -> void:
 	comp.casing_allowed = false
 	comp.prompt_key = &"ui.prompt.answer_pager"
 	comp.position = Vector3(0.0, 0.5, 0.0)
+	comp.aim_radius_m = _tw.pager_aim_radius_m  # PO6-20: answerable from anywhere around the body
 	guard.add_child(comp)
+	_follow_body(p, comp)
 	comp.started.connect(_on_answer_started.bind(pid))
 	comp.cancelled.connect(_on_answer_cancelled.bind(pid))
 	comp.completed.connect(_on_answer_completed.bind(pid))
@@ -215,6 +224,7 @@ func _on_answer_started(crew: Node, pid: int) -> void:
 		var q: Dictionary = _pagers[qid]
 		if qid != pid and float(q.get("grace_left", -1.0)) >= 0.0 and (q.get("grace_slots", []) as Array).has(slot):
 			q["grace_left"] = -1.0
+			_emit(&"pager_answer_released", [qid, slot])  # juggled: q beeps again (CuePlayer radio -> beep)
 	# CuePlayer swaps the beep loop for the cue.pager_radio loop on this fact (D-114 §3).
 	_emit(&"pager_answer_started", [pid, slot])
 
@@ -254,7 +264,9 @@ func _reconcile_holders(pid: int, released: Array[int]) -> void:
 				released.append(int(slot))
 	if not was_held or not holders.is_empty() or not _pagers.has(pid) or int(p["state"]) != State.ACTIVE:
 		return
-	if not _tw.pager_release_resumes and float(p.get("grace_left", -1.0)) < 0.0:
+	if _tw.pager_release_resumes:  # opt-in: the window resumes now (events.md v1.4)
+		_emit(&"pager_answer_released", [pid, released.back() if not released.is_empty() else -1])
+	elif float(p.get("grace_left", -1.0)) < 0.0:
 		p["grace_left"] = _tw.pager_juggle_window_s  # S5.4 alarm unless juggled (D-114 §4 amended)
 		p["grace_slots"] = released.duplicate()
 
@@ -301,6 +313,20 @@ func _remove(pid: int) -> void:
 			_runtime.interaction.cancel_all_on(comp)
 		comp.queue_free()
 	_pagers.erase(pid)
+
+
+## PO6-20: keep the answer prompt on the body where it lies (a death clip can end 1-2 m from the root;
+## a dragged body moves): the visual's `hips` bone, else the root, pager_prompt_up_m above the floor point.
+func _follow_body(p: Dictionary, comp: InteractableComponent) -> void:
+	var guard: Node3D = p["guard"] as Node3D
+	var at: Vector3 = guard.global_position
+	var skel: Skeleton3D = guard.find_child("Skeleton3D", true, false) as Skeleton3D
+	if skel != null:
+		var hips: int = skel.find_bone("hips")
+		if hips >= 0:
+			at = skel.global_transform * skel.get_bone_global_pose(hips).origin
+			at.y = guard.global_position.y
+	comp.global_position = at + Vector3.UP * _tw.pager_prompt_up_m
 
 
 ## Best current answer hold: Vector2(seconds left, progress 0..1) (the holder closest to done).

@@ -18,6 +18,8 @@ signal noise_heard(position: Vector3, kind: StringName, source_net_id: int)
 
 const LAYER_NPCS: int = 1 << 3
 const LAYER_HITBOXES: int = 1 << 4
+## PO6-19: the corpse's hitbox (zone BODY, lying along the body; NpcRagdoll places it where the body rests).
+const CORPSE_HITBOX: String = "CorpseHitbox"
 const MASK_WORLD: int = (1 << 0) | (1 << 1)
 ## Alert states in which an NPC no longer observes anything.
 const BLIND_STATES: Array[int] = [
@@ -83,7 +85,10 @@ func _ready() -> void:
 			c.queue_free()
 		visual_root.add_child(visual_scene.instantiate())
 	AnimDriver.ensure(self)  # D-041: animated visuals only (none for the capsule placeholder)
+	NpcRagdoll.ensure(self)  # PO6-19: visuals with ENV D's Skeleton3D/Ragdoll only
 	_ensure_hitboxes()
+	if not EventBus.body_bagged.is_connected(_on_body_bagged):
+		EventBus.body_bagged.connect(_on_body_bagged)
 
 
 ## Server: set up stats from EnemyDef for the run difficulty.
@@ -182,6 +187,8 @@ func take_hit(info: Dictionary, attacker_net_id: int = 0) -> Dictionary:
 	if not Net.is_authority() or not alive:
 		out["amount"] = 0.0
 		out["killed"] = false
+		if Net.is_authority():
+			_corpse_hit(info)
 		return out
 	var amount: float = float(info.get("amount", 0.0))
 	amount = NpcHitRules.pre_zone(self, info, amount, out)  # A3-06: L3.4 armor, L4.2 plate, L3.6, L4.6
@@ -211,9 +218,25 @@ func take_hit(info: Dictionary, attacker_net_id: int = 0) -> Dictionary:
 	EventBus.damage_applied.emit(net_id, attacker_net_id, out)
 	Net.replicate_event(&"damage_applied", [net_id, attacker_net_id, out])
 	BloodFx.hit(self, net_id, out, max_health, BloodFx.KIND_NPC)  # D-113
+	var rd: NpcRagdoll = NpcRagdoll.of(self)
+	if rd != null:
+		rd.note_hit(out)  # PO6-19: the killing frame's hits (all pellets) decide ragdoll vs death clip
 	if health <= 0.0:
 		die(out, attacker_net_id)
 	return out
+
+
+## Server, PO6-19 / D-113: a hit on the corpse bleeds at the hit point (blood_hit) and nudges the ragdoll.
+## No damage, no damage_applied. Bagged bodies are gone.
+func _corpse_hit(info: Dictionary) -> void:
+	if has_meta(&"bagged") or not is_in_group(G.BODY):
+		return
+	var blood: Dictionary = info.duplicate()
+	blood["killed"] = false
+	BloodFx.hit(self, net_id, blood, max_health, BloodFx.KIND_NPC)
+	var rd: NpcRagdoll = NpcRagdoll.of(self)
+	if rd != null:
+		rd.corpse_hit(info)
 
 
 ## Deprecated alias of take_hit (pre-D-026 callers).
@@ -234,9 +257,13 @@ func die(info: Dictionary = {}, killer_net_id: int = 0) -> void:
 	add_to_group(G.BODY)
 	collision_layer = 0
 	_set_hitboxes_enabled(false)
+	_set_corpse_hitbox_enabled(true)
 	if visual_root != null and not AnimDriver.drives(self):  # animated visuals play death_front/back
 		visual_root.rotation = Vector3(-PI * 0.5, 0.0, 0.0)
 		visual_root.position = Vector3(0.0, 0.25, 0.0)
+	var rd: NpcRagdoll = NpcRagdoll.of(self)
+	if rd != null:
+		rd.on_died()  # PO6-19 (server): ragdoll now or after the death clip
 	var st: StealthDirector = HeistRuntime.get_service(G.SVC_STEALTH) as StealthDirector
 	if st != null and Net.is_authority():
 		corpse_stimulus_id = st.register_stimulus(self, &"corpse")
@@ -264,6 +291,19 @@ func clear_corpse() -> void:
 		st.unregister_stimulus(corpse_stimulus_id)
 	corpse_stimulus_id = 0
 	remove_from_group(G.BODY)
+	_set_corpse_hitbox_enabled(false)
+	var rd: NpcRagdoll = NpcRagdoll.of(self)
+	if rd != null:
+		rd.release()
+
+
+## Clients: a bagged body leaves the world (the server's LootManager.bag_body does this on the authority).
+func _on_body_bagged(body_net_id: int, _bag_net_id: int, _slot: int) -> void:
+	if Net.is_authority() or body_net_id == 0 or body_net_id != net_id:
+		return
+	set_meta(&"bagged", true)
+	clear_corpse()
+	visible = false
 
 
 # --- Hitboxes (layer 5 "hitboxes": Hitbox areas, damage.md) ---------------------------------
@@ -294,6 +334,41 @@ func _add_hitbox(root: Node3D, nm: String, zone: Enums.HitZone, shape: Shape3D, 
 	cs.position = pos
 	a.add_child(cs)
 	root.add_child(a)
+
+
+## PO6-19: the corpse hitbox at global transform `xf` with box `size` (NpcRagdoll; created when missing).
+func set_corpse_hitbox(xf: Transform3D, size: Vector3) -> void:
+	var hb: Hitbox = _corpse_hitbox(true)
+	hb.global_transform = xf
+	var cs: CollisionShape3D = hb.get_child(0) as CollisionShape3D
+	(cs.shape as BoxShape3D).size = size
+	cs.transform = Transform3D.IDENTITY
+
+
+func _corpse_hitbox(create: bool) -> Hitbox:
+	var hb: Hitbox = get_node_or_null(CORPSE_HITBOX) as Hitbox
+	if hb != null or not create:
+		return hb
+	var tw: RagdollTweak = RagdollTweak.data()
+	hb = Hitbox.new()
+	hb.name = CORPSE_HITBOX
+	hb.hit_zone = Enums.HitZone.BODY
+	hb.target = self
+	var cs: CollisionShape3D = CollisionShape3D.new()
+	cs.name = "Shape"  # named: auto names (@Node@N) would shift the name-hashed death variants of later NPCs
+	var box: BoxShape3D = BoxShape3D.new()
+	box.size = tw.corpse_box_default
+	cs.shape = box
+	cs.position = tw.corpse_box_default_offset  # lying along -Z (the placeholder tips forward)
+	hb.add_child(cs)
+	add_child(hb)
+	return hb
+
+
+func _set_corpse_hitbox_enabled(on: bool) -> void:
+	var hb: Hitbox = _corpse_hitbox(on)
+	if hb != null:
+		hb.set_active(on)
 
 
 func _set_hitboxes_enabled(on: bool) -> void:

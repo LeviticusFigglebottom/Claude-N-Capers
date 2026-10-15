@@ -121,6 +121,7 @@ func _build() -> void:
 	_build_preplan()
 	_build_gameplay(_n("Gameplay"))
 	_build_variants(_n("Variants"))
+	_errors.append_array(GlasshouseAssaultEvents.build(_root, _obstructions))  # PO6-17 markers (gh_assault.gd)
 	_build_nav_links(nav)
 	_dress.dress(_n("Props"))
 	for line: String in _dress.report:
@@ -381,11 +382,10 @@ func _build_shell(geo: Node3D) -> void:
 		_wall(iw, String(w2[0]), String(w2[1]), float(w2[2]), float(w2[3]), float(w2[4]), L.INT_T,
 			Vector2(float(w2[5]), float(w2[6])), w2[7], "wall")
 	var slabs: Node3D = _add(bld, _node3d("Slabs")) as Node3D
-	for s: Array in L.SLABS:
-		_box_a(slabs, String(s[0]), s[1], String(s[2]))
 	var ceil: Node3D = _add(bld, _node3d("Ceilings")) as Node3D
-	for c: Array in L.CEILINGS:
-		_box_a(ceil, String(c[0]), c[1], "none")
+	for s: Array in L.SLABS + L.CEILINGS.map(func(c: Array) -> Array: return [c[0], c[1], "none", ceil]):
+		for p: Array in GlasshouseAssaultEvents.cut(String(s[0]), s[1]):  # PO6-17 ceiling breach holes
+			_box_a(ceil if s.size() > 3 else slabs, String(p[0]), p[1], String(s[2]))
 	_build_stair(bld)
 	var rails: Node3D = _add(bld, _node3d("Railings")) as Node3D
 	for r: Array in L.RAILINGS:
@@ -618,7 +618,7 @@ func _build_garage(parent: Node3D) -> void:
 ## and room through it; the prefab's `walkable` NavLink does that while it is passable.
 func _build_static_windows(bld: Node3D) -> void:
 	var gl: Node3D = _add(bld, _node3d("Glazing")) as Node3D
-	for w: Array in L.WINDOWS:
+	for w: Array in L.WINDOWS.filter(func(r: Array) -> bool: return r.size() < 6):  # PO6-17: breach glazes its window
 		var piece: String = String(w[1])
 		var pos: Vector3 = w[2]
 		var yaw: float = float(w[3])
@@ -1166,9 +1166,9 @@ func _build_workshop(gp: Node3D) -> void:
 			var targets: Array[NodePath] = [reader.get_path_to(safe)]
 			reader.set(&"targets", targets)
 		# Under the safe: Safe only enables loot parented to it once it opens (P1 gate finding).
-		# Safe-local position: 0.64 m in front of the door, as before.
-		_prefab(safe, "loot_spawn", "SafeLoot", Vector3(0.0, 0.0, -0.64), 0.0,
-			{"loot_id": &"loot.jewelry", "count": 4, "objective_tag": &"safe_loot"})
+		# PO6-05: at the large safe's LootAnchor (safe-local (0, 0.142, 0)); UsePoint stays safe-local (0, 0, -1.54).
+		_prefab(safe, "loot_spawn", "SafeLoot", Vector3(0.0, 0.142, 0.0), 0.0,
+			{"loot_id": &"loot.jewelry", "count": 4, "objective_tag": &"safe_loot"}, Vector3(6.5, 0.0, 2.1))
 
 
 func _build_cases(gp: Node3D) -> void:

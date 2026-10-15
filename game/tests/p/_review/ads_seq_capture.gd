@@ -5,6 +5,9 @@
 ##   xvfb-run -a -s "-screen 0 640x360x24" /opt/godot/godot --rendering-driver opengl3 --audio-driver Dummy \
 ##     --fixed-fps 60 --resolution 640x360 --path game res://tests/p/_review/ads_seq_capture.tscn -- --out=/abs/dir \
 ##     [--weapons=weapon.kestrel_p9,...]
+##     [--ads-z=0.05,0,-0.05] [--vm-fov=52,60]   PO6-11 framing sweep at settled ADS: per (set_ads_offset_z, viewmodel
+##                                             FOV) prints `[ADSCOV] ... arms=<frame share> gun=<frame share>` (pixels
+##                                             that change when the Arms mesh / the gun is hidden) and saves a frame
 ## Owner: ENV P.
 extends Node
 
@@ -13,6 +16,8 @@ const IN_TICKS: Array[int] = [2, 4, 6, 8, 11, 15, 22, 40]
 const OUT_TICKS: Array[int] = [4, 8, 30]
 
 var _out: String = "user://ads_seq"
+var _ads_z: PackedFloat64Array = []
+var _vm_fov: PackedFloat64Array = []
 var _weapons: PackedStringArray = ["weapon.kestrel_p9", "weapon.warden_45", "weapon.wren_380", "weapon.sparrow_mp",
 	"weapon.marshal_357", "weapon.corsair_ar"]
 
@@ -24,6 +29,12 @@ func _ready() -> void:
 		match kv[0]:
 			"out": _out = v
 			"weapons": _weapons = v.split(",")
+			"ads-z":
+				for e: String in v.split(",", false):
+					_ads_z.append(float(e))
+			"vm-fov":
+				for e: String in v.split(",", false):
+					_vm_fov.append(float(e))
 	DirAccess.make_dir_recursive_absolute(_out)
 	RenderingServer.render_loop_enabled = false
 	var rows: Array[Array] = []
@@ -70,6 +81,8 @@ func _weapon(wid: StringName) -> Array:
 		await _ticks(k - t)
 		t = k
 		imgs.append(await _shot(c, name, imgs.size(), "in%d" % k))
+	if not _ads_z.is_empty() or not _vm_fov.is_empty():
+		await _sweep(name)
 	inp.release(&"aim")
 	t = 0
 	for k: int in OUT_TICKS:
@@ -114,6 +127,66 @@ func _shot(c: CrewController, name: String, idx: int, label: String) -> Image:
 	elif c == null:
 		print("[ADSSEQ] %s %s no crew" % [name, label])
 	return img
+
+
+## PO6-11: settled-ADS framing per (eye relief offset, viewmodel FOV): frame share of the sleeves and of the gun.
+func _sweep(name: String) -> void:
+	var tw: FpViewmodelTweak = FpViewmodelTweak.data()
+	var vm: FpViewmodel = FpViewmodel.of(get_viewport().get_camera_3d())
+	if vm == null:
+		return
+	var set_id: StringName = vm.anim_set
+	var z0: Variant = tw.set_ads_offset_z.get(set_id, 0.0)
+	var fov0: float = tw.viewmodel_fov_deg
+	var zs: PackedFloat64Array = _ads_z if not _ads_z.is_empty() else PackedFloat64Array([float(z0)])
+	var fovs: PackedFloat64Array = _vm_fov if not _vm_fov.is_empty() else PackedFloat64Array([fov0])
+	var arms_meshes: Array[MeshInstance3D] = []
+	for n: Node in vm.arms.find_children("*", "MeshInstance3D", true, false):
+		if vm.weapon_visual == null or not vm.weapon_visual.is_ancestor_of(n):
+			arms_meshes.append(n as MeshInstance3D)
+	for z: float in zs:
+		for f: float in fovs:
+			tw.set_ads_offset_z[set_id] = z
+			tw.viewmodel_fov_deg = f
+			await _ticks(40)
+			var a: Image = await _shot(null, name, 90, "cov_z%s_fov%s" % [z, f])
+			for m: MeshInstance3D in arms_meshes:
+				m.visible = false
+			var b: Image = await _grab()
+			for m: MeshInstance3D in arms_meshes:
+				m.visible = true
+			vm.weapon_visual.visible = false
+			var c: Image = await _grab()
+			vm.weapon_visual.visible = true
+			print("[ADSCOV] %s set=%s ads_z=%.3f vm_fov=%.0f arms=%.3f gun=%.3f" % [name, set_id, z, f, _diff(a, b),
+				_diff(a, c)])
+	tw.set_ads_offset_z[set_id] = z0
+	tw.viewmodel_fov_deg = fov0
+	await _ticks(20)
+
+
+func _grab() -> Image:
+	RenderingServer.render_loop_enabled = true
+	await get_tree().process_frame
+	await RenderingServer.frame_post_draw
+	await RenderingServer.frame_post_draw
+	var img: Image = get_viewport().get_texture().get_image()
+	RenderingServer.render_loop_enabled = false
+	return img
+
+
+## Share of pixels that differ (any channel by more than 6/255).
+static func _diff(a: Image, b: Image) -> float:
+	var n: int = 0
+	var w: int = mini(a.get_width(), b.get_width())
+	var h: int = mini(a.get_height(), b.get_height())
+	for y: int in range(0, h, 2):
+		for x: int in range(0, w, 2):
+			var ca: Color = a.get_pixel(x, y)
+			var cb: Color = b.get_pixel(x, y)
+			if absf(ca.r - cb.r) + absf(ca.g - cb.g) + absf(ca.b - cb.b) > 6.0 / 255.0:
+				n += 1
+	return float(n) / float(maxi((w / 2) * (h / 2), 1))
 
 
 func _ticks(n: int) -> void:

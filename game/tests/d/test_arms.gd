@@ -74,6 +74,8 @@ const REF_WEAPON: Dictionary = {
 }
 ## Sets without sight alignment in ADS (a raised hold instead).
 const NO_SIGHTS: Array[String] = ["saw", "minigun"]
+## PO6-09: support finger / thumb skin may sit at most this deep inside the reference gun (ENV P's PFingerClip: 2 mm).
+const SKIN_DEPTH_M: float = 0.001
 ## ADS stock check (D2-04): no weapon geometry may cross the camera's near plane inside the view, i.e. where a
 ## stock passes under the eye it is cut by the near plane below the view's bottom edge (half height =
 ## near x tan(37.5 deg) at the crew camera's 75 deg FOV; 16:9 half width). CAMERA_NEAR is the viewmodel near
@@ -1062,7 +1064,9 @@ func test_hands_and_sights_on_the_real_models() -> void:
 		var marks: Dictionary = w["marks"]
 		var root: Node3D = w["root"]
 		# the support hand's palm on LeftHandIK (hip and ADS)
-		var tol: float = 0.04 if set_name == "saw" else 0.03
+		# saw: a top handle; smg (PO6-09): the cup grip sits on the short fore-end's lower-left corner, ahead of the
+		# magazine (skin contact is checked by _check_support_skin_clear and ENV P's PFingerClip)
+		var tol: float = 0.04 if set_name in ["saw", "smg"] else 0.03
 		for clip: String in ["idle", "ads_idle"]:
 			var pose: Dictionary = _pose_at("%s_%s" % [set_name, clip])
 			if marks.has("LeftHandIK") and set_name != "bow":
@@ -1128,6 +1132,9 @@ func _check_long_gun_support_grip() -> void:
 ## main bind is a left finger or thumb bone, CPU-skinned at idle 0, idle middle, ads_idle 0 and fire 2, must lie outside
 ## the convex hull of the reference gun's cross-section (sliced from its triangles every 4 mm along the barrel round
 ## LeftHandIK), 2 mm tolerance. Walking is `idle` under a whole-viewmodel bob (fp_viewmodel.gd), so idle covers it.
+## PO6-09: a hull hit is only a candidate: the hull fills a section's hollows (an LMG shroud's underside, a stock's
+## barrel channel), so it must also be inside the gun's real triangles (ray parity, 2 of 3 axes) and deeper than
+## SKIN_DEPTH_M (ENV P's PFingerClip limit is 2 mm).
 func _check_support_skin_clear() -> void:
 	var arms_mi: MeshInstance3D = _skel.get_node_or_null("Arms") as MeshInstance3D
 	if arms_mi == null or arms_mi.skin == null:
@@ -1169,6 +1176,7 @@ func _check_support_skin_clear() -> void:
 			continue
 		var mz: float = (marks["LeftHandIK"] as Transform3D).origin.z
 		var sections: Dictionary = _sections(root, mz)
+		var near_tris: PackedVector3Array = _near_tris(_model_verts(root), mz)
 		for pose: Array in [["idle", 0.0], ["idle", 0.5], ["ads_idle", 0.0], ["fire", 2.0 / FPS]]:
 			var clip: String = "%s_%s" % [set_name, pose[0]]
 			_player.play(StringName(clip))
@@ -1193,7 +1201,7 @@ func _check_support_skin_clear() -> void:
 				var key: int = roundi((q.z - mz) / 0.004)
 				if not sections.has(key):
 					continue
-				if _inside_hull(sections[key], Vector2(q.x, q.y), 0.002):
+				if _inside_hull(sections[key], Vector2(q.x, q.y), 0.002) and _inside_solid(near_tris, q, SKIN_DEPTH_M):
 					inside += 1
 			assert_eq(inside, 0, "%s: %d finger / thumb skin vertices inside %s" % [clip, inside, REF_WEAPON[set_name]])
 		root.queue_free()
@@ -1220,6 +1228,49 @@ func _sections(root: Node3D, mz: float) -> Dictionary:
 		if pts.size() >= 3:
 			out[key] = Geometry2D.convex_hull(pts)
 	return out
+
+
+## The triangles of `tris` (weapon space, 3 verts each) within 12 cm of LeftHandIK along the barrel.
+func _near_tris(tris: PackedVector3Array, mz: float) -> PackedVector3Array:
+	var out: PackedVector3Array = PackedVector3Array()
+	for i: int in range(0, tris.size(), 3):
+		var lo: float = minf(tris[i].z, minf(tris[i + 1].z, tris[i + 2].z))
+		var hi: float = maxf(tris[i].z, maxf(tris[i + 1].z, tris[i + 2].z))
+		if hi > mz - 0.12 and lo < mz + 0.12:
+			out.append_array([tris[i], tris[i + 1], tris[i + 2]])
+	return out
+
+
+## True when `q` is inside the closed triangle soup `tris` (odd ray crossings along at least 2 of the 3 axes) and more
+## than `depth` from its nearest triangle.
+func _inside_solid(tris: PackedVector3Array, q: Vector3, depth: float) -> bool:
+	var votes: int = 0
+	for d: Vector3 in [Vector3.RIGHT, Vector3.UP, Vector3.BACK]:
+		var hits: int = 0
+		for i: int in range(0, tris.size(), 3):
+			if Geometry3D.ray_intersects_triangle(q, d, tris[i], tris[i + 1], tris[i + 2]) != null:
+				hits += 1
+		votes += hits % 2
+	if votes < 2:
+		return false
+	for i: int in range(0, tris.size(), 3):
+		if _tri_dist(q, tris[i], tris[i + 1], tris[i + 2]) <= depth:
+			return false
+	return true
+
+
+## Distance from `p` to triangle a b c.
+func _tri_dist(p: Vector3, a: Vector3, b: Vector3, c: Vector3) -> float:
+	var n: Vector3 = (b - a).cross(c - a)
+	if n.length_squared() > 1e-18:
+		var nn: Vector3 = n.normalized()
+		var proj: Vector3 = p - nn * nn.dot(p - a)
+		if (b - a).cross(proj - a).dot(n) >= 0.0 and (c - b).cross(proj - b).dot(n) >= 0.0 \
+				and (a - c).cross(proj - c).dot(n) >= 0.0:
+			return absf(nn.dot(p - a))
+	return minf(Geometry3D.get_closest_point_to_segment(p, a, b).distance_to(p),
+		minf(Geometry3D.get_closest_point_to_segment(p, b, c).distance_to(p),
+			Geometry3D.get_closest_point_to_segment(p, c, a).distance_to(p)))
 
 
 ## True when `p` lies inside the closed convex polygon `hull` by more than `tol`.

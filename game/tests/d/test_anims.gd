@@ -107,7 +107,8 @@ const D304_GAITS: Dictionary = {"walk": [30, 1.6], "run": [21, 3.5]}
 const D304_ONESHOTS: Dictionary = {
 	"walk_start": 18, "walk_stop": 18, "run_start": 18, "run_stop": 20, "hit_react_back": 15, "hit_react_left": 15,
 	"hit_react_right": 15, "death_front_b": 60, "death_back_b": 60, "death_side": 60,
-	"death_seated_slump": 48, "death_seated_fall": 60,
+	"death_seated_slump": 48, "death_seated_fall": 60, "death_crouch": 45, "death_kneel_cuffed": 45, "death_kneel": 45,
+	"death_prone": 30, "death_downed": 36,
 }
 const D304_LOOPS: Dictionary = {"downed_crawl": 60, "dozer_walk_heavy": 33}
 const D304_EVENTS: Dictionary = {
@@ -115,7 +116,14 @@ const D304_EVENTS: Dictionary = {
 	"run_stop": {"step_l": 6, "step_r": 17}, "death_front_b": {"knees": 16, "impact": 38},
 	"death_back_b": {"step_r": 12, "step_l": 21, "impact": 44}, "death_side": {"impact": 36},
 	"death_seated_slump": {"impact": 22}, "death_seated_fall": {"impact": 34},
+	"death_crouch": {"impact": 26}, "death_kneel_cuffed": {"impact": 24}, "death_kneel": {"impact": 24},
+	"death_prone": {"impact": 3}, "death_downed": {"impact": 20},
 	"dozer_walk_heavy": {"step_r": 0, "step_l": 16},
+}
+## PO6-18 pose-aware deaths: clip -> [source clip, source time (s)] its frame 0 equals (surrender: its last frame).
+const POSE_DEATHS: Dictionary = {
+	"death_crouch": ["crouch_idle", 0.0], "death_kneel_cuffed": ["kneel_cuffed", 0.0], "death_kneel": ["surrender", 1.6],
+	"death_prone": ["lie_down", 0.0], "death_downed": ["downed", 0.0],
 }
 ## Start / stop: the cycle frame each one hands over to / from (SOURCE.txt handoff_frame).
 const D304_HANDOFF: Dictionary = {"walk_start": 3, "walk_stop": 0, "run_start": 4, "run_stop": 0}
@@ -957,6 +965,7 @@ func test_d304_polish_set() -> void:
 	_check_d304_hit_reacts()
 	_check_d304_deaths_end_on_the_floor()
 	_check_seated_deaths()
+	_check_pose_deaths()
 	_check_d304_crawl_and_heavy_gait()
 
 
@@ -1069,7 +1078,7 @@ func _check_d304_present_with_source_facts() -> void:
 	assert_true(String(lines.get("clip.dozer_walk_heavy", "")).contains("speed_mps=%s" % HEAVY_SPEED), "dozer_walk_heavy speed")
 	assert_true(_num(String(checks.get("dozer_walk_heavy", "")), "slide") < 0.1, "dozer_walk_heavy: planted feet")
 	for n: String in ["locomotion_blend", "locomotion_transitions", "hit_react_dirs", "death_variants", "death_end_poses",
-			"downed_crawl_pose", "dozer_walk_heavy_speed"]:
+			"downed_crawl_pose", "dozer_walk_heavy_speed", "pose_deaths", "pose_death_checks"]:
 		assert_true(lines.has(n), "SOURCE.txt documents %s" % n)
 
 
@@ -1356,3 +1365,43 @@ func _check_seated_deaths() -> void:
 	var f_end: Array[Vector3] = _snapshot("death_seated_fall", 2.0)
 	assert_true(f_end[hips].x < -0.35, "fall: hips beside the chair, to the left (%f)" % f_end[hips].x)
 	assert_true(f_end[head].x < -0.8, "fall: head ~1 m to the left (%f)" % f_end[head].x)
+
+
+## PO6-18 pose-aware deaths (a cuffed / kneeling / prone / downed NPC dies in place, never stands up first): each starts
+## on its source pose's frame (A switches without a crossfade), the root never moves, the hips and head never rise more
+## than 5 cm above their start height, no joint goes below the floor and the body ends lying on it; the cuffed wrists
+## stay together behind the hips the whole clip.
+func _check_pose_deaths() -> void:
+	var hips: int = _skel.find_bone("hips")
+	var head: int = _skel.find_bone("head")
+	var root: int = _skel.find_bone("root")
+	for clip: String in POSE_DEATHS:
+		assert_true(_player.has_animation(StringName(clip)), "%s present" % clip)
+		if _anim(clip) == null:
+			continue
+		var src: Array = POSE_DEATHS[clip]
+		var s0: Array[Vector3] = _snapshot(clip, 0.0)
+		var d0: float = _snap_dist(s0, _snapshot(String(src[0]), float(src[1])))
+		assert_true(d0 < 0.01, "%s: starts on %s @%.2fs (%f m)" % [clip, src[0], src[1], d0])
+		var lowest: float = 1.0
+		var rise: float = -1.0
+		var root_move: float = 0.0
+		var n: int = _d304_frames(clip)
+		for f: int in range(0, n + 1):
+			var s: Array[Vector3] = _snapshot(clip, float(f) / 30.0)
+			rise = maxf(rise, maxf(s[hips].y - s0[hips].y, s[head].y - s0[head].y))
+			if root >= 0:
+				root_move = maxf(root_move, s[root].distance_to(s0[root]))
+			for p: Vector3 in s:
+				lowest = minf(lowest, p.y)
+			if clip == "death_kneel_cuffed":
+				var l: Vector3 = s[_skel.find_bone("hand.L")]
+				var r: Vector3 = s[_skel.find_bone("hand.R")]
+				assert_true(l.distance_to(r) < 0.13, "%s f%d: cuffed wrists together (%f)" % [clip, f, l.distance_to(r)])
+				assert_true((l + r).distance_to(s[hips] * 2.0) < 0.6, "%s f%d: hands stay behind the hips" % [clip, f])
+		assert_true(rise < 0.05, "%s: hips / head never rise above the start (+%f m)" % [clip, rise])
+		assert_true(root_move < 0.001, "%s: the root never moves (%f m)" % [clip, root_move])
+		assert_true(lowest > -0.01, "%s: no joint below the floor (%f)" % [clip, lowest])
+		var e: Array[Vector3] = _snapshot(clip, float(n) / 30.0)
+		assert_true(e[hips].y < 0.32 and e[head].y < 0.45, "%s: ends lying on the floor (hips %f, head %f)" % [
+			clip, e[hips].y, e[head].y])

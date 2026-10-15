@@ -64,6 +64,8 @@ var _viewmodel: Node3D = null
 var _fp: FpViewmodel = null
 var _vm_viewport: SubViewport = null
 var _vm_cam: Camera3D = null
+## PO6-10: the gun-only fill light (null when off); its energy eases from hip to ADS with ads_blend.
+var _vm_gun_fill: DirectionalLight3D = null
 var _mask: Node3D = null
 var _mask_id: StringName = &""
 var _ads_weight: float = 0.0
@@ -233,6 +235,9 @@ func _update_viewmodel_camera(cam: Camera3D) -> void:
 	_vm_cam.global_transform = cam.global_transform
 	_vm_cam.fov = fov
 	_vm_cam.near = cam.near
+	if _vm_gun_fill != null and is_instance_valid(_vm_gun_fill):
+		var vt: FpViewmodelTweak = FpViewmodelTweak.data()
+		_vm_gun_fill.light_energy = lerpf(vt.viewmodel_gun_fill_energy, vt.viewmodel_gun_fill_ads_energy, ads_blend)
 
 
 ## The camera that draws the viewmodel layer (null when the arms draw with the world camera).
@@ -308,6 +313,7 @@ func _build_viewmodel_camera(cam: Camera3D) -> void:
 		fill.sky_mode = DirectionalLight3D.SKY_MODE_LIGHT_ONLY
 		fill.rotation_degrees = vt.viewmodel_gun_fill_euler_deg
 		_vm_cam.add_child(fill)
+		_vm_gun_fill = fill
 	for n: Node in cam.find_children("*", "GeometryInstance3D", true, false):
 		(n as GeometryInstance3D).layers = viewmodel_layers_for(n as GeometryInstance3D, cam)
 

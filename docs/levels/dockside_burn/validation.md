@@ -14,19 +14,27 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | clipping | PASS | 0 | 0 |
 | orientation | skipped | 0 | 0 |
 | scale | PASS | 0 | 0 |
+| slopes | PASS | 0 | 0 |
 | navmesh | PASS | 0 | 0 |
 | barred_doors | PASS | 0 | 0 |
 | reachability | PASS | 0 | 0 |
 | walkthrough | PASS | 0 | 0 |
 | patrols | PASS | 0 | 0 |
 | lasers | PASS | 0 | 0 |
+| camera_spine | skipped | 0 | 0 |
+| camera_screen | skipped | 0 | 0 |
 | materials | skipped | 0 | 0 |
 | zfight | skipped | 0 | 0 |
 | lights | skipped | 0 | 0 |
+| viewmodel_lit | PASS | 0 | 0 |
 | density | skipped | 0 | 0 |
 | variety | skipped | 0 | 0 |
 | bounds | skipped | 0 | 0 |
 | perf | skipped | 0 | 0 |
+| door_frame_gap | PASS | 0 | 0 |
+| frame_proud | PASS | 0 | 0 |
+| seam_gaps | PASS | 0 | 0 |
+| furniture_logic | PASS | 0 | 0 |
 
 ## contract_nodes: Contract nodes
 
@@ -43,12 +51,12 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## floating: Nothing floats
 
-- 223 props checked
+- 222 props checked
 
 
 ## clipping: Nothing clips
 
-- 223 props, 49 doors checked
+- 222 props, 49 doors checked
 
 
 ## scale: Human scale
@@ -79,13 +87,13 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 - `Rooms/RoomQS` (storage): ceiling median 3.00 m (rule 2.6-3.0)
 - `Geometry/Building/StairST/Flight1W`: ramp collision enveloping the steps (max 0.180 m above the treads)
 - `Geometry/Building/StairST/Flight1W`: 10 risers, 0.000 -> 1.800 m
-- `Geometry/Building/StairST/Flight1W` rails: -X wall, rail tops [0.91, 0.95, 0.98, 1.01, 1.04] m above nosing, max drop 0.00 m; +X wall, rail tops [0.91, 0.94, 0.97, 1.00, 1.03] m above nosing, max drop 0.00 m
+- `Geometry/Building/StairST/Flight1W` rails: -X wall, rail tops [0.91, 0.95, 0.98, 1.01, 1.04] m above nosing, max drop 0.00 m; +X wall, rail tops [0.89, 0.92, 0.95, 0.99, 1.02] m above nosing, max drop 0.00 m
 - `Geometry/Building/StairST/Flight1E`: ramp collision enveloping the steps (max 0.180 m above the treads)
 - `Geometry/Building/StairST/Flight1E`: 10 risers, 1.800 -> 3.600 m
 - `Geometry/Building/StairST/Flight1E` rails: -X wall, rail tops [0.91, 0.95, 0.98, 1.01, 1.04] m above nosing, max drop 0.00 m; +X wall, rail tops [0.91, 0.94, 0.97, 1.00, 1.03] m above nosing, max drop 0.00 m
 - `Geometry/Building/StairST/Flight2W`: ramp collision enveloping the steps (max 0.180 m above the treads)
 - `Geometry/Building/StairST/Flight2W`: 10 risers, 3.600 -> 5.400 m
-- `Geometry/Building/StairST/Flight2W` rails: -X wall, rail tops [0.91, 0.95, 0.98, 1.01, 1.04] m above nosing, max drop 0.00 m; +X wall, rail tops [0.91, 0.94, 0.97, 1.00, 1.03] m above nosing, max drop 0.00 m
+- `Geometry/Building/StairST/Flight2W` rails: -X wall, rail tops [0.91, 0.95, 0.98, 1.01, 1.04] m above nosing, max drop 0.00 m; +X wall, rail tops [0.89, 0.92, 0.95, 0.99, 1.02] m above nosing, max drop 0.00 m
 - `Geometry/Building/StairST/Flight2E`: ramp collision enveloping the steps (max 0.180 m above the treads)
 - `Geometry/Building/StairST/Flight2E`: 10 risers, 5.400 -> 7.200 m
 - `Geometry/Building/StairST/Flight2E` rails: -X wall, rail tops [0.91, 0.95, 0.98, 1.01, 1.04] m above nosing, max drop 0.00 m; +X wall, rail tops [0.91, 0.94, 0.97, 1.00, 1.03] m above nosing, max drop 0.00 m
@@ -104,15 +112,26 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 - `Geometry/Site/Ground/QuaySteps`: ramp collision enveloping the steps (max 0.180 m above the treads)
 - `Geometry/Site/Ground/QuaySteps`: 10 risers, -1.800 -> 0.000 m
 - `Geometry/Site/Ground/QuaySteps` rails: -X wall, rail tops [0.91, 0.94, 0.98, 1.01, 1.04] m above nosing, max drop 0.00 m; +X wall, rail tops [0.91, 0.94, 0.98, 1.01, 1.04] m above nosing, max drop 0.00 m
+- stair chain: `Geometry/Building/StairST/Flight1W` -> `Geometry/Building/StairST/Flight1E` joined by a landing at 1.800 m
+- stair chain: `Geometry/Building/StairST/Flight1E` -> `Geometry/Building/StairST/Flight2W` joined by a landing at 3.600 m
+- stair chain: `Geometry/Building/StairST/Flight2W` -> `Geometry/Building/StairST/Flight2E` joined by a landing at 5.400 m
+- stair chain: `Geometry/Building/Stairs/PlatformStair/Flight1` -> `Geometry/Building/Stairs/PlatformStair/Flight2` joined by a landing at 1.800 m
+- stair chain: `Geometry/Building/Stairs/PlatformStair/Flight2` -> `Geometry/Building/StairST/Flight2W` joined by a landing at 3.600 m
+- stair chain: `Geometry/Building/Stairs/FireStair/Flight1` -> `Geometry/Building/Stairs/FireStair/Flight2` joined by a landing at 1.800 m
+
+
+## slopes: No walkable slope < 50° outside the play mesh
+
+- 1809 x 1969 columns (0.25 m), 607394 surface samples, 0 collider(s) with reachable walkable surfaces outside play
 
 
 ## navmesh: Navmesh
 
-- navmesh: 2115 polygons, cell 0.10/0.10 m
-- 217 markers checked
+- navmesh: 2124 polygons, cell 0.10/0.10 m
+- 200 markers checked
 | room | walkable samples | covered | coverage |
 |---|---|---|---|
-| `Rooms/RoomO1` | 78 | 78 | 100% |
+| `Rooms/RoomO1` | 75 | 75 | 100% |
 | `Rooms/RoomO2` | 88 | 88 | 100% |
 | `Rooms/RoomST` | 9 | 9 | 100% |
 | `Rooms/RoomLF` | 20 | 20 | 100% |
@@ -129,12 +148,12 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `Rooms/RoomC2` | 360 | 360 | 100% |
 | `Rooms/RoomSR` | 170 | 170 | 100% |
 | `Rooms/RoomAN` | 512 | 512 | 100% |
-| `Rooms/RoomM1` | 77 | 77 | 100% |
+| `Rooms/RoomM1` | 74 | 74 | 100% |
 | `Rooms/RoomM2` | 66 | 66 | 100% |
 | `Rooms/RoomM3` | 13 | 13 | 100% |
 | `Rooms/RoomMC` | 105 | 105 | 100% |
 | `Rooms/RoomHH` | 5 | 5 | 100% |
-| `Rooms/RoomGH` | 58 | 58 | 100% |
+| `Rooms/RoomGH` | 54 | 54 | 100% |
 | `Rooms/RoomQS` | 120 | 120 | 100% |
 | `Rooms/RoomX1` | 751 | 749 | 100% |
 | `Rooms/RoomX2` | 623 | 623 | 100% |
@@ -150,12 +169,12 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## reachability: Reachability (per variant)
 
-- 39 variant configuration(s), 121065 spawn->target path queries
+- 39 variant configuration(s), 114630 spawn->target path queries
 
 
 ## walkthrough: Walkthrough bot
 
-- 2235 / 2235 spawn->target walks ok
+- 2070 / 2070 spawn->target walks ok
 
 
 ## patrols: Patrol graphs
@@ -167,4 +186,31 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 ## lasers: Laser grid bypass gaps
 
 - 0 laser grid(s), 0 with an asserted bypass gap
+
+
+## viewmodel_lit: Interior key lights light the viewmodel (D-095)
+
+- 25 interior key light(s) in 22 room(s); 0 lack `viewmodel_lit`
+
+
+## door_frame_gap: Doors and windows fill their wall openings (no gaps, no clipping)
+
+- 49 door / window prefab(s) measured; gap > 0.02 m and clip > 0.01 m fail
+- leaf bullet surfaces (D-105, Door.leaf_surface_id): metal 19, wood 30; 0 look glass / metal but resolve to wood (WARN)
+
+
+## frame_proud: Door / window frame colliders are flush with the wall (no proud or narrowing collision)
+
+- 49 door / window prefab(s), 49 with frame colliders; proud > 0.01 m and narrowing > 0.01 m fail; worst proud 0.000 m, narrowing 0.000 m
+
+
+## seam_gaps: No see-through slits at wall corners, junctions, floors and ceilings
+
+- 23 room(s), 100 box side(s) scanned; slits > 0.02 m fail
+
+
+## furniture_logic: Furniture arranged plausibly
+
+- classified: counter 7, chair 9, table 1, desk 2, wall_unit 1
+- 9 seats, 10 tables/desks/counters, 49 doors checked
 
