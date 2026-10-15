@@ -1,6 +1,7 @@
 ## PO6-17 (D-114 §5): RNG assault events (turret van, helicopter, breach points). Schedule determinism and the
 ## row rules over many seeds (AssaultEventScheduler, pure), each kind executed on a small map with ENV C-style
-## markers, and Golden Hour (real map, today without C's markers: fallbacks) firing an event in sustain.
+## markers, and Golden Hour firing an event in sustain. Every event unit wears a real character (no capsule), the
+## ropes are single straight lines retracted on touch, and EventBus.assault_event_started / _ended [R] fire.
 extends TestCase
 
 const HEIST: StringName = &"unit_events"
@@ -9,10 +10,47 @@ const DIRECTOR_TWEAK: String = "res://systems/director/director_tweak.tres"
 const EVENTS_TWEAK: String = "res://systems/director/assault_events_tweak.tres"
 
 var _rt: HeistRuntime = null
+var _started: Array[Array] = []
+var _ended: Array[Array] = []
+
+
+func _on_started(kind: StringName, net_id: int, pos: Vector3) -> void:
+	_started.append([kind, net_id, pos])
+
+
+func _on_ended(kind: StringName, net_id: int) -> void:
+	_ended.append([kind, net_id])
+
+
+func _listen() -> void:
+	_started.clear()
+	_ended.clear()
+	if not EventBus.assault_event_started.is_connected(_on_started):
+		EventBus.assault_event_started.connect(_on_started)
+		EventBus.assault_event_ended.connect(_on_ended)
+
+
+func _has_fact(facts: Array[Array], kind: StringName, net_id: int) -> bool:
+	return facts.any(func(f: Array) -> bool: return f[0] == kind and int(f[1]) == net_id)
+
+
+## Lead review: every event unit resolves a real character visual (an animated rig), never the capsule placeholder.
+func _assert_real_visuals(ev: AssaultEventRunner, what: String) -> void:
+	var n: int = 0
+	for u: NpcBase in ev.units:
+		if not is_instance_valid(u):
+			continue
+		n += 1
+		assert_true(u.visual_scene != null and AnimDriver.find_player(u) != null,
+			"%s unit %s wears a character (%s), not a capsule" % [what, u.name, u.visual_scene.resource_path if u.visual_scene else "null"])
+	assert_true(n > 0, "%s: units to check" % what)
 
 
 func after_each() -> void:
 	Engine.time_scale = 1.0
+	if EventBus.assault_event_started.is_connected(_on_started):
+		EventBus.assault_event_started.disconnect(_on_started)
+		EventBus.assault_event_ended.disconnect(_on_ended)
 	Modifiers.clear_source(0, &"po6_17.immune")
 	if _rt != null and is_instance_valid(_rt):
 		_rt.teardown()
@@ -253,7 +291,7 @@ static func _own(n: Node, root: Node) -> void:
 		_own(c, root)
 
 
-func _launch() -> AssaultEventRunner:
+func _launch(before_alarm: Callable = Callable()) -> AssaultEventRunner:
 	var dt: DirectorTweak = (load(DIRECTOR_TWEAK) as DirectorTweak).duplicate() as DirectorTweak
 	dt.first_control_s = 600.0
 	dt.first_responder_groups = 0
@@ -266,6 +304,9 @@ func _launch() -> AssaultEventRunner:
 	_rt.teleport_crew(0, Transform3D(Basis.IDENTITY, CREW_POS))
 	Modifiers.set_source(0, &"po6_17.immune", {&"defense.damage_taken_mult": 0.0})
 	await wait_physics_frames(2)
+	_listen()
+	if before_alarm.is_valid():
+		before_alarm.call()
 	_rt.stealth.raise_alarm(&"test", 0)
 	var dir: AssaultDirector = _rt.service(G.SVC_DIRECTOR) as AssaultDirector
 	assert_true(await wait_until(func() -> bool: return dir.running, 3.0), "director running")
@@ -287,6 +328,14 @@ func test_po6_17_turret_van_deploys_shoots_and_can_be_destroyed() -> void:
 	assert_true(van.door_l.rotation.y < -1.5, "rear door open")
 	assert_true(ev.units.size() >= 1, "squad dismounted")
 	assert_eq(ev.units[0].get_meta(AnimDriver.META_ANIM_OVERRIDE, &""), &"van_exit", "van_exit clip")
+	assert_true(_has_fact(_started, &"turret_van", van.net_id), "assault_event_started(turret_van) %s" % [_started])
+	var exit: Vector3 = van.exit_transform().origin
+	var stepped: bool = await wait_until(func() -> bool:
+		var u: NpcBase = ev.units[0]
+		return is_instance_valid(u) and u.get_meta(AnimDriver.META_ANIM_OVERRIDE, &"") == &"" \
+			and Vector2(u.global_position.x - exit.x, u.global_position.z - exit.z).length() < 0.9, 3.0)
+	assert_true(stepped, "van_exit carried the unit 0.6 m out onto the landing spot")
+	_assert_real_visuals(ev, "van squad")
 	var shot: bool = await wait_until(func() -> bool: return van.turret.hits_landed > 0, 8.0)
 	print("[PO6-17] turret shots %d hits %d" % [van.turret.shots_fired, van.turret.hits_landed])
 	assert_true(shot, "turret shoots the crew")
@@ -306,6 +355,7 @@ func test_po6_17_turret_van_deploys_shoots_and_can_be_destroyed() -> void:
 	assert_true(van.turret.armor_hp > 0.0, "weak spot skipped the armor")
 	assert_eq(van.stage, AssaultTurretVan.Stage.DESTROYED, "van stage DESTROYED")
 	assert_false(ev.active.has(van), "event over")
+	assert_true(_has_fact(_ended, &"turret_van", van.net_id), "assault_event_ended(turret_van)")
 	var shots: int = van.turret.shots_fired
 	await wait_physics_frames(20)
 	assert_eq(van.turret.shots_fired, shots, "a dead turret does not fire")
@@ -321,7 +371,15 @@ func test_po6_17_heli_rappels_a_squad_at_the_drop_and_carries_a_sniper() -> void
 	assert_true(heli != null, "heli spawned")
 	var hover: bool = await wait_until(func() -> bool: return heli.stage == AssaultHeli.Stage.HOVER, 10.0)
 	assert_true(hover, "heli hovers over the drop")
-	assert_true(heli.ropes.size() == 2 and heli.ropes[0].visible, "ropes out")
+	assert_true(heli.ropes.size() == 2 and heli.ropes[0].visible and heli.ropes[1].visible, "two ropes out")
+	for i: int in range(2):
+		var rope: MeshInstance3D = heli.ropes[i]
+		var anchor: Vector3 = (heli.rope_l if i == 0 else heli.rope_r).global_position
+		var top: Vector3 = rope.global_position + Vector3(0, (rope.mesh as CylinderMesh).height * 0.5, 0)
+		assert_true(rope.global_basis.is_equal_approx(Basis.IDENTITY), "rope %d is one straight vertical line" % i)
+		assert_true(top.distance_to(anchor) < 0.05, "rope %d hangs from its davit" % i)
+		assert_near(rope.global_position.y - (rope.mesh as CylinderMesh).height * 0.5, 0.0, 0.05, "rope %d reaches the floor" % i)
+	assert_true(_has_fact(_started, &"heli", heli.net_id), "assault_event_started(heli)")
 	var roping: bool = await wait_until(func() -> bool:
 		for u: NpcBase in ev.units:
 			var m: NpcMotor = u.get_node_or_null(^"Motor") as NpcMotor
@@ -344,6 +402,8 @@ func test_po6_17_heli_rappels_a_squad_at_the_drop_and_carries_a_sniper() -> void
 				Vector2(u.global_position.x - drop.x, u.global_position.z - drop.z).length(), m2 != null and m2.is_physics_processing()])
 	var landed: int = 2 if both else _rappellers_down(ev, drop)
 	assert_eq(landed, 2, "both rappellers landed at the drop and walk on")
+	if is_instance_valid(heli):
+		assert_false(heli.ropes[0].visible or heli.ropes[1].visible, "ropes retracted once everyone touched down")
 	# The sniper window is long (30 s) so a loaded batch cannot see the heli leave before the checks below.
 	var sniping: bool = await wait_until(func() -> bool: return is_instance_valid(heli) and heli.passenger != null, 6.0)
 	assert_true(sniping, "Longshot seated")
@@ -352,16 +412,21 @@ func test_po6_17_heli_rappels_a_squad_at_the_drop_and_carries_a_sniper() -> void
 	var sniper: NpcBase = heli.passenger
 	assert_eq(sniper.enemy_def.id, &"enemy.longshot", "Longshot def")
 	await wait_physics_frames(5)
-	assert_true(sniper.global_position.distance_to(heli.seat_transform().origin) < 0.6, "pinned to the seat")
 	var brain: LongshotBrain = sniper.get_node(^"Brain") as LongshotBrain
 	assert_true(brain.is_perched(), "perched on the heli perch")
 	assert_true(String(sniper.get_meta(AnimDriver.META_ANIM_OVERRIDE, &"")).begins_with("heli_door_"), "heli_door clip")
+	var kneel: Vector3 = heli.seat_transform() * Vector3(0.5, -0.344, 0.15)
+	assert_true(sniper.global_position.distance_to(kneel) < 0.05, "kneel root = SniperSeat x heli_door_sill offset")
+	_assert_real_visuals(ev, "heli rope squad + Longshot")
+	var heli_id: int = heli.net_id
 	heli.stage_time = 999.0  # end the (long) sniper window now
 	var wr: WeakRef = weakref(heli)
 	var gone: bool = await wait_until(func() -> bool:
 		var h: AssaultHeli = wr.get_ref() as AssaultHeli
 		return h == null or h.stage >= AssaultHeli.Stage.LEAVE, 8.0)
 	assert_true(gone, "heli leaves")
+	var freed: bool = await wait_until(func() -> bool: return wr.get_ref() == null, 10.0)
+	assert_true(freed and _has_fact(_ended, &"heli", heli_id), "assault_event_ended(heli) once it left (%s)" % [_ended])
 	await wait_physics_frames(2)
 	assert_false(is_instance_valid(sniper) and sniper.is_inside_tree(), "sniper leaves with it")
 
@@ -382,15 +447,24 @@ func test_po6_17_breach_blows_open_and_squad_enters() -> void:
 	var b: AssaultBreach = ev.run(&"breach", {"warning_s": 1.0, "squad": [&"enemy.tac_light", &"enemy.tac_light"]},
 		"Breach_1") as AssaultBreach
 	assert_true(b != null and b.stage == AssaultBreach.Stage.WARNING, "warning")
-	assert_true(b.charge_mesh.visible, "charge shown")
+	assert_false(b.charge_mesh.visible, "no charge before the placer's `place` event")
 	assert_true(intact.visible and not blown.visible, "still intact in the warning")
+	assert_true(_has_fact(_started, &"breach", b.net_id), "assault_event_started(breach)")
 	var placing: bool = await wait_until(func() -> bool:
 		return ev.units.any(func(u: NpcBase) -> bool: return u.get_meta(AnimDriver.META_ANIM_OVERRIDE, &"") == &"breach_place"), 0.8)
 	assert_true(placing, "the first squad unit plants the charge (breach_place)")
+	var placer: NpcBase = ev.units[0]
+	var charge: Vector3 = b.point("Charge")
+	assert_near(Vector2(placer.global_position.x - charge.x, placer.global_position.z - charge.z).length(), 0.45, 0.05,
+		"palms on the wall: the placer stands 0.45 m from it")
+	var armed: bool = await wait_until(func() -> bool: return b.charge_mesh.visible, 1.5)
+	assert_true(armed and b.stage_time >= 0.9, "the charge appears at the `place` event (%.2f s)" % b.stage_time)
+	assert_true(b.charge_mesh.global_position.distance_to(charge) < 0.01, "on the wall at Charge (1.1 m)")
 	var went: bool = await wait_until(func() -> bool: return b.is_blown(), 3.0)
 	assert_true(went, "blown")
 	assert_false(intact.visible, "Intact hidden")
 	assert_true(blown.visible, "Blown shown")
+	assert_true(_has_fact(_ended, &"breach", b.net_id), "assault_event_ended(breach) on the blast")
 	await wait_physics_frames(2)
 	assert_true(space.intersect_ray(ray).is_empty(), "the opening is clear")
 	NavigationServer3D.map_force_update(nav)
@@ -404,8 +478,73 @@ func test_po6_17_breach_blows_open_and_squad_enters() -> void:
 		return false, 15.0)
 	print("[PO6-17] breach squad %s" % [ev.units.map(func(u: NpcBase) -> Vector3: return u.global_position)])
 	assert_eq(ev.units.size(), 2, "squad spawned")
+	_assert_real_visuals(ev, "breach squad")
 	assert_true(entered, "a unit came through the breach")
 	assert_false(ev._breach_candidates().has(marker), "a blown breach is not picked again")
+
+
+func test_po6_17_rows_from_heist_def_then_tweak() -> void:
+	var def: HeistDef = HeistDef.new()
+	def.id = HEIST
+	def.assault_events = [{"kind": &"breach", "weight": 1.0, "min_wave": 1, "cooldown_s": 10.0, "max_per_heist": 1,
+		"params": {"warning_s": 0.5}}, {"kind": &"nonsense", "weight": 5.0}] as Array[Dictionary]
+	var ev: AssaultEventRunner = await _launch(func() -> void: _rt.map.heist_def = def)
+	assert_true(await wait_until(func() -> bool: return ev.begun, 3.0), "events began")
+	assert_eq(ev.rows_source, &"heist_def", "HeistDef.assault_events is read first")
+	assert_eq(ev.scheduler.rows.size(), 1, "same schema; unknown kinds dropped")
+	assert_eq(ev.scheduler.rows[0]["kind"], &"breach", "the HeistDef row")
+	_rt.teardown()
+	_rt = null
+	await wait_frames(2)
+	var et: AssaultEventsTweak = (load(EVENTS_TWEAK) as AssaultEventsTweak).duplicate(true) as AssaultEventsTweak
+	et.heists = {HEIST: {"events": [{"kind": &"heli", "weight": 1.0, "min_wave": 1, "cooldown_s": 10.0, "max_per_heist": 1}]}}
+	var empty_def: HeistDef = HeistDef.new()
+	empty_def.id = HEIST
+	var dt: DirectorTweak = (load(DIRECTOR_TWEAK) as DirectorTweak).duplicate() as DirectorTweak
+	dt.first_control_s = 600.0
+	dt.first_responder_groups = 0
+	_rt = await HeistLauncher.launch(HEIST, 618, Enums.Difficulty.ROUTINE, self,
+		{"map_packed": _map(), "ai_teammates": 0, "director_tweak": dt, "captain": false, "assault_events_tweak": et})
+	_rt.map.heist_def = empty_def
+	_rt.stealth.raise_alarm(&"test", 0)
+	var dir: AssaultDirector = _rt.service(G.SVC_DIRECTOR) as AssaultDirector
+	assert_true(await wait_until(func() -> bool: return dir.events.begun, 3.0), "events began")
+	assert_eq(dir.events.rows_source, &"tweak", "empty HeistDef rows: AssaultEventsTweak.heists[heist_id]")
+	assert_eq(dir.events.scheduler.rows.size(), 1, "the tweak row")
+	assert_eq(dir.events.scheduler.rows[0]["kind"], &"heli", "the tweak's heli row")
+
+
+## assault_event_ended fires exactly once per started event on every path: the entity freed / removed early,
+## the heist ending, and teardown (C keys the van engine / heli rotor loops on it by net id).
+func test_po6_17_event_ended_once_on_free_end_and_teardown() -> void:
+	var ev: AssaultEventRunner = await _launch()
+	var van: AssaultTurretVan = ev.run(&"turret_van", {"squad": []}) as AssaultTurretVan
+	var heli: AssaultHeli = ev.run(&"heli", {"drop": false, "sniper": false, "orbit_s": 999.0}) as AssaultHeli
+	var ids: Array[int] = [van.net_id, heli.net_id]
+	assert_true(_has_fact(_started, &"turret_van", ids[0]) and _has_fact(_started, &"heli", ids[1]), "both started")
+	van.queue_free()  # removed early (no finish)
+	await wait_frames(2)
+	assert_eq(_count_ended(ids[0]), 1, "freed van: ended once")
+	_rt.end_heist(false)  # heist over: the heli still on station ends with it
+	await wait_frames(2)
+	assert_eq(_count_ended(ids[1]), 1, "heist end: heli ended once")
+	_rt.teardown()
+	_rt = null
+	await wait_frames(3)
+	assert_eq(_count_ended(ids[0]), 1, "teardown does not repeat the van")
+	assert_eq(_count_ended(ids[1]), 1, "teardown does not repeat the heli")
+	# Teardown while an event is still running ends it (once).
+	var ev2: AssaultEventRunner = await _launch()
+	var heli2: AssaultHeli = ev2.run(&"heli", {"drop": false, "sniper": false, "orbit_s": 999.0}) as AssaultHeli
+	var id2: int = heli2.net_id
+	_rt.teardown()
+	_rt = null
+	await wait_frames(3)
+	assert_eq(_count_ended(id2), 1, "teardown: a running heli ends exactly once (%s)" % [_ended])
+
+
+func _count_ended(net_id: int) -> int:
+	return _ended.filter(func(f: Array) -> bool: return int(f[1]) == net_id).size()
 
 
 # --- Golden Hour ----------------------------------------------------------------------------------
@@ -426,6 +565,7 @@ func test_po6_17_gh_seeded_loud_run_fires_an_event_in_sustain() -> void:
 	for s: int in _rt.crew_members().size():
 		Modifiers.set_source(s, &"po6_17.immune", {&"defense.damage_taken_mult": 0.0})
 	var dir: AssaultDirector = _rt.service(G.SVC_DIRECTOR) as AssaultDirector
+	_listen()
 	_rt.stealth.raise_alarm(&"test", 0)
 	Engine.time_scale = 3.0
 	var fired: bool = await wait_until(func() -> bool: return not dir.events.history.is_empty(), 40.0)
@@ -436,6 +576,9 @@ func test_po6_17_gh_seeded_loud_run_fires_an_event_in_sustain() -> void:
 	print("[PO6-17] GH first event %s" % [first])
 	assert_eq(int(first["phase"]), Enums.AssaultPhase.SUSTAIN, "in the wave-1 sustain window")
 	assert_true(dir.events.active.size() >= 1 or not dir.events.history.is_empty(), "it ran")
+	assert_eq(dir.events.rows_source, &"tweak", "GH's HeistDef has no rows yet: the tweak's glasshouse rows")
+	assert_true(_has_fact(_started, StringName(first["kind"]), int(dir.events.history[0]["net_id"])),
+		"assault_event_started for it (%s)" % [_started])
 	# Every kind runs on GH today (fallback markers until C's AssaultEvents land on trunk).
 	for k: StringName in [&"turret_van", &"heli", &"breach"]:
 		if dir.events.blocked_kinds().has(k):
@@ -459,15 +602,21 @@ static func _below_hole(ev: AssaultEventRunner) -> int:
 func test_po6_17_ceiling_breach_squad_drops_through() -> void:
 	var ev: AssaultEventRunner = await _launch()
 	var intact: Node3D = _rt.map.get_node(^"AssaultEvents/Breach_2/Visual/Model/Intact")
-	var b: AssaultBreach = ev.run(&"breach", {"warning_s": 0.5, "squad": [&"enemy.tac_light", &"enemy.tac_light"]},
+	var b: AssaultBreach = ev.run(&"breach", {"warning_s": 2.5, "squad": [&"enemy.tac_light", &"enemy.tac_light"]},
 		"Breach_2") as AssaultBreach
 	assert_true(b != null and b.breach_kind == "ceiling", "ceiling breach")
+	var hanging: bool = await wait_until(func() -> bool:
+		return not b.is_blown() and ev.units.size() == 2 and ev.units.all(func(u: NpcBase) -> bool:
+			return u.get_meta(AnimDriver.META_ANIM_OVERRIDE, &"") == &"rappel_hang"), 2.4)
+	assert_true(hanging, "the squad hangs on the rope above the hole until the blast (rappel_hang)")
+	assert_true(b.rope_mesh.visible and b.rope_mesh.global_basis.is_equal_approx(Basis.IDENTITY), "one straight vertical rope")
 	assert_true(await wait_until(func() -> bool: return b.is_blown(), 3.0), "blown")
 	assert_false(intact.visible, "Intact hidden")
 	assert_true(b.link == null, "no walk link for a ceiling (rope drop)")
 	var down: bool = await wait_until(func() -> bool: return _below_hole(ev) == 2, 8.0)
 	print("[PO6-17] ceiling squad %s" % [ev.units.map(func(u: NpcBase) -> Vector3: return u.global_position)])
 	assert_true(down, "both dropped through the hole to the floor below and walk on")
+	assert_false(b.rope_mesh.visible, "rope retracted after the last touchdown")
 
 
 func test_po6_17_heli_roof_drop_pairs_ceiling_breach() -> void:
