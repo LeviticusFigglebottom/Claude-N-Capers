@@ -161,8 +161,51 @@ static func ammo(crew: Node) -> Dictionary:
 	}
 
 
-## Put a WeaponVisual of `def` + `mods` in front of the crew camera and hand it to the crew as its
-## `weapon_visual` (muzzle origin for tracers/noise, visual_slots.md). Replaces the previous one.
+## PO6-12: the crew's equipped weapon slot (CrewWeapons.equipped_slot), -1 without crew weapons.
+static func equipped_slot(crew: Node) -> int:
+	var w: Object = crew.get(&"weapons") as Object if crew != null and is_instance_valid(crew) else null
+	return int(w.get(&"equipped_slot")) if w != null else -1
+
+
+## PO6-12: equip slot `ws` through the crew's own weapons (CrewWeapons.equip: equip time, equipped_changed, so
+## CrewView/FpViewmodel play holster + draw). False when the slot is empty, already equipped or not allowed.
+static func equip(crew: Node, ws: int) -> bool:
+	var w: Object = crew.get(&"weapons") as Object if crew != null and is_instance_valid(crew) else null
+	return w != null and w.has_method(&"equip") and bool(w.call(&"equip", ws))
+
+
+## PO6-12: call `cb(slot: int)` on every weapon switch of the crew (CrewWeapons.equipped_changed).
+static func connect_equipped(crew: Node, cb: Callable) -> void:
+	var w: Object = crew.get(&"weapons") as Object if crew != null and is_instance_valid(crew) else null
+	if w != null and w.has_signal(&"equipped_changed") and not w.is_connected(&"equipped_changed", cb):
+		w.connect(&"equipped_changed", cb)
+
+
+## PO6-12: refill every slot's magazine and reserve in place (CrewWeapons.set_ammo) without re-pushing the loadout,
+## so the equipped weapon stays drawn (set_loadout would re-equip the primary and re-arm the arms).
+static func rearm(crew: Node) -> void:
+	var w: Object = crew.get(&"weapons") as Object if crew != null and is_instance_valid(crew) else null
+	if w == null or not w.has_method(&"set_ammo"):
+		return
+	for ws: int in [Enums.WeaponSlot.PRIMARY, Enums.WeaponSlot.SECONDARY]:
+		if not bool(w.call(&"has_weapon", ws)):
+			continue
+		var st: WeaponStats = w.call(&"stats", ws) as WeaponStats
+		var ms: int = int(w.call(&"mag_size", ws))
+		w.call(&"set_ammo", ws, ms, maxi((st.total_ammo if st != null else ms) - ms, 0))
+
+
+## PO6-12: the crew's live first-person WeaponVisual (CrewView builds it on the FpViewmodel arms' weapon bone), or
+## null.
+static func weapon_visual(crew: Node) -> WeaponVisual:
+	if crew == null or not is_instance_valid(crew) or not &"weapon_visual" in crew:
+		return null
+	return crew.get(&"weapon_visual") as WeaponVisual
+
+
+## LEGACY (pre-PO6-12; the range no longer calls it, ENV A's QB-47 test still does): put a static WeaponVisual of
+## `def` + `mods` in front of the crew camera and hand it to the crew as its `weapon_visual`. CrewView then treats the
+## camera as externally owned and drops its animated FpViewmodel arms. Replaces the previous one.
 static func attach_viewmodel(crew: Node, def: WeaponDef, mod_ids: Array[StringName], offset: Vector3) -> WeaponVisual:
 	var cam: Camera3D = camera(crew)
 	if cam == null or def == null:
