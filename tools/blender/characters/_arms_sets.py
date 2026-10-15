@@ -98,7 +98,8 @@ PISTOL = FPSet(
     pole_l=(-0.22, -0.25, -0.94), pole_l_ads=(-0.22, -0.25, -0.94), pole_r=(0.22, -0.25, -0.94),
     pole_r_ads=(-0.2, -0.2, -0.96),
     sprint=((0.13, 0.30, -0.15), 10.0, -16.0, -26.0),
-    # D-116 (lead): the gun never rolls its grip toward the camera; the mag change happens in frame, left hand from below
+    # D-116 (lead): the gun never rolls its grip toward the camera; the mag change happens in frame, the left hand
+    # coming in from below
     lowered=((0.14, 0.22, -0.42), 10.0, -35.0, -15.0),
     reload_tilt=((0.05, 0.33, -0.10), 8.0, 10.0, -20.0),
     support="pistol", blade=6.0, blade_ads=0.0,
