@@ -22,6 +22,8 @@ const CARRY_LIMIT_S: float = 300.0
 
 ## Objectives completed by walking near the marker (no interaction).
 const AREA_OBJECTIVES: Array[StringName] = [&"find_canvases"]
+## Objectives that unblock the others (GN loud hack: shutters up, vault doors open), tried first when marked.
+const FIRST_OBJECTIVES: Array[StringName] = [&"hack"]
 ## A marker with nothing usable for this long (s) yields to the other active markers.
 const STALL_SKIP_S: float = 30.0
 
@@ -106,6 +108,8 @@ func step() -> void:
 	if p.flat_dist(p.crew.global_position, pos) > 4.0:
 		if not await p.goto(p.stand_point(pos), 2.5, 60.0):
 			_note_once(id, "objective %s: marker at %s not reachable" % [id, Po5Pilot._v(pos)])
+			if not _has_path(p.stand_point(pos)):
+				_stalls[id] = maxf(float(_stalls.get(id, 0.0)), STALL_SKIP_S)  # GN probe 4: no path -> yield at once
 	_stalls[id] = _stalls.get(id, 0.0) + 3.0
 	if int(_stalls[id]) % 60 == 0:
 		f.note("waiting at %s for %.0f s (nothing usable within 2.5 m)" % [id, _stalls[id]])
@@ -116,6 +120,9 @@ func step() -> void:
 ## objectives (GN find_canvases) and markers that stalled STALL_SKIP_S with nothing usable come last, so the
 ## flow moves on to what it can act on (GN probe: stuck at a found, already cut canvas).
 func _pick(markers: Array[Dictionary]) -> Dictionary:
+	for m0: Dictionary in markers:  # GN probe 4: the loud hack lifts every shutter (Calloway), so it goes first
+		if StringName(m0["id"]) in FIRST_OBJECTIVES and float(_stalls.get(StringName(m0["id"]), 0.0)) < STALL_SKIP_S:
+			return m0
 	for m: Dictionary in markers:
 		var mid: StringName = StringName(m["id"])
 		if not (mid in [&"secure", &"escape", &"casing"] or mid in AREA_OBJECTIVES) \
@@ -222,12 +229,19 @@ func _fetch_bag() -> bool:
 	return p.crew.is_carrying_bag()
 
 
+## GN probe 4: a navmesh path from the pilot ends within 1.5 m of `to` (a long walk that timed out is not "unreachable").
+func _has_path(to: Vector3) -> bool:
+	var map: RID = p.crew.get_world_3d().navigation_map
+	var path: PackedVector3Array = NavigationServer3D.map_get_path(map, p.crew.global_position, to, true)
+	return not path.is_empty() and path[path.size() - 1].distance_to(to) <= 1.5
+
+
 ## GN probe 3: a target still out of reach after use() (the pilot could not path to it) is skipped for the rest
 ## of the run, so the flow moves on instead of retrying the same unreachable slot.
 func _mark_if_unreached(c: InteractableComponent) -> void:
 	if not is_instance_valid(c) or p.crew.is_carrying_bag():
 		return
-	if c.global_position.distance_to(p.crew.global_position) > 2.5:
+	if c.global_position.distance_to(p.crew.global_position) > 2.5 and not _has_path(c.global_position):
 		_unreachable[c.get_instance_id()] = true
 		f.note("skipping unreachable %s (%s) for this run" % [c.get_path(), c.kind])
 
