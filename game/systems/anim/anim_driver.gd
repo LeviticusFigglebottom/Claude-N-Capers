@@ -151,6 +151,9 @@ var _turning_left: float = 0.0
 var _aim_hold_left: float = 0.0
 var _hit_dir: Vector3 = Vector3.ZERO
 var _death_clip: StringName = &""
+## PO6-18: the clip the body showed on its last living frame, and whether the death holds that pose frozen.
+var _alive_clip: StringName = &""
+var _death_hold: bool = false
 var _last_hit_react_t: float = -100.0
 ## Moving (above move_threshold_mps) last tick, for the v1.10 starts / stops.
 var _was_moving: bool = false
@@ -288,6 +291,7 @@ func tick(delta: float) -> void:
 	var want: StringName = choose_clip()
 	if _npc != null and _npc.alive:
 		_seated = SEATED_CLIPS.has(want)
+		_alive_clip = want
 	_apply(want, _speed_scale_for(want, tw), tw)
 	if weapon_visual != null and is_instance_valid(weapon_visual):
 		weapon_visual.visible = not POSE_CLIPS.has(want) and _death_clip == &""
@@ -588,6 +592,13 @@ func _ambient_hint(h: StringName) -> StringName:
 
 
 func _pick_death_clip(tw: AnimTweak) -> StringName:
+	# PO6-18 / D-114 §7: a kneeling / cuffed / crouched / prone / downed body dies from that pose.
+	if tw.death_by_pose.has(_alive_clip):
+		var posed: StringName = tw.death_by_pose[_alive_clip]
+		if player == null or player.has_animation("%s/%s" % [LIBRARY, posed]):
+			return posed
+		_death_hold = true
+		return _alive_clip  # no pose death on this rig: freeze the pose where it is
 	var dir: Vector3 = _hit_dir
 	if dir == Vector3.ZERO and _npc != null:
 		dir = _npc.last_damage.get("direction", Vector3.ZERO)
@@ -615,6 +626,8 @@ func _pick_death_clip(tw: AnimTweak) -> StringName:
 
 
 func _speed_scale_for(p_clip: StringName, tw: AnimTweak) -> float:
+	if _death_hold and p_clip == _death_clip:
+		return 0.0
 	if p_clip == _oneshot and _oneshot_left > 0.0:
 		return _oneshot_speed
 	var key: StringName = p_clip
