@@ -39,3 +39,17 @@ func test_menus_read_the_progress_profile() -> void:
 	assert_true(BoardContracts.build_gate().call(LETHAL), "the Board gate follows")
 	var tip: String = UiText.t(&"ui.heist_select.difficulty_locked_progress", {"name": "Cataclysm", "prev": "Lethal"})
 	assert_true(tip.contains("Lethal") and not tip.contains("{"), tip)
+
+
+func test_board_locked_text_names_every_condition() -> void:
+	var tw: BoardTweak = BoardTweak.new()
+	tw.difficulty_min_level = [0, 0, 0, 0, 80, 80]
+	var p: PlayerProfile = PlayerProfile.new_default()
+	var gate: Callable = func(d: int) -> bool: return HeistCatalog.is_difficulty_unlocked(d, p)
+	var both: String = BoardContracts.locked_text(LETHAL, 10, tw, gate)
+	assert_true(both.contains("80") and both.contains("Brutal"), "level and win both named: %s" % both)
+	_win(p, 3)
+	var level_only: String = BoardContracts.locked_text(LETHAL, 10, tw, gate)
+	assert_true(level_only.contains("80") and not level_only.contains("Brutal"), level_only)
+	var win_only: String = BoardContracts.locked_text(CATACLYSM, 90, tw, gate)
+	assert_true(win_only.contains("Lethal") and not win_only.contains("80"), win_only)

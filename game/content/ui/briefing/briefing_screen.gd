@@ -241,9 +241,17 @@ func _fill_objectives() -> void:
 	for i: int in range(objectives.size()):
 		if more > 0 and i == objectives.size() - 1:
 			# D-117 §5: the steps left out sit between the lead steps and the final one.
-			var m: Label = UiBuild.label(&"ui.briefing.objectives_more", UiBuild.DIM, {"count": more})
+			# On the timeline: a rail-only node (dashed gap) and the text column, like the step rows.
+			var mrow: HBoxContainer = UiBuild.hbox(UiTokens.S3)
+			mrow.name = "ObjectivesMoreRow"
+			var gap: TimelineNode = TimelineNode.new()
+			gap.gap = true
+			mrow.add_child(gap)
+			var m: Label = UiBuild.label(&"ui.briefing.objectives_more_one" if more == 1 else &"ui.briefing.objectives_more",
+					UiBuild.DIM, {"count": more})
 			m.name = "ObjectivesMore"
-			objectives_box.add_child(m)
+			mrow.add_child(m)
+			objectives_box.add_child(mrow)
 		var row: HBoxContainer = UiBuild.hbox(UiTokens.S3)
 		var node: TimelineNode = TimelineNode.new()
 		node.first = i == 0
@@ -292,8 +300,8 @@ func _fill_loot() -> void:
 func objective_texts() -> Array[String]:
 	var out: Array[String] = []
 	for c: Node in objectives_box.get_children():
-		if c.is_queued_for_deletion():
-			continue
+		if c.is_queued_for_deletion() or c.name == &"ObjectivesMoreRow":
+			continue  # D-117 §5: the "+N more" row is not a step
 		var l: Label = c as Label if c is Label else c.get_child(1) as Label if c.get_child_count() > 1 else null
 		if l != null:
 			out.append(l.text)

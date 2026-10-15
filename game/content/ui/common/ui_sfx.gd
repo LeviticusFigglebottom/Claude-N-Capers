@@ -26,6 +26,8 @@ const HIT: StringName = &"cue.hud_hit"
 const HEADSHOT: StringName = &"cue.hud_headshot"
 const KILL: StringName = &"cue.hud_kill"
 const HEARTBEAT: StringName = &"cue.hud_heartbeat"
+## PO6-17: 2D sting when an RNG assault event starts (ENV C's cue; join ALL once it is in the registry).
+const ASSAULT_EVENT_WARNING: StringName = &"cue.assault_event_warning"
 ## Every UI cue id (tests check each one is in the registry).
 const ALL: Array[StringName] = [FOCUS, CONFIRM, BACK, PRIMARY, ERROR, TAB, OBJECTIVE_DONE, HINT,
 		PAYDAY_TOTAL, PAYDAY_TICK, CARD_FLIP, HIT, HEADSHOT, KILL, HEARTBEAT]

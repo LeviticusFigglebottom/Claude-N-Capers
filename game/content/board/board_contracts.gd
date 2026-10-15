@@ -58,6 +58,23 @@ static func allowed_difficulties(level: int, tweak: BoardTweak, build_unlocked: 
 	return out
 
 
+## Why difficulty `d` is locked, naming every condition that applies (lead r216: the rep level gate stacks on the
+## D-117 progression unlock): "Lethal (level 80, win on Brutal)", "(level 80)", "(win on Brutal)" or "(locked)".
+static func locked_text(d: int, level: int, tweak: BoardTweak, build_unlocked: Callable = Callable()) -> String:
+	var name_text: String = UiText.t(UiText.difficulty_key(d))
+	var need_level: bool = level < tweak.min_level_of(d)
+	var need_win: bool = build_unlocked.is_valid() and not bool(build_unlocked.call(d)) \
+			and HeistCatalog.is_progression_difficulty(d) and d > 0
+	var prev: String = UiText.t(UiText.difficulty_key(maxi(d - 1, 0)))
+	if need_level and need_win:
+		return UiText.t(&"ui.board.broker.locked_both", {"name": name_text, "level": tweak.min_level_of(d), "prev": prev})
+	if need_level:
+		return UiText.t(&"ui.board.broker.locked_level", {"name": name_text, "level": tweak.min_level_of(d)})
+	if need_win:
+		return UiText.t(&"ui.board.broker.locked_progress", {"name": name_text, "prev": prev})
+	return UiText.t(&"ui.heist_select.difficulty_locked", {"name": name_text})
+
+
 ## The default build gate used by the screen.
 static func build_gate() -> Callable:
 	return func(d: int) -> bool: return HeistCatalog.is_difficulty_unlocked(d)
