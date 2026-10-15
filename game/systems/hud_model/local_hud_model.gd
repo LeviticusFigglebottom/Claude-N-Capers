@@ -933,11 +933,13 @@ func _pager_row(e: Dictionary) -> Dictionary:
 	var answering: bool = bool(e.get("answering", false))
 	var answer_s: float = maxf(Tweak.stealth().pager_answer_s, 0.001)
 	var prog: float = float(e.get("progress", clampf(1.0 - left / answer_s, 0.0, 1.0) if answering else 0.0))
-	# PO6-20: the body's live position (dragged / bagged bodies move) for B's waypoint, pager_marker_up_m above it.
+	# PO6-20: where the body lies (PagerSystem: its hips; dragged bodies move) for B's waypoint, pager_marker_up_m
+	# above it; without a server row (event fallback) the body's root.
 	var gid: int = int(e.get("guard_net_id", 0))
-	var body: Node3D = Ids.lookup(gid) as Node3D if gid != 0 else null
-	var pos: Vector3 = body.global_position if body != null and body.is_inside_tree() \
-		else Vector3(e.get("world_pos", Vector3.ZERO))
+	var pos: Vector3 = Vector3(e.get("world_pos", Vector3.ZERO))
+	var body: Node3D = Ids.lookup(gid) as Node3D if gid != 0 and pos == Vector3.ZERO else null
+	if body != null and body.is_inside_tree():
+		pos = body.global_position
 	return {"pager_id": int(e.get("pager_id", 0)), "time_left_s": left, "answering": answering, "progress": prog,
 		"guard_net_id": gid, "world_pos": pos + Vector3.UP * pager_marker_up_m}
 

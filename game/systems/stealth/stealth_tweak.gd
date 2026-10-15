@@ -117,6 +117,10 @@ extends Resource
 @export var pager_release_resumes: bool = false
 ## PO6-08 juggle grace (s): how long a released pager waits for its answerer to pick up another pager.
 @export var pager_juggle_window_s: float = 0.5
+## PO6-20: the answer prompt follows the body (its `hips` bone, height pager_prompt_up_m) and is aimable
+## anywhere within pager_aim_radius_m of it, so a body that fell 1-2 m from its root is easy to answer.
+@export var pager_aim_radius_m: float = 0.9
+@export var pager_prompt_up_m: float = 0.25
 
 @export_group("Civilians (S3.1, S7)")
 @export var intimidate_duration_s: float = 45.0
