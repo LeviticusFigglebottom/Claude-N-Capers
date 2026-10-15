@@ -223,12 +223,19 @@ func _fetch_bag() -> bool:
 	return p.crew.is_carrying_bag()
 
 
+## GN probe 4: a navmesh path from the pilot ends within 1.5 m of `to` (a long walk that timed out is not "unreachable").
+func _has_path(to: Vector3) -> bool:
+	var map: RID = p.crew.get_world_3d().navigation_map
+	var path: PackedVector3Array = NavigationServer3D.map_get_path(map, p.crew.global_position, to, true)
+	return not path.is_empty() and path[path.size() - 1].distance_to(to) <= 1.5
+
+
 ## GN probe 3: a target still out of reach after use() (the pilot could not path to it) is skipped for the rest
 ## of the run, so the flow moves on instead of retrying the same unreachable slot.
 func _mark_if_unreached(c: InteractableComponent) -> void:
 	if not is_instance_valid(c) or p.crew.is_carrying_bag():
 		return
-	if c.global_position.distance_to(p.crew.global_position) > 2.5:
+	if c.global_position.distance_to(p.crew.global_position) > 2.5 and not _has_path(c.global_position):
 		_unreachable[c.get_instance_id()] = true
 		f.note("skipping unreachable %s (%s) for this run" % [c.get_path(), c.kind])
 
