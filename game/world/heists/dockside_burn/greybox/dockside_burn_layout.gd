@@ -574,15 +574,16 @@ const PROPS: Array = [
 	["Pier10Bollard", Vector3(72.6, 0.0, 20.0), Vector3(0.4, 0.8, 0.4), 0.0, "bollard", false, "trim"],
 ]
 
-## Chairs: [name, bottom-centre, yaw_deg (front -Z faces the table)], 0.45 x 0.85 x 0.45, seat 0.45.
+## Chairs: [name, bottom-centre, yaw_deg (front -Z faces the table), npc_seat (optional: a cartel post gunman spawns
+## seated on its `Seat`, PO6-06; no collider / nav obstruction)], 0.45 x 0.85 x 0.45, seat 0.45.
 const CHAIRS: Array = [
 	["DispatchChair", Vector3(12.0, 0.0, 1.85), 0.0],
 	["BreakChairN", Vector3(6.0, MEZZ, 1.9), 180.0],
-	["BreakChairS", Vector3(6.0, MEZZ, 3.7), 0.0],
+	["BreakChairS", Vector3(6.0, MEZZ, 3.7), 0.0, true],
 	["BreakChairW", Vector3(4.75, MEZZ, 2.8), -90.0],
 	["BreakChairE", Vector3(7.25, MEZZ, 2.8), 90.0],
 	["CountChair", Vector3(11.85, MEZZ, 3.55), 0.0],
-	["ForemanChair", Vector3(19.4, MEZZ, 1.75), 0.0],
+	["ForemanChair", Vector3(19.4, MEZZ, 1.75), 0.0, true],
 	# PO-9: the receptionist's seat on the staff side of the O1 counter (the DeskCashO1 UsePoint is on the
 	# front-door side) and the gate man's seat at the gatehouse console, clear of both door zones.
 	["ReceptionChair", Vector3(6.0, 0.0, 3.95), 0.0],
@@ -692,7 +693,7 @@ const CARTEL_POSTS: Dictionary = {
 		"cartel_yard_e", ""],
 	"post_hall": [[["GunmanHallA", Vector3(34.6, 0.0, 5.0), 0.0], ["GunmanHallB", Vector3(46.4, 0.0, 3.4), -90.0]],
 		"cartel_hall", ""],
-	"post_platform": [[["GunmanPlatformA", Vector3(20.0, MEZZ, 4.8), 90.0], ["GunmanPlatformB", Vector3(6.6, MEZZ, 4.7), 0.0]],
+	"post_platform": [[["GunmanPlatformA", Vector3(19.4, MEZZ, 1.75), 0.0], ["GunmanPlatformB", Vector3(6.0, MEZZ, 3.7), 0.0]],
 		"cartel_platform", "sit"],
 	"post_dock": [[["GunmanDockA", Vector3(28.6, 0.0, 26.6), 90.0], ["GunmanDockB", Vector3(37.0, 0.0, 27.8), 90.0]],
 		"cartel_dock", ""],
@@ -741,7 +742,7 @@ const PATROL_POINTS: Dictionary = {
 	"PostPlatform": [Vector3(20.0, MEZZ, 4.0), Vector2(4.0, 8.0), "look", ["cartel", "cartel_mezz"], -90.0],
 	"PFStairTop": [Vector3(20.8, MEZZ, 7.25), Vector2.ZERO, "idle", ["cartel", "cartel_mezz"], null],
 	"M1": [Vector3(13.4, MEZZ, 4.4), Vector2(4.0, 8.0), "idle", ["cartel", "cartel_mezz"], null],
-	"M2": [Vector3(6.0, MEZZ, 4.7), Vector2(10.0, 20.0), "sit", ["cartel", "cartel_mezz"], null],
+	"M2": [Vector3(6.0, MEZZ, 3.7), Vector2(10.0, 20.0), "sit", ["cartel", "cartel_mezz"], 0.0],  # on BreakChairS (PO6-06)
 	# post_dock: the anteroom floor, the strongroom door (pause look), the quay roller doors.
 	"PostDock": [Vector3(36.6, 0.0, 28.0), Vector2.ZERO, "idle", ["cartel", "cartel_dock", "staff", "staff_dock"], null],
 	"ANVault": [Vector3(28.4, 0.0, 28.0), Vector2(3.0, 6.0), "look", ["cartel", "cartel_dock"], 90.0],
