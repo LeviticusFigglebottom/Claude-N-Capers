@@ -117,12 +117,16 @@ PRESET = {
             "base": "#3F4042", "rough": (0.66, 0.8), "stipple_cells_per_m": 220, "stipple_mm": 0.35,
             "wear": 0.35, "grime": 0.3, "relief_ref_mm": 0.1, "specular": 0.4, "lum_min": 0.02,
         },
+        # PO6-10 (P's vm_light_probe): coated finishes are dielectrics (metal ~0.1, rough ~0.45-0.55): a
+        # full metal only reflects, and the FP viewmodel has nothing to reflect, so it rendered near-black.
+        # Worn spots stay bare metal. Bare steel, brass and chrome stay metallic. Albedo keeps the D-038 lift (a
+        # darker base measured worse: the FP gun is albedo-limited once it is a dielectric).
         "steel_blued": {
-            "base": "#6A717C", "worn": "#ACAFB3", "rough": (0.3, 0.4), "worn_rough": 0.28,
-            "holster_wear": 0.35, "wear": 0.3, "grime": 0.1,
+            "base": "#6A717C", "worn": "#ACAFB3", "rough": (0.45, 0.55), "worn_rough": 0.28,
+            "holster_wear": 0.35, "wear": 0.3, "grime": 0.1, "coat_metal": 0.12, "lum_min": 0.02,
         },
         "steel_bare": {"base": "#B7B9BC", "rough": (0.22, 0.32), "streak": 0.05, "wear": 0.0, "grime": 0.05},
-        "metal_matte": {"base": "#76797D", "rough": (0.5, 0.6), "wear": 0.2, "grime": 0.2},
+        "metal_matte": {"base": "#76797D", "rough": (0.5, 0.6), "wear": 0.2, "grime": 0.2, "coat_metal": 0.15},
         # Armory batch 3.
         "paint_safety_orange": {
             # #E8641E pulled to the 0.75 saturation cap and a little darker so it stays rich under AgX.
@@ -142,8 +146,8 @@ PRESET = {
         },
         # D-034 additions.
         "alu_anodized_black": {
-            "base": "#53565B", "worn": "#BEC1C5", "rough": (0.34, 0.44), "worn_rough": 0.3,
-            "edge_wear": 0.3, "wear": 0.3, "grime": 0.1, "lum_min": 0.02,
+            "base": "#53565B", "worn": "#BEC1C5", "rough": (0.45, 0.55), "worn_rough": 0.3,
+            "edge_wear": 0.3, "wear": 0.3, "grime": 0.1, "lum_min": 0.02, "coat_metal": 0.1,
         },
         "polymer_tan": {
             "base": "#8A7A5C", "rough": (0.58, 0.7), "grain_cells_per_m": 300, "wear": 0.25,
