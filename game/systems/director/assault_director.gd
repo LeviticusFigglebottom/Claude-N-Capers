@@ -16,6 +16,9 @@
 ## DifficultyDef.enemy_cap x PD2 crew balance x L1.3 stage force) and enemy_cap minus cartel. CONTROL
 ## spawns are low-rate; BUILD/SUSTAIN spawn a group every assault_group_interval_s / assault_intensity
 ## until the assault's _force_pool() is spent (then FADE, as PD2's task_spawn_allowance).
+## PO6-16 (D-114 §5 horde pacing): while alive < police_budget() in BUILD/SUSTAIN the group timer is
+## assault_refill_interval_s instead (same scaling), and BUILD starts with a group at once, so the force is
+## topped back up within seconds of losses (PD2 sustain); every wave still ends FADE -> CONTROL.
 ## FADE (L1.1): the director stops reinforcing and orders its units to retreat (fade_retreat): each
 ## unit with a PoliceBrain walks to the nearest spawn point and leaves the map there out of crew LOS.
 ## A3-03 drama (L1.2): `drama` 0..1 rises with crew damage taken, crew downs and shots/kills within
@@ -440,6 +443,7 @@ func _physics_step(delta: float) -> void:
 		Enums.AssaultPhase.ANTICIPATION:
 			if phase_time_left <= 0.0:
 				assault_spawned = 0
+				_group_left = 0.0  # PO6-16: the first assault group arrives with BUILD (no CONTROL timer carry-over)
 				_enter(Enums.AssaultPhase.BUILD, tweak.build_s)
 				_roll_captain()
 		Enums.AssaultPhase.BUILD:
@@ -557,8 +561,13 @@ func _tick_assault_spawns(delta: float) -> void:
 	var stage_mult: float = 1.0
 	if not tweak.stage_spawn_rate_mult.is_empty():
 		stage_mult = tweak.stage_spawn_rate_mult[clampi(stage(), 0, tweak.stage_spawn_rate_mult.size() - 1)]
-	_group_left = tweak.assault_group_interval_s / maxf(intensity * stage_mult * _drama_spawn_scale(), 0.05)
-	if alive_count() < police_budget():
+	var rate: float = maxf(intensity * stage_mult * _drama_spawn_scale(), 0.05)
+	var under_cap: bool = alive_count() < police_budget()
+	var interval: float = tweak.assault_group_interval_s
+	if under_cap and tweak.assault_refill_interval_s > 0.0:
+		interval = minf(interval, tweak.assault_refill_interval_s)  # PO6-16: top the force back up
+	_group_left = interval / rate
+	if under_cap:
 		_enqueue(_pick_group(assault_phase))
 
 
