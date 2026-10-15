@@ -5,10 +5,10 @@ extends TestCase
 
 ## ENV D's per-set PD2 support grips (tools/blender/characters/_arms_clips.py LONG_GUN_GRIPS[set].offset).
 const LONG_GUN_GRIPS: Dictionary[StringName, Vector3] = {
-	&"rifle": Vector3(-0.0371, 0.0099, 0.0398), &"shotgun": Vector3(-0.0457, 0.0076, 0.0343),
-	&"lmg": Vector3(-0.0292, -0.0066, 0.0391), &"sniper": Vector3(-0.0388, -0.0018, 0.0375),
-	&"break_action": Vector3(-0.0351, 0.0058, 0.0372), &"lever": Vector3(-0.0433, -0.0004, 0.037),
-	&"shotgun_box": Vector3(-0.0437, 0.0099, 0.0338)}
+	&"rifle": Vector3(-0.0381, 0.0021, 0.0426), &"shotgun": Vector3(-0.0482, 0.0048, 0.035),
+	&"lmg": Vector3(-0.0349, -0.0023, 0.0334), &"sniper": Vector3(-0.0382, -0.0094, 0.0371),
+	&"break_action": Vector3(-0.0351, 0.0002, 0.037), &"lever": Vector3(-0.0435, 0.0015, 0.0388),
+	&"shotgun_box": Vector3(-0.0479, 0.0015, 0.03)}
 
 var _root: Node3D = null
 
