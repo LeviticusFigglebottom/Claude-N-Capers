@@ -1,0 +1,130 @@
+# PO6-17 RNG assault events: visuals + Golden Hour markers (ENV C -> ENV A contract)
+
+D-114 §5 / `docs/process/po_playtest_2026-10-15.md` PO6-17. ENV C supplies **visual scenes and map
+markers only**; ENV A owns the events (HeistDef rows, `GameRng.stream(&"assault_events")`, spawning,
+animation, damage, nav links). Names below are exact. Godot axes: +Y up, -Z forward, metres.
+
+* Source script: `tools/blender/props/assault_events.py` (deterministic; `python3 tools/blender/build.py
+  --category props --asset <id>`, then `tools/blender/props/build_props.sh` steps `_make_materials.py` +
+  `_scenes.py`). Outputs: `game/assets/props/<id>/<id>.glb` + `SOURCE.txt`; wrapper scenes
+  `game/world/props/assault_event/<id>.tscn` (root Node3D, the glb instanced as `Model`).
+* Markers inside the props are glTF empties, i.e. **`Node3D`** (same convention as `DropAnchor`,
+  `DrillPoint`); all paths are relative to the wrapper root, under `Model/`. The map markers are `Marker3D`.
+* Palette: style guide §3 police navy `#1E2A44` + hi-vis `#D7E34A` trim, TAC charcoal `#2B2F33` armour;
+  new prop materials `pr_police_navy`, `pr_hivis`, `pr_armor_charcoal`, `pr_soot`, `pr_soot_haze`,
+  `pr_emit_police_blue` (`game/world/props/materials/`).
+* Tests: `game/tests/c/test_assault_event_props.gd` (node contract + GH markers); `test_props.gd`
+  (catalog rules: prefab group `assault_event`).
+
+## 1. `res://world/props/assault_event/prop_turret_van.tscn`
+
+Armoured police van, 5.8 x 2.2 x 2.6 m (AABB with push bar and mirrors 6.4 x 2.64 x 2.72). Pivot =
+ground, footprint centre. **Nose at +Z** (matches the `TurretVan_<n>` marker: instance it at the
+marker's transform), rear doors at -Z. No collision (the event prefab owns it; a 2.4 x 2.6 x 6.0 m box
+centred at (0, 1.3, -0.1) covers the body).
+
+| Node | Type | Local position | Notes |
+|---|---|---|---|
+| `Model/Body` | MeshInstance3D | (0, 0, 0) | shell, cab, wheels, light bar (blue left / red right), roof turret ring |
+| `Model/DoorL` | Node3D (hinge pivot) | (1.06, 0.5, -2.9) | van's left rear door (+X). Closed = identity. **Open: rotation.y = -100 deg** |
+| `Model/DoorR` | Node3D (hinge pivot) | (-1.06, 0.5, -2.9) | right rear door (-X). **Open: rotation.y = +100 deg** |
+| `Model/DoorL/DoorLMesh`, `Model/DoorR/DoorRMesh` | MeshInstance3D | | leaves (move with the pivots) |
+| `Model/TurretMount` | Node3D | (0, 2.66, -1.0) | top of the roof ring: put `prop_sentry_turret` here (its pivot = floor). -Z faces the van's rear |
+| `Model/ExitPoint` | Node3D | (0, 0, -4.2) | crew dismount point 1.3 m behind the rear doors, on the ground; -Z faces away from the van |
+
+## 2. `res://world/props/assault_event/prop_sentry_turret.tscn`
+
+Police auto-turret on a tripod, 1.25 m tall. Pivot = floor, centre. Rest pose = identity, gun along -Z.
+
+| Node | Type | Local position | Axis |
+|---|---|---|---|
+| `Model/Base` | MeshInstance3D | (0, 0, 0) | tripod, post, battery box (green LED) |
+| `Model/Yaw` | Node3D | (0, 0.75, 0) | **turns about local Y** |
+| `Model/Yaw/YawMesh` | MeshInstance3D | | turntable + cradle |
+| `Model/Yaw/Pitch` | Node3D | (0, 0.24, 0) under Yaw | **tilts about local X** (+X rotation = muzzle up) |
+| `Model/Yaw/Pitch/PitchMesh` | MeshInstance3D | | receiver, ammo box, barrel, shield, red sensor eye |
+| `Model/Yaw/Pitch/Muzzle` | Node3D | (0, 0, -0.89) under Pitch | barrel tip; **-Z = fire direction** |
+
+## 3. `res://world/props/assault_event/prop_police_helicopter.tscn`
+
+Light police helicopter (navy + hi-vis, 4-blade main rotor 9 m disc), both cabin doors slid open.
+**Nose at -Z.** Pivot = skid bottom under the cabin centre. No collision. ~5.5k triangles (van ~5.6k, turret ~3.2k, breaches 1.6-2.9k).
+
+| Node | Type | Local position | Notes |
+|---|---|---|---|
+| `Model/Body` | MeshInstance3D | (0, 0, 0) | fuselage, skids, tail, beacon, nose spotlight gimbal |
+| `Model/Rotor` | Node3D | (0, 2.65, -0.3) | main rotor pivot on the mast: **spin about local Y** (child `RotorBlades`) |
+| `Model/TailRotor` | Node3D | (0.11, 2.25, 6.45) | **spin about local X** (child `TailRotorBlades`) |
+| `Model/RopeL` | Node3D | (-1.1, 1.93, -0.3) | rope anchor (davit pulley) over the left door (-X); rope hangs along -Y |
+| `Model/RopeR` | Node3D | (1.1, 1.93, -0.3) | rope anchor over the right door (+X) |
+| `Model/SniperSeat` | Node3D | (-0.53, 1.08, 0.12) | rear bench end at the open left door, hip height; **-Z points out of the door (-X)** |
+| `Model/Spotlight` | Node3D | (0, 0.36, -2.49) | searchlight lens under the nose; **-Z = beam**, rest pitch 30 deg down |
+
+## 4. Breach points
+
+`prop_breach_wall`, `prop_breach_window`, `prop_breach_ceiling` (`res://world/props/assault_event/<id>.tscn`).
+Common contract:
+
+* **Frame: the `Breach_<n>` marker's.** Origin = the opening on the **room-side surface** (wall/window:
+  bottom-centre of the opening; ceiling: centre of the opening on the ceiling underside). **-Z points
+  into the room**, +Z is the cops' side. Instance the scene with an identity transform as the marker's
+  child (the GH map already does: `Breach_<n>/Visual`).
+* `Model/Intact` (Node3D, visible): the infill that closes the map's real opening, **with its own
+  collision `Model/Intact/Collision`** (StaticBody3D, layer 1, `metadata/surface` set).
+* `Model/Blown` (Node3D, **hidden** in the wrapper): scorched ragged frame (`BlownFrame`), soot decals
+  (`Scorch`), rubble and debris thrown into the room. **No collision** (rubble is visual; nothing blocks
+  the 1 m opening).
+* To blow it: `Intact.visible = false`, disable `Intact/Collision` (e.g. `process_mode = DISABLED` or
+  clear `collision_layer`), `Blown.visible = true`.
+* Markers (Node3D): `Model/Charge` (breach charge position, on the cops' face), `Model/EntryPoint` (where
+  cops stack, cops' side, on their floor), `Model/ExitPoint` (inside, on the room floor). Window and
+  ceiling also have `Model/RopeAnchor`.
+* **Navigation:** the map navmesh treats an intact breach as wall (baked with the infill as an
+  obstruction), so the opening is not walkable. When it blows, ENV A enables a link EntryPoint ->
+  ExitPoint (NavigationLink3D; the window and ceiling ones are a rappel / drop, not a walk).
+
+| Scene | Opening (`size`) | Built for | Local markers (marker frame) |
+|---|---|---|---|
+| `prop_breach_wall` | 1.0 x 2.2 m in a 0.2 m partition (infill occupies z 0 .. +0.2) | GH interior walls: an infilled old doorway (casing + plinth blocks both faces); room face plaster, cops' face drywall | `Charge` (0, 1.1, 0.23), `EntryPoint` (0, 0, 1.1), `ExitPoint` (0, 0, -1.0) |
+| `prop_breach_window` | 1.0 x 2.1 m in a 0.4 m exterior wall (z 0 .. +0.4): a 1.0 x 1.2 window over a 0.9 m sill infill + radiator console; blown down to the floor | GH upper facade (brick outside, plaster inside) | `Charge` (0, 1.0, 0.43), `EntryPoint` (0, 0, 1.0) = outside the sill, **in the air** on an upper floor (cops hang on a rope), `RopeAnchor` (0, 4.6, 0.2) = parapet top above, `ExitPoint` (0, 0, -1.0) |
+| `prop_breach_ceiling` | 1.2 x 1.2 m through ceiling (0 .. 0.05), plenum and roof slab (top at +0.6) | GH upper floor: a sealed skylight (roof curb + bolted cover, ceiling access panel). `Model/Frame` (the roof curb, always visible, own collision `Frame/CurbCollision`) | local +Z = up, +Y = world north (GH marker basis). `Charge` (0, 0, 0.84) on the cover, `EntryPoint` (0, 1.65, 0.6) on the roof beside the curb, `RopeAnchor` (0, 0.7, 0.8) on the curb, `ExitPoint` (0, 0, -3.0) on the room floor 3 m below |
+
+## 5. Golden Hour markers (`res://world/heists/glasshouse/glasshouse.tscn`)
+
+All under **`AssaultEvents`** (Node3D, root child, group **`assault_events`**). Generated by
+`game/world/heists/glasshouse/greybox/build_greybox.gd` (`_build_assault_events`) from
+`glasshouse_layout.gd` (`ASSAULT_*` tables); never hand-edit the map. World coordinates (x east, z south).
+
+| Marker (Marker3D) | Position | Orientation / metadata | Notes |
+|---|---|---|---|
+| `TurretVan_1` | (1.0, -0.15, 21.2) | yaw 90: **+Z (van forward) = east** | Harlow Ave eastbound lane, opposite shop bays A-B (9 m from the shopfront); clear of parked cars |
+| `TurretVan_2` | (15.0, -0.15, 24.6) | yaw -90: +Z = west | Harlow Ave westbound lane, opposite the entrance and the salon window. Both clear of escapes E1 (alley) and E2 (Pell St) and the police gates |
+| `HeliOrbit_1` | (9.0, 30.0, 8.0) | `radius` = 24.0 (float) | orbit centre over the building; y = flight height of the heli pivot (skids); clears the hotel (17 m) and the garage (10 m) |
+| `HeliDrop_1` | (12.6, 7.8, 9.1) | | roof (top 7.8), 1.5 m west of the `Breach_4` skylight curb (the roof is not on the player navmesh) |
+| `HeliDrop_2` | (11.0, 0.0, -3.6) | | service alley east of the dumpsters |
+| `Breach_1` | (10.6, 0.0, 6.1) | yaw 180 (-Z = south into G5); `kind` "wall", `size` (1.0, 2.2), `room` "G5" | G4 staff corridor -> G5 sales floor (wall `G_Corridor_S`), between the rear island case and the consult chair |
+| `Breach_2` | (11.9, 4.2, 7.3) | yaw 90 (-Z = west into U6); `kind` "wall", `size` (1.0, 2.2), `room` "U6" | U7 stock room -> U6 manager office (wall `U_U6_U7`) |
+| `Breach_3` | (10.1, 4.2, 11.8) | yaw 0 (-Z = north into U6); `kind` "window", `size` (1.0, 2.1), `room` "U6" | Harlow facade window `ManagerSouthB` -> U6 manager office; cops come down a rope from the parapet (pairs with `HeliDrop_1`) |
+| `Breach_4` | (14.9, 7.2, 9.1) | basis = rotation -90 deg about X (-Z = down, +Y = north); `kind` "ceiling", `size` (1.2, 1.2), `room` "U7" | roof -> U7 stock room aisle (ceiling 7.2, roof top 7.8); pairs with `HeliDrop_1` |
+
+Each `Breach_<n>` holds its breach scene as child **`Visual`** (Intact). Metadata on breach markers:
+`kind` (String), `size` (Vector2, opening width x height in metres; ceiling: x by north-south),
+`room` (String, the GH room id it opens into).
+
+Map changes that make the openings real (all generated): wall openings in `G_Corridor_S` (x 10.1-11.1),
+`U_U6_U7` (z 6.8-7.8) and the U6 south window B extended to the floor (`EXT_WALLS`); the roof slab and the
+U7 ceiling are cut around a 1.2 m square at `Breach_4`; the static glazing of `ManagerSouthB` is now the
+breach scene's (the room dressing still treats it as a window, so U6/U7/G5 dressing is unchanged). The
+navmesh is unchanged with the breaches intact (infills are projected obstructions in the bake).
+
+## 6. Review
+
+Shots: `docs/levels/_art/po6_17/*.jpg`, `contact_sheet.jpg`. Re-render:
+
+```bash
+xvfb-run -a -s "-screen 0 1280x720x24" /opt/godot/godot --path game --rendering-driver opengl3 \
+  --resolution 1280x720 --script res://world/props/tools/po6_17_review.gd -- --out=$PWD/docs/levels/_art/po6_17 [--part=props|gh]
+```
+
+Not done here (ENV A): event logic, NavigationLinks for blown breaches, rope/rappel and the helicopter's
+flight path, van arrival/door animation, turret behaviour and hitboxes, breach charge/explosion VFX + audio.

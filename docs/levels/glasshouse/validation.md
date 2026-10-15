@@ -10,22 +10,31 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | contract_nodes | PASS | 0 | 0 |
 | cameras | PASS | 0 | 0 |
 | secure_zones | PASS | 0 | 0 |
-| floating | PASS | 0 | 0 |
+| floating | PASS | 0 | 2 |
 | clipping | PASS | 0 | 0 |
 | orientation | PASS | 0 | 0 |
 | scale | PASS | 0 | 0 |
+| slopes | PASS | 0 | 0 |
 | navmesh | PASS | 0 | 0 |
+| barred_doors | PASS | 0 | 0 |
 | reachability | PASS | 0 | 0 |
 | walkthrough | PASS | 0 | 0 |
 | patrols | PASS | 0 | 0 |
 | lasers | PASS | 0 | 0 |
+| camera_spine | skipped | 0 | 0 |
+| camera_screen | skipped | 0 | 0 |
 | materials | PASS | 0 | 0 |
 | zfight | PASS | 0 | 0 |
 | lights | PASS | 0 | 0 |
+| viewmodel_lit | PASS | 0 | 0 |
 | density | PASS | 0 | 0 |
 | variety | PASS | 0 | 0 |
 | bounds | PASS | 0 | 0 |
 | perf | PASS | 0 | 0 |
+| door_frame_gap | PASS | 0 | 0 |
+| frame_proud | PASS | 0 | 0 |
+| seam_gaps | PASS | 0 | 0 |
+| furniture_logic | PASS | 0 | 0 |
 
 ## contract_nodes: Contract nodes
 
@@ -44,6 +53,8 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 - 393 props checked
 
+- WARN `Variants/Group_escape/Slot_esc_alley_west/VanEscapeE1` @ (-2.40, 0.00, -3.20): prop has no geometry or collision; skipped
+- WARN `Variants/Group_escape/Slot_esc_pell/VanEscapeE2` @ (25.20, -0.15, 2.30): prop has no geometry or collision; skipped
 
 ## clipping: Nothing clips
 
@@ -79,35 +90,46 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 - `Geometry/Building/Stair/FlightReturn`: ramp collision enveloping the steps (max 0.175 m above the treads)
 - `Geometry/Building/Stair/FlightReturn`: 12 risers, 2.100 -> 4.200 m
 - `Geometry/Building/Stair/FlightReturn` rails: -X open, rail tops [1.05, 1.06, 1.06, 1.06, 1.07] m above nosing, max drop 3.12 m; +X wall, rail tops [1.05, 1.06, 1.06, 1.06, 1.07] m above nosing, max drop 0.00 m
+- stair chain: `Geometry/Building/Stair/FlightUp` -> `Geometry/Building/Stair/FlightReturn` joined by a landing at 2.100 m
+
+
+## slopes: No walkable slope < 50° outside the play mesh
+
+- 409 x 233 columns (0.25 m), 24554 surface samples, 0 collider(s) with reachable walkable surfaces outside play
 
 
 ## navmesh: Navmesh
 
-- navmesh: 1343 polygons, cell 0.10/0.10 m
-- 141 markers checked
+- navmesh: 1359 polygons, cell 0.10/0.10 m
+- 140 markers checked
 | room | walkable samples | covered | coverage |
 |---|---|---|---|
-| `Rooms/RoomG1` | 15 | 15 | 100% |
+| `Rooms/RoomG1` | 17 | 17 | 100% |
 | `Rooms/RoomG7` | 1 | 1 | 100% |
-| `Rooms/RoomG2` | 34 | 34 | 100% |
+| `Rooms/RoomG2` | 41 | 41 | 100% |
 | `Rooms/RoomG3` | 22 | 22 | 100% |
 | `Rooms/RoomG4` | 70 | 70 | 100% |
 | `Rooms/RoomG8` | 0 | 0 | 100% |
 | `Rooms/RoomG9` | 0 | 0 | 100% |
 | `Rooms/RoomG10` | 18 | 18 | 100% |
 | `Rooms/RoomG5` | 95 | 95 | 100% |
-| `Rooms/RoomG6` | 24 | 23 | 96% |
-| `Rooms/RoomU1` | 25 | 25 | 100% |
-| `Rooms/RoomU2` | 41 | 41 | 100% |
+| `Rooms/RoomG6` | 26 | 25 | 96% |
+| `Rooms/RoomU1` | 28 | 28 | 100% |
+| `Rooms/RoomU2` | 37 | 37 | 100% |
 | `Rooms/RoomU3` | 26 | 26 | 100% |
 | `Rooms/RoomU4` | 70 | 70 | 100% |
 | `Rooms/RoomU8` | 16 | 16 | 100% |
-| `Rooms/RoomU5` | 71 | 71 | 100% |
-| `Rooms/RoomU6` | 39 | 39 | 100% |
+| `Rooms/RoomU5` | 62 | 62 | 100% |
+| `Rooms/RoomU6` | 34 | 34 | 100% |
 | `Rooms/RoomU7` | 36 | 36 | 100% |
 | `Rooms/RoomX1` | 552 | 552 | 100% |
 | `Rooms/RoomX3` | 347 | 347 | 100% |
-| `Rooms/RoomX2` | 739 | 739 | 100% |
+| `Rooms/RoomX2` | 740 | 740 | 100% |
+
+
+## barred_doors: BARRED doorways are closed in the navmesh
+
+- 4 BARRED door(s) checked
 
 
 ## reachability: Reachability (per variant)
@@ -134,24 +156,29 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## materials: Materials and texel density
 
-- 1482 surfaces checked
+- 2102 surfaces checked
 
 
 ## zfight: Z-fighting
 
-- 268913 triangles checked
+- 272378 triangles checked
 
 
 ## lights: Lighting is deliberate
 
-- 133 lights, 134 fixture meshes
+- 134 lights, 135 fixture meshes
+
+
+## viewmodel_lit: Interior key lights light the viewmodel (D-095)
+
+- 85 interior key light(s) in 18 room(s); 0 lack `viewmodel_lit`
 
 
 ## density: Dressing density
 
 | room | kit | props | m² | per m² |
 |---|---|---|---|---|
-| `Rooms/RoomG1` | storage_receiving | 15 | 18.5 | 0.81 |
+| `Rooms/RoomG1` | storage_receiving | 16 | 18.5 | 0.86 |
 | `Rooms/RoomG7` | electrical_closet | 3 | 4.0 | 0.75 |
 | `Rooms/RoomG2` | workshop_jeweler | 28 | 24.8 | 1.13 |
 | `Rooms/RoomG3` | restroom_single | 13 | 11.2 | 1.16 |
@@ -160,16 +187,16 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `Rooms/RoomG10` | corridor_service | 4 | 9.0 | 0.44 |
 | `Rooms/RoomG5` | sales_floor_jewelry | 52 | 78.0 | 0.67 |
 | `Rooms/RoomG6` | salon_private | 24 | 30.0 | 0.80 |
-| `Rooms/RoomU1` | break_room | 26 | 24.8 | 1.05 |
-| `Rooms/RoomU2` | security_office | 25 | 22.5 | 1.11 |
+| `Rooms/RoomU1` | break_room | 27 | 24.8 | 1.09 |
+| `Rooms/RoomU2` | security_office | 24 | 22.5 | 1.07 |
 | `Rooms/RoomU3` | restroom_single | 10 | 11.2 | 0.89 |
 | `Rooms/RoomU4` | corridor_office | 11 | 27.0 | 0.41 |
 | `Rooms/RoomU8` | corridor_service | 4 | 9.0 | 0.44 |
-| `Rooms/RoomU5` | office_open | 36 | 42.0 | 0.86 |
-| `Rooms/RoomU6` | office_manager | 26 | 30.0 | 0.87 |
+| `Rooms/RoomU5` | office_open | 35 | 42.0 | 0.83 |
+| `Rooms/RoomU6` | office_manager | 28 | 30.0 | 0.93 |
 | `Rooms/RoomU7` | storage_archive | 19 | 36.0 | 0.53 |
-| `Rooms/RoomX1` | exterior_alley | 19 | 193.2 | 0.10 |
-| `Rooms/RoomX2` | exterior_street | 29 | 1380.4 | 0.02 |
+| `Rooms/RoomX1` | exterior_alley | 18 | 193.2 | 0.09 |
+| `Rooms/RoomX2` | exterior_street | 28 | 1380.4 | 0.02 |
 
 
 ## variety: Layout variety
@@ -194,35 +221,57 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## bounds: No void / back faces
 
-- 269 eye samples, 21789 rays, sky yes, 0 void ray(s)
+- 272 eye samples, 22032 rays, sky yes, 0 void ray(s)
 
 
 ## perf: Per-shot performance budget
 
 | camera | draw calls | triangles | shadow lights |
 |---|---|---|---|
-| `TopDownSite` | 984 | 535210 | 6 |
-| `TopDownBuilding` | 1035 | 534234 | 6 |
-| `ExtHarlowCorner` | 1089 | 563400 | 6 |
-| `ExtShopfront` | 1426 | 573424 | 6 |
-| `ExtAlleyWest` | 1309 | 569910 | 6 |
-| `ExtAlleyMouth` | 1307 | 535518 | 6 |
-| `ExtFireEscape` | 816 | 348102 | 3 |
-| `ExtPellFireExit` | 1331 | 538776 | 6 |
-| `SalesFloorEntrance` | 873 | 382148 | 4 |
-| `ChandelierLandmark` | 1033 | 421450 | 6 |
-| `CounterStaffDoor` | 430 | 237918 | 3 |
-| `SalonPrivate` | 1243 | 478086 | 6 |
-| `CorridorG4` | 1118 | 448664 | 6 |
-| `WorkshopSafe` | 181 | 70320 | 2 |
-| `ReceivingBackDoor` | 168 | 78594 | 2 |
-| `StairCore` | 267 | 90194 | 2 |
-| `UpperCorridor` | 920 | 360838 | 6 |
-| `SecurityOffice` | 429 | 163766 | 3 |
-| `BreakRoom` | 153 | 71754 | 2 |
-| `ManagerOffice` | 508 | 260164 | 5 |
-| `AdminOffice` | 279 | 147732 | 2 |
-| `StockRoom` | 813 | 392532 | 6 |
-| `GaragePerch` | 1232 | 572282 | 6 |
-| `GarageRamp` | 40 | 33906 | 1 |
+| `TopDownSite` | 1622 | 542258 | 6 |
+| `TopDownBuilding` | 1574 | 539356 | 6 |
+| `ExtHarlowCorner` | 1667 | 569616 | 6 |
+| `ExtShopfront` | 1949 | 579272 | 6 |
+| `ExtAlleyWest` | 1884 | 575736 | 6 |
+| `ExtAlleyMouth` | 1832 | 542726 | 6 |
+| `ExtFireEscape` | 1128 | 349204 | 3 |
+| `ExtPellFireExit` | 1774 | 544712 | 6 |
+| `SalesFloorEntrance` | 1160 | 381844 | 4 |
+| `ChandelierLandmark` | 1456 | 423492 | 6 |
+| `CounterStaffDoor` | 599 | 249342 | 3 |
+| `SalonPrivate` | 1660 | 485062 | 6 |
+| `CorridorG4` | 1493 | 454170 | 6 |
+| `WorkshopSafe` | 244 | 71658 | 2 |
+| `ReceivingBackDoor` | 260 | 79544 | 2 |
+| `StairCore` | 428 | 86562 | 2 |
+| `UpperCorridor` | 1354 | 363798 | 6 |
+| `SecurityOffice` | 654 | 173442 | 3 |
+| `BreakRoom` | 238 | 71242 | 2 |
+| `ManagerOffice` | 747 | 263488 | 5 |
+| `AdminOffice` | 402 | 151120 | 2 |
+| `StockRoom` | 1168 | 399634 | 6 |
+| `GaragePerch` | 1809 | 577716 | 6 |
+| `GarageRamp` | 62 | 34944 | 1 |
+
+
+## door_frame_gap: Doors and windows fill their wall openings (no gaps, no clipping)
+
+- 30 door / window prefab(s) measured; gap > 0.02 m and clip > 0.01 m fail
+- leaf bullet surfaces (D-105, Door.leaf_surface_id): glass 1, metal 9, wood 13; 0 look glass / metal but resolve to wood (WARN)
+
+
+## frame_proud: Door / window frame colliders are flush with the wall (no proud or narrowing collision)
+
+- 30 door / window prefab(s), 23 with frame colliders; proud > 0.01 m and narrowing > 0.01 m fail; worst proud 0.000 m, narrowing 0.000 m
+
+
+## seam_gaps: No see-through slits at wall corners, junctions, floors and ceilings
+
+- 18 room(s), 80 box side(s) scanned; slits > 0.02 m fail
+
+
+## furniture_logic: Furniture arranged plausibly
+
+- classified: counter 2, chair 5, table 2, desk 9, low_table 1, wall_unit 19, lounge_seat 1, stool 1, visitor_chair 2, desk_chair 5, monitor 4
+- 14 seats, 14 tables/desks/counters, 23 doors checked
 
