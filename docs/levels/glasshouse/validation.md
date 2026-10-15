@@ -156,12 +156,12 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## materials: Materials and texel density
 
-- 2102 surfaces checked
+- 2100 surfaces checked
 
 
 ## zfight: Z-fighting
 
-- 272378 triangles checked
+- 272332 triangles checked
 
 
 ## lights: Lighting is deliberate
@@ -228,29 +228,29 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 | camera | draw calls | triangles | shadow lights |
 |---|---|---|---|
-| `TopDownSite` | 1622 | 542258 | 6 |
-| `TopDownBuilding` | 1574 | 539356 | 6 |
-| `ExtHarlowCorner` | 1667 | 569616 | 6 |
-| `ExtShopfront` | 1949 | 579272 | 6 |
-| `ExtAlleyWest` | 1884 | 575736 | 6 |
-| `ExtAlleyMouth` | 1832 | 542726 | 6 |
+| `TopDownSite` | 1620 | 542212 | 6 |
+| `TopDownBuilding` | 1572 | 539310 | 6 |
+| `ExtHarlowCorner` | 1665 | 569570 | 6 |
+| `ExtShopfront` | 1947 | 579226 | 6 |
+| `ExtAlleyWest` | 1882 | 575690 | 6 |
+| `ExtAlleyMouth` | 1830 | 542680 | 6 |
 | `ExtFireEscape` | 1128 | 349204 | 3 |
-| `ExtPellFireExit` | 1774 | 544712 | 6 |
-| `SalesFloorEntrance` | 1160 | 381844 | 4 |
-| `ChandelierLandmark` | 1456 | 423492 | 6 |
+| `ExtPellFireExit` | 1772 | 544666 | 6 |
+| `SalesFloorEntrance` | 1158 | 381798 | 4 |
+| `ChandelierLandmark` | 1454 | 423446 | 6 |
 | `CounterStaffDoor` | 599 | 249342 | 3 |
-| `SalonPrivate` | 1660 | 485062 | 6 |
-| `CorridorG4` | 1493 | 454170 | 6 |
-| `WorkshopSafe` | 244 | 71658 | 2 |
-| `ReceivingBackDoor` | 260 | 79544 | 2 |
+| `SalonPrivate` | 1658 | 485016 | 6 |
+| `CorridorG4` | 1491 | 454124 | 6 |
+| `WorkshopSafe` | 242 | 71612 | 2 |
+| `ReceivingBackDoor` | 258 | 79498 | 2 |
 | `StairCore` | 428 | 86562 | 2 |
 | `UpperCorridor` | 1354 | 363798 | 6 |
-| `SecurityOffice` | 654 | 173442 | 3 |
+| `SecurityOffice` | 652 | 173396 | 3 |
 | `BreakRoom` | 238 | 71242 | 2 |
 | `ManagerOffice` | 747 | 263488 | 5 |
 | `AdminOffice` | 402 | 151120 | 2 |
 | `StockRoom` | 1168 | 399634 | 6 |
-| `GaragePerch` | 1809 | 577716 | 6 |
+| `GaragePerch` | 1807 | 577670 | 6 |
 | `GarageRamp` | 62 | 34944 | 1 |
 
 
