@@ -26733,14 +26733,22 @@ visual_scene = ExtResource("204_nd")
 objective_tag = &"depository"
 metadata/kind = "safe"
 
-[node name="NightDropBags" type="Node3D" parent="Gameplay/Depository" unique_id=102990 instance=ExtResource("196_nd")]
-transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 22.6, -4, 18.3)
+[node name="NightDropBags" parent="Gameplay/Depository/DepositorySafe" unique_id=102990 instance=ExtResource("196_nd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.142, 0)
 script = ExtResource("197_nd")
 loot_id = &"loot.cash"
 count = 4
 visual_scene = ExtResource("198_nd")
 objective_tag = &"depository_loot"
 metadata/kind = "loot_spawn"
+
+[node name="UsePoint" parent="Gameplay/Depository/DepositorySafe/NightDropBags" index="1"]
+transform = Transform3D(-0.6560356, 0, 0.75473005, 0, 1.0000001, 0, -0.75473005, 0, -0.6560356, 1.2999973, -0.14199996, -1.1300011)
+
+[node name="Interactable" parent="Gameplay/Depository/DepositorySafe/NightDropBags" index="2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, -0.2)
+script = ExtResource("188_nd")
+kind = &"bag_loot"
 
 [node name="Misc" type="Node3D" parent="Gameplay" unique_id=102991]
 
@@ -28070,6 +28078,7 @@ volume_offset_db = -6.0
 [editable path="Gameplay/Vault/Box6"]
 [editable path="Gameplay/Vault/Box7"]
 [editable path="Gameplay/Vault/Box8"]
+[editable path="Gameplay/Depository/DepositorySafe/NightDropBags"]
 [editable path="Gameplay/Misc/TellerDrawer1"]
 [editable path="Gameplay/Misc/TellerDrawer2"]
 [editable path="Gameplay/Misc/TellerDrawer3"]

@@ -1,0 +1,15 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/props/prop_breach_wall/prop_breach_wall.glb" id="1_model"]
+
+[node name="PropBreachWall" type="Node3D"]
+
+[node name="Model" parent="." instance=ExtResource("1_model")]
+
+[node name="Collision" parent="Model/Intact"]
+metadata/surface = &"plaster"
+
+[node name="Blown" parent="Model"]
+visible = false
+
+[editable path="Model"]
