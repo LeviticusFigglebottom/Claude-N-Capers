@@ -36,6 +36,8 @@
 ## free SNIPER_PERCH point (SpecialSpawner.spawn_special places and claims it).
 ## A3-02 (L4.9): Commander Brandt + Aegis squad live in the child AegisCaptain; while he is on the
 ## map FADE never comes. NpcBase.take_hit calls modify_npc_hit() (resistance + per-hit cap).
+## PO6-17 (D-114 §5): RNG assault events (turret van, helicopter, breach points) live in the child
+## AssaultEventRunner `AssaultEvents`, ticked from the phase machine (GameRng &"assault_events").
 class_name AssaultDirector
 extends Node
 
@@ -84,6 +86,8 @@ var drama: float = 0.0
 var captain: AegisCaptain = null
 ## A3-03 (L1.5, L4.11): faction EnemyDefs and special caps.
 var roster: EnemyRoster = null
+## PO6-17: RNG assault events.
+var events: AssaultEventRunner = null
 
 var _start_held: bool = false
 var _runtime: HeistRuntime = null
@@ -116,6 +120,10 @@ func _ready() -> void:
 	captain.name = "AegisCaptain"
 	captain.setup(self)
 	add_child(captain)
+	events = AssaultEventRunner.new()
+	events.name = "AssaultEvents"
+	events.setup(self)
+	add_child(events)
 	if _runtime != null:
 		var override: DirectorTweak = _runtime.options.get("director_tweak") as DirectorTweak
 		if override != null:
@@ -342,7 +350,7 @@ func spawn_enemy(def: EnemyDef, xf: Transform3D, point: Node3D = null, extra: Di
 	if look.length() > 0.1:
 		xf.basis = Basis.looking_at(look, Vector3.UP)
 	var info: Dictionary = {"spawn_point": point, "assault_wave": wave_index, "faction": faction(),
-		"tags": point.get(&"tags") if point != null else null}
+		"tags": point.get(&"tags") if point != null and point.get(&"tags") is Array else []}
 	info.merge(extra, true)
 	if def != null:
 		info["enemy_def"] = def
@@ -461,6 +469,7 @@ func _physics_step(delta: float) -> void:
 				wave_index += 1
 				_enter(Enums.AssaultPhase.CONTROL, tweak.control_between_waves_s)
 	_tick_queue(delta)
+	events.tick(delta)
 
 
 func _tick_sustain(delta: float) -> void:

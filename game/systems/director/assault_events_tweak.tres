@@ -1,0 +1,91 @@
+[gd_resource type="Resource" script_class="AssaultEventsTweak" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://systems/director/assault_events_tweak.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+first_event_wave = 1
+first_event_delay_s = 8.0
+roll_interval_s = 20.0
+chance_per_roll = PackedFloat32Array(0.35, 0.4, 0.45, 0.5, 0.55, 0.6)
+min_gap_s = 30.0
+max_active = 2
+heists = {
+&"glasshouse": {
+"events": [{
+"cooldown_s": 150.0,
+"kind": &"turret_van",
+"max_per_heist": 1,
+"min_wave": 1,
+"params": {},
+"weight": 1.0
+}, {
+"cooldown_s": 90.0,
+"kind": &"heli",
+"max_per_heist": 2,
+"min_wave": 1,
+"params": {},
+"weight": 1.2
+}, {
+"cooldown_s": 45.0,
+"kind": &"breach",
+"max_per_heist": 4,
+"min_wave": 1,
+"params": {},
+"weight": 1.5
+}]
+}
+}
+kind_defaults = {
+&"breach": {
+"_note": "warning (cue + flashing charge) then a C4-style blast at the charge (world attacker: hurts crew and NPCs), Intact hidden / Blown shown, nav link opened, squad enters",
+"damage": 60.0,
+"radius_m": 4.5,
+"squad": [&"enemy.tac_heavy", &"enemy.tac_light", &"enemy.tac_light"],
+"squad_delay_s": 0.8,
+"squad_interval_s": 0.5,
+"warning_s": 3.5
+},
+&"heli": {
+"_note": "police helicopter: flies in, orbits the orbit marker, hovers over a drop marker for a rappel squad, then orbits with a Longshot at the open door for sniper_s and leaves",
+"approach_m": 110.0,
+"drop": true,
+"drop_interval_s": 0.9,
+"hover_height_m": 11.0,
+"orbit_height_m": 30.0,
+"orbit_radius_m": 24.0,
+"orbit_s": 10.0,
+"rappel_speed_mps": 3.0,
+"sniper": true,
+"sniper_id": &"enemy.longshot",
+"sniper_s": 35.0,
+"speed_mps": 20.0,
+"squad": [&"enemy.tac_heavy", &"enemy.tac_light", &"enemy.tac_light", &"enemy.tac_light"]
+},
+&"turret_van": {
+"_note": "armoured van drives in, opens its rear doors (squad dismounts), raises a roof turret. Turret: armor_hp first (front), then health; the rear WEAKPOINT (ammo box) skips armor x weakspot_mult. Display units (PD2 /10).",
+"accuracy_mult": 0.55,
+"aim_delay_s": 1.0,
+"aim_tolerance_deg": 5.0,
+"armor_hp": [500.0, 650.0, 800.0, 1000.0, 1250.0, 1500.0],
+"burst_pause_s": 1.4,
+"burst_s": 2.6,
+"damage": [6.0, 8.0, 10.0, 12.0, 15.0, 18.0],
+"deploy_s": 2.0,
+"door_open_s": 0.8,
+"drive_in_m": 22.0,
+"drive_in_s": 4.5,
+"explosive_mult": 1.5,
+"fire_interval_s": 0.12,
+"health": [1200.0, 1500.0, 1800.0, 2200.0, 2700.0, 3200.0],
+"pitch_deg_s": 60.0,
+"range_m": 60.0,
+"retarget_s": 0.5,
+"squad": [&"enemy.tac_light", &"enemy.tac_light"],
+"squad_interval_s": 0.7,
+"suppress_s": 2.0,
+"turn_deg_s": 75.0,
+"weakspot_mult": 2.5,
+"weapon_id": &"weapon.npc_lmg"
+}
+}

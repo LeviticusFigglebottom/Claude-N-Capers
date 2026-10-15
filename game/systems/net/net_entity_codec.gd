@@ -370,6 +370,8 @@ static func xform_of(node: Node) -> Variant:
 	var bag: LootBag = node as LootBag
 	if bag != null and not bag.is_carried():
 		return bag.global_transform
+	if node.has_method(&"_net_xform"):
+		return node.call(&"_net_xform")  # PO6-17: moving dynamic entities (assault van / heli)
 	return null
 
 
