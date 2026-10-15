@@ -1925,6 +1925,9 @@ def clips(sk: Skeleton, table: dict) -> dict[str, Clip]:
         from anim_humanoid import CLIPS as FULL  # noqa: PLC0415
 
         extra = d304.clips(sk, solver, table, gaits(FULL), int(FULL["idle"]["frames"]))
+    import _anim_assault as assault  # noqa: PLC0415 - PO6-17 assault-event set; imports this module
+
+    extra.update(assault.clips(sk, solver, table))
     out: dict[str, Clip] = {}
     for name, row in table.items():
         N, loop, speed = int(row["frames"]), bool(row["loop"]), float(row["speed"])
