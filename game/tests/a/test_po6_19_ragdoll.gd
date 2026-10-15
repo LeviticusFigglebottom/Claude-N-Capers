@@ -283,10 +283,11 @@ func test_bagging_a_frozen_corpse_stops_it() -> void:
 	assert_eq(_hits.size(), 0, "a bagged body does not bleed")
 
 
-## PO6-18 + PO6-19: a kneeling cuffed hostage (no pose death clip on this rig yet: the pose freezes) killed by a
-## pistol slumps down from the kneel right away (the settle ragdoll starts at once) and ends low on the floor.
-func test_kneeling_hostage_killed_slumps_from_the_pose() -> void:
-	var n: NpcBase = _npc(Vector3(30, 0, 0))
+## PO6-18 + PO6-19: a kneeling cuffed hostage killed by a pistol never stands up and ends low on the floor.
+## Two paths: the rig has ENV D's death_kneel_cuffed -> that clip plays (then the settle); the rig lacks it
+## (forced here by removing the clip) -> the frozen kneel hands over to the ragdoll at once and topples.
+func _kneeling_hostage(pos: Vector3, drop_clip: bool) -> NpcBase:
+	var n: NpcBase = _npc(pos)
 	var brain: Node = Node.new()
 	brain.name = "Brain"
 	var sc: GDScript = GDScript.new()
@@ -295,20 +296,49 @@ func test_kneeling_hostage_killed_slumps_from_the_pose() -> void:
 	brain.set_script(sc)
 	n.add_child(brain)
 	await wait_physics_frames(6)
+	var lib: AnimationLibrary = AnimDriver.of(n).player.get_animation_library(AnimDriver.LIBRARY)
+	if drop_clip and lib.has_animation(&"death_kneel_cuffed"):
+		lib = lib.duplicate()  # the scene's library is shared: drop the clip on this rig's copy only
+		lib.remove_animation(&"death_kneel_cuffed")
+		var ap: AnimationPlayer = AnimDriver.of(n).player
+		ap.remove_animation_library(AnimDriver.LIBRARY)
+		ap.add_animation_library(AnimDriver.LIBRARY, lib)
+		await wait_physics_frames(2)
 	assert_eq(AnimDriver.of(n).clip, &"kneel_cuffed", "kneeling before the shot")
-	n.take_hit(_info(500.0, PISTOL, n.global_position + Vector3(0, 0.9, 0), Vector3(0, 0, 1), 10.0))
-	var rd: NpcRagdoll = NpcRagdoll.of(n)
-	# LEAD (round 215): with ENV D's death_kneel_cuffed on the rig the pose death plays first, then the settle
-	# ragdoll; without it the frozen kneel topples within 1 s. Both must end on the floor and never stand up.
-	await wait_physics_frames(2)
-	var clip_path: bool = AnimDriver.of(n).clip == &"death_kneel_cuffed"
-	var budget: float = RagdollTweak.data().anim_wait_max_s + 1.0 if clip_path else 1.0
-	var ok: bool = await wait_until(func() -> bool: return rd.engaged, budget)
-	assert_true(ok, "the kneel death (%s) hands over to the settle ragdoll within %.1f s"
-			% ["clip" if clip_path else "frozen pose", budget])
-	await wait_until(func() -> bool: return rd.freezes > 0, RagdollTweak.data().settle_after_anim_s + 2.0)
-	var head: Vector3 = Vector3.INF
+	return n
+
+
+func _head_y(rd: NpcRagdoll) -> float:
 	for pb: PhysicalBone3D in rd.bodies:
 		if pb.name == "Head":
-			head = pb.global_position
-	assert_true(head.y < 0.6, "head ends low on the floor (%.2f m), the body never stands" % head.y)
+			return pb.global_position.y
+	return INF
+
+
+func test_kneeling_hostage_without_pose_clip_topples() -> void:
+	var n: NpcBase = await _kneeling_hostage(Vector3(30, 0, 0), true)
+	n.take_hit(_info(500.0, PISTOL, n.global_position + Vector3(0, 0.9, 0), Vector3(0, 0, 1), 10.0))
+	var rd: NpcRagdoll = NpcRagdoll.of(n)
+	var ok: bool = await wait_until(func() -> bool: return rd.engaged, 1.0)
+	assert_true(ok, "the frozen kneel hands over to the ragdoll within 1 s (not anim_wait_max_s)")
+	await wait_until(func() -> bool: return rd.freezes > 0, RagdollTweak.data().settle_s + 2.0)
+	assert_true(_head_y(rd) < 0.6, "head ends low on the floor (%.2f m)" % _head_y(rd))
+
+
+func test_kneeling_hostage_with_pose_clip_plays_it() -> void:
+	var probe: NpcBase = _npc(Vector3(40, 0, 0))
+	await wait_physics_frames(3)
+	var has_clip: bool = AnimDriver.of(probe).player.has_animation("%s/death_kneel_cuffed" % AnimDriver.LIBRARY)
+	if not has_clip:
+		skip("rig has no death_kneel_cuffed yet (ENV D clip): the topple test covers this rig")
+		return
+	var n: NpcBase = await _kneeling_hostage(Vector3(30, 0, 6), false)
+	var start_head: float = n.global_position.y + 1.2
+	n.take_hit(_info(500.0, PISTOL, n.global_position + Vector3(0, 0.9, 0), Vector3(0, 0, 1), 10.0))
+	await wait_frames(3)
+	assert_eq(AnimDriver.of(n).clip, &"death_kneel_cuffed", "the pose death clip plays")
+	var rd: NpcRagdoll = NpcRagdoll.of(n)
+	await wait_until(func() -> bool: return rd.freezes > 0,
+		RagdollTweak.data().anim_wait_max_s + RagdollTweak.data().settle_after_anim_s + 2.0)
+	assert_true(_head_y(rd) < 0.6, "head ends low on the floor (%.2f m)" % _head_y(rd))
+	assert_true(_head_y(rd) < start_head, "never rises")
