@@ -312,8 +312,19 @@ func _crew_range() -> FiringRange:
 		return null
 	var r: FiringRange = await _spawn_range()
 	await wait_physics_frames(10)  # settle on the floor
-	await wait_seconds(0.4)  # PO6-12: the crew draws the starter P9 (equip_time_s 0.35) before it can fire
+	# PO6-12: the crew draws the starter weapon (holster/draw path) before it can fire; wait for that, not a time.
+	var w: Object = r.crew.get(&"weapons") as Object
+	var t0: int = Time.get_ticks_msec()
+	while w != null and not _ready_to_fire(w) and Time.get_ticks_msec() - t0 < 5000:
+		await wait_physics_frames(1)
+	assert_true(w == null or _ready_to_fire(w), "crew armed and drawn before the test (5 s)")
 	return r
+
+
+## CrewWeapons can fire and the draw (equip time; no public accessor, read `_equip_left`) is over.
+func _ready_to_fire(w: Object) -> bool:
+	var left: Variant = w.get(&"_equip_left")
+	return bool(w.call(&"can_fire")) and (left == null or float(left) <= 0.0) and not bool(w.get(&"reloading"))
 
 
 ## Intent looking from the crew's eye at `p` (crew_intent.md: absolute yaw/pitch, -Z forward).
@@ -412,9 +423,12 @@ func test_real_crew_shot_damages_target_once() -> void:
 	crew.call(&"apply_intent", _intent_at(crew, aim_at, false))
 	await wait_physics_frames(2)
 	crew.call(&"apply_intent", _intent_at(crew, aim_at, true))  # trigger press (semi-auto: one shot)
-	await wait_physics_frames(6)
+	# Lead r215: condition-based (a loaded box made the old 6-frame wait miss the shot): hold until the hit resolves.
+	var t0: int = Time.get_ticks_msec()
+	while seen.is_empty() and Time.get_ticks_msec() - t0 < 3000:
+		await wait_physics_frames(1)
 	crew.call(&"apply_intent", _intent_at(crew, aim_at, false))
-	await wait_physics_frames(2)
+	await wait_physics_frames(6)  # a second (wrong) damage_applied would land here
 	EventBus.damage_applied.disconnect(on_applied)
 	assert_eq(seen.size(), 1, "one trigger press -> exactly one damage_applied (single hit path)")
 	if seen.is_empty():
