@@ -94,12 +94,14 @@ PISTOL = FPSet(
     # shoulder brought in under the eye so the firing hand's knuckles fill the bottom centre and only the cuff and a
     # short sleeve show below it. The left hand waits off-screen and comes up only to reload.
     hip=((0.102, 0.367, -0.107), 12.0, 2.0, -4.0), one_hand=True,
-    ads_dist=0.22, sh=(0.0, 0.06, 0.04), ads_sh=(-0.17, -0.06, -0.24),
+    ads_dist=0.22, sh=(0.0, 0.06, 0.04), ads_sh=(-0.25, 0.0, -0.30),  # lead: forearm drops steeply out of frame
     pole_l=(-0.22, -0.25, -0.94), pole_l_ads=(-0.22, -0.25, -0.94), pole_r=(0.22, -0.25, -0.94),
-    pole_r_ads=(0.1, -0.4, -0.9),
+    pole_r_ads=(-0.2, -0.2, -0.96),
     sprint=((0.13, 0.30, -0.15), 10.0, -16.0, -26.0),
-    lowered=((0.16, 0.20, -0.46), 10.0, -55.0, -30.0),
-    reload_tilt=((0.07, 0.36, -0.16), 16.0, 22.0, 30.0),
+    # D-116 (lead): the gun never rolls its grip toward the camera; the mag change happens in frame, the left hand
+    # coming in from below
+    lowered=((0.14, 0.22, -0.42), 10.0, -35.0, -15.0),
+    reload_tilt=((0.05, 0.33, -0.10), 8.0, 10.0, -20.0),
     support="pistol", blade=6.0, blade_ads=0.0,
     recoil={"back": 0.030, "up": 0.012, "pitch": 9.0, "roll": 1.5, "yaw": 0.6},
     recoil_ads={"back": 0.020, "up": 0.006, "pitch": 5.0, "roll": 0.8, "yaw": 0.3},
@@ -400,11 +402,11 @@ REVOLVER = FPSet(
     # shoulder brought in under the eye so the firing hand's knuckles fill the bottom centre and only the cuff and a
     # short sleeve show below it. The left hand waits off-screen and comes up only to reload.
     hip=((0.102, 0.367, -0.107), 12.0, 2.0, -4.0), one_hand=True,
-    ads_dist=0.22, sh=(0.0, 0.06, 0.04), ads_sh=(-0.17, -0.06, -0.24),
+    ads_dist=0.22, sh=(0.0, 0.06, 0.04), ads_sh=(-0.25, 0.0, -0.30),  # lead: forearm drops steeply out of frame
     pole_l=(-0.22, -0.25, -0.94), pole_l_ads=(-0.22, -0.25, -0.94), pole_r=(0.22, -0.25, -0.94),
-    pole_r_ads=(0.1, -0.4, -0.9),
+    pole_r_ads=(-0.2, -0.2, -0.96),
     sprint=((0.13, 0.30, -0.15), 10.0, -16.0, -26.0),
-    lowered=((0.16, 0.20, -0.46), 10.0, -55.0, -30.0),
+    lowered=((0.14, 0.22, -0.42), 10.0, -35.0, -15.0),
     reload_tilt=((0.07, 0.34, -0.15), 12.0, 10.0, -20.0),
     support="pistol", blade=6.0, blade_ads=0.0, reload="speedloader",
     recoil={"back": 0.040, "up": 0.018, "pitch": 16.0, "roll": 2.5, "yaw": 1.0},
