@@ -118,6 +118,8 @@ func test_door_locks_b2() -> void:
 		var r: Node = doors.get_node_or_null(nm2)
 		assert_true(r != null and float(r.get(&"width_m")) >= 1.0, "%s is a >= 1.0 m route door (B4.7)" % nm2)
 	assert_true(bool(doors.get_node("BronzeDoorsW").get(&"starts_open")), "bronze doors start open")
+	for sh: String in ["ShutterCalloway", "ShutterTreasury", "ShutterArtDoor"]:
+		assert_true(bool(doors.get_node(sh).get(&"shutter")), "%s is a Door.shutter (B5)" % sh)
 	assert_eq(PackedStringArray(doors.get_node("ArtStoreVaultDoor").get(&"npc_authorized_tags")),
 		PackedStringArray(["guard_vaultline"]), "Vaultline couriers pass the vault door")
 	for sid: String in COURT_LOCKS:
@@ -247,6 +249,8 @@ func test_frame_sensor_groups() -> void:
 			assert_true(ls.alarm_on_take and ls.alarm_group != &"", "%s: a hung study has a sensor" % ls.name)
 	var hack: HackTerminal = _map.get_node("Gameplay/Devices/ArgusTerminal") as HackTerminal
 	assert_eq(hack.clears_alarm_group, &"argus_treasury", "the hack clears the TR zone")
+	assert_eq(hack.clears_alarm_groups, [&"argus_upper", &"argus_ground"] as Array[StringName],
+		"the hack also takes the upper and ground zones offline itself")
 	assert_eq(PackedStringArray(hack.get_meta(&"alarm_groups", PackedStringArray())),
 		PackedStringArray(["argus_treasury", "argus_upper", "argus_ground"]), "and lists every zone for the mission")
 

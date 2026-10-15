@@ -304,7 +304,7 @@ func _build_shutters(parent: Node3D) -> void:
 					yaw = float(pl[1])
 		cprefab(parent, "door", String(sh[0]), pos, yaw, String(sh[4]),
 			{"lock": "enum:NONE", "swing": "enum:INWARD", "starts_open": true, "width_m": float(sh[5]),
-				"leaf_surface": &"metal", "objective_tag": &"shutter"}, null, {"kind": String(sh[6]), "swing_side": "back"})
+				"leaf_surface": &"metal", "objective_tag": &"shutter", "shutter": true}, null, {"kind": String(sh[6]), "swing_side": "back"})
 
 
 ## AS painting racks (plan [==]): 12 pull-out mesh screens, static dressing with collision + nav obstruction.
@@ -359,7 +359,8 @@ func _build_argus(_gp: Node3D) -> void:
 	var rack: Vector3 = Vector3(26.5, 5.4, 0.75)
 	cprefab(dev, "hack_terminal", "ArgusTerminal", rack, 180.0, "prop_server_rack_terminal",
 		{"duration_s": HACK_STEALTH_S, "interruptions": Vector2i(1, 2), "objective_tag": &"hack",
-			"clears_alarm_group": ARGUS_TR}, Vector3(26.5, 5.4, 2.2),
+			"clears_alarm_group": ARGUS_TR, "clears_alarm_groups": [ARGUS_UPPER, ARGUS_GROUND] as Array[StringName]},
+		Vector3(26.5, 5.4, 2.2),
 		{"kind": "hack_terminal", "alarm_groups": PackedStringArray(ARGUS_GROUPS)})
 	obstruct_catalog("prop_server_rack_terminal", rack, 180.0)
 	var doors: Node3D = n("Gameplay/Doors")

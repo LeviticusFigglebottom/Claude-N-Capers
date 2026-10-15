@@ -4,6 +4,32 @@ Owner: ENV C. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 
+## 2026-10-15 (new session, D-114 PO list)
+
+**Head:** `c4567cb6` on `env/c-worlds` (trunk merged). Lead merged 5afeae90 (r205) and e9e3b96e (r206).
+
+**Done:**
+- **PO6-07 audio loops** (5afeae90). Unowned loop requests now play once. Each keyed loop has a stop owner
+  (`CuePlayer.LOOP_STOP_OWNERS`, test-enforced) and a safety cap. Siren follows the assault phases; held-trigger weapon
+  loops stop on release; map bells stop after the bell duration. Real GH run log: `docs/levels/_audio/po6_07_gh_loud_run.txt`;
+  audit: `docs/levels/_audio/po6_07_loop_audit.md`; tests: `tests/c/test_audio_loops.gd`, `tests/c/_review/test_gh_audio_loud_run.gd`.
+- **PO6-13 muzzle flash** (e9e3b96e). SIZE_K 0.6, brake cone x0.75 + side-port jets, 2 frames, TP light halved.
+  Sheets: `docs/levels/_art/po6_13/`. Brake carries its own `Muzzle` marker (outermost wins), optional `MuzzlePortL/R`
+  (lead approved).
+- **PO6-10 black gun** (68b4e770). Coated finishes are dielectric (`coat_metal`). Probe: gun 8.0 -> 36.4, arms 89.5.
+  The rest of the gap is albedo/lighting (P). `docs/levels/_art/po6_10/`.
+- **GN door data** (c4567cb6). Shutters set `Door.shutter`; the Argus terminal clears all three zones itself.
+- `prop_saw_device` was already on trunk (3bc3c6d4); the handoff item was stale.
+
+**In progress (worktree lanes):**
+- PO6-17: GH turret van / sentry turret / helicopter / breach props, plus `AssaultEvents/` markers. Contract agreed with A:
+  `TurretVan_n`, `HeliOrbit_n` (meta `radius`), `HeliDrop_n`, `Breach_n` (meta `kind`, `size`; `Intact`/`Blown`).
+  Doc: `docs/levels/_art/po6_17/`.
+- D-111 SL/DB prop finish (`wip/c-sldb-props` steps 1-6).
+
+**Agreed with A:** PO6-05 `LootInterior` Marker3D on safe visuals (A sends the list); PO6-19 blood on corpses when A
+emits `blood_hit`.
+
 ## HANDOFF 2026-10-14
 
 **Branch head:** `34362123` + this handoff doc commit on `env/c-worlds`: trunk r~196 merged, all green (GH/ND wall tiles + SL/DB shots pending trunk).
