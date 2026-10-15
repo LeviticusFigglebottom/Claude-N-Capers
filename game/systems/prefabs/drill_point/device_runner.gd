@@ -90,9 +90,12 @@ func tick(delta: float) -> void:
 					_restart(-1)
 
 
-## Remove the stimulus (owner leaving the tree).
+## Remove the stimulus (owner leaving the tree). PO6-07 (D-114 §3): a device removed while RUNNING emits
+## device_jammed [R], the stop fact of its cue.drill_loop (no device_finished: nothing was opened).
 func shutdown() -> void:
 	_set_stimulus(false)
+	if state == State.RUNNING and Net.is_authority() and is_instance_valid(_owner):
+		_owner._emit_fact(&"device_jammed", [_owner.net_id])
 
 
 func _roll_jams() -> void:
