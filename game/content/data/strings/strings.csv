@@ -1281,7 +1281,7 @@ ui.perks.state.locked,Locked
 ui.perks.reason.not_enough_points,Needs {cost} perk points ({have} available)
 ui.perks.dev_unlocked,Dev build: every perk card is unlocked.
 ui.perks.hint,Press a deck to equip it; only the equipped deck is active. Perk points come from experience.
-heist.glasshouse.briefing,"Vossberg Jewelers sits on the corner of Harlow Avenue and Pell Street and stays open late for its private viewing week. Tonight the estate consignment waits in the workshop safe. Case the floor as customers, find the manager's keycard and take the back route. If it goes loud, the safe locks down: drill it and hold until the van arrives. Odile wants at least two bags before Friday."
+heist.glasshouse.briefing,"Vossberg Jewelers sits on the corner of Harlow Avenue and Pell Street and stays open late for its private viewing week. Tonight the estate consignment waits in the workshop safe. Case the floor as customers, find the manager's keycard and take the back route. The safe code is written down somewhere in the back offices; without it you can pick the dial, slowly. Odile wants at least two bags before Friday."
 heist.glasshouse.briefing_loud,"The safe reader locks down: drill the safe, then hold until the van comes back."
 contact.role.fence,Fence
 contact.role.fixer,Fixer
@@ -1498,6 +1498,7 @@ item.mask_pattern.crackle.name,Crackle
 item.mask_pattern.starburst.name,Starburst
 objective.glasshouse.casing,Case the store
 objective.glasshouse.keycard,Find the manager's keycard
+objective.glasshouse.code,Find the safe code
 objective.glasshouse.workshop_door,Get into the workshop
 objective.glasshouse.safe,Open the safe
 objective.glasshouse.safe_loot,Bag the consignment
@@ -1623,6 +1624,7 @@ voice.vo.accountant.briefing_shadow_ledger_3,"A ledger is only worth something i
 voice.vo.mercer.briefing_shadow_ledger_1,"Forty-two floors, heavy rain, and you start on the roof. One alarm and we walk away with nothing, so take it slow and don't let anyone reach a radio."
 ui.briefing.escape.zipline,Zipline
 ui.briefing.escape.service_lift,Service lift
+ui.briefing.escape.lift,Service lift
 item.asset.intel_laptop.name,Insider: laptop location
 item.asset.intel_laptop.desc,You know where the partners left the ledger laptop tonight.
 item.asset.gondola_left_hung.name,Window-washer gondola
@@ -1781,6 +1783,8 @@ voice.vo.accountant.shadow_ledger_contact_intro,"I want the whole ledger, every 
 voice.vo.mercer.shadow_ledger_laptop_found,"That's the partners' laptop. It holds the key, so treat it like it's made of glass."
 voice.vo.mercer.shadow_ledger_keycard_found,Keycard. That gets you past the server room door.
 voice.vo.mercer.shadow_ledger_code_found,Cage code's yours. No need to make noise in the server room.
+voice.vo.mercer.glasshouse_code_found,That's the safe code. Quiet way in, no drill needed.
+voice.vo.mercer.shadow_ledger_camera_warning,"Camera's getting curious. Get out of its eye line, now."
 voice.vo.mercer.shadow_ledger_cage_open,Cage is open. The terminal at the back releases the drive bays.
 voice.vo.mercer.shadow_ledger_hack_started,Release is running: {seconds} seconds. Keep the floor quiet while it works.
 voice.vo.mercer.shadow_ledger_hack_interrupted,The release stopped. Get back on that terminal.
@@ -2807,6 +2811,7 @@ voice.vo.mercer.radio_loot_secured_2,Secured. Nice.
 voice.vo.mercer.radio_loot_secured_3,That's one more counted.
 voice.vo.vance.glasshouse_radio_casing,Seen enough of the showroom? Good. The pretty things are in the back.
 voice.vo.vance.glasshouse_radio_keycard,The manager's keycard. He really should keep better company.
+voice.vo.vance.glasshouse_radio_code,"The code. Written on a sticky note, I imagine. Jewelers are so sentimental."
 voice.vo.vance.glasshouse_radio_workshop_door,"The workshop. Mind the tools, darling, they're worth more than you are."
 voice.vo.vance.glasshouse_radio_safe,"The safe's open. Steady hands, please. Those are estate pieces."
 voice.vo.vance.glasshouse_radio_safe_loot_new,"Bag the consignment. All of it, if you love me."
