@@ -193,8 +193,7 @@ func _process(delta: float) -> void:
 # --- Server -------------------------------------------------------------------------------------
 
 func start() -> void:
-	set_stage(Stage.WARNING)
-	cue(&"cue.assault_breach_warning", point("Charge"))
+	set_stage(Stage.WARNING)  # cue.assault_breach_warning: C's CuePlayer on assault_event_started
 
 
 func _physics_process(delta: float) -> void:

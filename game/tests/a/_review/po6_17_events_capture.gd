@@ -104,6 +104,8 @@ func _save(tiles: Array[Image], file: String) -> void:
 
 
 func _van(ev: AssaultEventRunner) -> void:
+	_rt.teleport_crew(0, Transform3D(Basis.IDENTITY, Vector3(8.5, 0.05, 16.5)))  # on the pavement: the turret's target
+	(_rt.crew_controller(0) as Node3D).visible = false  # the local FP crew member has no third-person body (capsule)
 	var van: AssaultTurretVan = ev.run(&"turret_van", {"drive_in_s": 3.0}, "TurretVan_1") as AssaultTurretVan
 	var tiles: Array[Image] = []
 	_look(Vector3(5.0, 1.7, 11.0), Vector3(-3.0, 1.2, 21.0))
@@ -139,6 +141,13 @@ func _heli(ev: AssaultEventRunner) -> void:
 			print("po6_17_capture: heli stage %d at %s" % [heli.stage, heli.global_position])
 	await _wait(1.6)
 	_look(Vector3(18.0, 2.0, -12.0), heli.global_position + Vector3(0, -4.0, 0))
+	tiles.append(await _grab())
+	# Same view with the heli and its ropes hidden: the rectangles behind are the map's fire-escape railings.
+	heli.visible = false
+	tiles.append(await _grab())
+	heli.visible = true
+	# Close-up from the alley floor: two straight ropes, davit to floor.
+	_look(Vector3(16.0, 1.6, -9.0), heli.global_position + Vector3(0, -2.5, 0))
 	tiles.append(await _grab())
 	while is_instance_valid(heli) and heli.passenger == null:
 		await get_tree().physics_frame

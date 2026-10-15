@@ -8,14 +8,25 @@ const HEIST: StringName = &"unit_events"
 const CREW_POS: Vector3 = Vector3(0.0, 0.05, -6.0)
 const DIRECTOR_TWEAK: String = "res://systems/director/director_tweak.tres"
 const EVENTS_TWEAK: String = "res://systems/director/assault_events_tweak.tres"
+## C's CuePlayer plays these on assault_event_started / _ended: A must not request them too (doubles).
+const C_OWNED_CUES: Array[StringName] = [&"cue.assault_van_arrive", &"cue.assault_heli_arrive", &"cue.assault_heli_leave",
+	&"cue.assault_breach_warning"]
 
 var _rt: HeistRuntime = null
 var _started: Array[Array] = []
 var _ended: Array[Array] = []
+var _cues: Array[StringName] = []
+
+
+func _on_cue(cue_id: StringName, _pos: Vector3, _src: int) -> void:
+	_cues.append(cue_id)
 
 
 func _on_started(kind: StringName, net_id: int, pos: Vector3) -> void:
 	_started.append([kind, net_id, pos])
+	var n: Node = Ids.lookup(net_id)
+	assert_true(n is AssaultEventEntity and (n as AssaultEventEntity).kind == kind,
+		"started net_id %d resolves (Ids.lookup) to the %s entity (C's loops follow it)" % [net_id, kind])
 
 
 func _on_ended(kind: StringName, net_id: int) -> void:
@@ -25,9 +36,11 @@ func _on_ended(kind: StringName, net_id: int) -> void:
 func _listen() -> void:
 	_started.clear()
 	_ended.clear()
+	_cues.clear()
 	if not EventBus.assault_event_started.is_connected(_on_started):
 		EventBus.assault_event_started.connect(_on_started)
 		EventBus.assault_event_ended.connect(_on_ended)
+		EventBus.audio_cue_requested.connect(_on_cue)
 
 
 func _has_fact(facts: Array[Array], kind: StringName, net_id: int) -> bool:
@@ -49,8 +62,11 @@ func _assert_real_visuals(ev: AssaultEventRunner, what: String) -> void:
 func after_each() -> void:
 	Engine.time_scale = 1.0
 	if EventBus.assault_event_started.is_connected(_on_started):
+		for c: StringName in C_OWNED_CUES:
+			assert_false(_cues.has(c), "%s is C's (played on the started / ended fact), never requested by A" % c)
 		EventBus.assault_event_started.disconnect(_on_started)
 		EventBus.assault_event_ended.disconnect(_on_ended)
+		EventBus.audio_cue_requested.disconnect(_on_cue)
 	Modifiers.clear_source(0, &"po6_17.immune")
 	if _rt != null and is_instance_valid(_rt):
 		_rt.teardown()
@@ -465,6 +481,7 @@ func test_po6_17_breach_blows_open_and_squad_enters() -> void:
 	assert_false(intact.visible, "Intact hidden")
 	assert_true(blown.visible, "Blown shown")
 	assert_true(_has_fact(_ended, &"breach", b.net_id), "assault_event_ended(breach) on the blast")
+	assert_true(_cues.has(&"cue.c4_explode"), "cue.c4_explode at the detonation")
 	await wait_physics_frames(2)
 	assert_true(space.intersect_ray(ray).is_empty(), "the opening is clear")
 	NavigationServer3D.map_force_update(nav)

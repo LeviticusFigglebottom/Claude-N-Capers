@@ -182,8 +182,7 @@ func start(center: Vector3, radius: float, p_hover: Vector3, floor_y: float, dro
 	var dir: Vector3 = Vector3(cos(a), 0.0, sin(a))
 	global_position = center + dir * p_float("approach_m", 110.0)
 	_leave_to = center - dir * p_float("approach_m", 110.0)
-	_angle = a
-	cue(&"cue.assault_heli_arrive", global_position)
+	_angle = a  # rotor loop / cue.assault_heli_arrive / _leave: C's CuePlayer on assault_event_started / _ended
 
 
 func _physics_process(delta: float) -> void:
@@ -244,12 +243,6 @@ func _step(delta: float) -> void:
 				set_stage(Stage.GONE)
 				end_event()
 				queue_free()
-
-
-func set_stage(s: int) -> void:
-	if s == Stage.LEAVE and s != stage and is_server():
-		cue(&"cue.assault_heli_leave", global_position)  # rotor loop stop fact (D-114 §3)
-	super.set_stage(s)
 
 
 ## Fly toward `p`; true when there.
