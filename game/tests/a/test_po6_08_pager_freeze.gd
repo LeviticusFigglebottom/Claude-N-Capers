@@ -24,6 +24,7 @@ func before_each() -> void:
 	_listen(EventBus.pager_answer_started, &"pager_answer_started")
 	_listen(EventBus.pager_answered, &"pager_answered")
 	_listen(EventBus.pager_failed, &"pager_failed")
+	_listen(EventBus.pager_answer_released, &"pager_answer_released")
 	_listen(EventBus.alarm_raised, &"alarm_raised")
 	_listen(EventBus.audio_cue_requested, &"audio_cue_requested")
 
@@ -139,6 +140,7 @@ func test_po6_08_early_release_resumes_from_frozen_value() -> void:
 	assert_false(bool(_row().get("answering", true)), "no longer answering")
 	assert_true(_of(&"pager_failed").is_empty(), "early release is not a failure (D-114 §4)")
 	assert_true(_of(&"alarm_raised").is_empty(), "no alarm on early release")
+	assert_eq(_of(&"pager_answer_released").size(), 1, "opt-in resume: pager_answer_released (events.md v1.4)")
 	await wait_seconds(1.0)
 	assert_true(_window() < resumed - 0.5, "window counts down again after release")
 	# Pick it up again and finish: the answer completes cleanly.
@@ -230,6 +232,7 @@ func test_po6_08_default_release_alarms_after_grace() -> void:
 	_release(0)
 	await wait_physics_frames(3)
 	assert_true(_of(&"pager_failed").is_empty(), "inside the juggle grace: not failed yet")
+	assert_true(_of(&"pager_answer_released").is_empty(), "no resume fact without a juggle")
 	await wait_seconds(Tweak.stealth().pager_juggle_window_s + 0.3)
 	assert_eq(_of(&"pager_failed").size(), 1, "S5.4: failed after the grace")
 	if _of(&"pager_failed").size() == 1:
@@ -264,6 +267,10 @@ func test_po6_08_juggle_resumes_released_pager() -> void:
 	await wait_seconds(Tweak.stealth().pager_juggle_window_s + 0.5)
 	assert_true(_of(&"pager_failed").is_empty(), "juggled: A did not fail")
 	assert_true(_of(&"alarm_raised").is_empty(), "juggled: no alarm")
+	var rel: Array[Array] = _of(&"pager_answer_released")
+	assert_eq(rel.size(), 1, "juggle: one pager_answer_released")
+	if rel.size() == 1:
+		assert_eq(int(rel[0][1]), pid_a, "for the released pager A")
 	var left_a: float = _window_of(pid_a)
 	assert_true(left_a > 0.0 and left_a < frozen_a, "A resumed its countdown (%.2f < %.2f)" % [left_a, frozen_a])
 	_release(0)

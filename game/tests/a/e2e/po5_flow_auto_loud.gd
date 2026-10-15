@@ -30,6 +30,8 @@ var p: Po5Pilot = null
 var rt: HeistRuntime = null
 var _ended: bool = false
 var _stalls: Dictionary[StringName, float] = {}
+## GN probe 3 (handoff §A1): interactables the pilot failed to reach (instance id -> true), skipped for the run.
+var _unreachable: Dictionary[int, bool] = {}
 
 
 func play(flow: Node) -> int:
@@ -97,6 +99,8 @@ func step() -> void:
 	if comp != null:
 		p.watch_point = Vector3.INF
 		await p.use(comp, 30.0, func() -> bool: return not comp.enabled or comp.availability(p.crew) != &"")
+		if is_instance_valid(comp) and comp.enabled and comp.availability(p.crew) == &"":
+			_mark_if_unreached(comp)  # still usable and still far: the walk failed (GN Slot_orchard_calloway)
 		return
 	# Nothing to do at the marker right now (a device running, a timer): go there and defend.
 	if p.flat_dist(p.crew.global_position, pos) > 4.0:
@@ -136,7 +140,7 @@ func _usable_near(pos: Vector3, radius: float) -> InteractableComponent:
 			continue
 		if c.kind in [&"revive", &"cable_tie", &"answer_pager", &"uncuff", &"break_window", &"break_glass", &"take_loot", &"bag_body"]:
 			continue
-		if c.availability(p.crew) != &"":
+		if c.availability(p.crew) != &"" or _unreachable.has(c.get_instance_id()):
 			continue
 		if _is_body_bag(c):
 			continue  # ND attempt 11: a body bag by the drill marker sent the pilot up the stairs mid-wave
@@ -201,7 +205,7 @@ func _fetch_bag() -> bool:
 		var c: InteractableComponent = n as InteractableComponent
 		if c == null or not c.enabled or not rt.is_ancestor_of(c) or not (c.kind in [&"bag_loot", &"carry_bag", &"pickup_bag"]):
 			continue
-		if c.availability(p.crew) != &"" or _is_body_bag(c):
+		if c.availability(p.crew) != &"" or _is_body_bag(c) or _unreachable.has(c.get_instance_id()):
 			continue
 		var o: Node = c.owner_node()
 		if o is Node3D and p.secure_zone() != null and (o as Node3D).global_position.distance_to(p.secure_zone().global_position) < 4.0:
@@ -214,7 +218,18 @@ func _fetch_bag() -> bool:
 		_note_once(&"_nobag", "secure is the only marked objective but no bag source is usable")
 		return false
 	await p.use(best, 20.0, func() -> bool: return p.crew.is_carrying_bag())
+	_mark_if_unreached(best)
 	return p.crew.is_carrying_bag()
+
+
+## GN probe 3: a target still out of reach after use() (the pilot could not path to it) is skipped for the rest
+## of the run, so the flow moves on instead of retrying the same unreachable slot.
+func _mark_if_unreached(c: InteractableComponent) -> void:
+	if not is_instance_valid(c) or p.crew.is_carrying_bag():
+		return
+	if c.global_position.distance_to(p.crew.global_position) > 2.5:
+		_unreachable[c.get_instance_id()] = true
+		f.note("skipping unreachable %s (%s) for this run" % [c.get_path(), c.kind])
 
 
 ## Body bags are not loot (S6.2): the loud pilot never picks them up.

@@ -57,6 +57,14 @@ static var _cached: AnimTweak = null
 ## v1.10: two hit reacts on one body at least this far apart (s); in between the current one plays on.
 @export var hit_react_min_gap_s: float = 0.35
 ## Aim pose for NPCs whose weapon has no WeaponDef, by role (&"pistol" / &"rifle"); default pistol.
+## PO6-16 review: NPC weapon ids (EnemyDef.weapon, no model of their own) -> the player WeaponDef whose model the
+## NPC holds in its right hand (third person). Missing = empty hands.
+@export var npc_weapon_models: Dictionary = {
+	&"weapon.npc_pistol": &"weapon.kestrel_p9", &"weapon.npc_rifle": &"weapon.corsair_ar",
+	&"weapon.npc_smg": &"weapon.wasp_pdw", &"weapon.npc_shotgun": &"weapon.brute_12",
+	&"weapon.npc_shotgun_semi": &"weapon.plowman_12", &"weapon.npc_sniper": &"weapon.heron_308",
+	&"weapon.npc_lmg": &"weapon.anvil_lmg", &"weapon.npc_minigun": &"weapon.cyclone_rotary",
+}
 @export var npc_weapon_anim_by_role: Dictionary = {&"police": &"rifle", &"special": &"rifle"}
 ## Seconds a standing crew member keeps the aim pose after its last shot.
 @export var aim_hold_s: float = 1.5

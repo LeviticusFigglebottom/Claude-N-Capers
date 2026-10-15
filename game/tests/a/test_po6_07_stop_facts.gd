@@ -50,3 +50,18 @@ func test_po6_07_idle_device_removed_is_silent() -> void:
 	dp.queue_free()
 	await wait_frames(2)
 	assert_eq(_facts.size(), 0, "idle device: no facts")
+
+
+## PO6-04 follow-up: a safe opened another way while its drill runs stops the drill (device_finished, no open
+## twice, no done cue).
+func test_po6_04_safe_opened_stops_running_drill() -> void:
+	var safe: Safe = ATestMaps.add_prefab(_rt, "safe", Vector3(3, 0, -4), func(n: Node) -> void:
+		(n as Safe).methods = [&"drill", &"code"] as Array[StringName]) as Safe
+	await wait_physics_frames(1)
+	safe.runner.place(0, 60.0)
+	safe.runner.jams.clear()
+	await wait_physics_frames(2)
+	safe.swing_open()
+	await wait_physics_frames(2)
+	assert_eq(safe.runner.state, DeviceRunner.State.DONE, "drill stopped")
+	assert_eq(_facts, [&"finished"] as Array[StringName], "one device_finished stops the loop")

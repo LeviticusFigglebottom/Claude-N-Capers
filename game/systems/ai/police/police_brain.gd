@@ -11,6 +11,12 @@
 ##   is claimed (one unit per point, node meta) and held; otherwise approach to a standoff band
 ##   standoff_min_m..standoff_max_m (closing in while the target is out of LOS).
 ## - fire: `wants_to_fire` / `combat_target` for NpcGunner (fires while moving too).
+## - PO6-16 (D-114 §5, L1.1 BUILD/SUSTAIN): while the assault pushes, cover farther than assault_cover_max_m
+##   from the target is not taken (released), and a unit without cover runs to a push slot: a navmesh point
+##   on the assault_slot_radii_m rings around the target with LOS to it (inside the room the crew holds, or
+##   its doorway), deepest free one first so a squad fans into the room instead of parking on the threshold;
+##   closed doors on the way are opened / breached by the motor (Door.npc_open). No slot found: approach
+##   the target itself (assault standoff band).
 ## - FADE (L1.1): no retreat in P1. Units keep fighting; the director just stops reinforcing.
 ## - L2.12 (A3-04): a DOWNED target that is not shooting within CustodyTweak.police_cuff_approach_m
 ##   is walked up to and cuffed at police_cuff_range_m (CrewCuffs.cuff_downed).
@@ -42,6 +48,12 @@ var anim_hint: StringName = &"idle"
 var spawn_position: Vector3 = Vector3.ZERO
 ## Squad order (L4.9): position to move to and hold, Vector3.INF = none.
 var order_position: Vector3 = Vector3.INF
+## PO6-16: current assault push slot (Vector3.INF = none) and the target position it was computed for.
+var push_slot: Vector3 = Vector3.INF
+var _push_slot_for: Vector3 = Vector3.INF
+## PO6-16: seconds the unit has made no headway toward its push slot, and the last slot given up on.
+var _push_stall_t: float = 0.0
+var _push_bad_slot: Vector3 = Vector3.INF
 
 var _npc: NpcBase = null
 var _motor: NpcMotor = null
@@ -234,6 +246,10 @@ func _tick_move(delta: float) -> void:
 		return
 	var d: float = _flat(tpos - _npc.global_position).length()
 	var pushing: bool = _assault_pushing()
+	if not pushing:
+		push_slot = Vector3.INF  # PO6-16: a slot only lives through BUILD / SUSTAIN
+	elif _tick_push(t, d, delta):
+		return
 	var s_min: float = tweak.assault_standoff_min_m if pushing else tweak.standoff_min_m
 	var s_pref: float = tweak.assault_standoff_pref_m if pushing else tweak.standoff_pref_m
 	if not _target_visible or d > tweak.standoff_max_m or (mode == &"approach" and d > s_pref):
@@ -243,6 +259,103 @@ func _tick_move(delta: float) -> void:
 		_move_to(_npc.global_position + away * (s_pref - d), &"back_off")
 	else:
 		_hold(tpos)
+
+
+## PO6-16: run to / hold the push slot near `t` (d = flat distance to it). False when there is no slot (the
+## caller approaches the target itself).
+func _tick_push(t: Node3D, d: float, delta: float) -> bool:
+	var tpos: Vector3 = t.global_position
+	if push_slot == Vector3.INF or _push_slot_for == Vector3.INF \
+			or _flat(tpos - _push_slot_for).length() > tweak.assault_slot_refresh_m:
+		push_slot = _find_push_slot(t)
+		_push_slot_for = tpos
+		_push_stall_t = 0.0
+	if push_slot == Vector3.INF:
+		return false
+	if d < tweak.assault_standoff_min_m and _target_visible:
+		_hold(tpos)  # already at arm's length: no need to walk to the slot (cuffing has its own path)
+		return true
+	# No early hold inside the standoff band: in a small room that band ends at the doorway, where holders
+	# stacked up and their separation push stopped the units behind them (PO6-16, Golden Hour office).
+	if _flat(push_slot - _npc.global_position).length() > tweak.assault_slot_arrive_m:
+		# Stalled (a unit standing on / next to the slot cancels the separation steer): in sight of the target,
+		# hold here; out of sight, give the slot up and take another.
+		var moving: bool = _flat(_npc.velocity).length() > tweak.assault_push_stall_speed \
+			or _motor.waiting_door != null  # opening / breaching a door is not a stall
+		_push_stall_t = 0.0 if moving or mode != &"push" else _push_stall_t + delta
+		if _push_stall_t >= tweak.assault_push_stall_s:
+			_push_stall_t = 0.0
+			if _target_visible:
+				push_slot = _npc.global_position
+			else:
+				_push_bad_slot = push_slot
+				push_slot = _find_push_slot(t)
+				_push_slot_for = tpos
+				if push_slot == Vector3.INF:
+					return false
+		if _flat(push_slot - _npc.global_position).length() > tweak.assault_slot_arrive_m:
+			_move_to(push_slot, &"push")
+			return true
+	if not _target_visible:
+		push_slot = Vector3.INF  # the slot lost sight of the target (it moved behind something): re-pick
+		return false
+	_hold(tpos)
+	return true
+
+
+## PO6-16: a reachable navmesh point around `t` with LOS to its eyes (same room / its doorway): rings at
+## assault_slot_radii_m x 8 angles (this unit's angle first). Score = distance to the target (deeper into the
+## room first, so nobody parks on the threshold) + assault_slot_taken_penalty_m per other unit's slot within
+## assault_slot_spacing_m. Vector3.INF when none.
+func _find_push_slot(t: Node3D) -> Vector3:
+	var tpos: Vector3 = t.global_position
+	var c: CrewController = t as CrewController
+	var eye: Vector3 = c.eye_position() if c != null else tpos + Vector3.UP * 1.5
+	var nav_map: RID = _npc.get_world_3d().navigation_map if _npc.is_inside_tree() else RID()
+	var has_nav: bool = nav_map.is_valid() and not NavigationServer3D.map_get_regions(nav_map).is_empty()
+	var taken: Array[Vector3] = _other_push_slots()
+	if _push_bad_slot != Vector3.INF:
+		taken.append(_push_bad_slot)
+	var base: float = float(_npc.get_instance_id() % 8) * TAU / 8.0
+	var best: Vector3 = Vector3.INF
+	var best_score: float = INF
+	for r: float in tweak.assault_slot_radii_m:
+		for i: int in range(8):
+			var a: float = base + float(i) * TAU / 8.0
+			var cand: Vector3 = tpos + Vector3(cos(a), 0.0, sin(a)) * r
+			if has_nav:
+				var snap: Vector3 = NavigationServer3D.map_get_closest_point(nav_map, cand)
+				if _flat(snap - cand).length() > tweak.assault_slot_snap_m:
+					continue
+				cand = snap
+			if absf(cand.y - tpos.y) > tweak.assault_slot_max_dy_m:
+				continue
+			var score: float = r + float(i) * 0.01  # own angle first among equals
+			for q: Vector3 in taken:
+				if _flat(q - cand).length() < tweak.assault_slot_spacing_m:
+					score += tweak.assault_slot_taken_penalty_m
+			if score >= best_score:
+				continue
+			if not CombatSystem.has_los(_npc, cand + Vector3(0.0, _npc.head_height, 0.0), eye, [_npc, t]):
+				continue
+			best_score = score
+			best = cand
+	return best
+
+
+## PO6-16: push slots held by the other police brains of this heist.
+func _other_push_slots() -> Array[Vector3]:
+	var out: Array[Vector3] = []
+	if _runtime == null:
+		return out
+	for n: Node in _runtime.npcs():
+		var o: NpcBase = n as NpcBase
+		if o == null or o == _npc or not o.alive:
+			continue
+		var b: PoliceBrain = o.get_node_or_null(^"Brain") as PoliceBrain
+		if b != null and b.push_slot != Vector3.INF:
+			out.append(b.push_slot)
+	return out
 
 
 ## PO-5.14: an assault is building or sustaining (L1.1): units push in (assault standoff band).
@@ -332,6 +445,8 @@ func _cover_ok(tp: TacticalPoint, t: Node3D) -> bool:
 	var d: float = _flat(t.global_position - tp.global_position).length()
 	if d < tweak.cover_min_m or d > tweak.cover_max_m:
 		return false
+	if d > tweak.assault_cover_max_m and _assault_pushing():
+		return false  # PO6-16: no cover outside the room during the push
 	var c: CrewController = t as CrewController
 	var to: Vector3 = c.eye_position() if c != null else t.global_position + Vector3.UP * 1.5
 	return CombatSystem.has_los(_npc, tp.global_position + Vector3(0.0, _npc.head_height, 0.0), to, [_npc, t])

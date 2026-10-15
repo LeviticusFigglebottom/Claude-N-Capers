@@ -74,3 +74,31 @@ func test_po6_03_hack_row() -> void:
 	assert_eq(r.get("kind"), &"hack")
 	assert_eq(r.get("state"), &"running")
 	assert_true(absf(float(r["duration_s"]) - 40.0) < 0.01, "duration 40 s")
+
+
+func test_po6_03_extras_restart_offset_c4() -> void:
+	var dp: DrillPoint = ATestMaps.add_prefab(_rt, "drill_point", Vector3(0, 1, -4), func(n: Node) -> void:
+		(n as DrillPoint).duration_s = 60.0) as DrillPoint
+	await wait_physics_frames(1)
+	dp.runner.place(0, dp.effective_duration())
+	var r: Dictionary = _row(dp.net_id)
+	assert_eq(float(r.get("auto_restart_in_s", 0.0)), -1.0, "running: no auto restart pending")
+	var wp: Vector3 = r["world_pos"]
+	var out: Vector3 = (wp - dp.global_position) * Vector3(1, 0, 1)
+	assert_true(out.dot(dp.global_basis.z) > 0.1, "panel sits out of the lock face (+Z of the drill point)")
+	dp.runner.auto_restart = true
+	dp.runner.progress = 0.5
+	dp.runner._jam()
+	r = _row(dp.net_id)
+	assert_true(float(r.get("auto_restart_in_s", -1.0)) >= 4.9, "jammed with auto restart: countdown shown")
+	var safe: Safe = ATestMaps.add_prefab(_rt, "safe", Vector3(3, 0, -4)) as Safe
+	await wait_physics_frames(1)
+	safe.stage = Safe.Stage.C4_ARMED
+	safe.timer_left = Tweak.interaction().c4_fuse_s * 0.5
+	EventBus.device_started.emit(safe.net_id, &"c4", Tweak.interaction().c4_fuse_s)
+	r = _row(safe.net_id)
+	assert_eq(r.get("kind"), &"c4", "armed C4 row")
+	assert_true(absf(float(r.get("progress", 0.0)) - 0.5) < 0.05, "fuse half burnt")
+	safe.timer_left = -1.0
+	safe.stage = Safe.Stage.LOCKED
+	assert_true(_row(safe.net_id).is_empty(), "fuse done: row removed")

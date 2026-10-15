@@ -520,8 +520,10 @@ func _stimulus_in_view(st: StealthObserverState, s: Dictionary, preset: Dictiona
 	var pos: Vector3 = _stim_pos(s)
 	if pos == Vector3.INF or eye.distance_to(pos) > float(preset.get("range", 0.0)):
 		return false
-	if not bool(preset.get("los", true)):
-		return true  # drills: range only, even outside the view (S4.4)
+	if not bool(preset.get("los", true)) and not st.is_camera():
+		return true  # drills: NPCs notice them in range, even out of sight (S4.1 / S4.3)
+	# PO6-04 (D-114 §1, overrides the S4.4 "drills even outside their view" clause): cameras react only to
+	# what they SEE, so a camera needs the stimulus inside its cone with a clear ray, drills included.
 	var target: Vector3 = pos + Vector3.UP * _tw.stimulus_los_height_m
 	return _view_angle(st, eye, fwd, target) <= st.half_fov_rad and _ray_clear(eye, target, st.node, src)
 
