@@ -2,12 +2,12 @@
 
 About 79 cm from the muzzle to the butt plate with a 26 cm barrel run inside the shell. Olive polymer
 bullpup shell, magazine behind the pistol grip, ejection port beside the cheek, full-length top rail,
-lower rail under the handguard, birdcage flash hider.
+lower rail under the handguard, 3-port side brake.
 
 Origin = firing-hand pivot on the grip (see _tern.py). Forward = Godot -Z.
 
 Node tree: ``Shell`` (+ ``ShellRail``, ``ShellDetails``, ``ButtPad``, ``TriggerGroup``, ``Grip``),
-``Barrel`` (+ ``FlashHider``). Stock parts: ``SightRail/StockSight`` (flip-up irons, ``AimPoint``),
+``Barrel`` (+ ``MuzzleBrake``). Stock parts: ``SightRail/StockSight`` (flip-up irons, ``AimPoint``),
 ``Magwell/StockMagazine`` (30 rounds). ``StockMount`` is the butt plate (no stock slot).
 """
 
@@ -75,7 +75,7 @@ def _barrel(ctx, mats):
     gm = mb.material(mats.steel())
     mb.cylinder(0.0120, 0.016, segments=24, centre=(0.0, t.BODY_FRONT_Y + 0.040, t.BORE_Z), axis="Y", mat=gm)  # gas block
     c.finish(mb, "GasBlock", bevel=0.0006, parent=barrel)
-    c.build_flash_hider(ctx, mats, 0.0105, t.BARREL_END_Y, t.HIDER_LEN, t.BORE_Z, parent=barrel)
+    c.build_muzzle_brake(ctx, mats, 0.0110, t.BARREL_END_Y, t.BRAKE_LEN, t.BORE_Z, parent=barrel)  # PO6-13
     return barrel
 
 
@@ -84,7 +84,6 @@ def build(ctx) -> None:
     _shell(ctx, mats)
     _barrel(ctx, mats)
 
-    ctx.marker("Muzzle", (0.0, t.MUZZLE_Y, t.BORE_Z))
     ctx.marker("BarrelMount", (0.0, t.BODY_FRONT_Y, t.BORE_Z))
     ctx.marker("Eject", (t.BODY_HW, -0.136, t.BORE_Z + 0.004), rotation_euler=(0.0, 0.0, -math.pi / 2))
     sight_rail = ctx.marker("SightRail", (0.0, t.SIGHT_RAIL_Y, t.RAIL_TOP_Z))
@@ -93,7 +92,8 @@ def build(ctx) -> None:
     ctx.marker("SideRail", (t.BODY_HW + 0.0057, t.SIDE_Y, t.BORE_Z))
     ctx.marker("StockMount", t.STOCK_MOUNT)
     ctx.marker("GripMount", (0.0, 0.0, 0.0))
-    ctx.marker("LeftHandIK", (-0.026, t.UNDER_Y, t.BODY_BOTTOM_Z - 0.004))
+    # Lead (ENV D, FP left-hand cup for the smg set): under the bullpup fore-end (grip front y 0.04 to body front 0.140, bottom z 0.024), x 0, 12 mm low, a third of the way forward.
+    ctx.marker("LeftHandIK", (0.0, 0.073, 0.012))
 
     stock_sight = ctx.marker("StockSight", (0.0, 0.0, 0.0), parent=sight_rail)
     _irons, aim = t.build_irons(ctx, mats, parent=stock_sight)

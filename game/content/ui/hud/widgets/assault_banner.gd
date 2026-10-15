@@ -13,6 +13,8 @@ var phase_label: Label
 var wave_label: Label
 var strip: PhaseStrip
 var panel: PanelContainer
+## PO6-17: the live RNG assault events ("TURRET VAN · BREACH") in red under the phase (Hud feeds set_events).
+var events_label: Label
 
 
 func build() -> void:
@@ -28,6 +30,12 @@ func build() -> void:
 	h.add_child(wave_label)
 	strip = PhaseStrip.new()
 	v.add_child(strip)
+	events_label = UiBuild.label(&"", UiBuild.HUD)
+	events_label.name = "AssaultEvents"
+	events_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	events_label.add_theme_color_override(&"font_color", tweak.assault_color)
+	events_label.visible = false
+	v.add_child(events_label)
 
 
 func watched_signals() -> Array[StringName]:
@@ -47,6 +55,19 @@ func refresh() -> void:
 	strip.visible = strip.current >= 0
 	strip.queue_redraw()
 	panel.modulate.a = 0.7 if phase == Enums.AssaultPhase.CONTROL else 1.0
+
+
+## PO6-17 (AssaultEventMarkers.events_changed): the live event names; empty hides the line.
+func set_events(kinds: Array[StringName]) -> void:
+	if events_label == null:
+		return
+	var names: PackedStringArray = PackedStringArray()
+	for k: StringName in kinds:
+		var t: String = AssaultEventMarkers.kind_text(k)
+		if not names.has(t):
+			names.append(t)
+	events_label.text = " · ".join(names)
+	events_label.visible = not names.is_empty()
 
 
 static func phase_key(phase: int) -> StringName:

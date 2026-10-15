@@ -33,7 +33,7 @@ def build(ctx) -> None:
     elif part == "mag_ext":
         k.build_mag(ctx, mats, extended=True)
     elif part == "suppressor":
-        c.build_can(ctx, mats, length=0.175, r=0.0190, overlap=k.HIDER_LEN - 0.004)
+        c.build_can(ctx, mats, length=0.175, r=0.0190, overlap=k.BRAKE_LEN - 0.004)
     elif part == "grip":
         c.build_vertical_grip(ctx, mats, length=0.080)
     else:

@@ -51,20 +51,16 @@ func _run() -> void:
 		get_tree().quit(1)
 		return
 	crew.set_masked()
-	await _shot("masked", 30)
 	_stand_at(crew, dp)
-	await _shot("before_place", 30)
+	await _shot("before_place", 20)
 	dp.runner.place(crew.slot, dp.effective_duration())
 	_aim(crew, dp)
-	await _shot("drill_running", 40)
-	await _shot("drill_running_later", 90)
+	await _shot("drill_running", 20)
 	dp.runner.call(&"_jam")
 	_aim(crew, dp)
-	await _shot("drill_jammed", 40)
-	_stand_at(crew, dp, 5.0)
-	await _shot("drill_jammed_5m", 30)
+	await _shot("drill_jammed", 20)
 	dp.runner.fix(crew.slot)
-	await _shot("drill_fixed_5m", 30)
+	await _shot("drill_fixed", 20)
 	print("DEVICE TIMER DONE %d frames" % _n)
 	get_tree().quit(0)
 
@@ -85,13 +81,14 @@ func _stand_at(crew: CrewController, dp: DrillPoint, off: float = STAND_OFF_M) -
 
 
 func _aim(crew: CrewController, dp: DrillPoint) -> void:
-	var d: Vector3 = (dp.global_position + Vector3.UP * 0.2 - crew.eye_position()).normalized()
-	var i: CrewIntent = CrewIntent.new()
-	i.look_yaw = atan2(-d.x, -d.z)
-	i.look_pitch = asin(clampf(d.y, -1.0, 1.0))
-	crew.look_yaw = i.look_yaw
-	crew.look_pitch = i.look_pitch
-	crew.apply_intent(i)
+	var d: Vector3 = (dp.global_position + Vector3.UP * 0.3 - crew.eye_position()).normalized()
+	var yaw: float = atan2(-d.x, -d.z)
+	# teleport() takes the yaw from the basis and zeroes the pitch; PlayerInput re-reads both (PI-06), then
+	# add_look tilts it down onto the drill.
+	crew.teleport(Transform3D(Basis(Vector3.UP, yaw), crew.global_position))
+	var pin: PlayerInput = crew.get_node_or_null(^"PlayerInput") as PlayerInput
+	if pin != null:
+		pin.add_look(0.0, asin(clampf(d.y, -1.0, 1.0)))
 
 
 func _crew() -> CrewController:

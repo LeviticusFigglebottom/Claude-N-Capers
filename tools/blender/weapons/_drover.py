@@ -5,7 +5,7 @@ Private helper: imported by ``drover_762.py`` and ``drover_762_mods.py``. Axes a
 20 mm below the grip top).
 
 Long-stroke 7.62 rifle: stamped steel receiver with a railed top cover, walnut furniture, deeply
-curved steel magazine, slant muzzle brake. The fixed walnut stock is the stock part
+curved steel magazine, 3-port muzzle brake. The fixed walnut stock is the stock part
 ``StockMount/StockStock``; the side-folding steel stock mod replaces it (shown folded along the
 left side of the receiver).
 """
@@ -45,7 +45,7 @@ BARREL_R = 0.0090
 BARREL_END_Y = 0.600
 GAS_BLOCK_Y = 0.420
 FRONT_SIGHT_Y = 0.565
-BRAKE_LEN = 0.046
+BRAKE_LEN = 0.050
 MUZZLE_Y = BARREL_END_Y + BRAKE_LEN + 0.001
 
 MAGWELL_Y0, MAGWELL_Y1 = 0.088, 0.150
@@ -132,6 +132,6 @@ def build_folding_stock(ctx, mats, parent=None, name="FoldingStock"):
 
 
 def build_brake_suppressor(ctx, mats, parent=None, name="Suppressor"):
-    """7.62 can that slips over the slant brake; origin = Muzzle (front of the brake)."""
+    """7.62 can that slips over the muzzle brake; origin = Muzzle (front of the brake)."""
     return c.build_can(ctx, mats, length=0.185, r=0.0205, overlap=BRAKE_LEN - 0.004, bore_r=0.0058,
                        parent=parent, name=name, cap_style="teeth")

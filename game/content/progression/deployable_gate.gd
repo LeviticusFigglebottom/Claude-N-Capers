@@ -6,8 +6,13 @@ class_name DeployableGate
 extends RefCounted
 
 ## deployable id -> FLAG modifier key it needs.
+## Lead ruling (PD2-faithful): ECM, trip mines and first aid kits need the skill that carries them; the gate is
+## the basic tier's grant (any non-zero value counts).
 const REQUIRES: Dictionary = {
 	&"deployable.armor_bag": &"deploy.armor_bag",
+	&"deployable.ecm": &"stealth.ecm_extra",
+	&"deployable.trip_mine": &"deploy.extra.trip_mine",
+	&"deployable.fak": &"deploy.extra.fak",
 }
 
 
@@ -38,4 +43,17 @@ static func unlock_card(deployable_id: StringName) -> Dictionary:
 			var grants: Dictionary = deck.cards[i].get("grants", {})
 			if grants.has(flag):
 				return {"card": i + 1, "name": StringName(deck.cards[i].get("name", ""))}
+	return {}
+
+
+## The skill whose basic tier grants the flag `deployable_id` needs: {"id": skill id, "name": name key}; {} when
+## no skill does (a perk card may, see unlock_card()).
+static func unlock_skill(deployable_id: StringName) -> Dictionary:
+	var flag: StringName = required_flag(deployable_id)
+	if flag == &"":
+		return {}
+	for r: Variant in ContentDB.all_of(ContentDB.SKILLS):
+		var sk: SkillDef = r as SkillDef
+		if sk != null and sk.grants_basic.has(flag):
+			return {"id": sk.id, "name": StringName("%s.name" % sk.id)}
 	return {}
