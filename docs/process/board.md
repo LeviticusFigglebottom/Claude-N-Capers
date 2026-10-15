@@ -14,6 +14,7 @@ Read it at the start of every work session.
 | ENV P | session_01VxQPFh6PypoyUxg94gmMGH | env/p-play | PO6-11 pistol hold/ADS, PO6-15 bot strength, FP flash |
 
 ## Trunk / merge rounds
+- 2026-10-15 17:35: **round 204 ON ORIGIN**: env/a-core b230579d (PO6-02 drill jams 1-2, spaced; pd2_fidelity S9.3 amended). Lead: a po6_02 2, s9_ 31, a3_09 24; banned clean.
 - 2026-10-15 17:12: **new LEAD + 5 fresh env sessions** (D-114). PO playtest list `docs/process/po_playtest_2026-10-15.md` (PO6-01..19) is top priority for all envs. Trunk 57145cc8.
 - 2026-10-14 22:20: **round 203 ON ORIGIN** (handoff complete): env/d-art a6802365 (D HANDOFF section, shotgun/LMG lit grip captures; docs/images only). All 5 env HANDOFF sections on trunk. Held: env/b-content (D SMG re-time 0%).
 - 2026-10-14 21:45: **round 202 ON ORIGIN** (handoff): env/d-art 8ac1e97e (per-set long-gun support grip to PO reference, vertex hull clip test in test_arms, skirt seated fix) + env/p-play fc0a3494 (matching per-set grip offsets, handoff notes) + env/c-worlds 6b533f0b (handoff). Lead: p po4_feel 10, p1_01 12, p1_03 5, grip_offset 2, finger_clip 3 (worst: Condor index 4.4 mm, Bastion thumb 3.8 mm; was 4-12 mm), po4_viewmodel 1; d test_arms 18, scenes 9, crew 7; a fp_viewmodel 15; b left_hand_ik 1. Still HELD: env/b-content (needs D SMG re-time).
