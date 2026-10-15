@@ -452,7 +452,8 @@ func _variants_server(variants: Node3D) -> void:
 	var sg: Node3D = _group(variants, "server_room")
 	_slot(sg, "server_room", "srv_locked", 0.6)
 	var sc: VariantSlot = _slot(sg, "server_room", "srv_contractor", 0.4, {"door_propped": "Gameplay/Doors/ServerDoor"})
-	spawn(sc, "ITContractor", "CIVILIAN", Vector3(26.5, L.F41, 11.8), 90.0, ["civ_it", "civ_staff"], "desk_work", "")
+	# PO6-06: K11 has no desk or chair (racks, CRAC, UPS), so the contractor stands on a call, not `desk_work`.
+	spawn(sc, "ITContractor", "CIVILIAN", Vector3(26.5, L.F41, 11.8), 90.0, ["civ_it", "civ_staff"], "phone", "")
 
 
 ## Keycards (pick 2): reception drawer, security cabinet, IT desk, Kessler's desk, lounge bar, guest

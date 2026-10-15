@@ -20617,7 +20617,7 @@ transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 26.5
 script = ExtResource("71_sl")
 kind = 2
 tags = Array[StringName]([&"civ_it", &"civ_staff"])
-idle_activity = &"desk_work"
+idle_activity = &"phone"
 
 [node name="Group_keycard" type="Node3D" parent="Variants" unique_id=103511]
 
