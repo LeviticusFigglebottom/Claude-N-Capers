@@ -1168,6 +1168,16 @@ func _late_align() -> void:
 			* (skeleton.global_transform * skeleton.get_bone_global_pose(_weapon_bone).origin)
 		r = Basis.from_euler(pose * (PI / 180.0))
 		pivot_off = q - r * q
+	# D-116 (LEAD ADS note): aimed, the set's ADS pitch turns the arms about the rear sight (AimPoint, so the sight
+	# stays on the crosshair): nose down puts the eye above and behind the hand, looking along the slide.
+	var ads_rot: Vector3 = (tw.set_ads_rot_deg.get(_playing_set(), Vector3.ZERO) as Vector3) * ads_weight
+	if ads_rot != Vector3.ZERO and weapon_visual != null and is_instance_valid(weapon_visual) and is_inside_tree():
+		var aim_m: Node3D = weapon_visual.get_marker(WeaponVisual.AIM_POINT)
+		if aim_m != null and aim_m.is_inside_tree():
+			var qa: Vector3 = global_transform.affine_inverse() * aim_m.global_position
+			var r2: Basis = Basis.from_euler(ads_rot * (PI / 180.0))
+			pivot_off += r * (qa - r2 * qa)
+			r = r * r2
 	transform = Transform3D(b * r, _base_offset + a + Vector3(0.0, 0.0, _kick.x) + s_off + b * pivot_off)
 
 

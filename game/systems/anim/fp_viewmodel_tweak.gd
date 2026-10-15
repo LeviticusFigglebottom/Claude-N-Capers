@@ -57,6 +57,11 @@ static var _gen: int = 0
 @export var one_handed_fp_sets: Array[StringName] = [&"pistol", &"revolver"]
 @export var one_handed_left_drop: Vector3 = Vector3(-0.15, -0.7, 0.25)
 @export var one_handed_drop_rate: float = 5.0
+## D-116 (LEAD ADS note): per-set rotation (deg, x pitch up / y yaw / z roll) of the arms about the rear sight
+## (AimPoint) at full ADS (x ads_weight), e.g. a small nose-down pitch puts the eye above and behind
+## the firing hand, looking along the slide; the rear sight stays on the crosshair. Empty: tried -8 on the D-116
+## v3 clips, it hardly changes the sleeve (the wrist sits right of the grip in the clip).
+@export var set_ads_rot_deg: Dictionary[StringName, Vector3] = {}
 ## PO6-11: sets whose support hand keeps the orientation (relative to the gun) it had at hip / full ADS through the ADS
 ## transition, instead of the blended clip's (off by ~10 deg mid-blend). Needs the IK (HandRestore).
 @export var left_hand_hold_rel_sets: Array[StringName] = [&"pistol", &"revolver"]
