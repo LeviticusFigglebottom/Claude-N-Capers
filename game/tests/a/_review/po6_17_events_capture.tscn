@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://tests/a/_review/po6_17_events_capture.gd" id="1"]
+
+[node name="Po617EventsCapture" type="Node"]
+script = ExtResource("1")
