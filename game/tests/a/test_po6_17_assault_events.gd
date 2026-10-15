@@ -335,19 +335,14 @@ func test_po6_17_heli_rappels_a_squad_at_the_drop_and_carries_a_sniper() -> void
 	var landing: bool = await wait_until(func() -> bool:
 		return ev.units.any(func(u: NpcBase) -> bool: return u.get_meta(AnimDriver.META_ANIM_OVERRIDE, &"") == &"rappel_land"), 1.0)
 	assert_true(landing, "rappel_land on touchdown")
-	await wait_until(func() -> bool:  # rappel_land_s, then the motor resumes
-		return ev.units.all(func(u: NpcBase) -> bool:
-			var mm: NpcMotor = u.get_node_or_null(^"Motor") as NpcMotor
-			return mm == null or mm.is_physics_processing()), 3.0)
-	var landed: int = 0
+	# Condition-based: both rappellers on the drop's floor (within the rope spread) with their motor back on.
+	var both: bool = await wait_until(func() -> bool: return _rappellers_down(ev, drop) == 2, 6.0)
 	for u: NpcBase in ev.units:
-		if not is_instance_valid(u) or (u.enemy_def != null and u.enemy_def.id == &"enemy.longshot"):
-			continue
-		var m2: NpcMotor = u.get_node_or_null(^"Motor") as NpcMotor
-		var flat: float = Vector2(u.global_position.x - drop.x, u.global_position.z - drop.z).length()
-		print("[PO6-17] rappeller at %s (flat %.2f from drop) motor on %s" % [u.global_position, flat, m2.is_physics_processing()])
-		if flat < 2.5 and u.global_position.y < 0.6 and m2.is_physics_processing() and not m2.rappelling:
-			landed += 1
+		if is_instance_valid(u):
+			var m2: NpcMotor = u.get_node_or_null(^"Motor") as NpcMotor
+			print("[PO6-17] rappeller at %s (flat %.2f from drop) motor on %s" % [u.global_position,
+				Vector2(u.global_position.x - drop.x, u.global_position.z - drop.z).length(), m2 != null and m2.is_physics_processing()])
+	var landed: int = 2 if both else _rappellers_down(ev, drop)
 	assert_eq(landed, 2, "both rappellers landed at the drop and walk on")
 	# The sniper window is long (30 s) so a loaded batch cannot see the heli leave before the checks below.
 	var sniping: bool = await wait_until(func() -> bool: return is_instance_valid(heli) and heli.passenger != null, 6.0)
@@ -525,3 +520,16 @@ func test_po6_17b_breach_blast_stuns_npcs_and_flashes_crew() -> void:
 	var left: float = crew.health.flashed_left
 	await wait_seconds(0.5)
 	assert_true(crew.health.flashed_left < left, "the flash wears off")
+
+
+## Rope units (not the seated Longshot) standing on the floor within 2.5 m of `drop`, motor resumed.
+static func _rappellers_down(ev: AssaultEventRunner, drop: Vector3) -> int:
+	var n: int = 0
+	for u: NpcBase in ev.units:
+		if not is_instance_valid(u) or (u.enemy_def != null and u.enemy_def.id == &"enemy.longshot"):
+			continue
+		var m: NpcMotor = u.get_node_or_null(^"Motor") as NpcMotor
+		var flat: float = Vector2(u.global_position.x - drop.x, u.global_position.z - drop.z).length()
+		if flat < 2.5 and u.global_position.y < drop.y + 0.6 and m != null and m.is_physics_processing() and not m.rappelling:
+			n += 1
+	return n

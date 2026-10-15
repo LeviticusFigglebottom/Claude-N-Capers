@@ -255,24 +255,29 @@ func _run_heli(p: Dictionary, marker: String) -> AssaultEventEntity:
 func _pick_drop(marker: String) -> Dictionary:
 	var cands: Array[Dictionary] = []
 	for m: Node3D in _pick_markers(AssaultEventMarkers.HELI_DROP, marker):
+		# Roof drops (GH HeliDrop_1, off the navmesh) are recognised by geometry, not by a navmesh query: the
+		# closest-point query was not reliable in a batch (a floor drop read as off-nav, paired with a roof breach).
 		var pos: Vector3 = m.global_position
-		if AssaultEventMarkers.nav_point(_rt.map, pos, 1.2) != Vector3.INF:
-			cands.append({"pos": pos, "name": String(m.name), "breach": ""})
-			continue
 		var pair: Node3D = _pair_ceiling_breach(pos)
 		if pair != null:
 			cands.append({"pos": pos, "name": String(m.name), "breach": _map_path(pair)})
-		else:
-			Log.warn(&"director", "HeliDrop %s is off the navmesh and has no ceiling breach near it: skipped" % m.name)
+			continue
+		if AssaultEventMarkers.nav_point(_rt.map, pos, 1.2) == Vector3.INF:
+			Log.warn(&"director", "HeliDrop %s: no navmesh within 1.2 m and no ceiling breach to drop through" % m.name)
+		cands.append({"pos": pos, "name": String(m.name), "breach": ""})
 	if not cands.is_empty():
 		return cands[GameRng.stream(RNG).randi_range(0, cands.size() - 1)]
 	var sp: Node3D = _nearest_police_spawn([])
 	return {"pos": sp.global_position, "name": "", "breach": ""} if sp != null else {}
 
 
+## The ceiling breach a roof drop at `pos` goes down through: a `ceiling` Breach_<n> within PAIR_RADIUS_M
+## horizontally whose ceiling plane the drop stands on or above (a floor drop under it never pairs).
 func _pair_ceiling_breach(pos: Vector3) -> Node3D:
 	for m: Node3D in AssaultEventMarkers.list(_rt.map, AssaultEventMarkers.BREACH):
-		if String(m.get_meta(&"kind", "wall")) == "ceiling" and m.global_position.distance_to(pos) <= PAIR_RADIUS_M:
+		if String(m.get_meta(&"kind", "wall")) != "ceiling":
+			continue
+		if _flat(m.global_position - pos).length() <= PAIR_RADIUS_M and pos.y >= m.global_position.y - 0.3:
 			return m
 	return null
 
@@ -298,9 +303,17 @@ func _on_heli_hover(heli: AssaultHeli, drop: Dictionary, p: Dictionary) -> void:
 	var interval: float = float(p.get("drop_interval_s", 0.9))
 	var speed: float = float(p.get("rappel_speed_mps", 3.0))
 	for i: int in range(ids.size()):
+		# Ropes hang from the hover point's anchors (not wherever the heli drifted to this frame), and land on the
+		# drop's floor: a floor hit far from the drop height (a ledge, a parked prop) is ignored.
 		var a: Vector3 = anchors[i % anchors.size()]
-		var land: Vector3 = _floor_below(a, float(drop["pos"].y))
-		var face: Vector3 = _flat(heli.global_position - a)  # hang outside the door, facing the rope / cabin
+		if heli.hover_point != Vector3.INF:
+			a += heli.hover_point - heli.global_position
+		var drop_y: float = float(drop["pos"].y)
+		var land: Vector3 = _floor_below(a, drop_y)
+		if absf(land.y - drop_y) > 0.6:
+			land = Vector3(a.x, drop_y, a.z)
+		var hover_at: Vector3 = heli.hover_point if heli.hover_point != Vector3.INF else heli.global_position
+		var face: Vector3 = _flat(hover_at - a)  # hang outside the door, facing the rope / cabin
 		face = face.normalized() if face.length() > 0.05 else -heli.global_basis.x
 		var bottom: Vector3 = Vector3(a.x, land.y, a.z)
 		var top_y: float = a.y - tweak.rope_chest_height_m - 0.3
