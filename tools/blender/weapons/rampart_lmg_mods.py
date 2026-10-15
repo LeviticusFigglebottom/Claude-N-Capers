@@ -32,8 +32,7 @@ def build(ctx) -> None:
     elif part == "box_big":
         r.build_box(ctx, mats, big=True)
     elif part == "short_barrel":
-        body = r.build_barrel(ctx, mats, short=True)
-        ctx.marker("Muzzle", (0.0, r.SHORT_END_Y - r.REC_FRONT_Y + r.HIDER_LEN + 0.001, 0.0), parent=body)
+        r.build_barrel(ctx, mats, short=True)   # its MuzzleBrake carries the own Muzzle
     elif part == "bipod":
         c.build_bipod(ctx, mats, leg_len=0.130)
     else:

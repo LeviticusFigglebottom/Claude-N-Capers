@@ -7,4 +7,4 @@ rebuild: python3 tools/blender/build.py --category weapons --asset wpn_osprey_76
 edit policy: generated file, never edit by hand; change the script and rebuild
 origin: firing-hand pivot: grip centre plane, mid grip depth, 20 mm below grip top
 tri_budget: 25000
-tris_lod0: 11496
+tris_lod0: 11800

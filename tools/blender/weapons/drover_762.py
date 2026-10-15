@@ -1,7 +1,7 @@
 """Graff-Lindqvist Drover 762: long-stroke 7.62 mm battle rifle, first-person model (B4-12).
 
 About 1.0 m long. Stamped steel receiver with a railed top cover, walnut handguard (upper and lower),
-pistol grip and fixed stock, gas tube over the barrel, front sight block and a slant muzzle brake,
+pistol grip and fixed stock, gas tube over the barrel, front sight block and a 3-port muzzle brake,
 deeply curved steel 30-round magazine. Heavier and older-looking than the Brannock Corsair.
 
 Origin = firing-hand pivot on the pistol grip (see _drover.py). Forward = Godot -Z, up = Godot +Y.
@@ -153,21 +153,7 @@ def _barrel(ctx, mats):
     gb.box((-0.0110, fy - 0.016, d.BORE_Z - 0.010), (0.0110, fy + 0.012, d.BORE_Z + 0.016), mat=gm)
     gb.box((-0.0080, fy - 0.004, d.BORE_Z - 0.032), (0.0080, fy + 0.006, d.BORE_Z - 0.010), mat=gm)   # bayonet lug
     c.finish(gb, "GasBlock", bevel=0.0010, segments=1, parent=barrel)
-    br = ctx.builder()
-    bm = br.material(mats.steel())
-    dark = br.material(mats.polymer())
-    y0, y1 = d.BARREL_END_Y - 0.002, d.BARREL_END_Y + d.BRAKE_LEN
-    c.ring_y(br, 0.0120, 0.0058, y0, y1, d.BORE_Z, bm, segments=24)
-    # slant cut (taller at the bottom) suggested by a dark wedge, plus two side ports
-    zb = d.BORE_Z
-    br.prism([(y1 - 0.010, zb - 0.0125), (y1 + 0.0004, zb - 0.0125), (y1 + 0.0004, zb - 0.0035)], axis="X",
-             start=-0.012, end=0.012, mat=dark)
-    for i in range(2):
-        y = y0 + 0.012 + i * 0.012
-        for side in (-1.0, 1.0):
-            lo, hi = sorted((side * 0.0116, side * 0.0126))
-            br.box((lo, y, d.BORE_Z - 0.0045), (hi, y + 0.007, d.BORE_Z + 0.0045), mat=dark)
-    c.finish(br, "Brake", bevel=0.0006, segments=1, parent=barrel)
+    c.build_muzzle_brake(ctx, mats, 0.0125, d.BARREL_END_Y, d.BRAKE_LEN, d.BORE_Z, parent=barrel)  # PO6-13
     return barrel
 
 
@@ -177,7 +163,6 @@ def build(ctx) -> None:
     _handguard(ctx, mats)
     _barrel(ctx, mats)
 
-    ctx.marker("Muzzle", (0.0, d.MUZZLE_Y, d.BORE_Z))
     ctx.marker("BarrelMount", (0.0, d.REC_FRONT_Y, d.BORE_Z))
     ctx.marker("Eject", (d.REC_HW, 0.075, d.BORE_Z - 0.002), rotation_euler=(0.0, 0.0, -math.pi / 2))
     sight_rail = ctx.marker("SightRail", (0.0, d.SIGHT_RAIL_Y, d.RAIL_TOP_Z))

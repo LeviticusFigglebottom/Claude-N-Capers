@@ -34,7 +34,9 @@ SIGHT_RAIL_Y = 0.040
 
 SHROUD_Y1 = 0.420
 BARREL_END_Y = 0.455
-MUZZLE_Y = BARREL_END_Y + 0.001
+COMP_LEN = 0.035                 # PO6-13 top-ported compensator
+COMP_SLEEVE = 0.022              # ... slipped this far back over the barrel end
+MUZZLE_Y = BARREL_END_Y + COMP_LEN - COMP_SLEEVE + 0.001
 
 MAGWELL_POS = (0.0, 0.150, REC_BOTTOM_Z)
 DRUM_W = 0.030                  # half width of the drum (along X)

@@ -5,7 +5,7 @@ Private helper: imported by ``gale_mg.py`` and ``gale_mg_mods.py``. Axes and piv
 
 Stamped steel receiver with a rear-hinged ``FeedCover`` (D-044: origin on the rear hinge, opens 78
 degrees about local X, optics rail and ``SightRail`` on top), a long perforated barrel jacket with a
-muzzle booster and front post, black polymer stock, belt box under the receiver feeding from the left
+3-port muzzle brake and front post, black polymer stock, belt box under the receiver feeding from the left
 (``Magwell``). The bipod is a mod on ``Underbarrel``.
 """
 
@@ -34,8 +34,8 @@ SIGHT_RAIL_Y = 0.070
 
 JACKET_R = 0.0200
 JACKET_Y1 = 0.555
-BOOST_LEN = 0.045
-MUZZLE_Y = JACKET_Y1 + BOOST_LEN + 0.001
+BRAKE_LEN = 0.052                # PO6-13 3-port side brake (was a booster)
+MUZZLE_Y = JACKET_Y1 + BRAKE_LEN + 0.001
 
 MAGWELL_POS = (0.0, 0.110, REC_BOTTOM_Z)
 FEED_POS = (-REC_HW, 0.050, 0.094)

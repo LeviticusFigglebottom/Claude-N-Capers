@@ -5,7 +5,7 @@ Private helper: imported by ``tern_556.py`` and ``tern_556_mods.py``. Axes and p
 
 Olive polymer bullpup shell from the butt to a short handguard, the magazine BEHIND the grip
 (``Magwell`` under the action), ejection port beside the cheek, full-length top rail, a short lower rail
-under the handguard, 5.56 barrel with a birdcage hider. The stock is part of the shell, so there is no
+under the handguard, 5.56 barrel with a 3-port brake. The stock is part of the shell, so there is no
 stock slot; ``StockMount`` sits at the butt plate.
 """
 
@@ -31,8 +31,8 @@ RAIL_TOP_Z = BODY_TOP_Z + 0.0062
 SIGHT_RAIL_Y = -0.020
 
 BARREL_END_Y = 0.400
-HIDER_LEN = 0.032
-MUZZLE_Y = BARREL_END_Y + HIDER_LEN + 0.001
+BRAKE_LEN = 0.042                # PO6-13 3-port side brake
+MUZZLE_Y = BARREL_END_Y + BRAKE_LEN + 0.001
 
 MAGWELL_Y = -0.118
 MAGWELL_POS = (0.0, MAGWELL_Y, -0.004)
@@ -63,5 +63,5 @@ def build_mag(ctx, mats, extended: bool, parent=None, name="Magazine"):
 
 
 def build_suppressor(ctx, mats, parent=None, name="Suppressor"):
-    return c.build_can(ctx, mats, length=0.170, r=0.0190, overlap=HIDER_LEN - 0.004, bore_r=0.0045, parent=parent,
+    return c.build_can(ctx, mats, length=0.170, r=0.0190, overlap=BRAKE_LEN - 0.004, bore_r=0.0045, parent=parent,
                        name=name)

@@ -1,13 +1,13 @@
 """Brannock Osprey Marksman: semi-automatic 7.62 sniper rifle, first-person model (B4-18).
 
 About 79 cm from the muzzle brake to the receiver rear (plus a 27 cm precision stock). Machined receiver
-with a long top rail, free-float handguard, fluted barrel with a two-port brake, ten-round magazine,
+with a long top rail, free-float handguard, fluted barrel with a three-port brake, ten-round magazine,
 adjustable stock with a cheek riser, fixed 4x scope.
 
 Origin = firing-hand pivot on the grip (see _osprey.py). Forward = Godot -Z.
 
 Node tree: ``Receiver`` (+ ``TopRail``, ``ReceiverDetails``, ``TriggerGroup``, ``Grip``, ``Handguard``),
-``Barrel`` (+ ``Brake``), ``Stock``. Stock parts: ``SightRail/StockSight`` (4x scope, ``AimPoint``),
+``Barrel`` (+ ``MuzzleBrake``), ``Stock``. Stock parts: ``SightRail/StockSight`` (4x scope, ``AimPoint``),
 ``Magwell/StockMagazine`` (10 rounds).
 """
 
@@ -74,17 +74,7 @@ def _barrel(ctx, mats):
     mb.cylinder(0.0090, o.HG_Y1 - o.REC_FRONT_Y, segments=20, centre=(0.0, (o.HG_Y1 + o.REC_FRONT_Y) / 2, o.BORE_Z),
                 axis="Y", mat=st)
     barrel = c.finish(mb, "Barrel", bevel=0.0004)
-    br = ctx.builder()
-    bm = br.material(mats.steel())
-    dark = br.material(mats.polymer())
-    y0 = o.BARREL_END_Y
-    br.cylinder(0.0140, o.BRAKE_LEN, segments=24, centre=(0.0, y0 + o.BRAKE_LEN / 2, o.BORE_Z), axis="Y", mat=bm)
-    for i in range(2):
-        y = y0 + 0.010 + i * 0.016
-        for side in (-1.0, 1.0):
-            lo, hi = sorted((side * 0.0125, side * 0.0146))
-            br.box((lo, y, o.BORE_Z - 0.007), (hi, y + 0.010, o.BORE_Z + 0.007), mat=dark)
-    c.finish(br, "Brake", bevel=0.0006, parent=barrel)
+    c.build_muzzle_brake(ctx, mats, 0.0135, o.BARREL_END_Y, o.BRAKE_LEN, o.BORE_Z, parent=barrel)  # PO6-13
     return barrel
 
 
@@ -114,7 +104,6 @@ def build(ctx) -> None:
     _barrel(ctx, mats)
     _stock(ctx, mats)
 
-    ctx.marker("Muzzle", (0.0, o.MUZZLE_Y, o.BORE_Z))
     ctx.marker("BarrelMount", (0.0, o.REC_FRONT_Y, o.BORE_Z))
     ctx.marker("Eject", (o.REC_HW, 0.035, o.BORE_Z), rotation_euler=(0.0, 0.0, -math.pi / 2))
     sight_rail = ctx.marker("SightRail", (0.0, o.SIGHT_RAIL_Y, o.RAIL_TOP_Z))
