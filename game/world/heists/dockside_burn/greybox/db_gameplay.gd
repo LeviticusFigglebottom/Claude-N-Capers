@@ -35,6 +35,11 @@ const ESCAPE_BOAT_MARKER: String = "res://world/heists/shared/escape_boat_marker
 ## D-111 prop art pass: catalog visual (tools/blender/props) per prefab type, as on Night Deposit
 ## (nd_gameplay.PREFAB_VISUALS). Doors, ladders, drills, burn points and loot choose theirs where they are built.
 const PREFAB_VISUALS: Dictionary = {"safe": "prop_safe_large", "hack_terminal": "prop_server_rack_terminal"}
+## D-111: the strongroom thermal drill shows the catalog device while it runs (as GN's DEVICE_VISUALS) and no
+## placeholder disc (the shared empty visual GH / GN use); the burn points are the catalog burn barrel.
+const THERMAL_DEVICE: String = "prop_thermal_drill_device"
+const VIS_EMPTY: String = "res://world/heists/glasshouse/art/gh_empty.tscn"
+const BURN_VISUAL: String = "res://world/props/burn_point/prop_burn_barrel.tscn"
 ## D1 stack ladder: 5.2 m rise, the container doors 0.22 m behind the stiles (prefab_visuals.py).
 const LADDER_D1: String = "prop_ladder_steel_h520_g22"
 ## Leaf widths per custom door type (width_m must equal the visual leaf width; validator scale check).
@@ -267,7 +272,8 @@ func _build_strongroom(_gp: Node3D) -> void:
 		return
 	prefab(door, "drill_point", "StrongroomDrill", Vector3(26.36, 1.0, 28.6), 90.0,
 		{"device": "enum:THERMAL", "duration_s": 240.0, "target": NodePath(".."), "loud_only": true,
-			"objective_tag": &"strongroom_drill"}, Vector3(27.2, 0.0, 28.6))
+			"objective_tag": &"strongroom_drill", "device_scene": _catalog_scene(THERMAL_DEVICE),
+			"visual_scene": load(VIS_EMPTY)}, Vector3(27.2, 0.0, 28.6))
 
 
 ## Yard containers K1-K6: every one has ENV A's padlock prefab on its doors (lockpick or hand-held
@@ -442,7 +448,8 @@ func _variants_product(variants: Node3D) -> void:
 		var fmn: Vector3 = v3(fb, 0)
 		var fmx: Vector3 = v3(fb, 3)
 		var bp: Node3D = prefab(s, "burn_point", "BurnPoint", base + Vector3(0.0, 1.2, 0.0), 0.0,
-			{"duration_s": BURN_S, "loud_only": true, "objective_tag": &"burn", "fire_volume_size": fmx - fmn},
+			{"duration_s": BURN_S, "loud_only": true, "objective_tag": &"burn", "fire_volume_size": fmx - fmn,
+				"visual_scene": load(BURN_VISUAL)},
 			base + Vector3(0.0, 0.0, 1.3))
 		if bp != null:
 			var fv: Node3D = bp.get_node_or_null(^"FireVolume") as Node3D
