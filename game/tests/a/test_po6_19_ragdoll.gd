@@ -179,8 +179,11 @@ func test_corpse_shot_bleeds_at_the_hit_point_and_nudges() -> void:
 	var rd: NpcRagdoll = NpcRagdoll.of(npc)
 	await wait_physics_frames(3)
 	_shotgun(npc, Vector3(0, 0, 1), 2.0)
-	await wait_physics_frames(3)
-	rd.freeze()
+	# Let the thrown body land and settle on its own (a forced freeze mid-flight would make the nudge's restart
+	# fall the rest of the way: order-dependent "a nudge, not a throw" failures in the po6_ batch).
+	var settled: bool = await wait_until(func() -> bool: return rd.phase == NpcRagdoll.Phase.FROZEN,
+		RagdollTweak.data().settle_s + 1.5)
+	assert_true(settled, "settled and frozen on the floor")
 	assert_eq(rd.phase, NpcRagdoll.Phase.FROZEN, "frozen")
 	var hb: Hitbox = npc.get_node_or_null(NpcBase.CORPSE_HITBOX) as Hitbox
 	assert_true(hb != null and hb.collision_layer == Hitbox.LAYER_HITBOXES, "corpse hitbox on the hitboxes layer")
