@@ -6384,6 +6384,39 @@
   "weight": 1.0,
   "z": 0.0
  },
+ "prop_night_drop_bags": {
+  "aabb": [
+   -0.3629,
+   0.0,
+   -0.1568,
+   0.7282,
+   0.223,
+   0.2909
+  ],
+  "clear": 0.0,
+  "fixture": false,
+  "glb": "res://assets/props/prop_night_drop_bags/prop_night_drop_bags.glb",
+  "group": "loot_spawn",
+  "has_light": false,
+  "hosts": [],
+  "keepout": [],
+  "kind": "loot_spawn",
+  "mount": "",
+  "nodes": [
+   "Pouches"
+  ],
+  "place": "none",
+  "prefab": "loot_spawn",
+  "scene": "res://world/props/loot_spawn/prop_night_drop_bags.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": false,
+  "surface": "fabric",
+  "top": 0.0,
+  "visibility_range_end": 0.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
  "prop_note_counter": {
   "aabb": [
    -0.13,
