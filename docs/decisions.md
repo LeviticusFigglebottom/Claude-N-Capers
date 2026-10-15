@@ -876,3 +876,31 @@ Today blood is only a mist billboard on flesh impacts, and the muzzle flash is a
    Suppressed weapons keep a tiny puff. FP and TP should match.
 3. **Hooks (ENV A):** hit events must carry headshot / penetration / strength so C can scale gore; a corpse/downed
    "bleed" hook for the pool. 4. **Option (ENV B):** Options → Gameplay "Blood & gore: Full / Reduced / Off".
+
+## D-114: PO playtest list 2026-10-15 is top priority; LEAD handover to a new session (2026-10-15, LEAD; product owner)
+The product owner played Golden Hour (in-world name "Vossberg Jewelers", heist id `glasshouse`), other heists and the
+firing range, and filed the list in `docs/process/po_playtest_2026-10-15.md` (items PO6-01..PO6-19, each with an owner,
+a spec and acceptance). Those items go **ahead of every other queue item**, including the 2026-10-14 handoff list,
+except the two open PO complaints already in flight (FP black-gun material, long-gun support grip), which are folded
+into the list as PO6-10/PO6-09. Rulings made with it:
+1. **Golden Hour stealth never needs the drill.** The manager-office safe gets a silent stealth path (PD2-style: the
+   manager's code/keycard opens it; lockpicking is a slow fallback). The drill stays the loud path. A running drill is
+   a noise source that guards/civilians can hear and investigate; it is not an instant alarm, and cameras react only
+   to what they see.
+2. **Drill jams follow PD2:** at most 1-2 jams per standard drill, fewer with upgrades; never a jam in the first or last
+   10 % of progress. Values stay in `interaction_tweak` (data, not code).
+3. **One-shot audio is one-shot.** Pager beep, sirens and alarm bells stop when their source state ends (pager answered
+   or expired, assault phase over, alarm cleared). A loop flag on a cue needs an owner that stops it.
+4. **Pager:** the countdown stops the moment a player starts answering (PD2), and stops for good when answered.
+5. **Loud waves are horde-paced (PD2 assault):** continuous spawning to a force cap during sustain, units path *into*
+   rooms players hold (no idling outside doors), plus RNG assault events per heist: turret van, helicopter
+   (sniper/rappel drop), and breach points (marked wall/ceiling/window spots cops blow open mid-loud).
+6. **Bot crew** must catch and carry thrown bags and be toned down (PD2 bots: weaker damage, cannot carry the run).
+7. **Death and bodies:** death animation picks from the pose before death (standing / crouched / kneeling-cuffed /
+   prone / downed); never stand a body up. Explosions and shotguns at close range impart an impulse (physical bones
+   ragdoll, or a scripted body push where ragdoll is too costly); corpses accept small hit impulses and bleed at the
+   hit point (D-113 VFX).
+8. **Muzzle flash is toned down** from D-113 (smaller, shorter, less light), and long guns get a muzzle-brake/
+   compensator mesh at the barrel tip that the flash emits from.
+9. **Team:** the previous sessions are not reachable from this account; the new LEAD (session_01XAPqmFJ32zHKLK9Sezymym)
+   spawns fresh A, B, C, D and P sessions (board Sessions table).
