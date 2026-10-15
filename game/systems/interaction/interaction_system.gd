@@ -207,6 +207,8 @@ func cancel(slot: int) -> void:
 	if is_instance_valid(comp):
 		comp.cancelled.emit(crew)
 		_emit(&"interaction_cancelled", [comp.owner_net_id(), slot])
+	else:  # PO6-07: the object was freed mid-hold; the fact still stops its hold cues
+		_emit(&"interaction_cancelled", [int(s.get("owner_id", 0)), slot])
 	session_changed.emit(slot)
 
 
@@ -228,7 +230,7 @@ func _start(crew: CrewController, comp: InteractableComponent, aimed: bool) -> v
 	var dur: float = comp.duration_for(crew)
 	_sessions[slot] = {
 		"comp": comp, "crew": crew, "progress": 0.0, "duration": dur,
-		"start_pos": crew.global_position, "aimed": aimed,
+		"start_pos": crew.global_position, "aimed": aimed, "owner_id": comp.owner_net_id(),
 	}
 	_blocked.erase(slot)
 	comp.started.emit(crew)
