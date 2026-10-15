@@ -58,6 +58,10 @@ func test_po6_13_toned_down_with_brake_ports() -> void:
 	assert_eq(_mf.port_count(), 0, "bare muzzle: no ports")
 	assert_true(_mf.cone_length() > braked, "brake shortens the forward cone")
 	_mf.hide_flash()
+	_mf.flash(1.0, false, &"shotgun", 0)
+	var port: Node3D = _mf.get_node("Petals/PortR") as Node3D
+	assert_true(port.transform.basis.y.normalized().y > 0.3, "shotgun comp ports vent up-and-out")
+	_mf.hide_flash()
 	_mf.flash(1.0, false, &"pistol", 0)
 	assert_false(_mf.last_brake, "pistols have no brake")
 	assert_eq(_mf.port_count(), 0)

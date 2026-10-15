@@ -33,7 +33,7 @@ func test_viewmodel_fov_fixed_and_layers_split() -> void:
 	var n: int = 0
 	for g: Node in cam.find_children("*", "GeometryInstance3D", true, false):
 		n += 1
-		assert_eq((g as GeometryInstance3D).layers, CrewView.VIEWMODEL_LAYER, "%s on the viewmodel layer" % g.name)
+		assert_eq((g as GeometryInstance3D).layers & CrewView.VIEWMODEL_LAYER, CrewView.VIEWMODEL_LAYER, "%s on the viewmodel layer" % g.name)
 	assert_true(n > 0, "arms/weapon meshes under the camera (%d)" % n)
 	GameSettings.current().set_value(GameSettings.VIDEO, &"fov", 100.0)
 	await wait_frames(3)
@@ -60,6 +60,34 @@ func test_viewmodel_key_light_only_lights_the_viewmodel() -> void:
 	assert_eq(key.layers, CrewView.VIEWMODEL_LAYER, "on the viewmodel layer, else the vm camera culls the light itself")
 	assert_false(key.shadow_enabled, "no shadows")
 	assert_near(key.light_energy, vt.viewmodel_key_light_energy, 1e-4, "energy from the tweak")
+
+
+## PO6-10: the gun fill light lights only the first-person gun (VIEWMODEL_GUN_LAYER on the WeaponVisual's meshes,
+## never on the arms).
+func test_gun_fill_light_only_lights_the_gun() -> void:
+	var c: CrewController = _rt.crew_controller(0) as CrewController
+	var view: CrewView = CrewView.of(c)
+	var vt: FpViewmodelTweak = FpViewmodelTweak.data()
+	var fill: DirectionalLight3D = view.find_child("ViewmodelGunFill", true, false) as DirectionalLight3D
+	if vt.viewmodel_gun_fill_energy <= 0.0 or vt.viewmodel_fov_deg <= 0.0:
+		assert_true(fill == null, "no gun fill when disabled")
+		return
+	assert_true(fill != null, "gun fill exists")
+	if fill == null:
+		return
+	assert_eq(fill.light_cull_mask, CrewView.VIEWMODEL_GUN_LAYER, "culled to the gun layer")
+	assert_eq(fill.layers, CrewView.VIEWMODEL_LAYER, "inside the vm camera's cull mask")
+	var gun: int = 0
+	var arms: int = 0
+	for g: Node in view.camera().find_children("*", "GeometryInstance3D", true, false):
+		var on_gun: bool = (g as GeometryInstance3D).layers & CrewView.VIEWMODEL_GUN_LAYER != 0
+		var in_wv: bool = CrewView.viewmodel_layers_for(g as GeometryInstance3D, view.camera()) != CrewView.VIEWMODEL_LAYER
+		assert_eq(on_gun, in_wv, "%s: gun layer only inside the WeaponVisual" % g.name)
+		if in_wv:
+			gun += 1
+		else:
+			arms += 1
+	assert_true(gun > 0 and arms > 0, "gun meshes (%d) and arms meshes (%d)" % [gun, arms])
 
 
 ## D-094 / PO-4: the viewmodel camera also sees lights tagged VIEWMODEL_LIT_LAYER; a shot (real input) lights the

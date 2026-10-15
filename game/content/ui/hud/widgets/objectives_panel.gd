@@ -26,6 +26,8 @@ var shown_id: StringName = &""
 var flashing: bool = false
 ## The finished step, struck through, shown during the flash (lead h02 note).
 var done_label: RichTextLabel
+## PO6-03: the current objective's device timer ("DRILL 02:31" / "DRILL JAMMED" in red) under the active line.
+var device_label: Label = null
 var _flash_tween: Tween = null
 var _shown_text: String = ""
 var _done_text: String = ""
@@ -69,6 +71,27 @@ func set_accent(color: Color) -> void:
 ## "Secure the bags ({count}/{total})"). Missions pass {"bags": N} (no count / total), so total falls back
 ## to bags / required and count to secured / `secured`. A placeholder still unfilled is dropped together
 ## with its "( ... )" group, so raw braces never reach the screen.
+## PO6-03 (DeviceTimers.objective_suffix_changed): show `text` under the active objective ("" hides it), red while jammed.
+func set_device_suffix(text: String, jammed: bool) -> void:
+	if device_label == null or not is_instance_valid(device_label):
+		device_label = UiBuild.label(&"", UiBuild.HUD)
+		device_label.name = "DeviceLine"
+	device_label.text = text
+	device_label.add_theme_color_override(&"font_color", tweak.device_jam_color if jammed else UiTokens.PAPER)
+	if text != "" and device_label.get_parent() == null and list_box != null:
+		list_box.add_child(device_label)
+	elif text == "" and device_label.get_parent() != null:
+		device_label.get_parent().remove_child(device_label)
+	_device_last()
+	visible = (list_box != null and list_box.get_child_count() > 0) or flashing
+
+
+## The device line always sits under the active step.
+func _device_last() -> void:
+	if device_label != null and list_box != null and device_label.get_parent() == list_box:
+		list_box.move_child(device_label, -1)
+
+
 static func objective_text(o: Dictionary, secured: int = 0) -> String:
 	var args: Dictionary = (o.get("args", {}) as Dictionary).duplicate()
 	if not args.has("total"):
@@ -198,6 +221,7 @@ func refresh() -> void:
 		_done_text = _shown_text
 		_flash_complete()
 	shown_id = new_id
+	_device_last()
 	_shown_text = (list_box.get_child(0) as Label).text if list_box.get_child_count() > 0 else ""
 	visible = list_box.get_child_count() > 0 or flashing
 

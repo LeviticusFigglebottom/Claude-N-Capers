@@ -22,6 +22,11 @@
 ## first-person camera, PlayerInput and CrewWeapons runtime fire hitscan claims that CombatSystem
 ## validates and delivers ONCE to RangeTarget.take_hit (damage.md single hit path). Loadout swaps
 ## call the crew's set_loadout(resolved). Panel mode pauses the crew input (RangeModeInput).
+## PO6-12: the first-person weapon is the real player viewmodel path (CrewView + FpViewmodel arms: draw/holster,
+## fire, reload, ADS, the weapon model with its attachments); the range never puts its own WeaponVisual under the
+## camera. The loadout holds a primary AND a secondary: picking a weapon replaces its own slot and equips it, and the
+## slot keys / scroll swap between the two in aim mode (CrewWeapons.equip, holster + draw clips). The readout, panels
+## and mods follow the equipped slot (`active_slot`).
 ## FALLBACK ONLY (CrewController or its range hook missing, or `use_fallback_shooter` set for
 ## tests): the RangeSpectator camera + RangeDebugGun.
 ## Last shot, damage numbers and the readout lane follow EventBus.damage_applied emitted by this
@@ -69,13 +74,20 @@ var crew: Node = null
 ## ENV A's LocalHudModel tracking `crew` (null in fallback mode or when A has no track()).
 var hud_model: Node = null
 var mode_input: RangeModeInput = null
-var viewmodel: WeaponVisual = null
+## The crew's live first-person WeaponVisual (CrewView's, rebuilt on every swap/loadout; null in fallback mode).
+var viewmodel: WeaponVisual:
+	get:
+		return RangeCrewBridge.weapon_visual(crew) if crew != null else null
+## Weapon slot under test: the crew's equipped slot (follows swaps), or the last picked slot in fallback mode.
+var active_slot: int = Enums.WeaponSlot.PRIMARY
 var overlay: RangeOverlay = null
 var level: Node3D = null
 var fx_root: Node3D = null
 var aim_mode: bool = false
 
 var _readout_dist: float = -INF
+## The CrewView WeaponVisual the loadout finish was last put on (CrewView rebuilds it on swaps and refreshes).
+var _finished_wv: WeaponVisual = null
 var _readout_cooldown: float = 0.0
 
 
@@ -83,6 +95,8 @@ var _readout_cooldown: float = 0.0
 func setup(initial_loadout: Loadout = null, initial_difficulty: int = Enums.Difficulty.ROUTINE) -> void:
 	loadout = initial_loadout.duplicate(true) as Loadout if initial_loadout != null else null
 	difficulty = initial_difficulty
+	if loadout != null:
+		active_slot = Enums.WeaponSlot.PRIMARY if loadout.primary != &"" else Enums.WeaponSlot.SECONDARY
 
 
 func _ready() -> void:
@@ -103,6 +117,7 @@ func _ready() -> void:
 	add_child(fx_root)
 	if loadout == null:
 		loadout = default_loadout()
+		active_slot = starter_slot()
 	if not use_fallback_shooter:
 		crew = RangeCrewBridge.try_spawn(self, Transform3D(Basis.IDENTITY, layout.spawn_position), loadout)
 	if crew != null:
@@ -124,6 +139,7 @@ func _exit_tree() -> void:
 
 
 func _process(delta: float) -> void:
+	_finish_viewmodel()
 	if overlay == null or weapon_stats == null:
 		return
 	if spectator != null:
@@ -132,7 +148,7 @@ func _process(delta: float) -> void:
 		var a: Dictionary = _crew_ammo()
 		if not a.is_empty():
 			if int(a["mag"]) <= 0 and int(a["reserve"]) <= 0 and not bool(a["reloading"]):
-				RangeCrewBridge.push_loadout(crew, resolved)  # the range never runs dry: re-arm
+				RangeCrewBridge.rearm(crew)  # the range never runs dry (in place: the weapon stays drawn)
 				if hud_model != null and hud_model.has_method(&"refresh"):
 					hud_model.call(&"refresh")  # poll now, not at the model's poll_hz
 			overlay.show_ammo(int(a["mag"]), int(a["mag_size"]), bool(a["reloading"]), int(a["reserve"]))
@@ -141,6 +157,15 @@ func _process(delta: float) -> void:
 	_readout_cooldown -= delta
 	if _readout_cooldown <= 0.0 and absf(readout_distance() - _readout_dist) > READOUT_MOVE_EPS_M:
 		_refresh_readout()
+
+
+## B7-04: Loadout.weapon_finishes (stamped by MenuFlow) on CrewView's FP weapon, once per rebuilt WeaponVisual.
+func _finish_viewmodel() -> void:
+	var wv: WeaponVisual = viewmodel
+	if wv == _finished_wv or wv == null or not is_instance_valid(wv) or wv.weapon == null:
+		return
+	_finished_wv = wv
+	wv.apply_loadout_finish(loadout)
 
 
 ## {mag, mag_size, reserve, reloading} of the crew's equipped weapon: through the tracking HUD model when
@@ -155,37 +180,55 @@ func _crew_ammo() -> Dictionary:
 	return RangeCrewBridge.ammo(crew)
 
 
-## The starter weapon (lowest unlock level, then price; ties by id order) with stock parts, in its
-## own slot. Not simply the first id: the armory grows (B4-04) and ids sort alphabetically.
+## The starter weapon of each slot (lowest unlock level, then price; ties by id order) with stock parts.
+## Not simply the first id: the armory grows (B4-04) and ids sort alphabetically. PO6-12: both slots are
+## filled so the range can swap; `starter_slot()` is the slot of the overall starter (equipped first).
 static func default_loadout() -> Loadout:
 	var l: Loadout = Loadout.new()
-	var best: WeaponDef = null
-	for w: WeaponDef in ContentDB.all_weapons():
-		if best == null or w.unlock_level < best.unlock_level \
-				or (w.unlock_level == best.unlock_level and w.price < best.price):
-			best = w
-	if best != null:
-		_put_weapon(l, best)
+	for ws: int in [Enums.WeaponSlot.PRIMARY, Enums.WeaponSlot.SECONDARY]:
+		var best: WeaponDef = _starter(ws)
+		if best != null:
+			_put_weapon(l, best)
 	return l
 
 
-## The weapon under test (primary if set, else secondary).
+## Slot of the overall starter weapon (the cheapest, lowest-level one of either slot).
+static func starter_slot() -> int:
+	var best: WeaponDef = _starter(-1)
+	return int(best.slot) if best != null else Enums.WeaponSlot.PRIMARY
+
+
+## Lowest unlock level, then price, among the weapons of slot `ws` (-1 = any slot).
+static func _starter(ws: int) -> WeaponDef:
+	var best: WeaponDef = null
+	for w: WeaponDef in ContentDB.all_weapons():
+		if ws >= 0 and int(w.slot) != ws:
+			continue
+		if best == null or w.unlock_level < best.unlock_level \
+				or (w.unlock_level == best.unlock_level and w.price < best.price):
+			best = w
+	return best
+
+
+## The weapon under test: the active slot's (the other slot's when the active one is empty).
 func current_weapon_id() -> StringName:
-	return loadout.primary if loadout.primary != &"" else loadout.secondary
+	return _slot_id(_test_slot())
 
 
-## Swap to any ContentDB weapon (ownership is not checked, P7), stock parts.
+## Swap to any ContentDB weapon (ownership is not checked, P7), stock parts, in its own slot; the other slot
+## keeps its weapon. The crew equips it (holster + draw when it lands in the other slot).
 func select_weapon(weapon_id: StringName) -> void:
 	var def: WeaponDef = ContentDB.weapon(weapon_id)
 	if def == null:
 		return
 	_put_weapon(loadout, def)
+	active_slot = int(def.slot)
 	_apply_loadout()
 
 
 ## Put `mod_id` in its ModType slot of the current weapon (&"" = back to the stock part).
 func set_mod(mod_type: int, mod_id: StringName) -> void:
-	var primary: bool = loadout.primary != &""
+	var primary: bool = _test_slot() == Enums.WeaponSlot.PRIMARY
 	var mods: Array[StringName] = loadout.primary_mods if primary else loadout.secondary_mods
 	var kept: Array[StringName] = []
 	for m: StringName in mods:
@@ -220,7 +263,7 @@ func reset_targets() -> void:
 	for t: RangeTarget in targets:
 		t.reset_target()
 	if crew != null and resolved != null:
-		RangeCrewBridge.push_loadout(crew, resolved)
+		RangeCrewBridge.rearm(crew)
 
 
 ## Net id the range's last-shot readout follows: the crew's (attacker id of its hits), else the
@@ -321,30 +364,62 @@ func mods_by_type() -> Dictionary:
 	var out: Dictionary = {}
 	if weapon_def == null:
 		return out
-	var mods: Array[StringName] = loadout.primary_mods if loadout.primary != &"" else loadout.secondary_mods
-	for m: WeaponModDef in LoadoutResolver.applied_mods(weapon_def, mods):
+	for m: WeaponModDef in LoadoutResolver.applied_mods(weapon_def, _slot_mods(_test_slot())):
 		out[int(m.mod_type)] = m.id
 	return out
 
 
 func _apply_loadout() -> void:
 	resolved = LoadoutResolver.resolve(loadout)
-	weapon_def = ContentDB.weapon(current_weapon_id())
-	weapon_stats = resolved.resolved_primary if loadout.primary != &"" else resolved.resolved_secondary
+	if crew != null:
+		# CrewController.set_loadout re-arms and re-equips the primary (CrewView rebuilds the FP weapon on the arms);
+		# then the crew switches to the slot under test with its own equip (holster + draw).
+		RangeCrewBridge.push_loadout(crew, resolved)
+		if not RangeCrewBridge.equip(crew, _test_slot()):
+			RangeCrewBridge.play_draw(crew)  # same slot: still show the new weapon being drawn
+	_sync_weapon()
+
+
+## Point the panels, readout and fallback gun at the weapon in the active slot (after a loadout change or a swap).
+func _sync_weapon() -> void:
+	if resolved == null:
+		return
+	var ws: int = _test_slot()
+	weapon_def = ContentDB.weapon(_slot_id(ws))
+	weapon_stats = resolved.resolved_primary if ws == Enums.WeaponSlot.PRIMARY else resolved.resolved_secondary
 	if weapon_def == null or weapon_stats == null:
 		return
 	if spectator != null:
 		spectator.gun.equip(weapon_def.id, weapon_stats, weapon_def.fire_modes.has(&"auto"))
-	if crew != null:
-		RangeCrewBridge.push_loadout(crew, resolved)
-		var mods: Array[StringName] = loadout.primary_mods if loadout.primary != &"" else loadout.secondary_mods
-		viewmodel = RangeCrewBridge.attach_viewmodel(crew, weapon_def, mods, tweak.viewmodel_offset)
-		if viewmodel != null:
-			viewmodel.apply_loadout_finish(loadout)  # B7-04: Loadout.weapon_finishes (stamped by MenuFlow)
 	if overlay != null:
 		overlay.show_weapon(weapon_def, mods_by_type())
 	_refresh_readout()
 	loadout_applied.emit(weapon_stats)
+
+
+## CrewWeapons.equipped_changed: the player swapped (slot key / scroll) or the range equipped a picked weapon.
+func _on_crew_equipped(ws: int) -> void:
+	if ws == active_slot and weapon_def != null and weapon_def.id == _slot_id(ws):
+		return
+	active_slot = ws
+	_sync_weapon()
+
+
+## The active slot, or the other one when the active slot is empty.
+func _test_slot() -> int:
+	if _slot_id(active_slot) != &"":
+		return active_slot
+	return Enums.WeaponSlot.SECONDARY if active_slot == Enums.WeaponSlot.PRIMARY else Enums.WeaponSlot.PRIMARY
+
+
+func _slot_id(ws: int) -> StringName:
+	if loadout == null:
+		return &""
+	return loadout.primary if ws == Enums.WeaponSlot.PRIMARY else loadout.secondary
+
+
+func _slot_mods(ws: int) -> Array[StringName]:
+	return loadout.primary_mods if ws == Enums.WeaponSlot.PRIMARY else loadout.secondary_mods
 
 
 func _refresh_readout() -> void:
@@ -408,6 +483,7 @@ func _setup_crew() -> void:
 	add_child(mode_input)
 	mode_input.aim_requested.connect(set_aim_mode)
 	hud_model = RangeCrewBridge.track_hud_model(self, crew)
+	RangeCrewBridge.connect_equipped(crew, _on_crew_equipped)
 
 
 func _spawn_spectator() -> void:
@@ -451,16 +527,15 @@ func _load_data() -> void:
 		tweak = load(TWEAK_PATH) as RangeTweak
 
 
+## Put `def` with stock parts in its own slot; the other slot is kept (PO6-12: the range swaps between the two).
 static func _put_weapon(l: Loadout, def: WeaponDef) -> void:
 	var empty: Array[StringName] = []
-	l.primary = &""
-	l.primary_mods = empty.duplicate()
-	l.secondary = &""
-	l.secondary_mods = empty.duplicate()
 	if def.slot == Enums.WeaponSlot.PRIMARY:
 		l.primary = def.id
+		l.primary_mods = empty.duplicate()
 	else:
 		l.secondary = def.id
+		l.secondary_mods = empty.duplicate()
 
 
 ## D-111: ENV C dresses the space on top of the builder's level (RangeDressing.build(layout, parent)) and

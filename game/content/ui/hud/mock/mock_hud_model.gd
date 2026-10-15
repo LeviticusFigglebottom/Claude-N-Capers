@@ -30,6 +30,7 @@ signal player_mode_changed()     ## player_mode (v1.6)
 ## Extras without a contract signal (like LocalHudModel): mask_progress.
 signal changed(property: StringName)
 signal dominate_prompt_changed()  ## dominate_target, dominate_window_s (PP-A-1, S5.8 / D-079)
+signal devices_changed()         ## devices (PO6-03 proposal to ENV A)
 signal crew_stats_changed()      ## crew_stats (B6-02 proposal, QB to ENV A; content/docs/scoreboard.md)
 
 ## PD2 display units (health 0..max_health, armor 0..max_armor).
@@ -128,6 +129,13 @@ var objective_markers: Array[Dictionary] = []:
 	set(v):
 		objective_markers = v
 		objective_markers_changed.emit(v)
+
+## PO6-03 proposal (asked of ENV A for ui_hud.md): [{net_id, kind, world_pos: Vector3, progress 0..1, time_left_s,
+## state: &"running"/&"jammed", fix_prompt_key}]. null = the model has none (DeviceTimers then tracks EventBus).
+var devices: Variant = null:
+	set(v):
+		devices = v
+		devices_changed.emit()
 
 var marked_targets: Array[Dictionary] = []:
 	set(v):

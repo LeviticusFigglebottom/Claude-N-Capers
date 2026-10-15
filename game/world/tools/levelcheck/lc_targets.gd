@@ -61,32 +61,39 @@ static func player_spawns(ctx: LcContext) -> Array[SpawnPoint]:
 	return out
 
 
-## GN-C2: a wall-mounted loot spawn (meta mount wall: a hung canvas, pivot on the wall face at hanging height) is
-## reached at its UsePoint (itself a nav marker), not at its origin. PO6-05: so is a loot spawn parented to a
-## safe (parent meta kind safe): it lives inside the safe body and is taken from the UsePoint in front of the door.
-## A loot spawn's own placeholder visual (`<loot>/Visual/LootSpawnPlaceholder`) follows its owner.
+## Loot reached at its UsePoint (itself a nav marker) instead of standing on the navmesh: a wall-mounted loot spawn
+## (GN-C2: meta mount wall, a hung canvas) and loot stowed in a safe (PO6-05: at the safe's LootAnchor inside the body;
+## the Safe hides it until open).
 static func is_wall_loot(n: Node) -> bool:
-	var o: Node = loot_owner(n)
-	if o.get_node_or_null("UsePoint") == null:
+	if n.get_node_or_null("UsePoint") == null:
 		return false
-	return LcUtil.meta_s(o, &"mount") == &"wall" or LcUtil.meta_s(o.get_parent(), &"kind") == &"safe"
+	return LcUtil.meta_s(n, &"mount") == &"wall" or is_stowed_loot(n)
+
+
+static func is_stowed_loot(n: Node) -> bool:
+	var p: Node = n.get_parent()
+	return p is Safe or LcUtil.meta_s(p, &"kind") == &"safe"
 
 
 static func loot_target(n: Node3D) -> Vector3:
 	if is_wall_loot(n):
-		return (loot_owner(n).get_node("UsePoint") as Node3D).global_position
+		return (n.get_node("UsePoint") as Node3D).global_position
 	return n.global_position
 
 
-## The loot spawn a node belongs to: itself, or the loot spawn whose `Visual` it sits in.
-static func loot_owner(n: Node) -> Node:
-	var v: Node = n.get_parent()
-	if v != null and v.name == &"Visual" and v.get_parent() != null and is_loot_spawn(v.get_parent()):
-		return v.get_parent()
-	return n
-
-
 static func is_loot_spawn(n: Node) -> bool:
+	if not _loot_spawn_node(n):
+		return false
+	# A loot_spawn's own visual (e.g. Visual/LootSpawnPlaceholder) is not a second target.
+	var p: Node = n.get_parent()
+	while p != null:
+		if _loot_spawn_node(p):
+			return false
+		p = p.get_parent()
+	return true
+
+
+static func _loot_spawn_node(n: Node) -> bool:
 	if LcUtil.meta_s(n, &"kind") == &"loot_spawn":
 		return true
 	if n.scene_file_path.get_file().begins_with("loot_spawn"):

@@ -24,7 +24,8 @@ backed to a wall | ``corner`` | ``floor`` free-standing | ``center`` | ``on`` on
 ``none``), ``mount``, ``support``, ``fixture``, ``light`` {type, color, energy, range, pos, angle},
 ``z`` (wall_mount centre height), ``hosts`` (kinds), ``clear`` (front clearance m), ``weight``,
 ``leaf_script`` (a LEAF_SCRIPTS key: a visual-only script set on the glb's ``Leaf`` node, GN-C2 shutters),
-``leaf2`` (true: the same script on ``Leaf2`` too, D-111 Dockside Burn twin rollers / sliders).
+``leaf2`` (true: the same script on ``Leaf2`` too, D-111 Dockside Burn twin rollers / sliders),
+``hidden`` (top-level glb node names the wrapper hides, e.g. a breach point's ``Blown`` state, PO6-17).
 """
 
 from __future__ import annotations
@@ -316,9 +317,14 @@ def entry(spec: meta.AssetSpec) -> tuple[dict, str]:
         lines += ["", '[node name="Leaf" parent="Model"]', 'script = ExtResource("2_leaf")']
         if cat.get("leaf2"):
             lines += ["", '[node name="Leaf2" parent="Model"]', 'script = ExtResource("2_leaf")']
+    hidden = [str(h) for h in cat.get("hidden", [])]
+    for hn in hidden:
+        if hn not in info["nodes"]:
+            raise SystemExit(f"_scenes.py: {aid}: hidden node `{hn}` not in the glb")
+        lines += ["", f'[node name="{hn}" parent="Model"]', "visible = false"]
     if "light" in cat:
         lines += [""] + _light_node(cat["light"])
-    if vis > 0.0 or info["collisions"] or leaf_script:
+    if vis > 0.0 or info["collisions"] or leaf_script or hidden:
         lines += ["", '[editable path="Model"]']
     return e, "\n".join(lines) + "\n"
 

@@ -108,12 +108,16 @@ static func _apply_hit(shooter: CrewController, w: CrewWeapons, ws: int, origin:
 	info["shield_pierce"] = bool(prof["shield_pierce"])
 	info["blocked"] = false
 	info["wall_pierced"] = through_wall
+	info["range_m"] = dist  # PO6-19: shotgun pellets push bodies only at close range
+	var npc: NpcBase = target as NpcBase
+	var was_corpse: bool = npc != null and not npc.alive
 	var res: Dictionary = deliver_hit(target, info, shooter.net_id)
+	if was_corpse:
+		return res  # PO6-19: a shot corpse bleeds and moves (NpcBase) but is no hit for stats or suppression
 	if CrewStatsService.enemy_of(target) != null:  # D-071: body, shield or plate, even for 0 damage
 		tally["hit"] = true
 		if int(info["zone"]) == Enums.HitZone.HEAD and target is NpcBase:
 			tally["head"] = true
-	var npc: NpcBase = target as NpcBase
 	if npc != null and float(prof["suppression"]) > 0.0:  # A3-06 (L3.5): damage builds threat
 		hit_npcs.append(npc)
 		if float(res.get("amount", 0.0)) > 0.0:

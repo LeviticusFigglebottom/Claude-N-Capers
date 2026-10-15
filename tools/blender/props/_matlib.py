@@ -127,6 +127,13 @@ TINTED: dict[str, dict] = {
     "grenade_olive": {"source": "metal_painted", "color": "#4F5638", "roughness": 0.9},
     "canister_grey": {"source": "drywall_painted", "color": "#5A5E58", "roughness": 0.9},
     "serum_green": {"source": "plastic_matte", "color": "#5E9A3A", "roughness": 0.4},
+    # PO6-17 assault events (style guide §3 faction colours: police navy + hi-vis trim, TAC charcoal armour;
+    # soot = blast scorching on breach frames)
+    "police_navy": {"source": "plastic_matte", "color": "#1E2A44", "roughness": 0.5},
+    "hivis": {"source": "drywall_painted", "color": "#D7E34A", "roughness": 0.8},
+    "armor_charcoal": {"source": "metal_painted", "color": "#2B2F33", "roughness": 0.9},
+    "soot": {"source": "concrete", "color": "#2C2825", "roughness": 1.2},
+    "soot_haze": {"source": "concrete", "color": "#4A433E", "roughness": 1.2},
 }
 
 # Painted canvases (GN-C2): key -> albedo PNG from tools/texgen/paintings.py. The prop material is a plain
@@ -155,6 +162,8 @@ EMISSIVE: dict[str, dict] = {
     # burn barrel (D-111): flame tongues and the ember bed / vent glow
     "emit_fire": {"color": "#6A2A0A", "emission": "#FF7A22", "energy": 5.0},
     "emit_ember": {"color": "#3A1206", "emission": "#FF3A0C", "energy": 3.0},
+    # PO6-17 police light bars (blue; red is emit_led_red)
+    "emit_police_blue": {"color": "#0E1A3A", "emission": "#2F5BFF", "energy": 2.0},
 }
 
 # Transparent variants of glass_clear (library albedo with alpha x colour).

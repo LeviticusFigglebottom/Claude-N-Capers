@@ -65,6 +65,8 @@ extends Resource
 @export_group("Stimuli (S4.1, S4.4, S6.3)")
 ## kind -> {range (m), los (bool), fill_time (s), guard (reaction), civilian (reaction), camera (bool)}
 ## (+ optional camera_alarm (bool, default true): a camera confirming it starts the S3.5 countdown.)
+## `los: false` (drills, saws) lets NPCs notice it in range without sight; cameras always need it inside
+## their cone with a clear ray (PO6-04, D-114 §1: cameras react only to what they see).
 ## Reactions: &"alarm" (guard -> ALARMED), &"investigate", &"panic", &"ignore".
 @export var stimuli: Dictionary = {
 	&"corpse": {"range": 25.0, "los": true, "fill_time": 0.8, "guard": &"alarm", "civilian": &"panic", "camera": true},
@@ -109,10 +111,18 @@ extends Resource
 @export var pager_window_s: float = 12.0
 @export var pager_answer_s: float = 10.0
 @export var pager_max_answers: int = 4
-## PO6-08 (D-114 §4): the response window freezes while anyone holds the answer; when the last holder
-## lets go early the window RESUMES from where it froze (true). false = the old S5.4 rule (letting go
-## early raises the alarm immediately).
-@export var pager_release_resumes: bool = false  # LEAD: PO 2026-10-15 early release = alarm
+## PO6-08 (D-114 §4, amended by the PO): the response window freezes while anyone holds the answer.
+## When the last holder lets go early the pager fails with the alarm (S5.4), unless within
+## pager_juggle_window_s the same player starts answering ANOTHER live pager (a juggle): then the
+## released pager resumes its remaining window and must still be answered. true = never alarm on an
+## early release, always resume (pre-amendment PO6-08 behaviour; tests / options).
+@export var pager_release_resumes: bool = false
+## PO6-08 juggle grace (s): how long a released pager waits for its answerer to pick up another pager.
+@export var pager_juggle_window_s: float = 0.5
+## PO6-20: the answer prompt follows the body (its `hips` bone, height pager_prompt_up_m) and is aimable
+## anywhere within pager_aim_radius_m of it, so a body that fell 1-2 m from its root is easy to answer.
+@export var pager_aim_radius_m: float = 0.9
+@export var pager_prompt_up_m: float = 0.25
 
 @export_group("Civilians (S3.1, S7)")
 @export var intimidate_duration_s: float = 45.0
@@ -148,6 +158,12 @@ extends Resource
 ## another point later; call: the next-cheapest call point or guard, else flees).
 @export var civilian_walk_stall_s: float = 2.5
 @export var civilian_walk_stall_m: float = 0.3
+## PO6-06 ◇ S7.5: a civilian whose idle activity is a seated loop (keys) sits only on a seat (the clips put the
+## root under the seat centre, characters.md npc_seat): a seating prop's `Seat` marker within
+## civilian_seat_radius_m (horizontal) of its root, on its floor (CivilianTargets.seat_near). With no seat it
+## does the standing activity (value) instead: a seated pose on thin air reads as a hostage crouched on the floor.
+@export var civilian_unseated_activity: Dictionary = {&"desk_work": &"teller", &"phone_seated": &"phone", &"sit": &"queue"}
+@export var civilian_seat_radius_m: float = 0.45
 ## PO-5 ◇ S7.1: the all-round shout (shout_all_within_m) reaches only civilians on the shouter's floor
 ## (height difference <= shout_floor_dy_m) that can hear it: clear line of sight, or a navmesh path no
 ## longer than shout_all_within_m x shout_path_mult (around a counter or a doorway, not through a wall).

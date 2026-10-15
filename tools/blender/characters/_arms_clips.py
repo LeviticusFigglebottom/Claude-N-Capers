@@ -68,37 +68,51 @@ class SupportGrip:
                                           # sit further out round the fore-end's far side
     offset: tuple[float, float, float]    # the resulting wrist from LeftHandIK, Godot marker axes (ENV P's per-set
                                           # FpViewmodelTweak.set_left_hand_grip_offset: must match)
+    curl: float = 0.60                    # the "grip" hand shape amount (finger closure)
+    index_open: float = 0.0               # index opened from the grip curl (deg; base / middle / tip x 1 / 0.8 / 0.4)
+    thumb: tuple[float, float, float] = (4.0, 6.0, 4.0)   # thumb flex (cmc, mcp, ip; deg)
+    fingers: tuple = ()                   # PO6-09: per-finger "grip" amounts (index, middle, ring, pinky), each closed
+                                          # until it rests on the set's tightest fore-end; replaces curl / index_open /
+                                          # ring_pinky when given
 
 
 #: PO review 2026-10-14 (lead): the gun rests in the support hand, fingers wrapping the far side with only the tips
 #: showing below the handguard top, the thumb forward along the near side, 2-5 mm clear of the skin. One grip per set
 #: because the fore-ends differ (round tube, slab handguard, wide shroud); test_arms checks the skin.
+#: PO6-09 (2026-10-15): refitted on EVERY gun of each set (each LeftHandIK on the set's marker, as the runtime IK
+#: does): the palm, wrist and thumb flex by coordinate descent, then each finger and the thumb opposition closed until
+#: the tightest fore-end of the set is within 0.8 mm of skin (ENV P's PFingerClip limit is 2 mm). The thumb now
+#: lies low along the near side next to the palm (thumb_opp -30 lifted it to the top edge, apart from the hand).
 LONG_GUN_GRIPS: dict[str, SupportGrip] = {
-    "rifle": SupportGrip((0.60, 0.80, -0.35), (0.30, -0.20, 1.0), (-0.001, 0.0, 0.005), -30.0, 13.0,
-                         (-0.0371, 0.0099, 0.0398)),
-    "shotgun": SupportGrip((1.0125, 0.95, -0.35), (0.15, -0.20, 1.0), (-0.004, 0.0, 0.008), -30.0, 15.0,
-                           (-0.0457, 0.0076, 0.0343)),
-    "lmg": SupportGrip((0.7125, 0.875, -0.275), (0.225, -0.20, 1.0), (0.008, 0.0, -0.006), -35.0, 11.0,
-                       (-0.0292, -0.0066, 0.0391)),
-    "sniper": SupportGrip((0.60, 0.65, -0.20), (0.075, -0.2375, 1.0), (0.0, 0.0, 0.0), -32.5, 15.0,
-                          (-0.0388, -0.0018, 0.0375)),
-    "break_action": SupportGrip((0.825, 0.80, -0.35), (0.0, -0.05, 1.0), (0.004, 0.0, 0.004), -20.0, 17.0,
-                                (-0.0351, 0.0058, 0.0372)),
-    "lever": SupportGrip((0.7875, 0.80, -0.3125), (0.15, -0.05, 1.0), (-0.004, 0.0, -0.001), -20.0, 15.0,
-                         (-0.0433, -0.0004, 0.0370)),
-    "shotgun_box": SupportGrip((0.825, 0.725, -0.425), (0.075, -0.125, 1.0), (-0.002, 0.0, 0.004), -30.0, 15.0,
-                               (-0.0437, 0.0099, 0.0338)),
+    "rifle": SupportGrip((0.6, 0.8, -0.25), (0.0, -0.1, 1.0), (-0.005, 0.0, 0.003), -8.31, 0.0,
+                (-0.0381, 0.0021, 0.0426), thumb=(16.0, -18.0, 4.0), fingers=(0.272, 0.523, 0.637, 0.806)),
+    "shotgun": SupportGrip((1.1125, 0.95, -0.35), (0.05, -0.2, 1.0), (-0.0055, -0.002, 0.006), -29.37, 0.0,
+                (-0.0482, 0.0048, 0.035), thumb=(4.0, 7.5, 4.0), fingers=(0.586, 0.717, 0.771, 1.348)),
+    "lmg": SupportGrip((0.9375, 0.875, -0.375), (-0.075, 0.0, 1.0), (0.004, 0.004, -0.0035), 2.22, 0.0,
+                (-0.0349, -0.0023, 0.0334), thumb=(4.0, -12.0, 4.0), fingers=(0.53, 0.668, 1.348, 1.348)),
+    "sniper": SupportGrip((0.5, 0.65, -0.1), (0.075, -0.1375, 1.0), (-0.004, 0.004, -0.002), -17.12, 0.0,
+                (-0.0382, -0.0094, 0.0371), thumb=(28.0, -18.0, 4.0), fingers=(0.22, 0.539, 0.649, 0.837)),
+    "break_action": SupportGrip((0.725, 0.8, -0.25), (-0.1, 0.05, 1.0), (0.0, 0.004, 0.002), -6.7, 0.0,
+                (-0.0351, 0.0002, 0.037), thumb=(4.0, 6.0, 4.0), fingers=(0.462, 0.595, 0.736, 1.348)),
+    "lever": SupportGrip((0.7875, 0.8, -0.3125), (0.05, 0.1, 1.0), (-0.006, 0.0, 0.001), -7.34, 0.0,
+                (-0.0435, 0.0015, 0.0388), thumb=(4.0, 6.0, 4.0), fingers=(0.48, 0.661, 0.759, 1.348)),
+    "shotgun_box": SupportGrip((0.825, 0.725, -0.325), (0.075, -0.125, 1.0), (-0.006, 0.004, 0.0), -27.0, 0.0,
+                (-0.0479, 0.0015, 0.03), thumb=(4.0, 12.0, 4.0), fingers=(0.558, 0.666, 0.717, 1.348)),
 }
 
 
 def cup_shape(g: SupportGrip) -> HandShape:
     """The long-gun support hand: fingers closed round the fore-end (ring and pinky more), the thumb open along it."""
-    shape = hand_shape("grip", 0.60)
+    shape = hand_shape("grip", g.curl)
     curl = dict(shape.curl)
-    for f, extra in (("ring", g.ring_pinky), ("pinky", g.ring_pinky * 1.3)):
+    if g.fingers:
+        full = hand_shape("grip", 1.0).curl
+        curl = {f: tuple(x * a for x in full[f]) for f, a in zip(("index", "middle", "ring", "pinky"), g.fingers)}
+        return dataclasses.replace(shape, curl=curl, thumb=g.thumb, thumb_opp=g.thumb_opp)
+    for f, extra in (("index", -g.index_open * 1.0), ("ring", g.ring_pinky), ("pinky", g.ring_pinky * 1.3)):
         b, m, t = curl[f]
         curl[f] = (b + extra, m + extra * 0.8, t + extra * 0.4)
-    return dataclasses.replace(shape, curl=curl, thumb=(4.0, 6.0, 4.0), thumb_opp=g.thumb_opp)
+    return dataclasses.replace(shape, curl=curl, thumb=g.thumb, thumb_opp=g.thumb_opp)
 
 
 def long_gun(s: FPSet) -> bool:

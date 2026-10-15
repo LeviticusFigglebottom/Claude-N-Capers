@@ -1,0 +1,47 @@
+[gd_resource type="Resource" script_class="RagdollTweak" format=3]
+
+[ext_resource type="Script" path="res://systems/anim/ragdoll_tweak.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+enabled = true
+min_impulse = 90.0
+explosion_always = true
+bullet_impulse_by_class = {
+&"ar": 16.0,
+&"lmg": 18.0,
+&"pistol": 12.0,
+&"shotgun": 25.0,
+&"smg": 10.0,
+&"sniper": 70.0
+}
+bullet_impulse_default = 14.0
+shotgun_range_m = 6.0
+shotgun_far_mult = 0.25
+melee_impulse = 25.0
+max_offset_m = 0.3
+explosion_speed_mps = 5.5
+explosion_falloff_pow = 0.6
+explosion_min_falloff = 0.25
+explosion_up_bias = 0.6
+explosion_leg_mult = 0.3
+explosion_head_mult = 1.4
+explosion_tip_height_m = 1.6
+corpse_blast_mult = 0.5
+settle_after_anim = true
+settle_after_anim_s = 1.0
+anim_wait_max_s = 3.0
+settle_s = 3.0
+settle_min_s = 0.6
+settle_speed_mps = 0.05
+max_active = 8
+bleed_move_m = 0.5
+nudge_min = 5.0
+nudge_max = 20.0
+nudge_mult = 0.5
+nudge_settle_s = 1.0
+corpse_box_width = 0.55
+corpse_box_height = 0.35
+corpse_box_pad_m = 0.35
+corpse_box_default = Vector3(0.55, 0.35, 1.8)
+corpse_box_default_offset = Vector3(0, 0.2, -0.85)
