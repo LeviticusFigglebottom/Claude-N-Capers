@@ -23,7 +23,8 @@ backed to a wall | ``corner`` | ``floor`` free-standing | ``center`` | ``on`` on
 ``seat`` in front of a host, facing it | ``wall_mount`` | ``above_door`` | ``ceiling`` |
 ``none``), ``mount``, ``support``, ``fixture``, ``light`` {type, color, energy, range, pos, angle},
 ``z`` (wall_mount centre height), ``hosts`` (kinds), ``clear`` (front clearance m), ``weight``,
-``leaf_script`` (a LEAF_SCRIPTS key: a visual-only script set on the glb's ``Leaf`` node, GN-C2 shutters).
+``leaf_script`` (a LEAF_SCRIPTS key: a visual-only script set on the glb's ``Leaf`` node, GN-C2 shutters),
+``leaf2`` (true: the same script on ``Leaf2`` too, D-111 Dockside Burn twin rollers / sliders).
 """
 
 from __future__ import annotations
@@ -46,7 +47,7 @@ CATALOG = GAME / "world" / "props" / "prop_catalog.json"
 SURFACE_MAP = GAME / "world" / "materials" / "surface_map.json"
 COLLISION_SUFFIXES = ("-convcolonly", "-colonly", "-convcol", "-col")
 # Visual-only scripts a wrapper may put on the model's `Leaf` (cat ``leaf_script``).
-LEAF_SCRIPTS = {"shutter": "res://world/props/shutter_leaf.gd"}
+LEAF_SCRIPTS = {"shutter": "res://world/props/shutter_leaf.gd", "slide": "res://world/props/slide_leaf.gd"}
 _SURFACES: dict = {}
 
 
@@ -313,6 +314,8 @@ def entry(spec: meta.AssetSpec) -> tuple[dict, str]:
         lines += ["", f'[node name="{leaf}" parent="{parent}"]', f'metadata/surface = &"{e["surface"]}"']
     if leaf_script:
         lines += ["", '[node name="Leaf" parent="Model"]', 'script = ExtResource("2_leaf")']
+        if cat.get("leaf2"):
+            lines += ["", '[node name="Leaf2" parent="Model"]', 'script = ExtResource("2_leaf")']
     if "light" in cat:
         lines += [""] + _light_node(cat["light"])
     if vis > 0.0 or info["collisions"] or leaf_script:

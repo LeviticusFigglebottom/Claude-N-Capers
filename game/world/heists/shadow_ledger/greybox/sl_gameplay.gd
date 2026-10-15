@@ -25,6 +25,20 @@ const PREFAB_VISUALS: Dictionary = {
 	"body_container": "prop_dumpster", "camera_station": "prop_camera_station_bank",
 	"security_camera": "prop_security_camera_wall", "hack_terminal": "prop_server_rack_terminal",
 }
+## D-111 doors: the layout's greybox kit piece (arch_door_<kind>_t<20|40>) maps to the catalog door of the same kind
+## and wall thickness (tools/blender/props/doors.py) in the room's finish: glass (leaf_surface glass), steel (back of
+## house, stairs, plant, facade and security doors), walnut (the partners' and the residence's rooms), else ivory.
+const DOOR_STEEL: Array[String] = [
+	"RefuseDoor", "StairBL40", "StairAGate", "StairBGate", "K1FacadeDoor", "JanitorL41", "StairAL41", "StairBL41",
+	"ServerDoor", "SecurityDoor", "ElectricalL41", "CageGate", "StudyFacadeDoor", "LinenL42", "StairAL42", "StairBL42",
+	"ElectricalL42", "RoofDoor", "RiserBayDoor", "HeadHousePlantDoor", "PlantDoor",
+]
+## Doors in the curtain-wall facade (FACADE_LINES): the gondola access doors and the terrace sliders.
+const DOOR_FACADE: Array[String] = ["K1FacadeDoor", "StudyFacadeDoor", "SliderDining", "SliderWest", "SliderEast"]
+const DOOR_WALNUT: Array[String] = [
+	"K1Door", "K5Door", "LibraryDoor", "ArtHallDoors", "StudyDoor", "SuiteDoor", "DiningDoor", "WineRoomDoor",
+	"BoardroomDoor",
+]
 ## Ladder visuals by height and wall gap (prefab_visuals.py `prop_ladder_steel_*`: Top / Bottom exactly where the
 ## placeholder had them, stand-offs reaching the wall behind; g00 = free-standing in the riser hole).
 const LADDER_RISER_LOWER: String = "prop_ladder_steel_h440_g00"
@@ -181,7 +195,7 @@ func _build_doors(gp: Node3D) -> void:
 	var doors: Node3D = add(gp, node3d("Doors")) as Node3D
 	for d: Array in L.DOORS:
 		var props: Dictionary = {"lock": "enum:" + String(d[4]), "swing": "enum:" + String(d[5]),
-			"visual_scene": kit_scene(String(d[1]))}
+			"visual_scene": _catalog_scene(door_visual(d))}
 		if String(d[6]) != "":
 			props["objective_tag"] = StringName(String(d[6]))
 		var metas: Dictionary = {"kind": "door", "swing_side": "front" if String(d[5]) == "OUTWARD" else "back"}
@@ -199,6 +213,31 @@ func _build_doors(gp: Node3D) -> void:
 		if String(d[1]).contains("double"):
 			props["width_m"] = 1.8
 		prefab(doors, "door", String(d[0]), d[2], float(d[3]), props, null, metas)
+
+
+## Catalog door for a layout row (DOOR_STEEL / DOOR_WALNUT; glass by leaf_surface): arch_door_single_t20 ->
+## prop_door_single_<finish>_t20. The frame follows the wall it stands in (doors.py `wall_t`): the greybox t40 piece
+## sits in a 0.3 m core wall (t30), or in the curtain wall's 0.04 m glazing (DOOR_FACADE, t04); a `no_wall` gate in
+## its 0.06 m mesh screen (t06).
+static func door_visual(d: Array) -> String:
+	var piece: String = String(d[1]).trim_prefix("arch_door_")
+	var nm: String = String(d[0])
+	var extra: Dictionary = d[7] as Dictionary
+	var fin: String = "ivory"
+	if String(extra.get("leaf_surface", "")) == "glass":
+		fin = "glass"
+	elif nm in DOOR_STEEL:
+		fin = "steel"
+	elif nm in DOOR_WALNUT:
+		fin = "walnut"
+	var t: String = piece.get_slice("_", 1)
+	if bool(extra.get("no_wall", false)):
+		t = "t06"
+	elif nm in DOOR_FACADE:
+		t = "t04"
+	elif t == "t40":
+		t = "t30"
+	return "prop_door_%s_%s_%s" % [piece.get_slice("_", 0), fin, t]
 
 
 ## K11 server room: the keycard reader on K10 (opens the server door), the cage lock (safe LARGE,

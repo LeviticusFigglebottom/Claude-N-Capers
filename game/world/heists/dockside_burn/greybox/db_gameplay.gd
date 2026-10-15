@@ -6,9 +6,24 @@
 ## placeholders (QC-37 / QC-38).
 extends "res://world/heists/dockside_burn/greybox/db_builder_base.gd"
 
-const SLIDE_VISUAL: String = "res://world/heists/dockside_burn/greybox/slide_door_visual.tscn"
-const ROLLER_VISUAL: String = "res://world/heists/dockside_burn/greybox/roller_door_visual.tscn"
-const VAULT_VISUAL: String = "res://world/heists/dockside_burn/greybox/vault_door_visual.tscn"
+## D-111 doors (tools/blender/props/doors.py): the industrial doors keep the G1 visuals' frame boxes, leaf planes and
+## widths (twin roller curtains that roll up, cold-store leaves that slide into the wall, the strongroom door); the
+## kit doors (layout `<kind>_t<20|40>`) map to the catalog door of the same kind and wall thickness, ivory in the
+## office block's corridors and the gatehouse, steel everywhere else (warehouse, plant, fire exits, yard gates).
+const CUSTOM_VISUAL: Dictionary = {
+	"slide": "prop_door_slide_coldstore_w240_h360", "roller": "prop_door_roller_twin_w360_h400",
+	"vault": "prop_door_vault_strongroom_w200_h220",
+}
+const DOOR_IVORY: Array[String] = [
+	"O1Corridor", "O2Corridor", "E1Corridor", "M2Corridor", "M1Corridor", "M3Corridor", "GatehouseNorth",
+	"GatehouseSouth",
+]
+## Greybox t20 doors that stand in 0.3 m walls (the office core stair / hall doors, the gatehouse and net store
+## partitions): their catalog frame is t30 (doors.py `wall_t`); the police gates sit in 0.1 m fences (t10).
+const DOOR_T30: Array[String] = [
+	"StairGround", "OCHall", "PLCorridor", "WSCorridor", "WSHall", "StairMezz", "MCPlatform", "RoofDoor",
+	"GatehouseNorth", "GatehouseSouth", "NetStoreWest", "NetStoreEast",
+]
 const LIFT_VISUAL: String = "res://world/heists/dockside_burn/greybox/goods_lift_visual.tscn"
 const BOAT_DROP_VISUAL: String = "res://world/heists/dockside_burn/greybox/boat_drop_visual.tscn"
 ## PO-13: the escape vans are the catalog van (as on GH / ND), not the secure_zone placeholder.
@@ -190,16 +205,7 @@ func _build_doors(gp: Node3D) -> void:
 	var doors: Node3D = add(gp, node3d("Doors")) as Node3D
 	for d: Array in L.DOORS:
 		var dtype: String = _door_type(d)
-		var vis: PackedScene = null
-		match dtype:
-			"slide":
-				vis = load(SLIDE_VISUAL) as PackedScene
-			"roller":
-				vis = load(ROLLER_VISUAL) as PackedScene
-			"vault":
-				vis = load(VAULT_VISUAL) as PackedScene
-			_:
-				vis = kit_scene("arch_door_" + String(d[1]))
+		var vis: PackedScene = _catalog_scene(door_visual(d))
 		var props: Dictionary = {"lock": "enum:" + String(d[4]), "swing": "enum:" + String(d[5]), "visual_scene": vis}
 		if String(d[6]) != "":
 			props["objective_tag"] = StringName(String(d[6]))
@@ -222,6 +228,21 @@ func _build_doors(gp: Node3D) -> void:
 		var door: Node3D = prefab(doors, "door", String(d[0]), d[2], float(d[3]), props, null, metas)
 		if door != null and extra.has("padlock"):
 			_padlock(door, d, float(extra["padlock"]))
+
+
+## Catalog door for a layout row (CUSTOM_VISUAL, else <kind>_t<n> -> prop_door_<kind>_<ivory|steel>_t<n>).
+static func door_visual(d: Array) -> String:
+	var piece: String = String(d[1])
+	var dtype: String = piece.get_slice("_", 0)
+	if CUSTOM_VISUAL.has(dtype):
+		return String(CUSTOM_VISUAL[dtype])
+	var fin: String = "ivory" if String(d[0]) in DOOR_IVORY else "steel"
+	var t: String = piece.get_slice("_", 1)
+	if String(d[6]) == "police_gate":
+		t = "t10"  # the 0.1 m yard / lane fences
+	elif String(d[0]) in DOOR_T30:
+		t = "t30"
+	return "prop_door_%s_%s_%s" % [dtype, fin, t]
 
 
 ## Padlock on a chained roller door: ENV A's `padlock` prefab (QC-37) on the door's outside (front)

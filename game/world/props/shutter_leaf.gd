@@ -20,11 +20,14 @@ var _lift_m: float = 0.0
 
 
 func _ready() -> void:
+	# D-111 twin rollers (doors.py roller_twin): `Leaf2` carries the same parts with the suffix "2" (glb node names
+	# are unique per asset).
+	var suffix: String = "2" if name == "Leaf2" else ""
 	for p: NodePath in [CURTAIN, BOTTOM_BAR, FITTINGS]:
-		var c: Node3D = get_node_or_null(p) as Node3D
+		var c: Node3D = get_node_or_null(NodePath(String(p) + suffix)) as Node3D
 		if c != null:
 			_rest[c] = c.transform
-	_curtain = get_node_or_null(CURTAIN) as Node3D
+	_curtain = get_node_or_null(NodePath(String(CURTAIN) + suffix)) as Node3D
 	if _curtain != null:
 		_lift_m = _curtain.position.y * (1.0 - MIN_SCALE)
 	set_notify_local_transform(true)

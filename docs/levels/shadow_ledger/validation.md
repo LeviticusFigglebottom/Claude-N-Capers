@@ -34,7 +34,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | door_frame_gap | PASS | 0 | 0 |
 | frame_proud | PASS | 0 | 0 |
 | seam_gaps | PASS | 0 | 0 |
-| furniture_logic | PASS | 0 | 3 |
+| furniture_logic | PASS | 0 | 2 |
 
 ## contract_nodes: Contract nodes
 
@@ -167,7 +167,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## slopes: No walkable slope < 50° outside the play mesh
 
-- 153 x 105 columns (0.25 m), 66630 surface samples, 0 collider(s) with reachable walkable surfaces outside play
+- 153 x 105 columns (0.25 m), 66784 surface samples, 0 collider(s) with reachable walkable surfaces outside play
 
 
 ## navmesh: Navmesh
@@ -274,7 +274,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 ## door_frame_gap: Doors and windows fill their wall openings (no gaps, no clipping)
 
 - 57 door / window prefab(s) measured; gap > 0.02 m and clip > 0.01 m fail
-- leaf bullet surfaces (D-105, Door.leaf_surface_id): glass 5, metal 3, wood 49; 0 look glass / metal but resolve to wood (WARN)
+- leaf bullet surfaces (D-105, Door.leaf_surface_id): glass 5, metal 21, wood 31; 0 look glass / metal but resolve to wood (WARN)
 
 
 ## frame_proud: Door / window frame colliders are flush with the wall (no proud or narrowing collision)
@@ -292,6 +292,5 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 - classified: counter 6, chair 58, table 8, desk 15, wall_unit 8, lounge_seat 3
 - 61 seats, 29 tables/desks/counters, 57 doors checked
 
-- WARN `Gameplay/Server/HackTerminal` @ (28.75, 3.60, 8.95): door_clear: in the clear zone of door `Gameplay/Doors/CageGate` (1.0 / 1.0 m each side, leaf width 0.90 m) by 0.05 m (gameplay prefab / variant content: review)
-- WARN `Variants/Group_gondola/Slot_gon_north_l42/CradleDeck` @ (33.00, 7.85, -0.20): door_clear: in the clear zone of door `Gameplay/Doors/StudyFacadeDoor` (1.0 / 1.0 m each side, leaf width 0.90 m) by 0.75 m (gameplay prefab / variant content: review)
-- WARN `Variants/Group_gondola/Slot_gon_west_l41/CradleDeck` @ (-0.20, 3.45, 2.65): door_clear: in the clear zone of door `Gameplay/Doors/K1FacadeDoor` (1.0 / 1.0 m each side, leaf width 0.90 m) by 0.75 m (gameplay prefab / variant content: review)
+- WARN `Variants/Group_gondola/Slot_gon_north_l42/CradleDeck` @ (33.00, 7.85, -0.20): door_clear: in the clear zone of door `Gameplay/Doors/StudyFacadeDoor` (1.0 / 1.0 m each side, leaf width 0.90 m) by 0.74 m (gameplay prefab / variant content: review)
+- WARN `Variants/Group_gondola/Slot_gon_west_l41/CradleDeck` @ (-0.20, 3.45, 2.65): door_clear: in the clear zone of door `Gameplay/Doors/K1FacadeDoor` (1.0 / 1.0 m each side, leaf width 0.90 m) by 0.74 m (gameplay prefab / variant content: review)
