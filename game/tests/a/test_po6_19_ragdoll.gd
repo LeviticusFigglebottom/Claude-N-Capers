@@ -298,8 +298,14 @@ func test_kneeling_hostage_killed_slumps_from_the_pose() -> void:
 	assert_eq(AnimDriver.of(n).clip, &"kneel_cuffed", "kneeling before the shot")
 	n.take_hit(_info(500.0, PISTOL, n.global_position + Vector3(0, 0.9, 0), Vector3(0, 0, 1), 10.0))
 	var rd: NpcRagdoll = NpcRagdoll.of(n)
-	var ok: bool = await wait_until(func() -> bool: return rd.engaged, 1.0)
-	assert_true(ok, "the frozen kneel hands over to the settle ragdoll within 1 s (not anim_wait_max_s)")
+	# LEAD (round 215): with ENV D's death_kneel_cuffed on the rig the pose death plays first, then the settle
+	# ragdoll; without it the frozen kneel topples within 1 s. Both must end on the floor and never stand up.
+	await wait_physics_frames(2)
+	var clip_path: bool = AnimDriver.of(n).clip == &"death_kneel_cuffed"
+	var budget: float = RagdollTweak.data().anim_wait_max_s + 1.0 if clip_path else 1.0
+	var ok: bool = await wait_until(func() -> bool: return rd.engaged, budget)
+	assert_true(ok, "the kneel death (%s) hands over to the settle ragdoll within %.1f s"
+			% ["clip" if clip_path else "frozen pose", budget])
 	await wait_until(func() -> bool: return rd.freezes > 0, RagdollTweak.data().settle_after_anim_s + 2.0)
 	var head: Vector3 = Vector3.INF
 	for pb: PhysicalBone3D in rd.bodies:
