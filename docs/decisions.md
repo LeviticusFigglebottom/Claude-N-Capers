@@ -938,3 +938,20 @@ This supersedes the two-handed pistol hold of PO6-11 for the first-person view (
 two-handed pose). Owners: P (viewmodel offsets, motion, tweaks), D (one-handed pistol/revolver clips if needed).
 Acceptance: side-by-side sheet against both references, hip and ADS, for every pistol and revolver, plus a short
 windowed motion clip (turn, walk, run, jump-land, fire, ADS in/out).
+
+## D-117: content-audit rulings (2026-10-15, LEAD; from ENV B's D-115 audit)
+1. **Heist display names** follow the design docs: "Golden Hour" (id `glasshouse`, location "Vossberg Jewelers") and
+   "Nightfall Depository" (id `night_deposit`). Ids never change; B aligns the `heist.<id>.name` strings, C the docs.
+2. **Lethal / Cataclysm** stay in the game: unlocked by progression (Lethal after any heist won on the top currently
+   pickable difficulty, Cataclysm after a Lethal win), never hidden by `unlocked_difficulties`. B implements the unlock
+   + UI; doc content for those tiers stays.
+3. **Docs follow data where the data is deliberate:** ND "ECM drop" asset is dropped from the doc (ECM is a deployable);
+   GN escape options = [van, limo] (doc fix); loot weights in docs follow the data (ND cash_bricks MEDIUM, SL
+   ledger_books / painting as in data). C edits `docs/design/heists/**`; `glasshouse.md` §Objectives gains `[code]`.
+4. **Localized briefings:** heist defs reference `heist.<id>.briefing` keys, never literal strings (C fixes the GH/ND/SL
+   generators; GH gets `code`, a briefing_objectives list and briefing_optional: extra bags, salon, display cases).
+5. **Briefing objective list (GN-U5):** show the first 5 steps of the heist's objective list, then always its final step
+   (secure/escape), with a "+N more steps on the night" line between when steps are cut; cap 6 rows.
+6. **Mission VO:** every written mission line is either said by the mission script or deleted; A wires GN's 17 unsaid
+   lines, SL's camera warning and GH's code-found line; DB's briefing lines play only on the briefing screen (ctx.source).
+7. **Music:** every built heist gets its own stems (C: ND, SL, DB, GN; SL stealth bed + abort sting).
