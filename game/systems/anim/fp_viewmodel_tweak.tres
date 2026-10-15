@@ -77,15 +77,16 @@ ads_settle_pitch_deg = 7.0
 left_hand_pole_offset = Vector3(-0.35, -0.45, 0.15)
 left_hand_grip_offset = Vector3(-0.035, -0.02, 0)
 set_left_hand_grip_offset = Dictionary[StringName, Vector3]({
-&"pistol": Vector3(-0.0362, 0.0204, 0.0162),
-&"revolver": Vector3(-0.0366, 0.0205, 0.0172),
-&"rifle": Vector3(-0.0381, 0.0021, 0.0426),
-&"shotgun": Vector3(-0.0482, 0.0048, 0.035),
+&"pistol": Vector3(-0.043, 0.0195, 0.0169),
+&"revolver": Vector3(-0.0322, 0.0259, 0.0183),
+&"rifle": Vector3(-0.0328, 0.0015, 0.051),
+&"shotgun": Vector3(-0.049, 0.0019, 0.0422),
 &"lmg": Vector3(-0.0349, -0.0023, 0.0334),
 &"sniper": Vector3(-0.0382, -0.0094, 0.0371),
-&"break_action": Vector3(-0.0351, 0.0002, 0.037),
-&"lever": Vector3(-0.0435, 0.0015, 0.0388),
-&"shotgun_box": Vector3(-0.0479, 0.0015, 0.03)
+&"break_action": Vector3(-0.0349, -0.0048, 0.0397),
+&"lever": Vector3(-0.0442, -0.001, 0.0416),
+&"shotgun_box": Vector3(-0.0519, 0.0028, 0.0327),
+&"smg": Vector3(-0.0492, -0.0297, 0.0004)
 })
 left_hand_ik_rate = 8.0
 reload_scale_min = 0.75

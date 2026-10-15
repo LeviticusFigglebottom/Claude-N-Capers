@@ -581,6 +581,75 @@ def build_flash_hider(ctx, mats: Mats, r: float, y0: float, length: float, z: fl
     return finish(mb, name, bevel=0.0004, parent=parent)
 
 
+PORT_FORWARD_DEG = 20.0   # side ports vent this far forward of pure sideways (D-114 §8)
+PORT_UP_DEG = 45.0        # top-ported compensators vent this far up from sideways
+
+
+def build_muzzle_brake(ctx, mats: Mats, r: float, y0: float, length: float, z: float, style: str = "brake",
+                       name: str = "MuzzleBrake", parent=None):
+    """PO6-13 muzzle device along +Y from ``y0`` (bore axis at x = 0, height ``z``), in ``parent``'s frame.
+
+    ``style``: ``"brake"`` = chamfered box with 3 rectangular side ports per side (rifles, LMGs: pass a
+    bigger ``r``); ``"sniper"`` = wide two-chamber brake with 2 big side windows per side; ``"comp"`` =
+    round flat-topped compensator sleeved over the barrel end (start ``y0`` behind the crown) with 3 ports on
+    top in its front part (shotguns). ``r`` = half width of the body. Ports are dark polymer insets (as the flash
+    hider slots). Carries its own markers (D-114 §8): ``Muzzle`` on the bore just ahead of the front face, and
+    ``MuzzlePortL``/``MuzzlePortR`` at the centre of the port band on the outer surface, local +Y (Godot -Z)
+    pointing along the vented direction (outward and ~20 deg forward; comps also ~45 deg up).
+    Returns ``(obj, front_y, port_y)``."""
+    mb = ctx.builder()
+    st = mb.material(mats.steel())
+    dark = mb.material(mats.polymer())
+    y1 = y0 + length
+    bore_r = r * 0.45
+    if style == "comp":
+        top = 0.78 * r                                         # flat top carrying the ports
+        a_t = math.asin(0.78)
+        n = 22
+        prof = [(math.cos(a) * r, z + math.sin(a) * r)
+                for a in (math.pi - a_t + i * (math.pi + 2 * a_t) / n for i in range(n + 1))]
+        mb.prism(prof, axis="Y", start=y0, end=y1, mat=st)
+        b0, b1 = y0 + 0.40 * length, y1 - 0.004
+        pitch = (b1 - b0) / 3
+        for i in range(3):
+            yy = b0 + i * pitch + pitch * 0.2
+            mb.box((-0.42 * r, yy, z + top - 0.0015), (0.42 * r, yy + pitch * 0.6, z + top + 0.0003), mat=dark)
+        port_y = (b0 + b1) / 2
+        port_x, port_z, tilt = 0.30 * r, z + top + 0.0003, PORT_UP_DEG
+    else:
+        collar = 0.007
+        mb.cylinder(r * 0.90, collar + 0.002, segments=24, centre=(0.0, y0 - 0.001 + collar / 2, z), axis="Y", mat=st)
+        if style == "sniper":
+            hw, hh = r * 1.15, r * 0.90
+            mb.prism(rounded_rect(hw, hh, r * 0.25, 0.0, z, corner_segments=2), axis="Y", start=y0 + collar, end=y1,
+                     mat=st)
+            ports, frac, ph = 2, 0.66, (hh - r * 0.25) * 1.9
+        elif style == "brake":
+            hw = hh = r
+            mb.prism(chamfer_rect(hw, z - hh, z + hh, r * 0.35), axis="Y", start=y0 + collar, end=y1, mat=st)
+            ports, frac, ph = 3, 0.58, (hh - r * 0.35) * 1.8
+        else:
+            raise ValueError(f"unknown muzzle brake style {style!r}")
+        b0, b1 = y0 + collar + 0.003, y1 - 0.005
+        pitch = (b1 - b0) / ports
+        for i in range(ports):
+            yy = b0 + i * pitch + pitch * (1.0 - frac) / 2
+            for side in (-1.0, 1.0):
+                lo, hi = sorted((side * (hw - 0.0015), side * (hw + 0.0003)))
+                mb.box((lo, yy, z - ph / 2), (hi, yy + pitch * frac, z + ph / 2), mat=dark)
+        port_y = (b0 + b1) / 2
+        port_x, port_z, tilt = hw + 0.0003, z, 0.0
+    mb.cylinder(bore_r, 0.001, segments=16, centre=(0.0, y1 + 0.0004, z), axis="Y", mat=dark)   # bore
+    body = finish(mb, name, bevel=0.0005, parent=parent)
+    ctx.marker("Muzzle", (0.0, y1 + 0.001, z), parent=body)
+    yaw = math.radians(90.0 - PORT_FORWARD_DEG)
+    for marker, side in (("MuzzlePortL", -1.0), ("MuzzlePortR", 1.0)):
+        # Euler XYZ: tilt +Y up about X, then yaw it out to the side about Z
+        ctx.marker(marker, (side * port_x, port_y, port_z), rotation_euler=(math.radians(tilt), 0.0, -side * yaw),
+                   parent=body)
+    return body, y1, port_y
+
+
 def build_butt_stock(ctx, mats: Mats, mat_name: str, profile: list[tuple[float, float]], hw: float,
                      name: str = "Stock", parent=None, pad_y: float | None = None, pad_z: tuple[float, float] = (0, 0),
                      bevel: float = 0.0030, taper=None):

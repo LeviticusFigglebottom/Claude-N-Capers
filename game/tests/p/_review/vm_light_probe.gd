@@ -61,9 +61,13 @@ func _ready() -> void:
 		var fill: DirectionalLight3D = view.find_child("ViewmodelGunFill", true, false) as DirectionalLight3D
 		print("[VML] gun fill light: %s" % (fill != null))
 		for e: float in _fills:
+			# CrewView re-applies the fill energy every frame from the tweak (hip -> ADS fade): set the tweak.
+			FpViewmodelTweak.data().viewmodel_gun_fill_energy = e
+			FpViewmodelTweak.data().viewmodel_gun_fill_ads_energy = e
 			if fill != null:
-				fill.light_energy = e
 				fill.visible = e > 0.0
+			for _f: int in 3:
+				await get_tree().process_frame
 			await _measure("fill_%s" % e)
 		RenderingServer.render_loop_enabled = true
 		print("[VML] RESULT DONE")

@@ -2,6 +2,31 @@
 
 Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min; this file says where to resume.
 
+## 2026-10-15: D-111 coverage re-run (GH loud), PO6-11b / smg pairing, fill fade
+- D-111 anim_coverage (gh_loud, seed 1792097579, trunk r213-era + P): 56 distinct clips (was 30 of 102). All five
+  "never fired" rows from 2026-10-14 now fire: hit_react_left/_right (+ hit_react; _back not seen this run),
+  walk/run start/stop, 8-way walk_*/run_* (crew + police), death_side / death_back_b / death_front_b, crew
+  crouch_idle / crouch_walk. STATIC 0, SLIDE 0, NO_CLIP 0, FROZEN 0, PLAYER_MISMATCH 0. Not exercised by this flow:
+  intimidation (surrender / hands_up / tied / kneel_cuffed / cower_stand), pager_answer, drill_place (the human
+  placed the drill), bag carry clips. Flow FAIL is harness/nav (A): after the first bag at 681 s the pilot
+  "could not reach WorkshopSafe/SafeLoot" (loot inside the safe since PO6-05). JSON:
+  tests/p/_review/captures/d111_cov/gh_loud_2026-10-15.json.
+- faa90a79: D's PO6-11b pistol/revolver grips merged; the IK targets moved to D's fitted wrists. 3f9d34f6: smg grip.
+- e245d85a / 294c7c03: gun fill hip 0.7 -> ADS 0.45 (probe: off 36.5, 0.45 54.4, 0.7 62.6, 0.85 67.0; arms ~93-97).
+
+## 2026-10-15: PO6-09 pair, PO6-15 on A's wiring, GN-P1 re-run
+- PO6-09 (c9d2c012, with env/d-art 6524e268): D's long-gun grip offsets; test_p_finger_clip hard-asserts <= 2 mm.
+  Deepest support-hand skin inside the gun, hip/ADS: Corsair 0.0/0.0, Bastion 0.8/0.8, Mule 0.8/0.8, Anvil 0.6/0.8,
+  Condor 0.9/0.8, Reaper 0.9/0.9, Shrike 0.9/1.0, Brute 0.7/0.7 mm (r192: thumb 4-12 mm).
+- PO6-15 on A's env/a-core b9133590 (scratch merge, shipped defaults): bot kills 21/16/16 in 240 s (4-5/min, was ~9.4),
+  ~14 dmg/hit, every crew member down/custody by t=100-140 s in all 3 seeds. Accepted by the LEAD; trunk re-run when
+  A's batch lands.
+- GN-P1 re-run (gn_pass.tscn, seed 1792002290, trunk r211 + P): last call warning t=439, Public -> RESTRICTED t=480;
+  loud objectives progress (lockdown, find_canvases, keycard, server_code, centrepiece, secure -> 1 at t=954).
+  CREW_STACK now transient (38 observations over ~450 s, never the same spot for long; was one 0.01 m stack for
+  300+ s). Harness only: A's pilot still gives up on legs through the casing-blocked ArtDoorEG, and circled a
+  bag_loot 27 m away after t=954 (the `use` re-press finds nothing aimed); stopped there.
+
 ## 2026-10-15: PO6-10 viewmodel side (gun fill light), PO6-12 asks
 **PO6-10:** CrewView.VIEWMODEL_GUN_LAYER (1 << 21) on every mesh inside the FP WeaponVisual (not the arms); a
 camera-attached DirectionalLight3D `ViewmodelGunFill` culled to that layer (FpViewmodelTweak.viewmodel_gun_fill_*:

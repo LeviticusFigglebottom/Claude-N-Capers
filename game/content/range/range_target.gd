@@ -234,6 +234,19 @@ func _refresh_plates() -> void:
 		mat.albedo_color = tweak.plate_colors[clampi(stage, 0, tweak.plate_colors.size() - 1)]
 
 
+## Lead (label clutter): show or hide this target's HP label and the signs the builder linked to it (meta &"signs").
+func set_labels_visible(on: bool) -> void:
+	if _hp_label != null:
+		_hp_label.visible = on
+	for n: Variant in get_meta(&"signs", []):
+		if n is Node3D and is_instance_valid(n):
+			(n as Node3D).visible = on
+
+
+func labels_visible() -> bool:
+	return _hp_label == null or _hp_label.visible
+
+
 func _refresh_label() -> void:
 	if _hp_label == null:
 		return

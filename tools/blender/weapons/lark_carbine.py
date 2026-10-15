@@ -2,12 +2,12 @@
 
 About 44 cm from the muzzle to the stock hinge (plus a 25 cm side-folding stock). Machined steel
 receiver with an integral top rail, short tan handguard with the gas tube above the barrel, curved tan
-magazine, birdcage hider, tan skeleton stock.
+magazine, 3-port side brake, tan skeleton stock.
 
 Origin = firing-hand pivot on the grip (see _lark.py). Forward = Godot -Z.
 
 Node tree: ``Receiver`` (+ ``TopRail``, ``ReceiverDetails``, ``TriggerGroup``, ``Grip``, ``Handguard``,
-``GasTube``), ``Barrel`` (+ ``FlashHider``). Stock parts: ``SightRail/StockSight`` (flip-up irons,
+``GasTube``), ``Barrel`` (+ ``MuzzleBrake``). Stock parts: ``SightRail/StockSight`` (flip-up irons,
 ``AimPoint``), ``Magwell/StockMagazine`` (30 rounds), ``StockMount/StockStock`` (extended stock).
 """
 
@@ -77,9 +77,8 @@ def build(ctx) -> None:
     mats = c.Mats(ctx)
     _receiver(ctx, mats)
     barrel = c.build_barrel(ctx, mats, 0.0085, k.REC_FRONT_Y - 0.010, k.BARREL_END_Y, k.BORE_Z, bore_r=0.0030)
-    c.build_flash_hider(ctx, mats, 0.0105, k.BARREL_END_Y, k.HIDER_LEN, k.BORE_Z, parent=barrel)
+    c.build_muzzle_brake(ctx, mats, 0.0105, k.BARREL_END_Y, k.BRAKE_LEN, k.BORE_Z, parent=barrel)  # PO6-13
 
-    ctx.marker("Muzzle", (0.0, k.MUZZLE_Y, k.BORE_Z))
     ctx.marker("BarrelMount", (0.0, k.REC_FRONT_Y, k.BORE_Z))
     ctx.marker("Eject", (k.REC_HW, 0.030, k.BORE_Z), rotation_euler=(0.0, 0.0, -math.pi / 2))
     sight_rail = ctx.marker("SightRail", (0.0, k.SIGHT_RAIL_Y, k.RAIL_TOP_Z))

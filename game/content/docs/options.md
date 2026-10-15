@@ -48,6 +48,7 @@ Suggested hook (ENV A, `systems/player/player_input.gd`): in `_ready()` read the
 | Subtitles on / off (options parity) | `subtitles()` / `accessibility/subtitles` (bool, default true) | ENV B's `SubtitleOverlay` shows no in-heist line while off. The briefing screen's own subtitle panel is the briefing text and stays. |
 | Subtitle size | `accessibility/subtitle_size` (`small`/`medium`/`large`) | ENV B's in-heist `SubtitleOverlay` (B7-03, `content/docs/radio.md`) follows it live: font sizes in `data/tweak/radio.tres` `font_sizes` (22 / 28 / 36 px at 1080p). |
 | Drop-in (host) | `gameplay/dropin_policy` (`ask`/`auto`/`off`, default `ask`) | ENV B: copied into each hosted lobby session (`LobbySession.host`); the host's in-lobby change is remembered here. Shown on the Controls tab. |
+| Blood & gore (D-113) | `gameplay/gore` (`full`/`reduced`/`off`, default `full`) | ENV C's VFX: `GameSettings.current().gore()` (StringName, `GameSettings.GORE_*`), looked up by class name; follow `changed(&"gameplay", &"gore")`. Shown on the Controls tab with the other gameplay rows. |
 
 ### What ENV B applies itself (`GameSettings.apply()` -> `SettingsApplier`)
 

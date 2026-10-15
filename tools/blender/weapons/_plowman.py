@@ -26,7 +26,9 @@ SIGHT_RAIL_Y = 0.140
 
 BARREL_R = 0.0105
 BARREL_END_Y = 0.735
-MUZZLE_Y = BARREL_END_Y + 0.001
+COMP_LEN = 0.035                 # PO6-13 top-ported compensator
+COMP_SLEEVE = 0.022              # ... slipped this far back over the barrel end
+MUZZLE_Y = BARREL_END_Y + COMP_LEN - COMP_SLEEVE + 0.001
 
 TUBE_Z = BORE_Z - 0.0255
 TUBE_R = 0.0115

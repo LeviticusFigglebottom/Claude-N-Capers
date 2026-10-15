@@ -41,7 +41,8 @@ sections = {
 "safehouse_hub": {"type": "choice", "default": "walk", "options": ["walk", "menu"]}
 },
 "gameplay": {
-"dropin_policy": {"type": "choice", "default": "ask", "options": ["ask", "auto", "off"]}
+"dropin_policy": {"type": "choice", "default": "ask", "options": ["ask", "auto", "off"]},
+"gore": {"type": "choice", "default": "full", "options": ["full", "reduced", "off"]}
 },
 "accessibility": {
 "palette": {"type": "choice", "default": "default", "options": ["default", "deuteranopia", "protanopia", "tritanopia", "high_contrast"]},

@@ -5,7 +5,7 @@ Private helper: imported by ``wasp_pdw.py`` and ``wasp_pdw_mods.py``. Axes and p
 
 Compact 4.6 mm personal defence weapon: one-piece tan polymer body with a full-length top rail,
 the magazine inserted through the pistol grip (``Magwell`` at the grip base, raked with the grip),
-folding front grip moulded under the nose, short barrel with a three-prong flash hider, collapsed
+a front finger ridge moulded under the nose, short barrel with a three-prong flash hider, collapsed
 telescopic stock (``StockMount/StockStock``).
 """
 

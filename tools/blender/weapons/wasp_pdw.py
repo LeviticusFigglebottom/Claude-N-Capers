@@ -90,9 +90,9 @@ def _body(ctx, mats):
     fg = ctx.builder()
     fm = fg.material(mats.polymer())
     fy = w.UNDER_Y + 0.020
-    fg.box((-0.0110, fy - 0.014, w.BODY_BOTTOM_Z - 0.006), (0.0110, fy + 0.014, w.BODY_BOTTOM_Z + 0.002), mat=fm)
-    fg.prism(c.rounded_rect(0.0105, 0.0130, 0.007, 0.0, fy, corner_segments=3), axis="Z", start=w.BODY_BOTTOM_Z - 0.066,
-             end=w.BODY_BOTTOM_Z - 0.004, mat=fm)
+    # ENV D (round 213): the moulded front grip stub went through the smg cup hand; it is a finger ridge now
+    # (<= 8 mm under the body), so the support hand cups the fore-end at LeftHandIK in front of the trigger guard.
+    fg.box((-0.0110, fy - 0.014, w.BODY_BOTTOM_Z - 0.008), (0.0110, fy + 0.014, w.BODY_BOTTOM_Z + 0.002), mat=fm)
     c.finish(fg, "FrontGrip", bevel=0.0018, segments=2, parent=body)
 
     tr = ctx.builder()
@@ -146,7 +146,9 @@ def build(ctx) -> None:
     ctx.marker("SideRail", (w.BODY_HW + 0.0057, w.SIDE_Y, w.BORE_Z - 0.008))
     stock_mount = ctx.marker("StockMount", w.STOCK_MOUNT)
     ctx.marker("GripMount", (0.0, 0.0, 0.0))
-    ctx.marker("LeftHandIK", (-0.020, w.UNDER_Y + 0.020, w.BODY_BOTTOM_Z - 0.035))
+    # Lead ruling (round 211): the smg cup grip like hornet/lancet/tern (vgrip set = backlog): x 0, 12 mm under the body,
+    # in front of the trigger guard (~y 0.075), behind the FrontGrip finger ridge (y 0.131).
+    ctx.marker("LeftHandIK", (0.0, 0.100, w.BODY_BOTTOM_Z - 0.012))
 
     stock_sight = ctx.marker("StockSight", (0.0, 0.0, 0.0), parent=sight_rail)
     _irons, aim = w.build_irons(ctx, mats, parent=stock_sight)

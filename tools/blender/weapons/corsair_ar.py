@@ -6,7 +6,7 @@ rail, tan polymer grip, stock and magazine. Straight-line layout (bore = buffer 
 Origin = firing-hand pivot on the pistol grip (see _corsair.py). Forward = Godot -Z, up = Godot +Y.
 
 Node tree (Godot names): ``Lower`` (+ ``Grip``, ``Trigger``, ``Controls``), ``Upper`` (+ ``TopRail``,
-``ChargingHandle``), ``Handguard`` (+ rails, slot inlays), ``Barrel`` (+ flash hider), ``Stock``
+``ChargingHandle``), ``Handguard`` (+ rails, slot inlays), ``Barrel`` (+ ``MuzzleBrake``), ``Stock``
 (buffer tube + tan stock). Markers per contracts/visual_slots.md: ``Muzzle``, ``Eject``,
 ``SightRail``, ``Magwell``, ``Underbarrel``, ``SideRail``, ``StockMount``, ``GripMount``,
 ``BarrelMount``, ``LeftHandIK``. Stock parts: ``SightRail/StockSight`` (flip-up irons, ``AimPoint``),
@@ -152,18 +152,12 @@ def _handguard(ctx, mats):
 def _barrel(ctx, mats):
     mb = ctx.builder()
     st = mb.material(mats.steel())
-    dark = mb.material(mats.polymer())
     mb.cylinder(k.BARREL_R, k.BARREL_END_Y - k.UPPER_FRONT_Y, segments=24,
                 centre=(0.0, (k.BARREL_END_Y + k.UPPER_FRONT_Y) / 2, k.BORE_Z), axis="Y", mat=st)
-    # flash hider: body + flats + four slots
-    h0, h1 = k.BARREL_END_Y, k.BARREL_END_Y + k.HIDER_LEN
-    c.ring_y(mb, 0.0112, 0.0060, h0, h1, k.BORE_Z, st, segments=24)
-    mb.cylinder(0.0118, 0.008, segments=6, centre=(0.0, h0 + 0.004, k.BORE_Z), axis="Y", mat=st)
-    for i in range(4):
-        a = math.pi / 4 + i * math.pi / 2
-        x, z = math.cos(a) * 0.0108, k.BORE_Z + math.sin(a) * 0.0108
-        mb.box((x - 0.0018, h0 + 0.022, z - 0.0018), (x + 0.0018, h1 - 0.003, z + 0.0018), mat=dark)
-    return c.finish(mb, "Barrel", bevel=0.0005, segments=1)
+    barrel = c.finish(mb, "Barrel", bevel=0.0005, segments=1)
+    # PO6-13: 3-port side brake carrying Muzzle + MuzzlePortL/R
+    c.build_muzzle_brake(ctx, mats, 0.0112, k.BARREL_END_Y, k.BRAKE_LEN, k.BORE_Z, parent=barrel)
+    return barrel
 
 
 def _stock(ctx, mats):
@@ -203,7 +197,6 @@ def build(ctx) -> None:
     _barrel(ctx, mats)
     _stock(ctx, mats)
 
-    ctx.marker("Muzzle", (0.0, k.MUZZLE_Y, k.BORE_Z))
     ctx.marker("BarrelMount", (0.0, k.UPPER_FRONT_Y, k.BORE_Z))
     ctx.marker("Eject", (0.0135, 0.066, k.BORE_Z), rotation_euler=(0.0, 0.0, -math.pi / 2))
     sight_rail = ctx.marker("SightRail", (0.0, k.SIGHT_RAIL_Y, k.RAIL_TOP_Z))

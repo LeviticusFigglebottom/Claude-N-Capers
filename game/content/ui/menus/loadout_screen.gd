@@ -648,8 +648,13 @@ func _gate_deployables(modifiers: Dictionary) -> bool:
 		var text: String = UiText.t(UiText.item_key(id))
 		if not ok:
 			var card: Dictionary = DeployableGate.unlock_card(id)
-			text = UiText.t(&"ui.loadout.deployable_locked", {"item": text, "card": int(card.get("card", 0)),
-					"name": UiText.t(StringName(card.get("name", &"")))})
+			var skill: Dictionary = DeployableGate.unlock_skill(id) if card.is_empty() else {}
+			if not skill.is_empty():  # lead ruling: ECM / trip mine / FAK need their skill
+				text = UiText.t(&"ui.loadout.deployable_locked_skill", {"item": text,
+						"name": UiText.t(StringName(skill["name"]))})
+			else:
+				text = UiText.t(&"ui.loadout.deployable_locked", {"item": text, "card": int(card.get("card", 0)),
+						"name": UiText.t(StringName(card.get("name", &"")))})
 		deployable_option.set_item_text(i, text)
 		deployable_option.set_item_disabled(i, not ok)
 		if not ok and deployable_option.selected == i:
