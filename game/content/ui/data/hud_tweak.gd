@@ -39,6 +39,8 @@ const DEFAULT_PATH: String = "res://content/data/ui/hud_tweak.tres"
 @export var mark_size_px: float = 14.0
 ## Height above the marked unit's world_pos (its feet) where the marker is drawn, m.
 @export var mark_height_m: float = 2.1
+## PO6-20: the pager waypoint sits this far above the guard's origin (EventBus fallback; model rows carry world_pos).
+@export var pager_marker_height_m: float = 1.2
 ## PO6-03 device timer panels (DeviceTimers): hidden past this distance (m); full size up to device_panel_ref_m,
 ## shrinking with distance down to device_panel_min_scale; the panel floats device_panel_up_m above and
 ## device_panel_out_m out from a device found by net id (EventBus fallback; the model's rows carry world_pos).
