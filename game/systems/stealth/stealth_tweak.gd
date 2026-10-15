@@ -109,10 +109,14 @@ extends Resource
 @export var pager_window_s: float = 12.0
 @export var pager_answer_s: float = 10.0
 @export var pager_max_answers: int = 4
-## PO6-08 (D-114 §4): the response window freezes while anyone holds the answer; when the last holder
-## lets go early the window RESUMES from where it froze (true). false = the old S5.4 rule (letting go
-## early raises the alarm immediately).
-@export var pager_release_resumes: bool = false  # LEAD: PO 2026-10-15 early release = alarm
+## PO6-08 (D-114 §4, amended by the PO): the response window freezes while anyone holds the answer.
+## When the last holder lets go early the pager fails with the alarm (S5.4), unless within
+## pager_juggle_window_s the same player starts answering ANOTHER live pager (a juggle): then the
+## released pager resumes its remaining window and must still be answered. true = never alarm on an
+## early release, always resume (pre-amendment PO6-08 behaviour; tests / options).
+@export var pager_release_resumes: bool = false
+## PO6-08 juggle grace (s): how long a released pager waits for its answerer to pick up another pager.
+@export var pager_juggle_window_s: float = 0.5
 
 @export_group("Civilians (S3.1, S7)")
 @export var intimidate_duration_s: float = 45.0

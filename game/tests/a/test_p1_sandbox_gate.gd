@@ -180,12 +180,10 @@ func test_08_loud_transition_and_assault() -> void:
 	await _teardown(rt)
 
 # 5. Releasing a pager early with nobody else answering raises the alarm.
-func test_05_pager_release_early_resumes() -> void:
-	# PO6-08 (D-114 §4): letting go early no longer alarms; the frozen window resumes (the old S5.4
-	# alarm stays behind StealthTweak.pager_release_resumes = false, test_s5_pagers.gd).
+func test_05_pager_release_early_alarm() -> void:
+	# S5.4 / D-114 §4 as amended: letting go early with no juggle raises the alarm after the juggle grace.
 	if not _ready_or_skip():
 		return
-	Tweak.stealth().pager_release_resumes = true  # LEAD: PO 2026-10-15 default is alarm; this test opts in
 	var rt: HeistRuntime = await _launch(SEED_B) as HeistRuntime
 	var alarms: Array[StringName] = []
 	var on_alarm: Callable = func(r: StringName, _s: int) -> void: alarms.append(r)
@@ -204,11 +202,9 @@ func test_05_pager_release_early_resumes() -> void:
 	rt.set_bot_intent(0, ans)
 	await wait_seconds(3.0)
 	rt.clear_bot_intent(0)
-	await wait_physics_frames(3)
-	assert_false(alarms.has(&"pager_failed"), "early release does not raise the alarm (D-114 §4)")
-	assert_eq(pagers.pager_entries().size(), 1, "the pager is still live")
+	await wait_seconds(Tweak.stealth().pager_juggle_window_s + 0.3)
+	assert_true(alarms.has(&"pager_failed"), "early release raises the alarm (S5.4)")
 	EventBus.alarm_raised.disconnect(on_alarm)
-	Tweak.stealth().pager_release_resumes = false  # LEAD: restore the PO 2026-10-15 default
 	await _teardown(rt)
 
 

@@ -135,6 +135,8 @@ const GROUP_SIGNAL: Dictionary[StringName, StringName] = {
 ## Extra (non-contract) properties included in snapshot().
 const EXTRA_PROPERTIES: Array[StringName] = [&"tracked_slot_resolved", &"mask_progress", &"heist_phase", &"local_net_id"]
 
+## PO6-20: height of a pager row's world_pos above the guard's body origin (m).
+@export var pager_marker_up_m: float = 1.2
 ## PO6-03: height of a device row's world_pos above the device (m).
 @export var device_panel_up_m: float = 0.45
 ## Poll rate of the runtime (presentation only).
@@ -931,7 +933,13 @@ func _pager_row(e: Dictionary) -> Dictionary:
 	var answering: bool = bool(e.get("answering", false))
 	var answer_s: float = maxf(Tweak.stealth().pager_answer_s, 0.001)
 	var prog: float = float(e.get("progress", clampf(1.0 - left / answer_s, 0.0, 1.0) if answering else 0.0))
-	return {"pager_id": int(e.get("pager_id", 0)), "time_left_s": left, "answering": answering, "progress": prog}
+	# PO6-20: the body's live position (dragged / bagged bodies move) for B's waypoint, pager_marker_up_m above it.
+	var gid: int = int(e.get("guard_net_id", 0))
+	var body: Node3D = Ids.lookup(gid) as Node3D if gid != 0 else null
+	var pos: Vector3 = body.global_position if body != null and body.is_inside_tree() \
+		else Vector3(e.get("world_pos", Vector3.ZERO))
+	return {"pager_id": int(e.get("pager_id", 0)), "time_left_s": left, "answering": answering, "progress": prog,
+		"guard_net_id": gid, "world_pos": pos + Vector3.UP * pager_marker_up_m}
 
 
 func _publish_detection() -> void:
