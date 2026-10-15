@@ -179,7 +179,9 @@ func test_08_loud_transition_and_assault() -> void:
 	await _teardown(rt)
 
 # 5. Releasing a pager early with nobody else answering raises the alarm.
-func test_05_pager_release_early_alarm() -> void:
+func test_05_pager_release_early_resumes() -> void:
+	# PO6-08 (D-114 §4): letting go early no longer alarms; the frozen window resumes (the old S5.4
+	# alarm stays behind StealthTweak.pager_release_resumes = false, test_s5_pagers.gd).
 	if not _ready_or_skip():
 		return
 	var rt: HeistRuntime = await _launch(SEED_B) as HeistRuntime
@@ -201,7 +203,8 @@ func test_05_pager_release_early_alarm() -> void:
 	await wait_seconds(3.0)
 	rt.clear_bot_intent(0)
 	await wait_physics_frames(3)
-	assert_has(alarms, &"pager_failed", "early release raises the alarm (S5.4)")
+	assert_false(alarms.has(&"pager_failed"), "early release does not raise the alarm (D-114 §4)")
+	assert_eq(pagers.pager_entries().size(), 1, "the pager is still live")
 	EventBus.alarm_raised.disconnect(on_alarm)
 	await _teardown(rt)
 

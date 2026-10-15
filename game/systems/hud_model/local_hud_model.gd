@@ -892,7 +892,10 @@ func _poll_custody(c: CrewController, slot: int) -> void:
 func _tick_timers(delta: float) -> void:
 	for pid: int in _pagers:
 		var e: Dictionary = _pagers[pid]
-		e["time_left"] = maxf(float(e["time_left"]) - delta, 0.0)
+		if bool(e.get("answering", false)):
+			e["progress"] = minf(float(e.get("progress", 0.0)) + delta / maxf(float(e.get("answer_s", 1.0)), 0.001), 1.0)
+		else:  # PO6-08 (D-114 §4): the window is frozen while answering
+			e["time_left"] = maxf(float(e["time_left"]) - delta, 0.0)
 	for eid: int in _ecms.keys():
 		_ecms[eid] = maxf(_ecms[eid] - delta, 0.0)
 	for oid: int in _detection.keys():
@@ -1029,8 +1032,10 @@ func _on_pager_started(pager_id: int, guard_net_id: int) -> void:
 
 func _on_pager_answer_started(pager_id: int, crew_slot: int) -> void:
 	var e: Dictionary = _pagers.get(pager_id, {"pager_id": pager_id, "guard_net_id": 0})
-	e["answering"] = true
-	e["time_left"] = Tweak.stealth().pager_answer_s * Modifiers.mult(crew_slot, &"stealth.pager_answer_speed_mult")
+	e["answering"] = true  # PO6-08: time_left (the window) stays frozen; the answer fills `progress`
+	e["time_left"] = float(e.get("time_left", Tweak.stealth().pager_window_s))
+	e["answer_s"] = Tweak.stealth().pager_answer_s * Modifiers.mult(crew_slot, &"stealth.pager_answer_speed_mult")
+	e["progress"] = 0.0
 	_pagers[pager_id] = e
 	_publish_pagers()
 	_flush()
