@@ -2,6 +2,23 @@
 
 Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min; this file says where to resume.
 
+## 2026-10-15: PO6-15 bot tuning (P side) + PO6-13 FP flash wiring
+**PO6-15:** CrewTweak "AI teammates" group (PD2 team AI preset): ai_damage_mult 0.4, ai_reaction_time_s 0.8,
+ai_shot_interval_s 0.45, ai_head_aim_chance 0.05, aim error 0.15 m + 0.025 m per m of range, engage 30 m.
+**Read by ENV A's code** (CrewWeapons.damage_at, CrewAiBrain scan/aim/fire): the wiring is a patch for A,
+tests/p/_review/captures/po6_15/a_wiring.patch (prototyped locally to measure, not committed by P).
+Probe tests/p/_review/bot_strength_probe.tscn (Golden Hour loud, 3 bots, passive human, 240 s, 3 seeds; raw lines in
+captures/po6_15/): before 36 / 38 / 39 bot kills (~9.4 per min), 0-1 downs, police held at 9-12;
+after 11 / 13 / 12 kills (~3 per min), 13-14 hits per kill -> 14 dmg per hit, every crew member downed, the crew
+collapses during the first assault sustain (~100-140 s) with a human that does nothing. Mid setting (0.5 / 0.6 s /
+0.02 per m) gave 16-26 kills and held the first assault in 2 of 3 seeds (rejected: still carries the start).
+**PO6-13 (FP side):** FpViewmodelFx passes the set's class to C's MuzzleFlash (flash_class_by_set), fp_scale(true) once,
+burst_end() burst_end_after_s (0.25 s) after the last shot; P's muzzle light halved (energy 1.25, 0.034 s). FP size
+stays vfx_muzzle_size: C's scene is already ~0.6x (SIZE_K) and 2 frames (env/c-worlds e9e3b96e), so no double cut; the
+flash sits at the `Muzzle` marker, which B moves to the brake face. Test test_p_d105_fp_fx (new
+test_flash_class_fp_scale_and_burst_end). Evidence: captures/po6_13_fp_flash_before_after.png (windowed, top = trunk
+scene, bottom = C's e9e3b96e scene; Corsair, Kestrel, Mule, Anvil, Heron; shot frame).
+
 ## 2026-10-15: PO6-11 pistol hold + ADS (session_01VxQPFh6PypoyUxg94gmMGH, new LEAD session_01XAPqmFJ32zHKLK9Sezymym)
 **Done (PO6-11):**
 - Cause of the "one-handed / inorganic" pistol: the pistol / revolver clips' idle and ads_idle share the finger pose

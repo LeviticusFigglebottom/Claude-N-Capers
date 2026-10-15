@@ -482,7 +482,7 @@ func _shot_fx(aimed: bool, eject_delay: float) -> void:
 			if _crew != null and _crew.weapons != null else null
 		if not tw.no_flash_sets.has(anim_set):
 			fx.flash(weapon_visual.get_marker(&"Muzzle"), st != null and st.suppressed,
-				float(tw.muzzle_flash_set_mult.get(anim_set, 1.0)))
+				float(tw.muzzle_flash_set_mult.get(anim_set, 1.0)), tw.flash_class_by_set.get(anim_set, &""))
 		var kind: StringName = tw.shell_kind.get(anim_set, &"")
 		if kind != &"":
 			fx.eject(weapon_visual.get_marker(&"Eject"), kind, eject_delay)
