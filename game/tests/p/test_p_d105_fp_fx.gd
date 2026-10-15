@@ -124,3 +124,28 @@ func _flash_showing(vm: FpViewmodel) -> bool:
 	if f == null:
 		return false
 	return bool(f.call(&"is_flashing")) if f.has_method(&"is_flashing") else f.visible
+
+
+## PO6-13 (D-114 §8): ENV C's toned-down MuzzleFlash gets the set's class shape, its FP scale, and the trailing wisp
+## once the burst ends.
+func test_flash_class_fp_scale_and_burst_end() -> void:
+	for pair: Array in [[&"weapon.bastion_br", &"rifle"], [&"weapon.mule_12", &"shotgun"]]:
+		var c: CrewController = await _launch(pair[0])
+		var vm: FpViewmodel = _vm(c)
+		if vm == null or vm.fx == null:
+			assert_true(false, "%s: animated viewmodel with FX" % pair[0])
+			return
+		_inp.press(&"fire")
+		assert_true(await wait_until(func() -> bool: return vm.fx.flashes > 0, 2.0), "%s: fired" % pair[0])
+		_inp.release(&"fire")
+		var lib: Node3D = vm.fx.get(&"_flash") as Node3D
+		if lib == null or not lib.has_method(&"burst_end"):
+			skip("ENV C's muzzle_flash.tscn not present")
+			return
+		assert_eq(lib.get(&"last_shape"), pair[1], "%s: %s shape" % [pair[0], pair[1]])
+		assert_true(bool(lib.get(&"_fp")), "%s: FP scale on" % pair[0])
+		assert_true(float(vm.fx.get(&"_burst_left")) > 0.0, "%s: burst end armed by the shot" % pair[0])
+		assert_true(await wait_until(func() -> bool: return float(vm.fx.get(&"_burst_left")) <= 0.0, 1.5),
+			"%s: burst end fired after the last shot" % pair[0])
+		assert_true(bool(lib.call(&"is_wisp_visible")), "%s: trailing wisp up" % pair[0])
+		await after_each()

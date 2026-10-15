@@ -453,6 +453,12 @@ func _lower_for_interaction() -> void:
 
 
 ## The equipped weapon's draw over its gameplay equip time (bag pickup, end of an interaction).
+## PO6-12 (ENV B range): replay the equipped weapon's `draw` (ready@ on the gameplay equip time), e.g. when a pick
+## lands in the slot already in the hands. Presentation only.
+func play_draw() -> void:
+	_draw_weapon()
+
+
 func _draw_weapon() -> void:
 	var equip_s: float = _equip_time()
 	_end_action()
@@ -482,7 +488,7 @@ func _shot_fx(aimed: bool, eject_delay: float) -> void:
 			if _crew != null and _crew.weapons != null else null
 		if not tw.no_flash_sets.has(anim_set):
 			fx.flash(weapon_visual.get_marker(&"Muzzle"), st != null and st.suppressed,
-				float(tw.muzzle_flash_set_mult.get(anim_set, 1.0)))
+				float(tw.muzzle_flash_set_mult.get(anim_set, 1.0)), tw.flash_class_by_set.get(anim_set, &""))
 		var kind: StringName = tw.shell_kind.get(anim_set, &"")
 		if kind != &"":
 			fx.eject(weapon_visual.get_marker(&"Eject"), kind, eject_delay)

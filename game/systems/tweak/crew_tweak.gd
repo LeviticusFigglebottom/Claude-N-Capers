@@ -158,6 +158,24 @@ extends Resource
 ## throw_distance_multiplier 1 / 1 / 0.5 / 0.3 of a 4 m base.
 @export var bag_throw_distance_m: PackedFloat32Array = PackedFloat32Array([4.0, 4.0, 2.0, 1.2])
 
+@export_group("AI teammates (PO6-15, PD2 team AI)")
+## PO6-15 (D-114 §6): PD2 bots support, they cannot carry a loud heist. These replace CrewAiTweak's fight values for
+## the AI crew (ENV A reads them in CrewAiBrain / CrewWeapons). Measured with tests/p/_review/bot_strength_probe.
+## Damage of an AI teammate's bullet x this (PD2 *_crew weapons hit far softer than the player's) ◇.
+@export var ai_damage_mult: float = 0.4
+## Delay between acquiring a target and the first shot (s; PD2 gang_member focus + aim delay) ◇.
+@export var ai_reaction_time_s: float = 0.8
+## Minimum time between trigger pulls (s) ◇.
+@export var ai_shot_interval_s: float = 0.45
+## Chance per shot to aim at the head instead of the chest ◇.
+@export_range(0.0, 1.0) var ai_head_aim_chance: float = 0.05
+## Aim error radius at the aim point (m) = ai_aim_error_m + ai_aim_error_per_m x target distance (PD2 accuracy
+## falloff with range: close shots mostly land, 30 m shots mostly miss) ◇.
+@export var ai_aim_error_m: float = 0.15
+@export var ai_aim_error_per_m: float = 0.025
+## Enemies farther than this are ignored (m) ◇.
+@export var ai_engage_range_m: float = 30.0
+
 @export_group("Net")
 @export var intent_send_hz: float = 30.0
 @export var max_client_speed_slack: float = 1.35
