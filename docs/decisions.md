@@ -901,6 +901,7 @@ into the list as PO6-10/PO6-09. Rulings made with it:
    ragdoll, or a scripted body push where ragdoll is too costly); corpses accept small hit impulses and bleed at the
    hit point (D-113 VFX).
 8. **Muzzle flash is toned down** from D-113 (smaller, shorter, less light), and long guns get a muzzle-brake/
-   compensator mesh at the barrel tip that the flash emits from.
+   compensator mesh at the barrel tip that the flash emits from. Marker rule (round 205): the brake node carries its own
+   `Muzzle` marker and the outermost `Muzzle` wins (no code change); optional `MuzzlePortL`/`MuzzlePortR` for side ports.
 9. **Team:** the previous sessions are not reachable from this account; the new LEAD (session_01XAPqmFJ32zHKLK9Sezymym)
    spawns fresh A, B, C, D and P sessions (board Sessions table).
