@@ -28,8 +28,8 @@ static func make_def() -> HeistDef:
 	# D-064 (Q7): $95k base and the loot values are placeholders; ENV B balances them in P6.
 	d.base_payout = 95000
 	d.stealth_bonus_mult = 1.0
-	# TODO(QC-39): loot.weapon_crate / loot.contraband are ENV B's new LootDefs (the thermite bag is a
-	# tool bag, not payout loot). Until they ship, LootManager spawns them with default weight/value.
+	# QC-39 (shipped, ENV B): loot.weapon_crate (HEAVY, $2,000) and loot.contraband (MEDIUM, $1,400) are LootDefs in
+	# content/data/loot/ (the thermite bag is a tool bag, not payout loot).
 	d.loot = [&"loot.cash_bricks", &"loot.weapon_crate", &"loot.contraband"] as Array[StringName]
 	# Objective ids = the design doc's Objectives `[tag]`s (D-039 rule: ENV B reads them there).
 	d.objectives = [&"cartel", &"breach", &"product", &"burn", &"strongroom", &"count_cage", &"containers",
