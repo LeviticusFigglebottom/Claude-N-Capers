@@ -1,4 +1,4 @@
-# Contract: characters (v1.12)
+# Contract: characters (v1.13)
 
 Producer: ENV C (generated humanoids + animations). Consumer: ENV A (NPC/crew prefabs).
 Until delivered, ENV A uses capsule placeholders with the same node names.
@@ -188,3 +188,15 @@ collide with `world_static | world_dynamic | ragdoll` only (not players, NPCs or
 `physical_bones_start_simulation()`, applies impulses to the body of the hit bone (nearest ancestor with
 a body), and freezes the corpse after ~3 s by baking the bodies into the bone poses and stopping the
 simulation (recipe: `world/characters/_tools/RAGDOLL.md`). project.godot names `3d_physics/layer_11="ragdoll"`.
+
+## v1.13: pose-aware deaths (PO6-18, D-114 §7)
+Five death clips that start exactly on their source pose's frame and end on the floor; root fixed; hips and head
+never rise more than 5 cm above their start height (SOURCE `pose_deaths`):
+* `death_crouch` (45 f, impact@26): from `crouch_idle` f0; topples onto the left side.
+* `death_kneel_cuffed` (45 f, impact@24): from `kneel_cuffed` f0; pitches forward face-down, wrists stay together behind the back.
+* `death_kneel` (45 f, impact@24): from `surrender`'s last frame (kneeling, hands on head); hands slide off, same fall.
+* `death_prone` (30 f, impact@3): from `lie_down` f0; goes limp in place.
+* `death_downed` (36 f, impact@20): from `downed` f0; falls back flat.
+ENV A mapping (`AnimTweak.death_by_pose`): crouch_idle / crouch_walk / cower → death_crouch; kneel_cuffed / tied →
+death_kneel_cuffed; surrender → death_kneel; lie_down → death_prone; downed / downed_crawl → death_downed. A rig without
+the clip freezes the pose and topples (A's fallback); strong impulses still ragdoll (v1.12).
