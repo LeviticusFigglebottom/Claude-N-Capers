@@ -40,6 +40,9 @@ func test_outline_follows_pager_facts() -> void:
 	assert_true(_mesh.material_overlay == _po.material(), "overlay material set")
 	var mat: ShaderMaterial = _po.material()
 	assert_true(mat.shader.code.contains("depth_test_disabled"), "visible through walls")
+	var shell: ShaderMaterial = mat.next_pass as ShaderMaterial
+	assert_true(shell != null and shell.shader.code.contains("compare_not_equal"), "shell masked to outside the body")
+	assert_true(float(shell.get_shader_parameter(&"width_m")) >= 0.05, "bold band (~3-4 px at 10 m)")
 	EventBus.pager_answered.emit(11, 0, 1)
 	assert_false(_po.is_outlined(_mesh), "gone after the answer")
 	assert_true(_mesh.material_overlay == null, "overlay removed")

@@ -288,7 +288,8 @@ func _build_depository(gp: Node3D) -> void:
 	# until it opens; the UsePoint stays in front of the safe on the floor.
 	if safe != null:
 		prefab(safe, "loot_spawn", "NightDropBags", Vector3(0.0, 0.142, 0.0), 0.0,
-			{"loot_id": &"loot.cash", "count": 4, "objective_tag": &"depository_loot"}, Vector3(22.6, L.BASE, 18.3))
+			{"loot_id": &"loot.cash", "count": 4, "objective_tag": &"depository_loot",
+				"visual_scene": catalog_scene("prop_night_drop_bags")}, Vector3(22.6, L.BASE, 18.3))
 	# Chute from the G13 night drop down to the safe (Geometry, ceiling to the top of the safe body).
 	box(n("Geometry/Building"), "DepositoryChute", Vector3(21.15, L.BASE + 1.395, 16.75), Vector3(21.55, L.BASE_CEIL, 17.25), "steel")
 
