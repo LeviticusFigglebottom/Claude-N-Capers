@@ -1,0 +1,20 @@
+asset: char_civilian_sales_b
+script: tools/blender/characters/char_civilians.py
+params: {"age": 0.22, "beard_shadow": 0.3, "build": 0.35, "gender": 0.0, "hair": "side_part", "hair_color": "brown", "height": 1.79, "look": "sales_b", "skin": 2}
+seed: 249307477  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category characters --asset char_civilian_sales_b
+edit policy: generated file, never edit by hand; change the script and rebuild
+attach_Back: bone chest, local [0.0000, 0.0898, 0.1062] (model [0.0000, 1.3073, 0.1248], Godot axes, rest pose)
+attach_Head: bone head, local [0.0000, 0.0815, -0.0892] (model [0.0000, 1.6754, -0.0771], Godot axes, rest pose)
+attach_Hip: bone hips, local [0.1793, 0.0511, 0.0358] (model [0.1793, 1.0096, 0.0383], Godot axes, rest pose)
+body_faces_culled: 4817
+body_params: {"age": 0.22, "beard_shadow": 0.3, "build": 0.35, "gender": 0.0, "hair": "side_part", "hair_color": "brown", "hair_peak": 0.0, "height": 1.79, "lip": "auto", "skin": 2}
+bones: 52
+faces_hidden_by_jacket: 2838
+look: Sales associate B: fitted near-black suit, black shirt open at the collar (no tie), brass name badge and lapel pin (the boutique's brass), black shoes, watch
+meshes: Body,Gear,Hair,Outfit
+shape_keys: none (baked at body_params; do not set blend_shapes/*)
+tri_budget: 35000
+tris: 26230
+tris_by_mesh: {"Body": 9110, "Gear": 684, "Hair": 1856, "Outfit": 14580}
