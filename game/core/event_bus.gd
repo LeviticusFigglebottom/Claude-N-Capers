@@ -38,6 +38,9 @@ signal cameras_loop_disabled(by_net_id: int)  # camera operator neutralised: all
 signal pager_started(pager_id: int, guard_net_id: int)
 signal pager_answer_started(pager_id: int, crew_slot: int)
 signal pager_answered(pager_id: int, crew_slot: int, answered_total: int)
+## events v1.4 (D-114 §4): opt-in StealthTweak.pager_release_resumes only: the last answerer let go early and the
+## response window resumes, no alarm (default: early release = pager_failed(released) + alarm).
+signal pager_answer_released(pager_id: int, crew_slot: int)
 signal pager_failed(pager_id: int, reason: StringName)
 signal body_bagged(body_net_id: int, bag_net_id: int, crew_slot: int)
 signal body_discovered(body_net_id: int, by_npc_net_id: int)

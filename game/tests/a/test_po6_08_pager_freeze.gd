@@ -30,7 +30,7 @@ func before_each() -> void:
 
 func after_each() -> void:
 	Engine.time_scale = 1.0
-	Tweak.stealth().pager_release_resumes = true
+	Tweak.stealth().pager_release_resumes = false  # LEAD: PO 2026-10-15 early release = alarm (default)
 	for c: Array in _conns:
 		var sig: Signal = c[0]
 		if sig.is_connected(c[1]):
