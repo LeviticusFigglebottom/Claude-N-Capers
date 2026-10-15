@@ -83,6 +83,8 @@ class SupportGrip:
 #: does): the palm, wrist and thumb flex by coordinate descent, then each finger and the thumb opposition closed until
 #: the tightest fore-end of the set is within 0.8 mm of skin (ENV P's PFingerClip limit is 2 mm). The thumb now
 #: lies low along the near side next to the palm (thumb_opp -30 lifted it to the top edge, apart from the hand).
+#: smg (B's under-fore-end markers, lead 2026-10-14): fitted on hornet / lancet / ferret / hush / mastiff; the short
+#: fore-ends leave no room ahead of the magazine, so the palm cups the lower-left corner, fingers across, thumb up the side.
 LONG_GUN_GRIPS: dict[str, SupportGrip] = {
     "rifle": SupportGrip((0.6, 0.8, -0.25), (0.0, -0.1, 1.0), (-0.005, 0.0, 0.003), -8.31, 0.0,
                 (-0.0381, 0.0021, 0.0426), thumb=(16.0, -18.0, 4.0), fingers=(0.272, 0.523, 0.637, 0.806)),
@@ -96,6 +98,8 @@ LONG_GUN_GRIPS: dict[str, SupportGrip] = {
                 (-0.0351, 0.0002, 0.037), thumb=(4.0, 6.0, 4.0), fingers=(0.462, 0.595, 0.736, 1.348)),
     "lever": SupportGrip((0.7875, 0.8, -0.3125), (0.05, 0.1, 1.0), (-0.006, 0.0, 0.001), -7.34, 0.0,
                 (-0.0435, 0.0015, 0.0388), thumb=(4.0, 6.0, 4.0), fingers=(0.48, 0.661, 0.759, 1.348)),
+    "smg": SupportGrip((0.85, 0.4, 0.0), (0.3, -0.2, 1.0), (0.005, 0.018, -0.013), 14.68, 0.0,
+                (-0.0439, -0.0264, 0.0005), thumb=(-20.0, -24.0, 4.0), fingers=(0.713, 0.78, 1.348, 0.87)),
     "shotgun_box": SupportGrip((0.825, 0.725, -0.325), (0.075, -0.125, 1.0), (-0.006, 0.004, 0.0), -27.0, 0.0,
                 (-0.0479, 0.0015, 0.03), thumb=(4.0, 12.0, 4.0), fingers=(0.558, 0.666, 0.717, 1.348)),
 }

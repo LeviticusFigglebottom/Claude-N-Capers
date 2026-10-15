@@ -1064,7 +1064,9 @@ func test_hands_and_sights_on_the_real_models() -> void:
 		var marks: Dictionary = w["marks"]
 		var root: Node3D = w["root"]
 		# the support hand's palm on LeftHandIK (hip and ADS)
-		var tol: float = 0.04 if set_name == "saw" else 0.03
+		# saw: a top handle; smg (PO6-09): the cup grip sits on the short fore-end's lower-left corner, ahead of the
+		# magazine (skin contact is checked by _check_support_skin_clear and ENV P's PFingerClip)
+		var tol: float = 0.04 if set_name in ["saw", "smg"] else 0.03
 		for clip: String in ["idle", "ads_idle"]:
 			var pose: Dictionary = _pose_at("%s_%s" % [set_name, clip])
 			if marks.has("LeftHandIK") and set_name != "bow":
