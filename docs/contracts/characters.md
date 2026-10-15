@@ -1,4 +1,4 @@
-# Contract: characters (v1.10)
+# Contract: characters (v1.12)
 
 Producer: ENV C (generated humanoids + animations). Consumer: ENV A (NPC/crew prefabs).
 Until delivered, ENV A uses capsule placeholders with the same node names.
@@ -177,3 +177,14 @@ First-person viewmodel arms: separate rig `rig_arms` (C) plus animation sets per
   slump on a frontal or melee kill, fall otherwise; falls back to `death_front`/`death_back` if absent.
 * New character `gallery_admin` (Gallery Night admin PA, QC-58c); p5_cast roles `gallery_admin` and
   `gallery_conservator` (= `gallery_attendant_b`).
+
+## v1.12: ragdoll (PO6-19, D-114 §7)
+Every character scene has `Skeleton3D/Ragdoll`, a
+`PhysicalBoneSimulator3D` shipped with `active = false`, holding `PhysicalBone3D` bodies `Hips`, `Spine`,
+`Chest`, `Head`, `UpperArmL/R`, `ForearmL/R`, `ThighL/R`, `ShinL/R` (`bone_name` = the contract bone; each
+with a `Shape` child; ~80 kg total; cone joints at the spine, neck, shoulders and hips, hinge joints
+flexing the elbows forward and the knees back, 0–140°). Bodies are on physics layer 11 `ragdoll` and
+collide with `world_static | world_dynamic | ragdoll` only (not players, NPCs or hitboxes). ENV A starts it at death with `active = true` +
+`physical_bones_start_simulation()`, applies impulses to the body of the hit bone (nearest ancestor with
+a body), and freezes the corpse after ~3 s by baking the bodies into the bone poses and stopping the
+simulation (recipe: `world/characters/_tools/RAGDOLL.md`). project.godot names `3d_physics/layer_11="ragdoll"`.
