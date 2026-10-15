@@ -3030,6 +3030,7 @@ heist.gallery_night.briefing,"The Halberd Gallery, Aldous Parade at Wexley Stree
 music.gallery_night.name,Laylight
 heist.gallery_night.briefing_loud,"Argus locks the gallery down. Hack the server, drill the art-store vault, then hold until the escape arrives."
 objective.gallery_night.casing,Case the gala
+objective.gallery_night.casing_last_call,Gala's over. Stay out of sight
 objective.gallery_night.find_canvases,Find the listed canvases ({found}/4)
 objective.gallery_night.keycard,Get a keycard
 objective.gallery_night.server_code,Find the Argus code
@@ -3136,6 +3137,7 @@ voice.vo.mercer.gallery_night_limo_eta,Limo's {seconds} seconds out. Hold the ha
 voice.vo.mercer.gallery_night_sniper_hotel,Sniper on the hotel roof. Stay out of the Mews mouth.
 voice.vo.mercer.gallery_night_escape,"Your ride's here. Canvases in, then you."
 voice.vo.vance.gallery_night_radio_casing,You've seen the rooms. Now forget the champagne and remember the walls.
+voice.vo.vance.gallery_night_radio_casing_last_call,Lights are coming up and the guests are leaving. Keep to the shadows.
 voice.vo.vance.gallery_night_radio_find_canvases,"All four on the list, found. My buyer will be thrilled, in his quiet way."
 voice.vo.vance.gallery_night_radio_keycard,"A keycard. Spend it wisely, darling, there aren't enough to go round."
 voice.vo.vance.gallery_night_radio_server_code,The Argus code. Someone at the Halberd writes things down. Bless them.
@@ -3162,3 +3164,15 @@ voice.vo.vance.gallery_night_radio_loot_lantern_bearer,The Lantern Bearer is min
 voice.vo.vance.gallery_night_radio_loot_study,"A study. Not on the list, but I never refuse a sketch."
 voice.vo.vance.gallery_night_radio_loot,Another canvas off the Halberd's walls. Lovely.
 ui.lobby.host_closed,The host ended the heist. You are back in the crew lobby.
+ui.hud.device.drill,DRILL
+ui.hud.device.thermal,THERMAL DRILL
+ui.hud.device.saw,SAW
+ui.hud.device.hack,HACK
+ui.hud.device.time_lock,TIME LOCK
+ui.hud.device.c4,C4
+ui.hud.device.time,{mm}:{ss}
+ui.hud.device.jammed,JAMMED
+ui.hud.device.interrupted,INTERRUPTED
+ui.hud.device.objective_suffix,{device} {time}
+ui.hud.device.paused,PAUSED
+ui.hud.device.restarting,Restarting in {time}

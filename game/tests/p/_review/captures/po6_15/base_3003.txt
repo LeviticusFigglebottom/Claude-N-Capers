@@ -1,0 +1,14 @@
+[BOTS] t=  0 phase=5 police_alive=10 kills={ 0: 0, 1: 0, 2: 0, 3: 0 } downs={ 0: 0, 1: 0, 2: 0, 3: 0 } states=0:0,1:0,2:0,3:0
+[BOTS] t= 20 phase=1 police_alive=6 kills={ 0: 0, 1: 1, 2: 4, 3: 2 } downs={ 0: 0, 1: 0, 2: 0, 3: 0 } states=0:0,1:0,2:0,3:0
+[BOTS] t= 40 phase=1 police_alive=6 kills={ 0: 0, 1: 1, 2: 4, 3: 2 } downs={ 0: 0, 1: 0, 2: 0, 3: 0 } states=0:0,1:0,2:0,3:0
+[BOTS] t= 60 phase=2 police_alive=6 kills={ 0: 0, 1: 1, 2: 4, 3: 2 } downs={ 0: 0, 1: 0, 2: 0, 3: 0 } states=0:0,1:0,2:0,3:0
+[BOTS] t= 80 phase=2 police_alive=8 kills={ 0: 0, 1: 2, 2: 6, 3: 4 } downs={ 0: 0, 1: 0, 2: 0, 3: 0 } states=0:0,1:0,2:0,3:0
+[BOTS] t=100 phase=3 police_alive=8 kills={ 0: 0, 1: 3, 2: 7, 3: 7 } downs={ 0: 0, 1: 0, 2: 0, 3: 0 } states=0:0,1:0,2:0,3:0
+[BOTS] t=120 phase=3 police_alive=7 kills={ 0: 0, 1: 7, 2: 9, 3: 8 } downs={ 0: 0, 1: 0, 2: 0, 3: 0 } states=0:0,1:0,2:0,3:0
+[BOTS] t=140 phase=4 police_alive=7 kills={ 0: 0, 1: 8, 2: 10, 3: 10 } downs={ 0: 0, 1: 1, 2: 0, 3: 0 } states=0:0,1:1,2:0,3:0
+[BOTS] t=160 phase=5 police_alive=6 kills={ 0: 0, 1: 8, 2: 10, 3: 13 } downs={ 0: 0, 1: 1, 2: 0, 3: 0 } states=0:0,1:0,2:0,3:0
+[BOTS] t=180 phase=5 police_alive=6 kills={ 0: 0, 1: 8, 2: 11, 3: 14 } downs={ 0: 0, 1: 1, 2: 0, 3: 0 } states=0:0,1:0,2:0,3:0
+[BOTS] t=200 phase=1 police_alive=6 kills={ 0: 0, 1: 8, 2: 11, 3: 14 } downs={ 0: 0, 1: 1, 2: 0, 3: 0 } states=0:0,1:0,2:0,3:0
+[BOTS] t=220 phase=1 police_alive=6 kills={ 0: 0, 1: 8, 2: 11, 3: 14 } downs={ 0: 0, 1: 1, 2: 0, 3: 0 } states=0:0,1:0,2:0,3:0
+[BOTS] t=240 phase=2 police_alive=9 kills={ 0: 0, 1: 10, 2: 11, 3: 18 } downs={ 0: 0, 1: 1, 2: 0, 3: 0 } states=0:0,1:0,2:0,3:0
+[BOTS] RESULT heist=glasshouse seed=3003 bots=3 secs=240 bot_kills=39 kills_per_min=9.8 shots=229 hits=87 acc=0.38 dmg=3463 dmg_per_hit=39.8 downs={ 0: 0, 1: 1, 2: 0, 3: 0 } police_alive_end=9
