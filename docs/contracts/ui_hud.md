@@ -1,4 +1,4 @@
-# Contract: HUD data (v1.13)
+# Contract: HUD data (v1.14)
 
 ENV A exposes in-heist state. ENV B owns every UI scene, HUD included (one UI style, one owner).
 
@@ -128,3 +128,23 @@ ENV A provides (env/a-core c24f6c53, 99f3e8dc); ENV B consumes.
   10 s answer countdown while answering; it no longer does. The service rows behind it (`PagerSystem.pager_entries()`,
   mirrored to clients by HeistNetSync) also carry `time_left` (window), `answer_left` (seconds left on the best current
   hold) and `progress`; `LocalHudModel.pagers` rows do **not** expose `answer_left` (derive it from `progress` if needed).
+
+## v1.14 (D-114 §1/§4, PO6-03/PO6-08/PO6-20): device kinds and auto-restart, pager waypoint rows
+ENV A provides (env/a-core 089d327a, 450b8ea0); ENV B consumes. Additive to v1.13.
+* **Devices.** The full `LocalHudModel.devices` row (signal `devices_changed()`) is now
+  `{net_id, kind, world_pos, progress, time_left_s, duration_s, state, fix_prompt_key, auto_restart_in_s}`:
+
+  | Field | Type | Meaning |
+  |---|---|---|
+  | `kind` | StringName | v1.13 kinds plus `&"c4"` (an armed C4 fuse on a Safe) and `&"time_lock"` (a vault Safe's time lock); full set `drill`, `thermal`, `saw`, `hack`, `c4`, `time_lock` |
+  | `world_pos` | Vector3 | panel anchor: the device raised `device_panel_up_m` 0.45 m and pushed `device_panel_out_m` 0.25 m out of the lock face, so the panel clears the safe door |
+  | `state` | StringName | `&"running"`, `&"jammed"`, `&"paused"` (`c4` / `time_lock` rows are always `&"running"`) |
+  | `fix_prompt_key` | StringName | as v1.13; `&""` for `c4` / `time_lock` |
+  | `auto_restart_in_s` | float | seconds until a jammed device restarts itself (the `interaction.device_auto_restart_chance` roll at placement / per fix succeeded), `-1` when none is pending |
+
+  Other fields are unchanged (`net_id`, `progress`, `time_left_s`, `duration_s`). Objective rows' `device_net_id` may now
+  also point at a `c4` / `time_lock` row.
+* **Pagers (PO6-20).** Each `pagers` row also carries `guard_net_id: int` (the paged guard's body) and `world_pos: Vector3`
+  (where that body lies: the server's hips position from `PagerSystem.pager_entries()`, or the body root as a fallback,
+  raised `pager_marker_up_m` **1.2 m**), for B's pager waypoint while the pager is live (D-114 §4). A dragged body moves
+  the waypoint. Row: `{pager_id, time_left_s, answering, progress, guard_net_id, world_pos}`.

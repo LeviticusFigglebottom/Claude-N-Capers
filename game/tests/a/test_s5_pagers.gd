@@ -23,7 +23,7 @@ func before_each() -> void:
 
 func after_each() -> void:
 	Engine.time_scale = 1.0
-	Tweak.stealth().pager_release_resumes = false  # LEAD: PO 2026-10-15 early release = alarm (default)
+	Tweak.stealth().pager_release_resumes = false  # the default (D-114 §4 amended)
 	for c: Array in _conns:
 		var sig: Signal = c[0]
 		if sig.is_connected(c[1]):
@@ -162,8 +162,8 @@ func test_s5_3_fourth_answer_mercer_line() -> void:
 	assert_true(_of(&"alarm_raised").is_empty(), "4th answer is fine")
 
 
-## S5.4 rule (StealthTweak.pager_release_resumes = false), the default again (LEAD: PO 2026-10-15 early
-## release = alarm). The opt-in resume rule (D-114 §4) is covered by test_po6_08_pager_freeze.gd.
+## S5.4 (the default, D-114 §4 amended): an early release with no juggle alarms after the juggle grace
+## (StealthTweak.pager_juggle_window_s); the juggle itself: test_po6_08_pager_freeze.gd.
 func test_s5_4_release_early_raises_alarm() -> void:
 	Engine.time_scale = 4.0
 	Tweak.stealth().pager_release_resumes = false
@@ -171,7 +171,7 @@ func test_s5_4_release_early_raises_alarm() -> void:
 	ATestMaps.hold_interact(_rt, 0, (r[0] as NpcBase).net_id)
 	await wait_seconds(2.0)
 	_rt.set_bot_intent(0, CrewIntent.new())
-	await wait_physics_frames(3)
+	await wait_seconds(Tweak.stealth().pager_juggle_window_s + 0.3)
 	var fails: Array[Array] = _of(&"pager_failed")
 	assert_eq(fails.size(), 1, "pager failed")
 	if fails.size() == 1:

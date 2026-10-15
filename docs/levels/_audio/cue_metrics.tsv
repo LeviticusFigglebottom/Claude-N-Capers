@@ -221,6 +221,13 @@ cue.escape_arrive_boat	World	False	3.0	1	-18.0	-16.42	-4.18	567
 cue.escape_arrive_heli	World	False	4.0	1	-19.22	-19.14	-1.1	1559
 cue.amb_glasshouse_interior	Ambience	True	20.0	2	-17.43	-18.02	-2.09	318
 cue.amb_street_dusk	Ambience	True	30.0	2	-16.6	-18.03	-1.23	1362
+cue.assault_van_arrive	Enemies	False	6.0	1	-17.99	-19.25	-3.35	2422
+cue.assault_van_park	Enemies	False	2.5	1	-18.96	-19.19	-1.09	3172
+cue.assault_turret_deploy	Enemies	False	2.2	1	-18.42	-18.1	-1.13	2176
+cue.assault_turret_destroyed	Enemies	False	2.4	1	-21.01	-20.72	-0.97	4388
+cue.assault_heli_arrive	Enemies	False	8.0	1	-19.33	-21.35	-1.18	509
+cue.assault_heli_leave	Enemies	False	6.0	1	-19.87	-21.09	-1.12	491
+cue.assault_breach_warning	Enemies	False	1.6	1	-17.99	-17.81	-11.01	3359
 cue.door_breach[1]	World	False	1.6	1	-18.01	-16.37	-1.51	3346
 cue.door_breach[2]	World	False	1.6	1	-18.0	-16.6	-3.28	2456
 cue.door_breach[3]	World	False	1.6	1	-18.03	-16.29	-1.66	3207

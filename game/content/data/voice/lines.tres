@@ -3507,6 +3507,15 @@ lines = Array[Dictionary]([{
 "text_key": &"voice.vo.vance.gallery_night_radio_casing"
 }, {
 "cooldown_s": 0.0,
+"event": &"radio.objective_new",
+"heist": &"gallery_night",
+"id": &"vo.vance.gallery_night_radio_casing_last_call",
+"objective": &"casing_last_call",
+"priority": 45,
+"speaker": &"vance",
+"text_key": &"voice.vo.vance.gallery_night_radio_casing_last_call"
+}, {
+"cooldown_s": 0.0,
 "event": &"radio.objective_done",
 "heist": &"gallery_night",
 "id": &"vo.vance.gallery_night_radio_find_canvases",

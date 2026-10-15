@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="NpcWeaponModels" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://content/weapons/npc_weapon_models.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+models = Dictionary[StringName, StringName]({
+&"weapon.npc_lmg": &"weapon.anvil_lmg",
+&"weapon.npc_minigun": &"weapon.cyclone_rotary",
+&"weapon.npc_pistol": &"weapon.warden_45",
+&"weapon.npc_rifle": &"weapon.corsair_ar",
+&"weapon.npc_shotgun": &"weapon.plowman_12",
+&"weapon.npc_shotgun_semi": &"weapon.brute_12",
+&"weapon.npc_smg": &"weapon.hornet_9",
+&"weapon.npc_sniper": &"weapon.heron_308"
+})
