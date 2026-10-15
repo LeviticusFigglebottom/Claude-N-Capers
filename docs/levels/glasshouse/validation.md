@@ -95,12 +95,12 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## slopes: No walkable slope < 50° outside the play mesh
 
-- 409 x 233 columns (0.25 m), 24554 surface samples, 0 collider(s) with reachable walkable surfaces outside play
+- 409 x 233 columns (0.25 m), 32073 surface samples, 0 collider(s) with reachable walkable surfaces outside play
 
 
 ## navmesh: Navmesh
 
-- navmesh: 1359 polygons, cell 0.10/0.10 m
+- navmesh: 1413 polygons, cell 0.10/0.10 m
 - 140 markers checked
 | room | walkable samples | covered | coverage |
 |---|---|---|---|
@@ -221,7 +221,8 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## bounds: No void / back faces
 
-- 272 eye samples, 22032 rays, sky yes, 0 void ray(s)
+- 119 navmesh sample(s) skipped: not reachable from a player spawn (police-only)
+- 259 eye samples, 20979 rays, sky yes, 0 void ray(s)
 
 
 ## perf: Per-shot performance budget

@@ -625,6 +625,11 @@ const ASSAULT_HELI_DROPS: Array = [
 	["HeliDrop_1", Vector3(12.6, 7.8, 9.1)],
 	["HeliDrop_2", Vector3(11.0, 0.0, -3.6)],
 ]
+## Roof -> alley rappel links (one-way, police): [name, roof start (inside the north parapet, by HeliDrop_1 / Breach_4),
+## alley end]. x 14 is clear of the back door, the fire escape and the U2/U3 windows.
+const ASSAULT_ROOF_RAPPELS: Array = [
+	["RoofRappelAlley", Vector3(14.0, 8.0, 0.9), Vector3(14.0, 0.0, -1.6)],
+]
 ## Breach points: [name, kind, breach scene (world/props/assault_event/<id>.tscn), pos on the room-side
 ## face (wall/window: bottom-centre of the opening; ceiling: centre of the ceiling underside), yaw_deg
 ## (-Z into the room; ceilings face down), size (w, h) m, room]. The wall/window openings are in the
