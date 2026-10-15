@@ -95,12 +95,12 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## slopes: No walkable slope < 50° outside the play mesh
 
-- 409 x 233 columns (0.25 m), 24554 surface samples, 0 collider(s) with reachable walkable surfaces outside play
+- 409 x 233 columns (0.25 m), 24544 surface samples, 0 collider(s) with reachable walkable surfaces outside play
 
 
 ## navmesh: Navmesh
 
-- navmesh: 1359 polygons, cell 0.10/0.10 m
+- navmesh: 1358 polygons, cell 0.10/0.10 m
 - 140 markers checked
 | room | walkable samples | covered | coverage |
 |---|---|---|---|
@@ -119,7 +119,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `Rooms/RoomU3` | 26 | 26 | 100% |
 | `Rooms/RoomU4` | 70 | 70 | 100% |
 | `Rooms/RoomU8` | 16 | 16 | 100% |
-| `Rooms/RoomU5` | 62 | 62 | 100% |
+| `Rooms/RoomU5` | 68 | 68 | 100% |
 | `Rooms/RoomU6` | 34 | 34 | 100% |
 | `Rooms/RoomU7` | 36 | 36 | 100% |
 | `Rooms/RoomX1` | 552 | 552 | 100% |
@@ -156,12 +156,12 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## materials: Materials and texel density
 
-- 2100 surfaces checked
+- 2099 surfaces checked
 
 
 ## zfight: Z-fighting
 
-- 272332 triangles checked
+- 272490 triangles checked
 
 
 ## lights: Lighting is deliberate
@@ -231,26 +231,26 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `TopDownSite` | 1620 | 542212 | 6 |
 | `TopDownBuilding` | 1572 | 539310 | 6 |
 | `ExtHarlowCorner` | 1665 | 569570 | 6 |
-| `ExtShopfront` | 1947 | 579226 | 6 |
-| `ExtAlleyWest` | 1882 | 575690 | 6 |
-| `ExtAlleyMouth` | 1830 | 542680 | 6 |
-| `ExtFireEscape` | 1128 | 349204 | 3 |
-| `ExtPellFireExit` | 1772 | 544666 | 6 |
-| `SalesFloorEntrance` | 1158 | 381798 | 4 |
-| `ChandelierLandmark` | 1454 | 423446 | 6 |
-| `CounterStaffDoor` | 599 | 249342 | 3 |
-| `SalonPrivate` | 1658 | 485016 | 6 |
-| `CorridorG4` | 1491 | 454124 | 6 |
+| `ExtShopfront` | 1946 | 580154 | 6 |
+| `ExtAlleyWest` | 1883 | 576734 | 6 |
+| `ExtAlleyMouth` | 1829 | 543608 | 6 |
+| `ExtFireEscape` | 1129 | 346932 | 3 |
+| `ExtPellFireExit` | 1771 | 545594 | 6 |
+| `SalesFloorEntrance` | 1159 | 379526 | 4 |
+| `ChandelierLandmark` | 1453 | 424374 | 6 |
+| `CounterStaffDoor` | 600 | 247070 | 3 |
+| `SalonPrivate` | 1657 | 485944 | 6 |
+| `CorridorG4` | 1490 | 455052 | 6 |
 | `WorkshopSafe` | 242 | 71612 | 2 |
 | `ReceivingBackDoor` | 258 | 79498 | 2 |
 | `StairCore` | 428 | 86562 | 2 |
-| `UpperCorridor` | 1354 | 363798 | 6 |
+| `UpperCorridor` | 1350 | 363238 | 6 |
 | `SecurityOffice` | 652 | 173396 | 3 |
 | `BreakRoom` | 238 | 71242 | 2 |
-| `ManagerOffice` | 747 | 263488 | 5 |
+| `ManagerOffice` | 748 | 261216 | 5 |
 | `AdminOffice` | 402 | 151120 | 2 |
-| `StockRoom` | 1168 | 399634 | 6 |
-| `GaragePerch` | 1807 | 577670 | 6 |
+| `StockRoom` | 1167 | 400562 | 6 |
+| `GaragePerch` | 1805 | 577554 | 6 |
 | `GarageRamp` | 62 | 34944 | 1 |
 
 
@@ -272,6 +272,6 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## furniture_logic: Furniture arranged plausibly
 
-- classified: counter 2, chair 5, table 2, desk 9, low_table 1, wall_unit 19, lounge_seat 1, stool 1, visitor_chair 2, desk_chair 5, monitor 4
-- 14 seats, 14 tables/desks/counters, 23 doors checked
+- classified: counter 2, chair 5, table 3, desk 9, wall_unit 19, lounge_seat 1, stool 1, visitor_chair 2, desk_chair 5, low_table 1, monitor 4
+- 14 seats, 15 tables/desks/counters, 23 doors checked
 

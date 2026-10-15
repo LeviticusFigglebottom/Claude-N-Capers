@@ -1293,17 +1293,17 @@ func _variants_keycard(variants: Node3D) -> void:
 		_prefab(s, "keycard_pickup", "Keycard", r[2], float(r[3]), {"objective_tag": &"keycard"}, r[4], r[5] if r.size() > 5 else {})
 		if String(r[0]) == "kc_jeweler":
 			# The card on the bench implies the jeweler is working (doc: kc_jeweler requires jw_working).
-			_spawn(s, "Jeweler", "CIVILIAN", Vector3(8.5, 0.0, 1.45), 0.0, ["civ_staff_workshop"], "desk_work", "")
+			_spawn(s, "Jeweler", "CIVILIAN", L.JEWELER_AT, 0.0, ["civ_staff_workshop"], "teller", "")
 
 
 func _variants_staff(variants: Node3D) -> void:
 	var jw: Node3D = _group(variants, "jeweler")
 	var work: VariantSlot = _slot(jw, "jeweler", "jw_working", 0.6)
-	_spawn(work, "Jeweler", "CIVILIAN", Vector3(8.5, 0.0, 1.45), 0.0, ["civ_staff_workshop"], "desk_work", "")
+	_spawn(work, "Jeweler", "CIVILIAN", L.JEWELER_AT, 0.0, ["civ_staff_workshop"], "teller", "")
 	_slot(jw, "jeweler", "jw_gone", 0.4)
 	var ac: Node3D = _group(variants, "admin_clerk")
 	var cin: VariantSlot = _slot(ac, "admin_clerk", "clerk_in", 0.5)
-	_spawn(cin, "AdminClerk", "CIVILIAN", Vector3(1.6, L.UPPER, 9.8), 0.0, ["civ_staff_admin"], "desk_work", "")
+	_spawn(cin, "AdminClerk", "CIVILIAN", Vector3(1.6, L.UPPER, 8.3), 180.0, ["civ_staff_admin"], "desk_work", "")
 	_slot(ac, "admin_clerk", "clerk_out", 0.5)
 
 
@@ -1339,7 +1339,7 @@ func _variants_customers(variants: Node3D) -> void:
 	var cg: Node3D = _group(variants, "customers")
 	var rows: Array = [
 		["cust_1", Vector3(1.7, 0.0, 9.5), 90.0, "browse"], ["cust_2", Vector3(3.5, 0.0, 8.45), 0.0, "queue"],
-		["cust_3", Vector3(5.0, 0.0, 10.75), 180.0, "sit"], ["cust_4", Vector3(9.8, 0.0, 9.65), 0.0, "browse"],
+		["cust_3", Vector3(2.05, 0.0, 10.75), 180.0, "browse"], ["cust_4", Vector3(9.8, 0.0, 9.65), 0.0, "browse"],
 		["cust_5", Vector3(7.0, 0.0, 10.75), 0.0, "browse"],
 	]
 	for r: Array in rows:
