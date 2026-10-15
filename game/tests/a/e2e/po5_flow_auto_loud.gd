@@ -106,6 +106,7 @@ func step() -> void:
 	if p.flat_dist(p.crew.global_position, pos) > 4.0:
 		if not await p.goto(p.stand_point(pos), 2.5, 60.0):
 			_note_once(id, "objective %s: marker at %s not reachable" % [id, Po5Pilot._v(pos)])
+			_stalls[id] = maxf(float(_stalls.get(id, 0.0)), STALL_SKIP_S)  # GN probe 4: no path -> yield at once
 	_stalls[id] = _stalls.get(id, 0.0) + 3.0
 	if int(_stalls[id]) % 60 == 0:
 		f.note("waiting at %s for %.0f s (nothing usable within 2.5 m)" % [id, _stalls[id]])
