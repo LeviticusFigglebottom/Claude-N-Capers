@@ -7,6 +7,7 @@
     blender -b --factory-startup --python tools/blender/characters/_anim_review.py -- rappel OUT.png [clip:frame[:yaw] ...]
     blender -b --factory-startup --python tools/blender/characters/_anim_review.py -- p5 OUT.png [clip:frame[:yaw] ...]
     blender -b --factory-startup --python tools/blender/characters/_anim_review.py -- d304 OUT.png [clip:frame[:yaw] ...]
+    blender -b --factory-startup --python tools/blender/characters/_anim_review.py -- assault OUT.png [clip:frame[:yaw] ...]
 
 ``humanoid``: one posed ``char_body_base`` body per cell (Cycles CPU, low samples; EEVEE needs EGL),
 3/4 front view with a side-view row for locomotion, the weapon models attached through the HandR
@@ -42,7 +43,8 @@ WEAPONS = {"pistol": REPO / "game/assets/weapons/wpn_kestrel_p9/wpn_kestrel_p9.g
 GUN_CLIPS = {"dozer_walk_heavy": "rifle", "aim_pistol": "pistol", "fire_pistol": "pistol", "reload_pistol": "pistol", "downed": "pistol",
              "aim_rifle": "rifle", "fire_rifle": "rifle", "reload_rifle": "rifle", "melee": "rifle",
              "shield_idle": "pistol", "shield_walk": "pistol", "shield_bang": "pistol", "heal_ally": "rifle",
-             "dozer_walk": "rifle", "idle_thug": "rifle"}
+             "dozer_walk": "rifle", "idle_thug": "rifle", "heli_door_idle": "rifle", "heli_door_aim": "rifle",
+             "heli_door_fire": "rifle"}
 #: Clips that also show the Bulwark shield proxy (a plate on the HandL/Socket frame, _anim_humanoid.SHIELD).
 SHIELD_CLIPS = ("shield_idle", "shield_walk", "shield_bang")
 SPECIAL_CELLS = ["kick_charge:0", "kick_charge:4", "kick_charge:10", "kick_charge:15", "kick_hit:3", "kick_hit:6",
@@ -81,6 +83,15 @@ D304_CELLS = ["walk_l:0:-58", "walk_l:8:-58", "walk_r:0:-58", "walk_r:8:-58", "w
               "death_side:4", "death_side:12", "death_side:21", "death_side:36", "death_side:60:90",
               "downed_crawl:0:-58", "downed_crawl:15:-58", "downed_crawl:30:-58",
               "dozer_walk_heavy:0:-58", "dozer_walk_heavy:8:-58", "dozer_walk_heavy:16:-58", "dozer_walk_heavy:8"]
+#: PO6-17 assault events: rope line, heli cabin (floor, bench, roof, door edge), van step and breach wall proxies at
+#: the placement documented in SOURCE.txt (_anim_assault constants; review only).
+ASSAULT_CELLS = ["rappel_hang:0", "rappel_hang:20:-90", "rappel_descend:0", "rappel_descend:10:-90",
+                 "rappel_land:0:-90", "rappel_land:6:-90", "rappel_land:11:-90", "rappel_land:30",
+                 "heli_door_idle:0:-50", "heli_door_aim:0:-50", "heli_door_aim:0:-90", "heli_door_fire:1:-50",
+                 "van_exit:0:-90", "van_exit:13:-90", "van_exit:16:-90", "van_exit:24:-90", "van_exit:36:-90",
+                 "breach_place:0:-90", "breach_place:16:-90", "breach_place:28:-90", "breach_place:28:-150",
+                 "breach_standback:10:-150", "breach_standback:21:-150", "breach_standback:30:-150",
+                 "breach_standback:21:-90"]
 #: Clips that show hand-prop proxies (review only), and their furniture.
 PROP_CLIPS = {"phone_call": "phone", "phone_seated": "phone", "mug_idle": "mug", "mug_carry_walk": "mug", "mop": "mop",
               "sit_bed_read": "book", "walk_text": "phone", "bartender_wipe": "rag", "bartender_pour": ("bottle", "glass"),
@@ -346,6 +357,8 @@ def humanoid(out: pathlib.Path, cells: list[str]) -> None:
             _shield_proxy(arm.matrix_world @ _weapon_matrix(sk, s, "L"), shield_mat)
         if name == "rappel":
             _rappel_props(arm.matrix_world.copy(), npc_mats)
+        if name in ASSAULT_PROPS:
+            _assault_props(name, f, arm.matrix_world.copy(), npc_mats)
         if name in PROP_CLIPS or name in CHAIR_CLIPS or name in P5_FURNITURE:
             _npc_props(name, sk, s, arm.matrix_world.copy(), i, npc_mats)
         dg = bpy.context.evaluated_depsgraph_get()
@@ -382,6 +395,40 @@ def _rappel_props(M: Matrix, mats: dict) -> None:
 
     _cyl("rope", M @ Matrix.Translation((0.0, lib.RAPPEL_ROPE_D, 0.0)), 0.006, -0.3, 2.6, mats["prop"], 10)
     _box("wall", M, (0.9, 0.05, 2.6), mats["paper"], (0.0, lib.RAPPEL_WALL + 0.025, 1.0))
+
+
+ASSAULT_PROPS = ("rappel_hang", "rappel_descend", "rappel_land", "heli_door_idle", "heli_door_aim", "heli_door_fire",
+                 "van_exit", "breach_place", "breach_standback")
+
+
+def _assault_props(name: str, f: int, M: Matrix, mats: dict) -> None:
+    """PO6-17 review proxies in the cell's frame (Blender clip space: x right, y forward, z up)."""
+    import _anim_assault as S  # noqa: PLC0415
+    from anim_humanoid import CLIPS  # noqa: PLC0415
+
+    if name.startswith("rappel"):
+        top = 2.6 if name != "rappel_land" else 2.2
+        _cyl("rope", M @ Matrix.Translation((0.0, S.ROPE_Y, 0.0)), 0.007, 0.0 if name == "rappel_land" else -0.2, top,
+             mats["mug"], 10)
+    elif name.startswith("heli_door"):
+        rx, _ry, rz = S.HELI_ROOT_IN_SNIPER_SEAT
+        # cabin floor up to the door edge, the rear bench (SniperSeat on its top), the roof liner over the cabin
+        _box("hfloor", M, (1.6, 1.6, 0.04), mats["furn"], (0.0, S.HELI_SILL_AHEAD - 0.8, -0.02))
+        _box("bench", M, (0.44, 1.44, -S.HELI_ROOT_IN_SNIPER_SEAT[1]), mats["prop"],
+             (-rx - 0.05, -(0.53 - rz), -S.HELI_ROOT_IN_SNIPER_SEAT[1] / 2))
+        _box("roof", M, (1.6, 1.6, 0.03), mats["paper"], (0.0, S.HELI_SILL_AHEAD - 0.8, S.HELI_HEADROOM + 0.015))
+    elif name == "van_exit":
+        N = int(CLIPS[name]["frames"])
+        edge = -S.VAN_STEP_EDGE + S.VAN_STEP_BACK - S.root_s(name, float(f), N)
+        _box("step", M, (1.4, 0.8, S.VAN_STEP_Z), mats["furn"], (0.0, edge - 0.4, S.VAN_STEP_Z / 2))
+        _box("doortop", M, (1.4, 0.8, 0.05), mats["prop"], (0.0, edge - 0.4, S.VAN_STEP_Z + 1.30))
+    elif name.startswith("breach"):
+        N = int(CLIPS[name]["frames"])
+        dx = S.root_s(name, float(f), N) if name == "breach_standback" else 0.0   # the charge stays at the start root
+        _box("wall", M, (1.4, 0.05, 2.0), mats["paper"], (dx, S.BREACH_WALL + 0.025, 1.0))
+        cx, cy, cz = S.BREACH_CHARGE
+        if name == "breach_standback" or f >= int(CLIPS["breach_place"]["events"]["place"]):
+            _box("charge", M, (0.16, S.BREACH_WALL - cy, 0.12), mats["cash"], (cx + dx, (S.BREACH_WALL + cy) / 2, cz))
 
 
 def _camera(view_from):
@@ -443,6 +490,8 @@ def main() -> None:
         humanoid(out, argv[2:] or P5_CELLS)
     elif kind == "d304":
         humanoid(out, argv[2:] or D304_CELLS)
+    elif kind == "assault":
+        humanoid(out, argv[2:] or ASSAULT_CELLS)
     elif kind == "arms":
         import _arms_review  # noqa: PLC0415
 
