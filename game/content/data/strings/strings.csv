@@ -3222,3 +3222,7 @@ ui.hud.device.interrupted,INTERRUPTED
 ui.hud.device.objective_suffix,{device} {time}
 ui.hud.device.paused,PAUSED
 ui.hud.device.restarting,Restarting in {time}
+ui.hud.assault_event.turret_van,TURRET VAN
+ui.hud.assault_event.heli,HELICOPTER
+ui.hud.assault_event.breach,BREACH
+ui.hud.assault_event.unknown,INCOMING
