@@ -122,12 +122,12 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## slopes: No walkable slope < 50° outside the play mesh
 
-- 1809 x 1969 columns (0.25 m), 607394 surface samples, 0 collider(s) with reachable walkable surfaces outside play
+- 1809 x 1969 columns (0.25 m), 607470 surface samples, 0 collider(s) with reachable walkable surfaces outside play
 
 
 ## navmesh: Navmesh
 
-- navmesh: 2124 polygons, cell 0.10/0.10 m
+- navmesh: 2118 polygons, cell 0.10/0.10 m
 - 200 markers checked
 | room | walkable samples | covered | coverage |
 |---|---|---|---|
@@ -149,7 +149,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `Rooms/RoomSR` | 170 | 170 | 100% |
 | `Rooms/RoomAN` | 512 | 512 | 100% |
 | `Rooms/RoomM1` | 74 | 74 | 100% |
-| `Rooms/RoomM2` | 66 | 66 | 100% |
+| `Rooms/RoomM2` | 70 | 70 | 100% |
 | `Rooms/RoomM3` | 13 | 13 | 100% |
 | `Rooms/RoomMC` | 105 | 105 | 100% |
 | `Rooms/RoomHH` | 5 | 5 | 100% |
@@ -196,7 +196,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 ## door_frame_gap: Doors and windows fill their wall openings (no gaps, no clipping)
 
 - 49 door / window prefab(s) measured; gap > 0.02 m and clip > 0.01 m fail
-- leaf bullet surfaces (D-105, Door.leaf_surface_id): metal 19, wood 30; 0 look glass / metal but resolve to wood (WARN)
+- leaf bullet surfaces (D-105, Door.leaf_surface_id): metal 41, wood 8; 0 look glass / metal but resolve to wood (WARN)
 
 
 ## frame_proud: Door / window frame colliders are flush with the wall (no proud or narrowing collision)

@@ -51,7 +51,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## floating: Nothing floats
 
-- 183 props checked
+- 185 props checked
 
 - WARN `Gameplay/Devices/ServerDoorDrill` @ (25.00, 6.40, 6.15): prop has no geometry or collision; skipped
 - WARN `Gameplay/Devices/VaultDrill` @ (21.50, -3.20, 7.75): prop has no geometry or collision; skipped
@@ -60,7 +60,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## clipping: Nothing clips
 
-- 185 props, 48 doors checked
+- 187 props, 48 doors checked
 
 
 ## scale: Human scale
@@ -277,8 +277,8 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## furniture_logic: Furniture arranged plausibly
 
-- classified: desk 1, wall_unit 1
-- 0 seats, 1 tables/desks/counters, 48 doors checked
+- classified: desk 1, wall_unit 1, desk_chair 2
+- 2 seats, 1 tables/desks/counters, 48 doors checked
 
 - WARN `Gameplay/Ladders/AreawayLadder` @ (-4.00, -4.20, 14.00): door_clear: in the clear zone of door `Variants/Group_areaway/Slot_grate_loose/AreawayGrate` (1.0 / 1.0 m each side, leaf width 1.99 m) by 0.18 m (gameplay prefab / variant content: review)
 - WARN `Gameplay/Ladders/AreawayLadder` @ (-4.00, -4.20, 14.00): door_clear: in the clear zone of door `Variants/Group_areaway/Slot_grate_padlocked/AreawayGrate` (1.0 / 1.0 m each side, leaf width 1.99 m) by 0.18 m (gameplay prefab / variant content: review)

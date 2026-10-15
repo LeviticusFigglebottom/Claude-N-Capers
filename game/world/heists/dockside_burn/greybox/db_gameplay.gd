@@ -6,9 +6,24 @@
 ## placeholders (QC-37 / QC-38).
 extends "res://world/heists/dockside_burn/greybox/db_builder_base.gd"
 
-const SLIDE_VISUAL: String = "res://world/heists/dockside_burn/greybox/slide_door_visual.tscn"
-const ROLLER_VISUAL: String = "res://world/heists/dockside_burn/greybox/roller_door_visual.tscn"
-const VAULT_VISUAL: String = "res://world/heists/dockside_burn/greybox/vault_door_visual.tscn"
+## D-111 doors (tools/blender/props/doors.py): the industrial doors keep the G1 visuals' frame boxes, leaf planes and
+## widths (twin roller curtains that roll up, cold-store leaves that slide into the wall, the strongroom door); the
+## kit doors (layout `<kind>_t<20|40>`) map to the catalog door of the same kind and wall thickness, ivory in the
+## office block's corridors and the gatehouse, steel everywhere else (warehouse, plant, fire exits, yard gates).
+const CUSTOM_VISUAL: Dictionary = {
+	"slide": "prop_door_slide_coldstore_w240_h360", "roller": "prop_door_roller_twin_w360_h400",
+	"vault": "prop_door_vault_strongroom_w200_h220",
+}
+const DOOR_IVORY: Array[String] = [
+	"O1Corridor", "O2Corridor", "E1Corridor", "M2Corridor", "M1Corridor", "M3Corridor", "GatehouseNorth",
+	"GatehouseSouth",
+]
+## Greybox t20 doors that stand in 0.3 m walls (the office core stair / hall doors, the gatehouse and net store
+## partitions): their catalog frame is t30 (doors.py `wall_t`); the police gates sit in 0.1 m fences (t10).
+const DOOR_T30: Array[String] = [
+	"StairGround", "OCHall", "PLCorridor", "WSCorridor", "WSHall", "StairMezz", "MCPlatform", "RoofDoor",
+	"GatehouseNorth", "GatehouseSouth", "NetStoreWest", "NetStoreEast",
+]
 const LIFT_VISUAL: String = "res://world/heists/dockside_burn/greybox/goods_lift_visual.tscn"
 const BOAT_DROP_VISUAL: String = "res://world/heists/dockside_burn/greybox/boat_drop_visual.tscn"
 ## PO-13: the escape vans are the catalog van (as on GH / ND), not the secure_zone placeholder.
@@ -17,6 +32,22 @@ const VAN_VISUAL: String = "res://world/props/secure_zone/veh_van_secure.tscn"
 ## secure_zone van, the moored launch), so their visual only carries the contract nodes (no second vehicle).
 const ESCAPE_VAN_MARKER: String = "res://world/heists/shared/escape_van_marker.tscn"
 const ESCAPE_BOAT_MARKER: String = "res://world/heists/shared/escape_boat_marker.tscn"
+## D-111 prop art pass: catalog visual (tools/blender/props) per prefab type, as on Night Deposit
+## (nd_gameplay.PREFAB_VISUALS). Doors, ladders, drills, burn points and loot choose theirs where they are built.
+const PREFAB_VISUALS: Dictionary = {"safe": "prop_safe_large", "hack_terminal": "prop_server_rack_terminal"}
+## D-111: the strongroom thermal drill shows the catalog device while it runs (as GN's DEVICE_VISUALS) and no
+## placeholder disc (the shared empty visual GH / GN use); the burn points are the catalog burn barrel.
+const THERMAL_DEVICE: String = "prop_thermal_drill_device"
+const VIS_EMPTY: String = "res://world/heists/glasshouse/art/gh_empty.tscn"
+const BURN_VISUAL: String = "res://world/props/burn_point/prop_burn_barrel.tscn"
+## D-111 loot: catalog stacks per loot id (tools/blender/props/loot.py; the cash pallet) and the cash stacks.
+const LOOT_VISUALS: Dictionary = {
+	"loot.weapon_crate": "prop_loot_weapon_crate", "loot.contraband": "prop_loot_contraband_bales",
+	"loot.cash_bricks": "prop_cash_pallet", "loot.thermite": "prop_loot_thermite_drum",
+}
+const SMALL_LOOT_VISUAL: String = "prop_cash_stack"
+## D1 stack ladder: 5.2 m rise, the container doors 0.22 m behind the stiles (prefab_visuals.py).
+const LADDER_D1: String = "prop_ladder_steel_h520_g22"
 ## Leaf widths per custom door type (width_m must equal the visual leaf width; validator scale check).
 const CUSTOM_WIDTH: Dictionary = {"slide": 2.4, "roller": 3.6, "vault": 2.0}
 ## Containers K1-K6: [prop name, door x (the door end face), door side (+1 = doors face +x)].
@@ -59,6 +90,12 @@ func prefab(parent: Node3D, kind: String, nm: String, pos: Vector3, yaw: float, 
 	inst.transform = global_xform(parent).affine_inverse() * world if parent != map_root else world
 	for k: Variant in props:
 		_set_prop(inst, String(k), props[k])
+	if not props.has("visual_scene") and PREFAB_VISUALS.has(kind):
+		inst.set(&"visual_scene", _catalog_scene(String(PREFAB_VISUALS[kind])))
+	elif not props.has("visual_scene") and kind == "loot_spawn" and LOOT_VISUALS.has(String(props.get("loot_id", ""))):
+		inst.set(&"visual_scene", _catalog_scene(String(LOOT_VISUALS[String(props["loot_id"])])))
+	elif not props.has("visual_scene") and kind == "small_loot":
+		inst.set(&"visual_scene", _catalog_scene(SMALL_LOOT_VISUAL))
 	for mk: Variant in metas:
 		inst.set_meta(StringName(String(mk)), metas[mk])
 	parent.add_child(inst)
@@ -183,16 +220,7 @@ func _build_doors(gp: Node3D) -> void:
 	var doors: Node3D = add(gp, node3d("Doors")) as Node3D
 	for d: Array in L.DOORS:
 		var dtype: String = _door_type(d)
-		var vis: PackedScene = null
-		match dtype:
-			"slide":
-				vis = load(SLIDE_VISUAL) as PackedScene
-			"roller":
-				vis = load(ROLLER_VISUAL) as PackedScene
-			"vault":
-				vis = load(VAULT_VISUAL) as PackedScene
-			_:
-				vis = kit_scene("arch_door_" + String(d[1]))
+		var vis: PackedScene = _catalog_scene(door_visual(d))
 		var props: Dictionary = {"lock": "enum:" + String(d[4]), "swing": "enum:" + String(d[5]), "visual_scene": vis}
 		if String(d[6]) != "":
 			props["objective_tag"] = StringName(String(d[6]))
@@ -217,6 +245,21 @@ func _build_doors(gp: Node3D) -> void:
 			_padlock(door, d, float(extra["padlock"]))
 
 
+## Catalog door for a layout row (CUSTOM_VISUAL, else <kind>_t<n> -> prop_door_<kind>_<ivory|steel>_t<n>).
+static func door_visual(d: Array) -> String:
+	var piece: String = String(d[1])
+	var dtype: String = piece.get_slice("_", 0)
+	if CUSTOM_VISUAL.has(dtype):
+		return String(CUSTOM_VISUAL[dtype])
+	var fin: String = "ivory" if String(d[0]) in DOOR_IVORY else "steel"
+	var t: String = piece.get_slice("_", 1)
+	if String(d[6]) == "police_gate":
+		t = "t10"  # the 0.1 m yard / lane fences
+	elif String(d[0]) in DOOR_T30:
+		t = "t30"
+	return "prop_door_%s_%s_%s" % [dtype, fin, t]
+
+
 ## Padlock on a chained roller door: ENV A's `padlock` prefab (QC-37) on the door's outside (front)
 ## face, its target the door. Lockpick (PADLOCK_PICK_S) or the hand-held saw (G.SAW_TARGET,
 ## InteractionTweak.hand_saw_padlock_s) opens it; opening unlocks and raises the door.
@@ -239,7 +282,8 @@ func _build_strongroom(_gp: Node3D) -> void:
 		return
 	prefab(door, "drill_point", "StrongroomDrill", Vector3(26.36, 1.0, 28.6), 90.0,
 		{"device": "enum:THERMAL", "duration_s": 240.0, "target": NodePath(".."), "loud_only": true,
-			"objective_tag": &"strongroom_drill"}, Vector3(27.2, 0.0, 28.6))
+			"objective_tag": &"strongroom_drill", "device_scene": _catalog_scene(THERMAL_DEVICE),
+			"visual_scene": load(VIS_EMPTY)}, Vector3(27.2, 0.0, 28.6))
 
 
 ## Yard containers K1-K6: every one has ENV A's padlock prefab on its doors (lockpick or hand-held
@@ -282,7 +326,8 @@ func _build_misc(gp: Node3D) -> void:
 	if safe != null:
 		for i: int in range(3):
 			var lp: Vector3 = Vector3(9.39 + 0.16 * float(i), 0.25, 0.56)
-			prefab(safe, "small_loot", "SafeCash%d" % (i + 1), lp, 180.0, {"loot_id": &"loot.cash", "value": 1000},
+			# turned 90: the 0.29 m cash stacks lie front-to-back at the 0.16 m spacing
+			prefab(safe, "small_loot", "SafeCash%d" % (i + 1), lp, 90.0, {"loot_id": &"loot.cash", "value": 1000},
 				Vector3(lp.x, 0.0, 1.5))
 	# Desk / counter small loot (O1, O2, M1).
 	for s: Array in [["DeskCashO1", Vector3(6.8, 0.9, 3.2), Vector3(6.8, 0.0, 2.4)],
@@ -414,7 +459,8 @@ func _variants_product(variants: Node3D) -> void:
 		var fmn: Vector3 = v3(fb, 0)
 		var fmx: Vector3 = v3(fb, 3)
 		var bp: Node3D = prefab(s, "burn_point", "BurnPoint", base + Vector3(0.0, 1.2, 0.0), 0.0,
-			{"duration_s": BURN_S, "loud_only": true, "objective_tag": &"burn", "fire_volume_size": fmx - fmn},
+			{"duration_s": BURN_S, "loud_only": true, "objective_tag": &"burn", "fire_volume_size": fmx - fmn,
+				"visual_scene": load(BURN_VISUAL)},
 			base + Vector3(0.0, 0.0, 1.3))
 		if bp != null:
 			var fv: Node3D = bp.get_node_or_null(^"FireVolume") as Node3D
@@ -484,7 +530,8 @@ func _variants_perch(variants: Node3D) -> void:
 	var roof: VariantSlot = _slot(g, "player_perch", "perch_roof", 0.3, {"door": "RoofDoor"})
 	marker(roof, "PerchRoof", Vector3(10.0, L.ROOF, 5.0))
 	var stack: VariantSlot = _slot(g, "player_perch", "perch_stack", 0.3)
-	prefab(stack, "ladder", "D1Ladder", Vector3(8.0, 0.0, -5.38), 180.0, {"height_m": 5.2}, null, {"kind": "ladder"})
+	prefab(stack, "ladder", "D1Ladder", Vector3(8.0, 0.0, -5.38), 180.0, {"height_m": 5.2,
+		"visual_scene": _catalog_scene(LADDER_D1)}, null, {"kind": "ladder"})
 	_slot(g, "player_perch", "perch_none", 0.4)
 
 

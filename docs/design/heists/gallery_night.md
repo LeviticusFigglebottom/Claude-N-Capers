@@ -511,11 +511,11 @@ Support-space check (level_standards §2.2):
 | Camera operator (`gallery_guard_b`) | 0–1 | `security_room_staffed` | CAMERA_OPERATOR in SC | `desk_work` | — |
 | Insurance inspectors (`gallery_guard`) | 2 | rare `insurance_inspection` (timed spawn at LD, QC-25) | `guard_inspection` | — | `guard` |
 | Vaultline couriers (`armored_car_crew`) | 2 | rare `vaultline_early` (timed spawn at LD) | `guard_vaultline` | — | `guard_vaultline` |
-| Curator Margit Sorell (`gallery_curator`) | 1 | always; route by `curator_route` | `civ_curator` | `curator_inspect` / `desk_work` | `staff`, `staff_curator` |
+| Curator Margit Sorell (`gallery_curator`) | 1 | always; route by `curator_route` | `civ_curator` | `curator_inspect` / `desk_work` (`curator_office`: on her DeskCO chair's `Seat`, PO6-06) | `staff`, `staff_curator` |
 | Attendant (`gallery_attendant`) | 2 | always | `civ_attendant` | `curator_inspect` / `browse` | `staff`, `staff_attendant` |
 | Waitstaff (`gallery_waitstaff`) | 1–2 | until last call + 120 s | `civ_waitstaff` | `walk_text` / `browse` (bar) | `staff`, `staff_bar` |
-| Conservator (`gallery_attendant_b`, QC-58) | 0–1 | `conservator` = `cons_late` | `civ_conservator` | `desk_work` (easel) | `staff`, `staff_cs` |
-| Admin PA (cast `gallery_admin`, QC-58c, ENV D 50265303) | 0–1 | rare `late_paperwork` | `civ_admin` | `desk_work` | `staff`, `staff_admin` |
+| Conservator (`gallery_attendant_b`, QC-58) | 0–1 | `conservator` = `cons_late` | `civ_conservator` | `teller` (standing at the 0.9 m BenchCS, PO6-06) | `staff`, `staff_cs` |
+| Admin PA (cast `gallery_admin`, QC-58c, ENV D 50265303) | 0–1 | rare `late_paperwork` | `civ_admin` | `desk_work` (on her DeskAO chair's `Seat`, PO6-06) | `staff`, `staff_admin` |
 | Patrons (`gallery_patron`) | 3–9 | `patrons` scalar; `stragglers` after last call | `civ_patron` (GH ×4, WG ×2, EG ×2, EB ×2, court ×2) | `browse` / `sit` / `smoke` (court) | `civilian`, `civilian_court` |
 
 **Totals per difficulty** (guards from `guard_post` picks with `difficulty_add`):

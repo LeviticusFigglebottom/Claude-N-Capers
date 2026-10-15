@@ -1665,6 +1665,126 @@ def amb_street_dusk(rng: np.random.Generator, v: int) -> np.ndarray:
 # ------------------------------------------------------------ QA-36: police breach + thermite burn (audio_cues v1.2)
 
 
+# ------------------------------------------------------------ PO6-17: RNG assault events (ENV A runtime)
+# All one-shots: ENV A requests them through audio_cue_requested (unowned), so the van engine and the rotor are
+# arrival/departure swells, not loops (PO6-07). Keyed loops follow once assault_event_started/ended exist.
+
+
+def _diesel(rng: np.random.Generator, dur: float, rpm: np.ndarray) -> np.ndarray:
+    """Heavy diesel: firing pulses at rpm/30 Hz (4-stroke V8 feel) through a low body + exhaust rasp."""
+    f = rpm / 30.0
+    ph = np.cumsum(f) / SR
+    pulse = (0.5 + 0.5 * np.cos(2 * np.pi * ph)) ** 8
+    body = filters.lp(noise.brown(dur, rng), 220) * pulse * 3.0 + osc.saw(f * 0.5, dur) * 0.25
+    rasp = filters.bp(noise.white(dur, rng), 700, 0.8) * pulse * 0.5
+    return filters.lp(fx.drive(body + rasp, 1.8), 1800)
+
+
+def assault_van_arrive(rng: np.random.Generator, v: int) -> np.ndarray:
+    """Armored police van arrives: diesel approaching (doppler-ish rise, gain swell), a downshift, brakes hiss.
+    6 s one-shot."""
+    dur = 6.0
+    t = tvec(dur)
+    rpm = 1300 + 900 * np.clip(t / 3.5, 0, 1) - 700 * np.clip((t - 4.0) / 1.5, 0, 1)
+    y = _diesel(rng, dur, rpm) * (np.clip(t / 4.0, 0.05, 1.0) ** 1.6)
+    hiss = filters.hp(noise.white(0.9, rng), 2500) * env.adsr(0.9, 0.02, 0.3, 0.5, 0.4) * 0.35
+    place(y, hiss, nsamp(5.0))
+    return fade(fx.reverb(y, "alley", 0.2, stereo_out=False, tail=False), 0.05, 0.4)
+
+
+def assault_van_park(rng: np.random.Generator, v: int) -> np.ndarray:
+    """Van parks: engine dies (rpm falls, last firings), handbrake ratchet, two heavy door clunks. 2.5 s."""
+    dur = 2.5
+    t = tvec(dur)
+    rpm = np.maximum(700 * (1 - t / 1.0), 60)
+    y = _diesel(rng, dur, rpm) * np.clip(1.0 - t / 1.1, 0, 1)
+    for i in range(6):
+        place(y, click(rng, (1800, 3600), 0.03, 6, 0.004, 0.35), nsamp(1.05 + i * 0.035))
+    for st in (1.6, 2.0):
+        place(y, thud(rng, 85, 0.3, 0.9), nsamp(st))
+        place(y, filters.bp(noise.white(0.08, rng), 1400, 1.0) * 0.3, nsamp(st))
+    return fade(fx.reverb(y, "alley", 0.2, stereo_out=False, tail=False), 0.0, 0.2)
+
+
+def assault_turret_deploy(rng: np.random.Generator, v: int) -> np.ndarray:
+    """Roof turret deploys: hatch clank, servo whir rising, lock-in clack, two short calibration chirps. 2.2 s."""
+    dur = 2.2
+    t = tvec(dur)
+    y = np.zeros(nsamp(dur))
+    place(y, thud(rng, 140, 0.2, 0.9), 0)
+    place(y, click(rng, (1200, 3000), 0.05, 8, 0.006, 0.7), 0)
+    sd = 1.1
+    st = tvec(sd)
+    servo = filters.bp(osc.saw(220 + 380 * st / sd, sd) + osc.square(440 + 760 * st / sd, sd, 0.3) * 0.3, 1200, 0.7)
+    place(y, servo * env.adsr(sd, 0.08, 0.2, 0.8, 0.15) * 0.6, nsamp(0.25))
+    place(y, click(rng, (2000, 5000), 0.04, 6, 0.004, 0.9), nsamp(1.4))
+    place(y, thud(rng, 180, 0.1, 0.6), nsamp(1.4))
+    for i in range(2):
+        place(y, osc.sine(2400, 0.06) * env.adsr(0.06, 0.005, 0.02, 0.6, 0.02) * 0.3, nsamp(1.7 + 0.14 * i))
+    return fx.reverb(y, "alley", 0.15, stereo_out=False, tail=False)
+
+
+def assault_turret_destroyed(rng: np.random.Generator, v: int) -> np.ndarray:
+    """Turret destroyed: electrical pop + sparks crackle, servo dying pitch-down, metal clatter. 2.4 s."""
+    dur = 2.4
+    t = tvec(dur)
+    pop = filters.hp(noise.white(dur, rng), 900) * env.exp_decay(dur, 0.06, 0.0) * 1.6
+    sd = 1.2
+    st = tvec(sd)
+    die = filters.bp(osc.saw(520 * np.exp(-st * 1.6) + 40, sd), 900, 0.7) * np.clip(1 - st / sd, 0, 1) * 0.5
+    y = fx.drive(pop + thud(rng, 120, dur, 0.8) * env.exp_decay(dur, 0.4, 0.0), 2.0)
+    place(y, die, nsamp(0.08))
+
+    def spark(i: int, r: np.random.Generator) -> np.ndarray:
+        return click(r, (2500, 7000), 0.02, 4, 0.003, r.uniform(0.15, 0.5))
+
+    y += granular.cloud(dur, np.sort(0.05 + rng.uniform(0, 1, 40) ** 1.5 * 1.4), spark, rng) * 0.6
+    for st0 in (0.5, 0.8, 1.15):
+        place(y, click(rng, (700, 2200), 0.12, 10, 0.01, 0.5), nsamp(st0))
+    return fade(fx.reverb(y, "alley", 0.2, stereo_out=False, tail=False), 0.0, 0.2)
+
+
+def _rotor(rng: np.random.Generator, dur: float, gain: np.ndarray) -> np.ndarray:
+    t = tvec(dur)
+    slap = (0.5 + 0.5 * np.cos(2 * np.pi * 17.0 * t)) ** 6
+    body = filters.lp(noise.brown(dur, rng), 380) * slap * 2.0 + filters.bp(noise.white(dur, rng), 1100, 0.8) * slap * 0.35
+    turbine = osc.sine(3100, dur) * 0.04
+    return (body + turbine) * gain
+
+
+def assault_heli_arrive(rng: np.random.Generator, v: int) -> np.ndarray:
+    """Police helicopter arrives: rotor slap swelling in from far (low-passed) to overhead. 8 s one-shot."""
+    dur = 8.0
+    t = tvec(dur)
+    y = _rotor(rng, dur, np.clip(t / 6.5, 0.03, 1.0) ** 1.4)
+    y = filters.biquad_tv(y, "lp", 500 + 4500 * np.clip(t / 7.0, 0, 1), 0.7)
+    return fade(y, 0.2, 0.6)
+
+
+def assault_heli_leave(rng: np.random.Generator, v: int) -> np.ndarray:
+    """Helicopter leaves: overhead rotor fading out and darkening. 6 s."""
+    dur = 6.0
+    t = tvec(dur)
+    y = _rotor(rng, dur, np.clip(1.0 - t / 5.5, 0.0, 1.0) ** 1.3)
+    y = filters.biquad_tv(y, "lp", 5000 - 4400 * np.clip(t / 5.5, 0, 1), 0.7)
+    return fade(y, 0.05, 0.4)
+
+
+def assault_breach_warning(rng: np.random.Generator, v: int) -> np.ndarray:
+    """Breach charge armed on a wall: three fast electronic beeps (1.9 kHz) then a rising tone. 1.6 s; it tells
+    the crew to get clear before the blast."""
+    dur = 1.6
+    y = np.zeros(nsamp(dur))
+    for i in range(3):
+        b = osc.square(1900, 0.09, 0.5) * env.adsr(0.09, 0.004, 0.02, 0.8, 0.02) * 0.4
+        place(y, filters.bp(b, 1900, 1.2), nsamp(0.05 + 0.22 * i))
+    rd = 0.7
+    rt = tvec(rd)
+    rise = osc.square(1500 + 1500 * rt / rd, rd, 0.5) * env.adsr(rd, 0.02, 0.1, 0.8, 0.05) * 0.3
+    place(y, filters.bp(rise, 2200, 0.9), nsamp(0.8))
+    return fx.reverb(y, "store", 0.12, stereo_out=False, tail=False)
+
+
 def door_breach(rng: np.random.Generator, v: int) -> np.ndarray:
     """Police ram on a locked door: a 55-70 Hz ram thump with wood-panel body modes (170-900 Hz),
     a broadband crack, then the frame splintering (dry 1-4 kHz snap grains thinning out over
@@ -2142,6 +2262,13 @@ CUES: list[CueSpec] = [
             volume_db=-14.0, norm="bed"),
     CueSpec("amb_street_dusk", amb_street_dusk, bus="Ambience", positional=False, loop=True, volume_db=-12.0,
             norm="bed"),
+    CueSpec("assault_van_arrive", assault_van_arrive, bus="Enemies", max_distance=120.0, note="PO6-17 one-shot"),
+    CueSpec("assault_van_park", assault_van_park, bus="Enemies", max_distance=80.0, note="PO6-17"),
+    CueSpec("assault_turret_deploy", assault_turret_deploy, bus="Enemies", max_distance=80.0, note="PO6-17"),
+    CueSpec("assault_turret_destroyed", assault_turret_destroyed, bus="Enemies", max_distance=100.0, note="PO6-17"),
+    CueSpec("assault_heli_arrive", assault_heli_arrive, bus="Enemies", max_distance=250.0, note="PO6-17 one-shot"),
+    CueSpec("assault_heli_leave", assault_heli_leave, bus="Enemies", max_distance=250.0, note="PO6-17"),
+    CueSpec("assault_breach_warning", assault_breach_warning, bus="Enemies", max_distance=40.0, note="PO6-17"),
     CueSpec("door_breach", door_breach, variations=3, max_distance=60.0, pitch_jitter=0.04,
             note="QA-36 audio_cues v1.2: police breach, 3D at the door"),
     CueSpec("burn_warning", burn_warning, variations=3, max_distance=50.0,
