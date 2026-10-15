@@ -86,3 +86,13 @@ the source), or the `*` list of characters.md (`DEFAULT_LOOPS` in `_tools/charac
 `assets/characters/_review/lineup_godot.png`, `lineup_silhouette_30m.png` (black silhouettes at
 the on-screen size of a 1.78 m figure at 30 m: 1080p, 60-degree vertical FOV, shown 4x) and
 `mask_fit_godot.png`. Add `-- --with-tests` to include the test fixtures.
+
+## Heist casts (`p5_cast.json`, hand-maintained)
+
+The one file that is **not** generated: `heist -> role -> [character ids]` for every heist with a
+cast (D3-01 P5 heists; D-115 added glasshouse, night_deposit, dockside_burn and shadow_ledger).
+For the D-115 heists the roles are the spawn tags in the design doc's roster table
+(`docs/design/heists/<heist>.md`, `### ... roster (spawn data)`), plus `security_operator` (the
+camera operator) and `police`, so ENV A's `NpcVisualTweak.heist_tag_characters` can mirror them.
+`game/tests/d/test_p5_cast.gd` parses those roster tables and fails when a design role has no
+character in `characters.json` with a loadable scene.
