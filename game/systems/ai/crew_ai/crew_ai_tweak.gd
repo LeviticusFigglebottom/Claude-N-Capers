@@ -118,3 +118,16 @@ extends Resource
 @export var secure_arrive_m: float = 0.8
 ## Drop only when the view is within this angle of the zone centre (deg).
 @export var secure_face_deg: float = 20.0
+
+@export_group("Thrown bags (PO6-14, D-114 §6)")
+## PD2 bots catch a bag a player throws at them: a bag in flight within this distance (m) of the bot's chest
+## is caught when the bot carries nothing ◇.
+@export var bag_catch_radius_m: float = 1.5
+## Chest height of the catch sphere above the crew origin (m).
+@export var bag_catch_height_m: float = 1.0
+## A bag a player threw that came to rest within this distance (horizontal, m) of a free bot is fetched ◇...
+@export var thrown_bag_pickup_radius_m: float = 2.5
+## ...when it was thrown no longer ago than this (s) ◇.
+@export var thrown_bag_pickup_window_s: float = 6.0
+## Vertical tolerance (m) for the resting pickup (same floor).
+@export var thrown_bag_pickup_max_dy_m: float = 1.5

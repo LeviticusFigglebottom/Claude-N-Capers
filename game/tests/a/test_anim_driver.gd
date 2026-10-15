@@ -724,3 +724,40 @@ func test_directional_run_above_strafe_speed() -> void:
 	for _i: int in 3:
 		d2.tick(0.016)
 	assert_eq(String(d2.player.current_animation), "humanoid/run", "run_b falls back to run")
+
+
+## PO6-18 / D-114 §7: a body dies from the pose it held. A rig without the pose death freezes the pose (never
+## stands up); with the clip (ENV D, characters.md v1.12) it plays the pose death; a standing body keeps the
+## hit-direction deaths.
+func test_po6_18_death_from_pose() -> void:
+	for pose: StringName in [&"kneel_cuffed", &"tied", &"lie_down", &"cower", &"surrender"]:
+		var npc: NpcBase = _npc(&"civilian")
+		npc.get_node("Brain").set(&"anim_hint", pose)
+		var d: AnimDriver = _drv(npc)
+		d.tick(0.016)
+		assert_eq(d.clip, pose, "%s: alive pose" % pose)
+		npc.last_damage = {"direction": Vector3(0, 0, 1), "type": Enums.DamageType.BULLET}
+		npc.die({"direction": Vector3(0, 0, 1)})
+		d.tick(0.016)
+		assert_eq(d.clip, pose, "%s: no pose death clip -> dies holding the pose" % pose)
+		assert_eq(d.player.speed_scale, 0.0, "%s: pose frozen" % pose)
+		assert_false(String(d.clip).begins_with("death_front") or String(d.clip).begins_with("death_back"),
+			"%s: never a standing death" % pose)
+	var withclip: NpcBase = _npc(&"civilian")
+	var lib: AnimationLibrary = _drv(withclip).player.get_animation_library(AnimDriver.LIBRARY)
+	var a: Animation = Animation.new()
+	a.length = 1.0
+	lib.add_animation(&"death_kneel_cuffed", a)
+	withclip.get_node("Brain").set(&"anim_hint", &"kneel_cuffed")
+	_drv(withclip).tick(0.016)
+	withclip.die({"direction": Vector3(0, 0, 1)})
+	_drv(withclip).tick(0.016)
+	assert_eq(_drv(withclip).clip, &"death_kneel_cuffed", "pose death clip plays when the rig has it")
+	assert_true(_drv(withclip).player.speed_scale > 0.0, "and it is not frozen")
+	var standing: NpcBase = _npc(&"civilian")
+	standing.get_node("Brain").set(&"anim_hint", &"browse")
+	_drv(standing).tick(0.016)
+	standing.last_damage = {"direction": Vector3(0, 0, 1), "type": Enums.DamageType.BULLET}
+	standing.die({"direction": Vector3(0, 0, 1)})
+	_drv(standing).tick(0.016)
+	assert_true(_drv(standing).clip in [&"death_back", &"death_back_b"], "standing body: hit-direction death")

@@ -46,6 +46,14 @@ static var _cached: AnimTweak = null
 @export var death_front_dot: float = 0.0
 ## v1.10: a death hit this far to the side (|dir . right|) plays death_side.
 @export var death_side_dot: float = 0.8
+## PO6-18 / D-114 §7: death clip by the pose the body held when it died (never stand a body up). A pose
+## missing here dies with the hit-direction set; a mapped clip the rig lacks holds the pose's current
+## frame instead (the body dies in place).
+@export var death_by_pose: Dictionary = {
+	&"kneel_cuffed": &"death_kneel_cuffed", &"tied": &"death_kneel_cuffed", &"surrender": &"death_kneel",
+	&"cower": &"death_crouch", &"crouch_idle": &"death_crouch", &"crouch_walk": &"death_crouch",
+	&"lie_down": &"death_prone", &"downed": &"death_downed", &"downed_crawl": &"death_downed",
+}
 ## v1.10: two hit reacts on one body at least this far apart (s); in between the current one plays on.
 @export var hit_react_min_gap_s: float = 0.35
 ## Aim pose for NPCs whose weapon has no WeaponDef, by role (&"pistol" / &"rifle"); default pistol.
