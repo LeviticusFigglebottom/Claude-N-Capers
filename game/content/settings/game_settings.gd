@@ -27,6 +27,10 @@ const CONTROLS: StringName = &"controls"
 const ACCESSIBILITY: StringName = &"accessibility"
 ## Gameplay preferences (lead ruling on B6-04: the host's remembered drop-in policy).
 const GAMEPLAY: StringName = &"gameplay"
+## D-113 gore levels (gameplay/gore).
+const GORE_FULL: StringName = &"full"
+const GORE_REDUCED: StringName = &"reduced"
+const GORE_OFF: StringName = &"off"
 const BINDINGS: StringName = &"bindings"
 ## Sections validated by SettingsDefaults (BINDINGS is validated by InputBindings).
 const VALUE_SECTIONS: Array[StringName] = [AUDIO, VIDEO, CONTROLS, ACCESSIBILITY, GAMEPLAY]
@@ -269,6 +273,12 @@ func pad_deadzone() -> float:
 ## The host's remembered drop-in policy (&"ask" / &"auto" / &"off"); copied into each new lobby session.
 func dropin_policy() -> StringName:
 	return StringName(String(get_value(GAMEPLAY, &"dropin_policy")))
+
+
+## D-113 Blood & gore (Options > Gameplay): &"full" (default), &"reduced" or &"off". ENV C's VFX read it by
+## class name: GameSettings.current().gore(), and follow `changed(&"gameplay", &"gore")`.
+func gore() -> StringName:
+	return StringName(String(get_value(GAMEPLAY, &"gore")))
 
 
 ## B6-06 (QC-45): the safehouse hub is walked in 3D ("walk", default) or the 2D station menu ("menu").

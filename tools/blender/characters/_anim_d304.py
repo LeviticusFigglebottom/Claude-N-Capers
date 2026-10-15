@@ -891,6 +891,312 @@ def death_seated_fall(sk: Skeleton, solver: Solver, N: int, impact: int) -> Keys
 
 
 # =============================================================================================
+# pose-aware deaths (PO6-18 / D-114 §7: an NPC killed while crouched, kneeling, prone or downed dies in place)
+# =============================================================================================
+#: death clip -> (source clip, source frame): the death's frame 0 IS that source frame as baked (``src_pose``).
+POSE_DEATH_SOURCE = {"death_crouch": ("crouch_idle", 0), "death_kneel_cuffed": ("kneel_cuffed", 0),
+                     "death_kneel": ("surrender", -1), "death_prone": ("lie_down", 0), "death_downed": ("downed", 0)}
+
+
+def src_pose(sk: Skeleton, solver: Solver, name: str, f: int) -> Pose:
+    """Frame ``f`` (negative = from the end) of the clip ``name`` exactly as ``_anim.bake`` exports it: the clip's
+    reach fix, no-sink lift and floor rest applied (a pose death starts on it, so ENV A switches without a crossfade)."""
+    import _anim_humanoid as H  # noqa: PLC0415
+    from anim_humanoid import CLIPS as FULL  # noqa: PLC0415
+
+    clip = H.clips(sk, {name: FULL[name]})[name]
+    N = clip.frames
+    f = f if f >= 0 else N + 1 + f
+    if clip.reach_fix:
+        poses = [clip.fn(i).copy() for i in range(N + 1)]
+        if clip.loop:
+            poses[N] = poses[0].copy()
+        A.fix_hips_for_reach(solver, poses[:N] if clip.loop else poses, clip.loop)
+        if clip.loop:
+            poses[N] = poses[0].copy()
+        pose = poses[f]
+    else:
+        pose = clip.fn(f).copy()
+    probe = A.probe_for(sk)
+    if clip.no_sink:
+        for _it in range(3):
+            low = probe.lowest(solver.solve(pose))
+            if low >= -2e-4:
+                break
+            A.lift(pose, -low)
+    if clip.floor is not None:
+        start = clip.floor if clip.floor >= 0 else N + 1 + clip.floor
+        if f >= start - 4:
+            w = 1.0 if f >= start else (f - (start - 4)) / 4
+            for _it in range(3):
+                low = probe.lowest(solver.solve(pose))
+                if abs(low) < 2e-4:
+                    break
+                A.lift(pose, -low * w if low > 0 else -low)
+    return pose
+
+
+def _cuff(sk: Skeleton, pose: Pose) -> None:
+    """kneel_cuffed's hands: the wrists together at the small of the back (hips space), fists."""
+    k = sk.scale
+    pre = Solver(sk).solve(pose)
+    for sfx, sx in A.SIDES:
+        p = A.bone_point(pre, sk, "hips", v3(sx * 0.03 * k, -0.16 * k, 0.0))
+        hand_on(sk, pose, sfx, p, pre.W["hips"] @ v3(-sx * 0.7, -0.2, -0.65), pre.W["hips"] @ v3(-sx * 0.3, -0.9, 0.2),
+                pole=pre.W["hips"] @ v3(sx * 0.6, -0.8, 0.0), along_share=0.3, clav=0.2)
+        pose.hands[sfx] = hand_shape("fist", 0.7)
+
+
+def _face_down(sk: Skeleton, hip_y: float, cuffed: bool, ankle_y: float = -0.41, foot: float = -150.0) -> Pose:
+    """Lying face down along +Y (forward), the feet behind at ``ankle_y``, the head turned onto the left cheek."""
+    k = sk.scale
+    hips_rest = sk.head["hips"]
+    g = Pose()
+    g.hip = v3(0.02 * k, hip_y * k, 0.125 * k - hips_rest[2])
+    spine(g, hips=(89, -3, 4), lean=-3, chest_lean=-3, neck=(-10, 0, 0), head=(-6, -4, 64))
+    for sfx, sx in A.SIDES:
+        g.legs[sfx] = LegIK(ankle=v3(sx * (0.16 if sfx == "L" else 0.12) * k, (ankle_y + (0.02 if sfx == "L" else 0.0)) * k,
+                                     0.075 * k), foot=rxd(foot) @ rzd(-sx * 12.0), toe=A.rad(30.0),
+                            pole=v3(sx * 0.3, 0.0, -1.0))
+    if cuffed:
+        _cuff(sk, g)
+        return g
+    pre = Solver(sk).solve(g)
+    for sfx, sx in A.SIDES:
+        # free arms limp along the trunk, palms up (fell without catching himself), the left one a little out
+        p = pre.P[f"upper_arm.{sfx}"] + v3(sx * (0.16 if sfx == "L" else 0.10) * k, -0.42 * k, 0.0)
+        p[2] = 0.04 * k
+        hand_on(sk, g, sfx, p, v3(sx * 0.15, -1.0, 0.0), v3(0.0, 0.0, 1.0), pole=v3(sx * 0.6, 0.0, 0.8),
+                along_share=0.5, palm_off=0.012, clav=0.3)
+        g.hands[sfx] = hand_shape("relaxed", 0.9)
+    return g
+
+
+def _kneel_keys(sk: Skeleton, solver: Solver, start: Pose, N: int, impact: int, cuffed: bool) -> Keys:
+    """Shot on the knees: a jolt, the trunk sags and pitches forward over the knees, the chest and face hit the floor
+    (``impact``) with the knees still under, then the legs slide out straight behind. Cuffed: the wrists stay together
+    at the small of the back the whole way; free hands: the arms go limp (no catching the fall)."""
+    k = sk.scale
+    hips_rest = sk.head["hips"]
+
+    def kneel(sit: float, hip_fwd: float, hip_z: float, hips_p: float, lean: float, chest: float, neck, head) -> Pose:
+        p = Pose()
+        p.hip = v3(0.0, hip_fwd * k, hip_z * k - hips_rest[2])
+        for sfx, sx in A.SIDES:
+            p.legs[sfx] = LegIK(ankle=v3(sx * 0.12 * k, -0.40 * k, 0.085 * k),
+                                foot=rxd(-120.0 - 10.0 * sit) @ rzd(-sx * 8.0), toe=A.rad(25.0),
+                                pole=v3(sx * 0.15, 1.0, -0.6))
+        spine(p, hips=(hips_p, 0, 0), lean=lean, chest_lean=chest, neck=neck, head=head)
+        if cuffed:
+            _cuff(sk, p)
+        else:
+            _limp_arms(sk, p, swing=10.0 + hips_p * 0.6, flex=20.0, add=22.0, out=8.0)
+        return p
+    jolt = kneel(0.0, -0.06, 0.585, -4.0, -6.0, -6.0, (-10, 0, 0), (-12, 4, 8))
+    slip = None
+    if not cuffed:
+        # the hands stay on the head through the jolt, then slide off it out to the sides before the arms drop (a
+        # straight wrist path from the crown to the thighs would cut through the head)
+        pre = Solver(sk).solve(jolt)
+        for sfx, sx in A.SIDES:
+            p = pre.P["head"] + pre.W["head"] @ v3(sx * 0.03 * k, -0.06 * k, 0.15 * k)
+            hand_on(sk, jolt, sfx, p, pre.W["head"] @ v3(-sx * 0.85, 0.0, 0.4), pre.W["head"] @ v3(0.0, 0.0, -1.0),
+                    pole=v3(sx * 1.0, 0.0, 0.1), along_share=0.45)
+            jolt.hands[sfx] = hand_shape("claw", 0.6)
+        slip = kneel(0.1, -0.05, 0.57, 2.0, 4.0, 2.0, (6, 0, 0), (8, 0, 4))
+        pre = Solver(sk).solve(slip)
+        for sfx, sx in A.SIDES:
+            p = pre.P["head"] + pre.W["head"] @ v3(sx * 0.24 * k, 0.02 * k, -0.06 * k)
+            hand_on(sk, slip, sfx, p, pre.W["head"] @ v3(sx * 0.2, 0.1, 1.0), pre.W["head"] @ v3(-sx * 1.0, 0.0, 0.0),
+                    pole=v3(sx * 1.0, 0.0, -0.3), along_share=0.45)
+            slip.hands[sfx] = hand_shape("relaxed", 0.8)
+    sag = kneel(0.3, -0.03, 0.55, 10.0, 12.0, 8.0, (14, 0, 0), (18, 0, 6))
+    tip = kneel(0.6, 0.18, 0.44, 46.0, 18.0, 10.0, (8, 0, 0), (10, -4, 20))
+    # chest down, the knees still under the hips (hips raised), head on the left cheek
+    hit = Pose()
+    hit.hip = v3(0.01 * k, 0.30 * k, 0.30 * k - hips_rest[2])
+    spine(hit, hips=(72, -3, 4), lean=10, chest_lean=4, neck=(-6, 0, 0), head=(-4, -4, 58))
+    for sfx, sx in A.SIDES:
+        hit.legs[sfx] = LegIK(ankle=v3(sx * 0.13 * k, -0.40 * k, 0.08 * k), foot=rxd(-128.0) @ rzd(-sx * 10.0),
+                              toe=A.rad(25.0), pole=v3(sx * 0.2, 1.0, -0.8))
+    if cuffed:
+        _cuff(sk, hit)
+    else:
+        pre = Solver(sk).solve(hit)
+        for sfx, sx in A.SIDES:
+            p = pre.P[f"upper_arm.{sfx}"] + v3(sx * 0.14 * k, -0.30 * k, 0.0)
+            p[2] = 0.05 * k
+            hand_on(sk, hit, sfx, p, v3(sx * 0.2, -1.0, 0.0), v3(0.0, 0.0, 1.0), pole=v3(sx * 0.6, 0.0, 0.8),
+                    along_share=0.5, palm_off=0.012, clav=0.3)
+            hit.hands[sfx] = hand_shape("relaxed", 0.9)
+    ground = _face_down(sk, 0.46, cuffed, foot=-132.0)
+    impact_p = hit.copy()
+    impact_p.hip = impact_p.hip + v3(0.0, 0.0, -0.01 * k)
+    add_rot(impact_p, "head", rxd(5.0))
+    keys = [(0, start, "inout"), (3, jolt, "snap")]
+    keys += [(7, slip, "inout"), (12, sag, "inout")] if slip is not None else [(9, sag, "inout")]
+    return Keys(solver, keys + [(impact - 7, tip, "in"), (impact, impact_p, "heavy"), (impact + 12, ground, "inout"),
+                                (N, ground, "inout")])
+
+
+def death_kneel_cuffed(sk: Skeleton, solver: Solver, N: int, impact: int) -> Keys:
+    """Killed kneeling with the hands cuffed behind the back (from ``kneel_cuffed`` frame 0): pitches forward onto
+    the chest and face, the wrists stay together at the small of the back, ends face down."""
+    return _kneel_keys(sk, solver, src_pose(sk, solver, "kneel_cuffed", 0), N, impact, True)
+
+
+def death_kneel(sk: Skeleton, solver: Solver, N: int, impact: int) -> Keys:
+    """Killed kneeling with the hands free (from ``surrender``'s last frame: on the knees, hands on the head): the hands
+    come off the head in the jolt, the arms go limp and the body pitches forward onto the floor, ends face down."""
+    return _kneel_keys(sk, solver, src_pose(sk, solver, "surrender", -1), N, impact, False)
+
+
+def death_crouch(sk: Skeleton, solver: Solver, N: int, impact: int) -> Keys:
+    """Killed crouching (from ``crouch_idle`` frame 0; ENV A also plays it from crouch_walk and cower): a jolt, the
+    hips sink and slip to the left off the planted feet, the body topples over its left side onto the floor
+    (``impact``) and ends on its left side, knees bent, hips ~0.4 m and head ~1 m to the left of the root. Never
+    rises above the crouch (the feet stay planted until the hips leave them)."""
+    k = sk.scale
+    hips_rest = sk.head["hips"]
+    start = src_pose(sk, solver, "crouch_idle", 0)
+    # the jolt keeps the crouch's trunk lean (straightening up would lift the head and hands): a twist, the head
+    # snapping back, the fingers clawing
+    jolt = start.copy()
+    jolt.hip = jolt.hip + v3(0.0, -0.015 * k, -0.02 * k)
+    add_rot(jolt, "chest", rzd(6.0) @ ryd(4.0))
+    add_rot(jolt, "head", rxd(10.0))
+    for sfx in ("L", "R"):
+        jolt.hands[sfx] = hand_shape("claw", 0.8)
+    sink = start.copy()
+    sink.hip = sink.hip + v3(-0.08 * k, -0.04 * k, -0.11 * k)
+    spine(sink, lean=12.0, chest_lean=8.0, side=-8.0, neck=(10, -4, 0), head=(14, -6, 6), hips=(6, -8, 0))
+    # the arms hang limp from the tilting trunk: the upper (right) one swings in across the body, not up
+    arm_fk(sk, sink, "L", add=24.0, swing=20.0, flex=24.0, out=10.0)
+    arm_fk(sk, sink, "R", add=56.0, swing=24.0, flex=30.0)
+    for sfx in ("L", "R"):
+        sink.hands[sfx] = hand_shape("relaxed", 0.7)
+    drop = Pose()
+    drop.hip = v3(-0.28 * k, -0.06 * k, 0.40 * k - hips_rest[2])
+    spine(drop, hips=(-30.0, -66.0, 0), lean=26.0, chest_lean=6.0, side=-10.0, neck=(4, -6, 0), head=(6, -8, 4))
+    A.leg_fk(drop, "L", swing=50.0, out=8.0, knee=70.0, ankle=12.0)
+    A.leg_fk(drop, "R", swing=48.0, out=-20.0, knee=80.0, ankle=-20.0)       # the upper knee falls across, not up
+    arm_fk(sk, drop, "L", add=40.0, swing=50.0, flex=20.0)
+    arm_fk(sk, drop, "R", add=74.0, swing=36.0, flex=30.0)
+    for sfx in ("L", "R"):
+        drop.hands[sfx] = hand_shape("relaxed", 0.8)
+    ground = Pose()
+    ground.hip = v3(-0.42 * k, -0.04 * k, 0.17 * k - hips_rest[2])
+    spine(ground, hips=(-20.0, -90.0, 0), lean=14.0, chest_lean=6.0, side=8.0, chest_side=5.0, neck=(-6, 4, 0),
+          head=(-4, 2, 6))
+    A.leg_fk(ground, "L", swing=60.0, out=4.0, knee=90.0, ankle=-28.0)
+    A.leg_fk(ground, "R", swing=70.0, out=-6.0, knee=80.0, ankle=-30.0)
+    arm_fk(sk, ground, "L", add=36.0, swing=78.0, flex=28.0, twist=-10.0)
+    arm_fk(sk, ground, "R", add=78.0, swing=50.0, flex=34.0, twist=10.0)
+    for sfx in ("L", "R"):
+        ground.hands[sfx] = hand_shape("relaxed", 0.9)
+    impact_p = ground.copy()
+    impact_p.hip = impact_p.hip + v3(0.0, 0.0, -0.01 * k)
+    add_rot(impact_p, "head", ryd(-6.0))
+    # no-sink relative to the crouch: crouch_idle (not floor-fixed) sits its toes ~6 mm into the floor, so a plain
+    # no_sink would lift frame 0 off crouch_idle frame 0; lift any later frame only below that contact depth
+    probe = A.probe_for(sk)
+    low0 = probe.lowest(solver.solve(start))
+
+    def post(f: int, pose: Pose) -> None:
+        if f == 0:
+            return
+        for _it in range(3):
+            low = probe.lowest(solver.solve(pose))
+            if low >= low0 - 2e-4:
+                break
+            A.lift(pose, low0 - low)
+    return Keys(solver, [(0, start, "inout"), (3, jolt, "snap"), (12, sink, "inout"), (impact - 7, drop, "in"),
+                         (impact, impact_p, "heavy"), (impact + 8, ground, "out"), (N, ground, "inout")], post=post)
+
+
+def death_prone(sk: Skeleton, solver: Solver, N: int, impact: int) -> Keys:
+    """Killed lying face down (from ``lie_down`` frame 0, hands on the back of the head; ENV A also plays it for a
+    tied hostage on the floor): a hit jolt (``impact``), then the body goes limp in place: the head drops onto the
+    left cheek, the hands slide off the head onto the floor either side of it."""
+    k = sk.scale
+    start = src_pose(sk, solver, "lie_down", 0)
+    jolt = start.copy()
+    jolt.hip = jolt.hip + v3(0.0, 0.0, 0.012 * k)
+    add_rot(jolt, "chest", rxd(4.0))
+    add_rot(jolt, "head", rxd(10.0))
+    limp = start.copy()
+    spine(limp, hips=(90.0, -2, 3), lean=-2.0, chest_lean=-2.0, neck=(-12, 0, 0), head=(-4, -4, 66))
+    pre = Solver(sk).solve(limp)
+    for sfx, sx in A.SIDES:
+        # the forearms on the floor either side of the head, elbows out, palms down
+        p = pre.P[f"upper_arm.{sfx}"] + v3(sx * 0.16 * k, 0.24 * k, 0.0)
+        p[2] = 0.05 * k
+        hand_on(sk, limp, sfx, p, v3(-sx * 0.35, 1.0, 0.0), v3(0.0, 0.0, -1.0), pole=v3(sx * 1.0, 0.0, 0.3),
+                along_share=0.5, palm_off=0.012, clav=0.5)
+        limp.hands[sfx] = hand_shape("relaxed", 0.9)
+    return Keys(solver, [(0, start, "inout"), (impact, jolt, "snap"), (impact + 9, limp, "inout"), (N, limp, "inout")])
+
+
+def death_downed(sk: Skeleton, solver: Solver, N: int, impact: int) -> Keys:
+    """Killed downed (from ``downed`` frame 0: sitting on the floor, leaning on the left hand, pistol up in the right;
+    ENV A also plays it from downed_crawl): a jolt, the support hand slips, the trunk falls back flat onto the floor
+    (``impact``), the gun arm drops beside the body, the bent right leg slides out. Ends supine."""
+    k = sk.scale
+    hips_rest = sk.head["hips"]
+    start = src_pose(sk, solver, "downed", 0)
+    jolt = start.copy()
+    add_rot(jolt, "chest", rxd(6.0))
+    add_rot(jolt, "head", rxd(12.0))
+    fall = Pose()
+    fall.hip = v3(0.0, -0.05 * k, 0.13 * k - hips_rest[2])
+    spine(fall, hips=(-66, 0, 0), lean=0.0, chest_lean=-2.0, neck=(10, 0, 0), head=(12, 0, 6))
+    fall.legs["L"] = LegIK(ankle=v3(-0.20 * k, 0.72 * k, 0.07 * k), foot=rxd(30.0) @ rzd(14.0), toe=0.0,
+                           pole=v3(-0.5, 0.3, 1.0))
+    fall.legs["R"] = LegIK(ankle=v3(0.15 * k, 0.56 * k, 0.08 * k), foot=rxd(10.0) @ rzd(-12.0), toe=0.0,
+                           pole=v3(0.4, 0.5, 1.0))
+    arm_fk(sk, fall, "R", add=24.0, swing=12.0, flex=30.0, out=20.0)
+    fall.hands["R"] = hand_shape("relaxed", 0.7)
+    # the support hand slips: the palm stays on the floor and slides out to the side and back
+    pre = Solver(sk).solve(fall)
+    pl = pre.P["upper_arm.L"] + v3(-0.30 * k, -0.08 * k, 0.0)
+    pl[2] = 0.012 * k
+    hand_on(sk, fall, "L", pl, v3(-0.5, -0.5, -0.1), v3(0.0, 0.0, -1.0), pole=v3(-0.6, -0.6, 0.4), along_share=0.55,
+            palm_off=0.012, clav=0.5)
+    fall.hands["L"] = hand_shape("flat", 0.6)
+    ground = Pose()
+    ground.hip = v3(0.0, -0.06 * k, 0.11 * k - hips_rest[2])
+    spine(ground, hips=(-88, 0, 0), lean=-2.0, chest_lean=-2.0, neck=(0, 0, 0), head=(4, 2, -42))
+    ground.legs["L"] = LegIK(ankle=v3(-0.22 * k, 0.78 * k, 0.07 * k), foot=rxd(40.0) @ rzd(24.0), toe=0.0,
+                             pole=v3(-0.4, 0.0, 1.0))
+    ground.legs["R"] = LegIK(ankle=v3(0.18 * k, 0.70 * k, 0.075 * k), foot=rxd(36.0) @ rzd(-24.0), toe=0.0,
+                             pole=v3(0.45, 0.2, 1.0))
+    # arms on the floor beside the trunk, a little out, elbows soft (FK like the fall key: no twist pop)
+    arm_fk(sk, ground, "R", add=30.0, swing=4.0, flex=22.0, out=18.0)
+    ground.hands["R"] = hand_shape("relaxed", 0.8)
+    # the slipped left hand stays palm-down on the floor out to the side (IK like the fall key: no twist pop)
+    pre = Solver(sk).solve(ground)
+    pl = pre.P["upper_arm.L"] + v3(-0.40 * k, 0.06 * k, 0.0)
+    pl[2] = 0.012 * k
+    hand_on(sk, ground, "L", pl, v3(-0.7, 0.2, 0.0), v3(0.0, 0.0, -1.0), pole=v3(-0.4, 0.4, 0.6), along_share=0.55,
+            palm_off=0.012, clav=0.5)
+    ground.hands["L"] = hand_shape("relaxed", 0.8)
+    impact_p = ground.copy()
+    impact_p.hip = impact_p.hip + v3(0.0, 0.0, -0.01 * k)
+    add_rot(impact_p, "chest", rxd(-3.0))
+    add_rot(impact_p, "head", rxd(-8.0))
+    return Keys(solver, [(0, start, "inout"), (3, jolt, "snap"), (impact - 8, fall, "in"), (impact, impact_p, "heavy"),
+                         (impact + 8, ground, "out"), (N, ground, "inout")])
+
+
+POSE_DEATH_FNS = {"death_crouch": death_crouch, "death_kneel_cuffed": death_kneel_cuffed, "death_kneel": death_kneel,
+                  "death_prone": death_prone, "death_downed": death_downed}
+#: clip -> (Clip.floor, rationale): kneels / prone / downed touch the floor every frame (floor rest from frame 0, like
+#: their sources); the crouch rests from its impact on and is only lifted (no_sink) before it.
+POSE_DEATH_FLOOR = {"death_crouch": None, "death_kneel_cuffed": 0, "death_kneel": 0, "death_prone": 0,
+                    "death_downed": 0}
+
+
+# =============================================================================================
 # downed crawl
 # =============================================================================================
 CRAWL_HIPS_Y = -0.30          # hips joint, m ahead of the root (the body lies along +Y, head forward)
@@ -975,8 +1281,9 @@ TRANSITIONS = ("walk_start", "walk_stop", "run_start", "run_stop")
 HITS = ("hit_react_back", "hit_react_left", "hit_react_right")
 DEATHS = ("death_front_b", "death_back_b", "death_side")
 SEATED_DEATHS = ("death_seated_slump", "death_seated_fall")
+POSE_DEATHS = ("death_crouch", "death_kneel_cuffed", "death_kneel", "death_prone", "death_downed")
 #: Start / stop shape: (hand-off cycle frame, right-foot lift frame or braking-step frame, ...), see ``clips``.
-NAMES = LOCO8 + TRANSITIONS + HITS + DEATHS + SEATED_DEATHS + ("downed_crawl", "dozer_walk_heavy")
+NAMES = LOCO8 + TRANSITIONS + HITS + DEATHS + SEATED_DEATHS + POSE_DEATHS + ("downed_crawl", "dozer_walk_heavy")
 
 
 def clips(sk: Skeleton, solver: Solver, table: dict, G: dict, idle_frames: int) -> dict[str, Clip]:
@@ -1017,6 +1324,12 @@ def clips(sk: Skeleton, solver: Solver, table: dict, G: dict, idle_frames: int) 
             else:
                 out[name] = Clip(name, N, False, death_seated_fall(sk, solver, N, ev["impact"]), speed, None, ev,
                                  reach_fix=False, floor=int(ev["impact"]), no_sink=True)
+        elif name in POSE_DEATHS:
+            fl = POSE_DEATH_FLOOR[name]
+            # no_sink only where the floor rest does not already hold from frame 0: death_crouch's source (crouch_idle)
+            # is not floor-fixed, a lift would move its frame 0 off crouch_idle's
+            out[name] = Clip(name, N, False, POSE_DEATH_FNS[name](sk, solver, N, int(ev["impact"])), speed, None, ev,
+                             reach_fix=False, floor=int(ev["impact"]) if fl is None else fl, no_sink=fl is not None)
         elif name in TRANSITIONS:
             base = name.split("_")[0]
             g = G[base]
@@ -1048,7 +1361,8 @@ def root_curve(clip: Clip) -> list[float]:
 # checks and SOURCE.txt notes
 # =============================================================================================
 #: Clips whose solved frames ``anim_humanoid.build`` keeps for the checks / notes below.
-KEEP = ("idle", "walk", "run") + TRANSITIONS + ("downed_crawl", "death_front_b", "death_back_b", "death_side") + SEATED_DEATHS
+KEEP = (("idle", "walk", "run") + TRANSITIONS + ("downed_crawl", "death_front_b", "death_back_b", "death_side")
+        + SEATED_DEATHS + POSE_DEATHS + tuple(sorted({src for src, _f in POSE_DEATH_SOURCE.values()})))
 
 
 def transition_slide(sk: Skeleton, clip: Clip, frames: list) -> float:
@@ -1146,8 +1460,43 @@ def source_notes(sk: Skeleton, table: dict, clips_: dict, keep: dict) -> dict[st
         "seat (use it for a frontal hit or a melee kill). death_seated_fall: tips over the chair's left side and lands "
         "on the floor on its left side at `impact` (hips ~0.5 m, head ~1.1 m to the left, knees under the desk front), "
         "lowest skin vertex on the root plane from `impact` on (any other hit).")
+    out["pose_deaths"] = (
+        "pose-aware deaths (PO6-18, D-114 §7), for an NPC killed in a pose other than standing / seated; each starts "
+        "EXACTLY on its source frame (switch without a crossfade), the root never moves, the trunk and head never rise "
+        "above their start height and nothing rises above the start pose's highest joint; `impact` = the body hits "
+        "the floor, from which on it rests on the floor (lowest skin vertex at the root plane). death_crouch (45 f, "
+        "impact@26): from crouch_idle frame 0; a jolt, the hips sink and slip left off the planted feet, topples onto "
+        "the left side, knees bent (hips ~0.4 m, head ~1.0 m to the left). death_kneel_cuffed (45 f, impact@24): from "
+        "kneel_cuffed frame 0; pitches forward onto chest and face, the wrists stay together at the small of the back "
+        "the whole clip, the legs slide out behind (ends face down, hips ~0.46 m ahead). death_kneel (45 f, impact@24): "
+        "from surrender's LAST frame (on the knees, hands on the head: the free-hands kneel), the hands slide off the "
+        "head, the arms go limp, same forward fall and end pose as death_kneel_cuffed with the arms by the sides. "
+        "death_prone (30 f, impact@3 = the hit jolt): from lie_down frame 0; jolt, then limp in place, the head drops "
+        "onto the left cheek, the hands slide off the head onto the floor beside it. death_downed (36 f, impact@20): "
+        "from downed frame 0; jolt, the support hand slips, falls back flat (supine), the gun arm drops to the side. "
+        "ENV A by pre-death pose: crouch_idle / crouch_walk / cower -> death_crouch (crouch_walk and cower crossfade "
+        "~0.15 s, their frame 0 differs); kneel_cuffed -> death_kneel_cuffed; surrender (kneeling end) -> death_kneel; "
+        "tied (kneeling, wrists bound behind) -> death_kneel_cuffed (crossfade ~0.15 s: sits on the heels, head down); "
+        "lie_down and a tied hostage on the floor -> death_prone; downed / downed_crawl -> death_downed (crawl "
+        "crossfades). Fall back to death_front / death_back if a clip is absent.")
+    pc = []
+    for name in POSE_DEATHS:
+        b = keep.get(name)
+        src, f = POSE_DEATH_SOURCE[name]
+        sb = keep.get(src)
+        if b is None or sb is None:
+            continue
+        s0 = sb.frames[f]
+        top0 = max(float(p[2]) for p in b.frames[0].P.values())
+        rise = max(max(float(fr.P[t][2] - b.frames[0].P[t][2]) for t in ("hips", "spine", "chest", "neck", "head"))
+                   for fr in b.frames)
+        top = max(max(float(p[2]) for p in fr.P.values()) for fr in b.frames)
+        pc.append(f"{name}: start={src}@{f if f >= 0 else sb.clip.frames} src0_err={pose_err(b.frames[0], s0):.2f}mm "
+                  f"trunk_rise={rise * 100:.1f}cm highest_joint={top:.2f}m (start {top0:.2f}m)")
+    if pc:
+        out["pose_death_checks"] = "; ".join(pc)
     ds = []
-    for name in ("death_front_b", "death_back_b", "death_side") + SEATED_DEATHS:
+    for name in ("death_front_b", "death_back_b", "death_side") + SEATED_DEATHS + POSE_DEATHS:
         b = keep.get(name)
         if b is None:
             continue

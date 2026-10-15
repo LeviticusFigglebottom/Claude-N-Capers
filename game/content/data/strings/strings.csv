@@ -323,6 +323,12 @@ item.deployable.ammo_bag.name,Ammo Bag
 item.deployable.ammo_bag.desc,A heavy bag of spare magazines for the whole crew.
 item.deployable.body_bag_case.name,Body Bag Case
 item.deployable.body_bag_case.desc,Holds three body bags for a tidy crew.
+item.deployable.ecm.name,ECM Jammer
+item.deployable.ecm.desc,"Jams cameras, pagers and phones for 20 seconds. One unit."
+item.deployable.fak.name,First Aid Kit
+item.deployable.fak.desc,"Four small kits; each heals one heister once."
+item.deployable.trip_mine.name,Trip Mine
+item.deployable.trip_mine.desc,"Three mines that blow when someone crosses the beam."
 item.loot.jewelry.name,Jewelry
 item.loot.jewelry.desc,"Rings, necklaces and watches in a padded bag."
 item.loot.cash.name,Cash
@@ -342,6 +348,7 @@ crew.sable,Sable
 crew.dutch,Dutch
 crew.wren,Wren
 crew.marten,Marten
+crew.jay,Jay
 enemy.security_officer,Security Officer
 enemy.camera_operator,Camera Operator
 enemy.civilian,Civilian
@@ -525,6 +532,28 @@ voice.vo.marten.guard_down_1,Guard's down.
 voice.vo.marten.guard_down_2,One less pair of eyes.
 voice.vo.marten.civilian_killed_1,That wasn't in the plan.
 voice.vo.marten.civilian_killed_2,We don't shoot the help. Ever.
+voice.vo.jay.pager_started_1,"Pager! I got it, I got it!"
+voice.vo.jay.pager_started_2,"On the pager. Smooth talk, coming up."
+voice.vo.jay.reloading_1,"Reloading, cover me!"
+voice.vo.jay.reloading_2,"Mag out, mag in, two seconds!"
+voice.vo.jay.device_jammed_1,Drill's stalled! Kick it!
+voice.vo.jay.device_jammed_2,Drill quit on us. Somebody restart it!
+voice.vo.jay.bagging_body_1,Bagging him. Quick and quiet.
+voice.vo.jay.bagging_body_2,Into the bag. Nobody look.
+voice.vo.jay.going_loud_1,We're hot! Floor it!
+voice.vo.jay.going_loud_2,Loud now. Let's make it fast!
+voice.vo.jay.crew_downed_1,I'm down! Somebody pull me up!
+voice.vo.jay.crew_downed_2,Took a hit! I'm down!
+voice.vo.jay.reviving_1,"Up, up! We've got a ride to catch."
+voice.vo.jay.reviving_2,Got you. On your feet!
+voice.vo.jay.cops_incoming_1,Cops inbound! Lots of 'em!
+voice.vo.jay.cops_incoming_2,Here comes the blue. Heads down!
+voice.vo.jay.loot_secured_1,Bag's in the trunk!
+voice.vo.jay.loot_secured_2,Secured. Keep 'em coming!
+voice.vo.jay.guard_down_1,Guard's out.
+voice.vo.jay.guard_down_2,Lights out for that one.
+voice.vo.jay.civilian_killed_1,"Whoa, whoa, not the civvies!"
+voice.vo.jay.civilian_killed_2,That's gonna cost us. Stop!
 ui.common.money,${amount}
 ui.common.percent,{value}%
 ui.menu.coming_soon,Coming soon
@@ -2129,6 +2158,7 @@ ui.escape.lift,service lift
 item.deployable.armor_bag.name,Armor Bag
 item.deployable.armor_bag.desc,"Holds your chosen armor. You start the job in a suit; put the bag down and change into the armor when it counts. One use."
 ui.loadout.deployable_locked,"{item} (locked: perk card {card}, {name})"
+ui.loadout.deployable_locked_skill,"{item} (locked: skill {name})"
 ui.prompt.pick_up_gear,Hold {key} to pick up your gear
 ui.blocked.civilian,You need your gear
 ui.options.title,Options
@@ -2601,6 +2631,10 @@ ui.options.gameplay.dropin_policy,Drop-in (when hosting)
 ui.options.gameplay.dropin_policy.ask,Ask Me
 ui.options.gameplay.dropin_policy.auto,Let Players In
 ui.options.gameplay.dropin_policy.off,Off
+ui.options.gameplay.gore,Blood & gore
+ui.options.gameplay.gore.full,Full
+ui.options.gameplay.gore.reduced,Reduced
+ui.options.gameplay.gore.off,Off
 ui.options.tab.gameplay,Gameplay
 ui.lobby.dropin_join,Drop In to a Running Heist
 ui.lobby.dropin_join.hint,"Join a crew whose heist has already started (the host may have to accept you)."
@@ -2933,6 +2967,8 @@ achievement.main_event.name,Main Event
 achievement.main_event.desc,"Take down 250 specials. Unlocks the Lucha mask."
 achievement.private_viewing.name,Private Viewing
 achievement.private_viewing.desc,"Complete Gallery Night. Unlocks the Signal mask."
+achievement.wheelman.name,Wheelman
+achievement.wheelman.desc,"Win five heists after the alarm goes up. Unlocks Jay."
 achievement.the_planner.name,The Planner
 achievement.the_planner.desc,"Finish three heists without raising the alarm. Unlocks Marten."
 achievement.deep_water.name,Deep Water

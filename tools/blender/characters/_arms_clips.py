@@ -83,6 +83,9 @@ class SupportGrip:
 #: does): the palm, wrist and thumb flex by coordinate descent, then each finger and the thumb opposition closed until
 #: the tightest fore-end of the set is within 0.8 mm of skin (ENV P's PFingerClip limit is 2 mm). The thumb now
 #: lies low along the near side next to the palm (thumb_opp -30 lifted it to the top edge, apart from the hand).
+#: smg (B's under-fore-end markers, lead 2026-10-14): fitted on hornet / lancet / ferret / hush / mastiff / wasp (B's
+#: 871b6646 finger ridge); the short fore-ends leave no room ahead of the magazine, so the palm cups the lower-left corner,
+#: fingers across, thumb up the side.
 LONG_GUN_GRIPS: dict[str, SupportGrip] = {
     "rifle": SupportGrip((0.6, 0.8, -0.25), (0.0, -0.1, 1.0), (-0.005, 0.0, 0.003), -8.31, 0.0,
                 (-0.0381, 0.0021, 0.0426), thumb=(16.0, -18.0, 4.0), fingers=(0.272, 0.523, 0.637, 0.806)),
@@ -96,8 +99,21 @@ LONG_GUN_GRIPS: dict[str, SupportGrip] = {
                 (-0.0351, 0.0002, 0.037), thumb=(4.0, 6.0, 4.0), fingers=(0.462, 0.595, 0.736, 1.348)),
     "lever": SupportGrip((0.7875, 0.8, -0.3125), (0.05, 0.1, 1.0), (-0.006, 0.0, 0.001), -7.34, 0.0,
                 (-0.0435, 0.0015, 0.0388), thumb=(4.0, 6.0, 4.0), fingers=(0.48, 0.661, 0.759, 1.348)),
+    "smg": SupportGrip((0.75, 0.4, 0.1), (0.4, -0.3, 1.0), (-0.002, 0.018, -0.011), -12.71, 0.0,
+                (-0.0492, -0.0297, 0.0004), thumb=(-20.0, -24.0, 4.0), fingers=(0.605, 0.68, 0.717, 0.764)),
     "shotgun_box": SupportGrip((0.825, 0.725, -0.325), (0.075, -0.125, 1.0), (-0.006, 0.004, 0.0), -27.0, 0.0,
                 (-0.0479, 0.0015, 0.03), thumb=(4.0, 12.0, 4.0), fingers=(0.558, 0.666, 0.717, 1.348)),
+}
+
+
+#: PO6-11b (ENV P, lead round 207): the isosceles pistol / revolver support hand. The palm heel fills the grip's left
+#: side, the fingers wrap over the firing hand's fingers with the index under the trigger guard, the thumb forward
+#: along the frame under the slide. Fitted like LONG_GUN_GRIPS, with the firing hand's skin as a contact surface too.
+PISTOL_GRIPS: dict[str, SupportGrip] = {
+    "pistol": SupportGrip((0.5, 0.5, -0.6), (0.75, 0.05, 0.25), (-0.007, 0.004, 0.001), -38.39, 0.0,
+                         (-0.043, 0.0195, 0.0169), thumb=(4.0, 0.0, 4.0), fingers=(0.729, 0.736, 0.623, 0.523)),
+    "revolver": SupportGrip((0.45, 0.45, -0.7), (1.2, 0.05, 0.25), (0.002, 0.0, 0.002), -34.95, 0.0,
+                           (-0.0322, 0.0259, 0.0183), thumb=(4.0, 12.0, 4.0), fingers=(0.83, 0.72, 0.635, 0.462)),
 }
 
 
@@ -126,7 +142,11 @@ class Kit:
         self.sk, self.s = sk, s
         m = s.markers
         self.grip = grip_hand(sk, pole=s.pole_r)
-        if s.support == "pistol":
+        if s.support == "pistol" and s.name in PISTOL_GRIPS:
+            g = PISTOL_GRIPS[s.name]
+            self.support = hand_at(sk, "L", "w", np.asarray(m["left_ik"], float) + np.asarray(g.shift), g.along,
+                                   g.palm, s.pole_l, cup_shape(g), share=0.45, off=0.016)
+        elif s.support == "pistol":
             self.support = hand_at(sk, "L", "w", m["left_ik"], (0.55, 0.45, -0.70), (0.85, 0.05, 0.25),
                                    s.pole_l, "support", share=0.45, off=0.016)
         elif s.support == "vgrip" and "left_palm" in m:   # a vertical front grip, palm on LeftHandIK (D2-04)

@@ -5,7 +5,7 @@ Private helper: imported by ``anvil_lmg.py`` and ``anvil_lmg_mods.py``. Axes and
 
 Belt-fed 7.62: tall riveted steel receiver with a rear-hinged ``FeedCover`` (D-044, optics rail on top),
 walnut skeleton stock, gas cylinder under a long fluted quick-change barrel
-(``BarrelMount/StockBarrel``: barrel + wooden carry handle + front post + cone flash hider), olive steel
+(``BarrelMount/StockBarrel``: barrel + wooden carry handle + front post + 3-port muzzle brake), olive steel
 ammo box under the receiver feeding from the left (``Magwell``).
 """
 
@@ -40,7 +40,7 @@ SIDE_Y = 0.330
 BARREL_R = 0.0130
 LONG_END_Y = 0.700
 SHORT_END_Y = 0.560
-HIDER_LEN = 0.052
+BRAKE_LEN = 0.060                # PO6-13 3-port side brake
 
 MAGWELL_POS = (0.0, 0.140, REC_BOTTOM_Z)
 FEED_POS = (-REC_HW, 0.070, 0.104)          # belt entry on the receiver's left side (world)
@@ -70,18 +70,14 @@ def build_rear_leaf(ctx, mats, parent=None, name="RearLeaf"):
 
 def build_barrel(ctx, mats, short: bool, parent=None, name="Barrel"):
     """Quick-change fluted barrel in the BarrelMount frame (origin = barrel root on the bore, +Y fwd).
-    Carries the carry handle, the front post and the cone flash hider."""
+    Carries the carry handle, the front post and the 3-port ``MuzzleBrake`` (with ``Muzzle``,
+    ``MuzzlePortL/R``)."""
     end = (SHORT_END_Y if short else LONG_END_Y) - REC_FRONT_Y
     mb = ctx.builder()
     st = mb.material(mats.steel())
     mb.cylinder(BARREL_R + 0.003, 0.040, segments=28, centre=(0.0, 0.020, 0.0), axis="Y", mat=st)   # barrel nut
     mb.prism(c.fluted(BARREL_R, BARREL_R - 0.0025, 8), axis="Y", start=0.040, end=end - 0.030, mat=st)
     mb.cylinder(BARREL_R - 0.0015, 0.032, segments=24, centre=(0.0, end - 0.016, 0.0), axis="Y", mat=st)
-    # cone flash hider
-    for i in range(4):
-        r0 = 0.0110 + i * 0.0012
-        mb.cylinder(r0, HIDER_LEN / 4 - 0.001, segments=24, centre=(0.0, end + (i + 0.5) * HIDER_LEN / 4, 0.0),
-                    axis="Y", mat=st)
     # front post on a ring
     fy = end - 0.020
     post_top = RAIL_TOP_Z + IRON_AIM_DZ - BORE_Z
@@ -103,6 +99,7 @@ def build_barrel(ctx, mats, short: bool, parent=None, name="Barrel"):
     hd.prism(c.rounded_rect(0.0075, 0.0085, 0.006, 0.0300, BARREL_R + 0.014, corner_segments=3), axis="Y",
              start=hy - 0.070, end=hy + 0.070, mat=wood)
     c.finish(hd, name + "Handle", bevel=0.0025, segments=2, parent=body)
+    c.build_muzzle_brake(ctx, mats, 0.0145, end, BRAKE_LEN, 0.0, parent=body)   # PO6-13, carries the Muzzle
     return body
 
 

@@ -4,7 +4,7 @@ Private helper: imported by ``lark_carbine.py`` and ``lark_carbine_mods.py``. Ax
 ``_common.py``. Origin = firing-hand pivot on the pistol grip.
 
 Short 5.56 carbine: machined steel receiver with an integral full-length top rail, short tan polymer
-handguard with a gas tube above the barrel, curved tan magazine, birdcage hider, side-folding tan
+handguard with a gas tube above the barrel, curved tan magazine, 3-port brake, side-folding tan
 skeleton stock on a hinge block (``StockMount/StockStock``; the folded variant lies along the right
 side of the receiver).
 """
@@ -32,8 +32,8 @@ SIGHT_RAIL_Y = 0.020
 
 HG_Y0, HG_Y1 = 0.162, 0.292
 BARREL_END_Y = 0.330
-HIDER_LEN = 0.030
-MUZZLE_Y = BARREL_END_Y + HIDER_LEN + 0.001
+BRAKE_LEN = 0.040                # PO6-13 3-port side brake
+MUZZLE_Y = BARREL_END_Y + BRAKE_LEN + 0.001
 
 MAG_HW = 0.0120
 MAG_HD = 0.0300
@@ -85,5 +85,5 @@ def build_stock(ctx, mats, folded: bool, parent=None, name="Stock"):
 
 
 def build_suppressor(ctx, mats, parent=None, name="Suppressor"):
-    return c.build_can(ctx, mats, length=0.150, r=0.0180, overlap=HIDER_LEN - 0.004, bore_r=0.0045, parent=parent,
+    return c.build_can(ctx, mats, length=0.150, r=0.0180, overlap=BRAKE_LEN - 0.004, bore_r=0.0045, parent=parent,
                        name=name)

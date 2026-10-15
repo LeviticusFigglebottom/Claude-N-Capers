@@ -108,7 +108,8 @@ PISTOL = FPSet(
 # -- smg (Hornet 9: 800 rpm = 2.25 frames per shot) ---------------------------------------------
 SMG = FPSet(
     name="smg", weapon="wpn_hornet_9",
-    markers={"left_ik": v3(-0.031, 0.160, 0.040), "aim": v3(0.0, -0.060, 0.1172),
+    # LeftHandIK under the fore-end (ENV B f8f17c7a, lead ruling 2026-10-14): the PD2 support grip of the long guns
+    markers={"left_ik": v3(0.0, 0.150, 0.016), "aim": v3(0.0, -0.060, 0.1172),
              "magwell": v3(0.0, 0.101, -0.002), "magwell_axis": rxd(4.0) @ v3(0.0, 0.0, 1.0),
              "cock": v3(-0.040, 0.171, 0.085), "cock_back": v3(-0.040, 0.128, 0.085),
              "butt": v3(0.0, -0.330, 0.050)},

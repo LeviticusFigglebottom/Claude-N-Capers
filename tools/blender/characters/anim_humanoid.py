@@ -164,6 +164,15 @@ CLIPS = {
     # the desk, root and hips stay on the seat), fall = off the chair to the left onto the floor (`impact`)
     "death_seated_slump": {"frames": 48, "loop": False, "speed": 0.0, "priority": 6, "events": {"impact": 22}},
     "death_seated_fall": {"frames": 60, "loop": False, "speed": 0.0, "priority": 6, "events": {"impact": 34}},
+    # pose-aware deaths (PO6-18, D-114 §7): an NPC killed crouched / kneeling / prone / downed dies in place. Each
+    # starts exactly on its source pose (crouch_idle 0, kneel_cuffed 0, surrender's last frame, lie_down 0, downed 0;
+    # SOURCE `pose_deaths`), the root never moves, nothing rises above the start; `impact` = the body hits the floor
+    # (death_prone: the hit jolt, the body is already down)
+    "death_crouch": {"frames": 45, "loop": False, "speed": 0.0, "priority": 6, "events": {"impact": 26}},
+    "death_kneel_cuffed": {"frames": 45, "loop": False, "speed": 0.0, "priority": 6, "events": {"impact": 24}},
+    "death_kneel": {"frames": 45, "loop": False, "speed": 0.0, "priority": 6, "events": {"impact": 24}},
+    "death_prone": {"frames": 30, "loop": False, "speed": 0.0, "priority": 6, "events": {"impact": 3}},
+    "death_downed": {"frames": 36, "loop": False, "speed": 0.0, "priority": 6, "events": {"impact": 20}},
     # prone bleed-out drag crawl, the root moving forward (-Z) at `speed`; Wrecker heavy stomp at the Wrecker's
     # advance speed (1.8 m/s on its 1.88 m body = 1.7 m/s native), a step every wrecker_step_interval_s (0.55 s)
     "downed_crawl": {"frames": 60, "loop": True, "speed": 0.3, "priority": 6},

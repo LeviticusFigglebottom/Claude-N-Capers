@@ -1,5 +1,5 @@
 ## ENV D 2026-10-14 long-gun support grip: the LeftHandGrip (left-hand IK target) offset is per FP set. The 7
-## long-gun sets on B's centred under-fore-end markers use D's per-set PD2 grip wrist; side-grip sets keep the
+## long-gun sets (+ smg, D round 214) on B's centred under-fore-end markers use D's per-set PD2 grip wrist; side-grip sets keep the
 ## global offset; the live IK target of an equipped gun sits at its set's offset. Owner: ENV P.
 extends TestCase
 
@@ -8,7 +8,7 @@ const LONG_GUN_GRIPS: Dictionary[StringName, Vector3] = {
 	&"rifle": Vector3(-0.0381, 0.0021, 0.0426), &"shotgun": Vector3(-0.0482, 0.0048, 0.035),
 	&"lmg": Vector3(-0.0349, -0.0023, 0.0334), &"sniper": Vector3(-0.0382, -0.0094, 0.0371),
 	&"break_action": Vector3(-0.0351, 0.0002, 0.037), &"lever": Vector3(-0.0435, 0.0015, 0.0388),
-	&"shotgun_box": Vector3(-0.0479, 0.0015, 0.03)}
+	&"shotgun_box": Vector3(-0.0479, 0.0015, 0.03), &"smg": Vector3(-0.0492, -0.0297, 0.0004)}
 
 var _root: Node3D = null
 
@@ -24,7 +24,7 @@ func test_per_set_offsets() -> void:
 	var tw: FpViewmodelTweak = FpViewmodelTweak.data()
 	for s: StringName in LONG_GUN_GRIPS:
 		assert_true(tw.grip_offset(s).is_equal_approx(LONG_GUN_GRIPS[s]), "%s: D's grip (%s)" % [s, tw.grip_offset(s)])
-	for s: StringName in [&"smg", &"launcher", &"flamethrower", &"minigun"]:
+	for s: StringName in [&"launcher", &"flamethrower", &"minigun"]:
 		assert_eq(tw.grip_offset(s), tw.left_hand_grip_offset, "%s keeps the side-grip offset" % s)
 
 

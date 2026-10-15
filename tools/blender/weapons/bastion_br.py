@@ -2,12 +2,12 @@
 
 About 69 cm from the muzzle to the receiver rear (plus a 26 cm fixed stock). Stamped steel receiver,
 cocking tube over the barrel with the handle on the left, slim vented polymer handguard, clamp-on top
-rail, straight 20-round magazine, prong flash hider, fixed polymer stock.
+rail, straight 20-round magazine, 3-port side brake, fixed polymer stock.
 
 Origin = firing-hand pivot on the grip (see _bastion.py). Forward = Godot -Z.
 
 Node tree: ``Receiver`` (+ ``CockingTube``, ``TopRail``, ``ReceiverDetails``, ``TriggerHousing``,
-``TriggerGroup``, ``Grip``, ``Handguard``), ``Barrel`` (+ ``FlashHider``). Stock parts:
+``TriggerGroup``, ``Grip``, ``Handguard``), ``Barrel`` (+ ``MuzzleBrake``). Stock parts:
 ``SightRail/StockSight`` (rear aperture + front post on the tube nose, ``AimPoint``),
 ``Magwell/StockMagazine`` (20 rounds), ``StockMount/StockStock`` (fixed stock).
 """
@@ -95,15 +95,7 @@ def _receiver(ctx, mats):
 def _barrel(ctx, mats):
     barrel = c.build_barrel(ctx, mats, 0.0100, b.REC_FRONT_Y - 0.010, b.BARREL_END_Y, b.BORE_Z, bore_r=0.0040,
                             segments=24)
-    fh = ctx.builder()
-    fm = fh.material(mats.steel())
-    y0, y1 = b.BARREL_END_Y, b.BARREL_END_Y + b.HIDER_LEN
-    fh.cylinder(0.0120, 0.010, segments=20, centre=(0.0, y0 + 0.005, b.BORE_Z), axis="Y", mat=fm)
-    for i in range(4):
-        a = math.pi / 4 + i * math.pi / 2
-        x, z = math.cos(a) * 0.0088, b.BORE_Z + math.sin(a) * 0.0088
-        fh.box((x - 0.0028, y0 + 0.010, z - 0.0028), (x + 0.0028, y1, z + 0.0028), mat=fm)
-    c.finish(fh, "FlashHider", bevel=0.0005, parent=barrel)
+    c.build_muzzle_brake(ctx, mats, 0.0125, b.BARREL_END_Y, b.BRAKE_LEN, b.BORE_Z, parent=barrel)  # PO6-13
     return barrel
 
 
@@ -112,7 +104,6 @@ def build(ctx) -> None:
     _receiver(ctx, mats)
     _barrel(ctx, mats)
 
-    ctx.marker("Muzzle", (0.0, b.MUZZLE_Y, b.BORE_Z))
     ctx.marker("BarrelMount", (0.0, b.REC_FRONT_Y, b.BORE_Z))
     ctx.marker("Eject", (b.REC_HW, 0.040, b.BORE_Z), rotation_euler=(0.0, 0.0, -math.pi / 2))
     sight_rail = ctx.marker("SightRail", (0.0, b.SIGHT_RAIL_Y, b.RAIL_TOP_Z))
