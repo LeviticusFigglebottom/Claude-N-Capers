@@ -10,8 +10,15 @@
 ## Flow (server): guard dies (or is dominated) while StealthDirector.is_stealth() -> after
 ## rand(pager_delay_min_s, pager_delay_max_s) on GameRng &"pagers" the pager beeps: pager_started
 ## [R] + a `PagerInteractable` on the guard (kind &"answer_pager", priority 10, allow_multiple).
-## Nobody starts answering within pager_window_s -> pager_failed(&"timeout") + alarm. The set of
-## current answerers becoming empty before completion -> pager_failed(&"released") + alarm (S5.4).
+## Nobody starts answering within pager_window_s -> pager_failed(&"timeout") + alarm.
+## PO6-08 (D-114 §4, S5.2/S5.4): the window FREEZES the moment a player starts the answer hold and
+## stays frozen while anyone holds it. When the set of answerers becomes empty before completion
+## (release, look-away, going down, leaving) the window RESUMES from where it froze; with
+## StealthTweak.pager_release_resumes = false it is the old rule: pager_failed(&"released") + alarm.
+## Audio (D-114 §3): the looping cue.pager_beep / cue.pager_radio are owned by CuePlayer, keyed per
+## pager on the pager_* facts (started -> beep, answer_started -> radio, answered/failed -> stop both).
+## This service never requests a looping pager cue through audio_cue_requested (nobody could stop it).
+## Clients: pager_entries() reads the server's rows mirrored through HeistNetSync (net_state()).
 ## The first completion counts: pager_answered(pager_id, slot, total) [R]; other holders are
 ## cancelled without alarm. total == max_answers -> Mercer line; total > max_answers -> the
 ## completed answer raises alarm_raised(&"pager_limit") (S5.3). No pagers once loud: pending and
@@ -35,6 +42,8 @@ var _next_id: int = 1
 var _pagers: Dictionary[int, Dictionary] = {}
 ## Guard instance ids that already had a pager.
 var _paged: Dictionary[int, bool] = {}
+## Client mirror (PO6-08): rows from the server's net_state(), see _apply_remote().
+var _remote_rows: Array[Dictionary] = []
 
 
 func _ready() -> void:
@@ -51,6 +60,12 @@ func _ready() -> void:
 
 
 func _exit_tree() -> void:
+	# PO6-08 / D-114 §3: teardown ends every live pager with a fact so CuePlayer stops its loops.
+	var ids: Array[int] = []
+	ids.assign(_pagers.keys())
+	for pid: int in ids:
+		if _pagers.has(pid):
+			_cancel(pid)
 	if EventBus.npc_killed.is_connected(_on_npc_killed):
 		EventBus.npc_killed.disconnect(_on_npc_killed)
 	if EventBus.npc_alert_state_changed.is_connected(_on_alert_state_changed):
@@ -90,8 +105,11 @@ func blocks_body(guard: Node) -> bool:
 	return false
 
 
-## Beeping pagers for the HUD (LocalHudModel): time_left = start window, or the answer time left.
+## Beeping pagers for the HUD (LocalHudModel): time_left = the response window left (frozen while
+## answering, PO6-08), answer_left / progress (0..1) = the current answer hold (answering only).
 func pager_entries() -> Array[Dictionary]:
+	if not Net.is_authority():
+		return _remote_entries()
 	var out: Array[Dictionary] = []
 	var ids: Array[int] = []
 	ids.assign(_pagers.keys())
@@ -100,15 +118,14 @@ func pager_entries() -> Array[Dictionary]:
 		var p: Dictionary = _pagers[pid]
 		if int(p["state"]) != State.ACTIVE:
 			continue
-		var guard: Node3D = p["guard"] as Node3D
+		var guard: Node3D = p["guard"] as Node3D if is_instance_valid(p["guard"]) else null
 		var holders: Dictionary = p["holders"]
-		var left: float = float(p["time_left"])
-		if not holders.is_empty():
-			left = _answer_time_left(p)
+		var answering: bool = not holders.is_empty()
+		var answer: Vector2 = _answer_state(p) if answering else Vector2(0.0, 0.0)
 		out.append({
-			"pager_id": pid, "guard_net_id": int(p["guard_net_id"]), "time_left": left,
-			"answering": not holders.is_empty(),
-			"world_pos": guard.global_position if is_instance_valid(guard) and guard.is_inside_tree() else Vector3.ZERO,
+			"pager_id": pid, "guard_net_id": int(p["guard_net_id"]), "time_left": float(p["time_left"]),
+			"answering": answering, "answer_left": answer.x, "progress": answer.y,
+			"world_pos": guard.global_position if guard != null and guard.is_inside_tree() else Vector3.ZERO,
 		})
 	return out
 
@@ -132,8 +149,8 @@ func _physics_process(delta: float) -> void:
 		if not _pagers.has(pid):
 			continue
 		var p: Dictionary = _pagers[pid]
-		if not is_instance_valid(p["guard"]):
-			_remove(pid)
+		if not is_instance_valid(p["guard"]) or not (p["guard"] as Node).is_inside_tree():
+			_cancel(pid)  # guard freed / despawned mid-pager: pager_failed(&"cancelled"), no alarm
 			continue
 		match int(p["state"]):
 			State.PENDING:
@@ -144,6 +161,10 @@ func _physics_process(delta: float) -> void:
 					else:
 						_cancel(pid)
 			State.ACTIVE:
+				_reconcile_holders(pid)
+				if not _pagers.has(pid):
+					continue
+				# PO6-08: frozen while anyone answers (S5.2 window), and while an ECM pauses it (S5.6).
 				if (p["holders"] as Dictionary).is_empty() and not _ecm_paused(p):
 					p["time_left"] = float(p["time_left"]) - delta
 					if float(p["time_left"]) <= 0.0:
@@ -170,27 +191,52 @@ func _activate(pid: int) -> void:
 	p["comp"] = comp
 	p["state"] = State.ACTIVE
 	p["time_left"] = _tw.pager_window_s
+	# D-114 §3: cue.pager_beep is a loop; CuePlayer starts it on pager_started and stops it on
+	# answer_started / answered / failed. A loose audio_cue_requested here had no owner to stop it.
 	_emit(&"pager_started", [pid, int(p["guard_net_id"])])
-	_emit(&"audio_cue_requested", [&"cue.pager_beep", guard.global_position, int(p["guard_net_id"])])
 
 
 func _on_answer_started(crew: Node, pid: int) -> void:
 	if not _pagers.has(pid) or int(_pagers[pid]["state"]) != State.ACTIVE:
 		return
-	var slot: int = int(crew.get(&"slot")) if crew != null else -1
+	# PO6-08 (D-114 §4): a holder freezes the window from this tick on (_physics_process skips it).
+	var slot: int = int(crew.get(&"slot")) if is_instance_valid(crew) else -1
 	(_pagers[pid]["holders"] as Dictionary)[slot] = true
+	# CuePlayer swaps the beep loop for the cue.pager_radio loop on this fact (D-114 §3).
 	_emit(&"pager_answer_started", [pid, slot])
-	var g: Node3D = _pagers[pid]["guard"] as Node3D
-	_emit(&"audio_cue_requested", [&"cue.pager_radio", g.global_position, int(_pagers[pid]["guard_net_id"])])
 
 
 func _on_answer_cancelled(crew: Node, pid: int) -> void:
 	if not _pagers.has(pid) or int(_pagers[pid]["state"]) != State.ACTIVE:
 		return
 	var holders: Dictionary = _pagers[pid]["holders"]
-	holders.erase(int(crew.get(&"slot")) if crew != null else -1)
-	if holders.is_empty():
-		_fail(pid, &"released")  # S5.4
+	var was_held: bool = holders.erase(int(crew.get(&"slot")) if is_instance_valid(crew) else -1)
+	_reconcile_holders(pid, was_held)
+
+
+## PO6-08: drop holders whose interaction session is gone or whose crew left / went down. When the
+## last one goes the window resumes (D-114 §4), or, with pager_release_resumes off, S5.4 alarms.
+func _reconcile_holders(pid: int, was_held: bool = false) -> void:
+	var p: Dictionary = _pagers[pid]
+	var holders: Dictionary = p["holders"]
+	was_held = was_held or not holders.is_empty()
+	var isys: InteractionSystem = _runtime.interaction if _runtime != null else null
+	var comp: InteractableComponent = p["comp"] as InteractableComponent if is_instance_valid(p["comp"]) else null
+	if isys != null and comp != null:
+		var live: Array[int] = isys.holders_of(comp)
+		for slot: int in live:
+			var cv: Variant = isys.session(slot).get("crew")
+			var crew: Node = cv as Node if is_instance_valid(cv) else null
+			if crew == null or not crew.is_inside_tree() or int(crew.get(&"crew_state")) != Enums.CrewState.NORMAL:
+				holders.erase(slot)
+				isys.cancel(slot)  # a stale session (answerer left / downed) must not keep it frozen
+		for slot: Variant in holders.keys():
+			if not live.has(int(slot)):
+				holders.erase(slot)
+	if not was_held or not holders.is_empty() or not _pagers.has(pid) or int(p["state"]) != State.ACTIVE:
+		return
+	if not _tw.pager_release_resumes:
+		_fail(pid, &"released")  # S5.4 (legacy rule)
 
 
 func _on_answer_completed(crew: Node, pid: int) -> void:
@@ -228,24 +274,70 @@ func _cancel(pid: int) -> void:
 func _remove(pid: int) -> void:
 	var p: Dictionary = _pagers[pid]
 	p["state"] = State.DONE
-	var comp: InteractableComponent = p["comp"] as InteractableComponent
-	if comp != null and is_instance_valid(comp):
+	var comp: InteractableComponent = p["comp"] as InteractableComponent if is_instance_valid(p["comp"]) else null
+	if comp != null:
 		comp.enabled = false
-		if _runtime != null and _runtime.interaction != null:
+		if is_instance_valid(_runtime) and is_instance_valid(_runtime.interaction):
 			_runtime.interaction.cancel_all_on(comp)
 		comp.queue_free()
 	_pagers.erase(pid)
 
 
-func _answer_time_left(p: Dictionary) -> float:
-	var comp: InteractableComponent = p["comp"] as InteractableComponent
+## Best current answer hold: Vector2(seconds left, progress 0..1) (the holder closest to done).
+func _answer_state(p: Dictionary) -> Vector2:
+	var comp: InteractableComponent = p["comp"] as InteractableComponent if is_instance_valid(p["comp"]) else null
 	if comp == null or _runtime == null or _runtime.interaction == null:
-		return float(p["time_left"])
-	var best: float = INF
+		return Vector2(0.0, 0.0)
+	var best: Vector2 = Vector2(INF, 0.0)
 	for slot: int in _runtime.interaction.holders_of(comp):
 		var s: Dictionary = _runtime.interaction.session(slot)
-		best = minf(best, maxf(float(s.get("duration", 0.0)) - float(s.get("progress", 0.0)), 0.0))
-	return best if best != INF else float(p["time_left"])
+		var dur: float = float(s.get("duration", 0.0))
+		var left: float = maxf(dur - float(s.get("progress", 0.0)), 0.0)
+		if left < best.x:
+			best = Vector2(left, 1.0 if dur <= 0.0 else clampf(1.0 - left / dur, 0.0, 1.0))
+	return best if best.x != INF else Vector2(0.0, 0.0)
+
+
+# --- Replication (PO6-08) --------------------------------------------------------------------------
+
+## Server: the HUD rows for clients (HeistNetSync services diff):
+## {"rows": [[pager_id, guard_net_id, window_left, answering, answer_left, progress]], "answered": int}.
+func net_state() -> Dictionary:
+	var rows: Array = []
+	for e: Dictionary in pager_entries():
+		rows.append([int(e["pager_id"]), int(e["guard_net_id"]), snappedf(float(e["time_left"]), 0.1),
+			bool(e["answering"]), snappedf(float(e["answer_left"]), 0.1), snappedf(float(e["progress"]), 0.01)])
+	return {"rows": rows, "answered": answered_total}
+
+
+## Client: mirror the server's pager rows (frozen window included) so pager_entries() works on every peer.
+func apply_net_state(d: Dictionary) -> void:
+	if Net.is_authority():
+		return
+	_apply_remote(d)
+
+
+func _apply_remote(d: Dictionary) -> void:
+	_remote_rows.clear()
+	for v: Variant in d.get("rows", []) as Array:
+		var a: Array = v as Array
+		if a == null or a.size() < 6:
+			continue
+		_remote_rows.append({
+			"pager_id": int(a[0]), "guard_net_id": int(a[1]), "time_left": float(a[2]),
+			"answering": bool(a[3]), "answer_left": float(a[4]), "progress": float(a[5]),
+		})
+	answered_total = int(d.get("answered", answered_total))
+
+
+func _remote_entries() -> Array[Dictionary]:
+	var out: Array[Dictionary] = []
+	for r: Dictionary in _remote_rows:
+		var e: Dictionary = r.duplicate()
+		var guard: Node3D = Ids.lookup(int(r["guard_net_id"])) as Node3D
+		e["world_pos"] = guard.global_position if guard != null and guard.is_inside_tree() else Vector3.ZERO
+		out.append(e)
+	return out
 
 
 func _on_npc_killed(npc_id: int, _killer_id: int, _info: Dictionary) -> void:
