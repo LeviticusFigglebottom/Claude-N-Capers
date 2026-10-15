@@ -86,6 +86,7 @@ var fx_root: Node3D = null
 var aim_mode: bool = false
 
 var _readout_dist: float = -INF
+var _label_focus_t: float = 0.0
 ## The CrewView WeaponVisual the loadout finish was last put on (CrewView rebuilds it on swaps and refreshes).
 var _finished_wv: WeaponVisual = null
 var _readout_cooldown: float = 0.0
@@ -140,6 +141,10 @@ func _exit_tree() -> void:
 
 func _process(delta: float) -> void:
 	_finish_viewmodel()
+	_label_focus_t -= delta
+	if _label_focus_t <= 0.0 and tweak != null:
+		_label_focus_t = tweak.label_focus_refresh_s
+		focus_labels(get_viewport().get_camera_3d())
 	if overlay == null or weapon_stats == null:
 		return
 	if spectator != null:
@@ -166,6 +171,32 @@ func _finish_viewmodel() -> void:
 		return
 	_finished_wv = wv
 	wv.apply_loadout_finish(loadout)
+
+
+## Lead (round 215): only the targets nearest the crosshair (RangeTweak.label_focus_count within label_focus_deg)
+## and the readout lane show their HP / distance / name labels; the rest are hidden (no far-lane clutter).
+## Returns the lanes shown.
+func focus_labels(cam: Camera3D) -> Array[int]:
+	var shown: Array[int] = []
+	if cam == null or targets.is_empty():
+		return shown
+	var fwd: Vector3 = -cam.global_basis.z
+	var scored: Array = []
+	for t: RangeTarget in targets:
+		if not is_instance_valid(t) or not t.is_inside_tree():
+			continue
+		var to: Vector3 = t.zone_position(Enums.HitZone.BODY) - cam.global_position
+		scored.append([rad_to_deg(fwd.angle_to(to)), t])
+	scored.sort_custom(func(a: Array, b: Array) -> bool: return float(a[0]) < float(b[0]))
+	var limit: int = tweak.label_focus_count
+	for i: int in range(scored.size()):
+		var t: RangeTarget = scored[i][1] as RangeTarget
+		var on: bool = limit <= 0 or t.lane == readout_lane \
+				or (shown.size() < limit and float(scored[i][0]) <= tweak.label_focus_deg)
+		if on:
+			shown.append(t.lane)
+		t.set_labels_visible(on)
+	return shown
 
 
 ## {mag, mag_size, reserve, reloading} of the crew's equipped weapon: through the tracking HUD model when

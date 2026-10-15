@@ -86,6 +86,7 @@ static func build_targets(layout: RangeLayout, dummy: RangeDummyDef, difficulty:
 		s.font_size = tweak.hp_font_size
 		s.position = t.position + Vector3(0.0, layout.target_sign_height_m, 0.0)
 		root.add_child(s)
+		t.set_meta(&"signs", [s])
 		out.append(t)
 	return out
 
@@ -123,6 +124,7 @@ static func build_extra_lanes(layout: RangeLayout, table: RangeDummyTable, diffi
 		s.position = base + Vector3(0.0, layout.target_sign_height_m, 0.0)
 		fade_far(s)
 		root.add_child(s)
+		var signs: Array = [s]
 		if dummy != null:
 			var n: Label3D = sign_label(UiText.t(dummy.name_key), tweak)
 			n.font_size = tweak.dummy_sign_font_size
@@ -131,6 +133,8 @@ static func build_extra_lanes(layout: RangeLayout, table: RangeDummyTable, diffi
 			if def.is_moving():
 				n.text = UiText.t(&"ui.range.moving_sign", {"name": n.text, "speed": snappedf(def.speed_mps, 0.1)})
 			root.add_child(n)
+			signs.append(n)
+		t.set_meta(&"signs", signs)
 		var a: Array = areas.get(def.area, [def.x_m, def.x_m, def.distance_m])
 		areas[def.area] = [minf(a[0], def.x_m - def.track_half_m), maxf(a[1], def.x_m + def.track_half_m), minf(a[2], def.distance_m)]
 		out.append(t)
