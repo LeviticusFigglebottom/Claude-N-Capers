@@ -227,7 +227,7 @@ func _on_ended(e: AssaultEventEntity) -> void:
 
 func _run_van(p: Dictionary, marker: String) -> AssaultEventEntity:
 	var xf: Transform3D = Transform3D.IDENTITY
-	var ms: Array[Node3D] = _pick_markers(AssaultMarkerLookup.VAN, marker)
+	var ms: Array[Node3D] = _pick_markers(AssaultEventMarkerScan.VAN, marker)
 	var taken: Array[Vector3] = []
 	for e: AssaultEventEntity in active:
 		if e is AssaultTurretVan:
@@ -264,13 +264,13 @@ func _run_van(p: Dictionary, marker: String) -> AssaultEventEntity:
 func _run_heli(p: Dictionary, marker: String) -> AssaultEventEntity:
 	var center: Vector3
 	var radius: float = float(p.get("orbit_radius_m", 24.0))
-	var orbits: Array[Node3D] = _pick_markers(AssaultMarkerLookup.HELI_ORBIT, "")
+	var orbits: Array[Node3D] = _pick_markers(AssaultEventMarkerScan.HELI_ORBIT, "")
 	if not orbits.is_empty():
 		var o: Node3D = orbits[GameRng.stream(RNG).randi_range(0, orbits.size() - 1)]
 		center = o.global_position
 		radius = float(o.get_meta(&"radius", radius))
 	else:
-		var b: AABB = AssaultMarkerLookup.map_bounds(_rt.map)
+		var b: AABB = AssaultEventMarkerScan.map_bounds(_rt.map)
 		center = b.get_center()
 		center.y = maxf(b.end.y + 8.0, float(p.get("orbit_height_m", 30.0)))
 		center = Vector3(center.x, center.y, center.z)
@@ -296,7 +296,7 @@ func _run_heli(p: Dictionary, marker: String) -> AssaultEventEntity:
 ## {pos, name, breach (AssaultBreach marker path or "")} or {}.
 func _pick_drop(marker: String) -> Dictionary:
 	var cands: Array[Dictionary] = []
-	for m: Node3D in _pick_markers(AssaultMarkerLookup.HELI_DROP, marker):
+	for m: Node3D in _pick_markers(AssaultEventMarkerScan.HELI_DROP, marker):
 		# Roof drops (GH HeliDrop_1, off the navmesh) are recognised by geometry, not by a navmesh query: the
 		# closest-point query was not reliable in a batch (a floor drop read as off-nav, paired with a roof breach).
 		var pos: Vector3 = m.global_position
@@ -307,7 +307,7 @@ func _pick_drop(marker: String) -> Dictionary:
 		if pair != null:
 			cands.append({"pos": pos, "name": String(m.name), "breach": _map_path(pair)})
 			continue
-		if AssaultMarkerLookup.nav_point(_rt.map, pos, 1.2) == Vector3.INF:
+		if AssaultEventMarkerScan.nav_point(_rt.map, pos, 1.2) == Vector3.INF:
 			Log.warn(&"director", "HeliDrop %s: no navmesh within 1.2 m and no ceiling breach to drop through" % m.name)
 		cands.append({"pos": pos, "name": String(m.name), "breach": ""})
 	if not cands.is_empty():
@@ -320,7 +320,7 @@ func _pick_drop(marker: String) -> Dictionary:
 ## AssaultEvents root whose start is on the drop's level within ROOF_LINK_RADIUS_M. With it the roof is a police
 ## navmesh island: rope units land and walk on (NpcMotor rappels down the link), no breach pairing needed.
 func _roof_rappel_link(pos: Vector3) -> NavigationLink3D:
-	var root: Node = AssaultMarkerLookup.root(_rt.map)
+	var root: Node = AssaultEventMarkerScan.root(_rt.map)
 	if root == null:
 		return null
 	for n: Node in root.find_children("*", "NavigationLink3D", true, false):
@@ -336,7 +336,7 @@ func _roof_rappel_link(pos: Vector3) -> NavigationLink3D:
 ## The ceiling breach a roof drop at `pos` goes down through: a `ceiling` Breach_<n> within PAIR_RADIUS_M
 ## horizontally whose ceiling plane the drop stands on or above (a floor drop under it never pairs).
 func _pair_ceiling_breach(pos: Vector3) -> Node3D:
-	for m: Node3D in AssaultMarkerLookup.list(_rt.map, AssaultMarkerLookup.BREACH):
+	for m: Node3D in AssaultEventMarkerScan.list(_rt.map, AssaultEventMarkerScan.BREACH):
 		if String(m.get_meta(&"kind", "wall")) != "ceiling":
 			continue
 		if _flat(m.global_position - pos).length() <= PAIR_RADIUS_M and pos.y >= m.global_position.y - 0.3:
@@ -444,10 +444,10 @@ func _breach_candidates() -> Array[Node3D]:
 	var out: Array[Node3D] = []
 	if _rt == null or _rt.map == null:
 		return out
-	for m: Node3D in AssaultMarkerLookup.list(_rt.map, AssaultMarkerLookup.BREACH):
+	for m: Node3D in AssaultEventMarkerScan.list(_rt.map, AssaultEventMarkerScan.BREACH):
 		if not _breach_used.has(_map_path(m)):
 			out.append(m)
-	if not out.is_empty() or not AssaultMarkerLookup.list(_rt.map, AssaultMarkerLookup.BREACH).is_empty():
+	if not out.is_empty() or not AssaultEventMarkerScan.list(_rt.map, AssaultEventMarkerScan.BREACH).is_empty():
 		return out
 	for n: Node in _rt.map.get_slots(G.ENTRY_POINT):
 		var n3: Node3D = n as Node3D
@@ -471,7 +471,7 @@ func _run_breach(p: Dictionary, marker: String) -> AssaultEventEntity:
 		if d < best_d:
 			best_d = d
 			best = m
-	var is_marker: bool = AssaultMarkerLookup.list(_rt.map, AssaultMarkerLookup.BREACH).has(best)
+	var is_marker: bool = AssaultEventMarkerScan.list(_rt.map, AssaultEventMarkerScan.BREACH).has(best)
 	var path: String = _map_path(best)
 	var b: AssaultBreach = AssaultBreach.new()
 	if is_marker:
@@ -811,7 +811,7 @@ func _rope_done(owner: Node) -> void:
 # --- Helpers -----------------------------------------------------------------------------------
 
 func _pick_markers(prefix: String, marker: String) -> Array[Node3D]:
-	var ms: Array[Node3D] = AssaultMarkerLookup.list(_rt.map, prefix)
+	var ms: Array[Node3D] = AssaultEventMarkerScan.list(_rt.map, prefix)
 	if marker != "":
 		ms = ms.filter(func(m: Node3D) -> bool: return String(m.name) == marker)
 	return ms

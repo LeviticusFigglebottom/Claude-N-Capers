@@ -17,6 +17,6 @@
 | po6_16_cops_inside_office_with_weapons.jpg | PO6-16 | re-capture after B's NpcWeaponModels: the cops inside the manager office hold and fire their weapons |
 | po6_05_po6_06_gh_safe_closed_jeweler_standing.jpg | PO6-05/06 | same frame as the earlier safe-closed shot after 138f51f2: the jeweler stands at the bench (no thin-air sitting) |
 | po6_18_po6_19_gh_hostage_slumped_corpse_shot.jpg | PO6-18/19 | the cuffed hostage slumped from the kneel to the floor, then the corpse shot twice: blood at the hit point |
-| po6_17_turret_van.jpg | PO6-17 | GH loud, van at C's TurretVan_1 spot (injected until C's markers reach trunk): driving in / parked, squad out / roof turret deployed and firing (placeholder van + turret) |
-| po6_17_heli.jpg | PO6-17 | GH heli over HeliDrop_2 (alley): ropes out, a cop on the rope / circling with the Longshot at the door (red laser) |
-| po6_17_breach.jpg | PO6-17 | GH breach on ENV C's Breach_3 geometry (manager office wall): intact / blown open (hole + smoke) / the squad stepping through into the office |
+| po6_17_turret_van.jpg | PO6-17 | GH loud, van at C's TurretVan_1: driving in / parked, squad out (D characters, no capsules) / roof turret deployed and firing at the crew on the pavement (placeholder van + turret) |
+| po6_17_heli.jpg | PO6-17 | GH heli over HeliDrop_2 (alley): two straight ropes with cops on them / same view with the heli hidden (the rectangles and the diagonal are the map's fire-escape railings and a cable, not ropes) / close-up of the two ropes / orbit with the Longshot at the door (red laser) |
+| po6_17_breach.jpg | PO6-17 | GH breach on C's Breach_3 (U6 manager-office window): squad hanging on the rope from the parapet / blast (window blown) / inside U6: the squad swung in |

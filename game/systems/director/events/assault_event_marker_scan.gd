@@ -3,7 +3,7 @@
 ## HeliDrop_<n>, Breach_<n> (meta kind wall|window|ceiling, size Vector2, -Z into the room). Owner: ENV A.
 ## Maps without them use fallbacks so events still fire (AssaultEventRunner): police spawns for the van and the
 ## heli drop, the map's mesh bounds for the orbit, ENTRY points as fx-only breaches.
-class_name AssaultMarkerLookup
+class_name AssaultEventMarkerScan
 extends RefCounted
 
 const ROOT_NAME: String = "AssaultEvents"
