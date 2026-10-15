@@ -146,7 +146,9 @@ def build(ctx) -> None:
     ctx.marker("SideRail", (w.BODY_HW + 0.0057, w.SIDE_Y, w.BORE_Z - 0.008))
     stock_mount = ctx.marker("StockMount", w.STOCK_MOUNT)
     ctx.marker("GripMount", (0.0, 0.0, 0.0))
-    ctx.marker("LeftHandIK", (-0.020, w.UNDER_Y + 0.020, w.BODY_BOTTOM_Z - 0.035))
+    # Lead ruling (round 211): the smg cup grip like hornet/lancet/tern (vgrip set = backlog): x 0, 12 mm under the body,
+    # in the fore-end gap between the trigger guard (~y 0.075) and the moulded FrontGrip (y 0.131), clear of both.
+    ctx.marker("LeftHandIK", (0.0, 0.100, w.BODY_BOTTOM_Z - 0.012))
 
     stock_sight = ctx.marker("StockSight", (0.0, 0.0, 0.0), parent=sight_rail)
     _irons, aim = w.build_irons(ctx, mats, parent=stock_sight)
