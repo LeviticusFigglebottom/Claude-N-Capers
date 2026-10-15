@@ -439,6 +439,17 @@ func kit_scene(piece: String) -> PackedScene:
 	return _scene_cache[path]
 
 
+## Catalog prop scene by asset id (PropCatalog `scene`, tools/blender/props), cached; null + error if absent.
+func _catalog_scene(asset: String) -> PackedScene:
+	var path: String = String(PropCatalog.entry(StringName(asset)).get("scene", ""))
+	if path == "":
+		errors.append("catalog asset %s not found" % asset)
+		return null
+	if not _scene_cache.has(path):
+		_scene_cache[path] = load(path) as PackedScene
+	return _scene_cache[path]
+
+
 ## Gameplay prefab scene by contract id, or null (no error) when `optional` and not on trunk.
 func prefab_scene(prefab: String, optional: bool = false) -> PackedScene:
 	if _scene_cache.has(prefab):

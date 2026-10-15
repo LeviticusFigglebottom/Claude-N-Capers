@@ -1,0 +1,8 @@
+asset: prop_dumpster_d094
+script: tools/blender/props/prefab_visuals.py
+params: {"cat": {"kind": "dumpster", "prefab": "body_container"}, "d": 0.94, "fn": "dumpster"}
+seed: 3124058467  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_dumpster_d094
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 12000

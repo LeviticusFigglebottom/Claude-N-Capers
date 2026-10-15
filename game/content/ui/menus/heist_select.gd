@@ -113,6 +113,9 @@ func _build_difficulties(parent: Container) -> void:
 			b.tooltip_text = UiText.t(&"ui.loadout.locked")
 			# PO-4: muted name (disabled tab) + tooltip; "(locked)" on six tabs wrapped the row at 720p.
 			b.tooltip_text = UiText.t(&"ui.heist_select.difficulty_locked", {"name": UiText.t(UiText.difficulty_key(d))})
+			if HeistCatalog.is_progression_difficulty(d) and d > 0:
+				b.tooltip_text = UiText.t(&"ui.heist_select.difficulty_locked_progress",
+						{"name": UiText.t(UiText.difficulty_key(d)), "prev": UiText.t(UiText.difficulty_key(d - 1))})
 		b.pressed.connect(select_difficulty.bind(d))
 		row.add_child(b)
 		difficulty_buttons.append(b)

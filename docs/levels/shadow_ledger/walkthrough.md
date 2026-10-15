@@ -118,9 +118,9 @@ Result: **PASS** (0 failure(s))
 | `Spawns/RoofSpawn1` | `Gameplay/Misc/ArchiveSafe/UsePoint` | use_point | 10.8 | 41.6 | 3.85 | detour (whitelisted) |
 | `Spawns/RoofSpawn1` | `Gameplay/Misc/ArchiveSafe/ArchiveCash` | loot_spawn | 10.6 | 42.5 | 4.00 | detour (whitelisted) |
 | `Spawns/RoofSpawn1` | `Gameplay/Misc/ArchiveSafe/ArchiveCash/UsePoint` | use_point | 10.6 | 42.5 | 4.00 | detour (whitelisted) |
-| `Spawns/RoofSpawn1` | `Gameplay/Misc/Painting1` | loot_spawn | 26.7 | 32.8 | 1.23 | ok |
+| `Spawns/RoofSpawn1` | `Gameplay/Misc/Painting1` | loot_spawn | 26.8 | 32.4 | 1.21 | ok |
 | `Spawns/RoofSpawn1` | `Gameplay/Misc/Painting1/UsePoint` | use_point | 26.8 | 32.4 | 1.21 | ok |
-| `Spawns/RoofSpawn1` | `Gameplay/Misc/Painting2` | loot_spawn | 27.6 | 33.5 | 1.21 | ok |
+| `Spawns/RoofSpawn1` | `Gameplay/Misc/Painting2` | loot_spawn | 27.8 | 33.2 | 1.20 | ok |
 | `Spawns/RoofSpawn1` | `Gameplay/Misc/Painting2/UsePoint` | use_point | 27.8 | 33.2 | 1.20 | ok |
 | `Spawns/RoofSpawn1` | `Gameplay/Misc/PrintoutBooks` | loot_spawn | 14.6 | 33.1 | 2.27 | ok |
 | `Spawns/RoofSpawn1` | `Gameplay/Misc/PrintoutBooks/UsePoint` | use_point | 14.1 | 32.5 | 2.31 | ok |
@@ -247,9 +247,9 @@ Result: **PASS** (0 failure(s))
 | `Spawns/RoofSpawn2` | `Gameplay/Misc/ArchiveSafe/UsePoint` | use_point | 11.0 | 40.6 | 3.70 | detour (whitelisted) |
 | `Spawns/RoofSpawn2` | `Gameplay/Misc/ArchiveSafe/ArchiveCash` | loot_spawn | 10.7 | 41.6 | 3.89 | detour (whitelisted) |
 | `Spawns/RoofSpawn2` | `Gameplay/Misc/ArchiveSafe/ArchiveCash/UsePoint` | use_point | 10.7 | 41.6 | 3.89 | detour (whitelisted) |
-| `Spawns/RoofSpawn2` | `Gameplay/Misc/Painting1` | loot_spawn | 25.6 | 31.8 | 1.24 | ok |
+| `Spawns/RoofSpawn2` | `Gameplay/Misc/Painting1` | loot_spawn | 25.7 | 31.4 | 1.22 | ok |
 | `Spawns/RoofSpawn2` | `Gameplay/Misc/Painting1/UsePoint` | use_point | 25.7 | 31.4 | 1.22 | ok |
-| `Spawns/RoofSpawn2` | `Gameplay/Misc/Painting2` | loot_spawn | 26.5 | 32.5 | 1.23 | ok |
+| `Spawns/RoofSpawn2` | `Gameplay/Misc/Painting2` | loot_spawn | 26.7 | 32.2 | 1.21 | ok |
 | `Spawns/RoofSpawn2` | `Gameplay/Misc/Painting2/UsePoint` | use_point | 26.7 | 32.2 | 1.21 | ok |
 | `Spawns/RoofSpawn2` | `Gameplay/Misc/PrintoutBooks` | loot_spawn | 14.5 | 32.1 | 2.22 | ok |
 | `Spawns/RoofSpawn2` | `Gameplay/Misc/PrintoutBooks/UsePoint` | use_point | 14.0 | 31.5 | 2.26 | ok |
@@ -376,9 +376,9 @@ Result: **PASS** (0 failure(s))
 | `Spawns/RoofSpawn3` | `Gameplay/Misc/ArchiveSafe/UsePoint` | use_point | 11.3 | 39.6 | 3.51 | detour (whitelisted) |
 | `Spawns/RoofSpawn3` | `Gameplay/Misc/ArchiveSafe/ArchiveCash` | loot_spawn | 10.9 | 40.6 | 3.74 | detour (whitelisted) |
 | `Spawns/RoofSpawn3` | `Gameplay/Misc/ArchiveSafe/ArchiveCash/UsePoint` | use_point | 10.9 | 40.6 | 3.74 | detour (whitelisted) |
-| `Spawns/RoofSpawn3` | `Gameplay/Misc/Painting1` | loot_spawn | 24.4 | 30.8 | 1.26 | ok |
+| `Spawns/RoofSpawn3` | `Gameplay/Misc/Painting1` | loot_spawn | 24.6 | 30.5 | 1.24 | ok |
 | `Spawns/RoofSpawn3` | `Gameplay/Misc/Painting1/UsePoint` | use_point | 24.6 | 30.5 | 1.24 | ok |
-| `Spawns/RoofSpawn3` | `Gameplay/Misc/Painting2` | loot_spawn | 25.4 | 31.6 | 1.24 | ok |
+| `Spawns/RoofSpawn3` | `Gameplay/Misc/Painting2` | loot_spawn | 25.5 | 31.3 | 1.22 | ok |
 | `Spawns/RoofSpawn3` | `Gameplay/Misc/Painting2/UsePoint` | use_point | 25.5 | 31.3 | 1.22 | ok |
 | `Spawns/RoofSpawn3` | `Gameplay/Misc/PrintoutBooks` | loot_spawn | 14.4 | 31.1 | 2.16 | ok |
 | `Spawns/RoofSpawn3` | `Gameplay/Misc/PrintoutBooks/UsePoint` | use_point | 13.9 | 30.6 | 2.20 | ok |
@@ -505,9 +505,9 @@ Result: **PASS** (0 failure(s))
 | `Spawns/RoofSpawn4` | `Gameplay/Misc/ArchiveSafe/UsePoint` | use_point | 11.7 | 38.8 | 3.31 | detour (whitelisted) |
 | `Spawns/RoofSpawn4` | `Gameplay/Misc/ArchiveSafe/ArchiveCash` | loot_spawn | 11.2 | 39.7 | 3.56 | detour (whitelisted) |
 | `Spawns/RoofSpawn4` | `Gameplay/Misc/ArchiveSafe/ArchiveCash/UsePoint` | use_point | 11.2 | 39.7 | 3.56 | detour (whitelisted) |
-| `Spawns/RoofSpawn4` | `Gameplay/Misc/Painting1` | loot_spawn | 23.3 | 29.9 | 1.28 | ok |
+| `Spawns/RoofSpawn4` | `Gameplay/Misc/Painting1` | loot_spawn | 23.5 | 29.6 | 1.26 | ok |
 | `Spawns/RoofSpawn4` | `Gameplay/Misc/Painting1/UsePoint` | use_point | 23.5 | 29.6 | 1.26 | ok |
-| `Spawns/RoofSpawn4` | `Gameplay/Misc/Painting2` | loot_spawn | 24.3 | 30.7 | 1.26 | ok |
+| `Spawns/RoofSpawn4` | `Gameplay/Misc/Painting2` | loot_spawn | 24.4 | 30.4 | 1.24 | ok |
 | `Spawns/RoofSpawn4` | `Gameplay/Misc/Painting2/UsePoint` | use_point | 24.4 | 30.4 | 1.24 | ok |
 | `Spawns/RoofSpawn4` | `Gameplay/Misc/PrintoutBooks` | loot_spawn | 14.5 | 30.2 | 2.09 | ok |
 | `Spawns/RoofSpawn4` | `Gameplay/Misc/PrintoutBooks/UsePoint` | use_point | 14.0 | 29.7 | 2.12 | ok |
@@ -634,9 +634,9 @@ Result: **PASS** (0 failure(s))
 | `Spawns/ServiceSpawn1` | `Gameplay/Misc/ArchiveSafe/UsePoint` | use_point | 28.6 | 48.3 | 1.69 | ok |
 | `Spawns/ServiceSpawn1` | `Gameplay/Misc/ArchiveSafe/ArchiveCash` | loot_spawn | 27.5 | 49.2 | 1.79 | ok |
 | `Spawns/ServiceSpawn1` | `Gameplay/Misc/ArchiveSafe/ArchiveCash/UsePoint` | use_point | 27.5 | 49.2 | 1.79 | ok |
-| `Spawns/ServiceSpawn1` | `Gameplay/Misc/Painting1` | loot_spawn | 8.3 | 40.4 | 4.85 | detour (whitelisted) |
+| `Spawns/ServiceSpawn1` | `Gameplay/Misc/Painting1` | loot_spawn | 8.5 | 40.5 | 4.78 | detour (whitelisted) |
 | `Spawns/ServiceSpawn1` | `Gameplay/Misc/Painting1/UsePoint` | use_point | 8.5 | 40.5 | 4.78 | detour (whitelisted) |
-| `Spawns/ServiceSpawn1` | `Gameplay/Misc/Painting2` | loot_spawn | 8.5 | 41.4 | 4.86 | detour (whitelisted) |
+| `Spawns/ServiceSpawn1` | `Gameplay/Misc/Painting2` | loot_spawn | 8.7 | 41.5 | 4.79 | detour (whitelisted) |
 | `Spawns/ServiceSpawn1` | `Gameplay/Misc/Painting2/UsePoint` | use_point | 8.7 | 41.5 | 4.79 | detour (whitelisted) |
 | `Spawns/ServiceSpawn1` | `Gameplay/Misc/PrintoutBooks` | loot_spawn | 22.8 | 50.0 | 2.19 | ok |
 | `Spawns/ServiceSpawn1` | `Gameplay/Misc/PrintoutBooks/UsePoint` | use_point | 22.7 | 49.5 | 2.18 | ok |
@@ -763,9 +763,9 @@ Result: **PASS** (0 failure(s))
 | `Spawns/ServiceSpawn2` | `Gameplay/Misc/ArchiveSafe/UsePoint` | use_point | 29.6 | 48.8 | 1.65 | ok |
 | `Spawns/ServiceSpawn2` | `Gameplay/Misc/ArchiveSafe/ArchiveCash` | loot_spawn | 28.5 | 49.7 | 1.75 | ok |
 | `Spawns/ServiceSpawn2` | `Gameplay/Misc/ArchiveSafe/ArchiveCash/UsePoint` | use_point | 28.5 | 49.7 | 1.75 | ok |
-| `Spawns/ServiceSpawn2` | `Gameplay/Misc/Painting1` | loot_spawn | 8.3 | 41.0 | 4.95 | detour (whitelisted) |
+| `Spawns/ServiceSpawn2` | `Gameplay/Misc/Painting1` | loot_spawn | 8.4 | 41.1 | 4.88 | detour (whitelisted) |
 | `Spawns/ServiceSpawn2` | `Gameplay/Misc/Painting1/UsePoint` | use_point | 8.4 | 41.1 | 4.88 | detour (whitelisted) |
-| `Spawns/ServiceSpawn2` | `Gameplay/Misc/Painting2` | loot_spawn | 8.3 | 42.0 | 5.04 | detour (whitelisted) |
+| `Spawns/ServiceSpawn2` | `Gameplay/Misc/Painting2` | loot_spawn | 8.5 | 42.0 | 4.97 | detour (whitelisted) |
 | `Spawns/ServiceSpawn2` | `Gameplay/Misc/Painting2/UsePoint` | use_point | 8.5 | 42.0 | 4.97 | detour (whitelisted) |
 | `Spawns/ServiceSpawn2` | `Gameplay/Misc/PrintoutBooks` | loot_spawn | 24.0 | 50.6 | 2.11 | ok |
 | `Spawns/ServiceSpawn2` | `Gameplay/Misc/PrintoutBooks/UsePoint` | use_point | 23.9 | 50.0 | 2.10 | ok |
@@ -892,9 +892,9 @@ Result: **PASS** (0 failure(s))
 | `Spawns/ServiceSpawn3` | `Gameplay/Misc/ArchiveSafe/UsePoint` | use_point | 28.0 | 47.0 | 1.68 | ok |
 | `Spawns/ServiceSpawn3` | `Gameplay/Misc/ArchiveSafe/ArchiveCash` | loot_spawn | 26.8 | 47.9 | 1.79 | ok |
 | `Spawns/ServiceSpawn3` | `Gameplay/Misc/ArchiveSafe/ArchiveCash/UsePoint` | use_point | 26.8 | 47.9 | 1.79 | ok |
-| `Spawns/ServiceSpawn3` | `Gameplay/Misc/Painting1` | loot_spawn | 8.8 | 39.1 | 4.45 | detour (whitelisted) |
+| `Spawns/ServiceSpawn3` | `Gameplay/Misc/Painting1` | loot_spawn | 9.0 | 39.2 | 4.35 | detour (whitelisted) |
 | `Spawns/ServiceSpawn3` | `Gameplay/Misc/Painting1/UsePoint` | use_point | 9.0 | 39.2 | 4.35 | detour (whitelisted) |
-| `Spawns/ServiceSpawn3` | `Gameplay/Misc/Painting2` | loot_spawn | 9.0 | 40.1 | 4.47 | detour (whitelisted) |
+| `Spawns/ServiceSpawn3` | `Gameplay/Misc/Painting2` | loot_spawn | 9.2 | 40.2 | 4.38 | detour (whitelisted) |
 | `Spawns/ServiceSpawn3` | `Gameplay/Misc/Painting2/UsePoint` | use_point | 9.2 | 40.2 | 4.38 | detour (whitelisted) |
 | `Spawns/ServiceSpawn3` | `Gameplay/Misc/PrintoutBooks` | loot_spawn | 23.2 | 48.7 | 2.10 | ok |
 | `Spawns/ServiceSpawn3` | `Gameplay/Misc/PrintoutBooks/UsePoint` | use_point | 23.1 | 48.2 | 2.09 | ok |
@@ -1021,9 +1021,9 @@ Result: **PASS** (0 failure(s))
 | `Spawns/ServiceSpawn4` | `Gameplay/Misc/ArchiveSafe/UsePoint` | use_point | 29.0 | 47.7 | 1.64 | ok |
 | `Spawns/ServiceSpawn4` | `Gameplay/Misc/ArchiveSafe/ArchiveCash` | loot_spawn | 27.9 | 48.7 | 1.75 | ok |
 | `Spawns/ServiceSpawn4` | `Gameplay/Misc/ArchiveSafe/ArchiveCash/UsePoint` | use_point | 27.9 | 48.7 | 1.75 | ok |
-| `Spawns/ServiceSpawn4` | `Gameplay/Misc/Painting1` | loot_spawn | 8.7 | 39.9 | 4.57 | detour (whitelisted) |
+| `Spawns/ServiceSpawn4` | `Gameplay/Misc/Painting1` | loot_spawn | 8.9 | 40.0 | 4.47 | detour (whitelisted) |
 | `Spawns/ServiceSpawn4` | `Gameplay/Misc/Painting1/UsePoint` | use_point | 8.9 | 40.0 | 4.47 | detour (whitelisted) |
-| `Spawns/ServiceSpawn4` | `Gameplay/Misc/Painting2` | loot_spawn | 8.8 | 40.9 | 4.66 | detour (whitelisted) |
+| `Spawns/ServiceSpawn4` | `Gameplay/Misc/Painting2` | loot_spawn | 9.0 | 41.0 | 4.56 | detour (whitelisted) |
 | `Spawns/ServiceSpawn4` | `Gameplay/Misc/Painting2/UsePoint` | use_point | 9.0 | 41.0 | 4.56 | detour (whitelisted) |
 | `Spawns/ServiceSpawn4` | `Gameplay/Misc/PrintoutBooks` | loot_spawn | 24.4 | 49.5 | 2.03 | ok |
 | `Spawns/ServiceSpawn4` | `Gameplay/Misc/PrintoutBooks/UsePoint` | use_point | 24.2 | 49.0 | 2.02 | ok |
@@ -1150,9 +1150,9 @@ Result: **PASS** (0 failure(s))
 | `Spawns/OobRoof1` | `Gameplay/Misc/ArchiveSafe/UsePoint` | use_point | 12.4 | 40.6 | 3.28 | detour (whitelisted) |
 | `Spawns/OobRoof1` | `Gameplay/Misc/ArchiveSafe/ArchiveCash` | loot_spawn | 12.2 | 41.6 | 3.41 | detour (whitelisted) |
 | `Spawns/OobRoof1` | `Gameplay/Misc/ArchiveSafe/ArchiveCash/UsePoint` | use_point | 12.2 | 41.6 | 3.41 | detour (whitelisted) |
-| `Spawns/OobRoof1` | `Gameplay/Misc/Painting1` | loot_spawn | 26.1 | 31.8 | 1.22 | ok |
+| `Spawns/OobRoof1` | `Gameplay/Misc/Painting1` | loot_spawn | 26.2 | 31.4 | 1.20 | ok |
 | `Spawns/OobRoof1` | `Gameplay/Misc/Painting1/UsePoint` | use_point | 26.2 | 31.4 | 1.20 | ok |
-| `Spawns/OobRoof1` | `Gameplay/Misc/Painting2` | loot_spawn | 27.0 | 32.5 | 1.20 | ok |
+| `Spawns/OobRoof1` | `Gameplay/Misc/Painting2` | loot_spawn | 27.2 | 32.2 | 1.19 | ok |
 | `Spawns/OobRoof1` | `Gameplay/Misc/Painting2/UsePoint` | use_point | 27.2 | 32.2 | 1.19 | ok |
 | `Spawns/OobRoof1` | `Gameplay/Misc/PrintoutBooks` | loot_spawn | 12.8 | 32.1 | 2.50 | ok |
 | `Spawns/OobRoof1` | `Gameplay/Misc/PrintoutBooks/UsePoint` | use_point | 12.4 | 31.6 | 2.55 | ok |
@@ -1279,9 +1279,9 @@ Result: **PASS** (0 failure(s))
 | `Spawns/OobRoof2` | `Gameplay/Misc/ArchiveSafe/UsePoint` | use_point | 12.5 | 39.5 | 3.15 | detour (whitelisted) |
 | `Spawns/OobRoof2` | `Gameplay/Misc/ArchiveSafe/ArchiveCash` | loot_spawn | 12.2 | 40.5 | 3.31 | detour (whitelisted) |
 | `Spawns/OobRoof2` | `Gameplay/Misc/ArchiveSafe/ArchiveCash/UsePoint` | use_point | 12.2 | 40.5 | 3.31 | detour (whitelisted) |
-| `Spawns/OobRoof2` | `Gameplay/Misc/Painting1` | loot_spawn | 24.9 | 30.7 | 1.23 | ok |
+| `Spawns/OobRoof2` | `Gameplay/Misc/Painting1` | loot_spawn | 25.1 | 30.3 | 1.21 | ok |
 | `Spawns/OobRoof2` | `Gameplay/Misc/Painting1/UsePoint` | use_point | 25.1 | 30.3 | 1.21 | ok |
-| `Spawns/OobRoof2` | `Gameplay/Misc/Painting2` | loot_spawn | 25.9 | 31.4 | 1.21 | ok |
+| `Spawns/OobRoof2` | `Gameplay/Misc/Painting2` | loot_spawn | 26.0 | 31.1 | 1.20 | ok |
 | `Spawns/OobRoof2` | `Gameplay/Misc/Painting2/UsePoint` | use_point | 26.0 | 31.1 | 1.20 | ok |
 | `Spawns/OobRoof2` | `Gameplay/Misc/PrintoutBooks` | loot_spawn | 12.7 | 31.0 | 2.44 | ok |
 | `Spawns/OobRoof2` | `Gameplay/Misc/PrintoutBooks/UsePoint` | use_point | 12.2 | 30.4 | 2.49 | ok |
@@ -1408,9 +1408,9 @@ Result: **PASS** (0 failure(s))
 | `Spawns/OobRoof3` | `Gameplay/Misc/ArchiveSafe/UsePoint` | use_point | 12.8 | 38.4 | 3.00 | detour (whitelisted) |
 | `Spawns/OobRoof3` | `Gameplay/Misc/ArchiveSafe/ArchiveCash` | loot_spawn | 12.4 | 39.4 | 3.18 | detour (whitelisted) |
 | `Spawns/OobRoof3` | `Gameplay/Misc/ArchiveSafe/ArchiveCash/UsePoint` | use_point | 12.4 | 39.4 | 3.18 | detour (whitelisted) |
-| `Spawns/OobRoof3` | `Gameplay/Misc/Painting1` | loot_spawn | 23.8 | 29.6 | 1.24 | ok |
+| `Spawns/OobRoof3` | `Gameplay/Misc/Painting1` | loot_spawn | 23.9 | 29.2 | 1.22 | ok |
 | `Spawns/OobRoof3` | `Gameplay/Misc/Painting1/UsePoint` | use_point | 23.9 | 29.2 | 1.22 | ok |
-| `Spawns/OobRoof3` | `Gameplay/Misc/Painting2` | loot_spawn | 24.7 | 30.3 | 1.23 | ok |
+| `Spawns/OobRoof3` | `Gameplay/Misc/Painting2` | loot_spawn | 24.9 | 30.0 | 1.21 | ok |
 | `Spawns/OobRoof3` | `Gameplay/Misc/Painting2/UsePoint` | use_point | 24.9 | 30.0 | 1.21 | ok |
 | `Spawns/OobRoof3` | `Gameplay/Misc/PrintoutBooks` | loot_spawn | 12.7 | 29.9 | 2.36 | ok |
 | `Spawns/OobRoof3` | `Gameplay/Misc/PrintoutBooks/UsePoint` | use_point | 12.2 | 29.4 | 2.41 | ok |

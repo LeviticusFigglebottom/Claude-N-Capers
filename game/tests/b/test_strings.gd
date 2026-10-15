@@ -168,9 +168,13 @@ func test_glasshouse_objectives_follow_the_design_doc() -> void:
 	assert_eq(ids, tags, "briefing placeholder objective ids")
 	for t: String in tags:
 		assert_has(_table, "objective.glasshouse.%s" % t)
+	# D-114 §1 / PO6-04: the silent stealth route adds a `code` step (A's mission); the doc's Objectives section is
+	# the lead's to update, so the key is allowed here until then.
+	var added: Array[String] = ["code"]
 	for k: String in _table.keys():
 		if k.begins_with("objective.glasshouse."):
-			assert_has(tags, k.trim_prefix("objective.glasshouse."), "no guessed objective key: %s" % k)
+			var tag: String = k.trim_prefix("objective.glasshouse.")
+			assert_true(tags.has(tag) or added.has(tag), "no guessed objective key: %s" % k)
 
 
 ## D-043 QA-24: every AI teammate order is acknowledged with `vo.crew.ack_<order>`: crew_ai_brain.gd builds

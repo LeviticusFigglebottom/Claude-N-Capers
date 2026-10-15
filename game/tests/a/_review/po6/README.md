@@ -14,3 +14,6 @@
 | po6_05_gh_safe_closed.jpg | PO6-05 | GH workshop safe closed: no loot visible in front of it |
 | po6_01_gh_drill_placed_once.jpg | PO6-01 | one placement: the drill is on the safe and running |
 | po6_05_po6_18_gh_safe_open_hostage_before_topple_fix.jpg | PO6-05/18 | safe open with the loot inside; a cuffed hostage shot while kneeling stays in place (this frame is before the topple fix: now the body slumps from the kneel to the floor, test_po6_19 kneeling_hostage) |
+| po6_16_cops_inside_office_with_weapons.jpg | PO6-16 | re-capture after B's NpcWeaponModels: the cops inside the manager office hold and fire their weapons |
+| po6_05_po6_06_gh_safe_closed_jeweler_standing.jpg | PO6-05/06 | same frame as the earlier safe-closed shot after 138f51f2: the jeweler stands at the bench (no thin-air sitting) |
+| po6_18_po6_19_gh_hostage_slumped_corpse_shot.jpg | PO6-18/19 | the cuffed hostage slumped from the kneel to the floor, then the corpse shot twice: blood at the hit point |

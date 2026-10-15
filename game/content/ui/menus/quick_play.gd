@@ -29,7 +29,7 @@ static func last(p: PlayerProfile) -> Dictionary:
 	return {"heist_id": id, "difficulty": diff}
 
 
-## Button text: "Continue · Glasshouse · Routine".
+## Button text: "Continue · Golden Hour · Routine".
 static func label(job: Dictionary) -> String:
 	return UiText.t(&"ui.menu.continue_job", {
 		"heist": UiText.t(StringName("heist.%s.name" % job["heist_id"])),

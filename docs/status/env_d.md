@@ -3,6 +3,35 @@
 Owner: ENV D. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-15 (later): PO6-18 deaths, PO6-11b pistol support hand, Wasp SMG refit
+- **PO6-18** (3fb66f28): death_crouch, death_kneel_cuffed, death_kneel (from surrender f48), death_prone,
+  death_downed. Each starts on its source frame and the root stays fixed; checked in test_anims
+  `_check_pose_deaths`. Evidence: `_review/po6_18_*`.
+- **SMG refit including wasp_pdw** (b33ddb77) on B's 871b6646 finger ridge; P's smg offset is
+  (-0.0492, -0.0297, 0.0004).
+- **PO6-11b** (8ede90c9): `PISTOL_GRIPS`, fitted against the gun and the firing hand's skin. Evidence: `_review/po6_11b/`.
+
+## 2026-10-15: PO6-09 support hand, SMG re-time, PO6-19 ragdolls (D-114; LEAD session_01XAPqmFJ32zHKLK9Sezymym)
+- **PO6-09** (fcd702b7, evidence 6524e268): the "finger detached from the hand" was the support thumb. Rigid hand
+  weights kept the whole thumb tube on thumb_01, and thumb_opp -30 lifted it onto the handguard's top edge, away
+  from the palm.
+  - Fix: `_arms._thenar_blend` (FP arms only; the thumb weight ramps in along the metacarpal) plus every long-gun
+    set refitted on all its guns. SupportGrip gains `thumb` and `fingers`.
+  - P's PFingerClip worst depth is now ≤ 1.0 mm on all 8 listed guns (it was up to 4.4).
+  - test_arms skin check: hull hit + ray parity + 1 mm depth.
+  - Evidence: `_review/po6_09/`.
+  - ENV P owes in the same merge: the new set_left_hand_grip_offset values (= `SupportGrip.offset`),
+    test_p_grip_offset's LONG_GUN_GRIPS, and the hard assert.
+- **SMG re-time** (c42b1bd0, after merging origin/env/b-content): the smg left_ik is B's Hornet marker, and
+  `LONG_GUN_GRIPS["smg"]` is fitted on hornet, lancet, ferret, hush and mastiff (≤ 0.81 mm). New P offset for smg:
+  (-0.0439, -0.0264, 0.0005). The palm-to-marker tolerance for smg is 4 cm (like the saw).
+  - Open: wasp_pdw still has a vertical-grip marker in the smg set (lead's call).
+- **PO6-19** (6e456fb6): `Skeleton3D/Ragdoll` PhysicalBoneSimulator3D (12 bodies, capped joints, 79.5 kg) on all
+  102 characters; the API is in `world/characters/_tools/RAGDOLL.md`. Asks for the lead: name physics layer 11 and
+  add contract v1.12.
+- Grip-fit tools: scratch Blender scripts (evaluator, PFingerClip-like; fitter: coordinate descent + per-finger
+  bisection to contact). They are not in the repo; the method is described above and in `_arms_clips` LONG_GUN_GRIPS.
+
 ## HANDOFF 2026-10-14
 
 **Branch head:** env/d-art at the commit that adds this section (on top of 8ac1e97e). It adds this handoff, plus the

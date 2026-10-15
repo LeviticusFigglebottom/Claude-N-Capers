@@ -22,7 +22,9 @@ func after_all() -> void:
 
 func test_data_is_complete() -> void:
 	var defs: Array[AchievementDef] = Achievements.all()
-	assert_true(defs.size() >= 35 and defs.size() <= 45, "about 40 achievements (B7-02): %d" % defs.size())
+	# B7-02 set of about 40, plus D-111's unlock achievements (Deep Water, Main Event, Private Viewing, The Planner,
+	# Wheelman).
+	assert_true(defs.size() >= 35 and defs.size() <= 50, "about 40 achievements (B7-02) + D-111: %d" % defs.size())
 	var strings: Dictionary = StringTable.parse_csv()
 	for a: AchievementDef in defs:
 		assert_true(String(a.id).begins_with("achievement."), String(a.id))

@@ -10,7 +10,7 @@ const MIN_FROM_GRIP_M: float = 0.06
 const MIN_FROM_MUZZLE_M: float = 0.08
 const MAX_REACH_M: float = 0.46
 ## Barrel-end meshes a support hand must not hold.
-const BARREL_PARTS: Array[String] = ["Barrel", "Barrels", "BarrelsBead", "Brake", "FlashHider", "MuzzleNut", "Can"]
+const BARREL_PARTS: Array[String] = ["Barrel", "Barrels", "BarrelsBead", "Brake", "MuzzleBrake", "FlashHider", "MuzzleNut", "Can"]
 
 
 static func offsets(def: WeaponDef) -> Dictionary:

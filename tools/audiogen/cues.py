@@ -1770,6 +1770,39 @@ def assault_heli_leave(rng: np.random.Generator, v: int) -> np.ndarray:
     return fade(y, 0.05, 0.4)
 
 
+def assault_van_engine(rng: np.random.Generator, v: int) -> np.ndarray:
+    """Parked armored van idling (keyed loop on assault_event_started/ended): diesel at ~720 rpm with a slow
+    lope and a faint alternator whine. Seamless 4 s loop."""
+    def render(d: float) -> np.ndarray:
+        t = tvec(d)
+        rpm = 720 + 25 * np.sin(2 * np.pi * 0.5 * t)
+        whine = osc.sine(1650, d) * 0.01
+        return _diesel(rng, d, rpm) * 0.8 + whine
+    return make_loop(render, 4.0, 0.4)
+
+
+def assault_heli_rotor(rng: np.random.Generator, v: int) -> np.ndarray:
+    """Police helicopter orbiting (keyed loop on assault_event_started/ended): steady 17 Hz blade slap over the
+    turbine, a slow distance swell. Seamless 6 s loop."""
+    def render(d: float) -> np.ndarray:
+        t = tvec(d)
+        y = _rotor(rng, d, 0.85 + 0.15 * np.sin(2 * np.pi * t / 6.0))
+        return filters.lp(y, 4200)
+    return make_loop(render, 6.0, 0.5)
+
+
+def assault_event_warning(rng: np.random.Generator, v: int) -> np.ndarray:
+    """2D HUD sting on any assault event start: two descending alarm tones (A5 -> E5), square + sine, 0.55 s,
+    dry. Niche: the only two-tone downward sting on the UI bus."""
+    dur = 0.55
+    y = np.zeros(nsamp(dur))
+    for i, f in enumerate((880.0, 659.3)):
+        ln = 0.22
+        tone = (osc.square(f, ln, 0.5) * 0.35 + osc.sine(f, ln) * 0.65) * env.adsr(ln, 0.005, 0.05, 0.75, 0.06)
+        place(y, filters.lp(tone, 3500), nsamp(0.02 + i * 0.25))
+    return y
+
+
 def assault_breach_warning(rng: np.random.Generator, v: int) -> np.ndarray:
     """Breach charge armed on a wall: three fast electronic beeps (1.9 kHz) then a rising tone. 1.6 s; it tells
     the crew to get clear before the blast."""
@@ -2268,6 +2301,12 @@ CUES: list[CueSpec] = [
     CueSpec("assault_turret_destroyed", assault_turret_destroyed, bus="Enemies", max_distance=100.0, note="PO6-17"),
     CueSpec("assault_heli_arrive", assault_heli_arrive, bus="Enemies", max_distance=250.0, note="PO6-17 one-shot"),
     CueSpec("assault_heli_leave", assault_heli_leave, bus="Enemies", max_distance=250.0, note="PO6-17"),
+    CueSpec("assault_van_engine", assault_van_engine, bus="Enemies", loop=True, max_distance=60.0, volume_db=-4.0,
+            note="PO6-17 keyed loop (assault_event_started/ended)"),
+    CueSpec("assault_heli_rotor", assault_heli_rotor, bus="Enemies", loop=True, max_distance=250.0,
+            note="PO6-17 keyed loop (assault_event_started/ended)"),
+    CueSpec("assault_event_warning", assault_event_warning, bus="UI", positional=False, volume_db=-6.0,
+            cooldown_s=3.0, note="PO6-17 HUD sting (B plays it)"),
     CueSpec("assault_breach_warning", assault_breach_warning, bus="Enemies", max_distance=40.0, note="PO6-17"),
     CueSpec("door_breach", door_breach, variations=3, max_distance=60.0, pitch_jitter=0.04,
             note="QA-36 audio_cues v1.2: police breach, 3D at the door"),

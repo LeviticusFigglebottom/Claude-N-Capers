@@ -535,6 +535,12 @@ func _build_site(geo: Node3D) -> void:
 		if b.size() > 3 and String(b[3]) == "ridge":
 			RT.apply(blk)  # an edge guard (gunwale), not a perch (D-104 slopes)
 	_far_shore_lights(blocks)
+	# D-111: the launch visual over its hidden colliders (L.LAUNCH; the escape E3 boat).
+	var launch: Node3D = _catalog_scene(String(L.LAUNCH[0])).instantiate() as Node3D
+	launch.name = "Launch"
+	launch.position = L.LAUNCH[1]
+	launch.basis = yaw_basis(float(L.LAUNCH[2]))
+	add(blocks, launch)
 	var fences: Node3D = add(site, node3d("Closures")) as Node3D
 	for f: Array in L.FENCES:
 		var ops: Array = (f[7] as Array).duplicate()

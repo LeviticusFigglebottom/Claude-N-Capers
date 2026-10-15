@@ -7,4 +7,4 @@ rebuild: python3 tools/blender/build.py --category weapons --asset wpn_plowman_1
 edit policy: generated file, never edit by hand; change the script and rebuild
 origin: firing-hand pivot: middle of the stock wrist (grip centre plane)
 tri_budget: 25000
-tris_lod0: 7168
+tris_lod0: 7612

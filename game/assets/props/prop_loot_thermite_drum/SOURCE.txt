@@ -1,0 +1,8 @@
+asset: prop_loot_thermite_drum
+script: tools/blender/props/loot.py
+params: {"cat": {"kind": "thermite", "prefab": "loot_spawn", "surface": "metal"}, "fn": "thermite_drum"}
+seed: 3579987841  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_loot_thermite_drum
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 8000

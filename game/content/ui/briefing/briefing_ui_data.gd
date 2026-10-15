@@ -14,6 +14,9 @@ extends Resource
 @export var placeholder_heists: Dictionary = {}
 ## Contact used when a heist names none or an unknown one.
 @export var fallback_contact: StringName = &"contact.mercer"
+## D-117 §5 (GN-U5): the briefing lists the first `briefing_lead_steps` objectives, then always the final one, with a
+## "+N more steps on the night" line between when steps are cut (cap lead + 1 step rows). 0 = every objective.
+@export var briefing_lead_steps: int = 5
 
 @export_group("Subtitles")
 ## A subtitle stays at least this long, plus `subtitle_s_per_char` per character of its text.

@@ -34,6 +34,13 @@ stems = "res://world/audio/music/shadow_ledger/shadow_ledger.tres"
 default_for_heists = Array[StringName]([&"shadow_ledger"])
 unlock = &""
 
+[sub_resource type="Resource" id="trk_gallery_night"]
+script = ExtResource("2_trk")
+id = &"gallery_night"
+stems = "res://world/audio/music/gallery_night"
+default_for_heists = Array[StringName]([&"gallery_night"])
+unlock = &""
+
 [sub_resource type="Resource" id="trk_vault_hymn"]
 script = ExtResource("2_trk")
 id = &"vault_hymn"
@@ -58,4 +65,4 @@ unlock = &"unlock.music.last_call"
 [resource]
 script = ExtResource("1_cat")
 table_path = "res://world/audio/music/tracks.tres"
-tracks = Array[ExtResource("2_trk")]([SubResource("trk_glasshouse"), SubResource("trk_dockside_burn"), SubResource("trk_night_deposit"), SubResource("trk_shadow_ledger"), SubResource("trk_vault_hymn"), SubResource("trk_long_con"), SubResource("trk_last_call")])
+tracks = Array[ExtResource("2_trk")]([SubResource("trk_glasshouse"), SubResource("trk_dockside_burn"), SubResource("trk_night_deposit"), SubResource("trk_shadow_ledger"), SubResource("trk_gallery_night"), SubResource("trk_vault_hymn"), SubResource("trk_long_con"), SubResource("trk_last_call")])

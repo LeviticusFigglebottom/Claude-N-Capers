@@ -14,6 +14,9 @@ const LIST_PATH: String = "res://content/data/ui/heist_list.tres"
 const SAMPLE_RESULT_PATH: String = "res://content/data/ui/sample_heist_result.json"
 
 
+## D-117 §2: the profile difficulty progression is read from (MenuFlow sets it when it loads the profile).
+static var progress_profile: PlayerProfile = null
+
 static func heist_list() -> UiHeistList:
 	var l: UiHeistList = null
 	if ResourceLoader.exists(LIST_PATH):
@@ -69,8 +72,19 @@ static func ids() -> Array[StringName]:
 	return out
 
 
-static func is_difficulty_unlocked(d: int) -> bool:
-	return heist_list().unlocked_difficulties.has(d)
+## Build-wide gate (heist_list unlocked_difficulties) or D-117 §2 progression: a progression difficulty opens once
+## any heist was won on the one below it, read from `p` (default: progress_profile, set by MenuFlow).
+static func is_difficulty_unlocked(d: int, p: PlayerProfile = null) -> bool:
+	var l: UiHeistList = heist_list()
+	if l.unlocked_difficulties.has(d):
+		return true
+	var prof: PlayerProfile = p if p != null else progress_profile
+	return l.progression_difficulties.has(d) and prof != null and Career.best_difficulty_any(prof) >= d - 1
+
+
+## True when `d` is locked behind progression (not the build list): the UI says what to win.
+static func is_progression_difficulty(d: int) -> bool:
+	return heist_list().progression_difficulties.has(d)
 
 
 ## Contract pay preview for a heist at a difficulty, through PayoutCalculator (same multipliers as

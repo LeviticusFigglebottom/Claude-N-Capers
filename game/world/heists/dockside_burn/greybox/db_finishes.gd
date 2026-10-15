@@ -127,7 +127,6 @@ const NAME_FINISH: Dictionary = {
 	"ToolBench": "metal_painted", "PackingTableA": "brushed_steel", "PackingTableB": "brushed_steel",
 	"GateConsole": "metal_painted", "ReachStacker": "paint_safety_orange", "ReeferTrailer": "trailer_white",
 	"ReeferTruck": "trailer_white", "TrawlerHull": "hull_dark", "TrawlerWheelhouse": "trailer_white",
-	"LaunchHull": "hull_dark", "LaunchGunwale": "hull_dark", "LaunchCabin": "trailer_white",
 	"Deck": "metal_matte", "WeighbridgePlate": "metal_matte", "FarShore": "brick_dark",
 	"BellweatherRoofPlant": "metal_painted", "StrongroomRoof": "concrete", "HeadHouseRoof": "blockwork",
 }

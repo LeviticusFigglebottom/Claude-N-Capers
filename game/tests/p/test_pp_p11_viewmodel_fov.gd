@@ -77,6 +77,9 @@ func test_gun_fill_light_only_lights_the_gun() -> void:
 		return
 	assert_eq(fill.light_cull_mask, CrewView.VIEWMODEL_GUN_LAYER, "culled to the gun layer")
 	assert_eq(fill.layers, CrewView.VIEWMODEL_LAYER, "inside the vm camera's cull mask")
+	await wait_frames(2)
+	assert_near(fill.light_energy, lerpf(vt.viewmodel_gun_fill_energy, vt.viewmodel_gun_fill_ads_energy, view.ads_blend),
+		1e-3, "energy eases hip -> ADS with ads_blend (%.3f at blend %.2f)" % [fill.light_energy, view.ads_blend])
 	var gun: int = 0
 	var arms: int = 0
 	for g: Node in view.camera().find_children("*", "GeometryInstance3D", true, false):
