@@ -1,4 +1,4 @@
-# Contract: characters (v1.13)
+# Contract: characters (v1.14)
 
 Producer: ENV C (generated humanoids + animations). Consumer: ENV A (NPC/crew prefabs).
 Until delivered, ENV A uses capsule placeholders with the same node names.
@@ -200,3 +200,15 @@ never rise more than 5 cm above their start height (SOURCE `pose_deaths`):
 ENV A mapping (`AnimTweak.death_by_pose`): crouch_idle / crouch_walk / cower → death_crouch; kneel_cuffed / tied →
 death_kneel_cuffed; surrender → death_kneel; lie_down → death_prone; downed / downed_crawl → death_downed. A rig without
 the clip freezes the pose and topples (A's fallback); strong impulses still ragdoll (v1.12).
+
+## v1.14: scripted clip override (PO6-17, D-114 §5)
+`AnimDriver.META_ANIM_OVERRIDE` = NPC meta `&"anim_override"`, value a **StringName clip** name. While set (non-empty) on a
+living NPC it wins over every NPC state and brain hint (only stun/tased is checked first); `&""` or removing the meta clears
+it, and the normal state/hint/locomotion selection resumes (then the `rappel` loop while `NpcMotor.rappelling`). Set and
+cleared on the **host** only by ENV A's assault events: AssaultEventRunner `_set_anim` on guided legs (`rappel_hang`,
+`rappel_descend`, `rappel_land`, `van_exit`, `breach_place`, `breach_standback`; cleared when the leg ends / the unit is
+released) and AssaultHeli for the sniper on the seat (`heli_door_idle` / `heli_door_aim` by its laser). Missing clips fall
+back via `AnimDriver.FALLBACK_CLIPS` (rappel_* → climb_ladder / idle_alert, heli_door_* → aim_rifle, van_exit → walk,
+breach_place → interact_mid, breach_standback → crouch_idle). The meta is host-side and not replicated (metas do not sync); a
+client-side mirror of the scripted clip is a follow-up if PO playtests need it.
+
