@@ -47,7 +47,7 @@ static func nav_markers(ctx: LcContext) -> Array[Node3D]:
 			out.append(n as Node3D)
 		elif n.name == &"UsePoint" and n is Node3D:
 			out.append(n as Node3D)
-		elif n is Node3D and is_loot_spawn(n) and not is_wall_loot(n) and not is_stowed_loot(n):
+		elif n is Node3D and is_loot_spawn(n) and not is_wall_loot(n):
 			out.append(n as Node3D)
 	return out
 
@@ -61,24 +61,22 @@ static func player_spawns(ctx: LcContext) -> Array[SpawnPoint]:
 	return out
 
 
-## GN-C2: a wall-mounted loot spawn (meta mount wall: a hung canvas, pivot on the wall face at hanging height) is
-## reached at its UsePoint (itself a nav marker), not at its origin.
-## Loot reached through its UsePoint instead of standing on the navmesh: wall-mounted loot, and loot stowed inside a
-## safe (parent meta kind `safe`; PO6-05: the Safe hides it until open, the crew takes it from the UsePoint).
+## Loot reached at its UsePoint (itself a nav marker) instead of standing on the navmesh: a wall-mounted loot spawn
+## (GN-C2: meta mount wall, a hung canvas) and loot stowed in a safe (PO6-05: at the safe's LootAnchor inside the body;
+## the Safe hides it until open).
 static func is_wall_loot(n: Node) -> bool:
 	if n.get_node_or_null("UsePoint") == null:
 		return false
-	return LcUtil.meta_s(n, &"mount") == &"wall" or LcUtil.meta_s(n.get_parent(), &"kind") == &"safe"
+	return LcUtil.meta_s(n, &"mount") == &"wall" or is_stowed_loot(n)
 
 
-## PO6-05: loot stowed in a Safe sits at the safe's LootAnchor inside the body, so it is reached at its
-## UsePoint (a nav marker) in front of the safe, not at its origin.
 static func is_stowed_loot(n: Node) -> bool:
-	return n.get_parent() is Safe and n.get_node_or_null("UsePoint") != null
+	var p: Node = n.get_parent()
+	return p is Safe or LcUtil.meta_s(p, &"kind") == &"safe"
 
 
 static func loot_target(n: Node3D) -> Vector3:
-	if is_wall_loot(n) or is_stowed_loot(n):
+	if is_wall_loot(n):
 		return (n.get_node("UsePoint") as Node3D).global_position
 	return n.global_position
 
