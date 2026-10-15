@@ -56,6 +56,11 @@ const ARMORY_LOOPS: Array[StringName] = [
 ]
 ## QA-36 (audio_cues v1.2: police breach, thermite burn) and throwables (audio_cues v1.3, D-073).
 const HAZARD_CUES: Array[StringName] = [&"cue.door_breach", &"cue.burn_warning"]
+## PO6-17 RNG assault events (ENV A runtime requests them via audio_cue_requested): 3D one-shots on Enemies.
+const ASSAULT_EVENT_CUES: Array[StringName] = [
+	&"cue.assault_van_arrive", &"cue.assault_van_park", &"cue.assault_turret_deploy", &"cue.assault_turret_destroyed",
+	&"cue.assault_heli_arrive", &"cue.assault_heli_leave", &"cue.assault_breach_warning",
+]
 const THROWABLE_CUES: Array[StringName] = [
 	&"cue.throwable_pin", &"cue.throwable_frag", &"cue.throwable_concussion", &"cue.throwable_incendiary",
 	&"cue.throwable_knife_hit", &"cue.throwable_knife_hit_hard", &"cue.throwable_incendiary_fire",
@@ -206,6 +211,20 @@ func test_armory_batch_cues() -> void:
 	akimbo.anim_set = &"akimbo"
 	assert_eq(player.weapon_fire_cue(&"x", false, akimbo), &"cue.weapon_pistol_fire", "akimbo reuses pistol")
 	player.queue_free()
+
+
+func test_assault_event_cues() -> void:
+	if _reg == null:
+		skip("no registry")
+		return
+	for id: StringName in ASSAULT_EVENT_CUES:
+		var c: AudioCueDef = _reg.get_cue(id)
+		assert_true(c != null, "registry has %s" % id)
+		if c == null:
+			continue
+		assert_true(c.positional, "%s positional" % id)
+		assert_false(c.loop, "%s is a one-shot (requested unowned, PO6-07)" % id)
+		assert_eq(c.bus, &"Enemies", "%s bus" % id)
 
 
 func test_breach_burn_and_throwable_cues() -> void:
