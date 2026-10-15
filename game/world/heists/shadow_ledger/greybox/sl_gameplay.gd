@@ -39,6 +39,15 @@ const DOOR_WALNUT: Array[String] = [
 	"K1Door", "K5Door", "LibraryDoor", "ArtHallDoors", "StudyDoor", "SuiteDoor", "DiningDoor", "WineRoomDoor",
 	"BoardroomDoor",
 ]
+## D-111 loot: catalog stacks per loot id (tools/blender/props/loot.py; the cash bags) and the small valuables; the
+## art-hall paintings are GN study canvases hung on the M3 south wall (wall loot: pivot back-centre on the face, centre
+## PAINTING_HANG_Y above the floor, taken from the UsePoint in front).
+const LOOT_VISUALS: Dictionary = {
+	"loot.ledger_laptop": "prop_loot_laptop", "loot.ledger_drives": "prop_loot_ledger_drives",
+	"loot.ledger_books": "prop_loot_ledger_books", "loot.cash": "prop_cash_bags",
+}
+const PAINTING_VISUALS: Array[String] = ["prop_canvas_study3", "prop_canvas_study6"]
+const PAINTING_HANG_Y: float = 1.6
 ## Ladder visuals by height and wall gap (prefab_visuals.py `prop_ladder_steel_*`: Top / Bottom exactly where the
 ## placeholder had them, stand-offs reaching the wall behind; g00 = free-standing in the riser hole).
 const LADDER_RISER_LOWER: String = "prop_ladder_steel_h440_g00"
@@ -67,6 +76,8 @@ func prefab(parent: Node3D, kind: String, nm: String, pos: Vector3, yaw: float, 
 		_set_prop(inst, String(k), props[k])
 	if not props.has("visual_scene") and PREFAB_VISUALS.has(kind):
 		inst.set(&"visual_scene", _catalog_scene(String(PREFAB_VISUALS[kind])))
+	elif not props.has("visual_scene") and kind == "loot_spawn" and LOOT_VISUALS.has(String(props.get("loot_id", ""))):
+		inst.set(&"visual_scene", _catalog_scene(String(LOOT_VISUALS[String(props["loot_id"])])))
 	for mk: Variant in metas:
 		inst.set_meta(StringName(String(mk)), metas[mk])
 	parent.add_child(inst)
@@ -284,7 +295,9 @@ func _build_study(gp: Node3D) -> void:
 	for i: int in range(3):
 		var x: float = 32.76 + 0.24 * float(i)
 		prefab(safe, "small_loot", "StudyValuables%d" % (i + 1), Vector3(x, L.F42 + 0.75, 7.04), 0.0,
-			{"loot_id": &"loot.small_valuables", "value": 1500}, Vector3(x, L.F42, 6.2))
+			{"loot_id": &"loot.small_valuables", "value": 1500,
+				"visual_scene": _catalog_scene("prop_valuables_watch_box" if i == 1 else "prop_valuables_jewelry_case")},
+			Vector3(x, L.F42, 6.2))
 	# PO6-05: the books sit at the safe's LootAnchor (safe-local (0, 0.02, 0)), taken from the UsePoint in front.
 	prefab(safe, "loot_spawn", "LedgerBooks", Vector3(33.0, L.F42 + 0.02, 7.04), 0.0,
 		{"loot_id": &"loot.ledger_books", "count": 1, "objective_tag": &"study_safe_loot"}, Vector3(34.2, L.F42, 5.8))
@@ -325,27 +338,34 @@ func _build_misc(gp: Node3D) -> void:
 	var arch: Node3D = prefab(misc, "safe", "ArchiveSafe", Vector3(1.2, L.F41, 23.44), 0.0,
 		{"size": "enum:MEDIUM", "methods": [&"saw"] as Array[StringName], "objective_tag": &"archive_safe"},
 		null, {"kind": "safe"})
-	if arch != null:  # PO6-05: the cash at the safe's LootAnchor (safe-local (0, 0.14, 0)), taken from the UsePoint
+	# PO6-05: the cash at the safe's LootAnchor (safe-local (0, 0.14, 0)), taken from the UsePoint; D-111: the float
+	# is bagged (prop_loot_bag_medium fits the MEDIUM body, the cash-bag stack does not).
+	if arch != null:
 		prefab(arch, "loot_spawn", "ArchiveCash", Vector3(1.2, L.F41 + 0.14, 23.44), 0.0,
-			{"loot_id": &"loot.cash", "count": 1, "objective_tag": &"archive_loot"}, Vector3(2.4, L.F41, 22.2))
-	# Art hall paintings (east of the lasers), cut from the frame.
+			{"loot_id": &"loot.cash", "count": 1, "objective_tag": &"archive_loot",
+				"visual_scene": _catalog_scene("prop_loot_bag_medium")}, Vector3(2.4, L.F41, 22.2))
+	# Art hall paintings (east of the lasers), cut from the frame: hung on the M3 south wall face (z 7.4).
 	for i: int in range(2):
 		var x: float = 27.3 + 1.0 * float(i)
-		prefab(misc, "loot_spawn", "Painting%d" % (i + 1), Vector3(x, L.F42, 6.9), 180.0,
-			{"loot_id": &"loot.painting", "count": 1, "interaction_time_s": 4.0, "objective_tag": &"paintings"},
-			Vector3(x, L.F42, 6.4))
+		prefab(misc, "loot_spawn", "Painting%d" % (i + 1), Vector3(x, L.F42 + PAINTING_HANG_Y, 7.4), 0.0,
+			{"loot_id": &"loot.painting", "count": 1, "interaction_time_s": 4.0, "objective_tag": &"paintings",
+				"visual_scene": _catalog_scene(PAINTING_VISUALS[i])},
+			Vector3(x, L.F42, 6.4), {"mount": "wall"})
 	# Rare `ledger_printout`: a working copy of the books on the K1 desk side (mission enables it).
 	prefab(misc, "loot_spawn", "PrintoutBooks", Vector3(4.4, L.F41, 3.2), 0.0,
 		{"loot_id": &"loot.ledger_books", "count": 1, "objective_tag": &"printout"}, Vector3(4.4, L.F41, 3.8))
 	# Small loot: the partners' desks and the wine-room humidor.
 	prefab(misc, "small_loot", "KesslerWatch", Vector3(3.5, L.F41 + 0.75, 2.0), 0.0,
-		{"loot_id": &"loot.small_valuables", "value": 1200}, Vector3(3.5, L.F41, 3.05))
+		{"loot_id": &"loot.small_valuables", "value": 1200, "visual_scene": _catalog_scene("prop_valuables_watch_box")},
+		Vector3(3.5, L.F41, 3.05))
 	prefab(misc, "small_loot", "MoorBracelet", Vector3(33.0, L.F41 + 0.75, 2.0), 0.0,
-		{"loot_id": &"loot.small_valuables", "value": 1200}, Vector3(33.0, L.F41, 3.05))
+		{"loot_id": &"loot.small_valuables", "value": 1200, "visual_scene": _catalog_scene("prop_valuables_jewelry_case")},
+		Vector3(33.0, L.F41, 3.05))
 	for i2: int in range(2):
 		var z: float = 14.35 + 0.3 * float(i2)
 		prefab(misc, "small_loot", "HumidorCigars%d" % (i2 + 1), Vector3(30.64, L.F42 + 1.0, z), 0.0,
-			{"loot_id": &"loot.small_valuables", "value": 800}, Vector3(29.9, L.F42, z))
+			{"loot_id": &"loot.small_valuables", "value": 800, "visual_scene": _catalog_scene("prop_valuables_cigar_box")},
+			Vector3(29.9, L.F42, z))
 
 
 ## Ladders (S9.11; unmasked crew cannot climb): the services riser (L41 -> L42 grating -> R1) and the

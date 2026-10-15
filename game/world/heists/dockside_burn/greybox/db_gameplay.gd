@@ -40,6 +40,12 @@ const PREFAB_VISUALS: Dictionary = {"safe": "prop_safe_large", "hack_terminal": 
 const THERMAL_DEVICE: String = "prop_thermal_drill_device"
 const VIS_EMPTY: String = "res://world/heists/glasshouse/art/gh_empty.tscn"
 const BURN_VISUAL: String = "res://world/props/burn_point/prop_burn_barrel.tscn"
+## D-111 loot: catalog stacks per loot id (tools/blender/props/loot.py; the cash pallet) and the cash stacks.
+const LOOT_VISUALS: Dictionary = {
+	"loot.weapon_crate": "prop_loot_weapon_crate", "loot.contraband": "prop_loot_contraband_bales",
+	"loot.cash_bricks": "prop_cash_pallet", "loot.thermite": "prop_loot_thermite_drum",
+}
+const SMALL_LOOT_VISUAL: String = "prop_cash_stack"
 ## D1 stack ladder: 5.2 m rise, the container doors 0.22 m behind the stiles (prefab_visuals.py).
 const LADDER_D1: String = "prop_ladder_steel_h520_g22"
 ## Leaf widths per custom door type (width_m must equal the visual leaf width; validator scale check).
@@ -86,6 +92,10 @@ func prefab(parent: Node3D, kind: String, nm: String, pos: Vector3, yaw: float, 
 		_set_prop(inst, String(k), props[k])
 	if not props.has("visual_scene") and PREFAB_VISUALS.has(kind):
 		inst.set(&"visual_scene", _catalog_scene(String(PREFAB_VISUALS[kind])))
+	elif not props.has("visual_scene") and kind == "loot_spawn" and LOOT_VISUALS.has(String(props.get("loot_id", ""))):
+		inst.set(&"visual_scene", _catalog_scene(String(LOOT_VISUALS[String(props["loot_id"])])))
+	elif not props.has("visual_scene") and kind == "small_loot":
+		inst.set(&"visual_scene", _catalog_scene(SMALL_LOOT_VISUAL))
 	for mk: Variant in metas:
 		inst.set_meta(StringName(String(mk)), metas[mk])
 	parent.add_child(inst)
@@ -316,7 +326,8 @@ func _build_misc(gp: Node3D) -> void:
 	if safe != null:
 		for i: int in range(3):
 			var lp: Vector3 = Vector3(9.39 + 0.16 * float(i), 0.25, 0.56)
-			prefab(safe, "small_loot", "SafeCash%d" % (i + 1), lp, 180.0, {"loot_id": &"loot.cash", "value": 1000},
+			# turned 90: the 0.29 m cash stacks lie front-to-back at the 0.16 m spacing
+			prefab(safe, "small_loot", "SafeCash%d" % (i + 1), lp, 90.0, {"loot_id": &"loot.cash", "value": 1000},
 				Vector3(lp.x, 0.0, 1.5))
 	# Desk / counter small loot (O1, O2, M1).
 	for s: Array in [["DeskCashO1", Vector3(6.8, 0.9, 3.2), Vector3(6.8, 0.0, 2.4)],

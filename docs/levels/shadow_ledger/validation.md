@@ -173,7 +173,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 ## navmesh: Navmesh
 
 - navmesh: 1642 polygons, cell 0.10/0.10 m
-- 243 markers checked
+- 231 markers checked
 | room | walkable samples | covered | coverage |
 |---|---|---|---|
 | `Rooms/RoomS1` | 83 | 83 | 100% |
@@ -243,12 +243,12 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## reachability: Reachability (per variant)
 
-- 47 variant configuration(s), 122078 spawn->target path queries
+- 47 variant configuration(s), 117425 spawn->target path queries
 
 
 ## walkthrough: Walkthrough bot
 
-- 1518 / 1518 spawn->target walks ok
+- 1419 / 1419 spawn->target walks ok
 
 
 ## patrols: Patrol graphs
