@@ -156,6 +156,12 @@ extends Resource
 ## another point later; call: the next-cheapest call point or guard, else flees).
 @export var civilian_walk_stall_s: float = 2.5
 @export var civilian_walk_stall_m: float = 0.3
+## PO6-06 ◇ S7.5: a civilian whose idle activity is a seated loop (keys) sits only on a seat (the clips put the
+## root under the seat centre, characters.md npc_seat): a seating prop's `Seat` marker within
+## civilian_seat_radius_m (horizontal) of its root, on its floor (CivilianTargets.seat_near). With no seat it
+## does the standing activity (value) instead: a seated pose on thin air reads as a hostage crouched on the floor.
+@export var civilian_unseated_activity: Dictionary = {&"desk_work": &"teller", &"phone_seated": &"phone", &"sit": &"queue"}
+@export var civilian_seat_radius_m: float = 0.45
 ## PO-5 ◇ S7.1: the all-round shout (shout_all_within_m) reaches only civilians on the shouter's floor
 ## (height difference <= shout_floor_dy_m) that can hear it: clear line of sight, or a navmesh path no
 ## longer than shout_all_within_m x shout_path_mult (around a counter or a doorway, not through a wall).
