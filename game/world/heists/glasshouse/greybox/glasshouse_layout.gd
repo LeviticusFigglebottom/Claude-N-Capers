@@ -333,7 +333,8 @@ const ANCHORS: Array = [
 	["U5", "DeskSalesAdmin", "prop_desk_office", Vector3(4.2, UPPER, 9.0), 0.0, {}],
 	# one task chair per desk (G2 review: the kit seated both chairs at the bookkeeping desk, so the
 	# sales-admin monitor had no chair to face)
-	["U5", "ChairBookkeeping", "prop_chair_office", Vector3(1.6, UPPER, 8.3), 180.0, {"faces_anchor": "DeskBookkeeping"}],
+	# PO6-06: the admin clerk's NPC seat (prop_chair_task: no collider / nav obstruction, D-063, as OperatorChair)
+	["U5", "ChairBookkeeping", "prop_chair_task", Vector3(1.6, UPPER, 8.3), 180.0, {"faces_anchor": "DeskBookkeeping"}],
 	# PO-9: pushed back from the desk (as if just stood up), out of the user spots of PhoneAdmin and the
 	# code_admin note (UsePoints x 4.6 / 3.7, z 8.15); it stood in the phone's
 	["U5", "ChairSalesAdmin", "prop_chair_office", Vector3(4.15, UPPER, 7.65), 180.0, {"faces_anchor": "DeskSalesAdmin"}],
@@ -477,10 +478,14 @@ const PLAYER_SPAWNS: Array = [
 	["PreplanAlleyWest4", Vector3(-12.5, 0.0, -5.4), -90.0, ["preplan_spawn_alley"]],
 ]
 
-## Fixed NPC spawns: [name, kind, pos, yaw, tags, idle_activity, patrol_graph ("" = none)].
+## PO6-06: the jeweler (variant spawns jw_working / kc_jeweler) works standing (`teller`) at JewelerBenchA, 0.28 m
+## behind its near edge (z 0.902): the bench top is 0.92 m (no seated clip fits it; the shop stool has no Seat).
+const JEWELER_AT: Vector3 = Vector3(8.5, 0.0, 1.18)
+## Fixed NPC spawns: [name, kind, pos, yaw, tags, idle_activity, patrol_graph ("" = none)]. PO6-06: seated
+## activities spawn on a seat's `Seat` marker (CivCounterAssociate stands: `teller`, 0.28 m behind the counter).
 const NPC_SPAWNS: Array = [
 	["GuardFloorPost", "GUARD", Vector3(9.6, 0.0, 11.2), 0.0, ["guard_post_floor"], "", "Building"],
-	["CivCounterAssociate", "CIVILIAN", Vector3(3.6, 0.0, 6.65), 180.0, ["civ_staff_counter"], "desk_work", ""],
+	["CivCounterAssociate", "CIVILIAN", Vector3(3.6, 0.0, 6.9), 180.0, ["civ_staff_counter"], "teller", ""],
 	["CivFloorAssociate", "CIVILIAN", Vector3(8.6, 0.0, 8.0), 90.0, ["civ_staff_floor"], "browse", ""],
 	["CameraOperatorSeat", "CAMERA_OPERATOR", Vector3(6.85, UPPER, 2.0), 90.0, ["security_operator"], "desk_work", ""],
 	["PoliceHarlowWest", "POLICE", Vector3(-30.0, ROAD_Y, 23.2), -90.0, ["police_harlow_west"], "", ""],
