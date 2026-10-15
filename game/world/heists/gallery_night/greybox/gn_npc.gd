@@ -163,17 +163,22 @@ const FIXED_SPAWNS: Array = [
 	["VaultlineA", "GUARD", Vector3(40.5, 0.0, 9.5), 180.0, ["scripted", "guard_vaultline"], "", "Halberd"],
 	["VaultlineB", "GUARD", Vector3(42.0, 0.0, 9.5), 180.0, ["scripted", "guard_vaultline"], "", "Halberd"],
 ]
-## Slot NPCs: slot id -> [name, kind, position, yaw, tags, idle, graph].
+## Slot NPCs: slot id -> [name, kind, position, yaw, tags, idle, graph, seat asset (optional)]. PO6-06: a seated
+## (desk_work) NPC spawns on the `Seat` of its own catalog NPC seat (prop_chair_task: no collider / nav obstruction,
+## D-063) placed in the slot at the spawn transform, pulled up to its desk (the greybox desks are 0.75 m, front -Z).
 const SLOT_NPCS: Dictionary = {
 	"rover_ground": ["GuardRoverGround", "GUARD", Vector3(10.0, 0.0, 7.0), -90.0, ["guard_rover_ground"], "", "Halberd"],
 	"rover_upper": ["GuardRoverUpper", "GUARD", Vector3(10.0, 5.4, 7.0), -90.0, ["guard_rover_upper"], "", "Halberd"],
 	"rover_basement": ["GuardRoverBasement", "GUARD", Vector3(10.0, -4.2, 7.0), -90.0, ["guard_rover_basement"], "",
 		"Halberd"],
 	"dock_smoker": ["GuardDockSmoker", "GUARD", Vector3(43.5, 0.0, -2.5), 90.0, ["guard_mews"], "smoke", "Mews"],
-	"cons_late": ["Conservator", "CIVILIAN", Vector3(38.0, 5.4, 7.0), 180.0, ["civ_conservator"], "desk_work", ""],
+	# standing (teller) at BenchCS (0.9 m), 0.28 m off its north edge (z 9.65), clear of the kc_conservator UsePoint
+	"cons_late": ["Conservator", "CIVILIAN", Vector3(39.55, 5.4, 9.37), 180.0, ["civ_conservator"], "teller", ""],
 	"curator_hall": ["Curator", "CIVILIAN", Vector3(17.5, 0.0, 15.5), -90.0, ["civ_curator"], "curator_inspect", ""],
-	"curator_office": ["Curator", "CIVILIAN", Vector3(7.5, 5.4, 3.8), 0.0, ["civ_curator"], "desk_work", ""],
-	"pa_late": ["AdminPA", "CIVILIAN", Vector3(12.0, 5.4, 2.5), 0.0, ["civ_admin"], "desk_work", ""],
+	"curator_office": ["Curator", "CIVILIAN", Vector3(6.0, 5.4, 1.3), 180.0, ["civ_curator"], "desk_work", "",
+		"prop_chair_task"],  # at DeskCO
+	"pa_late": ["AdminPA", "CIVILIAN", Vector3(14.0, 5.4, 3.3), 180.0, ["civ_admin"], "desk_work", "",
+		"prop_chair_task"],  # at DeskAO
 }
 ## TacticalPoints (doc Loud: police entries, perches, anchors, flanks): [name, kind, position, yaw, tags, breachable].
 const TACTICAL: Array = [
@@ -241,6 +246,8 @@ func npc_slot(vs: VariantSlot, _group: String, slot_id: String, _at: Vector3, _y
 
 func _npc(parent: Node3D, s: Array) -> void:
 	spawn_at(parent, String(s[0]), String(s[1]), s[2] as Vector3, float(s[3]), s[4], String(s[5]), String(s[6]))
+	if s.size() > 7:  # PO6-06: the NPC's seat, its `Seat` marker right under the spawn
+		catalog_prop(parent, String(s[7]), String(s[0]) + "Chair", s[2] as Vector3, float(s[3]))
 
 
 func _graph(nm: String, gid: StringName, floor_idx: int, points: Dictionary, edges: Array) -> void:

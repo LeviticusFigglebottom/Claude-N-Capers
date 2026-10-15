@@ -278,6 +278,8 @@ const LIFT: Dictionary = {
 ## Yaw: 0 = front north (-z), 180 = south (+z), 90 = west (-x), -90 = east (+x).
 ## extra: service / fire_exit (meta), width_m, padlock (seconds: a placed-saw drill_point on the lock,
 ## SAW_TARGET, D-057 / QC-37), shutter (fire shutter of a product room), entry (police ENTRY tag).
+## D-111: the moored launch visual (catalog veh_boat_launch, pivot = keel bottom, deck 1.0 m above): [asset, pivot, yaw].
+const LAUNCH: Array = ["veh_boat_launch", Vector3(23.5, -2.6, 55.5), 0.0]
 const DOORS: Array = [
 	# Office block, ground.
 	["O1Front", "single_t40", Vector3(6.0, 0.0, 0.0), 0.0, "LOCKPICK", "INWARD", "door_office", {}],
@@ -425,11 +427,13 @@ const BLOCKS: Array = [
 	["TrawlerWheelhouse", [68.0, 0.5, 49.6, 72.0, 4.0, 52.0], "vehicle"],
 	["TrawlerMast", [74.8, 0.5, 50.6, 75.2, 9.0, 51.0], "trim"],
 	["FarShore", [-200.0, WATER_Y, 400.0, 250.0, 8.0, 410.0], "facade_c"],
-	# The Co-op launch (escape E3) moored along the pontoon: walkable deck at -1.6.
-	["LaunchHull", [17.0, -3.2, 54.0, 30.0, -1.6, 57.4], "vehicle"],
-	# The gunwale (harbour side, 0.5 m) is an edge guard: ridged collider top (`ridge`, D-104 slopes).
-	["LaunchGunwale", [17.0, -1.6, 57.1, 30.0, -1.1, 57.4], "vehicle", "ridge"],
-	["LaunchCabin", [26.4, -1.6, 54.6, 29.6, 0.6, 56.8], "vehicle"],
+	# The Co-op launch (escape E3) moored along the pontoon: walkable deck at -1.6. D-111: the catalog `veh_boat_launch`
+	# (LAUNCH, 9 x 3 m, deck 1.0 m over its keel, its quay side on the pontoon edge z 54) is the visual; these are its
+	# hidden colliders (ND pattern): the hull block under the deck, the cabin block, and the harbour-side gunwale cap
+	# (ridged, D-104 slopes).
+	["LaunchHull", [19.0, -3.2, 54.0, 28.0, -1.6, 57.0], "none"],
+	["LaunchGunwale", [19.1, -1.6, 56.89, 25.8, -1.48, 56.99], "none", "ridge"],
+	["LaunchCabin", [25.0, -1.6, 54.8, 27.6, 0.4, 56.6], "none"],
 	# High-bay roof plant: evaporator condensers (vapour plumes, landmark 3) and the skylights.
 	["CondenserA", [24.0, BAY_ROOF, 27.0, 30.0, BAY_ROOF + 2.2, 30.0], "trim"],
 	["CondenserB", [36.0, BAY_ROOF, 27.0, 42.0, BAY_ROOF + 2.2, 30.0], "trim"],
@@ -574,15 +578,16 @@ const PROPS: Array = [
 	["Pier10Bollard", Vector3(72.6, 0.0, 20.0), Vector3(0.4, 0.8, 0.4), 0.0, "bollard", false, "trim"],
 ]
 
-## Chairs: [name, bottom-centre, yaw_deg (front -Z faces the table)], 0.45 x 0.85 x 0.45, seat 0.45.
+## Chairs: [name, bottom-centre, yaw_deg (front -Z faces the table), npc_seat (optional: a cartel post gunman spawns
+## seated on its `Seat`, PO6-06; no collider / nav obstruction)], 0.45 x 0.85 x 0.45, seat 0.45.
 const CHAIRS: Array = [
 	["DispatchChair", Vector3(12.0, 0.0, 1.85), 0.0],
 	["BreakChairN", Vector3(6.0, MEZZ, 1.9), 180.0],
-	["BreakChairS", Vector3(6.0, MEZZ, 3.7), 0.0],
+	["BreakChairS", Vector3(6.0, MEZZ, 3.7), 0.0, true],
 	["BreakChairW", Vector3(4.75, MEZZ, 2.8), -90.0],
 	["BreakChairE", Vector3(7.25, MEZZ, 2.8), 90.0],
 	["CountChair", Vector3(11.85, MEZZ, 3.55), 0.0],
-	["ForemanChair", Vector3(19.4, MEZZ, 1.75), 0.0],
+	["ForemanChair", Vector3(19.4, MEZZ, 1.75), 0.0, true],
 	# PO-9: the receptionist's seat on the staff side of the O1 counter (the DeskCashO1 UsePoint is on the
 	# front-door side) and the gate man's seat at the gatehouse console, clear of both door zones.
 	["ReceptionChair", Vector3(6.0, 0.0, 3.95), 0.0],
@@ -692,7 +697,7 @@ const CARTEL_POSTS: Dictionary = {
 		"cartel_yard_e", ""],
 	"post_hall": [[["GunmanHallA", Vector3(34.6, 0.0, 5.0), 0.0], ["GunmanHallB", Vector3(46.4, 0.0, 3.4), -90.0]],
 		"cartel_hall", ""],
-	"post_platform": [[["GunmanPlatformA", Vector3(20.0, MEZZ, 4.8), 90.0], ["GunmanPlatformB", Vector3(6.6, MEZZ, 4.7), 0.0]],
+	"post_platform": [[["GunmanPlatformA", Vector3(19.4, MEZZ, 1.75), 0.0], ["GunmanPlatformB", Vector3(6.0, MEZZ, 3.7), 0.0]],
 		"cartel_platform", "sit"],
 	"post_dock": [[["GunmanDockA", Vector3(28.6, 0.0, 26.6), 90.0], ["GunmanDockB", Vector3(37.0, 0.0, 27.8), 90.0]],
 		"cartel_dock", ""],
@@ -741,7 +746,7 @@ const PATROL_POINTS: Dictionary = {
 	"PostPlatform": [Vector3(20.0, MEZZ, 4.0), Vector2(4.0, 8.0), "look", ["cartel", "cartel_mezz"], -90.0],
 	"PFStairTop": [Vector3(20.8, MEZZ, 7.25), Vector2.ZERO, "idle", ["cartel", "cartel_mezz"], null],
 	"M1": [Vector3(13.4, MEZZ, 4.4), Vector2(4.0, 8.0), "idle", ["cartel", "cartel_mezz"], null],
-	"M2": [Vector3(6.0, MEZZ, 4.7), Vector2(10.0, 20.0), "sit", ["cartel", "cartel_mezz"], null],
+	"M2": [Vector3(6.0, MEZZ, 3.7), Vector2(10.0, 20.0), "sit", ["cartel", "cartel_mezz"], 0.0],  # on BreakChairS (PO6-06)
 	# post_dock: the anteroom floor, the strongroom door (pause look), the quay roller doors.
 	"PostDock": [Vector3(36.6, 0.0, 28.0), Vector2.ZERO, "idle", ["cartel", "cartel_dock", "staff", "staff_dock"], null],
 	"ANVault": [Vector3(28.4, 0.0, 28.0), Vector2(3.0, 6.0), "look", ["cartel", "cartel_dock"], 90.0],

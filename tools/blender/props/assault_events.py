@@ -12,7 +12,7 @@ navy `#1E2A44` + hi-vis `#D7E34A` trim, TAC charcoal `#2B2F33` armour.
   (pivot, tilts about Godot X), `Muzzle` under Pitch (-Z = fire direction). Pivot = floor, centre.
 * ``prop_police_helicopter``: light police helicopter, nose -Z, cabin doors slid open both sides.
   `Body`, `Rotor` (main rotor pivot on the mast, spins about Godot Y), `TailRotor` (spins about
-  Godot X), `RopeL` / `RopeR` (rope anchors on davits over the doors, L = Godot -X), `SniperSeat`
+  Godot X), `RopeL` / `RopeR` (rope anchors on davits over the doors, L = Godot -X), `SniperSeat` (+ child `SniperKneel`, ENV D's kneel root)
   (bench end at the open left door, -Z facing out), `Spotlight` (nose gimbal lens, -Z = beam).
   Pivot = skid bottom under the cabin centre. No collision.
 * ``prop_breach_wall`` / ``prop_breach_window`` / ``prop_breach_ceiling``: breach points sized to the
@@ -333,7 +333,7 @@ def _sentry_turret(k: Kit, p: dict) -> None:
 
 W = 0.78
 FLOOR = 0.65
-ROOF = 2.05
+ROOF = 2.15  # PO6-17 r: +0.1 m so ENV D's heli_door kneel clears the headliner
 
 
 def _police_heli(k: Kit, p: dict) -> None:
@@ -343,15 +343,15 @@ def _police_heli(k: Kit, p: dict) -> None:
     glass = body.part(bevel=0.0)
     gear = body.part(bevel=0.0)
     cabin = body.part(bevel=0.01)
-    nose = [(1.0, FLOOR), (2.3, FLOOR), (2.75, 0.85), (2.92, 1.15), (2.72, 1.55), (2.0, 2.0), (1.0, ROOF)]
+    nose = [(1.0, FLOOR), (2.3, FLOOR), (2.75, 0.85), (2.92, 1.15), (2.72, 1.55), (2.0, 2.1), (1.0, ROOF)]
     shell.profile_x(nose, -W, W, "police_navy")
-    rear = [(-0.4, FLOOR), (-0.4, ROOF), (-1.0, 2.0), (-1.9, 1.86), (-1.9, 1.28), (-1.5, 0.92), (-1.15, FLOOR)]
+    rear = [(-0.4, FLOOR), (-0.4, ROOF), (-1.0, 2.1), (-1.9, 1.86), (-1.9, 1.28), (-1.5, 0.92), (-1.15, FLOOR)]
     shell.profile_x(rear, -W, W, "police_navy")
     shell.bx((-W, -0.4, FLOOR), (W, 1.0, 0.73), "police_navy")
-    shell.bx((-W, -0.4, 1.97), (W, 1.0, ROOF), "police_navy")
-    shell.profile_x([(-1.75, 1.95), (0.95, 2.0), (0.75, 2.33), (-0.35, 2.45), (-1.5, 2.3)], -0.52, 0.52, "metal_white")
-    trim.cyl(0.09, 0.22, (0.0, -1.8, 2.12), "metal_dark", axis="Y", segs=12)
-    _glass_on(glass, (2.72, 1.55), (2.0, 2.0), -W + 0.08, W - 0.08)
+    shell.bx((-W, -0.4, 2.07), (W, 1.0, ROOF), "police_navy")
+    shell.profile_x([(-1.75, 2.05), (0.95, 2.1), (0.75, 2.43), (-0.35, 2.55), (-1.5, 2.4)], -0.52, 0.52, "metal_white")
+    trim.cyl(0.09, 0.22, (0.0, -1.8, 2.22), "metal_dark", axis="Y", segs=12)
+    _glass_on(glass, (2.72, 1.55), (2.0, 2.1), -W + 0.08, W - 0.08)
     _glass_on(glass, (2.92, 1.15), (2.72, 1.55), -W + 0.14, W - 0.14)
     for sx in (-1, 1):
         g0, g1 = sorted((sx * (W + 0.004), sx * (W + 0.012)))
@@ -361,7 +361,7 @@ def _police_heli(k: Kit, p: dict) -> None:
         w0, w1 = sorted((sx * (W + 0.05), sx * (W + 0.056)))
         glass.bx((w0, -1.4, 1.3), (w1, -0.52, 1.8), "glass_tinted")
         r0, r1 = sorted((sx * (W + 0.004), sx * (W + 0.03)))
-        trim.bx((r0, -1.6, 1.94), (r1, 1.0, 1.97), "metal_dark")
+        trim.bx((r0, -1.6, 2.04), (r1, 1.0, 2.07), "metal_dark")
         s0, s1 = sorted((sx * (W + 0.004), sx * (W + 0.008)))
         trim.bx((s0, 1.05, 0.88), (s1, 2.3, 1.08), "hivis")                                       # hi-vis band
         trim.bx((s0, -1.85, 0.88), (s1, -1.6, 1.08), "hivis")
@@ -369,9 +369,9 @@ def _police_heli(k: Kit, p: dict) -> None:
         x = sx * 1.1
         gear.tube([(x, -1.55, 0.05), (x, 1.65, 0.05), (x, 1.98, 0.2)], 0.05, "metal_dark", segs=10)
         # rope davit over the doorway: arm from the roof rail out to a pulley
-        trim.rod((sx * W, 0.3, 1.99), (sx * (W + 0.32), 0.3, 2.02), 0.025, "metal_dark", segs=8)
-        trim.rod((sx * W, 0.0, 1.99), (sx * (W + 0.3), 0.28, 2.01), 0.016, "metal_dark", segs=6)
-        trim.torus(0.04, 0.012, (sx * (W + 0.32), 0.3, 1.97), "metal_yellow", segs=12, rsegs=4, axis="Y")
+        trim.rod((sx * W, 0.3, 2.09), (sx * (W + 0.32), 0.3, 2.12), 0.025, "metal_dark", segs=8)
+        trim.rod((sx * W, 0.0, 2.09), (sx * (W + 0.3), 0.28, 2.11), 0.016, "metal_dark", segs=6)
+        trim.torus(0.04, 0.012, (sx * (W + 0.32), 0.3, 2.07), "metal_yellow", segs=12, rsegs=4, axis="Y")
     for y in (-0.95, 1.25):
         gear.tube([(-1.1, y, 0.05), (-1.02, y, 0.42), (-0.72, y, FLOOR + 0.02), (0.72, y, FLOOR + 0.02),
                    (1.02, y, 0.42), (1.1, y, 0.05)], 0.04, "metal_dark", segs=8)
@@ -381,7 +381,7 @@ def _police_heli(k: Kit, p: dict) -> None:
         c0, c1 = sorted((sx * 0.08, sx * (W - 0.08)))
         cabin.bx((c0, 0.84, 0.73), (c1, 0.99, 1.75), "fabric_charcoal")
     cabin.bx((-W + 0.04, 0.06, 0.73), (W - 0.04, 0.83, 0.736), "rubber")
-    cabin.bx((-W + 0.02, -0.4, 1.965), (W - 0.02, 1.0, 1.97), "plastic_grey")
+    cabin.bx((-W + 0.02, -0.4, 2.065), (W - 0.02, 1.0, 2.07), "plastic_grey")
     # tail boom, fins, stabiliser, tail skid
     shell.profile_x([(-1.85, 1.3), (-6.3, 1.62), (-6.3, 1.84), (-1.85, 1.84)], -0.18, 0.18, "police_navy")
     trim.profile_x([(-5.9, 1.62), (-6.45, 1.62), (-6.78, 2.75), (-6.38, 2.75)], -0.035, 0.035, "police_navy")
@@ -393,17 +393,17 @@ def _police_heli(k: Kit, p: dict) -> None:
         b0, b1 = sorted((sx * 0.18, sx * 0.184))
         trim.bx((b0, -4.6, 1.6), (b1, -2.2, 1.7), "hivis")
     gear.rod((0.0, -6.35, 1.2), (0.0, -6.55, 0.95), 0.025, "metal_dark", segs=6)
-    gear.cyl(0.07, 0.3, (0.0, 0.3, 2.5), "metal_grey", segs=12)
+    gear.cyl(0.07, 0.3, (0.0, 0.3, 2.6), "metal_grey", segs=12)
     trim.sphere(0.04, (-0.99, -5.15, 1.92), "emit_led_red", segs=8, rings=4)
     trim.sphere(0.04, (0.99, -5.15, 1.92), "emit_led_green", segs=8, rings=4)
     trim.sphere(0.05, (0.0, -6.6, 2.78), "emit_led_red", segs=8, rings=4)
-    trim.bx((-0.14, -1.2, 2.3), (0.14, -0.95, 2.36), "emit_police_blue")                           # roof beacon
+    trim.bx((-0.14, -1.2, 2.4), (0.14, -0.95, 2.46), "emit_police_blue")                           # roof beacon
     # nose spotlight gimbal (Spotlight marker on the lens)
     gear.rod((0.0, 2.35, FLOOR), (0.0, 2.35, 0.5), 0.03, "metal_dark", segs=8)
     trim.sphere(0.13, (0.0, 2.35, 0.42), "metal_dark", segs=14, rings=7)
     trim.cyl(0.09, 0.02, (0.0, 2.47, 0.36), "emit_cool", axis="Y", segs=14)
     body.build()
-    rotor = k.empty("Rotor", (0.0, 0.3, 2.65))
+    rotor = k.empty("Rotor", (0.0, 0.3, 2.75))
     rm = k.obj("RotorBlades", parent=rotor)
     hub = rm.part(bevel=0.01)
     hub.cyl(0.2, 0.12, (0.0, 0.0, 0.0), "metal_grey", segs=16)
@@ -431,9 +431,11 @@ def _police_heli(k: Kit, p: dict) -> None:
     th.bx((-0.002, -0.052, -0.62), (0.032, 0.052, -0.5), "metal_yellow")
     tm.build()
     # L = Godot -X (the pilot's left with the nose at -Z)
-    k.empty("RopeL", (-(W + 0.32), 0.3, 1.93))
-    k.empty("RopeR", (W + 0.32, 0.3, 1.93))
-    k.empty("SniperSeat", (-(W - 0.25), -0.12, 1.08), rotation=(0.0, 0.0, math.pi / 2))
+    k.empty("RopeL", (-(W + 0.32), 0.3, 2.03))
+    k.empty("RopeR", (W + 0.32, 0.3, 2.03))
+    seat = k.empty("SniperSeat", (-(W - 0.25), -0.12, 1.08), rotation=(0.0, 0.0, math.pi / 2))
+    # ENV D heli_door kneel root: SniperSeat x Godot-local (0.50, -0.344, 0.15) = Blender-local (0.50, -0.15, -0.344).
+    k.empty("SniperKneel", (0.50, -0.15, -0.344), parent=seat)
     k.empty("Spotlight", (0.0, 2.49, 0.36), rotation=(-math.pi / 6, 0.0, 0.0))
 
 
