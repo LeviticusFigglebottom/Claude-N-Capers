@@ -85,6 +85,7 @@ Phase column: the roadmap phase that must deliver the row (P1 = vertical slice).
 | S6.2 | **Body bags**: 1 per player base, inventory cap 2. Cleaner gives +1 and cap 3. A Body Bag Case deployable holds 3. A body-bag asset can be bought. | Base 1, cap 2 (`stealth.body_bags_extra` raises both). `deployable.body_bag_case` holds 3. Pre-planning asset `asset.body_bag_drop` places a case. Bagging is a 3.0 s hold (◇) × `stealth.body_bag_speed_mult`. | A (B data) | P1 |
 | S6.3 | A bagged body is a heavy bag that must be carried, thrown and hidden or secured. Guards see body bags within 19 m. | Body bag = loot bag `loot.body_bag` (HEAVY, value 0). Can be secured in `SECURE_LOOT` zones or dropped in `BODY_HIDE` zones/`body_container`. Stimulus range 19 m. | A (C zones) | P1 |
 | S6.4 | Dominated/cuffed guards and tied civilians are themselves suspicious if seen. | Stimulus `hostage` (guards) / `restrained` (civilians see them → panic). | A | P2 |
+| S6.5 | **Bodies:** close-range shotguns and explosions throw bodies (ragdoll); shooting a corpse makes it bleed and twitch, deals no damage. | Explosion kills always ragdoll; hit kills ragdoll at ≥ 90 N·s summed impulse (point-blank shotgun ≈ 250), else the pose-aware death clip then a 1 s settle; freeze after 3 s, cap 8 active. A bullet on a corpse (its lying `CorpseHitbox`) emits `blood_hit` + an impulse nudge, no damage, not counted for stats or suppression (damage.md v1.2, net.md v1.2 `rs`/`rp`, D-114 §7). ◇ | A | P6 |
 
 ### S7. Civilians and hostages
 

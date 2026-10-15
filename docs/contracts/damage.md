@@ -1,4 +1,4 @@
-# Contract: damage and hits (v1.1)
+# Contract: damage and hits (v1.2)
 
 Producer of hits: ENV A (weapons, melee, explosives, sentries, NPC fire). Damage targets: ENV A
 (crew, NPCs, cameras, glass, shields), ENV B (firing-range targets and armor dummies). Helper:
@@ -49,3 +49,28 @@ Producer of hits: ENV A (weapons, melee, explosives, sentries, NPC fire). Damage
   plate's remaining HP is lost (PD2).
 * Range dummies copy the EnemyDef they imitate (ENV A ships EnemyDefs for every special, incl. the armour
   params); ENV B's range data may reference EnemyDef resource paths (data, not code).
+
+## v1.2 (PO6-19, D-114 §7): corpse hits and ragdoll triggers
+ENV A (env/a-core f16e1031; `NpcBase._corpse_hit`, `NpcRagdoll`, tunables `RagdollTweak` in
+`game/systems/anim/ragdoll_tweak.tres`, all ◇ presentation tuning).
+* **Corpse hits.** A dead NPC keeps one `CorpseHitbox` (a `Hitbox` on layer 5 `hitboxes`, zone `BODY`, a box lying along
+  the body; NpcRagdoll moves it to where the body rests). The ragdoll's own bodies (layer 11 `ragdoll`, characters.md
+  v1.12) are never hit-tested. A bullet, melee or blast on a corpse still goes through `take_hit`, which on a dead NPC
+  deals **no damage**, emits **no** `damage_applied` / `npc_killed`, and instead (server) emits `blood_hit` at the hit
+  point (D-113, `killed = false`) and **nudges** the ragdoll: it restarts from the baked pose with impulse = live-hit
+  impulse × `nudge_mult` 0.5, clamped to `nudge_min..nudge_max` 5–20 N·s, and re-freezes after `nudge_settle_s` 1 s.
+  Bagged bodies take nothing. Blasts push corpses in radius and LOS (`Explosion.push_corpses`, × `corpse_blast_mult`
+  0.5, no blood). A frozen corpse moved more than `bleed_move_m` 0.5 m restarts its blood pool where it lies.
+* **Not a hit.** `CombatSystem._apply_hit` returns before the D-071 tally and suppression when the target was already a
+  corpse: a corpse hit counts for no `hits` / `headshots` stat and builds no threat (L3.5).
+* **Ragdoll at death** (server decides; only for NPCs whose visual has `Skeleton3D/Ragdoll`, capsule placeholders keep
+  the animation-only death). The hits of the killing physics frame are summed (all pellets of a shotgun shot):
+  * an **explosion** kill always ragdolls (`explosion_always`; every body pushed outward, upper body weighted so it tips);
+  * a summed hit impulse **≥ `min_impulse` 90 N·s** ragdolls at once from the current pose. Per-hit impulses
+    (`bullet_impulse_by_class`, N·s): pistol 12, smg 10, ar 16, lmg 18, sniper 70, shotgun 25 **per pellet** within
+    `shotgun_range_m` 6 m (× `shotgun_far_mult` 0.25 beyond); melee 25. A point-blank shotgun blast ≈ 250 N·s;
+  * otherwise the pose-aware death clip (PO6-18) plays (waited at most `anim_wait_max_s` 3 s), then a
+    `settle_after_anim_s` **1 s** settle ragdoll lays the body on the floor.
+* **Freeze and cap.** A ragdoll freezes (bones baked, simulation stopped) after `settle_s` **3 s**, or earlier once
+  every body is slower than `settle_speed_mps` 0.05 (not before `settle_min_s` 0.6 s). At most `max_active` **8**
+  ragdolls simulate per peer; starting one more freezes the oldest first. Replication: net.md v1.2 (`"rs"`, `"rp"`).
