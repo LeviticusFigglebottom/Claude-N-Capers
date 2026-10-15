@@ -3209,3 +3209,5 @@ ui.hud.device.time,{mm}:{ss}
 ui.hud.device.jammed,JAMMED
 ui.hud.device.interrupted,INTERRUPTED
 ui.hud.device.objective_suffix,{device} {time}
+ui.hud.device.paused,PAUSED
+ui.hud.device.restarting,Restarting in {time}

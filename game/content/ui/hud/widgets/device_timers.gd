@@ -16,6 +16,8 @@ signal objective_suffix_changed(text: String, jammed: bool)
 
 const STATE_RUNNING: StringName = &"running"
 const STATE_JAMMED: StringName = &"jammed"
+## Model rows only (power cut / lockdown on a hack): amber PAUSED, no fix prompt.
+const STATE_PAUSED: StringName = &"paused"
 ## Device kind -> name key.
 const KIND_KEYS: Dictionary = {
 	&"drill": &"ui.hud.device.drill", &"thermal": &"ui.hud.device.thermal", &"saw": &"ui.hud.device.saw",
@@ -107,6 +109,10 @@ static func kind_name(kind: StringName) -> String:
 	return UiText.t(KIND_KEYS.get(kind, &"ui.hud.device.drill") as StringName)
 
 
+static func is_paused(row: Dictionary) -> bool:
+	return StringName(row.get("state", STATE_RUNNING)) == STATE_PAUSED
+
+
 static func jam_text(kind: StringName) -> String:
 	return UiText.t(&"ui.hud.device.interrupted" if kind == &"hack" else &"ui.hud.device.jammed")
 
@@ -158,6 +164,8 @@ func objective_line(o: Dictionary) -> String:
 		return ""
 	var kind: StringName = StringName(r.get("kind", &"drill"))
 	var tail: String = jam_text(kind) if is_jammed(r) else time_text(float(r.get("time_left_s", 0.0)))
+	if is_paused(r):
+		tail = UiText.t(&"ui.hud.device.paused")
 	return UiText.t(&"ui.hud.device.objective_suffix", {"device": kind_name(kind), "time": tail})
 
 
@@ -211,11 +219,15 @@ func _layout(all: Array[Dictionary]) -> void:
 			continue
 		var kind: StringName = StringName(r.get("kind", &"drill"))
 		var jammed: bool = is_jammed(r)
-		drawn.append({"net_id": id, "kind": kind, "pos": to_local * cam.unproject_position(world),
+		var fix: String = fix_text(r) if jammed else ""
+		var restart: float = float(r.get("auto_restart_in_s", -1.0))
+		if jammed and restart >= 0.0:
+			fix = UiText.t(&"ui.hud.device.restarting", {"time": time_text(restart)})
+		drawn.append({"paused": is_paused(r),"net_id": id, "kind": kind, "pos": to_local * cam.unproject_position(world),
 				"scale": clampf(tweak.device_panel_ref_m / maxf(dist, 0.01), tweak.device_panel_min_scale, 1.0),
 				"jammed": jammed, "progress": clampf(float(r.get("progress", 0.0)), 0.0, 1.0),
 				"time_text": time_text(float(r.get("time_left_s", 0.0))), "label": kind_name(kind),
-				"jam_text": jam_text(kind) if jammed else "", "fix_text": fix_text(r) if jammed else ""})
+				"jam_text": jam_text(kind) if jammed else "", "fix_text": fix})
 
 
 ## Hide panels a wall stands in front of (camera -> device ray on device_occlusion_mask; hits within
@@ -243,7 +255,8 @@ func _draw() -> void:
 		var s: float = float(d["scale"])
 		var c: Vector2 = d["pos"] as Vector2
 		var jammed: bool = bool(d["jammed"])
-		var accent: Color = tweak.device_jam_color if jammed else tweak.objective_color
+		var paused: bool = bool(d.get("paused", false))
+		var accent: Color = tweak.device_jam_color if jammed else (UiTokens.WARN if paused else tweak.objective_color)
 		var w: float = PANEL_W * s
 		var h: float = PANEL_H * s
 		var r: Rect2 = Rect2(c - Vector2(w * 0.5, h), Vector2(w, h))
@@ -254,7 +267,10 @@ func _draw() -> void:
 		var pad: float = 8.0 * s
 		_text(Vector2(r.position.x + pad, r.position.y + pad + fs), String(d["label"]), fs, UiTokens.PAPER_DIM, false)
 		var main: String = String(d["jam_text"]) if jammed else String(d["time_text"])
-		_text(Vector2(r.end.x - pad, r.position.y + pad + big * 0.9), main, big, accent if jammed else UiTokens.PAPER, true)
+		if paused:
+			main = UiText.t(&"ui.hud.device.paused")
+		_text(Vector2(r.end.x - pad, r.position.y + pad + big * 0.9), main, big,
+				accent if jammed or paused else UiTokens.PAPER, true)
 		var bar: Rect2 = Rect2(r.position.x + pad, r.end.y - pad - 6.0 * s, w - 2.0 * pad, maxf(6.0 * s, 3.0))
 		draw_rect(bar, Color(UiTokens.LINE, 0.9))
 		draw_rect(Rect2(bar.position, Vector2(bar.size.x * float(d["progress"]), bar.size.y)), accent)

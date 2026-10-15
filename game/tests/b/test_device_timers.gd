@@ -174,3 +174,13 @@ func test_objective_without_link_matches_by_kind() -> void:
 	var other: Dictionary = {"id": &"secure_bags", "text_key": &"objective.test.secure", "state": Enums.ObjectiveState.ACTIVE}
 	assert_eq(_hud.device_timers.objective_line(other), "", "a bag objective gets no device timer")
 	EventBus.device_finished.emit(_id)
+
+
+func test_paused_and_auto_restart_rows() -> void:
+	_model.devices = [{"net_id": 5, "kind": &"hack", "world_pos": Vector3(0, 0, -5), "progress": 0.5, "time_left_s": 40.0,
+			"state": &"paused"}, {"net_id": 6, "kind": &"drill", "world_pos": Vector3(0.5, 0, -5), "progress": 0.4,
+			"time_left_s": 70.0, "state": &"jammed", "auto_restart_in_s": 4.2}]
+	await wait_frames(3)
+	assert_true(bool(_drawn(5)["paused"]), "paused row")
+	assert_false(bool(_drawn(5)["jammed"]))
+	assert_eq(String(_drawn(6)["fix_text"]), "Restarting in 00:05", "auto restart countdown instead of the fix prompt")
