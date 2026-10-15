@@ -77,6 +77,10 @@ const METHOD_UI: Dictionary = {
 @export var code_group: StringName = &""
 ## S9.8: vault time lock in s (0 = none), see the header.
 @export var time_lock_s: float = 0.0
+## D-115 (DB-5 / SL-1): per-safe drill / saw run time (s) when the design doc's time is not a size's (> 0 wins
+## over the `size` table; -1 = by size).
+@export var drill_duration_s: float = -1.0
+@export var saw_duration_s: float = -1.0
 ## S9.5 / A5-03: charges the c4 method needs (C4 items, or trip mines with interaction.shaped_charge).
 @export var charges_required: int = 1
 ## A2-08: keycard_reader that opens this safe (`methods` must contain &"keycard"). Optional: the
@@ -215,11 +219,15 @@ func swing_open() -> void:
 
 ## Drill time by `size` (s).
 func drill_duration() -> float:
+	if drill_duration_s > 0.0:
+		return drill_duration_s
 	return _by_size(Tweak.interaction().safe_drill_duration_s, Tweak.interaction().drill_duration_s)
 
 
 ## Saw time by `size` (s).
 func saw_duration() -> float:
+	if saw_duration_s > 0.0:
+		return saw_duration_s
 	return _by_size(Tweak.interaction().safe_saw_duration_s, Tweak.interaction().saw_duration_s)
 
 
