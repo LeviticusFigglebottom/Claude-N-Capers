@@ -335,7 +335,7 @@ item.loot.cash.name,Cash
 item.loot.cash.desc,"Bundled bills. Light, honest money."
 item.loot.body_bag.name,Body Bag
 item.loot.body_bag.desc,Heavy and awkward. Out of sight is out of mind.
-heist.glasshouse.name,Glasshouse
+heist.glasshouse.name,Golden Hour
 heist.glasshouse.subtitle,Vossberg Jewelers
 heist.glasshouse.brief,Vossberg keeps the good stones in the back and the cameras in the front. Odile wants the back.
 objective.glasshouse.escape,Get to the van
@@ -1561,7 +1561,7 @@ ui.board.district.uptown,Uptown
 ui.board.district.westside,Westside
 item.loot.cash_bricks.name,Cash Bricks
 item.loot.cash_bricks.desc,Shrink-wrapped bricks of undeclared bills off the Co-op pallet. Dense and slow to carry.
-heist.night_deposit.name,Night Deposit
+heist.night_deposit.name,Nightfall Depository
 heist.night_deposit.subtitle,Harbor Savings & Loan
 heist.night_deposit.brief,A cartel front drops its week of cash down a bank's night chute. The Accountant wants the chute and the vault cage.
 heist.night_deposit.briefing,"Harbor Savings & Loan, Pier District branch, stands on the corner of Harbor Street and Wharf Lane. Every Friday night the Ortega Fisheries Co-op drops its takings down the night depository chute, and the bags wait in the basement until the 06:00 armoured car. The Co-op's friends keep more cash in the vault cage. The bank is closed: case it from the ATM lobby, find the vault keycard and the time-lock code (or hack the lock from the server room), then hold the basement while the time lock runs. If it goes loud, the vault seals itself: drill the door and hold the basement. The Accountant wants at least four bags."
@@ -1625,6 +1625,7 @@ voice.vo.mercer.briefing_shadow_ledger_1,"Forty-two floors, heavy rain, and you 
 ui.briefing.escape.zipline,Zipline
 ui.briefing.escape.service_lift,Service lift
 ui.briefing.escape.lift,Service lift
+ui.briefing.objectives_more,+{count} more steps on the night
 item.asset.intel_laptop.name,Insider: laptop location
 item.asset.intel_laptop.desc,You know where the partners left the ledger laptop tonight.
 item.asset.gondola_left_hung.name,Window-washer gondola
@@ -1916,8 +1917,8 @@ ui.achievements.reward_caption,Reward
 ui.results.achievement_unlocked,Achievement unlocked: {name}
 achievement.first_score.name,First Score
 achievement.first_score.desc,Complete any heist.
-achievement.glasshouse_regular.name,Regular at the Glasshouse
-achievement.glasshouse_regular.desc,Complete Glasshouse three times.
+achievement.glasshouse_regular.name,Regular at Vossberg's
+achievement.glasshouse_regular.desc,Complete Golden Hour three times.
 achievement.ghost_crew.name,Ghost Crew
 achievement.ghost_crew.desc,Complete five heists without raising the alarm.
 achievement.make_some_noise.name,Make Some Noise
@@ -2983,9 +2984,9 @@ achievement.dock_work.desc,"Complete Dockside Burn five times. Unlocks the Urban
 achievement.harbour_master.name,Harbour Master
 achievement.harbour_master.desc,"Complete Dockside Burn on Lethal or higher. Unlocks the Dock Boss mask."
 achievement.night_shift.name,Night Shift
-achievement.night_shift.desc,"Complete Night Deposit without raising the alarm. Unlocks the Midnight Chrome weapon finish."
+achievement.night_shift.desc,"Complete Nightfall Depository without raising the alarm. Unlocks the Midnight Chrome weapon finish."
 achievement.shattered_glass.name,Shattered Glass
-achievement.shattered_glass.desc,"Complete Glasshouse loud on Cataclysm. Unlocks the Rose Cinder colours."
+achievement.shattered_glass.desc,"Complete Golden Hour loud on Cataclysm. Unlocks the Rose Cinder colours."
 achievement.grand_tour.name,Grand Tour
 achievement.grand_tour.desc,"Complete every heist at least once. Unlocks the Grand Tourist mask."
 achievement.lethal_itinerary.name,Lethal Itinerary
