@@ -1,0 +1,8 @@
+asset: prop_turret_van
+script: tools/blender/props/assault_events.py
+params: {"cat": {"kind": "turret_van", "prefab": "assault_event", "surface": "metal"}, "fn": "turret_van"}
+seed: 2910861312  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_turret_van
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 8000
