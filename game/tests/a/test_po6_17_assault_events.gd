@@ -492,3 +492,36 @@ func test_po6_17_heli_roof_drop_pairs_ceiling_breach() -> void:
 	assert_true(await wait_until(func() -> bool:
 		var h: AssaultHeli = wr.get_ref() as AssaultHeli
 		return h == null or h.stage >= AssaultHeli.Stage.LEAVE, 6.0), "heli leaves once the squad is down")
+
+
+## PO6-17b (PD2 breaches stagger): the blast stuns NPCs within stun_radius_m with LOS and flashes crew in range
+## (CrewHealth.flashed_left, replicated; LocalHudModel.flashed_s), stronger near the charge; out of range: nothing.
+func test_po6_17b_breach_blast_stuns_npcs_and_flashes_crew() -> void:
+	var ev: AssaultEventRunner = await _launch()
+	var marker: Node3D = _rt.map.get_node(^"AssaultEvents/Breach_1")
+	var crew: CrewController = _rt.crew_controller(0) as CrewController
+	_rt.teleport_crew(0, Transform3D(Basis.IDENTITY, marker.global_position + Vector3(0, 0.05, 3.0)))
+	var near: NpcBase = _rt.spawn_npc(&"civilian", Transform3D(Basis.IDENTITY, marker.global_position + Vector3(1.5, 0.05, 2.5)), {})
+	var far: NpcBase = _rt.spawn_npc(&"civilian", Transform3D(Basis.IDENTITY, marker.global_position + Vector3(0, 0.05, 25.0)), {})
+	for g: NpcBase in [near, far]:
+		g.max_health = 5000.0
+		g.health = 5000.0
+	await wait_physics_frames(3)
+	var b: AssaultBreach = ev.run(&"breach", {"warning_s": 0.3, "damage": 0.0, "squad": []}, "Breach_1") as AssaultBreach
+	assert_true(b != null, "breach running")
+	var went: bool = await wait_until(func() -> bool: return b.is_blown(), 3.0)
+	assert_true(went, "blown")
+	await wait_physics_frames(1)
+	assert_true(near.is_stunned(), "a civilian 3 m from the charge with LOS is stunned")
+	for u: NpcBase in ev.units:
+		assert_false(u.is_stunned(), "the breaching police are never stunned by their own charge")
+	assert_false(far.is_stunned(), "an NPC 25 m away is not")
+	assert_true(crew.health.flashed_left > 1.0, "the crew member 3 m away is flashed (%.2f s)" % crew.health.flashed_left)
+	var hud: LocalHudModel = LocalHudModel.new()
+	_rt.add_child(hud)
+	hud.track(crew)
+	assert_true(hud.flashed_s > 1.0, "HUD flashed_s %.2f" % hud.flashed_s)
+	hud.queue_free()
+	var left: float = crew.health.flashed_left
+	await wait_seconds(0.5)
+	assert_true(crew.health.flashed_left < left, "the flash wears off")

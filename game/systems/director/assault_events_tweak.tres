@@ -44,7 +44,10 @@ kind_defaults = {
 "squad": [&"enemy.tac_heavy", &"enemy.tac_light", &"enemy.tac_light"],
 "squad_delay_s": 0.8,
 "squad_interval_s": 0.5,
-"warning_s": 3.5
+"warning_s": 3.5,
+"stun_radius_m": 8.0,
+"npc_stun_s": 3.0,
+"crew_flash_s": 2.5
 },
 &"heli": {
 "_note": "police helicopter: flies in, orbits the orbit marker, hovers over a drop marker for a rappel squad, then orbits with a Longshot at the open door for sniper_s and leaves",

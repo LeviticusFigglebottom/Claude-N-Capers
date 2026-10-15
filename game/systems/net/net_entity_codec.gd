@@ -21,7 +21,7 @@ const GENERIC_PROPS: Array[StringName] = [
 ]
 ## Crew members' replicated fields (crew_state, mask, inventory, carried bag, vitals).
 const CREW_HEALTH_PROPS: Array[StringName] = [
-	&"health", &"max_health", &"armor", &"max_armor", &"downs_used", &"bleedout_left",
+	&"health", &"max_health", &"armor", &"max_armor", &"downs_used", &"bleedout_left", &"flashed_left",
 ]
 ## NPC children that only make sense on the authority (brains, motors, gunners, nav agents).
 const NPC_SERVER_ONLY: Array[String] = ["Brain", "Motor", "Gunner", "NavAgent"]

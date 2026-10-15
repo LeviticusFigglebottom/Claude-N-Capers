@@ -201,8 +201,37 @@ func blow() -> void:
 	if breach_kind == "wall" and visual != null:
 		_open_link()
 	Explosion.apply(self, at, p_float("radius_m", 4.5), p_float("damage", 60.0), 0, &"breach_c4")
+	_stun_around(at)
 	blown.emit(self)
 	end_event()
+
+
+## PO6-17b (PD2 breaches stagger): every non-police NPC (civilians, hostages, guards; never the police that set the
+## charge, roles police / special) within stun_radius_m with blast LOS is stunned npc_stun_s; every
+## crew member in range with LOS is flashed crew_flash_s scaled by distance (full at the charge, half at the edge).
+func _stun_around(at: Vector3) -> void:
+	var r: float = p_float("stun_radius_m", 8.0)
+	if r <= 0.0:
+		return
+	var mask: int = CombatTweak.data().explosion_los_mask
+	var rt: HeistRuntime = HeistRuntime.of(self)
+	if rt == null:
+		return
+	for n: Node in get_tree().get_nodes_in_group(G.NPC):
+		var npc: NpcBase = n as NpcBase
+		if npc == null or not npc.alive or not rt.is_ancestor_of(npc) or npc.role in [&"police", &"special"]:
+			continue
+		var eye: Vector3 = npc.global_position + Vector3.UP * 1.5
+		if eye.distance_to(at) <= r and CombatSystem.has_los(self, at, eye, [npc], mask):
+			npc.stun(p_float("npc_stun_s", 3.0))
+	for c: CrewController in rt.crew_members():
+		var ce: Vector3 = c.eye_position()
+		var d: float = ce.distance_to(at)
+		if d > r or not CombatSystem.has_los(self, at, ce, [c], mask):
+			continue
+		var hp: CrewHealth = c.health as CrewHealth
+		if hp != null:
+			hp.flash(p_float("crew_flash_s", 2.5) * lerpf(1.0, 0.5, clampf(d / r, 0.0, 1.0)))
 
 
 ## Server: hang the rope between two world points (or clear it with Vector3.INF).
