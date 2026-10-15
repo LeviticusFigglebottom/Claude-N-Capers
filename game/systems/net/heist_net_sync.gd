@@ -53,6 +53,8 @@ const SVC_STATS: String = "stats"
 const SVC_CAPTAIN: String = "captain"
 ## D-103 §6: runtime MapZone kind changes (ZoneKinds).
 const SVC_ZONES: String = "zones"
+## PO6-08: PagerSystem HUD rows (window frozen while answering) for clients.
+const SVC_PAGERS: String = "pagers"
 ## C11 Net.lobby_message kinds, both {"token": int}: host -> clients / client -> host.
 const KIND_CLOSED: StringName = &"heist_closed"
 const KIND_LEFT: StringName = &"heist_left"
@@ -340,6 +342,9 @@ func services_state() -> Dictionary:
 	var zones: ZoneKinds = _runtime.service(ZoneKinds.SERVICE) as ZoneKinds
 	if zones != null and not zones.overrides.is_empty():
 		out[SVC_ZONES] = zones.net_state()
+	var pagers: PagerSystem = _runtime.service(G.SVC_PAGERS) as PagerSystem
+	if pagers != null:
+		out[SVC_PAGERS] = pagers.net_state()
 	return out
 
 
@@ -507,6 +512,9 @@ func apply_services(svc: Dictionary) -> void:
 		_runtime.stats.apply_net_state(svc[SVC_STATS] as Dictionary)
 	if svc.has(SVC_ZONES):
 		ZoneKinds.ensure(_runtime).apply_net_state(svc[SVC_ZONES] as Dictionary)
+	var pagers: PagerSystem = _runtime.service(G.SVC_PAGERS) as PagerSystem
+	if svc.has(SVC_PAGERS) and pagers != null:
+		pagers.apply_net_state(svc[SVC_PAGERS] as Dictionary)
 	if svc.has(SVC_RUNTIME):
 		var r: Dictionary = svc[SVC_RUNTIME] as Dictionary
 		phase_replicated.emit(int(r.get("phase", _runtime.phase)), bool(r.get("loud", _runtime.went_loud)))
