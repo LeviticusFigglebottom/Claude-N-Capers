@@ -90,8 +90,9 @@ PISTOL = FPSet(
              "slide_rear": v3(0.0, -0.030, 0.050)},
     # D-116 (PO, FNV-style): ONE-HANDED in first person. Hip: the gun in the lower-right third
     # (grip ~x68 %/y96 % 0.35 m out, muzzle ~x58 %/y61 % at the 52 deg viewmodel FOV; refs
-    # po_shots/2026-10-15_ref_pistol_*), yawed 12 deg toward the centre. ADS: a close pistol (0.22 m), the right shoulder brought in under the eye so the firing hand's knuckles fill the bottom centre and only the
-    # cuff and a short sleeve show below it. The left hand waits off-screen and comes up only to reload.
+    # po_shots/2026-10-15_ref_pistol_*), yawed 12 deg toward the centre. ADS: a close pistol (0.22 m), the right
+    # shoulder brought in under the eye so the firing hand's knuckles fill the bottom centre and only the cuff and a
+    # short sleeve show below it. The left hand waits off-screen and comes up only to reload.
     hip=((0.102, 0.367, -0.107), 12.0, 2.0, -4.0), one_hand=True,
     ads_dist=0.22, sh=(0.0, 0.06, 0.04), ads_sh=(-0.17, -0.06, -0.24),
     pole_l=(-0.22, -0.25, -0.94), pole_l_ads=(-0.22, -0.25, -0.94), pole_r=(0.22, -0.25, -0.94),
@@ -395,8 +396,9 @@ REVOLVER = FPSet(
              "loader": v3(0.0, 0.0, 0.0478)},
     # D-116 as the pistol (PO, FNV-style): ONE-HANDED in first person. Hip: the gun in the lower-right third
     # (grip ~x68 %/y96 % 0.35 m out, muzzle ~x58 %/y61 % at the 52 deg viewmodel FOV; refs
-    # po_shots/2026-10-15_ref_pistol_*), yawed 12 deg toward the centre. ADS: a close pistol (0.22 m), the right shoulder brought in under the eye so the firing hand's knuckles fill the bottom centre and only the
-    # cuff and a short sleeve show below it. The left hand waits off-screen and comes up only to reload.
+    # po_shots/2026-10-15_ref_pistol_*), yawed 12 deg toward the centre. ADS: a close pistol (0.22 m), the right
+    # shoulder brought in under the eye so the firing hand's knuckles fill the bottom centre and only the cuff and a
+    # short sleeve show below it. The left hand waits off-screen and comes up only to reload.
     hip=((0.102, 0.367, -0.107), 12.0, 2.0, -4.0), one_hand=True,
     ads_dist=0.22, sh=(0.0, 0.06, 0.04), ads_sh=(-0.17, -0.06, -0.24),
     pole_l=(-0.22, -0.25, -0.94), pole_l_ads=(-0.22, -0.25, -0.94), pole_r=(0.22, -0.25, -0.94),
