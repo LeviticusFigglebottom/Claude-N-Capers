@@ -562,6 +562,7 @@ ui.menu.settings_soon,Settings are coming soon.
 ui.stub.launcher_missing,The heist launcher is not in this build yet. You can preview the payday screen with sample results.
 ui.stub.sample_payday,Preview payday (sample)
 ui.heist_select.difficulty_locked,{name} (locked)
+ui.heist_select.difficulty_locked_progress,"{name} is locked: win any heist on {prev} first."
 ui.loadout.none,None
 ui.loadout.stock,Stock
 ui.mod_type.barrel,Barrel
