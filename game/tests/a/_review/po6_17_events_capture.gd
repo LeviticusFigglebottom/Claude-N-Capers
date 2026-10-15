@@ -51,10 +51,10 @@ func _run() -> void:
 
 ## C's GH van / heli markers (README §5) when the map does not have them yet.
 func _inject_markers() -> void:
-	if AssaultEventMarkers.root(_rt.map) != null:
+	if AssaultEventMarkerScan.root(_rt.map) != null:
 		return
 	var ae: Node3D = Node3D.new()
-	ae.name = AssaultEventMarkers.ROOT_NAME
+	ae.name = AssaultEventMarkerScan.ROOT_NAME
 	_rt.map.add_child(ae)
 	var van: Marker3D = Marker3D.new()
 	van.name = "TurretVan_1"

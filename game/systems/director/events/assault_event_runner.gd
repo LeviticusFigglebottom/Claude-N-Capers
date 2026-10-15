@@ -183,7 +183,7 @@ func _on_ended(e: AssaultEventEntity) -> void:
 
 func _run_van(p: Dictionary, marker: String) -> AssaultEventEntity:
 	var xf: Transform3D = Transform3D.IDENTITY
-	var ms: Array[Node3D] = _pick_markers(AssaultEventMarkers.VAN, marker)
+	var ms: Array[Node3D] = _pick_markers(AssaultEventMarkerScan.VAN, marker)
 	var taken: Array[Vector3] = []
 	for e: AssaultEventEntity in active:
 		if e is AssaultTurretVan:
@@ -222,13 +222,13 @@ func _run_van(p: Dictionary, marker: String) -> AssaultEventEntity:
 func _run_heli(p: Dictionary, marker: String) -> AssaultEventEntity:
 	var center: Vector3
 	var radius: float = float(p.get("orbit_radius_m", 24.0))
-	var orbits: Array[Node3D] = _pick_markers(AssaultEventMarkers.HELI_ORBIT, "")
+	var orbits: Array[Node3D] = _pick_markers(AssaultEventMarkerScan.HELI_ORBIT, "")
 	if not orbits.is_empty():
 		var o: Node3D = orbits[GameRng.stream(RNG).randi_range(0, orbits.size() - 1)]
 		center = o.global_position
 		radius = float(o.get_meta(&"radius", radius))
 	else:
-		var b: AABB = AssaultEventMarkers.map_bounds(_rt.map)
+		var b: AABB = AssaultEventMarkerScan.map_bounds(_rt.map)
 		center = b.get_center()
 		center.y = maxf(b.end.y + 8.0, float(p.get("orbit_height_m", 30.0)))
 		center = Vector3(center.x, center.y, center.z)
@@ -254,9 +254,9 @@ func _run_heli(p: Dictionary, marker: String) -> AssaultEventEntity:
 ## {pos, name, breach (AssaultBreach marker path or "")} or {}.
 func _pick_drop(marker: String) -> Dictionary:
 	var cands: Array[Dictionary] = []
-	for m: Node3D in _pick_markers(AssaultEventMarkers.HELI_DROP, marker):
+	for m: Node3D in _pick_markers(AssaultEventMarkerScan.HELI_DROP, marker):
 		var pos: Vector3 = m.global_position
-		if AssaultEventMarkers.nav_point(_rt.map, pos, 1.2) != Vector3.INF:
+		if AssaultEventMarkerScan.nav_point(_rt.map, pos, 1.2) != Vector3.INF:
 			cands.append({"pos": pos, "name": String(m.name), "breach": ""})
 			continue
 		var pair: Node3D = _pair_ceiling_breach(pos)
@@ -271,7 +271,7 @@ func _pick_drop(marker: String) -> Dictionary:
 
 
 func _pair_ceiling_breach(pos: Vector3) -> Node3D:
-	for m: Node3D in AssaultEventMarkers.list(_rt.map, AssaultEventMarkers.BREACH):
+	for m: Node3D in AssaultEventMarkerScan.list(_rt.map, AssaultEventMarkerScan.BREACH):
 		if String(m.get_meta(&"kind", "wall")) == "ceiling" and m.global_position.distance_to(pos) <= PAIR_RADIUS_M:
 			return m
 	return null
@@ -366,10 +366,10 @@ func _breach_candidates() -> Array[Node3D]:
 	var out: Array[Node3D] = []
 	if _rt == null or _rt.map == null:
 		return out
-	for m: Node3D in AssaultEventMarkers.list(_rt.map, AssaultEventMarkers.BREACH):
+	for m: Node3D in AssaultEventMarkerScan.list(_rt.map, AssaultEventMarkerScan.BREACH):
 		if not _breach_used.has(_map_path(m)):
 			out.append(m)
-	if not out.is_empty() or not AssaultEventMarkers.list(_rt.map, AssaultEventMarkers.BREACH).is_empty():
+	if not out.is_empty() or not AssaultEventMarkerScan.list(_rt.map, AssaultEventMarkerScan.BREACH).is_empty():
 		return out
 	for n: Node in _rt.map.get_slots(G.ENTRY_POINT):
 		var n3: Node3D = n as Node3D
@@ -393,7 +393,7 @@ func _run_breach(p: Dictionary, marker: String) -> AssaultEventEntity:
 		if d < best_d:
 			best_d = d
 			best = m
-	var is_marker: bool = AssaultEventMarkers.list(_rt.map, AssaultEventMarkers.BREACH).has(best)
+	var is_marker: bool = AssaultEventMarkerScan.list(_rt.map, AssaultEventMarkerScan.BREACH).has(best)
 	var path: String = _map_path(best)
 	var b: AssaultBreach = AssaultBreach.new()
 	if is_marker:
@@ -656,7 +656,7 @@ func _rope_done(owner: Node) -> void:
 # --- Helpers -----------------------------------------------------------------------------------
 
 func _pick_markers(prefix: String, marker: String) -> Array[Node3D]:
-	var ms: Array[Node3D] = AssaultEventMarkers.list(_rt.map, prefix)
+	var ms: Array[Node3D] = AssaultEventMarkerScan.list(_rt.map, prefix)
 	if marker != "":
 		ms = ms.filter(func(m: Node3D) -> bool: return String(m.name) == marker)
 	return ms
