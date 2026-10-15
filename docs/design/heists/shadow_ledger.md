@@ -790,7 +790,7 @@ by design (a tower).
 
 ## Requests (to the lead)
 - **QC-15 (ENV B loot):** `loot.ledger_laptop` (LIGHT), `loot.ledger_drives` (MEDIUM),
-  `loot.ledger_books` (LIGHT), `loot.painting` (MEDIUM, reusable by `gallery_night`).
+  `loot.ledger_books` (MEDIUM), `loot.painting` (LIGHT, reusable by `gallery_night`) (weights follow the data, D-117).
 - **QC-16 (ENV B assets):** `asset.intel_laptop` (reveals `laptop`), `asset.gondola_left_hung` and
   `asset.riser_panel` (force a slot from the chosen point's params).
 - **QC-17 (ENV A):** confirm that carrying a bag on a `ladder` is blocked (the design assumes it is;

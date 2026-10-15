@@ -1,4 +1,6 @@
-# Night Deposit: Harbor Savings & Loan (night_deposit)
+# Nightfall Depository: Harbor Savings & Loan (night_deposit)
+
+> D-117: display name "Nightfall Depository"; id `night_deposit` unchanged.
 Status: APPROVED (lead, 2026-10-10) (D-040)
 
 ## Fiction
@@ -515,7 +517,7 @@ Each variable changes a decision.
 
 | Point | Category | Params / asset |
 |---|---|---|
-| `pp_drop_lot` | drop_zone | by the dumpster: body bag case, ECM, ammo |
+| `pp_drop_lot` | drop_zone | by the dumpster: body bag case, ammo (no ECM drop: ECM is a deployable, D-117) |
 | `pp_drop_quay` | drop_zone | |
 | `pp_spawn_lot` | spawn | spawn_tag `preplan_spawn_lot` |
 | `pp_spawn_quay` | spawn | spawn_tag `preplan_spawn_quay` |
@@ -548,7 +550,7 @@ Each variable changes a decision.
 - **LUT:** `lut_night_deposit`: sodium orange highlights, teal-green shadows.
 
 ## HeistDef (proposed data, `night_deposit_def.tres`)
-`id night_deposit`, display "Night Deposit", contact `contact.accountant`, mode STEALTH_OR_LOUD,
+`id night_deposit`, display "Nightfall Depository" (D-117), contact `contact.accountant`, mode STEALTH_OR_LOUD,
 base_payout proposed **$90,000** (lead/B to confirm), loot `[loot.cash, loot.cash_bricks,
 loot.small_valuables]` (B to confirm ids), escape_options `[van, boat]`, music_track `night_deposit`.
 
@@ -557,7 +559,7 @@ loot.small_valuables]` (B to confirm ids), escape_options `[van, boat]`, music_t
   landing (8 s, 2 bags per cycle). Same semantics as the P2 `zipline` with a vertical path.
 - **QC-12 (ENV A prefab / variant):** the server-hack interaction (3 × 20 s with random reboot
   interruptions) as a configurable `hack_terminal` prefab, or an option on `keypad`.
-- **QC-13 (ENV B loot):** `loot.cash_bricks` (HEAVY bag, the Co-op pallet) and the small-loot value
+- **QC-13 (ENV B loot):** `loot.cash_bricks` (MEDIUM bag per the data, D-117; the Co-op pallet) and the small-loot value
   for deposit boxes.
 - **QC-14 (ENV A):** the out-of-bounds water kill volume and quay respawn rule (stealth: no alarm),
   if no generic `oob_volume` exists.

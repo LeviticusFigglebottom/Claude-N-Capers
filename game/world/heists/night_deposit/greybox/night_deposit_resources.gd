@@ -18,12 +18,10 @@ static func make_def() -> HeistDef:
 	if d == null:
 		d = HeistDef.new()
 	d.id = &"night_deposit"
-	d.display_name = "Night Deposit"
+	d.display_name = "Nightfall Depository"  # D-117 §1 (id stays night_deposit)
 	d.contact = &"contact.accountant"
-	d.briefing = "Harbor Savings & Loan, Pier District branch. Every Friday night the Ortega Fisheries " \
-		+ "Co-op drops its week of cash into the night depository, and its special customers keep more in " \
-		+ "the vault cage. The Accountant: they can't report what they never declared. Keycard and " \
-		+ "time-lock code, or hack the lock; hold the basement; four bags minimum."
+	# D-117 §4: a strings-table key (ENV B), never a literal.
+	d.briefing = "heist.night_deposit.briefing"
 	d.mode = Enums.HeistMode.STEALTH_OR_LOUD
 	d.map_scene = SCENE_PATH
 	d.base_payout = 90000
