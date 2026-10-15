@@ -1166,9 +1166,9 @@ func _build_workshop(gp: Node3D) -> void:
 			var targets: Array[NodePath] = [reader.get_path_to(safe)]
 			reader.set(&"targets", targets)
 		# Under the safe: Safe only enables loot parented to it once it opens (P1 gate finding).
-		# Safe-local position: 0.64 m in front of the door, as before.
-		_prefab(safe, "loot_spawn", "SafeLoot", Vector3(0.0, 0.0, -0.64), 0.0,
-			{"loot_id": &"loot.jewelry", "count": 4, "objective_tag": &"safe_loot"})
+		# PO6-05: at the large safe's LootAnchor (safe-local (0, 0.142, 0)); UsePoint stays safe-local (0, 0, -1.54).
+		_prefab(safe, "loot_spawn", "SafeLoot", Vector3(0.0, 0.142, 0.0), 0.0,
+			{"loot_id": &"loot.jewelry", "count": 4, "objective_tag": &"safe_loot"}, Vector3(6.5, 0.0, 2.1))
 
 
 func _build_cases(gp: Node3D) -> void:

@@ -101,7 +101,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 ## navmesh: Navmesh
 
 - navmesh: 1359 polygons, cell 0.10/0.10 m
-- 141 markers checked
+- 140 markers checked
 | room | walkable samples | covered | coverage |
 |---|---|---|---|
 | `Rooms/RoomG1` | 17 | 17 | 100% |
@@ -242,10 +242,10 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `SalonPrivate` | 1660 | 485062 | 6 |
 | `CorridorG4` | 1493 | 454170 | 6 |
 | `WorkshopSafe` | 244 | 71658 | 2 |
-| `ReceivingBackDoor` | 258 | 79498 | 2 |
+| `ReceivingBackDoor` | 260 | 79544 | 2 |
 | `StairCore` | 428 | 86562 | 2 |
 | `UpperCorridor` | 1354 | 363798 | 6 |
-| `SecurityOffice` | 652 | 173396 | 3 |
+| `SecurityOffice` | 654 | 173442 | 3 |
 | `BreakRoom` | 238 | 71242 | 2 |
 | `ManagerOffice` | 747 | 263488 | 5 |
 | `AdminOffice` | 402 | 151120 | 2 |

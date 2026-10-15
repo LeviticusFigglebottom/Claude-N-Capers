@@ -49,7 +49,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/CasingHarlow1` | `Gameplay/Workshop/WorkshopSafe/UsePoint` | use_point | 13.3 | 29.8 | 2.25 | ok |
 | `Spawns/CasingHarlow1` | `Gameplay/Workshop/WorkshopSafe/SafeDrill` | objective | 13.2 | 29.9 | 2.26 | ok |
 | `Spawns/CasingHarlow1` | `Gameplay/Workshop/WorkshopSafe/SafeDrill/UsePoint` | use_point | 13.2 | 29.9 | 2.26 | ok |
-| `Spawns/CasingHarlow1` | `Gameplay/Workshop/WorkshopSafe/SafeLoot` | loot_spawn | 13.7 | 30.2 | 2.21 | ok |
+| `Spawns/CasingHarlow1` | `Gameplay/Workshop/WorkshopSafe/SafeLoot` | loot_spawn | 12.8 | 29.4 | 2.30 | ok |
 | `Spawns/CasingHarlow1` | `Gameplay/Workshop/WorkshopSafe/SafeLoot/UsePoint` | use_point | 12.8 | 29.4 | 2.30 | ok |
 | `Spawns/CasingHarlow1` | `Gameplay/Workshop/SafeKeycardReader` | objective | 14.2 | 30.3 | 2.14 | ok |
 | `Spawns/CasingHarlow1` | `Gameplay/Workshop/SafeKeycardReader/UsePoint` | use_point | 14.2 | 30.3 | 2.14 | ok |
@@ -120,7 +120,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/CasingHarlow2` | `Gameplay/Workshop/WorkshopSafe/UsePoint` | use_point | 12.9 | 28.3 | 2.19 | ok |
 | `Spawns/CasingHarlow2` | `Gameplay/Workshop/WorkshopSafe/SafeDrill` | objective | 12.9 | 28.4 | 2.20 | ok |
 | `Spawns/CasingHarlow2` | `Gameplay/Workshop/WorkshopSafe/SafeDrill/UsePoint` | use_point | 12.9 | 28.4 | 2.20 | ok |
-| `Spawns/CasingHarlow2` | `Gameplay/Workshop/WorkshopSafe/SafeLoot` | loot_spawn | 13.4 | 28.7 | 2.15 | ok |
+| `Spawns/CasingHarlow2` | `Gameplay/Workshop/WorkshopSafe/SafeLoot` | loot_spawn | 12.5 | 27.9 | 2.24 | ok |
 | `Spawns/CasingHarlow2` | `Gameplay/Workshop/WorkshopSafe/SafeLoot/UsePoint` | use_point | 12.5 | 27.9 | 2.24 | ok |
 | `Spawns/CasingHarlow2` | `Gameplay/Workshop/SafeKeycardReader` | objective | 13.8 | 28.9 | 2.10 | ok |
 | `Spawns/CasingHarlow2` | `Gameplay/Workshop/SafeKeycardReader/UsePoint` | use_point | 13.8 | 28.9 | 2.10 | ok |
@@ -191,7 +191,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/CasingHarlow3` | `Gameplay/Workshop/WorkshopSafe/UsePoint` | use_point | 12.8 | 26.9 | 2.10 | ok |
 | `Spawns/CasingHarlow3` | `Gameplay/Workshop/WorkshopSafe/SafeDrill` | objective | 12.8 | 27.0 | 2.11 | ok |
 | `Spawns/CasingHarlow3` | `Gameplay/Workshop/WorkshopSafe/SafeDrill/UsePoint` | use_point | 12.8 | 27.0 | 2.11 | ok |
-| `Spawns/CasingHarlow3` | `Gameplay/Workshop/WorkshopSafe/SafeLoot` | loot_spawn | 13.2 | 27.3 | 2.07 | ok |
+| `Spawns/CasingHarlow3` | `Gameplay/Workshop/WorkshopSafe/SafeLoot` | loot_spawn | 12.3 | 26.5 | 2.15 | ok |
 | `Spawns/CasingHarlow3` | `Gameplay/Workshop/WorkshopSafe/SafeLoot/UsePoint` | use_point | 12.3 | 26.5 | 2.15 | ok |
 | `Spawns/CasingHarlow3` | `Gameplay/Workshop/SafeKeycardReader` | objective | 13.6 | 27.5 | 2.03 | ok |
 | `Spawns/CasingHarlow3` | `Gameplay/Workshop/SafeKeycardReader/UsePoint` | use_point | 13.6 | 27.5 | 2.03 | ok |
@@ -262,7 +262,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/CasingHarlow4` | `Gameplay/Workshop/WorkshopSafe/UsePoint` | use_point | 12.8 | 25.6 | 1.99 | ok |
 | `Spawns/CasingHarlow4` | `Gameplay/Workshop/WorkshopSafe/SafeDrill` | objective | 12.8 | 25.7 | 2.00 | ok |
 | `Spawns/CasingHarlow4` | `Gameplay/Workshop/WorkshopSafe/SafeDrill/UsePoint` | use_point | 12.8 | 25.7 | 2.00 | ok |
-| `Spawns/CasingHarlow4` | `Gameplay/Workshop/WorkshopSafe/SafeLoot` | loot_spawn | 13.2 | 26.0 | 1.96 | ok |
+| `Spawns/CasingHarlow4` | `Gameplay/Workshop/WorkshopSafe/SafeLoot` | loot_spawn | 12.3 | 25.1 | 2.04 | ok |
 | `Spawns/CasingHarlow4` | `Gameplay/Workshop/WorkshopSafe/SafeLoot/UsePoint` | use_point | 12.3 | 25.1 | 2.04 | ok |
 | `Spawns/CasingHarlow4` | `Gameplay/Workshop/SafeKeycardReader` | objective | 13.5 | 26.1 | 1.94 | ok |
 | `Spawns/CasingHarlow4` | `Gameplay/Workshop/SafeKeycardReader/UsePoint` | use_point | 13.5 | 26.1 | 1.94 | ok |
@@ -333,7 +333,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PreplanAlleyMouth1` | `Gameplay/Workshop/WorkshopSafe/UsePoint` | use_point | 13.0 | 19.9 | 1.53 | ok |
 | `Spawns/PreplanAlleyMouth1` | `Gameplay/Workshop/WorkshopSafe/SafeDrill` | objective | 13.2 | 20.0 | 1.52 | ok |
 | `Spawns/PreplanAlleyMouth1` | `Gameplay/Workshop/WorkshopSafe/SafeDrill/UsePoint` | use_point | 13.2 | 20.0 | 1.52 | ok |
-| `Spawns/PreplanAlleyMouth1` | `Gameplay/Workshop/WorkshopSafe/SafeLoot` | loot_spawn | 12.9 | 20.3 | 1.58 | ok |
+| `Spawns/PreplanAlleyMouth1` | `Gameplay/Workshop/WorkshopSafe/SafeLoot` | loot_spawn | 13.1 | 19.5 | 1.49 | ok |
 | `Spawns/PreplanAlleyMouth1` | `Gameplay/Workshop/WorkshopSafe/SafeLoot/UsePoint` | use_point | 13.1 | 19.5 | 1.49 | ok |
 | `Spawns/PreplanAlleyMouth1` | `Gameplay/Workshop/SafeKeycardReader` | objective | 12.0 | 20.4 | 1.70 | ok |
 | `Spawns/PreplanAlleyMouth1` | `Gameplay/Workshop/SafeKeycardReader/UsePoint` | use_point | 12.0 | 20.4 | 1.70 | ok |
@@ -404,7 +404,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PreplanAlleyMouth2` | `Gameplay/Workshop/WorkshopSafe/UsePoint` | use_point | 13.3 | 21.1 | 1.58 | ok |
 | `Spawns/PreplanAlleyMouth2` | `Gameplay/Workshop/WorkshopSafe/SafeDrill` | objective | 13.5 | 21.1 | 1.56 | ok |
 | `Spawns/PreplanAlleyMouth2` | `Gameplay/Workshop/WorkshopSafe/SafeDrill/UsePoint` | use_point | 13.5 | 21.1 | 1.56 | ok |
-| `Spawns/PreplanAlleyMouth2` | `Gameplay/Workshop/WorkshopSafe/SafeLoot` | loot_spawn | 13.2 | 21.4 | 1.63 | ok |
+| `Spawns/PreplanAlleyMouth2` | `Gameplay/Workshop/WorkshopSafe/SafeLoot` | loot_spawn | 13.5 | 20.6 | 1.53 | ok |
 | `Spawns/PreplanAlleyMouth2` | `Gameplay/Workshop/WorkshopSafe/SafeLoot/UsePoint` | use_point | 13.5 | 20.6 | 1.53 | ok |
 | `Spawns/PreplanAlleyMouth2` | `Gameplay/Workshop/SafeKeycardReader` | objective | 12.3 | 21.6 | 1.75 | ok |
 | `Spawns/PreplanAlleyMouth2` | `Gameplay/Workshop/SafeKeycardReader/UsePoint` | use_point | 12.3 | 21.6 | 1.75 | ok |
@@ -475,7 +475,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PreplanAlleyMouth3` | `Gameplay/Workshop/WorkshopSafe/UsePoint` | use_point | 14.1 | 20.2 | 1.43 | ok |
 | `Spawns/PreplanAlleyMouth3` | `Gameplay/Workshop/WorkshopSafe/SafeDrill` | objective | 14.3 | 20.3 | 1.42 | ok |
 | `Spawns/PreplanAlleyMouth3` | `Gameplay/Workshop/WorkshopSafe/SafeDrill/UsePoint` | use_point | 14.3 | 20.3 | 1.42 | ok |
-| `Spawns/PreplanAlleyMouth3` | `Gameplay/Workshop/WorkshopSafe/SafeLoot` | loot_spawn | 14.0 | 20.6 | 1.47 | ok |
+| `Spawns/PreplanAlleyMouth3` | `Gameplay/Workshop/WorkshopSafe/SafeLoot` | loot_spawn | 14.2 | 19.8 | 1.39 | ok |
 | `Spawns/PreplanAlleyMouth3` | `Gameplay/Workshop/WorkshopSafe/SafeLoot/UsePoint` | use_point | 14.2 | 19.8 | 1.39 | ok |
 | `Spawns/PreplanAlleyMouth3` | `Gameplay/Workshop/SafeKeycardReader` | objective | 13.2 | 20.7 | 1.57 | ok |
 | `Spawns/PreplanAlleyMouth3` | `Gameplay/Workshop/SafeKeycardReader/UsePoint` | use_point | 13.2 | 20.7 | 1.57 | ok |
@@ -546,7 +546,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PreplanAlleyMouth4` | `Gameplay/Workshop/WorkshopSafe/UsePoint` | use_point | 14.5 | 21.3 | 1.48 | ok |
 | `Spawns/PreplanAlleyMouth4` | `Gameplay/Workshop/WorkshopSafe/SafeDrill` | objective | 14.6 | 21.4 | 1.46 | ok |
 | `Spawns/PreplanAlleyMouth4` | `Gameplay/Workshop/WorkshopSafe/SafeDrill/UsePoint` | use_point | 14.6 | 21.4 | 1.46 | ok |
-| `Spawns/PreplanAlleyMouth4` | `Gameplay/Workshop/WorkshopSafe/SafeLoot` | loot_spawn | 14.3 | 21.7 | 1.52 | ok |
+| `Spawns/PreplanAlleyMouth4` | `Gameplay/Workshop/WorkshopSafe/SafeLoot` | loot_spawn | 14.6 | 20.9 | 1.43 | ok |
 | `Spawns/PreplanAlleyMouth4` | `Gameplay/Workshop/WorkshopSafe/SafeLoot/UsePoint` | use_point | 14.6 | 20.9 | 1.43 | ok |
 | `Spawns/PreplanAlleyMouth4` | `Gameplay/Workshop/SafeKeycardReader` | objective | 13.5 | 21.8 | 1.62 | ok |
 | `Spawns/PreplanAlleyMouth4` | `Gameplay/Workshop/SafeKeycardReader/UsePoint` | use_point | 13.5 | 21.8 | 1.62 | ok |
@@ -617,7 +617,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PreplanAlleyWest1` | `Gameplay/Workshop/WorkshopSafe/UsePoint` | use_point | 19.2 | 31.6 | 1.64 | ok |
 | `Spawns/PreplanAlleyWest1` | `Gameplay/Workshop/WorkshopSafe/SafeDrill` | objective | 19.0 | 31.6 | 1.66 | ok |
 | `Spawns/PreplanAlleyWest1` | `Gameplay/Workshop/WorkshopSafe/SafeDrill/UsePoint` | use_point | 19.0 | 31.6 | 1.66 | ok |
-| `Spawns/PreplanAlleyWest1` | `Gameplay/Workshop/WorkshopSafe/SafeLoot` | loot_spawn | 19.2 | 31.9 | 1.67 | ok |
+| `Spawns/PreplanAlleyWest1` | `Gameplay/Workshop/WorkshopSafe/SafeLoot` | loot_spawn | 19.3 | 31.1 | 1.61 | ok |
 | `Spawns/PreplanAlleyWest1` | `Gameplay/Workshop/WorkshopSafe/SafeLoot/UsePoint` | use_point | 19.3 | 31.1 | 1.61 | ok |
 | `Spawns/PreplanAlleyWest1` | `Gameplay/Workshop/SafeKeycardReader` | objective | 19.9 | 32.1 | 1.61 | ok |
 | `Spawns/PreplanAlleyWest1` | `Gameplay/Workshop/SafeKeycardReader/UsePoint` | use_point | 19.9 | 32.1 | 1.61 | ok |
@@ -688,7 +688,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PreplanAlleyWest2` | `Gameplay/Workshop/WorkshopSafe/UsePoint` | use_point | 19.4 | 30.5 | 1.57 | ok |
 | `Spawns/PreplanAlleyWest2` | `Gameplay/Workshop/WorkshopSafe/SafeDrill` | objective | 19.2 | 30.5 | 1.59 | ok |
 | `Spawns/PreplanAlleyWest2` | `Gameplay/Workshop/WorkshopSafe/SafeDrill/UsePoint` | use_point | 19.2 | 30.5 | 1.59 | ok |
-| `Spawns/PreplanAlleyWest2` | `Gameplay/Workshop/WorkshopSafe/SafeLoot` | loot_spawn | 19.3 | 30.9 | 1.60 | ok |
+| `Spawns/PreplanAlleyWest2` | `Gameplay/Workshop/WorkshopSafe/SafeLoot` | loot_spawn | 19.5 | 30.0 | 1.54 | ok |
 | `Spawns/PreplanAlleyWest2` | `Gameplay/Workshop/WorkshopSafe/SafeLoot/UsePoint` | use_point | 19.5 | 30.0 | 1.54 | ok |
 | `Spawns/PreplanAlleyWest2` | `Gameplay/Workshop/SafeKeycardReader` | objective | 20.1 | 31.0 | 1.55 | ok |
 | `Spawns/PreplanAlleyWest2` | `Gameplay/Workshop/SafeKeycardReader/UsePoint` | use_point | 20.1 | 31.0 | 1.55 | ok |
@@ -759,7 +759,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PreplanAlleyWest3` | `Gameplay/Workshop/WorkshopSafe/UsePoint` | use_point | 19.9 | 29.3 | 1.47 | ok |
 | `Spawns/PreplanAlleyWest3` | `Gameplay/Workshop/WorkshopSafe/SafeDrill` | objective | 19.7 | 29.4 | 1.49 | ok |
 | `Spawns/PreplanAlleyWest3` | `Gameplay/Workshop/WorkshopSafe/SafeDrill/UsePoint` | use_point | 19.7 | 29.4 | 1.49 | ok |
-| `Spawns/PreplanAlleyWest3` | `Gameplay/Workshop/WorkshopSafe/SafeLoot` | loot_spawn | 19.8 | 29.7 | 1.50 | ok |
+| `Spawns/PreplanAlleyWest3` | `Gameplay/Workshop/WorkshopSafe/SafeLoot` | loot_spawn | 20.1 | 28.9 | 1.44 | ok |
 | `Spawns/PreplanAlleyWest3` | `Gameplay/Workshop/WorkshopSafe/SafeLoot/UsePoint` | use_point | 20.1 | 28.9 | 1.44 | ok |
 | `Spawns/PreplanAlleyWest3` | `Gameplay/Workshop/SafeKeycardReader` | objective | 20.5 | 29.9 | 1.46 | ok |
 | `Spawns/PreplanAlleyWest3` | `Gameplay/Workshop/SafeKeycardReader/UsePoint` | use_point | 20.5 | 29.9 | 1.46 | ok |
@@ -830,7 +830,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PreplanAlleyWest4` | `Gameplay/Workshop/WorkshopSafe/UsePoint` | use_point | 20.3 | 29.4 | 1.45 | ok |
 | `Spawns/PreplanAlleyWest4` | `Gameplay/Workshop/WorkshopSafe/SafeDrill` | objective | 20.1 | 29.4 | 1.47 | ok |
 | `Spawns/PreplanAlleyWest4` | `Gameplay/Workshop/WorkshopSafe/SafeDrill/UsePoint` | use_point | 20.1 | 29.4 | 1.47 | ok |
-| `Spawns/PreplanAlleyWest4` | `Gameplay/Workshop/WorkshopSafe/SafeLoot` | loot_spawn | 20.1 | 29.8 | 1.48 | ok |
+| `Spawns/PreplanAlleyWest4` | `Gameplay/Workshop/WorkshopSafe/SafeLoot` | loot_spawn | 20.4 | 28.9 | 1.42 | ok |
 | `Spawns/PreplanAlleyWest4` | `Gameplay/Workshop/WorkshopSafe/SafeLoot/UsePoint` | use_point | 20.4 | 28.9 | 1.42 | ok |
 | `Spawns/PreplanAlleyWest4` | `Gameplay/Workshop/SafeKeycardReader` | objective | 20.8 | 29.9 | 1.44 | ok |
 | `Spawns/PreplanAlleyWest4` | `Gameplay/Workshop/SafeKeycardReader/UsePoint` | use_point | 20.8 | 29.9 | 1.44 | ok |

@@ -22896,14 +22896,22 @@ visual_scene = ExtResource("165_gh")
 objective_tag = &"safe_drill"
 metadata/kind = "drill_point"
 
-[node name="SafeLoot" type="Node3D" parent="Gameplay/Workshop/WorkshopSafe" unique_id=102539 instance=ExtResource("166_gh")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.64)
+[node name="SafeLoot" parent="Gameplay/Workshop/WorkshopSafe" unique_id=102539 instance=ExtResource("166_gh")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.142, 0)
 script = ExtResource("167_gh")
 loot_id = &"loot.jewelry"
 count = 4
 visual_scene = ExtResource("168_gh")
 objective_tag = &"safe_loot"
 metadata/kind = "loot_spawn"
+
+[node name="UsePoint" parent="Gameplay/Workshop/WorkshopSafe/SafeLoot" index="1"]
+transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 0, -0.142, -1.5399997)
+
+[node name="Interactable" parent="Gameplay/Workshop/WorkshopSafe/SafeLoot" index="2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, -0.2)
+script = ExtResource("159_gh")
+kind = &"bag_loot"
 
 [node name="SafeKeycardReader" type="Node3D" parent="Gameplay/Workshop" unique_id=102540 instance=ExtResource("169_gh")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 7.3, 1.2, 0.2)
@@ -24111,6 +24119,7 @@ volume_offset_db = -6.0
 [editable path="Gameplay/Windows/ShopBayC"]
 [editable path="Gameplay/Windows/SalonSouth"]
 [editable path="Gameplay/Windows/SalonEast"]
+[editable path="Gameplay/Workshop/WorkshopSafe/SafeLoot"]
 [editable path="Gameplay/Misc/RegisterCash"]
 [editable path="Gameplay/Misc/PhoneCounter"]
 [editable path="Gameplay/Misc/PhoneAdmin"]
