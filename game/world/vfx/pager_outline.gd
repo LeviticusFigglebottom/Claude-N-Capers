@@ -97,8 +97,12 @@ func is_outlined(mesh: GeometryInstance3D) -> bool:
 
 
 func clear() -> void:
-	for m: GeometryInstance3D in _outlined.keys():
-		if is_instance_valid(m) and m.material_overlay == _material:
+	# Keys may be freed meshes (a guard freed mid-pager): never bind them to a typed variable before the check.
+	for k: Variant in _outlined.keys():
+		if not is_instance_valid(k):
+			continue
+		var m: GeometryInstance3D = k as GeometryInstance3D
+		if m.material_overlay == _material:
 			m.material_overlay = null
 	_outlined.clear()
 	_pagers.clear()
