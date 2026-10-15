@@ -124,3 +124,16 @@ func test_po6_06_every_civilian_visual_and_activity_stands() -> void:
 	for npc: NpcBase in made:
 		animated += _check_civilian(npc, "spawned")
 	assert_true(animated > 0, "civilian visuals are animated")
+
+
+## PO6-06 follow-up: the seat check applies whenever a seated hint is picked (after a wander, a patrol point's
+## pause_anim), not only at spawn: no seat under the civilian -> the standing counterpart.
+func test_po6_06_seated_hint_needs_a_seat_anywhere() -> void:
+	_rt = await HeistLauncher.launch(&"unit_po6_06", 6, Enums.Difficulty.ROUTINE, self,
+		{"map_packed": ATestMaps.basic(0, 0), "skip_casing": true})
+	var civ: NpcBase = _rt.spawn_npc(&"civilian", Transform3D(Basis.IDENTITY, Vector3(4, 0.05, 4)), {"idle_activity": &"browse"})
+	await wait_physics_frames(3)
+	var brain: CivilianBrain = civ.get_node("Brain") as CivilianBrain
+	assert_eq(brain._seated_or_standing(&"desk_work"), &"teller", "desk_work on thin air -> teller")
+	assert_eq(brain._seated_or_standing(&"sit"), &"queue", "sit on thin air -> queue")
+	assert_eq(brain._seated_or_standing(&"browse"), &"browse", "standing activities untouched")

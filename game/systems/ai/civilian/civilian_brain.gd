@@ -507,7 +507,17 @@ func _get_up() -> void:
 # --- Calm (S7.5) ----------------------------------------------------------------------
 
 func _set_idle_hint() -> void:
-	anim_hint = _idle_activity if KNOWN_ACTIVITIES.has(_idle_activity) else &"idle"
+	anim_hint = _seated_or_standing(_idle_activity if KNOWN_ACTIVITIES.has(_idle_activity) else &"idle")
+
+
+## PO6-06: a seated activity plays only on a seat (has_seat_under); elsewhere its standing counterpart
+## (StealthTweak.civilian_unseated_activity). Checked whenever a seated hint is applied: spawn, after a wander,
+## at a patrol point's pause_anim, so a civilian never sits on thin air (a crouched "hostage" look).
+func _seated_or_standing(activity: StringName) -> StringName:
+	var swap: Dictionary = Tweak.stealth().civilian_unseated_activity
+	if not swap.has(activity) or (_npc.spawn_info.get("tags", []) as Array).has(&"civ_kessler"):
+		return activity
+	return activity if has_seat_under(_npc) else StringName(swap[activity])
 
 
 ## PO6-06 (S7.5): a seated idle activity (StealthTweak.civilian_unseated_activity keys) with no seat under the
@@ -518,6 +528,7 @@ func _stand_if_unseated() -> void:
 	if mode != Mode.IDLE or not swap.has(_idle_activity) or (_npc.spawn_info.get("tags", []) as Array).has(&"civ_kessler"):
 		return
 	if has_seat_under(_npc):
+		_set_idle_hint()  # re-pick at the real spawn transform (a hint set in _ready saw the origin)
 		return
 	_idle_activity = StringName(swap[_idle_activity])
 	_npc.spawn_info["idle_activity"] = _idle_activity
@@ -580,7 +591,8 @@ func _tick_wander(delta: float) -> void:
 	if p != null and is_instance_valid(p):
 		if p.face_marker_forward and _motor != null:
 			_motor.face(-p.global_transform.basis.z)
-		anim_hint = p.pause_anim if p.pause_anim != &"idle" else (_idle_activity if KNOWN_ACTIVITIES.has(_idle_activity) else &"idle")
+		anim_hint = _seated_or_standing(p.pause_anim) if p.pause_anim != &"idle" \
+			else _seated_or_standing(_idle_activity if KNOWN_ACTIVITIES.has(_idle_activity) else &"idle")
 	else:
 		_set_idle_hint()
 
@@ -596,9 +608,9 @@ func _physics_process(delta: float) -> void:
 func _physics_step(delta: float) -> void:
 	if not Net.is_authority() or _npc == null or not _npc.alive:
 		return
-	if not _seat_checked:
+	if not _seat_checked and mode == Mode.IDLE:
 		_seat_checked = true
-		_stand_if_unseated()  # PO6-06: once, at the spawn transform (applied after _ready)
+		_stand_if_unseated()  # PO6-06: once, at the spawn transform (applied after _ready), when first idle
 	if _seat_pos == Vector3.INF and mode == Mode.IDLE and SEATED_ACTIVITIES.has(_idle_activity):
 		_seat_pos = _npc.global_position  # the spawn transform is applied after _ready
 	_update_body_block()

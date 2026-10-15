@@ -11,3 +11,6 @@
 | po6_19_grenade.jpg | PO6-19 | grenade: four guards thrown outward 3.7-3.9 m |
 | po6_19_corpse_shot.jpg | PO6-19 | frozen corpse shot 3x: blood_hit points, nudged and re-frozen |
 | po6_19_pistol.jpg | PO6-19 | pistol kill at range: death clip then settle |
+| po6_05_gh_safe_closed.jpg | PO6-05 | GH workshop safe closed: no loot visible in front of it |
+| po6_01_gh_drill_placed_once.jpg | PO6-01 | one placement: the drill is on the safe and running |
+| po6_05_po6_18_gh_safe_open_hostage_before_topple_fix.jpg | PO6-05/18 | safe open with the loot inside; a cuffed hostage shot while kneeling stays in place (this frame is before the topple fix: now the body slumps from the kneel to the floor, test_po6_19 kneeling_hostage) |

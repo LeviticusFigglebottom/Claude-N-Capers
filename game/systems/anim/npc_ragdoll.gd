@@ -52,6 +52,8 @@ var _t: float = 0.0
 var _settle_s: float = 0.0
 ## Server: hit records of the killing frame / of a start waiting for its first physics frame.
 var _hits: Array[Dictionary] = []
+## PO6-18: the killing hits kept for a held-pose topple.
+var _death_hits: Array[Dictionary] = []
 var _hits_frame: int = -1
 var _death_frame: int = -1
 ## Entries to apply on the next physics frame (after the bodies went rigid).
@@ -228,7 +230,9 @@ func _physics_process(delta: float) -> void:
 				_decide()
 		Phase.ANIM:
 			_t += delta
-			if _anim_done():
+			if _pose_held():
+				_topple_from_pose()
+			elif _anim_done():
 				_start([], RagdollTweak.data().settle_after_anim_s)
 		Phase.STARTING:
 			_first_push()
@@ -252,11 +256,37 @@ func _decide() -> void:
 		_hits.clear()
 		_start(hits, tw.settle_s)
 		return
+	_death_hits = _hits.duplicate()
 	_hits.clear()
 	_t = 0.0
 	phase = Phase.ANIM if tw.enabled and tw.settle_after_anim else Phase.FROZEN
 	if phase == Phase.FROZEN:
 		_place_hitbox_from_skeleton()
+
+
+## PO6-18: the AnimDriver froze the pre-death pose (kneel / crouch / prone without a pose death clip on this rig).
+func _pose_held() -> bool:
+	return _t >= 0.1 and player != null and player.speed_scale == 0.0
+
+
+## Server: a body frozen in its pose slumps down from it (never left upright): the killing hits' directions at
+## pose_topple_impulse (a forward push on the chest without one), settled like a ragdoll death.
+func _topple_from_pose() -> void:
+	var tw: RagdollTweak = RagdollTweak.data()
+	var hits: Array = []
+	for h: Dictionary in _death_hits:
+		if bool(h["blast"]):
+			continue
+		var rec: Dictionary = h.duplicate()
+		var imp: Vector3 = rec["impulse"]
+		rec["impulse"] = (imp.normalized() if imp.length() > 0.001 else -npc.global_basis.z) * tw.pose_topple_impulse
+		rec["mag"] = tw.pose_topple_impulse
+		hits.append(rec)
+	if hits.is_empty():
+		hits.append({"blast": false, "head": false, "mag": tw.pose_topple_impulse,
+			"point": npc.global_position + Vector3.UP * 0.9, "impulse": -npc.global_basis.z * tw.pose_topple_impulse})
+	_death_hits.clear()
+	_start(hits, tw.settle_s)
 
 
 func _anim_done() -> bool:

@@ -278,3 +278,28 @@ func test_bagging_a_frozen_corpse_stops_it() -> void:
 	_hits.clear()
 	npc.take_hit(_info(40.0, PISTOL, npc.global_position, Vector3(0, 0, 1), 5.0))
 	assert_eq(_hits.size(), 0, "a bagged body does not bleed")
+
+
+## PO6-18 + PO6-19: a kneeling cuffed hostage (no pose death clip on this rig yet: the pose freezes) killed by a
+## pistol slumps down from the kneel right away (the settle ragdoll starts at once) and ends low on the floor.
+func test_kneeling_hostage_killed_slumps_from_the_pose() -> void:
+	var n: NpcBase = _npc(Vector3(30, 0, 0))
+	var brain: Node = Node.new()
+	brain.name = "Brain"
+	var sc: GDScript = GDScript.new()
+	sc.source_code = "extends Node\nvar anim_hint: StringName = &\"kneel_cuffed\"\n"
+	sc.reload()
+	brain.set_script(sc)
+	n.add_child(brain)
+	await wait_physics_frames(6)
+	assert_eq(AnimDriver.of(n).clip, &"kneel_cuffed", "kneeling before the shot")
+	n.take_hit(_info(500.0, PISTOL, n.global_position + Vector3(0, 0.9, 0), Vector3(0, 0, 1), 10.0))
+	var rd: NpcRagdoll = NpcRagdoll.of(n)
+	var ok: bool = await wait_until(func() -> bool: return rd.engaged, 1.0)
+	assert_true(ok, "the frozen kneel hands over to the settle ragdoll within 1 s (not anim_wait_max_s)")
+	await wait_until(func() -> bool: return rd.freezes > 0, RagdollTweak.data().settle_after_anim_s + 2.0)
+	var head: Vector3 = Vector3.INF
+	for pb: PhysicalBone3D in rd.bodies:
+		if pb.name == "Head":
+			head = pb.global_position
+	assert_true(head.y < 0.6, "head ends low on the floor (%.2f m), the body never stands" % head.y)

@@ -52,6 +52,9 @@ static var _cached: RagdollTweak = null
 ## After a death animation ends, run a short ragdoll so the body rests on the floor (then freeze).
 @export var settle_after_anim: bool = true
 @export var settle_after_anim_s: float = 1.0
+## PO6-18: impulse (N s) on the hit body of a kneeling / crouched / prone body that died holding its pose
+## (no pose death clip): it slumps down from the pose instead of staying upright.
+@export var pose_topple_impulse: float = 45.0
 ## Wait for the death clip at most this long (s) before the settle.
 @export var anim_wait_max_s: float = 3.0
 
