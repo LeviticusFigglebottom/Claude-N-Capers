@@ -242,9 +242,26 @@ static func with_heist_def(def: HeistDef, guards: int = 0, civilians: int = 0,
 ## A2-01: basic() plus a wall along z = 0 (x in [-14, 14], 3 m high) with a 0.9 m doorway centred on
 ## x = 0 and a baked navmesh (`Navigation`, project nav defaults D-025) through the doorway. Add a
 ## Door prefab at the origin at runtime (add_prefab(rt, "door", Vector3.ZERO, ...)).
-static func with_doorway_wall(guards: int = 0, civilians: int = 0) -> PackedScene:
+## PO6-16: `room` (x half-width, depth) > 0 also closes a room behind the doorway on the -Z side: walls at
+## x = +-room.x and z = -room.y (3 m high), so the doorway is the room's only entrance.
+static func with_doorway_wall(guards: int = 0, civilians: int = 0, room: Vector2 = Vector2.ZERO) -> PackedScene:
 	var root: HeistMap = basic(guards, civilians).instantiate() as HeistMap
 	var geo: Node3D = root.get_node("Geometry")
+	if room.x > 0.0 and room.y > 0.0:
+		var specs: Array[Array] = [
+			[Vector3(-room.x, 1.5, -room.y * 0.5), Vector3(0.2, 3.0, room.y)],
+			[Vector3(room.x, 1.5, -room.y * 0.5), Vector3(0.2, 3.0, room.y)],
+			[Vector3(0.0, 1.5, -room.y), Vector3(room.x * 2.0 + 0.2, 3.0, 0.2)]]
+		for i: int in range(specs.size()):
+			var rb: StaticBody3D = StaticBody3D.new()
+			rb.name = "RoomWall%d" % i
+			var rcs: CollisionShape3D = CollisionShape3D.new()
+			var rbox: BoxShape3D = BoxShape3D.new()
+			rbox.size = specs[i][1]
+			rcs.shape = rbox
+			rb.add_child(rcs)
+			rb.position = specs[i][0]
+			geo.add_child(rb)
 	for side: float in [-1.0, 1.0]:
 		var b: StaticBody3D = StaticBody3D.new()
 		b.name = "Wall%s" % ("W" if side < 0.0 else "E")

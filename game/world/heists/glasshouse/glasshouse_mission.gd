@@ -2,8 +2,11 @@
 ## Design: docs/design/heists/glasshouse.md §Objectives / §Escape. Contract: heist_map.md §6: uses
 ## only the HeistMission API, EventBus and nodes of this map (found by objective_tag).
 ##
-## Stealth: casing (optional) -> keycard (skipped if `safe_left_open`) -> workshop door -> safe
-## (keycard swipe or drill) -> bag the consignment -> secure >= 2 bags -> escape at the van.
+## Stealth: casing (optional) -> keycard OR the safe code (skipped if `safe_left_open`) -> workshop door
+## -> safe (keycard swipe, code, slow lockpick or drill) -> bag the consignment -> secure >= 2 bags -> escape.
+## PO6-04 (D-114 §1: stealth never needs the drill): the code note (`code_note` slot group) is its own
+## objective with markers, the safe objective marks the keycard reader too, and the safe takes a slow,
+## silent lockpick from anyone while the heist is quiet (Safe.lockpick_fallback). The drill is the loud path.
 ## Loud (alarm): the safe reader locks down (drill only), the police gates open, the van leaves and
 ## returns at the first assault FADE or after 240 s, whichever is later; escape needs >= 2 bags.
 extends HeistMission
@@ -12,6 +15,10 @@ const MIN_BAGS: int = 2
 const VAN_RETURN_S: float = 240.0
 const LAST_PAGER: int = 4
 const ITEM_KEYCARD: StringName = &"item.keycard"
+const ITEM_CODE_NOTE: StringName = &"item.code_note"
+## PO6-04: tag given at runtime to the surviving code note (the map's notes carry no objective_tag).
+const TAG_CODE_NOTE: StringName = &"code_note"
+const CODE_NOTE_GROUP_PATH: NodePath = ^"Variants/Group_code_note"
 const TAG_SAFE: StringName = &"safe"
 const TAG_SAFE_DRILL: StringName = &"safe_drill"
 const TAG_SAFE_READER: StringName = &"safe_reader"
@@ -37,13 +44,19 @@ func _on_mission_start() -> void:
 	add_objective(&"casing", &"objective.glasshouse.casing", Enums.ObjectiveState.ACTIVE, {"optional": true})
 	if _slot_active(&"safe_state", &"safe_open"):
 		add_objective(&"keycard", &"objective.glasshouse.keycard", Enums.ObjectiveState.COMPLETED, {"skipped": true})
+		add_objective(&"code", &"objective.glasshouse.code", Enums.ObjectiveState.COMPLETED, {"skipped": true})
 	else:
-		add_objective(&"keycard", &"objective.glasshouse.keycard", Enums.ObjectiveState.ACTIVE, {"marker_tags": [TAG_KEYCARD]})
+		add_objective(&"keycard", &"objective.glasshouse.keycard", Enums.ObjectiveState.ACTIVE,
+			{"marker_tags": [TAG_KEYCARD], "alternative": &"code"})
 		require_items(&"keycard", ITEM_KEYCARD)
+		_tag_code_notes()
+		add_objective(&"code", &"objective.glasshouse.code", Enums.ObjectiveState.ACTIVE,
+			{"marker_tags": [TAG_CODE_NOTE], "alternative": &"keycard", "optional": true})
 	add_objective(&"workshop_door", &"objective.glasshouse.workshop_door", Enums.ObjectiveState.ACTIVE,
 		{"marker_tags": [TAG_WORKSHOP_DOOR]})
+	_enable_lockpick_fallback()
 	add_objective(&"safe", &"objective.glasshouse.safe", Enums.ObjectiveState.ACTIVE,
-		{"methods": [&"keycard", &"drill"], "marker_tags": [TAG_SAFE]})
+		{"methods": [&"keycard", &"code", &"lockpick", &"drill"], "marker_tags": [TAG_SAFE, TAG_SAFE_READER]})
 	add_objective(&"safe_loot", &"objective.glasshouse.safe_loot", Enums.ObjectiveState.HIDDEN,
 		{"marker_tags": [TAG_SAFE_LOOT]})
 	add_objective(&"secure", &"objective.glasshouse.secure", Enums.ObjectiveState.ACTIVE,
@@ -113,6 +126,11 @@ func _on_interaction_completed(interactable_net_id: int, _crew_slot: int, _kind:
 func _on_item_picked_up(item_id: StringName, _crew_slot: int) -> void:
 	if item_id == ITEM_KEYCARD:
 		say(&"vo.mercer.glasshouse_keycard_found")
+		_skip_if_active(&"code")  # PO6-04: either one gets you into the safe
+	elif item_id == ITEM_CODE_NOTE:
+		if objective_state(&"code") == Enums.ObjectiveState.ACTIVE:
+			complete(&"code")
+		_skip_if_active(&"keycard")
 
 
 func _on_device_finished(device_net_id: int) -> void:
@@ -138,6 +156,8 @@ func _open_safe() -> void:
 		elif s.has_method(&"unlock"):
 			s.call(&"unlock")
 	complete(&"safe")
+	_skip_if_active(&"keycard")
+	_skip_if_active(&"code")
 	activate(&"safe_loot")
 
 
@@ -164,6 +184,9 @@ func _go_loud() -> void:
 			# keycard step is skipped (the drill is the way now); "skipped" as for safe_left_open.
 			update_objective_data(&"keycard", {"disabled": true, "reason": &"lockdown", "skipped": true})
 			complete(&"keycard")
+		if objective_state(&"code") == Enums.ObjectiveState.ACTIVE:
+			update_objective_data(&"code", {"disabled": true, "reason": &"lockdown", "skipped": true})
+			complete(&"code")
 	for g: Node in find_tagged(TAG_POLICE_GATE):
 		g.call(&"unlock")
 		g.call(&"set_open", true)
@@ -195,6 +218,39 @@ func _try_escape() -> void:
 
 
 # --- Helpers ----------------------------------------------------------------------------------
+
+## PO6-04: an objective the crew no longer needs (the other way in was found, or the safe is open).
+func _skip_if_active(objective_id: StringName) -> void:
+	if objective_state(objective_id) == Enums.ObjectiveState.ACTIVE:
+		update_objective_data(objective_id, {"skipped": true})
+		complete(objective_id)
+
+
+## PO6-04: the code note(s) left by the `code_note` variant get the TAG_CODE_NOTE objective tag (marker
+## and find_tagged), unless the map already tagged them.
+func _tag_code_notes() -> void:
+	var map_root: Node = get_parent()
+	var group: Node = map_root.get_node_or_null(CODE_NOTE_GROUP_PATH) if map_root != null else null
+	if group == null:
+		return
+	var stack: Array[Node] = [group]
+	while not stack.is_empty():
+		var n: Node = stack.pop_back()
+		if n.get(&"code_group") != null and &"objective_tag" in n and StringName(n.get(&"objective_tag")) == &"":
+			n.set(&"objective_tag", TAG_CODE_NOTE)
+		for c: Node in n.get_children():
+			stack.append(c)
+
+
+## PO6-04 (D-114 §1): the safe takes a slow, silent lockpick from anyone while the heist is quiet.
+func _enable_lockpick_fallback() -> void:
+	for s: Node in find_tagged(TAG_SAFE):
+		if not (&"lockpick_fallback" in s):
+			continue
+		s.set(&"lockpick_fallback", true)
+		var m: Variant = s.get(&"methods")
+		if m is Array and not (m as Array).has(&"lockpick"):
+			(m as Array).append(&"lockpick")
 
 func _slot_active(group: StringName, slot_id: StringName) -> bool:
 	var v: Variant = variant(group)

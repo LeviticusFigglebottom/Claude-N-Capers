@@ -125,6 +125,17 @@ func stop_growing(node: Node3D) -> void:
 		_grow_s[i] = 0.0
 
 
+## Hide a decal now and free its slot (a body's pool restarting elsewhere).
+func release(node: Node3D) -> void:
+	var i: int = _slots.find(node)
+	if i < 0 or _age[i] < 0.0:
+		return
+	_age[i] = -1.0
+	_grow_s[i] = 0.0
+	_slots[i].visible = false
+	live -= 1
+
+
 func is_growing(node: Node3D) -> bool:
 	var i: int = _slots.find(node)
 	return i >= 0 and _age[i] >= 0.0 and _grow_s[i] > 0.0

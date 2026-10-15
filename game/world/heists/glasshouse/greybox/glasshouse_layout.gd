@@ -32,7 +32,7 @@ const EXT_WALLS: Array = [
 		[10.25, 12.25, 0.0, 2.2],    # double glass entry door (1.8 m)
 		[14.0, 17.0, 0.3, 2.7],      # salon window to Harlow Ave
 		[1.25, 2.25, 5.1, 6.3], [4.75, 5.75, 5.1, 6.3],    # U5 admin
-		[8.4, 9.4, 5.1, 6.3], [9.6, 10.6, 5.1, 6.3],       # U6 manager
+		[8.4, 9.4, 5.1, 6.3], [9.6, 10.6, UPPER, 6.3],     # U6 manager (B: PO6-17 breach window, sill infill to the floor)
 		[13.5, 16.5, 5.1, 6.3],      # U7 stock
 	]],
 	["ExtWest", "z", 0.0, 0.2, 11.8, []],  # party wall with Castellan Tailoring: no openings
@@ -51,7 +51,7 @@ const INT_WALLS: Array = [
 	["G_Corridor_N_E", "x", 4.5, 14.5, 17.8, 0.0, GROUND_WALL_TOP,
 		[[14.8, 15.8, 0.0, 2.2], [16.5, 17.5, 0.0, 2.2]]],
 	["G_Corridor_S", "x", 6.0, 0.2, 17.8, 0.0, GROUND_WALL_TOP,
-		[[1.0, 2.0, 0.0, 2.2], [16.0, 17.0, 0.0, 2.2]]],
+		[[1.0, 2.0, 0.0, 2.2], [10.1, 11.1, 0.0, 2.2], [16.0, 17.0, 0.0, 2.2]]],  # 10.1-11.1: PO6-17 breach (infilled)
 	["G_G1_G2", "z", 5.0, 0.2, 4.4, 0.0, GROUND_WALL_TOP, []],
 	["G_G7_E", "z", 2.0, 0.2, 2.1, 0.0, GROUND_WALL_TOP, [[0.5, 1.5, 0.0, 2.2]]],
 	["G_G7_S", "x", 2.0, 0.2, 2.1, 0.0, GROUND_WALL_TOP, []],
@@ -68,7 +68,7 @@ const INT_WALLS: Array = [
 		[[3.5, 4.5, UPPER, UPPER + 2.2], [10.0, 11.0, UPPER, UPPER + 2.2], [12.5, 13.5, UPPER, UPPER + 2.2]]],
 	["U_U1_U2", "z", 5.5, 0.2, 4.4, UPPER, UPPER_WALL_TOP, []],
 	["U_U5_U6", "z", 7.0, 6.1, 11.8, UPPER, UPPER_WALL_TOP, []],
-	["U_U6_U7", "z", 12.0, 6.1, 11.8, UPPER, UPPER_WALL_TOP, []],
+	["U_U6_U7", "z", 12.0, 6.1, 11.8, UPPER, UPPER_WALL_TOP, [[6.8, 7.8, UPPER, UPPER + 2.2]]],  # PO6-17 breach (infilled)
 ]
 
 ## Slabs: ground floor, upper floor (hole over the stair core x 13-16, z 0-4.48), roof.
@@ -115,6 +115,7 @@ const LANDING: Array = [1.0, 4.1, -1.4, 3.5, 4.2, -0.2]
 ## Windows: [name, kit piece, sill origin (x, y, z), yaw_deg (front = UsePoint side), prefab?].
 ## Prefab windows are breakable/openable gameplay windows; the rest are static greybox glazing.
 ## Yaw: 0 = front faces north (-z), 180 = south (+z), -90 = east (+x), 90 = west (-x).
+## Optional 6th field `true`: a PO6-17 breach window (glazing + collision come from ASSAULT_BREACHES).
 const WINDOWS: Array = [
 	["ShopBayA", "arch_window_shop_w300_h240", Vector3(1.8, 0.3, 12.0), 180.0, true],
 	["ShopBayB", "arch_window_shop_w300_h240", Vector3(5.0, 0.3, 12.0), 180.0, true],
@@ -127,7 +128,9 @@ const WINDOWS: Array = [
 	["AdminSouthA", "arch_window_w100_h120", Vector3(1.75, 5.1, 12.0), 180.0, false],
 	["AdminSouthB", "arch_window_w100_h120", Vector3(5.25, 5.1, 12.0), 180.0, false],
 	["ManagerSouthA", "arch_window_w100_h120", Vector3(8.9, 5.1, 12.0), 180.0, false],
-	["ManagerSouthB", "arch_window_w100_h120", Vector3(10.1, 5.1, 12.0), 180.0, false],
+	# PO6-17 breach window (6th field): the breach scene's Intact state is its glazing (no kit window, no
+	# blocker); it stays listed so the room dressing still keeps clear of it.
+	["ManagerSouthB", "arch_window_w100_h120", Vector3(10.1, 5.1, 12.0), 180.0, false, true],
 	["StockSouth", "arch_window_w300_h120", Vector3(15.0, 5.1, 12.0), 180.0, false],
 	["StockEastA", "arch_window_w100_h120", Vector3(18.0, 5.1, 8.4), -90.0, false],
 	["StockEastB", "arch_window_w100_h120", Vector3(18.0, 5.1, 9.6), -90.0, false],
@@ -604,6 +607,36 @@ const PREPLAN_POINTS: Array = [
 	["pp_insider_breakroom", "insider", Vector3(1.2, 4.2, 2.6), 1, {"variant_group": &"keycard", "variant_slot": &"kc_breakroom"}],
 	["pp_back_door", "access", Vector3(3.5, 0.0, -1.0), 0, {"variant_group": &"back_door", "variant_slot": &"back_propped"}],
 ]
+
+
+# --- PO6-17 RNG assault events (D-114 §5) ------------------------------------------------------
+
+## Marker nodes only, under `AssaultEvents` (group `assault_events`); ENV A's event code consumes them.
+## Contract: docs/levels/_art/po6_17/README.md. Turret vans: [name, pos (road, bottom-centre), yaw_deg
+## (+Z = the van's forward)]. Harlow Ave lanes, clear of the parked cars, the E1 alley and E2 Pell St escapes.
+const ASSAULT_TURRET_VANS: Array = [
+	["TurretVan_1", Vector3(1.0, ROAD_Y, 21.2), 90.0],      # eastbound lane opposite shop bays A-B
+	["TurretVan_2", Vector3(15.0, ROAD_Y, 24.6), -90.0],    # westbound lane opposite the entrance + salon
+]
+## Helicopter orbit: [name, centre (y = flight height of the heli pivot), radius]; clears the hotel (17 m).
+const ASSAULT_HELI_ORBITS: Array = [["HeliOrbit_1", Vector3(9.0, 30.0, 8.0), 24.0]]
+## Rappel landing points: [name, pos]. Roof beside the U7 skylight breach; the alley east of the dumpsters.
+const ASSAULT_HELI_DROPS: Array = [
+	["HeliDrop_1", Vector3(12.6, 7.8, 9.1)],
+	["HeliDrop_2", Vector3(11.0, 0.0, -3.6)],
+]
+## Breach points: [name, kind, breach scene (world/props/assault_event/<id>.tscn), pos on the room-side
+## face (wall/window: bottom-centre of the opening; ceiling: centre of the ceiling underside), yaw_deg
+## (-Z into the room; ceilings face down), size (w, h) m, room]. The wall/window openings are in the
+## wall tables above; the ceiling hole is cut from the roof slab and the ceiling by the generator.
+const ASSAULT_BREACHES: Array = [
+	["Breach_1", "wall", "prop_breach_wall", Vector3(10.6, 0.0, 6.1), 180.0, Vector2(1.0, 2.2), "G5"],
+	["Breach_2", "wall", "prop_breach_wall", Vector3(11.9, UPPER, 7.3), 90.0, Vector2(1.0, 2.2), "U6"],
+	["Breach_3", "window", "prop_breach_window", Vector3(10.1, UPPER, 11.8), 0.0, Vector2(1.0, 2.1), "U6"],
+	["Breach_4", "ceiling", "prop_breach_ceiling", Vector3(14.9, 7.2, 9.1), 0.0, Vector2(1.2, 1.2), "U7"],
+]
+## Ceiling breaches cut the slabs / ceilings between the ceiling underside and the roof top (+0.6 m).
+const ASSAULT_CEILING_DEPTH: float = 0.6
 
 
 # --- Rooms and zones ------------------------------------------------------------------------

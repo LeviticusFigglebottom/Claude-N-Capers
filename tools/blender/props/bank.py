@@ -47,6 +47,7 @@ VARIANTS = {
     "prop_vault_door_round": {"fn": "vault_door", "cat": {"prefab": "door", "kind": "vault_door"}},
     "prop_cash_bags": {"fn": "cash_bags", "cat": {"prefab": "loot_spawn", "kind": "loot_spawn"}},
     "prop_cash_pallet": {"fn": "cash_pallet", "cat": {"prefab": "loot_spawn", "kind": "loot_spawn"}},
+    "prop_night_drop_bags": {"fn": "night_drop_bags", "cat": {"prefab": "loot_spawn", "kind": "loot_spawn"}},
     "prop_cash_stack": {"fn": "cash_stack", "cat": {"prefab": "small_loot", "kind": "small_loot"}},
     "prop_keycard_bank": {"fn": "keycard", "cat": {"prefab": "keycard_pickup", "kind": "keycard"}},
 }
@@ -506,6 +507,28 @@ def _cash_bags(k: Kit, p: dict) -> None:
         a.slab(pts, z, z + 0.26, "canvas_bank")
         t.cyl(0.04, 0.05, (x, y, z + 0.285), "canvas_bank", segs=8)
         t.cyl(0.045, 0.012, (x, y, z + 0.265), "metal_red", segs=8)
+    o.build()
+
+
+def _night_drop_bags(k: Kit, p: dict) -> None:
+    """Night-depository pouches inside the depository safe (PO6-05): flat zipped bank bags, two stacks of three
+    (about 0.72 x 0.5 m, fits the MEDIUM safe's compartment), a lock tab and a paper tag on each."""
+    o = k.obj("Pouches")
+    a = o.part(bevel=0.02, segments=2)
+    t = o.part(bevel=0.0)
+    lw, ld, lh = 0.32, 0.22, 0.075
+    for sx, base_rot in ((-0.19, 0.08), (0.19, -0.12)):
+        for layer in range(3):
+            rot = base_rot + 0.09 * (layer - 1) * (1 if sx < 0 else -1)
+            cs, sn = math.cos(rot), math.sin(rot)
+            x, y, z = sx, 0.02 * (layer - 1), layer * lh
+            pts = [(x + dx * cs - dy * sn, y + dx * sn + dy * cs)
+                   for dx, dy in ((-lw / 2, -ld / 2), (lw / 2, -ld / 2), (lw / 2, ld / 2), (-lw / 2, ld / 2))]
+            a.slab(pts, z, z + lh - 0.006, "canvas_bank")
+            zx, zy = x + (lw / 2 - 0.03) * cs, y + (lw / 2 - 0.03) * sn
+            t.bx((zx - 0.02, zy - 0.03, z + lh - 0.008), (zx + 0.02, zy + 0.03, z + lh - 0.002), "metal_red")
+            tx, ty = x - (lw / 2 - 0.05) * cs, y - (lw / 2 - 0.05) * sn
+            t.bx((tx - 0.03, ty - 0.02, z + lh - 0.006), (tx + 0.03, ty + 0.02, z + lh - 0.003), "paper")
     o.build()
 
 

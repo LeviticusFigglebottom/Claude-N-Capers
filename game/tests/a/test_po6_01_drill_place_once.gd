@@ -88,6 +88,9 @@ func test_po6_01_one_hold_on_the_safe_places_the_visible_drill() -> void:
 	var safe: Safe = _tagged(&"safe") as Safe
 	assert_true(drill != null and safe != null, "safe and drill tagged")
 	assert_eq(drill.runner.state, DeviceRunner.State.IDLE, "drill idle at start")
+	# PO6-04: in stealth the safe itself offers the slow silent lockpick first (Safe.lockpick_fallback); this
+	# test is about the drill method of the safe's Interactable, so the fallback is switched off here.
+	safe.lockpick_fallback = false
 	assert_eq(safe.method_for(_rt.crew_controller(0)), &"drill", "the safe offers the drill (code unknown)")
 	assert_true(await _hold_aimed(safe, safe.interactable), "one hold on the safe completed")
 	_assert_one_drill(drill, safe)

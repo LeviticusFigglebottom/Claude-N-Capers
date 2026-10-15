@@ -57,6 +57,9 @@ extends Resource
 @export var revive_settle_speed: float = 0.3
 
 @export_group("Fight (L6.1)")
+## PO6-15: engage range, reaction, shot interval, aim error and head chance now come from CrewTweak's "AI teammates"
+## preset (ai_*, ENV P); engage_range_m / reaction_time_s / shot_interval_s / aim_error_m / head_aim_chance here are
+## unused, kept so saved .tres files still load.
 ## Enemies farther than this are ignored (m) ◇.
 @export var engage_range_m: float = 40.0
 ## Seconds between enemy scans (LOS rays) ◇.

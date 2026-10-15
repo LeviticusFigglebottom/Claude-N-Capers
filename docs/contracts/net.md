@@ -1,4 +1,4 @@
-# Contract: networking (v1.1)
+# Contract: networking (v1.2)
 
 API: `game/core/net.gd`. Architecture: architecture.md §3.
 
@@ -56,3 +56,25 @@ API: `game/core/net.gd`. Architecture: architecture.md §3.
 
 ## D-105 presentation facts (HeistNetSync, RELIABLE)
 `_rpc_crew_shot`, `_rpc_impact_fx`, `_rpc_explosion_fx`: see impact_fx.md 1.1 §2. Presentation only; gameplay stays server-authoritative (hit claims unchanged). Crew spread draws one GameRng `spread` seed per shot, then a per-shot RNG for pellets.
+
+## v1.2 (PO6-19, D-114 §7): NPC ragdoll state keys
+NPC entity state (`NetEntityCodec.state_of` / `_apply_npc_state`, reliable diffs; late joiners get the full state) gains
+two keys, written by `NpcRagdoll.net_state(st)` on the server and applied by `NpcRagdoll.apply_net_state(d)` on clients
+(`game/systems/anim/npc_ragdoll.gd`, env/a-core f16e1031). Both are present only once set; NPCs without ENV D's
+`Skeleton3D/Ragdoll` (capsule placeholders) never carry them.
+* **`"rs"` = `[seq: int, settle_s: float, entries: Array]`**: the latest ragdoll start or push fact. `seq` counts the
+  server's starts/pushes for this NPC (strictly increasing); `settle_s` is the simulation time before the freeze;
+  `entries` = `[[body_index: int, impulse: Vector3 (N·s, world space), offset: Vector3 (m, from the body's origin)], ...]`.
+  `body_index` indexes the `PhysicalBone3D` children of `Skeleton3D/Ragdoll` in scene order (characters.md v1.12).
+  A client applies an `rs` whose `seq` is newer than the last it applied: it starts (or nudges) its own ragdoll
+  **cosmetically** with the same impulses. An empty `entries` = a start with no push (e.g. frozen by the cap first).
+* **`"rp"` = `[seq: int, root_origin: Vector3, visual_offset: Vector3, bones: Array[Transform3D]]`**: the server's
+  frozen pose, sent once per freeze. `root_origin` = the NPC root's global position after the server re-anchored it
+  under the **hips** body; `visual_offset` = `visual_root.position` (the visual shifted back so the body stays put);
+  `bones` = **12** baked bone transforms in skeleton space, one per ragdoll body, indexed like `body_index` (the
+  12 bodies of characters.md v1.12: `Hips` … `ShinL/R`). A client snaps to an `rp` whose
+  `seq` is newer than the last it applied; when `rp.seq >= rs.seq` (late joiner) it skips the simulation and only snaps.
+  Clients never re-anchor on their own.
+* While the ragdoll owns the pose, `NetEntityCodec.apply_xform` ignores the NPC's replicated root transform: the root
+  comes from `rp`. Gameplay stays server-side (corpse stimulus, bag-body interaction and corpse hitbox follow the server's
+  re-anchored root).

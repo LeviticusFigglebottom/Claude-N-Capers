@@ -64,6 +64,18 @@ func fix(crew_slot: int) -> void:
 	_restart(crew_slot)
 
 
+## Server: the target was opened another way while the device runs or is jammed (PO6-04: code / keycard on a
+## safe being drilled): stop it. device_finished [R] stops its loop cue (D-114 §3); no done cue, and no `finished`
+## signal (nothing more to open).
+func abort() -> void:
+	if not Net.is_authority() or (state != State.RUNNING and state != State.JAMMED):
+		return
+	restart_left = -1.0
+	jams.clear()
+	_owner._emit_fact(&"device_finished", [_owner.net_id])
+	_set_state(State.DONE)
+
+
 ## Seconds of running left (excluding jams).
 func time_left() -> float:
 	return maxf(1.0 - progress, 0.0) * duration

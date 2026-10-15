@@ -1,10 +1,12 @@
 ## PO-13 / D-111 support hand: finger skin vs the gun in the real game pose (PFingerClip), hip and ADS, one gun per
 ## long-gun set. Sanity: the CPU-skinned finger vertices sit on their bones (the skinning maths match the render).
-## Report: per gun and pose, finger vertices inside the gun and the deepest one ("[FINGERS] ..." lines). The
-## depth limit is REPORT ONLY while ENV D iterates the grip (PO 2026-10-14); it becomes an assert once green.
+## Per gun and pose: finger vertices inside the gun and the deepest one ("[FINGERS] ..." lines), asserted at most
+## MAX_DEPTH_MM deep (PO6-09, D's thumb fix 6524e268; report-only before it).
 ## Owner: ENV P.
 extends TestCase
 
+## PO6-09: deepest allowed support-hand skin vertex inside the gun mesh (mm).
+const MAX_DEPTH_MM: float = 2.0
 const LONG_GUNS: Array[StringName] = [&"weapon.corsair_ar", &"weapon.bastion_br", &"weapon.mule_12",
 	&"weapon.anvil_lmg", &"weapon.condor_50", &"weapon.reaper_db", &"weapon.shrike_44", &"weapon.brute_12"]
 
@@ -89,4 +91,8 @@ func test_report_long_guns() -> void:
 				line += " %s %d/%d %.1fmm" % [f.trim_prefix("_"), int(e.get("inside", 0)), int(e.get("verts", 0)),
 					float(e.get("max_mm", 0.0))]
 			print(line)
+			# PO6-09 (D 6524e268): fingers stay on the gun surface, no skin deeper than 2 mm inside it.
+			var deepest: float = float((r.get("_total", {}) as Dictionary).get("max_mm", 0.0))
+			assert_true(deepest <= MAX_DEPTH_MM, "%s %s: support-hand skin at most %.0f mm inside the gun (%.1f mm)"
+				% [w, pose, MAX_DEPTH_MM, deepest])
 		await after_each()

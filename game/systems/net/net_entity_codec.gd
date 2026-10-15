@@ -198,6 +198,9 @@ static func state_of(node: Node) -> Dictionary:
 		var gb: GuardBrain = npc.get_node_or_null(^"Brain") as GuardBrain
 		if gb != null:
 			st["dom"] = gb.dominate_window_left > 0.0  # PP-A-1: the S5.8 window, for the client HUD cue
+		var rd: NpcRagdoll = NpcRagdoll.of(npc)
+		if rd != null:
+			rd.net_state(st)  # PO6-19: "rs" start / push, "rp" frozen pose
 		return st
 	var bag: LootBag = node as LootBag
 	if bag != null:
@@ -324,6 +327,10 @@ static func _apply_npc_state(npc: NpcBase, d: Dictionary) -> void:
 		npc.set_alert_state(int(d["alert"]) as Enums.AlertState)
 	if d.has("alive") and not bool(d["alive"]) and npc.alive:
 		npc.die({}, 0)
+	if d.has("rs") or d.has("rp"):
+		var rd: NpcRagdoll = NpcRagdoll.of(npc)
+		if rd != null:
+			rd.apply_net_state(d)
 	if d.has("dom"):
 		var gb: GuardBrain = npc.get_node_or_null(^"Brain") as GuardBrain
 		if gb != null and not Net.is_authority():
@@ -380,6 +387,8 @@ static func apply_xform(node: Node, x: Variant) -> void:
 		crew.crouched = bool(a[3])
 		return
 	var n3: Node3D = node as Node3D
+	if NpcRagdoll.owns_pose(node):
+		return  # PO6-19: a ragdolled corpse's root comes with its frozen pose ("rp")
 	if n3 != null and x is Transform3D:
 		var bag: LootBag = node as LootBag
 		if bag != null and bag.is_carried():

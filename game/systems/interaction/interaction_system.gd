@@ -97,14 +97,17 @@ func aimed_component(crew: CrewController) -> InteractableComponent:
 			continue
 		var to: Vector3 = c.global_position - eye
 		var d: float = to.length()
-		if d > tw.reach_m + 0.35 or d < 0.001:
+		if d - c.aim_radius_m > tw.reach_m + 0.35 or d < 0.001:
 			continue
 		var ang: float = fwd.angle_to(to)
-		# Close targets get a wider effective cone (the object fills more of the view).
-		var eff_cone: float = maxf(cone, atan2(0.3, d))
+		# Close targets get a wider effective cone (the object fills more of the view); PO6-20 aim_radius_m
+		# widens it to the whole extent (a pager body is answerable from anywhere around it).
+		var eff_cone: float = maxf(cone, atan2(0.3 + c.aim_radius_m, d))
 		if ang > eff_cone:
 			continue
 		var score: float = ang + d * 0.05
+		if c.aim_radius_m > 0.0:  # PO6-20: anywhere inside the extent counts as dead-on
+			score = maxf(ang - atan2(c.aim_radius_m, d), 0.0) + d * 0.05
 		if score < best_score and _has_los(crew, eye, c):
 			best = c
 			best_score = score

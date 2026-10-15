@@ -19,6 +19,28 @@ extends Resource
 ## sight, re-approach, repeat).
 @export var assault_standoff_min_m: float = 2.0
 @export var assault_standoff_pref_m: float = 4.0
+## PO6-16 ◇ (D-114 §5, L1.1 BUILD/SUSTAIN push): while the assault pushes, a COVER point is only taken when it
+## is this close to the target (PD2 assault units do not sit on cover outside the room the crew holds).
+@export var assault_cover_max_m: float = 6.0
+## PO6-16 ◇: push slots = navmesh points on these rings around the target (8 angles each) with LOS to the
+## target's eyes, i.e. inside (or at the threshold of) the room the target holds; nearer rings first. The
+## doorway on the way is opened / breached by NpcMotor + Door.npc_open.
+@export var assault_slot_radii_m: PackedFloat32Array = PackedFloat32Array([2.0, 3.0, 4.0])
+## PO6-16 ◇: another unit's slot closer than this counts as taken (adds the penalty, in meters of score).
+@export var assault_slot_spacing_m: float = 1.0
+@export var assault_slot_taken_penalty_m: float = 3.0
+## PO6-16 ◇: a unit closer than this to its push slot holds there (m).
+@export var assault_slot_arrive_m: float = 0.9
+## PO6-16 ◇: a unit moving slower than this (m/s) toward its slot for assault_push_stall_s is stalled: it holds
+## where it is when it sees the target, else it takes another slot.
+@export var assault_push_stall_speed: float = 0.3
+@export var assault_push_stall_s: float = 1.0
+## PO6-16 ◇: the slot is recomputed when the target moved this far from where it was computed (m).
+@export var assault_slot_refresh_m: float = 1.5
+## PO6-16 ◇: a projected slot must lie within this distance of the candidate (horizontal) and within
+## assault_slot_max_dy_m of the target's floor.
+@export var assault_slot_snap_m: float = 0.6
+@export var assault_slot_max_dy_m: float = 1.0
 @export var fire_range_m: float = 40.0
 ## Flank-lite: chance a fresh unit first visits a FLANK point near the target.
 @export var flank_chance: float = 0.3
