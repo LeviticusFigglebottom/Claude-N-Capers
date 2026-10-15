@@ -38,3 +38,10 @@ and reports a gap list; the LEAD folds the gaps in here as rows (id, heist, owne
 | GN-8 | GN | A | e2e stealth + loud; QC-57 Vaultline courier; 17 unsaid mission lines (D-117 §6) | open |
 | GN-10 | GN | D, P | cast polish; §7 traversal tests | open |
 | B-1 | all | B | D-117 names/briefing/unlocks; GH/SL/GN content gaps | DONE r216 |
+| D-1 | GH | D | design manager Greta Vossberg (female) vs male civilian_manager; civilian_sales_b + clerk look | open |
+| D-2 | DB | D | dock_worker, dock_worker_b, dock_packer (civ_worker wears bank outfits) | open |
+| D-3 | SL, ND, GN | A | NpcVisualTweak maps: SL Northgate guards/cleaner/Helena Moor; ND night manager + armored_car_crew; GN civ_admin → gallery_admin | open |
+| D-4 | all | D props, A attach | hand props (phone, mop, mug, cigarette, tray) not attached; no phone/cigarette asset | open |
+| D-5 | DB, SL, GN | A | unmapped clips: `look` pause, SL seated `desk`, GN curator_inspect / walk_text / smoke | open |
+| D-6 | all | D | cast file for GH/ND/SL/DB + test: every design role has a character | open |
+| D-7 | GH (PO6-17) | C | heli cabin roof +0.1 m + SniperKneel marker | open |
