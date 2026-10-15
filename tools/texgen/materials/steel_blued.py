@@ -20,6 +20,8 @@ def generate(ctx: Ctx) -> Maps:
     r0, r1 = ctx.p("rough")
     rough = ops.lerp(ops.lerp(r0, r1, ops.clamp01(0.5 + streak)), ctx.p("worn_rough"), worn)
     h = 0.000004 * streak - 0.000005 * worn
-    m = Maps(albedo, rough, np.ones(ctx.shape), h)
+    # PO6-10: the coating is a dielectric (metal ~0.1); only worn spots show bare, metallic substrate.
+    metal = ops.lerp(float(ctx.p("coat_metal", 1.0)), 1.0, worn)
+    m = Maps(albedo, rough, metal, h)
     weather(ctx, m)
     return m
