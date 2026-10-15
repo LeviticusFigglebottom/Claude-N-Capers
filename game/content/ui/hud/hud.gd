@@ -54,6 +54,8 @@ var device_timers: DeviceTimers
 var pager_waypoints: PagerWaypoints
 ## PO6-17: RNG assault event markers (turret van, helicopter, breach); their names go on the assault banner.
 var assault_events: AssaultEventMarkers
+## PO6-17b: breach-blast white-out over everything (LocalHudModel.flashed_s).
+var breach_flash: BreachFlash
 var interaction: InteractionPanel
 ## PP-A-1: guard-domination prompt (above the interaction prompt).
 var dominate: DominatePrompt
@@ -132,9 +134,9 @@ func set_crew_heisters(map: Dictionary) -> void:
 
 
 func widgets() -> Array[HudWidget]:
-	return [chevrons, marks, objective_markers, device_timers, pager_waypoints, assault_events, interaction, dominate, vitals, ammo,
-			pager, objectives, assault, teammates, status, custody, captain, stamina, scoreboard, hint, mask_ring, onboarding, hit_feedback,
-			damage_direction, low_health, downed, hostages]
+	return [chevrons, marks, objective_markers, device_timers, pager_waypoints, assault_events, breach_flash, interaction,
+			dominate, vitals, ammo, pager, objectives, assault, teammates, status, custody, captain, stamina, scoreboard, hint,
+			mask_ring, onboarding, hit_feedback, damage_direction, low_health, downed, hostages]
 
 
 func _build() -> void:
@@ -186,6 +188,7 @@ func _build() -> void:
 	_place(toast_label, Control.PRESET_CENTER, Vector2(-500, -260), Vector2(1000, 60))
 	toast_label.visible = false
 	assault_events.events_changed.connect(assault.set_events)
+	breach_flash = _place(BreachFlash.new(), Control.PRESET_FULL_RECT, Vector2.ZERO, Vector2.ZERO) as BreachFlash  # on top
 
 
 func _place(c: Control, preset: Control.LayoutPreset, offset: Vector2, min_size: Vector2) -> Control:

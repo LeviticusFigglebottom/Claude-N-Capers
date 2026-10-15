@@ -41,6 +41,11 @@ const DEFAULT_PATH: String = "res://content/data/ui/hud_tweak.tres"
 @export var mark_height_m: float = 2.1
 ## PO6-20: the pager waypoint sits this far above the guard's origin (EventBus fallback; model rows carry world_pos).
 @export var pager_marker_height_m: float = 1.2
+## PO6-17b breach flash: full white-out at flash_full_s or more left, fading as (left / full)^flash_curve.
+@export var flash_full_s: float = 1.5
+@export var flash_max_alpha: float = 0.95
+@export var flash_curve: float = 0.7
+@export var flash_color: Color = Color(1.0, 1.0, 0.97)
 ## PO6-17: an assault event marker pulses this long after the event starts (s).
 @export var assault_event_pulse_s: float = 2.0
 ## PO6-03 device timer panels (DeviceTimers): hidden past this distance (m); full size up to device_panel_ref_m,
