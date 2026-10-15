@@ -3203,6 +3203,9 @@ voice.vo.vance.gallery_night_radio_escape_available,"The exit is yours. Rolled c
 voice.vo.vance.gallery_night_radio_escape,"Your car is waiting, darling. Don't crease anything."
 voice.vo.vance.gallery_night_radio_loot_lantern_bearer,The Lantern Bearer is mine. Ours. Mostly mine.
 voice.vo.vance.gallery_night_radio_loot_study,"A study. Not on the list, but I never refuse a sketch."
+voice.vo.vance.gallery_night_radio_loot_salt_orchard,The Salt Orchard. Somebody in Geneva just stopped breathing.
+voice.vo.vance.gallery_night_radio_loot_widow_in_blue,"The Widow in Blue. She's been waiting for a better wall."
+voice.vo.vance.gallery_night_radio_loot_tidewater_saint,"The Tidewater Saint, in a duffel bag. Blessed are the quick."
 voice.vo.vance.gallery_night_radio_loot,Another canvas off the Halberd's walls. Lovely.
 ui.lobby.host_closed,The host ended the heist. You are back in the crew lobby.
 ui.hud.device.drill,DRILL
