@@ -1,8 +1,8 @@
 ## Timed device (drill / thermal drill / saw) state machine shared by DrillPoint and Safe (S9.3,
 ## S9.4). Owner: ENV A. The owning prefab calls `tick(delta)` from `_physics_process` (server).
-## Jams are rolled at placement on GameRng &"devices": n = randi_range(device_jams_min,
-## device_jams_max) candidates, each kept with probability clamp(interaction.device_jam_chance_mult,
-## 0, 1), placed uniformly in device_jam_progress_range. Auto-restart (chance
+## Jams are rolled at placement on GameRng &"devices" (roll_jam_points: 1-2 per device, D-114 §2),
+## each kept with probability clamp(interaction.device_jam_chance_mult, 0, 1), placed uniformly in
+## device_jam_progress_range at least device_jam_min_gap apart. Auto-restart (chance
 ## interaction.device_auto_restart_chance) is rolled at placement and on each fix; a successful
 ## roll restarts the next jam after rand(device_restart_delay_s). While running in stealth it makes
 ## a NoiseEvent every device_noise_interval_s (drill_radius_m) unless stealth.silent_devices, and
@@ -90,23 +90,50 @@ func tick(delta: float) -> void:
 					_restart(-1)
 
 
-## Remove the stimulus (owner leaving the tree).
+## Remove the stimulus (owner leaving the tree). PO6-07 (D-114 §3): a device removed while RUNNING emits
+## device_jammed [R], the stop fact of its cue.drill_loop (no device_finished: nothing was opened).
 func shutdown() -> void:
 	_set_stimulus(false)
+	if state == State.RUNNING and Net.is_authority() and is_instance_valid(_owner):
+		_owner._emit_fact(&"device_jammed", [_owner.net_id])
 
 
 func _roll_jams() -> void:
-	var tw: InteractionTweak = Tweak.interaction()
-	var rng: RandomNumberGenerator = GameRng.stream(&"devices")
 	var chance: float = clampf(Modifiers.mult(slot, &"interaction.device_jam_chance_mult"), 0.0, 1.0)
-	jams.clear()
-	var n: int = rng.randi_range(tw.device_jams_min, tw.device_jams_max)
+	jams = roll_jam_points(GameRng.stream(&"devices"), Tweak.interaction(), chance)
+
+
+## S9.3 / D-114 §2 jam schedule (pure; PO6-02 test runs it over 1000 seeds). Ascending progress
+## fractions inside tw.device_jam_progress_range, at least tw.device_jam_min_gap apart.
+static func roll_jam_points(rng: RandomNumberGenerator, tw: InteractionTweak, chance: float) -> Array[float]:
+	var n: int = tw.device_jams_min
+	for i: int in range(tw.device_jams_max - tw.device_jams_min):
+		if rng.randf() < tw.device_jam_extra_chance:
+			n += 1
+	var out: Array[float] = []
+	var lo: float = tw.device_jam_progress_range.x
+	var hi: float = tw.device_jam_progress_range.y
 	for i: int in range(n):
 		var keep: bool = rng.randf() < chance
-		var at: float = rng.randf_range(tw.device_jam_progress_range.x, tw.device_jam_progress_range.y)
-		if keep:
-			jams.append(at)
-	jams.sort()
+		var at: float = rng.randf_range(lo, hi)
+		if not keep:
+			continue
+		for other: float in out:
+			if absf(at - other) < tw.device_jam_min_gap:
+				# Push away from the nearer neighbour, inside the range; drop if there is no room.
+				at = other + tw.device_jam_min_gap if at >= other else other - tw.device_jam_min_gap
+		if at < lo or at > hi or _too_close(out, at, tw.device_jam_min_gap):
+			continue
+		out.append(at)
+	out.sort()
+	return out
+
+
+static func _too_close(points: Array[float], at: float, gap: float) -> bool:
+	for p: float in points:
+		if absf(at - p) < gap - 0.0001:
+			return true
+	return false
 
 
 func _roll_restart() -> void:

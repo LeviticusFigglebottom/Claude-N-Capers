@@ -14,7 +14,8 @@
 ##    HandR/HandL/Head/Back/Hip under Skeleton3D, each with a `Socket` Marker3D child at the attach
 ##    point. D-067(b): the scene inherits the glb (exported with `remove_armature`, so it imports as
 ##    Root > Skeleton3D > meshes); meshes and skins stay in the glb, the .tscn only holds overrides
-##    and added nodes. A glb without a top-level Skeleton3D is an error.
+##    and added nodes. A glb without a top-level Skeleton3D is an error. PO6-19: every character also
+##    gets the inactive physical-bones ragdoll `Skeleton3D/Ragdoll` (ragdoll_builder.gd, RAGDOLL.md).
 ## 3. Special characters (P3): SOURCE.txt `extra_markers` add Marker3D nodes (Longshot `LaserOrigin`)
 ##    and `material_override` sets MeshInstance3D.material_override (Phantom `Goggles`); extra named
 ##    meshes (Wrecker `Faceplate` / `Visor` / `HeadArmored`) come through as they are.
@@ -29,6 +30,7 @@ extends SceneTree
 
 const Spec: GDScript = preload("res://world/characters/_tools/character_spec.gd")
 const CrowdLod: GDScript = preload("res://world/characters/_tools/crowd_lod.gd")
+const RagdollBuilder: GDScript = preload("res://world/characters/_tools/ragdoll_builder.gd")
 
 var _errors: int = 0
 ## Override with `-- --anim-glb=res://...` (testing the conversion against another glb).
@@ -252,6 +254,7 @@ func _assemble(asset_id: String, scene_path: String, lib: AnimationLibrary) -> b
 	_add_extra_markers(skel, source, asset_id)
 	_apply_overrides(skel, source, asset_id, scene_path)
 	_add_crowd_lod(skel, source, asset_id, scene_path)
+	_add_ragdoll(skel, asset_id)
 	var player: AnimationPlayer = AnimationPlayer.new()
 	player.name = "AnimationPlayer"
 	root.add_child(player)
@@ -492,6 +495,15 @@ func _add_crowd_lod(skel: Skeleton3D, source: Dictionary, asset_id: String, scen
 	lod.add_to_group(CrowdLod.GROUP, true)
 	skel.add_child(lod)
 	lod.skeleton = NodePath("..")
+
+
+## PO6-19: the inactive physical-bones ragdoll `Skeleton3D/Ragdoll` (ragdoll_builder.gd, RAGDOLL.md).
+func _add_ragdoll(skel: Skeleton3D, asset_id: String) -> void:
+	var errors: Array[String] = []
+	var sim: PhysicalBoneSimulator3D = RagdollBuilder.build(skel, errors)
+	for msg: String in errors:
+		_error("%s: %s" % [asset_id, msg])
+	skel.add_child(sim)
 
 
 # --------------------------------------------------------------------------------------------

@@ -3,6 +3,9 @@
 ## per-source cooldowns, presentation-only pitch jitter from a local seeded RNG (never global randf).
 ## Missing cues play a generated placeholder beep and warn once (never crash).
 ## Runs on every peer: facts marked [R] in events.md are re-emitted on clients by Net.
+## PO6-07 / D-114 §3: only keyed loops (start_loop) loop, and every one has a stop owner
+## (LOOP_STOP_OWNERS) plus a safety cap (loop_max_s). A loop cue played any other way
+## (audio_cue_requested, weapon_fired) plays its clip once.
 class_name CuePlayer
 extends Node
 
@@ -13,6 +16,32 @@ const ALARM_KEY: StringName = &"alarm"
 const SIREN_KEY: StringName = &"siren"
 ## anim_sets that reuse another family's fire cue when WeaponDef.fire_cue is empty.
 const ANIM_SET_FIRE_FAMILY: Dictionary[StringName, StringName] = {&"akimbo": &"pistol"}
+## Every cue with loop = true -> the fact(s) that stop it (tests assert full coverage). "CueEmitter"
+## loops are owned by a node: they stop when it leaves the tree (map unload, pool freed) or on heist end.
+const LOOP_STOP_OWNERS: Dictionary[StringName, String] = {
+	&"cue.pager_beep": "pager_answer_started / pager_answered / pager_failed (A: PagerSystem); cap",
+	&"cue.pager_radio": "pager_answered / pager_failed (A: PagerSystem); answer cancel; cap",
+	&"cue.alarm_bell": "alarm_bell_duration_s timer / heist_ended / heist_loaded",
+	&"cue.alarm_bell_glasshouse": "alarm_bell_duration_s timer / heist_ended / heist_loaded",
+	&"cue.police_siren_far": "assault_phase_changed FADE/CONTROL/NONE (A: assault director) / heist_ended",
+	&"cue.drill_loop": "device_jammed / device_finished (A: Device); cap",
+	&"cue.lockpick": "interaction_cancelled / interaction_completed (A: Interactable) / crew_downed; cap",
+	&"cue.aegis_pulse": "captain_retreated / npc_killed (A: AegisCaptain)",
+	&"cue.weapon_flamethrower_fire": "weapon_fired gap > weapon_loop_tail_s (held trigger)",
+	&"cue.weapon_saw_rev": "weapon_fired gap > weapon_loop_tail_s (held trigger)",
+	&"cue.weapon_saw_cut": "weapon_fired gap > weapon_loop_tail_s (held trigger)",
+	&"cue.weapon_minigun_fire": "weapon_fired gap > weapon_loop_tail_s (held trigger)",
+	&"cue.phantom_hum": "never keyed: re-requested per interval, plays once (A: PhantomBrain)",
+	&"cue.stinger_arc": "never keyed: re-requested per interval, plays once (A: StingerBrain)",
+	&"cue.amb_glasshouse_interior": "CueEmitter (map bed)",
+	&"cue.amb_street_dusk": "CueEmitter (map bed)",
+	&"cue.throwable_incendiary_fire": "CueEmitter (fire pool, freed with the pool)",
+}
+## Held-trigger weapon loop -> one-shot tail played when the trigger is released.
+const WEAPON_LOOP_TAILS: Dictionary[StringName, StringName] = {
+	&"cue.weapon_flamethrower_fire": &"cue.weapon_flamethrower_stop",
+	&"cue.weapon_minigun_fire": &"cue.weapon_minigun_spin_down",
+}
 
 @export var registry: AudioCueRegistry
 @export var listen_to_event_bus: bool = true
@@ -23,6 +52,14 @@ const ANIM_SET_FIRE_FAMILY: Dictionary[StringName, StringName] = {&"akimbo": &"p
 @export var siren_delay_s: float = 6.0
 ## Play weapon_fired facts (server-local only; clients play fire from synced state via CueEmitter).
 @export var play_weapon_fired: bool = true
+## A held-trigger weapon loop stops this long after its shooter's last weapon_fired.
+@export var weapon_loop_tail_s: float = 0.25
+## Safety cap per loop cue (seconds; a keyed loop older than this is stopped even if its owner never
+## sent the end fact). Missing = no cap.
+@export var loop_max_s: Dictionary[StringName, float] = {
+	&"cue.pager_beep": 30.0, &"cue.pager_radio": 30.0, &"cue.lockpick": 120.0, &"cue.drill_loop": 600.0,
+	&"cue.police_siren_far": 240.0,
+}
 ## Interaction kind -> loop cue while the interaction is held.
 @export var interaction_loop_cues: Dictionary[StringName, StringName] = {&"lockpick": &"cue.lockpick"}
 ## Interaction kind -> one-shot cue on completion.
@@ -54,6 +91,10 @@ var _players_3d: Array[AudioStreamPlayer3D] = []
 var _players_2d: Array[AudioStreamPlayer] = []
 var _started_ms: Dictionary[Node, int] = {}
 var _loops: Dictionary[StringName, Node] = {}
+var _loop_cue: Dictionary[StringName, StringName] = {}
+var _loop_started_ms: Dictionary[StringName, int] = {}
+var _weapon_last_ms: Dictionary[StringName, int] = {}
+var _interact_crew: Dictionary[int, int] = {}
 var _follow: Dictionary[Node, int] = {}
 var _last_play_ms: Dictionary[String, int] = {}
 var _rng: RandomNumberGenerator = RandomNumberGenerator.new()
@@ -61,6 +102,8 @@ var _detect_last: Dictionary[int, float] = {}
 var _pager_guard: Dictionary[int, int] = {}
 var _device_kind: Dictionary[int, StringName] = {}
 var _alarm_gen: int = 0
+## True between an assault's FADE/CONTROL and the next wave: sirens stay off.
+var _siren_held: bool = false
 
 
 func _ready() -> void:
@@ -91,6 +134,9 @@ func _exit_tree() -> void:
 ## Stop every pooled player (teardown, tests).
 func stop_everything() -> void:
 	_loops.clear()
+	_loop_cue.clear()
+	_loop_started_ms.clear()
+	_weapon_last_ms.clear()
 	_follow.clear()
 	for p3: AudioStreamPlayer3D in _players_3d:
 		p3.stop()
@@ -104,6 +150,20 @@ func _process(_delta: float) -> void:
 		var p3: AudioStreamPlayer3D = p as AudioStreamPlayer3D
 		if target != null and p3 != null and p3.playing:
 			p3.global_position = target.global_position
+	if not _loops.is_empty():
+		_enforce_loop_ends()
+
+
+## Stops held-trigger weapon loops whose trigger was released and any loop past its safety cap.
+func _enforce_loop_ends() -> void:
+	var now: int = Time.get_ticks_msec()
+	for key: StringName in _weapon_last_ms.keys():
+		if now - _weapon_last_ms[key] > int(weapon_loop_tail_s * 1000.0):
+			_end_weapon_loop(key)
+	for key: StringName in _loop_started_ms.keys():
+		var cap: float = loop_max_s.get(_loop_cue.get(key, &""), 0.0)
+		if cap > 0.0 and now - _loop_started_ms[key] > int(cap * 1000.0):
+			stop_loop(key)
 
 
 # --- public API ------------------------------------------------------------------------------
@@ -112,8 +172,9 @@ func _process(_delta: float) -> void:
 ## Play a cue once (or start it, if it is a loop and you keep the returned player). `position`
 ## NO_POSITION = flat; a positional cue with a resolvable `source_net_id` plays at that node.
 ## Returns the player node, or null when suppressed by cooldown.
+## Only start_loop passes `looped` = true; any other play of a loop cue plays its clip once.
 func play_cue(cue_id: StringName, position: Vector3 = NO_POSITION, source_net_id: int = 0,
-		pitch: float = 1.0) -> Node:
+		pitch: float = 1.0, looped: bool = false) -> Node:
 	var cue: AudioCueDef = AudioCueLib.resolve(registry, cue_id)
 	if cue == null:
 		return _play_placeholder(cue_id)
@@ -124,7 +185,7 @@ func play_cue(cue_id: StringName, position: Vector3 = NO_POSITION, source_net_id
 			return null
 		_last_play_ms[key] = now
 	var pos: Vector3 = _resolve_position(position, source_net_id)
-	var stream: AudioStream = AudioCueLib.pick_stream(cue, _rng)
+	var stream: AudioStream = AudioCueLib.pick_stream(cue, _rng, 1 if looped else 0)
 	var pitch_scale: float = AudioCueLib.pitch_for(cue, _rng, pitch)
 	var player: Node = null
 	if cue.positional and pos != NO_POSITION:
@@ -137,7 +198,7 @@ func play_cue(cue_id: StringName, position: Vector3 = NO_POSITION, source_net_id
 		p3.global_position = pos
 		p3.play()
 		player = p3
-		if cue.loop and source_net_id != 0 and Ids.lookup(source_net_id) is Node3D:
+		if looped and cue.loop and source_net_id != 0 and Ids.lookup(source_net_id) is Node3D:
 			_follow[p3] = source_net_id
 	else:
 		var p2: AudioStreamPlayer = _take_2d()
@@ -156,9 +217,11 @@ func play_cue(cue_id: StringName, position: Vector3 = NO_POSITION, source_net_id
 ## Start a keyed loop (replacing an existing loop with the same key).
 func start_loop(key: StringName, cue_id: StringName, position: Vector3 = NO_POSITION, source_net_id: int = 0) -> void:
 	stop_loop(key)
-	var p: Node = play_cue(cue_id, position, source_net_id)
+	var p: Node = play_cue(cue_id, position, source_net_id, 1.0, true)
 	if p != null:
 		_loops[key] = p
+		_loop_cue[key] = cue_id
+		_loop_started_ms[key] = Time.get_ticks_msec()
 
 
 func stop_loop(key: StringName) -> void:
@@ -166,6 +229,9 @@ func stop_loop(key: StringName) -> void:
 		return
 	var p: Node = _loops[key]
 	_loops.erase(key)
+	_loop_cue.erase(key)
+	_loop_started_ms.erase(key)
+	_weapon_last_ms.erase(key)
 	_follow.erase(p)
 	if p is AudioStreamPlayer:
 		(p as AudioStreamPlayer).stop()
@@ -252,6 +318,7 @@ func _connect_event_bus() -> void:
 	EventBus.assault_phase_changed.connect(_on_assault_phase_changed)
 	EventBus.captain_arrived.connect(_on_captain_arrived)
 	EventBus.captain_retreated.connect(_on_captain_retreated)
+	EventBus.npc_killed.connect(_on_npc_killed)
 
 
 func _on_audio_cue_requested(cue_id: StringName, position: Vector3, source_net_id: int) -> void:
@@ -261,6 +328,7 @@ func _on_audio_cue_requested(cue_id: StringName, position: Vector3, source_net_i
 func _on_heist_loaded(heist_id: StringName, _run_seed: int, _variants: Dictionary) -> void:
 	_stop_alarm()
 	stop_all_loops()
+	_interact_crew.clear()
 	var s: String = String(heist_id)
 	heist_variant = StringName(s.get_slice(".", s.get_slice_count(".") - 1))
 
@@ -285,6 +353,7 @@ func _on_alarm_raised(_reason: StringName, _source_net_id: int) -> void:
 
 func _start_alarm() -> void:
 	alarm_active = true
+	_siren_held = false
 	_alarm_gen += 1
 	if play_flat_alarm:
 		start_loop(ALARM_KEY, variant_cue(&"cue.alarm_bell"))
@@ -301,7 +370,7 @@ func _stop_alarm() -> void:
 
 
 func _on_siren_timer(gen: int) -> void:
-	if gen == _alarm_gen and alarm_active:
+	if gen == _alarm_gen and alarm_active and not _siren_held and not is_loop_active(SIREN_KEY):
 		start_loop(SIREN_KEY, &"cue.police_siren_far")
 
 
@@ -316,6 +385,10 @@ func _on_crew_masked(crew_slot: int) -> void:
 
 func _on_crew_downed(crew_slot: int, _downs_used: int) -> void:
 	_play_at_crew(&"cue.crew_downed", crew_slot)
+	for iid: int in _interact_crew.keys():
+		if _interact_crew[iid] == crew_slot:
+			stop_loop(StringName("interact_%d" % iid))
+			_interact_crew.erase(iid)
 
 
 func _on_crew_revived(crew_slot: int, _by_crew_slot: int) -> void:
@@ -366,18 +439,21 @@ func _pager_key(pager_id: int, radio: bool) -> StringName:
 	return StringName("pager_%s_%d" % ["radio" if radio else "beep", pager_id])
 
 
-func _on_interaction_started(interactable_net_id: int, _crew_slot: int, kind: StringName) -> void:
+func _on_interaction_started(interactable_net_id: int, crew_slot: int, kind: StringName) -> void:
 	if interaction_loop_cues.has(kind):
+		_interact_crew[interactable_net_id] = crew_slot
 		start_loop(StringName("interact_%d" % interactable_net_id), interaction_loop_cues[kind], NO_POSITION,
 				interactable_net_id)
 
 
 func _on_interaction_cancelled(interactable_net_id: int, _crew_slot: int) -> void:
 	stop_loop(StringName("interact_%d" % interactable_net_id))
+	_interact_crew.erase(interactable_net_id)
 
 
 func _on_interaction_completed(interactable_net_id: int, _crew_slot: int, kind: StringName) -> void:
 	stop_loop(StringName("interact_%d" % interactable_net_id))
+	_interact_crew.erase(interactable_net_id)
 	if interaction_done_cues.has(kind):
 		play_cue(interaction_done_cues[kind], NO_POSITION, interactable_net_id)
 
@@ -463,8 +539,31 @@ func _on_damage_applied(_victim_net_id: int, attacker_net_id: int, info: Diction
 
 
 func _on_weapon_fired(shooter_net_id: int, weapon_id: StringName, suppressed: bool, position: Vector3) -> void:
-	if play_weapon_fired:
-		play_cue(weapon_fire_cue(weapon_id, suppressed), position, shooter_net_id)
+	if not play_weapon_fired:
+		return
+	var cue_id: StringName = weapon_fire_cue(weapon_id, suppressed)
+	var cue: AudioCueDef = AudioCueLib.resolve(registry, cue_id)
+	if cue == null or not cue.loop:
+		play_cue(cue_id, position, shooter_net_id)
+		return
+	# Held-trigger loop (minigun, flamethrower, saw): one loop per shooter, refreshed by every shot.
+	var key: StringName = _weapon_key(shooter_net_id)
+	if _loop_cue.get(key, &"") != cue_id:
+		start_loop(key, cue_id, position, shooter_net_id)
+	if is_loop_active(key):
+		_weapon_last_ms[key] = Time.get_ticks_msec()
+
+
+func _end_weapon_loop(key: StringName) -> void:
+	var cue_id: StringName = _loop_cue.get(key, &"")
+	var src: int = String(key).get_slice("_", 1).to_int()
+	stop_loop(key)
+	if WEAPON_LOOP_TAILS.has(cue_id):
+		play_cue(WEAPON_LOOP_TAILS[cue_id], NO_POSITION, src)
+
+
+func _weapon_key(shooter_net_id: int) -> StringName:
+	return StringName("weapon_%d" % shooter_net_id)
 
 
 func _on_captain_arrived(npc_net_id: int) -> void:
@@ -476,11 +575,22 @@ func _on_captain_retreated(npc_net_id: int) -> void:
 	stop_loop(_captain_key(npc_net_id))
 
 
+func _on_npc_killed(npc_net_id: int, _killer_net_id: int, _info: Dictionary) -> void:
+	stop_loop(_captain_key(npc_net_id))
+	stop_loop(_weapon_key(npc_net_id))
+
+
 func _captain_key(npc_net_id: int) -> StringName:
 	return StringName("captain_%d" % npc_net_id)
 
 
+## Sirens run while police are inbound or assaulting and stop when the assault ends (D-114 §3).
 func _on_assault_phase_changed(phase: int, _wave_index: int) -> void:
+	_siren_held = phase in [Enums.AssaultPhase.FADE, Enums.AssaultPhase.CONTROL, Enums.AssaultPhase.NONE]
+	if _siren_held:
+		stop_loop(SIREN_KEY)
+	elif alarm_active and not is_loop_active(SIREN_KEY):
+		start_loop(SIREN_KEY, &"cue.police_siren_far")
 	if phase == Enums.AssaultPhase.BUILD:
 		play_cue(&"cue.assault_start")
 

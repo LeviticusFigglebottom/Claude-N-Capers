@@ -1,4 +1,4 @@
-# Contract: HUD data (v1.12)
+# Contract: HUD data (v1.13)
 
 ENV A exposes in-heist state. ENV B owns every UI scene, HUD included (one UI style, one owner).
 
@@ -34,7 +34,7 @@ The HUD reads properties with `get()` and connects signals by name, ignoring sig
 | `interaction_changed` | `interaction` {} or {text_key, args, progress 0..1, blocked_reason (strings key or &"")} |
 | `detection_changed` | `detection` [{observer_net_id, world_pos, value, kind}] |
 | `marked_targets_changed` | `marked_targets` [{net_id, world_pos, kind}] |
-| `pagers_changed` | `pagers` [{pager_id, time_left_s, answering, progress}], `pagers_answered`, `pagers_max` |
+| `pagers_changed` | `pagers` [{pager_id, time_left_s, answering, progress}], `pagers_answered`, `pagers_max` (v1.13: `time_left_s` = response window, frozen while answering) |
 | `timers_changed` | `ecm_time_left_s`, `camera_alarm_s` (< 0 = inactive) |
 | `objectives_changed` | `objectives` [{id, text_key, args, state}] |
 | `assault_changed` | `assault_phase`, `assault_wave` |
@@ -100,3 +100,31 @@ are counted the same way.
 * v1.10: `LocalHudModel.revive_progress: float` (0..1, while the local crew member is downed and someone holds revive on them, else 0) and `reviver_slot: int` (-1 = none), for B's downed-state "<name> is reviving you" bar. ENV A provides.
 * v1.11: each `crew` row also carries `bleedout_s: float` (seconds left while DOWNED, else -1) and `revive_progress: float` (0..1 while being revived, else -1), for B's teammate state badge rings (env/a-core bbdc5784).
 * v1.12 (D-106): `reloading: bool` and `reload_progress: float` (0..1, -1 when not reloading) for the local crew member's equipped weapon, in the weapon group; ENV A provides, ENV B draws a reload indicator.
+
+## v1.13 (D-114 §1/§4, PO6-03/PO6-08): device rows, objective device id, pager window freeze
+ENV A provides (env/a-core c24f6c53, 99f3e8dc); ENV B consumes.
+* **Devices.** `LocalHudModel.devices: Array[Dictionary]` + signal `devices_changed()`: one row per placed timed device
+  while it is running, jammed or paused (the row is removed when the device is done or idle):
+
+  | Field | Type | Meaning |
+  |---|---|---|
+  | `net_id` | int | the device's net id (DrillPoint / Safe runner / HackTerminal) |
+  | `kind` | StringName | `&"drill"`, `&"thermal"`, `&"saw"`, `&"hack"` |
+  | `world_pos` | Vector3 | panel anchor, world space (the placed device, raised `device_panel_up_m`) |
+  | `progress` | float | 0..1 |
+  | `time_left_s` | float | run time left (jams excluded) |
+  | `duration_s` | float | full run time |
+  | `state` | StringName | `&"running"`, `&"jammed"`, `&"paused"` |
+  | `fix_prompt_key` | StringName | strings key to fix/restart while jammed (`ui.prompt.fix_drill`, `ui.prompt.restart_hack`), `&""` otherwise |
+
+  Clients extrapolate a running device's progress between replicated snapshots. A Safe that shares its DrillPoint's
+  runner (PO6-01) is listed once, under the drill point.
+* **Objectives.** Each `objectives` row also carries `device_net_id: int`: the device serving that ACTIVE objective
+  (matches a `devices[].net_id`), `-1` = none.
+* **Pagers (D-114 §4, PO 2026-10-15).** `pagers[].time_left_s` is now always the **response window**: it freezes while
+  anyone holds the answer. An early release with nobody else answering raises the alarm (default, S5.4); only with the
+  opt-in `StealthTweak.pager_release_resumes = true` does the window resume from the frozen value (events v1.4
+  `pager_answer_released`). `progress` (0..1) is the current answer hold (0 when nobody answers). It used to switch to the
+  10 s answer countdown while answering; it no longer does. The service rows behind it (`PagerSystem.pager_entries()`,
+  mirrored to clients by HeistNetSync) also carry `time_left` (window), `answer_left` (seconds left on the best current
+  hold) and `progress`; `LocalHudModel.pagers` rows do **not** expose `answer_left` (derive it from `progress` if needed).

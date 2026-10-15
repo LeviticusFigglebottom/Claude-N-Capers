@@ -120,6 +120,59 @@ const DEFAULT_HEAD_Y: float = 1.585
 ## The animation generator, relative to the repository root (outside res://).
 const ANIM_PY: String = "tools/blender/characters/anim_humanoid.py"
 
+## PO6-19 (D-114 §7): physical-bones ragdoll under `Skeleton3D/Ragdoll` (built by _tools/ragdoll_builder.gd,
+## API for ENV A in _tools/RAGDOLL.md). Inactive by default; ENV A activates and starts it at death.
+const RAGDOLL_NODE: String = "Ragdoll"
+## Layer 11 (bit 10): unnamed in project.godot; the LEAD names it `ragdoll` (proposal in RAGDOLL.md).
+const RAGDOLL_LAYER: int = 1 << 10
+## world_static | world_dynamic | ragdoll (limbs and corpses collide with each other; jointed pairs do not):
+## never players, npcs or hitboxes.
+const RAGDOLL_MASK: int = (1 << 0) | (1 << 1) | RAGDOLL_LAYER
+const RAGDOLL_LINEAR_DAMP: float = 0.4
+const RAGDOLL_ANGULAR_DAMP: float = 3.0
+const RAGDOLL_FRICTION: float = 0.9
+## One entry per physical bone, parents first. `len_to`: the bone whose rest origin ends this segment
+## (`""` = fixed length `len` x height scale); `ext`: extra length past it (hand / foot), `start`: capsule
+## start before the bone origin (the head reaches down to the chin), both x height scale.
+## Shapes are sized from the rest pose and scaled with the character height (k = head height / 1.585).
+## Masses (kg, ~80 kg body; a limb's distal segment carries the hand / foot). Joint limits in degrees:
+## cone = swing half-angle + twist; hinge = flexion range (elbow forward, knee backward).
+const RAGDOLL_BONES: Array[Dictionary] = [
+	{"bone": "hips", "node": "Hips", "shape": "box", "len_to": "spine", "mass": 12.0, "joint": "none"},
+	{"bone": "spine", "node": "Spine", "shape": "box", "len_to": "chest", "mass": 9.0, "joint": "cone",
+		"swing": 30.0, "twist": 30.0},
+	{"bone": "chest", "node": "Chest", "shape": "box", "len_to": "neck", "mass": 15.0, "joint": "cone",
+		"swing": 30.0, "twist": 30.0},
+	{"bone": "head", "node": "Head", "shape": "capsule", "len_to": "", "len": 0.25, "start": -0.06,
+		"radius": 0.095,
+		"mass": 5.5, "joint": "cone", "swing": 40.0, "twist": 45.0},
+	{"bone": "upper_arm.L", "node": "UpperArmL", "shape": "capsule", "len_to": "forearm.L", "radius": 0.05,
+		"mass": 2.5, "joint": "cone", "swing": 80.0, "twist": 45.0},
+	{"bone": "forearm.L", "node": "ForearmL", "shape": "capsule", "len_to": "hand.L", "ext": 0.09,
+		"radius": 0.042, "mass": 2.0, "joint": "hinge", "lower": 0.0, "upper": 140.0},
+	{"bone": "upper_arm.R", "node": "UpperArmR", "shape": "capsule", "len_to": "forearm.R", "radius": 0.05,
+		"mass": 2.5, "joint": "cone", "swing": 80.0, "twist": 45.0},
+	{"bone": "forearm.R", "node": "ForearmR", "shape": "capsule", "len_to": "hand.R", "ext": 0.09,
+		"radius": 0.042, "mass": 2.0, "joint": "hinge", "lower": 0.0, "upper": 140.0},
+	{"bone": "thigh.L", "node": "ThighL", "shape": "capsule", "len_to": "shin.L", "radius": 0.075,
+		"mass": 10.0, "joint": "cone", "swing": 70.0, "twist": 30.0},
+	{"bone": "shin.L", "node": "ShinL", "shape": "capsule", "len_to": "foot.L", "ext": 0.06,
+		"radius": 0.055, "mass": 4.5, "joint": "hinge", "lower": 0.0, "upper": 140.0},
+	{"bone": "thigh.R", "node": "ThighR", "shape": "capsule", "len_to": "shin.R", "radius": 0.075,
+		"mass": 10.0, "joint": "cone", "swing": 70.0, "twist": 30.0},
+	{"bone": "shin.R", "node": "ShinR", "shape": "capsule", "len_to": "foot.R", "ext": 0.06,
+		"radius": 0.055, "mass": 4.5, "joint": "hinge", "lower": 0.0, "upper": 140.0},
+]
+## Hinge flexion direction in character space (-Z forward): the forearm swings forward, the shin back.
+const RAGDOLL_FLEX_DIR: Dictionary = {"forearm": Vector3(0.0, 0.0, -1.0), "shin": Vector3(0.0, 0.0, 1.0)}
+## Torso boxes (metres at 1.78 m, x height scale): `depth` (Z), spine `width`; hips: the hip-joint span +
+## `pad` wide, reaching `below` under the hips origin; chest: the shoulder span x `shoulder_frac` wide.
+const RAGDOLL_BOX: Dictionary = {
+	"hips": {"depth": 0.20, "below": 0.10, "pad": 0.12},
+	"spine": {"depth": 0.19, "width": 0.28},
+	"chest": {"depth": 0.22, "shoulder_frac": 0.95},
+}
+
 
 ## The 52 contract bones in generator order (parents first).
 static func contract_bones() -> Array[String]:
