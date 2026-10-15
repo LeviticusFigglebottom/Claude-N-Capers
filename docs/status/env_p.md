@@ -2,6 +2,17 @@
 
 Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min; this file says where to resume.
 
+## 2026-10-15: PO6-10 viewmodel side (gun fill light), PO6-12 asks
+**PO6-10:** CrewView.VIEWMODEL_GUN_LAYER (1 << 21) on every mesh inside the FP WeaponVisual (not the arms); a
+camera-attached DirectionalLight3D `ViewmodelGunFill` culled to that layer (FpViewmodelTweak.viewmodel_gun_fill_*:
+energy 0.85, warm-neutral colour (1, 0.96, 0.9), specular 0.6, euler (-20, -15, 0)). vm_light_probe --fills (Glasshouse,
+Corsair, opengl3, with C's dielectric finishes c7a99c64 merged in a scratch worktree): weapon / arms mean luminance
+fill 0: 36.5 / 89.5; 0.85: 66.8 / 92.2; 1.0: 71.4 / 92.2; 1.5: 83.0 / 92.5; 2.5: 100.4 / 89.6; 4.0: 120.7 / 90.8 (arms
+unchanged: the fill never reaches them). 1.0 read cold/plastic with the earlier bluish colour; 0.85 warm chosen.
+Test test_pp_p11_viewmodel_fov.test_gun_fill_light_only_lights_the_gun.
+**PO6-12 (B asks):** CrewView.refresh_weapon applies the loadout weapon finish on the FP gun; FpViewmodel.play_draw().
+Test test_p_range_vm_api.
+
 ## 2026-10-15: PO6-15 bot tuning (P side) + PO6-13 FP flash wiring
 **PO6-15:** CrewTweak "AI teammates" group (PD2 team AI preset): ai_damage_mult 0.4, ai_reaction_time_s 0.8,
 ai_shot_interval_s 0.45, ai_head_aim_chance 0.05, aim error 0.15 m + 0.025 m per m of range, engage 30 m.

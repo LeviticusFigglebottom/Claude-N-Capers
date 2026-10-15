@@ -61,10 +61,18 @@ static func player_spawns(ctx: LcContext) -> Array[SpawnPoint]:
 	return out
 
 
-## GN-C2: a wall-mounted loot spawn (meta mount wall: a hung canvas, pivot on the wall face at hanging height) is
-## reached at its UsePoint (itself a nav marker), not at its origin.
+## Loot reached at its UsePoint (itself a nav marker) instead of standing on the navmesh: a wall-mounted loot spawn
+## (GN-C2: meta mount wall, a hung canvas) and loot stowed in a safe (PO6-05: at the safe's LootAnchor inside the body;
+## the Safe hides it until open).
 static func is_wall_loot(n: Node) -> bool:
-	return LcUtil.meta_s(n, &"mount") == &"wall" and n.get_node_or_null("UsePoint") != null
+	if n.get_node_or_null("UsePoint") == null:
+		return false
+	return LcUtil.meta_s(n, &"mount") == &"wall" or is_stowed_loot(n)
+
+
+static func is_stowed_loot(n: Node) -> bool:
+	var p: Node = n.get_parent()
+	return p is Safe or LcUtil.meta_s(p, &"kind") == &"safe"
 
 
 static func loot_target(n: Node3D) -> Vector3:
@@ -74,6 +82,18 @@ static func loot_target(n: Node3D) -> Vector3:
 
 
 static func is_loot_spawn(n: Node) -> bool:
+	if not _loot_spawn_node(n):
+		return false
+	# A loot_spawn's own visual (e.g. Visual/LootSpawnPlaceholder) is not a second target.
+	var p: Node = n.get_parent()
+	while p != null:
+		if _loot_spawn_node(p):
+			return false
+		p = p.get_parent()
+	return true
+
+
+static func _loot_spawn_node(n: Node) -> bool:
 	if LcUtil.meta_s(n, &"kind") == &"loot_spawn":
 		return true
 	if n.scene_file_path.get_file().begins_with("loot_spawn"):

@@ -53,8 +53,8 @@
 # 2) Count room / depository B11-B12 (south-east basement, under G12/G13).
 * Gameplay/Depository/DepositorySafe
 * Gameplay/Depository/DepositorySafe/UsePoint
-* Gameplay/Depository/NightDropBags
-* Gameplay/Depository/NightDropBags/UsePoint
+* Gameplay/Depository/DepositorySafe/NightDropBags
+* Gameplay/Depository/DepositorySafe/NightDropBags/UsePoint
 * Gameplay/Doors/DepositoryDoor
 * Gameplay/Doors/DepositoryDoor/UsePoint
 #
