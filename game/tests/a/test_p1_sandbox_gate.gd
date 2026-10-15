@@ -19,6 +19,7 @@ func before_all() -> void:
 
 func after_each() -> void:
 	Engine.time_scale = 1.0
+	Tweak.stealth().pager_release_resumes = false  # LEAD: PO 2026-10-15 early release = alarm (default)
 
 
 func _launch(seed_value: int, difficulty: int = Enums.Difficulty.ROUTINE) -> Object:

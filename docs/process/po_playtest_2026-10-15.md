@@ -22,7 +22,8 @@ manager-office storeroom, loud wave 3, AR equipped).
 | id | owner | helpers | issue → spec | acceptance |
 |---|---|---|---|---|
 | PO6-07 | C | A (stop calls in pager/assault/alarm systems) | **Audio keeps looping** (pager beep, cop sirens, others). D-114 §3. Audit every cue in `world/audio` for loop flags; one-shots must not loop; any loop needs a stop owner (A's systems call stop on state end). List each looping cue + its stopper in the report. | test: every looping cue has a registered stop path; windowed/headless run shows pager beep stops after answer and sirens stop after assault |
-| PO6-08 | A | | **Pager timer doesn't pause when picked up.** D-114 §4: countdown freezes when a player starts answering, ends on answer; releasing early resumes it (PD2). | unit test + real-input pager answer |
+| PO6-08 | A | | **Pager timer doesn't pause when picked up.** D-114 §4 (amended by the PO): countdown freezes when a player starts answering, ends on answer; **releasing early = alarm unless juggled** (same player starts another live pager within 0.5 s; the released one resumes its countdown). | unit test + real-input pager answer, release, juggle |
+| PO6-20 | A | B (HUD waypoint), C (outline shader if none exists) | **Pager prompt hard to see/find.** While a pager is live, the dead/downed guard's body gets a yellow outline (through walls within ~15 m) and a HUD waypoint with the remaining time; the answer prompt is reachable from anywhere around the body (not only one bone/spot). Applies to stealth kills and anything that triggers a pager. | windowed shot: yellow-outlined body behind a wall + waypoint; real-input answer from 3 sides |
 
 ## Weapons, viewmodel, firing range
 | id | owner | helpers | issue → spec | acceptance |

@@ -1,4 +1,4 @@
-# Contract: EventBus events (v1.2)
+# Contract: EventBus events (v1.4)
 
 Code: `game/core/event_bus.gd` (the signal list there is authoritative; this file adds emitter and
 replication rules). Rules: architecture.md §5.
@@ -19,7 +19,7 @@ Unmarked events are server-only facts (clients learn the outcome through synced 
 | detection_progress | A: StealthDirector | sent only to the observed crew member's peer (targeted RPC, not EventBus relay) | B HUD |
 | npc_alert_state_changed | A | [R] (for "?"/"!" icons) | B HUD, C audio |
 | camera_disabled, cameras_loop_disabled | A | [R] | B HUD |
-| pager_started / answer_started / answered / failed | A: PagerSystem | [R] | B HUD, C audio, voice |
+| pager_started / answer_started / answered / failed / answer_released | A: PagerSystem | [R] | B HUD, C audio, voice |
 | body_bagged / body_discovered | A | [R] | B HUD |
 | ecm_started / ended / feedback_triggered | A | [R] | B HUD, C audio |
 | civilian_* , guard_dominated, hostage_count_changed | A | [R] | B HUD, voice |
@@ -69,3 +69,12 @@ VfxDirector and ENV P's viewmodel consume them. Never used for gameplay decision
 `damage_applied` (crew: health hits only, not armour); `exit_point` is `Vector3.INF` when the bullet did not exit.
 `bleed_changed(body_net_id, bleeding, position, rate)`: NPC death starts (stops when bagged); crew down starts (stops on
 revive or custody). Both respect the `gameplay/gore` option (Full / Reduced / Off) on the consuming side.
+
+**v1.4 (D-114 §4): `pager_answer_released(pager_id, crew_slot)` [R].** Only with the opt-in
+`StealthTweak.pager_release_resumes = true` (the default is `false`: PO ruling 2026-10-15, an early release with nobody
+else answering ends in `pager_failed(pager_id, &"released")` + `alarm_raised(&"pager_failed")`, S5.4). With the opt-in,
+PagerSystem emits it when the set of answerers of a beeping pager becomes empty before completion (release, look-away,
+going down, leaving) and the response window **resumes** from the value it froze at on `pager_answer_started`. It is not
+an alarm and not a failure: the pager keeps beeping. Consumers: C audio swaps the `cue.pager_radio` loop back to
+`cue.pager_beep`; B HUD / LocalHudModel show the window counting down again. `crew_slot` is the last answerer who let go.
+Emitter pending in ENV A (PagerSystem).
