@@ -2,6 +2,27 @@
 
 Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min; this file says where to resume.
 
+## 2026-10-15: PO6-11 pistol hold + ADS (session_01VxQPFh6PypoyUxg94gmMGH, new LEAD session_01XAPqmFJ32zHKLK9Sezymym)
+**Done (PO6-11):**
+- Cause of the "one-handed / inorganic" pistol: the pistol / revolver clips' idle and ads_idle share the finger pose
+  but their left arm chains differ by 25-38 deg, so the FK crossfade swung the support hand ~45 mm off the gun (the
+  fingers read flat beside the slide mid-transition), and pistol/revolver were in left_hand_ik_skip_sets.
+- Fix (FpViewmodelTweak + FpViewmodel): pistol / revolver back on the left-hand IK with their per-set grip offset =
+  the clip's own wrist in LeftHandIK space (measured identical at hip and full ADS on all 4 pistols + the revolver),
+  so the IK is a no-op at the end poses and holds the isosceles two-hand grip through the blend;
+  `left_hand_hold_rel_sets` keeps the hand's orientation from hip / full ADS during the blend.
+- New tunables: `set_hip_rot_deg` (hip pose about the firing hand: pistol/revolver pitch 4 / yaw -2 / cant 3),
+  `set_ads_arc_roll_deg` (7 deg roll arc into the sights), ADS settle spring (`ads_settle_hz` 4.5, damping 0.45,
+  `ads_settle_pitch_deg` 7, all sets; returns on axis: test). Pistol hip raised (grip y -0.149 -> -0.109 m; it sat on
+  the bottom edge), ADS eye relief 0.42 -> 0.37 m. Sway / bob are the shared rifle values.
+- Test: tests/p/test_p_pistol_hold.gd (real input; wrist sampled post-IK in skeleton_updated: Kestrel 48.9 mm /
+  Marshal 26.9 mm off before, < 10 mm now). Review tool: tests/p/_review/ads_seq_capture.tscn (hip, walk, 8 frames in,
+  3 out; prints grip / aim / bore angles / wrist-in-marker).
+- Evidence (windowed opengl3): tests/p/_review/captures/po6_11/ (before_* / after_* hold sheets, closeups, per-weapon
+  hip->ADS->hip sequences for kestrel_p9, warden_45, wren_380, sparrow_mp, marshal_357 + corsair_ar reference).
+- Open (D, clip-side): at full pistol ADS the two sleeves still fill the lower third (the clip's forearms rise steeply
+  to the gun); a lower-elbow isosceles ads_idle would read better. Not blocking.
+
 ## HANDOFF 2026-10-14
 **Branch head:** (this commit, on env/p-play) the handoff notes on top of 69211232 (vm_light_probe material
 isolation). Trunk merged at r198; nothing red. No wip branches.
