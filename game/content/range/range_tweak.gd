@@ -29,6 +29,12 @@ extends Resource
 @export var plate_colors: PackedColorArray = PackedColorArray([Color(0.3, 0.32, 0.35), Color(0.55, 0.6, 0.68)])
 @export var rail_color: Color = Color(0.45, 0.45, 0.48)
 @export var dummy_sign_font_size: int = 24
+## Lead (round 215, label clutter): target HP / distance / name labels show only for the targets nearest the crosshair
+## (at most label_focus_count, each within label_focus_deg of the view centre) plus the readout lane; checked every
+## label_focus_refresh_s. 0 count = every label (old behaviour).
+@export var label_focus_count: int = 3
+@export var label_focus_deg: float = 8.0
+@export var label_focus_refresh_s: float = 0.1
 
 @export_group("Readout")
 ## Minimum seconds between two readout refreshes while the distance changes (moving targets).

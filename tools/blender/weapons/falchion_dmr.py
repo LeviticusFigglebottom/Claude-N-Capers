@@ -8,7 +8,7 @@ and more precise-looking than the Corsair.
 Origin = firing-hand pivot on the pistol grip (see _falchion.py). Forward = Godot -Z.
 
 Node tree: ``Lower`` (+ ``Grip``, ``Trigger``, ``Controls``), ``Upper`` (+ ``TopRail``,
-``ChargingHandle``), ``Handguard`` (+ ``HandguardRails``, ``HandguardSlots``), ``Barrel`` (+ ``Brake``),
+``ChargingHandle``), ``Handguard`` (+ ``HandguardRails``, ``HandguardSlots``), ``Barrel`` (+ ``MuzzleBrake``),
 ``BufferTube`` (+ ``Stock``, ``CheekPiece``, ``ButtPad``). Stock parts: ``SightRail/StockSight``
 (flip-up irons, ``AimPoint``), ``Magwell/StockMagazine`` (20 rounds).
 """
@@ -132,17 +132,7 @@ def _barrel(ctx, mats):
     mb.cylinder(f.BARREL_R, f.BARREL_END_Y - f.UPPER_FRONT_Y, segments=24,
                 centre=(0.0, (f.BARREL_END_Y + f.UPPER_FRONT_Y) / 2, f.BORE_Z), axis="Y", mat=st)
     barrel = c.finish(mb, "Barrel", bevel=0.0005, segments=1)
-    br = ctx.builder()
-    bm = br.material(mats.steel())
-    dark = br.material(mats.polymer())
-    y0, y1 = f.BARREL_END_Y - 0.002, f.BARREL_END_Y + f.BRAKE_LEN
-    c.ring_y(br, 0.0140, 0.0062, y0, y1, f.BORE_Z, bm, segments=28)
-    for i in range(3):
-        y = y0 + 0.012 + i * 0.014
-        for side in (-1.0, 1.0):
-            lo, hi = sorted((side * 0.0136, side * 0.0146))
-            br.box((lo, y, f.BORE_Z - 0.006), (hi, y + 0.008, f.BORE_Z + 0.006), mat=dark)
-    c.finish(br, "Brake", bevel=0.0006, segments=1, parent=barrel)
+    c.build_muzzle_brake(ctx, mats, 0.0135, f.BARREL_END_Y, f.BRAKE_LEN, f.BORE_Z, parent=barrel)  # PO6-13
     return barrel
 
 
@@ -183,7 +173,6 @@ def build(ctx) -> None:
     _barrel(ctx, mats)
     _stock(ctx, mats)
 
-    ctx.marker("Muzzle", (0.0, f.MUZZLE_Y, f.BORE_Z))
     ctx.marker("BarrelMount", (0.0, f.UPPER_FRONT_Y, f.BORE_Z))
     ctx.marker("Eject", (f.REC_HW, 0.075, f.BORE_Z), rotation_euler=(0.0, 0.0, -math.pi / 2))
     sight_rail = ctx.marker("SightRail", (0.0, f.SIGHT_RAIL_Y, f.RAIL_TOP_Z))

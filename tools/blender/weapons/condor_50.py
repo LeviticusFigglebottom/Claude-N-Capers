@@ -9,7 +9,7 @@ Origin = firing-hand pivot on the chassis grip (see _condor.py). Forward = Godot
 
 Node tree: ``Chassis`` (+ ``ChassisDetails``, ``Grip``, ``Trigger``, ``Handguard`` with ``HandguardRails``),
 ``Stock`` (+ ``CheekRiser``, ``ButtPad``), ``Receiver`` (+ ``ScopeRail``), ``Bolt`` (origin on the bore axis;
-ENV A animates it), ``Barrel`` (+ ``Brake``). Stock parts: ``SightRail/StockSight`` (6x scope,
+ENV A animates it), ``Barrel`` (+ ``MuzzleBrake``). Stock parts: ``SightRail/StockSight`` (6x scope,
 ``AimPoint``), ``Magwell/StockMagazine`` (five rounds).
 """
 
@@ -160,17 +160,7 @@ def _barrel(ctx, mats):
              end=y1 - 0.050, mat=st)
     mb.cylinder(k.BARREL_R - 0.002, 0.052, segments=28, centre=(0.0, y1 - 0.026, k.BORE_Z), axis="Y", mat=st)
     barrel = c.finish(mb, "Barrel", bevel=0.0005, segments=1)
-    br = ctx.builder()
-    bm = br.material(mats.steel())
-    dark = br.material(mats.polymer())
-    prof = c.rounded_rect(0.0230, 0.0185, 0.006, 0.0, k.BORE_Z, corner_segments=2)
-    br.prism(prof, axis="Y", start=y1 - 0.004, end=y1 + k.BRAKE_LEN, mat=bm)
-    for y in (y1 + 0.012, y1 + 0.048):                             # two big side windows per chamber
-        for side in (-1.0, 1.0):
-            lo, hi = sorted((side * 0.0226, side * 0.0236))
-            br.box((lo, y, k.BORE_Z - 0.012), (hi, y + 0.026, k.BORE_Z + 0.012), mat=dark)
-    br.cylinder(0.0075, 0.001, segments=20, centre=(0.0, y1 + k.BRAKE_LEN + 0.0004, k.BORE_Z), axis="Y", mat=dark)
-    c.finish(br, "Brake", bevel=0.0012, segments=1, parent=barrel)
+    c.build_muzzle_brake(ctx, mats, 0.0200, y1, k.BRAKE_LEN, k.BORE_Z, style="sniper", parent=barrel)  # PO6-13
     return barrel
 
 
@@ -182,7 +172,6 @@ def build(ctx) -> None:
     _bolt(ctx, mats)
     _barrel(ctx, mats)
 
-    ctx.marker("Muzzle", (0.0, k.MUZZLE_Y, k.BORE_Z))
     ctx.marker("BarrelMount", (0.0, k.REC_Y1, k.BORE_Z))
     ctx.marker("Eject", (k.REC_R, 0.130, k.BORE_Z + 0.004), rotation_euler=(0.0, 0.0, -math.pi / 2))
     sight_rail = ctx.marker("SightRail", (0.0, k.SIGHT_RAIL_Y, k.RAIL_TOP_Z))

@@ -81,6 +81,13 @@ func test_jam_turns_red_with_fix_prompt_and_freezes() -> void:
 	assert_true(bool(d["jammed"]), "jammed")
 	assert_eq(String(d["jam_text"]), "JAMMED")
 	assert_true(String(d["fix_text"]).contains("fix the drill"), String(d["fix_text"]))
+	await wait_frames(2)
+	var dt: DeviceTimers = _hud.device_timers
+	var f: Font = UiTokens.font_caps()
+	var sc: float = float(_drawn(_id)["scale"])
+	var need: float = f.get_string_size("DRILL", HORIZONTAL_ALIGNMENT_LEFT, -1, maxi(roundi(UiTokens.FONT_SMALL * sc), 11)).x \
+			+ f.get_string_size("JAMMED", HORIZONTAL_ALIGNMENT_LEFT, -1, maxi(roundi(UiTokens.FONT_LEAD * sc), 13)).x
+	assert_true(float(dt.drawn[0].get("width", 0.0)) > need, "the panel fits the name and JAMMED side by side")
 	var p: float = float(d["progress"])
 	await wait_seconds(0.3)
 	assert_near(float(_drawn(_id)["progress"]), p, 0.0001, "a jammed drill does not advance")

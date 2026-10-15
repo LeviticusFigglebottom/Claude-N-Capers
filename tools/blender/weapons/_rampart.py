@@ -3,7 +3,7 @@
 Private helper: imported by ``rampart_lmg.py`` and ``rampart_lmg_mods.py``. Axes and pivot rules: see
 ``_common.py``. Origin = firing-hand pivot on the pistol grip.
 
-The quick-change barrel (with gas tube, front post, carry handle and flash hider) is the stock part
+The quick-change barrel (with gas tube, front post, carry handle and muzzle brake) is the stock part
 ``BarrelMount/StockBarrel``; the short assault barrel mod replaces it and carries its own ``Muzzle``.
 The belt box (with the belt feeding up into the left side of the receiver) hangs from ``Magwell``.
 """
@@ -40,7 +40,7 @@ UNDER_Y = 0.385
 BARREL_R = 0.0125
 LONG_END_Y = 0.665
 SHORT_END_Y = 0.545
-HIDER_LEN = 0.040
+BRAKE_LEN = 0.052                # PO6-13 3-port side brake
 
 MAGWELL_POS = (0.0, 0.150, REC_BOTTOM_Z)
 FEED_POS = (-REC_HW, 0.060, 0.100)          # belt entry on the receiver's left side (world)
@@ -67,15 +67,12 @@ def build_rear_leaf(ctx, mats, parent=None, name="RearLeaf"):
 
 
 def build_barrel(ctx, mats, short: bool, parent=None, name="Barrel"):
-    """Quick-change barrel in the BarrelMount frame (origin = barrel root on the bore, +Y forward)."""
+    """Quick-change barrel in the BarrelMount frame (origin = barrel root on the bore, +Y forward). Carries the
+    3-port ``MuzzleBrake`` (with ``Muzzle``, ``MuzzlePortL/R``)."""
     end = (SHORT_END_Y if short else LONG_END_Y) - REC_FRONT_Y
     mb = ctx.builder()
     st = mb.material(mats.steel())
     mb.cylinder(BARREL_R, end, segments=28, centre=(0.0, end / 2, 0.0), axis="Y", mat=st)
-    # flash hider: tapered cage
-    for i in range(5):
-        mb.cylinder(0.0145 - i * 0.0004, HIDER_LEN / 5 - 0.001, segments=24,
-                    centre=(0.0, end + (i + 0.5) * HIDER_LEN / 5, 0.0), axis="Y", mat=st)
     # gas block + front post
     gy = end - 0.070
     mb.box((-0.0140, gy - 0.016, -0.034), (0.0140, gy + 0.016, 0.0120), mat=st)
@@ -97,6 +94,7 @@ def build_barrel(ctx, mats, short: bool, parent=None, name="Barrel"):
     inner = [(hy - 0.034, 0.030), (hy + 0.046, 0.030), (hy + 0.042, 0.050), (hy - 0.030, 0.050)]
     hd.prism(loop, holes=[list(reversed(inner))], axis="X", start=-0.0070, end=0.0070, mat=poly)
     c.finish(hd, name + "Handle", bevel=0.0025, segments=2, parent=body)
+    c.build_muzzle_brake(ctx, mats, 0.0145, end, BRAKE_LEN, 0.0, parent=body)   # PO6-13, carries the Muzzle
     return body
 
 

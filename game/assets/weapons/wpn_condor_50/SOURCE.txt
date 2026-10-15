@@ -8,4 +8,4 @@ edit policy: generated file, never edit by hand; change the script and rebuild
 bolt_pivot: Bolt origin on the bore axis at the bolt rear (rotate about local Z, slide +Z)
 origin: firing-hand pivot: grip centre plane, mid grip depth, 20 mm below grip top
 tri_budget: 25000
-tris_lod0: 13172
+tris_lod0: 13328

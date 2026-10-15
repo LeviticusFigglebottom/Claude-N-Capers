@@ -150,7 +150,6 @@ def build(ctx) -> None:
     _gas(ctx, mats)
     _stock(ctx, mats)
 
-    ctx.marker("Muzzle", (0.0, a.LONG_END_Y + a.HIDER_LEN + 0.001, a.BORE_Z))
     barrel_mount = ctx.marker("BarrelMount", (0.0, a.REC_FRONT_Y, a.BORE_Z))
     ctx.marker("Eject", (a.REC_HW, 0.075, a.BORE_Z - 0.026), rotation_euler=(0.0, 0.0, -math.pi / 2))
     sight_rail = ctx.marker("SightRail", (0.0, a.SIGHT_RAIL_Y - a.COVER_HINGE[1], a.RAIL_TOP_Z - a.COVER_HINGE[2]),
