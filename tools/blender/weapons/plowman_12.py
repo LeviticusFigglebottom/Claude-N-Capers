@@ -73,12 +73,15 @@ def _barrel(ctx, mats):
     for i in range(12):
         y = p.REC_FRONT_Y + 0.030 + i * 0.038
         mb.box((-0.0028, y, rib_z - 0.001), (0.0028, y + 0.008, rib_z + 0.0045), mat=st)
-    mb.box((-0.0040, p.REC_FRONT_Y + 0.020, rib_z + 0.0045), (0.0040, p.BARREL_END_Y - 0.004, rib_z + 0.0070), mat=st)
+    comp_y0 = p.BARREL_END_Y - p.COMP_SLEEVE
+    mb.box((-0.0040, p.REC_FRONT_Y + 0.020, rib_z + 0.0045), (0.0040, comp_y0 - 0.002, rib_z + 0.0070), mat=st)
     barrel = c.finish(mb, "Barrel", bevel=0.0005, segments=1)
     bd = ctx.builder()
-    bd.cylinder(0.0017, 0.003, segments=12, centre=(0.0, p.BARREL_END_Y - 0.006, rib_z + 0.0085), axis="Z",
+    bd.cylinder(0.0017, 0.003, segments=12, centre=(0.0, comp_y0 - 0.004, rib_z + 0.0085), axis="Z",
                 mat=bd.material(mats.brass()))
     c.finish(bd, "Bead", parent=barrel)
+    # PO6-13: top-ported compensator sleeved over the barrel end, carrying Muzzle + MuzzlePortL/R
+    c.build_muzzle_brake(ctx, mats, 0.0125, comp_y0, p.COMP_LEN, p.BORE_Z, style="comp", parent=barrel)
     return barrel
 
 
@@ -112,7 +115,6 @@ def build(ctx) -> None:
     _barrel(ctx, mats)
     _pump(ctx, mats)
 
-    ctx.marker("Muzzle", (0.0, p.MUZZLE_Y, p.BORE_Z))
     ctx.marker("BarrelMount", (0.0, p.REC_FRONT_Y, p.BORE_Z))
     ctx.marker("Eject", (p.REC_HW, 0.135, p.BORE_Z - 0.004), rotation_euler=(0.0, 0.0, -math.pi / 2))
     sight_rail = ctx.marker("SightRail", (0.0, p.SIGHT_RAIL_Y, p.RAIL_TOP_Z - 0.001))

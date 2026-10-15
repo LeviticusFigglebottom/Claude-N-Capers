@@ -1,13 +1,13 @@
 """Graff-Lindqvist Gale MG: high-rate belt-fed machine gun, first-person model (B4-18).
 
 About 68 cm from the muzzle to the receiver rear (plus a 30 cm polymer stock). Stamped receiver with a
-rear-hinged feed cover carrying the optics rail, long perforated barrel jacket with a muzzle booster and
+rear-hinged feed cover carrying the optics rail, long perforated barrel jacket with a 3-port muzzle brake and
 a front post, belt box under the receiver.
 
 Origin = firing-hand pivot on the grip (see _gale.py). Forward = Godot -Z.
 
 Node tree: ``Receiver`` (+ ``FeedCover`` with ``TopRail`` and the ``SightRail`` marker; origin = the rear
-hinge, D-044), ``ReceiverDetails``, ``TriggerGroup``, ``Grip``, ``ChargingHandle``), ``Jacket`` (+ ``Booster``),
+hinge, D-044), ``ReceiverDetails``, ``TriggerGroup``, ``Grip``, ``ChargingHandle``), ``Jacket`` (+ ``MuzzleBrake``),
 ``Stock``. Stock parts: ``SightRail/StockSight`` (rear leaf, ``AimPoint``), ``Magwell/StockMagazine`` (belt box).
 """
 
@@ -95,13 +95,7 @@ def _jacket(ctx, mats):
     rl = mb.material(mats.alu())
     c.rail_side(mb, rl, g.UNDER_Y - 0.030, g.UNDER_Y + 0.030, 0.0, g.BORE_Z - g.JACKET_R + 0.0005, 0.0)
     jacket = c.finish(mb, "Jacket", bevel=0.0006, segments=1)
-    bo = ctx.builder()
-    bm = bo.material(mats.steel())
-    for i in range(3):
-        r0 = 0.0130 + i * 0.0018
-        bo.cylinder(r0, g.BOOST_LEN / 3 - 0.001, segments=24,
-                    centre=(0.0, g.JACKET_Y1 + (i + 0.5) * g.BOOST_LEN / 3, g.BORE_Z), axis="Y", mat=bm)
-    c.finish(bo, "Booster", bevel=0.0005, parent=jacket)
+    c.build_muzzle_brake(ctx, mats, 0.0150, g.JACKET_Y1, g.BRAKE_LEN, g.BORE_Z, parent=jacket)  # PO6-13
     return jacket
 
 
@@ -121,7 +115,6 @@ def build(ctx) -> None:
     _jacket(ctx, mats)
     _stock(ctx, mats)
 
-    ctx.marker("Muzzle", (0.0, g.MUZZLE_Y, g.BORE_Z))
     ctx.marker("BarrelMount", (0.0, g.REC_FRONT_Y, g.BORE_Z))
     ctx.marker("Eject", (g.REC_HW, 0.060, g.BORE_Z - 0.026), rotation_euler=(0.0, 0.0, -math.pi / 2))
     sight_rail = ctx.marker("SightRail", (0.0, g.SIGHT_RAIL_Y - g.COVER_HINGE[1], g.RAIL_TOP_Z - g.COVER_HINGE[2]),

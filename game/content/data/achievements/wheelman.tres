@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="AchievementDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://content/defs/achievement_def.gd" id="1_ach"]
+
+[resource]
+script = ExtResource("1_ach")
+id = &"achievement.wheelman"
+name_key = &"achievement.wheelman.name"
+desc_key = &"achievement.wheelman.desc"
+condition = {"event": &"career_stat", "stat": "loud_wins", "count": 5}
+unlock = &"unlock.achievement.wheelman"
+order = 305
+category = &"loud"
+rewards = Array[StringName]([])
+unlocks = Array[StringName]([])
