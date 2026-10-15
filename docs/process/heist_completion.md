@@ -14,4 +14,27 @@ and reports a gap list; the LEAD folds the gaps in here as rows (id, heist, owne
 ## Gap rows
 | id | heist | owner | gap | status |
 |---|---|---|---|---|
-| (filled from env audits) | | | | |
+| X-1 | all but GH | C (+B rows) | music stems + MusicDirector for ND/SL/DB/GN (tracks.tres points at missing folders) | open |
+| X-2 | all but GH | C (+B rows) | ambience cues: 9 doc ambiences, SL/DB/GN have no Audio node, ND reuses GH beds | open |
+| X-3 | ND, DB, GN | C markers, A rows/logic | assault events (D-114 §5); SL N/A (stealth-only) | open |
+| X-4 | ND, SL, GN | A | stealth e2e flows (only GH has one) | open |
+| X-5 | all | A | nav agent_radius 0.30 vs NPC capsule 0.35; tellers pushed off marks; GN StaffCO/CS/AO desk_work without seats; GH WorkshopDoor UsePoint police motor snag (7.8, z 5) | open |
+| GH-1 | GH | A, P | PO6-17 logic merge; P real-input pass | in progress |
+| ND-1 | ND | A | gate 2 (auto_loud, attempt 24, empty box) | open |
+| ND-2 | ND | P | windowed real-input pass | open |
+| SL-1 | SL | C | G2 art pass (GI, probes, occluders, dressing, review shots) | open |
+| SL-2 | SL | C | D-111 props/doors/loot | landing |
+| SL-3 | SL | C | VictorKessler `sit` 4.1 m from a seat; camera station seat visual; ITContractor = phone (doc change APPROVED) | open |
+| SL-6 | SL | A | mission audit + stealth e2e | open |
+| DB-1 | DB | C | G2 art pass | open |
+| DB-2 | DB | C | D-111 doors (twin roller, cold-store slider, strongroom), launch, burn barrels, thermal drill | landing |
+| DB-4 | DB | A | cartel `sit` plays no seated clip | open |
+| DB-6 | DB | C, A | stale QC-36/39 TODOs (C); QC-25 S3 perch after fog lifts needs a director hook (A) | open |
+| DB-7 | DB | A | mission audit + windowed auto_loud | open |
+| GN-1 | GN | C | G2 (GN-C2): 50 props vs GH 628, GI/probes/occluders, moon light | open |
+| GN-2 | GN | C | 5 patron spawns vs 12 in doc (7/9 rolls capped) | open |
+| GN-3 | GN | C | 2 BODY_HIDE spots vs 8 | open |
+| GN-4 | GN | C | 6 COVER points vs ~50 | open |
+| GN-8 | GN | A | e2e stealth + loud; QC-57 Vaultline courier; 17 unsaid mission lines (D-117 §6) | open |
+| GN-10 | GN | D, P | cast polish; §7 traversal tests | open |
+| B-1 | all | B | D-117 names/briefing/unlocks; GH/SL/GN content gaps | DONE r216 |
