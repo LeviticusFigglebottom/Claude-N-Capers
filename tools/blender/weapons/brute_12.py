@@ -88,9 +88,12 @@ def _receiver(ctx, mats):
 def build(ctx) -> None:
     mats = c.Mats(ctx)
     _receiver(ctx, mats)
-    c.build_barrel(ctx, mats, 0.0130, u.SHROUD_Y1 - 0.020, u.BARREL_END_Y, u.BORE_Z, bore_r=0.0092, segments=28)
+    barrel = c.build_barrel(ctx, mats, 0.0130, u.SHROUD_Y1 - 0.020, u.BARREL_END_Y, u.BORE_Z, bore_r=0.0092,
+                            segments=28)
+    # PO6-13: top-ported compensator sleeved over the barrel end, carrying Muzzle + MuzzlePortL/R
+    c.build_muzzle_brake(ctx, mats, 0.0160, u.BARREL_END_Y - u.COMP_SLEEVE, u.COMP_LEN, u.BORE_Z, style="comp",
+                         parent=barrel)
 
-    ctx.marker("Muzzle", (0.0, u.MUZZLE_Y, u.BORE_Z))
     ctx.marker("BarrelMount", (0.0, u.REC_FRONT_Y, u.BORE_Z))
     ctx.marker("Eject", (u.REC_HW, 0.050, u.BORE_Z), rotation_euler=(0.0, 0.0, -math.pi / 2))
     sight_rail = ctx.marker("SightRail", (0.0, u.SIGHT_RAIL_Y, u.RAIL_TOP_Z))

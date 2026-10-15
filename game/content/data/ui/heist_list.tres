@@ -22,4 +22,5 @@ heists = {
 }
 }
 unlocked_difficulties = Array[int]([0, 1, 2, 3])
+progression_difficulties = Array[int]([4, 5])
 solo_ai_teammates = 3

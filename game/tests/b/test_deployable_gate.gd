@@ -96,3 +96,26 @@ func test_civilian_start_notice() -> void:
 	add_child(_screen)
 	await wait_frames(1)
 	assert_false(_screen.civilian_notice.visible, "casing start: no notice")
+
+
+## Lead ruling (PD2-faithful): ECM, trip mines and FAKs need the skill that carries them (its basic grant), and
+## the picker names that skill while locked.
+func test_skill_gated_deployables() -> void:
+	var cases: Dictionary = {
+		&"deployable.ecm": &"skill.infiltrator.jammer_jockey",
+		&"deployable.trip_mine": &"skill.breacher.extra_charges",
+		&"deployable.fak": &"skill.field_medic.field_kit",
+	}
+	for id: StringName in cases:
+		assert_true(ContentDB.deployable(id) != null, "%s def" % id)
+		var l: Loadout = Loadout.new()
+		assert_false(DeployableGate.allowed_for(l, id), "%s locked without its skill" % id)
+		assert_eq(DeployableGate.unlock_skill(id)["id"], cases[id])
+		l.skills = {cases[id]: 1}
+		assert_true(DeployableGate.allowed_for(l, id), "%s unlocked by %s basic" % [id, cases[id]])
+	await _open(&"", 0, &"deployable.ecm")
+	for i: int in range(_screen.deployable_option.item_count):
+		if StringName(_screen.deployable_option.get_item_metadata(i)) == &"deployable.ecm":
+			assert_true(_screen.deployable_option.is_item_disabled(i))
+			assert_true(_screen.deployable_option.get_item_text(i).contains(UiText.t(&"skill.infiltrator.jammer_jockey.name")))
+	assert_eq(_screen.current_loadout().deployable, &"", "a locked pick falls back to none")

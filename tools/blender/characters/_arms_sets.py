@@ -53,6 +53,7 @@ class FPSet:
     sh: tuple = (0.0, 0.0, 0.0)                      # shoulder offset (camera space, both shoulders)
     pole_l: tuple = (-0.85, -0.2, -0.5)              # elbow directions of the two-handed hold (hip)
     pole_l_ads: tuple = (-0.5, -0.15, -0.85)         # ... and in ADS
+    pole_r_ads: tuple | None = None                  # right elbow in ADS (None = pole_r)
     pole_r: tuple = (0.75, -0.2, -0.65)
     ads_hold: tuple | None = None                    # akimbo: an ADS hold instead of sight alignment
 
@@ -89,7 +90,8 @@ PISTOL = FPSet(
     # below), so the arms extend almost straight from the lower corners to a pistol 0.42 m out instead of
     # rising as two vertical forearm columns. IK reach 0 mm in every clip.
     ads_dist=0.42, sh=(0.0, 0.06, 0.04),
-    pole_l=(-0.22, -0.25, -0.94), pole_l_ads=(-0.45, -0.2, -0.87), pole_r=(0.22, -0.25, -0.94),
+    pole_l=(-0.22, -0.25, -0.94), pole_l_ads=(-0.6, -0.35, -0.72), pole_r=(0.22, -0.25, -0.94),
+    pole_r_ads=(0.6, -0.35, -0.72),  # PO6-11 (ENV P): ADS elbows out and down, the sleeves leave the lower centre
     sprint=((0.13, 0.30, -0.15), 10.0, -16.0, -26.0),
     lowered=((0.16, 0.20, -0.46), 10.0, -55.0, -30.0),
     reload_tilt=((0.07, 0.36, -0.16), 16.0, 22.0, 30.0),
@@ -108,7 +110,8 @@ PISTOL = FPSet(
 # -- smg (Hornet 9: 800 rpm = 2.25 frames per shot) ---------------------------------------------
 SMG = FPSet(
     name="smg", weapon="wpn_hornet_9",
-    markers={"left_ik": v3(-0.031, 0.160, 0.040), "aim": v3(0.0, -0.060, 0.1172),
+    # LeftHandIK under the fore-end (ENV B f8f17c7a, lead ruling 2026-10-14): the PD2 support grip of the long guns
+    markers={"left_ik": v3(0.0, 0.150, 0.016), "aim": v3(0.0, -0.060, 0.1172),
              "magwell": v3(0.0, 0.101, -0.002), "magwell_axis": rxd(4.0) @ v3(0.0, 0.0, 1.0),
              "cock": v3(-0.040, 0.171, 0.085), "cock_back": v3(-0.040, 0.128, 0.085),
              "butt": v3(0.0, -0.330, 0.050)},
@@ -388,7 +391,8 @@ REVOLVER = FPSet(
              "loader": v3(0.0, 0.0, 0.0478)},
     hip=((0.105, 0.36, -0.175), 5.0, 2.0, -4.0),
     ads_dist=0.42, sh=(0.0, 0.06, 0.04),          # isosceles ADS as the pistol
-    pole_l=(-0.22, -0.25, -0.94), pole_l_ads=(-0.22, -0.25, -0.94), pole_r=(0.22, -0.25, -0.94),
+    pole_l=(-0.22, -0.25, -0.94), pole_l_ads=(-0.6, -0.35, -0.72), pole_r=(0.22, -0.25, -0.94),
+    pole_r_ads=(0.6, -0.35, -0.72),
     sprint=((0.13, 0.30, -0.15), 10.0, -16.0, -26.0),
     lowered=((0.16, 0.20, -0.46), 10.0, -55.0, -30.0),
     reload_tilt=((0.07, 0.34, -0.15), 12.0, 10.0, -20.0),

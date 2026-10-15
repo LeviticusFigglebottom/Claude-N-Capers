@@ -1,4 +1,4 @@
-# Contract: EventBus events (v1.5)
+# Contract: EventBus events (v1.6)
 
 Code: `game/core/event_bus.gd` (the signal list there is authoritative; this file adds emitter and
 replication rules). Rules: architecture.md §5.
@@ -33,6 +33,7 @@ Unmarked events are server-only facts (clients learn the outcome through synced 
 | weapon_fired | A | no (audio is triggered locally from synced fire events) | C audio |
 | assault_phase_changed | A: AssaultDirector | [R] | B banner, C music |
 | captain_arrived / retreated | A | [R] | B HUD, C music |
+| assault_event_started / ended | A: AssaultEventRunner | [R] | B HUD, C audio/music, voice |
 | voice_line_requested | A/B (anyone) | emitter decides | C voice player, B subtitles |
 | audio_cue_requested | anyone | emitter decides | C audio player |
 
@@ -90,3 +91,13 @@ emits `pager_answer_released(pager_id, crew_slot)` [R] whenever a released pager
   Picking the **same** pager back up inside the grace just emits `pager_answer_started` (no release fact).
 Consumers are unchanged (C audio radio → beep, B HUD window counts down again).
 Also (PO6-19, damage.md v1.2): a shot on a corpse emits `blood_hit` with **no** preceding `damage_applied`.
+
+**v1.6 (D-114 §5, PO6-17): RNG assault events.** `assault_event_started(kind, net_id, position)` [R] and
+`assault_event_ended(kind, net_id)` [R], emitted by ENV A's AssaultEventRunner (host, child of the AssaultDirector)
+when a rolled event begins and when its entity ends (`AssaultEventEntity.end_event()` or the entity leaving the tree),
+mirroring the runner's local `event_started` / `event_ended`. A heli drop paired with a ceiling breach emits a second
+`started` for that breach. `kind` is one of `AssaultEventsTweak.KINDS`: `&"turret_van"`, `&"heli"`, `&"breach"`. `net_id` is the
+event's replicated dynamic entity (AssaultEventEntity; clients spawn it through NetEntityCodec, so the id resolves on every
+peer); `position` = van park point / heli hover point (drop) or orbit centre (sniper only) / breach point. Facts only: the entities still emit their own
+`audio_cue_requested` (cue.assault_*). Consumers: B HUD/voice callouts ("Turret!", "Chopper!"), C audio/music stingers.
+

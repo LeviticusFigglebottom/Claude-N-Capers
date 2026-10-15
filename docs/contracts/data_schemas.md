@@ -1,4 +1,4 @@
-# Contract: data schemas (v1.0)
+# Contract: data schemas (v1.1)
 
 Schemas are in `game/contracts/data/*.gd` (lead). Data instances are `.tres` files owned by the env
 listed. All data ids follow `groups.md`. The code headers are authoritative for field lists.
@@ -43,3 +43,20 @@ for UI and animation length checks. Plowman: start 0.4, per 0.4333, end 0.4, end
 
 ## WeaponStats addition (D-099)
 `recoil_horizontal_bias_deg: float = 0.0`: signed per-shot mean of the horizontal kick (deg, + = right); additive in `plus()`; 0 for every weapon except PD2-drifting LMGs. Producer B (data), consumer A (CrewWeapons).
+
+## v1.1: HeistDef.assault_events (D-114 §5, PO6-17)
+`HeistDef.assault_events: Array[Dictionary] = []`, the heist's RNG assault event rows (producer C in the heist's
+`<id>_def.tres`, or A's tweak meanwhile; consumer A's AssaultEventRunner). Row = ENV A's `AssaultEventsTweak` row:
+```
+{ "kind": StringName,        # &"turret_van" | &"heli" | &"breach" (AssaultEventsTweak.KINDS; other kinds are ignored)
+  "weight": float,           # relative pick weight among eligible rows
+  "min_wave": int,           # first assault wave the row may fire in
+  "cooldown_s": float,       # heist-clock seconds before this row may fire again
+  "max_per_heist": int,      # cap on firings of this row per heist
+  "params": Dictionary }     # merged over AssaultEventsTweak.kind_defaults[kind] (row wins)
+```
+**Precedence:** when a HeistDef has a non-empty `assault_events`, those rows **replace** the
+`AssaultEventsTweak.heists[heist_id].events` rows for that heist; an empty array falls back to the tweak (the tweak is the
+fallback, today the only source for `glasshouse`). Global timing (roll interval, chance per difficulty, min gap,
+max active) stays in the tweak. Run options `assault_events: false` (off) and `assault_events_tweak` (test tweak) still win.
+

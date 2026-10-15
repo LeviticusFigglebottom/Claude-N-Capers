@@ -146,7 +146,6 @@ def build(ctx) -> None:
     _handguard(ctx, mats)
     _stock(ctx, mats)
 
-    ctx.marker("Muzzle", (0.0, r.LONG_END_Y + r.HIDER_LEN + 0.001, r.BORE_Z))
     barrel_mount = ctx.marker("BarrelMount", (0.0, r.REC_FRONT_Y, r.BORE_Z))
     ctx.marker("Eject", (r.REC_HW, 0.065, r.BORE_Z - 0.012), rotation_euler=(0.0, 0.0, -math.pi / 2))
     # the optics rail rides on the feed cover, so sights open with it

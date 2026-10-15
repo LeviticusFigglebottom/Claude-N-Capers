@@ -5,7 +5,7 @@ Private helper: imported by ``bastion_br.py`` and ``bastion_br_mods.py``. Axes a
 
 Stamped steel receiver with a cocking tube running forward over the barrel (cocking handle on the left),
 slim vented polymer handguard, clamp-on top rail, a straight 20-round box magazine in a flared magwell,
-prong flash hider, fixed polymer stock (``StockMount/StockStock``, not modular).
+3-port side brake, fixed polymer stock (``StockMount/StockStock``, not modular).
 """
 
 from __future__ import annotations
@@ -34,8 +34,8 @@ SIGHT_RAIL_Y = 0.020
 
 HG_Y0, HG_Y1 = 0.205, 0.415
 BARREL_END_Y = 0.560
-HIDER_LEN = 0.040
-MUZZLE_Y = BARREL_END_Y + HIDER_LEN + 0.001
+BRAKE_LEN = 0.050                # PO6-13 3-port side brake
+MUZZLE_Y = BARREL_END_Y + BRAKE_LEN + 0.001
 
 MAG_HW = 0.0135
 MAG_HD = 0.0300
@@ -73,5 +73,5 @@ def build_stock(ctx, mats, parent=None, name="Stock"):
 
 
 def build_suppressor(ctx, mats, parent=None, name="Suppressor"):
-    return c.build_can(ctx, mats, length=0.200, r=0.0215, overlap=HIDER_LEN - 0.004, bore_r=0.0055, parent=parent,
+    return c.build_can(ctx, mats, length=0.200, r=0.0215, overlap=BRAKE_LEN - 0.004, bore_r=0.0055, parent=parent,
                        name=name)

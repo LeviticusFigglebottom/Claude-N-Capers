@@ -48,7 +48,8 @@ func test_objectives_rendered() -> void:
 	var expected: Array = _expected_objectives()
 	assert_true(expected.size() >= 1, "glasshouse has objectives")
 	var texts: Array[String] = s.objective_texts()
-	assert_eq(texts.size(), expected.size())
+	var lead: int = BriefingModel.ui_data().briefing_lead_steps
+	assert_eq(texts.size(), (BriefingModel.cap_objectives(expected, lead)["shown"] as Array).size(), "D-117 §5 cap")
 	for t: String in texts:
 		assert_false(t.contains("{"), "no unresolved args: %s" % t)
 		assert_false(t.contains("objective."), "key resolved: %s" % t)
