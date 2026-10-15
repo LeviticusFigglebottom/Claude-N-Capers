@@ -292,7 +292,19 @@ func _has_los(crew: CrewController, eye: Vector3, comp: InteractableComponent) -
 		return true
 	var col: Node = hit.get("collider")
 	var owner: Node = comp.owner_node()
-	return col != null and owner != null and (col == owner or owner.is_ancestor_of(col))
+	return col != null and owner != null and (col == owner or owner.is_ancestor_of(col) or _container_hit(col, owner))
+
+
+## PO6-05: the hit belongs to the prefab that holds the target (an open safe's body around the loot
+## inside it), so it does not block the target. Closed safes hide their contents, so this never reaches
+## through a shut door.
+static func _container_hit(col: Node, owner: Node) -> bool:
+	var n: Node = col
+	while n != null:
+		if n is GameplayPrefab:
+			return n.is_ancestor_of(owner)
+		n = n.get_parent()
+	return false
 
 
 func _emit(sig: StringName, args: Array) -> void:
