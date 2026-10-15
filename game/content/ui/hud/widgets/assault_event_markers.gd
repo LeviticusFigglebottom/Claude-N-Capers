@@ -100,6 +100,7 @@ func _text(center: Vector2, s: String, fs: int, col: Color) -> void:
 
 func _on_started(kind: StringName, net_id: int, position: Vector3) -> void:
 	active[net_id] = {"kind": kind, "position": position, "age": 0.0}
+	UiSfx.play(UiSfx.ASSAULT_EVENT_WARNING)  # C: 2D UI sting (the world-side van/heli/breach cues are C's CuePlayer)
 	set_process(true)
 	events_changed.emit(kinds())
 
