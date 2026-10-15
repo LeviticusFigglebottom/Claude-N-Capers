@@ -97,12 +97,12 @@ func is_outlined(mesh: GeometryInstance3D) -> bool:
 
 
 func clear() -> void:
+	# Keys may be freed meshes (a guard freed mid-pager): never bind them to a typed variable before the check.
 	for k: Variant in _outlined.keys():
-		# LEAD: a typed loop var errors on a freed mesh before is_instance_valid runs (round 214).
 		if not is_instance_valid(k):
 			continue
 		var m: GeometryInstance3D = k as GeometryInstance3D
-		if m != null and m.material_overlay == _material:
+		if m.material_overlay == _material:
 			m.material_overlay = null
 	_outlined.clear()
 	_pagers.clear()
