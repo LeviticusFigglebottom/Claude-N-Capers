@@ -241,6 +241,7 @@ locale/translations=PackedStringArray("res://content/data/strings/strings.en.tra
 3d_physics/layer_8="vision_blockers"
 3d_physics/layer_9="bullet_penetrable"
 3d_physics/layer_10="triggers"
+3d_physics/layer_11="ragdoll"
 
 [navigation]
 
