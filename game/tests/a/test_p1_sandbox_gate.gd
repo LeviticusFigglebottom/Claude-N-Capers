@@ -19,6 +19,7 @@ func before_all() -> void:
 
 func after_each() -> void:
 	Engine.time_scale = 1.0
+	Tweak.stealth().pager_release_resumes = false  # LEAD: PO 2026-10-15 early release = alarm (default)
 
 
 func _launch(seed_value: int, difficulty: int = Enums.Difficulty.ROUTINE) -> Object:
@@ -184,6 +185,7 @@ func test_05_pager_release_early_resumes() -> void:
 	# alarm stays behind StealthTweak.pager_release_resumes = false, test_s5_pagers.gd).
 	if not _ready_or_skip():
 		return
+	Tweak.stealth().pager_release_resumes = true  # LEAD: PO 2026-10-15 default is alarm; this test opts in
 	var rt: HeistRuntime = await _launch(SEED_B) as HeistRuntime
 	var alarms: Array[StringName] = []
 	var on_alarm: Callable = func(r: StringName, _s: int) -> void: alarms.append(r)
@@ -206,6 +208,7 @@ func test_05_pager_release_early_resumes() -> void:
 	assert_false(alarms.has(&"pager_failed"), "early release does not raise the alarm (D-114 §4)")
 	assert_eq(pagers.pager_entries().size(), 1, "the pager is still live")
 	EventBus.alarm_raised.disconnect(on_alarm)
+	Tweak.stealth().pager_release_resumes = false  # LEAD: restore the PO 2026-10-15 default
 	await _teardown(rt)
 
 

@@ -23,7 +23,7 @@ func before_each() -> void:
 
 func after_each() -> void:
 	Engine.time_scale = 1.0
-	Tweak.stealth().pager_release_resumes = true
+	Tweak.stealth().pager_release_resumes = false  # LEAD: PO 2026-10-15 early release = alarm (default)
 	for c: Array in _conns:
 		var sig: Signal = c[0]
 		if sig.is_connected(c[1]):
@@ -162,8 +162,8 @@ func test_s5_3_fourth_answer_mercer_line() -> void:
 	assert_true(_of(&"alarm_raised").is_empty(), "4th answer is fine")
 
 
-## Legacy S5.4 rule (StealthTweak.pager_release_resumes = false). The default since PO6-08 (D-114 §4)
-## resumes the window instead: test_po6_08_pager_freeze.gd.
+## S5.4 rule (StealthTweak.pager_release_resumes = false), the default again (LEAD: PO 2026-10-15 early
+## release = alarm). The opt-in resume rule (D-114 §4) is covered by test_po6_08_pager_freeze.gd.
 func test_s5_4_release_early_raises_alarm() -> void:
 	Engine.time_scale = 4.0
 	Tweak.stealth().pager_release_resumes = false
