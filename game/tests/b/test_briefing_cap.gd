@@ -37,5 +37,11 @@ func test_gallery_night_briefing_is_capped_with_the_more_line() -> void:
 	await wait_frames(3)
 	var more: Label = screen.find_child("ObjectivesMore", true, false) as Label
 	assert_true(more != null and more.text.contains(str(src.size() - 6)), "the +N more line is shown")
+	assert_true(more.get_parent().get_child(0) is TimelineNode and (more.get_parent().get_child(0) as TimelineNode).gap,
+			"the line sits on the timeline (dashed gap node)")
 	screen.queue_free()
 	await wait_frames(1)
+
+
+func test_one_hidden_step_reads_singular() -> void:
+	assert_eq(UiText.t(&"ui.briefing.objectives_more_one", {"count": 1}), "+1 more step on the night")

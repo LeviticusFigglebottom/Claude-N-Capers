@@ -1629,6 +1629,7 @@ ui.briefing.escape.zipline,Zipline
 ui.briefing.escape.service_lift,Service lift
 ui.briefing.escape.lift,Service lift
 ui.briefing.objectives_more,+{count} more steps on the night
+ui.briefing.objectives_more_one,+1 more step on the night
 item.asset.intel_laptop.name,Insider: laptop location
 item.asset.intel_laptop.desc,You know where the partners left the ledger laptop tonight.
 item.asset.gondola_left_hung.name,Window-washer gondola
