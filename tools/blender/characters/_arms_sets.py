@@ -55,6 +55,10 @@ class FPSet:
     pole_l_ads: tuple = (-0.5, -0.15, -0.85)         # ... and in ADS
     pole_r_ads: tuple | None = None                  # right elbow in ADS (None = pole_r)
     ads_sh: tuple = (0.0, 0.0, 0.0)                  # extra shoulder offset in ADS (camera space, both shoulders)
+    grip_adjust: tuple = (0.0, 0.0)                  # D-116 one-handed: right hand re-seated on the grip: (twist
+                                                     # about the grip axis, + = wrist to the gun's right; cock about
+                                                     # weapon X, + = wrist down), deg, pivot on the grip
+    grip_thumb: tuple = (4.0, 8.0, 6.0, -4.0)        # D-116 one-handed right thumb: flex cmc / mcp / ip, opp (deg)
     one_hand: bool = False                           # D-116: one-handed FP hold, the left hand off-screen low except
                                                      # while a reload uses it
     pole_r: tuple = (0.75, -0.2, -0.65)
@@ -94,6 +98,9 @@ PISTOL = FPSet(
     # shoulder brought in under the eye so the firing hand's knuckles fill the bottom centre and only the cuff and a
     # short sleeve show below it. The left hand waits off-screen and comes up only to reload.
     hip=((0.102, 0.367, -0.107), 12.0, 2.0, -4.0), one_hand=True,
+    # lead (P option b): the hand re-seated on the grip, wrist behind / under it and cocked down, so the eye sees the
+    # back of the hand and the thumb along the frame; the gun does not move
+    grip_adjust=(-28.0, 12.0), grip_thumb=(10.0, 20.0, 15.0, 30.0),
     ads_dist=0.22, sh=(0.0, 0.06, 0.04), ads_sh=(-0.15, -0.05, -0.20),  # P: elbow straight under the wrist
     pole_l=(-0.22, -0.25, -0.94), pole_l_ads=(-0.22, -0.25, -0.94), pole_r=(0.22, -0.25, -0.94),
     pole_r_ads=(0.0, -0.1, -1.0),
@@ -402,6 +409,9 @@ REVOLVER = FPSet(
     # shoulder brought in under the eye so the firing hand's knuckles fill the bottom centre and only the cuff and a
     # short sleeve show below it. The left hand waits off-screen and comes up only to reload.
     hip=((0.102, 0.367, -0.107), 12.0, 2.0, -4.0), one_hand=True,
+    # lead (P option b): the hand re-seated on the grip, wrist behind / under it and cocked down, so the eye sees the
+    # back of the hand and the thumb along the frame; the gun does not move
+    grip_adjust=(-28.0, 12.0), grip_thumb=(10.0, 20.0, 15.0, 30.0),
     ads_dist=0.22, sh=(0.0, 0.06, 0.04), ads_sh=(-0.15, -0.05, -0.20),  # P: elbow straight under the wrist
     pole_l=(-0.22, -0.25, -0.94), pole_l_ads=(-0.22, -0.25, -0.94), pole_r=(0.22, -0.25, -0.94),
     pole_r_ads=(0.0, -0.1, -1.0),

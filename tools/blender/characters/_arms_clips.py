@@ -134,6 +134,27 @@ def cup_shape(g: SupportGrip) -> HandShape:
     return dataclasses.replace(shape, curl=curl, thumb=g.thumb, thumb_opp=g.thumb_opp)
 
 
+GRIP_PIVOT = v3(0.0, -0.01, -0.04)          # on the pistol grip, weapon space
+
+
+def _reseat(h: Hand, twist: float, cock: float) -> Hand:
+    """``h`` (weapon space) rotated about the grip axis (raked like ``_anim.GRIP_RAKE_DEG``) by ``twist`` and about
+    weapon X by ``cock`` (deg), both through ``GRIP_PIVOT``: the hand turns on the grip, the gun stays."""
+    r = math.radians(A.GRIP_RAKE_DEG)
+    R = rxd(cock) @ _axis_rot(v3(0.0, -math.sin(r), math.cos(r)), twist)
+    out = h.copy()
+    out.wrist = GRIP_PIVOT + R @ (h.wrist - GRIP_PIVOT)
+    out.axes = R @ h.axes
+    return out
+
+
+def _axis_rot(axis: np.ndarray, deg: float) -> np.ndarray:
+    a = unit(axis)
+    k = np.array([[0.0, -a[2], a[1]], [a[2], 0.0, -a[0]], [-a[1], a[0], 0.0]])
+    t = math.radians(deg)
+    return np.eye(3) + math.sin(t) * k + (1.0 - math.cos(t)) * k @ k
+
+
 def long_gun(s: FPSet) -> bool:
     return s.support != "pistol"
 
@@ -146,8 +167,10 @@ class Kit:
         m = s.markers
         self.grip = grip_hand(sk, pole=s.pole_r)
         if s.one_hand:                             # D-116: no support hand to rest on: the thumb wraps the grip
-            self.grip = self.grip.with_shape(dataclasses.replace(hand_shape("trigger"), thumb=(4.0, 8.0, 6.0),
-                                                                 thumb_opp=-4.0))
+            self.grip = self.grip.with_shape(dataclasses.replace(hand_shape("trigger"), thumb=tuple(s.grip_thumb[:3]),
+                                                                 thumb_opp=s.grip_thumb[3]))
+        if any(s.grip_adjust):                     # D-116 (lead, P option b): the wrist behind / under the grip
+            self.grip = _reseat(self.grip, *s.grip_adjust)
         if s.support == "pistol" and s.name in PISTOL_GRIPS:
             g = PISTOL_GRIPS[s.name]
             self.support = hand_at(sk, "L", "w", np.asarray(m["left_ik"], float) + np.asarray(g.shift), g.along,
