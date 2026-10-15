@@ -39,6 +39,22 @@ const DEFAULT_PATH: String = "res://content/data/ui/hud_tweak.tres"
 @export var mark_size_px: float = 14.0
 ## Height above the marked unit's world_pos (its feet) where the marker is drawn, m.
 @export var mark_height_m: float = 2.1
+## PO6-20: the pager waypoint sits this far above the guard's origin (EventBus fallback; model rows carry world_pos).
+@export var pager_marker_height_m: float = 1.2
+## PO6-03 device timer panels (DeviceTimers): hidden past this distance (m); full size up to device_panel_ref_m,
+## shrinking with distance down to device_panel_min_scale; the panel floats device_panel_up_m above and
+## device_panel_out_m out from a device found by net id (EventBus fallback; the model's rows carry world_pos).
+@export var device_panel_max_m: float = 30.0
+@export var device_panel_ref_m: float = 4.0
+@export var device_panel_min_scale: float = 0.55
+@export var device_panel_up_m: float = 0.45
+@export var device_panel_out_m: float = 0.25
+@export var device_jam_color: Color = Color(0.9, 0.28, 0.3)
+## Occlusion ray (camera -> panel) on these physics layers, every device_occlusion_check_s; a hit within
+## device_occlusion_slack_m of the panel point is the device itself. Mask 0 = never hidden by walls.
+@export_flags_3d_physics var device_occlusion_mask: int = 1
+@export var device_occlusion_check_s: float = 0.2
+@export var device_occlusion_slack_m: float = 0.6
 
 
 static func load_default() -> HudTweak:

@@ -1,6 +1,7 @@
 ## D-105 / impact_fx.md 1.0 §4 (ENV P): first-person weapon effects of the local human. A child of FpViewmodel
 ## (under the world camera, so CrewView puts its meshes on the viewmodel layer):
-##   flash(muzzle, suppressed)   muzzle burst (crossed additive quads, random roll/scale) + smoke puff
+##   flash(muzzle, suppressed, size, class)  muzzle burst (C's MuzzleFlash shape for the class, FP-scaled, burst-end
+##                               wisp after the last shot; built-in crossed quads without it) + smoke puff
 ##   eject(port, kind, delay)    a casing out of the ejection port (pooled, ballistic, presentation only)
 ##   EventBus.shot_fx            for this peer's FP shots (flags bit1, shooter = our crew) a tracer streak from the
 ##                               muzzle as SEEN through the viewmodel camera to `end`, on the world layer
@@ -27,6 +28,8 @@ var _flash_left: float = 0.0
 var _flash_frame: int = 0
 ## The burst is ENV C's MuzzleFlash scene (flash/tick API) rather than the placeholder.
 var _custom_flash: bool = false
+## PO6-13: seconds until MuzzleFlash.burst_end (restarted by every shot; <= 0 = none pending).
+var _burst_left: float = 0.0
 ## ENV C's TracerFx (one per world) when its scene exists.
 var _c_tracer: Node3D = null
 var _smoke: CPUParticles3D = null
@@ -68,6 +71,10 @@ func tick(delta: float) -> void:
 	if _custom_flash and _flash != null:
 		if Engine.get_process_frames() > _flash_frame:  # drawn at least once before C's 0.05 s timer runs
 			_flash.call(&"tick", delta)
+		if _burst_left > 0.0:  # PO6-13: the burst's trailing wisp once the shooting stops
+			_burst_left -= delta
+			if _burst_left <= 0.0 and _flash.has_method(&"burst_end"):
+				_flash.call(&"burst_end")
 	elif _flash != null and _flash.visible:
 		_flash_left -= delta
 		if _flash_left <= 0.0 and Engine.get_process_frames() > _flash_frame:  # drawn at least once
@@ -86,7 +93,7 @@ func tick(delta: float) -> void:
 
 # --- Muzzle --------------------------------------------------------------------------------------------
 
-func flash(muzzle: Node3D, suppressed: bool, size_mult: float = 1.0) -> void:
+func flash(muzzle: Node3D, suppressed: bool, size_mult: float = 1.0, weapon_class: StringName = &"") -> void:
 	var tw: FpViewmodelTweak = FpViewmodelTweak.data()
 	if muzzle == null or not muzzle.is_inside_tree():
 		return
@@ -103,8 +110,9 @@ func flash(muzzle: Node3D, suppressed: bool, size_mult: float = 1.0) -> void:
 		_flash_left = tw.muzzle_flash_s
 		_flash_frame = Engine.get_process_frames()
 		if _custom_flash:
-			_flash.call(&"flash", tw.vfx_muzzle_size, false)
+			_flash.call(&"flash", tw.vfx_muzzle_size, false, weapon_class)
 			_hide_library_smoke()
+			_burst_left = tw.burst_end_after_s
 	if tw.muzzle_smoke_amount > 0:
 		if _smoke == null or not is_instance_valid(_smoke):
 			_smoke = _make_smoke(tw)
@@ -134,6 +142,8 @@ func _make_flash(tw: FpViewmodelTweak) -> Node3D:
 	var custom: Node3D = _instance(tw.vfx_muzzle_scene_path)
 	if custom != null and custom.has_method(&"flash") and custom.has_method(&"tick"):
 		custom.set(&"auto_tick", false)  # ticked from here so the burst survives one drawn frame
+		if custom.has_method(&"fp_scale"):
+			custom.call(&"fp_scale", true)  # sparks / wisp sized for a camera ~0.5 m from the muzzle
 		custom.ready.connect(_alpha_blend.bind(custom), CONNECT_ONE_SHOT)
 		_custom_flash = true
 		return custom

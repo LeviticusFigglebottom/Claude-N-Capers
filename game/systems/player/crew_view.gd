@@ -33,6 +33,9 @@ const VIEWMODEL_LAYER: int = 1 << 18
 ## should also light the viewmodel (lamps, muzzle flashes, flashlights). The viewmodel camera culls everything else,
 ## lights included. Never used on geometry.
 const VIEWMODEL_LIT_LAYER: int = 1 << 20
+## PO6-10: set IN ADDITION to VIEWMODEL_LAYER on the first-person weapon's meshes (not the arms), so the viewmodel
+## gun fill light (FpViewmodelTweak.viewmodel_gun_fill_*) lifts the black-albedo gun without flattening the arms.
+const VIEWMODEL_GUN_LAYER: int = 1 << 21
 
 ## Compatibility alias of the crew member's `Loadout.mask_descriptor` (QA-25); setting it calls
 ## set_mask_descriptor().
@@ -143,7 +146,7 @@ func _on_node_added(n: Node) -> void:
 	if cam != null and cam.is_ancestor_of(g):
 		g.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		if _vm_cam != null:
-			g.layers = VIEWMODEL_LAYER
+			g.layers = viewmodel_layers_for(g, cam)
 
 
 ## Re-apply everything (camera, weapon visual, mask).
@@ -292,8 +295,32 @@ func _build_viewmodel_camera(cam: Camera3D) -> void:
 	tr.stretch_mode = TextureRect.STRETCH_SCALE
 	tr.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	layer.add_child(tr)
+	if vt.viewmodel_gun_fill_energy > 0.0:
+		var fill: DirectionalLight3D = DirectionalLight3D.new()
+		fill.name = "ViewmodelGunFill"
+		fill.layers = VIEWMODEL_LAYER  # inside the vm camera's cull mask
+		fill.light_cull_mask = VIEWMODEL_GUN_LAYER  # the gun only: the arms and the world never see it
+		fill.light_energy = vt.viewmodel_gun_fill_energy
+		fill.light_color = vt.viewmodel_gun_fill_color
+		fill.light_specular = vt.viewmodel_gun_fill_specular
+		fill.shadow_enabled = false
+		fill.light_volumetric_fog_energy = 0.0
+		fill.sky_mode = DirectionalLight3D.SKY_MODE_LIGHT_ONLY
+		fill.rotation_degrees = vt.viewmodel_gun_fill_euler_deg
+		_vm_cam.add_child(fill)
 	for n: Node in cam.find_children("*", "GeometryInstance3D", true, false):
-		(n as GeometryInstance3D).layers = VIEWMODEL_LAYER
+		(n as GeometryInstance3D).layers = viewmodel_layers_for(n as GeometryInstance3D, cam)
+
+
+## PO6-10: render layers of a mesh under the local camera: VIEWMODEL_LAYER, plus VIEWMODEL_GUN_LAYER inside a
+## WeaponVisual (the gun and its mods, not the arms).
+static func viewmodel_layers_for(g: GeometryInstance3D, cam: Node) -> int:
+	var n: Node = g.get_parent()
+	while n != null and n != cam:
+		if n is WeaponVisual:
+			return VIEWMODEL_LAYER | VIEWMODEL_GUN_LAYER
+		n = n.get_parent()
+	return VIEWMODEL_LAYER
 
 
 ## D-084: linear zoom of `fov_deg` relative to `base_fov_deg` (both vertical, degrees).
@@ -342,6 +369,7 @@ func refresh_weapon(animated: bool = false) -> void:
 	_viewmodel = wv
 	if fp != null:
 		wv.setup(def, LoadoutResolver.applied_mods(def, mod_ids))
+		wv.apply_loadout_finish(_crew.loadout)  # B7-04 finish on the FP gun too (ENV B PO6-12 ask)
 		var keep: Node3D = old if old != null and fp.is_ancestor_of(old) else null
 		if old != null and keep == null:
 			_free_node(old)
@@ -352,6 +380,7 @@ func refresh_weapon(animated: bool = false) -> void:
 		wv.position = Tweak.crew().viewmodel_offset
 		cam.add_child(wv)
 		wv.setup(def, LoadoutResolver.applied_mods(def, mod_ids))
+		wv.apply_loadout_finish(_crew.loadout)
 	_crew.weapon_visual = wv
 	WeaponPartsAnimator.attach(wv, _crew.weapons)  # B4-18: Breech / Lever / String / Blade / Rotor
 	_apply_casing_visibility()

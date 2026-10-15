@@ -891,7 +891,12 @@ into the list as PO6-10/PO6-09. Rulings made with it:
    10 % of progress. Values stay in `interaction_tweak` (data, not code).
 3. **One-shot audio is one-shot.** Pager beep, sirens and alarm bells stop when their source state ends (pager answered
    or expired, assault phase over, alarm cleared). A loop flag on a cue needs an owner that stops it.
-4. **Pager:** the countdown stops the moment a player starts answering (PD2), and stops for good when answered.
+4. **Pager (amended by the PO, 2026-10-15 18:10):** the countdown freezes the moment a player starts answering and
+   stops for good when answered. **Releasing early raises the alarm** (PD2), **unless juggled**: the release is
+   forgiven only when the same player starts answering another live pager within 0.5 s (pager juggling); the released
+   pager then resumes its remaining countdown and must be answered later. `StealthTweak.pager_release_resumes`
+   defaults to false. A pager that goes off must be easy to find: the guard's body gets a **yellow outline** (visible
+   through walls within ~15 m, PD2 contour) and a HUD waypoint while its pager is live (PO6-20).
 5. **Loud waves are horde-paced (PD2 assault):** continuous spawning to a force cap during sustain, units path *into*
    rooms players hold (no idling outside doors), plus RNG assault events per heist: turret van, helicopter
    (sniper/rappel drop), and breach points (marked wall/ceiling/window spots cops blow open mid-loud).
@@ -901,6 +906,7 @@ into the list as PO6-10/PO6-09. Rulings made with it:
    ragdoll, or a scripted body push where ragdoll is too costly); corpses accept small hit impulses and bleed at the
    hit point (D-113 VFX).
 8. **Muzzle flash is toned down** from D-113 (smaller, shorter, less light), and long guns get a muzzle-brake/
-   compensator mesh at the barrel tip that the flash emits from.
+   compensator mesh at the barrel tip that the flash emits from. Marker rule (round 205): the brake node carries its own
+   `Muzzle` marker and the outermost `Muzzle` wins (no code change); optional `MuzzlePortL`/`MuzzlePortR` for side ports.
 9. **Team:** the previous sessions are not reachable from this account; the new LEAD (session_01XAPqmFJ32zHKLK9Sezymym)
    spawns fresh A, B, C, D and P sessions (board Sessions table).

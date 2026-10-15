@@ -312,6 +312,7 @@ func _crew_range() -> FiringRange:
 		return null
 	var r: FiringRange = await _spawn_range()
 	await wait_physics_frames(10)  # settle on the floor
+	await wait_seconds(0.4)  # PO6-12: the crew draws the starter P9 (equip_time_s 0.35) before it can fire
 	return r
 
 
@@ -336,8 +337,9 @@ func test_crew_spawns_with_camera_and_paused_input() -> void:
 	var cam: Camera3D = RangeCrewBridge.camera(r.crew)
 	assert_true(cam != null and cam.current, "crew first-person camera is active")
 	assert_eq(get_viewport().get_camera_3d(), cam)
-	assert_true(r.viewmodel != null and r.viewmodel.get_parent() == cam, "weapon viewmodel on the camera")
+	assert_true(r.viewmodel != null and cam.is_ancestor_of(r.viewmodel), "weapon viewmodel under the camera")
 	assert_eq(r.crew.get(&"weapon_visual"), r.viewmodel, "crew muzzle comes from the viewmodel")
+	assert_true(cam.get_node_or_null(RangeCrewBridge.VIEWMODEL_NAME) == null, "PO6-12: no static range viewmodel")
 	assert_true(r.mode_input != null, "panel/aim mode input")
 	assert_false(r.aim_mode)
 	assert_false(RangeCrewBridge.input_enabled(r.crew), "panel mode pauses the crew input")
@@ -427,7 +429,7 @@ func test_real_crew_shot_damages_target_once() -> void:
 	assert_near(float(r.last_shot.get("distance_m", 0.0)), RangeCrewBridge.eye_position(crew).distance_to(aim_at), 0.3)
 	assert_eq(r.readout_lane, lane, "readout follows the hit lane")
 	assert_eq(r.overlay.value_text("ls_damage"), "35")
-	await wait_frames(1)
+	await wait_seconds(0.15)  # one LocalHudModel poll (poll_hz 10): the overlay reads ammo through the model
 	var a: Dictionary = RangeCrewBridge.ammo(crew)
 	assert_eq(r.overlay.ammo_text(), UiText.t(&"ui.range.ammo_reserve",
 			{"ammo": int(a["mag"]), "mag": int(a["mag_size"]), "reserve": int(a["reserve"])}), "overlay ammo from the crew")

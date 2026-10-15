@@ -10,11 +10,14 @@
 ## viewmodel. "[VML] ..." lines; frames in --out. Owner: ENV P.
 ##   xvfb-run -a -s "-screen 0 960x540x24" /opt/godot/godot [--rendering-driver opengl3] --path game \
 ##     --resolution 960x540 res://tests/p/_review/vm_light_probe.tscn -- --out=/abs/dir [--heist=glasshouse]
+##     [--fills=0,1,1.5,2.5]  PO6-10 short run: only `fill_<e>` variants (the ViewmodelGunFill light at energy e;
+##                            0 = off), then quit
 extends Node
 
 var _out: String = "user://vm_light_probe"
 var _heist: StringName = &"glasshouse"
 var _weapon: StringName = &"weapon.corsair_ar"
+var _fills: PackedFloat64Array = []
 var _c: CrewController = null
 var _fp: FpViewmodel = null
 var _vp: SubViewport = null
@@ -29,6 +32,9 @@ func _ready() -> void:
 			"out": _out = v
 			"heist": _heist = StringName(v)
 			"weapon": _weapon = StringName(v)
+			"fills":
+				for e: String in v.split(",", false):
+					_fills.append(float(e))
 	DirAccess.make_dir_recursive_absolute(_out)
 	RenderingServer.render_loop_enabled = false
 	var l: Loadout = CrewWeapons.build_loadout(null).duplicate() as Loadout
@@ -51,6 +57,18 @@ func _ready() -> void:
 	print("[VML] renderer=%s driver=%s vp=%s" % [ProjectSettings.get_setting("rendering/renderer/rendering_method"),
 		RenderingServer.get_current_rendering_driver_name(), _vp != null])
 	_dump(view)
+	if not _fills.is_empty():
+		var fill: DirectionalLight3D = view.find_child("ViewmodelGunFill", true, false) as DirectionalLight3D
+		print("[VML] gun fill light: %s" % (fill != null))
+		for e: float in _fills:
+			if fill != null:
+				fill.light_energy = e
+				fill.visible = e > 0.0
+			await _measure("fill_%s" % e)
+		RenderingServer.render_loop_enabled = true
+		print("[VML] RESULT DONE")
+		get_tree().quit(0)
+		return
 	await _measure("base")
 	var restore: Array[Callable] = []
 	restore.append(_metal0())

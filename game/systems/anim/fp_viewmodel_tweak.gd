@@ -48,9 +48,14 @@ static var _gen: int = 0
 @export_group("Left hand IK (D-069, characters.md v1.7)")
 ## The FP left hand IKs (TwoBoneIK3D upper_arm.L -> forearm.L -> hand.L) to the weapon model's `LeftHandIK`
 ## marker while the clip leaves the left hand on the gun (not during reload / swap, nor for these sets).
-## Pistol / revolver (ENV D 2026-10-14): the clip's authored support grip wraps the gun; the IK onto the side point left
-## the fingers sticking out flat beside the slide.
-@export var left_hand_ik_skip_sets: Array[StringName] = [&"bow", &"akimbo", &"pistol", &"revolver"]
+## PO6-11: pistol / revolver are back on the IK (they were skipped 2026-10-14: the global side-point offset left the
+## fingers flat beside the slide). Their per-set offset below is the clip's own wrist position, so the IK changes
+## nothing at hip or full ADS and keeps the support hand wrapped on the firing hand through the idle <-> ads_idle blend
+## (the clips' arm chains differ by 25-38 deg, so the FK blend swung the hand 4 cm off the gun).
+@export var left_hand_ik_skip_sets: Array[StringName] = [&"bow", &"akimbo"]
+## PO6-11: sets whose support hand keeps the orientation (relative to the gun) it had at hip / full ADS through the ADS
+## transition, instead of the blended clip's (off by ~10 deg mid-blend). Needs the IK (HandRestore).
+@export var left_hand_hold_rel_sets: Array[StringName] = [&"pistol", &"revolver"]
 ## Elbow pole in skeleton space, relative to upper_arm.L (outward / down) ◇.
 @export var left_hand_pole_offset: Vector3 = Vector3(-0.35, -0.45, 0.15)
 ## hand.L origin (wrist) relative to the LeftHandIK marker (palm contact), in marker space: measured from
@@ -121,11 +126,19 @@ static var _gen: int = 0
 @export var viewmodel_key_light_energy: float = 0.7
 @export var viewmodel_key_light_color: Color = Color(1.0, 0.96, 0.9)
 @export var viewmodel_key_light_euler_deg: Vector3 = Vector3(-35.0, 25.0, 0.0)
+## PO6-10 (LEAD ruling 2026-10-15): a fill light on the first-person GUN only (CrewView.VIEWMODEL_GUN_LAYER), riding
+## the viewmodel camera: the coated finishes are dielectric now but their albedo stays near-black, so the gun reads
+## as a silhouette next to the arms. Lifts it toward the arms' luminance without touching the arms. 0 energy = off.
+## Direction: euler degrees in camera space (light shines along -Z).
+@export var viewmodel_gun_fill_energy: float = 0.85
+@export var viewmodel_gun_fill_color: Color = Color(1.0, 0.96, 0.9)
+@export var viewmodel_gun_fill_specular: float = 0.6
+@export var viewmodel_gun_fill_euler_deg: Vector3 = Vector3(-20.0, -15.0, 0.0)
 ## PO-4 (PD2): per-shot muzzle light at the weapon's Muzzle, on the world layer + CrewView.VIEWMODEL_LIT_LAYER, so
 ## it lights the arms, the gun and the surroundings. 0 energy = off. Suppressed guns use the multiplier.
-@export var muzzle_light_energy: float = 2.5
+@export var muzzle_light_energy: float = 1.25
 @export var muzzle_light_range_m: float = 4.0
-@export var muzzle_light_s: float = 0.05
+@export var muzzle_light_s: float = 0.034
 @export var muzzle_light_color: Color = Color(1.0, 0.78, 0.45)
 @export var muzzle_light_suppressed_mult: float = 0.15
 
@@ -133,6 +146,16 @@ static var _gen: int = 0
 ## PO-13: the gun dips this far (m) mid-way through the ADS transition (sin(pi x ads_weight)): a small arc into and
 ## out of the sights instead of a straight slide. 0 at hip and at full ADS, so the sight alignment is untouched.
 @export var ads_dip_m: float = 0.012
+## PO6-11: per-set roll (deg, about the weapon's bore axis) through the ADS transition (sin(pi x ads_weight)): the
+## sights swing up into the eye on a short arc instead of sliding straight. 0 at hip and at full ADS.
+@export var set_ads_arc_roll_deg: Dictionary[StringName, float] = {}
+## PO6-11: ADS settle. An underdamped spring (frequency Hz, damping ratio < 1) chases ads_weight; the viewmodel pitches
+## by (spring - ads_weight) x ads_settle_pitch_deg about the firing hand, so the gun trails a little on the way into
+## the sights, overshoots and settles. x the set's ads_settle_set_mult (sets not listed: 1). 0 = off.
+@export var ads_settle_hz: float = 4.5
+@export var ads_settle_damping: float = 0.45
+@export var ads_settle_pitch_deg: float = 3.0
+@export var ads_settle_set_mult: Dictionary[StringName, float] = {}
 ## PD2 vel_overshot (fpcameraplayerbase.lua _calculate_soft_velocity_overshot, playertweakdata stances.default):
 ## the weapon lags behind look motion. Target = sign x (|look speed| / sway_full_dps)^1.5 x max (deg); the target
 ## steps toward it at sway_target_rate_dps; the applied sway follows at lerp(3, 180, |diff| / 40) deg/s. Roll = -yaw.
@@ -159,6 +182,16 @@ static var _gen: int = 0
 @export var vfx_tracer_scene_path: String = G.VFX_DIR + "tracer.tscn"
 ## `size` passed to the library flash (its star / flame scale relative to the root's FP scale).
 @export var vfx_muzzle_size: float = 3.0
+## PO6-13 (D-113 / D-114 §8): ENV C's flash shape per anim set (MuzzleFlash.flash weapon_class: pistol, smg, rifle,
+## lmg, shotgun, sniper; sets not listed = rifle). C's scene picks the brake side-port jets by class and is already
+## toned down (its SIZE_K / FLASH_S), so vfx_muzzle_size stays the D-113 FP scale.
+@export var flash_class_by_set: Dictionary[StringName, StringName] = {
+	&"pistol": &"pistol", &"revolver": &"pistol", &"akimbo": &"pistol", &"smg": &"smg", &"rifle": &"rifle",
+	&"lmg": &"lmg", &"minigun": &"lmg", &"sniper": &"sniper", &"lever": &"rifle", &"shotgun": &"shotgun",
+	&"shotgun_box": &"shotgun", &"break_action": &"shotgun",
+}
+## The trailing smoke wisp (MuzzleFlash.burst_end) plays this long after the last shot of a burst (s).
+@export var burst_end_after_s: float = 0.25
 ## Burst visible this long (one or two frames at 60 fps); 0 = no burst.
 @export var muzzle_flash_s: float = 0.035
 ## The muzzle sits ~1 m out through the viewmodel camera, so the burst is sized for that depth.
@@ -235,6 +268,9 @@ static var _gen: int = 0
 ## authored rig puts the rifle's stock behind the lens (receiver fills the corner); PD2 shows the gun low-right with
 ## the receiver in view. Sets not listed: no offset.
 @export var set_hip_offset: Dictionary[StringName, Vector3] = {}
+## PO6-11: per-set hip pose rotation (deg: x pitch up, y yaw left, z roll left) about the firing hand (the weapon bone),
+## blended out toward full ADS: the natural hip cant / angle the authored clip lacks. Sets not listed: none.
+@export var set_hip_rot_deg: Dictionary[StringName, Vector3] = {}
 ## PO-4: extra forward offset (m, negative = away from the eye) per anim_set when fully aimed (eye relief), on top
 ## of the AimPoint alignment. Sets not listed: 0.
 @export var set_ads_offset_z: Dictionary[StringName, float] = {}

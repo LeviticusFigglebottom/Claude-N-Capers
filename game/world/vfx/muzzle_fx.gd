@@ -8,11 +8,12 @@ class_name MuzzleFx
 extends Node3D
 
 const FLASH_S: float = MuzzleFlash.FLASH_S
-const LIGHT_S: float = 0.06
+## PO6-13 / D-114 §8: toned down from D-113 (0.06 s, energy 4.5, range 5 m).
+const LIGHT_S: float = 0.035
 const LIGHT_COLOR: Color = Color(1.0, 0.8, 0.52)
 const LIGHT_END_COLOR: Color = Color(1.0, 0.42, 0.12)
-const LIGHT_ENERGY: float = 4.5
-const LIGHT_RANGE_M: float = 5.0
+const LIGHT_ENERGY: float = 2.2
+const LIGHT_RANGE_M: float = 3.5
 ## Energy ~ (time left / LIGHT_S)^LIGHT_FALLOFF: bright for a frame, then gone.
 const LIGHT_FALLOFF: float = 2.0
 ## Flash size (m) per weapon class (default 0.28); the class shape (MuzzleFlash.SHAPES) sets the proportions.

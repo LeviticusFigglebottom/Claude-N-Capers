@@ -206,7 +206,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## barred_doors: BARRED doorways are closed in the navmesh
 
-- 1 BARRED door(s) checked
+- 0 BARRED door(s) checked
 - variant-slot BARRED doors not checked (one bake for every variant): `Variants/Group_areaway/Slot_grate_padlocked/AreawayGrate`
 
 

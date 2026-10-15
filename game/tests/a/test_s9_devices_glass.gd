@@ -140,7 +140,7 @@ func test_s9_3_jams_deterministic_per_seed() -> void:
 	var first: Array[float] = dp.runner.jams.duplicate()
 	var restart_a: bool = dp.runner.auto_restart
 	assert_true(first.size() >= Tweak.interaction().device_jams_min and first.size() <= Tweak.interaction().device_jams_max,
-		"1..3 jams with jam chance 1 (got %d)" % first.size())
+		"1..2 jams with jam chance 1 (got %d)" % first.size())
 	for j: float in first:
 		assert_true(j >= 0.15 and j <= 0.9, "jam at %.2f inside 15-90%%" % j)
 	assert_false(restart_a, "no auto-restart without the modifier")

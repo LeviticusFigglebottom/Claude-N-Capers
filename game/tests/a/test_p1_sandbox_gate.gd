@@ -19,6 +19,7 @@ func before_all() -> void:
 
 func after_each() -> void:
 	Engine.time_scale = 1.0
+	Tweak.stealth().pager_release_resumes = false  # LEAD: PO 2026-10-15 early release = alarm (default)
 
 
 func _launch(seed_value: int, difficulty: int = Enums.Difficulty.ROUTINE) -> Object:
@@ -180,6 +181,7 @@ func test_08_loud_transition_and_assault() -> void:
 
 # 5. Releasing a pager early with nobody else answering raises the alarm.
 func test_05_pager_release_early_alarm() -> void:
+	# S5.4 / D-114 §4 as amended: letting go early with no juggle raises the alarm after the juggle grace.
 	if not _ready_or_skip():
 		return
 	var rt: HeistRuntime = await _launch(SEED_B) as HeistRuntime
@@ -200,8 +202,8 @@ func test_05_pager_release_early_alarm() -> void:
 	rt.set_bot_intent(0, ans)
 	await wait_seconds(3.0)
 	rt.clear_bot_intent(0)
-	await wait_physics_frames(3)
-	assert_has(alarms, &"pager_failed", "early release raises the alarm (S5.4)")
+	await wait_seconds(Tweak.stealth().pager_juggle_window_s + 0.3)
+	assert_true(alarms.has(&"pager_failed"), "early release raises the alarm (S5.4)")
 	EventBus.alarm_raised.disconnect(on_alarm)
 	await _teardown(rt)
 

@@ -18,7 +18,9 @@
 ##      (or tactically when no enemy is visible);
 ##   3. follow the nearest alive human (slot 0 fallback) within follow_min_m..follow_max_m, taking a
 ##      free COVER TacticalPoint near the leader while enemies are visible.
-##   No objectives. Bags only on order.
+##   No objectives. Bags on order, or thrown at it (PO6-14, D-114 §6: catch / fetch a bag a human threw;
+##   see `_thrown_bags`); a carrying AI follows (crew carry speed by bag weight), secures at a near SECURE_LOOT
+##   zone, and drops on a drop_bag order.
 ## - L6.1 orders (A3-05, CrewOrders resolves the receiver): `stance` follow (default) / hold (stay at
 ##   the hold point, still fight, revive only within hold_revive_radius_m); `task` carry_bag (walk to
 ##   the bag, pick it up via LootManager.carry, follow the leader, drop it facing a known SECURE_LOOT
@@ -257,6 +259,7 @@ func _physics_step(delta: float) -> void:
 	while not _pending.is_empty():
 		var o: Dictionary = _pending.pop_front()
 		receive_order(o["order"], o["target"], o["position"], o["issuer"])
+	_thrown_bags()
 	if not _rt.went_loud:
 		if not stealth_engaged:
 			# D-014: wait at the van, undetectable (stepping out of a human's way only).
@@ -637,6 +640,82 @@ func _fetch_goal() -> Vector3:
 			lm.carry(bag, _crew)
 		return Vector3.INF
 	return bag.global_position
+
+
+## PO6-14 (D-114 §6, PD2 bots take thrown bags): catch a bag a human threw when it flies within
+## bag_catch_radius_m of this bot's chest, else fetch (task carry_bag) one that came to rest within
+## thrown_bag_pickup_radius_m less than thrown_bag_pickup_window_s after the throw (nearest free bot only, not
+## inside a SECURE_LOOT zone). The thrower becomes the leader. A bot waiting at the van in stealth only takes it
+## under the D-014 P4 option (stealth_follow_enabled; it then leaves the van, detectable like after an order).
+func _thrown_bags() -> void:
+	if _crew.crew_state != Enums.CrewState.NORMAL or _crew.is_carrying_bag():
+		return
+	var stealth_wait: bool = not _rt.went_loud and not stealth_engaged
+	if stealth_wait and not tweak.stealth_follow_enabled:
+		return
+	var lm: LootManager = _rt.service(G.SVC_LOOT) as LootManager
+	if lm == null:
+		return
+	var chest: Vector3 = _crew.global_position + Vector3.UP * tweak.bag_catch_height_m
+	var claim: LootBag = null
+	var claim_d: float = tweak.thrown_bag_pickup_radius_m
+	for bag: LootBag in lm.bags():
+		if bag.secured or bag.is_carried() or bag.thrown_by_slot < 0 \
+				or bag.since_thrown_s > tweak.thrown_bag_pickup_window_s:
+			continue
+		var thrower: CrewController = _rt.crew_controller(bag.thrown_by_slot) as CrewController
+		if thrower == null or thrower.is_ai or thrower == _crew:
+			continue
+		if bag.in_flight:
+			# Only a bag coming at the bot (not one thrown past a bot standing beside the thrower).
+			var to_me: Vector3 = chest - bag.global_position
+			var closing: bool = Vector2(bag.linear_velocity.x, bag.linear_velocity.z).dot(Vector2(to_me.x, to_me.z)) > 0.0
+			if closing and to_me.length() <= tweak.bag_catch_radius_m and lm.carry(bag, _crew):
+				_took_thrown_bag(thrower.slot)  # (carry clears bag.thrown_by_slot)
+				return
+			continue
+		var d: float = _flat_dist(bag.global_position, _crew.global_position)
+		if d > claim_d or absf(bag.global_position.y - _crew.global_position.y) > tweak.thrown_bag_pickup_max_dy_m:
+			continue
+		if task == &"carry_bag" or _bag_claimed_by_other(bag, d) or _in_secure_zone(bag):
+			continue
+		claim = bag
+		claim_d = d
+	if claim != null:
+		task = &"carry_bag"
+		task_target_net_id = claim.net_id
+		_took_thrown_bag(claim.thrown_by_slot)
+
+
+func _took_thrown_bag(thrower_slot: int) -> void:
+	leader_slot = thrower_slot
+	if not _rt.went_loud:
+		stealth_engaged = true
+
+
+## Another active AI already fetches `bag`, or a free one (NORMAL, no task, not carrying) stands closer.
+func _bag_claimed_by_other(bag: LootBag, my_d: float) -> bool:
+	for c: CrewController in _rt.crew_members():
+		if c == _crew or not c.is_ai:
+			continue
+		var b: CrewAiBrain = CrewAiBrain.of(c)
+		if b == null or not b.is_active():
+			continue
+		if b.task == &"carry_bag" and b.task_target_net_id == bag.net_id:
+			return true
+		if c.crew_state == Enums.CrewState.NORMAL and b.task == &"" and not c.is_carrying_bag() \
+				and _flat_dist(c.global_position, bag.global_position) < my_d - 0.001:
+			return true
+	return false
+
+
+func _in_secure_zone(bag: LootBag) -> bool:
+	var probe: Vector3 = bag.global_position + Vector3.UP * LootTweak.get_default().zone_probe_up_m
+	for n: Node in get_tree().get_nodes_in_group(G.LOOT_SECURE_ZONE):
+		var a: Area3D = n as Area3D
+		if a != null and a.is_inside_tree() and _rt.is_ancestor_of(a) and ZoneUtil.contains(a, probe):
+			return true
+	return false
 
 
 ## Nearest SECURE_LOOT zone of this heist whose centre is within secure_seek_radius_m, or null.

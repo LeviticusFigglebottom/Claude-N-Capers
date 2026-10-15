@@ -2,6 +2,55 @@
 
 Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min; this file says where to resume.
 
+## 2026-10-15: PO6-10 viewmodel side (gun fill light), PO6-12 asks
+**PO6-10:** CrewView.VIEWMODEL_GUN_LAYER (1 << 21) on every mesh inside the FP WeaponVisual (not the arms); a
+camera-attached DirectionalLight3D `ViewmodelGunFill` culled to that layer (FpViewmodelTweak.viewmodel_gun_fill_*:
+energy 0.85, warm-neutral colour (1, 0.96, 0.9), specular 0.6, euler (-20, -15, 0)). vm_light_probe --fills (Glasshouse,
+Corsair, opengl3, with C's dielectric finishes c7a99c64 merged in a scratch worktree): weapon / arms mean luminance
+fill 0: 36.5 / 89.5; 0.85: 66.8 / 92.2; 1.0: 71.4 / 92.2; 1.5: 83.0 / 92.5; 2.5: 100.4 / 89.6; 4.0: 120.7 / 90.8 (arms
+unchanged: the fill never reaches them). 1.0 read cold/plastic with the earlier bluish colour; 0.85 warm chosen.
+Test test_pp_p11_viewmodel_fov.test_gun_fill_light_only_lights_the_gun.
+**PO6-12 (B asks):** CrewView.refresh_weapon applies the loadout weapon finish on the FP gun; FpViewmodel.play_draw().
+Test test_p_range_vm_api.
+
+## 2026-10-15: PO6-15 bot tuning (P side) + PO6-13 FP flash wiring
+**PO6-15:** CrewTweak "AI teammates" group (PD2 team AI preset): ai_damage_mult 0.4, ai_reaction_time_s 0.8,
+ai_shot_interval_s 0.45, ai_head_aim_chance 0.05, aim error 0.15 m + 0.025 m per m of range, engage 30 m.
+**Read by ENV A's code** (CrewWeapons.damage_at, CrewAiBrain scan/aim/fire): the wiring is a patch for A,
+tests/p/_review/captures/po6_15/a_wiring.patch (prototyped locally to measure, not committed by P).
+Probe tests/p/_review/bot_strength_probe.tscn (Golden Hour loud, 3 bots, passive human, 240 s, 3 seeds; raw lines in
+captures/po6_15/): before 36 / 38 / 39 bot kills (~9.4 per min), 0-1 downs, police held at 9-12;
+after 11 / 13 / 12 kills (~3 per min), 13-14 hits per kill -> 14 dmg per hit, every crew member downed, the crew
+collapses during the first assault sustain (~100-140 s) with a human that does nothing. Mid setting (0.5 / 0.6 s /
+0.02 per m) gave 16-26 kills and held the first assault in 2 of 3 seeds (rejected: still carries the start).
+**PO6-13 (FP side):** FpViewmodelFx passes the set's class to C's MuzzleFlash (flash_class_by_set), fp_scale(true) once,
+burst_end() burst_end_after_s (0.25 s) after the last shot; P's muzzle light halved (energy 1.25, 0.034 s). FP size
+stays vfx_muzzle_size: C's scene is already ~0.6x (SIZE_K) and 2 frames (env/c-worlds e9e3b96e), so no double cut; the
+flash sits at the `Muzzle` marker, which B moves to the brake face. Test test_p_d105_fp_fx (new
+test_flash_class_fp_scale_and_burst_end). Evidence: captures/po6_13_fp_flash_before_after.png (windowed, top = trunk
+scene, bottom = C's e9e3b96e scene; Corsair, Kestrel, Mule, Anvil, Heron; shot frame).
+
+## 2026-10-15: PO6-11 pistol hold + ADS (session_01VxQPFh6PypoyUxg94gmMGH, new LEAD session_01XAPqmFJ32zHKLK9Sezymym)
+**Done (PO6-11):**
+- Cause of the "one-handed / inorganic" pistol: the pistol / revolver clips' idle and ads_idle share the finger pose
+  but their left arm chains differ by 25-38 deg, so the FK crossfade swung the support hand ~45 mm off the gun (the
+  fingers read flat beside the slide mid-transition), and pistol/revolver were in left_hand_ik_skip_sets.
+- Fix (FpViewmodelTweak + FpViewmodel): pistol / revolver back on the left-hand IK with their per-set grip offset =
+  the clip's own wrist in LeftHandIK space (measured identical at hip and full ADS on all 4 pistols + the revolver),
+  so the IK is a no-op at the end poses and holds the isosceles two-hand grip through the blend;
+  `left_hand_hold_rel_sets` keeps the hand's orientation from hip / full ADS during the blend.
+- New tunables: `set_hip_rot_deg` (hip pose about the firing hand: pistol/revolver pitch 4 / yaw -2 / cant 3),
+  `set_ads_arc_roll_deg` (7 deg roll arc into the sights), ADS settle spring (`ads_settle_hz` 4.5, damping 0.45,
+  `ads_settle_pitch_deg` 7, all sets; returns on axis: test). Pistol hip raised (grip y -0.149 -> -0.109 m; it sat on
+  the bottom edge), ADS eye relief 0.42 -> 0.37 m. Sway / bob are the shared rifle values.
+- Test: tests/p/test_p_pistol_hold.gd (real input; wrist sampled post-IK in skeleton_updated: Kestrel 48.9 mm /
+  Marshal 26.9 mm off before, < 10 mm now). Review tool: tests/p/_review/ads_seq_capture.tscn (hip, walk, 8 frames in,
+  3 out; prints grip / aim / bore angles / wrist-in-marker).
+- Evidence (windowed opengl3): tests/p/_review/captures/po6_11/ (before_* / after_* hold sheets, closeups, per-weapon
+  hip->ADS->hip sequences for kestrel_p9, warden_45, wren_380, sparrow_mp, marshal_357 + corsair_ar reference).
+- Open (D, clip-side): at full pistol ADS the two sleeves still fill the lower third (the clip's forearms rise steeply
+  to the gun); a lower-elbow isosceles ads_idle would read better. Not blocking.
+
 ## HANDOFF 2026-10-14
 **Branch head:** (this commit, on env/p-play) the handoff notes on top of 69211232 (vm_light_probe material
 isolation). Trunk merged at r198; nothing red. No wip branches.
