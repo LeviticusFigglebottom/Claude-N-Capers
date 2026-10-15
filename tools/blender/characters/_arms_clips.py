@@ -83,26 +83,29 @@ class SupportGrip:
 #: does): the palm, wrist and thumb flex by coordinate descent, then each finger and the thumb opposition closed until
 #: the tightest fore-end of the set is within 0.8 mm of skin (ENV P's PFingerClip limit is 2 mm). The thumb now
 #: lies low along the near side next to the palm (thumb_opp -30 lifted it to the top edge, apart from the hand).
+#: Lead review 2026-10-15 (P's lit Glasshouse left views): the thumb must lie ON the near side face, not point forward
+#: under the fore-end: refitted with the thumb tip at 40-75 % of the fore-end's section height (rays at the tip's
+#: station) for rifle / sniper / shotgun / shotgun_box / lever / break_action.
 #: smg (B's under-fore-end markers, lead 2026-10-14): fitted on hornet / lancet / ferret / hush / mastiff / wasp (B's
 #: 871b6646 finger ridge); the short fore-ends leave no room ahead of the magazine, so the palm cups the lower-left corner,
 #: fingers across, thumb up the side.
 LONG_GUN_GRIPS: dict[str, SupportGrip] = {
-    "rifle": SupportGrip((0.6, 0.8, -0.25), (0.0, -0.1, 1.0), (-0.005, 0.0, 0.003), -8.31, 0.0,
-                (-0.0381, 0.0021, 0.0426), thumb=(16.0, -18.0, 4.0), fingers=(0.272, 0.523, 0.637, 0.806)),
-    "shotgun": SupportGrip((1.1125, 0.95, -0.35), (0.05, -0.2, 1.0), (-0.0055, -0.002, 0.006), -29.37, 0.0,
-                (-0.0482, 0.0048, 0.035), thumb=(4.0, 7.5, 4.0), fingers=(0.586, 0.717, 0.771, 1.348)),
+    "rifle": SupportGrip((0.55, 0.9, -0.25), (0.1, -0.1, 1.0), (-0.003, -0.006, 0.003), -13.47, 0.0,
+                (-0.0328, 0.0015, 0.051), thumb=(22.0, -3.0, 4.0), fingers=(0.197, 0.523, 0.656, 0.872)),
+    "shotgun": SupportGrip((1.0125, 0.95, -0.25), (0.15, -0.2, 1.0), (-0.0075, -0.008, 0.006), -26.36, 0.0,
+                (-0.049, 0.0019, 0.0422), thumb=(10.0, 13.5, 4.0), fingers=(0.488, 0.691, 0.743, 1.348)),
     "lmg": SupportGrip((0.9375, 0.875, -0.375), (-0.075, 0.0, 1.0), (0.004, 0.004, -0.0035), 2.22, 0.0,
                 (-0.0349, -0.0023, 0.0334), thumb=(4.0, -12.0, 4.0), fingers=(0.53, 0.668, 1.348, 1.348)),
     "sniper": SupportGrip((0.5, 0.65, -0.1), (0.075, -0.1375, 1.0), (-0.004, 0.004, -0.002), -17.12, 0.0,
                 (-0.0382, -0.0094, 0.0371), thumb=(28.0, -18.0, 4.0), fingers=(0.22, 0.539, 0.649, 0.837)),
-    "break_action": SupportGrip((0.725, 0.8, -0.25), (-0.1, 0.05, 1.0), (0.0, 0.004, 0.002), -6.7, 0.0,
-                (-0.0351, 0.0002, 0.037), thumb=(4.0, 6.0, 4.0), fingers=(0.462, 0.595, 0.736, 1.348)),
-    "lever": SupportGrip((0.7875, 0.8, -0.3125), (0.05, 0.1, 1.0), (-0.006, 0.0, 0.001), -7.34, 0.0,
-                (-0.0435, 0.0015, 0.0388), thumb=(4.0, 6.0, 4.0), fingers=(0.48, 0.661, 0.759, 1.348)),
+    "break_action": SupportGrip((0.625, 0.9, -0.15), (0.0, -0.05, 1.0), (-0.004, 0.004, 0.002), -2.19, 0.0,
+                (-0.0349, -0.0048, 0.0397), thumb=(10.0, 6.0, 4.0), fingers=(0.241, 0.509, 0.649, 1.348)),
+    "lever": SupportGrip((0.6875, 0.9, -0.2125), (0.175, 0.0, 1.0), (-0.01, 0.0, 0.003), 0.93, 0.0,
+                (-0.0442, -0.001, 0.0416), thumb=(4.0, 0.0, 4.0), fingers=(0.267, 0.614, 0.722, 1.348)),
     "smg": SupportGrip((0.75, 0.4, 0.1), (0.4, -0.3, 1.0), (-0.002, 0.018, -0.011), -12.71, 0.0,
                 (-0.0492, -0.0297, 0.0004), thumb=(-20.0, -24.0, 4.0), fingers=(0.605, 0.68, 0.717, 0.764)),
-    "shotgun_box": SupportGrip((0.825, 0.725, -0.325), (0.075, -0.125, 1.0), (-0.006, 0.004, 0.0), -27.0, 0.0,
-                (-0.0479, 0.0015, 0.03), thumb=(4.0, 12.0, 4.0), fingers=(0.558, 0.666, 0.717, 1.348)),
+    "shotgun_box": SupportGrip((0.925, 0.825, -0.325), (0.2, -0.225, 1.0), (-0.009, 0.0, 0.0025), -29.04, 0.0,
+                (-0.0519, 0.0028, 0.0327), thumb=(4.0, 12.0, 4.0), fingers=(0.581, 0.673, 0.717, 1.348)),
 }
 
 
@@ -169,6 +172,9 @@ class Kit:
                                    s.pole_l, hand_shape("grip", 0.80), share=0.55, off=0.018)
         self.support_ads = self.support.copy()
         self.support_ads.pole = unit(np.asarray(s.pole_l_ads, float))
+        self.grip_ads = self.grip.copy()
+        if s.pole_r_ads is not None:
+            self.grip_ads.pole = unit(np.asarray(s.pole_r_ads, float))
         self.down = hand_at(sk, "L", "c", (-0.20, 0.03, -0.60), (0.15, 0.35, -0.92), (0.95, 0.0, 0.25),
                             (-0.5, -0.6, -0.4), "relaxed", share=0.5)
         self.ready = hand_at(sk, "L", "c", (-0.10, 0.16, -0.40), (0.35, 0.60, -0.70), (0.90, -0.10, 0.40),
@@ -278,7 +284,7 @@ def _sway(st: State, f: int, N: int, amp: float = 1.0, ads: bool = False) -> Non
 
 
 def _static(kit: Kit, s: FPSet, wf, blade: float, ads: bool = False) -> list[Key]:
-    return [K(0, wf, kit.support_ads if ads else kit.support, kit.grip, blade=blade)]
+    return [K(0, wf, kit.support_ads if ads else kit.support, kit.grip_ads if ads else kit.grip, blade=blade)]
 
 
 def clip_idle(kit: Kit, s: FPSet, N: int):
