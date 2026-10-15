@@ -25,3 +25,7 @@ extends Resource
 @export var music_track: StringName = &""
 ## How the crew starts (S1.3, D-065): &"casing" (default) or &"civilian" (undetectable, no gear until a gear_pickup).
 @export var start_mode: StringName = &"casing"
+## PO6-17 (D-114 §5, data_schemas.md v1.1): RNG assault event rows, each
+## {kind: StringName (&"turret_van" | &"heli" | &"breach"), weight: float, min_wave: int, cooldown_s: float,
+##  max_per_heist: int, params: Dictionary}. Non-empty = overrides AssaultEventsTweak.heists[id]; empty = the tweak's rows.
+@export var assault_events: Array[Dictionary] = []

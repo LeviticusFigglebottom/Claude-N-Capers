@@ -85,6 +85,10 @@ signal weapon_fired(shooter_net_id: int, weapon_id: StringName, suppressed: bool
 signal assault_phase_changed(phase: int, wave_index: int)  # Enums.AssaultPhase
 signal captain_arrived(npc_net_id: int)
 signal captain_retreated(npc_net_id: int)
+## PO6-17 (D-114 §5) RNG assault events [R]: AssaultEventRunner (A), host. `kind` = AssaultEventsTweak.KINDS
+## (&"turret_van", &"heli", &"breach"); `net_id` = the event's dynamic entity (van / heli / breach).
+signal assault_event_started(kind: StringName, net_id: int, position: Vector3)
+signal assault_event_ended(kind: StringName, net_id: int)
 
 # --- Presentation hooks (consumed by audio/UI/voice) ---------------------------
 signal voice_line_requested(speaker: StringName, line_id: StringName, context: Dictionary)
