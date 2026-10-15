@@ -73,3 +73,15 @@ func test_never_replaces_another_overlay() -> void:
 	assert_true(_mesh.material_overlay == other, "a foreign overlay is kept")
 	EventBus.pager_answered.emit(14, 0, 1)
 	assert_true(_mesh.material_overlay == other, "and left alone at the end")
+
+
+## Lead r214 hotfix: a guard freed while its pager is live must not break clear().
+func test_clear_after_guard_freed() -> void:
+	_cam.position = Vector3(0, 1.7, 4.0)
+	EventBus.pager_started.emit(15, _id)
+	assert_true(_po.is_outlined(_mesh))
+	_guard.free()
+	_po.clear()
+	assert_true(_po.active_pagers().is_empty(), "cleared without touching the freed mesh")
+	_guard = Node3D.new()
+	add_child(_guard)
