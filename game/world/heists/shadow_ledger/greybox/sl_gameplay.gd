@@ -17,6 +17,22 @@ const SECURE_DROP_MARKER: String = "res://world/heists/shadow_ledger/greybox/sec
 const ESCAPE_HELI_VISUAL: String = "res://world/props/escape_zone/veh_heli_escape.tscn"
 const ESCAPE_LINE_VISUAL: String = "res://world/props/escape_zone/prop_escape_zipline_rig.tscn"
 const ESCAPE_LIFT_VISUAL: String = "res://world/props/escape_zone/prop_escape_lift_fitout.tscn"
+## D-111 prop art pass: catalog visual (tools/blender/props) per prefab type, as on Night Deposit
+## (nd_gameplay.PREFAB_VISUALS). Doors, ladders, lasers, loot and escapes choose theirs where they are built.
+const PREFAB_VISUALS: Dictionary = {
+	"safe": "prop_safe_large", "keycard_pickup": "prop_keycard_bank", "keycard_reader": "prop_keycard_reader",
+	"code_note": "prop_papers", "alarm_button": "prop_alarm_button", "phone": "prop_phone_desk",
+	"body_container": "prop_dumpster", "camera_station": "prop_camera_station_bank",
+	"security_camera": "prop_security_camera_wall", "hack_terminal": "prop_server_rack_terminal",
+}
+## Ladder visuals by height and wall gap (prefab_visuals.py `prop_ladder_steel_*`: Top / Bottom exactly where the
+## placeholder had them, stand-offs reaching the wall behind; g00 = free-standing in the riser hole).
+const LADDER_RISER_LOWER: String = "prop_ladder_steel_h440_g00"
+const LADDER_RISER_UPPER: String = "prop_ladder_steel_h360_g00"
+const LADDER_TERRACE: String = "prop_ladder_steel_h360_g25"
+const LADDER_GONDOLA: Dictionary = {
+	"gon_west_l41": "prop_ladder_steel_h800_g40", "gon_north_l42": "prop_ladder_steel_h360_g40",
+}
 
 
 # --- Prefab helpers ---------------------------------------------------------------------------
@@ -35,6 +51,8 @@ func prefab(parent: Node3D, kind: String, nm: String, pos: Vector3, yaw: float, 
 	inst.transform = global_xform(parent).affine_inverse() * world if parent != map_root else world
 	for k: Variant in props:
 		_set_prop(inst, String(k), props[k])
+	if not props.has("visual_scene") and PREFAB_VISUALS.has(kind):
+		inst.set(&"visual_scene", _catalog_scene(String(PREFAB_VISUALS[kind])))
 	for mk: Variant in metas:
 		inst.set_meta(StringName(String(mk)), metas[mk])
 	parent.add_child(inst)
@@ -259,9 +277,10 @@ func _build_misc(gp: Node3D) -> void:
 	]
 	for p: Array in phones:
 		prefab(misc, "phone", String(p[0]), p[1], 0.0, {}, p[2], {"kind": "phone"})
-	# S2 refuse room: 2 wheelie bins (body_container, 1 body each).
-	prefab(misc, "body_container", "RefuseBinA", Vector3(26.6, L.F40, 15.89), 0.0, {"capacity": 1}, null, {"kind": "bin"})
-	prefab(misc, "body_container", "RefuseBinB", Vector3(28.5, L.F40, 15.89), 0.0, {"capacity": 1}, null, {"kind": "bin"})
+	# S2 refuse room: 2 waste containers (body_container, 1 body each; the 0.94 m deep prop_dumpster_d094 clears the back wall).
+	for b: Array in [["RefuseBinA", 26.6], ["RefuseBinB", 28.5]]:
+		prefab(misc, "body_container", String(b[0]), Vector3(float(b[1]), L.F40, 15.89), 0.0,
+			{"capacity": 1, "visual_scene": _catalog_scene("prop_dumpster_d094")}, null, {"kind": "bin"})
 	# Archive safe (K17, MEDIUM, saw only): the partners' cash float.
 	var arch: Node3D = prefab(misc, "safe", "ArchiveSafe", Vector3(1.2, L.F41, 23.44), 0.0,
 		{"size": "enum:MEDIUM", "methods": [&"saw"] as Array[StringName], "objective_tag": &"archive_safe"},
@@ -294,13 +313,13 @@ func _build_misc(gp: Node3D) -> void:
 func _build_ladders(gp: Node3D) -> void:
 	var lad: Node3D = add(gp, node3d("Ladders")) as Node3D
 	var r: Dictionary = L.RISER
-	prefab(lad, "ladder", "RiserLadderLower", r["lower_ladder"], 0.0, {"height_m": L.F42 - L.F41},
-		null, {"kind": "ladder"})
-	prefab(lad, "ladder", "RiserLadderUpper", r["upper_ladder"], 0.0, {"height_m": L.FRF - L.F42},
-		null, {"kind": "ladder"})
+	prefab(lad, "ladder", "RiserLadderLower", r["lower_ladder"], 0.0, {"height_m": L.F42 - L.F41,
+		"visual_scene": _catalog_scene(LADDER_RISER_LOWER)}, null, {"kind": "ladder"})
+	prefab(lad, "ladder", "RiserLadderUpper", r["upper_ladder"], 0.0, {"height_m": L.FRF - L.F42,
+		"visual_scene": _catalog_scene(LADDER_RISER_UPPER)}, null, {"kind": "ladder"})
 	var t: Dictionary = L.TERRACE_LADDER
-	prefab(lad, "ladder", "TerraceLadder", t["pos"], float(t["yaw"]), {"height_m": float(t["h"])},
-		null, {"kind": "ladder"})
+	prefab(lad, "ladder", "TerraceLadder", t["pos"], float(t["yaw"]), {"height_m": float(t["h"]),
+		"visual_scene": _catalog_scene(LADDER_TERRACE)}, null, {"kind": "ladder"})
 
 
 # --- Variants ---------------------------------------------------------------------------------
@@ -522,12 +541,12 @@ func _variants_gondola(variants: Node3D) -> void:
 		for gid: String in L.GONDOLAS:
 			var g: Dictionary = L.GONDOLAS[gid]
 			if gid == sid:
-				_cradle(s, g)
+				_cradle(s, g, String(LADDER_GONDOLA[gid]))
 			else:
 				_closed_gate(s, "ClosedGate" + ("West" if gid.contains("west") else "North"), g["gate"])
 
 
-func _cradle(s: Node3D, g: Dictionary) -> void:
+func _cradle(s: Node3D, g: Dictionary, ladder_visual: String) -> void:
 	var d: Array = g["deck"]
 	var mn: Vector3 = v3(d, 0)
 	var mx: Vector3 = v3(d, 3)
@@ -566,8 +585,8 @@ func _cradle(s: Node3D, g: Dictionary) -> void:
 		add(deck, col)
 		mesh_box(deck, String(p[0]), pmn, pmx, "steel" if String(p[0]) == "Deck" else "fence")
 	# Boarding ladder from the deck to the roof (Top 0.4 m along +Z, over the open gate).
-	prefab(s, "ladder", "BoardingLadder", g["ladder"], float(g["ladder_yaw"]), {"height_m": float(g["ladder_h"])},
-		null, {"kind": "ladder"})
+	prefab(s, "ladder", "BoardingLadder", g["ladder"], float(g["ladder_yaw"]), {"height_m": float(g["ladder_h"]),
+		"visual_scene": _catalog_scene(ladder_visual)}, null, {"kind": "ladder"})
 	var link: Array = g["link"]
 	nav_link(s, "GondolaLink", link[0], link[1])
 
