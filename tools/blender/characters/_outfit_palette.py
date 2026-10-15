@@ -177,6 +177,17 @@ OUTFIT: dict[str, tuple[str, float, float, str]] = {
     "char_satin_gold": ("#B8954E", 0.35, 0.0, "cloth"),  # D3-01 afterhours: patron's gold satin mini dress
     "char_club_magenta": ("#9E3A72", 0.70, 0.0, "cloth"),  # D3-01 afterhours: patron's magenta top
     "char_hoodie_cream": ("#B9AE98", 0.95, 0.0, "cloth"),  # D3-01 afterhours: patron's cream hoodie
+    "char_suit_plum": ("#4A2C40", 0.76, 0.0, "cloth"),  # D-115 glasshouse: Greta Vossberg's deep plum trouser suit
+    "char_knit_oat": ("#A89878", 0.95, 0.0, "cloth"),  # D-115 glasshouse: admin clerk's oatmeal cardigan
+    "char_hivis_orange": ("#E07A3C", 0.62, 0.0, "cloth"),  # D-115 dockside_burn: orange hi-vis vest
+    "char_reflect_silver": ("#BCC0C2", 0.32, 0.0, "plastic"),  # D-115 dockside: reflective vest tape
+    "char_hardhat_white": ("#D2D0C8", 0.38, 0.0, "plastic"),  # D-115 dockside: white hard hat
+    "char_hardhat_blue": ("#3D5F8E", 0.38, 0.0, "plastic"),  # D-115 dockside: blue hard hat
+    "char_work_navy": ("#2E3647", 0.80, 0.0, "cloth"),  # D-115 dockside: navy canvas work jacket
+    "char_work_charcoal": ("#3D4045", 0.86, 0.0, "cloth"),  # D-115 dockside: charcoal work / cargo trousers
+    "char_fleece_maroon": ("#6A2E30", 0.97, 0.0, "cloth"),  # D-115 dockside: packer's maroon fleece
+    "char_knit_navy": ("#2B3346", 0.95, 0.0, "cloth"),  # D-115 dockside: packer's navy beanie
+    "char_glove_work": ("#7D776A", 0.80, 0.0, "cloth"),  # D-115 dockside: grey work gloves
 }
 
 #: Shared-library ids used by outfits, with a placeholder colour for the glb (the .tres wins).

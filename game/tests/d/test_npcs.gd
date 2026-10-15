@@ -49,6 +49,29 @@ const ALLOWED_MESHES: Array[String] = ["Body", "Hair", "Outfit", "Gear", "Headwe
 const RADIO_REACH: float = 0.07
 const RADIO_CLUSTER: float = 0.10
 const RADIO_MIN_VERTS: int = 8
+## D-115 (heist cast audit 2026-10-15): Golden Hour staff (char_civilians.py) and Dockside Burn
+## workers (char_dock_workers.py): the look-defining material per mesh each must wear.
+const D115_CAST: Dictionary = {
+	"char_civilian_manager_vossberg": {
+		"Outfit": ["char_suit_plum", "char_silk_ivory"], "Gear": ["brass"], "Headwear": ["brass", "char_hair_grey"],
+	},
+	"char_civilian_sales_b": {"Outfit": ["char_suit_dark", "char_shirt_black"], "Gear": ["brass"]},
+	"char_civilian_clerk": {
+		"Outfit": ["char_knit_oat", "char_shirt_white", "char_dress_black"], "Gear": ["char_medic_white", "brass"],
+		"Headwear": ["char_button_dark"],
+	},
+	"char_dock_worker": {
+		"Outfit": ["char_hivis_orange", "char_reflect_silver", "char_work_navy", "char_work_charcoal"],
+		"Headwear": ["char_hardhat_white"],
+	},
+	"char_dock_worker_b": {
+		"Outfit": ["char_hivis", "char_reflect_silver", "char_work_charcoal"], "Headwear": ["char_hardhat_blue"],
+	},
+	"char_dock_packer": {
+		"Outfit": ["char_hivis_orange", "char_reflect_silver", "char_fleece_maroon", "char_glove_work"],
+		"Headwear": ["char_knit_navy"],
+	},
+}
 
 var _index: Dictionary = {}
 
@@ -109,6 +132,26 @@ func test_index_lists_every_npc() -> void:
 				"%s: scene path convention" % id)
 		assert_false(bool(e.get("test", false)), "%s: cast, not a test fixture" % id)
 		assert_true(ResourceLoader.exists(String(e["scene"])), "%s: scene exists" % id)
+	_check_d115_cast()
+
+
+## D-115: the six new civilians are indexed with their scenes and wear their look (hi-vis + tape, hard
+## hat or beanie, Vossberg's plum suit and gold, the clerk's lanyard card); the packer has no hard hat.
+func _check_d115_cast() -> void:
+	for id: String in D115_CAST:
+		assert_true(_index.has(id), "%s in characters.json" % id)
+		if not _index.has(id):
+			continue
+		var scene: String = String((_index[id] as Dictionary)["scene"])
+		assert_eq(scene, _scene(id), "%s: scene path convention" % id)
+		assert_true(ResourceLoader.exists(scene), "%s: scene exists" % id)
+		var by_mesh: Dictionary = _materials(id)
+		var want: Dictionary = D115_CAST[id]
+		for mesh: String in want:
+			for m: String in want[mesh]:
+				assert_has(by_mesh.get(mesh, []) as Array, m, "%s: %s wears %s" % [id, mesh, m])
+	var packer: Array[String] = _all_materials(_materials("char_dock_packer"))
+	assert_false(packer.has("char_hardhat_white") or packer.has("char_hardhat_blue"), "dock_packer: no hard hat")
 
 
 func test_scene_contract_and_budget() -> void:
