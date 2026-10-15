@@ -282,7 +282,8 @@ func _on_answer_completed(crew: Node, pid: int) -> void:
 	var guard_id: int = int(p["guard_net_id"])
 	_remove(pid)
 	_emit(&"pager_answered", [pid, slot, total])
-	if total == max_answers:
+	var own_line: bool = _runtime != null and _runtime.mission != null and _runtime.mission.own_last_pager_line
+	if total == max_answers and not own_line:  # D-117: a heist with its own last-pager line says that one
 		_emit(&"voice_line_requested", [&"mercer", &"vo.mercer.pager_last", {}])
 	if total > max_answers:
 		_raise_alarm(&"pager_limit", guard_id)  # S5.3: the extra answer completes, then alarm

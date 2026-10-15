@@ -46,10 +46,6 @@ const RARE_EXTRA_CONTAINER: StringName = &"extra_container"
 const RARE_POLICE_TIPPED: StringName = &"police_tipped"
 const RARE_REINFORCEMENTS: StringName = &"cartel_reinforcements"
 const RARE_FOG: StringName = &"fog_lifts"
-## Briefing recap at the start (the contact, then Mercer; doc VO ids, D-051).
-const BRIEFING: Array[Array] = [[&"reyes", &"vo.reyes.briefing_dockside_burn_1"], [&"reyes", &"vo.reyes.briefing_dockside_burn_2"],
-	[&"reyes", &"vo.reyes.briefing_dockside_burn_3"], [&"mercer", &"vo.mercer.briefing_dockside_burn_1"],
-	[&"mercer", &"vo.mercer.briefing_dockside_burn_2"]]
 const SPECIAL_LONGSHOT: StringName = &"longshot"
 const CONTAINER_KEYS: Array[String] = ["k1", "k2", "k3", "k4", "k5", "k6"]
 ## Fire shutters (layout SHUTTERS): product slot -> doors under Gameplay/Doors.
@@ -73,8 +69,7 @@ var _snipers_seen: int = 0
 
 
 func _on_mission_start() -> void:
-	for b: Array in BRIEFING:
-		say(StringName(b[1]), {}, StringName(b[0]))
+	# D-117 §6: the briefing lines (lines.tres event `briefing`) play on the briefing screen only, never in-heist.
 	say(&"vo.mercer.dockside_burn_intro")
 	say(&"vo.reyes.dockside_burn_contact_intro", {}, &"reyes")
 	# [cartel] covers the whole yard (thin out the gunmen): no marker, like casing.

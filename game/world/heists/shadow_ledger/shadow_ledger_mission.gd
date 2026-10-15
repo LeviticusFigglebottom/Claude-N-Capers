@@ -11,7 +11,6 @@
 extends HeistMission
 
 const MIN_DRIVES: int = 2
-const LAST_PAGER: int = 4
 const CAGE_GROUP: StringName = &"cage"
 const ITEM_KEYCARD: StringName = &"item.keycard"
 const ITEM_CODE_NOTE: StringName = &"item.code_note"
@@ -39,6 +38,12 @@ const TAG_LOOT_SECURE: StringName = &"loot_secure"
 const RARE_PRINTOUT: StringName = &"ledger_printout"
 const RARE_CAGE_OPEN: StringName = &"cage_left_open"
 const RARE_TIMELOCK: StringName = &"timelock_extended"
+## D-117 §6: Mercer's camera warning, the first time any camera's meter on any crew member reaches CAMERA_WARN_METER
+## (before the "!" countdown, which is the point of no return here). Polled from the StealthDirector (server rows for
+## every crew slot; detection_progress only reaches the local / owning peer).
+const VO_CAMERA_WARNING: StringName = &"vo.mercer.shadow_ledger_camera_warning"
+const CAMERA_WARN_METER: float = 0.5
+const CAMERA_POLL_S: float = 0.25
 const TIMELOCK_EXTRA_S: float = 60.0
 ## Strings keys for the escape in Mercer's line (ENV B resolves them).
 const ESCAPE_KEYS: Dictionary = {
@@ -51,9 +56,11 @@ var _laptop_secured: bool = false
 var _drives_secured: int = 0
 var _escape_open: bool = false
 var _lasers_said: bool = false
+var _camera_warned: bool = false
 
 
 func _on_mission_start() -> void:
+	own_last_pager_line = true  # D-117: the heist's last-pager line replaces the generic one
 	say(&"vo.mercer.shadow_ledger_intro")
 	say(&"vo.accountant.shadow_ledger_contact_intro", {}, &"accountant")
 	add_objective(&"casing", &"objective.shadow_ledger.casing", Enums.ObjectiveState.ACTIVE, {"optional": true})
@@ -85,6 +92,7 @@ func _on_mission_start() -> void:
 	on_event(&"item_picked_up", _on_item_picked_up)
 	on_event(&"loot_secured", _on_bag_secured)
 	_setup_variants()
+	_poll_cameras()
 
 
 func _on_phase_changed(old_phase: int, new_phase: int) -> void:
@@ -98,7 +106,7 @@ func _on_alarm(_reason: StringName) -> void:
 
 
 func _on_pager_answered(total: int) -> void:
-	if total == LAST_PAGER:
+	if total == pager_cap():
 		say(&"vo.mercer.shadow_ledger_last_pager", {"answered": total})
 
 
@@ -247,6 +255,32 @@ func _try_escape() -> void:
 	var tag: StringName = _escape_tag()
 	say(&"vo.mercer.shadow_ledger_escape", {"escape": ESCAPE_KEYS.get(tag, &"ui.escape.heli")})
 	activate_escape(tag)
+
+
+# --- Camera warning (D-117) -------------------------------------------------------------------
+
+func _poll_cameras() -> void:
+	if _camera_warned or went_loud:
+		return
+	var rt: HeistRuntime = HeistRuntime.of(self)
+	var st: StealthDirector = rt.stealth if rt != null else null
+	if st != null:
+		var top: float = 0.0
+		for slot: int in range(Net.MAX_CREW):
+			for e: Dictionary in st.detection_entries(slot):
+				if int(e.get("kind", -1)) == Enums.ObserverKind.CAMERA:
+					top = maxf(top, float(e.get("value", 0.0)))
+		_on_camera_meter(top)
+	if not _camera_warned:
+		start_timer(&"camera_watch", CAMERA_POLL_S, _poll_cameras)
+
+
+## The highest camera meter on the crew right now (0..1): Mercer warns once, before the alarm.
+func _on_camera_meter(value: float) -> void:
+	if _camera_warned or went_loud or value < CAMERA_WARN_METER:
+		return
+	_camera_warned = true
+	say(VO_CAMERA_WARNING)
 
 
 # --- Helpers ----------------------------------------------------------------------------------

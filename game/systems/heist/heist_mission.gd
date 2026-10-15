@@ -48,8 +48,12 @@ var police_delay_s: float:
 		if d != null:
 			d.start_delay_s = v
 
+## D-117 §6: true when this mission says its own last-pager line (in `_on_pager_answered` at `pager_cap()`);
+## PagerSystem then skips the generic vo.mercer.pager_last so the cap is not called twice.
+var own_last_pager_line: bool = false
+
 var _runtime: HeistRuntime = null
-## objective id -> { "id", "text_key", "state", "data", "order" }
+## objective id ->{ "id", "text_key", "state", "data", "order" }
 var _objectives: Dictionary[StringName, Dictionary] = {}
 var _connections: Array[Array] = []
 var _timers: Dictionary[StringName, SceneTreeTimer] = {}
@@ -331,6 +335,12 @@ func disable_alarm_group(group: StringName) -> void:
 ## True when the crew bought pre-planning asset `asset_id` for this run (e.g. &"asset.intel_list").
 func has_asset(asset_id: StringName) -> bool:
 	return _runtime != null and _runtime.preplan != null and _runtime.preplan.has_asset(asset_id)
+
+
+## S5.3: the answered-pager cap of this run (PagerSystem.max_answers: StealthTweak, or the heist's scalar).
+func pager_cap() -> int:
+	var ps: PagerSystem = _runtime.service(G.SVC_PAGERS) as PagerSystem if _runtime != null else null
+	return ps.max_answers if ps != null else Tweak.stealth().pager_max_answers
 
 
 ## The effects of this run's rolled rare events: {event id: effects Dictionary} (HeistVariantTable.rare_events).

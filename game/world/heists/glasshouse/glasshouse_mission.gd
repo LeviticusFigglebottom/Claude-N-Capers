@@ -13,7 +13,6 @@ extends HeistMission
 
 const MIN_BAGS: int = 2
 const VAN_RETURN_S: float = 240.0
-const LAST_PAGER: int = 4
 const ITEM_KEYCARD: StringName = &"item.keycard"
 const ITEM_CODE_NOTE: StringName = &"item.code_note"
 ## PO6-04: tag given at runtime to the surviving code note (the map's notes carry no objective_tag).
@@ -37,9 +36,11 @@ var _lockdown: bool = false
 var _van_fade: bool = false
 var _van_timer_done: bool = false
 var _escape_open: bool = false
+var _code_said: bool = false
 
 
 func _on_mission_start() -> void:
+	own_last_pager_line = true  # D-117: the heist's last-pager line replaces the generic one
 	say(&"vo.mercer.glasshouse_intro")
 	add_objective(&"casing", &"objective.glasshouse.casing", Enums.ObjectiveState.ACTIVE, {"optional": true})
 	if _slot_active(&"safe_state", &"safe_open"):
@@ -86,7 +87,7 @@ func _on_alarm(_reason: StringName) -> void:
 
 
 func _on_pager_answered(total: int) -> void:
-	if total >= LAST_PAGER:
+	if total == pager_cap():
 		say(&"vo.mercer.glasshouse_last_pager", {"answered": total})
 
 
@@ -130,6 +131,9 @@ func _on_item_picked_up(item_id: StringName, _crew_slot: int) -> void:
 	elif item_id == ITEM_CODE_NOTE:
 		if objective_state(&"code") == Enums.ObjectiveState.ACTIVE:
 			complete(&"code")
+		if not _code_said and not _safe_open:  # D-117: Mercer, the first time the safe code is read
+			_code_said = true
+			say(&"vo.mercer.glasshouse_code_found")
 		_skip_if_active(&"keycard")
 
 
