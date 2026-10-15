@@ -17,6 +17,8 @@ const SECURE_DROP_MARKER: String = "res://world/heists/shadow_ledger/greybox/sec
 const ESCAPE_HELI_VISUAL: String = "res://world/props/escape_zone/veh_heli_escape.tscn"
 const ESCAPE_LINE_VISUAL: String = "res://world/props/escape_zone/prop_escape_zipline_rig.tscn"
 const ESCAPE_LIFT_VISUAL: String = "res://world/props/escape_zone/prop_escape_lift_fitout.tscn"
+## Victor Kessler's seat in M5 (kessler_in): the npc_seat chair's bottom-centre = his spawn.
+const KESSLER_SEAT: Vector3 = Vector3(3.0, L.F42, 12.3)
 
 
 # --- Prefab helpers ---------------------------------------------------------------------------
@@ -349,7 +351,10 @@ func _variants_people(variants: Node3D) -> void:
 	spawn(c3, "CleanerL41B", "CIVILIAN", Vector3(28.5, L.F41, 17.25), 90.0, ["civ_cleaner_l41", "civ_staff"], "browse", "")
 	var kg: Node3D = _group(variants, "kessler")
 	var ki: VariantSlot = _slot(kg, "kessler", "kessler_in", 0.0)
-	spawn(ki, "VictorKessler", "CIVILIAN", Vector3(3.2, L.F42, 10.2), 90.0, ["civ_kessler", "civ_staff"], "sit", "")
+	# PO6-06: reading in the M5 armchair at the bedside (back to the south wall, facing the bed's foot), on its `Seat`;
+	# the alarm button and the bedside phone are ~2 m west, the suite door's clear zone 3 m east.
+	spawn(ki, "VictorKessler", "CIVILIAN", KESSLER_SEAT, 0.0, ["civ_kessler", "civ_staff"], "sit", "")
+	npc_seat(ki, "KesslerArmchair", KESSLER_SEAT, 0.0)
 	_slot(kg, "kessler", "kessler_out", 1.0)
 
 
@@ -617,3 +622,21 @@ func _variants_escape(variants: Node3D) -> void:
 	prefab(e3, "escape_zone", "LiftEscapeE3", Vector3(22.5, L.F40, 9.0), 0.0,
 		{"objective_tag": &"escape_service", "escape_type": &"lift", "zone_size_m": Vector3(2.6, 2.4, 2.6),
 			"visual_scene": load(ESCAPE_LIFT_VISUAL)})
+
+
+## PO6-06 / D-063: a seat an NPC spawns seated in (as DB's `npc_seat` chairs and GH / GN's prop_chair_task): the
+## greybox chair with its `Seat` 0.45 m up, but no collider and no nav obstruction, so the spawn on it stays on the
+## navmesh and the seated NPC owns the spot. Lives in the NPC's slot (absent when the NPC is).
+func npc_seat(parent: Node3D, nm: String, base: Vector3, yaw: float) -> void:
+	var body: Node3D = Node3D.new()
+	body.name = nm
+	body.position = base
+	body.basis = yaw_basis(yaw)
+	body.set_meta(&"kind", "armchair")
+	add(parent, body)
+	mesh_box(body, "SeatMesh", Vector3(-0.225, 0.0, -0.225), Vector3(0.225, 0.45, 0.225), "chair")
+	mesh_box(body, "BackMesh", Vector3(-0.225, 0.45, 0.165), Vector3(0.225, 0.85, 0.225), "chair")
+	var m: Marker3D = Marker3D.new()
+	m.name = "Seat"
+	m.position = Vector3(0.0, 0.45, 0.0)
+	add(body, m)
