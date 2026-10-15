@@ -17,6 +17,7 @@ func after_each() -> void:
 func _launch(deployable: StringName, with_weapons: bool = false) -> void:
 	var l: Loadout = CrewWeapons.build_loadout(null) if with_weapons else Loadout.new()
 	l.deployable = deployable
+	ADeployableGateUtil.grant(l)  # D-111 gate flag, no extra units
 	_rt = await HeistLauncher.launch(&"unit_map", 2116, Enums.Difficulty.ROUTINE, self,
 		{"map_packed": ATestMaps.basic(0, 0), "ai_teammates": 0, "skip_casing": true, "loadouts": {0: l}})
 
