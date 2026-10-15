@@ -22,8 +22,13 @@ check.07: climb_ladder: 36f 1.20s loop speed=0.5 reach_err=0.0mm step=17.7deg
 check.08: cower: 60f 2.00s loop speed=0.0 reach_err=0.0mm step=1.9deg
 check.09: cower_seated: 90f 3.00s loop speed=0.0 reach_err=0.0mm step=1.6deg contact_slide=0.000mm/f
 check.10: cower_stand: 150f 5.00s loop speed=0.0 reach_err=0.0mm step=13.2deg contact_slide=0.000mm/f
-check.100: walk_stop: 18f 0.60s speed=1.6 reach_err=0.0mm step=15.2deg slide=0.036mm/f handoff_err=0.00mm idle0_err=0.00mm
-check.101: walk_text: 36f 1.20s loop speed=1.2 reach_err=0.0mm step=14.7deg slide=0.022mm/f
+check.100: walk_fl: 30f 1.00s loop speed=1.6 reach_err=0.0mm step=17.4deg slide=0.000mm/f
+check.101: walk_fr: 30f 1.00s loop speed=1.6 reach_err=0.0mm step=17.4deg slide=0.000mm/f
+check.102: walk_l: 30f 1.00s loop speed=1.6 reach_err=0.0mm step=19.4deg slide=0.000mm/f
+check.103: walk_r: 30f 1.00s loop speed=1.6 reach_err=0.0mm step=19.4deg slide=0.000mm/f
+check.104: walk_start: 18f 0.60s speed=1.6 reach_err=0.0mm step=19.8deg slide=0.038mm/f idle0_err=0.00mm handoff_err=0.00mm
+check.105: walk_stop: 18f 0.60s speed=1.6 reach_err=0.0mm step=15.2deg slide=0.036mm/f handoff_err=0.00mm idle0_err=0.00mm
+check.106: walk_text: 36f 1.20s loop speed=1.2 reach_err=0.0mm step=14.7deg slide=0.022mm/f
 check.11: crouch_idle: 90f 3.00s loop speed=0.0 reach_err=0.0mm step=0.5deg
 check.12: crouch_walk: 27f 0.90s loop speed=1.5 reach_err=0.0mm step=16.0deg slide=0.020mm/f
 check.13: curator_inspect: 360f 12.00s loop speed=0.0 reach_err=0.0mm step=9.6deg contact_slide=0.036mm/f
@@ -32,87 +37,87 @@ check.15: dance_b: 120f 4.00s loop speed=0.0 reach_err=0.0mm step=11.6deg contac
 check.16: dance_c: 120f 4.00s loop speed=0.0 reach_err=0.0mm step=6.2deg contact_slide=0.045mm/f
 check.17: death_back: 54f 1.80s speed=0.0 reach_err=0.0mm step=33.8deg
 check.18: death_back_b: 60f 2.00s speed=0.0 reach_err=0.0mm step=38.1deg
-check.19: death_front: 54f 1.80s speed=0.0 reach_err=0.0mm step=40.4deg
-check.20: death_front_b: 60f 2.00s speed=0.0 reach_err=0.0mm step=27.2deg
-check.21: death_seated_fall: 60f 2.00s speed=0.0 reach_err=0.0mm step=36.5deg
-check.22: death_seated_slump: 48f 1.60s speed=0.0 reach_err=0.0mm step=32.5deg
-check.23: death_side: 60f 2.00s speed=0.0 reach_err=0.0mm step=33.6deg
-check.24: desk_type: 60f 2.00s loop speed=0.0 reach_err=0.0mm step=13.4deg
-check.25: desk_work: 360f 12.00s loop speed=0.0 reach_err=0.0mm step=15.4deg
-check.26: downed: 90f 3.00s loop speed=0.0 reach_err=0.0mm step=0.8deg
-check.27: downed_crawl: 60f 2.00s loop speed=0.3 reach_err=0.0mm step=20.6deg palm_slide=0.000mm/f
-check.28: dozer_walk: 33f 1.10s loop speed=1.6 reach_err=0.0mm step=19.0deg slide=0.000mm/f
-check.29: dozer_walk_heavy: 33f 1.10s loop speed=1.7 reach_err=0.0mm step=22.6deg slide=0.000mm/f
-check.30: drill_place: 45f 1.50s speed=0.0 reach_err=0.0mm step=26.6deg
-check.31: fire_pistol: 9f 0.30s speed=0.0 reach_err=0.0mm step=13.0deg
-check.32: fire_rifle: 6f 0.20s speed=0.0 reach_err=0.0mm step=4.3deg
-check.33: flee: 20f 0.67s loop speed=4.0 reach_err=0.0mm step=23.1deg slide=0.039mm/f
-check.34: hands_up: 60f 2.00s loop speed=0.0 reach_err=0.0mm step=1.4deg
-check.35: heal_ally: 30f 1.00s speed=0.0 reach_err=0.0mm step=17.9deg
-check.36: hit_react: 15f 0.50s speed=0.0 reach_err=0.0mm step=34.9deg
-check.37: hit_react_back: 15f 0.50s speed=0.0 reach_err=0.0mm step=28.5deg
-check.38: hit_react_left: 15f 0.50s speed=0.0 reach_err=0.0mm step=28.6deg
-check.39: hit_react_right: 15f 0.50s speed=0.0 reach_err=0.0mm step=28.6deg
-check.40: idle: 120f 4.00s loop speed=0.0 reach_err=0.0mm step=0.3deg
-check.41: idle_alert: 90f 3.00s loop speed=0.0 reach_err=0.0mm step=1.2deg
-check.42: idle_thug: 105f 3.50s loop speed=0.0 reach_err=0.0mm step=1.8deg
-check.43: interact_high: 60f 2.00s loop speed=0.0 reach_err=0.0mm step=3.7deg
-check.44: interact_low: 60f 2.00s loop speed=0.0 reach_err=0.0mm step=3.7deg
-check.45: interact_mid: 60f 2.00s loop speed=0.0 reach_err=0.0mm step=3.7deg
-check.46: investigate_look: 120f 4.00s loop speed=0.0 reach_err=0.0mm step=0.9deg
-check.47: kick_charge: 15f 0.50s speed=0.0 reach_err=0.0mm step=16.2deg
-check.48: kick_hit: 21f 0.70s speed=0.0 reach_err=0.0mm step=44.2deg
-check.49: kneel_cuffed: 90f 3.00s loop speed=0.0 reach_err=0.0mm step=0.8deg
-check.50: lean_wall: 120f 4.00s loop speed=0.0 reach_err=0.0mm step=0.4deg
-check.51: lie_down: 90f 3.00s loop speed=0.0 reach_err=0.0mm step=0.2deg
-check.52: melee: 21f 0.70s speed=0.0 reach_err=0.0mm step=57.0deg
-check.53: mop: 120f 4.00s loop speed=0.0 reach_err=0.0mm step=3.4deg
-check.54: mug_carry_walk: 34f 1.13s loop speed=1.3 reach_err=0.0mm step=16.2deg slide=0.026mm/f
-check.55: mug_idle: 240f 8.00s loop speed=0.0 reach_err=0.0mm step=6.4deg
-check.56: pager_answer: 90f 3.00s loop speed=0.0 reach_err=0.0mm step=0.6deg
-check.57: phone_call: 120f 4.00s loop speed=0.0 reach_err=0.0mm step=4.3deg
-check.58: phone_seated: 240f 8.00s loop speed=0.0 reach_err=0.0mm step=8.9deg
-check.59: radio_call: 60f 2.00s speed=0.0 reach_err=0.0mm step=16.7deg
-check.60: rappel: 30f 1.00s loop speed=2.5 reach_err=0.0mm step=12.6deg
-check.61: reload_pistol: 45f 1.50s speed=0.0 reach_err=0.0mm step=40.0deg
-check.62: reload_rifle: 72f 2.40s speed=0.0 reach_err=0.0mm step=42.0deg
-check.63: run: 21f 0.70s loop speed=3.5 reach_err=0.0mm step=21.5deg slide=0.040mm/f
-check.64: run_b: 21f 0.70s loop speed=3.5 reach_err=0.0mm step=27.7deg slide=0.000mm/f
-check.65: run_bl: 21f 0.70s loop speed=3.5 reach_err=0.0mm step=26.7deg slide=0.000mm/f
-check.66: run_br: 21f 0.70s loop speed=3.5 reach_err=0.0mm step=27.3deg slide=0.000mm/f
-check.67: run_fl: 21f 0.70s loop speed=3.5 reach_err=0.0mm step=23.0deg slide=0.000mm/f
-check.68: run_fr: 21f 0.70s loop speed=3.5 reach_err=0.0mm step=23.9deg slide=0.000mm/f
-check.69: run_l: 21f 0.70s loop speed=3.5 reach_err=0.0mm step=25.0deg slide=0.000mm/f
-check.70: run_r: 21f 0.70s loop speed=3.5 reach_err=0.0mm step=27.0deg slide=0.000mm/f
-check.71: run_start: 18f 0.60s speed=3.5 reach_err=0.0mm step=19.5deg slide=0.028mm/f idle0_err=0.00mm handoff_err=0.00mm
-check.72: run_stop: 20f 0.67s speed=3.5 reach_err=0.0mm step=25.5deg slide=0.038mm/f handoff_err=0.00mm idle0_err=0.00mm
-check.73: shield_bang: 24f 0.80s speed=0.0 reach_err=0.0mm step=35.3deg
-check.74: shield_idle: 108f 3.60s loop speed=0.0 reach_err=0.0mm step=0.2deg
-check.75: shield_walk: 28f 0.93s loop speed=1.6 reach_err=0.0mm step=19.7deg slide=0.000mm/f
-check.76: sit_bed_read: 300f 10.00s loop speed=0.0 reach_err=0.0mm step=19.5deg
-check.77: sit_chair: 120f 4.00s loop speed=0.0 reach_err=0.0mm step=0.3deg
-check.78: sit_chair_watch: 300f 10.00s loop speed=0.0 reach_err=0.0mm step=10.5deg
-check.79: smoke: 120f 4.00s loop speed=0.0 reach_err=0.0mm step=30.5deg
-check.80: sprint: 18f 0.60s loop speed=5.75 reach_err=0.0mm step=28.7deg slide=0.053mm/f
-check.81: strafe_l: 18f 0.60s loop speed=1.2 reach_err=0.0mm step=10.8deg slide=0.006mm/f
-check.82: strafe_r: 18f 0.60s loop speed=1.2 reach_err=0.0mm step=10.9deg slide=0.006mm/f
-check.83: surrender: 48f 1.60s speed=0.0 reach_err=0.0mm step=54.8deg
-check.84: tased: 30f 1.00s loop speed=0.0 reach_err=0.0mm step=13.9deg
-check.85: teller_count: 240f 8.00s loop speed=0.0 reach_err=0.0mm step=18.6deg contact_slide=0.000mm/f
-check.86: throw_bag: 30f 1.00s speed=0.0 reach_err=0.0mm step=57.5deg
-check.87: tied: 90f 3.00s loop speed=0.0 reach_err=0.0mm step=0.9deg
-check.88: turn_l: 24f 0.80s speed=0.0 reach_err=0.0mm step=12.3deg
-check.89: turn_r: 24f 0.80s speed=0.0 reach_err=0.0mm step=12.3deg
-check.90: walk: 30f 1.00s loop speed=1.6 reach_err=0.0mm step=19.5deg slide=0.038mm/f
-check.91: walk_b: 30f 1.00s loop speed=1.6 reach_err=0.0mm step=18.3deg slide=0.000mm/f
-check.92: walk_back: 30f 1.00s loop speed=1.3 reach_err=0.0mm step=13.8deg slide=0.018mm/f
-check.93: walk_bl: 30f 1.00s loop speed=1.6 reach_err=0.0mm step=19.6deg slide=0.000mm/f
-check.94: walk_br: 30f 1.00s loop speed=1.6 reach_err=0.0mm step=19.6deg slide=0.000mm/f
-check.95: walk_fl: 30f 1.00s loop speed=1.6 reach_err=0.0mm step=17.4deg slide=0.000mm/f
-check.96: walk_fr: 30f 1.00s loop speed=1.6 reach_err=0.0mm step=17.4deg slide=0.000mm/f
-check.97: walk_l: 30f 1.00s loop speed=1.6 reach_err=0.0mm step=19.4deg slide=0.000mm/f
-check.98: walk_r: 30f 1.00s loop speed=1.6 reach_err=0.0mm step=19.4deg slide=0.000mm/f
-check.99: walk_start: 18f 0.60s speed=1.6 reach_err=0.0mm step=19.8deg slide=0.038mm/f idle0_err=0.00mm handoff_err=0.00mm
+check.19: death_crouch: 45f 1.50s speed=0.0 reach_err=0.0mm step=19.8deg
+check.20: death_downed: 36f 1.20s speed=0.0 reach_err=0.0mm step=34.2deg
+check.21: death_front: 54f 1.80s speed=0.0 reach_err=0.0mm step=40.4deg
+check.22: death_front_b: 60f 2.00s speed=0.0 reach_err=0.0mm step=27.2deg
+check.23: death_kneel: 45f 1.50s speed=0.0 reach_err=0.0mm step=48.7deg
+check.24: death_kneel_cuffed: 45f 1.50s speed=0.0 reach_err=0.0mm step=14.8deg
+check.25: death_prone: 30f 1.00s speed=0.0 reach_err=0.0mm step=30.7deg
+check.26: death_seated_fall: 60f 2.00s speed=0.0 reach_err=0.0mm step=36.5deg
+check.27: death_seated_slump: 48f 1.60s speed=0.0 reach_err=0.0mm step=32.5deg
+check.28: death_side: 60f 2.00s speed=0.0 reach_err=0.0mm step=33.6deg
+check.29: desk_type: 60f 2.00s loop speed=0.0 reach_err=0.0mm step=13.4deg
+check.30: desk_work: 360f 12.00s loop speed=0.0 reach_err=0.0mm step=15.4deg
+check.31: downed: 90f 3.00s loop speed=0.0 reach_err=0.0mm step=0.8deg
+check.32: downed_crawl: 60f 2.00s loop speed=0.3 reach_err=0.0mm step=20.6deg palm_slide=0.000mm/f
+check.33: dozer_walk: 33f 1.10s loop speed=1.6 reach_err=0.0mm step=19.0deg slide=0.000mm/f
+check.34: dozer_walk_heavy: 33f 1.10s loop speed=1.7 reach_err=0.0mm step=22.6deg slide=0.000mm/f
+check.35: drill_place: 45f 1.50s speed=0.0 reach_err=0.0mm step=26.6deg
+check.36: fire_pistol: 9f 0.30s speed=0.0 reach_err=0.0mm step=13.0deg
+check.37: fire_rifle: 6f 0.20s speed=0.0 reach_err=0.0mm step=4.3deg
+check.38: flee: 20f 0.67s loop speed=4.0 reach_err=0.0mm step=23.1deg slide=0.039mm/f
+check.39: hands_up: 60f 2.00s loop speed=0.0 reach_err=0.0mm step=1.4deg
+check.40: heal_ally: 30f 1.00s speed=0.0 reach_err=0.0mm step=17.9deg
+check.41: hit_react: 15f 0.50s speed=0.0 reach_err=0.0mm step=34.9deg
+check.42: hit_react_back: 15f 0.50s speed=0.0 reach_err=0.0mm step=28.5deg
+check.43: hit_react_left: 15f 0.50s speed=0.0 reach_err=0.0mm step=28.6deg
+check.44: hit_react_right: 15f 0.50s speed=0.0 reach_err=0.0mm step=28.6deg
+check.45: idle: 120f 4.00s loop speed=0.0 reach_err=0.0mm step=0.3deg
+check.46: idle_alert: 90f 3.00s loop speed=0.0 reach_err=0.0mm step=1.2deg
+check.47: idle_thug: 105f 3.50s loop speed=0.0 reach_err=0.0mm step=1.8deg
+check.48: interact_high: 60f 2.00s loop speed=0.0 reach_err=0.0mm step=3.7deg
+check.49: interact_low: 60f 2.00s loop speed=0.0 reach_err=0.0mm step=3.7deg
+check.50: interact_mid: 60f 2.00s loop speed=0.0 reach_err=0.0mm step=3.7deg
+check.51: investigate_look: 120f 4.00s loop speed=0.0 reach_err=0.0mm step=0.9deg
+check.52: kick_charge: 15f 0.50s speed=0.0 reach_err=0.0mm step=16.2deg
+check.53: kick_hit: 21f 0.70s speed=0.0 reach_err=0.0mm step=44.2deg
+check.54: kneel_cuffed: 90f 3.00s loop speed=0.0 reach_err=0.0mm step=0.8deg
+check.55: lean_wall: 120f 4.00s loop speed=0.0 reach_err=0.0mm step=0.4deg
+check.56: lie_down: 90f 3.00s loop speed=0.0 reach_err=0.0mm step=0.2deg
+check.57: melee: 21f 0.70s speed=0.0 reach_err=0.0mm step=57.0deg
+check.58: mop: 120f 4.00s loop speed=0.0 reach_err=0.0mm step=3.4deg
+check.59: mug_carry_walk: 34f 1.13s loop speed=1.3 reach_err=0.0mm step=16.2deg slide=0.026mm/f
+check.60: mug_idle: 240f 8.00s loop speed=0.0 reach_err=0.0mm step=6.4deg
+check.61: pager_answer: 90f 3.00s loop speed=0.0 reach_err=0.0mm step=0.6deg
+check.62: phone_call: 120f 4.00s loop speed=0.0 reach_err=0.0mm step=4.3deg
+check.63: phone_seated: 240f 8.00s loop speed=0.0 reach_err=0.0mm step=8.9deg
+check.64: radio_call: 60f 2.00s speed=0.0 reach_err=0.0mm step=16.7deg
+check.65: rappel: 30f 1.00s loop speed=2.5 reach_err=0.0mm step=12.6deg
+check.66: reload_pistol: 45f 1.50s speed=0.0 reach_err=0.0mm step=40.0deg
+check.67: reload_rifle: 72f 2.40s speed=0.0 reach_err=0.0mm step=42.0deg
+check.68: run: 21f 0.70s loop speed=3.5 reach_err=0.0mm step=21.5deg slide=0.040mm/f
+check.69: run_b: 21f 0.70s loop speed=3.5 reach_err=0.0mm step=27.7deg slide=0.000mm/f
+check.70: run_bl: 21f 0.70s loop speed=3.5 reach_err=0.0mm step=26.7deg slide=0.000mm/f
+check.71: run_br: 21f 0.70s loop speed=3.5 reach_err=0.0mm step=27.3deg slide=0.000mm/f
+check.72: run_fl: 21f 0.70s loop speed=3.5 reach_err=0.0mm step=23.0deg slide=0.000mm/f
+check.73: run_fr: 21f 0.70s loop speed=3.5 reach_err=0.0mm step=23.9deg slide=0.000mm/f
+check.74: run_l: 21f 0.70s loop speed=3.5 reach_err=0.0mm step=25.0deg slide=0.000mm/f
+check.75: run_r: 21f 0.70s loop speed=3.5 reach_err=0.0mm step=27.0deg slide=0.000mm/f
+check.76: run_start: 18f 0.60s speed=3.5 reach_err=0.0mm step=19.5deg slide=0.028mm/f idle0_err=0.00mm handoff_err=0.00mm
+check.77: run_stop: 20f 0.67s speed=3.5 reach_err=0.0mm step=25.5deg slide=0.038mm/f handoff_err=0.00mm idle0_err=0.00mm
+check.78: shield_bang: 24f 0.80s speed=0.0 reach_err=0.0mm step=35.3deg
+check.79: shield_idle: 108f 3.60s loop speed=0.0 reach_err=0.0mm step=0.2deg
+check.80: shield_walk: 28f 0.93s loop speed=1.6 reach_err=0.0mm step=19.7deg slide=0.000mm/f
+check.81: sit_bed_read: 300f 10.00s loop speed=0.0 reach_err=0.0mm step=19.5deg
+check.82: sit_chair: 120f 4.00s loop speed=0.0 reach_err=0.0mm step=0.3deg
+check.83: sit_chair_watch: 300f 10.00s loop speed=0.0 reach_err=0.0mm step=10.5deg
+check.84: smoke: 120f 4.00s loop speed=0.0 reach_err=0.0mm step=30.5deg
+check.85: sprint: 18f 0.60s loop speed=5.75 reach_err=0.0mm step=28.7deg slide=0.053mm/f
+check.86: strafe_l: 18f 0.60s loop speed=1.2 reach_err=0.0mm step=10.8deg slide=0.006mm/f
+check.87: strafe_r: 18f 0.60s loop speed=1.2 reach_err=0.0mm step=10.9deg slide=0.006mm/f
+check.88: surrender: 48f 1.60s speed=0.0 reach_err=0.0mm step=54.8deg
+check.89: tased: 30f 1.00s loop speed=0.0 reach_err=0.0mm step=13.9deg
+check.90: teller_count: 240f 8.00s loop speed=0.0 reach_err=0.0mm step=18.6deg contact_slide=0.000mm/f
+check.91: throw_bag: 30f 1.00s speed=0.0 reach_err=0.0mm step=57.5deg
+check.92: tied: 90f 3.00s loop speed=0.0 reach_err=0.0mm step=0.9deg
+check.93: turn_l: 24f 0.80s speed=0.0 reach_err=0.0mm step=12.3deg
+check.94: turn_r: 24f 0.80s speed=0.0 reach_err=0.0mm step=12.3deg
+check.95: walk: 30f 1.00s loop speed=1.6 reach_err=0.0mm step=19.5deg slide=0.038mm/f
+check.96: walk_b: 30f 1.00s loop speed=1.6 reach_err=0.0mm step=18.3deg slide=0.000mm/f
+check.97: walk_back: 30f 1.00s loop speed=1.3 reach_err=0.0mm step=13.8deg slide=0.018mm/f
+check.98: walk_bl: 30f 1.00s loop speed=1.6 reach_err=0.0mm step=19.6deg slide=0.000mm/f
+check.99: walk_br: 30f 1.00s loop speed=1.6 reach_err=0.0mm step=19.6deg slide=0.000mm/f
 clip.aim_pistol: 90f loop=True speed_mps=0.0
 clip.aim_rifle: 90f loop=True speed_mps=0.0
 clip.bartender_pour: 150f loop=True speed_mps=0.0 events=lift@2,pour_end@77,pour_start@39,set_down@110
@@ -132,8 +137,13 @@ clip.dance_b: 120f loop=True speed_mps=0.0 bpm=120 beats=8 beat_frames=15
 clip.dance_c: 120f loop=True speed_mps=0.0 bpm=120 beats=8 beat_frames=15
 clip.death_back: 54f loop=False speed_mps=0.0 events=impact@35
 clip.death_back_b: 60f loop=False speed_mps=0.0 events=impact@44,step_l@21,step_r@12
+clip.death_crouch: 45f loop=False speed_mps=0.0 events=impact@26
+clip.death_downed: 36f loop=False speed_mps=0.0 events=impact@20
 clip.death_front: 54f loop=False speed_mps=0.0 events=impact@35
 clip.death_front_b: 60f loop=False speed_mps=0.0 events=impact@38,knees@16
+clip.death_kneel: 45f loop=False speed_mps=0.0 events=impact@24
+clip.death_kneel_cuffed: 45f loop=False speed_mps=0.0 events=impact@24
+clip.death_prone: 30f loop=False speed_mps=0.0 events=impact@3
 clip.death_seated_fall: 60f loop=False speed_mps=0.0 events=impact@34
 clip.death_seated_slump: 48f loop=False speed_mps=0.0 events=impact@22
 clip.death_side: 60f loop=False speed_mps=0.0 events=impact@36
@@ -215,7 +225,7 @@ clip.walk_r: 30f loop=True speed_mps=1.6 dir_deg=90 dir_godot=(1.000,0,-0.000) f
 clip.walk_start: 18f loop=False speed_mps=1.6 events=step_r@15 handoff_frame=3
 clip.walk_stop: 18f loop=False speed_mps=1.6 events=step_l@14 handoff_frame=0
 clip.walk_text: 36f loop=True speed_mps=1.2
-clips: 102
+clips: 107
 cower_seated_seat: cower_seated: the npc_seat chair (seat top 0.47 m, root on the floor under the seat centre), no desk; hips joint 0.54 m above the root, feet flat 0.34 m ahead (balls on the floor, heels just up), the trunk curled forward over the knees, forearms over the head
 cower_stand_space: cower_stand: free-standing, in place; the rearmost skin is 0.19 m behind the root, so a wall face at Godot z = +0.21 (or further back) clears it: back it up to a wall there. Flinches at flinch_1@39, flinch_2@108
 curator_painting: curator_inspect: the painting's centre 1.55 m high on a wall whose face is 0.80 m ahead of the root (Godot z = -0.80), the root facing it; leaning in, the body comes to 0.49 m from the wall; steps back 0.38 m (step_back_r@93, step_back_l@110: the ankles reach Godot z = 0.39) and forward again (step_fwd_l@256, step_fwd_r@272); planted steps, the feet back on their frame-0 plants (0.0 mm), in place; keep 0.73 m clear behind the root
@@ -224,7 +234,7 @@ curve.run_stop: root_m=0.0000,0.1123,0.2161,0.3116,0.3989,0.4784,0.5503,0.6147,0
 curve.walk_start: root_m=0.0000,0.0013,0.0052,0.0118,0.0214,0.0341,0.0499,0.0691,0.0918,0.1181,0.1481,0.1821,0.2202,0.2624,0.3090,0.3600,0.4133,0.4667,0.5200 total_m=0.520 handoff=walk@3
 curve.walk_stop: root_m=0.0000,0.0524,0.1027,0.1507,0.1961,0.2385,0.2777,0.3133,0.3452,0.3729,0.3963,0.4150,0.4287,0.4371,0.4400,0.4400,0.4400,0.4400,0.4400 total_m=0.440 handoff=walk@0
 dance_sync: dance_a, dance_b, dance_c: 8 beats at 120 BPM per loop (120 f, a beat every 15 f, beat 1 on frame 0; the knees are lowest just after each beat); for a track at B BPM play at speed_scale = B / 120 and start the clip on a downbeat. In place: dance_a step-touches (R steps out 0.15 m on beat 1, L touches beside it on 2, L steps back on 3, R touches home on 4, twice per loop; feet planted between the steps), dance_b / dance_c keep both balls planted (the heels peel up); ankles within Godot x -0.14..0.23 m (keep ~0.6 m clear around the root)
-death_end_poses: last frame, Godot root space: death_front_b: hips (0.03,0.27,-0.86) head (-0.03,0.37,-1.48) highest joint 0.38 m; death_back_b: hips (-0.02,0.28,1.02) head (-0.07,0.18,1.64) highest joint 0.59 m; death_side: hips (-0.30,0.25,-0.08) head (-0.38,0.37,0.53) highest joint 0.49 m; death_seated_slump: hips (0.00,0.53,0.02) head (-0.03,0.82,-0.28) highest joint 0.82 m; death_seated_fall: hips (-0.50,0.26,-0.02) head (-1.11,0.37,0.05) highest joint 0.50 m
+death_end_poses: last frame, Godot root space: death_front_b: hips (0.03,0.27,-0.86) head (-0.03,0.37,-1.48) highest joint 0.38 m; death_back_b: hips (-0.02,0.28,1.02) head (-0.07,0.18,1.64) highest joint 0.59 m; death_side: hips (-0.30,0.25,-0.08) head (-0.38,0.37,0.53) highest joint 0.49 m; death_seated_slump: hips (0.00,0.53,0.02) head (-0.03,0.82,-0.28) highest joint 0.82 m; death_seated_fall: hips (-0.50,0.26,-0.02) head (-1.11,0.37,0.05) highest joint 0.50 m; death_crouch: hips (-0.42,0.26,0.04) head (-1.03,0.37,0.11) highest joint 0.50 m; death_kneel_cuffed: hips (0.02,0.19,-0.46) head (-0.03,0.28,-1.08) highest joint 0.40 m; death_kneel: hips (0.02,0.19,-0.46) head (-0.03,0.28,-1.08) highest joint 0.29 m; death_prone: hips (0.00,0.15,-0.80) head (-0.04,0.22,-1.43) highest joint 0.25 m; death_downed: hips (0.00,0.16,0.06) head (0.00,0.14,0.69) highest joint 0.41 m
 death_variants: deaths (feet planted at the start, root never moves): face down = death_front (pitch) and death_front_b (crumple onto the knees at `knees`, then forward); onto the back = death_back and death_back_b (two steps back, sits down and falls; the body ends ~1.0-1.9 m behind the root); death_side = spun ~100 deg to the left and dropped onto the left side (pick it for side hits or at random). `impact` = the body hits the floor. From the impact on the body rests on the floor (lowest skin vertex at the root plane, nothing below it).
 downed_crawl_pose: downed_crawl: prone, head toward -Z (forward); hips joint 0.30 m behind the root (Godot z +0.30), the head ~0.5 m ahead, the feet ~1.2 m behind; the palms plant at z -0.56, x +-0.25 and stay world-still while A moves the root forward at speed_mps (2 pulls per loop, right hand down at 0, left at 0.5). An NPC / bleed-out crawl (PD2 downed players do not crawl): the body rests on the floor every frame.
 dozer_walk_heavy_speed: dozer_walk_heavy: the Wrecker's advance stomp, 1.7 m/s native = 1.8 m/s (EnemyDef.params.advance_speed) on the 1.88 m Wrecker (motion_scale 1.056): speed_scale 1.0 while advancing; a step every 0.55 s (HeavySpecialTweak.wrecker_step_interval_s), step_r@0 / step_l@16 = heel strikes. Same gun hold at HandR/Socket as dozer_walk; to use it set EnemyDef.params.anim_walk_clip = dozer_walk_heavy and clip_speeds 1.7.
@@ -244,6 +254,8 @@ mug_carry_walk_speed: mug_carry_walk is a careful carry at 1.3 m/s native (walk 
 mug_grip: basis x=(1.0000,-0.0000,0.0000) y=(0.0000,0.9511,-0.3090) z=(0.0000,0.3090,0.9511) origin=(-0.0280,-0.0547,0.0387) relative to HandR/Socket; mug r 0.041 m, h 0.095 m: origin at the base centre, +Y = up the mug axis, handle toward -X; held around the body in the right hand (thumb on top); level in mug_carry_walk / mug_idle, tipped to the lips at `sip`
 npc_seat: sit_chair, desk_type, desk_work, phone_seated, sit_chair_watch: root on the floor under the seat centre, facing the desk; seat top 0.47 m (pelvis on it, thighs level, feet flat 0.40 m ahead), desk top 0.74 m with its front edge 0.20-0.25 m ahead of the root (keyboard 0.36 m ahead, mouse 0.27 m right; phone_seated's note pad 0.10 m left; sit_chair_watch's joystick/mouse 0.21 m right, monitors ahead from -25 to +25 deg)
 phone_grip: basis x=(0.0000,0.9978,0.0663) y=(-0.0000,0.0663,-0.9978) z=(-1.0000,0.0000,-0.0000) origin=(0.0115,-0.0083,0.0048) relative to HandR/Socket; phone 0.072 x 0.147 x 0.009 m slab: origin at its centre, +Y = the speaker end, the screen faces +Z, held to the right ear in phone_call / phone_seated (palm on the back, fingers up the phone)
+pose_death_checks: death_crouch: start=crouch_idle@0 src0_err=0.00mm trunk_rise=0.0cm highest_joint=1.13m (start 1.13m); death_kneel_cuffed: start=kneel_cuffed@0 src0_err=0.00mm trunk_rise=0.0cm highest_joint=1.31m (start 1.31m); death_kneel: start=surrender@48 src0_err=0.00mm trunk_rise=0.0cm highest_joint=1.52m (start 1.52m); death_prone: start=lie_down@0 src0_err=0.00mm trunk_rise=3.7cm highest_joint=0.49m (start 0.47m); death_downed: start=downed@0 src0_err=0.00mm trunk_rise=0.0cm highest_joint=0.70m (start 0.70m)
+pose_deaths: pose-aware deaths (PO6-18, D-114 §7), for an NPC killed in a pose other than standing / seated; each starts EXACTLY on its source frame (switch without a crossfade), the root never moves, the trunk and head never rise above their start height and nothing rises above the start pose's highest joint; `impact` = the body hits the floor, from which on it rests on the floor (lowest skin vertex at the root plane). death_crouch (45 f, impact@26): from crouch_idle frame 0; a jolt, the hips sink and slip left off the planted feet, topples onto the left side, knees bent (hips ~0.4 m, head ~1.0 m to the left). death_kneel_cuffed (45 f, impact@24): from kneel_cuffed frame 0; pitches forward onto chest and face, the wrists stay together at the small of the back the whole clip, the legs slide out behind (ends face down, hips ~0.46 m ahead). death_kneel (45 f, impact@24): from surrender's LAST frame (on the knees, hands on the head: the free-hands kneel), the hands slide off the head, the arms go limp, same forward fall and end pose as death_kneel_cuffed with the arms by the sides. death_prone (30 f, impact@3 = the hit jolt): from lie_down frame 0; jolt, then limp in place, the head drops onto the left cheek, the hands slide off the head onto the floor beside it. death_downed (36 f, impact@20): from downed frame 0; jolt, the support hand slips, falls back flat (supine), the gun arm drops to the side. ENV A by pre-death pose: crouch_idle / crouch_walk / cower -> death_crouch (crouch_walk and cower crossfade ~0.15 s, their frame 0 differs); kneel_cuffed -> death_kneel_cuffed; surrender (kneeling end) -> death_kneel; tied (kneeling, wrists bound behind) -> death_kneel_cuffed (crossfade ~0.15 s: sits on the heels, head down); lie_down and a tied hostage on the floor -> death_prone; downed / downed_crawl -> death_downed (crawl crossfades). Fall back to death_front / death_back if a clip is absent.
 rag_grip: basis x=(-0.0000,-0.9511,0.3090) y=(1.0000,-0.0000,0.0000) z=(0.0000,0.3090,0.9511) origin=(-0.0040,-0.0023,0.0316) relative to HandR/Socket; bar rag (a folded towel) 0.20 x 0.022 x 0.13 m: origin at the centre of its underside, +Y = up; flat under the right palm (fingers toward -Z), lying on the bar top in bartender_wipe
 rappel_rope: rappel: the rope is a vertical line at Godot x=0.000 z=-0.240 (root space, 0.24 m in front of the root; the character faces the wall, -Z). Fists (grip centres = HandL/HandR Socket origins, rope along socket +Y) at frame 0: guide HandL (0.000,1.720,-0.240) on the line, brake HandR (0.120,1.000,-0.170) at the right hip (0.12 m right of the line: the tail runs from the descender at the harness through the brake fist, then hangs). Both fists ride the body: 0..+0.33 m above their frame-0 height during the loop (the body is braked for the 4 wall-contact frames, rising 0.333 m against the root, then drops back). Wall: the balls of the feet brace at Godot z=-0.80 (frames 0..4, world-still at speed_mps=2.5); a free-hanging drop (skylight) just plays it without a wall. Root at the bottom of the link: the feet are 0.48 m+ above it
 seated_deaths: seated deaths (D-110), for an NPC killed while seated (desk_work, phone_seated, sit_chair_watch, cower_seated): both start from desk_work frame 0 on the npc chair (seat top 0.47 m, root on the floor under the seat centre, desk top 0.74 m with its near edge 0.22 m ahead); the root never moves. death_seated_slump: jolted back, then folds forward, head and right forearm on the desk top at `impact`, the left arm hanging; the hips stay on the seat (use it for a frontal hit or a melee kill). death_seated_fall: tips over the chair's left side and lands on the floor on its left side at `impact` (hips ~0.5 m, head ~1.1 m to the left, knees under the desk front), lowest skin vertex on the root plane from `impact` on (any other hit).
