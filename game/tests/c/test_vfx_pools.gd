@@ -253,7 +253,9 @@ func test_standalone_scenes_for_viewmodel() -> void:
 	mf.scale = Vector3.ONE * 0.12
 	mf.flash()
 	assert_true(mf.is_flashing(), "flash visible")
-	assert_true((mf.get_node("Flame") as Node3D).scale.z > 1.0, "flame ~1 m along -Z at size 1")
+	# D-113 rifle cone ~1.4 m at size 1; PO6-13 scales it by SIZE_K and the brake factor.
+	var cone_min: float = 1.4 * MuzzleFlash.SIZE_K * MuzzleFlash.BRAKE_CONE_K * 0.8
+	assert_true((mf.get_node("Flame") as Node3D).scale.z > cone_min, "flame along -Z at size 1")
 	await wait_seconds(0.2)
 	assert_false(mf.is_flashing(), "self-timed hide")
 	mf.free()

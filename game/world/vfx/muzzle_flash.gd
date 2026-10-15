@@ -2,9 +2,11 @@
 ## both the third-person pool (MuzzleFx) and ENV P's first-person viewmodel.
 ## Root -Z points down the barrel; at size 1 a rifle flash is ~1 m long (ENV P scales the root to ~0.12 m).
 ## API (P's FP contract):
-##   flash(size, suppressed, weapon_class = &"", variant = -1)  show one shot. weapon_class picks the shape
-##       (&"pistol", &"smg", &"rifle", &"shotgun", &"lmg", &"sniper"; &"" / &"assault_rifle" / unknown = rifle);
+##   flash(size, suppressed, weapon_class = &"", variant = -1, brake = -1)  show one shot. weapon_class picks the
+##       shape (&"pistol", &"smg", &"rifle", &"shotgun", &"lmg", &"sniper"; &"" / &"assault_rifle" / unknown = rifle);
 ##       variant 0..3 picks the atlas petals, -1 = random from GameRng.stream(RNG_STREAM). Random roll and scale per shot.
+##       brake: 1 = the muzzle has a brake/compensator (shorter forward cone + two side-port jets), 0 = bare muzzle,
+##       -1 = by class (BRAKE_SHAPES). The root sits at the brake's `Muzzle` marker (its front face, PO6-13).
 ##   burst_end()       play the trailing smoke wisp now (after the last shot of a burst).
 ##   fp_scale(enabled) shrink sparks and wisp for a camera ~0.5 m away (first person).
 ##   tick(delta)       advance (automatic in _process while `auto_tick`; set it false and drive tick() yourself).
@@ -17,7 +19,18 @@
 class_name MuzzleFlash
 extends Node3D
 
-const FLASH_S: float = 0.05
+## PO6-13 / D-114 §8: toned down from D-113 (0.05 s, size x1): about half the size, 3 -> 2 frames at 60 fps.
+const FLASH_S: float = 0.034
+## Global size factor on every class shape (keeps the proportions; FP and TP alike).
+const SIZE_K: float = 0.6
+## Classes that carry a muzzle brake / compensator by default (ENV B brake meshes on long guns).
+const BRAKE_SHAPES: Array[StringName] = [&"rifle", &"lmg", &"sniper", &"shotgun"]
+## With a brake: forward cone length factor, and the side-port jets (size-1 metres: width, length; angle off
+## the barrel in degrees; offset behind the front face along +Z).
+const BRAKE_CONE_K: float = 0.75
+const PORT_JET: Vector2 = Vector2(0.16, 0.34)
+const PORT_ANGLE: float = 80.0
+const PORT_BACK: float = 0.03
 const RNG_STREAM: StringName = &"vfx_muzzle"
 const SMOKE_LAYER: Dictionary = {
 	"kind": &"puff", "count": 4, "life": 0.7, "speed": Vector2(0.3, 0.9), "spread": 25.0, "gravity": -0.4,
@@ -28,17 +41,17 @@ const SMOKE_LAYER: Dictionary = {
 ## front = front star size; sparks = Vector2i(min, max) spark count.
 const SHAPES: Dictionary[StringName, Dictionary] = {
 	&"pistol": {"core": 0.42, "cone": Vector2(0.38, 0.62), "petals": 3, "petal": Vector2(0.2, 0.3), "angle": 62.0,
-		"front": 0.55, "sparks": Vector2i(2, 3)},
+		"front": 0.55, "sparks": Vector2i(1, 2)},
 	&"smg": {"core": 0.4, "cone": Vector2(0.36, 0.72), "petals": 3, "petal": Vector2(0.18, 0.3), "angle": 58.0,
-		"front": 0.5, "sparks": Vector2i(2, 3)},
+		"front": 0.5, "sparks": Vector2i(1, 2)},
 	&"rifle": {"core": 0.42, "cone": Vector2(0.5, 1.4), "petals": 4, "petal": Vector2(0.2, 0.42), "angle": 55.0,
-		"front": 0.7, "sparks": Vector2i(2, 4)},
+		"front": 0.7, "sparks": Vector2i(1, 2)},
 	&"lmg": {"core": 0.46, "cone": Vector2(0.54, 1.5), "petals": 4, "petal": Vector2(0.22, 0.48), "angle": 55.0,
-		"front": 0.75, "sparks": Vector2i(3, 5)},
+		"front": 0.75, "sparks": Vector2i(1, 3)},
 	&"shotgun": {"core": 0.62, "cone": Vector2(0.75, 0.8), "petals": 6, "petal": Vector2(0.3, 0.55), "angle": 68.0,
-		"front": 1.05, "sparks": Vector2i(3, 5)},
+		"front": 1.05, "sparks": Vector2i(1, 3)},
 	&"sniper": {"core": 0.6, "cone": Vector2(0.6, 1.9), "petals": 4, "petal": Vector2(0.3, 0.7), "angle": 60.0,
-		"front": 1.0, "sparks": Vector2i(3, 5)},
+		"front": 1.0, "sparks": Vector2i(1, 3)},
 }
 const MAX_PETALS: int = 6
 const MAX_SPARKS: int = 5
@@ -49,7 +62,7 @@ const CLASS_ALIASES: Dictionary[StringName, StringName] = {
 }
 const SPARK_COLOR: Color = Color(1.0, 0.72, 0.36)
 const SPARK_LIFE_S: Vector2 = Vector2(0.05, 0.11)
-const SPARK_SPEED: Vector2 = Vector2(9.0, 18.0)
+const SPARK_SPEED: Vector2 = Vector2(6.0, 12.0)
 const WISP_PUFFS: int = 3
 const WISP_LIFE_S: Vector2 = Vector2(0.6, 1.2)
 const WISP_COLOR: Color = Color(0.55, 0.55, 0.53, 0.2)
@@ -64,6 +77,8 @@ const FP_SCALE: float = 0.45
 ## Last shot's resolved shape and atlas variant (tests / tools).
 var last_shape: StringName = &"rifle"
 var last_variant: int = 0
+## Last shot had brake side-port jets (tests / tools).
+var last_brake: bool = false
 
 var _left: float = 0.0
 ## Engine.get_frames_drawn() when the flash started: it stays up for at least one drawn frame (hitch-proof).
@@ -82,6 +97,7 @@ var _wisp: Node3D
 var _smoke: GeometryInstance3D
 var _flame_quads: Array[MeshInstance3D] = []
 var _petal_quads: Array[MeshInstance3D] = []
+var _port_quads: Array[MeshInstance3D] = []
 var _spark_vel: PackedVector3Array = PackedVector3Array()
 var _spark_left: PackedFloat32Array = PackedFloat32Array()
 var _spark_len: PackedFloat32Array = PackedFloat32Array()
@@ -108,8 +124,10 @@ static func shape_of(weapon_class: StringName) -> StringName:
 
 
 ## Show the flash. `size` scales everything (1 = rifle cone ~1 m, relative to the root's own scale).
-func flash(size: float = 1.0, suppressed: bool = false, weapon_class: StringName = &"", variant: int = -1) -> void:
+func flash(size: float = 1.0, suppressed: bool = false, weapon_class: StringName = &"", variant: int = -1,
+		brake: int = -1) -> void:
 	var rng: RandomNumberGenerator = GameRng.stream(RNG_STREAM)
+	size *= SIZE_K
 	_size = size
 	var shown: bool = not suppressed
 	_star.visible = shown
@@ -120,7 +138,9 @@ func flash(size: float = 1.0, suppressed: bool = false, weapon_class: StringName
 		last_shape = shape_of(weapon_class)
 		last_variant = posmod(variant, VfxTextures.MUZZLE_VARIANTS) if variant >= 0 \
 			else rng.randi_range(0, VfxTextures.MUZZLE_VARIANTS - 1)
+		last_brake = BRAKE_SHAPES.has(last_shape) if brake < 0 else brake == 1
 		_shape(SHAPES[last_shape], size, last_variant, rng)
+		_ports(size, last_variant, rng)
 		_left = FLASH_S
 		_drawn_at = Engine.get_frames_drawn()
 	_smoke.scale = Vector3.ONE * (0.6 if suppressed else 1.0)
@@ -206,7 +226,9 @@ func _shape(sh: Dictionary, size: float, variant: int, rng: RandomNumberGenerato
 	var core: float = float(sh["core"]) * size * rng.randf_range(0.85, 1.15)
 	_star.scale = Vector3.ONE * core
 	var cone: Vector2 = sh["cone"]
-	_flame.scale = Vector3(cone.x * size * jitter, cone.x * size * jitter, cone.y * size * rng.randf_range(0.85, 1.2))
+	var cone_k: float = BRAKE_CONE_K if last_brake else 1.0
+	_flame.scale = Vector3(cone.x * size * jitter, cone.x * size * jitter,
+		cone.y * size * cone_k * rng.randf_range(0.85, 1.2))
 	_flame.rotation = Vector3(0.0, 0.0, roll)
 	for k: int in range(_flame_quads.size()):
 		_set_cell(_flame_quads[k], VfxTextures.MUZZLE_ROW_SIDE, variant + k * 2)
@@ -245,6 +267,32 @@ func _shape(sh: Dictionary, size: float, variant: int, rng: RandomNumberGenerato
 		_spark_len[i] = rng.randf_range(0.08, 0.18) * size * k_fp
 		sp.position = Vector3(0.0, 0.0, -0.05 * size)
 		_orient_spark(i)
+
+
+## Brake side-port jets: two short petals almost square to the barrel, left and right, just behind the front face.
+func _ports(size: float, variant: int, rng: RandomNumberGenerator) -> void:
+	for i: int in range(_port_quads.size()):
+		var q: MeshInstance3D = _port_quads[i]
+		q.visible = last_brake
+		if not last_brake:
+			continue
+		var radial: Vector3 = Vector3.RIGHT if i == 0 else Vector3.LEFT
+		var a: float = deg_to_rad(PORT_ANGLE) * rng.randf_range(0.92, 1.05)
+		var d: Vector3 = (Vector3.FORWARD * cos(a) + radial * sin(a)).normalized()
+		var x: Vector3 = d.cross(Vector3.UP).normalized()
+		var plen: float = PORT_JET.y * size * rng.randf_range(0.8, 1.2)
+		var wid: float = PORT_JET.x * size * rng.randf_range(0.85, 1.15)
+		q.transform = Transform3D(Basis(x * wid, d * plen, x.cross(d).normalized()), Vector3(0.0, 0.0, PORT_BACK * size))
+		_set_cell(q, VfxTextures.MUZZLE_ROW_SIDE, variant + 3 + i)
+
+
+## Side-port jets shown by the last flash (tests).
+func port_count() -> int:
+	var n: int = 0
+	for q: MeshInstance3D in _port_quads:
+		if q.visible and _petals.visible:
+			n += 1
+	return n
 
 
 ## Point a quad's own material at atlas cell (row, variant). Each quad owns its material (ENV P may swap it for
@@ -378,6 +426,11 @@ func _build() -> void:
 		var q: MeshInstance3D = _quad("Petal%d" % i, side.duplicate(), Vector3(0.0, 0.5, 0.0))
 		_petals.add_child(q)
 		_petal_quads.append(q)
+	for side_name: String in ["PortR", "PortL"]:
+		var q: MeshInstance3D = _quad(side_name, side.duplicate(), Vector3(0.0, 0.5, 0.0))
+		q.visible = false
+		_petals.add_child(q)
+		_port_quads.append(q)
 	add_child(_petals)
 	_sparks = Node3D.new()
 	_sparks.name = "Sparks"

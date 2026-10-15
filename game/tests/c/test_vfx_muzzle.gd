@@ -37,11 +37,33 @@ func test_class_shapes() -> void:
 	assert_true(cone[&"sniper"] > cone[&"rifle"] and cone[&"rifle"] > cone[&"pistol"], "cone lengths %s" % cone)
 	assert_true(cone[&"shotgun"] < cone[&"rifle"], "shotgun: short")
 	_mf.flash(1.0, false, &"shotgun", 0)
-	assert_true(_mf.get_node("Flame").scale.x > 0.6, "shotgun: wide")
+	assert_true(_mf.get_node("Flame").scale.x > 0.6 * MuzzleFlash.SIZE_K, "shotgun: wide")
 	assert_true(_mf.petal_count() > 4, "shotgun: more petals")
 	assert_eq(MuzzleFlash.shape_of(&""), &"rifle", "&\"\" = rifle")
 	assert_eq(MuzzleFlash.shape_of(&"assault_rifle"), &"rifle")
 	assert_eq(MuzzleFlash.shape_of(&"melee_or_unknown"), &"rifle")
+
+
+## PO6-13 / D-114 §8: toned down (half-ish size and duration) and long guns emit side jets from a brake.
+func test_po6_13_toned_down_with_brake_ports() -> void:
+	assert_true(MuzzleFlash.FLASH_S <= 0.035, "flash 2 frames at 60 fps (was 3)")
+	assert_true(MuzzleFlash.SIZE_K * MuzzleFlash.BRAKE_CONE_K <= 0.5, "long-gun flash roughly halved")
+	assert_true(MuzzleFx.LIGHT_ENERGY <= 2.5 and MuzzleFx.LIGHT_S <= 0.04, "light roughly halved")
+	_mf.flash(1.0, false, &"rifle", 0)
+	assert_true(_mf.last_brake, "rifle has a brake by default")
+	assert_eq(_mf.port_count(), 2, "two side-port jets")
+	var braked: float = _mf.cone_length()
+	_mf.hide_flash()
+	_mf.flash(1.0, false, &"rifle", 0, 0)
+	assert_eq(_mf.port_count(), 0, "bare muzzle: no ports")
+	assert_true(_mf.cone_length() > braked, "brake shortens the forward cone")
+	_mf.hide_flash()
+	_mf.flash(1.0, false, &"pistol", 0)
+	assert_false(_mf.last_brake, "pistols have no brake")
+	assert_eq(_mf.port_count(), 0)
+	_mf.hide_flash()
+	_mf.flash(1.0, true, &"rifle", 0)
+	assert_eq(_mf.port_count(), 0, "suppressed: no ports")
 
 
 func test_variants_use_the_atlas() -> void:
