@@ -910,3 +910,31 @@ into the list as PO6-10/PO6-09. Rulings made with it:
    `Muzzle` marker and the outermost `Muzzle` wins (no code change); optional `MuzzlePortL`/`MuzzlePortR` for side ports.
 9. **Team:** the previous sessions are not reachable from this account; the new LEAD (session_01XAPqmFJ32zHKLK9Sezymym)
    spawns fresh A, B, C, D and P sessions (board Sessions table).
+
+## D-115: finish every existing heist before a new one (2026-10-15, LEAD; product owner)
+PO: "flesh out every existing heist as previously documented before adding new ones." No new heist (Ostrander Federal,
+Afterhours, Rolling Thunder; `docs/process/next_heist.md` §1) starts until all five existing heists meet their own design
+doc (`docs/design/heists/<id>.md`) and the D-111 polish gate. Per heist "done" = (1) every objective, variant, loot,
+door/lock table and NPC role in the design doc exists and works; (2) final art (G2) with lighting and props, no greybox;
+(3) a windowed e2e flow for each mode the heist supports (stealth and/or loud) passes on the real menus; (4) a PO-6-style
+windowed real-input pass by ENV P with no STUCK/snag rows; (5) briefing, strings, music, VO and HUD markers complete;
+(6) assault events (D-114 §5) defined for the heist. Gap lists live in `docs/process/heist_completion.md` (LEAD).
+Order: Gallery Night (G2 + e2e) → Dockside Burn and Shadow Ledger (G2 + mission audit) → Night Deposit gate 2 → Golden
+Hour polish. The PO6 list stays top priority until it is closed.
+
+## D-116: first-person pistol framing follows the PO's reference shots (2026-10-15, LEAD; product owner)
+PO: holds "look better but still largely inorganic", with two reference images (`docs/process/po_shots/
+2026-10-15_ref_pistol_hip.png`, `..._ref_pistol_ads.png`). Read as the target for pistols/revolvers:
+* **Hip:** one-handed. Firing arm enters from the bottom-right corner (wrist + a short length of forearm visible, no
+  sleeve wall); gun in the lower-right third (grip ≈ x 65 %, y 85 %, muzzle ≈ x 60 %, y 62 % of the screen), yawed
+  ≈ 12-15° in toward the screen centre, muzzle slightly up, gun reads large and close. No support hand on screen.
+* **ADS:** gun dead centre, rear sight on the crosshair, viewed straight down the slide (back of the slide and both
+  sights read clearly); the firing hand's knuckles/thumb fill the bottom centre directly below the gun; no forearms
+  beyond the wrist cuff; no support hand on screen.
+* **Organic motion (all weapons):** the gun lags the view on mouse turns and springs back (inertia, small overshoot);
+  figure-8 walk bob tied to footsteps, larger when running; a slow breathing idle; a landing dip; recoil kicks up and
+  back then recovers on a damped spring; ADS in/out on an arc with a slight settle. No rigid locked-to-camera frames.
+This supersedes the two-handed pistol hold of PO6-11 for the first-person view (third-person characters keep their
+two-handed pose). Owners: P (viewmodel offsets, motion, tweaks), D (one-handed pistol/revolver clips if needed).
+Acceptance: side-by-side sheet against both references, hip and ADS, for every pistol and revolver, plus a short
+windowed motion clip (turn, walk, run, jump-land, fire, ADS in/out).
