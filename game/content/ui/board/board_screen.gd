@@ -428,12 +428,8 @@ func _refresh_broker() -> void:
 		var name_text: String = UiText.t(UiText.difficulty_key(d))
 		var locked: bool = not allowed.has(d)
 		broker_difficulty.set_item_disabled(i, locked)
-		if not locked:
-			broker_difficulty.set_item_text(i, name_text)
-		elif _level() < tweak.min_level_of(d):
-			broker_difficulty.set_item_text(i, UiText.t(&"ui.board.broker.locked_level", {"name": name_text, "level": tweak.min_level_of(d)}))
-		else:
-			broker_difficulty.set_item_text(i, UiText.t(&"ui.heist_select.difficulty_locked", {"name": name_text}))
+		broker_difficulty.set_item_text(i, name_text if not locked
+				else BoardContracts.locked_text(d, _level(), tweak, build_gate))
 	if broker_difficulty.selected < 0 or broker_difficulty.is_item_disabled(broker_difficulty.selected):
 		broker_difficulty.select(broker_difficulty.get_item_index(allowed[0] if not allowed.is_empty() else 0))
 	if broker_heist.selected < 0 and broker_heist.item_count > 0:

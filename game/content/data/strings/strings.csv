@@ -1549,6 +1549,8 @@ ui.board.broker.difficulty,Difficulty
 ui.board.broker.price,Price
 ui.board.broker.buy,Buy Contract
 ui.board.broker.locked_level,{name} (level {level})
+ui.board.broker.locked_both,"{name} (level {level}, win on {prev})"
+ui.board.broker.locked_progress,{name} (win on {prev})
 ui.board.broker.reason.unknown_heist,Unknown heist.
 ui.board.broker.reason.locked,That difficulty is locked.
 ui.board.broker.reason.stash,Not enough money in the stash.
