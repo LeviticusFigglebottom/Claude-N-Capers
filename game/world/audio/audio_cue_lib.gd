@@ -15,6 +15,7 @@ const NO_POSITION: Vector3 = Vector3.INF
 static var _registry: AudioCueRegistry = null
 static var _placeholder: AudioStreamWAV = null
 static var _warned: Dictionary[StringName, bool] = {}
+static var _loop_copies: Dictionary[AudioStream, AudioStream] = {}
 
 
 ## Make sure every contract bus exists. If the project has only Master (no default_bus_layout set in
@@ -95,12 +96,21 @@ static func placeholder_stream() -> AudioStreamWAV:
 	return w
 
 
-## Pick a variation and apply the cue's loop flag to the stream resource.
-static func pick_stream(cue: AudioCueDef, rng: RandomNumberGenerator) -> AudioStream:
+## Pick a variation. `looped` (default: the cue's flag) returns a cached looping copy of the stream;
+## otherwise the shared original with its loop flag forced off (PO6-07: an unowned play of a loop cue
+## must never loop forever, and a one-shot must not inherit a loop flag from a shared resource).
+static func pick_stream(cue: AudioCueDef, rng: RandomNumberGenerator, looped: int = -1) -> AudioStream:
 	var idx: int = 0 if cue.streams.size() == 1 else rng.randi_range(0, cue.streams.size() - 1)
 	var stream: AudioStream = cue.streams[idx]
-	set_loop(stream, cue.loop)
-	return stream
+	var want_loop: bool = cue.loop if looped < 0 else (looped == 1 and cue.loop)
+	if not want_loop:
+		set_loop(stream, false)
+		return stream
+	if not _loop_copies.has(stream):
+		var copy: AudioStream = stream.duplicate() as AudioStream
+		set_loop(copy, true)
+		_loop_copies[stream] = copy
+	return _loop_copies[stream]
 
 
 static func set_loop(stream: AudioStream, enabled: bool) -> void:
@@ -110,10 +120,23 @@ static func set_loop(stream: AudioStream, enabled: bool) -> void:
 		ogg.loop_offset = 0.0
 		return
 	var wav: AudioStreamWAV = stream as AudioStreamWAV
-	if wav != null and enabled:
+	if wav == null:
+		return
+	if enabled:
 		wav.loop_mode = AudioStreamWAV.LOOP_FORWARD
 		wav.loop_begin = 0
 		wav.loop_end = int(wav.get_length() * wav.mix_rate)
+	else:
+		wav.loop_mode = AudioStreamWAV.LOOP_DISABLED
+
+
+## True when `stream` will loop when played (ogg/wav loop flags).
+static func stream_loops(stream: AudioStream) -> bool:
+	if stream is AudioStreamOggVorbis:
+		return (stream as AudioStreamOggVorbis).loop
+	if stream is AudioStreamWAV:
+		return (stream as AudioStreamWAV).loop_mode != AudioStreamWAV.LOOP_DISABLED
+	return false
 
 
 static func pitch_for(cue: AudioCueDef, rng: RandomNumberGenerator, base: float = 1.0) -> float:

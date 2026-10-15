@@ -15,6 +15,7 @@ extends Node3D
 var _player: AudioStreamPlayer3D = null
 var _rng: RandomNumberGenerator = RandomNumberGenerator.new()
 var _last_ms: int = -1000000
+var _alarm_gen: int = 0
 
 
 func _ready() -> void:
@@ -76,9 +77,20 @@ func _on_alarm_raised(_reason: StringName, _source_net_id: int) -> void:
 	var heist_cue: StringName = cue_id if cue_id != &"" else &"cue.alarm_bell"
 	var player: CuePlayer = _find_cue_player()
 	play(player.variant_cue(heist_cue) if player != null else heist_cue)
+	# PO6-07: a map-placed bell rings as long as the flat bell does, then stops (no endless bell).
+	var ring_s: float = player.alarm_bell_duration_s if player != null else 120.0
+	_alarm_gen += 1
+	if is_inside_tree():
+		get_tree().create_timer(ring_s).timeout.connect(_on_bell_timer.bind(_alarm_gen))
+
+
+func _on_bell_timer(gen: int) -> void:
+	if gen == _alarm_gen:
+		stop()
 
 
 func _on_heist_ended(_result: Dictionary) -> void:
+	_alarm_gen += 1
 	stop()
 
 
