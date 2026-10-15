@@ -62,15 +62,28 @@ static func player_spawns(ctx: LcContext) -> Array[SpawnPoint]:
 
 
 ## GN-C2: a wall-mounted loot spawn (meta mount wall: a hung canvas, pivot on the wall face at hanging height) is
-## reached at its UsePoint (itself a nav marker), not at its origin.
+## reached at its UsePoint (itself a nav marker), not at its origin. PO6-05: so is a loot spawn parented to a
+## safe (parent meta kind safe): it lives inside the safe body and is taken from the UsePoint in front of the door.
+## A loot spawn's own placeholder visual (`<loot>/Visual/LootSpawnPlaceholder`) follows its owner.
 static func is_wall_loot(n: Node) -> bool:
-	return LcUtil.meta_s(n, &"mount") == &"wall" and n.get_node_or_null("UsePoint") != null
+	var o: Node = loot_owner(n)
+	if o.get_node_or_null("UsePoint") == null:
+		return false
+	return LcUtil.meta_s(o, &"mount") == &"wall" or LcUtil.meta_s(o.get_parent(), &"kind") == &"safe"
 
 
 static func loot_target(n: Node3D) -> Vector3:
 	if is_wall_loot(n):
-		return (n.get_node("UsePoint") as Node3D).global_position
+		return (loot_owner(n).get_node("UsePoint") as Node3D).global_position
 	return n.global_position
+
+
+## The loot spawn a node belongs to: itself, or the loot spawn whose `Visual` it sits in.
+static func loot_owner(n: Node) -> Node:
+	var v: Node = n.get_parent()
+	if v != null and v.name == &"Visual" and v.get_parent() != null and is_loot_spawn(v.get_parent()):
+		return v.get_parent()
+	return n
 
 
 static func is_loot_spawn(n: Node) -> bool:

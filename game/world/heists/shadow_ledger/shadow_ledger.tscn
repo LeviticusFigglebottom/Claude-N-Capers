@@ -20061,13 +20061,13 @@ objective_tag = &"study_safe"
 metadata/kind = "safe"
 
 [node name="StudyValuables1" parent="Gameplay/Study/StudySafe" unique_id=103449 instance=ExtResource("92_sl")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.24000168, 0.3000002, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.24000168, 0.75, 0)
 script = ExtResource("93_sl")
 value = 1500
 loot_id = &"loot.small_valuables"
 
 [node name="UsePoint" parent="Gameplay/Study/StudySafe/StudyValuables1" index="1"]
-transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, -0.3000002, -0.84000015)
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, -0.75, -0.84000015)
 
 [node name="Interactable" parent="Gameplay/Study/StudySafe/StudyValuables1" index="2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.06, 0)
@@ -20075,13 +20075,13 @@ script = ExtResource("83_sl")
 kind = &"take_loot"
 
 [node name="StudyValuables2" parent="Gameplay/Study/StudySafe" unique_id=103450 instance=ExtResource("92_sl")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3000002, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, 0)
 script = ExtResource("93_sl")
 value = 1500
 loot_id = &"loot.small_valuables"
 
 [node name="UsePoint" parent="Gameplay/Study/StudySafe/StudyValuables2" index="1"]
-transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, -0.3000002, -0.84000015)
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, -0.75, -0.84000015)
 
 [node name="Interactable" parent="Gameplay/Study/StudySafe/StudyValuables2" index="2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.06, 0)
@@ -20089,13 +20089,13 @@ script = ExtResource("83_sl")
 kind = &"take_loot"
 
 [node name="StudyValuables3" parent="Gameplay/Study/StudySafe" unique_id=103451 instance=ExtResource("92_sl")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.24000168, 0.3000002, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.24000168, 0.75, 0)
 script = ExtResource("93_sl")
 value = 1500
 loot_id = &"loot.small_valuables"
 
 [node name="UsePoint" parent="Gameplay/Study/StudySafe/StudyValuables3" index="1"]
-transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, -0.3000002, -0.84000015)
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, -0.75, -0.84000015)
 
 [node name="Interactable" parent="Gameplay/Study/StudySafe/StudyValuables3" index="2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.06, 0)
@@ -20103,13 +20103,13 @@ script = ExtResource("83_sl")
 kind = &"take_loot"
 
 [node name="LedgerBooks" parent="Gameplay/Study/StudySafe" unique_id=103452 instance=ExtResource("90_sl")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.2000008, 0, -0.63999987)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.020000458, 0)
 script = ExtResource("91_sl")
 loot_id = &"loot.ledger_books"
 objective_tag = &"study_safe_loot"
 
 [node name="UsePoint" parent="Gameplay/Study/StudySafe/LedgerBooks" index="1"]
-transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, 0, -0.5999999)
+transform = Transform3D(-0.7186019, 0, 0.69542176, 0, 1, 0, -0.69542176, 0, -0.7186019, 1.2000008, -0.020000458, -1.2399998)
 
 [node name="Interactable" parent="Gameplay/Study/StudySafe/LedgerBooks" index="2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, -0.2)
@@ -20259,13 +20259,13 @@ objective_tag = &"archive_safe"
 metadata/kind = "safe"
 
 [node name="ArchiveCash" parent="Gameplay/Misc/ArchiveSafe" unique_id=103470 instance=ExtResource("90_sl")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.2, 0, -0.84000015)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1400001, 0)
 script = ExtResource("91_sl")
 loot_id = &"loot.cash"
 objective_tag = &"archive_loot"
 
 [node name="UsePoint" parent="Gameplay/Misc/ArchiveSafe/ArchiveCash" index="1"]
-transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, 0, -0.39999962)
+transform = Transform3D(-0.71860206, 0, 0.6954215, 0, 1, 0, -0.6954215, 0, -0.71860206, 1.2, -0.1400001, -1.2399998)
 
 [node name="Interactable" parent="Gameplay/Misc/ArchiveSafe/ArchiveCash" index="2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, -0.2)

@@ -244,9 +244,10 @@ func _build_study(gp: Node3D) -> void:
 		reader.set(&"targets", [reader.get_path_to(safe)] as Array[NodePath])
 	for i: int in range(3):
 		var x: float = 32.76 + 0.24 * float(i)
-		prefab(safe, "small_loot", "StudyValuables%d" % (i + 1), Vector3(x, L.F42 + 0.3, 7.04), 0.0,
+		prefab(safe, "small_loot", "StudyValuables%d" % (i + 1), Vector3(x, L.F42 + 0.75, 7.04), 0.0,
 			{"loot_id": &"loot.small_valuables", "value": 1500}, Vector3(x, L.F42, 6.2))
-	prefab(safe, "loot_spawn", "LedgerBooks", Vector3(34.2, L.F42, 6.4), 0.0,
+	# PO6-05: the books sit at the safe's LootAnchor (safe-local (0, 0.02, 0)), taken from the UsePoint in front.
+	prefab(safe, "loot_spawn", "LedgerBooks", Vector3(33.0, L.F42 + 0.02, 7.04), 0.0,
 		{"loot_id": &"loot.ledger_books", "count": 1, "objective_tag": &"study_safe_loot"}, Vector3(34.2, L.F42, 5.8))
 
 
@@ -285,8 +286,8 @@ func _build_misc(gp: Node3D) -> void:
 	var arch: Node3D = prefab(misc, "safe", "ArchiveSafe", Vector3(1.2, L.F41, 23.44), 0.0,
 		{"size": "enum:MEDIUM", "methods": [&"saw"] as Array[StringName], "objective_tag": &"archive_safe"},
 		null, {"kind": "safe"})
-	if arch != null:
-		prefab(arch, "loot_spawn", "ArchiveCash", Vector3(2.4, L.F41, 22.6), 0.0,
+	if arch != null:  # PO6-05: the cash at the safe's LootAnchor (safe-local (0, 0.14, 0)), taken from the UsePoint
+		prefab(arch, "loot_spawn", "ArchiveCash", Vector3(1.2, L.F41 + 0.14, 23.44), 0.0,
 			{"loot_id": &"loot.cash", "count": 1, "objective_tag": &"archive_loot"}, Vector3(2.4, L.F41, 22.2))
 	# Art hall paintings (east of the lasers), cut from the frame.
 	for i: int in range(2):

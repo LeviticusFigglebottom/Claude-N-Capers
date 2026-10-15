@@ -14,18 +14,27 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | clipping | PASS | 0 | 0 |
 | orientation | skipped | 0 | 0 |
 | scale | PASS | 0 | 0 |
+| slopes | PASS | 0 | 0 |
 | navmesh | PASS | 0 | 0 |
+| barred_doors | PASS | 0 | 0 |
 | reachability | PASS | 0 | 0 |
 | walkthrough | PASS | 0 | 0 |
 | patrols | PASS | 0 | 0 |
 | lasers | PASS | 0 | 0 |
+| camera_spine | skipped | 0 | 0 |
+| camera_screen | skipped | 0 | 0 |
 | materials | skipped | 0 | 0 |
 | zfight | skipped | 0 | 0 |
 | lights | skipped | 0 | 0 |
+| viewmodel_lit | PASS | 0 | 0 |
 | density | skipped | 0 | 0 |
 | variety | skipped | 0 | 0 |
 | bounds | skipped | 0 | 0 |
 | perf | skipped | 0 | 0 |
+| door_frame_gap | PASS | 0 | 0 |
+| frame_proud | PASS | 0 | 0 |
+| seam_gaps | PASS | 0 | 0 |
+| furniture_logic | PASS | 0 | 3 |
 
 ## contract_nodes: Contract nodes
 
@@ -42,12 +51,12 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## floating: Nothing floats
 
-- 305 props checked
+- 359 props checked
 
 
 ## clipping: Nothing clips
 
-- 305 props, 57 doors checked
+- 359 props, 57 doors checked
 
 
 ## scale: Human scale
@@ -142,12 +151,29 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 - `Geometry/Building/Stairs/FeatureStair/Flight2`: ramp collision enveloping the steps (max 0.183 m above the treads)
 - `Geometry/Building/Stairs/FeatureStair/Flight2`: 12 risers, 5.800 -> 8.000 m
 - `Geometry/Building/Stairs/FeatureStair/Flight2` rails: -X wall, rail tops [0.90, 0.94, 0.97, 1.00, 1.25] m above nosing, max drop 4.34 m; +X wall, rail tops [0.90, 0.94, 0.97, 1.00, 1.25] m above nosing, max drop 4.34 m
+- stair chain: `Geometry/Building/Stairs/StairA/Flight1W` -> `Geometry/Building/Stairs/StairA/Flight1E` joined by a landing at 1.800 m
+- stair chain: `Geometry/Building/Stairs/StairA/Flight1E` -> `Geometry/Building/Stairs/StairA/Flight2W` joined by a landing at 3.600 m
+- stair chain: `Geometry/Building/Stairs/StairA/Flight2W` -> `Geometry/Building/Stairs/StairA/Flight2E` joined by a landing at 5.800 m
+- stair chain: `Geometry/Building/Stairs/StairA/Flight2E` -> `Geometry/Building/Stairs/StairA/Flight3W` joined by a landing at 8.000 m
+- stair chain: `Geometry/Building/Stairs/StairA/Flight3W` -> `Geometry/Building/Stairs/StairA/Flight3E` joined by a landing at 9.800 m
+- stair chain: `Geometry/Building/Stairs/StairB/Flight1W` -> `Geometry/Building/Stairs/StairB/Flight1E` joined by a landing at 1.800 m
+- stair chain: `Geometry/Building/Stairs/StairB/Flight1E` -> `Geometry/Building/Stairs/StairA/Flight2W` joined by a landing at 3.600 m
+- stair chain: `Geometry/Building/Stairs/StairB/Flight1E` -> `Geometry/Building/Stairs/StairB/Flight2W` joined by a landing at 3.600 m
+- stair chain: `Geometry/Building/Stairs/StairB/Flight2W` -> `Geometry/Building/Stairs/StairB/Flight2E` joined by a landing at 5.800 m
+- stair chain: `Geometry/Building/Stairs/StairB/Flight2E` -> `Geometry/Building/Stairs/StairA/Flight3W` joined by a landing at 8.000 m
+- stair chain: `Geometry/Building/Stairs/FeatureStair/Flight1` -> `Geometry/Building/Stairs/FeatureStair/Flight2` joined by a landing at 5.800 m
+- stair chain: `Geometry/Building/Stairs/FeatureStair/Flight2` -> `Geometry/Building/Stairs/StairA/Flight3W` joined by a landing at 8.000 m
+
+
+## slopes: No walkable slope < 50° outside the play mesh
+
+- 153 x 105 columns (0.25 m), 66630 surface samples, 0 collider(s) with reachable walkable surfaces outside play
 
 
 ## navmesh: Navmesh
 
-- navmesh: 1484 polygons, cell 0.10/0.10 m
-- 247 markers checked
+- navmesh: 1642 polygons, cell 0.10/0.10 m
+- 243 markers checked
 | room | walkable samples | covered | coverage |
 |---|---|---|---|
 | `Rooms/RoomS1` | 83 | 83 | 100% |
@@ -157,29 +183,29 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `Rooms/RoomSB` | 7 | 7 | 100% |
 | `Rooms/RoomSL` | 25 | 25 | 100% |
 | `Rooms/RoomK1` | 81 | 81 | 100% |
-| `Rooms/RoomK2` | 41 | 41 | 100% |
+| `Rooms/RoomK2` | 16 | 16 | 100% |
 | `Rooms/RoomK3` | 163 | 163 | 100% |
-| `Rooms/RoomK4` | 62 | 62 | 100% |
-| `Rooms/RoomK5` | 93 | 93 | 100% |
+| `Rooms/RoomK4` | 57 | 57 | 100% |
+| `Rooms/RoomK5` | 79 | 79 | 100% |
 | `Rooms/RoomK6` | 46 | 46 | 100% |
 | `Rooms/RoomK7` | 46 | 46 | 100% |
-| `Rooms/RoomK8` | 222 | 222 | 100% |
-| `Rooms/RoomK9` | 18 | 18 | 100% |
+| `Rooms/RoomK8` | 184 | 184 | 100% |
+| `Rooms/RoomK9` | 20 | 20 | 100% |
 | `Rooms/RoomK10` | 18 | 18 | 100% |
 | `Rooms/RoomK11` | 12 | 12 | 100% |
-| `Rooms/RoomK12` | 31 | 31 | 100% |
+| `Rooms/RoomK12` | 28 | 28 | 100% |
 | `Rooms/RoomK13` | 32 | 32 | 100% |
 | `Rooms/RoomK14` | 24 | 24 | 100% |
 | `Rooms/RoomK15` | 34 | 34 | 100% |
 | `Rooms/RoomK16` | 119 | 119 | 100% |
 | `Rooms/RoomK17` | 28 | 28 | 100% |
-| `Rooms/RoomK18` | 76 | 76 | 100% |
+| `Rooms/RoomK18` | 59 | 59 | 100% |
 | `Rooms/RoomK19` | 44 | 44 | 100% |
-| `Rooms/RoomK20` | 40 | 40 | 100% |
-| `Rooms/RoomK21` | 40 | 40 | 100% |
-| `Rooms/RoomK22` | 40 | 40 | 100% |
-| `Rooms/RoomK23` | 40 | 40 | 100% |
-| `Rooms/RoomK24` | 96 | 96 | 100% |
+| `Rooms/RoomK20` | 34 | 34 | 100% |
+| `Rooms/RoomK21` | 34 | 34 | 100% |
+| `Rooms/RoomK22` | 34 | 34 | 100% |
+| `Rooms/RoomK23` | 34 | 34 | 100% |
+| `Rooms/RoomK24` | 86 | 86 | 100% |
 | `Rooms/RoomJ41` | 3 | 3 | 100% |
 | `Rooms/RoomLF1` | 0 | 0 | 100% |
 | `Rooms/RoomLF2` | 0 | 0 | 100% |
@@ -192,22 +218,27 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `Rooms/RoomM5` | 78 | 78 | 100% |
 | `Rooms/RoomM6` | 30 | 30 | 100% |
 | `Rooms/RoomM7` | 11 | 11 | 100% |
-| `Rooms/RoomM8` | 128 | 128 | 100% |
-| `Rooms/RoomM9` | 18 | 18 | 100% |
+| `Rooms/RoomM8` | 104 | 104 | 100% |
+| `Rooms/RoomM9` | 20 | 20 | 100% |
 | `Rooms/RoomM10` | 18 | 18 | 100% |
-| `Rooms/RoomM11` | 37 | 37 | 100% |
+| `Rooms/RoomM11` | 31 | 31 | 100% |
 | `Rooms/RoomM12` | 28 | 28 | 100% |
 | `Rooms/RoomM13` | 31 | 31 | 100% |
-| `Rooms/RoomM14` | 81 | 81 | 100% |
-| `Rooms/RoomM15` | 69 | 69 | 100% |
+| `Rooms/RoomM14` | 40 | 40 | 100% |
+| `Rooms/RoomM15` | 74 | 74 | 100% |
 | `Rooms/RoomJ42` | 2 | 2 | 100% |
 | `Rooms/RoomWCW42` | 50 | 50 | 100% |
 | `Rooms/RoomWCM42` | 50 | 50 | 100% |
 | `Rooms/RoomR1` | 6 | 6 | 100% |
-| `Rooms/RoomR2` | 5 | 5 | 100% |
+| `Rooms/RoomR2` | 6 | 6 | 100% |
 | `Rooms/RoomR3` | 175 | 175 | 100% |
 | `Rooms/RoomX1` | 638 | 638 | 100% |
 | `Rooms/RoomX2` | 746 | 746 | 100% |
+
+
+## barred_doors: BARRED doorways are closed in the navmesh
+
+- 2 BARRED door(s) checked
 
 
 ## reachability: Reachability (per variant)
@@ -234,3 +265,33 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 - `Variants/Group_laser_pattern/Slot_lz_timed/LaserEmitters/ArtHallLasers`: pattern `timed_off`, bypass gap not required
 - 3 laser grid(s), 1 with an asserted bypass gap
 
+
+## viewmodel_lit: Interior key lights light the viewmodel (D-095)
+
+- 57 interior key light(s) in 53 room(s); 0 lack `viewmodel_lit`
+
+
+## door_frame_gap: Doors and windows fill their wall openings (no gaps, no clipping)
+
+- 57 door / window prefab(s) measured; gap > 0.02 m and clip > 0.01 m fail
+- leaf bullet surfaces (D-105, Door.leaf_surface_id): glass 5, metal 3, wood 49; 0 look glass / metal but resolve to wood (WARN)
+
+
+## frame_proud: Door / window frame colliders are flush with the wall (no proud or narrowing collision)
+
+- 57 door / window prefab(s), 57 with frame colliders; proud > 0.01 m and narrowing > 0.01 m fail; worst proud 0.000 m, narrowing 0.000 m
+
+
+## seam_gaps: No see-through slits at wall corners, junctions, floors and ceilings
+
+- 53 room(s), 232 box side(s) scanned; slits > 0.02 m fail
+
+
+## furniture_logic: Furniture arranged plausibly
+
+- classified: counter 6, chair 58, table 8, desk 15, wall_unit 8, lounge_seat 3
+- 61 seats, 29 tables/desks/counters, 57 doors checked
+
+- WARN `Gameplay/Server/HackTerminal` @ (28.75, 3.60, 8.95): door_clear: in the clear zone of door `Gameplay/Doors/CageGate` (1.0 / 1.0 m each side, leaf width 0.90 m) by 0.05 m (gameplay prefab / variant content: review)
+- WARN `Variants/Group_gondola/Slot_gon_north_l42/CradleDeck` @ (33.00, 7.85, -0.20): door_clear: in the clear zone of door `Gameplay/Doors/StudyFacadeDoor` (1.0 / 1.0 m each side, leaf width 0.90 m) by 0.75 m (gameplay prefab / variant content: review)
+- WARN `Variants/Group_gondola/Slot_gon_west_l41/CradleDeck` @ (-0.20, 3.45, 2.65): door_clear: in the clear zone of door `Gameplay/Doors/K1FacadeDoor` (1.0 / 1.0 m each side, leaf width 0.90 m) by 0.75 m (gameplay prefab / variant content: review)
