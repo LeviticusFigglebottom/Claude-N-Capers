@@ -65,6 +65,8 @@ extends Resource
 @export_group("Stimuli (S4.1, S4.4, S6.3)")
 ## kind -> {range (m), los (bool), fill_time (s), guard (reaction), civilian (reaction), camera (bool)}
 ## (+ optional camera_alarm (bool, default true): a camera confirming it starts the S3.5 countdown.)
+## `los: false` (drills, saws) lets NPCs notice it in range without sight; cameras always need it inside
+## their cone with a clear ray (PO6-04, D-114 §1: cameras react only to what they see).
 ## Reactions: &"alarm" (guard -> ALARMED), &"investigate", &"panic", &"ignore".
 @export var stimuli: Dictionary = {
 	&"corpse": {"range": 25.0, "los": true, "fill_time": 0.8, "guard": &"alarm", "civilian": &"panic", "camera": true},
