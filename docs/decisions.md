@@ -918,7 +918,7 @@ doc (`docs/design/heists/<id>.md`) and the D-111 polish gate. Per heist "done" =
 door/lock table and NPC role in the design doc exists and works; (2) final art (G2) with lighting and props, no greybox;
 (3) a windowed e2e flow for each mode the heist supports (stealth and/or loud) passes on the real menus; (4) a PO-6-style
 windowed real-input pass by ENV P with no STUCK/snag rows; (5) briefing, strings, music, VO and HUD markers complete;
-(6) assault events (D-114 §5) defined for the heist. Gap lists live in `docs/process/heist_completion.md` (LEAD).
+(6) assault events (D-114 §5) defined for the heist (N/A for stealth-only heists such as Shadow Ledger, PD2-style; ruled 2026-10-15). Gap lists live in `docs/process/heist_completion.md` (LEAD).
 Order: Gallery Night (G2 + e2e) → Dockside Burn and Shadow Ledger (G2 + mission audit) → Night Deposit gate 2 → Golden
 Hour polish. The PO6 list stays top priority until it is closed.
 

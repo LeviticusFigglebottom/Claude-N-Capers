@@ -1,4 +1,4 @@
-# Contract: HUD data (v1.14)
+# Contract: HUD data (v1.15)
 
 ENV A exposes in-heist state. ENV B owns every UI scene, HUD included (one UI style, one owner).
 
@@ -148,3 +148,9 @@ ENV A provides (env/a-core 089d327a, 450b8ea0); ENV B consumes. Additive to v1.1
   (where that body lies: the server's hips position from `PagerSystem.pager_entries()`, or the body root as a fallback,
   raised `pager_marker_up_m` **1.2 m**), for B's pager waypoint while the pager is live (D-114 §4). A dragged body moves
   the waypoint. Row: `{pager_id, time_left_s, answering, progress, guard_net_id, world_pos}`.
+
+## v1.15 (PO6-17b): breach flash
+`LocalHudModel.flashed_s: float` in the vitals group: seconds of breach-blast flash left on the local crew member
+(from `CrewHealth.flashed_left`, replicated with the crew health props; up to 2.5 s at the blast, half at the stun-radius
+edge). 0 = not flashed. B renders a white-out that fades with it; P may add a matching viewmodel/audio dull. The flash
+interrupts a held interaction (A).
