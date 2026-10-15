@@ -100,6 +100,14 @@ var melee_punch: Vector2:
 var land_dip: float:
 	get:
 		return _land_dip
+## D-116 (read-only): the camera head-bob stride phase (radians, one full cycle = two footsteps) and its weight
+## (0 still .. 1 walk, sprint x head_bob_sprint_mult): the viewmodel's figure-8 bob rides the same footsteps.
+var bob_phase: float:
+	get:
+		return _bob_phase
+var bob_weight: float:
+	get:
+		return _bob_w
 ## D-102 lane, read only: the current carry camera roll (degrees).
 var carry_tilt: float:
 	get:
