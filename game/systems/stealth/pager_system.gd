@@ -16,7 +16,9 @@
 ## (release, look-away, going down, leaving) the pager waits StealthTweak.pager_juggle_window_s (frozen):
 ## if one of the released answerers starts answering ANOTHER live pager in that time (a juggle), or anyone
 ## picks this one up again, it resumes its remaining window; otherwise pager_failed(&"released") + alarm.
-## StealthTweak.pager_release_resumes = true skips the alarm (the window always resumes).
+## StealthTweak.pager_release_resumes = true (opt-in, not the default) skips the alarm: the window resumes at once.
+## Either resume (opt-in, or a juggled pager leaving its grace) emits pager_answer_released(pager_id, slot) [R]
+## (events.md v1.4), on which CuePlayer swaps the radio loop back to the beep.
 ## Audio (D-114 §3): the looping cue.pager_beep / cue.pager_radio are owned by CuePlayer, keyed per
 ## pager on the pager_* facts (started -> beep, answer_started -> radio, answered/failed -> stop both).
 ## This service never requests a looping pager cue through audio_cue_requested (nobody could stop it).
@@ -222,6 +224,7 @@ func _on_answer_started(crew: Node, pid: int) -> void:
 		var q: Dictionary = _pagers[qid]
 		if qid != pid and float(q.get("grace_left", -1.0)) >= 0.0 and (q.get("grace_slots", []) as Array).has(slot):
 			q["grace_left"] = -1.0
+			_emit(&"pager_answer_released", [qid, slot])  # juggled: q beeps again (CuePlayer radio -> beep)
 	# CuePlayer swaps the beep loop for the cue.pager_radio loop on this fact (D-114 §3).
 	_emit(&"pager_answer_started", [pid, slot])
 
@@ -261,7 +264,9 @@ func _reconcile_holders(pid: int, released: Array[int]) -> void:
 				released.append(int(slot))
 	if not was_held or not holders.is_empty() or not _pagers.has(pid) or int(p["state"]) != State.ACTIVE:
 		return
-	if not _tw.pager_release_resumes and float(p.get("grace_left", -1.0)) < 0.0:
+	if _tw.pager_release_resumes:  # opt-in: the window resumes now (events.md v1.4)
+		_emit(&"pager_answer_released", [pid, released.back() if not released.is_empty() else -1])
+	elif float(p.get("grace_left", -1.0)) < 0.0:
 		p["grace_left"] = _tw.pager_juggle_window_s  # S5.4 alarm unless juggled (D-114 §4 amended)
 		p["grace_slots"] = released.duplicate()
 
