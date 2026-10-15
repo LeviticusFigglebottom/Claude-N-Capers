@@ -3136,6 +3136,7 @@ voice.vo.mercer.gallery_night_limo_eta,Limo's {seconds} seconds out. Hold the ha
 voice.vo.mercer.gallery_night_sniper_hotel,Sniper on the hotel roof. Stay out of the Mews mouth.
 voice.vo.mercer.gallery_night_escape,"Your ride's here. Canvases in, then you."
 voice.vo.vance.gallery_night_radio_casing,You've seen the rooms. Now forget the champagne and remember the walls.
+voice.vo.vance.gallery_night_radio_casing_last_call,Lights are coming up and the guests are leaving. Keep to the shadows.
 voice.vo.vance.gallery_night_radio_find_canvases,"All four on the list, found. My buyer will be thrilled, in his quiet way."
 voice.vo.vance.gallery_night_radio_keycard,"A keycard. Spend it wisely, darling, there aren't enough to go round."
 voice.vo.vance.gallery_night_radio_server_code,The Argus code. Someone at the Halberd writes things down. Bless them.
