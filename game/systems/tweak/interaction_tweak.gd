@@ -60,12 +60,17 @@ extends Resource
 ## noise profile id -> radius in m. "silent" = 0.
 @export var noise_profiles: Dictionary = {&"silent": 0.0, &"quiet": 5.0, &"loud": 25.0}
 
-@export_group("Device jams (S9.3)")
-## Jams rolled at placement: randi_range(min, max) candidates, each kept with probability
-## clamp(interaction.device_jam_chance_mult, 0, 1), placed uniformly in this progress range.
+@export_group("Device jams (S9.3, D-114 §2)")
+## PO6-02 / D-114 §2 (PD2): a standard device jams at most 1-2 times. Jams rolled at placement:
+## device_jams_min candidates, plus each further candidate up to device_jams_max with probability
+## device_jam_extra_chance; every candidate is kept with probability
+## clamp(interaction.device_jam_chance_mult, 0, 1). Points are placed uniformly in
+## device_jam_progress_range (never in the first or last 10 %), at least device_jam_min_gap apart.
 @export var device_jams_min: int = 1
-@export var device_jams_max: int = 3
+@export var device_jams_max: int = 2
+@export_range(0.0, 1.0) var device_jam_extra_chance: float = 0.35
 @export var device_jam_progress_range: Vector2 = Vector2(0.15, 0.9)
+@export var device_jam_min_gap: float = 0.2
 ## Auto-restart delay range (s) after a jam when the restart roll succeeds.
 @export var device_restart_delay_s: Vector2 = Vector2(5.0, 10.0)
 ## Seconds between NoiseEvents of a running device in stealth (S4.3).
