@@ -22,6 +22,8 @@ const CARRY_LIMIT_S: float = 300.0
 
 ## Objectives completed by walking near the marker (no interaction).
 const AREA_OBJECTIVES: Array[StringName] = [&"find_canvases"]
+## Objectives that unblock the others (GN loud hack: shutters up, vault doors open), tried first when marked.
+const FIRST_OBJECTIVES: Array[StringName] = [&"hack"]
 ## A marker with nothing usable for this long (s) yields to the other active markers.
 const STALL_SKIP_S: float = 30.0
 
@@ -118,6 +120,9 @@ func step() -> void:
 ## objectives (GN find_canvases) and markers that stalled STALL_SKIP_S with nothing usable come last, so the
 ## flow moves on to what it can act on (GN probe: stuck at a found, already cut canvas).
 func _pick(markers: Array[Dictionary]) -> Dictionary:
+	for m0: Dictionary in markers:  # GN probe 4: the loud hack lifts every shutter (Calloway), so it goes first
+		if StringName(m0["id"]) in FIRST_OBJECTIVES and float(_stalls.get(StringName(m0["id"]), 0.0)) < STALL_SKIP_S:
+			return m0
 	for m: Dictionary in markers:
 		var mid: StringName = StringName(m["id"])
 		if not (mid in [&"secure", &"escape", &"casing"] or mid in AREA_OBJECTIVES) \
