@@ -157,6 +157,17 @@ const FIXED_SPAWNS: Array = [
 	["PatronWG", "CIVILIAN", Vector3(7.0, 0.0, 14.0), 90.0, ["civ_patron"], "browse", ""],
 	["PatronEG", "CIVILIAN", Vector3(37.0, 0.0, 20.5), -90.0, ["civ_patron"], "browse", ""],
 	["PatronCourt", "CIVILIAN", Vector3(-8.0, 0.0, 12.0), 90.0, ["civ_patron", "civilian_court"], "smoke", ""],
+	# GN-C2 (doc roster: GH x4, WG x2, EG x2, EB x2, court x2 = 12). The mission keeps the first `patrons` (3/5/7/9)
+	# civ_patron spawns in this order (thin_civilians), so the 6th-9th spread over EB, the bar, WG and EG; the last
+	# three (EB donor wall, GH east, the court) only stand in with stragglers' logic or a larger roll. Each browses an
+	# artwork or the bar from >= 1 m, off every UsePoint, door clear zone and patrol point.
+	["PatronEB1", "CIVILIAN", Vector3(42.5, 0.0, 26.1), 0.0, ["civ_patron"], "browse", ""],  # StudyEB1
+	["PatronHallBar", "CIVILIAN", Vector3(16.6, 0.0, 20.1), 90.0, ["civ_patron"], "browse", ""],  # the gala bar
+	["PatronWG2", "CIVILIAN", Vector3(7.75, 0.0, 18.0), 180.0, ["civ_patron"], "browse", ""],  # StudyWG1 / WG2
+	["PatronEG2", "CIVILIAN", Vector3(42.0, 0.0, 14.1), 0.0, ["civ_patron"], "browse", ""],  # StudyEG2
+	["PatronEB2", "CIVILIAN", Vector3(34.4, 0.0, 26.8), 90.0, ["civ_patron"], "browse", ""],  # the donor wall
+	["PatronHallE2", "CIVILIAN", Vector3(27.5, 0.0, 15.0), 45.0, ["civ_patron"], "browse", ""],  # up at the landing
+	["PatronCourt2", "CIVILIAN", Vector3(-10.0, 0.0, 12.0), -90.0, ["civ_patron", "civilian_court"], "smoke", ""],
 	# Rare-event timed spawns (QC-25 hook, HeistRuntime.SCRIPTED_SPAWN_TAG): not spawned at load; at LD.
 	["InspectorA", "GUARD", Vector3(40.5, 0.0, 6.0), 180.0, ["scripted", "guard_inspection"], "", "Halberd"],
 	["InspectorB", "GUARD", Vector3(42.0, 0.0, 6.0), 180.0, ["scripted", "guard_inspection"], "", "Halberd"],
@@ -208,6 +219,58 @@ const TACTICAL: Array = [
 	["CoverUC", "COVER", Vector3(20.0, 5.4, 7.0), 90.0, ["door_recess", "h2"], false],
 	["CoverBB", "COVER", Vector3(16.0, -4.2, 7.0), 90.0, ["door_recess", "h3"], false],
 	["CoverLD", "COVER", Vector3(40.0, 0.0, 7.0), 0.0, ["crates", "h4"], false],
+	# GN-C2 (doc Loud COVER ~50): beside real cover geometry, on the navmesh, -Z facing away from the cover (as
+	# CoverBar). Vehicle cover (the E1 van, the E2 limo) lives in the escape slots (gn_content ESCAPE_COVER).
+	# Great Hall: the bar ends, the stair foot (central balustrades), the arch / opening jambs (both sides).
+	["CoverBarN", "COVER", Vector3(14.8, 0.0, 17.1), 0.0, ["bar", "h1"], false],
+	["CoverBarS", "COVER", Vector3(14.8, 0.0, 20.1), 180.0, ["bar", "h1"], false],
+	["CoverStairFootW", "COVER", Vector3(20.3, 0.0, 14.0), 90.0, ["balustrade", "h1"], false],
+	["CoverStairFootE", "COVER", Vector3(23.7, 0.0, 14.0), -90.0, ["balustrade", "h1"], false],
+	["CoverVEArchW", "COVER", Vector3(19.6, 0.0, 25.45), 0.0, ["jamb", "h1"], false],
+	["CoverVEArchE", "COVER", Vector3(24.4, 0.0, 25.45), 0.0, ["jamb", "h1"], false],
+	["CoverWGArchHallN", "COVER", Vector3(12.55, 0.0, 11.4), -90.0, ["jamb", "h1"], false],
+	["CoverWGArchHallS", "COVER", Vector3(12.55, 0.0, 16.6), -90.0, ["jamb", "h1"], false],
+	["CoverWGArchWGN", "COVER", Vector3(11.45, 0.0, 11.4), 90.0, ["jamb", "h1"], false],
+	["CoverWGArchWGS", "COVER", Vector3(11.45, 0.0, 16.6), 90.0, ["jamb", "h1"], false],
+	["CoverEGArchHallN", "COVER", Vector3(31.45, 0.0, 15.4), 90.0, ["jamb", "h1"], false],
+	["CoverEGArchHallS", "COVER", Vector3(31.45, 0.0, 20.6), 90.0, ["jamb", "h1"], false],
+	["CoverEGArchEGN", "COVER", Vector3(32.55, 0.0, 15.4), -90.0, ["jamb", "h4"], false],
+	["CoverEGArchEGS", "COVER", Vector3(32.55, 0.0, 20.6), -90.0, ["jamb", "h4"], false],
+	["CoverEBOpeningEGW", "COVER", Vector3(35.4, 0.0, 23.45), 0.0, ["jamb", "h4"], false],
+	["CoverEBOpeningEGE", "COVER", Vector3(40.6, 0.0, 23.45), 0.0, ["jamb", "h4"], false],
+	["CoverEBOpeningEBW", "COVER", Vector3(35.4, 0.0, 24.55), 180.0, ["jamb", "h4"], false],
+	["CoverEBOpeningEBE", "COVER", Vector3(40.6, 0.0, 24.55), 180.0, ["jamb", "h4"], false],
+	# The cloakroom and gift-shop counters (staff side).
+	["CoverCloakroomCounter", "COVER", Vector3(14.0, 0.0, 29.4), 180.0, ["counter", "h1"], false],
+	["CoverGiftShopCounter", "COVER", Vector3(30.8, 0.0, 28.0), -90.0, ["counter", "h1"], false],
+	# The Mews bins (north face and ends).
+	["CoverMewsBinsWN", "COVER", Vector3(28.6, 0.0, -1.85), 0.0, ["bins", "h4"], false],
+	["CoverMewsBinsEN", "COVER", Vector3(30.8, 0.0, -1.85), 0.0, ["bins", "h4"], false],
+	["CoverMewsBinsW", "COVER", Vector3(27.1, 0.0, -0.8), 90.0, ["bins", "h4"], false],
+	["CoverMewsBinsE", "COVER", Vector3(32.3, 0.0, -0.8), -90.0, ["bins", "h4"], false],
+	# Basement: the AS painting screens (aisles, off the rack studies' UsePoints), the FR crates, the PL AHU + crates.
+	["CoverRacksW", "COVER", Vector3(16.0, -4.2, 16.0), 0.0, ["rack", "h3"], false],
+	["CoverRacksE", "COVER", Vector3(28.0, -4.2, 16.0), 0.0, ["rack", "h3"], false],
+	["CoverRacksMid", "COVER", Vector3(21.5, -4.2, 14.0), 180.0, ["rack", "h3"], false],
+	["CoverRacksEMid", "COVER", Vector3(27.5, -4.2, 14.0), 180.0, ["rack", "h3"], false],
+	["CoverFRCrates", "COVER", Vector3(17.75, -4.2, 1.6), 180.0, ["crates", "h3"], false],
+	["CoverPLAHU", "COVER", Vector3(10.2, -4.2, 14.0), 90.0, ["ahu", "h3"], false],
+	["CoverPLCrates", "COVER", Vector3(10.4, -4.2, 16.75), 90.0, ["crates", "h3"], false],
+	# Upper: the balcony balustrades (BW / BE / SL), the UG1 / UG3 partition screens, the CS bench.
+	["CoverBWN", "COVER", Vector3(14.5, 5.4, 11.0), 90.0, ["balustrade", "h2"], false],
+	["CoverBWMid", "COVER", Vector3(14.5, 5.4, 20.0), 90.0, ["balustrade", "h2"], false],
+	["CoverBWS", "COVER", Vector3(14.5, 5.4, 24.0), 90.0, ["balustrade", "h2"], false],
+	["CoverBEN", "COVER", Vector3(29.5, 5.4, 11.0), -90.0, ["balustrade", "h2"], false],
+	["CoverBEMid", "COVER", Vector3(29.5, 5.4, 20.0), -90.0, ["balustrade", "h2"], false],
+	["CoverBES", "COVER", Vector3(29.5, 5.4, 24.0), -90.0, ["balustrade", "h2"], false],
+	["CoverSLW", "COVER", Vector3(18.0, 5.4, 26.5), 180.0, ["balustrade", "h2"], false],
+	["CoverSLMid", "COVER", Vector3(22.0, 5.4, 26.5), 180.0, ["balustrade", "h2"], false],
+	["CoverSLE", "COVER", Vector3(26.0, 5.4, 26.5), 180.0, ["balustrade", "h2"], false],
+	["CoverScreenUG1E", "COVER", Vector3(6.55, 5.4, 14.0), -90.0, ["screen", "h2"], false],
+	["CoverScreenUG1W", "COVER", Vector3(5.45, 5.4, 14.0), 90.0, ["screen", "h2"], false],
+	["CoverScreenUG3W", "COVER", Vector3(37.45, 5.4, 15.5), 90.0, ["screen", "h2"], false],
+	["CoverScreenUG3E", "COVER", Vector3(38.55, 5.4, 15.5), -90.0, ["screen", "h2"], false],
+	["CoverBenchCS", "COVER", Vector3(40.0, 5.4, 10.85), 180.0, ["bench", "h2"], false],
 ]
 ## Rooms without a greybox key light (shafts; exterior / roof are not key-light rooms).
 const UNLIT_ROOMS: Array[String] = ["SS", "LF", "HH", "LM"]
@@ -288,14 +351,7 @@ func _graph(nm: String, gid: StringName, floor_idx: int, points: Dictionary, edg
 
 func build_tactical(tac: Node3D) -> void:
 	for t: Array in TACTICAL:
-		var tp: TacticalPoint = TacticalPoint.new()
-		tp.name = String(t[0])
-		tp.kind = TacticalPoint.Kind[String(t[1])]
-		tp.position = t[2] as Vector3
-		tp.basis = yaw_basis(float(t[3]))
-		tp.tags = _names(t[4])
-		tp.breachable = bool(t[5])
-		add(tac, tp)
+		tactical_point(tac, t)
 
 
 # --- Greybox lights (B1: key lights carry viewmodel_lit; the art pass is G2) -----------------------

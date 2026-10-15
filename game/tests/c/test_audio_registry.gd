@@ -61,6 +61,7 @@ const ASSAULT_EVENT_CUES: Array[StringName] = [
 	&"cue.assault_van_arrive", &"cue.assault_van_park", &"cue.assault_turret_deploy", &"cue.assault_turret_destroyed",
 	&"cue.assault_heli_arrive", &"cue.assault_heli_leave", &"cue.assault_breach_warning",
 ]
+const ASSAULT_EVENT_LOOPS: Array[StringName] = [&"cue.assault_van_engine", &"cue.assault_heli_rotor"]
 const THROWABLE_CUES: Array[StringName] = [
 	&"cue.throwable_pin", &"cue.throwable_frag", &"cue.throwable_concussion", &"cue.throwable_incendiary",
 	&"cue.throwable_knife_hit", &"cue.throwable_knife_hit_hard", &"cue.throwable_incendiary_fire",
@@ -225,6 +226,11 @@ func test_assault_event_cues() -> void:
 		assert_true(c.positional, "%s positional" % id)
 		assert_false(c.loop, "%s is a one-shot (requested unowned, PO6-07)" % id)
 		assert_eq(c.bus, &"Enemies", "%s bus" % id)
+	for id: StringName in ASSAULT_EVENT_LOOPS:
+		var c: AudioCueDef = _reg.get_cue(id)
+		assert_true(c != null and c.loop and c.positional, "%s 3D loop" % id)
+	var w: AudioCueDef = _reg.get_cue(&"cue.assault_event_warning")
+	assert_true(w != null and not w.positional and w.bus == &"UI" and w.cooldown_s >= 3.0, "2D UI warning sting")
 
 
 func test_breach_burn_and_throwable_cues() -> void:

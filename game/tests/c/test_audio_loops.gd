@@ -132,3 +132,25 @@ func test_loop_safety_cap_and_npc_death() -> void:
 	EventBus.npc_killed.emit(88, 0, {})
 	assert_false(player.is_loop_active(&"captain_88"), "aegis loop stops when the captain dies")
 	player.queue_free()
+
+
+## PO6-17 / audio_cues v1.8: assault events key their loops on assault_event_started/ended.
+func test_assault_event_loops() -> void:
+	var player: CuePlayer = _make_player()
+	EventBus.assault_event_started.emit(&"turret_van", 301, Vector3(5, 0, 5))
+	assert_true(player.is_loop_active(&"assault_event_301"), "van engine loop")
+	EventBus.assault_event_started.emit(&"heli", 302, Vector3(0, 30, 0))
+	assert_true(player.is_loop_active(&"assault_event_302"), "rotor loop")
+	EventBus.assault_event_started.emit(&"breach", 303, Vector3(1, 0, 1))
+	assert_false(player.is_loop_active(&"assault_event_303"), "breach has no loop")
+	assert_eq(player.last_cue, &"cue.assault_breach_warning")
+	EventBus.assault_event_ended.emit(&"heli", 302)
+	assert_false(player.is_loop_active(&"assault_event_302"), "rotor stops on end")
+	assert_eq(player.last_cue, &"cue.assault_heli_leave", "leave one-shot")
+	EventBus.assault_event_ended.emit(&"turret_van", 301)
+	assert_false(player.is_loop_active(&"assault_event_301"), "engine stops on end")
+	EventBus.assault_event_started.emit(&"turret_van", 304, Vector3.ZERO)
+	EventBus.heist_ended.emit({"success": false})
+	assert_true(player.active_loop_keys().is_empty(), "heist end stops event loops")
+	assert_eq(_looping_players(player), 0)
+	player.queue_free()
