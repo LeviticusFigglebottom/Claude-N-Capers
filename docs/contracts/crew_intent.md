@@ -1,4 +1,4 @@
-# Contract: CrewIntent (v1.0)
+# Contract: CrewIntent (v1.1)
 
 `game/contracts/crew_intent.gd`. A single per-tick intent struct drives every crew member:
 
@@ -21,3 +21,9 @@
 `order_target_net_id`: for follow/hold/drop_bag it is the AI teammate; for carry_bag it is the bag; for revive it is the downed
 crew member. If it is 0: use the AI in the issuer's aim cone, else the nearest suitable AI. `order_position == Vector3.ZERO`
 means "at the issuer's position" (hold here).
+
+## v1.1 (D-118): gadget toggle
+`gadget: bool` (wire key `"ga"`): edge, true on the frame the local player presses the `gadget_toggle` input action
+(project.godot InputMap, default key B, no pad default; rebindable once B adds it to `settings_defaults.action_order`).
+The server toggles the equipped weapon's gadget (laser/flashlight per `WeaponStats.gadgets`); the on/off state is per
+weapon, survives swaps, and is replicated by ENV A. Bots never set it.
