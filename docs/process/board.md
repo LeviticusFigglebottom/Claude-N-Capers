@@ -14,6 +14,7 @@ Read it at the start of every work session.
 | ENV P | session_01VxQPFh6PypoyUxg94gmMGH | env/p-play | PO6-11 pistol hold/ADS, PO6-15 bot strength, FP flash |
 
 ## Trunk / merge rounds
+- 2026-10-15 17:45: **round 205 ON ORIGIN**: env/c-worlds 5afeae90 (PO6-07 C side: only owned loops loop, siren follows assault FADE, weapon loops stop after last shot, safety caps; table docs/levels/_audio/po6_07_loop_audit.md). Lead: c test_audio 23, a pager 18, b armory_batch3 13, b music 17; gdlint clean. PO6-07 A side (stop guarantees) open.
 - 2026-10-15 17:35: **round 204 ON ORIGIN**: env/a-core b230579d (PO6-02 drill jams 1-2, spaced; pd2_fidelity S9.3 amended). Lead: a po6_02 2, s9_ 31, a3_09 24; banned clean.
 - 2026-10-15 17:12: **new LEAD + 5 fresh env sessions** (D-114). PO playtest list `docs/process/po_playtest_2026-10-15.md` (PO6-01..19) is top priority for all envs. Trunk 57145cc8.
 - 2026-10-14 22:20: **round 203 ON ORIGIN** (handoff complete): env/d-art a6802365 (D HANDOFF section, shotgun/LMG lit grip captures; docs/images only). All 5 env HANDOFF sections on trunk. Held: env/b-content (D SMG re-time 0%).
