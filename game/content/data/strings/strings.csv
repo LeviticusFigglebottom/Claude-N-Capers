@@ -1964,6 +1964,7 @@ ui.workshop.status.equipped_secondary,Equipped as your secondary
 ui.workshop.status.for_sale,For sale: {price}
 ui.workshop.status.locked_level,Unlocks at level {level}
 ui.workshop.status.stock,Stock part
+ui.workshop.stock_desc,"The factory part: the weapon's baseline, no stat changes."
 ui.workshop.status.mod_source,Not owned. Drops from payday cards or buy it here for {price}.
 ui.workshop.status.mod_unlock,Locked. Unlocked by: {source}
 ui.workshop.vs_equipped,vs. your equipped {slot}
