@@ -48,6 +48,10 @@ var chevrons: DetectionChevrons
 var marks: MarkedTargets
 ## v1.8 objective world markers (edge-clamped, distance).
 var objective_markers: ObjectiveMarkers
+## PO6-03: PD2 device timer panels (drill / saw / hack ...) at the devices.
+var device_timers: DeviceTimers
+## PO6-20: a waypoint over every guard with a live pager.
+var pager_waypoints: PagerWaypoints
 var interaction: InteractionPanel
 ## PP-A-1: guard-domination prompt (above the interaction prompt).
 var dominate: DominatePrompt
@@ -126,8 +130,8 @@ func set_crew_heisters(map: Dictionary) -> void:
 
 
 func widgets() -> Array[HudWidget]:
-	return [chevrons, marks, objective_markers, interaction, dominate, vitals, ammo, pager, objectives, assault,
-			teammates, status, custody, captain, stamina, scoreboard, hint, mask_ring, onboarding, hit_feedback,
+	return [chevrons, marks, objective_markers, device_timers, pager_waypoints, interaction, dominate, vitals, ammo,
+			pager, objectives, assault, teammates, status, custody, captain, stamina, scoreboard, hint, mask_ring, onboarding, hit_feedback,
 			damage_direction, low_health, downed, hostages]
 
 
@@ -137,6 +141,8 @@ func _build() -> void:
 	downed.heisters = crew_heisters
 	marks = _place(MarkedTargets.new(), Control.PRESET_FULL_RECT, Vector2.ZERO, Vector2.ZERO) as MarkedTargets
 	objective_markers = _place(ObjectiveMarkers.new(), Control.PRESET_FULL_RECT, Vector2.ZERO, Vector2.ZERO) as ObjectiveMarkers
+	device_timers = _place(DeviceTimers.new(), Control.PRESET_FULL_RECT, Vector2.ZERO, Vector2.ZERO) as DeviceTimers
+	pager_waypoints = _place(PagerWaypoints.new(), Control.PRESET_FULL_RECT, Vector2.ZERO, Vector2.ZERO) as PagerWaypoints
 	chevrons = _place(DetectionChevrons.new(), Control.PRESET_FULL_RECT, Vector2.ZERO, Vector2.ZERO) as DetectionChevrons
 	crosshair = UiBuild.label(&"ui.hud.crosshair", UiBuild.HUD)
 	crosshair.modulate.a = 0.0  # lead ruling: no crosshair until masked (PD2)
@@ -155,6 +161,7 @@ func _build() -> void:
 	objectives = _place(ObjectivesPanel.new(), Control.PRESET_TOP_LEFT, Vector2(48, 48), Vector2(520, 200)) as ObjectivesPanel
 	if heist_id != &"":
 		objectives.set_accent(UiAccent.for_heist(heist_id))
+	device_timers.objective_suffix_changed.connect(objectives.set_device_suffix)
 	assault = _place(AssaultBanner.new(), Control.PRESET_CENTER_TOP, Vector2(-260, 40), Vector2(520, 56)) as AssaultBanner
 	hostages = _place(HostageStrip.new(), Control.PRESET_CENTER_TOP, Vector2(280, 40), Vector2(220, 80)) as HostageStrip
 	pager = _place(PagerPanel.new(), Control.PRESET_CENTER_TOP, Vector2(-200, 110), Vector2(400, 200)) as PagerPanel
