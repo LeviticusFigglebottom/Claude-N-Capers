@@ -206,6 +206,8 @@ func swing_open() -> void:
 	if _device_point != null and _device_point.interactable != null and _device_point.runner != null \
 			and _device_point.runner.state == DeviceRunner.State.IDLE:
 		_device_point.interactable.enabled = false
+	if runner != null:
+		runner.abort()  # a drill still running / jammed on a safe opened another way stops (server)
 	for p: GameplayPrefab in _inner_loot():
 		p.visible = true
 		p.interactable.enabled = _content_usable(p)
