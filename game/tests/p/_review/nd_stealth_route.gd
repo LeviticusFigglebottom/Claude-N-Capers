@@ -14,7 +14,6 @@
 extends Node
 
 const GRATE_AT: Vector3 = Vector3(16.95, 0.0, -1.4)
-const LADDER_FOOT: Vector3 = Vector3(17.6, -4.0, -0.55)
 const MASK_AT: Vector3 = Vector3(18.5, -4.0, 3.0)
 const GATE_AT: Vector3 = Vector3(14.0, -4.0, 6.9)
 const C6_AT: Vector3 = Vector3(9.1, -1.4, 8.8)
@@ -146,8 +145,8 @@ func _to_b3() -> bool:
 		note("grate not opened (%s)" % grate.get(&"lock"))
 		return false
 	await shot("grate_open")
-	if not await pilot.goto(LADDER_FOOT, 0.8, 60.0):
-		note("ladder foot not reached (at %s)" % Po5Pilot._v(pilot.crew.global_position))
+	if not await _climb_down_near(GRATE_AT):
+		note("ladder not climbed down (at %s)" % Po5Pilot._v(pilot.crew.global_position))
 		return false
 	if not await pilot.goto(MASK_AT, 0.8, 40.0):
 		return false
@@ -155,6 +154,36 @@ func _to_b3() -> bool:
 	note("masked in B3 (masked %s)" % pilot.crew.masked)
 	await shot("b3_masked")
 	return pilot.crew.masked
+
+
+## The ladder under the grate, by real input: walk to its top (ground side), face it, hold W down to the bottom
+## (the ladder's NavigationLink3D is on Ladder.NAV_LAYER, which the pilot's layer-1 nav paths do not use).
+func _climb_down_near(at: Vector3) -> bool:
+	var lad: Ladder = null
+	for n: Node in rt.find_children("*", "Ladder", true, false):
+		var l: Ladder = n as Ladder
+		if lad == null or l.global_position.distance_to(at) < lad.global_position.distance_to(at):
+			lad = l
+	if lad == null:
+		return false
+	var top: Vector3 = lad.top_position()
+	var bottom: Vector3 = lad.bottom_position()
+	var away: Vector3 = Vector3(top.x - lad.global_position.x, 0.0, top.z - lad.global_position.z)
+	away = away.normalized() if away.length() > 0.01 else Vector3.BACK
+	if not await pilot.goto(top + away * 0.5, 0.4, 40.0):
+		note("ladder top not reached (%s)" % Po5Pilot._v(top))
+		return false
+	await pilot.face(Vector3(lad.global_position.x, top.y + 0.2, lad.global_position.z), 0.05, 1.5)
+	pilot.inp.press(&"move_forward")
+	var t: float = 0.0
+	while t < lad.climb_time() + 8.0:
+		await wait_s(0.1)
+		t += 0.1
+		if pilot.crew.global_position.y < bottom.y + 0.3 and not lad.is_climbing(pilot.crew.slot):
+			break
+	pilot.inp.release(&"move_forward")
+	note("ladder %s: down %s in %.1f s" % [lad.name, pilot.crew.global_position.y < bottom.y + 0.3, t])
+	return pilot.crew.global_position.y < bottom.y + 0.3
 
 
 ## B5: guard_basement at the gate (facing S): knife him from behind (the corridor's north side), answer the pager.
