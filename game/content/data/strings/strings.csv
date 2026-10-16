@@ -2322,6 +2322,11 @@ ui.options.apply,Apply
 ui.options.revert,Revert
 ui.options.reset_tab,Reset Tab
 ui.options.unapplied,Unapplied changes
+ui.options.tips.label,First-time tips
+ui.options.tips.reset,Show again
+ui.options.tips.confirm_title,Show the first-time tips again?
+ui.options.tips.confirm_body,"Every first-time card shows again, the next time its moment comes up."
+ui.options.tips.done,The first-time tips will show again.
 ui.options.on,On
 ui.options.off,Off
 ui.options.value.percent,{value}%

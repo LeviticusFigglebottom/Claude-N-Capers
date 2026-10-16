@@ -59,7 +59,7 @@ static func heist_tip(heist_id: StringName) -> StringName:
 	return StringName("heist_%s" % heist_id) if HEISTS.has(heist_id) else &""
 
 
-## Forget every tip (tests; no Options "show tips again" row exists yet). Writes the profile when persisting.
+## Forget every tip (Options > Controls "First-time tips: Show again", tests). Writes the profile when persisting.
 static func reset() -> void:
 	_seen.clear()
 	_loaded = true
