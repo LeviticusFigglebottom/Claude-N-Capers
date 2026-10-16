@@ -48,7 +48,14 @@ func _run() -> void:
 	print("[PO6CAP] drill state %d device_node %s" % [dp.runner.state, dp.device_node])
 	await _shot("02_drill_placed_once")
 	dp.runner.progress = 0.999
-	await _wait(3.0)
+	# P's PO6 rerun: shot 03 was taken before the safe was open. Wait for the opened state (the drill finishes ->
+	# open_by_device -> swing_open), then let the door and the loot settle a moment before the shot.
+	if not await _wait_opened(safe, dp, 20.0):
+		push_error("[PO6CAP] safe not open 20 s after the drill was set to finish (drill state %d, stage %d)" % [
+			dp.runner.state, safe.stage])
+		get_tree().quit(1)
+		return
+	await _wait(1.0)
 	_log_contents(safe, "open")
 	await _shot("03_safe_open_loot_inside")
 	var civ: NpcBase = rt.spawn_npc(&"civilian",
@@ -91,6 +98,19 @@ func _run() -> void:
 func _log_contents(safe: Safe, tag: String) -> void:
 	for p: GameplayPrefab in safe.contents():
 		print("[PO6CAP] %s: %s visible %s enabled %s" % [tag, p.name, p.is_visible_in_tree(), p.interactable.enabled])
+
+
+## Polls until `safe.opened` (true) or `timeout_s` wall seconds pass (false). A jam on the way is fixed at once
+## (the capture is about the open safe, not the jam schedule).
+func _wait_opened(safe: Safe, dp: DrillPoint, timeout_s: float) -> bool:
+	var t0: int = Time.get_ticks_msec()
+	while not safe.opened and Time.get_ticks_msec() - t0 < int(timeout_s * 1000.0):
+		if dp.runner.state == DeviceRunner.State.JAMMED:
+			dp.runner.fix(0)
+		await get_tree().physics_frame
+	print("[PO6CAP] safe opened=%s after %.1f s (drill state %d)" % [safe.opened,
+		(Time.get_ticks_msec() - t0) / 1000.0, dp.runner.state])
+	return safe.opened
 
 
 func _wait(seconds: float) -> void:
