@@ -968,3 +968,13 @@ dragon's breath / incendiary), with real behaviour, not only stat deltas.
   penetration), flechette (more pellets, bleed-like DoT), dragon's breath (fire DoT, panic civilians); ammo pickup multipliers
   as data.
 * Values in data (WeaponStats / tweak), documented in pd2_fidelity.md (C-owned doc rows via the LEAD).
+
+## D-119: revert the PO6-10 gun look (2026-10-16, LEAD; product owner)
+The PO saw the flat light-grey first-person guns in the D-118 gadget captures and asked for the earlier look back. PO6-10
+("FP weapons render near-black") is **reverted** and closed as won't-fix:
+* **C:** restore the gun finish parameters from before 68b4e770 (alu_anodized_black, metal_matte, steel_blued, gsr preset)
+  and regenerate their textures. The test/audio files in that commit stay.
+* **P:** the viewmodel gun fill light is off by default (`FpViewmodelTweak` gun fill energy 0, hip and ADS). The code stays
+  so it can be re-enabled, but nothing in the game turns it on.
+* Acceptance: windowed Glasshouse hip shot of the Corsair and the Kestrel side by side with
+  `game/assets/characters/_review/grip_glasshouse_corsair_ar_hip.png` (black guns), reviewed by the LEAD.
