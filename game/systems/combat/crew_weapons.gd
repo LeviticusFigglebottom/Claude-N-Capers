@@ -616,8 +616,21 @@ func _build_claim(s: WeaponState, intent: CrewIntent) -> Dictionary:
 ## flash/tracer from the viewmodel), else the third-person weapon's `Muzzle`, else the eye.
 func _fx_origin() -> Vector3:
 	if _crew.is_local():
-		return _muzzle_position()
+		var fx_muzzle: Node3D = _fp_fx_muzzle()
+		return fx_muzzle.global_position if fx_muzzle != null else _muzzle_position()
 	return ShotFx.tp_muzzle(_crew, _crew.eye_position())
+
+
+## ENV P: FpViewmodel.fx_muzzle() is the Muzzle of the gun that fires the NEXT shot (akimbo alternates right then
+## left; valid before `fired`), null without one. Duck-typed: the viewmodel is a child of the crew camera.
+func _fp_fx_muzzle() -> Node3D:
+	var view: CrewView = CrewView.of(_crew)
+	var cam: Camera3D = view.camera() if view != null else null
+	var vm: Node = cam.get_node_or_null(^"FpViewmodel") if cam != null else null
+	if vm == null or not vm.has_method(&"fx_muzzle"):
+		return null
+	var m: Node3D = vm.call(&"fx_muzzle") as Node3D
+	return m if m != null and m.is_inside_tree() else null
 
 
 func _fx_flags(s: WeaponState) -> int:
