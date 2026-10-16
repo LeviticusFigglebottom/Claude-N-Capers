@@ -399,24 +399,41 @@ def investigate_look(sk: Skeleton, f: int, N: int) -> Pose:
 
 def downed(sk: Skeleton, f: int, N: int) -> Pose:
     """Bleed-out: sitting on the floor, leaning back on the left hand, pistol up in the right."""
-    t = f / FPS
-    T = N / FPS
+    return downed_pose(sk, f / FPS, N / FPS)
+
+
+def downed_pose(sk: Skeleton, t: float, T: float, recoil: float = 0.0, sit_up: float = 0.0, gun=None, left=None,
+                left_shape: str = "pinch") -> Pose:
+    """``downed`` at ``t`` of a ``T`` s loop. D-116 crew downed set (_anim_crew3p): ``recoil`` 0..1 kicks the pistol;
+    ``sit_up`` 0..1 brings the trunk up off the left hand; ``gun`` = (dx, dy, dz, pitch, roll) moves the pistol (m in
+    the chest offset's axes, deg); ``left(pre, wf) -> (point, along, palm)`` takes the left hand off the floor."""
     k = sk.scale
     pose = Pose()
     br = math.sin(TAU * 3 * t / T)
     hips_rest = sk.head["hips"]
     pose.hip = v3(0.0, -0.05 * k, 0.14 * k - hips_rest[2] + 0.003 * k * br)
-    spine(pose, hips=(-44, 0, 0), lean=8.0, chest_lean=6.0 + 1.5 * br, neck=(18, 0, 0), head=(6, 0, 2.0 * math.sin(TAU * t / T)))
+    spine(pose, hips=(-44 + 26.0 * sit_up, 0, 0), lean=8.0 + 10.0 * sit_up, chest_lean=6.0 + 1.5 * br, neck=(18 - 8.0 * sit_up, 0, 0),
+          head=(6 + 6.0 * sit_up, 0, 2.0 * math.sin(TAU * t / T)))
     pose.legs["L"] = A.LegIK(ankle=v3(-0.20 * k, 0.70 * k, 0.07 * k), foot=rxd(18.0) @ rzd(14.0), toe=0.0, pole=v3(-0.5, 0.3, 1.0))
     pose.legs["R"] = A.LegIK(ankle=v3(0.13 * k, 0.48 * k, 0.085 * k), foot=rzd(-10.0), toe=0.0, pole=v3(0.3, 0.6, 1.0))
     pre = Solver(sk).solve(pose)
-    pl = pre.P["upper_arm.L"] + v3(-0.10 * k, -0.16 * k, 0.0)
-    pl[2] = 0.012 * k
-    hand_on(sk, pose, "L", pl, v3(-0.35, -0.55, -0.1), v3(0.0, 0.0, -1.0),
-            pole=v3(-0.6, -0.8, 0.0), along_share=0.55, palm_off=0.012, clav=0.5)
-    pose.hands["L"] = hand_shape("flat", 0.5)
-    o = A.bone_point(pre, sk, "chest", v3(0.07 * k, 0.40 * k, 0.12 * k)) + v3(0.0, 0.0, 0.004 * k * br)
-    wf = weapon_frame(o, yaw=4.0 * math.sin(TAU * t / T), pitch=-2.0 + 1.5 * br)
+    dx, dy, dz, gp, gr = gun if gun is not None else (0.0, 0.0, 0.0, 0.0, 0.0)
+    o = A.bone_point(pre, sk, "chest", v3((0.07 + dx) * k, (0.40 + dy) * k, (0.12 + dz) * k)) + v3(0.0, 0.0, 0.004 * k * br)
+    wf = weapon_frame(o, yaw=4.0 * math.sin(TAU * t / T), pitch=-2.0 + 1.5 * br + gp, roll=gr)
+    if recoil:
+        R, o = wf
+        o = o + R @ v3(0.0, -0.03 * k * recoil, 0.012 * k * recoil)
+        wf = (R @ rxd(9.0 * recoil), o)
+    if left is None:
+        pl = pre.P["upper_arm.L"] + v3(-0.10 * k, -0.16 * k, 0.0)
+        pl[2] = 0.012 * k
+        hand_on(sk, pose, "L", pl, v3(-0.35, -0.55, -0.1), v3(0.0, 0.0, -1.0),
+                pole=v3(-0.6, -0.8, 0.0), along_share=0.55, palm_off=0.012, clav=0.5)
+        pose.hands["L"] = hand_shape("flat", 0.5)
+    else:
+        lp, la, lpalm = left(pre, wf)
+        hand_on(sk, pose, "L", lp, la, lpalm, pole=v3(-0.7, -0.3, -0.6), along_share=0.75)
+        pose.hands["L"] = hand_shape(left_shape)
     hold_pistol(sk, pose, wf, one_hand=True)
     return pose
 
@@ -2053,6 +2070,9 @@ def clips(sk: Skeleton, table: dict) -> dict[str, Clip]:
     import _anim_holds as holds  # noqa: PLC0415 - D-116 third-person weapon holds; imports this module
 
     extra.update(holds.clips(sk, solver, table))
+    import _anim_crew3p as crew3p  # noqa: PLC0415 - D-116 crew akimbo / downed / cuffed states; imports this module
+
+    extra.update(crew3p.clips(sk, solver, table))
     out: dict[str, Clip] = {}
     for name, row in table.items():
         N, loop, speed = int(row["frames"]), bool(row["loop"]), float(row["speed"])

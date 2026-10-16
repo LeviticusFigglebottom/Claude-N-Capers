@@ -18,6 +18,7 @@ Locomotion clips plant the stance foot exactly: at ``speed`` m/s (for 1.78 m; mu
 
 import _anim as anim
 import _anim_assault as assault
+import _anim_crew3p as crew3p
 import _anim_d304 as d304
 import _anim_hitzones as hitzones
 import _anim_holds as holds
@@ -237,6 +238,20 @@ CLIPS = {
     "interact_mid_armed": {"frames": 60, "loop": True, "speed": 0.0, "priority": 1},
     "interact_high_armed": {"frames": 60, "loop": True, "speed": 0.0, "priority": 1},
     "throw_bag_armed": {"frames": 30, "loop": False, "speed": 0.0, "priority": 1, "events": {"release": 15}},
+    # D-116 third-person crew states (_anim_crew3p, SOURCE `crew_states`): akimbo firing set, downed actions, cuffed
+    "aim_akimbo": {"frames": 90, "loop": True, "speed": 0.0, "priority": 2},
+    "fire_akimbo": {"frames": 9, "loop": False, "speed": 0.0, "priority": 2, "events": {"shot": 0}},
+    "fire_akimbo_l": {"frames": 9, "loop": False, "speed": 0.0, "priority": 2, "events": {"shot": 0}},
+    "reload_akimbo": {"frames": 60, "loop": False, "speed": 0.0, "priority": 2,
+                      "events": {"mag_out": 8, "mag_in": 32, "done": 46}},
+    "downed_fire": {"frames": 9, "loop": False, "speed": 0.0, "priority": 2, "events": {"shot": 0}},
+    "downed_reload": {"frames": 45, "loop": False, "speed": 0.0, "priority": 2,
+                      "events": {"mag_out": 6, "mag_in": 28, "done": 34}},
+    "downed_getup": {"frames": 40, "loop": False, "speed": 0.0, "priority": 2, "events": {"up": 34}},
+    "downed_arrested": {"frames": 40, "loop": False, "speed": 0.0, "priority": 2, "events": {"disarm": 6}},
+    "crew_cuffed": {"frames": 120, "loop": True, "speed": 0.0, "priority": 2},
+    "crew_cuffed_enter": {"frames": 18, "loop": False, "speed": 0.0, "priority": 2},
+    "crew_cuffed_free": {"frames": 24, "loop": False, "speed": 0.0, "priority": 2, "events": {"free": 8}},
 }
 LOOPS = sorted(name for name, row in CLIPS.items() if row["loop"])
 P1 = sorted(name for name, row in CLIPS.items() if row["priority"] == 1)
@@ -270,7 +285,7 @@ def build(ctx) -> None:
     for name in sorted(CLIPS):
         baked = anim.bake(solver, clips[name])
         if (name in KEEP or name in d304.KEEP or name in assault.KEEP or name in hitzones.KEEP
-                or name in surr.KEEP or name in holds.KEEP):
+                or name in surr.KEEP or name in holds.KEEP or name in crew3p.KEEP):
             keep[name] = baked
         anim.write_action(arm, baked, export_name(name))
         c = baked.checks
@@ -326,6 +341,8 @@ def build(ctx) -> None:
     for key, text in surr.source_notes(CLIPS, keep).items():
         ctx.source_extra[key] = text
     for key, text in holds.source_notes().items():
+        ctx.source_extra[key] = text
+    for key, text in crew3p.source_notes().items():
         ctx.source_extra[key] = text
     for name in sorted(CLIPS):
         row = CLIPS[name]
