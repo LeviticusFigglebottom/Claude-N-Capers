@@ -247,9 +247,9 @@ func _update_scope(st: WeaponStats, mag: float) -> void:
 		_vm_image.visible = t < tw.scope_hide_gun_at
 
 
-## ui_hud.md v1.16: while the sight picture shows, the local HUD model carries `scoped_ads` and `scope_ring` (the
-## ocular's screen-space bounds) so ENV B can move text panels out of the ring. Written only when ENV A's
-## LocalHudModel has the fields (duck-typed); `changed` fires on a show / hide edge and while the ring moves.
+## ui_hud.md v1.16 (ENV A e308d22e): the local HUD model carries `scoped_ads` and `scope_ring` (the ocular's
+## screen-space bounds, viewport px; Rect2() when not scoped), written here every frame (no signal; the model never
+## writes them) so ENV B can move text panels out of the ring. Duck-typed until the fields are on this branch.
 func _publish_scope(scoped: bool) -> void:
 	var rt: HeistRuntime = HeistRuntime.of(_crew)
 	var hm: Object = rt.hud_model if rt != null else null
@@ -259,16 +259,9 @@ func _publish_scope(scoped: bool) -> void:
 	if scoped:
 		var size: Vector2 = _scope.size
 		var r: float = FpScopeOverlay.ocular_radius(size)
-		var c: Vector2 = size * 0.5 + _scope.offset
-		ring = Rect2(c - Vector2(r, r), Vector2(r, r) * 2.0)
-	var was: bool = bool(hm.get(&"scoped_ads"))
-	var old_ring: Rect2 = hm.get(&"scope_ring") as Rect2
-	if was == scoped and old_ring.is_equal_approx(ring):
-		return
+		ring = Rect2(size * 0.5 + _scope.offset - Vector2(r, r), Vector2(r, r) * 2.0)
 	hm.set(&"scoped_ads", scoped)
 	hm.set(&"scope_ring", ring)
-	if hm.has_signal(&"changed"):
-		hm.emit_signal(&"changed", &"scoped_ads")
 
 
 ## The viewmodel's sight sway (deg) as a screen offset (px) at the world camera's zoomed FOV: yaw left / pitch up
