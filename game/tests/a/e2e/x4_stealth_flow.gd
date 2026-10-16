@@ -34,6 +34,8 @@ var alarms: Array[StringName] = []
 var lasers_tripped: int = 0
 var pagers: int = 0
 var ended: Array[Dictionary] = []
+## Objectives completed when heist_ended arrived (events.md v1.7: escape completes before it).
+var completed_at_end: Array[StringName] = []
 ## Objective ids in the order they completed.
 var completed: Array[StringName] = []
 var secured_loot: Array[StringName] = []
@@ -79,7 +81,9 @@ func launch(heist_id: StringName, seed_value: int) -> bool:
 		note("ALARM %s" % reason))
 	_listen(EventBus.laser_tripped, func(_id: int) -> void: lasers_tripped += 1)
 	_listen(EventBus.pager_started, func(_p: int, _g: int) -> void: pagers += 1)
-	_listen(EventBus.heist_ended, func(r: Dictionary) -> void: ended.append(r))
+	_listen(EventBus.heist_ended, func(r: Dictionary) -> void:
+		completed_at_end = completed.duplicate()
+		ended.append(r))
 	_listen(EventBus.loot_secured, func(_b: int, loot_id: StringName, _v: int) -> void:
 		secured_loot.append(loot_id)
 		note("secured %s (%d)" % [loot_id, secured_loot.size()]))

@@ -610,6 +610,10 @@ func end_heist(success: bool, escaped_slots: Array[int] = [], fail_reason: Strin
 	if _ended:
 		return {}
 	_ended = true
+	# events.md v1.7: a successful escape completes the mission's `escape` objective before heist_ended (HUD, B's
+	# achievement objectives_completed), whichever trigger ended it (escape zone, mission, stealth-only win).
+	if success and mission != null and mission.objective_state(&"escape") == Enums.ObjectiveState.ACTIVE:
+		mission.complete(&"escape")
 	var reason: StringName = FAIL_NONE if success else (fail_reason if fail_reason != FAIL_NONE else FAIL_ABORT)
 	var crew_rows: Array[Dictionary] = []
 	for slot: int in Net.all_slots():
