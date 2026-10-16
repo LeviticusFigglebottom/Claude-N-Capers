@@ -14,8 +14,8 @@ and reports a gap list; the LEAD folds the gaps in here as rows (id, heist, owne
 ## Gap rows
 | id | heist | owner | gap | status |
 |---|---|---|---|---|
-| X-1 | all but GH | C (+B rows) | music stems + MusicDirector for ND/SL/DB/GN (tracks.tres points at missing folders) | open |
-| X-2 | all but GH | C (+B rows) | ambience cues: 9 doc ambiences, SL/DB/GN have no Audio node, ND reuses GH beds | open |
+| X-1 | all but GH | C (+B rows) | music stems + MusicDirector for ND/SL/DB/GN (tracks.tres points at missing folders) | done (round 221) |
+| X-2 | all but GH | C (+B rows) | ambience cues: 9 doc ambiences, SL/DB/GN have no Audio node, ND reuses GH beds | done (round 221) |
 | X-3 | ND, DB, GN | C markers, A rows/logic | assault events (D-114 §5); SL N/A (stealth-only) | open |
 | X-4 | ND, SL, GN | A | stealth e2e flows (only GH has one) | open |
 | X-5 | all | A | nav agent_radius 0.30 vs NPC capsule 0.35; tellers pushed off marks; GN StaffCO/CS/AO desk_work without seats; GH WorkshopDoor UsePoint police motor snag (7.8, z 5) | open |
@@ -32,17 +32,17 @@ and reports a gap list; the LEAD folds the gaps in here as rows (id, heist, owne
 | DB-6 | DB | C, A | stale QC-36/39 TODOs (C); QC-25 S3 perch after fog lifts needs a director hook (A) | open |
 | DB-7 | DB | A | mission audit + windowed auto_loud | open |
 | GN-1 | GN | C | G2 (GN-C2): 50 props vs GH 628, GI/probes/occluders, moon light | open |
-| GN-2 | GN | C | 5 patron spawns vs 12 in doc (7/9 rolls capped) | open |
-| GN-3 | GN | C | 2 BODY_HIDE spots vs 8 | open |
-| GN-4 | GN | C | 6 COVER points vs ~50 | open |
+| GN-2 | GN | C | 5 patron spawns vs 12 in doc (7/9 rolls capped) | done (round 219) |
+| GN-3 | GN | C | 2 BODY_HIDE spots vs 8 | done (round 219) |
+| GN-4 | GN | C | 6 COVER points vs ~50 | done (round 219) |
 | GN-8 | GN | A | e2e stealth + loud; QC-57 Vaultline courier; 17 unsaid mission lines (D-117 §6) | open |
-| GN-10 | GN | D, P | cast polish; §7 traversal tests | open |
+| GN-10 | GN | D, P | cast polish; §7 traversal tests | done (round 222, pending tests); GN look map after D lands |
 | B-1 | all | B | D-117 names/briefing/unlocks; GH/SL/GN content gaps | DONE r216 |
 | D-1 | GH | D | design manager Greta Vossberg (female) vs male civilian_manager; civilian_sales_b + clerk look | done (round 220) |
 | D-2 | DB | D | dock_worker, dock_worker_b, dock_packer (civ_worker wears bank outfits) | done (round 220) |
-| D-3 | SL, ND, GN | A | NpcVisualTweak maps: SL Northgate guards/cleaner/Helena Moor; ND night manager + armored_car_crew; GN civ_admin → gallery_admin | open |
+| D-3 | SL, ND, GN | A | NpcVisualTweak maps: SL Northgate guards/cleaner/Helena Moor; ND night manager + armored_car_crew; GN civ_admin → gallery_admin | done (round 222, pending tests); GN look map after D lands |
 | D-4 | all | D props, A attach | hand props (phone, mop, mug, cigarette, tray) not attached; no phone/cigarette asset | D side done (round 220); A attach pending |
-| D-5 | DB, SL, GN | A | unmapped clips: `look` pause, SL seated `desk`, GN curator_inspect / walk_text / smoke | open |
+| D-5 | DB, SL, GN | A | unmapped clips: `look` pause, SL seated `desk`, GN curator_inspect / walk_text / smoke | done (round 222, pending tests); GN look map after D lands |
 | D-6 | all | D | cast file for GH/ND/SL/DB + test: every design role has a character | done (round 220) |
 | D-7 | GH (PO6-17) | C | heli cabin roof +0.1 m + SniperKneel marker | done (round 220) |
 | A-DB | DB | A / C | A audit (full table: docs/status/env_a.md on env/a-core 4aca399f): DB-1 no assault events (C markers, A rows); DB-2 contraband counts toward the 4 required bags (A); DB-3 cartel reinforcements spawn as plain guards (A); DB-4 thermite bag ignores chosen spawn (C+A); DB-5 count-cage drill 180 s vs doc 120 s (C); DB-6 briefing lines in-mission (A VO lane); DB-7 no music (C); DB-8 padlocks: placed saw 30/45 s per doc (LEAD ruling: doc wins, DB is loud-only); minors 8-19 in A's table | open |
