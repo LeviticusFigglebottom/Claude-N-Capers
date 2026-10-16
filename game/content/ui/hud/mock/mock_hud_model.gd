@@ -60,6 +60,11 @@ var crew_state: int = Enums.CrewState.NORMAL:
 		crew_state = v
 		vitals_changed.emit()
 ## Seconds until custody while DOWNED (< 0 = not bleeding out).
+## ui_hud v1.15 (PO6-17b): seconds of breach flash left (vitals group).
+var flashed_s: float = 0.0:
+	set(v):
+		flashed_s = v
+		vitals_changed.emit()
 var bleedout_s: float = -1.0:
 	set(v):
 		bleedout_s = v

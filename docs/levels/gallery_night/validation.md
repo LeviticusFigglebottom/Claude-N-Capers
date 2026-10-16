@@ -51,7 +51,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## floating: Nothing floats
 
-- 183 props checked
+- 192 props checked
 
 - WARN `Gameplay/Devices/ServerDoorDrill` @ (25.00, 6.40, 6.15): prop has no geometry or collision; skipped
 - WARN `Gameplay/Devices/VaultDrill` @ (21.50, -3.20, 7.75): prop has no geometry or collision; skipped
@@ -60,7 +60,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## clipping: Nothing clips
 
-- 185 props, 48 doors checked
+- 194 props, 48 doors checked
 
 
 ## scale: Human scale
@@ -146,28 +146,28 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## slopes: No walkable slope < 50° outside the play mesh
 
-- 561 x 345 columns (0.25 m), 213924 surface samples, 0 collider(s) with reachable walkable surfaces outside play
+- 561 x 345 columns (0.25 m), 214069 surface samples, 0 collider(s) with reachable walkable surfaces outside play
 
 
 ## navmesh: Navmesh
 
-- navmesh: 1285 polygons, cell 0.10/0.10 m
-- 270 markers checked
+- navmesh: 1299 polygons, cell 0.10/0.10 m
+- 277 markers checked
 | room | walkable samples | covered | coverage |
 |---|---|---|---|
 | `Rooms/RoomSS` | 12 | 12 | 100% |
 | `Rooms/RoomLK` | 132 | 132 | 100% |
-| `Rooms/RoomFR` | 209 | 209 | 100% |
+| `Rooms/RoomFR` | 193 | 193 | 100% |
 | `Rooms/RoomQR` | 165 | 165 | 100% |
 | `Rooms/RoomLF` | 77 | 77 | 100% |
 | `Rooms/RoomBB` | 135 | 135 | 100% |
-| `Rooms/RoomPL` | 529 | 529 | 100% |
+| `Rooms/RoomPL` | 498 | 498 | 100% |
 | `Rooms/RoomAS` | 630 | 630 | 100% |
 | `Rooms/RoomBR` | 110 | 110 | 100% |
 | `Rooms/RoomWC` | 55 | 55 | 100% |
 | `Rooms/RoomSC` | 102 | 102 | 100% |
 | `Rooms/RoomRG` | 106 | 106 | 100% |
-| `Rooms/RoomJ` | 33 | 33 | 100% |
+| `Rooms/RoomJ` | 27 | 27 | 100% |
 | `Rooms/RoomE1` | 33 | 33 | 100% |
 | `Rooms/RoomLD` | 529 | 529 | 100% |
 | `Rooms/RoomBC` | 171 | 171 | 100% |
@@ -184,7 +184,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `Rooms/RoomCO` | 111 | 111 | 100% |
 | `Rooms/RoomAO` | 125 | 125 | 100% |
 | `Rooms/RoomUW` | 55 | 55 | 100% |
-| `Rooms/RoomFS` | 33 | 33 | 100% |
+| `Rooms/RoomFS` | 27 | 27 | 100% |
 | `Rooms/RoomSV` | 110 | 110 | 100% |
 | `Rooms/RoomCS` | 510 | 510 | 100% |
 | `Rooms/RoomUC` | 171 | 171 | 100% |
@@ -212,7 +212,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## reachability: Reachability (per variant)
 
-- 50 variant configuration(s), 170388 spawn->target path queries
+- 50 variant configuration(s), 174588 spawn->target path queries
 
 
 ## walkthrough: Walkthrough bot
@@ -277,8 +277,8 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## furniture_logic: Furniture arranged plausibly
 
-- classified: desk 1, wall_unit 1
-- 0 seats, 1 tables/desks/counters, 48 doors checked
+- classified: desk 1, wall_unit 1, desk_chair 2
+- 2 seats, 1 tables/desks/counters, 48 doors checked
 
 - WARN `Gameplay/Ladders/AreawayLadder` @ (-4.00, -4.20, 14.00): door_clear: in the clear zone of door `Variants/Group_areaway/Slot_grate_loose/AreawayGrate` (1.0 / 1.0 m each side, leaf width 1.99 m) by 0.18 m (gameplay prefab / variant content: review)
 - WARN `Gameplay/Ladders/AreawayLadder` @ (-4.00, -4.20, 14.00): door_clear: in the clear zone of door `Variants/Group_areaway/Slot_grate_padlocked/AreawayGrate` (1.0 / 1.0 m each side, leaf width 1.99 m) by 0.18 m (gameplay prefab / variant content: review)

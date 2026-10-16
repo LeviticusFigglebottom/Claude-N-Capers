@@ -150,7 +150,7 @@ func _has_key_prefix(prefix: String) -> bool:
 
 ## D-039: objective ids are the heist design doc's `[tag]`s, never guesses.
 func test_glasshouse_objectives_follow_the_design_doc() -> void:
-	var tags: Array[String] = ["casing", "keycard", "workshop_door", "safe", "safe_loot", "secure", "escape"]
+	var tags: Array[String] = ["casing", "keycard", "code", "workshop_door", "safe", "safe_loot", "secure", "escape"]  # LEAD: D-117 §3 doc gains [code] (round 219)
 	var doc: String = ProjectSettings.globalize_path("res://").path_join("../docs/design/heists/glasshouse.md")
 	if FileAccess.file_exists(doc):
 		var text: String = FileAccess.get_file_as_string(doc)

@@ -36,6 +36,14 @@ const LOOP_STOP_OWNERS: Dictionary[StringName, String] = {
 	&"cue.amb_glasshouse_interior": "CueEmitter (map bed)",
 	&"cue.amb_street_dusk": "CueEmitter (map bed)",
 	&"cue.throwable_incendiary_fire": "CueEmitter (fire pool, freed with the pool)",
+	&"cue.assault_van_engine": "assault_event_ended (A: assault events) / heist_ended; cap",
+	&"cue.assault_heli_rotor": "assault_event_ended (A: assault events) / heist_ended; cap",
+}
+## PO6-17 / audio_cues v1.8: assault-event kind -> [start one-shot, keyed loop, end one-shot]; "" = none.
+const ASSAULT_EVENT_CUES: Dictionary = {
+	&"turret_van": [&"cue.assault_van_arrive", &"cue.assault_van_engine", &""],
+	&"heli": [&"cue.assault_heli_arrive", &"cue.assault_heli_rotor", &"cue.assault_heli_leave"],
+	&"breach": [&"cue.assault_breach_warning", &"", &""],
 }
 ## Held-trigger weapon loop -> one-shot tail played when the trigger is released.
 const WEAPON_LOOP_TAILS: Dictionary[StringName, StringName] = {
@@ -58,7 +66,7 @@ const WEAPON_LOOP_TAILS: Dictionary[StringName, StringName] = {
 ## sent the end fact). Missing = no cap.
 @export var loop_max_s: Dictionary[StringName, float] = {
 	&"cue.pager_beep": 30.0, &"cue.pager_radio": 30.0, &"cue.lockpick": 120.0, &"cue.drill_loop": 600.0,
-	&"cue.police_siren_far": 240.0,
+	&"cue.police_siren_far": 240.0, &"cue.assault_van_engine": 600.0, &"cue.assault_heli_rotor": 600.0,
 }
 ## Interaction kind -> loop cue while the interaction is held.
 @export var interaction_loop_cues: Dictionary[StringName, StringName] = {&"lockpick": &"cue.lockpick"}
@@ -320,6 +328,8 @@ func _connect_event_bus() -> void:
 	EventBus.captain_arrived.connect(_on_captain_arrived)
 	EventBus.captain_retreated.connect(_on_captain_retreated)
 	EventBus.npc_killed.connect(_on_npc_killed)
+	EventBus.assault_event_started.connect(_on_assault_event_started)
+	EventBus.assault_event_ended.connect(_on_assault_event_ended)
 
 
 func _on_audio_cue_requested(cue_id: StringName, position: Vector3, source_net_id: int) -> void:
@@ -587,6 +597,28 @@ func _on_captain_retreated(npc_net_id: int) -> void:
 func _on_npc_killed(npc_net_id: int, _killer_net_id: int, _info: Dictionary) -> void:
 	stop_loop(_captain_key(npc_net_id))
 	stop_loop(_weapon_key(npc_net_id))
+
+
+## PO6-17: arrival one-shot at `position`, then the event's keyed loop following `net_id` until it ends.
+func _on_assault_event_started(kind: StringName, net_id: int, position: Vector3) -> void:
+	var cues: Array = ASSAULT_EVENT_CUES.get(kind, [])
+	if cues.is_empty():
+		return
+	if cues[0] != &"":
+		play_cue(cues[0], position, net_id)
+	if cues[1] != &"":
+		start_loop(_assault_key(net_id), cues[1], position, net_id)
+
+
+func _on_assault_event_ended(kind: StringName, net_id: int) -> void:
+	stop_loop(_assault_key(net_id))
+	var cues: Array = ASSAULT_EVENT_CUES.get(kind, [])
+	if cues.size() > 2 and cues[2] != &"":
+		play_cue(cues[2], NO_POSITION, net_id)
+
+
+func _assault_key(net_id: int) -> StringName:
+	return StringName("assault_event_%d" % net_id)
 
 
 func _captain_key(npc_net_id: int) -> StringName:

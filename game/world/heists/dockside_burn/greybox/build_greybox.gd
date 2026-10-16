@@ -535,6 +535,12 @@ func _build_site(geo: Node3D) -> void:
 		if b.size() > 3 and String(b[3]) == "ridge":
 			RT.apply(blk)  # an edge guard (gunwale), not a perch (D-104 slopes)
 	_far_shore_lights(blocks)
+	# D-111: the launch visual over its hidden colliders (L.LAUNCH; the escape E3 boat).
+	var launch: Node3D = _catalog_scene(String(L.LAUNCH[0])).instantiate() as Node3D
+	launch.name = "Launch"
+	launch.position = L.LAUNCH[1]
+	launch.basis = yaw_basis(float(L.LAUNCH[2]))
+	add(blocks, launch)
 	var fences: Node3D = add(site, node3d("Closures")) as Node3D
 	for f: Array in L.FENCES:
 		var ops: Array = (f[7] as Array).duplicate()
@@ -626,7 +632,7 @@ func _build_props(props: Node3D) -> void:
 	for p: Array in L.PROPS:
 		prop_box(_prop_parent(p[1], g, m, x), String(p[0]), p[1], p[2], float(p[3]), String(p[4]), bool(p[5]), String(p[6]))
 	for c: Array in L.CHAIRS:
-		chair(_prop_parent(c[1], g, m, x), String(c[0]), c[1], float(c[2]))
+		chair(_prop_parent(c[1], g, m, x), String(c[0]), c[1], float(c[2]), c.size() > 3 and bool(c[3]))
 	for ms: Array in L.MASTS:
 		_mast(x, String(ms[0]), ms[1], float(ms[2]))
 

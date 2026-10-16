@@ -18,18 +18,22 @@ static func make_def() -> HeistDef:
 	if d == null:
 		d = HeistDef.new()
 	d.id = &"glasshouse"
-	d.display_name = "Glasshouse"
+	d.display_name = "Golden Hour"  # D-117 §1 (id stays glasshouse; location "Vossberg Jewelers")
 	d.contact = &"contact.vance"
-	d.briefing = "Vossberg Jewelers, corner of Harlow Avenue and Pell Street. Thursday's consignment of " \
-		+ "loose stones and estate pieces sits in the workshop safe overnight. Odile Vance has buyers. " \
-		+ "Keycard or drill, two bags minimum, out by the van."
+	# D-117 §4: a strings-table key (ENV B), never a literal.
+	d.briefing = "heist.glasshouse.briefing"
 	d.mode = Enums.HeistMode.STEALTH_OR_LOUD
 	d.map_scene = SCENE_PATH
 	d.base_payout = 40000
 	d.stealth_bonus_mult = 1.15
 	d.loot = [&"loot.jewelry", &"loot.cash"] as Array[StringName]
-	d.objectives = [&"casing", &"keycard", &"workshop_door", &"safe", &"safe_loot", &"secure", &"escape"] \
+	d.objectives = [&"casing", &"keycard", &"code", &"workshop_door", &"safe", &"safe_loot", &"secure", &"escape"] \
 		as Array[StringName]
+	# D-117 §4 / D-109: briefing list and optional extras (objective.glasshouse.<id> strings, ENV B).
+	d.briefing_objectives = [&"casing", &"keycard", &"code", &"workshop_door", &"safe", &"safe_loot", &"secure",
+		&"escape"] as Array[StringName]
+	d.briefing_loud_key = &"heist.glasshouse.briefing_loud"
+	d.briefing_optional = [&"extra_bags", &"salon", &"display_cases"] as Array[StringName]
 	# Pre-planning (contracts/preplanning.md, D-046 reversal): {"favors", "disable",
 	# "assets": {asset_id: overrides}}. Generic assets keep their library data; the two
 	# heist-only assets force a variant slot from the chosen point's params.

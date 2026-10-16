@@ -120,4 +120,8 @@ func _draw() -> void:
 		var label: String = UiText.t(&"ui.range.graph_marker", {"m": String.num(marker_distance_m, 1), "dmg": String.num(dmg, 1)})
 		var label_w: float = font.get_string_size(label, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x
 		var lx: float = c.x + 6.0 if c.x < r.position.x + r.size.x * 0.6 else c.x - 6.0 - label_w
-		draw_string(font, Vector2(lx, r.position.y + float(fs)), label, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, tweak.graph_marker_color)
+		# 1080p review: at the top of the graph the label sat on the flat curve; it goes below the point when the point is
+		# in the upper half, above it otherwise, never on the line.
+		var ly: float = c.y + 8.0 + float(fs) if c.y < r.position.y + r.size.y * 0.5 else c.y - 8.0
+		draw_string_outline(font, Vector2(lx, ly), label, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, 4, Color(0, 0, 0, 0.9))
+		draw_string(font, Vector2(lx, ly), label, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, tweak.graph_marker_color)

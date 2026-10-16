@@ -9,7 +9,7 @@ Exact node names per prefab; no collision (prefabs own it). Blender +Y = Godot -
 * alarm_button, phone: no required nodes (`Panel`/`Button`, `Base`/`Handset`).
 * camera_station: `Desk`, `Screens` (screen faces only), `Monitors`, `Seat` (operator faces the
   screens, Godot +Z).
-* body_container (dumpster): `Body`, `Lid` (pivot on the back top edge), `Inside`.
+* body_container (dumpster, GN crate / cart): `Body`, `Lid` (pivot on the back top edge), `Inside`.
 * ladder (fire-escape drop ladder): `Top`, `Bottom` markers, climb side -Z.
 * secure_zone van: `Body`, `DoorL`, `DoorR` (rear door hinges), `DropAnchor`; rear faces -Z.
 * loot bag: `Bag` (pivot bottom-centre), light / medium / heavy.
@@ -33,9 +33,23 @@ VARIANTS = {
     # D-063: the operator's sit_chair_watch / desk_work anims use a 0.74 m desk and a 0.47 m seat
     "prop_camera_station_bank": {"fn": "camera_station", "h": 0.74, "seat": 0.47, "cat": {"prefab": "camera_station", "kind": "camera_station"}},
     "prop_dumpster": {"fn": "dumpster", "cat": {"prefab": "body_container", "kind": "dumpster"}},
+    # GN-C2 (Gallery Night BODY_HIDE indoors): an empty lidded packing crate (FR, FS, PL) and a janitor's lidded
+    # linen / waste cart (J); same nodes as the dumpster.
+    "prop_crate_hide": {"fn": "hide_box", "style": "crate", "size": (1.3, 0.8, 0.85),
+                        "cat": {"prefab": "body_container", "kind": "crate"}},
+    "prop_cart_hide": {"fn": "hide_box", "style": "cart", "size": (1.0, 0.65, 0.95),
+                       "cat": {"prefab": "body_container", "kind": "cart"}},
+    # D-111 SL refuse room: 0.94 m deep (lid inside the 1.0 m placeholder box against the back wall)
+    "prop_dumpster_d094": {"fn": "dumpster", "d": 0.94, "cat": {"prefab": "body_container", "kind": "dumpster"}},
     "prop_ladder_fire_escape_h300": {"fn": "ladder", "h": 3.0, "cat": {"prefab": "ladder", "kind": "ladder"}},
     "prop_ladder_fire_escape_h420": {"fn": "ladder", "h": 4.2, "cat": {"prefab": "ladder", "kind": "ladder"}},
     "prop_ladder_wall_h400": {"fn": "ladder_wall", "h": 4.0, "cat": {"prefab": "ladder", "kind": "ladder"}},
+    # D-111 (SL / DB): the fire-escape ladder at the map's climb height with straight stiles (1.0 m grab rails over
+    # the landing, no gooseneck over a slab edge), stand-offs reaching the wall `gap` m behind the stiles (0 =
+    # free-standing, the SL services riser hole). Top / Bottom match the ladder placeholder.
+    **{f"prop_ladder_steel_h{h}_g{g:02d}": {"fn": "ladder", "h": h / 100.0, "gap": g / 100.0, "goose": False,
+                                            "cat": {"prefab": "ladder", "kind": "ladder"}}
+       for h, g in ((360, 0), (440, 0), (360, 25), (360, 40), (800, 40), (520, 22))},
     "prop_padlock_brass": {"fn": "padlock", "cat": {"prefab": "padlock", "kind": "padlock"}},
     "veh_van_secure": {"fn": "van", "cat": {"prefab": "secure_zone", "kind": "van"}},
     "prop_loot_bag_light": {"fn": "bag", "size": (0.5, 0.28, 0.26), "cat": {"prefab": "loot_bag", "kind": "loot_bag"}},
@@ -273,7 +287,7 @@ def _camera_station(k: Kit, p: dict) -> None:
 # ---------------------------------------------------------------------------------- dumpster
 
 def _dumpster(k: Kit, p: dict) -> None:
-    w, d, h = 1.8, 1.0, 1.1
+    w, d, h = 1.8, p.get("d", 1.0), 1.1
     body = k.obj("Body")
     hard = body.part(bevel=0.008, segments=1)
     run = body.part(bevel=0.0)
@@ -309,25 +323,93 @@ def _dumpster(k: Kit, p: dict) -> None:
     k.empty("Inside", (0.0, 0.0, 0.5))
 
 
+# ------------------------------------------------------------------------- hide box (crate / cart)
+
+def _hide_box(k: Kit, p: dict) -> None:
+    """Lidded body container: `Body`, `Lid` (pivot on the back top edge), `LidMesh`, `Inside`.
+
+    crate: pine boards on a batten frame, a stencilled label on the front; cart: a grey plastic tub on casters
+    with a push handle at the back.
+    """
+    w, d, h = p["size"]
+    crate = p["style"] == "crate"
+    shell = "wood_pine" if crate else "plastic_grey"
+    lid_key = "wood_pine" if crate else "plastic_black"
+    t = 0.022 if crate else 0.03
+    z0 = 0.0 if crate else 0.16
+    body = k.obj("Body")
+    hard = body.part(bevel=0.003 if crate else 0.01, segments=1)
+    run = body.part(bevel=0.0)
+    hard.bx((-w / 2 + t, -d / 2 + t, z0), (w / 2 - t, d / 2 - t, z0 + t), shell)
+    for sy in (-1, 1):
+        y0, y1 = sorted((sy * d / 2, sy * (d / 2 - t)))
+        hard.bx((-w / 2, y0, z0), (w / 2, y1, h - 0.03), shell)
+    for sx in (-1, 1):
+        x0, x1 = sorted((sx * w / 2, sx * (w / 2 - t)))
+        hard.bx((x0, -d / 2 + t, z0), (x1, d / 2 - t, h - 0.03), shell)
+    if crate:
+        # battens: a band round the foot and the rim, corner posts
+        for zb in (0.0, h - 0.11):
+            for sy in (-1, 1):
+                y0, y1 = sorted((sy * (d / 2 + 0.018), sy * d / 2))
+                run.bx((-w / 2, y0, zb), (w / 2, y1, zb + 0.08), "wood_pine")
+            for sx in (-1, 1):
+                x0, x1 = sorted((sx * (w / 2 + 0.018), sx * w / 2))
+                run.bx((x0, -d / 2, zb), (x1, d / 2, zb + 0.08), "wood_pine")
+        for sx in (-1, 1):
+            for sy in (-1, 1):
+                x0, x1 = sorted((sx * (w / 2 + 0.018), sx * (w / 2 - 0.06)))
+                y0, y1 = sorted((sy * (d / 2 + 0.018), sy * (d / 2 - 0.06)))
+                run.bx((x0, y0, 0.0), (x1, y1, h - 0.03), "wood_pine")
+        run.bx((-0.2, d / 2 + 0.018, h * 0.45), (0.2, d / 2 + 0.02, h * 0.45 + 0.14), "paper")
+    else:
+        for sx in (-1, 1):
+            for sy in (-1, 1):
+                x, y = sx * (w / 2 - 0.1), sy * (d / 2 - 0.1)
+                run.bx((x - 0.04, y - 0.04, 0.1), (x + 0.04, y + 0.04, z0), "metal_dark")
+                run.cyl(0.05, 0.035, (x, y, 0.05), "rubber", axis="X", segs=14)
+        for sx in (-1, 1):
+            hx = sx * (w / 2 - 0.08)
+            run.rod((hx, -d / 2 - 0.01, h - 0.2), (hx, -d / 2 - 0.1, h + 0.05), 0.012, "steel", segs=8)
+        run.rod((-(w / 2 - 0.08), -d / 2 - 0.1, h + 0.05), (w / 2 - 0.08, -d / 2 - 0.1, h + 0.05), 0.014, "steel",
+                segs=8)
+    body.build()
+    lid = k.empty("Lid", (0.0, -d / 2, h - 0.03))
+    lm = k.obj("LidMesh", parent=lid)
+    lp = lm.part(bevel=0.003 if crate else 0.008, segments=1)
+    lp.bx((-w / 2, 0.0, 0.0), (w / 2, d, 0.03), lid_key)
+    if crate:
+        for x in (-w / 2 + 0.08, 0.0, w / 2 - 0.08):
+            lp.bx((x - 0.04, 0.02, 0.03), (x + 0.04, d - 0.02, 0.05), "wood_pine")
+    else:
+        lp.bx((-0.15, d - 0.02, -0.04), (0.15, d + 0.02, 0.03), "plastic_black")
+    lm.build()
+    k.empty("Inside", (0.0, 0.0, z0 + 0.3))
+
+
 # ------------------------------------------------------------------------------------ ladder
 
 def _ladder(k: Kit, p: dict) -> None:
     h = p["h"]
+    gap = p.get("gap", 0.17)  # wall distance behind the stiles (Blender -Y); 0 = no stand-offs
     rail_x = 0.23
     lad = k.obj("Rails")
     lp = lad.part(bevel=0.002)
     top = h + 0.9
     for sx in (-1, 1):
         x = sx * rail_x
-        lp.bx((x - 0.03, -0.01, 0.0), (x + 0.03, 0.01, top - 0.25), "metal_dark")
-        # gooseneck return to the landing at the top
-        lp.rod((x, 0.0, top - 0.25), (x, -0.12, top), 0.017, "metal_dark", segs=10)
-        lp.rod((x, -0.12, top), (x, -0.35, top - 0.15), 0.017, "metal_dark", segs=10)
+        if not p.get("goose", True):
+            lp.bx((x - 0.03, -0.01, 0.0), (x + 0.03, 0.01, h + 1.0), "metal_dark")
+        else:
+            lp.bx((x - 0.03, -0.01, 0.0), (x + 0.03, 0.01, top - 0.25), "metal_dark")
+            # gooseneck return to the landing at the top
+            lp.rod((x, 0.0, top - 0.25), (x, -0.12, top), 0.017, "metal_dark", segs=10)
+            lp.rod((x, -0.12, top), (x, -0.35, top - 0.15), 0.017, "metal_dark", segs=10)
         # wall standoffs every 1.2 m (the wall is behind, Blender -Y)
         z = 0.6
-        while z < h - 0.3:
-            lp.bx((x - 0.012, -0.16, z - 0.02), (x + 0.012, -0.01, z + 0.02), "metal_dark")
-            lp.bx((x - 0.04, -0.17, z - 0.05), (x + 0.04, -0.16, z + 0.05), "metal_dark")
+        while gap > 0.0 and z < h - 0.3:
+            lp.bx((x - 0.012, -(gap - 0.01), z - 0.02), (x + 0.012, -0.01, z + 0.02), "metal_dark")
+            lp.bx((x - 0.04, -gap, z - 0.05), (x + 0.04, -(gap - 0.01), z + 0.05), "metal_dark")
             z += 1.2
     n = int(h / 0.3)
     for i in range(n + 1):
