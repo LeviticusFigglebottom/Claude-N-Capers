@@ -583,6 +583,12 @@ func _go_loud() -> void:
 		_bar(n)
 	for d: Door in _doors(TAG_ART_DOOR, PATHS_ART_DOOR):
 		d.relock(Door.Lock.BARRED)
+	# P GN loud rerun: after last call the bronze doors are locked LOCKPICK; loud links them for the police
+	# (breachable), so crew paths ran into a shut leaf. Loud blows the front: unlocked and breached open.
+	for b: Door in _doors(TAG_BRONZE, PATHS_BRONZE):
+		b.unlock()
+		if not b.is_open:
+			b.set_open(true, false, true)
 	for r: Node in find_tagged(TAG_VAULT_READER):
 		if r is KeycardReader:
 			(r as KeycardReader).set_disabled(true)
