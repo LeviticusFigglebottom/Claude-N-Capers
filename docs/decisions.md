@@ -1062,7 +1062,7 @@ values). ENV A checks crew-AI loadouts, custody and downed (downed equips the se
 secondary may fire it, PD2 bleed-out). ENV P checks the FP viewmodel and the swap paths for a secondary long gun.
 
 ## D-127: enemies get a little tougher (PO, 2026-10-16)
-The PO's playtest: NPCs die too quickly. Every non-special enemy (guards, beat cops, SWAT, heavy SWAT, FBI and their
+The PO's playtest: NPCs die too quickly. Every non-special enemy (guards, beat cops, SWAT, heavy SWAT, FBI, cartel gunmen and their
 variants) gets +25 % health on every difficulty. Head and limb multipliers, armor, damage and accuracy are unchanged.
 Specials keep their tuned values (D-125 Wrecker HP is not re-scaled). ENV A owns the enemy tweak data and pins the new table
 in a test (the D-125 Wrecker:Heavy ratio test moves to the new Heavy HP). ENV B re-runs the balance tool, with
