@@ -53,6 +53,11 @@ static var _cached: AnimTweak = null
 	&"kneel_cuffed": &"death_kneel_cuffed", &"tied": &"death_kneel_cuffed", &"surrender": &"death_kneel",
 	&"cower": &"death_crouch", &"crouch_idle": &"death_crouch", &"crouch_walk": &"death_crouch",
 	&"lie_down": &"death_prone", &"downed": &"death_downed", &"downed_crawl": &"death_downed",
+	# characters.md v1.18 variants: every surrender* / surrender_idle* kneels (death_kneel starts on their chain
+	# frame), kneel_cuffed_b/_c share kneel_cuffed's frame 0 (death_kneel_cuffed).
+	&"surrender_b": &"death_kneel", &"surrender_c": &"death_kneel", &"surrender_idle": &"death_kneel",
+	&"surrender_idle_b": &"death_kneel", &"surrender_idle_c": &"death_kneel",
+	&"kneel_cuffed_b": &"death_kneel_cuffed", &"kneel_cuffed_c": &"death_kneel_cuffed",
 }
 ## v1.10: two hit reacts on one body at least this far apart (s); in between the current one plays on.
 @export var hit_react_min_gap_s: float = 0.35
@@ -82,6 +87,14 @@ static var _cached: AnimTweak = null
 @export var blend_s: float = 0.2
 @export var oneshot_blend_s: float = 0.08
 @export var death_blend_s: float = 0.1
+## characters.md v1.18 hit-zone flinches (SOURCE hit_zones: fade in 0.03 s, out 0.12 s).
+@export var hit_zone_blend_in_s: float = 0.03
+@export var hit_zone_blend_out_s: float = 0.12
+## characters.md v1.19 (SOURCE weapon_holds): the crew upper-body hold layer blends in / out over this (s).
+@export var hold_layer_blend_s: float = 0.2
+## characters.md v1.20: the carried-bag visual's transform under Back/Socket (characters.md: loot bags at
+## Back/Socket; carry_bag_walk holds the strap at the left shoulder). Identity = the contract socket. ◇
+@export var carried_bag_offset: Transform3D = Transform3D.IDENTITY
 ## Exponential smoothing rate (1/s) of the velocity estimate from position deltas (clients).
 @export var velocity_smoothing: float = 12.0
 
