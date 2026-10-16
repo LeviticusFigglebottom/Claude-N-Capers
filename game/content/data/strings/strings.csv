@@ -1331,7 +1331,7 @@ voice.vo.accountant.briefing_glasshouse_2,"Two bags of stones covers my margin. 
 voice.vo.mercer.briefing_glasshouse_1,"I'll be on comms the whole way. Walk in like customers, count the cameras and don't touch anything you can't carry."
 ui.briefing.heist,{name}: {subtitle}
 ui.preplan.title,Pre-planning
-ui.preplan.placeholder,PLACEHOLDER BLUEPRINT
+ui.preplan.placeholder,ROUGH SKETCH: not to scale
 ui.preplan.crew_assets,Crew assets
 ui.preplan.crew_assets_meta,No map location: the whole crew gets these.
 ui.preplan.crew_short,crew
