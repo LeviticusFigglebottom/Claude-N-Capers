@@ -21,10 +21,8 @@ static func make_def() -> HeistDef:
 	d.id = &"shadow_ledger"
 	d.display_name = "Shadow Ledger"
 	d.contact = &"contact.accountant"
-	d.briefing = "Kessler & Moor, the top two floors of Calder Tower. Their off-book client ledger lives " \
-		+ "in three places: the encrypted drive array in the server cage, the partners' laptop with the " \
-		+ "key, and the printed books in Kessler's time-locked study safe. The Accountant wants all of it, " \
-		+ "and nobody may ever know it left the building. One alarm and the array is wiped: stealth only."
+	# D-117 §4: a strings-table key (ENV B), never a literal.
+	d.briefing = "heist.shadow_ledger.briefing"
 	d.mode = Enums.HeistMode.STEALTH_ONLY
 	d.map_scene = SCENE_PATH
 	d.base_payout = 110000
@@ -105,8 +103,10 @@ static func make_variants() -> HeistVariantTable:
 	]
 	t.rare_events = [
 		{"id": &"ledger_printout", "chance": 0.06, "good": true, "effects": {"extra_books": 1}},
-		# The mission only applies it with srv_contractor (doc: requires srv_contractor).
-		{"id": &"cage_left_open", "chance": 0.03, "good": true, "effects": {"requires_slot": &"srv_contractor"}},
+		# Doc: requires srv_contractor. Row-level `requires` (resolver A3-10) so the event never rolls otherwise;
+		# `requires_slot` stays for the mission's own check.
+		{"id": &"cage_left_open", "chance": 0.03, "good": true, "requires": {&"server_room": [&"srv_contractor"]},
+			"effects": {"requires_slot": &"srv_contractor"}},
 		{"id": &"kessler_sleepover", "chance": 0.05, "good": false,
 			"effects": {"force_active": {"group": &"kessler", "slot": &"kessler_in"}}},
 		{"id": &"timelock_extended", "chance": 0.10, "good": false, "min_difficulty": Enums.Difficulty.BRUTAL,

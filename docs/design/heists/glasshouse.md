@@ -1,4 +1,6 @@
-# Glasshouse: Vossberg Jewelers (glasshouse)
+# Golden Hour: Vossberg Jewelers (glasshouse)
+
+> D-117: display name "Golden Hour"; id `glasshouse` and location "Vossberg Jewelers" unchanged.
 Status: APPROVED (lead, 2026-10-10) (D-023). Required changes 1–4 folded in by ENV C on 2026-10-10.
 
 ## Fiction
@@ -326,7 +328,8 @@ D-014), so solo stealth is about **avoiding** civilians, not tying them all.
 ## Objectives
 **Stealth** (objective_tag in brackets):
 1. *(optional)* Case the store. Mercer intro and an Odile line. `[casing]`
-2. Find the manager's keycard. `[keycard]` (skipped if `safe_left_open`)
+2. Find the manager's keycard `[keycard]`, **or** the safe code from a code note `[code]` (either one completes the step;
+   both skipped if `safe_left_open`; D-117).
 3. Get into the workshop (lockpick the door). `[workshop_door]`
 4. Open the safe: keycard swipe (3 s) **or** drill (120 s, noisy). `[safe]`
 5. Bag the consignment (safe `loot_spawn`, 4 bags of `loot.jewelry`). `[safe_loot]`
@@ -406,6 +409,6 @@ Each variable changes a decision.
 - **LUT:** `lut_glasshouse`, warm mids and slightly cool shadows.
 
 ## HeistDef (proposed data, `glasshouse_def.tres`)
-`id glasshouse`, display "Glasshouse", contact `contact.vance`, mode STEALTH_OR_LOUD, base_payout
+`id glasshouse`, display "Golden Hour" (D-117), contact `contact.vance`, mode STEALTH_OR_LOUD, base_payout
 proposed **$40,000** (lead/B to confirm), loot `[loot.jewelry, loot.cash]`, escape_options `[van]`,
 music_track `glasshouse`.

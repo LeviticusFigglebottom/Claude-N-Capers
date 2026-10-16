@@ -1953,6 +1953,42 @@
   "weight": 1.0,
   "z": 0.0
  },
+ "prop_cart_hide": {
+  "aabb": [
+   -0.5,
+   0.0013,
+   -0.345,
+   1.0,
+   1.0127,
+   0.784
+  ],
+  "clear": 0.0,
+  "fixture": false,
+  "glb": "res://assets/props/prop_cart_hide/prop_cart_hide.glb",
+  "group": "body_container",
+  "has_light": false,
+  "hosts": [],
+  "keepout": [],
+  "kind": "cart",
+  "mount": "",
+  "nodes": [
+   "Body",
+   "Inside",
+   "Lid",
+   "LidMesh"
+  ],
+  "place": "none",
+  "prefab": "body_container",
+  "scene": "res://world/props/body_container/prop_cart_hide.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": false,
+  "surface": "wood",
+  "top": 0.0,
+  "visibility_range_end": 0.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
  "prop_cash_bags": {
   "aabb": [
    -0.45,
@@ -2896,6 +2932,42 @@
   "surface": "wood",
   "top": 1.05,
   "visibility_range_end": 60.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
+ "prop_crate_hide": {
+  "aabb": [
+   -0.668,
+   0.0,
+   -0.42,
+   1.336,
+   0.87,
+   0.838
+  ],
+  "clear": 0.0,
+  "fixture": false,
+  "glb": "res://assets/props/prop_crate_hide/prop_crate_hide.glb",
+  "group": "body_container",
+  "has_light": false,
+  "hosts": [],
+  "keepout": [],
+  "kind": "crate",
+  "mount": "",
+  "nodes": [
+   "Body",
+   "Inside",
+   "Lid",
+   "LidMesh"
+  ],
+  "place": "none",
+  "prefab": "body_container",
+  "scene": "res://world/props/body_container/prop_crate_hide.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": false,
+  "surface": "wood",
+  "top": 0.0,
+  "visibility_range_end": 0.0,
   "weight": 1.0,
   "z": 0.0
  },
