@@ -1105,3 +1105,33 @@ unreachable from the new LEAD (session_01HwYKRgCdkLfJCt4ZM6rfTk). They stopped ~
   (B 0ddba6f8, C 80eeb5a8, D 0e4e2a0f).
 Answer carried to ENV P: D-116 stands, first-person pistols/revolvers are one-handed; third person keeps two hands.
 Next heist after D-115 closes: Ostrander Federal (`docs/process/next_heist.md` §1), planning only until then.
+
+## D-130: difficulty shapes stealth by heist size; cameras detect faster (2026-10-16, LEAD; product owner)
+PO: "difficulty affects how many guards/civs there are for the larger heists in stealth (gallery, ledger) and, in smaller
+maps (jewelers), it reduces the total amount of pagers and makes cameras indestructible like PD2 does; cameras also need
+to detect the player a little bit faster." Size class = the design doc's `Size` line (S: Golden Hour; M: Night Deposit,
+Gallery Night, Shadow Ledger; Dockside Burn is loud-only, so N/A).
+1. **M stealth heists (GN, SL, ND): population scales with difficulty.** Guards *and* civilians. Routine = the design doc's
+   baseline count; each tier adds, reaching about **+50 % guards and +35 % civilians at Cataclysm** (Tense ≈ +10 %,
+   Hazardous ≈ +20 %, Brutal ≈ +30 %, Lethal ≈ +40 %; round to whole NPCs, guards first). Extras come from real spawn
+   points with their own patrol routes / work spots, never doubled-up posts. Data: the heists' variant-table
+   `difficulty_add` rows (guard_extra / civilian groups) and generator spawn points: **C**. Runtime: A checks the spawner
+   and VariantResolver apply `difficulty_add` to civilian groups as well as guards, that director caps (D-099) don't clip
+   stealth spawns, and pins per-heist guard/civilian counts for Routine and Cataclysm in a test. ND is included because it
+   is the same size class; GH keeps its current small `difficulty_add` rows.
+2. **S heists (GH): fewer pagers by difficulty.** New `HeistDef.pager_max_by_difficulty: Array[int]` (indexed by
+   Enums.Difficulty; empty = `StealthTweak.pager_max_answers`, 4). Golden Hour: **[4, 4, 3, 3, 2, 1]**. A's PagerSystem
+   and LocalHudModel `pagers_max` read it (the HUD and the `mercer.pager_limit` bark follow automatically). Value: C (GH
+   generator row). Other heists stay at 4.
+3. **S heists (GH): Titan cameras earlier.** New `HeistDef.camera_titan_min_difficulty: int = -1` (-1 = the tweak default,
+   LETHAL, PD2's top tiers, unchanged for every other heist). Golden Hour: **HAZARDOUS** (indestructible from the third
+   tier up). A's `SecurityCamera.is_titan()` reads the def first. Value: C. B: the briefing/difficulty card says "Titan
+   cameras" and "N pagers" when they apply (strings + a line in the briefing intel).
+4. **All cameras detect about 20 % faster (◇ vs PD2's editor defaults).** StealthTweak camera preset
+   `delay_min` 2.0 → **1.6**, `delay_max` 3.0 → **2.4** (range, FOV and weights unchanged). A updates `stealth_tweak.tres`,
+   the S2 row note and the D-128 pinned fill-time test. P includes cameras in the D-128 feel check.
+Contract: data_schemas v1.3 (HeistDef fields). Acceptance: A's count/pager/titan unit tests; P's windowed GH stealth run on
+Routine and Lethal shows the pager count on the HUD and a camera that can't be shot; LEAD looks at the shots.
+**D-130 addendum (round 229, camera range):** A's D-128 prefab default `range_m` 15 m (PD2 editor default) stays for
+cameras without an override; the map generators' explicit 20 m per camera stay too (authored range, and in line with
+the PO's harsher-cameras ask). The round-229 merge regenerates GH/ND/SL/GN scenes so they match their generators.

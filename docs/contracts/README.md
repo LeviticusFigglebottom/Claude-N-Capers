@@ -11,7 +11,7 @@ major version and comes with a `docs/decisions.md` entry and a migration note to
 | [characters.md](characters.md) | 1.26 | C → A (rigs, animation names) | — |
 | [events.md](events.md) | 1.7 | all ↔ all | `game/core/event_bus.gd` |
 | [modifiers.md](modifiers.md) | 1.0 | B → A | `game/core/modifiers.gd`, `game/contracts/modifier_keys.gd` |
-| [data_schemas.md](data_schemas.md) | 1.2 | B (data) → A (runtime) | `game/contracts/data/*` |
+| [data_schemas.md](data_schemas.md) | 1.3 | B (data) → A (runtime) | `game/contracts/data/*` |
 | [crew_intent.md](crew_intent.md) | 1.1 | A, LEAD tests | `game/contracts/crew_intent.gd` |
 | [audio_cues.md](audio_cues.md) | 1.8 | C (sounds) ← A/B (triggers) | `game/world/audio/cues.tres` (C) |
 | [preplanning.md](preplanning.md) | 1.0 | B (resolve, UI) / C (points, overrides) → A (apply) | — |
