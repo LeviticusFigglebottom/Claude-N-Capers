@@ -54,6 +54,11 @@ const RARE_POLICE_TIPPED: StringName = &"police_tipped"
 const RARE_REINFORCEMENTS: StringName = &"cartel_reinforcements"
 const RARE_FOG: StringName = &"fog_lifts"
 const SPECIAL_LONGSHOT: StringName = &"longshot"
+## D-115 (DB-13): Mercer's Longshot line by the SNIPER_PERCH tag of the perch the Longshot holds (doc §Loud: S1 the
+## Pier 10 crane, S2 the Bellweather roof; S3 / S4 have no line).
+const SNIPER_LINES: Dictionary = {
+	&"s1": &"vo.mercer.dockside_burn_sniper_crane", &"s2": &"vo.mercer.dockside_burn_sniper_roof",
+}
 const CONTAINER_KEYS: Array[String] = ["k1", "k2", "k3", "k4", "k5", "k6"]
 ## Fire shutters (layout SHUTTERS): product slot -> doors under Gameplay/Doors.
 const SHUTTERS: Dictionary = {
@@ -72,7 +77,7 @@ var _cartel_awake: bool = false
 var _gunmen_down: int = 0
 var _weapons: Array[String] = []
 var _weapons_found: bool = false
-var _snipers_seen: int = 0
+var _sniper_lines_said: Dictionary = {}
 ## DB-2: required bags secured (REQUIRED_LOOT only; HeistMission.bags_secured counts every bag).
 var _required_secured: int = 0
 
@@ -289,16 +294,18 @@ func _on_npc_alert(_npc_net_id: int, _old_state: int, new_state: int) -> void:
 	say(&"vo.mercer.dockside_burn_cartel_awake")
 
 
-## Longshots (L4.7): the crane perch S1 is the first one the crew meets, the Bellweather roof the next
-## (the event does not name the perch; G1 approximation).
-func _on_special_spawned(_npc_net_id: int, special_type: StringName) -> void:
+## Longshots (L4.7, DB-13): the line names the perch the Longshot holds (its claimed SNIPER_PERCH, else the
+## nearest; tag s1 = the crane, s2 = the roof), once per perch.
+func _on_special_spawned(npc_net_id: int, special_type: StringName) -> void:
 	if not String(special_type).contains(String(SPECIAL_LONGSHOT)):
 		return
-	_snipers_seen += 1
-	if _snipers_seen == 1:
-		say(&"vo.mercer.dockside_burn_sniper_crane")
-	elif _snipers_seen == 2:
-		say(&"vo.mercer.dockside_burn_sniper_roof")
+	var perch: TacticalPoint = sniper_perch_of(npc_net_id)
+	if perch == null:
+		return
+	for tag: StringName in SNIPER_LINES:
+		if perch.tags.has(tag) and not _sniper_lines_said.has(tag):
+			_sniper_lines_said[tag] = true
+			say(SNIPER_LINES[tag])
 
 
 func _on_npc_killed(_npc_net_id: int, _killer_net_id: int, _info: Dictionary) -> void:

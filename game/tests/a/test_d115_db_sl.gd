@@ -152,3 +152,33 @@ func _teardown_and_launch_gate() -> void:
 	assert_false(_usable(lane), "the lane bag is off")
 	for legacy: Node in _rt.mission.find_tagged(&"thermite"):
 		assert_false(_usable(legacy), "with a thermite_gate bag the legacy gate bag is off")
+
+
+# --- DB-13: the Longshot line names the perch ---------------------------------------------------------------
+
+func _perch(tag: StringName) -> TacticalPoint:
+	for n: Node in _rt.map.get_slots(G.SNIPER_PERCH):
+		var tp: TacticalPoint = n as TacticalPoint
+		if tp != null and tp.tags.has(tag):
+			return tp
+	return null
+
+
+func test_db13_longshot_line_by_perch() -> void:
+	await _launch(&"dockside_burn", 9001)
+	var roof: TacticalPoint = _perch(&"s2")
+	var crane: TacticalPoint = _perch(&"s1")
+	assert_true(roof != null and crane != null, "S1 and S2 perches")
+	var def: EnemyDef = SpecialSpawner.enemy_def(&"enemy.longshot")
+	# The roof Longshot shows up first: the roof line, not the crane's.
+	var a: NpcBase = _rt.spawn_npc(&"special", roof.global_transform, {"enemy_def": def})
+	await wait_physics_frames(3)
+	assert_eq(_count(&"vo.mercer.dockside_burn_sniper_roof"), 1, "first Longshot on the roof: roof line")
+	assert_eq(_count(&"vo.mercer.dockside_burn_sniper_crane"), 0, "not the crane line")
+	var b: NpcBase = _rt.spawn_npc(&"special", crane.global_transform, {"enemy_def": def})
+	await wait_physics_frames(3)
+	assert_eq(_count(&"vo.mercer.dockside_burn_sniper_crane"), 1, "then the crane")
+	EventBus.special_spawned.emit(a.net_id, &"longshot")
+	EventBus.special_spawned.emit(b.net_id, &"longshot")
+	assert_eq(_count(&"vo.mercer.dockside_burn_sniper_roof"), 1, "once per perch")
+	assert_eq(_count(&"vo.mercer.dockside_burn_sniper_crane"), 1, "once per perch")
