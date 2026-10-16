@@ -46,6 +46,10 @@ func _run() -> void:
 				await get_tree().process_frame
 				(sc as ScrollContainer).scroll_vertical = int((sc as ScrollContainer).get_v_scroll_bar().max_value)
 			await _shot("security_" + String(h))
+		# LEAD r229 real-input run: the pre-planning that follows (blueprint labels clear of the markers).
+		if flow.briefing_screen != null and flow.briefing_screen.continue_button != null:
+			flow.briefing_screen.continue_button.pressed.emit()
+			await _shot("preplanning_" + String(h), 30)
 	SaveService.delete_profile(SLOT)
 	print("BRIEF done")
 	get_tree().quit(0)
