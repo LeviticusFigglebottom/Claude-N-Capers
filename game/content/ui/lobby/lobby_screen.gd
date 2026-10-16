@@ -203,6 +203,10 @@ func _build_connect() -> VBoxContainer:
 	dropin_button.pressed.connect(_on_drop_in)
 	join_row.add_child(dropin_button)
 	join_v.add_child(join_row)
+	# Gamepad pass: the drop-in hint was a tooltip only; a dim line under the row reaches every input.
+	var dropin_hint: Label = UiBuild.label(&"ui.lobby.dropin_join.hint", UiBuild.DIM)
+	dropin_hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	join_v.add_child(dropin_hint)
 	loopback_button = UiBuild.button(&"ui.lobby.loopback", {"address": tweak.loopback_address})
 	loopback_button.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	loopback_button.pressed.connect(join_loopback)
