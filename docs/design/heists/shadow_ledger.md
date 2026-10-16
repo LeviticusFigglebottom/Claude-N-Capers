@@ -630,8 +630,9 @@ charges), **no kills, no pagers**:
 ## Loud
 **There is no loud phase.** `alarm_raised` (any reason, events.md) → 5 s Mercer abort line →
 `heist_ended(fail)`. During those 5 s guards switch to COMBAT and civilians panic; nothing spawns.
-The camera "!" tone (7 s unstoppable countdown, S3.5) is therefore the point of no return; Mercer
-calls it ("Camera's made you. Seven seconds.").
+The camera "!" tone (7 s unstoppable countdown, S3.5) is therefore the point of no return. Mercer's camera line
+(`camera_warning`, D-117 §6) is an EARLY warning: it plays while a camera's meter is filling on a crew member, before
+the "!", so the crew can still break line of sight.
 
 The contract nodes still exist so the map validates and a future "loud failure" variant is possible:
 - **Police spawns (≥ 3 directions, out of LOS of loot and escapes):** P1 Stair A below the L40
