@@ -35,6 +35,17 @@ func test_d115_tag_map_mirrors_cast() -> void:
 				assert_true((m.get(StringName(role), []) as Array).has(StringName(String(id))),
 					"%s/%s wears %s (cast)" % [heist, role, id])
 	assert_eq(tw.heist_tag_characters[&"gallery_night"][&"civ_admin"], [&"gallery_admin"], "GN admin = gallery_admin")
+	# D b95cc5e4 (p5_cast v4): tag_map.gallery_night is copied 1:1 (staff_cs / staff_admin are A's extra tags).
+	var gn_cast: Dictionary = (JSON.parse_string(FileAccess.get_file_as_string(CAST_PATH)) as Dictionary) \
+		.get("tag_map", {}).get("gallery_night", {})
+	var gn: Dictionary = tw.heist_tag_characters[&"gallery_night"]
+	assert_false(gn_cast.is_empty(), "p5_cast v4 has tag_map.gallery_night")
+	for tag: String in gn_cast:
+		var want: Array[StringName] = []
+		for id: Variant in gn_cast[tag]:
+			want.append(StringName(String(id)))
+		assert_eq(Array(gn.get(StringName(tag), [])), Array(want), "GN %s mirrors the cast tag_map" % tag)
+	assert_eq(gn[&"staff_cs"], [&"gallery_conservator"], "staff_cs wears the conservator")
 	for heist: Variant in tw.heist_tag_characters:
 		var m: Dictionary = tw.heist_tag_characters[heist]
 		for tag: Variant in m:
