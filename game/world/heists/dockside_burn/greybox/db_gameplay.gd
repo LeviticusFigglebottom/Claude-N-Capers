@@ -59,6 +59,8 @@ const CONTAINER_Z: Dictionary = {"k1": -26.82, "k2": -20.82, "k3": -14.82, "k4":
 ## ENV A padlock prefab (QC-37): lockpick seconds (the hand-held saw cuts it in
 ## InteractionTweak.hand_saw_padlock_s); the brass padlock visual (prefab_visuals.py).
 const PADLOCK_PICK_S: float = 8.0
+## D-115 DB-8: a placed saw on a container padlock once loud (roller-door padlocks take the layout's 30 s).
+const CONTAINER_SAW_S: float = 45.0
 const PADLOCK_VISUAL: String = "res://assets/props/prop_padlock_brass/prop_padlock_brass.glb"
 ## D-115 DB-9: every container hasp carries a customs bolt seal; the weapons slot adds the Co-op's brass padlock.
 const SEAL_VISUAL: String = "res://assets/props/prop_customs_seal/prop_customs_seal.glb"
@@ -264,8 +266,9 @@ static func door_visual(d: Array) -> String:
 
 ## Padlock on a chained roller door: ENV A's `padlock` prefab (QC-37) on the door's outside (front)
 ## face, its target the door. Lockpick (PADLOCK_PICK_S) or the hand-held saw (G.SAW_TARGET,
-## InteractionTweak.hand_saw_padlock_s) opens it; opening unlocks and raises the door.
-func _padlock(door: Node3D, d: Array, _seconds: float) -> void:
+## InteractionTweak.hand_saw_padlock_s) opens it; opening unlocks and raises the door. DB-8: once loud, a placed
+## saw (place_saw) runs the layout's `seconds` (30 s).
+func _padlock(door: Node3D, d: Array, seconds: float) -> void:
 	var o: Vector3 = d[2]
 	var yaw: float = float(d[3])
 	var b: Basis = yaw_basis(yaw)
@@ -274,7 +277,7 @@ func _padlock(door: Node3D, d: Array, _seconds: float) -> void:
 	use.y = o.y
 	prefab(door, "padlock", "Padlock", face, yaw + 180.0,
 		{"targets": [NodePath("..")] as Array[NodePath], "interaction_time_s": PADLOCK_PICK_S, "objective_tag": &"padlock",
-			"visual_scene": load(PADLOCK_VISUAL)}, use, {"mount": "door"})
+			"visual_scene": load(PADLOCK_VISUAL), "place_saw": true, "saw_duration_s": seconds}, use, {"mount": "door"})  # DB-8
 
 
 ## SR strongroom: the thermal drill on the vault door (doc 240 s, jams), AN side.
@@ -312,7 +315,7 @@ func _build_containers(gp: Node3D) -> void:
 		add(cg, latch)
 		var pl: Node3D = prefab(body, "padlock", "Padlock", face, 90.0 if side > 0.0 else -90.0,
 			{"interaction_time_s": PADLOCK_PICK_S, "objective_tag": StringName("padlock_" + String(k)),
-				"visual_scene": load(SEAL_VISUAL)}, use, {"mount": "door"})
+				"visual_scene": load(SEAL_VISUAL), "place_saw": true, "saw_duration_s": CONTAINER_SAW_S}, use, {"mount": "door"})
 		if pl != null:
 			pl.set(&"targets", [pl.get_path_to(latch)] as Array[NodePath])
 		prefab(cg, "loot_spawn", "Crates" + String(k).to_upper(), Vector3(float(row[1]) + side * 1.1, 0.0, zc - 0.7), 0.0,
