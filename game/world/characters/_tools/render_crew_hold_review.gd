@@ -53,6 +53,10 @@ var _chair_off: Vector3 = Vector3.ZERO
 var _close_h: float = 1.12
 ## --debug_surfaces: every mesh surface of the rigs in its own flat colour (the legend is printed): find a stray piece
 var _debug_surfaces: bool = false
+## --grid=N [--grid_view=full|close]: the sheet is a grid of one view per pose, N per row (motion strips: list one clip at
+## several times), instead of full + close rows
+var _grid: int = 0
+var _grid_view: String = "full"
 
 
 func _ready() -> void:
@@ -69,6 +73,8 @@ func _ready() -> void:
 			"chair": _chair = v
 			"close_h": _close_h = float(v)
 			"debug_surfaces": _debug_surfaces = true
+			"grid": _grid = int(v)
+			"grid_view": _grid_view = v
 			"chair_off":
 				var c: PackedStringArray = v.split(",")
 				_chair_off = Vector3(float(c[0]), float(c[1]), float(c[2]))
@@ -153,7 +159,10 @@ func _ready() -> void:
 		var close: Image = await _shot()
 		close.save_png("%s/%s_close.png" % [_out, pose[0]])
 		rows.append([full, close])
-	_sheet(rows)
+	if _grid > 0:
+		_grid_sheet(rows)
+	else:
+		_sheet(rows)
 	RenderingServer.render_loop_enabled = true
 	rt.teardown()
 	print("[CREWHOLD] RESULT DONE %s/crew_hold_sheet.png" % _out)
@@ -266,6 +275,21 @@ func _shot() -> Image:
 	var img: Image = get_viewport().get_texture().get_image()
 	RenderingServer.render_loop_enabled = false
 	return img
+
+
+## --grid: one view per pose, _grid per row, at half size.
+func _grid_sheet(rows: Array[Array]) -> void:
+	var col: int = 1 if _grid_view == "close" else 0
+	var w: int = (rows[0][col] as Image).get_width() / 2
+	var h: int = (rows[0][col] as Image).get_height() / 2
+	var lines: int = ceili(rows.size() / float(_grid))
+	var sheet: Image = Image.create(w * _grid, h * lines, false, Image.FORMAT_RGB8)
+	for i: int in rows.size():
+		var img: Image = (rows[i][col] as Image).duplicate() as Image
+		img.convert(Image.FORMAT_RGB8)
+		img.resize(w, h)
+		sheet.blit_rect(img, Rect2i(0, 0, w, h), Vector2i((i % _grid) * w, (i / _grid) * h))
+	sheet.save_png("%s/crew_hold_sheet.png" % _out)
 
 
 func _sheet(rows: Array[Array]) -> void:

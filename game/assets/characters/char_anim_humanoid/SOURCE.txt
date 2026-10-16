@@ -27,9 +27,9 @@ check.08: browse: 120f 4.00s loop speed=0.0 reach_err=0.0mm step=3.9deg
 check.09: carry_bag_walk: 22f 0.73s loop speed=2.4 reach_err=0.0mm step=14.9deg slide=0.034mm/f
 check.10: climb_ladder: 36f 1.20s loop speed=0.5 reach_err=0.0mm step=17.7deg
 check.100: mug_carry_walk: 34f 1.13s loop speed=1.3 reach_err=0.0mm step=16.2deg slide=0.026mm/f
-check.101: mug_idle: 240f 8.00s loop speed=0.0 reach_err=0.0mm step=6.4deg
+check.101: mug_idle: 240f 8.00s loop speed=0.0 reach_err=0.0mm step=7.6deg
 check.102: pager_answer: 90f 3.00s loop speed=0.0 reach_err=0.0mm step=0.6deg
-check.103: phone_call: 120f 4.00s loop speed=0.0 reach_err=0.0mm step=4.3deg
+check.103: phone_call: 120f 4.00s loop speed=0.0 reach_err=0.0mm step=8.5deg
 check.104: phone_seated: 240f 8.00s loop speed=0.0 reach_err=0.0mm step=8.9deg
 check.105: radio_call: 60f 2.00s speed=0.0 reach_err=0.0mm step=16.7deg
 check.106: rappel: 30f 1.00s loop speed=2.5 reach_err=0.0mm step=12.6deg
@@ -145,20 +145,20 @@ check.64: hit_react_left: 15f 0.50s speed=0.0 reach_err=0.0mm step=28.6deg
 check.65: hit_react_right: 15f 0.50s speed=0.0 reach_err=0.0mm step=28.6deg
 check.66: hit_shoulder_l: 14f 0.47s speed=0.0 reach_err=0.0mm step=39.4deg drift_L=0.0mm drift_R=0.0mm
 check.67: hit_shoulder_r: 14f 0.47s speed=0.0 reach_err=0.0mm step=39.4deg drift_L=0.0mm drift_R=0.0mm
-check.68: hold_akimbo: 96f 3.20s loop speed=0.0 reach_err=0.0mm step=0.6deg
-check.69: hold_lmg: 100f 3.33s loop speed=0.0 reach_err=0.0mm step=1.7deg
-check.70: hold_pistol: 96f 3.20s loop speed=0.0 reach_err=0.0mm step=0.6deg
-check.71: hold_rifle: 96f 3.20s loop speed=0.0 reach_err=0.0mm step=0.6deg
-check.72: hold_smg: 92f 3.07s loop speed=0.0 reach_err=0.0mm step=0.6deg
-check.73: hold_sniper: 96f 3.20s loop speed=0.0 reach_err=0.0mm step=0.6deg
-check.74: idle: 120f 4.00s loop speed=0.0 reach_err=0.0mm step=0.3deg
-check.75: idle_alert: 90f 3.00s loop speed=0.0 reach_err=0.0mm step=1.2deg
-check.76: idle_alert_akimbo: 106f 3.53s loop speed=0.0 reach_err=0.0mm step=0.7deg
-check.77: idle_alert_lmg: 100f 3.33s loop speed=0.0 reach_err=0.0mm step=1.5deg
-check.78: idle_alert_pistol: 110f 3.67s loop speed=0.0 reach_err=0.0mm step=0.8deg
-check.79: idle_alert_rifle: 96f 3.20s loop speed=0.0 reach_err=0.0mm step=0.6deg
-check.80: idle_alert_smg: 92f 3.07s loop speed=0.0 reach_err=0.0mm step=0.6deg
-check.81: idle_alert_sniper: 104f 3.47s loop speed=0.0 reach_err=0.0mm step=0.8deg
+check.68: hold_akimbo: 96f 3.20s loop speed=0.0 reach_err=0.0mm step=5.4deg
+check.69: hold_lmg: 100f 3.33s loop speed=0.0 reach_err=0.0mm step=4.5deg
+check.70: hold_pistol: 96f 3.20s loop speed=0.0 reach_err=0.0mm step=5.4deg
+check.71: hold_rifle: 96f 3.20s loop speed=0.0 reach_err=0.0mm step=4.3deg
+check.72: hold_smg: 92f 3.07s loop speed=0.0 reach_err=0.0mm step=4.2deg
+check.73: hold_sniper: 96f 3.20s loop speed=0.0 reach_err=0.0mm step=4.3deg
+check.74: idle: 120f 4.00s loop speed=0.0 reach_err=0.0mm step=3.9deg
+check.75: idle_alert: 90f 3.00s loop speed=0.0 reach_err=0.0mm step=5.6deg
+check.76: idle_alert_akimbo: 106f 3.53s loop speed=0.0 reach_err=0.0mm step=5.0deg
+check.77: idle_alert_lmg: 100f 3.33s loop speed=0.0 reach_err=0.0mm step=4.5deg
+check.78: idle_alert_pistol: 110f 3.67s loop speed=0.0 reach_err=0.0mm step=5.0deg
+check.79: idle_alert_rifle: 96f 3.20s loop speed=0.0 reach_err=0.0mm step=4.3deg
+check.80: idle_alert_smg: 92f 3.07s loop speed=0.0 reach_err=0.0mm step=4.2deg
+check.81: idle_alert_sniper: 104f 3.47s loop speed=0.0 reach_err=0.0mm step=3.9deg
 check.82: idle_thug: 105f 3.50s loop speed=0.0 reach_err=0.0mm step=1.8deg
 check.83: interact_high: 60f 2.00s loop speed=0.0 reach_err=0.0mm step=3.7deg
 check.84: interact_high_armed: 60f 2.00s loop speed=0.0 reach_err=0.0mm step=3.7deg
