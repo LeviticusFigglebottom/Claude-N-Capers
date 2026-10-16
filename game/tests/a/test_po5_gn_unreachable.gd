@@ -286,3 +286,44 @@ func test_po5_pilot_door_ahead_only_when_the_route_crosses_it() -> void:
 	assert_eq(pilot.door_ahead(Vector3(0, 0, -0.6), through), door, "the route goes through it")
 	var nav: PackedVector3Array = pilot.nav_path(Vector3(0, 0, -4))
 	assert_eq(pilot.door_ahead(Vector3.INF, nav), door, "the real navmesh path through the doorway")
+
+
+## Lead (P's GN loud rerun on 04f79b18): the pilot pushed 4 times against the OPEN BronzeDoorsE leaf, then stalled
+## 1200 s. An open leaf that narrows the doorway is an obstacle: `_pass_leaf` finds the clear lane across the doorway
+## and walks through it (from the crew's side to past the door plane) without pushing the leaf.
+func test_po5_pilot_passes_an_open_leaf_narrowing_the_doorway() -> void:
+	var s: Dictionary = await _setup()
+	var pilot: Po5Pilot = s["pilot"]
+	var door: Door = ATestMaps.add_prefab(_rt, "door", Vector3(6, 0, 6), func(p: GameplayPrefab) -> void:
+		(p as Door).width_m = 1.8) as Door
+	await wait_physics_frames(2)
+	door.set_open(true, true)
+	door._set_leaf_frac(0.667)  # the leaf at ~60 deg: it covers the hinge half of the doorway on the crew's side
+	door._sync_leaf_bodies()
+	await wait_physics_frames(2)
+	var frac: float = door.leaf_open_fraction()
+	_rt.teleport_crew(0, Transform3D(Basis.IDENTITY, Vector3(6.2, 0.05, 8.2)))
+	await wait_physics_frames(5)
+	await pilot._pass_leaf(door, Vector3(6, 0, 2))
+	var local: Vector3 = door.global_transform.affine_inverse() * pilot.crew.global_position
+	assert_true(local.z < -0.4, "past the door plane (local %s)" % local)
+	assert_true(local.x > 0.0, "through the free half of the doorway, not the leaf's (local %s)" % local)
+	assert_near(door.leaf_open_fraction(), frac, 0.01, "the leaf was not pushed")
+
+
+## Never wait out a long stall: a target whose walk failed WALK_FAIL_LIMIT times with a path and no blocking door (a
+## body in the way) is set aside for WALK_SKIP_S of heist time, then comes back.
+func test_po5_target_set_aside_after_repeated_failed_walks() -> void:
+	var s: Dictionary = await _setup()
+	_lift(s["door"] as Door)
+	await wait_physics_frames(2)
+	var flow: RefCounted = s["flow"]
+	var comp: InteractableComponent = s["comp"]
+	(s["pilot"] as Po5Pilot).last_blocked_door = null
+	for i: int in int(flow.get(&"WALK_FAIL_LIMIT")) - 1:
+		flow.call(&"_mark_if_unreached", comp)
+		assert_false(flow.call(&"_is_unreachable", comp), "failed walk %d: retried" % (i + 1))
+	flow.call(&"_mark_if_unreached", comp)
+	assert_true(flow.call(&"_is_unreachable", comp), "set aside after the limit")
+	(flow.get(&"_skip_until") as Dictionary)[comp.get_instance_id()] = _rt.heist_time_s - 1.0
+	assert_false(flow.call(&"_is_unreachable", comp), "back once the skip time is over")

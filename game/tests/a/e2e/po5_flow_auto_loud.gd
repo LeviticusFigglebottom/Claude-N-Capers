@@ -38,6 +38,11 @@ const BAG_FAIL_LIMIT: int = 3
 ## Longest the pilot leads one teammate-carried bag to the secure zone (s; CrewAiBrain secures within its
 ## secure_seek_radius_m of a known zone, following the leader).
 const ESCORT_LIMIT_S: float = 120.0
+## Lead (P's GN loud rerun on 04f79b18: 1200 s at the open BronzeDoorsE leaf): a target whose walk failed this many
+## times in a row although a navmesh path exists (a body in the way, not a door) is set aside for WALK_SKIP_S of
+## heist time, so the other markers go first; it comes back after.
+const WALK_FAIL_LIMIT: int = 3
+const WALK_SKIP_S: float = 90.0
 
 var f: Node = null
 var p: Po5Pilot = null
@@ -55,6 +60,10 @@ var _marker_blocked: Dictionary[String, Door] = {}
 var _bag_fails: Dictionary[int, int] = {}
 ## Seconds spent leading each teammate-carried bag (bag instance id) to the secure zone.
 var _escort_s: Dictionary[int, float] = {}
+## Failed walks in a row per interactable (instance id) with a path and no blocking door, and the heist time until
+## which such a target is set aside.
+var _walk_fails: Dictionary[int, int] = {}
+var _skip_until: Dictionary[int, float] = {}
 
 
 func play(flow: Node) -> int:
@@ -406,9 +415,17 @@ func _mark_if_unreached(c: InteractableComponent) -> void:
 		return
 	var stand: Vector3 = p._use_stand(c)
 	if p.flat_dist(stand, p.crew.global_position) <= 1.0 and absf(stand.y - p.crew.global_position.y) <= 1.5:
+		_walk_fails.erase(c.get_instance_id())
 		return  # it got there; the hold failed for another reason
 	var door: Door = p.last_blocked_door
 	if door == null and _has_path(stand):
+		var key: int = c.get_instance_id()
+		_walk_fails[key] = int(_walk_fails.get(key, 0)) + 1
+		if _walk_fails[key] >= WALK_FAIL_LIMIT:
+			_walk_fails.erase(key)
+			_skip_until[key] = rt.heist_time_s + WALK_SKIP_S
+			f.note("setting %s aside for %.0f s (%d failed walks with a path: a body in the way)" % [c.get_path(),
+				WALK_SKIP_S, WALK_FAIL_LIMIT])
 		return
 	_unreachable[c.get_instance_id()] = door
 	f.note("skipping unreachable %s (%s) %s" % [c.get_path(), c.kind,
@@ -418,6 +435,10 @@ func _mark_if_unreached(c: InteractableComponent) -> void:
 ## A target `_mark_if_unreached` blacklisted: for the run when it had no path, else while its door still blocks.
 func _is_unreachable(c: InteractableComponent) -> bool:
 	var key: int = c.get_instance_id()
+	if _skip_until.has(key):
+		if rt.heist_time_s < _skip_until[key]:
+			return true
+		_skip_until.erase(key)
 	if not _unreachable.has(key):
 		return false
 	var door: Door = _unreachable[key]

@@ -13,6 +13,8 @@ const REPRESS_TICKS: int = 20
 const DOOR_NEAR_M: float = 1.8
 ## goto(): a closed door whose doorway the route crosses within this of the crew is opened first (m).
 const DOOR_LOOKAHEAD_M: float = 1.8
+## _pass_leaf: half width of a clear lane through a doorway (crew capsule radius 0.35, less a little) (m).
+const LANE_HALF_M: float = 0.3
 ## Loud: a visible enemy within this range is fought before / during a hold (S9.1: damage cancels holds) (m).
 const HOLD_THREAT_M: float = 20.0
 ## Longest clearing fight before holding anyway (s).
@@ -57,6 +59,8 @@ var no_blind_press: bool = false
 var _in_hook: bool = false
 var _last_engage: float = -1.0
 var _door_tries: Dictionary[Door, int] = {}
+## Nesting of the short detour walks goto() makes when stuck (they do not detour again).
+var _detour_depth: int = 0
 var _rad_px: Vector2 = Vector2.ONE
 
 
@@ -254,13 +258,20 @@ func goto(target: Vector3, arrive_m: float = 0.8, timeout_s: float = 60.0, sprin
 					await open_door(leaf)
 					repath_t = 0.0
 				elif leaf != null:
-					# Open, but its leaf is held closed by a body in its sweep (PO-6 swing_blocked; maybe us): step back.
+					# Lead (P's GN loud rerun on 04f79b18): pressed 4 times against the OPEN BronzeDoorsE leaf
+					# (LeafBody2), then stalled 1200 s. An open leaf (or one held by a body in its sweep) is an
+					# obstacle: back off, then walk through the doorway's clear lane, never push the leaf again.
 					inp.release(&"move_forward")
-					d.note("pilot: %s is open but its leaf is held (swing blocked): stepping back" % leaf.name)
-					await inp.hold(&"move_back", 0.6)
-					await inp.ticks(int(0.5 * Engine.physics_ticks_per_second))
-				else:
+					d.note("pilot: against the open leaf of %s (swing_blocked=%s): going round it" % [leaf.name, leaf.swing_blocked])
+					await inp.hold(&"move_back", 0.4)
+					await _pass_leaf(leaf, corner)
+					repath_t = 0.0
+				elif _civilian_blocking() or _detour_depth > 0:
 					await _unstick(recover)
+				else:
+					inp.release(&"move_forward")
+					await _detour(corner, recover)
+					repath_t = 0.0
 			hist_pos = crew.global_position
 			hist_t = 0.0
 	inp.release(&"move_forward")
@@ -332,6 +343,79 @@ func _leaf_contact() -> Door:
 		if body is AnimatableBody3D and String(body.name).begins_with("LeafBody") and body.get_parent() is Door:
 			return body.get_parent() as Door
 	return null
+
+
+## A live civilian among the bodies the crew is pressed against (stealth flows back off / shout instead).
+func _civilian_blocking() -> bool:
+	for i: int in crew.get_slide_collision_count():
+		var b: NpcBase = crew.get_slide_collision(i).get_collider() as NpcBase
+		if b != null and b.is_in_group(G.CIVILIAN) and b.is_alive():
+			return true
+	return false
+
+
+## Stuck against something that is not the target (a prop, a cop, a wall corner the path hugs): side-step to a
+## navmesh point beside the crew, alternating sides (odd attempts right, even left) and widening (0.7 m, then
+## 1.2 m), a step toward `corner`, then the caller re-paths. Falls back to a jump when no side point is free.
+func _detour(corner: Vector3, attempt: int) -> void:
+	var fwd: Vector3 = corner - crew.global_position
+	fwd.y = 0.0
+	if fwd.length() < 0.05:
+		fwd = Vector3(-sin(crew.look_yaw), 0.0, -cos(crew.look_yaw))
+	fwd = fwd.normalized()
+	var right: Vector3 = fwd.cross(Vector3.UP)
+	var lat: float = 0.7 if attempt <= 2 else 1.2
+	var first: float = 1.0 if attempt % 2 == 1 else -1.0
+	for side: float in [first, -first]:
+		var want: Vector3 = crew.global_position + right * side * lat + fwd * 0.3
+		var snap: Vector3 = NavigationServer3D.map_get_closest_point(crew.get_world_3d().navigation_map, want)
+		if flat_dist(snap, want) > 0.35 or absf(snap.y - crew.global_position.y) > 0.6:
+			continue
+		d.note("pilot: detour %s %.1f m to %s (attempt %d)" % ["right" if side > 0.0 else "left", lat, _v(snap), attempt])
+		_detour_depth += 1
+		var ok: bool = await goto(snap, 0.3, 3.0, false, false)
+		_detour_depth -= 1
+		if ok:
+			return
+	await inp.tap(&"jump")
+	await inp.ticks(20)
+
+
+## Through the doorway of an open `door` whose leaf the crew is pressed against: the lane across the doorway (local
+## x offsets) that a knee-high ray along the door normal crosses without hitting anything (leaf, frame), walked
+## from 0.8 m on the crew's side to 0.9 m past the door plane (rays 1.2 m each side). No clear lane: a plain side-step detour.
+func _pass_leaf(door: Door, corner: Vector3) -> void:
+	var xf: Transform3D = door.global_transform
+	var my_z: float = signf((xf.affine_inverse() * crew.global_position).z)
+	if my_z == 0.0:
+		my_z = 1.0
+	var half: float = door.effective_width() * 0.5
+	var space: PhysicsDirectSpaceState3D = crew.get_world_3d().direct_space_state
+	var lane: float = INF
+	for x: float in [0.0, -half * 0.5, half * 0.5, -half * 0.75, half * 0.75]:
+		var clear: bool = true
+		for dx: float in [-LANE_HALF_M, 0.0, LANE_HALF_M]:  # the crew's capsule width, not just its centre line
+			var q: PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.create(
+				xf * Vector3(x + dx, 0.5, my_z * 1.2), xf * Vector3(x + dx, 0.5, -my_z * 1.2))
+			q.exclude = [crew.get_rid()]
+			q.collision_mask = GameplayPrefab.LAYER_WORLD_STATIC | GameplayPrefab.LAYER_WORLD_DYNAMIC
+			if not space.intersect_ray(q).is_empty():
+				clear = false
+				break
+		if clear:
+			lane = x
+			break
+	if lane == INF:
+		d.note("pilot: no clear lane through %s: side-step instead" % door.name)
+		await _detour(corner, 1)
+		return
+	var map: RID = crew.get_world_3d().navigation_map
+	_detour_depth += 1
+	for z: float in [my_z * 0.8, -my_z * 0.9]:
+		var pt: Vector3 = NavigationServer3D.map_get_closest_point(map, xf * Vector3(lane, 0.0, z))
+		if not await goto(pt, 0.3, 4.0, false, false):
+			break
+	_detour_depth -= 1
 
 
 func _unstick(attempt: int) -> void:
