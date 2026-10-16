@@ -18,10 +18,11 @@ func after_each() -> void:
 	await wait_frames(2)
 
 
-func run_stealth(heist: StringName, seed_value: int, expected_order: Array[StringName]) -> void:
+## `options`: extra HeistLauncher options (forced variants for a set-up case, X4StealthFlow.launch).
+func run_stealth(heist: StringName, seed_value: int, expected_order: Array[StringName], options: Dictionary = {}) -> void:
 	var t0: int = Time.get_ticks_msec()
 	flow = X4StealthFlow.new(self)
-	if not await flow.launch(heist, seed_value):
+	if not await flow.launch(heist, seed_value, options):
 		_report()
 		return
 	var ok: bool = await X4StealthRoutes.play(flow)

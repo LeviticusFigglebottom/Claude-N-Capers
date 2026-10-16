@@ -134,6 +134,7 @@ Contract: `docs/contracts/preplanning.md` v1.0 (D-038). **ENV B resolves** the p
 |---|---|
 | `options["preplan"]` | The PreplanResult (version 1) from ENV B's menu flow. Applied as given. |
 | `options["preplanning"]` | Dev/test shortcut: asset ids, an `Array` or `{id: point_id \| true}`. They are resolved by ENV B: `PreplanPlan.resolve_ids(heist_id, ids)` when ENV B ships it (B4-08). Until then a `PreplanBoard.build(heist_id, difficulty, def)` + `PreplanPlan.add(id, point, 0)` + `apply()` bridge is used: a located asset without a point takes the first allowed point of the board's blueprint. Ignored when `"preplan"` is set. |
+| `options["variant_table"]` | Dev/test: a `HeistVariantTable` that replaces the map's `variant_table` for this run (the roll and the mission's rare-event reads), e.g. a duplicate with a group's `pick` narrowed so a `force_variants` pin is the only slot. The map scene and its `.tres` are untouched. Server only (not sent to clients; a replica uses the host's resolved variants). |
 
 `PreplanAssets.normalize()` maps the result to the contract keys. ENV B's pre-contract hand-off keys
 are accepted too: `spawns[{asset, item, point}]` → `drops`, `player_spawn_tag` → `spawn_tag`,

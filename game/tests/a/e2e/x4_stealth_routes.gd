@@ -10,7 +10,8 @@
 ##     restarted -> 2 drive bags, secured -> escape (heli approach / line / lift).
 ##   gallery_night: the Argus hack first when a canvas we cut has a live frame sensor (code note -> server keypad ->
 ##     hack) -> the centrepiece's barrier (cp_store: keycard + art store vault reader; cp_treasury: keycard + Treasury
-##     reader + lasers) -> cut the Lantern Bearer and one listed canvas, each secured at the rolled escape -> escape.
+##     reader + lasers; the keycard: one lying in the map, else kc_curator's on Sorell's lanyard: shout her down,
+##     cable-tie her, take the card off her) -> cut the Lantern Bearer and one listed canvas, each secured at the rolled escape -> escape.
 class_name X4StealthRoutes
 extends RefCounted
 
@@ -155,7 +156,7 @@ func _sl_keycard() -> bool:
 		if card == null or (laptop != null and n3.global_position.distance_to(laptop.global_position)
 				< card.global_position.distance_to(laptop.global_position)):
 			card = n3
-	return await f.take(card, _has_card(), _tw().item_pickup_s, "take the keycard")
+	return await f.take(card, _has_card(), _tw().item_pickup_s + _tw().carried_item_s, "take the keycard")
 
 
 func _sl_laptop() -> bool:
@@ -261,6 +262,70 @@ func _gn_keycard() -> Node3D:
 	return null
 
 
+## A keycard for the barrier: one lying in the map when there is one, else the one the curator carries (QC-52).
+func _gn_get_card() -> bool:
+	var card: Node3D = _gn_keycard()
+	if card == null and _gn_carried_card() != null:
+		return await _gn_curator_card(_gn_carried_card())
+	return await f.take(card, _has_card(), _tw().item_pickup_s, "take the keycard")
+
+
+## kc_curator's card while Sorell still has it on her lanyard (not released, not taken).
+func _gn_carried_card() -> KeycardPickup:
+	for k: Node in f.all_tagged(&"keycard"):
+		var kp: KeycardPickup = k as KeycardPickup
+		if kp != null and kp.carrier_tag != &"" and not kp.released and not kp.taken:
+			return kp
+	return null
+
+
+## QC-52, PD2: shout the curator down (S7.1 intimidate, CrewIntent.shout through the ShoutSystem), cable-tie her
+## (S7.2, her TieInteractable through the InteractionSystem), then take the card that shows on her (carried_item_s).
+## stealth_hidden does not stop any of it: it only hides the bot from observers; shouts and ties are crew actions.
+func _gn_curator_card(card: KeycardPickup) -> bool:
+	var npc: NpcBase = Ids.lookup(card.carrier_id) as NpcBase if card.carrier_id != 0 else null
+	if not f.check(npc != null and npc.alive, "the curator carrying %s" % card.name):
+		return false
+	var brain: CivilianBrain = npc.get_node_or_null(^"Brain") as CivilianBrain
+	if not f.check(brain != null, "the curator's CivilianBrain"):
+		return false
+	f.facts[&"curator_net_id"] = npc.net_id
+	f.facts[&"curator_card_carrier"] = card.carrier_id
+	f.facts[&"curator_card_released_before_shout"] = card.released
+	var on_take: Callable = func(by: Node) -> void:
+		f.facts[&"curator_card_taken_by_slot"] = int(by.get(&"slot"))
+		f.facts[&"curator_card_tied_at_take"] = brain.is_tied()
+	card.interactable.completed.connect(on_take, CONNECT_ONE_SHOT)
+	f.note("the only keycard is on the curator (%s, %s): intimidate + tie her" % [npc.name, f.rt.mission.variant(&"curator_route")])
+	if not await f.go_to(npc) or not await _shout_down(brain):
+		return false
+	f.note("card released once she is down: %s" % card.released)
+	if not await f.use(npc, func() -> bool: return brain.is_tied(),
+			Tweak.stealth().cable_tie_s + X4StealthFlow.MARGIN_S, "cable-tie the curator"):
+		return false
+	f.facts[&"curator_tied"] = true
+	if not f.check(await f.wait_until(func() -> bool: return card.released, 2.0), "the curator's card shows on her"):
+		return false
+	return await f.take(card, _has_card(), _tw().carried_item_s, "take the curator's keycard")
+
+
+## Shout at the civilian `brain` (CrewIntent.shout held a few frames looking at her chest, then released; the
+## ShoutSystem decides who it reaches) until she is down (S7.1), a few tries one shout cooldown apart.
+func _shout_down(brain: CivilianBrain) -> bool:
+	var shouts: int = 0
+	while not brain.is_down() and shouts < 4:
+		shouts += 1
+		var i: CrewIntent = BotUtil.look_at_intent(f.crew.eye_position(), brain.shout_target_point())
+		i.shout = true
+		for _pass: int in range(2):  # held, then released (the shout fires on the rising edge)
+			f.rt.set_bot_intent(0, i)
+			await f.wait_until(func() -> bool: return false, 0.05)
+			i = BotUtil.look_at_intent(f.crew.eye_position(), brain.shout_target_point())
+		await f.wait_until(func() -> bool: return brain.is_down(), Tweak.stealth().shout_cooldown_s + 0.2)
+	f.facts[&"curator_shouts"] = shouts
+	return f.check(brain.is_down(), "the curator is shouted down (%d shout(s))" % shouts)
+
+
 ## The centrepiece's barrier: the art store vault (cp_store) or the Treasury door + lasers (cp_treasury); the landing
 ## (cp_landing) is open during the gala (its curtain is on from last call only).
 func _gn_barrier() -> bool:
@@ -275,7 +340,7 @@ func _gn_barrier() -> bool:
 	f.guard_lasers(&"treasury_lasers" if objective_id == &"treasury" else &"landing_curtain", _gn_lantern.global_position)
 	if reader_tag == &"":
 		return true
-	if not await f.take(_gn_keycard(), _has_card(), _tw().item_pickup_s + _tw().carried_item_s, "take the keycard"):
+	if not await _gn_get_card():
 		return false
 	return await f.take(f.tagged(reader_tag), _done(objective_id), _tw().keycard_s, "swipe the %s reader" % reader_tag)
 
