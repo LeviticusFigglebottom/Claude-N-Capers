@@ -24,7 +24,12 @@ const TAG_HACK: StringName = &"hack"
 const TAG_DRIVES: StringName = &"drives"
 const TAG_LAPTOP: StringName = &"laptop"
 const TAG_STUDY_SAFE: StringName = &"study_safe"
-const TAG_STUDY_DOOR: StringName = &"study_door"
+## D-115 (SL-9): Mercer's lasers line on the first crew approach to the active M3 grid (the rolled laser_pattern
+## slot's LaserGrid; within LASER_HINT_M of the grid, like Gallery Night), before the alarm.
+const TAG_LASERS: StringName = &"art_hall_lasers"
+const LASER_HINT_M: float = 4.0
+const LASER_HINT_V_M: float = 1.0
+const VO_LASERS: StringName = &"vo.mercer.shadow_ledger_lasers"
 const TAG_PAINTINGS: StringName = &"paintings"
 const TAG_ARCHIVE_SAFE: StringName = &"archive_safe"
 const TAG_PRINTOUT: StringName = &"printout"
@@ -93,6 +98,7 @@ func _on_mission_start() -> void:
 	on_event(&"loot_secured", _on_bag_secured)
 	_setup_variants()
 	_poll_cameras()
+	_watch_lasers()
 
 
 func _on_phase_changed(old_phase: int, new_phase: int) -> void:
@@ -151,9 +157,6 @@ func _on_interaction_completed(interactable_net_id: int, _crew_slot: int, _kind:
 	elif _is_tagged(interactable_net_id, TAG_CAGE):
 		# The code path opens the lock at once (the saw reports device_finished).
 		_open_cage()
-	elif _is_tagged(interactable_net_id, TAG_STUDY_DOOR) and not _lasers_said:
-		_lasers_said = true
-		say(&"vo.mercer.shadow_ledger_lasers")
 	elif _is_tagged(interactable_net_id, TAG_LAPTOP):
 		if objective_state(&"laptop") == Enums.ObjectiveState.ACTIVE:
 			complete(&"laptop")
@@ -226,11 +229,15 @@ func _on_hack_done() -> void:
 	activate(&"drives")
 
 
+## D-115 (SL-5, doc: 2 of 3 drive bags are required): [drives] completes once MIN_DRIVES bags are taken (or none
+## are left, for a map with fewer sleds).
 func _check_drives() -> void:
 	var left: int = 0
+	var taken: int = 0
 	for d: Node in find_tagged(TAG_DRIVES):
 		left += int(d.get(&"remaining"))
-	if left <= 0 and objective_state(&"drives") == Enums.ObjectiveState.ACTIVE:
+		taken += int(d.get(&"count")) - int(d.get(&"remaining"))
+	if (taken >= MIN_DRIVES or left <= 0) and objective_state(&"drives") == Enums.ObjectiveState.ACTIVE:
 		complete(&"drives")
 
 
@@ -281,6 +288,42 @@ func _on_camera_meter(value: float) -> void:
 		return
 	_camera_warned = true
 	say(VO_CAMERA_WARNING)
+
+
+# --- Lasers line (SL-9) -----------------------------------------------------------------------
+
+## A crew-detecting box around each active grid (the inactive laser_pattern slots are freed by the resolver): the grid
+## extents grown by LASER_HINT_M horizontally, so the whole 6.8 m wide grid is covered, not just its centre.
+func _watch_lasers() -> void:
+	for g: Node in find_tagged(TAG_LASERS):
+		var grid: Node3D = g as Node3D
+		if grid == null:
+			continue
+		var size: Vector3 = Vector3(2.0, 2.0, 0.1)
+		var s: Variant = grid.get(&"size_m")
+		if s is Vector3:
+			size = s
+		var area: Area3D = Area3D.new()
+		area.name = "LasersHintArea"
+		area.collision_layer = 0
+		area.collision_mask = 0xFFFFFFFF
+		area.monitorable = false
+		var shape: CollisionShape3D = CollisionShape3D.new()
+		var box: BoxShape3D = BoxShape3D.new()
+		# Horizontal reach LASER_HINT_M; vertically only LASER_HINT_V_M, so the floors above / below never trigger it.
+		box.size = size + Vector3(2.0 * LASER_HINT_M, 2.0 * LASER_HINT_V_M, 2.0 * LASER_HINT_M)
+		shape.shape = box
+		shape.position = Vector3(0.0, size.y * 0.5, 0.0)  # LaserGrid: centred in x / z, beams from y 0 to size_m.y
+		area.add_child(shape)
+		grid.add_child(area)
+		area.body_entered.connect(_on_lasers_area)
+
+
+func _on_lasers_area(body: Node) -> void:
+	if _lasers_said or went_loud or body == null or not body.is_in_group(G.CREW):
+		return
+	_lasers_said = true
+	say(VO_LASERS)
 
 
 # --- Helpers ----------------------------------------------------------------------------------

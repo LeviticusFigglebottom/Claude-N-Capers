@@ -13,6 +13,8 @@ signal objectives_changed()
 
 ## Mercer is the default speaker for mission lines (C8).
 const SPEAKER_MERCER: StringName = &"mercer"
+## D-115 (DB-3): CartelBrain.woken_by of a cartel gunman spawned by spawn_guards.
+const REINFORCEMENT_WAKE: StringName = &"reinforcement"
 
 ## Read-only runtime facts for mission scripts.
 var phase: int:
@@ -206,6 +208,9 @@ func schedule_at(time_mark_s: float, timer_id: StringName, callback: Callable, a
 ## 0.8 m apart when a point is reused). Points tagged HeistRuntime.SCRIPTED_SPAWN_TAG are skipped
 ## at load, so they are only used here. Spawned guards are ordinary guards (pagers, patrol graph
 ## and tags of their point). Returns the NPCs ([] with no matching point, logged).
+## D-115 (DB-3): a point also tagged CartelBrain.SPAWN_TAG (`cartel`) spawns a cartel gunman instead, exactly as
+## HeistRuntime._spawn_npcs does at load (role CartelBrain.ROLE, enemy_def CartelBrain.ENEMY_DEF), already awake
+## (COMBAT, woken_by &"reinforcement"): reinforcements arrive into a fight.
 func spawn_guards(count: int, spawn_tag: StringName) -> Array[Node]:
 	var out: Array[Node] = []
 	if _runtime == null or _runtime.map == null or count <= 0:
@@ -223,10 +228,25 @@ func spawn_guards(count: int, spawn_tag: StringName) -> Array[Node]:
 		var offset: Vector3 = sp2.global_transform.basis.x * (0.8 * float(i / points.size()))
 		var xf: Transform3D = sp2.global_transform
 		xf.origin += offset
-		var npc: NpcBase = _runtime.spawn_npc(&"guard", xf, HeistRuntime.spawn_info(sp2))
+		var npc: NpcBase = _spawn_scripted(sp2, xf)
 		if npc != null:
 			out.append(npc)
 	return out
+
+
+func _spawn_scripted(sp: SpawnPoint, xf: Transform3D) -> NpcBase:
+	var info: Dictionary = HeistRuntime.spawn_info(sp)
+	if not sp.tags.has(CartelBrain.SPAWN_TAG):
+		return _runtime.spawn_npc(&"guard", xf, info)
+	info["enemy_def"] = load(CartelBrain.ENEMY_DEF) as EnemyDef
+	var npc: NpcBase = _runtime.spawn_npc(CartelBrain.ROLE, xf, info)
+	if npc != null:
+		var brain: CartelBrain = npc.get_node_or_null(^"Brain") as CartelBrain
+		if brain != null:
+			brain.wake(REINFORCEMENT_WAKE)
+		else:
+			npc.set_alert_state(Enums.AlertState.COMBAT)
+	return npc
 
 
 ## Mercer (or another speaker) line: voice_line_requested [R] (C8).
@@ -335,6 +355,41 @@ func disable_alarm_group(group: StringName) -> void:
 ## True when the crew bought pre-planning asset `asset_id` for this run (e.g. &"asset.intel_list").
 func has_asset(asset_id: StringName) -> bool:
 	return _runtime != null and _runtime.preplan != null and _runtime.preplan.has_asset(asset_id)
+
+
+## D-115: the crew's pre-planned spawn tag (PreplanAssets.spawn_tag; &"" = the default spawn), e.g. Dockside Burn's
+## &"preplan_spawn_lane" (the thermite bag starts with the crew).
+func crew_spawn_tag() -> StringName:
+	return _runtime.preplan.spawn_tag() if _runtime != null and _runtime.preplan != null else &""
+
+
+## D-115 (DB-13 / DB-17): the NPC of this heist with `npc_net_id` (alive or a corpse), or null.
+func npc_by_net_id(npc_net_id: int) -> NpcBase:
+	if _runtime == null or npc_net_id == 0:
+		return null
+	var npc: NpcBase = Ids.lookup(npc_net_id) as NpcBase
+	return npc if npc != null and is_instance_valid(npc) and _runtime.is_ancestor_of(npc) else null
+
+
+## D-115 (DB-13): the SNIPER_PERCH TacticalPoint a Longshot `npc_net_id` holds (its brain's claimed perch, else the
+## nearest perch of the map), or null.
+func sniper_perch_of(npc_net_id: int) -> TacticalPoint:
+	var npc: NpcBase = npc_by_net_id(npc_net_id)
+	if npc == null:
+		return null
+	var brain: Node = npc.get_node_or_null(^"Brain")
+	var claimed: Variant = brain.get(&"perch") if brain != null else null
+	if claimed is TacticalPoint and is_instance_valid(claimed):
+		return claimed as TacticalPoint
+	var best: TacticalPoint = null
+	for n: Node in _runtime.map.get_slots(G.SNIPER_PERCH) if _runtime.map != null else []:
+		var tp: TacticalPoint = n as TacticalPoint
+		if tp == null or tp.kind != TacticalPoint.Kind.SNIPER_PERCH:
+			continue
+		if best == null or tp.global_position.distance_squared_to(npc.global_position) \
+				< best.global_position.distance_squared_to(npc.global_position):
+			best = tp
+	return best
 
 
 ## S5.3: the answered-pager cap of this run (PagerSystem.max_answers: StealthTweak, or the heist's scalar).

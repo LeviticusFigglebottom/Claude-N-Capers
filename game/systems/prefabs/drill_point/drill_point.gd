@@ -238,19 +238,25 @@ func _device_scene() -> PackedScene:
 ## A small emissive red mark above the device while jammed (procedural: no art asset).
 func _set_jam_mark(on: bool) -> void:
 	if on and _jam_mark == null:
-		_jam_mark = MeshInstance3D.new()
-		_jam_mark.name = "JamMark"
-		var m: SphereMesh = SphereMesh.new()
-		m.radius = 0.04
-		m.height = 0.08
-		var mat: StandardMaterial3D = StandardMaterial3D.new()
-		mat.albedo_color = Color(1.0, 0.1, 0.05)
-		mat.emission_enabled = true
-		mat.emission = Color(1.0, 0.1, 0.05)
-		mat.emission_energy_multiplier = 3.0
-		m.material = mat
-		_jam_mark.mesh = m
-		_jam_mark.position = Vector3(0.0, 0.42, 0.3)
+		_jam_mark = make_jam_mark()
 		device_node.add_child(_jam_mark)
 	if _jam_mark != null:
 		_jam_mark.visible = on
+
+
+## The jam mark mesh (also used by Padlock's placed saw).
+static func make_jam_mark() -> MeshInstance3D:
+	var mark: MeshInstance3D = MeshInstance3D.new()
+	mark.name = "JamMark"
+	var m: SphereMesh = SphereMesh.new()
+	m.radius = 0.04
+	m.height = 0.08
+	var mat: StandardMaterial3D = StandardMaterial3D.new()
+	mat.albedo_color = Color(1.0, 0.1, 0.05)
+	mat.emission_enabled = true
+	mat.emission = Color(1.0, 0.1, 0.05)
+	mat.emission_energy_multiplier = 3.0
+	m.material = mat
+	mark.mesh = m
+	mark.position = Vector3(0.0, 0.42, 0.3)
+	return mark
