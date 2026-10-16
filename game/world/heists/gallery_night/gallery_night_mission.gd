@@ -1,5 +1,5 @@
-## Gallery Night (Halberd Gallery) mission flow: G1 STUB. Owner: ENV C (GN-C1, map + stub); ENV A completes it (GN-A1,
-## next_heist §3b.6; ENV A co-owns game/world/heists/**). Design: docs/design/heists/gallery_night.md §Objectives,
+## Gallery Night (Halberd Gallery) mission flow. Owner: ENV A (mission scripts, owners.json); ENV C built the G1 stub
+## (GN-C1); ENV A completed it (GN-A1, GN-8). Design: docs/design/heists/gallery_night.md §Objectives,
 ## Build rulings B3 (no stealth-only fail) and B5 (marker_tags); data contract: game/content/_drafts/gallery_night/
 ## README.md (objective table, rare-event effect keys). Contract heist_map.md §6: only the HeistMission API, EventBus
 ## and nodes of this map (found by objective_tag).
@@ -40,6 +40,8 @@ const LIST_LOOT: Array[StringName] = [&"loot.painting_salt_orchard", &"loot.pain
 ## Loud hack (doc §Loud): 120 s, 2-3 interruptions (stealth 60 s / 1-2 is the map's hack_terminal).
 const HACK_LOUD_S: float = 120.0
 const HACK_LOUD_INTERRUPTIONS: Vector2i = Vector2i(2, 3)
+## Stealth card steps skipped by the lockdown (B's GN audit): the loud hack / vault drill replace them.
+const LOCKDOWN_SKIPPED: Array[StringName] = [&"keycard", &"treasury", &"art_store"]
 const LAST_CALL_WARNING_S: float = 60.0
 const GUESTS_GONE_S: float = 60.0
 ## find_canvases: radius of the "walk within 4 m" check around each active list slot (doc §Objectives 2).
@@ -772,13 +774,26 @@ func _go_loud() -> void:
 	for h: Node in find_tagged(TAG_HACK):
 		if h is HackTerminal:
 			(h as HackTerminal).reconfigure(HACK_LOUD_S, HACK_LOUD_INTERRUPTIONS + extra)
-	if objective_state(&"hack") == Enums.ObjectiveState.ACTIVE:
+	# GN-8 (doc §Loud: "the same hack lifts the lockdown"): a hack already done in stealth only took the sensors
+	# offline; the shutters are down now, so the terminal re-arms and [hack] is the loud step again.
+	var rearmed: bool = false
+	if objective_state(&"hack") == Enums.ObjectiveState.COMPLETED:
+		for h: Node in find_tagged(TAG_HACK):
+			if h is HackTerminal:
+				rearmed = (h as HackTerminal).rearm() or rearmed
+	if objective_state(&"hack") == Enums.ObjectiveState.ACTIVE or rearmed:
 		add_objective(&"hack", &"objective.gallery_night.hack_loud", Enums.ObjectiveState.ACTIVE,
 			{"marker_tags": [TAG_HACK], "duration_s": HACK_LOUD_S, "interruptions": HACK_LOUD_INTERRUPTIONS})
 	if objective_state(&"server_code") != Enums.ObjectiveState.COMPLETED:
 		activate(&"server_door")
 	if objective_state(&"art_store") != Enums.ObjectiveState.COMPLETED:
 		activate(&"vault_drill")
+	# GN-8 (B's GN audit; as glasshouse_mission _go_loud): the card steps are moot in the lockdown (the AS reader is
+	# dead, the hack opens TR / LD / AS with no card), so they are skipped and leave the current-step slot.
+	for id: StringName in LOCKDOWN_SKIPPED:
+		if objective_state(id) == Enums.ObjectiveState.ACTIVE:
+			update_objective_data(id, {"disabled": true, "reason": &"lockdown", "skipped": true})
+			complete(id)
 	if objective_state(&"secure") == Enums.ObjectiveState.COMPLETED:
 		_call_escape()
 

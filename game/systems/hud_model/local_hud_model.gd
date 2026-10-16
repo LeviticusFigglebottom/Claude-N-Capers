@@ -563,6 +563,37 @@ func _poll_marks_and_timers(slot: int) -> void:
 	_assign(&"camera_alarm_s", cam if cam >= 0.0 else -1.0)
 
 
+## GN-8 (B's GN audit): the HUD's current step is the first ACTIVE row, so an ACTIVE optional / as-needed step
+## (`args.optional`: GN keycard, code, hack) listed before a required one (the centrepiece) took the slot. Every
+## ACTIVE optional row moves to just after the last ACTIVE required row; everything else keeps the mission order.
+## With no required step active the order is unchanged (the optional steps are then the current ones).
+static func required_first(rows: Array[Dictionary]) -> Array[Dictionary]:
+	var last_req: int = -1
+	for i: int in range(rows.size()):
+		if _row_active(rows[i]) and not _row_optional(rows[i]):
+			last_req = i
+	if last_req < 0:
+		return rows
+	var out: Array[Dictionary] = []
+	var moved: Array[Dictionary] = []
+	for i: int in range(rows.size()):
+		if i < last_req and _row_active(rows[i]) and _row_optional(rows[i]):
+			moved.append(rows[i])
+			continue
+		out.append(rows[i])
+		if i == last_req:
+			out.append_array(moved)
+	return out
+
+
+static func _row_active(row: Dictionary) -> bool:
+	return int(row.get("state", -1)) == Enums.ObjectiveState.ACTIVE
+
+
+static func _row_optional(row: Dictionary) -> bool:
+	return bool((row.get("args", {}) as Dictionary).get("optional", false))
+
+
 func _poll_objectives() -> void:
 	var m: HeistMission = _runtime.mission if _runtime != null else null
 	_bind_mission(m)
@@ -586,7 +617,7 @@ func _poll_objectives() -> void:
 			"args": (o.get("args", {}) as Dictionary).duplicate(true), "state": int(o["state"]),
 			"device_net_id": int(_objective_device.get(StringName(o["id"]), -1)),
 		})
-	_assign(&"objectives", list)
+	_assign(&"objectives", required_first(list))
 	_poll_markers(src)
 
 
