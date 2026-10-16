@@ -52,6 +52,9 @@ const SHIELD_LAYER: int = 1 << 1
 ## (Phantom `Goggles`, so ENV A can ramp the emission per instance).
 const EXTRA_MARKERS_KEY: String = "extra_markers"
 const OVERRIDE_KEY: String = "material_override"
+## SOURCE.txt `headwear_class` (e.g. `hard_hat`): set as meta `headwear_class` (StringName) on Skeleton3D/Headwear
+## (ENV A's HardHatHandLift reads it).
+const HEADWEAR_CLASS_KEY: String = "headwear_class"
 
 ## Looped clips (the `*` names in characters.md). Fallback only: the tool prefers a `loops:` line in
 ## char_anim_humanoid/SOURCE.txt, then `LOOPS` in tools/blender/characters/anim_humanoid.py.

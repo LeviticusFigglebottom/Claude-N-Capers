@@ -7,13 +7,13 @@ rebuild: python3 tools/blender/build.py --category characters --asset char_galle
 edit policy: generated file, never edit by hand; change the script and rebuild
 attach_Back: bone chest, local [0.0000, 0.0887, 0.1032] (model [0.0000, 1.2927, 0.1216], Godot axes, rest pose)
 attach_Head: bone head, local [0.0000, 0.0805, -0.0882] (model [0.0000, 1.6566, -0.0763], Godot axes, rest pose)
-attach_Hip: bone hips, local [0.1769, 0.0505, 0.0356] (model [0.1769, 0.9983, 0.0381], Godot axes, rest pose)
-body_faces_culled: 4812
+attach_Hip: bone hips, local [0.1767, 0.0505, 0.0356] (model [0.1767, 0.9983, 0.0381], Godot axes, rest pose)
+body_faces_culled: 4882
 body_params: {"age": 0.15, "beard_shadow": 0.1, "build": 0.35, "gender": 0.0, "hair": "side_part", "hair_color": "brown", "hair_peak": 0.0, "height": 1.77, "lip": "auto", "skin": 4}
 bones: 52
 look: Gala waiter: white shirt, black bow tie, Halberd-wine waistcoat with gold buttons, long black bistro apron, Halberd pin, brass name tag
 meshes: Body,Gear,Hair,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 30176
-tris_by_mesh: {"Body": 9120, "Gear": 980, "Hair": 1856, "Outfit": 18220}
+tris: 30164
+tris_by_mesh: {"Body": 8980, "Gear": 980, "Hair": 1856, "Outfit": 18348}

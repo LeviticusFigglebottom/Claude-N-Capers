@@ -227,6 +227,7 @@ visibility_range_end_margin = 1.0
 [node name="Headwear" parent="Skeleton3D" index="3" unique_id=1026754239]
 visibility_range_end = 20.0
 visibility_range_end_margin = 1.0
+metadata/headwear_class = &"hard_hat"
 
 [node name="Outfit" parent="Skeleton3D" index="4" unique_id=1032069497]
 visibility_range_end = 20.0

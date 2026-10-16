@@ -8,7 +8,7 @@ edit policy: generated file, never edit by hand; change the script and rebuild
 attach_Back: bone chest, local [0.0000, 0.0903, 0.1061] (model [0.0000, 1.3146, 0.1248], Godot axes, rest pose)
 attach_Head: bone head, local [0.0000, 0.0819, -0.0897] (model [0.0000, 1.6847, -0.0776], Godot axes, rest pose)
 attach_Hip: bone hips, local [0.2306, 0.0644, 0.0426] (model [0.2306, 1.0279, 0.0458], Godot axes, rest pose)
-body_faces_culled: 5738
+body_faces_culled: 5812
 body_params: {"age": 0.45, "beard_shadow": 0.65, "build": 0.45, "gender": 0.0, "hair": "short", "hair_color": "dark", "hair_peak": 0.0, "height": 1.8, "lip": "auto", "skin": 5}
 bones: 52
 extra_markers: [{"name": "LaserOrigin", "origin": [0.0, 0.06, -0.5], "parent": "HandR/Socket"}]
@@ -17,7 +17,7 @@ hat: boonie hat (Headwear); LaserOrigin under HandR/Socket at (0, 0.06, -0.5)
 meshes: Body,Gear,Hair,Headwear,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 28116
-tris_by_mesh: {"Body": 7352, "Gear": 1820, "Hair": 1728, "Headwear": 588, "Outfit": 16628}
+tris: 28104
+tris_by_mesh: {"Body": 7204, "Gear": 1820, "Hair": 1728, "Headwear": 588, "Outfit": 16764}
 variant_of: longshot
 visual_variant: sentinel
