@@ -26,7 +26,7 @@ and reports a gap list; the LEAD folds the gaps in here as rows (id, heist, owne
 | SL-2 | SL | C | D-111 props/doors/loot | landing |
 | SL-3 | SL | C | VictorKessler `sit` 4.1 m from a seat; camera station seat visual; ITContractor = phone (doc change APPROVED) | open |
 | SL-6 | SL | A | mission audit + stealth e2e | open |
-| DB-1 | DB | C | G2 art pass | open |
+| DB-1 | DB | C | G2 art pass | done: G2 FINAL (C 40274739, round 227); chamber variety + trawler/crane art follow-ups |
 | DB-2 | DB | C | D-111 doors (twin roller, cold-store slider, strongroom), launch, burn barrels, thermal drill | landing |
 | DB-4 | DB | A | cartel `sit` plays no seated clip | open |
 | DB-6 | DB | C, A | stale QC-36/39 TODOs (C); QC-25 S3 perch after fog lifts needs a director hook (A) | open |

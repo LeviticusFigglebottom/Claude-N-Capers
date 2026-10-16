@@ -24,7 +24,7 @@ arrive after `police_delay_s`.
 | Pre-planning assets (QC-40) | `data/preplanning/assets/` (5 new) |
 | Thermite excluded from bag XP | `data/tweak/payout.tres` `xp_loot_excluded_ids` |
 | Strings: heist, objectives, loot, assets, point labels, VO | `data/strings/strings.csv` |
-| Briefing and mission VO (the doc's 31 ids + Vance/Accountant briefing sets) | `data/voice/lines.tres` |
+| Briefing and mission VO (the doc's 31 ids) | `data/voice/lines.tres` |
 | Tests | `tests/b/test_p2_heist_content.gd` (Dockside section), `tests/b/test_voice_lines.gd` |
 
 The menus, Board and broker list a heist only once it has a HeistDef **and** a map scene (QB-55,
@@ -89,12 +89,10 @@ range. ◇ $600–1,500 is proposed in `data/README.md` until C sets the prefab 
 | id | order |
 |---|---|
 | `vo.reyes.briefing_dockside_burn_1..3` (doc) | 1–3 |
-| `vo.vance.briefing_dockside_burn_1..2` (ours) | 1–2 |
-| `vo.accountant.briefing_dockside_burn_1..2` (ours) | 1–2 |
 | `vo.mercer.briefing_dockside_burn_1..2` (doc) | 100–101 (Mercer closes) |
 
-The Vance and Accountant sets are not in the doc. They follow Glasshouse, so the briefing still
-plays if a broker or fallback pick changes the contact.
+The Vance and Accountant sets that once followed Glasshouse were removed by the D-117 §6 VO coverage audit
+(`content/docs/vo_coverage.md`): the briefing only ever plays `HeistDef.contact` (Reyes) and Mercer.
 
 ## Mission VO (event `mission`, priority 90, cooldown 0)
 Every id from the doc's "VO line ids" list: 31 in total, including the 5 briefing ids above. The

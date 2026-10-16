@@ -358,6 +358,11 @@ item.loot.jewelry.name,Jewelry
 item.loot.jewelry.desc,"Rings, necklaces and watches in a padded bag."
 item.loot.cash.name,Cash
 item.loot.cash.desc,"Bundled bills. Light, honest money."
+item.loot.small_valuables.name,Small valuables
+item.item.keycard.name,Keycard
+item.item.code_note.name,Code note
+item.item.gear.name,Gear bag
+item.item.c4.name,C4
 item.loot.body_bag.name,Body Bag
 item.loot.body_bag.desc,Heavy and awkward. Out of sight is out of mind.
 heist.glasshouse.name,Golden Hour
@@ -407,27 +412,12 @@ voice.vo.mercer.body_discovered_1,Someone found a body. That's going to be hard 
 voice.vo.mercer.body_discovered_2,A body's been spotted. Get ready.
 voice.vo.mercer.camera_spotted_1,Camera's got you. Not ideal.
 voice.vo.mercer.camera_spotted_2,You're on tape. Somebody's watching that monitor.
-voice.vo.mercer.alarm_raised_1,"And there's the alarm. Quiet's over, so let's be quick instead."
-voice.vo.mercer.alarm_raised_2,"Alarm's up. Police are on their way. Plan B, everyone."
 voice.vo.mercer.device_started_1,Drill's running. Keep it company.
 voice.vo.mercer.device_started_2,"Drill's on. It'll take a while, so get comfortable."
 voice.vo.mercer.device_jammed_1,Drill's stopped. Somebody give it some encouragement.
 voice.vo.mercer.device_jammed_2,"The drill's jammed again. Cheap hardware, I know."
 voice.vo.mercer.device_finished_1,Drill's through. Go see what we paid for.
 voice.vo.mercer.device_finished_2,That's done. Door's open.
-voice.vo.mercer.assault_anticipation_1,They're gathering outside. Find cover and top up your ammo.
-voice.vo.mercer.assault_anticipation_2,It's gone quiet out there. That's never good. Get ready.
-voice.vo.mercer.assault_build_1,Here they come. Heads down.
-voice.vo.mercer.assault_build_2,Assault's starting. Stay close and stay alive.
-voice.vo.mercer.assault_fade_1,They're pulling back. Use the breather.
-voice.vo.mercer.assault_fade_2,"Assault's thinning out. Breathe, reload, keep working."
-voice.vo.mercer.assault_control_1,Quiet for now. Get the work done before they regroup.
-voice.vo.mercer.assault_control_2,"They're regrouping. You have a minute, maybe two."
-voice.vo.mercer.loot_secured_1,That bag's secured.
-voice.vo.mercer.loot_secured_2,Another one in the van. Good.
-voice.vo.mercer.loot_secured_3,Bag's safe. Keep them coming.
-voice.vo.mercer.escape_available_1,"Van's here. Leave whenever you're ready, or stay and get greedy."
-voice.vo.mercer.escape_available_2,Your ride is waiting. I'd use it.
 voice.vo.mercer.crew_downed_1,Someone's down. Get them up.
 voice.vo.mercer.crew_downed_2,Crew member down. Don't leave them there.
 voice.vo.mercer.crew_custody_1,"They've got one of you. We'll get them back, but finish the job first."
@@ -1341,6 +1331,7 @@ ui.briefing.optional,Optional
 ui.briefing.optional_line,• {text}
 ui.briefing.loot,Loot
 ui.briefing.loot_line,{loot}: {value} each
+ui.briefing.loot_line_small,{loot}: small loot
 ui.briefing.loot_none,No bagged loot on this job.
 ui.briefing.escape,Escape
 ui.briefing.escape_line,Escape: {options}
@@ -1363,10 +1354,6 @@ ui.briefing.placeholder,Provisional intel: details may change before the job.
 voice.vo.vance.briefing_glasshouse_1,"Vossberg Jewelers, darling. Harlow and Pell. On Thursday the estate consignment sleeps in the workshop safe; on Friday it goes to people with better manners than you."
 voice.vo.vance.briefing_glasshouse_2,The windows are for tourists. The good pieces are in the back. Find the manager's keycard and you won't need to make a racket.
 voice.vo.vance.briefing_glasshouse_3,Two bags is the least I'll accept. Bring me more and I may even remember your names. Don't keep me waiting.
-voice.vo.reyes.briefing_glasshouse_1,"A jewelry store? Not my usual. Odile's paying me to say hello, so: Vossberg, two floors, rent-a-cops from Halden Security."
-voice.vo.reyes.briefing_glasshouse_2,"If it goes loud, the safe locks itself down. Bring a drill, hold that back corridor and wait for the van like grown-ups."
-voice.vo.accountant.briefing_glasshouse_1,Vossberg's insurer filed the Thursday consignment as low risk. That is an error I would like you to correct.
-voice.vo.accountant.briefing_glasshouse_2,"Two bags of stones covers my margin. Anything beyond that is your bonus. Keep the receipts in your head, not on paper."
 voice.vo.mercer.briefing_glasshouse_1,"I'll be on comms the whole way. Walk in like customers, count the cameras and don't touch anything you can't carry."
 ui.briefing.heist,{name}: {subtitle}
 ui.preplan.title,Pre-planning
@@ -1677,6 +1664,85 @@ ui.briefing.escape.service_lift,Service lift
 ui.briefing.escape.lift,Service lift
 ui.briefing.objectives_more,+{count} more steps on the night
 ui.briefing.objectives_more_one,+1 more step on the night
+ui.briefing.sec.title,Known security
+ui.briefing.sec.range,{min}–{max}
+ui.briefing.sec.guards,Guards: {range}
+ui.briefing.sec.cartel,Cartel gunmen: {range}
+ui.briefing.sec.cameras,Cameras: {range}
+ui.briefing.sec.cameras_titan,Cameras: {range} (Titan: can't be shot out)
+ui.briefing.sec.operator_always,Camera operator: on shift
+ui.briefing.sec.operator_maybe,Camera operator: may be on shift
+ui.briefing.sec.pagers,Pagers: {range} answers
+ui.briefing.sec.alarm_buttons,Panic buttons: {range}
+ui.briefing.sec.keycards,Keycard locks: {range}
+ui.briefing.sec.keypads,Code locks: {range}
+ui.briefing.sec.lasers,Laser grids: {range}
+ui.briefing.sec.alarm_cases,Alarmed display cases: {range}
+ui.briefing.sec.time_lock,Time lock: {range} s
+ui.briefing.sec.vault_doors,Vault doors: {range}
+ui.briefing.sec.safes,Safes: {range}
+ui.briefing.sec.padlocks,Padlocks: {range}
+ui.briefing.sec.hack_terminals,Hack terminals: {range}
+ui.briefing.sec.sensors,Frame sensors: {range}
+ui.briefing.sec.located,{line} ({rooms})
+ui.briefing.sec.rooms_more,{rooms} +{n} more
+ui.briefing.sec.surprises,Possible surprises: {events}
+ui.briefing.sec.event.night_deposit.armored_car_early,armoured car arrives early (2 guards)
+ui.briefing.sec.event.shadow_ledger.timelock_extended,longer study-safe time lock
+ui.briefing.sec.event.dockside_burn.police_tipped,police tipped off (no response delay)
+ui.briefing.sec.event.dockside_burn.cartel_reinforcements,Co-op reinforcements at the gate
+ui.briefing.sec.event.dockside_burn.fog_lifts,fog lifts (viaduct sniper)
+ui.briefing.sec.event.dockside_burn.harbor_unit,harbour police boat (trawler sniper)
+ui.briefing.sec.event.gallery_night.insurance_inspection,insurance inspectors
+ui.briefing.sec.event.gallery_night.vaultline_early,Vaultline couriers arrive early
+ui.briefing.sec.event.gallery_night.argus_upgrade,Argus upgrade (every frame sensor live)
+ui.preplan.bp.gallery_night.ss,Service stair
+ui.preplan.bp.gallery_night.lk,Locker room
+ui.preplan.bp.gallery_night.fr,Frame store
+ui.preplan.bp.gallery_night.qr,Quarantine store
+ui.preplan.bp.gallery_night.lf,Art lift
+ui.preplan.bp.gallery_night.bb,Basement corridor
+ui.preplan.bp.gallery_night.pl,Plant room
+ui.preplan.bp.gallery_night.as,Art store
+ui.preplan.bp.gallery_night.br,Break room
+ui.preplan.bp.gallery_night.wc,Staff WC
+ui.preplan.bp.gallery_night.sc,Security
+ui.preplan.bp.gallery_night.rg,Registrar
+ui.preplan.bp.gallery_night.j,Janitor
+ui.preplan.bp.gallery_night.e1,Electrical
+ui.preplan.bp.gallery_night.ld,Loading dock
+ui.preplan.bp.gallery_night.bc,Back corridor
+ui.preplan.bp.gallery_night.wg,Founders' Gallery
+ui.preplan.bp.gallery_night.gh,Great Hall
+ui.preplan.bp.gallery_night.eg,Harbour Gallery
+ui.preplan.bp.gallery_night.dc,Drawings Cabinet
+ui.preplan.bp.gallery_night.pww,Public WC
+ui.preplan.bp.gallery_night.pwm,Public WC
+ui.preplan.bp.gallery_night.ck,Cloakroom
+ui.preplan.bp.gallery_night.ve,Vestibule
+ui.preplan.bp.gallery_night.gs,Gift shop
+ui.preplan.bp.gallery_night.eb,Benefactors' Room
+ui.preplan.bp.gallery_night.co,Curator's office
+ui.preplan.bp.gallery_night.ao,Admin office
+ui.preplan.bp.gallery_night.uw,Upper WC
+ui.preplan.bp.gallery_night.fs,Plinth store
+ui.preplan.bp.gallery_night.sv,Argus server
+ui.preplan.bp.gallery_night.cs,Conservation Studio
+ui.preplan.bp.gallery_night.uc,Upper corridor
+ui.preplan.bp.gallery_night.ug1,Calloway Room
+ui.preplan.bp.gallery_night.ug2,Sallow Room
+ui.preplan.bp.gallery_night.ug3,Maritime Room
+ui.preplan.bp.gallery_night.bw,West balcony
+ui.preplan.bp.gallery_night.be,East balcony
+ui.preplan.bp.gallery_night.sl,South loggia
+ui.preplan.bp.gallery_night.at,Attendants' station
+ui.preplan.bp.gallery_night.tr,Treasury
+ui.preplan.bp.gallery_night.hh,Stair head house
+ui.preplan.bp.gallery_night.lm,Lift motor room
+ui.preplan.bp.gallery_night.x1,Aldous Parade
+ui.preplan.bp.gallery_night.x2,Wexley Street
+ui.preplan.bp.gallery_night.x3,Sculpture Court
+ui.preplan.bp.gallery_night.x4,Roof deck
 item.asset.intel_laptop.name,Insider: laptop location
 item.asset.intel_laptop.desc,You know where the partners left the ledger laptop tonight.
 item.asset.gondola_left_hung.name,Window-washer gondola
@@ -2392,6 +2458,7 @@ ui.action.melee,Melee
 ui.action.slot_primary,Primary Weapon
 ui.action.slot_secondary,Secondary Weapon
 ui.action.swap_weapon,Swap Weapon
+ui.action.gadget_toggle,Weapon Gadget On/Off
 ui.action.interact,Interact
 ui.action.shout,Shout / Mark
 ui.action.mask_up,Mask Up
@@ -2506,10 +2573,6 @@ ui.preplan.point.dockside_burn.pp_gangway,Pier 10 gangway
 voice.vo.reyes.briefing_dockside_burn_1,"Ortega Cold Storage, Pier 9. The Co-op says it freezes fish. It freezes cash, guns and product, and its own boys guard it."
 voice.vo.reyes.briefing_dockside_burn_2,"The Co-op thinks the harbor's theirs because nobody's ever argued. We're arguing. Take the money, take the guns, and torch whatever they were going to sell."
 voice.vo.reyes.briefing_dockside_burn_3,"Four bags of cash or rifles, and the product burning: that's the job. Any product you carry out first, my buyer takes at a discount. I want smoke over Pier 9 by sunrise."
-voice.vo.vance.briefing_dockside_burn_1,"Hollis's sort of evening, darling: a freezer full of men with guns. I only put my name on it for the commission."
-voice.vo.vance.briefing_dockside_burn_2,"If anything in there has a frame or a hallmark, it comes to me. The rest you may burn as you please."
-voice.vo.accountant.briefing_dockside_burn_1,The Co-op's cold store carries its inventory at a valuation nobody has ever audited. I would like it written down to zero.
-voice.vo.accountant.briefing_dockside_burn_2,"Take what can be sold and destroy what cannot. A competitor's losses are a perfectly respectable kind of profit."
 voice.vo.mercer.briefing_dockside_burn_1,"Ten past five, fog on the water, and no quiet option. The Co-op's gunmen start on their posts, so take a few down before the shooting wakes the rest."
 voice.vo.mercer.briefing_dockside_burn_2,"Once it's loud, the police are a minute or two out. Get the thermite to the product, get four bags to the ride, and pick a place you can hold."
 voice.vo.mercer.dockside_burn_intro,"Ortega Cold Storage. The Co-op's gunmen haven't noticed you yet. Keep it that way as long as you can."
@@ -3321,7 +3384,6 @@ voice.vo.mercer.gallery_night_limo_eta,Limo's {seconds} seconds out. Hold the ha
 voice.vo.mercer.gallery_night_sniper_hotel,Sniper on the Grand Wexley roof. Stay out of the Mews mouth.
 voice.vo.mercer.gallery_night_escape,"Your ride's here. Canvases in, then you."
 voice.vo.vance.gallery_night_radio_casing,You've seen the rooms. Now forget the champagne and remember the walls.
-voice.vo.vance.gallery_night_radio_casing_last_call,Lights are coming up and the guests are leaving. Keep to the shadows.
 voice.vo.vance.gallery_night_radio_find_canvases,"All four on the list, found. My buyer will be thrilled, in his quiet way."
 voice.vo.vance.gallery_night_radio_keycard,"A keycard. Spend it wisely, darling, there aren't enough to go round."
 voice.vo.vance.gallery_night_radio_server_code,The Argus code. Someone at the Halberd writes things down. Bless them.
@@ -3329,7 +3391,6 @@ voice.vo.vance.gallery_night_radio_hack,Argus is blind. The frames are just fram
 voice.vo.vance.gallery_night_radio_treasury,The Treasury is open. Mind the pretty red lines.
 voice.vo.vance.gallery_night_radio_art_store,"The art store. Everything they didn't think worth showing, which is rarely true."
 voice.vo.vance.gallery_night_radio_centrepiece,"The Lantern Bearer, off its stretcher. Now I can breathe."
-voice.vo.vance.gallery_night_radio_canvases_new,"One more from the list. Any of them, but do pick a nice one."
 voice.vo.vance.gallery_night_radio_canvases,"That's two from the list. The buyer's minimum, and mine."
 voice.vo.vance.gallery_night_radio_secure,"The Lantern Bearer and a companion, safely away. Anything more is a gift."
 voice.vo.vance.gallery_night_radio_extras,The whole list and the studies too. You spoil me.

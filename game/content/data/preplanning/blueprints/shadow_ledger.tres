@@ -11,12 +11,7 @@ shapes = Array[Dictionary]([{
 "floor": 0,
 "kind": &"building",
 "label": &"",
-"rect": Rect2(21, 7.35, 9.1, 9.25)
-}, {
-"floor": 0,
-"kind": &"building",
-"label": &"",
-"rect": Rect2(12, 10.5, 3, 6)
+"rect": Rect2(0.2, 0.2, 35.6, 23.599998)
 }, {
 "floor": 0,
 "kind": &"room",

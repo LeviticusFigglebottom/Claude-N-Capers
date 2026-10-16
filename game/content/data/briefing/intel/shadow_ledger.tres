@@ -1,0 +1,150 @@
+[gd_resource type="Resource" script_class="BriefingIntelData" format=3]
+
+[ext_resource type="Script" path="res://content/ui/briefing/briefing_intel_data.gd" id="1_560p6"]
+
+[resource]
+script = ExtResource("1_560p6")
+heist_id = &"shadow_ledger"
+map_path = "res://world/heists/shadow_ledger/shadow_ledger.tscn"
+variants_path = "res://world/heists/shadow_ledger/shadow_ledger_variants.tres"
+fixed = {
+&"alarm_button": 3,
+&"code_safe": 1,
+&"guard": 1,
+&"hack_terminal": 1,
+&"keycard_reader": 2,
+&"safe": 3
+}
+groups = {
+&"camera": {
+&"cam_a": {
+"counts": {
+&"camera": 6
+},
+"rooms": {},
+"weight": 1.0
+},
+&"cam_b": {
+"counts": {
+&"camera": 6
+},
+"rooms": {},
+"weight": 1.0
+},
+&"cam_c": {
+"counts": {
+&"camera": 6
+},
+"rooms": {},
+"weight": 1.0
+}
+},
+&"guard_extra": {
+&"extra_none": {
+"counts": {},
+"rooms": {},
+"weight": 2.0
+},
+&"roof_watch": {
+"counts": {
+&"guard": 1
+},
+"rooms": {},
+"weight": 1.0
+},
+&"stair_watch": {
+"counts": {
+&"guard": 1
+},
+"rooms": {},
+"weight": 1.0
+}
+},
+&"guard_post": {
+&"rover_l41": {
+"counts": {
+&"guard": 1
+},
+"rooms": {},
+"weight": 1.0
+},
+&"rover_l42": {
+"counts": {
+&"guard": 1
+},
+"rooms": {},
+"weight": 1.0
+}
+},
+&"laser_pattern": {
+&"lz_static": {
+"counts": {
+&"laser": 1
+},
+"rooms": {
+&"laser": {
+&"M3": 1
+}
+},
+"weight": 0.5
+},
+&"lz_sweep": {
+"counts": {
+&"laser": 1
+},
+"rooms": {
+&"laser": {
+&"M3": 1
+}
+},
+"weight": 0.2
+},
+&"lz_timed": {
+"counts": {
+&"laser": 1
+},
+"rooms": {
+&"laser": {
+&"M3": 1
+}
+},
+"weight": 0.3
+}
+},
+&"security_room_staffed": {
+&"sec_empty": {
+"counts": {},
+"rooms": {},
+"weight": 0.4
+},
+&"sec_staffed": {
+"counts": {
+&"operator": 1
+},
+"rooms": {},
+"weight": 0.6
+}
+}
+}
+time_locks_s = Array[float]([90.0])
+fixed_rooms = {
+&"code_safe": {
+&"K11": 1
+},
+&"hack_terminal": {
+&"K11": 1
+},
+&"keycard_reader": {
+&"K11": 1,
+&"M4": 1
+},
+&"safe": {
+&"K11": 1,
+&"K17": 1,
+&"M4": 1
+},
+&"time_lock": {
+&"M4": 1
+}
+}
+surprises = Array[StringName]([&"timelock_extended"])

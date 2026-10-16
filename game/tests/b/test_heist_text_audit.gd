@@ -111,6 +111,36 @@ func test_every_heist_string_is_clean() -> void:
 
 
 ## The checker itself rejects what the audit is for.
+## LEAD r224: every carried-item id (`item.*` that is not an asset or a bag) a heist or a prefab hands out has a display
+## name (UiText.item_key), and every loot id a heist lists has one too, def-less small loot included
+## (loot.small_valuables keeps no LootDef by D-120; the briefing lists it by name).
+func test_carried_items_and_loot_ids_have_names() -> void:
+	var files: Array[String] = []
+	for h: StringName in HEISTS:
+		_collect(HEIST_DIR % h, files)
+	_collect("res://systems/prefabs", files)
+	var rx: RegEx = RegEx.create_from_string("&\"(item\\.[a-z0-9_]+)\"")
+	var items: Dictionary = {}
+	for f: String in files:
+		if not f.ends_with(".gd"):
+			continue
+		for m: RegExMatch in rx.search_all(FileAccess.get_file_as_string(f)):
+			var id: String = m.get_string(1)
+			if not id.begins_with("item.asset.") and not id.begins_with("item.loot."):
+				items[id] = f
+	assert_true(items.has("item.keycard") and items.has("item.code_note"), "carried items found: %s" % items.keys())
+	for id: String in items:
+		_check(&"carried", String(UiText.item_key(StringName(id))), String(items[id]))
+	for h2: StringName in HEISTS:
+		var def: HeistDef = load(DEF_PATH % [h2, h2]) as HeistDef
+		for loot: StringName in def.loot:
+			_check(h2, String(UiText.item_key(loot)), "HeistDef.loot")
+	var lines: Array[Dictionary] = BriefingModel.loot_lines([&"loot.cash", &"loot.small_valuables"], 0)
+	assert_eq(lines.size(), 2, "the def-less small loot lists by name")
+	assert_true(bool(lines[1].get("small", false)) and String(lines[1]["text"]) == "Small valuables", str(lines[1]))
+	assert_false(ContentDB.has(ContentDB.LOOT, &"loot.small_valuables"), "D-120: still no LootDef")
+
+
 func test_checker_rejects_raw_text() -> void:
 	assert_true(_problem("Find objective.glasshouse.keycard") != "", "raw objective key")
 	assert_true(_problem("Press ui.prompt.use") != "", "raw prompt key")

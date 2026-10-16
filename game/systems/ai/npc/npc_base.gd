@@ -18,7 +18,7 @@ signal noise_heard(position: Vector3, kind: StringName, source_net_id: int)
 
 const LAYER_NPCS: int = 1 << 3
 const LAYER_HITBOXES: int = 1 << 4
-## PO6-19: the corpse's hitbox (zone BODY, lying along the body; NpcRagdoll places it where the body rests).
+## PO6-19 / D-121: the corpse's hitbox (zone BODY, lying along the body; CorpseAnchor places it on the anchor).
 const CORPSE_HITBOX: String = "CorpseHitbox"
 const MASK_WORLD: int = (1 << 0) | (1 << 1)
 ## Alert states in which an NPC no longer observes anything.
@@ -51,6 +51,10 @@ var difficulty: int = Enums.Difficulty.ROUTINE
 var last_damage: Dictionary = {}
 ## Stimulus id of this corpse (registered with StealthDirector on death), 0 if none.
 var corpse_stimulus_id: int = 0
+## D-121: the corpse's deterministic gameplay position (CorpseAnchor; INF = alive / not yet known on a client)
+## and the flat push direction its hitbox lies along. The root sits here from death on; the ragdoll is cosmetic.
+var corpse_anchor: Vector3 = Vector3.INF
+var corpse_dir: Vector3 = Vector3.ZERO
 ## A2-03 (S8.6): seconds of ECM-feedback stun left. While stunned the NPC is blind (can_observe),
 ## its motor holds still and its brain pauses (no radio call progress, no firing).
 var stun_left: float = 0.0
@@ -258,6 +262,8 @@ func die(info: Dictionary = {}, killer_net_id: int = 0) -> void:
 	collision_layer = 0
 	_set_hitboxes_enabled(false)
 	_set_corpse_hitbox_enabled(true)
+	if Net.is_authority():
+		CorpseAnchor.settle(self, info)  # D-121: root + corpse hitbox on the deterministic anchor (visual stays)
 	if visual_root != null and not AnimDriver.drives(self):  # animated visuals play death_front/back
 		visual_root.rotation = Vector3(-PI * 0.5, 0.0, 0.0)
 		visual_root.position = Vector3(0.0, 0.25, 0.0)
