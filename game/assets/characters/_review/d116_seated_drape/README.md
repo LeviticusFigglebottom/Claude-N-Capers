@@ -26,3 +26,11 @@ Shots (render_crew_hold_review: `--props=book`, `--chair=<scene>`, `--close_h`):
 - `after_sit_bed_read.png`: on a stand-in mattress (prop_bench_upholstered; there is no bed prop). Legs out, the robe
   wraps the legs.
 - `after_walk_idle.png`: the same coats walking and idle (side view): no gaping or tearing on strides.
+
+## DB-4: seated cartel gunmen
+`db4_cartel_sit_chair_armed_vs_sit_chair.png` shows cartel_gunman_e, _b and the original in the armchair.
+- Row 1, the new `sit_chair_armed` (140 f loop): the long gun across the lap, the right hand on the grip and the left
+  on the fore-end.
+- Row 2, plain `sit_chair`: the held gun dangles from one hand. It's the wrong clip for an armed body.
+Every cartel scene carries the whole humanoid library (sit_chair, sit_chair_armed, desk_work, ...). The seat
+convention is sit_chair's: the clip root at the Seat marker, the seat top 0.47 m above it.
