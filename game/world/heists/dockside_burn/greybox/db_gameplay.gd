@@ -424,7 +424,8 @@ func _variants_cash(variants: Node3D) -> void:
 			"objective_tag": &"cash_bricks"})
 	var cr: VariantSlot = _slot(g, "cash_location", "cash_countroom", 0.4, {"holdout": "H1"})
 	prefab(cr, "safe", "CountCage", Vector3(9.5, L.MEZZ, 4.4), -90.0,
-		{"size": "enum:LARGE", "methods": [&"drill", &"c4"] as Array[StringName], "objective_tag": &"count_cage"},
+		{"size": "enum:LARGE", "methods": [&"drill", &"c4"] as Array[StringName], "objective_tag": &"count_cage",
+			"drill_duration_s": 120.0},  # D-115 DB-5: the doc's 120 s cage drill (size stays LARGE)
 		Vector3(10.4, L.MEZZ, 4.4), {"kind": "safe"})
 	for c2: Array in [["CageCashA", Vector3(9.65, L.MEZZ, 2.4)], ["CageCashB", Vector3(9.65, L.MEZZ, 1.2)]]:
 		prefab(cr, "loot_spawn", String(c2[0]), c2[1], 90.0, {"loot_id": &"loot.cash_bricks", "count": 2,

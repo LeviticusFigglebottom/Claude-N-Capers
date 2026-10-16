@@ -22071,6 +22071,7 @@ transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 9.5,
 script = ExtResource("91_db")
 size = 2
 methods = Array[StringName]([&"drill", &"c4"])
+drill_duration_s = 120.0
 visual_scene = ExtResource("92_db")
 objective_tag = &"count_cage"
 metadata/kind = "safe"
