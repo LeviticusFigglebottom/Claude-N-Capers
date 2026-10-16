@@ -101,8 +101,6 @@ static var _cached: AnimTweak = null
 @export var gadget_dot_offset_m: float = 0.01
 
 @export_group("Hard-hat hand lift (D-115 R1)")
-## Character ids wearing a hard hat (until ENV D tags Headwear with meta headwear_class = &"hard_hat").
-@export var hard_hat_characters: Array[StringName] = [&"dock_worker", &"dock_worker_b"]
 ## Hands-on-head clips during which the hands are lifted over the hat shell.
 @export var hard_hat_lift_clips: Array[StringName] = [&"surrender", &"hands_up", &"cower", &"cower_seated",
 	&"cower_stand", &"kneel_cuffed"]

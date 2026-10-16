@@ -282,10 +282,7 @@ func bind() -> bool:
 		_crew.weapons.reload_started.connect(_on_reload_started)
 	refresh_weapon()
 	hat_lift = null
-	var char_id: String = ""
-	if _npc != null and _npc.visual_scene != null:
-		char_id = _npc.visual_scene.resource_path.get_file().get_basename()
-	if HardHatHandLift.wears_hard_hat(rig, char_id):
+	if HardHatHandLift.wears_hard_hat(rig):
 		hat_lift = HardHatHandLift.ensure(rig.get_node_or_null(^"Skeleton3D") as Skeleton3D)
 	return true
 
