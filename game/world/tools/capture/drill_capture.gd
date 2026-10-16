@@ -54,6 +54,8 @@ func _ready() -> void:
 	cam.make_current()
 	for _i: int in maxi(_frames, 12):  # let the sparks fill in
 		await get_tree().process_frame
+	cam.make_current()  # the crew's camera can take over while the heist settles: claim the view again
+	await get_tree().process_frame
 	await RenderingServer.frame_post_draw
 	get_viewport().get_texture().get_image().save_png(_out)
 	print("drill_capture: saved %s" % _out)
