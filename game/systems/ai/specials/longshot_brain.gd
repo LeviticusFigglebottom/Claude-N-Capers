@@ -113,14 +113,16 @@ func _fire(t: CrewController) -> void:
 	aim_time = 0.0
 	_fire_cooldown = tweak.longshot_fire_interval_s
 	shots_fired += 1
-	var from: Vector3 = _origin()
+	# DET: gameplay (event, noise, falloff distance) from the body's eye, not the LaserOrigin marker: that rides the
+	# animated HandR socket, which the AnimationPlayer poses per render frame (a frame-timing-dependent position).
+	var from: Vector3 = _npc.eye_position()
 	var aim: Vector3 = CombatSystem.target_center(t)
 	var weapon_id: StringName = _npc.enemy_def.weapon if _npc.enemy_def != null else &""
 	EventBus.weapon_fired.emit(_npc.net_id, weapon_id, false, from)
 	cue(&"cue.longshot_report", from)
 	if _runtime != null:
 		_runtime.make_noise(from, Tweak.stealth().gunshot_npc_radius_m, &"gunshot", _npc.net_id)
-	ShotFx.npc_shot(_npc, from, aim, true, t)  # PO-8: shot_fx here + relayed (impact_fx.md)
+	ShotFx.npc_shot(_npc, _origin(), aim, true, t)  # PO-8: shot_fx here + relayed (impact_fx.md); the laser's muzzle
 	var info: Dictionary = Damage.info(shot_damage(from.distance_to(aim)), Enums.DamageType.BULLET,
 		Enums.HitZone.BODY, weapon_id, aim, (aim - from).normalized(), _npc.net_id)
 	info["bypass_armor_gate"] = true  # L2.2 / L4.7: snipers ignore armor gating
