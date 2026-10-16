@@ -232,6 +232,11 @@ CLIPS = {
     "hold_sniper": {"frames": 96, "loop": True, "speed": 0.0, "priority": 2},
     "hold_lmg": {"frames": 100, "loop": True, "speed": 0.0, "priority": 2},
     "hold_akimbo": {"frames": 96, "loop": True, "speed": 0.0, "priority": 2},
+    # D-116 audit: the crew's armed interactions (the weapon stays low in the right hand; _anim_holds ARMED)
+    "interact_low_armed": {"frames": 60, "loop": True, "speed": 0.0, "priority": 1},
+    "interact_mid_armed": {"frames": 60, "loop": True, "speed": 0.0, "priority": 1},
+    "interact_high_armed": {"frames": 60, "loop": True, "speed": 0.0, "priority": 1},
+    "throw_bag_armed": {"frames": 30, "loop": False, "speed": 0.0, "priority": 1, "events": {"release": 15}},
 }
 LOOPS = sorted(name for name, row in CLIPS.items() if row["loop"])
 P1 = sorted(name for name, row in CLIPS.items() if row["priority"] == 1)

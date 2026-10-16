@@ -714,16 +714,33 @@ def _flee_upper(sk: Skeleton, pose: Pose, ph: float, f: int) -> None:
     add_rot(pose, "head", rxd(-6.0))
 
 
+#: D-116 third-person audit: the weapon hand's low carry while the other hand works (the gun at HandR/Socket stays
+#: in the hand, PD2 style): the grip by the right thigh, the muzzle down and forward, clear of the body and the head
+LOW_CARRY = {"grip": (0.215, 0.085, 0.86), "yaw": 6.0, "pitch": -62.0, "roll": -8.0}
+
+
+def low_carry(sk: Skeleton, pose: Pose, sway: float = 0.0) -> None:
+    """The right hand holds its weapon low by the thigh (``LOW_CARRY``); ``sway`` (-1..1) swings it a little."""
+    k = sk.scale
+    gx, gy, gz = LOW_CARRY["grip"]
+    wf = weapon_frame(v3(gx * k, (gy + 0.03 * sway) * k, gz * k), yaw=LOW_CARRY["yaw"],
+                      pitch=LOW_CARRY["pitch"] + 6.0 * sway, roll=LOW_CARRY["roll"])
+    hold_weapon(sk, pose, wf, pole=v3(0.6, -0.2, -0.7), twist=0.6)
+    pose.hands["R"] = hand_shape("grip", 0.9)
+
+
 def _carry_upper(sk: Skeleton, pose: Pose, ph: float, f: int) -> None:
-    """Bag on the back: the right hand holds the strap at the right shoulder; the body leans
-    forward and slightly left against the load."""
+    """Bag on the back over the left shoulder: the LEFT hand holds the strap at the left shoulder, the right hand keeps
+    the weapon at a low carry (D-116 audit: the right hand on the strap stood the rifle up behind the head); the body
+    leans forward and slightly right against the load."""
     k = sk.scale
     pre = Solver(sk).solve(pose)
-    p = A.bone_point(pre, sk, "chest", v3(0.10 * k, 0.09 * k, 0.17 * k)) + v3(0.0, 0.0, 0.006 * k * math.cos(TAU * 2 * ph))
-    hand_on(sk, pose, "R", p, pre.W["chest"] @ v3(-0.25, 0.1, 0.95), pre.W["chest"] @ v3(-0.1, -1.0, 0.0),
-            pole=pre.W["chest"] @ v3(0.5, 0.3, -1.0), along_share=0.6)
-    pose.hands["R"] = hand_shape("fist", 0.9)
-    add_rot(pose, "chest", ryd(-3.0))
+    p = A.bone_point(pre, sk, "chest", v3(-0.10 * k, 0.09 * k, 0.17 * k)) + v3(0.0, 0.0, 0.006 * k * math.cos(TAU * 2 * ph))
+    hand_on(sk, pose, "L", p, pre.W["chest"] @ v3(0.25, 0.1, 0.95), pre.W["chest"] @ v3(0.1, -1.0, 0.0),
+            pole=pre.W["chest"] @ v3(-0.5, 0.3, -1.0), along_share=0.6)
+    pose.hands["L"] = hand_shape("fist", 0.9)
+    low_carry(sk, pose, math.sin(TAU * ph))
+    add_rot(pose, "chest", ryd(3.0))
 
 
 # =============================================================================================
