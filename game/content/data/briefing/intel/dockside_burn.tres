@@ -18,10 +18,16 @@ groups = {
 "counts": {
 &"safe": 1
 },
+"rooms": {
+&"safe": {
+&"M1": 1
+}
+},
 "weight": 0.4
 },
 &"cash_strongroom": {
 "counts": {},
+"rooms": {},
 "weight": 0.6
 }
 },
@@ -30,10 +36,16 @@ groups = {
 "counts": {
 &"hack_terminal": 1
 },
+"rooms": {
+&"hack_terminal": {
+&"E1": 1
+}
+},
 "weight": 0.4
 },
 &"lift_powered": {
 "counts": {},
+"rooms": {},
 "weight": 0.6
 }
 },
@@ -42,43 +54,59 @@ groups = {
 "counts": {
 &"cartel": 2
 },
+"rooms": {},
 "weight": 1.0
 },
 &"post_gate": {
 "counts": {
 &"cartel": 2
 },
+"rooms": {},
 "weight": 1.0
 },
 &"post_hall": {
 "counts": {
 &"cartel": 2
 },
+"rooms": {},
 "weight": 1.0
 },
 &"post_platform": {
 "counts": {
 &"cartel": 2
 },
+"rooms": {},
 "weight": 1.0
 },
 &"post_quay": {
 "counts": {
 &"cartel": 2
 },
+"rooms": {},
 "weight": 1.0
 },
 &"post_yard_e": {
 "counts": {
 &"cartel": 2
 },
+"rooms": {},
 "weight": 1.0
 },
 &"post_yard_w": {
 "counts": {
 &"cartel": 2
 },
+"rooms": {},
 "weight": 1.0
 }
 }
 }
+fixed_rooms = {
+&"safe": {
+&"O2": 1
+},
+&"vault_door": {
+&"SR": 1
+}
+}
+surprises = Array[StringName]([&"police_tipped", &"cartel_reinforcements", &"fog_lifts", &"harbor_unit"])

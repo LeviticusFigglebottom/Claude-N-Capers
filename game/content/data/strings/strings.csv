@@ -1702,6 +1702,66 @@ ui.briefing.sec.vault_doors,Vault doors: {range}
 ui.briefing.sec.safes,Safes: {range}
 ui.briefing.sec.padlocks,Padlocks: {range}
 ui.briefing.sec.hack_terminals,Hack terminals: {range}
+ui.briefing.sec.sensors,Frame sensors: {range}
+ui.briefing.sec.located,{line} ({rooms})
+ui.briefing.sec.rooms_more,{rooms} +{n} more
+ui.briefing.sec.surprises,Possible surprises: {events}
+ui.briefing.sec.event.night_deposit.armored_car_early,armoured car arrives early (2 guards)
+ui.briefing.sec.event.shadow_ledger.timelock_extended,longer study-safe time lock
+ui.briefing.sec.event.dockside_burn.police_tipped,police tipped off (no response delay)
+ui.briefing.sec.event.dockside_burn.cartel_reinforcements,Co-op reinforcements at the gate
+ui.briefing.sec.event.dockside_burn.fog_lifts,fog lifts (viaduct sniper)
+ui.briefing.sec.event.dockside_burn.harbor_unit,harbour police boat (trawler sniper)
+ui.briefing.sec.event.gallery_night.insurance_inspection,insurance inspectors
+ui.briefing.sec.event.gallery_night.vaultline_early,Vaultline couriers arrive early
+ui.briefing.sec.event.gallery_night.argus_upgrade,Argus upgrade (every frame sensor live)
+ui.preplan.bp.gallery_night.ss,Service stair
+ui.preplan.bp.gallery_night.lk,Locker room
+ui.preplan.bp.gallery_night.fr,Frame store
+ui.preplan.bp.gallery_night.qr,Quarantine store
+ui.preplan.bp.gallery_night.lf,Art lift
+ui.preplan.bp.gallery_night.bb,Basement corridor
+ui.preplan.bp.gallery_night.pl,Plant room
+ui.preplan.bp.gallery_night.as,Art store
+ui.preplan.bp.gallery_night.br,Break room
+ui.preplan.bp.gallery_night.wc,Staff WC
+ui.preplan.bp.gallery_night.sc,Security
+ui.preplan.bp.gallery_night.rg,Registrar
+ui.preplan.bp.gallery_night.j,Janitor
+ui.preplan.bp.gallery_night.e1,Electrical
+ui.preplan.bp.gallery_night.ld,Loading dock
+ui.preplan.bp.gallery_night.bc,Back corridor
+ui.preplan.bp.gallery_night.wg,Founders' Gallery
+ui.preplan.bp.gallery_night.gh,Great Hall
+ui.preplan.bp.gallery_night.eg,Harbour Gallery
+ui.preplan.bp.gallery_night.dc,Drawings Cabinet
+ui.preplan.bp.gallery_night.pww,Public WC
+ui.preplan.bp.gallery_night.pwm,Public WC
+ui.preplan.bp.gallery_night.ck,Cloakroom
+ui.preplan.bp.gallery_night.ve,Vestibule
+ui.preplan.bp.gallery_night.gs,Gift shop
+ui.preplan.bp.gallery_night.eb,Benefactors' Room
+ui.preplan.bp.gallery_night.co,Curator's office
+ui.preplan.bp.gallery_night.ao,Admin office
+ui.preplan.bp.gallery_night.uw,Upper WC
+ui.preplan.bp.gallery_night.fs,Plinth store
+ui.preplan.bp.gallery_night.sv,Argus server
+ui.preplan.bp.gallery_night.cs,Conservation Studio
+ui.preplan.bp.gallery_night.uc,Upper corridor
+ui.preplan.bp.gallery_night.ug1,Calloway Room
+ui.preplan.bp.gallery_night.ug2,Sallow Room
+ui.preplan.bp.gallery_night.ug3,Maritime Room
+ui.preplan.bp.gallery_night.bw,West balcony
+ui.preplan.bp.gallery_night.be,East balcony
+ui.preplan.bp.gallery_night.sl,South loggia
+ui.preplan.bp.gallery_night.at,Attendants' station
+ui.preplan.bp.gallery_night.tr,Treasury
+ui.preplan.bp.gallery_night.hh,Stair head house
+ui.preplan.bp.gallery_night.lm,Lift motor room
+ui.preplan.bp.gallery_night.x1,Aldous Parade
+ui.preplan.bp.gallery_night.x2,Wexley Street
+ui.preplan.bp.gallery_night.x3,Sculpture Court
+ui.preplan.bp.gallery_night.x4,Roof deck
 item.asset.intel_laptop.name,Insider: laptop location
 item.asset.intel_laptop.desc,You know where the partners left the ledger laptop tonight.
 item.asset.gondola_left_hung.name,Window-washer gondola

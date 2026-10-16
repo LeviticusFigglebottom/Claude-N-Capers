@@ -20,36 +20,42 @@ groups = {
 "counts": {
 &"camera": 1
 },
+"rooms": {},
 "weight": 1.0
 },
 &"cam_c2": {
 "counts": {
 &"camera": 1
 },
+"rooms": {},
 "weight": 1.0
 },
 &"cam_c3": {
 "counts": {
 &"camera": 1
 },
+"rooms": {},
 "weight": 1.0
 },
 &"cam_c4": {
 "counts": {
 &"camera": 1
 },
+"rooms": {},
 "weight": 1.0
 },
 &"cam_c5": {
 "counts": {
 &"camera": 1
 },
+"rooms": {},
 "weight": 1.0
 },
 &"cam_c6": {
 "counts": {
 &"camera": 1
 },
+"rooms": {},
 "weight": 1.0
 }
 },
@@ -58,31 +64,47 @@ groups = {
 "counts": {
 &"guard": 1
 },
+"rooms": {},
 "weight": 1.0
 },
 &"rover_boh": {
 "counts": {
 &"guard": 1
 },
+"rooms": {},
 "weight": 1.0
 },
 &"rover_upper": {
 "counts": {
 &"guard": 1
 },
+"rooms": {},
 "weight": 1.0
 }
 },
 &"security_room_staffed": {
 &"sec_empty": {
 "counts": {},
+"rooms": {},
 "weight": 0.4
 },
 &"sec_staffed": {
 "counts": {
 &"operator": 1
 },
+"rooms": {},
 "weight": 0.6
 }
+}
+}
+fixed_rooms = {
+&"code_safe": {
+&"G2": 1
+},
+&"keycard_reader": {
+&"G2": 1
+},
+&"safe": {
+&"G2": 1
 }
 }

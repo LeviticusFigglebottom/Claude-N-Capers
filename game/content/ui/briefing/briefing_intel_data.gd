@@ -14,8 +14,20 @@ extends Resource
 ## Security outside every VariantSlot: { category (StringName): count (int) }. Categories: BriefingIntel.CATEGORIES.
 @export var fixed: Dictionary = {}
 ## VariantSlot content, only for slot groups holding some security:
-## { group (StringName): { slot_id (StringName): { "weight": float, "counts": { category: int } } } }.
+## { group (StringName): { slot_id (StringName): { "weight": float, "counts": { category: int },
+##   "rooms": { category: { room_id: int } } } } }.
 ## Every slot of such a group is listed (an empty "counts" is an option without that security).
 @export var groups: Dictionary = {}
 ## Distinct safe time locks on the map (Safe.time_lock_s > 0), seconds, ascending.
 @export var time_locks_s: Array[float] = []
+## Where the located security sits outside every VariantSlot: { category: { room_id (StringName; &"" = in no
+## room): count } }, for BriefingIntel.LOCATED categories (a slot of `groups` carries the same under "rooms").
+## Rooms: the map's RoomVolume nodes under `Rooms` (the pre-planning blueprint's rooms, same room ids).
+@export var fixed_rooms: Dictionary = {}
+## The frame sensors' zone gate: the slot group whose VariantSlot params name `alarm_groups_off` (the zones
+## that option leaves offline): { "group": StringName, "slots": { slot_id: { "weight": float,
+## "off": Array[StringName] } } }; {} without a gate (every sensor zone stays live).
+@export var sensor_gate: Dictionary = {}
+## The variant table's rare events the briefing names as possible surprises (BriefingIntel.is_surprise:
+## bad events that change the security), table order.
+@export var surprises: Array[StringName] = []

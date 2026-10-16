@@ -17,18 +17,22 @@ fixed = {
 &"keycard_door": 2,
 &"keycard_reader": 1,
 &"safe": 1,
+&"sensor.argus_ground": 7,
+&"sensor.argus_upper": 6,
 &"vault_door": 1
 }
 groups = {
 &"areaway": {
 &"grate_loose": {
 "counts": {},
+"rooms": {},
 "weight": 1.0
 },
 &"grate_padlocked": {
 "counts": {
 &"padlock": 1
 },
+"rooms": {},
 "weight": 1.0
 }
 },
@@ -37,17 +41,107 @@ groups = {
 "counts": {
 &"camera": 6
 },
+"rooms": {},
 "weight": 1.0
 },
 &"cam_b": {
 "counts": {
 &"camera": 6
 },
+"rooms": {},
 "weight": 1.0
 },
 &"cam_c": {
 "counts": {
 &"camera": 6
+},
+"rooms": {},
+"weight": 1.0
+}
+},
+&"canvas_orchard": {
+&"orchard_benefactors": {
+"counts": {
+&"sensor.argus_ground": 1
+},
+"rooms": {
+&"sensor.argus_ground": {
+&"EB": 1
+}
+},
+"weight": 1.0
+},
+&"orchard_calloway": {
+"counts": {
+&"sensor.argus_upper": 1
+},
+"rooms": {
+&"sensor.argus_upper": {
+&"UG1": 1
+}
+},
+"weight": 1.0
+},
+&"orchard_quarantine": {
+"counts": {},
+"rooms": {},
+"weight": 0.7
+}
+},
+&"canvas_saint": {
+&"saint_harbour": {
+"counts": {
+&"sensor.argus_ground": 1
+},
+"rooms": {
+&"sensor.argus_ground": {
+&"EG": 1
+}
+},
+"weight": 1.0
+},
+&"saint_maritime": {
+"counts": {
+&"sensor.argus_upper": 1
+},
+"rooms": {
+&"sensor.argus_upper": {
+&"UG3": 1
+}
+},
+"weight": 1.0
+},
+&"saint_store": {
+"counts": {},
+"rooms": {},
+"weight": 0.7
+}
+},
+&"canvas_widow": {
+&"widow_conservation": {
+"counts": {},
+"rooms": {},
+"weight": 0.7
+},
+&"widow_founders": {
+"counts": {
+&"sensor.argus_ground": 1
+},
+"rooms": {
+&"sensor.argus_ground": {
+&"WG": 1
+}
+},
+"weight": 1.0
+},
+&"widow_sallow": {
+"counts": {
+&"sensor.argus_upper": 1
+},
+"rooms": {
+&"sensor.argus_upper": {
+&"UG2": 1
+}
 },
 "weight": 1.0
 }
@@ -55,16 +149,33 @@ groups = {
 &"centrepiece": {
 &"cp_landing": {
 "counts": {
-&"laser": 1
+&"laser": 1,
+&"sensor.argus_upper": 1
+},
+"rooms": {
+&"laser": {
+&"GH": 1
+},
+&"sensor.argus_upper": {
+&"GH": 1
+}
 },
 "weight": 0.4
 },
 &"cp_store": {
 "counts": {},
+"rooms": {},
 "weight": 0.25
 },
 &"cp_treasury": {
-"counts": {},
+"counts": {
+&"sensor.argus_treasury": 1
+},
+"rooms": {
+&"sensor.argus_treasury": {
+&"TR": 1
+}
+},
 "weight": 0.35
 }
 },
@@ -73,28 +184,33 @@ groups = {
 "counts": {
 &"guard": 1
 },
+"rooms": {},
 "weight": 1.0
 },
 &"rover_basement": {
 "counts": {
 &"guard": 1
 },
+"rooms": {},
 "weight": 1.0
 },
 &"rover_ground": {
 "counts": {
 &"guard": 1
 },
+"rooms": {},
 "weight": 1.0
 },
 &"rover_none": {
 "counts": {},
+"rooms": {},
 "weight": 1.0
 },
 &"rover_upper": {
 "counts": {
 &"guard": 1
 },
+"rooms": {},
 "weight": 1.0
 }
 },
@@ -103,11 +219,21 @@ groups = {
 "counts": {
 &"laser": 1
 },
+"rooms": {
+&"laser": {
+&"TR": 1
+}
+},
 "weight": 0.5
 },
 &"lz_sweep": {
 "counts": {
 &"laser": 1
+},
+"rooms": {
+&"laser": {
+&"TR": 1
+}
 },
 "weight": 0.2
 },
@@ -115,19 +241,76 @@ groups = {
 "counts": {
 &"laser": 1
 },
+"rooms": {
+&"laser": {
+&"TR": 1
+}
+},
 "weight": 0.3
 }
 },
 &"security_room_staffed": {
 &"sec_empty": {
 "counts": {},
+"rooms": {},
 "weight": 0.4
 },
 &"sec_staffed": {
 "counts": {
 &"operator": 1
 },
+"rooms": {},
 "weight": 0.6
 }
 }
 }
+fixed_rooms = {
+&"code_door": {
+&"SV": 1
+},
+&"hack_terminal": {
+&"SV": 1
+},
+&"keycard_door": {
+&"LD": 1,
+&"TR": 1
+},
+&"keycard_reader": {
+&"AS": 1
+},
+&"safe": {
+&"CO": 1
+},
+&"sensor.argus_ground": {
+&"DC": 2,
+&"EB": 1,
+&"EG": 2,
+&"WG": 2
+},
+&"sensor.argus_upper": {
+&"UG1": 2,
+&"UG2": 2,
+&"UG3": 2
+},
+&"vault_door": {
+&"AS": 1
+}
+}
+sensor_gate = {
+"group": &"sensor_net",
+"slots": {
+&"sensors_all": {
+"off": Array[StringName]([]),
+"weight": 0.15
+},
+&"sensors_treasury": {
+"off": Array[StringName]([&"argus_upper", &"argus_ground"]),
+"weight": 0.5
+},
+&"sensors_upper": {
+"off": Array[StringName]([&"argus_ground"]),
+"weight": 0.35
+}
+}
+}
+surprises = Array[StringName]([&"insurance_inspection", &"vaultline_early", &"argus_upgrade"])
