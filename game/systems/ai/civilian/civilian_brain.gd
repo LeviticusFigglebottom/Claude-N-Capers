@@ -534,10 +534,17 @@ func _set_idle_hint() -> void:
 ## (StealthTweak.civilian_unseated_activity). Checked whenever a seated hint is applied: spawn, after a wander,
 ## at a patrol point's pause_anim, so a civilian never sits on thin air (a crouched "hostage" look).
 func _seated_or_standing(activity: StringName) -> StringName:
+	return seated_or_standing(_npc, activity)
+
+
+## PO6-06 / X-5 shared rule (civilians, guards and cartel gunmen at a PatrolPoint pause_anim or a spawn activity):
+## `activity` when it is not a seated one (StealthTweak.civilian_unseated_activity keys) or `npc` has a seat
+## under it (has_seat_under), else its standing counterpart. Kessler's `sit` is his bed (AnimDriver sit_bed_read).
+static func seated_or_standing(npc: NpcBase, activity: StringName) -> StringName:
 	var swap: Dictionary = Tweak.stealth().civilian_unseated_activity
-	if not swap.has(activity) or (_npc.spawn_info.get("tags", []) as Array).has(&"civ_kessler"):
+	if npc == null or not swap.has(activity) or (npc.spawn_info.get("tags", []) as Array).has(&"civ_kessler"):
 		return activity
-	return activity if has_seat_under(_npc) else StringName(swap[activity])
+	return activity if has_seat_under(npc) else StringName(swap[activity])
 
 
 ## PO6-06 (S7.5): a seated idle activity (StealthTweak.civilian_unseated_activity keys) with no seat under the

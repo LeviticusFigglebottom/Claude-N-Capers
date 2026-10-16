@@ -247,7 +247,7 @@ func _reach_point() -> void:
 	if pp == null or not is_instance_valid(pp) or pp.pause_range.y <= 0.0:
 		return
 	_pause_left = _roll(pp.pause_range)
-	anim_hint = pp.pause_anim
+	anim_hint = CivilianBrain.seated_or_standing(_npc, pp.pause_anim)  # X-5 / PO6-06: no sitting on thin air
 	if pp.face_marker_forward:
 		_motor.face(-pp.global_basis.z)
 
