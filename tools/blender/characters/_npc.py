@@ -223,7 +223,12 @@ def tabard(kit: Kit, mat: str, hem_z: float, trim_mat: str | None = None) -> Mes
             o.straighten_loop(m, loops[key], iters=3)
     rows = max(2, int((hips.z - hem_z) / (0.035 * k)))
     o.loft_down(m, bottom, lambda th: hem_z, hull, rows, clearance=0.014 * k, flare=0.10, centre=hips,
-                weights=o.skirt_weights(fit, hips.z, hem_z, 0.6, 0.12), keep_shape=0.5)
+                # D-115 clip audit: a closed panel, so it follows the thighs like a skirt (``skirt``): almost fully at
+                # the hem, the front from just below the crease, the back relaxed under the seat; at 0.6 / 0.12 the
+                # thighs broke through the front in cower_stand and the hem swung loose behind the legs.
+                weights=o.skirt_weights(fit, hips.z, hem_z, thigh_max=0.95, centre_w=0.04, ramp=0.6, back_relax=0.6,
+                                        front_ramp=0.25),
+                keep_shape=0.5)
     o.drape(m, kit.hull(), 0.008 * k, max_off=0.08, iters=1)
     hem_loop = g.classify_loops(m)["hem"]
     if trim_mat:

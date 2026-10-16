@@ -444,7 +444,7 @@ def shoes(fit: Fit, mat: str, sole_mat: str, top_z: float = 0.095, base: float =
         y_back = min(m.v[v].y for v in bottom)
         heel_front = y_back + 0.058 * k
         ball_back = ball.y - 0.035 * k
-        ring_w, ring_t, ring_s, ring_b = [], [], [], []
+        ring_w, ring_t, ring_s, ring_b, ring_i = [], [], [], [], []
         ch = min(0.0025 * k, sole_top * 0.2)
         for v in bottom:
             p = m.v[v]
@@ -459,6 +459,11 @@ def shoes(fit: Fit, mat: str, sole_mat: str, top_z: float = 0.095, base: float =
             ring_t.append(m.add(Vector((p.x + r.x * wo, p.y + r.y * wo, sole_top - ch))))
             ring_s.append(m.add(Vector((p.x + r.x * wo, p.y + r.y * wo, z_b + ch))))
             ring_b.append(m.add(Vector((p.x + r.x * (wo - ch), p.y + r.y * (wo - ch), z_b))))
+            # D-115 clip audit: only the sole's outer band steps up at the instep; inside the upper's outline the
+            # bottom stays on the ground, else the foot's skin (sole at z = 0) hung below the lifted arch and showed
+            # whenever a sole faced the camera (kneel_cuffed, surrender, death_crouch)
+            z_i = z_b if (heel and p.y < c.y - 0.03 * k) else 0.0
+            ring_i.append(m.add(Vector((p.x - r.x * 0.002 * k, p.y - r.y * 0.002 * k, z_i))))
         nb = len(bottom)
         for i in range(nb):
             j = (i + 1) % nb
@@ -470,7 +475,9 @@ def shoes(fit: Fit, mat: str, sole_mat: str, top_z: float = 0.095, base: float =
         pole = m.add(Vector((c.x, c.y, 0.0)))
         for i in range(nb):
             j = (i + 1) % nb
-            m.f.append((ring_b[j], ring_b[i], pole))
+            m.f.append((ring_b[j], ring_b[i], ring_i[i], ring_i[j]))
+            m.m.append(sole_mat)
+            m.f.append((ring_i[j], ring_i[i], pole))
             m.m.append(sole_mat)
         o.straighten_loop(m, top, iters=2)
         o.hem(m, top, thick=0.004 * k, depth=0.012 * k)
