@@ -208,7 +208,11 @@ static func socket_of(body: Node, marker: String) -> Node3D:
 
 
 ## Add a driver to `body` when its visual has a contract AnimationPlayer (else none; returns the driver or null).
+## Crew bodies (CrewView calls this for everyone but the local human) also get their D-118 CrewGadgetVisual,
+## capsule placeholders included.
 static func ensure(body: Node) -> AnimDriver:
+	if body is CrewController:
+		CrewGadgetVisual.ensure(body as CrewController)
 	var d: AnimDriver = of(body)
 	if d != null:
 		d.bind()
