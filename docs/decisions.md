@@ -978,3 +978,15 @@ The PO saw the flat light-grey first-person guns in the D-118 gadget captures an
   so it can be re-enabled, but nothing in the game turns it on.
 * Acceptance: windowed Glasshouse hip shot of the Corsair and the Kestrel side by side with
   `game/assets/characters/_review/grip_glasshouse_corsair_ar_hip.png` (black guns), reviewed by the LEAD.
+
+### D-118 addendum (2026-10-16, LEAD): shotgun ammo values and per-shot damage
+* **Values:** B's AMMO mod params are the data and override A's `CombatTweak.shotgun_ammo_defaults` placeholders:
+  HE radius 2.0 m; flechette pellets_mult 1.5 with a 4/s bleed; dragon's breath 8/s; range_mult 0.7. A keeps its defaults
+  only as fallbacks for missing keys.
+* **Per-shot damage is preserved when the pellet count changes.** ShotgunAmmo scales per-pellet damage by
+  stock_pellets / new_pellets. A slug (1 pellet) therefore hits for the stock shot's full damage in one ray, and an HE round
+  splits nothing. Flechette's extra pellets share the same per-shot total. Mod `damage` deltas stay per-pellet on the stock
+  count, so they also scale with the rule. This is PD2's model: listed damage is per shot, and the ammo changes how it is
+  delivered.
+* **Pistol SideRail** is the dust-cover rail and its outward axis points down, so pistol gadgets hang under the barrel
+  (visual_slots.md).
