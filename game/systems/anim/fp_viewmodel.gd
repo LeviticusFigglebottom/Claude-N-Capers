@@ -105,9 +105,10 @@ const EVENT_PARTS: Dictionary = {
 	&"pump_back": [&"pump", 1.0], &"pump_forward": [&"pump", 0.0],
 	&"bolt_open": [&"bolt_lift", 1.0], &"bolt_back": [&"bolt_slide", 1.0],
 	&"bolt_forward": [&"bolt_slide", 0.0], &"bolt_close": [&"bolt_lift", 0.0],
-	&"cover_open": [&"cover", 1.0], &"cover_close": [&"cover", 0.0],
+	&"cover_open": [&"cover", 1.0], &"cover_close": [&"cover", 0.0], &"mag_out_l": [&"mag_l_out", 1.0],
+	&"mag_in_l": [&"mag_l_out", 0.0],
 }
-const CHANNELS: Array[StringName] = [&"slide", &"pump", &"bolt_lift", &"bolt_slide", &"cover"]
+const CHANNELS: Array[StringName] = [&"slide", &"pump", &"bolt_lift", &"bolt_slide", &"cover", &"mag_l_out"]
 ## Weapon model part node names (visual_slots.md).
 const PART_SLIDE: StringName = &"Slide"
 const PART_PUMP: StringName = &"Pump"
@@ -442,9 +443,11 @@ func tick(delta: float) -> void:
 func _on_fired(_claim: Dictionary) -> void:
 	if anim_set == &"" or action == Action.SWAP or action == Action.INTERACT:
 		return
+	offhand.begin_shot()
 	_flash_muzzle()
 	var aimed: bool = _aim_wanted()
-	var fire: StringName = _resolve(anim_set, &"fire_ads" if aimed else &"fire")
+	var fire: StringName = _resolve(anim_set, offhand.clip(&"fire_ads" if aimed else &"fire"))
+	fire = fire if fire != &"" else _resolve(anim_set, &"fire_ads" if aimed else &"fire")
 	var bolt: StringName = _resolve(anim_set, &"bolt_ads" if aimed else &"bolt")
 	var cycle: float = _length(anim_set, fire) if fire != &"" else 0.0
 	var done: float = _event(anim_set, fire, &"done") if fire != &"" else -1.0
@@ -543,11 +546,11 @@ func _shot_fx(aimed: bool, eject_delay: float) -> void:
 		var st: WeaponStats = _crew.weapons.stats(_crew.weapons.equipped_slot) \
 			if _crew != null and _crew.weapons != null else null
 		if not tw.no_flash_sets.has(anim_set):
-			fx.flash(weapon_visual.get_marker(&"Muzzle"), st != null and st.suppressed,
+			fx.flash(offhand.marker(weapon_visual, &"Muzzle"), st != null and st.suppressed,
 				float(tw.muzzle_flash_set_mult.get(anim_set, 1.0)), tw.flash_class_by_set.get(anim_set, &""))
 		var kind: StringName = tw.shell_kind.get(anim_set, &"")
 		if kind != &"":
-			fx.eject(weapon_visual.get_marker(&"Eject"), kind, eject_delay)
+			fx.eject(offhand.marker(weapon_visual, &"Eject"), kind, eject_delay)
 	var amp: Vector2 = Vector2(float(tw.kick_back_m.get(anim_set, 0.0)), float(tw.kick_pitch_deg.get(anim_set, 0.0)))
 	if aimed:
 		amp *= tw.kick_ads_mult
@@ -1237,7 +1240,7 @@ func _flash_muzzle() -> void:
 	var tw: FpViewmodelTweak = FpViewmodelTweak.data()
 	if tw.muzzle_light_energy <= 0.0 or weapon_visual == null or not is_instance_valid(weapon_visual):
 		return
-	var muzzle: Node3D = weapon_visual.get_marker(&"Muzzle")
+	var muzzle: Node3D = offhand.marker(weapon_visual, &"Muzzle")
 	if muzzle == null or not muzzle.is_inside_tree():
 		return
 	if _muzzle_light == null or not is_instance_valid(_muzzle_light):
@@ -1373,6 +1376,7 @@ func _update_parts() -> void:
 	_pose_part(PART_BOLT, Vector3(0, 0, tw.bolt_travel_m * float(parts[&"bolt_slide"])),
 		Basis(Vector3.BACK, deg_to_rad(tw.bolt_lift_deg) * float(parts[&"bolt_lift"])))
 	_pose_part(PART_COVER, Vector3.ZERO, Basis(Vector3.RIGHT, deg_to_rad(tw.feed_cover_deg) * float(parts[&"cover"])))
+	offhand.set_mag_hidden(float(parts[&"mag_l_out"]) > 0.5)
 
 
 func _pose_part(part: StringName, offset: Vector3, rot: Basis) -> void:

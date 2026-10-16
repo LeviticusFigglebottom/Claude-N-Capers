@@ -92,3 +92,41 @@ func test_no_flash_outside_shots() -> void:
 			shown[0] += 1
 		return vm.action == FpViewmodel.Action.NONE, 4.0), "draw finished")
 	assert_eq(shown[0], 0, "no flash during the draw (%d of %d frames)" % shown)
+
+
+func test_shots_alternate_and_left_mag_hides_in_reload() -> void:
+	if FpViewmodelTweak.data().arms_scene == null:
+		skip("char_arms_fp not delivered")
+		return
+	var c: CrewController = await _launch()
+	var vm: FpViewmodel = FpViewmodel.of(CrewView.of(c).camera())
+	if vm.offhand.gun() == null:
+		assert_true(false, "offhand on hand.L")
+		return
+	var sides: Array[bool] = []
+	var clips: Array[StringName] = []
+	for _k: int in 4:
+		await _inp.tap(&"fire")
+		var seen: StringName = &""
+		for _f: int in 12:  # the fire clips are 3 frames: catch whichever plays
+			if String(vm.clip).begins_with("fire"):
+				seen = vm.clip
+			await wait_frames(1)
+		sides.append(vm.offhand.shot_left)
+		clips.append(seen)
+		await wait_physics_frames(10)
+	assert_eq(sides, [false, true, false, true] as Array[bool], "shots alternate right, left (%s)" % [sides])
+	assert_true(String(clips[1]).ends_with("_l"), "the left shot plays the rig's fire_l (%s)" % [clips])
+	var mag: Node3D = vm.offhand.gun().find_child("Magwell", true, false) as Node3D
+	if mag == null:
+		skip("the offhand model has no Magwell")
+		return
+	assert_true(mag.visible, "left magazine in before the reload")
+	await _inp.tap(&"reload")
+	var hidden: Array[int] = [0]
+	assert_true(await wait_until(func() -> bool:
+		if not mag.visible:
+			hidden[0] += 1
+		return vm.action == FpViewmodel.Action.NONE and not c.weapons.reloading, 8.0), "reload finished")
+	assert_true(hidden[0] > 0, "the left magazine is hidden between mag_out_l and mag_in_l (%d frames)" % hidden[0])
+	assert_true(mag.visible, "the left magazine is back after the reload")

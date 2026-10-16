@@ -9,9 +9,13 @@ extends RefCounted
 
 ## The hand.L attachment (created on the first akimbo set).
 var attach: BoneAttachment3D = null
+## Read only: the current shot comes from the LEFT gun (akimbo shots alternate, right first; rig fire_l).
+var shot_left: bool = false
 
 var _gun: Node3D = null
 var _owner: WeaponVisual = null
+var _next_left: bool = false
+var _mag: Node3D = null
 
 
 ## Called by FpViewmodel._set_weapon for every equipped visual.
@@ -36,6 +40,9 @@ func setup(skeleton: Skeleton3D, wv: WeaponVisual, set_id: StringName) -> void:
 	sock.transform = tw.akimbo_offhand_grip
 	_gun = off
 	_owner = wv
+	_next_left = false
+	shot_left = false
+	_mag = off.find_child("Magwell", true, false) as Node3D
 	off.reparent(sock, false)
 	off.transform = wv.transform * main.transform  # weapon bone -> model, now on the left socket
 
@@ -52,8 +59,40 @@ func restore() -> void:
 				_gun.transform = main.transform * (main.global_transform.affine_inverse() * hand.global_transform)
 		else:
 			_gun.queue_free()
+	if _mag != null and is_instance_valid(_mag):
+		_mag.visible = true
 	_gun = null
 	_owner = null
+	_mag = null
+	shot_left = false
+
+
+## A shot: picks the gun (alternating while the left one rides hand.L; always the right one otherwise).
+func begin_shot() -> void:
+	shot_left = gun() != null and _next_left
+	_next_left = gun() != null and not _next_left
+
+
+## The shot's clip: `base` + "_l" for a left-gun shot (FpViewmodel falls back to `base` when the set has none).
+func clip(base: StringName) -> StringName:
+	return StringName(String(base) + "_l") if shot_left else base
+
+
+## The firing gun's marker (Muzzle / Eject ...): the offhand's for a left-gun shot.
+func marker(wv: WeaponVisual, name: StringName) -> Node3D:
+	if wv == null or not is_instance_valid(wv):
+		return null
+	if shot_left and gun() != null:
+		var m: Node3D = wv.get_offhand_marker(name)
+		if m != null:
+			return m
+	return wv.get_marker(name)
+
+
+## The left magazine has no bone (rig fp.akimbo): hidden between the reload's mag_out_l and mag_in_l.
+func set_mag_hidden(hidden: bool) -> void:
+	if _mag != null and is_instance_valid(_mag) and _mag.visible == hidden:
+		_mag.visible = not hidden
 
 
 ## Read only (tests): the left gun while it rides hand.L, else null.
