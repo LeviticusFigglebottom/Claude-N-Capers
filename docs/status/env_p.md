@@ -13,6 +13,12 @@ Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min;
   player while following upstairs), then spacing 2.5 m. Anim: 123 moving clips, no static / no_clip / mismatch;
   frozen crew_ai walk_bl / walk_fr, civilian tased; slides tac_heavy breach_standback, rappel_descend (heavy, light),
   longshot heli_door_idle. test_p_gn_traversal 8/8. Evidence: captures/gn_p1_2026-10-16/.
+- GN-P1 loud rerun on A's 04f79b18 (scratch merge 9f629838, gn_pass, seed 1792002290, 4800 s budget): stealth to last
+  call t=486 again; loud from t=540: server door, keycard, server code, hack (restart), treasury + art store t=985,
+  centrepiece t=1017, 1 painting secured t=1056; then "Cut one more listed canvas" with the pilot outside the
+  BronzeDoorsE leaf (STUCK x4 on LeafBody2 at (22.3, 30.0)) and 1200 s "waiting at canvases" -> budget FAIL.
+  STUCK rows: StaffDoor (recovered after 8 s), StudioDoor (closed, no prompt, lockdown-barred? 80 s+), BronzeDoorsE
+  leaf. captures/gn_p1_2026-10-16/loud2_*.
 - nd_stealth_pass (budget 180): civilian_call went loud at t=53 before any intimidate: 28 clips, no slides; the
   intimidation / pager / bag clips unexercised -> new `--intimidate-first` mode (dae0680f): rerun went loud at
   t=51 again (guard_radio right after the first shout; the tie kind was wrong, `cable_tie`, fixed).

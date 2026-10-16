@@ -14,185 +14,18 @@ reaches, kept for RadioTweak.speaker_overrides and new heists). Heists iterated:
 
 | Group | Lines | Said | Unsaid | Unsaid A | Unsaid B | Unsaid B reserve | Unsaid C |
 |---|---|---|---|---|---|---|---|
-| glasshouse | 29 | 26 | 3 | 0 | 0 | 0 | 3 |
+| glasshouse | 29 | 29 | 0 | 0 | 0 | 0 | 0 |
 | night_deposit | 39 | 39 | 0 | 0 | 0 | 0 | 0 |
 | shadow_ledger | 41 | 41 | 0 | 0 | 0 | 0 | 0 |
 | dockside_burn | 49 | 49 | 0 | 0 | 0 | 0 | 0 |
-| gallery_night | 67 | 65 | 2 | 0 | 0 | 0 | 2 |
-| shared | 295 | 87 | 208 | 166 | 0 | 42 | 0 |
+| gallery_night | 67 | 67 | 0 | 0 | 0 | 0 | 0 |
+| shared | 295 | 253 | 42 | 0 | 0 | 42 | 0 |
 
 Missing (code can say it, the table has no such line): 0.
 
-## Unsaid, owner A (166)
+## Unsaid, owner A (0)
 
-| Line | Event | Why |
-|---|---|---|
-| `vo.mercer.heist_start_casing_1` | heist_start_casing | nothing says it: no literal id or builder, and no code maps the `heist_start_casing` fact to its lines |
-| `vo.mercer.heist_start_casing_2` | heist_start_casing | nothing says it: no literal id or builder, and no code maps the `heist_start_casing` fact to its lines |
-| `vo.mercer.crew_masked_1` | crew_masked | nothing says it: no literal id or builder, and no code maps the `crew_masked` fact to its lines |
-| `vo.mercer.crew_masked_2` | crew_masked | nothing says it: no literal id or builder, and no code maps the `crew_masked` fact to its lines |
-| `vo.mercer.pager_started_1` | pager_started | nothing says it: no literal id or builder, and no code maps the `pager_started` fact to its lines |
-| `vo.mercer.pager_started_2` | pager_started | nothing says it: no literal id or builder, and no code maps the `pager_started` fact to its lines |
-| `vo.mercer.pager_answered_1` | pager_answered | nothing says it: no literal id or builder, and no code maps the `pager_answered` fact to its lines |
-| `vo.mercer.pager_answered_2` | pager_answered | nothing says it: no literal id or builder, and no code maps the `pager_answered` fact to its lines |
-| `vo.mercer.pager_last_answer_1` | pager_last_answer | nothing says it: no literal id or builder, and no code maps the `pager_last_answer` fact to its lines |
-| `vo.mercer.pager_last_answer_2` | pager_last_answer | nothing says it: no literal id or builder, and no code maps the `pager_last_answer` fact to its lines |
-| `vo.mercer.pager_limit_1` | pager_limit | nothing says it: no literal id or builder, and no code maps the `pager_limit` fact to its lines |
-| `vo.mercer.pager_limit_2` | pager_limit | nothing says it: no literal id or builder, and no code maps the `pager_limit` fact to its lines |
-| `vo.mercer.pager_failed_1` | pager_failed | nothing says it: no literal id or builder, and no code maps the `pager_failed` fact to its lines |
-| `vo.mercer.pager_failed_2` | pager_failed | nothing says it: no literal id or builder, and no code maps the `pager_failed` fact to its lines |
-| `vo.mercer.body_discovered_1` | body_discovered | nothing says it: no literal id or builder, and no code maps the `body_discovered` fact to its lines |
-| `vo.mercer.body_discovered_2` | body_discovered | nothing says it: no literal id or builder, and no code maps the `body_discovered` fact to its lines |
-| `vo.mercer.camera_spotted_1` | camera_spotted | nothing says it: no literal id or builder, and no code maps the `camera_spotted` fact to its lines |
-| `vo.mercer.camera_spotted_2` | camera_spotted | nothing says it: no literal id or builder, and no code maps the `camera_spotted` fact to its lines |
-| `vo.mercer.device_started_1` | device_started | nothing says it: no literal id or builder, and no code maps the `device_started` fact to its lines |
-| `vo.mercer.device_started_2` | device_started | nothing says it: no literal id or builder, and no code maps the `device_started` fact to its lines |
-| `vo.mercer.device_jammed_1` | device_jammed | nothing says it: no literal id or builder, and no code maps the `device_jammed` fact to its lines |
-| `vo.mercer.device_jammed_2` | device_jammed | nothing says it: no literal id or builder, and no code maps the `device_jammed` fact to its lines |
-| `vo.mercer.device_finished_1` | device_finished | nothing says it: no literal id or builder, and no code maps the `device_finished` fact to its lines |
-| `vo.mercer.device_finished_2` | device_finished | nothing says it: no literal id or builder, and no code maps the `device_finished` fact to its lines |
-| `vo.mercer.crew_downed_1` | crew_downed | nothing says it: no literal id or builder, and no code maps the `crew_downed` fact to its lines |
-| `vo.mercer.crew_downed_2` | crew_downed | nothing says it: no literal id or builder, and no code maps the `crew_downed` fact to its lines |
-| `vo.mercer.crew_custody_1` | crew_custody | nothing says it: no literal id or builder, and no code maps the `crew_custody` fact to its lines |
-| `vo.mercer.crew_custody_2` | crew_custody | nothing says it: no literal id or builder, and no code maps the `crew_custody` fact to its lines |
-| `vo.mercer.heist_success_1` | heist_success | nothing says it: no literal id or builder, and no code maps the `heist_success` fact to its lines |
-| `vo.mercer.heist_success_2` | heist_success | nothing says it: no literal id or builder, and no code maps the `heist_success` fact to its lines |
-| `vo.mercer.heist_failed_1` | heist_failed | nothing says it: no literal id or builder, and no code maps the `heist_failed` fact to its lines |
-| `vo.mercer.heist_failed_2` | heist_failed | nothing says it: no literal id or builder, and no code maps the `heist_failed` fact to its lines |
-| `vo.mercer.stealth_success_1` | stealth_success | nothing says it: no literal id or builder, and no code maps the `stealth_success` fact to its lines |
-| `vo.mercer.stealth_success_2` | stealth_success | nothing says it: no literal id or builder, and no code maps the `stealth_success` fact to its lines |
-| `vo.rook.pager_started_1` | pager_started | nothing says it: no literal id or builder, and no code maps the `pager_started` fact to its lines |
-| `vo.rook.pager_started_2` | pager_started | nothing says it: no literal id or builder, and no code maps the `pager_started` fact to its lines |
-| `vo.rook.reloading_1` | reloading | nothing says it: no literal id or builder, and no code maps the `reloading` fact to its lines |
-| `vo.rook.reloading_2` | reloading | nothing says it: no literal id or builder, and no code maps the `reloading` fact to its lines |
-| `vo.rook.device_jammed_1` | device_jammed | nothing says it: no literal id or builder, and no code maps the `device_jammed` fact to its lines |
-| `vo.rook.device_jammed_2` | device_jammed | nothing says it: no literal id or builder, and no code maps the `device_jammed` fact to its lines |
-| `vo.rook.bagging_body_1` | bagging_body | nothing says it: no literal id or builder, and no code maps the `bagging_body` fact to its lines |
-| `vo.rook.bagging_body_2` | bagging_body | nothing says it: no literal id or builder, and no code maps the `bagging_body` fact to its lines |
-| `vo.rook.going_loud_1` | going_loud | nothing says it: no literal id or builder, and no code maps the `going_loud` fact to its lines |
-| `vo.rook.going_loud_2` | going_loud | nothing says it: no literal id or builder, and no code maps the `going_loud` fact to its lines |
-| `vo.rook.crew_downed_1` | crew_downed | nothing says it: no literal id or builder, and no code maps the `crew_downed` fact to its lines |
-| `vo.rook.crew_downed_2` | crew_downed | nothing says it: no literal id or builder, and no code maps the `crew_downed` fact to its lines |
-| `vo.rook.reviving_1` | reviving | nothing says it: no literal id or builder, and no code maps the `reviving` fact to its lines |
-| `vo.rook.reviving_2` | reviving | nothing says it: no literal id or builder, and no code maps the `reviving` fact to its lines |
-| `vo.rook.cops_incoming_1` | cops_incoming | nothing says it: no literal id or builder, and no code maps the `cops_incoming` fact to its lines |
-| `vo.rook.cops_incoming_2` | cops_incoming | nothing says it: no literal id or builder, and no code maps the `cops_incoming` fact to its lines |
-| `vo.rook.loot_secured_1` | loot_secured | nothing says it: no literal id or builder, and no code maps the `loot_secured` fact to its lines |
-| `vo.rook.loot_secured_2` | loot_secured | nothing says it: no literal id or builder, and no code maps the `loot_secured` fact to its lines |
-| `vo.rook.guard_down_1` | guard_down | nothing says it: no literal id or builder, and no code maps the `guard_down` fact to its lines |
-| `vo.rook.guard_down_2` | guard_down | nothing says it: no literal id or builder, and no code maps the `guard_down` fact to its lines |
-| `vo.rook.civilian_killed_1` | civilian_killed | nothing says it: no literal id or builder, and no code maps the `civilian_killed` fact to its lines |
-| `vo.rook.civilian_killed_2` | civilian_killed | nothing says it: no literal id or builder, and no code maps the `civilian_killed` fact to its lines |
-| `vo.sable.pager_started_1` | pager_started | nothing says it: no literal id or builder, and no code maps the `pager_started` fact to its lines |
-| `vo.sable.pager_started_2` | pager_started | nothing says it: no literal id or builder, and no code maps the `pager_started` fact to its lines |
-| `vo.sable.reloading_1` | reloading | nothing says it: no literal id or builder, and no code maps the `reloading` fact to its lines |
-| `vo.sable.reloading_2` | reloading | nothing says it: no literal id or builder, and no code maps the `reloading` fact to its lines |
-| `vo.sable.device_jammed_1` | device_jammed | nothing says it: no literal id or builder, and no code maps the `device_jammed` fact to its lines |
-| `vo.sable.device_jammed_2` | device_jammed | nothing says it: no literal id or builder, and no code maps the `device_jammed` fact to its lines |
-| `vo.sable.bagging_body_1` | bagging_body | nothing says it: no literal id or builder, and no code maps the `bagging_body` fact to its lines |
-| `vo.sable.bagging_body_2` | bagging_body | nothing says it: no literal id or builder, and no code maps the `bagging_body` fact to its lines |
-| `vo.sable.going_loud_1` | going_loud | nothing says it: no literal id or builder, and no code maps the `going_loud` fact to its lines |
-| `vo.sable.going_loud_2` | going_loud | nothing says it: no literal id or builder, and no code maps the `going_loud` fact to its lines |
-| `vo.sable.crew_downed_1` | crew_downed | nothing says it: no literal id or builder, and no code maps the `crew_downed` fact to its lines |
-| `vo.sable.crew_downed_2` | crew_downed | nothing says it: no literal id or builder, and no code maps the `crew_downed` fact to its lines |
-| `vo.sable.reviving_1` | reviving | nothing says it: no literal id or builder, and no code maps the `reviving` fact to its lines |
-| `vo.sable.reviving_2` | reviving | nothing says it: no literal id or builder, and no code maps the `reviving` fact to its lines |
-| `vo.sable.cops_incoming_1` | cops_incoming | nothing says it: no literal id or builder, and no code maps the `cops_incoming` fact to its lines |
-| `vo.sable.cops_incoming_2` | cops_incoming | nothing says it: no literal id or builder, and no code maps the `cops_incoming` fact to its lines |
-| `vo.sable.loot_secured_1` | loot_secured | nothing says it: no literal id or builder, and no code maps the `loot_secured` fact to its lines |
-| `vo.sable.loot_secured_2` | loot_secured | nothing says it: no literal id or builder, and no code maps the `loot_secured` fact to its lines |
-| `vo.sable.guard_down_1` | guard_down | nothing says it: no literal id or builder, and no code maps the `guard_down` fact to its lines |
-| `vo.sable.guard_down_2` | guard_down | nothing says it: no literal id or builder, and no code maps the `guard_down` fact to its lines |
-| `vo.sable.civilian_killed_1` | civilian_killed | nothing says it: no literal id or builder, and no code maps the `civilian_killed` fact to its lines |
-| `vo.sable.civilian_killed_2` | civilian_killed | nothing says it: no literal id or builder, and no code maps the `civilian_killed` fact to its lines |
-| `vo.dutch.pager_started_1` | pager_started | nothing says it: no literal id or builder, and no code maps the `pager_started` fact to its lines |
-| `vo.dutch.pager_started_2` | pager_started | nothing says it: no literal id or builder, and no code maps the `pager_started` fact to its lines |
-| `vo.dutch.reloading_1` | reloading | nothing says it: no literal id or builder, and no code maps the `reloading` fact to its lines |
-| `vo.dutch.reloading_2` | reloading | nothing says it: no literal id or builder, and no code maps the `reloading` fact to its lines |
-| `vo.dutch.device_jammed_1` | device_jammed | nothing says it: no literal id or builder, and no code maps the `device_jammed` fact to its lines |
-| `vo.dutch.device_jammed_2` | device_jammed | nothing says it: no literal id or builder, and no code maps the `device_jammed` fact to its lines |
-| `vo.dutch.bagging_body_1` | bagging_body | nothing says it: no literal id or builder, and no code maps the `bagging_body` fact to its lines |
-| `vo.dutch.bagging_body_2` | bagging_body | nothing says it: no literal id or builder, and no code maps the `bagging_body` fact to its lines |
-| `vo.dutch.going_loud_1` | going_loud | nothing says it: no literal id or builder, and no code maps the `going_loud` fact to its lines |
-| `vo.dutch.going_loud_2` | going_loud | nothing says it: no literal id or builder, and no code maps the `going_loud` fact to its lines |
-| `vo.dutch.crew_downed_1` | crew_downed | nothing says it: no literal id or builder, and no code maps the `crew_downed` fact to its lines |
-| `vo.dutch.crew_downed_2` | crew_downed | nothing says it: no literal id or builder, and no code maps the `crew_downed` fact to its lines |
-| `vo.dutch.reviving_1` | reviving | nothing says it: no literal id or builder, and no code maps the `reviving` fact to its lines |
-| `vo.dutch.reviving_2` | reviving | nothing says it: no literal id or builder, and no code maps the `reviving` fact to its lines |
-| `vo.dutch.cops_incoming_1` | cops_incoming | nothing says it: no literal id or builder, and no code maps the `cops_incoming` fact to its lines |
-| `vo.dutch.cops_incoming_2` | cops_incoming | nothing says it: no literal id or builder, and no code maps the `cops_incoming` fact to its lines |
-| `vo.dutch.loot_secured_1` | loot_secured | nothing says it: no literal id or builder, and no code maps the `loot_secured` fact to its lines |
-| `vo.dutch.loot_secured_2` | loot_secured | nothing says it: no literal id or builder, and no code maps the `loot_secured` fact to its lines |
-| `vo.dutch.guard_down_1` | guard_down | nothing says it: no literal id or builder, and no code maps the `guard_down` fact to its lines |
-| `vo.dutch.guard_down_2` | guard_down | nothing says it: no literal id or builder, and no code maps the `guard_down` fact to its lines |
-| `vo.dutch.civilian_killed_1` | civilian_killed | nothing says it: no literal id or builder, and no code maps the `civilian_killed` fact to its lines |
-| `vo.dutch.civilian_killed_2` | civilian_killed | nothing says it: no literal id or builder, and no code maps the `civilian_killed` fact to its lines |
-| `vo.wren.pager_started_1` | pager_started | nothing says it: no literal id or builder, and no code maps the `pager_started` fact to its lines |
-| `vo.wren.pager_started_2` | pager_started | nothing says it: no literal id or builder, and no code maps the `pager_started` fact to its lines |
-| `vo.wren.reloading_1` | reloading | nothing says it: no literal id or builder, and no code maps the `reloading` fact to its lines |
-| `vo.wren.reloading_2` | reloading | nothing says it: no literal id or builder, and no code maps the `reloading` fact to its lines |
-| `vo.wren.device_jammed_1` | device_jammed | nothing says it: no literal id or builder, and no code maps the `device_jammed` fact to its lines |
-| `vo.wren.device_jammed_2` | device_jammed | nothing says it: no literal id or builder, and no code maps the `device_jammed` fact to its lines |
-| `vo.wren.bagging_body_1` | bagging_body | nothing says it: no literal id or builder, and no code maps the `bagging_body` fact to its lines |
-| `vo.wren.bagging_body_2` | bagging_body | nothing says it: no literal id or builder, and no code maps the `bagging_body` fact to its lines |
-| `vo.wren.going_loud_1` | going_loud | nothing says it: no literal id or builder, and no code maps the `going_loud` fact to its lines |
-| `vo.wren.going_loud_2` | going_loud | nothing says it: no literal id or builder, and no code maps the `going_loud` fact to its lines |
-| `vo.wren.crew_downed_1` | crew_downed | nothing says it: no literal id or builder, and no code maps the `crew_downed` fact to its lines |
-| `vo.wren.crew_downed_2` | crew_downed | nothing says it: no literal id or builder, and no code maps the `crew_downed` fact to its lines |
-| `vo.wren.reviving_1` | reviving | nothing says it: no literal id or builder, and no code maps the `reviving` fact to its lines |
-| `vo.wren.reviving_2` | reviving | nothing says it: no literal id or builder, and no code maps the `reviving` fact to its lines |
-| `vo.wren.cops_incoming_1` | cops_incoming | nothing says it: no literal id or builder, and no code maps the `cops_incoming` fact to its lines |
-| `vo.wren.cops_incoming_2` | cops_incoming | nothing says it: no literal id or builder, and no code maps the `cops_incoming` fact to its lines |
-| `vo.wren.loot_secured_1` | loot_secured | nothing says it: no literal id or builder, and no code maps the `loot_secured` fact to its lines |
-| `vo.wren.loot_secured_2` | loot_secured | nothing says it: no literal id or builder, and no code maps the `loot_secured` fact to its lines |
-| `vo.wren.guard_down_1` | guard_down | nothing says it: no literal id or builder, and no code maps the `guard_down` fact to its lines |
-| `vo.wren.guard_down_2` | guard_down | nothing says it: no literal id or builder, and no code maps the `guard_down` fact to its lines |
-| `vo.wren.civilian_killed_1` | civilian_killed | nothing says it: no literal id or builder, and no code maps the `civilian_killed` fact to its lines |
-| `vo.wren.civilian_killed_2` | civilian_killed | nothing says it: no literal id or builder, and no code maps the `civilian_killed` fact to its lines |
-| `vo.marten.pager_started_1` | pager_started | nothing says it: no literal id or builder, and no code maps the `pager_started` fact to its lines |
-| `vo.marten.pager_started_2` | pager_started | nothing says it: no literal id or builder, and no code maps the `pager_started` fact to its lines |
-| `vo.marten.reloading_1` | reloading | nothing says it: no literal id or builder, and no code maps the `reloading` fact to its lines |
-| `vo.marten.reloading_2` | reloading | nothing says it: no literal id or builder, and no code maps the `reloading` fact to its lines |
-| `vo.marten.device_jammed_1` | device_jammed | nothing says it: no literal id or builder, and no code maps the `device_jammed` fact to its lines |
-| `vo.marten.device_jammed_2` | device_jammed | nothing says it: no literal id or builder, and no code maps the `device_jammed` fact to its lines |
-| `vo.marten.bagging_body_1` | bagging_body | nothing says it: no literal id or builder, and no code maps the `bagging_body` fact to its lines |
-| `vo.marten.bagging_body_2` | bagging_body | nothing says it: no literal id or builder, and no code maps the `bagging_body` fact to its lines |
-| `vo.marten.going_loud_1` | going_loud | nothing says it: no literal id or builder, and no code maps the `going_loud` fact to its lines |
-| `vo.marten.going_loud_2` | going_loud | nothing says it: no literal id or builder, and no code maps the `going_loud` fact to its lines |
-| `vo.marten.crew_downed_1` | crew_downed | nothing says it: no literal id or builder, and no code maps the `crew_downed` fact to its lines |
-| `vo.marten.crew_downed_2` | crew_downed | nothing says it: no literal id or builder, and no code maps the `crew_downed` fact to its lines |
-| `vo.marten.reviving_1` | reviving | nothing says it: no literal id or builder, and no code maps the `reviving` fact to its lines |
-| `vo.marten.reviving_2` | reviving | nothing says it: no literal id or builder, and no code maps the `reviving` fact to its lines |
-| `vo.marten.cops_incoming_1` | cops_incoming | nothing says it: no literal id or builder, and no code maps the `cops_incoming` fact to its lines |
-| `vo.marten.cops_incoming_2` | cops_incoming | nothing says it: no literal id or builder, and no code maps the `cops_incoming` fact to its lines |
-| `vo.marten.loot_secured_1` | loot_secured | nothing says it: no literal id or builder, and no code maps the `loot_secured` fact to its lines |
-| `vo.marten.loot_secured_2` | loot_secured | nothing says it: no literal id or builder, and no code maps the `loot_secured` fact to its lines |
-| `vo.marten.guard_down_1` | guard_down | nothing says it: no literal id or builder, and no code maps the `guard_down` fact to its lines |
-| `vo.marten.guard_down_2` | guard_down | nothing says it: no literal id or builder, and no code maps the `guard_down` fact to its lines |
-| `vo.marten.civilian_killed_1` | civilian_killed | nothing says it: no literal id or builder, and no code maps the `civilian_killed` fact to its lines |
-| `vo.marten.civilian_killed_2` | civilian_killed | nothing says it: no literal id or builder, and no code maps the `civilian_killed` fact to its lines |
-| `vo.jay.pager_started_1` | pager_started | nothing says it: no literal id or builder, and no code maps the `pager_started` fact to its lines |
-| `vo.jay.pager_started_2` | pager_started | nothing says it: no literal id or builder, and no code maps the `pager_started` fact to its lines |
-| `vo.jay.reloading_1` | reloading | nothing says it: no literal id or builder, and no code maps the `reloading` fact to its lines |
-| `vo.jay.reloading_2` | reloading | nothing says it: no literal id or builder, and no code maps the `reloading` fact to its lines |
-| `vo.jay.device_jammed_1` | device_jammed | nothing says it: no literal id or builder, and no code maps the `device_jammed` fact to its lines |
-| `vo.jay.device_jammed_2` | device_jammed | nothing says it: no literal id or builder, and no code maps the `device_jammed` fact to its lines |
-| `vo.jay.bagging_body_1` | bagging_body | nothing says it: no literal id or builder, and no code maps the `bagging_body` fact to its lines |
-| `vo.jay.bagging_body_2` | bagging_body | nothing says it: no literal id or builder, and no code maps the `bagging_body` fact to its lines |
-| `vo.jay.going_loud_1` | going_loud | nothing says it: no literal id or builder, and no code maps the `going_loud` fact to its lines |
-| `vo.jay.going_loud_2` | going_loud | nothing says it: no literal id or builder, and no code maps the `going_loud` fact to its lines |
-| `vo.jay.crew_downed_1` | crew_downed | nothing says it: no literal id or builder, and no code maps the `crew_downed` fact to its lines |
-| `vo.jay.crew_downed_2` | crew_downed | nothing says it: no literal id or builder, and no code maps the `crew_downed` fact to its lines |
-| `vo.jay.reviving_1` | reviving | nothing says it: no literal id or builder, and no code maps the `reviving` fact to its lines |
-| `vo.jay.reviving_2` | reviving | nothing says it: no literal id or builder, and no code maps the `reviving` fact to its lines |
-| `vo.jay.cops_incoming_1` | cops_incoming | nothing says it: no literal id or builder, and no code maps the `cops_incoming` fact to its lines |
-| `vo.jay.cops_incoming_2` | cops_incoming | nothing says it: no literal id or builder, and no code maps the `cops_incoming` fact to its lines |
-| `vo.jay.loot_secured_1` | loot_secured | nothing says it: no literal id or builder, and no code maps the `loot_secured` fact to its lines |
-| `vo.jay.loot_secured_2` | loot_secured | nothing says it: no literal id or builder, and no code maps the `loot_secured` fact to its lines |
-| `vo.jay.guard_down_1` | guard_down | nothing says it: no literal id or builder, and no code maps the `guard_down` fact to its lines |
-| `vo.jay.guard_down_2` | guard_down | nothing says it: no literal id or builder, and no code maps the `guard_down` fact to its lines |
-| `vo.jay.civilian_killed_1` | civilian_killed | nothing says it: no literal id or builder, and no code maps the `civilian_killed` fact to its lines |
-| `vo.jay.civilian_killed_2` | civilian_killed | nothing says it: no literal id or builder, and no code maps the `civilian_killed` fact to its lines |
+None.
 
 ## Unsaid, owner B (0)
 
@@ -245,15 +78,9 @@ None.
 | `vo.mercer.radio_objective_failed_2` | radio.objective_failed | generic radio.objective_failed line: every radio.objective_failed fact has an always-ready heist line, or no heist with mercer on the radio has the fact |
 | `vo.mercer.radio_objective_failed_3` | radio.objective_failed | generic radio.objective_failed line: every radio.objective_failed fact has an always-ready heist line, or no heist with mercer on the radio has the fact |
 
-## Unsaid, owner C (5)
+## Unsaid, owner C (0)
 
-| Line | Event | Why |
-|---|---|---|
-| `vo.vance.glasshouse_radio_extra_bags` | radio.objective_done | HeistDef objective `extra_bags` is never added by glasshouse's mission |
-| `vo.vance.glasshouse_radio_salon` | radio.objective_done | HeistDef objective `salon` is never added by glasshouse's mission |
-| `vo.vance.glasshouse_radio_display_cases` | radio.objective_done | HeistDef objective `display_cases` is never added by glasshouse's mission |
-| `vo.vance.gallery_night_radio_extras` | radio.objective_done | the mission never completes objective `extras` |
-| `vo.vance.gallery_night_radio_lockers` | radio.objective_done | the mission never completes objective `lockers` |
+None.
 
 ## glasshouse
 
@@ -263,21 +90,21 @@ None.
 | `vo.vance.briefing_glasshouse_2` | briefing | B | BriefingModel.voice_lines via glasshouse (contact.vance) |
 | `vo.vance.briefing_glasshouse_3` | briefing | B | BriefingModel.voice_lines via glasshouse (contact.vance) |
 | `vo.mercer.briefing_glasshouse_1` | briefing | B | BriefingModel.voice_lines via glasshouse (contact.vance) |
-| `vo.mercer.glasshouse_intro` | mission | C | world/heists/glasshouse/glasshouse_mission.gd:44 |
-| `vo.mercer.glasshouse_keycard_found` | mission | C | world/heists/glasshouse/glasshouse_mission.gd:129 |
-| `vo.mercer.glasshouse_workshop_open` | mission | C | world/heists/glasshouse/glasshouse_mission.gd:113 |
-| `vo.mercer.glasshouse_drill_jam` | mission | C | world/heists/glasshouse/glasshouse_mission.gd:147 |
-| `vo.mercer.glasshouse_last_pager` | mission | C | world/heists/glasshouse/glasshouse_mission.gd:91 |
-| `vo.mercer.glasshouse_lockdown` | mission | C | world/heists/glasshouse/glasshouse_mission.gd:182 |
-| `vo.mercer.glasshouse_van_eta` | mission | C | world/heists/glasshouse/glasshouse_mission.gd:201 |
-| `vo.mercer.glasshouse_escape` | mission | C | world/heists/glasshouse/glasshouse_mission.gd:223 |
-| `vo.mercer.glasshouse_code_found` | mission | C | world/heists/glasshouse/glasshouse_mission.gd:136 |
+| `vo.mercer.glasshouse_intro` | mission | C | world/heists/glasshouse/glasshouse_mission.gd:49 |
+| `vo.mercer.glasshouse_keycard_found` | mission | C | world/heists/glasshouse/glasshouse_mission.gd:142 |
+| `vo.mercer.glasshouse_workshop_open` | mission | C | world/heists/glasshouse/glasshouse_mission.gd:126 |
+| `vo.mercer.glasshouse_drill_jam` | mission | C | world/heists/glasshouse/glasshouse_mission.gd:160 |
+| `vo.mercer.glasshouse_last_pager` | mission | C | world/heists/glasshouse/glasshouse_mission.gd:104 |
+| `vo.mercer.glasshouse_lockdown` | mission | C | world/heists/glasshouse/glasshouse_mission.gd:203 |
+| `vo.mercer.glasshouse_van_eta` | mission | C | world/heists/glasshouse/glasshouse_mission.gd:222 |
+| `vo.mercer.glasshouse_escape` | mission | C | world/heists/glasshouse/glasshouse_mission.gd:244 |
+| `vo.mercer.glasshouse_code_found` | mission | C | world/heists/glasshouse/glasshouse_mission.gd:149 |
 | `vo.vance.glasshouse_radio_casing` | radio.objective_done | B | ContactRadio radio.objective_done [casing] via glasshouse |
 | `vo.vance.glasshouse_radio_keycard` | radio.objective_done | B | ContactRadio radio.objective_done [keycard] via glasshouse |
 | `vo.vance.glasshouse_radio_code` | radio.objective_done | B | ContactRadio radio.objective_done [code] via glasshouse |
-| `vo.vance.glasshouse_radio_extra_bags` | radio.objective_done | C | **UNSAID**: HeistDef objective `extra_bags` is never added by glasshouse's mission |
-| `vo.vance.glasshouse_radio_salon` | radio.objective_done | C | **UNSAID**: HeistDef objective `salon` is never added by glasshouse's mission |
-| `vo.vance.glasshouse_radio_display_cases` | radio.objective_done | C | **UNSAID**: HeistDef objective `display_cases` is never added by glasshouse's mission |
+| `vo.vance.glasshouse_radio_extra_bags` | radio.objective_done | B | ContactRadio radio.objective_done [extra_bags] via glasshouse |
+| `vo.vance.glasshouse_radio_salon` | radio.objective_done | B | ContactRadio radio.objective_done [salon] via glasshouse |
+| `vo.vance.glasshouse_radio_display_cases` | radio.objective_done | B | ContactRadio radio.objective_done [display_cases] via glasshouse |
 | `vo.vance.glasshouse_radio_workshop_door` | radio.objective_done | B | ContactRadio radio.objective_done [workshop_door] via glasshouse |
 | `vo.vance.glasshouse_radio_safe` | radio.objective_done | B | ContactRadio radio.objective_done [safe] via glasshouse |
 | `vo.vance.glasshouse_radio_safe_loot_new` | radio.objective_new | B | ContactRadio radio.objective_new [safe_loot] via glasshouse |
@@ -442,24 +269,24 @@ None.
 | `vo.vance.briefing_gallery_night_3` | briefing | B | BriefingModel.voice_lines via gallery_night (contact.vance) |
 | `vo.mercer.briefing_gallery_night_1` | briefing | B | BriefingModel.voice_lines via gallery_night (contact.vance) |
 | `vo.mercer.briefing_gallery_night_2` | briefing | B | BriefingModel.voice_lines via gallery_night (contact.vance) |
-| `vo.vance.gallery_night_contact_intro` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:128 |
+| `vo.vance.gallery_night_contact_intro` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:130 |
 | `vo.vance.gallery_night_centrepiece` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:89 |
 | `vo.vance.gallery_night_payday` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:90 |
-| `vo.mercer.gallery_night_intro` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:127 |
-| `vo.mercer.gallery_night_canvas_found_saint` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:258 (builder `vo.mercer.gallery_night_canvas_found_%s`) |
-| `vo.mercer.gallery_night_canvas_found_widow` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:258 (builder `vo.mercer.gallery_night_canvas_found_%s`) |
-| `vo.mercer.gallery_night_canvas_found_orchard` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:258 (builder `vo.mercer.gallery_night_canvas_found_%s`) |
-| `vo.mercer.gallery_night_canvas_found_lantern` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:258 (builder `vo.mercer.gallery_night_canvas_found_%s`) |
-| `vo.mercer.gallery_night_last_call_soon` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:350 |
-| `vo.mercer.gallery_night_last_call` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:358 |
+| `vo.mercer.gallery_night_intro` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:129 |
+| `vo.mercer.gallery_night_canvas_found_saint` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:260 (builder `vo.mercer.gallery_night_canvas_found_%s`) |
+| `vo.mercer.gallery_night_canvas_found_widow` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:260 (builder `vo.mercer.gallery_night_canvas_found_%s`) |
+| `vo.mercer.gallery_night_canvas_found_orchard` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:260 (builder `vo.mercer.gallery_night_canvas_found_%s`) |
+| `vo.mercer.gallery_night_canvas_found_lantern` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:260 (builder `vo.mercer.gallery_night_canvas_found_%s`) |
+| `vo.mercer.gallery_night_last_call_soon` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:352 |
+| `vo.mercer.gallery_night_last_call` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:360 |
 | `vo.mercer.gallery_night_lasers_sweep` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:74 |
-| `vo.mercer.gallery_night_guests_gone` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:386 |
+| `vo.mercer.gallery_night_guests_gone` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:388 |
 | `vo.mercer.gallery_night_keycard` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:76 |
-| `vo.mercer.gallery_night_code_found` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:441 |
+| `vo.mercer.gallery_night_code_found` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:443 |
 | `vo.mercer.gallery_night_sensors_warning` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:80 |
 | `vo.mercer.gallery_night_hack_started` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:78 |
 | `vo.mercer.gallery_night_hack_interrupted` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:79 |
-| `vo.mercer.gallery_night_sensors_off` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:462 |
+| `vo.mercer.gallery_night_sensors_off` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:472 |
 | `vo.mercer.gallery_night_lasers` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:81 |
 | `vo.mercer.gallery_night_treasury_open` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:82 |
 | `vo.mercer.gallery_night_art_store_open` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:83 |
@@ -467,15 +294,15 @@ None.
 | `vo.mercer.gallery_night_inspectors` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:93 |
 | `vo.mercer.gallery_night_vaultline` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:94 |
 | `vo.mercer.gallery_night_last_pager` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:84 |
-| `vo.mercer.gallery_night_lockdown` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:571 |
+| `vo.mercer.gallery_night_lockdown` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:581 |
 | `vo.mercer.gallery_night_shutters_up` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:85 |
 | `vo.mercer.gallery_night_vault_drill` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:86 |
 | `vo.mercer.gallery_night_drill_jam` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:87 |
-| `vo.mercer.gallery_night_required_secured` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:528 |
-| `vo.mercer.gallery_night_van_eta` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:541 (builder `vo.mercer.gallery_night_%s_eta`) |
-| `vo.mercer.gallery_night_limo_eta` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:541 (builder `vo.mercer.gallery_night_%s_eta`) |
+| `vo.mercer.gallery_night_required_secured` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:538 |
+| `vo.mercer.gallery_night_van_eta` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:551 (builder `vo.mercer.gallery_night_%s_eta`) |
+| `vo.mercer.gallery_night_limo_eta` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:551 (builder `vo.mercer.gallery_night_%s_eta`) |
 | `vo.mercer.gallery_night_sniper_hotel` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:88 |
-| `vo.mercer.gallery_night_escape` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:552 |
+| `vo.mercer.gallery_night_escape` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:562 |
 | `vo.vance.gallery_night_radio_casing` | radio.objective_done | B | ContactRadio radio.objective_done [casing] via gallery_night |
 | `vo.vance.gallery_night_radio_find_canvases` | radio.objective_done | B | ContactRadio radio.objective_done [find_canvases] via gallery_night |
 | `vo.vance.gallery_night_radio_keycard` | radio.objective_done | B | ContactRadio radio.objective_done [keycard] via gallery_night |
@@ -486,8 +313,8 @@ None.
 | `vo.vance.gallery_night_radio_centrepiece` | radio.objective_done | B | ContactRadio radio.objective_done [centrepiece] via gallery_night |
 | `vo.vance.gallery_night_radio_canvases` | radio.objective_done | B | ContactRadio radio.objective_done [canvases] via gallery_night |
 | `vo.vance.gallery_night_radio_secure` | radio.objective_done | B | ContactRadio radio.objective_done [secure] via gallery_night |
-| `vo.vance.gallery_night_radio_extras` | radio.objective_done | C | **UNSAID**: the mission never completes objective `extras` |
-| `vo.vance.gallery_night_radio_lockers` | radio.objective_done | C | **UNSAID**: the mission never completes objective `lockers` |
+| `vo.vance.gallery_night_radio_extras` | radio.objective_done | B | ContactRadio radio.objective_done [extras] via gallery_night |
+| `vo.vance.gallery_night_radio_lockers` | radio.objective_done | B | ContactRadio radio.objective_done [lockers] via gallery_night |
 | `vo.vance.gallery_night_radio_curator_safe` | radio.objective_done | B | ContactRadio radio.objective_done [curator_safe] via gallery_night |
 | `vo.vance.gallery_night_radio_lockdown` | radio.objective_done | B | ContactRadio radio.objective_done [lockdown] via gallery_night |
 | `vo.vance.gallery_night_radio_server_door` | radio.objective_done | B | ContactRadio radio.objective_done [server_door] via gallery_night |
@@ -509,174 +336,174 @@ None.
 
 | Line | Event | Owner | Trigger site(s) |
 |---|---|---|---|
-| `vo.mercer.heist_start_casing_1` | heist_start_casing | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `heist_start_casing` fact to its lines |
-| `vo.mercer.heist_start_casing_2` | heist_start_casing | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `heist_start_casing` fact to its lines |
-| `vo.mercer.crew_masked_1` | crew_masked | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `crew_masked` fact to its lines |
-| `vo.mercer.crew_masked_2` | crew_masked | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `crew_masked` fact to its lines |
-| `vo.mercer.pager_started_1` | pager_started | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `pager_started` fact to its lines |
-| `vo.mercer.pager_started_2` | pager_started | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `pager_started` fact to its lines |
-| `vo.mercer.pager_answered_1` | pager_answered | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `pager_answered` fact to its lines |
-| `vo.mercer.pager_answered_2` | pager_answered | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `pager_answered` fact to its lines |
-| `vo.mercer.pager_last_answer_1` | pager_last_answer | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `pager_last_answer` fact to its lines |
-| `vo.mercer.pager_last_answer_2` | pager_last_answer | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `pager_last_answer` fact to its lines |
-| `vo.mercer.pager_limit_1` | pager_limit | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `pager_limit` fact to its lines |
-| `vo.mercer.pager_limit_2` | pager_limit | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `pager_limit` fact to its lines |
-| `vo.mercer.pager_failed_1` | pager_failed | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `pager_failed` fact to its lines |
-| `vo.mercer.pager_failed_2` | pager_failed | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `pager_failed` fact to its lines |
-| `vo.mercer.body_discovered_1` | body_discovered | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `body_discovered` fact to its lines |
-| `vo.mercer.body_discovered_2` | body_discovered | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `body_discovered` fact to its lines |
-| `vo.mercer.camera_spotted_1` | camera_spotted | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `camera_spotted` fact to its lines |
-| `vo.mercer.camera_spotted_2` | camera_spotted | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `camera_spotted` fact to its lines |
-| `vo.mercer.device_started_1` | device_started | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `device_started` fact to its lines |
-| `vo.mercer.device_started_2` | device_started | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `device_started` fact to its lines |
-| `vo.mercer.device_jammed_1` | device_jammed | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `device_jammed` fact to its lines |
-| `vo.mercer.device_jammed_2` | device_jammed | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `device_jammed` fact to its lines |
-| `vo.mercer.device_finished_1` | device_finished | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `device_finished` fact to its lines |
-| `vo.mercer.device_finished_2` | device_finished | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `device_finished` fact to its lines |
-| `vo.mercer.crew_downed_1` | crew_downed | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `crew_downed` fact to its lines |
-| `vo.mercer.crew_downed_2` | crew_downed | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `crew_downed` fact to its lines |
-| `vo.mercer.crew_custody_1` | crew_custody | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `crew_custody` fact to its lines |
-| `vo.mercer.crew_custody_2` | crew_custody | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `crew_custody` fact to its lines |
-| `vo.mercer.heist_success_1` | heist_success | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `heist_success` fact to its lines |
-| `vo.mercer.heist_success_2` | heist_success | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `heist_success` fact to its lines |
-| `vo.mercer.heist_failed_1` | heist_failed | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `heist_failed` fact to its lines |
-| `vo.mercer.heist_failed_2` | heist_failed | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `heist_failed` fact to its lines |
-| `vo.mercer.stealth_success_1` | stealth_success | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `stealth_success` fact to its lines |
-| `vo.mercer.stealth_success_2` | stealth_success | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `stealth_success` fact to its lines |
-| `vo.rook.pager_started_1` | pager_started | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `pager_started` fact to its lines |
-| `vo.rook.pager_started_2` | pager_started | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `pager_started` fact to its lines |
-| `vo.rook.reloading_1` | reloading | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `reloading` fact to its lines |
-| `vo.rook.reloading_2` | reloading | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `reloading` fact to its lines |
-| `vo.rook.device_jammed_1` | device_jammed | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `device_jammed` fact to its lines |
-| `vo.rook.device_jammed_2` | device_jammed | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `device_jammed` fact to its lines |
-| `vo.rook.bagging_body_1` | bagging_body | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `bagging_body` fact to its lines |
-| `vo.rook.bagging_body_2` | bagging_body | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `bagging_body` fact to its lines |
-| `vo.rook.going_loud_1` | going_loud | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `going_loud` fact to its lines |
-| `vo.rook.going_loud_2` | going_loud | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `going_loud` fact to its lines |
-| `vo.rook.crew_downed_1` | crew_downed | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `crew_downed` fact to its lines |
-| `vo.rook.crew_downed_2` | crew_downed | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `crew_downed` fact to its lines |
-| `vo.rook.reviving_1` | reviving | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `reviving` fact to its lines |
-| `vo.rook.reviving_2` | reviving | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `reviving` fact to its lines |
-| `vo.rook.cops_incoming_1` | cops_incoming | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `cops_incoming` fact to its lines |
-| `vo.rook.cops_incoming_2` | cops_incoming | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `cops_incoming` fact to its lines |
-| `vo.rook.loot_secured_1` | loot_secured | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `loot_secured` fact to its lines |
-| `vo.rook.loot_secured_2` | loot_secured | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `loot_secured` fact to its lines |
-| `vo.rook.guard_down_1` | guard_down | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `guard_down` fact to its lines |
-| `vo.rook.guard_down_2` | guard_down | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `guard_down` fact to its lines |
-| `vo.rook.civilian_killed_1` | civilian_killed | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `civilian_killed` fact to its lines |
-| `vo.rook.civilian_killed_2` | civilian_killed | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `civilian_killed` fact to its lines |
-| `vo.sable.pager_started_1` | pager_started | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `pager_started` fact to its lines |
-| `vo.sable.pager_started_2` | pager_started | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `pager_started` fact to its lines |
-| `vo.sable.reloading_1` | reloading | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `reloading` fact to its lines |
-| `vo.sable.reloading_2` | reloading | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `reloading` fact to its lines |
-| `vo.sable.device_jammed_1` | device_jammed | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `device_jammed` fact to its lines |
-| `vo.sable.device_jammed_2` | device_jammed | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `device_jammed` fact to its lines |
-| `vo.sable.bagging_body_1` | bagging_body | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `bagging_body` fact to its lines |
-| `vo.sable.bagging_body_2` | bagging_body | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `bagging_body` fact to its lines |
-| `vo.sable.going_loud_1` | going_loud | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `going_loud` fact to its lines |
-| `vo.sable.going_loud_2` | going_loud | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `going_loud` fact to its lines |
-| `vo.sable.crew_downed_1` | crew_downed | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `crew_downed` fact to its lines |
-| `vo.sable.crew_downed_2` | crew_downed | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `crew_downed` fact to its lines |
-| `vo.sable.reviving_1` | reviving | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `reviving` fact to its lines |
-| `vo.sable.reviving_2` | reviving | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `reviving` fact to its lines |
-| `vo.sable.cops_incoming_1` | cops_incoming | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `cops_incoming` fact to its lines |
-| `vo.sable.cops_incoming_2` | cops_incoming | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `cops_incoming` fact to its lines |
-| `vo.sable.loot_secured_1` | loot_secured | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `loot_secured` fact to its lines |
-| `vo.sable.loot_secured_2` | loot_secured | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `loot_secured` fact to its lines |
-| `vo.sable.guard_down_1` | guard_down | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `guard_down` fact to its lines |
-| `vo.sable.guard_down_2` | guard_down | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `guard_down` fact to its lines |
-| `vo.sable.civilian_killed_1` | civilian_killed | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `civilian_killed` fact to its lines |
-| `vo.sable.civilian_killed_2` | civilian_killed | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `civilian_killed` fact to its lines |
-| `vo.dutch.pager_started_1` | pager_started | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `pager_started` fact to its lines |
-| `vo.dutch.pager_started_2` | pager_started | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `pager_started` fact to its lines |
-| `vo.dutch.reloading_1` | reloading | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `reloading` fact to its lines |
-| `vo.dutch.reloading_2` | reloading | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `reloading` fact to its lines |
-| `vo.dutch.device_jammed_1` | device_jammed | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `device_jammed` fact to its lines |
-| `vo.dutch.device_jammed_2` | device_jammed | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `device_jammed` fact to its lines |
-| `vo.dutch.bagging_body_1` | bagging_body | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `bagging_body` fact to its lines |
-| `vo.dutch.bagging_body_2` | bagging_body | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `bagging_body` fact to its lines |
-| `vo.dutch.going_loud_1` | going_loud | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `going_loud` fact to its lines |
-| `vo.dutch.going_loud_2` | going_loud | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `going_loud` fact to its lines |
-| `vo.dutch.crew_downed_1` | crew_downed | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `crew_downed` fact to its lines |
-| `vo.dutch.crew_downed_2` | crew_downed | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `crew_downed` fact to its lines |
-| `vo.dutch.reviving_1` | reviving | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `reviving` fact to its lines |
-| `vo.dutch.reviving_2` | reviving | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `reviving` fact to its lines |
-| `vo.dutch.cops_incoming_1` | cops_incoming | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `cops_incoming` fact to its lines |
-| `vo.dutch.cops_incoming_2` | cops_incoming | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `cops_incoming` fact to its lines |
-| `vo.dutch.loot_secured_1` | loot_secured | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `loot_secured` fact to its lines |
-| `vo.dutch.loot_secured_2` | loot_secured | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `loot_secured` fact to its lines |
-| `vo.dutch.guard_down_1` | guard_down | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `guard_down` fact to its lines |
-| `vo.dutch.guard_down_2` | guard_down | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `guard_down` fact to its lines |
-| `vo.dutch.civilian_killed_1` | civilian_killed | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `civilian_killed` fact to its lines |
-| `vo.dutch.civilian_killed_2` | civilian_killed | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `civilian_killed` fact to its lines |
-| `vo.wren.pager_started_1` | pager_started | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `pager_started` fact to its lines |
-| `vo.wren.pager_started_2` | pager_started | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `pager_started` fact to its lines |
-| `vo.wren.reloading_1` | reloading | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `reloading` fact to its lines |
-| `vo.wren.reloading_2` | reloading | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `reloading` fact to its lines |
-| `vo.wren.device_jammed_1` | device_jammed | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `device_jammed` fact to its lines |
-| `vo.wren.device_jammed_2` | device_jammed | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `device_jammed` fact to its lines |
-| `vo.wren.bagging_body_1` | bagging_body | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `bagging_body` fact to its lines |
-| `vo.wren.bagging_body_2` | bagging_body | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `bagging_body` fact to its lines |
-| `vo.wren.going_loud_1` | going_loud | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `going_loud` fact to its lines |
-| `vo.wren.going_loud_2` | going_loud | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `going_loud` fact to its lines |
-| `vo.wren.crew_downed_1` | crew_downed | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `crew_downed` fact to its lines |
-| `vo.wren.crew_downed_2` | crew_downed | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `crew_downed` fact to its lines |
-| `vo.wren.reviving_1` | reviving | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `reviving` fact to its lines |
-| `vo.wren.reviving_2` | reviving | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `reviving` fact to its lines |
-| `vo.wren.cops_incoming_1` | cops_incoming | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `cops_incoming` fact to its lines |
-| `vo.wren.cops_incoming_2` | cops_incoming | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `cops_incoming` fact to its lines |
-| `vo.wren.loot_secured_1` | loot_secured | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `loot_secured` fact to its lines |
-| `vo.wren.loot_secured_2` | loot_secured | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `loot_secured` fact to its lines |
-| `vo.wren.guard_down_1` | guard_down | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `guard_down` fact to its lines |
-| `vo.wren.guard_down_2` | guard_down | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `guard_down` fact to its lines |
-| `vo.wren.civilian_killed_1` | civilian_killed | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `civilian_killed` fact to its lines |
-| `vo.wren.civilian_killed_2` | civilian_killed | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `civilian_killed` fact to its lines |
-| `vo.marten.pager_started_1` | pager_started | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `pager_started` fact to its lines |
-| `vo.marten.pager_started_2` | pager_started | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `pager_started` fact to its lines |
-| `vo.marten.reloading_1` | reloading | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `reloading` fact to its lines |
-| `vo.marten.reloading_2` | reloading | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `reloading` fact to its lines |
-| `vo.marten.device_jammed_1` | device_jammed | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `device_jammed` fact to its lines |
-| `vo.marten.device_jammed_2` | device_jammed | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `device_jammed` fact to its lines |
-| `vo.marten.bagging_body_1` | bagging_body | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `bagging_body` fact to its lines |
-| `vo.marten.bagging_body_2` | bagging_body | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `bagging_body` fact to its lines |
-| `vo.marten.going_loud_1` | going_loud | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `going_loud` fact to its lines |
-| `vo.marten.going_loud_2` | going_loud | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `going_loud` fact to its lines |
-| `vo.marten.crew_downed_1` | crew_downed | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `crew_downed` fact to its lines |
-| `vo.marten.crew_downed_2` | crew_downed | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `crew_downed` fact to its lines |
-| `vo.marten.reviving_1` | reviving | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `reviving` fact to its lines |
-| `vo.marten.reviving_2` | reviving | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `reviving` fact to its lines |
-| `vo.marten.cops_incoming_1` | cops_incoming | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `cops_incoming` fact to its lines |
-| `vo.marten.cops_incoming_2` | cops_incoming | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `cops_incoming` fact to its lines |
-| `vo.marten.loot_secured_1` | loot_secured | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `loot_secured` fact to its lines |
-| `vo.marten.loot_secured_2` | loot_secured | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `loot_secured` fact to its lines |
-| `vo.marten.guard_down_1` | guard_down | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `guard_down` fact to its lines |
-| `vo.marten.guard_down_2` | guard_down | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `guard_down` fact to its lines |
-| `vo.marten.civilian_killed_1` | civilian_killed | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `civilian_killed` fact to its lines |
-| `vo.marten.civilian_killed_2` | civilian_killed | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `civilian_killed` fact to its lines |
-| `vo.jay.pager_started_1` | pager_started | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `pager_started` fact to its lines |
-| `vo.jay.pager_started_2` | pager_started | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `pager_started` fact to its lines |
-| `vo.jay.reloading_1` | reloading | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `reloading` fact to its lines |
-| `vo.jay.reloading_2` | reloading | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `reloading` fact to its lines |
-| `vo.jay.device_jammed_1` | device_jammed | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `device_jammed` fact to its lines |
-| `vo.jay.device_jammed_2` | device_jammed | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `device_jammed` fact to its lines |
-| `vo.jay.bagging_body_1` | bagging_body | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `bagging_body` fact to its lines |
-| `vo.jay.bagging_body_2` | bagging_body | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `bagging_body` fact to its lines |
-| `vo.jay.going_loud_1` | going_loud | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `going_loud` fact to its lines |
-| `vo.jay.going_loud_2` | going_loud | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `going_loud` fact to its lines |
-| `vo.jay.crew_downed_1` | crew_downed | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `crew_downed` fact to its lines |
-| `vo.jay.crew_downed_2` | crew_downed | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `crew_downed` fact to its lines |
-| `vo.jay.reviving_1` | reviving | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `reviving` fact to its lines |
-| `vo.jay.reviving_2` | reviving | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `reviving` fact to its lines |
-| `vo.jay.cops_incoming_1` | cops_incoming | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `cops_incoming` fact to its lines |
-| `vo.jay.cops_incoming_2` | cops_incoming | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `cops_incoming` fact to its lines |
-| `vo.jay.loot_secured_1` | loot_secured | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `loot_secured` fact to its lines |
-| `vo.jay.loot_secured_2` | loot_secured | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `loot_secured` fact to its lines |
-| `vo.jay.guard_down_1` | guard_down | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `guard_down` fact to its lines |
-| `vo.jay.guard_down_2` | guard_down | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `guard_down` fact to its lines |
-| `vo.jay.civilian_killed_1` | civilian_killed | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `civilian_killed` fact to its lines |
-| `vo.jay.civilian_killed_2` | civilian_killed | A | **UNSAID**: nothing says it: no literal id or builder, and no code maps the `civilian_killed` fact to its lines |
-| `vo.mercer.abort` | stealth_abort | A | systems/heist/heist_runtime.gd:585<br>systems/heist/heist_runtime.gd:586 |
-| `vo.mercer.pager_last` | pager_last_answer | A | systems/stealth/pager_system.gd:287 |
+| `vo.mercer.heist_start_casing_1` | heist_start_casing | A | systems/vo/bark_tweak.tres:8 (builder `vo.mercer.heist_start_casing_%d`) |
+| `vo.mercer.heist_start_casing_2` | heist_start_casing | A | systems/vo/bark_tweak.tres:8 (builder `vo.mercer.heist_start_casing_%d`) |
+| `vo.mercer.crew_masked_1` | crew_masked | A | systems/vo/bark_tweak.tres:9 (builder `vo.mercer.crew_masked_%d`) |
+| `vo.mercer.crew_masked_2` | crew_masked | A | systems/vo/bark_tweak.tres:9 (builder `vo.mercer.crew_masked_%d`) |
+| `vo.mercer.pager_started_1` | pager_started | A | systems/vo/bark_tweak.tres:10 (builder `vo.mercer.pager_started_%d`) |
+| `vo.mercer.pager_started_2` | pager_started | A | systems/vo/bark_tweak.tres:10 (builder `vo.mercer.pager_started_%d`) |
+| `vo.mercer.pager_answered_1` | pager_answered | A | systems/vo/bark_tweak.tres:11 (builder `vo.mercer.pager_answered_%d`) |
+| `vo.mercer.pager_answered_2` | pager_answered | A | systems/vo/bark_tweak.tres:11 (builder `vo.mercer.pager_answered_%d`) |
+| `vo.mercer.pager_last_answer_1` | pager_last_answer | A | systems/vo/bark_tweak.tres:12 (builder `vo.mercer.pager_last_answer_%d`) |
+| `vo.mercer.pager_last_answer_2` | pager_last_answer | A | systems/vo/bark_tweak.tres:12 (builder `vo.mercer.pager_last_answer_%d`) |
+| `vo.mercer.pager_limit_1` | pager_limit | A | systems/vo/bark_tweak.tres:13 (builder `vo.mercer.pager_limit_%d`) |
+| `vo.mercer.pager_limit_2` | pager_limit | A | systems/vo/bark_tweak.tres:13 (builder `vo.mercer.pager_limit_%d`) |
+| `vo.mercer.pager_failed_1` | pager_failed | A | systems/vo/bark_tweak.tres:14 (builder `vo.mercer.pager_failed_%d`) |
+| `vo.mercer.pager_failed_2` | pager_failed | A | systems/vo/bark_tweak.tres:14 (builder `vo.mercer.pager_failed_%d`) |
+| `vo.mercer.body_discovered_1` | body_discovered | A | systems/vo/bark_tweak.tres:15 (builder `vo.mercer.body_discovered_%d`) |
+| `vo.mercer.body_discovered_2` | body_discovered | A | systems/vo/bark_tweak.tres:15 (builder `vo.mercer.body_discovered_%d`) |
+| `vo.mercer.camera_spotted_1` | camera_spotted | A | systems/vo/bark_tweak.tres:16 (builder `vo.mercer.camera_spotted_%d`) |
+| `vo.mercer.camera_spotted_2` | camera_spotted | A | systems/vo/bark_tweak.tres:16 (builder `vo.mercer.camera_spotted_%d`) |
+| `vo.mercer.device_started_1` | device_started | A | systems/vo/bark_tweak.tres:17 (builder `vo.mercer.device_started_%d`) |
+| `vo.mercer.device_started_2` | device_started | A | systems/vo/bark_tweak.tres:17 (builder `vo.mercer.device_started_%d`) |
+| `vo.mercer.device_jammed_1` | device_jammed | A | systems/vo/bark_tweak.tres:18 (builder `vo.mercer.device_jammed_%d`) |
+| `vo.mercer.device_jammed_2` | device_jammed | A | systems/vo/bark_tweak.tres:18 (builder `vo.mercer.device_jammed_%d`) |
+| `vo.mercer.device_finished_1` | device_finished | A | systems/vo/bark_tweak.tres:19 (builder `vo.mercer.device_finished_%d`) |
+| `vo.mercer.device_finished_2` | device_finished | A | systems/vo/bark_tweak.tres:19 (builder `vo.mercer.device_finished_%d`) |
+| `vo.mercer.crew_downed_1` | crew_downed | A | systems/vo/bark_tweak.tres:20 (builder `vo.mercer.crew_downed_%d`) |
+| `vo.mercer.crew_downed_2` | crew_downed | A | systems/vo/bark_tweak.tres:20 (builder `vo.mercer.crew_downed_%d`) |
+| `vo.mercer.crew_custody_1` | crew_custody | A | systems/vo/bark_tweak.tres:21 (builder `vo.mercer.crew_custody_%d`) |
+| `vo.mercer.crew_custody_2` | crew_custody | A | systems/vo/bark_tweak.tres:21 (builder `vo.mercer.crew_custody_%d`) |
+| `vo.mercer.heist_success_1` | heist_success | A | systems/vo/bark_tweak.tres:22 (builder `vo.mercer.heist_success_%d`) |
+| `vo.mercer.heist_success_2` | heist_success | A | systems/vo/bark_tweak.tres:22 (builder `vo.mercer.heist_success_%d`) |
+| `vo.mercer.heist_failed_1` | heist_failed | A | systems/vo/bark_tweak.tres:23 (builder `vo.mercer.heist_failed_%d`) |
+| `vo.mercer.heist_failed_2` | heist_failed | A | systems/vo/bark_tweak.tres:23 (builder `vo.mercer.heist_failed_%d`) |
+| `vo.mercer.stealth_success_1` | stealth_success | A | systems/vo/bark_tweak.tres:24 (builder `vo.mercer.stealth_success_%d`) |
+| `vo.mercer.stealth_success_2` | stealth_success | A | systems/vo/bark_tweak.tres:24 (builder `vo.mercer.stealth_success_%d`) |
+| `vo.rook.pager_started_1` | pager_started | A | systems/vo/bark_tweak.tres:25 (builder `vo.rook.pager_started_%d`) |
+| `vo.rook.pager_started_2` | pager_started | A | systems/vo/bark_tweak.tres:25 (builder `vo.rook.pager_started_%d`) |
+| `vo.rook.reloading_1` | reloading | A | systems/vo/bark_tweak.tres:28 (builder `vo.rook.reloading_%d`) |
+| `vo.rook.reloading_2` | reloading | A | systems/vo/bark_tweak.tres:28 (builder `vo.rook.reloading_%d`) |
+| `vo.rook.device_jammed_1` | device_jammed | A | systems/vo/bark_tweak.tres:26 (builder `vo.rook.device_jammed_%d`) |
+| `vo.rook.device_jammed_2` | device_jammed | A | systems/vo/bark_tweak.tres:26 (builder `vo.rook.device_jammed_%d`) |
+| `vo.rook.bagging_body_1` | bagging_body | A | systems/vo/bark_tweak.tres:29 (builder `vo.rook.bagging_body_%d`) |
+| `vo.rook.bagging_body_2` | bagging_body | A | systems/vo/bark_tweak.tres:29 (builder `vo.rook.bagging_body_%d`) |
+| `vo.rook.going_loud_1` | going_loud | A | systems/vo/bark_tweak.tres:30 (builder `vo.rook.going_loud_%d`) |
+| `vo.rook.going_loud_2` | going_loud | A | systems/vo/bark_tweak.tres:30 (builder `vo.rook.going_loud_%d`) |
+| `vo.rook.crew_downed_1` | crew_downed | A | systems/vo/bark_tweak.tres:27 (builder `vo.rook.crew_downed_%d`) |
+| `vo.rook.crew_downed_2` | crew_downed | A | systems/vo/bark_tweak.tres:27 (builder `vo.rook.crew_downed_%d`) |
+| `vo.rook.reviving_1` | reviving | A | systems/vo/bark_tweak.tres:31 (builder `vo.rook.reviving_%d`) |
+| `vo.rook.reviving_2` | reviving | A | systems/vo/bark_tweak.tres:31 (builder `vo.rook.reviving_%d`) |
+| `vo.rook.cops_incoming_1` | cops_incoming | A | systems/vo/bark_tweak.tres:32 (builder `vo.rook.cops_incoming_%d`) |
+| `vo.rook.cops_incoming_2` | cops_incoming | A | systems/vo/bark_tweak.tres:32 (builder `vo.rook.cops_incoming_%d`) |
+| `vo.rook.loot_secured_1` | loot_secured | A | systems/vo/bark_tweak.tres:33 (builder `vo.rook.loot_secured_%d`) |
+| `vo.rook.loot_secured_2` | loot_secured | A | systems/vo/bark_tweak.tres:33 (builder `vo.rook.loot_secured_%d`) |
+| `vo.rook.guard_down_1` | guard_down | A | systems/vo/bark_tweak.tres:34 (builder `vo.rook.guard_down_%d`) |
+| `vo.rook.guard_down_2` | guard_down | A | systems/vo/bark_tweak.tres:34 (builder `vo.rook.guard_down_%d`) |
+| `vo.rook.civilian_killed_1` | civilian_killed | A | systems/vo/bark_tweak.tres:35 (builder `vo.rook.civilian_killed_%d`) |
+| `vo.rook.civilian_killed_2` | civilian_killed | A | systems/vo/bark_tweak.tres:35 (builder `vo.rook.civilian_killed_%d`) |
+| `vo.sable.pager_started_1` | pager_started | A | systems/vo/bark_tweak.tres:25 (builder `vo.sable.pager_started_%d`) |
+| `vo.sable.pager_started_2` | pager_started | A | systems/vo/bark_tweak.tres:25 (builder `vo.sable.pager_started_%d`) |
+| `vo.sable.reloading_1` | reloading | A | systems/vo/bark_tweak.tres:28 (builder `vo.sable.reloading_%d`) |
+| `vo.sable.reloading_2` | reloading | A | systems/vo/bark_tweak.tres:28 (builder `vo.sable.reloading_%d`) |
+| `vo.sable.device_jammed_1` | device_jammed | A | systems/vo/bark_tweak.tres:26 (builder `vo.sable.device_jammed_%d`) |
+| `vo.sable.device_jammed_2` | device_jammed | A | systems/vo/bark_tweak.tres:26 (builder `vo.sable.device_jammed_%d`) |
+| `vo.sable.bagging_body_1` | bagging_body | A | systems/vo/bark_tweak.tres:29 (builder `vo.sable.bagging_body_%d`) |
+| `vo.sable.bagging_body_2` | bagging_body | A | systems/vo/bark_tweak.tres:29 (builder `vo.sable.bagging_body_%d`) |
+| `vo.sable.going_loud_1` | going_loud | A | systems/vo/bark_tweak.tres:30 (builder `vo.sable.going_loud_%d`) |
+| `vo.sable.going_loud_2` | going_loud | A | systems/vo/bark_tweak.tres:30 (builder `vo.sable.going_loud_%d`) |
+| `vo.sable.crew_downed_1` | crew_downed | A | systems/vo/bark_tweak.tres:27 (builder `vo.sable.crew_downed_%d`) |
+| `vo.sable.crew_downed_2` | crew_downed | A | systems/vo/bark_tweak.tres:27 (builder `vo.sable.crew_downed_%d`) |
+| `vo.sable.reviving_1` | reviving | A | systems/vo/bark_tweak.tres:31 (builder `vo.sable.reviving_%d`) |
+| `vo.sable.reviving_2` | reviving | A | systems/vo/bark_tweak.tres:31 (builder `vo.sable.reviving_%d`) |
+| `vo.sable.cops_incoming_1` | cops_incoming | A | systems/vo/bark_tweak.tres:32 (builder `vo.sable.cops_incoming_%d`) |
+| `vo.sable.cops_incoming_2` | cops_incoming | A | systems/vo/bark_tweak.tres:32 (builder `vo.sable.cops_incoming_%d`) |
+| `vo.sable.loot_secured_1` | loot_secured | A | systems/vo/bark_tweak.tres:33 (builder `vo.sable.loot_secured_%d`) |
+| `vo.sable.loot_secured_2` | loot_secured | A | systems/vo/bark_tweak.tres:33 (builder `vo.sable.loot_secured_%d`) |
+| `vo.sable.guard_down_1` | guard_down | A | systems/vo/bark_tweak.tres:34 (builder `vo.sable.guard_down_%d`) |
+| `vo.sable.guard_down_2` | guard_down | A | systems/vo/bark_tweak.tres:34 (builder `vo.sable.guard_down_%d`) |
+| `vo.sable.civilian_killed_1` | civilian_killed | A | systems/vo/bark_tweak.tres:35 (builder `vo.sable.civilian_killed_%d`) |
+| `vo.sable.civilian_killed_2` | civilian_killed | A | systems/vo/bark_tweak.tres:35 (builder `vo.sable.civilian_killed_%d`) |
+| `vo.dutch.pager_started_1` | pager_started | A | systems/vo/bark_tweak.tres:25 (builder `vo.dutch.pager_started_%d`) |
+| `vo.dutch.pager_started_2` | pager_started | A | systems/vo/bark_tweak.tres:25 (builder `vo.dutch.pager_started_%d`) |
+| `vo.dutch.reloading_1` | reloading | A | systems/vo/bark_tweak.tres:28 (builder `vo.dutch.reloading_%d`) |
+| `vo.dutch.reloading_2` | reloading | A | systems/vo/bark_tweak.tres:28 (builder `vo.dutch.reloading_%d`) |
+| `vo.dutch.device_jammed_1` | device_jammed | A | systems/vo/bark_tweak.tres:26 (builder `vo.dutch.device_jammed_%d`) |
+| `vo.dutch.device_jammed_2` | device_jammed | A | systems/vo/bark_tweak.tres:26 (builder `vo.dutch.device_jammed_%d`) |
+| `vo.dutch.bagging_body_1` | bagging_body | A | systems/vo/bark_tweak.tres:29 (builder `vo.dutch.bagging_body_%d`) |
+| `vo.dutch.bagging_body_2` | bagging_body | A | systems/vo/bark_tweak.tres:29 (builder `vo.dutch.bagging_body_%d`) |
+| `vo.dutch.going_loud_1` | going_loud | A | systems/vo/bark_tweak.tres:30 (builder `vo.dutch.going_loud_%d`) |
+| `vo.dutch.going_loud_2` | going_loud | A | systems/vo/bark_tweak.tres:30 (builder `vo.dutch.going_loud_%d`) |
+| `vo.dutch.crew_downed_1` | crew_downed | A | systems/vo/bark_tweak.tres:27 (builder `vo.dutch.crew_downed_%d`) |
+| `vo.dutch.crew_downed_2` | crew_downed | A | systems/vo/bark_tweak.tres:27 (builder `vo.dutch.crew_downed_%d`) |
+| `vo.dutch.reviving_1` | reviving | A | systems/vo/bark_tweak.tres:31 (builder `vo.dutch.reviving_%d`) |
+| `vo.dutch.reviving_2` | reviving | A | systems/vo/bark_tweak.tres:31 (builder `vo.dutch.reviving_%d`) |
+| `vo.dutch.cops_incoming_1` | cops_incoming | A | systems/vo/bark_tweak.tres:32 (builder `vo.dutch.cops_incoming_%d`) |
+| `vo.dutch.cops_incoming_2` | cops_incoming | A | systems/vo/bark_tweak.tres:32 (builder `vo.dutch.cops_incoming_%d`) |
+| `vo.dutch.loot_secured_1` | loot_secured | A | systems/vo/bark_tweak.tres:33 (builder `vo.dutch.loot_secured_%d`) |
+| `vo.dutch.loot_secured_2` | loot_secured | A | systems/vo/bark_tweak.tres:33 (builder `vo.dutch.loot_secured_%d`) |
+| `vo.dutch.guard_down_1` | guard_down | A | systems/vo/bark_tweak.tres:34 (builder `vo.dutch.guard_down_%d`) |
+| `vo.dutch.guard_down_2` | guard_down | A | systems/vo/bark_tweak.tres:34 (builder `vo.dutch.guard_down_%d`) |
+| `vo.dutch.civilian_killed_1` | civilian_killed | A | systems/vo/bark_tweak.tres:35 (builder `vo.dutch.civilian_killed_%d`) |
+| `vo.dutch.civilian_killed_2` | civilian_killed | A | systems/vo/bark_tweak.tres:35 (builder `vo.dutch.civilian_killed_%d`) |
+| `vo.wren.pager_started_1` | pager_started | A | systems/vo/bark_tweak.tres:25 (builder `vo.wren.pager_started_%d`) |
+| `vo.wren.pager_started_2` | pager_started | A | systems/vo/bark_tweak.tres:25 (builder `vo.wren.pager_started_%d`) |
+| `vo.wren.reloading_1` | reloading | A | systems/vo/bark_tweak.tres:28 (builder `vo.wren.reloading_%d`) |
+| `vo.wren.reloading_2` | reloading | A | systems/vo/bark_tweak.tres:28 (builder `vo.wren.reloading_%d`) |
+| `vo.wren.device_jammed_1` | device_jammed | A | systems/vo/bark_tweak.tres:26 (builder `vo.wren.device_jammed_%d`) |
+| `vo.wren.device_jammed_2` | device_jammed | A | systems/vo/bark_tweak.tres:26 (builder `vo.wren.device_jammed_%d`) |
+| `vo.wren.bagging_body_1` | bagging_body | A | systems/vo/bark_tweak.tres:29 (builder `vo.wren.bagging_body_%d`) |
+| `vo.wren.bagging_body_2` | bagging_body | A | systems/vo/bark_tweak.tres:29 (builder `vo.wren.bagging_body_%d`) |
+| `vo.wren.going_loud_1` | going_loud | A | systems/vo/bark_tweak.tres:30 (builder `vo.wren.going_loud_%d`) |
+| `vo.wren.going_loud_2` | going_loud | A | systems/vo/bark_tweak.tres:30 (builder `vo.wren.going_loud_%d`) |
+| `vo.wren.crew_downed_1` | crew_downed | A | systems/vo/bark_tweak.tres:27 (builder `vo.wren.crew_downed_%d`) |
+| `vo.wren.crew_downed_2` | crew_downed | A | systems/vo/bark_tweak.tres:27 (builder `vo.wren.crew_downed_%d`) |
+| `vo.wren.reviving_1` | reviving | A | systems/vo/bark_tweak.tres:31 (builder `vo.wren.reviving_%d`) |
+| `vo.wren.reviving_2` | reviving | A | systems/vo/bark_tweak.tres:31 (builder `vo.wren.reviving_%d`) |
+| `vo.wren.cops_incoming_1` | cops_incoming | A | systems/vo/bark_tweak.tres:32 (builder `vo.wren.cops_incoming_%d`) |
+| `vo.wren.cops_incoming_2` | cops_incoming | A | systems/vo/bark_tweak.tres:32 (builder `vo.wren.cops_incoming_%d`) |
+| `vo.wren.loot_secured_1` | loot_secured | A | systems/vo/bark_tweak.tres:33 (builder `vo.wren.loot_secured_%d`) |
+| `vo.wren.loot_secured_2` | loot_secured | A | systems/vo/bark_tweak.tres:33 (builder `vo.wren.loot_secured_%d`) |
+| `vo.wren.guard_down_1` | guard_down | A | systems/vo/bark_tweak.tres:34 (builder `vo.wren.guard_down_%d`) |
+| `vo.wren.guard_down_2` | guard_down | A | systems/vo/bark_tweak.tres:34 (builder `vo.wren.guard_down_%d`) |
+| `vo.wren.civilian_killed_1` | civilian_killed | A | systems/vo/bark_tweak.tres:35 (builder `vo.wren.civilian_killed_%d`) |
+| `vo.wren.civilian_killed_2` | civilian_killed | A | systems/vo/bark_tweak.tres:35 (builder `vo.wren.civilian_killed_%d`) |
+| `vo.marten.pager_started_1` | pager_started | A | systems/vo/bark_tweak.tres:25 (builder `vo.marten.pager_started_%d`) |
+| `vo.marten.pager_started_2` | pager_started | A | systems/vo/bark_tweak.tres:25 (builder `vo.marten.pager_started_%d`) |
+| `vo.marten.reloading_1` | reloading | A | systems/vo/bark_tweak.tres:28 (builder `vo.marten.reloading_%d`) |
+| `vo.marten.reloading_2` | reloading | A | systems/vo/bark_tweak.tres:28 (builder `vo.marten.reloading_%d`) |
+| `vo.marten.device_jammed_1` | device_jammed | A | systems/vo/bark_tweak.tres:26 (builder `vo.marten.device_jammed_%d`) |
+| `vo.marten.device_jammed_2` | device_jammed | A | systems/vo/bark_tweak.tres:26 (builder `vo.marten.device_jammed_%d`) |
+| `vo.marten.bagging_body_1` | bagging_body | A | systems/vo/bark_tweak.tres:29 (builder `vo.marten.bagging_body_%d`) |
+| `vo.marten.bagging_body_2` | bagging_body | A | systems/vo/bark_tweak.tres:29 (builder `vo.marten.bagging_body_%d`) |
+| `vo.marten.going_loud_1` | going_loud | A | systems/vo/bark_tweak.tres:30 (builder `vo.marten.going_loud_%d`) |
+| `vo.marten.going_loud_2` | going_loud | A | systems/vo/bark_tweak.tres:30 (builder `vo.marten.going_loud_%d`) |
+| `vo.marten.crew_downed_1` | crew_downed | A | systems/vo/bark_tweak.tres:27 (builder `vo.marten.crew_downed_%d`) |
+| `vo.marten.crew_downed_2` | crew_downed | A | systems/vo/bark_tweak.tres:27 (builder `vo.marten.crew_downed_%d`) |
+| `vo.marten.reviving_1` | reviving | A | systems/vo/bark_tweak.tres:31 (builder `vo.marten.reviving_%d`) |
+| `vo.marten.reviving_2` | reviving | A | systems/vo/bark_tweak.tres:31 (builder `vo.marten.reviving_%d`) |
+| `vo.marten.cops_incoming_1` | cops_incoming | A | systems/vo/bark_tweak.tres:32 (builder `vo.marten.cops_incoming_%d`) |
+| `vo.marten.cops_incoming_2` | cops_incoming | A | systems/vo/bark_tweak.tres:32 (builder `vo.marten.cops_incoming_%d`) |
+| `vo.marten.loot_secured_1` | loot_secured | A | systems/vo/bark_tweak.tres:33 (builder `vo.marten.loot_secured_%d`) |
+| `vo.marten.loot_secured_2` | loot_secured | A | systems/vo/bark_tweak.tres:33 (builder `vo.marten.loot_secured_%d`) |
+| `vo.marten.guard_down_1` | guard_down | A | systems/vo/bark_tweak.tres:34 (builder `vo.marten.guard_down_%d`) |
+| `vo.marten.guard_down_2` | guard_down | A | systems/vo/bark_tweak.tres:34 (builder `vo.marten.guard_down_%d`) |
+| `vo.marten.civilian_killed_1` | civilian_killed | A | systems/vo/bark_tweak.tres:35 (builder `vo.marten.civilian_killed_%d`) |
+| `vo.marten.civilian_killed_2` | civilian_killed | A | systems/vo/bark_tweak.tres:35 (builder `vo.marten.civilian_killed_%d`) |
+| `vo.jay.pager_started_1` | pager_started | A | systems/vo/bark_tweak.tres:25 (builder `vo.jay.pager_started_%d`) |
+| `vo.jay.pager_started_2` | pager_started | A | systems/vo/bark_tweak.tres:25 (builder `vo.jay.pager_started_%d`) |
+| `vo.jay.reloading_1` | reloading | A | systems/vo/bark_tweak.tres:28 (builder `vo.jay.reloading_%d`) |
+| `vo.jay.reloading_2` | reloading | A | systems/vo/bark_tweak.tres:28 (builder `vo.jay.reloading_%d`) |
+| `vo.jay.device_jammed_1` | device_jammed | A | systems/vo/bark_tweak.tres:26 (builder `vo.jay.device_jammed_%d`) |
+| `vo.jay.device_jammed_2` | device_jammed | A | systems/vo/bark_tweak.tres:26 (builder `vo.jay.device_jammed_%d`) |
+| `vo.jay.bagging_body_1` | bagging_body | A | systems/vo/bark_tweak.tres:29 (builder `vo.jay.bagging_body_%d`) |
+| `vo.jay.bagging_body_2` | bagging_body | A | systems/vo/bark_tweak.tres:29 (builder `vo.jay.bagging_body_%d`) |
+| `vo.jay.going_loud_1` | going_loud | A | systems/vo/bark_tweak.tres:30 (builder `vo.jay.going_loud_%d`) |
+| `vo.jay.going_loud_2` | going_loud | A | systems/vo/bark_tweak.tres:30 (builder `vo.jay.going_loud_%d`) |
+| `vo.jay.crew_downed_1` | crew_downed | A | systems/vo/bark_tweak.tres:27 (builder `vo.jay.crew_downed_%d`) |
+| `vo.jay.crew_downed_2` | crew_downed | A | systems/vo/bark_tweak.tres:27 (builder `vo.jay.crew_downed_%d`) |
+| `vo.jay.reviving_1` | reviving | A | systems/vo/bark_tweak.tres:31 (builder `vo.jay.reviving_%d`) |
+| `vo.jay.reviving_2` | reviving | A | systems/vo/bark_tweak.tres:31 (builder `vo.jay.reviving_%d`) |
+| `vo.jay.cops_incoming_1` | cops_incoming | A | systems/vo/bark_tweak.tres:32 (builder `vo.jay.cops_incoming_%d`) |
+| `vo.jay.cops_incoming_2` | cops_incoming | A | systems/vo/bark_tweak.tres:32 (builder `vo.jay.cops_incoming_%d`) |
+| `vo.jay.loot_secured_1` | loot_secured | A | systems/vo/bark_tweak.tres:33 (builder `vo.jay.loot_secured_%d`) |
+| `vo.jay.loot_secured_2` | loot_secured | A | systems/vo/bark_tweak.tres:33 (builder `vo.jay.loot_secured_%d`) |
+| `vo.jay.guard_down_1` | guard_down | A | systems/vo/bark_tweak.tres:34 (builder `vo.jay.guard_down_%d`) |
+| `vo.jay.guard_down_2` | guard_down | A | systems/vo/bark_tweak.tres:34 (builder `vo.jay.guard_down_%d`) |
+| `vo.jay.civilian_killed_1` | civilian_killed | A | systems/vo/bark_tweak.tres:35 (builder `vo.jay.civilian_killed_%d`) |
+| `vo.jay.civilian_killed_2` | civilian_killed | A | systems/vo/bark_tweak.tres:35 (builder `vo.jay.civilian_killed_%d`) |
+| `vo.mercer.abort` | stealth_abort | A | systems/heist/heist_runtime.gd:616<br>systems/heist/heist_runtime.gd:617 |
+| `vo.mercer.pager_last` | pager_last_answer | A | systems/stealth/pager_system.gd:291<br>systems/vo/bark_tweak.tres:12 |
 | `vo.mercer.dev_start` | dev_start | A | systems/dev/dev_sandbox_mission.gd:12 |
 | `vo.guard.cuff_warning` | cuff_warning | A | systems/stealth/stealth_tweak.gd:264 |
 | `vo.crew.ack_follow` | order_ack | A | systems/ai/crew_ai/crew_ai_brain.gd:153 (builder `vo.crew.ack_%s`) |

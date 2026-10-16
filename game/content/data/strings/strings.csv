@@ -2458,6 +2458,7 @@ ui.action.melee,Melee
 ui.action.slot_primary,Primary Weapon
 ui.action.slot_secondary,Secondary Weapon
 ui.action.swap_weapon,Swap Weapon
+ui.action.gadget_toggle,Weapon Gadget On/Off
 ui.action.interact,Interact
 ui.action.shout,Shout / Mark
 ui.action.mask_up,Mask Up

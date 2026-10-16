@@ -1,4 +1,4 @@
-# Contract: characters (v1.20)
+# Contract: characters (v1.22)
 
 Producer: ENV C (generated humanoids + animations). Consumer: ENV A (NPC/crew prefabs).
 Until delivered, ENV A uses capsule placeholders with the same node names.
@@ -270,3 +270,20 @@ left_ik follows the weapon's current LeftHandIK.
   the weapon in a low carry and the left hand does the work. ENV A plays the *_armed variant whenever the crew member holds a
   weapon. `carry_bag_walk` has the left hand on the strap at the left shoulder; the third-person carried-bag visual attaches
   there (ENV A).
+
+## v1.21: crew states in third person (D-116 follow-up; SOURCE `crew_states`, tools/blender/characters/_anim_crew3p.py)
+* **Akimbo:** `aim_akimbo` (90 f loop), `fire_akimbo` / `fire_akimbo_l` (9 f, shot@0; ENV A alternates per shot, right
+  first; each starts and ends on aim_akimbo f0), `reload_akimbo` (60 f; mag_out@8, mag_in@32, done@46). One pistol per hand
+  (HandR/Socket and HandL/Socket).
+* **Downed:** `downed_fire` (9 f, shot@0) and `downed_reload` (45 f; mag_out@6, mag_in@28, done@34), both downed f0 →
+  downed f0; `downed_getup` (40 f, up@34) to hold_pistol f0, ENV A crossfades 0.2 s into the current weapon's hold.
+* **Arrest / cuffed:** `downed_arrested` (40 f, disarm@6; ENV A hides the weapon at `disarm`, ends on crew_cuffed f0),
+  `crew_cuffed` (120 f loop), `crew_cuffed_enter` (18 f, from idle f0), `crew_cuffed_free` (24 f, free@8, to idle_alert f0).
+  The weapon stays hidden while cuffed. Custody has no body on the map, so it has no clip.
+
+## v1.22: Back/Socket is the carried bag's pivot
+`Back/Socket` seats a MEDIUM loot bag with an identity attach: slung from the left-shoulder strap of carry_bag_walk, the
+bag's top against the back, its length running from the left shoulder blade to the right hip, 50° below horizontal.
+Built from character_spec.gd SOCKET_OFFSETS["Back"] = (0.05, -0.10, 0.33) m on each body's measured back seat. The bag
+pivots sit at their bottom centres, so ENV A applies a socket-local offset per bag size: light (0, +0.05, 0), medium
+none, heavy (0, -0.05, 0). Published in the humanoid SOURCE `carried_bag` note.
