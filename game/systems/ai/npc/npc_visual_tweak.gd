@@ -11,5 +11,9 @@ extends Resource
 ## D-103 §3b.1: heist id -> {SpawnPoint tag -> character ids}, checked before tag_characters so a heist can dress a
 ## tag another heist already uses (Gallery Night's guard_hall wears gallery_guard, Night Deposit's does not).
 @export var heist_tag_characters: Dictionary = {}
+## LEAD (D's DB/SL cast audit): heist id -> {SpawnPoint tag -> pool name}. Tags of one pool share a single
+## round-robin deal (and must list the same ids), so e.g. every Shadow Ledger guard post plus the operator wear no
+## twins while their live count <= the pool's looks. An unmapped tag is its own pool.
+@export var heist_tag_pools: Dictionary = {}
 ## NPC role (&"civilian", &"guard", ...) -> character ids when no tag matched and no EnemyDef applies.
 @export var role_characters: Dictionary = {}
