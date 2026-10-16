@@ -1049,3 +1049,19 @@ Wrecker HP per difficulty (ROUTINE..CATACLYSM) becomes 2000 / 2000 / 3000 / 4500
 unchanged. PD2 shape: tanky, killable by an AR player through the visor with headshots at about half the reserve, and
 not by body fire alone. ENV A pins the table, the ratio and a Corsair head-route budget in a test; ENV B re-runs the
 balance tool after landing and reports the "solo within reserve" count.
+
+## D-126: the secondary slot holds pistols, SMGs and shotguns (PO, 2026-10-16)
+The PO's playtest: SMGs and shotguns belong in the secondary slot with the pistols. Every SMG and every shotgun
+(plowman_12, brute_12, harrow_12, reaper_db, mule_12) has `slot = SECONDARY`. Primaries are assault rifles, LMGs, snipers
+and specials. ENV B owns the data, the armory/loadout filters and the class tabs, and checks that the real loadout screen
+offers all of them as secondaries from a fresh profile (unlock levels apply as before). Ammo pools stay per weapon (D-118
+values). ENV A checks crew-AI loadouts, custody and downed (downed equips the secondary: a downed player with a shotgun
+secondary may fire it, PD2 bleed-out). ENV P checks the FP viewmodel and the swap paths for a secondary long gun.
+
+## D-127: enemies get a little tougher (PO, 2026-10-16)
+The PO's playtest: NPCs die too quickly. Every non-special enemy (guards, beat cops, SWAT, heavy SWAT, FBI and their
+variants) gets +25 % health on every difficulty. Head and limb multipliers, armor, damage and accuracy are unchanged.
+Specials keep their tuned values (D-125 Wrecker HP is not re-scaled). ENV A owns the enemy tweak data and pins the new table
+in a test (the D-125 Wrecker:Heavy ratio test moves to the new Heavy HP). ENV B re-runs the balance tool, with
+shots-to-kill per class against a Heavy SWAT, and flags any weapon that falls outside the PD2 class shape. Civilians
+are unchanged.
