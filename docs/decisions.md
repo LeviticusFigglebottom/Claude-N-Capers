@@ -1065,3 +1065,22 @@ Specials keep their tuned values (D-125 Wrecker HP is not re-scaled). ENV A owns
 in a test (the D-125 Wrecker:Heavy ratio test moves to the new Heavy HP). ENV B re-runs the balance tool, with
 shots-to-kill per class against a Heavy SWAT, and flags any weapon that falls outside the PD2 class shape. Civilians
 are unchanged.
+
+## D-128: detection follows PD2's formula and its ring indicator (PO, 2026-10-16)
+The PO's playtest: detection is too forgiving, and should mirror PD2's formula and its detection icon/ring. This replaces
+our ◇ design choices in pd2_fidelity S2 with PD2's behaviour wherever PD2's is known:
+* **Formula (ENV A).** Use PD2's detection presets and per-tick progress (the delay interpolated between the near and far
+  ranges, the angle term, the player's concealment-derived detection multiplier, the per-observer-type presets for
+  guards / civilians / cameras / police, and PD2's close-range uncover behaviour). Take the decay of the meter when
+  line of sight breaks from PD2 too. Our deviations go: the ×0.75 crouch multiplier (◇), the 0.25/s decay (◇), the 0.45
+  angle floor and the 0.1 distance floor, unless PD2 has the same term. Casing-mode rules (S1.1) stay. ENV A researches
+  PD2's actual values (the game's character detection presets and attention logic; cite the source in the S2 rows),
+  lands them in `stealth_tweak.tres`, and pins point-blank / mid / far fill times per observer type and DR in a test.
+  Where PD2's value can't be found, A picks the less forgiving option and marks it ◇.
+* **Indicator (ENV B).** PD2's detection HUD: over each observing NPC, a circular ring that fills clockwise as the
+  meter rises, with "?" inside while filling, turning into the red "!" at 100 %. Around the crosshair, one arc per
+  observer, in the observer's direction, filling the same way. Colours run white → orange → red. It replaces the
+  blue/orange chevrons in S2.1. Cameras use the same ring.
+* **Feel check (ENV P).** A windowed real-input stealth run on GH and SL after both land: detection should feel like PD2,
+  with lingering in a guard's view punished quickly and a clean, careful route still possible. Report fill times seen.
+The LEAD rewrites the S2 rows from A's sourced table when it lands.
