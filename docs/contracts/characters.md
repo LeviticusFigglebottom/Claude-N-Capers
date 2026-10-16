@@ -1,4 +1,4 @@
-# Contract: characters (v1.23)
+# Contract: characters (v1.24)
 
 Producer: ENV C (generated humanoids + animations). Consumer: ENV A (NPC/crew prefabs).
 Until delivered, ENV A uses capsule placeholders with the same node names.
@@ -307,3 +307,9 @@ none, heavy (0, -0.05, 0). Published in the humanoid SOURCE `carried_bag` note.
 * Night Deposit: the Halden hall, basement and rover guards form one pool of four (security_officer a-d).
 * ENV A deals each pool across its tags (a per-pool deal), so no two NPCs from one pool in a heist share a face until
   the pool runs out. test_p5_cast POOLS checks pool size, unique faces and both genders.
+
+## v1.24: armed seated idle (DB-4; SOURCE `crew_actions` / humanoid library)
+* `sit_chair_armed` (140 f loop): an armed body on a chair Seat (sit_chair's seat and feet), the long gun across the
+  lap, right hand on the grip, left on the fore-end. ENV A plays it instead of sit_chair for an armed seated NPC
+  (cartel `sit` posts, any armed guard on a seat post). Long-garment cloths render both faces and use seated drape
+  weights (no contract change; noted for consumers).
