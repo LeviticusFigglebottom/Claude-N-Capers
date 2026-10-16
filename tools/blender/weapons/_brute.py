@@ -76,3 +76,21 @@ def build_drum(ctx, mats, big: bool, parent=None, name="Drum"):
 def build_box(ctx, mats, parent=None, name="BoxMagazine"):
     return c.build_box_mag(ctx, mats, 0.080, 0.0160, 0.0380, curve=0.0, inside=0.020, mat_name="polymer",
                            round_r=0.0100, ribs=1, parent=parent, name=name, base_drop=0.007)
+
+
+def build_choke(ctx, mats, parent=None, name="Choke"):
+    """D-118 full choke threaded into the compensator face (tighter pattern); origin = Muzzle.
+    Knurled steel tube with a flared front lip, no side ports (the base comp keeps venting). Adds its own
+    ``Muzzle``."""
+    mb = ctx.builder()
+    st = mb.material(mats.steel())
+    dark = mb.material(mats.polymer())
+    length = 0.042
+    c.ring_y(mb, 0.0128, 0.0088, -0.004, length - 0.006, 0.0, st, segments=32)
+    c.ring_y(mb, 0.0140, 0.0082, length - 0.006, length, 0.0, st, segments=32)            # flared lip
+    for i in range(3):                                                                   # knurl bands
+        y = 0.006 + i * 0.009
+        mb.cylinder(0.0131, 0.0035, segments=12, centre=(0.0, y, 0.0), axis="Y", mat=dark)
+    body = c.finish(mb, name, bevel=0.0006, segments=1, parent=parent)
+    ctx.marker("Muzzle", (0.0, length + 0.001, 0.0), parent=body)
+    return body

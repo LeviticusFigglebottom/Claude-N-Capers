@@ -119,6 +119,15 @@ func set_item_icon(i: int, tex: Texture2D) -> void:
 	_items[i]["icon"] = tex
 
 
+## Lead queue (heister picker): an accent strip on this item's picker tile (alpha 0 = none).
+func get_item_accent(i: int) -> Color:
+	return _items[i].get("accent", Color(0, 0, 0, 0)) as Color
+
+
+func set_item_accent(i: int, c: Color) -> void:
+	_items[i]["accent"] = c
+
+
 # --- Picker -----------------------------------------------------------------------------------------
 
 ## Opens the item grid over the screen (the nearest UiScreen, else the viewport root).

@@ -79,6 +79,7 @@ func _build() -> void:
 	_build_tactical(n("Tactical"))
 	_build_preplan(n("Preplan"))
 	_build_review_cameras(n("ReviewCameras"))
+	_build_audio(add(map_root, node3d("Audio")) as Node3D)
 	build_gameplay(n("Gameplay"))
 	build_variants(n("Variants"))
 	_build_nav_links(nav)
@@ -103,6 +104,23 @@ func _build() -> void:
 	R.normalize_scene(_scene_out(), old_scene_uid)
 	print("shadow_ledger: saved %s (navmesh polygons: %d)" % [_scene_out(), polys])
 	quit(0)
+
+
+## D-117 Audio node (as Golden Hour / Nightfall Depository): CuePlayer, the shadow_ledger MusicDirector and the
+## ambience beds of the heist doc (Audio/lighting): tower interior (L40-L42) and the rain-swept roof / terrace.
+func _build_audio(parent: Node3D) -> void:
+	var beds: Array = [
+		["BedL40Service", Vector3(27.0, 1.8, 12.0), &"cue.amb_shadow_ledger_interior", -6.0],
+		["BedL41Executive", Vector3(18.0, 5.5, 4.0), &"cue.amb_shadow_ledger_interior", 0.0],
+		["BedL41Server", Vector3(28.0, 5.5, 10.0), &"cue.amb_shadow_ledger_interior", -2.0],
+		["BedL41Offices", Vector3(6.0, 5.5, 20.0), &"cue.amb_shadow_ledger_interior", -3.0],
+		["BedL42Executive", Vector3(18.0, 9.8, 4.0), &"cue.amb_shadow_ledger_interior", -2.0],
+		["BedL42West", Vector3(5.0, 9.8, 15.0), &"cue.amb_shadow_ledger_interior", -4.0],
+		["BedTerraceRain", Vector3(18.0, 9.5, 21.0), &"cue.amb_rooftop_rain", -4.0],
+		["BedRoofRain", Vector3(18.0, 13.0, 12.0), &"cue.amb_rooftop_rain", 0.0],
+		["BedRoofEast", Vector3(30.0, 13.0, 4.0), &"cue.amb_rooftop_rain", -2.0],
+	]
+	load("res://world/audio/map_audio_builder.gd").call(&"build", parent, map_root, &"shadow_ledger", beds)
 
 
 func _fail(msg: String) -> void:

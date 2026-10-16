@@ -1208,6 +1208,8 @@ item.mod.rail_reflex_sight.name,Beacon Reflex Sight
 item.mod.rail_reflex_sight.desc,An open red dot for any rail. Faster target pickup with a little extra bulk.
 item.mod.rail_prism_scope.name,Tri-Lens Prism Scope
 item.mod.rail_prism_scope.desc,"A compact 3x prism sight. Precise at range, slower to raise, hard to hide."
+item.mod.rail_vertical_grip.name,Rail Foregrip
+item.mod.rail_vertical_grip.desc,A clamp-on vertical grip for any lower rail. Tames the climb for a little extra bulk.
 item.mod.plowman_choke.name,Breacher Choke
 item.mod.plowman_choke.desc,Tightens the pellet spread. Toothed and ported for close work.
 item.mod.plowman_ghost_ring.name,Ghost Ring Sight
@@ -1500,6 +1502,9 @@ item.mask_pattern.starburst.name,Starburst
 objective.glasshouse.casing,Case the store
 objective.glasshouse.keycard,Find the manager's keycard
 objective.glasshouse.code,Find the safe code
+objective.glasshouse.extra_bags,Secure more than two bags
+objective.glasshouse.salon,Search the salon
+objective.glasshouse.display_cases,Smash the display cases
 objective.glasshouse.workshop_door,Get into the workshop
 objective.glasshouse.safe,Open the safe
 objective.glasshouse.safe_loot,Bag the consignment
@@ -1821,6 +1826,10 @@ item.mod.mastiff_vertical_grip.desc,A foregrip on the shroud rail. Tames the cli
 item.mod.mastiff_standard_mag.name,Standard Magazine
 item.mod.mastiff_extended_mag.name,Thirty-Five-Round Stick
 item.mod.mastiff_extended_mag.desc,A longer stick with a witness window. Ten more rounds and a slower reload.
+item.mod.mastiff_collapsed_stock.name,Collapsed Wire Stock
+item.mod.mastiff_collapsed_stock.desc,"The wire stock telescoped in. Easier to hide, harder to hold steady."
+item.mod.mastiff_heavy_stock.name,Heavy Stock
+item.mod.mastiff_heavy_stock.desc,"A solid stock with a cheek riser and a recoil pad in place of the wire. Steadier, but bulky."
 item.weapon.anvil_lmg.name,Anvil
 item.weapon.anvil_lmg.desc,"Tillman's belt-fed 7.62 workhorse. A hundred heavy rounds, a walnut stock, and nothing about it is discreet."
 item.mod.anvil_short_barrel.name,Assault Barrel
@@ -1851,6 +1860,8 @@ item.mod.mule_folding_stock.desc,A skeleton stock for steadier follow-ups. The M
 item.mod.mule_standard_tube.name,Five-Shell Tube
 item.mod.mule_extended_tube.name,Extended Tube
 item.mod.mule_extended_tube.desc,Two more shells under the barrel. Each shell still loads one at a time.
+item.mod.mule_breacher_brake.name,Breacher Brake
+item.mod.mule_breacher_brake.desc,"A toothed, side-ported brake for the short barrel. Less kick, a little longer."
 item.weapon.akimbo_warden_45.name,Warden .45 Pair
 item.weapon.akimbo_warden_45.desc,"Two Warden .45s, one in each hand. Twice the rounds and twice the noise, at the cost of accuracy."
 item.mod.akimbo_w45_compensator.name,Ridgeline Compensator Pair
@@ -1961,6 +1972,7 @@ ui.workshop.status.equipped_secondary,Equipped as your secondary
 ui.workshop.status.for_sale,For sale: {price}
 ui.workshop.status.locked_level,Unlocks at level {level}
 ui.workshop.status.stock,Stock part
+ui.workshop.stock_desc,"The factory part: the weapon's baseline, no stat changes."
 ui.workshop.status.mod_source,Not owned. Drops from payday cards or buy it here for {price}.
 ui.workshop.status.mod_unlock,Locked. Unlocked by: {source}
 ui.workshop.vs_equipped,vs. your equipped {slot}
@@ -2011,6 +2023,10 @@ item.mod.lancet_suppressor.name,Lancet Suppressor
 item.mod.lancet_suppressor.desc,"A long can for the .45. Near silent, with a damage cost."
 item.mod.lancet_vertical_grip.name,Vertical Grip
 item.mod.lancet_vertical_grip.desc,A short foregrip on the lower rail. Less muzzle climb.
+item.mod.lancet_collapsed_stock.name,Collapsed Stock
+item.mod.lancet_collapsed_stock.desc,"A light telescoping stock pushed all the way in. Easier to hide, harder to hold steady."
+item.mod.lancet_tactical_stock.name,Tactical Stock
+item.mod.lancet_tactical_stock.desc,"A full adjustable stock with a cheek riser. Steadier and tighter, but bulky."
 item.weapon.hush_9.name,Hush 9
 item.weapon.hush_9.desc,"A Tillman 9 mm with the suppressor built around the barrel. Quiet out of the box, at the cost of some punch."
 item.mod.hush_iron_sights.name,Drum Rear Sight
@@ -2039,6 +2055,10 @@ item.mod.bastion_suppressor.name,Bastion Suppressor
 item.mod.bastion_suppressor.desc,"A big can for the 7.62. Near silent, with a clear damage cost."
 item.mod.bastion_bipod.name,Folding Bipod
 item.mod.bastion_bipod.desc,"A bipod clamped under the handguard. Steadier, heavier."
+item.mod.bastion_collapsed_stock.name,Collapsed Stock
+item.mod.bastion_collapsed_stock.desc,"A light telescoping stock pushed all the way in. Easier to hide, harder to hold steady."
+item.mod.bastion_precision_stock.name,Precision Stock
+item.mod.bastion_precision_stock.desc,"A heavy stock with a cheek riser and a thick recoil pad. Steadier and tighter, but bulky."
 item.weapon.lark_carbine.name,Lark Carbine
 item.weapon.lark_carbine.desc,"A short Halvard carbine with a three-round burst. Light rounds, light handling, easy to carry."
 item.mod.lark_iron_sights.name,Standard Iron Sights
@@ -2057,6 +2077,10 @@ item.mod.harrow_extended_mag.name,Twelve-Shell Box
 item.mod.harrow_extended_mag.desc,"A long box magazine for twelve shells. Slower to swap, harder to hide."
 item.mod.harrow_muzzle_brake.name,Muzzle Brake
 item.mod.harrow_muzzle_brake.desc,"A ported brake that pushes the muzzle down. Less kick, a little longer."
+item.mod.harrow_collapsed_stock.name,Collapsed Stock
+item.mod.harrow_collapsed_stock.desc,"A light telescoping stock pushed all the way in. Easier to hide, kicks a lot harder."
+item.mod.harrow_padded_stock.name,Padded Stock
+item.mod.harrow_padded_stock.desc,"A heavy stock with a thick recoil pad that soaks up the kick. Steadier, but bulky."
 item.weapon.brute_12.name,Brute 12
 item.weapon.brute_12.desc,A Tillman full-automatic shotgun fed from a drum. It empties fast and it does not care what is in front of it.
 item.mod.brute_iron_sights.name,Carry-Handle Sights
@@ -2065,6 +2089,8 @@ item.mod.brute_box_8.name,Eight-Shell Box
 item.mod.brute_box_8.desc,"A slim box instead of the drum. Much easier to hide and to swap, but only eight shells."
 item.mod.brute_drum_32.name,Thirty-Two-Shell Drum
 item.mod.brute_drum_32.desc,"A huge drum. Twelve more shells, slow to swap and impossible to hide."
+item.mod.brute_full_choke.name,Full Choke
+item.mod.brute_full_choke.desc,"A tight choke threaded into the compensator. Narrows the pellet spread, a little longer."
 item.weapon.reaper_db.name,Reaper Double
 item.weapon.reaper_db.desc,"A Marrow & Kell side-by-side. Two barrels, two shells, both reloaded at once. Devastating up close."
 item.mod.reaper_bead_sight.name,Brass Bead
@@ -2083,6 +2109,8 @@ item.mod.gale_box_200.name,Two-Hundred-Round Belt Box
 item.mod.gale_box_200.desc,A bigger box for twice the belt. Slower to swap and very heavy.
 item.mod.gale_bipod.name,Folding Bipod
 item.mod.gale_bipod.desc,"A bipod under the barrel shroud. Steadier, heavier."
+item.mod.gale_barrage_brake.name,Barrage Brake
+item.mod.gale_barrage_brake.desc,"A heavy brake clamped over the stock one. Holds the muzzle down on long bursts, adds bulk."
 item.weapon.osprey_762.name,Osprey Marksman
 item.weapon.osprey_762.desc,"A Brannock semi-automatic marksman rifle. Less punch per shot than a bolt gun, but no bolt to work."
 item.mod.osprey_scope_4x.name,Fixed 4x Scope
@@ -2105,6 +2133,8 @@ item.mod.shrike_scout_scope.name,Scout Scope
 item.mod.shrike_scout_scope.desc,"A long-eye-relief 3x scope over the barrel. Reach, at the cost of bulk."
 item.mod.shrike_carbine_barrel.name,Carbine Barrel
 item.mod.shrike_carbine_barrel.desc,"A shorter barrel. Easier to carry, less power."
+item.mod.shrike_suppressor.name,Shrike Suppressor
+item.mod.shrike_suppressor.desc,"A slim can threaded on the long barrel. Silent shots, a little less power. Not for the carbine barrel."
 item.weapon.thorn_bow.name,Thorn Compound Bow
 item.weapon.thorn_bow.desc,"A Brannock compound bow. Silent, deadly at full draw, and the arrows can be picked up again."
 item.mod.thorn_pin_sight.name,Single-Pin Sight
@@ -2817,6 +2847,9 @@ voice.vo.mercer.radio_loot_secured_3,That's one more counted.
 voice.vo.vance.glasshouse_radio_casing,Seen enough of the showroom? Good. The pretty things are in the back.
 voice.vo.vance.glasshouse_radio_keycard,The manager's keycard. He really should keep better company.
 voice.vo.vance.glasshouse_radio_code,"The code. Written on a sticky note, I imagine. Jewelers are so sentimental."
+voice.vo.vance.glasshouse_radio_extra_bags,"More than my minimum. You do spoil me."
+voice.vo.vance.glasshouse_radio_salon,"The salon. Clients leave the nicest things in their coats."
+voice.vo.vance.glasshouse_radio_display_cases,"The cases. Loud, but honest work."
 voice.vo.vance.glasshouse_radio_workshop_door,"The workshop. Mind the tools, darling, they're worth more than you are."
 voice.vo.vance.glasshouse_radio_safe,"The safe's open. Steady hands, please. Those are estate pieces."
 voice.vo.vance.glasshouse_radio_safe_loot_new,"Bag the consignment. All of it, if you love me."

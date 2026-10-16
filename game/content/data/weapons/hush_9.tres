@@ -47,6 +47,7 @@ price = 34000
 unlock_level = 15
 mod_slots = {
 3: [&"mod.hush_iron_sights", &"mod.rail_reflex_sight"],
+5: [&"mod.rail_vertical_grip"],
 6: [&"mod.hush_collapsed_stock"],
 7: [&"mod.hush_standard_mag", &"mod.hush_extended_mag"]
 }

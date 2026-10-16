@@ -14,6 +14,9 @@
 extends HeistMission
 
 const MIN_BAGS: int = 4
+## D-115 (DB-2, doc §Loot path): only cash bricks and weapon crates count toward the MIN_BAGS; the product
+## (loot.contraband) and anything else pays but does not count.
+const REQUIRED_LOOT: Array[StringName] = [&"loot.cash_bricks", &"loot.weapon_crate"]
 ## The burn_point's telegraph (InteractionTweak.burn_warning_s): the shutters drop when it lights.
 const SHUTTER_WARNING_S: float = 5.0
 const FOG_BOAT_DELAY_S: float = 30.0
@@ -27,6 +30,10 @@ const TAG_STRONGROOM_DOOR: StringName = &"strongroom_door"
 const TAG_COUNT_CAGE: StringName = &"count_cage"
 const TAG_CASH: StringName = &"cash_bricks"
 const TAG_PADLOCK: StringName = &"padlock"
+## D-115 (DB-4, doc §Loot path / §Stealth routes): the thermite bag starts at the crew's spawn. One loot_spawn per
+## spawn, tagged `thermite_<spawn>` (THERMITE_SPAWNS); the pre-C map has only the gate bag, tagged TAG_THERMITE.
+const TAG_THERMITE: StringName = &"thermite"
+const THERMITE_SPAWNS: Array[StringName] = [&"gate", &"lane", &"pontoon"]
 const TAG_LIFT: StringName = &"goods_lift"
 const TAG_BREAKER: StringName = &"lift_breaker"
 const TAG_POLICE_GATE: StringName = &"police_gate"
@@ -46,11 +53,14 @@ const RARE_EXTRA_CONTAINER: StringName = &"extra_container"
 const RARE_POLICE_TIPPED: StringName = &"police_tipped"
 const RARE_REINFORCEMENTS: StringName = &"cartel_reinforcements"
 const RARE_FOG: StringName = &"fog_lifts"
-## Briefing recap at the start (the contact, then Mercer; doc VO ids, D-051).
-const BRIEFING: Array[Array] = [[&"reyes", &"vo.reyes.briefing_dockside_burn_1"], [&"reyes", &"vo.reyes.briefing_dockside_burn_2"],
-	[&"reyes", &"vo.reyes.briefing_dockside_burn_3"], [&"mercer", &"vo.mercer.briefing_dockside_burn_1"],
-	[&"mercer", &"vo.mercer.briefing_dockside_burn_2"]]
+## DB-6: the S3 viaduct perch (Variants/Group_perch_viaduct, tag `s3`): police-only, usable once the fog lifts.
+const TAG_PERCH_FOG: StringName = &"s3"
 const SPECIAL_LONGSHOT: StringName = &"longshot"
+## D-115 (DB-13): Mercer's Longshot line by the SNIPER_PERCH tag of the perch the Longshot holds (doc §Loud: S1 the
+## Pier 10 crane, S2 the Bellweather roof; S3 / S4 have no line).
+const SNIPER_LINES: Dictionary = {
+	&"s1": &"vo.mercer.dockside_burn_sniper_crane", &"s2": &"vo.mercer.dockside_burn_sniper_roof",
+}
 const CONTAINER_KEYS: Array[String] = ["k1", "k2", "k3", "k4", "k5", "k6"]
 ## Fire shutters (layout SHUTTERS): product slot -> doors under Gameplay/Doors.
 const SHUTTERS: Dictionary = {
@@ -69,12 +79,13 @@ var _cartel_awake: bool = false
 var _gunmen_down: int = 0
 var _weapons: Array[String] = []
 var _weapons_found: bool = false
-var _snipers_seen: int = 0
+var _sniper_lines_said: Dictionary = {}
+## DB-2: required bags secured (REQUIRED_LOOT only; HeistMission.bags_secured counts every bag).
+var _required_secured: int = 0
 
 
 func _on_mission_start() -> void:
-	for b: Array in BRIEFING:
-		say(StringName(b[1]), {}, StringName(b[0]))
+	# D-117 §6: the briefing lines (lines.tres event `briefing`) play on the briefing screen only, never in-heist.
 	say(&"vo.mercer.dockside_burn_intro")
 	say(&"vo.reyes.dockside_burn_contact_intro", {}, &"reyes")
 	# [cartel] covers the whole yard (thin out the gunmen): no marker, like casing.
@@ -84,18 +95,21 @@ func _on_mission_start() -> void:
 		{"location": variant(&"product_location"), "marker_tags": [TAG_PRODUCT]})
 	add_objective(&"burn", &"objective.dockside_burn.burn", Enums.ObjectiveState.HIDDEN, {"marker_tags": [TAG_BURN]})
 	var countroom: bool = _slot_active(&"cash_location", &"cash_countroom")
+	# D-115 (DB-16, doc §Loot path): the 4 bags are "cash bricks and/or weapon crates". The cash location is rolled
+	# (strongroom OR count room, never both), so each cash objective's alternative is the containers, and the
+	# containers are optional with the run's cash objective as their alternative.
 	add_objective(&"strongroom", &"objective.dockside_burn.strongroom",
 		Enums.ObjectiveState.HIDDEN if countroom else Enums.ObjectiveState.ACTIVE,
-		{"alternative": &"count_cage", "marker_tags": [TAG_STRONGROOM_DRILL]})
+		{"alternative": &"containers", "marker_tags": [TAG_STRONGROOM_DRILL]})
 	# The cage and the cash stacks of the active location (the cage exists only with cash_countroom).
 	add_objective(&"count_cage", &"objective.dockside_burn.count_cage",
 		Enums.ObjectiveState.ACTIVE if countroom else Enums.ObjectiveState.HIDDEN,
-		{"alternative": &"strongroom", "marker_tags": [TAG_COUNT_CAGE, TAG_CASH]})
+		{"alternative": &"containers", "marker_tags": [TAG_COUNT_CAGE, TAG_CASH]})
 	add_objective(&"containers", &"objective.dockside_burn.containers", Enums.ObjectiveState.ACTIVE,
-		{"marker_tags": _container_tags(CONTAINER_KEYS)})
+		{"optional": true, "alternative": &"count_cage" if countroom else &"strongroom",
+			"marker_tags": _container_tags(CONTAINER_KEYS)})
 	add_objective(&"secure", &"objective.dockside_burn.secure", Enums.ObjectiveState.ACTIVE,
 		{"bags": MIN_BAGS, "count": 0, "total": MIN_BAGS, "optional_more": true, "marker_tags": [TAG_LOOT_SECURE]})
-	require_loot(&"secure", MIN_BAGS)
 	add_objective(&"escape_wait", &"objective.dockside_burn.escape_wait", Enums.ObjectiveState.HIDDEN,
 		{"marker_tags": [_escape_tag()]})
 	add_objective(&"escape", &"objective.dockside_burn.escape", Enums.ObjectiveState.HIDDEN,
@@ -108,6 +122,7 @@ func _on_mission_start() -> void:
 	on_event(&"npc_alert_state_changed", _on_npc_alert)
 	on_event(&"npc_killed", _on_npc_killed)
 	on_event(&"special_spawned", _on_special_spawned)
+	_apply_thermite()
 	_apply_cash(countroom)
 	_apply_product()
 	_apply_containers()
@@ -130,6 +145,31 @@ func _apply_cash(countroom: bool) -> void:
 			(d as Node3D).visible = false
 		for ls: Node in find_tagged(TAG_CASH):
 			_set_enabled(ls, false)
+
+
+## DB-4: only the thermite bag of the crew's spawn (crew_spawn_tag: preplan_spawn_lane / _pontoon, else the gate)
+## is shown and usable; the other spawns' bags are hidden, disabled and emptied. Without a bag tagged for the
+## chosen spawn (today's map) the gate bag stays.
+func _apply_thermite() -> void:
+	var spawn: StringName = &"gate"
+	for key: StringName in THERMITE_SPAWNS:
+		if String(crew_spawn_tag()).ends_with(String(key)):
+			spawn = key
+	var keep: Array[Node] = find_tagged(StringName("thermite_%s" % spawn))
+	if keep.is_empty():
+		keep = find_tagged(&"thermite_gate")
+		keep.append_array(find_tagged(TAG_THERMITE))
+	var all: Array[Node] = find_tagged(TAG_THERMITE)
+	for key2: StringName in THERMITE_SPAWNS:
+		all.append_array(find_tagged(StringName("thermite_%s" % key2)))
+	for bag: Node in all:
+		if keep.has(bag):
+			continue
+		_set_enabled(bag, false)
+		if "remaining" in bag:
+			bag.set(&"remaining", 0)
+		if bag is Node3D:
+			(bag as Node3D).visible = false
 
 
 func _apply_product() -> void:
@@ -218,6 +258,7 @@ func _schedule_rare_events() -> void:
 	if _rare(RARE_REINFORCEMENTS) and difficulty >= Enums.Difficulty.HAZARDOUS:
 		schedule_at(REINFORCEMENTS_AT_S, &"reinforcements", _on_reinforcements)
 	if _rare(RARE_FOG):
+		set_sniper_perches_open(TAG_PERCH_FOG, false)  # DB-6: no Longshot on S3 while the fog is in
 		schedule_at(FOG_LIFTS_AT_S, &"fog_lifts", _on_fog_lifts)
 
 
@@ -243,6 +284,7 @@ func _on_reinforcements() -> void:
 
 
 func _on_fog_lifts() -> void:
+	set_sniper_perches_open(TAG_PERCH_FOG, true)  # DB-6 (QC-25): the director's Longshots may take S3 now
 	say(&"vo.mercer.dockside_burn_fog_lifts")
 	var we: WorldEnvironment = get_node_or_null(^"../Lighting/WorldEnvironment") as WorldEnvironment
 	if we != null and we.environment != null:
@@ -251,30 +293,39 @@ func _on_fog_lifts() -> void:
 
 # --- Events -----------------------------------------------------------------------------------
 
-## First cartel gunman awake (TODO(QC-36): the mission cannot tell a gunman from a worker by net id;
-## the night shift never reaches COMBAT, so COMBAT is the cartel's).
-func _on_npc_alert(_npc_net_id: int, _old_state: int, new_state: int) -> void:
-	if _cartel_awake or new_state != Enums.AlertState.COMBAT:
+## First cartel gunman awake (QC-36 done: CartelBrain gunmen are role CartelBrain.ROLE, looked up by net id, so a
+## worker, a guard or an early cop reaching COMBAT is not the cartel waking).
+func _on_npc_alert(npc_net_id: int, _old_state: int, new_state: int) -> void:
+	if _cartel_awake or new_state != Enums.AlertState.COMBAT or not _is_cartel(npc_net_id):
 		return
 	_cartel_awake = true
 	say(&"vo.mercer.dockside_burn_cartel_awake")
 
 
-## Longshots (L4.7): the crane perch S1 is the first one the crew meets, the Bellweather roof the next
-## (the event does not name the perch; G1 approximation).
-func _on_special_spawned(_npc_net_id: int, special_type: StringName) -> void:
+## Longshots (L4.7, DB-13): the line names the perch the Longshot holds (its claimed SNIPER_PERCH, else the
+## nearest; tag s1 = the crane, s2 = the roof), once per perch.
+func _on_special_spawned(npc_net_id: int, special_type: StringName) -> void:
 	if not String(special_type).contains(String(SPECIAL_LONGSHOT)):
 		return
-	_snipers_seen += 1
-	if _snipers_seen == 1:
-		say(&"vo.mercer.dockside_burn_sniper_crane")
-	elif _snipers_seen == 2:
-		say(&"vo.mercer.dockside_burn_sniper_roof")
+	var perch: TacticalPoint = sniper_perch_of(npc_net_id)
+	if perch == null:
+		return
+	for tag: StringName in SNIPER_LINES:
+		if perch.tags.has(tag) and not _sniper_lines_said.has(tag):
+			_sniper_lines_said[tag] = true
+			say(SNIPER_LINES[tag])
 
 
-func _on_npc_killed(_npc_net_id: int, _killer_net_id: int, _info: Dictionary) -> void:
-	if not _police_started:
+## [cartel] thin-out (DB-17): only cartel gunmen killed before the police count (not civilians or workers).
+func _on_npc_killed(npc_net_id: int, _killer_net_id: int, _info: Dictionary) -> void:
+	if not _police_started and _is_cartel(npc_net_id):
 		_gunmen_down += 1
+		update_objective_data(&"cartel", {"gunmen_down": _gunmen_down})
+
+
+func _is_cartel(npc_net_id: int) -> bool:
+	var npc: NpcBase = npc_by_net_id(npc_net_id)
+	return npc != null and npc.role == CartelBrain.ROLE
 
 
 func _on_interaction_completed(interactable_net_id: int, _crew_slot: int, _kind: StringName) -> void:
@@ -326,9 +377,14 @@ func _on_device_jammed(device_net_id: int) -> void:
 		say(&"vo.mercer.dockside_burn_drill_jam")
 
 
-func _on_bag_secured(_bag_net_id: int, _loot_id: StringName, _value: int) -> void:
-	update_objective_data(&"secure", {"count": bags_secured, "total": MIN_BAGS})  # HUD: count / total bags
-	if bags_secured == MIN_BAGS:
+## DB-2: only REQUIRED_LOOT counts toward [secure] (HUD count / total); product and the rest pay only.
+func _on_bag_secured(_bag_net_id: int, loot_id: StringName, _value: int) -> void:
+	if not REQUIRED_LOOT.has(loot_id):
+		return
+	_required_secured += 1
+	update_objective_data(&"secure", {"count": _required_secured, "total": MIN_BAGS})  # HUD: count / total bags
+	if _required_secured == MIN_BAGS:
+		complete(&"secure")
 		say(&"vo.mercer.dockside_burn_required_secured")
 	_try_escape()
 
@@ -404,7 +460,7 @@ func _drop_shutters() -> void:
 ## The escape is called when [burn] and [secure] are done; it arrives after `escape_eta_s` (+30 s
 ## for the boat with `fog_lifts`).
 func _try_escape() -> void:
-	if _escape_open or not _burned or bags_secured < MIN_BAGS:
+	if _escape_open or not _burned or _required_secured < MIN_BAGS:
 		return
 	_escape_open = true
 	var tag: StringName = _escape_tag()

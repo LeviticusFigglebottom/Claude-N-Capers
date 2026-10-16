@@ -15,7 +15,6 @@ const MIN_BAGS: int = 4
 const ESCAPE_RETURN_S: float = 300.0
 const FOG_BOAT_DELAY_S: float = 60.0
 const FADES_FOR_ESCAPE: int = 2
-const LAST_PAGER: int = 4
 const CODE_GROUP: StringName = &"nd_time_lock"
 const ITEM_KEYCARD: StringName = &"item.keycard"
 const ITEM_CODE_NOTE: StringName = &"item.code_note"
@@ -61,6 +60,7 @@ var _manager_tag_tries: int = 0
 
 
 func _on_mission_start() -> void:
+	own_last_pager_line = true  # D-117: the heist's last-pager line replaces the generic one
 	say(&"vo.mercer.night_deposit_intro")
 	say(&"vo.accountant.night_deposit_contact_intro", {}, &"accountant")
 	add_objective(&"casing", &"objective.night_deposit.casing", Enums.ObjectiveState.ACTIVE, {"optional": true})
@@ -115,7 +115,7 @@ func _on_alarm(_reason: StringName) -> void:
 
 
 func _on_pager_answered(total: int) -> void:
-	if total == LAST_PAGER:
+	if total == pager_cap():
 		say(&"vo.mercer.night_deposit_last_pager", {"answered": total})
 
 

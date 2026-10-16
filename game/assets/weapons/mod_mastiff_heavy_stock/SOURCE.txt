@@ -1,0 +1,9 @@
+asset: mod_mastiff_heavy_stock
+script: tools/blender/weapons/mastiff_45_mods.py
+params: {"part": "stock_heavy"}
+seed: 2500654177  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category weapons --asset mod_mastiff_heavy_stock
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 25000
+tris_lod0: 628

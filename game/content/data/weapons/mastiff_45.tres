@@ -49,6 +49,7 @@ mod_slots = {
 2: [&"mod.mastiff_suppressor"],
 3: [&"mod.mastiff_iron_sights", &"mod.rail_reflex_sight"],
 5: [&"mod.mastiff_vertical_grip"],
+6: [&"mod.mastiff_collapsed_stock", &"mod.mastiff_heavy_stock"],
 7: [&"mod.mastiff_standard_mag", &"mod.mastiff_extended_mag"]
 }
 default_mods = {

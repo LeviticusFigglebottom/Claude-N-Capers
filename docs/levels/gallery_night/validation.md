@@ -146,7 +146,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## slopes: No walkable slope < 50° outside the play mesh
 
-- 561 x 345 columns (0.25 m), 214069 surface samples, 0 collider(s) with reachable walkable surfaces outside play
+- 561 x 345 columns (0.25 m), 214081 surface samples, 0 collider(s) with reachable walkable surfaces outside play
 
 
 ## navmesh: Navmesh

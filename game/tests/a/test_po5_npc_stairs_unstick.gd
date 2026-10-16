@@ -64,7 +64,8 @@ func test_po5_stalled_wander_gives_up() -> void:
 	b._wander_timer = 0.0
 	await wait_physics_frames(2)
 	assert_eq(b.mode, CivilianBrain.Mode.WANDER, "walking to the point behind the wall")
-	var gave_up: bool = await wait_until(func() -> bool: return b.mode == CivilianBrain.Mode.IDLE, 4.0)
+	# X-5: 6 s (the r 0.30 body reaches the wall later than the r 0.35 one did; two 1 s stall windows follow)
+	var gave_up: bool = await wait_until(func() -> bool: return b.mode == CivilianBrain.Mode.IDLE, 6.0)
 	assert_true(gave_up, "a stalled walk ends (re-path, then give the point up) within a few seconds")
 	assert_true(civ.global_position.x < 3.0, "it never got through the wall")
 	assert_eq(b._failed_target, pp, "the unreachable point is skipped by the next pick")

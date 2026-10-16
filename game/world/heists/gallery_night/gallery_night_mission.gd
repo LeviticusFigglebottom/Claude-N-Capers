@@ -10,6 +10,7 @@
 ## `escape_eta_s`. Fail reasons: custody / abort only (B3; HeistRuntime ends the heist, this script never fails it).
 ## GN-A1 (ENV A): last call (zones, guests out, relocks), the curator's carried card, frame sensors, the lockdown
 ## (shutters BARRED, reader dead, loud hack), rare-event spawns, asset.intel_list and Mercer's sweep-laser hint.
+## D-117 §6: every written mission line is said here, each at its moment (the VO_* constants and their handlers).
 extends HeistMission
 
 const TAG_CASING: StringName = &"casing_hall"
@@ -71,6 +72,34 @@ const TAG_TR_LASERS: StringName = &"treasury_lasers"
 const LASER_SWEEP_SLOT: StringName = &"lz_sweep"
 const LASER_HINT_M: float = 4.0
 const VO_LASER_SWEEP: StringName = &"vo.mercer.gallery_night_lasers_sweep"
+## D-117 §6 mission VO (lines.tres `event: mission`; doc §Audio). Once per heist unless the handler says otherwise.
+const VO_KEYCARD: StringName = &"vo.mercer.gallery_night_keycard"
+const VO_CURATOR_KEYCARD: StringName = &"vo.mercer.gallery_night_curator_keycard"
+const VO_HACK_STARTED: StringName = &"vo.mercer.gallery_night_hack_started"
+const VO_HACK_INTERRUPTED: StringName = &"vo.mercer.gallery_night_hack_interrupted"
+const VO_SENSORS_WARNING: StringName = &"vo.mercer.gallery_night_sensors_warning"
+const VO_LASERS: StringName = &"vo.mercer.gallery_night_lasers"
+const VO_TREASURY_OPEN: StringName = &"vo.mercer.gallery_night_treasury_open"
+const VO_ART_STORE_OPEN: StringName = &"vo.mercer.gallery_night_art_store_open"
+const VO_LAST_PAGER: StringName = &"vo.mercer.gallery_night_last_pager"
+const VO_SHUTTERS_UP: StringName = &"vo.mercer.gallery_night_shutters_up"
+const VO_VAULT_DRILL: StringName = &"vo.mercer.gallery_night_vault_drill"
+const VO_DRILL_JAM: StringName = &"vo.mercer.gallery_night_drill_jam"
+const VO_SNIPER_HOTEL: StringName = &"vo.mercer.gallery_night_sniper_hotel"
+const VO_CENTREPIECE: StringName = &"vo.vance.gallery_night_centrepiece"
+const VO_PAYDAY: StringName = &"vo.vance.gallery_night_payday"
+## Rare-event timed spawns -> Mercer's line when they walk in (doc §Rare events).
+const RARE_SPAWN_VO: Dictionary = {
+	&"insurance_inspection": &"vo.mercer.gallery_night_inspectors",
+	&"vaultline_early": &"vo.mercer.gallery_night_vaultline",
+}
+const SPEAKER_VANCE: StringName = &"vance"
+## Curator hint: the first crew member within this of Sorell while she still carries kc_curator (stealth).
+const CURATOR_HINT_M: float = 5.0
+const SPECIAL_LONGSHOT: StringName = &"longshot"
+## Sniper perch markers (doc §Sniper perches: S1 = the Grand Wexley Hotel roof terrace).
+const PERCH_HOTEL: NodePath = ^"Tactical/SniperHotel"
+const PERCH_CONSERVATORY: NodePath = ^"Tactical/SniperConservatory"
 ## Rare-event timed spawns (QC-25): guards per spawn; `after` &"last_call" counts from last call.
 const TIMED_SPAWN_COUNT: int = 2
 const AFTER_LAST_CALL: StringName = &"last_call"
@@ -87,6 +116,8 @@ var _laser_hint_done: bool = false
 var _extra_interruptions: int = 0
 ## Rare timed spawns waiting for last call: [timer id, delay s, spawn tag].
 var _after_last_call: Array[Array] = []
+## D-117: one-shot mission lines already said this heist.
+var _said: Dictionary[StringName, bool] = {}
 
 
 func _on_mission_start() -> void:
@@ -120,13 +151,20 @@ func _on_mission_start() -> void:
 	on_event(&"interaction_completed", _on_interaction_completed)
 	on_event(&"device_finished", _on_device_finished)
 	on_event(&"loot_secured", _on_canvas_secured)
+	on_event(&"item_picked_up", _on_item_picked_up)
+	on_event(&"device_started", _on_device_started)
+	on_event(&"device_jammed", _on_device_jammed)
+	on_event(&"loot_picked", _on_loot_picked)
+	on_event(&"special_spawned", _on_special_spawned)
+	own_last_pager_line = true
 	_apply_scalars()
 	_apply_curator_card()
 	_apply_sensor_net()
 	_set_curtain(false)
 	_watch_canvases()
 	_apply_intel_list()
-	_watch_sweep_lasers()
+	_watch_lasers()
+	_watch_curator_card()
 	_tie_areaway_ladder()
 	_schedule_last_call()
 	_schedule_rare_events()
@@ -146,6 +184,12 @@ func _on_phase_changed(old_phase: int, new_phase: int) -> void:
 ## B3: every alarm goes loud; nothing here fails the heist.
 func _on_alarm(_reason: StringName) -> void:
 	_go_loud()
+
+
+## D-117: the pager cap reached, Mercer's heist line (PagerSystem skips the generic one: own_last_pager_line).
+func _on_pager_answered(total: int) -> void:
+	if total == pager_cap():
+		say(VO_LAST_PAGER, {"answered": total})
 
 
 # --- Setup -------------------------------------------------------------------------------------
@@ -199,11 +243,14 @@ func _watch_canvases() -> void:
 			shape.shape = sph
 			area.add_child(shape)
 			c.add_child(area)
-			area.body_entered.connect(_on_find_area.bind(tag))
+			area.body_entered.connect(_on_find_area.bind(tag, c))
 
 
-func _on_find_area(body: Node, tag: StringName) -> void:
-	if tag in _found or not body.is_in_group(G.CREW):
+func _on_find_area(body: Node, tag: StringName, canvas: Node = null) -> void:
+	if not body.is_in_group(G.CREW):
+		return
+	_warn_sensors(canvas)
+	if tag in _found:
 		return
 	_found.append(tag)
 	update_objective_data(&"find_canvases", {"marker_tags": _found.duplicate(), "found": _found.size()})
@@ -244,33 +291,55 @@ func _tie_areaway_ladder() -> void:
 	update.call()
 
 
-## Mercer's sweep-laser hint (B): an approach Area3D on the active lz_sweep Treasury grid.
-func _watch_sweep_lasers() -> void:
+## The Treasury grid: an approach Area3D on the active TR grid. The first crew approach before the alarm: Mercer's
+## laser line (D-117), then his sweep hint when the rolled pattern is lz_sweep (B 778deea3).
+func _watch_lasers() -> void:
 	var picked: Variant = variant(&"laser_pattern")
-	if not (picked is Array and (picked as Array).has(LASER_SWEEP_SLOT)):
-		return
+	var sweep: bool = picked is Array and (picked as Array).has(LASER_SWEEP_SLOT)
 	for g: Node in find_tagged(TAG_TR_LASERS):
-		if not String(g.get_path()).contains("Slot_%s" % LASER_SWEEP_SLOT):
-			continue
-		var area: Area3D = Area3D.new()
-		area.name = "HintArea"
-		area.collision_layer = 0
-		area.collision_mask = 0xFFFFFFFF
-		area.monitorable = false
-		var shape: CollisionShape3D = CollisionShape3D.new()
-		var sph: SphereShape3D = SphereShape3D.new()
-		sph.radius = LASER_HINT_M
-		shape.shape = sph
-		area.add_child(shape)
+		var area: Area3D = _proximity_area("HintArea", LASER_HINT_M)
 		g.add_child(area)
-		area.body_entered.connect(_on_laser_hint_area)
+		area.body_entered.connect(_on_laser_hint_area.bind(
+			sweep and String(g.get_path()).contains("Slot_%s" % LASER_SWEEP_SLOT)))
 
 
-func _on_laser_hint_area(body: Node) -> void:
-	if _laser_hint_done or went_loud or not body.is_in_group(G.CREW):
+func _on_laser_hint_area(body: Node, sweep: bool = true) -> void:
+	if went_loud or not body.is_in_group(G.CREW):
 		return
-	_laser_hint_done = true
-	say(VO_LASER_SWEEP)
+	_say_once(VO_LASERS)
+	if sweep and not _laser_hint_done:
+		_laser_hint_done = true
+		say(VO_LASER_SWEEP)
+
+
+## D-117: kc_curator rides on Sorell's lanyard (QC-52). The first crew member within CURATOR_HINT_M of her while she
+## still has it hears Mercer's hint (before the alarm; once).
+func _watch_curator_card() -> void:
+	for k: Node in find_tagged(TAG_KEYCARD):
+		var kp: KeycardPickup = k as KeycardPickup
+		if kp == null or kp.carrier_tag == &"":
+			continue
+		var area: Area3D = _proximity_area("CuratorHintArea", CURATOR_HINT_M)
+		kp.add_child(area)
+		area.body_entered.connect(_on_curator_area.bind(kp))
+
+
+func _on_curator_area(body: Node, card: KeycardPickup = null) -> void:
+	if went_loud or not body.is_in_group(G.CREW):
+		return
+	if card != null and (not is_instance_valid(card) or card.released or card.taken):
+		return
+	_say_once(VO_CURATOR_KEYCARD)
+
+
+## D-117: the first crew approach to a hung canvas whose frame sensor is live (QC-54), before the alarm.
+func _warn_sensors(canvas: Node) -> void:
+	var ls: LootSpawn = canvas as LootSpawn
+	if went_loud or ls == null or not ls.alarm_on_take:
+		return
+	var rt: HeistRuntime = HeistRuntime.of(self)
+	if rt != null and AlarmGroups.is_live(rt, ls.alarm_group):
+		_say_once(VO_SENSORS_WARNING)
 
 
 ## Last call (`last_call_s`): Mercer's warning 60 s before, then the gala ends. Before the alarm only.
@@ -345,9 +414,17 @@ func _schedule_rare_events() -> void:
 
 
 func _start_spawn_timer(id: StringName, after_s: float, tag: StringName) -> void:
-	start_timer(id, maxf(after_s, 0.01), func() -> void:
-		if not went_loud and tag != &"":
-			spawn_guards(TIMED_SPAWN_COUNT, tag))
+	start_timer(id, maxf(after_s, 0.01), _on_timed_spawn.bind(id, tag))
+
+
+## A rare timed spawn walks in (before the alarm): Mercer names it (D-117: the inspectors / the Vaultline crew).
+func _on_timed_spawn(id: StringName, tag: StringName) -> void:
+	if went_loud or tag == &"":
+		return
+	var spawned: Array[Node] = spawn_guards(TIMED_SPAWN_COUNT, tag)
+	var line: Variant = RARE_SPAWN_VO.get(StringName(String(id).trim_prefix("rare_")))
+	if line != null and not spawned.is_empty():
+		_say_once(StringName(line))
 
 
 # --- Stealth flow --------------------------------------------------------------------------------
@@ -355,8 +432,10 @@ func _start_spawn_timer(id: StringName, after_s: float, tag: StringName) -> void
 func _on_interaction_completed(interactable_net_id: int, _crew_slot: int, _kind: StringName) -> void:
 	if _is_tagged(interactable_net_id, TAG_TREASURY):
 		_complete_once(&"treasury")
+		_say_once(VO_TREASURY_OPEN)
 	elif _is_tagged(interactable_net_id, TAG_VAULT_READER):
 		_complete_once(&"art_store")
+		_say_once(VO_ART_STORE_OPEN)
 	elif _is_tagged(interactable_net_id, TAG_CODE):
 		_complete_once(&"server_code")
 		say(&"vo.mercer.gallery_night_code_found")
@@ -384,8 +463,55 @@ func _on_device_finished(device_net_id: int) -> void:
 	elif _is_tagged(device_net_id, TAG_VAULT_DRILL):
 		_complete_once(&"vault_drill")
 		_complete_once(&"art_store")
+		_say_once(VO_ART_STORE_OPEN)
 	elif _is_tagged(device_net_id, TAG_SERVER_DOOR):
 		_complete_once(&"server_door")
+
+
+## D-117: the Argus hack starts (once) / the vault drill goes on (once).
+func _on_device_started(device_net_id: int, _kind: StringName, _duration: float) -> void:
+	if _is_tagged(device_net_id, TAG_HACK):
+		_say_once(VO_HACK_STARTED)
+	elif _is_tagged(device_net_id, TAG_VAULT_DRILL):
+		_say_once(VO_VAULT_DRILL)
+
+
+## D-117: every Argus reboot / every drill jam (PD2: Bain calls each one).
+func _on_device_jammed(device_net_id: int) -> void:
+	if _is_tagged(device_net_id, TAG_HACK):
+		say(VO_HACK_INTERRUPTED)
+	elif _is_tagged(device_net_id, TAG_VAULT_DRILL):
+		say(VO_DRILL_JAM)
+
+
+## D-117: the first keycard in the crew's hands (any card: lanyard, cabinet, desk, bar).
+func _on_item_picked_up(item_id: StringName, _crew_slot: int) -> void:
+	if item_id == ITEM_KEYCARD:
+		_say_once(VO_KEYCARD)
+
+
+## D-117: Vance, the first time a crew member carries the Lantern Bearer (cut, or taken from the Vaultline crew).
+func _on_loot_picked(bag_net_id: int, _crew_slot: int) -> void:
+	var bag: LootBag = Ids.lookup(bag_net_id) as LootBag
+	if bag != null and bag.loot_id == LOOT_LANTERN:
+		_say_once(VO_CENTREPIECE, {}, SPEAKER_VANCE)
+
+
+## D-117: the first Longshot on the hotel perch (S1); the conservatory perch (S2) has no line.
+func _on_special_spawned(npc_net_id: int, special_type: StringName) -> void:
+	if not String(special_type).contains(String(SPECIAL_LONGSHOT)):
+		return
+	var npc: Node3D = Ids.lookup(npc_net_id) as Node3D
+	var rt: HeistRuntime = HeistRuntime.of(self)
+	if npc == null or rt == null or rt.map == null:
+		return
+	var hotel: Node3D = rt.map.get_node_or_null(PERCH_HOTEL) as Node3D
+	var cons: Node3D = rt.map.get_node_or_null(PERCH_CONSERVATORY) as Node3D
+	if hotel == null:
+		return
+	var p: Vector3 = npc.global_position
+	if cons == null or p.distance_squared_to(hotel.global_position) <= p.distance_squared_to(cons.global_position):
+		_say_once(VO_SNIPER_HOTEL)
 
 
 ## secure: the Lantern Bearer AND one other list canvas (D-075); studies never count.
@@ -424,6 +550,7 @@ func _open_escape() -> void:
 		complete(&"escape_wait")
 	activate(&"escape")
 	say(&"vo.mercer.gallery_night_escape")
+	_say_once(VO_PAYDAY, {}, SPEAKER_VANCE)  # D-117: the Lantern Bearer and one more are secured, the ride is here
 	activate_escape(StringName("escape_%s" % _escape))
 
 
@@ -476,6 +603,7 @@ func _lift_lockdown() -> void:
 			(r as KeycardReader).set_disabled(false)
 	_complete_once(&"treasury")
 	_complete_once(&"art_store")
+	_say_once(VO_SHUTTERS_UP)
 
 
 # --- Helpers -----------------------------------------------------------------------------------
@@ -524,6 +652,30 @@ func _court_doors() -> Array[Door]:
 func _slot_rolled(group: StringName, slot_id: StringName) -> bool:
 	var v: Variant = variant(group)
 	return v is Array and (v as Array).has(slot_id)
+
+
+## D-117: say `line_id` the first time only (per heist). Returns true when it was said.
+func _say_once(line_id: StringName, context: Dictionary = {}, speaker: StringName = SPEAKER_MERCER) -> bool:
+	if _said.has(line_id):
+		return false
+	_said[line_id] = true
+	say(line_id, context, speaker)
+	return true
+
+
+## A crew-detecting sphere (all layers, not monitorable) for the mission's approach hints.
+func _proximity_area(area_name: String, radius: float) -> Area3D:
+	var area: Area3D = Area3D.new()
+	area.name = area_name
+	area.collision_layer = 0
+	area.collision_mask = 0xFFFFFFFF
+	area.monitorable = false
+	var shape: CollisionShape3D = CollisionShape3D.new()
+	var sph: SphereShape3D = SphereShape3D.new()
+	sph.radius = radius
+	shape.shape = sph
+	area.add_child(shape)
+	return area
 
 
 func _complete_once(id: StringName) -> void:

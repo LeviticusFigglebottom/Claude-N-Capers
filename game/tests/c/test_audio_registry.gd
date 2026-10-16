@@ -1,3 +1,4 @@
+# gdlint:disable=max-public-methods
 ## ENV C audio: P1 cue registry completeness, stream loading, buses, CuePlayer fact mapping and
 ## MusicDirector stem selection (simulated EventBus facts, headless; checks state, not output).
 extends TestCase
@@ -75,6 +76,18 @@ const IMPACT_SURFACES: Array[StringName] = [
 const LOOPS: Array[StringName] = [
 	&"cue.pager_beep", &"cue.pager_radio", &"cue.alarm_bell", &"cue.drill_loop", &"cue.police_siren_far",
 ]
+## D-117: per-heist ambience beds (heist docs' Audio/lighting), CueEmitter-owned map loops.
+const AMBIENCE_BEDS: Array[StringName] = [
+	&"cue.amb_glasshouse_interior", &"cue.amb_street_dusk",
+	&"cue.amb_bank_night_interior", &"cue.amb_harbor_night",
+	&"cue.amb_shadow_ledger_interior", &"cue.amb_rooftop_rain",
+	&"cue.amb_cold_store", &"cue.amb_dockside_fog",
+	&"cue.amb_gallery_gala", &"cue.amb_art_store", &"cue.amb_uptown_night",
+]
+## D-117 §7: every built heist has its own music track. Shadow Ledger is stealth-only.
+const HEIST_MUSIC: Array[StringName] = [&"glasshouse", &"night_deposit", &"shadow_ledger", &"dockside_burn",
+		&"gallery_night"]
+const ALL_STEMS: Array[StringName] = [&"stealth", &"control", &"anticipation", &"assault", &"fade"]
 const BUSES: Array[StringName] = [&"Music", &"SFX", &"Weapons", &"Enemies", &"World", &"UI", &"Voice", &"Ambience"]
 ## PO-14 registry coverage scan (test_every_cue_referenced_in_code_is_registered).
 const CODE_ROOTS: Array[String] = ["res://systems", "res://world", "res://content", "res://core"]
@@ -319,6 +332,83 @@ func test_every_stream_loads_with_length() -> void:
 		assert_true(c.streams.size() >= 3, "%s variations" % id)
 		assert_eq(c.bus, &"Weapons", "%s bus" % id)
 		assert_false(c.loop, "%s one-shot" % id)
+
+
+## D-117: every heist bed is registered as a 2D Ambience-bus loop with a stop owner, and lasts long
+## enough not to read as a short loop.
+func test_heist_ambience_beds() -> void:
+	if _reg == null:
+		skip("no registry")
+		return
+	for id: StringName in AMBIENCE_BEDS:
+		var c: AudioCueDef = _reg.get_cue(id)
+		assert_true(c != null, "bed %s registered" % id)
+		if c == null:
+			continue
+		assert_true(c.loop, "%s loops" % id)
+		assert_eq(c.bus, &"Ambience", "%s on the Ambience bus" % id)
+		assert_false(c.positional, "%s is a 2D bed" % id)
+		assert_eq(c.streams.size(), 1, "%s one stream" % id)
+		assert_true(c.streams[0].get_length() >= 15.0, "%s loop length %.1f s" % [id, c.streams[0].get_length()])
+		assert_true(CuePlayer.LOOP_STOP_OWNERS.get(id, "") == "CueEmitter (map bed)", "%s owned by a map CueEmitter" % id)
+
+
+## D-117 §7: each heist track loads, has its own tempo grid, and answers every stem MusicDirector can ask
+## for (stem_for over all phases), so no phase is silent; stems are whole bars of the track's grid.
+func test_every_heist_music_track() -> void:
+	var bpms: Dictionary = {}
+	for tid: StringName in HEIST_MUSIC:
+		var t: MusicTrack = MusicTrack.load_track(tid)
+		assert_true(t != null, "track %s loads" % tid)
+		if t == null:
+			continue
+		assert_eq(t.id, tid)
+		bpms[tid] = t.bpm
+		for stem: StringName in ALL_STEMS:
+			var st: AudioStream = t.stem(stem)
+			assert_true(st != null, "%s has stem %s" % [tid, stem])
+			if st == null:
+				continue
+			var bars: float = st.get_length() / t.bar_seconds()
+			assert_true(bars >= 3.9, "%s/%s at least 4 bars (%.2f)" % [tid, stem, bars])
+			assert_true(absf(bars - roundf(bars)) < 0.02, "%s/%s whole bars (%.3f)" % [tid, stem, bars])
+			assert_true(t.loop_bars.has(stem), "%s/%s loop_bars" % [tid, stem])
+		for sting: StringName in [MusicTrack.STINGER_WIN, MusicTrack.STINGER_LOSE]:
+			assert_true(t.stingers.get(sting) is AudioStream, "%s stinger %s" % [tid, sting])
+	assert_eq(bpms.get(&"night_deposit"), 140.0, "ND 140 grid (stealth 70 half-time)")
+	assert_eq(bpms.get(&"shadow_ledger"), 132.0, "SL 132 grid (stealth 66 half-time)")
+	assert_eq(bpms.get(&"dockside_burn"), 150.0, "DB 150 grid")
+	assert_eq(bpms.get(&"gallery_night"), 144.0, "GN 144 grid (stealth 72 half-time)")
+	# Stealth-only Shadow Ledger: the loud stems are aliases (abort loop; escape/jukebox keep the bed).
+	var sl: MusicTrack = MusicTrack.load_track(&"shadow_ledger")
+	if sl != null:
+		assert_eq(sl.stem(&"assault"), sl.stem(&"stealth"), "SL escape / preview keep the stealth bed")
+		assert_eq(sl.stem(&"anticipation"), sl.stem(&"control"), "SL loud stems share the abort loop")
+		assert_true(sl.stem(&"control") != sl.stem(&"stealth"), "SL abort loop differs from the bed")
+		assert_true(sl.stem(&"control").get_length() < sl.stem(&"stealth").get_length(), "SL abort loop is short")
+
+
+## D-117: every built heist map carries an Audio node with a CuePlayer, its MusicDirector and its own
+## beds (checked on the generated scene text: no map load).
+func test_heist_maps_place_their_audio() -> void:
+	var beds: Dictionary = {
+		&"glasshouse": [&"cue.amb_glasshouse_interior", &"cue.amb_street_dusk"],
+		&"night_deposit": [&"cue.amb_bank_night_interior", &"cue.amb_harbor_night"],
+		&"shadow_ledger": [&"cue.amb_shadow_ledger_interior", &"cue.amb_rooftop_rain"],
+		&"dockside_burn": [&"cue.amb_cold_store", &"cue.amb_dockside_fog"],
+		&"gallery_night": [&"cue.amb_gallery_gala", &"cue.amb_art_store", &"cue.amb_uptown_night"],
+	}
+	for h: StringName in HEIST_MUSIC:
+		var txt: String = FileAccess.get_file_as_string("res://world/heists/%s/%s.tscn" % [h, h])
+		assert_false(txt.is_empty(), "%s scene readable" % h)
+		assert_true(txt.contains('[node name="Audio" type="Node3D" parent="."'), "%s has an Audio node" % h)
+		assert_true(txt.contains('[node name="CuePlayer" type="Node" parent="Audio"'), "%s CuePlayer" % h)
+		assert_true(txt.contains('[node name="MusicDirector" type="Node" parent="Audio"'), "%s MusicDirector" % h)
+		assert_true(txt.contains('track_id = &"%s"' % h) or h == &"glasshouse", "%s MusicDirector track" % h)
+		for id: StringName in beds[h]:
+			assert_true(txt.contains('cue_id = &"%s"' % id), "%s places bed %s" % [h, id])
+		if h != &"glasshouse":
+			assert_false(txt.contains('cue_id = &"cue.amb_glasshouse_interior"'), "%s no borrowed GH bed" % h)
 
 
 func test_buses_resolve() -> void:

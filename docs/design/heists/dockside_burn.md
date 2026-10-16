@@ -285,7 +285,7 @@ validator's confirmed ranges; `workshop`, `warehouse` 3.5–6.0).
 
 Ground notes:
 - The platform (x 18–22, z 0–8) is drawn on the mezzanine plan. Under it (3.3 m clear under the 0.3 m deck) are the
-  goods-lift door (x 18, z 1–2) and the OC double door (x 18, z 7).
+  goods-lift door (x 18, z 1–2) and the OC service door (x 18, z 7).
 - C1/C2/PK each hold **`L` product stacks and an `F` burn point**, but only the active
   `product_location` slot's content exists. The SR `L`s are cash pallets (`cash_strongroom`). The
   PK `L`s are product (`prod_packing`).
@@ -340,7 +340,7 @@ at 4.8–5.5 m on its north wall (exterior). The cold store has no windows (skyl
 | ST | stair | 3 × 6 | open | — | Ground → mezzanine → roof (head house). |
 | LF | elevator (goods lift) | 3 × 3 | — | — | **`bag_lift`** (`goods_lift` variant powered/dead), 2 bags per cycle, 8 s. Ground door E (hall), mezzanine door W (M1). |
 | E1 | electrical | 3 × 3 | 3.0 | `electrical_closet` | Main board, the **lift breaker** (interact 5 s with `lift_dead`), telecom. |
-| OC | corridor (office, ground) | 18 × 2 | 3.0 | `corridor_service` | W exterior door (LOCKPICK, lane), E double door to the hall, doors to O1/O2/ST/E1/PL/WS. |
+| OC | corridor (office, ground) | 18 × 2 | 3.0 | `corridor_service` | W exterior door (LOCKPICK, lane), E service door (1.2 m, open) to the hall (D-115 DB-15 doc fix: the map keeps the service door), doors to O1/O2/ST/E1/PL/WS. |
 | PL | plant (ammonia compressor room) | 10 × 10 | 5.0 | `plant_refrigeration` | 3 screw compressors, receiver vessel, valve manifolds, control panel. W exterior door (LOCKPICK). **Culvert grate `u`** (Phantom vent exit, nav layer `vent`). |
 | WS | workshop (forklift charging) | 8 × 10 | 5.0 | `workshop_forklift` | 2 forklifts on chargers, battery racks, tool benches. Service door (1.2 m) to the hall. |
 | LK | locker_room (with WCs) | 5 × 5 | 3.0 | `locker_room` | Workers' lockers, bench, 2 WC cubicles, sink. |
@@ -356,7 +356,7 @@ at 4.8–5.5 m on its north wall (exterior). The cold store has no windows (skyl
 | M1 | cash_office (count room) | 6 × 6 | 3.0 | `count_room` | Counting tables, money counters, vacuum sealer. `cash_countroom`: **cash cage** (`safe` LARGE, `methods [drill, c4]`, drill 120 s) with the cash-brick `loot_spawn`s as its contents. Goods-lift door E. Windows N. |
 | M2 | break_room | 6 × 6 | 3.0 | `break_room` | Fridge, counter + sink, microwave, coffee, table with 6 chairs, bulletin board (shift rota), TV. Windows N. |
 | M3 | restroom | 3 × 3 | 3.0 | `restroom_single` | WC, sink. |
-| MC | corridor (mezzanine) | 18 × 2 | 3.0 | `corridor_service` | W door to the external fire stair landing (LOCKPICK from outside, push bar inside); E door to PF. |
+| MC | corridor (mezzanine) | 18 × 2 | 3.0 | `corridor_service` | W door to the external fire stair landing (LOCKPICK from either side; police breach it once loud, so it stays a police entrance; no push bar, D-115 DB-14 doc fix); E door to PF. |
 | HH | stair (head house) | 3 × 6 | 2.7 | — | Roof door (`perch_roof` → unlocked; else LOCKPICK). |
 | GH | office (gatehouse) | 6 × 4 | 2.7 | `gatehouse` | Weighbridge console, gate controls, heater, kettle, phone, window to the weighbridge. Doors N/S. |
 | QS | storage (quay net store) | 8 × 6 | 3.0 | `net_store` | Nets, floats, fish boxes, rope reels; doors W and E, window S (to the pontoon). Holdout H3. Drop zone `pp_drop_quay`. |

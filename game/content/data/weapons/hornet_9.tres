@@ -48,6 +48,7 @@ unlock_level = 4
 mod_slots = {
 2: [&"mod.hornet_suppressor"],
 3: [&"mod.hornet_iron_sights", &"mod.rail_reflex_sight"],
+5: [&"mod.rail_vertical_grip"],
 6: [&"mod.hornet_stock_folded"],
 7: [&"mod.hornet_standard_mag", &"mod.hornet_extended_mag"]
 }

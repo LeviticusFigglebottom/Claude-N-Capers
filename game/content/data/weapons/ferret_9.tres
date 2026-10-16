@@ -48,6 +48,7 @@ unlock_level = 3
 mod_slots = {
 2: [&"mod.ferret_suppressor"],
 3: [&"mod.ferret_iron_sights", &"mod.rail_reflex_sight"],
+5: [&"mod.rail_vertical_grip"],
 6: [&"mod.ferret_wood_stock"],
 7: [&"mod.ferret_standard_mag", &"mod.ferret_extended_mag"]
 }

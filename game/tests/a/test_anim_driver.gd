@@ -761,3 +761,24 @@ func test_po6_18_death_from_pose() -> void:
 	standing.die({"direction": Vector3(0, 0, 1)})
 	_drv(standing).tick(0.016)
 	assert_true(_drv(standing).clip in [&"death_back", &"death_back_b"], "standing body: hit-direction death")
+
+
+## D cast audit: walk_text / mug_carry_walk play while the NPC walks with the `walk_text` / `mug_walk` hint; standing
+## still they hold phone_call / mug_idle (HINT_CLIPS aliases).
+func test_walk_text_and_mug_carry_walk_play_when_walking() -> void:
+	for c: Array in [[&"walk_text", &"walk_text", &"phone_call"], [&"mug_walk", &"mug_carry_walk", &"mug_idle"]]:
+		var npc: NpcBase = _npc(&"civilian")
+		var lib: AnimationLibrary = _drv(npc).player.get_animation_library(AnimDriver.LIBRARY)
+		for clip_name: StringName in [c[1], c[2]]:
+			if not lib.has_animation(clip_name):
+				var a: Animation = Animation.new()
+				a.length = 1.0
+				a.loop_mode = Animation.LOOP_LINEAR
+				lib.add_animation(clip_name, a)
+		npc.get_node("Brain").set(&"anim_hint", c[0])
+		npc.velocity = Vector3(0, 0, -1.2)
+		_drv(npc).tick(0.016)
+		assert_eq(_drv(npc).clip, c[1], "%s hint, walking -> %s" % [c[0], c[1]])
+		npc.velocity = Vector3.ZERO
+		_drv(npc).tick(0.016)
+		assert_eq(_drv(npc).clip, c[2], "%s hint, standing -> %s" % [c[0], c[2]])

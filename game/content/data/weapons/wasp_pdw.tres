@@ -48,6 +48,7 @@ unlock_level = 7
 mod_slots = {
 2: [&"mod.wasp_suppressor"],
 3: [&"mod.wasp_iron_sights", &"mod.rail_reflex_sight"],
+5: [&"mod.rail_vertical_grip"],
 6: [&"mod.wasp_end_cap"],
 7: [&"mod.wasp_standard_mag", &"mod.wasp_extended_mag"]
 }
