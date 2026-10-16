@@ -19,7 +19,7 @@ check.02: bartender_pour: 150f 5.00s loop speed=0.0 reach_err=0.0mm step=10.1deg
 check.03: bartender_wipe: 180f 6.00s loop speed=0.0 reach_err=0.0mm step=4.1deg contact_slide=0.000mm/f
 check.04: bouncer_idle: 300f 10.00s loop speed=0.0 reach_err=0.0mm step=8.7deg contact_slide=0.000mm/f
 check.05: breach_place: 45f 1.50s speed=0.0 reach_err=0.0mm step=22.3deg lowest_skin=-0.0mm
-check.06: breach_standback: 30f 1.00s speed=0.0 reach_err=0.0mm step=25.7deg lowest_skin=-5.5mm start_err=0.00mm
+check.06: breach_standback: 30f 1.00s speed=0.0 reach_err=0.0mm step=38.0deg lowest_skin=-5.5mm start_err=0.00mm
 check.07: browse: 120f 4.00s loop speed=0.0 reach_err=0.0mm step=3.9deg
 check.08: carry_bag_walk: 22f 0.73s loop speed=2.4 reach_err=0.0mm step=14.9deg slide=0.034mm/f
 check.09: climb_ladder: 36f 1.20s loop speed=0.5 reach_err=0.0mm step=17.7deg
