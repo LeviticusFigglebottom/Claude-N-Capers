@@ -93,15 +93,19 @@ func _on_mission_start() -> void:
 		{"location": variant(&"product_location"), "marker_tags": [TAG_PRODUCT]})
 	add_objective(&"burn", &"objective.dockside_burn.burn", Enums.ObjectiveState.HIDDEN, {"marker_tags": [TAG_BURN]})
 	var countroom: bool = _slot_active(&"cash_location", &"cash_countroom")
+	# D-115 (DB-16, doc §Loot path): the 4 bags are "cash bricks and/or weapon crates". The cash location is rolled
+	# (strongroom OR count room, never both), so each cash objective's alternative is the containers, and the
+	# containers are optional with the run's cash objective as their alternative.
 	add_objective(&"strongroom", &"objective.dockside_burn.strongroom",
 		Enums.ObjectiveState.HIDDEN if countroom else Enums.ObjectiveState.ACTIVE,
-		{"alternative": &"count_cage", "marker_tags": [TAG_STRONGROOM_DRILL]})
+		{"alternative": &"containers", "marker_tags": [TAG_STRONGROOM_DRILL]})
 	# The cage and the cash stacks of the active location (the cage exists only with cash_countroom).
 	add_objective(&"count_cage", &"objective.dockside_burn.count_cage",
 		Enums.ObjectiveState.ACTIVE if countroom else Enums.ObjectiveState.HIDDEN,
-		{"alternative": &"strongroom", "marker_tags": [TAG_COUNT_CAGE, TAG_CASH]})
+		{"alternative": &"containers", "marker_tags": [TAG_COUNT_CAGE, TAG_CASH]})
 	add_objective(&"containers", &"objective.dockside_burn.containers", Enums.ObjectiveState.ACTIVE,
-		{"marker_tags": _container_tags(CONTAINER_KEYS)})
+		{"optional": true, "alternative": &"count_cage" if countroom else &"strongroom",
+			"marker_tags": _container_tags(CONTAINER_KEYS)})
 	add_objective(&"secure", &"objective.dockside_burn.secure", Enums.ObjectiveState.ACTIVE,
 		{"bags": MIN_BAGS, "count": 0, "total": MIN_BAGS, "optional_more": true, "marker_tags": [TAG_LOOT_SECURE]})
 	add_objective(&"escape_wait", &"objective.dockside_burn.escape_wait", Enums.ObjectiveState.HIDDEN,

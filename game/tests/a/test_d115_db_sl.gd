@@ -182,3 +182,18 @@ func test_db13_longshot_line_by_perch() -> void:
 	EventBus.special_spawned.emit(b.net_id, &"longshot")
 	assert_eq(_count(&"vo.mercer.dockside_burn_sniper_roof"), 1, "once per perch")
 	assert_eq(_count(&"vo.mercer.dockside_burn_sniper_crane"), 1, "once per perch")
+
+
+# --- DB-16: [containers] is optional; cash or crates ----------------------------------------------------
+
+func test_db16_containers_optional_cash_alternative() -> void:
+	await _launch(&"dockside_burn", 9001)
+	var countroom: bool = (_rt.variants.get(&"cash_location", []) as Array).has(&"cash_countroom")
+	var cash_id: StringName = &"count_cage" if countroom else &"strongroom"
+	var cont: Dictionary = _obj(&"containers")["data"] as Dictionary
+	assert_true(bool(cont.get("optional", false)), "[containers] optional")
+	assert_eq(StringName(cont.get("alternative", &"")), cash_id, "its alternative is the run's cash objective")
+	for oid: StringName in [&"strongroom", &"count_cage"]:
+		assert_eq(StringName((_obj(oid)["data"] as Dictionary).get("alternative", &"")), &"containers",
+			"%s: cash and/or crates" % oid)
+	assert_eq(_rt.mission.objective_state(cash_id), Enums.ObjectiveState.ACTIVE, "the run's cash objective is shown")
