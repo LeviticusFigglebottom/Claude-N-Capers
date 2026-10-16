@@ -1,43 +1,64 @@
 {
   "bodies": {
-    "crew_ai": 6,
+    "crew_ai": 12,
     "npc:civilian": 3,
-    "npc:guard:enemy.security_officer": 1
+    "npc:guard:enemy.security_officer": 2,
+    "npc:police:enemy.patrol_officer": 1
   },
-  "frozen": {},
-  "mismatch": {},
+  "frozen": {
+    "npc:police:enemy.patrol_officer|surrender": 3
+  },
+  "mismatch": {
+    "npc:police:enemy.patrol_officer|surrender": 4
+  },
   "moving": {
     "npc:civilian|idle": 6,
     "npc:civilian|lie_down": 24,
     "npc:civilian|tied": 12,
-    "npc:guard:enemy.security_officer|idle": 4
+    "npc:guard:enemy.security_officer|idle": 7,
+    "npc:guard:enemy.security_officer|kneel_cuffed": 5,
+    "npc:police:enemy.patrol_officer|kneel_cuffed": 2,
+    "npc:police:enemy.patrol_officer|surrender": 2
   },
   "no_clip": {},
   "seen": {
     "crew_ai": {
-      "<none>": 130.357068
+      "<none>": 195.739558
     },
     "fp": {
-      "<hidden>": 5.74236233333333
+      "<hidden>": 11.520495
     },
     "fp:pistol": {
-      "bash": 0.387897,
-      "draw": 1.07539266666667,
-      "holster": 14.2364996666667,
-      "idle": 22.0102043333333
+      "bash": 0.4,
+      "draw": 1.80493490909091,
+      "holster": 16.3540924242424,
+      "idle": 35.166997
     },
     "npc:civilian": {
       "idle": 11.25,
-      "lie_down": 25.5595886666666,
-      "tied": 14.0160723333333
+      "lie_down": 25.580669,
+      "tied": 14.011338
     },
     "npc:guard:enemy.security_officer": {
-      "death_front": 21.595663,
-      "idle": 4.914806
+      "aim_pistol": 0.139002333333335,
+      "death_front": 21.7296326666667,
+      "idle": 10.044743,
+      "kneel_cuffed": 5.06099766666667
+    },
+    "npc:police:enemy.patrol_officer": {
+      "kneel_cuffed": 2.124808,
+      "run_start": 0.523858,
+      "surrender": 5.61584466666666
     }
   },
   "slides": {},
   "static": [
+    "crew_ai",
+    "crew_ai",
+    "crew_ai",
+    "crew_ai",
+    "crew_ai",
+    "crew_ai",
     "crew_ai",
     "crew_ai",
     "crew_ai",

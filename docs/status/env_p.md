@@ -19,7 +19,10 @@ Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min;
 - stealth_clip_coverage.tscn (new, unit map, real input): tied 2 (3rd: requires_item, PD2 2 ties), knifed 1,
   pager answered 1, body bagged / carried / thrown 1; civilian lie_down + tied moving, no frozen / slides /
   no_clip (captures/d111_cov/stealth_clip_coverage_2026-10-16.*). Knife from 1.3 m flat behind the guard misses
-  (4 swings, 0 hits); 0.8 m one-shots.
+  (4 swings, 0 hits); 0.8 m one-shots -> test_p_knife_reach (red until A's fix, 57713e0f).
+- stealth_clip_coverage + C) guard domination (skill forced) + D) loud cop surrender (chance forced) + tie: all 8
+  steps pass. Guard kneel_cuffed reads right. Police: `surrender` one-shot ends and the player stops (PLAYER_MISMATCH
+  driver 'surrender', player '', FROZEN); after the cable tie the cop stands upright, hands in front (no kneel).
 - D 107b16dd one-handed reloads (scratch merge): test_p_pistol_hold 3/3; Kestrel reload in frame, Marshal eject
   hand too close (palm across the top third, forearm wall): captures/d116/reload_107b16dd/. motion_clip `--reload-only`.
 

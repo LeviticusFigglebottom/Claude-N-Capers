@@ -3,7 +3,11 @@
 ## mouse look, F, G, melee, hold-interact), windowed, with AnimCoverage (--anim-out=DIR) recording what played:
 ## A) 3 civilians, no guard: shout each down (F) and tie them (hold F) -> civilian down / cower / tied clips;
 ## B) 1 guard: knife him from behind (melee), answer his pager, bag the body, carry it a few metres and throw it (G)
-##    -> guard death, pager_answer, bag_body, carry_bag_walk, throw_bag.
+##    -> guard death, pager_answer, bag_body, carry_bag_walk, throw_bag;
+## C) 1 guard, the S5.8 domination skill forced on (stealth.can_dominate_guards): let him spot us ("!" opens the
+##    window), shout -> he kneels and cuffs himself (kneel_cuffed);
+## D) loud, a patrol officer, surrender chance forced to 1 (CustodyTweak): shout -> hands_up / surrender, tie him
+##    (cable tie) -> tied.
 ##   xvfb-run -a -s "-screen 0 1280x720x24" /opt/godot/godot --path game --resolution 960x540 --audio-driver Dummy \
 ##     res://tests/p/_review/stealth_clip_coverage.tscn -- --anim-out=/abs/dir [--out=/abs/shots]
 ## Prints "[SCC ...]" lines and "[SCC] RESULT tied=N knifed=N pager=N bagged=N thrown=N". Owner: ENV P.
@@ -13,7 +17,8 @@ var rt: HeistRuntime = null
 var pilot: Po5Pilot = null
 var runner_out: String = ""
 var _shot: int = 0
-var _res: Dictionary = {"tied": 0, "knifed": 0, "pager": 0, "bagged": 0, "thrown": 0}
+var _res: Dictionary = {"tied": 0, "knifed": 0, "pager": 0, "bagged": 0, "thrown": 0, "dominated": 0,
+	"surrendered": 0, "cop_tied": 0}
 
 
 func _ready() -> void:
@@ -49,10 +54,9 @@ func wait_s(s: float) -> void:
 func _run() -> void:
 	await _civilians()
 	await _guard()
-	note("RESULT tied=%d knifed=%d pager=%d bagged=%d thrown=%d" % [_res["tied"], _res["knifed"], _res["pager"],
-		_res["bagged"], _res["thrown"]])
-	print("[SCC] RESULT tied=%d knifed=%d pager=%d bagged=%d thrown=%d" % [_res["tied"], _res["knifed"],
-		_res["pager"], _res["bagged"], _res["thrown"]])
+	await _dominate()
+	await _cop()
+	print("[SCC] RESULT %s" % _res)
 	get_tree().quit(0)
 
 
@@ -175,6 +179,76 @@ func _guard() -> void:
 		if not c.is_carrying_bag():
 			_res["thrown"] += 1
 		await shot("thrown")
+	await _teardown()
+
+
+## C) the S5.8 guard domination (skill forced): spotted -> window -> shout -> kneel_cuffed.
+func _dominate() -> void:
+	var c: CrewController = await _launch(1, 0)
+	Modifiers.set_source(c.slot, &"test.scc", {&"stealth.can_dominate_guards": true})
+	var g: NpcBase = rt.npcs(&"guard")[0] as NpcBase if not rt.npcs(&"guard").is_empty() else null
+	var gb: GuardBrain = g.get_node_or_null(^"Brain") as GuardBrain if g != null else null
+	if gb == null:
+		note("no guard")
+	else:
+		var front: Vector3 = g.global_position - g.global_basis.z.normalized() * 4.0  # in his view
+		rt.teleport_crew(c.slot, Transform3D(Basis.IDENTITY, Vector3(front.x, 0.05, front.z)))
+		await pilot.face(g.global_position + Vector3(0, 1.4, 0), 0.03, 1.5)
+		var t: float = 0.0
+		while gb.dominate_window_left <= 0.0 and t < 15.0 and not rt.went_loud:
+			await wait_s(0.1)
+			t += 0.1
+		note("dominate window %.2f s after %.1f s (alert %d)" % [gb.dominate_window_left, t, g.alert_state])
+		await pilot.inp.tap(&"shout")
+		await wait_s(1.0)
+		if g.alert_state == Enums.AlertState.DOMINATED:
+			_res["dominated"] += 1
+		note("guard alert %d (DOMINATED %d)" % [g.alert_state, Enums.AlertState.DOMINATED])
+		await wait_s(4.0)
+		await shot("dominated")
+	Modifiers.clear_source(c.slot, &"test.scc")
+	await _teardown()
+
+
+## D) loud cop surrender (L5.1, chance forced to 1) and tie.
+func _cop() -> void:
+	var c: CrewController = await _launch(0, 0)
+	var ct: CustodyTweak = CustodyTweak.data()
+	var old_chance: float = ct.surrender_base_chance
+	ct.surrender_base_chance = 1.0
+	Modifiers.set_source(c.slot, &"test.scc", {&"defense.damage_taken_mult": 0.0})
+	rt.teleport_crew(c.slot, Transform3D(Basis.IDENTITY, Vector3(0, 0.05, 4)))
+	var cop: NpcBase = rt.spawn_npc(&"police", Transform3D(Basis.IDENTITY, Vector3(0, 0.05, 0)), {})
+	rt.stealth.raise_alarm(&"test", 0)
+	await wait_s(0.5)
+	for _k: int in 4:
+		if cop.alert_state == Enums.AlertState.SURRENDERED:
+			break
+		await pilot.face(cop.global_position + Vector3(0, 1.4, 0), 0.03, 1.5)
+		await pilot.inp.tap(&"shout")
+		await wait_s(Tweak.stealth().shout_cooldown_s + 0.3)
+	if cop.alert_state == Enums.AlertState.SURRENDERED:
+		_res["surrendered"] += 1
+		await wait_s(2.0)
+		await shot("cop_surrendered")
+		var tie: InteractableComponent = null
+		for comp: Node in cop.find_children("*", "InteractableComponent", true, false):
+			var ic: InteractableComponent = comp as InteractableComponent
+			if ic.kind == &"cable_tie" and ic.enabled:
+				tie = ic
+		if tie != null:
+			var near: Vector3 = cop.global_position + _flat(cop.global_position.direction_to(c.global_position)) * 1.0
+			rt.teleport_crew(c.slot, Transform3D(Basis.IDENTITY, Vector3(near.x, 0.05, near.z)))
+			await wait_s(0.3)
+			if await pilot.use(tie, 15.0, func() -> bool: return cop.alert_state == Enums.AlertState.TIED, false):
+				_res["cop_tied"] += 1
+			await wait_s(2.0)
+			await shot("cop_tied")
+		else:
+			note("no tie on the surrendered cop")
+	note("cop alert %d" % cop.alert_state)
+	ct.surrender_base_chance = old_chance
+	Modifiers.clear_source(c.slot, &"test.scc")
 	await _teardown()
 
 
