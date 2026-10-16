@@ -1135,3 +1135,7 @@ Routine and Lethal shows the pager count on the HUD and a camera that can't be s
 **D-130 addendum (round 229, camera range):** A's D-128 prefab default `range_m` 15 m (PD2 editor default) stays for
 cameras without an override; the map generators' explicit 20 m per camera stay too (authored range, and in line with
 the PO's harsher-cameras ask). The round-229 merge regenerates GH/ND/SL/GN scenes so they match their generators.
+**QD-1 (D, 2026-10-16):** FP pistol/revolver web-of-hand vertices 1.7-4.0 mm into the tang/beavertail are accepted as skin
+compression on a high grip; the hand seat stays (D-116 sight picture); d/test_fp_pistol_thumb guards at 4.5 mm.
+**QB-1 (B, 2026-10-16):** heist-specific escape radio lines that a mission escape say() always covers are deleted; the
+generic escape lines stay as the fallback. B's briefing_objectives lists for GN/DB/SL approved (C edits the generator rows).
