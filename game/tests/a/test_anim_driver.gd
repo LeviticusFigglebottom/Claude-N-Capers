@@ -174,7 +174,11 @@ func test_alert_state_fallbacks_without_brain() -> void:
 	assert_eq(d.clip, &"idle_alert", "alerted idle")
 	npc.alert_state = Enums.AlertState.TIED
 	d.tick(0.016)
-	assert_eq(d.clip, &"tied")
+	assert_eq(d.clip, &"kneel_cuffed", "a tied guard / cop kneels cuffed, as on the host (P coverage)")
+	var civ: NpcBase = _npc(&"civilian", true, false)
+	civ.alert_state = Enums.AlertState.TIED
+	_drv(civ).tick(0.016)
+	assert_eq(_drv(civ).clip, &"tied", "a tied civilian keeps the hostage pose")
 	npc.alert_state = Enums.AlertState.INTIMIDATED
 	d.tick(0.016)
 	assert_eq(d.clip, &"hands_up")

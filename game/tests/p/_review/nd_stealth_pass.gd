@@ -14,7 +14,7 @@
 ## Prints "[NDS ...]" lines; the observer (po_observer.gd) logs its flags under --obs-out. Owner: ENV P.
 extends Node
 
-const SKIP_KINDS: Array[StringName] = [&"revive", &"tie", &"bag_body", &"lockpick_safe"]
+const SKIP_KINDS: Array[StringName] = [&"revive", &"cable_tie", &"bag_body", &"lockpick_safe"]
 
 var rt: HeistRuntime = null
 var pilot: Po5Pilot = null
@@ -214,7 +214,7 @@ func _intimidate(c: CrewController) -> bool:
 		if b.mode == CivilianBrain.Mode.DOWN:
 			for comp: Node in civ.find_children("*", "InteractableComponent", true, false):
 				var ic: InteractableComponent = comp as InteractableComponent
-				if ic.kind == &"tie" and ic.enabled and ic.availability(pilot.crew) == &"":
+				if ic.kind == &"cable_tie" and ic.enabled and ic.availability(pilot.crew) == &"":
 					note("tying %s" % civ.name)
 					if await pilot.use(ic, 15.0, func() -> bool: return b.mode == CivilianBrain.Mode.TIED):
 						_tied += 1
