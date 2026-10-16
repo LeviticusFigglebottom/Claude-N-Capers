@@ -39,6 +39,9 @@ extends Resource
 @export var suppressed: bool = false          ## silenced: stealth noise radius uses suppressed profile
 @export var noise_radius_m: float = 60.0      ## alert radius of a shot (suppressed ~ 0-5 m)
 @export var magnification: float = 1.0        ## ADS zoom
+@export var is_scope: bool = false            ## magnified optic: P's FP scope overlay at ADS (merged OR)
+@export var scope_reticle: StringName = &""   ## &"duplex" (default when empty) / &"mildot" / &"chevron" / &"dot" (last non-empty)
+@export var scope_reticle_color: Color = Color(0, 0, 0, 0)  ## alpha 0 = default near-black; bright = illuminated
 @export var gadgets: Array[StringName] = []   ## &"laser", &"flashlight", &"angled_sight"
 
 
@@ -86,6 +89,11 @@ func plus(d: WeaponStats) -> WeaponStats:
 	r.wall_pierce = r.wall_pierce or d.wall_pierce
 	r.suppression += d.suppression
 	r.magnification = maxf(r.magnification, d.magnification)
+	r.is_scope = r.is_scope or d.is_scope
+	if d.scope_reticle != &"":
+		r.scope_reticle = d.scope_reticle
+	if d.scope_reticle_color.a > 0.0:
+		r.scope_reticle_color = d.scope_reticle_color
 	r.ads_time_s += d.ads_time_s
 	r.equip_time_s += d.equip_time_s
 	if d.suppressed:
