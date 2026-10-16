@@ -79,7 +79,7 @@ const POLICE: Array[String] = ["rappel"]
 const RAPPEL_SPEED: float = 2.5
 const RAPPEL_CONTACT: int = 4
 ## Held props (SOURCE.txt `<prop>_grip`, relative to HandR/Socket).
-const GRIPS: Array[String] = ["phone_grip", "mug_grip", "mop_grip", "book_grip"]
+const GRIPS: Array[String] = ["phone_grip", "mug_grip", "mop_grip", "book_grip", "cigarette_grip"]
 const LOOPED: Array[String] = [
 	"idle", "idle_alert", "walk", "run", "sprint", "crouch_idle", "crouch_walk", "strafe_l", "strafe_r",
 	"walk_back", "aim_rifle", "aim_pistol", "kneel_cuffed", "hands_up", "cower", "lie_down", "tied",

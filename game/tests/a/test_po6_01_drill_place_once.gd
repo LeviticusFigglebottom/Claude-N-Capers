@@ -82,6 +82,37 @@ func _assert_one_drill(drill: DrillPoint, safe: Safe) -> void:
 	assert_eq(_loop_cues.size(), 1, "the drill place/loop cue fired exactly once (%s)" % [_loop_cues])
 
 
+## Lead (r215 GH capture): what the player is offered per device state, through the real aim path. RUNNING: no
+## prompt on the safe or the drill spot (the timer panel only); JAMMED: only "fix the drill"; running again: none.
+func _assert_prompts_follow_the_device(drill: DrillPoint, safe: Safe) -> void:
+	var c: CrewController = _rt.crew_controller(0) as CrewController
+	await wait_physics_frames(2)
+	for comp: InteractableComponent in [safe.interactable, drill.interactable]:
+		assert_false(comp.enabled, "%s offers nothing while the drill runs" % comp.get_parent().name)
+	var aimed: InteractableComponent = _rt.interaction.aimed_component(c)
+	assert_false(aimed == safe.interactable or aimed == drill.interactable, "no place prompt while running (%s)" % aimed)
+	drill.runner.progress = 0.5
+	drill.runner._jam()
+	await wait_physics_frames(2)
+	var d: Vector3 = drill.interactable.global_position - c.eye_position()  # look at the drill spot again
+	var look: CrewIntent = CrewIntent.new()
+	look.look_yaw = atan2(-d.x, -d.z)
+	look.look_pitch = atan2(d.y, Vector2(d.x, d.z).length())
+	_rt.set_bot_intent(0, look)
+	await wait_physics_frames(2)
+	aimed = _rt.interaction.aimed_component(c)
+	_rt.clear_bot_intent(0)
+	assert_true(aimed == safe.interactable or aimed == drill.interactable, "jammed: the aimed safe offers the fix")
+	if aimed == drill.interactable:
+		assert_eq(aimed.prompt_key, &"ui.prompt.fix_drill", "drill spot: fix prompt only")
+	elif aimed != null:
+		assert_eq(safe.method_for(c), &"fix", "safe: fix only")
+	drill.runner.jams.clear()  # the rolled points behind progress 0.5 would re-jam at once
+	drill.runner.fix(0)
+	await wait_physics_frames(2)
+	assert_false(safe.interactable.enabled or drill.interactable.enabled, "running again: no prompt")
+
+
 func test_po6_01_one_hold_on_the_safe_places_the_visible_drill() -> void:
 	await _launch()
 	var drill: DrillPoint = _tagged(&"safe_drill") as DrillPoint
@@ -94,10 +125,7 @@ func test_po6_01_one_hold_on_the_safe_places_the_visible_drill() -> void:
 	assert_eq(safe.method_for(_rt.crew_controller(0)), &"drill", "the safe offers the drill (code unknown)")
 	assert_true(await _hold_aimed(safe, safe.interactable), "one hold on the safe completed")
 	_assert_one_drill(drill, safe)
-	# The drill spot now refuses with the device-running reason: there is nothing left to place.
-	var c: CrewController = _rt.crew_controller(0) as CrewController
-	assert_eq(drill.interactable.availability(c), DrillPoint.BLOCK_RUNNING, "drill spot: device running")
-	assert_eq(safe.interactable.availability(c), DrillPoint.BLOCK_RUNNING, "safe: device running (not the reasonless block)")
+	await _assert_prompts_follow_the_device(drill, safe)
 
 
 func test_po6_01_one_hold_on_the_drill_spot_places_the_visible_drill() -> void:

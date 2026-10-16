@@ -153,17 +153,22 @@ func _on_completed(crew: Node) -> void:
 
 func _on_device_state(s: int) -> void:
 	_update_device_visual(s)
+	# Lead (r215 GH capture): while the device RUNS the spot offers nothing (PD2: no prompt, the timer panel only);
+	# jammed it offers only "fix"; idle "place".
 	match s:
 		DeviceRunner.State.JAMMED:
 			interactable.kind = &"fix_drill"
 			interactable.interaction_time_s = Tweak.interaction().drill_fix_s
 			interactable.prompt_key = &"ui.prompt.fix_drill"
-		DeviceRunner.State.DONE:
+			interactable.enabled = true
+		DeviceRunner.State.DONE, DeviceRunner.State.RUNNING:
+			interactable.kind = &"place_drill"  # not "fix the drill" when it next jams-and-fixes
+			interactable.prompt_key = _place_prompt
 			interactable.enabled = false
 		_:
 			interactable.kind = &"place_drill"
 			interactable.interaction_time_s = _place_time
-			interactable.prompt_key = _place_prompt  # not "fix the drill" while it runs again after a fix
+			interactable.prompt_key = _place_prompt
 
 
 func _on_device_finished() -> void:

@@ -29,6 +29,7 @@ func _launch(flag: bool) -> void:
 		Modifiers.set_source(0, &"test", {&"stealth.ecm_pager_delay": true})
 	var l: Loadout = Loadout.new()
 	l.deployable = &"deployable.ecm"
+	ADeployableGateUtil.grant(l)  # D-111 gate flag, no extra units
 	_rt = await HeistLauncher.launch(&"unit_ecm_pagers", 56, Enums.Difficulty.ROUTINE, self,
 		{"map_packed": ATestMaps.basic(1, 0), "ai_teammates": 0, "skip_casing": true, "loadouts": {0: l}})
 	EventBus.pager_started.connect(_on_pager_started)
