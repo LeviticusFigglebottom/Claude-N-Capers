@@ -313,13 +313,30 @@ func _antechamber() -> bool:
 		for _k: int in 6:
 			if _cam_down(cam):
 				break
-			await pilot.face(cam.global_position, 0.01, 1.0)
+			var aim_at: Vector3 = _cam_aim_point(cam)
+			await pilot.face(aim_at, 0.01, 1.0)
+			var c: CrewController = pilot.crew
+			var q: PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.create(c.eye_position(),
+				c.eye_position() + c.aim_direction() * 30.0)
+			q.exclude = [c.get_rid()]
+			var hit: Dictionary = c.get_world_3d().direct_space_state.intersect_ray(q)
+			note("C6 shot from %s at %s (%.1f m): ray hits %s" % [Po5Pilot._v(c.global_position), Po5Pilot._v(aim_at),
+				c.eye_position().distance_to(aim_at), (hit["collider"] as Node).get_path() if not hit.is_empty() else ^"-"])
 			await pilot.inp.tap(&"fire")
 			await wait_s(0.4)
 		note("camera C6 %s" % ("down" if _cam_down(cam) else "still up"))
 	else:
 		note("no C6 camera found near %s" % Po5Pilot._v(C6_AT))
 	return true
+
+
+## Where to shoot a camera: its collision box sits on the room side of the mount pivot (QA-26), so aim at the
+## shape's centre (the pivot is on the wall / ceiling plane: shots there hit the mount surface).
+static func _cam_aim_point(cam: Node3D) -> Vector3:
+	for n: Node in cam.find_children("*", "CollisionShape3D", true, false):
+		return (n as Node3D).global_position
+	var head: Node3D = cam.find_child("Head", true, false) as Node3D
+	return head.global_position if head != null else cam.global_position - cam.global_basis.z * 0.2
 
 
 ## A shot camera keeps its mesh: SecurityCamera.destroyed (S8.1) is the state.
