@@ -682,13 +682,16 @@ func _use_stand(comp: InteractableComponent) -> Vector3:
 		return stand_point(up.global_position)
 	var target: Vector3 = comp.global_position
 	var near: Vector3 = stand_point(target)
-	if _clear_to(near, target):
+	# GN probe 8: standing on a dropped bag, the crosshair never lands on it (aimed <none> at 0.67 m, 15 s of
+	# skipped presses). Stand a step back from a loose bag, like a player looking down at it.
+	var bag: bool = owner_n is LootBag
+	if not bag and _clear_to(near, target):
 		return near
 	for r: float in [0.7, 1.1, 1.5]:
 		for k: int in 12:
 			var a: float = TAU * float(k) / 12.0
 			var cand: Vector3 = stand_point(target + Vector3(cos(a), 0.0, sin(a)) * r)
-			if flat_dist(cand, target) <= 1.6 and _clear_to(cand, target):
+			if flat_dist(cand, target) <= 1.6 and (not bag or flat_dist(cand, target) >= 0.9) and _clear_to(cand, target):
 				return cand
 	return near
 

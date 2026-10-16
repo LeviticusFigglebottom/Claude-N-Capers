@@ -149,3 +149,21 @@ func test_po5_gn_stalled_marker_returns_when_usable_again() -> void:
 	dp.interactable.enabled = true
 	assert_false(flow.call(&"_stalled", m), "usable again: picked again")
 	assert_eq(float((flow.get(&"_stalls") as Dictionary)[&"hack"]), 0.0, "stall reset")
+
+
+## GN probe 8: a bag put down to clear the way is fetched before the optional extras (secure goes first while one lies
+## loose; _fetch_bag knows the bag's real kind, pick_bag), and the pilot stands a step back from it to aim at it.
+func test_po5_gn_loose_bag_goes_first_and_is_aimed_from_a_step_back() -> void:
+	var s: Dictionary = await _setup()
+	var flow: RefCounted = s["flow"]
+	var pilot: Po5Pilot = s["pilot"]
+	var loot: LootManager = _rt.service(G.SVC_LOOT) as LootManager
+	var bag: LootBag = loot.spawn_bag(&"loot.jewelry", Transform3D(Basis.IDENTITY, Vector3(6, 0.3, 6)))
+	await wait_physics_frames(3)
+	assert_eq(flow.call(&"_loose_bag"), bag.interactable, "a loose bag")
+	var secure: Dictionary = {"id": &"secure", "position": Vector3(-6, 0, 6)}
+	var extras: Dictionary = {"id": &"extras", "position": Vector3(8, 0, 8)}
+	var markers: Array[Dictionary] = [extras, secure]
+	assert_eq(flow.call(&"_pick", markers), secure, "carry the loose bag in before the extras")
+	var stand: Vector3 = pilot._use_stand(bag.interactable)
+	assert_true(pilot.flat_dist(stand, bag.global_position) >= 0.9, "not on top of the bag")

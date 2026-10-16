@@ -31,6 +31,8 @@ const CODE_BONUS_M: float = 2.0
 ## Pseudo objective: work on the door that blocks a FIRST_OBJECTIVES marker (GN loud: the coded ServerDoor in front
 ## of the Argus terminal: its keypad once the code is read, else its drill).
 const UNBLOCK_ID: StringName = &"_unblock"
+## Failed pick-ups of one loose bag before the pilot leaves it.
+const BAG_FAIL_LIMIT: int = 3
 
 var f: Node = null
 var p: Po5Pilot = null
@@ -44,6 +46,8 @@ var _unreachable: Dictionary[int, Door] = {}
 ## Markers whose walk was stopped by a door the crew cannot open (`_marker_key` -> that door): they yield like a
 ## stalled marker until the door is passable. Per marker, not per objective ([canvases] has one per slot).
 var _marker_blocked: Dictionary[String, Door] = {}
+## Failed pick-ups per loose bag (instance id); BAG_FAIL_LIMIT of them skip that bag for the run.
+var _bag_fails: Dictionary[int, int] = {}
 
 
 func play(flow: Node) -> int:
@@ -141,8 +145,8 @@ func step() -> void:
 ## flow moves on to what it can act on (GN probe: stuck at a found, already cut canvas).
 func _pick(markers: Array[Dictionary]) -> Dictionary:
 	for me: Dictionary in markers:  # GN probe 7: the ride is here (required loot secured): leave, skip the extras
-		if StringName(me["id"]) == &"escape":
-			return me
+		if StringName(me["id"]) == &"escape" or (StringName(me["id"]) == &"secure" and _loose_bag() != null):
+			return me  # probe 8: a dropped bag (put down to clear the way) is carried in before anything optional
 	for m0: Dictionary in markers:  # GN probe 4: the loud hack lifts every shutter (Calloway), so it goes first
 		if StringName(m0["id"]) in FIRST_OBJECTIVES and not _marker_blocked.has(_marker_key(m0)):
 			# P's GN-P1 rerun (a): the navmesh runs through the closed CODE ServerDoor, so a path alone said "go" and
@@ -256,7 +260,7 @@ func _fetch_bag() -> bool:
 	var best_d: float = INF
 	for n: Node in f.get_tree().get_nodes_in_group(G.INTERACTABLE):
 		var c: InteractableComponent = n as InteractableComponent
-		if c == null or not c.enabled or not rt.is_ancestor_of(c) or not (c.kind in [&"bag_loot", &"carry_bag", &"pickup_bag"]):
+		if c == null or not c.enabled or not rt.is_ancestor_of(c) or not (c.kind in [&"bag_loot", &"pick_bag"]):
 			continue
 		if c.availability(p.crew) != &"" or _is_body_bag(c) or _is_unreachable(c):
 			continue
@@ -272,7 +276,30 @@ func _fetch_bag() -> bool:
 		return false
 	await p.use(best, 20.0, func() -> bool: return p.crew.is_carrying_bag())
 	_mark_if_unreached(best)
+	if not p.crew.is_carrying_bag() and is_instance_valid(best) and best.kind == &"pick_bag":
+		var key: int = best.get_instance_id()
+		_bag_fails[key] = _bag_fails.get(key, 0) + 1
+		if _bag_fails[key] >= BAG_FAIL_LIMIT:
+			_unreachable[key] = null
+			f.note("skipping bag %s for this run (%d failed pick-ups)" % [best.get_path(), _bag_fails[key]])
 	return p.crew.is_carrying_bag()
+
+
+## A loot bag lying loose (dropped, not a body bag, not already in the secure zone) the pilot can pick up, else null.
+func _loose_bag() -> InteractableComponent:
+	if p.crew.is_carrying_bag():
+		return null
+	var zone: SecureZone = p.secure_zone()
+	for n: Node in f.get_tree().get_nodes_in_group(G.INTERACTABLE):
+		var c: InteractableComponent = n as InteractableComponent
+		if c == null or c.kind != &"pick_bag" or not c.enabled or not rt.is_ancestor_of(c) or _is_body_bag(c):
+			continue
+		if c.availability(p.crew) != &"" or _is_unreachable(c):
+			continue
+		if zone != null and c.global_position.distance_to(zone.global_position) < 4.0:
+			continue
+		return c
+	return null
 
 
 ## A marker that waited STALL_SKIP_S with nothing usable, while that is still so. Something usable there again (GN
