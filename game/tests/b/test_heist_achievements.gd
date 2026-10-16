@@ -142,16 +142,10 @@ func test_tool_and_body_bags_never_count_as_loot() -> void:
 	assert_true(HeistConditions.counts_as_loot(&"loot.jewelry"))
 	var r: Dictionary = {"loot": [_bag(&"loot.thermite"), _bag(&"loot.body_bag"), _bag(&"loot.jewelry")]}
 	assert_eq(HeistConditions.secured_counts(r), {&"loot.jewelry": 1})
-	# a spawned thermite bag that is consumed (never secured) does not break "no bag left behind"
-	var f: HeistFacts = HeistFacts.new()
-	f.record(&"loot_spawned", [1, &"loot.thermite"])
-	f.record(&"loot_spawned", [2, &"loot.jewelry"])
-	f.record(&"loot_secured", [2, &"loot.jewelry", 6500])
-	assert_true(HeistConditions.passes({"all_loot_secured": true}, r, f.snapshot()))
-	f.record(&"loot_spawned", [3, &"loot.jewelry"])
-	assert_false(HeistConditions.passes({"all_loot_secured": true}, r, f.snapshot()), "bag 3 left behind")
-	assert_true(HeistConditions.passes({"all_loot_secured": true}, {"loot": [_bag(&"loot.jewelry")], "loot_available": 1},
-			{"recorded": true}), "a loot_available fact (ENV A request) replaces the log check")
+	# loot_available (A, events.md v1.7) excludes tool and body bags too, so they never pad the count
+	assert_true(HeistConditions.passes({"all_loot_secured": true}, r.merged({"loot_available": 1}), {}))
+	assert_false(HeistConditions.passes({"all_loot_secured": true}, r.merged({"loot_available": 2}), {}),
+			"a thermite or body bag does not stand in for a valued bag")
 
 
 func test_fact_matching() -> void:
@@ -232,24 +226,23 @@ func _cases() -> Dictionary:
 	out[&"achievement.gh_velvet_gloves"] = _quiet_case(gh)
 	out[&"achievement.gh_before_closing"] = _speed_case(gh, 330.0, 400.0)
 	var jew: Array = _bags(&"loot.jewelry", 4)
-	var spawned: Array = _spawn_secure(&"loot.jewelry", 4, 4)
 	out[&"achievement.gh_whole_consignment"] = {
-		"pass": _run(_res(gh, true, {"loot": jew}), _facts(spawned, {&"safe_loot": DONE}), "consignment"),
+		"pass": _run(_res(gh, true, {"loot": jew, "loot_available": 4}), _facts([], {&"safe_loot": DONE}), "consignment"),
 		"miss": [
-			_run(_res(gh, true, {"loot": jew}), _facts(_spawn_secure(&"loot.jewelry", 5, 4), {&"safe_loot": DONE}), "bag left"),
-			_run(_res(gh, true, {"loot": _bags(&"loot.jewelry", 3)}), _facts(_spawn_secure(&"loot.jewelry", 3, 3),
-					{&"safe_loot": DONE}), "3 bags"),
-			_run(_res(gh, true, {"loot": jew}), _facts(spawned, {&"safe_loot": ACTIVE}), "safe not emptied"),
+			_run(_res(gh, true, {"loot": jew, "loot_available": 6}), _facts([], {&"safe_loot": DONE}), "delivery bags left"),
+			_run(_res(gh, true, {"loot": _bags(&"loot.jewelry", 3), "loot_available": 3}), _facts([], {&"safe_loot": DONE}),
+					"3 bags"),
+			_run(_res(gh, true, {"loot": jew, "loot_available": 4}), _facts([], {&"safe_loot": ACTIVE}), "safe not emptied"),
 		],
 	}
-	var code_objs: Dictionary = {&"code": DONE, &"safe": DONE, &"keycard": [DONE, true]}
-	var code_ev: Array = [[&"item_picked_up", [&"item.code_note", 0]], [&"interaction_completed", [12, 0, &"keypad"]]]
 	out[&"achievement.gh_managers_combination"] = {
-		"pass": _run(_res(gh, true), _facts(code_ev, code_objs), "code"),
+		"pass": _run(_res(gh, true), _facts([], {&"safe": [DONE, false, &"code"]}), "code"),
 		"miss": [
-			_run(_res(gh, true), _facts(code_ev + [[&"device_started", [9, &"drill", 120.0]]], code_objs), "drill"),
-			_run(_res(gh, true), _facts(code_ev + [[&"item_picked_up", [&"item.keycard", 1]]], code_objs), "keycard"),
-			_run(_res(gh, true), _facts([], {&"code": [DONE, true], &"safe": DONE}), "code skipped"),
+			_run(_res(gh, true), _facts([], {&"safe": [DONE, false, &"drill"]}), "drill"),
+			_run(_res(gh, true), _facts([], {&"safe": [DONE, false, &"keycard"]}), "keycard"),
+			_run(_res(gh, true), _facts([], {&"safe": [DONE, false, &"lockpick"]}), "lockpick"),
+			_run(_res(gh, true), _facts([], {&"safe": [DONE, true, &"code"]}), "safe skipped"),
+			_run(_res(gh, true), _facts([], {&"safe": DONE}), "no open_method"),
 		],
 	}
 	out[&"achievement.gh_window_shopping"] = {
@@ -271,11 +264,12 @@ func _cases() -> Dictionary:
 	out[&"achievement.nd_bankers_hours"] = _speed_case(nd, 700.0, 760.0)
 	var nd_objs: Dictionary = {&"vault_loot": DONE, &"depository": DONE}
 	out[&"achievement.nd_cleaned_out"] = {
-		"pass": _run(_res(nd, true, {"loot": _bags(&"loot.cash", 9)}), _facts(_spawn_secure(&"loot.cash", 9, 9), nd_objs), "all"),
+		"pass": _run(_res(nd, true, {"loot": _bags(&"loot.cash", 9), "loot_available": 9}), _facts([], nd_objs), "all"),
 		"miss": [
-			_run(_res(nd, true, {"loot": _bags(&"loot.cash", 9)}), _facts(_spawn_secure(&"loot.cash", 9, 9),
-					{&"vault_loot": DONE, &"depository": ACTIVE}), "depository shut"),
-			_run(_res(nd, true, {"loot": _bags(&"loot.cash", 8)}), _facts(_spawn_secure(&"loot.cash", 8, 8), nd_objs), "8 bags"),
+			_run(_res(nd, true, {"loot": _bags(&"loot.cash", 9), "loot_available": 9}),
+					_facts([], {&"vault_loot": DONE, &"depository": ACTIVE}), "depository shut"),
+			_run(_res(nd, true, {"loot": _bags(&"loot.cash", 8), "loot_available": 8}), _facts([], nd_objs), "8 bags"),
+			_run(_res(nd, true, {"loot": _bags(&"loot.cash", 9), "loot_available": 11}), _facts([], nd_objs), "courier bags left"),
 		],
 	}
 	out[&"achievement.nd_clockwork"] = {
@@ -293,20 +287,21 @@ func _cases() -> Dictionary:
 			+ _bags(&"loot.ledger_drives", 3) + _bags(&"loot.painting", 2)
 	var sl_objs: Dictionary = {&"study_safe": DONE, &"paintings": DONE, &"archive_safe": DONE}
 	out[&"achievement.sl_every_page"] = {
-		"pass": _run(_res(sl, true, {"loot": sl_loot}), _facts(_spawn_secure(&"loot.ledger_drives", 8, 8), sl_objs), "all"),
+		"pass": _run(_res(sl, true, {"loot": sl_loot, "loot_available": 8}), _facts([], sl_objs), "all"),
 		"miss": [
-			_run(_res(sl, true, {"loot": sl_loot.slice(0, 5) + _bags(&"loot.painting", 2)}),
-					_facts(_spawn_secure(&"loot.ledger_drives", 7, 7), sl_objs), "2 drives"),
-			_run(_res(sl, true, {"loot": sl_loot}), _facts(_spawn_secure(&"loot.ledger_drives", 8, 8),
-					{&"study_safe": DONE, &"paintings": DONE}), "archive safe shut"),
+			_run(_res(sl, true, {"loot": sl_loot.slice(0, 5) + _bags(&"loot.painting", 2), "loot_available": 7}),
+					_facts([], sl_objs), "2 drives"),
+			_run(_res(sl, true, {"loot": sl_loot, "loot_available": 8}), _facts([], {&"study_safe": DONE, &"paintings": DONE}),
+					"archive safe shut"),
+			_run(_res(sl, true, {"loot": sl_loot, "loot_available": 9}), _facts([], sl_objs), "printout left"),
 		],
 	}
-	var cage: Dictionary = {&"cage_code": DONE, &"cage": DONE}
 	out[&"achievement.sl_measure_twice"] = {
-		"pass": _run(_res(sl, true), _facts([[&"device_started", [5, &"time_lock", 90.0]]], cage), "code"),
+		"pass": _run(_res(sl, true), _facts([], {&"cage": [DONE, false, &"code"]}), "code"),
 		"miss": [
-			_run(_res(sl, true), _facts([[&"device_started", [6, &"saw", 90.0]]], cage), "saw"),
-			_run(_res(sl, true), _facts([], {&"cage_code": ACTIVE, &"cage": DONE}), "no code"),
+			_run(_res(sl, true), _facts([], {&"cage": [DONE, false, &"saw"]}), "saw"),
+			_run(_res(sl, true), _facts([], {&"cage": [DONE, false, &"left_open"]}), "left open"),
+			_run(_res(sl, true), _facts([], {&"cage": DONE}), "no open_method"),
 		],
 	}
 	out[&"achievement.sl_dead_air"] = {
@@ -324,12 +319,13 @@ func _cases() -> Dictionary:
 	}
 	out[&"achievement.db_before_sunrise"] = _speed_case(db, 830.0, 860.0, false)
 	var pier: Array = _bags(&"loot.cash_bricks", 4) + _bags(&"loot.weapon_crate", 4) + _bags(&"loot.contraband", 4)
-	var pier_ev: Array = _spawn_secure(&"loot.cash_bricks", 12, 12) + [[&"loot_spawned", [99, &"loot.thermite"]]]
 	out[&"achievement.db_strip_the_pier"] = {
-		"pass": _run(_res(db, false, {"loot": pier + [_bag(&"loot.thermite")]}), _facts(pier_ev, {}), "all"),
+		"pass": _run(_res(db, false, {"loot": pier + [_bag(&"loot.thermite")], "loot_available": 12}), {}, "all"),
 		"miss": [
-			_run(_res(db, false, {"loot": pier.slice(0, 11) + _bags(&"loot.cash_bricks", 1)}), _facts(pier_ev, {}), "3 product"),
-			_run(_res(db, false, {"loot": pier}), _facts(pier_ev + [[&"loot_spawned", [77, &"loot.contraband"]]], {}), "burned bag"),
+			_run(_res(db, false, {"loot": pier.slice(0, 11) + _bags(&"loot.cash_bricks", 1), "loot_available": 12}), {},
+					"3 product"),
+			_run(_res(db, false, {"loot": pier, "loot_available": 13}), {}, "burned bag"),
+			_run(_res(db, false, {"loot": pier}), {}, "no loot_available"),
 		],
 	}
 	out[&"achievement.db_buyers_discount"] = {
@@ -348,11 +344,12 @@ func _cases() -> Dictionary:
 	for id: StringName in CANVASES:
 		art.append(_bag(id))
 	out[&"achievement.gn_full_collection"] = {
-		"pass": _run(_res(gn, true, {"loot": art + [_bag(&"loot.painting_study")]}), _facts(_spawn_secure(LANTERN, 5, 5), {}), "all"),
+		"pass": _run(_res(gn, true, {"loot": art + [_bag(&"loot.painting_study")], "loot_available": 5}), {}, "all"),
 		"miss": [
-			_run(_res(gn, true, {"loot": art}), _facts(_spawn_secure(LANTERN, 4, 4), {}), "no study"),
-			_run(_res(gn, true, {"loot": art.slice(1) + _bags(&"loot.painting_study", 2)}), _facts(_spawn_secure(LANTERN, 5, 5), {}),
+			_run(_res(gn, true, {"loot": art, "loot_available": 4}), {}, "no study"),
+			_run(_res(gn, true, {"loot": art.slice(1) + _bags(&"loot.painting_study", 2), "loot_available": 5}), {},
 					"no Lantern Bearer"),
+			_run(_res(gn, true, {"loot": art + [_bag(&"loot.painting_study")], "loot_available": 18}), {}, "studies left"),
 		],
 	}
 	out[&"achievement.gn_pulled_the_plug"] = {
@@ -444,24 +441,56 @@ func _bags(id: StringName, n: int) -> Array:
 	return out
 
 
-## `spawned` loot_spawned facts (bag ids 1..n), the first `secured` of them secured.
-func _spawn_secure(id: StringName, spawned: int, secured: int) -> Array:
-	var out: Array = []
-	for i: int in range(spawned):
-		out.append([&"loot_spawned", [i + 1, id]])
-	for i: int in range(secured):
-		out.append([&"loot_secured", [i + 1, id, 1000]])
-	return out
-
-
-## A recorded log: events [[signal, args], ...]; objectives id -> state, or [state, skipped].
+## A recorded log: events [[signal, args], ...]; objectives id -> state, or [state, skipped[, open_method]].
 func _facts(events: Array, objectives: Dictionary) -> Dictionary:
 	var f: HeistFacts = HeistFacts.new()
 	for id: StringName in objectives:
 		var v: Variant = objectives[id]
 		var st: int = int((v as Array)[0]) if v is Array else int(v)
 		var skipped: bool = bool((v as Array)[1]) if v is Array else false
-		f.record(&"objective_updated", [id, st, {"skipped": skipped} if skipped else {}])
+		var data: Dictionary = {"skipped": skipped} if skipped else {}
+		if v is Array and (v as Array).size() > 2:
+			data["open_method"] = (v as Array)[2]
+		f.record(&"objective_updated", [id, st, data])
 	for e: Variant in events:
 		f.record(StringName((e as Array)[0]), (e as Array)[1] as Array)
 	return f.snapshot()
+
+
+## events.md v1.7 fact 1: HeistResult.loot_available. "All bags" = counted secured bags reach it; no field, a
+## zero, or one bag short never unlocks; no fact log is needed.
+func test_loot_available_fact() -> void:
+	var c: Dictionary = {"all_loot_secured": true}
+	var four: Array = _bags(&"loot.cash", 4)
+	assert_true(HeistConditions.passes(c, {"loot": four, "loot_available": 4}, {}), "4 of 4")
+	assert_true(HeistConditions.passes(c, {"loot": four, "loot_available": 3}, {}), "more than offered (thrown-in extra)")
+	assert_false(HeistConditions.passes(c, {"loot": four, "loot_available": 5}, {}), "one left behind")
+	assert_false(HeistConditions.passes(c, {"loot": four}, {}), "no loot_available: fails closed")
+	assert_false(HeistConditions.passes(c, {"loot": [], "loot_available": 0}, {}), "nothing offered is not a clear")
+	assert_false(HeistConditions.needs_facts(c), "a result fact, not a log fact")
+
+
+## events.md v1.7 facts 2 and 3: objective_updated data["open_method"] (GH safe, SL cage). HeistFacts keeps the
+## method once seen (it comes before COMPLETED); the condition needs the objective done, not skipped, by that method.
+func test_open_method_facts() -> void:
+	var f: HeistFacts = HeistFacts.new()
+	f.record(&"objective_updated", [&"safe", ACTIVE, {}])
+	f.record(&"objective_updated", [&"safe", ACTIVE, {"open_method": &"code"}])
+	f.record(&"objective_updated", [&"safe", DONE, {}])
+	assert_eq(StringName((f.objectives[&"safe"] as Dictionary).get("open_method", &"")), &"code", "kept through COMPLETED")
+	var gh: Dictionary = {"objectives_open_method": {&"safe": &"code"}}
+	assert_true(HeistConditions.passes(gh, {}, f.snapshot()), "GH safe by code")
+	assert_true(HeistConditions.needs_facts(gh))
+	for m: StringName in [&"keycard", &"lockpick", &"drill", &"left_open"]:
+		var g: HeistFacts = HeistFacts.new()
+		g.record(&"objective_updated", [&"safe", DONE, {"open_method": m}])
+		assert_false(HeistConditions.passes(gh, {}, g.snapshot()), "GH safe by %s" % m)
+	var sl: Dictionary = {"objectives_open_method": {&"cage": &"code"}}
+	for m2: StringName in [&"code", &"saw", &"left_open"]:
+		var h: HeistFacts = HeistFacts.new()
+		h.record(&"objective_updated", [&"cage", DONE, {"open_method": String(m2)}])  # String or StringName on the wire
+		assert_eq(HeistConditions.passes(sl, {}, h.snapshot()), m2 == &"code", "SL cage by %s" % m2)
+	var open: HeistFacts = HeistFacts.new()
+	open.record(&"objective_updated", [&"cage", ACTIVE, {"open_method": &"code"}])
+	assert_false(HeistConditions.passes(sl, {}, open.snapshot()), "method known but the cage objective not completed")
+	assert_false(HeistConditions.passes(sl, {}, {}), "no log")

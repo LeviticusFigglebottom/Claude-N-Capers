@@ -13,4 +13,4 @@ order = 722
 category = &"night_deposit"
 rewards = Array[StringName]([&"mask_pattern.chevron"])
 unlocks = Array[StringName]([])
-requires_facts = Array[StringName]([&"heist_result.loot_available"])
+requires_facts = Array[StringName]([])

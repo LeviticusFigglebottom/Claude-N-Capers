@@ -16,12 +16,12 @@
 ##                                PayoutTweak.xp_loot_excluded_ids, i.e. not a body bag) >= value.
 ##   "loot_all": [loot ids]       each secured at least once.
 ##   "loot_min": {loot id: n}     each secured at least n times.
+##   "all_loot_secured": true     the counted secured bags reach HeistResult.loot_available (events.md v1.7: every
+##                                valued bag the run offered, untaken / unopened included; > 0). No field: fails.
 ## Fact-log keys (need facts.recorded):
-##   "all_loot_secured": true     every COUNTED bag that spawned (loot_spawned) was secured (loot_secured, same
-##                                bag id), and at least one was. If the result carries `loot_available` (an int:
-##                                every bag the map offered; not in the contract yet, requested from ENV A) the
-##                                counted secured bags must reach it instead.
 ##   "objectives_completed": [ids]      each ended COMPLETED and not `skipped` by the mission.
+##   "objectives_open_method": {id: method}  each ended COMPLETED-and-not-skipped AND its recorded `open_method`
+##                                (objective_updated data, events.md v1.7) is that method. No method: fails.
 ##   "objectives_not_completed": [ids]  none of them ended COMPLETED-and-not-skipped.
 ##   "facts_seen" / "facts_not_seen": [{"signal": <EventBus fact>, "args": {<arg index>: <value>}}]
 ##                                at least one / no recorded fact of that signal whose listed args equal the values.
@@ -29,8 +29,8 @@ class_name HeistConditions
 extends RefCounted
 
 const RESULT_KEYS: Array[String] = ["max_time_s", "max_time_variant", "max_kills", "max_civilian_kills",
-	"max_downs", "max_custody", "max_pagers", "min_bags", "loot_all", "loot_min"]
-const FACT_KEYS: Array[String] = ["all_loot_secured", "objectives_completed", "objectives_not_completed",
+	"max_downs", "max_custody", "max_pagers", "min_bags", "loot_all", "loot_min", "all_loot_secured"]
+const FACT_KEYS: Array[String] = ["objectives_completed", "objectives_not_completed", "objectives_open_method",
 	"facts_seen", "facts_not_seen"]
 ## Crew-row counter per max_* key.
 const CREW_MAX: Dictionary = {"max_kills": "kills", "max_civilian_kills": "civilians_killed", "max_downs": "downs"}
@@ -58,7 +58,7 @@ static func needs_facts(c: Dictionary) -> bool:
 
 
 static func passes(c: Dictionary, result: Dictionary, facts: Dictionary) -> bool:
-	return _result_ok(c, result) and _facts_ok(c, result, facts)
+	return _result_ok(c, result) and _facts_ok(c, facts)
 
 
 static func _result_ok(c: Dictionary, r: Dictionary) -> bool:
@@ -92,10 +92,13 @@ static func _result_ok(c: Dictionary, r: Dictionary) -> bool:
 	for id: Variant in mins:
 		if int(bags.get(StringName(id), 0)) < int(mins[id]):
 			return false
+	if bool(c.get("all_loot_secured", false)) and not (r.has("loot_available") and int(r["loot_available"]) > 0
+			and _sum(bags) >= int(r["loot_available"])):
+		return false
 	return true
 
 
-static func _facts_ok(c: Dictionary, r: Dictionary, f: Dictionary) -> bool:
+static func _facts_ok(c: Dictionary, f: Dictionary) -> bool:
 	if not needs_facts(c):
 		return true
 	if not bool(f.get("recorded", false)):
@@ -107,6 +110,11 @@ static func _facts_ok(c: Dictionary, r: Dictionary, f: Dictionary) -> bool:
 	for id: Variant in c.get("objectives_not_completed", []) as Array:
 		if _done(objs, StringName(id)):
 			return false
+	var methods: Dictionary = c.get("objectives_open_method", {}) as Dictionary
+	for id: Variant in methods:
+		var o: Dictionary = objs.get(StringName(id), {}) as Dictionary
+		if not _done(objs, StringName(id)) or not _same(o.get("open_method", &""), methods[id]):
+			return false
 	var events: Array = f.get("events", []) as Array
 	for pat: Variant in c.get("facts_seen", []) as Array:
 		if not _seen(events, pat as Dictionary):
@@ -114,8 +122,6 @@ static func _facts_ok(c: Dictionary, r: Dictionary, f: Dictionary) -> bool:
 	for pat: Variant in c.get("facts_not_seen", []) as Array:
 		if _seen(events, pat as Dictionary):
 			return false
-	if bool(c.get("all_loot_secured", false)) and not _all_loot_secured(r, events):
-		return false
 	return true
 
 
@@ -150,28 +156,6 @@ static func _excluded_ids() -> Array[StringName]:
 		if tw != null:
 			_excluded = tw.xp_loot_excluded_ids.duplicate()
 	return _excluded
-
-
-static func _all_loot_secured(r: Dictionary, events: Array) -> bool:
-	if r.has("loot_available"):
-		return _sum(secured_counts(r)) >= maxi(int(r["loot_available"]), 1)
-	var spawned: Dictionary = {}
-	var secured: Dictionary = {}
-	for e: Variant in events:
-		var ev: Array = e as Array
-		if ev.size() < 2 or (ev[1] as Array).size() < 2:
-			continue
-		var args: Array = ev[1] as Array
-		if StringName(ev[0]) == &"loot_spawned" and counts_as_loot(StringName(args[1])):
-			spawned[int(args[0])] = true
-		elif StringName(ev[0]) == &"loot_secured":
-			secured[int(args[0])] = true
-	if spawned.is_empty():
-		return false
-	for id: int in spawned:
-		if not secured.has(id):
-			return false
-	return true
 
 
 static func _done(objs: Dictionary, id: StringName) -> bool:

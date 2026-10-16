@@ -3096,7 +3096,7 @@ achievement.gh_before_closing.desc,Complete Golden Hour in under 6 minutes. Unlo
 achievement.gh_whole_consignment.name,The Whole Consignment
 achievement.gh_whole_consignment.desc,"Complete Golden Hour with the safe emptied, at least 4 bags secured and no bag left behind. Unlocks the Diamonds pattern."
 achievement.gh_managers_combination.name,Manager's Combination
-achievement.gh_managers_combination.desc,"Complete Golden Hour after opening the Vossberg safe with the code from the note: no keycard, no drill. Unlocks the Footlights mask base."
+achievement.gh_managers_combination.desc,"Complete Golden Hour after opening the Vossberg safe with the manager's code: not the keycard, not a lockpick, not the drill. Unlocks the Footlights mask base."
 achievement.gh_window_shopping.name,Window Shopping
 achievement.gh_window_shopping.desc,Complete Golden Hour in stealth without breaking a single pane of glass. Unlocks the Sash pattern.
 achievement.gh_cataclysm.name,Not a Fingerprint
@@ -3118,7 +3118,7 @@ achievement.sl_express_elevator.desc,Complete Shadow Ledger in under 10 minutes.
 achievement.sl_every_page.name,Every Page
 achievement.sl_every_page.desc,"Complete Shadow Ledger with the laptop, all three drive bags, the ledger books, both paintings and the archive cash secured, and no bag left behind. Unlocks the Starburst pattern."
 achievement.sl_measure_twice.name,Measure Twice
-achievement.sl_measure_twice.desc,"Complete Shadow Ledger after opening the server cage with its code, without starting a single saw. Unlocks the Filter Face mask base."
+achievement.sl_measure_twice.desc,"Complete Shadow Ledger after opening the server cage with its code instead of the saw. Unlocks the Filter Face mask base."
 achievement.sl_dead_air.name,Dead Air
 achievement.sl_dead_air.desc,Complete Shadow Ledger without answering a single pager. Unlocks the Prowl pattern.
 achievement.sl_cataclysm.name,Hostile Takeover

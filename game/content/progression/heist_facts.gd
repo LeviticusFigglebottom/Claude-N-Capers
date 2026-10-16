@@ -2,7 +2,9 @@
 ##
 ## Listens to a fixed list of EventBus facts (SIGNALS, all [R] in contracts/events.md, so every peer sees
 ## them) from start() until stop() or heist_ended, and keeps:
-##   * every objective's last state and whether the mission marked it `skipped` (objective_updated);
+##   * every objective's last state, whether the mission marked it `skipped`, and how it was opened
+##     (`open_method`, events.md v1.7: GH safe keycard/code/lockpick/drill/left_open, SL cage code/saw/left_open;
+##     sent on an objective_updated before COMPLETED, kept once seen) (objective_updated);
 ##   * the other facts as [signal, args] in order (capped at MAX_EVENTS).
 ## snapshot() is what Achievements.on_payday reads as `facts` (`"recorded": true` marks a real log; without
 ## it every fact condition fails closed). It never decides gameplay and never emits.
@@ -23,7 +25,7 @@ const SIGNALS: Array[StringName] = [
 const MAX_EVENTS: int = 4000
 const OBJECTIVE_UPDATED: StringName = &"objective_updated"
 
-## objective id -> {"state": int (Enums.ObjectiveState), "skipped": bool}
+## objective id -> {"state": int (Enums.ObjectiveState), "skipped": bool[, "open_method": StringName]}
 var objectives: Dictionary = {}
 ## [[signal: StringName, args: Array], ...] in emission order.
 var events: Array[Array] = []
@@ -70,7 +72,14 @@ func record(sig: StringName, args: Array) -> void:
 	if sig == OBJECTIVE_UPDATED:
 		if args.size() >= 2:
 			var data: Dictionary = args[2] as Dictionary if args.size() >= 3 and args[2] is Dictionary else {}
-			objectives[StringName(args[0])] = {"state": int(args[1]), "skipped": bool(data.get("skipped", false))}
+			var id: StringName = StringName(args[0])
+			var entry: Dictionary = {"state": int(args[1]), "skipped": bool(data.get("skipped", false))}
+			var method: StringName = StringName(data.get("open_method", &""))
+			if method == &"":
+				method = StringName((objectives.get(id, {}) as Dictionary).get("open_method", &""))
+			if method != &"":
+				entry["open_method"] = method
+			objectives[id] = entry
 		return
 	if events.size() < MAX_EVENTS:
 		events.append([sig, args.duplicate()])

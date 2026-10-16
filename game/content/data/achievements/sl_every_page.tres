@@ -13,4 +13,4 @@ order = 732
 category = &"shadow_ledger"
 rewards = Array[StringName]([&"mask_pattern.starburst"])
 unlocks = Array[StringName]([])
-requires_facts = Array[StringName]([&"heist_result.loot_available"])
+requires_facts = Array[StringName]([])

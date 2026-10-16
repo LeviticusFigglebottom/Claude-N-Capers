@@ -13,4 +13,4 @@ order = 752
 category = &"gallery_night"
 rewards = Array[StringName]([&"mask_base.cat"])
 unlocks = Array[StringName]([])
-requires_facts = Array[StringName]([&"heist_result.loot_available"])
+requires_facts = Array[StringName]([])

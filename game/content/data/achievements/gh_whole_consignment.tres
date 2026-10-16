@@ -13,4 +13,4 @@ order = 712
 category = &"glasshouse"
 rewards = Array[StringName]([&"mask_pattern.diamonds"])
 unlocks = Array[StringName]([])
-requires_facts = Array[StringName]([&"heist_result.loot_available"])
+requires_facts = Array[StringName]([])

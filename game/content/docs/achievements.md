@@ -106,21 +106,24 @@ without the field (no `time_s`, no `crew` rows, no `pagers_answered`) or a payda
 unlocks it.
 * HeistResult: `max_time_s`, `max_time_variant` (time_s <= a rolled scalar, e.g. `last_call_s`), `max_kills`,
   `max_civilian_kills`, `max_downs` (crew totals, AI included), `max_custody`, `max_pagers`, `min_bags`, `loot_all`,
-  `loot_min` (secured bags; tool bags and `PayoutTweak.xp_loot_excluded_ids` (body bags) never count).
+  `loot_min` (secured bags; tool bags and `PayoutTweak.xp_loot_excluded_ids` (body bags) never count),
+  `all_loot_secured` (counted secured bags reach `HeistResult.loot_available`, events.md v1.7; no field fails).
 * In-heist fact log (`progression/heist_facts.gd`, `HeistFacts`): the in-heist `PaydayScreen` owns one
   (`facts`; MenuFlow calls `start_fact_log()` before the launch) and passes `facts.snapshot()` to
   `Achievements.on_payday(..., facts)`. It keeps every objective's last state + `skipped`, and the `[R]` facts in
-  `HeistFacts.SIGNALS` as `[signal, args]`. Keys: `objectives_completed` / `objectives_not_completed` (COMPLETED
-  and not `skipped`), `facts_seen` / `facts_not_seen` (`{"signal", "args": {index: value}}`), `all_loot_secured`
-  (every counted `loot_spawned` bag was `loot_secured`; a future HeistResult `loot_available` replaces this).
-* `AchievementDef.requires_facts`: facts a condition only approximates today (documentation for ENV A).
+  `HeistFacts.SIGNALS` as `[signal, args]`, plus each objective's `open_method` (objective_updated data, events.md
+  v1.7: GH safe keycard/code/lockpick/drill/left_open, SL cage code/saw/left_open). Keys: `objectives_completed` /
+  `objectives_not_completed` (COMPLETED and not `skipped`), `objectives_open_method` (`{id: method}`: done that way;
+  no recorded method fails), `facts_seen` / `facts_not_seen` (`{"signal", "args": {index: value}}`).
+* `AchievementDef.requires_facts`: facts a condition would only approximate (documentation for ENV A). Empty on
+  every def since A shipped `loot_available` and `open_method` (round 223).
 
 | Order | Id | Condition (besides `heist`) | Reward |
 |---|---|---|---|
 | 710 | `gh_velvet_gloves` | stealth, max_kills 0, max_civilian_kills 0 | `mask_pattern.dots` |
 | 711 | `gh_before_closing` | max_time_s 360 | `mask_colors.mint_graphite` |
 | 712 | `gh_whole_consignment` | objectives_completed [safe_loot], all_loot_secured, min_bags 4 | `mask_pattern.diamonds` |
-| 713 | `gh_managers_combination` | objectives_completed [code, safe]; not seen: item_picked_up item.keycard, device_started drill | `mask_base.theatre` |
+| 713 | `gh_managers_combination` | objectives_open_method {safe: code} | `mask_base.theatre` |
 | 714 | `gh_window_shopping` | stealth; not seen: glass_broken | `mask_pattern.sash` |
 | 715 | `gh_cataclysm` | stealth, difficulty_min 5 | `mask_base.demon` |
 | 720 | `nd_quiet_deposit` | stealth, max_kills 0, max_civilian_kills 0 | `mask_pattern.stripes` |
@@ -131,7 +134,7 @@ unlocks it.
 | 730 | `sl_silent_audit` | stealth, max_kills 0, max_civilian_kills 0 | `mask_pattern.scales` |
 | 731 | `sl_express_elevator` | max_time_s 600 | `mask_colors.oxblood_brass` |
 | 732 | `sl_every_page` | objectives_completed [study_safe, paintings, archive_safe], loot_all [laptop, books, cash], loot_min {drives 3, painting 2}, all_loot_secured | `mask_pattern.starburst` |
-| 733 | `sl_measure_twice` | objectives_completed [cage_code, cage]; not seen: device_started saw | `mask_base.gasmask` |
+| 733 | `sl_measure_twice` | objectives_open_method {cage: code} | `mask_base.gasmask` |
 | 734 | `sl_dead_air` | stealth, max_pagers 0 | `mask_pattern.prowl` |
 | 735 | `sl_cataclysm` | difficulty_min 5 | `mask_base.skull` |
 | 740 | `db_not_a_scratch` | max_downs 0, max_civilian_kills 0 (loud-only heist: no stealth clear) | `mask_pattern.crackle` |
@@ -147,6 +150,6 @@ unlocks it.
 | 755 | `gn_cataclysm` | difficulty_min 5 | `mask_base.welder` |
 
 Rewards are mask parts with no other unlock (payday-card parts, like the colour/material rewards above), each
-used by one heist achievement. `requires_facts`: the loot-everything set (`gh_whole_consignment`,
-`nd_cleaned_out`, `sl_every_page`, `db_strip_the_pier`, `gn_full_collection`) wants
-`heist_result.loot_available`; `gh_managers_combination` / `sl_measure_twice` want the safe / cage open method.
+used by one heist achievement. The loot-everything set (`gh_whole_consignment`, `nd_cleaned_out`, `sl_every_page`,
+`db_strip_the_pier`, `gn_full_collection`) reads `loot_available`; `gh_managers_combination` /
+`sl_measure_twice` read the safe / cage `open_method` (`code`).

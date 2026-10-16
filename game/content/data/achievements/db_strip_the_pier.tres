@@ -13,4 +13,4 @@ order = 742
 category = &"dockside_burn"
 rewards = Array[StringName]([&"mask_base.bruiser"])
 unlocks = Array[StringName]([])
-requires_facts = Array[StringName]([&"heist_result.loot_available"])
+requires_facts = Array[StringName]([])
