@@ -1,3 +1,4 @@
+# gdlint:disable=max-public-methods
 ## PO-5 (D-086): walks the local player like a person would. Owner: ENV A (test support).
 ## Everything goes through PlayerInputDriver (Input.parse_input_event): mouse motion turns, WASD moves,
 ## F interacts, G masks. The route comes from the navmesh (what a player who knows the map would walk);
@@ -11,6 +12,9 @@ extends RefCounted
 const REPRESS_TICKS: int = 20
 ## use() on a door walks (opening doors on the way) to within this of it before open_door() squares up (m).
 const DOOR_NEAR_M: float = 1.8
+## "Near" is also within this height (m): a target one floor up / down is not near (ND: the pilot stood over the
+## basement VaultGate and pressed its reader through the slab).
+const NEAR_DY_M: float = 1.5
 ## Loud: a visible enemy within this range is fought before / during a hold (S9.1: damage cancels holds) (m).
 const HOLD_THREAT_M: float = 20.0
 ## Longest clearing fight before holding anyway (s).
@@ -45,7 +49,7 @@ var shout_blockers: bool = true
 ## With shout_blockers off: unstick tries before the pilot shouts at a civilian anyway.
 var block_shout_after: int = 4
 ## goto() also needs |dy| <= this to arrive (INF = horizontal distance only; stealth flows set it for stairs).
-var arrive_dy: float = INF
+var arrive_dy: float = NEAR_DY_M
 ## The closed door the last goto() gave up at because the crew cannot open it now (GN loud: the lockdown-BARRED
 ## Calloway shutter; the navmesh still runs through the doorway), else null.
 var last_blocked_door: Door = null
@@ -154,6 +158,11 @@ func face(point: Vector3, tol: float = 0.03, timeout_s: float = 3.0) -> bool:
 func nav_path(to: Vector3) -> PackedVector3Array:
 	var map: RID = crew.get_world_3d().navigation_map
 	return NavigationServer3D.map_get_path(map, crew.global_position, to, true)
+
+
+## Within `r` horizontally AND on the same floor (|dy| <= NEAR_DY_M).
+func near(a: Vector3, b: Vector3, r: float) -> bool:
+	return flat_dist(a, b) <= r and absf(a.y - b.y) <= NEAR_DY_M
 
 
 func flat_dist(a: Vector3, b: Vector3) -> float:
@@ -328,7 +337,7 @@ func use(comp: InteractableComponent, timeout_s: float = 30.0, done: Callable = 
 		# ND attempts 15/16: the generic stand spot missed the lock and F became a shout. Walk there with normal
 		# routing first (it opens the doors on the way: attempt 17 stuck at the TellerDoor heading for the
 		# VaultGate), then square up with open_door().
-		if flat_dist(crew.global_position, door.global_position) > DOOR_NEAR_M:
+		if not near(crew.global_position, door.global_position, DOOR_NEAR_M):
 			await goto(stand_point(door.global_position), DOOR_NEAR_M, 60.0)
 		if door.is_open:
 			return true  # the walk's own door handling already opened it (a second use would close it)

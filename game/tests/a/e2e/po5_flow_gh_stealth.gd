@@ -409,7 +409,7 @@ func _escape() -> int:
 	var t1: float = rt.heist_time_s
 	while not ended[0] and rt.heist_time_s - t1 < 30.0:
 		await f.wait_s(0.5)
-		if not ended[0] and p.flat_dist(crew.global_position, ez.global_position) > 1.5:
+		if not ended[0] and not p.near(crew.global_position, ez.global_position, 1.5):
 			await p.goto(p.stand_point(ez.global_position), 0.8, 20.0)
 	if not ended[0]:
 		await f.shot("escape_stuck")

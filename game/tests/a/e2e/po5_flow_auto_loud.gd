@@ -133,7 +133,7 @@ func step() -> void:
 			_mark_if_unreached(comp)  # still usable and still far: the walk failed (GN Slot_orchard_calloway)
 		return
 	# Nothing to do at the marker right now (a device running, a timer): go there and defend.
-	if p.flat_dist(p.crew.global_position, pos) > 4.0:
+	if not p.near(p.crew.global_position, pos, 4.0):
 		if not await p.goto(_marker_stand(pos), 2.5, 60.0):
 			_note_once(id, "objective %s: marker at %s not reachable" % [id, Po5Pilot._v(pos)])
 			if p.last_blocked_door != null:
@@ -328,7 +328,7 @@ func _escort_mate_bag() -> bool:
 			continue
 		var t0: float = rt.heist_time_s
 		var stand: Vector3 = p.stand_point(zone.global_position)
-		if p.flat_dist(p.crew.global_position, stand) > 3.0:
+		if not p.near(p.crew.global_position, stand, 3.0):
 			_note_once(StringName("_escort_%d" % key), "slot %d carries %s: leading it to the secure zone" % [c.slot, bag.loot_id])
 			await p.goto(stand, 3.0, 10.0)
 		else:
@@ -474,7 +474,7 @@ func _secure_bag() -> void:
 	# short legs; whenever an enemy is in sight, put the bag down, fight until the way is clear, pick it up again.
 	var stand: Vector3 = p.stand_point(zone.global_position)
 	var t0: float = rt.heist_time_s
-	while p.crew.is_carrying_bag() and p.flat_dist(p.crew.global_position, stand) > 3.0 \
+	while p.crew.is_carrying_bag() and not p.near(p.crew.global_position, stand, 3.0) \
 			and rt.heist_time_s - t0 < CARRY_LIMIT_S and p.crew.crew_state == Enums.CrewState.NORMAL:
 		if p.nearest_enemy(CLEAR_RANGE_M) != null:
 			await _clear_then_pick_up()

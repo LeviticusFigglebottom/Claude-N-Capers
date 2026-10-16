@@ -206,3 +206,17 @@ func test_po5_marker_stand_uses_prefab_use_point() -> void:
 	var far: Vector3 = flow.call(&"_marker_stand", Vector3(20, 1, 20))
 	assert_true(far.distance_to((s["pilot"] as Po5Pilot).stand_point(Vector3(20, 1, 20))) < 0.05,
 		"no prefab near: nearest navmesh point")
+
+
+## P (ND-2, seed 1002): "near" is per floor. A door one floor below is not near, so use() walks to it instead of
+## pressing its reader through the slab, and goto() does not "arrive" a floor away.
+func test_po5_near_is_per_floor() -> void:
+	var s: Dictionary = await _setup()
+	var pilot: Po5Pilot = s["pilot"]
+	var door: Door = s["door"]
+	var below: Vector3 = door.global_position
+	var above: Vector3 = below + Vector3(0.3, 3.4, 0.2)  # straight over it, one floor up
+	assert_true(pilot.flat_dist(above, below) < Po5Pilot.DOOR_NEAR_M, "horizontally inside DOOR_NEAR_M")
+	assert_false(pilot.near(above, below, Po5Pilot.DOOR_NEAR_M), "one floor up is not near")
+	assert_true(pilot.near(below + Vector3(1.0, 0.2, 0.0), below, Po5Pilot.DOOR_NEAR_M), "same floor, 1 m away: near")
+	assert_eq(pilot.arrive_dy, Po5Pilot.NEAR_DY_M, "goto() arrives only on the target's floor by default")
