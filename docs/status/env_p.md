@@ -13,6 +13,12 @@ Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min;
   player while following upstairs), then spacing 2.5 m. Anim: 123 moving clips, no static / no_clip / mismatch;
   frozen crew_ai walk_bl / walk_fr, civilian tased; slides tac_heavy breach_standback, rappel_descend (heavy, light),
   longshot heli_door_idle. test_p_gn_traversal 8/8. Evidence: captures/gn_p1_2026-10-16/.
+- ND-2 close-out (A's auto_loud, Nightfall Depository, seed 1002, real menus, trunk ad54b5fe): blocked at the
+  basement VaultGate: the pilot stands on the ground floor right above it and re-presses through the slab
+  (po5_pilot.gd:326 Door branch near-check is horizontal only); routed to A. captures/nd2_2026-10-16/.
+- Scoped ADS (LEAD 2026-10-16): FpScopeOverlay (vignette + duplex / mildot / chevron / dot reticle, sways with the
+  look-lag spring + breathing), gun + ocular hidden at full ADS, B's is_scope / scope_reticle(_color) fields;
+  test_p_scope 3/3; captures/scope_2026-10-16/. Laser readability bump (D-118). PO6-18 re-shot (game time): PASS.
 - GN-P1 loud rerun on A's 04f79b18 (scratch merge 9f629838, gn_pass, seed 1792002290, 4800 s budget): stealth to last
   call t=486 again; loud from t=540: server door, keycard, server code, hack (restart), treasury + art store t=985,
   centrepiece t=1017, 1 painting secured t=1056; then "Cut one more listed canvas" with the pilot outside the

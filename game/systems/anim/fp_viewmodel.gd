@@ -84,7 +84,7 @@ class VgripPose:
 
 	func _process_modification_with_delta(_delta: float) -> void:
 		if vm != null and is_instance_valid(vm):
-			vm._apply_vgrip_pose()
+			vm.vgrip.apply(vm)
 
 
 enum Action { NONE, FIRE, RELOAD, SWAP, MELEE, DEPLOY, THROW, INTERACT }
@@ -105,9 +105,10 @@ const EVENT_PARTS: Dictionary = {
 	&"pump_back": [&"pump", 1.0], &"pump_forward": [&"pump", 0.0],
 	&"bolt_open": [&"bolt_lift", 1.0], &"bolt_back": [&"bolt_slide", 1.0],
 	&"bolt_forward": [&"bolt_slide", 0.0], &"bolt_close": [&"bolt_lift", 0.0],
-	&"cover_open": [&"cover", 1.0], &"cover_close": [&"cover", 0.0],
+	&"cover_open": [&"cover", 1.0], &"cover_close": [&"cover", 0.0], &"mag_out_l": [&"mag_l_out", 1.0],
+	&"mag_in_l": [&"mag_l_out", 0.0],
 }
-const CHANNELS: Array[StringName] = [&"slide", &"pump", &"bolt_lift", &"bolt_slide", &"cover"]
+const CHANNELS: Array[StringName] = [&"slide", &"pump", &"bolt_lift", &"bolt_slide", &"cover", &"mag_l_out"]
 ## Weapon model part node names (visual_slots.md).
 const PART_SLIDE: StringName = &"Slide"
 const PART_PUMP: StringName = &"Pump"
@@ -127,6 +128,10 @@ var left_hand_ik: FpLeftHandIk = null
 var arms: Node3D = null
 ## BoneAttachment3D on the `weapon` bone: the WeaponVisual's parent.
 var weapon_attach: BoneAttachment3D = null
+## Akimbo (D-050, rig fp.offhand_grip): the left gun on hand.L (FpViewmodelOffhand).
+var offhand: FpViewmodelOffhand = FpViewmodelOffhand.new()
+## D-118 vertical grip: the left hand takes D's `<set>_vgrip_hand` pose (FpViewmodelVgrip).
+var vgrip: FpViewmodelVgrip = FpViewmodelVgrip.new()
 ## The WeaponVisual shown (during a holster: the outgoing one until the draw starts).
 var weapon_visual: WeaponVisual = null
 ## anim_set of the weapon currently in the hands.
@@ -164,12 +169,6 @@ var _weapon_bone: int = -1
 var _hand_bone: int = -1
 var _hand_rel: Basis = Basis.IDENTITY
 var _hand_rel_set: bool = false
-## D-118: vertical grip: the target local rotations of hand.L and its finger bones (bone -> Quaternion, frame 0 of
-## `<set>_vgrip_hand`); empty = no vertical grip on this gun.
-var _vgrip_pose: Dictionary = {}
-## D-118: hand.L orientation relative to the weapon bone in the vgrip clip (HandCapture uses it instead of the playing
-## clip's while a vertical grip holds the hand).
-var _vgrip_rel: Basis = Basis.IDENTITY
 ## D-116: upper_arm.L and how far (0..1) the left arm is dropped out of view for a one-handed set.
 var _left_root_bone: int = -1
 var _left_drop: float = 0.0
@@ -216,6 +215,12 @@ var _pin_t: float = -1.0
 ## The camera's viewmodel arms (null when none).
 static func of(cam: Node) -> FpViewmodel:
 	return cam.get_node_or_null(NODE_NAME) as FpViewmodel if cam != null else null
+
+
+## The local first-person viewmodel of `crew` (its CrewView camera's), or null (remote peers, bots, no arms).
+static func of_crew(crew: Node) -> FpViewmodel:
+	var cv: CrewView = CrewView.of(crew)
+	return of(cv.camera()) if cv != null else null
 
 
 ## Arms for `crew` from `scene` (default FpViewmodelTweak.arms_scene); null when the scene is missing or has no
@@ -440,9 +445,11 @@ func tick(delta: float) -> void:
 func _on_fired(_claim: Dictionary) -> void:
 	if anim_set == &"" or action == Action.SWAP or action == Action.INTERACT:
 		return
+	offhand.begin_shot()
 	_flash_muzzle()
 	var aimed: bool = _aim_wanted()
-	var fire: StringName = _resolve(anim_set, &"fire_ads" if aimed else &"fire")
+	var fire: StringName = _resolve(anim_set, offhand.clip(&"fire_ads" if aimed else &"fire"))
+	fire = fire if fire != &"" else _resolve(anim_set, &"fire_ads" if aimed else &"fire")
 	var bolt: StringName = _resolve(anim_set, &"bolt_ads" if aimed else &"bolt")
 	var cycle: float = _length(anim_set, fire) if fire != &"" else 0.0
 	var done: float = _event(anim_set, fire, &"done") if fire != &"" else -1.0
@@ -541,11 +548,11 @@ func _shot_fx(aimed: bool, eject_delay: float) -> void:
 		var st: WeaponStats = _crew.weapons.stats(_crew.weapons.equipped_slot) \
 			if _crew != null and _crew.weapons != null else null
 		if not tw.no_flash_sets.has(anim_set):
-			fx.flash(weapon_visual.get_marker(&"Muzzle"), st != null and st.suppressed,
+			fx.flash(offhand.marker(weapon_visual, &"Muzzle"), st != null and st.suppressed,
 				float(tw.muzzle_flash_set_mult.get(anim_set, 1.0)), tw.flash_class_by_set.get(anim_set, &""))
 		var kind: StringName = tw.shell_kind.get(anim_set, &"")
 		if kind != &"":
-			fx.eject(weapon_visual.get_marker(&"Eject"), kind, eject_delay)
+			fx.eject(offhand.marker(weapon_visual, &"Eject"), kind, eject_delay)
 	var amp: Vector2 = Vector2(float(tw.kick_back_m.get(anim_set, 0.0)), float(tw.kick_pitch_deg.get(anim_set, 0.0)))
 	if aimed:
 		amp *= tw.kick_ads_mult
@@ -616,8 +623,8 @@ func _breathing() -> Vector2:
 func _capture_hand() -> void:
 	if skeleton == null or _hand_bone < 0 or _weapon_bone < 0:
 		return
-	if not _vgrip_pose.is_empty():  # D-118: the vertical grip's hand orientation
-		_hand_rel = _vgrip_rel
+	if vgrip.active():  # D-118: the vertical grip's hand orientation
+		_hand_rel = vgrip.rel
 		_hand_rel_set = true
 		return
 	# PO6-11: mid ADS blend the clip's hand orientation is a blend artefact; keep the one from hip / full ADS.
@@ -642,94 +649,16 @@ func _restore_hand() -> void:
 	skeleton.set_bone_global_pose(_hand_bone, Transform3D(Basis(q).scaled(scale_v), pose.origin))
 
 
-## D-118 (PD2 vertical grip): when the equipped gun's effective `LeftHandIK` is a mod's (WeaponVisual.get_marker
-## differs from get_base_marker) and the set has a `<set>_vgrip_hand` clip and a vgrip wrist offset, the IK target
-## moves to the grip (FpViewmodelTweak.set_vgrip_grip_offset) and the left hand / fingers take that clip's frame 0.
-func _setup_vgrip(wv: WeaponVisual, set_id: StringName) -> void:
-	_vgrip_pose.clear()
-	var tw: FpViewmodelTweak = FpViewmodelTweak.data()
-	if wv == null or skeleton == null or left_hand_ik == null or not tw.set_vgrip_grip_offset.has(set_id):
-		return
-	var mk: Node3D = wv.get_marker(&"LeftHandIK")
-	if mk == null or not wv.has_method(&"get_base_marker") or mk == wv.call(&"get_base_marker", &"LeftHandIK"):
-		return
-	if _resolve(set_id, &"vgrip_hand") != &"vgrip_hand":
-		return
-	var anim: Animation = player.get_animation("%s/vgrip_hand" % set_id)
-	var hand: int = skeleton.find_bone(FpLeftHandIk.END_BONE)
-	if anim == null or hand < 0:
-		return
-	for t: int in anim.get_track_count():
-		if anim.track_get_type(t) != Animation.TYPE_ROTATION_3D:
-			continue
-		var b: int = skeleton.find_bone(String(anim.track_get_path(t)).get_slice(":", 1))
-		if b >= 0 and _is_descendant(b, hand):  # the fingers; hand.L's orientation goes through HandRestore
-			_vgrip_pose[b] = anim.rotation_track_interpolate(t, 0.0)
-	if _vgrip_pose.is_empty() or _weapon_bone < 0:
-		_vgrip_pose.clear()
-		return
-	_vgrip_rel = _clip_global(anim, _weapon_bone).basis.orthonormalized().inverse() \
-		* _clip_global(anim, hand).basis.orthonormalized()
-	_hand_rel_set = false
-	var grip: Node3D = mk.get_node_or_null(FpLeftHandIk.GRIP_NAME) as Node3D
-	if grip != null:  # ENV D's offset is in weapon (WeaponVisual) axes; the grip node lives in the marker's
-		var to_marker: Basis = mk.global_basis.orthonormalized().inverse() * wv.global_basis.orthonormalized()
-		grip.position = to_marker * (tw.set_vgrip_grip_offset[set_id] as Vector3)
-
-
-## Skeleton-space pose of `bone` in `anim` at frame 0 (rest where the clip has no track).
-func _clip_global(anim: Animation, bone: int) -> Transform3D:
-	var chain: Array[int] = []
-	var b: int = bone
-	while b >= 0:
-		chain.push_front(b)
-		b = skeleton.get_bone_parent(b)
-	var g: Transform3D = Transform3D.IDENTITY
-	for i: int in chain:
-		var rest: Transform3D = skeleton.get_bone_rest(i)
-		var path: NodePath = NodePath("%s:%s" % [_skeleton_path(anim), skeleton.get_bone_name(i)])
-		var rt: int = anim.find_track(path, Animation.TYPE_ROTATION_3D)
-		var pt: int = anim.find_track(path, Animation.TYPE_POSITION_3D)
-		var q: Quaternion = anim.rotation_track_interpolate(rt, 0.0) if rt >= 0 else rest.basis.get_rotation_quaternion()
-		var o: Vector3 = anim.position_track_interpolate(pt, 0.0) if pt >= 0 else rest.origin
-		g = g * Transform3D(Basis(q).scaled(rest.basis.get_scale()), o)
-	return g
-
-
-## The node path prefix (before ":bone") the clip's bone tracks use.
-func _skeleton_path(anim: Animation) -> String:
-	for t: int in anim.get_track_count():
-		var p: String = String(anim.track_get_path(t))
-		if p.contains(":"):
-			return p.get_slice(":", 0)
-	return "."
-
-
-func _is_descendant(b: int, ancestor: int) -> bool:
-	var p: int = skeleton.get_bone_parent(b)
-	while p >= 0:
-		if p == ancestor:
-			return true
-		p = skeleton.get_bone_parent(p)
-	return false
-
-
-## VgripPose modifier: blend the left hand and fingers to the grip pose by the left-hand IK's influence (the clip owns
-## the hand while reloading / swapping, like the IK).
-func _apply_vgrip_pose() -> void:
-	if _vgrip_pose.is_empty() or skeleton == null or left_hand_ik == null or left_hand_ik.ik == null:
-		return
-	var w: float = left_hand_ik.ik.influence
-	if w <= 0.0:
-		return
-	for b: int in _vgrip_pose:
-		var cur: Quaternion = skeleton.get_bone_pose_rotation(b)
-		skeleton.set_bone_pose_rotation(b, cur.slerp(_vgrip_pose[b] as Quaternion, w))
+## Presentation origin for the NEXT shot's tracer / FX (ENV A's CrewWeapons._fx_origin, which runs before `fired`):
+## the Muzzle of the gun that fires it (akimbo: the left one on a left shot); null without a visual. Gameplay stays
+## at the eye (D-121).
+func fx_muzzle() -> Node3D:
+	return offhand.next_marker(weapon_visual, &"Muzzle")
 
 
 ## Read only (tests): whether the equipped gun's vertical grip took over the left hand.
 func vgrip_active() -> bool:
-	return not _vgrip_pose.is_empty()
+	return vgrip.active()
 
 
 ## D-116 (LeftArmHide modifier): move upper_arm.L (and so the whole left arm) by one_handed_left_drop (camera space,
@@ -751,6 +680,12 @@ func left_arm_drop() -> float:
 ## Read only (tests): the current look-lag sway (yaw, pitch; deg).
 func sway() -> Vector2:
 	return _sway
+
+
+## Read only (CrewView scope overlay): the sight's sway this frame, look-lag spring + breathing (yaw, pitch; deg),
+## the same terms that turn the gun in _late_align (recoil kick excluded: the camera carries it).
+func sight_sway_deg(sway_mult: float = 1.0, breath_mult: float = 1.0) -> Vector2:
+	return _sway * sway_mult + _breathing() * breath_mult
 
 
 ## Exact critically damped step (no amplitude loss at 60 Hz, see the PO-4 landing dip). The step is capped at 1/30 s
@@ -1094,7 +1029,9 @@ func _set_weapon(wv: WeaponVisual, set_id: StringName) -> void:
 	_magwell = wv.get_base_marker(&"Magwell") if wv != null else null
 	if left_hand_ik != null:
 		left_hand_ik.set_target(wv.get_marker(&"LeftHandIK") if wv != null else null, set_id)
-	_setup_vgrip(wv, set_id)
+	if vgrip.setup(self, wv, set_id, _weapon_bone):
+		_hand_rel_set = false
+	offhand.setup(skeleton, wv, set_id)
 	_magwell_rest = _magwell.transform if _magwell != null else Transform3D.IDENTITY
 	_check_aim_point(wv)
 
@@ -1228,7 +1165,7 @@ func _flash_muzzle() -> void:
 	var tw: FpViewmodelTweak = FpViewmodelTweak.data()
 	if tw.muzzle_light_energy <= 0.0 or weapon_visual == null or not is_instance_valid(weapon_visual):
 		return
-	var muzzle: Node3D = weapon_visual.get_marker(&"Muzzle")
+	var muzzle: Node3D = offhand.marker(weapon_visual, &"Muzzle")
 	if muzzle == null or not muzzle.is_inside_tree():
 		return
 	if _muzzle_light == null or not is_instance_valid(_muzzle_light):
@@ -1364,6 +1301,7 @@ func _update_parts() -> void:
 	_pose_part(PART_BOLT, Vector3(0, 0, tw.bolt_travel_m * float(parts[&"bolt_slide"])),
 		Basis(Vector3.BACK, deg_to_rad(tw.bolt_lift_deg) * float(parts[&"bolt_lift"])))
 	_pose_part(PART_COVER, Vector3.ZERO, Basis(Vector3.RIGHT, deg_to_rad(tw.feed_cover_deg) * float(parts[&"cover"])))
+	offhand.set_mag_hidden(float(parts[&"mag_l_out"]) > 0.5)
 
 
 func _pose_part(part: StringName, offset: Vector3, rot: Basis) -> void:

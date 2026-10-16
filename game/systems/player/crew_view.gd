@@ -66,6 +66,9 @@ var _vm_viewport: SubViewport = null
 var _vm_cam: Camera3D = null
 ## PO6-10: the gun-only fill light (null when off); its energy eases from hip to ADS with ads_blend.
 var _vm_gun_fill: DirectionalLight3D = null
+## Scoped ADS: the gun image (hidden at a full sight picture) and the overlay above it.
+var _vm_image: TextureRect = null
+var _scope: FpScopeOverlay = null
 var _mask: Node3D = null
 var _mask_id: StringName = &""
 var _ads_weight: float = 0.0
@@ -208,14 +211,82 @@ func _process(delta: float) -> void:
 		return
 	var mag: float = 1.0
 	var w: CrewWeapons = _crew.weapons
-	if w != null and w.stats(w.equipped_slot) != null:
-		mag = maxf(w.stats(w.equipped_slot).magnification, 1.0)
+	var st: WeaponStats = w.stats(w.equipped_slot) if w != null else null
+	if st != null:
+		mag = maxf(st.magnification, 1.0)
 	# P1-03: arms' rate
 	_ads_weight = move_toward(_ads_weight, 1.0 if CrewView.is_aiming(_crew) else 0.0, delta * CrewView.ads_rate(_crew))
 	cam.fov = gs.fov() / lerpf(1.0, mag, ads_blend)
 	_update_viewmodel_camera(cam)
+	_update_scope(st, mag)
 	_local_view = self
 	_set_zoom_factor(zoom_factor_for(gs.fov(), cam.fov))
+
+
+## Scoped ADS (LEAD 2026-10-16, PD2): a high-power scope fades in the FpScopeOverlay sight picture over the end
+## of ads_blend and hides the gun image (no opaque ocular disc); the world FOV zoom by magnification is above.
+## ENV B's optional WeaponStats fields `is_scope` (bool), `scope_reticle` (StringName) and `scope_reticle_color`
+## (Color) win over the magnification threshold and the tweak defaults when they exist.
+func _update_scope(st: WeaponStats, mag: float) -> void:
+	if _scope == null or not is_instance_valid(_scope):
+		return
+	var tw: FpViewmodelTweak = FpViewmodelTweak.data()
+	var scoped: bool = scope_overlay_for(st, mag)
+	var t: float = 0.0
+	if scoped and tw.scope_blend_in.y > tw.scope_blend_in.x:
+		t = clampf(inverse_lerp(tw.scope_blend_in.x, tw.scope_blend_in.y, ads_blend), 0.0, 1.0)
+	if scoped:
+		var rs: Variant = st.get(&"scope_reticle") if st != null else null
+		_scope.style = rs if rs is StringName and rs != &"" else tw.scope_reticle_default
+		var rc: Variant = st.get(&"scope_reticle_color") if st != null else null
+		_scope.tint = rc if rc is Color and (rc as Color).a > 0.0 else tw.scope_reticle_color
+	_scope.amount = t
+	_scope.offset = _scope_sway_px(tw) if t > 0.0 else Vector2.ZERO
+	_publish_scope(t > 0.5)
+	if _vm_image != null and is_instance_valid(_vm_image):
+		_vm_image.visible = t < tw.scope_hide_gun_at
+
+
+## ui_hud.md v1.16 (ENV A e308d22e): the local HUD model carries `scoped_ads` and `scope_ring` (the ocular's
+## screen-space bounds, viewport px; Rect2() when not scoped), written here every frame (no signal; the model never
+## writes them) so ENV B can move text panels out of the ring. Duck-typed until the fields are on this branch.
+func _publish_scope(scoped: bool) -> void:
+	var rt: HeistRuntime = HeistRuntime.of(_crew)
+	var hm: Object = rt.hud_model if rt != null else null
+	if hm == null or not (&"scoped_ads" in hm) or not (&"scope_ring" in hm):
+		return
+	var ring: Rect2 = Rect2()
+	if scoped:
+		var size: Vector2 = _scope.size
+		var r: float = FpScopeOverlay.ocular_radius(size)
+		ring = Rect2(size * 0.5 + _scope.offset - Vector2(r, r), Vector2(r, r) * 2.0)
+	hm.set(&"scoped_ads", scoped)
+	hm.set(&"scope_ring", ring)
+
+
+## The viewmodel's sight sway (deg) as a screen offset (px) at the world camera's zoomed FOV: yaw left / pitch up
+## move the sight picture left / up.
+func _scope_sway_px(tw: FpViewmodelTweak) -> Vector2:
+	var cam: Camera3D = camera()
+	var vm: FpViewmodel = FpViewmodel.of(cam) if cam != null else null
+	if vm == null:
+		return Vector2.ZERO
+	var deg: Vector2 = vm.sight_sway_deg(tw.scope_sway_mult, tw.scope_breath_mult)
+	var f: float = cam.get_viewport().get_visible_rect().size.y * 0.5 / tan(deg_to_rad(cam.fov) * 0.5)
+	return Vector2(-tan(deg_to_rad(deg.x)), -tan(deg_to_rad(deg.y))) * f
+
+
+## Whether `st` (magnification `mag`) is a scope with a sight picture overlay rather than a 3D sight.
+static func scope_overlay_for(st: WeaponStats, mag: float) -> bool:
+	var flag: Variant = st.get(&"is_scope") if st != null else null
+	if flag is bool:
+		return flag as bool
+	return mag >= FpViewmodelTweak.data().scope_overlay_min_mag
+
+
+## Read only (tests, review tools): the scope overlay (null until the viewmodel camera exists).
+func scope_overlay() -> FpScopeOverlay:
+	return _scope if _scope != null and is_instance_valid(_scope) else null
 
 
 ## PP-P-11 (PD2): the arms and weapon under `cam` render through a second camera with a fixed narrower FOV into a
@@ -300,6 +371,9 @@ func _build_viewmodel_camera(cam: Camera3D) -> void:
 	tr.stretch_mode = TextureRect.STRETCH_SCALE
 	tr.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	layer.add_child(tr)
+	_vm_image = tr
+	_scope = FpScopeOverlay.new()
+	layer.add_child(_scope)  # above the gun image, below the HUD
 	if vt.viewmodel_gun_fill_energy > 0.0:
 		var fill: DirectionalLight3D = DirectionalLight3D.new()
 		fill.name = "ViewmodelGunFill"

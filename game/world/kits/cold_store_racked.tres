@@ -1,0 +1,35 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"cold_store_racked"
+purpose = &"warehouse"
+required_items = Array[StringName]([&"rack", &"pallet_wrapped", &"fire_extinguisher", &"light_fixture"])
+optional_items = {
+&"fish_crates": 0.6,
+&"pallet": 1
+}
+clutter_groups = {}
+min_density = 0.03
+max_density = 0.2
+min_props = 8
+lone_ok_kinds = Array[StringName]([&"rack", &"pallet_wrapped", &"pallet", &"fish_crates"])
+seed_salt = 207
+counts = {}
+assets = {
+&"cone": PackedStringArray("prop_traffic_cone"),
+&"dolly": PackedStringArray("prop_hand_truck"),
+&"fire_extinguisher": PackedStringArray("prop_fire_extinguisher"),
+&"fish_boxes": PackedStringArray("prop_fish_box_stack"),
+&"fish_crates": PackedStringArray("prop_fish_crates"),
+&"hose_reel": PackedStringArray("prop_hose_reel"),
+&"light_fixture": PackedStringArray("prop_led_batten_cold"),
+&"pallet": PackedStringArray("prop_pallet_stack", "prop_pallet"),
+&"pallet_jack": PackedStringArray("prop_pallet_jack"),
+&"pallet_wrapped": PackedStringArray("prop_pallet_wrapped"),
+&"tote": PackedStringArray("prop_ibc_tote")
+}
+ceiling = {"prop_led_batten_cold": 4.7}
+notes = "C1 / C2 freezer chambers: the double-sided racking rows are map-built (3 m aisles kept clear). Wrapped pallets against the walls, 6000 K battens over the aisles."

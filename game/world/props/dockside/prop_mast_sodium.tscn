@@ -1,0 +1,13 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/props/prop_mast_sodium/prop_mast_sodium.glb" id="1_model"]
+
+[node name="PropMastSodium" type="Node3D"]
+metadata/kind = &"lamp_post"
+
+[node name="Model" parent="." instance=ExtResource("1_model")]
+
+[node name="Collision" parent="Model"]
+metadata/surface = &"metal"
+
+[editable path="Model"]

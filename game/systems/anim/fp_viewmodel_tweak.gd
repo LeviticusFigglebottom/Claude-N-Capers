@@ -50,6 +50,11 @@ static var _gen: int = 0
 ## marker while the clip leaves the left hand on the gun (not during reload / swap, nor for these sets).
 ## D-116: pistol / revolver are one-handed in first person (one_handed_fp_sets), so they skip the IK again (PO6-11
 ## had put them on it with the clip's own wrist offset; their set_left_hand_grip_offset entries stay for the record).
+## Akimbo sets: the WeaponVisual's offhand gun rides hand.L at akimbo_offhand_grip (hand.L bone space; ENV D's
+## rig SOURCE.txt fp.offhand_grip: the X-mirror of the weapon bone's hand.R offset).
+@export var akimbo_sets: Array[StringName] = [&"akimbo"]
+@export var akimbo_offhand_grip: Transform3D = Transform3D(Basis(Vector3(-0.0, -0.0, -1.0), Vector3(0.9511, -0.309, 0.0),
+	Vector3(-0.309, -0.9511, -0.0)), Vector3(0.012, 0.072, -0.03))
 @export var left_hand_ik_skip_sets: Array[StringName] = [&"bow", &"akimbo", &"pistol", &"revolver"]
 ## D-116 (PO, Fallout: New Vegas refs): first-person pistol / revolver are ONE-HANDED: the left arm drops out of view
 ## by one_handed_left_drop (camera space, m, applied to upper_arm.L) while the set plays, and eases back in for the
@@ -282,15 +287,41 @@ static var _gen: int = 0
 @export var gadget_laser_range_m: float = 50.0
 ## Beam ribbon width (m) and opacity (additive); the dot's size (m) at gadget_laser_dot_ref_m, growing with distance
 ## past it so it stays readable.
-@export var gadget_laser_width_m: float = 0.005
-@export var gadget_laser_beam_alpha: float = 0.5
-@export var gadget_laser_dot_m: float = 0.02
+@export var gadget_laser_width_m: float = 0.009
+@export var gadget_laser_beam_alpha: float = 0.7
+@export var gadget_laser_dot_m: float = 0.035
 @export var gadget_laser_dot_ref_m: float = 5.0
 @export var gadget_light_range_m: float = 25.0
 @export var gadget_light_angle_deg: float = 30.0
 @export var gadget_light_energy: float = 2.0
 @export var gadget_light_color: Color = Color(1.0, 0.97, 0.9)
 @export var gadget_light_attenuation: float = 1.2
+
+@export_group("Scoped ADS (LEAD 2026-10-16)")
+## A sight with WeaponStats.magnification >= this (or ENV B's `is_scope`, when present) shows the FpScopeOverlay
+## sight picture at full ADS instead of the 3D gun; lower-power optics (reflex, holo, 3x prism) stay 3D.
+@export var scope_overlay_min_mag: float = 3.5
+## ads_blend range over which the overlay fades in (and back out on release).
+@export var scope_blend_in: Vector2 = Vector2(0.8, 0.97)
+## Overlay amount past which the gun image (arms, gun, ocular lens) is hidden.
+@export var scope_hide_gun_at: float = 0.6
+## Ocular radius as a fraction of the shorter screen side; the soft dark edge just inside it (px).
+@export var scope_radius_frac: float = 0.46
+@export var scope_edge_px: float = 14.0
+## Reticle line width (px); style and colour when the weapon's scope data names none.
+@export var scope_line_px: float = 2.0
+@export var scope_reticle_default: StringName = &"duplex"
+@export var scope_reticle_color: Color = Color(0.02, 0.02, 0.02)
+## Duplex posts: width as a multiple of scope_line_px (at least 3 % of the ocular radius), ending this fraction of the
+## radius from the centre.
+@export var scope_post_width_mult: float = 4.0
+@export var scope_post_inner_frac: float = 0.25
+## The sight picture follows the gun's look-lag sway + breathing (FpViewmodel.sight_sway_deg) projected at the
+## zoomed world FOV: the look-lag sway times scope_sway_mult (the ADS sway is tuned tiny for iron sights; a scope
+## magnifies it, PD2: a turn swings the sight picture and it settles when still) and the breathing times
+## scope_breath_mult (a slow drift); 0 / 0 = a fixed sight picture.
+@export var scope_sway_mult: float = 8.0
+@export var scope_breath_mult: float = 3.0
 
 @export_group("Motion")
 ## Horizontal speed (m/s) above which walk bob / sprint play.

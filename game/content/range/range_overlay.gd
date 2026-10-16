@@ -619,7 +619,7 @@ func _ttk(shots: int, seconds: float, blocked: bool = false) -> String:
 		return UiText.t(&"ui.range.blocked")
 	if shots <= 0 or is_inf(seconds):
 		return UiText.t(&"ui.range.none")
-	return UiText.t(&"ui.range.fmt.ttk", {"shots": shots, "time": _num(seconds, 3)})
+	return UiText.t(&"ui.range.fmt.ttk_one" if shots == 1 else &"ui.range.fmt.ttk", {"shots": shots, "time": _num(seconds, 3)})
 
 
 static func _ttk_short(shots: int, seconds: float) -> String:

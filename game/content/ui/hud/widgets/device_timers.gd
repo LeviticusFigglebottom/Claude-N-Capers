@@ -37,6 +37,8 @@ const PANEL_W: float = 168.0
 const PANEL_H: float = 62.0
 
 ## Last drawn panels: [{net_id, kind, pos: Vector2 (local, panel centre), scale, jammed, time_text, label}] (tests).
+## ui_hud v1.16 scoped ADS: the scope ring in this widget's local space (Hud sets it); panels inside it are not drawn.
+var avoid: Rect2 = Rect2()
 var drawn: Array[Dictionary] = []
 ## Rows built from EventBus while the model has no `devices`: net_id -> {kind, duration, progress, state}.
 var tracked: Dictionary = {}
@@ -117,6 +119,17 @@ static func is_paused(row: Dictionary) -> bool:
 
 static func jam_text(kind: StringName) -> String:
 	return UiText.t(&"ui.hud.device.interrupted" if kind == &"hack" else &"ui.hud.device.jammed")
+
+
+## r227 crowding audit: true while the interaction prompt already shows this row's fix prompt (the player is at the
+## device): the panel's own fix line would repeat it right over the prompt.
+func _prompt_shows_fix(row: Dictionary) -> bool:
+	var it: Dictionary = prop(&"interaction", {}) as Dictionary
+	var kind: StringName = StringName(row.get("kind", &"drill"))
+	var key: StringName = StringName(row.get("fix_prompt_key", &""))
+	if key == &"":
+		key = FIX_KEYS.get(kind, FIX_DEFAULT) as StringName
+	return not it.is_empty() and StringName(it.get("text_key", &"")) == key
 
 
 ## The fix prompt of a jammed row ("Hold F to fix the drill").
@@ -221,7 +234,7 @@ func _layout(all: Array[Dictionary]) -> void:
 			continue
 		var kind: StringName = StringName(r.get("kind", &"drill"))
 		var jammed: bool = is_jammed(r)
-		var fix: String = fix_text(r) if jammed else ""
+		var fix: String = fix_text(r) if jammed and not _prompt_shows_fix(r) else ""
 		var restart: float = float(r.get("auto_restart_in_s", -1.0))
 		if jammed and restart >= 0.0:
 			fix = UiText.t(&"ui.hud.device.restarting", {"time": time_text(restart)})
@@ -254,6 +267,7 @@ func _check_occlusion(all: Array[Dictionary]) -> void:
 
 func _draw() -> void:
 	for d: Dictionary in drawn:
+		d["hidden_by_scope"] = false
 		var s: float = float(d["scale"])
 		var c: Vector2 = d["pos"] as Vector2
 		var jammed: bool = bool(d["jammed"])
@@ -272,6 +286,9 @@ func _draw() -> void:
 		d["width"] = w
 		var h: float = PANEL_H * s
 		var r: Rect2 = Rect2(c - Vector2(w * 0.5, h), Vector2(w, h))
+		if avoid.has_area() and avoid.intersects(r):
+			d["hidden_by_scope"] = true  # ui_hud v1.16: no text panel inside the scope ring (PD2)
+			continue
 		draw_rect(r, Color(UiTokens.INK_0, UiTokens.HUD_PANEL_ALPHA + 0.15))
 		draw_rect(r, accent, false, maxf(2.0 * s, 1.0))
 		_text(Vector2(r.position.x + pad, r.position.y + pad + fs), String(d["label"]), fs, UiTokens.PAPER_DIM, false)

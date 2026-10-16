@@ -230,7 +230,7 @@ bone_name = "chest"
 bone_idx = 3
 
 [node name="Socket" type="Marker3D" parent="Skeleton3D/Back" index="0" unique_id=1044803307]
-transform = Transform3D(1, 0, 0, 0, 0.9992, 0.03997, 0, -0.03997, 0.9992, 0, 0.0902, 0.104399994)
+transform = Transform3D(0.643, 0, 0.766, -0.76539, -0.03997, 0.64248997, 0.03062, -0.9992, -0.0257, 0.0506, 0.0025, 0.44189999)
 
 [node name="HandL" type="BoneAttachment3D" parent="Skeleton3D" index="4" unique_id=464232681]
 transform = Transform3D(0.07391276, -0.7032329, -0.707107, 0.07391271, -0.70323336, 0.70710653, -0.99452186, -0.104528405, -1.05890734e-07, -0.56567085, 1.0593858, -0.008751979)

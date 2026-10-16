@@ -136,19 +136,32 @@ func _tile(i: int) -> Button:
 	return b
 
 
-## Arrow / d-pad neighbours that follow the grid (wrap off).
+## Arrow / d-pad neighbours that follow the grid (wrap off). D-115: the picker is modal, so focus never
+## leaves the grid for the screen under the scrim: an edge points at the tile itself, down from a row
+## above a short last row lands on the last tile, and Tab / Shift+Tab cycle the enabled tiles.
 func _link_grid() -> void:
-	for i: int in range(tiles.size()):
+	var n: int = tiles.size()
+	var last_row: int = floori((n - 1) / float(COLUMNS))
+	for i: int in range(n):
 		var t: Button = tiles[i]
 		var col: int = i % COLUMNS
-		if col > 0:
-			t.focus_neighbor_left = t.get_path_to(tiles[i - 1])
-		if col < COLUMNS - 1 and i + 1 < tiles.size():
-			t.focus_neighbor_right = t.get_path_to(tiles[i + 1])
-		if i >= COLUMNS:
-			t.focus_neighbor_top = t.get_path_to(tiles[i - COLUMNS])
-		if i + COLUMNS < tiles.size():
-			t.focus_neighbor_bottom = t.get_path_to(tiles[i + COLUMNS])
+		t.focus_neighbor_left = t.get_path_to(tiles[i - 1] if col > 0 else t)
+		t.focus_neighbor_right = t.get_path_to(tiles[i + 1] if col < COLUMNS - 1 and i + 1 < n else t)
+		t.focus_neighbor_top = t.get_path_to(tiles[i - COLUMNS] if i >= COLUMNS else t)
+		var below: Button = t
+		if i + COLUMNS < n:
+			below = tiles[i + COLUMNS]
+		elif floori(i / float(COLUMNS)) < last_row:
+			below = tiles[n - 1]
+		t.focus_neighbor_bottom = t.get_path_to(below)
+	var enabled: Array[Button] = []
+	for t: Button in tiles:
+		if not t.disabled:
+			enabled.append(t)
+	for k: int in range(enabled.size()):
+		var t: Button = enabled[k]
+		t.focus_next = t.get_path_to(enabled[(k + 1) % enabled.size()])
+		t.focus_previous = t.get_path_to(enabled[(k - 1 + enabled.size()) % enabled.size()])
 
 
 func _on_tile(i: int) -> void:
