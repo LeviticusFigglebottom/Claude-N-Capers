@@ -51,12 +51,12 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## floating: Nothing floats
 
-- 230 props checked
+- 473 props checked
 
 
 ## clipping: Nothing clips
 
-- 230 props, 49 doors checked
+- 473 props, 49 doors checked
 
 
 ## scale: Human scale
@@ -122,44 +122,44 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## slopes: No walkable slope < 50° outside the play mesh
 
-- 1809 x 1969 columns (0.25 m), 607572 surface samples, 0 collider(s) with reachable walkable surfaces outside play
+- 1809 x 1969 columns (0.25 m), 608902 surface samples, 0 collider(s) with reachable walkable surfaces outside play
 
 
 ## navmesh: Navmesh
 
-- navmesh: 2131 polygons, cell 0.10/0.10 m
+- navmesh: 2352 polygons, cell 0.10/0.10 m
 - 204 markers checked
 | room | walkable samples | covered | coverage |
 |---|---|---|---|
-| `Rooms/RoomO1` | 75 | 75 | 100% |
-| `Rooms/RoomO2` | 88 | 88 | 100% |
+| `Rooms/RoomO1` | 72 | 72 | 100% |
+| `Rooms/RoomO2` | 74 | 74 | 100% |
 | `Rooms/RoomST` | 9 | 9 | 100% |
 | `Rooms/RoomLF` | 20 | 20 | 100% |
-| `Rooms/RoomE1` | 14 | 14 | 100% |
+| `Rooms/RoomE1` | 7 | 7 | 100% |
 | `Rooms/RoomOC` | 105 | 105 | 100% |
-| `Rooms/RoomPL` | 187 | 187 | 100% |
-| `Rooms/RoomWS` | 200 | 200 | 100% |
-| `Rooms/RoomLK` | 44 | 44 | 100% |
-| `Rooms/RoomJ` | 13 | 13 | 100% |
-| `Rooms/RoomPK` | 580 | 580 | 100% |
-| `Rooms/RoomH` | 663 | 663 | 100% |
-| `Rooms/RoomC1` | 414 | 414 | 100% |
+| `Rooms/RoomPL` | 170 | 170 | 100% |
+| `Rooms/RoomWS` | 181 | 178 | 98% |
+| `Rooms/RoomLK` | 36 | 36 | 100% |
+| `Rooms/RoomJ` | 5 | 5 | 100% |
+| `Rooms/RoomPK` | 498 | 496 | 100% |
+| `Rooms/RoomH` | 655 | 655 | 100% |
+| `Rooms/RoomC1` | 378 | 378 | 100% |
 | `Rooms/RoomSP` | 135 | 135 | 100% |
-| `Rooms/RoomC2` | 360 | 360 | 100% |
-| `Rooms/RoomSR` | 170 | 170 | 100% |
-| `Rooms/RoomAN` | 512 | 512 | 100% |
-| `Rooms/RoomM1` | 74 | 74 | 100% |
-| `Rooms/RoomM2` | 70 | 70 | 100% |
+| `Rooms/RoomC2` | 324 | 324 | 100% |
+| `Rooms/RoomSR` | 143 | 143 | 100% |
+| `Rooms/RoomAN` | 442 | 440 | 100% |
+| `Rooms/RoomM1` | 64 | 64 | 100% |
+| `Rooms/RoomM2` | 58 | 58 | 100% |
 | `Rooms/RoomM3` | 13 | 13 | 100% |
 | `Rooms/RoomMC` | 105 | 105 | 100% |
 | `Rooms/RoomHH` | 5 | 5 | 100% |
 | `Rooms/RoomGH` | 54 | 54 | 100% |
-| `Rooms/RoomQS` | 120 | 120 | 100% |
-| `Rooms/RoomX1` | 751 | 749 | 100% |
+| `Rooms/RoomQS` | 88 | 86 | 98% |
+| `Rooms/RoomX1` | 746 | 744 | 100% |
 | `Rooms/RoomX2` | 623 | 623 | 100% |
-| `Rooms/RoomX3` | 817 | 817 | 100% |
-| `Rooms/RoomX4` | 845 | 845 | 100% |
-| `Rooms/RoomX5` | 362 | 362 | 100% |
+| `Rooms/RoomX3` | 808 | 808 | 100% |
+| `Rooms/RoomX4` | 835 | 835 | 100% |
+| `Rooms/RoomX5` | 316 | 316 | 100% |
 
 
 ## barred_doors: BARRED doorways are closed in the navmesh
@@ -190,7 +190,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## viewmodel_lit: Interior key lights light the viewmodel (D-095)
 
-- 25 interior key light(s) in 22 room(s); 0 lack `viewmodel_lit`
+- 84 interior key light(s) in 22 room(s); 0 lack `viewmodel_lit`
 
 
 ## door_frame_gap: Doors and windows fill their wall openings (no gaps, no clipping)
@@ -211,6 +211,6 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## furniture_logic: Furniture arranged plausibly
 
-- classified: counter 7, chair 9, table 1, desk 2, wall_unit 1
+- classified: counter 7, chair 9, table 1, desk 2, wall_unit 9, monitor 1
 - 9 seats, 10 tables/desks/counters, 49 doors checked
 

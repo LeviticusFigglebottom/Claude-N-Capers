@@ -38,9 +38,9 @@ slots (glb JSON) against the library (`game/world/materials`, `game/world/props/
 | laser_grid | – | 3 nd_laser_* (ND-local) | – | **3 DEFAULT** |
 | drill_point | 1 (hidden) drill | 1 thermal + **2 saw** (hidden) | **1 thermal, DEFAULT orange disc** | – |
 | burn_point | – | – | **3 DEFAULT** | – |
-| bag_lift | – | nd_cash_lift (art) | **goods_lift_visual greybox** | – |
+| bag_lift | – | nd_cash_lift (art) | nd_cash_lift (art; DB-C2) | – |
 | zipline | – | – | – | **1 DEFAULT** |
-| secure_zone | 2 veh_van_secure | van + nd_boat_hatch | 2 van + **boat_drop_visual greybox** | **net / cart / drop greybox** |
+| secure_zone | 2 veh_van_secure | van + nd_boat_hatch | 2 van + nd_boat_hatch (art; DB-C2) | **net / cart / drop greybox** |
 | padlock / keypad / deposit_box / display_case | – / – / – / 8 prop | 1 / 1 / 8 baked | 13 prop_padlock_brass | – |
 
 GH and ND have no prefab placeholders left. Their maps contain only 3 BoxMesh (GH light panels) and textured emissive
@@ -96,7 +96,7 @@ Abbreviations: Hook = how C can supply the art without touching A files. SC = sc
    emissive tip (emissive_pilot_flame) as the `Bit`. Add `prop_saw_device`: a clamp-on rotary saw (pr_metal_yellow,
    pr_metal_dark, steel_bare blade as the `Bit`). Ask A to point DEFAULT for THERMAL/SAW at them.
 7. **Bag-secure points on SL/DB.** SL has `secure_net_visual` and `secure_cart_visual` (one BoxMesh each) and
-   `secure_drop_marker` (empty). DB has `boat_drop_visual` (1 BoxMesh hatch) and `goods_lift_visual` (4 BoxMesh, the bag_lift).
+   `secure_drop_marker` (empty). DB used `boat_drop_visual` and `goods_lift_visual` greybox boxes until DB-C2, which switched them to the ND art scenes.
    **SC: High** (every bag passes them). **Hook: yes** (map-local scenes, C). **Eff: M.**
    *Plan:* `escape.py`/`harbor.py` → `prop_secure_cargo_net` (pr_fabric_charcoal netting, steel_bare frame), `prop_cash_trolley`
    (exists, reuse for the cart), `prop_boat_hatch_drop` (adapt ND `nd_boat_hatch`: brushed_steel + wood_veneer_walnut),

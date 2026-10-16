@@ -13,6 +13,9 @@ extends "res://world/heists/dockside_burn/greybox/db_gameplay.gd"
 
 const VIEWMODEL_LIT_LAYER: int = 1 << 20  # viewmodel_lit (visual_slots v1.2, D-095) = CrewView.VIEWMODEL_LIT_LAYER
 const AM: GDScript = preload("res://world/heists/shared/assault_markers.gd")  # PO6-17 AssaultEvents markers
+## G2 art pass (DB-C2): environment / fixtures / skyline / probes / occluders, and the KitPlacer dressing pass.
+const DA: GDScript = preload("res://world/heists/dockside_burn/greybox/db_art.gd")
+const DR: GDScript = preload("res://world/heists/dockside_burn/greybox/db_dress.gd")
 
 
 func _initialize() -> void:
@@ -79,12 +82,14 @@ func _build() -> void:
 		L.ASSAULT_BREACHES, obstructions))
 	_build_nav_links(nav)
 	_close_barred_doorways()
+	_build_dressing()
 	var polys: int = await _bake(nav)
 	if polys <= 0:
 		_fail("navmesh bake produced no polygons")
 		return
 	for untagged: String in SurfaceTags.tag_tree(map_root):  # PO-8 bullet surface ids
 		errors.append("no surface id for %s" % untagged)
+	_build_art()
 	if not errors.is_empty():
 		_fail("\n".join(errors))
 		return
@@ -194,7 +199,7 @@ func _build_shell(geo: Node3D) -> void:
 	var ceil_n: Node3D = add(bld, node3d("Ceilings")) as Node3D
 	for c: Array in L.CEILINGS:
 		for p2: Array in AM.cut(String(c[0]), c[1], L.ASSAULT_BREACHES):
-			box_a(ceil_n, String(p2[0]), p2[1], "ceiling", true, SLAB_TILE)
+			_edgeless(box_a(ceil_n, String(p2[0]), p2[1], "ceiling", true, SLAB_TILE))
 	_build_core(bld)
 	_build_platform(bld)
 	var st: Node3D = add(bld, node3d("Stairs")) as Node3D
@@ -213,6 +218,36 @@ func _build_shell(geo: Node3D) -> void:
 	# PL culvert floor grate (Phantom vent exit; visual only, flush with the floor).
 	mesh_box(bld, "CulvertGrate", Vector3(1.4, 0.0, 14.4), Vector3(2.6, 0.015, 15.6), "grate")
 	_build_sheds(bld)
+
+
+## G2 (DB-C2): a ceiling box draws only its underside and top (its 5 cm edges stand inside the walls, where they were
+## coplanar with the wall pieces' ends: zfight). Visual only; the collider is unchanged.
+func _edgeless(body: Node3D) -> void:
+	if body == null:
+		return
+	for c: Node in body.get_children():
+		var mi: MeshInstance3D = c as MeshInstance3D
+		if mi == null:
+			continue
+		var bm: Mesh = mi.mesh
+		var key: String = "flat|%s|%s" % [str(bm.get_aabb()), bm.surface_get_material(0).resource_name]
+		if not _box_mesh_cache.has(key):
+			var h: Vector3 = bm.get_aabb().size * 0.5
+			var st: SurfaceTool = SurfaceTool.new()
+			st.begin(Mesh.PRIMITIVE_TRIANGLES)
+			for f: Array in [[Vector3.DOWN, Vector3.BACK, Vector3.RIGHT], [Vector3.UP, Vector3.RIGHT, Vector3.BACK]]:
+				var n: Vector3 = f[0]
+				var u: Vector3 = f[1] * absf((f[1] as Vector3).dot(h))
+				var v: Vector3 = f[2] * absf((f[2] as Vector3).dot(h))
+				var q: Array = [n * h - u - v, n * h + u - v, n * h + u + v, n * h - u + v]
+				for k: int in [0, 1, 2, 0, 2, 3]:
+					st.set_normal(n)
+					st.set_uv(Vector2((q[k] as Vector3).x, (q[k] as Vector3).z))
+					st.add_vertex(q[k])
+			st.generate_tangents()
+			st.set_material(bm.surface_get_material(0))
+			_box_mesh_cache[key] = st.commit()
+		mi.mesh = _box_mesh_cache[key]
 
 
 ## PO-13 slab skins (db_builder_base.slab_skins): the ground floor is one Pier 9 quay box and the
@@ -274,11 +309,12 @@ func _build_glazing(bld: Node3D) -> void:
 		var mx: Vector3 = Vector3(a1, y1, f + 0.02) if along_x else Vector3(f + 0.02, y1, a1)
 		var body: Node3D = box(gl, String(g[0]), mn, mx, "glass")
 		var span: float = a1 - a0
-		var fs: Vector3 = Vector3(span, 0.05, 0.08) if along_x else Vector3(0.08, 0.05, span)
+		# G2: the head bar stops 6 mm short of the reveals and rides 4 mm into the opening's head (zfight with the pane)
+		var fs: Vector3 = Vector3(span - 0.012, 0.05, 0.08) if along_x else Vector3(0.08, 0.05, span - 0.012)
 		var head: MeshInstance3D = MeshInstance3D.new()
 		head.name = "FrameHead"
 		head.mesh = box_mesh(fs, "frame")
-		head.position = Vector3(0.0, (y1 - y0) * 0.5 - 0.025, 0.0)
+		head.position = Vector3(0.0, (y1 - y0) * 0.5 - 0.021, 0.0)
 		add(body, head)
 
 
@@ -370,7 +406,9 @@ func _flight(parent: Node3D, nm: String, origin: Vector3, yaw: float, w: float, 
 	for k: int in range(1, nr):
 		var top: float = float(k) * r
 		var lo: float = (float(solid_y) - origin.y) if solid_y != null else top - r - 0.15
-		mesh_box(f, "Step%02d" % k, Vector3(-w * 0.5, lo, float(k - 1) * t), Vector3(w * 0.5, top, float(k) * t + SEAM), "stair")
+		# G2: 5 mm in from the flight's sides (guards / recess walls stand on the flight edges: zfight)
+		mesh_box(f, "Step%02d" % k, Vector3(-w * 0.5 + 0.005, lo, float(k - 1) * t), Vector3(w * 0.5 - 0.005, top,
+			float(k) * t + SEAM), "stair")
 	var ramp_t: float = 0.3
 	var end_z: float = float(nr - 1) * t
 	if solid_y == null:
@@ -454,15 +492,16 @@ func _build_core(parent: Node3D) -> void:
 			var xr2: float = (x0 + L.STAIR_WELL.y + off) if k == 0 else (x0 + L.STAIR_CLEAR.y - off)
 			_handrail(c, "Flight%sERail%d" % [tag, k], Vector3(xr2, yh + L.HANDRAIL_H, zh),
 				Vector3(xr2, yh + float(m) * r + L.HANDRAIL_H, L.STAIR_Z_START))
-		box(c, "HalfLanding%s" % tag, Vector3(x0 + L.STAIR_CLEAR.x, yh - 0.3, L.STAIR_Z_N), Vector3(x0 + L.STAIR_CLEAR.y, yh, zh),
+		# G2: the landings start at the west wall's face (0.2), not 5 cm inside it (zfight with the storey split)
+		box(c, "HalfLanding%s" % tag, Vector3(x0 + L.STAIR_WEST.x, yh - 0.3, L.STAIR_Z_N), Vector3(x0 + L.STAIR_CLEAR.y, yh, zh),
 			"stair")
 		var top_storey: bool = i == levels.size() - 2
 		box(c, "Divider%s" % tag, Vector3(x0 + L.STAIR_WELL.x, y0, zh), Vector3(x0 + L.STAIR_WELL.y, y1 + (1.1 if top_storey else 0.0),
 			L.STAIR_Z_START), "wall")
-		box(c, "FloorLanding%s" % tag, Vector3(x0 + L.STAIR_CLEAR.x, y1 - 0.3, L.STAIR_Z_START), Vector3(x0 + L.STAIR_CLEAR.y, y1,
+		box(c, "FloorLanding%s" % tag, Vector3(x0 + L.STAIR_WEST.x, y1 - 0.3, L.STAIR_Z_START), Vector3(x0 + L.STAIR_CLEAR.y, y1,
 			L.STAIR_Z_S), "stair")
 	var ytop: float = float(levels[levels.size() - 1])
-	railing(c, "TopRail", Vector3(x0 + L.STAIR_CLEAR.x, ytop, L.STAIR_Z_START - 0.06), Vector3(x0 + L.STAIR_WELL.x, ytop + 1.1,
+	railing(c, "TopRail", Vector3(x0 + L.STAIR_WEST.x, ytop, L.STAIR_Z_START - 0.06), Vector3(x0 + L.STAIR_WELL.x, ytop + 1.1,
 		L.STAIR_Z_START))
 
 
@@ -534,7 +573,8 @@ func _build_fire_landing(parent: Node3D) -> void:
 	var fl: Node3D = add(parent, node3d("FireLanding")) as Node3D
 	box_a(fl, "Slab", L.FIRE_LANDING, "stair")
 	for z: float in [6.05, 7.95]:
-		box(fl, "Post%d" % int(z), Vector3(-1.4, 0.0, z - 0.05), Vector3(-1.3, L.MEZZ_SLAB, z + 0.05), "trim")
+		# G2: 1 cm east and 3 mm up (its faces met the fire stair's solid base: zfight)
+		box(fl, "Post%d" % int(z), Vector3(-1.39, 0.003, z - 0.05), Vector3(-1.29, L.MEZZ_SLAB, z + 0.05), "trim")
 
 
 # --- Site -------------------------------------------------------------------------------------
@@ -563,7 +603,7 @@ func _build_site(geo: Node3D) -> void:
 	# D-111: the launch visual over its hidden colliders (L.LAUNCH; the escape E3 boat).
 	var launch: Node3D = _catalog_scene(String(L.LAUNCH[0])).instantiate() as Node3D
 	launch.name = "Launch"
-	launch.position = L.LAUNCH[1]
+	launch.position = L.LAUNCH[1] + Vector3(0.0, 0.0, 0.01)  # G2: the hull clear of the pontoon's face (zfight)
 	launch.basis = yaw_basis(float(L.LAUNCH[2]))
 	add(blocks, launch)
 	_container_footprints(blocks)
@@ -605,7 +645,7 @@ func _quay_steps(parent: Node3D) -> void:
 	var nr: int = int(qs["risers"])
 	var t: float = float(qs["tread"])
 	var yaw: float = float(qs["yaw"])
-	var f: Node3D = _flight(parent, "QuaySteps", o, yaw, w, nr, L.STAIR_RISER, t, -2.6, true)
+	var f: Node3D = _flight(parent, "QuaySteps", o, yaw, w, nr, L.STAIR_RISER, t, -2.59, true)  # G2: off the slab bottom
 	var b: Basis = yaw_basis(yaw)
 	var run: float = float(nr - 1) * t
 	for k: int in range(2):
@@ -666,7 +706,7 @@ func _far_shore_lights(parent: Node3D) -> void:
 	for i: int in range(14):
 		var x: float = -160.0 + 30.0 * float(i)
 		var y: float = 2.0 + float((i * 7) % 5)
-		mesh_box(fl, "Light%02d" % i, Vector3(x, y, 399.0), Vector3(x + 1.5, y + 0.6, 399.5), "far_lights")
+		mesh_box(fl, "Light%02d" % i, Vector3(x, y, 338.0), Vector3(x + 1.5, y + 0.6, 338.5), "far_lights")  # G2: before the skyline
 
 
 # --- Props ------------------------------------------------------------------------------------
@@ -704,10 +744,10 @@ func _mast(parent: Node3D, nm: String, base: Vector3, yaw: float) -> void:
 	col.shape = box_shape(Vector3(0.2, 8.0, 0.2))
 	col.position = Vector3(0.0, 4.0, 0.0)
 	add(body, col)
-	mesh_box(body, "Pole", Vector3(-0.1, 0.0, -0.1), Vector3(0.1, 8.0, 0.1), "trim")
-	mesh_box(body, "Arm", Vector3(-0.05, 7.9, -1.0), Vector3(0.05, 8.0, 0.0), "trim")
-	var head: MeshInstance3D = mesh_box(body, "Head", Vector3(-0.18, 7.76, -1.1), Vector3(0.18, 7.9, -0.4), "sodium")
-	head.set_meta(&"fixture", true)
+	# G2 (DB-C2): the catalog mast (galvanised pole, arm, flood head with its sodium lens) over the pole collider
+	var vis: Node3D = _art_visual(body, "Visual", "prop_mast_sodium", 0.0, Vector3.ZERO)
+	if vis != null:
+		vis.set_meta(&"fixture", true)
 	var light: OmniLight3D = OmniLight3D.new()
 	light.name = "Light"
 	light.position = Vector3(0.0, 7.5, -0.75)
@@ -715,56 +755,23 @@ func _mast(parent: Node3D, nm: String, base: Vector3, yaw: float) -> void:
 	light.light_energy = 2.2
 	light.omni_range = 18.0
 	light.layers |= VIEWMODEL_LIT_LAYER  # D-095: also lights the FP viewmodel
+	light.shadow_enabled = nm in DD.SHADOW_MASTS  # doc Budgets: 4 shadowed sodium masts
 	add(body, light)
 	obstruct(body.transform, AABB(Vector3(-0.1, 0.0, -0.1), Vector3(0.2, 8.0, 0.2)))
 
 
 # --- Lighting ---------------------------------------------------------------------------------
 
-## 05:10 pre-dawn: no sun (8 deg below the horizon, east), a weak sky fill, dense harbour fog
-## (~150 m visibility), sodium yard masts and the cold-store LEDs (doc Audio/lighting).
+## 05:10 pre-dawn: no sun (8 deg below the horizon, east), the moon on the outside only, dense harbour fog (~150 m
+## visibility), the LUT (db_art.environment); the sodium yard masts and floods; the rooms' fixtures come from the
+## dressing kits (db_dress.gd), the map keeps only KEEP_MAP_LIGHTS (rooms without a kit grid).
 func _build_lighting(lighting: Node3D) -> void:
-	var we: WorldEnvironment = WorldEnvironment.new()
-	we.set_script(load("res://world/lighting/heist_world_environment.gd"))  # brightness option (B5-01)
-	we.name = "WorldEnvironment"
-	var env: Environment = Environment.new()
-	env.resource_name = "env_dockside_burn_greybox"
-	var sky_mat: ProceduralSkyMaterial = ProceduralSkyMaterial.new()
-	sky_mat.sky_top_color = Color(0.04, 0.06, 0.1)
-	sky_mat.sky_horizon_color = Color(0.2, 0.22, 0.26)
-	sky_mat.ground_bottom_color = Color(0.02, 0.03, 0.04)
-	sky_mat.ground_horizon_color = Color(0.16, 0.17, 0.19)
-	sky_mat.sky_energy_multiplier = 0.7
-	var sky: Sky = Sky.new()
-	sky.sky_material = sky_mat
-	env.background_mode = Environment.BG_SKY
-	env.sky = sky
-	env.ambient_light_source = Environment.AMBIENT_SOURCE_SKY
-	env.ambient_light_energy = 0.9
-	env.tonemap_mode = Environment.TONE_MAPPER_FILMIC
-	env.tonemap_exposure = 1.3
-	env.fog_enabled = true
-	env.fog_light_color = Color(0.36, 0.36, 0.38)
-	# LEAD 2026-10-12 (D 20/40 m read): thinner; was density 0.006, height 4.0, height_density 0.05.
-	env.fog_density = 0.0035
-	env.fog_height = 2.0
-	env.fog_height_density = 0.015
-	env.fog_sky_affect = 0.6
-	env.glow_enabled = true
-	env.glow_intensity = 0.4
-	we.environment = env
-	add(lighting, we)
-	var dawn: DirectionalLight3D = DirectionalLight3D.new()
-	dawn.name = "PreDawnSky"
-	dawn.basis = Basis.looking_at(Vector3(-0.6, -0.4, 0.3).normalized(), Vector3.UP)
-	dawn.position = Vector3(24.0, 40.0, 16.0)
-	dawn.light_color = Color(0.6, 0.68, 0.85)
-	dawn.light_energy = 0.12
-	dawn.shadow_enabled = false
-	add(lighting, dawn)
+	var art: RefCounted = DA.new(self)
+	art.call(&"environment", lighting, map_root)
 	var fx: Node3D = add(lighting, node3d("Fixtures")) as Node3D
 	for c: Array in L.CEILING_LIGHTS:
-		_ceiling_light(fx, String(c[0]), c[1], c[2], float(c[3]), float(c[4]))
+		if String(c[0]) in DD.KEEP_MAP_LIGHTS:
+			_ceiling_light(fx, String(c[0]), c[1], c[2], float(c[3]), float(c[4]))
 	for w: Array in L.WALL_LIGHTS:
 		_wall_light(fx, String(w[0]), w[1], float(w[2]), w[3], float(w[4]), float(w[5]), w[6])
 	# Landmark 2: the Pier 10 crane's orange hazard beacons on the portal beams.
@@ -772,6 +779,7 @@ func _build_lighting(lighting: Node3D) -> void:
 		var p: Vector3 = Vector3(77.0, 22.0, -8.0 if i == 0 else 8.0)
 		var bcn: MeshInstance3D = mesh_box(fx, "CraneBeacon%d" % i, p - Vector3(0.2, 0.0, 0.2), p + Vector3(0.2, 0.4, 0.2), "beacon")
 		bcn.set_meta(&"fixture", true)
+		bcn.set_meta(&"kind", "light_fixture")
 		var bl: OmniLight3D = OmniLight3D.new()
 		bl.name = "CraneBeaconLight%d" % i
 		bl.position = p + Vector3(0.0, 0.7, 0.0)
@@ -779,6 +787,33 @@ func _build_lighting(lighting: Node3D) -> void:
 		bl.light_energy = 1.5
 		bl.omni_range = 10.0
 		add(fx, bl)
+
+
+# --- G2 dressing and art (DB-C2) ----------------------------------------------------------------
+
+## The KitPlacer pass (db_dress.gd + dockside_burn_dressing.gd): every kit room, the exterior props; the fill lights.
+## Floor props obstruct the navmesh bake that follows.
+func _build_dressing() -> void:
+	var dress: RefCounted = DR.new()
+	dress.call(&"setup", self, map_root)
+	dress.call(&"dress", n("Props"))
+	dress.call(&"fill_lights", add(n("Lighting"), node3d("Fill")) as Node3D)
+	for line: String in dress.get(&"report"):
+		printerr("dress: " + line)
+		if line.begins_with("ERROR"):
+			errors.append(line)
+
+
+## After the bake: the skyline ring, merged railing visuals, the moon's layer on the outside, reflection probes per
+## room, occluders.
+func _build_art() -> void:
+	var art: RefCounted = DA.new(self)
+	art.call(&"skyline", n("Geometry/Site"), map_root)
+	var merged: int = art.call(&"merge_railings", map_root)
+	art.call(&"moonlit", map_root)
+	var probes: int = art.call(&"reflection_probes", add(n("Lighting"), node3d("ReflectionProbes")) as Node3D, map_root)
+	var occ: int = art.call(&"occluders", add(n("Geometry"), node3d("Occluders")) as Node3D, map_root)
+	printerr("art: %d railing meshes merged away, %d probes, %d occluders" % [merged, probes, occ])
 
 
 ## PO-13: reflected lamp glints on the harbour and slip water (the shader's MAX_GLINTS = 16): the
@@ -833,15 +868,10 @@ func _ceiling_light(parent: Node3D, nm: String, pivot: Vector3, color: Color, en
 	r.set_meta(&"fixture", true)
 	r.set_meta(&"kind", "light_fixture")
 	add(parent, r)
-	var size: Vector3 = Vector3(0.6, 0.05, 0.6) if pivot.y < 5.0 else Vector3(0.5, 0.3, 0.5)
-	var mi: MeshInstance3D = MeshInstance3D.new()
-	mi.name = "Panel"
-	mi.mesh = box_mesh(size, "cold_led" if color.b > color.r else "fixture")
-	mi.position = Vector3(0.0, -size.y * 0.5 - 0.002, 0.0)
-	add(r, mi)
+	DA.new(self).call(&"fixture_model", r, String(DD.MAP_FIXTURE_ART["ceiling"]), map_root)  # G2: caged bulkhead
 	var light: OmniLight3D = OmniLight3D.new()
 	light.name = "Light"
-	light.position = Vector3(0.0, -size.y - 0.2, 0.0)
+	light.position = Vector3(0.0, -0.26, 0.0)
 	light.light_color = color
 	light.light_energy = energy
 	light.omni_range = rng
@@ -851,18 +881,14 @@ func _ceiling_light(parent: Node3D, nm: String, pivot: Vector3, color: Color, en
 
 ## Wall-mounted flood / lamp: pivot on the wall face (back-centre), -Z out of the wall.
 func _wall_light(parent: Node3D, nm: String, pivot: Vector3, yaw: float, color: Color, energy: float,
-		rng: float, size: Vector3) -> void:
+		rng: float, _size: Vector3) -> void:
 	var r: Node3D = node3d(nm, pivot)
 	r.basis = yaw_basis(yaw)
 	r.set_meta(&"mount", "wall")
 	r.set_meta(&"fixture", true)
 	r.set_meta(&"kind", "light_fixture")
 	add(parent, r)
-	var mi: MeshInstance3D = MeshInstance3D.new()
-	mi.name = "Body"
-	mi.mesh = box_mesh(size, "sodium")
-	mi.position = Vector3(0.0, 0.0, -size.z * 0.5 - 0.002)
-	add(r, mi)
+	DA.new(self).call(&"fixture_model", r, String(DD.MAP_FIXTURE_ART["wall"]), map_root)  # G2: sodium wall flood
 	var light: OmniLight3D = OmniLight3D.new()
 	light.name = "Light"
 	light.position = Vector3(0.0, -0.1, -0.5)
