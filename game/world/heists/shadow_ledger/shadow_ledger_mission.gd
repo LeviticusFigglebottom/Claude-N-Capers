@@ -4,7 +4,8 @@
 ## (prefabs found by objective_tag).
 ##
 ## Stealth only (HeistDef.mode STEALTH_ONLY): any alarm ends the heist through the runtime
-## (S11.3, FAIL_STEALTH_ONLY_ALARM); the mission only plays Mercer's abort line.
+## (S11.3, FAIL_STEALTH_ONLY_ALARM); the mission only plays Mercer's abort line (own_abort_line: it replaces the
+## generic one). SL-6: after the alarm the mission stays quiet (no progress lines, no escape): the job is over.
 ## Required line: laptop + keycard (server door, unless srv_contractor) + cage code or saw + the 45 s
 ## hack + secure the laptop and 2 of 3 drive bags -> escape (heli 45 s approach, line, service lift).
 ## Optional: the study safe (keycard + time lock), the paintings, the archive safe, small loot.
@@ -49,6 +50,9 @@ const RARE_TIMELOCK: StringName = &"timelock_extended"
 const VO_CAMERA_WARNING: StringName = &"vo.mercer.shadow_ledger_camera_warning"
 const CAMERA_WARN_METER: float = 0.5
 const CAMERA_POLL_S: float = 0.25
+## SL-6: the cage / archive safe are also watched for `opened` (the handheld saw, QC-37, opens a safe without an
+## interaction or device fact).
+const LOCK_POLL_S: float = 0.5
 const TIMELOCK_EXTRA_S: float = 60.0
 ## Strings keys for the escape in Mercer's line (ENV B resolves them).
 const ESCAPE_KEYS: Dictionary = {
@@ -62,10 +66,12 @@ var _drives_secured: int = 0
 var _escape_open: bool = false
 var _lasers_said: bool = false
 var _camera_warned: bool = false
+var _archive_open: bool = false
 
 
 func _on_mission_start() -> void:
 	own_last_pager_line = true  # D-117: the heist's last-pager line replaces the generic one
+	own_abort_line = true  # SL-6: "They're wiping the array" replaces the generic abort line
 	say(&"vo.mercer.shadow_ledger_intro")
 	say(&"vo.accountant.shadow_ledger_contact_intro", {}, &"accountant")
 	add_objective(&"casing", &"objective.shadow_ledger.casing", Enums.ObjectiveState.ACTIVE, {"optional": true})
@@ -99,10 +105,12 @@ func _on_mission_start() -> void:
 	_setup_variants()
 	_poll_cameras()
 	_watch_lasers()
+	_poll_locks()
 
 
 func _on_phase_changed(old_phase: int, new_phase: int) -> void:
-	if old_phase == Enums.HeistPhase.CASING and new_phase != Enums.HeistPhase.CASING:
+	# SL-6: the casing ends when the crew masks up (CASING -> STEALTH); an alarm while casing is the abort, not a step.
+	if old_phase == Enums.HeistPhase.CASING and new_phase != Enums.HeistPhase.CASING and not went_loud:
 		complete(&"casing")
 
 
@@ -113,7 +121,7 @@ func _on_alarm(_reason: StringName) -> void:
 
 func _on_pager_answered(total: int) -> void:
 	if total == pager_cap():
-		say(&"vo.mercer.shadow_ledger_last_pager", {"answered": total})
+		_vo(&"vo.mercer.shadow_ledger_last_pager", {"answered": total})
 
 
 # --- Setup ------------------------------------------------------------------------------------
@@ -131,10 +139,14 @@ func _setup_variants() -> void:
 	for s: Node in find_tagged(TAG_STUDY_SAFE):
 		s.set(&"time_lock_s", lock_s)
 	update_objective_data(&"study_safe", {"time_lock_s": lock_s})
-	# ledger_printout: the working copy on Kessler's desk exists only with the rare event.
+	# ledger_printout: the working copy on Kessler's desk exists only with the rare event. SL-6: without it the bag
+	# is not on offer at all (remaining 0, as a variant-disabled spawn), so HeistResult.loot_available skips it.
+	var printout: bool = _rare(RARE_PRINTOUT)
 	for p: Node in find_tagged(TAG_PRINTOUT):
-		_set_enabled(p, _rare(RARE_PRINTOUT))
-		(p as Node3D).visible = _rare(RARE_PRINTOUT)
+		_set_enabled(p, printout)
+		(p as Node3D).visible = printout
+		if not printout and p.get(&"remaining") != null:
+			p.set(&"remaining", 0)
 	# srv_contractor: the server door is propped (the reader's target starts open), no keycard needed.
 	if _slot_active(&"server_room", &"srv_contractor"):
 		for door: Node in find_tagged(TAG_SERVER_DOOR):
@@ -150,17 +162,18 @@ func _setup_variants() -> void:
 
 # --- Stealth flow -----------------------------------------------------------------------------
 
-func _on_interaction_completed(interactable_net_id: int, _crew_slot: int, kind: StringName) -> void:
+func _on_interaction_completed(interactable_net_id: int, _crew_slot: int, _kind: StringName) -> void:
 	if _is_tagged(interactable_net_id, TAG_SERVER_READER) or _is_tagged(interactable_net_id, TAG_SERVER_DOOR):
 		if objective_state(&"server_door") == Enums.ObjectiveState.ACTIVE:
 			complete(&"server_door")
 	elif _is_tagged(interactable_net_id, TAG_CAGE):
-		# The code path opens the lock at once (the saw reports device_finished).
-		_open_cage(&"saw" if String(kind).contains("saw") else &"code")
+		# SL-6: the code opens the lock at once; placing / fixing the saw (place_saw, fix_drill) only starts the 90 s
+		# cut, which reports device_finished. The cage counts as open only when its lock really swung.
+		_sync_cage()
 	elif _is_tagged(interactable_net_id, TAG_LAPTOP):
 		if objective_state(&"laptop") == Enums.ObjectiveState.ACTIVE:
 			complete(&"laptop")
-			say(&"vo.mercer.shadow_ledger_laptop_found")
+			_vo(&"vo.mercer.shadow_ledger_laptop_found")
 	elif _is_tagged(interactable_net_id, TAG_DRIVES):
 		_check_drives()
 	elif _is_tagged(interactable_net_id, TAG_PAINTINGS):
@@ -173,34 +186,70 @@ func _on_interaction_completed(interactable_net_id: int, _crew_slot: int, kind: 
 
 func _on_item_picked_up(item_id: StringName, _crew_slot: int) -> void:
 	if item_id == ITEM_KEYCARD:
-		say(&"vo.mercer.shadow_ledger_keycard_found")
+		_vo(&"vo.mercer.shadow_ledger_keycard_found")
 	elif item_id == ITEM_CODE_NOTE and objective_state(&"cage_code") == Enums.ObjectiveState.ACTIVE:
 		complete(&"cage_code")
-		say(&"vo.mercer.shadow_ledger_code_found")
+		_vo(&"vo.mercer.shadow_ledger_code_found")
 
 
 func _on_device_started(device_net_id: int, kind: StringName, seconds: float) -> void:
 	if _is_tagged(device_net_id, TAG_HACK):
-		say(&"vo.mercer.shadow_ledger_hack_started", {"seconds": seconds})
+		_vo(&"vo.mercer.shadow_ledger_hack_started", {"seconds": seconds})
 	elif _is_tagged(device_net_id, TAG_STUDY_SAFE) and kind == &"time_lock":
-		say(&"vo.mercer.shadow_ledger_time_lock_started", {"seconds": seconds})
+		_vo(&"vo.mercer.shadow_ledger_time_lock_started", {"seconds": seconds})
 
 
 func _on_device_finished(device_net_id: int) -> void:
 	if _is_tagged(device_net_id, TAG_CAGE):
-		_open_cage(&"saw")
+		_sync_cage()  # SL-6: also fires when a running saw is aborted (the cage opened another way)
 	elif _is_tagged(device_net_id, TAG_HACK):
 		_on_hack_done()
 	elif _is_tagged(device_net_id, TAG_STUDY_SAFE):
-		complete(&"study_safe")
-		say(&"vo.mercer.shadow_ledger_time_lock_open")
+		if objective_state(&"study_safe") == Enums.ObjectiveState.ACTIVE:
+			complete(&"study_safe")
+			_vo(&"vo.mercer.shadow_ledger_time_lock_open")
 	elif _is_tagged(device_net_id, TAG_ARCHIVE_SAFE):
-		complete(&"archive_safe")
+		_sync_archive()
 
 
 func _on_device_jammed(device_net_id: int) -> void:
 	if _is_tagged(device_net_id, TAG_HACK):
-		say(&"vo.mercer.shadow_ledger_hack_interrupted")
+		_vo(&"vo.mercer.shadow_ledger_hack_interrupted")
+
+
+## SL-6: the cage lock (Safe, methods [code, saw]) swung open, however it was beaten: open the cage for the mission.
+func _sync_cage() -> void:
+	if _cage_open:
+		return
+	for c: Node in find_tagged(TAG_CAGE):
+		if bool(c.get(&"opened")):
+			_open_cage(_open_method(c))
+			return
+
+
+## The cage lock's `beaten_by` as the [cage] open_method: &"code", else &"saw" (a placed saw reports &"device").
+static func _open_method(lock: Node) -> StringName:
+	var how: Variant = lock.get(&"beaten_by")
+	return &"code" if how != null and StringName(how) == &"code" else &"saw"
+
+
+## SL-6: the archive safe (saw only) swung open: the placed saw's device_finished, or the handheld saw.
+func _sync_archive() -> void:
+	if _archive_open:
+		return
+	for a: Node in find_tagged(TAG_ARCHIVE_SAFE):
+		if bool(a.get(&"opened")):
+			_archive_open = true
+			if objective_state(&"archive_safe") == Enums.ObjectiveState.ACTIVE:
+				complete(&"archive_safe")
+			return
+
+
+func _poll_locks() -> void:
+	_sync_cage()
+	_sync_archive()
+	if not (_cage_open and _archive_open):
+		start_timer(&"lock_watch", LOCK_POLL_S, _poll_locks)
 
 
 ## `method` (B achievements, objective.cage.open_method): &"code" / &"saw", or &"left_open" (rare); set on the
@@ -213,9 +262,17 @@ func _open_cage(method: StringName) -> void:
 	for g: Node in find_tagged(TAG_CAGE_GATE):
 		g.call(&"unlock")
 		g.call(&"set_open", true)
+	# left_open: the lock itself stops offering the code / saw (nothing is left to beat).
+	for c: Node in find_tagged(TAG_CAGE):
+		if not bool(c.get(&"opened")) and c.has_method(&"swing_open"):
+			c.call(&"swing_open")
+	# PO6-04: the code note is moot once the cage is open another way (saw, left open).
+	if objective_state(&"cage_code") == Enums.ObjectiveState.ACTIVE:
+		update_objective_data(&"cage_code", {"skipped": true})
+		complete(&"cage_code")
 	if objective_state(&"cage") != Enums.ObjectiveState.COMPLETED:
 		complete(&"cage")
-	say(&"vo.mercer.shadow_ledger_cage_open")
+	_vo(&"vo.mercer.shadow_ledger_cage_open")
 	for h: Node in find_tagged(TAG_HACK):
 		_set_enabled(h, true)
 	activate(&"hack")
@@ -226,7 +283,7 @@ func _on_hack_done() -> void:
 		return
 	_hacked = true
 	complete(&"hack")
-	say(&"vo.mercer.shadow_ledger_hack_done")
+	_vo(&"vo.mercer.shadow_ledger_hack_done")
 	for d: Node in find_tagged(TAG_DRIVES):
 		_set_enabled(d, true)
 	activate(&"drives")
@@ -255,15 +312,16 @@ func _on_bag_secured(_bag_net_id: int, loot_id: StringName, _value: int) -> void
 
 
 ## Required loot secured: heli (the zone's 45 s approach runs in the prefab), line or service lift.
+## SL-6: never after the alarm (the abort window): the job is over, no escape opens.
 func _try_escape() -> void:
-	if _escape_open:
+	if _escape_open or went_loud:
 		return
 	_escape_open = true
 	complete(&"secure")
-	say(&"vo.mercer.shadow_ledger_required_secured")
+	_vo(&"vo.mercer.shadow_ledger_required_secured")
 	activate(&"escape")
 	var tag: StringName = _escape_tag()
-	say(&"vo.mercer.shadow_ledger_escape", {"escape": ESCAPE_KEYS.get(tag, &"ui.escape.heli")})
+	_vo(&"vo.mercer.shadow_ledger_escape", {"escape": ESCAPE_KEYS.get(tag, &"ui.escape.heli")})
 	activate_escape(tag)
 
 
@@ -290,7 +348,7 @@ func _on_camera_meter(value: float) -> void:
 	if _camera_warned or went_loud or value < CAMERA_WARN_METER:
 		return
 	_camera_warned = true
-	say(VO_CAMERA_WARNING)
+	_vo(VO_CAMERA_WARNING)
 
 
 # --- Lasers line (SL-9) -----------------------------------------------------------------------
@@ -326,10 +384,16 @@ func _on_lasers_area(body: Node) -> void:
 	if _lasers_said or went_loud or body == null or not body.is_in_group(G.CREW):
 		return
 	_lasers_said = true
-	say(VO_LASERS)
+	_vo(VO_LASERS)
 
 
 # --- Helpers ----------------------------------------------------------------------------------
+
+## SL-6: a progress line from Mercer, never after the alarm (his abort line is the last word).
+func _vo(line_id: StringName, context: Dictionary = {}) -> void:
+	if not went_loud:
+		say(line_id, context)
+
 
 ## The rolled escape (a pre-planned escape_position forces the slot).
 func _escape_tag() -> StringName:

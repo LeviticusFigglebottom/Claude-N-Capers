@@ -5,7 +5,8 @@
 ##   loud    - heist_phase LOUD or an assault   (waves, hostages, keep moving the loot)
 ##   escape  - heist_phase ESCAPE               (the getaway, unsecured bags, whole crew in the zone)
 ## A card shows SHOW_DELAY_S after its situation starts, stays DWELL_S (a thin bar drains) and closes
-## early on the dismiss_tip action (D-096). Shown ids are stored in the profile (OnboardingTips), so each card appears
+## early on the dismiss_tip action (D-096). Row key caps and the footer follow the current binding (D-115: also
+## after a rebind while the card is open). Shown ids are stored in the profile (OnboardingTips), so each card appears
 ## once per profile. A new unseen situation replaces the open card (its situation is over).
 ## D-115: each built heist (OnboardingTips.HEISTS) also has one card for its own mechanics. It queues behind the
 ## situation cards: it shows once a heist situation is up and that situation's card is already seen (so on a first run
@@ -47,6 +48,8 @@ var situation: StringName = &""
 ## Heist being played (Hud sets it from Hud.heist_id); picks the heist card (OnboardingTips.heist_tip).
 var heist_id: StringName = &""
 var show_delay_s: float = SHOW_DELAY_S
+## r228: the card's width; the HUD narrows it to fit the black margin beside a scope ring (fit_width).
+var width: float = WIDTH
 var panel: PanelContainer
 var title: Label
 var step_label: Label
@@ -56,6 +59,9 @@ var dwell_bar: ProgressBar
 var _left: float = 0.0
 var _pending: StringName = &""
 var _pending_t: float = 0.0
+var _slide: Tween = null
+## Key cap text of each row of the open card ("" = bullet row), to redraw them when a binding changes.
+var _row_glyphs: Array[String] = []
 
 
 func build() -> void:
@@ -115,7 +121,8 @@ func refresh() -> void:
 	if panel == null or model == null:
 		return
 	if shown != &"":
-		_update_footer()  # Hud refreshes every widget on a device switch
+		_update_footer()  # Hud refreshes every widget on a device switch and after a rebind
+		_update_row_keys()
 	situation = current_situation()
 	if shown != &"" and OnboardingTips.ALL.has(shown) and situation != shown and situation != &"" \
 			and not OnboardingTips.is_seen(situation):
@@ -185,11 +192,7 @@ func _show(id: StringName) -> void:
 				"total": OnboardingTips.ALL.size()})
 	else:
 		step_label.text = UiText.t(StringName("heist.%s.name" % heist_id))
-	for c: Node in rows_box.get_children():
-		rows_box.remove_child(c)
-		c.queue_free()
-	for r: Array in ROWS[id] as Array:
-		rows_box.add_child(_row(StringName(r[0]), StringName(r[1])))
+	_build_rows()
 	_update_footer()
 	_left = DWELL_S
 	dwell_bar.value = 1.0
@@ -200,9 +203,33 @@ func _show(id: StringName) -> void:
 		modulate.a = 0.0
 		position.x += UiTokens.S5
 		var tw: Tween = create_tween().set_parallel(true)
+		_slide = tw
 		tw.tween_property(self, ^"modulate:a", 1.0, UiTokens.T_SLOW).set_ease(Tween.EASE_OUT)
 		tw.tween_property(self, ^"position:x", position.x - UiTokens.S5, UiTokens.T_SLOW) \
 				.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+
+
+func _build_rows() -> void:
+	for c: Node in rows_box.get_children():
+		rows_box.remove_child(c)
+		c.queue_free()
+	_row_glyphs = row_glyphs(shown)
+	for r: Array in ROWS[shown] as Array:
+		rows_box.add_child(_row(StringName(r[0]), StringName(r[1])))
+
+
+## Key cap text of each row of card `id` for the current bindings and device ("" = a bullet row).
+static func row_glyphs(id: StringName) -> Array[String]:
+	var out: Array[String] = []
+	for r: Array in ROWS.get(id, []) as Array:
+		out.append(InteractionPanel.action_key_text(StringName(r[0])) if StringName(r[0]) != &"" else "")
+	return out
+
+
+## D-115: an open card's key caps follow a rebind / device switch (rows rebuilt only when a glyph changed).
+func _update_row_keys() -> void:
+	if ROWS.has(shown) and row_glyphs(shown) != _row_glyphs:
+		_build_rows()
 
 
 ## "Press [H] to close" in the last device's glyph; "Closes by itself" when the action has no glyph.
@@ -213,6 +240,28 @@ func _update_footer() -> void:
 		footer.set_line(UiText.t(&"ui.tip.auto_close"), "")
 	else:
 		footer.set_prompt(&"ui.tip.dismiss", {}, glyph)
+
+
+## r228: ends the slide-in at once (the HUD is about to move the card into the scope margin).
+func settle() -> void:
+	if _slide != null and _slide.is_valid():
+		_slide.kill()
+	_slide = null
+	modulate.a = 1.0
+
+
+## r228: re-wraps the card to `w` HUD units wide (the rows reflow; the card grows taller).
+func fit_width(w: float) -> void:
+	if is_equal_approx(w, width) or panel == null:
+		return
+	width = w
+	panel.custom_minimum_size = Vector2(w, 0)
+	dwell_bar.custom_minimum_size.x = w - 2 * UiTokens.S3
+	for r: Node in rows_box.get_children():
+		var l: Label = r.get_child(r.get_child_count() - 1) as Label
+		if l != null:
+			l.custom_minimum_size.x = w - 120
+	panel.reset_size()
 
 
 ## Closes the card; a situation that started meanwhile (and is unseen) shows next.
@@ -249,6 +298,6 @@ func _row(action: StringName, key: StringName) -> HBoxContainer:
 	l.add_theme_color_override(&"font_color", UiTokens.PAPER)
 	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	l.custom_minimum_size = Vector2(WIDTH - 120, 0)
+	l.custom_minimum_size = Vector2(width - 120, 0)
 	h.add_child(l)
 	return h

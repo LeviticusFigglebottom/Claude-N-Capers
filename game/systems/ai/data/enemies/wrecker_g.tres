@@ -7,14 +7,14 @@ script = ExtResource("1")
 id = &"enemy.wrecker_g"
 display_name = "Wrecker-G"
 is_special = true
-health = PackedFloat32Array(2000, 2000, 4000, 8000, 16000, 24000)
+health = PackedFloat32Array(2000, 2000, 3000, 4500, 7000, 10000)
 headshot_mult = PackedFloat32Array(2.5, 2.5, 2.5, 2.5, 2.5, 2.5)
 damage = PackedFloat32Array(60, 60, 90, 120, 180, 240)
 move_speed = 3.5
 weapon = &"weapon.npc_shotgun"
 detection_preset = &"police"
 params = {
-"_note": "L4.6 Wrecker-G (PD2 Bulldozer, pump shotgun). Counts toward the enemy.wrecker special limit (D-022). Faceplate/visor HP (plate_health) are the same on every difficulty (PD2); health/damage per Difficulty (ROUTINE..CATACLYSM) PD2-shaped design values (◇).",
+"_note": "L4.6 Wrecker-G (PD2 Bulldozer, pump shotgun). Counts toward the enemy.wrecker special limit (D-022). Faceplate/visor HP (plate_health) are the same on every difficulty (PD2); health per Difficulty (ROUTINE..CATACLYSM) per D-125 (x5 over the range, 12.5x to 15.6x the TAC Heavy; an AR can solo one through the visor in about half its reserve), damage PD2-shaped design values (◇).",
 "advance_speed": 1.8,
 "anim_walk_clip": "dozer_walk",
 "aim_delay_s": 0.8,

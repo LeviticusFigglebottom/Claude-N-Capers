@@ -12,8 +12,8 @@
 	"owned_mask_parts": ["mask_pattern.dots"],
 	"custom_masks": [{"base": "mask_base.heron", "material": "mask_material.gilt", "colors": "mask_colors.bone_ink", "pattern": "mask_pattern.dots"}],
 	"loadout": {
-		"primary": "weapon.sparrow_mp", "primary_mods": ["mod.sparrow_extended_mag"],
-		"secondary": "weapon.kestrel_p9", "secondary_mods": ["mod.p9_suppressor"],
+		"primary": "weapon.corsair_ar", "primary_mods": [],
+		"secondary": "weapon.sparrow_mp", "secondary_mods": ["mod.sparrow_extended_mag"],
 		"melee": "melee.folding_knife", "throwable": "", "deployable": "deployable.doctor_bag",
 		"deployable_secondary": "", "armor": "armor.tailored_suit", "mask": "mask.custom.0",
 		"perk_deck": "perk.bulk", "heister": "", "perk_deck_cards": 9,

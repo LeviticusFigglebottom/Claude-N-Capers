@@ -46,7 +46,8 @@ heist_tag_characters = {
 &"staff_cs": [&"gallery_conservator"]
 },
 &"dockside_burn": {
-&"civ_worker": [&"dock_worker", &"dock_worker_b", &"dock_packer"]
+&"civ_worker": [&"dock_worker", &"dock_worker_b"],
+&"civ_worker_packer": [&"dock_packer"]
 },
 &"glasshouse": {
 &"civ_customer": [&"civilian_customer_a", &"civilian_customer_b", &"bank_customer", &"bank_customer_b"],
@@ -65,23 +66,40 @@ heist_tag_characters = {
 &"civ_cleaner": [&"npc_bank_cleaner"],
 &"civ_manager": [&"npc_bank_night_manager"],
 &"guard_armored_car": [&"armored_car_crew", &"armored_car_crew_b"],
-&"guard_basement": [&"security_officer", &"security_officer_b"],
-&"guard_hall": [&"security_officer", &"security_officer_b"],
-&"guard_rover": [&"security_officer", &"security_officer_b"],
+&"guard_basement": [&"security_officer", &"security_officer_b", &"security_officer_c", &"security_officer_d"],
+&"guard_hall": [&"security_officer", &"security_officer_b", &"security_officer_c", &"security_officer_d"],
+&"guard_rover": [&"security_officer", &"security_officer_b", &"security_officer_c", &"security_officer_d"],
 &"security_operator": [&"npc_bank_guard"]
 },
 &"shadow_ledger": {
-&"civ_cleaner_l41": [&"npc_cleaner_sl", &"npc_cleaner_sl_b"],
-&"civ_cleaner_l42": [&"npc_cleaner_sl", &"npc_cleaner_sl_b"],
+&"civ_cleaner_l41": [&"npc_cleaner_sl", &"npc_cleaner_sl_b", &"npc_cleaner_sl_c"],
+&"civ_cleaner_l42": [&"npc_cleaner_sl", &"npc_cleaner_sl_b", &"npc_cleaner_sl_c"],
 &"civ_it": [&"npc_it_contractor"],
 &"civ_kessler": [&"npc_kessler"],
 &"civ_partner": [&"npc_helena_moor"],
-&"guard_reception": [&"npc_northgate_guard", &"npc_northgate_guard_b"],
-&"guard_roof": [&"npc_northgate_guard", &"npc_northgate_guard_b"],
-&"guard_rover_l41": [&"npc_northgate_guard", &"npc_northgate_guard_b"],
-&"guard_rover_l42": [&"npc_northgate_guard", &"npc_northgate_guard_b"],
-&"guard_stair": [&"npc_northgate_guard", &"npc_northgate_guard_b"],
-&"security_operator": [&"npc_northgate_guard", &"npc_northgate_guard_b"]
+&"guard_reception": [&"npc_northgate_guard", &"npc_northgate_guard_b", &"npc_northgate_guard_c", &"npc_northgate_guard_d", &"npc_northgate_guard_e", &"npc_northgate_guard_f"],
+&"guard_roof": [&"npc_northgate_guard", &"npc_northgate_guard_b", &"npc_northgate_guard_c", &"npc_northgate_guard_d", &"npc_northgate_guard_e", &"npc_northgate_guard_f"],
+&"guard_rover_l41": [&"npc_northgate_guard", &"npc_northgate_guard_b", &"npc_northgate_guard_c", &"npc_northgate_guard_d", &"npc_northgate_guard_e", &"npc_northgate_guard_f"],
+&"guard_rover_l42": [&"npc_northgate_guard", &"npc_northgate_guard_b", &"npc_northgate_guard_c", &"npc_northgate_guard_d", &"npc_northgate_guard_e", &"npc_northgate_guard_f"],
+&"guard_stair": [&"npc_northgate_guard", &"npc_northgate_guard_b", &"npc_northgate_guard_c", &"npc_northgate_guard_d", &"npc_northgate_guard_e", &"npc_northgate_guard_f"],
+&"security_operator": [&"npc_northgate_guard", &"npc_northgate_guard_b", &"npc_northgate_guard_c", &"npc_northgate_guard_d", &"npc_northgate_guard_e", &"npc_northgate_guard_f"]
+}
+}
+heist_tag_pools = {
+&"night_deposit": {
+&"guard_basement": &"nd_guards",
+&"guard_hall": &"nd_guards",
+&"guard_rover": &"nd_guards"
+},
+&"shadow_ledger": {
+&"civ_cleaner_l41": &"sl_cleaners",
+&"civ_cleaner_l42": &"sl_cleaners",
+&"guard_reception": &"sl_guards",
+&"guard_roof": &"sl_guards",
+&"guard_rover_l41": &"sl_guards",
+&"guard_rover_l42": &"sl_guards",
+&"guard_stair": &"sl_guards",
+&"security_operator": &"sl_guards"
 }
 }
 role_characters = {

@@ -9,7 +9,8 @@ on the duty belt. Dark trousers, black duty belt (radio = the ``Hip`` seat where
 handcuff case, torch), black shoes.
 
 Two body variants so guards don't look cloned: ``char_security_officer`` (lean, 30s) and
-``char_security_officer_b`` (heavy-set, older, darker skin, grey buzz cut).
+``char_security_officer_b`` (heavy-set, older, darker skin, grey buzz cut); D-116: ``_c`` a woman in her 30s, mid
+skin, dark bob under the cap, and ``_d`` a tall young man, deep skin, buzz cut.
 
 Meshes (Godot ``<root>/Skeleton3D/``, exported with ``remove_armature``): ``Body`` (covered skin removed), ``Hair``,
 ``Outfit`` (cloth, belt, cable), ``Gear`` (rigid hard parts), ``Headwear`` (cap). No blend shapes:
@@ -32,6 +33,11 @@ VARIANTS = {
                               "hair": "short", "hair_color": "brown"},
     "char_security_officer_b": {"height": 1.76, "build": 0.95, "gender": 0.0, "age": 0.8, "skin": 5, "beard_shadow": 0.85,
                                 "hair": "buzz", "hair_color": "grey"},
+    # D-116 (Night Deposit: hall + basement + 1-2 rovers): two more Halden faces so 4 guards are never twins
+    "char_security_officer_c": {"height": 1.70, "build": 0.4, "gender": 1.0, "age": 0.3, "skin": 4,
+                                "hair": "bob", "hair_color": "dark"},
+    "char_security_officer_d": {"height": 1.84, "build": 0.6, "gender": 0.0, "age": 0.22, "skin": 6, "beard_shadow": 0.7,
+                                "hair": "buzz", "hair_color": "dark"},
 }
 
 SHIRT = "char_sec_shirt"

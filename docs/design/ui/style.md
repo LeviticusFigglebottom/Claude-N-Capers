@@ -134,7 +134,7 @@ Minimal, in the corners; the centre is reserved for aim, the prompt and detectio
 │ Get into the workshop                                    CASING / ⓜ  │
 │ ▸ 1/2 bags                                               bag, hostages│
 │                                                                      │
-│                         ◂ detection chevrons ▸                       │
+│                         ◂ detection arcs (D-128)▸                    │
 │                                 +                                    │
 │                         [F] Pick the lock                            │
 │                         ▬▬▬▬▬▬▬▬▬▬ hold bar                          │

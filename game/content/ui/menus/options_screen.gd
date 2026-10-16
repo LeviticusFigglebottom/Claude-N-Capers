@@ -39,6 +39,12 @@ var leave_button: Button = null
 var leave_confirm: Control = null
 var leave_confirm_button: Button = null
 var leave_cancel_button: Button = null
+## Lead r228: Controls tab "First-time tips: Show again" (confirm dialog, then OnboardingTips.reset()).
+var tips_button: Button = null
+var tips_done_label: Label = null
+var tips_confirm: Control = null
+var tips_confirm_button: Button = null
+var tips_cancel_button: Button = null
 var draft: GameSettings = null
 var current_tab: StringName = TAB_CONTROLS
 ## tab id -> Button / page Control / Array[Control] (the page's vertical focus order).
@@ -90,6 +96,19 @@ func build_ui() -> void:
 
 
 func _build_leave_confirm() -> void:
+	var d: Dictionary = _confirm_dialog(&"ui.menu.leave_heist", &"ui.menu.quit_confirm", &"AlertPanel",
+			func() -> void:
+				close_leave_confirm()
+				leave_heist_requested.emit(),
+			close_leave_confirm)  # leaving forfeits the job: a loud box
+	leave_confirm = d["dim"] as Control
+	leave_confirm_button = d["confirm"] as Button
+	leave_cancel_button = d["cancel"] as Button
+
+
+## A modal confirm over the screen: title, body, Cancel (left) and Confirm (right); hidden until opened.
+func _confirm_dialog(title_key: StringName, body_key: StringName, panel_type: StringName, on_confirm: Callable,
+		on_cancel: Callable) -> Dictionary:
 	var dim: PanelContainer = PanelContainer.new()
 	dim.theme_type_variation = UiBuild.SCRIM
 	dim.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -97,29 +116,79 @@ func _build_leave_confirm() -> void:
 	var center: CenterContainer = CenterContainer.new()
 	dim.add_child(center)
 	var panel: PanelContainer = PanelContainer.new()
-	panel.theme_type_variation = &"AlertPanel"  # leaving forfeits the job: a loud box
+	panel.theme_type_variation = panel_type
 	center.add_child(panel)
 	var v: VBoxContainer = UiBuild.vbox(UiTokens.S3)
 	panel.add_child(v)
-	v.add_child(UiBuild.label(&"ui.menu.leave_heist", UiBuild.SUBHEADER))
-	v.add_child(UiBuild.label(&"ui.menu.quit_confirm"))
+	v.add_child(UiBuild.label(title_key, UiBuild.SUBHEADER))
+	v.add_child(UiBuild.label(body_key))
 	# Cancel (ghost) left, Confirm (primary) right, like every footer.
-	leave_confirm_button = UiBuild.button(&"ui.menu.confirm")
-	leave_cancel_button = UiBuild.button(&"ui.menu.cancel")
-	for b: Button in [leave_confirm_button, leave_cancel_button]:
+	var confirm: Button = UiBuild.button(&"ui.menu.confirm")
+	var cancel: Button = UiBuild.button(&"ui.menu.cancel")
+	for b: Button in [confirm, cancel]:
 		b.custom_minimum_size = Vector2(240, 0)
 		b.focus_neighbor_top = NodePath(".")  # the d-pad stays inside the dialog
 		b.focus_neighbor_bottom = NodePath(".")
-	var h: HBoxContainer = UiBuild.footer(leave_cancel_button, leave_confirm_button)
-	UiNav.chain_horizontal([leave_cancel_button, leave_confirm_button] as Array[Control])
-	leave_confirm_button.pressed.connect(func() -> void:
-		close_leave_confirm()
-		leave_heist_requested.emit())
-	leave_cancel_button.pressed.connect(close_leave_confirm)
+	var h: HBoxContainer = UiBuild.footer(cancel, confirm)
+	UiNav.chain_horizontal([cancel, confirm] as Array[Control])
+	confirm.pressed.connect(on_confirm)
+	cancel.pressed.connect(on_cancel)
 	v.add_child(h)
 	dim.visible = false
 	add_child(dim)
-	leave_confirm = dim
+	return {"dim": dim, "confirm": confirm, "cancel": cancel}
+
+
+## Lead r228: the Controls tab row that forgets every seen first-time card (OnboardingTips), after a confirm.
+func _build_tips_row(page: VBoxContainer) -> Button:
+	var row: HBoxContainer = UiBuild.hbox(UiTokens.S3)
+	row.name = "Row_tips"
+	var l: Label = UiBuild.caption(&"ui.options.tips.label")
+	l.custom_minimum_size = Vector2(OptionsRows.LABEL_WIDTH, 0)
+	l.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	row.add_child(l)
+	tips_button = UiBuild.button(&"ui.options.tips.reset")
+	tips_button.name = "ShowTipsAgain"
+	tips_button.custom_minimum_size = Vector2(OptionsRows.CONTROL_WIDTH, 0)
+	tips_button.pressed.connect(open_tips_confirm)
+	row.add_child(tips_button)
+	tips_done_label = UiBuild.label(&"ui.options.tips.done", UiBuild.DIM)
+	tips_done_label.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	tips_done_label.visible = false
+	row.add_child(tips_done_label)
+	page.add_child(row)
+	var d: Dictionary = _confirm_dialog(&"ui.options.tips.confirm_title", &"ui.options.tips.confirm_body", UiBuild.CARD,
+			confirm_tips_reset, close_tips_confirm)
+	tips_confirm = d["dim"] as Control
+	tips_confirm_button = d["confirm"] as Button
+	tips_cancel_button = d["cancel"] as Button
+	return tips_button
+
+
+func is_tips_confirming() -> bool:
+	return tips_confirm != null and tips_confirm.visible
+
+
+## Opens the confirm; focus starts on Cancel so a stray A does not reset.
+func open_tips_confirm() -> void:
+	if tips_confirm == null:
+		return
+	tips_confirm.visible = true
+	tips_cancel_button.grab_focus.call_deferred()
+
+
+func close_tips_confirm() -> void:
+	if not is_tips_confirming():
+		return
+	tips_confirm.visible = false
+	tips_button.grab_focus.call_deferred()
+
+
+## Confirmed: every first-time card (situations and heists) shows again; takes effect at once (not on Apply).
+func confirm_tips_reset() -> void:
+	OnboardingTips.reset()
+	close_tips_confirm()
+	tips_done_label.visible = true
 
 
 func is_leave_confirming() -> bool:
@@ -246,6 +315,7 @@ func _fill_page(t: StringName, page: VBoxContainer) -> Array[Control]:
 		TAB_CONTROLS:
 			out = _rows(page, GameSettings.CONTROLS)
 			out.append_array(_rows(page, GameSettings.GAMEPLAY))
+			out.append(_build_tips_row(page))
 		TAB_KEYS:
 			controls_tab = OptionsControlsTab.new()
 			page.add_child(controls_tab)
@@ -337,6 +407,10 @@ func _unhandled_input(event: InputEvent) -> void:
 	if is_leave_confirming() and event.is_action_pressed(&"ui_cancel"):
 		get_viewport().set_input_as_handled()
 		close_leave_confirm()
+		return
+	if is_tips_confirming() and event.is_action_pressed(&"ui_cancel"):
+		get_viewport().set_input_as_handled()
+		close_tips_confirm()
 		return
 	if controls_tab != null and (controls_tab.is_capturing() or not controls_tab.pending_conflict.is_empty()) \
 			and event.is_action_pressed(&"ui_cancel"):

@@ -69,7 +69,7 @@ func _ready() -> void:
 # --- OptionButton-compatible API ------------------------------------------------------------------
 
 func add_item(label: String, _id: int = -1) -> void:
-	_items.append({"text": label, "meta": null, "disabled": false, "icon": null})
+	_items.append({"text": label, "meta": null, "disabled": false, "icon": null, "glyph": &""})
 	if selected < 0:
 		selected = 0
 	_sync()
@@ -109,6 +109,17 @@ func is_item_disabled(i: int) -> bool:
 
 func set_item_disabled(i: int, on: bool) -> void:
 	_items[i]["disabled"] = on
+
+
+## D-126: an item's own category glyph (HubStationIcon kind) for its picker tile; &"" = the slot's `glyph`.
+func get_item_glyph(i: int) -> StringName:
+	var g: StringName = StringName(_items[i].get("glyph", &""))
+	return g if g != &"" else glyph
+
+
+func set_item_glyph(i: int, kind: StringName) -> void:
+	_items[i]["glyph"] = kind
+	_sync()
 
 
 func get_item_icon(i: int) -> Texture2D:
@@ -171,4 +182,9 @@ func _sync() -> void:
 	if _value == null:
 		return
 	_value.text = get_item_text(selected) if selected >= 0 and selected < _items.size() else ""
+	if _icon != null:
+		var g: StringName = get_item_glyph(selected) if selected >= 0 and selected < _items.size() else glyph
+		if _icon.kind != g:
+			_icon.kind = g
+			_icon.queue_redraw()
 	text = ""  # the card draws its own labels

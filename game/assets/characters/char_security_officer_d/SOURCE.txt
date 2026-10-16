@@ -1,0 +1,19 @@
+asset: char_security_officer_d
+script: tools/blender/characters/char_security.py
+params: {"age": 0.22, "beard_shadow": 0.7, "build": 0.6, "gender": 0.0, "hair": "buzz", "hair_color": "dark", "height": 1.84, "skin": 6}
+seed: 1432259050  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category characters --asset char_security_officer_d
+edit policy: generated file, never edit by hand; change the script and rebuild
+attach_Back: bone chest, local [0.0000, 0.0922, 0.1074] (model [0.0000, 1.3438, 0.1265], Godot axes, rest pose)
+attach_Head: bone head, local [0.0000, 0.0837, -0.0917] (model [0.0000, 1.7222, -0.0793], Godot axes, rest pose)
+attach_Hip: bone hips, local [0.2194, 0.0708, 0.0735] (model [0.2194, 1.0543, 0.0770], Godot axes, rest pose)
+body_faces_culled: 4890
+body_params: {"age": 0.22, "beard_shadow": 0.7, "build": 0.6, "gender": 0.0, "hair": "buzz", "hair_color": "dark", "hair_peak": 0.0, "height": 1.84, "lip": "auto", "skin": 6}
+bones: 52
+hat: peaked cap (Headwear), crown top z 1.878 m
+meshes: Body,Gear,Hair,Headwear,Outfit
+shape_keys: none (baked at body_params; do not set blend_shapes/*)
+tri_budget: 35000
+tris: 32331
+tris_by_mesh: {"Body": 8964, "Gear": 2372, "Hair": 1200, "Headwear": 1904, "Outfit": 17891}

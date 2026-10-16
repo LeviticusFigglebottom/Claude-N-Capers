@@ -2,6 +2,18 @@
 
 Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min; this file says where to resume.
 
+## 2026-10-16 (evening): pistol hip levelled, D-126 secondary shotgun, ND stealth route
+- PO pistol hold: `set_hip_rot_deg` pistol / revolver (14, 3, -4) -> (-2.5, -8.5, -3.5), akimbo (-1, -1, -4). The hip
+  bore now matches each gun's ADS pitch (within 0.2 deg) with a 2.8 deg inward yaw; before it was 14.5 left and
+  +10..11.5 up. Evidence and table: captures/pistol_level_2026-10-16. Guard: test_p_pistol_hold:test_hip_bore_level,
+  which fails on the old values. Still one-handed (D-116) pending the LEAD's answer on the support hand. Thumb wrap: D.
+- D-126: test_p_secondary_shotgun (mule_12 secondary) is green 3/3 for swap both ways, reload, ADS on axis, and a
+  downed draw + fire. 94f5d219 had a parse error, fixed in 340a8f81. The tests now fire after the 0.45 s equip timer;
+  the VM settles a few frames earlier, and a pump needs a fresh press (PD2).
+- ND stealth route (seed 21, lot + vent preplan): the vent, ladder and B3 mask went clean, and PlantDoor and
+  LockerRoomDoor opened. Three held-melee swings from behind did not kill the unalerted gate guard (alert 0, t=47).
+  Next: check the knife damage vs guard HP before rerunning. The run is about 48 wall-s per game-s under load.
+
 ## 2026-10-16 (night): GN-P1 rerun, ND stealth coverage, D's one-handed reloads
 - GN-P1 (gn_pass.tscn, real menus, seed 1792002290, env/p-play 5b9d681e): stealth casing tour unmasked; last call
   warning t=439, Public -> RESTRICTED + 4 patrons leaving at t=484, guest stayed to t=535 with detection 0.00 (not

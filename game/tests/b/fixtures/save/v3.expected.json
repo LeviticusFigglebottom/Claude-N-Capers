@@ -12,8 +12,8 @@
 	"owned_mask_parts": [],
 	"custom_masks": [],
 	"loadout": {
-		"primary": "weapon.mule_12", "primary_mods": [],
-		"secondary": "weapon.kestrel_p9", "secondary_mods": ["mod.p9_extended_mag"],
+		"primary": "weapon.corsair_ar", "primary_mods": [],
+		"secondary": "weapon.mule_12", "secondary_mods": [],
 		"melee": "melee.folding_knife", "throwable": "", "deployable": "deployable.doctor_bag",
 		"deployable_secondary": "", "armor": "armor.light_vest", "mask": "mask.night_circuit",
 		"perk_deck": "perk.prowler", "heister": "", "perk_deck_cards": 2,
