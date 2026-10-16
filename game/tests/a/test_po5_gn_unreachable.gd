@@ -167,3 +167,20 @@ func test_po5_gn_loose_bag_goes_first_and_is_aimed_from_a_step_back() -> void:
 	assert_eq(flow.call(&"_pick", markers), secure, "carry the loose bag in before the extras")
 	var stand: Vector3 = pilot._use_stand(bag.interactable)
 	assert_true(pilot.flat_dist(stand, bag.global_position) >= 0.9, "not on top of the bag")
+
+
+## GN probe 9: a bot carrying a canvas the pilot put down: the pilot leads it to the secure zone (once per bag, capped).
+func test_po5_gn_pilot_leads_a_bag_carrying_bot_to_the_zone() -> void:
+	var s: Dictionary = await _setup()
+	var flow: RefCounted = s["flow"]
+	var zone: Node3D = ATestMaps.add_prefab(_rt, "secure_zone", Vector3(-6, 0, 8))
+	var loot: LootManager = _rt.service(G.SVC_LOOT) as LootManager
+	var bot: CrewController = _rt.crew_controller(1) as CrewController
+	var bag: LootBag = loot.spawn_bag(&"loot.jewelry", Transform3D(Basis.IDENTITY, bot.global_position + Vector3(0.5, 0.3, 0)))
+	await wait_physics_frames(3)
+	assert_true(zone != null and (s["pilot"] as Po5Pilot).secure_zone() != null, "a secure zone")
+	assert_true(loot.carry(bag, bot), "the bot carries it")
+	assert_true(await flow.call(&"_escort_mate_bag"), "pilot leads it")
+	assert_true(float((flow.get(&"_escort_s") as Dictionary).get(bag.get_instance_id(), 0.0)) > 0.0, "escort time counted")
+	(flow.get(&"_escort_s") as Dictionary)[bag.get_instance_id()] = 999.0
+	assert_false(await flow.call(&"_escort_mate_bag"), "capped per bag")

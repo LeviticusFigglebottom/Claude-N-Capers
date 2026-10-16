@@ -33,6 +33,9 @@ const CODE_BONUS_M: float = 2.0
 const UNBLOCK_ID: StringName = &"_unblock"
 ## Failed pick-ups of one loose bag before the pilot leaves it.
 const BAG_FAIL_LIMIT: int = 3
+## Longest the pilot leads one teammate-carried bag to the secure zone (s; CrewAiBrain secures within its
+## secure_seek_radius_m of a known zone, following the leader).
+const ESCORT_LIMIT_S: float = 120.0
 
 var f: Node = null
 var p: Po5Pilot = null
@@ -48,6 +51,8 @@ var _unreachable: Dictionary[int, Door] = {}
 var _marker_blocked: Dictionary[String, Door] = {}
 ## Failed pick-ups per loose bag (instance id); BAG_FAIL_LIMIT of them skip that bag for the run.
 var _bag_fails: Dictionary[int, int] = {}
+## Seconds spent leading each teammate-carried bag (bag instance id) to the secure zone.
+var _escort_s: Dictionary[int, float] = {}
 
 
 func play(flow: Node) -> int:
@@ -102,8 +107,9 @@ func step() -> void:
 	var m: Dictionary = _pick(markers)
 	var id: StringName = StringName(m["id"])
 	var pos: Vector3 = m["position"]
-	if p.crew.is_carrying_bag():
-		await _secure_bag()
+	if p.crew.is_carrying_bag() or await _escort_mate_bag():
+		if p.crew.is_carrying_bag():
+			await _secure_bag()
 		return
 	var esc: EscapeZone = p.active_escape()
 	if esc != null and id == &"escape":
@@ -283,6 +289,34 @@ func _fetch_bag() -> bool:
 			_unreachable[key] = null
 			f.note("skipping bag %s for this run (%d failed pick-ups)" % [best.get_path(), _bag_fails[key]])
 	return p.crew.is_carrying_bag()
+
+
+## GN probe 9: a bot picked up the canvas the pilot had put down to fight (PO6-14 fetch), then followed the pilot
+## around the optional extras: AI crew secure only near a zone they are led to. Like a player whose teammate holds
+## the bag: lead the way to the secure zone and wait there a moment. True when it acted.
+func _escort_mate_bag() -> bool:
+	var zone: SecureZone = p.secure_zone()
+	if zone == null:
+		return false
+	for c: CrewController in rt.crew_members():
+		if c == p.crew or c.crew_state != Enums.CrewState.NORMAL or not c.is_carrying_bag():
+			continue
+		var bag: LootBag = c.carried_bag as LootBag
+		if bag == null or bag.is_body_bag():
+			continue
+		var key: int = bag.get_instance_id()
+		if float(_escort_s.get(key, 0.0)) >= ESCORT_LIMIT_S:
+			continue
+		var t0: float = rt.heist_time_s
+		var stand: Vector3 = p.stand_point(zone.global_position)
+		if p.flat_dist(p.crew.global_position, stand) > 3.0:
+			_note_once(StringName("_escort_%d" % key), "slot %d carries %s: leading it to the secure zone" % [c.slot, bag.loot_id])
+			await p.goto(stand, 3.0, 10.0)
+		else:
+			await p.hold_position(3.0)
+		_escort_s[key] = float(_escort_s.get(key, 0.0)) + maxf(rt.heist_time_s - t0, 1.0)
+		return true
+	return false
 
 
 ## A loot bag lying loose (dropped, not a body bag, not already in the secure zone) the pilot can pick up, else null.
