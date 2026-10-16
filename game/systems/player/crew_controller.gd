@@ -64,7 +64,8 @@ var cable_ties: int = 0
 var items: Dictionary[StringName, int] = {}
 var carried_bag: Node = null
 ## First-person weapon visual (ENV B WeaponVisual, visual_slots.md) when attached; its
-## get_marker(&"Muzzle") is the tracer/noise origin (CrewWeapons._muzzle_position()).
+## get_marker(&"Muzzle") is the tracer / flash origin, presentation only (CrewWeapons._muzzle_position()).
+## The server's shot and noise origin is the eye position, not the animated muzzle (D-121).
 var weapon_visual: Node3D = null
 ## Mask-up hold progress 0..1 (HUD).
 var mask_progress: float = 0.0

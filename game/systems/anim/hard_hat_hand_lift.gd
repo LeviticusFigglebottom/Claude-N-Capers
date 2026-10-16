@@ -19,15 +19,13 @@ var near_head_m: float = 0.32
 var applied: PackedFloat32Array = PackedFloat32Array([0.0, 0.0])
 
 
-## True when `rig` wears a hard hat: its `Headwear` node is tagged (meta headwear_class = &"hard_hat", ENV D) or
-## its character id is listed in AnimTweak.hard_hat_characters (until the tag lands).
-static func wears_hard_hat(rig: Node, character_id: String) -> bool:
+## True when `rig` wears a hard hat: its `Headwear` node is tagged meta headwear_class = &"hard_hat" (ENV D
+## 5f767a0b, characters.md).
+static func wears_hard_hat(rig: Node) -> bool:
 	if rig == null:
 		return false
 	var hw: Node = rig.get_node_or_null(^"Skeleton3D/Headwear")
-	if hw != null and hw.has_meta(HEADWEAR_META):
-		return StringName(hw.get_meta(HEADWEAR_META)) == HARD_HAT
-	return AnimTweak.data().hard_hat_characters.has(StringName(character_id))
+	return hw != null and hw.has_meta(HEADWEAR_META) and StringName(hw.get_meta(HEADWEAR_META)) == HARD_HAT
 
 
 ## Add the modifier under `skeleton` (idempotent). Null when the rig lacks the arm / head bones.

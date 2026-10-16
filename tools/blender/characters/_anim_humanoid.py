@@ -27,7 +27,9 @@ from _anim import (FPS, TAU, Clip, Gait, Keys, Pose, Skeleton, Solver, add_rot, 
 # game/assets/weapons/wpn_kestrel_p9 and wpn_corsair_ar (B1-03 / B4-04).
 PISTOL = {"left_ik": v3(-0.025, 0.0115, -0.020), "aim": v3(0.0, -0.030, 0.0665), "magwell": v3(0.0, -0.0227, -0.070),
           "muzzle": v3(0.0, 0.1425, 0.048)}
-RIFLE = {"left_ik": v3(-0.0315, 0.330, 0.067), "aim": v3(0.0, -0.060, 0.1212), "magwell": v3(0.0, 0.1235, -0.012),
+# D-116 follow-up: RIFLE left_ik = the Corsair's current LeftHandIK (ENV B e18011f4: centred under the fore-end; the
+# pre-B (-0.0315, 0.330, 0.067) put the third-person support hand beside the handguard)
+RIFLE = {"left_ik": v3(0.0, 0.260, 0.038), "aim": v3(0.0, -0.060, 0.1212), "magwell": v3(0.0, 0.1235, -0.012),
          "butt": v3(0.0, -0.307, 0.040), "muzzle": v3(0.0, 0.612, 0.080)}
 
 
@@ -95,10 +97,17 @@ def pistol_support(sk: Skeleton, pose: Pose, wf, pole=None) -> None:
     pose.hands["L"] = hand_shape("support")
 
 
-def rifle_support(sk: Skeleton, pose: Pose, wf, pole=None, at=None) -> None:
+def rifle_support(sk: Skeleton, pose: Pose, wf, pole=None, at=None, cup: bool = True) -> None:
+    """The left hand on the fore-end. ``cup``: the PD2 support grip, the fore-end in the palm (palm up under it), the
+    fingers wrapping its far (right) side; False: the hand over its left side (strongly rolled rifles, the melee
+    strike, where the cup would twist the forearm through its limit)."""
     R = wf[0]
     p = wf_point(wf, RIFLE["left_ik"] if at is None else at)
-    hand_on(sk, pose, "L", p, R @ v3(0.55, 0.65, 0.35), R @ v3(0.55, -0.1, 0.83),
+    if cup:
+        along, palm = v3(0.70, 0.60, 0.30), v3(0.10, -0.05, 0.99)
+    else:
+        along, palm = v3(0.55, 0.65, 0.35), v3(0.55, -0.1, 0.83)
+    hand_on(sk, pose, "L", p, R @ along, R @ palm,
             pole=pole if pole is not None else v3(-0.35, -0.3, -0.9), along_share=0.55, palm_off=0.016)
     pose.hands["L"] = hand_shape("grip", 0.85)
 
@@ -705,16 +714,39 @@ def _flee_upper(sk: Skeleton, pose: Pose, ph: float, f: int) -> None:
     add_rot(pose, "head", rxd(-6.0))
 
 
+#: D-116 third-person audit: the weapon hand's low carry while the other hand works (the gun at HandR/Socket stays
+#: in the hand, PD2 style): the grip by the right thigh, the muzzle down and forward, clear of the body and the head
+LOW_CARRY = {"grip": (0.215, 0.085, 0.86), "yaw": 6.0, "pitch": -62.0, "roll": -8.0}
+
+
+def low_carry(sk: Skeleton, pose: Pose, sway: float = 0.0, crouch: bool = False) -> None:
+    """The right hand holds its weapon low by the thigh (``LOW_CARRY``); ``sway`` (-1..1) swings it a little.
+    ``crouch``: the grip follows the pose's hip drop and the muzzle points forward and down, past the knee, instead
+    of into the floor."""
+    k = sk.scale
+    gx, gy, gz = LOW_CARRY["grip"]
+    pitch = LOW_CARRY["pitch"]
+    if crouch:
+        gz = gz + float(pose.hip[2]) / k + 0.10
+        gy, pitch = gy + 0.10, -18.0
+    wf = weapon_frame(v3(gx * k, (gy + 0.03 * sway) * k, gz * k), yaw=LOW_CARRY["yaw"],
+                      pitch=pitch + 6.0 * sway, roll=LOW_CARRY["roll"])
+    hold_weapon(sk, pose, wf, pole=v3(0.6, -0.2, -0.7), twist=0.6)
+    pose.hands["R"] = hand_shape("grip", 0.9)
+
+
 def _carry_upper(sk: Skeleton, pose: Pose, ph: float, f: int) -> None:
-    """Bag on the back: the right hand holds the strap at the right shoulder; the body leans
-    forward and slightly left against the load."""
+    """Bag on the back over the left shoulder: the LEFT hand holds the strap at the left shoulder, the right hand keeps
+    the weapon at a low carry (D-116 audit: the right hand on the strap stood the rifle up behind the head); the body
+    leans forward and slightly right against the load."""
     k = sk.scale
     pre = Solver(sk).solve(pose)
-    p = A.bone_point(pre, sk, "chest", v3(0.10 * k, 0.09 * k, 0.17 * k)) + v3(0.0, 0.0, 0.006 * k * math.cos(TAU * 2 * ph))
-    hand_on(sk, pose, "R", p, pre.W["chest"] @ v3(-0.25, 0.1, 0.95), pre.W["chest"] @ v3(-0.1, -1.0, 0.0),
-            pole=pre.W["chest"] @ v3(0.5, 0.3, -1.0), along_share=0.6)
-    pose.hands["R"] = hand_shape("fist", 0.9)
-    add_rot(pose, "chest", ryd(-3.0))
+    p = A.bone_point(pre, sk, "chest", v3(-0.10 * k, 0.09 * k, 0.17 * k)) + v3(0.0, 0.0, 0.006 * k * math.cos(TAU * 2 * ph))
+    hand_on(sk, pose, "L", p, pre.W["chest"] @ v3(0.25, 0.1, 0.95), pre.W["chest"] @ v3(0.1, -1.0, 0.0),
+            pole=pre.W["chest"] @ v3(-0.5, 0.3, -1.0), along_share=0.6)
+    pose.hands["L"] = hand_shape("fist", 0.9)
+    low_carry(sk, pose, math.sin(TAU * ph))
+    add_rot(pose, "chest", ryd(3.0))
 
 
 # =============================================================================================
@@ -998,6 +1030,11 @@ def _surrender(sk: Skeleton, solver: Solver, N: int) -> Keys:
                          (N, kneel_hands, "settle")])
 
 
+#: the melee strike's support point: forward on the handguard's left side (the strike swings the rifle through a -70 deg
+#: roll, where the centred LeftHandIK cup would flip the left forearm)
+MELEE_SUPPORT = v3(-0.0315, 0.330, 0.067)
+
+
 def _melee(sk: Skeleton, solver: Solver, N: int) -> Keys:
     """Rifle-butt / pistol-whip strike: wind back, lunge with a short step, recover."""
     k = sk.scale
@@ -1007,14 +1044,14 @@ def _melee(sk: Skeleton, solver: Solver, N: int) -> Keys:
     spine(b, lean=0, twist=-28, chest_lean=-2, chest_twist=-18, head=(4, 0, 24), hips=(0, 0, -16))
     wf = weapon_frame(v3(0.20 * k, 0.05 * k, 1.38 * k), yaw=-20.0, pitch=30.0, roll=-30.0)
     hold_weapon(sk, b, wf, pole=v3(0.8, -0.3, -0.5))
-    rifle_support(sk, b, wf)
+    rifle_support(sk, b, wf, at=MELEE_SUPPORT, cup=False)
     c = gun_pose(sk, True, 0.0, sway=0.0)
     c.hip = c.hip + v3(-0.02 * k, 0.14 * k, -0.07 * k)
     stand(sk, c, spread=0.04, stagger_l=0.30, stagger_r=-0.10, yaw_l=6, yaw_r=26)
     spine(c, lean=12, twist=16, chest_lean=8, chest_twist=14, head=(4, 0, -14), hips=(4, 0, 10))
     wf = weapon_frame(v3(0.02 * k, 0.55 * k, 1.42 * k), yaw=30.0, pitch=-10.0, roll=-70.0)
     hold_weapon(sk, c, wf, pole=v3(0.8, -0.3, -0.5))
-    rifle_support(sk, c, wf)
+    rifle_support(sk, c, wf, at=MELEE_SUPPORT, cup=False)
     return Keys(solver, [(0, a, "inout"), (6, b, "inout"), (10, c, "snap"), (14, c.copy(), "inout"),
                          (N, gun_pose(sk, True, 0.0, sway=0.0), "settle")])
 
@@ -2013,6 +2050,9 @@ def clips(sk: Skeleton, table: dict) -> dict[str, Clip]:
     import _anim_surrender as surr  # noqa: PLC0415 - D-116 surrender variants; imports this module
 
     extra.update(surr.clips(sk, solver, table))
+    import _anim_holds as holds  # noqa: PLC0415 - D-116 third-person weapon holds; imports this module
+
+    extra.update(holds.clips(sk, solver, table))
     out: dict[str, Clip] = {}
     for name, row in table.items():
         N, loop, speed = int(row["frames"]), bool(row["loop"]), float(row["speed"])

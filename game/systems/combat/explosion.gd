@@ -66,6 +66,8 @@ static func push_corpses(ctx: Node3D, position: Vector3, radius: float, attacker
 			attacker_net_id)
 		info["blast_center"] = position
 		info["blast_radius"] = radius
+		if Net.is_authority():
+			CorpseAnchor.blast_push(npc, info)  # D-121: the gameplay anchor moves analytically, the ragdoll cosmetically
 		NpcRagdoll.of(npc).corpse_hit(info)
 
 

@@ -1,4 +1,4 @@
-# Contract: data schemas (v1.1)
+# Contract: data schemas (v1.2)
 
 Schemas are in `game/contracts/data/*.gd` (lead). Data instances are `.tres` files owned by the env
 listed. All data ids follow `groups.md`. The code headers are authoritative for field lists.
@@ -60,3 +60,9 @@ for UI and animation length checks. Plowman: start 0.4, per 0.4333, end 0.4, end
 fallback, today the only source for `glasshouse`). Global timing (roll interval, chance per difficulty, min gap,
 max active) stays in the tweak. Run options `assault_events: false` (off) and `assault_events_tweak` (test tweak) still win.
 
+
+## v1.2: scoped sights (D-118 follow-up; P's FP scope overlay)
+WeaponStats gains `is_scope: bool` (merged OR; true for magnified optics with magnification ≥ 3.5 — P's FP overlay at full
+ADS), `scope_reticle: StringName` (&"duplex" default / &"mildot" / &"chevron" / &"dot"; last non-empty wins) and
+`scope_reticle_color: Color` (alpha 0 = default near-black, bright = illuminated; last alpha > 0 wins). ENV B sets them on
+sight-mod deltas; make_delta() needs no change (defaults contribute nothing).
