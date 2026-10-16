@@ -1,6 +1,6 @@
 # Weapon balance audit (D-115, ENV B): stock builds vs PD2 shapes
 
-Status: **D-124 applied** (P1-P10; P4 rpm only, its reload half is pending). The tables and flags below are after the change. Same method as D-120: every number is derived from data, compared with
+Status: **D-124 applied** (P1-P10; P4 as amended: 230 rpm, 2.4 s reload). The tables and flags below are after the change. Same method as D-120: every number is derived from data, compared with
 PD2 *shapes* (no exact PD2 numbers invented). The proposals at the end are base-stat edits to weapon `.tres` files and
 were approved by the LEAD as D-124.
 Tool: `/opt/godot/godot --headless --path game -s res://content/progression/tools/weapon_balance_cli.gd -- [difficulty] [out.md]`
@@ -49,7 +49,7 @@ Targets: TAC Heavy 640 HP (head x3.0, frontal plate x0.0 in 120 deg); Wrecker 24
 | wren_380 | S | 2 | 30 | 21 | 600 | 10/160 | 52 | 78 | 30 | 1.40/2.00 | 3.0-7.0 | 0.00 | 103 | 8/0.70s | 22/5.90s | blocked | 331/95.70s! | 800/230.00s! | 20.0 | 0.62 |
 | sparrow_mp | S | 5 | 30 | 21 | 880 | 20/140 | 52 | 93 | 28 | 1.80/2.40 | 4.0-9.0 | 0.00 | 162 | 8/0.48s | 22/3.76s | blocked | 331/59.81s! | 800/145.42s! | 17.5 | 0.81 |
 | warden_45 | S | 6 | 62 | 52 | 400 | 8/72 | 68 | 75 | 27 | 1.70/2.30 | 2.0-4.0 | 0.00 | 148 | 4/0.45s | 11/3.65s | blocked | 161/67.00s! | 388/161.25s! | 18.0 | 0.75 |
-| marshal_357 | S | 10 | 155 | 146 | 270 | 6/54 | 76 | 58 | 26 | 2.40/2.40 | 1.0-3.0 | 0.00 | 265 | 2/0.22s | 5/0.89s | blocked | 65/36.00s! | 155/88.67s! | 27.0 | 1.00 |
+| marshal_357 | S | 10 | 155 | 146 | 230 | 6/54 | 76 | 58 | 26 | 2.40/2.40 | 1.0-3.0 | 0.00 | 251 | 2/0.26s | 5/1.04s | blocked | 65/38.09s! | 155/93.65s! | 27.0 | 1.00 |
 | akimbo_warden_45 | P | 16 | 62 | 52 | 400 | 16/144 | 60 | 78 | 23 | 3.00/3.60 | 3.0-6.0 | 0.00 | 170 | 4/0.45s | 11/1.50s | blocked | 161/58.50s! | 388/140.85s! | 36.0 | 1.12 |
 
 ### smg
@@ -114,12 +114,11 @@ Targets: TAC Heavy 640 HP (head x3.0, frontal plate x0.0 in 120 deg); Wrecker 24
 
 ## Mechanical flags (tool output, after D-124)
 
-Cleared by D-124: NEAR-DOMINATED hush_9 and tern_556, SNIPER-PER-SHOT osprey_762. SECONDARY-DPS marshal_357 is still
-open: P4 landed rpm only (330 -> 270, DPS 281 -> 265), because ENV D's `test_arms` pins the single-weapon
-`revolver_reload` clip (2.4 s) to `reload_time_s`. The 3.0 s reload half waits on the LEAD (retime the clip, or take
-rpm 235 with the 2.4 s reload). Left for ENV A (cross-env, no B data change): the PICKUP-FLOOR rounding and the Wrecker TTK.
+Cleared by D-124: NEAR-DOMINATED hush_9 and tern_556, SECONDARY-DPS marshal_357, SNIPER-PER-SHOT osprey_762.
+P4 as amended (LEAD r228, option b): the reload stays 2.4 s, because ENV D's `test_arms` pins the single-weapon
+`revolver_reload` clip to `reload_time_s`, and rpm goes 330 -> 230 (DPS 281 -> 251; 235 rounds to 253 = the weakest AR
+and still flags). Left for ENV A (cross-env, no B data change): the PICKUP-FLOOR rounding and the Wrecker TTK.
 
-- SECONDARY-DPS: marshal_357 (pistol) sustained DPS 265 > the weakest AR (253)
 - PICKUP-FLOOR: condor_50 pickup min 0.5 < 1 (AmmoPickupSystem floors every box at 1 round)
 - PICKUP-FLOOR: vise_crossbow pickup min 0.5 < 1 (AmmoPickupSystem floors every box at 1 round)
 - PICKUP-FLOOR: thorn_bow pickup min 0.5 < 1 (AmmoPickupSystem floors every box at 1 round)
@@ -189,7 +188,7 @@ rpm 235 with the 2.4 s reload). Left for ENV A (cross-env, no B data change): th
 | P1 | `tern_556.tres` concealment, spread_deg_ads | 21 -> 24, 2.7 -> 2.1 | accuracy 44 -> 56 | gives the bullpup an identity (accurate and concealable) that pays for its lower damage, rpm and slower reload compared with the Corsair |
 | P2 | `bastion_br.tres` damage | 100 -> 110 | Heavy head 3 -> 2 shots (660 >= 640); DPS 359 -> 395 | a heavy AR must reach the breakpoint it pays reserve and concealment for |
 | P3 | `falchion_dmr.tres` damage | 150 -> 120 | DPS 483 -> 386; Heavy head stays 2; sniper floor (160) now above every AR | DMR stays the precise AR, snipers keep per-shot damage, and no AR out-DPSes the LMGs by 25% |
-| P4 | `marshal_357.tres` fire_rate_rpm, reload_time_s / reload_empty_time_s | 330 -> 270, 2.4/2.4 -> 3.0/3.0 | DPS 281 -> 226 (below every AR, near the SMGs); 2 Heavy headshots unchanged | revolver = top per-shot damage among pistols, paid for in cadence and cylinder reload |
+| P4 (amended r228) | `marshal_357.tres` fire_rate_rpm (reload kept 2.4/2.4) | 330 -> 230 (proposed: 270 + 3.0 s reload) | DPS 281 -> 251 (below every AR); 2 Heavy headshots unchanged | revolver = top per-shot damage among pistols, paid for in cadence and cylinder reload |
 | P5 | `wren_380.tres` mag_size, total_ammo, fire_rate_rpm | 7 -> 10, 98 -> 160, 520 -> 600 | DPS 78 -> 103; reserve now above the Kestrel's 153 | pocket pistol = big reserve and fast handling, no longer a worse Kestrel |
 | P6 | `hush_9.tres` concealment | 21 -> 25 | | PD2-shape suppressed SMG: concealable stealth pick, not the least concealable SMG |
 | P7 | `vise_crossbow.tres` damage | 350 -> 450 | DPS 219 -> 281; Wrecker head 30 -> 24 bolts | crossbow = heaviest single bolt, paying with cycle and concealment against the bow |
@@ -197,8 +196,8 @@ rpm 235 with the 2.4 s reload). Left for ENV A (cross-env, no B data change): th
 | P9 | `cyclone_rotary.tres` ammo_pickup_min / max | 15 / 30 -> 10 / 20 | pickup/kill 2.81 -> 1.88 (below the LMGs' 2.25-2.40) | LMGs keep the best ammo economy; the minigun's 1000-round reserve is its identity |
 | P10 (optional) | `reaper_db.tres` damage (per pellet) | 19 -> 22 | 190 -> 220 per shot; Heavy head 2 -> 1 (660 >= 640); DPS 146 -> 169 | the 2-shell double barrel gets the one-shot breakpoint the other shotguns lack |
 
-Applied as one commit (P4 rpm only, see the flags). The tool rerun confirms that NEAR-DOMINATED Tern and Hush and
-SNIPER-PER-SHOT Osprey cleared. Class shape after: pistol 103-265 DPS, SMG 182-248, AR 253-395, LMG 331-379; the snipers
+Applied (P4 as amended, see the flags). The tool rerun confirms that NEAR-DOMINATED Tern and Hush, SECONDARY-DPS Marshal
+and SNIPER-PER-SHOT Osprey cleared. Class shape after: pistol 103-251 DPS, SMG 182-248, AR 253-395, LMG 331-379; the snipers
 keep the per-shot top (160+ against the AR maximum, now 120). `test_armory_batch2` now pins DMR > 2x the carbine and below the snipers.
 
 ## Not determined
