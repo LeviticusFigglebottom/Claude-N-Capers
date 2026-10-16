@@ -50,10 +50,13 @@ const DRIFT_FROZEN: Array[int] = [
 ]
 
 ## PO-10: every motor in the tree, and the neighbour grid rebuilt once per physics frame.
+## D-122: roles whose agents also path over Door.NAV_LAYER_BREACH links (they breach locked doors in loud).
+const BREACH_ROLES: Array[StringName] = [&"police", &"special"]
 static var _all: Array[NpcMotor] = []
 static var _grid: Dictionary = {}
 static var _grid_frame: int = -1
 static var _grid_cell: float = 1.0
+
 
 @export var arrive_distance: float = 0.4
 ## X-5 ◇: a target more than this above / below the body (m) is not reached by standing under / over it (an
@@ -137,6 +140,8 @@ func _ready() -> void:
 	var npc: NpcBase = _body as NpcBase
 	if npc != null:
 		npc.died.connect(func(_i: Dictionary, _k: int) -> void: _retire())
+		if _agent != null and BREACH_ROLES.has(npc.role):
+			_agent.navigation_layers |= Door.NAV_LAYER_BREACH  # D-122: police breach locked doors in loud
 
 
 ## The NPC died: a corpse keeps no navigation agent and no motor work (ND stall hunt: 30 corpses kept 30 agents

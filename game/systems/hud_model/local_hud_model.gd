@@ -287,6 +287,11 @@ var heist_phase: int = Enums.HeistPhase.LOADING
 
 ## Lookups walked by find_by_tag since the runtime was bound (tests / profiling).
 var marker_lookups: int = 0
+## ui_hud v1.16: scoped ADS overlay state, WRITTEN by ENV P's scope overlay every frame and read by ENV B with get()
+## (fields only, no signal; the model never sets them). `scope_ring`: the scope's clear circle in viewport pixels
+## (Rect2() when not scoped).
+var scoped_ads: bool = false
+var scope_ring: Rect2 = Rect2()
 var _runtime: HeistRuntime = null
 var _accum: float = 0.0
 var _mission: HeistMission = null

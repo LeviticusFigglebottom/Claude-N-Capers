@@ -23,6 +23,8 @@ clip_speeds = {
 &"walk_back": 1.3
 }
 reload_done_s = {
+&"akimbo": 1.5333,
+&"downed_reload": 1.1333,
 &"pistol": 1.1333,
 &"rifle": 1.9333
 }
