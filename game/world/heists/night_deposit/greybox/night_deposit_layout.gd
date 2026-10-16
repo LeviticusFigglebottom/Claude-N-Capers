@@ -451,7 +451,8 @@ const PATROL_POINTS_BANK: Dictionary = {
 	"G7East": [Vector3(24.5, 0.0, 6.75), Vector2(2.0, 4.0), "check_door", ["guard"], -90.0],
 	"G1Sally": [Vector3(4.4, 0.0, 2.6), Vector2(3.0, 6.0), "check_door", ["guard"], 0.0],
 	"G3Security": [Vector3(12.4, 0.0, 4.2), Vector2(4.0, 8.0), "lean", ["guard"], null],
-	"G4Break": [Vector3(15.0, 0.0, 5.0), Vector2(5.0, 10.0), "idle", ["guard", "staff", "staff_cleaner", "staff_manager"], null],
+	# Doc: the night manager takes coffee in G4 (A plays mug_idle with the mug hand prop).
+	"G4Break": [Vector3(15.0, 0.0, 5.0), Vector2(5.0, 10.0), "mug", ["guard", "staff", "staff_cleaner", "staff_manager"], null],
 	"G6Storage": [Vector3(23.6, 0.0, 4.0), Vector2(2.0, 4.0), "idle", ["guard"], null],
 	"G8West": [Vector3(2.0, 0.0, 8.6), Vector2.ZERO, "idle", ["guard", "staff", "staff_manager"], null],
 	"G8Mid": [Vector3(10.5, 0.0, 9.0), Vector2(3.0, 6.0), "idle", ["guard", "staff", "staff_manager"], null],
@@ -578,6 +579,11 @@ const TACTICAL: Array = [
 	["CoverLotCars", "COVER", Vector3(22.3, 0.0, -3.9), 0.0, ["vehicle"], false],
 	["CoverLotDumpster", "COVER", Vector3(9.0, 0.0, -2.2), 180.0, ["dumpster"], false],
 	["CoverQuayBench", "COVER", Vector3(20.0, 0.0, 30.6), 0.0, ["bench"], false],
+	# ND-3: the boat carry route (dressing CarHarborD / QuayBarrierW / QuayBarrierE / QuayBarrierFar), street side out.
+	["CoverHarborCarD", "COVER", Vector3(7.5, 0.0, 21.8), 0.0, ["vehicle"], false],
+	["CoverQuayBarrierW", "COVER", Vector3(4.5, 0.0, 31.5), 0.0, ["barrier"], false],
+	["CoverQuayBarrierE", "COVER", Vector3(12.5, 0.0, 31.5), 0.0, ["barrier"], false],
+	["CoverQuayBarrierFar", "COVER", Vector3(16.8, 0.0, 31.5), 0.0, ["barrier"], false],
 	["SniperCraneOffice", "SNIPER_PERCH", Vector3(42.0, 6.5, 4.0), 90.0, ["crane_office", "p3"], false],
 	["SniperTrawler", "SNIPER_PERCH", Vector3(-4.0, 2.8, 36.6), 180.0, ["trawler_wheelhouse", "p3"], false],
 ]

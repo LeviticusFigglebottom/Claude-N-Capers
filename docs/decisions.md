@@ -1045,6 +1045,11 @@ Shape kept (PD2): no early weapon best in class; LMGs have the best ammo economy
 shot; secondaries stay below primaries of the same role. ENV A reviews the Wrecker's Cataclysm HP scaling (×12 against
 the Heavy's ×4) against PD2's Bulldozer, and adds carry-over for fractional ammo pickups.
 
+**D-124 addendum (2026-10-16, after D-127): keep the Heavy SWAT breakpoints.** P11 bastion_br damage 110 → 135, with rpm
+scaled down so its sustained DPS stays at about its D-124 value (~395), keeping the 2-headshot Heavy breakpoint. P12 reaper_db 22 → 27
+per pellet (the point-blank double-barrel one-shot). P13 heron_308 230 → 270 (the entry sniper one-taps a Heavy's head, as in
+PD2). No other weapon changes for D-127.
+
 ## D-125: Wrecker HP curve (2026-10-16, LEAD; from ENV A's review of B's D-124 audit)
 Wrecker HP per difficulty (ROUTINE..CATACLYSM) becomes 2000 / 2000 / 3000 / 4500 / 7000 / 10000 (×5, was ×12 up to
 24000), so the Wrecker:Heavy ratio goes 12.5 → 15.6 instead of 12.5 → 37.5. wrecker_b/g/s share it; wrecker_m stays

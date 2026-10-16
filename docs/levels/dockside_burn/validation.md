@@ -51,12 +51,12 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## floating: Nothing floats
 
-- 473 props checked
+- 470 props checked
 
 
 ## clipping: Nothing clips
 
-- 473 props, 49 doors checked
+- 470 props, 49 doors checked
 
 
 ## orientation: Flush and oriented
@@ -126,12 +126,12 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## slopes: No walkable slope < 50° outside the play mesh
 
-- 1809 x 1969 columns (0.25 m), 608902 surface samples, 0 collider(s) with reachable walkable surfaces outside play
+- 1809 x 1969 columns (0.25 m), 608829 surface samples, 0 collider(s) with reachable walkable surfaces outside play
 
 
 ## navmesh: Navmesh
 
-- navmesh: 2352 polygons, cell 0.10/0.10 m
+- navmesh: 2339 polygons, cell 0.10/0.10 m
 - 204 markers checked
 | room | walkable samples | covered | coverage |
 |---|---|---|---|
@@ -149,7 +149,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `Rooms/RoomH` | 655 | 655 | 100% |
 | `Rooms/RoomC1` | 378 | 378 | 100% |
 | `Rooms/RoomSP` | 135 | 135 | 100% |
-| `Rooms/RoomC2` | 324 | 324 | 100% |
+| `Rooms/RoomC2` | 357 | 357 | 100% |
 | `Rooms/RoomSR` | 143 | 143 | 100% |
 | `Rooms/RoomAN` | 442 | 440 | 100% |
 | `Rooms/RoomM1` | 64 | 64 | 100% |
@@ -194,12 +194,12 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## materials: Materials and texel density
 
-- 3191 surfaces checked
+- 3185 surfaces checked
 
 
 ## zfight: Z-fighting
 
-- 334066 triangles checked
+- 331042 triangles checked
 
 
 ## lights: Lighting is deliberate
@@ -228,7 +228,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `Rooms/RoomH` | marshalling_hall | 23 | 300.0 | 0.08 |
 | `Rooms/RoomC1` | cold_store_racked | 20 | 196.0 | 0.10 |
 | `Rooms/RoomSP` | cold_store_aisle | 5 | 42.0 | 0.12 |
-| `Rooms/RoomC2` | cold_store_racked | 19 | 182.0 | 0.10 |
+| `Rooms/RoomC2` | cold_store_racked_b | 16 | 182.0 | 0.09 |
 | `Rooms/RoomSR` | strongroom_freezer | 7 | 64.0 | 0.11 |
 | `Rooms/RoomAN` | quay_dock | 22 | 176.0 | 0.12 |
 | `Rooms/RoomM1` | count_room_cash | 19 | 36.0 | 0.53 |
@@ -259,8 +259,9 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 - kit `count_room_cash`: 1 room(s), 1 distinct layout(s)
 - kit `quay_dock`: 1 room(s), 1 distinct layout(s)
 - kit `strongroom_freezer`: 1 room(s), 1 distinct layout(s)
+- kit `cold_store_racked_b`: 1 room(s), 1 distinct layout(s)
 - kit `cold_store_aisle`: 1 room(s), 1 distinct layout(s)
-- kit `cold_store_racked`: 2 room(s), 2 distinct layout(s)
+- kit `cold_store_racked`: 1 room(s), 1 distinct layout(s)
 - kit `marshalling_hall`: 1 room(s), 1 distinct layout(s)
 - kit `packing_hall`: 1 room(s), 1 distinct layout(s)
 - kit `janitor_dockside`: 1 room(s), 1 distinct layout(s)
@@ -275,40 +276,40 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 ## bounds: No void / back faces
 
 - 366 navmesh sample(s) skipped: not reachable from a player spawn (police-only)
-- 284 eye samples, 23004 rays, sky yes, 0 void ray(s)
+- 282 eye samples, 22842 rays, sky yes, 0 void ray(s)
 
 
 ## perf: Per-shot performance budget
 
 | camera | draw calls | triangles | shadow lights |
 |---|---|---|---|
-| `TopDownSite` | 2159 | 342244 | 8 |
-| `TopDownBuilding` | 1620 | 258164 | 5 |
-| `ExtGate` | 2063 | 339038 | 8 |
+| `TopDownSite` | 2159 | 343636 | 8 |
+| `TopDownBuilding` | 1620 | 259556 | 5 |
+| `ExtGate` | 2063 | 340430 | 8 |
 | `ExtYardEast` | 208 | 15550 | 1 |
-| `ExtQuay` | 2404 | 412812 | 8 |
-| `ExtLane` | 1775 | 291808 | 7 |
-| `YardWest` | 1613 | 270754 | 7 |
-| `Gatehouse` | 902 | 125190 | 7 |
-| `HallPlatform` | 1021 | 134874 | 6 |
-| `HallFloor` | 1812 | 317440 | 8 |
-| `ChamberA` | 1727 | 298500 | 6 |
-| `ChamberB` | 1206 | 188092 | 7 |
-| `Spine` | 704 | 121804 | 5 |
-| `Anteroom` | 1900 | 331626 | 7 |
-| `Strongroom` | 1319 | 200794 | 8 |
-| `Packing` | 1002 | 162086 | 5 |
+| `ExtQuay` | 2404 | 414204 | 8 |
+| `ExtLane` | 1775 | 293200 | 7 |
+| `YardWest` | 1613 | 271450 | 7 |
+| `Gatehouse` | 902 | 126582 | 7 |
+| `HallPlatform` | 1019 | 133794 | 6 |
+| `HallFloor` | 1808 | 315592 | 8 |
+| `ChamberA` | 1724 | 298248 | 6 |
+| `ChamberB` | 1208 | 187336 | 7 |
+| `Spine` | 696 | 120928 | 5 |
+| `Anteroom` | 1892 | 330150 | 7 |
+| `Strongroom` | 1308 | 198970 | 8 |
+| `Packing` | 1002 | 163478 | 5 |
 | `Plant` | 994 | 165762 | 2 |
-| `Workshop` | 1151 | 180878 | 5 |
+| `Workshop` | 1148 | 181322 | 5 |
 | `Reception` | 510 | 81604 | 2 |
 | `Dispatch` | 762 | 129604 | 2 |
-| `CountRoom` | 1088 | 183444 | 6 |
+| `CountRoom` | 1085 | 183192 | 6 |
 | `BreakRoom` | 567 | 82898 | 2 |
 | `LockerRoom` | 756 | 112378 | 2 |
 | `QuayShed` | 133 | 19136 | 1 |
 | `LandingStage` | 55 | 2772 | 0 |
 | `RoofPerch` | 526 | 86362 | 3 |
-| `SniperCrane` | 2015 | 341560 | 8 |
+| `SniperCrane` | 2015 | 342952 | 8 |
 
 
 ## door_frame_gap: Doors and windows fill their wall openings (no gaps, no clipping)

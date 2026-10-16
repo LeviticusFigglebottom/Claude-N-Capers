@@ -653,7 +653,7 @@ func test_heavy_brains_advance_walking() -> void:
 	await wait_frames(2)
 
 
-## D-069 ambient substitutions (characters.md v1.7): cleaners mop, Kessler reads in bed, seated phone calls,
+## D-069 ambient substitutions (characters.md v1.7): cleaners mop, Kessler reads in his armchair, seated phone calls,
 ## the camera operator watches monitors, cartel gunmen idle as thugs; mug_walk walks at v / 1.3.
 func test_d069_ambient_hint_substitutions() -> void:
 	var civ: NpcBase = _npc(&"civilian")
@@ -664,7 +664,7 @@ func test_d069_ambient_hint_substitutions() -> void:
 	assert_eq(d._hint(), &"mop", "cleaner browse -> mop")
 	civ.spawn_info = {"tags": [&"civ_kessler"]}
 	brain.set(&"anim_hint", &"sit")
-	assert_eq(d._hint(), &"sit_bed_read", "Kessler sit -> sit_bed_read")
+	assert_eq(d._hint(), &"sit_chair_read", "Kessler sit -> sit_chair_read (his armchair)")
 	civ.spawn_info = {"tags": [], "idle_activity": &"sit"}
 	brain.set(&"anim_hint", &"phone")
 	assert_eq(d._hint(), &"phone_seated", "seated phone call")

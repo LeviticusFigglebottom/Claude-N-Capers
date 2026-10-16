@@ -82,10 +82,11 @@ static func _by_tag(npc: NpcBase, tw: NpcVisualTweak) -> PackedScene:
 	if rt != null and tw.heist_tag_characters.get(rt.heist_id) is Dictionary:
 		maps.append(tw.heist_tag_characters[rt.heist_id] as Dictionary)
 	maps.append(tw.tag_characters)
+	var pools: Dictionary = tw.heist_tag_pools.get(rt.heist_id, {}) if rt != null else {}
 	for m: Dictionary in maps:
 		for t: Variant in tags as Array:
 			if m.has(StringName(t)):
-				var ps: PackedScene = _pick(npc, m[StringName(t)], String(t))
+				var ps: PackedScene = _pick(npc, m[StringName(t)], String(pools.get(StringName(t), t)))
 				if ps != null:
 					return ps
 	return null
@@ -112,13 +113,14 @@ static func _pick(npc: NpcBase, ids: Variant, tag: String = "") -> PackedScene:
 			arr.append(id)
 	if arr.is_empty():
 		return null
-	var i: int = _look_index(npc, tag, arr.size())
+	var i: int = look_index(npc, tag, arr.size())
 	return _load(scene_path(String(arr[i])))
 
 
 ## The index among `n` looks: the replicated spawn_info["look"], else the authority's round-robin deal for `tag`
-## in this run (stored in spawn_info["look"]), else a hash of the node name.
-static func _look_index(npc: NpcBase, tag: String, n: int) -> int:
+## (a tag, a shared pool, or an EnemyDef's alternates) in this run (stored in spawn_info["look"]), else a hash of
+## the node name.
+static func look_index(npc: NpcBase, tag: String, n: int) -> int:
 	var look: int = int(npc.spawn_info.get("look", -1))
 	if look >= 0:
 		return look % n

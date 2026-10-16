@@ -47,6 +47,9 @@ BASE_VARIANTS = {
     "prop_fish_crates": {"fn": "fish_crates", "layers": 5, "cat": {"kind": "fish_crates", "place": "wall", "group": _G}},
     "prop_fish_box_stack": {"fn": "fish_box_stack", "cat": {"kind": "fish_boxes", "place": "wall", "group": _G}},
     "prop_racking_coldstore": {"fn": "racking", "cat": {"kind": "rack", "place": "none", "group": _G}},
+    # Chamber B (lead DB G2 review: tell C1 / C2 apart): half the bays empty, blue fish-box stacks, not frosted cartons
+    "prop_racking_coldstore_b": {"fn": "racking", "empty": 0.5, "load": "fish",
+                                 "cat": {"kind": "rack", "place": "none", "group": _G}},
     "prop_pallet_wrapped": {"fn": "pallet_wrapped", "cat": {"kind": "pallet_wrapped", "place": "wall", "group": _G}},
     "prop_pallet_wrapper": {"fn": "wrapper", "cat": {"kind": "wrapping_machine", "place": "wall", "clear": 0.8, "group": _G}},
     "prop_pallet_jack": {"fn": "pallet_jack", "cat": {"kind": "pallet_jack", "place": "wall", "group": _G}},
@@ -409,6 +412,16 @@ def _carton_block(p, x0: float, x1: float, y0: float, y1: float, z0: float, z1: 
     p.bx((x0, y0, z0), (x1, y1, z1), key)
 
 
+def _fish_stack(p, x0: float, x1: float, y0: float, y1: float, z0: float, z1: float) -> None:
+    """A pallet of stacked fish boxes in a rack bay: 0.25 m layers, blue with every third one grey, slightly inset."""
+    n = max(2, int((z1 - z0) / 0.25))
+    lh = (z1 - z0) / n
+    for li in range(n):
+        inset = 0.02 if li % 2 else 0.0
+        p.bx((x0 + inset, y0 + inset, z0 + li * lh), (x1 - inset, y1 - inset, z0 + (li + 1) * lh - 0.015),
+             "plastic_grey" if li % 3 == 2 else "plastic_blue")
+
+
 def _racking(k: Kit, p: dict) -> None:
     """Double-sided cold-store pallet racking 2.69 x 9.19 x 6.59 m: 5 upright frames along the run, orange beams at
     0 / 2.2 / 4.4 / 6.5 m, frosted carton loads on pallets (some bays empty), a frosted back-to-back mesh spine."""
@@ -438,12 +451,15 @@ def _racking(k: Kit, p: dict) -> None:
         for side, (x0, x1) in enumerate(((-w / 2 + 0.12, -0.15), (0.15, w / 2 - 0.12))):
             for lvl, z in enumerate((0.0, 2.22, 4.42)):
                 for j in range(2):
-                    if rng.random() < 0.18:
+                    if rng.random() < float(p.get("empty", 0.18)):
                         continue
                     ya = y0 + j * (pitch - 0.3) / 2
                     yb = ya + (pitch - 0.3) / 2 - 0.08
                     ld.bx((x0, ya, z), (x1, yb, z + 0.14), "wood_pine")
                     top = z + 0.14 + rng.uniform(1.0, 1.7)
+                    if p.get("load") == "fish":
+                        _fish_stack(ld, x0 + 0.03, x1 - 0.03, ya + 0.03, yb - 0.03, z + 0.14, top)
+                        continue
                     _carton_block(ld, x0 + 0.03, x1 - 0.03, ya + 0.03, yb - 0.03, z + 0.14, top,
                                   "frost" if (i + side + lvl + j) % 3 else "cardboard_frost")
     o.build()

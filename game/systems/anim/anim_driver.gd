@@ -4,9 +4,9 @@
 ## placeholder) it does nothing. **Presentation only**: it reads gameplay state and never writes it; no
 ## gameplay code may read animation state. Headless-safe.
 ## Each frame it picks one clip, by priority:
-##   death_front/back (from the last hit direction vs facing) > crew state (downed, tased, kneel_cuffed) /
+##   death_front/back (from the last hit direction vs facing) > crew state (downed, tased, kneel_cuffed, mask_on) /
 ##   stun (tased) > pose hints (tied, cower, hands_up, surrender, lie_down, kneel_cuffed) > special actions
-##   (kick_charge, shield_bang, heal_ally) > one-shots (turn, fire, reload, throw_bag, melee, kick_hit,
+##   (kick_charge, shield_bang, heal_ally) > one-shots (turn, fire, reload, throw_bag, throw_grenade, melee, kick_hit,
 ##   hit_head / hit_chest / hit_shoulder_* / hit_leg_* by zone, else hit_react*) > interact_* / pager_answer >
 ##   locomotion by velocity (walk, run, sprint, crouch_walk, strafe,
 ##   walk_back, flee, carry_bag_walk, the unit's EnemyDef.params.anim_walk_clip = shield_walk / dozer_walk at
@@ -47,7 +47,7 @@ const HINT_CLIPS: Dictionary = {
 	&"heal_ally": &"heal_ally",
 	# characters.md v1.7 NPC ambient clips (D-069, ENV D 4355913).
 	&"desk_work": &"desk_work", &"phone_seated": &"phone_seated", &"sit_chair_watch": &"sit_chair_watch",
-	&"mop": &"mop", &"sit_bed_read": &"sit_bed_read", &"mug": &"mug_idle", &"idle_thug": &"idle_thug",
+	&"mop": &"mop", &"sit_bed_read": &"sit_bed_read", &"sit_chair_read": &"sit_chair_read", &"mug": &"mug_idle", &"idle_thug": &"idle_thug",
 	&"mug_walk": &"mug_idle",
 	# characters.md v1.9 (D-103, Gallery Night): inspect a hung work, cower standing / seated, walk texting.
 	&"curator_inspect": &"curator_inspect", &"inspect": &"curator_inspect", &"cower_stand": &"cower_stand",
@@ -140,6 +140,10 @@ const ARMED_CLIPS: Array[StringName] = [&"interact_low", &"interact_mid", &"inte
 const CARRIED_BAG_NODE: String = "CarriedBag"
 ## v1.20 akimbo: the pair's second gun (WeaponVisual.offhand) moves to HandL/Socket under this name.
 const OFFHAND_NODE: String = "ThirdPersonOffhand"
+## D-116 crew_actions: the mask-up (crew one-shot from the replicated `masked`, weapon holstered, the mask shows at the
+## clip's `mask_on` event) and the grenade throw (from the replicated pin cue, `release` on the gameplay release).
+const MASK_ON: StringName = &"mask_on"
+const THROW_GRENADE: StringName = &"throw_grenade"
 ## v1.21: one-shots that end exactly on crew_cuffed frame 0 (switch without a crossfade).
 const CUFF_INTO: Array[StringName] = [&"downed_arrested", &"crew_cuffed_enter"]
 ## Lead ruling (b): the upper-body flinch layer's node name (after the weapon-hold layer).
@@ -158,7 +162,7 @@ const FALLBACK_CLIPS: Dictionary = {
 	&"shield_walk": &"walk", &"dozer_walk": &"walk", &"kick_charge": &"idle_alert", &"kick_hit": &"melee",
 	&"shield_bang": &"idle_alert", &"heal_ally": &"interact_mid",
 	&"desk_work": &"desk_type", &"phone_seated": &"phone_call", &"sit_chair_watch": &"sit_chair", &"mop": &"browse",
-	&"sit_bed_read": &"sit_chair", &"mug_idle": &"idle", &"mug_carry_walk": &"walk", &"idle_thug": &"idle",
+	&"sit_bed_read": &"sit_chair", &"sit_chair_read": &"sit_bed_read", &"mug_idle": &"idle", &"mug_carry_walk": &"walk", &"idle_thug": &"idle",
 	&"rappel": &"climb_ladder", &"climb_ladder": &"idle",
 	# D-111: drill / crawl / gala and club ambient clips (characters.md v1.9-v1.10).
 	&"drill_place": &"interact_mid", &"downed_crawl": &"downed", &"bartender_wipe": &"browse",
@@ -231,6 +235,8 @@ var _state_oneshot_speed: float = 1.0
 var _last_crew_state: int = -1
 ## v1.21 akimbo: the next shot is the left gun's (fire_akimbo_l); the first shot is the right one.
 var _akimbo_left_next: bool = false
+## D-116: the crew mask (CrewView's `Head/Socket/Mask`) is held hidden by mask_on until its `mask_on` event.
+var _mask_held: bool = false
 
 var _body: Node3D = null
 var _npc: NpcBase = null
@@ -369,6 +375,8 @@ func bind() -> bool:
 	if _crew != null and _crew.weapons != null and not _crew.weapons.equipped_changed.is_connected(_on_equipped):
 		_crew.weapons.equipped_changed.connect(_on_equipped)
 		_crew.weapons.reload_started.connect(_on_reload_started)
+	if _crew != null and not _crew.masked_changed.is_connected(_on_masked_changed):
+		_crew.masked_changed.connect(_on_masked_changed)
 	refresh_weapon()
 	hold_layer = null
 	if _crew != null:  # v1.19 weapon holds; first among the modifiers (the hat lift fixes up after it)
@@ -431,6 +439,7 @@ func tick(delta: float) -> void:
 		weapon_visual.visible = weapon_shown(want)
 		if weapon_offhand != null and is_instance_valid(weapon_offhand):
 			weapon_offhand.visible = weapon_visual.visible
+	_update_mask_visual(tw)
 	_update_bag_visual(tw)
 	if hat_lift != null and is_instance_valid(hat_lift):
 		var lift_on: float = 1.0 if tw.hard_hat_lift_clips.has(clip) else 0.0
@@ -479,6 +488,39 @@ func _play_state_oneshot(c: StringName, duration: float = -1.0, speed: float = 1
 	_oneshot = c  # _apply restarts it from frame 0 when it repeats (downed_fire per shot)
 
 
+## D-116: the crew body masked up (CrewController.masked_changed: set_masked on the server, the snapshot / RPC on every
+## other peer, never local input): mask_on as a crew one-shot. The mask CrewView builds now stays hidden until the clip's
+## `mask_on` event (_update_mask_visual).
+func _on_masked_changed(now_masked: bool) -> void:
+	if not now_masked or player == null:
+		return
+	_play_state_oneshot(MASK_ON)
+	_update_mask_visual(AnimTweak.data())
+
+
+## D-116: hide the crew mask while mask_on plays before its `mask_on` event (AnimTweak.mask_on_s); show it at the event,
+## or when the clip is cut short (downed, tased...). Re-applied every tick, so a mask CrewView rebuilds mid-clip is held too.
+func _update_mask_visual(tw: AnimTweak) -> void:
+	if _crew == null:
+		return
+	var socket: Node3D = socket_of(_body, "Head")
+	var mask: Node3D = socket.get_node_or_null(NodePath(CrewView.MASK_NAME)) as Node3D if socket != null else null
+	if mask == null:
+		return
+	var held: bool = _state_oneshot == MASK_ON and _state_oneshot_left > 0.0 and _state_oneshot_t < tw.mask_on_s()
+	if held:
+		mask.visible = false
+		_mask_held = true
+	elif _mask_held:
+		mask.visible = true
+		_mask_held = false
+
+
+## True while the crew mask is held hidden by mask_on (before its `mask_on` event).
+func mask_held() -> bool:
+	return _mask_held
+
+
 ## v1.21: whether the third-person weapon shows with clip `c` playing. Hidden in poses, in death and while cuffed
 ## (crew_cuffed*, kneel_cuffed*); shown while downed (downed / downed_fire / downed_reload / downed_getup); in
 ## downed_arrested until its `disarm` event, in crew_cuffed_free from its `free` event (AnimTweak event times).
@@ -493,6 +535,8 @@ func weapon_shown(c: StringName) -> bool:
 			return _state_oneshot_t < tw.disarm_s()
 		&"crew_cuffed_free":
 			return _state_oneshot_t >= tw.free_s()
+		MASK_ON:
+			return false  # D-116: holstered for the whole mask-up; PD2 draws the weapon after masking
 	return not POSE_CLIPS.has(c)
 
 
@@ -986,14 +1030,14 @@ func _dance_pick(h: StringName) -> StringName:
 	return [&"dance_a", &"dance_b", &"dance_c"][absi(hash(String(_npc.name))) % 3]
 
 
-## D-069 per-NPC ambient substitutions: cleaners mop instead of browsing, Kessler reads in bed instead of
+## D-069 per-NPC ambient substitutions: cleaners mop instead of browsing, Kessler reads in his armchair instead of
 ## sitting, the camera operator watches the monitors, a seated phone call, cartel gunmen idle as thugs.
 func _ambient_hint(h: StringName) -> StringName:
 	var tags: Array = _npc.spawn_info.get("tags", []) as Array
 	if h == &"browse" and tags.any(func(t: Variant) -> bool: return String(t).begins_with("civ_cleaner")):
 		return &"mop"
 	if h == &"sit" and tags.has(&"civ_kessler"):
-		return &"sit_bed_read"
+		return &"sit_chair_read"  # LEAD (D's SL audit): his Seat is an armchair (falls back to sit_bed_read)
 	if h == &"phone" and String(_npc.spawn_info.get("idle_activity", "")) == "sit":
 		return &"phone_seated"
 	if (h == &"" or h == &"idle") and _npc.role == CartelBrain.ROLE and _npc.alert_state == Enums.AlertState.CALM:
@@ -1390,6 +1434,19 @@ func _on_audio_cue(cue_id: StringName, _pos: Vector3, source_net_id: int) -> voi
 		var clip_id: StringName = &"reload_pistol" if cue_id == NpcGunner.CUE_RELOAD_PISTOL else &"reload_rifle"
 		var done_s: float = AnimTweak.data().reload_done(&"pistol" if clip_id == &"reload_pistol" else &"rifle")
 		play_oneshot(clip_id, dur, false, done_s / maxf(dur, 0.05))
+	elif _crew != null and cue_id == CrewThrowables.CUE_PIN:
+		_play_throw()
+
+
+## D-116: the grenade throw starts at the pin pull (`cue.throwable_pin` [R], so every peer sees it) and is re-timed so
+## its `release` event lands on the gameplay release, CombatTweak.throw_windup_s later (the FP throw does the same).
+## Gameplay timing is untouched: the server still releases at the end of the windup. The weapon stays low in the right
+## hand (D's clip); while_moving, like throw_bag.
+func _play_throw() -> void:
+	if not _has_clip(THROW_GRENADE):
+		return
+	var windup: float = maxf(CombatTweak.data().throw_windup_s, 0.05)
+	play_oneshot(THROW_GRENADE, -1.0, true, AnimTweak.data().throw_release_s() / windup)
 
 
 func _on_reload_started(_ws: int, duration: float) -> void:

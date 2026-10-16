@@ -564,7 +564,8 @@ def loft_down(m: Mesh, top: list[int], z_hem: Callable[[float], float], hull: Hu
 
 def skirt_weights(fit: Fit, z_top: float, z_hem: float, thigh_max: float = 0.85,
                   centre_w: float = 0.05, ramp: float = 1.0, back_relax: float = 0.0,
-                  front_ramp: float | None = None) -> Callable[[Vector, float], dict]:
+                  front_ramp: float | None = None, shin_max: float = 0.0,
+                  knee_band: float = 0.10) -> Callable[[Vector, float], dict]:
     """Hips at the waist, blending to the thigh of the vertex's side towards the hem (at most
     ``thigh_max`` at the hem). Within ``centre_w`` of the centre line the two thighs are mixed, so
     the cloth either side of a front split (coat and jacket tails: a wider ``centre_w``, a lower
@@ -573,22 +574,31 @@ def skirt_weights(fit: Fit, z_top: float, z_hem: float, thigh_max: float = 0.85,
     ``back_relax`` takes that share of the thigh weight back to the hips behind the body, so a seated figure's
     back panel stays under the seat instead of swinging up between the knees with the thighs. ``front_ramp`` (D-115
     clip audit) replaces ``ramp`` in front of the body: a short ramp lays a closed front panel on the thigh from just
-    below the crease instead of blending through it (tabard in cower_stand)."""
+    below the crease instead of blending through it (tabard in cower_stand). ``shin_max`` (D-116 seated drape, long
+    coats and robes): below the knee that share of each side's thigh weight moves to its shin over ``knee_band`` m, so
+    the cloth past the knees falls with the shins on a seated body instead of standing out level with the thighs."""
     cy = fit.ring_centre("hips").y
+    knee_z = min(Vector(fit.J["knee.L"]).z, Vector(fit.J["knee.R"]).z) if shin_max else 0.0
     def w(p: Vector, _t: float) -> dict:
         t = clamp((z_top - p.z) / max(z_top - z_hem, 1e-3), 0.0, 1.0)
         rp = ramp
         if front_ramp is not None:
             rp = lerp(ramp, front_ramp, smoothstep(cy + 0.02 * fit.k, cy + 0.08 * fit.k, p.y))
         t = thigh_max * smoothstep(0.0, rp, t)
+        t_full = t
         if back_relax:
             t *= 1.0 - back_relax * smoothstep(cy + 0.01 * fit.k, cy - 0.06 * fit.k, p.y)
         s_r = smoothstep(-centre_w * fit.k, centre_w * fit.k, p.x)
         out = {"hips": 1.0 - t}
-        if t * s_r > 0.01:
-            out["thigh.R"] = t * s_r
-        if t * (1 - s_r) > 0.01:
-            out["thigh.L"] = t * (1 - s_r)
+        # below the knee the shin share ignores back_relax: the back panel past the seat edge hangs behind the calves
+        # too, instead of staying on the hips and stretching the side hem into a strip from the lap to the shins
+        sh = shin_max * smoothstep(knee_z + 0.02 * fit.k, knee_z - knee_band * fit.k, p.z) if shin_max else 0.0
+        out["hips"] = 1.0 - t * (1.0 - sh) - t_full * sh
+        for sfx, share in (("R", s_r), ("L", 1 - s_r)):
+            if t * share * (1.0 - sh) > 0.01:
+                out[f"thigh.{sfx}"] = t * share * (1.0 - sh)
+            if t_full * share * sh > 0.01:
+                out[f"shin.{sfx}"] = t_full * share * sh
         s = sum(out.values())
         return {b: x / s for b, x in sorted(out.items())}
     return w

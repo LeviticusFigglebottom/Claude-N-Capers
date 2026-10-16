@@ -29,7 +29,7 @@ HAND_PROPS = {
     "cigarette": ["smoke"],
     "mug": ["mug_idle", "mug_carry_walk"],
     "mop": ["mop"],
-    "book": ["sit_bed_read"],
+    "book": ["sit_bed_read", "sit_chair_read"],
     "rag": ["bartender_wipe"],
     "bottle": ["bartender_pour"],
     "glass": ["bartender_pour"],

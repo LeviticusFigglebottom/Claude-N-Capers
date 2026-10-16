@@ -78,10 +78,15 @@ func _ready() -> void:
 		visual_scene = enemy_def.visual  # characters.md: the EnemyDef's character visual
 		var alts: Variant = enemy_def.params.get("visual_alternates", [])
 		if visual_scene != null and alts is Array and not (alts as Array).is_empty():
-			# Alternate looks (cartel_gunman_b/_c): the same pick on every peer (the node name is replicated).
-			var pick: int = absi(hash(String(name))) % ((alts as Array).size() + 1)
-			if pick > 0 and ResourceLoader.exists(String((alts as Array)[pick - 1])):
-				visual_scene = load(String((alts as Array)[pick - 1])) as PackedScene
+			# Alternate looks (cartel_gunman_b.._f): the delivered ones are dealt round-robin per run like the tag
+			# looks (no twins while the live count <= the looks); the pick rides spawn_info["look"] to every peer.
+			var looks: Array[String] = []
+			for a: Variant in alts as Array:
+				if ResourceLoader.exists(String(a)):
+					looks.append(String(a))
+			var pick: int = NpcVisuals.look_index(self, "def:%s" % enemy_def.id, looks.size() + 1)
+			if pick > 0:
+				visual_scene = load(looks[pick - 1]) as PackedScene
 	if visual_scene == null and AnimDriver.find_player(self) == null:
 		visual_scene = NpcVisuals.resolve(self)  # PO-5.7: ENV D characters instead of capsules (not over a rig)
 	if visual_scene != null and visual_root != null:

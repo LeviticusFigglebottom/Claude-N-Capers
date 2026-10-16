@@ -111,6 +111,24 @@
 			"test": false
 		},
 		{
+			"asset": "char_cartel_gunman_d",
+			"id": "cartel_gunman_d",
+			"scene": "res://world/characters/cartel_gunman_d/cartel_gunman_d.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_cartel_gunman_e",
+			"id": "cartel_gunman_e",
+			"scene": "res://world/characters/cartel_gunman_e/cartel_gunman_e.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_cartel_gunman_f",
+			"id": "cartel_gunman_f",
+			"scene": "res://world/characters/cartel_gunman_f/cartel_gunman_f.tscn",
+			"test": false
+		},
+		{
 			"asset": "char_civilian_clerk",
 			"id": "civilian_clerk",
 			"scene": "res://world/characters/civilian_clerk/civilian_clerk.tscn",
@@ -509,6 +527,12 @@
 			"test": false
 		},
 		{
+			"asset": "char_npc_cleaner_sl_c",
+			"id": "npc_cleaner_sl_c",
+			"scene": "res://world/characters/npc_cleaner_sl_c/npc_cleaner_sl_c.tscn",
+			"test": false
+		},
+		{
 			"asset": "char_npc_helena_moor",
 			"id": "npc_helena_moor",
 			"scene": "res://world/characters/npc_helena_moor/npc_helena_moor.tscn",
@@ -542,6 +566,30 @@
 			"asset": "char_npc_northgate_guard_b",
 			"id": "npc_northgate_guard_b",
 			"scene": "res://world/characters/npc_northgate_guard_b/npc_northgate_guard_b.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_npc_northgate_guard_c",
+			"id": "npc_northgate_guard_c",
+			"scene": "res://world/characters/npc_northgate_guard_c/npc_northgate_guard_c.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_npc_northgate_guard_d",
+			"id": "npc_northgate_guard_d",
+			"scene": "res://world/characters/npc_northgate_guard_d/npc_northgate_guard_d.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_npc_northgate_guard_e",
+			"id": "npc_northgate_guard_e",
+			"scene": "res://world/characters/npc_northgate_guard_e/npc_northgate_guard_e.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_npc_northgate_guard_f",
+			"id": "npc_northgate_guard_f",
+			"scene": "res://world/characters/npc_northgate_guard_f/npc_northgate_guard_f.tscn",
 			"test": false
 		},
 		{
@@ -632,6 +680,18 @@
 			"asset": "char_security_officer_b",
 			"id": "security_officer_b",
 			"scene": "res://world/characters/security_officer_b/security_officer_b.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_security_officer_c",
+			"id": "security_officer_c",
+			"scene": "res://world/characters/security_officer_c/security_officer_c.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_security_officer_d",
+			"id": "security_officer_d",
+			"scene": "res://world/characters/security_officer_d/security_officer_d.tscn",
 			"test": false
 		},
 		{
