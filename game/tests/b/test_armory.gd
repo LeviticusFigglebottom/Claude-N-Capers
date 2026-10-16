@@ -27,11 +27,11 @@ const SHARED_FIRE_CUE: Dictionary = {&"weapon.rotor_saw": &"cue.weapon_saw_cut"}
 const INHERENTLY_SILENT: Array[StringName] = [&"weapon.hush_9", &"weapon.thorn_bow", &"weapon.vise_crossbow"]
 ## B4-18: PD2 specials are primaries except the portable saw (OVE9000: secondary).
 const SECONDARY_SPECIALS: Array[StringName] = [&"weapon.rotor_saw"]
-## PD2 exceptions to the class -> slot rule: short shotguns in the secondary slot (Locomotive analog) and
-## akimbo pairs in the primary slot.
-const SECONDARY_PRIMARY_CLASS: Array[StringName] = [&"weapon.mule_12"]
+## Exceptions to the class -> slot rule: akimbo pairs in the primary slot (PD2). D-126 (PO): every shotgun is a
+## secondary with the pistols and SMGs, so no shotgun is an exception any more.
+const SECONDARY_PRIMARY_CLASS: Array[StringName] = []
 const PRIMARY_CLASSES: Array[int] = [
-	Enums.WeaponClass.ASSAULT_RIFLE, Enums.WeaponClass.SHOTGUN, Enums.WeaponClass.LMG, Enums.WeaponClass.SNIPER,
+	Enums.WeaponClass.ASSAULT_RIFLE, Enums.WeaponClass.LMG, Enums.WeaponClass.SNIPER,
 ]
 
 var _strings: Dictionary = {}
@@ -110,7 +110,7 @@ func test_slots_follow_pd2() -> void:
 		elif PRIMARY_CLASSES.has(int(w.weapon_class)):
 			assert_eq(w.slot, Enums.WeaponSlot.PRIMARY, "%s is a primary" % w.id)
 		else:
-			# PD2: pistols and SMGs are secondaries
+			# D-126: pistols, SMGs and shotguns are secondaries
 			assert_eq(w.slot, Enums.WeaponSlot.SECONDARY, "%s is a secondary" % w.id)
 
 

@@ -27,7 +27,7 @@ NAMES = tuple(f"idle_alert_{kind}" for kind in KINDS) + tuple(f"hold_{kind}" for
 #: D-116 audit: armed variants of the crew interactions (the left hand works, the weapon stays in the right hand at
 #: H.LOW_CARRY): the shared interact_* / throw_bag work with both hands and clipped the held rifle through the arms /
 #: the head
-ARMED = ("interact_low_armed", "interact_mid_armed", "interact_high_armed", "throw_bag_armed")
+ARMED = ("interact_low_armed", "interact_mid_armed", "interact_high_armed", "throw_bag_armed", "sit_chair_armed")
 #: the work point per interact level (as _anim_humanoid.interact): z, y (m at 1.78 m), hand along, palm
 INTERACT = {"low": (0.40, 0.40, (0.0, 0.85, -0.5), (0.0, 0.3, -1.0)),
             "mid": (1.02, 0.40, (0.0, 1.0, -0.25), (0.0, 0.5, -1.0)),
@@ -45,6 +45,8 @@ LMG_HIP = {"grip": (0.16, 0.17, 1.03), "yaw": 10.0, "pitch": -6.0, "roll": -4.0,
 SHIFT_M, SHIFT_COUNTER_DEG = 0.016, 2.2
 #: the carried bag's pivot on Back/Socket per bag size (socket-local m, Godot axes; = character_spec.gd BACK_BAG_OFFSETS)
 BACK_BAG_OFFSETS = {"light": (0.0, 0.05, 0.0), "medium": (0.0, 0.0, 0.0), "heavy": (0.0, -0.05, 0.0)}
+#: sit_chair_armed: the long gun across the lap (deg: muzzle yawed left across the body, level, canted out)
+SIT_ARMED = {"yaw": 72.0, "pitch": -4.0, "roll": -14.0}
 #: the bones A layers from hold_* over locomotion
 UPPER_BONES = ("spine", "chest", "neck", "head", "clavicle.L", "clavicle.R", "upper_arm.L", "upper_arm.R",
                "forearm.L", "forearm.R", "hand.L", "hand.R", "fingers of both hands")
@@ -144,6 +146,26 @@ def interact_armed(sk: Skeleton, level: str, f: int, N: int) -> Pose:
     return pose
 
 
+def sit_chair_armed(sk: Skeleton, f: int, N: int) -> Pose:
+    """D-116 (DB-4): an armed body seated on a chair Seat (as sit_chair: the same seat height and feet), the long gun at
+    HandR/Socket laid across the lap, muzzle to the left, the left hand on the fore-end; slow breathing and looks
+    round. For cartel gunmen (and any armed guard) on a seat post."""
+    t = f / FPS
+    T = N / FPS
+    k = sk.scale
+    pose = Pose()
+    H.seated(sk, pose, recline=4.0)
+    H.look(pose, yaw=22.0 * math.sin(TAU * t / T), pitch=4.0 + 2.0 * math.sin(TAU * 2 * t / T))
+    H.breathe(pose, t, T / 5.0)
+    w = math.sin(TAU * t / T)
+    o = v3(0.11 * k, 0.24 * k + 0.004 * k * w, 0.67 * k + 0.003 * k * math.sin(TAU * 5 * t / T))
+    wf = A.weapon_frame(o, yaw=SIT_ARMED["yaw"], pitch=SIT_ARMED["pitch"], roll=SIT_ARMED["roll"])
+    A.hold_weapon(sk, pose, wf, pole=v3(0.8, -0.3, -0.5), twist=0.6)
+    H.rifle_support(sk, pose, wf, pole=v3(-0.6, -0.5, -0.6), cup=False)
+    pose.hands["R"] = hand_shape("grip", 0.9)
+    return pose
+
+
 def throw_bag_armed(sk: Skeleton, solver: Solver, N: int):
     """The bag heaved one-handed (left) from the left hip forward-up, released at the same frame as throw_bag; the
     weapon stays low in the right hand."""
@@ -191,6 +213,10 @@ def clips(sk: Skeleton, solver: Solver, table: dict) -> dict[str, Clip]:
     for name in [n for n in ARMED if n in table]:
         row = table[name]
         N = int(row["frames"])
+        if name == "sit_chair_armed":
+            out[name] = Clip(name, N, True, (lambda f, N=N: sit_chair_armed(sk, f, N)), 0.0, None,
+                             dict(row.get("events", {})), reach_fix=False)
+            continue
         if name == "throw_bag_armed":
             out[name] = Clip(name, N, False, throw_bag_armed(sk, solver, N), float(row["speed"]), None,
                              dict(row.get("events", {})), reach_fix=False)
@@ -227,7 +253,9 @@ def source_notes() -> dict:
             "hand does the work, the weapon stays in the right hand at a low carry by the thigh). Unarmed bodies "
             "(civilians, NPCs) keep the shared clips. carry_bag_walk now holds the bag strap with the LEFT hand at the "
             "left shoulder and keeps the weapon low in the right: the carried bag visual belongs on the left shoulder / "
-            "back (Back socket), not in the right hand"),
+            "back (Back socket), not in the right hand. sit_chair_armed (140 f loop, D-116 DB-4): an armed body on a chair "
+            "Seat (sit_chair's seat height and feet), the long gun across the lap, muzzle left; play it for a seated "
+            "cartel gunman / armed guard instead of sit_chair"),
         "carried_bag": (
             "D-116: Back/Socket is the carried loot bag's pivot (assemble_characters / character_spec.gd "
             "SOCKET_OFFSETS + SOCKET_BASES). The prop_loot_bag_* model attaches with an identity transform: the "

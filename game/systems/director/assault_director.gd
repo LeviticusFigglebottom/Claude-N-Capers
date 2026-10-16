@@ -577,23 +577,60 @@ func _tick_assault_spawns(delta: float) -> void:
 		interval = minf(interval, tweak.assault_refill_interval_s)  # PO6-16: top the force back up
 	_group_left = interval / rate
 	if under_cap:
-		_enqueue(_pick_assault_group())
+		_enqueue_assault()
+	elif tweak.assault_refill_interval_s > 0.0:
+		# PO6-16: at the cap there is nothing to spawn, so re-check at the refill cadence instead of sleeping a whole
+		# (drama-stretched) group interval: kills are topped back up promptly (PD2 force balancing).
+		_group_left = tweak.assault_refill_interval_s
 
 
-## A BUILD/SUSTAIN group: with DirectorTweak.assault_special_share[stage] a special-carrying group (PD2: specials
-## ride the assault), else (or when none is spawnable under the caps) the plain weighted pick.
-func _pick_assault_group() -> SpawnGroupDef:
+## A BUILD/SUSTAIN pick: the plain weighted squad (as before), plus, with DirectorTweak.assault_special_share[stage],
+## the specials of a special-carrying group riding in front of it (PD2: shields / tasers / cloakers / dozers come
+## WITH the assault squads). Specials are added, never swapped for the squad, so the force refills at the same rate;
+## only specials that can spawn now (L4.11 caps, a free perch) are rolled.
+func _enqueue_assault() -> void:
+	_enqueue(_pick_group(assault_phase))
+	var extra: Array[StringName] = _assault_specials()
+	if extra.is_empty():
+		return
+	var rest: Array[StringName] = _queue.slice(_queue_index)
+	_queue = extra
+	_queue.append_array(rest)
+	_queue_index = 0
+
+
+## The special units (expanded by count) of one special-carrying assault group, when the stage's share roll hits
+## and at least one of its specials can spawn now; else none.
+func _assault_specials() -> Array[StringName]:
+	var out: Array[StringName] = []
 	var shares: PackedFloat32Array = tweak.assault_special_share
 	var share: float = shares[clampi(stage(), 0, shares.size() - 1)] if not shares.is_empty() else 0.0
-	if share > 0.0 and GameRng.stream(RNG_DIRECTOR).randf() < share:
-		var specials: Array[SpawnGroupDef] = []
-		for g: SpawnGroupDef in tweak.assault_groups:
-			if g != null and _carries_special(g):
-				specials.append(g)
-		var picked: SpawnGroupDef = _pick_group(assault_phase, specials) if not specials.is_empty() else null
-		if picked != null:
-			return picked
-	return _pick_group(assault_phase)
+	if share <= 0.0 or GameRng.stream(RNG_DIRECTOR).randf() >= share:
+		return out
+	var cands: Array[SpawnGroupDef] = []
+	for g: SpawnGroupDef in tweak.assault_groups:
+		if g != null and _special_can_spawn(g):
+			cands.append(g)
+	var picked: SpawnGroupDef = _pick_group(assault_phase, cands) if not cands.is_empty() else null
+	if picked == null:
+		return out
+	for id: StringName in picked.expanded_units():
+		var def: EnemyDef = _enemy_def(id)
+		if def != null and def.is_special:
+			out.append(id)
+	return out
+
+
+## `g` carries a special that can spawn now (under its L4.11 cap; a Longshot needs a free SNIPER_PERCH).
+func _special_can_spawn(g: SpawnGroupDef) -> bool:
+	for id: StringName in g.unit_ids:
+		var def: EnemyDef = _enemy_def(id)
+		if def == null or not def.is_special or not roster.can_spawn_special(def):
+			continue
+		if _perch_only(def) and SpecialSpawner.free_perch(_runtime, _centroid(_active_crew()), null) == null:
+			continue
+		return true
+	return false
 
 
 func _carries_special(g: SpawnGroupDef) -> bool:

@@ -637,12 +637,15 @@ func fill_lights(parent: Node3D) -> void:
 				lerpf(lo.z, hi.z, 0.5 if long_x else fr))
 			if stair:
 				p.y = lo.y + 2.4 + L.MEZZ * float(i)
+			var high_hall: bool = rid in D.HIGH_FILL_ROOMS
+			if high_hall:
+				p.y = hi.y - 2.0  # lead G2 review: the downward high bays leave the deck soffit black
 			var light: OmniLight3D = OmniLight3D.new()
 			light.name = "Fill%s_%d" % [rid, i]
 			light.position = p
 			light.light_color = Color(1.0, 0.88, 0.74) if warm else Color(0.9, 0.95, 1.0)
-			light.light_energy = 0.28
-			light.omni_range = clampf(length / float(spots.size()) * 0.8 + size.y * 0.5, 3.5, 12.0)
+			light.light_energy = 0.29 if high_hall else 0.28
+			light.omni_range = 12.0 if high_hall else clampf(length / float(spots.size()) * 0.8 + size.y * 0.5, 3.5, 12.0)
 			light.layers = 1 | VIEWMODEL_LIT_LAYER  # D-095: also lights the FP viewmodel
 			light.shadow_enabled = false
 			light.set_meta(&"fill", true)

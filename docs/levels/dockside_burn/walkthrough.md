@@ -206,8 +206,8 @@ Result: **PASS** (0 failure(s))
 | `Spawns/Gate2` | `Gameplay/Doors/ANRollerE/Padlock/UsePoint` | use_point | 71.9 | 74.2 | 1.03 | ok |
 | `Spawns/Gate2` | `Gameplay/Doors/ANQuay` | objective | 72.4 | 74.7 | 1.03 | ok |
 | `Spawns/Gate2` | `Gameplay/Doors/ANQuay/UsePoint` | use_point | 72.4 | 74.7 | 1.03 | ok |
-| `Spawns/Gate2` | `Gameplay/Doors/ANEast` | objective | 68.3 | 72.9 | 1.07 | ok |
-| `Spawns/Gate2` | `Gameplay/Doors/ANEast/UsePoint` | use_point | 68.3 | 72.9 | 1.07 | ok |
+| `Spawns/Gate2` | `Gameplay/Doors/ANEast` | objective | 68.3 | 71.3 | 1.04 | ok |
+| `Spawns/Gate2` | `Gameplay/Doors/ANEast/UsePoint` | use_point | 68.3 | 71.3 | 1.04 | ok |
 | `Spawns/Gate2` | `Gameplay/Doors/HallRoller1` | objective | 38.5 | 38.5 | 1.00 | ok |
 | `Spawns/Gate2` | `Gameplay/Doors/HallRoller1/UsePoint` | use_point | 38.5 | 38.5 | 1.00 | ok |
 | `Spawns/Gate2` | `Gameplay/Doors/HallRoller1/Padlock` | objective | 38.1 | 38.1 | 1.00 | ok |
@@ -1184,7 +1184,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/Pontoon1` | `Gameplay/Doors/ChamberANorth/UsePoint` | use_point | 42.9 | 51.3 | 1.20 | ok |
 | `Spawns/Pontoon1` | `Gameplay/Doors/ChamberASpine/UsePoint` | use_point | 37.9 | 39.7 | 1.05 | ok |
 | `Spawns/Pontoon1` | `Gameplay/Doors/SpineChamberB/UsePoint` | use_point | 35.6 | 37.0 | 1.04 | ok |
-| `Spawns/Pontoon1` | `Gameplay/Doors/ChamberBNorth/UsePoint` | use_point | 47.5 | 49.9 | 1.05 | ok |
+| `Spawns/Pontoon1` | `Gameplay/Doors/ChamberBNorth/UsePoint` | use_point | 47.5 | 52.1 | 1.10 | ok |
 | `Spawns/Pontoon1` | `Gameplay/Doors/ChamberBSouth/UsePoint` | use_point | 34.3 | 36.9 | 1.07 | ok |
 | `Spawns/Pontoon1` | `Gameplay/Doors/StrongroomDoor` | objective | 24.9 | 29.6 | 1.19 | ok |
 | `Spawns/Pontoon1` | `Gameplay/Doors/StrongroomDoor/UsePoint` | use_point | 24.9 | 29.6 | 1.19 | ok |
@@ -1326,7 +1326,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/Pontoon2` | `Gameplay/Doors/ChamberANorth/UsePoint` | use_point | 42.8 | 50.2 | 1.17 | ok |
 | `Spawns/Pontoon2` | `Gameplay/Doors/ChamberASpine/UsePoint` | use_point | 37.4 | 38.6 | 1.03 | ok |
 | `Spawns/Pontoon2` | `Gameplay/Doors/SpineChamberB/UsePoint` | use_point | 35.1 | 35.8 | 1.02 | ok |
-| `Spawns/Pontoon2` | `Gameplay/Doors/ChamberBNorth/UsePoint` | use_point | 46.9 | 48.8 | 1.04 | ok |
+| `Spawns/Pontoon2` | `Gameplay/Doors/ChamberBNorth/UsePoint` | use_point | 46.9 | 51.0 | 1.09 | ok |
 | `Spawns/Pontoon2` | `Gameplay/Doors/ChamberBSouth/UsePoint` | use_point | 33.4 | 35.8 | 1.07 | ok |
 | `Spawns/Pontoon2` | `Gameplay/Doors/StrongroomDoor` | objective | 24.5 | 28.5 | 1.16 | ok |
 | `Spawns/Pontoon2` | `Gameplay/Doors/StrongroomDoor/UsePoint` | use_point | 24.5 | 28.5 | 1.16 | ok |
@@ -1468,7 +1468,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/Pontoon3` | `Gameplay/Doors/ChamberANorth/UsePoint` | use_point | 42.8 | 50.0 | 1.17 | ok |
 | `Spawns/Pontoon3` | `Gameplay/Doors/ChamberASpine/UsePoint` | use_point | 36.5 | 38.4 | 1.05 | ok |
 | `Spawns/Pontoon3` | `Gameplay/Doors/SpineChamberB/UsePoint` | use_point | 33.9 | 35.7 | 1.05 | ok |
-| `Spawns/Pontoon3` | `Gameplay/Doors/ChamberBNorth/UsePoint` | use_point | 45.4 | 48.6 | 1.07 | ok |
+| `Spawns/Pontoon3` | `Gameplay/Doors/ChamberBNorth/UsePoint` | use_point | 45.4 | 50.8 | 1.12 | ok |
 | `Spawns/Pontoon3` | `Gameplay/Doors/ChamberBSouth/UsePoint` | use_point | 31.3 | 35.6 | 1.14 | ok |
 | `Spawns/Pontoon3` | `Gameplay/Doors/StrongroomDoor` | objective | 24.1 | 28.3 | 1.18 | ok |
 | `Spawns/Pontoon3` | `Gameplay/Doors/StrongroomDoor/UsePoint` | use_point | 24.1 | 28.3 | 1.18 | ok |
@@ -1610,7 +1610,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/Pontoon4` | `Gameplay/Doors/ChamberANorth/UsePoint` | use_point | 42.9 | 51.1 | 1.19 | ok |
 | `Spawns/Pontoon4` | `Gameplay/Doors/ChamberASpine/UsePoint` | use_point | 36.2 | 39.5 | 1.09 | ok |
 | `Spawns/Pontoon4` | `Gameplay/Doors/SpineChamberB/UsePoint` | use_point | 33.5 | 36.8 | 1.10 | ok |
-| `Spawns/Pontoon4` | `Gameplay/Doors/ChamberBNorth/UsePoint` | use_point | 44.9 | 49.8 | 1.11 | ok |
+| `Spawns/Pontoon4` | `Gameplay/Doors/ChamberBNorth/UsePoint` | use_point | 44.9 | 51.9 | 1.16 | ok |
 | `Spawns/Pontoon4` | `Gameplay/Doors/ChamberBSouth/UsePoint` | use_point | 30.6 | 36.7 | 1.20 | ok |
 | `Spawns/Pontoon4` | `Gameplay/Doors/StrongroomDoor` | objective | 24.1 | 29.4 | 1.22 | ok |
 | `Spawns/Pontoon4` | `Gameplay/Doors/StrongroomDoor/UsePoint` | use_point | 24.1 | 29.4 | 1.22 | ok |
@@ -1752,7 +1752,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/OobQuay1` | `Gameplay/Doors/ChamberANorth/UsePoint` | use_point | 33.2 | 39.3 | 1.18 | ok |
 | `Spawns/OobQuay1` | `Gameplay/Doors/ChamberASpine/UsePoint` | use_point | 26.8 | 27.7 | 1.03 | ok |
 | `Spawns/OobQuay1` | `Gameplay/Doors/SpineChamberB/UsePoint` | use_point | 24.3 | 25.0 | 1.03 | ok |
-| `Spawns/OobQuay1` | `Gameplay/Doors/ChamberBNorth/UsePoint` | use_point | 36.0 | 37.9 | 1.05 | ok |
+| `Spawns/OobQuay1` | `Gameplay/Doors/ChamberBNorth/UsePoint` | use_point | 36.0 | 40.1 | 1.11 | ok |
 | `Spawns/OobQuay1` | `Gameplay/Doors/ChamberBSouth/UsePoint` | use_point | 22.7 | 24.9 | 1.10 | ok |
 | `Spawns/OobQuay1` | `Gameplay/Doors/StrongroomDoor` | objective | 14.4 | 17.6 | 1.22 | ok |
 | `Spawns/OobQuay1` | `Gameplay/Doors/StrongroomDoor/UsePoint` | use_point | 14.4 | 17.6 | 1.22 | ok |
@@ -1894,7 +1894,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/OobQuay2` | `Gameplay/Doors/ChamberANorth/UsePoint` | use_point | 33.4 | 38.3 | 1.15 | ok |
 | `Spawns/OobQuay2` | `Gameplay/Doors/ChamberASpine/UsePoint` | use_point | 26.5 | 26.7 | 1.01 | ok |
 | `Spawns/OobQuay2` | `Gameplay/Doors/SpineChamberB/UsePoint` | use_point | 23.9 | 24.0 | 1.00 | ok |
-| `Spawns/OobQuay2` | `Gameplay/Doors/ChamberBNorth/UsePoint` | use_point | 35.5 | 36.9 | 1.04 | ok |
+| `Spawns/OobQuay2` | `Gameplay/Doors/ChamberBNorth/UsePoint` | use_point | 35.5 | 39.1 | 1.10 | ok |
 | `Spawns/OobQuay2` | `Gameplay/Doors/ChamberBSouth/UsePoint` | use_point | 21.8 | 23.9 | 1.10 | ok |
 | `Spawns/OobQuay2` | `Gameplay/Doors/StrongroomDoor` | objective | 14.5 | 16.6 | 1.14 | ok |
 | `Spawns/OobQuay2` | `Gameplay/Doors/StrongroomDoor/UsePoint` | use_point | 14.5 | 16.6 | 1.14 | ok |
@@ -2036,7 +2036,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/OobQuay3` | `Gameplay/Doors/ChamberANorth/UsePoint` | use_point | 33.6 | 38.1 | 1.13 | ok |
 | `Spawns/OobQuay3` | `Gameplay/Doors/ChamberASpine/UsePoint` | use_point | 26.3 | 26.5 | 1.00 | ok |
 | `Spawns/OobQuay3` | `Gameplay/Doors/SpineChamberB/UsePoint` | use_point | 23.6 | 23.7 | 1.01 | ok |
-| `Spawns/OobQuay3` | `Gameplay/Doors/ChamberBNorth/UsePoint` | use_point | 34.9 | 36.7 | 1.05 | ok |
+| `Spawns/OobQuay3` | `Gameplay/Doors/ChamberBNorth/UsePoint` | use_point | 34.9 | 38.8 | 1.11 | ok |
 | `Spawns/OobQuay3` | `Gameplay/Doors/ChamberBSouth/UsePoint` | use_point | 20.9 | 22.5 | 1.07 | ok |
 | `Spawns/OobQuay3` | `Gameplay/Doors/StrongroomDoor` | objective | 14.8 | 16.4 | 1.11 | ok |
 | `Spawns/OobQuay3` | `Gameplay/Doors/StrongroomDoor/UsePoint` | use_point | 14.8 | 16.4 | 1.11 | ok |

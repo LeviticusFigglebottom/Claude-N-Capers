@@ -98,6 +98,16 @@ DOCKSIDE_KITS: dict[str, dict] = {
         "notes": "C1 / C2 freezer chambers: the double-sided racking rows are map-built (3 m aisles kept clear). Wrapped "
                  "pallets against the walls, 6000 K battens over the aisles.",
     },
+    "cold_store_racked_b": {
+        "purpose": "warehouse", "min_density": 0.02, "max_density": 0.1, "min_props": 5, "salt": 217,
+        "required": ["rack", "fish_boxes", "fire_extinguisher", "light_fixture"],
+        "optional": {"pallet": 1, "pallet_jack": 0.5},
+        "assets": {**DOCK_ASSETS, "light_fixture": ["prop_led_batten_cold"]},
+        "ceiling": {"prop_led_batten_cold": 4.7},
+        "lone_ok": ["rack", "fish_boxes", "pallet", "pallet_jack"],
+        "notes": "C2 (lead DB G2 review: tell the chambers apart): half-empty, stacked fish boxes instead of C1's "
+                 "wrapped pallets and crates, bare steel panels, colder light. Racking rows map-built as in C1.",
+    },
     "cold_store_aisle": {
         "purpose": "warehouse", "min_density": 0.05, "max_density": 0.4, "min_props": 4, "salt": 208,
         "required": ["fire_extinguisher", "light_fixture"],

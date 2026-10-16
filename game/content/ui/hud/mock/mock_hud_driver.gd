@@ -82,7 +82,7 @@ func _continuous() -> void:
 	if _stage == 3:
 		var p: float = fmod(t, 4.0) / 4.0
 		model.pagers = [{"pager_id": 1, "time_left_s": 10.0 * (1.0 - p), "answering": true, "progress": p}]
-		model.interaction = {"text_key": &"ui.prompt.answer_pager", "args": {"key": "F"}, "progress": p, "blocked_reason": &""}
+		model.interaction = {"text_key": &"ui.prompt.answer_pager", "args": {}, "progress": p, "blocked_reason": &""}
 	if _stage == 7 or _stage == 8:
 		model.captain_resistance = minf(0.1 + 0.05 * floorf((t - 28.0) / 1.0), 0.5)  # 10% +5%/step, cap 50%
 	if _stage == 6:
@@ -106,12 +106,12 @@ func _enter_stage(stage: int) -> void:
 			model.exhausted = false
 			model.crew_state = Enums.CrewState.NORMAL
 			model.bleedout_s = -1.0
-			model.interaction = {"text_key": &"ui.prompt.mask_up", "args": {"key": "G"}, "progress": 0.0, "blocked_reason": &""}
+			model.interaction = {"text_key": &"ui.prompt.mask_up", "args": {}, "progress": 0.0, "blocked_reason": &""}
 		1:
 			model.casing = false
 			model.masked = true
 			model.player_mode = &"masked"
-			model.interaction = {"text_key": &"ui.prompt.pick_lock", "args": {"key": "F"}, "progress": 0.0,
+			model.interaction = {"text_key": &"ui.prompt.pick_lock", "args": {}, "progress": 0.0,
 					"blocked_reason": &"ui.blocked.need_keycard"}
 		2:
 			model.carried_bag = {"loot_id": &"loot.jewelry", "weight": Enums.LootWeight.LIGHT}

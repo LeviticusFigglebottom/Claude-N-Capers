@@ -7,14 +7,14 @@ rebuild: python3 tools/blender/build.py --category characters --asset char_npc_k
 edit policy: generated file, never edit by hand; change the script and rebuild
 attach_Back: bone chest, local [0.0000, 0.0946, 0.1180] (model [0.0000, 1.3730, 0.1375], Godot axes, rest pose)
 attach_Head: bone head, local [0.0000, 0.0856, -0.0937] (model [0.0000, 1.7596, -0.0810], Godot axes, rest pose)
-attach_Hip: bone hips, local [0.2034, 0.0537, 0.0373] (model [0.2034, 1.0604, 0.0399], Godot axes, rest pose)
+attach_Hip: bone hips, local [0.2032, 0.0536, 0.0372] (model [0.2032, 1.0604, 0.0399], Godot axes, rest pose)
 body_faces_culled: 4868
 body_params: {"age": 0.8, "beard_shadow": 0.25, "build": 0.35, "gender": 0.0, "hair": "side_part", "hair_color": "grey", "hair_peak": 0.0, "height": 1.88, "lip": "auto", "skin": 1}
 bones: 52
-faces_hidden_by_robe: 3224
+faces_hidden_by_robe: 3099
 meshes: Body,Gear,Hair,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
-target_note: Kessler (default, in bed reading): tallest, silver hair; long ice-silk robe with a graphite shawl collar and sash over graphite pyjamas with ice piping. The long-coat version is char_npc_kessler_coat
+target_note: Kessler (default, reading in the armchair): tallest, silver hair; long ice-silk robe with a graphite shawl collar and sash over graphite pyjamas with ice piping. The long-coat version is char_npc_kessler_coat
 tri_budget: 35000
-tris: 27206
-tris_by_mesh: {"Body": 9008, "Gear": 196, "Hair": 1856, "Outfit": 16146}
+tris: 27120
+tris_by_mesh: {"Body": 9008, "Gear": 196, "Hair": 1856, "Outfit": 16060}

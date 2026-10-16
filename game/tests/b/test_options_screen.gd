@@ -75,6 +75,7 @@ func test_builds_every_tab() -> void:
 		var expected: int = o.draft.defaults.keys(StringName(t)).size()
 		if t == OptionsScreen.TAB_CONTROLS:
 			expected += o.draft.defaults.keys(GameSettings.GAMEPLAY).size()  # gameplay rows sit on Controls
+			expected += 1  # Lead r228: "First-time tips: Show again"
 		if t == OptionsScreen.TAB_KEYS:
 			expected = InputBindings.actions().size() + 1  # D-111: the rebind table is its own tab
 		assert_eq((o.page_focus[t] as Array).size(), expected, "%s rows are focusable" % t)
@@ -307,3 +308,44 @@ func test_pause_in_a_heist_opens_options_over_the_hud() -> void:
 	layer.queue_free()
 	crew.queue_free()
 	await wait_frames(1)
+
+
+## Lead r228: Controls has "First-time tips: Show again". It asks first (focus on Cancel; Cancel and Esc keep
+## the seen list), then forgets every seen card (situations and heists) at once, without Apply.
+func test_show_first_time_tips_again() -> void:
+	OnboardingTips.persist = false
+	OnboardingTips.reset()
+	OnboardingTips.mark_seen(&"casing")
+	OnboardingTips.mark_seen(OnboardingTips.heist_tip(&"glasshouse"))
+	var o: OptionsScreen = _screen(GameSettings.new())
+	await wait_frames(2)
+	var rows: Array = o.page_focus[OptionsScreen.TAB_CONTROLS]
+	assert_eq(rows[rows.size() - 1], o.tips_button, "the tips row ends the Controls page (pad reachable)")
+	assert_eq(_neighbor(o.tips_button, SIDE_BOTTOM), o.apply_button as Control)
+	o.tips_button.pressed.emit()
+	await wait_frames(2)
+	assert_true(o.is_tips_confirming(), "it asks first")
+	assert_eq(_focused(), o.tips_cancel_button as Control, "focus on Cancel")
+	o.tips_cancel_button.pressed.emit()
+	assert_false(o.is_tips_confirming())
+	assert_eq(OnboardingTips.seen_ids().size(), 2, "Cancel keeps the seen cards")
+	o.tips_button.pressed.emit()
+	var esc: InputEventAction = InputEventAction.new()
+	esc.action = &"ui_cancel"
+	esc.pressed = true
+	var backs: Array = []
+	o.back_requested.connect(func() -> void: backs.append(true))
+	o._unhandled_input(esc)
+	assert_false(o.is_tips_confirming(), "Esc / pad B closes the dialog")
+	assert_eq(backs.size(), 0, "and does not leave Options")
+	assert_eq(OnboardingTips.seen_ids().size(), 2)
+	o.tips_button.pressed.emit()
+	o.tips_confirm_button.pressed.emit()
+	assert_false(o.is_tips_confirming())
+	assert_eq(OnboardingTips.seen_ids().size(), 0, "every card shows again")
+	assert_false(OnboardingTips.is_seen(&"casing"))
+	assert_true(o.tips_done_label.visible, "the row says so")
+	assert_false(o.is_dirty(), "takes effect at once, nothing to Apply")
+	o.queue_free()
+	await wait_frames(1)
+	OnboardingTips.persist = true

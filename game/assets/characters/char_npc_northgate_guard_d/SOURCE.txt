@@ -1,0 +1,22 @@
+asset: char_npc_northgate_guard_d
+script: tools/blender/characters/char_npc_calder.py
+params: {"age": 0.2, "beard_shadow": 0.95, "build": 0.55, "gender": 0.0, "hair": "short", "hair_color": "blond", "height": 1.88, "look": "northgate_d", "skin": 1}
+seed: 2234495345  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category characters --asset char_npc_northgate_guard_d
+edit policy: generated file, never edit by hand; change the script and rebuild
+attach_Back: bone chest, local [0.0000, 0.0944, 0.1141] (model [0.0000, 1.3730, 0.1336], Godot axes, rest pose)
+attach_Head: bone head, local [0.0000, 0.0856, -0.0937] (model [0.0000, 1.7596, -0.0810], Godot axes, rest pose)
+attach_Hip: bone hips, local [0.2219, 0.0692, 0.0749] (model [0.2219, 1.0740, 0.0783], Godot axes, rest pose)
+body_faces_culled: 4906
+body_params: {"age": 0.2, "beard_shadow": 0.95, "build": 0.55, "gender": 0.0, "hair": "short", "hair_color": "blond", "hair_peak": 0.0, "height": 1.88, "lip": "auto", "skin": 1}
+bones: 52
+face: D-116: tall young man, light skin, short blond hair, heavy stubble
+faces_hidden_by_jacket: 2832
+hip_note: Hip seat = the radio on the belt under the jacket (right hip); the pager rides there
+look: Northgate Executive Protection: charcoal suit, grey shirt, black tie, earpiece + coiled cable (right ear), Northgate gate lapel pin, belt radio under the jacket
+meshes: Body,Gear,Hair,Outfit
+shape_keys: none (baked at body_params; do not set blend_shapes/*)
+tri_budget: 35000
+tris: 26628
+tris_by_mesh: {"Body": 8932, "Gear": 1010, "Hair": 1728, "Outfit": 14958}

@@ -605,6 +605,13 @@ def snap_opening(m: Mesh, half_w: Callable[[float], float], cy: float, z0: float
             m.v[v] = o.push_out(q, hull, clearance) if hull is not None else q
 
 
+#: D-116: a below-knee coat's share of thigh weight that moves to the shin past the knee (seated drape)
+SEATED_SHIN = 0.8
+#: the seated drape's centre band (m) mixing both legs: near zero, so each front-split edge (at the centre line) stays
+#: on its own leg seated; a wider band left both edges half on each thigh, a strip from the waist to between the knees
+SEATED_CENTRE = 0.008
+
+
 def jacket(fit: Fit, hull: Hull, mat: str, hem_z: float, button_z: float, neck_w: float = 0.075, base: float = 0.011,
            sleeve: float = 1.95, flare: float = 0.08, open_below: float = 0.03, lapel_w: float = 0.055,
            collar_mat: str | None = None, lapel_mat: str | None = None, min_off: float = 0.004,
@@ -645,9 +652,17 @@ def jacket(fit: Fit, hull: Hull, mat: str, hem_z: float, button_z: float, neck_w
         if key in loops:
             o.straighten_loop(m, loops[key], iters=2)
     rows = max(2, int((hips.z - hem_z) / (0.035 * k)))
+    knee_z = min(Vector(fit.J["knee.L"]).z, Vector(fit.J["knee.R"]).z)
+    if hem_z < knee_z - 0.03 * k:
+        # D-116 seated drape (long coats, robes): the front lies on the thighs (lap) from below the crease, the cloth
+        # past the knees falls with the shins, the back stays under the seat on the hips; mixed across a wide centre
+        # band so the front split stays near closed on strides
+        wts = o.skirt_weights(fit, hips.z, hem_z, thigh_max=0.92, centre_w=SEATED_CENTRE, ramp=0.7, back_relax=0.75,
+                              front_ramp=0.35, shin_max=SEATED_SHIN)
+    else:
+        wts = o.skirt_weights(fit, hips.z, hem_z, tail_thigh, tail_centre)
     o.loft_down(m, bottom, lambda th: hem_z - 0.01 * k * math.cos(th), hull, rows, clearance=0.012 * k,
-                flare=flare, centre=hips, weights=o.skirt_weights(fit, hips.z, hem_z, tail_thigh, tail_centre),
-                keep_shape=keep_shape)
+                flare=flare, centre=hips, weights=wts, keep_shape=keep_shape)
 
     def v_half(z: float) -> float:
         t = clamp((z - button_z) / max(neck_z - button_z, 1e-3), 0.0, 1.0)

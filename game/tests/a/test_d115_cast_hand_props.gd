@@ -7,7 +7,9 @@ extends TestCase
 const AD: Script = preload("res://tests/a/test_anim_driver.gd")
 const CAST_PATH: String = "res://world/characters/p5_cast.json"
 ## Cast entries ahead of ENV D's delivery on this branch (D-SL-2 second cleaner).
-const PENDING: Array[String] = ["npc_cleaner_sl_b"]
+## Ids listed ahead of ENV D's delivery (the deal skips them until their scenes exist; LEAD DB/SL cast audit).
+const PENDING: Array[String] = ["npc_cleaner_sl_b", "npc_cleaner_sl_c", "npc_northgate_guard_c", "npc_northgate_guard_d",
+	"npc_northgate_guard_e", "npc_northgate_guard_f", "security_officer_c", "security_officer_d"]
 
 var _nodes: Array[Node] = []
 
@@ -32,7 +34,10 @@ func test_d115_tag_map_mirrors_cast() -> void:
 				continue
 			assert_true(m.has(StringName(role)), "%s/%s mapped" % [heist, role])
 			for id: Variant in roles[role]:
-				assert_true((m.get(StringName(role), []) as Array).has(StringName(String(id))),
+				var tag: StringName = StringName(role)
+				if heist == "dockside_burn" and String(id) == "dock_packer":
+					tag = &"civ_worker_packer"  # LEAD: the packing-table spawn has its own tag
+				assert_true((m.get(tag, []) as Array).has(StringName(String(id))),
 					"%s/%s wears %s (cast)" % [heist, role, id])
 	assert_eq(tw.heist_tag_characters[&"gallery_night"][&"civ_admin"], [&"gallery_admin"], "GN admin = gallery_admin")
 	# D b95cc5e4 (p5_cast v4): tag_map.gallery_night is copied 1:1 (staff_cs / staff_admin are A's extra tags).

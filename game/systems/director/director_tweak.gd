@@ -107,8 +107,8 @@ extends Resource
 ## BUILD/SUSTAIN spawn rate multiplier by stage index (◇; "later waves -> more units").
 @export var stage_spawn_rate_mult: PackedFloat32Array = PackedFloat32Array([1.0, 1.15, 1.3])
 ## PD2: specials come mostly WITH the assault (its spawn groups carry the shields, tasers, cloakers, dozers). Each
-## BUILD/SUSTAIN group pick is drawn from the special-carrying assault groups with this chance, by stage (the plain
-## weighted pick otherwise, or when no special group is spawnable under the L4.11 caps).
+## BUILD/SUSTAIN pick adds, with this chance by stage, the specials of one special-carrying assault group in front of
+## the plain squad (added, not swapped: the force refills at the same rate; skipped when no special can spawn).
 @export var assault_special_share: PackedFloat32Array = PackedFloat32Array([0.35, 0.45, 0.55])
 ## CONTROL between waves (wave >= 2): every control_special_interval_s, with control_special_chance,
 ## one group from control_special_groups (weights by difficulty x stage; Phantoms weigh more).

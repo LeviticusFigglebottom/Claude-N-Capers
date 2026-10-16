@@ -1,4 +1,4 @@
-# Contract: characters (v1.24)
+# Contract: characters (v1.25)
 
 Producer: ENV C (generated humanoids + animations). Consumer: ENV A (NPC/crew prefabs).
 Until delivered, ENV A uses capsule placeholders with the same node names.
@@ -313,3 +313,17 @@ none, heavy (0, -0.05, 0). Published in the humanoid SOURCE `carried_bag` note.
   lap, right hand on the grip, left on the fore-end. ENV A plays it instead of sit_chair for an armed seated NPC
   (cartel `sit` posts, any armed guard on a seat post). Long-garment cloths render both faces and use seated drape
   weights (no contract change; noted for consumers).
+
+## v1.25: gait-locked weapon holds for armed locomotion (D-116 follow-up, PO "still inorganic"; SOURCE `locomotion_holds`)
+For each hold kind K in {rifle, smg, sniper, lmg, pistol, akimbo}, upper-body layer clips that carry the gait's own
+trunk motion (counter-twist, bob, lean) with the weapon arms on top; the weapon lags the chest 2-3 frames, takes part of
+the trunk's twist/pitch and springs on root acceleration (swings back on starts, overshoots on stops, settles):
+* loops: `hold_K_walk` (30 f), `hold_K_run` (21 f), `hold_K_sprint` (18 f; sprint carry: long guns diagonal across
+  the chest, pistols tucked at the chest), `hold_K_crouch` (27 f);
+* one-shots, the same frame counts as their base clips: `hold_K_walk_start` (18), `hold_K_walk_stop` (18),
+  `hold_K_run_start` (18), `hold_K_run_stop` (20).
+ENV A (anim_driver `_update_hold_layer`): while the locomotion clip is walk / walk_* / walk_back / strafe_* (30 f
+ones), run / run_*, sprint, crouch_walk, or one of the four starts/stops, layer `hold_K_<gait>` (strafe_l/r at 18 f
+keep plain `hold_K`), and **set the layer's time to the base AnimationPlayer's position every tick** (frame-locked
+to the feet, no random offset). `_layered_locomotion` covers sprint and crouch_walk too. idle_alert_K, aim priority
+and left-hand IK are unchanged.

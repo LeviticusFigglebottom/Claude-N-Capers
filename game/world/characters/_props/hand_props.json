@@ -2,7 +2,8 @@
   "book": {
     "asset": "char_hand_book",
     "clips": [
-      "sit_bed_read"
+      "sit_bed_read",
+      "sit_chair_read"
     ],
     "scene": "res://world/characters/_props/hand_book.tscn",
     "socket": "HandR"

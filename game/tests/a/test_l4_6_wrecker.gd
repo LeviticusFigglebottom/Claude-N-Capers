@@ -48,7 +48,7 @@ func test_l4_6_defs_and_variants() -> void:
 		assert_eq(PoliceSpecialKit.special_type_of(d.id), &"wrecker")
 		var hp_mult: float = 2.0 if id == "wrecker_m" else 1.0  # minigun: 2x HP (L4.6)
 		assert_near(d.health[0], 2000.0 * hp_mult, 0.1, "%s HP on the lowest difficulty" % id)
-		assert_near(d.health[5], 24000.0 * hp_mult, 0.1, "%s HP on the top difficulty" % id)
+		assert_near(d.health[5], 10000.0 * hp_mult, 0.1, "%s HP on the top difficulty (D-125)" % id)
 		assert_near(float((d.params["plate_health"] as Array)[0]), 150.0, 0.01)
 		assert_near(float((d.params["plate_health"] as Array)[1]), 160.0, 0.01)
 		assert_near(float(d.params["explosive_mult"]), 1.1, 0.0001)

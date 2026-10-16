@@ -25,15 +25,26 @@ const NPCS: Array[String] = [
 	"char_npc_kessler_coat",
 	"char_npc_cleaner_sl",
 	"char_npc_cleaner_sl_b",
+	"char_npc_cleaner_sl_c",
 	"char_npc_it_contractor",
 	"char_npc_northgate_guard",
 	"char_npc_northgate_guard_b",
+	"char_npc_northgate_guard_c",
+	"char_npc_northgate_guard_d",
+	"char_npc_northgate_guard_e",
+	"char_npc_northgate_guard_f",
 	"char_npc_helena_moor",
 ]
 const GUARD: String = "char_npc_bank_guard"
 ## Every NPC whose pager is answered at Hip/Socket (the radio on the belt).
-const RADIO_GUARDS: Array[String] = ["char_npc_bank_guard", "char_npc_northgate_guard", "char_npc_northgate_guard_b"]
-const NORTHGATE: Array[String] = ["char_npc_northgate_guard", "char_npc_northgate_guard_b"]
+const RADIO_GUARDS: Array[String] = [
+	"char_npc_bank_guard", "char_npc_northgate_guard", "char_npc_northgate_guard_b", "char_npc_northgate_guard_c",
+	"char_npc_northgate_guard_d", "char_npc_northgate_guard_e", "char_npc_northgate_guard_f",
+]
+const NORTHGATE: Array[String] = [
+	"char_npc_northgate_guard", "char_npc_northgate_guard_b", "char_npc_northgate_guard_c", "char_npc_northgate_guard_d",
+	"char_npc_northgate_guard_e", "char_npc_northgate_guard_f",
+]
 const TARGETS: Array[String] = ["char_npc_kessler", "char_npc_kessler_coat"]
 ## Kessler's recognisability accent: the ice coat (coat look) and the ice-silk robe (default look).
 const TARGET_MATERIALS: Array[String] = [
@@ -77,9 +88,9 @@ const D115_CAST: Dictionary = {
 		],
 		"Gear": ["char_metal_silver"], "Headwear": ["char_hair_grey"],
 	},
-	"char_dock_packer": {
-		"Outfit": ["char_hivis_orange", "char_reflect_silver", "char_fleece_maroon", "char_glove_work"],
-		"Headwear": ["char_knit_navy"],
+	"char_dock_packer": {   # D-116: processing whites (packing wing), not a third yard hand
+		"Outfit": ["char_shirt_white", "char_rubber_yellow", "char_work_charcoal", "char_sneaker_white"],
+		"Headwear": ["char_shirt_white"],
 	},
 	# GN-D1 polish (char_p5_gallery.py): five more gala patrons, the second waitstaff, the conservator's own look.
 	"char_gallery_patron_c": {"Outfit": ["char_dress_black", "brass"], "Headwear": ["brass", "char_hair_grey"]},
