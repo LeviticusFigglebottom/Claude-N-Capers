@@ -3498,6 +3498,8 @@ ui.preplan.bp.dockside_burn.pontoon,Pontoon
 ui.preplan.bp.dockside_burn.landing_stage,Landing stage
 ui.preplan.bp.dockside_burn.yard,Yard
 ui.preplan.bp.dockside_burn.west_lane,West lane
+ui.preplan.bp.dockside_burn.pier9_shed,Pier 9 shed
+ui.preplan.bp.dockside_burn.pier9_apron,Pier 9 apron
 ui.preplan.bp.dockside_burn.containers_west,Containers (west)
 ui.preplan.bp.dockside_burn.containers_east,Containers (east)
 item.mod.corsair_collapsed_stock.name,Collapsed Stock
