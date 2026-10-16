@@ -25,6 +25,13 @@ const NEW: Array[String] = [
 	"char_gallery_patron",
 	"char_gallery_patron_b",
 	"char_gallery_admin",
+	"char_gallery_patron_c",
+	"char_gallery_patron_d",
+	"char_gallery_patron_e",
+	"char_gallery_patron_f",
+	"char_gallery_patron_g",
+	"char_gallery_waiter",
+	"char_gallery_conservator",
 	"char_bank_manager",
 	"char_bank_officer",
 	"char_bank_officer_b",
@@ -46,7 +53,7 @@ const NEW: Array[String] = [
 ## bank_officer).
 const ROLES: Dictionary = {
 	"gallery_night": ["gallery_curator", "gallery_attendant", "gallery_conservator", "gallery_admin", "gallery_guard",
-		"gallery_patron"],
+		"gallery_patron", "gallery_waitstaff", "gallery_inspector", "gallery_vaultline"],
 	"ostrander_federal": ["bank_teller", "bank_manager", "bank_officer", "bank_guard", "bank_customer"],
 	"rolling_thunder": ["armored_car_crew", "convoy_escort"],
 	"afterhours": ["club_bouncer", "club_bartender", "club_dj", "club_patron"],
@@ -77,10 +84,14 @@ const ROSTER_FALLBACK: Dictionary = {
 		"cartel_quay", "cartel_reinf", "civ_worker", "police"],
 	"shadow_ledger": ["guard_reception", "guard_rover_l41", "guard_rover_l42", "guard_stair", "guard_roof",
 		"security_operator", "civ_cleaner_l41", "civ_cleaner_l42", "civ_it", "civ_partner", "civ_kessler"],
+	"gallery_night": ["guard_hall", "guard_rover_ground", "guard_rover_upper", "guard_rover_basement", "guard_mews",
+		"security_operator", "guard_inspection", "guard_vaultline", "civ_curator", "civ_attendant", "civ_waitstaff",
+		"civ_conservator", "civ_admin", "civ_patron"],
 }
 ## Minimum ids per role where the brief asks for several.
 const MIN_COUNT: Dictionary = {
-	"gallery_attendant": 2, "gallery_patron": 4, "bank_teller": 2, "bank_officer": 2, "bank_customer": 4, "armored_car_crew": 2,
+	"gallery_attendant": 2, "gallery_patron": 9, "gallery_waitstaff": 2, "bank_teller": 2, "bank_officer": 2,
+	"bank_customer": 4, "armored_car_crew": 2,
 	"club_bouncer": 2, "club_bartender": 2, "club_patron": 4,
 }
 ## New characters whose pager is answered at Hip/Socket (a belt radio).
@@ -108,6 +119,20 @@ const CURATOR_SUIT: String = "char_gallery_bone"
 const ADMIN_OFFICE: String = "char_knit_teal"
 const GALA_KIT: Array[String] = ["char_tux_black", "char_satin_black", "char_velvet_midnight", "char_gallery_green",
 	"char_glove_white", "char_gallery_bone"]
+## GN-D1: p5_cast.json tag_map.gallery_night is the spawn tag -> ids map ENV A mirrors into
+## NpcVisualTweak.heist_tag_characters.gallery_night. Its roster (gallery_night.md spawn data) names the
+## camera operator CAMERA_OPERATOR; the greybox spawn (gn_content.gd) tags it guard_operator.
+const GN: String = "gallery_night"
+const GN_OPERATOR_TAG: String = "guard_operator"
+## Up to nine patrons are live at once (gallery_night.md: `patrons` 3-9), so nine looks keep the crowd
+## free of twins; at least this many of each gender.
+const GN_MAX_PATRONS: int = 9
+const GN_MIN_PER_GENDER: int = 3
+## Tags whose several live NPCs must be able to wear different looks (2 attendants, 1-2 waitstaff).
+const GN_PAIRED_TAGS: Array[String] = ["civ_attendant", "civ_waitstaff"]
+## Staff, security and work kit no gala patron wears (patrons are evening wear only).
+const GN_NOT_EVENING: Array[String] = ["char_glove_white", "char_gallery_green", "char_gallery_bone", "char_knit_teal",
+	"char_knit_grey", "char_work_charcoal", "char_vl_amber"]
 
 var _index: Dictionary = {}
 var _cast: Dictionary = {}
@@ -449,3 +474,76 @@ func test_admin_pa_office_wear() -> void:
 	assert_has(mats, ADMIN_OFFICE, "admin PA wears the teal cardigan")
 	for m: String in GALA_KIT:
 		assert_false(mats.has(m), "admin PA must not wear gala/front-of-house %s" % m)
+
+
+func _gn_tag_map() -> Dictionary:
+	return (_cast.get("tag_map", {}) as Dictionary).get(GN, {}) as Dictionary
+
+
+## GN-D1: tag_map.gallery_night covers every spawn tag of gallery_night.md's roster table (CAMERA_OPERATOR
+## -> guard_operator), each tag's ids are cast in a gallery_night role and load, and the conservator,
+## the patrons and the staff never share a look.
+func test_gallery_tag_map() -> void:
+	var tags: Dictionary = _gn_tag_map()
+	assert_false(tags.is_empty(), "p5_cast.json has tag_map.%s" % GN)
+	var cast_ids: Array[String] = []
+	var roles: Dictionary = (_cast.get("heists", {}) as Dictionary).get(GN, {}) as Dictionary
+	for role: String in roles:
+		for cid: Variant in roles[role]:
+			cast_ids.append(String(cid))
+	for r: String in _design_roles(GN):
+		var tag: String = GN_OPERATOR_TAG if r == OPERATOR_ROLE else r
+		assert_true(tags.has(tag), "%s roster tag %s is in tag_map" % [GN, tag])
+	var by_id: Dictionary = {}
+	for asset: String in _index:
+		by_id[String((_index[asset] as Dictionary)["id"])] = _index[asset]
+	for tag: String in tags:
+		var ids: Array = tags[tag] as Array
+		assert_true(ids.size() >= 1, "%s/%s: >= 1 id" % [GN, tag])
+		for cid: Variant in ids:
+			var id: String = String(cid)
+			assert_has(cast_ids, id, "%s/%s: %s is cast in a %s role" % [GN, tag, id, GN])
+			assert_true(by_id.has(id) and ResourceLoader.exists(String((by_id.get(id, {}) as Dictionary).get("scene", ""))),
+					"%s/%s: %s scene exists" % [GN, tag, id])
+	for tag: String in GN_PAIRED_TAGS:
+		var ids: Array = tags.get(tag, []) as Array
+		var uniq: Dictionary = {}
+		for cid: Variant in ids:
+			uniq[String(cid)] = true
+		assert_true(uniq.size() >= 2, "%s/%s: >= 2 distinct looks (%s)" % [GN, tag, ids])
+	var staff: Array[String] = []
+	for tag: String in tags:
+		if tag != "civ_patron":
+			for cid: Variant in tags[tag]:
+				staff.append(String(cid))
+	for cid: Variant in tags.get("civ_patron", []) as Array:
+		assert_false(staff.has(String(cid)), "%s: patron %s is not also staff/security" % [GN, cid])
+	for cid: Variant in tags.get("civ_conservator", []) as Array:
+		assert_false((tags.get("civ_attendant", []) as Array).has(cid), "%s: conservator %s is not an attendant" % [GN, cid])
+
+
+## GN-D1: up to nine live patrons get nine distinct evening-wear looks, both genders (SOURCE.txt params).
+func test_gallery_patron_variety() -> void:
+	var ids: Array = _gn_tag_map().get("civ_patron", []) as Array
+	var uniq: Dictionary = {}
+	for cid: Variant in ids:
+		uniq[String(cid)] = true
+	assert_eq(uniq.size(), ids.size(), "%s/civ_patron: no id listed twice" % GN)
+	assert_true(uniq.size() >= GN_MAX_PATRONS, "%s/civ_patron: %d looks for up to %d patrons" % [GN, uniq.size(), GN_MAX_PATRONS])
+	var women: int = 0
+	var men: int = 0
+	for id: String in uniq:
+		var asset: String = "char_" + id
+		var src: Dictionary = Spec.read_source("%s%s/SOURCE.txt" % [Spec.ASSETS_DIR, asset])
+		var params: Variant = JSON.parse_string(String(src.get("params", "{}")))
+		assert_true(params is Dictionary and (params as Dictionary).has("gender"), "%s: SOURCE.txt params.gender" % asset)
+		if params is Dictionary:
+			if float((params as Dictionary).get("gender", 0.5)) >= 0.5:
+				women += 1
+			else:
+				men += 1
+		var mats: Array[String] = _materials(asset)
+		for bad: String in GN_NOT_EVENING:
+			assert_false(mats.has(bad), "%s: patron in evening wear, not %s" % [asset, bad])
+	assert_true(women >= GN_MIN_PER_GENDER and men >= GN_MIN_PER_GENDER,
+			"%s/civ_patron: both genders (%d women, %d men)" % [GN, women, men])

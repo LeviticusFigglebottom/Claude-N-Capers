@@ -328,6 +328,19 @@ def clip_ads_idle(kit: Kit, s: FPSet, N: int):
     return Choreo(_static(kit, s, ads_frame(s), s.blade_ads, True), post=lambda f, st: _sway(st, f, N, 0.6, ads=True))
 
 
+#: D-118 thumb on a vertical foregrip (cmc, mcp, ip flex, opposition; deg): tucked over the grip under the rail
+VGRIP_THUMB = (10.0, 20.0, 20.0, -20.0)
+
+
+def clip_vgrip_hand(kit: Kit, s: FPSet, N: int):
+    """D-118: the hip hold with the left hand closed round a vertical foregrip mod (palm on the mod's LeftHandIK,
+    ``markers["vgrip_ik"]`` on the set's reference gun). ENV P blends the left-hand bones to this pose and IKs the
+    wrist to the equipped grip's LeftHandIK at the set's vgrip wrist offset (SOURCE ``fp.vgrip``)."""
+    hand = left_vgrip(kit.sk, s.markers["vgrip_ik"], s.pole_l)
+    hand.shape = dataclasses.replace(hand.shape, thumb=VGRIP_THUMB[:3], thumb_opp=VGRIP_THUMB[3])
+    return Choreo([K(0, hold_frame(s.hip), hand, kit.grip, blade=s.blade)])
+
+
 def clip_sprint(kit: Kit, s: FPSet, N: int):
     def post(f: int, st: State) -> None:
         ph = f / N
@@ -894,6 +907,8 @@ def _state_fns(sk: Skeleton, s: FPSet) -> dict:
             fn = clip_ads_idle(kit, s, N)
         elif clip == "sprint":
             fn = clip_sprint(kit, s, N)
+        elif clip == "vgrip_hand":
+            fn = clip_vgrip_hand(kit, s, N)
         elif clip == "draw":
             fn = clip_draw(kit, s, N)
         elif clip == "holster":

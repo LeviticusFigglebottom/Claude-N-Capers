@@ -136,6 +136,45 @@ Phase column: the roadmap phase that must deliver the row (P1 = vertical slice).
 | S10.3 | Small loot (cash bundles, jewelry on counters) is picked up instantly and adds to payout without bags. | `small_loot` prefab, 0.5–1 s pickup. | A | P1 |
 | S10.4 | Loot value × difficulty multiplier (×1 … ×9.2). Payout = (contract + secured loot) × crew-alive bonus (110%). Split 80% offshore / 20% spending. | Identical structure. Our difficulty loot multipliers: Routine 1, Tense 2, Hazardous 2.6, Brutal 4.2, Lethal 7.2, Cataclysm 9.2. The offshore currency is named **"the stash"**. | B (payout), A (counts) | P1 |
 | S10.5 | Loot bags dropped by custody players stay where they were. | Identical. | A | P3 |
+| S10.6 | **Economy shape (D-120).** PD2: on loot heists the secured bags pay most of a full clear and greed pays; the contract is the floor. Bag values rank gold > heavy/medium goods > cash > light items. The contract broker costs a modest, difficulty-rising share of a run. The top difficulties are level-gated. | Bags (unscaled): gold 14k, weapon crate 8.5k, cash bricks / ledger books 8k, drives / parcels 7.5k, contraband / bonds 7k, cash 6.5k, jewelry 6k, laptop 5k, SL painting 4.5k, GN canvases 8k/6.8k/6k/5.2k, study 2.8k. Contracts (unscaled): GH 12k, ND 26k, SL 70k, DB 24k, GN 57k. Broker = [4k, 8k, 14k, 30k, 60k, 90k][d] + 10% of the scaled contract. Board gates: Lethal and Cataclysm at level 80. Bag share of a full clear: GH 55%, ND 67%, SL 39% (objective heist), DB 81%, GN 53%. Table below; full clear = contract + every bag + small loot, × payout_mult × 1.1 crew-alive (expected variant rolls). | B (values), C (base_payout) | P5 |
+
+Full clear vs. minimum run (contract + required bags) and broker price, per heist and difficulty (D-120):
+
+| Heist | Difficulty | Contract | Full-clear bags | Small loot | Full clear ×1.1 | Min run ×1.1 | Broker | Gate |
+|---|---|---|---|---|---|---|---|---|
+| GH | Routine | $12,000 | $27,000 | $9,850 | $53,735 | $26,400 | $5,200 | 0 |
+| GH | Tense | $24,000 | $54,000 | $19,700 | $107,470 | $52,800 | $10,400 | 0 |
+| GH | Hazardous | $31,200 | $70,200 | $25,610 | $139,711 | $68,640 | $17,120 | 0 |
+| GH | Brutal | $50,400 | $113,400 | $41,370 | $225,687 | $110,880 | $35,040 | 0 |
+| GH | Lethal | $86,400 | $194,400 | $70,920 | $386,892 | $190,080 | $68,640 | 80 |
+| GH | Cataclysm | $110,400 | $248,400 | $90,620 | $494,362 | $242,880 | $101,040 | 80 |
+| ND | Routine | $26,000 | $75,350 | $11,000 | $123,585 | $57,200 | $6,600 | 0 |
+| ND | Tense | $52,000 | $150,700 | $22,000 | $247,170 | $114,400 | $13,200 | 0 |
+| ND | Hazardous | $67,600 | $195,910 | $28,600 | $321,321 | $148,720 | $20,760 | 0 |
+| ND | Brutal | $109,200 | $316,470 | $46,200 | $519,057 | $240,240 | $40,920 | 0 |
+| ND | Lethal | $187,200 | $542,520 | $79,200 | $889,812 | $411,840 | $78,720 | 80 |
+| ND | Cataclysm | $239,200 | $693,220 | $101,200 | $1,136,982 | $526,240 | $113,920 | 80 |
+| SL | Routine | $70,000 | $51,000 | $8,500 | $142,450 | $99,000 | $11,000 | 0 |
+| SL | Tense | $140,000 | $102,000 | $17,000 | $284,900 | $198,000 | $22,000 | 0 |
+| SL | Hazardous | $182,000 | $132,600 | $22,100 | $370,370 | $257,400 | $32,200 | 0 |
+| SL | Brutal | $294,000 | $214,200 | $35,700 | $598,290 | $415,800 | $59,400 | 0 |
+| SL | Lethal | $504,000 | $367,200 | $61,200 | $1,025,640 | $712,800 | $110,400 | 80 |
+| SL | Cataclysm | $644,000 | $469,200 | $78,200 | $1,310,540 | $910,800 | $154,400 | 80 |
+| DB | Routine | $24,000 | $122,400 | $5,250 | $166,815 | $61,600 | $6,400 | 0 |
+| DB | Tense | $48,000 | $244,800 | $10,500 | $333,630 | $123,200 | $12,800 | 0 |
+| DB | Hazardous | $62,400 | $318,240 | $13,650 | $433,719 | $160,160 | $20,240 | 0 |
+| DB | Brutal | $100,800 | $514,080 | $22,050 | $700,623 | $258,720 | $40,080 | 0 |
+| DB | Lethal | $172,800 | $881,280 | $37,800 | $1,201,068 | $443,520 | $77,280 | 80 |
+| DB | Cataclysm | $220,800 | $1,126,080 | $48,300 | $1,534,698 | $566,720 | $112,080 | 80 |
+| GN | Routine | $57,000 | $79,200 | $14,100 | $165,330 | $78,980 | $9,700 | 0 |
+| GN | Tense | $114,000 | $158,400 | $28,200 | $330,660 | $157,960 | $19,400 | 0 |
+| GN | Hazardous | $148,200 | $205,920 | $36,660 | $429,858 | $205,348 | $28,820 | 0 |
+| GN | Brutal | $239,400 | $332,640 | $59,220 | $694,386 | $331,716 | $53,940 | 0 |
+| GN | Lethal | $410,400 | $570,240 | $101,520 | $1,190,376 | $568,656 | $101,040 | 80 |
+| GN | Cataclysm | $524,400 | $728,640 | $129,720 | $1,521,036 | $726,616 | $142,440 | 80 |
+
+Broker / full clear 4–20 %; broker / minimum run 10–42 % (GH Cataclysm highest). Unbuilt P5 heists (Ostrander, Rolling
+Thunder, Afterhours) keep placeholder $75–160k contracts and need the same cut when built.
 
 ### S11. Stealth reward and transition
 
@@ -191,6 +230,7 @@ Phase column: the roadmap phase that must deliver the row (P1 = vertical slice).
 | L3.7 | **Suppressors**: noise radius ~0 m. | `noise_radius_m` 0–1. | A, B | P1 |
 | L3.8 | **Hit registration** (PD2: client-side for players). | Client hit claims validated by server (see architecture §3). | A | P1 |
 | L3.9 | **Melee**: charge, knockdown, silent; concealment matters; melee kills in stealth are silent. | MeleeDef + melee intent; charge 0–1 s scales damage. | A, B | P2 |
+| L3.10 | **Shotgun ammo** (PD2: AP slug, HE, flechette, dragon's breath). Listed damage is per shot; the ammo changes delivery. | `ShotgunAmmo` (D-118 + addendum). Per-shot damage is preserved: per-pellet × stock/new pellets. Slug: 1 pellet, armor + shield + thin-wall pierce, no falloff penalty. HE: 1 pellet, explosion 2.0 m. Flechette: pellets ×1.5, bleed 4/s for 3 s. Dragon's breath: ignite 8/s for 3 s, panics civilians in the cone. range_mult 0.7. Values are B's AMMO mod params; `CombatTweak.shotgun_ammo_defaults` are fallbacks only. | A (B data) | P4 |
 
 ### L4. Enemy roster (PD2 behaviour, our names)
 

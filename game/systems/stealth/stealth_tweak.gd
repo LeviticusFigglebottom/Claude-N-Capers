@@ -45,6 +45,23 @@ extends Resource
 ## Points on the crew body tested for LOS (heights above feet, m).
 @export var los_heights: PackedFloat32Array = PackedFloat32Array([1.6, 1.0])
 
+@export_group("Weapon gadgets (D-118)")
+## D-118 ◇ PD2: a masked crew member's switched-on flashlight / laser fills the S2.1 meter of an observer
+## that sees the light even when the body is hidden: base_rate (preset min_time) x these multipliers
+## (x difficulty, x stealth.detection_rate_mult; DR does not apply: it is the gadget that is seen).
+@export var gadget_light_detect_mult: float = 0.6
+@export var gadget_laser_detect_mult: float = 0.4
+## D-118 ◇: a laser beam passing within this distance (m) of an observer's eye, at a point it can see.
+@export var gadget_laser_near_m: float = 1.0
+## D-118 ◇: "roughly inside the cone": the flashlight cone half angle is scaled by this for detection.
+@export var gadget_light_cone_mult: float = 1.25
+## D-118: fallbacks when the resolved weapon params lack them (visual_slots.md v1.3 defaults).
+@export var gadget_laser_range_m: float = 50.0
+@export var gadget_light_range_m: float = 25.0
+@export var gadget_light_angle_deg: float = 30.0
+## D-118: LOS rays to a beam point / laser dot stop this far short of it (m).
+@export var gadget_los_pullback_m: float = 0.05
+
 @export_group("Outcomes (S3)")
 @export var guard_radio_call_s: float = 2.0
 @export var investigate_budget_s: float = 20.0

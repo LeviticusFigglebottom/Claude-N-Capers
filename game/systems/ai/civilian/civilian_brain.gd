@@ -32,12 +32,14 @@ extends Node
 enum Mode { IDLE, WANDER, RUN_TO_CALL, CALLING, FLEE, COWER, DOWN, TIED, DEAD, LEAVE }
 
 ## Idle activities that may wander (seated / queued / desk civilians stay put).
-const WANDER_ACTIVITIES: Array[StringName] = [&"", &"idle", &"browse", &"phone", &"mug", &"text"]
+const WANDER_ACTIVITIES: Array[StringName] = [&"", &"idle", &"browse", &"phone", &"mug", &"text", &"walk_text"]
 ## D-069 adds mug (walks with it: mug_walk), mop, phone_seated (characters.md v1.7 ambient clips).
 ## D-103 (characters.md v1.9) adds inspect (curator_inspect at a hung work), text (walks texting: walk_text);
 ## D-111 the bar / club / bank loops: bartender, bartender_pour, bouncer, dance (dance_a/b/c), teller.
+## D-115 cast roster activities: look (investigate_look), desk (desk_work), curator_inspect, walk_text, smoke.
 const KNOWN_ACTIVITIES: Array[StringName] = [&"browse", &"phone", &"desk_work", &"queue", &"sit", &"mug", &"mop",
-	&"phone_seated", &"inspect", &"text", &"bartender", &"bartender_pour", &"bouncer", &"dance", &"teller"]
+	&"phone_seated", &"inspect", &"text", &"bartender", &"bartender_pour", &"bouncer", &"dance", &"teller",
+	&"look", &"desk", &"curator_inspect", &"walk_text", &"smoke"]
 ## Seated activities: a panicked civilian still in its seat cowers there (cower_seated) instead of running.
 const SEATED_ACTIVITIES: Array[StringName] = [&"sit", &"phone_seated"]
 ## Within this of its seat (m) a seated civilian counts as still seated.
@@ -254,6 +256,11 @@ func _on_phase_changed(_old: int, new_phase: int) -> void:
 			call_progress = 0.0
 			_clear_alerted_stimulus()
 			_flee()
+
+
+## Server: panic from a threat at `threat` (D-118 dragon's breath; same rules as _panic).
+func panic(threat: Vector3) -> void:
+	_panic(threat)
 
 
 ## Enter PANICKED (no-op when already panicked, down, tied or dead).
@@ -598,7 +605,8 @@ func _tick_idle(delta: float) -> void:
 	var pick: PatrolPoint = options[GameRng.weighted_index(&"civilians", weights)]
 	call_target = {"kind": KIND_POINT, "node": pick, "position": pick.global_position, "reason": &""}
 	mode = Mode.WANDER
-	anim_hint = &"mug_walk" if _idle_activity == &"mug" else (&"walk_text" if _idle_activity == &"text" else &"walk")
+	anim_hint = &"mug_walk" if _idle_activity == &"mug" \
+		else (&"walk_text" if _idle_activity == &"text" or _idle_activity == &"walk_text" else &"walk")
 	_reset_walk_stall()
 	_motor.go_to(pick.global_position, Tweak.stealth().civilian_walk_speed)
 
