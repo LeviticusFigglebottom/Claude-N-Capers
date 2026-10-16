@@ -31,6 +31,15 @@ func _shot(label: String) -> void:
 	print("[SCOPEHUD] shot %s" % label)
 
 
+## Po5Pilot's driver interface.
+func note(msg: String) -> void:
+	print("[SCOPEHUD] %s" % msg)
+
+
+func shot(label: String) -> void:
+	await _shot(label)
+
+
 func _run() -> void:
 	var l: Loadout = CrewWeapons.build_loadout(null).duplicate() as Loadout
 	l.primary = &"weapon.osprey_762"
@@ -54,12 +63,19 @@ func _run() -> void:
 		get_tree().quit(1)
 		return
 	dp.runner.place(0, dp.effective_duration())
-	dp.runner.jams.assign([0.02] as Array[float])  # jam right away (harness)
 	rt.teleport_crew(0, Transform3D(Basis.IDENTITY, safe.global_transform * Vector3(0, 0.05, -3.5)))
 	await _ticks(30)
-	var yaw: float = atan2(-(safe.global_position.x - c.global_position.x), -(safe.global_position.z - c.global_position.z))
-	await inp.turn_to_yaw(c, yaw)
-	await _ticks(60)
+	var pilot: Po5Pilot = Po5Pilot.new(self, c)
+	pilot.quiet = true
+	await pilot.calibrate()
+	for _i: int in 1200:  # jam it (harness): the next jam point just ahead of the drill's progress
+		if dp.runner.state == DeviceRunner.State.JAMMED:
+			break
+		dp.runner.jams.assign([dp.runner.progress + 0.001] as Array[float])
+		await _ticks(1)
+	var target: Vector3 = dp.device_node.global_position if dp.device_node != null else dp.global_position
+	await pilot.face(target, 0.01, 2.0)
+	await _ticks(30)
 	print("[SCOPEHUD] drill state %d (JAMMED %d)" % [dp.runner.state, DeviceRunner.State.JAMMED])
 	await _shot("01_hip_drill_jammed")
 	inp.press(&"aim")
@@ -68,6 +84,7 @@ func _run() -> void:
 		if cv.ads_blend > 0.999:
 			break
 		await _ticks(1)
+	await pilot.face(target, 0.003, 2.0)
 	await _ticks(30)
 	var hm: Object = rt.hud_model
 	print("[SCOPEHUD] scoped_ads=%s scope_ring=%s drill=%d" % [hm.get(&"scoped_ads") if &"scoped_ads" in hm else "-",
