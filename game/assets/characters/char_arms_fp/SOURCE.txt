@@ -7,29 +7,29 @@ rebuild: python3 tools/blender/build.py --category characters --asset char_arms_
 edit policy: generated file, never edit by hand; change the script and rebuild
 check.akimbo_ads_idle: reach_err=0.0mm step=0.0deg
 check.akimbo_bash: reach_err=0.0mm step=32.1deg
-check.akimbo_draw: reach_err=0.0mm step=5.4deg
+check.akimbo_draw: reach_err=0.0mm step=7.0deg
 check.akimbo_fire: reach_err=0.0mm step=8.7deg
 check.akimbo_fire_ads: reach_err=0.0mm step=6.3deg
 check.akimbo_fire_ads_l: reach_err=0.0mm step=6.3deg
 check.akimbo_fire_l: reach_err=0.0mm step=8.7deg
-check.akimbo_holster: reach_err=0.0mm step=5.4deg
+check.akimbo_holster: reach_err=0.0mm step=5.8deg
 check.akimbo_idle: reach_err=0.0mm step=0.1deg
-check.akimbo_reload: reach_err=0.0mm step=8.3deg
-check.akimbo_reload_empty: reach_err=0.0mm step=12.7deg
+check.akimbo_reload: reach_err=0.0mm step=8.5deg
+check.akimbo_reload_empty: reach_err=0.0mm step=16.8deg
 check.akimbo_sprint: reach_err=0.0mm step=2.7deg
 check.bow_ads_idle: reach_err=0.0mm step=0.1deg
 check.bow_bash: reach_err=0.0mm step=19.6deg
-check.bow_draw: reach_err=0.0mm step=13.8deg
+check.bow_draw: reach_err=0.0mm step=17.9deg
 check.bow_draw_string: reach_err=0.0mm step=15.3deg
 check.bow_fire: reach_err=0.0mm step=39.3deg
 check.bow_fire_ads: reach_err=0.0mm step=39.3deg
 check.bow_hold: reach_err=0.0mm step=0.8deg
-check.bow_holster: reach_err=0.0mm step=13.8deg
+check.bow_holster: reach_err=0.0mm step=14.6deg
 check.bow_idle: reach_err=0.0mm step=0.1deg
 check.bow_nock: reach_err=0.0mm step=43.3deg
 check.bow_release: reach_err=0.0mm step=39.3deg
-check.bow_reload: reach_err=0.0mm step=43.3deg
-check.bow_reload_empty: reach_err=0.0mm step=43.3deg
+check.bow_reload: reach_err=0.0mm step=43.6deg
+check.bow_reload_empty: reach_err=0.0mm step=43.6deg
 check.bow_sprint: reach_err=0.0mm step=7.5deg
 check.break_action_ads_idle: reach_err=0.0mm step=0.0deg
 check.break_action_bash: reach_err=0.0mm step=33.3deg
@@ -157,8 +157,8 @@ check.pistol_fire_auto: reach_err=0.0mm step=3.6deg
 check.pistol_fire_auto_ads: reach_err=0.0mm step=1.9deg
 check.pistol_holster: reach_err=0.0mm step=9.9deg
 check.pistol_idle: reach_err=0.0mm step=0.1deg
-check.pistol_reload: reach_err=0.0mm step=52.4deg
-check.pistol_reload_empty: reach_err=0.0mm step=46.9deg
+check.pistol_reload: reach_err=0.0mm step=45.5deg
+check.pistol_reload_empty: reach_err=0.0mm step=43.5deg
 check.pistol_sprint: reach_err=0.0mm step=7.0deg
 check.revolver_ads_idle: reach_err=0.0mm step=0.0deg
 check.revolver_bash: reach_err=0.0mm step=43.5deg
@@ -167,8 +167,8 @@ check.revolver_fire: reach_err=0.0mm step=11.1deg
 check.revolver_fire_ads: reach_err=0.0mm step=5.8deg
 check.revolver_holster: reach_err=0.0mm step=9.1deg
 check.revolver_idle: reach_err=0.0mm step=0.1deg
-check.revolver_reload: reach_err=0.0mm step=120.0deg
-check.revolver_reload_empty: reach_err=0.0mm step=120.0deg
+check.revolver_reload: reach_err=0.0mm step=115.6deg
+check.revolver_reload_empty: reach_err=0.0mm step=115.6deg
 check.revolver_sprint: reach_err=0.0mm step=7.0deg
 check.rifle_ads_idle: reach_err=0.0mm step=0.0deg
 check.rifle_bash: reach_err=0.0mm step=33.3deg
@@ -523,7 +523,7 @@ fp.lmg: reload: cover_open, mag_out (box off), mag_in (box on), belt_seat, cover
 fp.melee: melee_knife / melee_blunt / melee_blade (MeleeDef; proposal: MeleeDef.anim_set): the melee weapon hangs identity on the weapon bone, which carries the ITEM frame: Godot origin on the handle axis at the grip pivot (20 mm below the top of the fist), handle along +Y (blade / head toward +Y), edge / striking face toward -Z; it is the gun grip offset turned 18 deg (the grip rake) about X, so the weapon bone is not identity under hand.R in these sets. Tap: swing (hit@ contact, done@ back at idle). Hold: charge_start (idle -> the wind-up; length = MeleeDef.charge_time_s, charged@ its end) -> charge* (held wind-up, trembling; frame 0 = charge_start's last frame) -> charge_swing on release (hit@, done@). draw ready@, holster gone@ (defaults: no equip time in MeleeDef)
 fp.minigun: spin_up (spin@0 -> spun@15: Rotor at speed, fire may start) -> fire_hold* -> spin_down (stopped@end); Rotor spins about its local Z (ENV A); fire / fire_ads = 3 f shudders; reload / reload_empty: the ammo box rides the magazine bone (mag_out, mag_swap, mag_in; dropped when empty), belt_seat (the left hand feeds the belt into the chute); sprint* = a 24 f heavy jog; left hand on the left side grip (vgrip); no sights: ads_idle is a raised hip hold
 fp.offhand_grip: akimbo left gun: attach the second WeaponVisual to hand.L (BoneAttachment3D + Socket) at basis x=(-0.0000,-0.0000,-1.0000) y=(0.9511,-0.3090,0.0000) z=(-0.3090,-0.9511,-0.0000) origin=(0.0120,0.0720,-0.0300) (hand.L bone space; = _anim.grip_offset L = the X-mirror of the weapon bone's hand.R offset: the same gun model, not mirrored; no helper bone)
-fp.organic: D-116 follow-up: every gun set's reload* / draw / holster (not akimbo, bow) carries a secondary-motion layer (_arms_organic): the gun follows its keys through a spring (anticipation, overshoot, settle), kicked at mag_out / mag_in / shell_in* / round_in* / slide_release / bolt_release / bolt_forward / pump_forward / cover_close / belt_seat, with a slow drift while the hands work; the hands follow their paths on the gun through springs, the fingers re-grip, the wrist rolls into the well before a seat, the firing hand squeezes on a release. Clip lengths, key and event frames are unchanged; every clip starts and ends on its keyed pose (draw: the raise plays over the first 80 % and settles, ready@ = last frame)
+fp.organic: D-116 follow-up: every gun set's reload* / draw / holster carries a secondary-motion layer (_arms_organic; akimbo: per gun, before the two are combined): the gun follows its keys through a spring (anticipation, overshoot, settle), kicked at mag_out / mag_in / shell_in* / round_in* / slide_release / bolt_release / bolt_forward / pump_forward / cover_close / belt_seat, with a slow drift while the hands work; the hands follow their paths on the gun through springs, the fingers re-grip, the wrist rolls into the well before a seat, the firing hand squeezes on a release. Clip lengths, key and event frames are unchanged; every clip starts and ends on its keyed pose (draw: the raise plays over the first 80 % and settles, ready@ = last frame)
 fp.parts: Pump: slides 0.075 m along local +Z (back) between the pump_back ramp and pump_forward; Bolt: handle lifts 62 deg about the bore axis (bolt_open), slides 0.075 m along +Z (bolt_back), returns (bolt_forward), locks down (bolt_close); Rampart feed cover: opens 78 deg about its front hinge (cover_open .. cover_close; the weapon scene needs a hinged FeedCover pivot); Slide (pistol): slide_release; smg/rifle bolt_release (cocking-handle slap / bolt catch); shotgun_box bolt_release (charging handle released after a 0.070 m pull)
 fp.pistol_auto: pistol fire_auto / fire_auto_ads: 3 f machine-pistol kick (<= 1.5 shot intervals up to 900 rpm), restarted every shot; the semi-auto pistol clips are unchanged
 fp.revolver: Crane: pivot on the hinge line parallel to the bore, opens 80 deg (+ about its local Z; the cylinder swings to -X) over crane_open-2..crane_open+1, closes over crane_close-3..crane_close; Cylinder (child of Crane) turns 60 deg per shot; eject: palm on the ejector rod, muzzle up (rod stroke eject-3..eject, spawn 6 casings at eject); Speedloader rides the magazine bone: its weapon-scene pose = loaded against the closed cylinder (bone identity), visible loader_show..crane_close, seated on the open cylinder at speedloader_in (its rounds move to the cylinder), twisted and released at loader_drop (falls away empty), bone back to identity at crane_close; reload_empty = reload (same motion and events); fire/fire_ads 9 f, heavier kick than the pistol

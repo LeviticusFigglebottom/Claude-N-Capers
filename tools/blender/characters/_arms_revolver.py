@@ -128,6 +128,11 @@ class RevolverKit:
                        (-0.6, -0.35, -0.7), "flat", share=0.80, off=0.010)
 
 
+#: D-116 follow-up: the eject / load holds sit this much further from the eye (m) than the first cut, so under P's
+#: one-handed hip framing the right forearm does not fill the lower screen while the cylinder is worked
+DEEP = 0.08
+
+
 def clip_speedloader(kit, s: FPSet, N: int, ev: dict):
     """One reload clip (reload == reload_empty): crane_open, eject, loader_show, speedloader_in,
     loader_drop, crane_close, done."""
@@ -143,11 +148,11 @@ def clip_speedloader(kit, s: FPSet, N: int, ev: dict):
     flick = hold_frame(s.reload_tilt, (-0.006, 0.0, 0.004), yaw=4.0, pitch=2.0, roll=-14.0)
     # muzzle up: eject (D-116 follow-up: high enough that the cylinder and the rod hand stay in frame under P's
     # one-handed hip framing)
-    up = A.weapon_frame(v3(0.050, 0.30, -0.075), 8.0, 68.0, -12.0)
-    up_push = A.weapon_frame(v3(0.050, 0.30, -0.082), 8.0, 66.0, -12.0)
+    up = A.weapon_frame(v3(0.050, 0.30 + DEEP, -0.075), 8.0, 68.0, -12.0)
+    up_push = A.weapon_frame(v3(0.050, 0.30 + DEEP, -0.082), 8.0, 66.0, -12.0)
     # muzzle down and to the left, in front of the right forearm: the open cylinder faces the eye
-    down = A.weapon_frame(v3(0.050, 0.30, -0.105), 50.0, -38.0, 18.0)
-    load = A.weapon_frame(v3(0.045, 0.30, -0.100), 50.0, -34.0, 20.0)
+    down = A.weapon_frame(v3(0.050, 0.30 + DEEP, -0.105), 50.0, -38.0, 18.0)
+    load = A.weapon_frame(v3(0.045, 0.30 + DEEP, -0.100), 50.0, -34.0, 20.0)
     grip = kit.grip
     pouch = kit.pouch
     pre = rk.loader_w(1.0, back=0.032)
