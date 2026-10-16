@@ -1,11 +1,13 @@
 ## D-116 motion clip (windowed): real input on the unit map, every rendered frame saved, for the "organic" review:
 ## idle (breathing), a fast turn and stop (sway lag + overshoot), walk (footstep bob), sprint, jump + landing dip,
-## three shots (recoil spring), ADS in, aimed hold, ADS out. Writes <out>/<weapon>/f_NNNN.png per weapon and prints
+## three shots (recoil spring), ADS in, aimed hold, ADS out, a tactical reload (one-handed sets: the left hand comes
+## in for it, D-116). --reload-only records just the shots + reload (reload framing review). Writes
+## <out>/<weapon>/f_NNNN.png per weapon and prints
 ## `[MOTION] <weapon> <segment> frame=N`; make a video with
 ##   ffmpeg -framerate 30 -i <out>/<weapon>/f_%04d.png -pix_fmt yuv420p <weapon>.mp4
 ##   xvfb-run -a -s "-screen 0 640x360x24" /opt/godot/godot --rendering-driver opengl3 --audio-driver Dummy \
 ##     --fixed-fps 30 --resolution 640x360 --path game res://tests/p/_review/motion_clip.tscn -- --out=/abs/dir \
-##     [--weapons=weapon.kestrel_p9,weapon.corsair_ar]
+##     [--weapons=weapon.kestrel_p9,weapon.corsair_ar] [--reload-only]
 ## Owner: ENV P.
 extends Node
 
@@ -13,6 +15,7 @@ var _out: String = "user://motion_clip"
 var _weapons: PackedStringArray = ["weapon.kestrel_p9", "weapon.corsair_ar"]
 var _dir: String = ""
 var _frame: int = 0
+var _reload_only: bool = false
 
 
 func _ready() -> void:
@@ -22,6 +25,7 @@ func _ready() -> void:
 		match kv[0]:
 			"out": _out = v
 			"weapons": _weapons = v.split(",")
+			"reload-only": _reload_only = true
 	for wid: String in _weapons:
 		await _weapon(StringName(wid))
 	print("[MOTION] RESULT DONE weapons=%d out=%s" % [_weapons.size(), _out])
@@ -51,6 +55,13 @@ func _weapon(wid: StringName) -> void:
 	_dir = "%s/%s" % [_out, String(wid).trim_prefix("weapon.")]
 	DirAccess.make_dir_recursive_absolute(_dir)
 	_frame = 0
+	if _reload_only:
+		await _reload(wid, inp)
+		inp.release_all()
+		rt.teardown()
+		for _i: int in 3:
+			await get_tree().process_frame
+		return
 	await _seg(wid, "idle", 30)
 	for _k: int in 10:  # fast turn right, then stop: sway lag + spring overshoot
 		inp.look(45.0, 0.0)
@@ -73,10 +84,19 @@ func _weapon(wid: StringName) -> void:
 	await _seg(wid, "ads_in", 30)
 	inp.release(&"aim")
 	await _seg(wid, "ads_out", 30)
+	await _reload(wid, inp)
 	inp.release_all()
 	rt.teardown()
 	for _i: int in 3:
 		await get_tree().process_frame
+
+
+func _reload(wid: StringName, inp: PInputDriver) -> void:
+	for _k: int in 2:  # a full magazine does not reload
+		await inp.tap(&"fire")
+		await _seg(wid, "fire", 8)
+	await inp.tap(&"reload")
+	await _seg(wid, "reload", 90)
 
 
 func _seg(wid: StringName, label: String, frames: int) -> void:
