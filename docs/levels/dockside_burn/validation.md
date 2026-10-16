@@ -51,12 +51,12 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## floating: Nothing floats
 
-- 224 props checked
+- 230 props checked
 
 
 ## clipping: Nothing clips
 
-- 224 props, 49 doors checked
+- 230 props, 49 doors checked
 
 
 ## scale: Human scale

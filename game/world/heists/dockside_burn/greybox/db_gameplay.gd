@@ -60,6 +60,8 @@ const CONTAINER_Z: Dictionary = {"k1": -26.82, "k2": -20.82, "k3": -14.82, "k4":
 ## InteractionTweak.hand_saw_padlock_s); the brass padlock visual (prefab_visuals.py).
 const PADLOCK_PICK_S: float = 8.0
 const PADLOCK_VISUAL: String = "res://assets/props/prop_padlock_brass/prop_padlock_brass.glb"
+## D-115 DB-9: every container hasp carries a customs bolt seal; the weapons slot adds the Co-op's brass padlock.
+const SEAL_VISUAL: String = "res://assets/props/prop_customs_seal/prop_customs_seal.glb"
 ## Container door latch: the padlock's target; the mission releases the crates on its `opened`.
 const LATCH_SCRIPT: String = "res://world/heists/dockside_burn/db_container_latch.gd"
 ## Product rooms (doc Loot path): slot -> [room, burn pallet base, product loot spawns, fire volume box].
@@ -310,7 +312,7 @@ func _build_containers(gp: Node3D) -> void:
 		add(cg, latch)
 		var pl: Node3D = prefab(body, "padlock", "Padlock", face, 90.0 if side > 0.0 else -90.0,
 			{"interaction_time_s": PADLOCK_PICK_S, "objective_tag": StringName("padlock_" + String(k)),
-				"visual_scene": load(PADLOCK_VISUAL)}, use, {"mount": "door"})
+				"visual_scene": load(SEAL_VISUAL)}, use, {"mount": "door"})
 		if pl != null:
 			pl.set(&"targets", [pl.get_path_to(latch)] as Array[NodePath])
 		prefab(cg, "loot_spawn", "Crates" + String(k).to_upper(), Vector3(float(row[1]) + side * 1.1, 0.0, zc - 0.7), 0.0,
@@ -447,6 +449,15 @@ func _variants_containers(variants: Node3D) -> void:
 		var m: Marker3D = marker(s, "BrassPadlock", Vector3(float(row[1]) + float(row[2]) * 0.06, 1.1,
 			float(CONTAINER_Z[k]) + 0.5))
 		m.set_meta(&"brass_padlock", true)
+		# DB-9: the readable tell, the Co-op's brass padlock hung on the hasp above the customs seal (slot-only).
+		m.basis = yaw_basis(90.0 if float(row[2]) > 0.0 else -90.0)
+		var lock: Node3D = (load(PADLOCK_VISUAL) as PackedScene).instantiate() as Node3D
+		lock.name = "BrassPadlockVisual"
+		lock.position = Vector3(0.0, 0.13, -0.051)  # pivot 9 mm off the door face: the body clears it
+		lock.basis = yaw_basis(180.0)  # mount back (+Z) points into the door
+		lock.set_meta(&"mount", "wall")  # hangs on the container door's hasp
+		m.add_child(lock)
+		lock.owner = map_root
 
 
 ## Product location: product stacks (contraband), the product pallet and ENV A's `burn_point` on it
