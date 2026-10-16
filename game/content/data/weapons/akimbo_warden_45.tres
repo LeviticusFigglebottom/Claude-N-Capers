@@ -49,7 +49,8 @@ mod_slots = {
 1: [&"mod.akimbo_w45_compensator"],
 2: [&"mod.akimbo_w45_suppressor"],
 3: [&"mod.akimbo_w45_iron_sights", &"mod.akimbo_w45_reflex_sight"],
-7: [&"mod.akimbo_w45_standard_mag", &"mod.akimbo_w45_extended_mag"]
+7: [&"mod.akimbo_w45_standard_mag", &"mod.akimbo_w45_extended_mag"],
+8: [&"mod.rail_laser", &"mod.rail_flashlight", &"mod.rail_combo"]
 }
 default_mods = {
 3: &"mod.akimbo_w45_iron_sights",

@@ -53,7 +53,8 @@ mod_slots = {
 0: [&"mod.shrike_carbine_barrel"],
 2: [&"mod.shrike_suppressor"],
 3: [&"mod.shrike_iron_sights", &"mod.shrike_peep_sight", &"mod.shrike_scout_scope"],
-7: [&"mod.shrike_tube"]
+7: [&"mod.shrike_tube"],
+8: [&"mod.rail_laser", &"mod.rail_flashlight", &"mod.rail_combo"]
 }
 default_mods = {
 3: &"mod.shrike_iron_sights",

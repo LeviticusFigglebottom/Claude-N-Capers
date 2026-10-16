@@ -28,6 +28,12 @@ from lib import geo, uv
 FP_DENSITY = uv.DENSITY_FIRST_PERSON
 
 
+# D-118: on the pistols ``SideRail`` shares the dust-cover rail with ``Underbarrel`` (visual_slots.md). Its basis is
+# turned +90 deg about the bore (Blender +Y), so a rail gadget built "outward = local +X" (rail_gadgets_mods.py) hangs
+# under the frame; local +Y stays forward, so the gadgets' LaserOrigin/LightOrigin still point down the bore.
+DUST_COVER_SIDE_RAIL_ROT = (0.0, math.pi / 2, 0.0)
+
+
 # --- materials ---------------------------------------------------------------------------------
 class Mats:
     """Material slots M_<library_id>. Flat colours are the sRGB placeholders shown in Godot until the

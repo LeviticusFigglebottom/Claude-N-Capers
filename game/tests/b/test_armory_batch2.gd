@@ -137,4 +137,7 @@ func test_akimbo_pair() -> void:
 	for slot: Variant in w.mod_slots:
 		for mid: Variant in w.mod_slots[slot]:
 			var m: WeaponModDef = ContentDB.mod(StringName(mid))
-			assert_true(m.model != null and m.model.resource_path.contains("/mod_w45_"), "%s uses a Warden part" % mid)
+			# D-118: the shared rail gadgets (mod_rail_*) fit the Warden's dust-cover rail like its own parts
+			var part: bool = m.model != null and (m.model.resource_path.contains("/mod_w45_")
+					or m.model.resource_path.contains("/mod_rail_"))
+			assert_true(part, "%s uses a Warden part" % mid)

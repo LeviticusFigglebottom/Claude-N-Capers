@@ -218,6 +218,19 @@ Shared rail foregrip (D-115): `rail_vertical_grip` (FOREGRIP: kick −0.12, hori
 every weapon with an `Underbarrel` rail and no grip of its own (Drover, Lark, Ferret, Hornet, Hush, Wasp);
 like the per-weapon vertical grips it has no `LeftHandIK`, so the support hand keeps the base marker
 (`test_rail_grip.gd`).
+Rail gadgets (D-118, GADGET -> `SideRail`, `rail_gadgets_mods.py`): `rail_laser` (hip spread −0.2 / conc −1, $3500,
+gadgets [laser], params gadget_laser_color/_range_m, `LaserOrigin`), `rail_flashlight` (conc −1, $2500, gadgets
+[flashlight], params gadget_light_range_m/_angle_deg/_energy, `LightOrigin`), `rail_combo` (hip −0.2 / conc −2, $5500,
+both gadgets, both param sets, both markers) on every conventional weapon (specials excluded: bow, crossbow,
+flamethrower, launcher, saw, rotary). The origin markers' −Z = weapon forward. Pistols' `SideRail` shares the
+dust-cover rail with `Underbarrel` and is turned 90° about the bore so the gadget hangs below; no pistol has a
+FOREGRIP slot, so no conflicts are needed. Shotgun ammo (D-118, AMMO, Plowman/Brute/Harrow/Mule/Reaper):
+`shotgun_slug` (dmg +2/pellet, spread −0.6, total ammo −6, AP 1.0 + shield pierce, $6000), `shotgun_he` (dmg +1.5,
+spread +0.4, ammo −8, $7000), `shotgun_flechette` (dmg −0.5, spread −0.3, $4500), `shotgun_dragons_breath`
+(dmg −1, $5500); the ammo behaviour is in `params` (ammo_type + keys per D-118, merged by D-057). Mod deltas never
+touch pellets or falloff (test_content_data), so slug/HE `pellets: 1`, flechette `pellets_mult` and dragon's
+breath `range_mult` are runtime params for ENV A. AMMO has no attach marker: its model (`shotgun_ammo_mods.py`,
+a shell caddy) is an icon and never goes on the gun (`test_gadgets_ammo.gd`).
 Audit slot fills (D-118): STOCK pairs on the four weapons whose base stock is `StockMount/StockStock` —
 a light `*_collapsed_stock` (conc +3 / kick +0.21, horiz +0.3, ADS spread +0.576, hip +0.72; Harrow kick
 +0.585, horiz +0.06; $2000) and a heavy `bastion_precision_stock` / `lancet_tactical_stock` /

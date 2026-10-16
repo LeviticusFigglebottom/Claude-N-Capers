@@ -146,7 +146,7 @@ def build(ctx) -> None:
     sight_rail = ctx.marker("SightRail", (0.0, s.SIGHT_RAIL_Y, s.SLIDE_TOP_Z), parent=slide)
     magwell = ctx.marker("Magwell", s.MAGWELL_POS, rotation_euler=s.MAGWELL_ROT)
     rail = (0.0, s.RAIL_Y, s.FRAME_BOTTOM_Z - 0.0057)
-    ctx.marker("SideRail", rail)
+    ctx.marker("SideRail", rail, rotation_euler=c.DUST_COVER_SIDE_RAIL_ROT)  # D-118: gadgets hang under the rail
     ctx.marker("Underbarrel", rail)
     ctx.marker("StockMount", s.STOCK_MOUNT)
     ctx.marker("GripMount", (0.0, 0.0, 0.0))

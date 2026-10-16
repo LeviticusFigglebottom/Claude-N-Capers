@@ -337,7 +337,10 @@ func test_every_mod_has_a_downside_on_its_weapon() -> void:
 				# D-097: PD2 mods cost concealment, not ADS time; a concealment cost counts even when the
 				# weapon already sits at the 0 floor (Condor / Cyclone: the clamp hides it, PD2 lists it).
 				var worse: bool = m.delta.ads_time_s > 0.0 or m.delta.equip_time_s > 0.0 or m.delta.concealment < 0
-				var better: bool = m.delta.suppressed or modded.magnification > stock.magnification
+				# D-118: a gadget (laser / light) or a special shotgun load (fire, explosion: params.ammo_type) is its own
+				# upside, like a suppressor or a scope
+				var better: bool = m.delta.suppressed or modded.magnification > stock.magnification \
+						or not m.delta.gadgets.is_empty() or m.params.has("ammo_type")
 				for k: String in d:
 					if d[k]["changed"]:
 						if d[k]["better"]:

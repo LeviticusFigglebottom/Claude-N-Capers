@@ -49,7 +49,8 @@ mod_slots = {
 2: [&"mod.corsair_suppressor"],
 3: [&"mod.corsair_iron_sights", &"mod.rail_reflex_sight", &"mod.rail_prism_scope"],
 5: [&"mod.corsair_vertical_grip"],
-7: [&"mod.corsair_standard_mag", &"mod.corsair_extended_mag"]
+7: [&"mod.corsair_standard_mag", &"mod.corsair_extended_mag"],
+8: [&"mod.rail_laser", &"mod.rail_flashlight", &"mod.rail_combo"]
 }
 default_mods = {
 3: &"mod.corsair_iron_sights",

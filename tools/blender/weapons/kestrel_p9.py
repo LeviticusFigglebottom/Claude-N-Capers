@@ -22,6 +22,7 @@ port, to the right) and ``Magwell`` (rotated with the 18 deg grip rake, +Y = ins
 
 import math
 
+import _common as c
 import _p9 as p9
 
 ASSET_ID = "wpn_kestrel_p9"
@@ -177,7 +178,7 @@ def build(ctx) -> None:
     sight_rail = ctx.marker("SightRail", (0.0, p9.SIGHT_RAIL_Y, p9.SLIDE_TOP_Z), parent=slide)
     magwell = ctx.marker("Magwell", p9.MAGWELL_POS, rotation_euler=p9.MAGWELL_ROT)
     rail = (0.0, (p9.RAIL_FRONT_Y + p9.RAIL_REAR_Y) / 2, p9.RAIL_BOTTOM_Z)
-    ctx.marker("SideRail", rail)
+    ctx.marker("SideRail", rail, rotation_euler=c.DUST_COVER_SIDE_RAIL_ROT)  # D-118: gadgets hang under the rail
     ctx.marker("Underbarrel", rail)
     ctx.marker("StockMount", (0.0, -0.043, 0.030))
     ctx.marker("GripMount", (0.0, 0.0, 0.0))

@@ -1210,6 +1210,20 @@ item.mod.rail_prism_scope.name,Tri-Lens Prism Scope
 item.mod.rail_prism_scope.desc,"A compact 3x prism sight. Precise at range, slower to raise, hard to hide."
 item.mod.rail_vertical_grip.name,Rail Foregrip
 item.mod.rail_vertical_grip.desc,A clamp-on vertical grip for any lower rail. Tames the climb for a little extra bulk.
+item.mod.rail_laser.name,Pin-Point Laser Module
+item.mod.rail_laser.desc,"A side-rail laser that paints a red dot where the shot will land. Steadier from the hip, but guards can spot the beam."
+item.mod.rail_flashlight.name,Lantern Tactical Light
+item.mod.rail_flashlight.desc,"A bright rail light that cuts through dark rooms. Toggle it off in stealth: guards notice a lit cone."
+item.mod.rail_combo.name,Twinbeam Combo Unit
+item.mod.rail_combo.desc,"Laser and light in one housing. Both beams on one switch, a little more bulk to hide."
+item.mod.shotgun_slug.name,Breaching Slug
+item.mod.shotgun_slug.desc,"One heavy solid slug. Punches through body armor and shields, hits harder and straighter, fewer rounds per pickup."
+item.mod.shotgun_he.name,Blast Round
+item.mod.shotgun_he.desc,"A shell with a small explosive head. Bursts on impact for splash damage, never penetrates, scarce and wild."
+item.mod.shotgun_flechette.name,Needle Flechette
+item.mod.shotgun_flechette.desc,"Many thin darts in a tight pattern. Wounds keep bleeding for a few seconds after the hit."
+item.mod.shotgun_dragons_breath.name,Dragon's Breath
+item.mod.shotgun_dragons_breath.desc,"A gout of burning pellets. Sets targets alight and scatters civilians, but the fire dies out at short range."
 item.mod.plowman_choke.name,Breacher Choke
 item.mod.plowman_choke.desc,Tightens the pellet spread. Toothed and ported for close work.
 item.mod.plowman_ghost_ring.name,Ghost Ring Sight

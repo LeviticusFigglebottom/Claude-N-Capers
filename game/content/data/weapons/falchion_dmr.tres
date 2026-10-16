@@ -49,7 +49,8 @@ mod_slots = {
 2: [&"mod.falchion_suppressor"],
 3: [&"mod.falchion_iron_sights", &"mod.rail_reflex_sight", &"mod.rail_prism_scope"],
 5: [&"mod.falchion_bipod"],
-7: [&"mod.falchion_standard_mag", &"mod.falchion_extended_mag"]
+7: [&"mod.falchion_standard_mag", &"mod.falchion_extended_mag"],
+8: [&"mod.rail_laser", &"mod.rail_flashlight", &"mod.rail_combo"]
 }
 default_mods = {
 3: &"mod.falchion_iron_sights",
