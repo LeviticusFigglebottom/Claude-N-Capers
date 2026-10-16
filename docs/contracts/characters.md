@@ -1,4 +1,4 @@
-# Contract: characters (v1.25)
+# Contract: characters (v1.26)
 
 Producer: ENV C (generated humanoids + animations). Consumer: ENV A (NPC/crew prefabs).
 Until delivered, ENV A uses capsule placeholders with the same node names.
@@ -327,3 +327,21 @@ ones), run / run_*, sprint, crouch_walk, or one of the four starts/stops, layer 
 keep plain `hold_K`), and **set the layer's time to the base AnimationPlayer's position every tick** (frame-locked
 to the feet, no random offset). `_layered_locomotion` covers sprint and crouch_walk too. idle_alert_K, aim priority
 and left-hand IK are unchanged.
+
+## v1.26: police combat movement (D-116 follow-up, PO "still inorganic"; SOURCE `combat_moves`)
+* **Aim on the move**, frame-locked like v1.25: `aim_F_walk` (30 f), `aim_F_run` (21 f), `aim_F_crouch` (27 f) loops for
+  F in {rifle, pistol, akimbo}: the aim_F upper body over the gait trunk; the weapon follows 12-18 % of the trunk's turn
+  (muzzle wobble ≤ 2.8° at a run). They cover run-and-gun and strafe-while-aiming through the 8-way walk_* / run_* clips.
+* **Per-class reloads** (one-shots, reload_rifle's event names): `reload_smg` 54 f {mag_out, mag_in, done};
+  `reload_shotgun` 84 f {shell ×4 every 12 f, done} (tube feed, then pump); `reload_lmg` 120 f {cover_open, mag_out,
+  mag_in, cover_close, done}; `reload_sniper` 78 f {mag_out, mag_in, bolt, done}.
+* **Cover**: `cover_peek_l_F` / `cover_peek_r_F` (standing at a corner: lean out aimed, hold, back in) and `cover_low_F`
+  (crouched behind low cover: rise, aim over, duck), 150 f loops, F in {rifle, pistol}.
+* **Stagger**: `stagger_F` (F in {rifle, pistol}), 36 f one-shot {impact: 2}, root motion `curve.stagger_F` (two steps
+  back), weapon knocked off line, recovering into aim_F frame 0.
+ENV A wiring: (a) NPCs get the crew's hold layer: moving + alert + armed → `hold_K_<gait>`; aiming/firing while moving →
+`aim_F_<gait>` (time-locked to the base clip); firing while moving → fire_F upper bones over it. (b) A reload while moving
+plays `reload_<class>` as the upper-body layer, full body when standing; class map SMG/SPECIAL → smg, SHOTGUN → shotgun,
+LMG → lmg, SNIPER → sniper, rifle/pistol/akimbo unchanged. (c) cover_* loops play on a brain cover post (anim_hint
+`cover_peek_l` / `cover_peek_r` / `cover_low`). (d) `stagger_F` replaces hit_react on a stagger-strength hit. Fall back
+to the old clips until D's land.
