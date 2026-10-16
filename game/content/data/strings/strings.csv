@@ -3496,6 +3496,10 @@ ui.preplan.bp.dockside_burn.ferro_street,Ferro Street
 ui.preplan.bp.dockside_burn.bellweather,Bellweather Ice Co
 ui.preplan.bp.dockside_burn.pontoon,Pontoon
 ui.preplan.bp.dockside_burn.landing_stage,Landing stage
+ui.preplan.bp.dockside_burn.yard,Yard
+ui.preplan.bp.dockside_burn.west_lane,West lane
+ui.preplan.bp.dockside_burn.containers_west,Containers (west)
+ui.preplan.bp.dockside_burn.containers_east,Containers (east)
 item.mod.corsair_collapsed_stock.name,Collapsed Stock
 item.mod.corsair_collapsed_stock.desc,"A light telescoping stock pushed all the way in. Easier to hide, harder to hold steady."
 item.mod.corsair_tactical_stock.name,Tactical Stock
