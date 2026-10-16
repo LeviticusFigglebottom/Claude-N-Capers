@@ -61,8 +61,8 @@ set_hip_offset = Dictionary[StringName, Vector3]({
 &"melee_knife": Vector3(-0.1, 0.06, -0.18)
 })
 set_ads_offset_z = Dictionary[StringName, float]({
-&"pistol": 0.08,
-&"revolver": 0.05,
+&"pistol": 0.105,
+&"revolver": 0.08,
 &"shotgun": -0.03
 })
 set_hip_rot_deg = Dictionary[StringName, Vector3]({
