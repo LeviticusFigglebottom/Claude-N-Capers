@@ -206,3 +206,136 @@ func test_po5_marker_stand_uses_prefab_use_point() -> void:
 	var far: Vector3 = flow.call(&"_marker_stand", Vector3(20, 1, 20))
 	assert_true(far.distance_to((s["pilot"] as Po5Pilot).stand_point(Vector3(20, 1, 20))) < 0.05,
 		"no prefab near: nearest navmesh point")
+
+
+## P (ND-2, seed 1002): "near" is per floor. A door one floor below is not near, so use() walks to it instead of
+## pressing its reader through the slab, and goto() does not "arrive" a floor away.
+func test_po5_near_is_per_floor() -> void:
+	var s: Dictionary = await _setup()
+	var pilot: Po5Pilot = s["pilot"]
+	var door: Door = s["door"]
+	var below: Vector3 = door.global_position
+	var above: Vector3 = below + Vector3(0.3, 3.4, 0.2)  # straight over it, one floor up
+	assert_true(pilot.flat_dist(above, below) < Po5Pilot.DOOR_NEAR_M, "horizontally inside DOOR_NEAR_M")
+	assert_false(pilot.near(above, below, Po5Pilot.DOOR_NEAR_M), "one floor up is not near")
+	assert_true(pilot.near(below + Vector3(1.0, 0.2, 0.0), below, Po5Pilot.DOOR_NEAR_M), "same floor, 1 m away: near")
+	assert_eq(pilot.arrive_dy, Po5Pilot.NEAR_DY_M, "goto() arrives only on the target's floor by default")
+## P's GN loud rerun (StudioDoor, 80 s+ at a closed leaf with no prompt): `_path_blocker` sees every closed Door the
+## crew cannot open now, including one with no interactable left at all, a closed shutter, and a door the lockdown
+## relocked BARRED; unlocked (the hack lifts it) it is passable again even though its `lock` stays BARRED.
+func test_po5_gn_path_blocker_sees_lockdown_barred_and_promptless_doors() -> void:
+	var s: Dictionary = await _setup()
+	var door: Door = s["door"]
+	var flow: RefCounted = s["flow"]
+	var behind: Vector3 = Vector3(0, 0, -4)
+	assert_eq(flow.call(&"_path_blocker", behind), door, "BARRED and closed: blocks")
+	door.unlock()
+	await wait_physics_frames(2)
+	assert_false(door.is_open, "still closed")
+	assert_true(flow.call(&"_path_blocker", behind) == null, "unlocked (lock enum still BARRED): the crew opens it")
+	door.relock(Door.Lock.BARRED)  # GN _go_loud: the art door / shutters
+	await wait_physics_frames(2)
+	assert_eq(flow.call(&"_path_blocker", behind), door, "relocked BARRED by the lockdown: blocks again")
+	door.unlock()
+	door.shutter = true
+	assert_eq(flow.call(&"_path_blocker", behind), door, "a closed shutter blocks (the crew never operates one)")
+	door.shutter = false
+	var comp: InteractableComponent = door.get_node(^"Interactable") as InteractableComponent
+	comp.enabled = false
+	assert_eq(flow.call(&"_path_blocker", behind), door, "no usable prompt: blocks")
+	door.remove_child(comp)
+	comp.free()
+	await wait_physics_frames(1)
+	assert_eq(flow.call(&"_path_blocker", behind), door, "no interactable at all: still found (Door.GROUP)")
+
+
+## The same for any marker, not only the FIRST ones: a [canvases] marker behind the lockdown-barred door yields
+## before the walk, and comes back once the door is passable.
+func test_po5_gn_any_marker_behind_a_barred_door_yields_before_walking() -> void:
+	var s: Dictionary = await _setup()
+	var door: Door = s["door"]
+	var flow: RefCounted = s["flow"]
+	var behind: Dictionary = {"id": &"canvases", "position": Vector3(0, 0, -4)}
+	var open_one: Dictionary = {"id": &"lockers", "position": Vector3(6, 0, 6)}
+	var markers: Array[Dictionary] = [behind, open_one]
+	assert_eq(flow.call(&"_pick", markers), open_one, "the reachable marker first")
+	assert_true(flow.call(&"_is_marker_blocked", behind), "recorded as blocked by that door")
+	_lift(door)
+	await wait_physics_frames(2)
+	assert_eq(flow.call(&"_pick", markers), behind, "HUD order again once the door is up")
+
+
+## Po5Pilot: the leaf the crew is pressed against is found by its LeafBody (goto's stuck branch), whatever its
+## interactable says or wherever its handle is.
+func test_po5_pilot_finds_the_leaf_it_walks_into() -> void:
+	var s: Dictionary = await _setup()
+	var door: Door = s["door"]
+	var pilot: Po5Pilot = s["pilot"]
+	_rt.teleport_crew(0, Transform3D(Basis.IDENTITY, door.global_position + Vector3(0, 0.05, 0.6)))
+	pilot.crew.look_yaw = 0.0  # facing -Z, at the closed leaf
+	await wait_physics_frames(3)
+	assert_eq(pilot._leaf_contact(), door, "the closed leaf ahead")
+	assert_true(pilot._door_blocked(door), "BARRED: goto gives up the leg there")
+	_rt.teleport_crew(0, Transform3D(Basis.IDENTITY, door.global_position + Vector3(0, 0.05, 3.0)))
+	await wait_physics_frames(3)
+	assert_true(pilot._leaf_contact() == null, "3 m away: no leaf")
+
+
+## P's PO6 GH stealth run (SalonBackDoor, ui.blocked.casing): goto opens only a door its route goes THROUGH. A closed
+## door straight ahead that the route turns away from (LobbyDoor -> G4 -> west, the salon door in the south wall) is
+## not "the door ahead"; the door the route crosses is.
+func test_po5_pilot_door_ahead_only_when_the_route_crosses_it() -> void:
+	var s: Dictionary = await _setup()
+	var door: Door = s["door"]
+	var pilot: Po5Pilot = s["pilot"]
+	_rt.teleport_crew(0, Transform3D(Basis.IDENTITY, door.global_position + Vector3(0, 0.05, 1.6)))
+	pilot.crew.look_yaw = 0.0  # facing the door
+	await wait_physics_frames(3)
+	var here: Vector3 = pilot.crew.global_position
+	var turn_away: PackedVector3Array = PackedVector3Array([here, Vector3(0, 0, 0.7), Vector3(4, 0, 0.7)])
+	assert_true(pilot.door_ahead(Vector3(0, 0, 0.7), turn_away) == null, "the route turns before the doorway")
+	var through: PackedVector3Array = PackedVector3Array([here, Vector3(0, 0, -0.6), Vector3(0, 0, -4)])
+	assert_eq(pilot.door_ahead(Vector3(0, 0, -0.6), through), door, "the route goes through it")
+	var nav: PackedVector3Array = pilot.nav_path(Vector3(0, 0, -4))
+	assert_eq(pilot.door_ahead(Vector3.INF, nav), door, "the real navmesh path through the doorway")
+
+
+## Lead (P's GN loud rerun on 04f79b18): the pilot pushed 4 times against the OPEN BronzeDoorsE leaf, then stalled
+## 1200 s. An open leaf that narrows the doorway is an obstacle: `_pass_leaf` finds the clear lane across the doorway
+## and walks through it (from the crew's side to past the door plane) without pushing the leaf.
+func test_po5_pilot_passes_an_open_leaf_narrowing_the_doorway() -> void:
+	var s: Dictionary = await _setup()
+	var pilot: Po5Pilot = s["pilot"]
+	var door: Door = ATestMaps.add_prefab(_rt, "door", Vector3(6, 0, 6), func(p: GameplayPrefab) -> void:
+		(p as Door).width_m = 1.8) as Door
+	await wait_physics_frames(2)
+	door.set_open(true, true)
+	door._set_leaf_frac(0.667)  # the leaf at ~60 deg: it covers the hinge half of the doorway on the crew's side
+	door._sync_leaf_bodies()
+	await wait_physics_frames(2)
+	var frac: float = door.leaf_open_fraction()
+	_rt.teleport_crew(0, Transform3D(Basis.IDENTITY, Vector3(6.2, 0.05, 8.2)))
+	await wait_physics_frames(5)
+	await pilot._pass_leaf(door, Vector3(6, 0, 2))
+	var local: Vector3 = door.global_transform.affine_inverse() * pilot.crew.global_position
+	assert_true(local.z < -0.4, "past the door plane (local %s)" % local)
+	assert_true(local.x > 0.0, "through the free half of the doorway, not the leaf's (local %s)" % local)
+	assert_near(door.leaf_open_fraction(), frac, 0.01, "the leaf was not pushed")
+
+
+## Never wait out a long stall: a target whose walk failed WALK_FAIL_LIMIT times with a path and no blocking door (a
+## body in the way) is set aside for WALK_SKIP_S of heist time, then comes back.
+func test_po5_target_set_aside_after_repeated_failed_walks() -> void:
+	var s: Dictionary = await _setup()
+	_lift(s["door"] as Door)
+	await wait_physics_frames(2)
+	var flow: RefCounted = s["flow"]
+	var comp: InteractableComponent = s["comp"]
+	(s["pilot"] as Po5Pilot).last_blocked_door = null
+	for i: int in int(flow.get(&"WALK_FAIL_LIMIT")) - 1:
+		flow.call(&"_mark_if_unreached", comp)
+		assert_false(flow.call(&"_is_unreachable", comp), "failed walk %d: retried" % (i + 1))
+	flow.call(&"_mark_if_unreached", comp)
+	assert_true(flow.call(&"_is_unreachable", comp), "set aside after the limit")
+	(flow.get(&"_skip_until") as Dictionary)[comp.get_instance_id()] = _rt.heist_time_s - 1.0
+	assert_false(flow.call(&"_is_unreachable", comp), "back once the skip time is over")

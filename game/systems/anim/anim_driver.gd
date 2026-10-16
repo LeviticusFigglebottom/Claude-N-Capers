@@ -7,11 +7,14 @@
 ##   death_front/back (from the last hit direction vs facing) > crew state (downed, tased, kneel_cuffed) /
 ##   stun (tased) > pose hints (tied, cower, hands_up, surrender, lie_down, kneel_cuffed) > special actions
 ##   (kick_charge, shield_bang, heal_ally) > one-shots (turn, fire, reload, throw_bag, melee, kick_hit,
-##   hit_react) > interact_* / pager_answer > locomotion by velocity (walk, run, sprint, crouch_walk, strafe,
+##   hit_head / hit_chest / hit_shoulder_* / hit_leg_* by zone, else hit_react*) > interact_* / pager_answer >
+##   locomotion by velocity (walk, run, sprint, crouch_walk, strafe,
 ##   walk_back, flee, carry_bag_walk, the unit's EnemyDef.params.anim_walk_clip = shield_walk / dozer_walk at
 ##   walking speed; speed_scale = v / clip speed) > aim_* >
 ##   the brain's `anim_hint` idles (phone_call, smoke, radio_call, investigate_look...) > idle / idle_alert /
 ##   crouch_idle. Clips crossfade (AnimTweak.blend_s).
+## Pose variants (characters.md v1.18): hands_up / surrender / surrender_idle / kneel_cuffed play this body's
+## variant (hash(net_id) % 3, every peer agrees); a surrender* one-shot holds its own surrender_idle* loop.
 ## Shield carry: while the NPC carries a raised BulwarkShield (guard up, not dropped), the clip picked
 ## below the poses / actions is remapped through AnimTweak.shield_clips (idle / aim / fire / turn ->
 ## shield_idle*, walk family -> shield_walk*), so the left hand stays on the grip and the shield Visual
@@ -61,11 +64,31 @@ const HINT_CLIPS: Dictionary = {
 ## Clips that win over locomotion (the body holds a pose).
 ## One-shot poses that must stay held when they end (P coverage: a surrendered cop froze with a stopped player):
 ## clip -> its held loop (ENV D ask: `surrender_idle`, kneeling hands on head). Without the loop in the library the
-## last frame of the one-shot is held with the player still playing (speed 0).
-const HOLD_END: Dictionary = {&"surrender": &"surrender_idle"}
+## last frame of the one-shot is held with the player still playing (speed 0). characters.md v1.18: each surrender
+## variant holds its own loop (every surrender* ends on surrender's last frame = every surrender_idle* frame 0).
+const HOLD_END: Dictionary = {
+	&"surrender": &"surrender_idle", &"surrender_b": &"surrender_idle_b", &"surrender_c": &"surrender_idle_c",
+}
+## characters.md v1.18 (SOURCE `variants.<group>`): pose clip -> its variants, in SOURCE order. One index per body,
+## hash(net_id) % 3, used in every group (hands_up_b -> surrender_b -> surrender_idle_b -> kneel_cuffed_b); a
+## variant the rig lacks plays the original.
+const VARIANT_GROUPS: Dictionary = {
+	&"hands_up": [&"hands_up", &"hands_up_b", &"hands_up_c"],
+	&"surrender": [&"surrender", &"surrender_b", &"surrender_c"],
+	&"surrender_idle": [&"surrender_idle", &"surrender_idle_b", &"surrender_idle_c"],
+	&"kneel_cuffed": [&"kneel_cuffed", &"kneel_cuffed_b", &"kneel_cuffed_c"],
+}
+## Variant loops that start at a per-body random offset (SOURCE surrender_variants: the periods differ, so they never
+## re-sync). surrender_idle* reached from its surrender* one-shot starts on frame 0 instead (the chain frame).
+const OFFSET_LOOP_GROUPS: Array[StringName] = [&"hands_up", &"kneel_cuffed", &"surrender_idle"]
 const POSE_CLIPS: Array[StringName] = [
 	&"tied", &"kneel_cuffed", &"lie_down", &"cower", &"hands_up", &"surrender", &"downed", &"tased",
-	&"cower_stand", &"cower_seated",
+	&"cower_stand", &"cower_seated", &"surrender_idle",
+	&"hands_up_b", &"hands_up_c", &"surrender_b", &"surrender_c", &"surrender_idle_b", &"surrender_idle_c",
+	&"kneel_cuffed_b", &"kneel_cuffed_c",
+	# v1.21 crew states (the weapon follows weapon_shown(), not this list, for the downed set).
+	&"crew_cuffed", &"crew_cuffed_enter", &"crew_cuffed_free", &"downed_arrested", &"downed_getup", &"downed_fire",
+	&"downed_reload",
 ]
 ## Special actions held while the hint lasts: they win over one-shots, locomotion and aim (the brain
 ## stands the body still for them).
@@ -85,6 +108,42 @@ const HIT_FRONT: StringName = &"hit_react"
 const HIT_BACK: StringName = &"hit_react_back"
 const HIT_LEFT: StringName = &"hit_react_left"
 const HIT_RIGHT: StringName = &"hit_react_right"
+## characters.md v1.18 hit-zone flinches (SOURCE `hit_zones:`); the directional hit_react* set is the fallback.
+const HIT_HEAD: StringName = &"hit_head"
+const HIT_CHEST: StringName = &"hit_chest"
+const HIT_SHOULDER_L: StringName = &"hit_shoulder_l"
+const HIT_SHOULDER_R: StringName = &"hit_shoulder_r"
+const HIT_LEG_L: StringName = &"hit_leg_l"
+const HIT_LEG_R: StringName = &"hit_leg_r"
+const HIT_ZONE_CLIPS: Array[StringName] = [HIT_HEAD, HIT_CHEST, HIT_SHOULDER_L, HIT_SHOULDER_R, HIT_LEG_L, HIT_LEG_R]
+## D-123: DamageInfo `limb` sub-zone (NpcLimbHitboxes.SUB_*, a limb box hit; zone BODY) -> its flinch.
+const LIMB_CLIPS: Dictionary = {
+	&"shoulder_l": HIT_SHOULDER_L, &"shoulder_r": HIT_SHOULDER_R, &"leg_l": HIT_LEG_L, &"leg_r": HIT_LEG_R,
+}
+## SOURCE hit_zones: a LIMB hit above the hips joint (root-space y, m at 1.78 m x motion_scale) is a shoulder hit.
+const HIT_ZONE_HIPS_Y_M: float = 0.95
+## Damage types whose `zone` / `position` name a point on the body (explosions, fire, gas... use the direction set).
+const HIT_ZONE_TYPES: Array[int] = [Enums.DamageType.BULLET, Enums.DamageType.MELEE]
+## characters.md v1.20 (SOURCE weapon_holds): weapon class -> hold kind (idle_alert_<kind> / hold_<kind>). PISTOL is
+## `akimbo` for a pair (WeaponDef.akimbo). The aim / fire / reload clips stay two families: PISTOL_KINDS aim as
+## pistols, every other kind as a rifle.
+const KIND_BY_CLASS: Dictionary = {
+	Enums.WeaponClass.ASSAULT_RIFLE: &"rifle", Enums.WeaponClass.SHOTGUN: &"rifle", Enums.WeaponClass.SMG: &"smg",
+	Enums.WeaponClass.SPECIAL: &"smg", Enums.WeaponClass.SNIPER: &"sniper", Enums.WeaponClass.LMG: &"lmg",
+	Enums.WeaponClass.PISTOL: &"pistol",
+}
+const PISTOL_KINDS: Array[StringName] = [&"pistol", &"akimbo"]
+## v1.20 armed interactions (SOURCE armed_interactions): a crew body holding a weapon plays `<clip>_armed`.
+const ARMED_SUFFIX: String = "_armed"
+const ARMED_CLIPS: Array[StringName] = [&"interact_low", &"interact_mid", &"interact_high", &"throw_bag"]
+## v1.20: the carried-bag visual (LootDef.bag_model) on Back/Socket while the crew body carries a bag.
+const CARRIED_BAG_NODE: String = "CarriedBag"
+## v1.20 akimbo: the pair's second gun (WeaponVisual.offhand) moves to HandL/Socket under this name.
+const OFFHAND_NODE: String = "ThirdPersonOffhand"
+## v1.21: one-shots that end exactly on crew_cuffed frame 0 (switch without a crossfade).
+const CUFF_INTO: Array[StringName] = [&"downed_arrested", &"crew_cuffed_enter"]
+## Lead ruling (b): the upper-body flinch layer's node name (after the weapon-hold layer).
+const FLINCH_LAYER_NODE: String = "FlinchLayer"
 ## Starts / stops only for straight-ahead motion (|dir . forward| at least this).
 const START_STOP_DOT: float = 0.7
 ## One-shot hints that are not held as an idle once played (the hint may linger in the brain).
@@ -142,12 +201,36 @@ var clip: StringName = &""
 var hand_props: PackedStringArray = PackedStringArray()
 ## D-115 (ENV D audit R1): the hard-hat hand lift of this rig (null when it wears no hard hat).
 var hat_lift: HardHatHandLift = null
+## characters.md v1.19: the crew body's upper-body layer (hold_* over locomotion, aim_* while aiming); null for NPCs.
+var hold_layer: UpperBodyLayer = null
+## Lead ruling (b): the upper-body hit-zone flinch layer (every animated body); see _play_flinch_layer.
+var flinch_layer: UpperBodyLayer = null
+## Lead ruling (c): the third-person left hand on the weapon's LeftHandIK (rifle-family holds); null without a rig.
+var left_hand_ik: ThirdPersonLeftHandIK = null
 ## Crossfade (s) used for the last clip change (0 for the first clip).
 var last_blend_s: float = -1.0
-## &"pistol" or &"rifle": aim/fire/reload clip family.
+## Hold kind (v1.20 KIND_BY_CLASS): rifle / smg / sniper / lmg / pistol / akimbo; aim_family() gives the
+## aim / fire / reload clip family.
 var weapon_kind: StringName = &"pistol"
 ## Third-person WeaponVisual at HandR/Socket (null when there is no model).
 var weapon_visual: Node3D = null
+## v1.20 akimbo: the pair's second gun, moved to HandL/Socket (null otherwise).
+var weapon_offhand: Node3D = null
+## v1.20: the carried-bag visual at Back/Socket (null when not carrying), and the LootBag it shows.
+var bag_visual: Node3D = null
+var _shown_bag: Node = null
+## Lead ruling (b): seconds left of the upper-body flinch.
+var _flinch_left: float = 0.0
+## v1.21 crew-state one-shot (downed_fire / downed_reload / downed_getup / downed_arrested / crew_cuffed_enter /
+## crew_cuffed_free): wins over the crew state's own clip while it lasts; `_state_oneshot_t` = seconds since it began.
+var _state_oneshot: StringName = &""
+var _state_oneshot_left: float = 0.0
+var _state_oneshot_t: float = 0.0
+var _state_oneshot_speed: float = 1.0
+## Crew state seen last tick (-1 before the first), for the v1.21 transition clips.
+var _last_crew_state: int = -1
+## v1.21 akimbo: the next shot is the left gun's (fire_akimbo_l); the first shot is the right one.
+var _akimbo_left_next: bool = false
 
 var _body: Node3D = null
 var _npc: NpcBase = null
@@ -181,9 +264,14 @@ var _seated: bool = false
 var _last_hint: StringName = &""
 var _interact_kind: StringName = &""
 var _interact_height: float = 1.0
-## Shield clip family -> its variants in the library (Array[StringName], sorted); variant -> family.
+## Shield clip family -> its variants in the library (Array[StringName], sorted); variant -> family. v1.18 pose
+## variants (VARIANT_GROUPS) register here too (variant -> group).
 var _family_variants: Dictionary = {}
 var _variant_family: Dictionary = {}
+## v1.18: per variant group, the loop start offset as a fraction of the clip (GameRng `anim_variants`, drawn once).
+var _loop_offsets: Dictionary[StringName, float] = {}
+## v1.19: the body holds a weapon with a WeaponDef (crew: the equipped one).
+var _holds_weapon: bool = false
 
 
 ## The driver of `body` (null when it has none).
@@ -259,6 +347,7 @@ func _exit_tree() -> void:
 		var sig: Signal = pair[0]
 		if sig.is_connected(pair[1]):
 			sig.disconnect(pair[1])
+	_clear_bag_visual()  # v1.20: the LootBag shows its own visual again
 
 
 ## (Re)find the visual's AnimationPlayer and the weapon; returns true when active.
@@ -281,6 +370,12 @@ func bind() -> bool:
 		_crew.weapons.equipped_changed.connect(_on_equipped)
 		_crew.weapons.reload_started.connect(_on_reload_started)
 	refresh_weapon()
+	hold_layer = null
+	if _crew != null:  # v1.19 weapon holds; first among the modifiers (the hat lift fixes up after it)
+		hold_layer = UpperBodyLayer.ensure(rig.get_node_or_null(^"Skeleton3D") as Skeleton3D)
+	var skel: Skeleton3D = rig.get_node_or_null(^"Skeleton3D") as Skeleton3D
+	flinch_layer = UpperBodyLayer.ensure(skel, FLINCH_LAYER_NODE, 1)
+	left_hand_ik = ThirdPersonLeftHandIK.ensure(skel)
 	if clip == &"":
 		# P GH regression: never show the rig's bind pose before the first tick (a spawn / visual swap renders a
 		# frame before _process runs): start on idle at once; the next tick blends to the real state.
@@ -316,6 +411,7 @@ func tick(delta: float) -> void:
 	_update_start_stop(tw)
 	_aim_hold_left = maxf(_aim_hold_left - delta, 0.0)
 	_turning_left = maxf(_turning_left - delta, 0.0)
+	_update_crew_state_clips(delta)
 	var hint: StringName = _hint()
 	if hint != _last_hint:
 		_last_hint = hint
@@ -328,12 +424,76 @@ func tick(delta: float) -> void:
 		_alive_clip = want
 	_apply(want, _speed_scale_for(want, tw), tw)
 	_hold_pose_end()
+	_update_hold_layer(delta, tw)
+	_update_flinch_layer(delta, tw)
+	_update_left_hand_ik(delta, tw)
 	if weapon_visual != null and is_instance_valid(weapon_visual):
-		weapon_visual.visible = not POSE_CLIPS.has(want) and _death_clip == &""
+		weapon_visual.visible = weapon_shown(want)
+		if weapon_offhand != null and is_instance_valid(weapon_offhand):
+			weapon_offhand.visible = weapon_visual.visible
+	_update_bag_visual(tw)
 	if hat_lift != null and is_instance_valid(hat_lift):
 		var lift_on: float = 1.0 if tw.hard_hat_lift_clips.has(clip) else 0.0
 		hat_lift.influence = move_toward(hat_lift.influence, lift_on, delta * tw.hard_hat_lift_rate)
 		hat_lift.active = hat_lift.influence > 0.0
+
+
+## v1.21 crew-state transitions, from the replicated crew_state (so every peer plays them):
+##   DOWNED / CLOAKER_DOWNED -> CUFFED: downed_arrested (L2.12 police arrest; the weapon goes at `disarm`), then
+##     crew_cuffed. Any other -> CUFFED: crew_cuffed_enter (a guard cuffs a standing heister), then crew_cuffed.
+##   CUFFED -> NORMAL (uncuffed / self-free): crew_cuffed_free (the weapon comes back at `free`).
+##   DOWNED / CLOAKER_DOWNED / TASED... -> NORMAL from a downed state (revive): downed_getup, then the current
+##     hold (crossfade AnimTweak.getup_blend_s). A missing clip skips its step.
+func _update_crew_state_clips(delta: float) -> void:
+	if _state_oneshot_left > 0.0:
+		_state_oneshot_left = maxf(_state_oneshot_left - delta, 0.0)
+		_state_oneshot_t += delta * _state_oneshot_speed
+	if _crew == null:
+		return
+	var now: int = _crew.crew_state
+	var was: int = _last_crew_state
+	_last_crew_state = now
+	if was == -1 or was == now:
+		return
+	var downed: Array[int] = [Enums.CrewState.DOWNED, Enums.CrewState.CLOAKER_DOWNED]
+	_state_oneshot_left = 0.0
+	if now == Enums.CrewState.CUFFED:
+		_play_state_oneshot(&"downed_arrested" if downed.has(was) else &"crew_cuffed_enter")
+	elif was == Enums.CrewState.CUFFED and now == Enums.CrewState.NORMAL:
+		_play_state_oneshot(&"crew_cuffed_free")
+	elif downed.has(was) and now == Enums.CrewState.NORMAL:
+		_play_state_oneshot(&"downed_getup")
+
+
+## Start crew-state one-shot `c` (when the rig has it) for `duration` s (-1 = its length / speed).
+func _play_state_oneshot(c: StringName, duration: float = -1.0, speed: float = 1.0) -> void:
+	if not _has_clip(c):
+		return
+	_state_oneshot = c
+	_state_oneshot_speed = speed
+	_state_oneshot_t = 0.0
+	_oneshot_left = 0.0
+	_state_oneshot_left = duration if duration >= 0.0 \
+		else player.get_animation("%s/%s" % [LIBRARY, c]).length / maxf(speed, 0.01)
+	_restart = true
+	_oneshot = c  # _apply restarts it from frame 0 when it repeats (downed_fire per shot)
+
+
+## v1.21: whether the third-person weapon shows with clip `c` playing. Hidden in poses, in death and while cuffed
+## (crew_cuffed*, kneel_cuffed*); shown while downed (downed / downed_fire / downed_reload / downed_getup); in
+## downed_arrested until its `disarm` event, in crew_cuffed_free from its `free` event (AnimTweak event times).
+func weapon_shown(c: StringName) -> bool:
+	if _death_clip != &"":
+		return false
+	var tw: AnimTweak = AnimTweak.data()
+	match c:
+		&"downed", &"downed_crawl", &"downed_fire", &"downed_reload", &"downed_getup":
+			return true
+		&"downed_arrested":
+			return _state_oneshot_t < tw.disarm_s()
+		&"crew_cuffed_free":
+			return _state_oneshot_t >= tw.free_s()
+	return not POSE_CLIPS.has(c)
 
 
 ## Play `p_clip` once for `duration` seconds (-1 = the clip's length / speed). `while_moving` lets it
@@ -361,11 +521,38 @@ func choose_clip() -> StringName:
 		return _death_clip
 	var state_clip: StringName = _state_clip()
 	if state_clip != &"":
-		return _held_pose(state_clip)
+		return _held_pose(pose_variant(state_clip))
 	var hint_clip: StringName = HINT_CLIPS.get(_hint(), &"")
 	if POSE_CLIPS.has(hint_clip) or ACTION_CLIPS.has(hint_clip):
-		return _held_pose(hint_clip)
+		return _held_pose(pose_variant(hint_clip))
 	return _shield_clip(_active_clip(hint_clip))
+
+
+## characters.md v1.18: this body's variant index, hash(net_id) % 3: the same on every peer (net ids replicate) and
+## for the body's life, shared by every VARIANT_GROUPS group.
+func variant_index() -> int:
+	return absi(hash(_net_id())) % 3
+
+
+## `p_clip`'s variant for this body (VARIANT_GROUPS), or `p_clip` (not a variant group, no rig, or the rig lacks
+## the variant: the original plays).
+func pose_variant(p_clip: StringName) -> StringName:
+	if not VARIANT_GROUPS.has(p_clip) or player == null:
+		return p_clip
+	var group: Array = _variant_group(p_clip)
+	var v: StringName = group[variant_index() % group.size()]
+	return v if player.has_animation("%s/%s" % [LIBRARY, v]) else p_clip
+
+
+## The VARIANT_GROUPS list of `group` (cached in _family_variants, members registered in _variant_family).
+func _variant_group(group: StringName) -> Array:
+	if not _family_variants.has(group):
+		var out: Array[StringName] = []
+		for v: Variant in VARIANT_GROUPS[group]:
+			out.append(v as StringName)
+			_variant_family[v] = group
+		_family_variants[group] = out
+	return _family_variants[group] as Array
 
 
 ## A HOLD_END one-shot that has finished plays its held loop when the library has it (else it stays, frozen).
@@ -424,7 +611,8 @@ func shield_up() -> bool:
 ## `c` remapped to its shield clip (AnimTweak.shield_clips) while the shield is up and the rig has that
 ## family; otherwise `c`.
 func _shield_clip(c: StringName) -> StringName:
-	var fam: StringName = AnimTweak.data().shield_clips.get(c, &"")
+	var key: StringName = &"idle_alert" if String(c).begins_with("idle_alert_") else c  # v1.21 armed NPC idles
+	var fam: StringName = AnimTweak.data().shield_clips.get(key, &"")
 	if fam == &"" or not shield_up():
 		return c
 	var vs: Array = _variants_of(fam)
@@ -463,7 +651,7 @@ func _active_clip(hint_clip: StringName) -> StringName:
 	elif moving:
 		out = _locomotion_clip(speed, tw)
 	elif _aiming():
-		out = &"aim_rifle" if weapon_kind == &"rifle" else &"aim_pistol"
+		out = aim_clip()
 	elif hint_clip != &"" and hint_clip != &"idle" and not ONCE_ONLY_HINTS.has(hint_clip):
 		out = hint_clip
 	return out
@@ -476,10 +664,12 @@ func horizontal_speed() -> float:
 
 ## Rebuild the third-person weapon at `HandR/Socket` (crew: equipped weapon; NPC: EnemyDef.weapon).
 func refresh_weapon() -> void:
-	if weapon_visual != null and is_instance_valid(weapon_visual):
-		weapon_visual.get_parent().remove_child(weapon_visual)
-		weapon_visual.queue_free()
+	for n: Node3D in [weapon_visual, weapon_offhand]:
+		if n != null and is_instance_valid(n):
+			n.get_parent().remove_child(n)
+			n.queue_free()
 	weapon_visual = null
+	weapon_offhand = null
 	var def: WeaponDef = null
 	var mod_ids: Array[StringName] = []
 	if _crew != null and _crew.weapons != null:
@@ -493,6 +683,7 @@ func refresh_weapon() -> void:
 		# NPC weapon ids (weapon.npc_*) have no model of their own: ENV B's mapping to an armory model (PO6-16 review).
 		def = NpcWeaponModels.weapon_def(_npc.enemy_def.weapon)
 	weapon_kind = _kind_for(def)
+	_holds_weapon = def != null
 	var socket: Node3D = rig.get_node_or_null(^"Skeleton3D/HandR/Socket") as Node3D if rig != null else null
 	if def == null or def.model == null or socket == null:
 		return
@@ -501,12 +692,32 @@ func refresh_weapon() -> void:
 	socket.add_child(wv)
 	wv.setup(def, LoadoutResolver.applied_mods(def, mod_ids))
 	weapon_visual = wv
+	_place_offhand(wv)
+
+
+## v1.20 akimbo: WeaponVisual builds the pair as the gun plus `offhand` beside it (the first-person rest pose); in
+## third person the second gun goes in the left fist: HandL/Socket, the mirrored weapon-grip convention (identity).
+## One gun per hand, never the pair in one hand.
+func _place_offhand(wv: WeaponVisual) -> void:
+	var socket: Node3D = rig.get_node_or_null(^"Skeleton3D/HandL/Socket") as Node3D
+	if not wv.is_akimbo() or socket == null:
+		return
+	var off: Node3D = wv.offhand
+	off.get_parent().remove_child(off)
+	off.name = OFFHAND_NODE
+	socket.add_child(off)
+	off.transform = Transform3D.IDENTITY
+	weapon_offhand = off
 
 
 # --- Selection helpers ---------------------------------------------------------------------
 
 func _crew_state_clip() -> StringName:
+	if _state_oneshot_left > 0.0:
+		return _state_oneshot
 	var sc: StringName = CREW_STATE_CLIPS.get(_crew.crew_state, &"")
+	if sc == &"kneel_cuffed" and _has_clip(&"crew_cuffed"):
+		return &"crew_cuffed"  # v1.21: cuffed crew stand, wrists behind the back
 	if sc == &"downed" and horizontal_speed() > AnimTweak.data().move_threshold_mps:
 		return &"downed_crawl"  # v1.10: a downed body being moved (bleed-out drag)
 	return sc
@@ -611,18 +822,135 @@ func _interact_clip(tw: AnimTweak) -> StringName:
 	if _interact_kind == &"place_drill" or _interact_kind == &"fix_drill":
 		return &"drill_place"  # D-111: setting / fixing a drill
 	if _interact_height < tw.interact_low_max_m:
-		return &"interact_low"
-	return &"interact_high" if _interact_height > tw.interact_high_min_m else &"interact_mid"
+		return armed_clip(&"interact_low")
+	return armed_clip(&"interact_high" if _interact_height > tw.interact_high_min_m else &"interact_mid")
+
+
+## characters.md v1.20 (SOURCE armed_interactions): `c`'s `_armed` variant (the left hand works, the weapon stays
+## low in the right) while the crew body holds a weapon and the rig has it; otherwise `c`.
+func armed_clip(c: StringName) -> StringName:
+	if _crew == null or not _holds_weapon or not ARMED_CLIPS.has(c) or player == null:
+		return c
+	var a: StringName = StringName(String(c) + ARMED_SUFFIX)
+	return a if player.has_animation("%s/%s" % [LIBRARY, a]) else c
+
+
+## v1.20: while the crew body carries a LootBag, its LootDef.bag_model (else the bag's own visual scene) sits at
+## Back/Socket (v1.22: the bag pivot) shifted by AnimTweak.carried_bag_offset_by_weight; the LootBag's own visual
+## (which follows the carrier's back) is hidden meanwhile. Dropped / thrown / secured: removed, the bag shows again.
+func _update_bag_visual(tw: AnimTweak) -> void:
+	var bag: Node = _crew.carried_bag if _crew != null and _crew.is_carrying_bag() else null
+	if bag == _shown_bag and (bag == null or (bag_visual != null and is_instance_valid(bag_visual))):
+		return
+	_clear_bag_visual()
+	var socket: Node3D = rig.get_node_or_null(^"Skeleton3D/Back/Socket") as Node3D if rig != null else null
+	if bag == null or socket == null:
+		return
+	var lb: LootBag = bag as LootBag
+	var def: LootDef = ContentDB.loot(lb.loot_id) if lb != null and lb.loot_id != &"" else null
+	var scene: PackedScene = def.bag_model if def != null and def.bag_model != null else null
+	if scene == null and lb != null:
+		scene = lb.visual_scene if lb.visual_scene != null else LootBag.PLACEHOLDER
+	if scene == null:
+		return
+	var inst: Node3D = scene.instantiate() as Node3D
+	if inst == null:
+		return
+	inst.name = CARRIED_BAG_NODE
+	socket.add_child(inst)
+	inst.transform = Transform3D(Basis.IDENTITY, tw.carried_bag_offset_by_weight.get(
+		int(lb.weight) if lb != null else Enums.LootWeight.MEDIUM, Vector3.ZERO))
+	if lb != null and lb.visual_instance != null and is_instance_valid(lb.visual_instance) and scene == LootBag.PLACEHOLDER:
+		inst.scale = lb.visual_instance.scale  # the placeholder is sized by weight class
+	if lb != null and lb.visual_root != null:
+		lb.visual_root.visible = false
+	bag_visual = inst
+	_shown_bag = bag
+
+
+func _clear_bag_visual() -> void:
+	if bag_visual != null and is_instance_valid(bag_visual):
+		bag_visual.get_parent().remove_child(bag_visual)
+		bag_visual.queue_free()
+	bag_visual = null
+	var lb: LootBag = _shown_bag as LootBag if _shown_bag != null and is_instance_valid(_shown_bag) else null
+	if lb != null and lb.visual_root != null:
+		lb.visual_root.visible = true
+	_shown_bag = null
 
 
 func _idle_clip() -> StringName:
 	if _crew != null:
 		if _crew.crouched:
 			return &"crouch_idle"
-		return &"idle_alert" if _crew.masked else &"idle"
+		if not _crew.masked:
+			return &"idle"
+		var held: StringName = _held_weapon_clip(&"idle_alert_")
+		return held if held != &"" else &"idle_alert"
 	if _npc != null and ALERT_STATES.has(_npc.alert_state):
-		return &"idle_alert"
+		var npc_held: StringName = StringName("idle_alert_" + String(weapon_kind))
+		# v1.21 (SOURCE weapon_holds: armed NPCs too): an alerted NPC with a modelled weapon holds it at the low ready.
+		return npc_held if weapon_visual != null and _has_clip(npc_held) else &"idle_alert"
 	return &"idle"
+
+
+## characters.md v1.19: a masked crew body (human teammate or bot) holding a weapon: `<prefix><kind>` (idle_alert_ /
+## hold_ + rifle / pistol, AnimDriver.weapon_kind from _kind_for) when the rig has it, else &"".
+func _held_weapon_clip(prefix: String) -> StringName:
+	if _crew == null or not _crew.masked or not _holds_weapon or player == null:
+		return &""
+	var c: StringName = StringName(prefix + String(weapon_kind))
+	return c if player.has_animation("%s/%s" % [LIBRARY, c]) else &""
+
+
+## v1.19: the upper-body layer over walk / run / strafe* (weight 1, AnimTweak.hold_layer_blend_s): hold_<kind> while
+## the crew body holds a weapon; while aiming, aim_* keeps priority (the layer carries aim_<kind>, never hold_*).
+## Off for every other clip (idle uses idle_alert_<kind>, poses, deaths, one-shots).
+func _update_hold_layer(delta: float, tw: AnimTweak) -> void:
+	if hold_layer == null or not is_instance_valid(hold_layer):
+		return
+	var want: StringName = &""
+	if _layered_locomotion(clip):
+		if _aiming():
+			want = aim_clip()
+			if _held_weapon_clip(&"hold_") == &"" or not player.has_animation("%s/%s" % [LIBRARY, want]):
+				want = &""
+		else:
+			want = _held_weapon_clip(&"hold_")
+	if want != &"" and want != hold_layer.clip:
+		var a: Animation = player.get_animation("%s/%s" % [LIBRARY, want])
+		hold_layer.set_clip(want, a, _loop_offset(&"weapon_hold") * a.length if String(want).begins_with("hold_") else 0.0)
+	hold_layer.advance(delta)
+	var target: float = 1.0 if want != &"" else 0.0
+	hold_layer.influence = move_toward(hold_layer.influence, target, delta / maxf(tw.hold_layer_blend_s, 0.001))
+	hold_layer.active = hold_layer.influence > 0.0
+
+
+## Lead ruling (c) / characters.md v1.19: the left hand goes onto the held weapon's LeftHandIK (HandL/Socket on the
+## marker) while a rifle-family weapon shows and the clip holds it with both hands (idle_alert_<kind>, aim_rifle,
+## fire_rifle, or the hold_* / aim_rifle upper-body layer over locomotion); blends out for anything else (reloads,
+## armed interactions, the bag carry, poses, pistols and akimbo).
+func _update_left_hand_ik(delta: float, tw: AnimTweak) -> void:
+	if left_hand_ik == null or not is_instance_valid(left_hand_ik):
+		return
+	var wv: WeaponVisual = weapon_visual as WeaponVisual
+	var marker: Node3D = wv.get_marker(&"LeftHandIK") if wv != null and is_instance_valid(wv) else null
+	var two_hands: bool = String(clip).begins_with("idle_alert_") or clip == &"aim_rifle" or clip == &"fire_rifle" \
+		or (hold_layer != null and hold_layer.active and _layered_locomotion(clip))
+	var want: bool = marker != null and aim_family() == &"rifle" and weapon_visual.visible and two_hands \
+		and not (flinch_layer != null and flinch_layer.active)
+	left_hand_ik.set_target(marker if want else left_hand_ik.marker,
+		rig.get_node_or_null(^"Skeleton3D/HandR/Socket") as Node3D, rig.get_node_or_null(^"Skeleton3D/HandL/Socket") as Node3D)
+	left_hand_ik.influence = move_toward(left_hand_ik.influence, 1.0 if want else 0.0, delta * tw.left_hand_ik_rate)
+	left_hand_ik.active = left_hand_ik.influence > 0.0 and left_hand_ik.marker != null
+
+
+## Locomotion clips the v1.19 weapon-hold layer goes over (SOURCE weapon_holds: walk / run / strafe*).
+static func _layered_locomotion(c: StringName) -> bool:
+	var s: String = String(c)
+	if s == "walk_text":
+		return false
+	return s == "walk" or s == "run" or s.begins_with("walk_") or s.begins_with("run_") or s.begins_with("strafe_")
 
 
 func _aiming() -> bool:
@@ -723,6 +1051,8 @@ func _speed_scale_for(p_clip: StringName, tw: AnimTweak) -> float:
 		return 0.0
 	if _hold_done.get(p_clip, false) and HOLD_END.has(p_clip):
 		return 0.0  # frozen on the last frame (_hold_pose_end)
+	if p_clip == _state_oneshot and _state_oneshot_left > 0.0:
+		return _state_oneshot_speed
 	if p_clip == _oneshot and _oneshot_left > 0.0:
 		return _oneshot_speed
 	var key: StringName = p_clip
@@ -758,7 +1088,7 @@ func _update_start_stop(tw: AnimTweak) -> void:
 	if moving:
 		var fwd: Vector3 = -_body.global_transform.basis.z
 		var dir: Vector3 = Vector3(_vel.x, 0.0, _vel.z).normalized()
-		if dir.dot(fwd) >= START_STOP_DOT and (clip == &"idle" or clip == &"idle_alert" or clip == &""):
+		if dir.dot(fwd) >= START_STOP_DOT and (clip == &"idle" or String(clip).begins_with("idle_alert") or clip == &""):
 			_play_if_present(&"walk_start" if speed <= tw.walk_run_split_mps else &"run_start", true)
 	elif clip == &"walk" or clip == &"run":
 		_play_if_present(&"walk_stop" if clip == &"walk" else &"run_stop", false)
@@ -824,16 +1154,50 @@ func _apply(want: StringName, speed: float, tw: AnimTweak) -> void:
 			blend = 0.0  # first clip: no fade in from the bind pose (spawn A-pose flash)
 		elif want == _death_clip:
 			blend = tw.death_blend_s
+		elif HOLD_END.get(clip, &"") == want or (want == &"crew_cuffed" and CUFF_INTO.has(clip)):
+			blend = 0.0  # surrender* -> surrender_idle* (v1.18); downed_arrested / crew_cuffed_enter -> crew_cuffed (v1.21)
+		elif clip == &"downed_getup":
+			blend = tw.getup_blend_s  # v1.21: from hold_pistol f0 into the current weapon's hold
 		elif want == _oneshot:
-			blend = tw.oneshot_blend_s
+			blend = tw.hit_zone_blend_in_s if HIT_ZONE_CLIPS.has(want) else tw.oneshot_blend_s
+		elif HIT_ZONE_CLIPS.has(clip):
+			blend = tw.hit_zone_blend_out_s
+		var chained: bool = HOLD_END.get(clip, &"") == want
 		player.play(full, blend)
 		last_blend_s = blend
 		if restart:
 			player.seek(0.0, true)
+		elif not chained:
+			_seek_loop_offset(want, full)
 		clip = want
 		_restart = false
 		hand_props = HandProps.sync(rig, StringName(full.get_slice("/", 1)))  # D-115 (characters.md v1.16)
 	player.speed_scale = speed
+
+
+## v1.18: a variant-group loop (OFFSET_LOOP_GROUPS) starts at this body's random offset so a room of surrendered
+## NPCs never breathes in sync. The offset comes from GameRng `anim_variants`; it is presentation only (no gameplay
+## reads animation state) and each peer draws it in its own bind order, so peers may show different loop phases.
+## The pose itself (the variant) is hash(net_id), identical on every peer.
+## v1.19: the weapon-hold loops (idle_alert_<kind>, the hold_<kind> layer) start the same way (group &"weapon_hold").
+func _seek_loop_offset(want: StringName, full: String) -> void:
+	var group: StringName = StringName(_variant_family.get(want, &""))
+	if group == &"" and String(want).begins_with("idle_alert_"):
+		group = &"weapon_hold"
+	if group == &"" or not (OFFSET_LOOP_GROUPS.has(group) or group == &"weapon_hold") \
+			or full.get_slice("/", 1) != String(want):
+		return
+	var a: Animation = player.get_animation(full)
+	if a == null or a.loop_mode == Animation.LOOP_NONE or a.length <= 0.0:
+		return
+	player.seek(_loop_offset(group) * a.length, true)
+
+
+## This body's loop start fraction for `group` in [0, 1), drawn once from GameRng `anim_variants`.
+func _loop_offset(group: StringName) -> float:
+	if not _loop_offsets.has(group):
+		_loop_offsets[group] = GameRng.stream(&"anim_variants").randf()
+	return _loop_offsets[group]
 
 
 ## "humanoid/<clip>", else the fallback chain (FALLBACK_CLIPS, then idle); "" when nothing exists.
@@ -847,9 +1211,18 @@ func _resolve(p_clip: StringName) -> String:
 	return ""
 
 
+## The aim / fire / reload clip family of weapon_kind: &"pistol" (pistol, akimbo) or &"rifle" (every other kind).
+func aim_family() -> StringName:
+	return &"pistol" if PISTOL_KINDS.has(weapon_kind) else &"rifle"
+
+
+## Hold kind (characters.md v1.20, SOURCE weapon_holds): WeaponDef.weapon_class -> rifle / smg / sniper / lmg /
+## pistol / akimbo (KIND_BY_CLASS; an akimbo pair of pistols is `akimbo`); NPCs without a WeaponDef: rifle / pistol.
 func _kind_for(def: WeaponDef) -> StringName:
 	if def != null:
-		return &"pistol" if def.weapon_class == Enums.WeaponClass.PISTOL else &"rifle"
+		if def.weapon_class == Enums.WeaponClass.PISTOL and def.akimbo:
+			return &"akimbo"
+		return KIND_BY_CLASS.get(def.weapon_class, &"rifle")
 	if _npc != null:
 		if _npc.enemy_def != null and _npc.enemy_def.params.has("anim_weapon"):
 			return StringName(_npc.enemy_def.params["anim_weapon"])
@@ -891,7 +1264,71 @@ func _on_damage_applied(victim_net_id: int, _attacker: int, info: Dictionary) ->
 	if now - _last_hit_react_t < AnimTweak.data().hit_react_min_gap_s:
 		return
 	_last_hit_react_t = now
-	play_oneshot(hit_react_clip(_hit_dir), -1.0, true)
+	var zone_clip: StringName = hit_zone_clip(info)
+	if zone_clip != &"" and horizontal_speed() > AnimTweak.data().move_threshold_mps and _play_flinch_layer(zone_clip):
+		return  # lead ruling (b): moving, the legs keep their locomotion
+	play_oneshot(zone_clip if zone_clip != &"" else hit_react_clip(_hit_dir), -1.0, true)
+
+
+## Lead ruling (b) / SOURCE hit_zones: a hit-zone flinch on a moving body plays on the upper body only (spine and up,
+## UpperBodyLayer `FlinchLayer` over whatever the legs do) at AnimTweak.hit_zone_layer_weight (head: _head_weight),
+## fading in / out over hit_zone_blend_in_s / _out_s. False when the rig has no layer / clip (then full body).
+func _play_flinch_layer(c: StringName) -> bool:
+	if flinch_layer == null or not is_instance_valid(flinch_layer) or not _has_clip(c):
+		return false
+	flinch_layer.set_clip(&"", null)
+	flinch_layer.set_clip(c, player.get_animation("%s/%s" % [LIBRARY, c]), 0.0)
+	_flinch_left = player.get_animation("%s/%s" % [LIBRARY, c]).length
+	return true
+
+
+func _update_flinch_layer(delta: float, tw: AnimTweak) -> void:
+	if flinch_layer == null or not is_instance_valid(flinch_layer):
+		return
+	var dead: bool = _npc != null and not _npc.alive
+	if _flinch_left <= 0.0 or dead:
+		_flinch_left = 0.0
+		flinch_layer.influence = move_toward(flinch_layer.influence, 0.0, delta / maxf(tw.hit_zone_blend_out_s, 0.001))
+	else:
+		flinch_layer.advance(delta)
+		_flinch_left = maxf(_flinch_left - delta, 0.0)
+		var peak: float = tw.hit_zone_layer_head_weight if flinch_layer.clip == HIT_HEAD else tw.hit_zone_layer_weight
+		var target: float = peak if _flinch_left > tw.hit_zone_blend_out_s else peak * _flinch_left / maxf(tw.hit_zone_blend_out_s, 0.001)
+		flinch_layer.influence = move_toward(flinch_layer.influence, target, delta * peak / maxf(tw.hit_zone_blend_in_s, 0.001))
+	flinch_layer.active = flinch_layer.influence > 0.0
+
+
+## characters.md v1.18 (SOURCE `hit_zones:`): the flinch for damage `info` from its `zone` and hit `position` in the
+## body's root space: HEAD -> hit_head, BODY -> hit_chest, LIMB above the hips joint -> hit_shoulder_l / _r, below ->
+## hit_leg_l / _r (left = root-space x < 0). D-123: a `limb` sub-zone (upper-arm / thigh hitbox, zone BODY) wins
+## on a BODY / LIMB hit: shoulder_l / _r -> hit_shoulder_l / _r, leg_l / _r -> hit_leg_l / _r.
+## &"" when no zone is known (no `zone`, WEAKPOINT, a type other than
+## bullet / melee, a LIMB hit without a position) or the rig lacks the clip: the directional hit_react* set plays.
+func hit_zone_clip(info: Dictionary) -> StringName:
+	if not info.has("zone") or not HIT_ZONE_TYPES.has(int(info.get("type", Enums.DamageType.BULLET))):
+		return &""
+	var out: StringName = &""
+	var limb: StringName = StringName(info.get("limb", &""))
+	match int(info["zone"]):
+		Enums.HitZone.BODY, Enums.HitZone.LIMB when LIMB_CLIPS.has(limb):
+			out = LIMB_CLIPS[limb]  # D-123: a limb box's sub-zone (zone BODY) names its shoulder / leg flinch
+		Enums.HitZone.HEAD:
+			out = HIT_HEAD
+		Enums.HitZone.BODY:
+			out = HIT_CHEST
+		Enums.HitZone.LIMB:
+			var pos: Variant = info.get("position")
+			if pos is Vector3:
+				var xf: Transform3D = _body.global_transform if _body.is_inside_tree() else _body.transform
+				var local: Vector3 = xf.affine_inverse() * (pos as Vector3)
+				var left: bool = local.x < 0.0
+				if local.y > HIT_ZONE_HIPS_Y_M * _motion_scale():
+					out = HIT_SHOULDER_L if left else HIT_SHOULDER_R
+				else:
+					out = HIT_LEG_L if left else HIT_LEG_R
+	if out == &"" or player == null or not player.has_animation("%s/%s" % [LIBRARY, out]):
+		return &""
+	return out
 
 
 ## v1.10: the hit react for a bullet travelling along world direction `dir` (body frame: from the front, back,
@@ -912,7 +1349,31 @@ func _on_weapon_fired(shooter_net_id: int, _weapon_id: StringName, _suppressed: 
 	if player == null or shooter_net_id == 0 or shooter_net_id != _net_id():
 		return
 	_aim_hold_left = AnimTweak.data().aim_hold_s
-	play_oneshot(&"fire_rifle" if weapon_kind == &"rifle" else &"fire_pistol")
+	if _crew != null and _crew.crew_state == Enums.CrewState.DOWNED:
+		_play_state_oneshot(&"downed_fire")  # v1.21: shooting from the floor
+		return
+	play_oneshot(fire_clip())
+
+
+## The aim clip for weapon_kind: aim_akimbo (v1.21, when the rig has it), else aim_rifle / aim_pistol by family.
+func aim_clip() -> StringName:
+	if weapon_kind == &"akimbo" and _has_clip(&"aim_akimbo"):
+		return &"aim_akimbo"
+	return &"aim_rifle" if aim_family() == &"rifle" else &"aim_pistol"
+
+
+## The fire one-shot for the next shot: v1.21 akimbo alternates fire_akimbo (right) / fire_akimbo_l, right first;
+## otherwise fire_rifle / fire_pistol by family.
+func fire_clip() -> StringName:
+	if weapon_kind == &"akimbo" and _has_clip(&"fire_akimbo") and _has_clip(&"fire_akimbo_l"):
+		var c: StringName = &"fire_akimbo_l" if _akimbo_left_next else &"fire_akimbo"
+		_akimbo_left_next = not _akimbo_left_next
+		return c
+	return &"fire_rifle" if aim_family() == &"rifle" else &"fire_pistol"
+
+
+func _has_clip(c: StringName) -> bool:
+	return player != null and player.has_animation("%s/%s" % [LIBRARY, c])
 
 
 ## A3-13: an NPC melee windup (`cue.npc_melee_swing` [R], source = this NPC) plays `melee` on every peer, so
@@ -927,7 +1388,7 @@ func _on_audio_cue(cue_id: StringName, _pos: Vector3, source_net_id: int) -> voi
 		var g: NpcGunner = _npc.get_node_or_null(^"Gunner") as NpcGunner
 		var dur: float = g.reload_time() if g != null else CombatTweak.data().npc_reload_s
 		var clip_id: StringName = &"reload_pistol" if cue_id == NpcGunner.CUE_RELOAD_PISTOL else &"reload_rifle"
-		var done_s: float = float(AnimTweak.data().reload_done_s.get(&"pistol" if clip_id == &"reload_pistol" else &"rifle", 1.0))
+		var done_s: float = AnimTweak.data().reload_done(&"pistol" if clip_id == &"reload_pistol" else &"rifle")
 		play_oneshot(clip_id, dur, false, done_s / maxf(dur, 0.05))
 
 
@@ -935,9 +1396,20 @@ func _on_reload_started(_ws: int, duration: float) -> void:
 	if player == null:
 		return
 	var tw: AnimTweak = AnimTweak.data()
-	var done_s: float = float(tw.reload_done_s.get(weapon_kind, 1.0))
+	var c: StringName = &"reload_rifle" if aim_family() == &"rifle" else &"reload_pistol"
+	var key: StringName = aim_family()
+	if _crew != null and _crew.crew_state == Enums.CrewState.DOWNED and _has_clip(&"downed_reload"):
+		c = &"downed_reload"  # v1.21
+		key = c
+	elif weapon_kind == &"akimbo" and _has_clip(&"reload_akimbo"):
+		c = &"reload_akimbo"
+		key = &"akimbo"
+	var done_s: float = tw.reload_done(key, aim_family())
 	var speed: float = done_s / maxf(duration, 0.05)  # the `done` event frame lands on reload completion
-	play_oneshot(&"reload_rifle" if weapon_kind == &"rifle" else &"reload_pistol", duration, false, speed)
+	if c == &"downed_reload":
+		_play_state_oneshot(c, duration, speed)
+		return
+	play_oneshot(c, duration, false, speed)
 
 
 func _on_equipped(_ws: int) -> void:
@@ -946,7 +1418,7 @@ func _on_equipped(_ws: int) -> void:
 
 func _on_loot_dropped(_bag: int, crew_slot: int, thrown: bool) -> void:
 	if thrown and _crew != null and crew_slot == _crew.slot:
-		play_oneshot(&"throw_bag", -1.0, true)
+		play_oneshot(armed_clip(&"throw_bag"), -1.0, true)
 
 
 func _on_interaction_started(interactable_net_id: int, crew_slot: int, kind: StringName) -> void:

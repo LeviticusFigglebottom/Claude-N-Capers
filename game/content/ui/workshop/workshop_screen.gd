@@ -233,8 +233,9 @@ func _build_stage_column() -> Control:
 	stage.name = "Stage"
 	stage.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	box.add_child(stage)
-	var hint: Label = UiBuild.caption(&"ui.workshop.hint_short")
-	hint.tooltip_text = UiText.t(&"ui.workshop.hint")  # D-111: one line on the stage, every control on hover
+	# Gamepad pass: the full control line (mouse, pad, keys) on the stage; the hover tooltip never reached a pad, and
+	# this label ignores the mouse, so it never reached anyone.
+	var hint: Label = UiBuild.caption(&"ui.workshop.hint")
 	hint.uppercase = false
 	hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	hint.mouse_filter = Control.MOUSE_FILTER_IGNORE

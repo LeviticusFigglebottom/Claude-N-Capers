@@ -59,5 +59,8 @@ func _frames(seconds: float) -> void:
 		var d: AnimDriver = AnimDriver.of(_cop) if _cop != null else null
 		print("[ANIMCAP] frame %03d clip %s" % [_frame, d.clip if d != null else &"-"])
 		_frame += 1
-		await get_tree().create_timer(CAPTURE_S, true, false, true).timeout
-		t += CAPTURE_S
+		var step: float = 0.0  # CAPTURE_S of game time between frames (a wall-clock timer runs short under llvmpipe)
+		while step < CAPTURE_S:
+			await get_tree().physics_frame
+			step += get_physics_process_delta_time()
+		t += step

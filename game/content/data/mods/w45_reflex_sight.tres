@@ -16,6 +16,8 @@ noise_radius_m = 0.0
 equip_time_s = 0.0
 spread_deg_ads = -0.384
 magnification = 1.1
+scope_reticle = &"dot"
+scope_reticle_color = Color(1, 0.18, 0.12, 1)
 concealment = -1
 ads_time_s = 0.0
 

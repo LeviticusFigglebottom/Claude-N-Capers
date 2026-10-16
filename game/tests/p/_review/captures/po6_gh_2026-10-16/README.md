@@ -16,7 +16,7 @@ po6_gh_check.tscn (P) on 6c8083c8 + P. All windowed, real input.
 | PO6-14 bots carry thrown bags | PASS: bot carrying 1.5 m throw (direct launch: bots are capsules) | 05_po6_14_bot_bag.png |
 | PO6-16 cops push in | PARTIAL: cops inside back of house (body-blocked the player in the workshop corridor); the manager office was not on this run's path | po6_16_cop_inside_boh.png |
 | PO6-17 assault event | PASS: heli drop (HELICOPTER HUD marker) + breach in one loud run | po6_03_17_loud_drill_heli.png |
-| PO6-18 deaths respect the pose | PARTIAL: death_kneel_cuffed plays, dies in place; but the "kneel_cuffed" moment shows an arms-out bind pose and the corpse stays upright on its knees | po6_18_hostage_kneel_death_corpse.png |
+| PO6-18 deaths respect the pose | PASS (re-shot on A's 0c7d876b with game-time waits): kneels cuffed, dies in place face down, cuffed, blood pool; corpse FROZEN at hips 0.10 m. The earlier bind pose was a one-frame spawn bug (fixed, 0c7d876b); the upright corpse was the capture's real-time waits (1.2 game s for the whole capture under llvmpipe) | po6_18_gametime_kneel_death_corpse.png, po6_18_gametime_diag.txt |
 | PO6-19 shotgun ragdoll, corpse nudge / blood | PASS: point-blank Brute 12 -> 2.24 m, ragdoll settles; corpse hit nudge 0.08 m + blood | 02-04_po6_19_*.png, po6_19_corpse_blood.png |
 | PO6-20 pager outline | PASS outline (through a chair); HUD waypoint not visible in direct launch (no HUD) | 01_po6_20_pager_outline.png |
 

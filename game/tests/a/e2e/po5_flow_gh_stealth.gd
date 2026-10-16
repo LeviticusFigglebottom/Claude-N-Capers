@@ -288,6 +288,8 @@ func _guards() -> String:
 func _workshop() -> String:
 	var wdoor: InteractableComponent = _comp_tagged(&"workshop_door")
 	var door: Door = wdoor.owner_node() as Door
+	if not await _back_inside():
+		return "PO-5.stealth.workshop: could not get back inside from %s" % Po5Pilot._v(crew.global_position)
 	if not await _sneak_to(p.stand_point(Vector3(7.5, 0.0, 5.3)), 0.5, 120.0):
 		return "PO-5.stealth.workshop: could not reach the workshop door"
 	if not door.is_open:
@@ -409,7 +411,7 @@ func _escape() -> int:
 	var t1: float = rt.heist_time_s
 	while not ended[0] and rt.heist_time_s - t1 < 30.0:
 		await f.wait_s(0.5)
-		if not ended[0] and p.flat_dist(crew.global_position, ez.global_position) > 1.5:
+		if not ended[0] and not p.near(crew.global_position, ez.global_position, 1.5):
 			await p.goto(p.stand_point(ez.global_position), 0.8, 20.0)
 	if not ended[0]:
 		await f.shot("escape_stuck")
@@ -496,6 +498,22 @@ func _via_fire_exit(to_outside: bool) -> bool:
 		if not await p.goto(wp, 0.6, 60.0):
 			return false
 	return true
+
+
+## Back inside after the guard hunt (it can end in the alley). The smoker's BackDoor (LOCKPICK) is only on the
+## navmesh route while it is open (its NavLink); closed, the nav path from the alley runs up the fire-escape ladder to
+## the latched break-room window and the walk stalls there (PO6 rerun, seed 42: 120 s at (3.1, 4.2, -0.6)). Pick the
+## BackDoor (masked: allowed), else go round by the fire exit.
+func _back_inside() -> bool:
+	if _inside(crew.global_position):
+		return true
+	var back: Door = _door_named(&"BackDoor")
+	if back != null and not back.is_open and back.interactable != null and back.interactable.enabled:
+		f.note("outside at %s: in by the BackDoor (%s)" % [Po5Pilot._v(crew.global_position), back.interactable.kind])
+		await p.use(back.interactable, 40.0, func() -> bool: return back.is_open)
+	if back != null and back.is_open:
+		return await p.goto(Vector3(3.5, 0.0, 1.2), 0.6, 20.0)
+	return await _via_fire_exit(false)
 
 
 ## From wherever we are to the alley (outside, by the Pell St mouth).

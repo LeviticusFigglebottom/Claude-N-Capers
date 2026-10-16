@@ -25,6 +25,9 @@ func _init() -> void:
 	stretch = true
 	focus_mode = Control.FOCUS_ALL
 	mouse_filter = Control.MOUSE_FILTER_STOP
+	# D-115: focus is always visible (style.md §5); the viewport texture has no "focus" StyleBox of its own.
+	focus_entered.connect(queue_redraw)
+	focus_exited.connect(queue_redraw)
 	size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	size_flags_vertical = Control.SIZE_EXPAND_FILL
 	viewport = SubViewport.new()
@@ -89,6 +92,12 @@ func _process(delta: float) -> void:
 			yaw_deg = wrapf(yaw_deg + _tweak.preview_spin_deg_s * delta, -180.0, 180.0)
 			pitch_deg = move_toward(pitch_deg, 0.0, _tweak.preview_spin_deg_s * delta)
 	_apply()
+
+
+## D-115: the theme's cyan focus ring over the preview while it has focus (d-pad left / right turn it).
+func _draw() -> void:
+	if has_focus():
+		draw_style_box(UiThemeFactory.focus_ring(0), Rect2(Vector2.ZERO, size))
 
 
 ## Manual turn in degrees; pauses the auto spin for MaskTweak.preview_idle_s.
