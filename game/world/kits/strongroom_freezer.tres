@@ -1,0 +1,34 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"strongroom_freezer"
+purpose = &"vault"
+required_items = Array[StringName]([&"shelving", &"light_fixture"])
+optional_items = {
+&"fish_crates": 1
+}
+clutter_groups = {}
+min_density = 0.04
+max_density = 0.8
+min_props = 3
+lone_ok_kinds = Array[StringName]([&"shelving", &"fish_crates"])
+seed_salt = 209
+counts = {}
+assets = {
+&"cone": PackedStringArray("prop_traffic_cone"),
+&"dolly": PackedStringArray("prop_hand_truck"),
+&"fire_extinguisher": PackedStringArray("prop_fire_extinguisher"),
+&"fish_boxes": PackedStringArray("prop_fish_box_stack"),
+&"fish_crates": PackedStringArray("prop_fish_crates"),
+&"hose_reel": PackedStringArray("prop_hose_reel"),
+&"light_fixture": PackedStringArray("prop_bulkhead_caged"),
+&"pallet": PackedStringArray("prop_pallet_stack", "prop_pallet"),
+&"pallet_jack": PackedStringArray("prop_pallet_jack"),
+&"pallet_wrapped": PackedStringArray("prop_pallet_wrapped"),
+&"tote": PackedStringArray("prop_ibc_tote")
+}
+ceiling = {"prop_bulkhead_caged": 8}
+notes = "SR blast-freezer strongroom: freezer shelving (map-built), one caged bulkhead; the cash pallets / fish blocks are the cash_location variant."

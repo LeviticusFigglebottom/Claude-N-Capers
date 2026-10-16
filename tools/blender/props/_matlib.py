@@ -135,6 +135,18 @@ TINTED: dict[str, dict] = {
     "armor_charcoal": {"source": "metal_painted", "color": "#2B2F33", "roughness": 0.9},
     "soot": {"source": "concrete", "color": "#2C2825", "roughness": 1.2},
     "soot_haze": {"source": "concrete", "color": "#4A433E", "roughness": 1.2},
+    # Dockside Burn G2 (DB-C2): fish boxes, frosted cartons, film, nets and rope, insulated tubs, reefer white,
+    # laminate, and a 512 px/m hazard orange for world props (the library paint_safety_orange tiles every 1 m: FP gear).
+    "plastic_blue": {"source": "plastic_matte", "color": "#3D6488", "roughness": 0.8},
+    "frost": {"source": "plaster_painted", "color": "#C9D3D9", "roughness": 0.9},
+    "cardboard_frost": {"source": "plaster_painted", "color": "#A9A08F", "roughness": 1.0},
+    "shrink_wrap": {"source": "plastic_matte", "color": "#B9C0C2", "roughness": 0.45},
+    "net_green": {"source": "fabric_upholstery", "color": "#46604A", "roughness": 1.0},
+    "rope_tan": {"source": "fabric_upholstery", "color": "#9C865E", "roughness": 1.0},
+    "ice_blue": {"source": "plastic_matte", "color": "#5F86A8", "roughness": 0.7},
+    "trailer_white": {"source": "metal_painted", "color": "#CFCDC6", "roughness": 0.9},
+    "laminate_grey": {"source": "plastic_matte", "color": "#8E9090", "roughness": 0.6},
+    "paint_hazard_orange": {"source": "drywall_painted", "color": "#D2611E", "roughness": 0.8},
 }
 
 # Painted canvases (GN-C2): key -> albedo PNG from tools/texgen/paintings.py. The prop material is a plain

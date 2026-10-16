@@ -1,0 +1,13 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/props/veh_reach_stacker/veh_reach_stacker.glb" id="1_model"]
+
+[node name="VehReachStacker" type="Node3D"]
+metadata/kind = &"vehicle"
+
+[node name="Model" parent="." instance=ExtResource("1_model")]
+
+[node name="Collision" parent="Model"]
+metadata/surface = &"metal"
+
+[editable path="Model"]
