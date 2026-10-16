@@ -21,10 +21,18 @@ import _anim as A
 import _anim_humanoid as H
 from _anim import FPS, TAU, Clip, Pose, Skeleton, Solver, hand_shape, rxd, rzd, v3
 
-NAMES = ("idle_alert_rifle", "idle_alert_pistol", "hold_rifle", "hold_pistol")
+#: hold kinds (A maps WeaponDef.weapon_class -> kind, SOURCE ``weapon_holds``) -> loop frames
+KINDS = {"rifle": 96, "pistol": 110, "smg": 92, "sniper": 104, "lmg": 100, "akimbo": 106}
+NAMES = tuple(f"idle_alert_{kind}" for kind in KINDS) + tuple(f"hold_{kind}" for kind in KINDS)
 #: the low ready: rifle turned about its butt (pitch down, yaw left, lowered); pistol about its grip
 RIFLE_LOW = {"pitch": -28.0, "yaw": 12.0, "drop": 0.03}
 PISTOL_LOW = {"pitch": -38.0, "back": 0.20, "drop": 0.24}
+#: per rifle-like kind: the support point (Blender weapon space, the class reference model's LeftHandIK) and extra
+#: low-ready pitch (deg): smg = wpn_hornet_9 (also the thumper launcher), sniper = wpn_heron_308
+SUPPORT = {"rifle": (None, 0.0), "smg": (v3(0.0, 0.150, 0.016), 4.0), "sniper": (v3(0.0, 0.333, 0.024), -6.0)}
+#: the LMG hip carry (wpn_rampart_lmg): grip at the right hip, muzzle forward and a little down and left; the support
+#: hand 4 cm behind the LeftHandIK (still on the handguard): the marker is out of reach from a hip-held grip
+LMG_HIP = {"grip": (0.16, 0.17, 1.03), "yaw": 10.0, "pitch": -6.0, "roll": -4.0, "left_ik": v3(0.0, 0.253, 0.029)}
 #: the weight shift: hips side to side (m at 1.78 m) over one loop, with the spine leaning against it (deg)
 SHIFT_M, SHIFT_COUNTER_DEG = 0.016, 2.2
 #: the bones A layers from hold_* over locomotion
@@ -48,24 +56,62 @@ def pistol_low_frame(sk: Skeleton, t: float) -> tuple:
     return Rl, o + v3(0.0, -PISTOL_LOW["back"] * k, -PISTOL_LOW["drop"] * k)
 
 
-def _hold(sk: Skeleton, rifle: bool, f: int, N: int, shift: bool) -> Pose:
+def _mirror(wf: tuple) -> tuple:
+    """The weapon frame mirrored across the body's mid-plane (x): the left gun of an akimbo pair."""
+    R, o = wf
+    M = A.np.diag([-1.0, 1.0, 1.0])
+    return M @ R @ M, M @ o
+
+
+def lmg_hip_frame(sk: Skeleton, t: float) -> tuple:
+    k = sk.scale
+    gx, gy, gz = LMG_HIP["grip"]
+    o = v3(gx * k, gy * k + 0.004 * k * math.sin(TAU * t / 3.2), gz * k + 0.005 * k * math.sin(TAU * t / 1.6))
+    return A.weapon_frame(o, yaw=LMG_HIP["yaw"], pitch=LMG_HIP["pitch"] + 0.6 * math.sin(TAU * t / 1.6),
+                          roll=LMG_HIP["roll"])
+
+
+def _hold(sk: Skeleton, kind: str, f: int, N: int, shift: bool) -> Pose:
     t = f / FPS
     T = N / FPS
     k = sk.scale
     pose = Pose()
-    H.aim_body(sk, pose, rifle)
+    H.aim_body(sk, pose, kind not in ("pistol", "akimbo"))
+    if kind == "lmg":                                      # the weight carried low: lean back a little, wider
+        A.add_rot(pose, "spine", rxd(4.0))
+        pose.hip = pose.hip + v3(0.0, -0.01 * k, -0.012 * k)
     w = math.sin(TAU * t / T)
     if shift:
         pose.hip = pose.hip + v3(SHIFT_M * k * w, 0.0, -0.004 * k * abs(w))
         A.add_rot(pose, "spine", A.ryd(-SHIFT_COUNTER_DEG * w))
     H.look(pose, yaw=14.0 * math.sin(TAU * t / T + 0.9), pitch=-2.0 + 1.5 * math.sin(TAU * 2 * t / T))
-    wf = rifle_low_frame(sk, t) if rifle else pistol_low_frame(sk, t)
-    if rifle:
-        H.hold_rifle(sk, pose, wf)
+    if kind in SUPPORT:
+        at, extra = SUPPORT[kind]
+        R, o = rifle_low_frame(sk, t)
+        if extra:
+            butt = o + R @ (H.RIFLE["butt"] * k)
+            R2 = rxd(extra) @ R
+            R, o = R2, butt - R2 @ (H.RIFLE["butt"] * k)
+        A.hold_weapon(sk, pose, (R, o), pole=v3(0.75, -0.2, -0.6), twist=0.6)
+        H.rifle_support(sk, pose, (R, o), at=at)
         pose.hands["R"] = hand_shape("grip", 0.9)          # finger off the trigger at the low ready
-    else:
-        H.hold_pistol(sk, pose, wf)
+    elif kind == "lmg":
+        wf = lmg_hip_frame(sk, t)
+        A.hold_weapon(sk, pose, wf, pole=v3(0.8, -0.1, -0.6), twist=0.6)
+        H.rifle_support(sk, pose, wf, at=LMG_HIP["left_ik"], pole=v3(-0.5, -0.2, -0.85))
+        pose.hands["R"] = hand_shape("grip", 0.9)
+    elif kind == "pistol":
+        H.hold_pistol(sk, pose, pistol_low_frame(sk, t))
         pose.hands["R"] = hand_shape("grip", 0.85)
+    else:                                                  # akimbo: a pistol low ready in each hand
+        wf = pistol_low_frame(sk, t)
+        R, o = wf
+        o = o + v3(0.11 * k, 0.0, 0.0)
+        A.hold_weapon(sk, pose, (R, o), pole=v3(0.55, -0.15, -0.8), twist=0.6)
+        A.hold_weapon(sk, pose, _mirror((rzd(-6.0) @ R, o + v3(0.0, 0.0, 0.015 * k))), pole=v3(-0.55, -0.15, -0.8),
+                      sfx="L", twist=0.6)
+        pose.hands["R"] = hand_shape("grip", 0.85)
+        pose.hands["L"] = hand_shape("grip", 0.85)
     H.breathe(pose, t, T / 4.0, 1.1)
     return pose
 
@@ -75,11 +121,11 @@ def clips(sk: Skeleton, solver: Solver, table: dict) -> dict[str, Clip]:
     for name in [n for n in NAMES if n in table]:
         row = table[name]
         N = int(row["frames"])
-        rifle = name.endswith("rifle")
+        kind = name.rsplit("_", 1)[1]
         shift = name.startswith("idle_alert")
 
-        def fn(f: int, N=N, rifle=rifle, shift=shift) -> Pose:
-            return _hold(sk, rifle, f, N, shift)
+        def fn(f: int, N=N, kind=kind, shift=shift) -> Pose:
+            return _hold(sk, kind, f, N, shift)
         out[name] = Clip(name, N, True, fn, float(row["speed"]), None, dict(row.get("events", {})), reach_fix=False)
     return out
 
@@ -93,11 +139,12 @@ def check_row(name: str, baked) -> str:
 
 def source_notes() -> dict:
     return {"weapon_holds": (
-        "D-116 third-person weapon holds (crew bots / teammates, armed NPCs): idle_alert_rifle / idle_alert_pistol "
-        "replace idle_alert while the body holds a rifle- / pistol-class weapon (AnimDriver.weapon_kind) and is not "
-        "aiming: PD2 low ready, both hands on the weapon (support hand on its LeftHandIK), a slow weight shift. "
-        "hold_rifle / hold_pistol: the same upper body without the weight shift, to layer over walk / run / strafe* "
-        "with a bone filter (" + ", ".join(UPPER_BONES) + "), weight 1.0, blend 0.2 s; aim_rifle / aim_pistol keep "
-        f"priority while aiming. Loops: idle_alert_rifle {96} f, idle_alert_pistol {110} f, hold_* {96} f "
-        "(start each body at a random offset, GameRng &\"anim_variants\")")}
-
+        "D-116 third-person weapon holds (crew bots / teammates, armed NPCs): idle_alert_<kind> replaces idle_alert "
+        "while the body holds a weapon of that kind and is not aiming (PD2 low ready, both hands on the weapon, the "
+        "support hand on the class reference model's LeftHandIK, a slow weight shift); hold_<kind> is the same upper "
+        "body without the shift, to layer over walk / run / strafe* with a bone filter (" + ", ".join(UPPER_BONES)
+        + "), weight 1.0, blend 0.2 s; aim_rifle / aim_pistol keep priority while aiming. Kinds by "
+        "WeaponDef.weapon_class: ASSAULT_RIFLE, SHOTGUN -> rifle; SMG, SPECIAL (launcher) -> smg; SNIPER -> sniper; "
+        "LMG -> lmg (a hip carry); PISTOL -> pistol, or akimbo when the weapon is an akimbo pair (a second "
+        "WeaponVisual at HandL/Socket, the mirrored grip convention). Start each body's loop at a random offset "
+        "(GameRng &\"anim_variants\")")}

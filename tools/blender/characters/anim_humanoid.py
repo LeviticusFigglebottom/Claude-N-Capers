@@ -224,6 +224,14 @@ CLIPS = {
     "idle_alert_pistol": {"frames": 110, "loop": True, "speed": 0.0, "priority": 2},
     "hold_rifle": {"frames": 96, "loop": True, "speed": 0.0, "priority": 2},
     "hold_pistol": {"frames": 96, "loop": True, "speed": 0.0, "priority": 2},
+    "idle_alert_smg": {"frames": 92, "loop": True, "speed": 0.0, "priority": 2},
+    "idle_alert_sniper": {"frames": 104, "loop": True, "speed": 0.0, "priority": 2},
+    "idle_alert_lmg": {"frames": 100, "loop": True, "speed": 0.0, "priority": 2},
+    "idle_alert_akimbo": {"frames": 106, "loop": True, "speed": 0.0, "priority": 2},
+    "hold_smg": {"frames": 92, "loop": True, "speed": 0.0, "priority": 2},
+    "hold_sniper": {"frames": 96, "loop": True, "speed": 0.0, "priority": 2},
+    "hold_lmg": {"frames": 100, "loop": True, "speed": 0.0, "priority": 2},
+    "hold_akimbo": {"frames": 96, "loop": True, "speed": 0.0, "priority": 2},
 }
 LOOPS = sorted(name for name, row in CLIPS.items() if row["loop"])
 P1 = sorted(name for name, row in CLIPS.items() if row["priority"] == 1)
