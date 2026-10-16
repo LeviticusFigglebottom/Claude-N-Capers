@@ -292,6 +292,22 @@ static var _gen: int = 0
 @export var gadget_light_color: Color = Color(1.0, 0.97, 0.9)
 @export var gadget_light_attenuation: float = 1.2
 
+@export_group("Scoped ADS (LEAD 2026-10-16)")
+## A sight with WeaponStats.magnification >= this (or ENV B's `is_scope`, when present) shows the FpScopeOverlay
+## sight picture at full ADS instead of the 3D gun; lower-power optics (reflex, holo, 3x prism) stay 3D.
+@export var scope_overlay_min_mag: float = 3.5
+## ads_blend range over which the overlay fades in (and back out on release).
+@export var scope_blend_in: Vector2 = Vector2(0.8, 0.97)
+## Overlay amount past which the gun image (arms, gun, ocular lens) is hidden.
+@export var scope_hide_gun_at: float = 0.6
+## Ocular radius as a fraction of the shorter screen side; the soft dark edge just inside it (px).
+@export var scope_radius_frac: float = 0.46
+@export var scope_edge_px: float = 14.0
+## Reticle line width (px); style and colour when the weapon's scope data names none.
+@export var scope_line_px: float = 2.0
+@export var scope_reticle_default: StringName = &"duplex"
+@export var scope_reticle_color: Color = Color(0.02, 0.02, 0.02)
+
 @export_group("Motion")
 ## Horizontal speed (m/s) above which walk bob / sprint play.
 @export var move_threshold_mps: float = 0.3
