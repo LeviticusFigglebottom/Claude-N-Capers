@@ -184,6 +184,12 @@ const ANCHORS: Array = [
 	["X2H", "QuayBinA", "prop_bin_street", Vector3(-0.6, 0.0, 31.2), 180.0, {}],
 	["X2H", "QuayBinB", "prop_bin_street", Vector3(21.4, 0.0, 31.2), 180.0, {}],
 	["X2H", "SidewalkBin", "prop_bin_street", Vector3(13.0, 0.0, 21.75), 180.0, {}],
+	# ND-3 (P loud run, seed 1002: the boat carry route was open street): cover from the bank door to the quay steps.
+	# The car keeps clear of the main door, the turret-van lane (x 1-7, z 24.8-27.2) and the casing spawns' view.
+	["X2H", "CarHarborD", "veh_car_sedan_silver", Vector3(7.5, ROAD_Y, 23.3), 90.0, {}],
+	["X2H", "QuayBarrierW", "prop_barrier_jersey", Vector3(4.5, 0.0, 30.8), 0.0, {}],
+	["X2H", "QuayBarrierE", "prop_barrier_jersey", Vector3(12.5, 0.0, 30.8), 0.0, {}],
+	["X2H", "QuayBarrierFar", "prop_barrier_jersey", Vector3(16.8, 0.0, 30.8), 0.0, {}],
 	["X2H", "HarborClock", "prop_clock_harbor", Vector3(10.5, 3.65, 20.2), 180.0, {}],
 	# X2W Wharf Lane (east facade)
 	["X2W", "LampWharfW", "prop_street_lamp_sodium", Vector3(27.8, 0.0, -4.0), -90.0, {}],

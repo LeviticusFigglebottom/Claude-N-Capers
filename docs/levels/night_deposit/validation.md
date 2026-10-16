@@ -51,7 +51,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## floating: Nothing floats
 
-- 583 props checked
+- 586 props checked
 
 - WARN `Gameplay/Atms/AtmCash1` @ (22.30, 0.90, 16.88): prop has no geometry or collision; skipped
 - WARN `Gameplay/Atms/AtmCash2` @ (23.40, 0.90, 16.88): prop has no geometry or collision; skipped
@@ -70,7 +70,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## clipping: Nothing clips
 
-- 583 props, 36 doors checked
+- 586 props, 36 doors checked
 
 
 ## orientation: Flush and oriented
@@ -126,12 +126,12 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## slopes: No walkable slope < 50° outside the play mesh
 
-- 429 x 282 columns (0.25 m), 66557 surface samples, 0 collider(s) with reachable walkable surfaces outside play
+- 429 x 282 columns (0.25 m), 66803 surface samples, 0 collider(s) with reachable walkable surfaces outside play
 
 
 ## navmesh: Navmesh
 
-- navmesh: 1835 polygons, cell 0.10/0.10 m
+- navmesh: 1851 polygons, cell 0.10/0.10 m
 - 172 markers checked
 | room | walkable samples | covered | coverage |
 |---|---|---|---|
@@ -163,7 +163,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `Rooms/RoomB12` | 79 | 79 | 100% |
 | `Rooms/RoomB14` | 2 | 2 | 100% |
 | `Rooms/RoomX1` | 659 | 659 | 100% |
-| `Rooms/RoomX2` | 734 | 734 | 100% |
+| `Rooms/RoomX2` | 709 | 709 | 100% |
 
 
 ## barred_doors: BARRED doorways are closed in the navmesh
@@ -200,12 +200,12 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## materials: Materials and texel density
 
-- 2703 surfaces checked
+- 2714 surfaces checked
 
 
 ## zfight: Z-fighting
 
-- 418293 triangles checked
+- 422467 triangles checked
 
 
 ## lights: Lighting is deliberate
@@ -248,15 +248,15 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `Rooms/RoomB12` | depository | 9 | 30.0 | 0.30 |
 | `Rooms/RoomB14` | janitor_closet | 3 | 3.8 | 0.80 |
 | `Rooms/RoomX1` | exterior_lot | 22 | 595.0 | 0.04 |
-| `Rooms/RoomX2` | exterior_harbor | 35 | 1121.4 | 0.03 |
+| `Rooms/RoomX2` | exterior_harbor | 38 | 1121.4 | 0.03 |
 
 
 ## variety: Layout variety
 
 - kit `banking_hall`: 1 room(s), 1 distinct layout(s)
-- kit `locker_room`: 1 room(s), 1 distinct layout(s)
 - kit `server_room`: 1 room(s), 1 distinct layout(s)
 - kit `break_room`: 1 room(s), 1 distinct layout(s)
+- kit `locker_room`: 1 room(s), 1 distinct layout(s)
 - kit `depository`: 1 room(s), 1 distinct layout(s)
 - kit `exterior_harbor`: 1 room(s), 1 distinct layout(s)
 - kit `exterior_lot`: 1 room(s), 1 distinct layout(s)
@@ -282,44 +282,44 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## bounds: No void / back faces
 
-- 263 eye samples, 21303 rays, sky yes, 0 void ray(s)
+- 265 eye samples, 21465 rays, sky yes, 0 void ray(s)
 
 
 ## perf: Per-shot performance budget
 
 | camera | draw calls | triangles | shadow lights |
 |---|---|---|---|
-| `TopDownSite` | 1373 | 355516 | 6 |
-| `TopDownBuilding` | 1981 | 707390 | 6 |
-| `ExtHarborFacade` | 2191 | 726826 | 6 |
-| `ExtAtmCorner` | 2319 | 762510 | 6 |
-| `ExtLotSallyPort` | 1602 | 504260 | 6 |
-| `ExtQuaySteps` | 101 | 37532 | 2 |
-| `ExtWharfLane` | 2098 | 677108 | 6 |
+| `TopDownSite` | 1384 | 364936 | 6 |
+| `TopDownBuilding` | 1986 | 715922 | 6 |
+| `ExtHarborFacade` | 2201 | 736670 | 6 |
+| `ExtAtmCorner` | 2326 | 771338 | 6 |
+| `ExtLotSallyPort` | 1613 | 513680 | 6 |
+| `ExtQuaySteps` | 105 | 38124 | 2 |
+| `ExtWharfLane` | 2109 | 686528 | 6 |
 | `HallFromVestibule` | 1700 | 507586 | 6 |
-| `CompassLandmark` | 2102 | 625888 | 6 |
-| `HallGuardPost` | 1410 | 392366 | 5 |
+| `CompassLandmark` | 2110 | 635436 | 6 |
+| `HallGuardPost` | 1412 | 392662 | 5 |
 | `TellerWorkroom` | 2031 | 592546 | 6 |
-| `StaffCorridor` | 1721 | 532128 | 6 |
+| `StaffCorridor` | 1726 | 540660 | 6 |
 | `SecurityRoom` | 533 | 167310 | 3 |
 | `SallyPort` | 1067 | 320078 | 3 |
 | `StairCore` | 586 | 199338 | 3 |
 | `BasementCorridor` | 1898 | 575480 | 6 |
 | `Antechamber` | 1377 | 406248 | 5 |
-| `VaultInterior` | 495 | 171048 | 4 |
-| `CountDepository` | 905 | 287194 | 3 |
-| `RecordsRoom` | 559 | 212470 | 3 |
+| `VaultInterior` | 509 | 181484 | 4 |
+| `CountDepository` | 919 | 297630 | 3 |
+| `RecordsRoom` | 570 | 221890 | 3 |
 | `PlantAreaway` | 423 | 149158 | 2 |
 | `ManagerOffice` | 705 | 213898 | 0 |
-| `AtmVestibule` | 2280 | 728578 | 6 |
-| `CranePerch` | 2314 | 761862 | 6 |
+| `AtmVestibule` | 2285 | 737110 | 6 |
+| `CranePerch` | 2321 | 770690 | 6 |
 | `BreakRoom` | 589 | 189358 | 3 |
 | `SuppliesStore` | 306 | 106988 | 1 |
 | `LoanOffice` | 492 | 147552 | 1 |
 | `CashTransfer` | 225 | 83914 | 1 |
 | `LockerRoom` | 442 | 150240 | 2 |
 | `ServerRoom` | 716 | 233504 | 3 |
-| `InspectionPassage` | 603 | 209144 | 3 |
+| `InspectionPassage` | 617 | 219580 | 3 |
 
 
 ## door_frame_gap: Doors and windows fill their wall openings (no gaps, no clipping)

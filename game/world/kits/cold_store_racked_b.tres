@@ -1,0 +1,35 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"cold_store_racked_b"
+purpose = &"warehouse"
+required_items = Array[StringName]([&"rack", &"fish_boxes", &"fire_extinguisher", &"light_fixture"])
+optional_items = {
+&"pallet": 1,
+&"pallet_jack": 0.5
+}
+clutter_groups = {}
+min_density = 0.02
+max_density = 0.1
+min_props = 5
+lone_ok_kinds = Array[StringName]([&"rack", &"fish_boxes", &"pallet", &"pallet_jack"])
+seed_salt = 217
+counts = {}
+assets = {
+&"cone": PackedStringArray("prop_traffic_cone"),
+&"dolly": PackedStringArray("prop_hand_truck"),
+&"fire_extinguisher": PackedStringArray("prop_fire_extinguisher"),
+&"fish_boxes": PackedStringArray("prop_fish_box_stack"),
+&"fish_crates": PackedStringArray("prop_fish_crates"),
+&"hose_reel": PackedStringArray("prop_hose_reel"),
+&"light_fixture": PackedStringArray("prop_led_batten_cold"),
+&"pallet": PackedStringArray("prop_pallet_stack", "prop_pallet"),
+&"pallet_jack": PackedStringArray("prop_pallet_jack"),
+&"pallet_wrapped": PackedStringArray("prop_pallet_wrapped"),
+&"tote": PackedStringArray("prop_ibc_tote")
+}
+ceiling = {"prop_led_batten_cold": 4.7}
+notes = "C2 (lead DB G2 review: tell the chambers apart): half-empty, stacked fish boxes instead of C1's wrapped pallets and crates, bare steel panels, colder light. Racking rows map-built as in C1."
