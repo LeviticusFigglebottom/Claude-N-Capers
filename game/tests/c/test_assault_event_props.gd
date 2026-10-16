@@ -1,13 +1,14 @@
 ## PO6-17: assault-event visuals (tools/blender/props/assault_events.py) keep the node contract ENV A codes
 ## against (docs/levels/_art/po6_17/README.md): turret van, sentry turret, police helicopter and the three
-## breach points (+ the map-sized variants), plus the `AssaultEvents` markers of Golden Hour, Dockside Burn and
-## Night Deposit. Owner: ENV C.
+## breach points (+ the map-sized variants), plus the `AssaultEvents` markers of Golden Hour, Dockside Burn, Night
+## Deposit and Gallery Night. Owner: ENV C.
 extends TestCase
 
 const DIR: String = "res://world/props/assault_event/"
 const GH: String = "res://world/heists/glasshouse/glasshouse.tscn"
 const DB: String = "res://world/heists/dockside_burn/dockside_burn.tscn"
 const ND: String = "res://world/heists/night_deposit/night_deposit.tscn"
+const GN: String = "res://world/heists/gallery_night/gallery_night.tscn"
 const BREACHES: Dictionary = {
 	"prop_breach_wall": Vector2(1.0, 2.2), "prop_breach_window": Vector2(1.0, 2.1), "prop_breach_ceiling": Vector2(1.2, 1.2),
 	"prop_breach_wall_t40": Vector2(1.0, 2.2), "prop_breach_ceiling_p100_d800": Vector2(1.2, 1.2),
@@ -33,6 +34,12 @@ const ND_EXPECT: Dictionary = {
 	"breaches": {
 		"Breach_1": ["ceiling", "G9", "prop_breach_ceiling_p100_d550", 0.0],
 		"Breach_2": ["ceiling", "G8", "prop_breach_ceiling", 0.0], "Breach_3": ["wall", "G6", "prop_breach_wall_t40", 0.0]},
+}
+const GN_EXPECT: Dictionary = {
+	"counts": {"TurretVan": 2, "HeliOrbit": 1, "HeliDrop": 2, "Breach": 4}, "rappels": 0,
+	"breaches": {
+		"Breach_1": ["window", "AO", "prop_breach_window", 5.4], "Breach_2": ["wall", "WG", "prop_breach_wall_t40", 0.0],
+		"Breach_3": ["wall", "EB", "prop_breach_wall_t40", 0.0], "Breach_4": ["wall", "LD", "prop_breach_wall_t40", 0.0]},
 }
 
 
@@ -176,6 +183,10 @@ func test_dockside_burn_markers() -> void:
 
 func test_night_deposit_markers() -> void:
 	_check_map(ND, ND_EXPECT)
+
+
+func test_gallery_night_markers() -> void:
+	_check_map(GN, GN_EXPECT)
 
 
 ## Marker contract on a map (README §5-§7): AssaultEvents (group), Marker3D kinds and counts, orbit radius, the

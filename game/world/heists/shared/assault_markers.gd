@@ -17,8 +17,9 @@ const INFILL_T: Dictionary = {"prop_breach_wall": 0.2, "prop_breach_wall_t40": 0
 ## Ceiling breach roof curb (prop_breach_ceiling*: 0.15 m wide, 0.2 m high round the 1.2 m hole).
 const CURB_W: float = 0.15
 const CURB_H: float = 0.25
-## Infill obstructions reach this far (one nav cell) past the room face: the voxelised wall face they stand in for
-## erodes one cell further than a projected obstruction on the same plane.
+## Default reach of an infill obstruction past the room face (one nav cell): where the voxelised wall face it stands
+## in for erodes one cell further than a projected obstruction on the same plane (DB, ND). A map whose bake already
+## matches passes `face_pad` 0 (GN). Chosen per map so the navmesh is unchanged with the breaches intact.
 const NAV_FACE_PAD: float = 0.1
 
 
@@ -119,7 +120,7 @@ static func marker_xform(b: Array) -> Transform3D:
 ## `obstructions` ([corners, elevation, height], the generators' projected-obstruction rows) because the bake only
 ## parses `Geometry`: an intact breach stays wall for the navmesh. Returns errors.
 static func build(root: Node3D, vans: Array, orbits: Array, drops: Array, rappels: Array, breaches: Array,
-		obstructions: Array[Array]) -> PackedStringArray:
+		obstructions: Array[Array], face_pad: float = NAV_FACE_PAD) -> PackedStringArray:
 	var errors: PackedStringArray = PackedStringArray()
 	var ae: Node3D = Node3D.new()
 	ae.name = "AssaultEvents"
@@ -163,9 +164,9 @@ static func build(root: Node3D, vans: Array, orbits: Array, drops: Array, rappel
 			if not INFILL_T.has(String(b[2])):
 				errors.append("%s: no infill depth for %s" % [String(b[0]), String(b[2])])
 				continue
-			# NAV_FACE_PAD into the room: a projected obstruction erodes like the voxelised wall face it replaces
+			# face_pad into the room: the projected obstruction erodes like the voxelised wall face it replaces
 			var t: float = float(INFILL_T[String(b[2])])
-			box = AABB(Vector3(-size.x * 0.5, -0.2, -NAV_FACE_PAD), Vector3(size.x, size.y + 0.2, t + NAV_FACE_PAD))
+			box = AABB(Vector3(-size.x * 0.5, -0.2, -face_pad), Vector3(size.x, size.y + 0.2, t + face_pad))
 		obstructions.append(_projected(xf, box))
 	return errors
 
