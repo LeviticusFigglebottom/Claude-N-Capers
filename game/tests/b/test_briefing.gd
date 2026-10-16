@@ -167,7 +167,7 @@ func test_long_subtitle_keeps_the_nav_on_screen() -> void:
 func test_model_from_a_heist_def() -> void:
 	var def: HeistDef = HeistDef.new()
 	def.id = HEIST
-	def.contact = &"contact.reyes"
+	def.contact = &"contact.vance"
 	def.briefing = "Literal briefing text."
 	def.mode = Enums.HeistMode.LOUD_ONLY
 	def.base_payout = 10000
@@ -176,7 +176,7 @@ func test_model_from_a_heist_def() -> void:
 	def.escape_options = [&"boat", &"zeppelin"] as Array[StringName]
 	var m: Dictionary = BriefingModel.build(HEIST, Enums.Difficulty.BRUTAL, def)
 	assert_false(bool(m["placeholder"]))
-	assert_eq((m["contact"] as ContactDef).id, &"contact.reyes")
+	assert_eq((m["contact"] as ContactDef).id, &"contact.vance")
 	assert_eq(m["briefing_text"], "Literal briefing text.")
 	assert_eq(m["mode_key"], &"ui.heist_select.modes_loud_only")
 	assert_eq(int(m["contract_pay"]), HeistCatalog.contract_preview(10000, Enums.Difficulty.BRUTAL))
@@ -189,7 +189,8 @@ func test_model_from_a_heist_def() -> void:
 	assert_eq(String((esc[1] as Dictionary)["text"]), "Zeppelin")
 	var lines: Array = m["voice_lines"] as Array
 	assert_true(lines.size() >= 2)
-	assert_eq(StringName((lines[0] as Dictionary)["speaker"]), &"reyes")
+	# Glasshouse's own contact (D-117 §6: briefing sets of contacts a heist does not have were removed).
+	assert_eq(StringName((lines[0] as Dictionary)["speaker"]), &"vance")
 
 
 ## D-109 (lead ruling): briefing_objectives replaces the list, the loud branch is one line, extras sit under
@@ -266,3 +267,20 @@ func test_escape_line_sits_in_the_header() -> void:
 	var opts: String = "%s, %s" % [UiText.t(&"ui.briefing.escape.van"), UiText.t(&"ui.briefing.escape.boat")]
 	assert_eq(s.escape_label.text, UiText.t(&"ui.briefing.escape_line", {"options": opts}))
 	s.queue_free()
+
+
+## r224 GN capture: the briefing's blueprint panel draws the heist's real pre-planning blueprint (read-only),
+## not the "floor plans arrive" placeholder, for every heist that has one.
+func test_briefing_shows_the_real_blueprint() -> void:
+	for h: StringName in [&"glasshouse", &"night_deposit", &"shadow_ledger", &"dockside_burn", &"gallery_night"]:
+		var s: BriefingScreen = (load(SCENE) as PackedScene).instantiate() as BriefingScreen
+		s.setup(h, Enums.Difficulty.ROUTINE)
+		add_child(s)
+		await wait_frames(2)
+		assert_true(s.blueprint_view.visible, "%s: real blueprint shown" % h)
+		assert_false(s.blueprint_view.board.blueprint.placeholder, "%s: not the placeholder" % h)
+		assert_true(s.blueprint_view.size.x > 100.0 and s.blueprint_view.size.y > 100.0, "%s: fills the panel" % h)
+		for b: Variant in s.blueprint_view.markers.values():
+			assert_eq((b as Control).focus_mode, Control.FOCUS_NONE, "%s: markers are not focus stops" % h)
+		s.queue_free()
+		await wait_frames(1)

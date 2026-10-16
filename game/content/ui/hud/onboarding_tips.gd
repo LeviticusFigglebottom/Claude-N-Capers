@@ -8,6 +8,10 @@ extends RefCounted
 const SETTINGS_KEY: String = "onboarding_seen"
 ## Every tip, in the order a heist reaches them (OnboardingCard).
 const ALL: Array[StringName] = [&"casing", &"stealth", &"loud", &"escape"]
+## D-115: heists with a first-time card for their own mechanics; the card's tip id is heist_tip(heist id)
+## ("heist_<id>"), stored in the same SETTINGS_KEY array.
+const HEISTS: Array[StringName] = [&"glasshouse", &"night_deposit", &"shadow_ledger", &"dockside_burn",
+		&"gallery_night"]
 
 static var persist: bool = true
 static var profile_slot: int = 0
@@ -36,10 +40,23 @@ static func mark_seen(id: StringName) -> void:
 static func seen_ids() -> Array:
 	_load()
 	var out: Array = []
-	for id: StringName in ALL:
+	for id: StringName in known_ids():
 		if _seen.has(String(id)):
 			out.append(String(id))
 	return out
+
+
+## The situation cards (ALL) then every heist card, in a stable order.
+static func known_ids() -> Array[StringName]:
+	var out: Array[StringName] = ALL.duplicate()
+	for h: StringName in HEISTS:
+		out.append(heist_tip(h))
+	return out
+
+
+## The tip id of `heist_id`'s card (&"" = that heist has none).
+static func heist_tip(heist_id: StringName) -> StringName:
+	return StringName("heist_%s" % heist_id) if HEISTS.has(heist_id) else &""
 
 
 ## Forget every tip (Options "show tips again"; tests). Writes the profile when persisting.

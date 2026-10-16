@@ -566,6 +566,7 @@ func _build_site(geo: Node3D) -> void:
 	launch.position = L.LAUNCH[1]
 	launch.basis = yaw_basis(float(L.LAUNCH[2]))
 	add(blocks, launch)
+	_container_footprints(blocks)
 	var fences: Node3D = add(site, node3d("Closures")) as Node3D
 	for f: Array in L.FENCES:
 		var ops: Array = (f[7] as Array).duplicate()
@@ -574,6 +575,26 @@ func _build_site(geo: Node3D) -> void:
 			Vector2(float(f[5]), float(f[6])), ops, String(f[8]))
 	box_a(fences, "YardGateLeaf", L.GATE_LEAF, "fence")
 	mesh_box(site, "WeighbridgePlate", v3(L.WEIGHBRIDGE, 0), v3(L.WEIGHBRIDGE, 3), "trim")
+
+
+## Pre-planning footprints (D-115) of the yard containers K1-K6 and D1: they are Props (padlock objectives,
+## cover), which the blueprint exporter does not read, so each row is a plain Node3D under Site/Blocks with one
+## DISABLED box collider per container (no body: no physics, no navmesh source, no levelcheck prop).
+func _container_footprints(blocks: Node3D) -> void:
+	var rows: Dictionary = {"ContainersWest": [], "ContainersEast": []}
+	for p: Array in L.PROPS:
+		if String(p[4]) == "container":
+			(rows["ContainersWest" if (p[1] as Vector3).x < 30.0 else "ContainersEast"] as Array).append(p)
+	for row: String in rows:
+		var holder: Node3D = add(blocks, node3d(row)) as Node3D
+		for p2: Array in rows[row]:
+			var size: Vector3 = p2[2]
+			var cs: CollisionShape3D = CollisionShape3D.new()
+			cs.name = String(p2[0])
+			cs.shape = box_shape(size)
+			cs.disabled = true
+			cs.transform = Transform3D(yaw_basis(float(p2[3])), (p2[1] as Vector3) + Vector3(0.0, size.y * 0.5, 0.0))
+			add(holder, cs)
 
 
 ## Quay steps (-1.8 -> 0.0): one flight in the recess, walls both sides (the quay deck), handrails.

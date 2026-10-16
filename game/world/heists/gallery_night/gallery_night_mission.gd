@@ -118,6 +118,8 @@ var _extra_interruptions: int = 0
 var _after_last_call: Array[Array] = []
 ## D-117: one-shot mission lines already said this heist.
 var _said: Dictionary[StringName, bool] = {}
+## B VO coverage: net_ids of lockers / list canvases / studies taken (the `lockers` and `extras` completions).
+var _taken: Dictionary[int, bool] = {}
 
 
 func _on_mission_start() -> void:
@@ -443,10 +445,18 @@ func _on_interaction_completed(interactable_net_id: int, _crew_slot: int, _kind:
 		_complete_once(&"centrepiece")
 	elif _is_tagged(interactable_net_id, TAG_SAFE):
 		_complete_once(&"curator_safe")
+	elif _is_tagged(interactable_net_id, TAG_LOCKERS):
+		_taken[interactable_net_id] = true
+		if _all_taken([TAG_LOCKERS]):
+			_complete_once(&"lockers")  # Vance: "Friday's auction will be very short."
+	elif _is_tagged(interactable_net_id, TAG_STORE_STUDY):
+		_taken[interactable_net_id] = true
 	else:
 		for tag: StringName in LIST_TAGS:
 			if _is_tagged(interactable_net_id, tag):
+				_taken[interactable_net_id] = true
 				_complete_once(&"canvases")
+	_check_extras()
 	# QC-54: an alarmed frame's LootSpawn raises alarm_raised(&"sensor") itself (alarm_on_take, map; GN-C1 step 2d).
 
 
@@ -573,6 +583,12 @@ func _go_loud() -> void:
 		_bar(n)
 	for d: Door in _doors(TAG_ART_DOOR, PATHS_ART_DOOR):
 		d.relock(Door.Lock.BARRED)
+	# P GN loud rerun: after last call the bronze doors are locked LOCKPICK; loud links them for the police
+	# (breachable), so crew paths ran into a shut leaf. Loud blows the front: unlocked and breached open.
+	for b: Door in _doors(TAG_BRONZE, PATHS_BRONZE):
+		b.unlock()
+		if not b.is_open:
+			b.set_open(true, false, true)
 	for r: Node in find_tagged(TAG_VAULT_READER):
 		if r is KeycardReader:
 			(r as KeycardReader).set_disabled(true)
@@ -676,6 +692,37 @@ func _proximity_area(area_name: String, radius: float) -> Area3D:
 	shape.shape = sph
 	area.add_child(shape)
 	return area
+
+
+## [extras] (doc §Objectives 9): the whole list, the studies, the consignment lockers and the curator's safe.
+func _check_extras() -> void:
+	if objective_state(&"extras") != Enums.ObjectiveState.ACTIVE:
+		return
+	if objective_state(&"lockers") != Enums.ObjectiveState.COMPLETED \
+			or objective_state(&"curator_safe") != Enums.ObjectiveState.COMPLETED:
+		return
+	var tags: Array[StringName] = LIST_TAGS.duplicate()
+	tags.append(TAG_LANTERN)
+	tags.append(TAG_STORE_STUDY)
+	if _all_taken(tags):
+		complete(&"extras")  # Vance: "The whole list and the studies too."
+
+
+## Every live node with one of `tags` (visible, Interactable not switched off by _keep_first) has been taken.
+func _all_taken(tags: Array[StringName]) -> bool:
+	for tag: StringName in tags:
+		for n: Node in find_tagged(tag):
+			if n.is_queued_for_deletion() or not (n is Node3D) or not (n as Node3D).visible:
+				continue
+			var it: Node = n.get_node_or_null(^"Interactable")
+			if it != null and not bool(it.get(&"enabled")) and not _taken.has(int(n.get(&"net_id"))):
+				if n is DepositBox and not (n as DepositBox).opened:
+					return false  # a kept locker still shut (its take interaction waits for the saw)
+				continue
+			var nid: Variant = n.get(&"net_id")
+			if nid == null or not _taken.has(int(nid)):
+				return false
+	return true
 
 
 func _complete_once(id: StringName) -> void:

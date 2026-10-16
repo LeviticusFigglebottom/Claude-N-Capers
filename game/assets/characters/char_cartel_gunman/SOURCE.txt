@@ -7,8 +7,8 @@ rebuild: python3 tools/blender/build.py --category characters --asset char_carte
 edit policy: generated file, never edit by hand; change the script and rebuild
 attach_Back: bone chest, local [0.0000, 0.0912, 0.1300] (model [0.0000, 1.3146, 0.1487], Godot axes, rest pose)
 attach_Head: bone head, local [0.0000, 0.0819, -0.0897] (model [0.0000, 1.6847, -0.0776], Godot axes, rest pose)
-attach_Hip: bone hips, local [0.2023, 0.0514, 0.0360] (model [0.2023, 1.0153, 0.0385], Godot axes, rest pose)
-body_faces_culled: 5308
+attach_Hip: bone hips, local [0.2023, 0.0514, 0.0359] (model [0.2023, 1.0153, 0.0385], Godot axes, rest pose)
+body_faces_culled: 5394
 body_params: {"age": 0.55, "beard_shadow": 0.9, "build": 0.85, "gender": 0.0, "hair": "buzz", "hair_color": "dark", "hair_peak": 0.0, "height": 1.8, "lip": "auto", "skin": 4}
 bones: 52
 hat: knit watch-cap beanie (Headwear)
@@ -18,5 +18,5 @@ meshes: Body,Gear,Hair,Headwear,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 slung_gun: non-weapon Gear on the back (chest-rigid), muzzle model [-0.212, 1.698, 0.176], butt [0.147, 0.763, 0.186] (Godot axes), 21 deg from vertical
 tri_budget: 35000
-tris: 29884
-tris_by_mesh: {"Body": 8132, "Gear": 2954, "Hair": 1200, "Headwear": 608, "Outfit": 16990}
+tris: 29840
+tris_by_mesh: {"Body": 7960, "Gear": 2954, "Hair": 1200, "Headwear": 608, "Outfit": 17118}

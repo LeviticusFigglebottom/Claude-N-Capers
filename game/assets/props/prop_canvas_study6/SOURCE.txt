@@ -1,6 +1,6 @@
 asset: prop_canvas_study6
 script: tools/blender/props/gallery.py
-params: {"cat": {"kind": "painting", "mount": "wall", "prefab": "loot_spawn", "surface": "wood"}, "fn": "canvas_hung", "pid": "study6"}
+params: {"cat": {"kind": "painting", "mount": "wall", "prefab": "loot_spawn", "surface": "wood", "texel_mesh": "Paint", "texel_target": 1505.0}, "fn": "canvas_hung", "pid": "study6"}
 seed: 946754307  (zlib.crc32(asset_id))
 generator: Blender 4.5, tools/blender/lib 1.0.0
 rebuild: python3 tools/blender/build.py --category props --asset prop_canvas_study6

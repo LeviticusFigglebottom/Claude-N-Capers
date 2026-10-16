@@ -1,6 +1,7 @@
 ## Briefing screen (pd2_fidelity C2, roadmap B2-02). Owner: ENV B.
 ## Contact portrait slot + name/role, heist name, briefing text, objectives, loot with difficulty-scaled
-## values, contract pay, approach (stealth/loud), escape options, difficulty, a blueprint placeholder,
+## values, contract pay, approach (stealth/loud), escape options, difficulty, the heist's known security
+## (D-115, BriefingIntel: the intel column's last section), a blueprint placeholder,
 ## and "Play Briefing" with in-screen subtitles. Data: BriefingModel.build().
 ##
 ## API (MenuFlow wires it): setup(heist_id, difficulty) before or after the screen enters the tree.
@@ -27,6 +28,9 @@ var playing: bool = false
 
 var portrait: ContactPortrait
 var blueprint: BlueprintPlaceholder
+## r224 GN capture: the heist's real pre-planning blueprint (read-only, entry floor), over the placeholder sketch,
+## which stays only for a heist without one (PreplanBlueprint.placeholder).
+var blueprint_view: BlueprintView
 var heist_label: Label
 var difficulty_label: Label
 var mode_label: Label
@@ -38,6 +42,8 @@ var briefing_label: Label
 var objectives_box: VBoxContainer
 ## Under the timeline: the loud-branch line and the optional extras (D-109).
 var extras_box: VBoxContainer
+## D-115: "Known security" (the intel column's last section), one line per BriefingIntel line.
+var security_box: VBoxContainer
 var loot_box: VBoxContainer
 var escape_label: Label
 var subtitle_label: Label
@@ -173,6 +179,9 @@ func _build_intel_column(body: HBoxContainer) -> void:
 	col.add_child(objectives_box)
 	extras_box = UiBuild.vbox(UiTokens.S1)  # D-109: "If it goes loud: ..." and the Optional list
 	col.add_child(extras_box)
+	security_box = UiBuild.vbox(UiTokens.S1)
+	security_box.name = "KnownSecurity"
+	col.add_child(security_box)
 
 
 ## PO-4 section head: a brass caption (style.md §4).
@@ -194,9 +203,29 @@ func _build_side_column(body: HBoxContainer) -> void:
 	blueprint.grid_color = data.blueprint_grid
 	blueprint.line_color = data.blueprint_line
 	col.add_child(blueprint)
+	blueprint_view = BlueprintView.new()
+	blueprint_view.name = "BriefingBlueprint"
+	blueprint_view.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	blueprint_view.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	blueprint_view.visible = false
+	blueprint.add_child(blueprint_view)
 	col.add_child(_head(&"ui.briefing.loot"))
 	loot_box = UiBuild.vbox(6)
 	col.add_child(loot_box)
+
+
+## The heist's real blueprint (entry floor, markers read-only) when it has one; else the placeholder sketch.
+func _show_blueprint() -> void:
+	var board: PreplanBoard = PreplanBoard.build(heist_id, difficulty) if heist_id != &"" else null
+	var real: bool = board != null and board.blueprint != null and not board.blueprint.placeholder
+	blueprint_view.visible = real
+	if not real:
+		return
+	blueprint_view.setup(board)
+	for b: Variant in blueprint_view.markers.values():
+		(b as Control).focus_mode = Control.FOCUS_NONE
+		(b as Control).mouse_filter = Control.MOUSE_FILTER_IGNORE
+	blueprint_view.queue_redraw()
 
 
 ## Rebuilds every text from BriefingModel for the current heist and difficulty.
@@ -209,6 +238,7 @@ func refresh() -> void:
 	accent_strip.color = UiAccent.for_heist(heist_id)
 	heist_label.add_theme_color_override(&"font_color", UiAccent.text_color(heist_id, UiAccent.app_bg()))
 	placeholder_label.visible = bool(model["placeholder"])
+	_show_blueprint()
 	difficulty_label.text = UiText.t(&"ui.briefing.difficulty", {"name": UiText.t(UiText.difficulty_key(difficulty))})
 	mode_label.text = UiText.t(&"ui.briefing.mode", {"mode": UiText.t(StringName(model["mode_key"]))})
 	pay_label.text = UiText.t(&"ui.briefing.contract_pay", {"amount": UiText.money(int(model["contract_pay"]))})
@@ -218,6 +248,7 @@ func refresh() -> void:
 	contact_role_label.text = UiText.t(contact.role_key) if contact != null else ""
 	briefing_label.text = String(model["briefing_text"])
 	_fill_objectives()
+	_fill_security()
 	_fill_loot()
 	var escapes: PackedStringArray = PackedStringArray()
 	for e: Dictionary in model["escape_options"] as Array:
@@ -284,6 +315,44 @@ func _fill_objectives() -> void:
 			extras_box.add_child(ol)
 
 
+## D-115: the heading and one dim line per security item (all text from strings.csv via BriefingIntel).
+func _fill_security() -> void:
+	for c: Node in security_box.get_children():
+		security_box.remove_child(c)  # the new grid takes the name "SecurityGrid" at once
+		c.queue_free()
+	var lines: Array = model.get("security", []) as Array
+	security_box.visible = not lines.is_empty()
+	if lines.is_empty():
+		return
+	security_box.add_child(_spacer(8))
+	security_box.add_child(_head(&"ui.briefing.sec.title"))
+	# Two columns keep the section short (GN lists 14 items) in the scrolling intel column.
+	var grid: GridContainer = GridContainer.new()
+	grid.name = "SecurityGrid"
+	grid.columns = 2
+	grid.add_theme_constant_override(&"h_separation", UiTokens.S3)
+	grid.add_theme_constant_override(&"v_separation", UiTokens.S1)
+	security_box.add_child(grid)
+	for line: Dictionary in lines:
+		var l: Label = UiBuild.label(&"ui.briefing.optional_line", UiBuild.DIM, {"text": String(line["text"])})
+		l.name = "Sec_%s" % line["id"]
+		l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		grid.add_child(l)
+
+
+## Security lines currently shown (tests), bullet included.
+func security_texts() -> Array[String]:
+	var out: Array[String] = []
+	var grid: Node = security_box.get_node_or_null(^"SecurityGrid")
+	if grid == null:
+		return out
+	for c: Node in grid.get_children():
+		if not c.is_queued_for_deletion() and String(c.name).begins_with("Sec_"):
+			out.append((c as Label).text)
+	return out
+
+
 func _fill_loot() -> void:
 	for c: Node in loot_box.get_children():
 		c.queue_free()
@@ -291,6 +360,9 @@ func _fill_loot() -> void:
 	if loot.is_empty():
 		loot_box.add_child(UiBuild.label(&"ui.briefing.loot_none", UiBuild.DIM))
 	for entry: Dictionary in loot:
+		if bool(entry.get("small", false)):  # def-less small loot (loot.small_valuables): no bag value
+			loot_box.add_child(UiBuild.label(&"ui.briefing.loot_line_small", &"", {"loot": String(entry["text"])}))
+			continue
 		loot_box.add_child(UiBuild.label(&"ui.briefing.loot_line", &"", {
 			"loot": String(entry["text"]), "value": UiText.money(int(entry["value"])),
 		}))

@@ -218,7 +218,10 @@ def pair(sd: Side, fr, fl):
 
 
 def akimbo_fns(sk: Skeleton, s: FPSet) -> dict:
-    """``{clip: f -> State}`` for the akimbo set."""
+    """``{clip: f -> State}`` for the akimbo set (each gun's reload / draw / holster timeline with the D-116
+    secondary-motion layer before the two are combined)."""
+    import _arms_organic as organic  # noqa: PLC0415
+
     sd = Side(sk, s)
     out = {}
     for clip in s.clips:
@@ -229,7 +232,7 @@ def akimbo_fns(sk: Skeleton, s: FPSet) -> dict:
         elif clip == "sprint":
             out[clip] = pair(sd, side_sprint(sd, N, False), side_sprint(sd, N, True))
         elif clip in ("draw", "holster"):
-            ch = side_draw(sd, N, clip == "holster")
+            ch = organic.wrap(s, clip, side_draw(sd, N, clip == "holster"))
             out[clip] = pair(sd, ch, ch)
         elif clip in ("fire", "fire_ads", "fire_l", "fire_ads_l"):
             ads = clip.startswith("fire_ads")
@@ -238,7 +241,8 @@ def akimbo_fns(sk: Skeleton, s: FPSet) -> dict:
         elif clip in ("reload", "reload_empty"):
             ev = s.ev(clip)
             empty = clip == "reload_empty"
-            out[clip] = pair(sd, side_reload(sd, N, ev, "r", empty), side_reload(sd, N, ev, "l", empty))
+            out[clip] = pair(sd, organic.wrap(s, clip, side_reload(sd, N, ev, "r", empty)),
+                             organic.wrap(s, clip, side_reload(sd, N, ev, "l", empty)))
         else:
             raise ValueError(f"akimbo: no builder for clip {clip}")
     return out

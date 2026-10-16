@@ -219,7 +219,9 @@ def _light_node(light: dict) -> list[str]:
     if kind == "spot":
         # local -Z points straight down (rotation -90 deg about X)
         lines.append('[node name="Light" type="SpotLight3D" parent="."]')
-        lines.append(f"transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, {_f(pos[0])}, {_f(pos[1])}, {_f(pos[2])})")
+        # "up": local -Z points straight up (a ground uplight)
+        rot = "1, 0, 0, 0, 0, -1, 0, 1, 0" if light.get("up") else "1, 0, 0, 0, 0, 1, 0, -1, 0"
+        lines.append(f"transform = Transform3D({rot}, {_f(pos[0])}, {_f(pos[1])}, {_f(pos[2])})")
         lines.append(f"spot_range = {_f(light.get('range', 5.0))}")
         lines.append(f"spot_angle = {_f(light.get('angle', 35.0))}")
         lines.append("spot_angle_attenuation = 0.6")
@@ -310,6 +312,12 @@ def entry(spec: meta.AssetSpec) -> tuple[dict, str]:
             parent, _, leaf = ("Model/" + mp).rpartition("/")
             lines += ["", f'[node name="{leaf}" parent="{parent}"]', f"visibility_range_end = {_f(vis)}",
                       f"visibility_range_end_margin = {_f(vis * 0.1)}", "visibility_range_fade_mode = 1"]
+    if "texel_target" in cat:   # levelcheck materials: per-mesh texel density target (hero textures)
+        for mp in info["meshes"]:
+            parent, _, leaf = ("Model/" + mp).rpartition("/")
+            if leaf == cat.get("texel_mesh", leaf):
+                lines += ["", f'[node name="{leaf}" parent="{parent}"]',
+                          f"metadata/texel_target = {_f(cat['texel_target'])}"]
     for cp in info["collisions"]:
         parent, _, leaf = ("Model/" + cp).rpartition("/")
         lines += ["", f'[node name="{leaf}" parent="{parent}"]', f'metadata/surface = &"{e["surface"]}"']
@@ -324,7 +332,7 @@ def entry(spec: meta.AssetSpec) -> tuple[dict, str]:
         lines += ["", f'[node name="{hn}" parent="Model"]', "visible = false"]
     if "light" in cat:
         lines += [""] + _light_node(cat["light"])
-    if vis > 0.0 or info["collisions"] or leaf_script or hidden:
+    if vis > 0.0 or info["collisions"] or leaf_script or hidden or "texel_target" in cat:
         lines += ["", '[editable path="Model"]']
     return e, "\n".join(lines) + "\n"
 

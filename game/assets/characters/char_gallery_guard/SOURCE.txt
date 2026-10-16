@@ -8,14 +8,14 @@ edit policy: generated file, never edit by hand; change the script and rebuild
 attach_Back: bone chest, local [0.0000, 0.0932, 0.1189] (model [0.0000, 1.3511, 0.1381], Godot axes, rest pose)
 attach_Head: bone head, local [0.0000, 0.0842, -0.0922] (model [0.0000, 1.7315, -0.0797], Godot axes, rest pose)
 attach_Hip: bone hips, local [0.2269, 0.0681, 0.0740] (model [0.2269, 1.0569, 0.0773], Godot axes, rest pose)
-body_faces_culled: 4816
+body_faces_culled: 4890
 body_params: {"age": 0.5, "beard_shadow": 0.5, "build": 0.75, "gender": 0.0, "hair": "buzz", "hair_color": "grey", "hair_peak": 0.0, "height": 1.85, "lip": "auto", "skin": 1}
 bones: 52
-faces_hidden_by_jacket: 2830
+faces_hidden_by_jacket: 2835
 hip_note: Hip seat = the radio on the belt under the blazer (right hip); the pager rides there
 look: Halberd Gallery Security (in-house): bottle-green blazer, gold buttons, wine/gold Halberd breast crest, white shirt, wine tie, grey trousers, earpiece, belt radio under the blazer
 meshes: Body,Gear,Hair,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 26149
-tris_by_mesh: {"Body": 9112, "Gear": 916, "Hair": 1200, "Outfit": 14921}
+tris: 26113
+tris_by_mesh: {"Body": 8964, "Gear": 916, "Hair": 1200, "Outfit": 15033}

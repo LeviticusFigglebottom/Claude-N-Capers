@@ -7,14 +7,14 @@ rebuild: python3 tools/blender/build.py --category characters --asset char_galle
 edit policy: generated file, never edit by hand; change the script and rebuild
 attach_Back: bone chest, local [0.0000, 0.0903, 0.1066] (model [0.0000, 1.3146, 0.1253], Godot axes, rest pose)
 attach_Head: bone head, local [0.0000, 0.0819, -0.0897] (model [0.0000, 1.6847, -0.0776], Godot axes, rest pose)
-attach_Hip: bone hips, local [0.1821, 0.0514, 0.0359] (model [0.1821, 1.0153, 0.0384], Godot axes, rest pose)
-body_faces_culled: 5693
+attach_Hip: bone hips, local [0.1820, 0.0514, 0.0359] (model [0.1820, 1.0153, 0.0384], Godot axes, rest pose)
+body_faces_culled: 5764
 body_params: {"age": 0.25, "beard_shadow": 0.3, "build": 0.4, "gender": 0.0, "hair": "short", "hair_color": "dark", "hair_peak": 0.0, "height": 1.8, "lip": "auto", "skin": 3}
 bones: 52
-faces_hidden_by_waistcoat: 1154
+faces_hidden_by_waistcoat: 1156
 look: Gallery attendant: white band-collar shirt, black waistcoat with gold buttons, black trousers, white art-handling gloves, Halberd pin
 meshes: Body,Gear,Hair,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 26218
-tris_by_mesh: {"Body": 7442, "Gear": 884, "Hair": 1728, "Outfit": 16164}
+tris: 26200
+tris_by_mesh: {"Body": 7300, "Gear": 884, "Hair": 1728, "Outfit": 16288}

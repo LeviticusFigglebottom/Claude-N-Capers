@@ -1,0 +1,24 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/props/prop_patio_heater/prop_patio_heater.glb" id="1_model"]
+
+[node name="PropPatioHeater" type="Node3D" groups=["fixture"]]
+metadata/kind = &"heater"
+metadata/fixture = true
+
+[node name="Model" parent="." instance=ExtResource("1_model")]
+
+[node name="Collision" parent="Model"]
+metadata/surface = &"metal"
+
+[node name="Light" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.05, 0)
+omni_range = 3
+omni_attenuation = 1.2
+layers = 1048577
+light_color = Color(1, 0.5412, 0.2353, 1)
+light_energy = 0.6
+light_size = 0.05
+shadow_enabled = false
+
+[editable path="Model"]

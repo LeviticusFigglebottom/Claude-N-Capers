@@ -39,7 +39,8 @@ const CORE_FIT: Array = [3.05, 0.4]
 ## extra]. extra: c (opening centre when it is not the plan opening's), starts_open, push_bar, leaf (leaf_surface),
 ## vis (a catalog visual instead of the greybox kit door; GN-C2 the art-lift landing gates, which open out of LF so
 ## their leaves never sweep the car),
-## npc (npc_authorized_tags), code (code_group), tag (objective_tag), slot (built by that variant group instead).
+## npc (npc_authorized_tags), code (code_group), tag (objective_tag), slot (built by that variant group instead),
+## out (swing OUTWARD, toward the front: GN-C2, the leaves open into the room, never the corridor).
 ## The wall hole is cut to the kit opening (DOOR_OPENING_W x 2.2) on the door's centre, not the plan's 2.1 m hole.
 ## Public interior openings with no leaf in B2 (CK, PWW, PWM, DC, the arches) stay plain openings.
 ## B4.7 / next_heist §7.7 (ENV P traversal review): the route doors (staff door, CO, SV, CS from UC, AT N / W, TR, the
@@ -62,9 +63,9 @@ const DOORS: Array = [
 	["ElectricalDoor", "G", "x", 6.0, 26.5, "single", "NONE", "S", {}],
 	["LiftLandingDoorGS", "G", "x", 6.0, 28.6, "double", "NONE", "N", {"vis": "prop_door_double_liftgate_t20", "leaf": "metal"}],
 	["LiftLandingDoorGE", "G", "z", 32.0, 1.5, "double", "NONE", "W", {"vis": "prop_door_double_liftgate_t20", "leaf": "metal"}],
-	["DockCorridorDoor", "G", "z", 32.0, 6.1, "service", "NONE", "E", {}],
+	["DockCorridorDoor", "G", "z", 32.0, 6.1, "service", "NONE", "E", {"out": true}],
 	["ArtHandlingDoor", "G", "x", 8.0, 4.6, "double", "LOCKPICK", "S", {"npc": ["@guards", "@staff"]}],
-	["StaffDoor", "G", "x", 8.0, 18.5, "service", "LOCKPICK", "S", {"npc": ["@guards", "@staff"]}],
+	["StaffDoor", "G", "x", 8.0, 18.5, "service", "LOCKPICK", "S", {"npc": ["@guards", "@staff"], "out": true}],
 	["DockPersonnelDoor", "G", "x", 0.0, 40.5, "single", "LOCKPICK", "S",
 		{"push_bar": true, "leaf": "metal", "npc": ["guard_mews", "civ_waitstaff"]}],
 	["ArtDoorEG", "G", "x", 12.0, 37.0, "double", "KEYCARD", "N", {}],
@@ -106,6 +107,17 @@ const WINDOWS: Array = [
 	["LoggiaWindow3", "U", "x", 30.0, 23.5, "N"],
 	["LoggiaWindow4", "U", "x", 30.0, 27.5, "N"],
 ]
+## G2 (GN-C2): every B2 door wears its catalog door (tools/blender/props/doors.py: the greybox kit's frame and opening)
+## prop_door_<kind>_<finish>_<t20|t40>: walnut on the public side, steel in plant / dock / stairs / vault, ivory in
+## the back-of-house offices (the default).
+const DOOR_FINISH: Dictionary = {
+	"StairDoorB": "steel", "StairDoorG": "steel", "StairDoorU": "steel", "HeadHouseDoor": "steel", "PlantDoor": "steel",
+	"ArtStoreVaultDoor": "steel", "DockCorridorDoor": "steel", "DockPersonnelDoor": "steel", "ServerDoor": "steel",
+	"ArtDoorEG": "steel", "ArtHandlingDoor": "walnut", "StaffDoor": "walnut", "GiftShopDoor": "walnut",
+	"BalconyDoorW": "walnut", "BalconyDoorE": "walnut", "StudioGalleryDoor": "walnut", "AttendantDoorN": "walnut",
+	"AttendantDoorW": "walnut", "TreasuryDoor": "walnut", "BronzeDoorsW": "bronze", "BronzeDoorsE": "bronze",
+	"CourtDoors": "glass",
+}
 const WINDOW_VISUAL: String = "res://assets/props/prop_window_w120_h210/prop_window_w120_h210.glb"
 const WINDOW_W: float = 1.2
 const WINDOW_H: float = 2.1
@@ -327,8 +339,8 @@ func slot_content(_vs: VariantSlot, _group: String, _slot_id: String, _row: Arra
 	return false
 
 
-## B2 doors with the greybox kit visual (arch_door_<kind>_t20 / t40 by the wall they sit in: a flush frame,
-## PO-7 frame_proud / door_frame_gap), except the court French doors (the court_doors slots build theirs).
+## B2 doors with their catalog visual (DOOR_FINISH; t20 / t40 by the wall they sit in: a flush frame, PO-7
+## frame_proud / door_frame_gap), except the court French doors (the court_doors slots build theirs).
 func _build_doors(parent: Node3D) -> void:
 	for d: Array in DOORS:
 		if not (d[8] as Dictionary).has("slot"):
@@ -342,8 +354,11 @@ func door(parent: Node3D, d: Array, nm: String, lock: String) -> Node3D:
 	var kind: String = String(d[5])
 	var extra: Dictionary = d[8]
 	var t: String = "t40" if float(pl[2]) > 0.3 else "t20"
-	var props: Dictionary = {"lock": "enum:" + lock, "swing": "enum:" + ("DOUBLE" if kind == "double" else "INWARD"),
-		"visual_scene": kit_scene("arch_door_%s_%s" % [kind, t]), "width_m": float(DOOR_LEAF_W[kind])}
+	var out: bool = bool(extra.get("out", false))
+	var props: Dictionary = {"lock": "enum:" + lock,
+		"swing": "enum:" + ("DOUBLE" if kind == "double" else ("OUTWARD" if out else "INWARD")),
+		"visual_scene": _catalog_scene("prop_door_%s_%s_%s" % [kind, String(DOOR_FINISH.get(String(d[0]), "ivory")), t]),
+		"width_m": float(DOOR_LEAF_W[kind])}
 	if extra.has("vis"):
 		props["visual_scene"] = _catalog_scene(String(extra["vis"]))
 	if lock == "LOCKPICK":
@@ -360,7 +375,7 @@ func door(parent: Node3D, d: Array, nm: String, lock: String) -> Node3D:
 		props["code_group"] = StringName(String(extra["code"]))
 	if extra.has("tag"):
 		props["objective_tag"] = StringName(String(extra["tag"]))
-	var metas: Dictionary = {"kind": "door", "swing_side": "back"}
+	var metas: Dictionary = {"kind": "door", "swing_side": "front" if out else "back"}
 	if bool(extra.get("push_bar", false)):
 		metas["fire_exit"] = true
 	if kind == "service":   # `scale`: a 1.0-1.2 m service leaf

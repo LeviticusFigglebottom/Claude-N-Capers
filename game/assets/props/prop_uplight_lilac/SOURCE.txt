@@ -1,0 +1,8 @@
+asset: prop_uplight_lilac
+script: tools/blender/props/gallery_gala.py
+params: {"cat": {"fixture": true, "group": "exterior", "kind": "uplight", "light": {"angle": 28, "color": "#B79CF2", "energy": 3.0, "pos": [0.0, 0.18, 0.0], "range": 9.0, "type": "spot", "up": true}, "place": "floor"}, "fn": "uplight"}
+seed: 129059857  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_uplight_lilac
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 12000

@@ -1,0 +1,8 @@
+asset: prop_music_stand
+script: tools/blender/props/gallery_gala.py
+params: {"cat": {"group": "gallery", "kind": "music_stand", "place": "floor"}, "fn": "music_stand"}
+seed: 3689071557  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_music_stand
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 12000

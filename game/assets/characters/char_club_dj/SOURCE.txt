@@ -8,12 +8,12 @@ edit policy: generated file, never edit by hand; change the script and rebuild
 attach_Back: bone chest, local [0.0000, 0.0896, 0.1143] (model [0.0000, 1.3000, 0.1328], Godot axes, rest pose)
 attach_Head: bone head, local [0.0000, 0.0810, -0.0887] (model [0.0000, 1.6660, -0.0767], Godot axes, rest pose)
 attach_Hip: bone hips, local [0.1891, 0.0509, 0.0369] (model [0.1891, 1.0040, 0.0394], Godot axes, rest pose)
-body_faces_culled: 4700
+body_faces_culled: 4770
 body_params: {"age": 0.3, "beard_shadow": 0.5, "build": 0.4, "gender": 0.0, "hair": "short", "hair_color": "dark", "hair_peak": 0.0, "height": 1.78, "lip": "auto", "skin": 5}
 bones: 52
 look: Velvet DJ: over-ear headphones on the head (violet accents), tinted glasses, oversized violet hoodie, black trousers, white trainers
 meshes: Body,Gear,Hair,Headwear,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 27532
-tris_by_mesh: {"Body": 9344, "Gear": 136, "Hair": 1728, "Headwear": 1982, "Outfit": 14342}
+tris: 27520
+tris_by_mesh: {"Body": 9204, "Gear": 136, "Hair": 1728, "Headwear": 1982, "Outfit": 14470}

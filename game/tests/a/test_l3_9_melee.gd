@@ -134,3 +134,28 @@ func test_infiltrator_chain_on_real_swings() -> void:
 		assert_near(float(hits[1]["amount"]), knife.damage * 3.0, 0.5, "perk.infiltrator: the chained hit x3 (PerkHooks)")
 	await _swing(c, Vector3(5, 1.5, 5), 0.05)  # a miss
 	assert_near(PerkHooks.melee_damage_mult(c), 1.0, 0.001, "a miss resets the chain")
+
+
+## P (GN-P1): a charged knife from 1.3 m flat behind an unaware guard, aim pitched -22 deg, hits (PD2 knife reach
+## ~1.5-2 m; MeleeDef.range_m 1.8). Also at 1.6 m, and level aim.
+func test_knife_reach_behind_unaware_guard() -> void:
+	var c: CrewController = await _launch(&"melee.folding_knife")
+	c.set_masked()
+	var knife: MeleeDef = ContentDB.melee(&"melee.folding_knife")
+	for flat: float in [1.3, 1.6]:
+		for pitch_deg: float in [-22.0, 0.0]:
+			var n: NpcBase = _target(Vector3(0, 0.05, -flat))
+			n.look_at(n.global_position + Vector3(0, 0, -1), Vector3.UP)  # back to the crew, unaware
+			await wait_physics_frames(2)
+			var before: int = _melee_hits(n).size()
+			var dir: Vector3 = Vector3(0, sin(deg_to_rad(pitch_deg)), -cos(deg_to_rad(pitch_deg)))
+			await _swing(c, c.eye_position() + dir * 3.0, knife.charge_time_s + 0.2)
+			print("[knife reach] flat %.1f m pitch %.0f: hits %d" % [flat, pitch_deg, _melee_hits(n).size() - before])
+			assert_true(_melee_hits(n).size() > before, "charged knife reaches at %.1f m flat, pitch %.0f" % [flat, pitch_deg])
+			n.queue_free()
+			await wait_physics_frames(2)
+	var far: NpcBase = _target(Vector3(0, 0.05, -2.3))
+	far.look_at(far.global_position + Vector3(0, 0, -1), Vector3.UP)
+	await wait_physics_frames(2)
+	await _swing(c, c.eye_position() + Vector3(0, 0, -3.0), knife.charge_time_s + 0.2)
+	assert_eq(_melee_hits(far).size(), 0, "2.3 m flat is out of the knife's 1.8 m reach")

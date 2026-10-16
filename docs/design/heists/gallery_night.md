@@ -58,9 +58,9 @@ Cross-env requests are QC-51..QC-59.
   holdout). The art-store vault door also takes a **thermal drill** (240 s) as the fallback.
 - **Difficulty notes:**
   - Routine/Tense: 1–2 guards (hall post + 0–1 rover; `rover_none` 20%) + operator (60%), 3–5 patrons, `sensors_treasury`
-    likely.
-  - Hazardous/Brutal: 3–4 guards, 5–7 patrons, sweeping/timed lasers favoured, `sensors_all`
-    possible, `insurance_inspection` and `vaultline_early` events enabled. **From Brutal the guard
+    most likely (`sensor_net` 50%; `sensors_upper` 35%, and `sensors_all` 15%, so all 17 frames can be wired even at Routine).
+  - Hazardous/Brutal: 3 guards on Hazardous, exactly 4 on Brutal (`difficulty_add`, `rover_none` 0), 5–7 patrons, sweeping/timed lasers favoured, `sensors_all`
+    40% (`sensors_upper` 40%, `sensors_treasury` 20%), `insurance_inspection` and `vaultline_early` events enabled. **From Brutal the guard
     count plus the operator can exceed the 4-pager cap**: some guards must be ghosted. Intended.
   - Lethal/Cataclysm: 5 guards, Titan cameras (S8.1), `argus_upgrade` enabled.
   - **Solo:** AI teammates wait at the van in stealth (D-014). In loud they carry canvases on
@@ -401,7 +401,7 @@ and Wexley St with closed blinds. Vestibule, cloakroom and shop have shop-front 
 | WC | restroom (staff) | 3 × 6 | 3.0 | `restroom_multi` | 2 cubicles, sink. |
 | SC | security_room | 6 × 6 | 3.0 | `security_office` | **`camera_station` with its monitor wall on the west wall** (WC partition); the operator sits at (13.5, 3.5) facing **west**. Door S (16, 6) is ≈ 135° off his facing (outside the 120° FOV). Key cabinet on the east wall (`kc_security`), the **guard log** on the NE counter (`code_security_log`), lockers, kettle, phone, `alarm_button` on the console. Window N (Mews, frosted). |
 | RG | office (registrar) | 6 × 6 | 3.0 | `office_registrar` | Loans and shipping desk, condition reports, crate labels, `kc_registrar` (desk drawer), phone. Window N. |
-| J | janitor | 2 × 6 | 3.0 | `janitor_closet` | Mop sink, cleaner's cart, shelving. BODY_HIDE (1). |
+| J | janitor | 2 × 6 | 3.0 | `janitor_gallery` (GN-C2: the shared `janitor_closet` kit is purpose `storage`) | Mop sink, cleaner's cart, shelving. BODY_HIDE (1). |
 | E1 | electrical | 2 × 6 | 3.0 | `electrical_closet` | Sub-board, the Argus field panel (dressing), telecom. |
 | BC | corridor (back corridor) | 29 × 2 | 3.0 | `corridor_service` | BOH spine: SS, BR, WC, SC, RG, J, E1, LF, the WG art-handling door, the staff door under the stair, the LD double door. C5 (W end, looks E). |
 | LD | loading (dock) | 12 × 12 | 4.5 | `loading_dock_gallery` | Roller door N (Mews, 3.6 m), personnel door N (LOCKPICK), double door W (BC), the art lift E door, the **art door** S to EG (KEYCARD). Crate staging, an A-frame trolley, a forklift-free dock leveller, a parked art-transport van tail at the roller door (dressing). `xl_crate` slot (L at (38, 9)). |
@@ -416,7 +416,7 @@ and Wexley St with closed blinds. Vestibule, cloakroom and shop have shop-front 
 | EB | gallery (Benefactors' Room) | 12 × 6 | 4.5 | `gallery_hang` | Donor wall, two sofas, the gala's silent-auction table (catalogues). `orchard_benefactors` + 1 study. Windows S and E (blinds). |
 | UC | corridor (upper) | 29 × 2 | 3.0 | `corridor_office` | Doors to CO, AO, SV (CODE), UW, FS, LF, CS, BW, BE. C13 (W end, looks E). |
 | CO | office (curator) | 7 × 6 | 3.0 | `office_curator` | Margit Sorell's office: desk, reading table with catalogues, a **wall safe** (`safe` SMALL, `methods [drill, lockpick, saw]`, 3 `small_loot`), `code_curator_planner`, phone, window N. Her lanyard keycard is on her, not here (`kc_curator`; approved D-075). |
-| AO | office (development / admin) | 7 × 6 | 3.0 | `office_open` | 4 desks, printer, gala seating plans, `code_admin_postit` (monitor post-it), a working PA (`c`, `civ_admin`, rare). |
+| AO | office (development / admin) | 7 × 6 | 3.0 | `office_development` (GN-C2: `office_open` requires a gem scope) | 4 desks, printer, gala seating plans, `code_admin_postit` (monitor post-it), a working PA (`c`, `civ_admin`, rare). |
 | SV | server_room (Argus) | 6 × 6 | 3.0 | `server_room` | Racks, UPS, the Argus head-end with the **`hack_terminal`** (`objective_tag hack`). CODE door. No window. |
 | UW | restroom (staff) | 3 × 6 | 3.0 | `restroom_single` | WC, sink. |
 | FS | storage (frame and plinth store) | 2 × 6 | 3.0 | `storage_frames` | Plinths, spare frames. BODY_HIDE (1). |
@@ -432,7 +432,7 @@ and Wexley St with closed blinds. Vestibule, cloakroom and shop have shop-front 
 | X2 | exterior (Wexley St + Mews) | — | — | `exterior_mews` | Cobbles, the Mews bins (`body_container` ×2, BODY_HIDE), the fire-escape ladder, the caterers' van, the hotel canopy across Wexley St. |
 | X3 | exterior (Sculpture Court) | 14 × 30 | — | `exterior_court` | Gravel, 5 bronzes on plinths, a reflecting pool (rim + depth ≤ 0.35 m, a step, not OOB; Build rulings B4), benches, standing heaters and the smokers' ashtray stand (gala), the areaway grate, the gate. |
 | X4 | exterior (roof deck) | 25 × 8 + 4 × 2 (S of LM) | — | `exterior_roof` | AHUs, condensers, cable trays, the ladder top, the head house. |
-| LM | plant (lift motor room, roof) | 4 × 6 | 2.7 | — | Locked, no door to the crew (BARRED, no interaction); dressing only. |
+| LM | elevator_machine (lift motor room, roof) | 4 × 6 | 2.7 | `lift_motor_room` (GN-C2) | Locked, no door to the crew (BARRED, no interaction); dressing only. |
 
 Support-space check (level_standards §2.2):
 - restrooms: public PWW/PWM (ground), staff WC (ground), LK WCs (basement), UW (upper) ✓;
@@ -829,7 +829,7 @@ Hazardous (`sensor_net`, `laser_pattern`, `patrons`, `escape_eta_s`).
 | `canvas_orchard` (`loot_spot`) | `orchard_calloway` (UG1), `orchard_benefactors` (EB), `orchard_quarantine` (QR crate) | 1, 1, 0.7 | Upstairs behind the rover and the lockdown shutter, on the public ground floor, or in the basement. |
 | `canvas_widow` (`loot_spot`) | `widow_sallow` (UG2), `widow_founders` (WG), `widow_conservation` (CS easel) | 1, 1, 0.7 | As above; CS puts a civilian (conservator) and a keycard slot beside it. |
 | `canvas_saint` (`loot_spot`) | `saint_maritime` (UG3), `saint_harbour` (EG), `saint_store` (AS) | 1, 1, 0.7 | As above; `saint_store` makes the art store worth one of the two keycards. |
-| `sensor_net` | `sensors_treasury` (TR only), `sensors_upper` (all upper frames + TR + the landing), `sensors_all` (every hung frame) | Routine 0.5/0.35/0.15; Brutal+ 0.2/0.4/0.4 | **Whether the hack is needed in stealth**, and for which canvases. |
+| `sensor_net` | `sensors_treasury` (TR only), `sensors_upper` (all upper frames + TR + the landing), `sensors_all` (every hung frame) | Routine/Tense 0.5/0.35/0.15 (slot weights); Hazardous+ 0.2/0.4/0.4 (`weights_by_difficulty` 2-5) | **Whether the hack is needed in stealth**, and for which canvases. |
 | `conservator` (`civilian_cluster`) | `cons_late`, `cons_gone` | 0.5, 0.5 | A civilian in CS (by `widow_conservation` and `kc_conservator`). |
 | `keycard` | `kc_curator` (on her lanyard: tie or kill her, QC-52), `kc_security` (SC cabinet), `kc_registrar` (RG desk), `kc_conservator` (CS bench; requires `cons_late`) | 1, 0.75, 1, 1; **pick 2** | **2 cards for 3 readers (TR, AS vault, LD art door):** which door you give up, and whether you must deal with the operator or the curator. |
 | `code_note` | `code_security_log` (SC), `code_curator_planner` (CO), `code_admin_postit` (AO) | 1, 1, 1; pick 1 | **The SV door:** behind the operator, in the curator's office, or in the open office (C13's corridor). |
@@ -978,7 +978,7 @@ the vault and the Treasury.
 
 | Camera | Shows | Covers |
 |---|---|---|
-| `rc_top_down` | orthographic plan of the play space | top-down |
+| `TopDownPlan` | orthographic plan of the play space (validate_level needs a `TopDown*` name at final, GN-C2) | top-down |
 | `rc_ext_parade` | from the median looking N: the portico, red carpet, lilac uplights, the **gilded halberd** | exterior 1, landmarks 1–2 |
 | `rc_ext_wexley` | from the hotel canopy looking W: the east facade, the Mews mouth | exterior 2 |
 | `rc_ext_mews` | from the Mews west looking E: the LD roller door, the ladder, the van | exterior 3 |
@@ -1146,7 +1146,7 @@ KEYCARD; the server CODE; the art store VAULT. Staff that must pass a locked doo
 
 | Door (plan position) | Lock | Notes |
 |---|---|---|
-| VE bronze outer doors ×4 leaves (x 20–23, z 30) | NONE, `starts_open` | Public. At last call the hall guard closes them and the mission relocks them LOCKPICK from outside (§3b.6 relock API); `push_bar` inside, so the parade escape always walks out. |
+| VE bronze outer doors ×4 leaves (x 20–23, z 30) | NONE, `starts_open` | Public. At last call the hall guard closes them and the mission relocks them LOCKPICK from outside (§3b.6 relock API); `push_bar` inside, so the parade escape always walks out. On the alarm the mission unlocks them and breaches them open (the police storm the front; crew can always get back in). |
 | VE inner glass screen, CK (16, 26), PWW/PWM (12, 22 / 12, 25), DC (3, 20), GH↔WG/EG arches | NONE / no leaf | Public; stay unlocked after last call (the zone flip makes them RESTRICTED). |
 | Court French doors (0, 12–13) | `court_doors_open`: NONE until last call, then relock LOCKPICK; `court_doors_locked`: LOCKPICK 8 s | `pp_court_doors` (`asset.propped_door`) forces NONE all night. |
 | Court gate (exterior) | NONE (open) until last call, then LOCKPICK | Police ENTRY `breach_only`. |

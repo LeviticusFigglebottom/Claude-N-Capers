@@ -3,6 +3,8 @@
 ## (~(7.3, 4.4, 5.0)) and NpcMotor's arrival was horizontal only, so the cop "arrived" right under its target, the
 ## PoliceBrain re-issued the same approach go_to, and it arrived again every tick (mode approach, velocity 0, the
 ## nav path to the stairs unused). Arrival now also needs |dy| <= NpcMotor.arrive_dy (unless the path is done).
+## Flake (~1 run in 30, more under CPU load): the navmesh syncs on worker threads, so the snap below could hit an
+## empty map iteration; HeistLauncher.launch() now waits for it (HeistLauncher.navigation_ready).
 extends TestCase
 
 const DOOR: Vector3 = Vector3(7.5, 0.0, 4.5)
@@ -26,6 +28,10 @@ func test_x5_gh_police_do_not_park_under_the_crew_upstairs() -> void:
 	assert_true(_rt != null, "launched")
 	await wait_physics_frames(5)
 	var snap: Vector3 = NavigationServer3D.map_get_closest_point(_rt.map.get_world_3d().navigation_map, CREW_ABOVE)
+	# The crew must really stand upstairs: before HeistLauncher waited for the navmesh sync, the map could still be
+	# empty here (snap (0, 0, 0)), the crew stayed at the spawn and the police fought it on the ground floor.
+	assert_true(HeistLauncher.navigation_ready(_rt), "launch() returns with the navmesh synced")
+	assert_true(snap.distance_to(CREW_ABOVE) < 0.5, "the upper floor point snaps onto the navmesh (%s)" % snap)
 	for s: int in _rt.crew_members().size():
 		_rt.teleport_crew(s, Transform3D(Basis.IDENTITY, snap + Vector3(0.6 * s, 0.05, 0.0)))
 		Modifiers.set_source(s, &"diag.immune", {&"defense.damage_taken_mult": 0.0})

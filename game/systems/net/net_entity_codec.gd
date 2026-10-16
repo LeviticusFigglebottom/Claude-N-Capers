@@ -200,6 +200,9 @@ static func state_of(node: Node) -> Dictionary:
 		var gb: GuardBrain = npc.get_node_or_null(^"Brain") as GuardBrain
 		if gb != null:
 			st["dom"] = gb.dominate_window_left > 0.0  # PP-A-1: the S5.8 window, for the client HUD cue
+		var ca: Array = CorpseAnchor.net_value(npc)
+		if not ca.is_empty():
+			st["ca"] = ca  # D-121: the corpse's gameplay anchor + push direction (root, bag interaction, hitbox)
 		var rd: NpcRagdoll = NpcRagdoll.of(npc)
 		if rd != null:
 			rd.net_state(st)  # PO6-19: "rs" start / push, "rp" frozen pose
@@ -333,6 +336,10 @@ static func _apply_npc_state(npc: NpcBase, d: Dictionary) -> void:
 		npc.set_alert_state(int(d["alert"]) as Enums.AlertState)
 	if d.has("alive") and not bool(d["alive"]) and npc.alive:
 		npc.die({}, 0)
+	if d.has("ca") and not Net.is_authority():
+		var ca: Array = d["ca"] as Array
+		if ca.size() >= 2 and (npc.corpse_anchor != (ca[0] as Vector3) or npc.corpse_dir != (ca[1] as Vector3)):
+			CorpseAnchor.apply(npc, ca[0] as Vector3, ca[1] as Vector3)
 	if d.has("rs") or d.has("rp"):
 		var rd: NpcRagdoll = NpcRagdoll.of(npc)
 		if rd != null:
@@ -397,6 +404,11 @@ static func apply_xform(node: Node, x: Variant) -> void:
 	var n3: Node3D = node as Node3D
 	if NpcRagdoll.owns_pose(node):
 		return  # PO6-19: a ragdolled corpse's root comes with its frozen pose ("rp")
+	var dead: NpcBase = node as NpcBase
+	if dead != null and not dead.alive:
+		if x is Transform3D and dead.corpse_anchor == Vector3.INF:
+			CorpseAnchor.move_root(dead, (x as Transform3D).origin)  # D-121: the root jumps to the anchor, not the visual
+		return  # the anchor ("ca") owns a corpse's root
 	if n3 != null and x is Transform3D:
 		var bag: LootBag = node as LootBag
 		if bag != null and bag.is_carried():

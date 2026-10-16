@@ -369,13 +369,16 @@ func refresh() -> void:
 	detection_risk_label.add_theme_color_override(&"font_color", UiTokens.OK if detection_risk <= DR_LOW
 			else (UiTokens.WARN if detection_risk <= DR_HIGH else UiTokens.ALERT))
 	_refresh_progression_summary(l)
+	var sdef: WeaponDef = ContentDB.weapon(l.secondary)
 	var stock: WeaponStats = LoadoutResolver.resolve_weapon(l.secondary, [] as Array[StringName])
-	var modded: WeaponStats = resolved.resolved_secondary
+	# D-118: a loaded shotgun AMMO mod (Mule 12) shows as it fires (AmmoStats).
+	var modded: WeaponStats = AmmoStats.apply(resolved.resolved_secondary, sdef, l.secondary_mods)
 	if not _preview.is_empty():
 		# PO-4: picker preview: the focused item's numbers, diffs against what is equipped now.
-		var pv: Loadout = LoadoutResolver.resolve(current_loadout(true))
+		var pl: Loadout = current_loadout(true)
+		var pv: Loadout = LoadoutResolver.resolve(pl)
 		stock = modded
-		modded = pv.resolved_secondary
+		modded = AmmoStats.apply(pv.resolved_secondary, ContentDB.weapon(pl.secondary), pl.secondary_mods)
 		detection_risk_label.text = UiText.t(&"ui.common.percent", {"value": pv.detection_risk})
 		concealment_label.text = UiText.t(&"ui.loadout.concealment_total", {"value": pv.concealment_total})
 	if stock == null or modded == null:

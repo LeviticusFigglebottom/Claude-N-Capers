@@ -8,7 +8,7 @@ edit policy: generated file, never edit by hand; change the script and rebuild
 attach_Back: bone chest, local [0.0000, 0.0990, 0.3371] (model [0.0000, 1.3073, 0.3559], Godot axes, rest pose)
 attach_Head: bone head, local [0.0000, 0.0815, -0.0892] (model [0.0000, 1.6754, -0.0771], Godot axes, rest pose)
 attach_Hip: bone hips, local [0.1255, 0.0713, 0.1516] (model [0.1255, 1.0240, 0.1550], Godot axes, rest pose)
-body_faces_culled: 5742
+body_faces_culled: 5820
 body_params: {"age": 0.3, "beard_shadow": 0.0, "build": 0.55, "gender": 0.0, "hair": "short", "hair_color": "brown", "hair_peak": 0.0, "height": 1.79, "lip": "auto", "skin": 2}
 bones: 52
 faction: frd
@@ -17,7 +17,7 @@ medic_mark: original: red disc, white round-capped plus, thin white ring (not th
 meshes: Body,Gear,Hair,Headwear,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 34452
-tris_by_mesh: {"Body": 7344, "Gear": 5328, "Hair": 1728, "Headwear": 2924, "Outfit": 17128}
+tris: 34432
+tris_by_mesh: {"Body": 7188, "Gear": 5328, "Hair": 1728, "Headwear": 2924, "Outfit": 17264}
 variant_of: corpsman
 visual_variant: frd

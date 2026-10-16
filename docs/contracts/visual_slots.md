@@ -1,4 +1,4 @@
-# Contract: visual slots (v1.4)
+# Contract: visual slots (v1.5)
 
 How art scenes (ENV C props/characters, ENV B weapons) plug into ENV A gameplay prefabs.
 
@@ -76,3 +76,8 @@ Heist maps/props (ENV A during the pass) tag their key lights; levelcheck gets a
 On pistols `SideRail` is the dust-cover rail: the marker is turned 90° about the bore (`_common.DUST_COVER_SIDE_RAIL_ROT`),
 so its outward axis points **down** and a GADGET mod hangs under the barrel. `LaserOrigin` / `LightOrigin` sit at the lens,
 −Z along the bore. Long guns keep the right-side rail.
+
+## v1.5: akimbo offhand owner split
+First person: ENV P (`FpViewmodelOffhand`) reparents the offhand gun under a hand.L BoneAttachment3D + OffhandSocket at
+`fp.offhand_grip`, and hides/shows the left magazine at `mag_out_l` / `mag_in_l`. Third person: ENV A attaches one pistol at
+HandR/Socket and one at HandL/Socket (characters.md v1.20). This replaces the v1.0 "ENV A reparents" wording for first person.

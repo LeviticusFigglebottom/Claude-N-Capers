@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"exterior_mews"
+purpose = &"exterior"
+required_items = Array[StringName]([&"wall_lamp", &"bin"])
+optional_items = {}
+clutter_groups = {}
+min_density = 0.002
+max_density = 0.08
+min_props = 6
+lone_ok_kinds = Array[StringName]([&"wall_lamp", &"bin", &"street_lamp", &"van", &"crate", &"pallet", &"dumpster", &"bollard"])
+seed_salt = 125
+counts = {}
+assets = {}
+ceiling = {}
+notes = "X2 Wexley St + Pelham Mews: wall lamps, the bins, the caterers' crates by the dock."

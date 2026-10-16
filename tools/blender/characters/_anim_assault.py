@@ -503,14 +503,14 @@ def breach_standback(sk: Skeleton, solver: Solver, N: int) -> Keys:
     spine(wide, lean=12.0, chest_lean=6.0, side=2.0, twist=14.0, hips=(6.0, 0.0, 0.0))
     look(wide, yaw=55.0, pitch=16.0)
     leg(wide, "R", start, dx=X)
-    leg(wide, "L", end, d=(0.04, 0.0, 0.0))
+    leg(wide, "L", end)          # landed: planted where it stays (A's foot check: no creep against the curve)
     brace_arms(wide, 0.6)
     # the right foot closes (lifted), crouching
     close = Pose()
     hips_at(sk, close, 0.10, -0.08, ez + 0.08)
     spine(close, lean=16.0, chest_lean=10.0, twist=18.0, hips=(12.0, 0.0, 0.0))
     look(close, yaw=62.0, pitch=24.0)
-    leg(close, "L", end, d=(0.02, 0.0, 0.0))
+    leg(close, "L", end)
     leg(close, "R", end, d=(0.10, 0.02, 0.07))
     brace_arms(close, 1.0)
     # braced: crouched on crouch_idle's feet, turned away from the blast, head down, forearms by the head
