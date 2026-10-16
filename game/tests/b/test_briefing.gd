@@ -266,3 +266,20 @@ func test_escape_line_sits_in_the_header() -> void:
 	var opts: String = "%s, %s" % [UiText.t(&"ui.briefing.escape.van"), UiText.t(&"ui.briefing.escape.boat")]
 	assert_eq(s.escape_label.text, UiText.t(&"ui.briefing.escape_line", {"options": opts}))
 	s.queue_free()
+
+
+## r224 GN capture: the briefing's blueprint panel draws the heist's real pre-planning blueprint (read-only),
+## not the "floor plans arrive" placeholder, for every heist that has one.
+func test_briefing_shows_the_real_blueprint() -> void:
+	for h: StringName in [&"glasshouse", &"night_deposit", &"shadow_ledger", &"dockside_burn", &"gallery_night"]:
+		var s: BriefingScreen = (load(SCENE) as PackedScene).instantiate() as BriefingScreen
+		s.setup(h, Enums.Difficulty.ROUTINE)
+		add_child(s)
+		await wait_frames(2)
+		assert_true(s.blueprint_view.visible, "%s: real blueprint shown" % h)
+		assert_false(s.blueprint_view.board.blueprint.placeholder, "%s: not the placeholder" % h)
+		assert_true(s.blueprint_view.size.x > 100.0 and s.blueprint_view.size.y > 100.0, "%s: fills the panel" % h)
+		for b: Variant in s.blueprint_view.markers.values():
+			assert_eq((b as Control).focus_mode, Control.FOCUS_NONE, "%s: markers are not focus stops" % h)
+		s.queue_free()
+		await wait_frames(1)

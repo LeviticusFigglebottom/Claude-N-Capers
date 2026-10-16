@@ -2572,6 +2572,8 @@ ui.jukebox.no_stems,{name} has no recording yet.
 ui.options.controls.scoreboard_mode,Scoreboard
 ui.scoreboard.title,Crew Tally
 ui.scoreboard.objectives,Objectives
+ui.scoreboard.objectives_done,{count} done
+ui.scoreboard.objectives_more,+{count} more
 ui.scoreboard.loot,Loot secured
 ui.scoreboard.loot_line,{loot} x{count}
 ui.scoreboard.small_loot,Small loot
