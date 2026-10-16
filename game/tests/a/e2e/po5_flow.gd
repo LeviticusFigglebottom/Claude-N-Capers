@@ -6,7 +6,9 @@ const HITCH_MS: float = 1000.0
 
 var runner_out: String = "user://po5"
 var runner_flow: String = "smoke"
-var heist_name: String = "Glasshouse"
+## The heist card to click: its menu display name. `--po5-heist=` may also give the heist id or its old code name
+## ("Glasshouse", "glasshouse"): `menu_heist_name` maps it to the def's display_name ("Golden Hour", P's PO6 rerun).
+var heist_name: String = "Golden Hour"
 var difficulty_name: String = "Routine"
 var rt: HeistRuntime = null
 ## The run seed, kept for the RESULT line after the runtime is freed (back in the hub).
@@ -32,7 +34,7 @@ func _ready() -> void:
 func _run() -> void:
 	for a: String in OS.get_cmdline_user_args():
 		if a.begins_with("--po5-heist="):
-			heist_name = a.substr(12)
+			heist_name = menu_heist_name(a.substr(12))
 		elif a.begins_with("--po5-difficulty="):
 			difficulty_name = a.substr(17)
 		elif a.begins_with("--po5-seed="):
@@ -63,6 +65,18 @@ func _run() -> void:
 			_finish(code)
 			return
 	_finish(0)
+
+
+## The planning-table card label for `heist_name`: a heist id or code name ("Glasshouse", "night_deposit") -> that
+## HeistDef's display_name; anything else (already a display name, or unknown) unchanged.
+static func menu_heist_name(given: String) -> String:
+	var id: String = given.strip_edges().to_snake_case()
+	var path: String = "res://world/heists/%s/%s_def.tres" % [id, id]
+	if id != "" and ResourceLoader.exists(path):
+		var def: HeistDef = load(path) as HeistDef
+		if def != null and def.display_name != "":
+			return def.display_name
+	return name
 
 
 ## main menu -> Safehouse -> Planning Table -> heist -> difficulty -> Briefing -> Continue -> Confirm plan
