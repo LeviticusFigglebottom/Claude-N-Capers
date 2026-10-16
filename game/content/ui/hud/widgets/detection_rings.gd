@@ -5,7 +5,8 @@
 ## * Around the crosshair: one arc per observer, centred on the observer's direction, filling the same way.
 ## * Colours: HudTweak.detection_blue (white by default; the "filling" colour) below detection_orange_from, then orange,
 ##   then red; the accessibility palettes override all three.
-## * ui_hud v1.17 (proposed): a row may carry `state` (&"curious" / &"investigating", S3.4). Such a row shows the "?"
+## * No indicator while heist_phase is LOUD (PD2: detection ends with the alarm).
+## * ui_hud v1.17: a row may carry `state` (&"curious" / &"investigating", S3.4). Such a row shows the "?"
 ##   ring even at value 0 (an NPC checking a noise); the crosshair arc needs a value above zero.
 class_name DetectionRings
 extends HudWidget
@@ -23,11 +24,16 @@ func build() -> void:
 
 
 func watched_signals() -> Array[StringName]:
-	return [&"detection_changed"]
+	return [&"detection_changed", &"changed"]  # changed: heist_phase (no rings once loud)
 
 
 func refresh() -> void:
 	rings.clear()
+	# LEAD r229 crowding pass: PD2 drops detection once the alarm is up; a LOUD phase draws no ring or arc.
+	if int(prop(&"heist_phase", -1)) == Enums.HeistPhase.LOUD:
+		set_process(false)
+		queue_redraw()
+		return
 	var cam: Camera3D = get_viewport().get_camera_3d() if is_inside_tree() else null
 	for ind: Dictionary in prop(&"detection", []) as Array:
 		var value: float = clampf(float(ind.get("value", 0.0)), 0.0, 1.0)
