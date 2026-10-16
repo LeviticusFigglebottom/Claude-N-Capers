@@ -88,6 +88,20 @@ const ROSTER_FALLBACK: Dictionary = {
 		"security_operator", "guard_inspection", "guard_vaultline", "civ_curator", "civ_attendant", "civ_waitstaff",
 		"civ_conservator", "civ_admin", "civ_patron"],
 }
+## D-116 DB / SL cast polish (in the spirit of GN-D1): roles that put several NPCs on screen draw from a shared pool of
+## looks ([heist, the roles of the pool, minimum looks, both genders]). Every pool lists the same looks on each of
+## its roles, has at least that many distinct looks, and no two looks share a face (gender, skin, hair, hair colour
+## and an age bucket from SOURCE.txt params), so two NPCs drawn from the pool are never twins.
+const POOLS: Array = [
+	["dockside_burn", ["cartel_gate", "cartel_yard_w", "cartel_yard_e", "cartel_hall", "cartel_platform", "cartel_dock",
+		"cartel_quay", "cartel_reinf"], 6, true],
+	["shadow_ledger", ["guard_reception", "guard_rover_l41", "guard_rover_l42", "guard_stair", "guard_roof",
+		"security_operator"], 4, true],
+	["shadow_ledger", ["civ_cleaner_l41", "civ_cleaner_l42"], 3, false],
+	["dockside_burn", ["civ_worker"], 3, false],
+]
+## Northgate Executive Protection's own shirt; no other firm's livery (Halden char_sec_, bank, police).
+const NORTHGATE_SHIRT: String = "char_ng_shirt"
 ## Minimum ids per role where the brief asks for several.
 const MIN_COUNT: Dictionary = {
 	"gallery_attendant": 2, "gallery_patron": 9, "gallery_waitstaff": 2, "bank_teller": 2, "bank_officer": 2,
@@ -547,3 +561,48 @@ func test_gallery_patron_variety() -> void:
 			assert_false(mats.has(bad), "%s: patron in evening wear, not %s" % [asset, bad])
 	assert_true(women >= GN_MIN_PER_GENDER and men >= GN_MIN_PER_GENDER,
 			"%s/civ_patron: both genders (%d women, %d men)" % [GN, women, men])
+
+
+func _face(asset: String) -> String:
+	var src: Dictionary = Spec.read_source("%s%s/SOURCE.txt" % [Spec.ASSETS_DIR, asset])
+	var p: Variant = JSON.parse_string(String(src.get("params", "{}")))
+	if not p is Dictionary:
+		return ""
+	var d: Dictionary = p
+	return "%s/%s/%s/%s/%d" % [roundi(float(d.get("gender", 0.0))), d.get("skin", -1), d.get("hair", ""),
+			d.get("hair_color", ""), int(float(d.get("age", 0.0)) * 4.0)]
+
+
+func test_db_sl_pooled_variety() -> void:
+	for pool: Array in POOLS:
+		var heist: String = pool[0]
+		var roles: Array = pool[1]
+		var first: Array = _role_ids(heist, String(roles[0]))
+		for role: Variant in roles:
+			assert_eq(_role_ids(heist, String(role)), first, "%s/%s: the pool's looks" % [heist, role])
+		var uniq: Dictionary = {}
+		for cid: Variant in first:
+			uniq[String(cid)] = true
+		assert_eq(uniq.size(), first.size(), "%s/%s: no id listed twice" % [heist, roles[0]])
+		assert_true(uniq.size() >= int(pool[2]), "%s/%s: %d looks (>= %d)" % [heist, roles[0], uniq.size(), pool[2]])
+		var faces: Dictionary = {}
+		var genders: Dictionary = {}
+		for id: String in uniq:
+			var f: String = _face("char_" + id)
+			assert_false(f.is_empty(), "char_%s: SOURCE.txt params" % id)
+			assert_false(faces.has(f), "%s: %s and %s share a face (%s)" % [heist, id, faces.get(f, ""), f])
+			faces[f] = id
+			genders[f.get_slice("/", 0)] = true
+		if bool(pool[3]):
+			assert_eq(genders.size(), 2, "%s/%s: both genders in the pool" % [heist, roles[0]])
+
+
+func test_northgate_livery() -> void:
+	for cid: Variant in _role_ids("shadow_ledger", "guard_reception"):
+		var asset: String = "char_" + String(cid)
+		var mats: Array[String] = _materials(asset)
+		assert_has(mats, NORTHGATE_SHIRT, "%s: wears the Northgate shirt" % asset)
+		for m: String in mats:
+			for bad: String in OTHER_LIVERY:
+				if bad != "char_ng_":
+					assert_false(m.begins_with(bad), "%s: no other company's livery (%s)" % [asset, m])

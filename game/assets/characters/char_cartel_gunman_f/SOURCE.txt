@@ -1,0 +1,21 @@
+asset: char_cartel_gunman_f
+script: tools/blender/characters/char_cartel.py
+params: {"age": 0.24, "beard_shadow": 0.3, "build": 0.25, "gender": 0.0, "hair": "buzz", "hair_color": "brown", "height": 1.79, "look": "balaclava", "skin": 1}
+seed: 2217882712  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category characters --asset char_cartel_gunman_f
+edit policy: generated file, never edit by hand; change the script and rebuild
+attach_Back: bone chest, local [0.0000, 0.0899, 0.1100] (model [0.0000, 1.3073, 0.1285], Godot axes, rest pose)
+attach_Head: bone head, local [0.0000, 0.0815, -0.0892] (model [0.0000, 1.6754, -0.0771], Godot axes, rest pose)
+attach_Hip: bone hips, local [0.1771, 0.0511, 0.0358] (model [0.1771, 1.0096, 0.0383], Godot axes, rest pose)
+body_faces_culled: 5502
+body_params: {"age": 0.24, "beard_shadow": 0.3, "build": 0.25, "gender": 0.0, "hair": "buzz", "hair_color": "brown", "hair_peak": 0.0, "height": 1.79, "lip": "auto", "skin": 1}
+bones: 52
+hat: graphite beanie + gaiter pulled over the nose: a balaclava read (Headwear)
+insignia: none (plain work wear; no police/faction material ids)
+look: balaclava: graphite beanie and gaiter over the nose, graphite knit pull-over, black puffer vest, black cargos, brown work boots, fingerless gloves; sling across the chest
+meshes: Body,Gear,Hair,Headwear,Outfit
+shape_keys: none (baked at body_params; do not set blend_shapes/*)
+tri_budget: 35000
+tris: 30338
+tris_by_mesh: {"Body": 7744, "Gear": 190, "Hair": 1200, "Headwear": 1280, "Outfit": 19924}

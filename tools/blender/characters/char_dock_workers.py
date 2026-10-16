@@ -11,9 +11,9 @@ round the torso, braces over the shoulders), a hard hat or a beanie, work trouse
 * ``char_dock_worker_b``: forklift driver (crowd variant), a younger woman, deep skin, dark bob:
   yellow hi-vis vest over a charcoal canvas work jacket, black cargo trousers, black safety boots,
   a blue hard hat.
-* ``char_dock_packer``: packer, an older lean man, light skin, grey stubble: orange hi-vis vest over
-  a maroon fleece, grey work gloves, charcoal cargo trousers, black safety boots, a navy knit beanie
-  (no hard hat: a lower, rounder head than the drivers).
+* ``char_dock_packer``: packer, an older lean man, light skin, grey stubble, in the packing wing's
+  processing whites (D-116): a white smock, a yellow rubber bib apron and long yellow rubber gloves, charcoal
+  work trousers, white boots and a white hygiene cap (no hi-vis: he works indoors at the packing table).
 
 Meshes: ``Body`` (covered skin removed), ``Hair``, ``Outfit``, ``Gear``, ``Headwear`` (hard hat,
 beanie). No blend shapes (baked at the params below).
@@ -236,18 +236,21 @@ def worker_b(kit: Kit) -> None:
 
 
 def packer(kit: Kit) -> None:
+    """D-116 cast polish: the packing wing's fish packer in processing whites, not a third yard hand."""
     fit, k = kit.fit, kit.k
     hips_z, _belt_z = _z(kit)
-    boots = _boots(kit, "char_shoe_black")
+    boots = g.shoes(fit, "char_sneaker_white", "rubber_black", top_z=0.30, base=0.0075, toe=0.013, sole_h=0.022,
+                    boot=True)
+    kit.add_soft(boots)
     _cargos(kit, CHARCOAL, boots)
-    fleece = g.knit_top(fit, kit.hull(), "char_fleece_maroon", hips_z - 0.05 * k, neck="roll", base=0.011, rib=0.04)
-    kit.add_soft(fleece)
-    kit.add_soft(g.gloves(fit, "char_glove_work", cuff_len=0.07, base=0.003, cuff_off=0.007))
-    hivis_vest(kit, ORANGE)
-    kit.add_head(cgear.beanie(fit, "char_knit_navy", front_el=12.0, back_el=-12.0))
-    kit.notes["hat"] = "navy knit beanie (Headwear)"
-    kit.notes["look"] = ("packer: orange hi-vis vest (silver tape) over a maroon fleece, grey work gloves, charcoal "
-                         "cargo trousers, black safety boots, navy knit beanie (no hard hat)")
+    smock = g.knit_top(fit, kit.hull(), "char_shirt_white", hips_z - 0.09 * k, neck="roll", base=0.011, rib=0.03)
+    kit.add_soft(smock)
+    kit.add_soft(g.gloves(fit, "char_rubber_yellow", cuff_len=0.10, base=0.003, cuff_off=0.007))
+    kit.add_soft(g.apron(fit, kit.hull(), "char_rubber_yellow", 1.33 * k, 0.50 * k, strap_mat="char_rubber_yellow"))
+    kit.add_head(cgear.beanie(fit, "char_shirt_white", front_el=14.0, back_el=-10.0, cuff=0.05))
+    kit.notes["hat"] = "white hygiene cap over the hair (Headwear)"
+    kit.notes["look"] = ("packer (D-116): processing whites: white smock, yellow rubber bib apron and long gloves, "
+                         "charcoal work trousers, white boots, white hygiene cap (packing wing, no hi-vis)")
 
 
 _looks = {"worker": worker, "worker_b": worker_b, "packer": packer}
