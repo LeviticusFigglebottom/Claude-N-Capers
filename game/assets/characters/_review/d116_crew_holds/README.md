@@ -42,3 +42,8 @@ frame (weapon segment against the thigh and shin capsules): the least clearance 
 - downed_getup 0.66 and 1.0; downed_arrested 0.5 and 0.75;
 - crew_cuffed 1.0; crew_cuffed_free 0.3.
 The review keeps the weapons attached. In game, A hides the weapon at downed_arrested `disarm` and while cuffed.
+
+## mask_on and throw_grenade (third person)
+`mask_on_throw_grenade.png` rows: mask_on at 0.27, 0.47 (press), 0.6 and 0.8 s; throw_grenade at 0.2 (wind),
+0.37 (release) and 0.53 s (follow-through). In this review the held weapon stays attached and rides up to the face in
+mask_on. In game A hides it until mask_on ends (PD2: the weapon is drawn after masking up).
