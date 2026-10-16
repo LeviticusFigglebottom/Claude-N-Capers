@@ -112,11 +112,9 @@ static var _cached: AnimTweak = null
 
 @export_group("Hard-hat hand lift (D-115 R1)")
 ## Hands-on-head clips during which the hands are lifted over the hat shell.
-@export var hard_hat_lift_clips: Array[StringName] = [&"surrender", &"hands_up", &"cower", &"cower_seated",
-	&"cower_stand", &"kneel_cuffed",
-	# characters.md v1.18 variants (and the surrender_idle* holds).
-	&"surrender_b", &"surrender_c", &"surrender_idle", &"surrender_idle_b", &"surrender_idle_c",
-	&"hands_up_b", &"hands_up_c", &"kneel_cuffed_b", &"kneel_cuffed_c"]
+@export var hard_hat_lift_clips: Array[StringName] = [&"surrender", &"surrender_b", &"surrender_c",
+	&"surrender_idle", &"surrender_idle_b", &"surrender_idle_c", &"hands_up", &"hands_up_b", &"hands_up_c",
+	&"cower", &"cower_seated", &"cower_stand", &"kneel_cuffed", &"kneel_cuffed_b", &"kneel_cuffed_c"]
 ## Lift (m) of a hand resting on the head: the shell stands ~2.4 cm off the skull (ENV D audit R1).
 @export var hard_hat_hand_lift_m: float = 0.03
 ## A hand within this distance (m) of the head bone counts as resting on it.
