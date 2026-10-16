@@ -434,6 +434,17 @@ func _stack_left_column(s: float) -> void:
 func _on_settings_changed(section: StringName, _key: StringName) -> void:
 	if section == GameSettings.ACCESSIBILITY:
 		apply_accessibility()
+	elif section == GameSettings.BINDINGS:
+		# D-115: a rebind (pause menu Options) redraws every key cap. Options applies the InputMap right after
+		# `changed` (copy_from, then apply), so read it a frame later.
+		refresh_keys.call_deferred()
+
+
+## Redraws every widget, so key caps and prompts follow the current InputMap (rebinding, device switch).
+func refresh_keys() -> void:
+	for w: HudWidget in widgets():
+		if w != null and is_instance_valid(w):
+			w.refresh()
 
 
 static func _same_colors(a: HudTweak, b: HudTweak) -> bool:
@@ -517,9 +528,7 @@ func _find_local_crew() -> void:
 ## Prompts name the device the player is using (pad buttons vs keys); redraw on a switch.
 func _input(event: InputEvent) -> void:
 	if InteractionPanel.note_input(event):
-		for w: HudWidget in widgets():
-			if w != null and is_instance_valid(w):
-				w.refresh()
+		refresh_keys()
 
 
 func _process(delta: float) -> void:

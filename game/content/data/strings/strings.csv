@@ -572,8 +572,6 @@ voice.vo.jay.civilian_killed_2,That's gonna cost us. Stop!
 ui.common.money,${amount}
 ui.common.percent,{value}%
 ui.menu.coming_soon,Coming soon
-ui.menu.firing_range_soon,Firing Range (coming soon)
-ui.menu.settings_soon,Settings are coming soon.
 ui.stub.launcher_missing,The heist launcher is not in this build yet. You can preview the payday screen with sample results.
 ui.stub.sample_payday,Preview payday (sample)
 ui.heist_select.difficulty_locked,{name} (locked)
@@ -637,7 +635,6 @@ ui.range.ammo_reserve,{ammo} / {mag}  ·  reserve {reserve}
 ui.range.reloading,Reloading...
 ui.range.crosshair,+
 ui.range.hint_panels,Click the range or press Tab / Start to aim. Esc / B leaves the range.
-ui.range.hint_aim_crew,WASD move · Shift sprint · Ctrl/C crouch · Space jump · Mouse look · LMB fire · RMB aim · R reload · 1/2 weapon · Tab / Esc menu
 ui.range.hint_aim,WASD move · Q/E down/up · Mouse look · LMB fire · RMB aim · R reload · Tab / Esc menu
 ui.range.temp_camera,Fallback range camera (crew controller unavailable)
 ui.range.key.aim,Aim
@@ -1767,6 +1764,7 @@ ui.menu.continue_job,Continue · {heist} · {difficulty}
 ui.hub.title,The Safehouse
 ui.hub.subtitle,Every job starts at one of these stations.
 ui.hub.start_here,Start here
+ui.hub.start_here_walk,Walk to the Board and press {key} to pick your first job.
 ui.hub.main_menu,Main Menu
 ui.hub.station.board,The Board
 ui.hub.station.board.desc,"Live contracts from your contacts, pro jobs and the broker."
@@ -3258,7 +3256,7 @@ ui.loading.loading,Loading
 ui.loading.tip_caption,Tip
 ui.loading.tip.1,"Unmasked, you can walk where civilians walk. Mask up only when you're ready to commit."
 ui.loading.tip.2,"Cameras see further than guards. Find the security room and the operator, or stay out of their view."
-ui.loading.tip.3,"Each guard you take down carries a pager. Your crew can answer four before the operator gets suspicious."
+ui.loading.tip.3,"Each guard you take down carries a pager. Your crew can answer four; one more and the alarm goes off."
 ui.loading.tip.4,"Tie up civilians before they reach a phone. A panicked civilian is a raised alarm."
 ui.loading.tip.5,"Bodies left in the open get found. Bag them and stash them out of sight."
 ui.loading.tip.6,"Heavy bags slow you down. Throw them ahead of you through windows and over railings."

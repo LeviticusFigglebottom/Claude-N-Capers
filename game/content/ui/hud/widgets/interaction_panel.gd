@@ -1,7 +1,8 @@
 ## Interaction prompt (tr(text_key) with args), hold progress ring around the key cap and blocked reason (S9.1, S1.1).
 ## PO-4: the key is drawn as a key cap (KeyPrompt).
 ## The input key name is presentation (hud_model README): when the model's args carry no `key`,
-## the first keyboard binding of INTERACT_ACTION is filled in for the `{key}` placeholder.
+## the first binding of the prompt's action (action_for: interact, or mask_up / drop_bag / shout) is filled in
+## for the `{key}` placeholder.
 class_name InteractionPanel
 extends HudWidget
 
@@ -13,6 +14,9 @@ const KIND_PROMPTS: Dictionary = {
 	&"drill": &"ui.prompt.place_drill", &"hack": &"ui.prompt.start_hack",
 }
 const INTERACT_ACTION: StringName = &"interact"
+## D-115: prompts whose {key} is not the interact key (the input that does it). Any other prompt shows interact.
+const PROMPT_ACTIONS: Dictionary = {&"ui.prompt.mask_up": &"mask_up", &"ui.prompt.throw_bag": &"drop_bag",
+	&"ui.prompt.intimidate": &"shout"}
 
 ## D-082 fix: pad players saw keyboard keys ("Hold F") in prompts. Xbox-style names for the pad.
 const PAD_BUTTON_NAMES: Dictionary = {JOY_BUTTON_A: "A", JOY_BUTTON_B: "B", JOY_BUTTON_X: "X", JOY_BUTTON_Y: "Y",
@@ -71,7 +75,7 @@ func refresh() -> void:
 		return
 	var args: Dictionary = (it.get("args", {}) as Dictionary).duplicate()
 	if not args.has("key"):
-		args["key"] = action_key_text(INTERACT_ACTION)
+		args["key"] = action_key_text(action_for(key))
 	if not args.has("mask_key"):
 		args["mask_key"] = action_key_text(&"mask_up")  # PO-5.11: "Mask up first (hold G)"
 	prompt.set_prompt(key, args)
@@ -92,6 +96,11 @@ func _draw() -> void:
 	if blocked_label.visible:
 		r = r.merge(Rect2(box.position + blocked_label.position, blocked_label.size).grow(UiTokens.S2))
 	draw_rect(r, Color(UiTokens.INK_0, 0.85))
+
+
+## The input action whose key a prompt names ({key}): PROMPT_ACTIONS, else interact.
+static func action_for(text_key: StringName) -> StringName:
+	return PROMPT_ACTIONS.get(text_key, INTERACT_ACTION) as StringName
 
 
 ## P fresh-eyes #13: an interactable left on the generic "Hold {key} to interact" names its action from its
