@@ -1,0 +1,133 @@
+[gd_resource type="Resource" script_class="BriefingIntelData" format=3]
+
+[ext_resource type="Script" path="res://content/ui/briefing/briefing_intel_data.gd" id="1_41cfb"]
+
+[resource]
+script = ExtResource("1_41cfb")
+heist_id = &"gallery_night"
+map_path = "res://world/heists/gallery_night/gallery_night.tscn"
+variants_path = "res://world/heists/gallery_night/gallery_night_variants.tres"
+fixed = {
+&"alarm_button": 3,
+&"alarm_case": 2,
+&"camera": 2,
+&"code_door": 1,
+&"guard": 1,
+&"hack_terminal": 1,
+&"keycard_door": 2,
+&"keycard_reader": 1,
+&"safe": 1,
+&"vault_door": 1
+}
+groups = {
+&"areaway": {
+&"grate_loose": {
+"counts": {},
+"weight": 1.0
+},
+&"grate_padlocked": {
+"counts": {
+&"padlock": 1
+},
+"weight": 1.0
+}
+},
+&"camera": {
+&"cam_a": {
+"counts": {
+&"camera": 6
+},
+"weight": 1.0
+},
+&"cam_b": {
+"counts": {
+&"camera": 6
+},
+"weight": 1.0
+},
+&"cam_c": {
+"counts": {
+&"camera": 6
+},
+"weight": 1.0
+}
+},
+&"centrepiece": {
+&"cp_landing": {
+"counts": {
+&"laser": 1
+},
+"weight": 0.4
+},
+&"cp_store": {
+"counts": {},
+"weight": 0.25
+},
+&"cp_treasury": {
+"counts": {},
+"weight": 0.35
+}
+},
+&"guard_post": {
+&"dock_smoker": {
+"counts": {
+&"guard": 1
+},
+"weight": 1.0
+},
+&"rover_basement": {
+"counts": {
+&"guard": 1
+},
+"weight": 1.0
+},
+&"rover_ground": {
+"counts": {
+&"guard": 1
+},
+"weight": 1.0
+},
+&"rover_none": {
+"counts": {},
+"weight": 1.0
+},
+&"rover_upper": {
+"counts": {
+&"guard": 1
+},
+"weight": 1.0
+}
+},
+&"laser_pattern": {
+&"lz_static": {
+"counts": {
+&"laser": 1
+},
+"weight": 0.5
+},
+&"lz_sweep": {
+"counts": {
+&"laser": 1
+},
+"weight": 0.2
+},
+&"lz_timed": {
+"counts": {
+&"laser": 1
+},
+"weight": 0.3
+}
+},
+&"security_room_staffed": {
+&"sec_empty": {
+"counts": {},
+"weight": 0.4
+},
+&"sec_staffed": {
+"counts": {
+&"operator": 1
+},
+"weight": 0.6
+}
+}
+}

@@ -1,0 +1,84 @@
+[gd_resource type="Resource" script_class="BriefingIntelData" format=3]
+
+[ext_resource type="Script" path="res://content/ui/briefing/briefing_intel_data.gd" id="1_1iu64"]
+
+[resource]
+script = ExtResource("1_1iu64")
+heist_id = &"dockside_burn"
+map_path = "res://world/heists/dockside_burn/dockside_burn.tscn"
+variants_path = "res://world/heists/dockside_burn/dockside_burn_variants.tres"
+fixed = {
+&"padlock": 13,
+&"safe": 1,
+&"vault_door": 1
+}
+groups = {
+&"cash_location": {
+&"cash_countroom": {
+"counts": {
+&"safe": 1
+},
+"weight": 0.4
+},
+&"cash_strongroom": {
+"counts": {},
+"weight": 0.6
+}
+},
+&"goods_lift": {
+&"lift_dead": {
+"counts": {
+&"hack_terminal": 1
+},
+"weight": 0.4
+},
+&"lift_powered": {
+"counts": {},
+"weight": 0.6
+}
+},
+&"guard_post": {
+&"post_dock": {
+"counts": {
+&"cartel": 2
+},
+"weight": 1.0
+},
+&"post_gate": {
+"counts": {
+&"cartel": 2
+},
+"weight": 1.0
+},
+&"post_hall": {
+"counts": {
+&"cartel": 2
+},
+"weight": 1.0
+},
+&"post_platform": {
+"counts": {
+&"cartel": 2
+},
+"weight": 1.0
+},
+&"post_quay": {
+"counts": {
+&"cartel": 2
+},
+"weight": 1.0
+},
+&"post_yard_e": {
+"counts": {
+&"cartel": 2
+},
+"weight": 1.0
+},
+&"post_yard_w": {
+"counts": {
+&"cartel": 2
+},
+"weight": 1.0
+}
+}
+}

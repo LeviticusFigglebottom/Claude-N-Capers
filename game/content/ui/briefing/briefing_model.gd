@@ -17,6 +17,8 @@
 ##     "contract_pay": int,               HeistCatalog.contract_preview(base_payout, difficulty)
 ##     "mode": int (Enums.HeistMode), "mode_key": StringName,
 ##     "escape_options": [{ "id": StringName, "text": String }],
+##     "security": Array[Dictionary]     D-115 "Known security": BriefingIntel.lines(heist, difficulty, mode)
+##                                        (map scan + variant table + StealthTweak; [] without intel data)
 ##     "voice_lines": Array[Dictionary]   lines.tres entries (event &"briefing", "heist" == id) for
 ##                                        the contact's speaker, then the handler's, by "order" }
 class_name BriefingModel
@@ -90,6 +92,7 @@ static func build(heist_id: StringName, difficulty: int, def: HeistDef = null,
 		"mode": mode,
 		"mode_key": mode_key(mode),
 		"escape_options": escape_lines(escapes),
+		"security": BriefingIntel.lines(heist_id, difficulty, mode),
 		"voice_lines": voice_lines(heist_id, contact),
 	}
 

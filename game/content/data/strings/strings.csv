@@ -1683,6 +1683,25 @@ ui.briefing.escape.service_lift,Service lift
 ui.briefing.escape.lift,Service lift
 ui.briefing.objectives_more,+{count} more steps on the night
 ui.briefing.objectives_more_one,+1 more step on the night
+ui.briefing.sec.title,Known security
+ui.briefing.sec.range,{min}–{max}
+ui.briefing.sec.guards,Guards: {range}
+ui.briefing.sec.cartel,Cartel gunmen: {range}
+ui.briefing.sec.cameras,Cameras: {range}
+ui.briefing.sec.cameras_titan,Cameras: {range} (Titan: can't be shot out)
+ui.briefing.sec.operator_always,Camera operator: on shift
+ui.briefing.sec.operator_maybe,Camera operator: may be on shift
+ui.briefing.sec.pagers,Pagers: {range} answers
+ui.briefing.sec.alarm_buttons,Panic buttons: {range}
+ui.briefing.sec.keycards,Keycard locks: {range}
+ui.briefing.sec.keypads,Code locks: {range}
+ui.briefing.sec.lasers,Laser grids: {range}
+ui.briefing.sec.alarm_cases,Alarmed display cases: {range}
+ui.briefing.sec.time_lock,Time lock: {range} s
+ui.briefing.sec.vault_doors,Vault doors: {range}
+ui.briefing.sec.safes,Safes: {range}
+ui.briefing.sec.padlocks,Padlocks: {range}
+ui.briefing.sec.hack_terminals,Hack terminals: {range}
 item.asset.intel_laptop.name,Insider: laptop location
 item.asset.intel_laptop.desc,You know where the partners left the ledger laptop tonight.
 item.asset.gondola_left_hung.name,Window-washer gondola
