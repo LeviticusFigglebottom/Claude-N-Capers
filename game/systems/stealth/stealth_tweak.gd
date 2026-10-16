@@ -46,11 +46,12 @@ extends Resource
 @export var los_heights: PackedFloat32Array = PackedFloat32Array([1.6, 1.0])
 
 @export_group("Weapon gadgets (D-118)")
-## D-118 ◇ PD2: a masked crew member's switched-on flashlight / laser fills the S2.1 meter of an observer
-## that sees the light even when the body is hidden: base_rate (preset min_time) x these multipliers
-## (x difficulty, x stealth.detection_rate_mult; DR does not apply: it is the gadget that is seen).
-@export var gadget_light_detect_mult: float = 0.6
-@export var gadget_laser_detect_mult: float = 0.4
+## D-118 correction (pd2_fidelity S4.2): PD2 guards and cameras IGNORE flashlights and lasers, so these are 0 by
+## default. Above 0, a masked crew member's switched-on flashlight / laser fills the S2.1 meter of an observer that
+## sees the light even when the body is hidden: base_rate (preset min_time) x these multipliers (x difficulty,
+## x stealth.detection_rate_mult; DR does not apply: it is the gadget that is seen). 0 = no gadget stimulus.
+@export var gadget_light_detect_mult: float = 0.0
+@export var gadget_laser_detect_mult: float = 0.0
 ## D-118 ◇: a laser beam passing within this distance (m) of an observer's eye, at a point it can see.
 @export var gadget_laser_near_m: float = 1.0
 ## D-118 ◇: "roughly inside the cone": the flashlight cone half angle is scaled by this for detection.
@@ -179,8 +180,19 @@ extends Resource
 ## root under the seat centre, characters.md npc_seat): a seating prop's `Seat` marker within
 ## civilian_seat_radius_m (horizontal) of its root, on its floor (CivilianTargets.seat_near). With no seat it
 ## does the standing activity (value) instead: a seated pose on thin air reads as a hostage crouched on the floor.
-@export var civilian_unseated_activity: Dictionary = {&"desk_work": &"teller", &"phone_seated": &"phone", &"sit": &"queue"}
+## X-5: the seated aliases too (`desk` = the desk_work clip, D-115; desk_type / sit_chair / sit_chair_watch are seated
+## rig clips, anim_humanoid.py). The standing desk clip is teller_count (`teller`), standing hands-on-counter.
+@export var civilian_unseated_activity: Dictionary = {&"desk_work": &"teller", &"phone_seated": &"phone", &"sit": &"queue",
+	&"desk": &"teller", &"desk_type": &"teller", &"sit_chair": &"queue", &"sit_chair_watch": &"idle"}
 @export var civilian_seat_radius_m: float = 0.45
+## X-5 ◇ (PD2: staff hold their post): a CALM IDLE civilian whose activity keeps it on its spawn mark (not a wander
+## activity: a teller, a desk clerk, a seated customer) that is off the mark (a crew yield, a drift while alerted)
+## and standing still for civilian_mark_return_s goes back: within civilian_mark_settle_m it slides straight onto
+## the mark at npc_mark_settle_speed (NpcMotor.mark_anchor), farther it walks there first. It then faces its
+## spawn facing again.
+@export var civilian_mark_return_s: float = 1.0
+@export var civilian_mark_settle_m: float = 0.8
+@export var npc_mark_settle_speed: float = 1.0
 ## PO-5 ◇ S7.1: the all-round shout (shout_all_within_m) reaches only civilians on the shouter's floor
 ## (height difference <= shout_floor_dy_m) that can hear it: clear line of sight, or a navmesh path no
 ## longer than shout_all_within_m x shout_path_mult (around a counter or a doorway, not through a wall).

@@ -86,6 +86,8 @@ var _services: Dictionary[StringName, Node] = {}
 var _crew_tick_handlers: Array[Callable] = []
 var _start_msec: int = 0
 var _loot_secured: Array[Dictionary] = []
+## B achievements (HeistResult.loot_available): net ids of valued bags that existed this run (spawned or placed).
+var _offered_bags: Dictionary[int, bool] = {}
 var _small_loot: int = 0
 var _pagers_answered: int = 0
 var _ended: bool = false
@@ -550,6 +552,7 @@ func _connect_events() -> void:
 	EventBus.alarm_raised.connect(_on_alarm_raised)
 	EventBus.crew_masked.connect(_on_crew_masked)
 	EventBus.loot_secured.connect(_on_loot_secured)
+	EventBus.loot_spawned.connect(_on_loot_spawned)
 	EventBus.small_loot_taken.connect(_on_small_loot)
 	EventBus.pager_answered.connect(_on_pager_answered)
 
@@ -557,7 +560,7 @@ func _connect_events() -> void:
 func _disconnect_events() -> void:
 	for pair: Array in [
 		[EventBus.alarm_raised, _on_alarm_raised], [EventBus.crew_masked, _on_crew_masked],
-		[EventBus.loot_secured, _on_loot_secured],
+		[EventBus.loot_secured, _on_loot_secured], [EventBus.loot_spawned, _on_loot_spawned],
 		[EventBus.small_loot_taken, _on_small_loot], [EventBus.pager_answered, _on_pager_answered],
 		[EventBus.heist_phase_changed, _on_relayed_phase],
 	]:
@@ -627,7 +630,7 @@ func end_heist(success: bool, escaped_slots: Array[int] = [], fail_reason: Strin
 		"contract_pay": map.heist_def.base_payout if map != null and map.heist_def != null else 0,
 		"loot": _loot_secured.duplicate(true), "small_loot": _small_loot, "crew": crew_rows,
 		"pagers_answered": _pagers_answered, "seed": run_seed, "variants": variants.duplicate(true),
-		"fail_reason": reason,
+		"fail_reason": reason, "loot_available": _loot_available(),
 	}
 	_set_phase(Enums.HeistPhase.ENDED)
 	EventBus.heist_ended.emit(result)
@@ -635,8 +638,35 @@ func end_heist(success: bool, escaped_slots: Array[int] = [], fail_reason: Strin
 	return result
 
 
-func _on_loot_secured(_bag: int, loot_id: StringName, value: int) -> void:
+func _on_loot_secured(bag: int, loot_id: StringName, value: int) -> void:
 	_loot_secured.append({"loot_id": loot_id, "value": value})
+	if value > 0 and bag != Ids.INVALID:
+		_offered_bags[bag] = true
+
+
+func _on_loot_spawned(bag: int, loot_id: StringName) -> void:
+	if int(LootManager.loot_info(loot_id).get("value", 0)) > 0:
+		_offered_bags[bag] = true
+
+
+## Server: every valued bag this run offered (HeistResult.loot_available, for B's "all bags" achievements):
+## bags that existed (spawned from a LootSpawn or by the mission, or placed in the map) plus what is still
+## left in LootSpawns (safe contents included; variant-disabled spawns hold 0). Body bags and tool bags
+## (thermite, value 0) do not count.
+func _loot_available() -> int:
+	var seen: Dictionary[int, bool] = _offered_bags.duplicate()
+	var left: int = 0
+	var stack: Array[Node] = [self]
+	while not stack.is_empty():
+		var n: Node = stack.pop_back()
+		stack.append_array(n.get_children())
+		var ls: LootSpawn = n as LootSpawn
+		if ls != null and ls.remaining > 0 and int(LootManager.loot_info(ls.loot_id).get("value", 0)) > 0:
+			left += ls.remaining
+		var bag: LootBag = n as LootBag
+		if bag != null and bag.net_id != Ids.INVALID and bag.value > 0:
+			seen[bag.net_id] = true
+	return seen.size() + left
 
 
 func _on_small_loot(value: int, _slot: int) -> void:

@@ -91,6 +91,12 @@ var _leave_target: Vector3 = Vector3.INF
 var _seat_pos: Vector3 = Vector3.INF
 ## X-5: the spawn mark (the spawn transform, recorded on the first tick).
 var _mark_pos: Vector3 = Vector3.INF
+## X-5: the spawn facing (horizontal), faced again back on the mark.
+var _mark_dir: Vector3 = Vector3.ZERO
+## X-5 return to the mark: off-mark standing time, sliding onto it (mark_anchor), walking back to it.
+var _off_mark_t: float = 0.0
+var _settling: bool = false
+var _returning: bool = false
 ## PO6-06: the spawn seat check ran (_stand_if_unseated).
 var _seat_checked: bool = false
 var _cower_point: PatrolPoint = null
@@ -529,8 +535,57 @@ func on_mark() -> bool:
 		return false
 	if _mark_pos == Vector3.INF:
 		_mark_pos = _npc.global_position
-	return mode == Mode.IDLE and _npc.alert_state == Enums.AlertState.CALM and KNOWN_ACTIVITIES.has(_idle_activity) \
-		and _flat_dist(_npc.global_position, _mark_pos) <= MARK_HOLD_M
+		_mark_dir = -_npc.global_transform.basis.z
+	if mode != Mode.IDLE or _npc.alert_state != Enums.AlertState.CALM or not KNOWN_ACTIVITIES.has(_idle_activity):
+		return false
+	var d: float = _flat_dist(_npc.global_position, _mark_pos)
+	return d <= MARK_HOLD_M or (_settling and d <= Tweak.stealth().civilian_mark_settle_m)
+
+
+## X-5: the activity keeps this civilian on its spawn mark for good (not a wander activity): a teller, a clerk.
+func mark_bound() -> bool:
+	return KNOWN_ACTIVITIES.has(_idle_activity) and not WANDER_ACTIVITIES.has(_idle_activity)
+
+
+## X-5 (StealthTweak.civilian_mark_*): a mark-bound CALM IDLE civilian pushed off its mark (a crew yield, a drift
+## while alerted) goes back once it stands still: near, the motor slides it onto the mark (mark_anchor, held);
+## farther, it walks there first. Back on the mark it faces its spawn facing again.
+func _tick_mark(delta: float) -> void:
+	if _motor == null or _mark_pos == Vector3.INF or not mark_bound() or _npc.alert_state != Enums.AlertState.CALM:
+		_off_mark_t = 0.0
+		return
+	var tw: StealthTweak = Tweak.stealth()
+	var d: float = _flat_dist(_npc.global_position, _mark_pos)
+	if _returning:
+		if not _motor.arrived:
+			return
+		_returning = false
+		_set_idle_hint()
+	if d <= MARK_HOLD_M or (_settling and d <= tw.civilian_mark_settle_m):
+		_off_mark_t = 0.0
+		if _motor.mark_anchor != _mark_pos:
+			_motor.mark_anchor = _mark_pos
+			_motor.face(_mark_dir)
+		if d <= 0.01:
+			_settling = false
+		return
+	_settling = false
+	_motor.mark_anchor = Vector3.INF
+	if _motor.yielding() or not _motor.arrived:
+		_off_mark_t = 0.0
+		return
+	_off_mark_t += delta
+	if _off_mark_t < tw.civilian_mark_return_s:
+		return
+	_off_mark_t = 0.0
+	if d <= tw.civilian_mark_settle_m:
+		_settling = true
+		_motor.mark_anchor = _mark_pos
+		_motor.face(_mark_dir)
+	else:
+		_returning = true
+		anim_hint = &"walk"
+		_motor.go_to(_mark_pos, tw.civilian_walk_speed)
 
 
 func _set_idle_hint() -> void:
@@ -651,6 +706,7 @@ func _physics_step(delta: float) -> void:
 	_update_body_block()
 	match mode:
 		Mode.IDLE:
+			_tick_mark(delta)
 			_tick_idle(delta)
 		Mode.WANDER:
 			_tick_wander(delta)
