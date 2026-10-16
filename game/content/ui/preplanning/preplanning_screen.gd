@@ -292,6 +292,14 @@ func _build_map_column() -> VBoxContainer:
 	crew_button.pressed.connect(_on_crew_pressed)
 	bar.add_child(crew_button)
 	if board.blueprint.floor_count() > 1:
+		# LEAD r229 real-input run: the crew tab and the floor tabs are separate choices (no map point picked / the
+		# floor shown) and both showed "selected"; a divider and a MAP caption make the floors their own group.
+		var sep: VSeparator = VSeparator.new()
+		sep.custom_minimum_size = Vector2(UiTokens.S3, 0)
+		bar.add_child(sep)
+		var cap: Label = UiBuild.caption(&"ui.preplan.floor_caption")
+		cap.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		bar.add_child(cap)
 		for i: int in range(board.blueprint.floor_count()):
 			var fb: Button = UiBuild.tab(_small_button(board.blueprint.floor_names[i]))
 			fb.set_pressed_no_signal(i == 0)

@@ -1360,6 +1360,7 @@ ui.briefing.heist,{name}: {subtitle}
 ui.preplan.title,Pre-planning
 ui.preplan.placeholder,ROUGH SKETCH: not to scale
 ui.preplan.crew_assets,Crew assets
+ui.preplan.floor_caption,Map
 ui.preplan.crew_assets_meta,No map location: the whole crew gets these.
 ui.preplan.crew_short,crew
 ui.preplan.map_hint,Pick a numbered point on the blueprint to place an asset.
