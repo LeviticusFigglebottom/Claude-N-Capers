@@ -43,6 +43,8 @@ SUPPORT = {"rifle": (None, 0.0), "smg": (v3(0.0, 0.150, 0.016), 4.0), "sniper": 
 LMG_HIP = {"grip": (0.16, 0.17, 1.03), "yaw": 10.0, "pitch": -6.0, "roll": -4.0, "left_ik": v3(0.0, 0.253, 0.029)}
 #: the weight shift: hips side to side (m at 1.78 m) over one loop, with the spine leaning against it (deg)
 SHIFT_M, SHIFT_COUNTER_DEG = 0.016, 2.2
+#: the carried bag's pivot on Back/Socket per bag size (socket-local m, Godot axes; = character_spec.gd BACK_BAG_OFFSETS)
+BACK_BAG_OFFSETS = {"light": (0.0, 0.05, 0.0), "medium": (0.0, 0.0, 0.0), "heavy": (0.0, -0.05, 0.0)}
 #: the bones A layers from hold_* over locomotion
 UPPER_BONES = ("spine", "chest", "neck", "head", "clavicle.L", "clavicle.R", "upper_arm.L", "upper_arm.R",
                "forearm.L", "forearm.R", "hand.L", "hand.R", "fingers of both hands")
@@ -225,4 +227,11 @@ def source_notes() -> dict:
             "hand does the work, the weapon stays in the right hand at a low carry by the thigh). Unarmed bodies "
             "(civilians, NPCs) keep the shared clips. carry_bag_walk now holds the bag strap with the LEFT hand at the "
             "left shoulder and keeps the weapon low in the right: the carried bag visual belongs on the left shoulder / "
-            "back (Back socket), not in the right hand")}
+            "back (Back socket), not in the right hand"),
+        "carried_bag": (
+            "D-116: Back/Socket is the carried loot bag's pivot (assemble_characters / character_spec.gd "
+            "SOCKET_OFFSETS + SOCKET_BASES). The prop_loot_bag_* model attaches with an identity transform: the "
+            "bottom-centre pivot, the bag's top (straps) against the back, its length from the left shoulder blade "
+            "down to the right hip (50 deg), under the left-hand strap of carry_bag_walk. Seated for the MEDIUM bag; "
+            "per bag size, socket-local offsets (m): " + ", ".join(f"{k} {v}" for k, v in BACK_BAG_OFFSETS.items())
+            + " (the light and heavy bags' heights differ by 5 cm; set AnimTweak.carried_bag_offset by bag model)")}

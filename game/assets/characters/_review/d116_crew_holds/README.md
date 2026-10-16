@@ -21,3 +21,29 @@ the upper body over walk / run / strafe.
   The weapon stays in a low carry in the right hand while the left hand does the work. In the crouch the carry
   drops with the hips, muzzle down. The bag carry holds the strap in the left hand at the left shoulder.
 A plays the *_armed variants whenever the crew member holds a weapon (SOURCE `armed_interactions`).
+
+## Crouch walk with hold_<kind> layered (third person)
+The capture tool's `--layer=crouch_walk` plays crouch_walk and copies hold_<kind>'s upper bones over it (spine,
+chest, neck, head, clavicles, arms, hands, fingers): the bone filter A uses. Two stride phases (0.25 and 0.6 s) per
+sheet; A = LMG / SMG / rifle, B = akimbo / sniper / pistol.
+- `crouch_walk_A_before.png` / `crouch_walk_B_before.png`: plain crouch_walk; the weapon hangs from one hand.
+- `crouch_walk_A_after.png` / `crouch_walk_B_after.png`: the layer, 3/4 front.
+- `crouch_walk_A_side.png` / `crouch_walk_B_side.png`: the layer in profile (`--turn=90`).
+The layer works as authored. crouch_walk's hips pitch only 2.7 deg forward (the hold's stand: -0.9 deg), so the
+held weapon keeps its standing angle relative to the trunk. No weapon goes through the knees. Model check over every
+frame (weapon segment against the thigh and shin capsules): the least clearance is 160 mm (LMG), then 201 mm
+(sniper; its muzzle drops to 0.46 m at the knee's forward swing). No clip change is needed.
+
+## Crew states (third person, _anim_crew3p)
+`crew_states.png`: crew_wren (an akimbo pair: a single warden_45 in each hand) and crew_sable (kestrel_p9). Rows:
+- aim_akimbo 0.5; fire_akimbo 0.05; fire_akimbo_l 0.05;
+- reload_akimbo 0.27 (rolled in: the magazines drop), 0.6 (grips over the belt pouches), 1.0 (seated);
+- downed 0.5; downed_fire 0.05; downed_reload 0.5 and 0.85;
+- downed_getup 0.66 and 1.0; downed_arrested 0.5 and 0.75;
+- crew_cuffed 1.0; crew_cuffed_free 0.3.
+The review keeps the weapons attached. In game, A hides the weapon at downed_arrested `disarm` and while cuffed.
+
+## mask_on and throw_grenade (third person)
+`mask_on_throw_grenade.png` rows: mask_on at 0.27, 0.47 (press), 0.6 and 0.8 s; throw_grenade at 0.2 (wind),
+0.37 (release) and 0.53 s (follow-through). In this review the held weapon stays attached and rides up to the face in
+mask_on. In game A hides it until mask_on ends (PD2: the weapon is drawn after masking up).
