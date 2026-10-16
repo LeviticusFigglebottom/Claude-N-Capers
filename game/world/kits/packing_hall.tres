@@ -1,0 +1,45 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"packing_hall"
+purpose = &"warehouse"
+required_items = Array[StringName]([&"conveyor", &"counter_service", &"ice_machine", &"fish_crates", &"hose_reel", &"fire_extinguisher", &"light_fixture"])
+optional_items = {
+&"fish_boxes": 2,
+&"pallet": 1,
+&"pallet_jack": 0.5,
+&"pallet_wrapped": 0.8,
+&"tote": 0.5
+}
+clutter_groups = {
+&"floor": {
+"anchors": Array[StringName]([&"wall", &"corner"]),
+"count": Vector2i(1, 2),
+"items": {&"fish_boxes": 2, &"pallet": 1.5, &"tote": 0.6},
+"radius": 1.2
+}
+}
+min_density = 0.04
+max_density = 0.4
+min_props = 12
+lone_ok_kinds = Array[StringName]([&"conveyor", &"ice_machine", &"fish_crates", &"pallet_wrapped", &"pallet", &"tote", &"pallet_jack", &"fish_boxes"])
+seed_salt = 205
+counts = {}
+assets = {
+&"cone": PackedStringArray("prop_traffic_cone"),
+&"dolly": PackedStringArray("prop_hand_truck"),
+&"fire_extinguisher": PackedStringArray("prop_fire_extinguisher"),
+&"fish_boxes": PackedStringArray("prop_fish_box_stack"),
+&"fish_crates": PackedStringArray("prop_fish_crates"),
+&"hose_reel": PackedStringArray("prop_hose_reel"),
+&"light_fixture": PackedStringArray("prop_led_batten_cold"),
+&"pallet": PackedStringArray("prop_pallet_stack", "prop_pallet"),
+&"pallet_jack": PackedStringArray("prop_pallet_jack"),
+&"pallet_wrapped": PackedStringArray("prop_pallet_wrapped"),
+&"tote": PackedStringArray("prop_ibc_tote")
+}
+ceiling = {"prop_led_batten_cold": 4.5}
+notes = "PK chilled packing hall: the roller conveyor, the two stainless tables, the ice machine and the crate stacks are map-built; the product / burn point (prod_packing) and the quay doors stay clear."

@@ -1,0 +1,14 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/props/prop_conveyor_roller/prop_conveyor_roller.glb" id="1_model"]
+
+[node name="PropConveyorRoller" type="Node3D"]
+metadata/kind = &"conveyor"
+metadata/support = true
+
+[node name="Model" parent="." instance=ExtResource("1_model")]
+
+[node name="Collision" parent="Model"]
+metadata/surface = &"metal"
+
+[editable path="Model"]

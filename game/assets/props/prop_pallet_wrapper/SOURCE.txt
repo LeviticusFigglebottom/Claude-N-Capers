@@ -1,0 +1,8 @@
+asset: prop_pallet_wrapper
+script: tools/blender/props/dockside.py
+params: {"cat": {"clear": 0.8, "group": "dockside", "kind": "wrapping_machine", "pin_only": true, "place": "wall"}, "fn": "wrapper"}
+seed: 3561559356  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_pallet_wrapper
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 16000

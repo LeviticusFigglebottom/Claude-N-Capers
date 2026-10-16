@@ -24,8 +24,8 @@ const DOOR_T30: Array[String] = [
 	"StairGround", "OCHall", "PLCorridor", "WSCorridor", "WSHall", "StairMezz", "MCPlatform", "RoofDoor",
 	"GatehouseNorth", "GatehouseSouth", "NetStoreWest", "NetStoreEast",
 ]
-const LIFT_VISUAL: String = "res://world/heists/dockside_burn/greybox/goods_lift_visual.tscn"
-const BOAT_DROP_VISUAL: String = "res://world/heists/dockside_burn/greybox/boat_drop_visual.tscn"
+const LIFT_VISUAL: String = "res://world/heists/night_deposit/art/nd_cash_lift.tscn"  # G2: the ND car (same car size / nodes)
+const BOAT_DROP_VISUAL: String = "res://world/heists/night_deposit/art/nd_boat_hatch.tscn"  # G2: the ND hatch
 ## PO-13: the escape vans are the catalog van (as on GH / ND), not the secure_zone placeholder.
 const VAN_VISUAL: String = "res://world/props/secure_zone/veh_van_secure.tscn"
 ## PO-13: escape_zone visuals. Van / boat escapes show the vehicle already parked or moored there (the slot's
@@ -75,6 +75,10 @@ const PRODUCT: Dictionary = {
 	"prod_packing": ["PK", Vector3(11.0, 0.0, 23.8), [Vector3(6.6, 0.0, 23.6), Vector3(13.6, 0.0, 30.4)],
 		[0.2, 0.0, 23.1, 17.8, 4.5, 31.8]],
 }
+## G2 (DB-C2) levelcheck `kind` metas of the prefab instances that are props (density: every prop root has a kind).
+const PREFAB_KINDS: Dictionary = {
+	"loot_spawn": "loot_spawn", "small_loot": "small_loot", "burn_point": "burn_barrel", "bag_lift": "goods_lift",
+}
 ## Doc: the burn runs 30 s (no jams); the burn_point's fire volume deals fire DoT (D-064 Q6).
 const BURN_S: float = 30.0
 
@@ -102,6 +106,8 @@ func prefab(parent: Node3D, kind: String, nm: String, pos: Vector3, yaw: float, 
 		inst.set(&"visual_scene", _catalog_scene(SMALL_LOOT_VISUAL))
 	for mk: Variant in metas:
 		inst.set_meta(StringName(String(mk)), metas[mk])
+	if not inst.has_meta(&"kind") and PREFAB_KINDS.has(kind):  # G2 density: every prop root has a kind
+		inst.set_meta(&"kind", PREFAB_KINDS[kind])
 	parent.add_child(inst)
 	inst.owner = map_root
 	if use_point != null:
@@ -459,6 +465,7 @@ func _variants_containers(variants: Node3D) -> void:
 		lock.position = Vector3(0.0, 0.13, -0.051)  # pivot 9 mm off the door face: the body clears it
 		lock.basis = yaw_basis(180.0)  # mount back (+Z) points into the door
 		lock.set_meta(&"mount", "wall")  # hangs on the container door's hasp
+		lock.set_meta(&"kind", "padlock")
 		m.add_child(lock)
 		lock.owner = map_root
 
@@ -528,7 +535,8 @@ func _variants_gangway(variants: Node3D) -> void:
 	spawn(down, String(p3[0]), "POLICE", p3[1], float(p3[2]), p3[3], "", "")
 	_tactical(down, ["EntryGangway", "ENTRY", Vector3(61.4, 0.0, -13.0), 90.0, ["gangway", "east"], false])
 	var up: VariantSlot = _slot(g, "east_gangway", "gangway_up", 0.4)
-	var bar: StaticBody3D = prop_box(up, "GangwayBarrier", Vector3(61.85, 0.0, -13.0), Vector3(0.1, 1.05, 3.2), 0.0,
+	# G2: 3 mm off the apron (its underside met the gangway deck's in the other slot: zfight)
+	var bar: StaticBody3D = prop_box(up, "GangwayBarrier", Vector3(61.85, 0.003, -13.0), Vector3(0.1, 1.05, 3.2), 0.0,
 		"railing", false, "trim")
 	bar.set_meta(&"hinged_barrier", true)
 

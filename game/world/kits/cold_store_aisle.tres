@@ -1,0 +1,34 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"cold_store_aisle"
+purpose = &"warehouse"
+required_items = Array[StringName]([&"fire_extinguisher", &"light_fixture"])
+optional_items = {
+&"fish_boxes": 1
+}
+clutter_groups = {}
+min_density = 0.05
+max_density = 0.4
+min_props = 4
+lone_ok_kinds = Array[StringName]([&"fish_boxes"])
+seed_salt = 208
+counts = {}
+assets = {
+&"cone": PackedStringArray("prop_traffic_cone"),
+&"dolly": PackedStringArray("prop_hand_truck"),
+&"fire_extinguisher": PackedStringArray("prop_fire_extinguisher"),
+&"fish_boxes": PackedStringArray("prop_fish_box_stack"),
+&"fish_crates": PackedStringArray("prop_fish_crates"),
+&"hose_reel": PackedStringArray("prop_hose_reel"),
+&"light_fixture": PackedStringArray("prop_led_batten_cold"),
+&"pallet": PackedStringArray("prop_pallet_stack", "prop_pallet"),
+&"pallet_jack": PackedStringArray("prop_pallet_jack"),
+&"pallet_wrapped": PackedStringArray("prop_pallet_wrapped"),
+&"tote": PackedStringArray("prop_ibc_tote")
+}
+ceiling = {"prop_led_batten_cold": 3.5}
+notes = "SP spine aisle: strip curtains both ends, the chamber doors; only wall-hung kit and battens."

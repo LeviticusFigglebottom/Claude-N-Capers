@@ -217,6 +217,18 @@ PRESET = {
             "pivot": 0.45,
             "saturation": 1.02,
         },
+        # Dockside Burn (dockside_burn.md §Audio/lighting): cold blue-grey shadows, sodium-orange highlights, slightly
+        # crushed blacks in the fog.
+        "dockside_burn": {
+            "slope": (1.025, 1.0, 0.975),
+            "offset": (-0.006, -0.004, 0.0),
+            "power": (1.0, 1.0, 1.0),
+            "shadow_tint": (-0.014, -0.002, 0.02),
+            "highlight_tint": (0.022, 0.008, -0.02),
+            "contrast": 1.08,
+            "pivot": 0.42,
+            "saturation": 0.95,
+        },
     },
     # Godot Environment resources (godot.py).
     "environments": {

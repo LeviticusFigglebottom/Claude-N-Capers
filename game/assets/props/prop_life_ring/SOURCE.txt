@@ -1,0 +1,8 @@
+asset: prop_life_ring
+script: tools/blender/props/dockside.py
+params: {"cat": {"group": "dockside", "kind": "life_ring", "pin_only": true, "place": "wall_mount", "z": 1.5}, "fn": "life_ring"}
+seed: 3706725220  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_life_ring
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 16000
