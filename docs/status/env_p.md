@@ -2,6 +2,22 @@
 
 Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min; this file says where to resume.
 
+## 2026-10-16 (night): GN-P1 rerun, ND stealth coverage, D's one-handed reloads
+- GN-P1 (gn_pass.tscn, real menus, seed 1792002290, env/p-play 5b9d681e): stealth casing tour unmasked; last call
+  warning t=439, Public -> RESTRICTED + 4 patrons leaving at t=484, guest stayed to t=535 with detection 0.00 (not
+  spotted this time, round 187 was); loud at t=538 (guard_radio). STUCK (harness, A): po5_flow_auto_loud `_pick`
+  puts `hack` first because `_has_path` routes through the closed CODE ServerDoor (`server_door` drill is active);
+  pilot re-pressed the Argus terminal through the wall for t=597..1143, out of ammo (pilot never reloads); run killed.
+  Errors: `unknown weapons id weapon.npc_rifle / npc_pistol / npc_sniper` x46 on assault spawns
+  (anim_driver.refresh_weapon -> npc_weapon_models.weapon_def). Observer: CREW_STACK 8 (t=544-588, AI inside the
+  player while following upstairs), then spacing 2.5 m. Anim: 123 moving clips, no static / no_clip / mismatch;
+  frozen crew_ai walk_bl / walk_fr, civilian tased; slides tac_heavy breach_standback, rappel_descend (heavy, light),
+  longshot heli_door_idle. test_p_gn_traversal 8/8. Evidence: captures/gn_p1_2026-10-16/.
+- nd_stealth_pass (budget 180): civilian_call went loud at t=53 before any intimidate: 28 clips, no slides; the
+  intimidation / pager / bag clips unexercised -> new `--intimidate-first` mode (dae0680f), run pending.
+- D 107b16dd one-handed reloads (scratch merge): test_p_pistol_hold 3/3; Kestrel reload in frame, Marshal eject
+  hand too close (palm across the top third, forearm wall): captures/d116/reload_107b16dd/. motion_clip `--reload-only`.
+
 ## 2026-10-16 (later): D-118 gadgets + vgrip, D-119 dark guns, ND spawn view, GN ladder test
 - D-118 gadgets (d8e8dbe6, f901e122): PlayerInput intent.gadget = just_pressed(gadget_toggle); FpViewmodelGadgets
   (systems/anim/fp_viewmodel_gadgets.gd, world-space next to the crew): laser beam + dot from the apparent LaserOrigin,
