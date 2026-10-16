@@ -46,6 +46,9 @@ var shout_blockers: bool = true
 var block_shout_after: int = 4
 ## goto() also needs |dy| <= this to arrive (INF = horizontal distance only; stealth flows set it for stairs).
 var arrive_dy: float = INF
+## The closed door the last goto() gave up at because the crew cannot open it now (GN loud: the lockdown-BARRED
+## Calloway shutter; the navmesh still runs through the doorway), else null.
+var last_blocked_door: Door = null
 ## Stealth: never press F unless the component is aimed (a press with nothing usable aimed is a shout,
 ## S7.1: it puts every civilian within shout_all_within_m down, the sales floor through the wall).
 var no_blind_press: bool = false
@@ -167,6 +170,7 @@ func goto(target: Vector3, arrive_m: float = 0.8, timeout_s: float = 60.0, sprin
 	var hist_t: float = 0.0
 	var recover: int = 0
 	var ok: bool = false
+	last_blocked_door = null
 	while t < timeout_s:
 		if combat and crew.crew_state != Enums.CrewState.NORMAL:
 			d.note("pilot: goto aborted, crew state %d (fight from the floor)" % crew.crew_state)
@@ -203,6 +207,7 @@ func goto(target: Vector3, arrive_m: float = 0.8, timeout_s: float = 60.0, sprin
 		if door != null and _door_blocked(door):
 			inp.release(&"move_forward")
 			d.note("pilot: goto blocked by %s (%s); giving up this leg" % [door.name, _door_why(door)])
+			last_blocked_door = door
 			break  # P (GN loud): the lockdown-BARRED art door; pushing into it stalled the flow from t=480
 		if door != null:
 			inp.release(&"move_forward")
@@ -332,6 +337,8 @@ func use(comp: InteractableComponent, timeout_s: float = 30.0, done: Callable = 
 	var stand: Vector3 = _use_stand(comp)
 	if walk and not await goto(stand, 0.5, 60.0) and is_instance_valid(comp):
 		d.note("pilot: could not reach %s (%s)" % [comp.get_path(), comp.kind])
+		if last_blocked_door != null:
+			return false  # behind a door it cannot open: pressing F through the wall for 30 s does nothing (P GN-P1)
 	if not is_instance_valid(comp):
 		return false
 	await face(target)
@@ -541,6 +548,8 @@ func engage(npc: NpcBase, max_s: float) -> void:
 		await face(aim_pt, 0.03, 0.25)
 		if not has_los(aim_pt, npc):
 			break
+		if not await _ensure_ammo():
+			break  # both weapons dry: nothing to shoot with
 		inp.press(&"fire")
 		await inp.ticks(2)
 		inp.release(&"fire")
@@ -548,6 +557,40 @@ func engage(npc: NpcBase, max_s: float) -> void:
 		await inp.ticks(6)
 		t += 0.25 + 8.0 * dt()
 	inp.release(&"fire")
+
+
+## P's GN-P1 rerun (b): the pilot sat at 0/90 firing an empty gun. Like a player: an empty mag with reserve left is
+## reloaded (R, then wait for it to finish); with no reserve it switches to the other weapon if that one has ammo.
+## False when neither weapon can shoot. Through input only (reload / slot_primary / slot_secondary).
+func _ensure_ammo() -> bool:
+	var w: CrewWeapons = crew.weapons
+	if w == null:
+		return true
+	var ws: int = w.equipped_slot
+	if w.mag(ws) > 0 and not w.reloading:
+		return true
+	if w.reserve(ws) > 0 or w.reloading:
+		if not w.reloading:
+			inp.release(&"fire")
+			d.note("pilot: mag empty (%d/%d), reloading" % [w.mag(ws), w.reserve(ws)])
+			await inp.tap(&"reload")
+		var t: float = 0.0
+		while w.reloading and t < 8.0:
+			await tick()
+			t += dt()
+		return w.mag(w.equipped_slot) > 0
+	var other: int = Enums.WeaponSlot.PRIMARY if ws == Enums.WeaponSlot.SECONDARY else Enums.WeaponSlot.SECONDARY
+	if w.has_weapon(other) and w.mag(other) + w.reserve(other) > 0:
+		inp.release(&"fire")
+		d.note("pilot: %s dry, switching weapons" % w.weapon_id(ws))
+		await inp.tap(&"slot_primary" if other == Enums.WeaponSlot.PRIMARY else &"slot_secondary")
+		var t2: float = 0.0
+		while w.equipped_slot != other and t2 < 3.0:
+			await tick()
+			t2 += dt()
+		await inp.ticks(30)  # draw
+		return await _ensure_ammo() if w.equipped_slot == other else false
+	return false
 
 
 ## Fights whatever is in sight for `seconds` (standing still), reloading between targets.
@@ -639,13 +682,16 @@ func _use_stand(comp: InteractableComponent) -> Vector3:
 		return stand_point(up.global_position)
 	var target: Vector3 = comp.global_position
 	var near: Vector3 = stand_point(target)
-	if _clear_to(near, target):
+	# GN probe 8: standing on a dropped bag, the crosshair never lands on it (aimed <none> at 0.67 m, 15 s of
+	# skipped presses). Stand a step back from a loose bag, like a player looking down at it.
+	var bag: bool = owner_n is LootBag
+	if not bag and _clear_to(near, target):
 		return near
 	for r: float in [0.7, 1.1, 1.5]:
 		for k: int in 12:
 			var a: float = TAU * float(k) / 12.0
 			var cand: Vector3 = stand_point(target + Vector3(cos(a), 0.0, sin(a)) * r)
-			if flat_dist(cand, target) <= 1.6 and _clear_to(cand, target):
+			if flat_dist(cand, target) <= 1.6 and (not bag or flat_dist(cand, target) >= 0.9) and _clear_to(cand, target):
 				return cand
 	return near
 
