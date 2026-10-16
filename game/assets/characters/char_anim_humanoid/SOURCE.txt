@@ -54,10 +54,10 @@ check.122: run_stop: 20f 0.67s speed=3.5 reach_err=0.0mm step=25.5deg slide=0.03
 check.123: shield_bang: 24f 0.80s speed=0.0 reach_err=0.0mm step=35.3deg
 check.124: shield_idle: 108f 3.60s loop speed=0.0 reach_err=0.0mm step=0.2deg
 check.125: shield_walk: 28f 0.93s loop speed=1.6 reach_err=0.0mm step=19.7deg slide=0.000mm/f
-check.126: sit_bed_read: 300f 10.00s loop speed=0.0 reach_err=0.0mm step=19.5deg
+check.126: sit_bed_read: 300f 10.00s loop speed=0.0 reach_err=0.0mm step=20.5deg
 check.127: sit_chair: 120f 4.00s loop speed=0.0 reach_err=0.0mm step=0.3deg
 check.128: sit_chair_armed: 140f 4.67s loop speed=0.0 reach_err=0.0mm step=0.7deg
-check.129: sit_chair_read: 300f 10.00s loop speed=0.0 reach_err=0.0mm step=21.2deg
+check.129: sit_chair_read: 300f 10.00s loop speed=0.0 reach_err=0.0mm step=24.2deg
 check.13: cower_stand: 150f 5.00s loop speed=0.0 reach_err=0.0mm step=13.2deg contact_slide=0.000mm/f
 check.130: sit_chair_watch: 300f 10.00s loop speed=0.0 reach_err=0.0mm step=10.5deg
 check.131: smoke: 120f 4.00s loop speed=0.0 reach_err=0.0mm step=30.9deg

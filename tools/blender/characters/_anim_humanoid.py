@@ -1882,6 +1882,11 @@ def sit_chair_read(sk: Skeleton, f: int, N: int) -> Pose:
 #: sit_chair_read: the book's centre from the chest (chest-bone offset, m at 1.78 m) and the extra head pitch (deg)
 CHAIR_BOOK = v3(0.0, 0.30, -0.12)
 CHAIR_READ_HEAD = 20.0
+#: the book raised this far (world up, m at 1.78 m) off the chest offset and its top edge tipped this far (deg)
+#: further toward the face than square to the sight line, as (chair, bed): a reading angle, not flat in the lap; the
+#: reclined bed read already holds it up at the chest, so it only rises clear of the chin
+READ_RAISE = (0.10, 0.03)
+READ_TILT = (34.0, 8.0)
 
 
 def _reading(sk: Skeleton, f: int, N: int, chair: bool) -> Pose:
@@ -1911,8 +1916,8 @@ def _reading(sk: Skeleton, f: int, N: int, chair: bool) -> Pose:
     pre = Solver(sk).solve(pose)
     eye = head_eye(pre, sk)
     off = CHAIR_BOOK if chair else v3(0.0, 0.38, 0.10)
-    o = A.bone_point(pre, sk, "chest", off * k) + v3(0.0, 0.0, 0.006 * k * br)
-    R = facing_frame(o, eye)
+    o = A.bone_point(pre, sk, "chest", off * k) + v3(0.0, 0.0, (READ_RAISE[0 if chair else 1] + 0.006 * br) * k)
+    R = facing_frame(o, eye) @ rxd(READ_TILT[0 if chair else 1])
     prop_hand(sk, pose, "book", R, o, pole=v3(0.8, -0.2, -0.8))
     # left hand: hold -> page corner -> sweep across -> back to the cover
     # (u, point, along, palm) in book space; hand rotations are slerped between the keys
