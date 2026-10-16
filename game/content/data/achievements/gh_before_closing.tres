@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="AchievementDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://content/defs/achievement_def.gd" id="1_ach"]
+
+[resource]
+script = ExtResource("1_ach")
+id = &"achievement.gh_before_closing"
+name_key = &"achievement.gh_before_closing.name"
+desc_key = &"achievement.gh_before_closing.desc"
+condition = {"event": &"heist_completed", "heist": &"glasshouse", "max_time_s": 360.0, "count": 1}
+unlock = &""
+order = 711
+category = &"glasshouse"
+rewards = Array[StringName]([&"mask_colors.mint_graphite"])
+unlocks = Array[StringName]([])
+requires_facts = Array[StringName]([])

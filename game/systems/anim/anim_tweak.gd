@@ -100,6 +100,20 @@ static var _cached: AnimTweak = null
 ## Laser dot pulled this far off the hit surface (m) so it does not z-fight.
 @export var gadget_dot_offset_m: float = 0.01
 
+@export_group("Hard-hat hand lift (D-115 R1)")
+## Character ids wearing a hard hat (until ENV D tags Headwear with meta headwear_class = &"hard_hat").
+@export var hard_hat_characters: Array[StringName] = [&"dock_worker", &"dock_worker_b"]
+## Hands-on-head clips during which the hands are lifted over the hat shell.
+@export var hard_hat_lift_clips: Array[StringName] = [&"surrender", &"hands_up", &"cower", &"cower_seated",
+	&"cower_stand", &"kneel_cuffed"]
+## Lift (m) of a hand resting on the head: the shell stands ~2.4 cm off the skull (ENV D audit R1).
+@export var hard_hat_hand_lift_m: float = 0.03
+## A hand within this distance (m) of the head bone counts as resting on it.
+@export var hard_hat_near_head_m: float = 0.32
+## Influence blend rate (1/s) in and out of the lift clips.
+@export var hard_hat_lift_rate: float = 6.0
+
+
 static func data() -> AnimTweak:
 	if _cached == null:
 		_cached = load(PATH) as AnimTweak

@@ -29,6 +29,11 @@ import _tri
 from _outfit import Fit, Hull, Mesh, Vector
 
 COVER_RAY = 0.06
+# D-115 clip audit: the cover rays start just *inside* the skin, so a garment surface lying on the skin (a shoe
+# sole's flat bottom is coplanar with the foot's sole at z = 0) still counts as cover; starting outside it, the
+# ray began beyond that sole, the foot's skin was kept and showed through the soles whenever a sole faced the
+# camera (kneel_cuffed, surrender, death_crouch).
+COVER_START = 0.0008
 
 
 class Kit:
@@ -83,7 +88,7 @@ def cull_covered(fit: Fit, obj, covers: Hull) -> int:
     def covered_vert(v: int) -> bool:
         if v not in hit_cache:
             n = fit.N[v]
-            hit = covers.cast(fit.P[v] + n * 0.0004, n, COVER_RAY)
+            hit = covers.cast(fit.P[v] - n * COVER_START, n, COVER_RAY)
             hit_cache[v] = hit[0] is not None
         return hit_cache[v]
 
@@ -95,7 +100,7 @@ def cull_covered(fit: Fit, obj, covers: Hull) -> int:
             continue
         c = sum((fit.P[v] for v in f), Vector()) / len(f)
         n = o.newell(fit.P, f).normalized()
-        if covers.cast(c + n * 0.0004, n, COVER_RAY)[0] is None:
+        if covers.cast(c - n * COVER_START, n, COVER_RAY)[0] is None:
             continue
         kill.append(fi)
     bm = bmesh.new()

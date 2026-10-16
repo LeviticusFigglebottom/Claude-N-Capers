@@ -24,7 +24,7 @@ static func make_def() -> HeistDef:
 	d.briefing = "heist.glasshouse.briefing"
 	d.mode = Enums.HeistMode.STEALTH_OR_LOUD
 	d.map_scene = SCENE_PATH
-	d.base_payout = 40000
+	d.base_payout = 12000  # D-120
 	d.stealth_bonus_mult = 1.15
 	d.loot = [&"loot.jewelry", &"loot.cash"] as Array[StringName]
 	d.objectives = [&"casing", &"keycard", &"code", &"workshop_door", &"safe", &"safe_loot", &"secure", &"escape"] \

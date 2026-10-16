@@ -136,6 +136,8 @@ var rig: Node3D = null
 var clip: StringName = &""
 ## D-115: hand props attached for the playing clip (HandProps, e.g. ["phone"] while phone_call plays).
 var hand_props: PackedStringArray = PackedStringArray()
+## D-115 (ENV D audit R1): the hard-hat hand lift of this rig (null when it wears no hard hat).
+var hat_lift: HardHatHandLift = null
 ## Crossfade (s) used for the last clip change (0 for the first clip).
 var last_blend_s: float = -1.0
 ## &"pistol" or &"rifle": aim/fire/reload clip family.
@@ -271,6 +273,12 @@ func bind() -> bool:
 		_crew.weapons.equipped_changed.connect(_on_equipped)
 		_crew.weapons.reload_started.connect(_on_reload_started)
 	refresh_weapon()
+	hat_lift = null
+	var char_id: String = ""
+	if _npc != null and _npc.visual_scene != null:
+		char_id = _npc.visual_scene.resource_path.get_file().get_basename()
+	if HardHatHandLift.wears_hard_hat(rig, char_id):
+		hat_lift = HardHatHandLift.ensure(rig.get_node_or_null(^"Skeleton3D") as Skeleton3D)
 	return true
 
 
@@ -310,6 +318,10 @@ func tick(delta: float) -> void:
 	_apply(want, _speed_scale_for(want, tw), tw)
 	if weapon_visual != null and is_instance_valid(weapon_visual):
 		weapon_visual.visible = not POSE_CLIPS.has(want) and _death_clip == &""
+	if hat_lift != null and is_instance_valid(hat_lift):
+		var lift_on: float = 1.0 if tw.hard_hat_lift_clips.has(clip) else 0.0
+		hat_lift.influence = move_toward(hat_lift.influence, lift_on, delta * tw.hard_hat_lift_rate)
+		hat_lift.active = hat_lift.influence > 0.0
 
 
 ## Play `p_clip` once for `duration` seconds (-1 = the clip's length / speed). `while_moving` lets it

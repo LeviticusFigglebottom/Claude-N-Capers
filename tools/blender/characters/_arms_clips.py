@@ -872,16 +872,27 @@ def state_fns(sk: Skeleton, s: FPSet) -> dict:
             from _arms_items import item_fns  # noqa: PLC0415 - imports this module
             return item_fns(sk, s)
         if "bash" not in s.clips:
-            return _state_fns(sk, s)
+            return _organic(s, _state_fns(sk, s))
         import dataclasses  # noqa: PLC0415
 
         from _arms_melee import bash_fn  # noqa: PLC0415 - imports this module
         out = _state_fns(sk, dataclasses.replace(s, clips={c: r for c, r in s.clips.items() if c != "bash"}))
         out["bash"] = bash_fn(sk, s, out["idle"], s.frames("bash"), s.ev("bash"))
-        return out
+        return _organic(s, out)
     except ValueError as e:
         lengths = {c: s.frames(c) for c in s.clips}
         raise ValueError(f"{s.name} (clip frames {lengths}): {e}") from e
+
+
+def _organic(s: FPSet, fns: dict) -> dict:
+    """The D-116 secondary-motion layer (``_arms_organic``) over the handling clips; ``FP_ORGANIC=0`` turns it off
+    (before / after reviews)."""
+    import os  # noqa: PLC0415
+
+    if os.environ.get("FP_ORGANIC", "1") == "0":
+        return fns
+    import _arms_organic  # noqa: PLC0415
+    return _arms_organic.apply(s, fns)
 
 
 def _state_fns(sk: Skeleton, s: FPSet) -> dict:

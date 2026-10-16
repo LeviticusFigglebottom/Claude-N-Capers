@@ -145,18 +145,18 @@ func _setup_variants() -> void:
 		complete(&"server_door")
 		if _rare(RARE_CAGE_OPEN):
 			update_objective_data(&"cage", {"left_open": true})
-			_open_cage()
+			_open_cage(&"left_open")
 
 
 # --- Stealth flow -----------------------------------------------------------------------------
 
-func _on_interaction_completed(interactable_net_id: int, _crew_slot: int, _kind: StringName) -> void:
+func _on_interaction_completed(interactable_net_id: int, _crew_slot: int, kind: StringName) -> void:
 	if _is_tagged(interactable_net_id, TAG_SERVER_READER) or _is_tagged(interactable_net_id, TAG_SERVER_DOOR):
 		if objective_state(&"server_door") == Enums.ObjectiveState.ACTIVE:
 			complete(&"server_door")
 	elif _is_tagged(interactable_net_id, TAG_CAGE):
 		# The code path opens the lock at once (the saw reports device_finished).
-		_open_cage()
+		_open_cage(&"saw" if String(kind).contains("saw") else &"code")
 	elif _is_tagged(interactable_net_id, TAG_LAPTOP):
 		if objective_state(&"laptop") == Enums.ObjectiveState.ACTIVE:
 			complete(&"laptop")
@@ -188,7 +188,7 @@ func _on_device_started(device_net_id: int, kind: StringName, seconds: float) ->
 
 func _on_device_finished(device_net_id: int) -> void:
 	if _is_tagged(device_net_id, TAG_CAGE):
-		_open_cage()
+		_open_cage(&"saw")
 	elif _is_tagged(device_net_id, TAG_HACK):
 		_on_hack_done()
 	elif _is_tagged(device_net_id, TAG_STUDY_SAFE):
@@ -203,10 +203,13 @@ func _on_device_jammed(device_net_id: int) -> void:
 		say(&"vo.mercer.shadow_ledger_hack_interrupted")
 
 
-func _open_cage() -> void:
+## `method` (B achievements, objective.cage.open_method): &"code" / &"saw", or &"left_open" (rare); set on the
+## [cage] objective data before it completes.
+func _open_cage(method: StringName) -> void:
 	if _cage_open:
 		return
 	_cage_open = true
+	update_objective_data(&"cage", {"open_method": method})
 	for g: Node in find_tagged(TAG_CAGE_GATE):
 		g.call(&"unlock")
 		g.call(&"set_open", true)

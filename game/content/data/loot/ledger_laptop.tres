@@ -9,5 +9,5 @@ bag_model = ExtResource("2_bag")
 id = &"loot.ledger_laptop"
 display_name = "Ledger Laptop"
 weight = 0
-value = 2000
+value = 5000
 conceals = false

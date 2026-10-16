@@ -31,10 +31,10 @@ far: $160,000, about 1.8× Night Deposit's $90,000.
 ## Loot (proposed for ENV C)
 | id | Weight | Base | Role |
 |---|---|---|---|
-| `loot.cash_bricks` (existing) | MEDIUM | $1,600 | vault money (the roadmap's "money MEDIUM") |
-| `loot.gold` | HEAVY | $2,800 | vault gold |
-| `loot.bearer_bonds` | LIGHT | $1,400 | vault cage |
-| `loot.server_drives` | MEDIUM | $1,800 | optional (server room), if the doc wants one |
+| `loot.cash_bricks` (existing) | MEDIUM | $8,000 | vault money (the roadmap's "money MEDIUM") |
+| `loot.gold` | HEAVY | $14,000 | vault gold |
+| `loot.bearer_bonds` | LIGHT | $7,000 | vault cage |
+| `loot.server_drives` | MEDIUM | $7,500 | optional (server room), if the doc wants one |
 | `loot.small_valuables` (no def) | — | prefab, ◇ $800–2,400 per item | deposit boxes (S10.3, QB-52; as Night Deposit) |
 
 ## Waiting on ENV C (G0 doc)

@@ -285,7 +285,7 @@ def clerk(kit: Kit) -> None:
     n.trousers(kit, "char_chino_navy", sh, belt_z + 0.022 * k, hem_r=0.060)
     n0 = len(kit.soft.f)
     jk, _info = n.jacket(kit, "char_knit_oat", 0.78 * k, 1.03 * k, button_mat="char_button_dark", lapel_w=0.03,
-                         neck_w=0.09, flare=0.05, chest_welt=False)
+                         neck_w=0.09, flare=0.09, chest_welt=False, base=0.013)
     n.cull_under(kit, n0, jk, "faces_hidden_by_jacket")
     n.lanyard(kit, "char_dress_black", "char_medic_white", card_z=1.17, band_mat="brass")
     n.watch(kit, "L", strap="leather_dark", case="chrome")

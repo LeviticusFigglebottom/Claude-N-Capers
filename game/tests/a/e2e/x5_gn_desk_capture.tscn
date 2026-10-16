@@ -1,0 +1,6 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://tests/a/e2e/x5_gn_desk_capture.gd" id="1"]
+
+[node name="X5GnDeskCapture" type="Node3D"]
+script = ExtResource("1")

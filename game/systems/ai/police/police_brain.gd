@@ -17,6 +17,13 @@
 ##   its doorway), deepest free one first so a squad fans into the room instead of parking on the threshold;
 ##   closed doors on the way are opened / breached by the motor (Door.npc_open). No slot found: approach
 ##   the target itself (assault standoff band).
+## - X-5 back-off (GH workshop doorway jam): under the standoff band the unit backs off to ONE latched stand point
+##   (tweak back_off_*: s_pref from the target along the away heading, snapped to the navmesh), re-picked only
+##   when the target moves. It was recomputed every tick from the unit's own position: in a doorway facing a
+##   small room that point fell behind the corridor wall, its route forked east / west around the wall, and each
+##   0.2 m step flipped the route, so the cop danced on the threshold (or pressed into a holder there) for the
+##   whole ANTICIPATION. No headway for back_off_stall_s: side-step (the next back_off_side_deg heading); none
+##   left: hold where it stands (it sees the target) until the target moves.
 ## - FADE (L1.1): no retreat in P1. Units keep fighting; the director just stops reinforcing.
 ## - L2.12 (A3-04): a DOWNED target that is not shooting within CustodyTweak.police_cuff_approach_m
 ##   is walked up to and cuffed at police_cuff_range_m (CrewCuffs.cuff_downed).
@@ -54,6 +61,15 @@ var _push_slot_for: Vector3 = Vector3.INF
 ## PO6-16: seconds the unit has made no headway toward its push slot, and the last slot given up on.
 var _push_stall_t: float = 0.0
 var _push_bad_slot: Vector3 = Vector3.INF
+## X-5: latched back-off stand point (Vector3.INF = none), the target position it was picked for, the heading index
+## tried (tweak back_off_side_deg), the farthest flat distance from the target reached and the seconds without gain.
+## _back_off_hold_for: target position a blocked back-off gave up at (hold instead), Vector3.INF = none.
+var _back_off_to: Vector3 = Vector3.INF
+var _back_off_for: Vector3 = Vector3.INF
+var _back_off_try: int = 0
+var _back_off_best_d: float = 0.0
+var _back_off_stall_t: float = 0.0
+var _back_off_hold_for: Vector3 = Vector3.INF
 
 var _npc: NpcBase = null
 var _motor: NpcMotor = null
@@ -252,13 +268,67 @@ func _tick_move(delta: float) -> void:
 		return
 	var s_min: float = tweak.assault_standoff_min_m if pushing else tweak.standoff_min_m
 	var s_pref: float = tweak.assault_standoff_pref_m if pushing else tweak.standoff_pref_m
+	var backing: bool = false
 	if not _target_visible or d > tweak.standoff_max_m or (mode == &"approach" and d > s_pref):
 		_move_to(tpos, &"approach")
 	elif d < s_min:
-		var away: Vector3 = _flat(_npc.global_position - tpos).normalized()
-		_move_to(_npc.global_position + away * (s_pref - d), &"back_off")
+		backing = true
+		_tick_back_off(tpos, d, s_pref, delta)
 	else:
 		_hold(tpos)
+	if not backing:
+		_back_off_to = Vector3.INF
+		_back_off_hold_for = Vector3.INF
+
+
+## X-5: back off from `tpos` (flat distance d < the standoff min) to a latched stand point; side-step / hold when
+## blocked (see the header).
+func _tick_back_off(tpos: Vector3, d: float, s_pref: float, delta: float) -> void:
+	var refresh: float = tweak.back_off_refresh_m
+	if _back_off_hold_for != Vector3.INF and _flat(tpos - _back_off_hold_for).length() <= refresh:
+		_hold(tpos)  # backing off is blocked here: stand and fight until the target moves
+		return
+	_back_off_hold_for = Vector3.INF
+	if _back_off_to == Vector3.INF or mode != &"back_off" or _flat(tpos - _back_off_for).length() > refresh:
+		_back_off_try = 0
+		_back_off_to = _pick_back_off(tpos, d, s_pref)
+	elif d > _back_off_best_d + tweak.back_off_progress_m:
+		_back_off_best_d = d
+		_back_off_stall_t = 0.0
+	else:
+		_back_off_stall_t += delta
+		if _back_off_stall_t >= tweak.back_off_stall_s:
+			_back_off_try += 1
+			_back_off_to = _pick_back_off(tpos, d, s_pref)
+	if _back_off_to == Vector3.INF:
+		_back_off_hold_for = tpos
+		_hold(tpos)
+		return
+	_move_to(_back_off_to, &"back_off")
+
+
+## X-5: the stand point for heading try _back_off_try and later ones: s_pref from `tpos` along the away heading
+## turned by back_off_side_deg[i], snapped to the navmesh on this floor, and farther from the target than d +
+## back_off_progress_m. Resets the stall clock; Vector3.INF when no heading is left.
+func _pick_back_off(tpos: Vector3, d: float, s_pref: float) -> Vector3:
+	_back_off_for = tpos
+	_back_off_best_d = d
+	_back_off_stall_t = 0.0
+	var away: Vector3 = _flat(_npc.global_position - tpos)
+	away = away.normalized() if away.length() > 0.01 else Vector3.FORWARD
+	var nav_map: RID = _npc.get_world_3d().navigation_map if _npc.is_inside_tree() else RID()
+	var has_nav: bool = nav_map.is_valid() and not NavigationServer3D.map_get_regions(nav_map).is_empty()
+	var sides: PackedFloat32Array = tweak.back_off_side_deg
+	while _back_off_try < sides.size():
+		var cand: Vector3 = tpos + away.rotated(Vector3.UP, deg_to_rad(sides[_back_off_try])) * s_pref
+		cand.y = _npc.global_position.y
+		if has_nav:
+			cand = NavigationServer3D.map_get_closest_point(nav_map, cand)
+		if absf(cand.y - _npc.global_position.y) <= tweak.assault_slot_max_dy_m \
+				and _flat(cand - tpos).length() >= d + tweak.back_off_progress_m:
+			return cand
+		_back_off_try += 1
+	return Vector3.INF
 
 
 ## PO6-16: run to / hold the push slot near `t` (d = flat distance to it). False when there is no slot (the
@@ -316,7 +386,9 @@ func _find_push_slot(t: Node3D) -> Vector3:
 	var taken: Array[Vector3] = _other_push_slots()
 	if _push_bad_slot != Vector3.INF:
 		taken.append(_push_bad_slot)
-	var base: float = float(_npc.get_instance_id() % 8) * TAU / 8.0
+	# X-5: the start angle comes from the net id (spawn order, the same every run of a seed). It was the instance id,
+	# which shifts with every object allocated before (a batch run vs one test), so the push differed between runs.
+	var base: float = float(posmod(_npc.net_id, 8)) * TAU / 8.0
 	var best: Vector3 = Vector3.INF
 	var best_score: float = INF
 	for r: float in tweak.assault_slot_radii_m:

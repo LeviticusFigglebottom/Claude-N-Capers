@@ -9,5 +9,5 @@ bag_model = ExtResource("2_bag")
 id = &"loot.painting_lantern_bearer"
 display_name = "The Lantern Bearer"
 weight = 0
-value = 2000
+value = 8000
 conceals = false

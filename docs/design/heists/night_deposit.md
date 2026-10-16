@@ -551,7 +551,7 @@ Each variable changes a decision.
 
 ## HeistDef (proposed data, `night_deposit_def.tres`)
 `id night_deposit`, display "Nightfall Depository" (D-117), contact `contact.accountant`, mode STEALTH_OR_LOUD,
-base_payout proposed **$90,000** (lead/B to confirm), loot `[loot.cash, loot.cash_bricks,
+base_payout **$26,000** (D-120), loot `[loot.cash, loot.cash_bricks,
 loot.small_valuables]` (B to confirm ids), escape_options `[van, boat]`, music_track `night_deposit`.
 
 ## Requests (to the lead)
