@@ -119,15 +119,24 @@ static func apply(npc: NpcBase, anchor: Vector3, dir: Vector3) -> void:
 	npc.set_corpse_hitbox(Transform3D(Basis(x, Vector3.UP, z), anchor + Vector3.UP * (box.y * 0.5)), box)
 
 
-## Move `npc`'s root to `pos`, its visual staying where it is in the world.
+## Move `npc`'s root to `pos`, its visual and any carried BulwarkShield (it drops where it stood, L4.5) staying
+## where they are in the world.
 static func move_root(npc: NpcBase, pos: Vector3) -> void:
 	if npc.global_position.is_equal_approx(pos):
 		return
-	var vis: Node3D = npc.visual_root
-	var vg: Transform3D = vis.global_transform if vis != null and vis.is_inside_tree() else Transform3D.IDENTITY
+	var keep: Array[Node3D] = []
+	if npc.visual_root != null:
+		keep.append(npc.visual_root)
+	for c: Node in npc.get_children():
+		if c is BulwarkShield:
+			keep.append(c as Node3D)
+	var xf: Array[Transform3D] = []
+	for n: Node3D in keep:
+		xf.append(n.global_transform if n.is_inside_tree() else Transform3D.IDENTITY)
 	npc.global_position = pos
-	if vis != null and vis.is_inside_tree():
-		vis.global_transform = vg
+	for i: int in keep.size():
+		if keep[i].is_inside_tree():
+			keep[i].global_transform = xf[i]
 
 
 ## Net: the replicated anchor ([] = none yet).
