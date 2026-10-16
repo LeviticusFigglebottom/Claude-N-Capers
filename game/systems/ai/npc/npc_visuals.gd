@@ -100,7 +100,13 @@ static func prop_scene(npc: NpcBase, prop: String) -> PackedScene:
 static func _pick(npc: NpcBase, ids: Variant) -> PackedScene:
 	if not (ids is Array) or (ids as Array).is_empty():
 		return null
-	var arr: Array = ids as Array
+	# D-115: ids whose scene is not delivered yet (a cast entry ahead of ENV D's round) are skipped, not a miss.
+	var arr: Array = []
+	for id: Variant in ids as Array:
+		if _load(scene_path(String(id))) != null:
+			arr.append(id)
+	if arr.is_empty():
+		return null
 	var i: int = absi(hash(String(npc.name))) % arr.size()
 	return _load(scene_path(String(arr[i])))
 

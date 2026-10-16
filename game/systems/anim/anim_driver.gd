@@ -56,7 +56,7 @@ const HINT_CLIPS: Dictionary = {
 	# Brain / patrol-point aliases.
 	&"phone": &"phone_call", &"call": &"phone_call", &"sit": &"sit_chair",
 	&"queue": &"idle", &"lean": &"lean_wall", &"check_door": &"investigate_look", &"down": &"lie_down",
-	&"cuff": &"interact_low",
+	&"cuff": &"interact_low", &"look": &"investigate_look", &"desk": &"desk_work",
 }
 ## Clips that win over locomotion (the body holds a pose).
 const POSE_CLIPS: Array[StringName] = [
@@ -134,6 +134,8 @@ var player: AnimationPlayer = null
 var rig: Node3D = null
 ## Clip currently requested (without the library prefix), &"" before the first frame.
 var clip: StringName = &""
+## D-115: hand props attached for the playing clip (HandProps, e.g. ["phone"] while phone_call plays).
+var hand_props: PackedStringArray = PackedStringArray()
 ## Crossfade (s) used for the last clip change (0 for the first clip).
 var last_blend_s: float = -1.0
 ## &"pistol" or &"rifle": aim/fire/reload clip family.
@@ -768,6 +770,7 @@ func _apply(want: StringName, speed: float, tw: AnimTweak) -> void:
 			player.seek(0.0, true)
 		clip = want
 		_restart = false
+		hand_props = HandProps.sync(rig, StringName(full.get_slice("/", 1)))  # D-115 (characters.md v1.16)
 	player.speed_scale = speed
 
 
