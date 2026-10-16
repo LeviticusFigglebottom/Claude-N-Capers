@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="AchievementDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://content/defs/achievement_def.gd" id="1_ach"]
+
+[resource]
+script = ExtResource("1_ach")
+id = &"achievement.sl_every_page"
+name_key = &"achievement.sl_every_page.name"
+desc_key = &"achievement.sl_every_page.desc"
+condition = {"event": &"heist_completed", "heist": &"shadow_ledger", "objectives_completed": [&"study_safe", &"paintings", &"archive_safe"], "loot_all": [&"loot.ledger_laptop", &"loot.ledger_books", &"loot.cash"], "loot_min": {&"loot.ledger_drives": 3, &"loot.painting": 2}, "all_loot_secured": true, "count": 1}
+unlock = &""
+order = 732
+category = &"shadow_ledger"
+rewards = Array[StringName]([&"mask_pattern.starburst"])
+unlocks = Array[StringName]([])
+requires_facts = Array[StringName]([])

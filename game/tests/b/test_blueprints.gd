@@ -87,11 +87,13 @@ static func _in_shape(bp: PreplanBlueprint, pos: Vector2, fl: int, kinds: Array[
 	return false
 
 
-## Lead r222: point labels never sit on another label or on a marker (every heist, every floor, 1920x1080 view).
+## Lead r222: point labels never sit on another label, a marker, the scale bar or the north arrow (every heist,
+## every floor, the 1080p and the 720p view).
 func test_point_labels_do_not_collide() -> void:
-	for heist: StringName in [&"glasshouse", &"night_deposit", &"shadow_ledger", &"dockside_burn", &"gallery_night"]:
+	for job: Array in _label_jobs():
+		var heist: StringName = job[0]
 		var view: BlueprintView = BlueprintView.new()
-		view.size = Vector2(1130, 730)
+		view.size = job[1]
 		add_child(view)
 		view.setup(PreplanBoard.build(heist, Enums.Difficulty.ROUTINE))
 		for fl: int in range(view.board.blueprint.floor_count()):
@@ -106,10 +108,22 @@ func test_point_labels_do_not_collide() -> void:
 				var l: Label = view.marker_labels[pid] as Label
 				if l.visible and b.visible:
 					shown.append(Rect2(l.position, l.size))
+			var furniture: Array[Rect2] = view._furniture_rects()
 			for i: int in range(shown.size()):
+				for f: Rect2 in furniture:
+					assert_false(shown[i].intersects(f), "%s floor %d @%s: label %d on the scale bar / north arrow"
+							% [heist, fl, view.size, i])
 				for m: Rect2 in marks:
 					assert_false(shown[i].intersects(m.grow(-1.0)), "%s floor %d: label %d over a marker" % [heist, fl, i])
 				for j: int in range(i + 1, shown.size()):
 					assert_false(shown[i].intersects(shown[j].grow(-1.0)), "%s floor %d: labels %d/%d collide" % [heist, fl, i, j])
 		view.queue_free()
 		await wait_frames(1)
+
+
+func _label_jobs() -> Array[Array]:
+	var out: Array[Array] = []
+	for heist: StringName in [&"glasshouse", &"night_deposit", &"shadow_ledger", &"dockside_burn", &"gallery_night"]:
+		for sz: Vector2 in [Vector2(1130, 730), Vector2(755, 487)]:
+			out.append([heist, sz])
+	return out

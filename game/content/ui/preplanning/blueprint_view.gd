@@ -16,6 +16,8 @@ const PAD: float = 28.0
 const ZONE_FONT: int = 16
 ## Clear pixels kept between two markers (_separate_markers).
 const MARKER_GAP: float = 4.0
+## Length of the scale bar in meters (_draw_scale_bar, _furniture_rects).
+const SCALE_BAR_M: float = 10.0
 
 var board: PreplanBoard
 var tweak: PreplanTweak
@@ -133,7 +135,10 @@ func _build_markers() -> void:
 ## and with the drawn shape edges (light, so a label does not straddle a street edge) and takes the cheapest. A label
 ## whose every spot covers a marker is hidden and shows while its marker is focused or hovered.
 func _layout_markers() -> void:
+	# Zone names are soft (a label may cover one when nothing else is free); the scale bar, the north arrow and
+	# labels already placed are hard: a label with no spot clear of them hides (crowded, shown on hover).
 	var taken: Array[Rect2] = _zone_label_rects()
+	var hard: Array[Rect2] = _furniture_rects()
 	for pid: Variant in markers:
 		var p: Dictionary = board.blueprint.point(StringName(pid))
 		var b: Button = markers[pid] as Button
@@ -171,6 +176,10 @@ func _layout_markers() -> void:
 			for t: Rect2 in taken:
 				if t.intersects(r):
 					cost += 1000.0 + t.intersection(r).get_area()
+			for hr: Rect2 in hard:
+				if hr.intersects(r):
+					blocked = true
+					cost += 1e5
 			for e: Rect2 in edges:
 				if e.intersects(r):
 					cost += 1.0 + e.intersection(r).get_area() * 0.1
@@ -179,7 +188,8 @@ func _layout_markers() -> void:
 				best = spot
 				best_blocked = blocked
 		l.position = best
-		taken.append(Rect2(best, w))
+		if not best_blocked:
+			hard.append(Rect2(best, w))
 		l.set_meta(&"crowded", best_blocked)
 		l.visible = not best_blocked
 	queue_redraw()
@@ -245,6 +255,25 @@ func _zone_label_rects() -> Array[Rect2]:
 		var ts: Vector2 = font.get_string_size(UiText.t(key).to_upper(), HORIZONTAL_ALIGNMENT_LEFT, -1, ZONE_FONT)
 		if ts.x <= vr.size.x - 8.0:
 			out.append(Rect2(vr.position + Vector2(6, 4), ts))
+	return out
+
+
+## Rects of the scale bar (with its "10 m") and the north arrow _draw_scale_bar() prints: labels keep off them
+## (DB quay capture: "Pontoon: by launch" sat on the scale text).
+func _furniture_rects() -> Array[Rect2]:
+	var out: Array[Rect2] = []
+	if board == null or size == Vector2.ZERO:
+		return out
+	var s: float = float(_transform()["scale"])
+	var area: Rect2 = Rect2(world_to_view(board.blueprint.bounds.position), board.blueprint.bounds.size * s)
+	var font: Font = get_theme_default_font()
+	var bar: float = SCALE_BAR_M * s
+	var o: Vector2 = Vector2(area.end.x - bar - 12.0, area.end.y - 14.0)
+	var tw: float = font.get_string_size(UiText.t(&"ui.preplan.scale", {"m": int(SCALE_BAR_M)}),
+			HORIZONTAL_ALIGNMENT_LEFT, -1, 16).x
+	out.append(Rect2(o + Vector2(-2, -28), Vector2(maxf(bar, tw) + 4.0, 32)))
+	var n: Vector2 = Vector2(maxf(area.position.x - 30.0, 16.0), area.position.y + 30.0)
+	out.append(Rect2(n + Vector2(-10, -16), Vector2(24, 54)))
 	return out
 
 
@@ -352,7 +381,7 @@ func _draw_grid(area: Rect2) -> void:
 
 
 func _draw_scale_bar(area: Rect2, s: float, font: Font) -> void:
-	var meters: float = 10.0
+	var meters: float = SCALE_BAR_M
 	var o: Vector2 = Vector2(area.end.x - meters * s - 12.0, area.end.y - 14.0)
 	draw_line(o, o + Vector2(meters * s, 0), tweak.line_color, 3.0)
 	draw_line(o + Vector2(0, -6), o + Vector2(0, 0), tweak.line_color, 2.0)

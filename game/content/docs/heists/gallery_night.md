@@ -14,28 +14,29 @@ heist is hidden from the menus, the Board and the broker (QB-55, D-049; `test_p5
 | Accent | lilac `#B79CF2` ◇ (raw WCAG AA for text: 5.6:1 or better on our panels) | `data/ui/heist_accents.tres` |
 | Heist list | `solo_ai_teammates` 3 | `data/ui/heist_list.tres` |
 | Strings | `heist.gallery_night.name` / `.subtitle` / `.brief` | `data/strings/strings.csv` |
-| Base payout (`HeistDef.base_payout`, unscaled) | **$105,000 placeholder** ◇ | this doc (the def carries it) |
+| Base payout (`HeistDef.base_payout`, unscaled) | **$57,000** (D-120) | D-120 (the def carries it) |
 
 ## Contact: Odile Vance
 `game_overview.md` names Vance the fence for "jewelry/art jobs". A gallery of canvases is her job;
 Glasshouse is the precedent.
 
 ## Payout ◇
-PD2's Framing Frame pays above a plain small store and below Big Bank. Ours sits between Night
-Deposit ($90,000) and Shadow Ledger ($110,000): $105,000.
+D-120 (economy pass): the bags carry most of a run, as in PD2. Gallery Night's contract is $57,000, under
+Shadow Ledger's ($70,000, the objective heist) and over Night Deposit's ($26,000); with its canvases and
+studies a full clear pays the most of the five (≈ 53% bags).
 
 | Routine | Tense | Hazardous | Brutal | Lethal | Cataclysm |
 |---|---|---|---|---|---|
-| $105,000 | $210,000 | $273,000 | $441,000 | $756,000 | $966,000 |
+| $57,000 | $114,000 | $148,200 | $239,400 | $410,400 | $524,400 |
 
 ## Loot (proposed for ENV C)
 | id | Weight | Base | Role |
 |---|---|---|---|
-| `loot.painting_tidewater_saint` | LIGHT | $1,300 | canvas |
-| `loot.painting_widow_in_blue` | LIGHT | $1,500 | canvas |
-| `loot.painting_salt_orchard` | LIGHT | $1,700 | canvas |
-| `loot.painting_lantern_bearer` | LIGHT | $2,000 | centrepiece |
-| `loot.painting_study` | LIGHT | $1,100 | Calloway's study for the centrepiece (D-075) |
+| `loot.painting_tidewater_saint` | LIGHT | $5,200 | canvas |
+| `loot.painting_widow_in_blue` | LIGHT | $6,000 | canvas |
+| `loot.painting_salt_orchard` | LIGHT | $6,800 | canvas |
+| `loot.painting_lantern_bearer` | LIGHT | $8,000 | centrepiece |
+| `loot.painting_study` | LIGHT | $2,800 | Calloway's study for the centrepiece (D-075; D-081's $700 ×4 in the D-115 balance pass) |
 | `loot.small_valuables` (no def) | — | prefab | office and gift-shop small loot (S10.3) |
 
 PD2 cuts canvases out of the frame and carries them rolled, as a light bag. Shadow Ledger's framed

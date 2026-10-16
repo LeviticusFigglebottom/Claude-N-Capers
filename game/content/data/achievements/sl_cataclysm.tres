@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="AchievementDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://content/defs/achievement_def.gd" id="1_ach"]
+
+[resource]
+script = ExtResource("1_ach")
+id = &"achievement.sl_cataclysm"
+name_key = &"achievement.sl_cataclysm.name"
+desc_key = &"achievement.sl_cataclysm.desc"
+condition = {"event": &"heist_completed", "heist": &"shadow_ledger", "difficulty_min": 5, "count": 1}
+unlock = &""
+order = 735
+category = &"shadow_ledger"
+rewards = Array[StringName]([&"mask_base.skull"])
+unlocks = Array[StringName]([])
+requires_facts = Array[StringName]([])

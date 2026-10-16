@@ -765,6 +765,7 @@ func _spawn_in_heist_ui() -> void:
 	heist_radio = ContactRadio.spawn(_in_heist, _heist_id)
 	var pd: PaydayScreen = PAYDAY_SCENE.instantiate() as PaydayScreen
 	pd.listen_heist_ended = true
+	pd.start_fact_log()  # D-115: before the launch, so the mission's first objective facts are seen
 	pd.is_pro = is_pro
 	pd.profile_slot = profile_slot
 	pd.visible = false

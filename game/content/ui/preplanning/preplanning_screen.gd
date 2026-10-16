@@ -419,7 +419,7 @@ func _fill_list(ids: Array[StringName]) -> void:
 func _refresh_row(b: Button, id: StringName) -> void:
 	var a: PreplanAssetDef = board.asset(id)
 	var args: Dictionary = {
-		"name": UiText.t(UiText.item_key(id)), "cost": UiText.money(board.cost_of(id)), "favors": a.favors,
+		"name": UiText.t(UiText.item_key(id)), "cost": UiText.money(board.cost_of(id)), "favors": favor_text(a.favors),
 	}
 	var key: StringName = &"ui.preplan.row"
 	if is_selected(id):
@@ -429,6 +429,11 @@ func _refresh_row(b: Button, id: StringName) -> void:
 	b.text = UiText.t(key, args)
 	var ok: bool = is_selected(id) or _can_take(id) == PreplanPlan.OK
 	b.modulate = Color(1, 1, 1) if ok else Color(1, 1, 1, 0.5)
+
+
+## "1 favor" / "3 favors".
+static func favor_text(n: int) -> String:
+	return UiText.t(&"ui.preplan.favor_count.one") if n == 1 else UiText.t(&"ui.preplan.favor_count.many", {"n": n})
 
 
 func _can_take(id: StringName) -> StringName:
@@ -447,14 +452,14 @@ func _show_detail(id: StringName) -> void:
 	for t: StringName in a.tags:
 		tags.append(UiText.t(StringName("ui.preplan.tag.%s" % t)))
 	var desc: String = UiText.t(StringName("item.%s.desc" % id))
-	detail_label.text = "%s  [%s]" % [desc, ", ".join(tags)] if not tags.is_empty() else desc
+	detail_label.text = desc if tags.is_empty() else "%s\n%s" % [desc, UiText.t(&"ui.preplan.tags", {"tags": ", ".join(tags)})]
 	var r: StringName = PreplanPlan.OK if is_selected(id) else _can_take(id)
 	reason_label.text = "" if r == PreplanPlan.OK else _reason_text(r, id)
 
 
 func _reason_text(r: StringName, id: StringName) -> String:
 	return UiText.t(StringName("ui.preplan.reason.%s" % r), {
-		"cost": UiText.money(board.cost_of(id)), "favors": board.favors_of(id),
+		"cost": UiText.money(board.cost_of(id)), "favors": favor_text(board.favors_of(id)),
 		"left": plan.favors_left(), "cash": UiText.money(cash_left()),
 	})
 

@@ -9,5 +9,5 @@ bag_model = ExtResource("2_bag")
 id = &"loot.painting_tidewater_saint"
 display_name = "The Tidewater Saint"
 weight = 0
-value = 1300
+value = 5200
 conceals = false

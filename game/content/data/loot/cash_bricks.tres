@@ -9,5 +9,5 @@ bag_model = ExtResource("2_bag")
 id = &"loot.cash_bricks"
 display_name = "Cash Bricks"
 weight = 1
-value = 1600
+value = 8000
 conceals = false

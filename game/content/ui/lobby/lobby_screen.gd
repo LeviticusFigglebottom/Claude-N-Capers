@@ -769,7 +769,11 @@ func _refresh_slot(w: Dictionary, view: Dictionary) -> void:
 	else:
 		panel.remove_theme_stylebox_override(&"panel")
 	panel.modulate.a = 1.0 if human else 0.7
-	(w["kick"] as Button).visible = session.state.is_host and human and not bool(view["is_local"])
+	var kick: Button = w["kick"] as Button
+	kick.visible = session.state.is_host and human and not bool(view["is_local"])
+	# r223 720p co-op capture: Kick made the name row 9 px taller on kickable cards only, so their rows sat
+	# below the other cards'; every card's name row keeps the Kick height (themed by now, so it measures).
+	(kick.get_parent() as Control).custom_minimum_size.y = kick.get_combined_minimum_size().y
 
 
 ## D-073: the slot's heister in its accent; a pick lost to an earlier claim shows what was wanted.

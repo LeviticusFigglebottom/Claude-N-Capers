@@ -9,5 +9,5 @@ bag_model = ExtResource("2_bag")
 id = &"loot.ledger_books"
 display_name = "Ledger Books"
 weight = 1
-value = 2400
+value = 8000
 conceals = false

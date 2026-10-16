@@ -26,7 +26,9 @@ const STATE_EVENTS: Array[StringName] = [CAREER_STAT, NOTORIETY_REACHED, HEISTS_
 const EVENTS: Array[StringName] = [HEIST_COMPLETED, HEIST_FAILED, STASH_EARNED, LEVEL_REACHED, CAREER_STAT,
 	NOTORIETY_REACHED, HEISTS_ALL]
 ## Screen categories, in display order (strings `ui.achievements.category.<id>`).
-const CATEGORIES: Array[StringName] = [&"career", &"heists", &"stealth", &"loud", &"combat", &"wealth", &"notoriety"]
+## D-115: one category per heist (id = heist id) after the general heist list.
+const CATEGORIES: Array[StringName] = [&"career", &"heists", &"glasshouse", &"night_deposit", &"shadow_ledger",
+	&"dockside_burn", &"gallery_night", &"stealth", &"loud", &"combat", &"wealth", &"notoriety"]
 
 
 ## Every def in display order (order, then id).
@@ -48,15 +50,17 @@ static func is_unlocked(p: PlayerProfile, id: StringName) -> bool:
 	return bool((p.achievements.get(id, {}) as Dictionary).get("unlocked", false)) if p != null else false
 
 
-## The payday hook: HeistResult + PayoutCalculator output -> newly unlocked achievement ids.
-static func on_payday(p: PlayerProfile, result: Dictionary, payout: Dictionary, is_pro: bool = false) -> Array[StringName]:
+## The payday hook: HeistResult + PayoutCalculator output -> newly unlocked achievement ids. `facts` is the
+## in-heist log (HeistFacts.snapshot(), D-115); {} = none, so every fact condition fails closed.
+static func on_payday(p: PlayerProfile, result: Dictionary, payout: Dictionary, is_pro: bool = false,
+		facts: Dictionary = {}) -> Array[StringName]:
 	var out: Array[StringName] = []
 	if p == null:
 		return out
 	var ctx: Dictionary = {
 		"heist": StringName(result.get("heist_id", &"")), "difficulty": int(result.get("difficulty", 0)),
 		"stealth": bool(result.get("stealth", false)), "pro": is_pro,
-		"stash": int(payout.get("stash", 0)), "level": p.level,
+		"stash": int(payout.get("stash", 0)), "level": p.level, "result": result, "facts": facts,
 	}
 	var success: bool = bool(payout.get("success", result.get("success", false)))
 	out.append_array(record(p, HEIST_COMPLETED if success else HEIST_FAILED, ctx))
@@ -66,8 +70,9 @@ static func on_payday(p: PlayerProfile, result: Dictionary, payout: Dictionary, 
 	return out
 
 
-## Applies one event to every matching achievement. `ctx` keys: heist, difficulty, stealth, pro (heist
-## events), stash (stash_earned), level (level_reached). Returns the ids unlocked by it.
+## Applies one event to every matching achievement. `ctx` keys: heist, difficulty, stealth, pro, result
+## (the HeistResult), facts (HeistFacts.snapshot()) (heist events), stash (stash_earned), level
+## (level_reached). Returns the ids unlocked by it.
 static func record(p: PlayerProfile, event: StringName, ctx: Dictionary) -> Array[StringName]:
 	var out: Array[StringName] = []
 	for a: AchievementDef in all():
@@ -98,7 +103,8 @@ static func matches(a: AchievementDef, ctx: Dictionary) -> bool:
 	ok = ok and int(ctx.get("difficulty", 0)) >= int(c.get("difficulty_min", 0))
 	ok = ok and not (bool(c.get("stealth", false)) and not bool(ctx.get("stealth", false)))
 	ok = ok and not (bool(c.get("loud", false)) and bool(ctx.get("stealth", false)))
-	return ok and not (bool(c.get("pro", false)) and not bool(ctx.get("pro", false)))
+	ok = ok and not (bool(c.get("pro", false)) and not bool(ctx.get("pro", false)))
+	return ok and HeistConditions.passes(c, ctx.get("result", {}) as Dictionary, ctx.get("facts", {}) as Dictionary)
 
 
 ## Target of `a`: its count, or for heists_all with count 0 the number of offered heists.

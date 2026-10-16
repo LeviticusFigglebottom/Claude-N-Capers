@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="MusicCatalogTweak" format=3]
 
-; B5-03 STUB track list: MusicCatalog reads it only while ENV C's MusicTrackTable (table_path, D-062)
-; does not exist. The stub is replaced by C's table; keep ids in step with HeistDef.music_track.
+; B5-03 fallback track list: MusicCatalog reads it only when ENV C's MusicTrackTable (table_path, D-062, on trunk since round 221)
+; is missing (tests, stripped builds). Kept in step with C's table: same ids, stem dirs and unlocks.
 
 [ext_resource type="Script" path="res://content/audio/music_catalog_tweak.gd" id="1_cat"]
 [ext_resource type="Script" path="res://content/audio/music_stub_track.gd" id="2_trk"]
@@ -9,28 +9,28 @@
 [sub_resource type="Resource" id="trk_glasshouse"]
 script = ExtResource("2_trk")
 id = &"glasshouse"
-stems = "res://world/audio/music/glasshouse/glasshouse.tres"
+stems = "res://world/audio/music/glasshouse"
 default_for_heists = Array[StringName]([&"glasshouse"])
 unlock = &""
 
 [sub_resource type="Resource" id="trk_night_deposit"]
 script = ExtResource("2_trk")
 id = &"night_deposit"
-stems = "res://world/audio/music/night_deposit/night_deposit.tres"
+stems = "res://world/audio/music/night_deposit"
 default_for_heists = Array[StringName]([&"night_deposit"])
 unlock = &""
 
 [sub_resource type="Resource" id="trk_dockside_burn"]
 script = ExtResource("2_trk")
 id = &"dockside_burn"
-stems = "res://world/audio/music/dockside_burn/dockside_burn.tres"
+stems = "res://world/audio/music/dockside_burn"
 default_for_heists = Array[StringName]([&"dockside_burn"])
 unlock = &""
 
 [sub_resource type="Resource" id="trk_shadow_ledger"]
 script = ExtResource("2_trk")
 id = &"shadow_ledger"
-stems = "res://world/audio/music/shadow_ledger/shadow_ledger.tres"
+stems = "res://world/audio/music/shadow_ledger"
 default_for_heists = Array[StringName]([&"shadow_ledger"])
 unlock = &""
 
@@ -44,21 +44,21 @@ unlock = &""
 [sub_resource type="Resource" id="trk_vault_hymn"]
 script = ExtResource("2_trk")
 id = &"vault_hymn"
-stems = "res://world/audio/music/vault_hymn/vault_hymn.tres"
+stems = "res://world/audio/music/vault_hymn"
 default_for_heists = Array[StringName]([])
 unlock = &"unlock.music.vault_hymn"
 
 [sub_resource type="Resource" id="trk_long_con"]
 script = ExtResource("2_trk")
 id = &"long_con"
-stems = "res://world/audio/music/long_con/long_con.tres"
+stems = "res://world/audio/music/long_con"
 default_for_heists = Array[StringName]([])
 unlock = &"unlock.music.long_con"
 
 [sub_resource type="Resource" id="trk_last_call"]
 script = ExtResource("2_trk")
 id = &"last_call"
-stems = "res://world/audio/music/last_call/last_call.tres"
+stems = "res://world/audio/music/last_call"
 default_for_heists = Array[StringName]([])
 unlock = &"unlock.music.last_call"
 

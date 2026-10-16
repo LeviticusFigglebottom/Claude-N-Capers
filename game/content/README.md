@@ -135,6 +135,8 @@ defaults `mod.p9_stock_barrel` etc. if needed), `melee.folding_knife`, `armor.ta
   save), `record(profile, event, ctx)`, `progress/is_unlocked`. State: `PlayerProfile.achievements` (save v5).
   Screen: `AchievementsScreen` (`ui/achievements/`), from the hub profile panel (`HubMenu.achievements_requested`
   -> `MenuFlow._open_achievements()`); payday lists unlocks (`ui.results.achievement_unlocked`).
+  D-115: 28 per-heist achievements (one category per heist) with run conditions (`HeistConditions`: HeistResult
+  fields + the in-heist fact log `HeistFacts` the in-heist PaydayScreen keeps and passes as `on_payday(..., facts)`).
 * **Career stats (B7-01).** `Career` (`progression/career.gd`, static): `record(profile, result, payout, crew_slot)`
   (PaydayScreen._apply, local slot, before `Achievements.on_payday`), `add_spent(profile, amount, offshore)`
   (workshop, pre-planning incl. refunds, Notoriety cost, Board broker), readers `total(p, key)` (-1 = never
