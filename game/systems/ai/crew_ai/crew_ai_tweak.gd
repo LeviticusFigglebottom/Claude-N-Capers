@@ -34,6 +34,27 @@ extends Resource
 ## A following AI stops within this of its own formation slot (m) ◇.
 @export var follow_slot_arrive_m: float = 0.8
 
+@export_group("Give way (PO6-15)")
+## PD2 bots step aside when a player walks into them (P's ND loud run: Crew1 body-blocked the player in the B5
+## basement corridor). A human moving faster than give_way_min_speed (m/s) toward an idle / holding / following
+## bot within max(give_way_radius_m, speed x give_way_lookahead_s) ahead, with the bot within
+## give_way_path_half_width_m of the human's line, makes the bot sidestep ◇.
+@export var give_way_radius_m: float = 1.2
+@export var give_way_lookahead_s: float = 0.5
+@export var give_way_min_speed: float = 0.5
+@export var give_way_path_half_width_m: float = 0.8
+## The sidestep target: this far (m) off the human's line, on the side with free navmesh ◇.
+@export var give_way_lateral_m: float = 0.95
+## Stand aside this long (s) after the human's path is clear, then resume ◇.
+@export var give_way_hold_s: float = 1.0
+## A bot already off the human's line by more than 5 cm prefers to keep stepping that way: that side scores this much
+## more free room (m) ◇, so it never crosses in front of the human. An exact tie rolls on GameRng &"crew_ai_give_way".
+@export var give_way_keep_side_bias_m: float = 0.3
+## Follow formation: a moving leader's slot within this angle (deg) of its heading, in a passage narrower than
+## formation_narrow_width_m (navmesh, m), is mirrored behind the leader (bots do not lead into a corridor) ◇.
+@export var formation_ahead_cone_deg: float = 60.0
+@export var formation_narrow_width_m: float = 2.6
+
 @export_group("Cover (L6.1)")
 ## Cover points (TacticalPoint COVER) considered must be within this distance of the leader (m) ◇.
 @export var cover_search_radius_m: float = 8.0

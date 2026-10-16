@@ -1,5 +1,5 @@
-## Gallery Night (Halberd Gallery) mission flow: G1 STUB. Owner: ENV C (GN-C1, map + stub); ENV A completes it (GN-A1,
-## next_heist §3b.6; ENV A co-owns game/world/heists/**). Design: docs/design/heists/gallery_night.md §Objectives,
+## Gallery Night (Halberd Gallery) mission flow. Owner: ENV A (mission scripts, owners.json); ENV C built the G1 stub
+## (GN-C1); ENV A completed it (GN-A1, GN-8). Design: docs/design/heists/gallery_night.md §Objectives,
 ## Build rulings B3 (no stealth-only fail) and B5 (marker_tags); data contract: game/content/_drafts/gallery_night/
 ## README.md (objective table, rare-event effect keys). Contract heist_map.md §6: only the HeistMission API, EventBus
 ## and nodes of this map (found by objective_tag).
@@ -10,6 +10,9 @@
 ## `escape_eta_s`. Fail reasons: custody / abort only (B3; HeistRuntime ends the heist, this script never fails it).
 ## GN-A1 (ENV A): last call (zones, guests out, relocks), the curator's carried card, frame sensors, the lockdown
 ## (shutters BARRED, reader dead, loud hack), rare-event spawns, asset.intel_list and Mercer's sweep-laser hint.
+## GN-8 / QC-57: the Vaultline couriers (vaultline_early) walk to the centrepiece slot, take the Lantern Bearer as an
+## NPC-carried bag and carry it to the AS rack, then walk back to LD (B3: moves, never destroys). Killed, intimidated
+## or fighting, the carrier drops it where he stands; at an empty slot he radios the alarm.
 ## D-117 §6: every written mission line is said here, each at its moment (the VO_* constants and their handlers).
 extends HeistMission
 
@@ -37,6 +40,8 @@ const LIST_LOOT: Array[StringName] = [&"loot.painting_salt_orchard", &"loot.pain
 ## Loud hack (doc §Loud): 120 s, 2-3 interruptions (stealth 60 s / 1-2 is the map's hack_terminal).
 const HACK_LOUD_S: float = 120.0
 const HACK_LOUD_INTERRUPTIONS: Vector2i = Vector2i(2, 3)
+## Stealth card steps skipped by the lockdown (B's GN audit): the loud hack / vault drill replace them.
+const LOCKDOWN_SKIPPED: Array[StringName] = [&"keycard", &"treasury", &"art_store"]
 const LAST_CALL_WARNING_S: float = 60.0
 const GUESTS_GONE_S: float = 60.0
 ## find_canvases: radius of the "walk within 4 m" check around each active list slot (doc §Objectives 2).
@@ -103,6 +108,34 @@ const PERCH_CONSERVATORY: NodePath = ^"Tactical/SniperConservatory"
 ## Rare-event timed spawns (QC-25): guards per spawn; `after` &"last_call" counts from last call.
 const TIMED_SPAWN_COUNT: int = 2
 const AFTER_LAST_CALL: StringName = &"last_call"
+## QC-57 Vaultline couriers: the rare event's timer id, the poll period of their errand (s), how near a stop counts as
+## reached (m), the escort's side offset from the carrier's stops (m), the AS rack they carry the canvas to (the
+## cp_store slot: its canvas UsePoint in slot space; the slot node stays when the slot is not rolled) and the runtime
+## tag of the moved canvas (the centrepiece marker follows the bag, QC-60).
+const RARE_VAULTLINE_ID: StringName = &"rare_vaultline_early"
+const COURIER_TICK_S: float = 0.5
+const COURIER_REACH_M: float = 1.2
+const COURIER_ESCORT_M: float = 1.0
+const STORE_SLOT_PATH: String = "Variants/Group_centrepiece/Slot_cp_store"
+const STORE_DROP_LOCAL: Vector3 = Vector3(0.9, 0.0, -0.06)
+const TAG_LANTERN_MOVED: StringName = &"canvas_lantern_moved"
+## The couriers' spawn tag, and the doors on their LD -> slot -> AS walk the map does not authorise them on yet (the
+## KEYCARD LD art door; TR and the AS vault door list them already): authorised when they walk in.
+const COURIER_SPAWN_TAG: StringName = &"guard_vaultline"
+## Courier errand states (`courier_state`): walking to the slot, carrying to AS, the canvas put down on the AS rack
+## (`stored`), the carrier stopped (killed / intimidated / fighting: `intercepted`), the slot found empty (`alarm`).
+const COURIER_TO_SLOT: StringName = &"to_slot"
+const COURIER_CARRYING: StringName = &"carrying"
+const COURIER_STORED: StringName = &"stored"
+const COURIER_INTERCEPTED: StringName = &"intercepted"
+const COURIER_ALARM: StringName = &"alarm"
+const COURIER_CAUSE_EMPTY: StringName = &"canvas_missing"
+
+## QC-57: the Vaultline couriers (the carrier first once he has the canvas), their errand state (&"" before they
+## arrive), the canvas they carry or put down, and where each walked in (they walk back there).
+var couriers: Array[NpcBase] = []
+var courier_state: StringName = &""
+var courier_bag: LootBag = null
 
 var _escape: StringName = &"mews"
 var _lantern_secured: bool = false
@@ -118,6 +151,8 @@ var _extra_interruptions: int = 0
 var _after_last_call: Array[Array] = []
 ## D-117: one-shot mission lines already said this heist.
 var _said: Dictionary[StringName, bool] = {}
+## QC-57: where each courier walked in (spawn order; they walk back there after the AS rack).
+var _courier_home: Array[Vector3] = []
 ## B VO coverage: net_ids of lockers / list canvases / studies taken (the `lockers` and `extras` completions).
 var _taken: Dictionary[int, bool] = {}
 
@@ -427,6 +462,148 @@ func _on_timed_spawn(id: StringName, tag: StringName) -> void:
 	var line: Variant = RARE_SPAWN_VO.get(StringName(String(id).trim_prefix("rare_")))
 	if line != null and not spawned.is_empty():
 		_say_once(StringName(line))
+	if id == RARE_VAULTLINE_ID:
+		_start_couriers(spawned)
+
+
+# --- Vaultline couriers (QC-57) --------------------------------------------------------------------
+
+## The couriers walk in: both head for the rolled centrepiece slot (the carrier's stop, the escort beside him).
+func _start_couriers(spawned: Array[Node]) -> void:
+	if courier_state != &"":
+		return
+	for n: Node in spawned:
+		if n is NpcBase:
+			couriers.append(n as NpcBase)
+			_courier_home.append((n as NpcBase).global_position)
+	var slot: LootSpawn = _lantern_slot()
+	if couriers.is_empty() or slot == null:
+		return
+	for d: Door in _doors(TAG_ART_DOOR, PATHS_ART_DOOR):
+		d.authorise_npc_tag(COURIER_SPAWN_TAG)
+	courier_state = COURIER_TO_SLOT
+	_couriers_walk(_stand_of(slot))
+	start_timer(&"courier_tick", COURIER_TICK_S, _courier_tick)
+
+
+## One errand step, every COURIER_TICK_S while the couriers walk to the slot or carry the canvas.
+func _courier_tick() -> void:
+	match courier_state:
+		COURIER_TO_SLOT:
+			_courier_at_slot()
+		COURIER_CARRYING:
+			_courier_carry()
+	if courier_state in [COURIER_TO_SLOT, COURIER_CARRYING]:
+		start_timer(&"courier_tick", COURIER_TICK_S, _courier_tick)
+
+
+func _courier_at_slot() -> void:
+	if _active_couriers().is_empty():
+		courier_state = COURIER_INTERCEPTED  # stopped on the way (killed / intimidated / loud): the canvas still hangs
+		return
+	var slot: LootSpawn = _lantern_slot()
+	var carrier: NpcBase = _first_courier(_stand_of(slot) if slot != null else _store_point())
+	if carrier == null:
+		return  # still walking
+	if slot == null or slot.remaining <= 0:
+		courier_state = COURIER_ALARM  # B3: the canvas is gone -> he radios it in (alarm, loud)
+		var brain: GuardBrain = _brain(carrier)
+		if brain != null:
+			brain.report_alarm(slot.global_position if slot != null else carrier.global_position, COURIER_CAUSE_EMPTY)
+		return
+	var mgr: LootManager = HeistRuntime.get_service(G.SVC_LOOT) as LootManager
+	var bag: LootBag = slot.take_for_npc() if mgr != null else null
+	if bag == null:
+		return
+	if not mgr.npc_carry(bag, carrier):
+		courier_state = COURIER_INTERCEPTED  # cannot carry it now: the bag stays at the slot, loose
+		return
+	courier_bag = bag
+	bag.objective_tag = TAG_LANTERN_MOVED
+	update_objective_data(&"centrepiece", {"marker_tags": [TAG_LANTERN_MOVED]})
+	courier_state = COURIER_CARRYING
+	couriers.erase(carrier)
+	couriers.push_front(carrier)  # the carrier leads; the escort walks beside his stops
+	_couriers_walk(_store_point())
+
+
+func _courier_carry() -> void:
+	if courier_bag == null or not is_instance_valid(courier_bag) or not courier_bag.is_npc_carried():
+		courier_state = COURIER_INTERCEPTED  # killed / intimidated / fighting: the canvas lies where he stood
+		return
+	var carrier: NpcBase = courier_bag.npc_carrier
+	if not _near(carrier.global_position, _store_point(), COURIER_REACH_M):
+		return
+	var mgr: LootManager = HeistRuntime.get_service(G.SVC_LOOT) as LootManager
+	if mgr != null:
+		mgr.npc_drop(carrier)
+	courier_state = COURIER_STORED  # the canvas is on the AS rack now (still there to steal, B3); back to LD
+	for i: int in range(couriers.size()):
+		var b: GuardBrain = _brain(couriers[i])
+		if b != null and i < _courier_home.size():
+			b.walk_to_post(_courier_home[i])
+
+
+## Each courier walks to `to`; the others stand COURIER_ESCORT_M apart to the side of the walk.
+func _couriers_walk(to: Vector3) -> void:
+	for i: int in range(couriers.size()):
+		var b: GuardBrain = _brain(couriers[i])
+		if b == null:
+			continue
+		var side: Vector3 = Vector3.ZERO
+		var dir: Vector3 = to - couriers[i].global_position
+		dir.y = 0.0
+		if i > 0 and dir.length() > 0.01:
+			side = dir.normalized().cross(Vector3.UP) * COURIER_ESCORT_M * float(i)
+		b.walk_to_post(to + side)
+
+
+## The first courier still on his errand standing within COURIER_REACH_M of `at` (same floor), else null.
+func _first_courier(at: Vector3) -> NpcBase:
+	for c: NpcBase in _active_couriers():
+		if _near(c.global_position, at, COURIER_REACH_M):
+			return c
+	return null
+
+
+## Couriers still on the errand: alive and not stopped (LootManager.NPC_DROP_STATES: intimidated, tied, fighting...).
+func _active_couriers() -> Array[NpcBase]:
+	var out: Array[NpcBase] = []
+	for c: NpcBase in couriers:
+		if is_instance_valid(c) and c.alive and not LootManager.NPC_DROP_STATES.has(int(c.alert_state)):
+			out.append(c)
+	return out
+
+
+static func _brain(npc: NpcBase) -> GuardBrain:
+	return npc.get_node_or_null(^"Brain") as GuardBrain if is_instance_valid(npc) else null
+
+
+static func _near(a: Vector3, b: Vector3, r: float) -> bool:
+	return Vector2(a.x - b.x, a.z - b.z).length() <= r and absf(a.y - b.y) <= 1.5
+
+
+## The rolled centrepiece LootSpawn (the one slot left after the variant strip), else null.
+func _lantern_slot() -> LootSpawn:
+	for n: Node in find_tagged(TAG_LANTERN):
+		if n is LootSpawn:
+			return n as LootSpawn
+	return null
+
+
+## Where to stand to take a hung canvas: its UsePoint (on the navmesh, heist_map.md §3), else the canvas itself.
+static func _stand_of(n: Node3D) -> Vector3:
+	var up: Node3D = n.get_node_or_null(^"UsePoint") as Node3D
+	return up.global_position if up != null else n.global_position
+
+
+## The AS rack the couriers carry the canvas to (STORE_DROP_LOCAL in the cp_store slot), else their walk-in point.
+func _store_point() -> Vector3:
+	var rt: HeistRuntime = HeistRuntime.of(self)
+	var slot: Node3D = rt.map.get_node_or_null(NodePath(STORE_SLOT_PATH)) as Node3D if rt != null and rt.map != null else null
+	if slot != null:
+		return slot.global_transform * STORE_DROP_LOCAL
+	return _courier_home[0] if not _courier_home.is_empty() else Vector3.ZERO
 
 
 # --- Stealth flow --------------------------------------------------------------------------------
@@ -505,6 +682,7 @@ func _on_loot_picked(bag_net_id: int, _crew_slot: int) -> void:
 	var bag: LootBag = Ids.lookup(bag_net_id) as LootBag
 	if bag != null and bag.loot_id == LOOT_LANTERN:
 		_say_once(VO_CENTREPIECE, {}, SPEAKER_VANCE)
+		_complete_once(&"centrepiece")  # QC-57: taken back from the couriers (a pick_bag, not the slot's cut)
 
 
 ## D-117: the first Longshot on the hotel perch (S1); the conservatory perch (S2) has no line.
@@ -596,13 +774,26 @@ func _go_loud() -> void:
 	for h: Node in find_tagged(TAG_HACK):
 		if h is HackTerminal:
 			(h as HackTerminal).reconfigure(HACK_LOUD_S, HACK_LOUD_INTERRUPTIONS + extra)
-	if objective_state(&"hack") == Enums.ObjectiveState.ACTIVE:
+	# GN-8 (doc §Loud: "the same hack lifts the lockdown"): a hack already done in stealth only took the sensors
+	# offline; the shutters are down now, so the terminal re-arms and [hack] is the loud step again.
+	var rearmed: bool = false
+	if objective_state(&"hack") == Enums.ObjectiveState.COMPLETED:
+		for h: Node in find_tagged(TAG_HACK):
+			if h is HackTerminal:
+				rearmed = (h as HackTerminal).rearm() or rearmed
+	if objective_state(&"hack") == Enums.ObjectiveState.ACTIVE or rearmed:
 		add_objective(&"hack", &"objective.gallery_night.hack_loud", Enums.ObjectiveState.ACTIVE,
 			{"marker_tags": [TAG_HACK], "duration_s": HACK_LOUD_S, "interruptions": HACK_LOUD_INTERRUPTIONS})
 	if objective_state(&"server_code") != Enums.ObjectiveState.COMPLETED:
 		activate(&"server_door")
 	if objective_state(&"art_store") != Enums.ObjectiveState.COMPLETED:
 		activate(&"vault_drill")
+	# GN-8 (B's GN audit; as glasshouse_mission _go_loud): the card steps are moot in the lockdown (the AS reader is
+	# dead, the hack opens TR / LD / AS with no card), so they are skipped and leave the current-step slot.
+	for id: StringName in LOCKDOWN_SKIPPED:
+		if objective_state(id) == Enums.ObjectiveState.ACTIVE:
+			update_objective_data(id, {"disabled": true, "reason": &"lockdown", "skipped": true})
+			complete(id)
 	if objective_state(&"secure") == Enums.ObjectiveState.COMPLETED:
 		_call_escape()
 

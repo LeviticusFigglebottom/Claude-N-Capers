@@ -129,7 +129,9 @@ func test_s1_5_sprint_jump_behind_guard_stays_zero() -> void:
 	var g: NpcBase = _observer(&"guard", Vector3.ZERO, Vector3.FORWARD)
 	var noises: Array[float] = []
 	_rt.noise_made.connect(func(_p: Vector3, r: float, _k: StringName, _s: int) -> void: noises.append(r))
-	await _place(Vector3(-2.5, 0.05, 1.0), Vector3.RIGHT)
+	# D-128: PD2 NPCs see all round within 1.5 m (narrowing to +-60 deg by 8.5 m), so the run passes 5 m
+	# behind the guard: inside his rear blind arc, where only movement could give the crew member away.
+	await _place(Vector3(-2.5, 0.05, 5.0), Vector3.RIGHT)
 	var i: CrewIntent = CrewIntent.new()
 	i.move = Vector2(0, 1)
 	i.look_yaw = -PI * 0.5  # aim_direction (+X)
@@ -143,6 +145,6 @@ func test_s1_5_sprint_jump_behind_guard_stays_zero() -> void:
 		max_v = maxf(max_v, _st.detection_value(g, 0))
 		min_d = minf(min_d, Vector2(c.global_position.x, c.global_position.z).length())
 	_rt.clear_bot_intent(0)
-	assert_true(min_d < 1.3, "passed within ~1 m behind the guard (min %f)" % min_d)
+	assert_true(min_d < 5.3, "passed within ~5 m behind the guard (min %f)" % min_d)
 	assert_near(max_v, 0.0, 0.0001, "S1.5 sprint + jump behind a guard: no detection")
 	assert_eq(noises.size(), 0, "S1.5 no movement noise")

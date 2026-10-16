@@ -281,7 +281,18 @@ func _assert_masked_shout_works(heist: String) -> void:
 	assert_true(target != null, "%s: a calm civilian to shout at" % heist)
 	if target == null:
 		return
-	var yaw: float = await _approach(target)
+	# D-128: PD2 civilians notice a masked player instantly within 5.5 m and 55 deg of their facing (uncover),
+	# so the masked shout is made from 1.6 m at the civilian's side (90 deg: a ~1.1 s PD2 fill, not instant).
+	var p: Vector3 = target.global_position
+	var fwd: Vector3 = -target.global_transform.basis.z
+	fwd.y = 0.0
+	if fwd.length() < 0.1:
+		fwd = Vector3(1, 0, 0)
+	var side: Vector3 = fwd.normalized().cross(Vector3.UP)
+	var spot: Vector3 = p + side * 1.6
+	if not _rt.stealth.has_los(p + side * 1.9 + Vector3(0, 1.0, 0), p + side * 0.5 + Vector3(0, 1.0, 0)):
+		spot = p - side * 1.6
+	var yaw: float = await _go(spot, p + Vector3(0, 1.0, 0))
 	await _shout(yaw)
 	assert_eq(target.alert_state, Enums.AlertState.INTIMIDATED, "%s: a masked shout intimidates" % heist)
 	assert_true(_intimidated >= 1, "%s: civilian_intimidated emitted" % heist)

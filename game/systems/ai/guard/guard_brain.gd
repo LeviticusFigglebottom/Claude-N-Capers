@@ -88,6 +88,8 @@ var _target_visible: bool = false
 var _closing: bool = false
 var _cuff_left: float = 0.0
 var _cuff_origin: Vector3 = Vector3.ZERO
+## QC-57: a scripted post set by walk_to_post (kept by _start, no patrol route).
+var _scripted_post: bool = false
 
 
 func _ready() -> void:
@@ -129,6 +131,41 @@ func notice_suspicious(position: Vector3) -> void:
 	_begin_curious(position)
 
 
+## QC-57 (GN Vaultline couriers): a scripted walk. The guard drops his patrol route, walks to `pos` at patrol speed and
+## holds it as his post (CALM; after a "?" or an investigation he walks back to it). `forward` (flat) is the facing
+## there; zero keeps the walking direction. Server.
+func walk_to_post(pos: Vector3, forward: Vector3 = Vector3.ZERO) -> void:
+	if _npc == null:
+		return
+	_scripted_post = true
+	route.clear()
+	route_points.clear()
+	patrol_graph = null
+	_pause_left = 0.0
+	_post_pos = pos
+	var fwd: Vector3 = _flat(forward)
+	if fwd.length() < 0.01:
+		fwd = _flat(pos - _npc.global_position)
+	if fwd.length() > 0.01:
+		_post_fwd = fwd.normalized()
+	if _npc.alert_state == Enums.AlertState.CALM and _motor != null:
+		_walking = false  # _tick_post re-issues the walk to the new post on the next tick
+
+
+## QC-57: the guard stands at his post (flat distance within `tolerance_m`, same floor).
+func at_post(tolerance_m: float = 1.0) -> bool:
+	if _npc == null:
+		return false
+	return _flat(_npc.global_position - _post_pos).length() <= tolerance_m and absf(_npc.global_position.y - _post_pos.y) <= 1.5
+
+
+## QC-57 / B3: the guard found something wrong at `pos` (a Vaultline courier at an empty canvas slot): the S3.3 alarm
+## (stop, face it, radio call, then StealthDirector.raise_alarm). Killing or dominating him during the call stops it.
+func report_alarm(pos: Vector3, cause: StringName) -> void:
+	if _is_active():
+		_react(&"alarm", pos, cause)
+
+
 ## S3.1: a panicked civilian reached this guard and reported the crew: alarm + radio call.
 func alert_from_civilian(civ: Node3D) -> void:
 	if _is_active():
@@ -139,10 +176,11 @@ func _start() -> void:
 	if _npc == null or not is_inside_tree() or not Net.is_authority():
 		return
 	_runtime = HeistRuntime.of(_npc)
-	_post_pos = _npc.global_position
-	_post_fwd = _npc.look_forward()
-	_build_route()
-	_stagger_patrol_start()
+	if not _scripted_post:
+		_post_pos = _npc.global_position
+		_post_fwd = _npc.look_forward()
+		_build_route()
+		_stagger_patrol_start()
 	_look_left = _roll(tweak.post_look_interval_s)
 	_started = true
 	if _runtime != null and _runtime.went_loud and _is_active():

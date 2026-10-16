@@ -175,11 +175,12 @@ func test_detection_and_timers() -> void:
 	var guard_id: int = NetIds.of(rt.npcs(&"guard")[0])
 	var st: Node = rt.service(G.SVC_STEALTH)
 	if st != null and st.has_method(&"detection_entries"):
-		# Host: rows come from the stealth director, filtered to the tracked slot and value > 0.
+		# Host: rows come from the stealth director, filtered to the tracked slot and value > 0, plus (ui_hud
+		# v1.17, D-128) value-0 rows of CURIOUS / INVESTIGATING observers.
 		hud.refresh()
 		var expected: int = 0
 		for e: Dictionary in st.call(&"detection_entries", 0):
-			if float(e["value"]) > 0.0:
+			if float(e["value"]) > 0.0 or StringName(e.get("state", &"")) != &"":
 				expected += 1
 		assert_eq(hud.detection.size(), expected, "director rows for slot 0")
 	else:

@@ -72,6 +72,28 @@ func _on_completed(crew: Node) -> void:
 			visual_root.visible = false
 
 
+## Server (QC-57): an authorised NPC takes one bag (GN's Vaultline couriers moving the Lantern Bearer). The bag spawns
+## at the UsePoint with `moved` false (not a crew-moved bag, S4.1) and is returned for LootManager.npc_carry. No frame
+## sensor trips (the couriers are expected). Null when nothing is left.
+func take_for_npc() -> LootBag:
+	if not Net.is_authority() or remaining <= 0:
+		return null
+	var mgr: LootManager = HeistRuntime.get_service(G.SVC_LOOT) as LootManager
+	if mgr == null:
+		return null
+	var up: Node3D = get_node_or_null(^"UsePoint") as Node3D
+	var pos: Vector3 = up.global_position if up != null else global_position
+	var bag: LootBag = mgr.spawn_bag(loot_id, Transform3D(Basis.IDENTITY, pos), false)
+	if bag == null:
+		return null
+	remaining -= 1
+	if remaining <= 0:
+		interactable.enabled = false
+		if visual_root != null:
+			visual_root.visible = false
+	return bag
+
+
 ## Server: an alarmed take in a live group raises the alarm (no effect once loud).
 func _check_sensor() -> void:
 	if not alarm_on_take:

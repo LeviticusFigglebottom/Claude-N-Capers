@@ -225,6 +225,11 @@ func capture_like_player() -> void:
 		await wait_s(0.5)
 	if MouseCapture.is_captured():
 		note("mouse captured by the game (MouseCapture)")
+	elif DisplayServer.get_name() == "headless":
+		# GN-8 headless e2e: the headless DisplayServer cannot capture the mouse, so PlayerInput ignored every look
+		# motion (the pilot stood in the vestibule). P's test hook lets the same relative motion events through.
+		note("headless: no mouse capture; PlayerInput.test_assume_captured for the look motion")
+		PlayerInput.test_assume_captured = true
 	else:
 		note("FINDING PO-5.1: mouse not captured after a click in the game view; harness forces it (mode %d)"
 			% Input.mouse_mode)
@@ -366,6 +371,9 @@ func _hud_redraw_widgets(show: bool) -> void:
 
 
 func shot(label: String) -> void:
+	if DisplayServer.get_name() == "headless":
+		note("shot %s skipped (headless)" % label)  # GN-8: headless e2e runs (no viewport image to save)
+		return
 	var was_fast: bool = fast
 	if was_fast:
 		_hud_redraw_widgets(true)

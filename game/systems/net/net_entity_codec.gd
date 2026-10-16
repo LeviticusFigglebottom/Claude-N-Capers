@@ -209,7 +209,9 @@ static func state_of(node: Node) -> Dictionary:
 		return st
 	var bag: LootBag = node as LootBag
 	if bag != null:
-		return {"carrier": NetIds.of(bag.carrier) if bag.is_carried() else 0, "secured": bag.secured,
+		var crew_carried: bool = bag.is_carried() and not bag.is_npc_carried()
+		return {"carrier": NetIds.of(bag.carrier) if crew_carried else 0, "secured": bag.secured,
+			"npc": NetIds.of(bag.npc_carrier) if bag.is_npc_carried() else 0, "tag": bag.objective_tag,
 			"hidden": bag.hidden_from_stealth, "moved": bag.moved}
 	var out: Dictionary = {}
 	for k: StringName in GENERIC_PROPS:
@@ -363,12 +365,16 @@ static func _apply_bag_state(bag: LootBag, d: Dictionary) -> void:
 		bag.secured = true
 		if bag.interactable != null:
 			bag.interactable.enabled = false
+	if d.has("tag"):
+		bag.objective_tag = StringName(d["tag"])
 	if d.has("carrier"):
 		var c: CrewController = Ids.lookup(int(d["carrier"])) as CrewController
+		var npc: NpcBase = Ids.lookup(int(d.get("npc", 0))) as NpcBase  # QC-57: a courier's bag
 		bag.carrier = c
+		bag.npc_carrier = npc
 		if bag.interactable != null:
-			bag.interactable.enabled = c == null and not bag.secured
-		bag.collision_layer = 0 if c != null else LootBag.LAYER_LOOT
+			bag.interactable.enabled = c == null and npc == null and not bag.secured
+		bag.collision_layer = 0 if c != null or npc != null else LootBag.LAYER_LOOT
 
 
 # --- Continuous transforms ---------------------------------------------------------------------

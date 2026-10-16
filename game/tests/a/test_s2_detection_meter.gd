@@ -56,8 +56,9 @@ func test_s2_1_meter_starts_at_dr_fills_with_los_and_decays() -> void:
 	await wait_seconds(0.6)
 	var v1: float = _st.detection_value(g, 0)
 	assert_true(v1 < v0, "S2.1 decays without LOS (%f -> %f)" % [v0, v1])
-	assert_near(v0 - v1, Tweak.stealth().decay_per_s * 0.6, 0.08, "decay rate 0.25/s")
-	ok = await wait_until(func() -> bool: return _st.detection_value(g, 0) <= 0.0, 3.0)
+	# D-128: PD2 drain, 0.125 progress/s, shown through the DR offset (x (1 - 0.35)).
+	assert_near(v0 - v1, Tweak.stealth().npc_decay_per_s * 0.65 * 0.6, 0.04, "PD2 decay 0.125/s")
+	ok = await wait_until(func() -> bool: return _st.detection_value(g, 0) <= 0.0, 9.0)
 	assert_true(ok, "decays to 0")
 	await wait_physics_frames(2)
 	EventBus.detection_progress.disconnect(cb)
@@ -72,20 +73,22 @@ func test_s2_2_fill_rate_formula_distance_and_angle() -> void:
 	var g: NpcBase = _guard(Vector3.ZERO)
 	await _place(Vector3(0, 0.05, -4))
 	var r_near: float = _st.fill_rate(g, c)
-	# S2.2: base 1/1.0 s x dist_factor; d from eye (1.62) to chest (1.05 above feet).
+	# S2.2 / D-128: rate = 1 / PD2 delay; d from eye (1.62) to chest (1.05 above feet).
 	var d: float = Vector3(0, 1.62, 0).distance_to(Vector3(0, 1.05, -4))
-	assert_near(r_near, 1.0 - (d - 2.0) / 28.0, 0.01, "S2.2 dist_factor at 4 m, centred")
-	await _place(Vector3(0, 0.05, -20))
+	assert_near(1.0 / r_near, lerpf(0.4, 2.0, 0.75 * d / 20.0), 0.01, "S2.2 PD2 delay at 4 m, centred")
+	await _place(Vector3(0, 0.05, -18))
 	var r_far: float = _st.fill_rate(g, c)
 	assert_true(r_far > 0.0 and r_far < r_near, "closer fills faster (%f vs %f)" % [r_near, r_far])
-	await _place(Vector3(0, 0.05, -6))
+	await _place(Vector3(0, 0.05, -10))
 	var r_centre: float = _st.fill_rate(g, c)
-	var off: Vector3 = Vector3(-sin(deg_to_rad(45.0)), 0, -cos(deg_to_rad(45.0))) * 6.0
+	var off: Vector3 = Vector3(-sin(deg_to_rad(45.0)), 0, -cos(deg_to_rad(45.0))) * 10.0
 	await _place(off + Vector3(0, 0.05, 0))
 	var r_edge: float = _st.fill_rate(g, c)
 	assert_true(r_edge < r_centre, "centre fills faster than the edge")
-	assert_near(r_edge / r_centre, lerpf(1.0, 0.45, 45.0 / 60.0), 0.01, "S2.2 angle_factor")
-	var outside: Vector3 = Vector3(-sin(deg_to_rad(75.0)), 0, -cos(deg_to_rad(75.0))) * 6.0
+	var de: float = Vector3(0, 1.62, 0).distance_to(off + Vector3(0, 1.05, 0))
+	assert_near(1.0 / r_edge, lerpf(0.4, 2.0, 0.75 * de / 20.0 + 0.25 * 45.0 / 60.0), 0.01, "S2.2 PD2 angle term")
+	# PD2: the view narrows to +-60 deg only from 8.5 m (all round within 1.5 m), so test 75 deg at 10 m.
+	var outside: Vector3 = Vector3(-sin(deg_to_rad(75.0)), 0, -cos(deg_to_rad(75.0))) * 10.0
 	await _place(outside + Vector3(0, 0.05, 0))
 	assert_near(_st.fill_rate(g, c), 0.0, 0.0001, "outside half FOV: no fill")
 	var before: float = _st.detection_value(g, 0)
@@ -97,8 +100,8 @@ func test_s2_2_beyond_far_and_wall_no_fill() -> void:
 	var c: CrewController = _crew()
 	c.set_masked()
 	var g: NpcBase = _guard(Vector3(0, 0, 25))
-	await _place(Vector3(0, 0.05, -6.5))  # 31.5 m > far 30
-	assert_near(_st.fill_rate(g, c), 0.0, 0.0001, "beyond far: no fill")
+	await _place(Vector3(0, 0.05, -6.5))  # 31.5 m > PD2 range min(40, 20) at DR 35
+	assert_near(_st.fill_rate(g, c), 0.0, 0.0001, "beyond range: no fill")
 	await _place(Vector3(0, 0.05, 15))
 	assert_true(_st.fill_rate(g, c) > 0.0, "in range")
 	ATestMaps.add_wall(_rt.map, Vector3(0, 2, 20), Vector3(6, 4, 0.4))
@@ -121,11 +124,11 @@ func test_s2_3_dr_table_and_rates() -> void:
 	c.loadout.detection_risk = 75
 	var r75: float = _st.fill_rate(g, c)
 	assert_true(r3 > 0.0 and r3 < r75, "S2.3 DR 3 slower than DR 75 (%f vs %f)" % [r3, r75])
-	await _place(Vector3(0, 0.05, -6))  # 26 m: beyond far' = 30/sqrt(1.55) = 24.1
+	await _place(Vector3(0, 0.05, -6))  # 26 m: beyond 20/sqrt(1.55) = 16.1 (D-128 PD2 range)
 	c.loadout.detection_risk = 3
-	assert_near(_st.fill_rate(g, c), 0.0, 0.0001, "DR 3: far' shrinks below 26 m")
+	assert_near(_st.fill_rate(g, c), 0.0, 0.0001, "DR 3: range shrinks below 26 m")
 	c.loadout.detection_risk = 75
-	assert_true(_st.fill_rate(g, c) > 0.0, "DR 75: far' = 54.8 m")
+	assert_true(_st.fill_rate(g, c) > 0.0, "DR 75: range 20/sqrt(0.3) = 36.5 m")
 	await _place(Vector3(0, 0.05, 12))
 	var ok: bool = await wait_until(func() -> bool: return _st.detection_value(g, 0) > 0.0, 1.0)
 	assert_true(ok)
@@ -144,7 +147,12 @@ func test_s2_5_crouch_multiplies_rate() -> void:
 	var ok: bool = await wait_until(func() -> bool: return c.crouched, 1.0)
 	assert_true(ok, "crouched")
 	var crouch: float = _st.fill_rate(g, c)
-	assert_near(crouch / stand, Tweak.stealth().crouch_rate_mult, 0.01, "S2.5 crouch x0.75")
+	# D-128 S2.5: PD2 crouch shrinks the guard's range to 12 m (whisper_mode_crouch), not a rate multiplier.
+	var d: float = g.eye_position().distance_to(c.global_position + Vector3.UP * minf(1.0, c.eye_height()))
+	assert_true(crouch > 0.0 and crouch < stand, "crouched fills slower at 6 m (%f vs %f)" % [crouch, stand])
+	assert_near(1.0 / crouch, _st.fill_time(&"guard", 35, d, 0.0, true), 0.02, "S2.5 PD2 crouch delay")
+	await _place(Vector3(0, 0.05, -14))
+	assert_near(_st.fill_rate(g, c), 0.0, 0.0001, "crouched at 14 m: beyond the 12 m crouch range")
 
 
 func test_s2_2_modifier_and_difficulty_scale_rate() -> void:
@@ -168,7 +176,7 @@ func test_s11_2_detection_stops_when_loud() -> void:
 	_st.crew_detected.connect(func(_o: Node, cr: Node) -> void: detected.append(cr))
 	var heard: Array[StringName] = []
 	g.noise_heard.connect(func(_p: Vector3, k: StringName, _s: int) -> void: heard.append(k))
-	await _place(Vector3(0, 0.05, -20))
+	await _place(Vector3(0, 0.05, -15))  # D-128: inside the PD2 20 m range at DR 35
 	var ok: bool = await wait_until(func() -> bool: return _st.detection_value(g, 0) > 0.0, 1.0)
 	assert_true(ok, "filling before the alarm")
 	_st.raise_alarm(&"test")
