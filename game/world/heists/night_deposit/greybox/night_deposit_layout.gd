@@ -406,12 +406,12 @@ const WALL_LIGHTS: Array = [
 # --- Spawns, patrols, tactical -------------------------------------------------------------
 
 ## [name, pos, yaw_deg (-Z = facing), tags]. Casing spawns first (default crew spawns): on Harbor St's
-## kerb lane, 4.3 m off the bank front so the first frame frames the facade, not a wall (P spawn probe).
+## kerb lane, 4.3 m off the bank front and turned 25° east onto the facade (not the chandlery wall; P spawn probe).
 const PLAYER_SPAWNS: Array = [
-	["CasingSidewalk1", Vector3(-2.0, ROAD_Y, 24.5), 0.0, ["casing_sidewalk"]],
-	["CasingSidewalk2", Vector3(0.0, ROAD_Y, 24.5), 0.0, ["casing_sidewalk"]],
-	["CasingSidewalk3", Vector3(2.0, ROAD_Y, 24.5), 0.0, ["casing_sidewalk"]],
-	["CasingSidewalk4", Vector3(4.0, ROAD_Y, 24.5), 0.0, ["casing_sidewalk"]],
+	["CasingSidewalk1", Vector3(-2.0, ROAD_Y, 24.5), -25.0, ["casing_sidewalk"]],
+	["CasingSidewalk2", Vector3(0.0, ROAD_Y, 24.5), -25.0, ["casing_sidewalk"]],
+	["CasingSidewalk3", Vector3(2.0, ROAD_Y, 24.5), -25.0, ["casing_sidewalk"]],
+	["CasingSidewalk4", Vector3(4.0, ROAD_Y, 24.5), -25.0, ["casing_sidewalk"]],
 	["PreplanLot1", Vector3(1.5, 0.0, -9.0), 180.0, ["preplan_spawn_lot"]],
 	["PreplanLot2", Vector3(3.0, 0.0, -9.0), 180.0, ["preplan_spawn_lot"]],
 	["PreplanLot3", Vector3(1.5, 0.0, -10.5), 180.0, ["preplan_spawn_lot"]],
