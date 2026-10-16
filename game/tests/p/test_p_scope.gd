@@ -76,3 +76,31 @@ func test_low_power_prism_stays_3d() -> void:
 	await wait_frames(3)
 	assert_false(cv.scope_overlay().visible, "3x prism: no overlay")
 	assert_true(_image_visible(cv), "3x prism: the 3D sight stays")
+
+
+func test_sight_picture_sways_and_settles() -> void:
+	if FpViewmodelTweak.data().viewmodel_fov_deg <= 0.0:
+		skip("no viewmodel camera")
+		return
+	var c: CrewController = await _launch(&"weapon.osprey_762", &"mod.osprey_scope_4x")
+	var cv: CrewView = CrewView.of(c)
+	_inp.press(&"aim")
+	assert_true(await wait_until(func() -> bool: return cv.ads_blend > 0.999, 3.0), "aimed")
+	await wait_frames(5)
+	var ov: FpScopeOverlay = cv.scope_overlay()
+	var peak: float = 0.0
+	for _k: int in 8:  # a quick turn right
+		_inp.look(40.0, 0.0)
+		await wait_frames(1)
+		peak = maxf(peak, ov.offset.length())
+	for _k: int in 20:
+		await wait_frames(1)
+		peak = maxf(peak, ov.offset.length())
+	assert_true(peak > 5.0, "the turn sways the sight picture (peak %.1f px)" % peak)
+	await wait_physics_frames(150)
+	# Still: the look-lag part springs back to ~0 (the slow breathing drift, a few px, never stops).
+	var vm: FpViewmodel = FpViewmodel.of(cv.camera())
+	var lag: Vector2 = vm.sight_sway_deg(1.0, 0.0)
+	assert_true(lag.length() < 0.02, "look-lag sway settles when still (%s deg)" % lag)
+	assert_true(ov.offset.length() < peak, "the sight picture is back near the centre (%.1f px, peak %.1f)" % [
+		ov.offset.length(), peak])

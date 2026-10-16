@@ -27,6 +27,12 @@ var style: StringName = DUPLEX:
 		if v != style:
 			style = v
 			queue_redraw()
+## Sight-picture offset (px): the scope's sway / breathing moves the whole ocular (ring + reticle) on screen.
+var offset: Vector2 = Vector2.ZERO:
+	set(v):
+		if not v.is_equal_approx(offset):
+			offset = v
+			queue_redraw()
 ## Reticle colour (an illuminated reticle sets a bright one).
 var tint: Color = Color(0.02, 0.02, 0.02):
 	set(v):
@@ -54,9 +60,9 @@ static func ocular_radius(size: Vector2) -> float:
 
 func _draw() -> void:
 	var tw: FpViewmodelTweak = FpViewmodelTweak.data()
-	var c: Vector2 = size * 0.5
+	var c: Vector2 = size * 0.5 + offset
 	var r: float = ocular_radius(size)
-	var far: float = c.length() + 4.0
+	var far: float = (size * 0.5).length() + offset.length() + 4.0
 	var black: Color = Color(0.0, 0.0, 0.0, 1.0)
 	# Vignette: opaque outside the ocular, a soft dark edge just inside it.
 	draw_arc(c, (r + far) * 0.5, 0.0, TAU, 160, black, far - r + 2.0, true)
@@ -71,7 +77,7 @@ func _draw() -> void:
 
 func _draw_reticle(c: Vector2, r: float, tw: FpViewmodelTweak) -> void:
 	var thin: float = maxf(tw.scope_line_px, 1.0)
-	var thick: float = thin * 3.0
+	var thick: float = maxf(thin * tw.scope_post_width_mult, r * 0.03)
 	match style:
 		DOT:
 			draw_circle(c, thin * 1.6, tint)
@@ -89,8 +95,8 @@ func _draw_reticle(c: Vector2, r: float, tw: FpViewmodelTweak) -> void:
 				for s: float in [-1.0, 1.0]:
 					draw_circle(c + Vector2(s * step * k, 0), thin * 1.4, tint)
 					draw_circle(c + Vector2(0, s * step * k), thin * 1.4, tint)
-		_:  # DUPLEX: thick posts from the edge, a thin cross in the middle
-			var inner: float = r * 0.32
+		_:  # DUPLEX: thick posts from the edge to scope_post_inner_frac of the radius, a thin cross in the middle
+			var inner: float = r * tw.scope_post_inner_frac
 			draw_line(c + Vector2(-r, 0), c + Vector2(-inner, 0), tint, thick, true)
 			draw_line(c + Vector2(inner, 0), c + Vector2(r, 0), tint, thick, true)
 			draw_line(c + Vector2(0, inner), c + Vector2(0, r), tint, thick, true)

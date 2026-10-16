@@ -307,6 +307,16 @@ static var _gen: int = 0
 @export var scope_line_px: float = 2.0
 @export var scope_reticle_default: StringName = &"duplex"
 @export var scope_reticle_color: Color = Color(0.02, 0.02, 0.02)
+## Duplex posts: width as a multiple of scope_line_px (at least 3 % of the ocular radius), ending this fraction of the
+## radius from the centre.
+@export var scope_post_width_mult: float = 4.0
+@export var scope_post_inner_frac: float = 0.25
+## The sight picture follows the gun's look-lag sway + breathing (FpViewmodel.sight_sway_deg) projected at the
+## zoomed world FOV: the look-lag sway times scope_sway_mult (the ADS sway is tuned tiny for iron sights; a scope
+## magnifies it, PD2: a turn swings the sight picture and it settles when still) and the breathing times
+## scope_breath_mult (a slow drift); 0 / 0 = a fixed sight picture.
+@export var scope_sway_mult: float = 8.0
+@export var scope_breath_mult: float = 3.0
 
 @export_group("Motion")
 ## Horizontal speed (m/s) above which walk bob / sprint play.

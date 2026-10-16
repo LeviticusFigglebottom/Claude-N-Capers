@@ -241,8 +241,21 @@ func _update_scope(st: WeaponStats, mag: float) -> void:
 		var rc: Variant = st.get(&"scope_reticle_color") if st != null else null
 		_scope.tint = rc if rc is Color and (rc as Color).a > 0.0 else tw.scope_reticle_color
 	_scope.amount = t
+	_scope.offset = _scope_sway_px(tw) if t > 0.0 else Vector2.ZERO
 	if _vm_image != null and is_instance_valid(_vm_image):
 		_vm_image.visible = t < tw.scope_hide_gun_at
+
+
+## The viewmodel's sight sway (deg) as a screen offset (px) at the world camera's zoomed FOV: yaw left / pitch up
+## move the sight picture left / up.
+func _scope_sway_px(tw: FpViewmodelTweak) -> Vector2:
+	var cam: Camera3D = camera()
+	var vm: FpViewmodel = FpViewmodel.of(cam) if cam != null else null
+	if vm == null:
+		return Vector2.ZERO
+	var deg: Vector2 = vm.sight_sway_deg(tw.scope_sway_mult, tw.scope_breath_mult)
+	var f: float = cam.get_viewport().get_visible_rect().size.y * 0.5 / tan(deg_to_rad(cam.fov) * 0.5)
+	return Vector2(-tan(deg_to_rad(deg.x)), -tan(deg_to_rad(deg.y))) * f
 
 
 ## Whether `st` (magnification `mag`) is a scope with a sight picture overlay rather than a 3D sight.

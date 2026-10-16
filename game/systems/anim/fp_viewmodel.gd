@@ -753,6 +753,12 @@ func sway() -> Vector2:
 	return _sway
 
 
+## Read only (CrewView scope overlay): the sight's sway this frame, look-lag spring + breathing (yaw, pitch; deg),
+## the same terms that turn the gun in _late_align (recoil kick excluded: the camera carries it).
+func sight_sway_deg(sway_mult: float = 1.0, breath_mult: float = 1.0) -> Vector2:
+	return _sway * sway_mult + _breathing() * breath_mult
+
+
 ## Exact critically damped step (no amplitude loss at 60 Hz, see the PO-4 landing dip). The step is capped at 1/30 s
 ## so a slow frame still shows the punch instead of skipping past its 18 ms peak.
 func _tick_kick(delta: float, tw: FpViewmodelTweak) -> void:
