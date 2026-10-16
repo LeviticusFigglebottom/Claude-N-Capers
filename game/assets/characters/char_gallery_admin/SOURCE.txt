@@ -8,13 +8,13 @@ edit policy: generated file, never edit by hand; change the script and rebuild
 attach_Back: bone chest, local [0.0000, 0.0842, 0.0975] (model [0.0000, 1.2270, 0.1150], Godot axes, rest pose)
 attach_Head: bone head, local [0.0000, 0.0764, -0.0837] (model [0.0000, 1.5724, -0.0724], Godot axes, rest pose)
 attach_Hip: bone hips, local [0.1739, 0.0484, 0.0415] (model [0.1739, 0.9476, 0.0438], Godot axes, rest pose)
-body_faces_culled: 4748
+body_faces_culled: 4773
 body_params: {"age": 0.35, "beard_shadow": 0.0, "build": 0.45, "gender": 1.0, "hair": "bob", "hair_color": "brown", "hair_peak": 0.0, "height": 1.68, "lip": "auto", "skin": 3}
 bones: 52
-faces_hidden_by_jacket: 2923
+faces_hidden_by_jacket: 2931
 look: Admin PA (development office): teal knit cardigan over a pale-blue shirt, charcoal trousers, low heels, silver glasses, watch, gallery staff lanyard (wine, gold)
 meshes: Body,Gear,Hair,Headwear,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 26920
-tris_by_mesh: {"Body": 9248, "Gear": 548, "Hair": 2088, "Headwear": 498, "Outfit": 14538}
+tris: 26982
+tris_by_mesh: {"Body": 9198, "Gear": 548, "Hair": 2088, "Headwear": 498, "Outfit": 14650}

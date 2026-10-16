@@ -7,16 +7,16 @@ rebuild: python3 tools/blender/build.py --category characters --asset char_crew_
 edit policy: generated file, never edit by hand; change the script and rebuild
 attach_Back: bone chest, local [0.0000, 0.0839, 0.0912] (model [0.0000, 1.2270, 0.1086], Godot axes, rest pose)
 attach_Head: bone head, local [0.0000, 0.0764, -0.0837] (model [0.0000, 1.5724, -0.0724], Godot axes, rest pose)
-attach_Hip: bone hips, local [0.1673, 0.0484, 0.0422] (model [0.1673, 0.9476, 0.0445], Godot axes, rest pose)
-body_faces_culled: 5496
+attach_Hip: bone hips, local [0.1672, 0.0484, 0.0422] (model [0.1672, 0.9476, 0.0445], Godot axes, rest pose)
+body_faces_culled: 5556
 body_params: {"age": 0.08, "beard_shadow": 0.0, "build": 0.3, "gender": 1.0, "hair": "short", "hair_color": "brown", "hair_peak": 0.0, "height": 1.68, "lip": "auto", "skin": 2}
 bones: 52
-faces_hidden_by_waistcoat: 1169
+faces_hidden_by_waistcoat: 1170
 fp_sleeve: {"cuff": "bare forearm (skin), sleeve rolled to the elbow", "glove": "char_crew_glove_sage", "sleeve": "char_shirt_blue"}
 head_note: hat-free; the crew mask attaches at Head (face centre)
 look: Wren: no jacket; fitted mustard waistcoat, pale blue shirt with rolled sleeves, loose skinny teal tie, grey slacks, headphones round the neck, messenger satchel on the left hip, short tactical gloves
 meshes: Body,Gear,Hair,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 27766
-tris_by_mesh: {"Body": 7836, "Gear": 1648, "Hair": 1728, "Outfit": 16554}
+tris: 27772
+tris_by_mesh: {"Body": 7716, "Gear": 1648, "Hair": 1728, "Outfit": 16680}

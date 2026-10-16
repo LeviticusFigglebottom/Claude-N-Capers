@@ -1,0 +1,31 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"gallery_hang"
+purpose = &"gallery"
+required_items = Array[StringName]([&"bench", &"sculpture", &"light_fixture"])
+optional_items = {
+&"sculpture": 0.6,
+&"vitrine": 0.4
+}
+clutter_groups = {}
+min_density = 0.04
+max_density = 0.4
+min_props = 6
+lone_ok_kinds = Array[StringName]([&"bench", &"sculpture", &"vitrine", &"sofa", &"table"])
+seed_salt = 102
+counts = {
+&"bench": Vector2i(1, 2),
+&"sculpture": Vector2i(1, 2)
+}
+assets = {
+&"bench": PackedStringArray("prop_bench_gallery"),
+&"light_fixture": PackedStringArray("prop_track_light"),
+&"sculpture": PackedStringArray("prop_plinth_bronze_a", "prop_plinth_bronze_b"),
+&"vitrine": PackedStringArray("prop_vitrine_decor")
+}
+ceiling = {"prop_track_light": 3.2}
+notes = "WG / EG / EB ground galleries: hung works (the slots and studies), a gallery bench, bronzes on plinths >= 2 m off the hung walls, 3000 K track lights."

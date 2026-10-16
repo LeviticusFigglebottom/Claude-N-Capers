@@ -188,8 +188,9 @@ func preview_loadout() -> Loadout:
 	return l
 
 
+## The preview build as it fires (D-118: a loaded shotgun AMMO mod through AmmoStats).
 func _preview_stats() -> WeaponStats:
-	return LoadoutResolver.resolve_weapon(weapon_id, mod_ids())
+	return AmmoStats.apply(LoadoutResolver.resolve_weapon(weapon_id, mod_ids()), weapon(), mod_ids())
 
 
 ## Comparison base: the weapon equipped in the preview weapon's slot (with its mods), else the preview
@@ -201,14 +202,15 @@ func _baseline_stats() -> WeaponStats:
 	var cur: StringName = profile.loadout.primary if w.slot == Enums.WeaponSlot.PRIMARY else profile.loadout.secondary
 	if cur != &"":
 		var raw: Array[StringName] = profile.loadout.primary_mods if w.slot == Enums.WeaponSlot.PRIMARY else profile.loadout.secondary_mods
-		var s: WeaponStats = LoadoutResolver.resolve_weapon(cur, raw)
+		var s: WeaponStats = AmmoStats.apply(LoadoutResolver.resolve_weapon(cur, raw), ContentDB.weapon(cur), raw)
 		if s != null:
 			return s
 	return LoadoutResolver.resolve_weapon(weapon_id, [] as Array[StringName])
 
 
 ## {"shown": StatCalculator.display(preview), "delta": StatCalculator.delta(baseline, preview),
-## "boosted": [display keys the skills change]}; {} when nothing is previewed. With `with_skills` both
+## "boosted": [display keys the skills change], "pellets": pellets per shot as the ammo fires (D-118),
+## "ammo": the loaded ShotgunAmmo type (&"" = buckshot / none)}; {} when nothing is previewed. With `with_skills` both
 ## preview and baseline carry the skills (deltas compare like with like); "boosted" is empty without.
 func stat_rows() -> Dictionary:
 	var p: WeaponStats = _preview_stats()
@@ -222,7 +224,9 @@ func stat_rows() -> Dictionary:
 		boosted = SkillBoost.boosted_keys(StatCalculator.display(p), StatCalculator.display(pb))
 		p = pb
 		b = SkillBoost.apply(b, ContentDB.weapon(_baseline_id()), mods)
-	return {"shown": StatCalculator.display(p), "delta": StatCalculator.delta(b, p), "boosted": boosted}
+	var shown: Dictionary = StatCalculator.display(p)
+	return {"shown": shown, "delta": StatCalculator.delta(b, p), "boosted": boosted,
+			"pellets": maxi(p.pellets, 1), "ammo": AmmoStats.profile(weapon(), mod_ids()).get("ammo_type", &"")}
 
 
 ## The weapon the baseline stats belong to (the equipped one of this slot, else this weapon).

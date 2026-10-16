@@ -1,0 +1,28 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"gallery_balcony"
+purpose = &"atrium"
+required_items = Array[StringName]([&"sculpture", &"bench"])
+optional_items = {
+&"podium": 0.6
+}
+clutter_groups = {}
+min_density = 0.03
+max_density = 0.4
+min_props = 3
+lone_ok_kinds = Array[StringName]([&"sculpture", &"bench", &"podium", &"window"])
+seed_salt = 105
+counts = {
+&"sculpture": Vector2i(1, 3)
+}
+assets = {
+&"bench": PackedStringArray("prop_bench_gallery"),
+&"podium": PackedStringArray("prop_podium_bust"),
+&"sculpture": PackedStringArray("prop_plinth_bronze_a", "prop_plinth_bronze_b")
+}
+ceiling = {}
+notes = "BW / BE balconies and the SL loggia over the hall: busts and bronzes on plinths, a long bench; lit by the hall."

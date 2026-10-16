@@ -7,9 +7,9 @@ rebuild: python3 tools/blender/build.py --category characters --asset char_bank_
 edit policy: generated file, never edit by hand; change the script and rebuild
 attach_Back: bone chest, local [0.0000, 0.0847, 0.1090] (model [0.0000, 1.2270, 0.1265], Godot axes, rest pose)
 attach_Head: bone head, local [0.0000, 0.0764, -0.0837] (model [0.0000, 1.5724, -0.0724], Godot axes, rest pose)
-attach_Hip: bone hips, local [0.1906, 0.0485, 0.0444] (model [0.1906, 0.9476, 0.0468], Godot axes, rest pose)
+attach_Hip: bone hips, local [0.1898, 0.0485, 0.0443] (model [0.1898, 0.9476, 0.0466], Godot axes, rest pose)
 backpack_note: daypack is rigid Gear on the chest bone; strap padding is Outfit
-body_faces_culled: 4764
+body_faces_culled: 4808
 body_params: {"age": 0.35, "beard_shadow": 0.0, "build": 0.45, "gender": 1.0, "hair": "side_part", "hair_color": "brown", "hair_peak": 0.0, "height": 1.68, "lip": "auto", "skin": 5}
 bones: 52
 faces_hidden_by_bomber: 2519
@@ -17,5 +17,5 @@ look: Parent customer: olive nylon bomber over a cream crew knit, jeans, white t
 meshes: Body,Gear,Hair,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 28028
-tris_by_mesh: {"Body": 9216, "Gear": 630, "Hair": 1856, "Outfit": 16326}
+tris: 28068
+tris_by_mesh: {"Body": 9128, "Gear": 630, "Hair": 1856, "Outfit": 16454}

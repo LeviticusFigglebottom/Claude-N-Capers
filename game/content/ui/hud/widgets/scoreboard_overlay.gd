@@ -181,19 +181,35 @@ func _loot_line(text: String, value: int, col: Color) -> void:
 	loot_box.add_child(h)
 
 
-## Every objective but hidden ones: done in OK green, failed in red, the live ones in paper.
+## Every objective but hidden ones: done in OK green, failed in red, the live ones in paper. More than
+## HudTweak.scoreboard_objectives_max lines: the done ones fold into one "N done" line, the live ones fill the rest
+## and a muted "+N more" line closes the column (the sheet stays on screen).
 func _fill_objectives() -> void:
 	for c: Node in objectives_box.get_children():
 		objectives_box.remove_child(c)
 		c.queue_free()
+	var shown: Array[Dictionary] = []
+	var done: int = 0
 	for ob: Dictionary in prop(&"objectives", []) as Array:
 		var st: int = int(ob.get("state", Enums.ObjectiveState.ACTIVE))
 		if st == Enums.ObjectiveState.HIDDEN:
 			continue
-		var l: Label = UiBuild.label(&"", UiBuild.HUD)
-		l.add_theme_constant_override(&"outline_size", 0)
-		l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		l.text = UiText.t(ObjectivesPanel._state_key(st), {"text": ObjectivesPanel.objective_text(ob)})
+		shown.append(ob)
+		done += int(st == Enums.ObjectiveState.COMPLETED)
+	var cap: int = maxi(tweak.scoreboard_objectives_max, 3) if tweak != null else 8
+	var fold: bool = shown.size() > cap
+	if fold and done > 0:
+		_objective_line(UiText.t(&"ui.scoreboard.objectives_done", {"count": done}), UiTokens.OK)
+	var room: int = cap - (1 if fold and done > 0 else 0) - (1 if fold else 0)
+	var left: int = 0
+	for ob: Dictionary in shown:
+		var st: int = int(ob.get("state", Enums.ObjectiveState.ACTIVE))
+		if fold and st == Enums.ObjectiveState.COMPLETED:
+			continue
+		if fold and room <= 0:
+			left += 1
+			continue
+		room -= 1
 		var disabled: bool = bool((ob.get("args", {}) as Dictionary).get("disabled", false))
 		var col: Color = UiTokens.PAPER
 		if st == Enums.ObjectiveState.COMPLETED:
@@ -202,8 +218,18 @@ func _fill_objectives() -> void:
 			col = UiTokens.ALERT
 		elif disabled:
 			col = UiTokens.PAPER_MUTE
-		l.add_theme_color_override(&"font_color", col)
-		objectives_box.add_child(l)
+		_objective_line(UiText.t(ObjectivesPanel._state_key(st), {"text": ObjectivesPanel.objective_text(ob)}), col)
+	if left > 0:
+		_objective_line(UiText.t(&"ui.scoreboard.objectives_more", {"count": left}), UiTokens.PAPER_MUTE)
+
+
+func _objective_line(text: String, col: Color) -> void:
+	var l: Label = UiBuild.label(&"", UiBuild.HUD)
+	l.add_theme_constant_override(&"outline_size", 0)
+	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	l.text = text
+	l.add_theme_color_override(&"font_color", col)
+	objectives_box.add_child(l)
 
 
 ## Feed the `scoreboard` action state (from _process; tests call it directly). Hold: visible while

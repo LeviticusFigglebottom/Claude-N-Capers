@@ -1,4 +1,4 @@
-# Contract: characters (v1.17)
+# Contract: characters (v1.18)
 
 Producer: ENV C (generated humanoids + animations). Consumer: ENV A (NPC/crew prefabs).
 Until delivered, ENV A uses capsule placeholders with the same node names.
@@ -237,3 +237,17 @@ left-wrist offset, published in char_arms_fp SOURCE `fp.vgrip` (Godot weapon axe
 all three). When a vertical-grip mod is equipped, P switches the left-hand IK target to the mod's LeftHandIK + that offset
 and blends the left-hand bones (hand.L and its fingers) to `<set>_vgrip_hand`; without the mod, the handguard hold is
 unchanged. A new gun with a vertical grip gets a `vgrip_ik` marker and the clip in `_arms_sets.py`.
+
+## v1.18: hit-zone flinches and surrender variants (D-116 follow-up; SOURCE `hit_zones:` / `surrender_variants`)
+* **Hit zones** (one-shot, absolute poses, root fixed; each starts and ends on idle_alert f0): `hit_head` (14 f, impact@2),
+  `hit_chest` (14 f, impact@3), `hit_shoulder_l` / `hit_shoulder_r` (14 f, impact@3), `hit_leg_l` / `hit_leg_r` (16 f,
+  impact@3, 7 cm in-place stagger that returns). Zone → clip: HEAD → hit_head, BODY → hit_chest, LIMB above hip height →
+  shoulder by root-space side, below → leg by side. Blend: full-body OneShot when standing; otherwise spine-up filtered at 0.7
+  over aim/locomotion (0.9 for head), plus the hit arm unless it is the gun arm. The direction clips `hit_react*` stay as the
+  fallback when no zone is known. ENV A reads `info.zone` and `info.position`.
+* **Surrender variants:** `hands_up_b` / `hands_up_c`, `surrender_b` / `surrender_c` (start on surrender f0, end on its last
+  frame), `kneel_cuffed_b` / `kneel_cuffed_c` (f0 = kneel_cuffed f0, so death_kneel_cuffed still chains), and loops
+  `surrender_idle` / `_b` / `_c` (96 / 110 / 84 f, start on surrender's last frame). Pick rule: one stable index per NPC,
+  `hash(net_id) % 3`, used in every group, plus a random loop start offset from `GameRng.stream(&"anim_variants")`. After a
+  surrender* one-shot, play the matching surrender_idle* instead of holding the last frame. ENV A also adds the variants to
+  AnimTweak death_by_pose and hard_hat_lift_clips.

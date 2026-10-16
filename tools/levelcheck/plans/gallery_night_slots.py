@@ -199,9 +199,9 @@ PREPLAN = [
     ("pp_court_doors", "insider", 1, "G", "X3", -1.0, 12.5, {"variant_group": "court_doors", "variant_slot": "court_doors_open"}),
 ]
 # Review cameras (Review shots): (id, floor, room, x, z, eye height above FFL, look-at x, z, y above FFL).
-# rc_top_down has no room (orthographic over the play space).
+# TopDownPlan (the doc's rc_top_down; validate_level needs a TopDown* name at final) has no room (orthographic).
 REVIEW_CAMERAS = [
-    ("rc_top_down", "G", "", 9.0, 20.0, 120.0, 9.0, 20.0, 0.0),
+    ("TopDownPlan", "G", "", 9.0, 20.0, 120.0, 9.0, 20.0, 0.0),
     ("rc_ext_parade", "G", "X1", 22.0, 41.0, 1.7, 22.0, 30.0, 6.0),
     ("rc_ext_wexley", "G", "X2", 56.0, 10.0, 1.7, 44.0, 6.0, 4.0),
     ("rc_ext_mews", "G", "X2", -30.0, -4.0, 1.7, 40.0, -2.0, 3.0),
@@ -778,7 +778,7 @@ def check(b: Dict, b_snapshot_diff: List[str]) -> bool:
                 fail("%s zone of %s is not next to its slot anchor" % (k, s))
     print("  ESCAPE + SECURE_LOOT zones for %s" % ", ".join(esc))
     rc_ids = [r[0] for r in REVIEW_CAMERAS]
-    doc_rc = re.findall(r"^\| `(rc_\w+)`", _section(open(DOC, encoding="utf-8").read(), "Review shots"), re.M)
+    doc_rc = re.findall(r"^\| `((?:rc_|TopDown)\w+)`", _section(open(DOC, encoding="utf-8").read(), "Review shots"), re.M)
     if rc_ids != doc_rc:
         fail("review cameras: map %s vs doc %s" % (sorted(set(rc_ids) ^ set(doc_rc)), "(sets differ)"))
     if len(rc_ids) < 12:

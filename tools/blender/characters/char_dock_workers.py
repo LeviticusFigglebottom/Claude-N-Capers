@@ -216,6 +216,7 @@ def worker(kit: Kit) -> None:
     hivis_vest(kit, ORANGE, stand=0.016)
     kit.add_head(hard_hat(fit, "char_hardhat_white"))
     kit.notes["hat"] = "white hard hat (Headwear)"
+    kit.notes["headwear_class"] = "hard_hat"   # Headwear meta for A's HardHatHandLift (assemble_characters)
     kit.notes["look"] = ("forklift driver: orange hi-vis vest (silver tape hoops + braces) over a navy canvas work "
                          "jacket, charcoal cargo work trousers, brown safety boots, white hard hat")
 
@@ -229,6 +230,7 @@ def worker_b(kit: Kit) -> None:
     hivis_vest(kit, YELLOW, stand=0.016)
     kit.add_head(hard_hat(fit, "char_hardhat_blue"))
     kit.notes["hat"] = "blue hard hat (Headwear)"
+    kit.notes["headwear_class"] = "hard_hat"   # Headwear meta for A's HardHatHandLift (assemble_characters)
     kit.notes["look"] = ("forklift driver B: yellow hi-vis vest (silver tape) over a charcoal canvas work jacket, "
                          "black cargo trousers, black safety boots, blue hard hat")
 

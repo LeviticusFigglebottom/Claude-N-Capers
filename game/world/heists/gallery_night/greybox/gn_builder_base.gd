@@ -28,31 +28,25 @@ const PREFAB_CLASSES: Dictionary = {
 }
 ## Prop catalog (tools/blender/props, PropCatalog): asset id -> scene.
 const CATALOG_DIR: String = "res://world/props/"
-## Visual tile edge (m) for the big horizontal slabs (floors, roofs, grade): the Compatibility renderer lights a mesh
-## instance with at most 8 omni / spot lights (rendering/limits/opengl/max_lights_per_object), so one 44 x 30 m floor
-## box overlapped by every key light on its floor kept 8 arbitrary ones and whole rooms' floors (TR, LD) rendered
-## black. The collider stays one box (navmesh and collision unchanged); only the mesh is tiled.
+## Kept for the callers' signatures (box(..., tile)): the G2 art accumulator tiles every room's floors and long walls
+## itself (gn_art.gd, the Compatibility renderer's 8-lights-per-mesh limit).
 const SLAB_TILE: float = 6.0
 ## Visual step boxes overlap their higher neighbour by this much (no ray-through seams).
 const SEAM: float = 0.02
-## Building surface classes -> material library (greybox kit materials).
-const LIB_MATS: Dictionary = {
-	"wall": "grey_wall", "wall_ext": "grey_wall_ext", "floor": "grey_floor", "ceiling": "grey_ceiling",
-	"roof": "grey_ceiling", "stair": "grey_stair", "counter": "grey_counter", "prop": "grey_prop",
-	"trim": "grey_trim", "glass": "grey_glass", "frame": "grey_frame", "door": "grey_door",
-}
-## Site surface classes (greybox flat colours, one per class; meta greybox = true). Ids resolve to a bullet
-## surface through surface_map.json (asphalt / paving by name, court_stone by the `stone` keyword).
-const SITE_MATS: Dictionary = {
-	"asphalt": Color(0.1, 0.1, 0.11), "paving": Color(0.52, 0.5, 0.47), "court_stone": Color(0.6, 0.57, 0.5),
-}
+## Visual steps stop this far inside the flight's sides (the collision ramp keeps the full width).
+const STEP_INSET: float = 0.005
+## G2 art pass (GN-C2): library materials per surface class and room finish, merged world-UV visuals.
+const A: GDScript = preload("res://world/heists/gallery_night/greybox/gn_art.gd")
+const AS: GDScript = preload("res://world/heists/gallery_night/greybox/gn_art_site.gd")
+const GV: GDScript = preload("res://world/heists/gallery_night/greybox/gn_visuals.gd")
+const DR: GDScript = preload("res://world/heists/gallery_night/greybox/gn_dress.gd")
 
 var map_root: HeistMap = null
 var errors: PackedStringArray = PackedStringArray()
 ## Projected nav obstructions for props and prefabs: [corners (PackedVector3Array), elevation, height].
 var obstructions: Array[Array] = []
-var _lib_cache: Dictionary = {}
-var _site_cache: Dictionary = {}
+## The art pass (gn_art.gd): box() sends every face to its room's merged visual.
+var art: RefCounted = null
 var _box_mesh_cache: Dictionary = {}
 var _box_shape_cache: Dictionary = {}
 var _scene_cache: Dictionary = {}
@@ -77,38 +71,25 @@ static func yaw_basis(yaw_deg: float) -> Basis:
 	return Basis(Vector3.UP, deg_to_rad(yaw_deg))
 
 
-func lib_mat(id: String) -> Material:
-	var lib: String = String(LIB_MATS.get(id, ""))
-	if lib == "":
-		return _site_mat(id)
-	if not _lib_cache.has(lib):
-		_lib_cache[lib] = load(MAT_DIR + lib + ".tres") as Material
-	return _lib_cache[lib]
+## Art material key of a greybox surface class used for a whole local mesh (props, rails, steps).
+func art_key(cls: String) -> String:
+	if art.call(&"has_key", cls):
+		return cls
+	match cls:
+		"wall", "wall_ext":
+			return "bone_plaster_painted"
+		"stair":
+			return "terrazzo"
+		"ceiling", "roof", "floor":
+			return "plaster_painted"
+	return String(A.CLASS_MAT.get(cls, "dark_metal_painted"))
 
 
-func _site_mat(id: String) -> Material:
-	if _site_cache.has(id):
-		return _site_cache[id]
-	var m: StandardMaterial3D = StandardMaterial3D.new()
-	m.resource_name = "gn_grey_" + id
-	m.set_meta(&"greybox", true)
-	if SITE_MATS.has(id):
-		m.albedo_color = SITE_MATS[id]
-		m.roughness = 0.9
-	else:
-		errors.append("unknown material class `%s`" % id)
-		m.albedo_color = Color(1.0, 0.0, 1.0)
-	_site_cache[id] = m
-	return m
-
-
-func box_mesh(size: Vector3, mat_id: String) -> BoxMesh:
+## Local box mesh (centred) in the art material of class `mat_id`, cached.
+func box_mesh(size: Vector3, mat_id: String) -> Mesh:
 	var key: String = "%s|%.3f|%.3f|%.3f" % [mat_id, size.x, size.y, size.z]
 	if not _box_mesh_cache.has(key):
-		var bm: BoxMesh = BoxMesh.new()
-		bm.size = size
-		bm.material = lib_mat(mat_id)
-		_box_mesh_cache[key] = bm
+		_box_mesh_cache[key] = art.call(&"local_box_mesh", [[size, Vector3.ZERO, art_key(mat_id)]])
 	return _box_mesh_cache[key]
 
 
@@ -121,11 +102,10 @@ func box_shape(size: Vector3) -> BoxShape3D:
 	return _box_shape_cache[key]
 
 
-## Static box (world_static) from min/max corners: StaticBody3D + CollisionShape3D + MeshInstance3D. Every
-## body gets a mesh (so SurfaceTags.tag_tree can tag it; the generator refuses untagged bodies).
-## tile > 0: the visual is split into an even grid of mesh tiles no wider than `tile` in x / z (one collider still;
-## see SLAB_TILE).
-func box(parent: Node3D, nm: String, mn: Vector3, mx: Vector3, mat_id: String, tile: float = 0.0) -> StaticBody3D:
+## Static box (world_static) from min/max corners: StaticBody3D + CollisionShape3D, tagged with the dominant bullet
+## surface of its drawn faces; the faces go to the art pass (gn_art.vis_box: each face to the merged visual of the room
+## it looks into, by surface class `mat_id` and the room finish). `tile` is unused (the art pass tiles).
+func box(parent: Node3D, nm: String, mn: Vector3, mx: Vector3, mat_id: String, _tile: float = 0.0) -> StaticBody3D:
 	var size: Vector3 = mx - mn
 	if size.x <= 0.001 or size.y <= 0.001 or size.z <= 0.001:
 		return null
@@ -139,26 +119,15 @@ func box(parent: Node3D, nm: String, mn: Vector3, mx: Vector3, mat_id: String, t
 	col.name = "Collision"
 	col.shape = box_shape(size)
 	add(sb, col)
-	var nx: int = maxi(1, ceili(size.x / tile - 0.001)) if tile > 0.0 else 1
-	var nz: int = maxi(1, ceili(size.z / tile - 0.001)) if tile > 0.0 else 1
-	if nx * nz == 1:
-		var mi: MeshInstance3D = MeshInstance3D.new()
-		mi.name = "Mesh"
-		mi.mesh = box_mesh(size, mat_id)
-		add(sb, mi)
-		return sb
-	var ts: Vector3 = Vector3(size.x / nx, size.y, size.z / nz)
-	for ix: int in range(nx):
-		for iz: int in range(nz):
-			var t: MeshInstance3D = MeshInstance3D.new()
-			t.name = "Mesh%02d_%02d" % [ix, iz]
-			t.mesh = box_mesh(ts, mat_id)
-			t.position = Vector3(-size.x * 0.5 + ts.x * (ix + 0.5), 0.0, -size.z * 0.5 + ts.z * (iz + 0.5))
-			add(sb, t)
+	var w: Transform3D = global_xform(parent)
+	var wmn: Vector3 = w * mn
+	var wmx: Vector3 = w * mx
+	SurfaceTags.tag(sb, art.call(&"box_surface", wmn.min(wmx), wmn.max(wmx), mat_id))
+	art.call(&"vis_box", wmn.min(wmx), wmn.max(wmx), mat_id)
 	return sb
 
 
-## Visual-only box mesh child (no collision) at local min/max corners.
+## Visual-only box mesh child (no collision) at local min/max corners, in the art material of class `mat_id`.
 func mesh_box(parent: Node3D, nm: String, mn: Vector3, mx: Vector3, mat_id: String) -> MeshInstance3D:
 	var mi: MeshInstance3D = MeshInstance3D.new()
 	mi.name = nm
@@ -241,19 +210,35 @@ func ramp(flight: Node3D, x0: float, x1: float, polys: Array) -> void:
 
 
 ## One straight flight along its local +Z from `origin` (first riser line, lower floor level): nr risers of r,
-## (nr - 1) treads of t, width w. Steps are visual meshes (soffit 0.15 m below, or solid down to `solid_y`); the
+## (nr - 1) treads of t, width w. Steps are one visual mesh (soffit 0.15 m below, or solid down to `solid_y`); the
 ## collision is a smooth ramp through the nosings, extended one tread back over the lower floor (validator
 ## convention (b)).
 func flight(parent: Node3D, nm: String, origin: Vector3, yaw: float, w: float, nr: int, r: float, t: float,
-		solid_y: Variant) -> Node3D:
+		solid_y: Variant, mat_id: String = "stair") -> Node3D:
 	var f: Node3D = node3d(nm, origin)
 	f.basis = yaw_basis(yaw)
 	f.set_meta(&"kind", "stairs")
 	add(parent, f)
+	var fx: Transform3D = global_xform(f)
+	var surf: StringName = &""
+	var parts: Array = []
 	for k: int in range(1, nr):
 		var top: float = float(k) * r
 		var lo: float = (float(solid_y) - origin.y) if solid_y != null else top - r - 0.15
-		mesh_box(f, "Step%02d" % k, Vector3(-w * 0.5, lo, float(k - 1) * t), Vector3(w * 0.5, top, float(k) * t + SEAM), "stair")
+		# 5 mm in from the flight's sides: the balustrade panels' faces sit on the flight edges (zfight). One mesh for
+		# the flight's steps (one draw per material, not one per step).
+		var mn: Vector3 = Vector3(-w * 0.5 + STEP_INSET, lo, float(k - 1) * t)
+		var mx: Vector3 = Vector3(w * 0.5 - STEP_INSET, top, float(k) * t + SEAM)
+		parts.append([mx - mn, (mn + mx) * 0.5, art_key(mat_id)])
+		if k == 1:
+			var a: Vector3 = fx * mn
+			var b: Vector3 = fx * mx
+			surf = art.call(&"box_surface", a.min(b), a.max(b), mat_id)
+	if not parts.is_empty():
+		var steps: MeshInstance3D = MeshInstance3D.new()
+		steps.name = "Steps"
+		steps.mesh = art.call(&"local_box_mesh", parts)
+		add(f, steps)
 	var ramp_t: float = 0.3
 	var end_z: float = float(nr - 1) * t
 	if solid_y == null:
@@ -262,12 +247,13 @@ func flight(parent: Node3D, nm: String, origin: Vector3, yaw: float, w: float, n
 	else:
 		var lo2: float = minf(float(solid_y) - origin.y, -ramp_t)
 		ramp(f, -w * 0.5, w * 0.5, [[Vector2(-t, 0.0), Vector2(end_z, float(nr) * r), Vector2(end_z, lo2), Vector2(-t, lo2)]])
+	SurfaceTags.tag(f.get_node("Ramp"), surf)  # PO-8: the steps' material (they are merged art visuals)
 	return f
 
 
 ## Balustrade: a thin full-height collider (true to the visual, next_heist §7.2) with a top-rail mesh.
 func railing(parent: Node3D, nm: String, mn: Vector3, mx: Vector3) -> void:
-	var body: StaticBody3D = box(parent, nm, mn, mx, "trim")
+	var body: StaticBody3D = box(parent, nm, mn, mx, "rail")
 	if body == null:
 		return
 	body.set_meta(&"kind", "railing")

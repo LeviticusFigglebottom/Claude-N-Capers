@@ -7,15 +7,15 @@ rebuild: python3 tools/blender/build.py --category characters --asset char_club_
 edit policy: generated file, never edit by hand; change the script and rebuild
 attach_Back: bone chest, local [0.0000, 0.0953, 0.1364] (model [0.0000, 1.3730, 0.1559], Godot axes, rest pose)
 attach_Head: bone head, local [0.0000, 0.0856, -0.0937] (model [0.0000, 1.7596, -0.0810], Godot axes, rest pose)
-attach_Hip: bone hips, local [0.2747, 0.0314, 0.0303] (model [0.2747, 1.0385, 0.0318], Godot axes, rest pose)
-body_faces_culled: 4740
+attach_Hip: bone hips, local [0.2747, 0.0314, 0.0303] (model [0.2747, 1.0385, 0.0319], Godot axes, rest pose)
+body_faces_culled: 4818
 body_params: {"age": 0.4, "beard_shadow": 0.85, "build": 1.0, "gender": 0.0, "hair": "bald", "hair_color": "dark", "hair_peak": 0.0, "height": 1.88, "lip": "auto", "skin": 6}
 bones: 52
-faces_hidden_by_bomber: 2583
+faces_hidden_by_bomber: 2582
 hip_note: Hip seat = the radio clipped outside the bomber on its ribbed waistband (right hip); the pager rides there
 look: Velvet bouncer: biggest build, bald; black nylon bomber over a black tee, SECURITY across the back, radio clipped on the bomber waistband, black trousers, boots, earpiece
 meshes: Body,Gear,Hair,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 27042
-tris_by_mesh: {"Body": 9264, "Gear": 1312, "Hair": 580, "Outfit": 15886}
+tris: 27016
+tris_by_mesh: {"Body": 9108, "Gear": 1312, "Hair": 580, "Outfit": 16016}

@@ -1,0 +1,31 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"restroom_public"
+purpose = &"restroom"
+required_items = Array[StringName]([&"toilet", &"sink", &"mirror", &"hand_dryer", &"soap_dispenser", &"paper_dispenser", &"light_fixture"])
+optional_items = {
+&"bin": 1,
+&"plant_small": 0.3
+}
+clutter_groups = {}
+min_density = 0.3
+max_density = 1.8
+min_props = 9
+lone_ok_kinds = Array[StringName]([])
+seed_salt = 109
+counts = {
+&"paper_dispenser": Vector2i(2, 3),
+&"sink": Vector2i(2, 2),
+&"toilet": Vector2i(3, 3)
+}
+assets = {
+&"bin": PackedStringArray("prop_bin_small"),
+&"light_fixture": PackedStringArray("prop_downlight"),
+&"mirror": PackedStringArray("prop_mirror_restroom")
+}
+ceiling = {"prop_downlight": 2}
+notes = "PWW / PWM public restrooms: three WCs, a marble vanity with two basins and mirrors, dryer."

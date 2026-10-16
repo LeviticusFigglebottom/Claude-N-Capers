@@ -8,12 +8,12 @@ edit policy: generated file, never edit by hand; change the script and rebuild
 attach_Back: bone chest, local [0.0000, 0.0896, 0.1021] (model [0.0000, 1.3073, 0.1206], Godot axes, rest pose)
 attach_Head: bone head, local [0.0000, 0.0815, -0.0892] (model [0.0000, 1.6754, -0.0771], Godot axes, rest pose)
 attach_Hip: bone hips, local [0.1793, 0.0511, 0.0353] (model [0.1793, 1.0096, 0.0378], Godot axes, rest pose)
-body_faces_culled: 4504
+body_faces_culled: 4578
 body_params: {"age": 0.25, "beard_shadow": 0.5, "build": 0.42, "gender": 0.0, "hair": "side_part", "hair_color": "dark", "hair_peak": 0.0, "height": 1.79, "lip": "auto", "skin": 4}
 bones: 52
 look: Bank officer (gallery level), shirt sleeves: pale blue shirt open at the collar (no tie, sleeves rolled), grey suit trousers, black belt, the bank's red lanyard + ID badge, watch, black glasses
 meshes: Body,Gear,Hair,Headwear,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 26194
-tris_by_mesh: {"Body": 9736, "Gear": 572, "Hair": 1856, "Headwear": 498, "Outfit": 13532}
+tris: 26174
+tris_by_mesh: {"Body": 9588, "Gear": 572, "Hair": 1856, "Headwear": 498, "Outfit": 13660}

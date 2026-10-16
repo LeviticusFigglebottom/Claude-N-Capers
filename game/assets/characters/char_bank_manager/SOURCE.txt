@@ -5,18 +5,18 @@ seed: 3533270816  (zlib.crc32(asset_id))
 generator: Blender 4.5, tools/blender/lib 1.0.0
 rebuild: python3 tools/blender/build.py --category characters --asset char_bank_manager
 edit policy: generated file, never edit by hand; change the script and rebuild
-attach_Back: bone chest, local [0.0000, 0.0922, 0.1177] (model [0.0000, 1.3365, 0.1368], Godot axes, rest pose)
+attach_Back: bone chest, local [0.0000, 0.0922, 0.1178] (model [0.0000, 1.3365, 0.1368], Godot axes, rest pose)
 attach_Head: bone head, local [0.0000, 0.0833, -0.0912] (model [0.0000, 1.7128, -0.0789], Godot axes, rest pose)
-attach_Hip: bone hips, local [0.1967, 0.0522, 0.0366] (model [0.1967, 1.0322, 0.0392], Godot axes, rest pose)
-body_faces_culled: 4812
+attach_Hip: bone hips, local [0.1968, 0.0522, 0.0366] (model [0.1968, 1.0322, 0.0392], Godot axes, rest pose)
+body_faces_culled: 4906
 body_params: {"age": 0.5, "beard_shadow": 0.4, "build": 0.55, "gender": 0.0, "hair": "short", "hair_color": "dark", "hair_peak": 0.0, "height": 1.83, "lip": "auto", "skin": 6}
 bones: 52
-faces_hidden_by_jacket: 2813
-faces_hidden_by_waistcoat: 1241
+faces_hidden_by_jacket: 2841
+faces_hidden_by_waistcoat: 1238
 look: Day manager (keycard carrier): navy three-piece suit, cream shirt, bank-red tie, bank-red lanyard + white keycard, keyhole lapel badge, brass name tag, silver glasses, watch
 meshes: Body,Gear,Hair,Headwear,Outfit
 prop_note: keycard on the lanyard is skinned (Gear); a hand-held keycard prop goes at HandR/Socket
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 28706
-tris_by_mesh: {"Body": 9120, "Gear": 1608, "Hair": 1728, "Headwear": 498, "Outfit": 15752}
+tris: 28598
+tris_by_mesh: {"Body": 8932, "Gear": 1608, "Hair": 1728, "Headwear": 498, "Outfit": 15832}
