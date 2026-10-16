@@ -122,9 +122,10 @@ func _build_markers() -> void:
 	_layout_markers()
 
 
-## PO-4 (audit: point labels overlapped, "Alley … Van: alley west"): each label tries below, above,
-## right and left of its marker and takes the first spot that hits no marker and no placed label;
-## a label with no free spot is hidden and shows while its marker is focused or hovered.
+## PO-4 (audit: point labels overlapped, "Alley … Van: alley west"); lead r222 (blueprints): each label scores 8 spots
+## around its marker (below, above, right, left and the diagonals) by overlap with markers and placed labels (heavy)
+## and with the drawn shape edges (light, so a label does not straddle a street edge) and takes the cheapest. A label
+## whose every spot covers a marker is hidden and shows while its marker is focused or hovered.
 func _layout_markers() -> void:
 	var taken: Array[Rect2] = _zone_label_rects()
 	for pid: Variant in markers:
@@ -132,39 +133,69 @@ func _layout_markers() -> void:
 		var b: Button = markers[pid] as Button
 		b.position = world_to_view(p.get("pos", Vector2.ZERO) as Vector2) - b.size * 0.5
 	_separate_markers()
+	var marker_rects: Array[Rect2] = []
 	for pid: Variant in markers:
-		taken.append((markers[pid] as Button).get_rect().grow(2.0))
+		marker_rects.append((markers[pid] as Button).get_rect().grow(2.0))
+	var edges: Array[Rect2] = _shape_edge_rects()
 	for pid: Variant in markers:
 		var b: Button = markers[pid] as Button
 		var l: Label = marker_labels[pid] as Label
 		l.reset_size()
 		var c: Vector2 = b.position + b.size * 0.5
-		var half: Vector2 = b.size * 0.5
+		var h: Vector2 = b.size * 0.5
+		var w: Vector2 = l.size
 		var spots: Array[Vector2] = [
-			Vector2(c.x - l.size.x * 0.5, c.y + half.y + 2.0),
-			Vector2(c.x - l.size.x * 0.5, c.y - half.y - 2.0 - l.size.y),
-			Vector2(c.x + half.x + 4.0, c.y - l.size.y * 0.5),
-			Vector2(c.x - half.x - 4.0 - l.size.x, c.y - l.size.y * 0.5)]
-		var placed: bool = false
+			Vector2(c.x - w.x * 0.5, c.y + h.y + 2.0), Vector2(c.x - w.x * 0.5, c.y - h.y - 2.0 - w.y),
+			Vector2(c.x + h.x + 4.0, c.y - w.y * 0.5), Vector2(c.x - h.x - 4.0 - w.x, c.y - w.y * 0.5),
+			Vector2(c.x + h.x + 2.0, c.y + h.y), Vector2(c.x - h.x - 2.0 - w.x, c.y + h.y),
+			Vector2(c.x + h.x + 2.0, c.y - h.y - w.y), Vector2(c.x - h.x - 2.0 - w.x, c.y - h.y - w.y)]
+		var best: Vector2 = spots[0]
+		var best_cost: float = INF
+		var best_blocked: bool = true
 		for spot: Vector2 in spots:
-			var r: Rect2 = Rect2(spot, l.size)
-			if not Rect2(Vector2.ZERO, size).encloses(r) and size != Vector2.ZERO:
+			var r: Rect2 = Rect2(spot, w)
+			if size != Vector2.ZERO and not Rect2(Vector2.ZERO, size).encloses(r):
 				continue
-			var hit: bool = false
+			var blocked: bool = false
+			var cost: float = 0.0
+			for m: Rect2 in marker_rects:
+				if m.intersects(r):
+					blocked = true
+					cost += 1e6
 			for t: Rect2 in taken:
 				if t.intersects(r):
-					hit = true
-					break
-			if not hit:
-				l.position = spot
-				taken.append(r)
-				placed = true
-				break
-		if not placed:
-			l.position = spots[0]
-		l.set_meta(&"crowded", not placed)
-		l.visible = placed
+					cost += 1000.0 + t.intersection(r).get_area()
+			for e: Rect2 in edges:
+				if e.intersects(r):
+					cost += 1.0 + e.intersection(r).get_area() * 0.1
+			if cost < best_cost:
+				best_cost = cost
+				best = spot
+				best_blocked = blocked
+		l.position = best
+		taken.append(Rect2(best, w))
+		l.set_meta(&"crowded", best_blocked)
+		l.visible = not best_blocked
 	queue_redraw()
+
+
+## Thin rects (view px) along the edges of the shapes drawn on this floor: label placement avoids sitting on lines.
+func _shape_edge_rects() -> Array[Rect2]:
+	var out: Array[Rect2] = []
+	if board == null or size == Vector2.ZERO:
+		return out
+	var s: float = float(_transform()["scale"])
+	for sh: Dictionary in board.blueprint.shapes:
+		var fl: int = int(sh.get("floor", -1))
+		if fl >= 0 and fl != floor_index:
+			continue
+		var r: Rect2 = sh.get("rect", Rect2()) as Rect2
+		var vr: Rect2 = Rect2(world_to_view(r.position), r.size * s)
+		out.append(Rect2(vr.position - Vector2(1, 1), Vector2(vr.size.x + 2, 2)))
+		out.append(Rect2(Vector2(vr.position.x - 1, vr.end.y - 1), Vector2(vr.size.x + 2, 2)))
+		out.append(Rect2(vr.position - Vector2(1, 1), Vector2(2, vr.size.y + 2)))
+		out.append(Rect2(Vector2(vr.end.x - 1, vr.position.y - 1), Vector2(2, vr.size.y + 2)))
+	return out
 
 
 ## GN-B1 capture: two points a couple of meters apart (Gallery Night's portico entry and limo escape) drew
