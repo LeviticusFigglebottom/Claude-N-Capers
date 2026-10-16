@@ -121,6 +121,8 @@ CLIPS = {
     "mug_carry_walk": {"frames": 34, "loop": True, "speed": 1.3, "priority": 4},
     "mop": {"frames": 120, "loop": True, "speed": 0.0, "priority": 4},
     "sit_bed_read": {"frames": 300, "loop": True, "speed": 0.0, "priority": 4, "events": {"page_turn": 221}},
+    # D-116: Kessler in the bedside armchair (shadow_ledger.md), the sit_bed_read book and page turn seated like sit_chair
+    "sit_chair_read": {"frames": 300, "loop": True, "speed": 0.0, "priority": 2, "events": {"page_turn": 221}},
     # cartel gunmen: hunched idle with a long gun held low across the body (weapon at HandR/Socket)
     "idle_thug": {"frames": 105, "loop": True, "speed": 0.0, "priority": 4},
     # police rappel (QC-41, NpcMotor one-way rappel links): one hop per loop down a vertical rope, facing the wall,
@@ -238,6 +240,8 @@ CLIPS = {
     "interact_mid_armed": {"frames": 60, "loop": True, "speed": 0.0, "priority": 1},
     "interact_high_armed": {"frames": 60, "loop": True, "speed": 0.0, "priority": 1},
     "throw_bag_armed": {"frames": 30, "loop": False, "speed": 0.0, "priority": 1, "events": {"release": 15}},
+    # D-116 (DB-4): seated with a long gun across the lap (cartel / armed guard seat posts; sit_chair's seat and feet)
+    "sit_chair_armed": {"frames": 140, "loop": True, "speed": 0.0, "priority": 2},
     # D-116 third-person crew states (_anim_crew3p, SOURCE `crew_states`): akimbo firing set, downed actions, cuffed
     "aim_akimbo": {"frames": 90, "loop": True, "speed": 0.0, "priority": 2},
     "fire_akimbo": {"frames": 9, "loop": False, "speed": 0.0, "priority": 2, "events": {"shot": 0}},

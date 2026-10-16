@@ -10,6 +10,9 @@
 ##     bone filter A uses for hold_<kind>, SOURCE weapon_holds); [--turn=deg]: every rig turned further (90 = profile)
 ##     [--bags=light,medium,heavy]: per bot, that loot bag (world/props/loot_bag/prop_loot_bag_<size>.tscn) at
 ##     Back/Socket with character_spec.gd BACK_BAG_OFFSETS[size] (A's carried-bag visual)
+##     [--props=book,...]: that hand prop (world/characters/_props/hand_<prop>.tscn, at its own socket) on every bot
+##     [--chair=res://...tscn] [--chair_off=x,y,z]: a chair under every bot (its origin at the rig's, turned with it,
+##     offset in the rig's space), for the seated clips
 ## Owner: ENV D.
 extends Node
 
@@ -42,6 +45,14 @@ var _layer: String = ""
 var _turn: float = 0.0
 ## --bags=<size>,...: a carried bag per bot ("" = none)
 var _bags: PackedStringArray = []
+## --props / --chair / --chair_off
+var _props: PackedStringArray = []
+var _chair: String = ""
+var _chair_off: Vector3 = Vector3.ZERO
+## --close_h=<m>: the close-up camera's height and look-at height (seated bodies: ~0.7)
+var _close_h: float = 1.12
+## --debug_surfaces: every mesh surface of the rigs in its own flat colour (the legend is printed): find a stray piece
+var _debug_surfaces: bool = false
 
 
 func _ready() -> void:
@@ -54,6 +65,13 @@ func _ready() -> void:
 			"layer": _layer = v
 			"turn": _turn = float(v)
 			"bags": _bags = v.split(",")
+			"props": _props = v.split(",")
+			"chair": _chair = v
+			"close_h": _close_h = float(v)
+			"debug_surfaces": _debug_surfaces = true
+			"chair_off":
+				var c: PackedStringArray = v.split(",")
+				_chair_off = Vector3(float(c[0]), float(c[1]), float(c[2]))
 			"after": _poses = AFTER_POSES
 			"poses":   # --poses=interact_low:0.6,drill_place:0.8 (any clips, the same for every bot)
 				_poses = []
@@ -93,10 +111,18 @@ func _ready() -> void:
 		rig.rotate_y(deg_to_rad(28.0 * signf(lane) if lane != 0.0 else 0.0))
 		rig.rotate_y(deg_to_rad(_turn))
 		_attach(rig, StringName(spec[1]), ^"Skeleton3D/HandR/Socket")
+		for prop: String in _props:
+			_attach_prop(rig, prop)
+		if not _chair.is_empty():
+			var chair: Node3D = (load(_chair) as PackedScene).instantiate() as Node3D
+			rig.add_child(chair)
+			chair.position = _chair_off
 		if i < _bags.size() and not _bags[i].is_empty():
 			_attach_bag(rig, _bags[i])
 		if spec[2] == &"akimbo":
 			_attach(rig, StringName(spec[1]), ^"Skeleton3D/HandL/Socket")
+		if _debug_surfaces:
+			_paint_surfaces(rig)
 		rigs.append(rig)
 	var cam: Camera3D = Camera3D.new()
 	cam.fov = 55.0
@@ -122,8 +148,8 @@ func _ready() -> void:
 		cam.current = true
 		var full: Image = await _shot()
 		full.save_png("%s/%s.png" % [_out, pose[0]])
-		cam.global_position = mid + Vector3.UP * 1.25 - fwd * (1.45 + 0.75 * (rigs.size() - 2))
-		cam.look_at(mid + Vector3.UP * 1.12)
+		cam.global_position = mid + Vector3.UP * (_close_h + 0.13) - fwd * (1.45 + 0.75 * (rigs.size() - 2))
+		cam.look_at(mid + Vector3.UP * _close_h)
 		var close: Image = await _shot()
 		close.save_png("%s/%s_close.png" % [_out, pose[0]])
 		rows.append([full, close])
@@ -156,6 +182,40 @@ func _attach_bag(rig: Node3D, size: String) -> void:
 	var bag: Node3D = ps.instantiate() as Node3D
 	socket.add_child(bag)
 	bag.position = Spec.BACK_BAG_OFFSETS.get(size, Vector3.ZERO) as Vector3
+
+
+## --debug_surfaces: a flat colour per (mesh, surface), the legend printed as [SURF] mesh/surface material colour.
+func _paint_surfaces(rig: Node3D) -> void:
+	var palette: Array[Color] = [Color.RED, Color.LIME, Color.BLUE, Color.YELLOW, Color.MAGENTA, Color.CYAN,
+		Color.ORANGE, Color.PURPLE, Color.WHITE, Color.BLACK, Color.DARK_GREEN, Color.PINK]
+	var i: int = 0
+	for n: Node in rig.find_children("*", "MeshInstance3D", true, false):
+		var mi: MeshInstance3D = n as MeshInstance3D
+		if mi.mesh == null:
+			continue
+		for s: int in mi.mesh.get_surface_count():
+			var col: Color = palette[i % palette.size()]
+			var mat: StandardMaterial3D = StandardMaterial3D.new()
+			mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+			mat.albedo_color = col
+			var src: Material = mi.get_active_material(s)
+			print("[SURF] %s/%d %s %s" % [mi.name, s, src.resource_path.get_file() if src != null else "-", col.to_html(false)])
+			mi.set_surface_override_material(s, mat)
+			i += 1
+
+
+## AnimDriver HandProps: the prop scene under its socket with an identity transform.
+func _attach_prop(rig: Node3D, prop: String) -> void:
+	var ps: PackedScene = load("res://world/characters/_props/hand_%s.tscn" % prop) as PackedScene
+	if ps == null:
+		push_warning("crew hold review: no hand prop %s" % prop)
+		return
+	var inst: Node3D = ps.instantiate() as Node3D
+	var socket: Node3D = rig.get_node_or_null(NodePath("Skeleton3D/%s/Socket" % String(inst.get_meta("socket", "HandR"))))
+	if socket == null:
+		inst.free()
+		return
+	socket.add_child(inst)
 
 
 func _pose(rig: Node3D, clip: String, t: float) -> void:

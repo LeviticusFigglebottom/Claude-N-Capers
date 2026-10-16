@@ -24,6 +24,18 @@ ENV A/B's (``HandR/Socket``); the slung gun is a simplified, original non-weapon
   boots. Sling (left shoulder) and a leather shell bandolier (right shoulder) crossed on the
   chest; pump-gun slung on the back.
 
+D-116 (6-12 posted gunmen + 4 reinforcements; no pair of twins at a post):
+
+* ``char_cartel_gunman_d``: a woman in her 30s, mid skin, dark hair pinned up in a bun. Cream fisherman's
+  roll-neck under the black quilted puffer vest, a flare-orange gaiter round the neck, drab cargo trousers, tall
+  green rubber boots, fingerless gloves. Sling across the chest; no slung gun.
+* ``char_cartel_gunman_e``: a big heavy man, deep skin, heavy stubble. Flare-orange oilskin work jacket with a
+  corduroy collar, cream watch-cap beanie, drab cargos, rubber boots, fingerless gloves. Sling with shell loops,
+  pump-gun slung on the back.
+* ``char_cartel_gunman_f``: a slim young man, light skin. Graphite beanie and a graphite gaiter pulled over the
+  nose (balaclava read), a graphite knit pull-over under the black puffer vest, black cargos, brown work boots,
+  fingerless gloves. Sling across the chest; no slung gun.
+
 Meshes: ``Body`` (covered skin removed), ``Hair``, ``Outfit``, ``Gear``, ``Headwear`` (beanie; hood
 + gaiter; moustache). No blend shapes (baked at the params below). Seats in SOURCE.txt
 (``attach_*``); the ``Back`` seat sits on the garment, inside the slung gun on A and C (enemies
@@ -50,6 +62,12 @@ VARIANTS = {
                              "hair": "buzz", "hair_color": "dark", "look": "hood"},
     "char_cartel_gunman_c": {"height": 1.73, "build": 0.45, "gender": 0.0, "age": 0.78, "skin": 2, "beard_shadow": 0.6,
                              "hair": "buzz", "hair_color": "grey", "look": "deckhand"},
+    "char_cartel_gunman_d": {"height": 1.70, "build": 0.55, "gender": 1.0, "age": 0.38, "skin": 3,
+                             "hair": "side_part", "hair_color": "dark", "look": "deck_woman"},
+    "char_cartel_gunman_e": {"height": 1.86, "build": 1.0, "gender": 0.0, "age": 0.45, "skin": 5, "beard_shadow": 0.95,
+                             "hair": "buzz", "hair_color": "dark", "look": "smock"},
+    "char_cartel_gunman_f": {"height": 1.79, "build": 0.25, "gender": 0.0, "age": 0.24, "skin": 1, "beard_shadow": 0.3,
+                             "hair": "buzz", "hair_color": "brown", "look": "balaclava"},
 }
 
 WAX = "char_cartel_wax_rust"
@@ -159,7 +177,75 @@ def deckhand(kit: Kit) -> None:
                          "boots, bare head + moustache; sling and shell bandolier crossed, slung pump-gun")
 
 
-_looks = {"dockhand": dockhand, "hood": hood, "deckhand": deckhand}
+def _cargos_boots(kit: Kit, belt_z: float) -> Mesh:
+    k = kit.k
+    tr = g.trousers(kit.fit, CARGO, belt_z + 0.022 * k, hem_r=0.064, base=0.0085, hull=kit.hull()).mesh
+    straighten_loop(tr, g.classify_loops(tr)["top"], iters=3)
+    cg.rubber_boots(kit, tr, RUBBER, top_z=0.34)
+    kit.add_soft(tr)
+    cg.cargo_pockets(kit, tr, CARGO, z=0.58)
+    return tr
+
+
+def deck_woman(kit: Kit) -> None:
+    fit, k = kit.fit, kit.k
+    hips_z, belt_z = _z(kit)
+    _cargos_boots(kit, belt_z)
+    cg.fingerless_gloves(kit, "char_leather_black")
+    knit = g.knit_top(fit, kit.hull(), KNIT_CREAM, hips_z - 0.05 * k, neck="roll", base=0.011)
+    kit.add_soft(knit)
+    soft, zipm = g.gilet(fit, kit.hull(), PUFFER, hips_z + 0.06 * k, base=0.014, quilt=0.012)
+    kit.add_soft(soft)
+    kit.add_gear(zipm)
+    cg.neck_gaiter(kit, FLARE, t0=0.10, t1=0.85, radial=0.016)
+    loop = cg.StrapLoop(kit, -1.0, fit.ring_centre("waist").z - 0.01 * k)
+    loop.build(kit, WEBBING, 0.019, 0.004)
+    kit.add_head(contact.chignon(fit, "char_hair_dark", size=0.8))
+    kit.notes["hat"] = "bare head, dark hair in a bun (Headwear)"
+    kit.notes["look"] = ("deck_woman: cream roll-neck under a black puffer vest, flare-orange gaiter, drab cargos, "
+                         "green rubber boots, fingerless gloves; sling across the chest")
+
+
+def smock(kit: Kit) -> None:
+    fit, k = kit.fit, kit.k
+    hips_z, belt_z = _z(kit)
+    _cargos_boots(kit, belt_z)
+    cg.fingerless_gloves(kit, "char_leather_black")
+    cg.work_jacket(kit, OILSKIN, CORD, hips_z - 0.075 * k, 1.36 * k)
+    loop = cg.StrapLoop(kit, -1.0, fit.ring_centre("waist").z - 0.02 * k)
+    strap = loop.build(kit, WEBBING, 0.020, 0.004)
+    cg.shell_row(kit, strap, loop.front, 0.40, 0.72, 8, 0.004, SHELL)
+    _gun_note(kit, cg.slung_gun(kit, loop, 1.24, WOOD, GUNMETAL))
+    kit.add_head(cg.beanie(fit, KNIT_CREAM))
+    kit.notes["hat"] = "cream knit watch-cap beanie (Headwear)"
+    kit.notes["look"] = ("smock: flare-orange oilskin work jacket, cream beanie, drab cargos, green rubber boots, "
+                         "fingerless gloves; sling + shell loops, slung pump-gun")
+
+
+def balaclava(kit: Kit) -> None:
+    fit, k = kit.fit, kit.k
+    hips_z, belt_z = _z(kit)
+    boots = g.shoes(fit, "char_shoe_brown", "rubber_black", top_z=0.15, base=0.007, boot=True)
+    kit.add_soft(boots)
+    tr = n.trousers(kit, "char_trousers_black", boots, belt_z + 0.022 * k, hem_r=0.062)
+    cg.cargo_pockets(kit, tr, "char_trousers_black", z=0.57)
+    cg.fingerless_gloves(kit, "char_leather_black", cuff_len=0.05)
+    knit = g.knit_top(fit, kit.hull(), KNIT_DARK, hips_z - 0.05 * k, neck="roll", base=0.010)
+    kit.add_soft(knit)
+    soft, zipm = g.gilet(fit, kit.hull(), PUFFER, hips_z + 0.07 * k, base=0.014, quilt=0.012)
+    kit.add_soft(soft)
+    kit.add_gear(zipm)
+    loop = cg.StrapLoop(kit, -1.0, fit.ring_centre("waist").z - 0.01 * k)
+    loop.build(kit, WEBBING, 0.019, 0.004)
+    kit.add_head(cg.gaiter_up(fit, KNIT_DARK))
+    kit.add_head(cg.beanie(fit, KNIT_DARK))
+    kit.notes["hat"] = "graphite beanie + gaiter pulled over the nose: a balaclava read (Headwear)"
+    kit.notes["look"] = ("balaclava: graphite beanie and gaiter over the nose, graphite knit pull-over, black puffer "
+                         "vest, black cargos, brown work boots, fingerless gloves; sling across the chest")
+
+
+_looks = {"dockhand": dockhand, "hood": hood, "deckhand": deckhand, "deck_woman": deck_woman, "smock": smock,
+          "balaclava": balaclava}
 
 
 def recipe(kit: Kit) -> None:

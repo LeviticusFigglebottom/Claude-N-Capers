@@ -4,13 +4,18 @@
 ## HandR/HandL/Head/Back/Hip BoneAttachment3D markers with a Socket), that every surface resolves to
 ## a library material, the triangle budget, plausible heights, that they wear no insignia / uniform
 ## materials (police, TAC, security, faction or livery ids), that every one wears the sling and that
-## exactly two of the three carry the slung long gun on the back. Regenerate with
+## the slung long gun on the back marks the gunmen who carry it (D-116: 3 of the 6 looks). Regenerate with
 ## tools/blender/characters/assemble.sh.
 extends TestCase
 
 const Spec: GDScript = preload("res://world/characters/_tools/character_spec.gd")
 
-const GUNMEN: Array[String] = ["char_cartel_gunman", "char_cartel_gunman_b", "char_cartel_gunman_c"]
+const GUNMEN: Array[String] = [
+	"char_cartel_gunman", "char_cartel_gunman_b", "char_cartel_gunman_c", "char_cartel_gunman_d", "char_cartel_gunman_e",
+	"char_cartel_gunman_f",
+]
+## the looks with a slung long gun on the back (the others' long gun is the held one)
+const SLUNG: Array[String] = ["char_cartel_gunman", "char_cartel_gunman_c", "char_cartel_gunman_e"]
 const TRI_BUDGET: int = 35000
 const MIN_HEIGHT: float = 1.6
 const MAX_HEIGHT: float = 2.0
@@ -157,7 +162,7 @@ func test_no_insignia_or_uniform_materials() -> void:
 		root.queue_free()
 
 
-## The 30 m read: every gunman wears the sling; exactly two carry the slung long gun on the back,
+## The 30 m read: every gunman wears the sling; exactly the SLUNG looks carry the slung long gun on the back,
 ## and it rises above the shoulders.
 func test_sling_and_slung_gun() -> void:
 	var with_gun: Array[String] = []
@@ -184,4 +189,7 @@ func test_sling_and_slung_gun() -> void:
 			assert_true(top > 0.84 * h, "%s: gun barrel above the shoulders (%.3f of %.3f m)" % [id, top, h])
 			assert_true(back_z > 0.1, "%s: slung gun on the back (+Z, %.3f)" % [id, back_z])
 		root.queue_free()
-	assert_eq(with_gun.size(), 2, "two of three carry a slung gun: %s" % [with_gun])
+	with_gun.sort()
+	var want: Array[String] = SLUNG.duplicate()
+	want.sort()
+	assert_eq(with_gun, want, "the slung gun on exactly %s" % [want])
