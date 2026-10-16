@@ -333,6 +333,12 @@ func has_asset(asset_id: StringName) -> bool:
 	return _runtime != null and _runtime.preplan != null and _runtime.preplan.has_asset(asset_id)
 
 
+## DB-6 (QC-25 director hook): open / close the map's SNIPER_PERCH TacticalPoints tagged `tag` for the director's
+## Longshots (SpecialSpawner.set_perches_open). Returns how many perches matched.
+func set_sniper_perches_open(tag: StringName, open: bool) -> int:
+	return SpecialSpawner.set_perches_open(_runtime, tag, open) if Net.is_authority() else 0
+
+
 ## The effects of this run's rolled rare events: {event id: effects Dictionary} (HeistVariantTable.rare_events).
 func rare_effects() -> Dictionary:
 	var out: Dictionary = {}

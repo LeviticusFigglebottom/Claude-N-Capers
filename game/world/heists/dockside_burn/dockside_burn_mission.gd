@@ -46,6 +46,8 @@ const RARE_EXTRA_CONTAINER: StringName = &"extra_container"
 const RARE_POLICE_TIPPED: StringName = &"police_tipped"
 const RARE_REINFORCEMENTS: StringName = &"cartel_reinforcements"
 const RARE_FOG: StringName = &"fog_lifts"
+## DB-6: the S3 viaduct perch (Variants/Group_perch_viaduct, tag `s3`): police-only, usable once the fog lifts.
+const TAG_PERCH_FOG: StringName = &"s3"
 ## Briefing recap at the start (the contact, then Mercer; doc VO ids, D-051).
 const BRIEFING: Array[Array] = [[&"reyes", &"vo.reyes.briefing_dockside_burn_1"], [&"reyes", &"vo.reyes.briefing_dockside_burn_2"],
 	[&"reyes", &"vo.reyes.briefing_dockside_burn_3"], [&"mercer", &"vo.mercer.briefing_dockside_burn_1"],
@@ -218,6 +220,7 @@ func _schedule_rare_events() -> void:
 	if _rare(RARE_REINFORCEMENTS) and difficulty >= Enums.Difficulty.HAZARDOUS:
 		schedule_at(REINFORCEMENTS_AT_S, &"reinforcements", _on_reinforcements)
 	if _rare(RARE_FOG):
+		set_sniper_perches_open(TAG_PERCH_FOG, false)  # DB-6: no Longshot on S3 while the fog is in
 		schedule_at(FOG_LIFTS_AT_S, &"fog_lifts", _on_fog_lifts)
 
 
@@ -243,6 +246,7 @@ func _on_reinforcements() -> void:
 
 
 func _on_fog_lifts() -> void:
+	set_sniper_perches_open(TAG_PERCH_FOG, true)  # DB-6 (QC-25): the director's Longshots may take S3 now
 	say(&"vo.mercer.dockside_burn_fog_lifts")
 	var we: WorldEnvironment = get_node_or_null(^"../Lighting/WorldEnvironment") as WorldEnvironment
 	if we != null and we.environment != null:
