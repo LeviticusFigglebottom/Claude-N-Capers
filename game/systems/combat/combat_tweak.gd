@@ -204,6 +204,17 @@ static var _cached: CombatTweak = null
 @export var shotgun_panic_range_m: float = 12.0
 @export var shotgun_panic_cone_deg: float = 40.0
 
+@export_group("Limb hitboxes (D-123)")
+## Capsule radius of the upper-arm / thigh hitboxes on a rigged NPC (a little over ENV D's ragdoll capsules,
+## 0.051 / 0.077 m, for clothing) ◇. Length = the bone's rest length to its child joint (fallback below).
+@export var limb_upper_arm_radius_m: float = 0.065
+@export var limb_thigh_radius_m: float = 0.09
+@export var limb_upper_arm_length_m: float = 0.30
+@export var limb_thigh_length_m: float = 0.43
+## A shot that lands on the BODY hull is followed this far along its line, through the hull, to find the limb box
+## it passes inside (the hull still decides the hit and its damage; the probe only names the flinch sub-zone).
+@export var limb_probe_depth_m: float = 0.7
+
 static func data() -> CombatTweak:
 	if _cached == null:
 		_cached = load(PATH) as CombatTweak

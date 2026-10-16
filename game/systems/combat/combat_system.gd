@@ -5,6 +5,7 @@
 ##   { "seq": int, "weapon_slot": int (Enums.WeaponSlot), "weapon_id": StringName,
 ##     "origin": Vector3, "direction": Vector3,
 ##     "hits": [ { "target_id": int, "zone": int (Enums.HitZone), "distance": float, "position": Vector3,
+##                 "limb": StringName (optional, D-123 NpcLimbHitboxes.SUB_*: flinch sub-zone, never damage),
 ##                 "target": Object (server-local claims only; stripped before an RPC) } ] }
 ## `hits` holds one entry per pellet that struck a damageable hitbox (empty = miss/world hit).
 ## validate_and_apply() checks (in order) the shooter's state (S1.1 casing, CUSTODY...), shot seq,
@@ -126,6 +127,9 @@ static func _apply_hit(shooter: CrewController, w: CrewWeapons, ws: int, origin:
 	info["blocked"] = false
 	info["wall_pierced"] = through_wall
 	info["range_m"] = dist  # PO6-19: shotgun pellets push bodies only at close range
+	var limb: StringName = NpcLimbHitboxes.sanitize(hit.get("limb"), int(info["zone"]))
+	if limb != &"":
+		info["limb"] = limb  # D-123: the limb box's flinch sub-zone (damage is the BODY hit's)
 	var npc: NpcBase = target as NpcBase
 	var was_corpse: bool = npc != null and not npc.alive
 	var res: Dictionary = deliver_hit(target, info, shooter.net_id)

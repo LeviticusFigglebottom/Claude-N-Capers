@@ -113,6 +113,10 @@ const HIT_SHOULDER_R: StringName = &"hit_shoulder_r"
 const HIT_LEG_L: StringName = &"hit_leg_l"
 const HIT_LEG_R: StringName = &"hit_leg_r"
 const HIT_ZONE_CLIPS: Array[StringName] = [HIT_HEAD, HIT_CHEST, HIT_SHOULDER_L, HIT_SHOULDER_R, HIT_LEG_L, HIT_LEG_R]
+## D-123: DamageInfo `limb` sub-zone (NpcLimbHitboxes.SUB_*, a limb box hit; zone BODY) -> its flinch.
+const LIMB_CLIPS: Dictionary = {
+	&"shoulder_l": HIT_SHOULDER_L, &"shoulder_r": HIT_SHOULDER_R, &"leg_l": HIT_LEG_L, &"leg_r": HIT_LEG_R,
+}
 ## SOURCE hit_zones: a LIMB hit above the hips joint (root-space y, m at 1.78 m x motion_scale) is a shoulder hit.
 const HIT_ZONE_HIPS_Y_M: float = 0.95
 ## Damage types whose `zone` / `position` name a point on the body (explosions, fire, gas... use the direction set).
@@ -1148,13 +1152,18 @@ func _on_damage_applied(victim_net_id: int, _attacker: int, info: Dictionary) ->
 
 ## characters.md v1.18 (SOURCE `hit_zones:`): the flinch for damage `info` from its `zone` and hit `position` in the
 ## body's root space: HEAD -> hit_head, BODY -> hit_chest, LIMB above the hips joint -> hit_shoulder_l / _r, below ->
-## hit_leg_l / _r (left = root-space x < 0). &"" when no zone is known (no `zone`, WEAKPOINT, a type other than
+## hit_leg_l / _r (left = root-space x < 0). D-123: a `limb` sub-zone (upper-arm / thigh hitbox, zone BODY) wins
+## on a BODY / LIMB hit: shoulder_l / _r -> hit_shoulder_l / _r, leg_l / _r -> hit_leg_l / _r.
+## &"" when no zone is known (no `zone`, WEAKPOINT, a type other than
 ## bullet / melee, a LIMB hit without a position) or the rig lacks the clip: the directional hit_react* set plays.
 func hit_zone_clip(info: Dictionary) -> StringName:
 	if not info.has("zone") or not HIT_ZONE_TYPES.has(int(info.get("type", Enums.DamageType.BULLET))):
 		return &""
 	var out: StringName = &""
+	var limb: StringName = StringName(info.get("limb", &""))
 	match int(info["zone"]):
+		Enums.HitZone.BODY, Enums.HitZone.LIMB when LIMB_CLIPS.has(limb):
+			out = LIMB_CLIPS[limb]  # D-123: a limb box's sub-zone (zone BODY) names its shoulder / leg flinch
 		Enums.HitZone.HEAD:
 			out = HIT_HEAD
 		Enums.HitZone.BODY:

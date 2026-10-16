@@ -736,10 +736,14 @@ func _hitscan(origin: Vector3, dir: Vector3, tw: CombatTweak, wall_pierce: bool 
 	if target == null or target == _crew:
 		return {}
 	var pos: Vector3 = hit.get("position", origin)
-	return {
+	var rec: Dictionary = {
 		"target_id": NetIds.of(target as Node), "target": target, "zone": Damage.zone_of(col),
 		"distance": origin.distance_to(pos), "position": pos,
 	}
+	var limb: StringName = NpcLimbHitboxes.limb_at(col, pos, dir, _crew.get_world_3d().direct_space_state)
+	if limb != &"":
+		rec["limb"] = limb  # D-123: flinch sub-zone only (the zone stays BODY)
+	return rec
 
 
 static func _is_penetrable(collider: Variant) -> bool:
