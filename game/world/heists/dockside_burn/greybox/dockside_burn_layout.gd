@@ -365,11 +365,17 @@ const SHEDS: Array = [
 # --- Site -----------------------------------------------------------------------------------
 
 ## Walkable ground (top 0.0 unless stated): [name, box, material]. The Pier 9 deck is split round the
-## quay-steps recess (x 56-58, z 40.3-44).
+## quay-steps recess (x 56-58, z 40.3-44) and, for the pre-planning blueprint (D-115: the exporter
+## reads the ground slabs by name), into the X1 yard (z -34..0, drawn as yard/alley), the X2 west lane,
+## the shed base, the X3 east apron and the X4 quay (Pier9, drawn as quay). One deck, one level (FFL 0.0).
 const GROUND: Array = [
-	["Pier9", [-8.0, -2.6, -34.0, 56.0, 0.0, 44.0], "concrete"],
-	["Pier9Recess", [56.0, -2.6, -34.0, 58.0, 0.0, 40.3], "concrete"],
-	["Pier9East", [58.0, -2.6, -34.0, 62.0, 0.0, 44.0], "concrete"],
+	["Yard", [-8.0, -2.6, -34.0, 62.0, 0.0, 0.0], "concrete"],
+	["WestLane", [-8.0, -2.6, 0.0, 0.0, 0.0, 32.0], "concrete"],
+	["Pier9Shed", [0.0, -2.6, 0.0, 48.0, 0.0, 32.0], "concrete"],
+	["Pier9Apron", [48.0, -2.6, 0.0, 56.0, 0.0, 32.0], "concrete"],
+	["Pier9", [-8.0, -2.6, 32.0, 56.0, 0.0, 44.0], "concrete"],
+	["Pier9Recess", [56.0, -2.6, 0.0, 58.0, 0.0, 40.3], "concrete"],
+	["Pier9East", [58.0, -2.6, 0.0, 62.0, 0.0, 44.0], "concrete"],
 	["SlipHead", [62.0, -2.6, -34.0, 72.0, 0.0, -32.0], "concrete"],
 	["RecessFloor", [56.0, -2.6, 43.0, 58.0, LAND, 44.0], "concrete"],
 	["Pier10", [72.0, -2.6, -34.0, 100.0, 0.0, 44.0], "concrete"],
