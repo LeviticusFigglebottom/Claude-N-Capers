@@ -5,8 +5,8 @@
 ## * Pickup: a NORMAL / SWAN_SONG crew member within pickup_radius_m x weapon.ammo_pickup_range_mult
 ##   (horizontal) and pickup_height_m takes the box when at least one weapon is missing ammo. Each of
 ##   their weapons gets round(rand(WeaponStats.ammo_pickup_min, ammo_pickup_max) x
-##   weapon.ammo_pickup_mult[weapon class]) rounds (GameRng &"ammo"; at least 1 when max > 0), capped
-##   at what it is missing (DeployablePrefab.max_ammo), per crew member's own weapons and modifiers.
+##   weapon.ammo_pickup_mult[weapon class] x shotgun ammo ammo_pickup_mult, D-118) rounds (GameRng &"ammo"; at least 1
+##   when max > 0), capped at what it is missing (DeployablePrefab.max_ammo), per crew member's own weapons and modifiers.
 ##   A box nobody can use stays on the floor.
 ## * weapon.kill_ammo_drop {every_n_kills} (Scrounger aced): every n-th kill by that crew member drops an
 ##   extra box (on top of the normal drop roll).
@@ -144,7 +144,8 @@ static func rounds_for(crew: CrewController, ws: int, rng: RandomNumberGenerator
 	var def: WeaponDef = ContentDB.weapon(w.weapon_id(ws))
 	var q: StringName = Enums.weapon_class_qualifier(def.weapon_class) if def != null else &"pistol"
 	var lo: float = minf(st.ammo_pickup_min, st.ammo_pickup_max)
-	var n: float = rng.randf_range(lo, st.ammo_pickup_max) * Modifiers.mult(crew.slot, AMOUNT_KEY, q)
+	var n: float = rng.randf_range(lo, st.ammo_pickup_max) * Modifiers.mult(crew.slot, AMOUNT_KEY, q) \
+		* w.ammo_pickup_mult(ws)  # D-118: shotgun ammo params.ammo_pickup_mult
 	return maxi(int(round(n)), 1)
 
 
