@@ -19,6 +19,7 @@ import math
 
 import _anim as A
 import _anim_humanoid as H
+import _anim_life as life
 from _anim import FPS, TAU, Clip, Pose, Skeleton, Solver, hand_shape, rxd, rzd, v3
 
 #: hold kinds (A maps WeaponDef.weapon_class -> kind, SOURCE ``weapon_holds``) -> loop frames
@@ -96,10 +97,15 @@ def _hold(sk: Skeleton, kind: str, f: int, N: int, shift: bool) -> Pose:
     if shift:
         pose.hip = pose.hip + v3(SHIFT_M * k * w, 0.0, -0.004 * k * abs(w))
         A.add_rot(pose, "spine", A.ryd(-SHIFT_COUNTER_DEG * w))
-    H.look(pose, yaw=14.0 * math.sin(TAU * t / T + 0.9), pitch=-2.0 + 1.5 * math.sin(TAU * 2 * t / T))
+    # D-116 organic pass: glances that hold, the chest and spine following late; the weapon below follows the trunk's
+    # turn a moment late (the arms carry it) and rides the breath
+    lf = life.Life(life.GLANCES[life.GLANCE_ALIAS[kind]], T)
+    lf.head(pose, t, H.look)
+    pivot = v3(0.0, 0.0, 1.35 * k)
+    br = 0.0025 * k * math.sin(TAU * 4.0 * (t - 0.25) / T)
     if kind in SUPPORT:
         at, extra = SUPPORT[kind]
-        R, o = rifle_low_frame(sk, t)
+        R, o = life.lag_weapon(rifle_low_frame(sk, t), pivot, lf, t, br)
         if extra:
             butt = o + R @ (H.RIFLE["butt"] * k)
             R2 = rxd(extra) @ R
@@ -108,15 +114,15 @@ def _hold(sk: Skeleton, kind: str, f: int, N: int, shift: bool) -> Pose:
         H.rifle_support(sk, pose, (R, o), at=at)
         pose.hands["R"] = hand_shape("grip", 0.9)          # finger off the trigger at the low ready
     elif kind == "lmg":
-        wf = lmg_hip_frame(sk, t)
+        wf = life.lag_weapon(lmg_hip_frame(sk, t), pivot, lf, t, br)
         A.hold_weapon(sk, pose, wf, pole=v3(0.8, -0.1, -0.6), twist=0.6)
         H.rifle_support(sk, pose, wf, at=LMG_HIP["left_ik"], pole=v3(-0.5, -0.2, -0.85))
         pose.hands["R"] = hand_shape("grip", 0.9)
     elif kind == "pistol":
-        H.hold_pistol(sk, pose, pistol_low_frame(sk, t))
+        H.hold_pistol(sk, pose, life.lag_weapon(pistol_low_frame(sk, t), pivot, lf, t, br))
         pose.hands["R"] = hand_shape("grip", 0.85)
     else:                                                  # akimbo: a pistol low ready in each hand
-        wf = pistol_low_frame(sk, t)
+        wf = life.lag_weapon(pistol_low_frame(sk, t), pivot, lf, t, br)
         R, o = wf
         o = o + v3(0.11 * k, 0.0, 0.0)
         A.hold_weapon(sk, pose, (R, o), pole=v3(0.55, -0.15, -0.8), twist=0.6)

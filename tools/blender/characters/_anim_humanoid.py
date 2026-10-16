@@ -19,6 +19,7 @@ import math
 import numpy as np
 
 import _anim as A
+import _anim_life as life
 from _anim import (FPS, TAU, Clip, Gait, Keys, Pose, Skeleton, Solver, add_rot, arm_fk, cos_ease, hand_on,
                    hand_shape, hold_weapon, leg_fk, neutral, periodic, plant, pulse, rxd, ryd, rzd, smooth, spine,
                    spring, stand, unit, v3, weapon_frame, wf_point)
@@ -167,10 +168,12 @@ def idle(sk: Skeleton, f: int, N: int) -> Pose:
     pose = neutral(sk)
     shift(sk, pose, t, T, 0.012)
     breathe(pose, t, T / 3.0)
-    look(pose, yaw=4.0 * math.sin(TAU * t / T + 0.6), pitch=1.0 + 0.8 * math.sin(TAU * 2 * t / T))
+    lf = life.Life(life.GLANCES["idle"], T)          # D-116 organic pass: glances that hold, the body following
+    lf.head(pose, t, look)
     for sfx, sx in A.SIDES:
         arm_fk(sk, pose, sfx, add=38.0 - 0.8 * sx * math.sin(TAU * t / T), swing=1.5, flex=13.0, twist=8.0)
         pose.hands[sfx] = hand_shape("relaxed")
+    life.fk_arm_lag(pose, lf, t)
     breathe(pose, t, T / 3.0, 0.5)
     return pose
 
@@ -182,12 +185,16 @@ def idle_alert(sk: Skeleton, f: int, N: int) -> Pose:
     pose = neutral(sk)
     pose.hip = v3(0.0, -0.01 * k, -0.04 * k)
     stand(sk, pose, spread=0.045, stagger_l=0.07, stagger_r=-0.05, yaw_l=7, yaw_r=12)
-    scan = math.sin(TAU * t / T)
-    spine(pose, lean=6.0, chest_lean=2.0, twist=3.0 * scan, chest_twist=5.0 * scan, hips=(1, 0, 0))
-    look(pose, yaw=26.0 * scan, pitch=1.0 + 2.0 * math.sin(TAU * 2 * t / T))
+    spine(pose, lean=6.0, chest_lean=2.0, hips=(1, 0, 0))
+    # D-116 organic pass: the head glances and holds, the chest and spine follow it late, the weight shifts once per
+    # loop, the arms trail the trunk's turn (they used to sweep with one sine, locked to the head)
+    lf = life.Life(life.GLANCES["idle_alert"], T)
+    lf.weight(sk, pose, t, shift, 0.010)
+    lf.head(pose, t, look)
     for sfx, sx in A.SIDES:
         arm_fk(sk, pose, sfx, add=30.0, swing=14.0, flex=48.0 + 4.0 * math.sin(TAU * 2 * t / T), twist=14.0)
         pose.hands[sfx] = hand_shape("loose_fist", 0.8)
+    life.fk_arm_lag(pose, lf, t)
     breathe(pose, t, T / 4.0, 1.1)
     return pose
 
@@ -676,7 +683,8 @@ def gaits(table: dict) -> dict[str, Gait]:
         return Gait(speed=table[name]["speed"], frames=table[name]["frames"], **kw)
     out = {
         "walk": g("walk", beta=0.6, lift=0.07, drop=0.035, pelvis_yaw=7.0, strike=16.0, toeoff=-30.0,
-                  centre={"L": (0.0, -0.04), "R": (0.0, -0.04)}, arm_swing=17.0, elbow=14.0),
+                  centre={"L": (0.0, -0.04), "R": (0.0, -0.04)}, arm_swing=17.0, elbow=14.0,
+                  upper=lambda sk, pose, ph, f: life.walk_upper(sk, pose, ph, f, arm_lag=0.04)),
         "run": g("run", beta=0.36, lift=0.17, lift_skew=0.6, run=True, drop=0.075, bob=0.028, strike=8.0, toeoff=-40.0,
                  lean=9.0, pelvis_yaw=9.0, pelvis_roll=4.0, arm_swing=34.0, arm_add=30.0, elbow=78.0, elbow_swing=12.0,
                  hand="loose_fist", centre={"L": (0.0, -0.07), "R": (0.0, -0.07)}, sway=0.012, swing_toe_up=12.0,
@@ -1874,6 +1882,11 @@ def sit_chair_read(sk: Skeleton, f: int, N: int) -> Pose:
 #: sit_chair_read: the book's centre from the chest (chest-bone offset, m at 1.78 m) and the extra head pitch (deg)
 CHAIR_BOOK = v3(0.0, 0.30, -0.12)
 CHAIR_READ_HEAD = 20.0
+#: the book raised this far (world up, m at 1.78 m) off the chest offset and its top edge tipped this far (deg)
+#: further toward the face than square to the sight line, as (chair, bed): a reading angle, not flat in the lap; the
+#: reclined bed read already holds it up at the chest, so it only rises clear of the chin
+READ_RAISE = (0.10, 0.03)
+READ_TILT = (34.0, 8.0)
 
 
 def _reading(sk: Skeleton, f: int, N: int, chair: bool) -> Pose:
@@ -1903,8 +1916,8 @@ def _reading(sk: Skeleton, f: int, N: int, chair: bool) -> Pose:
     pre = Solver(sk).solve(pose)
     eye = head_eye(pre, sk)
     off = CHAIR_BOOK if chair else v3(0.0, 0.38, 0.10)
-    o = A.bone_point(pre, sk, "chest", off * k) + v3(0.0, 0.0, 0.006 * k * br)
-    R = facing_frame(o, eye)
+    o = A.bone_point(pre, sk, "chest", off * k) + v3(0.0, 0.0, (READ_RAISE[0 if chair else 1] + 0.006 * br) * k)
+    R = facing_frame(o, eye) @ rxd(READ_TILT[0 if chair else 1])
     prop_hand(sk, pose, "book", R, o, pole=v3(0.8, -0.2, -0.8))
     # left hand: hold -> page corner -> sweep across -> back to the cover
     # (u, point, along, palm) in book space; hand rotations are slerped between the keys
@@ -2097,10 +2110,14 @@ def clips(sk: Skeleton, table: dict) -> dict[str, Clip]:
     import _anim_crew3p as crew3p  # noqa: PLC0415 - D-116 crew akimbo / downed / cuffed states; imports this module
 
     extra.update(crew3p.clips(sk, solver, table))
+    import _anim_loco_holds as loco  # noqa: PLC0415 - D-116 frame-locked locomotion holds; imports this module
+
     out: dict[str, Clip] = {}
     for name, row in table.items():
         N, loop, speed = int(row["frames"]), bool(row["loop"]), float(row["speed"])
         ev = dict(row.get("events", {}))
+        if name in loco.NAMES:
+            continue
         if name in extra:
             out[name] = extra[name]
             continue
@@ -2136,4 +2153,13 @@ def clips(sk: Skeleton, table: dict) -> dict[str, Clip]:
             out[name].floor = int(N * 0.62)
         if name.startswith("death_") or name in ("surrender", "cower", "interact_low", "throw_bag", "melee"):
             out[name].no_sink = True
+    if any(n in table for n in loco.NAMES):
+        # the layers take their base clips' frames: build any base a subset table (review renders) leaves out
+        from anim_humanoid import CLIPS as FULL  # noqa: PLC0415
+
+        missing = {src: FULL[src] for src in loco.GAITS.values() if src not in out}
+        base = dict(out)
+        if missing:
+            base.update(clips(sk, missing))
+        out.update(loco.clips(sk, solver, table, base))
     return out

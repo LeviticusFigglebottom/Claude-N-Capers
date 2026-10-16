@@ -29,6 +29,16 @@ import numpy as np
 from _anim import rxd, v3
 
 
+#: D-116 (PO 2026-10-16): the one-handed pistol / revolver thumb rides high along the frame's left side (the tip ~22 mm
+#: left of the bore line, 16 mm above the grip pivot, under the slide) instead of standing 40 mm off it: cmc / mcp / ip
+#: flex, opposition (deg)
+PISTOL_THUMB = (18.0, -10.0, -10.0, 40.0)
+#: the revolver's thumb a little lower (tip ~8 mm above the grip pivot): along the frame under the cylinder, not into it
+REVOLVER_THUMB = (12.0, -10.0, -10.0, 48.0)
+#: the akimbo Warden .45s (both guns; the hand seats without grip_adjust): the thumb along the frame side, ~17 mm up
+AKIMBO_THUMB = (4.0, -5.0, -20.0, 26.0)
+
+
 @dataclass
 class FPSet:
     """A first-person animation set for one ``WeaponDef.anim_set``."""
@@ -100,7 +110,7 @@ PISTOL = FPSet(
     hip=((0.102, 0.367, -0.107), 12.0, 2.0, -4.0), one_hand=True,
     # lead (P option b): the hand re-seated on the grip, wrist behind / under it and cocked down, so the eye sees the
     # back of the hand and the thumb along the frame; the gun does not move
-    grip_adjust=(-28.0, 12.0), grip_thumb=(10.0, 20.0, 15.0, 30.0),
+    grip_adjust=(-28.0, 12.0), grip_thumb=PISTOL_THUMB,
     ads_dist=0.22, sh=(0.0, 0.06, 0.04), ads_sh=(-0.15, -0.05, -0.20),  # P: elbow straight under the wrist
     pole_l=(-0.22, -0.25, -0.94), pole_l_ads=(-0.22, -0.25, -0.94), pole_r=(0.22, -0.25, -0.94),
     pole_r_ads=(0.0, -0.1, -1.0),
@@ -368,6 +378,7 @@ AKIMBO = FPSet(
     lowered=((0.17, 0.20, -0.47), 6.0, -55.0, -20.0),
     reload_tilt=((0.105, 0.34, -0.15), 10.0, 18.0, -42.0),
     support="akimbo", blade=0.0, blade_ads=0.0, reload="akimbo",
+    grip_thumb=AKIMBO_THUMB,
     recoil={"back": 0.030, "up": 0.012, "pitch": 10.0, "roll": 1.5, "yaw": 0.6},
     recoil_ads={"back": 0.022, "up": 0.007, "pitch": 6.0, "roll": 0.8, "yaw": 0.3},
     mag={"top": 0.087, "bottom": -0.010, "hw": 0.009, "depth": 0.030, "grip": "base"},
@@ -417,7 +428,7 @@ REVOLVER = FPSet(
     hip=((0.102, 0.367, -0.107), 12.0, 2.0, -4.0), one_hand=True,
     # lead (P option b): the hand re-seated on the grip, wrist behind / under it and cocked down, so the eye sees the
     # back of the hand and the thumb along the frame; the gun does not move
-    grip_adjust=(-28.0, 12.0), grip_thumb=(10.0, 20.0, 15.0, 30.0),
+    grip_adjust=(-28.0, 12.0), grip_thumb=REVOLVER_THUMB,
     ads_dist=0.22, sh=(0.0, 0.06, 0.04), ads_sh=(-0.15, -0.05, -0.20),  # P: elbow straight under the wrist
     pole_l=(-0.22, -0.25, -0.94), pole_l_ads=(-0.22, -0.25, -0.94), pole_r=(0.22, -0.25, -0.94),
     pole_r_ads=(0.0, -0.1, -1.0),
