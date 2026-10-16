@@ -21,6 +21,15 @@
 ## NPC away from live NPCs of its heist within StealthTweak.npc_separation_radius_m (veering right when the push
 ## opposes its heading), lets stacked standing CALM NPCs drift apart, and stops short of a target another
 ## NPC already stands on (npc_crowd_*). Neighbours come from a per-physics-frame grid shared by all motors.
+## X-5 hold mark: a brain sets `hold_check` (asked every tick, from the very first one, so nothing pushes the body
+## before the brain has run) or `hold_mark` while its NPC stands idle at an authored activity mark (a teller behind
+## the counter, the jeweler at the bench, a seated clerk, a cartel gunman in his chair). With no target and no
+## yield, a held body does not move_and_slide at all: no idle drift away from a neighbour and no depenetration out of
+## a counter / chair placed right against (or under) the mark, which is where the clip lines up with the prop. It
+## still turns, and settles onto the floor below its root (a ray from just above the feet; a box it starts inside,
+## the chair under a seated NPC, is ignored) instead of falling.
+## X-5 body: every NPC capsule is r 0.30, the navmesh bake's agent_radius (D-025), so a path never hugs a
+## collider closer than the body is wide.
 class_name NpcMotor
 extends Node
 
@@ -70,6 +79,10 @@ var waiting_door: Door = null
 var blocked_door: Door = null
 ## QC-41: descending a rappel link (animation hint for the AnimDriver: &"rappel").
 var rappelling: bool = false
+## X-5: the brain holds this NPC on its activity mark while idle (see the header): a flag, or a check asked each
+## tick (returns bool).
+var hold_mark: bool = false
+var hold_check: Callable = Callable()
 
 var _body: CharacterBody3D = null
 var _agent: NavigationAgent3D = null
@@ -102,7 +115,7 @@ func _ready() -> void:
 	if _body != null and _agent == null:
 		_agent = NavigationAgent3D.new()
 		_agent.name = "NavAgent"
-		_agent.radius = 0.35
+		_agent.radius = 0.3  # X-5: the body capsule = the nav bake's agent_radius (D-025)
 		_agent.height = 1.8
 		_agent.path_desired_distance = 0.5
 		_agent.target_desired_distance = arrive_distance
@@ -164,6 +177,11 @@ func face_point(p: Vector3) -> void:
 		face(p - _body.global_position)
 
 
+## X-5: held on its activity mark (hold_mark or hold_check).
+func holding() -> bool:
+	return hold_mark or (hold_check.is_valid() and bool(hold_check.call()))
+
+
 ## PO-5: true while stepping aside for a crew member (or holding the side spot).
 func yielding() -> bool:
 	return _yield_point != Vector3.INF
@@ -220,6 +238,12 @@ func _physics_step(delta: float) -> void:
 				horiz = _separate(d.normalized()) * speed
 				_turn_toward(d, delta)
 	else:
+		if holding():
+			if face_dir != Vector3.ZERO:
+				_turn_toward(face_dir, delta)
+			_body.velocity = Vector3.ZERO
+			_settle_held(delta)
+			return  # X-5: held on its mark: no drift, no depenetration push
 		horiz = _idle_drift(npc)
 		if face_dir != Vector3.ZERO:
 			_turn_toward(face_dir, delta)
@@ -235,6 +259,20 @@ func _physics_step(delta: float) -> void:
 	else:
 		_body.velocity.y = minf(_body.velocity.y, 0.0)
 	_body.move_and_slide()
+
+
+## X-5: a held body drops onto the floor right below its root (at most gravity's fall this tick), no physics push.
+func _settle_held(delta: float) -> void:
+	var p: Vector3 = _body.global_position
+	var q: PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.create(p + Vector3.UP * 0.25,
+		p + Vector3.DOWN * 0.6, _body.collision_mask, [_body.get_rid()])
+	q.hit_from_inside = false
+	var hit: Dictionary = _body.get_world_3d().direct_space_state.intersect_ray(q)
+	if hit.is_empty():
+		return
+	var drop: float = p.y - (hit["position"] as Vector3).y
+	if drop > 0.001:
+		_body.global_position.y = p.y - minf(drop, maxf(gravity * delta, 0.05))
 
 
 # --- Personal space (PO-10) -----------------------------------------------------------------
