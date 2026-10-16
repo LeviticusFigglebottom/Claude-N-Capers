@@ -106,7 +106,9 @@ func _check_cage_and_hack(map: HeistMap, mission: HeistMission) -> void:
 		return
 	assert_false(_enabled(ht), "hack terminal locked until the cage opens")
 	assert_false(_enabled(drives), "drive sleds locked until the hack")
-	# The saw on the cage lock finishing (device_finished) opens the cage through the mission.
+	# The saw on the cage lock finishing swings the lock (DrillPoint.open_target -> Safe.open_by_device), then reports
+	# device_finished; the mission counts the cage open only once the lock really swung (A SL-6, 1ed923eb).
+	cage.open_by_device()
 	EventBus.device_finished.emit(int(cage.get(&"net_id")))
 	await wait_physics_frames(2)
 	assert_eq(mission.objective_state(&"cage"), Enums.ObjectiveState.COMPLETED, "cage objective")
