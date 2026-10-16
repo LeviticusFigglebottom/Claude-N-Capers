@@ -47,4 +47,8 @@ and reports a gap list; the LEAD folds the gaps in here as rows (id, heist, owne
 | D-7 | GH (PO6-17) | C | heli cabin roof +0.1 m + SniperKneel marker | done (round 220) |
 | A-DB | DB | A / C | A audit (full table: docs/status/env_a.md on env/a-core 4aca399f): DB-1 no assault events (C markers, A rows); DB-2 contraband counts toward the 4 required bags (A); DB-3 cartel reinforcements spawn as plain guards (A); DB-4 thermite bag ignores chosen spawn (C+A); DB-5 count-cage drill 180 s vs doc 120 s (C); DB-6 briefing lines in-mission (A VO lane); DB-7 no music (C); DB-8 padlocks: placed saw 30/45 s per doc (LEAD ruling: doc wins, DB is loud-only); minors 8-19 in A's table | open |
 | A-SL | SL | A / C / B | SL-1 cage saw 180 s vs doc 90 s (A+C); SL-2 camera_warning VO (A); SL-3 literal briefing (C, D-117 §4); SL-4 no music (C); SL-5 drives objective completes at 3 but 2 required (A); SL-6 cage_left_open `requires` at effects level ignored by resolver (B/C); SL-7 E3 zone (C); SL-8 doc lift vs service_lift (C doc); SL-9 lasers line late (A); SL-10 assault events N/A (ruled); SL-11 ambience/LUT (C) | open |
+| B-GN | GN | B (A for logic) | D-115 strings audit vs design doc: briefing, objective lines in order (GN-U5), loot names/values, contact lines, payday (GN-B1) | open |
+| B-DB | DB | B (A for logic) | D-115 strings audit vs design doc (as B-GN) | open |
+| B-SL | SL | B (A for logic) | D-115 strings audit vs design doc (as B-GN) | open |
+| ND-3 | ND | C | secure van at (9, 0, 30): last ~15 m of carry route has no cover (P ND-2: 7 downs in 25 s vs 4-7 enemies); add cover props | open |
 
