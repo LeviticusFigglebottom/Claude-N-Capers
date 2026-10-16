@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="AchievementDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://content/defs/achievement_def.gd" id="1_ach"]
+
+[resource]
+script = ExtResource("1_ach")
+id = &"achievement.gh_whole_consignment"
+name_key = &"achievement.gh_whole_consignment.name"
+desc_key = &"achievement.gh_whole_consignment.desc"
+condition = {"event": &"heist_completed", "heist": &"glasshouse", "objectives_completed": [&"safe_loot"], "all_loot_secured": true, "min_bags": 4, "count": 1}
+unlock = &""
+order = 712
+category = &"glasshouse"
+rewards = Array[StringName]([&"mask_pattern.diamonds"])
+unlocks = Array[StringName]([])
+requires_facts = Array[StringName]([&"heist_result.loot_available"])

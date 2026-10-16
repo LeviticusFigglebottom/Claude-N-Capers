@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="AchievementDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://content/defs/achievement_def.gd" id="1_ach"]
+
+[resource]
+script = ExtResource("1_ach")
+id = &"achievement.sl_measure_twice"
+name_key = &"achievement.sl_measure_twice.name"
+desc_key = &"achievement.sl_measure_twice.desc"
+condition = {"event": &"heist_completed", "heist": &"shadow_ledger", "objectives_completed": [&"cage_code", &"cage"], "facts_not_seen": [{"signal": &"device_started", "args": {1: &"saw"}}], "count": 1}
+unlock = &""
+order = 733
+category = &"shadow_ledger"
+rewards = Array[StringName]([&"mask_base.gasmask"])
+unlocks = Array[StringName]([])
+requires_facts = Array[StringName]([&"objective.cage.open_method"])

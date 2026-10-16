@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="AchievementDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://content/defs/achievement_def.gd" id="1_ach"]
+
+[resource]
+script = ExtResource("1_ach")
+id = &"achievement.db_strip_the_pier"
+name_key = &"achievement.db_strip_the_pier.name"
+desc_key = &"achievement.db_strip_the_pier.desc"
+condition = {"event": &"heist_completed", "heist": &"dockside_burn", "loot_min": {&"loot.cash_bricks": 4, &"loot.weapon_crate": 4, &"loot.contraband": 4}, "min_bags": 12, "all_loot_secured": true, "count": 1}
+unlock = &""
+order = 742
+category = &"dockside_burn"
+rewards = Array[StringName]([&"mask_base.bruiser"])
+unlocks = Array[StringName]([])
+requires_facts = Array[StringName]([&"heist_result.loot_available"])
