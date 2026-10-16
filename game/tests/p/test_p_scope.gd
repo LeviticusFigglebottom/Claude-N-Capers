@@ -104,3 +104,28 @@ func test_sight_picture_sways_and_settles() -> void:
 	assert_true(lag.length() < 0.02, "look-lag sway settles when still (%s deg)" % lag)
 	assert_true(ov.offset.length() < peak, "the sight picture is back near the centre (%.1f px, peak %.1f)" % [
 		ov.offset.length(), peak])
+
+
+## ui_hud.md v1.16: scoped ADS publishes `scoped_ads` + the ocular ring's screen bounds into the local HUD model.
+func test_hud_model_gets_scoped_ads_and_ring() -> void:
+	if FpViewmodelTweak.data().viewmodel_fov_deg <= 0.0:
+		skip("no viewmodel camera")
+		return
+	var c: CrewController = await _launch(&"weapon.osprey_762", &"mod.osprey_scope_4x")
+	var hm: Object = _rt.hud_model
+	if hm == null or not (&"scoped_ads" in hm) or not (&"scope_ring" in hm):
+		skip("LocalHudModel has no scoped_ads / scope_ring yet (ENV A, ui_hud.md v1.16)")
+		return
+	var cv: CrewView = CrewView.of(c)
+	assert_false(bool(hm.get(&"scoped_ads")), "not scoped at the hip")
+	_inp.press(&"aim")
+	assert_true(await wait_until(func() -> bool: return cv.ads_blend > 0.999, 3.0), "aimed")
+	await wait_frames(3)
+	assert_true(bool(hm.get(&"scoped_ads")), "scoped_ads at full ADS")
+	var ring: Rect2 = hm.get(&"scope_ring") as Rect2
+	var size: Vector2 = cv.scope_overlay().size
+	var r: float = FpScopeOverlay.ocular_radius(size)
+	assert_near(ring.size.x, 2.0 * r, 1.0, "ring = the ocular's diameter")
+	assert_true(ring.get_center().distance_to(size * 0.5) < r * 0.2, "ring centred (sway aside)")
+	_inp.release(&"aim")
+	assert_true(await wait_until(func() -> bool: return not bool(hm.get(&"scoped_ads")), 3.0), "cleared on release")
