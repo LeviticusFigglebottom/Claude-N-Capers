@@ -59,14 +59,17 @@ def write_music_track(path: Path, track_id: str, bpm: float, beats_per_bar: int,
                       stingers: dict[str, str], gains: dict[str, float], bars: dict[str, int]) -> None:
     lines: list[str] = ['[gd_resource type="Resource" script_class="MusicTrack" format=3]', ""]
     lines.append('[ext_resource type="Script" path="res://world/audio/music_track.gd" id="1_trk"]')
+    # one ext_resource per file: aliased stems (a stealth-only track reusing a part) share the id
     ids: dict[str, str] = {}
     for name, sp in list(stems.items()) + list(stingers.items()):
+        if sp in ids:
+            continue
         rid = f"m_{name}"
-        ids[name] = rid
+        ids[sp] = rid
         lines.append(f'[ext_resource type="AudioStream" path="{sp}" id="{rid}"]')
 
     def dict_res(d: dict[str, str]) -> str:
-        return ", ".join(f'&"{k}": ExtResource("{ids[k]}")' for k in d)
+        return ", ".join(f'&"{k}": ExtResource("{ids[sp]}")' for k, sp in d.items())
 
     lines += [
         "",
