@@ -52,7 +52,7 @@ func _run() -> void:
 	_rt = await HeistLauncher.launch(&"glasshouse", _seed, Enums.Difficulty.ROUTINE, self,
 		{"skip_casing": true, "crew_ai": true})
 	var budget: float = 1000.0 / float(Engine.physics_ticks_per_second)
-	var nav_map: RID = _rt.get_world_3d().navigation_map
+	var nav_map: RID = (_rt.crew_members()[0] as Node3D).get_world_3d().navigation_map
 	print("[NAVPERF] async_iterations=%s budget=%.2f ms" % [NavigationServer3D.map_get_use_async_iterations(nav_map),
 		budget])
 	for c: CrewController in _rt.crew_members():
