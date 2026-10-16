@@ -35,7 +35,7 @@ Status: APPROVED (lead, 2026-10-10) (D-040)
   The depository safe needs a **saw** (or the drill). The crew holds the basement, which has one stair
   plus the cash lift: a strong but trap-like position.
 - **Difficulty notes:**
-  - Routine: 2 guards + operator (staffed 60%).
+  - Routine: 2–3 guards (2 fixed posts + 0–1 rover, P(no rover) = 0.3) + operator (staffed 60%).
   - Brutal: 3–4 guards + operator, sweeping lasers allowed, and the `armored_car_early` bad event
     enabled.
   - **On Brutal the guard count can exceed the pager cap (4)**, so a ghost run must avoid some
