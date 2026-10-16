@@ -5,6 +5,8 @@
 * ``mod_falchion_extended_mag``   MAGAZINE   -> ``Magwell``     (25 rounds)
 * ``mod_falchion_suppressor``     SUPPRESSOR -> ``Muzzle``      (7.62 can over the brake; own ``Muzzle``)
 * ``mod_falchion_bipod``          FOREGRIP   -> ``Underbarrel`` (folded bipod)
+* ``mod_falchion_collapsed_stock`` STOCK -> ``StockMount`` (light telescoping stock pushed in; hides ``StockStock``; D-118)
+* ``mod_falchion_marksman_stock`` STOCK -> ``StockMount`` (heavy marksman stock, cheek riser + thick pad; hides ``StockStock``; D-118)
 
 Rail optics are the shared ``rail_optics_mods.py``.
 """
@@ -19,6 +21,8 @@ VARIANTS = {
     "mod_falchion_extended_mag": {"part": "mag_ext"},
     "mod_falchion_suppressor": {"part": "suppressor"},
     "mod_falchion_bipod": {"part": "bipod"},
+    "mod_falchion_collapsed_stock": {"part": "stock_light"},
+    "mod_falchion_marksman_stock": {"part": "stock_heavy"},
 }
 
 
@@ -36,6 +40,10 @@ def build(ctx) -> None:
         f.build_suppressor(ctx, mats)
     elif part == "bipod":
         c.build_bipod(ctx, mats, leg_len=0.175)
+    elif part == "stock_light":
+        c.build_collapsed_stock(ctx, mats, 0.140, 0.026, -0.114, 0.0200)
+    elif part == "stock_heavy":
+        c.build_precision_stock(ctx, mats, 0.235, 0.026, -0.114, 0.0200)
     else:
         raise ValueError(f"unknown part {part!r}")
     ctx.source_extra["tris_lod0"] = c.tris_of_scene()

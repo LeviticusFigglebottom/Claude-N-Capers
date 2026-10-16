@@ -1,0 +1,330 @@
+[gd_resource type="Resource" script_class="PreplanBlueprint" format=3]
+
+[ext_resource type="Script" path="res://content/preplanning/preplan_blueprint.gd" id="1_ybjd5"]
+
+[resource]
+script = ExtResource("1_ybjd5")
+heist_id = &"night_deposit"
+bounds = Rect2(-6, -16, 40, 60)
+floor_names = Array[StringName]([&"ui.preplan.floor.basement", &"ui.preplan.floor.ground"])
+shapes = Array[Dictionary]([{
+"floor": -1,
+"kind": &"street",
+"label": &"ui.preplan.bp.night_deposit.harbor_street",
+"rect": Rect2(-6, 22.2, 40, 8)
+}, {
+"floor": -1,
+"kind": &"sidewalk",
+"label": &"",
+"rect": Rect2(26.2, -16, 2.7999992, 36.2)
+}, {
+"floor": -1,
+"kind": &"sidewalk",
+"label": &"",
+"rect": Rect2(-6, 20.2, 35, 2)
+}, {
+"floor": -1,
+"kind": &"sidewalk",
+"label": &"ui.preplan.bp.night_deposit.quay_w",
+"rect": Rect2(-6, 30.2, 12, 3.7999992)
+}, {
+"floor": -1,
+"kind": &"sidewalk",
+"label": &"ui.preplan.bp.night_deposit.quay_e",
+"rect": Rect2(11, 30.2, 23, 3.7999992)
+}, {
+"floor": -1,
+"kind": &"sidewalk",
+"label": &"",
+"rect": Rect2(6, 30.2, 5, 2)
+}, {
+"floor": -1,
+"kind": &"sidewalk",
+"label": &"",
+"rect": Rect2(5.5, 34, 6, 1.4000015)
+}, {
+"floor": -1,
+"kind": &"alley",
+"label": &"ui.preplan.bp.night_deposit.lot_w",
+"rect": Rect2(-6, -15, 22.9, 14.8)
+}, {
+"floor": -1,
+"kind": &"alley",
+"label": &"",
+"rect": Rect2(16.9, -15, 2.1000004, 12.4)
+}, {
+"floor": -1,
+"kind": &"alley",
+"label": &"",
+"rect": Rect2(19, -15, 7.200001, 14.8)
+}, {
+"floor": -1,
+"kind": &"alley",
+"label": &"ui.preplan.bp.night_deposit.warehouse_yard",
+"rect": Rect2(-6, -16, 32.2, 1)
+}, {
+"floor": -1,
+"kind": &"alley",
+"label": &"ui.preplan.bp.night_deposit.wharf_lane",
+"rect": Rect2(29, -16, 5, 38.2)
+}, {
+"floor": -1,
+"kind": &"neighbour",
+"label": &"ui.preplan.bp.night_deposit.pell_chandlery",
+"rect": Rect2(-6, -0.2, 5.8, 20.400002)
+}, {
+"floor": 0,
+"kind": &"building",
+"label": &"",
+"rect": Rect2(-0.2, -0.2, 26.400002, 20.400002)
+}, {
+"floor": 0,
+"kind": &"room",
+"label": &"ui.preplan.bp.night_deposit.b9",
+"rect": Rect2(9, 10, 10, 10)
+}, {
+"floor": 0,
+"kind": &"room",
+"label": &"ui.preplan.bp.night_deposit.b6",
+"rect": Rect2(0, 7.5, 7, 12.5)
+}, {
+"floor": 0,
+"kind": &"room",
+"label": &"ui.preplan.bp.night_deposit.b1",
+"rect": Rect2(0, 0, 7, 6)
+}, {
+"floor": 0,
+"kind": &"room",
+"label": &"ui.preplan.bp.night_deposit.b5",
+"rect": Rect2(0, 6, 26, 1.5)
+}, {
+"floor": 0,
+"kind": &"room",
+"label": &"ui.preplan.bp.night_deposit.b11",
+"rect": Rect2(21, 7.5, 5, 6.5)
+}, {
+"floor": 0,
+"kind": &"room",
+"label": &"ui.preplan.bp.night_deposit.b3",
+"rect": Rect2(16, 0, 5, 6)
+}, {
+"floor": 0,
+"kind": &"room",
+"label": &"ui.preplan.bp.night_deposit.b4",
+"rect": Rect2(21, 0, 5, 6)
+}, {
+"floor": 0,
+"kind": &"room",
+"label": &"ui.preplan.bp.night_deposit.b12",
+"rect": Rect2(21, 14, 5, 6)
+}, {
+"floor": 0,
+"kind": &"room",
+"label": &"ui.preplan.bp.night_deposit.b2",
+"rect": Rect2(10, 2.5, 6, 3.5)
+}, {
+"floor": 0,
+"kind": &"room",
+"label": &"",
+"rect": Rect2(10, 0, 3.5, 2.5)
+}, {
+"floor": 0,
+"kind": &"room",
+"label": &"ui.preplan.bp.night_deposit.b7",
+"rect": Rect2(7, 7.5, 2, 12.5)
+}, {
+"floor": 0,
+"kind": &"room",
+"label": &"ui.preplan.bp.night_deposit.b8",
+"rect": Rect2(9, 7.5, 10, 2.5)
+}, {
+"floor": 0,
+"kind": &"room",
+"label": &"ui.preplan.bp.night_deposit.b10",
+"rect": Rect2(19, 7.5, 2, 12.5)
+}, {
+"floor": 0,
+"kind": &"room",
+"label": &"ui.preplan.bp.night_deposit.g2",
+"rect": Rect2(7, 0, 3, 6)
+}, {
+"floor": 0,
+"kind": &"room",
+"label": &"ui.preplan.bp.night_deposit.b13",
+"rect": Rect2(13.5, 0, 2.5, 2.5)
+}, {
+"floor": 0,
+"kind": &"room",
+"label": &"ui.preplan.bp.night_deposit.b14",
+"rect": Rect2(7, 3.5, 1.5, 2.5)
+}, {
+"floor": 1,
+"kind": &"building",
+"label": &"",
+"rect": Rect2(-0.2, -0.2, 26.400002, 20.400002)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"ui.preplan.bp.night_deposit.g9",
+"rect": Rect2(0, 10, 21, 8)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"",
+"rect": Rect2(0, 18, 8.5, 2)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"",
+"rect": Rect2(12.5, 18, 8.5, 2)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"ui.preplan.bp.night_deposit.g8",
+"rect": Rect2(0, 7.5, 21, 2.5)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"ui.preplan.bp.night_deposit.g1",
+"rect": Rect2(0, 0, 7, 6)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"ui.preplan.bp.night_deposit.g7",
+"rect": Rect2(0, 6, 26, 1.5)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"ui.preplan.bp.night_deposit.g6",
+"rect": Rect2(21, 0, 5, 6)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"ui.preplan.bp.night_deposit.g3",
+"rect": Rect2(10, 0, 4, 6)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"ui.preplan.bp.night_deposit.g4",
+"rect": Rect2(14, 0, 4, 6)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"ui.preplan.bp.night_deposit.g11",
+"rect": Rect2(21, 7.5, 5, 4.5)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"ui.preplan.bp.night_deposit.g12",
+"rect": Rect2(21, 12, 5, 4)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"ui.preplan.bp.night_deposit.g13",
+"rect": Rect2(21, 16, 5, 4)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"ui.preplan.bp.night_deposit.g2",
+"rect": Rect2(7, 0, 3, 6)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"ui.preplan.bp.night_deposit.g5",
+"rect": Rect2(18, 0, 3, 6)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"ui.preplan.bp.night_deposit.g10",
+"rect": Rect2(8.5, 18, 4, 2)
+}])
+points = Array[Dictionary]([{
+"category": &"drop_zone",
+"floor": 1,
+"id": &"pp_drop_lot",
+"label": &"ui.preplan.point.pp_drop_lot",
+"params": {},
+"pos": Vector2(10.6, -2.4)
+}, {
+"category": &"drop_zone",
+"floor": 1,
+"id": &"pp_drop_quay",
+"label": &"ui.preplan.point.pp_drop_quay",
+"params": {},
+"pos": Vector2(14, 32)
+}, {
+"category": &"spawn",
+"floor": 1,
+"id": &"pp_spawn_lot",
+"label": &"ui.preplan.point.pp_spawn_lot",
+"params": {
+"spawn_tag": &"preplan_spawn_lot"
+},
+"pos": Vector2(2.25, -9.75)
+}, {
+"category": &"spawn",
+"floor": 1,
+"id": &"pp_spawn_quay",
+"label": &"ui.preplan.point.pp_spawn_quay",
+"params": {
+"spawn_tag": &"preplan_spawn_quay"
+},
+"pos": Vector2(26.25, 31.4)
+}, {
+"category": &"escape",
+"floor": 1,
+"id": &"pp_escape_van",
+"label": &"ui.preplan.point.pp_escape_van",
+"params": {
+"variant_group": &"escape",
+"variant_slot": &"esc_van_lot"
+},
+"pos": Vector2(2.5, -5.4)
+}, {
+"category": &"escape",
+"floor": 1,
+"id": &"pp_escape_boat",
+"label": &"ui.preplan.point.pp_escape_boat",
+"params": {
+"variant_group": &"escape",
+"variant_slot": &"esc_boat_quay"
+},
+"pos": Vector2(7.5, 36.9)
+}, {
+"category": &"insider",
+"floor": 1,
+"id": &"pp_insider_code",
+"label": &"ui.preplan.point.pp_insider_code",
+"params": {
+"variant_group": &"code_note"
+},
+"pos": Vector2(23, 13)
+}, {
+"category": &"insider",
+"floor": 1,
+"id": &"pp_insider_keycard",
+"label": &"ui.preplan.point.pp_insider_keycard",
+"params": {
+"variant_group": &"keycard"
+},
+"pos": Vector2(2, 8.6)
+}, {
+"category": &"insider",
+"floor": 1,
+"id": &"pp_vent",
+"label": &"ui.preplan.point.pp_vent",
+"params": {
+"variant_group": &"vent_open",
+"variant_slot": &"vent_open"
+},
+"pos": Vector2(16.2, -1.4)
+}, {
+"category": &"insider",
+"floor": 1,
+"id": &"pp_blueprint_cams",
+"label": &"ui.preplan.point.pp_blueprint_cams",
+"params": {
+"variant_group": &"camera"
+},
+"pos": Vector2(12.4, 4.2)
+}])

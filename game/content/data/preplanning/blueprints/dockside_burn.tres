@@ -1,0 +1,374 @@
+[gd_resource type="Resource" script_class="PreplanBlueprint" format=3]
+
+[ext_resource type="Script" path="res://content/preplanning/preplan_blueprint.gd" id="1_05b61"]
+
+[resource]
+script = ExtResource("1_05b61")
+heist_id = &"dockside_burn"
+bounds = Rect2(-12, -46, 80, 108)
+floor_names = Array[StringName]([&"ui.preplan.floor.landing", &"ui.preplan.floor.ground", &"ui.preplan.floor.mezzanine", &"ui.preplan.floor.roof"])
+shapes = Array[Dictionary]([{
+"floor": -1,
+"kind": &"street",
+"label": &"ui.preplan.bp.dockside_burn.ferro_street",
+"rect": Rect2(-12, -46, 80, 12)
+}, {
+"floor": -1,
+"kind": &"sidewalk",
+"label": &"ui.preplan.bp.dockside_burn.pier_9",
+"rect": Rect2(-8, -34, 64, 78)
+}, {
+"floor": -1,
+"kind": &"sidewalk",
+"label": &"",
+"rect": Rect2(56, -34, 2, 74.3)
+}, {
+"floor": -1,
+"kind": &"sidewalk",
+"label": &"",
+"rect": Rect2(58, -34, 4, 78)
+}, {
+"floor": -1,
+"kind": &"sidewalk",
+"label": &"",
+"rect": Rect2(62, -34, 6, 2)
+}, {
+"floor": -1,
+"kind": &"sidewalk",
+"label": &"ui.preplan.bp.dockside_burn.landing_stage",
+"rect": Rect2(52, 44, 10, 4)
+}, {
+"floor": -1,
+"kind": &"sidewalk",
+"label": &"ui.preplan.bp.dockside_burn.pontoon",
+"rect": Rect2(16, 50, 16, 4)
+}, {
+"floor": -1,
+"kind": &"alley",
+"label": &"ui.preplan.bp.dockside_burn.bellweather",
+"rect": Rect2(-12, -34, 4, 78)
+}, {
+"floor": -1,
+"kind": &"neighbour",
+"label": &"",
+"rect": Rect2(-12, -32, 2, 14)
+}, {
+"floor": -1,
+"kind": &"neighbour",
+"label": &"",
+"rect": Rect2(-12, -10, 2, 50)
+}, {
+"floor": 1,
+"kind": &"building",
+"label": &"",
+"rect": Rect2(0, 0, 48, 32)
+}, {
+"floor": 1,
+"kind": &"building",
+"label": &"",
+"rect": Rect2(24, -32, 6, 4)
+}, {
+"floor": 1,
+"kind": &"building",
+"label": &"",
+"rect": Rect2(12, 34, 8, 6)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"ui.preplan.bp.dockside_burn.h",
+"rect": Rect2(18, 0, 30, 10)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"",
+"rect": Rect2(8, 18, 10, 3)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"",
+"rect": Rect2(5, 21, 13, 2)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"ui.preplan.bp.dockside_burn.pk",
+"rect": Rect2(0, 23, 18, 9)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"ui.preplan.bp.dockside_burn.c1",
+"rect": Rect2(18, 10, 14, 14)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"ui.preplan.bp.dockside_burn.c2",
+"rect": Rect2(35, 10, 13, 14)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"ui.preplan.bp.dockside_burn.an",
+"rect": Rect2(26, 24, 22, 8)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"ui.preplan.bp.dockside_burn.pl",
+"rect": Rect2(0, 8, 10, 10)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"ui.preplan.bp.dockside_burn.ws",
+"rect": Rect2(10, 8, 8, 10)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"ui.preplan.bp.dockside_burn.sr",
+"rect": Rect2(18, 24, 8, 8)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"ui.preplan.bp.dockside_burn.qs",
+"rect": Rect2(12, 34, 8, 6)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"ui.preplan.bp.dockside_burn.sp",
+"rect": Rect2(32, 10, 3, 14)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"ui.preplan.bp.dockside_burn.oc",
+"rect": Rect2(0, 6, 18, 2)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"ui.preplan.bp.dockside_burn.o2",
+"rect": Rect2(9, 0, 6, 6)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"ui.preplan.bp.dockside_burn.o1",
+"rect": Rect2(3, 0, 6, 6)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"ui.preplan.bp.dockside_burn.lk",
+"rect": Rect2(0, 18, 5, 5)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"ui.preplan.bp.dockside_burn.gh",
+"rect": Rect2(24, -32, 6, 4)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"ui.preplan.bp.dockside_burn.st",
+"rect": Rect2(0, 0, 3, 6)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"ui.preplan.bp.dockside_burn.j",
+"rect": Rect2(5, 18, 3, 3)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"ui.preplan.bp.dockside_burn.e1",
+"rect": Rect2(15, 3, 3, 3)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"ui.preplan.bp.dockside_burn.lf",
+"rect": Rect2(15, 0, 3, 3)
+}, {
+"floor": 2,
+"kind": &"building",
+"label": &"",
+"rect": Rect2(0, 0, 48, 32)
+}, {
+"floor": 2,
+"kind": &"room",
+"label": &"ui.preplan.bp.dockside_burn.h",
+"rect": Rect2(18, 0, 30, 10)
+}, {
+"floor": 2,
+"kind": &"room",
+"label": &"ui.preplan.bp.dockside_burn.c1",
+"rect": Rect2(18, 10, 14, 14)
+}, {
+"floor": 2,
+"kind": &"room",
+"label": &"ui.preplan.bp.dockside_burn.c2",
+"rect": Rect2(35, 10, 13, 14)
+}, {
+"floor": 2,
+"kind": &"room",
+"label": &"ui.preplan.bp.dockside_burn.an",
+"rect": Rect2(26, 24, 22, 8)
+}, {
+"floor": 2,
+"kind": &"room",
+"label": &"ui.preplan.bp.dockside_burn.sp",
+"rect": Rect2(32, 10, 3, 14)
+}, {
+"floor": 2,
+"kind": &"room",
+"label": &"ui.preplan.bp.dockside_burn.m1",
+"rect": Rect2(9, 0, 6, 6)
+}, {
+"floor": 2,
+"kind": &"room",
+"label": &"ui.preplan.bp.dockside_burn.m2",
+"rect": Rect2(3, 0, 6, 6)
+}, {
+"floor": 2,
+"kind": &"room",
+"label": &"ui.preplan.bp.dockside_burn.mc",
+"rect": Rect2(0, 6, 18, 2)
+}, {
+"floor": 2,
+"kind": &"room",
+"label": &"ui.preplan.bp.dockside_burn.st",
+"rect": Rect2(0, 0, 3, 6)
+}, {
+"floor": 2,
+"kind": &"room",
+"label": &"ui.preplan.bp.dockside_burn.lf",
+"rect": Rect2(15, 0, 3, 3)
+}, {
+"floor": 2,
+"kind": &"room",
+"label": &"ui.preplan.bp.dockside_burn.m3",
+"rect": Rect2(15, 3, 3, 3)
+}, {
+"floor": 3,
+"kind": &"building",
+"label": &"",
+"rect": Rect2(0, 0, 18, 8)
+}, {
+"floor": 3,
+"kind": &"sidewalk",
+"label": &"ui.preplan.bp.dockside_burn.x5",
+"rect": Rect2(3, 0, 15, 8)
+}, {
+"floor": 3,
+"kind": &"sidewalk",
+"label": &"",
+"rect": Rect2(0, 6, 3, 2)
+}, {
+"floor": 3,
+"kind": &"room",
+"label": &"ui.preplan.bp.dockside_burn.hh",
+"rect": Rect2(0, 0, 3, 6)
+}])
+points = Array[Dictionary]([{
+"category": &"spawn",
+"floor": 1,
+"id": &"pp_spawn_gate",
+"label": &"ui.preplan.point.dockside_burn.pp_spawn_gate",
+"params": {},
+"pos": Vector2(33.75, -38.5)
+}, {
+"category": &"spawn",
+"floor": 1,
+"id": &"pp_spawn_lane",
+"label": &"ui.preplan.point.dockside_burn.pp_spawn_lane",
+"params": {
+"spawn_tag": &"preplan_spawn_lane"
+},
+"pos": Vector2(-4.25, -31.5)
+}, {
+"category": &"spawn",
+"floor": 0,
+"id": &"pp_spawn_pontoon",
+"label": &"ui.preplan.point.dockside_burn.pp_spawn_pontoon",
+"params": {
+"spawn_tag": &"preplan_spawn_pontoon"
+},
+"pos": Vector2(24, 52)
+}, {
+"category": &"drop_zone",
+"floor": 1,
+"id": &"pp_drop_gatehouse",
+"label": &"ui.preplan.point.dockside_burn.pp_drop_gatehouse",
+"params": {},
+"pos": Vector2(25.5, -26.6)
+}, {
+"category": &"drop_zone",
+"floor": 1,
+"id": &"pp_drop_lane",
+"label": &"ui.preplan.point.dockside_burn.pp_drop_lane",
+"params": {},
+"pos": Vector2(-2.6, -2.6)
+}, {
+"category": &"drop_zone",
+"floor": 1,
+"id": &"pp_drop_quay",
+"label": &"ui.preplan.point.dockside_burn.pp_drop_quay",
+"params": {},
+"pos": Vector2(16, 37)
+}, {
+"category": &"drop_zone",
+"floor": 2,
+"id": &"pp_drop_platform",
+"label": &"ui.preplan.point.dockside_burn.pp_drop_platform",
+"params": {},
+"pos": Vector2(20, 2.6)
+}, {
+"category": &"escape",
+"floor": 1,
+"id": &"pp_escape_gate",
+"label": &"ui.preplan.point.dockside_burn.pp_escape_gate",
+"params": {
+"variant_group": &"escape",
+"variant_slot": &"esc_van_gate"
+},
+"pos": Vector2(34, -22)
+}, {
+"category": &"escape",
+"floor": 1,
+"id": &"pp_escape_lane",
+"label": &"ui.preplan.point.dockside_burn.pp_escape_lane",
+"params": {
+"variant_group": &"escape",
+"variant_slot": &"esc_van_lane"
+},
+"pos": Vector2(-5, 1.5)
+}, {
+"category": &"escape",
+"floor": 0,
+"id": &"pp_escape_boat",
+"label": &"ui.preplan.point.dockside_burn.pp_escape_boat",
+"params": {
+"variant_group": &"escape",
+"variant_slot": &"esc_boat"
+},
+"pos": Vector2(23, 55.6)
+}, {
+"category": &"drop_zone",
+"floor": 3,
+"id": &"pp_perch_roof",
+"label": &"ui.preplan.point.dockside_burn.pp_perch_roof",
+"params": {
+"variant_group": &"player_perch",
+"variant_slot": &"perch_roof"
+},
+"pos": Vector2(10, 5)
+}, {
+"category": &"drop_zone",
+"floor": 1,
+"id": &"pp_perch_stack",
+"label": &"ui.preplan.point.dockside_burn.pp_perch_stack",
+"params": {
+"variant_group": &"player_perch",
+"variant_slot": &"perch_stack"
+},
+"pos": Vector2(8, -4.6)
+}, {
+"category": &"insider",
+"floor": 1,
+"id": &"pp_gangway",
+"label": &"ui.preplan.point.dockside_burn.pp_gangway",
+"params": {
+"variant_group": &"east_gangway",
+"variant_slot": &"gangway_up"
+},
+"pos": Vector2(60.4, -13)
+}])

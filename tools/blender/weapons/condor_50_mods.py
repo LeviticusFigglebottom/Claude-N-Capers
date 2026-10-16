@@ -6,6 +6,8 @@
 * ``mod_condor_extended_mag``   MAGAZINE   -> ``Magwell``     (eight rounds)
 * ``mod_condor_suppressor``     SUPPRESSOR -> ``Muzzle``      (massive can over the brake; own ``Muzzle``)
 * ``mod_condor_bipod``          FOREGRIP   -> ``Underbarrel`` (folded bipod)
+* ``mod_condor_skeleton_stock`` STOCK -> ``StockMount`` (light open-frame skeleton stock; hides ``StockStock``; D-118)
+* ``mod_condor_precision_stock`` STOCK -> ``StockMount`` (heavy precision stock, cheek riser + thick pad; hides ``StockStock``; D-118)
 """
 
 import _common as c
@@ -19,6 +21,8 @@ VARIANTS = {
     "mod_condor_extended_mag": {"part": "mag_ext"},
     "mod_condor_suppressor": {"part": "suppressor"},
     "mod_condor_bipod": {"part": "bipod"},
+    "mod_condor_skeleton_stock": {"part": "stock_light"},
+    "mod_condor_precision_stock": {"part": "stock_heavy"},
 }
 
 
@@ -37,6 +41,10 @@ def build(ctx) -> None:
         k.build_suppressor(ctx, mats)
     elif part == "bipod":
         c.build_bipod(ctx, mats, leg_len=0.220)
+    elif part == "stock_light":
+        c.build_skeleton_stock(ctx, mats, 0.300, 0.010, -0.128, 0.0150, front_z=-0.044, mat_name="alu")
+    elif part == "stock_heavy":
+        c.build_precision_stock(ctx, mats, 0.380, 0.010, -0.128, 0.0165, front_z=-0.044)
     else:
         raise ValueError(f"unknown part {part!r}")
     ctx.source_extra["tris_lod0"] = c.tris_of_scene()

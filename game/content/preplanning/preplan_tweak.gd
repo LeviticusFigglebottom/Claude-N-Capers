@@ -21,6 +21,8 @@ const DEFAULT_PATH: String = "res://content/data/preplanning/preplan_tweak.tres"
 @export var grid_major_color: Color = Color(0.35, 0.55, 0.78, 0.38)
 @export var line_color: Color = Color(0.72, 0.85, 1.0, 0.9)
 @export var label_color: Color = Color(0.72, 0.85, 1.0, 0.75)
+## Opacity of the paper-coloured plate behind blueprint point labels (lines under a label stay readable as lines).
+@export var label_plate_alpha: float = 0.8
 ## Shape fill per blueprint shape kind.
 @export var shape_fill: Dictionary = {
 	&"building": Color(0.2, 0.36, 0.56, 0.55),

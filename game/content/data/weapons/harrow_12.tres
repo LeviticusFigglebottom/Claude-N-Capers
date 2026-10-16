@@ -49,7 +49,9 @@ mod_slots = {
 1: [&"mod.harrow_muzzle_brake"],
 3: [&"mod.harrow_iron_sights", &"mod.rail_reflex_sight"],
 6: [&"mod.harrow_collapsed_stock", &"mod.harrow_padded_stock"],
-7: [&"mod.harrow_standard_mag", &"mod.harrow_extended_mag"]
+7: [&"mod.harrow_standard_mag", &"mod.harrow_extended_mag"],
+8: [&"mod.rail_laser", &"mod.rail_flashlight", &"mod.rail_combo"],
+11: [&"mod.shotgun_slug", &"mod.shotgun_he", &"mod.shotgun_flechette", &"mod.shotgun_dragons_breath"]
 }
 default_mods = {
 3: &"mod.harrow_iron_sights",

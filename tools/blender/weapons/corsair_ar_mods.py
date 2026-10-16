@@ -5,6 +5,8 @@
 * ``mod_corsair_extended_mag``    MAGAZINE   -> ``Magwell``     (40 rounds, longer, witness window)
 * ``mod_corsair_suppressor``      SUPPRESSOR -> ``Muzzle``      (slips over the flash hider; own ``Muzzle``)
 * ``mod_corsair_vertical_grip``   FOREGRIP   -> ``Underbarrel`` (vertical foregrip)
+* ``mod_corsair_collapsed_stock`` STOCK -> ``StockMount`` (light telescoping stock pushed in; hides ``StockStock``; D-118)
+* ``mod_corsair_tactical_stock`` STOCK -> ``StockMount`` (full stock, cheek riser + recoil pad; hides ``StockStock``; D-118)
 
 Rail optics shared with other rifles are in ``rail_optics_mods.py``.
 """
@@ -19,6 +21,8 @@ VARIANTS = {
     "mod_corsair_extended_mag": {"part": "mag_ext"},
     "mod_corsair_suppressor": {"part": "suppressor"},
     "mod_corsair_vertical_grip": {"part": "grip"},
+    "mod_corsair_collapsed_stock": {"part": "stock_light"},
+    "mod_corsair_tactical_stock": {"part": "stock_heavy"},
 }
 
 
@@ -36,6 +40,10 @@ def build(ctx) -> None:
         c.build_can(ctx, mats, length=0.175, r=0.0190, overlap=k.BRAKE_LEN - 0.004)
     elif part == "grip":
         c.build_vertical_grip(ctx, mats, length=0.080)
+    elif part == "stock_light":
+        c.build_collapsed_stock(ctx, mats, 0.130, 0.025, -0.113, 0.0200)
+    elif part == "stock_heavy":
+        c.build_precision_stock(ctx, mats, 0.205, 0.025, -0.113, 0.0200)
     else:
         raise ValueError(f"unknown part {part!r}")
     ctx.source_extra["tris_lod0"] = c.tris_of_scene()

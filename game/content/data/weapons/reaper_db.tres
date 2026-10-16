@@ -49,7 +49,9 @@ mod_slots = {
 0: [&"mod.reaper_short_barrels"],
 3: [&"mod.reaper_bead_sight", &"mod.reaper_fiber_sight"],
 6: [&"mod.reaper_sawn_stock"],
-7: [&"mod.reaper_shells"]
+7: [&"mod.reaper_shells"],
+8: [&"mod.rail_laser", &"mod.rail_flashlight", &"mod.rail_combo"],
+11: [&"mod.shotgun_slug", &"mod.shotgun_he", &"mod.shotgun_flechette", &"mod.shotgun_dragons_breath"]
 }
 default_mods = {
 3: &"mod.reaper_bead_sight",

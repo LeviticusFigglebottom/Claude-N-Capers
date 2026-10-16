@@ -28,6 +28,12 @@ from lib import geo, uv
 FP_DENSITY = uv.DENSITY_FIRST_PERSON
 
 
+# D-118: on the pistols ``SideRail`` shares the dust-cover rail with ``Underbarrel`` (visual_slots.md). Its basis is
+# turned +90 deg about the bore (Blender +Y), so a rail gadget built "outward = local +X" (rail_gadgets_mods.py) hangs
+# under the frame; local +Y stays forward, so the gadgets' LaserOrigin/LightOrigin still point down the bore.
+DUST_COVER_SIDE_RAIL_ROT = (0.0, math.pi / 2, 0.0)
+
+
 # --- materials ---------------------------------------------------------------------------------
 class Mats:
     """Material slots M_<library_id>. Flat colours are the sRGB placeholders shown in Godot until the
@@ -800,3 +806,138 @@ def side_port_markers(ctx, x: float, y: float, z: float = 0.0, parent=None) -> N
     yaw = math.radians(90.0 - PORT_FORWARD_DEG)
     for marker, side in (("MuzzlePortL", -1.0), ("MuzzlePortR", 1.0)):
         ctx.marker(marker, (side * x, y, z), rotation_euler=(0.0, 0.0, -side * yaw), parent=parent)
+
+
+# --- D-118 weapon audit II: swappable StockStock / StockGrip around the existing geometry --------
+def wrap_part(ctx, objs, marker, part_name: str, marker_pos=(0.0, 0.0, 0.0)):
+    """Make the already-built ``objs`` (each with its children) the stock part ``part_name`` under ``marker`` without
+    moving a vertex: an empty ``part_name`` at the marker origin adopts them, offset by ``-marker_pos`` (the marker's
+    location in the weapon frame), so their world placement and mesh data stay exactly as built. Only valid for
+    objects whose old parent sits at the weapon origin unrotated (the frame / receiver / scene root)."""
+    part = ctx.marker(part_name, (0.0, 0.0, 0.0), parent=marker)
+    for obj in objs:
+        obj.parent = part
+        obj.matrix_parent_inverse.identity()
+        obj.location = Vector(obj.location) - Vector(marker_pos)
+    return part
+
+
+def child(obj, name: str):
+    """The direct child of ``obj`` called ``name`` (KeyError when missing)."""
+    for ch in obj.children:
+        if ch.name == name:
+            return ch
+    raise KeyError(f"{obj.name} has no child {name!r}")
+
+
+def split_off_rear(obj, y_cut: float, name: str, parent=None):
+    """Cut the finished mesh ``obj`` at the plane y = ``y_cut`` (object space) and move everything behind it
+    (y < ``y_cut``) into a new object ``name`` with the same materials, UVs and shading setup. Both cut faces are
+    capped flat (they abut, so the pair looks like the uncut part; either one alone stays closed)."""
+    import bpy
+
+    from lib import scene
+
+    def cut(keep_rear: bool):
+        bm = bmesh.new()
+        bm.from_mesh(obj.data)
+        geom = bm.verts[:] + bm.edges[:] + bm.faces[:]
+        bmesh.ops.bisect_plane(bm, geom=geom, plane_co=(0.0, y_cut, 0.0), plane_no=(0.0, 1.0, 0.0))
+        drop = [f for f in bm.faces if (f.calc_center_median().y < y_cut) != keep_rear]
+        bmesh.ops.delete(bm, geom=drop, context="FACES")
+        bm.faces.ensure_lookup_table()
+        mat = bm.faces[0].material_index if bm.faces else 0
+        made = bmesh.ops.holes_fill(bm, edges=[e for e in bm.edges if e.is_boundary], sides=0)
+        for f in made["faces"]:
+            f.material_index = mat
+        bm.normal_update()
+        return bm
+
+    rear_bm = cut(True)
+    front_bm = cut(False)
+    front_bm.to_mesh(obj.data)
+    front_bm.free()
+    me = bpy.data.meshes.new(name)
+    rear_bm.to_mesh(me)
+    rear_bm.free()
+    for m in obj.data.materials:
+        me.materials.append(m)
+    rear = bpy.data.objects.new(name, me)
+    scene.link(rear, parent)
+    for o in (obj, rear):
+        uv.box_project_object(o, density=FP_DENSITY)
+        geo.mark_sharp(o)
+    geo.add_weighted_normals(rear)
+    return rear
+
+
+def build_skeleton_stock(ctx, mats: Mats, length: float, top_z: float, toe_z: float, hw: float,
+                         front_z: float = -0.030, mat_name: str = "polymer", name: str = "SkeletonStock", parent=None):
+    """Light open-frame skeleton stock (PD2 light option for marksman / sniper rifles: hides better, kicks more);
+    origin = its front face on the mount, extends ``length`` along -Y. One frame with a big lightening cut-out and a
+    thin rubber butt pad."""
+    lg = length
+    outer = [(0.004, top_z - 0.004), (-(lg - 0.012), top_z), (-lg, top_z - 0.008), (-lg, toe_z), (-(lg - 0.022), toe_z),
+             (-0.040, front_z), (0.004, front_z)]
+    hole = [(-0.030, top_z - 0.013), (-(lg - 0.024), top_z - 0.012), (-(lg - 0.024), toe_z + 0.016),
+            (-0.052, front_z + 0.010), (-0.030, front_z + 0.012)]
+    mb = ctx.builder()
+    mb.prism(outer, holes=[hole], axis="X", start=-hw, end=hw, mat=mb.material(getattr(mats, mat_name)()))
+    taper_x(mb, lambda y, z: 0.80 + 0.20 * min(1.0, max(0.0, -y / max(lg, 0.001))))
+    body = finish(mb, name, bevel=0.0025, segments=2, parent=parent)
+    pd = ctx.builder()
+    pd.box((-hw - 0.0005, -lg - 0.010, toe_z + 0.001), (hw + 0.0005, -lg + 0.001, top_z - 0.008),
+           mat=pd.material(mats.rubber()))
+    finish(pd, name + "Pad", bevel=0.0020, segments=2, parent=body)
+    return body
+
+
+def build_grip_sleeve(ctx, mats: Mats, half_depth: float, tan: float, z_top: float, z_bot: float, hw: float,
+                      grow: float = 0.0016, grooves: int = 3, ribs: int = 7, segments: int = 2, name: str = "GripSleeve",
+                      parent=None):
+    """Slip-on rubber grip sleeve (PD2 "rubber grip": steadier, a little bulkier) around a raked pistol grip whose
+    front / back straps run at y = +-``half_depth`` + ``tan`` * z, of half width ``hw``; ``grow`` thick, from
+    ``z_top`` down to ``z_bot``, finger bumps on the front strap and ``ribs`` horizontal ribs on both sides
+    (``segments`` = bevel segments; fewer ribs / segments for a lighter mesh, e.g. the akimbo pair's budget).
+    Origin = ``GripMount`` (the weapon origin)."""
+    n = 6
+    zs = [z_top + (z_bot - z_top) * i / (n - 1) for i in range(n)]
+    prof = [(half_depth + grow + tan * z, z) for z in zs] + [(-half_depth - grow + tan * z, z) for z in reversed(zs)]
+    mb = ctx.builder()
+    rub = mb.material(mats.rubber())
+    w = hw + grow
+    mb.prism(prof, axis="X", start=-w, end=w, mat=rub)
+    for i in range(grooves):
+        z = z_top - (i + 1) * (z_top - z_bot) / (grooves + 1)
+        mb.cylinder(0.0030, 2 * w - 0.003, segments=12, centre=(0.0, half_depth + grow + tan * z - 0.0012, z),
+                    axis="X", mat=rub)
+    for side in (-1.0, 1.0):
+        lo, hi = sorted((side * (w - 0.0002), side * (w + 0.0006)))
+        for k in range(ribs):
+            z = z_top - 0.008 - k * (z_top - z_bot - 0.016) / max(ribs - 1, 1)
+            mb.box((lo, -half_depth + tan * z + 0.004, z - 0.0011), (hi, half_depth + tan * z - 0.004, z + 0.0011),
+                   mat=rub)
+    return finish(mb, name, bevel=0.0010, segments=segments, parent=parent)
+
+
+def build_slim_panels(ctx, mats: Mats, half_depth: float, tan: float, z_top: float, z_bot: float, hw: float,
+                      t: float = 0.0010, inset: float = 0.0040, mat_name: str = "matte", name: str = "SlimPanels",
+                      parent=None):
+    """Thin smooth grip panels (PD2 "slim grip": hides better, a little less steady) on the grip sides at
+    +-``hw`` (straps as in ``build_grip_sleeve``), ``t`` thick, ``inset`` in from the straps, two screws each.
+    Origin = ``GripMount`` (the weapon origin)."""
+    panel = [(half_depth + tan * z_top - inset, z_top), (half_depth + tan * z_bot - inset, z_bot),
+             (-half_depth + tan * z_bot + inset, z_bot), (-half_depth + tan * z_top + inset, z_top)]
+    mb = ctx.builder()
+    m = mb.material(getattr(mats, mat_name)())
+    for side in (-1.0, 1.0):
+        x0, x1 = sorted((side * (hw - 0.0003), side * (hw + t)))
+        mb.prism(panel, axis="X", start=x0, end=x1, mat=m)
+    body = finish(mb, name, bevel=min(0.0008, t * 0.45), segments=1, parent=parent)
+    sc = ctx.builder()
+    st = sc.material(mats.bare())
+    for side in (-1.0, 1.0):
+        for z in (z_top - 0.012, z_bot + 0.012):
+            sc.cylinder(0.0022, 0.0006, segments=12, centre=(side * (hw + t + 0.0002), tan * z, z), axis="X", mat=st)
+    finish(sc, name + "Screws", parent=body)
+    return body
