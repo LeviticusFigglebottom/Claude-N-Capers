@@ -968,3 +968,25 @@ dragon's breath / incendiary), with real behaviour, not only stat deltas.
   penetration), flechette (more pellets, bleed-like DoT), dragon's breath (fire DoT, panic civilians); ammo pickup multipliers
   as data.
 * Values in data (WeaponStats / tweak), documented in pd2_fidelity.md (C-owned doc rows via the LEAD).
+
+## D-119: revert the PO6-10 gun look (2026-10-16, LEAD; product owner)
+The PO saw the flat light-grey first-person guns in the D-118 gadget captures and asked for the earlier look back. PO6-10
+("FP weapons render near-black") is **reverted** and closed as won't-fix:
+* **C:** restore the gun finish parameters from before 68b4e770 (alu_anodized_black, metal_matte, steel_blued, gsr preset)
+  and regenerate their textures. The test/audio files in that commit stay.
+* **P:** the viewmodel gun fill light is off by default (`FpViewmodelTweak` gun fill energy 0, hip and ADS). The code stays
+  so it can be re-enabled, but nothing in the game turns it on.
+* Acceptance: windowed Glasshouse hip shot of the Corsair and the Kestrel side by side with
+  `game/assets/characters/_review/grip_glasshouse_corsair_ar_hip.png` (black guns), reviewed by the LEAD.
+
+### D-118 addendum (2026-10-16, LEAD): shotgun ammo values and per-shot damage
+* **Values:** B's AMMO mod params are the data and override A's `CombatTweak.shotgun_ammo_defaults` placeholders:
+  HE radius 2.0 m; flechette pellets_mult 1.5 with a 4/s bleed; dragon's breath 8/s; range_mult 0.7. A keeps its defaults
+  only as fallbacks for missing keys.
+* **Per-shot damage is preserved when the pellet count changes.** ShotgunAmmo scales per-pellet damage by
+  stock_pellets / new_pellets. A slug (1 pellet) therefore hits for the stock shot's full damage in one ray, and an HE round
+  splits nothing. Flechette's extra pellets share the same per-shot total. Mod `damage` deltas stay per-pellet on the stock
+  count, so they also scale with the rule. This is PD2's model: listed damage is per shot, and the ammo changes how it is
+  delivered.
+* **Pistol SideRail** is the dust-cover rail and its outward axis points down, so pistol gadgets hang under the barrel
+  (visual_slots.md).

@@ -134,7 +134,18 @@ func clear() -> void:
 func get_base_marker(marker: StringName) -> Node3D:
 	if model == null:
 		return null
-	return model.find_child(String(marker), true, false) as Node3D
+	# Mods hang inside the model (under its markers): skip their subtrees so a grip's LeftHandIK or a can's Muzzle
+	# never reads as the base weapon's.
+	for n: Node in model.find_children(String(marker), "", true, false):
+		var in_mod: bool = false
+		for t: Variant in attached:
+			var inst: Node = attached[t] as Node
+			if inst != null and is_instance_valid(inst) and inst.is_ancestor_of(n):
+				in_mod = true
+				break
+		if not in_mod:
+			return n as Node3D
+	return null
 
 
 ## Effective marker: an attached mod's own marker of that name wins (e.g. the suppressor's `Muzzle`,

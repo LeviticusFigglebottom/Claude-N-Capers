@@ -11,7 +11,6 @@
 extends HeistMission
 
 const MIN_DRIVES: int = 2
-const LAST_PAGER: int = 4
 const CAGE_GROUP: StringName = &"cage"
 const ITEM_KEYCARD: StringName = &"item.keycard"
 const ITEM_CODE_NOTE: StringName = &"item.code_note"
@@ -25,7 +24,12 @@ const TAG_HACK: StringName = &"hack"
 const TAG_DRIVES: StringName = &"drives"
 const TAG_LAPTOP: StringName = &"laptop"
 const TAG_STUDY_SAFE: StringName = &"study_safe"
-const TAG_STUDY_DOOR: StringName = &"study_door"
+## D-115 (SL-9): Mercer's lasers line on the first crew approach to the active M3 grid (the rolled laser_pattern
+## slot's LaserGrid; within LASER_HINT_M of the grid, like Gallery Night), before the alarm.
+const TAG_LASERS: StringName = &"art_hall_lasers"
+const LASER_HINT_M: float = 4.0
+const LASER_HINT_V_M: float = 1.0
+const VO_LASERS: StringName = &"vo.mercer.shadow_ledger_lasers"
 const TAG_PAINTINGS: StringName = &"paintings"
 const TAG_ARCHIVE_SAFE: StringName = &"archive_safe"
 const TAG_PRINTOUT: StringName = &"printout"
@@ -39,6 +43,12 @@ const TAG_LOOT_SECURE: StringName = &"loot_secure"
 const RARE_PRINTOUT: StringName = &"ledger_printout"
 const RARE_CAGE_OPEN: StringName = &"cage_left_open"
 const RARE_TIMELOCK: StringName = &"timelock_extended"
+## D-117 §6: Mercer's camera warning, the first time any camera's meter on any crew member reaches CAMERA_WARN_METER
+## (before the "!" countdown, which is the point of no return here). Polled from the StealthDirector (server rows for
+## every crew slot; detection_progress only reaches the local / owning peer).
+const VO_CAMERA_WARNING: StringName = &"vo.mercer.shadow_ledger_camera_warning"
+const CAMERA_WARN_METER: float = 0.5
+const CAMERA_POLL_S: float = 0.25
 const TIMELOCK_EXTRA_S: float = 60.0
 ## Strings keys for the escape in Mercer's line (ENV B resolves them).
 const ESCAPE_KEYS: Dictionary = {
@@ -51,9 +61,11 @@ var _laptop_secured: bool = false
 var _drives_secured: int = 0
 var _escape_open: bool = false
 var _lasers_said: bool = false
+var _camera_warned: bool = false
 
 
 func _on_mission_start() -> void:
+	own_last_pager_line = true  # D-117: the heist's last-pager line replaces the generic one
 	say(&"vo.mercer.shadow_ledger_intro")
 	say(&"vo.accountant.shadow_ledger_contact_intro", {}, &"accountant")
 	add_objective(&"casing", &"objective.shadow_ledger.casing", Enums.ObjectiveState.ACTIVE, {"optional": true})
@@ -85,6 +97,8 @@ func _on_mission_start() -> void:
 	on_event(&"item_picked_up", _on_item_picked_up)
 	on_event(&"loot_secured", _on_bag_secured)
 	_setup_variants()
+	_poll_cameras()
+	_watch_lasers()
 
 
 func _on_phase_changed(old_phase: int, new_phase: int) -> void:
@@ -98,7 +112,7 @@ func _on_alarm(_reason: StringName) -> void:
 
 
 func _on_pager_answered(total: int) -> void:
-	if total == LAST_PAGER:
+	if total == pager_cap():
 		say(&"vo.mercer.shadow_ledger_last_pager", {"answered": total})
 
 
@@ -143,9 +157,6 @@ func _on_interaction_completed(interactable_net_id: int, _crew_slot: int, _kind:
 	elif _is_tagged(interactable_net_id, TAG_CAGE):
 		# The code path opens the lock at once (the saw reports device_finished).
 		_open_cage()
-	elif _is_tagged(interactable_net_id, TAG_STUDY_DOOR) and not _lasers_said:
-		_lasers_said = true
-		say(&"vo.mercer.shadow_ledger_lasers")
 	elif _is_tagged(interactable_net_id, TAG_LAPTOP):
 		if objective_state(&"laptop") == Enums.ObjectiveState.ACTIVE:
 			complete(&"laptop")
@@ -218,11 +229,15 @@ func _on_hack_done() -> void:
 	activate(&"drives")
 
 
+## D-115 (SL-5, doc: 2 of 3 drive bags are required): [drives] completes once MIN_DRIVES bags are taken (or none
+## are left, for a map with fewer sleds).
 func _check_drives() -> void:
 	var left: int = 0
+	var taken: int = 0
 	for d: Node in find_tagged(TAG_DRIVES):
 		left += int(d.get(&"remaining"))
-	if left <= 0 and objective_state(&"drives") == Enums.ObjectiveState.ACTIVE:
+		taken += int(d.get(&"count")) - int(d.get(&"remaining"))
+	if (taken >= MIN_DRIVES or left <= 0) and objective_state(&"drives") == Enums.ObjectiveState.ACTIVE:
 		complete(&"drives")
 
 
@@ -247,6 +262,68 @@ func _try_escape() -> void:
 	var tag: StringName = _escape_tag()
 	say(&"vo.mercer.shadow_ledger_escape", {"escape": ESCAPE_KEYS.get(tag, &"ui.escape.heli")})
 	activate_escape(tag)
+
+
+# --- Camera warning (D-117) -------------------------------------------------------------------
+
+func _poll_cameras() -> void:
+	if _camera_warned or went_loud:
+		return
+	var rt: HeistRuntime = HeistRuntime.of(self)
+	var st: StealthDirector = rt.stealth if rt != null else null
+	if st != null:
+		var top: float = 0.0
+		for slot: int in range(Net.MAX_CREW):
+			for e: Dictionary in st.detection_entries(slot):
+				if int(e.get("kind", -1)) == Enums.ObserverKind.CAMERA:
+					top = maxf(top, float(e.get("value", 0.0)))
+		_on_camera_meter(top)
+	if not _camera_warned:
+		start_timer(&"camera_watch", CAMERA_POLL_S, _poll_cameras)
+
+
+## The highest camera meter on the crew right now (0..1): Mercer warns once, before the alarm.
+func _on_camera_meter(value: float) -> void:
+	if _camera_warned or went_loud or value < CAMERA_WARN_METER:
+		return
+	_camera_warned = true
+	say(VO_CAMERA_WARNING)
+
+
+# --- Lasers line (SL-9) -----------------------------------------------------------------------
+
+## A crew-detecting box around each active grid (the inactive laser_pattern slots are freed by the resolver): the grid
+## extents grown by LASER_HINT_M horizontally, so the whole 6.8 m wide grid is covered, not just its centre.
+func _watch_lasers() -> void:
+	for g: Node in find_tagged(TAG_LASERS):
+		var grid: Node3D = g as Node3D
+		if grid == null:
+			continue
+		var size: Vector3 = Vector3(2.0, 2.0, 0.1)
+		var s: Variant = grid.get(&"size_m")
+		if s is Vector3:
+			size = s
+		var area: Area3D = Area3D.new()
+		area.name = "LasersHintArea"
+		area.collision_layer = 0
+		area.collision_mask = 0xFFFFFFFF
+		area.monitorable = false
+		var shape: CollisionShape3D = CollisionShape3D.new()
+		var box: BoxShape3D = BoxShape3D.new()
+		# Horizontal reach LASER_HINT_M; vertically only LASER_HINT_V_M, so the floors above / below never trigger it.
+		box.size = size + Vector3(2.0 * LASER_HINT_M, 2.0 * LASER_HINT_V_M, 2.0 * LASER_HINT_M)
+		shape.shape = box
+		shape.position = Vector3(0.0, size.y * 0.5, 0.0)  # LaserGrid: centred in x / z, beams from y 0 to size_m.y
+		area.add_child(shape)
+		grid.add_child(area)
+		area.body_entered.connect(_on_lasers_area)
+
+
+func _on_lasers_area(body: Node) -> void:
+	if _lasers_said or went_loud or body == null or not body.is_in_group(G.CREW):
+		return
+	_lasers_said = true
+	say(VO_LASERS)
 
 
 # --- Helpers ----------------------------------------------------------------------------------

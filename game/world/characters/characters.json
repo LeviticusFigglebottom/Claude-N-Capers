@@ -461,6 +461,12 @@
 			"test": false
 		},
 		{
+			"asset": "char_npc_cleaner_sl_b",
+			"id": "npc_cleaner_sl_b",
+			"scene": "res://world/characters/npc_cleaner_sl_b/npc_cleaner_sl_b.tscn",
+			"test": false
+		},
+		{
 			"asset": "char_npc_helena_moor",
 			"id": "npc_helena_moor",
 			"scene": "res://world/characters/npc_helena_moor/npc_helena_moor.tscn",

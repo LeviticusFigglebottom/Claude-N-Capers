@@ -46,6 +46,7 @@ base = SubResource("base")
 price = 64000
 unlock_level = 30
 mod_slots = {
+1: [&"mod.brute_full_choke"],
 3: [&"mod.brute_iron_sights", &"mod.rail_reflex_sight"],
 7: [&"mod.brute_drum_20", &"mod.brute_box_8", &"mod.brute_drum_32"]
 }

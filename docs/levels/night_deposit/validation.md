@@ -51,7 +51,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## floating: Nothing floats
 
-- 587 props checked
+- 583 props checked
 
 - WARN `Gameplay/Atms/AtmCash1` @ (22.30, 0.90, 16.88): prop has no geometry or collision; skipped
 - WARN `Gameplay/Atms/AtmCash2` @ (23.40, 0.90, 16.88): prop has no geometry or collision; skipped
@@ -70,7 +70,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## clipping: Nothing clips
 
-- 587 props, 36 doors checked
+- 583 props, 36 doors checked
 
 
 ## orientation: Flush and oriented
@@ -126,12 +126,12 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## slopes: No walkable slope < 50° outside the play mesh
 
-- 429 x 282 columns (0.25 m), 66583 surface samples, 0 collider(s) with reachable walkable surfaces outside play
+- 429 x 282 columns (0.25 m), 66557 surface samples, 0 collider(s) with reachable walkable surfaces outside play
 
 
 ## navmesh: Navmesh
 
-- navmesh: 1832 polygons, cell 0.10/0.10 m
+- navmesh: 1835 polygons, cell 0.10/0.10 m
 - 172 markers checked
 | room | walkable samples | covered | coverage |
 |---|---|---|---|
@@ -140,9 +140,9 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `Rooms/RoomG3` | 51 | 51 | 100% |
 | `Rooms/RoomG4` | 24 | 24 | 100% |
 | `Rooms/RoomG5` | 38 | 38 | 100% |
-| `Rooms/RoomG6` | 58 | 58 | 100% |
+| `Rooms/RoomG6` | 62 | 62 | 100% |
 | `Rooms/RoomG7` | 102 | 102 | 100% |
-| `Rooms/RoomG8` | 25 | 25 | 100% |
+| `Rooms/RoomG8` | 35 | 35 | 100% |
 | `Rooms/RoomG9` | 564 | 564 | 100% |
 | `Rooms/RoomG10` | 17 | 17 | 100% |
 | `Rooms/RoomG11` | 27 | 27 | 100% |
@@ -200,12 +200,12 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## materials: Materials and texel density
 
-- 2702 surfaces checked
+- 2703 surfaces checked
 
 
 ## zfight: Z-fighting
 
-- 419691 triangles checked
+- 418293 triangles checked
 
 
 ## lights: Lighting is deliberate
@@ -226,9 +226,9 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `Rooms/RoomG3` | security_office_bank | 20 | 24.0 | 0.83 |
 | `Rooms/RoomG4` | break_room | 27 | 24.0 | 1.12 |
 | `Rooms/RoomG5` | electrical_closet | 11 | 18.0 | 0.61 |
-| `Rooms/RoomG6` | storage_supplies | 16 | 30.0 | 0.53 |
+| `Rooms/RoomG6` | storage_supplies | 14 | 30.0 | 0.47 |
 | `Rooms/RoomG7` | corridor_service | 14 | 39.0 | 0.36 |
-| `Rooms/RoomG8` | teller_line | 36 | 52.5 | 0.69 |
+| `Rooms/RoomG8` | teller_line | 34 | 52.5 | 0.65 |
 | `Rooms/RoomG9` | banking_hall | 37 | 202.0 | 0.18 |
 | `Rooms/RoomG11` | office_loan | 21 | 22.5 | 0.93 |
 | `Rooms/RoomG12` | office_manager_bank | 24 | 20.0 | 1.20 |
@@ -254,8 +254,8 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 ## variety: Layout variety
 
 - kit `banking_hall`: 1 room(s), 1 distinct layout(s)
-- kit `server_room`: 1 room(s), 1 distinct layout(s)
 - kit `locker_room`: 1 room(s), 1 distinct layout(s)
+- kit `server_room`: 1 room(s), 1 distinct layout(s)
 - kit `break_room`: 1 room(s), 1 distinct layout(s)
 - kit `depository`: 1 room(s), 1 distinct layout(s)
 - kit `exterior_harbor`: 1 room(s), 1 distinct layout(s)
@@ -282,44 +282,44 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## bounds: No void / back faces
 
-- 262 eye samples, 21222 rays, sky yes, 0 void ray(s)
+- 263 eye samples, 21303 rays, sky yes, 0 void ray(s)
 
 
 ## perf: Per-shot performance budget
 
 | camera | draw calls | triangles | shadow lights |
 |---|---|---|---|
-| `TopDownSite` | 1360 | 353026 | 6 |
-| `TopDownBuilding` | 1978 | 716688 | 6 |
-| `ExtHarborFacade` | 2184 | 735832 | 6 |
-| `ExtAtmCorner` | 2321 | 772368 | 6 |
-| `ExtLotSallyPort` | 1575 | 505968 | 6 |
+| `TopDownSite` | 1373 | 355516 | 6 |
+| `TopDownBuilding` | 1981 | 707390 | 6 |
+| `ExtHarborFacade` | 2191 | 726826 | 6 |
+| `ExtAtmCorner` | 2319 | 762510 | 6 |
+| `ExtLotSallyPort` | 1602 | 504260 | 6 |
 | `ExtQuaySteps` | 101 | 37532 | 2 |
-| `ExtWharfLane` | 2102 | 687296 | 6 |
-| `HallFromVestibule` | 1707 | 518324 | 6 |
-| `CompassLandmark` | 2099 | 635472 | 6 |
-| `HallGuardPost` | 1421 | 399054 | 5 |
-| `TellerWorkroom` | 2030 | 602328 | 6 |
-| `StaffCorridor` | 1699 | 534526 | 6 |
-| `SecurityRoom` | 526 | 167174 | 3 |
-| `SallyPort` | 1078 | 326998 | 3 |
-| `StairCore` | 592 | 199240 | 3 |
-| `BasementCorridor` | 1919 | 586410 | 6 |
-| `Antechamber` | 1401 | 414208 | 5 |
-| `VaultInterior` | 494 | 170936 | 4 |
-| `CountDepository` | 903 | 287070 | 3 |
-| `RecordsRoom` | 558 | 212358 | 3 |
-| `PlantAreaway` | 441 | 156816 | 2 |
-| `ManagerOffice` | 721 | 220842 | 0 |
-| `AtmVestibule` | 2279 | 738750 | 6 |
-| `CranePerch` | 2312 | 771364 | 6 |
-| `BreakRoom` | 588 | 189240 | 3 |
-| `SuppliesStore` | 323 | 114060 | 1 |
-| `LoanOffice` | 491 | 147440 | 1 |
-| `CashTransfer` | 224 | 83802 | 1 |
-| `LockerRoom` | 441 | 150128 | 2 |
-| `ServerRoom` | 730 | 241340 | 3 |
-| `InspectionPassage` | 602 | 209032 | 3 |
+| `ExtWharfLane` | 2098 | 677108 | 6 |
+| `HallFromVestibule` | 1700 | 507586 | 6 |
+| `CompassLandmark` | 2102 | 625888 | 6 |
+| `HallGuardPost` | 1410 | 392366 | 5 |
+| `TellerWorkroom` | 2031 | 592546 | 6 |
+| `StaffCorridor` | 1721 | 532128 | 6 |
+| `SecurityRoom` | 533 | 167310 | 3 |
+| `SallyPort` | 1067 | 320078 | 3 |
+| `StairCore` | 586 | 199338 | 3 |
+| `BasementCorridor` | 1898 | 575480 | 6 |
+| `Antechamber` | 1377 | 406248 | 5 |
+| `VaultInterior` | 495 | 171048 | 4 |
+| `CountDepository` | 905 | 287194 | 3 |
+| `RecordsRoom` | 559 | 212470 | 3 |
+| `PlantAreaway` | 423 | 149158 | 2 |
+| `ManagerOffice` | 705 | 213898 | 0 |
+| `AtmVestibule` | 2280 | 728578 | 6 |
+| `CranePerch` | 2314 | 761862 | 6 |
+| `BreakRoom` | 589 | 189358 | 3 |
+| `SuppliesStore` | 306 | 106988 | 1 |
+| `LoanOffice` | 492 | 147552 | 1 |
+| `CashTransfer` | 225 | 83914 | 1 |
+| `LockerRoom` | 442 | 150240 | 2 |
+| `ServerRoom` | 716 | 233504 | 3 |
+| `InspectionPassage` | 603 | 209144 | 3 |
 
 
 ## door_frame_gap: Doors and windows fill their wall openings (no gaps, no clipping)
@@ -340,6 +340,6 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## furniture_logic: Furniture arranged plausibly
 
-- classified: counter 7, chair 4, table 6, desk 7, wall_unit 28, stool 4, visitor_chair 4, desk_chair 7, monitor 3
+- classified: counter 7, chair 4, table 6, desk 7, wall_unit 25, stool 4, visitor_chair 4, desk_chair 7, monitor 3
 - 19 seats, 20 tables/desks/counters, 36 doors checked
 

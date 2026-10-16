@@ -82,13 +82,35 @@ func _tile(i: int) -> Button:
 	row.offset_left = UiTokens.S3
 	row.offset_right = -UiTokens.S3
 	b.add_child(row)
-	var icon: HubStationIcon = HubStationIcon.new()
-	icon.kind = _slot.glyph
-	icon.color = UiTokens.PAPER_DIM
-	icon.tile_color = UiTokens.INK_0
-	icon.custom_minimum_size = Vector2(56, 56)
-	icon.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	row.add_child(icon)
+	var accent: Color = _slot.get_item_accent(i)
+	if accent.a > 0.0:
+		var strip: ColorRect = ColorRect.new()
+		strip.name = "Accent"
+		strip.color = accent
+		strip.custom_minimum_size = Vector2(4, 56)
+		strip.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		strip.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		row.add_child(strip)
+	var tex: Texture2D = _slot.get_item_icon(i)
+	if tex != null:
+		# Lead queue: an item's own picture (heister portrait) instead of the slot glyph.
+		var pic: TextureRect = TextureRect.new()
+		pic.name = "Picture"
+		pic.texture = tex
+		pic.custom_minimum_size = Vector2(56, 56)
+		pic.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		pic.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		pic.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		pic.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		row.add_child(pic)
+	else:
+		var icon: HubStationIcon = HubStationIcon.new()
+		icon.kind = _slot.glyph
+		icon.color = UiTokens.PAPER_DIM
+		icon.tile_color = UiTokens.INK_0
+		icon.custom_minimum_size = Vector2(56, 56)
+		icon.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		row.add_child(icon)
 	var v: VBoxContainer = UiBuild.vbox(UiTokens.S1)
 	v.alignment = BoxContainer.ALIGNMENT_CENTER
 	v.size_flags_horizontal = Control.SIZE_EXPAND_FILL

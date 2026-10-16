@@ -452,7 +452,10 @@ def build_prism_scope(ctx, mats: Mats, parent=None, name: str = "PrismScope"):
 
 
 def build_vertical_grip(ctx, mats: Mats, length: float = 0.075, parent=None, name: str = "Foregrip"):
-    """Vertical foregrip; origin = underside rail surface (``Underbarrel``), hangs along -Z."""
+    """Vertical foregrip; origin = underside rail surface (``Underbarrel``), hangs along -Z.
+
+    Lead (vgrip plan): carries a ``LeftHandIK`` marker at the palm contact (grip centreline, 45 % down), so with the
+    grip equipped the support hand goes to the grip (a mod's marker wins over the base weapon's)."""
     mb = ctx.builder()
     poly = mb.material(mats.polymer())
     mb.box((-0.0125, -0.020, -0.010), (0.0125, 0.020, 0.0), mat=poly)    # clamp
@@ -463,7 +466,9 @@ def build_vertical_grip(ctx, mats: Mats, length: float = 0.075, parent=None, nam
         z = -0.025 - i * 0.016
         mb.box((-0.010, 0.013, z - 0.003), (0.010, 0.0165, z + 0.003), mat=poly)
     mb.cylinder(0.0145, 0.006, segments=24, centre=(0.0, 0.0, -length - 0.002), axis="Z", mat=poly)
-    return finish(mb, name, bevel=0.0015, segments=2, parent=parent)
+    grip = finish(mb, name, bevel=0.0015, segments=2, parent=parent)
+    ctx.marker("LeftHandIK", (0.0, 0.0, -length * 0.45), parent=grip)
+    return grip
 
 
 def build_bipod(ctx, mats: Mats, leg_len: float = 0.17, parent=None, name: str = "Bipod"):
@@ -739,3 +744,59 @@ def cone_z(mb, r, z0, z1, mat, segments=12):
         f.material_index = mat
     f = bm.faces.new(list(reversed(ring)))
     f.material_index = mat
+
+
+# --- D-118 weapon audit: shared stock options and ported muzzle devices ------------------------
+def build_collapsed_stock(ctx, mats: Mats, length: float, top_z: float, toe_z: float, hw: float,
+                          name: str = "CollapsedStock", parent=None):
+    """Light telescoping stock pushed all the way in (PD2 "folding/collapsed" option: hides better, kicks
+    more); origin = StockMount, extends ``length`` along -Y. Two steel guide rods from a mount block to a
+    short butt plate whose height runs from ``toe_z`` (scaled up) to ``top_z``."""
+    mb = ctx.builder()
+    st = mb.material(mats.matte())
+    steel = mb.material(mats.steel())
+    rub = mb.material(mats.rubber())
+    mb.box((-hw, -0.016, -0.024), (hw, 0.0, top_z - 0.004), mat=st)                     # mount block
+    rod_z = top_z - 0.012
+    for x in (-(hw - 0.0045), hw - 0.0045):
+        mb.cylinder(0.0040, length - 0.010, segments=12, centre=(x, -(length - 0.010) / 2 - 0.004, rod_z),
+                    axis="Y", mat=steel)
+    low = toe_z * 0.65
+    mb.box((-hw, -length - 0.006, low), (hw, -length + 0.006, top_z), mat=st)           # butt plate
+    mb.box((-hw + 0.0005, -length - 0.016, low + 0.002), (hw - 0.0005, -length - 0.006, top_z - 0.002), mat=rub)
+    return finish(mb, name, bevel=0.0010, segments=1, parent=parent)
+
+
+def build_precision_stock(ctx, mats: Mats, length: float, top_z: float, toe_z: float, hw: float,
+                          front_z: float = -0.030, name: str = "PrecisionStock", parent=None):
+    """Heavy adjustable stock (PD2 "precision/heavy" option: steadier, bulkier); origin = StockMount,
+    extends ``length`` along -Y. Polymer body with a raised cheek riser on an adjuster wheel and a thick
+    rubber recoil pad on a steel spacer."""
+    prof = [(0.004, top_z - 0.004), (0.004, front_z), (-0.050, front_z - 0.012), (-(length - 0.014), toe_z),
+            (-length, toe_z), (-length, top_z), (-(length - 0.024), top_z + 0.004), (-0.030, top_z)]
+    body = build_butt_stock(ctx, mats, "polymer", prof, hw, name=name, parent=parent, bevel=0.0030,
+                            taper=lambda y, z: 0.85 if y > -0.040 else 1.0)
+    rs = ctx.builder()
+    st = rs.material(mats.matte())
+    y0, y1 = -0.72 * length, -0.30 * length
+    rs.box((-hw * 0.80, y0, top_z), (hw * 0.80, y1, top_z + 0.012), mat=st)              # cheek riser
+    for y in (y0 + 0.012, y1 - 0.012):                                                   # riser posts
+        rs.box((-0.0035, y - 0.004, top_z - 0.002), (0.0035, y + 0.004, top_z + 0.001), mat=st)
+    rs.cylinder(0.0065, 2 * hw + 0.006, segments=16, centre=(0.0, (y0 + y1) / 2, top_z - 0.012), axis="X",
+                mat=rs.material(mats.steel()))                                           # adjuster wheel
+    finish(rs, name + "Riser", bevel=0.0008, segments=1, parent=body)
+    pd = ctx.builder()
+    pd.box((-hw - 0.0005, -length - 0.004, toe_z + 0.001), (hw + 0.0005, -length, top_z - 0.001),
+           mat=pd.material(mats.steel()))                                                # pad spacer
+    pd.box((-hw - 0.0010, -length - 0.020, toe_z - 0.001), (hw + 0.0010, -length - 0.004, top_z + 0.001),
+           mat=pd.material(mats.rubber()))                                               # recoil pad
+    finish(pd, name + "Pad", bevel=0.0025, segments=2, parent=body)
+    return body
+
+
+def side_port_markers(ctx, x: float, y: float, z: float = 0.0, parent=None) -> None:
+    """``MuzzlePortL``/``MuzzlePortR`` for a side-ported device (D-114 §8): on the outer surface at +-``x``,
+    local +Y (Godot -Z) venting outward and ``PORT_FORWARD_DEG`` forward, as ``build_muzzle_brake``."""
+    yaw = math.radians(90.0 - PORT_FORWARD_DEG)
+    for marker, side in (("MuzzlePortL", -1.0), ("MuzzlePortR", 1.0)):
+        ctx.marker(marker, (side * x, y, z), rotation_euler=(0.0, 0.0, -side * yaw), parent=parent)

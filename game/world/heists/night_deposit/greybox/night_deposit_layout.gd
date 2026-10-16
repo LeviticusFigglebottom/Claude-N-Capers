@@ -40,6 +40,7 @@ const EXT_WALLS: Array = [
 		[2.0, 5.0, 0.0, 2.8],          # sally roller door (3.0 m; closed shutter, breach point in loud)
 		[5.5, 6.5, 0.0, 2.2],          # steel personnel door G1 -> lot
 		[17.7, 18.7, -4.0, BD],        # basement areaway door (pit -> B3 plant)
+		[21.6, 22.6, 0.0, 2.2],        # PO6-17 Breach_3: blocked-up doorway lot -> G6 (infilled; AreawayLamp above x 21.5)
 	]],
 	["ExtSouthHall", "x", 20.0, -0.2, 21.2, 0.2, 20.9, -4.3, HALL_PARAPET, 1.0, [
 		[1.0, 4.0, 1.0, 4.5], [4.5, 7.5, 1.0, 4.5],       # banking hall tall windows (sill 1.0, 3.5 tall)
@@ -593,6 +594,43 @@ const PREPLAN_POINTS: Array = [
 	["pp_insider_keycard", "insider", Vector3(2.0, 0.0, 8.6), 1, {"variant_group": &"keycard"}],
 	["pp_vent", "insider", Vector3(16.2, 0.0, -1.4), 1, {"variant_group": &"vent_open", "variant_slot": &"vent_open"}],
 	["pp_blueprint_cams", "insider", Vector3(12.4, 0.0, 4.2), 1, {"variant_group": &"camera"}],
+]
+
+
+# --- PO6-17 RNG assault events (D-114 §5 / D-115 #5) -------------------------------------------
+
+## Marker nodes only, under `AssaultEvents` (group `assault_events`; world/heists/shared/assault_markers.gd); ENV A's
+## event code consumes them. Contract: docs/levels/_art/po6_17/README.md. Turret vans: [name, pos (road,
+## bottom-centre), yaw_deg (+Z = the van's forward)]: Harbor Street opposite the hall bays and the entrance, and Wharf
+## Lane opposite the G11 / G12 windows; clear of the parked cars, the escapes (lot van, quay boat) and the police gates.
+const ASSAULT_TURRET_VANS: Array = [
+	["TurretVan_1", Vector3(4.0, ROAD_Y, 26.0), 90.0],     # Harbor St eastbound lane: x 1-7, z 24.8-27.2
+	["TurretVan_2", Vector3(32.6, ROAD_Y, 10.0), 180.0],   # Wharf Lane, nose north: x 31.4-33.8, z 7.1-13.1
+]
+## Helicopter orbit: [name, centre (y = flight height of the heli pivot), radius]: over the bank and Harbor Street,
+## clear of the crane-yard gantries (x 38.5+, 22 m) and the 11-12 m neighbour blocks.
+const ASSAULT_HELI_ORBITS: Array = [["HeliOrbit_1", Vector3(12.0, 30.0, 8.0), 22.0]]
+## Rappel landing points: [name, pos]. The hall roof east of the skylight beside the Breach_1 hatch (off the
+## navmesh: ENV A pairs it with that ceiling breach) and Harbor Street in front of the bank.
+const ASSAULT_HELI_DROPS: Array = [
+	["HeliDrop_1", Vector3(16.6, HALL_ROOF, 15.75)],
+	["HeliDrop_2", Vector3(12.0, ROAD_Y, 28.5)],
+]
+## Breach points: [name, kind, breach scene (world/props/assault_event/<id>.tscn), pos on the room-side face
+## (wall: bottom-centre of the opening; ceiling: centre of the ceiling underside), yaw_deg (-Z into the room;
+## ceilings: the turn of +Y = the side of the roof EntryPoint about the vertical, 0 = north), size (w, h) m, room,
+## ceiling depth (ceiling underside to roof top; 0 for walls)]. The wall opening is in EXT_WALLS; the ceiling holes
+## are cut from the slabs / ceilings (and the art ceilings) by the generator. Sizes match the breach scenes.
+const ASSAULT_BREACHES: Array = [
+	# G9 banking hall: a sealed roof hatch east of the skylight laylight (RappelSkylight), between the coffer beams.
+	["Breach_1", "ceiling", "prop_breach_ceiling_p100_d550", Vector3(14.9, HALL_CEIL, 15.75), 0.0, Vector2(1.2, 1.2), "G9",
+		HALL_ROOF - HALL_CEIL],
+	# G8 teller workroom: a wing-roof hatch over the staff walkway behind the counter (between the stools and the
+	# teller stations 2 / 3; the room's fixtures stay at its ends), the roof EntryPoint north of it.
+	["Breach_2", "ceiling", "prop_breach_ceiling", Vector3(7.75, WING_CEIL, 8.6), 0.0, Vector2(1.2, 1.2), "G8",
+		WING_ROOF - WING_CEIL],
+	# G6 storage (the srv_ground rack room): a blocked-up doorway from the staff lot, west of the rack.
+	["Breach_3", "wall", "prop_breach_wall_t40", Vector3(22.1, 0.0, 0.2), 180.0, Vector2(1.0, 2.2), "G6", 0.0],
 ]
 
 

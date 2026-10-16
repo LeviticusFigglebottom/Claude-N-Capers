@@ -402,3 +402,11 @@ func test_strings_exist_for_every_weapon_and_mod() -> void:
 		assert_has(_strings, "item.%s.name" % m.id)
 		if not stock.has(m.id):
 			assert_has(_strings, "item.%s.desc" % m.id)
+
+
+## Weapon audit: no part's workshop description is a raw key (stock parts fall back to the shared stock line).
+func test_every_mod_description_reads_as_text() -> void:
+	for w: WeaponDef in ContentDB.all_weapons():
+		for v: Variant in w.default_mods.values():
+			var d: String = WorkshopScreen.mod_desc(StringName(v))
+			assert_false(d.begins_with("item.") or d.contains(".desc"), "%s stock part: %s" % [w.id, d])

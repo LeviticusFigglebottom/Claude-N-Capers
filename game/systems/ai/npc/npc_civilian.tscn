@@ -6,11 +6,11 @@
 [ext_resource type="Script" path="res://systems/interaction/interactable_component.gd" id="4"]
 
 [sub_resource type="CapsuleShape3D" id="cap"]
-radius = 0.35
+radius = 0.3
 height = 1.78
 
 [sub_resource type="CapsuleMesh" id="capmesh"]
-radius = 0.35
+radius = 0.3
 height = 1.78
 
 [node name="Npc_civilian" type="CharacterBody3D"]

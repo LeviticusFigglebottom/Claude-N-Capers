@@ -517,6 +517,13 @@ func delta_color(better: bool) -> Color:
 	return _hud_tweak.delta_better_color if better else _hud_tweak.delta_worse_color
 
 
+## A part's description; a stock part without its own text reads the shared stock line (weapon audit: 72 stock
+## parts showed their raw `item.<id>.desc` key).
+static func mod_desc(id: StringName) -> String:
+	var key: StringName = StringName("item.%s.desc" % id)
+	return UiText.t(key) if StringTable.has(key) else UiText.t(&"ui.workshop.stock_desc")
+
+
 func _refresh_part_status() -> void:
 	if selected_slot < 0:
 		part_status_label.text = ""
@@ -527,9 +534,9 @@ func _refresh_part_status() -> void:
 		var has_stock: bool = model.weapon().default_mods.has(selected_slot) or stage.visual.stock_part(selected_slot) != null
 		part_status_label.text = UiText.t(&"ui.workshop.status.stock" if has_stock else &"ui.workshop.status.none")
 		var stock: StringName = StringName(model.weapon().default_mods.get(selected_slot, &""))
-		part_desc_label.text = UiText.t(StringName("item.%s.desc" % stock)) if stock != &"" else ""
+		part_desc_label.text = mod_desc(stock) if stock != &"" else ""
 		return
-	part_desc_label.text = UiText.t(StringName("item.%s.desc" % id))
+	part_desc_label.text = mod_desc(id)
 	var m: WeaponModDef = ContentDB.mod(id)
 	match model.mod_state(id):
 		WorkshopModel.ItemState.OWNED:

@@ -170,6 +170,10 @@ func test_08_loud_transition_and_assault() -> void:
 	rt.call(&"clear_bot_intent", 0)
 	assert_true(loud, "alarm makes heist LOUD")
 	assert_true(rt.get(&"map") == map_before and is_instance_valid(map_before), "no scene change on loud transition")
+	# This gate checks the director's phase cycle, not crew survival: since PO6-15 (PD2-weak bots) and PO6-16
+	# (sustain refills to the cap) a passive crew can be wiped before the first FADE (heist ENDED), timing-dependent.
+	for slot: int in 4:
+		Modifiers.set_source(slot, &"test.gate08_immune", {&"defense.damage_taken_mult": 0.0})
 	Engine.time_scale = 4.0
 	var reached_fade: bool = await wait_until(func() -> bool: return Enums.AssaultPhase.FADE in phases, 600.0)
 	assert_true(reached_fade, "assault cycle reaches FADE")
@@ -177,6 +181,8 @@ func test_08_loud_transition_and_assault() -> void:
 	assert_has(phases, Enums.AssaultPhase.SUSTAIN)
 	assert_true((rt.call(&"npcs", &"police") as Array).size() > 0 or Enums.AssaultPhase.FADE in phases, "police spawned")
 	EventBus.assault_phase_changed.disconnect(on_phase)
+	for slot: int in 4:
+		Modifiers.clear_source(slot, &"test.gate08_immune")
 	await _teardown(rt)
 
 # 5. Releasing a pager early with nobody else answering raises the alarm.
