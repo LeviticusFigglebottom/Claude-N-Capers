@@ -86,6 +86,20 @@ static var _cached: AnimTweak = null
 @export var velocity_smoothing: float = 12.0
 
 
+@export_group("Weapon gadgets (D-118, visual_slots v1.3)")
+## Fallbacks when the resolved weapon params lack them (the contract defaults; B owns the real values).
+@export var gadget_laser_color: Color = Color(1.0, 0.05, 0.05)
+@export var gadget_laser_range_m: float = 50.0
+@export var gadget_light_range_m: float = 25.0
+@export var gadget_light_angle_deg: float = 30.0
+@export var gadget_light_energy: float = 2.0
+## Third-person beam thickness (m), hit dot radius (m) and emission multiplier.
+@export var gadget_beam_width_m: float = 0.006
+@export var gadget_dot_radius_m: float = 0.015
+@export var gadget_laser_emission: float = 4.0
+## Laser dot pulled this far off the hit surface (m) so it does not z-fight.
+@export var gadget_dot_offset_m: float = 0.01
+
 static func data() -> AnimTweak:
 	if _cached == null:
 		_cached = load(PATH) as AnimTweak
