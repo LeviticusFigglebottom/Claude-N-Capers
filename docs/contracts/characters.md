@@ -1,4 +1,4 @@
-# Contract: characters (v1.22)
+# Contract: characters (v1.23)
 
 Producer: ENV C (generated humanoids + animations). Consumer: ENV A (NPC/crew prefabs).
 Until delivered, ENV A uses capsule placeholders with the same node names.
@@ -287,3 +287,23 @@ bag's top against the back, its length running from the left shoulder blade to t
 Built from character_spec.gd SOCKET_OFFSETS["Back"] = (0.05, -0.10, 0.33) m on each body's measured back seat. The bag
 pivots sit at their bottom centres, so ENV A applies a socket-local offset per bag size: light (0, +0.05, 0), medium
 none, heavy (0, -0.05, 0). Published in the humanoid SOURCE `carried_bag` note.
+
+## v1.23: crew mask-up and grenade throw; reading in an armchair (D-116; SOURCE `crew_actions`, tools/blender/characters/_anim_crew3p.py)
+* `mask_on` (30 f, mask_on@18): from idle f0, both hands bring the mask up to the face and press it on, then pull the
+  strap back, ending on idle_alert f0. ENV A plays it while the mask-up hold runs (Tweak.crew().mask_up_time_s = 1.0 s =
+  the clip's length), shows the mask at Head/Socket at `mask_on`, and keeps the 3P weapon hidden until the clip ends
+  (PD2 draws after masking).
+* `throw_grenade` (24 f, release@11, done@24, the FP throwable_throw timing): an overhand with the LEFT arm while the
+  weapon stays low in the right hand. ENV A hides the held grenade and spawns the projectile at `release` (HandL/Socket).
+* `sit_chair_read` (300 f loop, page_turn@221): seated in an armchair on its Seat, an open book in both hands (the book
+  prop at HandR/Socket, as sit_bed_read), the same page turn as sit_bed_read. Kessler (shadow_ledger) plays it in the
+  bedside armchair; sit_bed_read stays for a bed.
+
+### v1.23 casts (p5_cast.json)
+* Shadow Ledger: the Northgate guards and the operator form one pool of six faces (npc_northgate_guard a-f). The
+  cleaners form one pool of three (npc_cleaner_sl a-c).
+* Dockside Burn: the cartel gunmen form one pool of six (cartel_gunman a-f; the slung gun on a, c and e). dock_packer
+  wears processing whites (packing wing).
+* Night Deposit: the Halden hall, basement and rover guards form one pool of four (security_officer a-d).
+* ENV A deals each pool across its tags (a per-pool deal), so no two NPCs from one pool in a heist share a face until
+  the pool runs out. test_p5_cast POOLS checks pool size, unique faces and both genders.
