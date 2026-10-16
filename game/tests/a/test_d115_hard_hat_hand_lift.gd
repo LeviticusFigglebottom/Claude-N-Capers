@@ -86,3 +86,20 @@ func test_d115_hard_hat_lifts_hands_on_head() -> void:
 	await wait_seconds(1.0)
 	assert_near(dw.hat_lift.influence, 0.0, 0.001, "idle: lift blended out")
 	assert_false(dw.hat_lift.active, "inactive outside the lift clips")
+
+
+## Round 225 (D v1.18): every hands-on-head pose the library carries (surrender_idle loops and the _b / _c variants
+## of hands_up / surrender / kneel_cuffed) is a lift clip, so the lift stays on when HOLD_END or a variant takes over.
+func test_d115_hard_hat_lift_covers_pose_variants() -> void:
+	var w: NpcBase = _npc("dock_worker")
+	await wait_frames(2)
+	var d: AnimDriver = AnimDriver.of(w)
+	var tw: AnimTweak = AnimTweak.data()
+	var seen: int = 0
+	for full: StringName in d.player.get_animation_list():
+		var c: String = String(full).get_slice("/", 1)
+		for fam: String in ["surrender", "hands_up", "kneel_cuffed", "cower"]:
+			if c == fam or c.begins_with(fam + "_"):
+				seen += 1
+				assert_true(tw.hard_hat_lift_clips.has(StringName(c)), "%s is a hard-hat lift clip" % c)
+	assert_true(seen >= 4, "hands-on-head clips found in the library (%d)" % seen)
