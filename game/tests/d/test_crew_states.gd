@@ -179,3 +179,15 @@ func test_no_joint_below_the_floor() -> void:
 			for p: Vector3 in _snapshot(clip, float(f) / 30.0):
 				lowest = minf(lowest, p.y)
 		assert_true(lowest > -0.01, "%s: no joint below the floor (%f)" % [clip, lowest])
+
+
+## Back/Socket is the carried bag's pivot; SOURCE carried_bag publishes the per-size offsets of character_spec.gd.
+func test_carried_bag_offsets_published() -> void:
+	var Spec: GDScript = preload("res://world/characters/_tools/character_spec.gd")
+	var note: String = String(_source_lines().get("carried_bag", ""))
+	assert_true(note.contains("Back/Socket") and note.contains("identity"), "SOURCE carried_bag")
+	var offsets: Dictionary = Spec.BACK_BAG_OFFSETS
+	for size: String in ["light", "medium", "heavy"]:
+		var v: Vector3 = offsets[size]
+		var text: String = "%s (%s, %s, %s)" % [size, str(snappedf(v.x, 0.001)), str(snappedf(v.y, 0.001)), str(snappedf(v.z, 0.001))]
+		assert_true(note.contains(text), "SOURCE carried_bag lists %s" % text)
