@@ -550,7 +550,10 @@ func _render() -> void:
 		UiText.t(&"ui.results.pagers_answered", {"count": int(result.get("pagers_answered", 0))}),
 		UiText.t(UiText.difficulty_key(int(result.get("difficulty", 0)))),
 	]
+	if not has_pagers(StringName(result.get("heist_id", &""))):
+		summary.remove_at(2)  # D-115 B-DB: no "Pagers answered: 0" on a heist without pagers
 	var chips: Label = UiBuild.caption()
+	chips.name = "SummaryChips"
 	chips.text = "   ·   ".join(summary)
 	_content.add_child(chips)
 	# D-111: three columns, nothing under the fold at 720p: cash | experience | crew + awards.
@@ -589,6 +592,13 @@ func _summary_key(success: bool) -> StringName:
 	if int(payout.get("civilian_penalty", 0)) > 0 or _civilians_killed() > 0:
 		return &"ui.results.stealth_messy"
 	return &"ui.results.stealth"
+
+
+## D-115 B-DB: false for a heist whose HeistDef is LOUD_ONLY (Dockside Burn: the Co-op's gunmen carry no pagers, the
+## police none either), so its payday shows no pager chip. Unknown ids keep the chip.
+static func has_pagers(heist_id: StringName) -> bool:
+	var def: HeistDef = HeistRegistry.get_def(heist_id) if heist_id != &"" else null
+	return def == null or def.mode != Enums.HeistMode.LOUD_ONLY
 
 
 func _civilians_killed() -> int:

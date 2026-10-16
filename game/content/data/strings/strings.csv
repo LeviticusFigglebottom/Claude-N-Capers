@@ -143,7 +143,7 @@ ui.tip.heist_shadow_ledger.alarm,One alarm and the job is over.
 ui.tip.heist_dockside_burn.title,Burn the product
 ui.tip.heist_dockside_burn.thermite,Carry the thermite bag to the product and place it on the burn point.
 ui.tip.heist_dockside_burn.shutters,"It burns 30 s, then fire shutters close the room. Don't be inside."
-ui.tip.heist_dockside_burn.containers,"Containers open with a saw on the padlock. Only two hold the rifles, so pick the ones worth it."
+ui.tip.heist_dockside_burn.containers,"Containers open with a saw on the padlock. The rifles are behind the Co-op's brass padlocks, not the customs seals."
 ui.tip.heist_gallery_night.title,The gala clock
 ui.tip.heist_gallery_night.list,Only the listed canvases count. The Lantern Bearer is a must.
 ui.tip.heist_gallery_night.cut,"Cut a canvas from the stretcher, then carry it rolled."
@@ -1650,8 +1650,8 @@ objective.shadow_ledger.server_door,Get into the server room
 objective.shadow_ledger.cage_code,Find the cage code
 objective.shadow_ledger.cage,Open the server cage
 objective.shadow_ledger.hack,Release the drive bays
-objective.shadow_ledger.drives,Bag the drives
-objective.shadow_ledger.secure,Secure the laptop and the drives ({count}/{total})
+objective.shadow_ledger.drives,Bag at least two drive bags
+objective.shadow_ledger.secure,Secure the laptop and two drive bags ({drives_secured}/{drives} drives)
 objective.shadow_ledger.study_safe,Open the study safe and bag the books
 objective.shadow_ledger.paintings,Take the paintings
 objective.shadow_ledger.archive_safe,Open the archive safe
@@ -1903,7 +1903,7 @@ voice.vo.mercer.night_deposit_escape,Ride's here. Bags in.
 voice.vo.mercer.shadow_ledger_intro,"Calder Tower, top floors, and the rain's doing us favours. Laptop first, then the server room. Masks stay in your pockets until you need them."
 voice.vo.accountant.shadow_ledger_contact_intro,"I want the whole ledger, every page of it. And when you leave, nobody in that building may ever learn it was gone."
 voice.vo.mercer.shadow_ledger_laptop_found,"That's the partners' laptop. It holds the key, so treat it like it's made of glass."
-voice.vo.mercer.shadow_ledger_keycard_found,Keycard. That gets you past the server room door.
+voice.vo.mercer.shadow_ledger_keycard_found,"Keycard. The server room door and the study safe each eat one, so spend it on the job first."
 voice.vo.mercer.shadow_ledger_code_found,Cage code's yours. No need to make noise in the server room.
 voice.vo.mercer.glasshouse_code_found,That's the safe code. Quiet way in, no drill needed.
 voice.vo.mercer.shadow_ledger_camera_warning,"Camera's getting curious. Get out of its eye line, now."
@@ -2548,21 +2548,22 @@ ui.loadout.civilian_start,"This job starts in civilian clothes: no weapons or eq
 heist.dockside_burn.name,Dockside Burn
 heist.dockside_burn.subtitle,Ortega Cold Storage
 heist.dockside_burn.brief,"The Co-op's freezer warehouse on Pier 9 holds its cash, its guns and its product. Hollis wants the first two and the third on fire."
-heist.dockside_burn.briefing,"Ortega Cold Storage on Pier 9, the Co-op's freezer warehouse. Cash for the laundering run sits in the strongroom, rifles in the yard containers, product boxed as frozen fish. Their gunmen carry no pagers and won't surrender; the police come within minutes. Burn the product with thermite, secure four bags of cash and weapons, hold for the van or the boat."
+heist.dockside_burn.briefing,"Ortega Cold Storage on Pier 9, the Co-op's freezer warehouse. Cash for the laundering run sits in the strongroom or the count-room cage upstairs, rifles in the yard containers, product boxed as frozen fish. Their gunmen carry no pagers and won't surrender; the police come within minutes. Burn the product with thermite, secure four bags of cash or rifles (product pays, but doesn't count), and hold for the van or the boat."
 item.loot.weapon_crate.name,Weapon Crate
 item.loot.weapon_crate.desc,"A crate of rifles out of a Co-op container, packed in grease paper. Heavy and slow, and worth every bruise."
 item.loot.contraband.name,Contraband
 item.loot.contraband.desc,"Vacuum-packed bricks boxed as frozen fish. Reyes' buyer takes it at a discount, so it pays, but it doesn't count toward the job."
 item.loot.thermite.name,Thermite Bag
-item.loot.thermite.desc,"Your own kit: enough thermite to burn out a freezer room. Heavy, worth nothing at payday, and the job fails without it."
+item.loot.thermite.desc,"Your own kit: enough thermite to burn out a freezer room. Heavy, worth nothing at payday, and nothing burns without it."
 objective.dockside_burn.cartel,Thin out the Co-op's gunmen before the police arrive
 objective.dockside_burn.breach,Get into the warehouse
 objective.dockside_burn.product,Find the product
 objective.dockside_burn.burn,Burn the product with the thermite
 objective.dockside_burn.strongroom,Drill the strongroom door
 objective.dockside_burn.count_cage,Open the cash cage in the count room
+ui.briefing.step.dockside_burn.cash,Get the cash: the strongroom door or the count-room cage
 objective.dockside_burn.containers,Find the weapons containers
-objective.dockside_burn.secure,Secure the bags ({count}/{total})
+objective.dockside_burn.secure,Secure four bags of cash or rifles ({count}/{total})
 objective.dockside_burn.escape_wait,Hold until the escape arrives
 objective.dockside_burn.escape,Get to the escape
 item.asset.sniper_position.name,Sniper position
@@ -2594,7 +2595,7 @@ voice.vo.reyes.briefing_dockside_burn_3,"Four bags of cash or rifles, and the pr
 voice.vo.mercer.briefing_dockside_burn_1,"Ten past five, fog on the water, and no quiet option. The Co-op's gunmen start on their posts, so take a few down before the shooting wakes the rest."
 voice.vo.mercer.briefing_dockside_burn_2,"Once it's loud, the police are a minute or two out. Get the thermite to the product, get four bags to the ride, and pick a place you can hold."
 voice.vo.mercer.dockside_burn_intro,"Ortega Cold Storage. The Co-op's gunmen haven't noticed you yet. Keep it that way as long as you can."
-voice.vo.reyes.dockside_burn_contact_intro,"Hammer here. Everything in that cold store is mine now. Whatever you can't carry, burns."
+voice.vo.reyes.dockside_burn_contact_intro,"Hammer here. The Co-op's cash and rifles are mine now. The product burns, and anything of it you carry out first, my buyer takes."
 voice.vo.mercer.dockside_burn_cartel_awake,That's woken them. The Co-op's boys don't carry pagers and they don't put their hands up. Put them down.
 voice.vo.mercer.dockside_burn_police_called,Gunfire on the docks. Somebody's calling it in.
 voice.vo.mercer.dockside_burn_breach,"You're inside. The product's in one of the freezer chambers or the packing hall. Find it."
@@ -2605,20 +2606,20 @@ voice.vo.mercer.dockside_burn_burn_done,Shutters coming down in {shutters_in_s} 
 voice.vo.mercer.dockside_burn_strongroom_drill,"Thermal drill's on the strongroom door. It's slow and it will jam. Hold the anteroom."
 voice.vo.mercer.dockside_burn_drill_jam,Drill's jammed. Get back on it.
 voice.vo.mercer.dockside_burn_strongroom_open,"Strongroom's open. Shrink-wrapped cash, pallets of it. Start bagging."
-voice.vo.mercer.dockside_burn_count_cage,"The cash is in a cage in the count room upstairs. Drill it or blow it, then get the bags down."
+voice.vo.mercer.dockside_burn_count_cage,"The count-room cage is going. Hold the mezzanine until it opens, then get the cash down by the lift or the stairs."
 voice.vo.mercer.dockside_burn_lift_dead,"Goods lift's dead. The breaker's in the electrical room off the office corridor, or carry the bags down the stairs."
-voice.vo.mercer.dockside_burn_containers_hint,"Two of those containers hold the rifles. Look for the Co-op's brass padlocks, not the customs seals."
+voice.vo.mercer.dockside_burn_containers_hint,"The rifles are in the containers with the Co-op's brass padlocks. The ones with customs seals are empty."
 voice.vo.mercer.dockside_burn_weapons_found,"Rifle crates. They're heavy, so no sprinting. Get them to the ride."
 voice.vo.mercer.dockside_burn_sniper_crane,Sniper in the crane cab across the slip. Stay off the apron.
 voice.vo.mercer.dockside_burn_sniper_roof,Shooter on the Bellweather Ice roof. He's got the lane and the quay.
 voice.vo.mercer.dockside_burn_gangway,The Pier 10 gangway is down. Expect police from the east.
 voice.vo.mercer.dockside_burn_reinforcements,Pickup at the gate. The Co-op's sent four more of its people.
-voice.vo.mercer.dockside_burn_fog_lifts,"Fog's lifting. The viaduct has a shooter's view now, and the boat will be slower."
-voice.vo.mercer.dockside_burn_required_secured,"Four bags and the product's burning. That's the job; I'm calling your ride. Anything more is a bonus."
+voice.vo.mercer.dockside_burn_fog_lifts,"Fog's lifting. The viaduct has a shooter's view now, and a launch will be slower finding the pontoon."
+voice.vo.mercer.dockside_burn_required_secured,"That's four bags. Your ride comes once the product's burned. Anything more is a bonus."
 voice.vo.mercer.dockside_burn_van_eta,Van's {seconds} seconds out. Hold.
 voice.vo.mercer.dockside_burn_boat_eta,Launch is {seconds} seconds out. Hold the quay.
 voice.vo.mercer.dockside_burn_escape,"Ride's here. Bags in, and don't stop to watch the smoke."
-voice.vo.reyes.dockside_burn_payday,"Smoke over Pier 9 and the Co-op's rifles in my lockup. That's a good morning. You've earned it."
+voice.vo.reyes.dockside_burn_payday,"Smoke over Pier 9, and the Co-op's take on its way to my lockup. That's a good morning."
 music.glasshouse.name,Glass Ceiling
 music.night_deposit.name,Time Lock
 music.shadow_ledger.name,Off the Books
@@ -3005,13 +3006,13 @@ voice.vo.accountant.night_deposit_radio_escape_available,Your way out of Harbor 
 voice.vo.accountant.night_deposit_radio_escape,Your vehicle has arrived outside the bank.
 voice.vo.accountant.night_deposit_radio_loot,"Undeclared money, now declared to me."
 voice.vo.accountant.night_deposit_radio_loot_cash_bricks,Another brick the Co-op cannot report stolen.
-voice.vo.accountant.shadow_ledger_radio_casing,You've seen the offices. Kessler and Moor are tidier than their clients.
+voice.vo.accountant.shadow_ledger_radio_casing,Masks on. Kessler and Moor are tidier than their clients; be tidier still.
 voice.vo.accountant.shadow_ledger_radio_laptop,The partners' laptop. That is the key to everything.
 voice.vo.accountant.shadow_ledger_radio_keycard,The keycard. The server room is expecting you.
 voice.vo.accountant.shadow_ledger_radio_server_door,You're in the server room. Touch nothing you don't need.
 voice.vo.accountant.shadow_ledger_radio_cage_code,The cage code. Someone wrote it down. Of course they did.
 voice.vo.accountant.shadow_ledger_radio_cage,The cage is open. The drives are behind it.
-voice.vo.accountant.shadow_ledger_radio_hack_new,"Run the hack, then make yourselves invisible while it works."
+voice.vo.accountant.shadow_ledger_radio_hack_new,"Start the release and stay by the terminal. The array will try to resync, and someone must start it again."
 voice.vo.accountant.shadow_ledger_radio_hack,The hack is complete. Pull the drives.
 voice.vo.accountant.shadow_ledger_radio_drives_new,Bag the drives. Gently. They are worth more than the building.
 voice.vo.accountant.shadow_ledger_radio_drives,Drives recovered. The ledger is nearly ours.
@@ -3019,25 +3020,25 @@ voice.vo.accountant.shadow_ledger_radio_secure,Laptop and drives secured. The le
 voice.vo.accountant.shadow_ledger_radio_study_safe,The study safe. Private papers make very public scandals.
 voice.vo.accountant.shadow_ledger_radio_paintings,The paintings. Odile will be insufferable about this.
 voice.vo.accountant.shadow_ledger_radio_archive_safe,The archive safe. The partners' cash float. You are very thorough.
-voice.vo.accountant.shadow_ledger_radio_escape_new,Leave the way you came: unseen.
+voice.vo.accountant.shadow_ledger_radio_escape_new,"Now leave, as unseen as you arrived."
 voice.vo.accountant.shadow_ledger_radio_escape_available,Your way out is ready. Nobody may see you use it.
 voice.vo.accountant.shadow_ledger_radio_escape,"Your ride is in position. Quietly, please."
 voice.vo.accountant.shadow_ledger_radio_loot,"Secured. Kessler and Moor are poorer, and they don't know it yet."
 voice.vo.accountant.shadow_ledger_radio_loot_laptop,The laptop is out. Now the drives have a reader.
 voice.vo.accountant.shadow_ledger_radio_loot_drives,"Another drive. Another page of the ledger, in my hands."
-voice.vo.reyes.dockside_burn_radio_cartel,Co-op boys are down. Now the cops get their turn.
+voice.vo.reyes.dockside_burn_radio_cartel,"Cops are rolling. Whatever's left of the Co-op's boys, you've got both now."
 voice.vo.reyes.dockside_burn_radio_breach,You're in the cold store. Mind the frostbite.
 voice.vo.reyes.dockside_burn_radio_product,Found the product. Now let's watch it burn.
-voice.vo.reyes.dockside_burn_radio_burn_new,Thermite on the product. I want to smell it from here.
+voice.vo.reyes.dockside_burn_radio_burn_new,Get the thermite on that product. I want to smell it from here.
 voice.vo.reyes.dockside_burn_radio_burn,"That's burning. Smoke over Pier 9, just like I said."
 voice.vo.reyes.dockside_burn_radio_strongroom,Strongroom's open. Bag the cash.
 voice.vo.reyes.dockside_burn_radio_count_cage,"Count cage is cracked. Cash, and plenty of it."
 voice.vo.reyes.dockside_burn_radio_containers,Those are the Co-op's rifles. Now they're mine.
-voice.vo.reyes.dockside_burn_radio_secure,Four bags. That's the job. Everything else is gravy.
+voice.vo.reyes.dockside_burn_radio_secure,Four bags. That's my end covered. Everything else is gravy.
 voice.vo.reyes.dockside_burn_radio_escape_wait_new,Ride's on the way. Hold the pier until it shows.
 voice.vo.reyes.dockside_burn_radio_escape_wait,Ride's in. Quit holding and start leaving.
 voice.vo.reyes.dockside_burn_radio_escape_new,Get off that pier before the whole thing goes up.
-voice.vo.reyes.dockside_burn_radio_escape_available,Pier's yours. Get to the ride when you're done.
+voice.vo.reyes.dockside_burn_radio_escape_available,"That's the job done. Your ride's coming, so keep the bags moving."
 voice.vo.reyes.dockside_burn_radio_escape,Your ride's at the pier. Don't make it wait.
 voice.vo.reyes.dockside_burn_radio_loot,Another bag off Pier 9. Keep 'em coming.
 voice.vo.reyes.dockside_burn_radio_loot_weapons,Co-op rifles in my lockup. Beautiful.

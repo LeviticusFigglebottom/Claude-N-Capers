@@ -12,7 +12,9 @@ const BLUEPRINT_PATH: String = "res://content/data/preplanning/blueprints/%s.tre
 const VOICE_LINES_PATH: String = "res://content/data/voice/lines.tres"
 ## Format args the heist code passes (objective data and voice_line_requested context). Anything else in
 ## a heist string is an unresolved placeholder.
-const ALLOWED_ARGS: Array[String] = ["count", "total", "found", "seconds", "answered", "escape", "shutters_in_s"]
+## drives / drives_secured: Shadow Ledger's [secure] data (D-115 B-SL).
+const ALLOWED_ARGS: Array[String] = ["count", "total", "found", "seconds", "answered", "escape", "shutters_in_s",
+	"drives", "drives_secured"]
 ## Dev tags that must never reach the player.
 const BANNED: Array[String] = ["[loud]", "[stealth]", "[tag]", "TODO", "TBD", "PLACEHOLDER", "FIXME", "XXX"]
 

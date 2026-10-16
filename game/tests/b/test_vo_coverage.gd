@@ -77,7 +77,51 @@ func test_unsaid_a_allowlist() -> void:
 
 
 func test_unsaid_b_reserve_allowlist() -> void:
-	_check_allowlist("R", UNSAID_B_RESERVE)
+	var allow: Array[StringName] = UNSAID_B_RESERVE.duplicate()
+	if _generic_abort_retired():
+		allow.append(VoCoverage.GENERIC_ABORT)  # SL-6: no STEALTH_ONLY heist plays the generic abort any more
+	_check_allowlist("R", allow)
+
+
+## LEAD r228 (SL-6): a STEALTH_ONLY mission with `own_abort_line = true` covers its alarm with its own line, and the
+## generic vo.mercer.abort is not counted for it. Shadow Ledger's own line is vo.mercer.shadow_ledger_abort.
+func test_stealth_only_abort_coverage() -> void:
+	var aborts: Dictionary = _r.get("aborts", {}) as Dictionary
+	assert_false(aborts.has(&"dockside_burn"), "a LOUD_ONLY heist has no abort line")
+	assert_true(aborts.has(&"shadow_ledger"), "SL is STEALTH_ONLY: %s" % aborts)
+	var sl_def: HeistDef = HeistRegistry.get_def(&"shadow_ledger")
+	var mission: String = "res://world/heists/shadow_ledger/shadow_ledger_mission.gd"
+	var src: String = FileAccess.get_file_as_string(mission)
+	assert_true(src.contains("say(&\"vo.mercer.shadow_ledger_abort\")"), "SL's _on_alarm says its own abort line")
+	if src.contains("own_abort_line = true"):
+		assert_eq(aborts[&"shadow_ledger"], &"vo.mercer.shadow_ledger_abort", "SL abort coverage is its own line")
+	# The rule itself, on a fixture: with the flag the mission's line, without it the generic one.
+	var fixture: String = "user://vo_cov_abort_fixture.gd"
+	for own: bool in [true, false]:
+		var f: FileAccess = FileAccess.open(fixture, FileAccess.WRITE)
+		var src_fx: String = "extends HeistMission\n\n\nfunc _on_mission_start() -> void:\n%s"
+		src_fx += "\tsay(&\"vo.mercer.shadow_ledger_intro\")\n\n\nfunc _on_alarm(_reason: StringName) -> void:\n"
+		src_fx += "\tsay(&\"vo.mercer.shadow_ledger_abort\")\n"
+		f.store_string(src_fx % ("\town_abort_line = true\n" if own else ""))
+		f.close()
+		assert_eq(VoCoverage.call(&"abort_line", sl_def, fixture),
+				&"vo.mercer.shadow_ledger_abort" if own else VoCoverage.GENERIC_ABORT, "own_abort_line %s" % own)
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(fixture))
+	var generic: Dictionary = {}
+	for row: Dictionary in _r["lines"] as Array:
+		if row["id"] == VoCoverage.GENERIC_ABORT:
+			generic = row
+	assert_false(generic.is_empty(), "the generic abort line is inventoried")
+	var users: Array = aborts.values().filter(func(v: Variant) -> bool: return v == VoCoverage.GENERIC_ABORT)
+	assert_eq((generic["sites"] as Array).is_empty(), users.is_empty(),
+			"the generic abort counts as said only while a STEALTH_ONLY heist uses it: %s" % aborts)
+
+
+func _generic_abort_retired() -> bool:
+	for v: Variant in (_r.get("aborts", {}) as Dictionary).values():
+		if v == VoCoverage.GENERIC_ABORT:
+			return false
+	return true
 
 
 func test_unsaid_c_allowlist() -> void:
