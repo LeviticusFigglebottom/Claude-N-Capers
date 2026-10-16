@@ -113,7 +113,7 @@ ui.tip.casing.2,"Find the guards, the cameras and the way to the loot."
 ui.tip.casing.3,Unlocked doors are fine. Locks and loot need the mask.
 ui.tip.casing.mask,Hold to mask up. It stays on.
 ui.tip.stealth.title,Stay quiet
-ui.tip.stealth.1,Guards and cameras spot you over time. Watch the chevrons.
+ui.tip.stealth.1,"Guards and cameras spot you over time. A ring over them fills, and ""!"" means you are seen."
 ui.tip.stealth.2,"Answer a downed guard's pager fast, or the alarm goes off."
 ui.tip.stealth.interact,"Interact: doors, loot, pagers, cable ties."
 ui.tip.stealth.throw,Throw a carried bag. Heavy ones slow you down.

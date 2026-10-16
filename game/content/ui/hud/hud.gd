@@ -51,7 +51,8 @@ var settings: GameSettings = null
 ## HudTweak recoloured by the active palette (what every widget reads).
 var tweak: HudTweak = null
 var model: Node = null
-var chevrons: DetectionChevrons
+## D-128: PD2 detection rings over observers + crosshair arcs (was the S2.1 chevrons).
+var chevrons: DetectionRings
 var marks: MarkedTargets
 ## v1.8 objective world markers (edge-clamped, distance).
 var objective_markers: ObjectiveMarkers
@@ -159,7 +160,7 @@ func _build() -> void:
 	pager_waypoints = _place(PagerWaypoints.new(), Control.PRESET_FULL_RECT, Vector2.ZERO, Vector2.ZERO) as PagerWaypoints
 	assault_events = _place(AssaultEventMarkers.new(), Control.PRESET_FULL_RECT, Vector2.ZERO, Vector2.ZERO) \
 			as AssaultEventMarkers
-	chevrons = _place(DetectionChevrons.new(), Control.PRESET_FULL_RECT, Vector2.ZERO, Vector2.ZERO) as DetectionChevrons
+	chevrons = _place(DetectionRings.new(), Control.PRESET_FULL_RECT, Vector2.ZERO, Vector2.ZERO) as DetectionRings
 	crosshair = UiBuild.label(&"ui.hud.crosshair", UiBuild.HUD)
 	crosshair.modulate.a = 0.0  # lead ruling: no crosshair until masked (PD2)
 	crosshair.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
