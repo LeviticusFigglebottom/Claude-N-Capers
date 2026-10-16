@@ -7,6 +7,8 @@
 ## bags have `moved == false` until their first pickup and are ignored (S4.1). Body bags in a
 ## BODY_HIDE zone / body_container set `hidden_from_stealth` (S6.3).
 ## Carrying: frozen, no collision, follows the carrier's back (LootManager.carry / drop_bag).
+## QC-57: an NPC can carry a bag too (`npc_carrier`, LootManager.npc_carry / npc_drop: GN's Vaultline courier with the
+## Lantern Bearer); it follows the NPC's back the same way and the crew cannot pick it up until he lets go.
 class_name LootBag
 extends RigidBody3D
 
@@ -30,6 +32,11 @@ const PLACEHOLDER_SIZE_M: Vector3 = Vector3(0.6, 0.35, 0.35)
 var net_id: int = 0
 ## Crew member carrying this bag, or null.
 var carrier: CrewController = null
+## QC-57: NPC carrying this bag (a Vaultline courier), or null. Exclusive with `carrier`.
+var npc_carrier: NpcBase = null
+## QC-57 / QC-60: objective tag for HUD markers (HeistRuntime.find_by_tag): a mission tags a moved required bag (GN:
+## the Lantern Bearer the couriers took) so its objective marker follows the bag.
+var objective_tag: StringName = &""
 ## S6.3: body bag inside a BODY_HIDE zone / body_container.
 var hidden_from_stealth: bool = false
 var secured: bool = false
@@ -82,12 +89,39 @@ func is_body_bag() -> bool:
 
 
 func is_carried() -> bool:
-	return carrier != null and is_instance_valid(carrier)
+	return (carrier != null and is_instance_valid(carrier)) or is_npc_carried()
+
+
+## QC-57: carried by an NPC (not crew).
+func is_npc_carried() -> bool:
+	return npc_carrier != null and is_instance_valid(npc_carrier)
+
+
+## Server (LootManager.npc_carry, QC-57): attach to an NPC's back. `moved` is left as it is (a courier's bag is not a
+## crew-moved bag, S4.1).
+func attach_npc(npc: NpcBase) -> void:
+	carrier = null
+	npc_carrier = npc
+	in_flight = false
+	thrown_by_slot = -1
+	since_thrown_s = INF
+	rest_time = 0.0
+	set_hidden(false, null)
+	freeze = true
+	collision_layer = 0
+	collision_mask = 0
+	linear_velocity = Vector3.ZERO
+	angular_velocity = Vector3.ZERO
+	if interactable != null:
+		interactable.enabled = false
+	_follow_carrier()
+	_update_stimulus()
 
 
 ## Server (LootManager): attach to `crew`'s back.
 func attach(crew: CrewController) -> void:
 	carrier = crew
+	npc_carrier = null
 	moved = true
 	in_flight = false
 	thrown_by_slot = -1
@@ -107,8 +141,13 @@ func attach(crew: CrewController) -> void:
 
 ## Server (LootManager): let go at `pos` with `velocity` (thrown = flies until first contact).
 func release(pos: Vector3, velocity: Vector3, thrown: bool) -> void:
-	var yaw: float = carrier.look_yaw if is_carried() else rotation.y
+	var yaw: float = rotation.y
+	if carrier != null and is_instance_valid(carrier):
+		yaw = carrier.look_yaw
+	elif is_npc_carried():
+		yaw = npc_carrier.global_rotation.y
 	carrier = null
+	npc_carrier = null
 	global_transform = Transform3D(Basis(Vector3.UP, yaw), pos)
 	collision_layer = LAYER_LOOT
 	collision_mask = MASK_WORLD
@@ -151,6 +190,14 @@ func _physics_process(_delta: float) -> void:
 
 
 func _physics_step(_delta: float) -> void:
+	if npc_carrier != null:
+		if not is_instance_valid(npc_carrier) or not npc_carrier.is_inside_tree():
+			npc_carrier = null
+			if Net.is_authority():
+				release(global_position, Vector3.ZERO, false)
+			return
+		_follow_carrier()
+		return
 	if carrier == null:
 		if since_thrown_s < INF:
 			since_thrown_s += _delta
@@ -162,9 +209,15 @@ func _physics_step(_delta: float) -> void:
 
 
 func _follow_carrier() -> void:
+	var tw: LootTweak = LootTweak.get_default()
+	if is_npc_carried():
+		if not npc_carrier.is_inside_tree():
+			return
+		var basis_n: Basis = Basis(Vector3.UP, npc_carrier.global_rotation.y)
+		global_transform = Transform3D(basis_n, npc_carrier.global_position + basis_n * tw.carry_offset)
+		return
 	if not is_carried() or not carrier.is_inside_tree():
 		return
-	var tw: LootTweak = LootTweak.get_default()
 	var basis_y: Basis = Basis(Vector3.UP, carrier.look_yaw)
 	global_transform = Transform3D(basis_y, carrier.global_position + basis_y * tw.carry_offset)
 
