@@ -1,3 +1,4 @@
+# gdlint:disable=max-public-methods
 ## Crew weapons component (A1-08): child `Weapons` of CrewController. Owner: ENV A.
 ## Fidelity: L3.1 (stats from resolved WeaponStats), L3.2 (falloff), L3.7 (suppressors), L3.8 (hit
 ## claims), S1.1 (no firing while casing), S4.3 (unsuppressed shots are noise), L2.5 (shoot while
@@ -23,7 +24,11 @@ signal reload_started(weapon_slot: int, duration: float)
 signal reload_finished(weapon_slot: int)
 signal equipped_changed(weapon_slot: int)
 signal ammo_changed(weapon_slot: int)
+## D-118: a slot's laser / flashlight was switched (server toggle; clients on the replicated state).
+signal gadget_changed(weapon_slot: int, on: bool)
 
+## D-118: gadgets CrewIntent.gadget toggles (WeaponStats.gadgets); angled sights are not switched here.
+const TOGGLE_GADGETS: Array[StringName] = [&"laser", &"flashlight"]
 ## PO-8: server-side marker on a claim that arrived from its owning client (_rpc_hit_claim).
 const REMOTE_CLAIM_KEY: String = "_remote"
 
@@ -78,6 +83,9 @@ var _cooldown: float = 0.0
 var _equip_left: float = 0.0
 var _prev_fire: bool = false
 var _prev_reload: bool = false
+var _prev_gadget: bool = false
+## D-118: Enums.WeaponSlot -> gadget switched on (absent = off).
+var _gadget_on: Dictionary[int, bool] = {}
 var _seq: int = 0
 var _server_clock: float = 0.0
 var _last_server_shot_clock: float = -INF
@@ -127,6 +135,7 @@ static func build_loadout(base: Loadout) -> Loadout:
 func set_loadout(l: Loadout) -> void:
 	loadout = l
 	_states.clear()
+	_clear_gadgets()
 	if l != null:
 		deployable_id = l.deployable  # A2-06: HUD fallback until DeployableSystem syncs
 		var th: ThrowableDef = ContentDB.throwable(l.throwable) if l.throwable != &"" else null
@@ -159,6 +168,59 @@ func _add_state(ws: int, id: StringName, st: WeaponStats, mods: Array[StringName
 
 
 # --- Queries (HUD + other systems) ----------------------------------------------------------
+
+## D-118: the slot's laser / flashlight is on (replicated; third-person views and stealth read it).
+func gadget_on(ws: int) -> bool:
+	return _gadget_on.get(ws, false)
+
+
+## D-118: the toggleable gadgets of slot `ws` (subset of TOGGLE_GADGETS in its resolved stats).
+func toggle_gadgets(ws: int) -> Array[StringName]:
+	var out: Array[StringName] = []
+	var st: WeaponStats = stats(ws)
+	if st != null:
+		for g: StringName in st.gadgets:
+			if TOGGLE_GADGETS.has(g) and not out.has(g):
+				out.append(g)
+	return out
+
+
+## D-118 (authority): flip the equipped weapon's gadget if it has a laser or flashlight. Returns the new state.
+func toggle_gadget() -> bool:
+	if not Net.is_authority() or toggle_gadgets(equipped_slot).is_empty():
+		return gadget_on(equipped_slot)
+	_set_gadget(equipped_slot, not gadget_on(equipped_slot))
+	return gadget_on(equipped_slot)
+
+
+func _set_gadget(ws: int, on: bool) -> void:
+	if gadget_on(ws) == on:
+		return
+	if on:
+		_gadget_on[ws] = true
+	else:
+		_gadget_on.erase(ws)
+	gadget_changed.emit(ws, on)
+
+
+func _clear_gadgets() -> void:
+	for ws: int in _gadget_on.keys():
+		_set_gadget(ws, false)
+
+
+## D-118 net state: bit (1 << ws) per slot whose gadget is on.
+func gadget_bits() -> int:
+	var b: int = 0
+	for ws: int in _gadget_on.keys():
+		b |= 1 << ws
+	return b
+
+
+## D-118 (client): apply the server's gadget_bits(); emits gadget_changed per slot that changed.
+func apply_gadget_bits(b: int) -> void:
+	for ws: int in [Enums.WeaponSlot.PRIMARY, Enums.WeaponSlot.SECONDARY]:
+		_set_gadget(ws, (b & (1 << ws)) != 0)
+
 
 func has_weapon(ws: int) -> bool:
 	return _states.has(ws)
@@ -266,6 +328,9 @@ func server_tick(intent: CrewIntent, delta: float) -> void:
 	_server_clock += delta
 	_tick_timers(delta)
 	_handle_controls(intent)
+	if intent.gadget and not _prev_gadget:
+		toggle_gadget()
+	_prev_gadget = intent.gadget
 	if involuntary_fire:
 		_involuntary_tick(intent)  # A3-01a: the server pulls the trigger for every slot (L4.4)
 	elif not _remote_owned():

@@ -235,6 +235,8 @@ static func _crew_state(crew: CrewController) -> Dictionary:
 	if crew.health != null:
 		for k: StringName in CREW_HEALTH_PROPS:
 			out["h_" + String(k)] = crew.health.get(k)
+	if crew.weapons != null:
+		out["gd"] = crew.weapons.gadget_bits()  # D-118 laser / flashlight per slot
 	return out
 
 
@@ -297,6 +299,8 @@ static func _apply_crew_state(crew: CrewController, d: Dictionary) -> void:
 		crew.cable_ties = int(d["ct"])
 	if d.has("hidden"):
 		crew.stealth_hidden = bool(d["hidden"])
+	if d.has("gd") and crew.weapons != null:
+		crew.weapons.apply_gadget_bits(int(d["gd"]))
 	if d.has("civ"):
 		crew.civilian = bool(d["civ"])
 	if d.has("pid"):
