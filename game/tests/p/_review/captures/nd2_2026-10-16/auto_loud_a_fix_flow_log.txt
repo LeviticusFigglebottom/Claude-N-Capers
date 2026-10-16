@@ -1,0 +1,113 @@
+[PO5 11.3s] shot /tmp/claude-0/-home-user-Claude-N-Capers/c8e3bd0d-2936-5426-b09e-0c307ae6466a/scratchpad/nd_ld3/01_main_menu.png
+[PO5 12.5s] click 'SAFEHOUSE' at (162.0, 266.75)
+[PO5 12.9s] click '' at (358.25, 160.75)
+[PO5 13.9s] shot /tmp/claude-0/-home-user-Claude-N-Capers/c8e3bd0d-2936-5426-b09e-0c307ae6466a/scratchpad/nd_ld3/02_planning_table.png
+[PO5 14.0s] click 'Nightfall Depository' at (142.0, 259.5)
+[PO5 15.0s] click 'ROUTINE' at (313.5, 250.0)
+[PO5 18.8s] click 'Briefing' at (848.0, 494.5)
+[PO5 18.9s] shot /tmp/claude-0/-home-user-Claude-N-Capers/c8e3bd0d-2936-5426-b09e-0c307ae6466a/scratchpad/nd_ld3/03_briefing.png
+[PO5 19.1s] click 'Continue' at (856.0, 502.5)
+[PO5 20.0s] shot /tmp/claude-0/-home-user-Claude-N-Capers/c8e3bd0d-2936-5426-b09e-0c307ae6466a/scratchpad/nd_ld3/04_continue.png
+[PO5 20.3s] click 'Confirm plan' at (856.0, 500.25)
+[PO5 21.1s] shot /tmp/claude-0/-home-user-Claude-N-Capers/c8e3bd0d-2936-5426-b09e-0c307ae6466a/scratchpad/nd_ld3/05_confirm_plan.png
+[PO5 21.3s] click 'Start Heist' at (848.0, 494.5)
+[PO5 71.8s] in heist night_deposit seed 1002 diff 0 phase 1 crew at (-2.0, -0.2, 24.5)
+[PO5 107.3s] shot /tmp/claude-0/-home-user-Claude-N-Capers/c8e3bd0d-2936-5426-b09e-0c307ae6466a/scratchpad/nd_ld3/06_heist_start.png
+[PO5 108.2s] mouse captured by the game (MouseCapture)
+[PO5 108.2s] pilot: calibrated 0.001600 rad/px yaw, 0.001600 rad/px pitch (settings formula said (0.0016, 0.0016))
+[PO5 109.2s] EVENT objective casing -> 2 t=3
+[PO5 176.5s] EVENT objective code -> 1 t=6
+[PO5 176.5s] EVENT objective server -> 1 t=6
+[PO5 176.5s] EVENT objective vault_drill -> 1 t=6
+[PO5 197.4s] loud: phase=3 went_loud=true
+[PO5 229.4s] shot /tmp/claude-0/-home-user-Claude-N-Capers/c8e3bd0d-2936-5426-b09e-0c307ae6466a/scratchpad/nd_ld3/07_auto_6.png
+[PO5 1031.0s] pilot: use MainEntrance (open_door) -> OK in 0.0 s
+[PO5 1046.4s] EVENT objective keycard -> 2 t=37
+[PO5 1254.4s] EVENT objective vault_gate -> 2 t=74
+[PO5 1254.4s] pilot: use VaultGate (open_door) -> OK in 1.0 s
+[PO5 1383.3s] pilot: use VaultDrill (place_drill) -> OK in 3.0 s
+[PO5 1515.7s] pilot: use CountRoomDoor (open_door) -> OK in 8.0 s
+[PO5 1706.4s] pilot: use DepositoryDoor (open_door) -> OK in 8.0 s
+[PO5 1781.2s] pilot: use DepositorySafe (place_drill) -> OK in 3.0 s
+[PO5 1796.7s] shot /tmp/claude-0/-home-user-Claude-N-Capers/c8e3bd0d-2936-5426-b09e-0c307ae6466a/scratchpad/nd_ld3/08_auto_132.png
+[PO5 2188.8s] waiting at vault_drill for 60 s (nothing usable within 2.5 m)
+[PO5 2196.1s] marker depository@21,-4,17: usable again, back to it
+[PO5 2233.1s] pilot: use DepositorySafe (fix_drill) -> OK in 2.0 s
+[PO5 2361.3s] shot /tmp/claude-0/-home-user-Claude-N-Capers/c8e3bd0d-2936-5426-b09e-0c307ae6466a/scratchpad/nd_ld3/09_auto_226.png
+[PO5 2881.0s] waiting at vault_drill for 120 s (nothing usable within 2.5 m)
+[PO5 2886.0s] marker vault_drill@15,-3,9: usable again, back to it
+[PO5 2912.5s] pilot: use VaultDrill (place_drill) -> OK in 2.0 s
+[PO5 2950.3s] EVENT objective depository -> 2 t=270
+[PO5 2961.4s] waiting at vault_drill for 60 s (nothing usable within 2.5 m)
+[PO5 3212.0s] waiting at vault_drill for 120 s (nothing usable within 2.5 m)
+[PO5 3315.2s] shot /tmp/claude-0/-home-user-Claude-N-Capers/c8e3bd0d-2936-5426-b09e-0c307ae6466a/scratchpad/nd_ld3/10_auto_317.png
+[PO5 3583.7s] waiting at vault_drill for 180 s (nothing usable within 2.5 m)
+[PO5 3686.3s] EVENT crew 1 state 0 -> 1 at (12.2, -4.0, 5.7) (t=334)
+[PO5 3686.8s] revive slot 1 at 335 s (3.8 m)
+[PO5 3883.1s] pilot: STUCK at (12.4, -4.0, 6.4) heading to (12.2, -3.8, 6.0); rays: h0.05:/root/HeistRuntime/Dynamic/Crew1@(12.2, -3.9, 5.9), h0.20:/root/HeistRuntime/Dynamic/Crew1@(12.2, -3.8, 6.0), h0.40:/root/HeistRuntime/Dynamic/Crew1@(
+[PO5 3925.2s] EVENT crew 0 state 0 -> 1 at (12.4, -4.0, 6.4) (t=341)
+[PO5 3948.6s] shot /tmp/claude-0/-home-user-Claude-N-Capers/c8e3bd0d-2936-5426-b09e-0c307ae6466a/scratchpad/nd_ld3/11_stuck_1.png
+[PO5 3948.6s] pilot: detour right 0.7 m to (12.9, -3.8, 5.6) (attempt 1)
+[PO5 3948.6s] pilot: goto aborted, crew state 1 (fight from the floor)
+[PO5 3948.6s] pilot: goto (12.9, -3.8, 5.6) FAILED at (12.4, -4.0, 6.4) after 0.0 s
+[PO5 3948.6s] pilot: detour left 0.7 m to (11.6, -3.8, 6.5) (attempt 1)
+[PO5 3948.6s] pilot: goto (11.6, -3.8, 6.5) FAILED at (12.4, -4.0, 6.4) after 0.0 s
+[PO5 3972.7s] pilot: goto aborted, crew state 1 (fight from the floor)
+[PO5 3972.7s] pilot: goto (12.2, -3.8, 5.7) FAILED at (12.4, -4.0, 6.4) after 6.0 s
+[PO5 3972.7s] pilot: could not reach /root/HeistRuntime/Dynamic/Crew1/ReviveInteractable (revive)
+[PO5 3972.8s] pilot: use Crew1 (revive) -> OK in 0.0 s
+[PO5 3972.8s] pilot: goto aborted, crew state 1 (fight from the floor)
+[PO5 3972.8s] pilot: goto (12.2, -3.8, 5.7) FAILED at (12.4, -4.0, 6.4) after 0.0 s
+[PO5 3972.8s] pilot: could not reach /root/HeistRuntime/Dynamic/Crew1/ReviveInteractable (revive)
+[PO5 3996.1s] pilot: use Crew1 (revive) -> OK in 0.0 s
+[PO5 4368.2s] EVENT crew 0 state 1 -> 0 at (12.4, -4.0, 6.4) (t=349)
+[PO5 4368.5s] revive slot 1 at 349 s (0.8 m)
+[PO5 4428.2s] EVENT crew 1 state 1 -> 0 at (12.2, -4.0, 5.7) (t=350)
+[PO5 4446.3s] pilot: use Crew1 (revive) -> OK in 0.8 s
+[PO5 4459.3s] pilot: use Crew1 (revive) -> OK in 0.0 s
+[PO5 4767.8s] waiting at vault_drill for 240 s (nothing usable within 2.5 m)
+[PO5 5117.0s] waiting at vault_drill for 300 s (nothing usable within 2.5 m)
+[PO5 5499.8s] shot /tmp/claude-0/-home-user-Claude-N-Capers/c8e3bd0d-2936-5426-b09e-0c307ae6466a/scratchpad/nd_ld3/12_auto_407.png
+[PO5 5618.6s] waiting at vault_drill for 360 s (nothing usable within 2.5 m)
+[PO5 5931.6s] waiting at vault_drill for 420 s (nothing usable within 2.5 m)
+[PO5 5932.8s] EVENT objective vault_drill -> 2 t=444
+[PO5 5933.0s] EVENT objective vault_loot -> 1 t=444
+[PO5 6060.4s] pilot: use CageCash (bag_loot) -> OK in 1.0 s
+[PO5 6072.5s] pilot: goto (7.0, -0.8, 36.9) FAILED at (13.6, -4.3, 9.4) after 4.0 s
+[PO5 6072.7s] carry: enemy in sight, bag down to clear the way (t=456)
+[PO5 6097.5s] FINDING slot 2 carries loot.cash: leading it to the secure zone
+[PO5 6172.9s] pilot: goto (7.0, -0.8, 36.9) FAILED at (9.3, -2.7, 2.2) after 10.0 s
+[PO5 6197.1s] pilot: goto (7.0, -0.8, 36.9) FAILED at (5.7, 0.0, 6.6) after 10.0 s
+[PO5 6208.9s] pilot: goto (7.0, -0.8, 36.9) FAILED at (4.9, 0.0, 10.9) after 10.0 s
+[PO5 6242.4s] pilot: goto (7.0, -0.8, 36.9) FAILED at (9.9, -0.0, 19.3) after 10.0 s
+[PO5 6254.4s] pilot: goto (7.0, -0.8, 36.9) FAILED at (7.4, -0.1, 28.9) after 10.0 s
+[PO5 6258.5s] shot /tmp/claude-0/-home-user-Claude-N-Capers/c8e3bd0d-2936-5426-b09e-0c307ae6466a/scratchpad/nd_ld3/13_auto_506.png
+[PO5 6288.4s] EVENT objective secure -> 1 t=512
+[PO5 6288.4s] EVENT loot_secured loot.cash 6500 t=512
+[PO5 6320.0s] EVENT crew 1 state 0 -> 1 at (9.9, 0.0, 30.5) (t=518)
+[PO5 6327.2s] revive slot 1 at 518 s (3.1 m)
+[PO5 6362.9s] EVENT crew 2 state 0 -> 1 at (8.1, -0.1, 29.5) (t=521)
+[PO5 6448.8s] EVENT crew 0 state 0 -> 1 at (10.1, -0.0, 30.2) (t=523)
+[PO5 6482.3s] pilot: use Crew1 (revive) -> OK in 0.0 s
+[PO5 6482.3s] pilot: goto aborted, crew state 1 (fight from the floor)
+[PO5 6482.3s] pilot: goto (14.0, -3.8, 14.5) FAILED at (10.1, -0.0, 30.2) after 6.3 s
+[PO5 6482.3s] pilot: could not reach /root/HeistRuntime/NightDeposit/Gameplay/Vault/CageCash/Interactable (bag_loot)
+[PO5 6482.7s] pilot: use CageCash (bag_loot) -> OK in 0.0 s
+[PO5 6482.7s] pilot: mag empty (0/139), reloading
+[PO5 6482.9s] EVENT crew 1 state 1 -> 0 at (9.9, 0.0, 30.5) (t=525)
+[PO5 6626.7s] EVENT crew 3 state 0 -> 1 at (8.8, 0.0, 30.3) (t=528)
+[PO5 6665.0s] EVENT crew 0 state 1 -> 0 at (10.1, -0.0, 30.2) (t=531)
+[PO5 6665.7s] revive slot 3 at 531 s (1.3 m)
+[PO5 6667.5s] pilot: use Crew3 (revive) -> OK in 0.4 s
+[PO5 6667.5s] pilot: use Crew3 (revive) -> OK in 0.0 s
+[PO5 6744.0s] pilot: mag empty (0/122), reloading
+[PO5 6800.6s] EVENT crew 1 state 0 -> 1 at (9.0, -0.1, 29.6) (t=537)
+[PO5 6800.6s] revive slot 3 at 537 s (0.3 m, last stand)
+[PO5 6959.1s] revive slot 3 at 540 s (0.3 m, last stand)
+[PO5 6974.8s] EVENT crew 0 state 0 -> 1 at (9.1, 0.0, 30.3) (t=543)
+[PO5 6974.8s] pilot: use Crew3 (revive) -> FAILED in 3.1 s
+[PO5 6974.9s] pilot: use Crew3 (revive) -> FAILED in 0.0 s
+[PO5 6975.2s] pilot: mag empty (0/105), reloading
+[PO5 7007.7s] FAIL budget 7000 s exceeded
+[PO5 7033.2s] shot /tmp/claude-0/-home-user-Claude-N-Capers/c8e3bd0d-2936-5426-b09e-0c307ae6466a/scratchpad/nd_ld3/14_budget_exceeded.png
+[PO5 7033.2s] RESULT FAIL (code 2) flow=auto_loud heist=Nightfall Depository seed=1002
