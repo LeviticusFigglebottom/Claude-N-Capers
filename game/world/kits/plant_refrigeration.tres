@@ -1,0 +1,39 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"plant_refrigeration"
+purpose = &"plant"
+required_items = Array[StringName]([&"compressor", &"tank", &"control_panel", &"breaker_panel", &"gas_cylinders", &"fire_extinguisher", &"light_fixture"])
+optional_items = {
+&"hose_reel": 0.6,
+&"shelving": 0.8,
+&"tote": 1
+}
+clutter_groups = {}
+min_density = 0.08
+max_density = 1
+min_props = 9
+lone_ok_kinds = Array[StringName]([&"compressor", &"tank", &"control_panel", &"tote", &"gas_cylinders"])
+seed_salt = 202
+counts = {}
+assets = {
+&"breaker_panel": PackedStringArray("prop_breaker_panel"),
+&"cone": PackedStringArray("prop_traffic_cone"),
+&"dolly": PackedStringArray("prop_hand_truck"),
+&"fire_extinguisher": PackedStringArray("prop_fire_extinguisher"),
+&"fish_boxes": PackedStringArray("prop_fish_box_stack"),
+&"fish_crates": PackedStringArray("prop_fish_crates"),
+&"gas_cylinders": PackedStringArray("prop_gas_cylinders"),
+&"hose_reel": PackedStringArray("prop_hose_reel"),
+&"light_fixture": PackedStringArray("prop_fluorescent"),
+&"pallet": PackedStringArray("prop_pallet_stack", "prop_pallet"),
+&"pallet_jack": PackedStringArray("prop_pallet_jack"),
+&"pallet_wrapped": PackedStringArray("prop_pallet_wrapped"),
+&"shelving": PackedStringArray("prop_shelving_parts"),
+&"tote": PackedStringArray("prop_ibc_tote")
+}
+ceiling = {"prop_fluorescent": 4.5}
+notes = "PL ammonia plant: the three screw compressors, the receiver and the control panel are map-built. The culvert grate (vent exit) and its link stay clear. 4000 K fluorescents, green panel LEDs."

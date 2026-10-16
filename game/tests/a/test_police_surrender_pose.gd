@@ -50,7 +50,7 @@ func test_police_surrender_then_tied_pose() -> void:
 	s.tie(0)
 	await wait_seconds(1.0)
 	print("[cop pose] tied driver %s player %s" % [d.clip, _playing(d)])
-	assert_true(d.clip == &"kneel_cuffed" or d.clip == &"tied", "tied cop kneels cuffed (%s)" % d.clip)
+	assert_true(String(d.clip).begins_with("kneel_cuffed") or d.clip == &"tied", "tied cop kneels cuffed (%s)" % d.clip)
 	assert_true(d.player.is_playing() and _playing(d).contains(String(d.clip)), "player plays %s (%s)" % [d.clip, _playing(d)])
 	await wait_seconds(2.0)
 	assert_true(d.player.is_playing() and _playing(d).contains(String(d.clip)), "still kneeling 2 s later (%s)" % _playing(d))

@@ -1,0 +1,44 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"gatehouse"
+purpose = &"office"
+required_items = Array[StringName]([&"counter_service", &"chair", &"heater", &"light_fixture"])
+optional_items = {
+&"bin": 1,
+&"clock": 0.6,
+&"fire_extinguisher": 0.8,
+&"picture": 0.8
+}
+clutter_groups = {
+&"desk": {
+"anchors": Array[StringName]([&"desk", &"counter_service"]),
+"count": Vector2i(1, 3),
+"items": {&"binders": 1, &"mug": 2, &"notebook": 1, &"papers": 3},
+"radius": 0.6
+}
+}
+min_density = 0.3
+max_density = 1.8
+min_props = 6
+lone_ok_kinds = Array[StringName]([])
+seed_salt = 212
+counts = {}
+assets = {
+&"bin": PackedStringArray("prop_bin_office"),
+&"binders": PackedStringArray("prop_binders"),
+&"box": PackedStringArray("prop_box_small"),
+&"clock": PackedStringArray("prop_clock_harbor"),
+&"fire_extinguisher": PackedStringArray("prop_fire_extinguisher"),
+&"heater": PackedStringArray("prop_radiator_heater"),
+&"light_fixture": PackedStringArray("prop_ceiling_panel_neutral"),
+&"mug": PackedStringArray("prop_mug"),
+&"notebook": PackedStringArray("prop_notebook"),
+&"papers": PackedStringArray("prop_papers"),
+&"picture": PackedStringArray("prop_notice_frame")
+}
+ceiling = {"prop_ceiling_panel_neutral": 3}
+notes = "GH: the weighbridge console (gate controls, desk clutter), the gate man's seat and the heater are map-built."

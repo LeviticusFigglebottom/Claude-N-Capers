@@ -87,5 +87,9 @@ func _shot(flow: X4StealthFlow, tag: String) -> void:
 	print("[X4CAP] shot %s (camera %.1f m out)" % [tag, best_d])
 
 
+## Game seconds (scaled physics time), not wall time: under llvmpipe a wall-clock timer can end well under 1 game s.
 func _wait(seconds: float) -> void:
-	await get_tree().create_timer(seconds, true, false, true).timeout
+	var t: float = 0.0
+	while t < seconds:
+		await get_tree().physics_frame
+		t += get_physics_process_delta_time()

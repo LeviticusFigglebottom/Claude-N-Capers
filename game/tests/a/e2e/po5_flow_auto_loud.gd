@@ -38,6 +38,11 @@ const BAG_FAIL_LIMIT: int = 3
 ## Longest the pilot leads one teammate-carried bag to the secure zone (s; CrewAiBrain secures within its
 ## secure_seek_radius_m of a known zone, following the leader).
 const ESCORT_LIMIT_S: float = 120.0
+## Lead (P's GN loud rerun on 04f79b18: 1200 s at the open BronzeDoorsE leaf): a target whose walk failed this many
+## times in a row although a navmesh path exists (a body in the way, not a door) is set aside for WALK_SKIP_S of
+## heist time, so the other markers go first; it comes back after.
+const WALK_FAIL_LIMIT: int = 3
+const WALK_SKIP_S: float = 90.0
 
 var f: Node = null
 var p: Po5Pilot = null
@@ -55,6 +60,10 @@ var _marker_blocked: Dictionary[String, Door] = {}
 var _bag_fails: Dictionary[int, int] = {}
 ## Seconds spent leading each teammate-carried bag (bag instance id) to the secure zone.
 var _escort_s: Dictionary[int, float] = {}
+## Failed walks in a row per interactable (instance id) with a path and no blocking door, and the heist time until
+## which such a target is set aside.
+var _walk_fails: Dictionary[int, int] = {}
+var _skip_until: Dictionary[int, float] = {}
 
 
 func play(flow: Node) -> int:
@@ -133,7 +142,7 @@ func step() -> void:
 			_mark_if_unreached(comp)  # still usable and still far: the walk failed (GN Slot_orchard_calloway)
 		return
 	# Nothing to do at the marker right now (a device running, a timer): go there and defend.
-	if p.flat_dist(p.crew.global_position, pos) > 4.0:
+	if not p.near(p.crew.global_position, pos, 4.0):
 		if not await p.goto(_marker_stand(pos), 2.5, 60.0):
 			_note_once(id, "objective %s: marker at %s not reachable" % [id, Po5Pilot._v(pos)])
 			if p.last_blocked_door != null:
@@ -175,7 +184,7 @@ func _pick(markers: Array[Dictionary]) -> Dictionary:
 	for m: Dictionary in markers:
 		var mid: StringName = StringName(m["id"])
 		if not (mid in [&"secure", &"escape", &"casing"] or mid in AREA_OBJECTIVES) \
-				and not _stalled(m) and not _is_marker_blocked(m):
+				and not _stalled(m) and not _is_marker_blocked(m) and not _blocked_on_path(m):
 			return m
 	for m1: Dictionary in markers:
 		if not (StringName(m1["id"]) in [&"secure", &"escape", &"casing"]):
@@ -328,7 +337,7 @@ func _escort_mate_bag() -> bool:
 			continue
 		var t0: float = rt.heist_time_s
 		var stand: Vector3 = p.stand_point(zone.global_position)
-		if p.flat_dist(p.crew.global_position, stand) > 3.0:
+		if not p.near(p.crew.global_position, stand, 3.0):
 			_note_once(StringName("_escort_%d" % key), "slot %d carries %s: leading it to the secure zone" % [c.slot, bag.loot_id])
 			await p.goto(stand, 3.0, 10.0)
 		else:
@@ -368,28 +377,23 @@ func _stalled(m: Dictionary) -> bool:
 	return false
 
 
-## The first closed door on the navmesh path from the pilot to `to` the crew cannot open now (BARRED / CODE without
-## the keypad / VAULT...), else null. The GN navmesh is baked through every doorway (heist_map.md §3).
+## The first closed door on the navmesh path from the pilot to `to` the crew cannot open now, else null. Every Door
+## of the map counts (Door.GROUP), not only the ones with an interactable: a lockdown shutter or a BARRED / VAULT leaf
+## offers no usable prompt (P's GN loud rerun sat 80 s+ pushing into a closed leaf with no prompt). The GN navmesh is
+## baked through every doorway (heist_map.md §3), so a path alone says nothing.
 func _path_blocker(to: Vector3) -> Door:
 	var path: PackedVector3Array = p.nav_path(to)
 	if path.size() < 2:
 		return null
 	var best: Door = null
 	var best_i: int = path.size()
-	for n: Node in f.get_tree().get_nodes_in_group(G.INTERACTABLE):
-		var c: InteractableComponent = n as InteractableComponent
-		var door: Door = c.owner_node() as Door if c != null else null
+	for n: Node in f.get_tree().get_nodes_in_group(Door.GROUP):
+		var door: Door = n as Door
 		if door == null or not rt.is_ancestor_of(door) or _passable(door):
 			continue
-		var half: float = maxf(door.width_m * 0.5, 0.6)
-		var inv: Transform3D = door.global_transform.affine_inverse()
-		for i: int in range(1, mini(path.size(), best_i + 1)):
-			var a: Vector3 = inv * path[i - 1]
-			var b: Vector3 = inv * path[i]
-			if signf(a.z) == signf(b.z) or absf(a.z - b.z) < 0.001:
-				continue  # this leg does not go through the door's plane
-			var x: Vector3 = a.lerp(b, a.z / (a.z - b.z))  # where it crosses (door space)
-			if absf(x.x) <= half + 0.2 and absf(x.y) <= 1.5:
+		for i: int in range(1, mini(path.size(), best_i)):
+			# Legs are lifted 0.5 m: navmesh points sit on the floor, doorway_crossing wants the opening's height.
+			if door.doorway_crossing(path[i - 1] + Vector3.UP * 0.5, path[i] + Vector3.UP * 0.5) != Vector3.INF:
 				best = door
 				best_i = i
 				break
@@ -411,9 +415,17 @@ func _mark_if_unreached(c: InteractableComponent) -> void:
 		return
 	var stand: Vector3 = p._use_stand(c)
 	if p.flat_dist(stand, p.crew.global_position) <= 1.0 and absf(stand.y - p.crew.global_position.y) <= 1.5:
+		_walk_fails.erase(c.get_instance_id())
 		return  # it got there; the hold failed for another reason
 	var door: Door = p.last_blocked_door
 	if door == null and _has_path(stand):
+		var key: int = c.get_instance_id()
+		_walk_fails[key] = int(_walk_fails.get(key, 0)) + 1
+		if _walk_fails[key] >= WALK_FAIL_LIMIT:
+			_walk_fails.erase(key)
+			_skip_until[key] = rt.heist_time_s + WALK_SKIP_S
+			f.note("setting %s aside for %.0f s (%d failed walks with a path: a body in the way)" % [c.get_path(),
+				WALK_SKIP_S, WALK_FAIL_LIMIT])
 		return
 	_unreachable[c.get_instance_id()] = door
 	f.note("skipping unreachable %s (%s) %s" % [c.get_path(), c.kind,
@@ -423,6 +435,10 @@ func _mark_if_unreached(c: InteractableComponent) -> void:
 ## A target `_mark_if_unreached` blacklisted: for the run when it had no path, else while its door still blocks.
 func _is_unreachable(c: InteractableComponent) -> bool:
 	var key: int = c.get_instance_id()
+	if _skip_until.has(key):
+		if rt.heist_time_s < _skip_until[key]:
+			return true
+		_skip_until.erase(key)
 	if not _unreachable.has(key):
 		return false
 	var door: Door = _unreachable[key]
@@ -435,9 +451,16 @@ func _is_unreachable(c: InteractableComponent) -> bool:
 	return false
 
 
-## The crew could walk through `door` now: open, or closed but usable (not BARRED / VAULT / no card).
+## The crew could walk through `door` now: open, or closed but usable now. Closed and blocked: a shutter (the crew
+## never operates one), a locked BARRED / VAULT door (the GN lockdown relocks the art door BARRED; once lifted it is
+## unlocked and open), or no enabled interactable the crew can use now (Po5Pilot._door_blocked: no card, no code,
+## three failed tries, casing).
 func _passable(door: Door) -> bool:
-	return door.is_open or not p._door_blocked(door)
+	if door.is_open:
+		return true
+	if door.shutter or (door.locked and door.lock in [Door.Lock.BARRED, Door.Lock.VAULT]):
+		return false
+	return not p._door_blocked(door)
 
 
 ## A marker whose walk a door the crew cannot open stopped (`_marker_blocked`), while that door still blocks.
@@ -451,6 +474,17 @@ func _is_marker_blocked(m: Dictionary) -> bool:
 	_marker_blocked.erase(key)
 	f.note("marker %s: %s is passable again" % [key, door.name if is_instance_valid(door) else "door"])
 	return false
+
+
+## P's GN loud rerun (StudioDoor, 80 s+): any marker, not only the FIRST ones, whose walk would cross a closed door
+## the crew cannot open now yields (recorded in `_marker_blocked`, back once that door is passable) before walking.
+func _blocked_on_path(m: Dictionary) -> bool:
+	var on_path: Door = _path_blocker(_marker_stand(m["position"] as Vector3))
+	if on_path == null:
+		return false
+	_marker_blocked[_marker_key(m)] = on_path
+	f.note("marker %s: %s on the way cannot be opened now" % [_marker_key(m), on_path.name])
+	return true
 
 
 static func _marker_key(m: Dictionary) -> String:
@@ -474,7 +508,7 @@ func _secure_bag() -> void:
 	# short legs; whenever an enemy is in sight, put the bag down, fight until the way is clear, pick it up again.
 	var stand: Vector3 = p.stand_point(zone.global_position)
 	var t0: float = rt.heist_time_s
-	while p.crew.is_carrying_bag() and p.flat_dist(p.crew.global_position, stand) > 3.0 \
+	while p.crew.is_carrying_bag() and not p.near(p.crew.global_position, stand, 3.0) \
 			and rt.heist_time_s - t0 < CARRY_LIMIT_S and p.crew.crew_state == Enums.CrewState.NORMAL:
 		if p.nearest_enemy(CLEAR_RANGE_M) != null:
 			await _clear_then_pick_up()

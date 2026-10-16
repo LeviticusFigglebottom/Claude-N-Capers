@@ -1,0 +1,8 @@
+asset: prop_led_batten_cold
+script: tools/blender/props/dockside.py
+params: {"cat": {"fixture": true, "group": "dockside", "kind": "light_fixture", "light": {"angle": 75, "color": "#DCE8FF", "energy": 2.6, "pos": [0.0, -0.09, 0.0], "range": 9.5, "type": "spot"}, "pin_only": true, "place": "ceiling"}, "fn": "batten"}
+seed: 2075811837  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_led_batten_cold
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 16000

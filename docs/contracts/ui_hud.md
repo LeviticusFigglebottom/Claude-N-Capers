@@ -1,4 +1,4 @@
-# Contract: HUD data (v1.16)
+# Contract: HUD data (v1.17)
 
 ENV A exposes in-heist state. ENV B owns every UI scene, HUD included (one UI style, one owner).
 
@@ -32,7 +32,7 @@ The HUD reads properties with `get()` and connects signals by name, ignoring sig
 | `inventory_changed` | `deployable_id, throwable_id` (StringName), `deployable_count, throwable_count, cable_ties, body_bags` (int) |
 | `carried_bag_changed` | `carried_bag` {} or {loot_id, weight} |
 | `interaction_changed` | `interaction` {} or {text_key, args, progress 0..1, blocked_reason (strings key or &"")} |
-| `detection_changed` | `detection` [{observer_net_id, world_pos, value, kind}] |
+| `detection_changed` | `detection` [{observer_net_id, world_pos, value, kind, state?}] (v1.17: `state`) |
 | `marked_targets_changed` | `marked_targets` [{net_id, world_pos, kind}] |
 | `pagers_changed` | `pagers` [{pager_id, time_left_s, answering, progress}], `pagers_answered`, `pagers_max` (v1.13: `time_left_s` = response window, frozen while answering) |
 | `timers_changed` | `ecm_time_left_s`, `camera_alarm_s` (< 0 = inactive) |
@@ -156,7 +156,18 @@ edge). 0 = not flashed. B renders a white-out that fades with it; P may add a ma
 interrupts a held interaction (A).
 
 ## v1.16: scoped ADS (P's FP scope overlay)
-HUD model gains `scoped_ads: bool` and `scope_ring: Rect2` (screen space, the ring's bounding rect), written by ENV P while
-the scope overlay is above its show threshold. ENV B moves text panels (device timers, the interaction prompt, hint strips)
-outside `scope_ring` while scoped. Gameplay markers, detection chevrons, hit markers and subtitles stay where they are
+HUD model gains `scoped_ads: bool` and `scope_ring: Rect2` (canvas coordinates at the 1920x1080 stretch base, the space B's Controls lay out in, not window
+pixels; the ring's bounding rect), written by ENV P while
+the scope overlay is above its show threshold. ENV B moves text panels (device timers, the interaction prompt, hint strips,
+first-time tips, assault banners) outside `scope_ring` while scoped; the ring leaves little room above or below it, so
+the side margins are the place. Gameplay markers, detection chevrons, hit markers and subtitles stay where they are
 (PD2 keeps them while scoped). No gadget on/off HUD hint: PD2 shows none.
+
+## v1.17: detection rings and the investigating "?" (D-128)
+`detection` rows gain an optional `state: StringName`: `&""` (meter only, as v1.16), `&"curious"` or
+`&"investigating"` (guard_brain S3.4 AlertState). ENV A also emits rows at `value` 0 for observers in CURIOUS or
+INVESTIGATING that are in view of, or within stealth range of, the tracked crew member, so the HUD can show "?" over a
+guard checking a noise. Rows without `state` behave as v1.16. ENV B draws PD2's indicator from these rows: a ring over
+each observer (2.15 m above `world_pos`, cameras 0.35 m) filling clockwise from 12 o'clock with "?" inside, turning into
+a red "!" when detected, plus one crosshair arc per observer in its direction; colours white → orange (≥ 0.5) → red.
+Off-screen observers get only the arc. It replaces the v1.x chevrons.

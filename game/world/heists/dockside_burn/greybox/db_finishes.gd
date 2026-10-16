@@ -69,7 +69,7 @@ const ROOM_FINISH: Dictionary = {
 	"LK": ["tile_ceramic_white", "drywall_painted", "ceiling_tile"],  # locker room
 	"J": ["tile_ceramic_white", "blockwork", "ceiling_tile"],  # janitor
 	"PK": ["epoxy_floor", "frost_panel", "frost_panel"],  # chilled packing hall
-	"H": ["concrete", "blockwork", "roof_metal"],  # marshalling hall
+	"H": ["concrete", "blockwork", "steel_cladding"],  # marshalling hall (G2: painted deck soffit; matte metal read black)
 	"C1": ["concrete", "frost_panel", "frost_panel"],  # cold store chambers + spine
 	"SP": ["concrete", "frost_panel", "frost_panel"],
 	"C2": ["concrete", "frost_panel", "frost_panel"],

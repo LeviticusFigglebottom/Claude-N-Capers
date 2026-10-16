@@ -127,7 +127,7 @@ def _thermite_drum(k: Kit, p: dict) -> None:
                    cy - math.sin(ang + math.pi / 2) * seg / 2 + math.sin(ang) * 0.003),
                   (cx + math.cos(ang + math.pi / 2) * seg / 2 + math.cos(ang) * 0.003,
                    cy + math.sin(ang + math.pi / 2) * seg / 2 + math.sin(ang) * 0.003)],
-                 h * 0.4, h * 0.58, "safety_orange")
+                 h * 0.4, h * 0.58, "paint_hazard_orange")
     o.build()
 
 

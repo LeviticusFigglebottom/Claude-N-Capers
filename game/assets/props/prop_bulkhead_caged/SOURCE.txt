@@ -1,0 +1,8 @@
+asset: prop_bulkhead_caged
+script: tools/blender/props/dockside.py
+params: {"cat": {"fixture": true, "group": "dockside", "kind": "light_fixture", "light": {"color": "#FFE2B8", "energy": 1.4, "pos": [0.0, -0.26, 0.0], "range": 6.0, "type": "omni"}, "pin_only": true, "place": "ceiling"}, "fn": "bulkhead"}
+seed: 1120820090  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_bulkhead_caged
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 16000

@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"exterior_yard"
+purpose = &"exterior"
+required_items = Array[StringName]([&"container", &"vehicle", &"ice_bins", &"lamp_post"])
+optional_items = {}
+clutter_groups = {}
+min_density = 0.004
+max_density = 0.3
+min_props = 12
+lone_ok_kinds = Array[StringName]([&"container", &"vehicle", &"ice_bins", &"lamp_post", &"kerb", &"cone", &"pallet", &"tote", &"barrier", &"bollard", &"skip", &"railing", &"gangway", &"loot_spawn"])
+seed_salt = 214
+counts = {}
+assets = {}
+ceiling = {}
+notes = "X1 yard: containers K1-K6 + D1, the reach stacker, the reefer trailer, ice-bin pallets and the sodium masts are map-built; cones, pallet stacks and totes in clusters at the container ends (direct props)."

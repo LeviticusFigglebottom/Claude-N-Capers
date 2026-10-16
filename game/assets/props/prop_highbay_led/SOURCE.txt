@@ -1,0 +1,8 @@
+asset: prop_highbay_led
+script: tools/blender/props/dockside.py
+params: {"cat": {"fixture": true, "group": "dockside", "kind": "light_fixture", "light": {"angle": 70, "color": "#F2F0EA", "energy": 3.0, "pos": [0.0, -0.32, 0.0], "range": 9.0, "type": "spot"}, "pin_only": true, "place": "ceiling"}, "fn": "highbay"}
+seed: 3825797741  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_highbay_led
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 16000

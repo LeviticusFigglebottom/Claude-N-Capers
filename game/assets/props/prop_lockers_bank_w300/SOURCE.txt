@@ -1,0 +1,8 @@
+asset: prop_lockers_bank_w300
+script: tools/blender/props/dockside.py
+params: {"cat": {"clear": 0.8, "group": "dockside", "kind": "lockers", "pin_only": true, "place": "wall"}, "fn": "locker_bank"}
+seed: 3086423333  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_lockers_bank_w300
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 16000

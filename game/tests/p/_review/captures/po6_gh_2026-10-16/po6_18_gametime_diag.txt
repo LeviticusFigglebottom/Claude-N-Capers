@@ -1,0 +1,3 @@
+[PO6DIAG] 04_hostage_kneel_cuffed game_t=8.28 phase=IDLE hips_y=0.95 root_y=0.00 alive=true
+[PO6DIAG] 05_hostage_shot_dies_in_place game_t=10.38 phase=ACTIVE hips_y=0.12 root_y=0.20 alive=false
+[PO6DIAG] 06_corpse_shot_blood_at_hit game_t=16.18 phase=FROZEN hips_y=0.10 root_y=0.20 alive=false

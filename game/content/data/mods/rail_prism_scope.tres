@@ -16,6 +16,8 @@ noise_radius_m = 0.0
 equip_time_s = 0.0
 spread_deg_ads = -0.384
 magnification = 3.0
+scope_reticle = &"chevron"
+scope_reticle_color = Color(1, 0.62, 0.1, 1)
 concealment = -3
 ads_time_s = 0.0
 
