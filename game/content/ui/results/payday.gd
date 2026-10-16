@@ -190,7 +190,10 @@ func show_result(heist_result: Dictionary) -> void:
 	xp_before = profile.xp
 	xp_after = xp_before + int(payout.get("xp_total", 0))
 	_applied = false
-	awards = HeistAwards.compute(result.get("crew", []) as Array)
+	# Lead r228: PD2 hands out no awards on a failed job.
+	awards = []
+	if bool(payout.get("success", false)):
+		awards = HeistAwards.compute(result.get("crew", []) as Array)
 	achievements_unlocked = []
 	_ensure_toast().clear()
 	if apply_to_profile:
@@ -556,7 +559,9 @@ func _render() -> void:
 	right.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	cols.add_child(right)
 	right.add_child(UiBuild.panel(_build_stats()))
-	right.add_child(UiBuild.panel(_build_awards()))
+	award_labels.clear()
+	if success:  # Lead r228: no Crew Honours on a failed job (PD2)
+		right.add_child(UiBuild.panel(_build_awards()))
 	achievements_panel = _build_achievements()
 	_content.add_child(achievements_panel)
 	_wire_achievements()
@@ -854,7 +859,7 @@ func _build_stats() -> VBoxContainer:
 	return v
 
 
-## B6-02 "Crew Honours": award name | winners | what it was for.
+## B6-02 "Crew Honours": award name | winners | what it was for (successful jobs only, as PD2).
 func _build_awards() -> VBoxContainer:
 	award_labels.clear()
 	var v: VBoxContainer = UiBuild.vbox(6)
@@ -865,6 +870,7 @@ func _build_awards() -> VBoxContainer:
 	var by_slot: Dictionary = {}
 	for member: Dictionary in result.get("crew", []) as Array:
 		by_slot[int(member.get("slot", -1))] = member
+	# Lead r228: winners are named like the crew stats rows (the heister: "Rook"), not the row's generic "Player".
 	var grid: GridContainer = GridContainer.new()
 	grid.columns = 2  # D-111: award, who; the description is the award name's tooltip
 	grid.add_theme_constant_override(&"h_separation", UiTokens.S4)
@@ -877,8 +883,7 @@ func _build_awards() -> VBoxContainer:
 		var names: Array[String] = []
 		for slot: int in a["slots"] as Array:
 			var member: Dictionary = by_slot.get(slot, {}) as Dictionary
-			var n: String = String(member.get("name", ""))
-			names.append(n if n != "" else _crew_name(slot, bool(member.get("is_ai", false))))
+			names.append(_crew_name(slot, bool(member.get("is_ai", false))))
 		var who: Label = UiBuild.label()
 		who.text = ", ".join(names)
 		grid.add_child(who)

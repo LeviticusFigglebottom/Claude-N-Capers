@@ -189,6 +189,44 @@ func test_payday_without_awards_says_so() -> void:
 	screen.free()
 
 
+## Lead r228 (payday capture): Crew Honours named "Player" (the row's generic name) where the stats list said the
+## heister; a failed job showed honours at all (PD2 shows none).
+func test_payday_honours_name_the_heister_and_skip_failed_jobs() -> void:
+	SaveService.root_dir = BTestUtil.profile_root()
+	var screen: PaydayScreen = PAYDAY_SCENE.instantiate() as PaydayScreen
+	screen.apply_to_profile = false
+	screen.setup(PlayerProfile.new_default())
+	screen.crew_heisters = {0: &"rook"}
+	add_child(screen)
+	await wait_frames(1)
+	var result: Dictionary = HeistCatalog.sample_result()
+	for row: Dictionary in result["crew"] as Array:
+		row["name"] = "Player"
+	screen.show_result(result)
+	var rook: String = Heisters.display_name(&"rook")
+	assert_eq(screen._crew_name(0, false), rook, "the stats row names the heister")
+	assert_eq((screen.award_labels[&"most_kills"] as Label).text, rook, "the honours name the same heister")
+	var failed: Dictionary = HeistCatalog.sample_result()
+	failed["success"] = false
+	failed["fail_reason"] = &"custody"
+	screen.show_result(failed)
+	assert_false(bool(screen.payout.get("success", true)), "failed job")
+	assert_eq(screen.awards.size(), 0, "no awards on a failed job")
+	assert_eq(screen.award_labels.size(), 0, "no Crew Honours section")
+	assert_false(_has_text(screen, UiText.t(&"ui.awards.title")), "the section is not drawn")
+	screen.free()
+	SaveService.root_dir = SaveService.DEFAULT_ROOT_DIR
+
+
+static func _has_text(n: Node, text: String) -> bool:
+	if n is Label and (n as Label).text == text:
+		return true
+	for c: Node in n.get_children():
+		if _has_text(c, text):
+			return true
+	return false
+
+
 ## A model with `crew` but no `crew_stats` (the shape of ENV A's LocalHudModel before the QB lands).
 class LegacyModel:
 	extends Node
