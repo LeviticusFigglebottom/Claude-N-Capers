@@ -130,6 +130,12 @@ func setup(p: PlayerProfile) -> void:
 	profile = p
 
 
+## Payday has no Back (Continue or the card pick move on; ui_cancel keeps the screen), so the hint strip shows only
+## Select, like the main menu (r227 achievements capture: "Escape BACK" under Continue).
+func control_hint_pairs() -> Array:
+	return [[&"ui_accept", &"ui.hint.select"]]
+
+
 func build_ui() -> void:
 	var backdrop: ColorRect = CaseBackdrop.new()  # opaque over the map when shown in-heist
 	backdrop.color = Color(UiAccent.app_bg(), 0.97)

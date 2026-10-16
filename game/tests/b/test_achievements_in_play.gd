@@ -201,3 +201,10 @@ func test_section_takes_gamepad_focus_only_past_one_line() -> void:
 	assert_eq(p.focus_mode, Control.FOCUS_ALL, "two lines: d-pad can reach the section")
 	assert_eq(_screen.continue_button.get_node(_screen.continue_button.focus_neighbor_top), p, "up from Continue")
 	assert_eq(p.get_node(p.focus_neighbor_bottom), _screen.continue_button, "and back")
+
+
+## r227: payday has no Back, so its hint strip offers only Select (the capture showed "Escape BACK").
+func test_payday_hint_strip_has_no_back() -> void:
+	var pairs: Array = PaydayScreen.new().control_hint_pairs()
+	assert_eq(pairs.size(), 1)
+	assert_eq(StringName(pairs[0][0]), &"ui_accept")
