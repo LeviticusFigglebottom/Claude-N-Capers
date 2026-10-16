@@ -55,6 +55,16 @@ func test_fresh_profile_loadout_lists_the_whole_secondary_slot() -> void:
 	assert_eq(classes.slice(0, 3), [Enums.WeaponClass.PISTOL, Enums.WeaponClass.SMG, Enums.WeaponClass.SHOTGUN]
 			as Array[int], "pistols, then SMGs, then shotguns")
 	assert_true(enabled.has(p.loadout.secondary), "the equipped secondary is pickable")
+	for i: int in range(o.item_count):
+		var w: WeaponDef = ContentDB.weapon(StringName(o.get_item_metadata(i)))
+		assert_eq(o.get_item_glyph(i), LoadoutScreen.class_glyph(int(w.weapon_class)), "%s class icon" % w.id)
+	assert_eq(LoadoutScreen.class_glyph(Enums.WeaponClass.SMG), &"smg")
+	assert_eq(LoadoutScreen.class_glyph(Enums.WeaponClass.SHOTGUN), &"shotgun")
+	var picker: ItemPicker = o.open_picker()
+	await wait_frames(2)
+	var locks: Array[Node] = picker.find_children("Lock", "Label", true, false)
+	assert_true(locks.size() >= o.item_count - enabled.size(), "every locked tile puts its lock on a second line")
+	picker.queue_free()
 	assert_eq(s._selected_id(o), p.loadout.secondary, "and selected")
 	s.queue_free()
 	await wait_frames(1)

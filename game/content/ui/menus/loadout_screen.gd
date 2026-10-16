@@ -628,7 +628,22 @@ func _fill_weapons() -> void:
 					if profile.level < w.unlock_level else UiText.t(&"ui.loadout.weapon_for_sale", {"name": text})
 		_add_item(weapon_option, text, wid)
 		weapon_option.set_item_disabled(weapon_option.item_count - 1, not owned)
+		weapon_option.set_item_glyph(weapon_option.item_count - 1, class_glyph(int(w.weapon_class)))
 	_select_id(weapon_option, profile.loadout.secondary)
+
+
+## HubStationIcon kind for a weapon class (D-126 picker tiles).
+static func class_glyph(weapon_class: int) -> StringName:
+	match weapon_class:
+		Enums.WeaponClass.SMG:
+			return &"smg"
+		Enums.WeaponClass.SHOTGUN:
+			return &"shotgun"
+		Enums.WeaponClass.SPECIAL:
+			return &"saw"
+		Enums.WeaponClass.PISTOL:
+			return &"pistol"
+	return &"armory"
 
 
 func _on_weapon_changed(_index: int) -> void:
