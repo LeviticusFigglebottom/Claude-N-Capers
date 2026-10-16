@@ -96,7 +96,7 @@ check.44: heal_ally: 30f 1.00s speed=0.0 reach_err=0.0mm step=17.9deg
 check.45: heli_door_aim: 90f 3.00s loop speed=0.0 reach_err=0.0mm step=0.1deg lowest_skin=6.0mm crown=1.217m
 check.46: heli_door_fire: 6f 0.20s speed=0.0 reach_err=0.0mm step=4.3deg lowest_skin=6.0mm crown=1.218m
 check.47: heli_door_idle: 90f 3.00s loop speed=0.0 reach_err=0.0mm step=0.5deg lowest_skin=6.0mm crown=1.211m
-check.48: hit_chest: 14f 0.47s speed=0.0 reach_err=0.0mm step=20.6deg drift_L=0.0mm drift_R=0.0mm
+check.48: hit_chest: 14f 0.47s speed=0.0 reach_err=0.0mm step=25.0deg drift_L=0.0mm drift_R=0.0mm
 check.49: hit_head: 14f 0.47s speed=0.0 reach_err=0.0mm step=49.0deg drift_L=0.0mm drift_R=0.0mm
 check.50: hit_leg_l: 16f 0.53s speed=0.0 reach_err=0.0mm step=39.4deg drift_L=70.0mm(step) drift_R=0.0mm
 check.51: hit_leg_r: 16f 0.53s speed=0.0 reach_err=0.0mm step=39.4deg drift_L=0.0mm drift_R=70.0mm(step)
