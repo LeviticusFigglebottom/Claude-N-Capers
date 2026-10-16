@@ -7,7 +7,8 @@ are no samples, recordings or third-party audio anywhere in the pipeline (style 
 python3 tools/audiogen/build.py                      # everything + metrics + spectrogram sheets
 python3 tools/audiogen/build.py --only glass_break   # one cue (name or cue.id)
 python3 tools/audiogen/build.py --only impact        # a cue group (all cue.impact_<surface>)
-python3 tools/audiogen/build.py --only music         # all Glasshouse stems + stingers
+python3 tools/audiogen/build.py --only music         # every heist track: stems + stingers
+python3 tools/audiogen/build.py --only mus_gallery_night  # one track (or mus_<track>_<part>)
 python3 tools/audiogen/build.py --check-determinism  # build, rebuild into a temp tree, compare sha256
 ```
 
@@ -20,9 +21,9 @@ Needs Python 3 with numpy, scipy, Pillow and `ffmpeg` with libvorbis. A full bui
 |---|---|
 | `game/assets/audio/sfx/<name>/sfx_<name>[_<n>].ogg` | cue streams (variations `_1.._n`), `SOURCE.txt` per folder |
 | `game/assets/audio/sfx/impact/impact_<surface>/sfx_impact_<surface>_<n>.ogg` | bullet/melee impact cues `cue.impact_<surface>` (impact_fx.md, D-105), 4 variations each |
-| `game/assets/audio/music/glasshouse/mus_glasshouse_<stem>.ogg` | stems `stealth control anticipation assault fade`, stingers `win lose` |
+| `game/assets/audio/music/<track>/mus_<track>_<part>.ogg` | per heist (D-117): stems `stealth control anticipation assault fade`, stingers `win lose`; Shadow Ledger renders `stealth abort` + stingers and aliases the loud stems (see `music_shadow_ledger.py`) |
 | `game/world/audio/cues.tres` | `AudioCueRegistry` generated from the `CUES` table in `cues.py` |
-| `game/world/audio/music/glasshouse/glasshouse.tres` | `MusicTrack` (bpm, bar length, stems, gains) |
+| `game/world/audio/music/<track>/<track>.tres` | `MusicTrack` (bpm, bar length, stems, gains) for glasshouse, night_deposit, shadow_ledger, dockside_burn, gallery_night |
 | `docs/levels/_audio/cue_spectrograms.png`, `music_spectrograms.png`, `cue_metrics.tsv` | listen-check substitutes |
 
 Never hand-edit the generated `.tres`; change `cues.py` / `music_glasshouse.py` and rebuild.
@@ -43,7 +44,10 @@ Never hand-edit the generated `.tres`; change `cues.py` / `music_glasshouse.py` 
 | `synth/seq.py` | `Song` grid (bpm, bars, step patterns, stereo buses), chord helper, drum synths (kick, snare, clap, hats, tom, rim, shaker, impact, riser) and instruments (bass, pad, FM bell, pluck, stab, drone) |
 | `cues.py` | one recipe function per cue + the `CUES` registry table (bus, 3D, loop, distance, jitter, cooldown) |
 | `cues_impact.py` | the 13 surface impact recipes (impact_fx.md §1 surface ids) + their `CUES` rows (`subdir="impact"`); build.py appends them to `cues.CUES` |
+| `cues_ambience.py` | D-117 heist ambience beds (`amb_<heist place>`, 2D Ambience loops); build.py appends them to `cues.CUES` |
+| `music_engine.py` | shared music parts (kick/hits/bass/pad/motif/arp/stabs/ticks/triplets), the bus mixdown, extra instruments (brass, strings, spiccato, harpsichord, timpani, clang, fog horn, glass pad, rain, tick) |
 | `music_glasshouse.py` | Glasshouse track (A minor, 140 BPM grid) |
+| `music_night_deposit.py`, `music_shadow_ledger.py`, `music_dockside_burn.py`, `music_gallery_night.py` | D-117 heist tracks (C minor 140, B minor 132 stealth-only, E phrygian 150, G minor 144); summary in `docs/levels/_audio/d117_music.md` |
 | `analysis.py` | metrics (duration, LUFS, true peak, spectral centroid) and the spectrogram contact sheet (numpy + Pillow) |
 | `registry.py` | deterministic `.tres` text writers |
 
@@ -61,7 +65,7 @@ Never hand-edit the generated `.tres`; change `cues.py` / `music_glasshouse.py` 
 
 ## Determinism
 
-Seeds are `zlib.crc32("<cue id>#<variation>")` (music: `crc32("mus_glasshouse_<stem>")`), never
+Seeds are `zlib.crc32("<cue id>#<variation>")` (music: `crc32("mus_<track>_<part>")`), never
 Python's `hash()`. numpy/scipy maths is deterministic on a given machine. ffmpeg is run with
 `-fflags +bitexact -flags +bitexact -map_metadata -1` and a fixed `-serial_offset` (seed), so the
 Ogg stream serial and the vendor/comment headers are stable. libvorbis turned out to be
@@ -72,7 +76,7 @@ deterministic under these flags; `--check-determinism` proves it on every run (a
 
 * SFX loops are rendered past their end and either crossfaded over the start (`loop_xfade`) or
   have their tails folded back (`wrap_loop`), so the sample after the last one is the first one.
-* Music stems are whole bars on one 140 BPM 4/4 grid (16 bars, stealth 32 bars), and reverb and
+* Music stems are whole bars on one 4/4 grid per track (16 bars, stealth usually 32 bars), and reverb and
   delay tails are folded into bar 1. `MusicDirector` switches stems on bar lines and keeps the
   phrase position.
 * Godot loop flags are set at runtime from `AudioCueDef.loop` (so `.import` files stay default).
