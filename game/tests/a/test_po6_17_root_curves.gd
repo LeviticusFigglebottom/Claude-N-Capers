@@ -6,11 +6,9 @@ extends TestCase
 const SOURCE: String = "res://assets/characters/char_anim_humanoid/SOURCE.txt"
 const PLANT_Y_M: float = 0.005
 const SLIDE_MAX_M: float = 0.01
-## breach_standback as shipped: with the curve applied exactly, the left foot is grounded (y 0) from f12 to f19 and
-## still slides 4.0 cm along the step on every rig (tac_heavy / tac_light / patrol_officer / security_officer). That is
-## in the clip / curve data (ENV D ask); the runtime consumer is right (the old constant-speed root slid 30 cm).
-## Tighten to SLIDE_MAX_M once D's clip lands.
-const BREACH_STANDBACK_CLIP_RESIDUAL_M: float = 0.045
+## breach_standback: D 5e5a2567 fixed the left-foot creep (4.0 cm along the step), so it now holds SLIDE_MAX_M like
+## van_exit. The old constant-speed root slid ~30 cm.
+const OLD_ROOT_SLIDE_MIN_M: float = 0.2
 
 var _nodes: Array[Node] = []
 
@@ -95,11 +93,11 @@ func test_po6_17_breach_standback_feet_planted_rotated() -> void:
 	for yaw: float in [0.0, deg_to_rad(37.0), deg_to_rad(-120.0)]:
 		var s: float = _slide("breach_standback", tw.breach_standback_curve, Vector3.LEFT, yaw, false)
 		print("[root curve] breach_standback yaw %.0f: slide %.4f m" % [rad_to_deg(yaw), s])
-		assert_true(s < BREACH_STANDBACK_CLIP_RESIDUAL_M,
-			"breach_standback yaw %.0f: planted foot slides %.4f m (clip residual only)" % [rad_to_deg(yaw), s])
+		assert_true(s < SLIDE_MAX_M,
+			"breach_standback yaw %.0f: planted foot slides %.4f m" % [rad_to_deg(yaw), s])
 	var old: float = _slide("breach_standback", tw.breach_standback_curve, Vector3.LEFT, deg_to_rad(37.0), true)
 	print("[root curve] breach_standback constant-speed root (old): slide %.4f m" % old)
-	assert_true(old > 5.0 * BREACH_STANDBACK_CLIP_RESIDUAL_M, "the old constant-speed root slid far more (%.3f m)" % old)
+	assert_true(old > OLD_ROOT_SLIDE_MIN_M, "the old constant-speed root slid far more (%.3f m)" % old)
 	var flipped: float = _slide("breach_standback", tw.breach_standback_curve, Vector3.RIGHT, 0.0, false)
 	assert_true(flipped > 0.5, "the step is along local -X (left): +X slides %.3f m" % flipped)
 

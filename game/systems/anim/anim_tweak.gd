@@ -53,6 +53,11 @@ static var _cached: AnimTweak = null
 	&"kneel_cuffed": &"death_kneel_cuffed", &"tied": &"death_kneel_cuffed", &"surrender": &"death_kneel",
 	&"cower": &"death_crouch", &"crouch_idle": &"death_crouch", &"crouch_walk": &"death_crouch",
 	&"lie_down": &"death_prone", &"downed": &"death_downed", &"downed_crawl": &"death_downed",
+	# characters.md v1.18 variants: every surrender* / surrender_idle* kneels (death_kneel starts on their chain
+	# frame), kneel_cuffed_b/_c share kneel_cuffed's frame 0 (death_kneel_cuffed).
+	&"surrender_b": &"death_kneel", &"surrender_c": &"death_kneel", &"surrender_idle": &"death_kneel",
+	&"surrender_idle_b": &"death_kneel", &"surrender_idle_c": &"death_kneel",
+	&"kneel_cuffed_b": &"death_kneel_cuffed", &"kneel_cuffed_c": &"death_kneel_cuffed",
 }
 ## v1.10: two hit reacts on one body at least this far apart (s); in between the current one plays on.
 @export var hit_react_min_gap_s: float = 0.35
@@ -82,6 +87,11 @@ static var _cached: AnimTweak = null
 @export var blend_s: float = 0.2
 @export var oneshot_blend_s: float = 0.08
 @export var death_blend_s: float = 0.1
+## characters.md v1.18 hit-zone flinches (SOURCE hit_zones: fade in 0.03 s, out 0.12 s).
+@export var hit_zone_blend_in_s: float = 0.03
+@export var hit_zone_blend_out_s: float = 0.12
+## characters.md v1.19 (SOURCE weapon_holds): the crew upper-body hold layer blends in / out over this (s).
+@export var hold_layer_blend_s: float = 0.2
 ## Exponential smoothing rate (1/s) of the velocity estimate from position deltas (clients).
 @export var velocity_smoothing: float = 12.0
 
@@ -103,7 +113,10 @@ static var _cached: AnimTweak = null
 @export_group("Hard-hat hand lift (D-115 R1)")
 ## Hands-on-head clips during which the hands are lifted over the hat shell.
 @export var hard_hat_lift_clips: Array[StringName] = [&"surrender", &"hands_up", &"cower", &"cower_seated",
-	&"cower_stand", &"kneel_cuffed"]
+	&"cower_stand", &"kneel_cuffed",
+	# characters.md v1.18 variants (and the surrender_idle* holds).
+	&"surrender_b", &"surrender_c", &"surrender_idle", &"surrender_idle_b", &"surrender_idle_c",
+	&"hands_up_b", &"hands_up_c", &"kneel_cuffed_b", &"kneel_cuffed_c"]
 ## Lift (m) of a hand resting on the head: the shell stands ~2.4 cm off the skull (ENV D audit R1).
 @export var hard_hat_hand_lift_m: float = 0.03
 ## A hand within this distance (m) of the head bone counts as resting on it.
