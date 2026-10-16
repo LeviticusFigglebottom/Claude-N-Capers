@@ -57,6 +57,8 @@ ui.loadout.section.weapons,Weapons
 ui.loadout.section.gear,Gear
 ui.loadout.section.crew,Mask and heister
 ui.loadout.primary_none,None yet: buy and equip one in the Workshop
+ui.loadout.weapon_locked,{name} (level {level})
+ui.loadout.weapon_for_sale,{name} (buy in the Workshop)
 ui.loadout.equip,Equip
 ui.loadout.equipped,Equipped
 ui.loadout.locked,Locked
@@ -2065,6 +2067,13 @@ ui.workshop.open,Workshop
 ui.workshop.weapons,Weapons
 ui.workshop.primaries,PRIMARY WEAPONS
 ui.workshop.secondaries,SECONDARY WEAPONS
+ui.workshop.class.pistol,Pistols
+ui.workshop.class.smg,Submachine guns
+ui.workshop.class.assault_rifle,Assault rifles
+ui.workshop.class.shotgun,Shotguns
+ui.workshop.class.lmg,Light machine guns
+ui.workshop.class.sniper,Sniper rifles
+ui.workshop.class.special,Specials
 ui.workshop.slots,Mod slots
 ui.workshop.overview,Whole Weapon
 ui.workshop.hint_short,"Drag to turn  ·  wheel to zoom  ·  R to reset"

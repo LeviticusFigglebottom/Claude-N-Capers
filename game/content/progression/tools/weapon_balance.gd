@@ -52,7 +52,7 @@ static func collect(diff: int) -> Array[Dictionary]:
 		if a["cls"] != b["cls"]:
 			return int(a["cls"]) < int(b["cls"])
 		if a["slot"] != b["slot"]:
-			return int(a["slot"]) < int(b["slot"])
+			return String(a["slot"]) < String(b["slot"])  # "P" before "S"
 		return int(a["unlock"]) < int(b["unlock"]))
 	return rows
 
@@ -260,7 +260,10 @@ static func class_flags(rows: Array[Dictionary]) -> PackedStringArray:
 			core_best_id = String(r["id"])
 	for r: Dictionary in rows:
 		var c: int = int(r["cls"])
-		if (c == Enums.WeaponClass.PISTOL or c == Enums.WeaponClass.SMG) and float(r["dps"]) > ar_min_dps:
+		# D-126: the secondary slot is pistols, SMGs and shotguns. Shotgun DPS is point blank only (SHOTGUN-RANGE
+		# judges its falloff), so the slot rule covers the bullet secondaries.
+		if r["slot"] == "S" and c != Enums.WeaponClass.SHOTGUN and c != Enums.WeaponClass.SPECIAL \
+				and float(r["dps"]) > ar_min_dps:
 			out.append("SECONDARY-DPS: %s (%s) sustained DPS %.0f > the weakest AR (%.0f)" % [r["id"], CLASS_NAMES[c], r["dps"], ar_min_dps])
 		if c == Enums.WeaponClass.SNIPER and float(r["dmg"]) <= ar_max_dmg + 15.0:
 			out.append("SNIPER-PER-SHOT: %s %.0f per shot vs the AR maximum %.0f" % [r["id"], r["dmg"], ar_max_dmg])
