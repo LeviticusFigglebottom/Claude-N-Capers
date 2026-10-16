@@ -1,7 +1,7 @@
 ## Contact sparks for a drill device's tip (PO: the thermal lance's glow and sparks sit on the door). Owner: ENV C.
 ## The prop wrapper (tools/blender/props/_scenes.py, cat `fx`) puts this `Sparks` node and a hidden `Glow`
 ## OmniLight3D at the tip; ENV A's DrillPoint toggles `emitting` and Glow.visible from the device state.
-## Procedural (no texture): small unshaded emissive quads thrown back off the face (+Z, away from the lock).
+## Procedural (no texture): thin unshaded emissive streaks, velocity-aligned, thrown back off the face (+Z).
 extends Node3D
 
 ## On while the device runs (A: DrillPoint._on_device_state).
@@ -28,11 +28,12 @@ func _ready() -> void:
 	_p.gravity = Vector3(0.0, -9.8, 0.0)
 	_p.scale_amount_min = 0.6
 	_p.scale_amount_max = 1.2
-	var q: QuadMesh = QuadMesh.new()
-	q.size = Vector2(0.012, 0.012)
+	# Streaks, not dots (lead review): thin boxes stretched along the velocity (align_y).
+	_p.particle_flag_align_y = true
+	var q: BoxMesh = BoxMesh.new()
+	q.size = Vector3(0.004, 0.035, 0.004)
 	var m: StandardMaterial3D = StandardMaterial3D.new()
 	m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	m.billboard_mode = BaseMaterial3D.BILLBOARD_ENABLED
 	m.albedo_color = Color(1.0, 0.72, 0.3)
 	m.emission_enabled = true
 	m.emission = Color(1.0, 0.55, 0.15)
