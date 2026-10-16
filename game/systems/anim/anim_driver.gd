@@ -924,17 +924,23 @@ func _update_hold_layer(delta: float, tw: AnimTweak) -> void:
 	if hold_layer == null or not is_instance_valid(hold_layer):
 		return
 	var want: StringName = &""
+	var plain: StringName = &""
 	if _layered_locomotion(clip):
 		if _aiming():
 			want = aim_clip()
 			if _held_weapon_clip(&"hold_") == &"" or not player.has_animation("%s/%s" % [LIBRARY, want]):
 				want = &""
 		else:
-			want = _held_weapon_clip(&"hold_")
+			plain = _held_weapon_clip(&"hold_")
+			want = HoldGait.clip_for(plain, clip, player, LIBRARY)  # v1.25: hold_<kind>_<gait> when D has it
+	var gait_locked: bool = want != &"" and want != plain
 	if want != &"" and want != hold_layer.clip:
 		var a: Animation = player.get_animation("%s/%s" % [LIBRARY, want])
-		hold_layer.set_clip(want, a, _loop_offset(&"weapon_hold") * a.length if String(want).begins_with("hold_") else 0.0)
+		var start: float = 0.0 if gait_locked else _loop_offset(&"weapon_hold") * a.length
+		hold_layer.set_clip(want, a, start if String(want).begins_with("hold_") else 0.0)
 	hold_layer.advance(delta)
+	if gait_locked and player.is_playing():
+		hold_layer.time = player.current_animation_position  # v1.25: frame-locked to the base gait, every tick
 	var target: float = 1.0 if want != &"" else 0.0
 	hold_layer.influence = move_toward(hold_layer.influence, target, delta / maxf(tw.hold_layer_blend_s, 0.001))
 	hold_layer.active = hold_layer.influence > 0.0
@@ -960,12 +966,14 @@ func _update_left_hand_ik(delta: float, tw: AnimTweak) -> void:
 	left_hand_ik.active = left_hand_ik.influence > 0.0 and left_hand_ik.marker != null
 
 
-## Locomotion clips the v1.19 weapon-hold layer goes over (SOURCE weapon_holds: walk / run / strafe*).
+## Locomotion clips the v1.19 weapon-hold layer goes over (SOURCE weapon_holds: walk / run / strafe*; v1.25 also
+## sprint and crouch_walk).
 static func _layered_locomotion(c: StringName) -> bool:
 	var s: String = String(c)
 	if s == "walk_text":
 		return false
-	return s == "walk" or s == "run" or s.begins_with("walk_") or s.begins_with("run_") or s.begins_with("strafe_")
+	return s == "walk" or s == "run" or s.begins_with("walk_") or s.begins_with("run_") or s.begins_with("strafe_") \
+		or s == "sprint" or s == "crouch_walk"  # v1.25
 
 
 func _aiming() -> bool:
