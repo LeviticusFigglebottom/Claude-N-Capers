@@ -1,4 +1,4 @@
-# Contract: characters (v1.21)
+# Contract: characters (v1.22)
 
 Producer: ENV C (generated humanoids + animations). Consumer: ENV A (NPC/crew prefabs).
 Until delivered, ENV A uses capsule placeholders with the same node names.
@@ -280,3 +280,10 @@ left_ik follows the weapon's current LeftHandIK.
 * **Arrest / cuffed:** `downed_arrested` (40 f, disarm@6; ENV A hides the weapon at `disarm`, ends on crew_cuffed f0),
   `crew_cuffed` (120 f loop), `crew_cuffed_enter` (18 f, from idle f0), `crew_cuffed_free` (24 f, free@8, to idle_alert f0).
   The weapon stays hidden while cuffed. Custody has no body on the map, so it has no clip.
+
+## v1.22: Back/Socket is the carried bag's pivot
+`Back/Socket` seats a MEDIUM loot bag with an identity attach: slung from the left-shoulder strap of carry_bag_walk, the
+bag's top against the back, its length running from the left shoulder blade to the right hip, 50° below horizontal.
+Built from character_spec.gd SOCKET_OFFSETS["Back"] = (0.05, -0.10, 0.33) m on each body's measured back seat. The bag
+pivots sit at their bottom centres, so ENV A applies a socket-local offset per bag size: light (0, +0.05, 0), medium
+none, heavy (0, -0.05, 0). Published in the humanoid SOURCE `carried_bag` note.
