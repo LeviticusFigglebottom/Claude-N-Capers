@@ -1,0 +1,8 @@
+asset: prop_breach_wall_t40
+script: tools/blender/props/assault_events.py
+params: {"cat": {"hidden": ["Blown"], "kind": "breach_wall", "prefab": "assault_event", "surface": "concrete"}, "fn": "breach_wall", "h": 2.2, "out": "concrete", "room": "concrete_light", "t": 0.4, "w": 1.0}
+seed: 3982756955  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_breach_wall_t40
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 8000

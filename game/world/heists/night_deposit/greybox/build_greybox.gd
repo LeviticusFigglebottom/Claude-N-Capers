@@ -14,6 +14,7 @@ extends "res://world/heists/night_deposit/greybox/nd_gameplay.gd"
 
 const VIEWMODEL_LIT_LAYER: int = 1 << 20  # viewmodel_lit (visual_slots v1.2, D-095) = CrewView.VIEWMODEL_LIT_LAYER
 const GI_PATH: String = OUT_DIR + "night_deposit_voxelgi.res"
+const AM: GDScript = preload("res://world/heists/shared/assault_markers.gd")  # PO6-17 AssaultEvents markers
 ## PO-8: collision-only boxes whose visuals are drawn elsewhere (panes, cage mesh, ceiling finish,
 ## palisades, the quay steps, the harbour bed under the water) -> bullet surface id.
 const SURFACE_GROUPS: Array = [
@@ -90,6 +91,9 @@ func _build() -> void:
 	_build_review_cameras(n("ReviewCameras"))
 	build_gameplay(n("Gameplay"))
 	build_variants(n("Variants"))
+	# PO6-17 markers (layout ASSAULT_*); the intact breach infills / roof curbs obstruct the bake
+	errors.append_array(AM.build(map_root, L.ASSAULT_TURRET_VANS, L.ASSAULT_HELI_ORBITS, L.ASSAULT_HELI_DROPS, [],
+		L.ASSAULT_BREACHES, obstructions))
 	_build_nav_links(nav)
 	dress.dress(n("Props"))
 	dress.site_dressing(add(n("Geometry"), node3d("SiteDressing")) as Node3D)
@@ -215,10 +219,12 @@ func _build_shell(geo: Node3D) -> void:
 			(w2[7] as Array) + _junction_cuts(String(w2[1]), float(w2[2]), yr2), "wall")
 	var slabs: Node3D = add(bld, node3d("Slabs")) as Node3D
 	for s: Array in L.SLABS:
-		box_a(slabs, String(s[0]), s[1], String(s[2]))
+		for p: Array in AM.cut(String(s[0]), s[1], L.ASSAULT_BREACHES):  # PO6-17 ceiling breach holes
+			box_a(slabs, String(p[0]), p[1], String(s[2]))
 	var ceil_n: Node3D = add(bld, node3d("Ceilings")) as Node3D
 	for c: Array in L.CEILINGS:
-		box_a(ceil_n, String(c[0]), c[1], "none")
+		for p2: Array in AM.cut(String(c[0]), c[1], L.ASSAULT_BREACHES):
+			box_a(ceil_n, String(p2[0]), p2[1], "none")
 	_build_stair(bld)
 	var rails: Node3D = add(bld, node3d("Railings")) as Node3D
 	for r: Array in L.RAILINGS:

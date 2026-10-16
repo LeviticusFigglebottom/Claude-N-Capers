@@ -1,0 +1,8 @@
+asset: prop_breach_ceiling_p100_d800
+script: tools/blender/props/assault_events.py
+params: {"cat": {"hidden": ["Blown"], "kind": "breach_ceiling", "prefab": "assault_event", "surface": "concrete"}, "drop": 8.0, "fn": "breach_ceiling", "plenum": 1.0, "w": 1.2}
+seed: 1599314201  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_breach_ceiling_p100_d800
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 8000

@@ -2,7 +2,8 @@
 ## instance, and the heist WorldEnvironment brightness hook (B5-01). Headless: checks state only.
 extends TestCase
 
-const HEIST_TRACKS: Array[StringName] = [&"glasshouse", &"night_deposit", &"shadow_ledger", &"dockside_burn"]
+const HEIST_TRACKS: Array[StringName] = [&"glasshouse", &"night_deposit", &"shadow_ledger", &"dockside_burn",
+		&"gallery_night"]
 const UNLOCKS: Dictionary = {
 	&"vault_hymn": &"unlock.music.vault_hymn", &"long_con": &"unlock.music.long_con",
 	&"last_call": &"unlock.music.last_call",
@@ -25,7 +26,8 @@ func test_table_entries() -> void:
 		assert_true(t.find(k) != null, "unlockable track %s" % k)
 		if t.find(k) != null:
 			assert_eq(t.find(k).unlock, UNLOCKS[k], "%s unlock id" % k)
-	assert_true(t.load_track(&"glasshouse") != null, "glasshouse stems load through the table")
+	for h: StringName in HEIST_TRACKS:
+		assert_true(t.load_track(h) != null, "%s stems load through the table (D-117)" % h)
 
 
 func test_heist_defs_use_table_tracks() -> void:
@@ -47,6 +49,8 @@ func test_preview_on_bare_director() -> void:
 	m.stop_preview()
 	assert_eq(m.current_stem, MusicDirector.SILENCE, "stop_preview silences")
 	assert_false(m.preview(&"no_such_track"), "unknown track refused")
+	for h: StringName in HEIST_TRACKS:
+		assert_true(m.preview(h), "jukebox preview (default assault stem) plays %s" % h)
 	m.free()
 
 
