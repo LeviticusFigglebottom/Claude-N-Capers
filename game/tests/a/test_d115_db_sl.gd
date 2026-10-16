@@ -197,3 +197,39 @@ func test_db16_containers_optional_cash_alternative() -> void:
 		assert_eq(StringName((_obj(oid)["data"] as Dictionary).get("alternative", &"")), &"containers",
 			"%s: cash and/or crates" % oid)
 	assert_eq(_rt.mission.objective_state(cash_id), Enums.ObjectiveState.ACTIVE, "the run's cash objective is shown")
+
+
+# --- DB-17 / QC-36: [cartel] counts cartel kills only; the wake line is the cartel's ---------------------
+
+func test_db17_cartel_thin_out_counts_cartel_kills_only() -> void:
+	await _launch(&"dockside_burn", 9001)
+	var m: HeistMission = _rt.mission
+	var gunmen: Array[Node] = _rt.npcs(CartelBrain.ROLE)
+	assert_true(gunmen.size() >= 2, "cartel posts spawned")
+	var guard_xf: Transform3D = (gunmen[0] as Node3D).global_transform
+	guard_xf.origin += Vector3(1.5, 0.0, 0.0)
+	var other: NpcBase = _rt.spawn_npc(&"civilian", guard_xf, {})
+	assert_true(other != null, "a civilian")
+	other.die({}, 0)
+	await wait_physics_frames(1)
+	assert_eq(int(m.get(&"_gunmen_down")), 0, "a civilian kill does not thin the cartel")
+	(gunmen[0] as NpcBase).die({}, 0)
+	await wait_physics_frames(1)
+	assert_eq(int(m.get(&"_gunmen_down")), 1, "a cartel kill counts")
+	assert_eq(int((_obj(&"cartel")["data"] as Dictionary).get("gunmen_down", -1)), 1, "HUD data follows")
+	EventBus.npc_killed.emit(987654, 0, {})
+	assert_eq(int(m.get(&"_gunmen_down")), 1, "an unknown net id does not count")
+
+
+func test_qc36_cartel_awake_line_only_for_cartel() -> void:
+	await _launch(&"dockside_burn", 9001)
+	var gunmen: Array[Node] = _rt.npcs(CartelBrain.ROLE)
+	var xf: Transform3D = (gunmen[0] as Node3D).global_transform
+	xf.origin += Vector3(1.5, 0.0, 0.0)
+	var civ: NpcBase = _rt.spawn_npc(&"civilian", xf, {})
+	EventBus.npc_alert_state_changed.emit(civ.net_id, Enums.AlertState.CALM, Enums.AlertState.COMBAT)
+	assert_eq(_count(&"vo.mercer.dockside_burn_cartel_awake"), 0, "not a gunman: no cartel line")
+	var g: NpcBase = gunmen[0] as NpcBase
+	EventBus.npc_alert_state_changed.emit(g.net_id, Enums.AlertState.CALM, Enums.AlertState.COMBAT)
+	EventBus.npc_alert_state_changed.emit(g.net_id, Enums.AlertState.CALM, Enums.AlertState.COMBAT)
+	assert_eq(_count(&"vo.mercer.dockside_burn_cartel_awake"), 1, "the first gunman awake: once")

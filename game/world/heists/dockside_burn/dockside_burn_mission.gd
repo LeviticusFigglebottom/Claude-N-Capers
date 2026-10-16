@@ -289,10 +289,10 @@ func _on_fog_lifts() -> void:
 
 # --- Events -----------------------------------------------------------------------------------
 
-## First cartel gunman awake (TODO(QC-36): the mission cannot tell a gunman from a worker by net id;
-## the night shift never reaches COMBAT, so COMBAT is the cartel's).
-func _on_npc_alert(_npc_net_id: int, _old_state: int, new_state: int) -> void:
-	if _cartel_awake or new_state != Enums.AlertState.COMBAT:
+## First cartel gunman awake (QC-36 done: CartelBrain gunmen are role CartelBrain.ROLE, looked up by net id, so a
+## worker, a guard or an early cop reaching COMBAT is not the cartel waking).
+func _on_npc_alert(npc_net_id: int, _old_state: int, new_state: int) -> void:
+	if _cartel_awake or new_state != Enums.AlertState.COMBAT or not _is_cartel(npc_net_id):
 		return
 	_cartel_awake = true
 	say(&"vo.mercer.dockside_burn_cartel_awake")
@@ -312,9 +312,16 @@ func _on_special_spawned(npc_net_id: int, special_type: StringName) -> void:
 			say(SNIPER_LINES[tag])
 
 
-func _on_npc_killed(_npc_net_id: int, _killer_net_id: int, _info: Dictionary) -> void:
-	if not _police_started:
+## [cartel] thin-out (DB-17): only cartel gunmen killed before the police count (not civilians or workers).
+func _on_npc_killed(npc_net_id: int, _killer_net_id: int, _info: Dictionary) -> void:
+	if not _police_started and _is_cartel(npc_net_id):
 		_gunmen_down += 1
+		update_objective_data(&"cartel", {"gunmen_down": _gunmen_down})
+
+
+func _is_cartel(npc_net_id: int) -> bool:
+	var npc: NpcBase = npc_by_net_id(npc_net_id)
+	return npc != null and npc.role == CartelBrain.ROLE
 
 
 func _on_interaction_completed(interactable_net_id: int, _crew_slot: int, _kind: StringName) -> void:
