@@ -4,7 +4,9 @@
 ## that every surface resolves to a library material in world/materials, the triangle budget,
 ## plausible heights, that every guard's Hip socket sits on his belt radio (the pager seat), that
 ## the bank guard wears Halden livery and the Northgate detail does not, that Kessler (both looks)
-## stands out (tallest, the only ones in the ice accent), and the IT contractor's lanyard and bag.
+## stands out (tallest, the only ones in the ice accent), and the IT contractor's lanyard and bag. D-115 hand props
+## (world/characters/_props): each scene loads, is hand-sized and sits at its SOURCE.txt grip; on the cleaner playing
+## smoke with hand_cigarette under HandR/Socket the cigarette is between the fingers and at the lips at each drag.
 ## Regenerate with tools/blender/characters/assemble.sh.
 extends TestCase
 
@@ -72,6 +74,14 @@ const D115_CAST: Dictionary = {
 		"Headwear": ["char_knit_navy"],
 	},
 }
+## D-115 hand props (world/characters/_props, tools/blender/characters/make_hand_prop_scenes.py): the index, the
+## largest extent a prop may have (m; the mop is 1.4 m long), and the smoke check (cigarette length, drag frames).
+const HAND_PROPS_INDEX: String = "res://world/characters/_props/hand_props.json"
+const HAND_PROP_MAX: Dictionary = {"mop": Vector3(0.45, 1.45, 0.45)}
+const HAND_PROP_SMALL: Vector3 = Vector3(0.32, 0.32, 0.32)
+const SMOKER: String = "char_npc_bank_cleaner"
+const CIG_LEN: float = 0.072
+const CIG_DRAG: Array[int] = [20, 26, 80, 86]
 
 var _index: Dictionary = {}
 
@@ -185,6 +195,115 @@ func test_scene_contract_and_budget() -> void:
 		var h: float = _height(root)
 		assert_true(h >= MIN_HEIGHT and h <= MAX_HEIGHT, "%s: height %.3f m" % [id, h])
 		root.queue_free()
+	_check_hand_props()
+	_check_smoke_cigarette()
+
+
+## "basis x=(..) y=(..) z=(..) origin=(..)" (SOURCE.txt transform notation) -> Transform3D.
+static func _parse_xform(text: String) -> Transform3D:
+	var re: RegEx = RegEx.create_from_string("(x|y|z|origin)=\\(([^)]*)\\)")
+	var v: Dictionary = {}
+	for m: RegExMatch in re.search_all(text):
+		var p: PackedStringArray = m.get_string(2).split(",")
+		v[m.get_string(1)] = Vector3(float(p[0]), float(p[1]), float(p[2]))
+	if v.size() < 4:
+		return Transform3D(Basis(), Vector3.INF)
+	return Transform3D(Basis(v["x"], v["y"], v["z"]), v["origin"])
+
+
+static func _to_root(node: Node3D, root: Node3D) -> Transform3D:
+	var t: Transform3D = Transform3D.IDENTITY
+	var n: Node = node
+	while n != null and n != root:
+		t = (n as Node3D).transform * t
+		n = n.get_parent()
+	return t
+
+
+## D-115: every hand-prop scene loads, its `Model` (the char_hand_<prop> glb) has a MeshInstance3D, is hand-sized,
+## sits at the SOURCE.txt `<prop>_grip` of the socket it names and within reach of that socket.
+func _check_hand_props() -> void:
+	var src: Dictionary = Spec.read_source(Spec.ANIM_SOURCE)
+	var index: Variant = JSON.parse_string(FileAccess.get_file_as_string(HAND_PROPS_INDEX))
+	if not (index is Dictionary) or (index as Dictionary).size() < 9:
+		fail("%s missing or short (run tools/blender/characters/make_hand_prop_scenes.py)" % HAND_PROPS_INDEX)
+		return
+	for prop: String in ["phone", "cigarette", "mug", "mop"]:
+		assert_true((index as Dictionary).has(prop), "hand prop %s indexed" % prop)
+	for prop: String in index:
+		var row: Dictionary = index[prop]
+		var line: String = String(src.get(prop + "_grip", ""))
+		assert_true(line.contains("relative to %s/Socket" % row["socket"]), "%s_grip at %s/Socket" % [prop, row["socket"]])
+		var packed: PackedScene = load(String(row["scene"])) as PackedScene
+		if packed == null:
+			fail("%s: %s does not load" % [prop, row["scene"]])
+			continue
+		var root: Node3D = packed.instantiate() as Node3D
+		var model: Node3D = root.get_node_or_null("Model") as Node3D
+		var meshes: Array[Node] = root.find_children("*", "MeshInstance3D", true, false)
+		assert_true(model != null and not meshes.is_empty(), "%s: Model with a MeshInstance3D" % prop)
+		assert_eq(String(root.get_meta("socket", "")), String(row["socket"]), "%s: socket metadata" % prop)
+		if model != null:
+			assert_true(model.transform.is_equal_approx(_parse_xform(line)), "%s: Model at %s_grip" % [prop, prop])
+		var box: AABB = AABB()
+		for i: int in range(meshes.size()):
+			var mi: MeshInstance3D = meshes[i] as MeshInstance3D
+			var b: AABB = _to_root(mi, root) * mi.get_aabb()
+			box = b if i == 0 else box.merge(b)
+		var cap: Vector3 = HAND_PROP_MAX.get(prop, HAND_PROP_SMALL)
+		var axes: Array[float] = [box.size.x, box.size.y, box.size.z]
+		axes.sort()
+		assert_true(axes[2] > 0.03 and axes[2] <= maxf(cap.x, maxf(cap.y, cap.z)) and axes[0] < cap.x,
+			"%s: hand-sized (%s)" % [prop, box.size])
+		var reach: float = box.get_center().length() - box.size.length() * 0.5
+		assert_true(reach < 0.08, "%s: within reach of the socket (%f m)" % [prop, reach])
+		root.free()
+
+
+## D-115 smoke on a real NPC with hand_cigarette.tscn under HandR/Socket: the cigarette crosses the gap between the
+## index and middle fingers on every frame, its filter tip is at the lips at each drag, held low (ember up) between.
+func _check_smoke_cigarette() -> void:
+	var root: Node3D = _instance(SMOKER)
+	var packed: PackedScene = load("res://world/characters/_props/hand_cigarette.tscn") as PackedScene
+	if root == null or packed == null:
+		fail("smoke: %s or hand_cigarette.tscn missing" % SMOKER)
+		return
+	var skel: Skeleton3D = root.get_node("Skeleton3D") as Skeleton3D
+	var socket: Node3D = skel.get_node("HandR/" + Spec.SOCKET_NAME) as Node3D
+	var prop: Node3D = packed.instantiate() as Node3D
+	socket.add_child(prop)
+	var grip: Transform3D = socket.transform * (prop.get_node("Model") as Node3D).transform
+	var player: AnimationPlayer = root.get_node("AnimationPlayer") as AnimationPlayer
+	player.play(&"humanoid/smoke")
+	var worst: float = 0.0
+	for f: int in range(0, 120, 4):
+		player.seek(float(f) / 30.0, true)
+		var cig: Transform3D = _bone(skel, "hand.R") * grip
+		var gap: Vector3 = (_bone(skel, "index_01.R").origin.lerp(_bone(skel, "index_02.R").origin, 0.75)
+			+ _bone(skel, "middle_01.R").origin.lerp(_bone(skel, "middle_02.R").origin, 0.75)) * 0.5
+		var axis: Vector3 = cig.basis.y.normalized()
+		var along: float = (gap - cig.origin).dot(axis)
+		worst = maxf(worst, (gap - cig.origin - axis * along).length())
+		assert_true(along > 0.01 and along < CIG_LEN - 0.02, "smoke f%d: fingers on the cigarette (%f m)" % [f, along])
+	assert_true(worst < 0.006, "smoke: the cigarette between the index and middle fingers (worst %f m)" % worst)
+	for f: int in CIG_DRAG:
+		player.seek(float(f) / 30.0, true)
+		var cig: Transform3D = _bone(skel, "hand.R") * grip
+		var head: Vector3 = _bone(skel, "head").origin
+		var d: float = cig.origin.distance_to(head)
+		assert_true(d > 0.07 and d < 0.15 and cig.origin.z < head.z - 0.06 and absf(cig.origin.y - head.y) < 0.06,
+			"smoke f%d: filter tip at the lips (%s, head joint %s)" % [f, cig.origin, head])
+		var ember: Vector3 = cig.origin + cig.basis.y.normalized() * CIG_LEN
+		assert_true(ember.distance_to(head) > d + 0.04, "smoke f%d: the cigarette points out of the mouth" % f)
+	player.seek(50.0 / 30.0, true)
+	var low: Transform3D = _bone(skel, "hand.R") * grip
+	assert_true(low.origin.y < 1.3 and low.basis.y.normalized().y > 0.2,
+		"smoke: held low, ember up between drags (%s, axis %s)" % [low.origin, low.basis.y])
+	root.queue_free()
+
+
+static func _bone(skel: Skeleton3D, bone: String) -> Transform3D:
+	return skel.global_transform * skel.get_bone_global_pose(skel.find_bone(bone))
 
 
 func test_materials_resolve_to_the_library() -> void:
