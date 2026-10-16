@@ -1,0 +1,12 @@
+asset: char_hand_glass
+script: tools/blender/characters/char_hand_props.py
+params: {"prop": "glass"}
+seed: 3687280972  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category characters --asset char_hand_glass
+edit policy: generated file, never edit by hand; change the script and rebuild
+bounds_blender: (-0.0400,-0.0394,0.0000)..(0.0400,0.0394,0.1000) m (Godot: x, z, -y)
+grip: char_anim_humanoid/SOURCE.txt `glass_grip` (prop frame relative to the hand Socket); scene world/characters/_props/hand_glass.tscn wraps this glb at that transform
+prop: glass
+tri_budget: 3000
+tris: 180

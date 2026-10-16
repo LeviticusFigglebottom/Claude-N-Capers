@@ -955,3 +955,16 @@ windowed motion clip (turn, walk, run, jump-land, fire, ADS in/out).
 6. **Mission VO:** every written mission line is either said by the mission script or deleted; A wires GN's 17 unsaid
    lines, SL's camera warning and GH's code-found line; DB's briefing lines play only on the briefing screen (ctx.source).
 7. **Music:** every built heist gets its own stems (C: ND, SL, DB, GN; SL stealth bed + abort sting).
+
+## D-118: weapon gadgets and shotgun ammo types are in scope (2026-10-15, LEAD; from ENV B's weapon audit)
+PD2 fidelity: weapons get GADGET mods (laser sight, flashlight, combo) and shotguns get AMMO mods (slug, HE, flechette,
+dragon's breath / incendiary), with real behaviour, not only stat deltas.
+* **B:** gadget + ammo mod defs, models (rail-mounted laser/light units; shells shown in the ammo icon), stat deltas, strings,
+  workshop UI; plus the audit's slot gaps (shared rail vertical grip, stocks, pistol grips, muzzle devices, shrike suppressor).
+* **P:** gadget toggle input (default key B), first-person rendering: laser beam + dot (visible to the owner and teammates),
+  flashlight cone with real light (shadows off, range ~25 m), on/off state per weapon, kept through swaps.
+* **A:** third-person + network: gadget state replicated, enemies/cameras can see a laser or flashlight in stealth (detection
+  stimulus, PD2-style), ammo runtime: slug (armor pierce, shield pierce), HE (small explosion via Explosion.apply, no
+  penetration), flechette (more pellets, bleed-like DoT), dragon's breath (fire DoT, panic civilians); ammo pickup multipliers
+  as data.
+* Values in data (WeaponStats / tweak), documented in pd2_fidelity.md (C-owned doc rows via the LEAD).

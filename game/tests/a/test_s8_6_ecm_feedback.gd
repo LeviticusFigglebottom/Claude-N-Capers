@@ -28,6 +28,7 @@ func _launch(deprecated_flag: Variant = null) -> void:
 		Modifiers.set_source(0, &"test", {&"stealth.ecm_feedback": deprecated_flag})
 	var l: Loadout = Loadout.new()
 	l.deployable = &"deployable.ecm"
+	ADeployableGateUtil.grant(l)  # D-111 gate flag, no extra units
 	_rt = await HeistLauncher.launch(&"unit_map", 86, Enums.Difficulty.ROUTINE, self,
 		{"map_packed": ATestMaps.basic(2, 0), "ai_teammates": 0, "skip_casing": true, "loadouts": {0: l}})
 	_listen(EventBus.ecm_feedback_triggered, &"feedback")

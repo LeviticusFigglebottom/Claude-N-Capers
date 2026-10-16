@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/characters/char_hand_mug/char_hand_mug.glb" id="1_glb"]
+
+[node name="HandMug" type="Node3D"]
+metadata/prop = "mug"
+metadata/socket = "HandR"
+metadata/clips = PackedStringArray("mug_idle", "mug_carry_walk")
+
+[node name="Model" parent="." instance=ExtResource("1_glb")]
+transform = Transform3D(1, 0, 0, 0, 0.9511, 0.309, 0, -0.309, 0.9511, -0.028, -0.0547, 0.0387)

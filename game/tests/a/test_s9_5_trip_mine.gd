@@ -17,6 +17,7 @@ func after_each() -> void:
 func test_s9_5_trip_mine_arms_and_triggers_on_enemy() -> void:
 	var l: Loadout = Loadout.new()
 	l.deployable = &"deployable.trip_mine"
+	ADeployableGateUtil.grant(l)  # D-111 gate flag, no extra units
 	_rt = await HeistLauncher.launch(&"unit_map", 95, Enums.Difficulty.ROUTINE, self,
 		{"map_packed": ATestMaps.basic(1, 0), "ai_teammates": 0, "skip_casing": true, "crew_ai": false,
 			"loadouts": {0: l}})

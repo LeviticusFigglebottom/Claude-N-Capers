@@ -1,0 +1,12 @@
+asset: char_hand_book
+script: tools/blender/characters/char_hand_props.py
+params: {"prop": "book"}
+seed: 3416592844  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category characters --asset char_hand_book
+edit policy: generated file, never edit by hand; change the script and rebuild
+bounds_blender: (-0.1500,-0.0110,-0.1150)..(0.1500,0.0110,0.1150) m (Godot: x, z, -y)
+grip: char_anim_humanoid/SOURCE.txt `book_grip` (prop frame relative to the hand Socket); scene world/characters/_props/hand_book.tscn wraps this glb at that transform
+prop: book
+tri_budget: 3000
+tris: 220

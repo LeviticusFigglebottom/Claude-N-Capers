@@ -177,6 +177,28 @@ OUTFIT: dict[str, tuple[str, float, float, str]] = {
     "char_satin_gold": ("#B8954E", 0.35, 0.0, "cloth"),  # D3-01 afterhours: patron's gold satin mini dress
     "char_club_magenta": ("#9E3A72", 0.70, 0.0, "cloth"),  # D3-01 afterhours: patron's magenta top
     "char_hoodie_cream": ("#B9AE98", 0.95, 0.0, "cloth"),  # D3-01 afterhours: patron's cream hoodie
+    "char_suit_plum": ("#4A2C40", 0.76, 0.0, "cloth"),  # D-115 glasshouse: Greta Vossberg's deep plum trouser suit
+    "char_knit_oat": ("#A89878", 0.95, 0.0, "cloth"),  # D-115 glasshouse: admin clerk's oatmeal cardigan
+    "char_hivis_orange": ("#E07A3C", 0.62, 0.0, "cloth"),  # D-115 dockside_burn: orange hi-vis vest
+    "char_reflect_silver": ("#BCC0C2", 0.32, 0.0, "plastic"),  # D-115 dockside: reflective vest tape
+    "char_hardhat_white": ("#D2D0C8", 0.38, 0.0, "plastic"),  # D-115 dockside: white hard hat
+    "char_hardhat_blue": ("#3D5F8E", 0.38, 0.0, "plastic"),  # D-115 dockside: blue hard hat
+    "char_work_navy": ("#2E3647", 0.80, 0.0, "cloth"),  # D-115 dockside: navy canvas work jacket
+    "char_work_charcoal": ("#3D4045", 0.86, 0.0, "cloth"),  # D-115 dockside: charcoal work / cargo trousers
+    "char_fleece_maroon": ("#6A2E30", 0.97, 0.0, "cloth"),  # D-115 dockside: packer's maroon fleece
+    "char_knit_navy": ("#2B3346", 0.95, 0.0, "cloth"),  # D-115 dockside: packer's navy beanie
+    "char_glove_work": ("#7D776A", 0.80, 0.0, "cloth"),  # D-115 dockside: grey work gloves
+    # D-115 hand props (char_hand_props.py)
+    "char_prop_paper": ("#DCDAD2", 0.85, 0.0, "plastic"),  # cigarette paper, book pages, cash strap, bottle label
+    "char_prop_filter": ("#C08A52", 0.80, 0.0, "plastic"),  # cigarette cork filter
+    "char_prop_ember": ("#9A4A36", 0.90, 0.0, "plastic"),  # cigarette ember (+ emission, make_materials EMISSION)
+    "char_prop_ceramic": ("#D4D0C6", 0.30, 0.0, "gloss"),  # mug glaze
+    "char_prop_coffee": ("#3B2A20", 0.20, 0.0, "gloss"),  # coffee in the mug
+    "char_prop_mop_string": ("#C9C3B0", 0.95, 0.0, "cloth"),  # cotton mop strands
+    "char_prop_cash": ("#8A9677", 0.85, 0.0, "cloth"),  # banknote stack (original grey-green, no real currency)
+    "char_prop_bottle": ("#6B4A26", 0.15, 0.0, "gloss"),  # amber liquor bottle glass (opaque)
+    "char_prop_book": ("#5A2E2E", 0.60, 0.0, "leather"),  # book cover
+    "char_prop_glass": ("#B4C2C6", 0.08, 0.0, "gloss"),  # tumbler glass (opaque: reads at range, no alpha pass)
 }
 
 #: Shared-library ids used by outfits, with a placeholder colour for the glb (the .tres wins).
