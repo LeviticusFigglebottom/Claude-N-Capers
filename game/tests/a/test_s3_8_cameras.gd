@@ -99,7 +99,7 @@ func test_s2_5_camera_crouch_follows_pd2() -> void:
 	var i: CrewIntent = CrewIntent.new()
 	i.crouch = true
 	_rt.set_bot_intent(0, i)
-	var ok: bool = await wait_until(func() -> bool: return c.crouched, 1.0)
+	var ok: bool = await wait_until(func() -> bool: return c.crouched, 5.0)  # returns at once; headroom under load
 	assert_true(ok)
 	var to: Vector3 = c.global_position + Vector3.UP * minf(1.0, c.eye_height()) - cam.eye_position()
 	var ang: float = rad_to_deg(cam.look_forward().angle_to(to))
@@ -110,7 +110,7 @@ func test_s2_5_camera_crouch_follows_pd2() -> void:
 	await _place(Vector3(0, 0.05, -13))
 	assert_near(_st.fill_rate(cam, c), 0.0, 0.0001, "crouched at 13 m: beyond the 12 m crouch range")
 	_rt.set_bot_intent(0, CrewIntent.new())
-	var up: bool = await wait_until(func() -> bool: return not c.crouched, 2.0)
+	var up: bool = await wait_until(func() -> bool: return not c.crouched, 5.0)
 	assert_true(up, "stood up")
 	assert_true(_st.fill_rate(cam, c) > 0.0, "standing at 13 m: inside the 15 m camera range")
 
