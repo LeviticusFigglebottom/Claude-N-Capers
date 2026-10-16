@@ -24,8 +24,9 @@ static func data() -> NpcWeaponModels:
 static func weapon_def(npc_weapon_id: StringName) -> WeaponDef:
 	if npc_weapon_id == &"":
 		return null
-	var own: WeaponDef = ContentDB.weapon(npc_weapon_id)
-	if own != null:
-		return own
+	# ContentDB.weapon logs an error for an unknown id: ask has() first (P's GN loud run: 46 "unknown weapons id
+	# 'weapon.npc_*'" errors, one per NPC weapon refresh).
+	if ContentDB.has(ContentDB.WEAPONS, npc_weapon_id):
+		return ContentDB.weapon(npc_weapon_id)
 	var mapped: StringName = data().models.get(npc_weapon_id, &"")
-	return ContentDB.weapon(mapped) if mapped != &"" else null
+	return ContentDB.weapon(mapped) if mapped != &"" and ContentDB.has(ContentDB.WEAPONS, mapped) else null
