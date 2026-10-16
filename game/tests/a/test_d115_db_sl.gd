@@ -233,3 +233,22 @@ func test_qc36_cartel_awake_line_only_for_cartel() -> void:
 	EventBus.npc_alert_state_changed.emit(g.net_id, Enums.AlertState.CALM, Enums.AlertState.COMBAT)
 	EventBus.npc_alert_state_changed.emit(g.net_id, Enums.AlertState.CALM, Enums.AlertState.COMBAT)
 	assert_eq(_count(&"vo.mercer.dockside_burn_cartel_awake"), 1, "the first gunman awake: once")
+
+
+# --- SL-5: [drives] completes at 2 of 3 -------------------------------------------------------------------
+
+func test_sl5_drives_complete_at_two_of_three() -> void:
+	await _launch(&"shadow_ledger", 777)
+	var m: HeistMission = _rt.mission
+	m.call(&"_on_hack_done")
+	assert_eq(m.objective_state(&"drives"), Enums.ObjectiveState.ACTIVE, "drives open after the hack")
+	var sleds: Array[Node] = m.find_tagged(&"drives")
+	assert_eq(sleds.size(), 3, "three drive sleds")
+	var take: Callable = func(n: Node) -> void:
+		n.set(&"remaining", int(n.get(&"remaining")) - 1)
+		EventBus.interaction_completed.emit(int(n.get(&"net_id")), 0, &"bag_loot")
+	take.call(sleds[0])
+	assert_eq(m.objective_state(&"drives"), Enums.ObjectiveState.ACTIVE, "1 of 2 required")
+	take.call(sleds[1])
+	assert_eq(m.objective_state(&"drives"), Enums.ObjectiveState.COMPLETED, "2 taken: [drives] done (the 3rd is a bonus)")
+

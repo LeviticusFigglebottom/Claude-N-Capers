@@ -226,11 +226,15 @@ func _on_hack_done() -> void:
 	activate(&"drives")
 
 
+## D-115 (SL-5, doc: 2 of 3 drive bags are required): [drives] completes once MIN_DRIVES bags are taken (or none
+## are left, for a map with fewer sleds).
 func _check_drives() -> void:
 	var left: int = 0
+	var taken: int = 0
 	for d: Node in find_tagged(TAG_DRIVES):
 		left += int(d.get(&"remaining"))
-	if left <= 0 and objective_state(&"drives") == Enums.ObjectiveState.ACTIVE:
+		taken += int(d.get(&"count")) - int(d.get(&"remaining"))
+	if (taken >= MIN_DRIVES or left <= 0) and objective_state(&"drives") == Enums.ObjectiveState.ACTIVE:
 		complete(&"drives")
 
 
