@@ -518,8 +518,28 @@ def desk_type(sk: Skeleton, f: int, N: int) -> Pose:
     return pose
 
 
+#: smoke (D-115): the filter tip at the drag, offset from the head joint (rest axes, m at 1.78 m: x right,
+#: y forward, z up; the lips' right half), the cigarette's direction out of the mouth and the finger direction
+#: (head axes); between drags the filter tip relative to the chest joint, the direction and the fingers (chest axes).
+CIG_LIPS = v3(0.012, 0.110, 0.004)
+CIG_DRAG_DIR = v3(0.45, 1.0, -0.45)
+CIG_DRAG_FINGERS = v3(0.0, 0.4, 1.0)
+CIG_LOW = v3(0.24, 0.22, -0.17)
+CIG_LOW_DIR = v3(0.85, 0.20, 0.45)
+CIG_LOW_FINGERS = v3(-0.10, 1.0, -0.35)
+
+
+def _frame_zy(z, y) -> np.ndarray:
+    """Rotation with Z along ``z`` and Y as close to ``y`` as possible (columns X, Y, Z)."""
+    z = unit(np.asarray(z, float))
+    y = unit(np.asarray(y, float) - z * float(z @ np.asarray(y, float)))
+    return np.column_stack([np.cross(y, z), y, z])
+
+
 def smoke(sk: Skeleton, f: int, N: int) -> Pose:
-    """Standing, cigarette in the right hand: one drag per 2 s; left arm across the waist."""
+    """Standing, a cigarette between the right index and middle fingers (GRIPS["cigarette"], HandR/Socket):
+    one drag per 2 s (the filter tip between the lips), held low at the right side between drags; left arm
+    across the waist."""
     t = f / FPS
     T = N / FPS
     k = sk.scale
@@ -529,13 +549,16 @@ def smoke(sk: Skeleton, f: int, N: int) -> Pose:
     exhale = smooth(0.55, 0.65, u) * (1.0 - smooth(0.8, 0.95, u))
     look(pose, pitch=-3.0 * exhale + 2.0 * up, yaw=-4.0 * exhale)
     pre = Solver(sk).solve(pose)
-    mouth = pre.P["head"] + pre.W["head"] @ v3(0.03 * k, 0.11 * k, 0.025 * k)
-    low = A.bone_point(pre, sk, "chest", v3(0.16 * k, 0.16 * k, -0.12 * k))
-    p = low * (1.0 - up) + mouth * up
-    hand_on(sk, pose, "R", p, unit(v3(-0.35, 0.3, 0.8) * up + v3(-0.2, 0.6, 0.3) * (1 - up)),
-            unit(v3(-0.4, -0.9, 0.0) * up + v3(-0.6, -0.1, 0.6) * (1 - up)), pole=v3(0.6, -0.3, -0.9), along_share=0.95,
-            palm_off=0.0)
-    pose.hands["R"] = hand_shape("pinch")
+    # D-115: the hand carries the cigarette (GRIPS["cigarette"], between index and middle): at the drag its
+    # filter tip is between the lips (palm toward the mouth, fingers up); between drags it is held low at
+    # the right side, palm in, ember pointing out and up.
+    Wh = pre.W["head"]
+    lips = A.bone_point(pre, sk, "head", CIG_LIPS * k)
+    R_up = _frame_zy(Wh @ CIG_DRAG_DIR, Wh @ CIG_DRAG_FINGERS)
+    o_low = A.bone_point(pre, sk, "chest", CIG_LOW * k)
+    R_low = _frame_zy(pre.W["chest"] @ CIG_LOW_DIR, pre.W["chest"] @ CIG_LOW_FINGERS)
+    prop_hand(sk, pose, "cigarette", A.mslerp(R_low, R_up, up), o_low * (1.0 - up) + lips * up,
+              pole=v3(0.6, -0.3, -0.9))
     across = A.bone_point(pre, sk, "spine", v3(0.06 * k, 0.15 * k, 0.02 * k))
     hand_on(sk, pose, "L", across, v3(0.95, 0.2, 0.0), v3(0.0, -0.4, 0.9), pole=v3(-0.5, -0.4, -1.0), along_share=0.5)
     pose.hands["L"] = hand_shape("relaxed", 1.2)
@@ -1375,9 +1398,22 @@ def _dozer_upper(sk: Skeleton, pose: Pose, ph: float, f: int) -> None:
 #   glass: a tumbler, origin at the base centre, Z = up, r 0.04, h 0.10; held in the LEFT hand from its -X side.
 #   cash: a banknote stack 0.156 x 0.066 x 0.015 (X = the long edge), origin at its centre, Z = the face normal;
 #        held in the LEFT palm (palm on the -Z face, fingers along +X).
+#   D-115 cigarette: r CIG_R, CIG_LEN long (filter CIG_FILTER), origin at the filter (mouth) end, Z = toward the
+#        ember; clamped between the right index and middle fingers (a ``fingers`` grip, measured off CIG_HAND),
+#        the filter out on the palm side, Y = along the fingers, X = Y x Z.
 PROPS = {"phone": (0.072, 0.009, 0.147), "mug": (0.082, 0.082, 0.095), "book": (0.30, 0.022, 0.23),
          "rag": (0.20, 0.13, 0.022), "bottle": (0.08, 0.08, 0.30), "glass": (0.08, 0.08, 0.10),
-         "cash": (0.156, 0.066, 0.015)}
+         "cash": (0.156, 0.066, 0.015), "cigarette": (0.0084, 0.0084, 0.072)}
+CIG_R = 0.0042
+CIG_LEN = 0.072
+CIG_FILTER = 0.024
+#: the filter tip sits this far out of the finger gap on the palm side (m at 1.78 m)
+CIG_OUT_PALM = 0.032
+#: share of the proximal phalanges (index_01 / middle_01) at which the cigarette crosses the finger gap
+CIG_AT = 0.75
+#: the smoking hand: index and middle nearly straight (the cigarette between them), ring and pinky curled
+CIG_HAND = A.HandShape(curl={"index": (14.0, 16.0, 8.0), "middle": (16.0, 18.0, 8.0), "ring": (48.0, 58.0, 30.0),
+                             "pinky": (56.0, 64.0, 32.0)}, thumb=(6.0, 10.0, 8.0), thumb_opp=18.0, spread=-2.0)
 MOP_GRIP_R = 0.95
 MOP_GRIP_L = 1.25
 MOP_LENGTH = 1.40
@@ -1401,6 +1437,8 @@ GRIPS = {
               "share": 0.55, "palm_off": 0.014, "shape": ("grip", 0.55)},
     "cash": {"sfx": "L", "point": v3(0.0, 0.0, -0.0075), "along": v3(1.0, 0.0, 0.0), "palm": v3(0.0, 0.0, 1.0),
              "share": 0.5, "palm_off": 0.012, "shape": ("support", 0.6)},
+    # D-115: between the index and middle fingers of CIG_HAND (the frame comes off the finger bones: cig_grip_bone)
+    "cigarette": {"sfx": "R", "fingers": ("index_01", "middle_01"), "shape": ("cig", 1.0)},
 }
 #: The left hand on the book's left half (book space, like GRIPS).
 BOOK_LEFT = {"point": v3(-0.105, 0.011, -0.045), "along": v3(0.30, 0.0, 1.0), "palm": v3(0.0, -1.0, 0.0)}
@@ -1417,6 +1455,8 @@ def grip_bone(sk: Skeleton, name: str) -> tuple[np.ndarray, np.ndarray]:
     if "socket" in g:
         R_off, t_off = A.grip_offset(sk, g["sfx"])
         return R_off.copy(), t_off + R_off @ v3(0.0, 0.0, -g["socket"] * k)
+    if "fingers" in g:
+        return cig_grip_bone(sk, g["sfx"], g["fingers"])
     Dw = A.hand_rot(sk, g["sfx"], unit(g["along"]), unit(g["palm"]))
     Ah = Dw @ sk.B[hb]
     local_pt = v3(0.0, g["share"] * sk.length(hb), -g["palm_off"] * k)
@@ -1431,11 +1471,50 @@ def prop_hand(sk: Skeleton, pose: Pose, name: str, R: np.ndarray, o: np.ndarray,
     k = sk.scale
     if "socket" in g:
         A.hold_weapon(sk, pose, (R, o + R @ v3(0.0, 0.0, g["socket"] * k)), pole, sfx=g["sfx"], twist=twist, clav=clav)
+    elif "fingers" in g:
+        hb = f"hand.{g['sfx']}"
+        Rb, tb = grip_bone(sk, name)
+        Ah = R @ Rb.T
+        A.arm_ik_rot(pose, g["sfx"], o - Ah @ tb, Ah @ sk.B[hb].T, unit(np.asarray(pole, float)), twist=twist, clav=clav)
     else:
         hand_on(sk, pose, g["sfx"], o + R @ (g["point"] * k), R @ unit(g["along"]), R @ unit(g["palm"]), pole,
                 along_share=g["share"], palm_off=g["palm_off"], twist=twist, clav=clav)
     kind, amt = shape or g["shape"]
-    pose.hands[g["sfx"]] = hand_shape(kind, amt)
+    pose.hands[g["sfx"]] = CIG_HAND if kind == "cig" else hand_shape(kind, amt)
+
+
+_CIG_GRIPS: dict[tuple, tuple[np.ndarray, np.ndarray]] = {}
+
+
+def cig_grip_bone(sk: Skeleton, sfx: str, fingers: tuple[str, str]) -> tuple[np.ndarray, np.ndarray]:
+    """(R, t) of the cigarette in ``hand.<sfx>`` bone-local coordinates: it crosses the gap between the two
+    fingers' proximal phalanges (CIG_AT along them, CIG_HAND curls) at right angles to them, the filter tip
+    CIG_OUT_PALM out on the palm side (bone-local -Z), Z toward the ember, Y along the fingers."""
+    key = (round(sk.scale, 6), sfx, fingers)
+    if key not in _CIG_GRIPS:
+        pose = neutral(sk)
+        pose.hands[sfx] = CIG_HAND
+        s = Solver(sk).solve(pose)
+        hb = f"hand.{sfx}"
+        Ah = s.W[hb] @ sk.B[hb]
+        pts, dirs = [], []
+        for f in fingers:
+            b = f"{f}.{sfx}"
+            head = s.P[b]
+            tail = head + s.W[b] @ (sk.tail[b] - sk.head[b])
+            pts.append(Ah.T @ (head + CIG_AT * (tail - head) - s.P[hb]))
+            dirs.append(Ah.T @ unit(tail - head))
+        side = unit(pts[1] - pts[0])
+        along = unit(dirs[0] + dirs[1])
+        along = unit(along - side * float(side @ along))
+        z = unit(np.cross(side, along))
+        if z[2] < 0.0:      # toward the back of the hand (bone-local +Z)
+            z = -z
+        x = unit(np.cross(along, z))
+        centre = 0.5 * (pts[0] + pts[1])
+        _CIG_GRIPS[key] = (np.column_stack([x, along, z]), centre - z * (CIG_OUT_PALM * sk.scale))
+    R, t = _CIG_GRIPS[key]
+    return R.copy(), t.copy()
 
 
 def prop_frame(sk: Skeleton, s, name: str) -> tuple[np.ndarray, np.ndarray]:

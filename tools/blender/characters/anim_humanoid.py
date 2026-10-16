@@ -318,6 +318,9 @@ PROP_DOCS = {
              "standing on the bar for the whole of bartender_pour",
     "cash": "banknote stack 0.156 x 0.015 x 0.066 m (+X = the long edge, +Y = the face normal, Z = the short edge): origin "
             "at its centre; lying in the LEFT palm (palm on the -Y face, fingers along +X) in teller_count",
+    "cigarette": "cigarette r {cig_r} m, {cig_len} m long (filter {cig_filter} m): origin at the filter (mouth) end, +Y = "
+                 "toward the ember; between the right index and middle fingers (the filter out on the palm side), "
+                 "its filter tip between the lips at each drag in smoke (D-115)",
 }
 
 
@@ -327,7 +330,8 @@ def _npc_source(ctx, sk, keep: dict) -> None:
 
     for prop, doc in PROP_DOCS.items():
         basis, origin = lib.prop_in_socket_godot(sk, prop)
-        doc = doc.format(length=lib.MOP_LENGTH, r=lib.MOP_GRIP_R, l=lib.MOP_GRIP_L)
+        doc = doc.format(length=lib.MOP_LENGTH, r=lib.MOP_GRIP_R, l=lib.MOP_GRIP_L, cig_r=lib.CIG_R, cig_len=lib.CIG_LEN,
+                         cig_filter=lib.CIG_FILTER)
         hand = "HandL" if lib.GRIPS[prop]["sfx"] == "L" else "HandR"
         ctx.source_extra[f"{prop}_grip"] = f"{_xform(basis, origin)} relative to {hand}/Socket; {doc}"
     ctx.source_extra["npc_seat"] = (
