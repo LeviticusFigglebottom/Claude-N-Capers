@@ -59,6 +59,10 @@ const HINT_CLIPS: Dictionary = {
 	&"cuff": &"interact_low", &"look": &"investigate_look", &"desk": &"desk_work",
 }
 ## Clips that win over locomotion (the body holds a pose).
+## One-shot poses that must stay held when they end (P coverage: a surrendered cop froze with a stopped player):
+## clip -> its held loop (ENV D ask: `surrender_idle`, kneeling hands on head). Without the loop in the library the
+## last frame of the one-shot is held with the player still playing (speed 0).
+const HOLD_END: Dictionary = {&"surrender": &"surrender_idle"}
 const POSE_CLIPS: Array[StringName] = [
 	&"tied", &"kneel_cuffed", &"lie_down", &"cower", &"hands_up", &"surrender", &"downed", &"tased",
 	&"cower_stand", &"cower_seated",
@@ -162,6 +166,10 @@ var _turning_left: float = 0.0
 var _aim_hold_left: float = 0.0
 var _hit_dir: Vector3 = Vector3.ZERO
 var _death_clip: StringName = &""
+## HOLD_END one-shots that reached their end this pose (cleared when the pose changes).
+var _hold_done: Dictionary[StringName, bool] = {}
+## True while a HOLD_END one-shot is frozen on its last frame (no loop clip in the library).
+var _pose_frozen: bool = false
 ## PO6-18: the clip the body showed on its last living frame, and whether the death holds that pose frozen.
 var _alive_clip: StringName = &""
 var _death_hold: bool = false
@@ -316,6 +324,7 @@ func tick(delta: float) -> void:
 		_seated = SEATED_CLIPS.has(want)
 		_alive_clip = want
 	_apply(want, _speed_scale_for(want, tw), tw)
+	_hold_pose_end()
 	if weapon_visual != null and is_instance_valid(weapon_visual):
 		weapon_visual.visible = not POSE_CLIPS.has(want) and _death_clip == &""
 	if hat_lift != null and is_instance_valid(hat_lift):
@@ -349,11 +358,47 @@ func choose_clip() -> StringName:
 		return _death_clip
 	var state_clip: StringName = _state_clip()
 	if state_clip != &"":
-		return state_clip
+		return _held_pose(state_clip)
 	var hint_clip: StringName = HINT_CLIPS.get(_hint(), &"")
 	if POSE_CLIPS.has(hint_clip) or ACTION_CLIPS.has(hint_clip):
-		return hint_clip
+		return _held_pose(hint_clip)
 	return _shield_clip(_active_clip(hint_clip))
+
+
+## A HOLD_END one-shot that has finished plays its held loop when the library has it (else it stays, frozen).
+func _held_pose(p_clip: StringName) -> StringName:
+	if not HOLD_END.has(p_clip):
+		if not _hold_done.is_empty() and not HOLD_END.values().has(p_clip):
+			_hold_done.clear()
+		return p_clip
+	var idle: StringName = HOLD_END[p_clip]
+	if _hold_done.get(p_clip, false) and player != null and player.has_animation("%s/%s" % [LIBRARY, idle]):
+		return idle
+	return p_clip
+
+
+## Called after _apply: a HOLD_END one-shot at its end is marked done and, with no held loop, frozen on its last
+## frame while the player keeps playing (driver and player agree).
+func _hold_pose_end() -> void:
+	_pose_frozen = false
+	if not HOLD_END.has(clip) or player == null:
+		return
+	var full: String = "%s/%s" % [LIBRARY, clip]
+	if not player.has_animation(full):
+		return
+	var length: float = player.get_animation(full).length
+	var at_end: bool = not player.is_playing() or String(player.current_animation) != full \
+		or player.current_animation_position >= length - 0.05
+	if not at_end and not _hold_done.get(clip, false):
+		return
+	_hold_done[clip] = true
+	if player.has_animation("%s/%s" % [LIBRARY, HOLD_END[clip]]):
+		return  # choose_clip switches to the loop next frame
+	if String(player.current_animation) != full or not player.is_playing():
+		player.play(full, 0.0)
+	player.seek(maxf(length - 0.001, 0.0), true)
+	player.speed_scale = 0.0
+	_pose_frozen = true
 
 
 ## The BulwarkShield this NPC carries (the brain's `shield`, else a `Shield` child), or null.
@@ -488,7 +533,7 @@ func _state_clip() -> StringName:
 	var out: StringName = &""
 	match _npc.alert_state:
 		Enums.AlertState.TIED:
-			out = &"tied"
+			out = &"tied" if _npc.role == &"civilian" else &"kneel_cuffed"  # tied cops / guards kneel cuffed (as host)
 		Enums.AlertState.SURRENDERED:
 			out = &"surrender"
 		Enums.AlertState.INTIMIDATED, Enums.AlertState.DOMINATED:
@@ -673,6 +718,8 @@ func _pick_death_clip(tw: AnimTweak) -> StringName:
 func _speed_scale_for(p_clip: StringName, tw: AnimTweak) -> float:
 	if _death_hold and p_clip == _death_clip:
 		return 0.0
+	if _hold_done.get(p_clip, false) and HOLD_END.has(p_clip):
+		return 0.0  # frozen on the last frame (_hold_pose_end)
 	if p_clip == _oneshot and _oneshot_left > 0.0:
 		return _oneshot_speed
 	var key: StringName = p_clip
