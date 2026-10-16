@@ -66,5 +66,14 @@ func _run() -> void:
 		await get_tree().process_frame
 	await RenderingServer.frame_post_draw
 	get_viewport().get_texture().get_image().save_png("%s/d115_hand_props.png" % _out)
+	# LEAD: a close-up per character (about 3x) so small props (cigarette, cash) read.
+	for i: int in CAST.size():
+		var x: float = (i - 2) * 1.5
+		cam.position = Vector3(x + 0.25, 1.45, 1.35)
+		cam.look_at(Vector3(x, 1.15, 0))
+		for f: int in 3:
+			await get_tree().process_frame
+		await RenderingServer.frame_post_draw
+		get_viewport().get_texture().get_image().save_png("%s/d115_hand_props_%s.png" % [_out, CAST[i][1]])
 	print("[D115CAP] done: %s" % _out)
 	get_tree().quit(0)
