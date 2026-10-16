@@ -9,5 +9,5 @@ bag_model = ExtResource("2_bag")
 id = &"loot.painting_salt_orchard"
 display_name = "The Salt Orchard"
 weight = 0
-value = 1700
+value = 6800
 conceals = false

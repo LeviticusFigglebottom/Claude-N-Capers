@@ -45,7 +45,7 @@ city map both name `contact.reyes`.
 | Bonus | bags beyond 4, all product (`loot.contraband`, does not count toward the 4), dispatch-safe and desk small loot | doc |
 | Difficulty gating | global Board rules: `difficulty_min_level` `[0,0,0,0,80,80]` plus the build gate | board_tweak (C1) |
 | Pro job | eligible under the global rule: Tense+, `pro_chance` 0.2; no restart, +20% XP | board_tweak (C1) |
-| Broker price | `broker_cost_by_difficulty[d] + 5%` of the contract preview | board_tweak |
+| Broker price | `broker_cost_by_difficulty[d] + 10%` of the contract preview (D-115) | board_tweak |
 
 Contract pay by difficulty (× `payout_mult` 1 / 2 / 2.6 / 4.2 / 7.2 / 9.2, via `HeistCatalog.contract_preview`):
 
@@ -53,7 +53,7 @@ Contract pay by difficulty (× `payout_mult` 1 / 2 / 2.6 / 4.2 / 7.2 / 9.2, via 
 |---|---|---|---|---|---|
 | $95,000 | $190,000 | $247,000 | $399,000 | $684,000 | $874,000 |
 
-The required 4 bags add $6,400 (4 cash bricks) to $8,000 (4 crates) at Routine, before the
+The required 4 bags add $32,000 (4 cash bricks) to $34,000 (4 crates) at Routine (D-115 values; ENV C was proposed a $24,000 base payout so that bags carry the run), before the
 multiplier. The Board card has no field for the requirement. It shows in the briefing (objectives
 `burn` and `secure`) and in the HUD's objective panel. There is no per-heist difficulty floor or pro
 flag in `BoardTweak`, so Dockside uses the global rules (Q-DB2).
@@ -64,9 +64,9 @@ Base values before `DifficultyDef.payout_mult`. Weight is the `Enums.LootWeight`
 
 | id | Name | Weight | Base | Tense | Hazardous | Brutal | Lethal | Cataclysm | Role | Src |
 |---|---|---|---|---|---|---|---|---|---|---|
-| `loot.cash_bricks` (existing) | Cash Bricks | MEDIUM | $1,600 | $3,200 | $4,160 | $6,720 | $11,520 | $14,720 | required (counts toward 4); strongroom pallets or count-room cage | B4-09 def |
-| `loot.weapon_crate` | Weapon Crate | HEAVY | $2,000 | $4,000 | $5,200 | $8,400 | $14,400 | $18,400 | required (counts toward 4); 2 containers × 2 crates | weight V, value ◇ (doc) |
-| `loot.contraband` | Contraband | MEDIUM | $1,400 | $2,800 | $3,640 | $5,880 | $10,080 | $12,880 | bonus only; burns with the room | weight V, value ◇ (doc) |
+| `loot.cash_bricks` (existing) | Cash Bricks | MEDIUM | $8,000 | $16,000 | $20,800 | $33,600 | $57,600 | $73,600 | required (counts toward 4); strongroom pallets or count-room cage | B4-09 def |
+| `loot.weapon_crate` | Weapon Crate | HEAVY | $8,500 | $17,000 | $22,100 | $35,700 | $61,200 | $78,200 | required (counts toward 4); 2 containers × 2 crates | weight V, value ◇ (doc) |
+| `loot.contraband` | Contraband | MEDIUM | $7,000 | $14,000 | $18,200 | $29,400 | $50,400 | $64,400 | bonus only; burns with the room | weight V, value ◇ (doc) |
 | `loot.thermite` | Thermite Bag | HEAVY | $0 | – | – | – | – | – | **tool bag**, consumed by the burn point | V (doc) |
 
 **Tool bag.** `LootDef` has no "tool" flag. Zero value already means no cash: `PayoutCalculator`

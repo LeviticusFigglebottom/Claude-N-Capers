@@ -7,25 +7,26 @@ extends TestCase
 
 ## [id, weight, base value] (◇, data README "P5 heists").
 const P5_LOOT: Array = [
-	[&"loot.gold", Enums.LootWeight.HEAVY, 2800],
-	[&"loot.server_drives", Enums.LootWeight.MEDIUM, 1800],
-	[&"loot.bearer_bonds", Enums.LootWeight.LIGHT, 1400],
-	[&"loot.parcels", Enums.LootWeight.LIGHT, 1500],
-	[&"loot.painting_tidewater_saint", Enums.LootWeight.LIGHT, 1300],
-	[&"loot.painting_widow_in_blue", Enums.LootWeight.LIGHT, 1500],
-	[&"loot.painting_salt_orchard", Enums.LootWeight.LIGHT, 1700],
-	[&"loot.painting_lantern_bearer", Enums.LootWeight.LIGHT, 2000],
-	[&"loot.painting_study", Enums.LootWeight.LIGHT, 700],  # D-075; $700 per D-081 / D-103.5
+	[&"loot.gold", Enums.LootWeight.HEAVY, 14000],
+	[&"loot.server_drives", Enums.LootWeight.MEDIUM, 7500],
+	[&"loot.bearer_bonds", Enums.LootWeight.LIGHT, 7000],
+	[&"loot.parcels", Enums.LootWeight.LIGHT, 7500],
+	[&"loot.painting_tidewater_saint", Enums.LootWeight.LIGHT, 5200],
+	[&"loot.painting_widow_in_blue", Enums.LootWeight.LIGHT, 6000],
+	[&"loot.painting_salt_orchard", Enums.LootWeight.LIGHT, 6800],
+	[&"loot.painting_lantern_bearer", Enums.LootWeight.LIGHT, 8000],
+	[&"loot.painting_study", Enums.LootWeight.LIGHT, 2800],  # D-075; D-081's $700 x4 in the D-115 balance pass
 ]
 ## Gallery Night's rolled canvases (PD2 carries cut paintings as a light bag).
 const PAINTINGS: Array[StringName] = [
 	&"loot.painting_tidewater_saint", &"loot.painting_widow_in_blue", &"loot.painting_salt_orchard",
 	&"loot.painting_lantern_bearer", &"loot.painting_study",
 ]
-## Value band per weight class, from the loot already shipped (jewelry $1,000 .. weapon crate $2,000)
-## stretched one step for gold: [min, max] by Enums.LootWeight. LIGHT starts at $700: the painting study
-## (D-081 / D-103.5).
-const BANDS: Array = [[700, 2000], [1400, 2400], [2000, 3000]]
+## Value band per weight class (D-115 balance pass, data README "Loot"): [min, max] by Enums.LootWeight.
+## LIGHT runs from the painting study ($2,800) to the Lantern Bearer ($8,000); MEDIUM from the discounted
+## contraband ($7,000) to the cash bricks / ledger books ($8,000, P5 drives $7,500); HEAVY from the weapon
+## crate ($8,500) to gold ($14,000), the top bag.
+const BANDS: Array = [[2800, 8000], [7000, 8000], [8500, 14000]]
 ## Stubs whose G0 doc is approved and whose objective strings are drafted (GN-B1, D-103).
 const OBJECTIVES_DRAFTED: Array[StringName] = [&"gallery_night"]
 ## heist id -> [contact, district, placeholder base payout ◇ (unscaled)].

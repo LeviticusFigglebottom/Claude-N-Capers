@@ -31,11 +31,11 @@ Deposit ($90,000) and Shadow Ledger ($110,000): $105,000.
 ## Loot (proposed for ENV C)
 | id | Weight | Base | Role |
 |---|---|---|---|
-| `loot.painting_tidewater_saint` | LIGHT | $1,300 | canvas |
-| `loot.painting_widow_in_blue` | LIGHT | $1,500 | canvas |
-| `loot.painting_salt_orchard` | LIGHT | $1,700 | canvas |
-| `loot.painting_lantern_bearer` | LIGHT | $2,000 | centrepiece |
-| `loot.painting_study` | LIGHT | $1,100 | Calloway's study for the centrepiece (D-075) |
+| `loot.painting_tidewater_saint` | LIGHT | $5,200 | canvas |
+| `loot.painting_widow_in_blue` | LIGHT | $6,000 | canvas |
+| `loot.painting_salt_orchard` | LIGHT | $6,800 | canvas |
+| `loot.painting_lantern_bearer` | LIGHT | $8,000 | centrepiece |
+| `loot.painting_study` | LIGHT | $2,800 | Calloway's study for the centrepiece (D-075; D-081's $700 ×4 in the D-115 balance pass) |
 | `loot.small_valuables` (no def) | — | prefab | office and gift-shop small loot (S10.3) |
 
 PD2 cuts canvases out of the frame and carries them rolled, as a light bag. Shadow Ledger's framed
