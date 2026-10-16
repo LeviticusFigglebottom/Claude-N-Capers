@@ -184,3 +184,25 @@ func test_po5_gn_pilot_leads_a_bag_carrying_bot_to_the_zone() -> void:
 	assert_true(float((flow.get(&"_escort_s") as Dictionary).get(bag.get_instance_id(), 0.0)) > 0.0, "escort time counted")
 	(flow.get(&"_escort_s") as Dictionary)[bag.get_instance_id()] = 999.0
 	assert_false(await flow.call(&"_escort_mate_bag"), "capped per bag")
+
+
+## ENV C (GN Locker1): a wall-mounted prefab's marker sits on the wall; the pilot stands at the prefab's UsePoint, not
+## at the navmesh point nearest the wall marker (which may be on the far side of the wall).
+func test_po5_marker_stand_uses_prefab_use_point() -> void:
+	var s: Dictionary = await _setup()
+	var flow: RefCounted = s["flow"]
+	var comp: InteractableComponent = s["comp"]
+	var owner_n: Node3D = comp.owner_node() as Node3D
+	var up: Node3D = owner_n.get_node_or_null(^"UsePoint") as Node3D
+	if up == null:
+		up = Node3D.new()
+		up.name = "UsePoint"
+		owner_n.add_child(up)
+	up.global_position = owner_n.global_position + Vector3(0, 0, 1.0)  # inside the room, toward the door
+	var marker: Vector3 = comp.global_position + Vector3(0, 0.9, -0.3)  # on the wall behind, 0.9 m up
+	var stand: Vector3 = flow.call(&"_marker_stand", marker)
+	var want: Vector3 = (s["pilot"] as Po5Pilot).stand_point(up.global_position)
+	assert_true(stand.distance_to(want) < 0.05, "stands at the UsePoint (%s vs %s)" % [stand, want])
+	var far: Vector3 = flow.call(&"_marker_stand", Vector3(20, 1, 20))
+	assert_true(far.distance_to((s["pilot"] as Po5Pilot).stand_point(Vector3(20, 1, 20))) < 0.05,
+		"no prefab near: nearest navmesh point")

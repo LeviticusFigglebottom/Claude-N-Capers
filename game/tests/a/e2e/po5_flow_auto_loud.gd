@@ -5,6 +5,8 @@
 ## Reports objectives that have no marker or nothing usable as findings (objective guidance gaps).
 extends RefCounted
 
+## A marker's prefab (its UsePoint is where to stand) lies within this of the marker.
+const MARKER_PREFAB_M: float = 1.5
 const LOOP_LIMIT_S: float = 1500.0
 ## Downed teammates within this flat distance get revived first (m).
 const REVIVE_RANGE_M: float = 20.0
@@ -132,11 +134,11 @@ func step() -> void:
 		return
 	# Nothing to do at the marker right now (a device running, a timer): go there and defend.
 	if p.flat_dist(p.crew.global_position, pos) > 4.0:
-		if not await p.goto(p.stand_point(pos), 2.5, 60.0):
+		if not await p.goto(_marker_stand(pos), 2.5, 60.0):
 			_note_once(id, "objective %s: marker at %s not reachable" % [id, Po5Pilot._v(pos)])
 			if p.last_blocked_door != null:
 				_marker_blocked[_marker_key(m)] = p.last_blocked_door  # GN probe 6: behind the BARRED shutter -> yield at once
-			elif not _has_path(p.stand_point(pos)):
+			elif not _has_path(_marker_stand(pos)):
 				_stalls[id] = maxf(float(_stalls.get(id, 0.0)), STALL_SKIP_S)  # GN probe 4: no path -> yield at once
 	_stalls[id] = _stalls.get(id, 0.0) + 3.0
 	if int(_stalls[id]) % 60 == 0:
@@ -182,6 +184,23 @@ func _pick(markers: Array[Dictionary]) -> Dictionary:
 
 
 ## Enabled interactables within `radius` of the marker the player can use now (not revive / tie / pager / body bags).
+## Where to stand for a marker: the UsePoint of the nearest prefab within MARKER_PREFAB_M (enabled or not; e.g. a
+## wall-mounted GN Locker whose marker sits on the wall 0.9 m up, ENV C), else the navmesh point nearest the marker
+## (which for a wall marker can snap to the far side of the wall and read "not reachable").
+func _marker_stand(pos: Vector3) -> Vector3:
+	var best: InteractableComponent = null
+	var best_d: float = MARKER_PREFAB_M
+	for n: Node in f.get_tree().get_nodes_in_group(G.INTERACTABLE):
+		var c: InteractableComponent = n as InteractableComponent
+		if c == null or not rt.is_ancestor_of(c) or c.owner_node() is Door:
+			continue
+		var d: float = c.global_position.distance_to(pos)
+		if d < best_d:
+			best_d = d
+			best = c
+	return p._use_stand(best) if best != null else p.stand_point(pos)
+
+
 func _usable_near(pos: Vector3, radius: float) -> InteractableComponent:
 	var best: InteractableComponent = null
 	var best_d: float = INF
