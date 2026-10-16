@@ -801,7 +801,9 @@ def _seat0(sk: Skeleton) -> Pose:
     return H.desk_work(sk, 0, 360)
 
 
-LEAN, CHEST, NECK = 40.0, 24.0, 14.0
+#: the slump's fold (deg): D-115 audit (lead) cut the trunk curl (was 40 / 24 / 14) so the belly does not fold into
+#: the thighs (the jacket front broke on the lap); the neck takes more of the drop to the desk
+LEAN, CHEST, NECK = 32.0, 16.0, 24.0
 
 
 def death_seated_slump(sk: Skeleton, solver: Solver, N: int, impact: int) -> Keys:
@@ -824,7 +826,7 @@ def death_seated_slump(sk: Skeleton, solver: Solver, N: int, impact: int) -> Key
     def slumped(fold: float, head_down: float) -> Pose:
         p = Pose()
         H.seated(sk, p, recline=-6.0)
-        p.hip = p.hip + v3(0.0, 0.06 * k * fold, -0.01 * k * fold)          # the hips slide forward on the seat
+        p.hip = p.hip + v3(0.0, 0.09 * k * fold, -0.01 * k * fold)          # the hips slide forward on the seat
         spine(p, hips=(-86.0 - 6.0, 0, 0), lean=80.0 + 3.6 + LEAN * fold, chest_lean=4.0 + CHEST * fold,
               side=4.0 * fold, neck=(NECK * fold, 0, 0), head=(head_down, -18.0 * fold, 62.0 * fold))
         hand_on(sk, p, "R", v3(0.10 * k, (0.30 + 0.12 * fold) * k, desk + 0.012 * k), v3(-0.55, 0.8, 0.0),
