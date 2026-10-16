@@ -1208,6 +1208,8 @@ item.mod.rail_reflex_sight.name,Beacon Reflex Sight
 item.mod.rail_reflex_sight.desc,An open red dot for any rail. Faster target pickup with a little extra bulk.
 item.mod.rail_prism_scope.name,Tri-Lens Prism Scope
 item.mod.rail_prism_scope.desc,"A compact 3x prism sight. Precise at range, slower to raise, hard to hide."
+item.mod.rail_vertical_grip.name,Rail Foregrip
+item.mod.rail_vertical_grip.desc,A clamp-on vertical grip for any lower rail. Tames the climb for a little extra bulk.
 item.mod.plowman_choke.name,Breacher Choke
 item.mod.plowman_choke.desc,Tightens the pellet spread. Toothed and ported for close work.
 item.mod.plowman_ghost_ring.name,Ghost Ring Sight

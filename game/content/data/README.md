@@ -214,7 +214,11 @@ Mods (stock defaults have a zero delta, except the Heron's stock 4x scope = magn
 Shared rail optics: `rail_reflex_sight` (ADS spread −0.1, 1.15× / conc −1, ADS +0.02, $3000) and
 `rail_prism_scope` ($6000). Every suppressor's `suppression` delta equals minus its weapon's base
 threat, so a resolved suppressed weapon has threat 0 (L3.5). `test_armory.gd` checks the shapes.
-Models: `tools/blender/weapons/<weapon>.py` + `<weapon>_mods.py` (+ `rail_optics_mods.py`), helpers
+Shared rail foregrip (D-115): `rail_vertical_grip` (FOREGRIP: kick −0.12, horiz −0.15 / conc −1, $2500) on
+every weapon with an `Underbarrel` rail and no grip of its own (Drover, Lark, Ferret, Hornet, Hush, Wasp);
+like the per-weapon vertical grips it has no `LeftHandIK`, so the support hand keeps the base marker
+(`test_rail_grip.gd`).
+Models: `tools/blender/weapons/<weapon>.py` + `<weapon>_mods.py` (+ `rail_optics_mods.py`, `rail_grips_mods.py`), helpers
 `_common.py` and `_<weapon>.py`; previews `game/assets/weapons/<weapon>_preview_*.png`. Tube
 magazines hang from `Magwell` at the loading port; the LMG's quick-change barrel is
 `BarrelMount/StockBarrel`; folding/removable stocks are `StockMount/StockStock`.
