@@ -1009,3 +1009,15 @@ Cataclysm full clear. Approved, and it lands in **one round** (B 49d0171b + C's 
 pd2_fidelity.md S4.2 holds: PD2 guards and cameras ignore flashlights and lasers. The D-118 line "enemies/cameras can see a
 laser or flashlight in stealth" was wrong. ENV A sets the StealthTweak "Weapon gadgets (D-118)" multipliers to **0** by default.
 The code stays behind the tweak, and nothing in the game enables it. The third-person beams and lights stay (visual only).
+
+## D-121: loud-path determinism rules (2026-10-16, LEAD; from ENV A's DET audit)
+* Heist navigation runs synchronous map/region iterations (`HeistRuntime.use_sync_navigation`; launch option `nav_sync`
+  false opts out). Async iterations made door/breach link changes land on a timing-dependent frame.
+* Gameplay never reads positions of nodes animated on render frames: shot origins, noise origins and "nearby shot" drama
+  use the shooter's eye/body position; muzzles and lasers are for FX only. This includes crew_weapons' server noise origin.
+* **Corpses (PO6-19):** the server keeps a deterministic corpse anchor (pose-at-death position plus an analytic impulse
+  offset) and puts the body-bag interaction, corpse stimulus, despawn and server corpse hitbox on that anchor. The physical
+  ragdoll is cosmetic. Shots still nudge it and it still bleeds where shot, locally.
+* Thrown and dropped bags stay server-authoritative physics with a replicated rest position. Exact cross-process replay of
+  bag rest positions is not required.
+* Replay tests compare traces from a fresh process; a real-input pilot driven by wall-clock menus is exempt.
