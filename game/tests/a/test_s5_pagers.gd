@@ -154,11 +154,16 @@ func test_s5_3_fourth_answer_mercer_line() -> void:
 	ATestMaps.hold_interact(_rt, 0, (r[0] as NpcBase).net_id)
 	await wait_until(func() -> bool: return not _of(&"pager_answered").is_empty(), 14.0)
 	_rt.clear_bot_intent(0)
-	var lines: Array[Array] = _of(&"voice_line_requested")
+	# D-117 §6: heister barks (BarkDirector) may come with the answer; the cap line is Mercer's, from his
+	# pager_last_answer pool (vo.mercer.pager_last included, BarkTweak.patterns).
+	var lines: Array[Array] = []
+	for e: Array in _of(&"voice_line_requested"):
+		if e[1] == &"mercer" and String(e[2]).begins_with("vo.mercer.pager_last"):
+			lines.append(e)
 	assert_eq(lines.size(), 1, "Mercer line")
 	if lines.size() == 1:
-		assert_eq(lines[0][1], &"mercer")
-		assert_eq(lines[0][2], &"vo.mercer.pager_last")
+		assert_true([&"vo.mercer.pager_last", &"vo.mercer.pager_last_answer_1", &"vo.mercer.pager_last_answer_2"]
+			.has(lines[0][2]), "last-answer line (%s)" % lines[0][2])
 	assert_true(_of(&"alarm_raised").is_empty(), "4th answer is fine")
 
 

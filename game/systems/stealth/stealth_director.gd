@@ -28,6 +28,8 @@ extends Node
 
 signal crew_detected(observer: Node, crew: Node)
 signal stimulus_noticed(observer: Node, stimulus_id: int)
+## Server: a camera saw the crew and its S3.5 countdown started (BarkDirector: Mercer's camera_spotted line).
+signal camera_countdown_started(camera_net_id: int, seconds: float)
 
 ## Physics layers that block vision: world_static(1), world_dynamic(2), vision_blockers(8).
 const VISION_MASK: int = (1 << 0) | (1 << 1) | (1 << 7)
@@ -692,6 +694,7 @@ func _start_camera_countdown(camera_net_id: int) -> void:
 	_camera_source_id = camera_net_id
 	Log.info(&"stealth", "camera alert: alarm in %.1f s" % _camera_left)
 	_rpc_camera_countdown.rpc(_camera_left)
+	camera_countdown_started.emit(camera_net_id, _camera_left)
 
 
 @rpc("authority", "call_remote", "reliable")

@@ -281,11 +281,14 @@ func bind() -> bool:
 		_crew.weapons.equipped_changed.connect(_on_equipped)
 		_crew.weapons.reload_started.connect(_on_reload_started)
 	refresh_weapon()
+	if clip == &"":
+		# P GH regression: never show the rig's bind pose before the first tick (a spawn / visual swap renders a
+		# frame before _process runs): start on idle at once; the next tick blends to the real state.
+		var first: String = _resolve(&"idle")
+		if first != "" and not player.is_playing():
+			player.play(first, 0.0)  # `clip` stays &"": the first tick's clip still starts without a fade
 	hat_lift = null
-	var char_id: String = ""
-	if _npc != null and _npc.visual_scene != null:
-		char_id = _npc.visual_scene.resource_path.get_file().get_basename()
-	if HardHatHandLift.wears_hard_hat(rig, char_id):
+	if HardHatHandLift.wears_hard_hat(rig):
 		hat_lift = HardHatHandLift.ensure(rig.get_node_or_null(^"Skeleton3D") as Skeleton3D)
 	return true
 

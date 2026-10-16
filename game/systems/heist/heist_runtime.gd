@@ -168,6 +168,8 @@ func start(p_heist_id: StringName, map_scene: PackedScene, p_seed: int, p_diffic
 	_create_services()
 	add_child(map)
 	move_child(map, 0)
+	if bool(options.get("nav_sync", true)):
+		use_sync_navigation(map)
 	dynamic_root = Node3D.new()
 	dynamic_root.name = "Dynamic"
 	add_child(dynamic_root)
@@ -205,6 +207,26 @@ func start(p_heist_id: StringName, map_scene: PackedScene, p_seed: int, p_diffic
 	if mission != null:
 		mission._on_mission_start()
 	return true
+
+
+## DET (server replay determinism): Godot 4.7 commits navigation map / region changes on worker threads by
+## default (navigation/world/map_use_async_iterations, region_use_async_iterations), so a door's NavLink
+## toggle, a breach or rappel link, or the map's first build becomes visible to path queries after a
+## thread-timing-dependent number of physics frames, and the same seed walks different paths. The heist's
+## navigation map and its regions iterate synchronously instead (at the end of the physics frame that changed
+## them). Launch option "nav_sync": false keeps the engine default (determinism tests compare both).
+static func use_sync_navigation(root: Node3D) -> void:
+	if root == null or not root.is_inside_tree():
+		return
+	var map_rid: RID = root.get_world_3d().navigation_map
+	if map_rid.is_valid():
+		NavigationServer3D.map_set_use_async_iterations(map_rid, false)
+	for n: Node in root.find_children("*", "NavigationRegion3D", true, false):
+		var reg: NavigationRegion3D = n as NavigationRegion3D
+		NavigationServer3D.region_set_use_async_iterations(reg.get_rid(), false)
+		var own_map: RID = reg.get_navigation_map()
+		if own_map.is_valid() and own_map != map_rid:
+			NavigationServer3D.map_set_use_async_iterations(own_map, false)
 
 
 func _resolve_start_mode() -> StringName:
@@ -373,6 +395,9 @@ func _create_services() -> void:
 	var oob: OutOfBoundsSystem = OutOfBoundsSystem.new()  # A3-09 (QC-14): OUT_OF_BOUNDS zones
 	oob.name = "OutOfBoundsSystem"
 	register_service(OutOfBoundsSystem.SERVICE, oob)
+	var barks: BarkDirector = BarkDirector.new()  # D-117 §6 (C8): VO barks, server only, replicated
+	barks.name = "BarkDirector"
+	register_service(BarkDirector.SERVICE, barks)
 	hud_model = LocalHudModel.new()
 	hud_model.name = "LocalHudModel"
 	add_child(hud_model)
