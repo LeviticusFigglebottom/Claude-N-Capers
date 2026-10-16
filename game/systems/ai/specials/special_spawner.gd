@@ -9,11 +9,16 @@
 ##   (EnemyDef.params.group_spread_m apart); the director's special_limits (L4.11) count each unit.
 ## - Longshot (L4.7): `xform` is ignored; the unit spawns on a free SNIPER_PERCH TacticalPoint (the
 ##   one nearest the crew centroid) and nothing spawns when every perch is taken or the map has none.
+## - DB-6 (QC-25 hook): a mission may close perches by tag (set_perches_open, CLOSED_META on the TacticalPoint;
+##   HeistMission.set_sniper_perches_open): a closed perch is no perch at all (no spawn, no snap) until reopened,
+##   e.g. Dockside Burn's S3 viaduct walkway with `fog_lifts` (closed until the fog thins at 6:00).
 class_name SpecialSpawner
 extends RefCounted
 
 const ENEMY_DIR: String = "res://systems/ai/data/enemies/"
 const PERCH_ONLY: Array[StringName] = [&"enemy.longshot"]
+## DB-6: TacticalPoint meta of a SNIPER_PERCH the mission has closed.
+const CLOSED_META: StringName = &"perch_closed"
 
 
 static func enemy_def(kind: StringName) -> EnemyDef:
@@ -92,6 +97,14 @@ static func free_perch(rt: HeistRuntime, pos: Vector3, self_npc: Node) -> Tactic
 
 static func _perches(rt: HeistRuntime) -> Array[TacticalPoint]:
 	var out: Array[TacticalPoint] = []
+	for tp: TacticalPoint in _all_perches(rt):
+		if not tp.has_meta(CLOSED_META):
+			out.append(tp)
+	return out
+
+
+static func _all_perches(rt: HeistRuntime) -> Array[TacticalPoint]:
+	var out: Array[TacticalPoint] = []
 	if rt == null or rt.map == null:
 		return out
 	for n: Node in rt.map.get_slots(G.SNIPER_PERCH):
@@ -99,6 +112,26 @@ static func _perches(rt: HeistRuntime) -> Array[TacticalPoint]:
 		if tp != null and tp.kind == TacticalPoint.Kind.SNIPER_PERCH:
 			out.append(tp)
 	return out
+
+
+## DB-6 (server): open / close every SNIPER_PERCH of `rt`'s map tagged `tag` (TacticalPoint.tags). Returns how
+## many perches matched. Closing does not move a Longshot already on the perch.
+static func set_perches_open(rt: HeistRuntime, tag: StringName, open: bool) -> int:
+	var n: int = 0
+	for tp: TacticalPoint in _all_perches(rt):
+		if not tp.tags.has(tag):
+			continue
+		n += 1
+		if open:
+			tp.remove_meta(CLOSED_META)
+		else:
+			tp.set_meta(CLOSED_META, true)
+	return n
+
+
+## DB-6: the open (usable) SNIPER_PERCH points of `rt`'s map.
+static func open_perches(rt: HeistRuntime) -> Array[TacticalPoint]:
+	return _perches(rt)
 
 
 static func _claimed_by_other(tp: TacticalPoint, self_npc: Node) -> bool:

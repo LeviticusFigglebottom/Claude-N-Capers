@@ -247,7 +247,7 @@ func _reach_point() -> void:
 	if pp == null or not is_instance_valid(pp) or pp.pause_range.y <= 0.0:
 		return
 	_pause_left = _roll(pp.pause_range)
-	anim_hint = pp.pause_anim
+	anim_hint = CivilianBrain.seated_or_standing(_npc, pp.pause_anim)  # X-5 / PO6-06: no sitting on thin air
 	if pp.face_marker_forward:
 		_motor.face(-pp.global_basis.z)
 
@@ -334,7 +334,7 @@ func _tick_investigating(delta: float) -> void:
 		_resume_calm()  # Nothing confirmed within the budget.
 		return
 	if not _at_focus:
-		if _motor.arrived or _motor.distance_to_target() <= tweak.investigate_arrive_m:
+		if _motor.arrived or (_motor.target_on_level() and _motor.distance_to_target() <= tweak.investigate_arrive_m):
 			_motor.stop()
 			_at_focus = true
 			var to_focus: Vector3 = _flat(focus_position - _npc.global_position)
