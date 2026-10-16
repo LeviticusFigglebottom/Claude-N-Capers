@@ -19,6 +19,7 @@ Locomotion clips plant the stance foot exactly: at ``speed`` m/s (for 1.78 m; mu
 import _anim as anim
 import _anim_assault as assault
 import _anim_d304 as d304
+import _anim_hitzones as hitzones
 import _anim_humanoid as lib
 import _anim_p5 as p5
 import _rig as rig
@@ -194,6 +195,15 @@ CLIPS = {
     "breach_place": {"frames": 45, "loop": False, "speed": 0.0, "priority": 7, "events": {"place": 28}},
     "breach_standback": {"frames": 30, "loop": False, "speed": 0.0, "priority": 7,
                          "root_motion": "curve.breach_standback"},
+    # D-116 hit-zone flinches (priority 8, _anim_hitzones): non-lethal PD2-style flinch by where the bullet landed
+    # (SOURCE `hit_zones`); each starts and ends on idle_alert frame 0, root fixed, `impact` = the peak; the leg ones
+    # take a small in-place catch step with the hit foot that returns to its spot
+    "hit_head": {"frames": 14, "loop": False, "speed": 0.0, "priority": 8, "events": {"impact": 2}},
+    "hit_chest": {"frames": 14, "loop": False, "speed": 0.0, "priority": 8, "events": {"impact": 3}},
+    "hit_shoulder_l": {"frames": 14, "loop": False, "speed": 0.0, "priority": 8, "events": {"impact": 3}},
+    "hit_shoulder_r": {"frames": 14, "loop": False, "speed": 0.0, "priority": 8, "events": {"impact": 3}},
+    "hit_leg_l": {"frames": 16, "loop": False, "speed": 0.0, "priority": 8, "events": {"impact": 3}},
+    "hit_leg_r": {"frames": 16, "loop": False, "speed": 0.0, "priority": 8, "events": {"impact": 3}},
 }
 LOOPS = sorted(name for name, row in CLIPS.items() if row["loop"])
 P1 = sorted(name for name, row in CLIPS.items() if row["priority"] == 1)
@@ -226,7 +236,7 @@ def build(ctx) -> None:
     keep = {}
     for name in sorted(CLIPS):
         baked = anim.bake(solver, clips[name])
-        if name in KEEP or name in d304.KEEP or name in assault.KEEP:
+        if name in KEEP or name in d304.KEEP or name in assault.KEEP or name in hitzones.KEEP:
             keep[name] = baked
         anim.write_action(arm, baked, export_name(name))
         c = baked.checks
@@ -242,6 +252,8 @@ def build(ctx) -> None:
             row += d304.check_row(sk, CLIPS, name, clips[name], baked, keep)
         if name in assault.NAMES:
             row += assault.check_row(sk, CLIPS, name, baked, keep)
+        if name in hitzones.NAMES:
+            row += hitzones.check_row(sk, CLIPS, name, baked, keep)
         report.append(row)
         print(f"[anim] {row}")
     for pb in arm.pose.bones:
@@ -272,6 +284,8 @@ def build(ctx) -> None:
     for key, text in d304.source_notes(sk, CLIPS, clips, keep).items():
         ctx.source_extra[key] = text
     for key, text in assault.source_notes(sk, CLIPS, keep).items():
+        ctx.source_extra[key] = text
+    for key, text in hitzones.source_notes(sk, CLIPS, keep).items():
         ctx.source_extra[key] = text
     for name in sorted(CLIPS):
         row = CLIPS[name]
