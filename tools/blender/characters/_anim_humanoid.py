@@ -2007,6 +2007,9 @@ def clips(sk: Skeleton, table: dict) -> dict[str, Clip]:
     import _anim_assault as assault  # noqa: PLC0415 - PO6-17 assault-event set; imports this module
 
     extra.update(assault.clips(sk, solver, table))
+    import _anim_surrender as surr  # noqa: PLC0415 - D-116 surrender variants; imports this module
+
+    extra.update(surr.clips(sk, solver, table))
     out: dict[str, Clip] = {}
     for name, row in table.items():
         N, loop, speed = int(row["frames"]), bool(row["loop"]), float(row["speed"])

@@ -21,6 +21,7 @@ import _anim_assault as assault
 import _anim_d304 as d304
 import _anim_humanoid as lib
 import _anim_p5 as p5
+import _anim_surrender as surr
 import _rig as rig
 
 TRI_BUDGET = 35000
@@ -65,6 +66,19 @@ CLIPS = {
     "surrender": {"frames": 48, "loop": False, "speed": 0.0, "priority": 2},
     "kneel_cuffed": {"frames": 90, "loop": True, "speed": 0.0, "priority": 2},
     "hands_up": {"frames": 60, "loop": True, "speed": 0.0, "priority": 1},
+    # D-116 surrender variety (priority 8, _anim_surrender): per-NPC variants of hands_up / surrender / kneel_cuffed and
+    # the held surrender (surrender_idle*, NEW: frame 0 = surrender's last frame); groups and how to pick in SOURCE
+    # `variants.<group>` / `surrender_variants`. surrender_b/_c start on idle 0 and end exactly on surrender's last frame;
+    # kneel_cuffed_b/_c frame 0 = kneel_cuffed frame 0. Unrelated loop periods so a group never re-syncs.
+    "hands_up_b": {"frames": 82, "loop": True, "speed": 0.0, "priority": 8},
+    "hands_up_c": {"frames": 98, "loop": True, "speed": 0.0, "priority": 8},
+    "surrender_b": {"frames": 54, "loop": False, "speed": 0.0, "priority": 8},
+    "surrender_c": {"frames": 42, "loop": False, "speed": 0.0, "priority": 8},
+    "kneel_cuffed_b": {"frames": 104, "loop": True, "speed": 0.0, "priority": 8},
+    "kneel_cuffed_c": {"frames": 118, "loop": True, "speed": 0.0, "priority": 8},
+    "surrender_idle": {"frames": 96, "loop": True, "speed": 0.0, "priority": 8},
+    "surrender_idle_b": {"frames": 110, "loop": True, "speed": 0.0, "priority": 8},
+    "surrender_idle_c": {"frames": 84, "loop": True, "speed": 0.0, "priority": 8},
     "cower": {"frames": 60, "loop": True, "speed": 0.0, "priority": 1},
     "lie_down": {"frames": 90, "loop": True, "speed": 0.0, "priority": 1},
     "tied": {"frames": 90, "loop": True, "speed": 0.0, "priority": 1},
@@ -226,7 +240,7 @@ def build(ctx) -> None:
     keep = {}
     for name in sorted(CLIPS):
         baked = anim.bake(solver, clips[name])
-        if name in KEEP or name in d304.KEEP or name in assault.KEEP:
+        if name in KEEP or name in d304.KEEP or name in assault.KEEP or name in surr.KEEP:
             keep[name] = baked
         anim.write_action(arm, baked, export_name(name))
         c = baked.checks
@@ -242,6 +256,8 @@ def build(ctx) -> None:
             row += d304.check_row(sk, CLIPS, name, clips[name], baked, keep)
         if name in assault.NAMES:
             row += assault.check_row(sk, CLIPS, name, baked, keep)
+        if name in surr.NAMES:
+            row += surr.check_row(name, baked, keep)
         report.append(row)
         print(f"[anim] {row}")
     for pb in arm.pose.bones:
@@ -273,6 +289,8 @@ def build(ctx) -> None:
         ctx.source_extra[key] = text
     for key, text in assault.source_notes(sk, CLIPS, keep).items():
         ctx.source_extra[key] = text
+    for key, text in surr.source_notes(CLIPS, keep).items():
+        ctx.source_extra[key] = text
     for name in sorted(CLIPS):
         row = CLIPS[name]
         extra = f"{row['frames']}f loop={row['loop']} speed_mps={row['speed']}"
@@ -284,7 +302,7 @@ def build(ctx) -> None:
             extra += f" travel_axis={row['axis']}"
         if "bpm" in row:
             extra += f" bpm={row['bpm']} beats={row['beats']} beat_frames={row['frames'] // row['beats']}"
-        extra += d304.row_extra(row) + assault.row_extra(row)
+        extra += d304.row_extra(row) + assault.row_extra(row) + surr.row_extra(name)
         ctx.source_extra[f"clip.{name}"] = extra
     for i, row in enumerate(report):
         ctx.source_extra[f"check.{i:02d}"] = row
