@@ -115,7 +115,7 @@ func _strike() -> void:
 	var fwd: Vector3 = _crew.aim_direction().normalized()
 	var best: Object = null
 	var best_d: float = INF
-	for t: Object in SpecialWeapons.cone_targets(_crew, eye, fwd, range_m, tw.melee_cone_deg):
+	for t: Object in SpecialWeapons.cone_targets(_crew, eye, fwd, range_m, tw.melee_cone_deg, true):
 		var n3: Node3D = t as Node3D
 		var d: float = n3.global_position.distance_to(_crew.global_position) if n3 != null else INF
 		if d < best_d:
