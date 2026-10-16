@@ -100,3 +100,19 @@ func test_db_packer_tag_wears_the_packer() -> void:
 		return
 	var p: NpcBase = _spawn(&"civilian", 0, {"tags": [&"civ_worker_packer"]})
 	assert_true(p.visual_scene != null and p.visual_scene.resource_path.contains("dock_packer"), "wears dock_packer")
+
+
+func test_nd_hall_basement_rover_share_one_pool() -> void:
+	await _launch(&"night_deposit")
+	var m: Dictionary = NpcVisuals.tweak().heist_tag_characters[&"night_deposit"]
+	var pool: int = _delivered(m[&"guard_hall"])
+	assert_eq(m[&"guard_hall"], m[&"guard_basement"], "one pool lists one set of looks")
+	assert_eq(m[&"guard_hall"], m[&"guard_rover"], "one pool lists one set of looks")
+	if pool < 2:
+		skip("fewer than 2 security_officer looks delivered")
+		return
+	var npcs: Array[NpcBase] = []
+	var tags: Array[StringName] = [&"guard_hall", &"guard_basement", &"guard_rover"]
+	for i: int in pool + 1:
+		npcs.append(_spawn(&"guard", i, {"tags": [tags[i % tags.size()]]}))
+	_check(npcs, pool, "ND guards")

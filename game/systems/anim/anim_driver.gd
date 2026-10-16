@@ -47,7 +47,7 @@ const HINT_CLIPS: Dictionary = {
 	&"heal_ally": &"heal_ally",
 	# characters.md v1.7 NPC ambient clips (D-069, ENV D 4355913).
 	&"desk_work": &"desk_work", &"phone_seated": &"phone_seated", &"sit_chair_watch": &"sit_chair_watch",
-	&"mop": &"mop", &"sit_bed_read": &"sit_bed_read", &"mug": &"mug_idle", &"idle_thug": &"idle_thug",
+	&"mop": &"mop", &"sit_bed_read": &"sit_bed_read", &"sit_chair_read": &"sit_chair_read", &"mug": &"mug_idle", &"idle_thug": &"idle_thug",
 	&"mug_walk": &"mug_idle",
 	# characters.md v1.9 (D-103, Gallery Night): inspect a hung work, cower standing / seated, walk texting.
 	&"curator_inspect": &"curator_inspect", &"inspect": &"curator_inspect", &"cower_stand": &"cower_stand",
@@ -158,7 +158,7 @@ const FALLBACK_CLIPS: Dictionary = {
 	&"shield_walk": &"walk", &"dozer_walk": &"walk", &"kick_charge": &"idle_alert", &"kick_hit": &"melee",
 	&"shield_bang": &"idle_alert", &"heal_ally": &"interact_mid",
 	&"desk_work": &"desk_type", &"phone_seated": &"phone_call", &"sit_chair_watch": &"sit_chair", &"mop": &"browse",
-	&"sit_bed_read": &"sit_chair", &"mug_idle": &"idle", &"mug_carry_walk": &"walk", &"idle_thug": &"idle",
+	&"sit_bed_read": &"sit_chair", &"sit_chair_read": &"sit_bed_read", &"mug_idle": &"idle", &"mug_carry_walk": &"walk", &"idle_thug": &"idle",
 	&"rappel": &"climb_ladder", &"climb_ladder": &"idle",
 	# D-111: drill / crawl / gala and club ambient clips (characters.md v1.9-v1.10).
 	&"drill_place": &"interact_mid", &"downed_crawl": &"downed", &"bartender_wipe": &"browse",
@@ -986,14 +986,14 @@ func _dance_pick(h: StringName) -> StringName:
 	return [&"dance_a", &"dance_b", &"dance_c"][absi(hash(String(_npc.name))) % 3]
 
 
-## D-069 per-NPC ambient substitutions: cleaners mop instead of browsing, Kessler reads in bed instead of
+## D-069 per-NPC ambient substitutions: cleaners mop instead of browsing, Kessler reads in his armchair instead of
 ## sitting, the camera operator watches the monitors, a seated phone call, cartel gunmen idle as thugs.
 func _ambient_hint(h: StringName) -> StringName:
 	var tags: Array = _npc.spawn_info.get("tags", []) as Array
 	if h == &"browse" and tags.any(func(t: Variant) -> bool: return String(t).begins_with("civ_cleaner")):
 		return &"mop"
 	if h == &"sit" and tags.has(&"civ_kessler"):
-		return &"sit_bed_read"
+		return &"sit_chair_read"  # LEAD (D's SL audit): his Seat is an armchair (falls back to sit_bed_read)
 	if h == &"phone" and String(_npc.spawn_info.get("idle_activity", "")) == "sit":
 		return &"phone_seated"
 	if (h == &"" or h == &"idle") and _npc.role == CartelBrain.ROLE and _npc.alert_state == Enums.AlertState.CALM:
