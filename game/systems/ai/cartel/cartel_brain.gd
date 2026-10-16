@@ -10,6 +10,10 @@
 ## - COMBAT: holds its post: claims a COVER TacticalPoint within cover_search_m of the post with LOS to the
 ##   target (else stands at the post), never leaves post_leash_m; shoots the nearest visible crew member.
 ## - no pager, no cuffing, never dominated (on_shouted wakes it and fails), never surrenders.
+## - DB-4 seated post: a SpawnPoint idle_activity that is a seated one (`sit`, `desk_work`, `phone_seated`) on a
+##   real seat (CivilianBrain.seated_or_standing, the PO6-06 rule) sits there while asleep (anim_hint = the
+##   activity: AnimDriver sit -> sit_chair), never patrols, and is held on the seat (NpcMotor.hold_mark); with no
+##   seat under it the gunman stands (idle -> idle_thug).
 ## Numbers: CartelTweak (cartel_tweak.tres).
 class_name CartelBrain
 extends Node
@@ -42,6 +46,9 @@ var _pause_left: float = 0.0
 var _sight: Dictionary[int, float] = {}
 var _retarget_left: float = 0.0
 var _target_visible: bool = false
+## DB-4: the seated idle activity this gunman plays at its post (&"" = stands), resolved once (_resolve_seat).
+var _seated_activity: StringName = &""
+var _seat_resolved: bool = false
 
 
 func _ready() -> void:
@@ -49,6 +56,8 @@ func _ready() -> void:
 	_motor = get_node_or_null("../Motor") as NpcMotor
 	if tweak == null:
 		tweak = load(DEFAULT_TWEAK) as CartelTweak
+	if _motor != null:
+		_motor.hold_check = holds_seat  # DB-4: asked from the motor's first tick (no push out of the chair)
 	_start.call_deferred()
 
 
@@ -57,7 +66,9 @@ func _start() -> void:
 		return
 	_runtime = HeistRuntime.of(self)
 	_post_pos = _npc.global_position
-	_build_route()
+	_resolve_seat()
+	if _seated_activity == &"":
+		_build_route()  # DB-4: a seated gunman holds his chair
 	if _runtime != null:
 		_runtime.noise_made.connect(_on_noise)
 	EventBus.damage_applied.connect(_on_damage)
@@ -133,7 +144,7 @@ func _build_route() -> void:
 
 func _tick_patrol(delta: float) -> void:
 	if route.is_empty():
-		anim_hint = &"idle"
+		anim_hint = _seated_activity if holds_seat() else &"idle"
 		return
 	if _walking:
 		if _motor.arrived:
@@ -148,6 +159,24 @@ func _tick_patrol(delta: float) -> void:
 	_motor.go_to(route[_route_index], tweak.patrol_speed)
 	_walking = true
 	anim_hint = &"walk"
+
+
+## DB-4: the spawn idle_activity is a seated one and a seat is under the gunman (checked once, at its spawn spot).
+func _resolve_seat() -> void:
+	if _seat_resolved or _npc == null or not _npc.is_inside_tree():
+		return
+	_seat_resolved = true
+	var act: StringName = StringName(_npc.spawn_info.get("idle_activity", &""))
+	if Tweak.stealth().civilian_unseated_activity.has(act) and CivilianBrain.seated_or_standing(_npc, act) == act:
+		_seated_activity = act
+
+
+## DB-4 (NpcMotor.hold_check): asleep in its chair at the post.
+func holds_seat() -> bool:
+	if _npc == null or not _npc.alive or _npc.alert_state != Enums.AlertState.CALM:
+		return false
+	_resolve_seat()
+	return _seated_activity != &"" and (not _started or _flat_dist(_post_pos) <= CivilianBrain.MARK_HOLD_M)
 
 
 func _tick_sight(delta: float) -> void:
