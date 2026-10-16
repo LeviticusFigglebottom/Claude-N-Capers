@@ -252,6 +252,8 @@ CLIPS = {
     "crew_cuffed": {"frames": 120, "loop": True, "speed": 0.0, "priority": 2},
     "crew_cuffed_enter": {"frames": 18, "loop": False, "speed": 0.0, "priority": 2},
     "crew_cuffed_free": {"frames": 24, "loop": False, "speed": 0.0, "priority": 2, "events": {"free": 8}},
+    "mask_on": {"frames": 30, "loop": False, "speed": 0.0, "priority": 2, "events": {"mask_on": 18}},
+    "throw_grenade": {"frames": 24, "loop": False, "speed": 0.0, "priority": 2, "events": {"release": 11, "done": 24}},
 }
 LOOPS = sorted(name for name, row in CLIPS.items() if row["loop"])
 P1 = sorted(name for name, row in CLIPS.items() if row["priority"] == 1)

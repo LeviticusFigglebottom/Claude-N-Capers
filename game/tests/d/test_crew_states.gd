@@ -21,6 +21,8 @@ const CLIPS: Dictionary = {
 	"crew_cuffed": [120, true, "", [], []],
 	"crew_cuffed_enter": [18, false, "", ["idle", 0.0], ["crew_cuffed", 0.0]],
 	"crew_cuffed_free": [24, false, "free@8", ["crew_cuffed", 0.0], ["idle_alert", 0.0]],
+	"mask_on": [30, false, "mask_on@18", ["idle", 0.0], ["idle_alert", 0.0]],
+	"throw_grenade": [24, false, "done@24,release@11", [], []],
 }
 
 var _root: Node3D = null

@@ -43,7 +43,9 @@ from _anim import FPS, TAU, Clip, Keys, Pose, Skeleton, Solver, hand_shape, puls
 AKIMBO = ("aim_akimbo", "fire_akimbo", "fire_akimbo_l", "reload_akimbo")
 DOWNED = ("downed_fire", "downed_reload", "downed_getup", "downed_arrested")
 CUFFED = ("crew_cuffed", "crew_cuffed_enter", "crew_cuffed_free")
-NAMES = AKIMBO + DOWNED + CUFFED
+#: D-116 round 228: the mask-up and the grenade throw as teammates see them
+ACTIONS = ("mask_on", "throw_grenade")
+NAMES = AKIMBO + DOWNED + CUFFED + ACTIONS
 KEEP = NAMES
 #: the akimbo aim: the right gun's grip (m at 1.78 m; the left mirrors it), toe-in yaw and outward cant (deg)
 AKIMBO_AIM = {"grip": (0.105, 0.56, 1.53), "toe_in": 3.0, "cant": 8.0}
@@ -280,6 +282,75 @@ def _cuffed_free(sk: Skeleton, solver: Solver, N: int) -> Keys:
 
 
 # ---------------------------------------------------------------------------------------------------------------------
+# mask-up and grenade throw
+# ---------------------------------------------------------------------------------------------------------------------
+def _hands_at_face(sk: Skeleton, pose: Pose, y: float, z: float, half: float, back: float = 0.0,
+                   shape: str = "grip") -> None:
+    """Both hands at the sides of a mask held ``y`` m in front of the face, ``z`` m up (at 1.78 m), ``half`` m apart
+    from the centre; ``back`` tips the fingers back over the head (the strap)."""
+    k = sk.scale
+    for sfx, sx in A.SIDES:
+        H.hand_on(sk, pose, sfx, v3(sx * half * k, y * k, z * k), H.unit(v3(0.0, -back, 1.0)), v3(-sx, -0.25, 0.0),
+                  pole=v3(sx * 0.8, 0.1, -0.6), along_share=0.5)
+        pose.hands[sfx] = hand_shape(shape, 0.7)
+
+
+def _mask_on(sk: Skeleton, solver: Solver, N: int) -> Keys:
+    """Hands to the face, mask on (``mask_on``: A shows the mask at Head/Socket), strap pulled back, idle_alert."""
+    look_at = H._stand_key(sk)                                          # noqa: SLF001
+    A.spine(look_at, lean=4, chest_lean=2, neck=(10, 0, 0), head=(12, 0, 0))
+    _hands_at_face(sk, look_at, 0.30, 1.40, 0.10)
+    lift = H._stand_key(sk)                                             # noqa: SLF001
+    A.spine(lift, lean=2, neck=(4, 0, 0), head=(4, 0, 0))
+    _hands_at_face(sk, lift, 0.20, 1.58, 0.09)
+    press = H._stand_key(sk)                                            # noqa: SLF001
+    A.spine(press, lean=1, neck=(0, 0, 0), head=(-2, 0, 0))
+    _hands_at_face(sk, press, 0.10, 1.63, 0.085, shape="flat")
+    strap = H._stand_key(sk)                                            # noqa: SLF001
+    A.spine(strap, lean=0, neck=(-4, 0, 0), head=(-6, 0, 0))
+    _hands_at_face(sk, strap, 0.0, 1.70, 0.09, back=0.4, shape="pinch")
+    down = H._stand_key(sk)                                             # noqa: SLF001
+    A.spine(down, lean=2, head=(2, 0, 0))
+    k = sk.scale
+    for sfx, sx in A.SIDES:                                             # forward and down in front of the chest
+        H.hand_on(sk, down, sfx, v3(sx * 0.16 * k, 0.24 * k, 1.28 * k), H.unit(v3(0.0, 1.0, -0.3)), v3(-sx, 0.0, 0.0),
+                  pole=v3(sx * 0.8, -0.2, -0.6), along_share=0.5)
+        down.hands[sfx] = hand_shape("relaxed")
+    return Keys(solver, [(0, H._stand_key(sk), "inout"), (8, look_at, "inout"), (14, lift, "inout"),       # noqa: SLF001
+                         (18, press, "snap"), (23, strap, "inout"), (27, down, "inout"),
+                         (N, H.idle_alert(sk, 0, 120), "settle")])
+
+
+def _throw_grenade(sk: Skeleton, solver: Solver, N: int, release: int) -> Keys:
+    """Overhand with the LEFT arm (the weapon stays low in the right hand, H.low_carry): wound up behind the left
+    shoulder, released forward-high at ``release``, follow-through across the body."""
+    k = sk.scale
+
+    def left(pose: Pose, p, along, shape: str) -> None:
+        H.hand_on(sk, pose, "L", v3(p[0] * k, p[1] * k, p[2] * k), H.unit(v3(*along)), v3(0.9, 0.0, 0.3),
+                  pole=v3(-0.8, -0.4, -0.4), along_share=0.6)
+        pose.hands["L"] = hand_shape(shape, 0.9)
+        H.low_carry(sk, pose)
+    start = H._stand_key(sk)                                            # noqa: SLF001
+    left(start, (-0.16, 0.18, 1.12), (0.1, 0.5, 0.85), "fist")
+    wind = H._stand_key(sk)                                             # noqa: SLF001
+    H.stand(sk, wind, spread=0.05, stagger_l=-0.10, stagger_r=0.12, yaw_l=24, yaw_r=10)
+    A.spine(wind, lean=-6, twist=26, chest_lean=-4, chest_twist=18, neck=(-4, 0, -14), head=(-6, 0, -18), hips=(0, 0, 10))
+    left(wind, (-0.24, -0.20, 1.62), (0.0, -0.4, 0.9), "fist")
+    rel = H._stand_key(sk)                                              # noqa: SLF001
+    rel.hip = rel.hip + v3(0.0, 0.07 * k, -0.02 * k)
+    A.spine(rel, lean=10, twist=-10, chest_lean=6, chest_twist=-8, neck=(-6, 0, 6), head=(-8, 0, 8), hips=(0, 0, -8))
+    left(rel, (-0.10, 0.48, 1.62), (0.0, 0.9, 0.4), "relaxed")
+    follow = H._stand_key(sk)                                           # noqa: SLF001
+    A.spine(follow, lean=14, twist=-14, chest_lean=6, chest_twist=-8, head=(4, 0, 6))
+    left(follow, (0.08, 0.36, 1.06), (0.3, 0.6, -0.75), "relaxed")
+    end = H._stand_key(sk)                                              # noqa: SLF001
+    H.low_carry(sk, end)
+    return Keys(solver, [(0, start, "inout"), (release - 5, wind, "inout"), (release, rel, "in"),
+                         (release + 5, follow, "out"), (N, end, "inout")])
+
+
+# ---------------------------------------------------------------------------------------------------------------------
 # table hooks
 # ---------------------------------------------------------------------------------------------------------------------
 def clips(sk: Skeleton, solver: Solver, table: dict) -> dict[str, Clip]:
@@ -304,7 +375,8 @@ def clips(sk: Skeleton, solver: Solver, table: dict) -> dict[str, Clip]:
             out[name] = Clip(name, N, loop, (lambda f, N=N: crew_cuffed(sk, f, N)), 0.0, None, ev)
         else:
             maker = {"downed_getup": _downed_getup, "downed_arrested": _downed_arrested,
-                     "crew_cuffed_enter": _cuffed_enter, "crew_cuffed_free": _cuffed_free}[name]
+                     "crew_cuffed_enter": _cuffed_enter, "crew_cuffed_free": _cuffed_free, "mask_on": _mask_on,
+                     "throw_grenade": lambda s_, so, n, ev=ev: _throw_grenade(s_, so, n, int(ev["release"]))}[name]
             out[name] = Clip(name, N, loop, maker(sk, solver, N), 0.0, None, ev, reach_fix=False,
                              no_sink=name.startswith("downed_"))
     return out
@@ -323,4 +395,11 @@ def source_notes() -> dict:
         "hold_pistol f0: crossfade 0.2 s into the current weapon's hold); downed_arrested when police cuff a downed "
         "heister (hide the weapon at disarm; ends on crew_cuffed f0). Cuffed: crew_cuffed loop while cuffed (standing, "
         "wrists behind the back), crew_cuffed_enter when cuffed standing (stealth guard cuffs), crew_cuffed_free on "
-        "uncuff or self-free (ends on idle_alert f0). Custody: no body on the map, no clip")}
+        "uncuff or self-free (ends on idle_alert f0). Custody: no body on the map, no clip"),
+        "crew_actions": (
+            "D-116 round 228, as teammates see them. mask_on (30 f, mask_on@18): from idle f0, both hands bring the "
+            "mask up to the face and press it on (show the mask at Head/Socket at mask_on), pull the strap back, end "
+            "on idle_alert f0. Play it while the mask-up hold runs, scaled to Tweak.crew().mask_up_time_s (1.0 s = "
+            "the clip's length), so crew_masked lands at its end. throw_grenade (24 f, release@11, done@24, the FP "
+            "throwable_throw timing): an overhand with the LEFT arm, the weapon kept low in the right hand. Hide the "
+            "held grenade and spawn the projectile at release (HandL/Socket)")}
