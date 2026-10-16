@@ -1021,3 +1021,13 @@ The code stays behind the tweak, and nothing in the game enables it. The third-p
 * Thrown and dropped bags stay server-authoritative physics with a replicated rest position. Exact cross-process replay of
   bag rest positions is not required.
 * Replay tests compare traces from a fresh process; a real-input pilot driven by wall-clock menus is exempt.
+
+## D-122: police-only breach navigation (2026-10-16, LEAD; from ENV C's GN bronze-doors finding)
+A loud-breachable locked door links on `Door.NAV_LAYER_BREACH` (navigation layer 2, "npc_only"). Police and specials path
+through it (AssaultDirector._path_cost includes it). Crew, bots, civilians and the test pilot query layer 1 only, so they
+treat a closed, locked door as blocked. Test: `test_d122_breach_nav_layer` (ENV A).
+
+## D-123: limb hitboxes for hit reactions only (2026-10-16, LEAD)
+NPCs get LIMB hitboxes (upper arms, thighs) so D's shoulder/leg flinch clips can trigger. A LIMB hit takes the BODY damage
+multiplier (1.0) and counts as a body hit for every rule (headshot rules, armor, and so on), so PD2 damage is unchanged.
+Flinches play through the existing UpperBodyLayer (spine-up) while moving and full-body only when standing still.
