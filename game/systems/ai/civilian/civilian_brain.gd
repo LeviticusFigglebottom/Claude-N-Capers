@@ -32,7 +32,7 @@ extends Node
 enum Mode { IDLE, WANDER, RUN_TO_CALL, CALLING, FLEE, COWER, DOWN, TIED, DEAD, LEAVE }
 
 ## Idle activities that may wander (seated / queued / desk civilians stay put).
-const WANDER_ACTIVITIES: Array[StringName] = [&"", &"idle", &"browse", &"phone", &"mug", &"text"]
+const WANDER_ACTIVITIES: Array[StringName] = [&"", &"idle", &"browse", &"phone", &"mug", &"text", &"walk_text"]
 ## D-069 adds mug (walks with it: mug_walk), mop, phone_seated (characters.md v1.7 ambient clips).
 ## D-103 (characters.md v1.9) adds inspect (curator_inspect at a hung work), text (walks texting: walk_text);
 ## D-111 the bar / club / bank loops: bartender, bartender_pour, bouncer, dance (dance_a/b/c), teller.
@@ -605,7 +605,8 @@ func _tick_idle(delta: float) -> void:
 	var pick: PatrolPoint = options[GameRng.weighted_index(&"civilians", weights)]
 	call_target = {"kind": KIND_POINT, "node": pick, "position": pick.global_position, "reason": &""}
 	mode = Mode.WANDER
-	anim_hint = &"mug_walk" if _idle_activity == &"mug" else (&"walk_text" if _idle_activity == &"text" else &"walk")
+	anim_hint = &"mug_walk" if _idle_activity == &"mug" \
+		else (&"walk_text" if _idle_activity == &"text" or _idle_activity == &"walk_text" else &"walk")
 	_reset_walk_stall()
 	_motor.go_to(pick.global_position, Tweak.stealth().civilian_walk_speed)
 

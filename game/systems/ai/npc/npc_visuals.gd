@@ -3,7 +3,9 @@
 ## Order (D-103 §3b.1: the tag beats the EnemyDef): SpawnPoint tag (NpcVisualTweak.heist_tag_characters for this
 ## heist, then tag_characters) -> EnemyDef id (`enemy.<id>` -> character <id>, or NpcVisualTweak.enemy_characters;
 ## faction variant from params.visual_variant, characters.md v1.6) -> role (role_characters).
-## The pick among several ids hashes the NPC's node name (replicated), so every peer shows the same look.
+## The pick among several ids (D-115 GN polish): the authority deals a tag's looks round-robin in spawn order from a
+## per-run, per-tag offset (no twins while the tag's live count <= its looks), stores the index in
+## spawn_info["look"] and replicates it with the spawn descriptor; without a heist it hashes the node name.
 ## Missing scenes fall through (the capsule stays). Owner: ENV A.
 class_name NpcVisuals
 extends RefCounted
@@ -15,6 +17,9 @@ const CHAR_DIR: String = G.CHARACTERS_DIR  # LEAD: contract path (characters.md)
 static var disabled: bool = false
 static var _tweak: NpcVisualTweak = null
 static var _cache: Dictionary[String, PackedScene] = {}
+## Round-robin deal state: "<runtime iid>|<tag>" -> next count. Reset when a new run starts dealing.
+static var _deal: Dictionary[String, int] = {}
+static var _deal_run: int = 0
 
 
 static func tweak() -> NpcVisualTweak:
@@ -80,7 +85,7 @@ static func _by_tag(npc: NpcBase, tw: NpcVisualTweak) -> PackedScene:
 	for m: Dictionary in maps:
 		for t: Variant in tags as Array:
 			if m.has(StringName(t)):
-				var ps: PackedScene = _pick(npc, m[StringName(t)])
+				var ps: PackedScene = _pick(npc, m[StringName(t)], String(t))
 				if ps != null:
 					return ps
 	return null
@@ -97,7 +102,7 @@ static func prop_scene(npc: NpcBase, prop: String) -> PackedScene:
 	return _load("%s_%s.tscn" % [path.trim_suffix(".tscn"), prop])
 
 
-static func _pick(npc: NpcBase, ids: Variant) -> PackedScene:
+static func _pick(npc: NpcBase, ids: Variant, tag: String = "") -> PackedScene:
 	if not (ids is Array) or (ids as Array).is_empty():
 		return null
 	# D-115: ids whose scene is not delivered yet (a cast entry ahead of ENV D's round) are skipped, not a miss.
@@ -107,8 +112,29 @@ static func _pick(npc: NpcBase, ids: Variant) -> PackedScene:
 			arr.append(id)
 	if arr.is_empty():
 		return null
-	var i: int = absi(hash(String(npc.name))) % arr.size()
+	var i: int = _look_index(npc, tag, arr.size())
 	return _load(scene_path(String(arr[i])))
+
+
+## The index among `n` looks: the replicated spawn_info["look"], else the authority's round-robin deal for `tag`
+## in this run (stored in spawn_info["look"]), else a hash of the node name.
+static func _look_index(npc: NpcBase, tag: String, n: int) -> int:
+	var look: int = int(npc.spawn_info.get("look", -1))
+	if look >= 0:
+		return look % n
+	var rt: HeistRuntime = HeistRuntime.of(npc)
+	if tag == "" or rt == null or not Net.is_authority() or bool(npc.spawn_info.get("replica", false)):
+		return absi(hash(String(npc.name))) % n
+	var run: int = rt.get_instance_id()
+	if run != _deal_run:
+		_deal.clear()
+		_deal_run = run
+	var key: String = "%d|%s" % [run, tag]
+	var k: int = _deal.get(key, 0)
+	_deal[key] = k + 1
+	var i: int = (absi(hash("%d|%s" % [rt.run_seed, tag])) + k) % n
+	npc.spawn_info["look"] = i
+	return i
 
 
 static func _load(path: String) -> PackedScene:

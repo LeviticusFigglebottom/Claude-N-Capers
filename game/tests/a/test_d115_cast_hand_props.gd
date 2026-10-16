@@ -94,3 +94,37 @@ func test_d115_anim_driver_attaches_on_clip() -> void:
 	d.tick(0.016)
 	assert_eq(d.hand_props.size(), 0, "idle: none")
 	assert_true(sock.get_node_or_null("HandProp_cigarette") == null, "cigarette gone")
+
+
+## D-115 GN polish (LEAD): a tag's looks are dealt round-robin in spawn order (no twins while the live count is
+## at most the look count), the pick rides the spawn descriptor ("look") and a replica wears the same look.
+func test_d115_tag_looks_dealt_without_twins() -> void:
+	var specs: Array[Dictionary] = []
+	for i: int in 4:
+		specs.append({"kind": SpawnPoint.Kind.CIVILIAN, "tags": [&"civ_customer"], "pos": Vector3(i * 2.0 - 3.0, 0.05, -6)})
+	var rt: HeistRuntime = await HeistLauncher.launch(&"unit_map", 4242, Enums.Difficulty.ROUTINE, self,
+		{"map_packed": ATestMaps.with_tagged_spawns(specs), "ai_teammates": 0, "crew_ai": false, "skip_casing": true})
+	_nodes.append(rt)
+	await wait_physics_frames(3)
+	var looks: Array = NpcVisuals.tweak().tag_characters[&"civ_customer"]
+	var seen: Dictionary = {}
+	var civs: Array[NpcBase] = []
+	for n: Node in rt.npcs(&"civilian"):
+		var npc: NpcBase = n as NpcBase
+		if (npc.spawn_info.get("tags", []) as Array).has(&"civ_customer"):
+			civs.append(npc)
+	assert_eq(civs.size(), 4, "four tagged customers")
+	for npc: NpcBase in civs:
+		var path: String = npc.visual_scene.resource_path if npc.visual_scene != null else ""
+		seen[path] = int(seen.get(path, 0)) + 1
+		var d: Dictionary = NetEntityCodec.describe(npc)
+		assert_eq(int((d["params"] as Dictionary)["look"]), int(npc.spawn_info["look"]), "look in the descriptor")
+	assert_eq(seen.size(), mini(looks.size(), 4), "every look used before any repeats (%s)" % seen)
+	for path: String in seen:
+		assert_true(int(seen[path]) <= ceili(4.0 / looks.size()), "no look worn more than its share")
+	var replica: NpcBase = NpcBase.new()
+	replica.name = "ReplicaCustomer"
+	replica.spawn_info = {"tags": [&"civ_customer"], "replica": true, "look": int(civs[1].spawn_info["look"])}
+	assert_eq(NpcVisuals._pick(replica, looks, "civ_customer"), civs[1].visual_scene, "replica wears the dealt look")
+	replica.free()
+	rt.teardown()
