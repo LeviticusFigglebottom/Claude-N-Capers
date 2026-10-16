@@ -1,0 +1,29 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"gallery_toplit"
+purpose = &"gallery"
+required_items = Array[StringName]([&"bench", &"sculpture", &"light_fixture"])
+optional_items = {
+&"sculpture": 0.6
+}
+clutter_groups = {}
+min_density = 0.04
+max_density = 0.4
+min_props = 6
+lone_ok_kinds = Array[StringName]([&"bench", &"sculpture", &"partition_screen"])
+seed_salt = 103
+counts = {
+&"bench": Vector2i(1, 2),
+&"sculpture": Vector2i(1, 2)
+}
+assets = {
+&"bench": PackedStringArray("prop_bench_gallery"),
+&"light_fixture": PackedStringArray("prop_track_light"),
+&"sculpture": PackedStringArray("prop_plinth_bronze_b", "prop_plinth_bronze_a")
+}
+ceiling = {"prop_track_light": 3.4}
+notes = "UG1-UG3 top-lit galleries under the laylight: benches, bronzes, 3000 K track lights hung from the laylight grid."

@@ -209,6 +209,18 @@ PRESET = {
             "pivot": 0.45,
             "saturation": 1.04,
         },
+        # Gallery Night (gallery_night.md §Audio/lighting): warm ivory mids, green-teal shadows, lifted lilac
+        # highlights (the gala uplights outside).
+        "gallery_night": {
+            "slope": (1.02, 1.0, 0.97),
+            "offset": (0.0, 0.004, 0.006),
+            "power": (1.0, 1.0, 1.0),
+            "shadow_tint": (-0.014, 0.008, 0.012),
+            "highlight_tint": (0.012, 0.0, 0.016),
+            "contrast": 1.05,
+            "pivot": 0.45,
+            "saturation": 1.02,
+        },
     },
     # Godot Environment resources (godot.py).
     "environments": {

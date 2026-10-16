@@ -118,6 +118,7 @@ TINTED: dict[str, dict] = {
     "car_black": {"source": "plastic_matte", "color": "#1F2023", "roughness": 0.4},
     "paint_halberd": {"source": "drywall_painted", "color": "#24463A", "roughness": 0.8},
     "steel_galv": {"source": "drywall_painted", "color": "#8E9497", "roughness": 0.7},
+    "brass_bronze": {"source": "metal_painted", "color": "#5E4A32", "roughness": 0.7, "metallic": 1.0},
     # equipment (D-111 deployables: ammo bag olive drab, medic patch red, armor-bag coyote carrier)
     "bag_olive": {"source": "fabric_upholstery", "color": "#4B5136", "roughness": 1.0},
     "bag_red": {"source": "fabric_upholstery", "color": "#8A2C27", "roughness": 1.0},
@@ -164,6 +165,8 @@ EMISSIVE: dict[str, dict] = {
     "emit_ember": {"color": "#3A1206", "emission": "#FF3A0C", "energy": 3.0},
     # PO6-17 police light bars (blue; red is emit_led_red)
     "emit_police_blue": {"color": "#0E1A3A", "emission": "#2F5BFF", "energy": 2.0},
+    # Gallery Night gala uplights (the doc's lilac #B79CF2, emissive only)
+    "emit_lilac": {"color": "#4A3A66", "emission": "#B79CF2", "energy": 3.0},
 }
 
 # Transparent variants of glass_clear (library albedo with alpha x colour).

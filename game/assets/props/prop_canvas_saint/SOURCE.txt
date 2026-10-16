@@ -1,6 +1,6 @@
 asset: prop_canvas_saint
 script: tools/blender/props/gallery.py
-params: {"cat": {"kind": "painting", "mount": "wall", "prefab": "loot_spawn", "surface": "wood"}, "fn": "canvas_hung", "pid": "saint"}
+params: {"cat": {"kind": "painting", "mount": "wall", "prefab": "loot_spawn", "surface": "wood", "texel_mesh": "Paint", "texel_target": 877.0}, "fn": "canvas_hung", "pid": "saint"}
 seed: 1331617340  (zlib.crc32(asset_id))
 generator: Blender 4.5, tools/blender/lib 1.0.0
 rebuild: python3 tools/blender/build.py --category props --asset prop_canvas_saint

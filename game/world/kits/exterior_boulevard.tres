@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"exterior_boulevard"
+purpose = &"exterior"
+required_items = Array[StringName]([&"street_lamp", &"uplight", &"planter"])
+optional_items = {}
+clutter_groups = {}
+min_density = 0.003
+max_density = 0.08
+min_props = 10
+lone_ok_kinds = Array[StringName]([&"street_lamp", &"uplight", &"planter", &"bollard", &"bin_street", &"limo", &"car", &"bus_shelter", &"sculpture", &"vehicle"])
+seed_salt = 124
+counts = {}
+assets = {}
+ceiling = {}
+notes = "X1 Aldous Parade + portico: street lamps, lilac gala uplights on the facade, planters, the red carpet (art)."

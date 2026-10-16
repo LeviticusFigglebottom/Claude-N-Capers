@@ -38,6 +38,17 @@ _PAINT_IDS = ("lantern", "orchard", "widow", "saint", "study1", "study2", "study
 _CANVAS = {"lantern": (1.3, 1.7), "orchard": (1.5, 1.0), "widow": (0.95, 1.25), "saint": (0.85, 1.3),
            "study1": (0.6, 0.48), "study2": (0.45, 0.6), "study3": (0.7, 0.5), "study4": (0.5, 0.65),
            "study5": (0.55, 0.7), "study6": (0.75, 0.5), "study7": (0.55, 0.7), "study8": (0.8, 0.5)}
+# Painted canvases are hero art (the heist's loot, seen at arm's length): one 1024 px image per picture whatever its
+# size, so each canvas mesh carries its own levelcheck `texel_target`, the image over the painted area (0.9: the
+# turnover; ~620 px/m for The Lantern, ~1700 for the small studies; the 512 px/m default would reject every study).
+# Wrapper scenes set it on each mesh (_scenes.py).
+# (Upper-case constants only: lib/meta.py evaluates just the module's UPPER_CASE assignments.)
+_PAINT_TEXEL = {pid: float(round(0.9 * 1024.0 / (_CANVAS[pid][0] * _CANVAS[pid][1]) ** 0.5)) for pid in _PAINT_IDS}
+_CANVAS_HUNG = {f"prop_canvas_{pid}": {"fn": "canvas_hung", "pid": pid,
+                                       "cat": {"prefab": "loot_spawn", "kind": "painting", "mount": "wall",
+                                               "surface": "wood", "texel_target": _PAINT_TEXEL[pid],
+                                               "texel_mesh": "Paint"}}
+                for pid in _PAINT_IDS}
 VARIANTS = {
     "prop_door_shutter_steel_arch_w300_h360": {"fn": "shutter_reveal", "w": 3.0, "h": 3.6, "t": 0.2, "hood": 0.36,
                                                "slat": "steel_galv", "cat": {**_DOOR, "kind": "industrial_door",
@@ -55,15 +66,16 @@ VARIANTS = {
                                "cat": {"prefab": "ladder", "kind": "ladder", "surface": "metal"}},
     "prop_ladder_wall_h420_flush": {"fn": "ladder_flush", "h": 4.2,
                                     "cat": {"prefab": "ladder", "kind": "ladder", "surface": "metal"}},
-    **{f"prop_canvas_{pid}": {"fn": "canvas_hung", "pid": pid,
-                              "cat": {"prefab": "loot_spawn", "kind": "painting", "mount": "wall", "surface": "wood"}}
-       for pid in _PAINT_IDS},
+    **_CANVAS_HUNG,
     "prop_canvas_widow_easel": {"fn": "canvas_easel", "pid": "widow",
-                                "cat": {"prefab": "loot_spawn", "kind": "painting", "surface": "wood"}},
+                                "cat": {"prefab": "loot_spawn", "kind": "painting", "surface": "wood",
+                                        "texel_target": _PAINT_TEXEL["widow"], "texel_mesh": "Paint"}},
     "prop_canvas_orchard_crate": {"fn": "canvas_crate", "pid": "orchard",
-                                  "cat": {"prefab": "loot_spawn", "kind": "painting", "surface": "wood"}},
+                                  "cat": {"prefab": "loot_spawn", "kind": "painting", "surface": "wood",
+                                          "texel_target": _PAINT_TEXEL["orchard"], "texel_mesh": "Paint"}},
     "prop_canvas_study3_crate": {"fn": "canvas_crate", "pid": "study3",
-                                 "cat": {"prefab": "loot_spawn", "kind": "painting", "surface": "wood"}},
+                                 "cat": {"prefab": "loot_spawn", "kind": "painting", "surface": "wood",
+                                         "texel_target": _PAINT_TEXEL["study3"], "texel_mesh": "Paint"}},
     "prop_art_rack_screen": {"fn": "rack", "cat": {"kind": "art_rack", "group": "gallery", "place": "none",
                                                    "surface": "metal", "support": True}},
     "prop_safe_wall_small": {"fn": "safe_wall", "cat": {"prefab": "safe", "kind": "safe", "mount": "wall",
@@ -88,16 +100,17 @@ def _curtain(k: Kit, leaf, width: float, top: float, bar_h: float, slat_key: str
     for i in range(n):
         z1 = -i * step
         z0 = z1 - step - 0.004   # overlap: no see-through between slats
-        sp.bx((0.0, -depth / 2, z0), (width, depth / 2, z1), slat_key)
+        # slat ends 6 mm inside the guides (their faces never meet the guides' outer faces: zfight)
+        sp.bx((0.006, -depth / 2, z0), (width - 0.006, depth / 2, z1), slat_key)
         zm = (z0 + z1) / 2
-        rib.bx((0.0, depth / 2, zm - 0.008), (width, depth / 2 + 0.006, zm + 0.008), slat_key)
-        rib.bx((0.0, -depth / 2 - 0.006, zm - 0.008), (width, -depth / 2, zm + 0.008), slat_key)
+        rib.bx((0.006, depth / 2, zm - 0.008), (width - 0.006, depth / 2 + 0.006, zm + 0.008), slat_key)
+        rib.bx((0.006, -depth / 2 - 0.006, zm - 0.008), (width - 0.006, -depth / 2, zm + 0.008), slat_key)
     cur.build()
     bar = k.obj("BottomBar", parent=leaf)
     bp = bar.part(bevel=0.004)
-    bp.bx((0.0, -0.022, 0.012), (width, 0.022, bar_h + 0.004), "steel")
+    bp.bx((0.006, -0.022, 0.012), (width - 0.006, 0.022, bar_h + 0.004), "steel")
     rub = bar.part(bevel=0.0)
-    rub.bx((0.0, -0.014, 0.004), (width, 0.014, 0.012), "rubber")
+    rub.bx((0.006, -0.014, 0.004), (width - 0.006, 0.014, 0.012), "rubber")
     bar.build()
 
 
@@ -131,7 +144,7 @@ def _shutter_reveal(k: Kit, p: dict) -> None:
     mb.box((-hw, -yh, h - hood), (hw, yh, h))
     geo.collision_from_builder(mb, "convex", parent=obj)
     leaf = k.empty("Leaf", (-hw, 0.0, 0.0))
-    _curtain(k, leaf, w, h - hood + 0.05, 0.07, p["slat"])
+    _curtain(k, leaf, w, h - hood - 0.003, 0.07, p["slat"])   # top 3 mm under the hood (no coplanar faces)
     if p.get("handles"):
         # pull handles and a floor lock on the bottom bar, both faces (the roller is BARRED: dressing)
         hb = k.obj("BarFittings", parent=leaf)
@@ -150,7 +163,7 @@ def _shutter_face(k: Kit, p: dict) -> None:
     """Face-mounted lockdown shutter over a door opening: guides on the front wall face beside the reveal, the coil
     hood above it, the curtain 7 cm in front of the wall (clear of the door's own frame and levers)."""
     w, h, t = p["w"], p["h"], p["t"]
-    yf = t / 2
+    yf = t / 2 + 0.003   # guides and hood stand 3 mm off the wall face (a door casing there is coplanar otherwise)
     yc = yf + 0.07
     half = w / 2 + 0.05     # curtain half width (runs 4.5 cm into each guide)
     fr = k.obj("Frame")
@@ -158,7 +171,7 @@ def _shutter_face(k: Kit, p: dict) -> None:
     trim = fr.part(bevel=0.0015)
     for sx in (-1, 1):
         x0, x1 = sorted((sx * (w / 2 + 0.005), sx * (w / 2 + 0.095)))
-        g.bx((x0, yf, 0.0), (x1, yf + 0.12, h + 0.03), "metal_dark")
+        g.bx((x0, yf, 0.008), (x1, yf + 0.12, h + 0.03), "metal_dark")   # 8 mm up: a door casing foot is coplanar
         xa, xb = sorted((sx * (w / 2 + 0.03), sx * (w / 2 + 0.07)))
         for z in (0.3, 1.2, 2.0):   # wall fixings
             trim.bx((xa, yf + 0.12, z - 0.03), (xb, yf + 0.124, z + 0.03), "steel")
@@ -214,7 +227,7 @@ def _grate(k: Kit, p: dict) -> None:
     mb.box((-hw + lin, top - 0.08, ln - lin), (hw - lin, top, ln))
     geo.collision_from_builder(mb, "trimesh", parent=obj)
     # leaf: hinge on the -X lining, top flush with the grade; Leaf pivot 2.5 cm under the top (LeafBody centre)
-    yl = top - 0.025
+    yl = top - 0.028   # leaf top 3 mm under the curb / grade plane (no coplanar faces)
     leaf = k.empty("Leaf", (-hw + lin, yl, 0.0))
     lw = w - 2 * lin
     lf = k.obj("LeafMesh", parent=leaf)
@@ -238,7 +251,7 @@ def _grate(k: Kit, p: dict) -> None:
     hd = lf.part(bevel=0.0)
     hd.tube([(x1 - 0.18, 0.025, ln / 2 - 0.14), (x1 - 0.18, 0.075, ln / 2 - 0.1), (x1 - 0.18, 0.075, ln / 2 + 0.1),
              (x1 - 0.18, 0.025, ln / 2 + 0.14)], 0.01, "steel", segs=8)
-    hd.bx((x1 - 0.004, 0.02, ln / 2 - 0.035), (x1 + 0.055, 0.026, ln / 2 + 0.035), "steel")
+    hd.bx((x1 - 0.004, 0.015, ln / 2 - 0.035), (x1 + 0.055, 0.021, ln / 2 + 0.035), "steel")   # 1 cm under the curb top
     for z in (0.35, ln / 2, ln - 0.35):
         hd.cyl(0.016, 0.12, (-0.004, 0.0, z), "steel", axis="Z", segs=10)
     lf.build()
@@ -384,11 +397,14 @@ def _framed(k: Kit, name: str, pid: str, cw: float, ch: float, y_back: float, zc
     s = 0.03
     slip.bx((-cw / 2 - 0.002, y_back + 0.01, zc - ch / 2 - 0.002), (cw / 2 + 0.002, y_back + d - 0.024, zc + ch / 2 + 0.002),
             "canvas_ivory")
-    pt = o.part(bevel=0.0)
+    obj = o.build()
+    # the painted canvas is its own mesh (`Paint`): only it carries the hero texel target (_PAINT_TEXEL)
+    po = k.obj("Paint", parent=obj)
+    pt = po.part(bevel=0.0)
     pt.bx((-cw / 2 + s, y_back + d - 0.03, zc - ch / 2 + s), (cw / 2 - s, y_back + d - 0.016, zc + ch / 2 - s),
           f"painting_{pid}")
-    obj = o.build()
-    _paint_uv(obj, k.mat(f"painting_{pid}").name)
+    pobj = po.build()
+    _paint_uv(pobj, k.mat(f"painting_{pid}").name)
     return obj
 
 
@@ -431,15 +447,17 @@ def _canvas_easel(k: Kit, p: dict) -> None:
     c = k.obj("Canvas")
     st = c.part(bevel=0.002)
     st.bx((-cw / 2, -0.03, tray), (cw / 2, 0.0, tray + ch), "canvas_ivory")
-    pt = c.part(bevel=0.0)
-    pt.bx((-cw / 2 + 0.005, 0.0, tray + 0.005), (cw / 2 - 0.005, 0.004, tray + ch - 0.005), f"painting_{pid}")
     obj = c.build()
-    _paint_uv(obj, k.mat(f"painting_{pid}").name)
+    po = k.obj("Paint", parent=obj)
+    pt = po.part(bevel=0.0)
+    pt.bx((-cw / 2 + 0.005, 0.0, tray + 0.005), (cw / 2 - 0.005, 0.004, tray + ch - 0.005), f"painting_{pid}")
+    pobj = po.build()
+    _paint_uv(pobj, k.mat(f"painting_{pid}").name)
     # task lamp clip and a palette on the tray end (conservation dressing)
     d = k.obj("Tools")
     dp = d.part(bevel=0.002)
-    dp.bx((cw / 2 - 0.2, -0.05, tray), (cw / 2 - 0.02, 0.03, tray + 0.012), "wood_pine")
-    dp.cyl(0.006, 0.12, (cw / 2 - 0.25, 0.0, tray + 0.006), "wood_dark", axis="X", segs=6)
+    dp.bx((cw / 2 - 0.2, 0.008, tray), (cw / 2 - 0.02, 0.038, tray + 0.012), "wood_pine")   # in front of the canvas
+    dp.cyl(0.006, 0.12, (cw / 2 - 0.25, 0.022, tray + 0.006), "wood_dark", axis="X", segs=6)
     d.build()
 
 

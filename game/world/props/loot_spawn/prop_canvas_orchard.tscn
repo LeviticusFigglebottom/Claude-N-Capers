@@ -5,3 +5,8 @@
 [node name="PropCanvasOrchard" type="Node3D"]
 
 [node name="Model" parent="." instance=ExtResource("1_model")]
+
+[node name="Paint" parent="Model/Canvas"]
+metadata/texel_target = 752
+
+[editable path="Model"]

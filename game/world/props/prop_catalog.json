@@ -236,6 +236,39 @@
   "weight": 1.0,
   "z": 0.0
  },
+ "prop_ashtray_stand": {
+  "aabb": [
+   -0.16,
+   0.0,
+   -0.16,
+   0.32,
+   0.96,
+   0.32
+  ],
+  "clear": 0.0,
+  "fixture": false,
+  "glb": "res://assets/props/prop_ashtray_stand/prop_ashtray_stand.glb",
+  "group": "exterior",
+  "has_light": false,
+  "hosts": [],
+  "keepout": [],
+  "kind": "ashtray",
+  "mount": "",
+  "nodes": [
+   "Ashtray"
+  ],
+  "place": "floor",
+  "prefab": "",
+  "scene": "res://world/props/exterior/prop_ashtray_stand.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": false,
+  "surface": "metal",
+  "top": 0.0,
+  "visibility_range_end": 0.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
  "prop_atm": {
   "aabb": [
    -0.35,
@@ -332,6 +365,39 @@
   "surface": "fabric",
   "top": 0.0,
   "visibility_range_end": 25.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
+ "prop_bar_counter_gala": {
+  "aabb": [
+   -1.02,
+   0.0,
+   -0.5316,
+   2.04,
+   1.1,
+   0.9316
+  ],
+  "clear": 1.0,
+  "fixture": false,
+  "glb": "res://assets/props/prop_bar_counter_gala/prop_bar_counter_gala.glb",
+  "group": "gallery",
+  "has_light": false,
+  "hosts": [],
+  "keepout": [],
+  "kind": "counter_bar",
+  "mount": "",
+  "nodes": [
+   "Bar"
+  ],
+  "place": "wall",
+  "prefab": "",
+  "scene": "res://world/props/gallery/prop_bar_counter_gala.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": true,
+  "surface": "wood",
+  "top": 1.1,
+  "visibility_range_end": 60.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -434,6 +500,39 @@
   "weight": 1.0,
   "z": 0.0
  },
+ "prop_bench_gallery": {
+  "aabb": [
+   -0.8,
+   0.0,
+   -0.25,
+   1.6,
+   0.46,
+   0.5
+  ],
+  "clear": 0.6,
+  "fixture": false,
+  "glb": "res://assets/props/prop_bench_gallery/prop_bench_gallery.glb",
+  "group": "gallery",
+  "has_light": false,
+  "hosts": [],
+  "keepout": [],
+  "kind": "bench",
+  "mount": "",
+  "nodes": [
+   "Bench"
+  ],
+  "place": "center",
+  "prefab": "",
+  "scene": "res://world/props/gallery/prop_bench_gallery.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": false,
+  "surface": "plaster",
+  "top": 0.0,
+  "visibility_range_end": 60.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
  "prop_bench_lamp": {
   "aabb": [
    -0.075,
@@ -466,6 +565,39 @@
   "surface": "metal",
   "top": 0.0,
   "visibility_range_end": 25.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
+ "prop_bench_stone": {
+  "aabb": [
+   -0.9,
+   0.0,
+   -0.24,
+   1.8,
+   0.46,
+   0.48
+  ],
+  "clear": 0.6,
+  "fixture": false,
+  "glb": "res://assets/props/prop_bench_stone/prop_bench_stone.glb",
+  "group": "exterior",
+  "has_light": false,
+  "hosts": [],
+  "keepout": [],
+  "kind": "bench",
+  "mount": "",
+  "nodes": [
+   "Bench"
+  ],
+  "place": "wall",
+  "prefab": "",
+  "scene": "res://world/props/exterior/prop_bench_stone.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": false,
+  "surface": "plaster",
+  "top": 0.0,
+  "visibility_range_end": 0.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -1195,6 +1327,39 @@
   "weight": 1.0,
   "z": 1.45
  },
+ "prop_bronze_court": {
+  "aabb": [
+   -0.53,
+   0.0,
+   -0.53,
+   1.06,
+   2.24,
+   1.06
+  ],
+  "clear": 1.0,
+  "fixture": false,
+  "glb": "res://assets/props/prop_bronze_court/prop_bronze_court.glb",
+  "group": "exterior",
+  "has_light": false,
+  "hosts": [],
+  "keepout": [],
+  "kind": "sculpture",
+  "mount": "",
+  "nodes": [
+   "Bronze"
+  ],
+  "place": "floor",
+  "prefab": "",
+  "scene": "res://world/props/exterior/prop_bronze_court.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": false,
+  "surface": "concrete",
+  "top": 0.0,
+  "visibility_range_end": 0.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
  "prop_bulletin_board": {
   "aabb": [
    -0.45,
@@ -1424,7 +1589,8 @@
   "mount": "wall",
   "nodes": [
    "Canvas",
-   "Hooks"
+   "Hooks",
+   "Paint"
   ],
   "place": "none",
   "prefab": "loot_spawn",
@@ -1458,7 +1624,8 @@
   "mount": "wall",
   "nodes": [
    "Canvas",
-   "Hooks"
+   "Hooks",
+   "Paint"
   ],
   "place": "none",
   "prefab": "loot_spawn",
@@ -1493,7 +1660,8 @@
   "nodes": [
    "Canvas",
    "Crate",
-   "Lid"
+   "Lid",
+   "Paint"
   ],
   "place": "none",
   "prefab": "loot_spawn",
@@ -1527,7 +1695,8 @@
   "mount": "wall",
   "nodes": [
    "Canvas",
-   "Hooks"
+   "Hooks",
+   "Paint"
   ],
   "place": "none",
   "prefab": "loot_spawn",
@@ -1561,7 +1730,8 @@
   "mount": "wall",
   "nodes": [
    "Canvas",
-   "Hooks"
+   "Hooks",
+   "Paint"
   ],
   "place": "none",
   "prefab": "loot_spawn",
@@ -1595,7 +1765,8 @@
   "mount": "wall",
   "nodes": [
    "Canvas",
-   "Hooks"
+   "Hooks",
+   "Paint"
   ],
   "place": "none",
   "prefab": "loot_spawn",
@@ -1629,7 +1800,8 @@
   "mount": "wall",
   "nodes": [
    "Canvas",
-   "Hooks"
+   "Hooks",
+   "Paint"
   ],
   "place": "none",
   "prefab": "loot_spawn",
@@ -1664,7 +1836,8 @@
   "nodes": [
    "Canvas",
    "Crate",
-   "Lid"
+   "Lid",
+   "Paint"
   ],
   "place": "none",
   "prefab": "loot_spawn",
@@ -1698,7 +1871,8 @@
   "mount": "wall",
   "nodes": [
    "Canvas",
-   "Hooks"
+   "Hooks",
+   "Paint"
   ],
   "place": "none",
   "prefab": "loot_spawn",
@@ -1732,7 +1906,8 @@
   "mount": "wall",
   "nodes": [
    "Canvas",
-   "Hooks"
+   "Hooks",
+   "Paint"
   ],
   "place": "none",
   "prefab": "loot_spawn",
@@ -1766,7 +1941,8 @@
   "mount": "wall",
   "nodes": [
    "Canvas",
-   "Hooks"
+   "Hooks",
+   "Paint"
   ],
   "place": "none",
   "prefab": "loot_spawn",
@@ -1800,7 +1976,8 @@
   "mount": "wall",
   "nodes": [
    "Canvas",
-   "Hooks"
+   "Hooks",
+   "Paint"
   ],
   "place": "none",
   "prefab": "loot_spawn",
@@ -1834,7 +2011,8 @@
   "mount": "wall",
   "nodes": [
    "Canvas",
-   "Hooks"
+   "Hooks",
+   "Paint"
   ],
   "place": "none",
   "prefab": "loot_spawn",
@@ -1868,7 +2046,8 @@
   "mount": "wall",
   "nodes": [
    "Canvas",
-   "Hooks"
+   "Hooks",
+   "Paint"
   ],
   "place": "none",
   "prefab": "loot_spawn",
@@ -1903,6 +2082,7 @@
   "nodes": [
    "Canvas",
    "Easel",
+   "Paint",
    "Tools"
   ],
   "place": "none",
@@ -2535,6 +2715,72 @@
   "visibility_range_end": 60.0,
   "weight": 1.0,
   "z": 3.4
+ },
+ "prop_coat_rail": {
+  "aabb": [
+   -0.7485,
+   -0.0,
+   -0.275,
+   1.4971,
+   1.75,
+   0.55
+  ],
+  "clear": 0.6,
+  "fixture": false,
+  "glb": "res://assets/props/prop_coat_rail/prop_coat_rail.glb",
+  "group": "gallery",
+  "has_light": false,
+  "hosts": [],
+  "keepout": [],
+  "kind": "coat_rail",
+  "mount": "",
+  "nodes": [
+   "Rail"
+  ],
+  "place": "wall",
+  "prefab": "",
+  "scene": "res://world/props/gallery/prop_coat_rail.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": false,
+  "surface": "fabric",
+  "top": 0.0,
+  "visibility_range_end": 60.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
+ "prop_cocktail_table": {
+  "aabb": [
+   -0.365,
+   0.0,
+   -0.365,
+   0.73,
+   1.08,
+   0.73
+  ],
+  "clear": 0.5,
+  "fixture": false,
+  "glb": "res://assets/props/prop_cocktail_table/prop_cocktail_table.glb",
+  "group": "gallery",
+  "has_light": false,
+  "hosts": [],
+  "keepout": [],
+  "kind": "cocktail_table",
+  "mount": "",
+  "nodes": [
+   "Table"
+  ],
+  "place": "center",
+  "prefab": "",
+  "scene": "res://world/props/gallery/prop_cocktail_table.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": true,
+  "surface": "fabric",
+  "top": 0.0,
+  "visibility_range_end": 60.0,
+  "weight": 1.0,
+  "z": 0.0
  },
  "prop_coffee_machine": {
   "aabb": [
@@ -4178,10 +4424,10 @@
   "aabb": [
    -1.05,
    -0.05,
-   -0.21,
+   -0.207,
    2.1,
    2.1,
-   0.14
+   0.137
   ],
   "clear": 0.0,
   "fixture": false,
@@ -4582,10 +4828,10 @@
  "prop_door_shutter_steel_face_w120": {
   "aabb": [
    -0.736,
-   0.0,
-   -0.368,
+   0.004,
+   -0.371,
    1.472,
-   2.6,
+   2.596,
    0.268
   ],
   "clear": 0.0,
@@ -4619,10 +4865,10 @@
  "prop_door_shutter_steel_face_w200": {
   "aabb": [
    -1.136,
-   0.0,
-   -0.368,
+   0.004,
+   -0.371,
    2.272,
-   2.6,
+   2.596,
    0.268
   ],
   "clear": 0.0,
@@ -5335,6 +5581,39 @@
   "weight": 1.0,
   "z": 0.0
  },
+ "prop_easel_studio": {
+  "aabb": [
+   -0.42,
+   0.0,
+   -0.06,
+   0.8452,
+   2.06,
+   0.68
+  ],
+  "clear": 0.6,
+  "fixture": false,
+  "glb": "res://assets/props/prop_easel_studio/prop_easel_studio.glb",
+  "group": "gallery",
+  "has_light": false,
+  "hosts": [],
+  "keepout": [],
+  "kind": "easel",
+  "mount": "",
+  "nodes": [
+   "Easel"
+  ],
+  "place": "floor",
+  "prefab": "",
+  "scene": "res://world/props/gallery/prop_easel_studio.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": false,
+  "surface": "wood",
+  "top": 0.0,
+  "visibility_range_end": 60.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
  "prop_escape_lift_fitout": {
   "aabb": [
    -1.346,
@@ -5600,6 +5879,39 @@
   "weight": 1.0,
   "z": 0.0
  },
+ "prop_gas_cylinders": {
+  "aabb": [
+   -0.75,
+   0.0,
+   -0.18,
+   1.5,
+   1.85,
+   0.36
+  ],
+  "clear": 0.6,
+  "fixture": false,
+  "glb": "res://assets/props/prop_gas_cylinders/prop_gas_cylinders.glb",
+  "group": "plant",
+  "has_light": false,
+  "hosts": [],
+  "keepout": [],
+  "kind": "gas_cylinders",
+  "mount": "",
+  "nodes": [
+   "Bank"
+  ],
+  "place": "wall",
+  "prefab": "",
+  "scene": "res://world/props/plant/prop_gas_cylinders.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": false,
+  "surface": "metal",
+  "top": 0.0,
+  "visibility_range_end": 60.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
  "prop_gem_scope": {
   "aabb": [
    -0.1,
@@ -5668,6 +5980,44 @@
   "standoff": 0.0,
   "support": false,
   "surface": "wood",
+  "top": 0.0,
+  "visibility_range_end": 25.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
+ "prop_glassware": {
+  "aabb": [
+   -0.1,
+   0.0,
+   -0.08,
+   0.19,
+   0.2,
+   0.17
+  ],
+  "clear": 0.0,
+  "fixture": false,
+  "glb": "res://assets/props/prop_glassware/prop_glassware.glb",
+  "group": "clutter",
+  "has_light": false,
+  "hosts": [
+   "cocktail_table",
+   "counter_bar",
+   "table",
+   "kitchen_counter"
+  ],
+  "keepout": [],
+  "kind": "glassware",
+  "mount": "",
+  "nodes": [
+   "Glasses"
+  ],
+  "place": "on",
+  "prefab": "",
+  "scene": "res://world/props/clutter/prop_glassware.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": false,
+  "surface": "glass",
   "top": 0.0,
   "visibility_range_end": 25.0,
   "weight": 1.0,
@@ -6542,6 +6892,39 @@
   "weight": 1.0,
   "z": 1.3
  },
+ "prop_lectern": {
+  "aabb": [
+   -0.278,
+   0.0,
+   -0.21,
+   0.556,
+   1.1195,
+   0.42
+  ],
+  "clear": 0.6,
+  "fixture": false,
+  "glb": "res://assets/props/prop_lectern/prop_lectern.glb",
+  "group": "gallery",
+  "has_light": false,
+  "hosts": [],
+  "keepout": [],
+  "kind": "lectern",
+  "mount": "",
+  "nodes": [
+   "Lectern"
+  ],
+  "place": "floor",
+  "prefab": "",
+  "scene": "res://world/props/gallery/prop_lectern.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": false,
+  "surface": "wood",
+  "top": 0.0,
+  "visibility_range_end": 60.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
  "prop_light_switch": {
   "aabb": [
    -0.04,
@@ -7293,6 +7676,39 @@
   "weight": 1.0,
   "z": 0.0
  },
+ "prop_music_stand": {
+  "aabb": [
+   -0.25,
+   0.0,
+   -0.1956,
+   0.5205,
+   1.34,
+   0.4713
+  ],
+  "clear": 0.0,
+  "fixture": false,
+  "glb": "res://assets/props/prop_music_stand/prop_music_stand.glb",
+  "group": "gallery",
+  "has_light": false,
+  "hosts": [],
+  "keepout": [],
+  "kind": "music_stand",
+  "mount": "",
+  "nodes": [
+   "Stand"
+  ],
+  "place": "floor",
+  "prefab": "",
+  "scene": "res://world/props/gallery/prop_music_stand.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": false,
+  "surface": "metal",
+  "top": 0.0,
+  "visibility_range_end": 60.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
  "prop_neon_vossberg": {
   "aabb": [
    -1.77,
@@ -7763,6 +8179,39 @@
   "weight": 1.0,
   "z": 0.0
  },
+ "prop_patio_heater": {
+  "aabb": [
+   -0.4183,
+   0.0,
+   -0.4183,
+   0.8367,
+   2.24,
+   0.8367
+  ],
+  "clear": 0.0,
+  "fixture": true,
+  "glb": "res://assets/props/prop_patio_heater/prop_patio_heater.glb",
+  "group": "exterior",
+  "has_light": true,
+  "hosts": [],
+  "keepout": [],
+  "kind": "heater",
+  "mount": "",
+  "nodes": [
+   "Heater"
+  ],
+  "place": "floor",
+  "prefab": "",
+  "scene": "res://world/props/exterior/prop_patio_heater.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": false,
+  "surface": "metal",
+  "top": 0.0,
+  "visibility_range_end": 0.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
  "prop_pen_cup": {
   "aabb": [
    -0.0397,
@@ -7944,6 +8393,39 @@
   "weight": 1.0,
   "z": 0.0
  },
+ "prop_plan_chest": {
+  "aabb": [
+   -0.66,
+   0.0,
+   -0.4994,
+   1.32,
+   0.9,
+   0.9844
+  ],
+  "clear": 0.9,
+  "fixture": false,
+  "glb": "res://assets/props/prop_plan_chest/prop_plan_chest.glb",
+  "group": "gallery",
+  "has_light": false,
+  "hosts": [],
+  "keepout": [],
+  "kind": "plan_chest",
+  "mount": "",
+  "nodes": [
+   "Chest"
+  ],
+  "place": "wall",
+  "prefab": "",
+  "scene": "res://world/props/gallery/prop_plan_chest.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": true,
+  "surface": "wood",
+  "top": 0.0,
+  "visibility_range_end": 60.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
  "prop_plant_small": {
   "aabb": [
    -0.0842,
@@ -8047,6 +8529,72 @@
   "surface": "dirt",
   "top": 0.0,
   "visibility_range_end": 0.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
+ "prop_plinth_bronze_a": {
+  "aabb": [
+   -0.27,
+   0.0,
+   -0.27,
+   0.54,
+   1.82,
+   0.54
+  ],
+  "clear": 0.6,
+  "fixture": false,
+  "glb": "res://assets/props/prop_plinth_bronze_a/prop_plinth_bronze_a.glb",
+  "group": "gallery",
+  "has_light": false,
+  "hosts": [],
+  "keepout": [],
+  "kind": "sculpture",
+  "mount": "",
+  "nodes": [
+   "Plinth"
+  ],
+  "place": "floor",
+  "prefab": "",
+  "scene": "res://world/props/gallery/prop_plinth_bronze_a.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": false,
+  "surface": "plaster",
+  "top": 0.0,
+  "visibility_range_end": 60.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
+ "prop_plinth_bronze_b": {
+  "aabb": [
+   -0.27,
+   0.0,
+   -0.27,
+   0.54,
+   1.71,
+   0.54
+  ],
+  "clear": 0.6,
+  "fixture": false,
+  "glb": "res://assets/props/prop_plinth_bronze_b/prop_plinth_bronze_b.glb",
+  "group": "gallery",
+  "has_light": false,
+  "hosts": [],
+  "keepout": [],
+  "kind": "sculpture",
+  "mount": "",
+  "nodes": [
+   "Plinth"
+  ],
+  "place": "floor",
+  "prefab": "",
+  "scene": "res://world/props/gallery/prop_plinth_bronze_b.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": false,
+  "surface": "plaster",
+  "top": 0.0,
+  "visibility_range_end": 60.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -8983,6 +9531,39 @@
   "weight": 1.0,
   "z": 0.0
  },
+ "prop_stanchion_velvet": {
+  "aabb": [
+   -1.0,
+   0.0,
+   -0.15,
+   2.0,
+   0.97,
+   0.3
+  ],
+  "clear": 0.0,
+  "fixture": false,
+  "glb": "res://assets/props/prop_stanchion_velvet/prop_stanchion_velvet.glb",
+  "group": "gallery",
+  "has_light": false,
+  "hosts": [],
+  "keepout": [],
+  "kind": "stanchion",
+  "mount": "",
+  "nodes": [
+   "Stanchions"
+  ],
+  "place": "floor",
+  "prefab": "",
+  "scene": "res://world/props/gallery/prop_stanchion_velvet.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": false,
+  "surface": "metal",
+  "top": 0.0,
+  "visibility_range_end": 60.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
  "prop_step_ladder": {
   "aabb": [
    -0.2367,
@@ -9152,6 +9733,39 @@
   "surface": "metal",
   "top": 0.0,
   "visibility_range_end": 0.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
+ "prop_suction_table": {
+  "aabb": [
+   -1.0,
+   0.0,
+   -0.6,
+   2.0,
+   0.8615,
+   1.2
+  ],
+  "clear": 0.8,
+  "fixture": false,
+  "glb": "res://assets/props/prop_suction_table/prop_suction_table.glb",
+  "group": "gallery",
+  "has_light": false,
+  "hosts": [],
+  "keepout": [],
+  "kind": "suction_table",
+  "mount": "",
+  "nodes": [
+   "Table"
+  ],
+  "place": "center",
+  "prefab": "",
+  "scene": "res://world/props/gallery/prop_suction_table.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": true,
+  "surface": "metal",
+  "top": 0.86,
+  "visibility_range_end": 60.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -9701,6 +10315,39 @@
   "surface": "metal",
   "top": 0.0,
   "visibility_range_end": 25.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
+ "prop_uplight_lilac": {
+  "aabb": [
+   -0.15,
+   0.0,
+   -0.13,
+   0.3,
+   0.172,
+   0.26
+  ],
+  "clear": 0.0,
+  "fixture": true,
+  "glb": "res://assets/props/prop_uplight_lilac/prop_uplight_lilac.glb",
+  "group": "exterior",
+  "has_light": true,
+  "hosts": [],
+  "keepout": [],
+  "kind": "uplight",
+  "mount": "",
+  "nodes": [
+   "Uplight"
+  ],
+  "place": "floor",
+  "prefab": "",
+  "scene": "res://world/props/exterior/prop_uplight_lilac.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": false,
+  "surface": "metal",
+  "top": 0.0,
+  "visibility_range_end": 0.0,
   "weight": 1.0,
   "z": 0.0
  },
