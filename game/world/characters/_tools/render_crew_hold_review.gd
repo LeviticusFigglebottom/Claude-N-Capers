@@ -1,17 +1,24 @@
 ## D-116 follow-up (organic, third person): how teammates and bots hold their weapons, windowed, in a lit heist.
-## Two crew rigs stand in front of the heist's first Spawns marker, a rifle and a pistol, each WeaponVisual attached
+## Two crew rigs stand in front of the player crew's spawn (the heist launched as the game does), a rifle and a pistol,
 ## at HandR/Socket exactly as AnimDriver.refresh_weapon does, posed at idle_alert, walk (mid stride), aim. A 3/4
 ## front view plus a close-up of the hands per pose.
 ## Writes <out>/<pose>.png, <out>/<pose>_close.png and <out>/crew_hold_sheet.png (rows = poses).
 ##   xvfb-run -a -s "-screen 0 960x540x24" /opt/godot/godot --rendering-driver opengl3 --audio-driver Dummy \
 ##     --resolution 960x540 --path game res://world/characters/_tools/render_crew_hold_review.tscn -- --out=/abs/dir \
-##     [--heist=glasshouse]
+##     [--heist=glasshouse] [--after]
 ## Owner: ENV D.
 extends Node
 
 ## [character scene id, weapon id, weapon kind]
 const BOTS: Array = [["crew_rook", &"weapon.corsair_ar", &"rifle"], ["crew_sable", &"weapon.kestrel_p9", &"pistol"]]
 const ANIM_LIB: String = "humanoid/"
+## m in front of the crew spawn (Glasshouse: short of the store window)
+const DIST: float = 1.8
+
+## --after: the D-116 weapon-class holds instead of the shared idle_alert / walk (hold_* is the upper-body layer A
+## blends over locomotion; shown here on its own stand)
+const AFTER_POSES: Array = [["idle_alert", "idle_alert_rifle", "idle_alert_pistol", 0.5],
+	["hold", "hold_rifle", "hold_pistol", 0.3], ["aim", "aim_rifle", "aim_pistol", 0.5]]
 
 var _out: String = "user://crew_hold_review"
 var _heist: String = "glasshouse"
@@ -27,15 +34,20 @@ func _ready() -> void:
 		match kv[0]:
 			"out": _out = v
 			"heist": _heist = v
+			"after": _poses = AFTER_POSES
 	DirAccess.make_dir_recursive_absolute(_out)
 	RenderingServer.render_loop_enabled = false   # llvmpipe: render only the saved frames (a lit heist is slow)
-	var level: Node3D = (load("res://world/heists/%s/%s.tscn" % [_heist, _heist]) as PackedScene).instantiate() as Node3D
-	add_child(level)
-	for _i: int in 3:
+	# the heist as the game builds it (HeistLauncher), lit; the crew stands at its spawn, its view gives the frame
+	var l: Loadout = CrewWeapons.build_loadout(null).duplicate() as Loadout
+	var rt: HeistRuntime = await HeistLauncher.launch(StringName(_heist), 1002, Enums.Difficulty.ROUTINE, self,
+			{"ai_teammates": 0, "crew_ai": false, "loadouts": {0: l}})
+	rt.isolate_npc(null)
+	for _i: int in 30:
 		await get_tree().physics_frame
-	var spawn: Node3D = _first_spawn(level)
-	var o: Vector3 = spawn.global_position if spawn != null else Vector3.ZERO
-	var fwd: Vector3 = (-spawn.global_basis.z if spawn != null else Vector3.FORWARD)
+	var crew: Node3D = rt.crew_controller(0) as Node3D
+	crew.visible = false   # the review camera stands where the player is
+	var o: Vector3 = crew.global_position
+	var fwd: Vector3 = -crew.global_basis.z
 	fwd.y = 0.0
 	fwd = fwd.normalized()
 	var side: Vector3 = fwd.cross(Vector3.UP).normalized()
@@ -44,23 +56,23 @@ func _ready() -> void:
 		var spec: Array = BOTS[i]
 		var rig: Node3D = (load("res://world/characters/%s/%s.tscn" % [spec[0], spec[0]]) as PackedScene).instantiate()
 		add_child(rig)
-		var p: Vector3 = o + fwd * 3.0 + side * (0.55 if i == 0 else -0.55)
+		var p: Vector3 = o + fwd * DIST + side * (0.5 if i == 0 else -0.5)
 		rig.global_position = p
-		rig.look_at(o + side * (0.3 if i == 0 else -0.3), Vector3.UP, true)   # facing the camera, turned 3/4
+		rig.look_at(o + side * (0.3 if i == 0 else -0.3), Vector3.UP)   # facing the camera, turned 3/4
 		rig.rotate_y(deg_to_rad(28.0 if i == 0 else -28.0))
 		_attach(rig, StringName(spec[1]))
 		rigs.append(rig)
 	var cam: Camera3D = Camera3D.new()
 	cam.fov = 55.0
 	add_child(cam)
-	var mid: Vector3 = o + fwd * 3.0
+	var mid: Vector3 = o + fwd * DIST
 	var rows: Array[Array] = []
 	for pose: Array in _poses:
 		for i: int in rigs.size():
 			var clip: String = String(pose[1] if BOTS[i][2] == &"rifle" else pose[2])
 			_pose(rigs[i], clip, float(pose[3]))
 		await get_tree().process_frame
-		cam.global_position = o + Vector3.UP * 1.55 + fwd * 0.4
+		cam.global_position = o + Vector3.UP * 1.55 - fwd * 0.6
 		cam.look_at(mid + Vector3.UP * 1.1)
 		cam.current = true
 		var full: Image = await _shot()
@@ -72,18 +84,9 @@ func _ready() -> void:
 		rows.append([full, close])
 	_sheet(rows)
 	RenderingServer.render_loop_enabled = true
+	rt.teardown()
 	print("[CREWHOLD] RESULT DONE %s/crew_hold_sheet.png" % _out)
 	get_tree().quit(0)
-
-
-func _first_spawn(level: Node) -> Node3D:
-	var spawns: Node = level.get_node_or_null(^"Spawns")
-	if spawns == null:
-		return null
-	for c: Node in spawns.get_children():
-		if c is Node3D:
-			return c as Node3D
-	return null
 
 
 ## AnimDriver.refresh_weapon: the WeaponDef's WeaponVisual (no mods) at HandR/Socket.
@@ -95,7 +98,7 @@ func _attach(rig: Node3D, wid: StringName) -> void:
 		return
 	var wv: WeaponVisual = WeaponVisual.new()
 	socket.add_child(wv)
-	wv.setup(def, [] as Array[StringName])
+	wv.setup(def, [] as Array[WeaponModDef])
 
 
 func _pose(rig: Node3D, clip: String, t: float) -> void:

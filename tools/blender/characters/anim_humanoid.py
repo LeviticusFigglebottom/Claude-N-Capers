@@ -20,6 +20,7 @@ import _anim as anim
 import _anim_assault as assault
 import _anim_d304 as d304
 import _anim_hitzones as hitzones
+import _anim_holds as holds
 import _anim_humanoid as lib
 import _anim_p5 as p5
 import _anim_surrender as surr
@@ -218,6 +219,11 @@ CLIPS = {
     "hit_shoulder_r": {"frames": 14, "loop": False, "speed": 0.0, "priority": 8, "events": {"impact": 3}},
     "hit_leg_l": {"frames": 16, "loop": False, "speed": 0.0, "priority": 8, "events": {"impact": 3}},
     "hit_leg_r": {"frames": 16, "loop": False, "speed": 0.0, "priority": 8, "events": {"impact": 3}},
+    # D-116 third-person weapon holds (_anim_holds): the low ready two-handed outside aiming (SOURCE `weapon_holds`)
+    "idle_alert_rifle": {"frames": 96, "loop": True, "speed": 0.0, "priority": 2},
+    "idle_alert_pistol": {"frames": 110, "loop": True, "speed": 0.0, "priority": 2},
+    "hold_rifle": {"frames": 96, "loop": True, "speed": 0.0, "priority": 2},
+    "hold_pistol": {"frames": 96, "loop": True, "speed": 0.0, "priority": 2},
 }
 LOOPS = sorted(name for name, row in CLIPS.items() if row["loop"])
 P1 = sorted(name for name, row in CLIPS.items() if row["priority"] == 1)
@@ -251,7 +257,7 @@ def build(ctx) -> None:
     for name in sorted(CLIPS):
         baked = anim.bake(solver, clips[name])
         if (name in KEEP or name in d304.KEEP or name in assault.KEEP or name in hitzones.KEEP
-                or name in surr.KEEP):
+                or name in surr.KEEP or name in holds.KEEP):
             keep[name] = baked
         anim.write_action(arm, baked, export_name(name))
         c = baked.checks
@@ -305,6 +311,8 @@ def build(ctx) -> None:
     for key, text in hitzones.source_notes(sk, CLIPS, keep).items():
         ctx.source_extra[key] = text
     for key, text in surr.source_notes(CLIPS, keep).items():
+        ctx.source_extra[key] = text
+    for key, text in holds.source_notes().items():
         ctx.source_extra[key] = text
     for name in sorted(CLIPS):
         row = CLIPS[name]
