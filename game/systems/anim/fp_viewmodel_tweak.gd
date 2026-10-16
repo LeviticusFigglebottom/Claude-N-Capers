@@ -73,6 +73,13 @@ static var _gen: int = 0
 ## Per-set override of left_hand_grip_offset (ENV D 2026-10-14): the long-gun sets' PD2 support grip (palm up under
 ## B's centred under-fore-end markers, thumb along the left side) puts the wrist here; side-grip sets keep the global.
 @export var set_left_hand_grip_offset: Dictionary[StringName, Vector3] = {}
+## D-118 (ENV D, PD2 vertical grip): with a vertical-grip mod (its own LeftHandIK) the wrist sits here relative to the
+## mod's marker (same convention as set_left_hand_grip_offset) and the left hand takes `<set>_vgrip_hand` frame 0.
+## Sets not listed keep their normal grip with a vgrip mod.
+@export var set_vgrip_grip_offset: Dictionary[StringName, Vector3] = {
+	&"smg": Vector3(-0.018, 0.0, 0.047), &"rifle": Vector3(-0.018, 0.0, 0.047),
+	&"launcher": Vector3(-0.018, 0.0, 0.047),
+}
 ## IK influence blend rate (1/s) when the hand leaves / returns to the grip.
 @export var left_hand_ik_rate: float = 8.0
 ## PO-13: keep the clip's left-hand orientation relative to the gun while the IK moves the wrist (else the hand
