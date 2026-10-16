@@ -47,6 +47,8 @@ var situation: StringName = &""
 ## Heist being played (Hud sets it from Hud.heist_id); picks the heist card (OnboardingTips.heist_tip).
 var heist_id: StringName = &""
 var show_delay_s: float = SHOW_DELAY_S
+## r228: the card's width; the HUD narrows it to fit the black margin beside a scope ring (fit_width).
+var width: float = WIDTH
 var panel: PanelContainer
 var title: Label
 var step_label: Label
@@ -56,6 +58,7 @@ var dwell_bar: ProgressBar
 var _left: float = 0.0
 var _pending: StringName = &""
 var _pending_t: float = 0.0
+var _slide: Tween = null
 
 
 func build() -> void:
@@ -200,6 +203,7 @@ func _show(id: StringName) -> void:
 		modulate.a = 0.0
 		position.x += UiTokens.S5
 		var tw: Tween = create_tween().set_parallel(true)
+		_slide = tw
 		tw.tween_property(self, ^"modulate:a", 1.0, UiTokens.T_SLOW).set_ease(Tween.EASE_OUT)
 		tw.tween_property(self, ^"position:x", position.x - UiTokens.S5, UiTokens.T_SLOW) \
 				.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
@@ -213,6 +217,28 @@ func _update_footer() -> void:
 		footer.set_line(UiText.t(&"ui.tip.auto_close"), "")
 	else:
 		footer.set_prompt(&"ui.tip.dismiss", {}, glyph)
+
+
+## r228: ends the slide-in at once (the HUD is about to move the card into the scope margin).
+func settle() -> void:
+	if _slide != null and _slide.is_valid():
+		_slide.kill()
+	_slide = null
+	modulate.a = 1.0
+
+
+## r228: re-wraps the card to `w` HUD units wide (the rows reflow; the card grows taller).
+func fit_width(w: float) -> void:
+	if is_equal_approx(w, width) or panel == null:
+		return
+	width = w
+	panel.custom_minimum_size = Vector2(w, 0)
+	dwell_bar.custom_minimum_size.x = w - 2 * UiTokens.S3
+	for r: Node in rows_box.get_children():
+		var l: Label = r.get_child(r.get_child_count() - 1) as Label
+		if l != null:
+			l.custom_minimum_size.x = w - 120
+	panel.reset_size()
 
 
 ## Closes the card; a situation that started meanwhile (and is unseen) shows next.
@@ -249,6 +275,6 @@ func _row(action: StringName, key: StringName) -> HBoxContainer:
 	l.add_theme_color_override(&"font_color", UiTokens.PAPER)
 	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	l.custom_minimum_size = Vector2(WIDTH - 120, 0)
+	l.custom_minimum_size = Vector2(width - 120, 0)
 	h.add_child(l)
 	return h

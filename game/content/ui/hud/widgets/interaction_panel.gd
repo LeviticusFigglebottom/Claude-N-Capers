@@ -31,6 +31,12 @@ var prompt: KeyPrompt
 ## A ProgressRing (ProgressBar API) drawn around the key cap.
 var progress_bar: ProgressBar
 var blocked_label: Label
+## r228: docked in the black scope margin, the prompt sits on a dark plate (Hud._avoid_scope sets it).
+var plated: bool = false:
+	set(v):
+		if v != plated:
+			plated = v
+			queue_redraw()
 
 
 func build() -> void:
@@ -75,6 +81,17 @@ func refresh() -> void:
 	var blocked: StringName = StringName(it.get("blocked_reason", &""))
 	blocked_label.visible = blocked != &""
 	blocked_label.text = UiText.t(blocked, args) if blocked != &"" else ""
+	queue_redraw()
+
+
+func _draw() -> void:
+	if not plated or prompt == null:
+		return
+	var box: Control = prompt.get_parent() as Control
+	var r: Rect2 = Rect2(box.position + prompt.position, prompt.size).grow(UiTokens.S2)
+	if blocked_label.visible:
+		r = r.merge(Rect2(box.position + blocked_label.position, blocked_label.size).grow(UiTokens.S2))
+	draw_rect(r, Color(UiTokens.INK_0, 0.85))
 
 
 ## P fresh-eyes #13: an interactable left on the generic "Hold {key} to interact" names its action from its

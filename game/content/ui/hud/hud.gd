@@ -32,8 +32,10 @@ const CASING_HINT_KEYS: Dictionary = {
 ## Captain panel top (HUD units) under a one-line assault banner, and its gap below a taller one (_stack_captain).
 const CAPTAIN_TOP: float = 104.0
 const CAPTAIN_GAP: float = 8.0
-## Gap (HUD units) between the scope ring and a text panel moved below it (_avoid_scope).
+## Gap (HUD units) between the scope ring, the screen edge and the text panels docked in the margin (_avoid_scope).
 const SCOPE_GAP: float = 12.0
+## A margin narrower than this (HUD units) takes no panels: they stay where they are.
+const SCOPE_MIN_MARGIN: float = 220.0
 
 @export var model_path: NodePath
 ## Discover the model through group G.LOCAL_HUD_MODEL when nothing is bound.
@@ -99,8 +101,9 @@ var _toast_t: float = 0.0
 var _watched_crew: Node = null
 ## Other humans in the crew (slot -> display name), to tell the crew when one leaves or joins (PD2).
 var _human_names: Dictionary = {}
-## Control -> its offset_top as placed (_avoid_scope moves it back there when the scope is lowered).
-var _base_top: Dictionary = {}
+## Control -> [offset_left, offset_top, offset_right, offset_bottom, scale, pivot_offset] as placed; _avoid_scope
+## docks the control in the scope margin and puts these back when the scope is lowered.
+var _docked: Dictionary = {}
 
 
 func _ready() -> void:
@@ -199,32 +202,145 @@ func _build() -> void:
 	breach_flash = _place(BreachFlash.new(), Control.PRESET_FULL_RECT, Vector2.ZERO, Vector2.ZERO) as BreachFlash  # on top
 
 
-## ui_hud v1.16 (LEAD r227): while the model says `scoped_ads`, the TEXT panels keep out of `scope_ring` (screen
-## space, written by P's scope overlay): device timer panels inside it are not drawn, and the interaction prompt and the
-## hint strip move down to just below it. Markers, chevrons, hit markers and subtitles stay where they are (PD2).
+## ui_hud v1.16 (LEAD r227/r228): while the model says `scoped_ads`, no TEXT panel sits over the ring `scope_ring`
+## (canvas units at the 1920x1080 stretch base, written by P's scope overlay). Device timer panels inside it are not
+## drawn. The assault banner, captain, toast, tip card, interaction prompt and hint strip that the ring would cover dock in
+## the black margin right of it, stacked from the top. The prompt sits at least at the vertical centre, on a dark plate,
+## and when the margin runs short the card gives way to it. Markers, chevrons, hit markers and subtitles stay (PD2).
 func _avoid_scope() -> void:
 	var ring: Rect2 = Rect2()
 	if model != null and model.get(&"scoped_ads") == true and model.get(&"scope_ring") is Rect2:
 		ring = model.get(&"scope_ring") as Rect2
+	var local: Rect2 = get_global_transform_with_canvas().affine_inverse() * ring if ring.has_area() else Rect2()
 	if device_timers != null:
-		device_timers.avoid = device_timers.get_global_transform_with_canvas().affine_inverse() * ring if ring.has_area() \
-				else Rect2()
-	for c: Control in [interaction, hint]:
-		if c == null:
-			continue
-		if not _base_top.has(c):
-			_base_top[c] = c.offset_top
-		var base: float = float(_base_top[c])
-		var top: float = base
-		if ring.has_area():
-			var local: Rect2 = get_global_transform_with_canvas().affine_inverse() * ring
-			var anchor_y: float = size.y * c.anchor_top
-			if Rect2(Vector2(local.position.x, anchor_y + base), Vector2(local.size.x, c.size.y)).intersects(local):
-				top = maxf(base, local.end.y - anchor_y + SCOPE_GAP)
-		if not is_equal_approx(c.offset_top, top):
-			var h: float = c.offset_bottom - c.offset_top
-			c.offset_top = top
-			c.offset_bottom = top + h
+		device_timers.avoid = local
+		device_timers.yield_rect = _toast_rect() if local == Rect2() else Rect2()
+	var keep: Array[Control] = []
+	if local.has_area():
+		keep = _dock_in_margin(local)
+	for c: Variant in _docked.keys():
+		if not keep.has(c as Control):
+			_undock(c as Control)
+
+
+## r228 windowed check: the toast's text (not its 1000-unit box), for device panels to step below.
+func _toast_rect() -> Rect2:
+	if toast_label == null or not toast_label.visible or toast_label.text == "":
+		return Rect2()
+	var f: Font = toast_label.get_theme_font(&"font")
+	var fs: int = toast_label.get_theme_font_size(&"font_size")
+	var w: float = f.get_string_size(toast_label.text, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x * toast_label.scale.x
+	var r: Rect2 = Rect2(toast_label.position, toast_label.size * toast_label.scale)
+	return Rect2(r.get_center().x - w * 0.5 - SCOPE_GAP, r.position.y, w + 2.0 * SCOPE_GAP, r.size.y)
+
+
+## Docks the text panels the ring covers; returns the docked controls.
+func _dock_in_margin(ring: Rect2) -> Array[Control]:
+	var x0: float = ring.end.x + SCOPE_GAP
+	var w: float = size.x - SCOPE_GAP * 2.0 - x0
+	var out: Array[Control] = []
+	if w < SCOPE_MIN_MARGIN:
+		return out
+	for c: Control in [assault, captain, toast_label, onboarding, interaction, hint]:
+		if c != null and c.visible and _over_ring(c, ring):
+			out.append(c)
+	var top: float = SCOPE_GAP * 3.0
+	if status != null and status.visible and status.get_child_count() > 0:
+		var st: Rect2 = _visual_rect(status)
+		top = maxf(top, st.position.y + (status.get_child(0) as Control).get_combined_minimum_size().y * status.scale.y
+				+ SCOPE_GAP)
+	var bottom: float = (_visual_rect(ammo).position.y if ammo != null else size.y) - SCOPE_GAP
+	if _stack(out, x0, w, top, bottom, ring, true) and out.has(onboarding):
+		_stack(out, x0, w, top, bottom, ring, false)  # the prompt did not fit under the card: the card gives way
+	return out
+
+
+## Lays `list` out top-down in the margin; returns true when the interaction prompt ran past `bottom`.
+func _stack(list: Array[Control], x0: float, w: float, top: float, bottom: float, ring: Rect2, with_card: bool) -> bool:
+	var y: float = top
+	var prompt_short: bool = false
+	for c: Control in list:
+		_dock(c)
+		var saved: Array = _docked[c] as Array
+		var base: float = (saved[4] as Vector2).x
+		if c == onboarding:
+			onboarding.settle()
+			onboarding.fit_width(w / base)
+		var content: Vector2 = _dock_content(c)
+		var own_h: float = float(saved[3]) - float(saved[1]) if c == interaction else content.y
+		var sc: float = minf(base, w / maxf(content.x, 1.0))
+		var h: float = own_h * sc
+		var at: float = maxf(y, ring.get_center().y - h * 0.5) if c == interaction else y
+		var fits: bool = at + h <= bottom and (with_card or c != onboarding)
+		if c == interaction and not fits:
+			prompt_short = true
+		c.pivot_offset = Vector2.ZERO
+		c.scale = Vector2(sc, sc)
+		var origin: Vector2 = Vector2(size.x * c.anchor_left, size.y * c.anchor_top)
+		var x: float = x0 if fits else size.x + 100.0  # no room: off screen until the scope is lowered
+		c.offset_left = x - origin.x
+		c.offset_top = at - origin.y
+		c.offset_right = c.offset_left + w / sc
+		c.offset_bottom = c.offset_top + own_h
+		if fits:
+			y = at + h + SCOPE_GAP
+	if interaction != null:
+		interaction.plated = list.has(interaction)
+	return prompt_short
+
+
+## Remembers how `c` was placed (once per scoped stretch).
+func _dock(c: Control) -> void:
+	if not _docked.has(c):
+		_docked[c] = [c.offset_left, c.offset_top, c.offset_right, c.offset_bottom, c.scale, c.pivot_offset]
+
+
+func _undock(c: Control) -> void:
+	var saved: Array = _docked[c] as Array
+	_docked.erase(c)
+	c.offset_left = float(saved[0])
+	c.offset_top = float(saved[1])
+	c.offset_right = float(saved[2])
+	c.offset_bottom = float(saved[3])
+	c.scale = saved[4] as Vector2
+	c.pivot_offset = saved[5] as Vector2
+	if c == onboarding:
+		onboarding.fit_width(OnboardingCard.WIDTH)
+	if c == interaction:
+		interaction.plated = false
+
+
+## Unscaled size of what `c` shows (its first child's minimum; the toast's text).
+func _dock_content(c: Control) -> Vector2:
+	if c == toast_label:
+		var r: Rect2 = _toast_rect()
+		return Vector2(r.size.x / maxf(toast_label.scale.x, 0.01), toast_label.size.y)
+	var inner: Control = c.get_child(0) as Control if c.get_child_count() > 0 else null
+	return inner.get_combined_minimum_size().max(Vector2(1, 1)) if inner != null else c.size
+
+
+## Where `c` is drawn (its rect scaled about its pivot), in HUD units.
+static func _visual_rect(c: Control) -> Rect2:
+	return Rect2(c.position + c.pivot_offset * (Vector2.ONE - c.scale), c.size * c.scale)
+
+
+## True when `c` as placed (not as docked) touches the circle inscribed in `ring`.
+func _over_ring(c: Control, ring: Rect2) -> bool:
+	var r: Rect2 = _visual_rect(c)
+	if _docked.has(c):
+		var saved: Array = _docked[c] as Array
+		var origin: Vector2 = Vector2(size.x * c.anchor_left, size.y * c.anchor_top)
+		var sc: Vector2 = saved[4] as Vector2
+		var piv: Vector2 = saved[5] as Vector2
+		var sz: Vector2 = Vector2(float(saved[2]) - float(saved[0]), float(saved[3]) - float(saved[1]))
+		r = Rect2(origin + Vector2(float(saved[0]), float(saved[1])) + piv * (Vector2.ONE - sc), sz * sc)
+	if c == toast_label:
+		var t: Rect2 = _toast_rect()
+		r = Rect2(Vector2(r.get_center().x - t.size.x * 0.5, r.position.y), Vector2(t.size.x, r.size.y))
+	var centre: Vector2 = ring.get_center()
+	var radius: float = minf(ring.size.x, ring.size.y) * 0.5
+	var near: Vector2 = centre.clamp(r.position, r.end)
+	return near.distance_to(centre) < radius
 
 
 ## r227 crowding audit: the captain panel sits under the assault banner's real bottom; the banner grows when it lists
