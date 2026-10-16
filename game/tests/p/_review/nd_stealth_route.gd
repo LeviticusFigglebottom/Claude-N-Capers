@@ -200,12 +200,23 @@ func _gate_guard() -> bool:
 	if not await pilot.goto(Vector3(back.x, g.global_position.y, back.z), 0.5, 40.0):
 		note("could not get behind the gate guard")
 		return false
-	for _k: int in 3:
+	var hits: Array[int] = [0, 0]
+	var c: CrewController = pilot.crew
+	c.melee.hit_landed.connect(func(_t: Object) -> void: hits[0] += 1)
+	c.melee.swung.connect(func(_ch: bool) -> void: hits[1] += 1)
+	for _k: int in 4:
 		if not g.is_alive():
 			break
-		await pilot.face(g.global_position + Vector3(0, 1.2, 0), 0.03, 1.0)
+		if pilot.flat_dist(g.global_position, c.global_position) > 1.1:  # he walked on: close in behind him again
+			var b2: Vector3 = g.global_position + g.global_basis.z.normalized() * 0.8
+			await pilot.goto(Vector3(b2.x, g.global_position.y, b2.z), 0.4, 10.0)
+		await pilot.face(g.global_position + Vector3(0, 1.1, 0), 0.03, 1.0)
 		await pilot.inp.hold(&"melee", 1.05)
 		await wait_s(0.6)
+		note("swing: me %s guard %s fwd %s dist %.2f, swings %d, hits %d, health %.2f alive %s alert %d" % [
+			Po5Pilot._v(c.global_position), Po5Pilot._v(g.global_position), Po5Pilot._v(-g.global_basis.z),
+			pilot.flat_dist(g.global_position, c.global_position), hits[1], hits[0], g.health, g.is_alive(),
+			g.alert_state])
 	if g.is_alive():
 		note("gate guard not knifed (alert %d)" % g.alert_state)
 		return false
