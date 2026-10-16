@@ -26,7 +26,7 @@ from __future__ import annotations
 import numpy as np
 
 import _anim as A
-from _anim import FPS, Skeleton, hand_shape, ryd, smooth, unit, v3
+from _anim import FPS, Skeleton, hand_shape, ryd, rzd, smooth, unit, v3
 from _arms_choreo import I3, Choreo, Hand, Key, State, hand_at, hand_cam, mag_cam
 from _arms_sets import CRANE_OPEN_DEG, FPSet
 
@@ -117,16 +117,17 @@ class RevolverKit:
         """The heel of the left hand on the ejector-rod tip of the open crane (pushed ``push`` m in), fingers
         curled (lead, D-116 follow-up: PD2 strikes the rod with the heel, never a flat palm at the lens)."""
         tip = crane_point(self.s, 1.0, self.s.markers["rod_tip"]) + v3(0.0, 0.006 - push, 0.0)
-        return hand_at(self.sk, "L", "w", tip, (0.55, 0.0, 0.84), (0.0, -1.0, 0.0), (-0.6, -0.3, -0.75),
+        return hand_at(self.sk, "L", "w", tip, (0.55, 0.0, 0.84), (0.0, -1.0, 0.0), ROD_POLE,
                        hand_shape("loose_fist", 0.9), share=0.04, off=0.020)
 
     def push_hand(self, a: float, away: float = 0.0) -> Hand:
-        """Left fingers on the left side of the cylinder (crane opened ``a``) to swing it shut."""
+        """Left fingers on the left side of the cylinder (crane opened ``a``) to swing it shut: fingers curled
+        against the cylinder (lead review of v2: never an open, splayed palm facing the camera)."""
         m = self.s.markers
         R, _t = crane_frame(self.s, a)
         p = crane_point(self.s, a, m["cyl"] + v3(-m["cyl_r"] - 0.004 - away, 0.006, 0.004))
         return hand_at(self.sk, "L", "w", p, R @ v3(0.15, 0.55, 0.82), R @ v3(1.0, 0.0, -0.1),
-                       (-0.6, -0.35, -0.7), "flat", share=0.80, off=0.010)
+                       (-0.6, -0.35, -0.7), hand_shape("grip", 0.45), share=0.80, off=0.010)
 
 
 #: D-116 follow-up: the eject / load holds sit this much further from the eye (m) than the first cut, so under P's
@@ -135,6 +136,12 @@ DEEP = 0.08
 #: the muzzle-up eject hold (camera-space position before DEEP, pitch deg): lead review of the first cut - the gun and
 #: the rod hand stay in the lower-right two thirds of the frame (top third = the world) and the hand >= 0.30 m away
 UP_P, UP_PITCH = (0.065, 0.31, -0.095), 50.0
+#: the rod hand's elbow direction (camera space): straight down under the hand, so the forearm rises from the bottom
+#: edge instead of cutting a wedge across the lower left (lead review of v2)
+ROD_POLE = (0.05, -0.25, -0.97)
+UP_ROLL = -12.0
+#: the wrist flick that lets the speedloader go (deg about the gun's up axis, through the wrist)
+FLICK_DEG = 14.0
 
 
 def clip_speedloader(kit, s: FPSet, N: int, ev: dict):
@@ -152,8 +159,8 @@ def clip_speedloader(kit, s: FPSet, N: int, ev: dict):
     flick = hold_frame(s.reload_tilt, (-0.006, 0.0, 0.004), yaw=4.0, pitch=2.0, roll=-14.0)
     # muzzle up: eject (D-116 follow-up: high enough that the cylinder and the rod hand stay in frame under P's
     # one-handed hip framing)
-    up = A.weapon_frame(v3(UP_P[0], UP_P[1] + DEEP, UP_P[2]), 8.0, UP_PITCH, -12.0)
-    up_push = A.weapon_frame(v3(UP_P[0], UP_P[1] + DEEP, UP_P[2] - 0.007), 8.0, UP_PITCH - 2.0, -12.0)
+    up = A.weapon_frame(v3(UP_P[0], UP_P[1] + DEEP, UP_P[2]), 8.0, UP_PITCH, UP_ROLL)
+    up_push = A.weapon_frame(v3(UP_P[0], UP_P[1] + DEEP, UP_P[2] - 0.007), 8.0, UP_PITCH - 2.0, UP_ROLL)
     # muzzle down and to the left, in front of the right forearm: the open cylinder faces the eye
     down = A.weapon_frame(v3(0.050, 0.30 + DEEP, -0.105), 50.0, -38.0, 18.0)
     load = A.weapon_frame(v3(0.045, 0.30 + DEEP, -0.100), 50.0, -34.0, 20.0)
@@ -163,6 +170,8 @@ def clip_speedloader(kit, s: FPSet, N: int, ev: dict):
     seat = rk.loader_w(1.0)
     rk.fit_loader_hand(load, seat)
     twist = rk.loader_w(1.0, twist=LOADER_TWIST_DEG)
+    held = rk.hand_on(twist)
+    flick_off = held.turned(rzd(-FLICK_DEG), held.wrist).moved(v3(-0.008, -0.012, 0.0))
     keys = [Key(0, hip, kit.support, grip, blade=bl),
             Key(co - 4, tilt, rk.cradle, grip, blade=bl),
             Key(co, flick, rk.cradle, grip, blade=bl, ease="snap"),
@@ -174,7 +183,9 @@ def clip_speedloader(kit, s: FPSet, N: int, ev: dict):
             Key(sl - 4, load, rk.hand_on(pre), grip, blade=bl, arc_l=(-0.06, 0.0, -0.02)),
             Key(sl, load, rk.hand_on(seat), grip, blade=bl, ease="snap"),
             Key(drop - 1, load, rk.hand_on(twist), grip, blade=bl),
-            Key(cc - 6, tilt, rk.push_hand(1.0, 0.045).with_shape(hand_shape("relaxed")), grip, blade=bl,
+            # the loader released with a small wrist flick, the fingers relaxing but still curled
+            Key(drop + 1, load, flick_off.with_shape(hand_shape("grip", 0.35)), grip, blade=bl, ease="snap"),
+            Key(cc - 6, tilt, rk.push_hand(1.0, 0.045).with_shape(hand_shape("loose_fist", 0.6)), grip, blade=bl,
                 arc_l=(-0.04, -0.02, 0.0)),
             Key(cc - 4, tilt, rk.push_hand(1.0, 0.012), grip, blade=bl),
             Key(cc, flick, rk.push_hand(0.0), grip, blade=bl, ease="snap"),
