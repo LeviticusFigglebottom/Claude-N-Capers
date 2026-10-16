@@ -12,6 +12,8 @@ const CASES: Array[Array] = [
 const HEIST_BAGS: Dictionary = {
 	&"glasshouse": [&"loot.jewelry", &"loot.jewelry"],
 	&"night_deposit": [&"loot.cash", &"loot.cash", &"loot.cash_bricks", &"loot.cash_bricks"],
+	&"dockside_burn": [&"loot.cash_bricks", &"loot.cash_bricks", &"loot.weapon_crate", &"loot.weapon_crate"],
+	&"shadow_ledger": [&"loot.ledger_laptop", &"loot.ledger_drives", &"loot.ledger_drives"],
 }
 
 var _out: String = ""

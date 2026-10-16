@@ -129,7 +129,7 @@ func test_loot_lines_keep_the_list_order() -> void:
 		if i > 0:
 			assert_true(int(lines[i]["value"]) < int(lines[i - 1]["value"]), "D-075 order: %s < previous" % names[i])
 	assert_eq(names, ["The Lantern Bearer", "The Salt Orchard", "Widow in Blue", "The Tidewater Saint",
-			"Calloway's Study"], "loot names")
+			"A Study"], "loot names")
 
 
 func test_payday_names_the_job() -> void:

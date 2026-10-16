@@ -143,7 +143,7 @@ ui.tip.heist_shadow_ledger.alarm,One alarm and the job is over.
 ui.tip.heist_dockside_burn.title,Burn the product
 ui.tip.heist_dockside_burn.thermite,Carry the thermite bag to the product and place it on the burn point.
 ui.tip.heist_dockside_burn.shutters,"It burns 30 s, then fire shutters close the room. Don't be inside."
-ui.tip.heist_dockside_burn.containers,"Containers open with a saw on the padlock. The rifles are behind the Co-op's brass padlocks, not the customs seals."
+ui.tip.heist_dockside_burn.containers,Pick or saw the lock to open a container. The rifles are behind the Co-op's brass padlocks; a customs seal alone means empty.
 ui.tip.heist_gallery_night.title,The gala clock
 ui.tip.heist_gallery_night.list,Only the listed canvases count. The Lantern Bearer is a must.
 ui.tip.heist_gallery_night.cut,"Cut a canvas from the stretcher, then carry it rolled."
@@ -399,7 +399,7 @@ enemy.commander_brandt,Commander Brandt
 enemy.aegis,Aegis Trooper
 voice.vo.mercer.heist_start_casing_1,"Alright, you're in. Keep the masks in your pockets and look like you belong."
 voice.vo.mercer.heist_start_casing_2,"Take your time. Count the cameras, count the guards, and try to look bored."
-voice.vo.mercer.crew_masked_1,Mask's on. No more pretending to shop.
+voice.vo.mercer.crew_masked_1,Mask's on. No more pretending you belong here.
 voice.vo.mercer.crew_masked_2,"Faces covered. From here on, it counts."
 voice.vo.mercer.pager_started_1,His pager's going. Somebody pick that up and be convincing.
 voice.vo.mercer.pager_started_2,Pager. Answer it before his boss gets curious.
@@ -1639,12 +1639,12 @@ item.loot.ledger_drives.desc,A bay of encrypted drives pulled from the array. Wo
 item.loot.ledger_books.name,Ledger Books
 item.loot.ledger_books.desc,"The printed master books, bound in leather. Every shell company, in the partners' own hand."
 item.loot.painting.name,Painting
-item.loot.painting.desc,"A framed canvas, carefully cut and rolled. Handle it like it's worth more than you."
+item.loot.painting.desc,A canvas cut from its frame and rolled. Handle it like it's worth more than you.
 heist.shadow_ledger.name,Shadow Ledger
 heist.shadow_ledger.subtitle,Kessler & Moor
 heist.shadow_ledger.brief,A law firm on top of Calder Tower keeps the books for people who don't exist. Take them without anyone ever knowing.
 heist.shadow_ledger.briefing,"Kessler & Moor, a private-wealth and law practice, holds the top two floors of Calder Tower on Calder Street. Its off-book client ledger exists three times: an encrypted drive array in the server cage, the partners' laptop with the decryption key, and the printed master books in Kessler's time-locked study safe. The crew starts on the roof under a climber's line from Arden Tower. Find the laptop, get into the server room, open the cage and release the drive bays, then get the laptop and two drive bags out. This one is stealth only: one alarm and the firm wipes the array, and the job is over."
-objective.shadow_ledger.casing,Case the roof and the service level
+objective.shadow_ledger.casing,Case the building before you mask up
 objective.shadow_ledger.laptop,Find and bag the ledger laptop
 objective.shadow_ledger.keycard,Get a keycard for the server room
 objective.shadow_ledger.server_door,Get into the server room
@@ -1653,13 +1653,13 @@ objective.shadow_ledger.cage,Open the server cage
 objective.shadow_ledger.hack,Release the drive bays
 objective.shadow_ledger.drives,Bag at least two drive bags
 objective.shadow_ledger.secure,Secure the laptop and two drive bags ({drives_secured}/{drives} drives)
-objective.shadow_ledger.study_safe,Open the study safe and bag the books
+objective.shadow_ledger.study_safe,"Open the study safe: a keycard, then the time lock"
 objective.shadow_ledger.paintings,Take the paintings
 objective.shadow_ledger.archive_safe,Open the archive safe
 objective.shadow_ledger.escape,Get to the escape
 voice.vo.accountant.briefing_shadow_ledger_1,Kessler and Moor wash money for people who would rather it had never been dirty. They keep a ledger of who owns what. I would like to own it.
 voice.vo.accountant.briefing_shadow_ledger_2,The drives hold the data and the partners' laptop holds the key. Bring me the laptop and two drives. The printed books are a courtesy I would appreciate.
-voice.vo.accountant.briefing_shadow_ledger_3,"A ledger is only worth something if nobody knows it was read. No alarm. If they notice, they wipe it, and I have paid you for nothing."
+voice.vo.accountant.briefing_shadow_ledger_3,"A ledger is only worth something if nobody knows it was read. No alarm. If they notice, they wipe it, and nobody is paid for an empty drive."
 voice.vo.mercer.briefing_shadow_ledger_1,"Forty-two floors, heavy rain, and you start on the roof. One alarm and we walk away with nothing, so take it slow and don't let anyone reach a radio."
 ui.briefing.escape.zipline,Zipline
 ui.briefing.escape.service_lift,Service lift
@@ -1695,8 +1695,8 @@ ui.briefing.sec.event.dockside_burn.police_tipped,police tipped off (no response
 ui.briefing.sec.event.dockside_burn.cartel_reinforcements,Co-op reinforcements at the gate
 ui.briefing.sec.event.dockside_burn.fog_lifts,fog lifts (viaduct sniper)
 ui.briefing.sec.event.dockside_burn.harbor_unit,harbour police boat (trawler sniper)
-ui.briefing.sec.event.gallery_night.insurance_inspection,insurance inspectors with escorts (2 guards)
-ui.briefing.sec.event.gallery_night.vaultline_early,Vaultline crew arrives early for The Lantern Bearer (2 guards)
+ui.briefing.sec.event.gallery_night.insurance_inspection,insurance inspectors with escorts at the dock (2 guards)
+ui.briefing.sec.event.gallery_night.vaultline_early,Vaultline crew arrives early (2 guards)
 ui.briefing.sec.event.gallery_night.argus_upgrade,Argus upgrade (every frame sensor live)
 ui.briefing.sec.event.gallery_night.late_paperwork,the admin PA working late (1 civilian by the office)
 ui.briefing.sec.event.glasshouse.nervous_manager,the manager staying late (1 civilian who runs for the alarm)
@@ -2606,20 +2606,20 @@ voice.vo.mercer.dockside_burn_breach,"You're inside. The product's in one of the
 voice.vo.mercer.dockside_burn_product_found,"There's the product. Bag what you want, then the thermite goes on the burn point."
 voice.vo.mercer.dockside_burn_thermite_reminder,Nothing burns without the thermite bag. Somebody bring it.
 voice.vo.mercer.dockside_burn_burn_started,Thermite's lit. Stay clear of that room.
-voice.vo.mercer.dockside_burn_burn_done,Shutters coming down in {shutters_in_s} seconds! Get out of that room. Anything left in it burns.
+voice.vo.mercer.dockside_burn_burn_done,"Shutters drop in {shutters_in_s} seconds! Out of that room, now."
 voice.vo.mercer.dockside_burn_strongroom_drill,"Thermal drill's on the strongroom door. It's slow and it will jam. Hold the anteroom."
 voice.vo.mercer.dockside_burn_drill_jam,Drill's jammed. Get back on it.
 voice.vo.mercer.dockside_burn_strongroom_open,"Strongroom's open. Shrink-wrapped cash, pallets of it. Start bagging."
 voice.vo.mercer.dockside_burn_count_cage,"The count-room cage is going. Hold the mezzanine until it opens, then get the cash down by the lift or the stairs."
 voice.vo.mercer.dockside_burn_lift_dead,"Goods lift's dead. The breaker's in the electrical room off the office corridor, or carry the bags down the stairs."
-voice.vo.mercer.dockside_burn_containers_hint,"The rifles are in the containers with the Co-op's brass padlocks. The ones with customs seals are empty."
+voice.vo.mercer.dockside_burn_containers_hint,The rifles are in the containers with the Co-op's brass padlocks. The ones with only a customs seal are empty.
 voice.vo.mercer.dockside_burn_weapons_found,"Rifle crates. They're heavy, so no sprinting. Get them to the ride."
 voice.vo.mercer.dockside_burn_sniper_crane,Sniper in the crane cab across the slip. Stay off the apron.
 voice.vo.mercer.dockside_burn_sniper_roof,Shooter on the Bellweather Ice roof. He's got the lane and the quay.
 voice.vo.mercer.dockside_burn_gangway,The Pier 10 gangway is down. Expect police from the east.
 voice.vo.mercer.dockside_burn_reinforcements,Pickup at the gate. The Co-op's sent four more of its people.
 voice.vo.mercer.dockside_burn_fog_lifts,"Fog's lifting. The viaduct has a shooter's view now, and a launch will be slower finding the pontoon."
-voice.vo.mercer.dockside_burn_required_secured,"That's four bags. Your ride comes once the product's burned. Anything more is a bonus."
+voice.vo.mercer.dockside_burn_required_secured,That's four bags. Anything more is a bonus.
 voice.vo.mercer.dockside_burn_van_eta,Van's {seconds} seconds out. Hold.
 voice.vo.mercer.dockside_burn_boat_eta,Launch is {seconds} seconds out. Hold the quay.
 voice.vo.mercer.dockside_burn_escape,"Ride's here. Bags in, and don't stop to watch the smoke."
@@ -2808,8 +2808,8 @@ ui.options.tab.gameplay,Gameplay
 ui.lobby.dropin_join,Drop In to a Running Heist
 ui.lobby.dropin_join.hint,"Join a crew whose heist has already started (the host may have to accept you)."
 ui.dropin.failed.unreachable,Could not reach the host. Check the address and port.
-item.loot.painting_study.name,Calloway's Study
-item.loot.painting_study.desc,"A charcoal-and-wash study for The Lantern Bearer, smaller and quicker to roll. Collectors pay for the hand, not the size."
+item.loot.painting_study.name,A Study
+item.loot.painting_study.desc,"A lesser study off the Halberd's walls or store racks. Not on the list, but Vance takes it at a fence's price."
 item.finish.gunmetal_blue.name,Gunmetal Blue
 item.finish.gunmetal_blue.desc,Brushed blue-grey on every metal part. The armourer's standard issue.
 item.finish.desert_tan.name,Desert Tan
@@ -3031,7 +3031,7 @@ voice.vo.accountant.shadow_ledger_radio_loot,"Secured. Kessler and Moor are poor
 voice.vo.accountant.shadow_ledger_radio_loot_laptop,The laptop is out. Now the drives have a reader.
 voice.vo.accountant.shadow_ledger_radio_loot_drives,"Another drive. Another page of the ledger, in my hands."
 voice.vo.reyes.dockside_burn_radio_cartel,"Cops are rolling. Whatever's left of the Co-op's boys, you've got both now."
-voice.vo.reyes.dockside_burn_radio_breach,You're in the cold store. Mind the frostbite.
+voice.vo.reyes.dockside_burn_radio_breach,You're inside. Mind the frostbite in the freezers.
 voice.vo.reyes.dockside_burn_radio_product,Found the product. Now let's watch it burn.
 voice.vo.reyes.dockside_burn_radio_burn_new,Get the thermite on that product. I want to smell it from here.
 voice.vo.reyes.dockside_burn_radio_burn,"That's burning. Smoke over Pier 9, just like I said."
@@ -3383,7 +3383,7 @@ voice.vo.mercer.gallery_night_canvas_found_saint,The Tidewater Saint. That one's
 voice.vo.mercer.gallery_night_last_call_soon,Bar's calling last orders. A minute or so before they walk the guests out.
 voice.vo.mercer.gallery_night_last_call,Last call. Guests are heading for the doors. Everything inside is off limits now.
 voice.vo.mercer.gallery_night_lasers_sweep,Beams pair up at the walls; go along the edge.
-voice.vo.mercer.gallery_night_guests_gone,Doors are locked and the gala's over. It's just you and the guards.
+voice.vo.mercer.gallery_night_guests_gone,Doors are locked and the guests are out. Watch for anyone who stayed behind.
 voice.vo.mercer.gallery_night_keycard,That's a keycard. Three readers want one each and you'll only find two. Choose.
 voice.vo.mercer.gallery_night_code_found,That's the Argus code. The server room's on the upper corridor.
 voice.vo.mercer.gallery_night_sensors_warning,That frame's wired. Cut it with the sensors live and the whole building hears it.
@@ -3394,8 +3394,8 @@ voice.vo.mercer.gallery_night_lasers,Lasers across the Treasury. Watch the patte
 voice.vo.mercer.gallery_night_treasury_open,Treasury's open. Mind the grid.
 voice.vo.mercer.gallery_night_art_store_open,Art store's open. Camera in the corner never sleeps.
 voice.vo.mercer.gallery_night_curator_keycard,The curator wears her keycard on her lanyard. You'll have to get close.
-voice.vo.mercer.gallery_night_inspectors,"Insurance inspectors at the loading dock, with escorts. They're heading for the centrepiece."
-voice.vo.mercer.gallery_night_vaultline,Vaultline truck in the Mews. They've come to move The Lantern Bearer. Get to it first.
+voice.vo.mercer.gallery_night_inspectors,"Insurance inspectors at the loading dock, with Halberd escorts. Two more guards on the floor."
+voice.vo.mercer.gallery_night_vaultline,"Vaultline truck in the Mews, early. Two more guards walking the halls."
 voice.vo.mercer.gallery_night_last_pager,That's {answered}. They won't buy another one.
 voice.vo.mercer.gallery_night_lockdown,"That's Argus. Shutters are coming down, the vault's sealed."
 voice.vo.mercer.gallery_night_shutters_up,Lockdown's lifted. Shutters are up and the vault reader's open.
@@ -3425,14 +3425,14 @@ voice.vo.vance.gallery_night_radio_vault_drill_new,"Drill the vault door. Loudly
 voice.vo.vance.gallery_night_radio_vault_drill,The vault is through. Take what's on the racks.
 voice.vo.vance.gallery_night_radio_escape_wait_new,Your ride is coming. Hold the room and keep the canvases dry.
 voice.vo.vance.gallery_night_radio_escape_wait,Your ride has arrived. Do stop shooting and start leaving.
-voice.vo.vance.gallery_night_radio_escape_new,The Halberd has had enough of you. Find your way out.
+voice.vo.vance.gallery_night_radio_escape_new,"That's what we came for, darling. Find your way out."
 voice.vo.vance.gallery_night_radio_escape_available,"The exit is yours. Rolled canvases first, then you."
 voice.vo.vance.gallery_night_radio_escape,"Your car is waiting, darling. Don't crease anything."
 voice.vo.vance.gallery_night_radio_loot_lantern_bearer,The Lantern Bearer is mine. Ours. Mostly mine.
 voice.vo.vance.gallery_night_radio_loot_study,"A study. Not on the list, but I never refuse a sketch."
 voice.vo.vance.gallery_night_radio_loot_salt_orchard,The Salt Orchard. Somebody in Geneva just stopped breathing.
 voice.vo.vance.gallery_night_radio_loot_widow_in_blue,Widow in Blue. She's been waiting for a better wall.
-voice.vo.vance.gallery_night_radio_loot_tidewater_saint,"The Tidewater Saint, in a duffel bag. Blessed are the quick."
+voice.vo.vance.gallery_night_radio_loot_tidewater_saint,"The Tidewater Saint, rolled and away. Blessed are the quick."
 voice.vo.vance.gallery_night_radio_loot,Another canvas off the Halberd's walls. Lovely.
 ui.lobby.host_closed,The host ended the heist. You are back in the crew lobby.
 ui.hud.device.drill,DRILL
