@@ -17,6 +17,7 @@ Locomotion clips plant the stance foot exactly: at ``speed`` m/s (for 1.78 m; mu
 """
 
 import _anim as anim
+import _anim_assault as assault
 import _anim_d304 as d304
 import _anim_humanoid as lib
 import _anim_p5 as p5
@@ -177,6 +178,22 @@ CLIPS = {
     # advance speed (1.8 m/s on its 1.88 m body = 1.7 m/s native), a step every wrecker_step_interval_s (0.55 s)
     "downed_crawl": {"frames": 60, "loop": True, "speed": 0.3, "priority": 6},
     "dozer_walk_heavy": {"frames": 33, "loop": True, "speed": 1.7, "priority": 6, "events": {"step_r": 0, "step_l": 16}},
+    # PO6-17 assault events (priority 7, _anim_assault): helicopter rappel squad (rope line, root plane and land:
+    # SOURCE `rappel_assault`; rappel_descend moves the root down at `speed`), heli door sniper (kneel on the cabin
+    # floor at the door, SOURCE `heli_door_sill`), turret van crew (`van_exit_step`, root motion `curve.van_exit`),
+    # breach charges (`breach_charge`, `curve.breach_standback`). rappel_land / van_exit / breach_place end exactly on
+    # idle_alert frame 0, breach_standback on crouch_idle frame 0.
+    "rappel_hang": {"frames": 40, "loop": True, "speed": 0.0, "priority": 7},
+    "rappel_descend": {"frames": 20, "loop": True, "speed": 2.5, "priority": 7, "axis": "down"},
+    "rappel_land": {"frames": 30, "loop": False, "speed": 0.0, "priority": 7, "events": {"touch": 6}},
+    "heli_door_idle": {"frames": 90, "loop": True, "speed": 0.0, "priority": 7},
+    "heli_door_aim": {"frames": 90, "loop": True, "speed": 0.0, "priority": 7},
+    "heli_door_fire": {"frames": 6, "loop": False, "speed": 0.0, "priority": 7, "events": {"shot": 0}},
+    "van_exit": {"frames": 36, "loop": False, "speed": 0.0, "priority": 7, "events": {"step_r": 16, "step_l": 28},
+                 "root_motion": "curve.van_exit"},
+    "breach_place": {"frames": 45, "loop": False, "speed": 0.0, "priority": 7, "events": {"place": 28}},
+    "breach_standback": {"frames": 30, "loop": False, "speed": 0.0, "priority": 7,
+                         "root_motion": "curve.breach_standback"},
 }
 LOOPS = sorted(name for name, row in CLIPS.items() if row["loop"])
 P1 = sorted(name for name, row in CLIPS.items() if row["priority"] == 1)
@@ -209,7 +226,7 @@ def build(ctx) -> None:
     keep = {}
     for name in sorted(CLIPS):
         baked = anim.bake(solver, clips[name])
-        if name in KEEP or name in d304.KEEP:
+        if name in KEEP or name in d304.KEEP or name in assault.KEEP:
             keep[name] = baked
         anim.write_action(arm, baked, export_name(name))
         c = baked.checks
@@ -223,6 +240,8 @@ def build(ctx) -> None:
             row += f" contact_slide={cs:.3f}mm/f"
         if name in d304.NAMES:
             row += d304.check_row(sk, CLIPS, name, clips[name], baked, keep)
+        if name in assault.NAMES:
+            row += assault.check_row(sk, CLIPS, name, baked, keep)
         report.append(row)
         print(f"[anim] {row}")
     for pb in arm.pose.bones:
@@ -252,6 +271,8 @@ def build(ctx) -> None:
     _npc_source(ctx, sk, keep)
     for key, text in d304.source_notes(sk, CLIPS, clips, keep).items():
         ctx.source_extra[key] = text
+    for key, text in assault.source_notes(sk, CLIPS, keep).items():
+        ctx.source_extra[key] = text
     for name in sorted(CLIPS):
         row = CLIPS[name]
         extra = f"{row['frames']}f loop={row['loop']} speed_mps={row['speed']}"
@@ -263,7 +284,7 @@ def build(ctx) -> None:
             extra += f" travel_axis={row['axis']}"
         if "bpm" in row:
             extra += f" bpm={row['bpm']} beats={row['beats']} beat_frames={row['frames'] // row['beats']}"
-        extra += d304.row_extra(row)
+        extra += d304.row_extra(row) + assault.row_extra(row)
         ctx.source_extra[f"clip.{name}"] = extra
     for i, row in enumerate(report):
         ctx.source_extra[f"check.{i:02d}"] = row
@@ -297,6 +318,9 @@ PROP_DOCS = {
              "standing on the bar for the whole of bartender_pour",
     "cash": "banknote stack 0.156 x 0.015 x 0.066 m (+X = the long edge, +Y = the face normal, Z = the short edge): origin "
             "at its centre; lying in the LEFT palm (palm on the -Y face, fingers along +X) in teller_count",
+    "cigarette": "cigarette r {cig_r} m, {cig_len} m long (filter {cig_filter} m): origin at the filter (mouth) end, +Y = "
+                 "toward the ember; between the right index and middle fingers (the filter out on the palm side), "
+                 "its filter tip between the lips at each drag in smoke (D-115)",
 }
 
 
@@ -306,7 +330,8 @@ def _npc_source(ctx, sk, keep: dict) -> None:
 
     for prop, doc in PROP_DOCS.items():
         basis, origin = lib.prop_in_socket_godot(sk, prop)
-        doc = doc.format(length=lib.MOP_LENGTH, r=lib.MOP_GRIP_R, l=lib.MOP_GRIP_L)
+        doc = doc.format(length=lib.MOP_LENGTH, r=lib.MOP_GRIP_R, l=lib.MOP_GRIP_L, cig_r=lib.CIG_R, cig_len=lib.CIG_LEN,
+                         cig_filter=lib.CIG_FILTER)
         hand = "HandL" if lib.GRIPS[prop]["sfx"] == "L" else "HandR"
         ctx.source_extra[f"{prop}_grip"] = f"{_xform(basis, origin)} relative to {hand}/Socket; {doc}"
     ctx.source_extra["npc_seat"] = (

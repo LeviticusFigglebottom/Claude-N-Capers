@@ -1,0 +1,12 @@
+asset: char_hand_phone
+script: tools/blender/characters/char_hand_props.py
+params: {"prop": "phone"}
+seed: 2269338062  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category characters --asset char_hand_phone
+edit policy: generated file, never edit by hand; change the script and rebuild
+bounds_blender: (-0.0360,-0.0050,-0.0735)..(0.0372,0.0064,0.0735) m (Godot: x, z, -y)
+grip: char_anim_humanoid/SOURCE.txt `phone_grip` (prop frame relative to the hand Socket); scene world/characters/_props/hand_phone.tscn wraps this glb at that transform
+prop: phone
+tri_budget: 3000
+tris: 304

@@ -1,0 +1,77 @@
+{
+  "book": {
+    "asset": "char_hand_book",
+    "clips": [
+      "sit_bed_read"
+    ],
+    "scene": "res://world/characters/_props/hand_book.tscn",
+    "socket": "HandR"
+  },
+  "bottle": {
+    "asset": "char_hand_bottle",
+    "clips": [
+      "bartender_pour"
+    ],
+    "scene": "res://world/characters/_props/hand_bottle.tscn",
+    "socket": "HandR"
+  },
+  "cash": {
+    "asset": "char_hand_cash",
+    "clips": [
+      "teller_count"
+    ],
+    "scene": "res://world/characters/_props/hand_cash.tscn",
+    "socket": "HandL"
+  },
+  "cigarette": {
+    "asset": "char_hand_cigarette",
+    "clips": [
+      "smoke"
+    ],
+    "scene": "res://world/characters/_props/hand_cigarette.tscn",
+    "socket": "HandR"
+  },
+  "glass": {
+    "asset": "char_hand_glass",
+    "clips": [
+      "bartender_pour"
+    ],
+    "scene": "res://world/characters/_props/hand_glass.tscn",
+    "socket": "HandL"
+  },
+  "mop": {
+    "asset": "char_hand_mop",
+    "clips": [
+      "mop"
+    ],
+    "scene": "res://world/characters/_props/hand_mop.tscn",
+    "socket": "HandR"
+  },
+  "mug": {
+    "asset": "char_hand_mug",
+    "clips": [
+      "mug_idle",
+      "mug_carry_walk"
+    ],
+    "scene": "res://world/characters/_props/hand_mug.tscn",
+    "socket": "HandR"
+  },
+  "phone": {
+    "asset": "char_hand_phone",
+    "clips": [
+      "phone_call",
+      "phone_seated",
+      "walk_text"
+    ],
+    "scene": "res://world/characters/_props/hand_phone.tscn",
+    "socket": "HandR"
+  },
+  "rag": {
+    "asset": "char_hand_rag",
+    "clips": [
+      "bartender_wipe"
+    ],
+    "scene": "res://world/characters/_props/hand_rag.tscn",
+    "socket": "HandR"
+  }
+}

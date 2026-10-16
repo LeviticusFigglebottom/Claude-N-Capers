@@ -8,7 +8,8 @@
 ## radio (and the pager roles, incl. club_bouncer); and the liveries: the gallery and armoured-car
 ## companies are neither Halden, Northgate nor police, the curator is the only pale suit at the gala
 ## and the Ostrander bank officers (D-075) wear the bank lanyard over grey. Regenerate with
-## tools/blender/characters/assemble.sh.
+## tools/blender/characters/assemble.sh. D-115: the same index casts the four pre-P5 heists, and every
+## role in their design roster tables (docs/design/heists/<heist>.md) must have a loadable character.
 extends TestCase
 
 const Spec: GDScript = preload("res://world/characters/_tools/character_spec.gd")
@@ -49,6 +50,33 @@ const ROLES: Dictionary = {
 	"ostrander_federal": ["bank_teller", "bank_manager", "bank_officer", "bank_guard", "bank_customer"],
 	"rolling_thunder": ["armored_car_crew", "convoy_escort"],
 	"afterhours": ["club_bouncer", "club_bartender", "club_dj", "club_patron"],
+}
+## D-115: the pre-P5 heists whose roster is read from docs/design/heists/<heist>.md, section
+## "### ... roster (spawn data)": every spawn tag in its "Spawn tags" column is a cast role.
+const DESIGN_HEISTS: Array[String] = ["glasshouse", "night_deposit", "dockside_burn", "shadow_ledger"]
+const ROSTER_HEADING: String = "roster (spawn data)"
+## Roles a roster row names without a spawn-tag token: the CAMERA_OPERATOR spawn is tagged
+## security_operator (<heist>_layout.gd CameraOperatorSeat) and the police row lists director spawn
+## points, cast as the role `police`.
+const OPERATOR_ROLE: String = "security_operator"
+const POLICE_ROLE: String = "police"
+## Roles the design names outside the roster table (kept explicit, pointing at the doc section).
+const EXTRA_ROLES: Dictionary = {
+	# glasshouse.md §Variants `guard_post` (post_floor, rover_boh, rover_upper, alley_smoker) and
+	# §Sightlines "P2 camera operator" (spawn tags from glasshouse_layout.gd).
+	"glasshouse": ["guard_post_floor", "guard_rover_boh", "guard_rover_upper", "guard_alley_smoker", "security_operator"],
+	# night_deposit.md §Rare events `armored_car_early`: 2 extra guards (night_deposit_mission.gd tag).
+	"night_deposit": ["guard_armored_car"],
+}
+## The roster spawn tags at D-115 (used only when docs/ is not in the checkout).
+const ROSTER_FALLBACK: Dictionary = {
+	"glasshouse": ["civ_staff_counter", "civ_staff_floor", "civ_staff_workshop", "civ_staff_admin", "civ_staff_manager",
+		"civ_customer"],
+	"night_deposit": ["guard_hall", "guard_basement", "guard_rover", "security_operator", "civ_cleaner", "civ_manager"],
+	"dockside_burn": ["cartel_gate", "cartel_yard_w", "cartel_yard_e", "cartel_hall", "cartel_platform", "cartel_dock",
+		"cartel_quay", "cartel_reinf", "civ_worker", "police"],
+	"shadow_ledger": ["guard_reception", "guard_rover_l41", "guard_rover_l42", "guard_stair", "guard_roof",
+		"security_operator", "civ_cleaner_l41", "civ_cleaner_l42", "civ_it", "civ_partner", "civ_kessler"],
 }
 ## Minimum ids per role where the brief asks for several.
 const MIN_COUNT: Dictionary = {
@@ -220,6 +248,84 @@ func test_cast_index_covers_every_heist_and_role() -> void:
 		for role: String in ROLES[heist]:
 			var ids: Array = _role_ids(heist, role)
 			assert_true(ids.size() >= int(MIN_COUNT.get(role, 1)), "%s/%s: %d id(s)" % [heist, role, ids.size()])
+
+
+## Roles of one heist's design roster table (spawn tags), or ROSTER_FALLBACK when the doc is absent.
+func _design_roles(heist: String) -> Array[String]:
+	var out: Array[String] = []
+	var doc: String = ProjectSettings.globalize_path("res://").path_join("../docs/design/heists/%s.md" % heist)
+	if not FileAccess.file_exists(doc):
+		out.assign(ROSTER_FALLBACK[heist])
+		return out
+	var lines: PackedStringArray = FileAccess.get_file_as_string(doc).split("\n")
+	var start: int = -1
+	for i: int in range(lines.size()):
+		if lines[i].begins_with("### ") and lines[i].contains(ROSTER_HEADING):
+			start = i + 1
+			break
+	assert_true(start >= 0, "%s.md: has a '### ... %s' section" % [heist, ROSTER_HEADING])
+	if start < 0:
+		return out
+	var tick: RegEx = RegEx.create_from_string("`([a-z0-9_]+)`")
+	var col: int = -1
+	var in_table: bool = false
+	for i: int in range(start, lines.size()):
+		var line: String = lines[i].strip_edges()
+		if not line.begins_with("|"):
+			if in_table:
+				break
+			continue
+		in_table = true
+		var cells: PackedStringArray = line.split("|")
+		if col < 0:
+			for c: int in range(cells.size()):
+				if cells[c].strip_edges() == "Spawn tags":
+					col = c
+			continue
+		if col >= cells.size() or cells[col].strip_edges().begins_with("---"):
+			continue
+		var cell: String = cells[col]
+		var found: Array[String] = []
+		if cell.contains("CAMERA_OPERATOR"):
+			found.append(OPERATOR_ROLE)
+		elif cells[1].strip_edges().begins_with("Police"):
+			found.append(POLICE_ROLE)
+		else:
+			for m: RegExMatch in tick.search_all(cell):
+				found.append(m.get_string(1))
+		assert_false(found.is_empty(), "%s.md roster row has a spawn tag: %s" % [heist, line.left(60)])
+		for r: String in found:
+			if not out.has(r):
+				out.append(r)
+	assert_true(col >= 0, "%s.md roster table has a 'Spawn tags' column" % heist)
+	return out
+
+
+## D-115: every role of the four pre-P5 heist designs (the roster table's spawn tags plus
+## EXTRA_ROLES) is cast in p5_cast.json with >= 1 id that is in characters.json and whose scene loads.
+func test_design_rosters_have_a_cast() -> void:
+	var by_id: Dictionary = {}
+	for asset: String in _index:
+		by_id[String((_index[asset] as Dictionary)["id"])] = _index[asset]
+	var loaded: Dictionary = {}
+	for heist: String in DESIGN_HEISTS:
+		var roles: Array[String] = _design_roles(heist)
+		for r: Variant in EXTRA_ROLES.get(heist, []) as Array:
+			if not roles.has(String(r)):
+				roles.append(String(r))
+		assert_true(roles.size() >= 6, "%s: design roster parsed (%d roles)" % [heist, roles.size()])
+		for role: String in roles:
+			var ids: Array = _role_ids(heist, role)
+			assert_true(ids.size() >= 1, "%s/%s: cast in p5_cast.json" % [heist, role])
+			for cid: Variant in ids:
+				var id: String = String(cid)
+				assert_true(by_id.has(id), "%s/%s: %s in characters.json" % [heist, role, id])
+				if not by_id.has(id):
+					continue
+				if not loaded.has(id):
+					var scene: String = String((by_id[id] as Dictionary)["scene"])
+					loaded[id] = ResourceLoader.exists(scene) and load(scene) is PackedScene
+				assert_true(bool(loaded[id]), "%s/%s: %s scene loads" % [heist, role, id])
 
 
 func test_cast_index_points_at_existing_scenes() -> void:

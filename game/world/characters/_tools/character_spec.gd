@@ -13,10 +13,13 @@ const ANIM_LIBRARY_PATH: String = "res://world/characters/anim_humanoid.res"
 const ANIM_LIBRARY_NAME: StringName = &"humanoid"
 const INDEX_PATH: String = "res://world/characters/characters.json"
 
-## Asset folders `char_<x>` that are NOT characters: animation source, first-person arms, masks
+## Asset folders `char_<x>` that are NOT characters: animation source, first-person arms, masks,
+## the D-115 hand props (`char_hand_<prop>`, scenes world/characters/_props/hand_<prop>.tscn)
 ## and the test bodies. Everything else under assets/characters/ named `char_<id>` whose
 ## `char_<id>.glb` contains a Skeleton3D is assembled into world/characters/<id>/<id>.tscn.
-const EXCLUDE_PREFIXES: Array[String] = ["char_anim_", "char_arms_", "char_mask_", "char_body_base"]
+const EXCLUDE_PREFIXES: Array[String] = [
+	"char_anim_", "char_arms_", "char_mask_", "char_body_base", "char_hand_",
+]
 ## Test fixtures assembled anyway (asset id -> scene path), flagged `"test": true` in the index.
 const TEST_SCENES: Dictionary = {
 	"char_body_base": "res://world/characters/_test/body_base.tscn",

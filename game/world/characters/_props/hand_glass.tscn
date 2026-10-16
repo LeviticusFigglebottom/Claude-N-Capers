@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/characters/char_hand_glass/char_hand_glass.glb" id="1_glb"]
+
+[node name="HandGlass" type="Node3D"]
+metadata/prop = "glass"
+metadata/socket = "HandL"
+metadata/clips = PackedStringArray("bartender_pour")
+
+[node name="Model" parent="." instance=ExtResource("1_glb")]
+transform = Transform3D(1, 0, 0, 0, 0.9511, 0.309, 0, -0.309, 0.9511, 0.027, -0.0509, 0.0375)
