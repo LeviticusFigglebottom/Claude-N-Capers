@@ -3,19 +3,23 @@
 ## fix prompt can be checked against the scope ring (B moves text out of LocalHudModel.scope_ring). Real input for
 ## mask, swap and aim (PInputDriver); the drill placement / jam is a harness shortcut. Prints the model fields.
 ##   xvfb-run -a -s "-screen 0 1280x720x24" /opt/godot/godot --path game --resolution 1280x720 --audio-driver Dummy \
-##     res://tests/p/_review/scope_hud_capture.tscn -- --out=/abs/dir
+##     res://tests/p/_review/scope_hud_capture.tscn -- --out=/abs/dir [--dist=1.6]
 ## Owner: ENV P.
 extends Node
 
 const HUD_SCENE: String = "res://content/ui/hud/hud.tscn"
 
 var _out: String = "user://scope_hud_capture"
+## Stand-off from the safe (m): inside the drill's interact range the HUD shows the fix prompt.
+var _dist: float = 1.6
 
 
 func _ready() -> void:
 	for a: String in OS.get_cmdline_user_args():
 		if a.begins_with("--out="):
 			_out = a.trim_prefix("--out=")
+		elif a.begins_with("--dist="):
+			_dist = a.trim_prefix("--dist=").to_float()
 	DirAccess.make_dir_recursive_absolute(_out)
 	_run.call_deferred()
 
@@ -63,7 +67,7 @@ func _run() -> void:
 		get_tree().quit(1)
 		return
 	dp.runner.place(0, dp.effective_duration())
-	rt.teleport_crew(0, Transform3D(Basis.IDENTITY, safe.global_transform * Vector3(0, 0.05, -3.5)))
+	rt.teleport_crew(0, Transform3D(Basis.IDENTITY, safe.global_transform * Vector3(0, 0.05, -_dist)))
 	await _ticks(30)
 	var pilot: Po5Pilot = Po5Pilot.new(self, c)
 	pilot.quiet = true
