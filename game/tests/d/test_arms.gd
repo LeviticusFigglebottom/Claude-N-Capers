@@ -72,6 +72,10 @@ const REF_WEAPON: Dictionary = {
 	"crossbow": "vise_crossbow", "launcher": "thumper_40", "flamethrower": "furnace_ft", "saw": "rotor_saw",
 	"minigun": "cyclone_rotary", "shotgun_box": "brute_12",
 }
+## D-116: one-handed first-person sets (the left hand waits off-screen except while a reload uses it).
+const ONE_HAND: Array[String] = ["pistol", "revolver"]
+## The viewmodel camera's vertical FOV (FpViewmodel, 16:9) for the off-screen check.
+const VM_FOV_DEG: float = 52.0
 ## Sets without sight alignment in ADS (a raised hold instead).
 const NO_SIGHTS: Array[String] = ["saw", "minigun"]
 ## PO6-09: support finger / thumb skin may sit at most this deep inside the reference gun (ENV P's PFingerClip: 2 mm).
@@ -1069,7 +1073,10 @@ func test_hands_and_sights_on_the_real_models() -> void:
 		var tol: float = 0.04 if set_name in ["saw", "smg"] else 0.03
 		for clip: String in ["idle", "ads_idle"]:
 			var pose: Dictionary = _pose_at("%s_%s" % [set_name, clip])
-			if marks.has("LeftHandIK") and set_name != "bow":
+			if ONE_HAND.has(set_name):
+				assert_true(_off_screen(pose["palm_l"] as Vector3), "%s_%s: one-handed, the left hand off-screen (%s)" % [
+						set_name, clip, pose["palm_l"]])
+			elif marks.has("LeftHandIK") and set_name != "bow":
 				var lhik: Vector3 = (pose["weapon"] as Transform3D) * (marks["LeftHandIK"] as Transform3D).origin
 				var d: float = (pose["palm_l"] as Vector3).distance_to(lhik)
 				assert_true(d < tol, "%s_%s: left palm %.3f m from %s LeftHandIK" % [set_name, clip, d, REF_WEAPON[set_name]])
@@ -1271,6 +1278,13 @@ func _tri_dist(p: Vector3, a: Vector3, b: Vector3, c: Vector3) -> float:
 	return minf(Geometry3D.get_closest_point_to_segment(p, a, b).distance_to(p),
 		minf(Geometry3D.get_closest_point_to_segment(p, b, c).distance_to(p),
 			Geometry3D.get_closest_point_to_segment(p, c, a).distance_to(p)))
+
+
+## True when the skeleton-space (camera) point `p` is outside the viewmodel camera's view (behind it or past an edge).
+func _off_screen(p: Vector3) -> bool:
+	var fwd: float = -p.z
+	var th: float = tan(deg_to_rad(VM_FOV_DEG * 0.5))
+	return fwd < 0.02 or absf(p.y) > fwd * th or absf(p.x) > fwd * th * 16.0 / 9.0
 
 
 ## True when `p` lies inside the closed convex polygon `hull` by more than `tol`.

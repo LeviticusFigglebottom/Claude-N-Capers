@@ -111,6 +111,12 @@
 			"test": false
 		},
 		{
+			"asset": "char_civilian_clerk",
+			"id": "civilian_clerk",
+			"scene": "res://world/characters/civilian_clerk/civilian_clerk.tscn",
+			"test": false
+		},
+		{
 			"asset": "char_civilian_customer_a",
 			"id": "civilian_customer_a",
 			"scene": "res://world/characters/civilian_customer_a/civilian_customer_a.tscn",
@@ -135,9 +141,21 @@
 			"test": false
 		},
 		{
+			"asset": "char_civilian_manager_vossberg",
+			"id": "civilian_manager_vossberg",
+			"scene": "res://world/characters/civilian_manager_vossberg/civilian_manager_vossberg.tscn",
+			"test": false
+		},
+		{
 			"asset": "char_civilian_sales",
 			"id": "civilian_sales",
 			"scene": "res://world/characters/civilian_sales/civilian_sales.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_civilian_sales_b",
+			"id": "civilian_sales_b",
+			"scene": "res://world/characters/civilian_sales_b/civilian_sales_b.tscn",
 			"test": false
 		},
 		{
@@ -288,6 +306,24 @@
 			"asset": "char_crew_wren",
 			"id": "crew_wren",
 			"scene": "res://world/characters/crew_wren/crew_wren.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_dock_packer",
+			"id": "dock_packer",
+			"scene": "res://world/characters/dock_packer/dock_packer.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_dock_worker",
+			"id": "dock_worker",
+			"scene": "res://world/characters/dock_worker/dock_worker.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_dock_worker_b",
+			"id": "dock_worker_b",
+			"scene": "res://world/characters/dock_worker_b/dock_worker_b.tscn",
 			"test": false
 		},
 		{

@@ -1025,7 +1025,7 @@ the single service stair). By design.
 `id gallery_night`, display "Gallery Night", contact `contact.vance`, mode STEALTH_OR_LOUD,
 base_payout **$105,000** (ENV B's placeholder, accepted), loot `[loot.painting_lantern_bearer,
 loot.painting_salt_orchard, loot.painting_widow_in_blue, loot.painting_tidewater_saint,
-loot.painting_study]` (`loot.painting_study` new, approved D-075, ENV B adds it, QC-57), escape_options `[van]`,
+loot.painting_study]` (`loot.painting_study` new, approved D-075, ENV B adds it, QC-57), escape_options `[van, limo]` (D-117),
 music_track `gallery_night`, objectives `[casing, find_canvases, keycard, server_code, hack, treasury,
 art_store, centrepiece, canvases, secure, extras, lockers, curator_safe, lockdown, server_door,
 vault_drill, escape_wait, escape]`, `start_mode` `&"casing"`, preplanning as above. Map

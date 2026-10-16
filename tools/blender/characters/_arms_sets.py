@@ -54,6 +54,13 @@ class FPSet:
     pole_l: tuple = (-0.85, -0.2, -0.5)              # elbow directions of the two-handed hold (hip)
     pole_l_ads: tuple = (-0.5, -0.15, -0.85)         # ... and in ADS
     pole_r_ads: tuple | None = None                  # right elbow in ADS (None = pole_r)
+    ads_sh: tuple = (0.0, 0.0, 0.0)                  # extra shoulder offset in ADS (camera space, both shoulders)
+    grip_adjust: tuple = (0.0, 0.0)                  # D-116 one-handed: right hand re-seated on the grip: (twist
+                                                     # about the grip axis, + = wrist to the gun's right; cock about
+                                                     # weapon X, + = wrist down), deg, pivot on the grip
+    grip_thumb: tuple = (4.0, 8.0, 6.0, -4.0)        # D-116 one-handed right thumb: flex cmc / mcp / ip, opp (deg)
+    one_hand: bool = False                           # D-116: one-handed FP hold, the left hand off-screen low except
+                                                     # while a reload uses it
     pole_r: tuple = (0.75, -0.2, -0.65)
     ads_hold: tuple | None = None                    # akimbo: an ADS hold instead of sight alignment
 
@@ -85,16 +92,23 @@ PISTOL = FPSet(
     markers={"left_ik": v3(-0.025, 0.0115, -0.020), "aim": v3(0.0, -0.030, 0.0665),
              "magwell": v3(0.0, -0.0227, -0.070), "magwell_axis": rxd(-_P9_RAKE) @ v3(0.0, 0.0, 1.0),
              "slide_rear": v3(0.0, -0.030, 0.050)},
-    hip=((0.105, 0.36, -0.175), 5.0, 2.0, -4.0),
-    # Isosceles pistol ADS (ENV D, PO feedback): shoulders ~0.23 m below and ~0.05 m behind the eye (was 0.37 m
-    # below), so the arms extend almost straight from the lower corners to a pistol 0.42 m out instead of
-    # rising as two vertical forearm columns. IK reach 0 mm in every clip.
-    ads_dist=0.42, sh=(0.0, 0.06, 0.04),
-    pole_l=(-0.22, -0.25, -0.94), pole_l_ads=(-0.6, -0.35, -0.72), pole_r=(0.22, -0.25, -0.94),
-    pole_r_ads=(0.6, -0.35, -0.72),  # PO6-11 (ENV P): ADS elbows out and down, the sleeves leave the lower centre
+    # D-116 (PO, FNV-style): ONE-HANDED in first person. Hip: the gun in the lower-right third
+    # (grip ~x68 %/y96 % 0.35 m out, muzzle ~x58 %/y61 % at the 52 deg viewmodel FOV; refs
+    # po_shots/2026-10-15_ref_pistol_*), yawed 12 deg toward the centre. ADS: a close pistol (0.22 m), the right
+    # shoulder brought in under the eye so the firing hand's knuckles fill the bottom centre and only the cuff and a
+    # short sleeve show below it. The left hand waits off-screen and comes up only to reload.
+    hip=((0.102, 0.367, -0.107), 12.0, 2.0, -4.0), one_hand=True,
+    # lead (P option b): the hand re-seated on the grip, wrist behind / under it and cocked down, so the eye sees the
+    # back of the hand and the thumb along the frame; the gun does not move
+    grip_adjust=(-28.0, 12.0), grip_thumb=(10.0, 20.0, 15.0, 30.0),
+    ads_dist=0.22, sh=(0.0, 0.06, 0.04), ads_sh=(-0.15, -0.05, -0.20),  # P: elbow straight under the wrist
+    pole_l=(-0.22, -0.25, -0.94), pole_l_ads=(-0.22, -0.25, -0.94), pole_r=(0.22, -0.25, -0.94),
+    pole_r_ads=(0.0, -0.1, -1.0),
     sprint=((0.13, 0.30, -0.15), 10.0, -16.0, -26.0),
-    lowered=((0.16, 0.20, -0.46), 10.0, -55.0, -30.0),
-    reload_tilt=((0.07, 0.36, -0.16), 16.0, 22.0, 30.0),
+    # D-116 (lead): the gun never rolls its grip toward the camera; the mag change happens in frame, the left hand
+    # coming in from below
+    lowered=((0.14, 0.22, -0.42), 10.0, -35.0, -15.0),
+    reload_tilt=((0.05, 0.33, -0.10), 8.0, 10.0, -20.0),
     support="pistol", blade=6.0, blade_ads=0.0,
     recoil={"back": 0.030, "up": 0.012, "pitch": 9.0, "roll": 1.5, "yaw": 0.6},
     recoil_ads={"back": 0.020, "up": 0.006, "pitch": 5.0, "roll": 0.8, "yaw": 0.3},
@@ -389,12 +403,20 @@ REVOLVER = FPSet(
              "cyl": v3(0.0, 0.032, 0.0478), "cyl_len": 0.044, "cyl_r": 0.021,
              "hinge": v3(-0.006, 0.032, 0.0288), "rod_tip": v3(0.0, 0.086, 0.0478),
              "loader": v3(0.0, 0.0, 0.0478)},
-    hip=((0.105, 0.36, -0.175), 5.0, 2.0, -4.0),
-    ads_dist=0.42, sh=(0.0, 0.06, 0.04),          # isosceles ADS as the pistol
-    pole_l=(-0.22, -0.25, -0.94), pole_l_ads=(-0.6, -0.35, -0.72), pole_r=(0.22, -0.25, -0.94),
-    pole_r_ads=(0.6, -0.35, -0.72),
+    # D-116 as the pistol (PO, FNV-style): ONE-HANDED in first person. Hip: the gun in the lower-right third
+    # (grip ~x68 %/y96 % 0.35 m out, muzzle ~x58 %/y61 % at the 52 deg viewmodel FOV; refs
+    # po_shots/2026-10-15_ref_pistol_*), yawed 12 deg toward the centre. ADS: a close pistol (0.22 m), the right
+    # shoulder brought in under the eye so the firing hand's knuckles fill the bottom centre and only the cuff and a
+    # short sleeve show below it. The left hand waits off-screen and comes up only to reload.
+    hip=((0.102, 0.367, -0.107), 12.0, 2.0, -4.0), one_hand=True,
+    # lead (P option b): the hand re-seated on the grip, wrist behind / under it and cocked down, so the eye sees the
+    # back of the hand and the thumb along the frame; the gun does not move
+    grip_adjust=(-28.0, 12.0), grip_thumb=(10.0, 20.0, 15.0, 30.0),
+    ads_dist=0.22, sh=(0.0, 0.06, 0.04), ads_sh=(-0.15, -0.05, -0.20),  # P: elbow straight under the wrist
+    pole_l=(-0.22, -0.25, -0.94), pole_l_ads=(-0.22, -0.25, -0.94), pole_r=(0.22, -0.25, -0.94),
+    pole_r_ads=(0.0, -0.1, -1.0),
     sprint=((0.13, 0.30, -0.15), 10.0, -16.0, -26.0),
-    lowered=((0.16, 0.20, -0.46), 10.0, -55.0, -30.0),
+    lowered=((0.14, 0.22, -0.42), 10.0, -35.0, -15.0),
     reload_tilt=((0.07, 0.34, -0.15), 12.0, 10.0, -20.0),
     support="pistol", blade=6.0, blade_ads=0.0, reload="speedloader",
     recoil={"back": 0.040, "up": 0.018, "pitch": 16.0, "roll": 2.5, "yaw": 1.0},

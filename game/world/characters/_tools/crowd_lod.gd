@@ -35,7 +35,7 @@ const META_BASE: StringName = &"crowd_lod_switch_m"
 ## Mesh node names a character may have and still get LOD2 (anything else is gameplay-visible).
 const PLAIN_MESHES: Array[String] = ["Body", "Gear", "Hair", "Headwear", "Outfit"]
 const CROWD_SCRIPTS: Array[String] = [
-	"char_civilians.py", "char_npc_bank.py", "char_npc_calder.py", "char_npc_penthouse.py",
+	"char_civilians.py", "char_dock_workers.py", "char_npc_bank.py", "char_npc_calder.py", "char_npc_penthouse.py",
 	"char_p5_bank.py", "char_p5_club.py", "char_p5_convoy.py", "char_p5_gallery.py",
 ]
 ## D-080: specials (char_specials.py: TAC Heavy, Corpsman, Stinger, Longshot, Bulwark, Brandt, ...) keep LOD0/1 only,

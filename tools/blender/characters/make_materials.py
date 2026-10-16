@@ -60,7 +60,7 @@ FORBIDDEN = {"#4FD1E8"}
 #: ORM materials that also glow: id -> (emission sRGB hex, energy). Style guide §3: emissives may
 #: exceed the albedo saturation cap (the albedo itself stays in the palette rules). ENV A drives
 #: the energy at runtime (Phantom goggles: SpecialTweak.phantom_goggle_energy_idle/charge).
-EMISSION = {"char_goggle_glow": ("#3BFF6A", 1.0)}
+EMISSION = {"char_goggle_glow": ("#3BFF6A", 1.0), "char_prop_ember": ("#FF6A2A", 1.6)}
 
 
 def srgb_bytes(h: str) -> tuple[int, int, int]:

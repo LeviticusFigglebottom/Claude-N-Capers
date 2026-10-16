@@ -79,7 +79,7 @@ const POLICE: Array[String] = ["rappel"]
 const RAPPEL_SPEED: float = 2.5
 const RAPPEL_CONTACT: int = 4
 ## Held props (SOURCE.txt `<prop>_grip`, relative to HandR/Socket).
-const GRIPS: Array[String] = ["phone_grip", "mug_grip", "mop_grip", "book_grip"]
+const GRIPS: Array[String] = ["phone_grip", "mug_grip", "mop_grip", "book_grip", "cigarette_grip"]
 const LOOPED: Array[String] = [
 	"idle", "idle_alert", "walk", "run", "sprint", "crouch_idle", "crouch_walk", "strafe_l", "strafe_r",
 	"walk_back", "aim_rifle", "aim_pistol", "kneel_cuffed", "hands_up", "cower", "lie_down", "tied",
@@ -124,6 +124,17 @@ const D304_EVENTS: Dictionary = {
 const POSE_DEATHS: Dictionary = {
 	"death_crouch": ["crouch_idle", 0.0], "death_kneel_cuffed": ["kneel_cuffed", 0.0], "death_kneel": ["surrender", 1.6],
 	"death_prone": ["lie_down", 0.0], "death_downed": ["downed", 0.0],
+}
+## PO6-17 assault-event clips (_anim_assault): clip -> [frames, looped, events, [clip, time] frame 0 equals, clip whose
+## frame 0 the last frame equals].
+const ASSAULT: Dictionary = {
+	"rappel_hang": [40, true, {}, [], ""], "rappel_descend": [20, true, {}, [], ""],
+	"rappel_land": [30, false, {"touch": 6}, ["rappel_descend", 0.0], "idle_alert"],
+	"heli_door_idle": [90, true, {}, [], ""], "heli_door_aim": [90, true, {}, [], ""],
+	"heli_door_fire": [6, false, {"shot": 0}, [], ""],
+	"van_exit": [36, false, {"step_r": 16, "step_l": 28}, [], "idle_alert"],
+	"breach_place": [45, false, {"place": 28}, ["idle_alert", 0.0], "idle_alert"],
+	"breach_standback": [30, false, {}, ["breach_place", 1.5], "crouch_idle"],
 }
 ## Start / stop: the cycle frame each one hands over to / from (SOURCE.txt handoff_frame).
 const D304_HANDOFF: Dictionary = {"walk_start": 3, "walk_stop": 0, "run_start": 4, "run_stop": 0}
@@ -179,7 +190,8 @@ func test_delivered_p2_clips_are_present() -> void:
 	for clip: String in P2:
 		assert_true(_player.has_animation(StringName(clip)), "P2 clip %s" % clip)
 	var names: PackedStringArray = _player.get_animation_list()
-	assert_eq(names.size(), P1.size() + P2.size() + SPECIALS.size() + NPC.size() + POLICE.size() + P5.size() + _d304().size(),
+	assert_eq(names.size(), P1.size() + P2.size() + SPECIALS.size() + NPC.size() + POLICE.size() + P5.size() + _d304().size()
+		+ _assault().size(),
 		"no extra or misnamed clips: %s" % [names])
 	for n: String in names:
 		assert_false(n.ends_with("-loop") or n.ends_with("_loop"), "%s: loop suffix stripped" % n)
@@ -188,12 +200,12 @@ func test_delivered_p2_clips_are_present() -> void:
 func test_loop_modes() -> void:
 	if not _ready_or_fail():
 		return
-	for clip: String in P1 + P2 + SPECIALS + NPC + POLICE + P5 + _d304():
+	for clip: String in P1 + P2 + SPECIALS + NPC + POLICE + P5 + _d304() + _assault():
 		var a: Animation = _anim(clip)
 		if a == null:
 			continue
 		var want: Animation.LoopMode = Animation.LOOP_LINEAR if LOOPED.has(clip) or P5.has(clip) or _d304_loops().has(clip) \
-			else Animation.LOOP_NONE
+			or _assault(true).has(clip) else Animation.LOOP_NONE
 		assert_eq(a.loop_mode, want, "loop mode of %s" % clip)
 
 
@@ -225,7 +237,7 @@ func test_lengths() -> void:
 func test_tracks_target_skeleton_bones() -> void:
 	if not _ready_or_fail():
 		return
-	for clip: String in P1 + P2 + SPECIALS + NPC + POLICE + P5 + _d304():
+	for clip: String in P1 + P2 + SPECIALS + NPC + POLICE + P5 + _d304() + _assault():
 		var a: Animation = _anim(clip)
 		if a == null:
 			continue
@@ -245,7 +257,7 @@ func test_tracks_target_skeleton_bones() -> void:
 func test_loops_end_on_their_first_pose() -> void:
 	if not _ready_or_fail():
 		return
-	for clip: String in LOOPED + P5 + _d304_loops():
+	for clip: String in LOOPED + P5 + _d304_loops() + _assault(true):
 		var a: Animation = _anim(clip)
 		if a == null:
 			continue
@@ -260,7 +272,7 @@ func test_loops_end_on_their_first_pose() -> void:
 func test_values_are_finite_without_flips() -> void:
 	if not _ready_or_fail():
 		return
-	for clip: String in P1 + P2 + SPECIALS + NPC + POLICE + P5 + _d304():
+	for clip: String in P1 + P2 + SPECIALS + NPC + POLICE + P5 + _d304() + _assault():
 		var a: Animation = _anim(clip)
 		if a == null:
 			continue
@@ -967,6 +979,7 @@ func test_d304_polish_set() -> void:
 	_check_seated_deaths()
 	_check_pose_deaths()
 	_check_d304_crawl_and_heavy_gait()
+	_check_assault_clips()
 
 
 func _d304_8way() -> Array[String]:
@@ -1405,3 +1418,83 @@ func _check_pose_deaths() -> void:
 		var e: Array[Vector3] = _snapshot(clip, float(n) / 30.0)
 		assert_true(e[hips].y < 0.32 and e[head].y < 0.45, "%s: ends lying on the floor (hips %f, head %f)" % [
 			clip, e[hips].y, e[head].y])
+
+
+# --------------------------------------------------- PO6-17 assault events (_anim_assault) ---------------------------
+func _assault(loops_only: bool = false) -> Array[String]:
+	var out: Array[String] = []
+	for c: String in ASSAULT:
+		if bool(ASSAULT[c][1]) or not loops_only:
+			out.append(c)
+	return out
+
+
+## Every PO6-17 clip: length and events (SOURCE), root fixed, no joint below the floor, the source's lowest skin vertex
+## >= -1 cm, exact (1 cm per bone) start / end joins; the heli kneel: right knee on the sill, muzzle along -Z when aimed.
+func _check_assault_clips() -> void:
+	var lines: Dictionary = _source_lines()
+	var checks: Dictionary = _check_rows()
+	var root: int = _skel.find_bone("root")
+	for n: String in ["rappel_assault", "heli_door_sill", "van_exit_step", "breach_charge", "curve.van_exit",
+			"curve.breach_standback", "assault_checks"]:
+		assert_true(lines.has(n), "SOURCE.txt documents %s" % n)
+	assert_true(String(lines.get("clip.rappel_descend", "")).contains("speed_mps=2.5 travel_axis=down"), "descend 2.5 m/s down")
+	for clip: String in ASSAULT:
+		var spec: Array = ASSAULT[clip]
+		var n: int = int(spec[0])
+		var a: Animation = _anim(clip)
+		assert_true(a != null, "PO6-17 clip %s" % clip)
+		if a == null:
+			continue
+		assert_near(a.length, float(n) / 30.0, 0.002, "%s length" % clip)
+		for ev: String in spec[2]:
+			assert_true(String(lines.get("clip." + clip, "")).contains("%s@%d" % [ev, int(spec[2][ev])]), "%s %s" % [clip, ev])
+		var low_skin: float = _num(String(checks.get(clip, "")), "lowest_skin")
+		assert_true(low_skin > -10.0 and low_skin < INF, "%s: lowest skin vertex %f mm (source)" % [clip, low_skin])
+		var s0: Array[Vector3] = _snapshot(clip, 0.0)
+		var lowest: float = 1.0
+		var root_move: float = 0.0
+		for f: int in range(0, n + 1):
+			var s: Array[Vector3] = _snapshot(clip, float(f) / 30.0)
+			root_move = maxf(root_move, s[root].distance_to(s0[root]))
+			for p: Vector3 in s:
+				lowest = minf(lowest, p.y)
+		assert_true(root_move < 0.001, "%s: the root never moves (%f m)" % [clip, root_move])
+		assert_true(lowest > -0.01, "%s: no joint below the floor (%f)" % [clip, lowest])
+		if not spec[3].is_empty():
+			var d0: float = _snap_dist(s0, _snapshot(String(spec[3][0]), float(spec[3][1])))
+			assert_true(d0 < 0.01, "%s: starts on %s @%.2fs (%f m)" % [clip, spec[3][0], spec[3][1], d0])
+		if not String(spec[4]).is_empty():
+			var d1: float = _snap_dist(_snapshot(clip, float(n) / 30.0), _snapshot(String(spec[4]), 0.0))
+			assert_true(d1 < 0.01, "%s: ends on %s frame 0 (%f m)" % [clip, spec[4], d1])
+	var sock_r: Transform3D = _parse_xform(String(lines.get("handr_weapon_offset_godot", "")))
+	for clip: String in ["heli_door_idle", "heli_door_aim"]:
+		_player.play(StringName(clip))
+		_player.seek(0.0, true)
+		assert_true(_bone_pos("shin.R").y < 0.12 and _bone_pos("foot.L").z < -0.15, "%s: right knee down, left foot ahead" % clip)
+		var muzzle: Vector3 = -(_bone_xform("hand.R") * sock_r).basis.z.normalized()
+		var ok: bool = muzzle.dot(Vector3.FORWARD) > 0.97 if clip == "heli_door_aim" else muzzle.y < -0.3
+		assert_true(ok, "%s: muzzle aimed along -Z / at the low ready (%s)" % [clip, muzzle])
+	# rappel_hang / rappel_descend: both fists (Socket origins) on the documented rope line (3 cm) on every frame (hang:
+	# right fist overhead, left low; descend: guide fist high, brake fist low); the feet clear of the root plane
+	var m: RegExMatch = RegEx.create_from_string("vertical line at Godot x=(-?[0-9.]+) z=(-?[0-9.]+)").search(
+		String(lines.get("rappel_assault", "")))
+	var rope: Vector2 = Vector2(m.get_string(1).to_float(), m.get_string(2).to_float()) if m != null else Vector2.INF
+	assert_true(rope.y < -0.15 and rope.y > -0.35, "SOURCE rappel_assault: the rope line in front of the chest (%s)" % rope)
+	var sock_l: Transform3D = _parse_xform(String(lines.get("handl_shield_offset_godot", "")))
+	for clip: String in ["rappel_hang", "rappel_descend"]:
+		_player.play(StringName(clip))
+		var worst: float = 0.0
+		var feet: float = 9.0
+		for f: int in range(0, int(ASSAULT[clip][0]) + 1):
+			_player.seek(float(f) / 30.0, true)
+			var gl: Vector3 = (_bone_xform("hand.L") * sock_l).origin
+			var gr: Vector3 = (_bone_xform("hand.R") * sock_r).origin
+			worst = maxf(worst, maxf(Vector2(gl.x, gl.z).distance_to(rope), Vector2(gr.x, gr.z).distance_to(rope)))
+			var order: bool = gr.y > _bone_pos("head").y and gl.y < gr.y - 0.4 if clip == "rappel_hang" else gl.y > gr.y + 0.4
+			assert_true(order, "%s f%d: fist heights" % [clip, f])
+			for b: String in ["toe.L", "toe.R", "foot.L", "foot.R"]:
+				feet = minf(feet, _bone_pos(b).y)
+		_player.stop()
+		assert_true(worst < 0.03, "%s: both fists on the rope line (%f m)" % [clip, worst])
+		assert_true(feet > 0.25, "%s: the feet clear of the root plane (%f m)" % [clip, feet])

@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/characters/char_hand_cigarette/char_hand_cigarette.glb" id="1_glb"]
+
+[node name="HandCigarette" type="Node3D"]
+metadata/prop = "cigarette"
+metadata/socket = "HandR"
+metadata/clips = PackedStringArray("smoke")
+
+[node name="Model" parent="." instance=ExtResource("1_glb")]
+transform = Transform3D(-0.1014, 0.9135, 0.3941, -0.9945, -0.1037, -0.0156, 0.0266, -0.3935, 0.919, -0.0128, -0.0037, -0.0388)

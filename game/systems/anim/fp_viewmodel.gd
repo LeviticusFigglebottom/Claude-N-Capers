@@ -67,6 +67,16 @@ class HandRestore:
 			vm._restore_hand()
 
 
+## D-116: one-handed first-person sets (pistol / revolver): drops the left arm out of view (see _hide_left_arm).
+class LeftArmHide:
+	extends SkeletonModifier3D
+	var vm: FpViewmodel = null
+
+	func _process_modification_with_delta(_delta: float) -> void:
+		if vm != null and is_instance_valid(vm):
+			vm._hide_left_arm()
+
+
 enum Action { NONE, FIRE, RELOAD, SWAP, MELEE, DEPLOY, THROW, INTERACT }
 
 const NODE_NAME: String = "FpViewmodel"
@@ -142,6 +152,9 @@ var _weapon_bone: int = -1
 var _hand_bone: int = -1
 var _hand_rel: Basis = Basis.IDENTITY
 var _hand_rel_set: bool = false
+## D-116: upper_arm.L and how far (0..1) the left arm is dropped out of view for a one-handed set.
+var _left_root_bone: int = -1
+var _left_drop: float = 0.0
 var _mag_bone: int = -1
 var _bob_phase: float = 0.0
 ## Linear ADS progress behind the eased ads_weight.
@@ -170,6 +183,9 @@ var _kick_v: Vector2 = Vector2.ZERO
 ## and the breathing clock.
 var _sway_target: Vector2 = Vector2.ZERO
 var _sway: Vector2 = Vector2.ZERO
+var _sway_v: Vector2 = Vector2.ZERO
+## D-116: bob rotation (x pitch, z roll; deg) and the landing pitch, applied about the firing hand.
+var _bob_rot: Vector3 = Vector3.ZERO
 var _last_look: Vector2 = Vector2.INF
 var _breath_t: float = 0.0
 ## The item model on the weapon bone during a melee / deploy one-shot (null = none / gun bash).
@@ -230,6 +246,12 @@ func _bind(inst: Node3D, crew: CrewController) -> bool:
 		res.name = "HandRestore"
 		res.vm = self
 		skeleton.add_child(res)  # after the IK, before AdsAlign
+	_left_root_bone = skeleton.find_bone(FpLeftHandIk.ROOT_BONE)
+	if _left_root_bone >= 0:
+		var hide: LeftArmHide = LeftArmHide.new()
+		hide.name = "LeftArmHide"
+		hide.vm = self
+		skeleton.add_child(hide)  # after the IK / HandRestore, before AdsAlign
 	var align: AdsAlign = AdsAlign.new()
 	align.name = "AdsAlign"
 	align.vm = self
@@ -377,6 +399,9 @@ func tick(delta: float) -> void:
 	_update_offset(delta, tw)
 	_update_magazine()
 	_update_flash(delta, tw)
+	# D-116: one-handed FP sets keep the left arm out of view, except while a reload clip needs the hand.
+	var drop: float = 1.0 if tw.one_handed_fp_sets.has(_playing_set()) and action != Action.RELOAD else 0.0
+	_left_drop = move_toward(_left_drop, drop, delta * tw.one_handed_drop_rate)
 	if left_hand_ik != null:  # D-069: the clip owns the left hand while reloading / swapping
 		left_hand_ik.update(delta, action == Action.NONE or action == Action.FIRE)
 
@@ -534,9 +559,18 @@ func _tick_sway(delta: float, tw: FpViewmodelTweak) -> void:
 		-signf(rate.y) * pow(clampf(absf(rate.y) / full, 0.0, 1.0), 1.5) * max_deg.y)
 	_sway_target.x = move_toward(_sway_target.x, input.x, tw.sway_target_rate_dps * delta)
 	_sway_target.y = move_toward(_sway_target.y, input.y, tw.sway_target_rate_dps * delta)
-	for k: int in 2:
-		var diff: float = absf(_sway_target[k] - _sway[k])
-		_sway[k] = move_toward(_sway[k], _sway_target[k], lerpf(3.0, 180.0, clampf(diff / 40.0, 0.0, 1.0)) * delta)
+	if tw.sway_spring_hz > 0.0:  # D-116: spring with a slight overshoot
+		var w: float = TAU * tw.sway_spring_hz
+		var left: float = delta
+		while left > 0.0:
+			var h: float = minf(left, 1.0 / 120.0)
+			_sway_v += (w * w * (_sway_target - _sway) - 2.0 * tw.sway_spring_damping * w * _sway_v) * h
+			_sway += _sway_v * h
+			left -= h
+	else:
+		for k: int in 2:
+			var diff: float = absf(_sway_target[k] - _sway[k])
+			_sway[k] = move_toward(_sway[k], _sway_target[k], lerpf(3.0, 180.0, clampf(diff / 40.0, 0.0, 1.0)) * delta)
 	_breath_t += delta
 
 
@@ -573,6 +607,22 @@ func _restore_hand() -> void:
 	var scale_v: Vector3 = pose.basis.get_scale()
 	var q: Quaternion = pose.basis.orthonormalized().get_rotation_quaternion().slerp(want.get_rotation_quaternion(), w)
 	skeleton.set_bone_global_pose(_hand_bone, Transform3D(Basis(q).scaled(scale_v), pose.origin))
+
+
+## D-116 (LeftArmHide modifier): move upper_arm.L (and so the whole left arm) by one_handed_left_drop (camera space,
+## scaled by the eased _left_drop) so a one-handed set shows no support arm.
+func _hide_left_arm() -> void:
+	if skeleton == null or _left_root_bone < 0 or _left_drop <= 0.0 or arms == null:
+		return
+	var off_cam: Vector3 = FpViewmodelTweak.data().one_handed_left_drop * smoothstep(0.0, 1.0, _left_drop)
+	var off_skel: Vector3 = skeleton.global_basis.inverse() * (arms.global_basis * off_cam)
+	var pose: Transform3D = skeleton.get_bone_global_pose(_left_root_bone)
+	skeleton.set_bone_global_pose(_left_root_bone, Transform3D(pose.basis, pose.origin + off_skel))
+
+
+## Read only (tests): how far the left arm is dropped for a one-handed set (0..1).
+func left_arm_drop() -> float:
+	return _left_drop
 
 
 ## Read only (tests): the current look-lag sway (yaw, pitch; deg).
@@ -1011,13 +1061,24 @@ func _update_ads(delta: float) -> void:
 
 func _update_offset(delta: float, tw: FpViewmodelTweak) -> void:
 	var speed: float = _speed()
-	var moving: bool = speed > tw.move_threshold_mps and not _sprinting(tw)
+	var sprint: bool = _sprinting(tw)
+	# D-116: the bob also runs while sprinting (bigger), riding the sprint clip.
+	var moving: bool = speed > tw.move_threshold_mps and (tw.bob_follow_steps or not sprint)
 	var target: float = clampf(speed / maxf(tw.bob_ref_speed_mps, 0.01), 0.0, 1.5) if moving else 0.0
+	if sprint and tw.bob_follow_steps:
+		target = minf(target, 1.0) * tw.bob_sprint_mult
 	_bob_weight = move_toward(_bob_weight, target, tw.bob_rate * delta)
 	_bob_phase = fmod(_bob_phase + delta * TAU * tw.bob_frequency_hz * maxf(target, 0.5), TAU * 2.0)
+	var phase: float = _bob_phase
+	if tw.bob_follow_steps and _crew != null and is_instance_valid(_crew) and _crew.bob_weight > 0.0:
+		phase = _crew.bob_phase  # D-116: the camera's footstep phase (own clock when Options head bob is off)
 	var amp: float = _bob_weight * lerpf(1.0, tw.ads_bob_mult, ads_weight)
-	var off: Vector3 = Vector3(sin(_bob_phase) * tw.bob_amplitude.x, sin(_bob_phase * 2.0) * tw.bob_amplitude.y, 0.0) * amp
+	var off: Vector3 = Vector3(sin(phase) * tw.bob_amplitude.x, sin(phase * 2.0) * tw.bob_amplitude.y, 0.0) * amp
 	off.y += step_lag(tw)
+	var land: float = _crew.land_dip if _crew != null and is_instance_valid(_crew) else 0.0
+	off.y += land * tw.land_vm_mult * lerpf(1.0, tw.ads_bob_mult, ads_weight)  # D-116: arms dip deeper on landing
+	_bob_rot = Vector3(sin(phase * 2.0) * tw.bob_pitch_deg * amp + land * tw.land_vm_pitch_deg_per_m, 0.0,
+		sin(phase) * tw.bob_roll_deg * amp)
 	# PO-4: the offset of the set actually playing (a melee / throw / deploy item set rides the gun's arms but has its
 	# own framing), eased so switching sets does not jump.
 	var set_now: StringName = _playing_set()
@@ -1107,6 +1168,16 @@ func _late_align() -> void:
 			* (skeleton.global_transform * skeleton.get_bone_global_pose(_weapon_bone).origin)
 		r = Basis.from_euler(pose * (PI / 180.0))
 		pivot_off = q - r * q
+	# D-116 (LEAD ADS note): aimed, the set's ADS pitch turns the arms about the rear sight (AimPoint, so the sight
+	# stays on the crosshair): nose down puts the eye above and behind the hand, looking along the slide.
+	var ads_rot: Vector3 = (tw.set_ads_rot_deg.get(_playing_set(), Vector3.ZERO) as Vector3) * ads_weight
+	if ads_rot != Vector3.ZERO and weapon_visual != null and is_instance_valid(weapon_visual) and is_inside_tree():
+		var aim_m: Node3D = weapon_visual.get_marker(WeaponVisual.AIM_POINT)
+		if aim_m != null and aim_m.is_inside_tree():
+			var qa: Vector3 = global_transform.affine_inverse() * aim_m.global_position
+			var r2: Basis = Basis.from_euler(ads_rot * (PI / 180.0))
+			pivot_off += r * (qa - r2 * qa)
+			r = r * r2
 	transform = Transform3D(b * r, _base_offset + a + Vector3(0.0, 0.0, _kick.x) + s_off + b * pivot_off)
 
 
@@ -1114,7 +1185,7 @@ func _late_align() -> void:
 ## arc roll and the settle pitch.
 func _pose_rot_deg(tw: FpViewmodelTweak) -> Vector3:
 	var set_now: StringName = _playing_set()
-	var r: Vector3 = _set_rot
+	var r: Vector3 = _set_rot + _bob_rot
 	r.z += sin(PI * clampf(ads_weight, 0.0, 1.0)) * float(tw.set_ads_arc_roll_deg.get(set_now, 0.0))
 	r.x += (_settle - ads_weight) * tw.ads_settle_pitch_deg * float(tw.ads_settle_set_mult.get(set_now, 1.0))
 	return r

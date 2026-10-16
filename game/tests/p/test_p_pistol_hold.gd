@@ -1,6 +1,7 @@
-## PO6-11 pistol hold: the support hand stays wrapped on the firing hand through the hip <-> ADS transition (left-hand
-## IK on the clip's own wrist offset), the hip pose / ADS arc tweaks are in place, and the ADS settle returns the
-## sights to the crosshair. Real input (PInputDriver). Owner: ENV P.
+## D-116 (PO, supersedes the PO6-11 two-hand hold in FIRST PERSON): pistol / revolver are one-handed: no left-hand IK,
+## the left arm stays out of the viewmodel camera's view at the hip and through ADS and comes back for the reload;
+## the hip pose / ADS arc tweaks are in place, and the ADS settle returns the sights to the crosshair. Real input
+## (PInputDriver). Owner: ENV P.
 extends TestCase
 
 var _rt: HeistRuntime = null
@@ -22,13 +23,14 @@ func after_each() -> void:
 	await wait_frames(1)
 
 
-func test_pistol_sets_on_ik() -> void:
+func test_pistol_sets_one_handed() -> void:
 	var tw: FpViewmodelTweak = FpViewmodelTweak.data()
-	for s: StringName in [&"pistol", &"revolver"]:
-		assert_false(tw.left_hand_ik_skip_sets.has(s), "%s support hand is IK'd onto the gun" % s)
-		assert_true(tw.set_left_hand_grip_offset.has(s), "%s has the clip's own wrist offset" % s)
-		assert_true(tw.set_hip_rot_deg.has(s), "%s has a hip pose" % s)
-		assert_true(float(tw.set_ads_arc_roll_deg.get(s, 0.0)) > 0.0, "%s has an ADS arc" % s)
+	for set_id: StringName in [&"pistol", &"revolver"]:
+		assert_true(tw.one_handed_fp_sets.has(set_id), "%s is one-handed in first person" % set_id)
+		assert_true(tw.left_hand_ik_skip_sets.has(set_id), "%s skips the left-hand IK" % set_id)
+		assert_true(tw.set_hip_rot_deg.has(set_id), "%s has a hip pose" % set_id)
+		assert_true(float(tw.set_ads_arc_roll_deg.get(set_id, 0.0)) > 0.0, "%s has an ADS arc" % set_id)
+	assert_false(tw.one_handed_fp_sets.has(&"rifle"), "long guns stay two-handed")
 
 
 func _launch(wid: StringName) -> CrewController:
@@ -47,28 +49,31 @@ func _launch(wid: StringName) -> CrewController:
 	return c
 
 
+## Post-modifier hand.L in the viewmodel camera's view: true when it is inside the screen (with a margin).
 func _on_skel() -> void:
-	if _fp == null or not is_instance_valid(_fp) or _marker == null or not is_instance_valid(_marker):
+	if _fp == null or not is_instance_valid(_fp):
 		return
+	var vc: Camera3D = CrewView.of(_fp.crew()).viewmodel_camera()
 	var hb: int = _fp.skeleton.find_bone(FpLeftHandIk.END_BONE)
-	var hand: Transform3D = _fp.skeleton.global_transform * _fp.skeleton.get_bone_global_pose(hb)
-	_wrists.append(_marker.global_transform.orthonormalized().affine_inverse() * hand.origin)
+	var p: Vector3 = _fp.skeleton.global_transform * _fp.skeleton.get_bone_global_pose(hb).origin
+	var cam: Camera3D = vc if vc != null else get_viewport().get_camera_3d()
+	var sz: Vector2 = get_viewport().get_visible_rect().size
+	var on_screen: bool = not cam.is_position_behind(p) and Rect2(Vector2.ZERO, sz).grow(sz.y * 0.05) \
+		.has_point(cam.unproject_position(p))
+	_wrists.append(Vector3(1.0 if on_screen else 0.0, 0.0, 0.0))
 
 
-func test_support_hand_stays_on_gun_through_ads() -> void:
+func test_left_arm_out_of_view_except_reload() -> void:
 	if FpViewmodelTweak.data().arms_scene == null:
 		skip("char_arms_fp not delivered")
 		return
 	for wid: StringName in [&"weapon.kestrel_p9", &"weapon.marshal_357"]:
 		var c: CrewController = await _launch(wid)
 		_fp = FpViewmodel.of(get_viewport().get_camera_3d())
-		assert_true(_fp != null, "%s: FP viewmodel" % wid)
+		assert_true(_fp != null and c != null, "%s: FP viewmodel" % wid)
 		if _fp == null:
 			await after_each()
 			continue
-		_marker = (c.weapon_visual as WeaponVisual).get_marker(&"LeftHandIK")
-		assert_true(_marker != null, "%s: LeftHandIK marker" % wid)
-		var want: Vector3 = FpViewmodelTweak.data().grip_offset(_fp.anim_set)
 		_wrists.clear()
 		_fp.skeleton.skeleton_updated.connect(_on_skel)
 		_inp.press(&"aim")
@@ -76,13 +81,19 @@ func test_support_hand_stays_on_gun_through_ads() -> void:
 		_inp.release(&"aim")
 		await wait_physics_frames(40)
 		_fp.skeleton.skeleton_updated.disconnect(_on_skel)
-		var worst: float = 0.0
+		var seen: int = 0
 		for w: Vector3 in _wrists:
-			worst = maxf(worst, w.distance_to(want))
+			seen += int(w.x)
 		assert_true(_wrists.size() > 30, "%s: sampled %d poses" % [wid, _wrists.size()])
-		# Before PO6-11 the FK blend swung the wrist ~45 mm off the gun mid-transition.
-		assert_true(worst < 0.01, "%s: support wrist within 10 mm of the grip through hip -> ADS -> hip (%.1f mm)"
-			% [wid, worst * 1000.0])
+		assert_eq(seen, 0, "%s: the left hand is never on screen at the hip / through ADS (%d of %d)" % [wid, seen,
+			_wrists.size()])
+		assert_near(_fp.left_arm_drop(), 1.0, 1e-3, "%s: left arm fully dropped" % wid)
+		for _k: int in 2:  # a full magazine does not reload
+			await _inp.tap(&"fire")
+			await wait_physics_frames(20)
+		await _inp.tap(&"reload")
+		assert_true(await wait_until(func() -> bool: return _fp.left_arm_drop() < 0.5, 2.0),
+			"%s: the left arm comes back for the reload (%.2f)" % [wid, _fp.left_arm_drop()])
 		await after_each()
 
 

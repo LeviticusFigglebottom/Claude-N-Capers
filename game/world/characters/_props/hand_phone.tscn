@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/characters/char_hand_phone/char_hand_phone.glb" id="1_glb"]
+
+[node name="HandPhone" type="Node3D"]
+metadata/prop = "phone"
+metadata/socket = "HandR"
+metadata/clips = PackedStringArray("phone_call", "phone_seated", "walk_text")
+
+[node name="Model" parent="." instance=ExtResource("1_glb")]
+transform = Transform3D(0, 0, -1, 0.9978, 0.0663, 0, 0.0663, -0.9978, 0, 0.0115, -0.0083, 0.0048)
