@@ -53,6 +53,9 @@ var police_delay_s: float:
 ## D-117 §6: true when this mission says its own last-pager line (in `_on_pager_answered` at `pager_cap()`);
 ## PagerSystem then skips the generic vo.mercer.pager_last so the cap is not called twice.
 var own_last_pager_line: bool = false
+## SL-6 (S11.3): true when this STEALTH_ONLY mission says its own abort line (in `_on_alarm`); HeistRuntime then
+## skips the generic vo.mercer.abort so the alarm is not called twice.
+var own_abort_line: bool = false
 
 var _runtime: HeistRuntime = null
 ## objective id ->{ "id", "text_key", "state", "data", "order" }
