@@ -24,6 +24,7 @@ const NPCS: Array[String] = [
 	"char_npc_kessler",
 	"char_npc_kessler_coat",
 	"char_npc_cleaner_sl",
+	"char_npc_cleaner_sl_b",
 	"char_npc_it_contractor",
 	"char_npc_northgate_guard",
 	"char_npc_northgate_guard_b",
@@ -68,6 +69,13 @@ const D115_CAST: Dictionary = {
 	},
 	"char_dock_worker_b": {
 		"Outfit": ["char_hivis", "char_reflect_silver", "char_work_charcoal"], "Headwear": ["char_hardhat_blue"],
+	},
+	"char_npc_cleaner_sl_b": {
+		"Outfit": [
+			"char_cleaner_teal", "char_waistcoat_graphite", "char_knit_graphite", "char_trousers_black",
+			"char_rubber_yellow",
+		],
+		"Gear": ["char_metal_silver"], "Headwear": ["char_hair_grey"],
 	},
 	"char_dock_packer": {
 		"Outfit": ["char_hivis_orange", "char_reflect_silver", "char_fleece_maroon", "char_glove_work"],
@@ -147,6 +155,7 @@ func test_index_lists_every_npc() -> void:
 
 ## D-115: the six new civilians are indexed with their scenes and wear their look (hi-vis + tape, hard
 ## hat or beanie, Vossberg's plum suit and gold, the clerk's lanyard card); the packer has no hard hat.
+## D-SL-2: the second Shadow Ledger cleaner wears exactly npc_cleaner_sl's uniform but is another person.
 func _check_d115_cast() -> void:
 	for id: String in D115_CAST:
 		assert_true(_index.has(id), "%s in characters.json" % id)
@@ -162,6 +171,16 @@ func _check_d115_cast() -> void:
 				assert_has(by_mesh.get(mesh, []) as Array, m, "%s: %s wears %s" % [id, mesh, m])
 	var packer: Array[String] = _all_materials(_materials("char_dock_packer"))
 	assert_false(packer.has("char_hardhat_white") or packer.has("char_hardhat_blue"), "dock_packer: no hard hat")
+	var sl: Dictionary = _materials("char_npc_cleaner_sl")
+	var sl_b: Dictionary = _materials("char_npc_cleaner_sl_b")
+	for mesh: String in ["Outfit", "Gear"]:
+		var a: Array = (sl.get(mesh, []) as Array).duplicate()
+		var b: Array = (sl_b.get(mesh, []) as Array).duplicate()
+		a.sort()
+		b.sort()
+		assert_eq(b, a, "cleaner_sl_b: same %s uniform as cleaner_sl" % mesh)
+	assert_ne(sl_b.get("Body", []), sl.get("Body", []), "cleaner_sl_b: a different skin from cleaner_sl")
+	assert_ne(sl_b.get("Hair", []), sl.get("Hair", []), "cleaner_sl_b: different hair from cleaner_sl")
 
 
 func test_scene_contract_and_budget() -> void:
