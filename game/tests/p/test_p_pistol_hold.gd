@@ -80,6 +80,8 @@ func test_left_arm_out_of_view_except_reload() -> void:
 		await wait_physics_frames(40)
 		_inp.release(&"aim")
 		await wait_physics_frames(40)
+		# Poses arrive per rendered frame: under a loaded llvmpipe that is far fewer than the physics ticks.
+		await wait_until(func() -> bool: return _wrists.size() > 30, 60.0)
 		_fp.skeleton.skeleton_updated.disconnect(_on_skel)
 		var seen: int = 0
 		for w: Vector3 in _wrists:
