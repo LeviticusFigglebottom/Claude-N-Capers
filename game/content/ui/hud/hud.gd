@@ -204,7 +204,7 @@ func _build() -> void:
 ## hint strip move down to just below it. Markers, chevrons, hit markers and subtitles stay where they are (PD2).
 func _avoid_scope() -> void:
 	var ring: Rect2 = Rect2()
-	if model != null and bool(model.get(&"scoped_ads")) and model.get(&"scope_ring") is Rect2:
+	if model != null and model.get(&"scoped_ads") == true and model.get(&"scope_ring") is Rect2:
 		ring = model.get(&"scope_ring") as Rect2
 	if device_timers != null:
 		device_timers.avoid = device_timers.get_global_transform_with_canvas().affine_inverse() * ring if ring.has_area() \
