@@ -14,8 +14,10 @@
 ##   fx only); its squad walks in through the opened link (wall), swings in on a rope (window) or drops through
 ##   (ceiling).
 ## Event units go through AssaultDirector.spawn_enemy (assault force pool) and stop at the hard enemy_cap().
-## Facts: signals event_started / event_ended here plus the entities' audio cues [R] (cue.assault_*); the
-## EventBus fact `assault_event_started(kind, net_id, position)` [R] is a pending ask to the lead.
+## Facts: EventBus.assault_event_started(kind, net_id, position) [R] when an event entity spawns and
+## assault_event_ended(kind, net_id) [R] when it ends or leaves the tree (teardown included), plus the entities'
+## audio cues [R] (cue.assault_*). Rows: the map's HeistDef.assault_events first (data_schemas.md v1.1), else
+## AssaultEventsTweak.heists[heist_id].
 class_name AssaultEventRunner
 extends Node
 
@@ -27,6 +29,7 @@ signal unit_spawned(kind: StringName, npc: NpcBase)
 const RNG: StringName = &"assault_events"
 const DEFAULT_TWEAK: String = "res://systems/director/assault_events_tweak.tres"
 const PAIR_RADIUS_M: float = 12.0
+const ROOF_LINK_RADIUS_M: float = 30.0
 const WALK_SPEED_MPS: float = 2.2
 ## ENV D PO6-17 clip names (characters.md; AnimDriver.FALLBACK_CLIPS until they land).
 const CLIP_RAPPEL_HANG: StringName = &"rappel_hang"
@@ -35,6 +38,7 @@ const CLIP_RAPPEL_LAND: StringName = &"rappel_land"
 const CLIP_VAN_EXIT: StringName = &"van_exit"
 const CLIP_BREACH_PLACE: StringName = &"breach_place"
 const CLIP_BREACH_STANDBACK: StringName = &"breach_standback"
+const CLIP_CROUCH_IDLE: StringName = &"crouch_idle"
 
 var director: AssaultDirector = null
 var tweak: AssaultEventsTweak = null
@@ -45,6 +49,8 @@ var active: Array[AssaultEventEntity] = []
 ## {kind, t, wave, position, marker, net_id} of every event run.
 var history: Array[Dictionary] = []
 var units: Array[NpcBase] = []
+## Where the rows came from (&"heist_def" / &"tweak" / &""), for tests and logs.
+var rows_source: StringName = &""
 
 var _rt: HeistRuntime = null
 ## Pending unit spawns: {t, id, xf, legs, kind, owner}.
@@ -56,6 +62,8 @@ var _breach_used: Dictionary = {}
 var _entry_used: Dictionary = {}
 ## Heli -> units still on its ropes.
 var _heli_ropes: Dictionary = {}
+## "<owner instance id>:<rope index>" -> units still to come down that rope.
+var _rope_users: Dictionary = {}
 var _clock: float = 0.0
 
 
@@ -71,10 +79,34 @@ func _ready() -> void:
 		if o != null:
 			tweak = o
 		enabled = bool(_rt.options.get("assault_events", true))
+		_rt.phase_changed.connect(_on_heist_phase)
+
+
+## Heist over: every running event ends now (assault_event_ended exactly once each: C keys loops on it).
+func _on_heist_phase(_old: int, new_phase: int) -> void:
+	if new_phase == Enums.HeistPhase.ENDED:
+		end_all()
+
+
+## Server: end every active event (heist end / teardown). Idempotent per event.
+func end_all() -> void:
+	for e: AssaultEventEntity in active.duplicate():
+		_on_ended(e)
+
+
+func _exit_tree() -> void:
+	end_all()  # teardown: the runner may leave before the entities under dynamic_root
 
 
 func rows() -> Array[Dictionary]:
-	return tweak.rows_for(_rt.heist_id) if _rt != null and tweak != null else [] as Array[Dictionary]
+	if _rt == null or tweak == null:
+		return [] as Array[Dictionary]
+	var def: HeistDef = _rt.map.heist_def if _rt.map != null else null
+	if def != null and not def.assault_events.is_empty():
+		rows_source = &"heist_def"
+		return AssaultEventsTweak.valid_rows(def.assault_events)
+	rows_source = &"tweak"
+	return tweak.rows_for(_rt.heist_id)
 
 
 func begin() -> void:
@@ -82,7 +114,8 @@ func begin() -> void:
 		return
 	begun = true
 	scheduler.setup(tweak, rows(), _rt.difficulty if _rt != null else 0)
-	Log.info(&"director", "assault events: %d rows for %s" % [scheduler.rows.size(), _rt.heist_id if _rt else &""])
+	Log.info(&"director", "assault events: %d rows for %s (%s)" % [scheduler.rows.size(), _rt.heist_id if _rt else &"",
+		rows_source])
 
 
 ## Server, from the director's physics step.
@@ -145,8 +178,16 @@ func run(kind: StringName, params: Dictionary = {}, marker: String = "") -> Assa
 	history.append({"kind": kind, "t": _clock, "wave": director.wave_index if director else 0,
 		"position": at, "marker": String(p.get("_marker", "")), "net_id": e.net_id})
 	Log.info(&"director", "assault event %s at %s (%s)" % [kind, at, p.get("_marker", "fallback")])
-	event_started.emit(kind, e, at)
+	_started(kind, e, at)
 	return e
+
+
+## event_started + EventBus.assault_event_started [R].
+func _started(kind: StringName, e: AssaultEventEntity, at: Vector3) -> void:
+	e.set_meta(&"po6_17_started", true)
+	event_started.emit(kind, e, at)
+	EventBus.assault_event_started.emit(kind, e.net_id, at)
+	Net.replicate_event(&"assault_event_started", [kind, e.net_id, at])
 
 
 func _add_entity(e: AssaultEventEntity, kind: StringName, p: Dictionary, xf: Transform3D) -> void:
@@ -177,6 +218,9 @@ func _on_ended(e: AssaultEventEntity) -> void:
 		return
 	active.erase(e)
 	event_ended.emit(e.kind, e)
+	if e.has_meta(&"po6_17_started"):
+		EventBus.assault_event_ended.emit(e.kind, e.net_id)
+		Net.replicate_event(&"assault_event_ended", [e.kind, e.net_id])
 
 
 # --- Turret van --------------------------------------------------------------------------------
@@ -209,9 +253,7 @@ func _run_van(p: Dictionary, marker: String) -> AssaultEventEntity:
 			basis = Basis.looking_at(-to_crew.normalized(), Vector3.UP)  # +Z (nose) toward the crew
 		xf = Transform3D(basis, sp.global_position)
 	var van: AssaultTurretVan = AssaultTurretVan.new()
-	var exit_legs: Array[Dictionary] = [{"hold_s": tweak.van_exit_s, "anim": CLIP_VAN_EXIT}]
-	van.on_dismount = func(ids: Array, exit: Transform3D) -> void: _queue_squad(ids, exit, exit_legs,
-		AssaultEventsTweak.KIND_TURRET_VAN, van, p.get("squad_interval_s", 0.7))
+	van.on_dismount = func(ids: Array, exit: Transform3D) -> void: _queue_van_exit(ids, exit, van, p.get("squad_interval_s", 0.7))
 	_add_entity(van, AssaultEventsTweak.KIND_TURRET_VAN, p, xf)
 	van.start(xf)
 	return van
@@ -255,24 +297,49 @@ func _run_heli(p: Dictionary, marker: String) -> AssaultEventEntity:
 func _pick_drop(marker: String) -> Dictionary:
 	var cands: Array[Dictionary] = []
 	for m: Node3D in _pick_markers(AssaultEventMarkerScan.HELI_DROP, marker):
+		# Roof drops (GH HeliDrop_1, off the navmesh) are recognised by geometry, not by a navmesh query: the
+		# closest-point query was not reliable in a batch (a floor drop read as off-nav, paired with a roof breach).
 		var pos: Vector3 = m.global_position
-		if AssaultEventMarkerScan.nav_point(_rt.map, pos, 1.2) != Vector3.INF:
-			cands.append({"pos": pos, "name": String(m.name), "breach": ""})
+		if _roof_rappel_link(pos) != null:
+			cands.append({"pos": pos, "name": String(m.name), "breach": ""})  # roof navmesh + rappel link down
 			continue
 		var pair: Node3D = _pair_ceiling_breach(pos)
 		if pair != null:
 			cands.append({"pos": pos, "name": String(m.name), "breach": _map_path(pair)})
-		else:
-			Log.warn(&"director", "HeliDrop %s is off the navmesh and has no ceiling breach near it: skipped" % m.name)
+			continue
+		if AssaultEventMarkerScan.nav_point(_rt.map, pos, 1.2) == Vector3.INF:
+			Log.warn(&"director", "HeliDrop %s: no navmesh within 1.2 m and no ceiling breach to drop through" % m.name)
+		cands.append({"pos": pos, "name": String(m.name), "breach": ""})
 	if not cands.is_empty():
 		return cands[GameRng.stream(RNG).randi_range(0, cands.size() - 1)]
 	var sp: Node3D = _nearest_police_spawn([])
 	return {"pos": sp.global_position, "name": "", "breach": ""} if sp != null else {}
 
 
+## ENV C's roof route (GH AssaultEvents/RoofRappelAlley): a one-way NavigationLink3D with RappelLinks.META under the
+## AssaultEvents root whose start is on the drop's level within ROOF_LINK_RADIUS_M. With it the roof is a police
+## navmesh island: rope units land and walk on (NpcMotor rappels down the link), no breach pairing needed.
+func _roof_rappel_link(pos: Vector3) -> NavigationLink3D:
+	var root: Node = AssaultEventMarkerScan.root(_rt.map)
+	if root == null:
+		return null
+	for n: Node in root.find_children("*", "NavigationLink3D", true, false):
+		var link: NavigationLink3D = n as NavigationLink3D
+		if not link.has_meta(RappelLinks.META) or not link.enabled:
+			continue
+		var start: Vector3 = link.global_transform * link.start_position
+		if absf(start.y - pos.y) < 1.5 and _flat(start - pos).length() <= ROOF_LINK_RADIUS_M:
+			return link
+	return null
+
+
+## The ceiling breach a roof drop at `pos` goes down through: a `ceiling` Breach_<n> within PAIR_RADIUS_M
+## horizontally whose ceiling plane the drop stands on or above (a floor drop under it never pairs).
 func _pair_ceiling_breach(pos: Vector3) -> Node3D:
 	for m: Node3D in AssaultEventMarkerScan.list(_rt.map, AssaultEventMarkerScan.BREACH):
-		if String(m.get_meta(&"kind", "wall")) == "ceiling" and m.global_position.distance_to(pos) <= PAIR_RADIUS_M:
+		if String(m.get_meta(&"kind", "wall")) != "ceiling":
+			continue
+		if _flat(m.global_position - pos).length() <= PAIR_RADIUS_M and pos.y >= m.global_position.y - 0.3:
 			return m
 	return null
 
@@ -293,19 +360,28 @@ func _on_heli_hover(heli: AssaultHeli, drop: Dictionary, p: Dictionary) -> void:
 		if breach != null:
 			history.append({"kind": AssaultEventsTweak.KIND_BREACH, "t": _clock, "wave": director.wave_index,
 				"position": breach.global_position, "marker": bpath, "net_id": breach.net_id})
-			event_started.emit(AssaultEventsTweak.KIND_BREACH, breach, breach.global_position)
+			_started(AssaultEventsTweak.KIND_BREACH, breach, breach.global_position)
 	_heli_ropes[heli] = 0
 	var interval: float = float(p.get("drop_interval_s", 0.9))
 	var speed: float = float(p.get("rappel_speed_mps", 3.0))
 	for i: int in range(ids.size()):
+		# Ropes hang from the hover point's anchors (not wherever the heli drifted to this frame), and land on the
+		# drop's floor: a floor hit far from the drop height (a ledge, a parked prop) is ignored.
 		var a: Vector3 = anchors[i % anchors.size()]
-		var land: Vector3 = _floor_below(a, float(drop["pos"].y))
-		var face: Vector3 = _flat(heli.global_position - a)  # hang outside the door, facing the rope / cabin
+		if heli.hover_point != Vector3.INF:
+			a += heli.hover_point - heli.global_position
+		var drop_y: float = float(drop["pos"].y)
+		var land: Vector3 = _floor_below(a, drop_y)
+		if absf(land.y - drop_y) > 0.6:
+			land = Vector3(a.x, drop_y, a.z)
+		var hover_at: Vector3 = heli.hover_point if heli.hover_point != Vector3.INF else heli.global_position
+		var face: Vector3 = _flat(hover_at - a)  # hang outside the door, facing the rope / cabin
 		face = face.normalized() if face.length() > 0.05 else -heli.global_basis.x
 		var bottom: Vector3 = Vector3(a.x, land.y, a.z)
-		var top_y: float = a.y - tweak.rope_chest_height_m - 0.3
+		var top_y: float = a.y - tweak.rope_hang_chest_m - 0.2
 		var legs: Array[Dictionary] = [{"to": _rope_root(a, bottom, top_y, face), "rappel": true, "speed": speed}]
-		legs.append({"to": _rope_root(a, bottom, land.y, face), "rappel": true, "speed": speed, "landed": true})
+		legs.append({"to": _rope_root(a, bottom, land.y, face), "rappel": true, "speed": speed, "landed": true,
+			"rope": [heli, i % anchors.size()]})
 		legs.append({"hold_s": tweak.rappel_land_s, "anim": CLIP_RAPPEL_LAND})
 		if breach != null:
 			legs.append_array(_ceiling_legs(breach, Vector3.ZERO, true))
@@ -313,6 +389,8 @@ func _on_heli_hover(heli: AssaultHeli, drop: Dictionary, p: Dictionary) -> void:
 			"xf": Transform3D(Basis.looking_at(face, Vector3.UP), legs[0]["to"]), "legs": legs, "face": face,
 			"kind": AssaultEventsTweak.KIND_HELI, "owner": heli})
 		_heli_ropes[heli] = int(_heli_ropes[heli]) + 1
+		_rope_users_add(heli, i % anchors.size())
+	heli.rope_floor_y = float(drop["pos"].y)
 	if ids.is_empty():
 		heli.drop_done = true
 
@@ -409,8 +487,9 @@ func _run_breach(p: Dictionary, marker: String) -> AssaultEventEntity:
 	p["_marker"] = String(best.name)
 	_add_entity(b, AssaultEventsTweak.KIND_BREACH, p, best.global_transform.orthonormalized())
 	b.blown.connect(_on_breach_blown.bind(p))
-	b.start()
 	_queue_breach_placer(b, p)
+	_queue_rope_squad(b, p)
+	b.start()
 	return b
 
 
@@ -419,16 +498,17 @@ func _run_breach(p: Dictionary, marker: String) -> AssaultEventEntity:
 func _ceiling_legs(b: AssaultBreach, off: Vector3, walk_in: bool) -> Array[Dictionary]:
 	var up: Vector3 = b.global_basis.z.normalized()
 	var face: Vector3 = b.global_basis.y.normalized()
-	var top: Vector3 = b.global_position + up * (1.0 + tweak.rope_chest_height_m)
+	var top: Vector3 = b.global_position + up * (1.0 + tweak.rope_hang_chest_m)
 	var bottom: Vector3 = b.point("ExitPoint")
 	b.set_rope(top, bottom)
+	_rope_users_add(b, 0)
 	var hang_y: float = b.global_position.y + up.y * 0.7
 	var legs: Array[Dictionary] = []
 	if walk_in:
 		legs.append({"to": b.point("EntryPoint"), "rappel": false})
 	legs.append({"to": _rope_root(top, bottom, hang_y, face) + off, "rappel": false, "face": face})
 	legs.append({"to": _rope_root(top, bottom, hang_y, face) + off, "wait_breach": b, "anim": CLIP_RAPPEL_HANG})
-	legs.append({"to": _rope_root(top, bottom, bottom.y, face) + off, "rappel": true, "speed": 3.5})
+	legs.append({"to": _rope_root(top, bottom, bottom.y, face) + off, "rappel": true, "speed": 3.5, "rope": [b, 0]})
 	legs.append({"hold_s": tweak.rappel_land_s, "anim": CLIP_RAPPEL_LAND})
 	return legs
 
@@ -436,6 +516,8 @@ func _ceiling_legs(b: AssaultBreach, off: Vector3, walk_in: bool) -> Array[Dicti
 func _on_breach_blown(b: AssaultBreach, p: Dictionary) -> void:
 	var ids: Array = p.get("squad", []) as Array
 	var kind: String = b.breach_kind if not bool(p.get("fx_only", false)) else "fx"
+	if bool(p.get("_pre_squad", false)):
+		return  # window / ceiling: the squad is already on the rope, waiting for the blast
 	if bool(p.get("_placer", false)) and not ids.is_empty():
 		ids = ids.slice(1)  # the charge placer is already there (it walks in with the squad)
 	if ids.is_empty():
@@ -443,55 +525,92 @@ func _on_breach_blown(b: AssaultBreach, p: Dictionary) -> void:
 	var delay: float = float(p.get("squad_delay_s", 0.8))
 	var interval: float = float(p.get("squad_interval_s", 0.5))
 	var side: Vector3 = b.global_basis.x.normalized()
-	var into: Vector3 = -b.global_basis.z.normalized()
+	var face: Vector3 = _flat(-b.global_basis.z)
+	face = face.normalized() if face.length() > 0.05 else Vector3.FORWARD
+	for i: int in range(ids.size()):
+		var off: Vector3 = side * 0.7 * ceilf(float(i) * 0.5) * (1.0 if i % 2 == 1 else -1.0)
+		var spawn: Vector3 = (b.global_position if kind == "fx" else b.point("EntryPoint")) + off
+		_queue.append({"t": delay + interval * i, "id": StringName(ids[i]), "face": face,
+			"xf": Transform3D(Basis.looking_at(face, Vector3.UP), spawn), "legs": [] as Array[Dictionary],
+			"kind": AssaultEventsTweak.KIND_BREACH, "owner": b})
+
+
+## Window / ceiling breach (PD2): the squad ropes down at warning start and hangs (rappel_hang) until the blast,
+## then swings in through the window / drops through the hole and lands.
+func _queue_rope_squad(b: AssaultBreach, p: Dictionary) -> void:
+	var ids: Array = p.get("squad", []) as Array
+	if ids.is_empty() or bool(p.get("fx_only", false)) or not ["window", "ceiling"].has(b.breach_kind):
+		return
+	p["_pre_squad"] = true
+	var interval: float = float(p.get("squad_interval_s", 0.5))
+	var side: Vector3 = b.global_basis.x.normalized()
 	for i: int in range(ids.size()):
 		var off: Vector3 = side * 0.7 * ceilf(float(i) * 0.5) * (1.0 if i % 2 == 1 else -1.0)
 		var legs: Array[Dictionary] = []
-		var spawn: Vector3
-		var face: Vector3 = _flat(into).normalized() if _flat(into).length() > 0.05 else Vector3.FORWARD
-		match kind:
-			"window":
-				# Down the rope from the parapet to sill height, then swing in through the opening.
-				var anchor: Vector3 = b.point("RopeAnchor")
-				var entry: Vector3 = b.point("EntryPoint")
-				b.set_rope(anchor, entry)
-				spawn = _rope_root(anchor, entry, anchor.y - tweak.rope_chest_height_m - 0.3, face)
-				legs = [{"to": _rope_root(anchor, entry, entry.y + 2.0, face), "rappel": true},
-					{"to": b.point("ExitPoint") + off * 0.5, "rappel": true},
-					{"hold_s": tweak.rappel_land_s, "anim": CLIP_RAPPEL_LAND}]
-			"ceiling":
-				legs = _ceiling_legs(b, off * 0.4, false)
-				face = b.global_basis.y.normalized()
-				spawn = legs[0]["to"]
-			"fx":
-				spawn = b.global_position + off
-			_:
-				spawn = b.point("EntryPoint") + off
-		_queue.append({"t": delay + interval * i, "id": StringName(ids[i]), "face": face,
-			"xf": Transform3D(Basis.looking_at(_flat(face).normalized() if _flat(face).length() > 0.05 else Vector3.FORWARD,
-				Vector3.UP), spawn), "legs": legs, "kind": AssaultEventsTweak.KIND_BREACH, "owner": b})
+		var face: Vector3
+		if b.breach_kind == "ceiling":
+			legs = _ceiling_legs(b, off * 0.4, false)
+			face = b.global_basis.y.normalized()
+		else:
+			face = _flat(-b.global_basis.z).normalized()
+			var entry: Vector3 = b.point("EntryPoint") + off
+			var top: Vector3 = Vector3(entry.x, b.point("RopeAnchor").y, entry.z)  # vertical rope off the parapet
+			if i == 0:
+				b.set_rope(top, entry)
+			_rope_users_add(b, 0)
+			var hang_y: float = entry.y + 2.0
+			legs = [{"to": _rope_root(top, entry, top.y - tweak.rope_hang_chest_m - 0.2, face), "rappel": false},
+				{"to": _rope_root(top, entry, hang_y, face), "rappel": true},
+				{"to": _rope_root(top, entry, hang_y, face), "wait_breach": b, "anim": CLIP_RAPPEL_HANG},
+				{"to": b.point("ExitPoint") + off * 0.5, "rappel": true, "rope": [b, 0]},
+				{"hold_s": tweak.rappel_land_s, "anim": CLIP_RAPPEL_LAND}]
+		_queue.append({"t": interval * i, "id": StringName(ids[i]), "face": face,
+			"xf": Transform3D(Basis.looking_at(face, Vector3.UP), legs[0]["to"]), "legs": legs,
+			"kind": AssaultEventsTweak.KIND_BREACH, "owner": b})
 
 
-## A wall / fx breach: the squad's first unit plants the charge at warning start (breach_place, then crouches
-## back in breach_standback until the blast; it walks in with the squad).
+## A wall / fx breach: the squad's first unit plants the charge at warning start (ENV D breach_place: stands
+## breach_place_wall_m from the wall, the charge appears at the clip's `place` event), side-steps
+## breach_standback_side_m to its left (breach_standback) and holds a braced crouch until the blast; it walks in
+## with the squad.
 func _queue_breach_placer(b: AssaultBreach, p: Dictionary) -> void:
 	var ids: Array = p.get("squad", []) as Array
 	if ids.is_empty() or b.breach_kind != "wall":
 		return
 	var face: Vector3 = _flat(-b.global_basis.z)
 	face = face.normalized() if face.length() > 0.05 else Vector3.FORWARD
-	var stand: Vector3 = b.point("EntryPoint") if not bool(p.get("fx_only", false)) else b.global_position - face * 0.9
-	var aside: Vector3 = stand + b.global_basis.x.normalized() * 0.9
+	var charge: Vector3 = b.point("Charge")
+	var floor_y: float = b.global_position.y
+	var stand: Vector3 = Vector3(charge.x, floor_y, charge.z) - face * tweak.breach_place_wall_m
+	var left: Vector3 = -Basis.looking_at(face, Vector3.UP).x.normalized()
+	var aside: Vector3 = stand + left * tweak.breach_standback_side_m
 	p["_placer"] = true
+	b.charge_delay_s = tweak.breach_place_event_s
 	var legs: Array[Dictionary] = [{"hold_s": tweak.breach_place_s, "anim": CLIP_BREACH_PLACE},
-		{"to": aside, "rappel": false, "face": face},
-		{"to": aside, "wait_breach": b, "anim": CLIP_BREACH_STANDBACK}]
+		{"to": aside, "speed": tweak.breach_standback_side_m / maxf(tweak.breach_standback_s, 0.01), "face": face,
+			"anim": CLIP_BREACH_STANDBACK},
+		{"to": aside, "wait_breach": b, "anim": CLIP_CROUCH_IDLE}]
 	_queue.append({"t": 0.0, "id": StringName(ids[0]), "face": face,
 		"xf": Transform3D(Basis.looking_at(face, Vector3.UP), stand), "legs": legs,
 		"kind": AssaultEventsTweak.KIND_BREACH, "owner": b})
 
 
 # --- Units ---------------------------------------------------------------------------------------
+
+## ENV D van_exit: root at f0 van_exit_step_m behind the landing spot (toward the van), carried along the unit's
+## -Z (away from the van) by the clip's root-motion curve over van_exit_s; then the motor takes over.
+func _queue_van_exit(ids: Array, exit: Transform3D, van: Node, interval: float) -> void:
+	var face: Vector3 = _flat(-exit.basis.z)
+	face = face.normalized() if face.length() > 0.05 else Vector3.FORWARD
+	var side: Vector3 = exit.basis.x.normalized()
+	for i: int in range(ids.size()):
+		var land: Vector3 = exit.origin + side * 0.8 * ceilf(float(i) * 0.5) * (1.0 if i % 2 == 1 else -1.0)
+		var legs: Array[Dictionary] = [{"to": land, "speed": tweak.van_exit_step_m / maxf(tweak.van_exit_s, 0.01),
+			"face": face, "anim": CLIP_VAN_EXIT}]
+		_queue.append({"t": interval * i, "id": StringName(ids[i]), "face": face, "legs": legs,
+			"xf": Transform3D(Basis.looking_at(face, Vector3.UP), land - face * tweak.van_exit_step_m),
+			"kind": AssaultEventsTweak.KIND_TURRET_VAN, "owner": van})
+
 
 func _queue_squad(ids: Array, xf: Transform3D, legs: Array[Dictionary], kind: StringName, owner: Node, interval: float) -> void:
 	var side: Vector3 = xf.basis.x.normalized()
@@ -515,7 +634,11 @@ func _tick_queue(delta: float) -> void:
 		var owner: Node = q.get("owner") as Node
 		if npc == null:
 			_rope_done(owner)
+			for leg: Dictionary in legs:
+				if leg.has("rope"):
+					_rope_users_done(leg["rope"] as Array)
 			continue
+		npc.global_position = (q["xf"] as Transform3D).origin
 		if not legs.is_empty():
 			_guides.append({"npc": npc, "legs": legs, "i": 0, "owner": owner, "started": false,
 				"face": q.get("face", Vector3.ZERO), "hold": 0.0})
@@ -551,6 +674,10 @@ func _tick_guides(delta: float) -> void:
 			if motor != null:
 				_release(npc, motor)
 			_land(g)
+			for li: int in range(int(g["i"]), (g["legs"] as Array).size()):
+				var lg: Dictionary = (g["legs"] as Array)[li]
+				if lg.has("rope"):
+					_rope_users_done(lg["rope"] as Array)
 			_guides.remove_at(gi)
 			continue
 		if not bool(g["started"]):
@@ -600,6 +727,8 @@ func _step_leg(g: Dictionary, npc: NpcBase, motor: NpcMotor, delta: float) -> bo
 	npc.global_position = to
 	if bool(leg.get("landed", false)):
 		_land(g)
+	if leg.has("rope"):
+		_rope_users_done(leg["rope"] as Array)  # touch: hands off, this unit's rope is retracted
 	return true
 
 
@@ -634,6 +763,32 @@ func _release(npc: NpcBase, motor: NpcMotor) -> void:
 	if is_instance_valid(npc):
 		npc.velocity = Vector3.ZERO
 		_set_anim(npc, &"")
+
+
+## Rope visibility: a rope (heli RopeL / RopeR index, or a breach's single rope) shows while a unit still has to
+## come down it; it is retracted once the last one touched down (ENV D: the hands let go by rappel_land f17).
+func _rope_users_add(owner: Node, idx: int) -> void:
+	var key: String = "%d:%d" % [owner.get_instance_id(), idx]
+	_rope_users[key] = int(_rope_users.get(key, 0)) + 1
+	_set_rope_shown(owner, idx, true)
+
+
+func _rope_users_done(rope: Array) -> void:
+	var owner: Node = rope[0] as Node
+	if owner == null or not is_instance_valid(owner):
+		return
+	var key: String = "%d:%d" % [owner.get_instance_id(), int(rope[1])]
+	_rope_users[key] = int(_rope_users.get(key, 0)) - 1
+	if int(_rope_users[key]) <= 0:
+		_rope_users.erase(key)
+		_set_rope_shown(owner, int(rope[1]), false)
+
+
+static func _set_rope_shown(owner: Node, idx: int, on: bool) -> void:
+	if owner is AssaultHeli:
+		(owner as AssaultHeli).set_rope_shown(idx, on)
+	elif owner is AssaultBreach:
+		(owner as AssaultBreach).set_rope_shown(on)
 
 
 ## A heli rope unit is down (or gone): the heli leaves once all are.

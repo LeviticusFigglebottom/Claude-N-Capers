@@ -26,14 +26,25 @@ const KINDS: Array[StringName] = [KIND_TURRET_VAN, KIND_HELI, KIND_BREACH]
 @export var max_active: int = 2
 
 @export_group("Rope / clips (ENV D PO6-17 clips)")
-## Rope units hang so that chest + rope_hand_offset_m forward lies on the rope line (the clip holds the hands
-## there): root = rope point at (root height + rope_chest_height_m) - facing x rope_hand_offset_m.
-@export var rope_chest_height_m: float = 1.3
-@export var rope_hand_offset_m: float = 0.10
-## One-shot clip lengths (s): rappel_land ~30 f, van_exit ~36 f, breach_place ~45 f (`place` @ ~28 f).
+## ENV D's rope clips hold both fists on a vertical rope at root-space (x 0, z -rope_hand_offset_m), 0.10 m in
+## front of the sternum: root = rope point at (root height + sternum height) - facing x rope_hand_offset_m.
+## Sternum height above the root: rope_chest_height_m while descending, rope_hang_chest_m while hanging.
+@export var rope_chest_height_m: float = 1.4
+@export var rope_hang_chest_m: float = 1.7
+@export var rope_hand_offset_m: float = 0.225
+## One-shot clips (s / m): rappel_land 30 f (touch @6; hands off by f17), van_exit 36 f with a 0.60 m root-motion
+## step along -Z, breach_place 45 f (`place` @ 28 f = 0.93 s, palms on a wall 0.45 m ahead), breach_standback
+## 30 f side step 0.80 m along -X into a braced crouch (ends on crouch_idle).
 @export var rappel_land_s: float = 1.0
 @export var van_exit_s: float = 1.2
+@export var van_exit_step_m: float = 0.6
 @export var breach_place_s: float = 1.5
+@export var breach_place_event_s: float = 0.93
+@export var breach_place_wall_m: float = 0.45
+@export var breach_standback_s: float = 1.0
+@export var breach_standback_side_m: float = 0.8
+## ENV D heli_door_sill: the kneeling sniper's root = SniperSeat x this offset (SniperSeat local basis).
+@export var heli_kneel_offset: Vector3 = Vector3(0.5, -0.344, 0.15)
 
 @export_group("Rows")
 ## heist_id (StringName) -> {"events": Array[Dictionary]} (see the header).
@@ -53,11 +64,16 @@ const KINDS: Array[StringName] = [KIND_TURRET_VAN, KIND_HELI, KIND_BREACH]
 
 ## Rows for `heist_id` (empty when the heist has no events).
 func rows_for(heist_id: StringName) -> Array[Dictionary]:
-	var out: Array[Dictionary] = []
 	var entry: Variant = heists.get(heist_id, heists.get(String(heist_id), {}))
 	if not entry is Dictionary:
-		return out
-	for r: Variant in (entry as Dictionary).get("events", []):
+		return [] as Array[Dictionary]
+	return valid_rows((entry as Dictionary).get("events", []) as Array)
+
+
+## The rows of `arr` with a known kind (HeistDef.assault_events and the tweak table share the schema).
+static func valid_rows(arr: Array) -> Array[Dictionary]:
+	var out: Array[Dictionary] = []
+	for r: Variant in arr:
 		if r is Dictionary and KINDS.has(StringName((r as Dictionary).get("kind", &""))):
 			out.append(r as Dictionary)
 	return out

@@ -136,8 +136,7 @@ func start(p_park: Transform3D) -> void:
 	park = p_park
 	var fwd: Vector3 = park.basis.z.normalized()
 	drive_from = Transform3D(park.basis, park.origin - fwd * p_float("drive_in_m", 20.0))
-	global_transform = drive_from
-	cue(&"cue.assault_van_arrive", global_position)
+	global_transform = drive_from  # engine loop / cue.assault_van_arrive: C's CuePlayer on assault_event_started
 
 
 func _physics_process(delta: float) -> void:

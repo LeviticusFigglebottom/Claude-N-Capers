@@ -25,7 +25,7 @@ func _ready() -> void:
 
 func _run() -> void:
 	_rt = await HeistLauncher.launch(&"glasshouse", 1617, Enums.Difficulty.HAZARDOUS, self,
-		{"skip_casing": true, "crew_ai": false, "captain": false, "assault_events": false})
+		{"skip_casing": true, "crew_ai": false, "ai_teammates": 0, "captain": false, "assault_events": false})
 	for s: int in _rt.crew_members().size():
 		Modifiers.set_source(s, &"po6_17.immune", {&"defense.damage_taken_mult": 0.0})
 	_rt.teleport_crew(0, Transform3D(Basis.IDENTITY, Vector3(5.0, 0.05, 10.5)))
@@ -104,6 +104,8 @@ func _save(tiles: Array[Image], file: String) -> void:
 
 
 func _van(ev: AssaultEventRunner) -> void:
+	_rt.teleport_crew(0, Transform3D(Basis.IDENTITY, Vector3(8.5, 0.05, 16.5)))  # on the pavement: the turret's target
+	(_rt.crew_controller(0) as Node3D).visible = false  # the local FP crew member has no third-person body (capsule)
 	var van: AssaultTurretVan = ev.run(&"turret_van", {"drive_in_s": 3.0}, "TurretVan_1") as AssaultTurretVan
 	var tiles: Array[Image] = []
 	_look(Vector3(5.0, 1.7, 11.0), Vector3(-3.0, 1.2, 21.0))
@@ -140,6 +142,13 @@ func _heli(ev: AssaultEventRunner) -> void:
 	await _wait(1.6)
 	_look(Vector3(18.0, 2.0, -12.0), heli.global_position + Vector3(0, -4.0, 0))
 	tiles.append(await _grab())
+	# Same view with the heli and its ropes hidden: the rectangles behind are the map's fire-escape railings.
+	heli.visible = false
+	tiles.append(await _grab())
+	heli.visible = true
+	# Close-up from the alley floor: two straight ropes, davit to floor.
+	_look(Vector3(16.0, 1.6, -9.0), heli.global_position + Vector3(0, -2.5, 0))
+	tiles.append(await _grab())
 	while is_instance_valid(heli) and heli.passenger == null:
 		await get_tree().physics_frame
 	await _wait(3.0)
@@ -151,23 +160,33 @@ func _heli(ev: AssaultEventRunner) -> void:
 
 
 func _breach(ev: AssaultEventRunner) -> void:
-	var b: AssaultBreach = ev.run(&"breach", {"warning_s": 3.0}) as AssaultBreach
+	# C's Breach_3: the U6 manager-office window on the Harlow facade (cops rope down from the parapet, hang, swing in).
+	var b: AssaultBreach = ev.run(&"breach", {"warning_s": 5.0}, "Breach_3") as AssaultBreach
+	if b == null:
+		b = ev.run(&"breach", {"warning_s": 5.0}) as AssaultBreach
 	if b == null:
 		print("po6_17_capture: no breach candidate")
 		return
-	var at: Vector3 = b.point("Charge")
-	var room: Vector3 = b.global_transform * Vector3(0, 1.6, -5.0)
-	if room.distance_to(Vector3(5.0, 1.6, 8.0)) > room.distance_to(b.global_transform * Vector3(0, 1.6, 5.0)):
-		room = b.global_transform * Vector3(0, 1.6, 5.0)
+	var out: Vector3 = b.global_basis.z.normalized()
+	var street: Vector3 = b.global_position + out * 7.5 + Vector3(2.5, -1.7, 0.0)
+	var target: Vector3 = b.global_position + Vector3(0, 1.5, 0)
+	var inside: Vector3 = b.global_position - out * 4.5 + Vector3(-1.2, 1.6, 0.0)
+	var fill: OmniLight3D = OmniLight3D.new()
+	fill.omni_range = 9.0
+	fill.light_energy = 2.0
+	_rt.add_child(fill)
+	fill.global_position = b.global_position + out * 3.0 + Vector3(0, 2.0, 0)
 	var tiles: Array[Image] = []
-	_look(room, at)
-	await _wait(1.5)
+	await _wait(3.6)
+	_look(street, target)
 	tiles.append(await _grab())
 	while not b.is_blown():
 		await get_tree().physics_frame
 	await _wait(0.1)
 	tiles.append(await _grab())
-	await _wait(2.0)
+	await _wait(1.6)
+	_look(inside, b.global_position + Vector3(0, 1.0, 0))
 	tiles.append(await _grab())
+	fill.queue_free()
 	print("po6_17_capture: breach %s at %s, units %d" % [b.params.get("_marker", ""), b.global_position, ev.units.size()])
 	_save(tiles, "po6_17_breach.jpg")

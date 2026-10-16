@@ -38,7 +38,10 @@ var do_drop: bool = false
 var do_sniper: bool = false
 ## Server: the runner says the drop is done (every unit down or dead).
 var drop_done: bool = false
-var rope_len: float = 0.0
+## Ropes: each drawn as ONE straight vertical line (top_level, world space) from its RopeL / RopeR anchor down to
+## rope_floor_y, only while rope_on[i] (the runner: a unit still has to come down it; ENV D: retract on touch).
+var rope_floor_y: float = 0.0
+var rope_on: Array[bool] = [false, false]
 ## Server: the seated sniper and his moving SNIPER_PERCH (the runner sets / clears them); pinned to the seat
 ## every physics frame after his motor ran (process_physics_priority).
 var passenger: NpcBase = null
@@ -62,9 +65,10 @@ func _build() -> void:
 	for anchor: Node3D in [rope_l, rope_r]:
 		if anchor == null:
 			continue
-		var rope: MeshInstance3D = AssaultEventEntity.cylinder("Rope", 0.02, 1.0, Color(0.1, 0.09, 0.08))
+		var rope: MeshInstance3D = AssaultEventEntity.cylinder("Rope%d" % ropes.size(), 0.02, 1.0, Color(0.1, 0.09, 0.08))
 		rope.visible = false
-		anchor.add_child(rope)
+		rope.top_level = true
+		add_child(rope)
 		ropes.append(rope)
 	process_physics_priority = 10  # after NpcMotor: the seated sniper is pinned after his motor ran
 
@@ -127,6 +131,7 @@ func seat_transform() -> Transform3D:
 
 
 func _process(delta: float) -> void:
+	_update_ropes()
 	if rotor != null:
 		rotor.rotate_y(TAU * ROTOR_RPS * delta)
 	if tail_rotor != null:
@@ -134,15 +139,33 @@ func _process(delta: float) -> void:
 
 
 func _apply_stage(s: int) -> void:
-	_show_ropes(s == Stage.HOVER)
+	if s != Stage.HOVER:
+		rope_on = [false, false] as Array[bool]
+	_update_ropes()
 
 
-func _show_ropes(on: bool) -> void:
-	for rope: MeshInstance3D in ropes:
-		rope.visible = on and rope_len > 0.2
+## Server (runner): show / retract rope `i` (0 = RopeL, 1 = RopeR).
+func set_rope_shown(i: int, on: bool) -> void:
+	if i >= 0 and i < rope_on.size():
+		rope_on[i] = on
+	_update_ropes()
+
+
+func _update_ropes() -> void:
+	var anchors: Array[Node3D] = []
+	for a: Node3D in [rope_l, rope_r]:
+		if a != null:
+			anchors.append(a)
+	for i: int in range(ropes.size()):
+		var rope: MeshInstance3D = ropes[i]
+		var on: bool = stage == Stage.HOVER and i < rope_on.size() and rope_on[i] and i < anchors.size() \
+			and anchors[i].is_inside_tree()
+		var top: Vector3 = anchors[i].global_position if on else Vector3.ZERO
+		var length: float = top.y - rope_floor_y
+		rope.visible = on and length > 0.2
 		if rope.visible:
-			(rope.mesh as CylinderMesh).height = rope_len
-			rope.position = Vector3(0, -rope_len * 0.5, 0)
+			(rope.mesh as CylinderMesh).height = length
+			rope.transform = Transform3D(Basis.IDENTITY, Vector3(top.x, (top.y + rope_floor_y) * 0.5, top.z))
 
 
 # --- Server -------------------------------------------------------------------------------------
@@ -159,8 +182,7 @@ func start(center: Vector3, radius: float, p_hover: Vector3, floor_y: float, dro
 	var dir: Vector3 = Vector3(cos(a), 0.0, sin(a))
 	global_position = center + dir * p_float("approach_m", 110.0)
 	_leave_to = center - dir * p_float("approach_m", 110.0)
-	_angle = a
-	cue(&"cue.assault_heli_arrive", global_position)
+	_angle = a  # rotor loop / cue.assault_heli_arrive / _leave: C's CuePlayer on assault_event_started / _ended
 
 
 func _physics_process(delta: float) -> void:
@@ -178,7 +200,8 @@ func _pin_passenger() -> void:
 	if passenger_perch != null and is_instance_valid(passenger_perch):
 		passenger_perch.global_position = xf.origin
 	if passenger != null and is_instance_valid(passenger) and passenger.alive:
-		passenger.global_position = xf.origin  # ENV D heli_door_* clips: root at SniperSeat, kneeling on the sill
+		# ENV D heli_door_sill: kneel root = SniperSeat x heli_kneel_offset (seat basis), facing out of the door.
+		passenger.global_transform = Transform3D(xf.basis.orthonormalized(), xf * AssaultEventsTweak.data().heli_kneel_offset)
 		passenger.velocity = Vector3.ZERO
 		var lb: LongshotBrain = passenger.get_node_or_null(^"Brain") as LongshotBrain
 		var clip: StringName = CLIP_DOOR_AIM if lb != null and lb.laser_active else CLIP_DOOR_IDLE
@@ -200,15 +223,12 @@ func _step(delta: float) -> void:
 					sniper_window.emit(self, true)
 		Stage.TO_DROP:
 			if _fly_to(hover_point, speed * 0.6, delta):
-				rope_len = maxf(hover_point.y + 1.93 - drop_floor_y, 0.0)
+				rope_floor_y = drop_floor_y
 				set_stage(Stage.HOVER)
-				_show_ropes(true)
 				hover_reached.emit(self)
 		Stage.HOVER:
 			_hold(hover_point, delta)
 			if drop_done or stage_time > 60.0:
-				rope_len = 0.0
-				_show_ropes(false)
 				set_stage(Stage.SNIPER if do_sniper else Stage.LEAVE)
 				if stage == Stage.SNIPER:
 					_angle = atan2(global_position.z - orbit_center.z, global_position.x - orbit_center.x)
@@ -223,12 +243,6 @@ func _step(delta: float) -> void:
 				set_stage(Stage.GONE)
 				end_event()
 				queue_free()
-
-
-func set_stage(s: int) -> void:
-	if s == Stage.LEAVE and s != stage and is_server():
-		cue(&"cue.assault_heli_leave", global_position)  # rotor loop stop fact (D-114 §3)
-	super.set_stage(s)
 
 
 ## Fly toward `p`; true when there.
@@ -274,11 +288,13 @@ func _face(dir: Vector3, delta: float, bank: float = 0.0) -> void:
 
 
 func _net_state() -> Dictionary:
-	return {"stage": stage, "rope": snappedf(rope_len, 0.1)}
+	return {"stage": stage, "fy": snappedf(rope_floor_y, 0.01), "ro": (1 if rope_on[0] else 0) | (2 if rope_on[1] else 0)}
 
 
 func _apply_net_state(d: Dictionary) -> void:
-	if d.has("rope"):
-		rope_len = float(d["rope"])
+	if d.has("fy"):
+		rope_floor_y = float(d["fy"])
+	if d.has("ro"):
+		rope_on = [(int(d["ro"]) & 1) != 0, (int(d["ro"]) & 2) != 0] as Array[bool]
 	super._apply_net_state(d)
-	_show_ropes(stage == Stage.HOVER)
+	_update_ropes()

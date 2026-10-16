@@ -30,6 +30,10 @@ var size: Vector2 = Vector2(1.0, 2.2)
 var rope_top: Vector3 = Vector3.INF
 var rope_bottom: Vector3 = Vector3.INF
 var rope_mesh: MeshInstance3D = null
+## Server-set, replicated: the rope is drawn only while a unit still has to come down it.
+var rope_shown: bool = false
+## The charge appears this long into WARNING (a placer's breach_place `place` event; 0 = at once).
+var charge_delay_s: float = 0.0
 var _blink_t: float = 0.0
 
 
@@ -61,6 +65,7 @@ func _build() -> void:
 	charge_mesh.visible = false
 	rope_mesh = AssaultEventEntity.cylinder("Rope", 0.02, 1.0, Color(0.1, 0.09, 0.08))
 	rope_mesh.visible = false
+	rope_mesh.top_level = true  # one straight world-space line, never inherits a parent basis
 	add_child(rope_mesh)
 
 
@@ -142,10 +147,7 @@ func is_blown() -> bool:
 
 
 func _apply_stage(s: int) -> void:
-	if charge_mesh != null:
-		charge_mesh.visible = s == Stage.WARNING
-		if charge_mesh.visible and charge_mesh.is_inside_tree():
-			charge_mesh.global_position = point("Charge")
+	_update_charge()
 	if s == Stage.BLOWN:
 		if intact != null:
 			intact.visible = false
@@ -164,7 +166,18 @@ static func _disable_collision(n: Node) -> void:
 		_disable_collision(c)
 
 
+## The charge on the wall at Charge (C's Model/Charge, 1.1 m high on a wall) from charge_delay_s into WARNING.
+func _update_charge() -> void:
+	if charge_mesh == null:
+		return
+	var on: bool = stage == Stage.WARNING and stage_time >= charge_delay_s
+	if on and not charge_mesh.visible and charge_mesh.is_inside_tree():
+		charge_mesh.global_position = point("Charge")
+	charge_mesh.visible = on
+
+
 func _process(delta: float) -> void:
+	_update_charge()
 	if charge_light == null:
 		return
 	if stage != Stage.WARNING:
@@ -180,8 +193,7 @@ func _process(delta: float) -> void:
 # --- Server -------------------------------------------------------------------------------------
 
 func start() -> void:
-	set_stage(Stage.WARNING)
-	cue(&"cue.assault_breach_warning", point("Charge"))
+	set_stage(Stage.WARNING)  # cue.assault_breach_warning: C's CuePlayer on assault_event_started
 
 
 func _physics_process(delta: float) -> void:
@@ -201,6 +213,7 @@ func blow() -> void:
 	if breach_kind == "wall" and visual != null:
 		_open_link()
 	Explosion.apply(self, at, p_float("radius_m", 4.5), p_float("damage", 60.0), 0, &"breach_c4")
+	cue(&"cue.c4_explode", at)  # audio_cues.md v1.8 (Explosion.apply emits only the explosion_fx, no cue)
 	_stun_around(at)
 	blown.emit(self)
 	end_event()
@@ -241,21 +254,35 @@ func set_rope(top: Vector3, bottom: Vector3) -> void:
 	_show_rope()
 
 
+func set_rope_shown(on: bool) -> void:
+	rope_shown = on
+	_show_rope()
+
+
 func _show_rope() -> void:
 	if rope_mesh == null:
 		return
-	rope_mesh.visible = rope_top != Vector3.INF and rope_bottom != Vector3.INF and rope_top.distance_to(rope_bottom) > 0.2
-	if not rope_mesh.visible or not rope_mesh.is_inside_tree():
+	rope_mesh.visible = rope_shown and rope_top != Vector3.INF and rope_bottom != Vector3.INF \
+		and rope_top.distance_to(rope_bottom) > 0.2
+	if not rope_mesh.visible:
 		return
 	var d: Vector3 = rope_top - rope_bottom
 	(rope_mesh.mesh as CylinderMesh).height = d.length()
+	rope_mesh.transform = Transform3D(rope_basis(d), (rope_top + rope_bottom) * 0.5)  # top_level: world space
+
+
+## Orthonormal basis whose +Y runs along `d` (a CylinderMesh stands on its local Y axis).
+static func rope_basis(d: Vector3) -> Basis:
 	var y: Vector3 = d.normalized()
-	var x: Vector3 = y.cross(Vector3.FORWARD if absf(y.z) < 0.9 else Vector3.RIGHT).normalized()
-	rope_mesh.global_transform = Transform3D(Basis(x, y, x.cross(y)), (rope_top + rope_bottom) * 0.5)
+	if y.dot(Vector3.UP) > 0.9999:
+		return Basis.IDENTITY
+	if y.dot(Vector3.UP) < -0.9999:
+		return Basis(Vector3.RIGHT, PI)
+	return Basis(Quaternion(Vector3.UP, y))  # the shortest rotation taking +Y onto the rope
 
 
 func _net_state() -> Dictionary:
-	var d: Dictionary = {"stage": stage}
+	var d: Dictionary = {"stage": stage, "cd": charge_delay_s, "rs": rope_shown}
 	if rope_top != Vector3.INF:
 		d["rt"] = rope_top
 		d["rb"] = rope_bottom
@@ -264,9 +291,12 @@ func _net_state() -> Dictionary:
 
 func _apply_net_state(d: Dictionary) -> void:
 	super._apply_net_state(d)
-	if d.has("rt") or d.has("rb"):
+	if d.has("cd"):
+		charge_delay_s = float(d["cd"])
+	if d.has("rt") or d.has("rb") or d.has("rs"):
 		rope_top = d.get("rt", rope_top) as Vector3
 		rope_bottom = d.get("rb", rope_bottom) as Vector3
+		rope_shown = bool(d.get("rs", rope_shown))
 		_show_rope()
 
 
