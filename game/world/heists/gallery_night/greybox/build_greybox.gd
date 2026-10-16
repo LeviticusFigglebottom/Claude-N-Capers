@@ -98,6 +98,7 @@ func _build() -> void:
 	_build_spawns(n("Spawns"))
 	_build_preplan(n("Preplan"))
 	_build_review_cameras(n("ReviewCameras"))
+	_build_audio(add(map_root, node3d("Audio")) as Node3D)
 	build_npcs()
 	build_tactical(n("Tactical"))
 	build_lights(n("Lighting"))
@@ -126,6 +127,25 @@ func _build() -> void:
 	normalize_scene(out, old_scene_uid)
 	print("gallery_night: saved %s (navmesh polygons: %d)" % [out, polys])
 	quit(0)
+
+
+## D-117 Audio node (as Golden Hour / Nightfall Depository): CuePlayer, the gallery_night MusicDirector and the
+## ambience beds of the heist doc (Audio/lighting): Great Hall gala / galleries, the basement art store and plant, and the uptown street.
+func _build_audio(parent: Node3D) -> void:
+	var beds: Array = [
+		["BedGreatHall", Vector3(22.0, 3.0, 17.0), &"cue.amb_gallery_gala", 0.0],
+		["BedVestibule", Vector3(22.0, 2.5, 28.0), &"cue.amb_gallery_gala", -6.0],
+		["BedWestGallery", Vector3(6.0, 2.5, 14.0), &"cue.amb_gallery_gala", -8.0],
+		["BedEastGallery", Vector3(38.0, 2.5, 18.0), &"cue.amb_gallery_gala", -8.0],
+		["BedUpperBalcony", Vector3(22.0, 7.5, 28.0), &"cue.amb_gallery_gala", -6.0],
+		["BedArtStore", Vector3(22.0, -2.5, 14.0), &"cue.amb_art_store", 0.0],
+		["BedPlant", Vector3(6.0, -2.5, 14.0), &"cue.amb_art_store", -3.0],
+		["BedParade", Vector3(22.0, 2.5, 40.0), &"cue.amb_uptown_night", 0.0],
+		["BedMews", Vector3(20.0, 2.5, -4.0), &"cue.amb_uptown_night", -4.0],
+		["BedMewsEast", Vector3(51.0, 2.5, 4.0), &"cue.amb_uptown_night", -4.0],
+		["BedCourt", Vector3(-8.0, 2.5, 15.0), &"cue.amb_uptown_night", -4.0],
+	]
+	load("res://world/audio/map_audio_builder.gd").call(&"build", parent, map_root, &"gallery_night", beds)
 
 
 func _fail(msg: String) -> void:

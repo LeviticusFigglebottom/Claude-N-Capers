@@ -120,6 +120,9 @@
 [ext_resource type="PackedScene" path="res://world/heists/dockside_burn/greybox/boat_drop_visual.tscn" id="118_db"]
 [ext_resource type="PackedScene" path="res://world/heists/shared/escape_boat_marker.tscn" id="119_db"]
 [ext_resource type="Script" path="res://world/heists/dockside_burn/dockside_burn_mission.gd" id="120_db"]
+[ext_resource type="Script" path="res://world/audio/cue_player.gd" id="121_db"]
+[ext_resource type="Script" path="res://world/audio/music_director.gd" id="122_db"]
+[ext_resource type="Script" path="res://world/audio/cue_emitter.gd" id="123_db"]
 
 [sub_resource type="BoxShape3D" id="db_1"]
 size = Vector3(3.8, 3.6, 0.2)
@@ -22484,6 +22487,87 @@ metadata/caption = "X5 office roof (player perch) toward the viaduct"
 transform = Transform3D(0.23431562, -0.4960271, 0.83609396, 0, 0.86003685, 0.5102317, -0.9721606, -0.11955525, 0.20152009, 79, 23.8, -2.6)
 metadata/fov = 70.0
 metadata/caption = "S1 crane cab: the Longshot's view over the yard and apron"
+
+[node name="Audio" type="Node3D" parent="." unique_id=103985]
+
+[node name="CuePlayer" type="Node" parent="Audio" unique_id=103986]
+script = ExtResource("121_db")
+device_cues = Dictionary[StringName, PackedStringArray]({
+&"drill": PackedStringArray("cue.drill_loop", "cue.drill_jam", "cue.drill_done"),
+&"hack": PackedStringArray("", "cue.hack_interrupt", "cue.hack_done", "cue.hack_start"),
+&"saw": PackedStringArray("cue.drill_loop", "cue.drill_jam", "cue.drill_done"),
+&"thermal": PackedStringArray("cue.drill_loop", "cue.drill_jam", "cue.drill_done")
+})
+
+[node name="MusicDirector" type="Node" parent="Audio" unique_id=103987]
+script = ExtResource("122_db")
+track_id = &"dockside_burn"
+
+[node name="BedColdStoreC1" type="Node3D" parent="Audio" unique_id=103988]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25, 3, 17)
+script = ExtResource("123_db")
+cue_id = &"cue.amb_cold_store"
+autoplay = true
+
+[node name="BedColdStoreC2" type="Node3D" parent="Audio" unique_id=103989]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 41.5, 3, 17)
+script = ExtResource("123_db")
+cue_id = &"cue.amb_cold_store"
+autoplay = true
+
+[node name="BedPlantRoom" type="Node3D" parent="Audio" unique_id=103990]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 2.5, 13)
+script = ExtResource("123_db")
+cue_id = &"cue.amb_cold_store"
+autoplay = true
+volume_offset_db = -2.0
+
+[node name="BedHall" type="Node3D" parent="Audio" unique_id=103991]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 33, 3, 5)
+script = ExtResource("123_db")
+cue_id = &"cue.amb_cold_store"
+autoplay = true
+volume_offset_db = -6.0
+
+[node name="BedOffices" type="Node3D" parent="Audio" unique_id=103992]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9, 1.8, 4)
+script = ExtResource("123_db")
+cue_id = &"cue.amb_cold_store"
+autoplay = true
+volume_offset_db = -10.0
+
+[node name="BedYard" type="Node3D" parent="Audio" unique_id=103993]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24, 3, -16)
+script = ExtResource("123_db")
+cue_id = &"cue.amb_dockside_fog"
+autoplay = true
+
+[node name="BedQuay" type="Node3D" parent="Audio" unique_id=103994]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24, 2, 38)
+script = ExtResource("123_db")
+cue_id = &"cue.amb_dockside_fog"
+autoplay = true
+
+[node name="BedApron" type="Node3D" parent="Audio" unique_id=103995]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 55, 3, 16)
+script = ExtResource("123_db")
+cue_id = &"cue.amb_dockside_fog"
+autoplay = true
+volume_offset_db = -3.0
+
+[node name="BedLane" type="Node3D" parent="Audio" unique_id=103996]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 3, 16)
+script = ExtResource("123_db")
+cue_id = &"cue.amb_dockside_fog"
+autoplay = true
+volume_offset_db = -4.0
+
+[node name="BedAnnexDock" type="Node3D" parent="Audio" unique_id=103997]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 37, 2.5, 28)
+script = ExtResource("123_db")
+cue_id = &"cue.amb_dockside_fog"
+autoplay = true
+volume_offset_db = -6.0
 
 [editable path="Props/Exterior/ContainerK1/Padlock"]
 [editable path="Props/Exterior/ContainerK2/Padlock"]

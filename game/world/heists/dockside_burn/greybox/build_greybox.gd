@@ -70,6 +70,7 @@ func _build() -> void:
 	_build_tactical(n("Tactical"))
 	_build_preplan(n("Preplan"))
 	_build_review_cameras(n("ReviewCameras"))
+	_build_audio(add(map_root, node3d("Audio")) as Node3D)
 	build_gameplay(n("Gameplay"))
 	build_variants(n("Variants"))
 	_build_nav_links(nav)
@@ -94,6 +95,24 @@ func _build() -> void:
 	R.normalize_scene(_scene_out(), old_scene_uid)
 	print("dockside_burn: saved %s (navmesh polygons: %d)" % [_scene_out(), polys])
 	quit(0)
+
+
+## D-117 Audio node (as Golden Hour / Nightfall Depository): CuePlayer, the dockside_burn MusicDirector and the
+## ambience beds of the heist doc (Audio/lighting): cold-store chambers / plant / hall and the foggy yard / quay.
+func _build_audio(parent: Node3D) -> void:
+	var beds: Array = [
+		["BedColdStoreC1", Vector3(25.0, 3.0, 17.0), &"cue.amb_cold_store", 0.0],
+		["BedColdStoreC2", Vector3(41.5, 3.0, 17.0), &"cue.amb_cold_store", 0.0],
+		["BedPlantRoom", Vector3(5.0, 2.5, 13.0), &"cue.amb_cold_store", -2.0],
+		["BedHall", Vector3(33.0, 3.0, 5.0), &"cue.amb_cold_store", -6.0],
+		["BedOffices", Vector3(9.0, 1.8, 4.0), &"cue.amb_cold_store", -10.0],
+		["BedYard", Vector3(24.0, 3.0, -16.0), &"cue.amb_dockside_fog", 0.0],
+		["BedQuay", Vector3(24.0, 2.0, 38.0), &"cue.amb_dockside_fog", 0.0],
+		["BedApron", Vector3(55.0, 3.0, 16.0), &"cue.amb_dockside_fog", -3.0],
+		["BedLane", Vector3(-4.0, 3.0, 16.0), &"cue.amb_dockside_fog", -4.0],
+		["BedAnnexDock", Vector3(37.0, 2.5, 28.0), &"cue.amb_dockside_fog", -6.0],
+	]
+	load("res://world/audio/map_audio_builder.gd").call(&"build", parent, map_root, &"dockside_burn", beds)
 
 
 func _fail(msg: String) -> void:

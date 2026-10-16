@@ -153,6 +153,9 @@
 [ext_resource type="PackedScene" path="res://world/heists/shadow_ledger/greybox/secure_drop_marker.tscn" id="151_sl"]
 [ext_resource type="PackedScene" path="res://world/props/escape_zone/prop_escape_lift_fitout.tscn" id="152_sl"]
 [ext_resource type="Script" path="res://world/heists/shadow_ledger/shadow_ledger_mission.gd" id="153_sl"]
+[ext_resource type="Script" path="res://world/audio/cue_player.gd" id="154_sl"]
+[ext_resource type="Script" path="res://world/audio/music_director.gd" id="155_sl"]
+[ext_resource type="Script" path="res://world/audio/cue_emitter.gd" id="156_sl"]
 
 [sub_resource type="BoxShape3D" id="sl_1"]
 size = Vector3(3, 3.3, 0.3000002)
@@ -21803,6 +21806,82 @@ metadata/caption = "Stair A at L41 (U-stair, 0.3 m core walls)"
 transform = Transform3D(0.38074985, -0.087621704, 0.92051727, 0, 0.99550027, 0.094759144, -0.9246781, -0.03607953, 0.37903658, 29.3, 1.7, 11.8)
 metadata/fov = 75.0
 metadata/caption = "L40 service lobby (PUBLIC): service lift car (E3), service spawn"
+
+[node name="Audio" type="Node3D" parent="." unique_id=103695]
+
+[node name="CuePlayer" type="Node" parent="Audio" unique_id=103696]
+script = ExtResource("154_sl")
+device_cues = Dictionary[StringName, PackedStringArray]({
+&"drill": PackedStringArray("cue.drill_loop", "cue.drill_jam", "cue.drill_done"),
+&"hack": PackedStringArray("", "cue.hack_interrupt", "cue.hack_done", "cue.hack_start"),
+&"saw": PackedStringArray("cue.drill_loop", "cue.drill_jam", "cue.drill_done"),
+&"thermal": PackedStringArray("cue.drill_loop", "cue.drill_jam", "cue.drill_done")
+})
+
+[node name="MusicDirector" type="Node" parent="Audio" unique_id=103697]
+script = ExtResource("155_sl")
+track_id = &"shadow_ledger"
+
+[node name="BedL40Service" type="Node3D" parent="Audio" unique_id=103698]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 27, 1.8, 12)
+script = ExtResource("156_sl")
+cue_id = &"cue.amb_shadow_ledger_interior"
+autoplay = true
+volume_offset_db = -6.0
+
+[node name="BedL41Executive" type="Node3D" parent="Audio" unique_id=103699]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 5.5, 4)
+script = ExtResource("156_sl")
+cue_id = &"cue.amb_shadow_ledger_interior"
+autoplay = true
+
+[node name="BedL41Server" type="Node3D" parent="Audio" unique_id=103700]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 28, 5.5, 10)
+script = ExtResource("156_sl")
+cue_id = &"cue.amb_shadow_ledger_interior"
+autoplay = true
+volume_offset_db = -2.0
+
+[node name="BedL41Offices" type="Node3D" parent="Audio" unique_id=103701]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 5.5, 20)
+script = ExtResource("156_sl")
+cue_id = &"cue.amb_shadow_ledger_interior"
+autoplay = true
+volume_offset_db = -3.0
+
+[node name="BedL42Executive" type="Node3D" parent="Audio" unique_id=103702]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 9.8, 4)
+script = ExtResource("156_sl")
+cue_id = &"cue.amb_shadow_ledger_interior"
+autoplay = true
+volume_offset_db = -2.0
+
+[node name="BedL42West" type="Node3D" parent="Audio" unique_id=103703]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 9.8, 15)
+script = ExtResource("156_sl")
+cue_id = &"cue.amb_shadow_ledger_interior"
+autoplay = true
+volume_offset_db = -4.0
+
+[node name="BedTerraceRain" type="Node3D" parent="Audio" unique_id=103704]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 9.5, 21)
+script = ExtResource("156_sl")
+cue_id = &"cue.amb_rooftop_rain"
+autoplay = true
+volume_offset_db = -4.0
+
+[node name="BedRoofRain" type="Node3D" parent="Audio" unique_id=103705]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 13, 12)
+script = ExtResource("156_sl")
+cue_id = &"cue.amb_rooftop_rain"
+autoplay = true
+
+[node name="BedRoofEast" type="Node3D" parent="Audio" unique_id=103706]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30, 13, 4)
+script = ExtResource("156_sl")
+cue_id = &"cue.amb_rooftop_rain"
+autoplay = true
+volume_offset_db = -2.0
 
 [editable path="Gameplay/Server/ServerReader"]
 [editable path="Gameplay/Server/Drives1"]

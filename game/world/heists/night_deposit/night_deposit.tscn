@@ -256,7 +256,8 @@
 [ext_resource type="PackedScene" path="res://world/heists/shared/escape_boat_marker.tscn" id="254_nd"]
 [ext_resource type="Script" path="res://world/heists/night_deposit/night_deposit_mission.gd" id="255_nd"]
 [ext_resource type="Script" path="res://world/audio/cue_player.gd" id="256_nd"]
-[ext_resource type="Script" path="res://world/audio/cue_emitter.gd" id="257_nd"]
+[ext_resource type="Script" path="res://world/audio/music_director.gd" id="257_nd"]
+[ext_resource type="Script" path="res://world/audio/cue_emitter.gd" id="258_nd"]
 
 [sub_resource type="BoxShape3D" id="nd_1"]
 size = Vector3(2.2, 4.3, 0.2)
@@ -28001,45 +28002,47 @@ device_cues = Dictionary[StringName, PackedStringArray]({
 &"thermal": PackedStringArray("cue.drill_loop", "cue.drill_jam", "cue.drill_done")
 })
 
-[node name="BedBankingHall" type="Node3D" parent="Audio" unique_id=103159]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.5, 3, 14)
+[node name="MusicDirector" type="Node" parent="Audio" unique_id=103159]
 script = ExtResource("257_nd")
-cue_id = &"cue.amb_glasshouse_interior"
+track_id = &"night_deposit"
+
+[node name="BedBankingHall" type="Node3D" parent="Audio" unique_id=103160]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.5, 3, 14)
+script = ExtResource("258_nd")
+cue_id = &"cue.amb_bank_night_interior"
+autoplay = true
+
+[node name="BedBackOfHouse" type="Node3D" parent="Audio" unique_id=103161]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13, 1.8, 4)
+script = ExtResource("258_nd")
+cue_id = &"cue.amb_bank_night_interior"
 autoplay = true
 volume_offset_db = -6.0
 
-[node name="BedBackOfHouse" type="Node3D" parent="Audio" unique_id=103160]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13, 1.8, 4)
-script = ExtResource("257_nd")
-cue_id = &"cue.amb_glasshouse_interior"
-autoplay = true
-volume_offset_db = -8.0
-
-[node name="BedBasement" type="Node3D" parent="Audio" unique_id=103161]
+[node name="BedBasement" type="Node3D" parent="Audio" unique_id=103162]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13, -2.2, 7)
-script = ExtResource("257_nd")
-cue_id = &"cue.amb_glasshouse_interior"
-autoplay = true
-volume_offset_db = -4.0
-
-[node name="BedHarborStreet" type="Node3D" parent="Audio" unique_id=103162]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 3, 27)
-script = ExtResource("257_nd")
-cue_id = &"cue.amb_street_dusk"
+script = ExtResource("258_nd")
+cue_id = &"cue.amb_bank_night_interior"
 autoplay = true
 volume_offset_db = -2.0
 
-[node name="BedQuay" type="Node3D" parent="Audio" unique_id=103163]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 2, 33)
-script = ExtResource("257_nd")
-cue_id = &"cue.amb_street_dusk"
+[node name="BedHarborStreet" type="Node3D" parent="Audio" unique_id=103163]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 3, 27)
+script = ExtResource("258_nd")
+cue_id = &"cue.amb_harbor_night"
 autoplay = true
-volume_offset_db = -4.0
+volume_offset_db = -2.0
 
-[node name="BedLot" type="Node3D" parent="Audio" unique_id=103164]
+[node name="BedQuay" type="Node3D" parent="Audio" unique_id=103164]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 2, 33)
+script = ExtResource("258_nd")
+cue_id = &"cue.amb_harbor_night"
+autoplay = true
+
+[node name="BedLot" type="Node3D" parent="Audio" unique_id=103165]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 3, -7)
-script = ExtResource("257_nd")
-cue_id = &"cue.amb_street_dusk"
+script = ExtResource("258_nd")
+cue_id = &"cue.amb_harbor_night"
 autoplay = true
 volume_offset_db = -6.0
 

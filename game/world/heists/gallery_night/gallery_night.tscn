@@ -126,6 +126,9 @@
 [ext_resource type="PackedScene" path="res://world/props/secure_zone/veh_limo_gala.tscn" id="124_gn"]
 [ext_resource type="PackedScene" path="res://world/props/loot_spawn/prop_canvas_study3_crate.tscn" id="125_gn"]
 [ext_resource type="Script" path="res://world/heists/gallery_night/gallery_night_mission.gd" id="126_gn"]
+[ext_resource type="Script" path="res://world/audio/cue_player.gd" id="127_gn"]
+[ext_resource type="Script" path="res://world/audio/music_director.gd" id="128_gn"]
+[ext_resource type="Script" path="res://world/audio/cue_emitter.gd" id="129_gn"]
 
 [sub_resource type="BoxShape3D" id="gn_1"]
 size = Vector3(32, 4.2, 0.4)
@@ -15788,6 +15791,95 @@ metadata/caption = "rc_plant (PL)"
 transform = Transform3D(-0.38461536, 0.08484638, -0.91916925, 0, 0.9957667, 0.09191691, 0.9230769, 0.035352655, -0.38298717, 10, 10.7, 1)
 metadata/fov = 70.0
 metadata/caption = "rc_roof_deck (X4)"
+
+[node name="Audio" type="Node3D" parent="." unique_id=102697]
+
+[node name="CuePlayer" type="Node" parent="Audio" unique_id=102698]
+script = ExtResource("127_gn")
+device_cues = Dictionary[StringName, PackedStringArray]({
+&"drill": PackedStringArray("cue.drill_loop", "cue.drill_jam", "cue.drill_done"),
+&"hack": PackedStringArray("", "cue.hack_interrupt", "cue.hack_done", "cue.hack_start"),
+&"saw": PackedStringArray("cue.drill_loop", "cue.drill_jam", "cue.drill_done"),
+&"thermal": PackedStringArray("cue.drill_loop", "cue.drill_jam", "cue.drill_done")
+})
+
+[node name="MusicDirector" type="Node" parent="Audio" unique_id=102699]
+script = ExtResource("128_gn")
+track_id = &"gallery_night"
+
+[node name="BedGreatHall" type="Node3D" parent="Audio" unique_id=102700]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22, 3, 17)
+script = ExtResource("129_gn")
+cue_id = &"cue.amb_gallery_gala"
+autoplay = true
+
+[node name="BedVestibule" type="Node3D" parent="Audio" unique_id=102701]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22, 2.5, 28)
+script = ExtResource("129_gn")
+cue_id = &"cue.amb_gallery_gala"
+autoplay = true
+volume_offset_db = -6.0
+
+[node name="BedWestGallery" type="Node3D" parent="Audio" unique_id=102702]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 2.5, 14)
+script = ExtResource("129_gn")
+cue_id = &"cue.amb_gallery_gala"
+autoplay = true
+volume_offset_db = -8.0
+
+[node name="BedEastGallery" type="Node3D" parent="Audio" unique_id=102703]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 38, 2.5, 18)
+script = ExtResource("129_gn")
+cue_id = &"cue.amb_gallery_gala"
+autoplay = true
+volume_offset_db = -8.0
+
+[node name="BedUpperBalcony" type="Node3D" parent="Audio" unique_id=102704]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22, 7.5, 28)
+script = ExtResource("129_gn")
+cue_id = &"cue.amb_gallery_gala"
+autoplay = true
+volume_offset_db = -6.0
+
+[node name="BedArtStore" type="Node3D" parent="Audio" unique_id=102705]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22, -2.5, 14)
+script = ExtResource("129_gn")
+cue_id = &"cue.amb_art_store"
+autoplay = true
+
+[node name="BedPlant" type="Node3D" parent="Audio" unique_id=102706]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, -2.5, 14)
+script = ExtResource("129_gn")
+cue_id = &"cue.amb_art_store"
+autoplay = true
+volume_offset_db = -3.0
+
+[node name="BedParade" type="Node3D" parent="Audio" unique_id=102707]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22, 2.5, 40)
+script = ExtResource("129_gn")
+cue_id = &"cue.amb_uptown_night"
+autoplay = true
+
+[node name="BedMews" type="Node3D" parent="Audio" unique_id=102708]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 2.5, -4)
+script = ExtResource("129_gn")
+cue_id = &"cue.amb_uptown_night"
+autoplay = true
+volume_offset_db = -4.0
+
+[node name="BedMewsEast" type="Node3D" parent="Audio" unique_id=102709]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 51, 2.5, 4)
+script = ExtResource("129_gn")
+cue_id = &"cue.amb_uptown_night"
+autoplay = true
+volume_offset_db = -4.0
+
+[node name="BedCourt" type="Node3D" parent="Audio" unique_id=102710]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 2.5, 15)
+script = ExtResource("129_gn")
+cue_id = &"cue.amb_uptown_night"
+autoplay = true
+volume_offset_db = -4.0
 
 [editable path="Gameplay/Windows/BenefactorsWindowS1"]
 [editable path="Gameplay/Windows/BenefactorsWindowS2"]
