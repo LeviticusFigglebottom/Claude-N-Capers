@@ -1,4 +1,4 @@
-# Contract: characters (v1.18)
+# Contract: characters (v1.19)
 
 Producer: ENV C (generated humanoids + animations). Consumer: ENV A (NPC/crew prefabs).
 Until delivered, ENV A uses capsule placeholders with the same node names.
@@ -251,3 +251,12 @@ unchanged. A new gun with a vertical grip gets a `vgrip_ik` marker and the clip 
   `hash(net_id) % 3`, used in every group, plus a random loop start offset from `GameRng.stream(&"anim_variants")`. After a
   surrender* one-shot, play the matching surrender_idle* instead of holding the last frame. ENV A also adds the variants to
   AnimTweak death_by_pose and hard_hat_lift_clips.
+
+## v1.19: third-person crew weapon holds (D-116 follow-up; SOURCE `weapon_holds`)
+`idle_alert_rifle` (96 f) / `idle_alert_pistol` (110 f): full-body PD2 low-ready loops with a slow weight shift (rifle
+support hand cupped under the fore-end at the weapon's LeftHandIK; pistol compressed at chest height). `hold_rifle` /
+`hold_pistol` (96 f): the same upper body without the weight shift, for layering. ENV A: when a rifle- or pistol-class
+weapon (`weapon_kind`) is held and not aiming, play idle_alert_<kind> instead of idle_alert; over walk / run / strafe*,
+layer hold_<kind> with an upper-body filter (spine, chest, neck, head, clavicles, arms, hands, fingers), weight 1, blend
+0.2 s; aim_* keeps priority; loops start at a random offset from `GameRng.stream(&"anim_variants")`. The third-person RIFLE
+left_ik follows the weapon's current LeftHandIK.
