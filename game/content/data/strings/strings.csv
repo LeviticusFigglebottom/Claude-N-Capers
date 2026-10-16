@@ -2462,19 +2462,19 @@ item.asset.intel_containers.name,Insider: weapons containers
 item.asset.intel_containers.desc,Reyes' contact marks which yard containers hold the rifles.
 item.asset.lift_power.name,Powered goods lift
 item.asset.lift_power.desc,"Someone makes sure the goods lift has power tonight, so count-room bags ride down two at a time."
-ui.preplan.point.pp_spawn_gate,Gate: Ferro Street
-ui.preplan.point.pp_spawn_lane,West lane: cut in the fence
-ui.preplan.point.pp_spawn_pontoon,Pontoon: by launch
-ui.preplan.point.pp_drop_gatehouse,Behind the gatehouse
-ui.preplan.point.pp_drop_lane,West lane: by the fire stair
+ui.preplan.point.dockside_burn.pp_spawn_gate,Gate: Ferro Street
+ui.preplan.point.dockside_burn.pp_spawn_lane,West lane: cut in the fence
+ui.preplan.point.dockside_burn.pp_spawn_pontoon,Pontoon: by launch
+ui.preplan.point.dockside_burn.pp_drop_gatehouse,Behind the gatehouse
+ui.preplan.point.dockside_burn.pp_drop_lane,West lane: by the fire stair
 ui.preplan.point.dockside_burn.pp_drop_quay,Quay net store
-ui.preplan.point.pp_drop_platform,Hall platform
-ui.preplan.point.pp_escape_gate,Van at the weighbridge
-ui.preplan.point.pp_escape_lane,Van in the west lane
+ui.preplan.point.dockside_burn.pp_drop_platform,Hall platform
+ui.preplan.point.dockside_burn.pp_escape_gate,Van at the weighbridge
+ui.preplan.point.dockside_burn.pp_escape_lane,Van in the west lane
 ui.preplan.point.dockside_burn.pp_escape_boat,Launch at the pontoon
-ui.preplan.point.pp_perch_roof,Office roof
-ui.preplan.point.pp_perch_stack,Double-stacked container
-ui.preplan.point.pp_gangway,Pier 10 gangway
+ui.preplan.point.dockside_burn.pp_perch_roof,Office roof
+ui.preplan.point.dockside_burn.pp_perch_stack,Double-stacked container
+ui.preplan.point.dockside_burn.pp_gangway,Pier 10 gangway
 voice.vo.reyes.briefing_dockside_burn_1,"Ortega Cold Storage, Pier 9. The Co-op says it freezes fish. It freezes cash, guns and product, and its own boys guard it."
 voice.vo.reyes.briefing_dockside_burn_2,"The Co-op thinks the harbor's theirs because nobody's ever argued. We're arguing. Take the money, take the guns, and torch whatever they were going to sell."
 voice.vo.reyes.briefing_dockside_burn_3,"Four bags of cash or rifles, and the product burning: that's the job. Any product you carry out first, my buyer takes at a discount. I want smoke over Pier 9 by sunrise."
@@ -3276,3 +3276,156 @@ ui.hud.assault_event.turret_van,TURRET VAN
 ui.hud.assault_event.heli,HELICOPTER
 ui.hud.assault_event.breach,BREACH
 ui.hud.assault_event.unknown,INCOMING
+ui.preplan.floor.landing,Quay landing
+ui.preplan.floor.mezzanine,Mezzanine
+ui.preplan.floor.level_40,Level 40 (service)
+ui.preplan.floor.level_41,Level 41
+ui.preplan.floor.level_42,Level 42
+ui.preplan.bp.glasshouse.g1,Receiving
+ui.preplan.bp.glasshouse.g2,Workshop
+ui.preplan.bp.glasshouse.g3,WC
+ui.preplan.bp.glasshouse.g4,Staff corridor
+ui.preplan.bp.glasshouse.g5,Sales floor
+ui.preplan.bp.glasshouse.g6,Private salon
+ui.preplan.bp.glasshouse.g7,Electrical
+ui.preplan.bp.glasshouse.g8,Stairs
+ui.preplan.bp.glasshouse.g9,Janitor
+ui.preplan.bp.glasshouse.g10,Stair lobby
+ui.preplan.bp.glasshouse.u1,Break room
+ui.preplan.bp.glasshouse.u2,Security
+ui.preplan.bp.glasshouse.u3,WC
+ui.preplan.bp.glasshouse.u4,Upper corridor
+ui.preplan.bp.glasshouse.u5,Admin office
+ui.preplan.bp.glasshouse.u6,Manager
+ui.preplan.bp.glasshouse.u7,Stock room
+ui.preplan.bp.glasshouse.u8,Upper lobby
+ui.preplan.bp.glasshouse.alley,Service alley
+ui.preplan.bp.glasshouse.kessel_yards,Kessel Row yards
+ui.preplan.bp.glasshouse.harlow_road,Harlow Avenue
+ui.preplan.bp.glasshouse.pell_road_n,Pell Street
+ui.preplan.bp.glasshouse.castellan_tailoring,Castellan Tailoring
+ui.preplan.bp.glasshouse.garage_ground,Parking garage
+ui.preplan.bp.glasshouse.kessel_row_backs,Kessel Row
+ui.preplan.bp.night_deposit.g1,Sally port
+ui.preplan.bp.night_deposit.g2,Stairs
+ui.preplan.bp.night_deposit.g3,Security
+ui.preplan.bp.night_deposit.g4,Break room
+ui.preplan.bp.night_deposit.g5,Electrical
+ui.preplan.bp.night_deposit.g6,Supplies
+ui.preplan.bp.night_deposit.g7,Staff corridor
+ui.preplan.bp.night_deposit.g8,Teller line
+ui.preplan.bp.night_deposit.g9,Banking hall
+ui.preplan.bp.night_deposit.g10,Vestibule
+ui.preplan.bp.night_deposit.g11,Loan office
+ui.preplan.bp.night_deposit.g12,Manager
+ui.preplan.bp.night_deposit.g13,ATM lobby
+ui.preplan.bp.night_deposit.b1,Cash transfer
+ui.preplan.bp.night_deposit.b2,Lockers
+ui.preplan.bp.night_deposit.b3,Plant room
+ui.preplan.bp.night_deposit.b4,Server room
+ui.preplan.bp.night_deposit.b5,Basement corridor
+ui.preplan.bp.night_deposit.b6,Records
+ui.preplan.bp.night_deposit.b7,West passage
+ui.preplan.bp.night_deposit.b8,Antechamber
+ui.preplan.bp.night_deposit.b9,Vault
+ui.preplan.bp.night_deposit.b10,East passage
+ui.preplan.bp.night_deposit.b11,Count room
+ui.preplan.bp.night_deposit.b12,Depository
+ui.preplan.bp.night_deposit.b13,WC
+ui.preplan.bp.night_deposit.b14,Janitor
+ui.preplan.bp.night_deposit.lot_w,Staff lot
+ui.preplan.bp.night_deposit.harbor_street,Harbor Street
+ui.preplan.bp.night_deposit.wharf_lane,Wharf Lane
+ui.preplan.bp.night_deposit.quay_e,Quay
+ui.preplan.bp.night_deposit.quay_w,Quay
+ui.preplan.bp.night_deposit.crane_yard,Crane yard
+ui.preplan.bp.night_deposit.warehouse_yard,Warehouse yard
+ui.preplan.bp.night_deposit.pell_chandlery,Pell Chandlery
+ui.preplan.bp.shadow_ledger.s1,Service lobby
+ui.preplan.bp.shadow_ledger.s2,Refuse room
+ui.preplan.bp.shadow_ledger.s3,Service corridor
+ui.preplan.bp.shadow_ledger.sa,Stair A
+ui.preplan.bp.shadow_ledger.sb,Stair B
+ui.preplan.bp.shadow_ledger.sl,Service lift
+ui.preplan.bp.shadow_ledger.k1,Kessler's office
+ui.preplan.bp.shadow_ledger.k2,Conference
+ui.preplan.bp.shadow_ledger.k3,Reception
+ui.preplan.bp.shadow_ledger.k4,Assistant
+ui.preplan.bp.shadow_ledger.k5,Moor's office
+ui.preplan.bp.shadow_ledger.k6,Corridor
+ui.preplan.bp.shadow_ledger.k7,Corridor
+ui.preplan.bp.shadow_ledger.k8,Associates
+ui.preplan.bp.shadow_ledger.k9,West core
+ui.preplan.bp.shadow_ledger.k10,East core
+ui.preplan.bp.shadow_ledger.k11,Server cage
+ui.preplan.bp.shadow_ledger.k12,IT office
+ui.preplan.bp.shadow_ledger.k13,Security
+ui.preplan.bp.shadow_ledger.k14,Electrical
+ui.preplan.bp.shadow_ledger.k15,Copy room
+ui.preplan.bp.shadow_ledger.k16,South corridor
+ui.preplan.bp.shadow_ledger.k17,Records
+ui.preplan.bp.shadow_ledger.k18,Break room
+ui.preplan.bp.shadow_ledger.k19,Law library
+ui.preplan.bp.shadow_ledger.k20,Office
+ui.preplan.bp.shadow_ledger.k21,Office
+ui.preplan.bp.shadow_ledger.k22,Office
+ui.preplan.bp.shadow_ledger.k23,Office
+ui.preplan.bp.shadow_ledger.k24,Interview
+ui.preplan.bp.shadow_ledger.j41,Janitor
+ui.preplan.bp.shadow_ledger.j42,Linen
+ui.preplan.bp.shadow_ledger.lf1,Lift
+ui.preplan.bp.shadow_ledger.lf2,Lift
+ui.preplan.bp.shadow_ledger.wcw41,WC
+ui.preplan.bp.shadow_ledger.wcm41,WC
+ui.preplan.bp.shadow_ledger.wcw42,WC
+ui.preplan.bp.shadow_ledger.wcm42,WC
+ui.preplan.bp.shadow_ledger.m1,Partners' lounge
+ui.preplan.bp.shadow_ledger.m2,Gallery
+ui.preplan.bp.shadow_ledger.m3,Art hall
+ui.preplan.bp.shadow_ledger.m4,Private study
+ui.preplan.bp.shadow_ledger.m5,Guest suite
+ui.preplan.bp.shadow_ledger.m6,En-suite
+ui.preplan.bp.shadow_ledger.m7,Dressing
+ui.preplan.bp.shadow_ledger.m8,Private dining
+ui.preplan.bp.shadow_ledger.m9,West corridor
+ui.preplan.bp.shadow_ledger.m10,East corridor
+ui.preplan.bp.shadow_ledger.m11,Pantry
+ui.preplan.bp.shadow_ledger.m12,Electrical
+ui.preplan.bp.shadow_ledger.m13,Wine room
+ui.preplan.bp.shadow_ledger.m14,Boardroom
+ui.preplan.bp.shadow_ledger.m15,Terrace corridor
+ui.preplan.bp.shadow_ledger.r1,Riser
+ui.preplan.bp.shadow_ledger.r2,Stair head
+ui.preplan.bp.shadow_ledger.r3,Plant room
+ui.preplan.bp.shadow_ledger.x1,Terrace
+ui.preplan.bp.shadow_ledger.x2,Roof
+ui.preplan.bp.dockside_burn.o1,Front office
+ui.preplan.bp.dockside_burn.o2,Dispatch
+ui.preplan.bp.dockside_burn.st,Stairs
+ui.preplan.bp.dockside_burn.lf,Goods lift
+ui.preplan.bp.dockside_burn.e1,Electrical
+ui.preplan.bp.dockside_burn.oc,Office corridor
+ui.preplan.bp.dockside_burn.pl,Compressors
+ui.preplan.bp.dockside_burn.ws,Forklift bay
+ui.preplan.bp.dockside_burn.lk,Lockers
+ui.preplan.bp.dockside_burn.j,Janitor
+ui.preplan.bp.dockside_burn.pk,Packing hall
+ui.preplan.bp.dockside_burn.h,Marshalling hall
+ui.preplan.bp.dockside_burn.c1,Freezer A
+ui.preplan.bp.dockside_burn.sp,Aisle
+ui.preplan.bp.dockside_burn.c2,Freezer B
+ui.preplan.bp.dockside_burn.sr,Strongroom
+ui.preplan.bp.dockside_burn.an,Quay dock
+ui.preplan.bp.dockside_burn.m1,Count room
+ui.preplan.bp.dockside_burn.m2,Break room
+ui.preplan.bp.dockside_burn.m3,WC
+ui.preplan.bp.dockside_burn.mc,Mezzanine corridor
+ui.preplan.bp.dockside_burn.hh,Head house
+ui.preplan.bp.dockside_burn.gh,Gatehouse
+ui.preplan.bp.dockside_burn.qs,Net store
+ui.preplan.bp.dockside_burn.x5,Office roof
+ui.preplan.bp.dockside_burn.pier_9,Pier 9
+ui.preplan.bp.dockside_burn.ferro_street,Ferro Street
+ui.preplan.bp.dockside_burn.bellweather,Bellweather Ice Co
+ui.preplan.bp.dockside_burn.pontoon,Pontoon
+ui.preplan.bp.dockside_burn.landing_stage,Landing stage
