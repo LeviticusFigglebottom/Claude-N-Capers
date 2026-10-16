@@ -699,3 +699,16 @@ static func _rappellers_down(ev: AssaultEventRunner, drop: Vector3) -> int:
 		if flat < 2.5 and u.global_position.y < drop.y + 0.6 and m != null and m.is_physics_processing() and not m.rappelling:
 			n += 1
 	return n
+
+
+## D-115 X-3: every loud heist has assault-event rows (turret van, heli, breach); SL is stealth-only (N/A).
+func test_po6_17_rows_for_every_loud_heist() -> void:
+	var tw: AssaultEventsTweak = load("res://systems/director/assault_events_tweak.tres") as AssaultEventsTweak
+	for h: StringName in [&"glasshouse", &"dockside_burn", &"night_deposit", &"gallery_night"]:
+		assert_true(tw.heists.has(h), "%s has rows" % h)
+		var kinds: Array = []
+		for r: Dictionary in (tw.heists.get(h, {}) as Dictionary).get("events", []):
+			kinds.append(r["kind"])
+		for k: StringName in [&"turret_van", &"heli", &"breach"]:
+			assert_true(kinds.has(k), "%s: %s row" % [h, k])
+	assert_false(tw.heists.has(&"shadow_ledger"), "SL is stealth-only: no assault events (D-115)")
