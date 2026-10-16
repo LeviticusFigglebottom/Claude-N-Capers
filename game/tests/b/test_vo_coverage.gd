@@ -10,68 +10,9 @@ const HEISTS: Array[StringName] = [
 	&"glasshouse", &"night_deposit", &"shadow_ledger", &"dockside_burn", &"gallery_night",
 ]
 
-## ENV A: nothing maps these facts to their lines yet (no bark director; VoiceLineTable.lines_for has no A caller).
-## Mercer's event barks (casing start, mask-up, pager, cameras, devices, custody, results) and the per-heister
-## crew barks (pager_started, device_jammed, crew_downed, reloading, bagging_body, going_loud, reviving,
-## cops_incoming, loot_secured, guard_down, civilian_killed). pd2_fidelity C8.
-const UNSAID_A: Array[StringName] = [
-	&"vo.mercer.heist_start_casing_1", &"vo.mercer.heist_start_casing_2", &"vo.mercer.crew_masked_1",
-	&"vo.mercer.crew_masked_2", &"vo.mercer.pager_started_1", &"vo.mercer.pager_started_2",
-	&"vo.mercer.pager_answered_1", &"vo.mercer.pager_answered_2", &"vo.mercer.pager_last_answer_1",
-	&"vo.mercer.pager_last_answer_2", &"vo.mercer.pager_limit_1", &"vo.mercer.pager_limit_2",
-	&"vo.mercer.pager_failed_1", &"vo.mercer.pager_failed_2", &"vo.mercer.body_discovered_1",
-	&"vo.mercer.body_discovered_2", &"vo.mercer.camera_spotted_1", &"vo.mercer.camera_spotted_2",
-	&"vo.mercer.device_started_1", &"vo.mercer.device_started_2", &"vo.mercer.device_jammed_1",
-	&"vo.mercer.device_jammed_2", &"vo.mercer.device_finished_1", &"vo.mercer.device_finished_2",
-	&"vo.mercer.crew_downed_1", &"vo.mercer.crew_downed_2", &"vo.mercer.crew_custody_1",
-	&"vo.mercer.crew_custody_2", &"vo.mercer.heist_success_1", &"vo.mercer.heist_success_2",
-	&"vo.mercer.heist_failed_1", &"vo.mercer.heist_failed_2", &"vo.mercer.stealth_success_1",
-	&"vo.mercer.stealth_success_2", &"vo.rook.pager_started_1", &"vo.rook.pager_started_2",
-	&"vo.rook.reloading_1", &"vo.rook.reloading_2", &"vo.rook.device_jammed_1",
-	&"vo.rook.device_jammed_2", &"vo.rook.bagging_body_1", &"vo.rook.bagging_body_2",
-	&"vo.rook.going_loud_1", &"vo.rook.going_loud_2", &"vo.rook.crew_downed_1",
-	&"vo.rook.crew_downed_2", &"vo.rook.reviving_1", &"vo.rook.reviving_2",
-	&"vo.rook.cops_incoming_1", &"vo.rook.cops_incoming_2", &"vo.rook.loot_secured_1",
-	&"vo.rook.loot_secured_2", &"vo.rook.guard_down_1", &"vo.rook.guard_down_2",
-	&"vo.rook.civilian_killed_1", &"vo.rook.civilian_killed_2", &"vo.sable.pager_started_1",
-	&"vo.sable.pager_started_2", &"vo.sable.reloading_1", &"vo.sable.reloading_2",
-	&"vo.sable.device_jammed_1", &"vo.sable.device_jammed_2", &"vo.sable.bagging_body_1",
-	&"vo.sable.bagging_body_2", &"vo.sable.going_loud_1", &"vo.sable.going_loud_2",
-	&"vo.sable.crew_downed_1", &"vo.sable.crew_downed_2", &"vo.sable.reviving_1",
-	&"vo.sable.reviving_2", &"vo.sable.cops_incoming_1", &"vo.sable.cops_incoming_2",
-	&"vo.sable.loot_secured_1", &"vo.sable.loot_secured_2", &"vo.sable.guard_down_1",
-	&"vo.sable.guard_down_2", &"vo.sable.civilian_killed_1", &"vo.sable.civilian_killed_2",
-	&"vo.dutch.pager_started_1", &"vo.dutch.pager_started_2", &"vo.dutch.reloading_1",
-	&"vo.dutch.reloading_2", &"vo.dutch.device_jammed_1", &"vo.dutch.device_jammed_2",
-	&"vo.dutch.bagging_body_1", &"vo.dutch.bagging_body_2", &"vo.dutch.going_loud_1",
-	&"vo.dutch.going_loud_2", &"vo.dutch.crew_downed_1", &"vo.dutch.crew_downed_2",
-	&"vo.dutch.reviving_1", &"vo.dutch.reviving_2", &"vo.dutch.cops_incoming_1",
-	&"vo.dutch.cops_incoming_2", &"vo.dutch.loot_secured_1", &"vo.dutch.loot_secured_2",
-	&"vo.dutch.guard_down_1", &"vo.dutch.guard_down_2", &"vo.dutch.civilian_killed_1",
-	&"vo.dutch.civilian_killed_2", &"vo.wren.pager_started_1", &"vo.wren.pager_started_2",
-	&"vo.wren.reloading_1", &"vo.wren.reloading_2", &"vo.wren.device_jammed_1",
-	&"vo.wren.device_jammed_2", &"vo.wren.bagging_body_1", &"vo.wren.bagging_body_2",
-	&"vo.wren.going_loud_1", &"vo.wren.going_loud_2", &"vo.wren.crew_downed_1",
-	&"vo.wren.crew_downed_2", &"vo.wren.reviving_1", &"vo.wren.reviving_2",
-	&"vo.wren.cops_incoming_1", &"vo.wren.cops_incoming_2", &"vo.wren.loot_secured_1",
-	&"vo.wren.loot_secured_2", &"vo.wren.guard_down_1", &"vo.wren.guard_down_2",
-	&"vo.wren.civilian_killed_1", &"vo.wren.civilian_killed_2", &"vo.marten.pager_started_1",
-	&"vo.marten.pager_started_2", &"vo.marten.reloading_1", &"vo.marten.reloading_2",
-	&"vo.marten.device_jammed_1", &"vo.marten.device_jammed_2", &"vo.marten.bagging_body_1",
-	&"vo.marten.bagging_body_2", &"vo.marten.going_loud_1", &"vo.marten.going_loud_2",
-	&"vo.marten.crew_downed_1", &"vo.marten.crew_downed_2", &"vo.marten.reviving_1",
-	&"vo.marten.reviving_2", &"vo.marten.cops_incoming_1", &"vo.marten.cops_incoming_2",
-	&"vo.marten.loot_secured_1", &"vo.marten.loot_secured_2", &"vo.marten.guard_down_1",
-	&"vo.marten.guard_down_2", &"vo.marten.civilian_killed_1", &"vo.marten.civilian_killed_2",
-	&"vo.jay.pager_started_1", &"vo.jay.pager_started_2", &"vo.jay.reloading_1",
-	&"vo.jay.reloading_2", &"vo.jay.device_jammed_1", &"vo.jay.device_jammed_2",
-	&"vo.jay.bagging_body_1", &"vo.jay.bagging_body_2", &"vo.jay.going_loud_1",
-	&"vo.jay.going_loud_2", &"vo.jay.crew_downed_1", &"vo.jay.crew_downed_2",
-	&"vo.jay.reviving_1", &"vo.jay.reviving_2", &"vo.jay.cops_incoming_1",
-	&"vo.jay.cops_incoming_2", &"vo.jay.loot_secured_1", &"vo.jay.loot_secured_2",
-	&"vo.jay.guard_down_1", &"vo.jay.guard_down_2", &"vo.jay.civilian_killed_1",
-	&"vo.jay.civilian_killed_2",
-]
+## ENV A: lines only A code can trigger and does not yet (pd2_fidelity C8 barks). Empty since A's D-117 bark
+## director; it stays shrink-only like the others.
+const UNSAID_A: Array[StringName] = []  # every A line is said: the D-117 bark director, env/a-core dd20d1f0 (round 226)
 
 ## B reserve: a contact's generic radio lines that no current heist reaches (each fact has an always-ready heist
 ## line, or no heist with that contact has the fact: only Night Deposit fails an objective). Kept on purpose for
