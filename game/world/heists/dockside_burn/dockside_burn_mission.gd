@@ -30,6 +30,10 @@ const TAG_STRONGROOM_DOOR: StringName = &"strongroom_door"
 const TAG_COUNT_CAGE: StringName = &"count_cage"
 const TAG_CASH: StringName = &"cash_bricks"
 const TAG_PADLOCK: StringName = &"padlock"
+## D-115 (DB-4, doc §Loot path / §Stealth routes): the thermite bag starts at the crew's spawn. One loot_spawn per
+## spawn, tagged `thermite_<spawn>` (THERMITE_SPAWNS); the pre-C map has only the gate bag, tagged TAG_THERMITE.
+const TAG_THERMITE: StringName = &"thermite"
+const THERMITE_SPAWNS: Array[StringName] = [&"gate", &"lane", &"pontoon"]
 const TAG_LIFT: StringName = &"goods_lift"
 const TAG_BREAKER: StringName = &"lift_breaker"
 const TAG_POLICE_GATE: StringName = &"police_gate"
@@ -107,6 +111,7 @@ func _on_mission_start() -> void:
 	on_event(&"npc_alert_state_changed", _on_npc_alert)
 	on_event(&"npc_killed", _on_npc_killed)
 	on_event(&"special_spawned", _on_special_spawned)
+	_apply_thermite()
 	_apply_cash(countroom)
 	_apply_product()
 	_apply_containers()
@@ -129,6 +134,31 @@ func _apply_cash(countroom: bool) -> void:
 			(d as Node3D).visible = false
 		for ls: Node in find_tagged(TAG_CASH):
 			_set_enabled(ls, false)
+
+
+## DB-4: only the thermite bag of the crew's spawn (crew_spawn_tag: preplan_spawn_lane / _pontoon, else the gate)
+## is shown and usable; the other spawns' bags are hidden, disabled and emptied. Without a bag tagged for the
+## chosen spawn (today's map) the gate bag stays.
+func _apply_thermite() -> void:
+	var spawn: StringName = &"gate"
+	for key: StringName in THERMITE_SPAWNS:
+		if String(crew_spawn_tag()).ends_with(String(key)):
+			spawn = key
+	var keep: Array[Node] = find_tagged(StringName("thermite_%s" % spawn))
+	if keep.is_empty():
+		keep = find_tagged(&"thermite_gate")
+		keep.append_array(find_tagged(TAG_THERMITE))
+	var all: Array[Node] = find_tagged(TAG_THERMITE)
+	for key2: StringName in THERMITE_SPAWNS:
+		all.append_array(find_tagged(StringName("thermite_%s" % key2)))
+	for bag: Node in all:
+		if keep.has(bag):
+			continue
+		_set_enabled(bag, false)
+		if "remaining" in bag:
+			bag.set(&"remaining", 0)
+		if bag is Node3D:
+			(bag as Node3D).visible = false
 
 
 func _apply_product() -> void:

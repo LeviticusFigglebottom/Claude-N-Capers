@@ -83,3 +83,72 @@ func test_db2_contraband_pays_but_does_not_count() -> void:
 	assert_false(bool(m.get(&"_escape_open")), "no escape before the burn")
 	m.call(&"_on_burn_done")
 	assert_true(bool(m.get(&"_escape_open")), "burn + 4 required bags: the escape is called")
+
+
+# --- DB-4: the thermite bag of the crew's spawn -----------------------------------------------------------
+
+func _thermite_bag(tag: StringName) -> LootSpawn:
+	var ls: LootSpawn = (load("res://systems/prefabs/loot_spawn/loot_spawn.tscn") as PackedScene).instantiate() as LootSpawn
+	ls.loot_id = &"loot.thermite"
+	ls.objective_tag = tag
+	ls.name = "TestThermite_%s" % tag
+	_rt.map.add_child(ls)
+	return ls
+
+
+func _usable(n: Node) -> bool:
+	var ls: LootSpawn = n as LootSpawn
+	return ls.visible and ls.interactable.enabled and ls.remaining > 0
+
+
+func test_db4_thermite_bag_at_the_spawn() -> void:
+	await _launch(&"dockside_burn", 9001)
+	var m: HeistMission = _rt.mission
+	var gate_today: Array[Node] = m.find_tagged(&"thermite")
+	gate_today.append_array(m.find_tagged(&"thermite_gate"))  # after C retags the gate bag
+	assert_eq(gate_today.size(), 1, "one gate bag on the map")
+	assert_true(_usable(gate_today[0]), "default (gate) spawn: the gate bag is usable")
+	# Today's map, lane spawn: no lane bag yet, the gate bag stays.
+	_rt.preplan.result["spawn_tag"] = &"preplan_spawn_lane"
+	if m.find_tagged(&"thermite_lane").is_empty():
+		m.call(&"_apply_thermite")
+		assert_true(_usable(gate_today[0]), "no thermite_lane bag: the gate bag is kept")
+	# C's per-spawn bags exist: only the lane bag stays.
+	var lane: LootSpawn = _thermite_bag(&"thermite_lane")
+	var pontoon: LootSpawn = _thermite_bag(&"thermite_pontoon")
+	var gate: LootSpawn = _thermite_bag(&"thermite_gate")
+	await wait_physics_frames(1)
+	m.call(&"_apply_thermite")
+	assert_true(_usable(lane), "lane spawn: the lane bag")
+	assert_false(_usable(pontoon), "the pontoon bag is hidden and disabled")
+	assert_false(_usable(gate), "the gate bag is hidden and disabled")
+	assert_false(_usable(gate_today[0]), "the untagged-by-spawn gate bag too")
+	assert_false(pontoon.visible or pontoon.interactable.enabled, "hidden, not interactable")
+
+
+func test_db4_thermite_pontoon_and_gate_spawns() -> void:
+	await _launch(&"dockside_burn", 9001)
+	var m: HeistMission = _rt.mission
+	var lane: LootSpawn = _thermite_bag(&"thermite_lane")
+	var pontoon: LootSpawn = _thermite_bag(&"thermite_pontoon")
+	var gate: LootSpawn = _thermite_bag(&"thermite_gate")
+	await wait_physics_frames(1)
+	_rt.preplan.result["spawn_tag"] = &"preplan_spawn_pontoon"
+	m.call(&"_apply_thermite")
+	assert_true(_usable(pontoon), "pontoon spawn: the pontoon bag")
+	assert_false(_usable(lane) or _usable(gate), "the others are off")
+	await _teardown_and_launch_gate()
+
+
+func _teardown_and_launch_gate() -> void:
+	_rt.teardown()
+	await wait_frames(2)
+	await _launch(&"dockside_burn", 9001)
+	var lane: LootSpawn = _thermite_bag(&"thermite_lane")
+	var gate: LootSpawn = _thermite_bag(&"thermite_gate")
+	await wait_physics_frames(1)
+	_rt.mission.call(&"_apply_thermite")
+	assert_true(_usable(gate), "default spawn: the thermite_gate bag")
+	assert_false(_usable(lane), "the lane bag is off")
+	for legacy: Node in _rt.mission.find_tagged(&"thermite"):
+		assert_false(_usable(legacy), "with a thermite_gate bag the legacy gate bag is off")
