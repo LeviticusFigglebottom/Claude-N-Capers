@@ -260,3 +260,38 @@ func test_long_objective_list_folds_and_the_sheet_fits() -> void:
 	sb.refresh()
 	await wait_frames(2)
 	assert_eq(sb.objectives_box.get_child_count(), 5, "a short list shows whole, done ones included")
+
+
+## D-115 GN strings audit: at Gallery Night's start 13 steps are live and 9 of them optional; folding, the required
+## steps (find_canvases, centrepiece, canvases, secure) keep their lines and the order stays the mission's.
+func test_fold_keeps_required_steps_before_optional_ones() -> void:
+	var ids: Array[StringName] = [&"casing", &"find_canvases", &"keycard", &"server_code", &"hack", &"treasury",
+		&"art_store", &"centrepiece", &"canvases", &"secure", &"extras", &"lockers", &"curator_safe"]
+	var required: Array[StringName] = [&"find_canvases", &"centrepiece", &"canvases", &"secure"]
+	var obs: Array[Dictionary] = []
+	for id: StringName in ids:
+		var args: Dictionary = {}
+		if id == &"find_canvases":
+			args = {"found": 0, "total": 4}
+		elif id == &"secure":
+			args = {"count": 0, "total": 2}
+		if not required.has(id):
+			args["optional"] = true
+		obs.append({"id": id, "text_key": StringName("objective.gallery_night.%s" % id),
+			"state": Enums.ObjectiveState.ACTIVE, "args": args})
+	_model.objectives = obs
+	var sb: ScoreboardOverlay = _board()
+	sb.set_shown(true)
+	sb.refresh()
+	await wait_frames(2)
+	var texts: Array[String] = []
+	for l: Node in sb.objectives_box.get_children():
+		texts.append((l as Label).text)
+	var cap: int = sb.tweak.scoreboard_objectives_max
+	assert_eq(texts.size(), cap, "capped: %s" % [texts])
+	for id: StringName in required:
+		var want: String = ObjectivesPanel.objective_text(obs[ids.find(id)])
+		assert_true(texts.has(want), "required step %s keeps a line: %s" % [id, texts])
+	assert_true(texts.find(ObjectivesPanel.objective_text(obs[1])) < texts.find(ObjectivesPanel.objective_text(obs[7])),
+			"mission order kept")
+	assert_eq(texts[texts.size() - 1], UiText.t(&"ui.scoreboard.objectives_more", {"count": ids.size() - (cap - 1)}))

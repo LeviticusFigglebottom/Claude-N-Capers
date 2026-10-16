@@ -66,6 +66,8 @@ var result: Dictionary = {}
 ## stash, spending, xp.<key>, xp_total, level).
 var value_labels: Dictionary = {}
 var level_bar: ProgressBar
+## The "Payday: <heist>" header (D-115 GN strings audit: PD2's payday names the job).
+var title_label: Label
 var continue_button: Button
 ## Shown only when offer_retry() (a failed heist, no heist completed yet, solo).
 var retry_button: Button
@@ -143,7 +145,8 @@ func build_ui() -> void:
 	add_child(backdrop)
 	var root: VBoxContainer = UiBuild.vbox(16)
 	UiBuild.screen_margin(self, root)
-	root.add_child(UiBuild.label(&"ui.results.title", UiBuild.HEADER))
+	title_label = UiBuild.label(&"ui.results.title", UiBuild.HEADER)
+	root.add_child(title_label)
 	var scroll: ScrollContainer = ScrollContainer.new()
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
@@ -538,6 +541,8 @@ func _render() -> void:
 		c.queue_free()
 	value_labels.clear()
 	var success: bool = bool(payout.get("success", false))
+	if title_label != null:
+		title_label.text = title_text(StringName(result.get("heist_id", &"")))
 	_content.add_child(_build_hero(success))
 	var summary: Array[String] = [
 		UiText.t(_summary_key(success)),
@@ -614,6 +619,14 @@ func offer_retry() -> bool:
 	if int(profile.stats.get("heists_completed", 0)) > 0:
 		return false
 	return Net.is_authority() and Net.human_slots().size() <= 1
+
+
+## Header text: "Payday: <heist name>" when `heist_id` has a `heist.<id>.name` string, else "Payday".
+static func title_text(heist_id: StringName) -> String:
+	var name_key: StringName = StringName("heist.%s.name" % heist_id)
+	if heist_id == &"" or not UiText.has(name_key):
+		return UiText.t(&"ui.results.title")
+	return UiText.t(&"ui.results.title_heist", {"heist": UiText.t(name_key)})
 
 
 ## Strings key explaining a failed heist's `fail_reason` (unknown / empty reads as an abort).

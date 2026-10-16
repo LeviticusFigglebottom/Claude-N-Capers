@@ -239,6 +239,7 @@ ui.blocked.no_space,No room to place it here
 ui.blocked.push_bar_outside,Opens from the other side
 ui.blocked.lift_full,The lift is full
 ui.results.title,Payday
+ui.results.title_heist,Payday: {heist}
 ui.results.success,Heist complete
 ui.results.failure,Heist failed
 ui.results.fail.all_custody,The whole crew ended up in custody.
@@ -1693,8 +1694,8 @@ ui.briefing.sec.event.dockside_burn.police_tipped,police tipped off (no response
 ui.briefing.sec.event.dockside_burn.cartel_reinforcements,Co-op reinforcements at the gate
 ui.briefing.sec.event.dockside_burn.fog_lifts,fog lifts (viaduct sniper)
 ui.briefing.sec.event.dockside_burn.harbor_unit,harbour police boat (trawler sniper)
-ui.briefing.sec.event.gallery_night.insurance_inspection,insurance inspectors
-ui.briefing.sec.event.gallery_night.vaultline_early,Vaultline couriers arrive early
+ui.briefing.sec.event.gallery_night.insurance_inspection,insurance inspectors with escorts (2 guards)
+ui.briefing.sec.event.gallery_night.vaultline_early,Vaultline crew arrives early for The Lantern Bearer (2 guards)
 ui.briefing.sec.event.gallery_night.argus_upgrade,Argus upgrade (every frame sensor live)
 ui.preplan.bp.gallery_night.ss,Service stair
 ui.preplan.bp.gallery_night.lk,Locker room
@@ -3292,7 +3293,7 @@ ui.hud.player_left,{name} left the game. An AI plays {heister} now.
 ui.hud.player_joined,{name} joined as {heister}.
 heist.gallery_night.briefing,"The Halberd Gallery, Aldous Parade at Wexley Street, in the Calloway gala's last hour. Odile Vance's buyer wants four canvases off a list, The Lantern Bearer above all. Walk in as guests, case the rooms before last call, then cut the Lantern Bearer and one more. Rolled, not framed. Out by the van in the Mews or the limo at the kerb."
 music.gallery_night.name,Laylight
-heist.gallery_night.briefing_loud,"Argus locks the gallery down. Hack the server, drill the art-store vault, then hold until the escape arrives."
+heist.gallery_night.briefing_loud,"Argus locks the gallery down. Hack the Argus server to lift it, or drill the art-store vault, then hold until the escape arrives."
 objective.gallery_night.casing,Case the gala
 objective.gallery_night.casing_last_call,Gala's over. Stay out of sight
 objective.gallery_night.find_canvases,Find the listed canvases ({found}/{total})
@@ -3304,8 +3305,8 @@ objective.gallery_night.treasury,Open the Treasury
 objective.gallery_night.art_store,Open the art store
 objective.gallery_night.centrepiece,Cut The Lantern Bearer
 objective.gallery_night.canvases,Cut one more listed canvas
-objective.gallery_night.secure,Secure the canvases ({count}/{total})
-objective.gallery_night.extras,Take the rest of the list and the studies
+objective.gallery_night.secure,Secure The Lantern Bearer and one more ({count}/{total})
+objective.gallery_night.extras,"Take it all: the rest of the list, the studies, the lockers and the safe"
 objective.gallery_night.lockers,Saw open the consignment lockers
 objective.gallery_night.curator_safe,Open the curator's safe
 objective.gallery_night.lockdown,Argus has locked the gallery down
@@ -3369,7 +3370,7 @@ voice.vo.vance.gallery_night_centrepiece,"The Lantern Bearer. Hold it like you'd
 voice.vo.vance.gallery_night_payday,"The Lantern Bearer is on its way to a man who will never show it to anyone. Sad, really. Your share is less sad."
 voice.vo.mercer.briefing_gallery_night_1,I'll be on comms. You arrive as guests at the gala. Masks stay in your pockets until the guests are gone or nobody's looking.
 voice.vo.mercer.briefing_gallery_night_2,"Argus runs the cameras, the frame sensors and the Treasury lasers. If it goes loud, steel shutters come down. The server upstairs lifts them."
-voice.vo.mercer.gallery_night_intro,"Gala's in its last hour. Walk the rooms, read the plaques, find the list. Last call's coming and the hall empties after it."
+voice.vo.mercer.gallery_night_intro,"Gala's in its last hour. Walk the rooms, get close to the paintings, find the list. Last call's coming and the hall empties after it."
 voice.vo.mercer.gallery_night_canvas_found_lantern,That's The Lantern Bearer. The one the buyer asked for by name.
 voice.vo.mercer.gallery_night_canvas_found_orchard,The Salt Orchard. That's on the list.
 voice.vo.mercer.gallery_night_canvas_found_widow,Widow in Blue. On the list. Mark it.
@@ -3408,7 +3409,7 @@ voice.vo.vance.gallery_night_radio_hack,Argus is blind. The frames are just fram
 voice.vo.vance.gallery_night_radio_treasury,The Treasury is open. Mind the pretty red lines.
 voice.vo.vance.gallery_night_radio_art_store,"The art store. Everything they didn't think worth showing, which is rarely true."
 voice.vo.vance.gallery_night_radio_centrepiece,"The Lantern Bearer, off its stretcher. Now I can breathe."
-voice.vo.vance.gallery_night_radio_canvases,"That's two from the list. The buyer's minimum, and mine."
+voice.vo.vance.gallery_night_radio_canvases,"Another name off the list. With The Lantern Bearer, that's the buyer's minimum, and mine."
 voice.vo.vance.gallery_night_radio_secure,"The Lantern Bearer and a companion, safely away. Anything more is a gift."
 voice.vo.vance.gallery_night_radio_extras,The whole list and the studies too. You spoil me.
 voice.vo.vance.gallery_night_radio_lockers,The consignment lockers. Friday's auction will be very short.
