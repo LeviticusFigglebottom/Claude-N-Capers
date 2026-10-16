@@ -337,8 +337,8 @@ and left-hand IK are unchanged.
   mag_in, cover_close, done}; `reload_sniper` 78 f {mag_out, mag_in, bolt, done}.
 * **Cover**: `cover_peek_l_F` / `cover_peek_r_F` (standing at a corner: lean out aimed, hold, back in) and `cover_low_F`
   (crouched behind low cover: rise, aim over, duck), 150 f loops, F in {rifle, pistol}.
-* **Stagger**: `stagger_F` (F in {rifle, pistol}), 36 f one-shot {impact: 2}, root motion `curve.stagger_F` (two steps
-  back), weapon knocked off line, recovering into aim_F frame 0.
+* **Stagger**: `stagger_F` (F in {rifle, pistol}), 36 f one-shot {impact: 2}, IN PLACE (no root motion: the feet stumble
+  back and return), weapon knocked off line, recovering into aim_F frame 0.
 ENV A wiring: (a) NPCs get the crew's hold layer: moving + alert + armed → `hold_K_<gait>`; aiming/firing while moving →
 `aim_F_<gait>` (time-locked to the base clip); firing while moving → fire_F upper bones over it. (b) A reload while moving
 plays `reload_<class>` as the upper-body layer, full body when standing; class map SMG/SPECIAL → smg, SHOTGUN → shotgun,
