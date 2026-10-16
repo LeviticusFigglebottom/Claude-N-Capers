@@ -581,6 +581,18 @@
 			"test": false
 		},
 		{
+			"asset": "char_npc_northgate_guard_e",
+			"id": "npc_northgate_guard_e",
+			"scene": "res://world/characters/npc_northgate_guard_e/npc_northgate_guard_e.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_npc_northgate_guard_f",
+			"id": "npc_northgate_guard_f",
+			"scene": "res://world/characters/npc_northgate_guard_f/npc_northgate_guard_f.tscn",
+			"test": false
+		},
+		{
 			"asset": "char_npc_penthouse_guest_a",
 			"id": "npc_penthouse_guest_a",
 			"scene": "res://world/characters/npc_penthouse_guest_a/npc_penthouse_guest_a.tscn",
@@ -668,6 +680,18 @@
 			"asset": "char_security_officer_b",
 			"id": "security_officer_b",
 			"scene": "res://world/characters/security_officer_b/security_officer_b.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_security_officer_c",
+			"id": "security_officer_c",
+			"scene": "res://world/characters/security_officer_c/security_officer_c.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_security_officer_d",
+			"id": "security_officer_d",
+			"scene": "res://world/characters/security_officer_d/security_officer_d.tscn",
 			"test": false
 		},
 		{

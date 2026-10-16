@@ -96,9 +96,10 @@ const POOLS: Array = [
 	["dockside_burn", ["cartel_gate", "cartel_yard_w", "cartel_yard_e", "cartel_hall", "cartel_platform", "cartel_dock",
 		"cartel_quay", "cartel_reinf"], 6, true],
 	["shadow_ledger", ["guard_reception", "guard_rover_l41", "guard_rover_l42", "guard_stair", "guard_roof",
-		"security_operator"], 4, true],
+		"security_operator"], 6, true],
 	["shadow_ledger", ["civ_cleaner_l41", "civ_cleaner_l42"], 3, false],
 	["dockside_burn", ["civ_worker"], 3, false],
+	["night_deposit", ["guard_hall", "guard_basement", "guard_rover"], 4, true],
 ]
 ## Northgate Executive Protection's own shirt; no other firm's livery (Halden char_sec_, bank, police).
 const NORTHGATE_SHIRT: String = "char_ng_shirt"

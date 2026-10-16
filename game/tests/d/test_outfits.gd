@@ -7,6 +7,8 @@ extends TestCase
 const CHARACTERS: Array[String] = [
 	"char_security_officer",
 	"char_security_officer_b",
+	"char_security_officer_c",
+	"char_security_officer_d",
 	"char_civilian_customer_a",
 	"char_civilian_customer_b",
 	"char_civilian_sales",

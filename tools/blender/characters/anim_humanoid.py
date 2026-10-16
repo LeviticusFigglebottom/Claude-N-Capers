@@ -121,6 +121,8 @@ CLIPS = {
     "mug_carry_walk": {"frames": 34, "loop": True, "speed": 1.3, "priority": 4},
     "mop": {"frames": 120, "loop": True, "speed": 0.0, "priority": 4},
     "sit_bed_read": {"frames": 300, "loop": True, "speed": 0.0, "priority": 4, "events": {"page_turn": 221}},
+    # D-116: Kessler in the bedside armchair (shadow_ledger.md), the sit_bed_read book and page turn seated like sit_chair
+    "sit_chair_read": {"frames": 300, "loop": True, "speed": 0.0, "priority": 2, "events": {"page_turn": 221}},
     # cartel gunmen: hunched idle with a long gun held low across the body (weapon at HandR/Socket)
     "idle_thug": {"frames": 105, "loop": True, "speed": 0.0, "priority": 4},
     # police rappel (QC-41, NpcMotor one-way rappel links): one hop per loop down a vertical rope, facing the wall,

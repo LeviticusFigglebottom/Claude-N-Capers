@@ -1861,18 +1861,40 @@ def sit_bed_read(sk: Skeleton, f: int, N: int) -> Pose:
     """Kessler reading in bed, propped up on pillows: legs out on the mattress, the trunk reclined
     ~BED_RECLINE deg, an open book in both hands (GRIPS["book"] = HandR/Socket; the left hand on the
     left cover). Once per loop the left hand turns a page (event ``page_turn``)."""
+    return _reading(sk, f, N, chair=False)
+
+
+def sit_chair_read(sk: Skeleton, f: int, N: int) -> Pose:
+    """D-116: Kessler reading in the bedside armchair (shadow_ledger.md: the spawn on the armchair's Seat, played like
+    sit_chair): seated upright, leaning back a little, the open book held over the lap in both hands, the same page turn
+    as sit_bed_read (event ``page_turn``)."""
+    return _reading(sk, f, N, chair=True)
+
+
+#: sit_chair_read: the book's centre from the chest (chest-bone offset, m at 1.78 m) and the extra head pitch (deg)
+CHAIR_BOOK = v3(0.0, 0.30, -0.12)
+CHAIR_READ_HEAD = 20.0
+
+
+def _reading(sk: Skeleton, f: int, N: int, chair: bool) -> Pose:
     t = f / FPS
     T = N / FPS
     k = sk.scale
     pose = Pose()
     hips_rest = sk.head["hips"]
     br = math.sin(TAU * 3 * t / T)
-    pose.hip = v3(0.0, -0.02 * k, 0.11 * k - hips_rest[2])
-    spine(pose, hips=(-86.0, 0, 0), lean=52.0, chest_lean=5.0 + 0.8 * br, neck=(14, 0, 0), head=(12, 0, 0))
-    pose.legs["L"] = A.LegIK(ankle=v3(-0.115 * k, 0.835 * k, 0.035 * k), foot=rxd(62.0) @ rzd(16.0), toe=0.0,
-                             pole=v3(-0.25, 0.2, 1.0))
-    pose.legs["R"] = A.LegIK(ankle=v3(0.13 * k, 0.76 * k, 0.045 * k), foot=rxd(58.0) @ rzd(-12.0), toe=0.0,
-                             pole=v3(0.35, 0.2, 1.0))
+    if chair:
+        seated(sk, pose, recline=10.0)
+        A.add_rot(pose, "chest", rxd(0.8 * br))
+        A.add_rot(pose, "neck", rxd(-0.5 * CHAIR_READ_HEAD))
+        A.add_rot(pose, "head", rxd(-0.5 * CHAIR_READ_HEAD))
+    else:
+        pose.hip = v3(0.0, -0.02 * k, 0.11 * k - hips_rest[2])
+        spine(pose, hips=(-86.0, 0, 0), lean=52.0, chest_lean=5.0 + 0.8 * br, neck=(14, 0, 0), head=(12, 0, 0))
+        pose.legs["L"] = A.LegIK(ankle=v3(-0.115 * k, 0.835 * k, 0.035 * k), foot=rxd(62.0) @ rzd(16.0), toe=0.0,
+                                 pole=v3(-0.25, 0.2, 1.0))
+        pose.legs["R"] = A.LegIK(ankle=v3(0.13 * k, 0.76 * k, 0.045 * k), foot=rxd(58.0) @ rzd(-12.0), toe=0.0,
+                                 pole=v3(0.35, 0.2, 1.0))
     u0, u1 = BED_PAGE
     turn = clamp((t - u0) / (u1 - u0)) if u0 <= t <= u1 else (1.0 if t > u1 else 0.0)
     # reading: the eyes go down the page, then back up to the top during the turn
@@ -1880,7 +1902,8 @@ def sit_bed_read(sk: Skeleton, f: int, N: int) -> Pose:
     look(pose, yaw=-2.0 + 3.0 * math.sin(TAU * 10 * t / T) * (1.0 - math.sin(math.pi * turn)), pitch=-2.0 + 8.0 * read)
     pre = Solver(sk).solve(pose)
     eye = head_eye(pre, sk)
-    o = A.bone_point(pre, sk, "chest", v3(0.0, 0.38 * k, 0.10 * k)) + v3(0.0, 0.0, 0.006 * k * br)
+    off = CHAIR_BOOK if chair else v3(0.0, 0.38, 0.10)
+    o = A.bone_point(pre, sk, "chest", off * k) + v3(0.0, 0.0, 0.006 * k * br)
     R = facing_frame(o, eye)
     prop_hand(sk, pose, "book", R, o, pole=v3(0.8, -0.2, -0.8))
     # left hand: hold -> page corner -> sweep across -> back to the cover
@@ -2043,6 +2066,7 @@ def clips(sk: Skeleton, table: dict) -> dict[str, Clip]:
         "sit_chair": sit_chair, "smoke": smoke, "lean_wall": lean_wall, "tased": tased, "climb_ladder": climb_ladder,
         "shield_idle": shield_idle, "desk_work": desk_work, "phone_seated": phone_seated,
         "sit_chair_watch": sit_chair_watch, "mug_idle": mug_idle, "mop": mop, "sit_bed_read": sit_bed_read,
+        "sit_chair_read": sit_chair_read,
         "idle_thug": idle_thug,
     }
     stationary.update(p5.STATIONARY)

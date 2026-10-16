@@ -10,7 +10,7 @@ the one pale figure in the room is the target:
   pocket square, white shirt, black bow tie, trousers with a satin side stripe.
 * ``char_npc_penthouse_staff``: waitress / butler's staff: white shirt, black bow tie, graphite
   waistcoat, long black bistro apron over black trousers, dark hair in a chignon.
-* ``char_npc_kessler``: Victor Kessler at home (D-063 default: ``kessler_sleepover``, reading in bed
+* ``char_npc_kessler``: Victor Kessler at home (D-063 default: ``kessler_sleepover``, reading in the bedside armchair (D-116, ``sit_chair_read``)
   in the M5 guest suite): the same body as below; graphite silk pyjamas with ice piping, a long
   ice-silk dressing robe (graphite shawl collar, graphite sash tied at the side) and graphite
   slippers. Still the only pale full-length figure.
@@ -127,7 +127,7 @@ def kessler(kit: Kit) -> None:
 
 
 def kessler_robe(kit: Kit) -> None:
-    """Kessler at home in the guest suite (reading in bed, D-063): graphite silk pyjamas with ice
+    """Kessler at home in the guest suite (reading in the bedside armchair, D-063 / D-116): graphite silk pyjamas with ice
     piping under a long ice-silk dressing robe with a graphite shawl collar and sash, slippers."""
     fit, k = kit.fit, kit.k
     hips_z, belt_z, _tuck = _z(kit)
@@ -142,7 +142,7 @@ def kessler_robe(kit: Kit) -> None:
                            neck_w=0.085, lapel_w=0.075, flare=0.10, base=0.012, open_below=0.06, sleeve=1.88)
     n.cull_under(kit, n0, robe, "faces_hidden_by_robe")
     n.sash(kit, robe, SILK_GRAPHITE, wrap_z - 0.01 * k, side=1.0)
-    kit.notes["target_note"] = ("Kessler (default, in bed reading): tallest, silver hair; long ice-silk robe with a "
+    kit.notes["target_note"] = ("Kessler (default, reading in the armchair): tallest, silver hair; long ice-silk robe with a "
                                 "graphite shawl collar and sash over graphite pyjamas with ice piping. The long-coat "
                                 "version is char_npc_kessler_coat")
 
