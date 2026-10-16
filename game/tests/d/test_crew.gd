@@ -218,7 +218,8 @@ func test_masks_seat_on_every_face() -> void:
 		root.queue_free()
 
 
-## Hip (pager) on the right hip at belt height; Back (bag) behind the chest.
+## Hip (pager) on the right hip at belt height; Back = the carried bag's pivot (D-116): behind the back by the
+## medium bag's height, the bag's up (socket +Y) facing forward onto the back, its length running down to the right.
 func test_hip_and_back_seats() -> void:
 	for id: String in CREW:
 		var root: Node3D = _instance(id)
@@ -231,11 +232,15 @@ func test_hip_and_back_seats() -> void:
 			if att == null or socket == null:
 				fail("%s: %s/Socket" % [id, marker])
 				continue
-			var p: Vector3 = (skel.get_bone_global_rest(skel.find_bone(att.bone_name)) * socket.transform).origin
+			var xf: Transform3D = skel.get_bone_global_rest(skel.find_bone(att.bone_name)) * socket.transform
+			var p: Vector3 = xf.origin
 			if marker == "Hip":
 				assert_true(p.x > 0.10 and p.y > 0.85 and p.y < 1.15, "%s: Hip on the right hip (%s)" % [id, p])
 			else:
-				assert_true(p.z > 0.05 and p.y > 1.1 and p.y < 1.5, "%s: Back behind the chest (%s)" % [id, p])
+				assert_true(p.z > 0.35 and p.z < 0.60 and p.y > 1.0 and p.y < 1.4, "%s: Back = bag pivot (%s)" % [id, p])
+				assert_true(xf.basis.y.normalized().dot(Vector3.FORWARD) > 0.99, "%s: the bag's top faces the back" % id)
+				var length: Vector3 = xf.basis.x.normalized()
+				assert_true(length.x > 0.5 and length.y < -0.6, "%s: the bag runs down to the right (%s)" % [id, length])
 		root.queue_free()
 
 

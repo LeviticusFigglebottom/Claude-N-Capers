@@ -8,8 +8,12 @@
 ##     [--heist=glasshouse] [--after] [--bots=crew_rook:weapon.mule_12:rifle,...] [--poses=interact_low:0.6,...]
 ##     [--layer=crouch_walk]: each pose plays the locomotion clip and layers the pose clip's upper bones over it (the
 ##     bone filter A uses for hold_<kind>, SOURCE weapon_holds); [--turn=deg]: every rig turned further (90 = profile)
+##     [--bags=light,medium,heavy]: per bot, that loot bag (world/props/loot_bag/prop_loot_bag_<size>.tscn) at
+##     Back/Socket with character_spec.gd BACK_BAG_OFFSETS[size] (A's carried-bag visual)
 ## Owner: ENV D.
 extends Node
+
+const Spec = preload("res://world/characters/_tools/character_spec.gd")
 
 ## [character scene id, weapon id, weapon kind]
 const BOTS: Array = [["crew_rook", &"weapon.corsair_ar", &"rifle"], ["crew_sable", &"weapon.kestrel_p9", &"pistol"]]
@@ -36,6 +40,8 @@ var _bots: Array = BOTS
 var _layer: String = ""
 ## --turn=<deg>: extra yaw of every rig (left), e.g. 90 for a profile view of the weapon against the knees
 var _turn: float = 0.0
+## --bags=<size>,...: a carried bag per bot ("" = none)
+var _bags: PackedStringArray = []
 
 
 func _ready() -> void:
@@ -47,6 +53,7 @@ func _ready() -> void:
 			"heist": _heist = v
 			"layer": _layer = v
 			"turn": _turn = float(v)
+			"bags": _bags = v.split(",")
 			"after": _poses = AFTER_POSES
 			"poses":   # --poses=interact_low:0.6,drill_place:0.8 (any clips, the same for every bot)
 				_poses = []
@@ -86,6 +93,8 @@ func _ready() -> void:
 		rig.rotate_y(deg_to_rad(28.0 * signf(lane) if lane != 0.0 else 0.0))
 		rig.rotate_y(deg_to_rad(_turn))
 		_attach(rig, StringName(spec[1]), ^"Skeleton3D/HandR/Socket")
+		if i < _bags.size() and not _bags[i].is_empty():
+			_attach_bag(rig, _bags[i])
 		if spec[2] == &"akimbo":
 			_attach(rig, StringName(spec[1]), ^"Skeleton3D/HandL/Socket")
 		rigs.append(rig)
@@ -135,6 +144,18 @@ func _attach(rig: Node3D, wid: StringName, at: NodePath) -> void:
 	var wv: WeaponVisual = WeaponVisual.new()
 	socket.add_child(wv)
 	wv.setup(def, [] as Array[WeaponModDef])
+
+
+## AnimDriver._update_bag_visual: the bag scene at Back/Socket, here with the per-size offset.
+func _attach_bag(rig: Node3D, size: String) -> void:
+	var socket: Node3D = rig.get_node_or_null(^"Skeleton3D/Back/Socket") as Node3D
+	var ps: PackedScene = load("res://world/props/loot_bag/prop_loot_bag_%s.tscn" % size) as PackedScene
+	if socket == null or ps == null:
+		push_warning("crew hold review: no Back/Socket or bag %s" % size)
+		return
+	var bag: Node3D = ps.instantiate() as Node3D
+	socket.add_child(bag)
+	bag.position = Spec.BACK_BAG_OFFSETS.get(size, Vector3.ZERO) as Vector3
 
 
 func _pose(rig: Node3D, clip: String, t: float) -> void:

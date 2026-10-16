@@ -388,7 +388,7 @@ func _add_markers(skel: Skeleton3D, source: Dictionary, asset_id: String) -> voi
 			local = Transform3D(h.basis, h.origin * k)
 		else:
 			var point: Vector3 = (Spec.SOCKET_POINTS[marker] as Vector3) * k
-			local = Transform3D(Spec.socket_basis(rest.basis), rest.affine_inverse() * point)
+			local = Transform3D(Spec.socket_basis(rest.basis, marker), rest.affine_inverse() * point)
 		var key: String = Spec.SOURCE_KEYS[marker]
 		if source.has(key):
 			var v: Variant = JSON.parse_string(String(source[key]))
@@ -402,6 +402,8 @@ func _add_markers(skel: Skeleton3D, source: Dictionary, asset_id: String) -> voi
 				local.origin = rest.affine_inverse() * (seat as Vector3)
 			else:
 				_error("%s SOURCE.txt %s%s has no (model [x, y, z] ...)" % [asset_id, Spec.SEAT_PREFIX, marker])
+		if Spec.SOCKET_OFFSETS.has(marker):   # D-116: Back/Socket = the carried bag's pivot, off the measured seat
+			local.origin += rest.basis.inverse() * ((Spec.SOCKET_OFFSETS[marker] as Vector3) * k)
 		var socket: Marker3D = Marker3D.new()
 		socket.name = Spec.SOCKET_NAME
 		socket.transform = _rounded(local)

@@ -102,6 +102,27 @@ const SOCKET_POINTS: Dictionary = {
 	"Back": Vector3(0.0, 1.30, 0.12),
 	"Hip": Vector3(0.17, 1.00, 0.0),
 }
+## D-116 (A v1.20 carried bag): Back/Socket is the carried loot bag's pivot. The bag models
+## (prop_loot_bag_light/medium/heavy) have their pivot at the bottom centre, length along X, height (straps
+## and handles on top) along +Y, width along Z. Attached with an identity transform, the MEDIUM bag hangs
+## on the back from the left shoulder strap of carry_bag_walk. Its top (straps) lies against the back,
+## the length runs from the left shoulder blade down to the right hip, 50 deg below horizontal.
+## Model-space offset from the back seat (SOCKET_POINTS / the outfit's measured attach_Back) to the pivot:
+## right/down to the bag centre, and back by the medium bag's height plus 2 cm of clothing clearance.
+const SOCKET_OFFSETS: Dictionary = {
+	"Back": Vector3(0.05, -0.10, 0.33),
+}
+## Socket bases in character space at rest (columns x, y, z). Back: x = the bag length (down to the right),
+## y = the bag's up (its top faces the back: forward, -Z), z = the bag width.
+const SOCKET_BASES: Dictionary = {
+	"Back": Basis(Vector3(0.643, -0.766, 0.0), Vector3(0.0, 0.0, -1.0), Vector3(0.766, 0.643, 0.0)),
+}
+## The bag pivot per bag size on top of Back/Socket (socket-local, m): the medium bag needs none. The light
+## (0.26 m tall) and heavy (0.36 m) bags move along socket +Y by the height difference, so their top lies
+## on the back like the medium's (0.31 m). ENV A: AnimTweak.carried_bag_offset per LootDef weight / bag model.
+const BACK_BAG_OFFSETS: Dictionary = {
+	"light": Vector3(0.0, 0.05, 0.0), "medium": Vector3.ZERO, "heavy": Vector3(0.0, -0.05, 0.0),
+}
 ## Hand sockets in hand-bone-local space (1.78 m; origin scaled by height): the weapon origin and
 ## axes (X right, Y up, -Z muzzle) the animation solver puts in the fist, i.e.
 ## `_anim.grip_offset_godot()` in tools/blender/characters (18-degree grip rake). The assembly
@@ -197,9 +218,9 @@ static func contract_bones() -> Array[String]:
 
 
 ## Socket basis in the bone's local space for the non-hand sockets: character space at rest
-## (+Y up, -Z forward).
-static func socket_basis(bone_global_rest: Basis) -> Basis:
-	return bone_global_rest.inverse()
+## (+Y up, -Z forward), turned by SOCKET_BASES[marker] when present.
+static func socket_basis(bone_global_rest: Basis, marker: String = "") -> Basis:
+	return bone_global_rest.inverse() * (SOCKET_BASES.get(marker, Basis.IDENTITY) as Basis)
 
 
 ## Hand sockets (see HAND_SOCKETS) from `_anim.grip_offset_godot()` via python3, else the constants.
