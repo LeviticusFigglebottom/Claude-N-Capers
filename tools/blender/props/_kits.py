@@ -215,6 +215,9 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 from _kits_bank import BANK_KITS  # noqa: E402  (Night Deposit kits)
 
 KITS.update(BANK_KITS)
+from _kits_dockside import DOCKSIDE_KITS  # noqa: E402  (Dockside Burn kits, DB-C2)
+
+KITS.update(DOCKSIDE_KITS)
 
 
 def _sn(s: str) -> str:

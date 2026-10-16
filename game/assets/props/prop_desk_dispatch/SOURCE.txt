@@ -1,0 +1,8 @@
+asset: prop_desk_dispatch
+script: tools/blender/props/dockside.py
+params: {"cat": {"clear": 1.0, "group": "dockside", "kind": "desk", "pin_only": true, "place": "wall", "support": true}, "d": 0.8, "fn": "desk", "h": 0.75, "w": 2.4}
+seed: 2687770106  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_desk_dispatch
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 16000

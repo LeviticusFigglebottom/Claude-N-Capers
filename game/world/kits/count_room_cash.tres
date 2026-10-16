@@ -1,0 +1,37 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"count_room_cash"
+purpose = &"cash_office"
+required_items = Array[StringName]([&"counter_service", &"chair", &"note_counter", &"shelving", &"file_cabinet", &"light_fixture"])
+optional_items = {
+&"bin": 1,
+&"box": 1,
+&"picture": 0.5
+}
+clutter_groups = {}
+min_density = 0.3
+max_density = 1.8
+min_props = 9
+lone_ok_kinds = Array[StringName]([&"shelving", &"file_cabinet"])
+seed_salt = 211
+counts = {}
+assets = {
+&"bin": PackedStringArray("prop_bin_office"),
+&"binders": PackedStringArray("prop_binders"),
+&"box": PackedStringArray("prop_box_small"),
+&"file_cabinet": PackedStringArray("prop_file_cabinet"),
+&"fire_extinguisher": PackedStringArray("prop_fire_extinguisher"),
+&"light_fixture": PackedStringArray("prop_ceiling_panel_neutral"),
+&"mug": PackedStringArray("prop_mug"),
+&"note_counter": PackedStringArray("prop_note_counter"),
+&"notebook": PackedStringArray("prop_notebook"),
+&"papers": PackedStringArray("prop_papers"),
+&"picture": PackedStringArray("prop_notice_frame"),
+&"shelving": PackedStringArray("prop_shelving_boxes")
+}
+ceiling = {"prop_ceiling_panel_neutral": 3}
+notes = "M1 count room (doc kit count_room; the shared count_room kit is an office kit): the counting table and its chair are map-built; money counters on the table; the cash cage variant and the lift door clear."

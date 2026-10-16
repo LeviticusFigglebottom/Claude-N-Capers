@@ -30,6 +30,8 @@ const PREFAB_CLASSES: Dictionary = {
 }
 ## PO-13 surface pass: greybox class / room purpose -> library finish (db_finishes.gd).
 const F: GDScript = preload("res://world/heists/dockside_burn/greybox/db_finishes.gd")
+## G2 dressing / art data (DB-C2): catalog visuals of the map-built props and chairs.
+const DD: GDScript = preload("res://world/heists/dockside_burn/greybox/dockside_burn_dressing.gd")
 ## Visual tile edge (m) for the big horizontal boxes (slabs, roofs, ceilings, grade): the Compatibility renderer
 ## lights a mesh instance with at most 8 omni / spot lights (rendering/limits/opengl/max_lights_per_object), so one
 ## floor-wide box overlapped by every room light keeps 8 arbitrary ones and whole rooms render black (Gallery Night
@@ -314,7 +316,7 @@ func slab_skins(parent: Node3D, sources: Array, rooms: Array, prefix: String) ->
 			if cs == null or not (cs.shape is BoxShape3D) or meshes.is_empty() or not xf.basis.is_equal_approx(Basis.IDENTITY):
 				continue
 			var sz: Vector3 = (cs.shape as BoxShape3D).size
-			var mat: Material = ((meshes[0] as MeshInstance3D).mesh as BoxMesh).material
+			var mat: Material = (meshes[0] as MeshInstance3D).mesh.surface_get_material(0)  # box or flat (ceilings) mesh
 			boxes.append([xf * AABB(cs.position - sz * 0.5, sz), String(mat.resource_name).trim_prefix(prefix)])
 	var per_room: Dictionary = {}  # room id -> {finish key -> [[x0, z0, x1, z1, y, up], ...]} (insertion order)
 	for r: Array in rooms:
@@ -501,14 +503,49 @@ func prop_box(parent: Node3D, nm: String, base: Vector3, size: Vector3, yaw: flo
 	col.shape = RT.shape(size) if kind == "bollard" else box_shape(size)
 	col.position = Vector3(0.0, size.y * 0.5, 0.0)
 	add(body, col)
+	obstruct(body.transform, AABB(Vector3(-size.x * 0.5, 0.0, -size.z * 0.5), size))
+	var art: Array = DD.PROP_ART.get(nm, [])
+	if not art.is_empty():  # G2 (DB-C2): the catalog visual over the unchanged collider
+		body.set_meta(&"art_asset", String(art[0]))
+		if String(art[2]) != "":
+			body.set_meta(&"kind", String(art[2]))
+		var off: Vector3 = art[3] if art.size() > 3 else Vector3.ZERO
+		_art_visual(body, "Visual", String(art[0]), float(art[1]), off)
+		var i: int = 2
+		for st: Array in DD.STACKED.get(nm, []):
+			_art_visual(body, "Visual%d" % i, String(st[0]), float(art[1]), off + Vector3(0.0, float(st[1]), 0.0))
+			i += 1
+		return body
 	var mi: MeshInstance3D = MeshInstance3D.new()
 	mi.name = "Mesh"
 	mi.mesh = box_mesh(size, finish(parent, mat_id, nm, base - Vector3(size.x, 0.0, size.z) * 0.5, base + Vector3(size.x, size.y * 2.0,
 		size.z) * 0.5, kind))
 	mi.position = col.position
 	add(body, mi)
-	obstruct(body.transform, AABB(Vector3(-size.x * 0.5, 0.0, -size.z * 0.5), size))
 	return body
+
+
+## G2 (DB-C2): a catalog prop's wrapper scene as the visual child `nm` of a map-built body (yaw / offset in the body's
+## frame). Any collision the model ships with is switched off: the body's layout collider stays the gameplay shape.
+func _art_visual(body: Node3D, nm: String, asset: String, yaw: float, offset: Vector3) -> Node3D:
+	var ps: PackedScene = _catalog_scene(asset)
+	if ps == null:
+		return null
+	var vis: Node3D = ps.instantiate() as Node3D
+	vis.name = nm
+	vis.transform = Transform3D(yaw_basis(yaw), offset)
+	add(body, vis)  # inside the body's prop (levelcheck: the body is the prop root and carries the metas)
+	var shapes: Array[Node] = vis.find_children("*", "CollisionShape3D", true, false)
+	if not shapes.is_empty():
+		map_root.set_editable_instance(vis, true)
+		for m: Node in vis.find_children("*", "", true, false):
+			if m.scene_file_path != "":
+				map_root.set_editable_instance(m, true)
+		for c: Node in vis.find_children("*", "CollisionObject3D", true, false):
+			(c as CollisionObject3D).collision_layer = 0
+		for s: Node in shapes:
+			(s as CollisionShape3D).disabled = true
+	return vis
 
 
 ## `npc_seat` (PO6-06): a chair an NPC spawns seated in. No collider and no nav obstruction, so the spawn on its
@@ -530,12 +567,18 @@ func chair(parent: Node3D, nm: String, base: Vector3, yaw: float, npc_seat: bool
 		col.shape = box_shape(size)
 		col.position = Vector3(0.0, size.y * 0.5, 0.0)
 		add(body, col)
-	mesh_box(body, "SeatMesh", Vector3(-0.225, 0.0, -0.225), Vector3(0.225, 0.45, 0.225), "chair")
-	mesh_box(body, "BackMesh", Vector3(-0.225, 0.45, 0.165), Vector3(0.225, 0.85, 0.225), "chair")
 	var m: Marker3D = Marker3D.new()
 	m.name = "Seat"
 	m.position = Vector3(0.0, 0.45, 0.0)
 	add(body, m)
+	if DD.CHAIR_ART.has(nm):  # G2 (DB-C2): the catalog chair over the unchanged 0.45 m collider / seat
+		body.set_meta(&"art_asset", String(DD.CHAIR_ART[nm]))
+		_art_visual(body, "Visual", String(DD.CHAIR_ART[nm]), 0.0, Vector3.ZERO)
+		if DD.CHAIR_FACES.has(nm) and parent.has_node(String(DD.CHAIR_FACES[nm])):
+			body.set_meta(&"faces", NodePath("../" + String(DD.CHAIR_FACES[nm])))
+	else:
+		mesh_box(body, "SeatMesh", Vector3(-0.225, 0.0, -0.225), Vector3(0.225, 0.45, 0.225), "chair")
+		mesh_box(body, "BackMesh", Vector3(-0.225, 0.45, 0.165), Vector3(0.225, 0.85, 0.225), "chair")
 	if not npc_seat:
 		obstruct(body.transform, AABB(Vector3(-0.225, 0.0, -0.225), size))
 

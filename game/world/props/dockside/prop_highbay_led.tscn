@@ -1,0 +1,28 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/props/prop_highbay_led/prop_highbay_led.glb" id="1_model"]
+
+[node name="PropHighbayLed" type="Node3D" groups=["fixture"]]
+metadata/kind = &"light_fixture"
+metadata/mount = &"ceiling"
+metadata/fixture = true
+
+[node name="Model" parent="." instance=ExtResource("1_model")]
+
+[node name="Fixture" parent="Model"]
+visibility_range_end = 25
+visibility_range_end_margin = 2.5
+visibility_range_fade_mode = 1
+
+[node name="Light" type="SpotLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, -0.32, 0)
+spot_range = 9
+spot_angle = 70
+spot_angle_attenuation = 0.6
+layers = 1048577
+light_color = Color(0.949, 0.9412, 0.9176, 1)
+light_energy = 3
+light_size = 0.05
+shadow_enabled = false
+
+[editable path="Model"]
