@@ -43,6 +43,8 @@ extends Resource
 @export var drill_duration_s: float = 180.0
 @export var thermal_duration_s: float = 360.0
 @export var saw_duration_s: float = 180.0
+## D-115 (DB-8): a placed saw on a padlock (Padlock.place_saw) when the padlock sets no saw_duration_s (◇).
+@export var padlock_saw_duration_s: float = 30.0
 
 ## PO-12: the placed device's `Bit` spin while running (deg/s, about its local Z); 0 = still.
 @export var device_bit_spin_dps: float = 900.0
