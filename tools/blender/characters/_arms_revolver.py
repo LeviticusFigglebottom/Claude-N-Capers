@@ -77,7 +77,7 @@ class RevolverKit:
         # loader body to its far (right) side, so the forearm stays left of the gun
         knob = m["loader"] + v3(-0.010, -0.036, 0.000)
         self.on_loader = hand_at(sk, "L", "m", knob, (0.92, 0.10, -0.38), (0.10, 0.99, 0.0),
-                                 (-0.7, -0.3, -0.6), hand_shape("grip", 0.55), share=0.42, off=0.014)
+                                 (-0.7, -0.3, -0.6), hand_shape("grip", LOADER_CURL), share=0.42, off=0.014)
         # cradle: the support hand slides forward under the cylinder, fingers ready to push it out
         self.cradle = kit.support.moved(v3(0.004, 0.022, 0.010))
 
@@ -90,7 +90,7 @@ class RevolverKit:
         along = unit(up - palm * float(up @ palm))
         knob = self.s.markers["loader"] + v3(0.0, -0.036, 0.0)
         self.on_loader = hand_at(self.sk, "L", "m", knob, along, palm, (-0.45, -0.15, -0.88),
-                                 hand_shape("grip", 0.55), share=0.40, off=0.014)
+                                 hand_shape("grip", LOADER_CURL), share=0.40, off=0.014)
 
     def loader_w(self, a: float, back: float = 0.0, twist: float = 0.0) -> tuple:
         """Speedloader frame (weapon-relative) on the cylinder opened ``a``, ``back`` m behind it,
@@ -140,6 +140,9 @@ UP_P, UP_PITCH = (0.065, 0.31, -0.095), 50.0
 #: edge instead of cutting a wedge across the lower left (lead review of v2)
 ROD_POLE = (0.05, -0.25, -0.97)
 UP_ROLL = -12.0
+#: finger curl of the hand on the speedloader (hand_shape "grip" amount): wrapped round the loader body, so the back
+#: of the hand does not read as an open palm walling the view (lead review of v3)
+LOADER_CURL = 0.95
 #: the wrist flick that lets the speedloader go (deg about the gun's up axis, through the wrist)
 FLICK_DEG = 14.0
 
@@ -178,8 +181,11 @@ def clip_speedloader(kit, s: FPSet, N: int, ev: dict):
             Key(ej - 6, up, rk.rod_hand(0.0), grip, blade=bl, arc_l=(-0.04, 0.0, 0.03)),
             Key(ej, up_push, rk.rod_hand(EJECT_STROKE), grip, blade=bl, ease="snap"),
             Key(ej + 3, up, rk.rod_hand(0.0).moved(v3(0.0, 0.02, 0.0)), grip, blade=bl),
-            Key(ej + 6, down, pouch.moved(v3(0.07, 0.10, 0.12)), grip, blade=bl, arc_l=(-0.03, 0.0, 0.0)),
-            Key(show, down, pouch, grip, blade=bl),
+            # to the pouch and back up with the speedloader: a loose fist, then the fingers round the loader (never
+            # the relaxed open hand at the lens, lead review of v3)
+            Key(ej + 6, down, pouch.moved(v3(0.07, 0.10, 0.12)).with_shape(hand_shape("loose_fist", 0.7)), grip,
+                blade=bl, arc_l=(-0.03, 0.0, 0.0)),
+            Key(show, down, pouch.with_shape(hand_shape("grip", LOADER_CURL)), grip, blade=bl),
             Key(sl - 4, load, rk.hand_on(pre), grip, blade=bl, arc_l=(-0.06, 0.0, -0.02)),
             Key(sl, load, rk.hand_on(seat), grip, blade=bl, ease="snap"),
             Key(drop - 1, load, rk.hand_on(twist), grip, blade=bl),
