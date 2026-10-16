@@ -188,6 +188,8 @@ OUTFIT: dict[str, tuple[str, float, float, str]] = {
     "char_fleece_maroon": ("#6A2E30", 0.97, 0.0, "cloth"),  # D-115 dockside: packer's maroon fleece
     "char_knit_navy": ("#2B3346", 0.95, 0.0, "cloth"),  # D-115 dockside: packer's navy beanie
     "char_glove_work": ("#7D776A", 0.80, 0.0, "cloth"),  # D-115 dockside: grey work gloves
+    "char_satin_sapphire": ("#2D3F70", 0.38, 0.0, "cloth"),  # GN-D1 gallery: patron_e's sapphire satin dress
+    "char_satin_amethyst": ("#4E3164", 0.38, 0.0, "cloth"),  # GN-D1 gallery: patron_g's amethyst satin dress
     # D-115 hand props (char_hand_props.py)
     "char_prop_paper": ("#DCDAD2", 0.85, 0.0, "plastic"),  # cigarette paper, book pages, cash strap, bottle label
     "char_prop_filter": ("#C08A52", 0.80, 0.0, "plastic"),  # cigarette cork filter

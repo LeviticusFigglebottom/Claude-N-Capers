@@ -81,6 +81,24 @@ const D115_CAST: Dictionary = {
 		"Outfit": ["char_hivis_orange", "char_reflect_silver", "char_fleece_maroon", "char_glove_work"],
 		"Headwear": ["char_knit_navy"],
 	},
+	# GN-D1 polish (char_p5_gallery.py): five more gala patrons, the second waitstaff, the conservator's own look.
+	"char_gallery_patron_c": {"Outfit": ["char_dress_black", "brass"], "Headwear": ["brass", "char_hair_grey"]},
+	"char_gallery_patron_d": {
+		"Outfit": ["char_tux_black", "char_satin_black", "char_shirt_black", "char_silk_plum"], "Gear": ["chrome"],
+	},
+	"char_gallery_patron_e": {"Outfit": ["char_satin_sapphire", "chrome"], "Headwear": ["chrome"]},
+	"char_gallery_patron_f": {
+		"Outfit": ["char_suit_navy", "char_satin_black", "char_shirt_white"], "Gear": ["char_gallery_wine"],
+		"Headwear": ["char_metal_silver"],
+	},
+	"char_gallery_patron_g": {"Outfit": ["char_satin_amethyst", "char_satin_black"], "Headwear": ["brass"]},
+	"char_gallery_waiter": {
+		"Outfit": ["char_gallery_wine", "char_shirt_white", "char_tux_black"], "Gear": ["brass", "char_tie_black"],
+	},
+	"char_gallery_conservator": {
+		"Outfit": ["char_shirt_blue", "char_knit_grey", "char_work_charcoal", "char_glove_white", "char_chino_khaki"],
+		"Gear": ["char_medic_white"], "Headwear": ["char_metal_silver", "polymer_black"],
+	},
 }
 ## D-115 hand props (world/characters/_props, tools/blender/characters/make_hand_prop_scenes.py): the index, the
 ## largest extent a prop may have (m; the mop is 1.4 m long), and the smoke check (cigarette length, drag frames).
@@ -156,6 +174,7 @@ func test_index_lists_every_npc() -> void:
 ## D-115: the six new civilians are indexed with their scenes and wear their look (hi-vis + tape, hard
 ## hat or beanie, Vossberg's plum suit and gold, the clerk's lanyard card); the packer has no hard hat.
 ## D-SL-2: the second Shadow Ledger cleaner wears exactly npc_cleaner_sl's uniform but is another person.
+## GN-D1 polish: the new Gallery Night looks (patrons c-g, waiter, conservator); test_p5_cast checks their roles.
 func _check_d115_cast() -> void:
 	for id: String in D115_CAST:
 		assert_true(_index.has(id), "%s in characters.json" % id)
