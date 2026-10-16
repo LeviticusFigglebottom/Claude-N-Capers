@@ -1,4 +1,4 @@
-# Contract: audio cues (v1.7)
+# Contract: audio cues (v1.8)
 
 ENV C produces every sound (synthesized/procedural; see style guide §Audio) and the cue registry
 `game/world/audio/cues.tres` (`AudioCueDef` resources: streams[], volume_db, bus, 3D, max_distance,
@@ -86,3 +86,18 @@ Special-action cues have no dedicated EventBus signals: ENV A triggers them with
 
 Music: `world/audio/music/<track>/` stems `stealth, control, anticipation, assault, fade` (plus
 `win`, `lose` stingers) driven by C's `MusicDirector` listening to the phase signals.
+
+## v1.8 (PO6-17, D-114 §5): assault-event cues
+Kinds on `EventBus.assault_event_started(kind, net_id, position)` / `assault_event_ended(kind, net_id)` are
+`&"turret_van"`, `&"heli"`, `&"breach"` (never `&"helicopter"`).
+| cue | type | trigger | stop owner |
+|---|---|---|---|
+| `cue.assault_event_warning` | 2D, UI bus ≈ −6 dB, cooldown 3 s | B HUD on `assault_event_started` (`UiSfx.ASSAULT_EVENT_WARNING`) | one-shot |
+| `cue.assault_van_arrive` | 3D one-shot at `position` | turret_van start | one-shot |
+| `cue.assault_van_engine` | 3D loop, follows `net_id` | turret_van start | C: `assault_event_ended`, heist end, safety cap |
+| `cue.assault_turret_deploy` / `cue.assault_turret_destroyed` | 3D one-shots | A (turret) | one-shot |
+| `cue.assault_heli_arrive` | 3D one-shot | heli start | one-shot |
+| `cue.assault_heli_rotor` | 3D loop on `net_id`, 250 m | heli start | C: `assault_event_ended`, heist end, safety cap |
+| `cue.assault_heli_leave` | 3D one-shot | heli end | one-shot |
+| `cue.assault_breach_warning` | 3D at `position` | breach start | one-shot |
+| `cue.c4_explode` | 3D one-shot | breach blast: A plays it on detonation (A confirms) | one-shot |

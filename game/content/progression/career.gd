@@ -120,6 +120,14 @@ static func best_difficulty(p: PlayerProfile, heist_id: StringName) -> int:
 	return -1
 
 
+## Highest difficulty any heist was won on, -1 when none (D-117 §2 difficulty unlocks).
+static func best_difficulty_any(p: PlayerProfile) -> int:
+	var best: int = -1
+	for id: Variant in section(p, "heists"):
+		best = maxi(best, best_difficulty(p, StringName(id)))
+	return best
+
+
 ## Fastest win of `heist` in seconds, -1.0 when unknown.
 static func fastest_win_s(p: PlayerProfile, heist_id: StringName) -> float:
 	var ms: int = int(heist(p, heist_id).get(FASTEST_WIN_MS, -1))

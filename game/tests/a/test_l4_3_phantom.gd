@@ -218,6 +218,7 @@ func test_l4_3_play_dead() -> void:
 func test_l4_3_ecm_feedback_immune() -> void:
 	var l: Loadout = Loadout.new()
 	l.deployable = &"deployable.ecm"
+	ADeployableGateUtil.grant(l)  # D-111 gate flag, no extra units
 	await _launch(1, {0: l})
 	var p: NpcBase = _setup_phantom(Vector3(0, 0, -6))
 	var cop: NpcBase = _rt.spawn_npc(&"police", Transform3D(Basis.IDENTITY, _crew(0).global_position + Vector3(3, 0, -6)))

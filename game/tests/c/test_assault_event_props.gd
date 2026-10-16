@@ -109,7 +109,16 @@ func test_glasshouse_markers() -> void:
 		map.free()
 		return
 	var counts: Dictionary = {"TurretVan": 0, "HeliOrbit": 0, "HeliDrop": 0, "Breach": 0}
+	var rappels: int = 0
 	for c: Node in ae.get_children():
+		if c is NavigationLink3D:
+			# PO6-17 roof -> alley police rappel: one-way, RappelLinks meta, roof start above the alley end.
+			var l: NavigationLink3D = c as NavigationLink3D
+			assert_false(l.bidirectional, "%s one-way" % c.name)
+			assert_true(l.has_meta(RappelLinks.META), "%s is a rappel link" % c.name)
+			assert_true(l.start_position.y - l.end_position.y > 6.0, "%s goes roof -> ground" % c.name)
+			rappels += 1
+			continue
 		assert_true(c is Marker3D, "%s is a Marker3D" % c.name)
 		var kind: String = String(c.name).get_slice("_", 0)
 		assert_true(counts.has(kind), "%s: known marker kind" % c.name)
@@ -123,6 +132,7 @@ func test_glasshouse_markers() -> void:
 	assert_eq(int(counts["TurretVan"]), 2, "2 turret-van spots")
 	assert_eq(int(counts["HeliOrbit"]), 1, "1 helicopter orbit")
 	assert_eq(int(counts["HeliDrop"]), 2, "2 rappel drops")
+	assert_eq(rappels, 1, "the roof -> alley rappel link")
 	assert_true(int(counts["Breach"]) >= 3 and int(counts["Breach"]) <= 4, "3-4 breach points")
 	map.free()
 

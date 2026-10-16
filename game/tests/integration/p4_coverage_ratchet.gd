@@ -84,7 +84,6 @@ const UNTESTED: Dictionary = {
 	&"movement.speed_mult": "A",  # systems/player/crew_controller.gd
 	&"stealth.body_bag_concealed_carry": "A",  # systems/player/crew_controller.gd
 	&"stealth.cable_tie_speed_mult": "A",  # systems/ai/civilian/civilian_brain.gd, ...
-	&"stealth.casing_detection_rate_mult": "A",  # systems/stealth/stealth_director.gd
 	&"stealth.civilian_intimidate_range_mult": "A",  # systems/stealth/shout_system.gd
 	&"stealth.civilian_stay_down_mult": "A",  # systems/ai/civilian/civilian_brain.gd
 	&"stealth.ecm_feedback_duration_mult": "A",  # systems/deployables/ecm_system.gd

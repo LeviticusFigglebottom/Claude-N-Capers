@@ -159,6 +159,33 @@ const ESCAPES: Dictionary = {
 	"esc_mews": [Vector3(36.5, 0.0, -4.2), -90.0, Vector3(39.0, 0.0, -1.4), Vector3(4.0, 3.0, 2.0)],
 	"esc_parade": [Vector3(26.5, 0.0, 37.6), 90.0, Vector3(21.0, 0.0, 37.6), Vector3(3.6, 3.0, 2.4)],
 }
+## GN-C2 vehicle COVER (doc Loud: the limos, the van) in the active escape's slot, -Z away from the vehicle, clear of
+## the escape zone and the roller door's clear zone (TacticalPoint rows as gn_npc TACTICAL).
+const ESCAPE_COVER: Dictionary = {
+	"esc_mews": [
+		["CoverVanN", "COVER", Vector3(36.5, 0.0, -5.95), 0.0, ["vehicle", "h4"], false],
+		["CoverVanW", "COVER", Vector3(33.3, 0.0, -4.2), 90.0, ["vehicle", "h4"], false],
+		["CoverVanE", "COVER", Vector3(39.8, 0.0, -4.2), -90.0, ["vehicle", "h4"], false],
+	],
+	"esc_parade": [
+		["CoverLimoN", "COVER", Vector3(26.5, 0.0, 35.9), 0.0, ["vehicle", "h1"], false],
+		["CoverLimoS", "COVER", Vector3(26.5, 0.0, 39.3), 180.0, ["vehicle", "h1"], false],
+		["CoverLimoE", "COVER", Vector3(30.4, 0.0, 37.6), -90.0, ["vehicle", "h1"], false],
+	],
+}
+## GN-C2 BODY_HIDE indoors (doc Room list / Loot path: FR crates 2, J 1, FS 1, PL behind the AHU 2; the Mews bins are
+## _build_misc's): body_container [name, catalog visual, pos (bottom-centre), yaw (front -Z away from the wall)], 1 body
+## each. The PL pair stands south of the plant room's AHU (PL_AHU, catalog dressing), out of sight of the BB door.
+const BODY_HIDES: Array = [
+	["FrameStoreCrateW", "prop_crate_hide", Vector3(16.9, -4.2, 0.64), 180.0],
+	["FrameStoreCrateE", "prop_crate_hide", Vector3(18.4, -4.2, 0.64), 180.0],
+	["JanitorCart", "prop_cart_hide", Vector3(25.0, 0.0, 0.66), 180.0],
+	["FrameStoreUCrate", "prop_crate_hide", Vector3(21.0, 5.4, 0.64), 180.0],
+	["PlantCrateN", "prop_crate_hide", Vector3(11.36, -4.2, 15.9), 90.0],
+	["PlantCrateS", "prop_crate_hide", Vector3(11.36, -4.2, 17.35), 90.0],
+]
+## The PL air-handling unit (catalog prop_air_handler, back to the east wall): [pos, yaw].
+const PL_AHU: Array = [Vector3(11.28, -4.2, 14.0), 90.0]
 
 
 # --- Helpers -------------------------------------------------------------------------------------
@@ -444,7 +471,8 @@ func _build_loot(_gp: Node3D) -> void:
 		"counter_box"])
 
 
-## Phones, alarm buttons, the Mews bins (BODY_HIDE, 1 body each), the gala bar (kc_curator's curator_tipsy pickup).
+## Phones, alarm buttons, the Mews bins and the indoor BODY_HIDE crates / cart (1 body each; GN-C2), the PL AHU, the
+## gala bar (kc_curator's curator_tipsy pickup).
 func _build_misc(_gp: Node3D) -> void:
 	var dev: Node3D = n("Gameplay/Devices")
 	for p: Array in PHONES:
@@ -457,6 +485,14 @@ func _build_misc(_gp: Node3D) -> void:
 		var bp: Vector3 = Vector3(float(b[1]), 0.0, -0.77)
 		cprefab(dev, "body_container", String(b[0]), bp, 0.0, "prop_dumpster", {"capacity": 1}, null, {"kind": "bin"})
 		obstruct_catalog("prop_dumpster", bp, 0.0)
+	for h: Array in BODY_HIDES:
+		var hp: Vector3 = h[2] as Vector3
+		cprefab(dev, "body_container", String(h[0]), hp, float(h[3]), String(h[1]), {"capacity": 1}, null,
+			{"kind": PropCatalog.entry(StringName(String(h[1]))).get("kind", "crate")})
+		obstruct_catalog(String(h[1]), hp, float(h[3]))
+	var ahu: Vector3 = PL_AHU[0] as Vector3
+	catalog_prop(n("Props"), "prop_air_handler", "PlantAHU", ahu, float(PL_AHU[1]))
+	obstruct_catalog("prop_air_handler", ahu, float(PL_AHU[1]))
 	_prop_box(n("Props/Greybox"), "GalaBar", Vector3(14.8, 0.0, 18.6), Vector3(0.8, 1.1, 2.0), 0.0, "bar_counter", true)
 
 
@@ -679,3 +715,17 @@ func _escape(vs: VariantSlot, slot_id: String) -> void:
 	cprefab(vs, "escape_zone", "Escape" + short.capitalize(), e[2] as Vector3, 0.0, ESCAPE_VAN_MARKER,
 		{"objective_tag": StringName("escape_" + short), "escape_type": &"van", "zone_size_m": e[3] as Vector3})
 	vs.params = {"label": "E1" if short == "mews" else "E2", "vehicle": "van" if short == "mews" else "limo"}
+	for t: Array in ESCAPE_COVER.get(slot_id, []):
+		tactical_point(vs, t)
+
+
+## A TacticalPoint row [name, kind, position, yaw, tags, breachable] under `parent`.
+func tactical_point(parent: Node3D, t: Array) -> TacticalPoint:
+	var tp: TacticalPoint = TacticalPoint.new()
+	tp.name = String(t[0])
+	tp.kind = TacticalPoint.Kind[String(t[1])]
+	tp.transform = global_xform(parent).affine_inverse() * Transform3D(yaw_basis(float(t[3])), t[2] as Vector3)
+	tp.tags = _names(t[4])
+	tp.breachable = bool(t[5])
+	add(parent, tp)
+	return tp

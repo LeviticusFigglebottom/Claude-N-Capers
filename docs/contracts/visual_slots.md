@@ -1,4 +1,4 @@
-# Contract: visual slots (v1.2)
+# Contract: visual slots (v1.3)
 
 How art scenes (ENV C props/characters, ENV B weapons) plug into ENV A gameplay prefabs.
 
@@ -58,3 +58,16 @@ ENV A must ship placeholder visuals with the **same named nodes** so swapping ar
 | 21 | `1 << 20` | `viewmodel_lit` | any env owning a `Light3D` | set **in addition** to the light's normal layers on lights that should light the viewmodel (map lamps near play spaces, muzzle flashes, flashlights, explosions) |
 The viewmodel camera's `cull_mask` includes `viewmodel | viewmodel_lit` (layers 19 + 21); geometry never uses layer 21 (so nothing is drawn twice).
 Heist maps/props (ENV A during the pass) tag their key lights; levelcheck gets a rule later (ENV C when active).
+
+## v1.3 (D-118): weapon gadget and muzzle markers
+* `Muzzle` (existing) — on a muzzle device / brake the outermost `Muzzle` wins (D-114 §8); optional `MuzzlePortL` /
+  `MuzzlePortR` for brake side ports.
+* `LaserOrigin` (Marker3D at the emitter, −Z = beam direction) and `LightOrigin` (−Z = cone axis) on gadget mod scenes
+  (SideRail slot); `WeaponVisual.get_marker(&"LaserOrigin")` finds them, outermost wins.
+* Gadget/ammo data rides existing fields: `WeaponStats.gadgets` (`&"laser"`, `&"flashlight"`; combo = both) and the mod's
+  `params` merged into the resolved `WeaponDef.params` (D-057): `gadget_laser_color`, `gadget_laser_range_m` (50),
+  `gadget_light_range_m` (25), `gadget_light_angle_deg` (30), `gadget_light_energy` (2); shotgun AMMO mods set
+  `ammo_type` (`&"slug"`, `&"he"`, `&"flechette"`, `&"dragons_breath"`; absent = buckshot) plus per-type params
+  (pellets / pellets_mult, armor_pierce, shield_pierce, explosion_radius_m, explosion_damage_mult, penetration, dot_dps,
+  dot_s, ignite, panic_civilians, range_mult, ammo_pickup_mult). B owns values; A reads resolved params and may clamp in
+  its tweak; detection numbers stay in StealthTweak.

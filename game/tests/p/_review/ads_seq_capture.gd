@@ -75,6 +75,10 @@ func _weapon(wid: StringName) -> Array:
 	imgs.append(await _shot(c, name, imgs.size(), "walk"))
 	inp.release(&"move_forward")
 	await _ticks(60)
+	var vm0: FpViewmodel = FpViewmodel.of(get_viewport().get_camera_3d())
+	if vm0 != null:
+		vm0.skeleton.skeleton_updated.connect(_dump_bones.bind(vm0, name), CONNECT_ONE_SHOT)
+		await _ticks(2)
 	inp.press(&"aim")
 	var t: int = 0
 	for k: int in IN_TICKS:
@@ -113,6 +117,13 @@ func _shot(c: CrewController, name: String, idx: int, label: String) -> Image:
 		var bore: Vector3 = (inv.basis * (muz.global_position - aim.global_position)).normalized() \
 			if muz != null and aim != null else Vector3.ZERO
 		var up: Vector3 = inv.basis * vm.weapon_attach.global_basis.y.normalized()
+		if muz != null:
+			var vc: Camera3D = CrewView.of(c).viewmodel_camera() if c != null else null
+			var pc: Camera3D = vc if vc != null else cam
+			var sz: Vector2 = get_viewport().get_visible_rect().size
+			print("[ADSSEQ] %s %s screen grip=%s muzzle=%s" % [name, label,
+				pc.unproject_position(vm.weapon_attach.global_position) / sz,
+				pc.unproject_position(muz.global_position) / sz])
 		print("[ADSSEQ] %s %s ads=%.2f grip=%s aim=%s yaw=%.1f pitch=%.1f roll=%.1f" % [name, label, vm.ads_weight,
 			inv * vm.weapon_attach.global_position, inv * aim.global_position if aim != null else Vector3.INF,
 			rad_to_deg(atan2(-bore.x, -bore.z)), rad_to_deg(asin(clampf(bore.y, -1.0, 1.0))),
@@ -187,6 +198,17 @@ static func _diff(a: Image, b: Image) -> float:
 			if absf(ca.r - cb.r) + absf(ca.g - cb.g) + absf(ca.b - cb.b) > 6.0 / 255.0:
 				n += 1
 	return float(n) / float(maxi((w / 2) * (h / 2), 1))
+
+
+## Post-modifier positions of the hand bones (camera space), at the hip (D-116 one-handed check).
+func _dump_bones(vm: FpViewmodel, name: String) -> void:
+	var cam: Camera3D = get_viewport().get_camera_3d()
+	var inv: Transform3D = cam.global_transform.affine_inverse()
+	for b: String in ["upper_arm.L", "hand.L", "thumb_03.L", "index_03.L", "hand.R", "thumb_03.R", "index_03.R"]:
+		var i: int = vm.skeleton.find_bone(b)
+		if i >= 0:
+			print("[ADSSEQ] %s bone %s %s left_drop=%.2f" % [name, b,
+				inv * (vm.skeleton.global_transform * vm.skeleton.get_bone_global_pose(i).origin), vm.left_arm_drop()])
 
 
 func _ticks(n: int) -> void:

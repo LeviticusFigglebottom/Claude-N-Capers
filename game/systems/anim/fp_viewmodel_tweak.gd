@@ -48,11 +48,20 @@ static var _gen: int = 0
 @export_group("Left hand IK (D-069, characters.md v1.7)")
 ## The FP left hand IKs (TwoBoneIK3D upper_arm.L -> forearm.L -> hand.L) to the weapon model's `LeftHandIK`
 ## marker while the clip leaves the left hand on the gun (not during reload / swap, nor for these sets).
-## PO6-11: pistol / revolver are back on the IK (they were skipped 2026-10-14: the global side-point offset left the
-## fingers flat beside the slide). Their per-set offset below is the clip's own wrist position, so the IK changes
-## nothing at hip or full ADS and keeps the support hand wrapped on the firing hand through the idle <-> ads_idle blend
-## (the clips' arm chains differ by 25-38 deg, so the FK blend swung the hand 4 cm off the gun).
-@export var left_hand_ik_skip_sets: Array[StringName] = [&"bow", &"akimbo"]
+## D-116: pistol / revolver are one-handed in first person (one_handed_fp_sets), so they skip the IK again (PO6-11
+## had put them on it with the clip's own wrist offset; their set_left_hand_grip_offset entries stay for the record).
+@export var left_hand_ik_skip_sets: Array[StringName] = [&"bow", &"akimbo", &"pistol", &"revolver"]
+## D-116 (PO, Fallout: New Vegas refs): first-person pistol / revolver are ONE-HANDED: the left arm drops out of view
+## by one_handed_left_drop (camera space, m, applied to upper_arm.L) while the set plays, and eases back in for the
+## reload clips (they use the left hand) at one_handed_drop_rate (1/s). Third person stays two-handed.
+@export var one_handed_fp_sets: Array[StringName] = [&"pistol", &"revolver"]
+@export var one_handed_left_drop: Vector3 = Vector3(-0.15, -0.7, 0.25)
+@export var one_handed_drop_rate: float = 5.0
+## D-116 (LEAD ADS note): per-set rotation (deg, x pitch up / y yaw / z roll) of the arms about the rear sight
+## (AimPoint) at full ADS (x ads_weight), e.g. a small nose-down pitch puts the eye above and behind
+## the firing hand, looking along the slide; the rear sight stays on the crosshair. Empty: tried -8 on the D-116
+## v3 clips, it hardly changes the sleeve (the wrist sits right of the grip in the clip).
+@export var set_ads_rot_deg: Dictionary[StringName, Vector3] = {}
 ## PO6-11: sets whose support hand keeps the orientation (relative to the gun) it had at hip / full ADS through the ADS
 ## transition, instead of the blended clip's (off by ~10 deg mid-blend). Needs the IK (HandRestore).
 @export var left_hand_hold_rel_sets: Array[StringName] = [&"pistol", &"revolver"]
@@ -170,6 +179,10 @@ static var _gen: int = 0
 ## Look speed (deg/s) that reaches the full sway.
 @export var sway_full_dps: float = 300.0
 @export var sway_target_rate_dps: float = 120.0
+## D-116 (PO "organic"): the applied sway follows its PD2 target on an underdamped spring (frequency Hz, damping
+## ratio < 1: a slight overshoot as a turn stops, then it settles), instead of the PD2 rate chase. 0 Hz = PD2 chase.
+@export var sway_spring_hz: float = 3.2
+@export var sway_spring_damping: float = 0.55
 ## PD2 stances.default shakers.breathing amplitude: hip 0.3, crouched 0.25, ADS 0.025 (deg); slow idle sway.
 @export var breathing_amp_deg: float = 0.3
 @export var breathing_crouched_amp_deg: float = 0.25
@@ -260,6 +273,17 @@ static var _gen: int = 0
 @export var bob_amplitude: Vector2 = Vector2(0.008, 0.006)
 @export var bob_frequency_hz: float = 1.0
 @export var bob_ref_speed_mps: float = 3.5
+## D-116: the bob rides the camera's footstep phase (CrewController.bob_phase: one cycle = two steps) and weight, as a
+## figure-8 (x = sin, y = sin 2x) with roll / pitch, x bob_sprint_mult while sprinting (bigger running). false = the
+## old free-running bob_frequency_hz clock.
+@export var bob_follow_steps: bool = true
+@export var bob_sprint_mult: float = 1.6
+@export var bob_roll_deg: float = 0.8
+@export var bob_pitch_deg: float = 0.5
+## D-116: landing dip of the arms on top of the camera's (CrewController.land_dip x this) and a pitch per m of dip
+## (deg/m; the gun noses down as it lands).
+@export var land_vm_mult: float = 0.6
+@export var land_vm_pitch_deg_per_m: float = 60.0
 ## Bob multiplier while fully aimed down sights.
 @export var ads_bob_mult: float = 0.2
 ## Bob amplitude response rate (1/s) when starting / stopping.

@@ -1,4 +1,6 @@
-# Glasshouse: Vossberg Jewelers (glasshouse)
+# Golden Hour: Vossberg Jewelers (glasshouse)
+
+> D-117: display name "Golden Hour"; id `glasshouse` and location "Vossberg Jewelers" unchanged.
 Status: APPROVED (lead, 2026-10-10) (D-023). Required changes 1–4 folded in by ENV C on 2026-10-10.
 
 ## Fiction
@@ -250,12 +252,12 @@ upper floor reaches it via the stair, 18 m max travel).
 
 | NPC | Count | Presence | Spawn tags | Idle activity (`SpawnPoint.idle_activity`) | PatrolPoint tags used |
 |---|---|---|---|---|---|
-| Sales associate (counter) | 1 | always | `civ_staff_counter` | `desk_work` (register) | `staff`, `staff_floor` |
+| Sales associate (counter) | 1 | always | `civ_staff_counter` | `teller` (standing at the register, PO6-06) | `staff`, `staff_floor` |
 | Sales associate (floor) | 1 | always | `civ_staff_floor` | `browse` (tending cases) | `staff`, `staff_floor` |
-| Jeweler | 0–1 | `jeweler` = `jw_working` | `civ_staff_workshop` | `desk_work` (bench) | `staff`, `staff_boh` (G2, U1 coffee, G3 WC) |
-| Admin clerk | 0–1 | `admin_clerk` = `clerk_in` | `civ_staff_admin` | `desk_work` | `staff`, `staff_upper` (U5, U1, U3) |
+| Jeweler | 0–1 | `jeweler` = `jw_working` | `civ_staff_workshop` | `teller` (standing at the 0.92 m bench, PO6-06) | `staff`, `staff_boh` (G2, U1 coffee, G3 WC) |
+| Admin clerk | 0–1 | `admin_clerk` = `clerk_in` | `civ_staff_admin` | `desk_work` (on the bookkeeping chair's `Seat`) | `staff`, `staff_upper` (U5, U1, U3) |
 | Manager (Greta Vossberg) | 0–1 | rare event `nervous_manager` | `civ_staff_manager` | `phone` | `staff`, `staff_upper` |
-| Customers | 2–5 | scalar `customers` | `civ_customer` | `browse` / `queue` / `sit` | `civilian` (G5 and G6 when unlocked) |
+| Customers | 2–5 | scalar `customers` | `civ_customer` | `browse` / `queue` (PO6-06: the window bench has no NPC seat, cust_3 browses window display A) | `civilian` (G5 and G6 when unlocked) |
 
 **Civilians in total:** Routine 4–8 (2 associates + 0–2 variable staff + 2–4 customers; +1 if
 `nervous_manager`). Brutal 5–9 (3–5 customers). The two associates are what route 1 has to read:
@@ -326,7 +328,8 @@ D-014), so solo stealth is about **avoiding** civilians, not tying them all.
 ## Objectives
 **Stealth** (objective_tag in brackets):
 1. *(optional)* Case the store. Mercer intro and an Odile line. `[casing]`
-2. Find the manager's keycard. `[keycard]` (skipped if `safe_left_open`)
+2. Find the manager's keycard `[keycard]`, **or** the safe code from a code note `[code]` (either one completes the step;
+   both skipped if `safe_left_open`; D-117).
 3. Get into the workshop (lockpick the door). `[workshop_door]`
 4. Open the safe: keycard swipe (3 s) **or** drill (120 s, noisy). `[safe]`
 5. Bag the consignment (safe `loot_spawn`, 4 bags of `loot.jewelry`). `[safe_loot]`
@@ -406,6 +409,6 @@ Each variable changes a decision.
 - **LUT:** `lut_glasshouse`, warm mids and slightly cool shadows.
 
 ## HeistDef (proposed data, `glasshouse_def.tres`)
-`id glasshouse`, display "Glasshouse", contact `contact.vance`, mode STEALTH_OR_LOUD, base_payout
+`id glasshouse`, display "Golden Hour" (D-117), contact `contact.vance`, mode STEALTH_OR_LOUD, base_payout
 proposed **$40,000** (lead/B to confirm), loot `[loot.jewelry, loot.cash]`, escape_options `[van]`,
 music_track `glasshouse`.

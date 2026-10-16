@@ -21,10 +21,8 @@ static func make_def() -> HeistDef:
 	d.id = &"shadow_ledger"
 	d.display_name = "Shadow Ledger"
 	d.contact = &"contact.accountant"
-	d.briefing = "Kessler & Moor, the top two floors of Calder Tower. Their off-book client ledger lives " \
-		+ "in three places: the encrypted drive array in the server cage, the partners' laptop with the " \
-		+ "key, and the printed books in Kessler's time-locked study safe. The Accountant wants all of it, " \
-		+ "and nobody may ever know it left the building. One alarm and the array is wiped: stealth only."
+	# D-117 §4: a strings-table key (ENV B), never a literal.
+	d.briefing = "heist.shadow_ledger.briefing"
 	d.mode = Enums.HeistMode.STEALTH_ONLY
 	d.map_scene = SCENE_PATH
 	d.base_payout = 110000

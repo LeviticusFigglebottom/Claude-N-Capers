@@ -1,0 +1,8 @@
+asset: prop_valuables_watch_box
+script: tools/blender/props/loot.py
+params: {"cat": {"kind": "small_valuables", "prefab": "small_loot"}, "fn": "watch_box"}
+seed: 269790504  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_valuables_watch_box
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 8000
