@@ -63,6 +63,7 @@
 			"cartel_quay": ["cartel_gunman", "cartel_gunman_b", "cartel_gunman_c", "cartel_gunman_d", "cartel_gunman_e", "cartel_gunman_f"],
 			"cartel_reinf": ["cartel_gunman", "cartel_gunman_b", "cartel_gunman_c", "cartel_gunman_d", "cartel_gunman_e", "cartel_gunman_f"],
 			"civ_worker": ["dock_worker", "dock_worker_b", "dock_packer"],
+			"civ_worker_packer": ["dock_packer"],
 			"police": ["patrol_officer", "tac_light", "tac_heavy"]
 		},
 		"shadow_ledger": {
@@ -106,7 +107,7 @@
 		"afterhours": "Staff wear black and the Velvet's violet; patrons are mixed club wear. club_bouncer_b's Hip/Socket is on a belt radio; club_bouncer's is the default hip seat (radio under the bomber is not modelled).",
 		"glasshouse": "Golden Hour (D-115). Guards and the operator are Halden. Greta Vossberg (owner/manager, rare nervous_manager) is civilian_manager_vossberg; the two associates are told apart (civilian_sales at the counter, civilian_sales_b on the floor); the upstairs admin clerk wears civilian_clerk office wear, not the shop-floor dress. Customers add the Ostrander bank_customer looks for variety. Guard tags and the operator are not in the roster table: they come from the guard_post variant table and the CameraOperatorSeat spawn.",
 		"night_deposit": "Nightfall Depository (D-115). Halden on the floor (D-116: four faces security_officer a-d, one pool for hall, basement and rovers); the seated operator is the bare-headed Halden night guard (npc_bank_guard). The night manager (code carrier) is npc_bank_night_manager (bank livery, D2-02). The armored_car_early guards are the Vaultline crew (guard_armored_car, from the rare-event table, not the roster).",
-		"dockside_burn": "Dockside Burn (D-115). Co-op cartel gunmen on every cartel post (EnemyDef enemy.cartel_gunman visual_alternates); night-shift workers are the dock crew (forklift drivers dock_worker/_b, the packer dock_packer), never bank staff. Police are the director roster plus faction reskins.",
+		"dockside_burn": "Dockside Burn (D-115). Co-op cartel gunmen on every cartel post (EnemyDef enemy.cartel_gunman visual_alternates); night-shift workers are the dock crew (civ_worker: dock_worker/_b and dock_packer, one pool of three faces; civ_worker_packer, DB-C2: the packing-table worker, dock_packer), never bank staff. Police are the director roster plus faction reskins.",
 		"shadow_ledger": "Shadow Ledger (D-115). Every guard and the operator are Northgate Executive Protection, never Halden: one pool of six faces (npc_northgate_guard a-f, D-116) for the reception, rover, stair, roof and operator tags, so Lethal's 5 guards + the operator are never twins. Cleaners wear the Calder tabard on both floors, one pool of three faces: npc_cleaner_sl (man, buzz cut), npc_cleaner_sl_b (D-SL-2: woman, late 50s, grey bun), npc_cleaner_sl_c (D-116: young man, glasses). Helena Moor is npc_helena_moor, Victor Kessler npc_kessler (robe, reading in the bedside armchair: sit_chair_read)."
 	}
 }
