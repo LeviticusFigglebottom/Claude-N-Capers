@@ -6,7 +6,8 @@
 ##   is_stealth() -> bool                      -> CASING/STEALTH and no alarm yet
 ##   detection_value(observer, slot) -> float  -> meter 0..1 (test_hooks.md)
 ##   detection_entries(slot) -> Array[Dictionary] -> {observer_net_id, world_pos, value, kind} (HUD, server)
-##   fill_rate(observer, crew) -> float        -> instantaneous S2.2 fill rate per second (0 = no fill)
+##   fill_rate(observer, crew) -> float        -> instantaneous S2.2 fill rate per second (0 = no fill);
+##                                                max of the body rate and the D-118 laser/flashlight rate
 ##   detection_risk_mult(dr) -> float          -> S2.3 DR time multiplier (interpolated table)
 ##   camera_countdown() -> float               -> S3.5 seconds until the camera alarm, -1 if none
 ##   start_camera_alarm(camera_net_id)         -> S3.5/S4.4 camera alerted by a stimulus (A2-02)
@@ -67,6 +68,8 @@ var _notice_buf: Array[int] = []
 ## stand-still seconds.
 var _marks: Dictionary[int, Dictionary] = {}
 var _still_s: Dictionary[int, float] = {}
+## D-118 per-physics-frame gadget emission of each crew member (slot -> _gadget_emission() result).
+var _gadget_cache: Dictionary[int, Dictionary] = {}
 
 
 func _ready() -> void:
@@ -347,6 +350,11 @@ func _fill_rate(st: StealthObserverState, crew: CrewController, eye: Vector3, fw
 	var rule_mult: float = _rule_mult(st, crew)
 	if rule_mult <= 0.0:
 		return 0.0
+	return maxf(_body_rate(st, crew, eye, fwd, rule_mult), _gadget_rate(st, crew, eye, fwd, rule_mult))
+
+
+## S2.2 body rate: the crew member's body in view (rule_mult from _rule_mult, > 0).
+func _body_rate(st: StealthObserverState, crew: CrewController, eye: Vector3, fwd: Vector3, rule_mult: float) -> float:
 	var dr_m: float = maxf(detection_risk_mult(float(_detection_risk(crew))), 0.001)
 	var far_eff: float = st.far / sqrt(dr_m)  # S2.3: distance divided by sqrt(mult)
 	var target: Vector3 = crew.global_position + Vector3.UP * minf(1.0, crew.eye_height())
@@ -357,10 +365,13 @@ func _fill_rate(st: StealthObserverState, crew: CrewController, eye: Vector3, fw
 	var dist_f: float = clampf(1.0 - (d - st.near) / maxf(far_eff - st.near, 0.001), _tw.dist_factor_min, 1.0)
 	var ang_f: float = lerpf(1.0, _tw.angle_factor_edge, ang / maxf(st.half_fov_rad, 0.001))
 	var stance: float = _tw.crouch_rate_mult if crew.crouched and not st.is_camera() else 1.0  # S2.5
-	var diff: float = 1.0
+	return st.base_rate * dist_f * ang_f * stance / dr_m * _difficulty_mult() * rule_mult
+
+
+func _difficulty_mult() -> float:
 	if _runtime != null and _runtime.difficulty_def != null:
-		diff = _runtime.difficulty_def.detection_speed_mult
-	return st.base_rate * dist_f * ang_f * stance / dr_m * diff * rule_mult
+		return _runtime.difficulty_def.detection_speed_mult
+	return 1.0
 
 
 ## Masked: everyone fills at stealth.detection_rate_mult (S1.4, S2.8). Unmasked (casing, S1.1/S3.8):
@@ -436,6 +447,121 @@ func _zone_mask_at(pos: Vector3) -> int:
 		if z != null:
 			mask |= 1 << z.kind
 	return mask
+
+
+# --- Weapon gadgets (D-118) ----------------------------------------------------------------
+# PD2: a visible flashlight cone or laser beam/dot gives a crew member away even when the observer cannot
+# see the body. It feeds the same S2.1 crew meter (max with the body rate). Only a masked crew member
+# (weapon out; casing keeps it holstered) with the equipped weapon's gadget switched on (CrewWeapons
+# gadget_on, server state) emits. Ranges come from the resolved weapon params (visual_slots.md v1.3),
+# rates and fallbacks from StealthTweak.gadget_*. The emitter is the crew eye along aim_direction().
+#   flashlight: observer eye inside the cone (half angle x gadget_light_cone_mult) within
+#     gadget_light_range_m with a clear ray from the emitter; guards notice being lit from any side,
+#     cameras only with the emitter inside their view cone (D-114 §1).
+#   laser: the beam (ray to the first world hit, gadget_laser_range_m) passes within gadget_laser_near_m
+#     of the observer's eye at a point inside its view, or its dot lands in view within the preset far
+#     range; both need a clear ray from the eye.
+
+func _gadget_rate(st: StealthObserverState, crew: CrewController, eye: Vector3, fwd: Vector3, rule_mult: float) -> float:
+	if not crew.masked:
+		return 0.0
+	var e: Dictionary = _gadget_emission(crew)
+	if e.is_empty():
+		return 0.0
+	var r: float = 0.0
+	if bool(e["light"]):
+		r = _light_rate(st, crew, e, eye, fwd)
+	if bool(e["laser"]):
+		r = maxf(r, _laser_rate(st, crew, e, eye, fwd))
+	return r * _difficulty_mult() * rule_mult
+
+
+## Cached per physics frame; {} when the crew member emits nothing.
+func _gadget_emission(crew: CrewController) -> Dictionary:
+	var w: CrewWeapons = crew.weapons
+	if w == null or crew.civilian or not w.gadget_on(w.equipped_slot):
+		return {}
+	var cached: Dictionary = _gadget_cache.get(crew.slot, {})
+	if int(cached.get("frame", -1)) == _frame:
+		return cached
+	var ws: int = w.equipped_slot
+	var kinds: Array[StringName] = w.toggle_gadgets(ws)
+	var p: Dictionary = SpecialWeapons.params_for(crew, ws)
+	var origin: Vector3 = crew.eye_position()
+	var dir: Vector3 = crew.aim_direction().normalized()
+	var light_half: float = deg_to_rad(float(p.get("gadget_light_angle_deg", _tw.gadget_light_angle_deg)) * 0.5)
+	var e: Dictionary = {
+		"frame": _frame, "origin": origin, "dir": dir,
+		"light": kinds.has(&"flashlight"), "laser": kinds.has(&"laser"),
+		"light_range": float(p.get("gadget_light_range_m", _tw.gadget_light_range_m)),
+		"light_cos": cos(clampf(light_half * _tw.gadget_light_cone_mult, 0.0, PI)),
+		"laser_end": origin, "laser_dot": false,
+	}
+	if bool(e["laser"]):
+		var range_m: float = float(p.get("gadget_laser_range_m", _tw.gadget_laser_range_m))
+		_exclude.clear()
+		_exclude.append(crew.get_rid())
+		_ray_q.from = origin
+		_ray_q.to = origin + dir * range_m
+		_ray_q.exclude = _exclude
+		var hit: Dictionary = get_viewport().world_3d.direct_space_state.intersect_ray(_ray_q)
+		e["laser_end"] = hit["position"] if not hit.is_empty() else _ray_q.to
+		e["laser_dot"] = not hit.is_empty()
+	_gadget_cache[crew.slot] = e
+	return e
+
+
+func _light_rate(st: StealthObserverState, crew: CrewController, e: Dictionary, eye: Vector3, fwd: Vector3) -> float:
+	var origin: Vector3 = e["origin"]
+	var range_m: float = e["light_range"]
+	var to: Vector3 = eye - origin
+	var d: float = to.length()
+	if d > range_m or d < 0.001 or (e["dir"] as Vector3).dot(to / d) < float(e["light_cos"]):
+		return 0.0
+	if st.is_camera() and _view_angle(st, eye, fwd, origin) > st.half_fov_rad:
+		return 0.0
+	if not _ray_clear(origin, eye, st.node, crew):
+		return 0.0
+	var dist_f: float = clampf(1.0 - d / maxf(range_m, 0.001), _tw.dist_factor_min, 1.0)
+	return st.base_rate * _tw.gadget_light_detect_mult * dist_f
+
+
+func _laser_rate(st: StealthObserverState, crew: CrewController, e: Dictionary, eye: Vector3, fwd: Vector3) -> float:
+	var origin: Vector3 = e["origin"]
+	var end: Vector3 = e["laser_end"]
+	var seg: Vector3 = end - origin
+	var seg_len: float = seg.length()
+	if seg_len < 0.001:
+		return 0.0
+	var dir: Vector3 = seg / seg_len
+	var near_m: float = _tw.gadget_laser_near_m
+	# The beam near the eye: the closest point and the far end of the chord inside near_m.
+	var tc: float = clampf((eye - origin).dot(dir), 0.0, seg_len)
+	var miss: float = eye.distance_to(origin + dir * tc)
+	if miss <= near_m:
+		var t_exit: float = minf(seg_len, tc + sqrt(maxf(near_m * near_m - miss * miss, 0.0)))
+		for t: float in [tc, t_exit]:
+			if _gadget_point_seen(st, crew, eye, fwd, origin + dir * t, near_m * 0.1):
+				return st.base_rate * _tw.gadget_laser_detect_mult
+	if bool(e["laser_dot"]):
+		var d: float = eye.distance_to(end)
+		if d <= st.far and _gadget_point_seen(st, crew, eye, fwd, end, 0.0):
+			var dist_f: float = clampf(1.0 - (d - st.near) / maxf(st.far - st.near, 0.001), _tw.dist_factor_min, 1.0)
+			return st.base_rate * _tw.gadget_laser_detect_mult * dist_f
+	return 0.0
+
+
+## `pt` is inside the observer's view (or within `any_dir_m` of its eye) with a clear ray (stopping
+## gadget_los_pullback_m short of `pt`, so the surface a dot sits on does not block it).
+func _gadget_point_seen(st: StealthObserverState, crew: CrewController, eye: Vector3, fwd: Vector3, pt: Vector3,
+		any_dir_m: float) -> bool:
+	var to: Vector3 = pt - eye
+	var d: float = to.length()
+	if d > any_dir_m and _view_angle(st, eye, fwd, pt) > st.half_fov_rad:
+		return false
+	if d <= _tw.gadget_los_pullback_m:
+		return true
+	return _ray_clear(eye, pt - to / d * _tw.gadget_los_pullback_m, st.node, crew)
 
 
 # --- Replication (events.md detection_progress) -------------------------------------------
