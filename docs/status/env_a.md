@@ -3,6 +3,24 @@
 Owner: ENV A. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-15 23:10 UTC: D-115 mission audit, Dockside Burn + Shadow Ledger (read-only)
+Owners: A = mission script/systems, B = content, C = map/props/generator. Severity in brackets.
+### Dockside Burn
+- DB-1 [blocker] no assault events (no AssaultEvents/ markers, empty HeistDef.assault_events). C markers + rows; A verifies runner.
+- DB-2 [major, A] loot.contraband counts toward the 4 required bags (doc: pays, does not count). Fix: count cash_bricks + weapon_crate only.
+- DB-3 [major, A] cartel reinforcements spawn as ordinary guards (heist_mission.spawn_guards ignores the `cartel` spawn tag). Fix in shared spawn_guards.
+- DB-4 [major, C+A] thermite bag fixed at the gate; should start at the chosen spawn (lane / pontoon). C adds bags per spawn, A enables the matching one.
+- DB-5 [major, C] count-room cage drill 180 s (LARGE) vs doc 120 s. C size MEDIUM, or A per-safe drill_duration_s override.
+- DB-6 [major, A] briefing lines replay in-mission (D-117 §6): VO lane.
+- DB-7 [major, C] no music stems.
+- DB-8..19 [minor]: placed-saw padlock times (doc vs data, LEAD), brass padlock tell (C), fog_lifts S3 perch timing (A+C, = QC-25), harbor_unit P4 (C doc), cartel body-sighting wake (A), sniper line by perch (A), MC push bar (C), OC double door (C), [containers] optional flag (A), [cartel] kill count includes civilians (A), lift breaker stand-in (C G2), ambience/LUT (C).
+### Shadow Ledger
+- SL-1 [major, A+C] cage saw 180 s vs doc 90 s. A: Safe saw_duration_s override; C sets 90.
+- SL-2 [major, A] camera_warning never said: VO lane.
+- SL-3 [major, C] literal briefing string in def (D-117 §4).
+- SL-4 [major, C] no music stems.
+- SL-5..11 [minor]: [drives] completes only at 3 (doc: 2 required, A), cage_left_open requires at effects level (B/C), E3 escape zone small (C), escape name lift vs service_lift (doc), lasers line late (A), SL assault events N/A stealth-only (LEAD), ambience/LUT (C).
+
 ## HANDOFF 2026-10-14
 **Branch head:** code head 4f11fb91 (`[QB-58]` runtime deployable skill gate), plus this handoff commit on top.
 Everything up to 4f11fb91 is on trunk (round 199, 95f6b5bc); env/a-core has no unmerged code.

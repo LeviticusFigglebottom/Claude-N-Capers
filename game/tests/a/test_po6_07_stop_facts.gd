@@ -80,3 +80,12 @@ func test_d115_safe_run_time_overrides() -> void:
 	assert_eq(safe.saw_duration(), 90.0, "saw override")
 	safe.drill_duration_s = -1.0
 	assert_eq(safe.drill_duration(), by_size, "back to the size table")
+
+
+## D-115 (SL-7): EscapeZone.zone_offset moves the Zone box (one zone over the car and its lobby), not the prefab.
+func test_d115_escape_zone_offset() -> void:
+	var ez: EscapeZone = ATestMaps.add_prefab(_rt, "escape_zone", Vector3(6, 0, 6), func(n: Node) -> void:
+		(n as EscapeZone).zone_offset = Vector3(-3.0, 0, 0)) as EscapeZone
+	await wait_physics_frames(1)
+	assert_true(ez.zone.global_position.distance_to(ez.global_position + Vector3(-3.0, ez.zone.position.y, 0)) < 0.01,
+		"zone shifted 3 m along -X (%s vs prefab %s)" % [ez.zone.global_position, ez.global_position])

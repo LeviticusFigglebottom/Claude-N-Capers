@@ -30,7 +30,7 @@ func test_po6_16_gh_police_enter_manager_office() -> void:
 	tw.build_s = 15.0
 	tw.sustain_by_stage_s = PackedFloat32Array([120.0, 120.0, 120.0])
 	_rt = await HeistLauncher.launch(&"glasshouse", 7, Enums.Difficulty.HAZARDOUS, self,
-		{"crew_ai": false, "director_tweak": tw, "captain": false})
+		{"crew_ai": false, "director_tweak": tw, "captain": false, "assault_events": false})  # PO6-17 events add units outside the office
 	assert_true(_rt != null, "launched")
 	await wait_physics_frames(5)
 	var spots: Array[Vector3] = [Vector3(9.0, 4.25, 10.8), Vector3(10.0, 4.25, 10.8), Vector3(11.2, 4.25, 10.5), Vector3(8.0, 4.25, 10.5)]

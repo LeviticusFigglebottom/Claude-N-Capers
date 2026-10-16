@@ -29,6 +29,9 @@ const TYPE_VISUAL_NODES: Dictionary = {
 @export var escape_type: StringName = &"van"
 @export var active: bool = false
 @export var zone_size_m: Vector3 = Vector3(4.0, 3.0, 4.0)
+## D-115 (SL-7): offset (m, prefab space) of the `Zone` box from the origin, so one zone can cover the vehicle
+## and its boarding area while the visual stays on the vehicle (ZERO = centred on the origin footprint).
+@export var zone_offset: Vector3 = Vector3.ZERO
 ## Seconds between activate() and the vehicle's arrival (heli / boat approach). 0 = present.
 @export var arrival_delay_s: float = 0.0
 ## Bags only (zipline / lift drop): secures bags, crew cannot escape here.
@@ -56,6 +59,8 @@ func _prefab_ready() -> void:
 	if active:
 		arrival_left = maxf(arrival_delay_s, 0.0)
 	ZoneUtil.size_box_zone(zone, zone_size_m)
+	if zone != null:
+		zone.position += zone_offset  # once, at ready (the scene's own Zone placement + the offset)
 	if using_placeholder and visual_instance != null:
 		visual_instance.scale = Vector3(zone_size_m.x / PLACEHOLDER_FOOTPRINT_M.x, 1.0, zone_size_m.z / PLACEHOLDER_FOOTPRINT_M.y)
 	_apply_active()
