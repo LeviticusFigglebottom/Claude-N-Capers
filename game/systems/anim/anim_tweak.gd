@@ -18,7 +18,10 @@ static var _cached: AnimTweak = null
 }
 ## Seconds from clip start to the reload `done` event (SOURCE.txt: pistol done@34, rifle done@58, 30 fps).
 ## The reload clip is sped up/slowed so `done` lands when the gameplay reload finishes.
-@export var reload_done_s: Dictionary = {&"pistol": 1.1333, &"rifle": 1.9333}
+## v1.21: reload_akimbo done@46, downed_reload done@34.
+@export var reload_done_s: Dictionary = {
+	&"pistol": 1.1333, &"rifle": 1.9333, &"akimbo": 1.5333, &"downed_reload": 1.1333,
+}
 ## Turn-in-place clip: the root yaws this many degrees over `turn_time_s`.
 @export var turn_clip_deg: float = 90.0
 @export var turn_time_s: float = 0.8
@@ -93,8 +96,16 @@ static var _cached: AnimTweak = null
 ## characters.md v1.19 (SOURCE weapon_holds): the crew upper-body hold layer blends in / out over this (s).
 @export var hold_layer_blend_s: float = 0.2
 ## characters.md v1.20: the carried-bag visual's transform under Back/Socket (characters.md: loot bags at
-## Back/Socket; carry_bag_walk holds the strap at the left shoulder). Identity = the contract socket. ◇
-@export var carried_bag_offset: Transform3D = Transform3D.IDENTITY
+## Back/Socket; carry_bag_walk holds the strap at the left shoulder). ◇ from a windowed review (rook, D-116 clip):
+## 30 cm down the back, 7 cm left, rolled 22 deg so the left end rides up to the strap hand (Back/Socket at identity
+## sat across the shoulders like a backpack, the handles at the head).
+@export var carried_bag_offset: Transform3D = Transform3D(Basis.from_euler(Vector3(0.0, 0.0, deg_to_rad(-22.0))),
+	Vector3(-0.07, -0.30, 0.05))
+## characters.md v1.21 crew-state event times (SOURCE, 30 fps): downed_arrested disarm@6 (the weapon goes), crew_cuffed_free
+## free@8 (the weapon comes back); downed_getup crossfades into the current hold over getup_blend_s.
+@export var arrest_disarm_s: float = 0.2
+@export var cuffed_free_s: float = 0.2667
+@export var getup_blend_s: float = 0.2
 ## Exponential smoothing rate (1/s) of the velocity estimate from position deltas (clients).
 @export var velocity_smoothing: float = 12.0
 
