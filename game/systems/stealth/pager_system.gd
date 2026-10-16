@@ -284,7 +284,11 @@ func _on_answer_completed(crew: Node, pid: int) -> void:
 	_emit(&"pager_answered", [pid, slot, total])
 	var own_line: bool = _runtime != null and _runtime.mission != null and _runtime.mission.own_last_pager_line
 	if total == max_answers and not own_line:  # D-117: a heist with its own last-pager line says that one
-		_emit(&"voice_line_requested", [&"mercer", &"vo.mercer.pager_last", {}])
+		# D-117 §6: the bark director picks among Mercer's pager_last_answer lines (vo.mercer.pager_last included,
+		# BarkTweak.patterns); without one (bare tests) the generic line.
+		var barks: BarkDirector = _runtime.service(BarkDirector.SERVICE) as BarkDirector if _runtime != null else null
+		if barks == null or barks.say_now(&"pager_last_answer") == &"":
+			_emit(&"voice_line_requested", [&"mercer", &"vo.mercer.pager_last", {}])
 	if total > max_answers:
 		_raise_alarm(&"pager_limit", guard_id)  # S5.3: the extra answer completes, then alarm
 
