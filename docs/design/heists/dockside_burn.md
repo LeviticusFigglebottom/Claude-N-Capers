@@ -409,7 +409,7 @@ Support-space check (level_standards §2.2):
 | Cartel gunman (yard west) | 2 | `post_yard_w` | `cartel_yard_w` | — | `cartel`, `cartel_yard` |
 | Cartel gunman (yard east) | 2 | `post_yard_e` | `cartel_yard_e` | — | `cartel`, `cartel_yard` |
 | Cartel gunman (hall) | 2 | `post_hall` | `cartel_hall` | — | `cartel`, `cartel_hall` |
-| Cartel gunman (platform / count room) | 2 | `post_platform` | `cartel_platform` | `sit` (M2) | `cartel`, `cartel_mezz` |
+| Cartel gunman (platform / count room) | 2 | `post_platform` | `cartel_platform` | `sit` (on the Seat of M2's BreakChairS and PF's ForemanChair, PO6-06) | `cartel`, `cartel_mezz` |
 | Cartel gunman (quay dock) | 2 | `post_dock` | `cartel_dock` | — | `cartel`, `cartel_dock` |
 | Cartel gunman (quay) | 2 | `post_quay` | `cartel_quay` | `smoke` | `cartel`, `cartel_quay` |
 | Cartel reinforcements | 4 | rare `cartel_reinforcements` (timed spawn at the gate, QC-25 hook) | `cartel_reinf` | — | — |

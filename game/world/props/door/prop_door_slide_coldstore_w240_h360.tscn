@@ -1,0 +1,19 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/props/prop_door_slide_coldstore_w240_h360/prop_door_slide_coldstore_w240_h360.glb" id="1_model"]
+[ext_resource type="Script" path="res://world/props/slide_leaf.gd" id="2_leaf"]
+
+[node name="PropDoorSlideColdstoreW240H360" type="Node3D"]
+
+[node name="Model" parent="." instance=ExtResource("1_model")]
+
+[node name="Collision" parent="Model/Frame"]
+metadata/surface = &"metal"
+
+[node name="Leaf" parent="Model"]
+script = ExtResource("2_leaf")
+
+[node name="Leaf2" parent="Model"]
+script = ExtResource("2_leaf")
+
+[editable path="Model"]

@@ -7,6 +7,8 @@ const R: float = 7.0
 
 var first: bool = false
 var last: bool = false
+## D-117 §5: the "+N more steps" row: a dashed rail and no ring (steps left out between the lead ones and the final).
+var gap: bool = false
 
 
 func _init() -> void:
@@ -18,6 +20,9 @@ func _init() -> void:
 func _draw() -> void:
 	var c: Vector2 = Vector2(size.x * 0.5, 17.0)
 	var rail: Color = UiTokens.LINE_STRONG
+	if gap:
+		draw_dashed_line(Vector2(c.x, 0), Vector2(c.x, size.y), rail, 2.0, 4.0)
+		return
 	if not first:
 		draw_line(Vector2(c.x, 0), c - Vector2(0, R), rail, 2.0)
 	if not last:

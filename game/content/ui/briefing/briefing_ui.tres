@@ -17,7 +17,7 @@ placeholder_heists = {
 "contact": &"contact.vance",
 "escape_options": Array[StringName]([&"van"]),
 "loot": Array[StringName]([&"loot.jewelry", &"loot.cash"]),
-"objectives": Array[StringName]([&"casing", &"keycard", &"workshop_door", &"safe", &"safe_loot", &"secure", &"escape"])
+"objectives": Array[StringName]([&"casing", &"keycard", &"code", &"workshop_door", &"safe", &"safe_loot", &"secure", &"escape"])
 },
 &"night_deposit": {
 "briefing": "heist.night_deposit.briefing",

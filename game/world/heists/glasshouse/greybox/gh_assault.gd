@@ -54,6 +54,7 @@ static func build(root: Node3D, obstructions: Array[Array]) -> PackedStringArray
 		_marker(root, ae, String(o[0]), Transform3D(Basis.IDENTITY, o[1])).set_meta(&"radius", float(o[2]))
 	for d: Array in L.ASSAULT_HELI_DROPS:
 		_marker(root, ae, String(d[0]), Transform3D(Basis.IDENTITY, d[1]))
+	rappel_links(root, ae)
 	for b: Array in L.ASSAULT_BREACHES:
 		var kind: String = String(b[1])
 		var size: Vector2 = b[5]
@@ -79,6 +80,19 @@ static func build(root: Node3D, obstructions: Array[Array]) -> PackedStringArray
 				pts.append(xf * (box.position + box.size * c))
 			obstructions.append([pts, xf.origin.y + box.position.y, box.size.y])
 	return errors
+
+
+## PO6-17: police rope down from the roof (HeliDrop_1 rappel squads) over the north parapet to the alley. One-way,
+## meta `rappel` = NpcMotor descends it (RappelLinks contract); its roof end also keeps the roof island in the bake.
+static func rappel_links(root: Node, parent: Node3D) -> void:
+	for r: Array in L.ASSAULT_ROOF_RAPPELS:
+		var rl: NavigationLink3D = NavigationLink3D.new()
+		rl.name = String(r[0])
+		rl.bidirectional = false
+		rl.set_meta(&"rappel", true)  # RappelLinks.META (literal: the builder runs without autoloads)
+		rl.start_position = r[1]
+		rl.end_position = r[2]
+		_own(root, parent, rl)
 
 
 static func _marker(root: Node, parent: Node3D, nm: String, xf: Transform3D) -> Marker3D:

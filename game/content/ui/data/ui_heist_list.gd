@@ -10,6 +10,9 @@ extends Resource
 @export var heists: Dictionary = {}
 ## Difficulties selectable in this build (Enums.Difficulty values); others show as locked (C4: P1 = 2).
 @export var unlocked_difficulties: Array[int] = []
+## D-117 §2: difficulties unlocked by progression: each opens once any heist is won on the difficulty just below it
+## (Lethal after a win on the top pickable one, Cataclysm after a Lethal win). Shown locked until then, never hidden.
+@export var progression_difficulties: Array[int] = []
 ## Default AI teammates added by "Play solo" (contracts/test_hooks.md options.ai_teammates).
 @export var solo_ai_teammates: int = 3
 

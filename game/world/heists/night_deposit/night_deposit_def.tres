@@ -5,9 +5,9 @@
 [resource]
 script = ExtResource("1_cet1u")
 id = &"night_deposit"
-display_name = "Night Deposit"
+display_name = "Nightfall Depository"
 contact = &"contact.accountant"
-briefing = "Harbor Savings & Loan, Pier District branch. Every Friday night the Ortega Fisheries Co-op drops its week of cash into the night depository, and its special customers keep more in the vault cage. The Accountant: they can't report what they never declared. Keycard and time-lock code, or hack the lock; hold the basement; four bags minimum."
+briefing = "heist.night_deposit.briefing"
 map_scene = "res://world/heists/night_deposit/night_deposit.tscn"
 base_payout = 90000
 loot = Array[StringName]([&"loot.cash", &"loot.cash_bricks", &"loot.small_valuables"])

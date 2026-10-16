@@ -439,6 +439,17 @@ func kit_scene(piece: String) -> PackedScene:
 	return _scene_cache[path]
 
 
+## Catalog prop scene by asset id (PropCatalog `scene`, tools/blender/props), cached; null + error if absent.
+func _catalog_scene(asset: String) -> PackedScene:
+	var path: String = String(PropCatalog.entry(StringName(asset)).get("scene", ""))
+	if path == "":
+		errors.append("catalog asset %s not found" % asset)
+		return null
+	if not _scene_cache.has(path):
+		_scene_cache[path] = load(path) as PackedScene
+	return _scene_cache[path]
+
+
 ## Gameplay prefab scene by contract id, or null (no error) when `optional` and not on trunk.
 func prefab_scene(prefab: String, optional: bool = false) -> PackedScene:
 	if _scene_cache.has(prefab):
@@ -500,28 +511,33 @@ func prop_box(parent: Node3D, nm: String, base: Vector3, size: Vector3, yaw: flo
 	return body
 
 
-func chair(parent: Node3D, nm: String, base: Vector3, yaw: float) -> void:
-	var body: StaticBody3D = StaticBody3D.new()
+## `npc_seat` (PO6-06): a chair an NPC spawns seated in. No collider and no nav obstruction, so the spawn on its
+## `Seat` stays on the navmesh and the seated NPC owns the spot (D-063, as GH / ND's prop_chair_task).
+func chair(parent: Node3D, nm: String, base: Vector3, yaw: float, npc_seat: bool = false) -> void:
+	var body: Node3D = Node3D.new() if npc_seat else StaticBody3D.new()
 	body.name = nm
-	body.collision_layer = 1
-	body.collision_mask = 0
+	if not npc_seat:
+		(body as StaticBody3D).collision_layer = 1
+		(body as StaticBody3D).collision_mask = 0
 	body.position = base
 	body.basis = yaw_basis(yaw)
 	body.set_meta(&"kind", "chair")
 	add(parent, body)
 	var size: Vector3 = Vector3(0.45, 0.85, 0.45)
-	var col: CollisionShape3D = CollisionShape3D.new()
-	col.name = "Collision"
-	col.shape = box_shape(size)
-	col.position = Vector3(0.0, size.y * 0.5, 0.0)
-	add(body, col)
+	if not npc_seat:
+		var col: CollisionShape3D = CollisionShape3D.new()
+		col.name = "Collision"
+		col.shape = box_shape(size)
+		col.position = Vector3(0.0, size.y * 0.5, 0.0)
+		add(body, col)
 	mesh_box(body, "SeatMesh", Vector3(-0.225, 0.0, -0.225), Vector3(0.225, 0.45, 0.225), "chair")
 	mesh_box(body, "BackMesh", Vector3(-0.225, 0.45, 0.165), Vector3(0.225, 0.85, 0.225), "chair")
 	var m: Marker3D = Marker3D.new()
 	m.name = "Seat"
 	m.position = Vector3(0.0, 0.45, 0.0)
 	add(body, m)
-	obstruct(body.transform, AABB(Vector3(-0.225, 0.0, -0.225), size))
+	if not npc_seat:
+		obstruct(body.transform, AABB(Vector3(-0.225, 0.0, -0.225), size))
 
 
 func area_boxes(area: Area3D, boxes: Array) -> void:
