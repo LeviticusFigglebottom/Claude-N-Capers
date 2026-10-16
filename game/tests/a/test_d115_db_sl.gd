@@ -59,3 +59,27 @@ func test_db3_spawn_guards_cartel_tag_spawns_awake_cartel() -> void:
 	await wait_physics_frames(3)
 	for n: Node in spawned:
 		assert_eq((n as NpcBase).alert_state, Enums.AlertState.COMBAT, "still awake after the brain started")
+
+
+# --- DB-2: only cash bricks and weapon crates count toward the 4 ---------------------------------------
+
+func test_db2_contraband_pays_but_does_not_count() -> void:
+	await _launch(&"dockside_burn", 9001)
+	var m: HeistMission = _rt.mission
+	for i: int in range(3):
+		EventBus.loot_secured.emit(9000 + i, &"loot.contraband", 1400)
+	assert_eq(int((_obj(&"secure")["data"] as Dictionary)["count"]), 0, "product does not count")
+	assert_eq(m.objective_state(&"secure"), Enums.ObjectiveState.ACTIVE, "secure still open")
+	assert_eq(m.bags_secured, 3, "but the bags are secured (they pay)")
+	EventBus.loot_secured.emit(9100, &"loot.cash_bricks", 1000)
+	EventBus.loot_secured.emit(9101, &"loot.weapon_crate", 1000)
+	EventBus.loot_secured.emit(9102, &"loot.cash_bricks", 1000)
+	assert_eq(int((_obj(&"secure")["data"] as Dictionary)["count"]), 3, "HUD count: required bags only")
+	assert_eq(m.objective_state(&"secure"), Enums.ObjectiveState.ACTIVE, "3 of 4")
+	assert_eq(_count(&"vo.mercer.dockside_burn_required_secured"), 0)
+	EventBus.loot_secured.emit(9103, &"loot.weapon_crate", 1000)
+	assert_eq(m.objective_state(&"secure"), Enums.ObjectiveState.COMPLETED, "the 4th required bag completes it")
+	assert_eq(_count(&"vo.mercer.dockside_burn_required_secured"), 1)
+	assert_false(bool(m.get(&"_escape_open")), "no escape before the burn")
+	m.call(&"_on_burn_done")
+	assert_true(bool(m.get(&"_escape_open")), "burn + 4 required bags: the escape is called")

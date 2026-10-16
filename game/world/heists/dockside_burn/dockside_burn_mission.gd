@@ -14,6 +14,9 @@
 extends HeistMission
 
 const MIN_BAGS: int = 4
+## D-115 (DB-2, doc §Loot path): only cash bricks and weapon crates count toward the MIN_BAGS; the product
+## (loot.contraband) and anything else pays but does not count.
+const REQUIRED_LOOT: Array[StringName] = [&"loot.cash_bricks", &"loot.weapon_crate"]
 ## The burn_point's telegraph (InteractionTweak.burn_warning_s): the shutters drop when it lights.
 const SHUTTER_WARNING_S: float = 5.0
 const FOG_BOAT_DELAY_S: float = 30.0
@@ -66,6 +69,8 @@ var _gunmen_down: int = 0
 var _weapons: Array[String] = []
 var _weapons_found: bool = false
 var _snipers_seen: int = 0
+## DB-2: required bags secured (REQUIRED_LOOT only; HeistMission.bags_secured counts every bag).
+var _required_secured: int = 0
 
 
 func _on_mission_start() -> void:
@@ -90,7 +95,6 @@ func _on_mission_start() -> void:
 		{"marker_tags": _container_tags(CONTAINER_KEYS)})
 	add_objective(&"secure", &"objective.dockside_burn.secure", Enums.ObjectiveState.ACTIVE,
 		{"bags": MIN_BAGS, "count": 0, "total": MIN_BAGS, "optional_more": true, "marker_tags": [TAG_LOOT_SECURE]})
-	require_loot(&"secure", MIN_BAGS)
 	add_objective(&"escape_wait", &"objective.dockside_burn.escape_wait", Enums.ObjectiveState.HIDDEN,
 		{"marker_tags": [_escape_tag()]})
 	add_objective(&"escape", &"objective.dockside_burn.escape", Enums.ObjectiveState.HIDDEN,
@@ -321,9 +325,14 @@ func _on_device_jammed(device_net_id: int) -> void:
 		say(&"vo.mercer.dockside_burn_drill_jam")
 
 
-func _on_bag_secured(_bag_net_id: int, _loot_id: StringName, _value: int) -> void:
-	update_objective_data(&"secure", {"count": bags_secured, "total": MIN_BAGS})  # HUD: count / total bags
-	if bags_secured == MIN_BAGS:
+## DB-2: only REQUIRED_LOOT counts toward [secure] (HUD count / total); product and the rest pay only.
+func _on_bag_secured(_bag_net_id: int, loot_id: StringName, _value: int) -> void:
+	if not REQUIRED_LOOT.has(loot_id):
+		return
+	_required_secured += 1
+	update_objective_data(&"secure", {"count": _required_secured, "total": MIN_BAGS})  # HUD: count / total bags
+	if _required_secured == MIN_BAGS:
+		complete(&"secure")
 		say(&"vo.mercer.dockside_burn_required_secured")
 	_try_escape()
 
@@ -399,7 +408,7 @@ func _drop_shutters() -> void:
 ## The escape is called when [burn] and [secure] are done; it arrives after `escape_eta_s` (+30 s
 ## for the boat with `fog_lifts`).
 func _try_escape() -> void:
-	if _escape_open or not _burned or bags_secured < MIN_BAGS:
+	if _escape_open or not _burned or _required_secured < MIN_BAGS:
 		return
 	_escape_open = true
 	var tag: StringName = _escape_tag()
