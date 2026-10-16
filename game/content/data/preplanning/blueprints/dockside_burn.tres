@@ -15,18 +15,28 @@ shapes = Array[Dictionary]([{
 }, {
 "floor": -1,
 "kind": &"sidewalk",
+"label": &"",
+"rect": Rect2(0, 0, 48, 32)
+}, {
+"floor": -1,
+"kind": &"sidewalk",
+"label": &"",
+"rect": Rect2(48, 0, 8, 32)
+}, {
+"floor": -1,
+"kind": &"sidewalk",
 "label": &"ui.preplan.bp.dockside_burn.pier_9",
-"rect": Rect2(-8, -34, 64, 78)
+"rect": Rect2(-8, 32, 64, 12)
 }, {
 "floor": -1,
 "kind": &"sidewalk",
 "label": &"",
-"rect": Rect2(56, -34, 2, 74.3)
+"rect": Rect2(56, 0, 2, 40.3)
 }, {
 "floor": -1,
 "kind": &"sidewalk",
 "label": &"",
-"rect": Rect2(58, -34, 4, 78)
+"rect": Rect2(58, 0, 4, 44)
 }, {
 "floor": -1,
 "kind": &"sidewalk",
@@ -45,6 +55,16 @@ shapes = Array[Dictionary]([{
 }, {
 "floor": -1,
 "kind": &"alley",
+"label": &"ui.preplan.bp.dockside_burn.yard",
+"rect": Rect2(-8, -34, 70, 34)
+}, {
+"floor": -1,
+"kind": &"alley",
+"label": &"ui.preplan.bp.dockside_burn.west_lane",
+"rect": Rect2(-8, 0, 8, 32)
+}, {
+"floor": -1,
+"kind": &"alley",
 "label": &"ui.preplan.bp.dockside_burn.bellweather",
 "rect": Rect2(-12, -34, 4, 78)
 }, {
@@ -57,6 +77,41 @@ shapes = Array[Dictionary]([{
 "kind": &"neighbour",
 "label": &"",
 "rect": Rect2(-12, -10, 2, 50)
+}, {
+"floor": -1,
+"kind": &"neighbour",
+"label": &"ui.preplan.bp.dockside_burn.containers_west",
+"rect": Rect2(1.9, -28.05, 12.200001, 2.4499989)
+}, {
+"floor": -1,
+"kind": &"neighbour",
+"label": &"ui.preplan.bp.dockside_burn.containers_west",
+"rect": Rect2(1.9, -22.05, 12.200001, 2.4499989)
+}, {
+"floor": -1,
+"kind": &"neighbour",
+"label": &"ui.preplan.bp.dockside_burn.containers_west",
+"rect": Rect2(1.9, -16.05, 12.200001, 2.4499989)
+}, {
+"floor": -1,
+"kind": &"neighbour",
+"label": &"ui.preplan.bp.dockside_burn.containers_west",
+"rect": Rect2(1.9, -8.05, 12.200001, 2.4500003)
+}, {
+"floor": -1,
+"kind": &"neighbour",
+"label": &"ui.preplan.bp.dockside_burn.containers_east",
+"rect": Rect2(45.9, -28.05, 12.199997, 2.4499989)
+}, {
+"floor": -1,
+"kind": &"neighbour",
+"label": &"ui.preplan.bp.dockside_burn.containers_east",
+"rect": Rect2(45.9, -22.05, 12.199997, 2.4499989)
+}, {
+"floor": -1,
+"kind": &"neighbour",
+"label": &"ui.preplan.bp.dockside_burn.containers_east",
+"rect": Rect2(45.9, -16.05, 12.199997, 2.4499989)
 }, {
 "floor": 1,
 "kind": &"building",

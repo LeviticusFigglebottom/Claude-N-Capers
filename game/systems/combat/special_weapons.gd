@@ -19,6 +19,10 @@
 class_name SpecialWeapons
 extends RefCounted
 
+## Melee body axis (cone_targets body_axis): shins to crown above the target's feet, sampled this often.
+const AXIS_LOW_M: float = 0.3
+const AXIS_HIGH_M: float = 1.7
+const AXIS_SAMPLES: int = 14
 const KIND_HITSCAN: StringName = &""
 const KIND_PROJECTILE: StringName = &"projectile"
 const KIND_FLAME: StringName = &"flame"
@@ -100,7 +104,11 @@ static func draw_time(p: Dictionary) -> float:
 
 ## Damageable targets (not crew: no friendly fire) whose centre lies within `range_m` of `origin` and
 ## inside the cone of full angle `cone_deg` around `fwd`, with blast line of sight (shields don't block).
-static func cone_targets(crew: CrewController, origin: Vector3, fwd: Vector3, range_m: float, cone_deg: float) -> Array[Object]:
+## `body_axis` (melee, P GN-P1): test the point of the target's body axis (AXIS_LOW_M..AXIS_HIGH_M above its feet)
+## nearest the aim line instead of its centre, so a close or level swing at a standing body reaches it (PD2: the
+## blade hits whatever of the body lies along the reach, not only the chest).
+static func cone_targets(crew: CrewController, origin: Vector3, fwd: Vector3, range_m: float, cone_deg: float,
+		body_axis: bool = false) -> Array[Object]:
 	var out: Array[Object] = []
 	if crew == null or not crew.is_inside_tree() or range_m <= 0.0:
 		return out
@@ -109,7 +117,7 @@ static func cone_targets(crew: CrewController, origin: Vector3, fwd: Vector3, ra
 	for t: Object in Explosion.targets_in_sphere(crew, origin, range_m, tw):
 		if t is CrewController:
 			continue
-		var c: Vector3 = _center(t, origin)
+		var c: Vector3 = _axis_point(t, origin, fwd) if body_axis else _center(t, origin)
 		if _in_cone(origin, fwd, c, range_m, cos_half) and Explosion.blast_los(crew, origin, c, t, tw):
 			out.append(t)
 	return out
@@ -275,6 +283,26 @@ static func _in_cone(origin: Vector3, fwd: Vector3, point: Vector3, range_m: flo
 	if d > range_m:
 		return false
 	return d < 0.3 or to.normalized().dot(fwd) >= cos_half
+
+
+## The point of `target`'s vertical body axis nearest the ray origin + fwd * s (s >= 0); the centre for non-bodies.
+static func _axis_point(target: Object, origin: Vector3, fwd: Vector3) -> Vector3:
+	var body: CharacterBody3D = target as CharacterBody3D
+	if body == null:
+		return _center(target, origin)
+	var a: Vector3 = body.global_position + Vector3.UP * AXIS_LOW_M
+	var b: Vector3 = body.global_position + Vector3.UP * AXIS_HIGH_M
+	var best: Vector3 = a
+	var best_d: float = INF
+	for i: int in AXIS_SAMPLES + 1:
+		var p: Vector3 = a.lerp(b, float(i) / float(AXIS_SAMPLES))
+		var to: Vector3 = p - origin
+		var along: float = maxf(to.dot(fwd), 0.0)
+		var d: float = (to - fwd * along).length()
+		if d < best_d:
+			best_d = d
+			best = p
+	return best
 
 
 static func _center(target: Object, fallback: Vector3) -> Vector3:

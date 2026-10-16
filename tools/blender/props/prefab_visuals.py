@@ -631,9 +631,9 @@ def build(ctx) -> None:
 
 
 def _lift_breaker(k: Kit, p: dict) -> None:
-    """Goods-lift breaker cabinet: pivot back-centre on the floor, the cabinet 1.0-1.9 m up the wall.
+    """Goods-lift breaker cabinet: pivot back-centre of the cabinet (hung at 1.45 m, like prop_breaker_panel).
     `Panel` = cabinet, reset lever, labels; `Screen` = the status window the prefab tints with progress."""
-    w, d, z0, z1 = 0.6, 0.16, 1.0, 1.9
+    w, d, z0, z1 = 0.6, 0.16, -0.45, 0.45
     pn = k.obj("Panel")
     a = pn.part(bevel=0.005, segments=2)
     a.bx((-w / 2, 0.0, z0), (w / 2, d, z1), "metal_grey")

@@ -83,6 +83,18 @@ static var _cached: RagdollTweak = null
 @export var corpse_box_default: Vector3 = Vector3(0.55, 0.35, 1.8)
 @export var corpse_box_default_offset: Vector3 = Vector3(0.0, 0.2, -0.85)
 
+@export_group("Corpse anchor (D-121)")
+## Server gameplay corpse anchor (CorpseAnchor): the root at death moved along the killing push (flat) by this
+## (m) for an ordinary kill; the body's gameplay position (bagging, corpse stimulus, despawn LOS, corpse hitbox).
+@export var anchor_offset_m: float = 0.8
+## ... and by this for a throwing kill (explosion, point-blank shotgun: the kills that ragdoll at once).
+@export var anchor_strong_offset_m: float = 1.4
+## The anchor stops this far short of a wall between the death spot and the offset point (m).
+@export var anchor_wall_margin_m: float = 0.3
+## The anchor snaps onto the navmesh when its closest point is within this (flat m, and 0.6 m vertically);
+## otherwise onto the floor straight below.
+@export var anchor_nav_snap_m: float = 0.75
+
 
 static func data() -> RagdollTweak:
 	if _cached == null:

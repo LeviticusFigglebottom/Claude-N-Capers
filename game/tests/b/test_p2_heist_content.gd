@@ -296,18 +296,15 @@ func test_dockside_burn_loot() -> void:
 			assert_true(ContentDB.loot(id) != null, "dockside_burn def loot %s exists" % id)
 
 
-## Reyes (the contact) has 3 lines and Mercer closes with 2; the other contacts also have a set (as
-## for Glasshouse), so the briefing plays whoever ends up offering the contract.
+## Reyes (the contact) has 3 lines and Mercer closes with 2. The briefing reads HeistDef.contact only (the Board's
+## contact pick applies to heists without one), so the Vance / Accountant sets were removed (D-117 §6 VO audit).
 func test_dockside_burn_briefing() -> void:
 	_check_briefing(DB_HEIST, &"contact.reyes", 3, 2)
 	for c: ContactDef in ContactDef.all():
-		if c.is_handler:
+		if c.is_handler or c.id == &"contact.reyes":
 			continue
-		var own: int = 0
 		for l: Dictionary in BriefingModel.voice_lines(DB_HEIST, c):
-			if StringName(l["speaker"]) == c.voice_speaker:
-				own += 1
-		assert_true(own >= 2, "%s has Dockside Burn briefing lines" % c.id)
+			assert_ne(StringName(l["speaker"]), c.voice_speaker, "no unplayed %s Dockside Burn briefing set" % c.id)
 	var def: HeistDef = HeistRegistry.get_def(DB_HEIST)
 	if def == null:
 		return

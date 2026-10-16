@@ -392,8 +392,11 @@ func _bags() -> String:
 
 func _escape() -> int:
 	var ended: Array[bool] = [false]
+	var escape_done: Array[bool] = [false]
 	EventBus.heist_ended.connect(func(r: Dictionary) -> void:
 		ended[0] = true
+		# events.md v1.7: [escape] completes before heist_ended.
+		escape_done[0] = rt.mission.objective_state(&"escape") == Enums.ObjectiveState.COMPLETED
 		f.note("EVENT heist_ended success=%s went_loud=%s %s" % [r.get("success"), rt.went_loud, r]))
 	var t0: float = rt.heist_time_s
 	while p.active_escape() == null and rt.heist_time_s - t0 < 20.0:
@@ -413,6 +416,8 @@ func _escape() -> int:
 		return await _fail("PO-5.stealth.escape: standing in the escape zone did not end the heist")
 	if rt.went_loud or alarm != &"":
 		return await _fail("PO-5.stealth: the heist ended but it went loud (%s)" % alarm)
+	if not escape_done[0]:
+		return await _fail("PO-5.stealth.escape: [escape] was not completed before heist_ended (events.md v1.7)")
 	f.note("STEALTH WIN: heist ended with no alarm, pagers answered %d" % pagers_answered)
 	return await f.payday_to_hub()
 

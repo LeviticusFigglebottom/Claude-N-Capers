@@ -1,0 +1,28 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"cloakroom"
+purpose = &"reception"
+required_items = Array[StringName]([&"coat_rail", &"light_fixture"])
+optional_items = {
+&"bench": 0.5
+}
+clutter_groups = {}
+min_density = 0.1
+max_density = 1
+min_props = 5
+lone_ok_kinds = Array[StringName]([&"coat_rail", &"counter_service"])
+seed_salt = 107
+counts = {
+&"coat_rail": Vector2i(2, 3)
+}
+assets = {
+&"bench": PackedStringArray("prop_bench_corridor"),
+&"counter_service": PackedStringArray("prop_counter_sales"),
+&"light_fixture": PackedStringArray("prop_downlight")
+}
+ceiling = {"prop_downlight": 2.2}
+notes = "CK: the 0.9 m service counter (tip jar / cash box), coat rails behind it."

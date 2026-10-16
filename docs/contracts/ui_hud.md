@@ -1,4 +1,4 @@
-# Contract: HUD data (v1.15)
+# Contract: HUD data (v1.16)
 
 ENV A exposes in-heist state. ENV B owns every UI scene, HUD included (one UI style, one owner).
 
@@ -154,3 +154,9 @@ ENV A provides (env/a-core 089d327a, 450b8ea0); ENV B consumes. Additive to v1.1
 (from `CrewHealth.flashed_left`, replicated with the crew health props; up to 2.5 s at the blast, half at the stun-radius
 edge). 0 = not flashed. B renders a white-out that fades with it; P may add a matching viewmodel/audio dull. The flash
 interrupts a held interaction (A).
+
+## v1.16: scoped ADS (P's FP scope overlay)
+HUD model gains `scoped_ads: bool` and `scope_ring: Rect2` (screen space, the ring's bounding rect), written by ENV P while
+the scope overlay is above its show threshold. ENV B moves text panels (device timers, the interaction prompt, hint strips)
+outside `scope_ring` while scoped. Gameplay markers, detection chevrons, hit markers and subtitles stay where they are
+(PD2 keeps them while scoped). No gadget on/off HUD hint: PD2 shows none.

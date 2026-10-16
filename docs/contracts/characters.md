@@ -1,4 +1,4 @@
-# Contract: characters (v1.17)
+# Contract: characters (v1.22)
 
 Producer: ENV C (generated humanoids + animations). Consumer: ENV A (NPC/crew prefabs).
 Until delivered, ENV A uses capsule placeholders with the same node names.
@@ -237,3 +237,53 @@ left-wrist offset, published in char_arms_fp SOURCE `fp.vgrip` (Godot weapon axe
 all three). When a vertical-grip mod is equipped, P switches the left-hand IK target to the mod's LeftHandIK + that offset
 and blends the left-hand bones (hand.L and its fingers) to `<set>_vgrip_hand`; without the mod, the handguard hold is
 unchanged. A new gun with a vertical grip gets a `vgrip_ik` marker and the clip in `_arms_sets.py`.
+
+## v1.18: hit-zone flinches and surrender variants (D-116 follow-up; SOURCE `hit_zones:` / `surrender_variants`)
+* **Hit zones** (one-shot, absolute poses, root fixed; each starts and ends on idle_alert f0): `hit_head` (14 f, impact@2),
+  `hit_chest` (14 f, impact@3), `hit_shoulder_l` / `hit_shoulder_r` (14 f, impact@3), `hit_leg_l` / `hit_leg_r` (16 f,
+  impact@3, 7 cm in-place stagger that returns). Zone → clip: HEAD → hit_head, BODY → hit_chest, LIMB above hip height →
+  shoulder by root-space side, below → leg by side. Blend: full-body OneShot when standing; otherwise spine-up filtered at 0.7
+  over aim/locomotion (0.9 for head), plus the hit arm unless it is the gun arm. The direction clips `hit_react*` stay as the
+  fallback when no zone is known. ENV A reads `info.zone` and `info.position`.
+* **Surrender variants:** `hands_up_b` / `hands_up_c`, `surrender_b` / `surrender_c` (start on surrender f0, end on its last
+  frame), `kneel_cuffed_b` / `kneel_cuffed_c` (f0 = kneel_cuffed f0, so death_kneel_cuffed still chains), and loops
+  `surrender_idle` / `_b` / `_c` (96 / 110 / 84 f, start on surrender's last frame). Pick rule: one stable index per NPC,
+  `hash(net_id) % 3`, used in every group, plus a random loop start offset from `GameRng.stream(&"anim_variants")`. After a
+  surrender* one-shot, play the matching surrender_idle* instead of holding the last frame. ENV A also adds the variants to
+  AnimTweak death_by_pose and hard_hat_lift_clips.
+
+## v1.19: third-person crew weapon holds (D-116 follow-up; SOURCE `weapon_holds`)
+`idle_alert_rifle` (96 f) / `idle_alert_pistol` (110 f): full-body PD2 low-ready loops with a slow weight shift (rifle
+support hand cupped under the fore-end at the weapon's LeftHandIK; pistol compressed at chest height). `hold_rifle` /
+`hold_pistol` (96 f): the same upper body without the weight shift, for layering. ENV A: when a rifle- or pistol-class
+weapon (`weapon_kind`) is held and not aiming, play idle_alert_<kind> instead of idle_alert; over walk / run / strafe*,
+layer hold_<kind> with an upper-body filter (spine, chest, neck, head, clavicles, arms, hands, fingers), weight 1, blend
+0.2 s; aim_* keeps priority; loops start at a random offset from `GameRng.stream(&"anim_variants")`. The third-person RIFLE
+left_ik follows the weapon's current LeftHandIK.
+
+## v1.20: holds for every weapon class + armed interactions (D-116 follow-up; SOURCE `weapon_holds`, `armed_interactions`)
+* `idle_alert_<kind>` / `hold_<kind>` for kind = rifle, pistol, smg, sniper, lmg, akimbo. weapon_class → kind:
+  ASSAULT_RIFLE and SHOTGUN → rifle; SMG and SPECIAL (launcher) → smg; SNIPER → sniper; LMG → lmg (hip carry); PISTOL →
+  pistol, or akimbo for an akimbo weapon. Akimbo: ENV A attaches a single pistol at HandR/Socket AND at HandL/Socket (the
+  paired glb is for the armory view only).
+* `interact_low_armed`, `interact_mid_armed`, `interact_high_armed`, `throw_bag_armed` (release@15): the right hand keeps
+  the weapon in a low carry and the left hand does the work. ENV A plays the *_armed variant whenever the crew member holds a
+  weapon. `carry_bag_walk` has the left hand on the strap at the left shoulder; the third-person carried-bag visual attaches
+  there (ENV A).
+
+## v1.21: crew states in third person (D-116 follow-up; SOURCE `crew_states`, tools/blender/characters/_anim_crew3p.py)
+* **Akimbo:** `aim_akimbo` (90 f loop), `fire_akimbo` / `fire_akimbo_l` (9 f, shot@0; ENV A alternates per shot, right
+  first; each starts and ends on aim_akimbo f0), `reload_akimbo` (60 f; mag_out@8, mag_in@32, done@46). One pistol per hand
+  (HandR/Socket and HandL/Socket).
+* **Downed:** `downed_fire` (9 f, shot@0) and `downed_reload` (45 f; mag_out@6, mag_in@28, done@34), both downed f0 →
+  downed f0; `downed_getup` (40 f, up@34) to hold_pistol f0, ENV A crossfades 0.2 s into the current weapon's hold.
+* **Arrest / cuffed:** `downed_arrested` (40 f, disarm@6; ENV A hides the weapon at `disarm`, ends on crew_cuffed f0),
+  `crew_cuffed` (120 f loop), `crew_cuffed_enter` (18 f, from idle f0), `crew_cuffed_free` (24 f, free@8, to idle_alert f0).
+  The weapon stays hidden while cuffed. Custody has no body on the map, so it has no clip.
+
+## v1.22: Back/Socket is the carried bag's pivot
+`Back/Socket` seats a MEDIUM loot bag with an identity attach: slung from the left-shoulder strap of carry_bag_walk, the
+bag's top against the back, its length running from the left shoulder blade to the right hip, 50° below horizontal.
+Built from character_spec.gd SOCKET_OFFSETS["Back"] = (0.05, -0.10, 0.33) m on each body's measured back seat. The bag
+pivots sit at their bottom centres, so ENV A applies a socket-local offset per bag size: light (0, +0.05, 0), medium
+none, heavy (0, -0.05, 0). Published in the humanoid SOURCE `carried_bag` note.

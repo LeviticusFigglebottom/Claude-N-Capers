@@ -1,0 +1,38 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"great_hall_gala"
+purpose = &"atrium"
+required_items = Array[StringName]([&"cocktail_table", &"bench", &"stanchion", &"music_stand", &"light_fixture"])
+optional_items = {
+&"plant": 1
+}
+clutter_groups = {
+&"glass": {
+"anchors": Array[StringName]([&"cocktail_table"]),
+"count": Vector2i(1, 1),
+"items": {&"glassware": 1},
+"radius": 0.4
+}
+}
+min_density = 0.04
+max_density = 0.3
+min_props = 18
+lone_ok_kinds = Array[StringName]([&"cocktail_table", &"bench", &"stanchion", &"music_stand", &"plant", &"sculpture", &"counter_bar", &"lectern"])
+seed_salt = 101
+counts = {
+&"cocktail_table": Vector2i(7, 9),
+&"plant": Vector2i(2, 4)
+}
+assets = {
+&"bench": PackedStringArray("prop_bench_gallery"),
+&"cocktail_table": PackedStringArray("prop_cocktail_table"),
+&"light_fixture": PackedStringArray("prop_chandelier_ring"),
+&"plant": PackedStringArray("prop_plant_tall"),
+&"stanchion": PackedStringArray("prop_stanchion_velvet")
+}
+ceiling = {}
+notes = "GH (gallery_night.md): the gala bar, cocktail tables with glassware, the string trio's stands, the velvet rope at the stair foot, two benches, the three bronze ring chandeliers (anchors). 2700 K."

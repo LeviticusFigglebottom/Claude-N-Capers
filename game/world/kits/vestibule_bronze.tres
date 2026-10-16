@@ -1,0 +1,28 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"vestibule_bronze"
+purpose = &"lobby"
+required_items = Array[StringName]([&"lectern", &"stanchion", &"light_fixture"])
+optional_items = {
+&"plant": 1
+}
+clutter_groups = {}
+min_density = 0.1
+max_density = 0.8
+min_props = 5
+lone_ok_kinds = Array[StringName]([&"lectern", &"stanchion", &"plant"])
+seed_salt = 106
+counts = {
+&"plant": Vector2i(2, 2)
+}
+assets = {
+&"light_fixture": PackedStringArray("prop_downlight"),
+&"plant": PackedStringArray("prop_plant_tall"),
+&"stanchion": PackedStringArray("prop_stanchion_velvet")
+}
+ceiling = {"prop_downlight": 2.2}
+notes = "VE: the guest-list lectern, a velvet rope, two palms in the corners. 2700 K."

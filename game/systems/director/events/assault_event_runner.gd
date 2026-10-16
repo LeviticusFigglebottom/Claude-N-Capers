@@ -587,8 +587,7 @@ func _queue_breach_placer(b: AssaultBreach, p: Dictionary) -> void:
 	p["_placer"] = true
 	b.charge_delay_s = tweak.breach_place_event_s
 	var legs: Array[Dictionary] = [{"hold_s": tweak.breach_place_s, "anim": CLIP_BREACH_PLACE},
-		{"to": aside, "speed": tweak.breach_standback_side_m / maxf(tweak.breach_standback_s, 0.01), "face": face,
-			"anim": CLIP_BREACH_STANDBACK},
+		{"from": stand, "to": aside, "curve": tweak.breach_standback_curve, "face": face, "anim": CLIP_BREACH_STANDBACK},
 		{"to": aside, "wait_breach": b, "anim": CLIP_CROUCH_IDLE}]
 	_queue.append({"t": 0.0, "id": StringName(ids[0]), "face": face,
 		"xf": Transform3D(Basis.looking_at(face, Vector3.UP), stand), "legs": legs,
@@ -605,8 +604,8 @@ func _queue_van_exit(ids: Array, exit: Transform3D, van: Node, interval: float) 
 	var side: Vector3 = exit.basis.x.normalized()
 	for i: int in range(ids.size()):
 		var land: Vector3 = exit.origin + side * 0.8 * ceilf(float(i) * 0.5) * (1.0 if i % 2 == 1 else -1.0)
-		var legs: Array[Dictionary] = [{"to": land, "speed": tweak.van_exit_step_m / maxf(tweak.van_exit_s, 0.01),
-			"face": face, "anim": CLIP_VAN_EXIT}]
+		var legs: Array[Dictionary] = [{"from": land - face * tweak.van_exit_step_m, "to": land,
+			"curve": tweak.van_exit_curve, "face": face, "anim": CLIP_VAN_EXIT}]
 		_queue.append({"t": interval * i, "id": StringName(ids[i]), "face": face, "legs": legs,
 			"xf": Transform3D(Basis.looking_at(face, Vector3.UP), land - face * tweak.van_exit_step_m),
 			"kind": AssaultEventsTweak.KIND_TURRET_VAN, "owner": van})
@@ -710,6 +709,8 @@ func _step_leg(g: Dictionary, npc: NpcBase, motor: NpcMotor, delta: float) -> bo
 		return false
 	if leg.has("wait_breach"):
 		return true  # the wait is over (its position was reached by the leg before)
+	if leg.has("curve"):
+		return _step_curve_leg(g, leg, npc, motor, delta)
 	var rope: bool = bool(leg.get("rappel", false))
 	motor.rappelling = rope
 	_set_anim(npc, CLIP_RAPPEL_DESCEND if rope else StringName(leg.get("anim", &"")))
@@ -730,6 +731,31 @@ func _step_leg(g: Dictionary, npc: NpcBase, motor: NpcMotor, delta: float) -> bo
 	if leg.has("rope"):
 		_rope_users_done(leg["rope"] as Array)  # touch: hands off, this unit's rope is retracted
 	return true
+
+
+## A root-motion leg (ENV D `curve.<clip>`): the root follows the clip's published curve from `from` to `to`
+## frame by frame (not at a constant speed), so the clip's planted feet stay put. True when the curve is done.
+func _step_curve_leg(g: Dictionary, leg: Dictionary, npc: NpcBase, motor: NpcMotor, delta: float) -> bool:
+	motor.rappelling = false
+	_set_anim(npc, StringName(leg.get("anim", &"")))
+	g["hold"] = float(g["hold"]) + delta
+	var c: PackedFloat32Array = leg["curve"]
+	var t: float = float(g["hold"])
+	npc.global_position = curve_root(leg["from"] as Vector3, leg["to"] as Vector3, c, t, tweak.root_curve_fps)
+	npc.velocity = Vector3.ZERO  # the clip carries the steps; no locomotion blend on top
+	return t * tweak.root_curve_fps >= float(c.size() - 1)
+
+
+## Root position `t` seconds into a root-motion curve (metres travelled per frame at `fps`, linear between frames),
+## from `from` toward `to`; the curve's total is scaled onto |to - from|.
+static func curve_root(from: Vector3, to: Vector3, curve: PackedFloat32Array, t: float, fps: float) -> Vector3:
+	if curve.is_empty():
+		return to
+	var total: float = maxf(curve[curve.size() - 1], 0.0001)
+	var f: float = clampf(t * fps, 0.0, float(curve.size() - 1))
+	var i: int = floori(f)
+	var m: float = curve[i] if i + 1 >= curve.size() else lerpf(curve[i], curve[i + 1], f - float(i))
+	return from.lerp(to, clampf(m / total, 0.0, 1.0))
 
 
 func _face(npc: NpcBase, dir: Vector3) -> void:

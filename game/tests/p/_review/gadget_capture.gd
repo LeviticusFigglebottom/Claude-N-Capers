@@ -5,6 +5,8 @@
 ##     --fixed-fps 60 --resolution 960x540 --path game res://tests/p/_review/gadget_capture.tscn -- --out=/abs/dir \
 ##     [--heist=glasshouse] [--weapons=weapon.corsair_ar,weapon.kestrel_p9]
 ##     [--mods=weapon.kestrel_p9:mod.rail_combo,...]   real gadget mods (then WeaponStats.gadgets is not forced)
+##     [--at=x,y,z,yaw_deg]   stand there (teleport) facing yaw (0 = -Z), e.g. ND basement spine B5:
+##                            --heist=night_deposit --at=3.5,-4.0,6.75,-90
 ## Owner: ENV P.
 extends Node
 
@@ -12,6 +14,8 @@ var _out: String = "user://gadget_capture"
 var _heist: StringName = &"glasshouse"
 var _weapons: PackedStringArray = ["weapon.corsair_ar", "weapon.kestrel_p9"]
 var _mods: PackedStringArray = []
+## Optional stand point (x, y, z, yaw degrees); empty = the spawn.
+var _at: PackedFloat64Array = []
 
 
 func _ready() -> void:
@@ -23,6 +27,7 @@ func _ready() -> void:
 			"heist": _heist = StringName(v)
 			"weapons": _weapons = v.split(",")
 			"mods": _mods = v.split(",", false)
+			"at": _at = v.split_floats(",")
 	DirAccess.make_dir_recursive_absolute(_out)
 	RenderingServer.render_loop_enabled = false
 	var rows: Array[Array] = []
@@ -68,6 +73,11 @@ func _weapon(wid: StringName) -> Array:
 	inp.capture_mouse()
 	await inp.hold(&"mask_up", Tweak.crew().mask_up_time_s + 0.3)
 	await inp.tap(&"slot_secondary" if secondary else &"slot_primary")
+	if _at.size() >= 3:
+		rt.teleport_crew(0, Transform3D(Basis.IDENTITY, Vector3(_at[0], _at[1] + 0.05, _at[2])))
+		await _ticks(10)
+		if _at.size() >= 4:
+			await inp.turn_to_yaw(c, deg_to_rad(_at[3]))
 	await _ticks(90)
 	var st: WeaponStats = c.weapons.stats(c.weapons.equipped_slot)
 	if mods.is_empty():

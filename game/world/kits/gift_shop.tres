@@ -1,0 +1,36 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"gift_shop"
+purpose = &"retail"
+required_items = Array[StringName]([&"bookshelf", &"light_fixture"])
+optional_items = {
+&"leaflet_rack": 1,
+&"plant_small": 0.5
+}
+clutter_groups = {
+&"counter": {
+"anchors": Array[StringName]([&"counter_service"]),
+"count": Vector2i(1, 2),
+"items": {&"gift_boxes": 1, &"papers": 1},
+"radius": 0.6
+}
+}
+min_density = 0.1
+max_density = 1.2
+min_props = 6
+lone_ok_kinds = Array[StringName]([&"bookshelf", &"counter_service"])
+seed_salt = 108
+counts = {
+&"bookshelf": Vector2i(2, 3)
+}
+assets = {
+&"bookshelf": PackedStringArray("prop_bookshelf"),
+&"counter_service": PackedStringArray("prop_counter_sales"),
+&"light_fixture": PackedStringArray("prop_downlight")
+}
+ceiling = {"prop_downlight": 2.2}
+notes = "GS (closed for the gala): till counter, print racks and books."

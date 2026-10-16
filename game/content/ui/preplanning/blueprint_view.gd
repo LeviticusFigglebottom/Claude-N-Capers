@@ -18,6 +18,8 @@ const ZONE_FONT: int = 16
 const MARKER_GAP: float = 4.0
 ## Length of the scale bar in meters (_draw_scale_bar, _furniture_rects).
 const SCALE_BAR_M: float = 10.0
+## Pixels between a narrow zone and its name placed beside it (_zone_labels).
+const BESIDE_GAP: float = 6.0
 
 var board: PreplanBoard
 var tweak: PreplanTweak
@@ -238,13 +240,30 @@ func _separate_markers() -> void:
 		placed.append(b)
 
 
-## Rects of the zone names _draw() prints (same rules: top-left of the zone, only when it fits).
+## Rects of the zone names _draw() prints (see _zone_labels).
 func _zone_label_rects() -> Array[Rect2]:
 	var out: Array[Rect2] = []
+	for z: Array in _zone_labels():
+		out.append(z[2] as Rect2)
+	return out
+
+
+## The zone names this floor shows: [text, baseline pos, rect, leader] (leader: [from, to] or null).
+## 1. Inside: at the zone's top-left when the name fits the zone (width AND height) and clears a name already
+##    placed (ND audit: "WAREHOUSE YARD" on a 1 m strip ran into "STAFF LOT").
+## 2. Beside (LEAD r226, DB containers / west lane): a name that fits none of its zones goes just outside the union
+##    of its zones on this floor (right, left, above, below), on a paper plate with a short leader line, at the spot
+##    the collision scoring likes best (names already placed and the scale bar / north arrow are hard, shape edges
+##    cost a little); with no clear spot it is left out. A name shows once per floor.
+func _zone_labels() -> Array[Array]:
+	var out: Array[Array] = []
 	if board == null or size == Vector2.ZERO:
 		return out
 	var s: float = float(_transform()["scale"])
 	var font: Font = get_theme_default_font()
+	var placed: Array[Rect2] = []
+	var shown: Dictionary = {}
+	var narrow: Dictionary = {}  # text -> union view rect of its zones that are too small for it
 	for sh: Dictionary in board.blueprint.shapes:
 		var key: StringName = StringName(sh.get("label", &""))
 		var fl: int = int(sh.get("floor", -1))
@@ -252,9 +271,55 @@ func _zone_label_rects() -> Array[Rect2]:
 			continue
 		var r: Rect2 = sh.get("rect", Rect2()) as Rect2
 		var vr: Rect2 = Rect2(world_to_view(r.position), r.size * s)
-		var ts: Vector2 = font.get_string_size(UiText.t(key).to_upper(), HORIZONTAL_ALIGNMENT_LEFT, -1, ZONE_FONT)
-		if ts.x <= vr.size.x - 8.0:
-			out.append(Rect2(vr.position + Vector2(6, 4), ts))
+		var text: String = UiText.t(key).to_upper()
+		var ts: Vector2 = font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, ZONE_FONT)
+		var rect: Rect2 = Rect2(vr.position + Vector2(6, 4), ts)
+		if ts.x > vr.size.x - 8.0 or ts.y > vr.size.y - 4.0:
+			narrow[text] = (narrow[text] as Rect2).merge(vr) if narrow.has(text) else vr
+			continue
+		var clash: bool = shown.has(text)
+		for p: Rect2 in placed:
+			clash = clash or p.intersects(rect)
+		if clash:
+			continue
+		placed.append(rect)
+		shown[text] = true
+		out.append([text, vr.position + Vector2(6, 18), rect, null])
+	var hard: Array[Rect2] = _furniture_rects()
+	var edges: Array[Rect2] = _shape_edge_rects()
+	var view: Rect2 = Rect2(Vector2.ZERO, size)
+	for text: String in narrow:
+		if shown.has(text):
+			continue
+		var z: Rect2 = narrow[text] as Rect2
+		var ts2: Vector2 = font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, ZONE_FONT) + Vector2(6, 2)
+		var gap: float = BESIDE_GAP
+		var spots: Array[Vector2] = [
+			Vector2(z.end.x + gap, z.get_center().y - ts2.y * 0.5), Vector2(z.position.x - gap - ts2.x, z.get_center().y - ts2.y * 0.5),
+			Vector2(z.get_center().x - ts2.x * 0.5, z.position.y - gap - ts2.y), Vector2(z.get_center().x - ts2.x * 0.5, z.end.y + gap)]
+		var best: Rect2 = Rect2()
+		var best_cost: float = INF
+		for sp: Vector2 in spots:
+			var rr: Rect2 = Rect2(sp, ts2)
+			if not view.encloses(rr):
+				continue
+			var cost: float = 0.0
+			for p2: Rect2 in placed + hard:
+				if p2.intersects(rr):
+					cost += 1e6
+			for e: Rect2 in edges:
+				if e.intersects(rr):
+					cost += 1.0 + e.intersection(rr).get_area() * 0.05
+			if cost < best_cost:
+				best_cost = cost
+				best = rr
+		if best_cost >= 1e6:
+			continue
+		placed.append(best)
+		shown[text] = true
+		var to: Vector2 = Vector2(clampf(best.get_center().x, z.position.x, z.end.x), clampf(best.get_center().y, z.position.y, z.end.y))
+		var from: Vector2 = Vector2(clampf(to.x, best.position.x, best.end.x), clampf(to.y, best.position.y, best.end.y))
+		out.append([text, best.position + Vector2(3, 15), best, [from, to]])
 	return out
 
 
@@ -346,19 +411,12 @@ func _draw() -> void:
 		var fill: Color = tweak.shape_fill.get(StringName(sh.get("kind", &"")), tweak.grid_color) as Color
 		draw_rect(vr, fill)
 		draw_rect(vr, tweak.line_color, false, 2.0 if StringName(sh.get("kind", &"")) == &"building" else 1.0)
-	for sh: Dictionary in bp.shapes:
-		var key: StringName = StringName(sh.get("label", &""))
-		var fl2: int = int(sh.get("floor", -1))
-		if key == &"" or (fl2 >= 0 and fl2 != floor_index):
-			continue
-		var r2: Rect2 = sh.get("rect", Rect2()) as Rect2
-		var vr2: Rect2 = Rect2(world_to_view(r2.position), r2.size * s)
-		var text: String = UiText.t(key).to_upper()
-		var fs: int = ZONE_FONT
-		var tw: float = font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x
-		if tw > vr2.size.x - 8.0:
-			continue
-		draw_string(font, vr2.position + Vector2(6, 18), text, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, tweak.label_color)
+	for z: Array in _zone_labels():
+		if z[3] != null:  # beside a narrow zone: plate + leader
+			var lead: Array = z[3] as Array
+			draw_line(lead[0] as Vector2, lead[1] as Vector2, tweak.label_color, 1.0, true)
+			draw_rect(z[2] as Rect2, Color(tweak.paper_color, tweak.label_plate_alpha))
+		draw_string(font, z[1] as Vector2, String(z[0]), HORIZONTAL_ALIGNMENT_LEFT, -1, ZONE_FONT, tweak.label_color)
 	draw_rect(area, tweak.line_color, false, 2.0)
 	_draw_scale_bar(area, s, font)
 

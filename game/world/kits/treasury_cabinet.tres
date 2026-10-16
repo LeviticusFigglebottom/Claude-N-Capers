@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"treasury_cabinet"
+purpose = &"vault"
+required_items = Array[StringName]([&"bench", &"light_fixture"])
+optional_items = {}
+clutter_groups = {}
+min_density = 0.05
+max_density = 0.8
+min_props = 4
+lone_ok_kinds = Array[StringName]([&"bench", &"display_case"])
+seed_salt = 122
+counts = {}
+assets = {
+&"bench": PackedStringArray("prop_bench_gallery"),
+&"light_fixture": PackedStringArray("prop_downlight")
+}
+ceiling = {"prop_downlight": 2.4}
+notes = "TR treasury: one painting wall, two vitrines (map), a bench; a 3000 K spot on the painting."

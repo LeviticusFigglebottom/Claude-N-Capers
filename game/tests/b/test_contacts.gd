@@ -39,16 +39,24 @@ func test_contact_strings_and_speakers() -> void:
 	assert_false(ContactDef.find(&"contact.vance").is_handler)
 
 
-func test_every_contact_has_glasshouse_briefing_lines() -> void:
+## D-117 §6: each heist's briefing has lines from its own contact (HeistDef.contact) and Mercer. Briefing sets for
+## a contact the heist does not have were never played (BriefingModel.voice_lines reads HeistDef.contact) and were
+## removed by the VO coverage audit (tests/b/test_vo_coverage.gd).
+func test_every_heist_contact_has_briefing_lines() -> void:
 	var table: VoiceLineTable = load(BriefingModel.LINES_PATH) as VoiceLineTable
-	for c: ContactDef in ContactDef.all():
-		var n: int = 0
-		for l: Dictionary in table.lines_for(&"briefing", c.voice_speaker):
-			if StringName(l.get("heist", &"")) == &"glasshouse" and StringName(l["speaker"]) == c.voice_speaker:
-				n += 1
-				assert_has(_strings, String(l["text_key"]))
-				assert_eq(typeof(l.get("order")), TYPE_INT, "order of %s" % l["id"])
-		assert_true(n >= 1, "%s has a Glasshouse briefing line" % c.id)
+	for h: HeistDef in HeistRegistry.all():
+		var c: ContactDef = ContactDef.find(h.contact)
+		assert_true(c != null, "%s has a contact" % h.id)
+		if c == null:
+			continue
+		for sp: StringName in [c.voice_speaker, &"mercer"]:
+			var n: int = 0
+			for l: Dictionary in table.lines_for(&"briefing", sp):
+				if StringName(l.get("heist", &"")) == h.id and StringName(l["speaker"]) == sp:
+					n += 1
+					assert_has(_strings, String(l["text_key"]))
+					assert_eq(typeof(l.get("order")), TYPE_INT, "order of %s" % l["id"])
+			assert_true(n >= 1, "%s briefing has a %s line" % [h.id, sp])
 
 
 func test_placeholder_portrait_draws_without_art() -> void:

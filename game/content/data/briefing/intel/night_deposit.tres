@@ -1,0 +1,199 @@
+[gd_resource type="Resource" script_class="BriefingIntelData" format=3]
+
+[ext_resource type="Script" path="res://content/ui/briefing/briefing_intel_data.gd" id="1_hrtnf"]
+
+[resource]
+script = ExtResource("1_hrtnf")
+heist_id = &"night_deposit"
+map_path = "res://world/heists/night_deposit/night_deposit.tscn"
+variants_path = "res://world/heists/night_deposit/night_deposit_variants.tres"
+fixed = {
+&"alarm_button": 3,
+&"guard": 2,
+&"keycard_door": 1,
+&"keypad": 1,
+&"safe": 1,
+&"vault_door": 1
+}
+groups = {
+&"camera": {
+&"cam_a": {
+"counts": {
+&"camera": 4
+},
+"rooms": {},
+"weight": 1.0
+},
+&"cam_b": {
+"counts": {
+&"camera": 4
+},
+"rooms": {},
+"weight": 1.0
+},
+&"cam_c": {
+"counts": {
+&"camera": 4
+},
+"rooms": {},
+"weight": 1.0
+}
+},
+&"extra_loot": {
+&"mgr_safe_empty": {
+"counts": {
+&"safe": 1
+},
+"rooms": {
+&"safe": {
+&"G12": 1
+}
+},
+"weight": 0.5
+},
+&"mgr_safe_full": {
+"counts": {
+&"safe": 1
+},
+"rooms": {
+&"safe": {
+&"G12": 1
+}
+},
+"weight": 0.5
+}
+},
+&"guard_post": {
+&"rover_basement": {
+"counts": {
+&"guard": 1
+},
+"rooms": {},
+"weight": 1.0
+},
+&"rover_exterior": {
+"counts": {
+&"guard": 1
+},
+"rooms": {},
+"weight": 1.0
+},
+&"rover_ground": {
+"counts": {
+&"guard": 1
+},
+"rooms": {},
+"weight": 1.0
+},
+&"rover_none": {
+"counts": {},
+"rooms": {},
+"weight": 1.2857142857142858
+}
+},
+&"laser_pattern": {
+&"laser_static": {
+"counts": {
+&"laser": 1
+},
+"rooms": {
+&"laser": {
+&"B8": 1
+}
+},
+"weight": 0.5
+},
+&"laser_sweep": {
+"counts": {
+&"laser": 1
+},
+"rooms": {
+&"laser": {
+&"B8": 1
+}
+},
+"weight": 0.2
+},
+&"laser_timed": {
+"counts": {
+&"laser": 1
+},
+"rooms": {
+&"laser": {
+&"B8": 1
+}
+},
+"weight": 0.3
+}
+},
+&"security_room_staffed": {
+&"sec_empty": {
+"counts": {},
+"rooms": {},
+"weight": 0.4
+},
+&"sec_staffed": {
+"counts": {
+&"operator": 1
+},
+"rooms": {},
+"weight": 0.6
+}
+},
+&"server_room": {
+&"srv_basement": {
+"counts": {
+&"hack_terminal": 1
+},
+"rooms": {
+&"hack_terminal": {
+&"B4": 1
+}
+},
+"weight": 0.6
+},
+&"srv_ground": {
+"counts": {
+&"hack_terminal": 1
+},
+"rooms": {
+&"hack_terminal": {
+&"G6": 1
+}
+},
+"weight": 0.4
+}
+},
+&"vent_open": {
+&"vent_locked": {
+"counts": {
+&"padlock": 1
+},
+"rooms": {},
+"weight": 0.5
+},
+&"vent_open": {
+"counts": {},
+"rooms": {},
+"weight": 0.5
+}
+}
+}
+fixed_rooms = {
+&"keycard_door": {
+&"B8": 1
+},
+&"keypad": {
+&"B8": 1
+},
+&"safe": {
+&"B12": 1
+},
+&"time_lock": {
+&"B8": 1
+},
+&"vault_door": {
+&"B8": 1
+}
+}
+surprises = Array[StringName]([&"armored_car_early"])

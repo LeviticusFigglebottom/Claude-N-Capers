@@ -1,0 +1,29 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"conservation_studio"
+purpose = &"workshop"
+required_items = Array[StringName]([&"plan_chest", &"shelving", &"light_fixture"])
+optional_items = {
+&"step_ladder": 0.5,
+&"stool": 1
+}
+clutter_groups = {}
+min_density = 0.06
+max_density = 0.8
+min_props = 9
+lone_ok_kinds = Array[StringName]([&"easel", &"suction_table", &"workbench", &"plan_chest", &"shelving"])
+seed_salt = 120
+counts = {
+&"easel": Vector2i(2, 2)
+}
+assets = {
+&"light_fixture": PackedStringArray("prop_fluorescent"),
+&"shelving": PackedStringArray("prop_shelving_parts"),
+&"stool": PackedStringArray("prop_stool_shop")
+}
+ceiling = {"prop_fluorescent": 3}
+notes = "CS conservation studio under the north light: easels, the suction table, benches, plan chest, solvents shelving. 5600 K."

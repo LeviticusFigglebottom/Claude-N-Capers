@@ -7,8 +7,9 @@
 ## alarm buttons, the Mews bins, both ladders, the art lift, the lockdown shutters and the escape / secure zones. Visuals
 ## come from the prop catalog (GN-C2: the canvases and studies, the wall safe, the consignment boxes, the caged ladder,
 ## the limo, the shutters, the areaway grate, the art-lift car; the AS rack screens are catalog dressing under Props);
-## the vitrines' sketchbooks keep the prefab placeholder. Greybox support boxes (desks, counters, the bar, the
-## key cabinet, the partition screens) live under Props with meta kind / support. Design: gallery_night.md (B2, B5,
+## the vitrines' sketchbooks keep the prefab placeholder. The supports pickups and notes rest on (desks, counters, the
+## gala bar, the key chest) are catalog props with box colliders under Props/MapBuilt (G2, GN-C2: support_prop); the
+## partition screens and the C7 pole stay map-built boxes in library materials. Design: gallery_night.md (B2, B5,
 ## B6; Loot path; Sightlines; Escape).
 extends "res://world/heists/gallery_night/greybox/gn_gameplay.gd"
 
@@ -261,11 +262,14 @@ static func study_visual(i: int) -> String:
 	return "prop_canvas_study%d" % (i % STUDY_VISUALS + 1)
 
 
-## A catalog dressing prop (wrapper scene: metas kind / support from the catalog) at a world position / yaw.
-func catalog_prop(parent: Node3D, asset_id: String, nm: String, pos: Vector3, yaw: float) -> Node3D:
+## A catalog dressing prop (wrapper scene: metas kind / support from the catalog) at a world position / yaw. `near`:
+## the interior near-range variant (gn_dress.near_scene_path, INTERIOR_VIS).
+func catalog_prop(parent: Node3D, asset_id: String, nm: String, pos: Vector3, yaw: float, near: bool = false) -> Node3D:
 	var ps: PackedScene = _catalog_scene(asset_id)
 	if ps == null:
 		return null
+	if near:
+		ps = load(DR.near_scene_path(asset_id, ps.resource_path)) as PackedScene
 	var inst: Node3D = ps.instantiate() as Node3D
 	inst.name = nm
 	inst.transform = global_xform(parent).affine_inverse() * Transform3D(yaw_basis(yaw), pos)
@@ -273,14 +277,43 @@ func catalog_prop(parent: Node3D, asset_id: String, nm: String, pos: Vector3, ya
 	return inst
 
 
-## Pickup / note resting on a greybox support box: the box (Props) and the prefab on its top.
-## `bx` = [box name, base (bottom-centre), size, yaw, kind].
+## Pickup / note resting on a catalog support (G2, GN-C2: the furniture the greybox boxes stood for): the support
+## (Props/MapBuilt, support_prop) and the prefab on its top. `bx` = [node name, catalog asset, base (bottom-centre), yaw];
+## `top.y` must be the support's work top.
 func on_box(parent: Node3D, kind: String, nm: String, top: Vector3, yaw: float, vis: String, props: Dictionary,
 		bx: Array) -> Node3D:
-	var base: Vector3 = bx[1] as Vector3
-	_prop_box(n("Props"), String(bx[0]), base, bx[2] as Vector3, float(bx[3]), String(bx[4]), true)
+	var base: Vector3 = bx[2] as Vector3
+	support_prop(String(bx[0]), String(bx[1]), base, float(bx[3]))
 	var up: Vector3 = Vector3(top.x, base.y, top.z) + front_of(yaw) * L.USE_POINT_M
 	return cprefab(parent, kind, nm, top, yaw, vis, props, up)
+
+
+## A map-placed catalog support (desk, counter, bench...) under Props/MapBuilt: the wrapper scene (metas kind / support
+## from the catalog), a box collider over its catalog AABB up to its work top, the bullet surface and the navmesh
+## obstruction (as the dressing pass finishes kit props, gn_dress.gd).
+func support_prop(nm: String, asset_id: String, base: Vector3, yaw: float) -> Node3D:
+	var inst: Node3D = catalog_prop(n("Props/MapBuilt"), asset_id, nm, base, yaw, true)
+	if inst == null:
+		return null
+	var e: Dictionary = PropCatalog.entry(StringName(asset_id))
+	var a: Array = e.get("aabb", [])
+	var bb: AABB = AABB(Vector3(a[0], a[1], a[2]), Vector3(a[3], a[4], a[5]))
+	var top: float = float(e.get("top", 0.0))
+	if top > 0.0 and top < bb.end.y:
+		bb.size.y = top - bb.position.y
+	var body: StaticBody3D = StaticBody3D.new()
+	body.name = "Collision"
+	body.collision_layer = 1
+	body.collision_mask = 0
+	add(inst, body)
+	SurfaceTags.tag(body, StringName(String(e.get("surface", "wood"))))
+	var cs: CollisionShape3D = CollisionShape3D.new()
+	cs.name = "Shape"
+	cs.shape = box_shape(bb.size)
+	cs.position = bb.get_center()
+	add(body, cs)
+	obstruct(Transform3D(yaw_basis(yaw), base), bb)
+	return inst
 
 
 func spawn_at(parent: Node3D, nm: String, kind: String, pos: Vector3, yaw: float, tags: Array, idle: String,
@@ -295,7 +328,7 @@ func spawn_at(parent: Node3D, nm: String, kind: String, pos: Vector3, yaw: float
 # --- Always-present gameplay -------------------------------------------------------------------
 
 func build_devices(gp: Node3D) -> void:
-	add(n("Props"), node3d("Greybox"))
+	add(n("Props"), node3d("MapBuilt"))
 	_build_security(gp)
 	_build_argus(gp)
 	_build_loot(gp)
@@ -305,14 +338,14 @@ func build_devices(gp: Node3D) -> void:
 	for cid: String in ["C11", "C14"]:  # B6: live in every layout, outside any slot
 		security_camera(cams, cid)
 	add(cams, node3d("Poles"))
-	_prop_box(n("Props/Greybox"), "CameraPoleC7", C7_POLE, Vector3(0.15, 3.6, 0.15), 0.0, "pole", false, "trim")
+	_prop_box(n("Props/MapBuilt"), "CameraPoleC7", C7_POLE, Vector3(0.15, 3.6, 0.15), 0.0, "pole", false, "trim")
 	for s: Array in L.SCREENS:   # B6 partition screens (2.4 m, freestanding)
 		var a: Vector3 = Vector3(float(s[1]), 5.4, float(s[2]))
 		var b: Vector3 = Vector3(float(s[3]), 5.4, float(s[4]))
 		var along_z: bool = absf(b.z - a.z) > absf(b.x - a.x)
 		var len_m: float = maxf(absf(b.z - a.z), absf(b.x - a.x))
-		var scr: StaticBody3D = _prop_box(n("Props/Greybox"), "PartitionScreen" + String(s[0]), (a + b) * 0.5,
-			Vector3(0.1, 2.4, len_m), 0.0 if along_z else 90.0, "partition_screen", false, "wall")
+		var scr: StaticBody3D = _prop_box(n("Props/MapBuilt"), "PartitionScreen" + String(s[0]), (a + b) * 0.5,
+			Vector3(0.1, 2.4, len_m), 0.0 if along_z else 90.0, "partition_screen", false, "partition")
 		scr.set_meta(&"room", String(s[0]))
 	_build_shutters(n("Gameplay/Doors"))
 	_build_racks(n("Props"))
@@ -341,7 +374,7 @@ func _build_racks(parent: Node3D) -> void:
 	for z: float in RACK_ROWS:
 		for x: float in RACK_COLS:
 			k += 1
-			catalog_prop(racks, "prop_art_rack_screen", "ArtRack%02d" % k, Vector3(x, -4.2, z), 0.0)
+			catalog_prop(racks, "prop_art_rack_screen", "ArtRack%02d" % k, Vector3(x, -4.2, z), 0.0, true)
 			obstruct_catalog("prop_art_rack_screen", Vector3(x, -4.2, z), 0.0)
 
 
@@ -464,11 +497,9 @@ func _build_loot(_gp: Node3D) -> void:
 			{"loot_id": SMALL_LOOT, "glass_breaks_alarm": true}, Vector3(vp.x, 5.4, 27.6))
 		obstruct_catalog("prop_display_case_vitrine", vp, 0.0)
 	on_box(lt, "small_loot", "CloakroomCashBox", Vector3(15.5, 0.9, 28.6), 180.0, "prop_cash_stack",
-		{"loot_id": SMALL_LOOT, "value": 1200}, ["CloakroomCounter", Vector3(15.0, 0.0, 28.6), Vector3(3.0, 0.9, 0.6), 0.0,
-		"counter_box"])
+		{"loot_id": SMALL_LOOT, "value": 1200}, ["CloakroomCounter", "prop_counter_sales", Vector3(15.0, 0.0, 28.6), 0.0])
 	on_box(lt, "small_loot", "GiftShopTill", Vector3(30.0, 0.9, 28.0), 90.0, "prop_cash_stack",
-		{"loot_id": SMALL_LOOT, "value": 1000}, ["GiftShopCounter", Vector3(30.0, 0.0, 28.0), Vector3(0.6, 0.9, 1.6), 0.0,
-		"counter_box"])
+		{"loot_id": SMALL_LOOT, "value": 1000}, ["GiftShopCounter", "prop_counter_sales", Vector3(30.0, 0.0, 28.0), 90.0])
 
 
 ## Phones, alarm buttons, the Mews bins and the indoor BODY_HIDE crates / cart (1 body each; GN-C2), the PL AHU, the
@@ -493,7 +524,8 @@ func _build_misc(_gp: Node3D) -> void:
 	var ahu: Vector3 = PL_AHU[0] as Vector3
 	catalog_prop(n("Props"), "prop_air_handler", "PlantAHU", ahu, float(PL_AHU[1]))
 	obstruct_catalog("prop_air_handler", ahu, float(PL_AHU[1]))
-	_prop_box(n("Props/Greybox"), "GalaBar", Vector3(14.8, 0.0, 18.6), Vector3(0.8, 1.1, 2.0), 0.0, "bar_counter", true)
+	# the gala bar (GN-C2: catalog prop_bar_counter_gala, 1.1 m): guests on the hall side (east), the waitstaff behind it
+	support_prop("GalaBar", "prop_bar_counter_gala", Vector3(14.9, 0.0, 18.6), -90.0)
 
 
 static func _floor_y(y: float) -> float:
@@ -599,14 +631,15 @@ func _keycard(vs: VariantSlot, slot_id: String, at: Vector3, yaw: float) -> void
 			cprefab(vs, "keycard_pickup", "KeycardBar", Vector3(14.95, 1.1, 18.95), yaw, vis,
 				{"objective_tag": &"keycard_bar"}, up + Vector3(0.0, 0.0, 0.35))
 		"kc_security":
-			on_box(vs, "keycard_pickup", "Keycard", Vector3(17.725, 1.2, 3.0), yaw, vis, props, ["KeyCabinetSC",
-				Vector3(17.725, 0.0, 3.0), Vector3(0.6, 1.2, 0.35), 90.0, "key_cabinet"])
+			# on the key-cabinet chest (file cabinet, 1.32 m) under the wall key cabinet, east wall
+			on_box(vs, "keycard_pickup", "Keycard", Vector3(17.56, 1.32, 3.0), yaw, vis, props, ["KeyChestSC",
+				"prop_file_cabinet", Vector3(17.56, 0.0, 3.0), 90.0])
 		"kc_registrar":
-			on_box(vs, "keycard_pickup", "Keycard", Vector3(21.0, 0.75, 3.0), yaw, vis, props, ["DeskRG",
-				Vector3(21.0, 0.0, 3.0), Vector3(1.4, 0.75, 0.7), 0.0, "desk_box"])
+			on_box(vs, "keycard_pickup", "Keycard", Vector3(21.0, 0.74, 3.0), yaw, vis, props, ["DeskRG",
+				"prop_desk_office", Vector3(21.0, 0.0, 3.0), 0.0])
 		"kc_conservator":
 			on_box(vs, "keycard_pickup", "Keycard", Vector3(40.0, 6.3, 10.0), yaw, vis, props, ["BenchCS",
-				Vector3(40.0, 5.4, 10.0), Vector3(1.4, 0.9, 0.7), 0.0, "workbench_box"])
+				"prop_workbench", Vector3(40.0, 5.4, 10.0), 0.0])
 
 
 ## code_* notes (B5 `code_note`, code group argus) on the SC counter, the CO desk, the AO desk.
@@ -615,14 +648,15 @@ func _code_note(vs: VariantSlot, slot_id: String, _at: Vector3, yaw: float) -> v
 	var vis: String = "res://world/props/clutter/prop_papers.tscn"
 	match slot_id:
 		"code_security_log":
-			on_box(vs, "code_note", "CodeNote", Vector3(17.4, 1.0, 0.5), yaw, vis, props, ["CounterSC",
-				Vector3(17.24, 0.0, 0.51), Vector3(1.3, 1.0, 0.6), 0.0, "counter_box"])
+			# the guard log on the NE credenza (north wall)
+			on_box(vs, "code_note", "CodeNote", Vector3(17.2, 0.75, 0.44), yaw, vis, props, ["CounterSC",
+				"prop_credenza", Vector3(16.95, 0.0, 0.43), 180.0])
 		"code_curator_planner":
-			on_box(vs, "code_note", "CodeNote", Vector3(6.0, 6.15, 2.0), yaw, vis, props, ["DeskCO",
-				Vector3(6.0, 5.4, 2.0), Vector3(1.4, 0.75, 0.7), 0.0, "desk_box"])
+			on_box(vs, "code_note", "CodeNote", Vector3(6.0, 6.14, 2.0), yaw, vis, props, ["DeskCO",
+				"prop_desk_office", Vector3(6.0, 5.4, 2.0), 0.0])
 		"code_admin_postit":
-			on_box(vs, "code_note", "CodeNote", Vector3(14.0, 6.15, 4.0), yaw, vis, props, ["DeskAO",
-				Vector3(14.0, 5.4, 4.0), Vector3(1.4, 0.75, 0.7), 0.0, "desk_box"])
+			on_box(vs, "code_note", "CodeNote", Vector3(14.0, 6.14, 4.0), yaw, vis, props, ["DeskAO",
+				"prop_desk_office", Vector3(14.0, 5.4, 4.0), 0.0])
 
 
 ## TR grid at z 26.5 across the room, carried by two emitter columns (a support prop, as Shadow Ledger): lz_static
@@ -648,6 +682,7 @@ func _lasers(vs: VariantSlot, slot_id: String) -> void:
 		metas["bypass"] = false
 		metas["crouch_under"] = true
 	props["enabled_at_start"] = true   # live all night (QC-53)
+	props["visual_scene"] = load(GV.path(slot_id)) as PackedScene   # G2 beams (gn_visuals.gd)
 	prefab(em, "laser_grid", "TreasuryLasers", Vector3(mid, 5.4 + y, LASER_Z), 0.0, props, null, metas)
 
 
@@ -656,7 +691,8 @@ func _curtain(vs: VariantSlot, floor_y: float) -> void:
 	var x1: float = float(CURTAIN[1])
 	prefab(vs, "laser_grid", "LandingCurtain", Vector3((x0 + x1) * 0.5, floor_y, float(CURTAIN[2])), 0.0,
 		{"pattern": &"static", "size_m": Vector3(x1 - x0, float(CURTAIN[3]), 0.1), "beam_count": int(CURTAIN[4]),
-			"objective_tag": &"landing_curtain", "enabled_at_start": false}, null, {"kind": "laser_grid"})
+			"objective_tag": &"landing_curtain", "enabled_at_start": false, "visual_scene": load(GV.path("curtain")) as PackedScene},
+		null, {"kind": "laser_grid"})
 
 
 func _emitters(parent: Node3D, base: Vector3, span: float) -> StaticBody3D:
@@ -691,7 +727,7 @@ func _grate(vs: VariantSlot, slot_id: String) -> void:
 	if not locked:
 		props["interaction_time_s"] = 3.0
 	var g: Node3D = cprefab(vs, "door", "AreawayGrate", GRATE_ORIGIN, 0.0, "prop_door_grate_steel_areaway_w200", props, null,
-		{"kind": "hatch"})
+		{"kind": "hatch", "tilted": true})
 	if g == null:
 		return
 	var flat: Basis = Basis(Vector3(-1.0, 0.0, 0.0), Vector3(0.0, 0.0, -1.0), Vector3(0.0, -1.0, 0.0))

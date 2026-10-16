@@ -926,8 +926,15 @@ func _on_crew_downed(_slot: int, _downs: int) -> void:
 		add_drama(tweak.drama_per_down)
 
 
-func _on_weapon_fired(_shooter: int, _weapon_id: StringName, _suppressed: bool, position: Vector3) -> void:
-	if running and Net.is_authority() and _near_crew(position):
+## DET: drama is measured from the shooter's body when it resolves, not the event position: that is the muzzle
+## marker of an animated weapon visual (posed per render frame), which would make spawn pacing frame-timing-dependent.
+func _on_weapon_fired(shooter: int, _weapon_id: StringName, _suppressed: bool, position: Vector3) -> void:
+	if not running or not Net.is_authority():
+		return
+	var body: Node3D = Ids.lookup(shooter) as Node3D
+	if body != null and body.is_inside_tree():
+		position = body.global_position
+	if _near_crew(position):
 		add_drama(tweak.drama_per_nearby_shot)
 
 

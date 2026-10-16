@@ -179,6 +179,7 @@ func _build() -> void:
 	hint = _place(HintStrip.new(), Control.PRESET_CENTER, Vector2(-450, 190), Vector2(900, 64)) as HintStrip
 	onboarding = _place(OnboardingCard.new(), Control.PRESET_CENTER_RIGHT, Vector2(-OnboardingCard.WIDTH - 48, -300),
 			Vector2(OnboardingCard.WIDTH, 0)) as OnboardingCard
+	onboarding.heist_id = heist_id  # D-115 heist card
 	var board: ScoreboardOverlay = ScoreboardOverlay.new()
 	board.settings = settings
 	board.heisters = crew_heisters

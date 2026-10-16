@@ -178,7 +178,7 @@ OPEN: List[Tuple[str, str, float, float, float, float, str]] = [
     ("U", "W", 13.5, 0, 14.5, 0, "AO window N"),
     # The doc draws this window on the UW/FS partition point (x 20); a centred span would straddle the
     # partition, so the data puts it in FS's facade bay (x 20-21). Lead to confirm (or move it into UW).
-    ("U", "W", 20, 0, 21, 0, "FS window N"),
+    ("U", "W", 20.5, 0, 21.5, 0, "FS window N"),
     ("U", "W", 44, 1.5, 44, 2.5, "CS window E"),
     ("U", "W", 44, 3.5, 44, 4.5, "CS window E"),
     ("U", "W", 44, 5.5, 44, 6.5, "CS window E"),
