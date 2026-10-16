@@ -26,6 +26,11 @@ const AREA_OBJECTIVES: Array[StringName] = [&"find_canvases"]
 const FIRST_OBJECTIVES: Array[StringName] = [&"hack"]
 ## A marker with nothing usable for this long (s) yields to the other active markers.
 const STALL_SKIP_S: float = 30.0
+## A code keypad ranks this much nearer than a drill / saw at the same spot: entering a known code is instant (m).
+const CODE_BONUS_M: float = 2.0
+## Pseudo objective: work on the door that blocks a FIRST_OBJECTIVES marker (GN loud: the coded ServerDoor in front
+## of the Argus terminal: its keypad once the code is read, else its drill).
+const UNBLOCK_ID: StringName = &"_unblock"
 
 var f: Node = null
 var p: Po5Pilot = null
@@ -54,6 +59,10 @@ func play(flow: Node) -> int:
 		f.note("EVENT loot_secured %s %d t=%.0f" % [l, v, rt.heist_time_s]))
 	await p.inp.hold(&"mask_up", Tweak.crew().mask_up_time_s + 0.4)
 	p.combat = true
+	# GN probe 6: the pilot walked past three downed teammates on its way to the vault drill (t=275-288), then went
+	# down itself with nobody left to revive it. A player turns to a downed teammate in range mid-walk / mid-hold.
+	p.hook_need = func() -> bool: return _downed_mate() != null
+	p.hook = _revive_teammate
 	await p.face(p.crew.eye_position() + Vector3(0, 3, -5))
 	for _i: int in 3:
 		await p.inp.tap(&"fire")
@@ -104,6 +113,8 @@ func step() -> void:
 		return
 	var comp: InteractableComponent = _usable_near(pos, 2.5)
 	if comp != null:
+		if id == UNBLOCK_ID:
+			_stalls[id] = float(_stalls.get(id, 0.0))  # started: keep defending its drill after this (see _pick)
 		p.watch_point = Vector3.INF
 		await p.use(comp, 30.0, func() -> bool: return not comp.enabled or comp.availability(p.crew) != &"")
 		if is_instance_valid(comp) and comp.enabled and comp.availability(p.crew) == &"":
@@ -123,11 +134,29 @@ func step() -> void:
 	await p.hold_position(3.0)
 
 
-## Prefer objectives that are not the generic secure/escape when something else is still active. Walk-near (area)
+## An open escape goes first (the ride only comes once the required objectives are done; GN probe 7 looped on the
+## optional extras / lockers behind the art store vault door instead). Otherwise prefer objectives that are not the
+## generic secure/escape when something else is still active. Walk-near (area)
 ## objectives (GN find_canvases) and markers that stalled STALL_SKIP_S with nothing usable come last, so the
 ## flow moves on to what it can act on (GN probe: stuck at a found, already cut canvas).
 func _pick(markers: Array[Dictionary]) -> Dictionary:
+	for me: Dictionary in markers:  # GN probe 7: the ride is here (required loot secured): leave, skip the extras
+		if StringName(me["id"]) == &"escape":
+			return me
 	for m0: Dictionary in markers:  # GN probe 4: the loud hack lifts every shutter (Calloway), so it goes first
+		if StringName(m0["id"]) in FIRST_OBJECTIVES and not _marker_blocked.has(_marker_key(m0)):
+			# P's GN-P1 rerun (a): the navmesh runs through the closed CODE ServerDoor, so a path alone said "go" and
+			# the pilot pressed the Argus terminal through the wall for 9 min. Check the doors on that path first.
+			var on_path: Door = _path_blocker(p.stand_point(m0["position"] as Vector3))
+			if on_path != null:
+				_marker_blocked[_marker_key(m0)] = on_path
+				f.note("marker %s: %s on the way cannot be opened now" % [_marker_key(m0), on_path.name])
+		var gate: Door = _marker_blocked.get(_marker_key(m0)) as Door
+		if StringName(m0["id"]) in FIRST_OBJECTIVES and _is_marker_blocked(m0) \
+				and float(_stalls.get(UNBLOCK_ID, 0.0)) < STALL_SKIP_S * 4.0 \
+				and (_stalls.has(UNBLOCK_ID) or _usable_near(gate.global_position, 2.5) != null):
+			# GN probe 6: open the door in front of it first (then defend its drill there, up to 4 x STALL_SKIP_S)
+			return {"id": UNBLOCK_ID, "position": gate.global_position}
 		if StringName(m0["id"]) in FIRST_OBJECTIVES and float(_stalls.get(StringName(m0["id"]), 0.0)) < STALL_SKIP_S \
 				and not _is_marker_blocked(m0) \
 				and _has_path(p.stand_point(m0["position"] as Vector3)):  # probe 5: the Argus terminal sits behind
@@ -140,9 +169,6 @@ func _pick(markers: Array[Dictionary]) -> Dictionary:
 	for m1: Dictionary in markers:
 		if not (StringName(m1["id"]) in [&"secure", &"escape", &"casing"]):
 			return m1
-	for m2: Dictionary in markers:
-		if StringName(m2["id"]) == &"escape":
-			return m2
 	return markers[0]
 
 
@@ -168,15 +194,18 @@ func _usable_near(pos: Vector3, radius: float) -> InteractableComponent:
 			continue
 		if c.kind == &"lockpick":
 			dd += LOCKPICK_PENALTY_M  # ND attempt 15: two 30 s lockpick timeouts on a door it could simply open
+		elif c.kind == &"enter_code":
+			dd -= CODE_BONUS_M  # GN probe 6: the ServerDoor keypad (code read) beats its 60 s drill
 		if dd < best_d:
 			best = c
 			best_d = dd
 	return best
 
 
-## Like a PD2 player (L2.7): pick up a downed teammate within REVIVE_RANGE_M before anything else, but only when no
-## enemy in sight of the pilot (else it fights first) or when it is the last one standing. True when it acted.
-func _revive_teammate() -> bool:
+## The revive interactable of the nearest downed teammate within REVIVE_RANGE_M the pilot can use, else null.
+func _downed_mate() -> InteractableComponent:
+	if p.crew.crew_state != Enums.CrewState.NORMAL:
+		return null
 	var best: InteractableComponent = null
 	var best_d: float = REVIVE_RANGE_M
 	for c: CrewController in rt.crew_members():
@@ -189,8 +218,17 @@ func _revive_teammate() -> bool:
 		if dd < best_d:
 			best = rev
 			best_d = dd
+	return best
+
+
+## Like a PD2 player (L2.7): pick up a downed teammate within REVIVE_RANGE_M before anything else, but only when no
+## enemy in sight of the pilot (else it fights first) or when it is the last one standing. True when it acted.
+## Also the pilot's hook (p.hook): goto() / use() hand over to it whenever a teammate goes down in range.
+func _revive_teammate() -> bool:
+	var best: InteractableComponent = _downed_mate()
 	if best == null:
 		return false
+	var best_d: float = p.flat_dist(p.crew.global_position, best.global_position)
 	var mate: CrewController = best.get_parent() as CrewController
 	var last_stand: bool = _last_standing()
 	var foe: NpcBase = p.nearest_enemy(REVIVE_THREAT_M)
@@ -236,6 +274,34 @@ func _fetch_bag() -> bool:
 	await p.use(best, 20.0, func() -> bool: return p.crew.is_carrying_bag())
 	_mark_if_unreached(best)
 	return p.crew.is_carrying_bag()
+
+
+## The first closed door on the navmesh path from the pilot to `to` the crew cannot open now (BARRED / CODE without
+## the keypad / VAULT...), else null. The GN navmesh is baked through every doorway (heist_map.md §3).
+func _path_blocker(to: Vector3) -> Door:
+	var path: PackedVector3Array = p.nav_path(to)
+	if path.size() < 2:
+		return null
+	var best: Door = null
+	var best_i: int = path.size()
+	for n: Node in f.get_tree().get_nodes_in_group(G.INTERACTABLE):
+		var c: InteractableComponent = n as InteractableComponent
+		var door: Door = c.owner_node() as Door if c != null else null
+		if door == null or not rt.is_ancestor_of(door) or _passable(door):
+			continue
+		var half: float = maxf(door.width_m * 0.5, 0.6)
+		var inv: Transform3D = door.global_transform.affine_inverse()
+		for i: int in range(1, mini(path.size(), best_i + 1)):
+			var a: Vector3 = inv * path[i - 1]
+			var b: Vector3 = inv * path[i]
+			if signf(a.z) == signf(b.z) or absf(a.z - b.z) < 0.001:
+				continue  # this leg does not go through the door's plane
+			var x: Vector3 = a.lerp(b, a.z / (a.z - b.z))  # where it crosses (door space)
+			if absf(x.x) <= half + 0.2 and absf(x.y) <= 1.5:
+				best = door
+				best_i = i
+				break
+	return best
 
 
 ## GN probe 4: a navmesh path from the pilot ends within 1.5 m of `to` (a long walk that timed out is not "unreachable").

@@ -37,6 +37,7 @@ func _setup() -> Dictionary:
 	var sink: NoteSink = NoteSink.new()
 	add_child(sink)
 	var crew: CrewController = _rt.crew_controller(0) as CrewController
+	crew.set_masked()  # loud pilot: masked (an unmasked crew member cannot use a drill: BLOCK_CASING)
 	var flow: RefCounted = FlowScript.new()
 	flow.set(&"f", sink)
 	flow.set(&"p", Po5Pilot.new(sink, crew))
@@ -90,3 +91,44 @@ func test_po5_gn_blocked_marker_yields_per_marker_until_passable() -> void:
 	await wait_physics_frames(2)
 	assert_false(flow.call(&"_is_marker_blocked", behind), "passable again")
 	assert_eq(flow.call(&"_pick", markers), behind, "HUD order again once the door is up")
+	var escape: Dictionary = {"id": &"escape", "position": Vector3(-8, 0, 8)}
+	markers.append(escape)
+	assert_eq(flow.call(&"_pick", markers), escape, "GN probe 7: an open escape beats the optional extras")
+
+
+## GN probe 6 / P's GN-P1 rerun (a): the hack (a FIRST objective) behind the coded ServerDoor, which the navmesh runs
+## through: the pilot sees the door on the path before walking, works on it first (its keypad or drill) instead of
+## pressing the terminal through the wall, then does the hack once the door is open.
+func test_po5_gn_first_objective_behind_a_door_unblocks_it_first() -> void:
+	var s: Dictionary = await _setup()
+	var door: Door = s["door"]
+	var flow: RefCounted = s["flow"]
+	ATestMaps.add_prefab(_rt, "drill_point", Vector3(0.6, 1, 0.4), func(n: Node) -> void:
+		(n as DrillPoint).duration_s = 60.0)
+	await wait_physics_frames(2)
+	var hack: Dictionary = {"id": &"hack", "position": Vector3(0, 0, -4)}
+	var other: Dictionary = {"id": &"keycard", "position": Vector3(6, 0, 6)}
+	var markers: Array[Dictionary] = [hack, other]
+	assert_eq(flow.call(&"_path_blocker", Vector3(0, 0, -4)), door, "the closed barred door on the navmesh path")
+	var picked: Dictionary = flow.call(&"_pick", markers)
+	assert_eq(picked.get("id"), flow.get(&"UNBLOCK_ID"), "the blocking door first")
+	assert_true((picked["position"] as Vector3).distance_to(door.global_position) < 0.01, "at that door")
+	_lift(door)
+	await wait_physics_frames(2)
+	assert_true(flow.call(&"_path_blocker", Vector3(0, 0, -4)) == null, "open: nothing on the path")
+	assert_eq(flow.call(&"_pick", markers), hack, "then the hack")
+
+
+## P's GN-P1 rerun (b): an empty mag with reserve left is reloaded (R), not fired dry.
+func test_po5_pilot_reloads_an_empty_mag() -> void:
+	var s: Dictionary = await _setup()
+	var pilot: Po5Pilot = s["pilot"]
+	var w: CrewWeapons = pilot.crew.weapons
+	var ws: int = w.equipped_slot
+	var st: Object = w._states[ws]
+	st.set(&"mag", 0)
+	var before: int = w.reserve(ws)
+	assert_true(before > 0, "reserve left")
+	var ok: bool = await pilot._ensure_ammo()
+	assert_true(ok, "can shoot again")
+	assert_true(w.mag(ws) > 0 and w.reserve(ws) < before, "reloaded from the reserve")
