@@ -151,3 +151,39 @@ func test_fx_muzzle_predicts_the_next_gun() -> void:
 		assert_eq(vm.offhand.gun().is_ancestor_of(fired), k % 2 == 1, "shot %d is the %s gun" % [k,
 			"left" if k % 2 == 1 else "right"])
 		await wait_physics_frames(12)
+
+
+## Bore (AimPoint -> Muzzle) yaw / pitch and up-vector roll in camera space (deg).
+static func _bore(inv: Transform3D, aim: Node3D, muz: Node3D, body: Node3D) -> Vector3:
+	var b: Vector3 = (inv.basis * (muz.global_position - aim.global_position)).normalized()
+	var u: Vector3 = inv.basis * body.global_basis.y.normalized()
+	return Vector3(rad_to_deg(atan2(-b.x, -b.z)), rad_to_deg(asin(clampf(b.y, -1.0, 1.0))), rad_to_deg(atan2(-u.x, u.y)))
+
+
+## LEAD 2026-10-16 (akimbo ADS review): aimed, both guns are upright with the sights forward (the akimbo ADS clip
+## turns hand.L; FpViewmodelOffhand.align) and the crosshair sits between the two sights (PD2).
+func test_ads_both_guns_upright_and_centred() -> void:
+	if FpViewmodelTweak.data().arms_scene == null:
+		skip("char_arms_fp not delivered")
+		return
+	var c: CrewController = await _launch()
+	var vm: FpViewmodel = FpViewmodel.of(CrewView.of(c).camera())
+	if vm.offhand.gun() == null:
+		assert_true(false, "the offhand gun is on hand.L")
+		return
+	_inp.press(&"aim")
+	assert_true(await wait_until(func() -> bool: return vm.ads_weight > 0.999, 3.0), "aimed")
+	await wait_physics_frames(60)
+	var inv: Transform3D = CrewView.of(c).camera().global_transform.affine_inverse()
+	var wv: WeaponVisual = vm.weapon_visual
+	var ra: Node3D = wv.get_marker(WeaponVisual.AIM_POINT)
+	var la: Node3D = wv.get_offhand_marker(WeaponVisual.AIM_POINT)
+	var r: Vector3 = _bore(inv, ra, wv.get_marker(&"Muzzle"), wv.get(&"model") as Node3D)
+	var l: Vector3 = _bore(inv, la, wv.get_offhand_marker(&"Muzzle"), vm.offhand.gun())
+	for g: Array in [["right", r], ["left", l]]:
+		var v: Vector3 = g[1]
+		assert_true(absf(v.x) < 3.0 and absf(v.z) < 3.0, "%s gun forward and upright (yaw %.1f roll %.1f)" % [g[0],
+			v.x, v.z])
+	var mid: Vector3 = inv * ((ra.global_position + la.global_position) * 0.5)
+	assert_true(Vector2(mid.x, mid.y).length() < 0.01, "the crosshair sits between the sights (%s)" % mid)
+	_inp.release(&"aim")

@@ -128,6 +128,16 @@ func _shot(c: CrewController, name: String, idx: int, label: String) -> Image:
 			inv * vm.weapon_attach.global_position, inv * aim.global_position if aim != null else Vector3.INF,
 			rad_to_deg(atan2(-bore.x, -bore.z)), rad_to_deg(asin(clampf(bore.y, -1.0, 1.0))),
 			rad_to_deg(atan2(-up.x, up.y))])
+		var off_g: Node3D = vm.offhand.gun()
+		if off_g != null:  # akimbo: the left gun's bore and up (camera space)
+			var om: Node3D = vm.weapon_visual.get_offhand_marker(&"Muzzle")
+			var oa: Node3D = vm.weapon_visual.get_offhand_marker(WeaponVisual.AIM_POINT)
+			if om != null and oa != null:
+				var ob: Vector3 = (inv.basis * (om.global_position - oa.global_position)).normalized()
+				var ou: Vector3 = inv.basis * off_g.global_basis.y.normalized()
+				print("[ADSSEQ] %s %s offhand yaw=%.1f pitch=%.1f roll=%.1f at %s" % [name, label,
+					rad_to_deg(atan2(-ob.x, -ob.z)), rad_to_deg(asin(clampf(ob.y, -1.0, 1.0))),
+					rad_to_deg(atan2(-ou.x, ou.y)), inv * oa.global_position])
 		var mk: Node3D = vm.weapon_visual.get_marker(&"LeftHandIK") if vm.weapon_visual != null else null
 		var hb: int = vm.skeleton.find_bone("hand.L")
 		if mk != null and hb >= 0:
