@@ -5,9 +5,12 @@
 ## keycards, keypads, hack, bags); a guard within 2.5 m who is noticing us gets the knife; a pager within 15 m
 ## is answered; D-111 coverage: a civilian within 6 m is shouted down (F tap) and tied (up to 3), and the weapon
 ## is swapped every 45 s (draw / holster, the secondary's set); it ends at the alarm (went loud), the heist end or
-## --budget heist seconds. A partial run is fine.
+## --budget heist seconds. A partial run is fine. --intimidate-first (LEAD 2026-10-16, D-111 coverage): right after
+## masking, walk to the nearest civilians and shout / tie them (up to 3), then stalk the nearest guard and knife him
+## (pager -> answered), bag the body, carry it and throw it (carry_bag_walk / throw_bag), then the objectives.
 ##   xvfb-run -a -s "-screen 0 1280x720x24" /opt/godot/godot --path game --resolution 960x540 \
-##     res://tests/p/_review/nd_stealth_pass.tscn -- --obs-out=/abs/dir [--budget=600] [--seed=1002]
+##     res://tests/p/_review/nd_stealth_pass.tscn -- --obs-out=/abs/dir [--budget=600] [--seed=1002] \
+##     [--intimidate-first]
 ## Prints "[NDS ...]" lines; the observer (po_observer.gd) logs its flags under --obs-out. Owner: ENV P.
 extends Node
 
@@ -25,6 +28,9 @@ var _pagers: int = 0
 var _tied: int = 0
 var _swaps: int = 0
 var _shouted: Dictionary = {}
+var _intimidate_first: bool = false
+var _bagged: int = 0
+var _thrown: int = 0
 
 
 func _ready() -> void:
@@ -35,6 +41,7 @@ func _ready() -> void:
 			"obs-out": runner_out = v
 			"budget": _budget = v.to_float()
 			"seed": _seed = v.to_int()
+			"intimidate-first": _intimidate_first = true
 	if runner_out == "":
 		runner_out = OS.get_user_data_dir() + "/nd_stealth"
 	DirAccess.make_dir_recursive_absolute(runner_out)
@@ -101,6 +108,8 @@ func _run() -> void:
 	await pilot.inp.hold(&"mask_up", Tweak.crew().mask_up_time_s + 0.4)
 	note("masked")
 	var t0: float = rt.heist_time_s
+	if _intimidate_first:
+		await _opening(c)
 	var last_shot: float = -100.0
 	var last_swap: float = rt.heist_time_s
 	while not _ended and not rt.went_loud and rt.heist_time_s - t0 < _budget:
@@ -119,8 +128,8 @@ func _run() -> void:
 			continue
 		await _step()
 	var how: String = "ended" if _ended else ("went loud" if rt.went_loud else "budget")
-	note("RESULT %s at t=%.0f, knifed %d, pagers %d, tied %d, swaps %d, objectives %s" % [how, rt.heist_time_s,
-		_knifed, _pagers, _tied, _swaps,
+	note("RESULT %s at t=%.0f, knifed %d, pagers %d, tied %d, bagged %d, thrown %d, swaps %d, objectives %s" % [how,
+		rt.heist_time_s, _knifed, _pagers, _tied, _bagged, _thrown, _swaps,
 		rt.hud_model.objectives.map(func(o: Dictionary) -> String: return "%s:%d" % [o["id"], o["state"]])])
 	await shot("end")
 	RenderingServer.render_loop_enabled = true
@@ -230,3 +239,87 @@ func _knife_noticer(c: CrewController) -> bool:
 			_knifed += 1
 		return true
 	return false
+
+
+## --intimidate-first: civilians, then a guard (knife -> pager -> body bag -> carry -> throw), before the objectives.
+func _opening(c: CrewController) -> void:
+	var tries: int = 0
+	while _tied < 3 and tries < 8 and not rt.went_loud and c.crew_state == Enums.CrewState.NORMAL:
+		tries += 1
+		var civ: NpcBase = _nearest(&"civilian", 60.0, true)
+		if civ == null:
+			note("opening: no civilian left to tie")
+			break
+		if pilot.flat_dist(civ.global_position, c.global_position) > 5.0:
+			await pilot.goto(civ.global_position, 4.5, 25.0)
+		await _intimidate(c)
+		await shot("tie%d" % _tied)
+	var g: NpcBase = _nearest(&"guard", 80.0, false)
+	if g == null or rt.went_loud:
+		note("opening: no guard to stalk (loud %s)" % rt.went_loud)
+		return
+	note("stalking %s" % g.name)
+	var t: float = 0.0
+	while is_instance_valid(g) and g.is_alive() and t < 40.0 and not rt.went_loud:
+		await pilot.goto(g.global_position, 1.6, 2.0)
+		t += 2.0
+		if pilot.flat_dist(g.global_position, c.global_position) < 2.0:
+			await pilot.face(g.global_position + Vector3(0, 1.1, 0), 0.05, 1.0)
+			await pilot.inp.hold(&"melee", 1.05)
+			await wait_s(0.6)
+	if not is_instance_valid(g) or g.is_alive():
+		note("opening: guard not knifed (loud %s)" % rt.went_loud)
+		return
+	_knifed += 1
+	await shot("knifed")
+	for _k: int in 20:  # the pager goes off a moment after the kill
+		if await _answer_pager(c) or rt.went_loud:
+			break
+		await wait_s(0.5)
+	await _bag_and_throw(c, g)
+
+
+func _bag_and_throw(c: CrewController, body: NpcBase) -> void:
+	if not is_instance_valid(body) or rt.went_loud:
+		return
+	for comp: Node in body.find_children("*", "InteractableComponent", true, false):
+		var ic: InteractableComponent = comp as InteractableComponent
+		if ic.kind != &"bag_body" or not ic.enabled:
+			continue
+		if ic.availability(pilot.crew) != &"":
+			note("bag_body unavailable: %s" % ic.availability(pilot.crew))
+			return
+		note("bagging %s" % body.name)
+		if not await pilot.use(ic, 20.0, func() -> bool: return c.is_carrying_bag()):
+			note("bag_body did not give a bag")
+			return
+		_bagged += 1
+		pilot.inp.press(&"move_forward")
+		await wait_s(2.5)
+		pilot.inp.release(&"move_forward")
+		await shot("carry")
+		await pilot.inp.tap(&"drop_bag")
+		await wait_s(1.0)
+		if not c.is_carrying_bag():
+			_thrown += 1
+		return
+	note("no bag_body interaction on %s" % body.name)
+
+
+func _nearest(role: StringName, max_m: float, untied: bool) -> NpcBase:
+	var best: NpcBase = null
+	var best_d: float = max_m
+	for n: Node in rt.npcs(role):
+		var npc: NpcBase = n as NpcBase
+		if npc == null or not npc.is_alive():
+			continue
+		if untied:
+			var b: CivilianBrain = npc.get_node_or_null(^"Brain") as CivilianBrain
+			if b == null or b.mode in [CivilianBrain.Mode.TIED, CivilianBrain.Mode.DEAD, CivilianBrain.Mode.LEAVE] \
+					or int(_shouted.get(npc.get_instance_id(), 0)) >= 4:
+				continue
+		var d: float = pilot.flat_dist(npc.global_position, pilot.crew.global_position)
+		if d < best_d:
+			best = npc
+			best_d = d
+	return best
