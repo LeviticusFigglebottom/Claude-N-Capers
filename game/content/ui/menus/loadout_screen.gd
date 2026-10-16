@@ -456,7 +456,8 @@ func _fill_options() -> void:
 func _fill_heisters(selected: StringName) -> void:
 	heister_option.clear()
 	_add_item(heister_option, UiText.t(Heisters.name_key(&"")), &"")
-	heister_option.set_item_icon(0, _swatch_icon(Heisters.accent(&"")))
+	heister_option.set_item_icon(0, heister_icon(&""))
+	heister_option.set_item_accent(0, Heisters.accent(&""))
 	for id: StringName in Heisters.ids():
 		var taken: bool = taken_heisters.has(id)
 		var locked: bool = not Heisters.is_unlocked(profile, id)  # D-111: earned heisters (Marten)
@@ -467,7 +468,8 @@ func _fill_heisters(selected: StringName) -> void:
 			text = UiText.t(&"ui.loadout.heister_taken", {"name": text})
 		_add_item(heister_option, text, id)
 		var i: int = heister_option.item_count - 1
-		heister_option.set_item_icon(i, _swatch_icon(Heisters.accent(id)))
+		heister_option.set_item_icon(i, heister_icon(id))
+		heister_option.set_item_accent(i, Heisters.accent(id))
 		heister_option.set_item_disabled(i, taken or locked)
 	if not _select_id(heister_option, selected):
 		heister_option.select(0)
@@ -663,9 +665,23 @@ func _gate_deployables(modifiers: Dictionary) -> bool:
 	return changed
 
 
-static func _swatch_icon(c: Color) -> ImageTexture:
-	var img: Image = Image.create(16, 16, false, Image.FORMAT_RGBA8)
-	img.fill(c)
+## Lead queue: a heister's picker picture: ENV D's portrait, else an accent-tinted head-and-shoulders silhouette.
+static func heister_icon(id: StringName) -> Texture2D:
+	var tex: Texture2D = Heisters.portrait(id)
+	return tex if tex != null else silhouette_icon(Heisters.accent(id))
+
+
+static func silhouette_icon(c: Color) -> ImageTexture:
+	var n: int = 64
+	var img: Image = Image.create(n, n, false, Image.FORMAT_RGBA8)
+	img.fill(UiTokens.INK_0)
+	var fill: Color = c.lerp(UiTokens.PAPER_DIM, 0.35)
+	for y: int in range(n):
+		for x: int in range(n):
+			var head: bool = Vector2(x - 32, y - 24).length() <= 11.0
+			var body: bool = y >= 40 and Vector2((x - 32) / 1.6, y - 64).length() <= 22.0
+			if head or body:
+				img.set_pixel(x, y, fill)
 	return ImageTexture.create_from_image(img)
 
 

@@ -48,6 +48,7 @@ unlock_level = 21
 mod_slots = {
 1: [&"mod.harrow_muzzle_brake"],
 3: [&"mod.harrow_iron_sights", &"mod.rail_reflex_sight"],
+6: [&"mod.harrow_collapsed_stock", &"mod.harrow_padded_stock"],
 7: [&"mod.harrow_standard_mag", &"mod.harrow_extended_mag"]
 }
 default_mods = {

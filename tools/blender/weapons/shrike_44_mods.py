@@ -5,6 +5,7 @@
 * ``mod_shrike_scout_scope``     SIGHT    -> ``SightRail``   (long-eye-relief scope on a barrel base, ``AimPoint``)
 * ``mod_shrike_tube``            MAGAZINE -> ``Magwell``     (stock eight-round tube at the loading port)
 * ``mod_shrike_carbine_barrel``  BARREL   -> ``BarrelMount`` (shorter octagonal barrel; own ``Muzzle``)
+* ``mod_shrike_suppressor``    SUPPRESSOR -> ``Muzzle``    (slim can on the long barrel; own ``Muzzle``; conflicts with the carbine barrel)
 """
 
 import _common as c
@@ -17,6 +18,7 @@ VARIANTS = {
     "mod_shrike_scout_scope": {"part": "scope"},
     "mod_shrike_tube": {"part": "tube"},
     "mod_shrike_carbine_barrel": {"part": "carbine"},
+    "mod_shrike_suppressor": {"part": "suppressor"},
 }
 
 
@@ -35,6 +37,8 @@ def build(ctx) -> None:
         s.build_tube(ctx, mats)
     elif part == "carbine":
         s.build_barrel(ctx, mats, s.CARBINE_END_Y, muzzle=True)
+    elif part == "suppressor":
+        s.build_suppressor(ctx, mats)
     else:
         raise ValueError(f"unknown part {part!r}")
     ctx.source_extra["tris_lod0"] = c.tris_of_scene()

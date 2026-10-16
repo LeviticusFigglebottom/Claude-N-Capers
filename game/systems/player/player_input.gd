@@ -19,7 +19,7 @@ extends Node
 ## press that closed or navigated the UI does not also melee / throw / fire in the game.
 const RESUME_GATED: Array[StringName] = [&"fire", &"melee", &"throw_item", &"mask_up", &"drop_bag", &"deploy",
 	&"interact", &"shout", &"reload", &"jump", &"aim", &"slot_primary", &"slot_secondary",
-	&"swap_weapon"]
+	&"swap_weapon", &"gadget_toggle"]
 
 ## Tests only (PInputDriver): headless cannot capture the mouse; treat motion as captured.
 ## Never set by game code: the real capture is MouseCapture's (D-087).
@@ -357,8 +357,10 @@ func build_intent(rt: HeistRuntime) -> CrewIntent:
 		var held: int = _crew.weapons.equipped_slot if _crew.weapons != null else _last_slot
 		_last_slot = Enums.WeaponSlot.PRIMARY if held == Enums.WeaponSlot.SECONDARY else Enums.WeaponSlot.SECONDARY
 		i.weapon_slot = _last_slot
+	i.gadget = Input.is_action_just_pressed(&"gadget_toggle")  # D-118 edge (crew_intent v1.1)
 	_order_input(rt, i)
 	if not _suppressed.is_empty():
+		i.gadget = i.gadget and not _suppressed.has(&"gadget_toggle")
 		i.fire = i.fire and not _suppressed.has(&"fire")
 		i.melee = i.melee and not _suppressed.has(&"melee")
 		i.reload = i.reload and not _suppressed.has(&"reload")

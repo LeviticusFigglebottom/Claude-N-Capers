@@ -99,3 +99,31 @@ def build_folding_stock(ctx, mats, parent=None, name="FoldingStock"):
     mb.box((-0.0180, yr - 0.004, -0.112), (0.0180, yr + 0.006, 0.024), mat=st)
     mb.box((-0.0175, yr - 0.018, -0.110), (0.0175, yr - 0.004, 0.022), mat=rub)
     return c.finish(mb, name, bevel=0.0010, segments=1, parent=parent)
+
+
+BREACHER_LEN = 0.052                # D-118 breacher brake (mod), origin = Muzzle
+BREACHER_R = 0.0150
+
+
+def build_breacher_brake(ctx, mats, parent=None, name="BreacherBrake"):
+    """D-118 breacher brake on the bare barrel: steel sleeve with three side ports a side and four
+    stand-off teeth; origin = Muzzle. Adds its own ``Muzzle`` (tooth tips) and ``MuzzlePortL``/``R``."""
+    mb = ctx.builder()
+    st = mb.material(mats.steel())
+    dark = mb.material(mats.polymer())
+    length, r = BREACHER_LEN, BREACHER_R
+    c.ring_y(mb, r, 0.0092, -0.006, length, 0.0, st, segments=28)
+    for i in range(4):                                                                  # stand-off teeth
+        a = 2 * math.pi * (i + 0.5) / 4
+        x, z = math.cos(a) * (r - 0.003), math.sin(a) * (r - 0.003)
+        mb.box((x - 0.0028, length, z - 0.0028), (x + 0.0028, length + 0.007, z + 0.0028), mat=st)
+    p0, pitch = 0.012, 0.011
+    for i in range(3):
+        y = p0 + i * pitch
+        for side in (-1.0, 1.0):
+            lo, hi = sorted((side * (r - 0.0015), side * (r + 0.0003)))
+            mb.box((lo, y, -0.0055), (hi, y + 0.007, 0.0055), mat=dark)
+    body = c.finish(mb, name, bevel=0.0006, segments=1, parent=parent)
+    ctx.marker("Muzzle", (0.0, length + 0.008, 0.0), parent=body)
+    c.side_port_markers(ctx, r + 0.0003, p0 + pitch + 0.0035, parent=body)
+    return body
