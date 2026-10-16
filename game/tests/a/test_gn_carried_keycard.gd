@@ -57,11 +57,15 @@ func test_gn_dead_carrier_drops_the_card_where_she_fell() -> void:
 	var cur: NpcBase = _curator(Vector3(2, 0.05, -3))
 	var card: KeycardPickup = _card(Vector3(-5, 1, 5))
 	await wait_physics_frames(3)
-	var fell_at: Vector3 = cur.global_position
+	var stood_at: Vector3 = cur.global_position
 	cur.die({}, 0)
 	await wait_physics_frames(2)
+	# D-121: the body lies at the ground-snapped corpse anchor (the root after death), not where she stood;
+	# the card, the ammo drop and the body bag all use it.
+	var lies_at: Vector3 = cur.global_position
 	assert_true(card.released and card.visible and card.interactable.enabled, "dead: lootable")
-	assert_true(card.global_position.distance_to(fell_at) < 0.3, "on the floor at the body")
+	assert_true(card.global_position.distance_to(lies_at) < 0.3, "on the floor at the body")
+	assert_true(absf(card.global_position.y - stood_at.y) < 0.3, "at floor height")
 	var drop: Vector3 = card.global_position
 	var crew: CrewController = _rt.crew_controller(0) as CrewController
 	crew.body_bags = 1
