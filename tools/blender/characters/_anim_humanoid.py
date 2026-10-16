@@ -2010,6 +2010,9 @@ def clips(sk: Skeleton, table: dict) -> dict[str, Clip]:
     import _anim_hitzones as hitzones  # noqa: PLC0415 - D-116 hit-zone flinches; imports this module
 
     extra.update(hitzones.clips(sk, solver, table))
+    import _anim_surrender as surr  # noqa: PLC0415 - D-116 surrender variants; imports this module
+
+    extra.update(surr.clips(sk, solver, table))
     out: dict[str, Clip] = {}
     for name, row in table.items():
         N, loop, speed = int(row["frames"]), bool(row["loop"]), float(row["speed"])
