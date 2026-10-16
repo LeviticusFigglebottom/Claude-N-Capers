@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"attendant_station"
+purpose = &"staff_room"
+required_items = Array[StringName]([&"lockers", &"credenza", &"bulletin_board", &"light_fixture"])
+optional_items = {
+&"bin": 1
+}
+clutter_groups = {}
+min_density = 0.3
+max_density = 1.8
+min_props = 6
+lone_ok_kinds = Array[StringName]([&"lockers", &"kitchen_counter"])
+seed_salt = 121
+counts = {
+&"lockers": Vector2i(2, 2)
+}
+assets = {
+&"bin": PackedStringArray("prop_bin_kitchen"),
+&"light_fixture": PackedStringArray("prop_ceiling_panel_neutral")
+}
+ceiling = {"prop_ceiling_panel_neutral": 2.4}
+notes = "AT attendants' station: lockers for the white gloves, a kettle counter, the rota board (phone, alarm: map)."

@@ -1,0 +1,29 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"art_store"
+purpose = &"vault"
+required_items = Array[StringName]([&"plan_chest", &"light_fixture"])
+optional_items = {
+&"crate": 0.8,
+&"dolly": 0.4,
+&"step_ladder": 0.4
+}
+clutter_groups = {}
+min_density = 0.04
+max_density = 0.6
+min_props = 14
+lone_ok_kinds = Array[StringName]([&"art_rack", &"plan_chest", &"crate", &"deposit_box"])
+seed_salt = 114
+counts = {
+&"plan_chest": Vector2i(2, 3)
+}
+assets = {
+&"crate": PackedStringArray("prop_crate_wood"),
+&"light_fixture": PackedStringArray("prop_fluorescent")
+}
+ceiling = {"prop_fluorescent": 3}
+notes = "AS art store: the 12 pull-out mesh screens (map-built), plan chests, consignment lockers, cold 5000 K strips."

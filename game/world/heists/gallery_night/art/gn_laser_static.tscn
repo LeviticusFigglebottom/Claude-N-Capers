@@ -1,0 +1,81 @@
+[gd_scene format=4]
+
+[sub_resource type="StandardMaterial3D" id="gn_1"]
+resource_name = "gn_laser_red"
+albedo_color = Color(1, 0.12, 0.08, 1)
+roughness = 0.6
+emission_enabled = true
+emission = Color(1, 0.08, 0.05, 1)
+emission_energy_multiplier = 4.0
+metadata/untextured_ok = true
+
+[sub_resource type="ArrayMesh" id="gn_2"]
+resource_name = "gh_p"
+_surfaces = [{
+"aabb": AABB(-3.6000001, -0.006, -0.006, 7.2000003, 0.012, 0.012),
+"attribute_data": PackedByteArray("pptEu6abRDumm0Q7pptEu6abRDumm0Q7pptEu6abRLumm0Q7pptEO6abRLumm0S7pptEO6abRLumm0S7pptEO2dm5r+mm0S7Z2bmP6abRDtnZuY/pptEu2dm5r+mm0Q7Z2bmv6abRLtnZuY/pptEO2dm5r+mm0Q7Z2bmP6abRLtnZuY/pptEO2dm5r+mm0S7Z2bmP6abRLtnZua/pptEO2dm5r+mm0Q7Z2bmP6abRLtnZuY/pptEO2dm5r+mm0S7"),
+"format": 34359742487,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAAADAAEABAAFAAYABAAHAAUACAAJAAoACAALAAkADAANAA4ADAAPAA0AEAARABIAEAATABEAFAAVABYAFAAXABUA"),
+"material": SubResource("gn_1"),
+"name": "laser_red",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 24,
+"vertex_data": PackedByteArray("Z2ZmwKabxLumm8S7Z2ZmwKabxDumm8Q7Z2ZmwKabxLumm8Q7Z2ZmwKabxDumm8S7Z2ZmQKabxLumm8S7Z2ZmQKabxDumm8Q7Z2ZmQKabxDumm8S7Z2ZmQKabxLumm8Q7Z2ZmwKabxLumm8S7Z2ZmQKabxLumm8Q7Z2ZmQKabxLumm8S7Z2ZmwKabxLumm8Q7Z2ZmwKabxDumm8S7Z2ZmQKabxDumm8Q7Z2ZmwKabxDumm8Q7Z2ZmQKabxDumm8S7Z2ZmwKabxLumm8S7Z2ZmQKabxDumm8S7Z2ZmwKabxDumm8S7Z2ZmQKabxLumm8S7Z2ZmwKabxLumm8Q7Z2ZmQKabxDumm8Q7Z2ZmQKabxLumm8Q7Z2ZmwKabxDumm8Q7AAD/f/9//78AAP9//3//vwAA/3//f/+/AAD/f/9//7////9//////////3//////////f/////////9///////9/AAD///8//38AAP///z//fwAA////P/9/AAD///8//3///////7//f///////v/9///////+//3///////7//////AAD/v/////8AAP+//////wAA/7//////AAD/v/9//3////+//3//f////7//f/9/////v/9//3////+/")
+}]
+
+[sub_resource type="ArrayMesh" id="gn_3"]
+resource_name = "gh_p"
+_surfaces = [{
+"aabb": AABB(-3.6000001, -0.006, -0.006, 7.2000003, 0.012, 0.012),
+"attribute_data": PackedByteArray("pptEu6abRDumm0Q7pptEu6abRDumm0Q7pptEu6abRLumm0Q7pptEO6abRLumm0S7pptEO6abRLumm0S7pptEO2dm5r+mm0S7Z2bmP6abRDtnZuY/pptEu2dm5r+mm0Q7Z2bmv6abRLtnZuY/pptEO2dm5r+mm0Q7Z2bmP6abRLtnZuY/pptEO2dm5r+mm0S7Z2bmP6abRLtnZua/pptEO2dm5r+mm0Q7Z2bmP6abRLtnZuY/pptEO2dm5r+mm0S7"),
+"format": 34359742487,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAAADAAEABAAFAAYABAAHAAUACAAJAAoACAALAAkADAANAA4ADAAPAA0AEAARABIAEAATABEAFAAVABYAFAAXABUA"),
+"material": SubResource("gn_1"),
+"name": "laser_red",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 24,
+"vertex_data": PackedByteArray("Z2ZmwKabxLumm8S7Z2ZmwKabxDumm8Q7Z2ZmwKabxLumm8Q7Z2ZmwKabxDumm8S7Z2ZmQKabxLumm8S7Z2ZmQKabxDumm8Q7Z2ZmQKabxDumm8S7Z2ZmQKabxLumm8Q7Z2ZmwKabxLumm8S7Z2ZmQKabxLumm8Q7Z2ZmQKabxLumm8S7Z2ZmwKabxLumm8Q7Z2ZmwKabxDumm8S7Z2ZmQKabxDumm8Q7Z2ZmwKabxDumm8Q7Z2ZmQKabxDumm8S7Z2ZmwKabxLumm8S7Z2ZmQKabxDumm8S7Z2ZmwKabxDumm8S7Z2ZmQKabxLumm8S7Z2ZmwKabxLumm8Q7Z2ZmQKabxDumm8Q7Z2ZmQKabxLumm8Q7Z2ZmwKabxDumm8Q7AAD/f/9//78AAP9//3//vwAA/3//f/+/AAD/f/9//7////9//////////3//////////f/////////9///////9/AAD///8//38AAP///z//fwAA////P/9/AAD///8//3///////7//f///////v/9///////+//3///////7//////AAD/v/////8AAP+//////wAA/7//////AAD/v/9//3////+//3//f////7//f/9/////v/9//3////+/")
+}]
+
+[sub_resource type="ArrayMesh" id="gn_4"]
+resource_name = "gh_p"
+_surfaces = [{
+"aabb": AABB(-3.6000001, -0.006, -0.006, 7.2000003, 0.012, 0.012),
+"attribute_data": PackedByteArray("pptEu6abRDumm0Q7pptEu6abRDumm0Q7pptEu6abRLumm0Q7pptEO6abRLumm0S7pptEO6abRLumm0S7pptEO2dm5r+mm0S7Z2bmP6abRDtnZuY/pptEu2dm5r+mm0Q7Z2bmv6abRLtnZuY/pptEO2dm5r+mm0Q7Z2bmP6abRLtnZuY/pptEO2dm5r+mm0S7Z2bmP6abRLtnZua/pptEO2dm5r+mm0Q7Z2bmP6abRLtnZuY/pptEO2dm5r+mm0S7"),
+"format": 34359742487,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAAADAAEABAAFAAYABAAHAAUACAAJAAoACAALAAkADAANAA4ADAAPAA0AEAARABIAEAATABEAFAAVABYAFAAXABUA"),
+"material": SubResource("gn_1"),
+"name": "laser_red",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 24,
+"vertex_data": PackedByteArray("Z2ZmwKabxLumm8S7Z2ZmwKabxDumm8Q7Z2ZmwKabxLumm8Q7Z2ZmwKabxDumm8S7Z2ZmQKabxLumm8S7Z2ZmQKabxDumm8Q7Z2ZmQKabxDumm8S7Z2ZmQKabxLumm8Q7Z2ZmwKabxLumm8S7Z2ZmQKabxLumm8Q7Z2ZmQKabxLumm8S7Z2ZmwKabxLumm8Q7Z2ZmwKabxDumm8S7Z2ZmQKabxDumm8Q7Z2ZmwKabxDumm8Q7Z2ZmQKabxDumm8S7Z2ZmwKabxLumm8S7Z2ZmQKabxDumm8S7Z2ZmwKabxDumm8S7Z2ZmQKabxLumm8S7Z2ZmwKabxLumm8Q7Z2ZmQKabxDumm8Q7Z2ZmQKabxLumm8Q7Z2ZmwKabxDumm8Q7AAD/f/9//78AAP9//3//vwAA/3//f/+/AAD/f/9//7////9//////////3//////////f/////////9///////9/AAD///8//38AAP///z//fwAA////P/9/AAD///8//3///////7//f///////v/9///////+//3///////7//////AAD/v/////8AAP+//////wAA/7//////AAD/v/9//3////+//3//f////7//f/9/////v/9//3////+/")
+}]
+
+[node name="GnLaserLzStatic" type="Node3D" unique_id=100001]
+
+[node name="Beam0" type="Node3D" parent="." unique_id=100002]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.29999998, 0)
+
+[node name="Bar" type="MeshInstance3D" parent="Beam0" unique_id=100003]
+cast_shadow = 0
+mesh = SubResource("gn_2")
+
+[node name="Beam1" type="Node3D" parent="." unique_id=100004]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+
+[node name="Bar" type="MeshInstance3D" parent="Beam1" unique_id=100005]
+cast_shadow = 0
+mesh = SubResource("gn_3")
+
+[node name="Beam2" type="Node3D" parent="." unique_id=100006]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+
+[node name="Bar" type="MeshInstance3D" parent="Beam2" unique_id=100007]
+cast_shadow = 0
+mesh = SubResource("gn_4")

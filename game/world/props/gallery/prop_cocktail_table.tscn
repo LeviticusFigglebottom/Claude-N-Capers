@@ -1,0 +1,19 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/props/prop_cocktail_table/prop_cocktail_table.glb" id="1_model"]
+
+[node name="PropCocktailTable" type="Node3D"]
+metadata/kind = &"cocktail_table"
+metadata/support = true
+
+[node name="Model" parent="." instance=ExtResource("1_model")]
+
+[node name="Table" parent="Model"]
+visibility_range_end = 60
+visibility_range_end_margin = 6
+visibility_range_fade_mode = 1
+
+[node name="Collision" parent="Model"]
+metadata/surface = &"fabric"
+
+[editable path="Model"]
