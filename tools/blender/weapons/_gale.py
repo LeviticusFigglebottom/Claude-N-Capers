@@ -96,3 +96,27 @@ def build_box(ctx, mats, big: bool, parent=None, name="AmmoBox"):
         bt.box((x - 0.0068, fy - 0.012, z - 0.0040), (x + 0.0068, fy - 0.005, z + 0.0040), mat=lk)
     c.finish(bt, name + "Belt", parent=body)
     return body
+
+
+def build_barrage_brake(ctx, mats, parent=None, name="BarrageBrake"):
+    """D-118 heavy round brake slipped over the stock 3-port brake (its sleeve covers it) and extending a
+    big expansion chamber with three wide side ports a side; origin = Muzzle (front of the stock brake).
+    Adds its own ``Muzzle`` and ``MuzzlePortL``/``R`` (the stock brake's ports are covered)."""
+    mb = ctx.builder()
+    st = mb.material(mats.matte())
+    dark = mb.material(mats.polymer())
+    r, length, back = 0.0225, 0.046, BRAKE_LEN - 0.004
+    c.ring_y(mb, r, 0.0188, -back, length - 0.004, 0.0, st, segments=32)                 # sleeve + chamber
+    c.ring_y(mb, r, 0.0060, length - 0.004, length, 0.0, st, segments=32)                # front cap
+    c.ring_y(mb, r + 0.0010, 0.0188, -back, -back + 0.010, 0.0, st, segments=32)         # clamp collar
+    mb.box((-0.0040, -back + 0.001, r + 0.0005), (0.0040, -back + 0.009, r + 0.0040), mat=st)  # clamp bolt
+    p0, pitch = 0.003, 0.0125
+    for i in range(3):
+        y = p0 + i * pitch
+        for side in (-1.0, 1.0):
+            lo, hi = sorted((side * (r - 0.0015), side * (r + 0.0003)))
+            mb.box((lo, y, -0.0085), (hi, y + 0.0085, 0.0085), mat=dark)
+    body = c.finish(mb, name, bevel=0.0006, segments=1, parent=parent)
+    ctx.marker("Muzzle", (0.0, length + 0.001, 0.0), parent=body)
+    c.side_port_markers(ctx, r + 0.0003, p0 + pitch + 0.004, parent=body)
+    return body

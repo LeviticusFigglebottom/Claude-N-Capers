@@ -48,6 +48,7 @@ unlock_level = 9
 mod_slots = {
 2: [&"mod.drover_suppressor"],
 3: [&"mod.drover_iron_sights", &"mod.rail_reflex_sight", &"mod.rail_prism_scope"],
+5: [&"mod.rail_vertical_grip"],
 6: [&"mod.drover_folding_stock"],
 7: [&"mod.drover_standard_mag", &"mod.drover_extended_mag"]
 }

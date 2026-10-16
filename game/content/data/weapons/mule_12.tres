@@ -50,6 +50,7 @@ base = SubResource("base")
 price = 26000
 unlock_level = 13
 mod_slots = {
+1: [&"mod.mule_breacher_brake"],
 3: [&"mod.mule_ghost_ring", &"mod.rail_reflex_sight"],
 6: [&"mod.mule_folding_stock"],
 7: [&"mod.mule_standard_tube", &"mod.mule_extended_tube"]

@@ -139,3 +139,9 @@ def lever_profile():
     hole = [(cy + 0.018 * math.cos(math.radians(d)) - px, cz + 0.015 * math.sin(math.radians(d)) - pz)
             for d in range(0, 360, 30)]
     return outer, hole
+
+
+def build_suppressor(ctx, mats, parent=None, name="Suppressor"):
+    """D-118 slim rifle can threaded on the octagonal barrel's crown; origin = Muzzle. Kept under the
+    front-blade sight line. Adds its own ``Muzzle``."""
+    return c.build_can(ctx, mats, length=0.170, r=0.0175, overlap=0.0, bore_r=0.0058, parent=parent, name=name)
