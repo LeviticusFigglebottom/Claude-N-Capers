@@ -334,7 +334,7 @@ func _tick_investigating(delta: float) -> void:
 		_resume_calm()  # Nothing confirmed within the budget.
 		return
 	if not _at_focus:
-		if _motor.arrived or _motor.distance_to_target() <= tweak.investigate_arrive_m:
+		if _motor.arrived or (_motor.target_on_level() and _motor.distance_to_target() <= tweak.investigate_arrive_m):
 			_motor.stop()
 			_at_focus = true
 			var to_focus: Vector3 = _flat(focus_position - _npc.global_position)
