@@ -5,7 +5,7 @@
 ## Writes <out>/<pose>.png, <out>/<pose>_close.png and <out>/crew_hold_sheet.png (rows = poses).
 ##   xvfb-run -a -s "-screen 0 960x540x24" /opt/godot/godot --rendering-driver opengl3 --audio-driver Dummy \
 ##     --resolution 960x540 --path game res://world/characters/_tools/render_crew_hold_review.tscn -- --out=/abs/dir \
-##     [--heist=glasshouse] [--after] [--bots=crew_rook:weapon.mule_12:rifle,crew_sable:weapon.hornet_9:smg]
+##     [--heist=glasshouse] [--after] [--bots=crew_rook:weapon.mule_12:rifle,...] [--poses=interact_low:0.6,...]
 ## Owner: ENV D.
 extends Node
 
@@ -40,6 +40,11 @@ func _ready() -> void:
 			"out": _out = v
 			"heist": _heist = v
 			"after": _poses = AFTER_POSES
+			"poses":   # --poses=interact_low:0.6,drill_place:0.8 (any clips, the same for every bot)
+				_poses = []
+				for e: String in v.split(","):
+					var f2: PackedStringArray = e.split(":")
+					_poses.append([f2[0], f2[0], float(f2[1]) if f2.size() > 1 else 0.5])
 			"bots":
 				_bots = []
 				for b: String in v.split(","):
