@@ -252,3 +252,31 @@ func test_sl5_drives_complete_at_two_of_three() -> void:
 	take.call(sleds[1])
 	assert_eq(m.objective_state(&"drives"), Enums.ObjectiveState.COMPLETED, "2 taken: [drives] done (the 3rd is a bonus)")
 
+
+# --- SL-9: the lasers line on the approach to the active grid ----------------------------------------------
+
+func test_sl9_lasers_line_on_grid_approach() -> void:
+	await _launch(&"shadow_ledger", 777)
+	var m: HeistMission = _rt.mission
+	var grids: Array[Node] = m.find_tagged(&"art_hall_lasers")
+	assert_eq(grids.size(), 1, "one active grid (the rolled laser_pattern)")
+	var grid: Node3D = grids[0] as Node3D
+	assert_true(grid.get_node_or_null(^"LasersHintArea") != null, "approach area on the grid")
+	# The study door's lockpick no longer says it.
+	for d: Node in m.find_tagged(&"study_door"):
+		EventBus.interaction_completed.emit(int(d.get(&"net_id")), 0, &"lockpick")
+	assert_eq(_count(&"vo.mercer.shadow_ledger_lasers"), 0, "not on the study-door lockpick")
+	var crew: CrewController = _rt.crew_controller(0)
+	var far: Vector3 = grid.global_position + grid.global_basis.z.normalized() * 12.0
+	crew.global_position = Vector3(far.x, grid.global_position.y - 1.0, far.z)
+	await wait_physics_frames(4)
+	assert_eq(_count(&"vo.mercer.shadow_ledger_lasers"), 0, "12 m away: nothing yet")
+	var near: Vector3 = grid.global_position + grid.global_basis.z.normalized() * 3.0
+	crew.global_position = Vector3(near.x, grid.global_position.y - 1.0, near.z)
+	await wait_physics_frames(4)
+	assert_eq(_count(&"vo.mercer.shadow_ledger_lasers"), 1, "within 4 m of the grid: the lasers line")
+	crew.global_position = Vector3(far.x, grid.global_position.y - 1.0, far.z)
+	await wait_physics_frames(4)
+	crew.global_position = Vector3(near.x, grid.global_position.y - 1.0, near.z)
+	await wait_physics_frames(4)
+	assert_eq(_count(&"vo.mercer.shadow_ledger_lasers"), 1, "once")
