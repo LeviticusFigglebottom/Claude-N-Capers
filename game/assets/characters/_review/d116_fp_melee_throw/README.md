@@ -16,3 +16,12 @@ Throwable (`_arms_items` THROW_POSES):
   the edge, the wind-up behind the camera, and the follow-through 44 deg down.
 - After: the grenade is held in the lower third (screen y 0.90), the pin pull at y 0.83, the wind-up at the top right
   edge, the release near the centre, the follow-through at the bottom edge (y 0.98). Event frames are unchanged.
+
+## Blunt and blade melee (the lead's call: like the knife)
+Only melee.folding_knife exists in content, so these come from the Blender review (crew camera, 75 deg).
+- `melee_blunt_before.png` / `melee_blade_before.png`: the previous `arms_fp_melee_*` review sheets.
+- `melee_blunt_after.png` / `melee_blade_after.png`: rows = swing (hit, follow, recovery) and charge_swing (hit,
+  follow, recovery).
+The blunt hit and both follow-throughs were 33-44 deg below the eye. Under the game's 52 deg viewmodel FOV, the hand
+now stays at or above the bottom edge (screen y <= 1.0 at the wrist) through every hit and follow-through. Reach is 0
+mm, and events and lengths are unchanged.
