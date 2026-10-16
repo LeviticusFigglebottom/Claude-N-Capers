@@ -692,6 +692,7 @@ ui.range.fmt.dps,{value}/s
 ui.range.fmt.hp,{value} HP
 ui.range.fmt.head,{value} (x{mult})
 ui.range.fmt.ttk,"{shots} shots, {time} s"
+ui.range.fmt.ttk_one,"1 shot, {time} s"
 item.mod.p9_iron_sights.name,Standard Iron Sights
 item.mod.p9_standard_mag.name,Standard Magazine
 perk.shared.card2.name,Headhunter
