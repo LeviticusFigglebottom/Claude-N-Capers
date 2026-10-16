@@ -66,8 +66,9 @@ set_ads_offset_z = Dictionary[StringName, float]({
 &"shotgun": -0.03
 })
 set_hip_rot_deg = Dictionary[StringName, Vector3]({
-&"pistol": Vector3(14, 3, -4),
-&"revolver": Vector3(14, 3, -4)
+&"pistol": Vector3(-2.5, -8.5, -3.5),
+&"revolver": Vector3(-2.5, -8.5, -3.5),
+&"akimbo": Vector3(-1, -1, -4)
 })
 set_ads_arc_roll_deg = Dictionary[StringName, float]({
 &"pistol": 7.0,
