@@ -1,0 +1,12 @@
+asset: char_hand_mug
+script: tools/blender/characters/char_hand_props.py
+params: {"prop": "mug"}
+seed: 2120353065  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category characters --asset char_hand_mug
+edit policy: generated file, never edit by hand; change the script and rebuild
+bounds_blender: (-0.0748,-0.0410,0.0000)..(0.0410,0.0410,0.0950) m (Godot: x, z, -y)
+grip: char_anim_humanoid/SOURCE.txt `mug_grip` (prop frame relative to the hand Socket); scene world/characters/_props/hand_mug.tscn wraps this glb at that transform
+prop: mug
+tri_budget: 3000
+tris: 348

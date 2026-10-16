@@ -95,7 +95,7 @@ ASSAULT_CELLS = ["rappel_hang:0", "rappel_hang:20:-90", "rappel_descend:0", "rap
 #: Clips that show hand-prop proxies (review only), and their furniture.
 PROP_CLIPS = {"phone_call": "phone", "phone_seated": "phone", "mug_idle": "mug", "mug_carry_walk": "mug", "mop": "mop",
               "sit_bed_read": "book", "walk_text": "phone", "bartender_wipe": "rag", "bartender_pour": ("bottle", "glass"),
-              "teller_count": "cash"}
+              "teller_count": "cash", "smoke": "cigarette"}
 DESK_CLIPS = ("desk_work", "phone_seated", "sit_chair_watch", "desk_type", "death_seated_slump", "death_seated_fall")
 CHAIR_CLIPS = DESK_CLIPS + ("sit_chair", "cower_seated")
 P5_FURNITURE = ("bartender_wipe", "bartender_pour", "teller_count", "curator_inspect", "cower_stand")
@@ -223,6 +223,8 @@ def _npc_props(name: str, sk, s, base_m: Matrix, i: int, mats: dict) -> None:
             _cyl(f"glass_{i}", M, 0.04, 0.0, 0.10, mats["paper"])
         elif prop == "cash":
             _box(f"cash_{i}", M, lib.PROPS["cash"], mats["cash"])
+        elif prop == "cigarette":
+            _cyl(f"cig_{i}", M, lib.CIG_R, 0.0, lib.CIG_LEN, mats["paper"], 8)
     if name in P5_FURNITURE:
         _p5_furniture(name, base_m, i, mats)
     if name in CHAIR_CLIPS:

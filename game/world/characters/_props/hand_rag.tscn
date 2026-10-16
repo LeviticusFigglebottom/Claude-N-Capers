@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/characters/char_hand_rag/char_hand_rag.glb" id="1_glb"]
+
+[node name="HandRag" type="Node3D"]
+metadata/prop = "rag"
+metadata/socket = "HandR"
+metadata/clips = PackedStringArray("bartender_wipe")
+
+[node name="Model" parent="." instance=ExtResource("1_glb")]
+transform = Transform3D(0, 1, 0, -0.9511, 0, 0.309, 0.309, 0, 0.9511, -0.004, -0.0023, 0.0316)

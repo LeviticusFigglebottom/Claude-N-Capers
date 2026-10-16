@@ -121,7 +121,7 @@ check.88: shield_walk: 28f 0.93s loop speed=1.6 reach_err=0.0mm step=19.7deg sli
 check.89: sit_bed_read: 300f 10.00s loop speed=0.0 reach_err=0.0mm step=19.5deg
 check.90: sit_chair: 120f 4.00s loop speed=0.0 reach_err=0.0mm step=0.3deg
 check.91: sit_chair_watch: 300f 10.00s loop speed=0.0 reach_err=0.0mm step=10.5deg
-check.92: smoke: 120f 4.00s loop speed=0.0 reach_err=0.0mm step=30.5deg
+check.92: smoke: 120f 4.00s loop speed=0.0 reach_err=0.0mm step=30.9deg
 check.93: sprint: 18f 0.60s loop speed=5.75 reach_err=0.0mm step=28.7deg slide=0.053mm/f
 check.94: strafe_l: 18f 0.60s loop speed=1.2 reach_err=0.0mm step=10.8deg slide=0.006mm/f
 check.95: strafe_r: 18f 0.60s loop speed=1.2 reach_err=0.0mm step=10.9deg slide=0.006mm/f
@@ -129,6 +129,7 @@ check.96: surrender: 48f 1.60s speed=0.0 reach_err=0.0mm step=54.8deg
 check.97: tased: 30f 1.00s loop speed=0.0 reach_err=0.0mm step=13.9deg
 check.98: teller_count: 240f 8.00s loop speed=0.0 reach_err=0.0mm step=18.6deg contact_slide=0.000mm/f
 check.99: throw_bag: 30f 1.00s speed=0.0 reach_err=0.0mm step=57.5deg
+cigarette_grip: basis x=(-0.1014,-0.9945,0.0266) y=(0.9135,-0.1037,-0.3935) z=(0.3941,-0.0156,0.9190) origin=(-0.0128,-0.0037,-0.0388) relative to HandR/Socket; cigarette r 0.0042 m, 0.072 m long (filter 0.024 m): origin at the filter (mouth) end, +Y = toward the ember; between the right index and middle fingers (the filter out on the palm side), its filter tip between the lips at each drag in smoke (D-115)
 clip.aim_pistol: 90f loop=True speed_mps=0.0
 clip.aim_rifle: 90f loop=True speed_mps=0.0
 clip.bartender_pour: 150f loop=True speed_mps=0.0 events=lift@2,pour_end@77,pour_start@39,set_down@110
