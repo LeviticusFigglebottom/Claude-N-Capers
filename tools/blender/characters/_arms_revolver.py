@@ -114,10 +114,11 @@ class RevolverKit:
         return ("c", Rm, hand_c_wrist - Rm @ g.wrist)
 
     def rod_hand(self, push: float) -> Hand:
-        """Left palm on the ejector-rod tip of the open crane (pushed ``push`` m in)."""
+        """The heel of the left hand on the ejector-rod tip of the open crane (pushed ``push`` m in), fingers
+        curled (lead, D-116 follow-up: PD2 strikes the rod with the heel, never a flat palm at the lens)."""
         tip = crane_point(self.s, 1.0, self.s.markers["rod_tip"]) + v3(0.0, 0.006 - push, 0.0)
         return hand_at(self.sk, "L", "w", tip, (0.55, 0.0, 0.84), (0.0, -1.0, 0.0), (-0.6, -0.3, -0.75),
-                       "flat", share=0.20, off=0.016)
+                       hand_shape("loose_fist", 0.9), share=0.04, off=0.020)
 
     def push_hand(self, a: float, away: float = 0.0) -> Hand:
         """Left fingers on the left side of the cylinder (crane opened ``a``) to swing it shut."""
@@ -131,6 +132,9 @@ class RevolverKit:
 #: D-116 follow-up: the eject / load holds sit this much further from the eye (m) than the first cut, so under P's
 #: one-handed hip framing the right forearm does not fill the lower screen while the cylinder is worked
 DEEP = 0.08
+#: the muzzle-up eject hold (camera-space position before DEEP, pitch deg): lead review of the first cut - the gun and
+#: the rod hand stay in the lower-right two thirds of the frame (top third = the world) and the hand >= 0.30 m away
+UP_P, UP_PITCH = (0.065, 0.31, -0.095), 50.0
 
 
 def clip_speedloader(kit, s: FPSet, N: int, ev: dict):
@@ -148,8 +152,8 @@ def clip_speedloader(kit, s: FPSet, N: int, ev: dict):
     flick = hold_frame(s.reload_tilt, (-0.006, 0.0, 0.004), yaw=4.0, pitch=2.0, roll=-14.0)
     # muzzle up: eject (D-116 follow-up: high enough that the cylinder and the rod hand stay in frame under P's
     # one-handed hip framing)
-    up = A.weapon_frame(v3(0.050, 0.30 + DEEP, -0.075), 8.0, 68.0, -12.0)
-    up_push = A.weapon_frame(v3(0.050, 0.30 + DEEP, -0.082), 8.0, 66.0, -12.0)
+    up = A.weapon_frame(v3(UP_P[0], UP_P[1] + DEEP, UP_P[2]), 8.0, UP_PITCH, -12.0)
+    up_push = A.weapon_frame(v3(UP_P[0], UP_P[1] + DEEP, UP_P[2] - 0.007), 8.0, UP_PITCH - 2.0, -12.0)
     # muzzle down and to the left, in front of the right forearm: the open cylinder faces the eye
     down = A.weapon_frame(v3(0.050, 0.30 + DEEP, -0.105), 50.0, -38.0, 18.0)
     load = A.weapon_frame(v3(0.045, 0.30 + DEEP, -0.100), 50.0, -34.0, 20.0)
