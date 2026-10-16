@@ -32,8 +32,13 @@ var p: Po5Pilot = null
 var rt: HeistRuntime = null
 var _ended: bool = false
 var _stalls: Dictionary[StringName, float] = {}
-## GN probe 3 (handoff §A1): interactables the pilot failed to reach (instance id -> true), skipped for the run.
-var _unreachable: Dictionary[int, bool] = {}
+## GN probe 3 (handoff §A1): interactables the pilot failed to reach (instance id -> the closed door that stopped
+## the walk, or null when the navmesh has no path), skipped for the run, or until that door is passable again (GN
+## loud: the Calloway canvas behind the lockdown-BARRED shutter comes back once the hack lifts it).
+var _unreachable: Dictionary[int, Door] = {}
+## Markers whose walk was stopped by a door the crew cannot open (`_marker_key` -> that door): they yield like a
+## stalled marker until the door is passable. Per marker, not per objective ([canvases] has one per slot).
+var _marker_blocked: Dictionary[String, Door] = {}
 
 
 func play(flow: Node) -> int:
@@ -108,7 +113,9 @@ func step() -> void:
 	if p.flat_dist(p.crew.global_position, pos) > 4.0:
 		if not await p.goto(p.stand_point(pos), 2.5, 60.0):
 			_note_once(id, "objective %s: marker at %s not reachable" % [id, Po5Pilot._v(pos)])
-			if not _has_path(p.stand_point(pos)):
+			if p.last_blocked_door != null:
+				_marker_blocked[_marker_key(m)] = p.last_blocked_door  # GN probe 6: behind the BARRED shutter -> yield at once
+			elif not _has_path(p.stand_point(pos)):
 				_stalls[id] = maxf(float(_stalls.get(id, 0.0)), STALL_SKIP_S)  # GN probe 4: no path -> yield at once
 	_stalls[id] = _stalls.get(id, 0.0) + 3.0
 	if int(_stalls[id]) % 60 == 0:
@@ -122,12 +129,13 @@ func step() -> void:
 func _pick(markers: Array[Dictionary]) -> Dictionary:
 	for m0: Dictionary in markers:  # GN probe 4: the loud hack lifts every shutter (Calloway), so it goes first
 		if StringName(m0["id"]) in FIRST_OBJECTIVES and float(_stalls.get(StringName(m0["id"]), 0.0)) < STALL_SKIP_S \
+				and not _is_marker_blocked(m0) \
 				and _has_path(p.stand_point(m0["position"] as Vector3)):  # probe 5: the Argus terminal sits behind
 			return m0  # the coded ServerDoor; only first when reachable
 	for m: Dictionary in markers:
 		var mid: StringName = StringName(m["id"])
 		if not (mid in [&"secure", &"escape", &"casing"] or mid in AREA_OBJECTIVES) \
-				and float(_stalls.get(mid, 0.0)) < STALL_SKIP_S:
+				and float(_stalls.get(mid, 0.0)) < STALL_SKIP_S and not _is_marker_blocked(m):
 			return m
 	for m1: Dictionary in markers:
 		if not (StringName(m1["id"]) in [&"secure", &"escape", &"casing"]):
@@ -148,7 +156,7 @@ func _usable_near(pos: Vector3, radius: float) -> InteractableComponent:
 			continue
 		if c.kind in [&"revive", &"cable_tie", &"answer_pager", &"uncuff", &"break_window", &"break_glass", &"take_loot", &"bag_body"]:
 			continue
-		if c.availability(p.crew) != &"" or _unreachable.has(c.get_instance_id()):
+		if c.availability(p.crew) != &"" or _is_unreachable(c):
 			continue
 		if _is_body_bag(c):
 			continue  # ND attempt 11: a body bag by the drill marker sent the pilot up the stairs mid-wave
@@ -213,7 +221,7 @@ func _fetch_bag() -> bool:
 		var c: InteractableComponent = n as InteractableComponent
 		if c == null or not c.enabled or not rt.is_ancestor_of(c) or not (c.kind in [&"bag_loot", &"carry_bag", &"pickup_bag"]):
 			continue
-		if c.availability(p.crew) != &"" or _is_body_bag(c) or _unreachable.has(c.get_instance_id()):
+		if c.availability(p.crew) != &"" or _is_body_bag(c) or _is_unreachable(c):
 			continue
 		var o: Node = c.owner_node()
 		if o is Node3D and p.secure_zone() != null and (o as Node3D).global_position.distance_to(p.secure_zone().global_position) < 4.0:
@@ -237,14 +245,59 @@ func _has_path(to: Vector3) -> bool:
 	return not path.is_empty() and path[path.size() - 1].distance_to(to) <= 1.5
 
 
-## GN probe 3: a target still out of reach after use() (the pilot could not path to it) is skipped for the rest
-## of the run, so the flow moves on instead of retrying the same unreachable slot.
+## GN probe 3: a target still out of reach after use() (the walk failed: no navmesh path, or a door the crew cannot
+## open stopped it) is skipped, so the flow moves on instead of retrying the same slot. A long walk that only hit the
+## leg timeout is retried (33bb7e51). Checked against the use stand (UsePoint), not the wall-hung canvas itself.
 func _mark_if_unreached(c: InteractableComponent) -> void:
 	if not is_instance_valid(c) or p.crew.is_carrying_bag():
 		return
-	if c.global_position.distance_to(p.crew.global_position) > 2.5 and not _has_path(c.global_position):
-		_unreachable[c.get_instance_id()] = true
-		f.note("skipping unreachable %s (%s) for this run" % [c.get_path(), c.kind])
+	var stand: Vector3 = p._use_stand(c)
+	if p.flat_dist(stand, p.crew.global_position) <= 1.0 and absf(stand.y - p.crew.global_position.y) <= 1.5:
+		return  # it got there; the hold failed for another reason
+	var door: Door = p.last_blocked_door
+	if door == null and _has_path(stand):
+		return
+	_unreachable[c.get_instance_id()] = door
+	f.note("skipping unreachable %s (%s) %s" % [c.get_path(), c.kind,
+		"until %s is passable" % door.name if door != null else "for this run (no navmesh path)"])
+
+
+## A target `_mark_if_unreached` blacklisted: for the run when it had no path, else while its door still blocks.
+func _is_unreachable(c: InteractableComponent) -> bool:
+	var key: int = c.get_instance_id()
+	if not _unreachable.has(key):
+		return false
+	var door: Door = _unreachable[key]
+	if door == null:
+		return true
+	if is_instance_valid(door) and not _passable(door):
+		return true
+	_unreachable.erase(key)
+	f.note("%s is passable again: retrying %s" % [door.name if is_instance_valid(door) else "door", c.get_path()])
+	return false
+
+
+## The crew could walk through `door` now: open, or closed but usable (not BARRED / VAULT / no card).
+func _passable(door: Door) -> bool:
+	return door.is_open or not p._door_blocked(door)
+
+
+## A marker whose walk a door the crew cannot open stopped (`_marker_blocked`), while that door still blocks.
+func _is_marker_blocked(m: Dictionary) -> bool:
+	var key: String = _marker_key(m)
+	if not _marker_blocked.has(key):
+		return false
+	var door: Door = _marker_blocked[key]
+	if is_instance_valid(door) and not _passable(door):
+		return true
+	_marker_blocked.erase(key)
+	f.note("marker %s: %s is passable again" % [key, door.name if is_instance_valid(door) else "door"])
+	return false
+
+
+static func _marker_key(m: Dictionary) -> String:
+	var pos: Vector3 = m["position"]
+	return "%s@%d,%d,%d" % [m["id"], roundi(pos.x), roundi(pos.y), roundi(pos.z)]
 
 
 ## Body bags are not loot (S6.2): the loud pilot never picks them up.

@@ -46,6 +46,9 @@ var shout_blockers: bool = true
 var block_shout_after: int = 4
 ## goto() also needs |dy| <= this to arrive (INF = horizontal distance only; stealth flows set it for stairs).
 var arrive_dy: float = INF
+## The closed door the last goto() gave up at because the crew cannot open it now (GN loud: the lockdown-BARRED
+## Calloway shutter; the navmesh still runs through the doorway), else null.
+var last_blocked_door: Door = null
 ## Stealth: never press F unless the component is aimed (a press with nothing usable aimed is a shout,
 ## S7.1: it puts every civilian within shout_all_within_m down, the sales floor through the wall).
 var no_blind_press: bool = false
@@ -167,6 +170,7 @@ func goto(target: Vector3, arrive_m: float = 0.8, timeout_s: float = 60.0, sprin
 	var hist_t: float = 0.0
 	var recover: int = 0
 	var ok: bool = false
+	last_blocked_door = null
 	while t < timeout_s:
 		if combat and crew.crew_state != Enums.CrewState.NORMAL:
 			d.note("pilot: goto aborted, crew state %d (fight from the floor)" % crew.crew_state)
@@ -203,6 +207,7 @@ func goto(target: Vector3, arrive_m: float = 0.8, timeout_s: float = 60.0, sprin
 		if door != null and _door_blocked(door):
 			inp.release(&"move_forward")
 			d.note("pilot: goto blocked by %s (%s); giving up this leg" % [door.name, _door_why(door)])
+			last_blocked_door = door
 			break  # P (GN loud): the lockdown-BARRED art door; pushing into it stalled the flow from t=480
 		if door != null:
 			inp.release(&"move_forward")
