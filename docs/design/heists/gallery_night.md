@@ -1146,7 +1146,7 @@ KEYCARD; the server CODE; the art store VAULT. Staff that must pass a locked doo
 
 | Door (plan position) | Lock | Notes |
 |---|---|---|
-| VE bronze outer doors ×4 leaves (x 20–23, z 30) | NONE, `starts_open` | Public. At last call the hall guard closes them and the mission relocks them LOCKPICK from outside (§3b.6 relock API); `push_bar` inside, so the parade escape always walks out. |
+| VE bronze outer doors ×4 leaves (x 20–23, z 30) | NONE, `starts_open` | Public. At last call the hall guard closes them and the mission relocks them LOCKPICK from outside (§3b.6 relock API); `push_bar` inside, so the parade escape always walks out. On the alarm the mission unlocks them and breaches them open (the police storm the front; crew can always get back in). |
 | VE inner glass screen, CK (16, 26), PWW/PWM (12, 22 / 12, 25), DC (3, 20), GH↔WG/EG arches | NONE / no leaf | Public; stay unlocked after last call (the zone flip makes them RESTRICTED). |
 | Court French doors (0, 12–13) | `court_doors_open`: NONE until last call, then relock LOCKPICK; `court_doors_locked`: LOCKPICK 8 s | `pp_court_doors` (`asset.propped_door`) forces NONE all night. |
 | Court gate (exterior) | NONE (open) until last call, then LOCKPICK | Police ENTRY `breach_only`. |
