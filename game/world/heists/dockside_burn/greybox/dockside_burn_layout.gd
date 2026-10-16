@@ -972,7 +972,7 @@ const ROOMS: Array = [
 	["H", "warehouse", "marshalling_hall", 1, [[18.0, 0.0, 0.0, 48.0, HALL_CEIL, 10.0]], null],
 	["C1", "warehouse", "cold_store_racked", 1, [[18.0, 0.0, 10.0, 32.0, BAY_CEIL, 24.0]], BAY_CEIL_RANGE],
 	["SP", "warehouse", "cold_store_aisle", 1, [[32.0, 0.0, 10.0, 35.0, BAY_CEIL, 24.0]], BAY_CEIL_RANGE],
-	["C2", "warehouse", "cold_store_racked", 1, [[35.0, 0.0, 10.0, 48.0, BAY_CEIL, 24.0]], BAY_CEIL_RANGE],
+	["C2", "warehouse", "cold_store_racked_b", 1, [[35.0, 0.0, 10.0, 48.0, BAY_CEIL, 24.0]], BAY_CEIL_RANGE],
 	["SR", "vault", "strongroom_freezer", 1, [[18.0, 0.0, 24.0, 26.0, SR_CEIL, 32.0]], null],
 	["AN", "warehouse", "quay_dock", 1, [[26.0, 0.0, 24.0, 48.0, AN_CEIL, 32.0]], null],
 	["M1", "cash_office", "count_room_cash", 2, [[9.0, MEZZ, 0.0, 15.0, MEZZ_CEIL, 6.0]], null],

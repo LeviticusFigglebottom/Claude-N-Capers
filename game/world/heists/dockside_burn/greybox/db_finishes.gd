@@ -29,6 +29,7 @@ const FINISHES: Dictionary = {
 	"vinyl_floor": ["vinyl_floor", Color(0.86, 0.87, 0.88)],
 	"ceiling_tile": ["ceiling_tile", null],
 	"frost_panel": ["paint_white", Color(0.9, 0.94, 0.97)],
+	"soffit_panel": ["paint_white", Color(0.74, 0.76, 0.78)],
 	"rust_cladding": ["paint_safety_orange", Color(0.6, 0.72, 0.9)],
 	"steel_cladding": ["metal_painted", Color(1.0, 1.0, 1.0)],
 	"roof_metal": ["metal_matte", Color(0.85, 0.85, 0.85)],
@@ -69,10 +70,10 @@ const ROOM_FINISH: Dictionary = {
 	"LK": ["tile_ceramic_white", "drywall_painted", "ceiling_tile"],  # locker room
 	"J": ["tile_ceramic_white", "blockwork", "ceiling_tile"],  # janitor
 	"PK": ["epoxy_floor", "frost_panel", "frost_panel"],  # chilled packing hall
-	"H": ["concrete", "blockwork", "steel_cladding"],  # marshalling hall (G2: painted deck soffit; matte metal read black)
+	"H": ["concrete", "blockwork", "soffit_panel"],  # marshalling hall (lead G2 review: the painted deck soffit read navy)
 	"C1": ["concrete", "frost_panel", "frost_panel"],  # cold store chambers + spine
 	"SP": ["concrete", "frost_panel", "frost_panel"],
-	"C2": ["concrete", "frost_panel", "frost_panel"],
+	"C2": ["concrete", "brushed_steel", "frost_panel"],  # bare steel panels: tells C2 from frosted C1
 	"SR": ["concrete", "concrete", "concrete"],  # strongroom (reinforced)
 	"AN": ["concrete", "frost_panel", "frost_panel"],  # chilled quay dock
 	"M1": ["vinyl_floor", "drywall_painted", "ceiling_tile"],  # count room

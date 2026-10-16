@@ -105,7 +105,7 @@ func _tile(i: int) -> Button:
 		row.add_child(pic)
 	else:
 		var icon: HubStationIcon = HubStationIcon.new()
-		icon.kind = _slot.glyph
+		icon.kind = _slot.get_item_glyph(i)
 		icon.color = UiTokens.PAPER_DIM
 		icon.tile_color = UiTokens.INK_0
 		icon.custom_minimum_size = Vector2(56, 56)
@@ -117,10 +117,20 @@ func _tile(i: int) -> Button:
 	v.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	row.add_child(v)
 	var name_label: Label = UiBuild.label(&"")
-	name_label.text = _slot.get_item_text(i)
+	# D-126: a lock suffix ("Marshal .357\n(level 10)") goes on its own line instead of being cut off.
+	var parts: PackedStringArray = _slot.get_item_text(i).split(" (", false, 1)
+	name_label.text = parts[0]
 	name_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	name_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	v.add_child(name_label)
+	if parts.size() > 1:
+		var lock: Label = UiBuild.caption()
+		lock.name = "Lock"
+		lock.text = "(" + parts[1]
+		lock.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+		lock.add_theme_color_override(&"font_color", UiTokens.PAPER_MUTE)
+		lock.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		v.add_child(lock)
 	if i == _slot.selected:
 		var tag: Label = UiBuild.caption(&"ui.loadout.equipped")
 		tag.add_theme_color_override(&"font_color", UiTokens.BRASS_HI)

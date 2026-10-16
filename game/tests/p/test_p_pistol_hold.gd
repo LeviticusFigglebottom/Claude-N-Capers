@@ -114,3 +114,37 @@ func test_ads_settles_on_axis() -> void:
 	assert_near(_fp.ads_weight, 1.0, 1e-3, "aimed")
 	assert_true(Vector2(p.x, p.y).length() < 0.002, "settled sights on the camera axis (%s)" % p)
 	_inp.release(&"aim")
+
+
+## Bore direction (AimPoint -> Muzzle) in camera space, degrees: x yaw (+ = muzzle left), y pitch (+ = up).
+func _bore_deg() -> Vector2:
+	var inv: Transform3D = get_viewport().get_camera_3d().global_transform.affine_inverse()
+	var aim: Node3D = _fp.weapon_visual.get_marker(WeaponVisual.AIM_POINT)
+	var muz: Node3D = _fp.weapon_visual.get_marker(&"Muzzle")
+	var b: Vector3 = (inv.basis * (muz.global_position - aim.global_position)).normalized()
+	return Vector2(rad_to_deg(atan2(-b.x, -b.z)), rad_to_deg(asin(clampf(b.y, -1.0, 1.0))))
+
+
+## PO 2026-10-16 (PO6-11 follow-up): the hip pistol is level: the bore runs along the view like at full ADS (the
+## sight line sits above the bore, so "level" is the ADS reading, not 0), with a slight inward yaw at most.
+func test_hip_bore_level() -> void:
+	if FpViewmodelTweak.data().arms_scene == null:
+		skip("char_arms_fp not delivered")
+		return
+	for wid: StringName in [&"weapon.kestrel_p9", &"weapon.marshal_357"]:
+		var c: CrewController = await _launch(wid)
+		_fp = FpViewmodel.of(get_viewport().get_camera_3d())
+		assert_true(_fp != null and c != null, "%s: FP viewmodel" % wid)
+		if _fp == null:
+			await after_each()
+			continue
+		await wait_physics_frames(30)
+		var hip: Vector2 = _bore_deg()
+		_inp.press(&"aim")
+		await wait_until(func() -> bool: return _fp.ads_weight > 0.999, 3.0)
+		await wait_physics_frames(60)
+		var ads: Vector2 = _bore_deg()
+		_inp.release(&"aim")
+		assert_true(absf(hip.y - ads.y) < 2.5, "%s: hip bore level (pitch %.1f vs ADS %.1f)" % [wid, hip.y, ads.y])
+		assert_true(hip.x > -1.0 and hip.x < 6.0, "%s: hip yaw a slight inward cant at most (%.1f)" % [wid, hip.x])
+		await after_each()

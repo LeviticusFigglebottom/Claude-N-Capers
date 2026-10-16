@@ -58,7 +58,9 @@ func test_dmr_and_heavy_rifle_shapes() -> void:
 	var carbine: WeaponStats = _w(&"weapon.corsair_ar").base
 	assert_eq(_w(&"weapon.falchion_dmr").fire_modes, [&"semi"] as Array[StringName], "DMR semi only")
 	assert_eq(_w(&"weapon.falchion_dmr").anim_set, &"rifle", "DMR uses the rifle set")
-	assert_true(dmr.damage > 2.5 * carbine.damage and dmr.mag_size <= 20, "DMR: few, heavy rounds")
+	# D-124 (P3): 150 -> 120, still > 2x the carbine, still below the snipers' per-shot floor.
+	assert_true(dmr.damage > 2.0 * carbine.damage and dmr.mag_size <= 20, "DMR: few, heavy rounds")
+	assert_true(dmr.damage < _w(&"weapon.osprey_762").base.damage, "DMR per shot stays below the snipers")
 	assert_true(heavy.damage > carbine.damage and heavy.fire_rate_rpm < carbine.fire_rate_rpm, "heavy AR")
 	assert_true(heavy.concealment < carbine.concealment, "heavy AR hides worse")
 	assert_true(dmr.concealment < heavy.concealment, "DMR hides worst of the ARs")

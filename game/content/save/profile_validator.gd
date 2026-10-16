@@ -134,6 +134,7 @@ static func _loadout(p: PlayerProfile, notes: Array[String]) -> void:
 			l.set(f, def.get(f))
 	for f: String in ["primary_mods", "secondary_mods"]:
 		l.set(f, _known(l.get(f) as Array[StringName], ContentDB.MODS, "loadout." + f, notes))
+	_weapon_slots(p, notes)
 	if not MaskLocker.is_equippable(p, l.mask):
 		notes.append("loadout.mask: '%s' not equippable; reset to '%s'" % [l.mask, def.mask])
 		l.mask = def.mask if MaskLocker.is_equippable(p, def.mask) else &""
@@ -145,6 +146,38 @@ static func _loadout(p: PlayerProfile, notes: Array[String]) -> void:
 		l.perk_deck = &""
 		l.perk_deck_cards = 0
 	MaskLocker.sync_descriptor(p)
+
+
+## D-126 (shotguns joined the secondary slot): a weapon equipped in a slot it no longer belongs to moves over.
+## A secondary-slot weapon in the primary slot becomes the secondary (with its mods; it was the player's main gun) and
+## the primary falls back to the starter primary when owned, else the first owned primary, else empty. A primary-slot
+## weapon in the secondary slot is replaced by the default secondary.
+static func _weapon_slots(p: PlayerProfile, notes: Array[String]) -> void:
+	var l: Loadout = p.loadout
+	var pw: WeaponDef = ContentDB.weapon(l.primary) if l.primary != &"" else null
+	if pw != null and pw.slot == Enums.WeaponSlot.SECONDARY:
+		notes.append("loadout.primary: '%s' is a secondary now (D-126); moved to the secondary slot" % l.primary)
+		l.secondary = l.primary
+		l.secondary_mods = l.primary_mods.duplicate()
+		l.primary = _owned_primary(p)
+		l.primary_mods = [] as Array[StringName]
+	var sw: WeaponDef = ContentDB.weapon(l.secondary) if l.secondary != &"" else null
+	if sw != null and sw.slot == Enums.WeaponSlot.PRIMARY:
+		var def: StringName = _defaults().secondary
+		notes.append("loadout.secondary: '%s' is a primary; reset to '%s'" % [l.secondary, def])
+		l.secondary = def
+		l.secondary_mods = [] as Array[StringName]
+
+
+static func _owned_primary(p: PlayerProfile) -> StringName:
+	var starter: StringName = StringName(SaveService.STARTER_PRIMARY)
+	if p.owned_weapons.has(starter):
+		return starter
+	for id: StringName in p.owned_weapons:
+		var w: WeaponDef = ContentDB.weapon(id)
+		if w != null and w.slot == Enums.WeaponSlot.PRIMARY:
+			return id
+	return &""
 
 
 static func _perk_cards(p: PlayerProfile, notes: Array[String]) -> void:

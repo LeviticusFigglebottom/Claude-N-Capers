@@ -183,7 +183,9 @@ func _loot_line(text: String, value: int, col: Color) -> void:
 
 ## Every objective but hidden ones: done in OK green, failed in red, the live ones in paper. More than
 ## HudTweak.scoreboard_objectives_max lines: the done ones fold into one "N done" line, the live ones fill the rest
-## and a muted "+N more" line closes the column (the sheet stays on screen).
+## and a muted "+N more" line closes the column (the sheet stays on screen). Folding, required steps get the room before
+## `optional` ones (D-115 GN audit: six optional "as needed" steps hid Gallery Night's centrepiece / canvases / secure);
+## the lines keep the mission's order.
 func _fill_objectives() -> void:
 	for c: Node in objectives_box.get_children():
 		objectives_box.remove_child(c)
@@ -201,15 +203,24 @@ func _fill_objectives() -> void:
 	if fold and done > 0:
 		_objective_line(UiText.t(&"ui.scoreboard.objectives_done", {"count": done}), UiTokens.OK)
 	var room: int = cap - (1 if fold and done > 0 else 0) - (1 if fold else 0)
+	var keep: Dictionary = {}  # index in `shown` -> true when it gets a line (fold only)
+	for optional_pass: bool in [false, true]:
+		for i: int in range(shown.size()):
+			var o: Dictionary = shown[i]
+			if room <= 0 or int(o.get("state", Enums.ObjectiveState.ACTIVE)) == Enums.ObjectiveState.COMPLETED:
+				continue
+			if bool((o.get("args", {}) as Dictionary).get("optional", false)) == optional_pass:
+				keep[i] = true
+				room -= 1
 	var left: int = 0
-	for ob: Dictionary in shown:
+	for i: int in range(shown.size()):
+		var ob: Dictionary = shown[i]
 		var st: int = int(ob.get("state", Enums.ObjectiveState.ACTIVE))
 		if fold and st == Enums.ObjectiveState.COMPLETED:
 			continue
-		if fold and room <= 0:
+		if fold and not keep.has(i):
 			left += 1
 			continue
-		room -= 1
 		var disabled: bool = bool((ob.get("args", {}) as Dictionary).get("disabled", false))
 		var col: Color = UiTokens.PAPER
 		if st == Enums.ObjectiveState.COMPLETED:

@@ -145,7 +145,7 @@ spec types `float/int/bool/choice`). Tests point `GameSettings.root_dir` at
 | Field | Used for |
 |---|---|
 | `id`, `name_key` | setting value, `ui.options.palette.<id>` |
-| `detection_suspicious`, `detection_alert`, `detection_detected` | detection chevrons below 0.5, from 0.5, at 1.0 |
+| `detection_suspicious`, `detection_alert`, `detection_detected` | detection rings and crosshair arcs (D-128) below 0.5, from 0.5, at 1.0 ("!") |
 | `health`, `armor`, `low_health` | vitals / teammate bars; low-health tint and warning text |
 | `ally_marker`, `enemy_marker` | teammate names; marked-target diamonds |
 | `objective` | active objective rows |

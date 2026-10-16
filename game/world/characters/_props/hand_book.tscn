@@ -5,7 +5,7 @@
 [node name="HandBook" type="Node3D"]
 metadata/prop = "book"
 metadata/socket = "HandR"
-metadata/clips = PackedStringArray("sit_bed_read")
+metadata/clips = PackedStringArray("sit_bed_read", "sit_chair_read")
 
 [node name="Model" parent="." instance=ExtResource("1_glb")]
 transform = Transform3D(0, 0, -1, 0.9997, -0.0227, 0, -0.0227, -0.9997, 0, 0.006, -0.1098, -0.0155)

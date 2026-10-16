@@ -7,7 +7,7 @@ extends TestCase
 const SCENE: String = "res://content/range/firing_range.tscn"
 const P9: StringName = &"weapon.kestrel_p9"
 const CORSAIR: StringName = &"weapon.corsair_ar"
-const PLOWMAN: StringName = &"weapon.plowman_12"
+const LARK: StringName = &"weapon.lark_carbine"  # a second primary (D-126 moved the shotguns to secondary)
 const SUPPRESSOR: StringName = &"mod.corsair_suppressor"
 
 var _range: FiringRange = null
@@ -84,10 +84,10 @@ func test_pick_keeps_other_slot_and_swaps_with_holster_and_draw() -> void:
 	assert_eq(r.loadout.secondary, P9, "the secondary stays for swapping")
 	assert_eq(r.active_slot, int(Enums.WeaponSlot.PRIMARY))
 	assert_eq(r.weapon_def.id, CORSAIR, "panels follow the pick")
-	r.select_weapon(PLOWMAN)
-	assert_eq(r.loadout.primary, PLOWMAN, "a pick replaces only its own slot")
+	r.select_weapon(LARK)
+	assert_eq(r.loadout.primary, LARK, "a pick replaces only its own slot")
 	await wait_seconds(1.5)
-	assert_eq(RangeCrewBridge.weapon_visual(r.crew).weapon.id, PLOWMAN, "the FP model is the picked weapon")
+	assert_eq(RangeCrewBridge.weapon_visual(r.crew).weapon.id, LARK, "the FP model is the picked weapon")
 	# Slot key in aim mode: the crew's own equip.
 	var i: CrewIntent = CrewIntent.new()
 	i.weapon_slot = Enums.WeaponSlot.SECONDARY

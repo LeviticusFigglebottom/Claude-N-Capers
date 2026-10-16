@@ -6,7 +6,7 @@
 
 [sub_resource type="Resource" id="base"]
 script = ExtResource("2")
-damage = 100.0
+damage = 110.0
 pellets = 1
 headshot_mult = 1.0
 fire_rate_rpm = 550.0

@@ -11,8 +11,9 @@ extends Resource
 @export var stash_fraction: float = 0.8
 ## ◇ Small loot (cash bundles, counter jewelry) is scaled by DifficultyDef.payout_mult like bags.
 @export var small_loot_scaled_by_difficulty: bool = true
-## ◇ Civilian kill penalties (DifficultyDef.civilian_kill_penalty per kill) also apply to failed heists.
-@export var civilian_penalty_on_failure: bool = true
+## Civilian kill penalties (DifficultyDef.civilian_kill_penalty per kill) also apply to failed heists. D-120 addendum
+## (LEAD r228): a failed heist pays nothing AND costs nothing, so this is off.
+@export var civilian_penalty_on_failure: bool = false
 
 # --- XP (applied in C6 order) ----------------------------------------------------
 ## ◇ Base heist XP for a successful heist (before loot XP).

@@ -63,6 +63,12 @@ FORBIDDEN = {"#4FD1E8"}
 EMISSION = {"char_goggle_glow": ("#3BFF6A", 1.0), "char_prop_ember": ("#FF6A2A", 1.6)}
 
 
+#: D-116: open long garments (robe, long coats, below the knee) show their inside where they part, a front split
+#: gaping on a seated body or a hem flaring on a stride; drawn single-sided, the far panel vanished there and left only
+#: its folded hem edge floating as a thin strip. These cloths render both faces (cull_mode = 2, CULL_DISABLED).
+DOUBLE_SIDED = {"char_silk_ice", "char_coat_ice", "char_crew_rook_coat", "char_coat_camel", "char_coat_command"}
+
+
 def srgb_bytes(h: str) -> tuple[int, int, int]:
     h = h.lstrip("#")
     return int(h[0:2], 16), int(h[2:4], 16), int(h[4:6], 16)
@@ -319,6 +325,10 @@ def build_one(mid: str, spec: tuple, preset: dict) -> dict:
         text = tres.read_text(encoding="utf-8")
         text = text.replace("ao_enabled = true\n", "ao_enabled = true\nsubsurf_scatter_enabled = true\n"
                             "subsurf_scatter_strength = 0.25\nsubsurf_scatter_skin_mode = true\n")
+        tio.write_text(tres, text)
+    if mid in DOUBLE_SIDED:
+        text = tres.read_text(encoding="utf-8")
+        text = text.replace("ao_enabled = true\n", "ao_enabled = true\ncull_mode = 2\n")
         tio.write_text(tres, text)
     if mid in EMISSION:
         eh, energy = EMISSION[mid]
