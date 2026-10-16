@@ -1,4 +1,4 @@
-# Contract: damage and hits (v1.2)
+# Contract: damage and hits (v1.3)
 
 Producer of hits: ENV A (weapons, melee, explosives, sentries, NPC fire). Damage targets: ENV A
 (crew, NPCs, cameras, glass, shields), ENV B (firing-range targets and armor dummies). Helper:
@@ -74,3 +74,9 @@ ENV A (env/a-core f16e1031; `NpcBase._corpse_hit`, `NpcRagdoll`, tunables `Ragdo
 * **Freeze and cap.** A ragdoll freezes (bones baked, simulation stopped) after `settle_s` **3 s**, or earlier once
   every body is slower than `settle_speed_mps` 0.05 (not before `settle_min_s` 0.6 s). At most `max_active` **8**
   ragdolls simulate per peer; starting one more freezes the oldest first. Replication: net.md v1.2 (`"rs"`, `"rp"`).
+
+## v1.3: limb hitboxes (D-123)
+Rigged NPCs carry four bone-following capsules (upper_arm.L/R, thigh.L/R). A limb hit reports zone BODY, so the 1.0
+multiplier, headshot, armor, stats and kill-info rules are unchanged. The hit claim and DamageInfo may carry an optional
+`limb` key (&"shoulder_l" / &"shoulder_r" / &"leg_l" / &"leg_r"), used only to pick the flinch clip. The server drops it on
+HEAD hits and drops unknown values. `Enums.HitZone.LIMB` stays unused by NPC hitboxes.

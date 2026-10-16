@@ -114,6 +114,11 @@ static var _cached: AnimTweak = null
 @export var arrest_disarm_s: float = 0.2
 @export var cuffed_free_s: float = 0.2667
 @export var getup_blend_s: float = 0.2
+## characters.md D-116 crew_actions (SOURCE, 30 fps): mask_on mask_on@18 (the mask appears on the face; the clip plays
+## when the replicated `masked` turns true, the weapon holstered throughout), throw_grenade release@11 (re-timed so
+## it lands on the gameplay release, CombatTweak.throw_windup_s after the pin).
+@export var mask_on_event_s: float = 0.6
+@export var throw_release_event_s: float = 0.3667
 ## Lead ruling (b): a hit-zone flinch on a moving body is an upper-body layer at this weight (SOURCE hit_zones 0.7,
 ## hit_head 0.9).
 @export var hit_zone_layer_weight: float = 0.7
@@ -171,6 +176,15 @@ func disarm_s() -> float:
 
 func free_s() -> float:
 	return clip_event_s(&"crew_cuffed_free", &"free", cuffed_free_s)
+
+
+## mask_on `mask_on` (the mask shows at Head/Socket) and throw_grenade `release` (the grenade leaves the hand), SOURCE first.
+func mask_on_s() -> float:
+	return clip_event_s(&"mask_on", &"mask_on", mask_on_event_s)
+
+
+func throw_release_s() -> float:
+	return clip_event_s(&"throw_grenade", &"release", throw_release_event_s)
 
 
 static func data() -> AnimTweak:

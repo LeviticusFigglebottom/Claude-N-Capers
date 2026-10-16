@@ -49,7 +49,8 @@ const EV_ESCAPE: StringName = &"radio.escape"
 const EV_LOOT: StringName = &"radio.loot_secured"
 const EV_BRIEFING: StringName = &"briefing"
 const EV_MISSION: StringName = &"mission"
-const RX_ID: String = "[\"'](vo\\.[A-Za-z0-9_]+\\.[A-Za-z0-9_%]+)[\"']"
+## `%s` / `%d` may stand in the speaker or the line segment (BarkTweak: one `vo.%s.<event>_%d` pattern per bark).
+const RX_ID: String = "[\"'](vo\\.[A-Za-z0-9_%]+\\.[A-Za-z0-9_%]+)[\"']"
 const RX_ADD: String = "\\b(?:add_objective|_add)\\(\\s*&\"(\\w+)\""
 const RX_DONE: String = "\\b(?:complete|_complete_once|_skip_if_active|require_items|require_loot)\\(\\s*&\"(\\w+)\""
 const RX_NEW: String = "\\bactivate\\(\\s*&\"(\\w+)\""
@@ -165,7 +166,9 @@ static func radio_facts(def: HeistDef, mission_path: String, tweak: RadioTweak) 
 	var done: Dictionary = {}
 	var new: Dictionary = {}
 	var failed: Dictionary = {}
-	for oid: StringName in _matches(src, RX_DONE):
+	var done_ids: Array[StringName] = _matches(src, RX_DONE)
+	done_ids.append_array(_helper_completions(src))
+	for oid: StringName in done_ids:
 		if states.has(oid) and (states[oid] as Dictionary).keys() != ["COMPLETED"]:
 			done[oid] = true
 	for oid: StringName in _matches(src, RX_NEW):
@@ -410,6 +413,27 @@ static func _add_site(row: Dictionary, site: String) -> void:
 	var sites: Array = row["sites"]
 	if not sites.has(site):
 		sites.append(site)
+
+
+## Objective ids completed through a mission helper that completes its own first parameter (GH's
+## `_check_cases(&"salon", TAG)` -> `complete(objective_id)`, C 762934d5): every literal first argument at a call of
+## such a helper counts as completed.
+static func _helper_completions(src: String) -> Array[StringName]:
+	var out: Array[StringName] = []
+	var rx_func: RegEx = RegEx.create_from_string("(?m)^func (\\w+)\\((\\w+)\\s*:")
+	var funcs: Array[RegExMatch] = rx_func.search_all(src)
+	for i: int in range(funcs.size()):
+		var f: RegExMatch = funcs[i]
+		var body_end: int = funcs[i + 1].get_start() if i + 1 < funcs.size() else src.length()
+		var body: String = src.substr(f.get_end(), body_end - f.get_end())
+		var param: String = f.get_string(2)
+		var name: String = f.get_string(1)
+		if not RegEx.create_from_string("\\b(?:complete|_complete_once)\\(\\s*%s\\s*\\)" % param).search(body):
+			continue
+		for id: StringName in _matches(src, "\\b%s\\(\\s*&\"(\\w+)\"" % name):
+			if not out.has(id):
+				out.append(id)
+	return out
 
 
 static func _matches(src: String, pattern: String) -> Array[StringName]:

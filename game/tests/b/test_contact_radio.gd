@@ -364,7 +364,10 @@ func test_subtitle_rows_speaker_text_timing() -> void:
 	var acc: Color = ContactDef.find(&"contact.accountant").accent_color
 	assert_true(UiAccent.contrast_ratio(row["color"] as Color, UiAccent.over(o.tweak.panel_color, Color.BLACK)) >= 4.5)
 	assert_near((row["color"] as Color).h, acc.h, 0.05, "contact accent hue")
-	assert_false(o.show_line(&"guard", &"vo.guard.cuff_warning", {}), "guards are not subtitled by default")
+	var gs: GameSettings = GameSettings.current()
+	gs.set_value(GameSettings.ACCESSIBILITY, &"subtitles_all_speakers", false)  # default on since LEAD r226
+	assert_false(o.show_line(&"guard", &"vo.guard.cuff_warning", {}), "guards are not subtitled with the toggle off")
+	gs.set_value(GameSettings.ACCESSIBILITY, &"subtitles_all_speakers", true)
 	assert_false(o.show_line(&"vance", &"vo.vance.briefing_glasshouse_1", {"source": &"briefing"}), "no briefing")
 	var short_t: float = o.tweak.display_s("Go.")
 	var long_t: float = o.tweak.display_s("x".repeat(80))
@@ -435,15 +438,20 @@ func _radio_heists() -> Dictionary:
 	return out
 
 
-## Lead ruling: guard barks / crew acks get subtitles only with Options › Accessibility › subtitles_all_speakers.
+## LEAD r226 (D-117 barks): every speaker is subtitled by default (barks are dialogue, most ship without audio);
+## Options › Accessibility › subtitles_all_speakers off narrows it back to contacts and the handler. Heister barks
+## carry the heister's name.
 func test_guard_and_crew_subtitles_behind_the_toggle() -> void:
 	var s: GameSettings = GameSettings.current()
 	var o: SubtitleOverlay = _overlay()
-	assert_false(bool(s.get_value(GameSettings.ACCESSIBILITY, &"subtitles_all_speakers")), "default off")
-	assert_false(o.show_line(&"guard", &"vo.guard.cuff_warning", {}), "guard bark hidden by default")
-	s.set_value(GameSettings.ACCESSIBILITY, &"subtitles_all_speakers", true)
-	assert_true(o.show_line(&"guard", &"vo.guard.cuff_warning", {}), "shown once the toggle is on")
+	assert_true(bool(s.get_value(GameSettings.ACCESSIBILITY, &"subtitles_all_speakers")), "default on")
+	assert_true(o.show_line(&"guard", &"vo.guard.cuff_warning", {}), "guard bark shown by default")
+	assert_eq(String(o.speaker_style(&"rook")[0]), Heisters.display_name(&"rook"), "a heister bark names the heister")
 	s.set_value(GameSettings.ACCESSIBILITY, &"subtitles_all_speakers", false)
+	assert_false(o.show_line(&"guard", &"vo.guard.cuff_warning", {}), "hidden once the toggle is off")
+	assert_true(o.show_line(&"mercer", &"vo.mercer.abort", {}) or not o.tweak.subtitle_speakers.has(&"mercer"),
+			"the handler stays subtitled with the toggle off")
+	s.set_value(GameSettings.ACCESSIBILITY, &"subtitles_all_speakers", true)
 
 
 ## P fresh-eyes #9: subtitles sit above the bottom HUD band on a readable backing.

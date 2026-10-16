@@ -23,7 +23,7 @@ const HOSTAGE_CLIPS: Array[StringName] = [&"tied", &"kneel_cuffed", &"lie_down",
 ## Seated loops (characters.md npc_seat: the root under the seat centre).
 const SEATED_CLIPS: Array[StringName] = [&"desk_work", &"desk_type", &"phone_seated", &"sit_chair", &"sit_chair_watch"]
 ## Explicitly authored low poses (D-069: Kessler reads in bed).
-const AUTHORED_LOW: Array[StringName] = [&"sit_bed_read"]
+const AUTHORED_LOW: Array[StringName] = [&"sit_bed_read", &"sit_chair_read"]
 ## Head height (m above the feet) below which a body reads as on the floor (seated at a desk ~1.05,
 ## standing ~1.55, cower ~0.62).
 const MIN_HEAD_M: float = 0.9

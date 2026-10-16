@@ -1,0 +1,19 @@
+[PO6] PO6-06 PASS 5 civilians at start, not standing: []; office civilian none
+[PO6 211.1s t=4.2] behind Npc_guard3 (nearest civilian 4.6 m)
+[PO6 402.0s t=8.2] pager 1 on Npc_guard3, 11.93 s
+[PO6] PO6-08 PASS freeze while held: 11.32 -> 11.32 over 1 s (window was 11.83 at the beep, 11.35 at the hold); answered true
+[PO6] PO6-20 FAIL pager row world pos (inf, inf, inf), interactable none (outline: see shot)
+[PO6] PO6-07 PASS 2 s after the answer, active loops []
+[PO6 918.0s t=21.3] behind Npc_guard (nearest civilian 3.5 m)
+[PO6 1051.5s t=25.3] pager 2 on Npc_guard, 11.98 s
+[PO6 1103.6s t=26.9] alarm pager_failed
+[PO6] PO6-08b PASS release after 0.6 s -> alarm pager_failed
+[PO6] PO6-07b PASS 2 s after the failed pager, active loops [&"alarm"]
+[PO6 1364.4s t=4.0] alarm test
+[PO6 1505.6s t=6.0] open direction (-0.707107, 0.0, 0.707107), 20.0 m clear (want 7.0)
+[PO6] PO6-19 PASS cop dead true, body moved 2.24 m (ragdoll FROZEN)
+[PO6 1684.8s t=10.1] corpse nudge 0.08 m
+[PO6 1709.3s t=10.9] throwing at Crew1 1.5 m away
+[PO6] PO6-14 PASS Crew1 carrying after the throw: true (player carrying false)
+[PO6 1728.2s t=11.1] PO6-07 audit: active loops at the end of the loud check [&"alarm"]
+[PO6] DONE

@@ -613,8 +613,9 @@ func _on_alarm_raised(reason: StringName, _source: int) -> void:
 	if heist_mode == Enums.HeistMode.STEALTH_ONLY:
 		# S11.3: alarm = fail. Mercer abort line, then heist_ended(failed) after the tweak delay.
 		stealth_abort_left = Tweak.stealth().stealth_only_abort_s
-		EventBus.voice_line_requested.emit(&"mercer", &"vo.mercer.abort", {})
-		Net.replicate_event(&"voice_line_requested", [&"mercer", &"vo.mercer.abort", {}])
+		if mission == null or not mission.own_abort_line:  # SL-6: the heist's own abort line replaces it
+			EventBus.voice_line_requested.emit(&"mercer", &"vo.mercer.abort", {})
+			Net.replicate_event(&"voice_line_requested", [&"mercer", &"vo.mercer.abort", {}])
 
 
 
@@ -641,6 +642,10 @@ func end_heist(success: bool, escaped_slots: Array[int] = [], fail_reason: Strin
 	if _ended:
 		return {}
 	_ended = true
+	# SL-6 (S11.3): a STEALTH_ONLY heist cannot be won once the alarm sounded (an escape inside the abort window).
+	if success and heist_mode == Enums.HeistMode.STEALTH_ONLY and went_loud:
+		success = false
+		fail_reason = FAIL_STEALTH_ONLY_ALARM
 	# events.md v1.7: a successful escape completes the mission's `escape` objective before heist_ended (HUD, B's
 	# achievement objectives_completed), whichever trigger ended it (escape zone, mission, stealth-only win).
 	if success and mission != null and mission.objective_state(&"escape") == Enums.ObjectiveState.ACTIVE:

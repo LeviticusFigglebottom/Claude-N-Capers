@@ -601,7 +601,7 @@ func _seated_or_standing(activity: StringName) -> StringName:
 
 ## PO6-06 / X-5 shared rule (civilians, guards and cartel gunmen at a PatrolPoint pause_anim or a spawn activity):
 ## `activity` when it is not a seated one (StealthTweak.civilian_unseated_activity keys) or `npc` has a seat
-## under it (has_seat_under), else its standing counterpart. Kessler's `sit` is his bed (AnimDriver sit_bed_read).
+## under it (has_seat_under), else its standing counterpart. Kessler's `sit` is his armchair (AnimDriver sit_chair_read).
 static func seated_or_standing(npc: NpcBase, activity: StringName) -> StringName:
 	var swap: Dictionary = Tweak.stealth().civilian_unseated_activity
 	if npc == null or not swap.has(activity) or (npc.spawn_info.get("tags", []) as Array).has(&"civ_kessler"):
@@ -611,7 +611,7 @@ static func seated_or_standing(npc: NpcBase, activity: StringName) -> StringName
 
 ## PO6-06 (S7.5): a seated idle activity (StealthTweak.civilian_unseated_activity keys) with no seat under the
 ## civilian becomes its standing counterpart: the seated clips put the root under the seat centre, and on thin
-## air they read as a hostage crouched on the floor. Kessler's `sit` is his bed (AnimDriver sit_bed_read).
+## air they read as a hostage crouched on the floor. Kessler's `sit` is his armchair (AnimDriver sit_chair_read).
 func _stand_if_unseated() -> void:
 	var swap: Dictionary = Tweak.stealth().civilian_unseated_activity
 	if mode != Mode.IDLE or not swap.has(_idle_activity) or (_npc.spawn_info.get("tags", []) as Array).has(&"civ_kessler"):

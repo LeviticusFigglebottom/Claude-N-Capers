@@ -120,7 +120,7 @@ func _stealth_checks() -> void:
 		if mode in [CivilianBrain.Mode.DOWN, CivilianBrain.Mode.TIED, CivilianBrain.Mode.COWER] \
 				or civ.alert_state in [Enums.AlertState.INTIMIDATED, Enums.AlertState.TIED]:
 			bad.append("%s mode %d alert %d at %s" % [civ.name, mode, civ.alert_state, Po5Pilot._v(civ.global_position)])
-		if civ.global_position.y > 3.0 and civ.global_position.distance_to(MANAGER_AT) < 9.0 and (office == null
+		if civ.global_position.y > 3.0 and (office == null
 				or civ.global_position.distance_to(MANAGER_AT) < office.global_position.distance_to(MANAGER_AT)):
 			office = civ
 	if office != null:
@@ -145,6 +145,9 @@ func _stealth_checks() -> void:
 	if pid > 0:
 		await shot("po6_20_pager_outline")
 		var comp: InteractableComponent = _pager_comp(guards[0])
+		var row_pos: Vector3 = _pager_pos(pid)
+		verdict("PO6-20", comp != null and row_pos != Vector3.INF, "pager row world pos %s (body %s), interactable %s (outline: see shot)" % [
+			row_pos, guards[0].global_position, comp.get_path() if comp != null else "none"])
 		var t0: float = _time_left(pid)
 		await _place(c, guards[0].global_position + _flat_dir(guards[0].global_position, c.global_position) * 1.0,
 			comp.global_position if comp != null else guards[0].global_position)
@@ -159,8 +162,6 @@ func _stealth_checks() -> void:
 		verdict("PO6-08", absf(t_held_a - t_held_b) < 0.05 and answered,
 			"freeze while held: %.2f -> %.2f over 1 s (window was %.2f at the beep, %.2f at the hold); answered %s" % [
 			t_held_a, t_held_b, t0, t_before, answered])
-		verdict("PO6-20", comp != null, "pager row world pos %s, interactable %s (outline: see shot)" % [
-			_pager_pos(pid), comp.get_path() if comp != null else "none"])
 		await wait_s(2.0)
 		var loops: Array[StringName] = _active_loops()
 		verdict("PO6-07", not _has_pager_loop(loops), "2 s after the answer, active loops %s" % [loops])
