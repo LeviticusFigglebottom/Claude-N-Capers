@@ -3429,3 +3429,59 @@ ui.preplan.bp.dockside_burn.ferro_street,Ferro Street
 ui.preplan.bp.dockside_burn.bellweather,Bellweather Ice Co
 ui.preplan.bp.dockside_burn.pontoon,Pontoon
 ui.preplan.bp.dockside_burn.landing_stage,Landing stage
+item.mod.corsair_collapsed_stock.name,Collapsed Stock
+item.mod.corsair_collapsed_stock.desc,"A light telescoping stock pushed all the way in. Easier to hide, harder to hold steady."
+item.mod.corsair_tactical_stock.name,Tactical Stock
+item.mod.corsair_tactical_stock.desc,"A full stock with a cheek riser and a thick recoil pad. Steadier and tighter, but bulky."
+item.mod.falchion_collapsed_stock.name,Collapsed Stock
+item.mod.falchion_collapsed_stock.desc,"A light telescoping stock pushed all the way in. Easier to hide, harder to hold steady."
+item.mod.falchion_marksman_stock.name,Marksman Stock
+item.mod.falchion_marksman_stock.desc,"A heavy marksman stock with a cheek riser and a thick recoil pad. Steadier and tighter, but bulky."
+item.mod.brute_folding_stock.name,Folding Stock
+item.mod.brute_folding_stock.desc,"A light folding stock with a thin butt plate. Easier to hide, kicks a lot harder."
+item.mod.brute_padded_stock.name,Padded Stock
+item.mod.brute_padded_stock.desc,"A heavy stock with a thick recoil pad that soaks up the kick. Steadier, but bulky."
+item.mod.anvil_collapsed_stock.name,Collapsed Stock
+item.mod.anvil_collapsed_stock.desc,"A light telescoping stock pushed all the way in. Easier to hide, harder to hold steady."
+item.mod.anvil_heavy_stock.name,Heavy Stock
+item.mod.anvil_heavy_stock.desc,"A heavy stock with a thick recoil pad that holds the long bursts down. Steadier, but even bulkier."
+item.mod.gale_collapsed_stock.name,Collapsed Stock
+item.mod.gale_collapsed_stock.desc,"A light telescoping stock pushed all the way in. Easier to hide, harder to hold steady."
+item.mod.gale_heavy_stock.name,Heavy Stock
+item.mod.gale_heavy_stock.desc,"A heavy stock with a thick recoil pad that holds the long bursts down. Steadier, but even bulkier."
+item.mod.rampart_collapsed_stock.name,Collapsed Stock
+item.mod.rampart_collapsed_stock.desc,"A light telescoping stock pushed all the way in. Easier to hide, harder to hold steady."
+item.mod.rampart_heavy_stock.name,Heavy Stock
+item.mod.rampart_heavy_stock.desc,"A heavy stock with a thick recoil pad that holds the long bursts down. Steadier, but even bulkier."
+item.mod.condor_skeleton_stock.name,Skeleton Stock
+item.mod.condor_skeleton_stock.desc,"An open-frame skeleton stock with a thin pad. Easier to carry, but every shot kicks harder."
+item.mod.condor_precision_stock.name,Precision Stock
+item.mod.condor_precision_stock.desc,"A precision stock with a raised cheek riser and a thick pad. Steadier and tighter, but bulky."
+item.mod.heron_skeleton_stock.name,Skeleton Stock
+item.mod.heron_skeleton_stock.desc,"An open-frame skeleton stock with a thin pad. Easier to carry, but every shot kicks harder."
+item.mod.heron_precision_stock.name,Precision Stock
+item.mod.heron_precision_stock.desc,"A precision stock with a raised cheek riser and a thick pad. Steadier and tighter, but bulky."
+item.mod.osprey_skeleton_stock.name,Skeleton Stock
+item.mod.osprey_skeleton_stock.desc,"An open-frame skeleton stock with a thin pad. Easier to carry, but every shot kicks harder."
+item.mod.osprey_precision_stock.name,Precision Stock
+item.mod.osprey_precision_stock.desc,"A precision stock with a raised cheek riser and a thick pad. Steadier and tighter, but bulky."
+item.mod.shrike_trapper_stock.name,Trapper Stock
+item.mod.shrike_trapper_stock.desc,"A short trapper stock with a plain steel plate. Handier and easier to hide, but it kicks harder."
+item.mod.shrike_target_stock.name,Target Stock
+item.mod.shrike_target_stock.desc,"A target stock with a raised comb and a recoil pad. Steadier and tighter, but bulky."
+item.mod.p9_rubber_grip.name,Rubber Grip Sleeve
+item.mod.p9_rubber_grip.desc,A slip-on rubber sleeve with finger grooves that soaks up the recoil. A little bulkier.
+item.mod.wren_rubber_grip.name,Rubber Grip Sleeve
+item.mod.wren_rubber_grip.desc,A slip-on rubber sleeve with finger grooves that soaks up the recoil. A little bulkier.
+item.mod.w45_rubber_grip.name,Wraparound Grip
+item.mod.w45_rubber_grip.desc,A ribbed rubber grip that wraps the whole frame and soaks up the recoil. A little bulkier.
+item.mod.w45_slim_grip.name,Slimline Panels
+item.mod.w45_slim_grip.desc,"Thin smooth aluminium grip panels. Easier to hide, a little harder to hold steady."
+item.mod.akimbo_w45_rubber_grip.name,Wraparound Grip Pair
+item.mod.akimbo_w45_rubber_grip.desc,Matched rubber grips on both guns soak up the recoil. A little bulkier.
+item.mod.akimbo_w45_slim_grip.name,Slimline Panels Pair
+item.mod.akimbo_w45_slim_grip.desc,"Thin aluminium panels on both guns. Easier to hide, a little harder to hold steady."
+item.mod.sparrow_rubber_grip.name,Rubber Grip Sleeve
+item.mod.sparrow_rubber_grip.desc,A slip-on rubber sleeve that keeps the long bursts steadier. A little bulkier.
+item.mod.sparrow_slim_grip.name,Slim Grip Panels
+item.mod.sparrow_slim_grip.desc,"Flush smooth polymer panels without stippling. Easier to hide, a little harder to hold steady."

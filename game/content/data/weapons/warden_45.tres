@@ -49,6 +49,7 @@ mod_slots = {
 1: [&"mod.w45_compensator"],
 2: [&"mod.w45_suppressor"],
 3: [&"mod.w45_iron_sights", &"mod.w45_reflex_sight"],
+4: [&"mod.w45_rubber_grip", &"mod.w45_slim_grip"],
 7: [&"mod.w45_standard_mag", &"mod.w45_extended_mag"],
 8: [&"mod.rail_laser", &"mod.rail_flashlight", &"mod.rail_combo"]
 }

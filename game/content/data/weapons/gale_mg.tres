@@ -50,6 +50,7 @@ mod_slots = {
 1: [&"mod.gale_barrage_brake"],
 3: [&"mod.gale_iron_sights", &"mod.rail_reflex_sight", &"mod.rail_prism_scope"],
 5: [&"mod.gale_bipod"],
+6: [&"mod.gale_collapsed_stock", &"mod.gale_heavy_stock"],
 7: [&"mod.gale_box_100", &"mod.gale_box_200"],
 8: [&"mod.rail_laser", &"mod.rail_flashlight", &"mod.rail_combo"]
 }

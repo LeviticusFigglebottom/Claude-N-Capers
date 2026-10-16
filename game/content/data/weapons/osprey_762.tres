@@ -49,6 +49,7 @@ mod_slots = {
 2: [&"mod.osprey_suppressor"],
 3: [&"mod.osprey_scope_4x", &"mod.osprey_scope_8x"],
 5: [&"mod.osprey_bipod"],
+6: [&"mod.osprey_skeleton_stock", &"mod.osprey_precision_stock"],
 7: [&"mod.osprey_standard_mag", &"mod.osprey_extended_mag"],
 8: [&"mod.rail_laser", &"mod.rail_flashlight", &"mod.rail_combo"]
 }
