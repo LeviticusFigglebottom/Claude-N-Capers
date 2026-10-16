@@ -86,9 +86,12 @@ func test_s3_8_camera_unmasked_only_in_restricted() -> void:
 	assert_near(unmasked / _st.fill_rate(cam, c), Tweak.stealth().casing_rate_mult, 0.001, "casing x0.35")
 
 
-func test_s2_5_camera_ignores_crouch() -> void:
+## D-128 (was "camera ignores crouch"): in PD2 cameras read the same combatant crouch attention setting
+## as guards (whisper_mode_crouch max_range 12 m), so crouching shortens a camera's range too.
+func test_s2_5_camera_crouch_follows_pd2() -> void:
 	var c: CrewController = _crew()
 	c.set_masked()
+	c.loadout.detection_risk = 35
 	var cam: FakeCamera = _camera(Vector3(0, 1, -5))
 	await _place(Vector3(0, 0.05, -5))
 	var stand: float = _st.fill_rate(cam, c)
@@ -98,7 +101,18 @@ func test_s2_5_camera_ignores_crouch() -> void:
 	_rt.set_bot_intent(0, i)
 	var ok: bool = await wait_until(func() -> bool: return c.crouched, 1.0)
 	assert_true(ok)
-	assert_near(_st.fill_rate(cam, c), stand, 0.01 * stand, "S2.5 crouch does not affect cameras")
+	var to: Vector3 = c.global_position + Vector3.UP * minf(1.0, c.eye_height()) - cam.eye_position()
+	var ang: float = rad_to_deg(cam.look_forward().angle_to(to))
+	var want: float = _st.fill_time(&"camera", float(c.loadout.detection_risk), to.length(), ang, true)
+	var crouch: float = _st.fill_rate(cam, c)
+	assert_true(crouch > 0.0, "crouched at 5 m: still in the 12 m crouch range")
+	assert_near(1.0 / crouch, want, 0.03, "S2.5 PD2 camera crouch delay")
+	await _place(Vector3(0, 0.05, -13))
+	assert_near(_st.fill_rate(cam, c), 0.0, 0.0001, "crouched at 13 m: beyond the 12 m crouch range")
+	_rt.set_bot_intent(0, CrewIntent.new())
+	var up: bool = await wait_until(func() -> bool: return not c.crouched, 2.0)
+	assert_true(up, "stood up")
+	assert_true(_st.fill_rate(cam, c) > 0.0, "standing at 13 m: inside the 15 m camera range")
 
 
 func test_s3_5_camera_detection_starts_unstoppable_countdown() -> void:
@@ -110,7 +124,8 @@ func test_s3_5_camera_detection_starts_unstoppable_countdown() -> void:
 	var cam: FakeCamera = _camera(Vector3(0, 1, -4))
 	assert_near(_st.camera_countdown(), -1.0, 0.0001, "no countdown yet")
 	await _place(Vector3(0, 0.05, -4))
-	var ok: bool = await wait_until(func() -> bool: return _st.camera_countdown() > 0.0, 5.0)
+	# D-128: a PD2 camera takes lerp(4 x DR mult, 3, ...) s at close range (about 4 s at DR 35, 6 s at DR 3).
+	var ok: bool = await wait_until(func() -> bool: return _st.camera_countdown() > 0.0, 9.0)
 	assert_true(ok, "S3.5 camera at 1.0 starts the countdown")
 	assert_eq(cam.spotted, [c] as Array[Node], "camera notified")
 	assert_true(_st.camera_countdown() <= 1.5)

@@ -24,10 +24,15 @@ Anything in group `G.OBSERVER` that implements:
 - Meters per (observer, crew slot) in `StealthObserverState` (`stealth_observer_state.gd`), ticked at
   `tick_hz` (10 Hz) with observers staggered across physics frames; each observer integrates its own
   elapsed time (capped at `max_tick_dt_s`).
-- S2.1: starts at DR/100 when fill begins, decays `decay_per_s` without fill, stays at 1.0 once full.
+- S2.1 (D-128, PD2): the meter shows PD2's notice progress p through the HUD offset, `p × (1 − DR/100) + DR/100`,
+  so it appears at DR/100; p fills at `1/delay` and drains without fill at `npc_decay_per_s` (0.125/s) for NPCs,
+  `1/delay_max` for cameras; p < 0 clears it. Stays at 1.0 once full.
   At 1.0: `observer.notify_crew_spotted(crew)`, `crew_detected(observer, crew)`, `crew.set_masked(true)` (S1.2).
-- S2.2 rate = `1/min_time × dist_factor × angle_factor × stance × (1/DR_mult) × rule_mult × difficulty.detection_speed_mult`,
-  `far' = far/sqrt(DR_mult)`; NPCs use a horizontal sector, cameras a 3D cone. Crouch ×0.75 except cameras (S2.5).
+- S2.2 (D-128, PD2): `range = min(far, attention max_range) × sqrt(1/DR_mult)`; `delay = lerp(delay_min ×
+  notice_delay_mul × DR_mult, delay_max, w_d × d/range + w_a × min(angle/angle_ref, 1))`; rate = `1/delay ×
+  rule_mult × difficulty.detection_speed_mult`. NPCs see all round within 1.5 m, narrowing to ±fov/2 by 8.5 m,
+  and notice instantly (masked) inside the attention `uncover_range` under 55° off their facing. Crouch uses
+  PD2's crouch attention settings (shorter range, civilians ×3 delay_min). `fill_time()` exposes the formula.
   LOS: rays from the eye to each `los_heights` point (clamped to the crew eye height) on `VISION_MASK`.
 - Rules (`rule_mult`): masked → `Modifiers stealth.detection_rate_mult`, everyone fills (S1.4, S2.8).
   Unmasked (S1.1, S3.8) → civilians never; others only in RESTRICTED, or within `casing_too_close_m`

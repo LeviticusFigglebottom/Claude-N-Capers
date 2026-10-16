@@ -164,7 +164,7 @@ func test_d118_camera_sees_flashlight_and_laser() -> void:
 	var cam_pos: Vector3 = Vector3(0, 3, 0)
 	cam.global_transform = Transform3D(Basis.looking_at(Vector3(0, 1, -22) - cam_pos, Vector3.UP), cam_pos)
 	NetIds.claim(cam)
-	await _place(Vector3(0, 0.05, -22), Vector3.ZERO)  # 22 m: beyond the camera preset's far (20)
+	await _place(Vector3(0, 0.05, -22), Vector3.ZERO)  # 22 m: beyond the camera preset's far (15, D-128)
 	assert_near(_st.fill_rate(cam, c), 0.0, 0.0001, "body beyond camera range: no fill")
 	_gadget(c, [&"flashlight"] as Array[StringName])
 	await wait_physics_frames(2)
@@ -180,12 +180,13 @@ func test_d118_camera_sees_flashlight_and_laser() -> void:
 	ATestMaps.add_wall(_rt.map, Vector3(0, 2, -30), Vector3(12, 4, 0.4))
 	await wait_physics_frames(2)
 	assert_near(_st.fill_rate(cam, c), 0.0, 0.0001, "dot 30 m out, beyond the camera's far range: no fill")
-	# Camera 18 m in front of the crew member, looking away from him at the far wall where the dot lands.
-	cam.global_transform = Transform3D(Basis.IDENTITY, Vector3(0, 3, -12))
+	# Camera 22 m in front of the crew member, looking away from him at the far wall where the dot lands
+	# (D-128: within the PD2 camera preset's 15 m of the dot).
+	cam.global_transform = Transform3D(Basis.IDENTITY, Vector3(0, 3, -16))
 	cam.look_at(Vector3(0, 1.6, -29.8), Vector3.UP)
 	await _place(Vector3(0, 0.05, 6), Vector3(0, 0, -29.8))
 	assert_true(_st.fill_rate(cam, c) > 0.0, "camera sees the laser dot (body behind it)")
-	cam.look_at(Vector3(20, 3, -12), Vector3.UP)  # turned sideways: neither dot nor body in its cone
+	cam.look_at(Vector3(20, 3, -16), Vector3.UP)  # turned sideways: neither dot nor body in its cone
 	await wait_physics_frames(2)
 	assert_near(_st.fill_rate(cam, c), 0.0, 0.0001, "dot outside the camera cone: no fill")
 
