@@ -1,4 +1,4 @@
-# Contract: characters (v1.14)
+# Contract: characters (v1.16)
 
 Producer: ENV C (generated humanoids + animations). Consumer: ENV A (NPC/crew prefabs).
 Until delivered, ENV A uses capsule placeholders with the same node names.
@@ -212,3 +212,20 @@ back via `AnimDriver.FALLBACK_CLIPS` (rappel_* → climb_ladder / idle_alert, he
 breach_place → interact_mid, breach_standback → crouch_idle). The meta is host-side and not replicated (metas do not sync); a
 client-side mirror of the scripted clip is a follow-up if PO playtests need it.
 
+
+## v1.15: assault-event clips (PO6-17; SOURCE `rappel_assault`, `heli_door_sill`, `van_exit_step`, `breach_charge`, `assault_checks`)
+`rappel_hang*` (40 f) / `rappel_descend*` (20 f, 2.5 m/s down; A moves the root): both fists on a vertical rope line at
+x 0, z −0.225 in root space (0.10 m in front of the sternum), feet 0.30 m above the root plane. `rappel_land` (30 f,
+touch@6): rappel_descend f0 → idle_alert f0. `heli_door_idle*` / `heli_door_aim*` (90 f) / `heli_door_fire` (6 f, shot@0):
+kneeling on the right knee, root = SniperSeat × (0.50, −0.344, 0.15) (C's `SniperKneel` marker), rifle at HandR/Socket as
+aim_rifle. `van_exit` (36 f, step_r@16 step_l@28): from a 0.45 m step to idle_alert f0, root motion `curve.van_exit`
+(0.60 m along −Z). `breach_place` (45 f, place@28): idle_alert f0 → idle_alert f0, charge at (0, 1.10, −0.41).
+`breach_standback` (30 f): 0.80 m side step left (`curve.breach_standback`) into a braced crouch, ends on crouch_idle f0.
+
+## v1.16: hand props + cast file (D-115)
+Hand props: `world/characters/_props/hand_<prop>.tscn` (phone, cigarette, mug, mop, book, rag, bottle, glass, cash), root =
+the hand Socket frame, attach as an identity child of `HandR/Socket` / `HandL/Socket`; index `_props/hand_props.json`
+(prop → scene, socket, clips); grips in char_anim_humanoid SOURCE `<prop>_grip`. ENV A attaches on clip start and detaches on
+clip change / death. Cast: `world/characters/p5_cast.json` v3 covers every built heist; `test_p5_cast` asserts every role
+in `docs/design/heists/<id>.md` has a delivered character. First-person one-handed pistol/revolver sets (D-116) carry
+`FPSet.grip_adjust` (hand.R re-seat behind/under the grip) — FP only; third-person rigs are unchanged.
