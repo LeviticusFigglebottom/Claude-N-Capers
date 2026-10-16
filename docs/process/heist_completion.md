@@ -17,7 +17,7 @@ and reports a gap list; the LEAD folds the gaps in here as rows (id, heist, owne
 | X-1 | all but GH | C (+B rows) | music stems + MusicDirector for ND/SL/DB/GN (tracks.tres points at missing folders) | done (round 221) |
 | X-2 | all but GH | C (+B rows) | ambience cues: 9 doc ambiences, SL/DB/GN have no Audio node, ND reuses GH beds | done (round 221) |
 | X-3 | ND, DB, GN | C markers, A rows/logic | assault events (D-114 §5); SL N/A (stealth-only) | done: markers (C, earlier) + rows 07c1adf9 + test_x3 8293bb60 (round 223) |
-| X-4 | ND, SL, GN | A | stealth e2e flows (only GH has one) | done: test_x4_nd/sl/gn_stealth (A ec76d360, round 223); GN curator-keycard variant pending |
+| X-4 | ND, SL, GN | A | stealth e2e flows (only GH has one) | done: test_x4_nd/sl/gn_stealth (A ec76d360, round 223); GN curator-keycard variant test_x4_gn_curator_keycard (A 5138fdb1, round 224) |
 | X-5 | all | A | nav agent_radius 0.30 vs NPC capsule 0.35; tellers pushed off marks; GN StaffCO/CS/AO desk_work without seats; GH WorkshopDoor UsePoint police motor snag (7.8, z 5) | done: nav doorway test, mark-return for tellers, GN seats (A 61900a46/2727f197, round 223); x5 GH police flake under bisect |
 | GH-1 | GH | A, P | PO6-17 logic merge; P real-input pass | in progress |
 | ND-1 | ND | A | gate 2 (auto_loud, attempt 24, empty box) | open |
