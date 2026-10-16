@@ -191,3 +191,19 @@ func test_paused_and_auto_restart_rows() -> void:
 	assert_true(bool(_drawn(5)["paused"]), "paused row")
 	assert_false(bool(_drawn(5)["jammed"]))
 	assert_eq(String(_drawn(6)["fix_text"]), "Restarting in 00:05", "auto restart countdown instead of the fix prompt")
+
+
+## r227 crowding audit: at the jammed drill the interaction prompt already says "Hold F to fix the drill"; the panel's
+## own fix line is dropped then (it sat right over the prompt) and comes back when the player looks away.
+func test_fix_line_yields_to_the_interaction_prompt() -> void:
+	EventBus.device_started.emit(_id, &"drill", 60.0)
+	EventBus.device_jammed.emit(_id)
+	await wait_frames(2)
+	assert_ne(String(_drawn(_id)["fix_text"]), "", "fix line while not at the drill")
+	_model.interaction = {"text_key": &"ui.prompt.fix_drill", "args": {"key": "F"}, "progress": 0.0, "blocked_reason": &""}
+	await wait_frames(2)
+	assert_eq(String(_drawn(_id)["fix_text"]), "", "the prompt says it: no second line")
+	_model.interaction = {}
+	await wait_frames(2)
+	assert_ne(String(_drawn(_id)["fix_text"]), "", "back once the prompt goes")
+	EventBus.device_finished.emit(_id)

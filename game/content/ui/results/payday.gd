@@ -16,7 +16,11 @@
 ## Career (B7-01): _apply banks the result into profile.career (Career.record, local crew slot) before the
 ## achievements, so career-stat achievements see this payday.
 ## Achievements (B4-20): _apply runs Achievements.on_payday on the profile before saving; ids unlocked by
-## this payday are in `achievements_unlocked` and listed under the summary.
+## this payday are in `achievements_unlocked`.
+## Achievements in play (D-115): the same ids go to `toast` (AchievementToast, top-right banner over the summary
+## and the card stage, queued) the moment on_payday returns them, and the summary lists them in their own
+## "Achievements unlocked" panel under the three columns (`achievements_panel`, hidden when none;
+## `achievement_rows`: id -> entry with name, description and reward). Only the local profile is evaluated.
 ## Heist achievements (D-115): the in-heist screen keeps a HeistFacts log (`facts`; MenuFlow calls
 ## start_fact_log() before the launch, _ready starts it too when listening) and hands its snapshot to on_payday.
 ## Awards (B6-02; content/docs/scoreboard.md): HeistAwards.compute over result.crew -> `awards`, shown as
@@ -40,6 +44,8 @@ const CREW_COLUMN_KEYS: Dictionary = {"kills": &"ui.results.kills", "specials_ki
 const COUNT_S: float = 1.2
 ## Lead round 62: seconds per level the XP bar takes to fill (a level-up wraps it and pops the line).
 const XP_FILL_S: float = 0.9
+## D-115: achievement entries per line in the payday's "Achievements unlocked" panel.
+const ACHIEVEMENT_COLUMNS: int = 3
 ## D-090: at most one count-up tick per this many ms.
 const COUNT_TICK_MS: int = 80
 
@@ -73,6 +79,11 @@ var awards: Array[Dictionary] = []
 var award_labels: Dictionary = {}
 ## Achievement ids this payday unlocked (B4-20).
 var achievements_unlocked: Array[StringName] = []
+## D-115: the unlock toast (always present; built in build_ui or on the first unlock) and the summary section.
+var toast: AchievementToast = null
+var achievements_panel: PanelContainer = null
+## Achievement id -> its entry in achievements_panel (tests).
+var achievement_rows: Dictionary = {}
 ## D-115: in-heist fact log (objective outcomes, device kinds, items, loot ids) for the heist achievements.
 var facts: HeistFacts = HeistFacts.new()
 ## Index of the picked card (-1 = not picked yet).
@@ -119,6 +130,12 @@ func setup(p: PlayerProfile) -> void:
 	profile = p
 
 
+## Payday has no Back (Continue or the card pick move on; ui_cancel keeps the screen), so the hint strip shows only
+## Select, like the main menu (r227 achievements capture: "Escape BACK" under Continue).
+func control_hint_pairs() -> Array:
+	return [[&"ui_accept", &"ui.hint.select"]]
+
+
 func build_ui() -> void:
 	var backdrop: ColorRect = CaseBackdrop.new()  # opaque over the map when shown in-heist
 	backdrop.color = Color(UiAccent.app_bg(), 0.97)
@@ -130,6 +147,7 @@ func build_ui() -> void:
 	var scroll: ScrollContainer = ScrollContainer.new()
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	scroll.follow_focus = true  # D-115: a focused achievements panel scrolls into view
 	root.add_child(scroll)
 	_summary = scroll
 	_build_cards_stage(root)
@@ -157,6 +175,7 @@ func build_ui() -> void:
 		EventBus.heist_ended.connect(_on_heist_ended)
 	if listen_heist_ended:
 		start_fact_log()
+	_ensure_toast()
 	if not result.is_empty():
 		_render()
 
@@ -173,6 +192,7 @@ func show_result(heist_result: Dictionary) -> void:
 	_applied = false
 	awards = HeistAwards.compute(result.get("crew", []) as Array)
 	achievements_unlocked = []
+	_ensure_toast().clear()
 	if apply_to_profile:
 		_apply()
 	card_roll = {}
@@ -435,7 +455,78 @@ func _apply() -> void:
 	Career.record(profile, result, payout, Net.local_slot())
 	var snap: Dictionary = facts.snapshot() if facts.started else {}
 	achievements_unlocked = Achievements.on_payday(profile, result, payout, is_pro, snap)
+	_ensure_toast().push(achievements_unlocked)
 	SaveService.save_profile(profile, profile_slot)
+
+
+func _ensure_toast() -> AchievementToast:
+	if toast == null:
+		toast = AchievementToast.new()
+		add_child(toast)
+	return toast
+
+
+## D-115: "Achievements unlocked" panel, one compact entry per id in `achievements_unlocked`, up to
+## ACHIEVEMENT_COLUMNS per line: the name (brass) with its reward ("REWARD Oxblood Herald", only when it grants
+## something) on one line, the description under it; one line of entries fits under the columns at 720p. Hidden
+## when the run unlocked none. More than one line can run under the fold, so then (only) the panel takes focus
+## (d-pad up from Continue) and the summary scrolls to it.
+func _build_achievements() -> PanelContainer:
+	achievement_rows.clear()
+	var v: VBoxContainer = UiBuild.vbox(UiTokens.S1)
+	v.add_child(UiBuild.caption(&"ui.results.achievements_header"))
+	var grid: GridContainer = GridContainer.new()
+	grid.columns = clampi(achievements_unlocked.size(), 1, ACHIEVEMENT_COLUMNS)
+	grid.add_theme_constant_override(&"h_separation", UiTokens.S5)
+	grid.add_theme_constant_override(&"v_separation", UiTokens.S2)
+	v.add_child(grid)
+	for id: StringName in achievements_unlocked:
+		var a: AchievementDef = ContentDB.by_id(ContentDB.ACHIEVEMENTS, id) as AchievementDef
+		if a == null:
+			continue
+		var e: VBoxContainer = UiBuild.vbox(0)
+		e.name = String(id).replace(".", "_")
+		e.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		var top: HBoxContainer = UiBuild.hbox(UiTokens.S3)
+		e.add_child(top)
+		var n: Label = UiBuild.label()
+		n.text = UiText.t(a.name_key)
+		n.add_theme_color_override(&"font_color", UiTokens.BRASS_HI)
+		top.add_child(n)
+		var reward: String = AchievementsScreen.reward_name(a)
+		if reward != "":
+			var cap: Label = UiBuild.caption(&"ui.achievements.reward_caption")
+			cap.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+			top.add_child(cap)
+			var r: Label = UiBuild.label(&"ui.achievements.reward", &"", {"name": reward})
+			r.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+			r.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			r.custom_minimum_size.x = 1.0
+			top.add_child(r)
+		var d: Label = UiBuild.label(a.desc_key, UiBuild.DIM)
+		d.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		e.add_child(d)
+		grid.add_child(e)
+		achievement_rows[id] = e
+	var p: PanelContainer = UiBuild.panel(v)
+	p.name = "AchievementsUnlocked"
+	p.visible = not achievement_rows.is_empty()
+	if achievement_rows.size() > ACHIEVEMENT_COLUMNS:
+		UiBuild.focus_panel(p)
+	return p
+
+
+## D-115: Continue <-> the achievements panel (up / down) while the panel takes focus, else Continue keeps its
+## own up / down (UiNav.chain_vertical of the one-entry chain).
+func _wire_achievements() -> void:
+	var on: bool = achievements_panel != null and achievements_panel.focus_mode != Control.FOCUS_NONE
+	var to_panel: NodePath = continue_button.get_path_to(achievements_panel if on else continue_button)
+	continue_button.focus_neighbor_top = to_panel
+	continue_button.focus_neighbor_bottom = to_panel
+	if on:
+		var back: NodePath = achievements_panel.get_path_to(continue_button)
+		achievements_panel.focus_neighbor_top = back
+		achievements_panel.focus_neighbor_bottom = back
 
 
 func _render() -> void:
@@ -466,10 +557,9 @@ func _render() -> void:
 	cols.add_child(right)
 	right.add_child(UiBuild.panel(_build_stats()))
 	right.add_child(UiBuild.panel(_build_awards()))
-	for id: StringName in achievements_unlocked:
-		var a: AchievementDef = ContentDB.by_id(ContentDB.ACHIEVEMENTS, id) as AchievementDef
-		if a != null:
-			_content.add_child(UiBuild.label(&"ui.results.achievement_unlocked", UiBuild.SUBHEADER, {"name": UiText.t(a.name_key)}))
+	achievements_panel = _build_achievements()
+	_content.add_child(achievements_panel)
+	_wire_achievements()
 	retry_button.visible = offer_retry()
 	_wire_retry()
 	focus_default()
