@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c0wh003ax0c62"
-path="res://.godot/imported/mask_on_before_event.png-a82418e4096c21acc7c5b70c013f1d58.ctex"
+uid="uid://i2q3bu1770m2"
+path="res://.godot/imported/mask_hold_before_event.png-d21af0ef33f88d3e3b70ee57e8100658.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://tests/a/_review/v123/mask_on_before_event.png"
-dest_files=["res://.godot/imported/mask_on_before_event.png-a82418e4096c21acc7c5b70c013f1d58.ctex"]
+source_file="res://tests/a/_review/v123/mask_hold_before_event.png"
+dest_files=["res://.godot/imported/mask_hold_before_event.png-d21af0ef33f88d3e3b70ee57e8100658.ctex"]
 
 [params]
 

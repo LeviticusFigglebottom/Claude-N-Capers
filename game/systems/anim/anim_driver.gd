@@ -4,9 +4,10 @@
 ## placeholder) it does nothing. **Presentation only**: it reads gameplay state and never writes it; no
 ## gameplay code may read animation state. Headless-safe.
 ## Each frame it picks one clip, by priority:
-##   death_front/back (from the last hit direction vs facing) > crew state (downed, tased, kneel_cuffed, mask_on) /
+##   death_front/back (from the last hit direction vs facing) > crew state (downed, tased, kneel_cuffed) /
 ##   stun (tased) > pose hints (tied, cower, hands_up, surrender, lie_down, kneel_cuffed) > special actions
-##   (kick_charge, shield_bang, heal_ally) > one-shots (turn, fire, reload, throw_bag, throw_grenade, melee, kick_hit,
+##   (kick_charge, shield_bang, heal_ally) > crew actions (mask_on, throw_grenade; CrewActionAnim) > one-shots (turn,
+##   fire, reload, throw_bag, melee, kick_hit,
 ##   hit_head / hit_chest / hit_shoulder_* / hit_leg_* by zone, else hit_react*) > interact_* / pager_answer >
 ##   locomotion by velocity (walk, run, sprint, crouch_walk, strafe,
 ##   walk_back, flee, carry_bag_walk, the unit's EnemyDef.params.anim_walk_clip = shield_walk / dozer_walk at
@@ -140,10 +141,6 @@ const ARMED_CLIPS: Array[StringName] = [&"interact_low", &"interact_mid", &"inte
 const CARRIED_BAG_NODE: String = "CarriedBag"
 ## v1.20 akimbo: the pair's second gun (WeaponVisual.offhand) moves to HandL/Socket under this name.
 const OFFHAND_NODE: String = "ThirdPersonOffhand"
-## D-116 crew_actions: the mask-up (crew one-shot from the replicated `masked`, weapon holstered, the mask shows at the
-## clip's `mask_on` event) and the grenade throw (from the replicated pin cue, `release` on the gameplay release).
-const MASK_ON: StringName = &"mask_on"
-const THROW_GRENADE: StringName = &"throw_grenade"
 ## v1.21: one-shots that end exactly on crew_cuffed frame 0 (switch without a crossfade).
 const CUFF_INTO: Array[StringName] = [&"downed_arrested", &"crew_cuffed_enter"]
 ## Lead ruling (b): the upper-body flinch layer's node name (after the weapon-hold layer).
@@ -211,6 +208,8 @@ var hold_layer: UpperBodyLayer = null
 var flinch_layer: UpperBodyLayer = null
 ## Lead ruling (c): the third-person left hand on the weapon's LeftHandIK (rifle-family holds); null without a rig.
 var left_hand_ik: ThirdPersonLeftHandIK = null
+## characters.md v1.23: the crew actions (mask_on during the mask-up hold, throw_grenade; CrewActionAnim), crew only.
+var crew_action: CrewActionAnim = null
 ## Crossfade (s) used for the last clip change (0 for the first clip).
 var last_blend_s: float = -1.0
 ## Hold kind (v1.20 KIND_BY_CLASS): rifle / smg / sniper / lmg / pistol / akimbo; aim_family() gives the
@@ -235,8 +234,6 @@ var _state_oneshot_speed: float = 1.0
 var _last_crew_state: int = -1
 ## v1.21 akimbo: the next shot is the left gun's (fire_akimbo_l); the first shot is the right one.
 var _akimbo_left_next: bool = false
-## D-116: the crew mask (CrewView's `Head/Socket/Mask`) is held hidden by mask_on until its `mask_on` event.
-var _mask_held: bool = false
 
 var _body: Node3D = null
 var _npc: NpcBase = null
@@ -375,14 +372,15 @@ func bind() -> bool:
 	if _crew != null and _crew.weapons != null and not _crew.weapons.equipped_changed.is_connected(_on_equipped):
 		_crew.weapons.equipped_changed.connect(_on_equipped)
 		_crew.weapons.reload_started.connect(_on_reload_started)
-	if _crew != null and not _crew.masked_changed.is_connected(_on_masked_changed):
-		_crew.masked_changed.connect(_on_masked_changed)
 	refresh_weapon()
 	hold_layer = null
 	if _crew != null:  # v1.19 weapon holds; first among the modifiers (the hat lift fixes up after it)
 		hold_layer = UpperBodyLayer.ensure(rig.get_node_or_null(^"Skeleton3D") as Skeleton3D)
 	var skel: Skeleton3D = rig.get_node_or_null(^"Skeleton3D") as Skeleton3D
 	flinch_layer = UpperBodyLayer.ensure(skel, FLINCH_LAYER_NODE, 1)
+	if _crew != null:
+		crew_action = crew_action if crew_action != null else CrewActionAnim.new(self, _crew)
+		crew_action.bind_layer(skel)  # over the weapon holds, under the flinch
 	left_hand_ik = ThirdPersonLeftHandIK.ensure(skel)
 	if clip == &"":
 		# P GH regression: never show the rig's bind pose before the first tick (a spawn / visual swap renders a
@@ -420,6 +418,8 @@ func tick(delta: float) -> void:
 	_aim_hold_left = maxf(_aim_hold_left - delta, 0.0)
 	_turning_left = maxf(_turning_left - delta, 0.0)
 	_update_crew_state_clips(delta)
+	if crew_action != null:
+		crew_action.update(delta)
 	var hint: StringName = _hint()
 	if hint != _last_hint:
 		_last_hint = hint
@@ -439,7 +439,8 @@ func tick(delta: float) -> void:
 		weapon_visual.visible = weapon_shown(want)
 		if weapon_offhand != null and is_instance_valid(weapon_offhand):
 			weapon_offhand.visible = weapon_visual.visible
-	_update_mask_visual(tw)
+	if crew_action != null:
+		crew_action.update_visuals(delta, tw)
 	_update_bag_visual(tw)
 	if hat_lift != null and is_instance_valid(hat_lift):
 		var lift_on: float = 1.0 if tw.hard_hat_lift_clips.has(clip) else 0.0
@@ -466,6 +467,8 @@ func _update_crew_state_clips(delta: float) -> void:
 		return
 	var downed: Array[int] = [Enums.CrewState.DOWNED, Enums.CrewState.CLOAKER_DOWNED]
 	_state_oneshot_left = 0.0
+	if crew_action != null:
+		crew_action.end()  # v1.23: downed / tased / cuffed cut the mask-up or the throw
 	if now == Enums.CrewState.CUFFED:
 		_play_state_oneshot(&"downed_arrested" if downed.has(was) else &"crew_cuffed_enter")
 	elif was == Enums.CrewState.CUFFED and now == Enums.CrewState.NORMAL:
@@ -488,45 +491,12 @@ func _play_state_oneshot(c: StringName, duration: float = -1.0, speed: float = 1
 	_oneshot = c  # _apply restarts it from frame 0 when it repeats (downed_fire per shot)
 
 
-## D-116: the crew body masked up (CrewController.masked_changed: set_masked on the server, the snapshot / RPC on every
-## other peer, never local input): mask_on as a crew one-shot. The mask CrewView builds now stays hidden until the clip's
-## `mask_on` event (_update_mask_visual).
-func _on_masked_changed(now_masked: bool) -> void:
-	if not now_masked or player == null:
-		return
-	_play_state_oneshot(MASK_ON)
-	_update_mask_visual(AnimTweak.data())
-
-
-## D-116: hide the crew mask while mask_on plays before its `mask_on` event (AnimTweak.mask_on_s); show it at the event,
-## or when the clip is cut short (downed, tased...). Re-applied every tick, so a mask CrewView rebuilds mid-clip is held too.
-func _update_mask_visual(tw: AnimTweak) -> void:
-	if _crew == null:
-		return
-	var socket: Node3D = socket_of(_body, "Head")
-	var mask: Node3D = socket.get_node_or_null(NodePath(CrewView.MASK_NAME)) as Node3D if socket != null else null
-	if mask == null:
-		return
-	var held: bool = _state_oneshot == MASK_ON and _state_oneshot_left > 0.0 and _state_oneshot_t < tw.mask_on_s()
-	if held:
-		mask.visible = false
-		_mask_held = true
-	elif _mask_held:
-		mask.visible = true
-		_mask_held = false
-
-
-## True while the crew mask is held hidden by mask_on (before its `mask_on` event).
-func mask_held() -> bool:
-	return _mask_held
-
-
 ## v1.21: whether the third-person weapon shows with clip `c` playing. Hidden in poses, in death and while cuffed
 ## (crew_cuffed*, kneel_cuffed*); shown while downed (downed / downed_fire / downed_reload / downed_getup); in
 ## downed_arrested until its `disarm` event, in crew_cuffed_free from its `free` event (AnimTweak event times).
 func weapon_shown(c: StringName) -> bool:
-	if _death_clip != &"":
-		return false
+	if _death_clip != &"" or (crew_action != null and crew_action.holsters_weapon()):
+		return false  # v1.23: none while casing (PD2), drawn when mask_on has finished
 	var tw: AnimTweak = AnimTweak.data()
 	match c:
 		&"downed", &"downed_crawl", &"downed_fire", &"downed_reload", &"downed_getup":
@@ -535,8 +505,6 @@ func weapon_shown(c: StringName) -> bool:
 			return _state_oneshot_t < tw.disarm_s()
 		&"crew_cuffed_free":
 			return _state_oneshot_t >= tw.free_s()
-		MASK_ON:
-			return false  # D-116: holstered for the whole mask-up; PD2 draws the weapon after masking
 	return not POSE_CLIPS.has(c)
 
 
@@ -569,6 +537,8 @@ func choose_clip() -> StringName:
 	var hint_clip: StringName = HINT_CLIPS.get(_hint(), &"")
 	if POSE_CLIPS.has(hint_clip) or ACTION_CLIPS.has(hint_clip):
 		return _held_pose(pose_variant(hint_clip))
+	if crew_action != null and crew_action.action != &"" and horizontal_speed() <= AnimTweak.data().move_threshold_mps:
+		return crew_action.action  # v1.23 standing: full body (moving: CrewActionAnim's upper-body layer)
 	return _shield_clip(_active_clip(hint_clip))
 
 
@@ -981,6 +951,7 @@ func _update_left_hand_ik(delta: float, tw: AnimTweak) -> void:
 	var marker: Node3D = wv.get_marker(&"LeftHandIK") if wv != null and is_instance_valid(wv) else null
 	var two_hands: bool = String(clip).begins_with("idle_alert_") or clip == &"aim_rifle" or clip == &"fire_rifle" \
 		or (hold_layer != null and hold_layer.active and _layered_locomotion(clip))
+	two_hands = two_hands and (crew_action == null or crew_action.action == &"")  # v1.23: not during an action
 	var want: bool = marker != null and aim_family() == &"rifle" and weapon_visual.visible and two_hands \
 		and not (flinch_layer != null and flinch_layer.active)
 	left_hand_ik.set_target(marker if want else left_hand_ik.marker,
@@ -1216,6 +1187,9 @@ func _apply(want: StringName, speed: float, tw: AnimTweak) -> void:
 		clip = want
 		_restart = false
 		hand_props = HandProps.sync(rig, StringName(full.get_slice("/", 1)))  # D-115 (characters.md v1.16)
+	if crew_action != null and want == crew_action.action:
+		player.seek(crew_action.time, true)  # v1.23: the action's time and rate are CrewActionAnim's (the hold drives it)
+		speed = crew_action.speed
 	player.speed_scale = speed
 
 
@@ -1434,19 +1408,8 @@ func _on_audio_cue(cue_id: StringName, _pos: Vector3, source_net_id: int) -> voi
 		var clip_id: StringName = &"reload_pistol" if cue_id == NpcGunner.CUE_RELOAD_PISTOL else &"reload_rifle"
 		var done_s: float = AnimTweak.data().reload_done(&"pistol" if clip_id == &"reload_pistol" else &"rifle")
 		play_oneshot(clip_id, dur, false, done_s / maxf(dur, 0.05))
-	elif _crew != null and cue_id == CrewThrowables.CUE_PIN:
-		_play_throw()
-
-
-## D-116: the grenade throw starts at the pin pull (`cue.throwable_pin` [R], so every peer sees it) and is re-timed so
-## its `release` event lands on the gameplay release, CombatTweak.throw_windup_s later (the FP throw does the same).
-## Gameplay timing is untouched: the server still releases at the end of the windup. The weapon stays low in the right
-## hand (D's clip); while_moving, like throw_bag.
-func _play_throw() -> void:
-	if not _has_clip(THROW_GRENADE):
-		return
-	var windup: float = maxf(CombatTweak.data().throw_windup_s, 0.05)
-	play_oneshot(THROW_GRENADE, -1.0, true, AnimTweak.data().throw_release_s() / windup)
+	elif crew_action != null and cue_id == CrewThrowables.CUE_PIN:
+		crew_action.play_throw()  # v1.23 throw_grenade
 
 
 func _on_reload_started(_ws: int, duration: float) -> void:
