@@ -137,6 +137,7 @@ def hivis_vest(kit: Kit, mat: str, tape: str = TAPE, stand: float = 0.008) -> Me
     for loop in o.boundary_loops(vm.f):
         o.straighten_loop(vm, loop, iters=3)
     o.hem_all(vm, thick=0.005 * k, depth=0.014 * k)
+    _torso_weights(fit, vm)
     kit.add_soft(vm)
     vh = Hull(fit, [vm], body_regions=set())
     tp = Mesh()
@@ -166,8 +167,26 @@ def hivis_vest(kit: Kit, mat: str, tape: str = TAPE, stand: float = 0.008) -> Me
                     pts.append(hit[0])
             o.strip(tp, vh, pts, 0.020 * k, 0.0032 * k, tape, side_hint=Vector((sx, 0, 0)), segs_across=1,
                     chamfer=0.002 * k, cast_back=0.04)
+    _torso_weights(fit, tp)
     kit.add_soft(tp)
     return vm
+
+
+def _torso_weights(fit, m: Mesh, arm_keep: float = 0.2) -> None:
+    """D-115 clip audit: a sleeveless vest stands well off the body, so the armhole's nearest skin is the upper arm
+    and those vertices were dragged up the raised arms (hands_up, surrender), tearing the vest. Keep at most
+    ``arm_keep`` of an upper_arm weight; the rest goes to that side's clavicle (the vest rides the shoulder)."""
+    for i, p in enumerate(m.v):
+        w = dict(m.w[i]) if m.w[i] is not None else fit.weights_at(m.a[i] if m.a[i] is not None else p)
+        for sfx in ("L", "R"):
+            arm = w.pop(f"upper_arm.{sfx}", 0.0) + w.pop(f"forearm.{sfx}", 0.0)
+            if arm > 0.0:
+                w[f"upper_arm.{sfx}"] = arm * arm_keep
+                w[f"clavicle.{sfx}"] = w.get(f"clavicle.{sfx}", 0.0) + arm * (1.0 - arm_keep)
+        top = sorted(w.items(), key=lambda kv: (-kv[1], kv[0]))[:4]
+        top = [(b, x) for b, x in top if x >= 0.01 * sum(y for _c, y in top)]
+        tot = sum(x for _b, x in top)
+        m.w[i] = {b: x / tot for b, x in sorted(top)}
 
 
 def _boots(kit: Kit, mat: str) -> Mesh:

@@ -270,7 +270,7 @@ bone_name = "hips"
 bone_idx = 1
 
 [node name="Socket" type="Marker3D" parent="Skeleton3D/Hip" index="0" unique_id=1019911767]
-transform = Transform3D(1, 0, 0, 0, 0.99875, 0.049939997, 0, -0.049939997, 0.99875, 0.2175, 0.051599998, 0.0394)
+transform = Transform3D(1, 0, 0, 0, 0.99875, 0.049939997, 0, -0.049939997, 0.99875, 0.2174, 0.051599998, 0.0393)
 
 [node name="CrowdLod" type="MeshInstance3D" parent="Skeleton3D" index="10" unique_id=714353340 groups=["crowd_lod"]]
 visibility_range_begin = 20.0

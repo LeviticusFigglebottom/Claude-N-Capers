@@ -176,6 +176,14 @@ def notes() -> dict:
                      "(hand.L and its fingers) to it and IK the left wrist to the mod's LeftHandIK + this offset "
                      "(Godot weapon axes, m): "
                      + "; ".join(f"{k} {_g(v)}" for k, v in sorted(_vgrip_wrists().items()))),
+        "fp.organic": ("D-116 follow-up: every gun set's reload* / draw / holster (not akimbo, bow) carries a "
+                       "secondary-motion layer (_arms_organic): the gun follows its keys through a spring "
+                       "(anticipation, overshoot, settle), kicked at mag_out / mag_in / shell_in* / round_in* / "
+                       "slide_release / bolt_release / bolt_forward / pump_forward / cover_close / belt_seat, with a "
+                       "slow drift while the hands work; the hands follow their paths on the gun through springs, the "
+                       "fingers re-grip, the wrist rolls into the well before a seat, the firing hand squeezes on a "
+                       "release. Clip lengths, key and event frames are unchanged; every clip starts and ends on its "
+                       "keyed pose (draw: the raise plays over the first 80 % and settles, ready@ = last frame)"),
         "fp.melee": ("melee_knife / melee_blunt / melee_blade (MeleeDef; proposal: MeleeDef.anim_set): the melee weapon "
                      "hangs identity on the weapon bone, which carries the ITEM frame: Godot origin on the handle axis at "
                      "the grip pivot (20 mm below the top of the fist), handle along +Y (blade / head toward +Y), edge / "
