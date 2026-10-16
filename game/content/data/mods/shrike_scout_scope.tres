@@ -16,6 +16,7 @@ noise_radius_m = 0.0
 ads_time_s = 0.0
 concealment = -2
 magnification = 3.0
+scope_reticle = &"duplex"
 
 [resource]
 script = ExtResource("1")

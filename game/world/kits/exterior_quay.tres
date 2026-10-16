@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"exterior_quay"
+purpose = &"exterior"
+required_items = Array[StringName]([&"bollard", &"nets", &"ice_bins"])
+optional_items = {}
+clutter_groups = {}
+min_density = 0.004
+max_density = 0.3
+min_props = 8
+lone_ok_kinds = Array[StringName]([&"bollard", &"nets", &"ice_bins", &"lamp_post", &"pallet", &"tote", &"fish_crates", &"rope_reel", &"life_ring", &"boat", &"loot_spawn"])
+seed_salt = 217
+counts = {}
+assets = {}
+ceiling = {}
+notes = "X4 quay, pontoon and landing stage: bollards, net stacks and ice-bin pallets are map-built."

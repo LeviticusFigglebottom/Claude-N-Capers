@@ -328,8 +328,8 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## variety: Layout variety
 
-- kit `server_room`: 1 room(s), 1 distinct layout(s)
 - kit `locker_room`: 1 room(s), 1 distinct layout(s)
+- kit `server_room`: 1 room(s), 1 distinct layout(s)
 - kit `break_room`: 1 room(s), 1 distinct layout(s)
 - kit `art_store`: 1 room(s), 1 distinct layout(s)
 - kit `exterior_court`: 1 room(s), 1 distinct layout(s)
@@ -422,7 +422,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## furniture_logic: Furniture arranged plausibly
 
-- classified: counter 4, chair 4, table 2, desk 12, wall_unit 29, desk_chair 8, monitor 6
+- classified: counter 4, chair 4, desk 12, table 2, wall_unit 29, desk_chair 8, monitor 6
 - 12 seats, 18 tables/desks/counters, 48 doors checked
 
 - WARN `Gameplay/Ladders/AreawayLadder` @ (-4.00, -4.20, 14.00): door_clear: in the clear zone of door `Variants/Group_areaway/Slot_grate_loose/AreawayGrate` (1.0 / 1.0 m each side, leaf width 1.99 m) by 0.18 m (gameplay prefab / variant content: review)

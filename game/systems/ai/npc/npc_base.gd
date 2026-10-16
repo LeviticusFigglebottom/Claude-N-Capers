@@ -91,6 +91,7 @@ func _ready() -> void:
 	AnimDriver.ensure(self)  # D-041: animated visuals only (none for the capsule placeholder)
 	NpcRagdoll.ensure(self)  # PO6-19: visuals with ENV D's Skeleton3D/Ragdoll only
 	_ensure_hitboxes()
+	NpcLimbHitboxes.ensure(self)  # D-123: upper-arm / thigh boxes on the rig's bones (zone BODY, flinch sub-zone)
 	if not EventBus.body_bagged.is_connected(_on_body_bagged):
 		EventBus.body_bagged.connect(_on_body_bagged)
 
@@ -385,3 +386,4 @@ func _set_hitboxes_enabled(on: bool) -> void:
 		var area: Area3D = a as Area3D
 		if area != null:
 			area.collision_layer = LAYER_HITBOXES if on else 0
+	NpcLimbHitboxes.set_active(self, on)  # D-123

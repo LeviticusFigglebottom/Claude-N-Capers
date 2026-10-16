@@ -1,0 +1,37 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"marshalling_hall"
+purpose = &"warehouse"
+required_items = Array[StringName]([&"crate", &"pallet_jack", &"pallet_wrapped", &"fire_extinguisher", &"light_fixture"])
+optional_items = {
+&"cone": 0.5,
+&"pallet": 1,
+&"tote": 0.5
+}
+clutter_groups = {}
+min_density = 0.04
+max_density = 0.12
+min_props = 12
+lone_ok_kinds = Array[StringName]([&"crate", &"pallet_jack", &"pallet_wrapped", &"pallet", &"tote", &"cone", &"desk", &"chair"])
+seed_salt = 206
+counts = {}
+assets = {
+&"cone": PackedStringArray("prop_traffic_cone"),
+&"crate": PackedStringArray("prop_shipping_crate_h120"),
+&"dolly": PackedStringArray("prop_hand_truck"),
+&"fire_extinguisher": PackedStringArray("prop_fire_extinguisher"),
+&"fish_boxes": PackedStringArray("prop_fish_box_stack"),
+&"fish_crates": PackedStringArray("prop_fish_crates"),
+&"hose_reel": PackedStringArray("prop_hose_reel"),
+&"light_fixture": PackedStringArray("prop_highbay_led"),
+&"pallet": PackedStringArray("prop_pallet_stack", "prop_pallet"),
+&"pallet_jack": PackedStringArray("prop_pallet_jack"),
+&"pallet_wrapped": PackedStringArray("prop_pallet_wrapped"),
+&"tote": PackedStringArray("prop_ibc_tote")
+}
+ceiling = {"prop_highbay_led": 6}
+notes = "H dispatch staging (lead G2 review): the open floor x 28.6-42.4 stays empty between the map-built crate banks; wrapped pallets by the roller doors. 5000 K high bays (half on)."

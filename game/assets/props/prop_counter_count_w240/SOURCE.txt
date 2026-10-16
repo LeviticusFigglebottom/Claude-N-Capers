@@ -1,0 +1,8 @@
+asset: prop_counter_count_w240
+script: tools/blender/props/dockside.py
+params: {"cat": {"group": "dockside", "kind": "counter_service", "pin_only": true, "place": "center", "support": true, "top": 0.9}, "d": 1.0, "fn": "counter", "style": "count", "w": 2.4}
+seed: 3722935643  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_counter_count_w240
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 16000

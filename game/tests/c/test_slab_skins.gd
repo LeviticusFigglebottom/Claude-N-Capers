@@ -19,7 +19,7 @@ const MAPS: Dictionary = {
 ## [vertex count, polygon count, sha256 of the vertices + polygons].
 const NAV_FINGERPRINT: Dictionary = {
 	"shadow_ledger": [1598, 1642, "9996c867aa83fd0c0d49e7de6385e12d75abd1a543e3fedbbc60e170d1e2ba06"],
-	"dockside_burn": [2058, 2131, "28a7acb598f4ec7ca822ea05d225178cf3f8611b8cd49629d60e905792f05a5d"],  # re-pinned: DB-9 + lift breaker
+	"dockside_burn": [2287, 2352, "0ebd128c74db91de01e274be78f4978dc80d3352e0ab38689e8b7dc30dd64125"],  # re-pinned: DB-C2 G2 dressing
 }
 const SKINS: String = "Geometry/Building/Skins"
 const OFFSET_MIN: float = 0.003

@@ -236,3 +236,19 @@ func test_v1_2_custody_from_custody_system() -> void:
 	assert_true(hud.tracked_crew == null, "track(null) back to slot mode")
 	rt.teardown()
 	await wait_frames(1)
+
+
+func test_v1_16_scope_fields_are_writer_owned() -> void:
+	var rt: HeistRuntime = await _launch(1116)
+	var hud: LocalHudModel = rt.hud_model
+	assert_eq(hud.get(&"scoped_ads"), false, "scoped_ads defaults false")
+	assert_eq(hud.get(&"scope_ring"), Rect2(), "scope_ring defaults empty")
+	var ring: Rect2 = Rect2(400.0, 120.0, 480.0, 480.0)
+	hud.set(&"scoped_ads", true)  # ENV P's scope overlay writes them every frame
+	hud.set(&"scope_ring", ring)
+	hud.refresh()
+	await wait_physics_frames(3)
+	assert_eq(hud.get(&"scoped_ads"), true, "a poll never overwrites scoped_ads")
+	assert_eq(hud.get(&"scope_ring"), ring, "nor scope_ring")
+	rt.teardown()
+	await wait_frames(1)

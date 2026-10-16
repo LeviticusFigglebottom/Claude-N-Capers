@@ -266,6 +266,9 @@ var dominate_window_s: float = 0.0:
 	set(v):
 		dominate_window_s = v
 		dominate_prompt_changed.emit()
+## ui_hud v1.16: P's scoped ADS (the HUD keeps its text panels out of `scope_ring`, screen space). Read every frame.
+var scoped_ads: bool = false
+var scope_ring: Rect2 = Rect2()
 ## v1.4 (B4-19): sprint stamina 0..1 (1 = full) and the exhausted flag (no sprint until recovered).
 var stamina: float = 1.0:
 	set(v):

@@ -15,6 +15,8 @@ var mode_label: Label
 var name_label: Label
 var next_button: Button
 var back_button: Button
+## Gamepad pass: why the locked difficulties are locked, shown under the row (a tooltip alone never reaches a pad).
+var locked_label: Label
 var selected_heist: int = 0
 var selected_difficulty: int = Enums.Difficulty.ROUTINE
 var _entries: Array[Dictionary] = []
@@ -119,6 +121,16 @@ func _build_difficulties(parent: Container) -> void:
 		b.pressed.connect(select_difficulty.bind(d))
 		row.add_child(b)
 		difficulty_buttons.append(b)
+	var reasons: PackedStringArray = PackedStringArray()
+	for b2: Button in difficulty_buttons:
+		if b2.disabled and b2.tooltip_text != "" and not reasons.has(b2.tooltip_text):
+			reasons.append(b2.tooltip_text)
+	locked_label = UiBuild.caption()
+	locked_label.uppercase = false
+	locked_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	locked_label.text = "  ".join(reasons)
+	locked_label.visible = not reasons.is_empty()
+	parent.add_child(locked_label)
 
 
 func select_heist(index: int) -> void:

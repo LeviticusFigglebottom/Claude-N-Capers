@@ -311,7 +311,8 @@ func _kneeling_hostage(pos: Vector3, drop_clip: bool) -> NpcBase:
 		ap.remove_animation_library(AnimDriver.LIBRARY)
 		ap.add_animation_library(AnimDriver.LIBRARY, lib)
 		await wait_physics_frames(2)
-	assert_eq(AnimDriver.of(n).clip, &"kneel_cuffed", "kneeling before the shot")
+	var kneel: StringName = AnimDriver.of(n).clip
+	assert_true(String(kneel).begins_with("kneel_cuffed"), "kneeling before the shot (%s, v1.18 variants)" % kneel)
 	return n
 
 

@@ -1010,6 +1010,9 @@ pd2_fidelity.md S4.2 holds: PD2 guards and cameras ignore flashlights and lasers
 laser or flashlight in stealth" was wrong. ENV A sets the StealthTweak "Weapon gadgets (D-118)" multipliers to **0** by default.
 The code stays behind the tweak, and nothing in the game enables it. The third-person beams and lights stay (visual only).
 
+**D-120 addendum (2026-10-16): a failed heist pays nothing and costs nothing.** Civilian cleanup costs are charged only
+against a successful payout; a failed payday shows $0 and no cleanup line, matching "A failed heist pays no cash".
+
 ## D-121: loud-path determinism rules (2026-10-16, LEAD; from ENV A's DET audit)
 * Heist navigation runs synchronous map/region iterations (`HeistRuntime.use_sync_navigation`; launch option `nav_sync`
   false opts out). Async iterations made door/breach link changes land on a timing-dependent frame.
@@ -1031,3 +1034,56 @@ treat a closed, locked door as blocked. Test: `test_d122_breach_nav_layer` (ENV 
 NPCs get LIMB hitboxes (upper arms, thighs) so D's shoulder/leg flinch clips can trigger. A LIMB hit takes the BODY damage
 multiplier (1.0) and counts as a body hit for every rule (headshot rules, armor, and so on), so PD2 damage is unchanged.
 Flinches play through the existing UpperBodyLayer (spine-up) while moving and full-body only when standing still.
+
+## D-124: weapon balance pass (2026-10-16, LEAD; from ENV B's audit game/content/docs/weapon_balance.md)
+Approved, all data-only (ENV B applies them in one commit, reruns the tool and updates pinned tests):
+P1 tern_556 concealment 21→24, spread_ads 2.7→2.1; P2 bastion_br damage 100→110; P3 falchion_dmr damage 150→120;
+P4 marshal_357 rpm 330→230 with the 2.4 s reload kept (amended 2026-10-16: the revolver clips pin the reload; 235 tied the weakest AR at 253 DPS, 230 gives 251 and clears the SECONDARY-DPS flag); P5 wren_380 mag 7→10, total 98→160, rpm 520→600; P6 hush_9
+concealment 21→25; P7 vise_crossbow damage 350→450; P8 akimbo_warden_45 total_ammo 128→144; P9 cyclone_rotary pickup
+15–30→10–20; P10 reaper_db 19→22 per pellet (Heavy one-shot breakpoint).
+Shape kept (PD2): no early weapon best in class; LMGs have the best ammo economy; every sniper out-damages every AR per
+shot; secondaries stay below primaries of the same role. ENV A reviews the Wrecker's Cataclysm HP scaling (×12 against
+the Heavy's ×4) against PD2's Bulldozer, and adds carry-over for fractional ammo pickups.
+
+## D-125: Wrecker HP curve (2026-10-16, LEAD; from ENV A's review of B's D-124 audit)
+Wrecker HP per difficulty (ROUTINE..CATACLYSM) becomes 2000 / 2000 / 3000 / 4500 / 7000 / 10000 (×5, was ×12 up to
+24000), so the Wrecker:Heavy ratio goes 12.5 → 15.6 instead of 12.5 → 37.5. wrecker_b/g/s share it; wrecker_m stays
+2× (4000 / 4000 / 6000 / 9000 / 14000 / 20000). Plates (150 / 160), head ×2.5, explosive ×1.1 and the damage table are
+unchanged. PD2 shape: tanky, killable by an AR player through the visor with headshots at about half the reserve, and
+not by body fire alone. ENV A pins the table, the ratio and a Corsair head-route budget in a test; ENV B re-runs the
+balance tool after landing and reports the "solo within reserve" count.
+
+## D-126: the secondary slot holds pistols, SMGs and shotguns (PO, 2026-10-16)
+The PO's playtest: SMGs and shotguns belong in the secondary slot with the pistols. Every SMG and every shotgun
+(plowman_12, brute_12, harrow_12, reaper_db, mule_12) has `slot = SECONDARY`. Primaries are assault rifles, LMGs, snipers
+and specials. ENV B owns the data, the armory/loadout filters and the class tabs, and checks that the real loadout screen
+offers all of them as secondaries from a fresh profile (unlock levels apply as before). Ammo pools stay per weapon (D-118
+values). ENV A checks crew-AI loadouts, custody and downed (downed equips the secondary: a downed player with a shotgun
+secondary may fire it, PD2 bleed-out). ENV P checks the FP viewmodel and the swap paths for a secondary long gun.
+
+## D-127: enemies get a little tougher (PO, 2026-10-16)
+The PO's playtest: NPCs die too quickly. Every non-special enemy (guards, beat cops, SWAT, heavy SWAT, FBI, cartel gunmen and their
+variants) gets +25 % health on every difficulty. Head and limb multipliers, armor, damage and accuracy are unchanged.
+Specials keep their tuned values (D-125 Wrecker HP is not re-scaled). ENV A owns the enemy tweak data and pins the new table
+in a test (the D-125 Wrecker:Heavy ratio test moves to the new Heavy HP). ENV B re-runs the balance tool, with
+shots-to-kill per class against a Heavy SWAT, and flags any weapon that falls outside the PD2 class shape. Civilians
+are unchanged.
+
+## D-128: detection follows PD2's formula and its ring indicator (PO, 2026-10-16)
+The PO's playtest: detection is too forgiving, and should mirror PD2's formula and its detection icon/ring. This replaces
+our ◇ design choices in pd2_fidelity S2 with PD2's behaviour wherever PD2's is known:
+* **Formula (ENV A).** Use PD2's detection presets and per-tick progress (the delay interpolated between the near and far
+  ranges, the angle term, the player's concealment-derived detection multiplier, the per-observer-type presets for
+  guards / civilians / cameras / police, and PD2's close-range uncover behaviour). Take the decay of the meter when
+  line of sight breaks from PD2 too. Our deviations go: the ×0.75 crouch multiplier (◇), the 0.25/s decay (◇), the 0.45
+  angle floor and the 0.1 distance floor, unless PD2 has the same term. Casing-mode rules (S1.1) stay. ENV A researches
+  PD2's actual values (the game's character detection presets and attention logic; cite the source in the S2 rows),
+  lands them in `stealth_tweak.tres`, and pins point-blank / mid / far fill times per observer type and DR in a test.
+  Where PD2's value can't be found, A picks the less forgiving option and marks it ◇.
+* **Indicator (ENV B).** PD2's detection HUD: over each observing NPC, a circular ring that fills clockwise as the
+  meter rises, with "?" inside while filling, turning into the red "!" at 100 %. Around the crosshair, one arc per
+  observer, in the observer's direction, filling the same way. Colours run white → orange → red. It replaces the
+  blue/orange chevrons in S2.1. Cameras use the same ring.
+* **Feel check (ENV P).** A windowed real-input stealth run on GH and SL after both land: detection should feel like PD2,
+  with lingering in a guard's view punished quickly and a clean, careful route still possible. Report fill times seen.
+The LEAD rewrites the S2 rows from A's sourced table when it lands.

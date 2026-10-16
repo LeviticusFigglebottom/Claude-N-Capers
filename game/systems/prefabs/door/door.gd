@@ -50,6 +50,10 @@ enum Swing { INWARD, OUTWARD, DOUBLE }
 const PLACEHOLDER: PackedScene = preload("res://systems/prefabs/door/door_placeholder.tscn")
 const PLACEHOLDER_DOUBLE: PackedScene = preload("res://systems/prefabs/door/door_double_placeholder.tscn")
 ## Contract default sizes (visual_slots.md).
+## Navigation layer (project "npc_only", value 2) of a loud-breachable locked door's link: police / specials path
+## through it (they breach it), crew / bots / pilots (layer 1 only) treat the shut door as blocked (D-122, C's GN
+## bronze-doors stall). An open, unlocked or NPC-authorised door's link is on layer 1 (everyone).
+const NAV_LAYER_BREACH: int = 2
 const SINGLE_WIDTH_M: float = 0.9
 const DOUBLE_WIDTH_M: float = 1.8
 const HEIGHT_M: float = 2.1
@@ -564,8 +568,9 @@ func _update_nav_link() -> void:
 	# P3 gate: once loud, breachable locks (not BARRED / VAULT) are linked: police breach them.
 	var rt: HeistRuntime = HeistRuntime.of(self) if is_inside_tree() else null
 	var breachable: bool = lock != Lock.BARRED and lock != Lock.VAULT and rt != null and rt.went_loud
-	_nav_link.enabled = is_open or not locked or breachable or (not npc_authorized_tags.is_empty() \
-		and lock != Lock.BARRED)
+	var passable: bool = is_open or not locked or (not npc_authorized_tags.is_empty() and lock != Lock.BARRED)
+	_nav_link.enabled = passable or breachable
+	_nav_link.navigation_layers = 1 if passable else NAV_LAYER_BREACH
 	# A2-08: closed push-bar doors pass inside (-Z, start) -> outside (+Z, end) only.
 	_nav_link.bidirectional = is_open or not push_bar or not npc_authorized_tags.is_empty()
 

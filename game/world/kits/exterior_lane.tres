@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"exterior_lane"
+purpose = &"exterior"
+required_items = Array[StringName]([&"vehicle", &"skip"])
+optional_items = {}
+clutter_groups = {}
+min_density = 0.004
+max_density = 0.3
+min_props = 3
+lone_ok_kinds = Array[StringName]([&"vehicle", &"skip", &"lamp_post", &"pallet", &"tote", &"cone", &"bin_street", &"loot_spawn"])
+seed_salt = 215
+counts = {}
+assets = {}
+ceiling = {}
+notes = "X2 west lane: the flatbed and the skips are map-built."

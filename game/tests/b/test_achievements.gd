@@ -111,11 +111,8 @@ func test_payday_screen_records_achievements() -> void:
 	pd.show_result(r)
 	assert_has(pd.achievements_unlocked, &"achievement.first_score")
 	assert_true(Achievements.is_unlocked(SaveService.load_profile(SLOT), &"achievement.first_score"), "saved by the payday")
-	var found: bool = false
-	for l: Node in pd.find_children("*", "Label", true, false):
-		if (l as Label).text == UiText.t(&"ui.results.achievement_unlocked", {"name": UiText.t(&"achievement.first_score.name")}):
-			found = true
-	assert_true(found, "listed on the results")
+	assert_has(pd.achievement_rows, &"achievement.first_score", "listed on the results (D-115 section)")
+	assert_true(pd.achievements_panel.visible)
 	pd.queue_free()
 	await wait_frames(1)
 

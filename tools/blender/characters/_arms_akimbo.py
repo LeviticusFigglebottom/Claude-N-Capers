@@ -50,6 +50,14 @@ def mirror_hand(h: Hand) -> Hand:
     return Hand("c", MIRROR @ h.wrist, MIRROR @ h.axes @ FLIP, MIRROR @ h.pole, h.shape, h.twist)
 
 
+#: D-116 (P r225 review): the reload dip. The guns used to drop to ``lowered``, fully below the frame, for
+#: ~1 s. PD2's akimbo reload dips but stays partly in view, so the slide tops and the hands stay in the lower
+#: third while the magwells (the fresh magazines) are below the frame edge. Same form as ``FPSet.hip``.
+RELOAD_DIP = ((0.14, 0.32, -0.19), 8.0, 8.0, -28.0)
+#: the seat: the gun pushed up (m) onto the fresh magazine below the frame edge at ``mag_in_<sfx>``
+RELOAD_SEAT_M = 0.015
+
+
 def hold(spec: tuple, dp=(0.0, 0.0, 0.0), yaw: float = 0.0, pitch: float = 0.0, roll: float = 0.0):
     p, y0, p0, r0 = spec
     return A.weapon_frame(np.array(p, float) + np.array(dp, float), y0 + yaw, p0 + pitch, r0 + roll)
@@ -162,8 +170,8 @@ def side_reload(sd: Side, N: int, ev: dict, sfx: str, empty: bool):
     tilt = hold(s.reload_tilt)
     jolt = hold(s.reload_tilt, (0.0, 0.004, 0.006), pitch=2.0, roll=-3.0)        # thumb on the release
     look = hold(s.reload_tilt, (-0.004, 0.0, -0.012), pitch=-6.0, roll=4.0)   # watching the mag fall
-    low = hold(s.lowered, (-0.03, 0.06, 0.06), yaw=6.0, pitch=10.0, roll=-10.0)  # below the view
-    seat = hold(s.lowered, (-0.03, 0.06, 0.075), yaw=6.0, pitch=12.0, roll=-10.0)
+    low = hold(RELOAD_DIP)                                                   # the dip: tops still in view
+    seat = hold(RELOAD_DIP, (0.0, 0.0, RELOAD_SEAT_M), pitch=2.0)             # pushed up onto the fresh mag
     t_in = max(3, mo - 7)
     keys = [sd.key(0, hip),
             sd.key(t_in, tilt),
