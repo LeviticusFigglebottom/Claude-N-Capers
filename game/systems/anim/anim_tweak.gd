@@ -6,6 +6,14 @@ class_name AnimTweak
 extends Resource
 
 const PATH: String = "res://systems/anim/anim_tweak.tres"
+## ENV D's third-person rig SOURCE.txt: clip event frames (`clip.<name>: ... events=a@F,...`) at SOURCE_FPS.
+const CHAR_SOURCE: String = "res://assets/characters/char_anim_humanoid/SOURCE.txt"
+const SOURCE_FPS: float = 30.0
+## reload_done_s key -> third-person reload clip.
+const RELOAD_CLIPS: Dictionary = {
+	&"pistol": &"reload_pistol", &"rifle": &"reload_rifle", &"akimbo": &"reload_akimbo",
+	&"downed_reload": &"downed_reload",
+}
 
 static var _cached: AnimTweak = null
 
@@ -141,6 +149,28 @@ static var _cached: AnimTweak = null
 @export var hard_hat_near_head_m: float = 0.32
 ## Influence blend rate (1/s) in and out of the lift clips.
 @export var hard_hat_lift_rate: float = 6.0
+
+
+## Seconds from the start of third-person clip `clip_id` to `event`, read from the rig's SOURCE.txt (so a D
+## retime needs no tweak change); `fallback` (the hand-copied tweak value) while the clip or event is missing.
+static func clip_event_s(clip_id: StringName, event: StringName, fallback: float) -> float:
+	var ev: Dictionary = FpViewmodelTweak.source_events(CHAR_SOURCE).get(clip_id, {})
+	return float(ev[event]) / SOURCE_FPS if ev.has(event) else fallback
+
+
+## Reload `done` time for a reload_done_s key (SOURCE.txt first, then the tweak table, then the rifle's).
+func reload_done(key: StringName, fallback_key: StringName = &"rifle") -> float:
+	var fb: float = float(reload_done_s.get(key, reload_done_s.get(fallback_key, 1.0)))
+	return clip_event_s(RELOAD_CLIPS.get(key, &""), &"done", fb)
+
+
+## downed_arrested `disarm` (the weapon goes) and crew_cuffed_free `free` (it comes back), SOURCE.txt first.
+func disarm_s() -> float:
+	return clip_event_s(&"downed_arrested", &"disarm", arrest_disarm_s)
+
+
+func free_s() -> float:
+	return clip_event_s(&"crew_cuffed_free", &"free", cuffed_free_s)
 
 
 static func data() -> AnimTweak:

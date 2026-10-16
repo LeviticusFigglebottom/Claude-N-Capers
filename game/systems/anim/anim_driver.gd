@@ -486,9 +486,9 @@ func weapon_shown(c: StringName) -> bool:
 		&"downed", &"downed_crawl", &"downed_fire", &"downed_reload", &"downed_getup":
 			return true
 		&"downed_arrested":
-			return _state_oneshot_t < tw.arrest_disarm_s
+			return _state_oneshot_t < tw.disarm_s()
 		&"crew_cuffed_free":
-			return _state_oneshot_t >= tw.cuffed_free_s
+			return _state_oneshot_t >= tw.free_s()
 	return not POSE_CLIPS.has(c)
 
 
@@ -1378,7 +1378,7 @@ func _on_audio_cue(cue_id: StringName, _pos: Vector3, source_net_id: int) -> voi
 		var g: NpcGunner = _npc.get_node_or_null(^"Gunner") as NpcGunner
 		var dur: float = g.reload_time() if g != null else CombatTweak.data().npc_reload_s
 		var clip_id: StringName = &"reload_pistol" if cue_id == NpcGunner.CUE_RELOAD_PISTOL else &"reload_rifle"
-		var done_s: float = float(AnimTweak.data().reload_done_s.get(&"pistol" if clip_id == &"reload_pistol" else &"rifle", 1.0))
+		var done_s: float = AnimTweak.data().reload_done(&"pistol" if clip_id == &"reload_pistol" else &"rifle")
 		play_oneshot(clip_id, dur, false, done_s / maxf(dur, 0.05))
 
 
@@ -1394,7 +1394,7 @@ func _on_reload_started(_ws: int, duration: float) -> void:
 	elif weapon_kind == &"akimbo" and _has_clip(&"reload_akimbo"):
 		c = &"reload_akimbo"
 		key = &"akimbo"
-	var done_s: float = float(tw.reload_done_s.get(key, tw.reload_done_s.get(aim_family(), 1.0)))
+	var done_s: float = tw.reload_done(key, aim_family())
 	var speed: float = done_s / maxf(duration, 0.05)  # the `done` event frame lands on reload completion
 	if c == &"downed_reload":
 		_play_state_oneshot(c, duration, speed)
