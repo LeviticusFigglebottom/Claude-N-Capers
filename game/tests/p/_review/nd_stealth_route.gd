@@ -17,6 +17,7 @@ const GRATE_AT: Vector3 = Vector3(16.95, 0.0, -1.4)
 const MASK_AT: Vector3 = Vector3(18.5, -4.0, 3.0)
 const GATE_AT: Vector3 = Vector3(14.0, -4.0, 6.9)
 const C6_AT: Vector3 = Vector3(9.1, -1.4, 8.8)
+const LASER_GAP_X: float = 9.575
 
 var rt: HeistRuntime = null
 var pilot: Po5Pilot = null
@@ -330,9 +331,18 @@ func _time_lock() -> bool:
 	var panel: Node3D = _tagged(&"time_lock")
 	if panel == null:
 		return false
-	pilot.inp.press(&"crouch")  # static lasers: under them
-	var ok: bool = await pilot.use(_comp(panel), 40.0, func() -> bool: return _objective(&"time_lock") == 2)
-	pilot.inp.release(&"crouch")
+	# laser_static (nd_gameplay._variants_lasers): the grid spans x 10.05-18.9 at z 8.5 in front of the panel; the
+	# bypass gap is x 9.1-10.05 by the west wall (capsule r 0.35: centre x 9.45-9.7). Through the gap, then east
+	# behind the plane (the navmesh ignores beams: walking straight at the panel tripped it, ND run 4 t=97.7).
+	for wp: Vector3 in [Vector3(LASER_GAP_X, GATE_AT.y, 7.9), Vector3(LASER_GAP_X, GATE_AT.y, 9.15)]:
+		if not await pilot.goto(wp, 0.12, 20.0):
+			note("laser gap: could not reach %s (at %s)" % [Po5Pilot._v(wp), Po5Pilot._v(pilot.crew.global_position)])
+			return false
+	var stand: Vector3 = Vector3(panel.global_position.x - 0.9, GATE_AT.y, clampf(panel.global_position.z, 9.0, 9.8))
+	if not await pilot.goto(stand, 0.25, 30.0):
+		note("TL: could not reach the stand point %s (at %s)" % [Po5Pilot._v(stand),
+			Po5Pilot._v(pilot.crew.global_position)])
+	var ok: bool = await pilot.use(_comp(panel), 40.0, func() -> bool: return _objective(&"time_lock") == 2, false)
 	if not ok:
 		return false
 	var vault: Door = _tagged(&"vault_door") as Door
