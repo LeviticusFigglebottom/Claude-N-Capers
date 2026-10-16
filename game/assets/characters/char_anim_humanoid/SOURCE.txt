@@ -75,7 +75,7 @@ check.141: tased: 30f 1.00s loop speed=0.0 reach_err=0.0mm step=13.9deg
 check.142: teller_count: 240f 8.00s loop speed=0.0 reach_err=0.0mm step=18.6deg contact_slide=0.000mm/f
 check.143: throw_bag: 30f 1.00s speed=0.0 reach_err=0.0mm step=57.5deg
 check.144: throw_bag_armed: 30f 1.00s speed=0.0 reach_err=0.0mm step=28.7deg
-check.145: throw_grenade: 24f 0.80s speed=0.0 reach_err=0.0mm step=42.9deg
+check.145: throw_grenade: 24f 0.80s speed=0.0 reach_err=0.0mm step=77.3deg
 check.146: tied: 90f 3.00s loop speed=0.0 reach_err=0.0mm step=0.9deg
 check.147: turn_l: 24f 0.80s speed=0.0 reach_err=0.0mm step=12.3deg
 check.148: turn_r: 24f 0.80s speed=0.0 reach_err=0.0mm step=12.3deg
