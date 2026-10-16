@@ -2566,6 +2566,8 @@ objective.dockside_burn.burn,Burn the product with the thermite
 objective.dockside_burn.strongroom,Drill the strongroom door
 objective.dockside_burn.count_cage,Open the cash cage in the count room
 ui.briefing.step.dockside_burn.cash,Get the cash: the strongroom door or the count-room cage
+ui.briefing.step.gallery_night.access,"As needed: a keycard, the Argus code and the frame-sensor hack"
+ui.briefing.step.gallery_night.cut,Cut The Lantern Bearer and one more listed canvas
 objective.dockside_burn.containers,Find the weapons containers
 objective.dockside_burn.secure,Secure four bags of cash or rifles ({count}/{total})
 objective.dockside_burn.escape_wait,Hold until the escape arrives
@@ -2986,8 +2988,6 @@ voice.vo.vance.glasshouse_radio_safe_loot_new,"Bag the consignment. All of it, i
 voice.vo.vance.glasshouse_radio_safe_loot,That's the estate consignment. I could kiss you. I won't.
 voice.vo.vance.glasshouse_radio_secure,Two bags. My minimum is met. Anything more is a gesture of affection.
 voice.vo.vance.glasshouse_radio_escape_new,Vossberg has entertained you long enough. Find your way out.
-voice.vo.vance.glasshouse_radio_escape_available,"The van is yours. Leave the windows, they're only glass."
-voice.vo.vance.glasshouse_radio_escape,"The van's here, darling. Don't scratch it."
 voice.vo.vance.glasshouse_radio_loot_jewelry,Jewels in the van. Vossberg will be inconsolable.
 voice.vo.vance.glasshouse_radio_loot,Another bag from Vossberg's. Lovely.
 voice.vo.accountant.night_deposit_radio_casing,Your survey is complete. The bank is exactly as dull as its books.
@@ -3006,8 +3006,6 @@ voice.vo.accountant.night_deposit_radio_vault_loot,The cage has been emptied. An
 voice.vo.accountant.night_deposit_radio_depository,The night-drop safe is open. The Co-op's week is yours to bag.
 voice.vo.accountant.night_deposit_radio_secure,Four bags. My account is settled. The rest is yours.
 voice.vo.accountant.night_deposit_radio_escape_new,Your exit is arranged. Bring the bags.
-voice.vo.accountant.night_deposit_radio_escape_available,Your way out of Harbor Savings and Loan is open. Leave quietly if you can.
-voice.vo.accountant.night_deposit_radio_escape,Your vehicle has arrived outside the bank.
 voice.vo.accountant.night_deposit_radio_loot,"Undeclared money, now declared to me."
 voice.vo.accountant.night_deposit_radio_loot_cash_bricks,Another brick the Co-op cannot report stolen.
 voice.vo.accountant.shadow_ledger_radio_casing,Masks on. Kessler and Moor are tidier than their clients; be tidier still.
@@ -3025,7 +3023,6 @@ voice.vo.accountant.shadow_ledger_radio_study_safe,The study safe. Private paper
 voice.vo.accountant.shadow_ledger_radio_paintings,The paintings. Odile will be insufferable about this.
 voice.vo.accountant.shadow_ledger_radio_archive_safe,The archive safe. The partners' cash float. You are very thorough.
 voice.vo.accountant.shadow_ledger_radio_escape_new,"Now leave, as unseen as you arrived."
-voice.vo.accountant.shadow_ledger_radio_escape_available,Your way out is ready. Nobody may see you use it.
 voice.vo.accountant.shadow_ledger_radio_escape,"Your ride is in position. Quietly, please."
 voice.vo.accountant.shadow_ledger_radio_loot,"Secured. Kessler and Moor are poorer, and they don't know it yet."
 voice.vo.accountant.shadow_ledger_radio_loot_laptop,The laptop is out. Now the drives have a reader.
@@ -3042,8 +3039,6 @@ voice.vo.reyes.dockside_burn_radio_secure,Four bags. That's my end covered. Ever
 voice.vo.reyes.dockside_burn_radio_escape_wait_new,Ride's on the way. Hold the pier until it shows.
 voice.vo.reyes.dockside_burn_radio_escape_wait,Ride's in. Quit holding and start leaving.
 voice.vo.reyes.dockside_burn_radio_escape_new,Get off that pier before the whole thing goes up.
-voice.vo.reyes.dockside_burn_radio_escape_available,"That's the job done. Your ride's coming, so keep the bags moving."
-voice.vo.reyes.dockside_burn_radio_escape,Your ride's at the pier. Don't make it wait.
 voice.vo.reyes.dockside_burn_radio_loot,Another bag off Pier 9. Keep 'em coming.
 voice.vo.reyes.dockside_burn_radio_loot_weapons,Co-op rifles in my lockup. Beautiful.
 voice.vo.reyes.dockside_burn_radio_loot_cash,"Co-op cash. Smells like fish, spends fine."
@@ -3426,8 +3421,6 @@ voice.vo.vance.gallery_night_radio_vault_drill,The vault is through. Take what's
 voice.vo.vance.gallery_night_radio_escape_wait_new,Your ride is coming. Hold the room and keep the canvases dry.
 voice.vo.vance.gallery_night_radio_escape_wait,Your ride has arrived. Do stop shooting and start leaving.
 voice.vo.vance.gallery_night_radio_escape_new,"That's what we came for, darling. Find your way out."
-voice.vo.vance.gallery_night_radio_escape_available,"The exit is yours. Rolled canvases first, then you."
-voice.vo.vance.gallery_night_radio_escape,"Your car is waiting, darling. Don't crease anything."
 voice.vo.vance.gallery_night_radio_loot_lantern_bearer,The Lantern Bearer is mine. Ours. Mostly mine.
 voice.vo.vance.gallery_night_radio_loot_study,"A study. Not on the list, but I never refuse a sketch."
 voice.vo.vance.gallery_night_radio_loot_salt_orchard,The Salt Orchard. Somebody in Geneva just stopped breathing.

@@ -16,21 +16,16 @@ const UNSAID_A: Array[StringName] = []  # every A line is said: the D-117 bark d
 
 ## B reserve: a contact's generic radio lines that no current heist reaches (each fact has an always-ready heist
 ## line, or no heist with that contact has the fact: only Night Deposit fails an objective). Kept on purpose for
-## RadioTweak.speaker_overrides and new heists (content/docs/radio.md "Coverage").
+## RadioTweak.speaker_overrides and new heists (content/docs/radio.md "Coverage"). The generic escape lines are
+## reached again since QB-1 (LEAD 2026-10-16) deleted the heist escape lines a mission escape line always covered.
 const UNSAID_B_RESERVE: Array[StringName] = [
 	&"vo.vance.radio_objective_done_1", &"vo.vance.radio_objective_done_2", &"vo.vance.radio_objective_done_3",
 	&"vo.vance.radio_objective_failed_1", &"vo.vance.radio_objective_failed_2", &"vo.vance.radio_objective_failed_3",
-	&"vo.vance.radio_escape_available_1", &"vo.vance.radio_escape_available_2", &"vo.vance.radio_escape_available_3",
-	&"vo.vance.radio_escape_1", &"vo.vance.radio_escape_2", &"vo.vance.radio_escape_3",
 	&"vo.reyes.radio_objective_done_1", &"vo.reyes.radio_objective_done_2", &"vo.reyes.radio_objective_done_3",
 	&"vo.reyes.radio_objective_new_1", &"vo.reyes.radio_objective_new_2", &"vo.reyes.radio_objective_new_3",
 	&"vo.reyes.radio_objective_failed_1", &"vo.reyes.radio_objective_failed_2", &"vo.reyes.radio_objective_failed_3",
-	&"vo.reyes.radio_escape_available_1", &"vo.reyes.radio_escape_available_2", &"vo.reyes.radio_escape_available_3",
-	&"vo.reyes.radio_escape_1", &"vo.reyes.radio_escape_2", &"vo.reyes.radio_escape_3",
 	&"vo.accountant.radio_objective_done_1", &"vo.accountant.radio_objective_done_2", &"vo.accountant.radio_objective_done_3",
 	&"vo.accountant.radio_objective_new_1", &"vo.accountant.radio_objective_new_2", &"vo.accountant.radio_objective_new_3",
-	&"vo.accountant.radio_escape_available_1", &"vo.accountant.radio_escape_available_2", &"vo.accountant.radio_escape_available_3",
-	&"vo.accountant.radio_escape_1", &"vo.accountant.radio_escape_2", &"vo.accountant.radio_escape_3",
 	&"vo.mercer.radio_objective_failed_1", &"vo.mercer.radio_objective_failed_2", &"vo.mercer.radio_objective_failed_3",
 ]
 

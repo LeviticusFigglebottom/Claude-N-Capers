@@ -14,12 +14,12 @@ reaches, kept for RadioTweak.speaker_overrides and new heists). Heists iterated:
 
 | Group | Lines | Said | Unsaid | Unsaid A | Unsaid B | Unsaid B reserve | Unsaid C |
 |---|---|---|---|---|---|---|---|
-| glasshouse | 29 | 29 | 0 | 0 | 0 | 0 | 0 |
-| night_deposit | 39 | 39 | 0 | 0 | 0 | 0 | 0 |
-| shadow_ledger | 41 | 41 | 0 | 0 | 0 | 0 | 0 |
-| dockside_burn | 49 | 49 | 0 | 0 | 0 | 0 | 0 |
-| gallery_night | 67 | 67 | 0 | 0 | 0 | 0 | 0 |
-| shared | 295 | 253 | 42 | 0 | 0 | 42 | 0 |
+| glasshouse | 27 | 27 | 0 | 0 | 0 | 0 | 0 |
+| night_deposit | 37 | 37 | 0 | 0 | 0 | 0 | 0 |
+| shadow_ledger | 40 | 40 | 0 | 0 | 0 | 0 | 0 |
+| dockside_burn | 47 | 47 | 0 | 0 | 0 | 0 | 0 |
+| gallery_night | 65 | 65 | 0 | 0 | 0 | 0 | 0 |
+| shared | 295 | 270 | 25 | 0 | 0 | 25 | 0 |
 
 Missing (code can say it, the table has no such line): 0.
 
@@ -31,22 +31,17 @@ None.
 
 None.
 
-## Unsaid, owner B reserve (42)
+## Unsaid, owner B reserve (25)
 
 | Line | Event | Why |
 |---|---|---|
+| `vo.mercer.abort` | stealth_abort | every STEALTH_ONLY heist says its own abort line (HeistMission.own_abort_line): shadow_ledger: vo.mercer.shadow_ledger_abort |
 | `vo.vance.radio_objective_done_1` | radio.objective_done | generic radio.objective_done line: every radio.objective_done fact has an always-ready heist line, or no heist with vance on the radio has the fact |
 | `vo.vance.radio_objective_done_2` | radio.objective_done | generic radio.objective_done line: every radio.objective_done fact has an always-ready heist line, or no heist with vance on the radio has the fact |
 | `vo.vance.radio_objective_done_3` | radio.objective_done | generic radio.objective_done line: every radio.objective_done fact has an always-ready heist line, or no heist with vance on the radio has the fact |
 | `vo.vance.radio_objective_failed_1` | radio.objective_failed | generic radio.objective_failed line: every radio.objective_failed fact has an always-ready heist line, or no heist with vance on the radio has the fact |
 | `vo.vance.radio_objective_failed_2` | radio.objective_failed | generic radio.objective_failed line: every radio.objective_failed fact has an always-ready heist line, or no heist with vance on the radio has the fact |
 | `vo.vance.radio_objective_failed_3` | radio.objective_failed | generic radio.objective_failed line: every radio.objective_failed fact has an always-ready heist line, or no heist with vance on the radio has the fact |
-| `vo.vance.radio_escape_available_1` | radio.escape_available | generic radio.escape_available line: every radio.escape_available fact has an always-ready heist line, or no heist with vance on the radio has the fact |
-| `vo.vance.radio_escape_available_2` | radio.escape_available | generic radio.escape_available line: every radio.escape_available fact has an always-ready heist line, or no heist with vance on the radio has the fact |
-| `vo.vance.radio_escape_available_3` | radio.escape_available | generic radio.escape_available line: every radio.escape_available fact has an always-ready heist line, or no heist with vance on the radio has the fact |
-| `vo.vance.radio_escape_1` | radio.escape | generic radio.escape line: every radio.escape fact has an always-ready heist line, or no heist with vance on the radio has the fact |
-| `vo.vance.radio_escape_2` | radio.escape | generic radio.escape line: every radio.escape fact has an always-ready heist line, or no heist with vance on the radio has the fact |
-| `vo.vance.radio_escape_3` | radio.escape | generic radio.escape line: every radio.escape fact has an always-ready heist line, or no heist with vance on the radio has the fact |
 | `vo.reyes.radio_objective_done_1` | radio.objective_done | generic radio.objective_done line: every radio.objective_done fact has an always-ready heist line, or no heist with reyes on the radio has the fact |
 | `vo.reyes.radio_objective_done_2` | radio.objective_done | generic radio.objective_done line: every radio.objective_done fact has an always-ready heist line, or no heist with reyes on the radio has the fact |
 | `vo.reyes.radio_objective_done_3` | radio.objective_done | generic radio.objective_done line: every radio.objective_done fact has an always-ready heist line, or no heist with reyes on the radio has the fact |
@@ -56,24 +51,12 @@ None.
 | `vo.reyes.radio_objective_failed_1` | radio.objective_failed | generic radio.objective_failed line: every radio.objective_failed fact has an always-ready heist line, or no heist with reyes on the radio has the fact |
 | `vo.reyes.radio_objective_failed_2` | radio.objective_failed | generic radio.objective_failed line: every radio.objective_failed fact has an always-ready heist line, or no heist with reyes on the radio has the fact |
 | `vo.reyes.radio_objective_failed_3` | radio.objective_failed | generic radio.objective_failed line: every radio.objective_failed fact has an always-ready heist line, or no heist with reyes on the radio has the fact |
-| `vo.reyes.radio_escape_available_1` | radio.escape_available | generic radio.escape_available line: every radio.escape_available fact has an always-ready heist line, or no heist with reyes on the radio has the fact |
-| `vo.reyes.radio_escape_available_2` | radio.escape_available | generic radio.escape_available line: every radio.escape_available fact has an always-ready heist line, or no heist with reyes on the radio has the fact |
-| `vo.reyes.radio_escape_available_3` | radio.escape_available | generic radio.escape_available line: every radio.escape_available fact has an always-ready heist line, or no heist with reyes on the radio has the fact |
-| `vo.reyes.radio_escape_1` | radio.escape | generic radio.escape line: every radio.escape fact has an always-ready heist line, or no heist with reyes on the radio has the fact |
-| `vo.reyes.radio_escape_2` | radio.escape | generic radio.escape line: every radio.escape fact has an always-ready heist line, or no heist with reyes on the radio has the fact |
-| `vo.reyes.radio_escape_3` | radio.escape | generic radio.escape line: every radio.escape fact has an always-ready heist line, or no heist with reyes on the radio has the fact |
 | `vo.accountant.radio_objective_done_1` | radio.objective_done | generic radio.objective_done line: every radio.objective_done fact has an always-ready heist line, or no heist with accountant on the radio has the fact |
 | `vo.accountant.radio_objective_done_2` | radio.objective_done | generic radio.objective_done line: every radio.objective_done fact has an always-ready heist line, or no heist with accountant on the radio has the fact |
 | `vo.accountant.radio_objective_done_3` | radio.objective_done | generic radio.objective_done line: every radio.objective_done fact has an always-ready heist line, or no heist with accountant on the radio has the fact |
 | `vo.accountant.radio_objective_new_1` | radio.objective_new | generic radio.objective_new line: every radio.objective_new fact has an always-ready heist line, or no heist with accountant on the radio has the fact |
 | `vo.accountant.radio_objective_new_2` | radio.objective_new | generic radio.objective_new line: every radio.objective_new fact has an always-ready heist line, or no heist with accountant on the radio has the fact |
 | `vo.accountant.radio_objective_new_3` | radio.objective_new | generic radio.objective_new line: every radio.objective_new fact has an always-ready heist line, or no heist with accountant on the radio has the fact |
-| `vo.accountant.radio_escape_available_1` | radio.escape_available | generic radio.escape_available line: every radio.escape_available fact has an always-ready heist line, or no heist with accountant on the radio has the fact |
-| `vo.accountant.radio_escape_available_2` | radio.escape_available | generic radio.escape_available line: every radio.escape_available fact has an always-ready heist line, or no heist with accountant on the radio has the fact |
-| `vo.accountant.radio_escape_available_3` | radio.escape_available | generic radio.escape_available line: every radio.escape_available fact has an always-ready heist line, or no heist with accountant on the radio has the fact |
-| `vo.accountant.radio_escape_1` | radio.escape | generic radio.escape line: every radio.escape fact has an always-ready heist line, or no heist with accountant on the radio has the fact |
-| `vo.accountant.radio_escape_2` | radio.escape | generic radio.escape line: every radio.escape fact has an always-ready heist line, or no heist with accountant on the radio has the fact |
-| `vo.accountant.radio_escape_3` | radio.escape | generic radio.escape line: every radio.escape fact has an always-ready heist line, or no heist with accountant on the radio has the fact |
 | `vo.mercer.radio_objective_failed_1` | radio.objective_failed | generic radio.objective_failed line: every radio.objective_failed fact has an always-ready heist line, or no heist with mercer on the radio has the fact |
 | `vo.mercer.radio_objective_failed_2` | radio.objective_failed | generic radio.objective_failed line: every radio.objective_failed fact has an always-ready heist line, or no heist with mercer on the radio has the fact |
 | `vo.mercer.radio_objective_failed_3` | radio.objective_failed | generic radio.objective_failed line: every radio.objective_failed fact has an always-ready heist line, or no heist with mercer on the radio has the fact |
@@ -91,14 +74,14 @@ None.
 | `vo.vance.briefing_glasshouse_3` | briefing | B | BriefingModel.voice_lines via glasshouse (contact.vance) |
 | `vo.mercer.briefing_glasshouse_1` | briefing | B | BriefingModel.voice_lines via glasshouse (contact.vance) |
 | `vo.mercer.glasshouse_intro` | mission | C | world/heists/glasshouse/glasshouse_mission.gd:49 |
-| `vo.mercer.glasshouse_keycard_found` | mission | C | world/heists/glasshouse/glasshouse_mission.gd:142 |
-| `vo.mercer.glasshouse_workshop_open` | mission | C | world/heists/glasshouse/glasshouse_mission.gd:126 |
-| `vo.mercer.glasshouse_drill_jam` | mission | C | world/heists/glasshouse/glasshouse_mission.gd:160 |
-| `vo.mercer.glasshouse_last_pager` | mission | C | world/heists/glasshouse/glasshouse_mission.gd:104 |
-| `vo.mercer.glasshouse_lockdown` | mission | C | world/heists/glasshouse/glasshouse_mission.gd:203 |
-| `vo.mercer.glasshouse_van_eta` | mission | C | world/heists/glasshouse/glasshouse_mission.gd:222 |
-| `vo.mercer.glasshouse_escape` | mission | C | world/heists/glasshouse/glasshouse_mission.gd:244 |
-| `vo.mercer.glasshouse_code_found` | mission | C | world/heists/glasshouse/glasshouse_mission.gd:149 |
+| `vo.mercer.glasshouse_keycard_found` | mission | C | world/heists/glasshouse/glasshouse_mission.gd:143 |
+| `vo.mercer.glasshouse_workshop_open` | mission | C | world/heists/glasshouse/glasshouse_mission.gd:127 |
+| `vo.mercer.glasshouse_drill_jam` | mission | C | world/heists/glasshouse/glasshouse_mission.gd:161 |
+| `vo.mercer.glasshouse_last_pager` | mission | C | world/heists/glasshouse/glasshouse_mission.gd:105 |
+| `vo.mercer.glasshouse_lockdown` | mission | C | world/heists/glasshouse/glasshouse_mission.gd:204 |
+| `vo.mercer.glasshouse_van_eta` | mission | C | world/heists/glasshouse/glasshouse_mission.gd:223 |
+| `vo.mercer.glasshouse_escape` | mission | C | world/heists/glasshouse/glasshouse_mission.gd:245 |
+| `vo.mercer.glasshouse_code_found` | mission | C | world/heists/glasshouse/glasshouse_mission.gd:150 |
 | `vo.vance.glasshouse_radio_casing` | radio.objective_done | B | ContactRadio radio.objective_done [casing] via glasshouse |
 | `vo.vance.glasshouse_radio_keycard` | radio.objective_done | B | ContactRadio radio.objective_done [keycard] via glasshouse |
 | `vo.vance.glasshouse_radio_code` | radio.objective_done | B | ContactRadio radio.objective_done [code] via glasshouse |
@@ -111,8 +94,6 @@ None.
 | `vo.vance.glasshouse_radio_safe_loot` | radio.objective_done | B | ContactRadio radio.objective_done [safe_loot] via glasshouse |
 | `vo.vance.glasshouse_radio_secure` | radio.objective_done | B | ContactRadio radio.objective_done [secure] via glasshouse |
 | `vo.vance.glasshouse_radio_escape_new` | radio.objective_new | B | ContactRadio radio.objective_new [escape] via glasshouse |
-| `vo.vance.glasshouse_radio_escape_available` | radio.escape_available | B | ContactRadio radio.escape_available via glasshouse |
-| `vo.vance.glasshouse_radio_escape` | radio.escape | B | ContactRadio radio.escape via glasshouse |
 | `vo.vance.glasshouse_radio_loot_jewelry` | radio.loot_secured | B | ContactRadio radio.loot_secured (loot.jewelry) via glasshouse |
 | `vo.vance.glasshouse_radio_loot` | radio.loot_secured | B | ContactRadio radio.loot_secured (loot.jewelry) via glasshouse<br>ContactRadio radio.loot_secured (loot.cash) via glasshouse |
 
@@ -155,8 +136,6 @@ None.
 | `vo.accountant.night_deposit_radio_depository` | radio.objective_done | B | ContactRadio radio.objective_done [depository] via night_deposit |
 | `vo.accountant.night_deposit_radio_secure` | radio.objective_done | B | ContactRadio radio.objective_done [secure] via night_deposit |
 | `vo.accountant.night_deposit_radio_escape_new` | radio.objective_new | B | ContactRadio radio.objective_new [escape] via night_deposit |
-| `vo.accountant.night_deposit_radio_escape_available` | radio.escape_available | B | ContactRadio radio.escape_available via night_deposit |
-| `vo.accountant.night_deposit_radio_escape` | radio.escape | B | ContactRadio radio.escape via night_deposit |
 | `vo.accountant.night_deposit_radio_loot` | radio.loot_secured | B | ContactRadio radio.loot_secured (loot.cash) via night_deposit<br>ContactRadio radio.loot_secured (loot.cash_bricks) via night_deposit<br>ContactRadio radio.loot_secured (loot.small_valuables) via night_deposit |
 | `vo.accountant.night_deposit_radio_loot_cash_bricks` | radio.loot_secured | B | ContactRadio radio.loot_secured (loot.cash_bricks) via night_deposit |
 
@@ -168,23 +147,23 @@ None.
 | `vo.accountant.briefing_shadow_ledger_2` | briefing | B | BriefingModel.voice_lines via shadow_ledger (contact.accountant) |
 | `vo.accountant.briefing_shadow_ledger_3` | briefing | B | BriefingModel.voice_lines via shadow_ledger (contact.accountant) |
 | `vo.mercer.briefing_shadow_ledger_1` | briefing | B | BriefingModel.voice_lines via shadow_ledger (contact.accountant) |
-| `vo.mercer.shadow_ledger_intro` | mission | C | world/heists/shadow_ledger/shadow_ledger_mission.gd:69 |
-| `vo.accountant.shadow_ledger_contact_intro` | mission | C | world/heists/shadow_ledger/shadow_ledger_mission.gd:70 |
-| `vo.mercer.shadow_ledger_laptop_found` | mission | C | world/heists/shadow_ledger/shadow_ledger_mission.gd:163 |
-| `vo.mercer.shadow_ledger_keycard_found` | mission | C | world/heists/shadow_ledger/shadow_ledger_mission.gd:176 |
-| `vo.mercer.shadow_ledger_code_found` | mission | C | world/heists/shadow_ledger/shadow_ledger_mission.gd:179 |
-| `vo.mercer.shadow_ledger_camera_warning` | mission | C | world/heists/shadow_ledger/shadow_ledger_mission.gd:49 |
-| `vo.mercer.shadow_ledger_cage_open` | mission | C | world/heists/shadow_ledger/shadow_ledger_mission.gd:218 |
-| `vo.mercer.shadow_ledger_hack_started` | mission | C | world/heists/shadow_ledger/shadow_ledger_mission.gd:184 |
-| `vo.mercer.shadow_ledger_hack_interrupted` | mission | C | world/heists/shadow_ledger/shadow_ledger_mission.gd:203 |
-| `vo.mercer.shadow_ledger_hack_done` | mission | C | world/heists/shadow_ledger/shadow_ledger_mission.gd:229 |
-| `vo.mercer.shadow_ledger_lasers` | mission | C | world/heists/shadow_ledger/shadow_ledger_mission.gd:32 |
-| `vo.mercer.shadow_ledger_time_lock_started` | mission | C | world/heists/shadow_ledger/shadow_ledger_mission.gd:186 |
-| `vo.mercer.shadow_ledger_time_lock_open` | mission | C | world/heists/shadow_ledger/shadow_ledger_mission.gd:196 |
-| `vo.mercer.shadow_ledger_last_pager` | mission | C | world/heists/shadow_ledger/shadow_ledger_mission.gd:116 |
-| `vo.mercer.shadow_ledger_required_secured` | mission | C | world/heists/shadow_ledger/shadow_ledger_mission.gd:263 |
-| `vo.mercer.shadow_ledger_escape` | mission | C | world/heists/shadow_ledger/shadow_ledger_mission.gd:266 |
-| `vo.mercer.shadow_ledger_abort` | mission | C | world/heists/shadow_ledger/shadow_ledger_mission.gd:111 |
+| `vo.mercer.shadow_ledger_intro` | mission | C | world/heists/shadow_ledger/shadow_ledger_mission.gd:75 |
+| `vo.accountant.shadow_ledger_contact_intro` | mission | C | world/heists/shadow_ledger/shadow_ledger_mission.gd:76 |
+| `vo.mercer.shadow_ledger_laptop_found` | mission | C | world/heists/shadow_ledger/shadow_ledger_mission.gd:176 |
+| `vo.mercer.shadow_ledger_keycard_found` | mission | C | world/heists/shadow_ledger/shadow_ledger_mission.gd:189 |
+| `vo.mercer.shadow_ledger_code_found` | mission | C | world/heists/shadow_ledger/shadow_ledger_mission.gd:192 |
+| `vo.mercer.shadow_ledger_camera_warning` | mission | C | world/heists/shadow_ledger/shadow_ledger_mission.gd:50 |
+| `vo.mercer.shadow_ledger_cage_open` | mission | C | world/heists/shadow_ledger/shadow_ledger_mission.gd:275 |
+| `vo.mercer.shadow_ledger_hack_started` | mission | C | world/heists/shadow_ledger/shadow_ledger_mission.gd:197 |
+| `vo.mercer.shadow_ledger_hack_interrupted` | mission | C | world/heists/shadow_ledger/shadow_ledger_mission.gd:217 |
+| `vo.mercer.shadow_ledger_hack_done` | mission | C | world/heists/shadow_ledger/shadow_ledger_mission.gd:286 |
+| `vo.mercer.shadow_ledger_lasers` | mission | C | world/heists/shadow_ledger/shadow_ledger_mission.gd:33 |
+| `vo.mercer.shadow_ledger_time_lock_started` | mission | C | world/heists/shadow_ledger/shadow_ledger_mission.gd:199 |
+| `vo.mercer.shadow_ledger_time_lock_open` | mission | C | world/heists/shadow_ledger/shadow_ledger_mission.gd:210 |
+| `vo.mercer.shadow_ledger_last_pager` | mission | C | world/heists/shadow_ledger/shadow_ledger_mission.gd:124 |
+| `vo.mercer.shadow_ledger_required_secured` | mission | C | world/heists/shadow_ledger/shadow_ledger_mission.gd:321 |
+| `vo.mercer.shadow_ledger_escape` | mission | C | world/heists/shadow_ledger/shadow_ledger_mission.gd:324 |
+| `vo.mercer.shadow_ledger_abort` | mission | C | world/heists/shadow_ledger/shadow_ledger_mission.gd:119 |
 | `vo.accountant.shadow_ledger_radio_casing` | radio.objective_done | B | ContactRadio radio.objective_done [casing] via shadow_ledger |
 | `vo.accountant.shadow_ledger_radio_laptop` | radio.objective_done | B | ContactRadio radio.objective_done [laptop] via shadow_ledger |
 | `vo.accountant.shadow_ledger_radio_keycard` | radio.objective_done | B | ContactRadio radio.objective_done [keycard] via shadow_ledger |
@@ -200,7 +179,6 @@ None.
 | `vo.accountant.shadow_ledger_radio_paintings` | radio.objective_done | B | ContactRadio radio.objective_done [paintings] via shadow_ledger |
 | `vo.accountant.shadow_ledger_radio_archive_safe` | radio.objective_done | B | ContactRadio radio.objective_done [archive_safe] via shadow_ledger |
 | `vo.accountant.shadow_ledger_radio_escape_new` | radio.objective_new | B | ContactRadio radio.objective_new [escape] via shadow_ledger |
-| `vo.accountant.shadow_ledger_radio_escape_available` | radio.escape_available | B | ContactRadio radio.escape_available via shadow_ledger |
 | `vo.accountant.shadow_ledger_radio_escape` | radio.escape | B | ContactRadio radio.escape via shadow_ledger |
 | `vo.accountant.shadow_ledger_radio_loot` | radio.loot_secured | B | ContactRadio radio.loot_secured (loot.ledger_laptop) via shadow_ledger<br>ContactRadio radio.loot_secured (loot.ledger_drives) via shadow_ledger<br>ContactRadio radio.loot_secured (loot.ledger_books) via shadow_ledger<br>ContactRadio radio.loot_secured (loot.painting) via shadow_ledger<br>ContactRadio radio.loot_secured (loot.cash) via shadow_ledger |
 | `vo.accountant.shadow_ledger_radio_loot_laptop` | radio.loot_secured | B | ContactRadio radio.loot_secured (loot.ledger_laptop) via shadow_ledger |
@@ -253,8 +231,6 @@ None.
 | `vo.reyes.dockside_burn_radio_escape_wait_new` | radio.objective_new | B | ContactRadio radio.objective_new [escape_wait] via dockside_burn |
 | `vo.reyes.dockside_burn_radio_escape_wait` | radio.objective_done | B | ContactRadio radio.objective_done [escape_wait] via dockside_burn |
 | `vo.reyes.dockside_burn_radio_escape_new` | radio.objective_new | B | ContactRadio radio.objective_new [escape] via dockside_burn |
-| `vo.reyes.dockside_burn_radio_escape_available` | radio.escape_available | B | ContactRadio radio.escape_available via dockside_burn |
-| `vo.reyes.dockside_burn_radio_escape` | radio.escape | B | ContactRadio radio.escape via dockside_burn |
 | `vo.reyes.dockside_burn_radio_loot` | radio.loot_secured | B | ContactRadio radio.loot_secured (loot.cash_bricks) via dockside_burn<br>ContactRadio radio.loot_secured (loot.weapon_crate) via dockside_burn<br>ContactRadio radio.loot_secured (loot.contraband) via dockside_burn |
 | `vo.reyes.dockside_burn_radio_loot_weapons` | radio.loot_secured | B | ContactRadio radio.loot_secured (loot.weapon_crate) via dockside_burn |
 | `vo.reyes.dockside_burn_radio_loot_cash` | radio.loot_secured | B | ContactRadio radio.loot_secured (loot.cash_bricks) via dockside_burn |
@@ -323,8 +299,6 @@ None.
 | `vo.vance.gallery_night_radio_escape_wait_new` | radio.objective_new | B | ContactRadio radio.objective_new [escape_wait] via gallery_night |
 | `vo.vance.gallery_night_radio_escape_wait` | radio.objective_done | B | ContactRadio radio.objective_done [escape_wait] via gallery_night |
 | `vo.vance.gallery_night_radio_escape_new` | radio.objective_new | B | ContactRadio radio.objective_new [escape] via gallery_night |
-| `vo.vance.gallery_night_radio_escape_available` | radio.escape_available | B | ContactRadio radio.escape_available via gallery_night |
-| `vo.vance.gallery_night_radio_escape` | radio.escape | B | ContactRadio radio.escape via gallery_night |
 | `vo.vance.gallery_night_radio_loot_lantern_bearer` | radio.loot_secured | B | ContactRadio radio.loot_secured (loot.painting_lantern_bearer) via gallery_night |
 | `vo.vance.gallery_night_radio_loot_study` | radio.loot_secured | B | ContactRadio radio.loot_secured (loot.painting_study) via gallery_night |
 | `vo.vance.gallery_night_radio_loot_salt_orchard` | radio.loot_secured | B | ContactRadio radio.loot_secured (loot.painting_salt_orchard) via gallery_night |
@@ -502,7 +476,7 @@ None.
 | `vo.jay.guard_down_2` | guard_down | A | systems/vo/bark_tweak.tres:34 (builder `vo.jay.guard_down_%d`) |
 | `vo.jay.civilian_killed_1` | civilian_killed | A | systems/vo/bark_tweak.tres:35 (builder `vo.jay.civilian_killed_%d`) |
 | `vo.jay.civilian_killed_2` | civilian_killed | A | systems/vo/bark_tweak.tres:35 (builder `vo.jay.civilian_killed_%d`) |
-| `vo.mercer.abort` | stealth_abort | A | systems/heist/heist_runtime.gd:616<br>systems/heist/heist_runtime.gd:617 |
+| `vo.mercer.abort` | stealth_abort | R | **UNSAID**: every STEALTH_ONLY heist says its own abort line (HeistMission.own_abort_line): shadow_ledger: vo.mercer.shadow_ledger_abort |
 | `vo.mercer.pager_last` | pager_last_answer | A | systems/stealth/pager_system.gd:291<br>systems/vo/bark_tweak.tres:12 |
 | `vo.mercer.dev_start` | dev_start | A | systems/dev/dev_sandbox_mission.gd:12 |
 | `vo.guard.cuff_warning` | cuff_warning | A | systems/stealth/stealth_tweak.gd:264 |
@@ -532,12 +506,12 @@ None.
 | `vo.vance.radio_assault_fade_1` | radio.assault_fade | B | ContactRadio radio.assault_fade via gallery_night (generic)<br>ContactRadio radio.assault_fade via glasshouse (generic) |
 | `vo.vance.radio_assault_fade_2` | radio.assault_fade | B | ContactRadio radio.assault_fade via gallery_night (generic)<br>ContactRadio radio.assault_fade via glasshouse (generic) |
 | `vo.vance.radio_assault_fade_3` | radio.assault_fade | B | ContactRadio radio.assault_fade via gallery_night (generic)<br>ContactRadio radio.assault_fade via glasshouse (generic) |
-| `vo.vance.radio_escape_available_1` | radio.escape_available | R | **UNSAID**: generic radio.escape_available line: every radio.escape_available fact has an always-ready heist line, or no heist with vance on the radio has the fact |
-| `vo.vance.radio_escape_available_2` | radio.escape_available | R | **UNSAID**: generic radio.escape_available line: every radio.escape_available fact has an always-ready heist line, or no heist with vance on the radio has the fact |
-| `vo.vance.radio_escape_available_3` | radio.escape_available | R | **UNSAID**: generic radio.escape_available line: every radio.escape_available fact has an always-ready heist line, or no heist with vance on the radio has the fact |
-| `vo.vance.radio_escape_1` | radio.escape | R | **UNSAID**: generic radio.escape line: every radio.escape fact has an always-ready heist line, or no heist with vance on the radio has the fact |
-| `vo.vance.radio_escape_2` | radio.escape | R | **UNSAID**: generic radio.escape line: every radio.escape fact has an always-ready heist line, or no heist with vance on the radio has the fact |
-| `vo.vance.radio_escape_3` | radio.escape | R | **UNSAID**: generic radio.escape line: every radio.escape fact has an always-ready heist line, or no heist with vance on the radio has the fact |
+| `vo.vance.radio_escape_available_1` | radio.escape_available | B | ContactRadio radio.escape_available via gallery_night (generic)<br>ContactRadio radio.escape_available via glasshouse (generic) |
+| `vo.vance.radio_escape_available_2` | radio.escape_available | B | ContactRadio radio.escape_available via gallery_night (generic)<br>ContactRadio radio.escape_available via glasshouse (generic) |
+| `vo.vance.radio_escape_available_3` | radio.escape_available | B | ContactRadio radio.escape_available via gallery_night (generic)<br>ContactRadio radio.escape_available via glasshouse (generic) |
+| `vo.vance.radio_escape_1` | radio.escape | B | ContactRadio radio.escape via gallery_night (generic)<br>ContactRadio radio.escape via glasshouse (generic) |
+| `vo.vance.radio_escape_2` | radio.escape | B | ContactRadio radio.escape via gallery_night (generic)<br>ContactRadio radio.escape via glasshouse (generic) |
+| `vo.vance.radio_escape_3` | radio.escape | B | ContactRadio radio.escape via gallery_night (generic)<br>ContactRadio radio.escape via glasshouse (generic) |
 | `vo.vance.radio_loot_secured_1` | radio.loot_secured | B | ContactRadio radio.loot_secured (loot.painting_lantern_bearer) via gallery_night (generic)<br>ContactRadio radio.loot_secured (loot.painting_salt_orchard) via gallery_night (generic)<br>ContactRadio radio.loot_secured (loot.painting_widow_in_blue) via gallery_night (generic)<br>ContactRadio radio.loot_secured (loot.painting_tidewater_saint) via gallery_night (generic)<br>ContactRadio radio.loot_secured (loot.painting_study) via gallery_night (generic)<br>ContactRadio radio.loot_secured (loot.jewelry) via glasshouse (generic)<br>ContactRadio radio.loot_secured (loot.cash) via glasshouse (generic) |
 | `vo.vance.radio_loot_secured_2` | radio.loot_secured | B | ContactRadio radio.loot_secured (loot.painting_lantern_bearer) via gallery_night (generic)<br>ContactRadio radio.loot_secured (loot.painting_salt_orchard) via gallery_night (generic)<br>ContactRadio radio.loot_secured (loot.painting_widow_in_blue) via gallery_night (generic)<br>ContactRadio radio.loot_secured (loot.painting_tidewater_saint) via gallery_night (generic)<br>ContactRadio radio.loot_secured (loot.painting_study) via gallery_night (generic)<br>ContactRadio radio.loot_secured (loot.jewelry) via glasshouse (generic)<br>ContactRadio radio.loot_secured (loot.cash) via glasshouse (generic) |
 | `vo.vance.radio_loot_secured_3` | radio.loot_secured | B | ContactRadio radio.loot_secured (loot.painting_lantern_bearer) via gallery_night (generic)<br>ContactRadio radio.loot_secured (loot.painting_salt_orchard) via gallery_night (generic)<br>ContactRadio radio.loot_secured (loot.painting_widow_in_blue) via gallery_night (generic)<br>ContactRadio radio.loot_secured (loot.painting_tidewater_saint) via gallery_night (generic)<br>ContactRadio radio.loot_secured (loot.painting_study) via gallery_night (generic)<br>ContactRadio radio.loot_secured (loot.jewelry) via glasshouse (generic)<br>ContactRadio radio.loot_secured (loot.cash) via glasshouse (generic) |
@@ -562,12 +536,12 @@ None.
 | `vo.reyes.radio_assault_fade_1` | radio.assault_fade | B | ContactRadio radio.assault_fade via dockside_burn (generic) |
 | `vo.reyes.radio_assault_fade_2` | radio.assault_fade | B | ContactRadio radio.assault_fade via dockside_burn (generic) |
 | `vo.reyes.radio_assault_fade_3` | radio.assault_fade | B | ContactRadio radio.assault_fade via dockside_burn (generic) |
-| `vo.reyes.radio_escape_available_1` | radio.escape_available | R | **UNSAID**: generic radio.escape_available line: every radio.escape_available fact has an always-ready heist line, or no heist with reyes on the radio has the fact |
-| `vo.reyes.radio_escape_available_2` | radio.escape_available | R | **UNSAID**: generic radio.escape_available line: every radio.escape_available fact has an always-ready heist line, or no heist with reyes on the radio has the fact |
-| `vo.reyes.radio_escape_available_3` | radio.escape_available | R | **UNSAID**: generic radio.escape_available line: every radio.escape_available fact has an always-ready heist line, or no heist with reyes on the radio has the fact |
-| `vo.reyes.radio_escape_1` | radio.escape | R | **UNSAID**: generic radio.escape line: every radio.escape fact has an always-ready heist line, or no heist with reyes on the radio has the fact |
-| `vo.reyes.radio_escape_2` | radio.escape | R | **UNSAID**: generic radio.escape line: every radio.escape fact has an always-ready heist line, or no heist with reyes on the radio has the fact |
-| `vo.reyes.radio_escape_3` | radio.escape | R | **UNSAID**: generic radio.escape line: every radio.escape fact has an always-ready heist line, or no heist with reyes on the radio has the fact |
+| `vo.reyes.radio_escape_available_1` | radio.escape_available | B | ContactRadio radio.escape_available via dockside_burn (generic) |
+| `vo.reyes.radio_escape_available_2` | radio.escape_available | B | ContactRadio radio.escape_available via dockside_burn (generic) |
+| `vo.reyes.radio_escape_available_3` | radio.escape_available | B | ContactRadio radio.escape_available via dockside_burn (generic) |
+| `vo.reyes.radio_escape_1` | radio.escape | B | ContactRadio radio.escape via dockside_burn (generic) |
+| `vo.reyes.radio_escape_2` | radio.escape | B | ContactRadio radio.escape via dockside_burn (generic) |
+| `vo.reyes.radio_escape_3` | radio.escape | B | ContactRadio radio.escape via dockside_burn (generic) |
 | `vo.reyes.radio_loot_secured_1` | radio.loot_secured | B | ContactRadio radio.loot_secured (loot.cash_bricks) via dockside_burn (generic)<br>ContactRadio radio.loot_secured (loot.weapon_crate) via dockside_burn (generic)<br>ContactRadio radio.loot_secured (loot.contraband) via dockside_burn (generic) |
 | `vo.reyes.radio_loot_secured_2` | radio.loot_secured | B | ContactRadio radio.loot_secured (loot.cash_bricks) via dockside_burn (generic)<br>ContactRadio radio.loot_secured (loot.weapon_crate) via dockside_burn (generic)<br>ContactRadio radio.loot_secured (loot.contraband) via dockside_burn (generic) |
 | `vo.reyes.radio_loot_secured_3` | radio.loot_secured | B | ContactRadio radio.loot_secured (loot.cash_bricks) via dockside_burn (generic)<br>ContactRadio radio.loot_secured (loot.weapon_crate) via dockside_burn (generic)<br>ContactRadio radio.loot_secured (loot.contraband) via dockside_burn (generic) |
@@ -592,12 +566,12 @@ None.
 | `vo.accountant.radio_assault_fade_1` | radio.assault_fade | B | ContactRadio radio.assault_fade via night_deposit (generic) |
 | `vo.accountant.radio_assault_fade_2` | radio.assault_fade | B | ContactRadio radio.assault_fade via night_deposit (generic) |
 | `vo.accountant.radio_assault_fade_3` | radio.assault_fade | B | ContactRadio radio.assault_fade via night_deposit (generic) |
-| `vo.accountant.radio_escape_available_1` | radio.escape_available | R | **UNSAID**: generic radio.escape_available line: every radio.escape_available fact has an always-ready heist line, or no heist with accountant on the radio has the fact |
-| `vo.accountant.radio_escape_available_2` | radio.escape_available | R | **UNSAID**: generic radio.escape_available line: every radio.escape_available fact has an always-ready heist line, or no heist with accountant on the radio has the fact |
-| `vo.accountant.radio_escape_available_3` | radio.escape_available | R | **UNSAID**: generic radio.escape_available line: every radio.escape_available fact has an always-ready heist line, or no heist with accountant on the radio has the fact |
-| `vo.accountant.radio_escape_1` | radio.escape | R | **UNSAID**: generic radio.escape line: every radio.escape fact has an always-ready heist line, or no heist with accountant on the radio has the fact |
-| `vo.accountant.radio_escape_2` | radio.escape | R | **UNSAID**: generic radio.escape line: every radio.escape fact has an always-ready heist line, or no heist with accountant on the radio has the fact |
-| `vo.accountant.radio_escape_3` | radio.escape | R | **UNSAID**: generic radio.escape line: every radio.escape fact has an always-ready heist line, or no heist with accountant on the radio has the fact |
+| `vo.accountant.radio_escape_available_1` | radio.escape_available | B | ContactRadio radio.escape_available via night_deposit (generic)<br>ContactRadio radio.escape_available via shadow_ledger (generic) |
+| `vo.accountant.radio_escape_available_2` | radio.escape_available | B | ContactRadio radio.escape_available via night_deposit (generic)<br>ContactRadio radio.escape_available via shadow_ledger (generic) |
+| `vo.accountant.radio_escape_available_3` | radio.escape_available | B | ContactRadio radio.escape_available via night_deposit (generic)<br>ContactRadio radio.escape_available via shadow_ledger (generic) |
+| `vo.accountant.radio_escape_1` | radio.escape | B | ContactRadio radio.escape via night_deposit (generic) |
+| `vo.accountant.radio_escape_2` | radio.escape | B | ContactRadio radio.escape via night_deposit (generic) |
+| `vo.accountant.radio_escape_3` | radio.escape | B | ContactRadio radio.escape via night_deposit (generic) |
 | `vo.accountant.radio_loot_secured_1` | radio.loot_secured | B | ContactRadio radio.loot_secured (loot.cash) via night_deposit (generic)<br>ContactRadio radio.loot_secured (loot.cash_bricks) via night_deposit (generic)<br>ContactRadio radio.loot_secured (loot.small_valuables) via night_deposit (generic)<br>ContactRadio radio.loot_secured (loot.ledger_laptop) via shadow_ledger (generic)<br>ContactRadio radio.loot_secured (loot.ledger_drives) via shadow_ledger (generic)<br>ContactRadio radio.loot_secured (loot.ledger_books) via shadow_ledger (generic)<br>ContactRadio radio.loot_secured (loot.painting) via shadow_ledger (generic)<br>ContactRadio radio.loot_secured (loot.cash) via shadow_ledger (generic) |
 | `vo.accountant.radio_loot_secured_2` | radio.loot_secured | B | ContactRadio radio.loot_secured (loot.cash) via night_deposit (generic)<br>ContactRadio radio.loot_secured (loot.cash_bricks) via night_deposit (generic)<br>ContactRadio radio.loot_secured (loot.small_valuables) via night_deposit (generic)<br>ContactRadio radio.loot_secured (loot.ledger_laptop) via shadow_ledger (generic)<br>ContactRadio radio.loot_secured (loot.ledger_drives) via shadow_ledger (generic)<br>ContactRadio radio.loot_secured (loot.ledger_books) via shadow_ledger (generic)<br>ContactRadio radio.loot_secured (loot.painting) via shadow_ledger (generic)<br>ContactRadio radio.loot_secured (loot.cash) via shadow_ledger (generic) |
 | `vo.accountant.radio_loot_secured_3` | radio.loot_secured | B | ContactRadio radio.loot_secured (loot.cash) via night_deposit (generic)<br>ContactRadio radio.loot_secured (loot.cash_bricks) via night_deposit (generic)<br>ContactRadio radio.loot_secured (loot.small_valuables) via night_deposit (generic)<br>ContactRadio radio.loot_secured (loot.ledger_laptop) via shadow_ledger (generic)<br>ContactRadio radio.loot_secured (loot.ledger_drives) via shadow_ledger (generic)<br>ContactRadio radio.loot_secured (loot.ledger_books) via shadow_ledger (generic)<br>ContactRadio radio.loot_secured (loot.painting) via shadow_ledger (generic)<br>ContactRadio radio.loot_secured (loot.cash) via shadow_ledger (generic) |

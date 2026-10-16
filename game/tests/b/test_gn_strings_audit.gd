@@ -110,6 +110,11 @@ func test_briefing_text_and_list() -> void:
 	var b: Dictionary = BriefingModel.build(HEIST, Enums.Difficulty.ROUTINE)
 	var rows: Array = b["objectives"] as Array
 	assert_eq(rows.size(), 6, "D-117 §5: 5 lead steps + the final one")
+	# LEAD ruling on the second audit: the def lists [casing, find_canvases, access step, cut step, secure, escape].
+	var steps: Array[Dictionary] = BriefingModel.objective_lines(HEIST, [&"ui.briefing.step.gallery_night.access",
+			&"ui.briefing.step.gallery_night.cut"])
+	assert_eq(String(steps[0]["text"]), "As needed: a keycard, the Argus code and the frame-sensor hack", "GN access")
+	assert_eq(String(steps[1]["text"]), "Cut The Lantern Bearer and one more listed canvas", "GN cut step (D-075)")
 	assert_eq(int(b["objectives_more"]), 2, "+2 more steps on the night")
 	assert_eq(StringName((rows[5] as Dictionary)["id"]), &"escape", "the final step is the escape")
 	assert_eq(int((rows[5] as Dictionary)["index"]), 8, "the final step keeps its number")
