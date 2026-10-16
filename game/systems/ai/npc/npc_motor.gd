@@ -27,7 +27,8 @@
 ## yield, a held body does not move_and_slide at all: no idle drift away from a neighbour and no depenetration out of
 ## a counter / chair placed right against (or under) the mark, which is where the clip lines up with the prop. It
 ## still turns, and settles onto the floor below its root (a ray from just above the feet; a box it starts inside,
-## the chair under a seated NPC, is ignored) instead of falling.
+## the chair under a seated NPC, is ignored) instead of falling. With a `mark_anchor` (a brain whose NPC was pushed
+## off its mark: a yield, a drift while not calm) it slides straight back onto it (_slide_to_anchor).
 ## X-5 floors: arrival is horizontal (arrive_distance) AND within arrive_dy of the target's height. It was flat
 ## only, so a cop chasing a crew member on the floor above stood right under him "arrived" (stop -> the brain
 ## re-issues the same go_to -> arrived again) for minutes (GH: a first responder parked by the WorkshopDoor below
@@ -91,6 +92,8 @@ var rappelling: bool = false
 ## tick (returns bool).
 var hold_mark: bool = false
 var hold_check: Callable = Callable()
+## X-5: while held, the body slides back onto this point (the brain's mark after a push); INF = stay put.
+var mark_anchor: Vector3 = Vector3.INF
 
 var _body: CharacterBody3D = null
 var _agent: NavigationAgent3D = null
@@ -260,6 +263,7 @@ func _physics_step(delta: float) -> void:
 			if face_dir != Vector3.ZERO:
 				_turn_toward(face_dir, delta)
 			_body.velocity = Vector3.ZERO
+			_slide_to_anchor(delta)
 			_settle_held(delta)
 			return  # X-5: held on its mark: no drift, no depenetration push
 		horiz = _idle_drift(npc)
@@ -277,6 +281,20 @@ func _physics_step(delta: float) -> void:
 	else:
 		_body.velocity.y = minf(_body.velocity.y, 0.0)
 	_body.move_and_slide()
+
+
+## X-5: a held body with a mark_anchor slides straight onto it (horizontal, npc_mark_settle_speed, no physics: the
+## mark may sit closer to its counter / chair than the navmesh edge, where the clip lines up with the prop).
+func _slide_to_anchor(delta: float) -> void:
+	if mark_anchor == Vector3.INF:
+		return
+	var d: Vector3 = mark_anchor - _body.global_position
+	d.y = 0.0
+	var step: float = Tweak.stealth().npc_mark_settle_speed * delta
+	if d.length() <= step:
+		_body.global_position += d
+	else:
+		_body.global_position += d.normalized() * step
 
 
 ## X-5: a held body drops onto the floor right below its root (at most gravity's fall this tick), no physics push.
