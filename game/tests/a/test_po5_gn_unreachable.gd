@@ -267,3 +267,22 @@ func test_po5_pilot_finds_the_leaf_it_walks_into() -> void:
 	_rt.teleport_crew(0, Transform3D(Basis.IDENTITY, door.global_position + Vector3(0, 0.05, 3.0)))
 	await wait_physics_frames(3)
 	assert_true(pilot._leaf_contact() == null, "3 m away: no leaf")
+
+
+## P's PO6 GH stealth run (SalonBackDoor, ui.blocked.casing): goto opens only a door its route goes THROUGH. A closed
+## door straight ahead that the route turns away from (LobbyDoor -> G4 -> west, the salon door in the south wall) is
+## not "the door ahead"; the door the route crosses is.
+func test_po5_pilot_door_ahead_only_when_the_route_crosses_it() -> void:
+	var s: Dictionary = await _setup()
+	var door: Door = s["door"]
+	var pilot: Po5Pilot = s["pilot"]
+	_rt.teleport_crew(0, Transform3D(Basis.IDENTITY, door.global_position + Vector3(0, 0.05, 1.6)))
+	pilot.crew.look_yaw = 0.0  # facing the door
+	await wait_physics_frames(3)
+	var here: Vector3 = pilot.crew.global_position
+	var turn_away: PackedVector3Array = PackedVector3Array([here, Vector3(0, 0, 0.7), Vector3(4, 0, 0.7)])
+	assert_true(pilot.door_ahead(Vector3(0, 0, 0.7), turn_away) == null, "the route turns before the doorway")
+	var through: PackedVector3Array = PackedVector3Array([here, Vector3(0, 0, -0.6), Vector3(0, 0, -4)])
+	assert_eq(pilot.door_ahead(Vector3(0, 0, -0.6), through), door, "the route goes through it")
+	var nav: PackedVector3Array = pilot.nav_path(Vector3(0, 0, -4))
+	assert_eq(pilot.door_ahead(Vector3.INF, nav), door, "the real navmesh path through the doorway")

@@ -11,6 +11,8 @@ extends RefCounted
 const REPRESS_TICKS: int = 20
 ## use() on a door walks (opening doors on the way) to within this of it before open_door() squares up (m).
 const DOOR_NEAR_M: float = 1.8
+## goto(): a closed door whose doorway the route crosses within this of the crew is opened first (m).
+const DOOR_LOOKAHEAD_M: float = 1.8
 ## Loud: a visible enemy within this range is fought before / during a hold (S9.1: damage cancels holds) (m).
 const HOLD_THREAT_M: float = 20.0
 ## Longest clearing fight before holding anyway (s).
@@ -203,7 +205,7 @@ func goto(target: Vector3, arrive_m: float = 0.8, timeout_s: float = 60.0, sprin
 			if flat_dist(p, crew.global_position) > 0.45:
 				corner = p
 				break
-		var door: Door = door_ahead(corner) if doors else null
+		var door: Door = door_ahead(corner, path) if doors else null
 		if door != null and _door_blocked(door):
 			inp.release(&"move_forward")
 			d.note("pilot: goto blocked by %s (%s); giving up this leg" % [door.name, _door_why(door)])
@@ -477,8 +479,14 @@ func _aim_on(comp: InteractableComponent, target: Vector3) -> bool:
 	return is_instance_valid(comp) and isys.aimed_component(crew) == comp
 
 
-## A closed door within 1.8 m in front of the crew (the pilot opens it like a player: aim + hold F).
-func door_ahead(corner: Vector3 = Vector3.INF) -> Door:
+## A closed door within 1.8 m in front of the crew (the pilot opens it like a player: aim + hold F). With the nav
+## `path` being walked: the first closed door whose doorway the route crosses within DOOR_LOOKAHEAD_M (P's PO6 GH
+## stealth run: coming south through the LobbyDoor into G4, the old "handle near the segment to the next corner" test
+## picked the LOCKPICK SalonBackDoor straight ahead, which the route turns away from, and a casing pilot gave up the
+## leg at ui.blocked.casing). Without a path: a door whose handle is near the segment to `corner`.
+func door_ahead(corner: Vector3 = Vector3.INF, path: PackedVector3Array = PackedVector3Array()) -> Door:
+	if path.size() >= 2:
+		return _door_on_route(path)
 	var fwd: Vector3 = Vector3(-sin(crew.look_yaw), 0.0, -cos(crew.look_yaw))
 	for n: Node in crew.get_tree().get_nodes_in_group(G.INTERACTABLE):
 		var c: InteractableComponent = n as InteractableComponent
@@ -499,6 +507,45 @@ func door_ahead(corner: Vector3 = Vector3.INF) -> Door:
 				if off > 0.7:
 					continue
 			return door
+	return null
+
+
+## The first closed Door (any, Door.GROUP) whose doorway the route crosses within DOOR_LOOKAHEAD_M of the crew: from
+## the crew along `path` (its points past the one the crew is on), legs lifted to waist height.
+func _door_on_route(path: PackedVector3Array) -> Door:
+	var doors: Array[Door] = []
+	for n: Node in crew.get_tree().get_nodes_in_group(Door.GROUP):
+		var dn: Door = n as Door
+		if dn != null and not dn.is_open and flat_dist(dn.global_position, crew.global_position) < DOOR_LOOKAHEAD_M + 2.0:
+			doors.append(dn)
+	if doors.is_empty():
+		return null
+	var up: Vector3 = Vector3.UP * 0.5
+	var a: Vector3 = crew.global_position
+	var left: float = DOOR_LOOKAHEAD_M
+	var started: bool = false
+	for pt: Vector3 in path:
+		if not started:
+			if flat_dist(pt, crew.global_position) <= 0.45:
+				continue  # the point the crew stands on
+			started = true
+		var b: Vector3 = pt
+		var leg: float = a.distance_to(b)
+		if leg > left:
+			b = a.lerp(b, left / leg)
+		var best: Door = null
+		var best_d: float = INF
+		for dn: Door in doors:
+			var x: Vector3 = dn.doorway_crossing(a + up, b + up)
+			if x != Vector3.INF and x.distance_to(a) < best_d:
+				best = dn
+				best_d = x.distance_to(a)
+		if best != null:
+			return best
+		left -= leg
+		if left <= 0.0:
+			break
+		a = pt
 	return null
 
 
