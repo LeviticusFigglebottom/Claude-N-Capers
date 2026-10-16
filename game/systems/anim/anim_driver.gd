@@ -836,7 +836,7 @@ func armed_clip(c: StringName) -> StringName:
 
 
 ## v1.20: while the crew body carries a LootBag, its LootDef.bag_model (else the bag's own visual scene) sits at
-## Back/Socket x AnimTweak.carried_bag_offset (the left shoulder strap of carry_bag_walk); the LootBag's own visual
+## Back/Socket (v1.22: the bag pivot) shifted by AnimTweak.carried_bag_offset_by_weight; the LootBag's own visual
 ## (which follows the carrier's back) is hidden meanwhile. Dropped / thrown / secured: removed, the bag shows again.
 func _update_bag_visual(tw: AnimTweak) -> void:
 	var bag: Node = _crew.carried_bag if _crew != null and _crew.is_carrying_bag() else null
@@ -858,7 +858,8 @@ func _update_bag_visual(tw: AnimTweak) -> void:
 		return
 	inst.name = CARRIED_BAG_NODE
 	socket.add_child(inst)
-	inst.transform = tw.carried_bag_offset
+	inst.transform = Transform3D(Basis.IDENTITY, tw.carried_bag_offset_by_weight.get(
+		int(lb.weight) if lb != null else Enums.LootWeight.MEDIUM, Vector3.ZERO))
 	if lb != null and lb.visual_instance != null and is_instance_valid(lb.visual_instance) and scene == LootBag.PLACEHOLDER:
 		inst.scale = lb.visual_instance.scale  # the placeholder is sized by weight class
 	if lb != null and lb.visual_root != null:

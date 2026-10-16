@@ -180,3 +180,18 @@ func test_carried_bag_visual_on_back() -> void:
 	await wait_frames(1)
 	assert_eq(back.find_children(AnimDriver.CARRIED_BAG_NODE, "", false, false).size(), 0, "freed")
 	assert_true(bag.visual_root.visible, "the LootBag shows its own visual again")
+	# characters.md v1.22: Back/Socket is the bag pivot; only a per-weight lift along the socket's Y.
+	var lift: Dictionary = AnimTweak.data().carried_bag_offset_by_weight
+	for w: int in [Enums.LootWeight.LIGHT, Enums.LootWeight.MEDIUM, Enums.LootWeight.HEAVY, Enums.LootWeight.VERY_HEAVY]:
+		bag.weight = w as Enums.LootWeight
+		crew.set_carried_bag(bag)
+		d.tick(0.05)
+		assert_true(d.bag_visual != null, "weight %d: on the back" % w)
+		if d.bag_visual != null:
+			assert_true(d.bag_visual.transform.basis.is_equal_approx(Basis.IDENTITY), "weight %d: no rotation" % w)
+			assert_true(d.bag_visual.position.is_equal_approx(lift[w] as Vector3), "weight %d: %s" % [w, lift[w]])
+		crew.set_carried_bag(null)
+		d.tick(0.05)
+	assert_true((lift[Enums.LootWeight.MEDIUM] as Vector3).is_zero_approx(), "a MEDIUM bag sits at the pivot")
+	assert_near((lift[Enums.LootWeight.LIGHT] as Vector3).y, 0.05, 0.0001, "light rides 5 cm up")
+	assert_near((lift[Enums.LootWeight.HEAVY] as Vector3).y, -0.05, 0.0001, "heavy 5 cm down")

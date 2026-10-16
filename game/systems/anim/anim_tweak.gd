@@ -103,12 +103,12 @@ static var _cached: AnimTweak = null
 @export var hit_zone_blend_out_s: float = 0.12
 ## characters.md v1.19 (SOURCE weapon_holds): the crew upper-body hold layer blends in / out over this (s).
 @export var hold_layer_blend_s: float = 0.2
-## characters.md v1.20: the carried-bag visual's transform under Back/Socket (characters.md: loot bags at
-## Back/Socket; carry_bag_walk holds the strap at the left shoulder). ◇ from a windowed review (rook, D-116 clip):
-## 30 cm down the back, 7 cm left, rolled 22 deg so the left end rides up to the strap hand (Back/Socket at identity
-## sat across the shoulders like a backpack, the handles at the head).
-@export var carried_bag_offset: Transform3D = Transform3D(Basis.from_euler(Vector3(0.0, 0.0, deg_to_rad(-22.0))),
-	Vector3(-0.07, -0.30, 0.05))
+## characters.md v1.22 (D c885e144): Back/Socket is the carried bag's pivot, so an identity attach seats a MEDIUM bag;
+## the other sizes shift along the socket's local Y by Enums.LootWeight (VERY_HEAVY rides like HEAVY).
+@export var carried_bag_offset_by_weight: Dictionary = {
+	Enums.LootWeight.LIGHT: Vector3(0.0, 0.05, 0.0), Enums.LootWeight.MEDIUM: Vector3.ZERO,
+	Enums.LootWeight.HEAVY: Vector3(0.0, -0.05, 0.0), Enums.LootWeight.VERY_HEAVY: Vector3(0.0, -0.05, 0.0),
+}
 ## characters.md v1.21 crew-state event times (SOURCE, 30 fps): downed_arrested disarm@6 (the weapon goes), crew_cuffed_free
 ## free@8 (the weapon comes back); downed_getup crossfades into the current hold over getup_blend_s.
 @export var arrest_disarm_s: float = 0.2
