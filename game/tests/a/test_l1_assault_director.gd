@@ -121,6 +121,9 @@ func test_l1_4_spawns_out_of_los_15m_and_capped() -> void:
 	tw.unit_spawn_interval_s = 0.2
 	tw.force_crew_mult = PackedFloat32Array([1.0])  # PO-5.4 force scaling off: the enemy cap alone binds
 	tw.stage_force_mult = PackedFloat32Array([1.0])
+	# L1.4 rules and the plain BUILD groups' make-up: no added specials (the assault special share is
+	# test_director_assault_specials' subject; with a cap of 5 they would fill it ahead of the squads).
+	tw.assault_special_share = PackedFloat32Array([0.0])
 	var diff: DifficultyDef = DifficultyDef.new()
 	diff.enemy_cap = 5
 	diff.assault_intensity = 1.0
