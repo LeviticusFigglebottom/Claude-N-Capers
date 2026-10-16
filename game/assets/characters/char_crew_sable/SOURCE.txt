@@ -7,16 +7,16 @@ rebuild: python3 tools/blender/build.py --category characters --asset char_crew_
 edit policy: generated file, never edit by hand; change the script and rebuild
 attach_Back: bone chest, local [0.0000, 0.0875, 0.0957] (model [0.0000, 1.2781, 0.1138], Godot axes, rest pose)
 attach_Head: bone head, local [0.0000, 0.0796, -0.0872] (model [0.0000, 1.6379, -0.0754], Godot axes, rest pose)
-attach_Hip: bone hips, local [0.1775, 0.0504, 0.0435] (model [0.1775, 0.9871, 0.0460], Godot axes, rest pose)
-body_faces_culled: 5698
+attach_Hip: bone hips, local [0.1777, 0.0504, 0.0436] (model [0.1777, 0.9871, 0.0460], Godot axes, rest pose)
+body_faces_culled: 5742
 body_params: {"age": 0.38, "beard_shadow": 0.0, "build": 0.2, "gender": 1.0, "hair": "bob", "hair_color": "dark", "hair_peak": 0.0, "height": 1.75, "lip": "auto", "skin": 5}
 bones: 52
-faces_hidden_by_blazer: 2699
+faces_hidden_by_blazer: 2692
 fp_sleeve: {"cuff": "char_knit_graphite", "glove": "char_crew_glove_ivory", "sleeve": "char_crew_sable_blazer"}
 head_note: hat-free; the crew mask attaches at Head (face centre)
 look: Sable: cropped aubergine blazer, sharp shoulders, black satin lapels, black roll-neck, narrow trousers, heeled ankle boots, ivory gloves
 meshes: Body,Gear,Hair,Headwear,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 26772
-tris_by_mesh: {"Body": 7432, "Gear": 116, "Hair": 2088, "Headwear": 440, "Outfit": 16696}
+tris: 26826
+tris_by_mesh: {"Body": 7344, "Gear": 116, "Hair": 2088, "Headwear": 440, "Outfit": 16838}

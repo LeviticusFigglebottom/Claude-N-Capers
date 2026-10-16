@@ -7,8 +7,8 @@ rebuild: python3 tools/blender/build.py --category characters --asset char_conta
 edit policy: generated file, never edit by hand; change the script and rebuild
 attach_Back: bone chest, local [0.0000, 0.0904, 0.1087] (model [0.0000, 1.3146, 0.1274], Godot axes, rest pose)
 attach_Head: bone head, local [0.0000, 0.0819, -0.0897] (model [0.0000, 1.6847, -0.0776], Godot axes, rest pose)
-attach_Hip: bone hips, local [0.1829, 0.0513, 0.0353] (model [0.1829, 1.0153, 0.0378], Godot axes, rest pose)
-body_faces_culled: 4821
+attach_Hip: bone hips, local [0.1830, 0.0513, 0.0353] (model [0.1830, 1.0153, 0.0378], Godot axes, rest pose)
+body_faces_culled: 4882
 body_params: {"age": 0.5, "beard_shadow": 0.0, "build": 0.3, "gender": 0.0, "hair": "short", "hair_color": "dark", "hair_peak": 0.0, "height": 1.8, "lip": "auto", "skin": 2}
 bones: 52
 head_note: fedora (top z 1.849 m, Blender axes), glasses with lenses
@@ -16,5 +16,5 @@ meshes: Body,Gear,Hair,Headwear,Outfit
 portrait: QB-50a contact bust: The Accountant (backlit silhouette)
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 34498
-tris_by_mesh: {"Body": 9102, "Gear": 364, "Hair": 1728, "Headwear": 2222, "Outfit": 21082}
+tris: 34506
+tris_by_mesh: {"Body": 8980, "Gear": 364, "Hair": 1728, "Headwear": 2222, "Outfit": 21212}

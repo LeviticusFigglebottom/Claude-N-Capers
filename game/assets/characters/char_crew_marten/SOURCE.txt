@@ -8,7 +8,7 @@ edit policy: generated file, never edit by hand; change the script and rebuild
 attach_Back: bone chest, local [0.0000, 0.0859, 0.1166] (model [0.0000, 1.2416, 0.1342], Godot axes, rest pose)
 attach_Head: bone head, local [0.0000, 0.0774, -0.0847] (model [0.0000, 1.5911, -0.0733], Godot axes, rest pose)
 attach_Hip: bone hips, local [0.2064, 0.0491, 0.0450] (model [0.2064, 0.9588, 0.0474], Godot axes, rest pose)
-body_faces_culled: 5768
+body_faces_culled: 5822
 body_params: {"age": 0.62, "beard_shadow": 0.0, "build": 0.7, "gender": 1.0, "hair": "short", "hair_color": "grey", "hair_peak": 0.0, "height": 1.7, "lip": "auto", "skin": 3}
 bones: 52
 faces_hidden_by_parka: 2818
@@ -18,5 +18,5 @@ look: Marten: hip-length olive field parka zipped high, fur-trimmed hood down be
 meshes: Body,Gear,Hair,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 27410
-tris_by_mesh: {"Body": 7292, "Gear": 306, "Hair": 1728, "Outfit": 18084}
+tris: 27430
+tris_by_mesh: {"Body": 7184, "Gear": 306, "Hair": 1728, "Outfit": 18212}

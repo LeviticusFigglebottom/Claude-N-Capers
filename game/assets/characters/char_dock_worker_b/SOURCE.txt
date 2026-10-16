@@ -12,6 +12,7 @@ body_faces_culled: 4733
 body_params: {"age": 0.25, "beard_shadow": 0.0, "build": 0.5, "gender": 1.0, "hair": "bob", "hair_color": "dark", "hair_peak": 0.0, "height": 1.68, "lip": "auto", "skin": 6}
 bones: 52
 hat: blue hard hat (Headwear)
+headwear_class: hard_hat
 insignia: none (civilian work wear; no police/cartel material ids)
 look: forklift driver B: yellow hi-vis vest (silver tape) over a charcoal canvas work jacket, black cargo trousers, black safety boots, blue hard hat
 meshes: Body,Gear,Hair,Headwear,Outfit

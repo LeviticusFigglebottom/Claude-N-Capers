@@ -8,7 +8,7 @@ edit policy: generated file, never edit by hand; change the script and rebuild
 attach_Back: bone chest, local [0.0000, 0.0940, 0.1638] (model [0.0000, 1.3365, 0.1829], Godot axes, rest pose)
 attach_Head: bone head, local [0.0000, 0.0833, -0.0912] (model [0.0000, 1.7128, -0.0789], Godot axes, rest pose)
 attach_Hip: bone hips, local [0.1363, 0.0732, 0.1618] (model [0.1363, 1.0469, 0.1653], Godot axes, rest pose)
-body_faces_culled: 5719
+body_faces_culled: 5794
 body_params: {"age": 0.4, "beard_shadow": 0.7, "build": 1.0, "gender": 0.0, "hair": "buzz", "hair_color": "dark", "hair_peak": 0.0, "height": 1.83, "lip": "auto", "skin": 1}
 bones: 52
 faction: frd
@@ -16,7 +16,7 @@ hat: heavy helmet, visor up (Headwear)
 meshes: Body,Gear,Hair,Headwear,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 32590
-tris_by_mesh: {"Body": 7390, "Gear": 4552, "Hair": 1200, "Headwear": 2576, "Outfit": 16872}
+tris: 32576
+tris_by_mesh: {"Body": 7240, "Gear": 4552, "Hair": 1200, "Headwear": 2576, "Outfit": 17008}
 variant_of: tac_heavy
 visual_variant: frd
