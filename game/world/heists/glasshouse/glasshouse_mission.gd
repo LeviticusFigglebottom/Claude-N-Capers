@@ -30,6 +30,11 @@ const TAG_ESCAPE: StringName = &"escape_van"
 const TAG_KEYCARD: StringName = &"keycard"
 ## PO-5 (D-089 markers): the van's secure zones (VanSecureE1 / VanSecureE2).
 const TAG_LOOT_SECURE: StringName = &"loot_secure"
+## D-117 optional objectives (HeistDef.briefing_optional; Vance's radio lines on completion).
+const TAG_SALON_CASE: StringName = &"salon_case"
+const TAG_DISPLAY_CASE: StringName = &"display_case"
+## The map's cases carry no objective_tag (optional loot, not levelcheck objectives); tagged at start.
+const DISPLAY_CASES_PATH: NodePath = ^"Gameplay/DisplayCases"
 
 var _safe_open: bool = false
 var _lockdown: bool = false
@@ -64,12 +69,20 @@ func _on_mission_start() -> void:
 		{"bags": MIN_BAGS, "count": 0, "total": MIN_BAGS, "optional_more": true, "marker_tags": [TAG_LOOT_SECURE]})
 	require_loot(&"secure", MIN_BAGS)
 	add_objective(&"escape", &"objective.glasshouse.escape", Enums.ObjectiveState.HIDDEN, {"marker_tags": [TAG_ESCAPE]})
+	# D-117 optional extras: more than the minimum bags, the salon's two cases, the sales-floor cases.
+	_tag_display_cases()
+	add_objective(&"extra_bags", &"objective.glasshouse.extra_bags", Enums.ObjectiveState.ACTIVE, {"optional": true})
+	add_objective(&"salon", &"objective.glasshouse.salon", Enums.ObjectiveState.ACTIVE,
+		{"optional": true, "marker_tags": [TAG_SALON_CASE]})
+	add_objective(&"display_cases", &"objective.glasshouse.display_cases", Enums.ObjectiveState.ACTIVE,
+		{"optional": true, "marker_tags": [TAG_DISPLAY_CASE]})
 	on_event(&"interaction_completed", _on_interaction_completed)
 	on_event(&"device_finished", _on_device_finished)
 	on_event(&"device_jammed", _on_device_jammed)
 	on_event(&"item_picked_up", _on_item_picked_up)
 	on_event(&"loot_secured", _on_bag_secured)
 	on_event(&"assault_phase_changed", _on_assault_phase_changed)
+	on_event(&"small_loot_taken", _on_small_loot_taken)
 	_apply_door_variants()
 	if _slot_active(&"safe_state", &"safe_open"):
 		_open_safe(&"left_open")
@@ -168,8 +181,16 @@ func _open_safe(method: StringName) -> void:
 	activate(&"safe_loot")
 
 
+## D-117: a case emptied (emitted after the case sets `taken`): the salon / display_cases extras.
+func _on_small_loot_taken(_value: int, _crew_slot: int) -> void:
+	_check_cases(&"salon", TAG_SALON_CASE)
+	_check_cases(&"display_cases", TAG_DISPLAY_CASE)
+
+
 func _on_bag_secured(_bag_net_id: int, _loot_id: StringName, _value: int) -> void:
 	update_objective_data(&"secure", {"count": bags_secured, "total": MIN_BAGS})  # HUD: count / total bags
+	if bags_secured > MIN_BAGS and objective_state(&"extra_bags") == Enums.ObjectiveState.ACTIVE:
+		complete(&"extra_bags")
 	_try_escape()
 
 
@@ -225,6 +246,30 @@ func _try_escape() -> void:
 
 
 # --- Helpers ----------------------------------------------------------------------------------
+
+## D-117: SalonCase* get TAG_SALON_CASE, the other cases TAG_DISPLAY_CASE (markers and find_tagged).
+func _tag_display_cases() -> void:
+	var map_root: Node = get_parent()
+	var holder: Node = map_root.get_node_or_null(DISPLAY_CASES_PATH) if map_root != null else null
+	if holder == null:
+		return
+	for c: Node in holder.get_children():
+		if &"objective_tag" in c and StringName(c.get(&"objective_tag")) == &"":
+			c.set(&"objective_tag", TAG_SALON_CASE if String(c.name).begins_with("Salon") else TAG_DISPLAY_CASE)
+
+
+## D-117 optional: completes `objective_id` once every display case tagged `tag` has had its loot taken.
+func _check_cases(objective_id: StringName, tag: StringName) -> void:
+	if objective_state(objective_id) != Enums.ObjectiveState.ACTIVE:
+		return
+	var cases: Array[Node] = find_tagged(tag)
+	if cases.is_empty():
+		return
+	for c: Node in cases:
+		if not bool(c.get(&"taken")):
+			return
+	complete(objective_id)
+
 
 ## PO6-04: an objective the crew no longer needs (the other way in was found, or the safe is open).
 func _skip_if_active(objective_id: StringName) -> void:
