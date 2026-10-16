@@ -12,3 +12,12 @@ attached at HandR/Socket exactly as AnimDriver does. Left column: a wide view; r
   weight shift in the idle loops.
 A wires these clips (SOURCE `weapon_holds`): idle_alert_<kind> while holding and not aiming; hold_<kind> layered on
 the upper body over walk / run / strafe.
+
+## Crew interaction audit (third person)
+- `interactions_before.png`: rows interact_low, interact_mid, interact_high, drill_place, pager_answer,
+  throw_bag (0.35 and 0.5 s), carry_bag_walk. The rifle went through the forearm (mid), through the head (high and
+  the throw release) and behind the head (bag carry).
+- `interactions_after.png`: the same rows with the armed variants interact_low/mid/high_armed and throw_bag_armed.
+  The weapon stays in a low carry in the right hand while the left hand does the work. In the crouch the carry
+  drops with the hips, muzzle down. The bag carry holds the strap in the left hand at the left shoulder.
+A plays the *_armed variants whenever the crew member holds a weapon (SOURCE `armed_interactions`).
