@@ -56,6 +56,9 @@ var own_last_pager_line: bool = false
 ## SL-6 (S11.3): true when this STEALTH_ONLY mission says its own abort line (in `_on_alarm`); HeistRuntime then
 ## skips the generic vo.mercer.abort so the alarm is not called twice.
 var own_abort_line: bool = false
+## B-SL audit: true once Mercer said this heist's own intro (a `vo.mercer.*_intro` line, set by `say`); BarkDirector
+## then drops the generic casing line (heist_start_casing) so the heist is not introduced twice.
+var own_intro_line: bool = false
 
 var _runtime: HeistRuntime = null
 ## objective id ->{ "id", "text_key", "state", "data", "order" }
@@ -256,6 +259,8 @@ func _spawn_scripted(sp: SpawnPoint, xf: Transform3D) -> NpcBase:
 
 ## Mercer (or another speaker) line: voice_line_requested [R] (C8).
 func say(line_id: StringName, context: Dictionary = {}, speaker: StringName = SPEAKER_MERCER) -> void:
+	if speaker == SPEAKER_MERCER and String(line_id).ends_with("_intro"):
+		own_intro_line = true
 	EventBus.voice_line_requested.emit(speaker, line_id, context)
 	Net.replicate_event(&"voice_line_requested", [speaker, line_id, context])
 
