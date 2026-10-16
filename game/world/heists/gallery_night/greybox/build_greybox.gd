@@ -47,6 +47,11 @@ const POOL_WATER_Y: float = 0.2
 const WATER_MAT: String = "res://world/materials/water_harbour_night.tres"
 ## Parapet coping (B4.5: >= 50 deg): a ridge 0.3 m above the wall top over the half thickness (0.2 m) = 56 deg.
 const COPING_RISE: float = 0.3
+## The moon lights only visuals on this render layer (layer 3): the outside of the building (GN-C2).
+const MOON_LAYER: int = 1 << 2
+const LUT_PATH: String = "res://assets/luts/lut_gallery_night.png"
+## Interior VoxelGI data (baked by bake_gi.gd under xvfb; see its header).
+const GI_PATH: String = "res://world/heists/gallery_night/gallery_night_voxelgi.res"
 
 
 func _initialize() -> void:
@@ -64,6 +69,12 @@ static func _scene_out() -> String:
 func _build() -> void:
 	var out: String = _scene_out()
 	var old_scene_uid: String = read_uid(out)
+	art = A.new()
+	art.call(&"setup")
+	var vis_err: String = GV.make(art, load("res://world/heists/gallery_night/greybox/gn_builder_base.gd") as GDScript)
+	if vis_err != "":
+		_fail(vis_err)
+		return
 	map_root = HeistMap.new()
 	map_root.name = "GalleryNight"
 	# HeistDef / variant table: ENV B's data, copied verbatim from its drafts to the registry path (heist_map.md §1);
@@ -102,14 +113,17 @@ func _build() -> void:
 	_build_review_cameras(n("ReviewCameras"))
 	build_npcs()
 	build_tactical(n("Tactical"))
-	build_lights(n("Lighting"))
 	_build_environment(n("Lighting"))
+	_voxel_gi(n("Lighting"))
 	build_gameplay(n("Gameplay"))
 	build_variants(n("Variants"))
 	# PO6-17 markers (gn_assault.gd); the intact breach infills obstruct the bake
 	errors.append_array(AM.build(map_root, AE.TURRET_VANS, AE.HELI_ORBITS, AE.HELI_DROPS, [], AE.BREACHES, obstructions,
 		0.0))  # face_pad 0: the GN bake erodes a projected infill like the wall face (navmesh unchanged)
 	_build_nav_links(nav)
+	link_seats()
+	_build_dressing()
+	_build_art()
 	var polys: int = await _bake(nav)
 	if polys <= 0:
 		_fail("navmesh bake produced no polygons")
@@ -300,7 +314,7 @@ func _build_sills(parent: Node3D) -> void:
 		var s1: float = fx + L.EXT_T * 0.5 if lo_out else fx
 		var bmn: Vector3 = Vector3(float(q[2]), -L.SLAB_T, s0) if ax == "x" else Vector3(s0, -L.SLAB_T, float(q[2]))
 		var bmx: Vector3 = Vector3(float(q[3]), 0.0, s1) if ax == "x" else Vector3(s1, 0.0, float(q[3]))
-		box(parent, "SillBreach_%s" % String(b[0]).get_slice("_", 1), bmn, bmx, "floor")
+		box(parent, "SillBreach_%s" % String(b[0]).get_slice("_", 1), bmn, bmx, "sill")
 
 
 ## A wall run of a lower floor on the same line covering [a0, a1] whose top is at `ffl` (it carries the opening).
@@ -455,7 +469,7 @@ func _build_grand_stair(parent: Node3D) -> void:
 	var y_half: float = float(nr) * r
 	var y_top: float = 2.0 * y_half
 	flight(gs, "Central", Vector3((float(cx[0]) + float(cx[1])) * 0.5, 0.0, float(g["z_foot"])), 180.0,
-		float(cx[1]) - float(cx[0]), nr, r, t, 0.0)
+		float(cx[1]) - float(cx[0]), nr, r, t, 0.0, "marble_cream")
 	box(gs, "HalfLanding", Vector3(float(hl[0]), y_half - 0.3, float(hl[1]) - 0.1), Vector3(float(hl[2]), y_half, float(hl[3])),
 		"stair")
 	var lz: Array = g["upper_landing_z"]
@@ -465,7 +479,7 @@ func _build_grand_stair(parent: Node3D) -> void:
 		var x0: float = float(xs[0])
 		var x1: float = float(xs[1])
 		flight(gs, "Return" + String(sides[k]), Vector3((x0 + x1) * 0.5, y_half, float(g["z_land"])), 0.0, x1 - x0, nr, r, t,
-			null)
+			null, "marble_cream")
 		box(gs, "UpperLanding" + String(sides[k]), Vector3(x0, y_top - 0.3, float(lz[0])), Vector3(x1, y_top, float(lz[1])), "stair")
 		railing(gs, "UpperLandingRailS" + String(sides[k]), Vector3(x0, y_top, float(lz[1]) - 0.05),
 			Vector3(x1, y_top + 1.1, float(lz[1]) + 0.05))
@@ -529,7 +543,7 @@ func _handrail(parent: Node3D, nm: String, a: Vector3, b: Vector3) -> void:
 	add(body, col)
 	var mi: MeshInstance3D = MeshInstance3D.new()
 	mi.name = "Mesh"
-	mi.mesh = box_mesh(size, "trim")
+	mi.mesh = box_mesh(size, "handrail")
 	add(body, mi)
 
 
@@ -540,7 +554,7 @@ func _balustrade(parent: Node3D, nm: String, x0: float, x1: float, a: Vector2, b
 	var c: Array[Vector3] = []
 	for x: float in [x0, x1]:
 		c.append_array([Vector3(x, a.y - d, a.x), Vector3(x, a.y, a.x), Vector3(x, b.y, b.x), Vector3(x, b.y - d, b.x)])
-	_hexahedron(parent, nm, c, "trim")
+	_hexahedron(parent, nm, c, "ashlar_marble_cream")
 
 
 ## Static convex hexahedron from 8 corners (0-3 one face, 4-7 the opposite face, same order): collision + mesh.
@@ -556,30 +570,9 @@ func _hexahedron(parent: Node3D, nm: String, c: Array[Vector3], mat_id: String) 
 	col.name = "Collision"
 	col.shape = shp
 	add(body, col)
-	var centre: Vector3 = Vector3.ZERO
-	for p: Vector3 in c:
-		centre += p / 8.0
-	var st: SurfaceTool = SurfaceTool.new()
-	st.begin(Mesh.PRIMITIVE_TRIANGLES)
-	for q: Array in [[0, 1, 2, 3], [4, 5, 6, 7], [0, 1, 5, 4], [3, 2, 6, 7], [1, 2, 6, 5], [0, 3, 7, 4]]:
-		var p0: Vector3 = c[int(q[0])]
-		var p1: Vector3 = c[int(q[1])]
-		var p2: Vector3 = c[int(q[2])]
-		var p3: Vector3 = c[int(q[3])]
-		var nrm: Vector3 = (p1 - p0).cross(p2 - p0).normalized()
-		var fc: Vector3 = (p0 + p1 + p2 + p3) * 0.25
-		if nrm.dot(fc - centre) > 0.0:   # Godot front faces wind clockwise seen from outside
-			var tmp: Vector3 = p1
-			p1 = p3
-			p3 = tmp
-			nrm = -nrm
-		st.set_normal(-nrm)
-		for v: Vector3 in [p0, p1, p2, p0, p2, p3]:
-			st.add_vertex(v)
-	st.set_material(lib_mat(mat_id))
 	var mi: MeshInstance3D = MeshInstance3D.new()
 	mi.name = "Mesh"
-	mi.mesh = st.commit()
+	mi.mesh = art.call(&"local_hex_mesh", c, art_key(mat_id))
 	add(body, mi)
 	return body
 
@@ -626,7 +619,7 @@ func _coping(parent: Node3D, nm: String, axis: String, fixed: float, a0: float, 
 	for a: float in [a0, a1]:
 		for q: Vector2 in [Vector2(-h, 0.0), Vector2(-0.001, COPING_RISE), Vector2(0.001, COPING_RISE), Vector2(h, 0.0)]:
 			c.append(Vector3(a, y + q.y, fixed + q.x) if axis == "x" else Vector3(fixed + q.x, y + q.y, a))
-	_hexahedron(parent, nm, c, "trim")
+	_hexahedron(parent, nm, c, "limestone_plaster_painted")
 
 
 ## Grade around the building: the Parade (+ portico, + its east end to the barriers), the Mews and Wexley St, the
@@ -654,7 +647,15 @@ func _build_site(geo: Node3D) -> void:
 	for c: Array in L.CLOSURES:
 		var b: Array = c[1]
 		box(cl, String(c[0]), Vector3(float(b[0]), float(b[1]), float(b[2])), Vector3(float(b[3]), float(b[4]), float(b[5])),
-			String(c[2]))
+			String(AS.CLOSURE_CLASS.get(String(c[0]), String(c[2]))))
+		var i: int = 0
+		for v: Array in AS.CLOSURE_VEHICLES.get(String(c[0]), []):
+			var veh: Node3D = (load(String(v[0])) as PackedScene).instantiate() as Node3D
+			veh.name = "%sVehicle%d" % [String(c[0]), i]
+			veh.position = v[1]
+			veh.rotation_degrees = Vector3(0.0, float(v[2]), 0.0)
+			add(cl, veh)
+			i += 1
 
 
 ## Reflecting pool (B4.4): a stone rim 0.3 m high (a step in and out, heavy bag included) around a basin whose floor
@@ -696,7 +697,7 @@ func _build_areaway(parent: Node3D) -> void:
 	var z0: float = float(p[1])
 	var x1: float = float(p[2])
 	var z1: float = float(p[3])
-	box(parent, "Floor", Vector3(x0 - t, y0 - L.SLAB_T, z0 - t), Vector3(x1, y0, z1 + t), "floor")
+	box(parent, "Floor", Vector3(x0 - t, y0 - L.SLAB_T, z0 - t), Vector3(x1, y0, z1 + t), "sill")
 	box(parent, "WallN", Vector3(x0 - t, y0, z0 - t), Vector3(x1, -0.3, z0), "wall")
 	box(parent, "WallS", Vector3(x0 - t, y0, z1), Vector3(x1, -0.3, z1 + t), "wall")
 	box(parent, "WallW", Vector3(x0 - t, y0, z0), Vector3(x0, -0.3, z1), "wall")
@@ -832,7 +833,7 @@ func _build_review_cameras(cams: Node3D) -> void:
 		var dir: Vector3 = target - pos
 		var up: Vector3 = Vector3.FORWARD if absf(dir.normalized().dot(Vector3.UP)) > 0.99 else Vector3.UP
 		m.basis = Basis.looking_at(dir, up)
-		if nm == "rc_top_down":
+		if nm.begins_with("TopDown"):
 			m.set_meta(&"size", 110.0)
 		else:
 			m.set_meta(&"fov", 70.0)
@@ -842,12 +843,65 @@ func _build_review_cameras(cams: Node3D) -> void:
 	map_root.review_cameras = paths
 
 
+# --- Dressing (G2, GN-C2) ----------------------------------------------------------------------
+
+## The KitPlacer pass (gn_dress.gd, gallery_night_dressing.gd): every kit room, the anchors, the exterior props; the
+## fill lights. Floor props obstruct the navmesh bake that follows.
+func _build_dressing() -> void:
+	var dress: RefCounted = DR.new()
+	dress.call(&"setup", self, map_root, art)
+	dress.call(&"dress", n("Props"))
+	dress.call(&"fill_lights", add(n("Lighting"), node3d("Fill")) as Node3D)
+	for line: String in dress.get(&"report"):
+		printerr("dress: " + line)
+		if line.begins_with("ERROR"):
+			errors.append(line)
+
+
+# --- Art pass (G2, GN-C2) ----------------------------------------------------------------------
+
+## Room trims, the hall coffers, the facade and site, the skyline; flushed into Geometry/Visual (one MeshInstance3D per
+## room / tile group); reflection probes per room; occluders for the shell and the neighbours.
+func _build_art() -> void:
+	art.call(&"draw_queued")
+	art.call(&"room_trims")
+	art.call(&"hall_coffers", L.OCULUS)
+	var site: RefCounted = AS.new(art)
+	site.call(&"facade")
+	site.call(&"site_markings")
+	site.call(&"neighbour_windows")
+	site.call(&"skyline")
+	var vis: Node3D = add(n("Geometry"), node3d("Visual")) as Node3D
+	art.get(&"acc").call(&"flush", vis, map_root, {"Far": {"distant": true}, "Neighbours": {"distant": true}})
+	_moonlit(vis)
+	var probes: Node3D = add(n("Lighting"), node3d("ReflectionProbes")) as Node3D
+	art.call(&"reflection_probes", probes, map_root)
+	var occ: Node3D = add(n("Geometry"), node3d("Occluders")) as Node3D
+	site.call(&"occluders", occ, map_root)
+
+
 # --- Environment ------------------------------------------------------------------------------
 
-## Night, no sun, no moon (a shadowless directional would light every interior through the roofs): a dark procedural
-## sky behind the facades, a cool moonlit ambient so unlit floor / corners and the exterior read at night instead of
-## black (the key lights carry the rest), AgX tonemap. No fog (the city is clear; the portico looks into the hall),
-## no SSAO / SSIL (the Compatibility renderer ignores them). Same pattern as Night Deposit's _build_lighting.
+## 23:20, clear after rain (doc §Audio/lighting): a dark procedural sky with the city's orange glow at the horizon, a
+## cool moonlit ambient so unlit corners read, AgX tonemap, the gallery LUT (warm ivory mids, green-teal shadows, lilac
+## highlights), subtle glow. The moon (low WSW) is a shadowless DirectionalLight3D that lights only the outside: its
+## light_cull_mask is MOON_LAYER, which only the facade, grade, neighbour and skyline visuals carry (so it never lights
+## an interior through a roof).
+## Interior VoxelGI over the building, basement to roof (data baked by bake_gi.gd under xvfb; see its header).
+func _voxel_gi(lighting: Node3D) -> void:
+	if not ResourceLoader.exists(GI_PATH):
+		var empty: VoxelGIData = VoxelGIData.new()
+		empty.interior = true
+		ResourceSaver.save(empty, GI_PATH)
+	var vg: VoxelGI = VoxelGI.new()
+	vg.name = "VoxelGI"
+	vg.position = Vector3(22.0, 3.9, 15.0)
+	vg.size = Vector3(46.0, 17.0, 32.0)
+	vg.subdiv = VoxelGI.SUBDIV_64
+	vg.data = load(GI_PATH) as VoxelGIData
+	add(lighting, vg)
+
+
 func _build_environment(lighting: Node3D) -> void:
 	var we: WorldEnvironment = WorldEnvironment.new()
 	we.set_script(load("res://world/lighting/heist_world_environment.gd"))  # brightness option (B5-01)
@@ -856,28 +910,54 @@ func _build_environment(lighting: Node3D) -> void:
 	env.resource_name = "env_gallery_night"
 	var sky_mat: ProceduralSkyMaterial = ProceduralSkyMaterial.new()
 	sky_mat.sky_top_color = Color(0.02, 0.03, 0.06)
-	sky_mat.sky_horizon_color = Color(0.13, 0.13, 0.16)
+	sky_mat.sky_horizon_color = Color(0.2, 0.15, 0.13)
+	sky_mat.sky_curve = 0.12
 	sky_mat.ground_bottom_color = Color(0.01, 0.015, 0.02)
-	sky_mat.ground_horizon_color = Color(0.1, 0.1, 0.12)
+	sky_mat.ground_horizon_color = Color(0.12, 0.1, 0.1)
 	sky_mat.sky_energy_multiplier = 0.6
+	sky_mat.sun_angle_max = 2.0
 	var sky: Sky = Sky.new()
 	sky.sky_material = sky_mat
 	env.background_mode = Environment.BG_SKY
 	env.sky = sky
 	env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
 	env.ambient_light_color = Color(0.36, 0.42, 0.55)
-	env.ambient_light_energy = 0.5
+	env.ambient_light_energy = 0.45
 	env.reflected_light_source = Environment.REFLECTION_SOURCE_SKY
 	env.tonemap_mode = Environment.TONE_MAPPER_AGX
 	env.tonemap_exposure = 1.25
+	env.ssao_enabled = true
+	env.ssao_radius = 1.2
+	env.ssao_intensity = 1.2
 	env.fog_enabled = false
 	env.glow_enabled = true
 	env.glow_intensity = 0.4
 	env.glow_bloom = 0.04
 	env.glow_blend_mode = Environment.GLOW_BLEND_MODE_SOFTLIGHT
 	env.glow_hdr_threshold = 1.1
+	env.adjustment_enabled = true
+	env.adjustment_color_correction = load(LUT_PATH) as Texture
 	we.environment = env
 	add(lighting, we)
+	var moon: DirectionalLight3D = DirectionalLight3D.new()
+	moon.name = "Moon"
+	# low in the WSW: light travels toward the ENE and down (~18 deg altitude)
+	moon.basis = Basis.looking_at(Vector3(0.88, -0.31, -0.36).normalized(), Vector3.UP)
+	moon.position = Vector3(22.0, 40.0, 15.0)
+	moon.light_color = Color(0.62, 0.72, 0.92)
+	moon.light_energy = 0.3
+	moon.shadow_enabled = false
+	moon.light_cull_mask = MOON_LAYER
+	moon.layers = 1 | VIEWMODEL_LIT_LAYER   # D-095 like every map light; its cull mask keeps it off the viewmodel anyway
+	add(lighting, moon)
+
+
+## Puts the outside visuals (facade, roofs, grade, neighbours, skyline) on MOON_LAYER as well as layer 1.
+func _moonlit(vis: Node3D) -> void:
+	for c: Node in vis.get_children():
+		var nm: String = String(c.name)
+		if nm.begins_with("Visual_Shell") or nm.begins_with("Visual_Site") or nm in ["Visual_Far", "Visual_Neighbours"]:
+			(c as VisualInstance3D).layers = 1 | MOON_LAYER
 
 
 # --- Navigation bake --------------------------------------------------------------------------

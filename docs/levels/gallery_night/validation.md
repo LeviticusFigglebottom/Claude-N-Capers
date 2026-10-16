@@ -41,7 +41,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## cameras: Review camera placement
 
-- 27 perspective review camera(s) checked
+- 26 perspective review camera(s) checked
 
 
 ## secure_zones: Secure zones reach the ground
@@ -51,7 +51,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## floating: Nothing floats
 
-- 192 props checked
+- 898 props checked
 
 - WARN `Gameplay/Devices/ServerDoorDrill` @ (25.00, 6.40, 6.15): prop has no geometry or collision; skipped
 - WARN `Gameplay/Devices/VaultDrill` @ (21.50, -3.20, 7.75): prop has no geometry or collision; skipped
@@ -60,7 +60,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## clipping: Nothing clips
 
-- 194 props, 48 doors checked
+- 900 props, 48 doors checked
 
 
 ## scale: Human scale
@@ -109,7 +109,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 - `Geometry/Building/Stairs/StairSS/Flight0W`: 12 risers, -4.200 -> -2.100 m
 - `Geometry/Building/Stairs/StairSS/Flight0W` rails: -X wall, rail tops [1.06, 1.06, 1.06, 1.07, 1.07] m above nosing, max drop 0.00 m; +X wall, rail tops [1.05, 1.06, 1.06, 1.06, 1.07] m above nosing, max drop 0.00 m
 - `Geometry/Building/Stairs/StairSS/Flight0E`: ramp collision enveloping the steps (max 0.175 m above the treads)
-- `Geometry/Building/Stairs/StairSS/Flight0E`: 12 risers, -2.100 -> 0.000 m
+- `Geometry/Building/Stairs/StairSS/Flight0E`: 12 risers, -2.100 -> -0.000 m
 - `Geometry/Building/Stairs/StairSS/Flight0E` rails: -X wall, rail tops [1.06, 1.06, 1.06, 1.07, 1.07] m above nosing, max drop 0.00 m; +X wall, rail tops [1.06, 1.06, 1.06, 1.07, 1.07] m above nosing, max drop 0.00 m
 - `Geometry/Building/Stairs/StairSS/Flight1W`: ramp collision enveloping the steps (max 0.180 m above the treads)
 - `Geometry/Building/Stairs/StairSS/Flight1W`: 15 risers, 0.000 -> 2.700 m
@@ -133,11 +133,10 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 - `Geometry/Building/Stairs/GrandStair/ReturnE`: 15 risers, 2.700 -> 5.400 m
 - `Geometry/Building/Stairs/GrandStair/ReturnE` rails: -X open, rail tops [1.05, 1.05, 1.06, 1.06, 1.06] m above nosing, max drop 5.35 m; +X partly walled, rail tops [1.05, -, -, -, 1.06] m above nosing, max drop 3.59 m
 - stair chain: `Geometry/Building/Stairs/StairSS/Flight0W` -> `Geometry/Building/Stairs/StairSS/Flight0E` joined by a landing at -2.100 m
-- stair chain: `Geometry/Building/Stairs/StairSS/Flight0E` -> `Geometry/Building/Stairs/StairSS/Flight1W` joined by a landing at 0.000 m
+- stair chain: `Geometry/Building/Stairs/StairSS/Flight0E` -> `Geometry/Building/Stairs/StairSS/Flight1W` joined by a landing at -0.000 m
 - stair chain: `Geometry/Building/Stairs/StairSS/Flight1W` -> `Geometry/Building/Stairs/StairSS/Flight1E` joined by a landing at 2.700 m
 - stair chain: `Geometry/Building/Stairs/StairSS/Flight1E` -> `Geometry/Building/Stairs/StairSS/Flight2W` joined by a landing at 5.400 m
 - stair chain: `Geometry/Building/Stairs/StairSS/Flight2W` -> `Geometry/Building/Stairs/StairSS/Flight2E` joined by a landing at 7.200 m
-- stair chain: `Geometry/Building/Stairs/StairSS/Flight0E` -> `Geometry/Building/Stairs/GrandStair/Central` joined by a landing at 0.000 m
 - stair chain: `Geometry/Building/Stairs/GrandStair/Central` -> `Geometry/Building/Stairs/GrandStair/ReturnW` joined by a landing at 2.700 m
 - stair chain: `Geometry/Building/Stairs/GrandStair/ReturnW` -> `Geometry/Building/Stairs/StairSS/Flight2W` joined by a landing at 5.400 m
 - stair chain: `Geometry/Building/Stairs/GrandStair/Central` -> `Geometry/Building/Stairs/GrandStair/ReturnE` joined by a landing at 2.700 m
@@ -146,62 +145,62 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## slopes: No walkable slope < 50° outside the play mesh
 
-- 561 x 345 columns (0.25 m), 214081 surface samples, 0 collider(s) with reachable walkable surfaces outside play
+- 561 x 345 columns (0.25 m), 216715 surface samples, 0 collider(s) with reachable walkable surfaces outside play
 
 
 ## navmesh: Navmesh
 
-- navmesh: 1299 polygons, cell 0.10/0.10 m
+- navmesh: 2561 polygons, cell 0.10/0.10 m
 - 277 markers checked
 | room | walkable samples | covered | coverage |
 |---|---|---|---|
 | `Rooms/RoomSS` | 12 | 12 | 100% |
-| `Rooms/RoomLK` | 132 | 132 | 100% |
-| `Rooms/RoomFR` | 193 | 193 | 100% |
-| `Rooms/RoomQR` | 165 | 165 | 100% |
+| `Rooms/RoomLK` | 103 | 103 | 100% |
+| `Rooms/RoomFR` | 142 | 139 | 98% |
+| `Rooms/RoomQR` | 140 | 134 | 96% |
 | `Rooms/RoomLF` | 77 | 77 | 100% |
 | `Rooms/RoomBB` | 135 | 135 | 100% |
-| `Rooms/RoomPL` | 498 | 498 | 100% |
-| `Rooms/RoomAS` | 630 | 630 | 100% |
-| `Rooms/RoomBR` | 110 | 110 | 100% |
-| `Rooms/RoomWC` | 55 | 55 | 100% |
-| `Rooms/RoomSC` | 102 | 102 | 100% |
-| `Rooms/RoomRG` | 106 | 106 | 100% |
-| `Rooms/RoomJ` | 27 | 27 | 100% |
-| `Rooms/RoomE1` | 33 | 33 | 100% |
-| `Rooms/RoomLD` | 529 | 529 | 100% |
+| `Rooms/RoomPL` | 447 | 447 | 100% |
+| `Rooms/RoomAS` | 595 | 595 | 100% |
+| `Rooms/RoomBR` | 60 | 60 | 100% |
+| `Rooms/RoomWC` | 38 | 38 | 100% |
+| `Rooms/RoomSC` | 74 | 74 | 100% |
+| `Rooms/RoomRG` | 64 | 64 | 100% |
+| `Rooms/RoomJ` | 6 | 6 | 100% |
+| `Rooms/RoomE1` | 8 | 8 | 100% |
+| `Rooms/RoomLD` | 493 | 492 | 100% |
 | `Rooms/RoomBC` | 171 | 171 | 100% |
-| `Rooms/RoomWG` | 529 | 529 | 100% |
-| `Rooms/RoomGH` | 480 | 480 | 100% |
-| `Rooms/RoomEG` | 529 | 529 | 100% |
-| `Rooms/RoomDC` | 247 | 247 | 100% |
-| `Rooms/RoomPWW` | 81 | 81 | 100% |
-| `Rooms/RoomPWM` | 81 | 81 | 100% |
-| `Rooms/RoomCK` | 43 | 43 | 100% |
-| `Rooms/RoomVE` | 105 | 105 | 100% |
-| `Rooms/RoomGS` | 58 | 58 | 100% |
-| `Rooms/RoomEB` | 253 | 253 | 100% |
-| `Rooms/RoomCO` | 111 | 111 | 100% |
-| `Rooms/RoomAO` | 125 | 125 | 100% |
-| `Rooms/RoomUW` | 55 | 55 | 100% |
-| `Rooms/RoomFS` | 27 | 27 | 100% |
-| `Rooms/RoomSV` | 110 | 110 | 100% |
-| `Rooms/RoomCS` | 510 | 510 | 100% |
+| `Rooms/RoomWG` | 482 | 482 | 100% |
+| `Rooms/RoomGH` | 417 | 417 | 100% |
+| `Rooms/RoomEG` | 480 | 480 | 100% |
+| `Rooms/RoomDC` | 207 | 207 | 100% |
+| `Rooms/RoomPWW` | 60 | 60 | 100% |
+| `Rooms/RoomPWM` | 60 | 60 | 100% |
+| `Rooms/RoomCK` | 28 | 28 | 100% |
+| `Rooms/RoomVE` | 79 | 79 | 100% |
+| `Rooms/RoomGS` | 44 | 44 | 100% |
+| `Rooms/RoomEB` | 191 | 191 | 100% |
+| `Rooms/RoomCO` | 94 | 94 | 100% |
+| `Rooms/RoomAO` | 57 | 57 | 100% |
+| `Rooms/RoomUW` | 43 | 43 | 100% |
+| `Rooms/RoomFS` | 3 | 3 | 100% |
+| `Rooms/RoomSV` | 59 | 59 | 100% |
+| `Rooms/RoomCS` | 448 | 448 | 100% |
 | `Rooms/RoomUC` | 171 | 171 | 100% |
-| `Rooms/RoomUG1` | 500 | 500 | 100% |
-| `Rooms/RoomBW` | 175 | 175 | 100% |
-| `Rooms/RoomBE` | 175 | 175 | 100% |
-| `Rooms/RoomUG3` | 507 | 507 | 100% |
-| `Rooms/RoomUG2` | 437 | 437 | 100% |
-| `Rooms/RoomSL` | 273 | 273 | 100% |
-| `Rooms/RoomAT` | 77 | 77 | 100% |
-| `Rooms/RoomTR` | 139 | 139 | 100% |
+| `Rooms/RoomUG1` | 466 | 466 | 100% |
+| `Rooms/RoomBW` | 140 | 140 | 100% |
+| `Rooms/RoomBE` | 134 | 134 | 100% |
+| `Rooms/RoomUG3` | 476 | 476 | 100% |
+| `Rooms/RoomUG2` | 402 | 402 | 100% |
+| `Rooms/RoomSL` | 219 | 219 | 100% |
+| `Rooms/RoomAT` | 60 | 60 | 100% |
+| `Rooms/RoomTR` | 122 | 122 | 100% |
 | `Rooms/RoomHH` | 6 | 6 | 100% |
-| `Rooms/RoomX4` | 736 | 736 | 100% |
-| `Rooms/RoomLM` | 77 | 77 | 100% |
-| `Rooms/RoomX1` | 846 | 846 | 100% |
+| `Rooms/RoomX4` | 650 | 650 | 100% |
+| `Rooms/RoomLM` | 69 | 69 | 100% |
+| `Rooms/RoomX1` | 837 | 837 | 100% |
 | `Rooms/RoomX2` | 833 | 833 | 100% |
-| `Rooms/RoomX3` | 803 | 794 | 99% |
+| `Rooms/RoomX3` | 744 | 735 | 99% |
 
 
 ## barred_doors: BARRED doorways are closed in the navmesh
@@ -256,13 +255,13 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## viewmodel_lit: Interior key lights light the viewmodel (D-095)
 
-- 39 interior key light(s) in 39 room(s); 0 lack `viewmodel_lit`
+- 291 interior key light(s) in 37 room(s); 0 lack `viewmodel_lit`
 
 
 ## door_frame_gap: Doors and windows fill their wall openings (no gaps, no clipping)
 
 - 57 door / window prefab(s) measured; gap > 0.02 m and clip > 0.01 m fail
-- leaf bullet surfaces (D-105, Door.leaf_surface_id): glass 2, metal 17, wood 29; 0 look glass / metal but resolve to wood (WARN)
+- leaf bullet surfaces (D-105, Door.leaf_surface_id): glass 2, metal 23, wood 23; 0 look glass / metal but resolve to wood (WARN)
 
 
 ## frame_proud: Door / window frame colliders are flush with the wall (no proud or narrowing collision)
@@ -277,8 +276,8 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## furniture_logic: Furniture arranged plausibly
 
-- classified: desk 1, wall_unit 1, desk_chair 2
-- 2 seats, 1 tables/desks/counters, 48 doors checked
+- classified: counter 4, chair 4, table 2, desk 12, wall_unit 29, desk_chair 8, monitor 6
+- 12 seats, 18 tables/desks/counters, 48 doors checked
 
 - WARN `Gameplay/Ladders/AreawayLadder` @ (-4.00, -4.20, 14.00): door_clear: in the clear zone of door `Variants/Group_areaway/Slot_grate_loose/AreawayGrate` (1.0 / 1.0 m each side, leaf width 1.99 m) by 0.18 m (gameplay prefab / variant content: review)
 - WARN `Gameplay/Ladders/AreawayLadder` @ (-4.00, -4.20, 14.00): door_clear: in the clear zone of door `Variants/Group_areaway/Slot_grate_padlocked/AreawayGrate` (1.0 / 1.0 m each side, leaf width 1.99 m) by 0.18 m (gameplay prefab / variant content: review)

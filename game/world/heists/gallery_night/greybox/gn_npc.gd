@@ -1,6 +1,7 @@
-## Gallery Night NPC data, tactical points and greybox lights (GN-C1 G1 step 2). Owner: ENV C.
+## Gallery Night NPC data and tactical points (GN-C1 G1 step 2; the G1 key lights gave way to the G2 fixtures, gn_dress.gd).
+## Owner: ENV C.
 ## Chain: gn_builder_base <- gn_gameplay <- gn_content <- gn_npc <- build_greybox.
-## Design: gallery_night.md Circulation + roster (spawn tags B1), Loud (police entries, perches, anchors), B1 lights.
+## Design: gallery_night.md Circulation + roster (spawn tags B1), Loud (police entries, perches, anchors).
 ## Patrol graphs (heist_map.md §4): `halberd` (guards, every floor, linked through Stair SS and the staff door; >= 3
 ## loops through each guard post's start point), `mews` (the dock smoker), `gala` (patrons: tag civilian; cower
 ## points tag cower) and `staff` (curator, attendants, waitstaff, conservator, PA: tag staff + the role tag).
@@ -174,7 +175,8 @@ const FIXED_SPAWNS: Array = [
 	["VaultlineA", "GUARD", Vector3(40.5, 0.0, 9.5), 180.0, ["scripted", "guard_vaultline"], "", "Halberd"],
 	["VaultlineB", "GUARD", Vector3(42.0, 0.0, 9.5), 180.0, ["scripted", "guard_vaultline"], "", "Halberd"],
 ]
-## Slot NPCs: slot id -> [name, kind, position, yaw, tags, idle, graph, seat asset (optional)]. PO6-06: a seated
+## Slot NPCs: slot id -> [name, kind, position, yaw, tags, idle, graph, seat asset (optional), desk it faces
+## (optional, Props/MapBuilt)]. PO6-06: a seated
 ## (desk_work) NPC spawns on the `Seat` of its own catalog NPC seat (prop_chair_task: no collider / nav obstruction,
 ## D-063) placed in the slot at the spawn transform, pulled up to its desk (the greybox desks are 0.75 m, front -Z).
 const SLOT_NPCS: Dictionary = {
@@ -187,9 +189,9 @@ const SLOT_NPCS: Dictionary = {
 	"cons_late": ["Conservator", "CIVILIAN", Vector3(39.55, 5.4, 9.37), 180.0, ["civ_conservator"], "teller", ""],
 	"curator_hall": ["Curator", "CIVILIAN", Vector3(17.5, 0.0, 15.5), -90.0, ["civ_curator"], "curator_inspect", ""],
 	"curator_office": ["Curator", "CIVILIAN", Vector3(6.0, 5.4, 1.3), 180.0, ["civ_curator"], "desk_work", "",
-		"prop_chair_task"],  # at DeskCO
+		"prop_chair_task", "DeskCO"],
 	"pa_late": ["AdminPA", "CIVILIAN", Vector3(14.0, 5.4, 3.3), 180.0, ["civ_admin"], "desk_work", "",
-		"prop_chair_task"],  # at DeskAO
+		"prop_chair_task", "DeskAO"],
 }
 ## TacticalPoints (doc Loud: police entries, perches, anchors, flanks): [name, kind, position, yaw, tags, breachable].
 const TACTICAL: Array = [
@@ -272,24 +274,11 @@ const TACTICAL: Array = [
 	["CoverScreenUG3E", "COVER", Vector3(38.55, 5.4, 15.5), -90.0, ["screen", "h2"], false],
 	["CoverBenchCS", "COVER", Vector3(40.0, 5.4, 10.85), 180.0, ["bench", "h2"], false],
 ]
-## Rooms without a greybox key light (shafts; exterior / roof are not key-light rooms).
-const UNLIT_ROOMS: Array[String] = ["SS", "LF", "HH", "LM"]
-## Exterior key lights at grade (street / wall lamps, 4.5 m up; fixtures are the G2 art pass): [name, x, z]. The Mews
-## (spawn + E1 escape) every ~20 m from the gate to the LD roller and up Wexley St, the reflecting pool and the court
-## gate, the portico pair either side of the bronze doors, the Parade at the police islands. pd2_fidelity §7.11: the
-## viewmodel reads in ADS fights outside, so they carry viewmodel_lit like the interior keys.
-const EXT_LAMPS: Array = [
-	["LampMewsW", -30.0, -4.0], ["LampMewsGate", -10.0, -4.0], ["LampMewsMid", 10.0, -4.0],
-	["LampMewsDock", 30.0, -4.0], ["LampMewsCorner", 47.0, -3.0], ["LampWexleyN", 51.0, -16.0],
-	["LampWexleyS", 51.0, 14.0], ["LampPool", -3.0, 18.0], ["LampCourtN", -8.0, 5.0], ["LampCourtS", -8.0, 27.0],
-	["LampPorticoW", 18.0, 34.5], ["LampPorticoE", 26.0, 34.5], ["LampParadeW", -30.0, 46.0],
-	["LampParadeMid", 4.0, 46.0], ["LampParadeE", 52.0, 46.0],
-]
-const EXT_LAMP_Y: float = 4.5
-const EXT_LAMP_COLOR: Color = Color(1.0, 0.86, 0.66)
-
-
 # --- NPC spawns ----------------------------------------------------------------------------------
+
+## [chair, desk name] pending `faces` links (link_seats).
+var _seat_links: Array = []
+
 
 func build_npcs() -> void:
 	_graph("Halberd", &"halberd", 1, HALBERD, HALBERD_EDGES)
@@ -310,7 +299,19 @@ func npc_slot(vs: VariantSlot, _group: String, slot_id: String, _at: Vector3, _y
 func _npc(parent: Node3D, s: Array) -> void:
 	spawn_at(parent, String(s[0]), String(s[1]), s[2] as Vector3, float(s[3]), s[4], String(s[5]), String(s[6]))
 	if s.size() > 7:  # PO6-06: the NPC's seat, its `Seat` marker right under the spawn
-		catalog_prop(parent, String(s[7]), String(s[0]) + "Chair", s[2] as Vector3, float(s[3]))
+		var chair: Node3D = catalog_prop(parent, String(s[7]), String(s[0]) + "Chair", s[2] as Vector3, float(s[3]), true)
+		if s.size() > 8 and chair != null:  # the desk it faces (Props/MapBuilt, linked once built: link_seats)
+			_seat_links.append([chair, String(s[8])])
+
+
+## The slot seats' `faces` links to their map-built desks (levelcheck orientation).
+func link_seats() -> void:
+	for l: Array in _seat_links:
+		var desk: Node = n("Props/MapBuilt").get_node_or_null(String(l[1]))
+		if desk == null:
+			errors.append("seat %s: no desk Props/MapBuilt/%s" % [(l[0] as Node).name, String(l[1])])
+			continue
+		(l[0] as Node).set_meta(&"faces", (l[0] as Node).get_path_to(desk))
 
 
 func _graph(nm: String, gid: StringName, floor_idx: int, points: Dictionary, edges: Array) -> void:
@@ -352,45 +353,3 @@ func _graph(nm: String, gid: StringName, floor_idx: int, points: Dictionary, edg
 func build_tactical(tac: Node3D) -> void:
 	for t: Array in TACTICAL:
 		tactical_point(tac, t)
-
-
-# --- Greybox lights (B1: key lights carry viewmodel_lit; the art pass is G2) -----------------------
-
-## One key OmniLight3D per interior room (layers 1 | viewmodel_lit), centred in its first plan rect, 0.4 m under
-## its ceiling (the Great Hall: the chandelier height 6 m; open-top rooms 4 m); its range reaches the room's far
-## floor corners (the floor read black past ~0.8 x the long side). Then the exterior lamps (EXT_LAMPS).
-func build_lights(lit: Node3D) -> void:
-	var done: Dictionary = {}
-	for r: Array in L.ROOMS:
-		var rid: String = String(r[1])
-		var f: String = String(r[0])
-		if done.has(f + rid) or rid in UNLIT_ROOMS or String(r[2]) == "exterior":
-			continue
-		done[f + rid] = true
-		var ceil: float = float(r[7]) if float(r[7]) > 0.0 else 4.4
-		var h: float = 6.0 if rid == "GH" else minf(ceil, 5.0) - 0.4
-		var w: float = float(r[5]) - float(r[3])
-		var d: float = float(r[6]) - float(r[4])
-		var corner: float = Vector3(w * 0.5, h, d * 0.5).length() * 1.1
-		var light: OmniLight3D = OmniLight3D.new()
-		light.name = "Key%s%s" % [f, rid]
-		light.position = Vector3((float(r[3]) + float(r[5])) * 0.5, float(L.FFL[f]) + h, (float(r[4]) + float(r[6])) * 0.5)
-		light.omni_range = clampf(maxf(maxf(w, d) * 0.8, corner), 4.0, 16.0)
-		light.light_energy = 1.0
-		light.shadow_enabled = false
-		light.layers = 1 | VIEWMODEL_LIT_LAYER
-		light.set_meta(&"key_light", true)
-		add(lit, light)
-	var ext: Node3D = add(lit, node3d("Exterior")) as Node3D
-	for e: Array in EXT_LAMPS:
-		var lamp: OmniLight3D = OmniLight3D.new()
-		lamp.name = String(e[0])
-		lamp.position = Vector3(float(e[1]), EXT_LAMP_Y, float(e[2]))
-		lamp.light_color = EXT_LAMP_COLOR
-		lamp.light_energy = 1.5
-		lamp.omni_range = 16.0
-		lamp.omni_attenuation = 0.7
-		lamp.shadow_enabled = false
-		lamp.layers = 1 | VIEWMODEL_LIT_LAYER
-		lamp.set_meta(&"key_light", true)
-		add(ext, lamp)
