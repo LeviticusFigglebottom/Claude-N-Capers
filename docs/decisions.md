@@ -1035,7 +1035,7 @@ Flinches play through the existing UpperBodyLayer (spine-up) while moving and fu
 ## D-124: weapon balance pass (2026-10-16, LEAD; from ENV B's audit game/content/docs/weapon_balance.md)
 Approved, all data-only (ENV B applies them in one commit, reruns the tool and updates pinned tests):
 P1 tern_556 concealment 21→24, spread_ads 2.7→2.1; P2 bastion_br damage 100→110; P3 falchion_dmr damage 150→120;
-P4 marshal_357 rpm 330→270, reload 2.4/2.4→3.0/3.0; P5 wren_380 mag 7→10, total 98→160, rpm 520→600; P6 hush_9
+P4 marshal_357 rpm 330→235 with the 2.4 s reload kept (amended 2026-10-16: the revolver clips pin the reload; DPS ~252); P5 wren_380 mag 7→10, total 98→160, rpm 520→600; P6 hush_9
 concealment 21→25; P7 vise_crossbow damage 350→450; P8 akimbo_warden_45 total_ammo 128→144; P9 cyclone_rotary pickup
 15–30→10–20; P10 reaper_db 19→22 per pellet (Heavy one-shot breakpoint).
 Shape kept (PD2): no early weapon best in class; LMGs have the best ammo economy; every sniper out-damages every AR per
