@@ -96,3 +96,15 @@ func test_investigating_shows_question_at_zero() -> void:
 	_model.detection = []
 	await wait_frames(1)
 	assert_eq(_hud.chevrons.rings.size(), 0)
+
+
+func test_no_rings_once_loud() -> void:
+	_model.heist_phase = Enums.HeistPhase.STEALTH
+	_model.detection = [{"observer_net_id": 1, "world_pos": Vector3(0, -2.0, -8), "value": 0.6,
+			"kind": Enums.ObserverKind.GUARD}]
+	await wait_frames(2)
+	assert_eq(_hud.chevrons.rings.size(), 1)
+	_model.heist_phase = Enums.HeistPhase.LOUD
+	await wait_frames(2)
+	assert_eq(_hud.chevrons.rings.size(), 0, "PD2: no detection indicator once loud")
+
