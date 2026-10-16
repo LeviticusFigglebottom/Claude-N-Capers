@@ -25,6 +25,7 @@ import cues  # noqa: E402
 import cues_impact  # noqa: E402
 import music_glasshouse  # noqa: E402
 import music_night_deposit  # noqa: E402
+import music_shadow_ledger  # noqa: E402
 import registry  # noqa: E402
 from synth import loudness, wavio  # noqa: E402
 from synth.core import seed_for  # noqa: E402
@@ -33,7 +34,7 @@ REPO = HERE.parent.parent
 SFX_DIR = Path("game/assets/audio/sfx")
 CUE_TRES = Path("game/world/audio/cues.tres")
 # every heist music track (D-117): one module per track, all on the music_engine.py parts
-TRACKS = {m.TRACK: m for m in (music_glasshouse, music_night_deposit,)}
+TRACKS = {m.TRACK: m for m in (music_glasshouse, music_night_deposit, music_shadow_ledger,)}
 
 
 def mus_dir(track: str) -> Path:
