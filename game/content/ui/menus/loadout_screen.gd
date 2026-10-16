@@ -488,6 +488,7 @@ func _on_heister_changed(_index: int) -> void:
 
 func _show_heister(id: StringName) -> void:
 	heister_swatch.color = Heisters.accent(id)
+	heister_swatch.visible = id != &""  # LEAD r229 run: "Any Free Heister" has no accent; a bare grey strip read as a scrollbar
 	var tex: Texture2D = Heisters.portrait(id)
 	heister_portrait.texture = tex
 	heister_portrait.visible = tex != null

@@ -168,3 +168,32 @@ func test_scoped_dock_with_pad_glyph() -> void:
 	model.queue_free()
 	cam.queue_free()
 	await wait_frames(2)
+
+
+## LEAD r229 real-input run: the casing card shows "[G] Hold to mask up", so the mask-up hint strip waits while it is
+## open and comes back when it closes.
+func test_mask_hint_yields_to_the_casing_card() -> void:
+	OnboardingTips.persist = false
+	OnboardingTips.reset()
+	var model: MockHudModel = MockHudModel.new()
+	add_child(model)
+	var hud: Hud = HUD_SCENE.instantiate() as Hud
+	hud.auto_find_model = false
+	add_child(hud)
+	await wait_frames(1)
+	hud.bind(model)
+	hud.hint.capture_probe = func() -> bool: return true
+	model.casing = true
+	model.player_mode = &"casing"
+	await wait_frames(2)
+	assert_eq(hud.hint.hint, &"mask_up")
+	hud.onboarding._show(&"casing")
+	await wait_frames(2)
+	assert_false(hud.hint.visible, "the card already shows the mask row")
+	hud.onboarding.dismiss()
+	await wait_frames(2)
+	assert_true(hud.hint.visible, "the hint is back once the card closes")
+	hud.queue_free()
+	model.queue_free()
+	await wait_frames(1)
+	OnboardingTips.persist = true

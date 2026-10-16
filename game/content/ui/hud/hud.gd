@@ -551,7 +551,8 @@ func _process(delta: float) -> void:
 				and not (toast_label != null and toast_label.visible) \
 				and not (downed != null and downed.active)  # lane 2 audit: the card sat over the downed screen
 	if hint != null and onboarding != null:
-		hint.note.visible = hint.hint == &"mask_up" and onboarding.shown == &""  # the card already says it
+		hint.yield_to_card = onboarding.visible and onboarding.shown == &"casing"  # the card shows the mask row
+		hint.note.visible = hint.hint == &"mask_up" and onboarding.shown == &""  # any card already says it
 	if _toast_t > 0.0:
 		_toast_t -= delta
 		# Not over the Tab sheet, nor over the downed screen (its block sits where toasts do).
