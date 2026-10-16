@@ -86,6 +86,9 @@ const POSE_CLIPS: Array[StringName] = [
 	&"cower_stand", &"cower_seated", &"surrender_idle",
 	&"hands_up_b", &"hands_up_c", &"surrender_b", &"surrender_c", &"surrender_idle_b", &"surrender_idle_c",
 	&"kneel_cuffed_b", &"kneel_cuffed_c",
+	# v1.21 crew states (the weapon follows weapon_shown(), not this list, for the downed set).
+	&"crew_cuffed", &"crew_cuffed_enter", &"crew_cuffed_free", &"downed_arrested", &"downed_getup", &"downed_fire",
+	&"downed_reload",
 ]
 ## Special actions held while the hint lasts: they win over one-shots, locomotion and aim (the brain
 ## stands the body still for them).
@@ -133,6 +136,10 @@ const ARMED_CLIPS: Array[StringName] = [&"interact_low", &"interact_mid", &"inte
 const CARRIED_BAG_NODE: String = "CarriedBag"
 ## v1.20 akimbo: the pair's second gun (WeaponVisual.offhand) moves to HandL/Socket under this name.
 const OFFHAND_NODE: String = "ThirdPersonOffhand"
+## v1.21: one-shots that end exactly on crew_cuffed frame 0 (switch without a crossfade).
+const CUFF_INTO: Array[StringName] = [&"downed_arrested", &"crew_cuffed_enter"]
+## Lead ruling (b): the upper-body flinch layer's node name (after the weapon-hold layer).
+const FLINCH_LAYER_NODE: String = "FlinchLayer"
 ## Starts / stops only for straight-ahead motion (|dir . forward| at least this).
 const START_STOP_DOT: float = 0.7
 ## One-shot hints that are not held as an idle once played (the hint may linger in the brain).
@@ -192,6 +199,10 @@ var hand_props: PackedStringArray = PackedStringArray()
 var hat_lift: HardHatHandLift = null
 ## characters.md v1.19: the crew body's upper-body layer (hold_* over locomotion, aim_* while aiming); null for NPCs.
 var hold_layer: UpperBodyLayer = null
+## Lead ruling (b): the upper-body hit-zone flinch layer (every animated body); see _play_flinch_layer.
+var flinch_layer: UpperBodyLayer = null
+## Lead ruling (c): the third-person left hand on the weapon's LeftHandIK (rifle-family holds); null without a rig.
+var left_hand_ik: ThirdPersonLeftHandIK = null
 ## Crossfade (s) used for the last clip change (0 for the first clip).
 var last_blend_s: float = -1.0
 ## Hold kind (v1.20 KIND_BY_CLASS): rifle / smg / sniper / lmg / pistol / akimbo; aim_family() gives the
@@ -204,6 +215,18 @@ var weapon_offhand: Node3D = null
 ## v1.20: the carried-bag visual at Back/Socket (null when not carrying), and the LootBag it shows.
 var bag_visual: Node3D = null
 var _shown_bag: Node = null
+## Lead ruling (b): seconds left of the upper-body flinch.
+var _flinch_left: float = 0.0
+## v1.21 crew-state one-shot (downed_fire / downed_reload / downed_getup / downed_arrested / crew_cuffed_enter /
+## crew_cuffed_free): wins over the crew state's own clip while it lasts; `_state_oneshot_t` = seconds since it began.
+var _state_oneshot: StringName = &""
+var _state_oneshot_left: float = 0.0
+var _state_oneshot_t: float = 0.0
+var _state_oneshot_speed: float = 1.0
+## Crew state seen last tick (-1 before the first), for the v1.21 transition clips.
+var _last_crew_state: int = -1
+## v1.21 akimbo: the next shot is the left gun's (fire_akimbo_l); the first shot is the right one.
+var _akimbo_left_next: bool = false
 
 var _body: Node3D = null
 var _npc: NpcBase = null
@@ -346,6 +369,9 @@ func bind() -> bool:
 	hold_layer = null
 	if _crew != null:  # v1.19 weapon holds; first among the modifiers (the hat lift fixes up after it)
 		hold_layer = UpperBodyLayer.ensure(rig.get_node_or_null(^"Skeleton3D") as Skeleton3D)
+	var skel: Skeleton3D = rig.get_node_or_null(^"Skeleton3D") as Skeleton3D
+	flinch_layer = UpperBodyLayer.ensure(skel, FLINCH_LAYER_NODE, 1)
+	left_hand_ik = ThirdPersonLeftHandIK.ensure(skel)
 	if clip == &"":
 		# P GH regression: never show the rig's bind pose before the first tick (a spawn / visual swap renders a
 		# frame before _process runs): start on idle at once; the next tick blends to the real state.
@@ -381,6 +407,7 @@ func tick(delta: float) -> void:
 	_update_start_stop(tw)
 	_aim_hold_left = maxf(_aim_hold_left - delta, 0.0)
 	_turning_left = maxf(_turning_left - delta, 0.0)
+	_update_crew_state_clips(delta)
 	var hint: StringName = _hint()
 	if hint != _last_hint:
 		_last_hint = hint
@@ -394,8 +421,10 @@ func tick(delta: float) -> void:
 	_apply(want, _speed_scale_for(want, tw), tw)
 	_hold_pose_end()
 	_update_hold_layer(delta, tw)
+	_update_flinch_layer(delta, tw)
+	_update_left_hand_ik(delta, tw)
 	if weapon_visual != null and is_instance_valid(weapon_visual):
-		weapon_visual.visible = not POSE_CLIPS.has(want) and _death_clip == &""
+		weapon_visual.visible = weapon_shown(want)
 		if weapon_offhand != null and is_instance_valid(weapon_offhand):
 			weapon_offhand.visible = weapon_visual.visible
 	_update_bag_visual(tw)
@@ -403,6 +432,64 @@ func tick(delta: float) -> void:
 		var lift_on: float = 1.0 if tw.hard_hat_lift_clips.has(clip) else 0.0
 		hat_lift.influence = move_toward(hat_lift.influence, lift_on, delta * tw.hard_hat_lift_rate)
 		hat_lift.active = hat_lift.influence > 0.0
+
+
+## v1.21 crew-state transitions, from the replicated crew_state (so every peer plays them):
+##   DOWNED / CLOAKER_DOWNED -> CUFFED: downed_arrested (L2.12 police arrest; the weapon goes at `disarm`), then
+##     crew_cuffed. Any other -> CUFFED: crew_cuffed_enter (a guard cuffs a standing heister), then crew_cuffed.
+##   CUFFED -> NORMAL (uncuffed / self-free): crew_cuffed_free (the weapon comes back at `free`).
+##   DOWNED / CLOAKER_DOWNED / TASED... -> NORMAL from a downed state (revive): downed_getup, then the current
+##     hold (crossfade AnimTweak.getup_blend_s). A missing clip skips its step.
+func _update_crew_state_clips(delta: float) -> void:
+	if _state_oneshot_left > 0.0:
+		_state_oneshot_left = maxf(_state_oneshot_left - delta, 0.0)
+		_state_oneshot_t += delta * _state_oneshot_speed
+	if _crew == null:
+		return
+	var now: int = _crew.crew_state
+	var was: int = _last_crew_state
+	_last_crew_state = now
+	if was == -1 or was == now:
+		return
+	var downed: Array[int] = [Enums.CrewState.DOWNED, Enums.CrewState.CLOAKER_DOWNED]
+	_state_oneshot_left = 0.0
+	if now == Enums.CrewState.CUFFED:
+		_play_state_oneshot(&"downed_arrested" if downed.has(was) else &"crew_cuffed_enter")
+	elif was == Enums.CrewState.CUFFED and now == Enums.CrewState.NORMAL:
+		_play_state_oneshot(&"crew_cuffed_free")
+	elif downed.has(was) and now == Enums.CrewState.NORMAL:
+		_play_state_oneshot(&"downed_getup")
+
+
+## Start crew-state one-shot `c` (when the rig has it) for `duration` s (-1 = its length / speed).
+func _play_state_oneshot(c: StringName, duration: float = -1.0, speed: float = 1.0) -> void:
+	if not _has_clip(c):
+		return
+	_state_oneshot = c
+	_state_oneshot_speed = speed
+	_state_oneshot_t = 0.0
+	_oneshot_left = 0.0
+	_state_oneshot_left = duration if duration >= 0.0 \
+		else player.get_animation("%s/%s" % [LIBRARY, c]).length / maxf(speed, 0.01)
+	_restart = true
+	_oneshot = c  # _apply restarts it from frame 0 when it repeats (downed_fire per shot)
+
+
+## v1.21: whether the third-person weapon shows with clip `c` playing. Hidden in poses, in death and while cuffed
+## (crew_cuffed*, kneel_cuffed*); shown while downed (downed / downed_fire / downed_reload / downed_getup); in
+## downed_arrested until its `disarm` event, in crew_cuffed_free from its `free` event (AnimTweak event times).
+func weapon_shown(c: StringName) -> bool:
+	if _death_clip != &"":
+		return false
+	var tw: AnimTweak = AnimTweak.data()
+	match c:
+		&"downed", &"downed_crawl", &"downed_fire", &"downed_reload", &"downed_getup":
+			return true
+		&"downed_arrested":
+			return _state_oneshot_t < tw.arrest_disarm_s
+		&"crew_cuffed_free":
+			return _state_oneshot_t >= tw.cuffed_free_s
+	return not POSE_CLIPS.has(c)
 
 
 ## Play `p_clip` once for `duration` seconds (-1 = the clip's length / speed). `while_moving` lets it
@@ -520,7 +607,8 @@ func shield_up() -> bool:
 ## `c` remapped to its shield clip (AnimTweak.shield_clips) while the shield is up and the rig has that
 ## family; otherwise `c`.
 func _shield_clip(c: StringName) -> StringName:
-	var fam: StringName = AnimTweak.data().shield_clips.get(c, &"")
+	var key: StringName = &"idle_alert" if String(c).begins_with("idle_alert_") else c  # v1.21 armed NPC idles
+	var fam: StringName = AnimTweak.data().shield_clips.get(key, &"")
 	if fam == &"" or not shield_up():
 		return c
 	var vs: Array = _variants_of(fam)
@@ -559,7 +647,7 @@ func _active_clip(hint_clip: StringName) -> StringName:
 	elif moving:
 		out = _locomotion_clip(speed, tw)
 	elif _aiming():
-		out = &"aim_rifle" if aim_family() == &"rifle" else &"aim_pistol"
+		out = aim_clip()
 	elif hint_clip != &"" and hint_clip != &"idle" and not ONCE_ONLY_HINTS.has(hint_clip):
 		out = hint_clip
 	return out
@@ -621,7 +709,11 @@ func _place_offhand(wv: WeaponVisual) -> void:
 # --- Selection helpers ---------------------------------------------------------------------
 
 func _crew_state_clip() -> StringName:
+	if _state_oneshot_left > 0.0:
+		return _state_oneshot
 	var sc: StringName = CREW_STATE_CLIPS.get(_crew.crew_state, &"")
+	if sc == &"kneel_cuffed" and _has_clip(&"crew_cuffed"):
+		return &"crew_cuffed"  # v1.21: cuffed crew stand, wrists behind the back
 	if sc == &"downed" and horizontal_speed() > AnimTweak.data().move_threshold_mps:
 		return &"downed_crawl"  # v1.10: a downed body being moved (bleed-out drag)
 	return sc
@@ -791,7 +883,9 @@ func _idle_clip() -> StringName:
 		var held: StringName = _held_weapon_clip(&"idle_alert_")
 		return held if held != &"" else &"idle_alert"
 	if _npc != null and ALERT_STATES.has(_npc.alert_state):
-		return &"idle_alert"
+		var npc_held: StringName = StringName("idle_alert_" + String(weapon_kind))
+		# v1.21 (SOURCE weapon_holds: armed NPCs too): an alerted NPC with a modelled weapon holds it at the low ready.
+		return npc_held if weapon_visual != null and _has_clip(npc_held) else &"idle_alert"
 	return &"idle"
 
 
@@ -813,7 +907,7 @@ func _update_hold_layer(delta: float, tw: AnimTweak) -> void:
 	var want: StringName = &""
 	if _layered_locomotion(clip):
 		if _aiming():
-			want = &"aim_rifle" if aim_family() == &"rifle" else &"aim_pistol"
+			want = aim_clip()
 			if _held_weapon_clip(&"hold_") == &"" or not player.has_animation("%s/%s" % [LIBRARY, want]):
 				want = &""
 		else:
@@ -825,6 +919,25 @@ func _update_hold_layer(delta: float, tw: AnimTweak) -> void:
 	var target: float = 1.0 if want != &"" else 0.0
 	hold_layer.influence = move_toward(hold_layer.influence, target, delta / maxf(tw.hold_layer_blend_s, 0.001))
 	hold_layer.active = hold_layer.influence > 0.0
+
+
+## Lead ruling (c) / characters.md v1.19: the left hand goes onto the held weapon's LeftHandIK (HandL/Socket on the
+## marker) while a rifle-family weapon shows and the clip holds it with both hands (idle_alert_<kind>, aim_rifle,
+## fire_rifle, or the hold_* / aim_rifle upper-body layer over locomotion); blends out for anything else (reloads,
+## armed interactions, the bag carry, poses, pistols and akimbo).
+func _update_left_hand_ik(delta: float, tw: AnimTweak) -> void:
+	if left_hand_ik == null or not is_instance_valid(left_hand_ik):
+		return
+	var wv: WeaponVisual = weapon_visual as WeaponVisual
+	var marker: Node3D = wv.get_marker(&"LeftHandIK") if wv != null and is_instance_valid(wv) else null
+	var two_hands: bool = String(clip).begins_with("idle_alert_") or clip == &"aim_rifle" or clip == &"fire_rifle" \
+		or (hold_layer != null and hold_layer.active and _layered_locomotion(clip))
+	var want: bool = marker != null and aim_family() == &"rifle" and weapon_visual.visible and two_hands \
+		and not (flinch_layer != null and flinch_layer.active)
+	left_hand_ik.set_target(marker if want else left_hand_ik.marker,
+		rig.get_node_or_null(^"Skeleton3D/HandR/Socket") as Node3D, rig.get_node_or_null(^"Skeleton3D/HandL/Socket") as Node3D)
+	left_hand_ik.influence = move_toward(left_hand_ik.influence, 1.0 if want else 0.0, delta * tw.left_hand_ik_rate)
+	left_hand_ik.active = left_hand_ik.influence > 0.0 and left_hand_ik.marker != null
 
 
 ## Locomotion clips the v1.19 weapon-hold layer goes over (SOURCE weapon_holds: walk / run / strafe*).
@@ -933,6 +1046,8 @@ func _speed_scale_for(p_clip: StringName, tw: AnimTweak) -> float:
 		return 0.0
 	if _hold_done.get(p_clip, false) and HOLD_END.has(p_clip):
 		return 0.0  # frozen on the last frame (_hold_pose_end)
+	if p_clip == _state_oneshot and _state_oneshot_left > 0.0:
+		return _state_oneshot_speed
 	if p_clip == _oneshot and _oneshot_left > 0.0:
 		return _oneshot_speed
 	var key: StringName = p_clip
@@ -1034,8 +1149,10 @@ func _apply(want: StringName, speed: float, tw: AnimTweak) -> void:
 			blend = 0.0  # first clip: no fade in from the bind pose (spawn A-pose flash)
 		elif want == _death_clip:
 			blend = tw.death_blend_s
-		elif HOLD_END.get(clip, &"") == want:
-			blend = 0.0  # v1.18: surrender* ends exactly on surrender_idle* frame 0 (no crossfade)
+		elif HOLD_END.get(clip, &"") == want or (want == &"crew_cuffed" and CUFF_INTO.has(clip)):
+			blend = 0.0  # surrender* -> surrender_idle* (v1.18); downed_arrested / crew_cuffed_enter -> crew_cuffed (v1.21)
+		elif clip == &"downed_getup":
+			blend = tw.getup_blend_s  # v1.21: from hold_pistol f0 into the current weapon's hold
 		elif want == _oneshot:
 			blend = tw.hit_zone_blend_in_s if HIT_ZONE_CLIPS.has(want) else tw.oneshot_blend_s
 		elif HIT_ZONE_CLIPS.has(clip):
@@ -1143,7 +1260,37 @@ func _on_damage_applied(victim_net_id: int, _attacker: int, info: Dictionary) ->
 		return
 	_last_hit_react_t = now
 	var zone_clip: StringName = hit_zone_clip(info)
+	if zone_clip != &"" and horizontal_speed() > AnimTweak.data().move_threshold_mps and _play_flinch_layer(zone_clip):
+		return  # lead ruling (b): moving, the legs keep their locomotion
 	play_oneshot(zone_clip if zone_clip != &"" else hit_react_clip(_hit_dir), -1.0, true)
+
+
+## Lead ruling (b) / SOURCE hit_zones: a hit-zone flinch on a moving body plays on the upper body only (spine and up,
+## UpperBodyLayer `FlinchLayer` over whatever the legs do) at AnimTweak.hit_zone_layer_weight (head: _head_weight),
+## fading in / out over hit_zone_blend_in_s / _out_s. False when the rig has no layer / clip (then full body).
+func _play_flinch_layer(c: StringName) -> bool:
+	if flinch_layer == null or not is_instance_valid(flinch_layer) or not _has_clip(c):
+		return false
+	flinch_layer.set_clip(&"", null)
+	flinch_layer.set_clip(c, player.get_animation("%s/%s" % [LIBRARY, c]), 0.0)
+	_flinch_left = player.get_animation("%s/%s" % [LIBRARY, c]).length
+	return true
+
+
+func _update_flinch_layer(delta: float, tw: AnimTweak) -> void:
+	if flinch_layer == null or not is_instance_valid(flinch_layer):
+		return
+	var dead: bool = _npc != null and not _npc.alive
+	if _flinch_left <= 0.0 or dead:
+		_flinch_left = 0.0
+		flinch_layer.influence = move_toward(flinch_layer.influence, 0.0, delta / maxf(tw.hit_zone_blend_out_s, 0.001))
+	else:
+		flinch_layer.advance(delta)
+		_flinch_left = maxf(_flinch_left - delta, 0.0)
+		var peak: float = tw.hit_zone_layer_head_weight if flinch_layer.clip == HIT_HEAD else tw.hit_zone_layer_weight
+		var target: float = peak if _flinch_left > tw.hit_zone_blend_out_s else peak * _flinch_left / maxf(tw.hit_zone_blend_out_s, 0.001)
+		flinch_layer.influence = move_toward(flinch_layer.influence, target, delta * peak / maxf(tw.hit_zone_blend_in_s, 0.001))
+	flinch_layer.active = flinch_layer.influence > 0.0
 
 
 ## characters.md v1.18 (SOURCE `hit_zones:`): the flinch for damage `info` from its `zone` and hit `position` in the
@@ -1192,7 +1339,31 @@ func _on_weapon_fired(shooter_net_id: int, _weapon_id: StringName, _suppressed: 
 	if player == null or shooter_net_id == 0 or shooter_net_id != _net_id():
 		return
 	_aim_hold_left = AnimTweak.data().aim_hold_s
-	play_oneshot(&"fire_rifle" if aim_family() == &"rifle" else &"fire_pistol")
+	if _crew != null and _crew.crew_state == Enums.CrewState.DOWNED:
+		_play_state_oneshot(&"downed_fire")  # v1.21: shooting from the floor
+		return
+	play_oneshot(fire_clip())
+
+
+## The aim clip for weapon_kind: aim_akimbo (v1.21, when the rig has it), else aim_rifle / aim_pistol by family.
+func aim_clip() -> StringName:
+	if weapon_kind == &"akimbo" and _has_clip(&"aim_akimbo"):
+		return &"aim_akimbo"
+	return &"aim_rifle" if aim_family() == &"rifle" else &"aim_pistol"
+
+
+## The fire one-shot for the next shot: v1.21 akimbo alternates fire_akimbo (right) / fire_akimbo_l, right first;
+## otherwise fire_rifle / fire_pistol by family.
+func fire_clip() -> StringName:
+	if weapon_kind == &"akimbo" and _has_clip(&"fire_akimbo") and _has_clip(&"fire_akimbo_l"):
+		var c: StringName = &"fire_akimbo_l" if _akimbo_left_next else &"fire_akimbo"
+		_akimbo_left_next = not _akimbo_left_next
+		return c
+	return &"fire_rifle" if aim_family() == &"rifle" else &"fire_pistol"
+
+
+func _has_clip(c: StringName) -> bool:
+	return player != null and player.has_animation("%s/%s" % [LIBRARY, c])
 
 
 ## A3-13: an NPC melee windup (`cue.npc_melee_swing` [R], source = this NPC) plays `melee` on every peer, so
@@ -1215,9 +1386,20 @@ func _on_reload_started(_ws: int, duration: float) -> void:
 	if player == null:
 		return
 	var tw: AnimTweak = AnimTweak.data()
-	var done_s: float = float(tw.reload_done_s.get(aim_family(), 1.0))
+	var c: StringName = &"reload_rifle" if aim_family() == &"rifle" else &"reload_pistol"
+	var key: StringName = aim_family()
+	if _crew != null and _crew.crew_state == Enums.CrewState.DOWNED and _has_clip(&"downed_reload"):
+		c = &"downed_reload"  # v1.21
+		key = c
+	elif weapon_kind == &"akimbo" and _has_clip(&"reload_akimbo"):
+		c = &"reload_akimbo"
+		key = &"akimbo"
+	var done_s: float = float(tw.reload_done_s.get(key, tw.reload_done_s.get(aim_family(), 1.0)))
 	var speed: float = done_s / maxf(duration, 0.05)  # the `done` event frame lands on reload completion
-	play_oneshot(&"reload_rifle" if aim_family() == &"rifle" else &"reload_pistol", duration, false, speed)
+	if c == &"downed_reload":
+		_play_state_oneshot(c, duration, speed)
+		return
+	play_oneshot(c, duration, false, speed)
 
 
 func _on_equipped(_ws: int) -> void:
