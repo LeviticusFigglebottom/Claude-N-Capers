@@ -119,6 +119,17 @@ static func jam_text(kind: StringName) -> String:
 	return UiText.t(&"ui.hud.device.interrupted" if kind == &"hack" else &"ui.hud.device.jammed")
 
 
+## r227 crowding audit: true while the interaction prompt already shows this row's fix prompt (the player is at the
+## device): the panel's own fix line would repeat it right over the prompt.
+func _prompt_shows_fix(row: Dictionary) -> bool:
+	var it: Dictionary = prop(&"interaction", {}) as Dictionary
+	var kind: StringName = StringName(row.get("kind", &"drill"))
+	var key: StringName = StringName(row.get("fix_prompt_key", &""))
+	if key == &"":
+		key = FIX_KEYS.get(kind, FIX_DEFAULT) as StringName
+	return not it.is_empty() and StringName(it.get("text_key", &"")) == key
+
+
 ## The fix prompt of a jammed row ("Hold F to fix the drill").
 static func fix_text(row: Dictionary) -> String:
 	var kind: StringName = StringName(row.get("kind", &"drill"))
@@ -221,7 +232,7 @@ func _layout(all: Array[Dictionary]) -> void:
 			continue
 		var kind: StringName = StringName(r.get("kind", &"drill"))
 		var jammed: bool = is_jammed(r)
-		var fix: String = fix_text(r) if jammed else ""
+		var fix: String = fix_text(r) if jammed and not _prompt_shows_fix(r) else ""
 		var restart: float = float(r.get("auto_restart_in_s", -1.0))
 		if jammed and restart >= 0.0:
 			fix = UiText.t(&"ui.hud.device.restarting", {"time": time_text(restart)})

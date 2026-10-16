@@ -29,6 +29,9 @@ const CASING_HINT_S: float = 1.5
 const CASING_HINT_KEYS: Dictionary = {
 	&"sprint": &"ui.hud.casing_blocked.sprint", &"crouch": &"ui.hud.casing_blocked.crouch",
 	&"jump": &"ui.hud.casing_blocked.jump"}
+## Captain panel top (HUD units) under a one-line assault banner, and its gap below a taller one (_stack_captain).
+const CAPTAIN_TOP: float = 104.0
+const CAPTAIN_GAP: float = 8.0
 
 @export var model_path: NodePath
 ## Discover the model through group G.LOCAL_HUD_MODEL when nothing is bound.
@@ -173,7 +176,7 @@ func _build() -> void:
 	pager = _place(PagerPanel.new(), Control.PRESET_CENTER_TOP, Vector2(-200, 110), Vector2(400, 200)) as PagerPanel
 	status = _place(StatusPanel.new(), Control.PRESET_TOP_RIGHT, Vector2(-448, 48), Vector2(400, 180)) as StatusPanel
 	custody = _place(CustodyPanel.new(), Control.PRESET_CENTER, Vector2(-300, -200), Vector2(600, 130)) as CustodyPanel
-	captain = _place(CaptainPanel.new(), Control.PRESET_CENTER_TOP, Vector2(-260, 104), Vector2(520, 84)) as CaptainPanel
+	captain = _place(CaptainPanel.new(), Control.PRESET_CENTER_TOP, Vector2(-260, CAPTAIN_TOP), Vector2(520, 84)) as CaptainPanel
 	mask_ring = _place(MaskProgress.new(), Control.PRESET_CENTER, Vector2(-120, -40), Vector2(240, 110)) as MaskProgress
 	# Below the interaction prompt, clear of the subtitles at the bottom (audit: they collided).
 	hint = _place(HintStrip.new(), Control.PRESET_CENTER, Vector2(-450, 190), Vector2(900, 64)) as HintStrip
@@ -190,6 +193,20 @@ func _build() -> void:
 	toast_label.visible = false
 	assault_events.events_changed.connect(assault.set_events)
 	breach_flash = _place(BreachFlash.new(), Control.PRESET_FULL_RECT, Vector2.ZERO, Vector2.ZERO) as BreachFlash  # on top
+
+
+## r227 crowding audit: the captain panel sits under the assault banner's real bottom; the banner grows when it lists
+## the active assault events, and the fixed spot covered that line ("TURRET VAN" under Commander Brandt).
+func _stack_captain() -> void:
+	if captain == null or assault == null or assault.panel == null:
+		return
+	var top: float = CAPTAIN_TOP
+	if assault.visible and assault.panel.is_visible_in_tree():
+		top = maxf(top, assault.offset_top + assault.panel.position.y + assault.panel.size.y + CAPTAIN_GAP)
+	if not is_equal_approx(captain.offset_top, top):
+		var h: float = captain.offset_bottom - captain.offset_top
+		captain.offset_top = top
+		captain.offset_bottom = top + h
 
 
 func _place(c: Control, preset: Control.LayoutPreset, offset: Vector2, min_size: Vector2) -> Control:
@@ -359,6 +376,7 @@ func _input(event: InputEvent) -> void:
 
 func _process(delta: float) -> void:
 	_update_crosshair(delta)
+	_stack_captain()
 	if objective_markers != null and scoreboard != null:
 		objective_markers.show_all = scoreboard.visible  # Tab shows every objective's marker
 		objective_markers.z_index = 1 if scoreboard.visible else 0  # drawn over the sheet, not under it

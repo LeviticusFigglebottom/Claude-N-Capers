@@ -65,3 +65,21 @@ func test_events_show_markers_and_banner_names() -> void:
 func test_turret_van_name() -> void:
 	assert_eq(AssaultEventMarkers.kind_text(&"turret_van"), "TURRET VAN")
 	assert_eq(AssaultEventMarkers.kind_text(&"unknown_thing"), "INCOMING")
+
+
+## r227 crowding audit: with the captain present, his panel sits under the banner's real bottom, so the events line
+## the banner grows ("TURRET VAN") stays visible; without events it keeps its usual spot.
+func test_captain_panel_clears_the_events_line() -> void:
+	_model.captain_present = true
+	_model.captain_resistance = 0.25
+	await wait_frames(3)
+	var base_top: float = _hud.captain.get_global_rect().position.y
+	EventBus.assault_event_started.emit(&"turret_van", 91, Vector3(0, 0, -10))
+	await wait_frames(4)
+	var banner: Rect2 = _hud.assault.panel.get_global_rect()
+	var cap: Rect2 = _hud.captain.get_global_rect()
+	assert_true(_hud.assault.events_label.is_visible_in_tree(), "events line shown")
+	assert_true(cap.position.y >= banner.end.y - 0.5, "captain below the banner (%s vs %s)" % [cap, banner])
+	EventBus.assault_event_ended.emit(&"turret_van", 91)
+	await wait_frames(4)
+	assert_near(_hud.captain.get_global_rect().position.y, base_top, 1.0, "back to its spot without events")
