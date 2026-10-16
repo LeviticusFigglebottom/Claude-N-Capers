@@ -42,6 +42,18 @@ func _settled(vm: FpViewmodel) -> bool:
 	return vm.action == FpViewmodel.Action.NONE
 
 
+## The viewmodel can settle a few frames before the 0.45 s equip timer ends, and a pump needs a fresh press (PD2
+## btn_primary_attack_press; a press held through the equip is spent): tap until the shell leaves.
+func _shoot_once(c: CrewController) -> bool:
+	var mag: int = c.weapons.mag(c.weapons.equipped_slot)
+	for _i: int in 20:
+		await _inp.tap(&"fire")
+		await wait_physics_frames(2)
+		if c.weapons.mag(c.weapons.equipped_slot) < mag:
+			return true
+	return false
+
+
 func test_secondary_shotgun_swap_reload_ads() -> void:
 	if FpViewmodelTweak.data().arms_scene == null:
 		skip("char_arms_fp not delivered")
@@ -58,7 +70,7 @@ func test_secondary_shotgun_swap_reload_ads() -> void:
 		"swap to the secondary shotgun (set %s, wanted %s)" % [vm.anim_set, shotgun_set])
 	assert_eq(c.weapons.weapon_id(c.weapons.equipped_slot), SHOTGUN, "the shotgun is equipped")
 	assert_true(FpViewmodel.has_aim_point(vm.weapon_visual), "the shotgun has an AimPoint")
-	await _inp.tap(&"fire")
+	assert_true(await _shoot_once(c), "fired")
 	await wait_physics_frames(40)
 	await _inp.tap(&"reload")
 	assert_true(await wait_until(func() -> bool: return vm.action == FpViewmodel.Action.RELOAD, 2.0), "reload plays")
@@ -87,13 +99,13 @@ func test_downed_player_holds_and_fires_the_secondary_shotgun() -> void:
 	assert_eq(c.weapons.equipped_slot, Enums.WeaponSlot.PRIMARY, "the rifle out first")
 	c.health.go_down()
 	assert_true(await wait_until(func() -> bool: return c.crew_state == Enums.CrewState.DOWNED, 2.0), "downed")
-	assert_true(await wait_until(func() -> bool: return c.weapons.equipped_slot == Enums.WeaponSlot.SECONDARY
-		and vm.anim_set == shotgun_set and _settled(vm), 6.0), "downed: the secondary shotgun comes out (set %s)" %
-		vm.anim_set)
+	var drawn: Callable = func() -> bool:
+		return c.weapons.equipped_slot == Enums.WeaponSlot.SECONDARY and vm.anim_set == shotgun_set and _settled(vm)
+	assert_true(await wait_until(drawn, 6.0), "downed: the secondary shotgun comes out (set %s)" % vm.anim_set)
 	var flashes: int = vm.fx.flashes
 	var mag: int = c.weapons.mag(c.weapons.equipped_slot)
-	await _inp.tap(&"fire")
-	await wait_physics_frames(20)
-	assert_eq(c.weapons.mag(c.weapons.equipped_slot), mag - 1, "a downed shot fired")
+	assert_true(await _shoot_once(c), "a downed shot fired")
+	await wait_physics_frames(10)
+	assert_eq(c.weapons.mag(c.weapons.equipped_slot), mag - 1, "one shell per trigger press")
 	assert_true(vm.fx.flashes > flashes, "the FP shotgun flashed")
 	assert_true(vm.weapon_visual != null and vm.weapon_visual.is_visible_in_tree(), "the shotgun is on screen")
