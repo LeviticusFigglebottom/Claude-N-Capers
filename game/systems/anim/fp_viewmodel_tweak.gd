@@ -282,9 +282,9 @@ static var _gen: int = 0
 @export var gadget_laser_range_m: float = 50.0
 ## Beam ribbon width (m) and opacity (additive); the dot's size (m) at gadget_laser_dot_ref_m, growing with distance
 ## past it so it stays readable.
-@export var gadget_laser_width_m: float = 0.005
-@export var gadget_laser_beam_alpha: float = 0.5
-@export var gadget_laser_dot_m: float = 0.02
+@export var gadget_laser_width_m: float = 0.009
+@export var gadget_laser_beam_alpha: float = 0.7
+@export var gadget_laser_dot_m: float = 0.035
 @export var gadget_laser_dot_ref_m: float = 5.0
 @export var gadget_light_range_m: float = 25.0
 @export var gadget_light_angle_deg: float = 30.0
