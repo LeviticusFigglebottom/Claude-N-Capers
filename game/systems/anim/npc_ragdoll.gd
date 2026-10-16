@@ -9,16 +9,18 @@
 ##   (blasts: every body outward from the centre with falloff). Otherwise the (PO6-18 pose-aware) death clip
 ##   plays and, when it ends, a short settle ragdoll lays the body on the floor (settle_after_anim).
 ## * after settle_s (or once every body is slower than settle_speed_mps) the bodies are baked into the skeleton
-##   pose and the simulation stops (frozen corpse: no physics cost, a fixed pose). The NPC root moves under the
-##   hips (the visual is shifted back), so the bag-body interaction, the corpse stimulus and the corpse hitbox
-##   are where the body lies.
+##   pose and the simulation stops (frozen corpse: no physics cost, a fixed pose).
+## * D-121: the ragdoll is cosmetic. It never moves the NPC root or the corpse hitbox: those sit on the
+##   deterministic CorpseAnchor from the death frame on (bagging, corpse stimulus, despawn LOS, bullets stopped by
+##   the corpse), so a same-seed run replays whatever the physics world did before. Only the visual, the blood
+##   pool where the hips come to rest and the nudges are physics-driven.
 ## * a bullet / melee / blast on a corpse restarts the ragdoll from the baked pose with a small nudge and
 ##   re-freezes it after nudge_settle_s (NpcBase emits blood_hit at the hit point).
 ## * at most max_active ragdolls simulate per peer: starting one more freezes the oldest first.
 ## Net (NetEntityCodec NPC state, reliable diffs, late joiners get the full state):
 ##   "rs" = [seq, settle_s, entries]  start / push fact: entries [[body index, impulse, offset], ...];
-##   "rp" = [seq, root origin, visual offset, Array[Transform3D] baked bone transforms (skeleton space, one
-##          per body)]  the server's frozen pose, sent once per freeze.
+##   "rp" = [seq, root origin (the anchor), visual offset, Array[Transform3D] baked bone transforms (skeleton
+##          space, one per body)]  the server's frozen pose, sent once per freeze.
 ## Clients run the same start + impulses cosmetically and snap to "rp" (they never re-anchor on their own).
 class_name NpcRagdoll
 extends Node
@@ -29,7 +31,6 @@ const NODE_NAME: String = "NpcRagdoll"
 const SIM_PATH: NodePath = ^"Skeleton3D/Ragdoll"
 const HEAD_BODY: StringName = &"Head"
 const HIPS_BODY: StringName = &"Hips"
-const SHIN_BODIES: Array[StringName] = [&"ShinL", &"ShinR"]
 
 ## Simulating ragdolls on this peer, oldest first (the cap).
 static var _active: Array[NpcRagdoll] = []
@@ -238,7 +239,6 @@ func _physics_process(delta: float) -> void:
 			_first_push()
 		Phase.ACTIVE:
 			_t += delta
-			_place_hitbox_from_bodies()
 			if _t >= _settle_s or (_t >= RagdollTweak.data().settle_min_s and _all_slow()):
 				freeze()
 
@@ -260,8 +260,6 @@ func _decide() -> void:
 	_hits.clear()
 	_t = 0.0
 	phase = Phase.ANIM if tw.enabled and tw.settle_after_anim else Phase.FROZEN
-	if phase == Phase.FROZEN:
-		_place_hitbox_from_skeleton()
 
 
 ## PO6-18: the AnimDriver froze the pre-death pose (kneel / crouch / prone without a pose death clip on this rig).
@@ -283,8 +281,9 @@ func _topple_from_pose() -> void:
 		rec["mag"] = tw.pose_topple_impulse
 		hits.append(rec)
 	if hits.is_empty():
+		var base: Vector3 = npc.visual_root.global_position if npc.visual_root != null else npc.global_position
 		hits.append({"blast": false, "head": false, "mag": tw.pose_topple_impulse,
-			"point": npc.global_position + Vector3.UP * 0.9, "impulse": -npc.global_basis.z * tw.pose_topple_impulse})
+			"point": base + Vector3.UP * 0.9, "impulse": -npc.global_basis.z * tw.pose_topple_impulse})
 	_death_hits.clear()
 	_start(hits, tw.settle_s)
 
@@ -388,8 +387,8 @@ func _all_slow() -> bool:
 
 # --- Freeze -----------------------------------------------------------------------------------
 
-## Bake the bodies into the skeleton pose and stop simulating. The server moves the NPC root under the hips
-## (visual shifted back) and publishes the pose; a client freezes cosmetically until the server's pose arrives.
+## Bake the bodies into the skeleton pose and stop simulating. The server publishes the pose (the root stays on
+## the CorpseAnchor, D-121); a client freezes cosmetically until the server's pose arrives.
 func freeze() -> void:
 	if phase != Phase.ACTIVE and phase != Phase.STARTING:
 		return
@@ -404,9 +403,8 @@ func freeze() -> void:
 	_entries.clear()
 	_hits.clear()
 	if Net.is_authority():
-		_reanchor(skel.global_transform * xfs[_body_index(HIPS_BODY)].origin)
+		_bleed_at(skel.global_transform * xfs[_body_index(HIPS_BODY)].origin)
 	bake(skel, bodies, xfs)
-	_place_hitbox(xfs)
 	if Net.is_authority():
 		_rp = [seq, npc.global_position, npc.visual_root.position if npc.visual_root != null else Vector3.ZERO, xfs]
 
@@ -438,19 +436,12 @@ static func bake(p_skel: Skeleton3D, p_bodies: Array[PhysicalBone3D], xfs: Array
 		global[i] = parent_xf * local
 
 
-## Server: the gameplay body (root) moves under the hips; the visual keeps its world transform.
-func _reanchor(hips: Vector3) -> void:
-	var old: Vector3 = npc.global_position
-	var to: Vector3 = Vector3(hips.x, old.y, hips.z)
-	if to.distance_to(old) < 0.01:
-		return
-	var vis: Node3D = npc.visual_root
-	var vg: Transform3D = vis.global_transform if vis != null else Transform3D.IDENTITY
-	npc.global_position = to
-	if vis != null:
-		vis.global_transform = vg
-	if to.distance_to(old) >= RagdollTweak.data().bleed_move_m and npc.net_id != 0:
-		BloodFx.bleed(npc.net_id, true, to, BloodFx.death_rate(npc.last_damage))  # D-113: the pool where it lies
+## Server, D-113 (cosmetic): the blood pool follows the body to where its hips came to rest when that is
+## bleed_move_m or more from the gameplay anchor (the root, D-121; it never moves here).
+func _bleed_at(hips: Vector3) -> void:
+	var at: Vector3 = Vector3(hips.x, npc.global_position.y, hips.z)
+	if at.distance_to(npc.global_position) >= RagdollTweak.data().bleed_move_m and npc.net_id != 0:
+		BloodFx.bleed(npc.net_id, true, at, BloodFx.death_rate(npc.last_damage))
 
 
 func _body_index(nm: StringName) -> int:
@@ -458,51 +449,6 @@ func _body_index(nm: StringName) -> int:
 		if bodies[i].name == nm:
 			return i
 	return 0
-
-
-# --- Corpse hitbox -------------------------------------------------------------------------------
-
-func _place_hitbox_from_bodies() -> void:
-	var pts: Array[Vector3] = []
-	for pb: PhysicalBone3D in bodies:
-		pts.append(pb.global_position)
-	_place_hitbox_points(pts)
-
-
-## From baked bone transforms (skeleton space): each body's centre = skeleton x bone x body_offset.
-func _place_hitbox(xfs: Array[Transform3D]) -> void:
-	var pts: Array[Vector3] = []
-	for i: int in mini(xfs.size(), bodies.size()):
-		pts.append((skel.global_transform * xfs[i] * bodies[i].body_offset).origin)
-	_place_hitbox_points(pts)
-
-
-func _place_hitbox_from_skeleton() -> void:
-	var pts: Array[Vector3] = []
-	for pb: PhysicalBone3D in bodies:
-		var bi: int = skel.find_bone(pb.bone_name)
-		pts.append((skel.global_transform * skel.get_bone_global_pose(bi) * pb.body_offset).origin if bi >= 0
-			else npc.global_position)
-	_place_hitbox_points(pts)
-
-
-## Corpse hitbox from per-body points (bodies order): a box from the shins to the head.
-func _place_hitbox_points(pts: Array[Vector3]) -> void:
-	if pts.size() != bodies.size() or pts.is_empty():
-		return
-	var head: Vector3 = pts[_body_index(HEAD_BODY)]
-	var feet: Vector3 = Vector3.ZERO
-	for nm: StringName in SHIN_BODIES:
-		feet += pts[_body_index(nm)]
-	feet /= float(SHIN_BODIES.size())
-	var tw: RagdollTweak = RagdollTweak.data()
-	var axis: Vector3 = head - feet
-	var z: Vector3 = axis.normalized() if axis.length() > 0.05 else npc.global_basis.z
-	var x: Vector3 = Vector3.UP.cross(z)
-	x = x.normalized() if x.length() > 0.05 else Vector3.RIGHT
-	var y: Vector3 = z.cross(x).normalized()
-	npc.set_corpse_hitbox(Transform3D(Basis(x, y, z), (head + feet) * 0.5),
-		Vector3(tw.corpse_box_width, tw.corpse_box_height, axis.length() + tw.corpse_box_pad_m))
 
 
 # --- Cap ------------------------------------------------------------------------------------------
@@ -581,4 +527,3 @@ func _snap(root: Vector3, visual_offset: Vector3, xfs_in: Array) -> void:
 	for x: Variant in xfs_in:
 		xfs.append(x as Transform3D)
 	bake(skel, bodies, xfs)
-	_place_hitbox(xfs)
