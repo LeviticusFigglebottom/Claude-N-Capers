@@ -239,7 +239,26 @@ func goto(target: Vector3, arrive_m: float = 0.8, timeout_s: float = 60.0, sprin
 			if moved < stuck_min_m and inp.is_held(&"move_forward"):
 				await _log_stuck(corner)
 				recover += 1
-				await _unstick(recover)
+				var leaf: Door = _leaf_contact() if doors else null
+				if leaf != null and not leaf.is_open and _door_blocked(leaf):
+					# P's GN loud rerun: 80 s+ pushing into StudioDoor, a closed leaf with no prompt (door_ahead finds
+					# a door by its interactable near the route; a leaf the crew walks into is that door whatever it is).
+					inp.release(&"move_forward")
+					d.note("pilot: goto stuck on the closed leaf of %s (%s); giving up this leg" % [leaf.name, _door_why(leaf)])
+					last_blocked_door = leaf
+					break
+				if leaf != null and not leaf.is_open:
+					inp.release(&"move_forward")
+					await open_door(leaf)
+					repath_t = 0.0
+				elif leaf != null:
+					# Open, but its leaf is held closed by a body in its sweep (PO-6 swing_blocked; maybe us): step back.
+					inp.release(&"move_forward")
+					d.note("pilot: %s is open but its leaf is held (swing blocked): stepping back" % leaf.name)
+					await inp.hold(&"move_back", 0.6)
+					await inp.ticks(int(0.5 * Engine.physics_ticks_per_second))
+				else:
+					await _unstick(recover)
 			hist_pos = crew.global_position
 			hist_t = 0.0
 	inp.release(&"move_forward")
@@ -291,6 +310,26 @@ func _log_stuck(corner: Vector3) -> void:
 	d.note("pilot: STUCK at %s heading to %s; rays: %s" % [_v(crew.global_position), _v(corner), ", ".join(hits)])
 	if stuck_spots.size() <= 3:
 		await d.shot("stuck_%d" % stuck_spots.size())
+
+
+## The Door whose leaf (its `LeafBody*` AnimatableBody3D) the crew is pressed against, else null: from the slide
+## collisions of the last move, else a short knee-high ray along the facing.
+func _leaf_contact() -> Door:
+	var cols: Array[Object] = []
+	for i: int in crew.get_slide_collision_count():
+		cols.append(crew.get_slide_collision(i).get_collider())
+	var fwd: Vector3 = Vector3(-sin(crew.look_yaw), 0.0, -cos(crew.look_yaw))
+	var from: Vector3 = crew.global_position + Vector3(0, 0.5, 0)
+	var q: PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.create(from, from + fwd * 0.8)
+	q.exclude = [crew.get_rid()]
+	var hit: Dictionary = crew.get_world_3d().direct_space_state.intersect_ray(q)
+	if not hit.is_empty():
+		cols.append(hit["collider"])
+	for o: Object in cols:
+		var body: Node = o as Node
+		if body is AnimatableBody3D and String(body.name).begins_with("LeafBody") and body.get_parent() is Door:
+			return body.get_parent() as Door
+	return null
 
 
 func _unstick(attempt: int) -> void:

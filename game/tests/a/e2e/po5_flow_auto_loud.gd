@@ -175,7 +175,7 @@ func _pick(markers: Array[Dictionary]) -> Dictionary:
 	for m: Dictionary in markers:
 		var mid: StringName = StringName(m["id"])
 		if not (mid in [&"secure", &"escape", &"casing"] or mid in AREA_OBJECTIVES) \
-				and not _stalled(m) and not _is_marker_blocked(m):
+				and not _stalled(m) and not _is_marker_blocked(m) and not _blocked_on_path(m):
 			return m
 	for m1: Dictionary in markers:
 		if not (StringName(m1["id"]) in [&"secure", &"escape", &"casing"]):
@@ -368,28 +368,23 @@ func _stalled(m: Dictionary) -> bool:
 	return false
 
 
-## The first closed door on the navmesh path from the pilot to `to` the crew cannot open now (BARRED / CODE without
-## the keypad / VAULT...), else null. The GN navmesh is baked through every doorway (heist_map.md §3).
+## The first closed door on the navmesh path from the pilot to `to` the crew cannot open now, else null. Every Door
+## of the map counts (Door.GROUP), not only the ones with an interactable: a lockdown shutter or a BARRED / VAULT leaf
+## offers no usable prompt (P's GN loud rerun sat 80 s+ pushing into a closed leaf with no prompt). The GN navmesh is
+## baked through every doorway (heist_map.md §3), so a path alone says nothing.
 func _path_blocker(to: Vector3) -> Door:
 	var path: PackedVector3Array = p.nav_path(to)
 	if path.size() < 2:
 		return null
 	var best: Door = null
 	var best_i: int = path.size()
-	for n: Node in f.get_tree().get_nodes_in_group(G.INTERACTABLE):
-		var c: InteractableComponent = n as InteractableComponent
-		var door: Door = c.owner_node() as Door if c != null else null
+	for n: Node in f.get_tree().get_nodes_in_group(Door.GROUP):
+		var door: Door = n as Door
 		if door == null or not rt.is_ancestor_of(door) or _passable(door):
 			continue
-		var half: float = maxf(door.width_m * 0.5, 0.6)
-		var inv: Transform3D = door.global_transform.affine_inverse()
-		for i: int in range(1, mini(path.size(), best_i + 1)):
-			var a: Vector3 = inv * path[i - 1]
-			var b: Vector3 = inv * path[i]
-			if signf(a.z) == signf(b.z) or absf(a.z - b.z) < 0.001:
-				continue  # this leg does not go through the door's plane
-			var x: Vector3 = a.lerp(b, a.z / (a.z - b.z))  # where it crosses (door space)
-			if absf(x.x) <= half + 0.2 and absf(x.y) <= 1.5:
+		for i: int in range(1, mini(path.size(), best_i)):
+			# Legs are lifted 0.5 m: navmesh points sit on the floor, doorway_crossing wants the opening's height.
+			if door.doorway_crossing(path[i - 1] + Vector3.UP * 0.5, path[i] + Vector3.UP * 0.5) != Vector3.INF:
 				best = door
 				best_i = i
 				break
@@ -435,9 +430,16 @@ func _is_unreachable(c: InteractableComponent) -> bool:
 	return false
 
 
-## The crew could walk through `door` now: open, or closed but usable (not BARRED / VAULT / no card).
+## The crew could walk through `door` now: open, or closed but usable now. Closed and blocked: a shutter (the crew
+## never operates one), a locked BARRED / VAULT door (the GN lockdown relocks the art door BARRED; once lifted it is
+## unlocked and open), or no enabled interactable the crew can use now (Po5Pilot._door_blocked: no card, no code,
+## three failed tries, casing).
 func _passable(door: Door) -> bool:
-	return door.is_open or not p._door_blocked(door)
+	if door.is_open:
+		return true
+	if door.shutter or (door.locked and door.lock in [Door.Lock.BARRED, Door.Lock.VAULT]):
+		return false
+	return not p._door_blocked(door)
 
 
 ## A marker whose walk a door the crew cannot open stopped (`_marker_blocked`), while that door still blocks.
@@ -451,6 +453,17 @@ func _is_marker_blocked(m: Dictionary) -> bool:
 	_marker_blocked.erase(key)
 	f.note("marker %s: %s is passable again" % [key, door.name if is_instance_valid(door) else "door"])
 	return false
+
+
+## P's GN loud rerun (StudioDoor, 80 s+): any marker, not only the FIRST ones, whose walk would cross a closed door
+## the crew cannot open now yields (recorded in `_marker_blocked`, back once that door is passable) before walking.
+func _blocked_on_path(m: Dictionary) -> bool:
+	var on_path: Door = _path_blocker(_marker_stand(m["position"] as Vector3))
+	if on_path == null:
+		return false
+	_marker_blocked[_marker_key(m)] = on_path
+	f.note("marker %s: %s on the way cannot be opened now" % [_marker_key(m), on_path.name])
+	return true
 
 
 static func _marker_key(m: Dictionary) -> String:

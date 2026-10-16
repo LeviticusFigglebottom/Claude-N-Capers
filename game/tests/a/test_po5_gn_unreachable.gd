@@ -206,3 +206,64 @@ func test_po5_marker_stand_uses_prefab_use_point() -> void:
 	var far: Vector3 = flow.call(&"_marker_stand", Vector3(20, 1, 20))
 	assert_true(far.distance_to((s["pilot"] as Po5Pilot).stand_point(Vector3(20, 1, 20))) < 0.05,
 		"no prefab near: nearest navmesh point")
+
+
+## P's GN loud rerun (StudioDoor, 80 s+ at a closed leaf with no prompt): `_path_blocker` sees every closed Door the
+## crew cannot open now, including one with no interactable left at all, a closed shutter, and a door the lockdown
+## relocked BARRED; unlocked (the hack lifts it) it is passable again even though its `lock` stays BARRED.
+func test_po5_gn_path_blocker_sees_lockdown_barred_and_promptless_doors() -> void:
+	var s: Dictionary = await _setup()
+	var door: Door = s["door"]
+	var flow: RefCounted = s["flow"]
+	var behind: Vector3 = Vector3(0, 0, -4)
+	assert_eq(flow.call(&"_path_blocker", behind), door, "BARRED and closed: blocks")
+	door.unlock()
+	await wait_physics_frames(2)
+	assert_false(door.is_open, "still closed")
+	assert_true(flow.call(&"_path_blocker", behind) == null, "unlocked (lock enum still BARRED): the crew opens it")
+	door.relock(Door.Lock.BARRED)  # GN _go_loud: the art door / shutters
+	await wait_physics_frames(2)
+	assert_eq(flow.call(&"_path_blocker", behind), door, "relocked BARRED by the lockdown: blocks again")
+	door.unlock()
+	door.shutter = true
+	assert_eq(flow.call(&"_path_blocker", behind), door, "a closed shutter blocks (the crew never operates one)")
+	door.shutter = false
+	var comp: InteractableComponent = door.get_node(^"Interactable") as InteractableComponent
+	comp.enabled = false
+	assert_eq(flow.call(&"_path_blocker", behind), door, "no usable prompt: blocks")
+	door.remove_child(comp)
+	comp.free()
+	await wait_physics_frames(1)
+	assert_eq(flow.call(&"_path_blocker", behind), door, "no interactable at all: still found (Door.GROUP)")
+
+
+## The same for any marker, not only the FIRST ones: a [canvases] marker behind the lockdown-barred door yields
+## before the walk, and comes back once the door is passable.
+func test_po5_gn_any_marker_behind_a_barred_door_yields_before_walking() -> void:
+	var s: Dictionary = await _setup()
+	var door: Door = s["door"]
+	var flow: RefCounted = s["flow"]
+	var behind: Dictionary = {"id": &"canvases", "position": Vector3(0, 0, -4)}
+	var open_one: Dictionary = {"id": &"lockers", "position": Vector3(6, 0, 6)}
+	var markers: Array[Dictionary] = [behind, open_one]
+	assert_eq(flow.call(&"_pick", markers), open_one, "the reachable marker first")
+	assert_true(flow.call(&"_is_marker_blocked", behind), "recorded as blocked by that door")
+	_lift(door)
+	await wait_physics_frames(2)
+	assert_eq(flow.call(&"_pick", markers), behind, "HUD order again once the door is up")
+
+
+## Po5Pilot: the leaf the crew is pressed against is found by its LeafBody (goto's stuck branch), whatever its
+## interactable says or wherever its handle is.
+func test_po5_pilot_finds_the_leaf_it_walks_into() -> void:
+	var s: Dictionary = await _setup()
+	var door: Door = s["door"]
+	var pilot: Po5Pilot = s["pilot"]
+	_rt.teleport_crew(0, Transform3D(Basis.IDENTITY, door.global_position + Vector3(0, 0.05, 0.6)))
+	pilot.crew.look_yaw = 0.0  # facing -Z, at the closed leaf
+	await wait_physics_frames(3)
+	assert_eq(pilot._leaf_contact(), door, "the closed leaf ahead")
+	assert_true(pilot._door_blocked(door), "BARRED: goto gives up the leg there")
+	_rt.teleport_crew(0, Transform3D(Basis.IDENTITY, door.global_position + Vector3(0, 0.05, 3.0)))
+	await wait_physics_frames(3)
+	assert_true(pilot._leaf_contact() == null, "3 m away: no leaf")
