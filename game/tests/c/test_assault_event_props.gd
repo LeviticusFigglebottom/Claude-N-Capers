@@ -1,11 +1,13 @@
 ## PO6-17: assault-event visuals (tools/blender/props/assault_events.py) keep the node contract ENV A codes
 ## against (docs/levels/_art/po6_17/README.md): turret van, sentry turret, police helicopter and the three
-## breach points (+ the map-sized variants), plus the `AssaultEvents` markers of Golden Hour and Dockside Burn. Owner: ENV C.
+## breach points (+ the map-sized variants), plus the `AssaultEvents` markers of Golden Hour, Dockside Burn and
+## Night Deposit. Owner: ENV C.
 extends TestCase
 
 const DIR: String = "res://world/props/assault_event/"
 const GH: String = "res://world/heists/glasshouse/glasshouse.tscn"
 const DB: String = "res://world/heists/dockside_burn/dockside_burn.tscn"
+const ND: String = "res://world/heists/night_deposit/night_deposit.tscn"
 const BREACHES: Dictionary = {
 	"prop_breach_wall": Vector2(1.0, 2.2), "prop_breach_window": Vector2(1.0, 2.1), "prop_breach_ceiling": Vector2(1.2, 1.2),
 	"prop_breach_wall_t40": Vector2(1.0, 2.2), "prop_breach_ceiling_p100_d800": Vector2(1.2, 1.2),
@@ -25,6 +27,12 @@ const DB_EXPECT: Dictionary = {
 		"Breach_3": ["wall", "AN", "prop_breach_wall_t40", 0.0],
 		"Breach_4": ["ceiling", "C1", "prop_breach_ceiling_p100_d800", 0.0],
 		"Breach_5": ["ceiling", "C2", "prop_breach_ceiling_p100_d800", 0.0]},
+}
+const ND_EXPECT: Dictionary = {
+	"counts": {"TurretVan": 2, "HeliOrbit": 1, "HeliDrop": 2, "Breach": 3}, "rappels": 0,
+	"breaches": {
+		"Breach_1": ["ceiling", "G9", "prop_breach_ceiling_p100_d550", 0.0],
+		"Breach_2": ["ceiling", "G8", "prop_breach_ceiling", 0.0], "Breach_3": ["wall", "G6", "prop_breach_wall_t40", 0.0]},
 }
 
 
@@ -164,6 +172,10 @@ func test_glasshouse_markers() -> void:
 
 func test_dockside_burn_markers() -> void:
 	_check_map(DB, DB_EXPECT)
+
+
+func test_night_deposit_markers() -> void:
+	_check_map(ND, ND_EXPECT)
 
 
 ## Marker contract on a map (README §5-§7): AssaultEvents (group), Marker3D kinds and counts, orbit radius, the

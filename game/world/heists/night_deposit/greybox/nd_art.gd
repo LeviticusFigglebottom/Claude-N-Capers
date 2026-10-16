@@ -8,6 +8,7 @@ extends RefCounted
 
 const M: GDScript = preload("res://world/heists/glasshouse/greybox/gh_mesh.gd")
 const L: GDScript = preload("res://world/heists/night_deposit/greybox/night_deposit_layout.gd")
+const AM: GDScript = preload("res://world/heists/shared/assault_markers.gd")  # PO6-17 ceiling breach holes
 const MAT_DIR: String = "res://world/materials/"
 const TRIM_TABLE: String = "res://assets/textures/trim_interior/trim_table.json"
 const LIBRARY: Array[String] = [
@@ -414,8 +415,10 @@ func room_surfaces() -> void:
 				var cx1: float = x1 - _wall_thickness("z", x1, y1 + 0.01, z0, z1) * 0.5
 				var cz0: float = z0 + _wall_thickness("x", z0, y1 + 0.01, x0, x1) * 0.5
 				var cz1: float = z1 - _wall_thickness("x", z1, y1 + 0.01, x0, x1) * 0.5
-				acc.quad("Interior", String(fin[2]), Vector3(cx0, y1, cz0), Vector3(cx1, y1, cz0), Vector3(cx1, y1, cz1),
-					Vector3(cx0, y1, cz1), Vector3.DOWN)
+				for cr: Rect2 in AM.ceiling_rects(cx0, cz0, cx1, cz1, y1, L.ASSAULT_BREACHES):  # PO6-17 hatches
+					acc.quad("Interior", String(fin[2]), Vector3(cr.position.x, y1, cr.position.y),
+						Vector3(cr.end.x, y1, cr.position.y), Vector3(cr.end.x, y1, cr.end.y), Vector3(cr.position.x, y1, cr.end.y),
+						Vector3.DOWN)
 		if id in ["B3", "B7", "B10", "G2"]:
 			continue
 		for b2: Array in r[4]:
