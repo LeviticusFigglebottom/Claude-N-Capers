@@ -49,7 +49,9 @@ mod_slots = {
 2: [&"mod.condor_suppressor"],
 3: [&"mod.condor_scope_6x", &"mod.condor_scope_12x"],
 5: [&"mod.condor_bipod"],
-7: [&"mod.condor_standard_mag", &"mod.condor_extended_mag"]
+6: [&"mod.condor_skeleton_stock", &"mod.condor_precision_stock"],
+7: [&"mod.condor_standard_mag", &"mod.condor_extended_mag"],
+8: [&"mod.rail_laser", &"mod.rail_flashlight", &"mod.rail_combo"]
 }
 default_mods = {
 3: &"mod.condor_scope_6x",

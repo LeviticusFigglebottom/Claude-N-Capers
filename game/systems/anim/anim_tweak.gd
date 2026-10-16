@@ -86,6 +86,34 @@ static var _cached: AnimTweak = null
 @export var velocity_smoothing: float = 12.0
 
 
+@export_group("Weapon gadgets (D-118, visual_slots v1.3)")
+## Fallbacks when the resolved weapon params lack them (the contract defaults; B owns the real values).
+@export var gadget_laser_color: Color = Color(1.0, 0.05, 0.05)
+@export var gadget_laser_range_m: float = 50.0
+@export var gadget_light_range_m: float = 25.0
+@export var gadget_light_angle_deg: float = 30.0
+@export var gadget_light_energy: float = 2.0
+## Third-person beam thickness (m), hit dot radius (m) and emission multiplier.
+@export var gadget_beam_width_m: float = 0.006
+@export var gadget_dot_radius_m: float = 0.015
+@export var gadget_laser_emission: float = 4.0
+## Laser dot pulled this far off the hit surface (m) so it does not z-fight.
+@export var gadget_dot_offset_m: float = 0.01
+
+@export_group("Hard-hat hand lift (D-115 R1)")
+## Character ids wearing a hard hat (until ENV D tags Headwear with meta headwear_class = &"hard_hat").
+@export var hard_hat_characters: Array[StringName] = [&"dock_worker", &"dock_worker_b"]
+## Hands-on-head clips during which the hands are lifted over the hat shell.
+@export var hard_hat_lift_clips: Array[StringName] = [&"surrender", &"hands_up", &"cower", &"cower_seated",
+	&"cower_stand", &"kneel_cuffed"]
+## Lift (m) of a hand resting on the head: the shell stands ~2.4 cm off the skull (ENV D audit R1).
+@export var hard_hat_hand_lift_m: float = 0.03
+## A hand within this distance (m) of the head bone counts as resting on it.
+@export var hard_hat_near_head_m: float = 0.32
+## Influence blend rate (1/s) in and out of the lift clips.
+@export var hard_hat_lift_rate: float = 6.0
+
+
 static func data() -> AnimTweak:
 	if _cached == null:
 		_cached = load(PATH) as AnimTweak

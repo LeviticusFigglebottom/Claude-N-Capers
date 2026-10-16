@@ -136,7 +136,7 @@ def build(ctx) -> None:
     # speedloader point: the cylinder's rear face, local +Z = forward into the chambers
     magwell = ctx.marker("Magwell", (0.0, 0.0, 0.0), rotation_euler=(-math.pi / 2, 0.0, 0.0), parent=cylinder)
     rail = (0.0, 0.135, m.BORE_Z - m.LUG_DZ - 0.002)
-    ctx.marker("SideRail", rail)
+    ctx.marker("SideRail", rail, rotation_euler=c.DUST_COVER_SIDE_RAIL_ROT)  # D-118: gadgets hang under the rail
     ctx.marker("Underbarrel", rail)
     ctx.marker("StockMount", m.STOCK_MOUNT)
     grip_mount = ctx.marker("GripMount", (0.0, 0.0, 0.0))

@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="AchievementDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://content/defs/achievement_def.gd" id="1_ach"]
+
+[resource]
+script = ExtResource("1_ach")
+id = &"achievement.nd_bankers_hours"
+name_key = &"achievement.nd_bankers_hours.name"
+desc_key = &"achievement.nd_bankers_hours.desc"
+condition = {"event": &"heist_completed", "heist": &"night_deposit", "max_time_s": 720.0, "count": 1}
+unlock = &""
+order = 721
+category = &"night_deposit"
+rewards = Array[StringName]([&"mask_colors.violet_static"])
+unlocks = Array[StringName]([])
+requires_facts = Array[StringName]([])

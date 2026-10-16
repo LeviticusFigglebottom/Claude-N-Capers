@@ -66,7 +66,7 @@ FP_SLEEVES = {
     "sable": {"sleeve": SABLE_BLAZER, "cuff": "char_knit_graphite", "glove": IVORY},
     "dutch": {"sleeve": BOMBER, "cuff": "char_knit_graphite", "glove": TAN},
     "wren": {"sleeve": "char_shirt_blue", "cuff": "bare forearm (skin), sleeve rolled to the elbow",
-             "glove": "char_tac_glove"},
+             "glove": "char_crew_glove_sage"},
     "marten": {"sleeve": PARKA, "cuff": PARKA, "glove": ORANGE},
     "jay": {"sleeve": COBALT + " with two " + STRIPE + " stripes", "cuff": COBALT, "glove": DRIVING},
 }
@@ -558,7 +558,7 @@ def wren(kit: Kit) -> None:
     rolled_shirt(kit, "char_shirt_blue", tuck)
     n.trousers(kit, "char_slacks_grey", sh, belt_z + 0.022 * k, hem_r=0.054)
     loose_tie(kit, "char_satin_teal", belt_z + 0.05 * k)
-    _gloves(kit, "char_tac_glove", cuff_len=0.03, cuff_off=0.004)
+    _gloves(kit, "char_crew_glove_sage", cuff_len=0.03, cuff_off=0.004)
     n0 = len(kit.soft.f)
     vest = n.waistcoat(kit, VEST, hips_z - 0.015 * k, 1.11 * k, point=0.045, neck_w=0.066, buttons=5,
                        button_mat="char_button_dark")

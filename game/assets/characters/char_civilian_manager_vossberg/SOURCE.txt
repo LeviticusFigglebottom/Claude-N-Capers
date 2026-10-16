@@ -8,13 +8,13 @@ edit policy: generated file, never edit by hand; change the script and rebuild
 attach_Back: bone chest, local [0.0000, 0.0848, 0.1012] (model [0.0000, 1.2343, 0.1187], Godot axes, rest pose)
 attach_Head: bone head, local [0.0000, 0.0769, -0.0842] (model [0.0000, 1.5818, -0.0728], Godot axes, rest pose)
 attach_Hip: bone hips, local [0.1773, 0.0486, 0.0406] (model [0.1773, 0.9532, 0.0430], Godot axes, rest pose)
-body_faces_culled: 4744
+body_faces_culled: 4772
 body_params: {"age": 0.68, "beard_shadow": 0.0, "build": 0.45, "gender": 1.0, "hair": "side_part", "hair_color": "grey", "hair_peak": 0.0, "height": 1.69, "lip": "char_lip_rose", "skin": 1}
 bones: 52
-faces_hidden_by_jacket: 2810
+faces_hidden_by_jacket: 2811
 look: Greta Vossberg (owner-manager): deep-plum trouser suit with brass buttons, cream silk blouse open at the collar, gold chain + pendant, gold studs, gold reading glasses pushed up on silver hair (chignon), gold watch, black low heels
 meshes: Body,Gear,Hair,Headwear,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 28096
-tris_by_mesh: {"Body": 9256, "Gear": 648, "Hair": 1856, "Headwear": 1858, "Outfit": 14478}
+tris: 28166
+tris_by_mesh: {"Body": 9200, "Gear": 648, "Hair": 1856, "Headwear": 1858, "Outfit": 14604}

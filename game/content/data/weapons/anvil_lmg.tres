@@ -50,7 +50,9 @@ mod_slots = {
 0: [&"mod.anvil_short_barrel"],
 3: [&"mod.anvil_iron_sights", &"mod.rail_reflex_sight", &"mod.rail_prism_scope"],
 5: [&"mod.anvil_bipod"],
-7: [&"mod.anvil_box_100", &"mod.anvil_box_150"]
+6: [&"mod.anvil_collapsed_stock", &"mod.anvil_heavy_stock"],
+7: [&"mod.anvil_box_100", &"mod.anvil_box_150"],
+8: [&"mod.rail_laser", &"mod.rail_flashlight", &"mod.rail_combo"]
 }
 default_mods = {
 3: &"mod.anvil_iron_sights",

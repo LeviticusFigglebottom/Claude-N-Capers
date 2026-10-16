@@ -555,8 +555,10 @@ def cower_seated(sk: Skeleton, f: int, N: int) -> Pose:
     H.seated(sk, pose)
     rock = math.sin(TAU * t / T)
     pose.hip = pose.hip + v3(0.0, 0.03 * k, 0.0)
-    spine(pose, hips=(-78.0, 0.0, 0.0), lean=94.0 + 2.5 * rock, chest_lean=26.0 + 2.0 * rock, neck=(14, 0, 0),
-          head=(18, 0, 3.0 * math.sin(TAU * 2 * t / T)))
+    # D-115 audit (lead): less trunk curl than the first cut (lean 94 / chest 26), so the belly no longer folds into
+    # the thighs and a jacket / tabard front stays whole on the lap; the neck and head take the rest of the duck
+    spine(pose, hips=(-78.0, 0.0, 0.0), lean=81.0 + 2.5 * rock, chest_lean=12.0 + 2.0 * rock, neck=(30, 0, 0),
+          head=(28, 0, 3.0 * math.sin(TAU * 2 * t / T)))
     for sfx, sx in A.SIDES:
         plant_mtp(sk, pose, sfx, v3(sx * 0.04 * k, 0.34 * k, 0.0), -sx * 6.0, 10.0, pole=v3(sx * 0.2, 0.5, 1.0))
     tremble(pose, t, 1.3)

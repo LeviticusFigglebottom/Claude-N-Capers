@@ -9,5 +9,5 @@ bag_model = ExtResource("2_bag")
 id = &"loot.server_drives"
 display_name = "Server Drives"
 weight = 1
-value = 1800
+value = 7500
 conceals = false

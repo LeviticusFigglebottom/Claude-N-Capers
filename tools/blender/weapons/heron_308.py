@@ -6,10 +6,11 @@ detachable five-round magazine. Ships with a fixed 4x scope (the stock sight).
 
 Origin = firing-hand pivot on the stock's grip (see _heron.py). Forward = Godot -Z.
 
-Node tree: ``Stock`` (+ ``CheekRiser``, ``ButtPad``, ``TriggerGuard``, ``Trigger``, ``Rails``),
+Node tree: ``Stock`` (grip + fore-end; + ``TriggerGuard``, ``Trigger``, ``Rails``, ``StockChannel``),
 ``Receiver`` (+ ``ScopeRail``), ``Bolt`` (separate: ENV A animates it), ``Barrel`` (+ ``MuzzleBrake``).
 Stock parts: ``SightRail/StockSight`` (4x scope, ``AimPoint`` at the eyepiece),
-``Magwell/StockMagazine`` (five rounds).
+``Magwell/StockMagazine`` (five rounds), ``StockMount/StockStock`` (``Butt`` + ``CheekRiser``, ``ButtPad``:
+the stock behind ``BUTT_CUT_Y``, D-118).
 """
 
 import math
@@ -141,7 +142,7 @@ def _barrel(ctx, mats):
 
 def build(ctx) -> None:
     mats = c.Mats(ctx)
-    _stock(ctx, mats)
+    stock = _stock(ctx, mats)
     _receiver(ctx, mats)
     _bolt(ctx, mats)
     _barrel(ctx, mats)
@@ -152,7 +153,7 @@ def build(ctx) -> None:
     magwell = ctx.marker("Magwell", k.MAGWELL_POS)
     ctx.marker("Underbarrel", (0.0, k.UNDER_Y, k.UNDER_Z - 0.0057))
     ctx.marker("SideRail", (k.STOCK_HW + 0.0057, 0.445, 0.050))
-    ctx.marker("StockMount", (0.0, -0.012, 0.074))
+    stock_mount = ctx.marker("StockMount", k.STOCK_MOUNT)
     ctx.marker("GripMount", (0.0, 0.0, 0.0))
     # Lead (ENV D, FP left-hand cup): under the stock fore-end (y 0.240-0.520, bottom z 0.036), x 0, 12 mm low, a third of the way forward.
     ctx.marker("LeftHandIK", (0.0, 0.333, 0.024))
@@ -161,6 +162,13 @@ def build(ctx) -> None:
     k.build_scope(ctx, mats, ten=False, parent=stock_sight)
     stock_mag = ctx.marker("StockMagazine", (0.0, 0.0, 0.0), parent=magwell)
     k.build_mag(ctx, mats, extended=False, parent=stock_mag)
+    # D-118: swappable stock. The one-piece stock is cut 1 cm behind the thumbhole: the butt (with the cheek riser
+    # and the pad) becomes StockMount/StockStock, the grip and fore-end stay on the gun.
+    butt = c.split_off_rear(stock, k.BUTT_CUT_Y, "Butt")
+    for ch in list(stock.children):
+        if ch.name in ("CheekRiser", "ButtPad"):
+            ch.parent = butt
+    c.wrap_part(ctx, [butt], stock_mount, "StockStock", k.STOCK_MOUNT)  # D-118: swappable butt
 
     ctx.source_extra["tris_lod0"] = c.tris_of_scene()
     ctx.source_extra["origin"] = "firing-hand pivot: grip centre plane, mid grip depth, 20 mm below grip top"

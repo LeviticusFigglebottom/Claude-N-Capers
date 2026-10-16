@@ -59,6 +59,7 @@ static func _spawn_params(node: Node) -> Dictionary:
 			"role": npc.role, "difficulty": npc.difficulty, "alive": npc.alive, "alert": int(npc.alert_state),
 			"enemy_def": npc.enemy_def.resource_path if npc.enemy_def != null else "",
 			"tags": (npc.spawn_info.get("tags", []) as Array).duplicate(),
+			"look": int(npc.spawn_info.get("look", -1)),  # D-115: the authority's look pick (NpcVisuals)
 		}
 		return p
 	var bag: LootBag = node as LootBag
@@ -109,7 +110,8 @@ static func _configure(node: Node, p: Dictionary) -> void:
 		if def_path != "" and ResourceLoader.exists(def_path):
 			npc.enemy_def = load(def_path) as EnemyDef
 		npc.role = StringName(p.get("role", npc.role))
-		npc.setup_npc(int(p.get("difficulty", 0)), {"tags": p.get("tags", []), "replica": true})
+		npc.setup_npc(int(p.get("difficulty", 0)), {"tags": p.get("tags", []), "replica": true,
+			"look": int(p.get("look", -1))})
 		for child_name: String in NPC_SERVER_ONLY:  # the server simulates; the client only renders
 			var c: Node = npc.get_node_or_null(child_name)
 			if c != null:

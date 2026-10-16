@@ -134,6 +134,9 @@ OUTFIT: dict[str, tuple[str, float, float, str]] = {
     "char_crew_jay_jacket": ("#2A559C", 0.55, 0.0, "cloth"),  # D-111 Jay: cobalt racing jacket (nylon)
     "char_crew_jay_stripe": ("#E8E6E0", 0.55, 0.0, "cloth"),  # D-111 Jay: white racing stripes
     "char_crew_glove_driving": ("#9C6B3E", 0.50, 0.0, "leather"),  # D-111 Jay: cognac driving gloves
+    # D-115 lead call (pistol framing shows only the glove): Wren's own sage-olive tactical gloves (were the black
+    # char_tac_glove, identical to Rook's black leather with the pistol out)
+    "char_crew_glove_sage": ("#6B7556", 0.72, 0.0, "leather"),
     "char_sec_knit": ("#2C2F35", 0.95, 0.0, "cloth"),  # npcs (D-063): Halden night-shift guard's V-neck sweater vest
     "char_cleaner_teal": ("#4F7F82", 0.80, 0.0, "cloth"),  # npcs: shadow_ledger cleaner tabard (glass teal #5D8C8F, toned)
     "char_hoodie_rust": ("#7A4C34", 0.95, 0.0, "cloth"),  # npcs: IT contractor's hoodie
@@ -188,6 +191,8 @@ OUTFIT: dict[str, tuple[str, float, float, str]] = {
     "char_fleece_maroon": ("#6A2E30", 0.97, 0.0, "cloth"),  # D-115 dockside: packer's maroon fleece
     "char_knit_navy": ("#2B3346", 0.95, 0.0, "cloth"),  # D-115 dockside: packer's navy beanie
     "char_glove_work": ("#7D776A", 0.80, 0.0, "cloth"),  # D-115 dockside: grey work gloves
+    "char_satin_sapphire": ("#2D3F70", 0.38, 0.0, "cloth"),  # GN-D1 gallery: patron_e's sapphire satin dress
+    "char_satin_amethyst": ("#4E3164", 0.38, 0.0, "cloth"),  # GN-D1 gallery: patron_g's amethyst satin dress
     # D-115 hand props (char_hand_props.py)
     "char_prop_paper": ("#DCDAD2", 0.85, 0.0, "plastic"),  # cigarette paper, book pages, cash strap, bottle label
     "char_prop_filter": ("#C08A52", 0.80, 0.0, "plastic"),  # cigarette cork filter

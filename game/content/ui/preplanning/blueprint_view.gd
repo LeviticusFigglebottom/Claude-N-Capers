@@ -16,6 +16,8 @@ const PAD: float = 28.0
 const ZONE_FONT: int = 16
 ## Clear pixels kept between two markers (_separate_markers).
 const MARKER_GAP: float = 4.0
+## Length of the scale bar in meters (_draw_scale_bar, _furniture_rects).
+const SCALE_BAR_M: float = 10.0
 
 var board: PreplanBoard
 var tweak: PreplanTweak
@@ -116,55 +118,100 @@ func _build_markers() -> void:
 		l.add_theme_color_override(&"font_color", tweak.label_color)
 		l.add_theme_color_override(&"font_outline_color", tweak.paper_color)
 		l.add_theme_constant_override(&"outline_size", 6)
+		# Lead r222: a thin translucent plate in the paper colour, so a line under a label never cuts its text.
+		var plate: StyleBoxFlat = StyleBoxFlat.new()
+		plate.bg_color = Color(tweak.paper_color, tweak.label_plate_alpha)
+		plate.set_content_margin_all(2.0)
+		plate.set_corner_radius_all(2)
+		l.add_theme_stylebox_override(&"normal", plate)
 		l.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		add_child(l)
 		marker_labels[pid] = l
 	_layout_markers()
 
 
-## PO-4 (audit: point labels overlapped, "Alley … Van: alley west"): each label tries below, above,
-## right and left of its marker and takes the first spot that hits no marker and no placed label;
-## a label with no free spot is hidden and shows while its marker is focused or hovered.
+## PO-4 (audit: point labels overlapped, "Alley … Van: alley west"); lead r222 (blueprints): each label scores 8 spots
+## around its marker (below, above, right, left and the diagonals) by overlap with markers and placed labels (heavy)
+## and with the drawn shape edges (light, so a label does not straddle a street edge) and takes the cheapest. A label
+## whose every spot covers a marker is hidden and shows while its marker is focused or hovered.
 func _layout_markers() -> void:
+	# Zone names are soft (a label may cover one when nothing else is free); the scale bar, the north arrow and
+	# labels already placed are hard: a label with no spot clear of them hides (crowded, shown on hover).
 	var taken: Array[Rect2] = _zone_label_rects()
+	var hard: Array[Rect2] = _furniture_rects()
 	for pid: Variant in markers:
 		var p: Dictionary = board.blueprint.point(StringName(pid))
 		var b: Button = markers[pid] as Button
 		b.position = world_to_view(p.get("pos", Vector2.ZERO) as Vector2) - b.size * 0.5
 	_separate_markers()
+	var marker_rects: Array[Rect2] = []
 	for pid: Variant in markers:
-		taken.append((markers[pid] as Button).get_rect().grow(2.0))
+		marker_rects.append((markers[pid] as Button).get_rect().grow(2.0))
+	var edges: Array[Rect2] = _shape_edge_rects()
 	for pid: Variant in markers:
 		var b: Button = markers[pid] as Button
 		var l: Label = marker_labels[pid] as Label
 		l.reset_size()
 		var c: Vector2 = b.position + b.size * 0.5
-		var half: Vector2 = b.size * 0.5
+		var h: Vector2 = b.size * 0.5
+		var w: Vector2 = l.size
 		var spots: Array[Vector2] = [
-			Vector2(c.x - l.size.x * 0.5, c.y + half.y + 2.0),
-			Vector2(c.x - l.size.x * 0.5, c.y - half.y - 2.0 - l.size.y),
-			Vector2(c.x + half.x + 4.0, c.y - l.size.y * 0.5),
-			Vector2(c.x - half.x - 4.0 - l.size.x, c.y - l.size.y * 0.5)]
-		var placed: bool = false
+			Vector2(c.x - w.x * 0.5, c.y + h.y + 2.0), Vector2(c.x - w.x * 0.5, c.y - h.y - 2.0 - w.y),
+			Vector2(c.x + h.x + 4.0, c.y - w.y * 0.5), Vector2(c.x - h.x - 4.0 - w.x, c.y - w.y * 0.5),
+			Vector2(c.x + h.x + 2.0, c.y + h.y), Vector2(c.x - h.x - 2.0 - w.x, c.y + h.y),
+			Vector2(c.x + h.x + 2.0, c.y - h.y - w.y), Vector2(c.x - h.x - 2.0 - w.x, c.y - h.y - w.y)]
+		var best: Vector2 = spots[0]
+		var best_cost: float = INF
+		var best_blocked: bool = true
 		for spot: Vector2 in spots:
-			var r: Rect2 = Rect2(spot, l.size)
-			if not Rect2(Vector2.ZERO, size).encloses(r) and size != Vector2.ZERO:
+			var r: Rect2 = Rect2(spot, w)
+			if size != Vector2.ZERO and not Rect2(Vector2.ZERO, size).encloses(r):
 				continue
-			var hit: bool = false
+			var blocked: bool = false
+			var cost: float = 0.0
+			for m: Rect2 in marker_rects:
+				if m.intersects(r):
+					blocked = true
+					cost += 1e6
 			for t: Rect2 in taken:
 				if t.intersects(r):
-					hit = true
-					break
-			if not hit:
-				l.position = spot
-				taken.append(r)
-				placed = true
-				break
-		if not placed:
-			l.position = spots[0]
-		l.set_meta(&"crowded", not placed)
-		l.visible = placed
+					cost += 1000.0 + t.intersection(r).get_area()
+			for hr: Rect2 in hard:
+				if hr.intersects(r):
+					blocked = true
+					cost += 1e5
+			for e: Rect2 in edges:
+				if e.intersects(r):
+					cost += 1.0 + e.intersection(r).get_area() * 0.1
+			if cost < best_cost:
+				best_cost = cost
+				best = spot
+				best_blocked = blocked
+		l.position = best
+		if not best_blocked:
+			hard.append(Rect2(best, w))
+		l.set_meta(&"crowded", best_blocked)
+		l.visible = not best_blocked
 	queue_redraw()
+
+
+## Thin rects (view px) along the edges of the shapes drawn on this floor: label placement avoids sitting on lines.
+func _shape_edge_rects() -> Array[Rect2]:
+	var out: Array[Rect2] = []
+	if board == null or size == Vector2.ZERO:
+		return out
+	var s: float = float(_transform()["scale"])
+	for sh: Dictionary in board.blueprint.shapes:
+		var fl: int = int(sh.get("floor", -1))
+		if fl >= 0 and fl != floor_index:
+			continue
+		var r: Rect2 = sh.get("rect", Rect2()) as Rect2
+		var vr: Rect2 = Rect2(world_to_view(r.position), r.size * s)
+		out.append(Rect2(vr.position - Vector2(1, 1), Vector2(vr.size.x + 2, 2)))
+		out.append(Rect2(Vector2(vr.position.x - 1, vr.end.y - 1), Vector2(vr.size.x + 2, 2)))
+		out.append(Rect2(vr.position - Vector2(1, 1), Vector2(2, vr.size.y + 2)))
+		out.append(Rect2(Vector2(vr.end.x - 1, vr.position.y - 1), Vector2(2, vr.size.y + 2)))
+	return out
 
 
 ## GN-B1 capture: two points a couple of meters apart (Gallery Night's portico entry and limo escape) drew
@@ -208,6 +255,25 @@ func _zone_label_rects() -> Array[Rect2]:
 		var ts: Vector2 = font.get_string_size(UiText.t(key).to_upper(), HORIZONTAL_ALIGNMENT_LEFT, -1, ZONE_FONT)
 		if ts.x <= vr.size.x - 8.0:
 			out.append(Rect2(vr.position + Vector2(6, 4), ts))
+	return out
+
+
+## Rects of the scale bar (with its "10 m") and the north arrow _draw_scale_bar() prints: labels keep off them
+## (DB quay capture: "Pontoon: by launch" sat on the scale text).
+func _furniture_rects() -> Array[Rect2]:
+	var out: Array[Rect2] = []
+	if board == null or size == Vector2.ZERO:
+		return out
+	var s: float = float(_transform()["scale"])
+	var area: Rect2 = Rect2(world_to_view(board.blueprint.bounds.position), board.blueprint.bounds.size * s)
+	var font: Font = get_theme_default_font()
+	var bar: float = SCALE_BAR_M * s
+	var o: Vector2 = Vector2(area.end.x - bar - 12.0, area.end.y - 14.0)
+	var tw: float = font.get_string_size(UiText.t(&"ui.preplan.scale", {"m": int(SCALE_BAR_M)}),
+			HORIZONTAL_ALIGNMENT_LEFT, -1, 16).x
+	out.append(Rect2(o + Vector2(-2, -28), Vector2(maxf(bar, tw) + 4.0, 32)))
+	var n: Vector2 = Vector2(maxf(area.position.x - 30.0, 16.0), area.position.y + 30.0)
+	out.append(Rect2(n + Vector2(-10, -16), Vector2(24, 54)))
 	return out
 
 
@@ -315,7 +381,7 @@ func _draw_grid(area: Rect2) -> void:
 
 
 func _draw_scale_bar(area: Rect2, s: float, font: Font) -> void:
-	var meters: float = 10.0
+	var meters: float = SCALE_BAR_M
 	var o: Vector2 = Vector2(area.end.x - meters * s - 12.0, area.end.y - 14.0)
 	draw_line(o, o + Vector2(meters * s, 0), tweak.line_color, 3.0)
 	draw_line(o + Vector2(0, -6), o + Vector2(0, 0), tweak.line_color, 2.0)

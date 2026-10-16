@@ -48,7 +48,10 @@ unlock_level = 30
 mod_slots = {
 1: [&"mod.brute_full_choke"],
 3: [&"mod.brute_iron_sights", &"mod.rail_reflex_sight"],
-7: [&"mod.brute_drum_20", &"mod.brute_box_8", &"mod.brute_drum_32"]
+6: [&"mod.brute_folding_stock", &"mod.brute_padded_stock"],
+7: [&"mod.brute_drum_20", &"mod.brute_box_8", &"mod.brute_drum_32"],
+8: [&"mod.rail_laser", &"mod.rail_flashlight", &"mod.rail_combo"],
+11: [&"mod.shotgun_slug", &"mod.shotgun_he", &"mod.shotgun_flechette", &"mod.shotgun_dragons_breath"]
 }
 default_mods = {
 3: &"mod.brute_iron_sights",

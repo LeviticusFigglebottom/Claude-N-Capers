@@ -32,12 +32,14 @@ extends Node
 enum Mode { IDLE, WANDER, RUN_TO_CALL, CALLING, FLEE, COWER, DOWN, TIED, DEAD, LEAVE }
 
 ## Idle activities that may wander (seated / queued / desk civilians stay put).
-const WANDER_ACTIVITIES: Array[StringName] = [&"", &"idle", &"browse", &"phone", &"mug", &"text"]
+const WANDER_ACTIVITIES: Array[StringName] = [&"", &"idle", &"browse", &"phone", &"mug", &"text", &"walk_text"]
 ## D-069 adds mug (walks with it: mug_walk), mop, phone_seated (characters.md v1.7 ambient clips).
 ## D-103 (characters.md v1.9) adds inspect (curator_inspect at a hung work), text (walks texting: walk_text);
 ## D-111 the bar / club / bank loops: bartender, bartender_pour, bouncer, dance (dance_a/b/c), teller.
+## D-115 cast roster activities: look (investigate_look), desk (desk_work), curator_inspect, walk_text, smoke.
 const KNOWN_ACTIVITIES: Array[StringName] = [&"browse", &"phone", &"desk_work", &"queue", &"sit", &"mug", &"mop",
-	&"phone_seated", &"inspect", &"text", &"bartender", &"bartender_pour", &"bouncer", &"dance", &"teller"]
+	&"phone_seated", &"inspect", &"text", &"bartender", &"bartender_pour", &"bouncer", &"dance", &"teller",
+	&"look", &"desk", &"curator_inspect", &"walk_text", &"smoke"]
 ## Seated activities: a panicked civilian still in its seat cowers there (cower_seated) instead of running.
 const SEATED_ACTIVITIES: Array[StringName] = [&"sit", &"phone_seated"]
 ## Within this of its seat (m) a seated civilian counts as still seated.
@@ -89,6 +91,12 @@ var _leave_target: Vector3 = Vector3.INF
 var _seat_pos: Vector3 = Vector3.INF
 ## X-5: the spawn mark (the spawn transform, recorded on the first tick).
 var _mark_pos: Vector3 = Vector3.INF
+## X-5: the spawn facing (horizontal), faced again back on the mark.
+var _mark_dir: Vector3 = Vector3.ZERO
+## X-5 return to the mark: off-mark standing time, sliding onto it (mark_anchor), walking back to it.
+var _off_mark_t: float = 0.0
+var _settling: bool = false
+var _returning: bool = false
 ## PO6-06: the spawn seat check ran (_stand_if_unseated).
 var _seat_checked: bool = false
 var _cower_point: PatrolPoint = null
@@ -254,6 +262,11 @@ func _on_phase_changed(_old: int, new_phase: int) -> void:
 			call_progress = 0.0
 			_clear_alerted_stimulus()
 			_flee()
+
+
+## Server: panic from a threat at `threat` (D-118 dragon's breath; same rules as _panic).
+func panic(threat: Vector3) -> void:
+	_panic(threat)
 
 
 ## Enter PANICKED (no-op when already panicked, down, tied or dead).
@@ -522,8 +535,57 @@ func on_mark() -> bool:
 		return false
 	if _mark_pos == Vector3.INF:
 		_mark_pos = _npc.global_position
-	return mode == Mode.IDLE and _npc.alert_state == Enums.AlertState.CALM and KNOWN_ACTIVITIES.has(_idle_activity) \
-		and _flat_dist(_npc.global_position, _mark_pos) <= MARK_HOLD_M
+		_mark_dir = -_npc.global_transform.basis.z
+	if mode != Mode.IDLE or _npc.alert_state != Enums.AlertState.CALM or not KNOWN_ACTIVITIES.has(_idle_activity):
+		return false
+	var d: float = _flat_dist(_npc.global_position, _mark_pos)
+	return d <= MARK_HOLD_M or (_settling and d <= Tweak.stealth().civilian_mark_settle_m)
+
+
+## X-5: the activity keeps this civilian on its spawn mark for good (not a wander activity): a teller, a clerk.
+func mark_bound() -> bool:
+	return KNOWN_ACTIVITIES.has(_idle_activity) and not WANDER_ACTIVITIES.has(_idle_activity)
+
+
+## X-5 (StealthTweak.civilian_mark_*): a mark-bound CALM IDLE civilian pushed off its mark (a crew yield, a drift
+## while alerted) goes back once it stands still: near, the motor slides it onto the mark (mark_anchor, held);
+## farther, it walks there first. Back on the mark it faces its spawn facing again.
+func _tick_mark(delta: float) -> void:
+	if _motor == null or _mark_pos == Vector3.INF or not mark_bound() or _npc.alert_state != Enums.AlertState.CALM:
+		_off_mark_t = 0.0
+		return
+	var tw: StealthTweak = Tweak.stealth()
+	var d: float = _flat_dist(_npc.global_position, _mark_pos)
+	if _returning:
+		if not _motor.arrived:
+			return
+		_returning = false
+		_set_idle_hint()
+	if d <= MARK_HOLD_M or (_settling and d <= tw.civilian_mark_settle_m):
+		_off_mark_t = 0.0
+		if _motor.mark_anchor != _mark_pos:
+			_motor.mark_anchor = _mark_pos
+			_motor.face(_mark_dir)
+		if d <= 0.01:
+			_settling = false
+		return
+	_settling = false
+	_motor.mark_anchor = Vector3.INF
+	if _motor.yielding() or not _motor.arrived:
+		_off_mark_t = 0.0
+		return
+	_off_mark_t += delta
+	if _off_mark_t < tw.civilian_mark_return_s:
+		return
+	_off_mark_t = 0.0
+	if d <= tw.civilian_mark_settle_m:
+		_settling = true
+		_motor.mark_anchor = _mark_pos
+		_motor.face(_mark_dir)
+	else:
+		_returning = true
+		anim_hint = &"walk"
+		_motor.go_to(_mark_pos, tw.civilian_walk_speed)
 
 
 func _set_idle_hint() -> void:
@@ -598,7 +660,8 @@ func _tick_idle(delta: float) -> void:
 	var pick: PatrolPoint = options[GameRng.weighted_index(&"civilians", weights)]
 	call_target = {"kind": KIND_POINT, "node": pick, "position": pick.global_position, "reason": &""}
 	mode = Mode.WANDER
-	anim_hint = &"mug_walk" if _idle_activity == &"mug" else (&"walk_text" if _idle_activity == &"text" else &"walk")
+	anim_hint = &"mug_walk" if _idle_activity == &"mug" \
+		else (&"walk_text" if _idle_activity == &"text" or _idle_activity == &"walk_text" else &"walk")
 	_reset_walk_stall()
 	_motor.go_to(pick.global_position, Tweak.stealth().civilian_walk_speed)
 
@@ -643,6 +706,7 @@ func _physics_step(delta: float) -> void:
 	_update_body_block()
 	match mode:
 		Mode.IDLE:
+			_tick_mark(delta)
 			_tick_idle(delta)
 		Mode.WANDER:
 			_tick_wander(delta)

@@ -48,7 +48,9 @@ unlock_level = 2
 mod_slots = {
 2: [&"mod.wren_suppressor"],
 3: [&"mod.wren_iron_sights", &"mod.wren_reflex_sight"],
-7: [&"mod.wren_standard_mag", &"mod.wren_extended_mag"]
+4: [&"mod.wren_rubber_grip"],
+7: [&"mod.wren_standard_mag", &"mod.wren_extended_mag"],
+8: [&"mod.rail_laser", &"mod.rail_flashlight", &"mod.rail_combo"]
 }
 default_mods = {
 3: &"mod.wren_iron_sights",

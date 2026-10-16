@@ -108,7 +108,9 @@ PISTOL = FPSet(
     # D-116 (lead): the gun never rolls its grip toward the camera; the mag change happens in frame, the left hand
     # coming in from below
     lowered=((0.14, 0.22, -0.42), 10.0, -35.0, -15.0),
-    reload_tilt=((0.05, 0.33, -0.10), 8.0, 10.0, -20.0),
+    # D-116 follow-up (lead): raised and canted so the magwell and the left hand seating the magazine are IN FRAME
+    # under P's one-handed hip framing (set_hip_offset / set_hip_rot_deg): the well at ~0.72 of the screen height, the gun angled like the hip hold
+    reload_tilt=((0.04, 0.33, 0.0), 15.0, 6.0, -45.0),
     support="pistol", blade=6.0, blade_ads=0.0,
     recoil={"back": 0.030, "up": 0.012, "pitch": 9.0, "roll": 1.5, "yaw": 0.6},
     recoil_ads={"back": 0.020, "up": 0.006, "pitch": 5.0, "roll": 0.8, "yaw": 0.3},
@@ -126,6 +128,7 @@ SMG = FPSet(
     name="smg", weapon="wpn_hornet_9",
     # LeftHandIK under the fore-end (ENV B f8f17c7a, lead ruling 2026-10-14): the PD2 support grip of the long guns
     markers={"left_ik": v3(0.0, 0.150, 0.016), "aim": v3(0.0, -0.060, 0.1172),
+             "vgrip_ik": v3(0.0, 0.175, -0.0032),  # D-118: mod_rail_vertical_grip's LeftHandIK on the hornet
              "magwell": v3(0.0, 0.101, -0.002), "magwell_axis": rxd(4.0) @ v3(0.0, 0.0, 1.0),
              "cock": v3(-0.040, 0.171, 0.085), "cock_back": v3(-0.040, 0.128, 0.085),
              "butt": v3(0.0, -0.330, 0.050)},
@@ -139,6 +142,7 @@ SMG = FPSet(
     recoil_ads={"back": 0.012, "up": 0.003, "pitch": 1.4, "roll": 0.4, "yaw": 0.3},
     mag={"top": 0.034, "bottom": -0.134, "hw": 0.0115, "depth": 0.032, "grip": "side"},
     clips={**_std(14, 3),
+           "vgrip_hand": {"frames": 2, "loop": False},
            "reload": {"frames": 66, "loop": False,
                       "events": {"mag_out": 13, "mag_swap": 23, "mag_in": 39, "done": 56}},
            "reload_empty": {"frames": 90, "loop": False,
@@ -150,6 +154,7 @@ SMG = FPSet(
 RIFLE = FPSet(
     name="rifle", weapon="wpn_corsair_ar",
     markers={"left_ik": v3(0.0, 0.260, 0.038), "aim": v3(0.0, -0.060, 0.1212),
+             "vgrip_ik": v3(0.0, 0.38, 0.0143),  # D-118: mod_corsair_vertical_grip's LeftHandIK
              "magwell": v3(0.0, 0.1235, -0.012), "magwell_axis": rxd(8.0) @ v3(0.0, 0.0, 1.0),
              "catch": v3(-0.017, 0.098, 0.042), "butt": v3(0.0, -0.300, 0.030)},
     hip=((0.13, 0.20, -0.18), 7.0, 1.0, -6.0),
@@ -162,6 +167,7 @@ RIFLE = FPSet(
     recoil_ads={"back": 0.014, "up": 0.003, "pitch": 1.5, "roll": 0.5, "yaw": 0.3},
     mag={"top": 0.038, "bottom": -0.124, "hw": 0.0115, "depth": 0.060, "grip": "side"},
     clips={**_std(17, 3),
+           "vgrip_hand": {"frames": 2, "loop": False},
            "reload": {"frames": 72, "loop": False,
                       "events": {"mag_out": 14, "mag_swap": 25, "mag_in": 43, "done": 61}},
            "reload_empty": {"frames": 93, "loop": False,
@@ -417,7 +423,7 @@ REVOLVER = FPSet(
     pole_r_ads=(0.0, -0.1, -1.0),
     sprint=((0.13, 0.30, -0.15), 10.0, -16.0, -26.0),
     lowered=((0.14, 0.22, -0.42), 10.0, -35.0, -15.0),
-    reload_tilt=((0.07, 0.34, -0.15), 12.0, 10.0, -20.0),
+    reload_tilt=((0.04, 0.33, -0.03), 14.0, 8.0, -28.0),   # D-116 follow-up: the open cylinder in frame
     support="pistol", blade=6.0, blade_ads=0.0, reload="speedloader",
     recoil={"back": 0.040, "up": 0.018, "pitch": 16.0, "roll": 2.5, "yaw": 1.0},
     recoil_ads={"back": 0.028, "up": 0.010, "pitch": 9.0, "roll": 1.4, "yaw": 0.5},
@@ -506,6 +512,7 @@ LAUNCHER = FPSet(
     # D2-04: ENV B's wpn_thumper_40 (LeftHandIK on the Forend, AimPoint = the leaf sight, Breech pivot,
     # the GrenadeRound base at the breech face)
     markers={"left_ik": v3(-0.024, 0.170, 0.0265), "aim": v3(0.0, 0.110, 0.1097),
+             "vgrip_ik": v3(0.0, 0.170, -0.020),  # D-118: mod_thumper_vertical_grip's LeftHandIK
              "hinge": v3(0.0, 0.056, 0.026), "chambers": (v3(0.0, 0.062, 0.058),),
              "lever": v3(0.0, 0.020, 0.080), "butt": v3(0.0, -0.298, 0.0),
              "magwell": v3(0.0, 0.062, 0.058), "magwell_axis": v3(0.0, -1.0, 0.0)},
@@ -517,7 +524,7 @@ LAUNCHER = FPSet(
     support="handguard", blade=44.0, blade_ads=48.0, reload="break",
     recoil={"back": 0.060, "up": 0.022, "pitch": 14.0, "roll": 2.5, "yaw": 1.2},
     recoil_ads={"back": 0.045, "up": 0.014, "pitch": 9.0, "roll": 1.6, "yaw": 0.7},
-    clips=_break_clips(LAUNCHER_DATA, 1, LAUNCHER_FIRE),
+    clips={**_break_clips(LAUNCHER_DATA, 1, LAUNCHER_FIRE), "vgrip_hand": {"frames": 2, "loop": False}},
 )
 
 # -- crossbow (Vise crossbow: lever-cocked, one bolt) -------------------------------------------

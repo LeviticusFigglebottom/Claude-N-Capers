@@ -1,0 +1,265 @@
+[gd_resource type="Resource" script_class="PreplanBlueprint" format=3]
+
+[ext_resource type="Script" path="res://content/preplanning/preplan_blueprint.gd" id="1_dba0l"]
+
+[resource]
+script = ExtResource("1_dba0l")
+heist_id = &"glasshouse"
+bounds = Rect2(-20, -10, 50, 28)
+floor_names = Array[StringName]([&"ui.preplan.floor.ground", &"ui.preplan.floor.upper"])
+shapes = Array[Dictionary]([{
+"floor": -1,
+"kind": &"street",
+"label": &"ui.preplan.bp.glasshouse.harlow_road",
+"rect": Rect2(-20, 16.2, 50, 1.7999992)
+}, {
+"floor": -1,
+"kind": &"street",
+"label": &"ui.preplan.bp.glasshouse.pell_road_n",
+"rect": Rect2(21.2, -10, 8, 26.2)
+}, {
+"floor": -1,
+"kind": &"sidewalk",
+"label": &"",
+"rect": Rect2(-20, 12.2, 41.2, 4.000001)
+}, {
+"floor": -1,
+"kind": &"sidewalk",
+"label": &"",
+"rect": Rect2(29.2, 12.2, 0.79999924, 4.000001)
+}, {
+"floor": -1,
+"kind": &"sidewalk",
+"label": &"",
+"rect": Rect2(18.2, -10, 3, 22.2)
+}, {
+"floor": -1,
+"kind": &"sidewalk",
+"label": &"",
+"rect": Rect2(29.2, -10, 0.79999924, 22.2)
+}, {
+"floor": -1,
+"kind": &"alley",
+"label": &"ui.preplan.bp.glasshouse.alley",
+"rect": Rect2(-20, -6.2, 38.2, 6)
+}, {
+"floor": -1,
+"kind": &"alley",
+"label": &"ui.preplan.bp.glasshouse.kessel_yards",
+"rect": Rect2(-20, -8.2, 38.2, 2)
+}, {
+"floor": -1,
+"kind": &"neighbour",
+"label": &"ui.preplan.bp.glasshouse.castellan_tailoring",
+"rect": Rect2(-14, -0.2, 13.8, 12.4)
+}, {
+"floor": -1,
+"kind": &"neighbour",
+"label": &"",
+"rect": Rect2(-20, -0.2, 6, 12.4)
+}, {
+"floor": -1,
+"kind": &"neighbour",
+"label": &"ui.preplan.bp.glasshouse.kessel_row_backs",
+"rect": Rect2(-20, -10, 38.2, 1.8000002)
+}, {
+"floor": 0,
+"kind": &"building",
+"label": &"",
+"rect": Rect2(-0.2, -0.2, 18.400002, 12.4)
+}, {
+"floor": 0,
+"kind": &"room",
+"label": &"ui.preplan.bp.glasshouse.g5",
+"rect": Rect2(0, 6, 13, 6)
+}, {
+"floor": 0,
+"kind": &"room",
+"label": &"ui.preplan.bp.glasshouse.g6",
+"rect": Rect2(13, 6, 5, 6)
+}, {
+"floor": 0,
+"kind": &"room",
+"label": &"ui.preplan.bp.glasshouse.g4",
+"rect": Rect2(0, 4.5, 18, 1.5)
+}, {
+"floor": 0,
+"kind": &"room",
+"label": &"ui.preplan.bp.glasshouse.g2",
+"rect": Rect2(5, 0, 5.5, 4.5)
+}, {
+"floor": 0,
+"kind": &"room",
+"label": &"",
+"rect": Rect2(2, 0, 3, 2)
+}, {
+"floor": 0,
+"kind": &"room",
+"label": &"ui.preplan.bp.glasshouse.g1",
+"rect": Rect2(0, 2, 5, 2.5)
+}, {
+"floor": 0,
+"kind": &"room",
+"label": &"ui.preplan.bp.glasshouse.g3",
+"rect": Rect2(10.5, 0, 2.5, 4.5)
+}, {
+"floor": 0,
+"kind": &"room",
+"label": &"ui.preplan.bp.glasshouse.g8",
+"rect": Rect2(13, 0, 1.5, 4.5)
+}, {
+"floor": 0,
+"kind": &"room",
+"label": &"",
+"rect": Rect2(14.5, 0, 1.5, 3)
+}, {
+"floor": 0,
+"kind": &"room",
+"label": &"ui.preplan.bp.glasshouse.g10",
+"rect": Rect2(16, 0, 2, 4.5)
+}, {
+"floor": 0,
+"kind": &"room",
+"label": &"ui.preplan.bp.glasshouse.g7",
+"rect": Rect2(0, 0, 2, 2)
+}, {
+"floor": 0,
+"kind": &"room",
+"label": &"ui.preplan.bp.glasshouse.g9",
+"rect": Rect2(14.5, 3, 1.5, 1.5)
+}, {
+"floor": 1,
+"kind": &"building",
+"label": &"",
+"rect": Rect2(0, 0, 18, 12)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"ui.preplan.bp.glasshouse.u5",
+"rect": Rect2(0, 6, 7, 6)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"ui.preplan.bp.glasshouse.u7",
+"rect": Rect2(12, 6, 6, 6)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"ui.preplan.bp.glasshouse.u6",
+"rect": Rect2(7, 6, 5, 6)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"ui.preplan.bp.glasshouse.u4",
+"rect": Rect2(0, 4.5, 18, 1.5)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"ui.preplan.bp.glasshouse.u1",
+"rect": Rect2(0, 0, 5.5, 4.5)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"ui.preplan.bp.glasshouse.u2",
+"rect": Rect2(5.5, 0, 5, 4.5)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"ui.preplan.bp.glasshouse.g8",
+"rect": Rect2(13, 0, 1.5, 4.5)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"",
+"rect": Rect2(14.5, 0, 1.5, 3)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"ui.preplan.bp.glasshouse.u3",
+"rect": Rect2(10.5, 0, 2.5, 4.5)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"ui.preplan.bp.glasshouse.u8",
+"rect": Rect2(16, 0, 2, 4.5)
+}])
+points = Array[Dictionary]([{
+"category": &"drop_zone",
+"floor": 0,
+"id": &"pp_alley_dumpsters",
+"label": &"ui.preplan.point.pp_alley_dumpsters",
+"params": {},
+"pos": Vector2(8, -2.2)
+}, {
+"category": &"drop_zone",
+"floor": 0,
+"id": &"pp_alley_hvac",
+"label": &"ui.preplan.point.pp_alley_hvac",
+"params": {},
+"pos": Vector2(13.8, -2.2)
+}, {
+"category": &"drop_zone",
+"floor": 0,
+"id": &"pp_side_kerb",
+"label": &"ui.preplan.point.pp_side_kerb",
+"params": {},
+"pos": Vector2(20.6, 6)
+}, {
+"category": &"spawn",
+"floor": 0,
+"id": &"pp_spawn_alley_west",
+"label": &"ui.preplan.point.pp_spawn_alley_west",
+"params": {
+"spawn_tag": &"preplan_spawn_alley"
+},
+"pos": Vector2(-12.5, -3.3)
+}, {
+"category": &"spawn",
+"floor": 0,
+"id": &"pp_spawn_alley_mouth",
+"label": &"ui.preplan.point.pp_spawn_alley_mouth",
+"params": {
+"spawn_tag": &"preplan_spawn_alley_mouth"
+},
+"pos": Vector2(19.6, -2.4)
+}, {
+"category": &"escape",
+"floor": 0,
+"id": &"pp_escape_alley_west",
+"label": &"ui.preplan.point.pp_escape_alley_west",
+"params": {
+"variant_group": &"escape",
+"variant_slot": &"esc_alley_west"
+},
+"pos": Vector2(-8.5, -3.2)
+}, {
+"category": &"escape",
+"floor": 0,
+"id": &"pp_escape_side_street",
+"label": &"ui.preplan.point.pp_escape_side_street",
+"params": {
+"variant_group": &"escape",
+"variant_slot": &"esc_pell"
+},
+"pos": Vector2(22.4, 7)
+}, {
+"category": &"insider",
+"floor": 1,
+"id": &"pp_insider_breakroom",
+"label": &"ui.preplan.point.pp_insider_breakroom",
+"params": {
+"variant_group": &"keycard",
+"variant_slot": &"kc_breakroom"
+},
+"pos": Vector2(1.2, 2.6)
+}, {
+"category": &"access",
+"floor": 0,
+"id": &"pp_back_door",
+"label": &"ui.preplan.point.pp_back_door",
+"params": {
+"variant_group": &"back_door",
+"variant_slot": &"back_propped"
+},
+"pos": Vector2(3.5, -1)
+}])

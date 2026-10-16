@@ -31,9 +31,9 @@ Burn ($95,000): $85,000. A loud job gets no stealth bonus.
 ## Loot (proposed for ENV C)
 | id | Weight | Base | Role |
 |---|---|---|---|
-| `loot.gold` | HEAVY | $2,800 | truck cargo |
-| `loot.cash_bricks` (existing) | MEDIUM | $1,600 | truck cargo |
-| `loot.server_drives` | MEDIUM | $1,800 | a courier truck's data cargo, if the doc wants one |
+| `loot.gold` | HEAVY | $14,000 | truck cargo |
+| `loot.cash_bricks` (existing) | MEDIUM | $8,000 | truck cargo |
+| `loot.server_drives` | MEDIUM | $7,500 | a courier truck's data cargo, if the doc wants one |
 
 ## Waiting on ENV C (G0 doc)
 * Objective `[tag]`s → `objective.rolling_thunder.*` strings and the briefing placeholder (none yet).

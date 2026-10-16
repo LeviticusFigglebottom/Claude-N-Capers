@@ -123,9 +123,34 @@ func test_ladders_up_and_down() -> void:
 		skip("no Ladder prefabs in the greybox yet (step 2)")
 		return
 	for l: Ladder in ladders:
+		if not l.usable:
+			# A's GN mission (b25c8dc5): the areaway ladder is usable only while its grate is open. Open the
+			# nearest Door (the grate) like a player would, and expect the mission to enable the ladder.
+			var grate: Door = _nearest_door(l.top_position(), 4.0)
+			assert_true(grate != null, "%s: gated ladder has a grate nearby" % l.name)
+			if grate == null:
+				continue
+			grate.set_open(true, true)
+			await wait_physics_frames(2)
+			assert_true(l.usable, "%s: opening %s enables it" % [l.name, grate.name])
 		var r: Dictionary = await _tr.ladder(l, true)
 		assert_true(bool(r.get("up", false)), "%s: climbed up (%s)" % [l.name, r])
 		assert_true(bool(r.get("down", false)), "%s: climbed back down (%s)" % [l.name, r])
+
+
+func _nearest_door(p: Vector3, within_m: float) -> Door:
+	var best: Door = null
+	var best_d: float = within_m
+	var stack: Array[Node] = [_rt]
+	while not stack.is_empty():
+		var n: Node = stack.pop_back()
+		stack.append_array(n.get_children())
+		if n is Door:
+			var d: float = (n as Door).global_position.distance_to(p)
+			if d < best_d:
+				best_d = d
+				best = n as Door
+	return best
 
 
 # --- §7.1 Treasury laser grid (step 2): one seed per pattern; crossing must not trip the grid ------------------

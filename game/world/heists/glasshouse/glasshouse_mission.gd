@@ -72,7 +72,7 @@ func _on_mission_start() -> void:
 	on_event(&"assault_phase_changed", _on_assault_phase_changed)
 	_apply_door_variants()
 	if _slot_active(&"safe_state", &"safe_open"):
-		_open_safe()
+		_open_safe(&"left_open")
 
 
 func _on_phase_changed(old_phase: int, new_phase: int) -> void:
@@ -106,19 +106,19 @@ func _apply_door_variants() -> void:
 			d2.call(&"unlock")
 
 
-func _on_interaction_completed(interactable_net_id: int, _crew_slot: int, _kind: StringName) -> void:
+func _on_interaction_completed(interactable_net_id: int, _crew_slot: int, kind: StringName) -> void:
 	if _is_tagged(interactable_net_id, TAG_WORKSHOP_DOOR):
 		if objective_state(&"workshop_door") == Enums.ObjectiveState.ACTIVE:
 			complete(&"workshop_door")
 			say(&"vo.mercer.glasshouse_workshop_open")
 	elif _is_tagged(interactable_net_id, TAG_SAFE_READER):
 		if not _lockdown:
-			_open_safe()
+			_open_safe(&"keycard")
 	elif _is_tagged(interactable_net_id, TAG_SAFE):
 		# PO-5: the safe's own keypad (code from a code note) opened it.
 		for sf: Node in find_tagged(TAG_SAFE):
 			if bool(sf.get(&"opened")):
-				_open_safe()
+				_open_safe(&"lockpick" if kind == &"lockpick" else &"code")
 	elif _is_tagged(interactable_net_id, TAG_SAFE_LOOT):
 		if objective_state(&"safe_loot") == Enums.ObjectiveState.ACTIVE:
 			complete(&"safe_loot")
@@ -139,7 +139,7 @@ func _on_item_picked_up(item_id: StringName, _crew_slot: int) -> void:
 
 func _on_device_finished(device_net_id: int) -> void:
 	if _is_tagged(device_net_id, TAG_SAFE_DRILL):
-		_open_safe()
+		_open_safe(&"drill")
 
 
 func _on_device_jammed(device_net_id: int) -> void:
@@ -147,10 +147,13 @@ func _on_device_jammed(device_net_id: int) -> void:
 		say(&"vo.mercer.glasshouse_drill_jam")
 
 
-func _open_safe() -> void:
+## `method` (B achievements, objective.safe.open_method): &"keycard" / &"code" / &"lockpick" / &"drill", or
+## &"left_open" for the safe_open variant; set on the [safe] objective data before it completes.
+func _open_safe(method: StringName) -> void:
 	if _safe_open:
 		return
 	_safe_open = true
+	update_objective_data(&"safe", {"open_method": method})
 	for s: Node in find_tagged(TAG_SAFE):
 		# PO-5.8: swing the door AND enable the loot inside (Safe.swing_open). Setting `opened` directly
 		# left the door shut and the bags disabled; this handler runs before the drill's own

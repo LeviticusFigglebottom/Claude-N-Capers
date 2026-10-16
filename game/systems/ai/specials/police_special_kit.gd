@@ -87,7 +87,7 @@ static func spot_behind_bulwark(npc: NpcBase) -> Vector3:
 		return Vector3.INF
 	var fwd: Vector3 = best.look_forward()
 	var right: Vector3 = fwd.cross(Vector3.UP).normalized()
-	var lane: float = float(int(npc.get_instance_id() % 3) - 1)
+	var lane: float = float(posmod(npc.net_id, 3) - 1)  # X-5: net id (deterministic per seed), not the instance id
 	return best.global_position - fwd * tw.formation_behind_m + right * (lane * tw.formation_side_m)
 
 
