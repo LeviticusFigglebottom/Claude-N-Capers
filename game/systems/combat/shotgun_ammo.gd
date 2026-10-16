@@ -72,6 +72,12 @@ static func pellets(base: int, prof: Dictionary) -> int:
 	return clampi(n, 1, maxi(CombatTweak.data().shotgun_ammo_max_pellets, 1))
 
 
+## D-118 addendum (LEAD ruling): per-shot damage is preserved, so each pellet does stock / ammo pellets of a stock
+## pellet (a slug's one ray hits for the whole stock shot; HE / flechette split it over their pellets).
+static func pellet_damage_mult(base: int, prof: Dictionary) -> float:
+	return float(maxi(base, 1)) / float(pellets(base, prof))
+
+
 ## Wall piercing: the ammo's `penetration` when it sets one, else the weapon's own.
 static func wall_pierce(stats_wall_pierce: bool, prof: Dictionary) -> bool:
 	return bool(prof.get("penetration", false)) if bool(prof.get("has_penetration", false)) else stats_wall_pierce

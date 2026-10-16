@@ -309,7 +309,8 @@ func damage_at(ws: int, distance: float) -> float:
 	var slot: int = _crew.slot if _crew != null else -1
 	var ai: float = Tweak.crew().ai_damage_mult if _crew != null and _crew.is_ai else 1.0  # PO6-15: PD2 bots hit soft
 	var rm: float = maxf(float(s.ammo.get("range_mult", 1.0)), 0.01)  # D-118: ammo range scales the falloff
-	return s.stats.damage * CombatSystem.falloff_mult(s.stats, distance / rm) \
+	var per_pellet: float = float(maxi(s.stats.pellets, 1)) / float(maxi(s.pellets, 1))  # D-118: per-shot total kept
+	return s.stats.damage * per_pellet * CombatSystem.falloff_mult(s.stats, distance / rm) \
 		* Modifiers.mult(slot, &"weapon.damage_mult", s.qualifier) * ai
 
 

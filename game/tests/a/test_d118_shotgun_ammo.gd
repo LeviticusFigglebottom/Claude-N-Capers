@@ -264,3 +264,24 @@ func test_d118_ammo_pickup_mult() -> void:
 	var doubled: int = AmmoPickupSystem.rounds_for(c, WS, rng)
 	assert_true(plain >= 1, "buckshot box rounds")
 	assert_true(absi(doubled - plain * 2) <= 1, "x2 rounds per box (%d vs %d)" % [doubled, plain])
+
+
+## D-118 addendum (LEAD ruling): per-shot damage is preserved: pellets x per-pellet damage at a range equals
+## buckshot's, for slug (1 ray), HE (B's absolute 1) and flechette (B's pellets_mult 1.5).
+func test_d118_per_shot_damage_preserved() -> void:
+	_shotgun(&"weapon.test_slug_dmg", {"ammo_type": &"slug", "pellets": 1})
+	_shotgun(&"weapon.test_he_dmg", {"ammo_type": &"he", "pellets": 1, "explosion_radius_m": 2.0})
+	_shotgun(&"weapon.test_fl_dmg", {"ammo_type": &"flechette", "pellets_mult": 1.5})
+	var w: CrewWeapons = await _arm(BASE_ID)
+	var buck: Array[float] = []
+	for r: float in [3.0, 20.0]:
+		buck.append(w.damage_at(WS, r) * w.pellet_count(WS))
+	var stock: int = w.pellet_count(WS)
+	for id: StringName in [&"weapon.test_slug_dmg", &"weapon.test_he_dmg", &"weapon.test_fl_dmg"]:
+		w = ACombatSpecials.arm(_rt, 0, id)
+		await wait_physics_frames(2)
+		for i: int in 2:
+			var r: float = [3.0, 20.0][i]
+			assert_near(w.damage_at(WS, r) * w.pellet_count(WS), buck[i], 0.01,
+				"%s: per-shot total at %.0f m == buckshot (%d pellets vs %d)" % [id, r, w.pellet_count(WS), stock])
+	assert_eq(w.pellet_count(WS), int(round(stock * 1.5)), "flechette 1.5x pellets")
