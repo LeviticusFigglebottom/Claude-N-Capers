@@ -14,11 +14,11 @@ reaches, kept for RadioTweak.speaker_overrides and new heists). Heists iterated:
 
 | Group | Lines | Said | Unsaid | Unsaid A | Unsaid B | Unsaid B reserve | Unsaid C |
 |---|---|---|---|---|---|---|---|
-| glasshouse | 29 | 26 | 3 | 0 | 0 | 0 | 3 |
+| glasshouse | 29 | 29 | 0 | 0 | 0 | 0 | 0 |
 | night_deposit | 39 | 39 | 0 | 0 | 0 | 0 | 0 |
 | shadow_ledger | 41 | 41 | 0 | 0 | 0 | 0 | 0 |
 | dockside_burn | 49 | 49 | 0 | 0 | 0 | 0 | 0 |
-| gallery_night | 67 | 65 | 2 | 0 | 0 | 0 | 2 |
+| gallery_night | 67 | 67 | 0 | 0 | 0 | 0 | 0 |
 | shared | 295 | 253 | 42 | 0 | 0 | 42 | 0 |
 
 Missing (code can say it, the table has no such line): 0.
@@ -78,15 +78,9 @@ None.
 | `vo.mercer.radio_objective_failed_2` | radio.objective_failed | generic radio.objective_failed line: every radio.objective_failed fact has an always-ready heist line, or no heist with mercer on the radio has the fact |
 | `vo.mercer.radio_objective_failed_3` | radio.objective_failed | generic radio.objective_failed line: every radio.objective_failed fact has an always-ready heist line, or no heist with mercer on the radio has the fact |
 
-## Unsaid, owner C (5)
+## Unsaid, owner C (0)
 
-| Line | Event | Why |
-|---|---|---|
-| `vo.vance.glasshouse_radio_extra_bags` | radio.objective_done | HeistDef objective `extra_bags` is never added by glasshouse's mission |
-| `vo.vance.glasshouse_radio_salon` | radio.objective_done | HeistDef objective `salon` is never added by glasshouse's mission |
-| `vo.vance.glasshouse_radio_display_cases` | radio.objective_done | HeistDef objective `display_cases` is never added by glasshouse's mission |
-| `vo.vance.gallery_night_radio_extras` | radio.objective_done | the mission never completes objective `extras` |
-| `vo.vance.gallery_night_radio_lockers` | radio.objective_done | the mission never completes objective `lockers` |
+None.
 
 ## glasshouse
 
@@ -96,21 +90,21 @@ None.
 | `vo.vance.briefing_glasshouse_2` | briefing | B | BriefingModel.voice_lines via glasshouse (contact.vance) |
 | `vo.vance.briefing_glasshouse_3` | briefing | B | BriefingModel.voice_lines via glasshouse (contact.vance) |
 | `vo.mercer.briefing_glasshouse_1` | briefing | B | BriefingModel.voice_lines via glasshouse (contact.vance) |
-| `vo.mercer.glasshouse_intro` | mission | C | world/heists/glasshouse/glasshouse_mission.gd:44 |
-| `vo.mercer.glasshouse_keycard_found` | mission | C | world/heists/glasshouse/glasshouse_mission.gd:129 |
-| `vo.mercer.glasshouse_workshop_open` | mission | C | world/heists/glasshouse/glasshouse_mission.gd:113 |
-| `vo.mercer.glasshouse_drill_jam` | mission | C | world/heists/glasshouse/glasshouse_mission.gd:147 |
-| `vo.mercer.glasshouse_last_pager` | mission | C | world/heists/glasshouse/glasshouse_mission.gd:91 |
-| `vo.mercer.glasshouse_lockdown` | mission | C | world/heists/glasshouse/glasshouse_mission.gd:182 |
-| `vo.mercer.glasshouse_van_eta` | mission | C | world/heists/glasshouse/glasshouse_mission.gd:201 |
-| `vo.mercer.glasshouse_escape` | mission | C | world/heists/glasshouse/glasshouse_mission.gd:223 |
-| `vo.mercer.glasshouse_code_found` | mission | C | world/heists/glasshouse/glasshouse_mission.gd:136 |
+| `vo.mercer.glasshouse_intro` | mission | C | world/heists/glasshouse/glasshouse_mission.gd:49 |
+| `vo.mercer.glasshouse_keycard_found` | mission | C | world/heists/glasshouse/glasshouse_mission.gd:142 |
+| `vo.mercer.glasshouse_workshop_open` | mission | C | world/heists/glasshouse/glasshouse_mission.gd:126 |
+| `vo.mercer.glasshouse_drill_jam` | mission | C | world/heists/glasshouse/glasshouse_mission.gd:160 |
+| `vo.mercer.glasshouse_last_pager` | mission | C | world/heists/glasshouse/glasshouse_mission.gd:104 |
+| `vo.mercer.glasshouse_lockdown` | mission | C | world/heists/glasshouse/glasshouse_mission.gd:203 |
+| `vo.mercer.glasshouse_van_eta` | mission | C | world/heists/glasshouse/glasshouse_mission.gd:222 |
+| `vo.mercer.glasshouse_escape` | mission | C | world/heists/glasshouse/glasshouse_mission.gd:244 |
+| `vo.mercer.glasshouse_code_found` | mission | C | world/heists/glasshouse/glasshouse_mission.gd:149 |
 | `vo.vance.glasshouse_radio_casing` | radio.objective_done | B | ContactRadio radio.objective_done [casing] via glasshouse |
 | `vo.vance.glasshouse_radio_keycard` | radio.objective_done | B | ContactRadio radio.objective_done [keycard] via glasshouse |
 | `vo.vance.glasshouse_radio_code` | radio.objective_done | B | ContactRadio radio.objective_done [code] via glasshouse |
-| `vo.vance.glasshouse_radio_extra_bags` | radio.objective_done | C | **UNSAID**: HeistDef objective `extra_bags` is never added by glasshouse's mission |
-| `vo.vance.glasshouse_radio_salon` | radio.objective_done | C | **UNSAID**: HeistDef objective `salon` is never added by glasshouse's mission |
-| `vo.vance.glasshouse_radio_display_cases` | radio.objective_done | C | **UNSAID**: HeistDef objective `display_cases` is never added by glasshouse's mission |
+| `vo.vance.glasshouse_radio_extra_bags` | radio.objective_done | B | ContactRadio radio.objective_done [extra_bags] via glasshouse |
+| `vo.vance.glasshouse_radio_salon` | radio.objective_done | B | ContactRadio radio.objective_done [salon] via glasshouse |
+| `vo.vance.glasshouse_radio_display_cases` | radio.objective_done | B | ContactRadio radio.objective_done [display_cases] via glasshouse |
 | `vo.vance.glasshouse_radio_workshop_door` | radio.objective_done | B | ContactRadio radio.objective_done [workshop_door] via glasshouse |
 | `vo.vance.glasshouse_radio_safe` | radio.objective_done | B | ContactRadio radio.objective_done [safe] via glasshouse |
 | `vo.vance.glasshouse_radio_safe_loot_new` | radio.objective_new | B | ContactRadio radio.objective_new [safe_loot] via glasshouse |
@@ -275,24 +269,24 @@ None.
 | `vo.vance.briefing_gallery_night_3` | briefing | B | BriefingModel.voice_lines via gallery_night (contact.vance) |
 | `vo.mercer.briefing_gallery_night_1` | briefing | B | BriefingModel.voice_lines via gallery_night (contact.vance) |
 | `vo.mercer.briefing_gallery_night_2` | briefing | B | BriefingModel.voice_lines via gallery_night (contact.vance) |
-| `vo.vance.gallery_night_contact_intro` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:128 |
+| `vo.vance.gallery_night_contact_intro` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:130 |
 | `vo.vance.gallery_night_centrepiece` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:89 |
 | `vo.vance.gallery_night_payday` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:90 |
-| `vo.mercer.gallery_night_intro` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:127 |
-| `vo.mercer.gallery_night_canvas_found_saint` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:258 (builder `vo.mercer.gallery_night_canvas_found_%s`) |
-| `vo.mercer.gallery_night_canvas_found_widow` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:258 (builder `vo.mercer.gallery_night_canvas_found_%s`) |
-| `vo.mercer.gallery_night_canvas_found_orchard` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:258 (builder `vo.mercer.gallery_night_canvas_found_%s`) |
-| `vo.mercer.gallery_night_canvas_found_lantern` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:258 (builder `vo.mercer.gallery_night_canvas_found_%s`) |
-| `vo.mercer.gallery_night_last_call_soon` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:350 |
-| `vo.mercer.gallery_night_last_call` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:358 |
+| `vo.mercer.gallery_night_intro` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:129 |
+| `vo.mercer.gallery_night_canvas_found_saint` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:260 (builder `vo.mercer.gallery_night_canvas_found_%s`) |
+| `vo.mercer.gallery_night_canvas_found_widow` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:260 (builder `vo.mercer.gallery_night_canvas_found_%s`) |
+| `vo.mercer.gallery_night_canvas_found_orchard` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:260 (builder `vo.mercer.gallery_night_canvas_found_%s`) |
+| `vo.mercer.gallery_night_canvas_found_lantern` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:260 (builder `vo.mercer.gallery_night_canvas_found_%s`) |
+| `vo.mercer.gallery_night_last_call_soon` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:352 |
+| `vo.mercer.gallery_night_last_call` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:360 |
 | `vo.mercer.gallery_night_lasers_sweep` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:74 |
-| `vo.mercer.gallery_night_guests_gone` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:386 |
+| `vo.mercer.gallery_night_guests_gone` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:388 |
 | `vo.mercer.gallery_night_keycard` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:76 |
-| `vo.mercer.gallery_night_code_found` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:441 |
+| `vo.mercer.gallery_night_code_found` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:443 |
 | `vo.mercer.gallery_night_sensors_warning` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:80 |
 | `vo.mercer.gallery_night_hack_started` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:78 |
 | `vo.mercer.gallery_night_hack_interrupted` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:79 |
-| `vo.mercer.gallery_night_sensors_off` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:462 |
+| `vo.mercer.gallery_night_sensors_off` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:472 |
 | `vo.mercer.gallery_night_lasers` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:81 |
 | `vo.mercer.gallery_night_treasury_open` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:82 |
 | `vo.mercer.gallery_night_art_store_open` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:83 |
@@ -300,15 +294,15 @@ None.
 | `vo.mercer.gallery_night_inspectors` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:93 |
 | `vo.mercer.gallery_night_vaultline` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:94 |
 | `vo.mercer.gallery_night_last_pager` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:84 |
-| `vo.mercer.gallery_night_lockdown` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:571 |
+| `vo.mercer.gallery_night_lockdown` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:581 |
 | `vo.mercer.gallery_night_shutters_up` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:85 |
 | `vo.mercer.gallery_night_vault_drill` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:86 |
 | `vo.mercer.gallery_night_drill_jam` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:87 |
-| `vo.mercer.gallery_night_required_secured` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:528 |
-| `vo.mercer.gallery_night_van_eta` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:541 (builder `vo.mercer.gallery_night_%s_eta`) |
-| `vo.mercer.gallery_night_limo_eta` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:541 (builder `vo.mercer.gallery_night_%s_eta`) |
+| `vo.mercer.gallery_night_required_secured` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:538 |
+| `vo.mercer.gallery_night_van_eta` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:551 (builder `vo.mercer.gallery_night_%s_eta`) |
+| `vo.mercer.gallery_night_limo_eta` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:551 (builder `vo.mercer.gallery_night_%s_eta`) |
 | `vo.mercer.gallery_night_sniper_hotel` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:88 |
-| `vo.mercer.gallery_night_escape` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:552 |
+| `vo.mercer.gallery_night_escape` | mission | C | world/heists/gallery_night/gallery_night_mission.gd:562 |
 | `vo.vance.gallery_night_radio_casing` | radio.objective_done | B | ContactRadio radio.objective_done [casing] via gallery_night |
 | `vo.vance.gallery_night_radio_find_canvases` | radio.objective_done | B | ContactRadio radio.objective_done [find_canvases] via gallery_night |
 | `vo.vance.gallery_night_radio_keycard` | radio.objective_done | B | ContactRadio radio.objective_done [keycard] via gallery_night |
@@ -319,8 +313,8 @@ None.
 | `vo.vance.gallery_night_radio_centrepiece` | radio.objective_done | B | ContactRadio radio.objective_done [centrepiece] via gallery_night |
 | `vo.vance.gallery_night_radio_canvases` | radio.objective_done | B | ContactRadio radio.objective_done [canvases] via gallery_night |
 | `vo.vance.gallery_night_radio_secure` | radio.objective_done | B | ContactRadio radio.objective_done [secure] via gallery_night |
-| `vo.vance.gallery_night_radio_extras` | radio.objective_done | C | **UNSAID**: the mission never completes objective `extras` |
-| `vo.vance.gallery_night_radio_lockers` | radio.objective_done | C | **UNSAID**: the mission never completes objective `lockers` |
+| `vo.vance.gallery_night_radio_extras` | radio.objective_done | B | ContactRadio radio.objective_done [extras] via gallery_night |
+| `vo.vance.gallery_night_radio_lockers` | radio.objective_done | B | ContactRadio radio.objective_done [lockers] via gallery_night |
 | `vo.vance.gallery_night_radio_curator_safe` | radio.objective_done | B | ContactRadio radio.objective_done [curator_safe] via gallery_night |
 | `vo.vance.gallery_night_radio_lockdown` | radio.objective_done | B | ContactRadio radio.objective_done [lockdown] via gallery_night |
 | `vo.vance.gallery_night_radio_server_door` | radio.objective_done | B | ContactRadio radio.objective_done [server_door] via gallery_night |

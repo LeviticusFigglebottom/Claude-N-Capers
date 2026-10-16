@@ -34,16 +34,9 @@ const UNSAID_B_RESERVE: Array[StringName] = [
 	&"vo.mercer.radio_objective_failed_1", &"vo.mercer.radio_objective_failed_2", &"vo.mercer.radio_objective_failed_3",
 ]
 
-## ENV C: contact radio lines keyed to a HeistDef objective the mission never adds or moves.
-##   glasshouse extra_bags / salon / display_cases: HeistDef.briefing_optional (D-117 §4) lists them, but
-##     glasshouse_mission.gd never add_objective()s them (doc docs/design/heists/glasshouse.md: more than 2 bags,
-##     the G6 salon, the display cases), so radio.objective_done never fires;
-##   gallery_night extras / lockers: added (doc §Objectives stealth 9) but never complete()d.
-const UNSAID_C: Array[StringName] = [
-	&"vo.vance.glasshouse_radio_extra_bags", &"vo.vance.glasshouse_radio_salon",
-	&"vo.vance.glasshouse_radio_display_cases", &"vo.vance.gallery_night_radio_extras",
-	&"vo.vance.gallery_night_radio_lockers",
-]
+## ENV C: radio lines keyed to objectives the mission never adds or completes. Empty since C 762934d5 (GH
+## extra_bags / salon / display_cases, GN lockers / extras); shrink-only like the others.
+const UNSAID_C: Array[StringName] = []  # every C line is said (C 762934d5, round 226)
 
 var _r: Dictionary = {}
 
