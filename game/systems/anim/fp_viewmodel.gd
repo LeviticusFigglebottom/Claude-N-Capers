@@ -43,6 +43,7 @@ class AdsAlign:
 
 	func _process_modification_with_delta(_delta: float) -> void:
 		if vm != null and is_instance_valid(vm):
+			vm.offhand.align(vm.skeleton, vm._weapon_bone, vm.weapon_attach, vm.ads_weight)
 			vm._late_align()
 
 
@@ -1215,6 +1216,9 @@ func _late_align() -> void:
 		if aim != null and aim.is_inside_tree():
 			var rel: Vector3 = weapon_attach.global_transform.affine_inverse() * aim.global_position  # rigid
 			var in_skel: Vector3 = skeleton.get_bone_global_pose(_weapon_bone) * rel
+			var off_aim: Variant = offhand.marker_in_skeleton(skeleton, weapon_visual, WeaponVisual.AIM_POINT)
+			if off_aim is Vector3:  # akimbo (PD2): the crosshair sits between the two guns' sights
+				in_skel = (in_skel + (off_aim as Vector3)) * 0.5
 			var p: Vector3 = arms.global_transform.affine_inverse() * (skeleton.global_transform * in_skel)
 			a = Vector3(-p.x, -p.y, 0.0) * ads_weight
 	_align = a
