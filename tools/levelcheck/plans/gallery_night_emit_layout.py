@@ -23,16 +23,16 @@ PARAPET = 1.1
 
 # Room list: id -> (ceiling above FFL (0 = open / shaft), kit). Ceiling heights from the Room list / vertical data.
 ROOM_META: Dict[str, Tuple[float, str]] = {
-    "SS": (0.0, ""), "LF": (0.0, ""), "HH": (2.7, ""), "LM": (2.7, ""), "X4": (0.0, "exterior_roof"),
+    "SS": (0.0, ""), "LF": (0.0, ""), "HH": (2.7, ""), "LM": (2.7, "lift_motor_room"), "X4": (0.0, "exterior_roof"),
     "LK": (3.0, "locker_room"), "FR": (3.0, "storage_frames"), "QR": (3.0, "storage_quarantine"),
     "BB": (3.0, "corridor_service"), "PL": (3.4, "plant_climate"), "AS": (3.4, "art_store"),
     "BR": (3.0, "break_room"), "WC": (3.0, "restroom_multi"), "SC": (3.0, "security_office"),
-    "RG": (3.0, "office_registrar"), "J": (3.0, "janitor_closet"), "E1": (3.0, "electrical_closet"),
+    "RG": (3.0, "office_registrar"), "J": (3.0, "janitor_gallery"), "E1": (3.0, "electrical_closet"),
     "BC": (3.0, "corridor_service"), "LD": (4.5, "loading_dock_gallery"), "GH": (9.8, "great_hall_gala"),
     "VE": (4.5, "vestibule_bronze"), "CK": (4.5, "cloakroom"), "GS": (4.5, "gift_shop"), "WG": (4.5, "gallery_hang"),
     "DC": (4.5, "gallery_cabinet"), "PWW": (3.0, "restroom_public"), "PWM": (3.0, "restroom_public"),
     "EG": (4.5, "gallery_hang"), "EB": (4.5, "gallery_hang"), "UC": (3.0, "corridor_office"),
-    "CO": (3.0, "office_curator"), "AO": (3.0, "office_open"), "SV": (3.0, "server_room"),
+    "CO": (3.0, "office_curator"), "AO": (3.0, "office_development"), "SV": (3.0, "server_room"),
     "UW": (3.0, "restroom_single"), "FS": (3.0, "storage_frames"), "CS": (4.0, "conservation_studio"),
     "BW": (4.4, "gallery_balcony"), "BE": (4.4, "gallery_balcony"), "SL": (4.4, "gallery_balcony"),
     "UG1": (6.0, "gallery_toplit"), "UG2": (6.0, "gallery_toplit"), "UG3": (6.0, "gallery_toplit"),

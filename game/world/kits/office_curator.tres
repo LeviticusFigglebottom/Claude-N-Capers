@@ -1,0 +1,42 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"office_curator"
+purpose = &"office"
+required_items = Array[StringName]([&"bookshelf", &"light_fixture"])
+optional_items = {
+&"file_cabinet": 0.6,
+&"picture": 1,
+&"plant": 1,
+&"table": 0.8
+}
+clutter_groups = {
+&"desk": {
+"anchors": Array[StringName]([&"desk"]),
+"count": Vector2i(2, 4),
+"items": {&"binders": 1, &"mug": 2, &"notebook": 1.5, &"papers": 3, &"pen_cup": 1.5, &"plant_small": 0.6},
+"radius": 0.6
+}
+}
+min_density = 0.25
+max_density = 1.6
+min_props = 9
+lone_ok_kinds = Array[StringName]([&"table"])
+seed_salt = 116
+counts = {
+&"bookshelf": Vector2i(2, 3),
+&"chair": Vector2i(1, 1)
+}
+assets = {
+&"chair": PackedStringArray("prop_chair_office"),
+&"desk": PackedStringArray("prop_desk_exec"),
+&"light_fixture": PackedStringArray("prop_ceiling_panel_neutral"),
+&"picture": PackedStringArray("prop_wall_art_b", "prop_wall_art_c"),
+&"plant": PackedStringArray("prop_plant_tall"),
+&"table": PackedStringArray("prop_consult_table")
+}
+ceiling = {"prop_ceiling_panel_neutral": 2.4}
+notes = "CO Margit Sorell's office: desk, reading table with catalogues, bookshelves, the wall safe (map)."

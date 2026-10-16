@@ -534,14 +534,15 @@ func _variants_gangway(variants: Node3D) -> void:
 
 
 ## Goods lift power (doc `goods_lift`): dead = the E1 breaker must be reset (interact 5 s) before the
-## lift runs. G1 stand-in: a hack_terminal (duration 5 s, no interruptions) on E1's east wall.
+## lift runs: a hack_terminal (duration 5 s, no interruptions), the prop_lift_breaker cabinet on E1's east wall.
 func _variants_lift(variants: Node3D) -> void:
 	var g: Node3D = _group(variants, "goods_lift")
 	_slot(g, "goods_lift", "lift_powered", 0.6)
 	var dead: VariantSlot = _slot(g, "goods_lift", "lift_dead", 0.4)
-	prefab(dead, "hack_terminal", "LiftBreaker", Vector3(17.3, 0.0, 4.55), 90.0,
-		{"duration_s": 5.0, "interruptions": Vector2i(0, 0), "objective_tag": &"lift_breaker"}, Vector3(16.3, 0.0, 4.55),
-		{"kind": "breaker_panel"})
+	prefab(dead, "hack_terminal", "LiftBreaker", Vector3(17.85, 1.45, 4.55), 90.0,
+		{"duration_s": 5.0, "interruptions": Vector2i(0, 0), "objective_tag": &"lift_breaker",
+			"visual_scene": _catalog_scene("prop_lift_breaker")}, Vector3(16.9, 0.0, 4.55),
+		{"kind": "breaker_panel", "mount": "wall"})
 
 
 ## Player perch (doc `player_perch`): the roof head-house door unlocked, the D1 ladder in place, none.

@@ -1,0 +1,30 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"storage_quarantine"
+purpose = &"storage"
+required_items = Array[StringName]([&"crate", &"shelving", &"light_fixture"])
+optional_items = {
+&"box": 0.8,
+&"dolly": 0.5,
+&"pallet": 1
+}
+clutter_groups = {}
+min_density = 0.1
+max_density = 1
+min_props = 5
+lone_ok_kinds = Array[StringName]([&"crate", &"shelving", &"pallet"])
+seed_salt = 112
+counts = {
+&"crate": Vector2i(2, 4)
+}
+assets = {
+&"crate": PackedStringArray("prop_crate_wood"),
+&"light_fixture": PackedStringArray("prop_fluorescent"),
+&"shelving": PackedStringArray("prop_shelving_archive")
+}
+ceiling = {"prop_fluorescent": 2.6}
+notes = "QR quarantine: loan crates acclimatising with humidity loggers, shelving."

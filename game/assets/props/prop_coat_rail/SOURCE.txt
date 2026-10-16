@@ -1,0 +1,8 @@
+asset: prop_coat_rail
+script: tools/blender/props/gallery_gala.py
+params: {"cat": {"clear": 0.6, "group": "gallery", "kind": "coat_rail", "place": "wall"}, "fn": "coat_rail"}
+seed: 512431221  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_coat_rail
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 12000

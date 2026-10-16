@@ -35,7 +35,7 @@ const ROOMS: Array = [
 	["G", "WC", "restroom", 9.0, 0.0, 12.0, 6.0, 3.0, "restroom_multi"],
 	["G", "SC", "security_room", 12.0, 0.0, 18.0, 6.0, 3.0, "security_office"],
 	["G", "RG", "office", 18.0, 0.0, 24.0, 6.0, 3.0, "office_registrar"],
-	["G", "J", "janitor", 24.0, 0.0, 26.0, 6.0, 3.0, "janitor_closet"],
+	["G", "J", "janitor", 24.0, 0.0, 26.0, 6.0, 3.0, "janitor_gallery"],
 	["G", "E1", "electrical", 26.0, 0.0, 28.0, 6.0, 3.0, "electrical_closet"],
 	["G", "LF", "elevator", 28.0, 0.0, 32.0, 6.0, 0.0, ""],
 	["G", "LD", "loading", 32.0, 0.0, 44.0, 12.0, 4.5, "loading_dock_gallery"],
@@ -52,7 +52,7 @@ const ROOMS: Array = [
 	["G", "EB", "gallery", 32.0, 24.0, 44.0, 30.0, 4.5, "gallery_hang"],
 	["U", "SS", "stair", 0.0, 0.0, 3.0, 8.0, 0.0, ""],
 	["U", "CO", "office", 3.0, 0.0, 10.0, 6.0, 3.0, "office_curator"],
-	["U", "AO", "office", 10.0, 0.0, 17.0, 6.0, 3.0, "office_open"],
+	["U", "AO", "office", 10.0, 0.0, 17.0, 6.0, 3.0, "office_development"],
 	["U", "UW", "restroom", 17.0, 0.0, 20.0, 6.0, 3.0, "restroom_single"],
 	["U", "FS", "storage", 20.0, 0.0, 22.0, 6.0, 3.0, "storage_frames"],
 	["U", "SV", "server_room", 22.0, 0.0, 28.0, 6.0, 3.0, "server_room"],
@@ -70,7 +70,7 @@ const ROOMS: Array = [
 	["R", "HH", "stair", 0.0, 0.0, 3.0, 8.0, 2.7, ""],
 	["R", "X4", "exterior", 3.0, 0.0, 28.0, 8.0, 0.0, "exterior_roof"],
 	["R", "X4", "exterior", 28.0, 6.0, 32.0, 8.0, 0.0, "exterior_roof"],
-	["R", "LM", "elevator_machine", 28.0, 0.0, 32.0, 6.0, 2.7, ""],
+	["R", "LM", "elevator_machine", 28.0, 0.0, 32.0, 6.0, 2.7, "lift_motor_room"],
 ]
 ## Exterior rooms at grade: [id, purpose, [x0, z0, x1, z1], kit].
 const EXTERIOR: Array = [
@@ -262,7 +262,7 @@ const OPENINGS: Array = [
 	["U", "D", "z", 32.0, 27.5, 28.5, 5.4, 7.5, "SL -> AT"],
 	["U", "W", "x", 0.0, 4.5, 5.5, 6.3, 7.8, "CO window N"],
 	["U", "W", "x", 0.0, 13.5, 14.5, 6.3, 7.8, "AO window N"],
-	["U", "W", "x", 0.0, 20.0, 21.0, 6.3, 7.8, "FS window N"],
+	["U", "W", "x", 0.0, 20.5, 21.5, 6.3, 7.8, "FS window N"],
 	["U", "W", "z", 44.0, 1.5, 2.5, 6.3, 8.8, "CS window E"],
 	["U", "W", "z", 44.0, 3.5, 4.5, 6.3, 8.8, "CS window E"],
 	["U", "W", "z", 44.0, 5.5, 6.5, 6.3, 8.8, "CS window E"],
@@ -777,7 +777,7 @@ const PREPLAN: Array = [
 ]
 ## Review cameras: [id, floor, room, x, y, z, look-at x, y, z].
 const REVIEW_CAMERAS: Array = [
-	["rc_top_down", "G", "", 9.0, 120.0, 20.0, 9.0, 0.0, 20.0],
+	["TopDownPlan", "G", "", 9.0, 120.0, 20.0, 9.0, 0.0, 20.0],
 	["rc_ext_parade", "G", "X1", 22.0, 1.7, 41.0, 22.0, 6.0, 30.0],
 	["rc_ext_wexley", "G", "X2", 56.0, 1.7, 10.0, 44.0, 4.0, 6.0],
 	["rc_ext_mews", "G", "X2", -30.0, 1.7, -4.0, 40.0, 3.0, -2.0],

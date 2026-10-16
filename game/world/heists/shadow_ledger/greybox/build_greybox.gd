@@ -448,6 +448,20 @@ func _build_slabs(parent: Node3D) -> void:
 		var r: Array = l40[i]
 		box(parent, "SlabL40_%d" % i, Vector3(float(r[0]), -0.3, float(r[1])), Vector3(float(r[2]), L.F40, float(r[3])), "floor", true,
 			SLAB_TILE)
+	# The sealed vacant rest of L40 (D-115): its slab inside the solid L40 facade, round the in-play rooms,
+	# the service lift and the two stair cores (walls included). Bare concrete; never reached, so a navmesh
+	# obstruction keeps it from baking an island. The pre-planning blueprint draws L40 as the floor plate.
+	var vacant_holes: Array = [[23.85, 7.35, 30.1, 16.6], [20.85, 7.35, 23.85, 10.65]]
+	for cid3: String in L.STAIR_CORES:
+		var x03: float = float(L.STAIR_CORES[cid3]["x0"])
+		vacant_holes.append([x03 - 0.15, 10.35, x03 + 3.15, 16.65])
+	var vacant: Array = _rects_minus([0.2, 0.2, 35.8, 23.8], vacant_holes)
+	for j: int in range(vacant.size()):
+		var v: Array = vacant[j]
+		box(parent, "SlabL40Vacant_%02d" % j, Vector3(float(v[0]), -0.3, float(v[1])), Vector3(float(v[2]), L.F40, float(v[3])),
+			"floor", true, SLAB_TILE)
+		obstruct(Transform3D.IDENTITY, AABB(Vector3(float(v[0]), -0.5, float(v[1])),
+			Vector3(float(v[2]) - float(v[0]), 2.5, float(v[3]) - float(v[1]))))
 	var plate: Array = [-0.2, -0.2, 36.2, 24.2]
 	_slab(parent, "SlabL41", plate, core_holes, L.TOP40, L.F41, "floor")
 	var void_hole: Array = [12.1, 0.2, 20.5, 4.0]
