@@ -10,3 +10,7 @@ cropped to the viewmodel). The upper block is the tactical reload; the lower blo
   in frame throughout.
 Framing math (P's one-handed hip offset and rotation applied): pistol magwell at ~0.70 and the seating palm at ~0.78
 of the screen height; wrist 0.34 m from the eye.
+- `glasshouse_marshal_357_v2.png` / `marshal_eject_full_v2.png` (lead review of v1): the heel strikes the ejector rod
+  with the fingers curled (no flat palm). The muzzle-up tilt is capped at 50 deg, so the top third shows the world,
+  and the left hand is 0.31 m from the eye. The left forearm still crosses the lower-left as it reaches over the
+  gun.
