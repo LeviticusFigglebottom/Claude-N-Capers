@@ -329,9 +329,9 @@ func _refresh_points() -> void:
 	var perks: int = PerkProgress.available(profile, ProgressionUiTweak.load_default())
 	var parts: PackedStringArray = PackedStringArray()
 	if skills > 0:
-		parts.append(UiText.t(&"ui.hub.points.skills", {"points": skills}))
+		parts.append(UiText.t(&"ui.hub.points.skills_one" if skills == 1 else &"ui.hub.points.skills", {"points": skills}))
 	if perks > 0:
-		parts.append(UiText.t(&"ui.hub.points.perks", {"points": perks}))
+		parts.append(UiText.t(&"ui.hub.points.perks_one" if perks == 1 else &"ui.hub.points.perks", {"points": perks}))
 	skill_points_label.text = "  ·  ".join(parts)
 	skill_points_label.visible = not parts.is_empty()
 
