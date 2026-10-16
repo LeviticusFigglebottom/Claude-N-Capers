@@ -24,7 +24,7 @@ static func make_def() -> HeistDef:
 	d.briefing = "heist.night_deposit.briefing"
 	d.mode = Enums.HeistMode.STEALTH_OR_LOUD
 	d.map_scene = SCENE_PATH
-	d.base_payout = 90000
+	d.base_payout = 26000  # D-120
 	d.stealth_bonus_mult = 1.15
 	d.loot = [&"loot.cash", &"loot.cash_bricks", &"loot.small_valuables"] as Array[StringName]
 	# Objective ids = the design doc's Objectives `[tag]`s (D-039 rule: ENV B reads them there).

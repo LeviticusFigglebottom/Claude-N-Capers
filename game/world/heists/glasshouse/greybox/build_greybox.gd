@@ -1173,7 +1173,7 @@ func _build_workshop(gp: Node3D) -> void:
 
 func _build_cases(gp: Node3D) -> void:
 	var cases: Node3D = _add(gp, _node3d("DisplayCases")) as Node3D
-	var jewelry: StringName = &"loot.jewelry"
+	var jewelry: StringName = &"loot.small_valuables"  # D-120: no LootDef (as GN vitrines), not a $6k bag
 	var rows: Array = [
 		["WallCaseA", Vector3(0.51, 0.0, 8.0), -90.0, "wall"], ["WallCaseB", Vector3(0.51, 0.0, 9.5), -90.0, "wall"],
 		["WallCaseC", Vector3(0.51, 0.0, 11.0), -90.0, "wall"], ["IslandCaseA", Vector3(3.6, 0.0, 10.2), 0.0, "island"],

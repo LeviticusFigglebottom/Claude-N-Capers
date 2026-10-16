@@ -700,8 +700,8 @@ func _variants_escape(variants: Node3D) -> void:
 			"zone_size_m": Vector3(2.4, 2.4, 2.4), "visual_scene": load(SECURE_DROP_MARKER)},
 		null, {}, false)
 	prefab(e3, "escape_zone", "LiftEscapeE3", Vector3(22.5, L.F40, 9.0), 0.0,
-		{"objective_tag": &"escape_service", "escape_type": &"lift", "zone_size_m": Vector3(2.6, 2.4, 2.6),
-			"visual_scene": load(ESCAPE_LIFT_VISUAL)})
+		{"objective_tag": &"escape_service", "escape_type": &"lift", "zone_size_m": Vector3(8.8, 2.4, 4.8),
+			"zone_offset": Vector3(3.0, 0.0, 1.0), "visual_scene": load(ESCAPE_LIFT_VISUAL)})  # SL-7: car + lobby, one zone
 
 
 ## PO6-06 / D-063: a seat an NPC spawns seated in (as DB's `npc_seat` chairs and GH / GN's prop_chair_task): the

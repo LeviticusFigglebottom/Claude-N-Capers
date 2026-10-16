@@ -21627,7 +21627,8 @@ objective_tag = &"loot_secure"
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22.5, 0, 9)
 script = ExtResource("145_sl")
 escape_type = &"lift"
-zone_size_m = Vector3(2.6, 2.4, 2.6)
+zone_size_m = Vector3(8.8, 2.4, 4.8)
+zone_offset = Vector3(3, 0, 1)
 visual_scene = ExtResource("152_sl")
 objective_tag = &"escape_service"
 

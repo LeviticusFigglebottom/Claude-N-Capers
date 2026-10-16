@@ -83,7 +83,7 @@ func test_def() -> void:
 		return
 	assert_eq(d.id, &"glasshouse")
 	assert_eq(d.map_scene, SCENE)
-	assert_eq(d.base_payout, 40000, "QC-5 base payout")
+	assert_eq(d.base_payout, 12000, "D-120 base payout")
 	assert_eq(d.contact, &"contact.vance")
 	assert_eq(d.music_track, &"glasshouse")
 	assert_eq(d.mode, Enums.HeistMode.STEALTH_OR_LOUD)
