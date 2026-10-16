@@ -120,9 +120,12 @@
 [ext_resource type="PackedScene" path="res://world/heists/dockside_burn/greybox/boat_drop_visual.tscn" id="118_db"]
 [ext_resource type="PackedScene" path="res://world/heists/shared/escape_boat_marker.tscn" id="119_db"]
 [ext_resource type="Script" path="res://world/heists/dockside_burn/dockside_burn_mission.gd" id="120_db"]
-[ext_resource type="PackedScene" path="res://world/props/assault_event/prop_breach_window.tscn" id="121_db"]
-[ext_resource type="PackedScene" path="res://world/props/assault_event/prop_breach_wall_t40.tscn" id="122_db"]
-[ext_resource type="PackedScene" path="res://world/props/assault_event/prop_breach_ceiling_p100_d800.tscn" id="123_db"]
+[ext_resource type="Script" path="res://world/audio/cue_player.gd" id="121_db"]
+[ext_resource type="Script" path="res://world/audio/music_director.gd" id="122_db"]
+[ext_resource type="Script" path="res://world/audio/cue_emitter.gd" id="123_db"]
+[ext_resource type="PackedScene" path="res://world/props/assault_event/prop_breach_window.tscn" id="124_db"]
+[ext_resource type="PackedScene" path="res://world/props/assault_event/prop_breach_wall_t40.tscn" id="125_db"]
+[ext_resource type="PackedScene" path="res://world/props/assault_event/prop_breach_ceiling_p100_d800.tscn" id="126_db"]
 
 [sub_resource type="BoxShape3D" id="db_1"]
 size = Vector3(3.8, 3.6, 0.2)
@@ -23011,63 +23014,144 @@ transform = Transform3D(0.23431562, -0.4960271, 0.83609396, 0, 0.86003685, 0.510
 metadata/fov = 70.0
 metadata/caption = "S1 crane cab: the Longshot's view over the yard and apron"
 
-[node name="AssaultEvents" type="Node3D" parent="." unique_id=104105 groups=["assault_events"]]
+[node name="Audio" type="Node3D" parent="." unique_id=104105]
 
-[node name="TurretVan_1" type="Marker3D" parent="AssaultEvents" unique_id=104106]
+[node name="CuePlayer" type="Node" parent="Audio" unique_id=104106]
+script = ExtResource("121_db")
+device_cues = Dictionary[StringName, PackedStringArray]({
+&"drill": PackedStringArray("cue.drill_loop", "cue.drill_jam", "cue.drill_done"),
+&"hack": PackedStringArray("", "cue.hack_interrupt", "cue.hack_done", "cue.hack_start"),
+&"saw": PackedStringArray("cue.drill_loop", "cue.drill_jam", "cue.drill_done"),
+&"thermal": PackedStringArray("cue.drill_loop", "cue.drill_jam", "cue.drill_done")
+})
+
+[node name="MusicDirector" type="Node" parent="Audio" unique_id=104107]
+script = ExtResource("122_db")
+track_id = &"dockside_burn"
+
+[node name="BedColdStoreC1" type="Node3D" parent="Audio" unique_id=104108]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25, 3, 17)
+script = ExtResource("123_db")
+cue_id = &"cue.amb_cold_store"
+autoplay = true
+
+[node name="BedColdStoreC2" type="Node3D" parent="Audio" unique_id=104109]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 41.5, 3, 17)
+script = ExtResource("123_db")
+cue_id = &"cue.amb_cold_store"
+autoplay = true
+
+[node name="BedPlantRoom" type="Node3D" parent="Audio" unique_id=104110]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 2.5, 13)
+script = ExtResource("123_db")
+cue_id = &"cue.amb_cold_store"
+autoplay = true
+volume_offset_db = -2.0
+
+[node name="BedHall" type="Node3D" parent="Audio" unique_id=104111]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 33, 3, 5)
+script = ExtResource("123_db")
+cue_id = &"cue.amb_cold_store"
+autoplay = true
+volume_offset_db = -6.0
+
+[node name="BedOffices" type="Node3D" parent="Audio" unique_id=104112]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9, 1.8, 4)
+script = ExtResource("123_db")
+cue_id = &"cue.amb_cold_store"
+autoplay = true
+volume_offset_db = -10.0
+
+[node name="BedYard" type="Node3D" parent="Audio" unique_id=104113]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24, 3, -16)
+script = ExtResource("123_db")
+cue_id = &"cue.amb_dockside_fog"
+autoplay = true
+
+[node name="BedQuay" type="Node3D" parent="Audio" unique_id=104114]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24, 2, 38)
+script = ExtResource("123_db")
+cue_id = &"cue.amb_dockside_fog"
+autoplay = true
+
+[node name="BedApron" type="Node3D" parent="Audio" unique_id=104115]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 55, 3, 16)
+script = ExtResource("123_db")
+cue_id = &"cue.amb_dockside_fog"
+autoplay = true
+volume_offset_db = -3.0
+
+[node name="BedLane" type="Node3D" parent="Audio" unique_id=104116]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 3, 16)
+script = ExtResource("123_db")
+cue_id = &"cue.amb_dockside_fog"
+autoplay = true
+volume_offset_db = -4.0
+
+[node name="BedAnnexDock" type="Node3D" parent="Audio" unique_id=104117]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 37, 2.5, 28)
+script = ExtResource("123_db")
+cue_id = &"cue.amb_dockside_fog"
+autoplay = true
+volume_offset_db = -6.0
+
+[node name="AssaultEvents" type="Node3D" parent="." unique_id=104118 groups=["assault_events"]]
+
+[node name="TurretVan_1" type="Marker3D" parent="AssaultEvents" unique_id=104119]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 34, 0, -46)
 
-[node name="TurretVan_2" type="Marker3D" parent="AssaultEvents" unique_id=104107]
+[node name="TurretVan_2" type="Marker3D" parent="AssaultEvents" unique_id=104120]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 55.5, 0, 6)
 
-[node name="HeliOrbit_1" type="Marker3D" parent="AssaultEvents" unique_id=104108]
+[node name="HeliOrbit_1" type="Marker3D" parent="AssaultEvents" unique_id=104121]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 28, 32, 4)
 metadata/radius = 26.0
 
-[node name="HeliDrop_1" type="Marker3D" parent="AssaultEvents" unique_id=104109]
+[node name="HeliDrop_1" type="Marker3D" parent="AssaultEvents" unique_id=104122]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 44.5, 9, 13.5)
 
-[node name="HeliDrop_2" type="Marker3D" parent="AssaultEvents" unique_id=104110]
+[node name="HeliDrop_2" type="Marker3D" parent="AssaultEvents" unique_id=104123]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 36, 0, -9)
 
-[node name="Breach_1" type="Marker3D" parent="AssaultEvents" unique_id=104111]
+[node name="Breach_1" type="Marker3D" parent="AssaultEvents" unique_id=104124]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 13.5, 3.6, 0.2)
 metadata/kind = "window"
 metadata/size = Vector2(1, 2.1)
 metadata/room = "M1"
 
-[node name="Visual" type="Node3D" parent="AssaultEvents/Breach_1" unique_id=104112 instance=ExtResource("121_db")]
+[node name="Visual" type="Node3D" parent="AssaultEvents/Breach_1" unique_id=104125 instance=ExtResource("124_db")]
 
-[node name="Breach_2" type="Marker3D" parent="AssaultEvents" unique_id=104113]
+[node name="Breach_2" type="Marker3D" parent="AssaultEvents" unique_id=104126]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 0.2, 0, 9)
 metadata/kind = "wall"
 metadata/size = Vector2(1, 2.2)
 metadata/room = "PL"
 
-[node name="Visual" type="Node3D" parent="AssaultEvents/Breach_2" unique_id=104114 instance=ExtResource("122_db")]
+[node name="Visual" type="Node3D" parent="AssaultEvents/Breach_2" unique_id=104127 instance=ExtResource("125_db")]
 
-[node name="Breach_3" type="Marker3D" parent="AssaultEvents" unique_id=104115]
+[node name="Breach_3" type="Marker3D" parent="AssaultEvents" unique_id=104128]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 34, 0, 31.8)
 metadata/kind = "wall"
 metadata/size = Vector2(1, 2.2)
 metadata/room = "AN"
 
-[node name="Visual" type="Node3D" parent="AssaultEvents/Breach_3" unique_id=104116 instance=ExtResource("122_db")]
+[node name="Visual" type="Node3D" parent="AssaultEvents/Breach_3" unique_id=104129 instance=ExtResource("125_db")]
 
-[node name="Breach_4" type="Marker3D" parent="AssaultEvents" unique_id=104117]
+[node name="Breach_4" type="Marker3D" parent="AssaultEvents" unique_id=104130]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 25, 8, 22.6)
 metadata/kind = "ceiling"
 metadata/size = Vector2(1.2, 1.2)
 metadata/room = "C1"
 
-[node name="Visual" type="Node3D" parent="AssaultEvents/Breach_4" unique_id=104118 instance=ExtResource("123_db")]
+[node name="Visual" type="Node3D" parent="AssaultEvents/Breach_4" unique_id=104131 instance=ExtResource("126_db")]
 
-[node name="Breach_5" type="Marker3D" parent="AssaultEvents" unique_id=104119]
+[node name="Breach_5" type="Marker3D" parent="AssaultEvents" unique_id=104132]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 41, 8, 22.6)
 metadata/kind = "ceiling"
 metadata/size = Vector2(1.2, 1.2)
 metadata/room = "C2"
 
-[node name="Visual" type="Node3D" parent="AssaultEvents/Breach_5" unique_id=104120 instance=ExtResource("123_db")]
+[node name="Visual" type="Node3D" parent="AssaultEvents/Breach_5" unique_id=104133 instance=ExtResource("126_db")]
 
 [editable path="Props/Exterior/ContainerK1/Padlock"]
 [editable path="Props/Exterior/ContainerK2/Padlock"]

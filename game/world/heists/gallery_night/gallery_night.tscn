@@ -129,8 +129,11 @@
 [ext_resource type="PackedScene" path="res://world/props/secure_zone/veh_limo_gala.tscn" id="127_gn"]
 [ext_resource type="PackedScene" path="res://world/props/loot_spawn/prop_canvas_study3_crate.tscn" id="128_gn"]
 [ext_resource type="Script" path="res://world/heists/gallery_night/gallery_night_mission.gd" id="129_gn"]
-[ext_resource type="PackedScene" path="res://world/props/assault_event/prop_breach_window.tscn" id="130_gn"]
-[ext_resource type="PackedScene" path="res://world/props/assault_event/prop_breach_wall_t40.tscn" id="131_gn"]
+[ext_resource type="Script" path="res://world/audio/cue_player.gd" id="130_gn"]
+[ext_resource type="Script" path="res://world/audio/music_director.gd" id="131_gn"]
+[ext_resource type="Script" path="res://world/audio/cue_emitter.gd" id="132_gn"]
+[ext_resource type="PackedScene" path="res://world/props/assault_event/prop_breach_window.tscn" id="133_gn"]
+[ext_resource type="PackedScene" path="res://world/props/assault_event/prop_breach_wall_t40.tscn" id="134_gn"]
 
 [sub_resource type="BoxShape3D" id="gn_1"]
 size = Vector3(32, 4.2, 0.4)
@@ -16263,55 +16266,144 @@ transform = Transform3D(-0.38461536, 0.08484638, -0.91916925, 0, 0.9957667, 0.09
 metadata/fov = 70.0
 metadata/caption = "rc_roof_deck (X4)"
 
-[node name="AssaultEvents" type="Node3D" parent="." unique_id=102783 groups=["assault_events"]]
+[node name="Audio" type="Node3D" parent="." unique_id=102783]
 
-[node name="TurretVan_1" type="Marker3D" parent="AssaultEvents" unique_id=102784]
+[node name="CuePlayer" type="Node" parent="Audio" unique_id=102784]
+script = ExtResource("130_gn")
+device_cues = Dictionary[StringName, PackedStringArray]({
+&"drill": PackedStringArray("cue.drill_loop", "cue.drill_jam", "cue.drill_done"),
+&"hack": PackedStringArray("", "cue.hack_interrupt", "cue.hack_done", "cue.hack_start"),
+&"saw": PackedStringArray("cue.drill_loop", "cue.drill_jam", "cue.drill_done"),
+&"thermal": PackedStringArray("cue.drill_loop", "cue.drill_jam", "cue.drill_done")
+})
+
+[node name="MusicDirector" type="Node" parent="Audio" unique_id=102785]
+script = ExtResource("131_gn")
+track_id = &"gallery_night"
+
+[node name="BedGreatHall" type="Node3D" parent="Audio" unique_id=102786]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22, 3, 17)
+script = ExtResource("132_gn")
+cue_id = &"cue.amb_gallery_gala"
+autoplay = true
+
+[node name="BedVestibule" type="Node3D" parent="Audio" unique_id=102787]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22, 2.5, 28)
+script = ExtResource("132_gn")
+cue_id = &"cue.amb_gallery_gala"
+autoplay = true
+volume_offset_db = -6.0
+
+[node name="BedWestGallery" type="Node3D" parent="Audio" unique_id=102788]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 2.5, 14)
+script = ExtResource("132_gn")
+cue_id = &"cue.amb_gallery_gala"
+autoplay = true
+volume_offset_db = -8.0
+
+[node name="BedEastGallery" type="Node3D" parent="Audio" unique_id=102789]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 38, 2.5, 18)
+script = ExtResource("132_gn")
+cue_id = &"cue.amb_gallery_gala"
+autoplay = true
+volume_offset_db = -8.0
+
+[node name="BedUpperBalcony" type="Node3D" parent="Audio" unique_id=102790]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22, 7.5, 28)
+script = ExtResource("132_gn")
+cue_id = &"cue.amb_gallery_gala"
+autoplay = true
+volume_offset_db = -6.0
+
+[node name="BedArtStore" type="Node3D" parent="Audio" unique_id=102791]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22, -2.5, 14)
+script = ExtResource("132_gn")
+cue_id = &"cue.amb_art_store"
+autoplay = true
+
+[node name="BedPlant" type="Node3D" parent="Audio" unique_id=102792]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, -2.5, 14)
+script = ExtResource("132_gn")
+cue_id = &"cue.amb_art_store"
+autoplay = true
+volume_offset_db = -3.0
+
+[node name="BedParade" type="Node3D" parent="Audio" unique_id=102793]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22, 2.5, 40)
+script = ExtResource("132_gn")
+cue_id = &"cue.amb_uptown_night"
+autoplay = true
+
+[node name="BedMews" type="Node3D" parent="Audio" unique_id=102794]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 2.5, -4)
+script = ExtResource("132_gn")
+cue_id = &"cue.amb_uptown_night"
+autoplay = true
+volume_offset_db = -4.0
+
+[node name="BedMewsEast" type="Node3D" parent="Audio" unique_id=102795]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 51, 2.5, 4)
+script = ExtResource("132_gn")
+cue_id = &"cue.amb_uptown_night"
+autoplay = true
+volume_offset_db = -4.0
+
+[node name="BedCourt" type="Node3D" parent="Audio" unique_id=102796]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 2.5, 15)
+script = ExtResource("132_gn")
+cue_id = &"cue.amb_uptown_night"
+autoplay = true
+volume_offset_db = -4.0
+
+[node name="AssaultEvents" type="Node3D" parent="." unique_id=102797 groups=["assault_events"]]
+
+[node name="TurretVan_1" type="Marker3D" parent="AssaultEvents" unique_id=102798]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 51, 0, 14)
 
-[node name="TurretVan_2" type="Marker3D" parent="AssaultEvents" unique_id=102785]
+[node name="TurretVan_2" type="Marker3D" parent="AssaultEvents" unique_id=102799]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -6, 0, 37.5)
 
-[node name="HeliOrbit_1" type="Marker3D" parent="AssaultEvents" unique_id=102786]
+[node name="HeliOrbit_1" type="Marker3D" parent="AssaultEvents" unique_id=102800]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22, 34, 15)
 metadata/radius = 24.0
 
-[node name="HeliDrop_1" type="Marker3D" parent="AssaultEvents" unique_id=102787]
+[node name="HeliDrop_1" type="Marker3D" parent="AssaultEvents" unique_id=102801]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22, 11, 22)
 
-[node name="HeliDrop_2" type="Marker3D" parent="AssaultEvents" unique_id=102788]
+[node name="HeliDrop_2" type="Marker3D" parent="AssaultEvents" unique_id=102802]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0, 37.5)
 
-[node name="Breach_1" type="Marker3D" parent="AssaultEvents" unique_id=102789]
+[node name="Breach_1" type="Marker3D" parent="AssaultEvents" unique_id=102803]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 14, 5.4, 0.2)
 metadata/kind = "window"
 metadata/size = Vector2(1, 2.1)
 metadata/room = "AO"
 
-[node name="Visual" type="Node3D" parent="AssaultEvents/Breach_1" unique_id=102790 instance=ExtResource("130_gn")]
+[node name="Visual" type="Node3D" parent="AssaultEvents/Breach_1" unique_id=102804 instance=ExtResource("133_gn")]
 
-[node name="Breach_2" type="Marker3D" parent="AssaultEvents" unique_id=102791]
+[node name="Breach_2" type="Marker3D" parent="AssaultEvents" unique_id=102805]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 0.2, 0, 9.5)
 metadata/kind = "wall"
 metadata/size = Vector2(1, 2.2)
 metadata/room = "WG"
 
-[node name="Visual" type="Node3D" parent="AssaultEvents/Breach_2" unique_id=102792 instance=ExtResource("131_gn")]
+[node name="Visual" type="Node3D" parent="AssaultEvents/Breach_2" unique_id=102806 instance=ExtResource("134_gn")]
 
-[node name="Breach_3" type="Marker3D" parent="AssaultEvents" unique_id=102793]
+[node name="Breach_3" type="Marker3D" parent="AssaultEvents" unique_id=102807]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 36, 0, 29.8)
 metadata/kind = "wall"
 metadata/size = Vector2(1, 2.2)
 metadata/room = "EB"
 
-[node name="Visual" type="Node3D" parent="AssaultEvents/Breach_3" unique_id=102794 instance=ExtResource("131_gn")]
+[node name="Visual" type="Node3D" parent="AssaultEvents/Breach_3" unique_id=102808 instance=ExtResource("134_gn")]
 
-[node name="Breach_4" type="Marker3D" parent="AssaultEvents" unique_id=102795]
+[node name="Breach_4" type="Marker3D" parent="AssaultEvents" unique_id=102809]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 43.8, 0, 3)
 metadata/kind = "wall"
 metadata/size = Vector2(1, 2.2)
 metadata/room = "LD"
 
-[node name="Visual" type="Node3D" parent="AssaultEvents/Breach_4" unique_id=102796 instance=ExtResource("131_gn")]
+[node name="Visual" type="Node3D" parent="AssaultEvents/Breach_4" unique_id=102810 instance=ExtResource("134_gn")]
 
 [editable path="Gameplay/Windows/BenefactorsWindowS1"]
 [editable path="Gameplay/Windows/BenefactorsWindowS2"]
