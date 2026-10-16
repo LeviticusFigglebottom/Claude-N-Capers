@@ -334,9 +334,13 @@ func _build_misc(gp: Node3D) -> void:
 			["DeskCashO2", Vector3(13.0, 0.75, 0.9), Vector3(13.2, 0.0, 1.8)],
 			["DeskCashM1", Vector3(10.8, L.MEZZ + 0.9, 2.6), Vector3(10.2, L.MEZZ, 3.5)]]:
 		prefab(misc, "small_loot", String(s[0]), s[1], 0.0, {"loot_id": &"loot.cash", "value": 750}, s[2])
-	# The thermite bag at the van (gate spawn): ENV A's burn_point consumes it (QC-38).
-	prefab(misc, "loot_spawn", "ThermiteBag", Vector3(30.2, 0.0, -38.0), 0.0,
-		{"loot_id": &"loot.thermite", "count": 1, "objective_tag": &"thermite"})
+	# Thermite bags, one per player spawn (QC-38; D-115 DB-4): ENV A enables only the bag matching the run's spawn
+	# (tags thermite_gate / thermite_lane / thermite_pontoon); ENV A's burn_point consumes it.
+	for tb: Array in [["ThermiteBag", Vector3(30.2, 0.0, -38.0), &"thermite_gate"],
+			["ThermiteBagLane", Vector3(-4.0, 0.0, -31.0), &"thermite_lane"],
+			["ThermiteBagPontoon", Vector3(24.0, -1.8, 51.0), &"thermite_pontoon"]]:
+		prefab(misc, "loot_spawn", String(tb[0]), tb[1], 0.0,
+			{"loot_id": &"loot.thermite", "count": 1, "objective_tag": tb[2]})
 
 
 ## Goods lift LF (bag_lift, bags only: 2 bags / 8 s): landing 0 = ground (car at the east hatch, front

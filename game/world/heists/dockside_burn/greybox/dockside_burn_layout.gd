@@ -70,16 +70,16 @@ const EXT_WALLS: Array = [
 	["NorthOffice", "x", 0.0, -0.2, 17.85, 0.0, OFFICE_PARAPET, -1.0, [
 		[3.6, 4.8, 0.9, 2.1], [7.2, 8.4, 0.9, 2.1], [9.9, 11.1, 0.9, 2.1], [12.9, 14.1, 0.9, 2.1],
 		[3.6, 4.8, MEZZ + 0.9, MEZZ + 2.1], [7.2, 8.4, MEZZ + 0.9, MEZZ + 2.1],
-		[9.9, 11.1, MEZZ + 0.9, MEZZ + 2.1], [12.9, 14.1, MEZZ + 0.9, MEZZ + 2.1],
+		[9.9, 11.1, MEZZ + 0.9, MEZZ + 2.1], [13.0, 14.0, MEZZ, MEZZ + 2.1],  # 13-14: PO6-17 Breach_1 window (to the floor)
 	]],
 	["NorthHeadHouse", "x", 0.0, -0.2, 3.15, OFFICE_PARAPET, HH_TOP, -1.0, []],
 	# Hall north wall: three yard roller doors and the clerestory band (4.8-5.5).
 	["NorthHall", "x", 0.0, 18.15, 48.2, 0.0, HALL_PARAPET, -1.0, [[18.6, 47.4, 4.8, 5.5]]],
 	["SouthWing", "x", 32.0, -0.2, 18.0, 0.0, WING_PARAPET, 1.0, []],
-	["SouthBay", "x", 32.0, 18.0, 48.2, 0.0, BAY_PARAPET, 1.0, []],
+	["SouthBay", "x", 32.0, 18.0, 48.2, 0.0, BAY_PARAPET, 1.0, [[33.5, 34.5, 0.0, 2.2]]],  # PO6-17 Breach_3 (infilled)
 	["WestOffice", "z", 0.0, 0.2, 7.85, 0.0, OFFICE_PARAPET, -1.0, []],
 	["WestHeadHouse", "z", 0.0, 0.2, 6.15, OFFICE_PARAPET, HH_TOP, -1.0, []],
-	["WestWing", "z", 0.0, 7.85, 31.8, 0.0, WING_PARAPET, -1.0, []],
+	["WestWing", "z", 0.0, 7.85, 31.8, 0.0, WING_PARAPET, -1.0, [[8.5, 9.5, 0.0, 2.2]]],  # PO6-17 Breach_2 (infilled)
 	["EastHall", "z", 48.0, 0.2, 10.0, 0.0, HALL_PARAPET, 1.0, []],
 	["EastBay", "z", 48.0, 10.0, 31.8, 0.0, BAY_PARAPET, 1.0, []],
 ]
@@ -172,7 +172,8 @@ const GLAZING: Array = [
 	["O1WindowW", "x", 0.0, 3.6, 4.8, 0.9, 2.1], ["O1WindowE", "x", 0.0, 7.2, 8.4, 0.9, 2.1],
 	["O2WindowW", "x", 0.0, 9.9, 11.1, 0.9, 2.1], ["O2WindowE", "x", 0.0, 12.9, 14.1, 0.9, 2.1],
 	["M2WindowW", "x", 0.0, 3.6, 4.8, MEZZ + 0.9, MEZZ + 2.1], ["M2WindowE", "x", 0.0, 7.2, 8.4, MEZZ + 0.9, MEZZ + 2.1],
-	["M1WindowW", "x", 0.0, 9.9, 11.1, MEZZ + 0.9, MEZZ + 2.1], ["M1WindowE", "x", 0.0, 12.9, 14.1, MEZZ + 0.9, MEZZ + 2.1],
+	# M1 window E is the PO6-17 Breach_1 window (its glazing + collision come from the breach scene).
+	["M1WindowW", "x", 0.0, 9.9, 11.1, MEZZ + 0.9, MEZZ + 2.1],
 	["HallClerestory", "x", 0.0, 18.6, 47.4, 4.8, 5.5],
 	["GatehouseWindow", "z", 30.0, -31.2, -28.8, 0.9, 2.1],
 	["NetStoreWindow", "x", 40.0, 14.5, 17.5, 0.9, 2.1],
@@ -883,6 +884,47 @@ const NAV_LINKS: Array = [
 	["RappelLinkSP", Vector3(33.5, BAY_ROOF, 19.2), Vector3(33.5, 0.0, 19.2), false, 1],
 	["RappelLinkC2", Vector3(41.0, BAY_ROOF, 19.2), Vector3(41.0, 0.0, 19.2), false, 1],
 	["CulvertLink", Vector3(-5.5, 0.0, 42.6), Vector3(2.0, 0.0, 15.0), true, 4],
+]
+
+
+# --- PO6-17 RNG assault events (D-114 §5 / D-115 #5) -------------------------------------------
+
+## Marker nodes only, under `AssaultEvents` (group `assault_events`; db_assault.gd); ENV A's event code consumes
+## them. Contract: docs/levels/_art/po6_17/README.md. Turret vans: [name, pos (road, bottom-centre), yaw_deg (+Z =
+## the van's forward)]. Ferro Street in front of the yard gate (north of the player spawns, the police come along
+## the street from the P1 closures), and the east apron beside the dock roller (clear of the reefer trailer, the
+## cartel patrol and the P3 gangway route).
+const ASSAULT_TURRET_VANS: Array = [
+	["TurretVan_1", Vector3(34.0, 0.0, -46.0), 90.0],    # Ferro St, eastbound: x 31-37, 7.5 m north of the spawns
+	["TurretVan_2", Vector3(55.5, 0.0, 6.0), 180.0],     # east apron, nose north: z 3.1-9.1, opposite the dock roller
+]
+## Helicopter orbit: [name, centre (y = flight height of the heli pivot), radius]: over the yard and the high bay,
+## 5 m over the Pier 10 crane boom (+26.6) and well inside the crane legs (x 73.5).
+const ASSAULT_HELI_ORBITS: Array = [["HeliOrbit_1", Vector3(28.0, 32.0, 4.0), 26.0]]
+## Rappel landing points: [name, pos]. The high-bay roof by the P5 spawn (police-only navmesh island; it reaches the
+## chambers by the QC-41 RAPPEL skylight points / RappelLink* NAV_LINKS, no extra link) and the open yard
+## between the hall and the K containers.
+const ASSAULT_HELI_DROPS: Array = [
+	["HeliDrop_1", Vector3(44.5, BAY_ROOF, 13.5)],
+	["HeliDrop_2", Vector3(36.0, 0.0, -9.0)],
+]
+## Breach points: [name, kind, breach scene (world/props/assault_event/<id>.tscn), pos on the room-side face
+## (wall/window: bottom-centre of the opening; ceiling: centre of the ceiling underside), yaw_deg (-Z into the room;
+## ceilings: the turn of +Y about the vertical, 0 = +Y north), size (w, h) m, room, ceiling depth (ceiling underside
+## to roof top; 0 for walls)]. The wall / window openings are in EXT_WALLS; the ceiling holes are cut from the
+## slabs / ceilings by the generator (db_assault.gd). Sizes match the breach scenes (README §4).
+const ASSAULT_BREACHES: Array = [
+	# M1 count room: the north window E (was M1WindowE) made the breach window, opening to the mezzanine floor.
+	["Breach_1", "window", "prop_breach_window", Vector3(13.5, MEZZ, 0.2), 180.0, Vector2(1.0, 2.1), "M1", 0.0],
+	# PL plant: a blocked-up doorway in the west wall, from the west lane (north of the compressors).
+	["Breach_2", "wall", "prop_breach_wall_t40", Vector3(0.2, 0.0, 9.0), -90.0, Vector2(1.0, 2.2), "PL", 0.0],
+	# AN anteroom: a blocked-up doorway in the south wall between the roller doors, from the quay.
+	["Breach_3", "wall", "prop_breach_wall_t40", Vector3(34.0, 0.0, 31.8), 0.0, Vector2(1.0, 2.2), "AN", 0.0],
+	# C1 / C2: sealed roof hatches over the centre aisles (south of the skylights, roof 9.0 over the 8.0 ceiling).
+	["Breach_4", "ceiling", "prop_breach_ceiling_p100_d800", Vector3(25.0, BAY_CEIL, 22.6), 0.0, Vector2(1.2, 1.2), "C1",
+		BAY_ROOF - BAY_CEIL],
+	["Breach_5", "ceiling", "prop_breach_ceiling_p100_d800", Vector3(41.0, BAY_CEIL, 22.6), 0.0, Vector2(1.2, 1.2), "C2",
+		BAY_ROOF - BAY_CEIL],
 ]
 
 ## Pre-planning points (contracts/preplanning.md, D-046): [id, category, pos, floor (index into

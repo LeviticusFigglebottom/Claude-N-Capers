@@ -128,6 +128,8 @@ var action: int = Action.NONE
 var action_speed: float = 1.0
 ## D-105: first-person weapon FX (muzzle burst, smoke, shells, tracers).
 var fx: FpViewmodelFx = null
+## D-118: first-person laser / flashlight (lives next to the crew, freed with the viewmodel).
+var gadgets: FpViewmodelGadgets = null
 ## 0 = hip, 1 = aimed down sights.
 var ads_weight: float = 0.0
 ## Part channel -> position 0..1 (slide, pump, bolt_lift, bolt_slide, cover).
@@ -260,6 +262,10 @@ func _bind(inst: Node3D, crew: CrewController) -> bool:
 	fx = FpViewmodelFx.new()
 	fx.setup(self)
 	add_child(fx)
+	gadgets = FpViewmodelGadgets.new()  # D-118: world-space, next to the crew (not under the camera)
+	gadgets.setup(self)
+	if crew != null and crew.get_parent() != null:
+		crew.get_parent().add_child.call_deferred(gadgets)
 	apply_sleeves(crew.heister if crew != null else &"")
 	_no_shadows(inst)
 	for ch: StringName in CHANNELS:
@@ -286,6 +292,8 @@ func _ready() -> void:
 
 
 func _exit_tree() -> void:
+	if gadgets != null and is_instance_valid(gadgets):
+		gadgets.queue_free()
 	for pair: Array in [[EventBus.interaction_started, _on_interaction_started],
 			[EventBus.interaction_cancelled, _on_interaction_ended], [EventBus.interaction_completed, _on_interaction_ended]]:
 		if (pair[0] as Signal).is_connected(pair[1]):
@@ -670,7 +678,11 @@ func weapon_class_key() -> StringName:
 func muzzle_world_apparent() -> Vector3:
 	if weapon_visual == null or not is_instance_valid(weapon_visual):
 		return Vector3.INF
-	var m: Node3D = weapon_visual.get_marker(&"Muzzle")
+	return marker_world_apparent(weapon_visual.get_marker(&"Muzzle"))
+
+
+## D-118: where any viewmodel node `m` APPEARS in the world (see muzzle_world_apparent); Vector3.INF without one.
+func marker_world_apparent(m: Node3D) -> Vector3:
 	var cam: Camera3D = get_parent() as Camera3D
 	if m == null or not m.is_inside_tree() or cam == null:
 		return Vector3.INF

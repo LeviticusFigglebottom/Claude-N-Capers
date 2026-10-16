@@ -52,6 +52,8 @@ var bleedout_health: float = 0.0
 var invuln_left: float = 0.0
 ## Seconds until armor starts regenerating.
 var regen_delay_left: float = 0.0
+## PO6-17b: seconds of breach / flash blindness left (replicated; the HUD whites out while > 0).
+var flashed_left: float = 0.0
 ## Downs left before the next zero-health hit means custody (HUD).
 var downs_left: int:
 	get:
@@ -414,11 +416,24 @@ func _tick_down_states(delta: float) -> bool:
 	return false
 
 
+## Server (PO6-17b): a breach blast / flashbang blinds this member for `seconds` (the longer of the two wins) and
+## interrupts a hold interaction (S9.1, as damage does).
+func flash(seconds: float) -> void:
+	if _crew == null or not Net.is_authority() or seconds <= 0.0 or _crew.crew_state != Enums.CrewState.NORMAL:
+		return
+	flashed_left = maxf(flashed_left, seconds)
+	var rt: HeistRuntime = HeistRuntime.of(_crew)
+	if rt != null and rt.interaction != null:
+		rt.interaction.interrupt_on_damage(_crew.slot)
+
+
 ## Authority: every physics tick (CrewController._tick_server_actions).
 func server_tick(delta: float) -> void:
 	if _crew == null:
 		return
 	_refresh_max()
+	if flashed_left > 0.0:
+		flashed_left = maxf(flashed_left - delta, 0.0)
 	if _tick_down_states(delta):
 		return
 	_tick_health_regen(delta)  # L2.1

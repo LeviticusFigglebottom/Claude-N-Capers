@@ -7,11 +7,11 @@
 [ext_resource type="Resource" path="res://systems/ai/specials/special_tweak.tres" id="5"]
 
 [sub_resource type="CapsuleShape3D" id="cap"]
-radius = 0.35
+radius = 0.3
 height = 1.78
 
 [sub_resource type="CapsuleMesh" id="capmesh"]
-radius = 0.35
+radius = 0.3
 height = 1.78
 
 [sub_resource type="StandardMaterial3D" id="bodymat"]
@@ -51,7 +51,7 @@ material_override = SubResource("gogglemat")
 [node name="NavAgent" type="NavigationAgent3D" parent="."]
 path_desired_distance = 0.5
 target_desired_distance = 0.4
-radius = 0.35
+radius = 0.3
 height = 1.8
 navigation_layers = 5
 

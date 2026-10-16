@@ -21,6 +21,9 @@
 ## TIED: cable tie hold (`TieInteractable`, enabled only while DOWN). Permanent; joins G.HOSTAGE,
 ##   registers a `restrained` stimulus, CivilianTargets recounts hostages.
 ## Intimidated/tied civilians do not observe (NpcBase.BLIND_STATES).
+## X-5: a CALM IDLE civilian with an authored activity (KNOWN_ACTIVITIES: teller, desk_work, phone...) standing
+##   within MARK_HOLD_M of its spawn mark holds it (NpcMotor.hold_check): no separation drift, no push out of the
+##   counter / bench / chair the mark sits against.
 ## A3-04 (L2.10): a tied civilian can be traded for a crew member in custody (CustodySystem ->
 ## release_as_hostage, then the node is freed).
 class_name CivilianBrain
@@ -46,6 +49,8 @@ const KIND_POINT: StringName = &"point"
 const RETARGET_S: float = 0.5
 ## leave_map: despawn within this of the exit point (m).
 const LEAVE_ARRIVE_M: float = 1.0
+## X-5: within this of its spawn mark (m, horizontal) an idle civilian counts as on its mark (held there).
+const MARK_HOLD_M: float = 0.3
 
 var mode: Mode = Mode.IDLE
 ## Animation hint for the visual (&"browse", &"walk", &"run", &"call", &"down", &"tied", &"cower"...).
@@ -82,6 +87,8 @@ var _wander_profile: Dictionary = {}
 var _failed_target: Node = null
 var _leave_target: Vector3 = Vector3.INF
 var _seat_pos: Vector3 = Vector3.INF
+## X-5: the spawn mark (the spawn transform, recorded on the first tick).
+var _mark_pos: Vector3 = Vector3.INF
 ## PO6-06: the spawn seat check ran (_stand_if_unseated).
 var _seat_checked: bool = false
 var _cower_point: PatrolPoint = null
@@ -113,6 +120,8 @@ func _ready() -> void:
 		_targets = CivilianTargets.ensure(_runtime)
 		_runtime.phase_changed.connect(_on_phase_changed)
 	_wander_timer = _roll_wander_delay()
+	if _motor != null:
+		_motor.hold_check = on_mark  # X-5: asked from the motor's first tick (before this brain has run)
 	if _is_loud():
 		_panic.call_deferred(Vector3.INF)
 
@@ -506,6 +515,17 @@ func _get_up() -> void:
 
 # --- Calm (S7.5) ----------------------------------------------------------------------
 
+## X-5: idle and calm at its authored activity mark (spawn position, taken on the first query: the spawn transform
+## is set after _ready): the motor holds it there.
+func on_mark() -> bool:
+	if _npc == null or not _npc.is_inside_tree():
+		return false
+	if _mark_pos == Vector3.INF:
+		_mark_pos = _npc.global_position
+	return mode == Mode.IDLE and _npc.alert_state == Enums.AlertState.CALM and KNOWN_ACTIVITIES.has(_idle_activity) \
+		and _flat_dist(_npc.global_position, _mark_pos) <= MARK_HOLD_M
+
+
 func _set_idle_hint() -> void:
 	anim_hint = _seated_or_standing(_idle_activity if KNOWN_ACTIVITIES.has(_idle_activity) else &"idle")
 
@@ -514,10 +534,17 @@ func _set_idle_hint() -> void:
 ## (StealthTweak.civilian_unseated_activity). Checked whenever a seated hint is applied: spawn, after a wander,
 ## at a patrol point's pause_anim, so a civilian never sits on thin air (a crouched "hostage" look).
 func _seated_or_standing(activity: StringName) -> StringName:
+	return seated_or_standing(_npc, activity)
+
+
+## PO6-06 / X-5 shared rule (civilians, guards and cartel gunmen at a PatrolPoint pause_anim or a spawn activity):
+## `activity` when it is not a seated one (StealthTweak.civilian_unseated_activity keys) or `npc` has a seat
+## under it (has_seat_under), else its standing counterpart. Kessler's `sit` is his bed (AnimDriver sit_bed_read).
+static func seated_or_standing(npc: NpcBase, activity: StringName) -> StringName:
 	var swap: Dictionary = Tweak.stealth().civilian_unseated_activity
-	if not swap.has(activity) or (_npc.spawn_info.get("tags", []) as Array).has(&"civ_kessler"):
+	if npc == null or not swap.has(activity) or (npc.spawn_info.get("tags", []) as Array).has(&"civ_kessler"):
 		return activity
-	return activity if has_seat_under(_npc) else StringName(swap[activity])
+	return activity if has_seat_under(npc) else StringName(swap[activity])
 
 
 ## PO6-06 (S7.5): a seated idle activity (StealthTweak.civilian_unseated_activity keys) with no seat under the

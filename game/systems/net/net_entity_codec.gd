@@ -21,7 +21,7 @@ const GENERIC_PROPS: Array[StringName] = [
 ]
 ## Crew members' replicated fields (crew_state, mask, inventory, carried bag, vitals).
 const CREW_HEALTH_PROPS: Array[StringName] = [
-	&"health", &"max_health", &"armor", &"max_armor", &"downs_used", &"bleedout_left",
+	&"health", &"max_health", &"armor", &"max_armor", &"downs_used", &"bleedout_left", &"flashed_left",
 ]
 ## NPC children that only make sense on the authority (brains, motors, gunners, nav agents).
 const NPC_SERVER_ONLY: Array[String] = ["Brain", "Motor", "Gunner", "NavAgent"]
@@ -235,6 +235,8 @@ static func _crew_state(crew: CrewController) -> Dictionary:
 	if crew.health != null:
 		for k: StringName in CREW_HEALTH_PROPS:
 			out["h_" + String(k)] = crew.health.get(k)
+	if crew.weapons != null:
+		out["gd"] = crew.weapons.gadget_bits()  # D-118 laser / flashlight per slot
 	return out
 
 
@@ -297,6 +299,8 @@ static func _apply_crew_state(crew: CrewController, d: Dictionary) -> void:
 		crew.cable_ties = int(d["ct"])
 	if d.has("hidden"):
 		crew.stealth_hidden = bool(d["hidden"])
+	if d.has("gd") and crew.weapons != null:
+		crew.weapons.apply_gadget_bits(int(d["gd"]))
 	if d.has("civ"):
 		crew.civilian = bool(d["civ"])
 	if d.has("pid"):
@@ -370,6 +374,8 @@ static func xform_of(node: Node) -> Variant:
 	var bag: LootBag = node as LootBag
 	if bag != null and not bag.is_carried():
 		return bag.global_transform
+	if node.has_method(&"_net_xform"):
+		return node.call(&"_net_xform")  # PO6-17: moving dynamic entities (assault van / heli)
 	return null
 
 

@@ -104,7 +104,8 @@ const MARKER_MAX_TRIES: int = 6
 const GROUP_SIGNAL: Dictionary[StringName, StringName] = {
 	&"health": &"vitals_changed", &"max_health": &"vitals_changed", &"armor": &"vitals_changed",
 	&"max_armor": &"vitals_changed", &"downs_left": &"vitals_changed", &"crew_state": &"vitals_changed",
-	&"bleedout_s": &"vitals_changed", &"revive_progress": &"vitals_changed", &"reviver_slot": &"vitals_changed",
+	&"bleedout_s": &"vitals_changed", &"flashed_s": &"vitals_changed",
+	&"revive_progress": &"vitals_changed", &"reviver_slot": &"vitals_changed",
 	&"ammo": &"ammo_changed", &"equipped_slot": &"ammo_changed",
 	&"reloading": &"ammo_changed", &"reload_progress": &"ammo_changed",
 	&"deployable_id": &"inventory_changed", &"throwable_id": &"inventory_changed",
@@ -162,6 +163,8 @@ var downs_left: int = 0
 var crew_state: Enums.CrewState = Enums.CrewState.NORMAL
 ## Seconds until custody while bleeding out (L2.5); < 0 = not bleeding out.
 var bleedout_s: float = -1.0
+## PO6-17b: seconds of breach / flash blindness left on the tracked member (0 = none); B / P white the screen out.
+var flashed_s: float = 0.0
 ## ui_hud v1.10: 0..1 while the HUD's crew member is downed/helpless and someone holds revive on them, else 0.
 var revive_progress: float = 0.0
 ## ui_hud v1.10: crew slot holding that revive (-1 = none).
@@ -424,6 +427,7 @@ func _poll_vitals(c: CrewController, slot: int) -> void:
 	_assign(&"max_armor", float(_read(hp, &"max_armor", tw.default_armor)))
 	_assign(&"armor", float(_read(hp, &"armor", tw.default_armor)))
 	_assign(&"downs_left", int(_read(hp, &"downs_left", tw.downs_before_custody + extra_downs)))
+	_assign(&"flashed_s", snappedf(float(_read(hp, &"flashed_left", 0.0)), 0.05))
 	var bleed: float = float(_read(hp, &"bleedout_left", -1.0))
 	_assign(&"bleedout_s", bleed if bleed > 0.0 else -1.0)
 	_assign(&"local_net_id", c.net_id if c != null else 0)

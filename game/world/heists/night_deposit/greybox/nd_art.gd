@@ -8,6 +8,7 @@ extends RefCounted
 
 const M: GDScript = preload("res://world/heists/glasshouse/greybox/gh_mesh.gd")
 const L: GDScript = preload("res://world/heists/night_deposit/greybox/night_deposit_layout.gd")
+const AM: GDScript = preload("res://world/heists/shared/assault_markers.gd")  # PO6-17 ceiling breach holes
 const MAT_DIR: String = "res://world/materials/"
 const TRIM_TABLE: String = "res://assets/textures/trim_interior/trim_table.json"
 const LIBRARY: Array[String] = [
@@ -414,8 +415,10 @@ func room_surfaces() -> void:
 				var cx1: float = x1 - _wall_thickness("z", x1, y1 + 0.01, z0, z1) * 0.5
 				var cz0: float = z0 + _wall_thickness("x", z0, y1 + 0.01, x0, x1) * 0.5
 				var cz1: float = z1 - _wall_thickness("x", z1, y1 + 0.01, x0, x1) * 0.5
-				acc.quad("Interior", String(fin[2]), Vector3(cx0, y1, cz0), Vector3(cx1, y1, cz0), Vector3(cx1, y1, cz1),
-					Vector3(cx0, y1, cz1), Vector3.DOWN)
+				for cr: Rect2 in AM.ceiling_rects(cx0, cz0, cx1, cz1, y1, L.ASSAULT_BREACHES):  # PO6-17 hatches
+					acc.quad("Interior", String(fin[2]), Vector3(cr.position.x, y1, cr.position.y),
+						Vector3(cr.end.x, y1, cr.position.y), Vector3(cr.end.x, y1, cr.end.y), Vector3(cr.position.x, y1, cr.end.y),
+						Vector3.DOWN)
 		if id in ["B3", "B7", "B10", "G2"]:
 			continue
 		for b2: Array in r[4]:
@@ -869,31 +872,15 @@ func occluders(parent: Node3D, owner_root: Node, blocks: Array) -> void:
 		occ.owner = owner_root
 
 
-## Ambience beds (positional CueEmitters) and the cue player. The bank / harbour night beds
-## (amb_bank_night_interior, amb_harbor_night) are not in the cue registry yet: the interior and
-## street beds stand in for them (C2 G2 report). No MusicDirector until the night_deposit track exists.
+## Ambience beds (positional CueEmitters), the night_deposit music director and the cue player (D-117:
+## the heist's own beds amb_bank_night_interior / amb_harbor_night and music track).
 func audio(parent: Node3D, owner_root: Node) -> void:
-	var player: Node = Node.new()
-	player.set_script(load("res://world/audio/cue_player.gd"))
-	player.name = "CuePlayer"
-	parent.add_child(player)
-	player.owner = owner_root
 	var beds: Array = [
-		["BedBankingHall", Vector3(10.5, 3.0, 14.0), &"cue.amb_glasshouse_interior", -6.0],
-		["BedBackOfHouse", Vector3(13.0, 1.8, 4.0), &"cue.amb_glasshouse_interior", -8.0],
-		["BedBasement", Vector3(13.0, -2.2, 7.0), &"cue.amb_glasshouse_interior", -4.0],
-		["BedHarborStreet", Vector3(10.0, 3.0, 27.0), &"cue.amb_street_dusk", -2.0],
-		["BedQuay", Vector3(10.0, 2.0, 33.0), &"cue.amb_street_dusk", -4.0],
-		["BedLot", Vector3(8.0, 3.0, -7.0), &"cue.amb_street_dusk", -6.0],
+		["BedBankingHall", Vector3(10.5, 3.0, 14.0), &"cue.amb_bank_night_interior", 0.0],
+		["BedBackOfHouse", Vector3(13.0, 1.8, 4.0), &"cue.amb_bank_night_interior", -6.0],
+		["BedBasement", Vector3(13.0, -2.2, 7.0), &"cue.amb_bank_night_interior", -2.0],
+		["BedHarborStreet", Vector3(10.0, 3.0, 27.0), &"cue.amb_harbor_night", -2.0],
+		["BedQuay", Vector3(10.0, 2.0, 33.0), &"cue.amb_harbor_night", 0.0],
+		["BedLot", Vector3(8.0, 3.0, -7.0), &"cue.amb_harbor_night", -6.0],
 	]
-	var emitter: Script = load("res://world/audio/cue_emitter.gd")
-	for b: Array in beds:
-		var em: Node3D = Node3D.new()
-		em.set_script(emitter)
-		em.name = String(b[0])
-		em.position = b[1]
-		em.set(&"cue_id", b[2])
-		em.set(&"autoplay", true)
-		em.set(&"volume_offset_db", float(b[3]))
-		parent.add_child(em)
-		em.owner = owner_root
+	load("res://world/audio/map_audio_builder.gd").call(&"build", parent, owner_root, &"night_deposit", beds)

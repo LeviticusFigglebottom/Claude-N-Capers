@@ -103,8 +103,10 @@ static func make_variants() -> HeistVariantTable:
 	]
 	t.rare_events = [
 		{"id": &"ledger_printout", "chance": 0.06, "good": true, "effects": {"extra_books": 1}},
-		# The mission only applies it with srv_contractor (doc: requires srv_contractor).
-		{"id": &"cage_left_open", "chance": 0.03, "good": true, "effects": {"requires_slot": &"srv_contractor"}},
+		# Doc: requires srv_contractor. Row-level `requires` (resolver A3-10) so the event never rolls otherwise;
+		# `requires_slot` stays for the mission's own check.
+		{"id": &"cage_left_open", "chance": 0.03, "good": true, "requires": {&"server_room": [&"srv_contractor"]},
+			"effects": {"requires_slot": &"srv_contractor"}},
 		{"id": &"kessler_sleepover", "chance": 0.05, "good": false,
 			"effects": {"force_active": {"group": &"kessler", "slot": &"kessler_in"}}},
 		{"id": &"timelock_extended", "chance": 0.10, "good": false, "min_difficulty": Enums.Difficulty.BRUTAL,
