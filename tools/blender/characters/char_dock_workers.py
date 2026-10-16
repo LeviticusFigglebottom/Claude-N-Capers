@@ -11,6 +11,9 @@ round the torso, braces over the shoulders), a hard hat or a beanie, work trouse
 * ``char_dock_worker_b``: forklift driver (crowd variant), a younger woman, deep skin, dark bob:
   yellow hi-vis vest over a charcoal canvas work jacket, black cargo trousers, black safety boots,
   a blue hard hat.
+* ``char_dock_worker_c``: dock hand (D-115, third ``civ_worker`` face), a sturdy woman in her 50s, light skin,
+  grey bob under a navy knit beanie (no hard hat): orange hi-vis vest over a maroon zip fleece, blue denim work
+  jeans, brown leather safety boots.
 * ``char_dock_packer``: packer, an older lean man, light skin, grey stubble, in the packing wing's
   processing whites (D-116): a white smock, a yellow rubber bib apron and long yellow rubber gloves, charcoal
   work trousers, white boots and a white hygiene cap (no hi-vis: he works indoors at the packing table).
@@ -37,6 +40,8 @@ VARIANTS = {
                          "hair": "short", "hair_color": "dark", "look": "worker"},
     "char_dock_worker_b": {"height": 1.68, "build": 0.5, "gender": 1.0, "age": 0.25, "skin": 6, "hair": "bob",
                            "hair_color": "dark", "look": "worker_b"},
+    "char_dock_worker_c": {"height": 1.69, "build": 0.7, "gender": 1.0, "age": 0.62, "skin": 2, "hair": "bob",
+                           "hair_color": "grey", "look": "worker_c"},
     "char_dock_packer": {"height": 1.74, "build": 0.3, "gender": 0.0, "age": 0.75, "skin": 1, "beard_shadow": 0.7,
                          "hair": "short", "hair_color": "grey", "look": "packer"},
 }
@@ -235,6 +240,22 @@ def worker_b(kit: Kit) -> None:
                          "black cargo trousers, black safety boots, blue hard hat")
 
 
+def worker_c(kit: Kit) -> None:
+    """D-115: the third yard hand (civ_worker pool of three): beanie instead of a hard hat, maroon fleece sleeves."""
+    fit, k = kit.fit, kit.k
+    hips_z, belt_z = _z(kit)
+    boots = _boots(kit, "char_shoe_brown")
+    tr = n.trousers(kit, "char_denim", boots, belt_z + 0.022 * k, hem_r=0.062)
+    n.belt(kit, tr, belt_z, mat="char_leather_black", buckle="chrome", height=0.034)
+    fleece = g.knit_top(fit, kit.hull(), "char_fleece_maroon", hips_z - 0.05 * k, neck="roll", base=0.012, rib=0.04)
+    kit.add_soft(fleece)
+    hivis_vest(kit, ORANGE, stand=0.016)
+    kit.add_head(cgear.beanie(fit, "char_knit_navy"))
+    kit.notes["hat"] = "navy knit beanie (Headwear)"
+    kit.notes["look"] = ("dock hand C: orange hi-vis vest (silver tape hoops + braces) over a maroon fleece, blue "
+                         "denim work jeans, brown safety boots, navy beanie")
+
+
 def packer(kit: Kit) -> None:
     """D-116 cast polish: the packing wing's fish packer in processing whites, not a third yard hand."""
     fit, k = kit.fit, kit.k
@@ -253,7 +274,7 @@ def packer(kit: Kit) -> None:
                          "charcoal work trousers, white boots, white hygiene cap (packing wing, no hi-vis)")
 
 
-_looks = {"worker": worker, "worker_b": worker_b, "packer": packer}
+_looks = {"worker": worker, "worker_b": worker_b, "worker_c": worker_c, "packer": packer}
 
 
 def recipe(kit: Kit) -> None:

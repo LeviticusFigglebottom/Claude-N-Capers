@@ -36,6 +36,27 @@ D-116 (6-12 posted gunmen + 4 reinforcements; no pair of twins at a post):
   nose (balaclava read), a graphite knit pull-over under the black puffer vest, black cargos, brown work boots,
   fingerless gloves. Sling across the chest; no slung gun.
 
+D-115 (GN-D1 standard for Dockside Burn: up to 12 posted gunmen at Cataclysm + 4 reinforcements; a pool of 12 faces):
+
+* ``char_cartel_gunman_g``: a stocky young man, mid-deep skin, buzz cut. Navy hoodie with the **hood up** and the
+  face bare (no gaiter, no vest), drab cargos, tall green rubber boots, fingerless gloves. Sling over the **right**
+  shoulder; pump-gun slung on the back (muzzle up behind the right shoulder).
+* ``char_cartel_gunman_h``: a young woman, deep-mid skin, dark bob under a flare-orange watch-cap beanie. Charcoal
+  canvas work jacket with a corduroy collar, black cargos, brown work boots, fingerless gloves. Sling across the
+  chest; no slung gun.
+* ``char_cartel_gunman_i``: a big old deckhand in his 60s, mid skin, grey short hair and a grey beard shadow, bare
+  head. Slate-green fisherman's roll-neck under **drab** canvas bib-and-brace overalls, tall rubber boots. Sling
+  and a leather shell bandolier crossed on the chest; pump-gun slung on the back.
+* ``char_cartel_gunman_j``: a woman in her 40s, light-mid skin, brown bob under a **rust bandana tied on the head**
+  (knot at the nape). Concrete-grey fleece pull-over, belted drab cargos, rubber boots, fingerless gloves. Sling
+  across the chest; no slung gun.
+* ``char_cartel_gunman_k``: a broad man in his 30s, light skin, short blond hair, bare head, beard shadow. Olive
+  nylon work jacket with a corduroy collar, a graphite gaiter round the neck, drab cargos, rubber boots, fingerless
+  gloves. Sling with shell loops (right shoulder); pump-gun slung on the back.
+* ``char_cartel_gunman_l``: a tall lean man in his 50s, deep skin, shaved bald head. Cream pull-over hoodie (hood
+  down on the shoulders, kangaroo pocket, dark drawstrings), black cargos, brown work boots, fingerless gloves.
+  Sling across the chest; no slung gun.
+
 Meshes: ``Body`` (covered skin removed), ``Hair``, ``Outfit``, ``Gear``, ``Headwear`` (beanie; hood
 + gaiter; moustache). No blend shapes (baked at the params below). Seats in SOURCE.txt
 (``attach_*``); the ``Back`` seat sits on the garment, inside the slung gun on A and C (enemies
@@ -48,7 +69,9 @@ import _cartel_gear as cg
 import _contact_gear as contact
 import _gear_kit as gk
 import _npc as n
+import _outfit as o
 import _outfit_garments as g
+import _special_gear as sg
 from _outfit import Hull, Mesh, Vector, patch, rounded_rect, straighten_loop
 from _outfit_build import Kit, build_character
 
@@ -68,6 +91,19 @@ VARIANTS = {
                              "hair": "buzz", "hair_color": "dark", "look": "smock"},
     "char_cartel_gunman_f": {"height": 1.79, "build": 0.25, "gender": 0.0, "age": 0.24, "skin": 1, "beard_shadow": 0.3,
                              "hair": "buzz", "hair_color": "brown", "look": "balaclava"},
+    # D-115: the 12-face pool (g-l)
+    "char_cartel_gunman_g": {"height": 1.76, "build": 0.7, "gender": 0.0, "age": 0.2, "skin": 4, "beard_shadow": 0.4,
+                             "hair": "buzz", "hair_color": "dark", "look": "navy_hood"},
+    "char_cartel_gunman_h": {"height": 1.68, "build": 0.4, "gender": 1.0, "age": 0.27, "skin": 5,
+                             "hair": "bob", "hair_color": "dark", "look": "flare_beanie"},
+    "char_cartel_gunman_i": {"height": 1.78, "build": 0.9, "gender": 0.0, "age": 0.85, "skin": 3, "beard_shadow": 1.0,
+                             "hair": "short", "hair_color": "grey", "look": "drab_bib"},
+    "char_cartel_gunman_j": {"height": 1.71, "build": 0.6, "gender": 1.0, "age": 0.52, "skin": 2,
+                             "hair": "bob", "hair_color": "brown", "look": "bandana"},
+    "char_cartel_gunman_k": {"height": 1.83, "build": 0.8, "gender": 0.0, "age": 0.36, "skin": 1, "beard_shadow": 0.8,
+                             "hair": "short", "hair_color": "blond", "look": "olive_jacket"},
+    "char_cartel_gunman_l": {"height": 1.88, "build": 0.2, "gender": 0.0, "age": 0.6, "skin": 6, "beard_shadow": 0.5,
+                             "hair": "bald", "hair_color": "dark", "look": "cream_hoodie"},
 }
 
 WAX = "char_cartel_wax_rust"
@@ -84,6 +120,10 @@ GUNMETAL = "char_cartel_gunmetal"
 SHELL = "char_cartel_shell"
 KNIT_DARK = "char_knit_graphite"
 KNIT_CREAM = "char_knit_cream"
+KNIT_NAVY = "char_knit_navy"
+KNIT_GREY = "char_knit_grey"
+KNIT_SLATE = "char_knit_slate"
+BANDANA = "char_hoodie_rust"
 
 
 def _z(kit: Kit) -> tuple[float, float]:
@@ -244,8 +284,128 @@ def balaclava(kit: Kit) -> None:
                          "vest, black cargos, brown work boots, fingerless gloves; sling across the chest")
 
 
+# =============================================================================================
+# D-115: the 12-face pool (g-l)
+# =============================================================================================
+def _black_cargos(kit: Kit, belt_z: float) -> Mesh:
+    boots = g.shoes(kit.fit, "char_shoe_brown", "rubber_black", top_z=0.15, base=0.007, boot=True)
+    kit.add_soft(boots)
+    tr = n.trousers(kit, "char_trousers_black", boots, belt_z + 0.022 * kit.k, hem_r=0.062)
+    cg.cargo_pockets(kit, tr, "char_trousers_black", z=0.57)
+    return tr
+
+
+def navy_hood(kit: Kit) -> None:
+    fit, k = kit.fit, kit.k
+    hips_z, belt_z = _z(kit)
+    _cargos_boots(kit, belt_z)
+    cg.fingerless_gloves(kit, "char_leather_black")
+    knit = g.knit_top(fit, kit.hull(), KNIT_NAVY, hips_z - 0.06 * k, neck="none", base=0.011)
+    kit.add_soft(knit)
+    pk = Mesh()
+    patch(pk, kit.hull(), Vector((0.0, 0.0, hips_z + 0.05 * k)), Vector((1, 0, 0)), cg.UP,
+          rounded_rect(0.25 * k, 0.12 * k, 0.03 * k, 2), 0.005 * k, KNIT_NAVY, cast_dir=Vector((0, -1, 0)), rings=2,
+          chamfer=0.004 * k)
+    kit.add_soft(pk)
+    loop = cg.StrapLoop(kit, 1.0, fit.ring_centre("waist").z - 0.02 * k)
+    loop.build(kit, WEBBING, 0.020, 0.004)
+    _gun_note(kit, cg.slung_gun(kit, loop, 1.24, WOOD, GUNMETAL))
+    kit.add_head(cg.hood_up(fit, KNIT_NAVY, cord_mat=KNIT_CREAM))
+    kit.notes["hat"] = "navy hood up, face bare (Headwear)"
+    kit.notes["look"] = ("navy_hood: navy hoodie with the hood up (face bare), drab cargos, green rubber boots, "
+                         "fingerless gloves; sling over the right shoulder, slung pump-gun")
+
+
+def flare_beanie(kit: Kit) -> None:
+    fit, k = kit.fit, kit.k
+    hips_z, belt_z = _z(kit)
+    _black_cargos(kit, belt_z)
+    cg.fingerless_gloves(kit, "char_leather_black", cuff_len=0.05)
+    cg.work_jacket(kit, "char_work_charcoal", CORD, hips_z - 0.07 * k, 1.36 * k)
+    loop = cg.StrapLoop(kit, -1.0, fit.ring_centre("waist").z - 0.02 * k)
+    loop.build(kit, WEBBING, 0.019, 0.004)
+    kit.add_head(cg.beanie(fit, FLARE))
+    kit.notes["hat"] = "flare-orange knit watch-cap beanie over a dark bob (Headwear)"
+    kit.notes["look"] = ("flare_beanie: flare-orange beanie, charcoal canvas work jacket with a corduroy collar, "
+                         "black cargos, brown work boots, fingerless gloves; sling across the chest")
+
+
+def drab_bib(kit: Kit) -> None:
+    fit, k = kit.fit, kit.k
+    waist_z = fit.ring_centre("waist").z
+    knit = g.knit_top(fit, kit.hull(), KNIT_SLATE, waist_z - 0.005 * k, neck="roll", base=0.011)
+    kit.add_soft(knit)
+    tr, _bib = cg.bib_overalls(kit, CARGO, 1.29 * k, waist_z + 0.03 * k)
+    cg.rubber_boots(kit, tr, RUBBER, top_z=0.38)
+    kit.add_soft(tr)
+    loop = cg.StrapLoop(kit, -1.0, waist_z - 0.03 * k)
+    loop.build(kit, WEBBING, 0.019, 0.004)
+    band = cg.StrapLoop(kit, 1.0, waist_z - 0.06 * k, shoulder_in=0.115)
+    bstrap = band.build(kit, "leather_dark", 0.026, 0.005)
+    cg.shell_row(kit, bstrap, band.front, 0.18, 0.80, 12, 0.005, SHELL)
+    _gun_note(kit, cg.slung_gun(kit, loop, 1.22, WOOD, GUNMETAL, stand_off=0.032))
+    kit.notes["hat"] = "bare head (grey short hair, grey beard shadow)"
+    kit.notes["look"] = ("drab_bib: slate roll-neck under drab canvas bib overalls, green rubber boots, bare grey "
+                         "head; sling and shell bandolier crossed, slung pump-gun")
+
+
+def bandana(kit: Kit) -> None:
+    fit, k = kit.fit, kit.k
+    hips_z, belt_z = _z(kit)
+    tr = _cargos_boots(kit, belt_z)
+    n.belt(kit, tr, belt_z, mat="char_leather_black", buckle="chrome", height=0.034)
+    cg.fingerless_gloves(kit, "char_leather_black")
+    knit = g.knit_top(fit, kit.hull(), KNIT_GREY, hips_z - 0.06 * k, neck="crew", base=0.013, rib=0.04)
+    kit.add_soft(knit)
+    loop = cg.StrapLoop(kit, -1.0, fit.ring_centre("waist").z - 0.01 * k)
+    loop.build(kit, WEBBING, 0.019, 0.004)
+    # a bandana tied flat over the head: a snug cap (no cuff, no slouch) and a knot at the nape
+    kit.add_head(cg.beanie(fit, BANDANA, front_el=16.0, back_el=-4.0, cuff=0.04, slouch=0.0))
+    knot = contact.chignon(fit, BANDANA, size=0.5, lift=-0.01)
+    kc = sum(knot.v, Vector()) / len(knot.v)
+    for sx in (-1.0, 1.0):   # the two tails hanging from the knot
+        tail = [kc + Vector((sx * 0.006 * k, -0.010 * k, -0.004 * k)),
+                kc + Vector((sx * 0.016 * k, -0.020 * k, -0.045 * k)),
+                kc + Vector((sx * 0.024 * k, -0.022 * k, -0.085 * k))]
+        o.tube(knot, tail, lambda t: (0.011 - 0.006 * t) * k, BANDANA, sides=6, weights=lambda p, t: sg.HEAD_W)
+    kit.add_head(knot)
+    kit.notes["hat"] = "rust bandana tied on the head, knot at the nape (Headwear)"
+    kit.notes["look"] = ("bandana: rust head bandana, concrete-grey fleece pull-over, drab cargos, green rubber "
+                         "boots, fingerless gloves; sling across the chest")
+
+
+def olive_jacket(kit: Kit) -> None:
+    fit, k = kit.fit, kit.k
+    hips_z, belt_z = _z(kit)
+    _cargos_boots(kit, belt_z)
+    cg.fingerless_gloves(kit, "char_leather_black")
+    cg.work_jacket(kit, "char_nylon_olive", CORD, hips_z - 0.075 * k, 1.36 * k)
+    cg.neck_gaiter(kit, KNIT_DARK, t0=0.10, t1=0.85, radial=0.016)
+    loop = cg.StrapLoop(kit, 1.0, fit.ring_centre("waist").z - 0.02 * k)
+    strap = loop.build(kit, WEBBING, 0.020, 0.004)
+    cg.shell_row(kit, strap, loop.front, 0.40, 0.72, 8, 0.004, SHELL)
+    _gun_note(kit, cg.slung_gun(kit, loop, 1.24, WOOD, GUNMETAL))
+    kit.notes["hat"] = "bare head (short blond hair)"
+    kit.notes["look"] = ("olive_jacket: olive nylon work jacket, graphite neck gaiter, bare blond head, drab cargos, "
+                         "green rubber boots, fingerless gloves; sling + shell loops (right shoulder), slung pump-gun")
+
+
+def cream_hoodie(kit: Kit) -> None:
+    fit, k = kit.fit, kit.k
+    hips_z, belt_z = _z(kit)
+    _black_cargos(kit, belt_z)
+    cg.fingerless_gloves(kit, "char_leather_black", cuff_len=0.05)
+    n.hoodie(kit, "char_hoodie_cream", hips_z - 0.06 * k, string_mat=CORD)
+    loop = cg.StrapLoop(kit, -1.0, fit.ring_centre("waist").z - 0.01 * k)
+    loop.build(kit, WEBBING, 0.019, 0.004)
+    kit.notes["hat"] = "bare shaved head"
+    kit.notes["look"] = ("cream_hoodie: cream pull-over hoodie (hood down), shaved head, black cargos, brown work "
+                         "boots, fingerless gloves; sling across the chest")
+
+
 _looks = {"dockhand": dockhand, "hood": hood, "deckhand": deckhand, "deck_woman": deck_woman, "smock": smock,
-          "balaclava": balaclava}
+          "balaclava": balaclava, "navy_hood": navy_hood, "flare_beanie": flare_beanie, "drab_bib": drab_bib,
+          "bandana": bandana, "olive_jacket": olive_jacket, "cream_hoodie": cream_hoodie}
 
 
 def recipe(kit: Kit) -> None:
