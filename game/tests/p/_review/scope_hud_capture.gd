@@ -68,11 +68,9 @@ func _run() -> void:
 	var pilot: Po5Pilot = Po5Pilot.new(self, c)
 	pilot.quiet = true
 	await pilot.calibrate()
-	for _i: int in 1200:  # jam it (harness): the next jam point just ahead of the drill's progress
-		if dp.runner.state == DeviceRunner.State.JAMMED:
-			break
-		dp.runner.jams.assign([dp.runner.progress + 0.001] as Array[float])
-		await _ticks(1)
+	await _ticks(10)
+	dp.runner.call(&"_jam")  # jam it now (harness shortcut: DeviceRunner's own jam path, panel + prompt included)
+	await _ticks(10)
 	var target: Vector3 = dp.device_node.global_position if dp.device_node != null else dp.global_position
 	await pilot.face(target, 0.01, 2.0)
 	await _ticks(30)
