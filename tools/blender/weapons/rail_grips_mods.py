@@ -4,8 +4,8 @@ hanging along -Z (see _common.py).
 
 * ``mod_rail_vertical_grip``  FOREGRIP -> ``Underbarrel`` (short vertical foregrip)
 
-Like the per-weapon vertical grips it carries no ``LeftHandIK``: the support hand stays on the base
-model's marker.
+Like every vertical grip it carries a ``LeftHandIK`` at the palm contact (c.build_vertical_grip, lead vgrip plan):
+with the grip equipped the support hand holds the grip instead of the base model's fore-end marker.
 """
 
 import _common as c

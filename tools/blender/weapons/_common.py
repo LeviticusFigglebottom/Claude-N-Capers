@@ -452,7 +452,10 @@ def build_prism_scope(ctx, mats: Mats, parent=None, name: str = "PrismScope"):
 
 
 def build_vertical_grip(ctx, mats: Mats, length: float = 0.075, parent=None, name: str = "Foregrip"):
-    """Vertical foregrip; origin = underside rail surface (``Underbarrel``), hangs along -Z."""
+    """Vertical foregrip; origin = underside rail surface (``Underbarrel``), hangs along -Z.
+
+    Lead (vgrip plan): carries a ``LeftHandIK`` marker at the palm contact (grip centreline, 45 % down), so with the
+    grip equipped the support hand goes to the grip (a mod's marker wins over the base weapon's)."""
     mb = ctx.builder()
     poly = mb.material(mats.polymer())
     mb.box((-0.0125, -0.020, -0.010), (0.0125, 0.020, 0.0), mat=poly)    # clamp
@@ -463,7 +466,9 @@ def build_vertical_grip(ctx, mats: Mats, length: float = 0.075, parent=None, nam
         z = -0.025 - i * 0.016
         mb.box((-0.010, 0.013, z - 0.003), (0.010, 0.0165, z + 0.003), mat=poly)
     mb.cylinder(0.0145, 0.006, segments=24, centre=(0.0, 0.0, -length - 0.002), axis="Z", mat=poly)
-    return finish(mb, name, bevel=0.0015, segments=2, parent=parent)
+    grip = finish(mb, name, bevel=0.0015, segments=2, parent=parent)
+    ctx.marker("LeftHandIK", (0.0, 0.0, -length * 0.45), parent=grip)
+    return grip
 
 
 def build_bipod(ctx, mats: Mats, leg_len: float = 0.17, parent=None, name: str = "Bipod"):

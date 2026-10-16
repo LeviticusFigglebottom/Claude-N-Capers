@@ -1,7 +1,7 @@
 ## D-115: the shared rail foregrip `mod.rail_vertical_grip` is offered in FOREGRIP by every weapon that has an
 ## `Underbarrel` rail but no grip of its own, steadies the weapon through LoadoutResolver, and attaches under
 ## the base model's `Underbarrel` (hiding a `StockForegrip`, when there is one). Like the per-weapon
-## vertical grips it carries no `LeftHandIK`, so the support-hand target stays the base model's.
+## vertical grips it carries its own `LeftHandIK` at the palm contact (lead vgrip plan), so the hand holds the grip.
 extends TestCase
 
 const GRIP: StringName = &"mod.rail_vertical_grip"
@@ -62,7 +62,27 @@ func test_grip_attaches_under_underbarrel() -> void:
 			assert_true(inst.find_child("Foregrip", true, false) != null, "%s: grip mesh" % wid)
 		if had_stock_foregrip:
 			assert_false(v.stock_part(Enums.ModType.FOREGRIP).visible, "%s: StockForegrip hidden" % wid)
-		# no own LeftHandIK: the support hand keeps the base marker (like the per-weapon vertical grips)
-		assert_true(v.get_base_marker(&"LeftHandIK") != null, "%s: base LeftHandIK" % wid)
-		assert_eq(v.get_marker(&"LeftHandIK"), v.get_base_marker(&"LeftHandIK"), "%s: hand target unchanged" % wid)
+		# lead vgrip plan: the grip's own LeftHandIK wins over the base marker (the hand holds the grip)
+		var hand: Node3D = v.get_marker(&"LeftHandIK")
+		assert_true(hand != null and inst != null and inst.is_ancestor_of(hand), "%s: hand target is the grip's" % wid)
+		var base_hand: Node3D = v.get_base_marker(&"LeftHandIK")
+		assert_true(base_hand != null and not inst.is_ancestor_of(base_hand), "%s: base marker is the weapon's own" % wid)
 		v.queue_free()
+
+
+## Lead vgrip plan: EVERY vertical-grip mod carries a LeftHandIK at the palm contact, below the rail.
+func test_every_vertical_grip_carries_a_hand_marker() -> void:
+	var ids: Array[StringName] = [&"mod.corsair_vertical_grip", &"mod.tern_vertical_grip", &"mod.lancet_vertical_grip",
+			&"mod.mastiff_vertical_grip", &"mod.thumper_vertical_grip", &"mod.rail_vertical_grip"]
+	for id: StringName in ids:
+		var m: WeaponModDef = ContentDB.mod(id)
+		if m == null:
+			fail("missing %s" % id)
+			continue
+		var inst: Node3D = m.model.instantiate() as Node3D
+		var hand: Node3D = inst.find_child("LeftHandIK", true, false) as Node3D
+		assert_true(hand != null, "%s has a LeftHandIK" % id)
+		if hand != null:
+			var p: Vector3 = inst.to_local(hand.global_position) if inst.is_inside_tree() else hand.position
+			assert_true(p.y < -0.02, "%s hand marker hangs on the grip (y %.3f)" % [id, p.y])
+		inst.free()
