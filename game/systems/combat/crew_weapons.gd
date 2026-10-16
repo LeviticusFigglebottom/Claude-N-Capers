@@ -829,7 +829,8 @@ func server_commit_shot(claim: Dictionary) -> void:
 	var radius: float = s.stats.noise_radius_m if s.stats.suppressed else Tweak.stealth().gunshot_player_radius_m
 	var rt: HeistRuntime = HeistRuntime.of(_crew)
 	if rt != null and radius > 0.0:
-		rt.make_noise(origin, radius, &"gunshot", _crew.net_id)
+		# D-121: the server's gunshot noise starts at the shooter's eye (deterministic), not the claim's animated muzzle.
+		rt.make_noise(_crew.eye_position(), radius, &"gunshot", _crew.net_id)
 	ammo_changed.emit(ws)
 	_sync_ammo(ws)
 	_commit_shot_fx(claim, s, ws)
