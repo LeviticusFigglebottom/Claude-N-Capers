@@ -1,0 +1,20 @@
+asset: char_civilian_clerk
+script: tools/blender/characters/char_civilians.py
+params: {"age": 0.35, "beard_shadow": 0.5, "build": 0.6, "gender": 0.0, "hair": "short", "hair_color": "dark", "height": 1.75, "look": "clerk", "skin": 5}
+seed: 720664868  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category characters --asset char_civilian_clerk
+edit policy: generated file, never edit by hand; change the script and rebuild
+attach_Back: bone chest, local [0.0000, 0.0880, 0.1093] (model [0.0000, 1.2781, 0.1275], Godot axes, rest pose)
+attach_Head: bone head, local [0.0000, 0.0796, -0.0872] (model [0.0000, 1.6379, -0.0754], Godot axes, rest pose)
+attach_Hip: bone hips, local [0.1842, 0.0499, 0.0348] (model [0.1842, 0.9871, 0.0373], Godot axes, rest pose)
+body_faces_culled: 4812
+body_params: {"age": 0.35, "beard_shadow": 0.5, "build": 0.6, "gender": 0.0, "hair": "short", "hair_color": "dark", "hair_peak": 0.0, "height": 1.75, "lip": "auto", "skin": 5}
+bones: 52
+faces_hidden_by_jacket: 2850
+look: Admin clerk (upstairs office): oatmeal knit cardigan over a white shirt, navy chinos, brown shoes, black glasses, watch, staff lanyard (black strap, brass band, white ID card)
+meshes: Body,Gear,Hair,Headwear,Outfit
+shape_keys: none (baked at body_params; do not set blend_shapes/*)
+tri_budget: 35000
+tris: 26514
+tris_by_mesh: {"Body": 9120, "Gear": 548, "Hair": 1728, "Headwear": 498, "Outfit": 14620}

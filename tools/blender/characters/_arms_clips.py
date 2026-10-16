@@ -134,6 +134,27 @@ def cup_shape(g: SupportGrip) -> HandShape:
     return dataclasses.replace(shape, curl=curl, thumb=g.thumb, thumb_opp=g.thumb_opp)
 
 
+GRIP_PIVOT = v3(0.0, -0.01, -0.04)          # on the pistol grip, weapon space
+
+
+def _reseat(h: Hand, twist: float, cock: float) -> Hand:
+    """``h`` (weapon space) rotated about the grip axis (raked like ``_anim.GRIP_RAKE_DEG``) by ``twist`` and about
+    weapon X by ``cock`` (deg), both through ``GRIP_PIVOT``: the hand turns on the grip, the gun stays."""
+    r = math.radians(A.GRIP_RAKE_DEG)
+    R = rxd(cock) @ _axis_rot(v3(0.0, -math.sin(r), math.cos(r)), twist)
+    out = h.copy()
+    out.wrist = GRIP_PIVOT + R @ (h.wrist - GRIP_PIVOT)
+    out.axes = R @ h.axes
+    return out
+
+
+def _axis_rot(axis: np.ndarray, deg: float) -> np.ndarray:
+    a = unit(axis)
+    k = np.array([[0.0, -a[2], a[1]], [a[2], 0.0, -a[0]], [-a[1], a[0], 0.0]])
+    t = math.radians(deg)
+    return np.eye(3) + math.sin(t) * k + (1.0 - math.cos(t)) * k @ k
+
+
 def long_gun(s: FPSet) -> bool:
     return s.support != "pistol"
 
@@ -145,6 +166,11 @@ class Kit:
         self.sk, self.s = sk, s
         m = s.markers
         self.grip = grip_hand(sk, pole=s.pole_r)
+        if s.one_hand:                             # D-116: no support hand to rest on: the thumb wraps the grip
+            self.grip = self.grip.with_shape(dataclasses.replace(hand_shape("trigger"), thumb=tuple(s.grip_thumb[:3]),
+                                                                 thumb_opp=s.grip_thumb[3]))
+        if any(s.grip_adjust):                     # D-116 (lead, P option b): the wrist behind / under the grip
+            self.grip = _reseat(self.grip, *s.grip_adjust)
         if s.support == "pistol" and s.name in PISTOL_GRIPS:
             g = PISTOL_GRIPS[s.name]
             self.support = hand_at(sk, "L", "w", np.asarray(m["left_ik"], float) + np.asarray(g.shift), g.along,
@@ -170,8 +196,12 @@ class Kit:
         else:
             self.support = hand_at(sk, "L", "w", m["left_ik"], (0.30, 0.45, 0.84), (0.75, 0.62, -0.10),
                                    s.pole_l, hand_shape("grip", 0.80), share=0.55, off=0.018)
+        if s.one_hand:                             # D-116: the left hand waits off-screen below
+            self.support = hand_at(sk, "L", "c", (-0.20, 0.03, -0.60), (0.15, 0.35, -0.92), (0.95, 0.0, 0.25),
+                                   (-0.5, -0.6, -0.4), "relaxed", share=0.5)
         self.support_ads = self.support.copy()
-        self.support_ads.pole = unit(np.asarray(s.pole_l_ads, float))
+        if not s.one_hand:
+            self.support_ads.pole = unit(np.asarray(s.pole_l_ads, float))
         self.grip_ads = self.grip.copy()
         if s.pole_r_ads is not None:
             self.grip_ads.pole = unit(np.asarray(s.pole_r_ads, float))
@@ -284,7 +314,9 @@ def _sway(st: State, f: int, N: int, amp: float = 1.0, ads: bool = False) -> Non
 
 
 def _static(kit: Kit, s: FPSet, wf, blade: float, ads: bool = False) -> list[Key]:
-    return [K(0, wf, kit.support_ads if ads else kit.support, kit.grip_ads if ads else kit.grip, blade=blade)]
+    if ads:
+        return [K(0, wf, kit.support_ads, kit.grip_ads, blade=blade, sh=tuple(s.ads_sh))]
+    return [K(0, wf, kit.support, kit.grip, blade=blade)]
 
 
 def clip_idle(kit: Kit, s: FPSet, N: int):

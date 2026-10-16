@@ -13,14 +13,34 @@ Five variants with distinct silhouettes, genders, ages, builds and skin tones:
 * ``char_civilian_manager``: store manager, navy blazer over a pale blue shirt (no tie), grey
   slacks, brown shoes, brass name badge.
 
-Meshes: ``Body`` (covered skin removed), ``Hair``, ``Outfit``, ``Gear``, ``Headwear`` (glasses).
+D-115 (heist cast audit 2026-10-15, glasshouse.md roster):
+
+* ``char_civilian_manager_vossberg``: Greta Vossberg, the owner-manager (``civ_staff_manager``,
+  rare ``nervous_manager``), a woman in her 50s: tailored deep-plum trouser suit (brass buttons),
+  cream silk blouse open at the collar, a fine gold chain with a small pendant, gold stud earrings,
+  gold reading glasses pushed up on her silver hair (side part + chignon), gold watch, black low heels.
+* ``char_civilian_sales_b``: the second sales associate (``civ_staff_floor``), so the two on the
+  floor are not twins: a young man in the boutique's black (fitted near-black suit, black shirt open
+  at the collar, no tie) with the shop's brass: name badge and lapel pin; light skin, brown side part.
+* ``char_civilian_clerk``: the upstairs admin clerk (``civ_staff_admin``): office wear, not the shop
+  floor: an oatmeal knit cardigan (open, one button) over a white shirt, navy chinos, brown shoes,
+  black glasses, a watch and the staff lanyard (black strap, brass band, white ID card).
+
+Meshes: ``Body`` (covered skin removed), ``Hair``, ``Outfit``, ``Gear``, ``Headwear`` (glasses, chignon,
+earrings).
 No blend shapes (baked at the params below).
 """
 
+import math
+
+import _contact_gear as cg
 import _gear_kit as gk
+import _npc as n
 import _outfit as o
 import _outfit_garments as g
+import _special_gear as sg
 from _outfit import Hull, Mesh, Vector
+from mathutils import Matrix
 from _outfit_build import Kit, build_character
 from char_crew import suit
 
@@ -38,7 +58,16 @@ VARIANTS = {
                               "hair_color": "grey", "look": "apron"},
     "char_civilian_manager": {"height": 1.81, "build": 0.55, "gender": 0.0, "age": 0.45, "skin": 3, "beard_shadow": 0.35,
                               "hair": "buzz", "hair_color": "dark", "look": "blazer"},
+    # D-115
+    "char_civilian_manager_vossberg": {"height": 1.69, "build": 0.45, "gender": 1.0, "age": 0.68, "skin": 1,
+                                       "hair": "side_part", "hair_color": "grey", "lip": "char_lip_rose",
+                                       "look": "vossberg"},
+    "char_civilian_sales_b": {"height": 1.79, "build": 0.35, "gender": 0.0, "age": 0.22, "skin": 2,
+                              "beard_shadow": 0.3, "hair": "side_part", "hair_color": "brown", "look": "sales_b"},
+    "char_civilian_clerk": {"height": 1.75, "build": 0.6, "gender": 0.0, "age": 0.35, "skin": 5,
+                            "beard_shadow": 0.5, "hair": "short", "hair_color": "dark", "look": "clerk"},
 }
+PLUM = "char_suit_plum"
 
 
 def _trousers(kit: Kit, mat: str, shoes: Mesh, top_z: float, hem_r: float = 0.058) -> Mesh:
@@ -151,7 +180,122 @@ def blazer(kit: Kit) -> None:
     kit.add_gear(gk.name_tag(kit.hull(), Vector((-0.10 * k, 0.2, 1.36 * k)), k=k))
 
 
-_looks = {"coat": coat, "gilet": gilet, "dress": dress, "apron": apron, "blazer": blazer}
+# ---------------------------------------------------------------------------------------------
+# D-115: Vossberg Jewelers staff
+# ---------------------------------------------------------------------------------------------
+def _z(kit: Kit) -> tuple[float, float]:
+    """(belt z, shirt tuck z)."""
+    belt_z = kit.fit.ring_centre("hips").z + 0.035 * kit.k
+    return belt_z, belt_z - 0.02 * kit.k
+
+
+def _necklace(kit: Kit, mat: str, drop: float = 0.055, half_w: float = 0.052) -> None:
+    """Fine chain in the open collar: an arc over the chest from under the collar on either side,
+    dipping ``drop`` below the neck base, with a small round pendant at the bottom."""
+    fit, k = kit.fit, kit.k
+    hull = kit.hull()
+    nk = g.Neck(fit)
+    neck_z = nk.point(0.0, 0.0).z
+    cy = fit.ring_centre("chest").y
+    path = []
+    for i in range(15):
+        u = -1.0 + 2.0 * i / 14
+        z = neck_z + 0.004 * k - drop * k * (1.0 - u * u) ** 1.2
+        hit = hull.cast(Vector((u * half_w * k, 0.6, z)), Vector((0, -1, 0)), 1.2)
+        q = hit[0] if hit[0] is not None else Vector((u * half_w * k, cy + 0.11 * k, z))
+        path.append(o.push_out(q, hull, 0.0022 * k))
+    m = Mesh()
+    o.tube(m, path, 0.0011 * k, mat, sides=4)
+    bot = path[7]
+    gr = o.Gear()
+    gr.cyl(0.0055 * k, 0.0025 * k, centre=(0, 0, 0.0012 * k), axis="Z", segs=10, mat=mat)
+    gr.bevel(0.0008 * k, 1, 30.0)
+    pc = bot - Vector((0.0, 0.0, 0.0065 * k))
+    pc = o.push_out(pc, hull, 0.0012 * k)
+    m.extend(gr.to_mesh(o.frame_from(pc, Vector((0.0, 1.0, 0.1))), anchor=pc))
+    kit.add_gear(m, layer=False)
+
+
+def _glasses_up(fit, mat: str, tilt_deg: float = 64.0, clear: float = 0.0035) -> Mesh:
+    """Reading glasses pushed up onto the hair: ``gk.glasses`` turned up about the ear line, then
+    lifted radially so every point clears the hair surface by ``clear``."""
+    k = fit.k
+    m = gk.glasses(fit, mat)
+    c = fit.head_centre()
+    eye = fit.eye_centre()
+    piv = Vector((0.0, c.y - 0.010 * k, eye.z - 0.006 * k))
+    rot = Matrix.Translation(piv) @ Matrix.Rotation(math.radians(tilt_deg), 4, "X") @ Matrix.Translation(-piv)
+    for i, v in enumerate(m.v):
+        q = rot @ v
+        d = q - c
+        az = math.atan2(d.x, d.y)
+        el = math.atan2(d.z, math.hypot(d.x, d.y))
+        r = sg.head_radius(fit, az, el, c)
+        if r is not None and d.length < r + clear * k:
+            q = c + d.normalized() * (r + clear * k)
+        m.v[i] = q
+    return m
+
+
+def vossberg(kit: Kit) -> None:
+    """Greta Vossberg (owner-manager): the boss, not the floor staff's black."""
+    fit, k = kit.fit, kit.k
+    belt_z, tuck = _z(kit)
+    sh = n.shoes(kit, heel=True)
+    n.shirt(kit, "char_silk_ivory", tuck, point_len=0.05, spread=0.40)
+    n.trousers(kit, PLUM, sh, belt_z + 0.022 * k, hem_r=0.056)
+    n0 = len(kit.soft.f)
+    jk, _info = n.jacket(kit, PLUM, 0.83 * k, 1.05 * k, button_mat="brass", lapel_w=0.052, neck_w=0.092, flare=0.06)
+    n.cull_under(kit, n0, jk, "faces_hidden_by_jacket")
+    _necklace(kit, "brass")
+    n.watch(kit, "L", strap="brass", case="brass")
+    kit.add_head(cg.chignon(fit, "char_hair_grey", size=0.9))
+    kit.add_head(cg.earrings(fit, "brass", drop=False))
+    kit.add_head(_glasses_up(fit, "brass"))
+    kit.notes["look"] = ("Greta Vossberg (owner-manager): deep-plum trouser suit with brass buttons, cream silk "
+                         "blouse open at the collar, gold chain + pendant, gold studs, gold reading glasses pushed "
+                         "up on silver hair (chignon), gold watch, black low heels")
+
+
+def sales_b(kit: Kit) -> None:
+    """Second associate: the boutique's black with the brass badge (a man, so never a twin of ``sales``)."""
+    k = kit.k
+    belt_z, tuck = _z(kit)
+    sh = n.shoes(kit)
+    n.shirt(kit, "char_shirt_black", tuck, point_len=0.054, spread=0.34)
+    n.trousers(kit, "char_suit_dark", sh, belt_z + 0.022 * k, hem_r=0.055)
+    n0 = len(kit.soft.f)
+    jk, _info = n.jacket(kit, "char_suit_dark", 0.80 * k, 1.05 * k, button_mat="char_button_dark", lapel_w=0.05,
+                         neck_w=0.085, flare=0.05)
+    n.cull_under(kit, n0, jk, "faces_hidden_by_jacket")
+    hull = kit.hull()
+    kit.add_gear(gk.name_tag(hull, Vector((0.10 * k, 0.2, 1.335 * k)), k=k))
+    kit.add_gear(cg.lapel_pin(hull, Vector((-0.095 * k, 0.3, 1.36 * k)), "brass", k=k))
+    n.watch(kit, "L", strap="char_leather_black", case="chrome")
+    kit.notes["look"] = ("Sales associate B: fitted near-black suit, black shirt open at the collar (no tie), brass "
+                         "name badge and lapel pin (the boutique's brass), black shoes, watch")
+
+
+def clerk(kit: Kit) -> None:
+    """Upstairs admin clerk: office wear (cardigan + lanyard), not the shop floor's black."""
+    fit, k = kit.fit, kit.k
+    belt_z, tuck = _z(kit)
+    sh = n.shoes(kit, mat="char_shoe_brown")
+    n.shirt(kit, "char_shirt_white", tuck, point_len=0.054, spread=0.32)
+    n.trousers(kit, "char_chino_navy", sh, belt_z + 0.022 * k, hem_r=0.060)
+    n0 = len(kit.soft.f)
+    jk, _info = n.jacket(kit, "char_knit_oat", 0.78 * k, 1.03 * k, button_mat="char_button_dark", lapel_w=0.03,
+                         neck_w=0.09, flare=0.05, chest_welt=False)
+    n.cull_under(kit, n0, jk, "faces_hidden_by_jacket")
+    n.lanyard(kit, "char_dress_black", "char_medic_white", card_z=1.17, band_mat="brass")
+    n.watch(kit, "L", strap="leather_dark", case="chrome")
+    kit.add_head(gk.glasses(fit, "char_button_dark"))
+    kit.notes["look"] = ("Admin clerk (upstairs office): oatmeal knit cardigan over a white shirt, navy chinos, brown "
+                         "shoes, black glasses, watch, staff lanyard (black strap, brass band, white ID card)")
+
+
+_looks = {"coat": coat, "gilet": gilet, "dress": dress, "apron": apron, "blazer": blazer, "vossberg": vossberg,
+          "sales_b": sales_b, "clerk": clerk}
 
 
 def recipe(kit: Kit) -> None:

@@ -2,6 +2,21 @@
 
 Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min; this file says where to resume.
 
+## 2026-10-16: D-116 one-handed FP pistol / revolver + organic motion (with ENV D)
+- One-handed FP: one_handed_fp_sets [pistol, revolver] skip the left-hand IK; LeftArmHide drops upper_arm.L out of view
+  (eases back for the reload clips). D's clips (env/d-art up to b65aeb04: one-handed, re-seated grip
+  FPSet.grip_adjust). P owns the runtime framing (agreed with D): hip offset (0.025, -0.015, 0.05), rot pitch 14 /
+  yaw 3 / roll -4 about the firing hand; ADS eye relief +0.08 pistol / +0.05 revolver. Hip vs the FNV ref: muzzle
+  (62 %, 58 %) vs (61 %, 58 %), grip (73 %, 89 %) vs (72 %, 88 %). ADS: back of the hand + thumb under the gun, no
+  sleeve. set_ads_rot_deg (rotation about the AimPoint) exists, off.
+- Organic motion (all weapons): bob on the camera's footstep phase (figure-8 + roll/pitch, x1.6 sprinting), sway on an
+  underdamped spring (3.2 Hz, 0.55), landing dip + pitch on the arms; breathing / recoil spring / ADS arc + settle as
+  before. Tests: test_p_pistol_hold (D-116), test_p_po13_hold (overshoot, footstep bob; windowed).
+- Evidence: tests/p/_review/captures/d116/side_by_side_refs_glasshouse.png (5 guns), side_by_side_refs_unitmap.png,
+  kestrel_p9.mp4 / marshal_357.mp4 / corsair_ar.mp4 (idle, turn, walk, sprint, jump-land, fire, ADS in/out).
+- Next: D-118 gadgets (waiting on the LEAD's gadget_toggle InputMap action + CrewIntent field), nd_stealth_pass
+  coverage (~1 heist s per wall min here), D-115 GN-P1 windowed pass.
+
 ## 2026-10-15: D-111 coverage re-run (GH loud), PO6-11b / smg pairing, fill fade
 - D-111 anim_coverage (gh_loud, seed 1792097579, trunk r213-era + P): 56 distinct clips (was 30 of 102). All five
   "never fired" rows from 2026-10-14 now fire: hit_react_left/_right (+ hit_react; _back not seen this run),
