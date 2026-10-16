@@ -1,5 +1,5 @@
 ## DET (loud-path determinism audit): two runs of one seed in loud replay the same. Golden Hour (glasshouse)
-## at HAZARDOUS, alarm raised at once, crew AI bots on and immune, the assault director with events; the
+## at HAZARDOUS, alarm raised at once, crew AI bots on (mortal; the diagnostic can make them immune), the director with events; the
 ## DetTrace of both runs (spawns, shots, damage, kills, unit positions / targets) must hash the same.
 ## DET_JITTER=1 adds per-frame wall-clock jitter (OS.delay_usec in _process), exposing decisions that hang on
 ## the render-frame rate instead of the fixed physics tick.
