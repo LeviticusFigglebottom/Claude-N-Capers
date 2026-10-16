@@ -1,4 +1,4 @@
-## Glasshouse (Vossberg Jewelers) mission flow. Owner: ENV C (C1-03).
+## Glasshouse (Vossberg Jewelers) mission flow. Owner: ENV A (mission scripts, owners.json; ENV C built the first flow, C1-03).
 ## Design: docs/design/heists/glasshouse.md §Objectives / §Escape. Contract: heist_map.md §6: uses
 ## only the HeistMission API, EventBus and nodes of this map (found by objective_tag).
 ##

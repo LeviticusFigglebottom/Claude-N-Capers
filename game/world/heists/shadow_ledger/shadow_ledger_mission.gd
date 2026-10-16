@@ -1,4 +1,4 @@
-## Shadow Ledger (Kessler & Moor penthouse) mission flow. Owner: ENV C (C2).
+## Shadow Ledger (Kessler & Moor penthouse) mission flow. Owner: ENV A (mission scripts, owners.json; ENV C built the first flow, C2).
 ## Design: docs/design/heists/shadow_ledger.md §Objectives / §Rare events / §Escape (D-042).
 ## Contract heist_map.md §6: uses only the HeistMission API, EventBus, Services and nodes of this map
 ## (prefabs found by objective_tag).
