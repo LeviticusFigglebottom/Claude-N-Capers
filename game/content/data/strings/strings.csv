@@ -265,6 +265,7 @@ ui.difficulty.lethal,Lethal
 ui.difficulty.cataclysm,Cataclysm
 ui.difficulty.last_breath,Last Breath
 ui.stat.damage,Damage
+ui.stat.damage_pellets,{total} ({pellets} × {each})
 ui.stat.accuracy,Accuracy
 ui.stat.stability,Stability
 ui.stat.concealment,Concealment
