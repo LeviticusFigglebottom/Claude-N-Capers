@@ -191,6 +191,7 @@ Phase column: the roadmap phase that must deliver the row (P1 = vertical slice).
 | L3.7 | **Suppressors**: noise radius ~0 m. | `noise_radius_m` 0–1. | A, B | P1 |
 | L3.8 | **Hit registration** (PD2: client-side for players). | Client hit claims validated by server (see architecture §3). | A | P1 |
 | L3.9 | **Melee**: charge, knockdown, silent; concealment matters; melee kills in stealth are silent. | MeleeDef + melee intent; charge 0–1 s scales damage. | A, B | P2 |
+| L3.10 | **Shotgun ammo** (PD2: AP slug, HE, flechette, dragon's breath). Listed damage is per shot; the ammo changes delivery. | `ShotgunAmmo` (D-118 + addendum). Per-shot damage is preserved: per-pellet × stock/new pellets. Slug: 1 pellet, armor + shield + thin-wall pierce, no falloff penalty. HE: 1 pellet, explosion 2.0 m. Flechette: pellets ×1.5, bleed 4/s for 3 s. Dragon's breath: ignite 8/s for 3 s, panics civilians in the cone. range_mult 0.7. Values are B's AMMO mod params; `CombatTweak.shotgun_ammo_defaults` are fallbacks only. | A (B data) | P4 |
 
 ### L4. Enemy roster (PD2 behaviour, our names)
 

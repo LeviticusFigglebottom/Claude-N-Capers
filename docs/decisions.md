@@ -963,7 +963,7 @@ dragon's breath / incendiary), with real behaviour, not only stat deltas.
   workshop UI; plus the audit's slot gaps (shared rail vertical grip, stocks, pistol grips, muzzle devices, shrike suppressor).
 * **P:** gadget toggle input (default key B), first-person rendering: laser beam + dot (visible to the owner and teammates),
   flashlight cone with real light (shadows off, range ~25 m), on/off state per weapon, kept through swaps.
-* **A:** third-person + network: gadget state replicated, enemies/cameras can see a laser or flashlight in stealth (detection
+* **A:** third-person + network: gadget state replicated, [CORRECTED below: not a detection stimulus, S4.2] enemies/cameras can see a laser or flashlight in stealth (detection
   stimulus, PD2-style), ammo runtime: slug (armor pierce, shield pierce), HE (small explosion via Explosion.apply, no
   penetration), flechette (more pellets, bleed-like DoT), dragon's breath (fire DoT, panic civilians); ammo pickup multipliers
   as data.
@@ -1004,3 +1004,8 @@ Cataclysm full clear. Approved, and it lands in **one round** (B 49d0171b + C's 
   roughly halve; the broker costs 4–20 % of a full clear and never more than the run pays.
 * Supersedes the payout values in QC-5 (GH $40k) and D-081 (study $700). B publishes the full per-difficulty table in
   pd2_fidelity.md via the LEAD.
+
+### D-118 correction (2026-10-16, LEAD): gadgets are NOT a detection stimulus
+pd2_fidelity.md S4.2 holds: PD2 guards and cameras ignore flashlights and lasers. The D-118 line "enemies/cameras can see a
+laser or flashlight in stealth" was wrong. ENV A sets the StealthTweak "Weapon gadgets (D-118)" multipliers to **0** by default.
+The code stays behind the tweak, and nothing in the game enables it. The third-person beams and lights stay (visual only).
