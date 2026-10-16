@@ -6,12 +6,15 @@ Read it at the start of every work session.
 ## Sessions
 | Role | Session id | Branch | Focus now |
 |---|---|---|---|
-| LEAD | session_01XAPqmFJ32zHKLK9Sezymym | claude/dreamy-hamilton-pc7vck | D-114 PO list: merges, rulings, gates |
-| ENV A | session_01P3gsmbSxRgc9fxN9YHL5Gz | env/a-core | PO6-01/02/08/05/04/06/14/18/16/19/17 |
-| ENV B | session_013tiw1JiUaB4yH2AEpjsm1f | env/b-content | PO6-12 range, PO6-03 drill timer, PO6-13 brakes; held branch |
-| ENV C | session_013Lwe5Wx7JGrnrjs7cbRcr2 | env/c-worlds | PO6-07 audio loops, PO6-13 flash, PO6-10 black gun; A helper slices |
-| ENV D | session_016xjLH3KQNyUH4ZRyseSDR6 | env/d-art | PO6-09 finger gap/grip, SMG re-time, death clips + PhysicalBones |
-| ENV P | session_01VxQPFh6PypoyUxg94gmMGH | env/p-play | PO6-11 pistol hold/ADS, PO6-15 bot strength, FP flash |
+| LEAD | session_01HwYKRgCdkLfJCt4ZM6rfTk | claude/dreamy-hamilton-pc7vck | D-129 handover: round 229 gate, D-115 heist completion |
+| ENV A | session_01EoHohP5E4RVEPzabfnFk8y | env/a-core | GN-8 crash + inspectors alarm, pilot fixes, npc weapon ids, knife vs HP, DB-4/6/7, SL-6, ND-1 |
+| ENV B | session_013vBwDAbwJ82mZAvDEWJYrr | env/b-content | B-GN/B-DB/B-SL strings audits, D-128 ring check, real-input UI runs (5 heists) |
+| ENV C | session_01T5Xwi8DdzfABwGjjW46Axr | env/c-worlds | SL-1 G2 art, SL-2/DB-2 D-111 props (port wip/c-sldb-props), SL-3, DB-6, drill VFX |
+| ENV D | session_01HpyNo9Bn1kCg4ddXt4xZyA | env/d-art | police combat movement (v1.26), DB-4 seated clips, SL/DB cast polish, FP pistol thumb |
+| ENV P | session_012CbsHeKpNoVbWCSzTZiLMb | env/p-play | ND-2 stealth route, D-128 feel check GH/SL, SL + DB real-input passes, GH-1, GN-P1 loud |
+
+Previous team (session_01XAPqm… lead + its envs) was in another account and is unreachable; it stopped ~16:30 UTC
+2026-10-16 with round 229 merged on `claude/epic-fermi-k5fa09` but not gated.
 
 ## Trunk / merge rounds
 - 2026-10-16 15:55: **round 228 ON ORIGIN**: env/a-core ddb0af3c (D-125 Wrecker HP curve, cast pools ND/SL/DB, mask_on + throw_grenade 3P wiring, SL-6 mission audit (5 fixes), DB-7 drill FX hook) + env/b-content 8c50d7f5 (D-124 P4 230 rpm, scope HUD margin dock, new-player flow, payday honours, show-tips-again, D-126 secondaries + picker, D-128 detection rings, B-GN strings, failed-payday waives cleanup) + env/c-worlds 0e30b908 (ND-3 van cover, DB chambers + packer retag) + env/d-art c3cbe906 (cast D6-D9, seated drape + double-sided long cloth, sit_chair_read, sit_chair_armed) + env/p-play e42fcb17 (pistol hip level, secondary-shotgun checks) + LEAD (D-124 P11-P13, D-127 cartel, characters v1.25, pd2_fidelity S2 rewrite from A's sourced D-128 table, GN courier doc, GN-8 status). Cherry-picks: A 28266f8f (assault specials ride WITH the squad; refill cadence at the cap = the round-227 po6_16 red), D 74f15c4c (p5_cast civ_worker_packer), LEAD 227e1f1e (SL launch test drives the cage lock swing). Lead: validate_all 5/5 (DB/GN/GH/ND final, SL greybox); 2675 targeted tests, then re-runs on the final tree: a po6_16 3 / director 17 / l1_ 22 / l3_ 39, integration test_p3_loud 10 (9 specials in assaults), c shadow_ledger_launch 2, d p5_cast 16. KNOWN RED (pre-existing, also red on trunk efa0919c): a/test_p1_sandbox_gate test_04_pager_answer; A's D-128 push carries the fix.

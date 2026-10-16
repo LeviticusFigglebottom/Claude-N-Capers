@@ -1092,3 +1092,16 @@ our ◇ design choices in pd2_fidelity S2 with PD2's behaviour wherever PD2's is
 * **Feel check (ENV P).** A windowed real-input stealth run on GH and SL after both land: detection should feel like PD2,
   with lingering in a guard's view punished quickly and a clean, careful route still possible. Report fill times seen.
 The LEAD rewrites the S2 rows from A's sourced table when it lands.
+
+## D-129: LEAD handover to a new session; fresh env team (2026-10-16, LEAD; product owner)
+The previous LEAD (session_01XAPqmFJ32zHKLK9Sezymym) and its five env sessions ran in another account and are
+unreachable from the new LEAD (session_01HwYKRgCdkLfJCt4ZM6rfTk). They stopped ~16:30 UTC with round 229 merged on
+`claude/epic-fermi-k5fa09` but not gated. The new LEAD:
+* keeps trunk = `claude/dreamy-hamilton-pc7vck` and every rule in force (D-086 team v3, D-088 targeted checks, D-115
+  heist completion before any new heist);
+* spawned five new env sessions (A, B, C, D, P; ids on the board) from each env branch's origin tip; any lane that was
+  only in an old container is lost and is re-queued from the status files and `docs/process/heist_completion.md`;
+* gates round 229 = the old LEAD's merges (epic-fermi, incl. characters v1.26) + the env commits pushed after them
+  (B 0ddba6f8, C 80eeb5a8, D 0e4e2a0f).
+Answer carried to ENV P: D-116 stands, first-person pistols/revolvers are one-handed; third person keeps two hands.
+Next heist after D-115 closes: Ostrander Federal (`docs/process/next_heist.md` §1), planning only until then.
