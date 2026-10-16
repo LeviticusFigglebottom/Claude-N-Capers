@@ -62,24 +62,12 @@ func test_viewmodel_key_light_only_lights_the_viewmodel() -> void:
 	assert_near(key.light_energy, vt.viewmodel_key_light_energy, 1e-4, "energy from the tweak")
 
 
-## PO6-10: the gun fill light lights only the first-person gun (VIEWMODEL_GUN_LAYER on the WeaponVisual's meshes,
-## never on the arms).
+## PO6-10 / D-119: the FP weapon's meshes carry VIEWMODEL_GUN_LAYER (never the arms); the gun fill light that lights
+## only that layer exists only when the tweak gives it energy (D-119 default 0: the PO's darker gun).
 func test_gun_fill_light_only_lights_the_gun() -> void:
 	var c: CrewController = _rt.crew_controller(0) as CrewController
 	var view: CrewView = CrewView.of(c)
 	var vt: FpViewmodelTweak = FpViewmodelTweak.data()
-	var fill: DirectionalLight3D = view.find_child("ViewmodelGunFill", true, false) as DirectionalLight3D
-	if vt.viewmodel_gun_fill_energy <= 0.0 or vt.viewmodel_fov_deg <= 0.0:
-		assert_true(fill == null, "no gun fill when disabled")
-		return
-	assert_true(fill != null, "gun fill exists")
-	if fill == null:
-		return
-	assert_eq(fill.light_cull_mask, CrewView.VIEWMODEL_GUN_LAYER, "culled to the gun layer")
-	assert_eq(fill.layers, CrewView.VIEWMODEL_LAYER, "inside the vm camera's cull mask")
-	await wait_frames(2)
-	assert_near(fill.light_energy, lerpf(vt.viewmodel_gun_fill_energy, vt.viewmodel_gun_fill_ads_energy, view.ads_blend),
-		1e-3, "energy eases hip -> ADS with ads_blend (%.3f at blend %.2f)" % [fill.light_energy, view.ads_blend])
 	var gun: int = 0
 	var arms: int = 0
 	for g: Node in view.camera().find_children("*", "GeometryInstance3D", true, false):
@@ -91,6 +79,18 @@ func test_gun_fill_light_only_lights_the_gun() -> void:
 		else:
 			arms += 1
 	assert_true(gun > 0 and arms > 0, "gun meshes (%d) and arms meshes (%d)" % [gun, arms])
+	var fill: DirectionalLight3D = view.find_child("ViewmodelGunFill", true, false) as DirectionalLight3D
+	if vt.viewmodel_gun_fill_energy <= 0.0 or vt.viewmodel_fov_deg <= 0.0:
+		assert_true(fill == null, "no gun fill at energy 0 (D-119 default)")
+		return
+	assert_true(fill != null, "gun fill exists")
+	if fill == null:
+		return
+	assert_eq(fill.light_cull_mask, CrewView.VIEWMODEL_GUN_LAYER, "culled to the gun layer")
+	assert_eq(fill.layers, CrewView.VIEWMODEL_LAYER, "inside the vm camera's cull mask")
+	await wait_frames(2)
+	assert_near(fill.light_energy, lerpf(vt.viewmodel_gun_fill_energy, vt.viewmodel_gun_fill_ads_energy, view.ads_blend),
+		1e-3, "energy eases hip -> ADS with ads_blend (%.3f at blend %.2f)" % [fill.light_energy, view.ads_blend])
 
 
 ## D-094 / PO-4: the viewmodel camera also sees lights tagged VIEWMODEL_LIT_LAYER; a shot (real input) lights the

@@ -138,11 +138,12 @@ static var _gen: int = 0
 ## PO6-10 (LEAD ruling 2026-10-15): a fill light on the first-person GUN only (CrewView.VIEWMODEL_GUN_LAYER), riding
 ## the viewmodel camera: the coated finishes are dielectric now but their albedo stays near-black, so the gun reads
 ## as a silhouette next to the arms. Lifts it toward the arms' luminance without touching the arms. 0 energy = off.
+## D-119 (PO): off by default (the PO wants the darker gun back); the PO6-10 tuning was 0.7 hip / 0.45 ADS.
 ## Direction: euler degrees in camera space (light shines along -Z).
-@export var viewmodel_gun_fill_energy: float = 0.7
+@export var viewmodel_gun_fill_energy: float = 0.0
 ## Fill energy at full ADS (eased with CrewView.ads_blend): the sights sit ~10 cm from the eye and read near-white
 ## at the hip energy (LEAD round 213).
-@export var viewmodel_gun_fill_ads_energy: float = 0.45
+@export var viewmodel_gun_fill_ads_energy: float = 0.0
 @export var viewmodel_gun_fill_color: Color = Color(1.0, 0.96, 0.9)
 @export var viewmodel_gun_fill_specular: float = 0.6
 @export var viewmodel_gun_fill_euler_deg: Vector3 = Vector3(-20.0, -15.0, 0.0)
