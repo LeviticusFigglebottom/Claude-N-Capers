@@ -115,8 +115,8 @@ func clear() -> void:
 		_drop(0)
 
 
-## Contact / handler lines always; guard barks and crew acks only with accessibility/subtitles_all_speakers
-## (Options, default off; lead ruling on B7-03).
+## Contact / handler lines always; everyone else (guard barks, crew acks, heister barks) with
+## accessibility/subtitles_all_speakers (Options, default ON since LEAD r226: barks are dialogue).
 func _shows_speaker(speaker: StringName) -> bool:
 	return tweak.subtitle_speakers.has(speaker) \
 			or bool(settings.get_value(GameSettings.ACCESSIBILITY, &"subtitles_all_speakers"))
