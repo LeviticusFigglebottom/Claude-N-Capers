@@ -2511,7 +2511,7 @@ voice.vo.mercer.dockside_burn_boat_eta,Launch is {seconds} seconds out. Hold the
 voice.vo.mercer.dockside_burn_escape,"Ride's here. Bags in, and don't stop to watch the smoke."
 voice.vo.reyes.dockside_burn_payday,"Smoke over Pier 9 and the Co-op's rifles in my lockup. That's a good morning. You've earned it."
 music.glasshouse.name,Glass Ceiling
-music.night_deposit.name,Night Shift
+music.night_deposit.name,Time Lock
 music.shadow_ledger.name,Off the Books
 music.dockside_burn.name,Cold Storage
 music.vault_hymn.name,Vault Hymn
