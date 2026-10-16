@@ -22,6 +22,7 @@ const STATE_PAUSED: StringName = &"paused"
 const KIND_KEYS: Dictionary = {
 	&"drill": &"ui.hud.device.drill", &"thermal": &"ui.hud.device.thermal", &"saw": &"ui.hud.device.saw",
 	&"hack": &"ui.hud.device.hack", &"time_lock": &"ui.hud.device.time_lock", &"c4": &"ui.hud.device.c4",
+	&"thermite": &"ui.hud.device.thermite",  # D-115: Dockside Burn's burn_point (device_started kind)
 }
 ## Device kind -> fix prompt when the row has none (the device's own interactable prompt).
 const FIX_KEYS: Dictionary = {&"hack": &"ui.prompt.restart_hack"}
@@ -30,6 +31,7 @@ const FIX_DEFAULT: StringName = &"ui.prompt.fix_drill"
 const SERVES: Dictionary = {
 	&"drill": [&"drill", &"safe", &"door"], &"thermal": [&"drill", &"safe", &"door"], &"saw": [&"drill", &"safe", &"door"],
 	&"hack": [&"laptop", &"drill"], &"time_lock": [&"drill", &"safe", &"laptop"], &"c4": [&"safe", &"door"],
+	&"thermite": [&"fire"],
 }
 const PANEL_W: float = 168.0
 const PANEL_H: float = 62.0

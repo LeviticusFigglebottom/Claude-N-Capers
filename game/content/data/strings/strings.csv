@@ -1323,7 +1323,7 @@ ui.perks.state.locked,Locked
 ui.perks.reason.not_enough_points,Needs {cost} perk points ({have} available)
 ui.perks.dev_unlocked,Dev build: every perk card is unlocked.
 ui.perks.hint,Press a deck to equip it; only the equipped deck is active. Perk points come from experience.
-heist.glasshouse.briefing,"Vossberg Jewelers sits on the corner of Harlow Avenue and Pell Street and stays open late for its private viewing week. Tonight the estate consignment waits in the workshop safe. Case the floor as customers, find the manager's keycard and take the back route. The safe code is written down somewhere in the back offices; without it you can pick the dial, slowly. Odile wants at least two bags before Friday."
+heist.glasshouse.briefing,"Vossberg Jewelers sits on the corner of Harlow Avenue and Pell Street and stays open late for its private viewing week. Tonight the estate consignment waits in the workshop safe. Case the floor as customers, find the manager's keycard or the safe code note, and take the back route. Without either, the safe needs the drill, and the drill is loud. Odile wants at least two bags before Friday."
 heist.glasshouse.briefing_loud,"The safe reader locks down: drill the safe, then hold until the van comes back."
 contact.role.fence,Fence
 contact.role.fixer,Fixer
@@ -1399,7 +1399,7 @@ ui.preplan.floor.ground,Ground floor
 ui.preplan.floor.upper,Upper floor
 ui.preplan.category.drop_zone,Drop zone: supplies are left here before the job.
 ui.preplan.category.spawn,Entry point: the crew starts here instead.
-ui.preplan.category.escape,Escape: where the van waits.
+ui.preplan.category.escape,Escape: where your ride waits.
 ui.preplan.category.access,Access point.
 ui.preplan.reason.unknown_asset,This asset is not offered on this job.
 ui.preplan.reason.needs_point,Place this asset on a point of the blueprint.
@@ -1428,11 +1428,11 @@ ui.preplan.bp.avenue,Avenue
 ui.preplan.bp.facades,Facades
 ui.preplan.point.pp_alley_dumpsters,Alley dumpsters
 ui.preplan.point.pp_alley_hvac,Alley HVAC units
-ui.preplan.point.pp_side_kerb,Side street kerb
+ui.preplan.point.pp_side_kerb,Pell Street kerb
 ui.preplan.point.pp_spawn_alley_west,Alley west end
-ui.preplan.point.pp_spawn_alley_mouth,Alley mouth
+ui.preplan.point.pp_spawn_alley_mouth,Alley mouth (Pell Street)
 ui.preplan.point.pp_escape_alley_west,Van: alley west
-ui.preplan.point.pp_escape_side_street,Van: side street
+ui.preplan.point.pp_escape_side_street,Van: Pell Street
 ui.preplan.point.pp_insider_breakroom,Break room (insider)
 ui.preplan.point.pp_back_door,Back door
 item.asset.body_bag_case_drop.name,Body bag case drop
@@ -1459,10 +1459,10 @@ item.asset.propped_door.name,Propped door
 item.asset.propped_door.desc,Someone on staff leaves this door propped open tonight.
 item.asset.insider_code.name,Insider: time-lock code
 item.asset.insider_code.desc,An insider writes down tonight's time-lock code. You know where the note is.
-item.asset.vent_access.name,Vent access
-item.asset.vent_access.desc,A maintenance contact leaves the vent grille unscrewed for you.
-item.asset.escape_position.name,Van position
-item.asset.escape_position.desc,"The getaway van waits here. A plan: the crew votes, the host breaks ties."
+item.asset.vent_access.name,Areaway grate
+item.asset.vent_access.desc,A maintenance contact leaves the padlock off the areaway grate. The ladder drops into the basement plant room.
+item.asset.escape_position.name,Escape position
+item.asset.escape_position.desc,"Your ride out waits here. A plan: the crew votes, the host breaks ties."
 ui.masks.title,Masks
 ui.masks.crumb,Safehouse / Loadout
 ui.masks.open,Masks
@@ -1543,7 +1543,7 @@ item.mask_pattern.crackle.name,Crackle
 item.mask_pattern.starburst.name,Starburst
 objective.glasshouse.casing,Case the store
 objective.glasshouse.keycard,Find the manager's keycard
-objective.glasshouse.code,Find the safe code
+objective.glasshouse.code,Or find the safe code
 objective.glasshouse.extra_bags,Secure more than two bags
 objective.glasshouse.salon,Search the salon
 objective.glasshouse.display_cases,Smash the display cases
@@ -1614,12 +1614,12 @@ item.loot.cash_bricks.desc,Shrink-wrapped bricks of undeclared bills off the Co-
 heist.night_deposit.name,Nightfall Depository
 heist.night_deposit.subtitle,Harbor Savings & Loan
 heist.night_deposit.brief,A cartel front drops its week of cash down a bank's night chute. The Accountant wants the chute and the vault cage.
-heist.night_deposit.briefing,"Harbor Savings & Loan, Pier District branch, stands on the corner of Harbor Street and Wharf Lane. Every Friday night the Ortega Fisheries Co-op drops its takings down the night depository chute, and the bags wait in the basement until the 06:00 armoured car. The Co-op's friends keep more cash in the vault cage. The bank is closed: case it from the ATM lobby, find the vault keycard and the time-lock code (or hack the lock from the server room), then hold the basement while the time lock runs. If it goes loud, the vault seals itself: drill the door and hold the basement. The Accountant wants at least four bags."
+heist.night_deposit.briefing,"Harbor Savings & Loan, Pier District branch, stands on the corner of Harbor Street and Wharf Lane. Every Friday night the Ortega Fisheries Co-op drops its takings down the night depository chute, and the bags wait in the basement until the 06:00 armoured car. The Co-op's friends keep more cash in the vault cage. The bank is closed: case it from the ATM vestibule, find the vault keycard and the time-lock code (or hack the lock from the server room), then hold the basement while the time lock runs. If it goes loud, the vault seals itself: drill the door and hold the basement. The Accountant wants at least four bags."
 heist.night_deposit.briefing_loud,Drill the vault door and hold the basement.
 objective.night_deposit.casing,Case the bank
 objective.night_deposit.keycard,Find the vault keycard
 objective.night_deposit.code,Find the time-lock code
-objective.night_deposit.server,Hack the time lock from the server room
+objective.night_deposit.server,Or hack the time lock from the server room
 objective.night_deposit.vault_gate,Get through the vault gate and the lasers
 objective.night_deposit.time_lock,Start the time lock
 objective.night_deposit.time_lock_wait,Hold the basement until the time lock opens
@@ -1655,7 +1655,7 @@ heist.shadow_ledger.name,Shadow Ledger
 heist.shadow_ledger.subtitle,Kessler & Moor
 heist.shadow_ledger.brief,A law firm on top of Calder Tower keeps the books for people who don't exist. Take them without anyone ever knowing.
 heist.shadow_ledger.briefing,"Kessler & Moor, a private-wealth and law practice, holds the top two floors of Calder Tower on Calder Street. Its off-book client ledger exists three times: an encrypted drive array in the server cage, the partners' laptop with the decryption key, and the printed master books in Kessler's time-locked study safe. The crew starts on the roof under a climber's line from Arden Tower. Find the laptop, get into the server room, open the cage and release the drive bays, then get the laptop and two drive bags out. This one is stealth only: one alarm and the firm wipes the array, and the job is over."
-objective.shadow_ledger.casing,Case the roof
+objective.shadow_ledger.casing,Case the roof and the service level
 objective.shadow_ledger.laptop,Find and bag the ledger laptop
 objective.shadow_ledger.keycard,Get a keycard for the server room
 objective.shadow_ledger.server_door,Get into the server room
@@ -1807,7 +1807,7 @@ ui.range.fmt.ttk_short,{shots} / {time} s
 ui.range.ls.via_shield,{zone} (through shield)
 ui.range.ls.plate,Plate {n}: {hp} HP left
 ui.range.ls.plate_broken,Plate {n} broken
-voice.vo.mercer.glasshouse_intro,"Vossberg's at closing time. The good pieces sit in the workshop safe, not the window. Walk the floor first, masks in your pockets."
+voice.vo.mercer.glasshouse_intro,"Vossberg's is open late. The good pieces sit in the workshop safe, not the window. Walk the floor first, masks in your pockets."
 voice.vo.mercer.glasshouse_keycard_found,That's the manager's card. The safe reader in the workshop will take it.
 voice.vo.mercer.glasshouse_workshop_open,Workshop door's open. Safe's on the north wall.
 voice.vo.mercer.glasshouse_drill_jam,Drill's jammed. Somebody give it a hand.
@@ -1815,7 +1815,7 @@ voice.vo.mercer.glasshouse_last_pager,That's {answered}. That's the last one the
 voice.vo.mercer.glasshouse_lockdown,Alarm's up and the safe went into lockdown. Reader's dead. Put the drill on it.
 voice.vo.mercer.glasshouse_van_eta,Van's {seconds} seconds out. Hold what you've got.
 voice.vo.mercer.glasshouse_escape,"Van's at the curb. Bags in, then you."
-voice.vo.mercer.night_deposit_intro,Harbor Savings closed hours ago. The Co-op's drop is in the basement. Case it from the ATM lobby and the lot.
+voice.vo.mercer.night_deposit_intro,Harbor Savings closed hours ago. The Co-op's drop is in the basement. Case it from the ATM vestibule and the lot.
 voice.vo.accountant.night_deposit_contact_intro,The Co-op washes its money through Harbor S&L. Take the night drop and the cage. They can't report what they never declared.
 voice.vo.mercer.night_deposit_keycard_found,"That card opens the vault gate downstairs. One swipe, so don't waste it."
 voice.vo.mercer.night_deposit_code_found,You've got the time-lock code.
@@ -1826,7 +1826,7 @@ voice.vo.mercer.night_deposit_time_lock_open,Vault's open. Bag the cage.
 voice.vo.mercer.night_deposit_drill_jam,Thermal drill's stalled. Get it going again.
 voice.vo.mercer.night_deposit_last_pager,That was the fourth pager. No more of those.
 voice.vo.mercer.night_deposit_lockdown,Alarm. The vault sealed itself. Thermal drill on the door.
-voice.vo.mercer.night_deposit_armored_car,Armored car's early. Two more guards at the sally port.
+voice.vo.mercer.night_deposit_armored_car,Armoured car's early. Two more guards at the sally port.
 voice.vo.mercer.night_deposit_fog_lifts,Fog's lifting. Anyone on the street can see the quay now.
 voice.vo.mercer.night_deposit_escape_eta,Your ride's {seconds} seconds out. Hold.
 voice.vo.mercer.night_deposit_escape,Ride's here. Bags in.
@@ -1841,13 +1841,13 @@ voice.vo.mercer.shadow_ledger_cage_open,Cage is open. The terminal at the back r
 voice.vo.mercer.shadow_ledger_hack_started,Release is running: {seconds} seconds. Keep the floor quiet while it works.
 voice.vo.mercer.shadow_ledger_hack_interrupted,The release stopped. Get back on that terminal.
 voice.vo.mercer.shadow_ledger_hack_done,Bays are unlocked. Pull the drives and bag them.
-voice.vo.mercer.shadow_ledger_lasers,Laser grid in the study. Remember it on your way back out.
+voice.vo.mercer.shadow_ledger_lasers,Laser grid in the art hall. Remember it on your way back out.
 voice.vo.mercer.shadow_ledger_time_lock_started,Study safe's on its time lock: {seconds} seconds. Nobody needs to stand and watch it.
 voice.vo.mercer.shadow_ledger_time_lock_open,"Study safe's open. The books are a bonus, if you have the hands."
 voice.vo.mercer.shadow_ledger_last_pager,That's {answered} on the pagers. Nobody gets to reach for another one.
 voice.vo.mercer.shadow_ledger_required_secured,Laptop and two drives are out. The job's done; everything else is greed.
 voice.vo.mercer.shadow_ledger_escape,Your way out is the {escape}. Go.
-voice.vo.mercer.shadow_ledger_abort,"Alarm. That means they're wiping the drives, and there's nothing left worth taking. Pull out."
+voice.vo.mercer.shadow_ledger_abort,That's the alarm. They're wiping the array. It's over.
 item.weapon.drover_762.name,Drover 762
 item.weapon.drover_762.desc,"Graff-Lindqvist's long-stroke battle rifle. Heavy 7.62 rounds, walnut furniture and a kick to match."
 item.mod.drover_suppressor.name,Bulkhead Suppressor
@@ -2492,7 +2492,7 @@ item.asset.lift_power.name,Powered goods lift
 item.asset.lift_power.desc,"Someone makes sure the goods lift has power tonight, so count-room bags ride down two at a time."
 ui.preplan.point.dockside_burn.pp_spawn_gate,Gate: Ferro Street
 ui.preplan.point.dockside_burn.pp_spawn_lane,West lane: cut in the fence
-ui.preplan.point.dockside_burn.pp_spawn_pontoon,Pontoon: by launch
+ui.preplan.point.dockside_burn.pp_spawn_pontoon,Pontoon: by the launch
 ui.preplan.point.dockside_burn.pp_drop_gatehouse,Behind the gatehouse
 ui.preplan.point.dockside_burn.pp_drop_lane,West lane: by the fire stair
 ui.preplan.point.dockside_burn.pp_drop_quay,Quay net store
@@ -2520,7 +2520,7 @@ voice.vo.mercer.dockside_burn_breach,"You're inside. The product's in one of the
 voice.vo.mercer.dockside_burn_product_found,"There's the product. Bag what you want, then the thermite goes on the burn point."
 voice.vo.mercer.dockside_burn_thermite_reminder,Nothing burns without the thermite bag. Somebody bring it.
 voice.vo.mercer.dockside_burn_burn_started,Thermite's lit. Stay clear of that room.
-voice.vo.mercer.dockside_burn_burn_done,"Fire shutters are down. That room's gone, and so is anything you left in it."
+voice.vo.mercer.dockside_burn_burn_done,Shutters coming down in {shutters_in_s} seconds! Get out of that room. Anything left in it burns.
 voice.vo.mercer.dockside_burn_strongroom_drill,"Thermal drill's on the strongroom door. It's slow and it will jam. Hold the anteroom."
 voice.vo.mercer.dockside_burn_drill_jam,Drill's jammed. Get back on it.
 voice.vo.mercer.dockside_burn_strongroom_open,"Strongroom's open. Shrink-wrapped cash, pallets of it. Start bagging."
@@ -2529,7 +2529,7 @@ voice.vo.mercer.dockside_burn_lift_dead,"Goods lift's dead. The breaker's in the
 voice.vo.mercer.dockside_burn_containers_hint,"Two of those containers hold the rifles. Look for the Co-op's brass padlocks, not the customs seals."
 voice.vo.mercer.dockside_burn_weapons_found,"Rifle crates. They're heavy, so no sprinting. Get them to the ride."
 voice.vo.mercer.dockside_burn_sniper_crane,Sniper in the crane cab across the slip. Stay off the apron.
-voice.vo.mercer.dockside_burn_sniper_roof,"Shooter on the ice company roof. He's got the lane and the quay."
+voice.vo.mercer.dockside_burn_sniper_roof,Shooter on the Bellweather Ice roof. He's got the lane and the quay.
 voice.vo.mercer.dockside_burn_gangway,The Pier 10 gangway is down. Expect police from the east.
 voice.vo.mercer.dockside_burn_reinforcements,Pickup at the gate. The Co-op's sent four more of its people.
 voice.vo.mercer.dockside_burn_fog_lifts,"Fog's lifting. The viaduct has a shooter's view now, and the boat will be slower."
@@ -2911,7 +2911,7 @@ voice.vo.accountant.night_deposit_radio_server,The server has given up its secre
 voice.vo.accountant.night_deposit_radio_vault_gate,The vault gate is open. Mind the time lock.
 voice.vo.accountant.night_deposit_radio_time_lock_new,"Start the time lock. Patience, in this case, is billable."
 voice.vo.accountant.night_deposit_radio_time_lock,"The time lock is running. Now we wait, which I do not enjoy paying for."
-voice.vo.accountant.night_deposit_radio_time_lock_wait_new,The time lock is counting down. Hold the floor until it finishes.
+voice.vo.accountant.night_deposit_radio_time_lock_wait_new,The time lock is counting down. Hold the basement until it finishes.
 voice.vo.accountant.night_deposit_radio_time_lock_wait,The time lock has opened. The cage is yours.
 voice.vo.accountant.night_deposit_radio_vault_drill_new,"Drill the vault door. Noisily, I suppose."
 voice.vo.accountant.night_deposit_radio_vault_drill,The vault door is through. Proceed.
@@ -2937,7 +2937,7 @@ voice.vo.accountant.shadow_ledger_radio_drives,Drives recovered. The ledger is n
 voice.vo.accountant.shadow_ledger_radio_secure,Laptop and drives secured. The ledger is mine.
 voice.vo.accountant.shadow_ledger_radio_study_safe,The study safe. Private papers make very public scandals.
 voice.vo.accountant.shadow_ledger_radio_paintings,The paintings. Odile will be insufferable about this.
-voice.vo.accountant.shadow_ledger_radio_archive_safe,The archive safe. The printed books. You are very thorough.
+voice.vo.accountant.shadow_ledger_radio_archive_safe,The archive safe. The partners' cash float. You are very thorough.
 voice.vo.accountant.shadow_ledger_radio_escape_new,Leave the way you came: unseen.
 voice.vo.accountant.shadow_ledger_radio_escape_available,Your way out is ready. Nobody may see you use it.
 voice.vo.accountant.shadow_ledger_radio_escape,"Your ride is in position. Quietly, please."
@@ -3215,8 +3215,8 @@ music.gallery_night.name,Laylight
 heist.gallery_night.briefing_loud,"Argus locks the gallery down. Hack the server, drill the art-store vault, then hold until the escape arrives."
 objective.gallery_night.casing,Case the gala
 objective.gallery_night.casing_last_call,Gala's over. Stay out of sight
-objective.gallery_night.find_canvases,Find the listed canvases ({found}/4)
-objective.gallery_night.keycard,Get a keycard
+objective.gallery_night.find_canvases,Find the listed canvases ({found}/{total})
+objective.gallery_night.keycard,Get a keycard for the Treasury or the art store
 objective.gallery_night.server_code,Find the Argus code
 objective.gallery_night.hack,Take the frame sensors offline
 objective.gallery_night.hack_loud,Hack the Argus server to lift the lockdown
@@ -3277,7 +3277,7 @@ ui.preplan.bp.gallery_night.maritime,Maritime Room
 ui.preplan.bp.gallery_night.treasury,Treasury
 ui.preplan.bp.gallery_night.conservation,Conservation Studio
 ui.preplan.bp.gallery_night.server,Argus server
-ui.preplan.bp.gallery_night.curator,Curator
+ui.preplan.bp.gallery_night.curator,Curator's office
 ui.preplan.bp.gallery_night.hall_void,Open to the hall
 ui.preplan.bp.gallery_night.roof_deck,Roof deck
 ui.preplan.bp.gallery_night.glass_roofs,Glass roofs
@@ -3298,7 +3298,7 @@ voice.vo.mercer.gallery_night_last_call_soon,Bar's calling last orders. A minute
 voice.vo.mercer.gallery_night_last_call,Last call. Guests are heading for the doors. Everything inside is off limits now.
 voice.vo.mercer.gallery_night_lasers_sweep,Beams pair up at the walls; go along the edge.
 voice.vo.mercer.gallery_night_guests_gone,Doors are locked and the gala's over. It's just you and the guards.
-voice.vo.mercer.gallery_night_keycard,That's a keycard. Two readers want one each and you won't have enough for all three. Choose.
+voice.vo.mercer.gallery_night_keycard,That's a keycard. Three readers want one each and you'll only find two. Choose.
 voice.vo.mercer.gallery_night_code_found,That's the Argus code. The server room's on the upper corridor.
 voice.vo.mercer.gallery_night_sensors_warning,That frame's wired. Cut it with the sensors live and the whole building hears it.
 voice.vo.mercer.gallery_night_hack_started,Hack's running. Stay with it.
@@ -3318,7 +3318,7 @@ voice.vo.mercer.gallery_night_drill_jam,Drill's jammed. Somebody give it a hand.
 voice.vo.mercer.gallery_night_required_secured,The Lantern Bearer and one more are secured. Anything else is a bonus.
 voice.vo.mercer.gallery_night_van_eta,Van's {seconds} seconds out. Hold the dock.
 voice.vo.mercer.gallery_night_limo_eta,Limo's {seconds} seconds out. Hold the hall.
-voice.vo.mercer.gallery_night_sniper_hotel,Sniper on the hotel roof. Stay out of the Mews mouth.
+voice.vo.mercer.gallery_night_sniper_hotel,Sniper on the Grand Wexley roof. Stay out of the Mews mouth.
 voice.vo.mercer.gallery_night_escape,"Your ride's here. Canvases in, then you."
 voice.vo.vance.gallery_night_radio_casing,You've seen the rooms. Now forget the champagne and remember the walls.
 voice.vo.vance.gallery_night_radio_casing_last_call,Lights are coming up and the guests are leaving. Keep to the shadows.
@@ -3347,7 +3347,7 @@ voice.vo.vance.gallery_night_radio_escape,"Your car is waiting, darling. Don't c
 voice.vo.vance.gallery_night_radio_loot_lantern_bearer,The Lantern Bearer is mine. Ours. Mostly mine.
 voice.vo.vance.gallery_night_radio_loot_study,"A study. Not on the list, but I never refuse a sketch."
 voice.vo.vance.gallery_night_radio_loot_salt_orchard,The Salt Orchard. Somebody in Geneva just stopped breathing.
-voice.vo.vance.gallery_night_radio_loot_widow_in_blue,"The Widow in Blue. She's been waiting for a better wall."
+voice.vo.vance.gallery_night_radio_loot_widow_in_blue,Widow in Blue. She's been waiting for a better wall.
 voice.vo.vance.gallery_night_radio_loot_tidewater_saint,"The Tidewater Saint, in a duffel bag. Blessed are the quick."
 voice.vo.vance.gallery_night_radio_loot,Another canvas off the Halberd's walls. Lovely.
 ui.lobby.host_closed,The host ended the heist. You are back in the crew lobby.
@@ -3357,6 +3357,7 @@ ui.hud.device.saw,SAW
 ui.hud.device.hack,HACK
 ui.hud.device.time_lock,TIME LOCK
 ui.hud.device.c4,C4
+ui.hud.device.thermite,THERMITE
 ui.hud.device.time,{mm}:{ss}
 ui.hud.device.jammed,JAMMED
 ui.hud.device.interrupted,INTERRUPTED
@@ -3387,7 +3388,7 @@ ui.preplan.bp.glasshouse.u2,Security
 ui.preplan.bp.glasshouse.u3,WC
 ui.preplan.bp.glasshouse.u4,Upper corridor
 ui.preplan.bp.glasshouse.u5,Admin office
-ui.preplan.bp.glasshouse.u6,Manager
+ui.preplan.bp.glasshouse.u6,Manager's office
 ui.preplan.bp.glasshouse.u7,Stock room
 ui.preplan.bp.glasshouse.u8,Upper lobby
 ui.preplan.bp.glasshouse.alley,Service alley
@@ -3409,7 +3410,7 @@ ui.preplan.bp.night_deposit.g9,Banking hall
 ui.preplan.bp.night_deposit.g10,Vestibule
 ui.preplan.bp.night_deposit.g11,Loan office
 ui.preplan.bp.night_deposit.g12,Manager
-ui.preplan.bp.night_deposit.g13,ATM lobby
+ui.preplan.bp.night_deposit.g13,ATM vestibule
 ui.preplan.bp.night_deposit.b1,Cash transfer
 ui.preplan.bp.night_deposit.b2,Lockers
 ui.preplan.bp.night_deposit.b3,Plant room
@@ -3430,8 +3431,8 @@ ui.preplan.bp.night_deposit.wharf_lane,Wharf Lane
 ui.preplan.bp.night_deposit.quay_e,Quay
 ui.preplan.bp.night_deposit.quay_w,Quay
 ui.preplan.bp.night_deposit.crane_yard,Crane yard
-ui.preplan.bp.night_deposit.warehouse_yard,Warehouse yard
-ui.preplan.bp.night_deposit.pell_chandlery,Pell Chandlery
+ui.preplan.bp.night_deposit.warehouse_yard,Warehouse backs
+ui.preplan.bp.night_deposit.pell_chandlery,Pell & Sons Chandlery
 ui.preplan.bp.shadow_ledger.s1,Service lobby
 ui.preplan.bp.shadow_ledger.s2,Refuse room
 ui.preplan.bp.shadow_ledger.s3,Service corridor
@@ -3448,7 +3449,7 @@ ui.preplan.bp.shadow_ledger.k7,Corridor
 ui.preplan.bp.shadow_ledger.k8,Associates
 ui.preplan.bp.shadow_ledger.k9,West core
 ui.preplan.bp.shadow_ledger.k10,East core
-ui.preplan.bp.shadow_ledger.k11,Server cage
+ui.preplan.bp.shadow_ledger.k11,Server room
 ui.preplan.bp.shadow_ledger.k12,IT office
 ui.preplan.bp.shadow_ledger.k13,Security
 ui.preplan.bp.shadow_ledger.k14,Electrical
@@ -3517,7 +3518,7 @@ ui.preplan.bp.dockside_burn.qs,Net store
 ui.preplan.bp.dockside_burn.x5,Office roof
 ui.preplan.bp.dockside_burn.pier_9,Pier 9
 ui.preplan.bp.dockside_burn.ferro_street,Ferro Street
-ui.preplan.bp.dockside_burn.bellweather,Bellweather Ice Co
+ui.preplan.bp.dockside_burn.bellweather,Bellweather Ice Co.
 ui.preplan.bp.dockside_burn.pontoon,Pontoon
 ui.preplan.bp.dockside_burn.landing_stage,Landing stage
 ui.preplan.bp.dockside_burn.yard,Yard
