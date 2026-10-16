@@ -134,6 +134,9 @@ OUTFIT: dict[str, tuple[str, float, float, str]] = {
     "char_crew_jay_jacket": ("#2A559C", 0.55, 0.0, "cloth"),  # D-111 Jay: cobalt racing jacket (nylon)
     "char_crew_jay_stripe": ("#E8E6E0", 0.55, 0.0, "cloth"),  # D-111 Jay: white racing stripes
     "char_crew_glove_driving": ("#9C6B3E", 0.50, 0.0, "leather"),  # D-111 Jay: cognac driving gloves
+    # D-115 lead call (pistol framing shows only the glove): Wren's own sage-olive tactical gloves (were the black
+    # char_tac_glove, identical to Rook's black leather with the pistol out)
+    "char_crew_glove_sage": ("#6B7556", 0.72, 0.0, "leather"),
     "char_sec_knit": ("#2C2F35", 0.95, 0.0, "cloth"),  # npcs (D-063): Halden night-shift guard's V-neck sweater vest
     "char_cleaner_teal": ("#4F7F82", 0.80, 0.0, "cloth"),  # npcs: shadow_ledger cleaner tabard (glass teal #5D8C8F, toned)
     "char_hoodie_rust": ("#7A4C34", 0.95, 0.0, "cloth"),  # npcs: IT contractor's hoodie
