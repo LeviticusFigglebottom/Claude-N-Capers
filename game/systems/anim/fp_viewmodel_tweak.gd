@@ -50,6 +50,11 @@ static var _gen: int = 0
 ## marker while the clip leaves the left hand on the gun (not during reload / swap, nor for these sets).
 ## D-116: pistol / revolver are one-handed in first person (one_handed_fp_sets), so they skip the IK again (PO6-11
 ## had put them on it with the clip's own wrist offset; their set_left_hand_grip_offset entries stay for the record).
+## Akimbo sets: the WeaponVisual's offhand gun rides hand.L at akimbo_offhand_grip (hand.L bone space; ENV D's
+## rig SOURCE.txt fp.offhand_grip: the X-mirror of the weapon bone's hand.R offset).
+@export var akimbo_sets: Array[StringName] = [&"akimbo"]
+@export var akimbo_offhand_grip: Transform3D = Transform3D(Basis(Vector3(-0.0, -0.0, -1.0), Vector3(0.9511, -0.309, 0.0),
+	Vector3(-0.309, -0.9511, -0.0)), Vector3(0.012, 0.072, -0.03))
 @export var left_hand_ik_skip_sets: Array[StringName] = [&"bow", &"akimbo", &"pistol", &"revolver"]
 ## D-116 (PO, Fallout: New Vegas refs): first-person pistol / revolver are ONE-HANDED: the left arm drops out of view
 ## by one_handed_left_drop (camera space, m, applied to upper_arm.L) while the set plays, and eases back in for the

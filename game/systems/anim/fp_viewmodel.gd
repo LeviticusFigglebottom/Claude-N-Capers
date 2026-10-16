@@ -127,6 +127,8 @@ var left_hand_ik: FpLeftHandIk = null
 var arms: Node3D = null
 ## BoneAttachment3D on the `weapon` bone: the WeaponVisual's parent.
 var weapon_attach: BoneAttachment3D = null
+## Akimbo (D-050, rig fp.offhand_grip): the left gun on hand.L (FpViewmodelOffhand).
+var offhand: FpViewmodelOffhand = FpViewmodelOffhand.new()
 ## The WeaponVisual shown (during a holster: the outgoing one until the draw starts).
 var weapon_visual: WeaponVisual = null
 ## anim_set of the weapon currently in the hands.
@@ -1101,6 +1103,7 @@ func _set_weapon(wv: WeaponVisual, set_id: StringName) -> void:
 	if left_hand_ik != null:
 		left_hand_ik.set_target(wv.get_marker(&"LeftHandIK") if wv != null else null, set_id)
 	_setup_vgrip(wv, set_id)
+	offhand.setup(skeleton, wv, set_id)
 	_magwell_rest = _magwell.transform if _magwell != null else Transform3D.IDENTITY
 	_check_aim_point(wv)
 

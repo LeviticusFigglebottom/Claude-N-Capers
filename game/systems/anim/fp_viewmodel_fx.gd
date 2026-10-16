@@ -123,6 +123,15 @@ func flash(muzzle: Node3D, suppressed: bool, size_mult: float = 1.0, weapon_clas
 		_smoke.emitting = true
 
 
+## Read only (tests): whether the muzzle flash shape is showing now (C's flash: its burst timer; placeholder: shown).
+func flash_visible() -> bool:
+	if _flash == null or not is_instance_valid(_flash) or not _flash.visible:
+		return false
+	if _custom_flash:
+		return float(_flash.get(&"_left")) > 0.0
+	return true
+
+
 ## ENV C's flash carries a world-space smoke emitter whose particle size ignores the root scale (metres at the
 ## viewmodel's ~0.5 m depth fill the screen); the FP smoke is ours (sized for the viewmodel), so C's stays hidden.
 func _hide_library_smoke() -> void:
