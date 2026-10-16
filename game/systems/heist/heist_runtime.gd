@@ -153,6 +153,12 @@ func start(p_heist_id: StringName, map_scene: PackedScene, p_seed: int, p_diffic
 		return false
 	if map.heist_def != null:
 		heist_mode = map.heist_def.mode
+	# Dev/test: options["variant_table"] replaces the map's HeistVariantTable for this run (the roll and the
+	# mission's rare-event reads); the map scene and its .tres are untouched. Server only (a replica takes the
+	# host's resolved variants).
+	var vt: HeistVariantTable = options.get("variant_table") as HeistVariantTable
+	if vt != null:
+		map.variant_table = vt
 	# heist_map.md §5: resolve and strip inactive variant content BEFORE anything spawns.
 	var slots: Dictionary = VariantResolver.collect_slots(map)
 	preplan.setup(options, map.heist_def, heist_id, difficulty)  # C3 (A3-08): PreplanResult, before the roll
