@@ -45,6 +45,10 @@ class WeaponState:
 	## B4-18: merged WeaponDef/WeaponModDef params (SpecialWeapons) and the resulting kind.
 	var special: Dictionary = {}
 	var kind: StringName = &""
+	## D-118: resolved shotgun ammo profile (ShotgunAmmo.profile), pellets per shot and wall piercing.
+	var ammo: Dictionary = {}
+	var pellets: int = 1
+	var wall_pierce: bool = false
 
 ## Equipped Enums.WeaponSlot (HUD).
 var equipped_slot: int = Enums.WeaponSlot.SECONDARY
@@ -159,6 +163,9 @@ func _add_state(ws: int, id: StringName, st: WeaponStats, mods: Array[StringName
 	s.qualifier = Enums.weapon_class_qualifier(s.def.weapon_class) if s.def != null else &"pistol"
 	s.special = SpecialWeapons.params_of(s.def, mods)
 	s.kind = SpecialWeapons.kind_of(s.special)
+	s.ammo = ShotgunAmmo.profile(s.special)
+	s.pellets = ShotgunAmmo.pellets(st.pellets, s.ammo)
+	s.wall_pierce = ShotgunAmmo.wall_pierce(st.wall_pierce, s.ammo)
 	var slot: int = _crew.slot if _crew != null else -1
 	s.mag_size = maxi(st.mag_size + int(Modifiers.add(slot, &"weapon.mag_extra", s.qualifier)), 1)
 	var total: int = int(round(float(st.total_ammo) * Modifiers.mult(slot, &"weapon.ammo_total_mult", s.qualifier)))
@@ -246,6 +253,30 @@ func weapon_id(ws: int) -> StringName:
 	return s.id if s != null else &""
 
 
+## D-118: pellets per shot (WeaponStats.pellets under the shotgun ammo); client claims and server agree on it.
+func pellet_count(ws: int) -> int:
+	var s: WeaponState = _states.get(ws)
+	return s.pellets if s != null else 1
+
+
+## D-118: resolved shotgun ammo profile of slot `ws` (ShotgunAmmo.profile; {} without a weapon).
+func ammo_profile(ws: int) -> Dictionary:
+	var s: WeaponState = _states.get(ws)
+	return s.ammo if s != null else {}
+
+
+## L3.4 + D-118: rounds of slot `ws` pass thin walls (WeaponStats.wall_pierce, overridden by ammo penetration).
+func wall_pierce(ws: int) -> bool:
+	var s: WeaponState = _states.get(ws)
+	return s.wall_pierce if s != null else false
+
+
+## D-118: ammo box rounds multiplier of slot `ws` (shotgun ammo `ammo_pickup_mult`, 1 otherwise).
+func ammo_pickup_mult(ws: int) -> float:
+	var s: WeaponState = _states.get(ws)
+	return float(s.ammo.get("ammo_pickup_mult", 1.0)) if s != null else 1.0
+
+
 func is_suppressed(ws: int = -1) -> bool:
 	var st: WeaponStats = stats(equipped_slot if ws < 0 else ws)
 	return st != null and st.suppressed
@@ -277,7 +308,8 @@ func damage_at(ws: int, distance: float) -> float:
 		return 0.0
 	var slot: int = _crew.slot if _crew != null else -1
 	var ai: float = Tweak.crew().ai_damage_mult if _crew != null and _crew.is_ai else 1.0  # PO6-15: PD2 bots hit soft
-	return s.stats.damage * CombatSystem.falloff_mult(s.stats, distance) \
+	var rm: float = maxf(float(s.ammo.get("range_mult", 1.0)), 0.01)  # D-118: ammo range scales the falloff
+	return s.stats.damage * CombatSystem.falloff_mult(s.stats, distance / rm) \
 		* Modifiers.mult(slot, &"weapon.damage_mult", s.qualifier) * ai
 
 
@@ -564,9 +596,9 @@ func _build_claim(s: WeaponState, intent: CrewIntent) -> Dictionary:
 	var cls: StringName = ShotFx.weapon_class_id(s.def)
 	var max_range: float = tw.hitscan_max_range_m
 	# B4-18: flame / saw / projectile shots carry no hits (the server derives them).
-	for p: int in range(maxi(s.stats.pellets, 1) if s.kind == SpecialWeapons.KIND_HITSCAN else 0):
+	for p: int in range(s.pellets if s.kind == SpecialWeapons.KIND_HITSCAN else 0):  # D-118: ammo pellets
 		var dir: Vector3 = _spread_dir(fwd, spread, _pellet_rng)
-		var h: Dictionary = _hitscan(origin, dir, tw, s.stats.wall_pierce)
+		var h: Dictionary = _hitscan(origin, dir, tw, s.wall_pierce)
 		if not h.is_empty():
 			hits.append(h)
 		if fx:
@@ -593,7 +625,7 @@ func _fx_flags(s: WeaponState) -> int:
 		f |= ShotFx.FLAG_FIRST_PERSON
 	if s.stats != null and s.stats.damage >= CombatTweak.data().fx_strong_damage:
 		f |= ShotFx.FLAG_STRONG  # D-113 (kept only on flesh hits by ShotFx.flesh_flags)
-	if s.stats != null and s.stats.wall_pierce:
+	if s.stats != null and s.wall_pierce:
 		f |= ShotFx.FLAG_PENETRATED  # AP rounds exit the body (flesh only, as above)
 	return f
 
@@ -612,9 +644,9 @@ func _fx_replay(origin: Vector3, dir: Vector3, spread_deg: float, pellet_seed: i
 	var fx_origin: Vector3 = _fx_origin()
 	var fx_flags: int = _fx_flags(s)
 	var cls: StringName = ShotFx.weapon_class_id(s.def)
-	for p: int in range(maxi(s.stats.pellets, 1)):
+	for p: int in range(s.pellets):
 		var d: Vector3 = _spread_dir(fwd, clampf(spread_deg, 0.0, tw.fx_max_replay_spread_deg), _pellet_rng)
-		_hitscan(origin, d, tw, s.stats.wall_pierce)
+		_hitscan(origin, d, tw, s.wall_pierce)
 		ShotFx.emit_ray(fx_origin, _ray_hit, origin + d * tw.hitscan_max_range_m, cls, _crew.net_id,
 			fx_flags | (ShotFx.FLAG_PENETRATED if _ray_walls > 0 else 0))
 

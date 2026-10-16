@@ -256,6 +256,11 @@ func _on_phase_changed(_old: int, new_phase: int) -> void:
 			_flee()
 
 
+## Server: panic from a threat at `threat` (D-118 dragon's breath; same rules as _panic).
+func panic(threat: Vector3) -> void:
+	_panic(threat)
+
+
 ## Enter PANICKED (no-op when already panicked, down, tied or dead).
 func _panic(threat: Vector3) -> void:
 	if not Net.is_authority() or _npc == null or not _npc.alive:
