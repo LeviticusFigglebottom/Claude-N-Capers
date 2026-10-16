@@ -1,7 +1,7 @@
 ## Windowed close-up of a placed drill device at its DrillPoint, from the side (PO: the lance must touch the door).
 ##   xvfb-run -a -s "-screen 0 1280x720x24" /opt/godot/godot --rendering-driver opengl3 --path game \
 ##     res://world/tools/capture/drill_capture.tscn -- --heist=dockside_burn \
-##     --point=Gameplay/Doors/StrongroomDoor/StrongroomDrill --out=/abs/path.png [--side=1.3] [--frames=3]
+##     --point=Gameplay/Doors/StrongroomDoor/StrongroomDrill --out=/abs/path.png [--side=1.3] [--back=0.35] [--up=0.25]
 ## Owner: ENV C.
 extends Node
 
@@ -9,6 +9,8 @@ var _heist: StringName = &"dockside_burn"
 var _point: String = ""
 var _out: String = "user://drill.png"
 var _side: float = 1.3
+var _back: float = 0.35
+var _up: float = 0.25
 var _frames: int = 3
 
 
@@ -22,6 +24,10 @@ func _ready() -> void:
 			_out = a.trim_prefix("--out=")
 		elif a.begins_with("--side="):
 			_side = float(a.trim_prefix("--side="))
+		elif a.begins_with("--back="):
+			_back = float(a.trim_prefix("--back="))
+		elif a.begins_with("--up="):
+			_up = float(a.trim_prefix("--up="))
 		elif a.begins_with("--frames="):
 			_frames = int(a.trim_prefix("--frames="))
 	var rt: HeistRuntime = await HeistLauncher.launch(_heist, 1002, Enums.Difficulty.ROUTINE, self,
@@ -49,7 +55,7 @@ func _ready() -> void:
 	cam.fov = 50.0
 	rt.map.add_child(cam)
 	# Side view: off the point's local +X, a little above, looking at the contact point.
-	cam.global_position = tip + xf.basis.x.normalized() * _side + Vector3.UP * 0.25 + xf.basis.z.normalized() * 0.35
+	cam.global_position = tip + xf.basis.x.normalized() * _side + Vector3.UP * _up + xf.basis.z.normalized() * _back
 	cam.look_at(tip + xf.basis.z.normalized() * 0.25, Vector3.UP)
 	cam.make_current()
 	for _i: int in maxi(_frames, 12):  # let the sparks fill in
