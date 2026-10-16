@@ -221,6 +221,18 @@ func _update_device_visual(s: int) -> void:
 		_jam_mark = null
 	if device_node != null:
 		_set_jam_mark(s == DeviceRunner.State.JAMMED)
+		set_device_fx(device_node, s == DeviceRunner.State.RUNNING)
+
+
+## ENV C device FX (thermal drill): `Sparks` (particles) emits and `Glow` (light) shows while the device RUNS, off
+## while JAMMED. Both direct children of the device root at the tip; missing nodes are fine.
+static func set_device_fx(device: Node, on: bool) -> void:
+	var sparks: Node = device.get_node_or_null(^"Sparks")
+	if sparks != null and &"emitting" in sparks:
+		sparks.set(&"emitting", on)
+	var glow: Node3D = device.get_node_or_null(^"Glow") as Node3D
+	if glow != null:
+		glow.visible = on
 
 
 func _device_scene() -> PackedScene:
