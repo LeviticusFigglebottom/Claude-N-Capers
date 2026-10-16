@@ -34406,7 +34406,7 @@ script = ExtResource("193_gn")
 kind = &"enter_code"
 
 [node name="ServerDoorDrill" parent="Gameplay/Devices" unique_id=103703 instance=ExtResource("228_gn")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25, 6.4, 6.15)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25, 6.4, 6.035)
 script = ExtResource("229_gn")
 duration_s = 60.0
 target = NodePath("../../Doors/ServerDoor")
@@ -34416,7 +34416,7 @@ objective_tag = &"server_door"
 metadata/kind = "drill_point"
 
 [node name="UsePoint" parent="Gameplay/Devices/ServerDoorDrill" index="1"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0.75)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0.86500025)
 
 [node name="Interactable" parent="Gameplay/Devices/ServerDoorDrill" index="2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.05)
@@ -34459,7 +34459,7 @@ script = ExtResource("193_gn")
 kind = &"keycard"
 
 [node name="VaultDrill" parent="Gameplay/Devices" unique_id=103706 instance=ExtResource("228_gn")]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 21.5, -3.2, 7.75)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 21.5, -3.2, 7.965)
 script = ExtResource("229_gn")
 device = 1
 duration_s = 240.0
@@ -34471,7 +34471,7 @@ objective_tag = &"vault_drill"
 metadata/kind = "drill_point"
 
 [node name="UsePoint" parent="Gameplay/Devices/VaultDrill" index="1"]
-transform = Transform3D(1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, 1, 0, -0.99999976, 0.75)
+transform = Transform3D(1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, 1, 0, -0.99999976, 0.96500015)
 
 [node name="Interactable" parent="Gameplay/Devices/VaultDrill" index="2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.05)

@@ -26,7 +26,8 @@ static func make_def() -> HeistDef:
 	d.map_scene = SCENE_PATH
 	d.base_payout = 12000  # D-120
 	d.stealth_bonus_mult = 1.15
-	d.loot = [&"loot.jewelry", &"loot.cash"] as Array[StringName]
+	# B GH audit: only jewelry comes as bags; the register / manager cash is small loot (briefing lists bags).
+	d.loot = [&"loot.jewelry"] as Array[StringName]
 	d.objectives = [&"casing", &"keycard", &"code", &"workshop_door", &"safe", &"safe_loot", &"secure", &"escape"] \
 		as Array[StringName]
 	# D-117 §4 / D-109: briefing list and optional extras (objective.glasshouse.<id> strings, ENV B).

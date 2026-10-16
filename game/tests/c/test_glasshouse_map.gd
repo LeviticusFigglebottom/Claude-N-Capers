@@ -89,7 +89,7 @@ func test_def() -> void:
 	assert_eq(d.mode, Enums.HeistMode.STEALTH_OR_LOUD)
 	assert_has(d.escape_options, &"van")
 	assert_has(d.loot, &"loot.jewelry")
-	assert_has(d.loot, &"loot.cash")
+	assert_false(d.loot.has(&"loot.cash"), "GH cash is small loot, not a bag (B audit)")
 
 
 func test_variable_table_coverage() -> void:

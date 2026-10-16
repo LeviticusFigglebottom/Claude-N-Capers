@@ -26627,7 +26627,7 @@ metadata/kind = "vault_door"
 metadata/swing_side = "back"
 
 [node name="VaultDrill" parent="Gameplay/Doors/VaultDoor" unique_id=103007 instance=ExtResource("186_nd")]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.6, 1, -0.52)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.6, 1, -0.035)
 script = ExtResource("187_nd")
 device = 1
 target = NodePath("..")
@@ -26637,7 +26637,7 @@ objective_tag = &"vault_drill"
 metadata/kind = "drill_point"
 
 [node name="UsePoint" parent="Gameplay/Doors/VaultDoor/VaultDrill" index="1"]
-transform = Transform3D(1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, 1, 0, -1, 0.47999954)
+transform = Transform3D(1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, 1, 0, -1, 0.96500015)
 
 [node name="Interactable" parent="Gameplay/Doors/VaultDoor/VaultDrill" index="2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.05)

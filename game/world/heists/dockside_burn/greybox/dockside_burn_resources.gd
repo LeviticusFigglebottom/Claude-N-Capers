@@ -35,8 +35,10 @@ static func make_def() -> HeistDef:
 	d.objectives = [&"cartel", &"breach", &"product", &"burn", &"strongroom", &"count_cage", &"containers",
 		&"secure", &"escape_wait", &"escape"] as Array[StringName]
 	# D-109 (ENV B): briefing subset, loud line and optional objectives shown on the briefing screen.
-	d.briefing_objectives = [&"cartel", &"breach", &"product", &"burn", &"strongroom", &"secure", &"escape_wait", &"escape"]
-	d.briefing_optional = [&"count_cage", &"containers"]
+	# B's DB audit: the cash rolls strongroom / count-room cage (60/40), so the briefing names both (B's step key).
+	d.briefing_objectives = [&"cartel", &"breach", &"product", &"burn", &"ui.briefing.step.dockside_burn.cash", &"secure",
+		&"escape_wait", &"escape"]
+	d.briefing_optional = [&"containers"]
 	# Pre-planning (contracts/preplanning.md, D-046 final): {"favors", "disable", "assets": {asset_id:
 	# overrides}}. Doc §Pre-planning (ENV B B5-04 values): favors 5; the library drops are limited to this
 	# map's points; the alternate entries (lane, pontoon) and the escape vote use their points' params.
