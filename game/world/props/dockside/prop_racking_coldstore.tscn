@@ -1,0 +1,13 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/props/prop_racking_coldstore/prop_racking_coldstore.glb" id="1_model"]
+
+[node name="PropRackingColdstore" type="Node3D"]
+metadata/kind = &"rack"
+
+[node name="Model" parent="." instance=ExtResource("1_model")]
+
+[node name="Collision" parent="Model"]
+metadata/surface = &"wood"
+
+[editable path="Model"]

@@ -143,7 +143,7 @@ const SLABS: Array = [
 	["RoofSlabA", [3.15, ROOF_SLAB, 0.2, 17.85, ROOF, 7.85], "roof"],
 	["RoofSlabB", [0.2, ROOF_SLAB, 6.15, 3.15, ROOF, 7.85], "roof"],
 	["LiftShaftCap", [15.1, MEZZ_CEIL, 0.2, 17.85, ROOF_SLAB, 2.9], "ceiling"],
-	["HeadHouseRoof", [-0.2, HH_CEIL, -0.2, 3.15, HH_TOP, 6.15], "roof"],
+	["HeadHouseRoof", [-0.19, HH_CEIL, -0.19, 3.14, HH_TOP - 0.01, 6.14], "roof"],  # G2: 1 cm inside the wall skins (zfight)
 	["HallRoof", [18.15, 6.3, 0.2, 47.8, HALL_ROOF, 9.85], "roof"],
 	["WingRoof", [0.2, 5.5, 8.15, 17.8, WING_ROOF, 31.8], "roof"],
 	["BayRoof", [18.2, 8.7, 10.15, 47.8, BAY_ROOF, 31.8], "roof"],
@@ -162,7 +162,7 @@ const CEILINGS: Array = [
 	["CeilPacking", [0.2, PACK_CEIL, 18.1, 17.8, PACK_CEIL + 0.05, 31.8]],
 	["CeilLockers", [0.2, SMALL_CEIL, 18.1, 5.1, SMALL_CEIL + 0.05, 22.9]],
 	["CeilJanitor", [5.1, SMALL_CEIL, 18.1, 7.9, SMALL_CEIL + 0.05, 20.9]],
-	["CeilHall", [18.15, HALL_CEIL, 0.2, 47.8, HALL_CEIL + 0.05, 9.85]],
+	["CeilHall", [18.15, HALL_CEIL + 0.003, 0.2, 47.8, HALL_CEIL + 0.053, 9.85]],  # G2: 3 mm over the MCPlatform door head (zfight)
 	["CeilBay", [18.2, BAY_CEIL, 10.15, 47.8, BAY_CEIL + 0.05, 23.8]],
 	["CeilAnteroom", [26.2, AN_CEIL, 24.1, 47.8, AN_CEIL + 0.05, 31.8]],
 ]
@@ -208,7 +208,7 @@ const RAILINGS: Array = [
 	# Pier 10 edge on the slip (x 72), open at the gangway; Pier 10 harbour edge.
 	["RailPier10N", [71.95, 0.0, -32.0, 72.0, 1.05, -14.6]],
 	["RailPier10S", [71.95, 0.0, -11.4, 72.0, 1.05, 43.95]],
-	["RailPier10Quay", [72.0, 0.0, 43.95, 84.0, 1.05, 44.0]],
+	["RailPier10Quay", [72.0, 0.0, 43.95, 83.95, 1.05, 44.0]],  # G2: stops at the hoarding face (zfight)
 	# Pontoon (16 x 4 at -1.8): west, east and north (except the ramp); the launch closes the south.
 	["RailPontoonW", [16.0, LAND, 50.0, 16.05, LAND + 1.05, 54.0]],
 	["RailPontoonE", [31.95, LAND, 50.0, 32.0, LAND + 1.05, 54.0]],
@@ -396,12 +396,12 @@ const WATER: Array = [
 ## Neighbour / dressing blocks (solid massing): [name, box, material(, "ridge": ridged collider top)].
 const BLOCKS: Array = [
 	# Bellweather Ice Co. (west): north shed, main building (roof +8.0, parapet 9.0), west block.
-	["BellweatherShed", [-30.0, -0.3, -32.0, -10.0, 6.0, -18.0], "facade_a"],
-	["BellweatherMain", [-30.0, -0.3, -10.0, -10.0, 8.0, 40.0], "facade_b"],
+	["BellweatherShed", [-30.0, -0.29, -32.0, -10.0, 6.0, -18.0], "facade_a"],
+	["BellweatherMain", [-30.0, -0.29, -10.05, -10.0, 8.0, 40.0], "facade_b"],
 	["BellweatherParapetS", [-30.0, 8.0, 39.7, -10.0, 9.0, 40.0], "facade_b"],
 	["BellweatherParapetE", [-10.3, 8.0, -10.0, -10.0, 9.0, 40.0], "facade_b"],
 	["BellweatherRoofPlant", [-26.0, 8.0, 10.0, -16.0, 10.5, 24.0], "trim"],
-	["BellweatherWest", [-60.0, -0.3, -34.0, -30.0, 9.0, 44.0], "brick"],
+	["BellweatherWest", [-60.0, -0.29, -34.1, -30.0, 9.0, 44.1], "brick"],  # G2: faces off the ground slab's (zfight)
 	# Rail viaduct over Ferro Street (deck +7.0, walkway parapet) and its piers on the north kerb.
 	["ViaductDeck", [-70.0, 6.2, -58.0, 150.0, 7.0, -50.0], "concrete"],
 	["ViaductParapet", [-70.0, 7.0, -50.2, 150.0, 8.1, -50.0], "concrete"],
@@ -412,7 +412,7 @@ const BLOCKS: Array = [
 	["SemiTrailerN", [-17.0, 0.0, -51.6, -12.2, 4.0, -48.6], "container"],
 	["SemiTrailerS", [-17.0, 0.0, -39.6, -12.2, 4.0, -36.6], "container"],
 	["ReeferTruck", [66.2, 0.0, -51.0, 71.0, 4.0, -46.5], "vehicle"],
-	["EastBlockFerro", [84.0, -0.3, -34.0, 150.0, 9.0, -33.0], "brick"],
+	["EastBlockFerro", [84.05, -0.29, -34.1, 149.95, 9.0, -33.0], "brick"],  # G2: faces off the slab / stacks (zfight)
 	# Pier 10 container terminal: stacks (4 high, 10.4 m) behind the hoarding, the gantry crane.
 	["StacksNorth", [88.0, 0.0, -34.0, 100.0, 10.4, -18.0], "container"],
 	["StacksSouth", [88.0, 0.0, -10.0, 100.0, 10.4, 44.0], "container"],
@@ -460,9 +460,9 @@ const FENCES: Array = [
 	["NorthFenceE", "x", -34.0, 38.0, 84.0, 0.0, 2.4, [], "fence"],
 	["LaneFence", "z", -8.0, -34.0, 43.95, 0.0, 2.4, [], "fence"],
 	["BellweatherFrontage", "x", -34.0, -40.0, -8.0, 0.0, 2.4, [], "fence"],
-	["FerroWestClosure", "z", -12.0, -58.0, -34.0, 0.0, 2.4, [], "barrier"],
-	["FerroEastClosure", "z", 66.0, -58.0, -34.0, 0.0, 2.4, [], "barrier"],
-	["ViaductPalisade", "x", -52.0, -12.0, 66.0, 0.0, 2.4, [], "fence"],
+	["FerroWestClosure", "z", -12.0, -58.0, -34.05, 0.0, 2.4, [], "barrier"],  # G2: meets the fence face (zfight)
+	["FerroEastClosure", "z", 66.0, -58.0, -34.05, 0.0, 2.4, [], "barrier"],  # G2: meets the fence face (zfight)
+	["ViaductPalisade", "x", -52.0, -11.95, 65.95, 0.0, 2.4, [], "fence"],  # G2: meets the closures (zfight)
 	["Pier10Hoarding", "z", 84.0, -34.0, 44.0, 0.0, 2.4, [], "fence"],
 	["Pier10North", "x", -34.0, 84.0, 88.0, 0.0, 2.4, [], "fence"],
 ]
@@ -470,7 +470,7 @@ const FENCES: Array = [
 ## The yard gate's open slide leaf (parked against the fence east of the opening) and the gatehouse
 ## weighbridge plate (visual, flush).
 const GATE_LEAF: Array = [38.1, 0.0, -34.6, 46.0, 2.2, -34.45]
-const WEIGHBRIDGE: Array = [30.0, 0.0, -32.0, 38.0, 0.02, -18.0]
+const WEIGHBRIDGE: Array = [30.0, 0.003, -32.0, 38.0, 0.02, -18.0]  # G2: off the shed walls' bottoms (zfight)
 
 
 # --- Props (gameplay-relevant blockers; placeholder boxes) ----------------------------------
@@ -493,8 +493,8 @@ const PROPS: Array = [
 	# PO-9: 0.35 m east, clear of the CageCashA UsePoint (10.4, 2.1)
 	["CountingTable", Vector3(11.85, MEZZ, 2.6), Vector3(2.4, 0.9, 1.0), 0.0, "counter_service", true, "counter"],
 	# M3 restroom
-	["Toilet", Vector3(16.5, MEZZ, 3.45), Vector3(0.4, 0.8, 0.6), 0.0, "toilet", false, "prop"],
-	["Sink", Vector3(17.6, MEZZ, 4.6), Vector3(0.5, 0.85, 0.5), 0.0, "sink", false, "prop"],
+	["Toilet", Vector3(16.5, MEZZ, 3.45), Vector3(0.4, 0.8, 0.6), 180.0, "toilet", false, "prop"],
+	["Sink", Vector3(17.6, MEZZ, 4.6), Vector3(0.5, 0.85, 0.5), 90.0, "sink", false, "prop"],
 	# PF platform (foreman's desk)
 	["ForemanDesk", Vector3(19.4, MEZZ, 1.0), Vector3(1.4, 0.75, 0.7), 0.0, "desk", true, "prop"],
 	# PL plant: screw compressors, receiver vessel, control panel
@@ -656,7 +656,7 @@ const WALL_LIGHTS: Array = [
 
 ## Landmark 1: the "ORTEGA COLD STORAGE" leaping-fish mural (12 x 2.2 m) on the high-bay north wall
 ## above the hall roof (outer face z 9.85), x 27-39, y 6.75-8.95.
-const MURAL: Array = [27.0, 6.75, 9.83, 39.0, 8.95, 9.85]
+const MURAL: Array = [27.0, 6.75, 9.82, 39.0, 8.95, 9.845]  # G2: back 5 mm off the wall (the floods' plates)
 
 
 # --- Spawns, patrols, tactical -------------------------------------------------------------
@@ -966,7 +966,7 @@ const ROOMS: Array = [
 	["PL", "plant", "plant_refrigeration", 1, [[0.0, 0.0, 8.0, 10.0, PLANT_CEIL, 18.0]], null],
 	["WS", "workshop", "workshop_forklift", 1, [[10.0, 0.0, 8.0, 18.0, PLANT_CEIL, 18.0]], null],
 	["LK", "locker_room", "locker_room", 1, [[0.0, 0.0, 18.0, 5.0, SMALL_CEIL, 23.0]], null],
-	["J", "janitor", "janitor_closet", 1, [[5.0, 0.0, 18.0, 8.0, SMALL_CEIL, 21.0]], null],
+	["J", "janitor", "janitor_dockside", 1, [[5.0, 0.0, 18.0, 8.0, SMALL_CEIL, 21.0]], null],
 	["PK", "warehouse", "packing_hall", 1, [[8.0, 0.0, 18.0, 18.0, PACK_CEIL, 21.0], [5.0, 0.0, 21.0, 18.0, PACK_CEIL, 23.0],
 		[0.0, 0.0, 23.0, 18.0, PACK_CEIL, 32.0]], null],
 	["H", "warehouse", "marshalling_hall", 1, [[18.0, 0.0, 0.0, 48.0, HALL_CEIL, 10.0]], null],
@@ -975,7 +975,7 @@ const ROOMS: Array = [
 	["C2", "warehouse", "cold_store_racked", 1, [[35.0, 0.0, 10.0, 48.0, BAY_CEIL, 24.0]], BAY_CEIL_RANGE],
 	["SR", "vault", "strongroom_freezer", 1, [[18.0, 0.0, 24.0, 26.0, SR_CEIL, 32.0]], null],
 	["AN", "warehouse", "quay_dock", 1, [[26.0, 0.0, 24.0, 48.0, AN_CEIL, 32.0]], null],
-	["M1", "cash_office", "count_room", 2, [[9.0, MEZZ, 0.0, 15.0, MEZZ_CEIL, 6.0]], null],
+	["M1", "cash_office", "count_room_cash", 2, [[9.0, MEZZ, 0.0, 15.0, MEZZ_CEIL, 6.0]], null],
 	["M2", "break_room", "break_room", 2, [[3.0, MEZZ, 0.0, 9.0, MEZZ_CEIL, 6.0]], null],
 	["M3", "restroom", "restroom_single", 2, [[15.0, MEZZ, 3.0, 18.0, MEZZ_CEIL, 6.0]], null],
 	["MC", "corridor", "corridor_service", 2, [[0.0, MEZZ, 6.0, 18.0, MEZZ_CEIL, 8.0]], null],

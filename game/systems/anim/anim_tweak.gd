@@ -6,6 +6,14 @@ class_name AnimTweak
 extends Resource
 
 const PATH: String = "res://systems/anim/anim_tweak.tres"
+## ENV D's third-person rig SOURCE.txt: clip event frames (`clip.<name>: ... events=a@F,...`) at SOURCE_FPS.
+const CHAR_SOURCE: String = "res://assets/characters/char_anim_humanoid/SOURCE.txt"
+const SOURCE_FPS: float = 30.0
+## reload_done_s key -> third-person reload clip.
+const RELOAD_CLIPS: Dictionary = {
+	&"pistol": &"reload_pistol", &"rifle": &"reload_rifle", &"akimbo": &"reload_akimbo",
+	&"downed_reload": &"downed_reload",
+}
 
 static var _cached: AnimTweak = null
 
@@ -18,7 +26,10 @@ static var _cached: AnimTweak = null
 }
 ## Seconds from clip start to the reload `done` event (SOURCE.txt: pistol done@34, rifle done@58, 30 fps).
 ## The reload clip is sped up/slowed so `done` lands when the gameplay reload finishes.
-@export var reload_done_s: Dictionary = {&"pistol": 1.1333, &"rifle": 1.9333}
+## v1.21: reload_akimbo done@46, downed_reload done@34.
+@export var reload_done_s: Dictionary = {
+	&"pistol": 1.1333, &"rifle": 1.9333, &"akimbo": 1.5333, &"downed_reload": 1.1333,
+}
 ## Turn-in-place clip: the root yaws this many degrees over `turn_time_s`.
 @export var turn_clip_deg: float = 90.0
 @export var turn_time_s: float = 0.8
@@ -53,6 +64,11 @@ static var _cached: AnimTweak = null
 	&"kneel_cuffed": &"death_kneel_cuffed", &"tied": &"death_kneel_cuffed", &"surrender": &"death_kneel",
 	&"cower": &"death_crouch", &"crouch_idle": &"death_crouch", &"crouch_walk": &"death_crouch",
 	&"lie_down": &"death_prone", &"downed": &"death_downed", &"downed_crawl": &"death_downed",
+	# characters.md v1.18 variants: every surrender* / surrender_idle* kneels (death_kneel starts on their chain
+	# frame), kneel_cuffed_b/_c share kneel_cuffed's frame 0 (death_kneel_cuffed).
+	&"surrender_b": &"death_kneel", &"surrender_c": &"death_kneel", &"surrender_idle": &"death_kneel",
+	&"surrender_idle_b": &"death_kneel", &"surrender_idle_c": &"death_kneel",
+	&"kneel_cuffed_b": &"death_kneel_cuffed", &"kneel_cuffed_c": &"death_kneel_cuffed",
 }
 ## v1.10: two hit reacts on one body at least this far apart (s); in between the current one plays on.
 @export var hit_react_min_gap_s: float = 0.35
@@ -82,6 +98,28 @@ static var _cached: AnimTweak = null
 @export var blend_s: float = 0.2
 @export var oneshot_blend_s: float = 0.08
 @export var death_blend_s: float = 0.1
+## characters.md v1.18 hit-zone flinches (SOURCE hit_zones: fade in 0.03 s, out 0.12 s).
+@export var hit_zone_blend_in_s: float = 0.03
+@export var hit_zone_blend_out_s: float = 0.12
+## characters.md v1.19 (SOURCE weapon_holds): the crew upper-body hold layer blends in / out over this (s).
+@export var hold_layer_blend_s: float = 0.2
+## characters.md v1.22 (D c885e144): Back/Socket is the carried bag's pivot, so an identity attach seats a MEDIUM bag;
+## the other sizes shift along the socket's local Y by Enums.LootWeight (VERY_HEAVY rides like HEAVY).
+@export var carried_bag_offset_by_weight: Dictionary = {
+	Enums.LootWeight.LIGHT: Vector3(0.0, 0.05, 0.0), Enums.LootWeight.MEDIUM: Vector3.ZERO,
+	Enums.LootWeight.HEAVY: Vector3(0.0, -0.05, 0.0), Enums.LootWeight.VERY_HEAVY: Vector3(0.0, -0.05, 0.0),
+}
+## characters.md v1.21 crew-state event times (SOURCE, 30 fps): downed_arrested disarm@6 (the weapon goes), crew_cuffed_free
+## free@8 (the weapon comes back); downed_getup crossfades into the current hold over getup_blend_s.
+@export var arrest_disarm_s: float = 0.2
+@export var cuffed_free_s: float = 0.2667
+@export var getup_blend_s: float = 0.2
+## Lead ruling (b): a hit-zone flinch on a moving body is an upper-body layer at this weight (SOURCE hit_zones 0.7,
+## hit_head 0.9).
+@export var hit_zone_layer_weight: float = 0.7
+@export var hit_zone_layer_head_weight: float = 0.9
+## Lead ruling (c): the third-person left-hand IK blends in / out at this rate (1/s).
+@export var left_hand_ik_rate: float = 8.0
 ## Exponential smoothing rate (1/s) of the velocity estimate from position deltas (clients).
 @export var velocity_smoothing: float = 12.0
 
@@ -111,6 +149,28 @@ static var _cached: AnimTweak = null
 @export var hard_hat_near_head_m: float = 0.32
 ## Influence blend rate (1/s) in and out of the lift clips.
 @export var hard_hat_lift_rate: float = 6.0
+
+
+## Seconds from the start of third-person clip `clip_id` to `event`, read from the rig's SOURCE.txt (so a D
+## retime needs no tweak change); `fallback` (the hand-copied tweak value) while the clip or event is missing.
+static func clip_event_s(clip_id: StringName, event: StringName, fallback: float) -> float:
+	var ev: Dictionary = FpViewmodelTweak.source_events(CHAR_SOURCE).get(clip_id, {})
+	return float(ev[event]) / SOURCE_FPS if ev.has(event) else fallback
+
+
+## Reload `done` time for a reload_done_s key (SOURCE.txt first, then the tweak table, then the rifle's).
+func reload_done(key: StringName, fallback_key: StringName = &"rifle") -> float:
+	var fb: float = float(reload_done_s.get(key, reload_done_s.get(fallback_key, 1.0)))
+	return clip_event_s(RELOAD_CLIPS.get(key, &""), &"done", fb)
+
+
+## downed_arrested `disarm` (the weapon goes) and crew_cuffed_free `free` (it comes back), SOURCE.txt first.
+func disarm_s() -> float:
+	return clip_event_s(&"downed_arrested", &"disarm", arrest_disarm_s)
+
+
+func free_s() -> float:
+	return clip_event_s(&"crew_cuffed_free", &"free", cuffed_free_s)
 
 
 static func data() -> AnimTweak:

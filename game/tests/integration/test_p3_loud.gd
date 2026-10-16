@@ -166,7 +166,7 @@ func test_01_scripted_waves_escalation_and_caps() -> void:
 			assert_true(limits.has(d.roster.special_limit_key(s[0])), "special %s has a DifficultyDef limit" % s[0])
 		elif String(s[4]).contains("/frd/") or s[0] == &"enemy.frd_agent":
 			faction_units += 1
-	assert_true(in_assault > 0, "specials spawned during assaults (%d)" % in_assault)
+	assert_true(in_assault >= 2, "specials spawned during assaults (%d, PD2: several ride the assault)" % in_assault)
 	assert_true(between > 0, "specials spawned between waves (CONTROL, wave >= 2: %d)" % between)
 	assert_eq(at_breach, [] as Array[StringName], "L1.4: no unit spawned at a breach_only ENTRY point (QC-42)")
 	assert_eq(stats["over"], [], "alive specials within DifficultyDef.special_limits")

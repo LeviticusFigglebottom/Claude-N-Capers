@@ -577,7 +577,31 @@ func _tick_assault_spawns(delta: float) -> void:
 		interval = minf(interval, tweak.assault_refill_interval_s)  # PO6-16: top the force back up
 	_group_left = interval / rate
 	if under_cap:
-		_enqueue(_pick_group(assault_phase))
+		_enqueue(_pick_assault_group())
+
+
+## A BUILD/SUSTAIN group: with DirectorTweak.assault_special_share[stage] a special-carrying group (PD2: specials
+## ride the assault), else (or when none is spawnable under the caps) the plain weighted pick.
+func _pick_assault_group() -> SpawnGroupDef:
+	var shares: PackedFloat32Array = tweak.assault_special_share
+	var share: float = shares[clampi(stage(), 0, shares.size() - 1)] if not shares.is_empty() else 0.0
+	if share > 0.0 and GameRng.stream(RNG_DIRECTOR).randf() < share:
+		var specials: Array[SpawnGroupDef] = []
+		for g: SpawnGroupDef in tweak.assault_groups:
+			if g != null and _carries_special(g):
+				specials.append(g)
+		var picked: SpawnGroupDef = _pick_group(assault_phase, specials) if not specials.is_empty() else null
+		if picked != null:
+			return picked
+	return _pick_group(assault_phase)
+
+
+func _carries_special(g: SpawnGroupDef) -> bool:
+	for id: StringName in g.unit_ids:
+		var def: EnemyDef = _enemy_def(id)
+		if def != null and def.is_special:
+			return true
+	return false
 
 
 ## L1.2: spawn-rate scale from drama, (1 - drama_spawn_scale * drama).
@@ -888,7 +912,7 @@ func _path_cost(from: Vector3, to: Vector3) -> float:
 	var nav_map: RID = _runtime.map.get_world_3d().navigation_map
 	if not nav_map.is_valid() or NavigationServer3D.map_get_iteration_id(nav_map) == 0:
 		return straight
-	var path: PackedVector3Array = NavigationServer3D.map_get_path(nav_map, from, to, true)
+	var path: PackedVector3Array = NavigationServer3D.map_get_path(nav_map, from, to, true, 1 | Door.NAV_LAYER_BREACH)
 	if path.size() < 2 or path[path.size() - 1].distance_to(to) > 2.0:
 		return straight
 	var total: float = 0.0

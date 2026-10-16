@@ -22,6 +22,8 @@ charge_start's last frame) and ``charge_swing`` (from the held wind-up: ``hit``,
 
 from __future__ import annotations
 
+import dataclasses
+
 import math
 
 import numpy as np
@@ -128,8 +130,10 @@ MELEE_POSES = {
         "sprint": ((0.165, 0.240, -0.255), (-0.15, 0.75, 0.62), (0.05, 0.62, -0.78)),
         "low": ((0.170, 0.120, -0.500), (0.10, 0.95, 0.25), (0.0, 0.25, -0.95)),
         "wind": ((0.250, 0.270, -0.120), (0.55, 0.10, 0.83), (-0.70, 0.55, -0.20)),
-        "hit": ((0.040, 0.370, -0.160), (-0.55, 0.80, 0.25), (-0.65, -0.20, -0.70)),
-        "follow": ((-0.110, 0.320, -0.270), (-0.75, 0.55, -0.35), (-0.45, -0.60, 0.65)),
+        # D-116 FP audit: the hit higher and the blade across the view (it pointed away and hid behind the fist),
+        # the follow-through ends at the lower left edge instead of 40 deg below the eye (out of frame)
+        "hit": ((0.040, 0.350, -0.145), (-0.80, 0.55, 0.20), (-0.55, -0.40, -0.70)),
+        "follow": ((-0.100, 0.330, -0.150), (-0.75, 0.55, -0.35), (-0.45, -0.60, 0.65)),
         "charged": ((0.230, 0.260, -0.090), (0.35, -0.10, 0.93), (-0.30, 0.90, 0.10)),
         "c_hit": ((0.050, 0.380, -0.140), (-0.10, 0.99, 0.05), (0.0, 0.10, -0.99)),
         "c_follow": ((0.020, 0.360, -0.200), (-0.15, 0.95, -0.25), (0.0, 0.25, -0.97)),
@@ -139,11 +143,12 @@ MELEE_POSES = {
         "sprint": ((0.175, 0.230, -0.270), (-0.10, 0.35, 0.93), (0.0, 0.93, -0.35)),
         "low": ((0.170, 0.120, -0.520), (0.10, 0.70, 0.70), (0.0, 0.70, -0.70)),
         "wind": ((0.210, 0.090, 0.010), (0.15, -0.65, 0.75), (0.0, 0.75, 0.65)),
-        "hit": ((0.090, 0.360, -0.230), (-0.10, 0.75, -0.65), (0.0, -0.65, -0.75)),
-        "follow": ((0.050, 0.330, -0.320), (-0.10, 0.25, -0.96), (0.0, -0.96, -0.25)),
+        # D-116 FP audit: hit and follow-through in frame (they were 33 / 44 deg below the eye; the frame edge is 26)
+        "hit": ((0.090, 0.360, -0.150), (-0.10, 0.75, -0.65), (0.0, -0.65, -0.75)),
+        "follow": ((0.050, 0.325, -0.160), (-0.10, 0.25, -0.96), (0.0, -0.96, -0.25)),
         "charged": ((0.215, 0.070, 0.030), (0.18, -0.75, 0.64), (0.0, 0.64, 0.75)),
-        "c_hit": ((0.085, 0.360, -0.225), (-0.08, 0.70, -0.70), (0.0, -0.70, -0.70)),
-        "c_follow": ((0.050, 0.330, -0.320), (-0.08, 0.20, -0.97), (0.0, -0.97, -0.20)),
+        "c_hit": ((0.085, 0.330, -0.150), (-0.08, 0.70, -0.70), (0.0, -0.70, -0.70)),
+        "c_follow": ((0.050, 0.320, -0.160), (-0.08, 0.20, -0.97), (0.0, -0.97, -0.20)),
     },
     "melee_blade": {
         "idle": ((0.150, 0.315, -0.180), (-0.35, 0.55, 0.75), (0.10, 0.82, -0.56)),
@@ -151,12 +156,17 @@ MELEE_POSES = {
         "low": ((0.170, 0.120, -0.510), (0.10, 0.90, 0.40), (0.0, 0.40, -0.90)),
         "wind": ((0.260, 0.160, -0.100), (0.85, -0.20, 0.48), (-0.40, 0.25, 0.88)),
         "hit": ((0.060, 0.330, -0.150), (-0.30, 0.95, -0.05), (-0.95, -0.30, 0.0)),
-        "follow": ((-0.080, 0.250, -0.240), (-0.95, -0.15, -0.25), (0.15, -0.99, 0.0)),
+        # D-116 FP audit: the follow-throughs end at the lower left edge, in frame (they were 44 deg below the eye)
+        "follow": ((-0.060, 0.265, -0.125), (-0.95, -0.15, -0.25), (0.15, -0.99, 0.0)),
         "charged": ((0.265, 0.130, -0.080), (0.80, -0.35, 0.50), (-0.45, 0.20, 0.87)),
         "c_hit": ((0.060, 0.330, -0.150), (-0.25, 0.97, -0.05), (-0.97, -0.25, 0.0)),
-        "c_follow": ((-0.080, 0.250, -0.250), (-0.95, -0.20, -0.25), (0.20, -0.98, 0.0)),
+        "c_follow": ((-0.060, 0.265, -0.125), (-0.95, -0.20, -0.25), (0.20, -0.98, 0.0)),
     },
 }
+
+
+#: the melee fist's thumb (curls, opposition; deg): over the index / middle fingers, tip ~16 mm from them
+MELEE_THUMB, MELEE_THUMB_OPP = (-10.0, -14.0, -12.0), 50.0
 
 
 class MeleeKit:
@@ -164,6 +174,10 @@ class MeleeKit:
         self.sk, self.s = sk, s
         self.P = MELEE_POSES[s.name]
         self.grip = item_hand(sk)
+        # D-116 FP audit: the thumb wraps over the index and middle fingers. With the gun grip's thumb it stuck out
+        # straight, 72 mm off the handle, and read as a pointing finger.
+        self.grip = dataclasses.replace(self.grip, shape=dataclasses.replace(self.grip.shape, thumb=MELEE_THUMB,
+                                                                       thumb_opp=MELEE_THUMB_OPP))
         # the free left hand: low left guard (off screen at rest), raised a little for the strikes
         self.down = hand_at(sk, "L", "c", (-0.20, 0.06, -0.58), (0.15, 0.40, -0.90), (0.95, 0.0, 0.25),
                             (-0.5, -0.6, -0.4), hand_shape("loose_fist", 0.8))

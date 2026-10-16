@@ -351,7 +351,7 @@ def _roller_curtain(k: Kit, leaf, suffix: str, x0: float, x1: float, top: float)
     bar = k.obj("BottomBar" + suffix, parent=leaf)
     bp = bar.part(bevel=0.004)
     bp.bx((x0, -0.025, 0.012), (x1, 0.025, bar_h + 0.004), "metal_dark")
-    bp.bx((x0, -0.026, bar_h - 0.02), (x1, 0.026, bar_h), "safety_orange")
+    bp.bx((x0, -0.026, bar_h - 0.02), (x1, 0.026, bar_h), "paint_hazard_orange")
     bar.part(bevel=0.0).bx((x0, -0.016, 0.004), (x1, 0.016, 0.012), "rubber")
     bar.build()
     fit = k.obj("BarFittings" + suffix, parent=leaf)
@@ -380,7 +380,7 @@ def _roller_twin(k: Kit, p: dict) -> None:
             x0, x1 = sorted((sx * (hw + 0.02), sx * (hw + 0.08)))
             for sy in (-1, 1):
                 y0, y1 = sorted((sy * t / 2, sy * (t / 2 + 0.004)))
-                trim.bx((x0, y0, z), (x1, y1, z + 0.12), "safety_orange")
+                trim.bx((x0, y0, z), (x1, y1, z + 0.12), "paint_hazard_orange")
     for sy in (-1, 1):
         y0, y1 = sorted((sy * t / 2, sy * (t / 2 + 0.004)))
         trim.bx((-hw - jamb + 0.03, y0, h + 0.015), (hw + jamb - 0.03, y1, h + jamb - 0.015), "steel_galv")
@@ -431,7 +431,7 @@ def _slide(k: Kit, p: dict) -> None:
             edge.bx((x0 + 0.04, y0, 0.06), (x1 - 0.04, y1, 0.36), "steel")
             for z in (1.2, 2.4):
                 edge.bx((x0 + 0.04, y0, z), (x1 - 0.04, y1, z + 0.04), "steel")
-            edge.bx((x0 + 0.04, y0, 1.62), (x1 - 0.04, y1, 1.7), "safety_orange")
+            edge.bx((x0 + 0.04, y0, 1.62), (x1 - 0.04, y1, 1.7), "paint_hazard_orange")
             yb = sy * (lt / 2 + 0.06)
             edge.rod((hx, yb, 0.85), (hx, yb, 1.45), 0.016, "steel", segs=10)
             for z in (0.9, 1.4):
@@ -450,7 +450,7 @@ def _vault(k: Kit, p: dict) -> None:
             x0, x1 = sorted((sx * (hw + 0.012), sx * (hw + jamb - 0.012)))
             trim.bx((x0, y0, 0.0), (x1, y1, h + jamb - 0.012), "steel")
             for z in (0.3, 1.0, 1.7):
-                trim.cyl(0.012, 0.008, ((x0 + x1) / 2, sy * (t / 2 + 0.008), z), "steel_bare", axis="Y", segs=8)
+                trim.cyl(0.012, 0.008, ((x0 + x1) / 2, sy * (t / 2 + 0.008), z), "steel", axis="Y", segs=8)
         trim.bx((-hw - jamb + 0.012, y0, h + 0.012), (hw + jamb - 0.012, y1, h + jamb - 0.012), "steel")
     obj = fr.build()
     _box_frame_collision(obj, hw, jamb, h, t)
@@ -466,7 +466,7 @@ def _vault(k: Kit, p: dict) -> None:
     det.bx((x0 + 0.14, yf + 0.01, 0.14), (x1 - 0.14, yf + 0.016, h - 0.14), "metal_dark")
     # locking wheel (hub, rim, 4 spokes), the combination dial and a key escutcheon
     cx, cz = w / 2, 1.15
-    det.cyl(0.07, 0.06, (cx, yf + 0.046, cz), "steel_bare", axis="Y", segs=16)
+    det.cyl(0.07, 0.06, (cx, yf + 0.046, cz), "steel", axis="Y", segs=16)
     rim = lf.part(bevel=0.0)
     n = 16
     r = 0.26
@@ -474,10 +474,10 @@ def _vault(k: Kit, p: dict) -> None:
         a0 = 2 * math.pi * i / n
         a1 = 2 * math.pi * (i + 1) / n
         rim.rod((cx + r * math.cos(a0), yf + 0.07, cz + r * math.sin(a0)),
-                (cx + r * math.cos(a1), yf + 0.07, cz + r * math.sin(a1)), 0.018, "steel_bare", segs=8)
+                (cx + r * math.cos(a1), yf + 0.07, cz + r * math.sin(a1)), 0.018, "steel", segs=8)
     for i in range(4):
         a = math.pi / 4 + math.pi / 2 * i
-        rim.rod((cx, yf + 0.06, cz), (cx + r * math.cos(a), yf + 0.07, cz + r * math.sin(a)), 0.014, "steel_bare",
+        rim.rod((cx, yf + 0.06, cz), (cx + r * math.cos(a), yf + 0.07, cz + r * math.sin(a)), 0.014, "steel",
                 segs=8)
     det.cyl(0.06, 0.03, (cx, yf + 0.031, cz + 0.5), "chrome", axis="Y", segs=20)
     det.cyl(0.035, 0.02, (cx, yf + 0.055, cz + 0.5), "metal_dark", axis="Y", segs=16)
@@ -486,8 +486,8 @@ def _vault(k: Kit, p: dict) -> None:
     for z in (0.35, h / 2, h - 0.35):
         det.cyl(0.045, 0.32, (x0 + 0.05, yf + 0.04, z), "steel", segs=14)
     for z in (0.4, 0.8, 1.2, 1.6, 2.0):
-        det.cyl(0.03, 0.03, (x1 - 0.07, yf + 0.018, z), "steel_bare", axis="Y", segs=12)
-    det.bx((x1 - 0.2, yf, h - 0.32), (x1 - 0.1, yf + 0.004, h - 0.2), "safety_orange")
+        det.cyl(0.03, 0.03, (x1 - 0.07, yf + 0.018, z), "steel", axis="Y", segs=12)
+    det.bx((x1 - 0.2, yf, h - 0.32), (x1 - 0.1, yf + 0.004, h - 0.2), "paint_hazard_orange")
     # back face: the bolt-work cover plate
     det.bx((x0 + 0.12, -lt / 2 - 0.008, 0.3), (x1 - 0.12, -lt / 2, h - 0.3), "metal_grey")
     lf.build()

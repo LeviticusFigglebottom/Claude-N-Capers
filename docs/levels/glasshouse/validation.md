@@ -273,6 +273,6 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## furniture_logic: Furniture arranged plausibly
 
-- classified: counter 2, chair 5, table 3, desk 9, low_table 1, wall_unit 19, lounge_seat 1, stool 1, visitor_chair 2, desk_chair 5, monitor 4
+- classified: counter 2, chair 5, desk 9, table 3, low_table 1, wall_unit 19, lounge_seat 1, stool 1, visitor_chair 2, desk_chair 5, monitor 4
 - 14 seats, 15 tables/desks/counters, 23 doors checked
 

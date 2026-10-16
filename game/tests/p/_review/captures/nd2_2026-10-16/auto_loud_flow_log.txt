@@ -1,0 +1,38 @@
+[PO5 9.8s] shot /tmp/claude-0/-home-user-Claude-N-Capers/c8e3bd0d-2936-5426-b09e-0c307ae6466a/scratchpad/nd_ld/01_main_menu.png
+[PO5 10.6s] click 'SAFEHOUSE' at (162.0, 266.75)
+[PO5 11.2s] click '' at (358.25, 160.75)
+[PO5 12.2s] shot /tmp/claude-0/-home-user-Claude-N-Capers/c8e3bd0d-2936-5426-b09e-0c307ae6466a/scratchpad/nd_ld/02_planning_table.png
+[PO5 12.2s] click 'Nightfall Depository' at (142.0, 259.5)
+[PO5 13.3s] click 'ROUTINE' at (313.5, 250.0)
+[PO5 17.2s] click 'Briefing' at (848.0, 494.5)
+[PO5 17.2s] shot /tmp/claude-0/-home-user-Claude-N-Capers/c8e3bd0d-2936-5426-b09e-0c307ae6466a/scratchpad/nd_ld/03_briefing.png
+[PO5 17.4s] click 'Continue' at (856.0, 502.5)
+[PO5 18.3s] shot /tmp/claude-0/-home-user-Claude-N-Capers/c8e3bd0d-2936-5426-b09e-0c307ae6466a/scratchpad/nd_ld/04_continue.png
+[PO5 18.6s] click 'Confirm plan' at (856.0, 500.25)
+[PO5 19.4s] shot /tmp/claude-0/-home-user-Claude-N-Capers/c8e3bd0d-2936-5426-b09e-0c307ae6466a/scratchpad/nd_ld/05_confirm_plan.png
+[PO5 19.5s] click 'Start Heist' at (848.0, 494.5)
+[PO5 59.7s] in heist night_deposit seed 1002 diff 0 phase 1 crew at (-2.0, -0.2, 24.5)
+[PO5 77.9s] shot /tmp/claude-0/-home-user-Claude-N-Capers/c8e3bd0d-2936-5426-b09e-0c307ae6466a/scratchpad/nd_ld/06_heist_start.png
+[PO5 78.7s] mouse captured by the game (MouseCapture)
+[PO5 78.8s] pilot: calibrated 0.001600 rad/px yaw, 0.001600 rad/px pitch (settings formula said (0.0016, 0.0016))
+[PO5 79.8s] EVENT objective casing -> 2 t=3
+[PO5 122.8s] EVENT objective code -> 1 t=6
+[PO5 122.8s] EVENT objective server -> 1 t=6
+[PO5 122.9s] EVENT objective vault_drill -> 1 t=6
+[PO5 135.6s] loud: phase=3 went_loud=true
+[PO5 152.5s] shot /tmp/claude-0/-home-user-Claude-N-Capers/c8e3bd0d-2936-5426-b09e-0c307ae6466a/scratchpad/nd_ld/07_auto_6.png
+[PO5 648.9s] pilot: use MainEntrance (open_door) -> OK in 0.0 s
+[PO5 664.3s] EVENT objective keycard -> 2 t=37
+[PO5 699.9s] pilot: use StorageDoor (open_door) -> OK in 0.0 s
+[PO5 761.2s] pilot: use BreakRoomDoor (open_door) -> OK in 0.0 s
+[PO5 763.1s] pilot: aimed <none>, wanted /root/HeistRuntime/NightDeposit/Gameplay/Doors/VaultGate/Interactable (dist 4.71, angle 0.0 deg, avail '', LOS ray hit /root/HeistRuntime/NightDeposit/Geometry/Building/Slabs/GroundSlabE at (14.0, -0
+[PO5 1632.2s] pilot: use VaultGate (keycard) -> FAILED in 30.0 s
+[PO5 1653.0s] shot /tmp/claude-0/-home-user-Claude-N-Capers/c8e3bd0d-2936-5426-b09e-0c307ae6466a/scratchpad/nd_ld/08_auto_101.png
+[PO5 1653.0s] pilot: aimed <none>, wanted /root/HeistRuntime/NightDeposit/Gameplay/Doors/VaultGate/Interactable (dist 4.71, angle 0.0 deg, avail '', LOS ray hit /root/HeistRuntime/NightDeposit/Geometry/Building/Slabs/GroundSlabE at (14.0, -
+[PO5 2508.4s] pilot: use VaultGate (keycard) -> FAILED in 30.0 s
+[PO5 2509.4s] pilot: aimed <none>, wanted /root/HeistRuntime/NightDeposit/Gameplay/Doors/VaultGate/Interactable (dist 4.71, angle 0.0 deg, avail '', LOS ray hit /root/HeistRuntime/NightDeposit/Geometry/Building/Slabs/GroundSlabE at (14.0, -
+[PO5 2888.0s] pilot: use VaultGate (keycard) -> FAILED in 30.0 s
+[PO5 2888.4s] pilot: aimed <none>, wanted /root/HeistRuntime/NightDeposit/Gameplay/Doors/VaultGate/Interactable (dist 4.71, angle 0.0 deg, avail '', LOS ray hit /root/HeistRuntime/NightDeposit/Geometry/Building/Slabs/GroundSlabE at (14.0, -
+[PO5 3298.2s] pilot: use VaultGate (keycard) -> FAILED in 30.0 s
+[PO5 3338.4s] shot /tmp/claude-0/-home-user-Claude-N-Capers/c8e3bd0d-2936-5426-b09e-0c307ae6466a/scratchpad/nd_ld/09_auto_223.png
+[PO5 3338.5s] pilot: aimed <none>, wanted /root/HeistRuntime/NightDeposit/Gameplay/Doors/VaultGate/Interactable (dist 4.71, angle 0.0 deg, avail '', LOS ray hit /root/HeistRuntime/NightDeposit/Geometry/Building/Slabs/GroundSlabE at (14.0, -

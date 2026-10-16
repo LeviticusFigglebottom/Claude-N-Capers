@@ -102,6 +102,9 @@ func _impact(hit: Dictionary) -> void:
 		info["headshot_bonus"] = float(params.get("headshot_bonus", 1.0))
 		info["pierced_armor"] = CombatSystem.roll_armor_pierce(float(params.get("armor_pierce", 0.0)))
 		info["shield_pierce"] = bool(params.get("shield_pierce", false))
+		var limb: StringName = Hitbox.limb_of(hit.get("collider") as Object)
+		if limb != &"":
+			info["limb"] = limb  # D-123: flinch sub-zone of a limb box (damage stays BODY)
 		CombatSystem.deliver_hit(t, info, attacker)
 	if bool(params.get("retrievable", false)) and radius <= 0.0:
 		stuck = true

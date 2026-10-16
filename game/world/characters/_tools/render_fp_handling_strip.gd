@@ -4,6 +4,9 @@
 ##   xvfb-run -a -s "-screen 0 640x360x24" /opt/godot/godot --rendering-driver opengl3 --audio-driver Dummy \
 ##     --fixed-fps 60 --resolution 640x360 --path game res://world/characters/_tools/render_fp_handling_strip.tscn \
 ##     -- --out=/abs/dir [--weapons=weapon.kestrel_p9,...] [--heist=glasshouse] [--step=6] [--reload_s=2.6]
+##     [--actions=melee,melee_charge,throw]: instead of reload / draw, rows of a quick melee (tap), a charged melee
+##     (held 1 s, released) and a throw (held 0.4 s, released) with --melee (melee.folding_knife) and --throwable
+##     (throwable.frag) in the loadout
 ## Owner: ENV D.
 extends Node
 
@@ -13,6 +16,10 @@ var _heist: StringName = &"glasshouse"
 var _step: int = 6
 var _reload_s: float = 2.6
 var _draw_s: float = 1.0
+## --actions: the rows to capture instead of reload / draw (empty = reload, draw)
+var _actions: PackedStringArray = []
+var _melee: StringName = &"melee.folding_knife"
+var _throwable: StringName = &"throwable.frag"
 
 
 func _ready() -> void:
@@ -25,6 +32,9 @@ func _ready() -> void:
 			"heist": _heist = StringName(v)
 			"step": _step = int(v)
 			"reload_s": _reload_s = float(v)
+			"actions": _actions = v.split(",")
+			"melee": _melee = StringName(v)
+			"throwable": _throwable = StringName(v)
 	DirAccess.make_dir_recursive_absolute(_out)
 	RenderingServer.render_loop_enabled = false   # llvmpipe: render only the saved frames
 	for wid: String in _weapons:
@@ -50,6 +60,9 @@ func _weapon(wid: StringName) -> void:
 		l.primary = wid
 		l.primary_mods = [] as Array[StringName]
 		l.resolved_primary = LoadoutResolver.resolve_weapon(wid, l.primary_mods)
+	if not _actions.is_empty():
+		l.melee = _melee
+		l.throwable = _throwable
 	var rt: HeistRuntime = await HeistLauncher.launch(_heist, 1002, Enums.Difficulty.ROUTINE, self,
 			{"ai_teammates": 0, "crew_ai": false, "loadouts": {0: l}})
 	rt.isolate_npc(null)
@@ -62,6 +75,13 @@ func _weapon(wid: StringName) -> void:
 	var other: StringName = &"slot_primary" if secondary else &"slot_secondary"
 	await inp.tap(own)
 	await _ticks(90)
+	if not _actions.is_empty():
+		await _action_rows(inp, wname)
+		inp.release_all()
+		rt.teardown()
+		for _i: int in 3:
+			await get_tree().process_frame
+		return
 	for _i: int in 3:   # a partly spent magazine: the tactical reload
 		await inp.tap(&"fire")
 		await _ticks(20)
@@ -79,6 +99,30 @@ func _weapon(wid: StringName) -> void:
 	rt.teardown()
 	for _i: int in 3:
 		await get_tree().process_frame
+
+
+## The --actions rows: real input, frames every --step ticks.
+func _action_rows(inp: PInputDriver, wname: String) -> void:
+	var rows: Array[Array] = []
+	for act: String in _actions:
+		match act:
+			"melee":
+				await inp.tap(&"melee")
+				rows.append(await _frames(wname, act, 1.0))
+			"melee_charge":
+				inp.press(&"melee")
+				var held: Array[Image] = await _frames(wname, act + "_hold", 1.0)
+				inp.release(&"melee")
+				held.append_array(await _frames(wname, act + "_swing", 0.8))
+				rows.append(held)
+			"throw":
+				inp.press(&"throw_item")
+				var aim: Array[Image] = await _frames(wname, act + "_hold", 0.4)
+				inp.release(&"throw_item")
+				aim.append_array(await _frames(wname, act + "_release", 1.2))
+				rows.append(aim)
+		await _ticks(120)
+	_sheet(rows, "%s/%s_actions.png" % [_out, wname])
 
 
 func _frames(wname: String, phase: String, seconds: float) -> Array[Image]:

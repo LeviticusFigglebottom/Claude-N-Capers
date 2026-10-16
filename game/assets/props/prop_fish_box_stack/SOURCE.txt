@@ -1,0 +1,8 @@
+asset: prop_fish_box_stack
+script: tools/blender/props/dockside.py
+params: {"cat": {"group": "dockside", "kind": "fish_boxes", "pin_only": true, "place": "wall"}, "fn": "fish_box_stack"}
+seed: 205797702  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_fish_box_stack
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 16000

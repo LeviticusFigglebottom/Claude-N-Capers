@@ -254,8 +254,8 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 ## variety: Layout variety
 
 - kit `banking_hall`: 1 room(s), 1 distinct layout(s)
-- kit `server_room`: 1 room(s), 1 distinct layout(s)
 - kit `locker_room`: 1 room(s), 1 distinct layout(s)
+- kit `server_room`: 1 room(s), 1 distinct layout(s)
 - kit `break_room`: 1 room(s), 1 distinct layout(s)
 - kit `depository`: 1 room(s), 1 distinct layout(s)
 - kit `exterior_harbor`: 1 room(s), 1 distinct layout(s)
@@ -340,6 +340,6 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## furniture_logic: Furniture arranged plausibly
 
-- classified: counter 7, chair 4, table 6, desk 7, wall_unit 25, stool 4, visitor_chair 4, desk_chair 7, monitor 3
+- classified: counter 7, chair 4, desk 7, table 6, wall_unit 25, stool 4, visitor_chair 4, desk_chair 7, monitor 3
 - 19 seats, 20 tables/desks/counters, 36 doors checked
 

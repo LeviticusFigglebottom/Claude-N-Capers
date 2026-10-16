@@ -256,3 +256,47 @@ func test_d113_npc_killed_position_and_hit_dir() -> void:
 	if got.size() == 1:
 		assert_true((got[0]["position"] as Vector3).distance_to(g.global_position) < 0.01, "position = the body")
 		assert_true((got[0]["hit_dir"] as Vector3).distance_to(Vector3(0, 0, -1)) < 0.01, "normalised killing direction")
+
+
+## ENV P's FpViewmodel.fx_muzzle() stand-in: the gun that fires the next shot, alternating right / left.
+class FxMuzzleStub:
+	extends Node3D
+	var guns: Array[Node3D] = []
+	var reads: int = 0
+
+	func fx_muzzle() -> Node3D:
+		reads += 1
+		return guns[(reads - 1) % guns.size()]
+
+
+func test_local_tracer_starts_at_the_viewmodel_fx_muzzle() -> void:
+	var c: CrewController = await _launch(0)
+	if not c.is_local():
+		skip("crew 0 is not the local human here")
+		return
+	var cam: Camera3D = CrewView.of(c).camera()
+	var real: Node = cam.get_node_or_null(^"FpViewmodel")
+	if real != null:
+		real.name = "FpViewmodelReal"
+	var stub: FxMuzzleStub = FxMuzzleStub.new()
+	stub.name = "FpViewmodel"
+	cam.add_child(stub)
+	for x: float in [0.2, -0.2]:
+		var g: Node3D = Node3D.new()
+		_rt.add_child(g)  # world-fixed, so turning the head between the shot and the check moves nothing
+		g.global_position = c.eye_position() + Vector3(x, -0.15, -0.5)
+		stub.guns.append(g)
+	var fwd: Vector3 = c.eye_position() + Vector3(0, 0, -10)
+	for k: int in range(2):
+		_shots.clear()
+		await _pull(BotUtil.look_at_intent(c.eye_position(), fwd))
+		await wait_physics_frames(int(ceilf(Engine.physics_ticks_per_second * 0.5)))
+		var mine: Array[Dictionary] = _of(c.net_id)
+		assert_eq(mine.size(), 1, "shot %d emitted" % k)
+		if mine.size() == 1:
+			var want: Vector3 = stub.guns[k % 2].global_position
+			assert_true((mine[0]["origin"] as Vector3).distance_to(want) < 0.001, "shot %d starts at the %s gun"
+				% [k, "right" if k % 2 == 0 else "left"])
+	stub.queue_free()
+	if real != null:
+		real.name = "FpViewmodel"
