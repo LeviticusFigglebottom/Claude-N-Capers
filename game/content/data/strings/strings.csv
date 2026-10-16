@@ -2038,7 +2038,9 @@ ui.achievements.unlocked,Unlocked
 ui.achievements.locked,In progress
 ui.achievements.reward,{name}
 ui.achievements.reward_caption,Reward
-ui.results.achievement_unlocked,Achievement unlocked: {name}
+ui.results.achievements_header,Achievements unlocked
+ui.results.achievement_toast,Achievement unlocked
+ui.results.achievement_toast_reward,Reward: {name}
 achievement.first_score.name,First Score
 achievement.first_score.desc,Complete any heist.
 achievement.glasshouse_regular.name,Regular at Vossberg's
