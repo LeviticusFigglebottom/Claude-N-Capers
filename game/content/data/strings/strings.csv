@@ -1697,6 +1697,9 @@ ui.briefing.sec.event.dockside_burn.harbor_unit,harbour police boat (trawler sni
 ui.briefing.sec.event.gallery_night.insurance_inspection,insurance inspectors with escorts (2 guards)
 ui.briefing.sec.event.gallery_night.vaultline_early,Vaultline crew arrives early for The Lantern Bearer (2 guards)
 ui.briefing.sec.event.gallery_night.argus_upgrade,Argus upgrade (every frame sensor live)
+ui.briefing.sec.event.gallery_night.late_paperwork,the admin PA working late (1 civilian by the office)
+ui.briefing.sec.event.glasshouse.nervous_manager,the manager staying late (1 civilian who runs for the alarm)
+ui.briefing.sec.event.shadow_ledger.kessler_sleepover,Victor Kessler sleeping over (1 civilian in the guest suite)
 ui.preplan.bp.gallery_night.ss,Service stair
 ui.preplan.bp.gallery_night.lk,Locker room
 ui.preplan.bp.gallery_night.fr,Frame store

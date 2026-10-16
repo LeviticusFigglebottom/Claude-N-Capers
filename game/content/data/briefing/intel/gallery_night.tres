@@ -313,4 +313,4 @@ sensor_gate = {
 }
 }
 }
-surprises = Array[StringName]([&"insurance_inspection", &"vaultline_early", &"argus_upgrade"])
+surprises = Array[StringName]([&"insurance_inspection", &"vaultline_early", &"argus_upgrade", &"late_paperwork"])
