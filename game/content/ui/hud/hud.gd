@@ -493,7 +493,7 @@ func _other_humans() -> Dictionary:
 ## Toast a strings key for `seconds` (default TOAST_S).
 func toast(key: StringName, args: Dictionary = {}, seconds: float = TOAST_S) -> void:
 	# LEAD r229: an assault event the banner already lists is not toasted as well (its world marker stays).
-	if String(key).begins_with("ui.hud.assault_event.") and assault != null and assault.events_label != null \
+	if AssaultEventMarkers.KIND_KEYS.values().has(key) and assault != null and assault.events_label != null \
 			and assault.events_label.visible and assault.events_label.text.split(" · ").has(UiText.t(key, args)):
 		return
 	toast_label.text = UiText.t(key, args)
