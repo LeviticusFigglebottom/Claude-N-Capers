@@ -37,6 +37,8 @@ const PANEL_W: float = 168.0
 const PANEL_H: float = 62.0
 
 ## Last drawn panels: [{net_id, kind, pos: Vector2 (local, panel centre), scale, jammed, time_text, label}] (tests).
+## ui_hud v1.16 scoped ADS: the scope ring in this widget's local space (Hud sets it); panels inside it are not drawn.
+var avoid: Rect2 = Rect2()
 var drawn: Array[Dictionary] = []
 ## Rows built from EventBus while the model has no `devices`: net_id -> {kind, duration, progress, state}.
 var tracked: Dictionary = {}
@@ -265,6 +267,7 @@ func _check_occlusion(all: Array[Dictionary]) -> void:
 
 func _draw() -> void:
 	for d: Dictionary in drawn:
+		d["hidden_by_scope"] = false
 		var s: float = float(d["scale"])
 		var c: Vector2 = d["pos"] as Vector2
 		var jammed: bool = bool(d["jammed"])
@@ -283,6 +286,9 @@ func _draw() -> void:
 		d["width"] = w
 		var h: float = PANEL_H * s
 		var r: Rect2 = Rect2(c - Vector2(w * 0.5, h), Vector2(w, h))
+		if avoid.has_area() and avoid.intersects(r):
+			d["hidden_by_scope"] = true  # ui_hud v1.16: no text panel inside the scope ring (PD2)
+			continue
 		draw_rect(r, Color(UiTokens.INK_0, UiTokens.HUD_PANEL_ALPHA + 0.15))
 		draw_rect(r, accent, false, maxf(2.0 * s, 1.0))
 		_text(Vector2(r.position.x + pad, r.position.y + pad + fs), String(d["label"]), fs, UiTokens.PAPER_DIM, false)

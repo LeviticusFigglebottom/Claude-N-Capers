@@ -32,6 +32,8 @@ const CASING_HINT_KEYS: Dictionary = {
 ## Captain panel top (HUD units) under a one-line assault banner, and its gap below a taller one (_stack_captain).
 const CAPTAIN_TOP: float = 104.0
 const CAPTAIN_GAP: float = 8.0
+## Gap (HUD units) between the scope ring and a text panel moved below it (_avoid_scope).
+const SCOPE_GAP: float = 12.0
 
 @export var model_path: NodePath
 ## Discover the model through group G.LOCAL_HUD_MODEL when nothing is bound.
@@ -97,6 +99,8 @@ var _toast_t: float = 0.0
 var _watched_crew: Node = null
 ## Other humans in the crew (slot -> display name), to tell the crew when one leaves or joins (PD2).
 var _human_names: Dictionary = {}
+## Control -> its offset_top as placed (_avoid_scope moves it back there when the scope is lowered).
+var _base_top: Dictionary = {}
 
 
 func _ready() -> void:
@@ -193,6 +197,34 @@ func _build() -> void:
 	toast_label.visible = false
 	assault_events.events_changed.connect(assault.set_events)
 	breach_flash = _place(BreachFlash.new(), Control.PRESET_FULL_RECT, Vector2.ZERO, Vector2.ZERO) as BreachFlash  # on top
+
+
+## ui_hud v1.16 (LEAD r227): while the model says `scoped_ads`, the TEXT panels keep out of `scope_ring` (screen
+## space, written by P's scope overlay): device timer panels inside it are not drawn, and the interaction prompt and the
+## hint strip move down to just below it. Markers, chevrons, hit markers and subtitles stay where they are (PD2).
+func _avoid_scope() -> void:
+	var ring: Rect2 = Rect2()
+	if model != null and bool(model.get(&"scoped_ads")) and model.get(&"scope_ring") is Rect2:
+		ring = model.get(&"scope_ring") as Rect2
+	if device_timers != null:
+		device_timers.avoid = device_timers.get_global_transform_with_canvas().affine_inverse() * ring if ring.has_area() \
+				else Rect2()
+	for c: Control in [interaction, hint]:
+		if c == null:
+			continue
+		if not _base_top.has(c):
+			_base_top[c] = c.offset_top
+		var base: float = float(_base_top[c])
+		var top: float = base
+		if ring.has_area():
+			var local: Rect2 = get_global_transform_with_canvas().affine_inverse() * ring
+			var anchor_y: float = size.y * c.anchor_top
+			if Rect2(Vector2(local.position.x, anchor_y + base), Vector2(local.size.x, c.size.y)).intersects(local):
+				top = maxf(base, local.end.y - anchor_y + SCOPE_GAP)
+		if not is_equal_approx(c.offset_top, top):
+			var h: float = c.offset_bottom - c.offset_top
+			c.offset_top = top
+			c.offset_bottom = top + h
 
 
 ## r227 crowding audit: the captain panel sits under the assault banner's real bottom; the banner grows when it lists
@@ -377,6 +409,7 @@ func _input(event: InputEvent) -> void:
 func _process(delta: float) -> void:
 	_update_crosshair(delta)
 	_stack_captain()
+	_avoid_scope()
 	if objective_markers != null and scoreboard != null:
 		objective_markers.show_all = scoreboard.visible  # Tab shows every objective's marker
 		objective_markers.z_index = 1 if scoreboard.visible else 0  # drawn over the sheet, not under it
