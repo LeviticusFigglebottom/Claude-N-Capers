@@ -719,12 +719,18 @@ def _flee_upper(sk: Skeleton, pose: Pose, ph: float, f: int) -> None:
 LOW_CARRY = {"grip": (0.215, 0.085, 0.86), "yaw": 6.0, "pitch": -62.0, "roll": -8.0}
 
 
-def low_carry(sk: Skeleton, pose: Pose, sway: float = 0.0) -> None:
-    """The right hand holds its weapon low by the thigh (``LOW_CARRY``); ``sway`` (-1..1) swings it a little."""
+def low_carry(sk: Skeleton, pose: Pose, sway: float = 0.0, crouch: bool = False) -> None:
+    """The right hand holds its weapon low by the thigh (``LOW_CARRY``); ``sway`` (-1..1) swings it a little.
+    ``crouch``: the grip follows the pose's hip drop and the muzzle points forward and down, past the knee, instead
+    of into the floor."""
     k = sk.scale
     gx, gy, gz = LOW_CARRY["grip"]
+    pitch = LOW_CARRY["pitch"]
+    if crouch:
+        gz = gz + float(pose.hip[2]) / k + 0.10
+        gy, pitch = gy + 0.10, -18.0
     wf = weapon_frame(v3(gx * k, (gy + 0.03 * sway) * k, gz * k), yaw=LOW_CARRY["yaw"],
-                      pitch=LOW_CARRY["pitch"] + 6.0 * sway, roll=LOW_CARRY["roll"])
+                      pitch=pitch + 6.0 * sway, roll=LOW_CARRY["roll"])
     hold_weapon(sk, pose, wf, pole=v3(0.6, -0.2, -0.7), twist=0.6)
     pose.hands["R"] = hand_shape("grip", 0.9)
 

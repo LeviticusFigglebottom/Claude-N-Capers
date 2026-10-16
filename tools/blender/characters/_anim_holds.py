@@ -138,7 +138,7 @@ def interact_armed(sk: Skeleton, level: str, f: int, N: int) -> Pose:
     H.hand_on(sk, pose, "L", p, H.unit(v3(*along) + v3(0.35, 0.0, 0.0)), H.unit(v3(*palm) + v3(0.25, 0.0, 0.0)),
               pole=v3(-0.9, -0.3, -0.5), along_share=0.6)
     pose.hands["L"] = hand_shape("grip", 0.8 + 0.2 * w)
-    H.low_carry(sk, pose, 0.2 * w)
+    H.low_carry(sk, pose, 0.2 * w, crouch=level == "low")
     return pose
 
 
