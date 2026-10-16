@@ -8,6 +8,7 @@
 ##   detection_entries(slot) -> Array[Dictionary] -> {observer_net_id, world_pos, value, kind} (HUD, server)
 ##   fill_rate(observer, crew) -> float        -> instantaneous S2.2 fill rate per second (0 = no fill);
 ##                                                max of the body rate and the D-118 laser/flashlight rate
+##   fill_time(preset, dr, d, angle_deg, crouched) -> float -> D-128 PD2 formula alone: s to fill (0 instant, INF never)
 ##   detection_risk_mult(dr) -> float          -> S2.3 DR time multiplier (interpolated table)
 ##   camera_countdown() -> float               -> S3.5 seconds until the camera alarm, -1 if none
 ##   start_camera_alarm(camera_net_id)         -> S3.5/S4.4 camera alerted by a stimulus (A2-02)
@@ -35,6 +36,8 @@ signal camera_countdown_started(camera_net_id: int, seconds: float)
 const VISION_MASK: int = (1 << 0) | (1 << 1) | (1 << 7)
 ## MapZone layer "triggers" (10).
 const TRIGGER_MASK: int = 1 << 9
+## D-128 fill rate (progress per second) reported for PD2's instant uncover.
+const INSTANT_RATE: float = 1000.0
 const _PRESET_BY_KIND: Dictionary = {
 	Enums.ObserverKind.GUARD: &"guard", Enums.ObserverKind.CIVILIAN: &"civilian",
 	Enums.ObserverKind.CAMERA: &"camera", Enums.ObserverKind.POLICE: &"police",
@@ -119,21 +122,67 @@ func detection_value(observer: Node, slot: int) -> float:
 	return st.meters.get(slot, 0.0)
 
 
-## HUD model rows for crew `slot` (server; clients get detection_progress instead).
+## HUD model rows for crew `slot` (server; clients get detection_progress instead). ui_hud v1.17 (D-128):
+## each row carries `state` (&"" / &"curious" / &"investigating", the observer's S3.4 AlertState), and an
+## observer that is CURIOUS or INVESTIGATING with no meter on `slot` still gets a row at value 0 while the
+## crew member is in its view or within its stealth detection range, so the HUD can show its "?".
 func detection_entries(slot: int) -> Array[Dictionary]:
 	var out: Array[Dictionary] = []
+	var crew: CrewController = _runtime.crew_controller(slot) as CrewController if _runtime != null else null
 	for iid: int in _states:
 		var st: StealthObserverState = _states[iid]
-		if not st.meters.has(slot) or not is_instance_valid(st.node):
+		if not is_instance_valid(st.node):
 			continue
+		var state: StringName = _hud_state(st.node)
+		var value: float = st.meters.get(slot, -1.0)
+		if value < 0.0:
+			if state == &"" or crew == null or not is_instance_valid(crew) or not _hud_in_range(st, crew):
+				continue
+			value = 0.0
 		out.append({
 			"observer_net_id": NetIds.of(st.node), "world_pos": st.node.global_position,
-			"value": st.meters[slot], "kind": st.kind,
+			"value": value, "kind": st.kind, "state": state,
 		})
 	return out
 
 
-## Instantaneous S2.2 fill rate (per second) of `observer` on `crew`; 0 when it cannot fill.
+## ui_hud v1.17: &"curious" / &"investigating" for an observer in that AlertState, else &"".
+static func _hud_state(n: Node) -> StringName:
+	var s: Variant = n.get(&"alert_state")
+	if s == null:
+		return &""
+	match int(s):
+		Enums.AlertState.CURIOUS:
+			return &"curious"
+		Enums.AlertState.INVESTIGATING:
+			return &"investigating"
+	return &""
+
+
+## ui_hud v1.17: `crew` is within `st`'s PD2 stealth range (S2.2, its stance and DR) or in its view with sight.
+func _hud_in_range(st: StealthObserverState, crew: CrewController) -> bool:
+	var eye: Vector3 = _eye(st.node)
+	var target: Vector3 = crew.global_position + Vector3.UP * minf(1.0, crew.eye_height())
+	var c: float = maxf(detection_risk_mult(float(_detection_risk(crew))), 0.001)
+	if eye.distance_to(target) <= _pd2_range(st, _attention(st, crew.crouched), c):
+		return true
+	return _view_angle(st, eye, _forward(st.node), target) < st.half_fov_rad and _crew_visible(st, crew, eye)
+
+
+## D-128 PD2 formula alone (no sight ray, no S1.1 rules, no modifiers): seconds for an observer with preset
+## `preset_key` to take its meter from empty to full on a masked crew member at DR `dr`, `d` m from its eye and
+## `angle_deg` off its view axis. 0 = instant (PD2 uncover), INF = it cannot notice from there.
+func fill_time(preset_key: StringName, dr: float, d: float, angle_deg: float, crouched: bool = false) -> float:
+	var st: StealthObserverState = StealthObserverState.new()
+	var kind: int = Enums.ObserverKind.CAMERA if preset_key == &"camera" else Enums.ObserverKind.GUARD
+	st.setup(null, kind, _tw.observer_presets.get(preset_key, {}))
+	var c: float = maxf(detection_risk_mult(dr), 0.001)
+	var delay: float = _pd2_delay(st, c, d, deg_to_rad(angle_deg), crouched, true)
+	return INF if delay < 0.0 else delay
+
+
+## Instantaneous S2.2 fill rate of `observer` on `crew`: meter progress per second (D-128: 1 / PD2 delay,
+## so the fill time is 1 / rate; INSTANT_RATE for PD2's uncover); 0 when it cannot fill.
 func fill_rate(observer: Node, crew: CrewController) -> float:
 	var n3: Node3D = observer as Node3D
 	if n3 == null or crew == null or not _observer_active(n3):
@@ -320,12 +369,18 @@ func _tick_meter(st: StealthObserverState, crew: CrewController, eye: Vector3, f
 		return  # S2.1: stays at 1.0
 	var cur: float = st.meters.get(slot, 0.0)
 	var rate: float = _fill_rate(st, crew, eye, fwd)
+	# S2.1 / D-128: the meter shows PD2's notice progress p (0..1) through the suspicion HUD offset
+	# (playermovement _feed_suspicion_to_hud: shown = p x (1 - offset) + offset, offset = DR / 100), so it
+	# appears at DR/100 and p, not the shown value, sets the fill time (1 / rate) and the drain.
+	var offset: float = clampf(float(_detection_risk(crew)) / 100.0, 0.0, 0.99)
 	var v: float = 0.0
 	if rate > 0.0:
-		# S2.1: the meter starts at DR/100 when LOS begins.
-		v = minf(1.0, maxf(cur, float(_detection_risk(crew)) / 100.0) + rate * dt)
-	else:
-		v = maxf(0.0, cur - _tw.decay_per_s * dt)
+		v = minf(1.0, maxf(cur, offset) + rate * (1.0 - offset) * dt)
+	elif cur > 0.0:
+		var drain: float = 1.0 / maxf(st.delay_max, 0.001) if st.is_camera() else _tw.npc_decay_per_s
+		v = cur - drain * (1.0 - offset) * dt
+		if v <= offset:
+			v = 0.0  # PD2: progress below 0 drops the attention object
 	if v <= 0.0:
 		st.meters.erase(slot)
 	else:
@@ -355,19 +410,53 @@ func _fill_rate(st: StealthObserverState, crew: CrewController, eye: Vector3, fw
 	return maxf(_body_rate(st, crew, eye, fwd, rule_mult), _gadget_rate(st, crew, eye, fwd, rule_mult))
 
 
-## S2.2 body rate: the crew member's body in view (rule_mult from _rule_mult, > 0).
+## S2.2 body rate: the crew member's body in view (rule_mult from _rule_mult, > 0). D-128: 1 / PD2 delay.
 func _body_rate(st: StealthObserverState, crew: CrewController, eye: Vector3, fwd: Vector3, rule_mult: float) -> float:
-	var dr_m: float = maxf(detection_risk_mult(float(_detection_risk(crew))), 0.001)
-	var far_eff: float = st.far / sqrt(dr_m)  # S2.3: distance divided by sqrt(mult)
+	var c: float = maxf(detection_risk_mult(float(_detection_risk(crew))), 0.001)
 	var target: Vector3 = crew.global_position + Vector3.UP * minf(1.0, crew.eye_height())
 	var d: float = eye.distance_to(target)
 	var ang: float = _view_angle(st, eye, fwd, target)
-	if d > far_eff or ang > st.half_fov_rad or not _crew_visible(st, crew, eye):
+	# S1.1 casing keeps its own rule: PD2's instant uncover applies to masked crew only.
+	var delay: float = _pd2_delay(st, c, d, ang, crew.crouched, crew.masked)
+	if delay < 0.0 or not _crew_visible(st, crew, eye):
 		return 0.0
-	var dist_f: float = clampf(1.0 - (d - st.near) / maxf(far_eff - st.near, 0.001), _tw.dist_factor_min, 1.0)
-	var ang_f: float = lerpf(1.0, _tw.angle_factor_edge, ang / maxf(st.half_fov_rad, 0.001))
-	var stance: float = _tw.crouch_rate_mult if crew.crouched and not st.is_camera() else 1.0  # S2.5
-	return st.base_rate * dist_f * ang_f * stance / dr_m * _difficulty_mult() * rule_mult
+	var rate: float = INSTANT_RATE if delay <= 0.0 else 1.0 / delay
+	return rate * _difficulty_mult() * rule_mult
+
+
+## D-128 PD2 player attention settings `st` reads for this stance (StealthTweak.attention_settings).
+func _attention(st: StealthObserverState, crouched: bool) -> Dictionary:
+	return _tw.attention_settings.get(StringName("%s_%s" % [st.attention, "crouch" if crouched else "stand"]), {})
+
+
+## D-128 PD2 detection range (m): min(far, attention max_range) x sqrt(1 / concealment mult).
+func _pd2_range(st: StealthObserverState, att: Dictionary, c: float) -> float:
+	var max_range: float = float(att.get("max_range", -1.0))
+	return (st.far if max_range < 0.0 else minf(st.far, max_range)) * sqrt(1.0 / c)
+
+
+## D-128 PD2 notice delay (s) of `st` on a crew member `d` m away, `ang` rad off its view axis, concealment
+## multiplier `c` (S2.3); 0 = instant (uncover), -1 = cannot notice (out of range or view). NPCs:
+## coplogicbase _angle_and_dis_chk + _upd_attention_obj_detection; cameras: securitycamera.lua.
+func _pd2_delay(st: StealthObserverState, c: float, d: float, ang: float, crouched: bool, allow_uncover: bool) -> float:
+	var att: Dictionary = _attention(st, crouched)
+	var dm: float = d / maxf(_pd2_range(st, att, c), 0.001)
+	if dm >= 1.0:
+		return -1.0
+	var cam: bool = st.is_camera()
+	if not cam and allow_uncover and d < float(att.get("uncover_range", 0.0)) \
+			and ang < deg_to_rad(_tw.uncover_angle_deg):
+		return 0.0
+	var half: float = st.half_fov_rad
+	if not cam:
+		half = lerpf(PI, st.half_fov_rad, clampf((d - _tw.npc_all_round_m) / maxf(_tw.npc_angle_narrow_m, 0.001), 0.0, 1.0))
+	if ang >= half:
+		return -1.0
+	var ang_ref: float = st.half_fov_rad * 2.0 if cam else st.half_fov_rad
+	var t: float = (_tw.camera_dis_weight if cam else _tw.npc_dis_weight) * dm \
+			+ (_tw.camera_angle_weight if cam else _tw.npc_angle_weight) * minf(ang / maxf(ang_ref, 0.001), 1.0)
+	var ndm: float = float(att.get("notice_delay_mul", 1.0))
+	return maxf(lerpf(st.delay_min * ndm * c, st.delay_max, t), 0.0)
 
 
 func _difficulty_mult() -> float:
@@ -548,7 +637,8 @@ func _laser_rate(st: StealthObserverState, crew: CrewController, e: Dictionary, 
 	if bool(e["laser_dot"]):
 		var d: float = eye.distance_to(end)
 		if d <= st.far and _gadget_point_seen(st, crew, eye, fwd, end, 0.0):
-			var dist_f: float = clampf(1.0 - (d - st.near) / maxf(st.far - st.near, 0.001), _tw.dist_factor_min, 1.0)
+			var near: float = _tw.gadget_near_m
+			var dist_f: float = clampf(1.0 - (d - near) / maxf(st.far - near, 0.001), _tw.dist_factor_min, 1.0)
 			return st.base_rate * _tw.gadget_laser_detect_mult * dist_f
 	return 0.0
 

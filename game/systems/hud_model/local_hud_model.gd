@@ -32,7 +32,7 @@
 ##       in_custody(slot) -> bool, negotiation_left(slot) -> float, auto_release_left(slot) -> float,
 ##       highlighted_hostage() -> Node with net_id
 ##   HeistRuntime.get_service(G.SVC_STEALTH):
-##       detection_entries(crew_slot) -> Array of {observer_net_id, world_pos, value, kind} (server)
+##       detection_entries(crew_slot) -> Array of {observer_net_id, world_pos, value, kind, state} (server)
 ##       marked_targets(crew_slot) -> Array of net ids or {net_id, world_pos, kind}
 ##       camera_countdown() -> float (seconds left, < 0 = none)
 ## Any member may be a property or a method. Missing members fall back to defaults from
@@ -541,7 +541,9 @@ func _poll_detection(slot: int) -> void:
 	if st != null and st.has_method(&"detection_entries") and Net.is_authority():
 		var rows: Array[Dictionary] = []
 		for v: Variant in st.call(&"detection_entries", slot):
-			if v is Dictionary and float((v as Dictionary).get("value", 0.0)) > 0.0:
+			# ui_hud v1.17: value-0 rows of CURIOUS / INVESTIGATING observers carry their "?" state.
+			if v is Dictionary and (float((v as Dictionary).get("value", 0.0)) > 0.0
+					or StringName((v as Dictionary).get("state", &"")) != &""):
 				rows.append(_detection_row(v as Dictionary))
 		rows.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return int(a["observer_net_id"]) < int(b["observer_net_id"]))
 		_assign(&"detection", rows)
@@ -1016,10 +1018,14 @@ static func _detection_row(e: Dictionary) -> Dictionary:
 	var obs: Node3D = Ids.lookup(oid) as Node3D
 	if obs != null and obs.is_inside_tree():
 		pos = obs.global_position
-	return {
+	var row: Dictionary = {
 		"observer_net_id": oid, "world_pos": pos as Vector3,
 		"value": clampf(float(e.get("value", 0.0)), 0.0, 1.0), "kind": int(e.get("kind", 0)),
 	}
+	var state: StringName = StringName(e.get("state", &""))
+	if state != &"":
+		row["state"] = state  # ui_hud v1.17 (D-128): &"curious" / &"investigating"; absent = meter only
+	return row
 
 
 static func _mark_row(v: Variant) -> Dictionary:
