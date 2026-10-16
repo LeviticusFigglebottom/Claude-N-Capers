@@ -23,19 +23,19 @@ var _anim: Animation = null
 var _pairs: PackedInt32Array = PackedInt32Array()
 
 
-## The layer under `skeleton` (created when missing, first among the skeleton's modifiers so the hard-hat lift and
-## other fix-ups run after it).
-static func ensure(skeleton: Skeleton3D) -> UpperBodyLayer:
+## The layer `layer_name` under `skeleton` (created when missing at modifier index `index`: the weapon-hold layer is
+## first, so the flinch layer (index 1) and the hand fix-ups (hard-hat lift, left-hand IK) run after it).
+static func ensure(skeleton: Skeleton3D, layer_name: String = NODE_NAME, index: int = 0) -> UpperBodyLayer:
 	if skeleton == null:
 		return null
-	var m: UpperBodyLayer = skeleton.get_node_or_null(NODE_NAME) as UpperBodyLayer
+	var m: UpperBodyLayer = skeleton.get_node_or_null(layer_name) as UpperBodyLayer
 	if m == null:
 		m = UpperBodyLayer.new()
-		m.name = NODE_NAME
+		m.name = layer_name
 		m.influence = 0.0
 		m.active = false
 		skeleton.add_child(m)
-		skeleton.move_child(m, 0)
+		skeleton.move_child(m, mini(index, skeleton.get_child_count() - 1))
 	return m
 
 

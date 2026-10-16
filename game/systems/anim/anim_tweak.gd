@@ -106,6 +106,12 @@ static var _cached: AnimTweak = null
 @export var arrest_disarm_s: float = 0.2
 @export var cuffed_free_s: float = 0.2667
 @export var getup_blend_s: float = 0.2
+## Lead ruling (b): a hit-zone flinch on a moving body is an upper-body layer at this weight (SOURCE hit_zones 0.7,
+## hit_head 0.9).
+@export var hit_zone_layer_weight: float = 0.7
+@export var hit_zone_layer_head_weight: float = 0.9
+## Lead ruling (c): the third-person left-hand IK blends in / out at this rate (1/s).
+@export var left_hand_ik_rate: float = 8.0
 ## Exponential smoothing rate (1/s) of the velocity estimate from position deltas (clients).
 @export var velocity_smoothing: float = 12.0
 

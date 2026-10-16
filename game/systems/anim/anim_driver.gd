@@ -138,6 +138,8 @@ const CARRIED_BAG_NODE: String = "CarriedBag"
 const OFFHAND_NODE: String = "ThirdPersonOffhand"
 ## v1.21: one-shots that end exactly on crew_cuffed frame 0 (switch without a crossfade).
 const CUFF_INTO: Array[StringName] = [&"downed_arrested", &"crew_cuffed_enter"]
+## Lead ruling (b): the upper-body flinch layer's node name (after the weapon-hold layer).
+const FLINCH_LAYER_NODE: String = "FlinchLayer"
 ## Starts / stops only for straight-ahead motion (|dir . forward| at least this).
 const START_STOP_DOT: float = 0.7
 ## One-shot hints that are not held as an idle once played (the hint may linger in the brain).
@@ -197,6 +199,10 @@ var hand_props: PackedStringArray = PackedStringArray()
 var hat_lift: HardHatHandLift = null
 ## characters.md v1.19: the crew body's upper-body layer (hold_* over locomotion, aim_* while aiming); null for NPCs.
 var hold_layer: UpperBodyLayer = null
+## Lead ruling (b): the upper-body hit-zone flinch layer (every animated body); see _play_flinch_layer.
+var flinch_layer: UpperBodyLayer = null
+## Lead ruling (c): the third-person left hand on the weapon's LeftHandIK (rifle-family holds); null without a rig.
+var left_hand_ik: ThirdPersonLeftHandIK = null
 ## Crossfade (s) used for the last clip change (0 for the first clip).
 var last_blend_s: float = -1.0
 ## Hold kind (v1.20 KIND_BY_CLASS): rifle / smg / sniper / lmg / pistol / akimbo; aim_family() gives the
@@ -209,6 +215,8 @@ var weapon_offhand: Node3D = null
 ## v1.20: the carried-bag visual at Back/Socket (null when not carrying), and the LootBag it shows.
 var bag_visual: Node3D = null
 var _shown_bag: Node = null
+## Lead ruling (b): seconds left of the upper-body flinch.
+var _flinch_left: float = 0.0
 ## v1.21 crew-state one-shot (downed_fire / downed_reload / downed_getup / downed_arrested / crew_cuffed_enter /
 ## crew_cuffed_free): wins over the crew state's own clip while it lasts; `_state_oneshot_t` = seconds since it began.
 var _state_oneshot: StringName = &""
@@ -361,6 +369,9 @@ func bind() -> bool:
 	hold_layer = null
 	if _crew != null:  # v1.19 weapon holds; first among the modifiers (the hat lift fixes up after it)
 		hold_layer = UpperBodyLayer.ensure(rig.get_node_or_null(^"Skeleton3D") as Skeleton3D)
+	var skel: Skeleton3D = rig.get_node_or_null(^"Skeleton3D") as Skeleton3D
+	flinch_layer = UpperBodyLayer.ensure(skel, FLINCH_LAYER_NODE, 1)
+	left_hand_ik = ThirdPersonLeftHandIK.ensure(skel)
 	if clip == &"":
 		# P GH regression: never show the rig's bind pose before the first tick (a spawn / visual swap renders a
 		# frame before _process runs): start on idle at once; the next tick blends to the real state.
@@ -410,6 +421,8 @@ func tick(delta: float) -> void:
 	_apply(want, _speed_scale_for(want, tw), tw)
 	_hold_pose_end()
 	_update_hold_layer(delta, tw)
+	_update_flinch_layer(delta, tw)
+	_update_left_hand_ik(delta, tw)
 	if weapon_visual != null and is_instance_valid(weapon_visual):
 		weapon_visual.visible = weapon_shown(want)
 		if weapon_offhand != null and is_instance_valid(weapon_offhand):
@@ -908,6 +921,25 @@ func _update_hold_layer(delta: float, tw: AnimTweak) -> void:
 	hold_layer.active = hold_layer.influence > 0.0
 
 
+## Lead ruling (c) / characters.md v1.19: the left hand goes onto the held weapon's LeftHandIK (HandL/Socket on the
+## marker) while a rifle-family weapon shows and the clip holds it with both hands (idle_alert_<kind>, aim_rifle,
+## fire_rifle, or the hold_* / aim_rifle upper-body layer over locomotion); blends out for anything else (reloads,
+## armed interactions, the bag carry, poses, pistols and akimbo).
+func _update_left_hand_ik(delta: float, tw: AnimTweak) -> void:
+	if left_hand_ik == null or not is_instance_valid(left_hand_ik):
+		return
+	var wv: WeaponVisual = weapon_visual as WeaponVisual
+	var marker: Node3D = wv.get_marker(&"LeftHandIK") if wv != null and is_instance_valid(wv) else null
+	var two_hands: bool = String(clip).begins_with("idle_alert_") or clip == &"aim_rifle" or clip == &"fire_rifle" \
+		or (hold_layer != null and hold_layer.active and _layered_locomotion(clip))
+	var want: bool = marker != null and aim_family() == &"rifle" and weapon_visual.visible and two_hands \
+		and not (flinch_layer != null and flinch_layer.active)
+	left_hand_ik.set_target(marker if want else left_hand_ik.marker,
+		rig.get_node_or_null(^"Skeleton3D/HandR/Socket") as Node3D, rig.get_node_or_null(^"Skeleton3D/HandL/Socket") as Node3D)
+	left_hand_ik.influence = move_toward(left_hand_ik.influence, 1.0 if want else 0.0, delta * tw.left_hand_ik_rate)
+	left_hand_ik.active = left_hand_ik.influence > 0.0 and left_hand_ik.marker != null
+
+
 ## Locomotion clips the v1.19 weapon-hold layer goes over (SOURCE weapon_holds: walk / run / strafe*).
 static func _layered_locomotion(c: StringName) -> bool:
 	var s: String = String(c)
@@ -1228,7 +1260,37 @@ func _on_damage_applied(victim_net_id: int, _attacker: int, info: Dictionary) ->
 		return
 	_last_hit_react_t = now
 	var zone_clip: StringName = hit_zone_clip(info)
+	if zone_clip != &"" and horizontal_speed() > AnimTweak.data().move_threshold_mps and _play_flinch_layer(zone_clip):
+		return  # lead ruling (b): moving, the legs keep their locomotion
 	play_oneshot(zone_clip if zone_clip != &"" else hit_react_clip(_hit_dir), -1.0, true)
+
+
+## Lead ruling (b) / SOURCE hit_zones: a hit-zone flinch on a moving body plays on the upper body only (spine and up,
+## UpperBodyLayer `FlinchLayer` over whatever the legs do) at AnimTweak.hit_zone_layer_weight (head: _head_weight),
+## fading in / out over hit_zone_blend_in_s / _out_s. False when the rig has no layer / clip (then full body).
+func _play_flinch_layer(c: StringName) -> bool:
+	if flinch_layer == null or not is_instance_valid(flinch_layer) or not _has_clip(c):
+		return false
+	flinch_layer.set_clip(&"", null)
+	flinch_layer.set_clip(c, player.get_animation("%s/%s" % [LIBRARY, c]), 0.0)
+	_flinch_left = player.get_animation("%s/%s" % [LIBRARY, c]).length
+	return true
+
+
+func _update_flinch_layer(delta: float, tw: AnimTweak) -> void:
+	if flinch_layer == null or not is_instance_valid(flinch_layer):
+		return
+	var dead: bool = _npc != null and not _npc.alive
+	if _flinch_left <= 0.0 or dead:
+		_flinch_left = 0.0
+		flinch_layer.influence = move_toward(flinch_layer.influence, 0.0, delta / maxf(tw.hit_zone_blend_out_s, 0.001))
+	else:
+		flinch_layer.advance(delta)
+		_flinch_left = maxf(_flinch_left - delta, 0.0)
+		var peak: float = tw.hit_zone_layer_head_weight if flinch_layer.clip == HIT_HEAD else tw.hit_zone_layer_weight
+		var target: float = peak if _flinch_left > tw.hit_zone_blend_out_s else peak * _flinch_left / maxf(tw.hit_zone_blend_out_s, 0.001)
+		flinch_layer.influence = move_toward(flinch_layer.influence, target, delta * peak / maxf(tw.hit_zone_blend_in_s, 0.001))
+	flinch_layer.active = flinch_layer.influence > 0.0
 
 
 ## characters.md v1.18 (SOURCE `hit_zones:`): the flinch for damage `info` from its `zone` and hit `position` in the
