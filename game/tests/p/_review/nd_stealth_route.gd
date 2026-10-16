@@ -223,7 +223,7 @@ func _gate_guard() -> bool:
 			continue
 		await pilot.face(g.global_position + Vector3(0, 1.1, 0), 0.05, 0.5)
 		var alert_before: int = g.alert_state
-		await pilot.inp.hold(&"melee", 1.05)
+		await pilot.inp.tap(&"melee")  # a quick swing: S3.6 kills an unaware guard on any hit; a charge let him walk on
 		await wait_s(0.6)
 		note("swing: me %s guard %s fwd %s dist %.2f, swings %d, hits %d, health %.2f alive %s alert %d -> %d" % [
 			Po5Pilot._v(c.global_position), Po5Pilot._v(g.global_position), Po5Pilot._v(-g.global_basis.z),
@@ -237,7 +237,16 @@ func _gate_guard() -> bool:
 		var pc: InteractableComponent = _comp(g, &"answer_pager")
 		if pc != null and pc.enabled:
 			note("answering the pager")
-			return await pilot.use(pc, 20.0, func() -> bool: return not pc.enabled)
+			var answered: Callable = func() -> bool: return not pc.enabled
+			if await pilot.use(pc, 20.0, answered) or answered.call():
+				return true
+			# The body fell inside the vault gate: answer through the bars from the corridor side, nearest the body.
+			var b: Vector3 = pc.global_position
+			await pilot.goto(Vector3(clampf(b.x, GATE_AT.x - 1.0, GATE_AT.x + 1.0), GATE_AT.y, GATE_AT.z - 0.3), 0.4,
+				10.0)
+			note("answering through the gate from %s (pager at %s, %.2f m)" % [Po5Pilot._v(c.global_position),
+				Po5Pilot._v(b), c.eye_position().distance_to(b)])
+			return await pilot.use(pc, 20.0, answered, false) or answered.call()
 		if _alarm != &"":
 			return false
 		await wait_s(0.25)
