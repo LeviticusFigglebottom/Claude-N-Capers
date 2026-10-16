@@ -1,5 +1,6 @@
-## D-127 (PO playtest): every non-special enemy (guards, beat cops, SWAT, heavy SWAT, FBI and their faction variants)
-## has +25 % health on every difficulty; specials keep their tuned values (D-125); head multipliers unchanged.
+## D-127 (PO playtest): every non-special hostile (guards, beat cops, SWAT, heavy SWAT, FBI and their faction variants,
+## cartel gunmen) has +25 % health on every difficulty; specials keep their tuned values (D-125); head multipliers
+## unchanged.
 extends TestCase
 
 const DIR: String = "res://systems/ai/data/enemies/"
@@ -14,6 +15,7 @@ const TABLE: Dictionary = {
 	"tac_heavy": [200.0, 200.0, 300.0, 400.0, 600.0, 800.0],
 	"frd_agent": [75.0, 75.0, 112.5, 150.0, 225.0, 300.0],
 	"sentinel/frd_agent": [75.0, 75.0, 112.5, 150.0, 225.0, 300.0],
+	"cartel_gunman": [75.0, 75.0, 112.5, 150.0, 225.0, 300.0],  # LEAD: all non-special hostiles
 }
 ## Specials stay as tuned (Routine and Cataclysm spot values).
 const SPECIALS: Dictionary = {
@@ -42,7 +44,7 @@ func test_every_non_special_enemy_is_covered() -> void:
 			if f.ends_with(".tres"):
 				var id: String = sub + f.trim_suffix(".tres")
 				var d: EnemyDef = _def(id)
-				if d != null and not d.is_special and id != "cartel_gunman":  # cartel: not in D-127's list (LEAD)
+				if d != null and not d.is_special:
 					seen.append(id)
 	for id: String in seen:
 		assert_true(TABLE.has(id), "%s is pinned in the D-127 table" % id)
