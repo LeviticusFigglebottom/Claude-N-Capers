@@ -23,6 +23,7 @@ var mask_up: bool = false
 var weapon_slot: int = -1               ## -1 = no change, else Enums.WeaponSlot
 var drop_bag: bool = false
 var throw_bag: bool = false
+var gadget: bool = false               ## edge: toggle the equipped weapon's gadget (D-118)
 ## AI teammate orders (from a human crew member): &"", &"follow", &"hold", &"carry_bag", &"drop_bag", &"revive"
 var order: StringName = &""
 var order_target_net_id: int = 0
@@ -34,7 +35,7 @@ func to_dict() -> Dictionary:
 		"mv": move, "yw": look_yaw, "pt": look_pitch, "sp": sprint, "cr": crouch, "jp": jump,
 		"fi": fire, "ai": aim, "rl": reload, "in": interact, "it": interact_target_net_id,
 		"sh": shout, "me": melee, "th": throw_item, "de": deploy, "mu": mask_up,
-		"ws": weapon_slot, "db": drop_bag, "tb": throw_bag,
+		"ws": weapon_slot, "db": drop_bag, "tb": throw_bag, "ga": gadget,
 		"or": order, "ot": order_target_net_id, "op": order_position,
 	}
 
@@ -60,6 +61,7 @@ static func from_dict(d: Dictionary) -> CrewIntent:
 	i.weapon_slot = d.get("ws", -1)
 	i.drop_bag = d.get("db", false)
 	i.throw_bag = d.get("tb", false)
+	i.gadget = d.get("ga", false)
 	i.order = d.get("or", &"")
 	i.order_target_net_id = d.get("ot", 0)
 	i.order_position = d.get("op", Vector3.ZERO)
