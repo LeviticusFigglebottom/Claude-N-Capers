@@ -17,7 +17,7 @@ const FIELDS: Array[StringName] = [
 @export var id: StringName = &"default"
 @export var name_key: StringName = &""
 ## Detection meter: below HudTweak.detection_orange_from, from it, and at 1.0 (detected).
-@export var detection_suspicious: Color = Color(0.35, 0.65, 1.0)
+@export var detection_suspicious: Color = Color(0.95, 0.95, 0.92)  # D-128: PD2 white
 @export var detection_alert: Color = Color(1.0, 0.6, 0.15)
 @export var detection_detected: Color = Color(1.0, 0.2, 0.2)
 @export var health: Color = Color(0.85, 0.95, 0.85)

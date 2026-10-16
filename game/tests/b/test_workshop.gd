@@ -64,7 +64,21 @@ func test_screen_instantiates_with_every_weapon() -> void:
 	assert_eq(_screen.model.weapon_id, CORSAIR, "opens on the equipped primary")
 	var ids: Array[StringName] = WorkshopModel.weapon_ids()
 	assert_eq(ids.size(), ContentDB.all_weapons().size())
-	assert_eq(_screen.weapon_list.item_count, ids.size() + 2, "every weapon + primary / secondary headers")
+	var heads: int = 0  # D-126: a header per slot plus a class sub-header per (slot, class) pair
+	var seen: Dictionary = {}
+	for id: StringName in ids:
+		var w: WeaponDef = ContentDB.weapon(id)
+		seen[w.slot] = true
+		seen[Vector2i(w.slot, w.weapon_class)] = true
+	heads = seen.size()
+	assert_eq(_screen.weapon_list.item_count, ids.size() + heads, "every weapon + slot headers + class sub-headers")
+	var secondaries: Array[int] = []
+	for id: StringName in ids:
+		var w: WeaponDef = ContentDB.weapon(id)
+		if w.slot == Enums.WeaponSlot.SECONDARY and not secondaries.has(int(w.weapon_class)):
+			secondaries.append(int(w.weapon_class))
+	assert_eq(secondaries.slice(0, 3), [Enums.WeaponClass.PISTOL, Enums.WeaponClass.SMG, Enums.WeaponClass.SHOTGUN]
+			as Array[int], "D-126: the secondary list is pistols, SMGs, shotguns")
 	assert_eq(_screen.slot_buttons.size(), ContentDB.weapon(CORSAIR).mod_slots.size(), "one button per mod slot")
 	assert_true(_screen.focus_chain.has(_screen.weapon_list) and _screen.focus_chain.has(_screen.equip_button))
 

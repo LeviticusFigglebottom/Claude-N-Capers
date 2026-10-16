@@ -95,6 +95,7 @@ func show_home(p: PlayerProfile) -> bool:
 	if not enter():
 		return false
 	_resume(p)
+	hud.set_profile(p)  # D-115: the START HERE note until the first heist is on the record
 	flow.show_screen(hud)
 	return true
 

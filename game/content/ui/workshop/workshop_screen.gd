@@ -385,18 +385,31 @@ func _item_list() -> ItemList:
 	return l
 
 
+## strings.csv key of a weapon class's sub-header ("ui.workshop.class.smg").
+static func class_key(weapon_class: int) -> StringName:
+	return StringName("ui.workshop.class.%s" % String(Enums.WeaponClass.keys()[weapon_class]).to_lower())
+
+
 func _fill_weapon_list() -> void:
 	weapon_list.clear()
 	_weapon_rows.clear()
 	var last_slot: int = -1
+	var last_class: int = -1
 	for id: StringName in WorkshopModel.weapon_ids():
 		var w: WeaponDef = ContentDB.weapon(id)
 		if int(w.slot) != last_slot:
 			last_slot = int(w.slot)
+			last_class = -1
 			var head: int = weapon_list.add_item(UiText.t(
 					&"ui.workshop.primaries" if w.slot == Enums.WeaponSlot.PRIMARY else &"ui.workshop.secondaries"))
 			weapon_list.set_item_selectable(head, false)
 			weapon_list.set_item_custom_fg_color(head, _dim_color())
+			_weapon_rows.append(&"")
+		if int(w.weapon_class) != last_class:  # D-126: class sub-headers (Pistols / Submachine guns / Shotguns ...)
+			last_class = int(w.weapon_class)
+			var sub: int = weapon_list.add_item("  " + UiText.t(class_key(last_class)))
+			weapon_list.set_item_selectable(sub, false)
+			weapon_list.set_item_custom_fg_color(sub, UiTokens.BRASS)
 			_weapon_rows.append(&"")
 		var text: String = UiText.t(&"ui.workshop.entry", {"name": UiText.t(UiText.item_key(id)), "status": _weapon_tag(id)})
 		var row: int = weapon_list.add_item(text)
