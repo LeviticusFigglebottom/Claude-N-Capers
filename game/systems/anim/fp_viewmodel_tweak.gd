@@ -266,6 +266,24 @@ static var _gen: int = 0
 ## Multiplier on the world Environment's ambient energy for the viewmodel camera only.
 @export var viewmodel_ambient_mult: float = 1.6
 
+@export_group("Gadgets (D-118)")
+## FpViewmodelGadgets defaults; the resolved WeaponDef/mod params (visual_slots.md v1.3) win when present.
+## Marker used when the gun has no LaserOrigin / LightOrigin.
+@export var gadget_fallback_marker: StringName = &"Muzzle"
+@export var gadget_laser_color: Color = Color(1.0, 0.12, 0.08)
+@export var gadget_laser_range_m: float = 50.0
+## Beam ribbon width (m) and opacity (additive); the dot's size (m) at gadget_laser_dot_ref_m, growing with distance
+## past it so it stays readable.
+@export var gadget_laser_width_m: float = 0.005
+@export var gadget_laser_beam_alpha: float = 0.5
+@export var gadget_laser_dot_m: float = 0.02
+@export var gadget_laser_dot_ref_m: float = 5.0
+@export var gadget_light_range_m: float = 25.0
+@export var gadget_light_angle_deg: float = 30.0
+@export var gadget_light_energy: float = 2.0
+@export var gadget_light_color: Color = Color(1.0, 0.97, 0.9)
+@export var gadget_light_attenuation: float = 1.2
+
 @export_group("Motion")
 ## Horizontal speed (m/s) above which walk bob / sprint play.
 @export var move_threshold_mps: float = 0.3
