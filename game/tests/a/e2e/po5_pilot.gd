@@ -337,6 +337,8 @@ func use(comp: InteractableComponent, timeout_s: float = 30.0, done: Callable = 
 	var stand: Vector3 = _use_stand(comp)
 	if walk and not await goto(stand, 0.5, 60.0) and is_instance_valid(comp):
 		d.note("pilot: could not reach %s (%s)" % [comp.get_path(), comp.kind])
+		if last_blocked_door != null:
+			return false  # behind a door it cannot open: pressing F through the wall for 30 s does nothing (P GN-P1)
 	if not is_instance_valid(comp):
 		return false
 	await face(target)
