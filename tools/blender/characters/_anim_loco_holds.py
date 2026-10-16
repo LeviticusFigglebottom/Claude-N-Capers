@@ -33,6 +33,13 @@ from _anim import FPS, TAU, Clip, Pose, Skeleton, Solver, hand_shape, rxd, ryd, 
 GAITS = {"walk": "walk", "run": "run", "sprint": "sprint", "crouch": "crouch_walk", "walk_start": "walk_start",
          "walk_stop": "walk_stop", "run_start": "run_start", "run_stop": "run_stop"}
 NAMES = tuple(f"hold_{kind}_{g}" for kind in holds.KINDS for g in GAITS)
+#: item 2 (police combat movement, the crew too): aiming on the move, per aim family, over walk / run / crouch_walk
+AIM_FAMILIES = ("rifle", "pistol", "akimbo")
+AIM_GAITS = ("walk", "run", "crouch")
+AIM_NAMES = tuple(f"aim_{fam}_{g}" for fam in AIM_FAMILIES for g in AIM_GAITS)
+#: aimed, the weapon stays on the target: it follows little of the trunk's turn, one frame late, a stiff spring
+AIM_FOLLOW = {"walk": (0.12, 0.25, 0.3), "run": (0.18, 0.35, 0.4), "crouch": (0.12, 0.2, 0.3)}
+AIM_SPRING = 0.35
 #: frames the weapon trails the chest, per gait family
 LAG = {"walk": 2, "run": 2, "sprint": 1, "crouch": 2}
 #: share of the chest's turn the weapon follows (yaw, pitch, roll); the rest is taken up by the arms
@@ -153,6 +160,41 @@ def _trunk_set(sk: Skeleton, kind: str) -> Pose:
     return p
 
 
+def _aim_trunk(sk: Skeleton, fam: str) -> Pose:
+    """The standing aim's trunk (and stance) of an aim family: aim_rifle / aim_pistol / aim_akimbo's."""
+    p = Pose()
+    holds.H.aim_body(sk, p, fam == "rifle")
+    if fam == "akimbo":                                    # _anim_crew3p.akimbo_pose's trunk
+        A.spine(p, lean=6, twist=0, chest_lean=6, neck=(2, 0, 0), head=(-4, 0, 0), hips=(1, 0, 0))
+    return p
+
+
+def aim_frames(sk: Skeleton, fam: str) -> list[tuple[str, tuple]]:
+    """The standing aim's weapon frame(s) without the idle sway."""
+    if fam == "rifle":
+        return [("R", holds.H.rifle_aim_frame(sk, 0.0, 0.0))]
+    if fam == "pistol":
+        return [("R", holds.H.pistol_aim_frame(sk, 0.0, 0.0))]
+    import _anim_crew3p as crew3p  # noqa: PLC0415 - imports _anim_humanoid
+
+    # the left gun as it really sits (the mirror of akimbo_frame's right-handed frame), so the chest carries it as is
+    return [("R", crew3p.akimbo_frame(sk, 0.0, 0.0, 0.0, 0.0)),
+            ("L", holds._mirror(crew3p.akimbo_frame(sk, 0.0, 0.0, 2.1, 0.0)))]       # noqa: SLF001
+
+
+def aim_grip(sk: Skeleton, pose: Pose, fam: str, frames: list) -> None:
+    for sfx in ("L", "R"):
+        _clear(pose, sfx)
+    if fam == "rifle":
+        holds.H.hold_rifle(sk, pose, frames[0][1])
+    elif fam == "pistol":
+        holds.H.hold_pistol(sk, pose, frames[0][1])
+    else:
+        import _anim_crew3p as crew3p  # noqa: PLC0415
+
+        crew3p.akimbo_hold(sk, pose, frames[0][1], holds._mirror(frames[1][1]))  # noqa: SLF001 - it mirrors again
+
+
 def _spring(acc: list[np.ndarray], loop: bool, k: float) -> list[np.ndarray]:
     """Offsets of a damped spring driven by ``-acc`` (per frame), periodic for loops (three passes, the last kept)."""
     w = TAU * SPRING["hz"]
@@ -174,8 +216,9 @@ def _spring(acc: list[np.ndarray], loop: bool, k: float) -> list[np.ndarray]:
     return out
 
 
-def layer_clip(sk: Skeleton, solver: Solver, kind: str, gait: str, base: Clip) -> Clip:
-    """``hold_<kind>_<gait>`` over ``base``: see the module docstring."""
+def layer_clip(sk: Skeleton, solver: Solver, kind: str, gait: str, base: Clip, aim: str = "") -> Clip:
+    """``hold_<kind>_<gait>`` over ``base`` (or, with ``aim`` = an aim family, ``aim_<aim>_<gait>``): see the module
+    docstring."""
     k = sk.scale
     N = base.frames
     loop = base.loop
@@ -186,7 +229,7 @@ def layer_clip(sk: Skeleton, solver: Solver, kind: str, gait: str, base: Clip) -
         A.fix_hips_for_reach(solver, poses[:N] if loop else poses, loop)
         if loop:
             poses[N] = poses[0].copy()
-    trunk = None if sprint else _trunk_set(sk, kind)
+    trunk = _aim_trunk(sk, aim) if aim else (None if sprint else _trunk_set(sk, kind))
     if trunk is not None:
         for p in poses:
             for b in ("spine", "chest", "neck", "head"):
@@ -194,13 +237,15 @@ def layer_clip(sk: Skeleton, solver: Solver, kind: str, gait: str, base: Clip) -
     solved = [solver.solve(p) for p in poses]
     # the reference chest: the class's standing trunk (the frames above are authored for it) or an upright stand
     ref = Pose()
-    if trunk is not None:
+    if aim:
+        ref = _aim_trunk(sk, aim)
+    elif trunk is not None:
         holds.H.aim_body(sk, ref, kind not in ("pistol", "akimbo"))
     else:
         holds.H.stand(sk, ref)
     S0 = solver.solve(ref)
     W0, P0 = S0.W["chest"], S0.P["chest"]
-    frames0 = sprint_frames(sk, kind) if sprint else low_frames(sk, kind)
+    frames0 = aim_frames(sk, aim) if aim else (sprint_frames(sk, kind) if sprint else low_frames(sk, kind))
     # the spring's drive: the root's forward acceleration (starts / stops) and the chest's vertical acceleration
     tr = getattr(base, "transition", None)
     s = [tr.s(float(f)) if tr is not None else 0.0 for f in range(N + 1)]
@@ -214,9 +259,9 @@ def layer_clip(sk: Skeleton, solver: Solver, kind: str, gait: str, base: Clip) -
             return 0.0
         return (vals[i + 1] - 2.0 * vals[i] + vals[i - 1]) * FPS * FPS
     acc = [v3(0.0, SPRING["fwd"] * d2(s, i), SPRING["up"] * d2(cz, i)) for i in range(N + 1)]
-    off = [x * SPRING_KIND.get(kind, 1.0) for x in _spring(acc, loop, k)]
-    lag = LAG[fam]
-    share = FOLLOW[fam]
+    off = [x * (AIM_SPRING if aim else SPRING_KIND.get(kind, 1.0)) for x in _spring(acc, loop, k)]
+    lag = 1 if aim else LAG[fam]
+    share = AIM_FOLLOW[fam] if aim else FOLLOW[fam]
     ph_of = (lambda f: f / N) if loop else (lambda f: f / N)
 
     def fn(f: int) -> Pose:
@@ -236,9 +281,13 @@ def layer_clip(sk: Skeleton, solver: Solver, kind: str, gait: str, base: Clip) -
                 pump = SPRINT_PUMP * k * math.cos(TAU * (ph_of(f) - 0.08)) * sgn
                 o = o + v3(0.0, pump, 0.4 * abs(pump))
             out.append((sfx, (R, o)))
-        grip(sk, pose, kind, out, sprint)
+        if aim:
+            aim_grip(sk, pose, aim, out)
+        else:
+            grip(sk, pose, kind, out, sprint)
         return pose
-    return Clip(f"hold_{kind}_{gait}", N, loop, fn, 0.0, None, dict(base.events), reach_fix=False)
+    name = f"aim_{aim}_{gait}" if aim else f"hold_{kind}_{gait}"
+    return Clip(name, N, loop, fn, 0.0, None, dict(base.events), reach_fix=False)
 
 
 def clips(sk: Skeleton, solver: Solver, table: dict, base: dict[str, Clip]) -> dict[str, Clip]:
@@ -251,6 +300,11 @@ def clips(sk: Skeleton, solver: Solver, table: dict, base: dict[str, Clip]) -> d
         if src not in base:
             continue
         out[name] = layer_clip(sk, solver, kind, gait, base[src])
+    for name in [n for n in AIM_NAMES if n in table]:
+        fam, gait = name.split("_")[1], name.split("_", 2)[2]
+        src = GAITS[gait]
+        if src in base:
+            out[name] = layer_clip(sk, solver, "pistol" if fam != "rifle" else "rifle", gait, base[src], aim=fam)
     return out
 
 
@@ -264,6 +318,10 @@ def rows(table: dict) -> dict:
             if r.get("events"):
                 row["events"] = dict(r["events"])
             out[f"hold_{kind}_{gait}"] = row
+    for fam in AIM_FAMILIES:
+        for gait in AIM_GAITS:
+            r = table[GAITS[gait]]
+            out[f"aim_{fam}_{gait}"] = {"frames": r["frames"], "loop": r["loop"], "speed": 0.0, "priority": 2}
     return out
 
 

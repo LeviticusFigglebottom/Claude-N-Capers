@@ -24,6 +24,7 @@ import _anim_hitzones as hitzones
 import _anim_holds as holds
 import _anim_humanoid as lib
 import _anim_loco_holds as loco
+import _anim_police as police
 import _anim_p5 as p5
 import _anim_surrender as surr
 import _rig as rig
@@ -263,6 +264,8 @@ CLIPS = {
 # D-116 frame-locked weapon holds on the move (_anim_loco_holds, SOURCE `locomotion_holds`): hold_<kind>_<gait>, the
 # base clip's frames / loop / events
 CLIPS.update(loco.rows(CLIPS))
+# D-116 police combat movement (_anim_police, SOURCE `police_combat`): per-class reloads, cover peeks, stagger
+CLIPS.update(police.ROWS)
 LOOPS = sorted(name for name, row in CLIPS.items() if row["loop"])
 P1 = sorted(name for name, row in CLIPS.items() if row["priority"] == 1)
 #: Clips whose solved frames build() keeps for SOURCE.txt measurements.
@@ -351,6 +354,8 @@ def build(ctx) -> None:
     for key, text in surr.source_notes(CLIPS, keep).items():
         ctx.source_extra[key] = text
     for key, text in loco.source_notes().items():
+        ctx.source_extra[key] = text
+    for key, text in police.source_notes().items():
         ctx.source_extra[key] = text
     for key, text in holds.source_notes().items():
         ctx.source_extra[key] = text
