@@ -31,7 +31,7 @@ and reports a gap list; the LEAD folds the gaps in here as rows (id, heist, owne
 | DB-4 | DB | A | cartel `sit` plays no seated clip | open |
 | DB-6 | DB | C, A | stale QC-36/39 TODOs (C); QC-25 S3 perch after fog lifts needs a director hook (A) | open |
 | DB-7 | DB | A | mission audit + windowed auto_loud | open |
-| GN-1 | GN | C | G2 (GN-C2): 50 props vs GH 628, GI/probes/occluders, moon light | open |
+| GN-1 | GN | C | G2 (GN-C2): 50 props vs GH 628, GI/probes/occluders, moon light | done: G2 FINAL (C 8a7872c4, round 224); gala dressing top-up optional |
 | GN-2 | GN | C | 5 patron spawns vs 12 in doc (7/9 rolls capped) | done (round 219) |
 | GN-3 | GN | C | 2 BODY_HIDE spots vs 8 | done (round 219) |
 | GN-4 | GN | C | 6 COVER points vs ~50 | done (round 219) |
