@@ -146,3 +146,32 @@ func test_zone_names_fit_and_do_not_overlap() -> void:
 							% [job[0], fl, view.size, zs[i][0], zs[j][0]])
 		view.queue_free()
 		await wait_frames(1)
+
+
+## LEAD r226: names too big for their zones (DB's container footprints, the west lane) sit beside the zone with a
+## leader line instead of disappearing; each shows once and clears every other name at 1080p and 720p.
+func test_narrow_zones_are_named_beside() -> void:
+	for sz: Vector2 in [Vector2(1130, 730), Vector2(755, 487)]:
+		var view: BlueprintView = BlueprintView.new()
+		view.size = sz
+		add_child(view)
+		view.setup(PreplanBoard.build(&"dockside_burn", Enums.Difficulty.ROUTINE))
+		var fl: int = -1
+		for i: int in range(view.board.blueprint.floor_count()):
+			view.set_floor(i)
+			for z: Array in view._zone_labels():
+				if String(z[0]) == UiText.t(&"ui.preplan.bp.dockside_burn.yard").to_upper():
+					fl = i
+		assert_true(fl >= 0, "the yard floor exists")
+		view.set_floor(fl)
+		var texts: Array[String] = []
+		for z2: Array in view._zone_labels():
+			texts.append(String(z2[0]))
+			if z2[3] != null:
+				var lead: Array = z2[3] as Array
+				assert_true((z2[2] as Rect2).grow(1.0).has_point(lead[0] as Vector2), "leader starts at the plate")
+		for k: StringName in [&"ui.preplan.bp.dockside_burn.containers_west", &"ui.preplan.bp.dockside_burn.containers_east"]:
+			var t: String = UiText.t(k).to_upper()
+			assert_eq(texts.count(t), 1, "%s named once @%s (%s)" % [t, sz, texts])
+		view.queue_free()
+		await wait_frames(1)
