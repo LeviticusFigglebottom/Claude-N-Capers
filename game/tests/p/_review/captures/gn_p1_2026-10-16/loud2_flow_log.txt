@@ -1,0 +1,495 @@
+[PO5 532.1s] pilot: goto (2.0, 0.2, -4.0) FAILED at (36.6, 0.0, 13.0) after 32.4 s
+[PO5 541.9s] pilot: goto (51.0, 0.2, 4.0) FAILED at (36.6, 0.0, 13.0) after 0.0 s
+[PO5 543.7s] pilot: goto (-8.0, 0.2, 15.0) FAILED at (36.6, 0.0, 13.0) after 0.0 s
+[PO5 1016.7s] pilot: goto (2.0, 0.2, -4.0) FAILED at (36.6, 0.0, 13.0) after 32.4 s
+[PO5 1037.5s] pilot: goto (51.0, 0.2, 4.0) FAILED at (36.6, 0.0, 13.0) after 0.0 s
+[PO5 1042.1s] pilot: goto (-8.0, 0.2, 15.0) FAILED at (36.6, 0.0, 13.0) after 0.0 s
+[PO5 1127.8s] EVENT objective casing -> 1 t=480
+[PO5 1278.7s] EVENT objective casing -> 2 t=537
+[PO5 1302.0s] EVENT objective lockdown -> 1 t=540
+[PO5 1302.0s] EVENT objective lockdown -> 2 t=540
+[PO5 1302.1s] EVENT objective find_canvases -> 2 t=540
+[PO5 1302.1s] EVENT objective hack -> 1 t=540
+[PO5 1302.1s] EVENT objective server_door -> 1 t=540
+[PO5 1302.1s] EVENT objective vault_drill -> 1 t=540
+[PO5 1329.7s] EVENT objective find_canvases -> 2 t=545
+[PO5 1483.5s] EVENT objective find_canvases -> 2 t=590
+[PO5 1596.5s] waiting at _unblock for 60 s (nothing usable within 2.5 m)
+[PO5 1692.2s] waiting at _unblock for 120 s (nothing usable within 2.5 m)
+[PO5 1741.1s] EVENT objective server_door -> 2 t=664
+[PO5 1880.8s] pilot: STUCK at (19.4, -0.3, 8.4) heading to (19.5, 0.2, 7.6); rays: h0.40:/root/HeistRuntime/GalleryNight/Gameplay/Doors/StaffDoor/LeafBody@(19.4, 0.1, 8.0), h1.00:/root/HeistRuntime/GalleryNight/Gameplay/Doors/StaffDoor/Leaf
+[PO5 1893.5s] pilot: STUCK at (19.4, -0.3, 8.4) heading to (19.5, 0.2, 7.6); rays: h0.40:/root/HeistRuntime/GalleryNight/Gameplay/Doors/StaffDoor/LeafBody@(19.4, 0.1, 8.0), h1.00:/root/HeistRuntime/GalleryNight/Gameplay/Doors/StaffDoor/Leaf
+[PO5 1943.2s] EVENT objective keycard -> 2 t=707
+[PO5 2138.5s] EVENT objective server_code -> 2 t=779
+[PO5 2201.1s] pilot: STUCK at (31.6, 5.4, 7.3) heading to (32.1, 5.6, 7.3); rays: h0.05:/root/HeistRuntime/GalleryNight/Gameplay/Doors/StudioDoor/LeafBody@(32.0, 5.5, 7.3), h0.20:/root/HeistRuntime/GalleryNight/Gameplay/Doors/StudioDoor/Lea
+[PO5 2213.6s] pilot: STUCK at (31.6, 5.4, 7.3) heading to (32.1, 5.6, 7.3); rays: h0.05:/root/HeistRuntime/GalleryNight/Gameplay/Doors/StudioDoor/LeafBody@(32.0, 5.5, 7.3), h0.20:/root/HeistRuntime/GalleryNight/Gameplay/Doors/StudioDoor/Lea
+[PO5 2280.2s] pilot: STUCK at (31.6, 5.4, 7.3) heading to (32.1, 5.6, 7.3); rays: h0.05:/root/HeistRuntime/GalleryNight/Gameplay/Doors/StudioDoor/LeafBody@(32.0, 5.5, 7.3), h0.20:/root/HeistRuntime/GalleryNight/Gameplay/Doors/StudioDoor/Lea
+[PO5 2287.1s] pilot: STUCK at (31.6, 5.4, 7.3) heading to (32.1, 5.6, 7.3); rays: h0.05:/root/HeistRuntime/GalleryNight/Gameplay/Doors/StudioDoor/LeafBody@(32.0, 5.5, 7.3), h0.20:/root/HeistRuntime/GalleryNight/Gameplay/Doors/StudioDoor/Lea
+[PO5 2336.4s] EVENT objective find_canvases -> 2 t=838
+[PO5 2742.9s] EVENT objective hack -> 2 t=985
+[PO5 2743.0s] EVENT objective treasury -> 2 t=985
+[PO5 2743.0s] EVENT objective art_store -> 2 t=985
+[PO5 2873.6s] EVENT objective centrepiece -> 2 t=1017
+[PO5 2882.6s] pilot: goto (26.5, 0.2, 39.0) FAILED at (21.3, 0.0, 14.8) after 4.0 s
+[PO5 2891.2s] pilot: goto (26.5, 0.2, 39.0) FAILED at (21.1, 0.0, 19.8) after 4.0 s
+[PO5 2896.4s] pilot: goto (26.5, 0.2, 39.0) FAILED at (21.0, 0.0, 24.0) after 4.0 s
+[PO5 2907.2s] pilot: goto (26.5, 0.2, 39.0) FAILED at (20.4, 0.0, 28.3) after 4.0 s
+[PO5 2934.4s] pilot: goto (26.5, 0.2, 39.0) FAILED at (20.7, 0.0, 32.7) after 4.0 s
+[PO5 2945.1s] pilot: goto (26.5, 0.2, 39.0) FAILED at (22.0, 0.0, 36.7) after 4.0 s
+[PO5 2956.9s] EVENT objective secure -> 1 t=1056
+[PO5 2994.4s] pilot: STUCK at (22.3, 0.0, 30.4) heading to (22.2, 0.2, 29.5); rays: h0.05:/root/HeistRuntime/GalleryNight/Gameplay/Doors/BronzeDoorsE/LeafBody2@(22.3, 0.1, 30.0), h0.20:/root/HeistRuntime/GalleryNight/Gameplay/Doors/BronzeDo
+[PO5 2996.8s] pilot: STUCK at (22.3, 0.0, 30.4) heading to (22.2, 0.2, 29.5); rays: h0.05:/root/HeistRuntime/GalleryNight/Gameplay/Doors/BronzeDoorsE/LeafBody2@(22.2, 0.1, 30.0), h0.20:/root/HeistRuntime/GalleryNight/Gameplay/Doors/BronzeDo
+[PO5 3002.3s] pilot: STUCK at (22.3, 0.0, 30.4) heading to (22.3, 0.2, 29.5); rays: h0.05:/root/HeistRuntime/GalleryNight/Gameplay/Doors/BronzeDoorsE/LeafBody2@(22.3, 0.1, 30.0), h0.20:/root/HeistRuntime/GalleryNight/Gameplay/Doors/BronzeDo
+[PO5 3006.5s] pilot: STUCK at (22.3, 0.0, 30.4) heading to (22.2, 0.2, 29.5); rays: h0.05:/root/HeistRuntime/GalleryNight/Gameplay/Doors/BronzeDoorsE/LeafBody2@(22.2, 0.1, 30.0), h0.20:/root/HeistRuntime/GalleryNight/Gameplay/Doors/BronzeDo
+[PO5 3008.8s] pilot: goto (1.2, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 16.1 s
+[PO5 3008.8s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3010.1s] pilot: goto (1.2, 0.2, 16.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3010.1s] pilot: goto (0.6, 0.2, 16.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3011.5s] pilot: goto (42.8, 5.6, 16.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3011.5s] pilot: goto (43.5, 5.6, 16.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3015.5s] pilot: goto (31.5, -4.0, 10.5) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3016.8s] pilot: goto (31.5, -4.0, 13.5) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3018.2s] pilot: goto (31.5, -4.0, 12.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3022.2s] pilot: goto (31.5, -4.0, 15.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3023.6s] pilot: goto (9.0, 5.6, 2.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3023.6s] pilot: goto (10.5, 5.6, 2.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3025.2s] pilot: goto (31.5, -4.0, 10.5) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3028.1s] pilot: goto (31.5, -4.0, 13.5) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3030.2s] pilot: goto (31.5, -4.0, 12.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3037.4s] pilot: goto (31.5, -4.0, 15.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3044.5s] pilot: goto (10.5, 5.6, 2.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3047.1s] pilot: goto (21.5, -4.0, 7.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3047.1s] pilot: goto (21.5, -4.0, 7.8) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3048.4s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3051.9s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3054.4s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3055.8s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3059.5s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3061.8s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3063.1s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3067.2s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3070.0s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3071.3s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3075.8s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3079.0s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3080.3s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3085.5s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3088.2s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3089.5s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3094.6s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3094.6s] waiting at canvases for 60 s (nothing usable within 2.5 m)
+[PO5 3098.3s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3099.6s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3105.4s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3109.2s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3110.5s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3114.0s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3120.2s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3121.5s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3125.1s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3130.9s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3132.3s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3135.8s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3141.1s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3142.5s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3146.1s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3150.6s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3152.0s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3155.5s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3161.1s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3162.4s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3162.4s] waiting at canvases for 120 s (nothing usable within 2.5 m)
+[PO5 3165.7s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3171.3s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3172.6s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3176.8s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3185.9s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3189.2s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3192.5s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3198.4s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3199.7s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3203.3s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3208.7s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3210.1s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3213.4s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3218.5s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3219.8s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3223.1s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3228.9s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3230.3s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3233.6s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3239.4s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3239.4s] waiting at canvases for 180 s (nothing usable within 2.5 m)
+[PO5 3240.7s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3244.0s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3250.0s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3251.3s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3254.5s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3259.8s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3261.2s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3262.5s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3270.6s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3272.0s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3273.3s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3282.0s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3283.3s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3284.6s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3292.5s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3293.8s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3295.2s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3302.7s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3304.0s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3305.4s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3305.4s] waiting at canvases for 240 s (nothing usable within 2.5 m)
+[PO5 3312.9s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3314.2s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3315.6s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3323.2s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3324.5s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3325.8s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3333.4s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3334.8s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3336.1s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3343.9s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3345.2s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3346.6s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3354.2s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3355.5s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3356.8s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3364.0s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3365.4s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3366.7s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3374.2s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3375.5s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3375.5s] waiting at canvases for 300 s (nothing usable within 2.5 m)
+[PO5 3376.8s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3384.6s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3385.9s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3387.2s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3395.1s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3396.4s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3397.8s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3405.2s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3406.5s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3407.9s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3415.7s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3417.1s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3423.0s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3433.8s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3435.1s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3436.4s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3443.8s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3445.1s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3446.4s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3453.8s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3453.8s] waiting at canvases for 360 s (nothing usable within 2.5 m)
+[PO5 3455.1s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3456.5s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3464.9s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3466.3s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3467.6s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3477.8s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3479.2s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3480.5s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3489.5s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3490.8s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3492.2s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3500.9s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3502.2s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3503.5s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3511.4s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3512.8s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3514.1s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3523.0s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3524.4s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3525.7s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3525.7s] waiting at canvases for 420 s (nothing usable within 2.5 m)
+[PO5 3534.0s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3535.3s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3536.7s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3545.6s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3547.0s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3548.3s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3556.0s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3557.3s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3558.7s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3566.8s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3568.2s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3569.5s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3577.5s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3578.8s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3580.2s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3589.3s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3590.7s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3592.0s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3600.8s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3602.1s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3602.1s] waiting at canvases for 480 s (nothing usable within 2.5 m)
+[PO5 3603.4s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3610.9s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3612.2s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3613.6s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3620.9s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3622.2s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3623.5s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3631.7s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3635.5s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3650.6s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3667.4s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3668.8s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3670.1s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3677.3s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3678.6s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3679.9s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3688.6s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3689.9s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3691.2s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3699.5s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3699.5s] waiting at canvases for 540 s (nothing usable within 2.5 m)
+[PO5 3704.5s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3707.7s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3717.6s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3719.0s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3720.3s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3725.9s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3727.2s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3728.5s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3734.2s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3735.5s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3736.8s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3745.5s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3746.8s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3748.1s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3757.0s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3758.4s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3759.7s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3769.9s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3771.2s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3772.6s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3772.6s] waiting at canvases for 600 s (nothing usable within 2.5 m)
+[PO5 3782.4s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3783.7s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3785.1s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3795.7s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3797.1s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3798.4s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3809.0s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3810.3s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3811.7s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3822.7s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3824.1s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3825.4s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3836.8s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3838.2s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3839.5s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3850.9s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3852.2s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3853.5s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3865.6s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3866.9s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3866.9s] waiting at canvases for 660 s (nothing usable within 2.5 m)
+[PO5 3868.2s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3880.6s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3881.9s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3883.3s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3896.0s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3897.3s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3898.7s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3909.5s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3910.8s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3912.1s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3922.0s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3923.4s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3924.7s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3936.2s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3937.6s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3938.9s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3950.9s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3952.2s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3953.5s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3965.0s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3965.0s] waiting at canvases for 720 s (nothing usable within 2.5 m)
+[PO5 3966.3s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3967.7s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3979.0s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3980.3s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3981.6s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3994.6s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3996.0s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 3997.3s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4015.9s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4021.2s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4022.4s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4033.3s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4034.7s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4036.0s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4047.0s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4048.3s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4049.6s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4061.6s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4065.9s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4067.2s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4067.2s] waiting at canvases for 780 s (nothing usable within 2.5 m)
+[PO5 4077.8s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4079.1s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4080.4s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4091.2s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4092.5s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4093.9s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4104.3s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4105.6s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4106.9s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4117.5s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4118.8s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4120.1s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4131.2s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4132.5s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4133.8s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4145.1s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4146.4s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4147.8s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4158.2s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4159.5s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4159.5s] waiting at canvases for 840 s (nothing usable within 2.5 m)
+[PO5 4160.8s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4171.9s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4173.2s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4174.5s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4185.6s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4186.9s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4188.2s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4200.1s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4201.4s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4202.7s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4215.3s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4216.6s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4217.9s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4229.0s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4230.2s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4231.6s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4240.3s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4246.1s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4247.4s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4255.1s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4255.1s] waiting at canvases for 900 s (nothing usable within 2.5 m)
+[PO5 4259.8s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4261.0s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4268.4s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4272.7s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4274.1s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4283.3s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4287.4s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4288.7s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4295.0s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4298.3s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4299.6s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4306.2s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4310.7s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4312.1s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4319.5s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4323.8s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4331.2s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4342.7s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4347.4s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4348.8s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4348.8s] waiting at canvases for 960 s (nothing usable within 2.5 m)
+[PO5 4354.4s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4357.9s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4359.2s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4364.2s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4367.6s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4369.3s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4377.9s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4382.1s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4383.5s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4391.8s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4397.2s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4398.5s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4407.2s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4411.5s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4412.9s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4416.9s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4424.5s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4425.8s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4430.4s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4437.8s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4437.8s] waiting at canvases for 1020 s (nothing usable within 2.5 m)
+[PO5 4439.1s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4445.0s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4452.7s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4454.0s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4459.1s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4467.8s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4469.2s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4473.2s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4481.2s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4482.5s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4487.2s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4494.6s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4495.9s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4500.5s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4508.7s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4510.1s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4511.4s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4523.3s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4524.6s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4526.0s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4526.0s] waiting at canvases for 1080 s (nothing usable within 2.5 m)
+[PO5 4536.9s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4538.2s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4539.6s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4552.0s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4553.3s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4554.6s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4566.6s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4567.9s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4569.2s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4580.7s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4582.1s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4583.4s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4596.0s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4597.3s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4598.6s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4608.5s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4609.8s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4611.2s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4623.6s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4624.9s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4624.9s] waiting at canvases for 1140 s (nothing usable within 2.5 m)
+[PO5 4626.2s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4637.8s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4639.2s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4640.5s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4658.5s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4662.5s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4663.8s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4677.4s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4678.8s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4680.1s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4691.4s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4692.7s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4694.0s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4704.2s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4705.6s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4706.9s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4717.9s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4719.3s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4720.6s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4730.8s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4730.8s] waiting at canvases for 1200 s (nothing usable within 2.5 m)
+[PO5 4732.2s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4733.5s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4743.6s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4744.9s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4746.4s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4758.1s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4759.4s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4760.8s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4772.8s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4774.1s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4775.4s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4788.0s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4789.3s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4790.6s] pilot: goto (0.6, 5.6, 14.0) FAILED at (21.4, 0.0, 30.4) after 0.0 s
+[PO5 4802.2s] FAIL budget 4800 s exceeded
+[PO5 4809.3s] RESULT FAIL (code 2) flow=gn_pass heist=Gallery Night seed=1792002290
