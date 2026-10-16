@@ -240,6 +240,8 @@ CLIPS = {
     "interact_mid_armed": {"frames": 60, "loop": True, "speed": 0.0, "priority": 1},
     "interact_high_armed": {"frames": 60, "loop": True, "speed": 0.0, "priority": 1},
     "throw_bag_armed": {"frames": 30, "loop": False, "speed": 0.0, "priority": 1, "events": {"release": 15}},
+    # D-116 (DB-4): seated with a long gun across the lap (cartel / armed guard seat posts; sit_chair's seat and feet)
+    "sit_chair_armed": {"frames": 140, "loop": True, "speed": 0.0, "priority": 2},
     # D-116 third-person crew states (_anim_crew3p, SOURCE `crew_states`): akimbo firing set, downed actions, cuffed
     "aim_akimbo": {"frames": 90, "loop": True, "speed": 0.0, "priority": 2},
     "fire_akimbo": {"frames": 9, "loop": False, "speed": 0.0, "priority": 2, "events": {"shot": 0}},

@@ -5,7 +5,7 @@ seed: 3428229313  (zlib.crc32(asset_id))
 generator: Blender 4.5, tools/blender/lib 1.0.0
 rebuild: python3 tools/blender/build.py --category characters --asset char_anim_humanoid
 edit policy: generated file, never edit by hand; change the script and rebuild
-armed_interactions: D-116 crew interaction audit: a crew body holding a weapon plays interact_low_armed / interact_mid_armed / interact_high_armed / throw_bag_armed instead of interact_* / throw_bag (same frames and events: the left hand does the work, the weapon stays in the right hand at a low carry by the thigh). Unarmed bodies (civilians, NPCs) keep the shared clips. carry_bag_walk now holds the bag strap with the LEFT hand at the left shoulder and keeps the weapon low in the right: the carried bag visual belongs on the left shoulder / back (Back socket), not in the right hand
+armed_interactions: D-116 crew interaction audit: a crew body holding a weapon plays interact_low_armed / interact_mid_armed / interact_high_armed / throw_bag_armed instead of interact_* / throw_bag (same frames and events: the left hand does the work, the weapon stays in the right hand at a low carry by the thigh). Unarmed bodies (civilians, NPCs) keep the shared clips. carry_bag_walk now holds the bag strap with the LEFT hand at the left shoulder and keeps the weapon low in the right: the carried bag visual belongs on the left shoulder / back (Back socket), not in the right hand. sit_chair_armed (140 f loop, D-116 DB-4): an armed body on a chair Seat (sit_chair's seat height and feet), the long gun across the lap, muzzle left; play it for a seated cartel gunman / armed guard instead of sit_chair
 assault_checks: rappel_hang: lowest_skin=300.0mm rope_err=0.0mm sternum_gap=10.0cm feet_above_root=0.37m; rappel_descend: lowest_skin=299.7mm rope_err=0.0mm sternum_gap=10.1cm feet_above_root=0.39m; rappel_land: lowest_skin=-1.2mm start_err=0.00mm end_err=0.00mm; heli_door_idle: lowest_skin=6.0mm crown=1.211m; heli_door_aim: lowest_skin=6.0mm crown=1.217m; heli_door_fire: lowest_skin=6.0mm crown=1.218m; van_exit: lowest_skin=-0.0mm end_err=0.00mm; breach_place: lowest_skin=-0.0mm start_err=0.00mm end_err=0.00mm; breach_standback: lowest_skin=-5.5mm start_err=0.00mm end_err=0.00mm
 bar_placement: bartender_wipe / bartender_pour: root on the floor behind the bar, facing it; bar top 1.05 m high, its near edge 0.28 m ahead of the root (Godot z = -0.28; 6 cm and more below the top the body stays behind z = -0.24). wipe: the rag (rag_grip) on the bar top in r 0.075 m circles, one per second, the centre drifting over Godot x 0.03..0.16, z -0.47; the left palm flat on the bar at Godot (-0.20, 1.05, -0.40). pour: the bottle (bottle_grip) stands on the bar at Godot (0.270,1.050,-0.440) at frame 0 and from set_down@110 ((0.270,1.050,-0.440)), lifted at lift@2; from pour_start@39 to pour_end@77 it is tipped past 100 deg with its mouth 0.045..0.060 m above the glass rim, within 0.031 m of the glass axis; the glass (glass_grip, LEFT hand) stands at Godot (0.020,1.050,-0.420) throughout (moves 0.0 mm)
 bed_pose: sit_bed_read: the root is ON THE MATTRESS TOP under the pelvis (place it at the sleeping surface, e.g. a 0.55 m bed -> root at y 0.55), facing the foot end; hips joint 0.126 m above the root, buttocks and heels on the surface (lowest skin 6 mm above it), ankles 0.83 m ahead (mattress >= 1.08 m ahead of the root), trunk reclined 34 deg on pillows/headboard whose face meets the back 0.45 m behind the root at 0.54 m height
@@ -56,43 +56,44 @@ check.124: shield_idle: 108f 3.60s loop speed=0.0 reach_err=0.0mm step=0.2deg
 check.125: shield_walk: 28f 0.93s loop speed=1.6 reach_err=0.0mm step=19.7deg slide=0.000mm/f
 check.126: sit_bed_read: 300f 10.00s loop speed=0.0 reach_err=0.0mm step=19.5deg
 check.127: sit_chair: 120f 4.00s loop speed=0.0 reach_err=0.0mm step=0.3deg
-check.128: sit_chair_read: 300f 10.00s loop speed=0.0 reach_err=0.0mm step=21.2deg
-check.129: sit_chair_watch: 300f 10.00s loop speed=0.0 reach_err=0.0mm step=10.5deg
+check.128: sit_chair_armed: 140f 4.67s loop speed=0.0 reach_err=0.0mm step=0.7deg
+check.129: sit_chair_read: 300f 10.00s loop speed=0.0 reach_err=0.0mm step=21.2deg
 check.13: cower_stand: 150f 5.00s loop speed=0.0 reach_err=0.0mm step=13.2deg contact_slide=0.000mm/f
-check.130: smoke: 120f 4.00s loop speed=0.0 reach_err=0.0mm step=30.9deg
-check.131: sprint: 18f 0.60s loop speed=5.75 reach_err=0.0mm step=28.7deg slide=0.053mm/f
-check.132: strafe_l: 18f 0.60s loop speed=1.2 reach_err=0.0mm step=10.8deg slide=0.006mm/f
-check.133: strafe_r: 18f 0.60s loop speed=1.2 reach_err=0.0mm step=10.9deg slide=0.006mm/f
-check.134: surrender: 48f 1.60s speed=0.0 reach_err=0.0mm step=54.8deg
-check.135: surrender_b: 54f 1.80s speed=0.0 reach_err=0.0mm step=52.3deg start_err=0.00mm end_err=0.00mm max_diff_vs_surrender=125.8deg
-check.136: surrender_c: 42f 1.40s speed=0.0 reach_err=0.0mm step=51.9deg start_err=0.00mm end_err=0.00mm max_diff_vs_surrender=97.7deg
-check.137: surrender_idle: 96f 3.20s loop speed=0.0 reach_err=0.0mm step=0.7deg start_err=0.00mm
-check.138: surrender_idle_b: 110f 3.67s loop speed=0.0 reach_err=0.0mm step=1.9deg start_err=0.00mm max_diff_vs_surrender_idle=23.1deg
-check.139: surrender_idle_c: 84f 2.80s loop speed=0.0 reach_err=0.0mm step=6.1deg start_err=0.00mm max_diff_vs_surrender_idle=46.7deg
+check.130: sit_chair_watch: 300f 10.00s loop speed=0.0 reach_err=0.0mm step=10.5deg
+check.131: smoke: 120f 4.00s loop speed=0.0 reach_err=0.0mm step=30.9deg
+check.132: sprint: 18f 0.60s loop speed=5.75 reach_err=0.0mm step=28.7deg slide=0.053mm/f
+check.133: strafe_l: 18f 0.60s loop speed=1.2 reach_err=0.0mm step=10.8deg slide=0.006mm/f
+check.134: strafe_r: 18f 0.60s loop speed=1.2 reach_err=0.0mm step=10.9deg slide=0.006mm/f
+check.135: surrender: 48f 1.60s speed=0.0 reach_err=0.0mm step=54.8deg
+check.136: surrender_b: 54f 1.80s speed=0.0 reach_err=0.0mm step=52.3deg start_err=0.00mm end_err=0.00mm max_diff_vs_surrender=125.8deg
+check.137: surrender_c: 42f 1.40s speed=0.0 reach_err=0.0mm step=51.9deg start_err=0.00mm end_err=0.00mm max_diff_vs_surrender=97.7deg
+check.138: surrender_idle: 96f 3.20s loop speed=0.0 reach_err=0.0mm step=0.7deg start_err=0.00mm
+check.139: surrender_idle_b: 110f 3.67s loop speed=0.0 reach_err=0.0mm step=1.9deg start_err=0.00mm max_diff_vs_surrender_idle=23.1deg
 check.14: crew_cuffed: 120f 4.00s loop speed=0.0 reach_err=0.0mm step=1.0deg
-check.140: tased: 30f 1.00s loop speed=0.0 reach_err=0.0mm step=13.9deg
-check.141: teller_count: 240f 8.00s loop speed=0.0 reach_err=0.0mm step=18.6deg contact_slide=0.000mm/f
-check.142: throw_bag: 30f 1.00s speed=0.0 reach_err=0.0mm step=57.5deg
-check.143: throw_bag_armed: 30f 1.00s speed=0.0 reach_err=0.0mm step=28.7deg
-check.144: throw_grenade: 24f 0.80s speed=0.0 reach_err=0.0mm step=42.9deg
-check.145: tied: 90f 3.00s loop speed=0.0 reach_err=0.0mm step=0.9deg
-check.146: turn_l: 24f 0.80s speed=0.0 reach_err=0.0mm step=12.3deg
-check.147: turn_r: 24f 0.80s speed=0.0 reach_err=0.0mm step=12.3deg
-check.148: van_exit: 36f 1.20s speed=0.0 reach_err=0.0mm step=20.3deg lowest_skin=-0.0mm end_err=0.00mm
-check.149: walk: 30f 1.00s loop speed=1.6 reach_err=0.0mm step=19.5deg slide=0.038mm/f
+check.140: surrender_idle_c: 84f 2.80s loop speed=0.0 reach_err=0.0mm step=6.1deg start_err=0.00mm max_diff_vs_surrender_idle=46.7deg
+check.141: tased: 30f 1.00s loop speed=0.0 reach_err=0.0mm step=13.9deg
+check.142: teller_count: 240f 8.00s loop speed=0.0 reach_err=0.0mm step=18.6deg contact_slide=0.000mm/f
+check.143: throw_bag: 30f 1.00s speed=0.0 reach_err=0.0mm step=57.5deg
+check.144: throw_bag_armed: 30f 1.00s speed=0.0 reach_err=0.0mm step=28.7deg
+check.145: throw_grenade: 24f 0.80s speed=0.0 reach_err=0.0mm step=42.9deg
+check.146: tied: 90f 3.00s loop speed=0.0 reach_err=0.0mm step=0.9deg
+check.147: turn_l: 24f 0.80s speed=0.0 reach_err=0.0mm step=12.3deg
+check.148: turn_r: 24f 0.80s speed=0.0 reach_err=0.0mm step=12.3deg
+check.149: van_exit: 36f 1.20s speed=0.0 reach_err=0.0mm step=20.3deg lowest_skin=-0.0mm end_err=0.00mm
 check.15: crew_cuffed_enter: 18f 0.60s speed=0.0 reach_err=0.0mm step=13.3deg
-check.150: walk_b: 30f 1.00s loop speed=1.6 reach_err=0.0mm step=18.3deg slide=0.000mm/f
-check.151: walk_back: 30f 1.00s loop speed=1.3 reach_err=0.0mm step=13.8deg slide=0.018mm/f
-check.152: walk_bl: 30f 1.00s loop speed=1.6 reach_err=0.0mm step=19.6deg slide=0.000mm/f
-check.153: walk_br: 30f 1.00s loop speed=1.6 reach_err=0.0mm step=19.6deg slide=0.000mm/f
-check.154: walk_fl: 30f 1.00s loop speed=1.6 reach_err=0.0mm step=17.4deg slide=0.000mm/f
-check.155: walk_fr: 30f 1.00s loop speed=1.6 reach_err=0.0mm step=17.4deg slide=0.000mm/f
-check.156: walk_l: 30f 1.00s loop speed=1.6 reach_err=0.0mm step=19.4deg slide=0.000mm/f
-check.157: walk_r: 30f 1.00s loop speed=1.6 reach_err=0.0mm step=19.4deg slide=0.000mm/f
-check.158: walk_start: 18f 0.60s speed=1.6 reach_err=0.0mm step=19.8deg slide=0.038mm/f idle0_err=0.00mm handoff_err=0.00mm
-check.159: walk_stop: 18f 0.60s speed=1.6 reach_err=0.0mm step=15.2deg slide=0.036mm/f handoff_err=0.00mm idle0_err=0.00mm
+check.150: walk: 30f 1.00s loop speed=1.6 reach_err=0.0mm step=19.5deg slide=0.038mm/f
+check.151: walk_b: 30f 1.00s loop speed=1.6 reach_err=0.0mm step=18.3deg slide=0.000mm/f
+check.152: walk_back: 30f 1.00s loop speed=1.3 reach_err=0.0mm step=13.8deg slide=0.018mm/f
+check.153: walk_bl: 30f 1.00s loop speed=1.6 reach_err=0.0mm step=19.6deg slide=0.000mm/f
+check.154: walk_br: 30f 1.00s loop speed=1.6 reach_err=0.0mm step=19.6deg slide=0.000mm/f
+check.155: walk_fl: 30f 1.00s loop speed=1.6 reach_err=0.0mm step=17.4deg slide=0.000mm/f
+check.156: walk_fr: 30f 1.00s loop speed=1.6 reach_err=0.0mm step=17.4deg slide=0.000mm/f
+check.157: walk_l: 30f 1.00s loop speed=1.6 reach_err=0.0mm step=19.4deg slide=0.000mm/f
+check.158: walk_r: 30f 1.00s loop speed=1.6 reach_err=0.0mm step=19.4deg slide=0.000mm/f
+check.159: walk_start: 18f 0.60s speed=1.6 reach_err=0.0mm step=19.8deg slide=0.038mm/f idle0_err=0.00mm handoff_err=0.00mm
 check.16: crew_cuffed_free: 24f 0.80s speed=0.0 reach_err=0.0mm step=26.9deg
-check.160: walk_text: 36f 1.20s loop speed=1.2 reach_err=0.0mm step=14.7deg slide=0.022mm/f
+check.160: walk_stop: 18f 0.60s speed=1.6 reach_err=0.0mm step=15.2deg slide=0.036mm/f handoff_err=0.00mm idle0_err=0.00mm
+check.161: walk_text: 36f 1.20s loop speed=1.2 reach_err=0.0mm step=14.7deg slide=0.022mm/f
 check.17: crouch_idle: 90f 3.00s loop speed=0.0 reach_err=0.0mm step=0.5deg
 check.18: crouch_walk: 27f 0.90s loop speed=1.5 reach_err=0.0mm step=16.0deg slide=0.020mm/f
 check.19: curator_inspect: 360f 12.00s loop speed=0.0 reach_err=0.0mm step=9.6deg contact_slide=0.036mm/f
@@ -305,6 +306,7 @@ clip.shield_idle: 108f loop=True speed_mps=0.0
 clip.shield_walk: 28f loop=True speed_mps=1.6
 clip.sit_bed_read: 300f loop=True speed_mps=0.0 events=page_turn@221
 clip.sit_chair: 120f loop=True speed_mps=0.0
+clip.sit_chair_armed: 140f loop=True speed_mps=0.0
 clip.sit_chair_read: 300f loop=True speed_mps=0.0 events=page_turn@221
 clip.sit_chair_watch: 300f loop=True speed_mps=0.0
 clip.smoke: 120f loop=True speed_mps=0.0
@@ -338,7 +340,7 @@ clip.walk_r: 30f loop=True speed_mps=1.6 dir_deg=90 dir_godot=(1.000,0,-0.000) f
 clip.walk_start: 18f loop=False speed_mps=1.6 events=step_r@15 handoff_frame=3
 clip.walk_stop: 18f loop=False speed_mps=1.6 events=step_l@14 handoff_frame=0
 clip.walk_text: 36f loop=True speed_mps=1.2
-clips: 161
+clips: 162
 cower_seated_seat: cower_seated: the npc_seat chair (seat top 0.47 m, root on the floor under the seat centre), no desk; hips joint 0.54 m above the root, feet flat 0.34 m ahead (balls on the floor, heels just up), the trunk curled forward over the knees, forearms over the head
 cower_stand_space: cower_stand: free-standing, in place; the rearmost skin is 0.19 m behind the root, so a wall face at Godot z = +0.21 (or further back) clears it: back it up to a wall there. Flinches at flinch_1@39, flinch_2@108
 crew_actions: D-116 round 228, as teammates see them. mask_on (30 f, mask_on@18): from idle f0, both hands bring the mask up to the face and press it on (show the mask at Head/Socket at mask_on), pull the strap back, end on idle_alert f0. Play it while the mask-up hold runs, scaled to Tweak.crew().mask_up_time_s (1.0 s = the clip's length), so crew_masked lands at its end. throw_grenade (24 f, release@11, done@24, the FP throwable_throw timing): an overhand with the LEFT arm, the weapon kept low in the right hand. Hide the held grenade and spawn the projectile at release (HandL/Socket)
@@ -366,7 +368,7 @@ hit_zones: D-116 non-lethal flinch by hit zone (pick from the damage info `zone`
 idle_thug_weapon: idle_thug: the long gun at HandR/Socket (the weapon grip convention), held low across the body: muzzle 30 deg below the horizontal, turned 38 deg to the left; the left hand loosely under the front of the receiver (0.19 m behind LeftHandIK), not on LeftHandIK
 locomotion_blend: crew 8-way blend set (D3-04): two BlendSpace2D (or two 3x3 grids of AnimationNodeBlend2/3), one per gait, blend position = the local move direction (x = right, y = forward, unit length) and ONE speed_scale per gait = v / (clip speed x motion_scale): walk (1.6 m/s, 30 f) at (0,1) walk, (0.71,0.71) walk_fr, (1,0) walk_r, (0.71,-0.71) walk_br, (0,-1) walk_b, (-0.71,-0.71) walk_bl, (-1,0) walk_l, (-0.71,0.71) walk_fl; run (3.5 m/s, 21 f) the same with run_*. Every clip of a gait has the same length, speed and stance share and the right foot down at normalised time 0, the left at 0.5 (`foot_down` in the clip rows), so blend them on one shared normalised time (BlendSpace2D sync = true, or seek every clip to the same time): the planted foot is the same foot in every direction. Walk <-> run: crossfade at the walk_run split (or a Blend2 on speed with both spaces advancing on the same normalised time: walk 1 s and run 0.7 s cycles; R down at 0 in both). strafe_l / strafe_r (1.2 m/s, 18 f shuffle) and walk_back (1.3 m/s) stay for the single-clip picker; the 8-way set replaces them inside the blend spaces.
 locomotion_transitions: walk_start / run_start: idle frame 0 -> the cycle; the clip's last frame IS walk frame 3 / run frame 4 (`handoff`), so switch to the cycle at that frame (no crossfade needed). walk_stop / run_stop: the clip's frame 0 IS walk / run frame 0 (`handoff`: the right heel strike) and the last frame IS idle frame 0. In place: A moves the root by `curve.<clip>` (root_m per frame, m at 1.78 m x motion_scale; the speed at both ends equals the cycle speed / 0): planted feet stay world-still at that root motion. Start = accelerate from 0 to the cycle speed by the right foot's first plant (step_r), then the cycle speed; stop = decelerate from the cycle speed to 0 at the last plant (walk: step_l, run: step_r), then settle into idle.
-loops: aim_akimbo,aim_pistol,aim_rifle,bartender_pour,bartender_wipe,bouncer_idle,browse,carry_bag_walk,climb_ladder,cower,cower_seated,cower_stand,crew_cuffed,crouch_idle,crouch_walk,curator_inspect,dance_a,dance_b,dance_c,desk_type,desk_work,downed,downed_crawl,dozer_walk,dozer_walk_heavy,flee,hands_up,hands_up_b,hands_up_c,heli_door_aim,heli_door_idle,hold_akimbo,hold_lmg,hold_pistol,hold_rifle,hold_smg,hold_sniper,idle,idle_alert,idle_alert_akimbo,idle_alert_lmg,idle_alert_pistol,idle_alert_rifle,idle_alert_smg,idle_alert_sniper,idle_thug,interact_high,interact_high_armed,interact_low,interact_low_armed,interact_mid,interact_mid_armed,investigate_look,kneel_cuffed,kneel_cuffed_b,kneel_cuffed_c,lean_wall,lie_down,mop,mug_carry_walk,mug_idle,pager_answer,phone_call,phone_seated,rappel,rappel_descend,rappel_hang,run,run_b,run_bl,run_br,run_fl,run_fr,run_l,run_r,shield_idle,shield_walk,sit_bed_read,sit_chair,sit_chair_read,sit_chair_watch,smoke,sprint,strafe_l,strafe_r,surrender_idle,surrender_idle_b,surrender_idle_c,tased,teller_count,tied,walk,walk_b,walk_back,walk_bl,walk_br,walk_fl,walk_fr,walk_l,walk_r,walk_text
+loops: aim_akimbo,aim_pistol,aim_rifle,bartender_pour,bartender_wipe,bouncer_idle,browse,carry_bag_walk,climb_ladder,cower,cower_seated,cower_stand,crew_cuffed,crouch_idle,crouch_walk,curator_inspect,dance_a,dance_b,dance_c,desk_type,desk_work,downed,downed_crawl,dozer_walk,dozer_walk_heavy,flee,hands_up,hands_up_b,hands_up_c,heli_door_aim,heli_door_idle,hold_akimbo,hold_lmg,hold_pistol,hold_rifle,hold_smg,hold_sniper,idle,idle_alert,idle_alert_akimbo,idle_alert_lmg,idle_alert_pistol,idle_alert_rifle,idle_alert_smg,idle_alert_sniper,idle_thug,interact_high,interact_high_armed,interact_low,interact_low_armed,interact_mid,interact_mid_armed,investigate_look,kneel_cuffed,kneel_cuffed_b,kneel_cuffed_c,lean_wall,lie_down,mop,mug_carry_walk,mug_idle,pager_answer,phone_call,phone_seated,rappel,rappel_descend,rappel_hang,run,run_b,run_bl,run_br,run_fl,run_fr,run_l,run_r,shield_idle,shield_walk,sit_bed_read,sit_chair,sit_chair_armed,sit_chair_read,sit_chair_watch,smoke,sprint,strafe_l,strafe_r,surrender_idle,surrender_idle_b,surrender_idle_c,tased,teller_count,tied,walk,walk_b,walk_back,walk_bl,walk_br,walk_fl,walk_fr,walk_l,walk_r,walk_text
 loops_marked_by: -loop name suffix (Godot strips it and sets LOOP_LINEAR)
 mop_grip: basis x=(1.0000,0.0000,0.0000) y=(0.0000,1.0000,0.0000) z=(0.0000,0.0000,1.0000) origin=(0.0000,-0.9500,-0.0000) relative to HandR/Socket; string mop: origin at the floor end of the shaft (the head's centre on the floor), +Y = up the shaft (length 1.4 m), the right fist 0.95 m up the shaft (the socket, thumb toward the top), the left fist at 1.25 m (the HandL weapon-grip convention on the same shaft axes)
 mop_sweep: mop: in place, the head sweeps x -0.22..0.42 m, 0.56..0.68 m ahead of the root (two sweeps per loop); keep ~1 m clear ahead

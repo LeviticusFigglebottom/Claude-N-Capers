@@ -135,10 +135,14 @@ def kessler_robe(kit: Kit) -> None:
     kit.add_soft(sl)
     n.shirt(kit, SILK_GRAPHITE, hips_z - 0.01 * k, collar="fold", point_len=0.052, spread=0.30)
     tr = n.trousers(kit, SILK_GRAPHITE, sl, belt_z + 0.022 * k, hem_r=0.066)
-    n.trouser_stripes(kit, tr, SILK_ICE, belt_z + 0.022 * k, half_w=0.0045)
+    robe_hem = 0.36 * k
+    # D-116: the ice piping only where it shows, below the robe hem. Under the robe the trouser faces are culled but a
+    # stripe on them was not, so seated (the robe side lifting off the thigh) it stood out as a pale strip from the
+    # waist to the floor.
+    n.trouser_stripes(kit, tr, SILK_ICE, robe_hem + 0.05 * k, half_w=0.0045)
     n0 = len(kit.soft.f)
     wrap_z = 1.00 * k
-    robe, _info = n.jacket(kit, SILK_ICE, 0.36 * k, wrap_z, lapel_mat=SILK_GRAPHITE, buttons=False, chest_welt=False,
+    robe, _info = n.jacket(kit, SILK_ICE, robe_hem, wrap_z, lapel_mat=SILK_GRAPHITE, buttons=False, chest_welt=False,
                            neck_w=0.085, lapel_w=0.075, flare=0.10, base=0.012, open_below=0.06, sleeve=1.88)
     n.cull_under(kit, n0, robe, "faces_hidden_by_robe")
     n.sash(kit, robe, SILK_GRAPHITE, wrap_z - 0.01 * k, side=1.0)
