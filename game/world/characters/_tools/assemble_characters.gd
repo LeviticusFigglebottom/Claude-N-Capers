@@ -253,6 +253,7 @@ func _assemble(asset_id: String, scene_path: String, lib: AnimationLibrary) -> b
 	_add_markers(skel, source, asset_id)
 	_add_extra_markers(skel, source, asset_id)
 	_apply_overrides(skel, source, asset_id, scene_path)
+	_apply_headwear_class(skel, source, asset_id)
 	_add_crowd_lod(skel, source, asset_id, scene_path)
 	_add_ragdoll(skel, asset_id)
 	var player: AnimationPlayer = AnimationPlayer.new()
@@ -430,6 +431,18 @@ func _add_extra_markers(skel: Skeleton3D, source: Dictionary, asset_id: String) 
 		marker.name = String(d.get("name", "Marker"))
 		marker.transform = _rounded(Transform3D(Basis.IDENTITY, Vector3(float(org[0]), float(org[1]), float(org[2]))))
 		parent.add_child(marker)
+
+
+## SOURCE.txt `headwear_class` -> meta `headwear_class` (StringName) on Skeleton3D/Headwear (lead 2026-10-16: ENV A's
+## HardHatHandLift lifts the hands of hard-hat rigs in surrender / cower).
+func _apply_headwear_class(skel: Skeleton3D, source: Dictionary, asset_id: String) -> void:
+	if not source.has(Spec.HEADWEAR_CLASS_KEY):
+		return
+	var hw: Node = skel.get_node_or_null(^"Headwear")
+	if hw == null:
+		_error("%s SOURCE.txt %s but no Skeleton3D/Headwear" % [asset_id, Spec.HEADWEAR_CLASS_KEY])
+		return
+	hw.set_meta(&"headwear_class", StringName(String(source[Spec.HEADWEAR_CLASS_KEY])))
 
 
 ## SOURCE.txt `material_override`: {mesh node name: material path} -> material_override (the Phantom's

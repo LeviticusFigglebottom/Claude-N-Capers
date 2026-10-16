@@ -6,7 +6,11 @@
 ##   escape  - heist_phase ESCAPE               (the getaway, unsecured bags, whole crew in the zone)
 ## A card shows SHOW_DELAY_S after its situation starts, stays DWELL_S (a thin bar drains) and closes
 ## early on the dismiss_tip action (D-096). Shown ids are stored in the profile (OnboardingTips), so each card appears
-## once per profile. A new unseen situation replaces the open card (its situation is over). Owner: ENV B.
+## once per profile. A new unseen situation replaces the open card (its situation is over).
+## D-115: each built heist (OnboardingTips.HEISTS) also has one card for its own mechanics. It queues behind the
+## situation cards: it shows once a heist situation is up and that situation's card is already seen (so on a first run
+## right after the casing / loud card, on later runs at heist start). No situation replaces it; the counter slot names
+## the heist instead of "n/4". Owner: ENV B.
 class_name OnboardingCard
 extends HudWidget
 
@@ -24,11 +28,24 @@ const ROWS: Dictionary = {
 			[&"drop_bag", &"ui.tip.stealth.throw"]],
 	&"loud": [[&"", &"ui.tip.loud.1"], [&"shout", &"ui.tip.loud.shout"], [&"", &"ui.tip.loud.3"]],
 	&"escape": [[&"", &"ui.tip.escape.1"], [&"", &"ui.tip.escape.2"], [&"", &"ui.tip.escape.3"]],
+	&"heist_glasshouse": [[&"", &"ui.tip.heist_glasshouse.1"], [&"", &"ui.tip.heist_glasshouse.2"],
+			[&"interact", &"ui.tip.heist_glasshouse.interact"], [&"", &"ui.tip.heist_glasshouse.drill"]],
+	&"heist_night_deposit": [[&"", &"ui.tip.heist_night_deposit.1"], [&"", &"ui.tip.heist_night_deposit.2"],
+			[&"", &"ui.tip.heist_night_deposit.lasers"], [&"", &"ui.tip.heist_night_deposit.ecm"]],
+	&"heist_shadow_ledger": [[&"", &"ui.tip.heist_shadow_ledger.cage"], [&"", &"ui.tip.heist_shadow_ledger.saw"],
+			[&"interact", &"ui.tip.heist_shadow_ledger.hack"], [&"", &"ui.tip.heist_shadow_ledger.alarm"]],
+	&"heist_dockside_burn": [[&"interact", &"ui.tip.heist_dockside_burn.thermite"],
+			[&"", &"ui.tip.heist_dockside_burn.shutters"], [&"", &"ui.tip.heist_dockside_burn.containers"]],
+	&"heist_gallery_night": [[&"", &"ui.tip.heist_gallery_night.list"],
+			[&"interact", &"ui.tip.heist_gallery_night.cut"], [&"", &"ui.tip.heist_gallery_night.gala"],
+			[&"", &"ui.tip.heist_gallery_night.last_call"]],
 }
 
 ## Tip on screen (&"" = none) and the situation the model is in now (tests).
 var shown: StringName = &""
 var situation: StringName = &""
+## Heist being played (Hud sets it from Hud.heist_id); picks the heist card (OnboardingTips.heist_tip).
+var heist_id: StringName = &""
 var show_delay_s: float = SHOW_DELAY_S
 var panel: PanelContainer
 var title: Label
@@ -100,23 +117,38 @@ func refresh() -> void:
 	if shown != &"":
 		_update_footer()  # Hud refreshes every widget on a device switch
 	situation = current_situation()
-	if shown != &"" and situation != shown and situation != &"" and not OnboardingTips.is_seen(situation):
+	if shown != &"" and OnboardingTips.ALL.has(shown) and situation != shown and situation != &"" \
+			and not OnboardingTips.is_seen(situation):
 		_close()  # h02 capture: the casing card outlived the mask-up; a card whose situation ended yields
-	if shown != &"" or situation == &"" or OnboardingTips.is_seen(situation):
+	var want: StringName = wanted_tip()
+	if shown != &"" or want == &"":
 		return  # an open card stays until it times out or is dismissed; dismiss() looks again
-	if _pending != situation:
-		_pending = situation
+	if _pending != want:
+		_pending = want
 		_pending_t = show_delay_s
 	set_process(true)
 	if _pending_t <= 0.0:
 		_show(_pending)
 
 
+## The card to show next (&"" = none): the situation's card while unseen, else the heist's card while unseen.
+func wanted_tip() -> StringName:
+	var sit: StringName = current_situation()
+	if sit == &"":
+		return &""  # the heist card waits for the heist to be under way too
+	if not OnboardingTips.is_seen(sit):
+		return sit
+	var heist_tip: StringName = OnboardingTips.heist_tip(heist_id)
+	if heist_tip != &"" and not OnboardingTips.is_seen(heist_tip):
+		return heist_tip
+	return &""
+
+
 func _process(delta: float) -> void:
 	if _pending != &"":
 		_pending_t -= delta
 		if _pending_t <= 0.0:
-			if _pending == current_situation():
+			if _pending == wanted_tip():
 				_show(_pending)
 			else:
 				_pending = &""
@@ -148,8 +180,11 @@ func _show(id: StringName) -> void:
 	shown = id
 	OnboardingTips.mark_seen(id)
 	title.text = UiText.t(StringName("ui.tip.%s.title" % id))
-	step_label.text = UiText.t(&"ui.tip.step", {"n": OnboardingTips.ALL.find(id) + 1,
-			"total": OnboardingTips.ALL.size()})
+	if OnboardingTips.ALL.has(id):
+		step_label.text = UiText.t(&"ui.tip.step", {"n": OnboardingTips.ALL.find(id) + 1,
+				"total": OnboardingTips.ALL.size()})
+	else:
+		step_label.text = UiText.t(StringName("heist.%s.name" % heist_id))
 	for c: Node in rows_box.get_children():
 		rows_box.remove_child(c)
 		c.queue_free()

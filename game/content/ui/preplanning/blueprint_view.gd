@@ -238,13 +238,24 @@ func _separate_markers() -> void:
 		placed.append(b)
 
 
-## Rects of the zone names _draw() prints (same rules: top-left of the zone, only when it fits).
+## Rects of the zone names _draw() prints (see _zone_labels).
 func _zone_label_rects() -> Array[Rect2]:
 	var out: Array[Rect2] = []
+	for z: Array in _zone_labels():
+		out.append(z[2] as Rect2)
+	return out
+
+
+## The zone names this floor shows: [text, baseline pos, rect] at the zone's top-left, only when the name fits the
+## zone (width AND height) and does not overlap a name already placed (ND audit: "WAREHOUSE YARD" on a 1 m strip ran
+## into "STAFF LOT").
+func _zone_labels() -> Array[Array]:
+	var out: Array[Array] = []
 	if board == null or size == Vector2.ZERO:
 		return out
 	var s: float = float(_transform()["scale"])
 	var font: Font = get_theme_default_font()
+	var placed: Array[Rect2] = []
 	for sh: Dictionary in board.blueprint.shapes:
 		var key: StringName = StringName(sh.get("label", &""))
 		var fl: int = int(sh.get("floor", -1))
@@ -252,9 +263,18 @@ func _zone_label_rects() -> Array[Rect2]:
 			continue
 		var r: Rect2 = sh.get("rect", Rect2()) as Rect2
 		var vr: Rect2 = Rect2(world_to_view(r.position), r.size * s)
-		var ts: Vector2 = font.get_string_size(UiText.t(key).to_upper(), HORIZONTAL_ALIGNMENT_LEFT, -1, ZONE_FONT)
-		if ts.x <= vr.size.x - 8.0:
-			out.append(Rect2(vr.position + Vector2(6, 4), ts))
+		var text: String = UiText.t(key).to_upper()
+		var ts: Vector2 = font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, ZONE_FONT)
+		var rect: Rect2 = Rect2(vr.position + Vector2(6, 4), ts)
+		if ts.x > vr.size.x - 8.0 or ts.y > vr.size.y - 4.0:
+			continue
+		var clash: bool = false
+		for p: Rect2 in placed:
+			clash = clash or p.intersects(rect)
+		if clash:
+			continue
+		placed.append(rect)
+		out.append([text, vr.position + Vector2(6, 18), rect])
 	return out
 
 
@@ -346,19 +366,8 @@ func _draw() -> void:
 		var fill: Color = tweak.shape_fill.get(StringName(sh.get("kind", &"")), tweak.grid_color) as Color
 		draw_rect(vr, fill)
 		draw_rect(vr, tweak.line_color, false, 2.0 if StringName(sh.get("kind", &"")) == &"building" else 1.0)
-	for sh: Dictionary in bp.shapes:
-		var key: StringName = StringName(sh.get("label", &""))
-		var fl2: int = int(sh.get("floor", -1))
-		if key == &"" or (fl2 >= 0 and fl2 != floor_index):
-			continue
-		var r2: Rect2 = sh.get("rect", Rect2()) as Rect2
-		var vr2: Rect2 = Rect2(world_to_view(r2.position), r2.size * s)
-		var text: String = UiText.t(key).to_upper()
-		var fs: int = ZONE_FONT
-		var tw: float = font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x
-		if tw > vr2.size.x - 8.0:
-			continue
-		draw_string(font, vr2.position + Vector2(6, 18), text, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, tweak.label_color)
+	for z: Array in _zone_labels():
+		draw_string(font, z[1] as Vector2, String(z[0]), HORIZONTAL_ALIGNMENT_LEFT, -1, ZONE_FONT, tweak.label_color)
 	draw_rect(area, tweak.line_color, false, 2.0)
 	_draw_scale_bar(area, s, font)
 

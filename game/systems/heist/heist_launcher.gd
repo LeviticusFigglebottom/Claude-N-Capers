@@ -10,6 +10,8 @@ extends RefCounted
 ## Net.lobby_message kind carrying HeistNetSync.bring_up() (server -> clients).
 const BRING_UP_KIND: StringName = &"heist_bring_up"
 const BRING_UP_VERSION: int = 1
+## X-5: launch() waits at most this many physics frames for the heist's navmesh to sync (_await_navigation).
+const NAV_READY_MAX_FRAMES: int = 600
 
 ## Maps owned by ENV A (dev only, never shipped as heists).
 const BUILTIN_MAPS: Dictionary = {
@@ -88,7 +90,50 @@ static func launch(heist_id: StringName, seed: int, difficulty: Enums.Difficulty
 		Net.lobby_send(BRING_UP_KIND, rt.net_sync.bring_up())
 	await tree.physics_frame
 	await tree.physics_frame
+	await _await_navigation(rt)
 	return rt
+
+
+## X-5: navigation regions (and the map) sync on worker threads (Godot's async iterations), so a fresh map's
+## navmesh is not queryable for a few physics frames, more under CPU load: map_get_closest_point answered the
+## origin and the GH "police do not park under the crew upstairs" test teleported the crew to the spawn instead
+## (~1 run in 30 in the police batch). Wait until every enabled region of the heist has built and
+## the map answers queries from it, at most NAV_READY_MAX_FRAMES physics frames (then warn and go on).
+static func _await_navigation(rt: HeistRuntime) -> void:
+	var tree: SceneTree = Engine.get_main_loop() as SceneTree
+	var frames: int = 0
+	while not navigation_ready(rt):
+		if frames >= NAV_READY_MAX_FRAMES or not is_instance_valid(rt) or not rt.is_inside_tree():
+			if is_instance_valid(rt) and rt.is_inside_tree():
+				Log.warn(&"heist", "launch(): navigation not synced after %d physics frames" % frames)
+			return
+		await tree.physics_frame
+		frames += 1
+	if frames > 0:
+		Log.info(&"heist", "launch(): navigation synced after %d more physics frames" % frames)
+
+
+## True when every enabled NavigationRegion3D (with polygons) under `rt` has built and its map's current iteration
+## includes it: the map has a polygon (of some region) right on a point of the region's own surface.
+static func navigation_ready(rt: HeistRuntime) -> bool:
+	if rt == null or not is_instance_valid(rt) or not rt.is_inside_tree():
+		return true
+	for n: Node in rt.find_children("*", "NavigationRegion3D", true, false):
+		var reg: NavigationRegion3D = n as NavigationRegion3D
+		if not reg.is_inside_tree() or not reg.enabled or reg.navigation_mesh == null \
+				or reg.navigation_mesh.get_polygon_count() == 0:
+			continue
+		var rid: RID = reg.get_rid()
+		var map_rid: RID = reg.get_navigation_map()
+		if not map_rid.is_valid() or NavigationServer3D.region_get_iteration_id(rid) == 0 \
+				or NavigationServer3D.map_get_iteration_id(map_rid) == 0:
+			return false
+		var centre: Vector3 = NavigationServer3D.region_get_bounds(rid).get_center()
+		var p: Vector3 = NavigationServer3D.region_get_closest_point(rid, centre)
+		if not NavigationServer3D.map_get_closest_point_owner(map_rid, p).is_valid() \
+				or NavigationServer3D.map_get_closest_point(map_rid, p).distance_to(p) > 0.05:
+			return false
+	return true
 
 
 ## The map scene, loaded on a worker thread while the main loop keeps running (one frame per poll),

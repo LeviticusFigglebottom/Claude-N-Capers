@@ -8,10 +8,10 @@ edit policy: generated file, never edit by hand; change the script and rebuild
 attach_Back: bone chest, local [0.0000, 0.0944, 0.1376] (model [0.0000, 1.3584, 0.1569], Godot axes, rest pose)
 attach_Head: bone head, local [0.0000, 0.0846, -0.0927] (model [0.0000, 1.7409, -0.0801], Godot axes, rest pose)
 attach_Hip: bone hips, local [0.2271, 0.0532, 0.0390] (model [0.2271, 1.0491, 0.0416], Godot axes, rest pose)
-body_faces_culled: 5717
+body_faces_culled: 5798
 body_params: {"age": 0.72, "beard_shadow": 0.95, "build": 0.95, "gender": 0.0, "hair": "buzz", "hair_color": "grey", "hair_peak": 0.0, "height": 1.86, "lip": "auto", "skin": 1}
 bones: 52
-faces_hidden_by_bomber: 2446
+faces_hidden_by_bomber: 2445
 fp_sleeve: {"cuff": "char_knit_graphite", "glove": "char_crew_glove_tan", "sleeve": "char_crew_dutch_bomber"}
 hair_note: beard + moustache (2894 tris) joined into Hair
 head_note: hat-free; the crew mask attaches at Head (face centre)
@@ -19,5 +19,5 @@ look: Dutch: brown leather bomber, cream shearling collar, ribbed waist/cuffs, z
 meshes: Body,Gear,Hair,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 30402
-tris_by_mesh: {"Body": 7394, "Gear": 302, "Hair": 4094, "Outfit": 18612}
+tris: 30370
+tris_by_mesh: {"Body": 7232, "Gear": 302, "Hair": 4094, "Outfit": 18742}

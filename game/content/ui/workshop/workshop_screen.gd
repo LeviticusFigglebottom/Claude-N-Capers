@@ -471,6 +471,16 @@ func _rebuild_visual() -> void:
 	stage.show_build(model.weapon(), model.applied_mods())
 
 
+## The damage row: the per-shot total, plus "(pellets x each)" for a multi-pellet shot or a loaded ammo type
+## (D-118: a slug reads "160 (1 x 160)", HE "160 (4 x 40)"; the total is the stock one, as it fires).
+static func damage_text(rows: Dictionary) -> String:
+	var total: float = float((rows.get("shown", {}) as Dictionary).get("damage", 0.0))
+	var n: int = int(rows.get("pellets", 1))
+	if n <= 1 and StringName(rows.get("ammo", &"")) == &"":
+		return _fmt(total)
+	return UiText.t(&"ui.stat.damage_pellets", {"total": _fmt(total), "pellets": n, "each": _fmt(snappedf(total / n, 0.1))})
+
+
 func _refresh_stats() -> void:
 	var rows: Dictionary = model.stat_rows()
 	var w: WeaponDef = model.weapon()
@@ -489,6 +499,8 @@ func _refresh_stats() -> void:
 			val.text = "-"
 			continue
 		val.text = _fmt((rows["shown"] as Dictionary).get(k, 0))
+		if String(k) == "damage":
+			val.text = damage_text(rows)
 		if (rows.get("boosted", []) as Array).has(String(k)):
 			val.text = UiText.t(&"ui.stats.boosted_value", {"value": val.text})
 		var deltas: Dictionary = rows["delta"]

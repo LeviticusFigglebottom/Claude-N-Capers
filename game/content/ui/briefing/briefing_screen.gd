@@ -27,6 +27,9 @@ var playing: bool = false
 
 var portrait: ContactPortrait
 var blueprint: BlueprintPlaceholder
+## r224 GN capture: the heist's real pre-planning blueprint (read-only, entry floor), over the placeholder sketch,
+## which stays only for a heist without one (PreplanBlueprint.placeholder).
+var blueprint_view: BlueprintView
 var heist_label: Label
 var difficulty_label: Label
 var mode_label: Label
@@ -194,9 +197,29 @@ func _build_side_column(body: HBoxContainer) -> void:
 	blueprint.grid_color = data.blueprint_grid
 	blueprint.line_color = data.blueprint_line
 	col.add_child(blueprint)
+	blueprint_view = BlueprintView.new()
+	blueprint_view.name = "BriefingBlueprint"
+	blueprint_view.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	blueprint_view.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	blueprint_view.visible = false
+	blueprint.add_child(blueprint_view)
 	col.add_child(_head(&"ui.briefing.loot"))
 	loot_box = UiBuild.vbox(6)
 	col.add_child(loot_box)
+
+
+## The heist's real blueprint (entry floor, markers read-only) when it has one; else the placeholder sketch.
+func _show_blueprint() -> void:
+	var board: PreplanBoard = PreplanBoard.build(heist_id, difficulty) if heist_id != &"" else null
+	var real: bool = board != null and board.blueprint != null and not board.blueprint.placeholder
+	blueprint_view.visible = real
+	if not real:
+		return
+	blueprint_view.setup(board)
+	for b: Variant in blueprint_view.markers.values():
+		(b as Control).focus_mode = Control.FOCUS_NONE
+		(b as Control).mouse_filter = Control.MOUSE_FILTER_IGNORE
+	blueprint_view.queue_redraw()
 
 
 ## Rebuilds every text from BriefingModel for the current heist and difficulty.
@@ -209,6 +232,7 @@ func refresh() -> void:
 	accent_strip.color = UiAccent.for_heist(heist_id)
 	heist_label.add_theme_color_override(&"font_color", UiAccent.text_color(heist_id, UiAccent.app_bg()))
 	placeholder_label.visible = bool(model["placeholder"])
+	_show_blueprint()
 	difficulty_label.text = UiText.t(&"ui.briefing.difficulty", {"name": UiText.t(UiText.difficulty_key(difficulty))})
 	mode_label.text = UiText.t(&"ui.briefing.mode", {"mode": UiText.t(StringName(model["mode_key"]))})
 	pay_label.text = UiText.t(&"ui.briefing.contract_pay", {"amount": UiText.money(int(model["contract_pay"]))})

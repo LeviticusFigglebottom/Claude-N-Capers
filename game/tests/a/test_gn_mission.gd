@@ -103,3 +103,29 @@ func test_gn_areaway_ladder_follows_the_grate() -> void:
 	grate.set_open(false)
 	await wait_physics_frames(2)
 	assert_false(ladder.usable, "grate closed: not climbable")
+
+
+## P GN-P1 check: an unmasked guest who stays in a gala room after last call trespasses (the room is RESTRICTED:
+## a guard who sees him fills at the casing rate, S1.1); before last call the same spot is PUBLIC (no fill).
+func test_gn_stayer_trespasses_after_last_call() -> void:
+	await _launch()
+	var zone: MapZone = null
+	for z: Node in _rt.map.find_children("*", "Area3D", true, false):
+		if z is MapZone and (z as MapZone).kind == MapZone.Kind.PUBLIC:
+			zone = z as MapZone
+			break
+	assert_true(zone != null, "a PUBLIC gala zone")
+	var p: Vector3 = NavigationServer3D.map_get_closest_point(_rt.map.get_world_3d().navigation_map, zone.global_position)
+	assert_true(_rt.stealth.in_zone(p + Vector3.UP, MapZone.Kind.PUBLIC), "spot %s is PUBLIC" % p)
+	_rt.teleport_crew(0, Transform3D(Basis.IDENTITY, p + Vector3(0, 0.05, 0)))
+	var c: CrewController = _rt.crew_controller(0) as CrewController
+	assert_false(c.masked, "an unmasked guest")
+	var g: NpcBase = ATestMaps.add_npc_observer(_rt, &"guard", p + Vector3(0, 0.05, 4.5), Vector3.FORWARD)
+	await wait_physics_frames(3)
+	assert_near(_rt.stealth.fill_rate(g, c), 0.0, 0.0001, "PUBLIC during the gala: no fill")
+	_rt.mission.call(&"_on_last_call")
+	await wait_physics_frames(3)
+	assert_true(_rt.stealth.in_zone(p + Vector3.UP, MapZone.Kind.RESTRICTED), "the same spot is RESTRICTED now")
+	var r: float = _rt.stealth.fill_rate(g, c)
+	print("[GN stayer] fill after last call %.4f" % r)
+	assert_true(r > 0.0, "a guard who sees the stayer fills his meter (trespassing, casing rate)")

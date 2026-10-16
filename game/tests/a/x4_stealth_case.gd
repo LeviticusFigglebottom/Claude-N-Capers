@@ -18,10 +18,11 @@ func after_each() -> void:
 	await wait_frames(2)
 
 
-func run_stealth(heist: StringName, seed_value: int, expected_order: Array[StringName]) -> void:
+## `options`: extra HeistLauncher options (forced variants for a set-up case, X4StealthFlow.launch).
+func run_stealth(heist: StringName, seed_value: int, expected_order: Array[StringName], options: Dictionary = {}) -> void:
 	var t0: int = Time.get_ticks_msec()
 	flow = X4StealthFlow.new(self)
-	if not await flow.launch(heist, seed_value):
+	if not await flow.launch(heist, seed_value, options):
 		_report()
 		return
 	var ok: bool = await X4StealthRoutes.play(flow)
@@ -46,6 +47,8 @@ func run_stealth(heist: StringName, seed_value: int, expected_order: Array[Strin
 		assert_true(at > pos, "objective %s completed after the previous step (order %s)" % [id, flow.completed])
 		pos = maxi(pos, at)
 	assert_ne(flow.objective(&"escape"), Enums.ObjectiveState.HIDDEN, "the mission opened the escape")
+	assert_eq(flow.objective(&"escape"), Enums.ObjectiveState.COMPLETED, "escape completed (events.md v1.7)")
+	assert_true(flow.completed_at_end.has(&"escape"), "escape completed before heist_ended (%s)" % [flow.completed_at_end])
 	assert_true(wall_s < BUDGET_S, "under the headless budget (%.1f s)" % wall_s)
 
 
