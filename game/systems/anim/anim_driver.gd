@@ -117,6 +117,22 @@ const HIT_ZONE_CLIPS: Array[StringName] = [HIT_HEAD, HIT_CHEST, HIT_SHOULDER_L, 
 const HIT_ZONE_HIPS_Y_M: float = 0.95
 ## Damage types whose `zone` / `position` name a point on the body (explosions, fire, gas... use the direction set).
 const HIT_ZONE_TYPES: Array[int] = [Enums.DamageType.BULLET, Enums.DamageType.MELEE]
+## characters.md v1.20 (SOURCE weapon_holds): weapon class -> hold kind (idle_alert_<kind> / hold_<kind>). PISTOL is
+## `akimbo` for a pair (WeaponDef.akimbo). The aim / fire / reload clips stay two families: PISTOL_KINDS aim as
+## pistols, every other kind as a rifle.
+const KIND_BY_CLASS: Dictionary = {
+	Enums.WeaponClass.ASSAULT_RIFLE: &"rifle", Enums.WeaponClass.SHOTGUN: &"rifle", Enums.WeaponClass.SMG: &"smg",
+	Enums.WeaponClass.SPECIAL: &"smg", Enums.WeaponClass.SNIPER: &"sniper", Enums.WeaponClass.LMG: &"lmg",
+	Enums.WeaponClass.PISTOL: &"pistol",
+}
+const PISTOL_KINDS: Array[StringName] = [&"pistol", &"akimbo"]
+## v1.20 armed interactions (SOURCE armed_interactions): a crew body holding a weapon plays `<clip>_armed`.
+const ARMED_SUFFIX: String = "_armed"
+const ARMED_CLIPS: Array[StringName] = [&"interact_low", &"interact_mid", &"interact_high", &"throw_bag"]
+## v1.20: the carried-bag visual (LootDef.bag_model) on Back/Socket while the crew body carries a bag.
+const CARRIED_BAG_NODE: String = "CarriedBag"
+## v1.20 akimbo: the pair's second gun (WeaponVisual.offhand) moves to HandL/Socket under this name.
+const OFFHAND_NODE: String = "ThirdPersonOffhand"
 ## Starts / stops only for straight-ahead motion (|dir . forward| at least this).
 const START_STOP_DOT: float = 0.7
 ## One-shot hints that are not held as an idle once played (the hint may linger in the brain).
@@ -178,10 +194,16 @@ var hat_lift: HardHatHandLift = null
 var hold_layer: UpperBodyLayer = null
 ## Crossfade (s) used for the last clip change (0 for the first clip).
 var last_blend_s: float = -1.0
-## &"pistol" or &"rifle": aim/fire/reload clip family.
+## Hold kind (v1.20 KIND_BY_CLASS): rifle / smg / sniper / lmg / pistol / akimbo; aim_family() gives the
+## aim / fire / reload clip family.
 var weapon_kind: StringName = &"pistol"
 ## Third-person WeaponVisual at HandR/Socket (null when there is no model).
 var weapon_visual: Node3D = null
+## v1.20 akimbo: the pair's second gun, moved to HandL/Socket (null otherwise).
+var weapon_offhand: Node3D = null
+## v1.20: the carried-bag visual at Back/Socket (null when not carrying), and the LootBag it shows.
+var bag_visual: Node3D = null
+var _shown_bag: Node = null
 
 var _body: Node3D = null
 var _npc: NpcBase = null
@@ -298,6 +320,7 @@ func _exit_tree() -> void:
 		var sig: Signal = pair[0]
 		if sig.is_connected(pair[1]):
 			sig.disconnect(pair[1])
+	_clear_bag_visual()  # v1.20: the LootBag shows its own visual again
 
 
 ## (Re)find the visual's AnimationPlayer and the weapon; returns true when active.
@@ -367,6 +390,9 @@ func tick(delta: float) -> void:
 	_update_hold_layer(delta, tw)
 	if weapon_visual != null and is_instance_valid(weapon_visual):
 		weapon_visual.visible = not POSE_CLIPS.has(want) and _death_clip == &""
+		if weapon_offhand != null and is_instance_valid(weapon_offhand):
+			weapon_offhand.visible = weapon_visual.visible
+	_update_bag_visual(tw)
 	if hat_lift != null and is_instance_valid(hat_lift):
 		var lift_on: float = 1.0 if tw.hard_hat_lift_clips.has(clip) else 0.0
 		hat_lift.influence = move_toward(hat_lift.influence, lift_on, delta * tw.hard_hat_lift_rate)
@@ -527,7 +553,7 @@ func _active_clip(hint_clip: StringName) -> StringName:
 	elif moving:
 		out = _locomotion_clip(speed, tw)
 	elif _aiming():
-		out = &"aim_rifle" if weapon_kind == &"rifle" else &"aim_pistol"
+		out = &"aim_rifle" if aim_family() == &"rifle" else &"aim_pistol"
 	elif hint_clip != &"" and hint_clip != &"idle" and not ONCE_ONLY_HINTS.has(hint_clip):
 		out = hint_clip
 	return out
@@ -540,10 +566,12 @@ func horizontal_speed() -> float:
 
 ## Rebuild the third-person weapon at `HandR/Socket` (crew: equipped weapon; NPC: EnemyDef.weapon).
 func refresh_weapon() -> void:
-	if weapon_visual != null and is_instance_valid(weapon_visual):
-		weapon_visual.get_parent().remove_child(weapon_visual)
-		weapon_visual.queue_free()
+	for n: Node3D in [weapon_visual, weapon_offhand]:
+		if n != null and is_instance_valid(n):
+			n.get_parent().remove_child(n)
+			n.queue_free()
 	weapon_visual = null
+	weapon_offhand = null
 	var def: WeaponDef = null
 	var mod_ids: Array[StringName] = []
 	if _crew != null and _crew.weapons != null:
@@ -566,6 +594,22 @@ func refresh_weapon() -> void:
 	socket.add_child(wv)
 	wv.setup(def, LoadoutResolver.applied_mods(def, mod_ids))
 	weapon_visual = wv
+	_place_offhand(wv)
+
+
+## v1.20 akimbo: WeaponVisual builds the pair as the gun plus `offhand` beside it (the first-person rest pose); in
+## third person the second gun goes in the left fist: HandL/Socket, the mirrored weapon-grip convention (identity).
+## One gun per hand, never the pair in one hand.
+func _place_offhand(wv: WeaponVisual) -> void:
+	var socket: Node3D = rig.get_node_or_null(^"Skeleton3D/HandL/Socket") as Node3D
+	if not wv.is_akimbo() or socket == null:
+		return
+	var off: Node3D = wv.offhand
+	off.get_parent().remove_child(off)
+	off.name = OFFHAND_NODE
+	socket.add_child(off)
+	off.transform = Transform3D.IDENTITY
+	weapon_offhand = off
 
 
 # --- Selection helpers ---------------------------------------------------------------------
@@ -676,8 +720,60 @@ func _interact_clip(tw: AnimTweak) -> StringName:
 	if _interact_kind == &"place_drill" or _interact_kind == &"fix_drill":
 		return &"drill_place"  # D-111: setting / fixing a drill
 	if _interact_height < tw.interact_low_max_m:
-		return &"interact_low"
-	return &"interact_high" if _interact_height > tw.interact_high_min_m else &"interact_mid"
+		return armed_clip(&"interact_low")
+	return armed_clip(&"interact_high" if _interact_height > tw.interact_high_min_m else &"interact_mid")
+
+
+## characters.md v1.20 (SOURCE armed_interactions): `c`'s `_armed` variant (the left hand works, the weapon stays
+## low in the right) while the crew body holds a weapon and the rig has it; otherwise `c`.
+func armed_clip(c: StringName) -> StringName:
+	if _crew == null or not _holds_weapon or not ARMED_CLIPS.has(c) or player == null:
+		return c
+	var a: StringName = StringName(String(c) + ARMED_SUFFIX)
+	return a if player.has_animation("%s/%s" % [LIBRARY, a]) else c
+
+
+## v1.20: while the crew body carries a LootBag, its LootDef.bag_model (else the bag's own visual scene) sits at
+## Back/Socket x AnimTweak.carried_bag_offset (the left shoulder strap of carry_bag_walk); the LootBag's own visual
+## (which follows the carrier's back) is hidden meanwhile. Dropped / thrown / secured: removed, the bag shows again.
+func _update_bag_visual(tw: AnimTweak) -> void:
+	var bag: Node = _crew.carried_bag if _crew != null and _crew.is_carrying_bag() else null
+	if bag == _shown_bag and (bag == null or (bag_visual != null and is_instance_valid(bag_visual))):
+		return
+	_clear_bag_visual()
+	var socket: Node3D = rig.get_node_or_null(^"Skeleton3D/Back/Socket") as Node3D if rig != null else null
+	if bag == null or socket == null:
+		return
+	var lb: LootBag = bag as LootBag
+	var def: LootDef = ContentDB.loot(lb.loot_id) if lb != null and lb.loot_id != &"" else null
+	var scene: PackedScene = def.bag_model if def != null and def.bag_model != null else null
+	if scene == null and lb != null:
+		scene = lb.visual_scene if lb.visual_scene != null else LootBag.PLACEHOLDER
+	if scene == null:
+		return
+	var inst: Node3D = scene.instantiate() as Node3D
+	if inst == null:
+		return
+	inst.name = CARRIED_BAG_NODE
+	socket.add_child(inst)
+	inst.transform = tw.carried_bag_offset
+	if lb != null and lb.visual_instance != null and is_instance_valid(lb.visual_instance) and scene == LootBag.PLACEHOLDER:
+		inst.scale = lb.visual_instance.scale  # the placeholder is sized by weight class
+	if lb != null and lb.visual_root != null:
+		lb.visual_root.visible = false
+	bag_visual = inst
+	_shown_bag = bag
+
+
+func _clear_bag_visual() -> void:
+	if bag_visual != null and is_instance_valid(bag_visual):
+		bag_visual.get_parent().remove_child(bag_visual)
+		bag_visual.queue_free()
+	bag_visual = null
+	var lb: LootBag = _shown_bag as LootBag if _shown_bag != null and is_instance_valid(_shown_bag) else null
+	if lb != null and lb.visual_root != null:
+		lb.visual_root.visible = true
+	_shown_bag = null
 
 
 func _idle_clip() -> StringName:
@@ -711,7 +807,7 @@ func _update_hold_layer(delta: float, tw: AnimTweak) -> void:
 	var want: StringName = &""
 	if _layered_locomotion(clip):
 		if _aiming():
-			want = &"aim_rifle" if weapon_kind == &"rifle" else &"aim_pistol"
+			want = &"aim_rifle" if aim_family() == &"rifle" else &"aim_pistol"
 			if _held_weapon_clip(&"hold_") == &"" or not player.has_animation("%s/%s" % [LIBRARY, want]):
 				want = &""
 		else:
@@ -987,9 +1083,18 @@ func _resolve(p_clip: StringName) -> String:
 	return ""
 
 
+## The aim / fire / reload clip family of weapon_kind: &"pistol" (pistol, akimbo) or &"rifle" (every other kind).
+func aim_family() -> StringName:
+	return &"pistol" if PISTOL_KINDS.has(weapon_kind) else &"rifle"
+
+
+## Hold kind (characters.md v1.20, SOURCE weapon_holds): WeaponDef.weapon_class -> rifle / smg / sniper / lmg /
+## pistol / akimbo (KIND_BY_CLASS; an akimbo pair of pistols is `akimbo`); NPCs without a WeaponDef: rifle / pistol.
 func _kind_for(def: WeaponDef) -> StringName:
 	if def != null:
-		return &"pistol" if def.weapon_class == Enums.WeaponClass.PISTOL else &"rifle"
+		if def.weapon_class == Enums.WeaponClass.PISTOL and def.akimbo:
+			return &"akimbo"
+		return KIND_BY_CLASS.get(def.weapon_class, &"rifle")
 	if _npc != null:
 		if _npc.enemy_def != null and _npc.enemy_def.params.has("anim_weapon"):
 			return StringName(_npc.enemy_def.params["anim_weapon"])
@@ -1081,7 +1186,7 @@ func _on_weapon_fired(shooter_net_id: int, _weapon_id: StringName, _suppressed: 
 	if player == null or shooter_net_id == 0 or shooter_net_id != _net_id():
 		return
 	_aim_hold_left = AnimTweak.data().aim_hold_s
-	play_oneshot(&"fire_rifle" if weapon_kind == &"rifle" else &"fire_pistol")
+	play_oneshot(&"fire_rifle" if aim_family() == &"rifle" else &"fire_pistol")
 
 
 ## A3-13: an NPC melee windup (`cue.npc_melee_swing` [R], source = this NPC) plays `melee` on every peer, so
@@ -1104,9 +1209,9 @@ func _on_reload_started(_ws: int, duration: float) -> void:
 	if player == null:
 		return
 	var tw: AnimTweak = AnimTweak.data()
-	var done_s: float = float(tw.reload_done_s.get(weapon_kind, 1.0))
+	var done_s: float = float(tw.reload_done_s.get(aim_family(), 1.0))
 	var speed: float = done_s / maxf(duration, 0.05)  # the `done` event frame lands on reload completion
-	play_oneshot(&"reload_rifle" if weapon_kind == &"rifle" else &"reload_pistol", duration, false, speed)
+	play_oneshot(&"reload_rifle" if aim_family() == &"rifle" else &"reload_pistol", duration, false, speed)
 
 
 func _on_equipped(_ws: int) -> void:
@@ -1115,7 +1220,7 @@ func _on_equipped(_ws: int) -> void:
 
 func _on_loot_dropped(_bag: int, crew_slot: int, thrown: bool) -> void:
 	if thrown and _crew != null and crew_slot == _crew.slot:
-		play_oneshot(&"throw_bag", -1.0, true)
+		play_oneshot(armed_clip(&"throw_bag"), -1.0, true)
 
 
 func _on_interaction_started(interactable_net_id: int, crew_slot: int, kind: StringName) -> void:
