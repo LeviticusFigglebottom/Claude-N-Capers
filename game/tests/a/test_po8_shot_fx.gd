@@ -128,13 +128,14 @@ func test_headshot_flag_and_flesh() -> void:
 	_rt.teleport_crew(0, Transform3D(Basis.IDENTITY, g.global_position + Vector3(0, 0, 3.0)))
 	await wait_physics_frames(3)
 	_shots.clear()
-	await _pull(BotUtil.look_at_intent(c.eye_position(), g.head_position()))
+	var head: Vector3 = g.head_position()  # D-121: the kill moves the root to the corpse anchor, so aim-time head
+	await _pull(BotUtil.look_at_intent(c.eye_position(), head))
 	var mine: Array[Dictionary] = _of(c.net_id)
 	assert_eq(mine.size(), 1, "one shot_fx")
 	if mine.size() == 1:
 		assert_true(int(mine[0]["flags"]) & ShotFx.FLAG_HEADSHOT != 0, "headshot flag")
 		assert_eq(StringName(mine[0]["surface"]), &"flesh", "a character is flesh")
-		assert_true((mine[0]["end"] as Vector3).distance_to(g.head_position()) < 0.6, "ends at the head")
+		assert_true((mine[0]["end"] as Vector3).distance_to(head) < 0.6, "ends at the head")
 	assert_false(g.alive, "and the shot really killed the guard")
 
 
