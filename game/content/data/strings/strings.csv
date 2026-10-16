@@ -123,6 +123,30 @@ ui.tip.escape.title,Get out
 ui.tip.escape.1,The getaway is here. Head for the escape zone.
 ui.tip.escape.2,Unsecured bags pay nothing. Go now or grab more.
 ui.tip.escape.3,You leave when the whole crew is in the zone.
+ui.tip.heist_glasshouse.title,The workshop safe
+ui.tip.heist_glasshouse.1,The safe opens with the manager's keycard or the safe code.
+ui.tip.heist_glasshouse.2,The keycard could be anywhere. The code is on a note.
+ui.tip.heist_glasshouse.interact,Swipe the card or enter the code: quick and quiet.
+ui.tip.heist_glasshouse.drill,"A drill opens it too, but it's loud. The floor guard hears it."
+ui.tip.heist_night_deposit.title,The time lock
+ui.tip.heist_night_deposit.1,"The vault needs the keycard and the time-lock code, or the server-room hack."
+ui.tip.heist_night_deposit.2,The code starts the time lock. Keep the basement quiet until it opens.
+ui.tip.heist_night_deposit.lasers,"Lasers guard the panel. Find the gap, time the sweep, or cross when the grid drops."
+ui.tip.heist_night_deposit.ecm,ECM does not stop lasers.
+ui.tip.heist_shadow_ledger.title,The server cage
+ui.tip.heist_shadow_ledger.cage,The cage opens with its code (find the note) or the saw.
+ui.tip.heist_shadow_ledger.saw,The saw is a last resort: the camera operator sits through the wall.
+ui.tip.heist_shadow_ledger.hack,The array resyncs and stops the hack. Interact to keep it running.
+ui.tip.heist_shadow_ledger.alarm,One alarm and the job is over.
+ui.tip.heist_dockside_burn.title,Burn the product
+ui.tip.heist_dockside_burn.thermite,Carry the thermite bag to the product and place it on the burn point.
+ui.tip.heist_dockside_burn.shutters,"It burns 30 s, then fire shutters close the room. Don't be inside."
+ui.tip.heist_dockside_burn.containers,The guns are in the containers with the Co-op's brass padlock. Customs seals hold nothing.
+ui.tip.heist_gallery_night.title,The gala clock
+ui.tip.heist_gallery_night.list,Only the listed canvases count. The Lantern Bearer is a must.
+ui.tip.heist_gallery_night.cut,"Cut a canvas from the stretcher, then carry it rolled."
+ui.tip.heist_gallery_night.gala,"Until last call, you can walk the ground floor unmasked as a guest."
+ui.tip.heist_gallery_night.last_call,"At last call the guests leave, and the whole building is restricted."
 ui.hud.hint.click_resume,Click to resume
 ui.hud.casing_blocked.sprint,Mask up to sprint ({key})
 ui.hud.casing_blocked.crouch,Mask up to crouch ({key})
