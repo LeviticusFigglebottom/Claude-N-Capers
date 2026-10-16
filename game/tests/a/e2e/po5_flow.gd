@@ -76,7 +76,7 @@ static func menu_heist_name(given: String) -> String:
 		var def: HeistDef = load(path) as HeistDef
 		if def != null and def.display_name != "":
 			return def.display_name
-	return name
+	return given
 
 
 ## main menu -> Safehouse -> Planning Table -> heist -> difficulty -> Briefing -> Continue -> Confirm plan
