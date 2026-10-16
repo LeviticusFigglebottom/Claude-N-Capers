@@ -5,17 +5,17 @@ seed: 2409495870  (zlib.crc32(asset_id))
 generator: Blender 4.5, tools/blender/lib 1.0.0
 rebuild: python3 tools/blender/build.py --category characters --asset char_gallery_curator
 edit policy: generated file, never edit by hand; change the script and rebuild
-attach_Back: bone chest, local [0.0000, 0.0897, 0.1042] (model [0.0000, 1.3073, 0.1227], Godot axes, rest pose)
+attach_Back: bone chest, local [0.0000, 0.0897, 0.1041] (model [0.0000, 1.3073, 0.1227], Godot axes, rest pose)
 attach_Head: bone head, local [0.0000, 0.0815, -0.0892] (model [0.0000, 1.6754, -0.0771], Godot axes, rest pose)
-attach_Hip: bone hips, local [0.1833, 0.0515, 0.0433] (model [0.1833, 1.0096, 0.0458], Godot axes, rest pose)
-body_faces_culled: 4752
+attach_Hip: bone hips, local [0.1826, 0.0515, 0.0432] (model [0.1826, 1.0096, 0.0457], Godot axes, rest pose)
+body_faces_culled: 4793
 body_params: {"age": 0.6, "beard_shadow": 0.0, "build": 0.3, "gender": 1.0, "hair": "bob", "hair_color": "dark", "hair_peak": 0.0, "height": 1.79, "lip": "char_lip_rose", "skin": 5}
 bones: 52
-faces_hidden_by_jacket: 3057
+faces_hidden_by_jacket: 3055
 look: Curator: bone-white tailored long jacket (black satin lapels) + trousers, black roll-neck, heavy black glasses, gold earrings, black lanyard with keycard; the one pale suit at the gala
 meshes: Body,Gear,Hair,Headwear,Outfit
 prop_note: keycard on the lanyard is skinned (Gear); a hand-held keycard prop goes at HandR/Socket
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 27112
-tris_by_mesh: {"Body": 9240, "Gear": 248, "Hair": 2088, "Headwear": 938, "Outfit": 14598}
+tris: 27162
+tris_by_mesh: {"Body": 9158, "Gear": 248, "Hair": 2088, "Headwear": 938, "Outfit": 14730}

@@ -8,14 +8,14 @@ edit policy: generated file, never edit by hand; change the script and rebuild
 attach_Back: bone chest, local [0.0000, 0.0915, 0.1136] (model [0.0000, 1.3292, 0.1325], Godot axes, rest pose)
 attach_Head: bone head, local [0.0000, 0.0828, -0.0907] (model [0.0000, 1.7034, -0.0784], Godot axes, rest pose)
 attach_Hip: bone hips, local [0.2192, 0.0670, 0.0722] (model [0.2192, 1.0397, 0.0755], Godot axes, rest pose)
-body_faces_culled: 4808
+body_faces_culled: 4902
 body_params: {"age": 0.5, "beard_shadow": 0.5, "build": 0.6, "gender": 0.0, "hair": "short", "hair_color": "dark", "hair_peak": 0.0, "height": 1.82, "lip": "auto", "skin": 4}
 bones: 52
-faces_hidden_by_vest: 1016
+faces_hidden_by_vest: 1022
 hip_note: Hip seat = the radio on the duty belt (right hip); the pager rides there
 look: Halden night-shift guard: steel-blue shirt + charcoal tie under a charcoal V-neck sweater vest, charcoal epaulettes with gold bars, burgundy/gold H sleeve patch, gold-rim burgundy chest badge, duty belt (radio = Hip), bare-headed
 meshes: Body,Gear,Hair,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 31639
-tris_by_mesh: {"Body": 9128, "Gear": 2140, "Hair": 1728, "Outfit": 18643}
+tris: 31567
+tris_by_mesh: {"Body": 8940, "Gear": 2140, "Hair": 1728, "Outfit": 18759}

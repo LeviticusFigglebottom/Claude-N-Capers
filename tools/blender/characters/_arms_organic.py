@@ -25,10 +25,12 @@ import numpy as np
 from _anim import FPS, HandShape
 from _arms_choreo import Hand, State, as_cam, mag_cam
 
-#: clip-name prefixes the layer applies to (the keyed one-shot handling clips)
-CLIPS = ("reload", "draw", "holster")
-#: sets left alone: their states carry a second gun / a string in ``State.extra`` that the layer would not move
-SKIP_SETS = ("akimbo", "bow")
+#: the clips the layer applies to: every reload* plus these (the keyed one-shot handling clips; not the bow's
+#: draw_string)
+CLIPS = ("draw", "holster")
+#: sets the generic wrapper leaves alone: akimbo's combined state carries the left gun in ``State.extra``; its two
+#: single-gun timelines get the layer before they are combined (``_arms_akimbo.akimbo_fns`` via ``wrap``)
+SKIP_SETS = ("akimbo",)
 
 #: (frequency Hz, damping ratio, gain) of the springs
 GUN_POS = (5.5, 0.45, 0.6)
@@ -73,7 +75,11 @@ FINGER_NAMES = ("index", "middle", "ring", "pinky")
 
 def applies(s, clip: str) -> bool:
     return (s.name not in SKIP_SETS and s.support not in ("melee", "throw", "deploy")
-            and clip.startswith(CLIPS))
+            and _handling(clip))
+
+
+def _handling(clip: str) -> bool:
+    return clip.startswith("reload") or clip in CLIPS
 
 
 # ---------------------------------------------------------------------------------------------
@@ -298,3 +304,14 @@ def apply(s, fns: dict) -> dict:
             share = DRAW_SHARE if clip == "draw" else 1.0
             out[clip] = Organic(fn, int(s.frames(clip)), dict(s.ev(clip)), share)
     return out
+
+
+def wrap(s, clip: str, fn):
+    """One single-gun timeline of ``clip`` with the layer (``FP_ORGANIC=0``: unchanged); for builders that combine
+    timelines themselves (akimbo)."""
+    import os  # noqa: PLC0415
+
+    if os.environ.get("FP_ORGANIC", "1") == "0" or not _handling(clip):
+        return fn
+    share = DRAW_SHARE if clip == "draw" else 1.0
+    return Organic(fn, int(s.frames(clip)), dict(s.ev(clip)), share)

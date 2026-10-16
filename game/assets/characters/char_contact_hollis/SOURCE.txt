@@ -7,8 +7,8 @@ rebuild: python3 tools/blender/build.py --category characters --asset char_conta
 edit policy: generated file, never edit by hand; change the script and rebuild
 attach_Back: bone chest, local [0.0000, 0.0894, 0.1194] (model [0.0000, 1.2927, 0.1378], Godot axes, rest pose)
 attach_Head: bone head, local [0.0000, 0.0805, -0.0882] (model [0.0000, 1.6566, -0.0763], Godot axes, rest pose)
-attach_Hip: bone hips, local [0.1997, 0.0505, 0.0341] (model [0.1997, 0.9983, 0.0365], Godot axes, rest pose)
-body_faces_culled: 4806
+attach_Hip: bone hips, local [0.1997, 0.0505, 0.0340] (model [0.1997, 0.9983, 0.0365], Godot axes, rest pose)
+body_faces_culled: 4884
 body_params: {"age": 0.85, "beard_shadow": 0.7, "build": 0.85, "gender": 0.0, "hair": "buzz", "hair_color": "grey", "hair_peak": 0.0, "height": 1.77, "lip": "auto", "skin": 2}
 bones: 52
 head_note: flat cap (top z 1.787 m, Blender axes)
@@ -16,5 +16,5 @@ meshes: Body,Gear,Hair,Headwear,Outfit
 portrait: QB-50a contact bust: Hollis 'Hammer' Reyes (fixer)
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 32998
-tris_by_mesh: {"Body": 9132, "Gear": 836, "Hair": 1200, "Headwear": 808, "Outfit": 21022}
+tris: 32970
+tris_by_mesh: {"Body": 8976, "Gear": 836, "Hair": 1200, "Headwear": 808, "Outfit": 21150}

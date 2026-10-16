@@ -7,13 +7,13 @@ rebuild: python3 tools/blender/build.py --category characters --asset char_galle
 edit policy: generated file, never edit by hand; change the script and rebuild
 attach_Back: bone chest, local [0.0000, 0.0901, 0.1143] (model [0.0000, 1.3073, 0.1328], Godot axes, rest pose)
 attach_Head: bone head, local [0.0000, 0.0815, -0.0892] (model [0.0000, 1.6754, -0.0771], Godot axes, rest pose)
-attach_Hip: bone hips, local [0.1891, 0.0510, 0.0343] (model [0.1891, 1.0096, 0.0368], Godot axes, rest pose)
-body_faces_culled: 4810
+attach_Hip: bone hips, local [0.1893, 0.0510, 0.0343] (model [0.1893, 1.0096, 0.0368], Godot axes, rest pose)
+body_faces_culled: 4902
 body_params: {"age": 0.7, "beard_shadow": 0.3, "build": 0.55, "gender": 0.0, "hair": "side_part", "hair_color": "grey", "hair_peak": 0.0, "height": 1.79, "lip": "auto", "skin": 2}
 bones: 52
 look: Gala guest: midnight-blue velvet dinner jacket, black satin shawl lapels, white shirt, black bow tie, satin-striped trousers, wine pocket square
 meshes: Body,Gear,Hair,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 32034
-tris_by_mesh: {"Body": 9124, "Gear": 300, "Hair": 1856, "Outfit": 20754}
+tris: 31978
+tris_by_mesh: {"Body": 8940, "Gear": 300, "Hair": 1856, "Outfit": 20882}

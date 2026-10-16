@@ -43,6 +43,17 @@ const KINDS: Array[StringName] = [KIND_TURRET_VAN, KIND_HELI, KIND_BREACH]
 @export var breach_place_wall_m: float = 0.45
 @export var breach_standback_s: float = 1.0
 @export var breach_standback_side_m: float = 0.8
+## ENV D root-motion curves (char_anim_humanoid SOURCE.txt `curve.<clip>: root_m=`, metres travelled at each frame
+## at root_curve_fps): the guide moves the root along these so the planted feet stay put (P GN-P1 foot slide).
+## test_po6_17_root_curves checks them against SOURCE.txt.
+@export var root_curve_fps: float = 30.0
+@export var breach_standback_curve: PackedFloat32Array = PackedFloat32Array([
+	0.0, 0.0, 0.0, 0.0071, 0.0274, 0.0593, 0.101, 0.1509, 0.2074, 0.2689, 0.3336, 0.4, 0.4664, 0.5311, 0.5926,
+	0.6491, 0.699, 0.7407, 0.7726, 0.7929, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8])
+@export var van_exit_curve: PackedFloat32Array = PackedFloat32Array([
+	0.0, 0.0, 0.0, 0.0, 0.0024, 0.0094, 0.0206, 0.0356, 0.0541, 0.0757, 0.1001, 0.1268, 0.1556, 0.1859, 0.2176,
+	0.2502, 0.2833, 0.3167, 0.3498, 0.3824, 0.4141, 0.4444, 0.4732, 0.4999, 0.5243, 0.5459, 0.5644, 0.5794,
+	0.5906, 0.5976, 0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 0.6])
 ## ENV D heli_door_sill: the kneeling sniper's root = SniperSeat x this offset (SniperSeat local basis).
 @export var heli_kneel_offset: Vector3 = Vector3(0.5, -0.344, 0.15)
 

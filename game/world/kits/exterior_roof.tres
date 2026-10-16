@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"exterior_roof"
+purpose = &"exterior"
+required_items = Array[StringName]([&"ahu", &"hvac"])
+optional_items = {}
+clutter_groups = {}
+min_density = 0.01
+max_density = 0.3
+min_props = 5
+lone_ok_kinds = Array[StringName]([&"ahu", &"hvac"])
+seed_salt = 127
+counts = {}
+assets = {}
+ceiling = {}
+notes = "X4 roof deck: AHUs and condensers (hard cover)."

@@ -29,13 +29,13 @@ tag_characters = {
 heist_tag_characters = {
 &"gallery_night": {
 &"civ_admin": [&"gallery_admin"],
-&"civ_attendant": [&"gallery_attendant"],
-&"civ_conservator": [&"gallery_attendant_b"],
+&"civ_attendant": [&"gallery_attendant", &"gallery_attendant_b"],
+&"civ_conservator": [&"gallery_conservator"],
 &"civ_curator": [&"gallery_curator"],
-&"civ_patron": [&"gallery_patron", &"gallery_patron_b", &"npc_penthouse_guest_a", &"npc_penthouse_guest_b"],
-&"civ_waitstaff": [&"npc_penthouse_staff"],
+&"civ_patron": [&"gallery_patron", &"gallery_patron_b", &"gallery_patron_c", &"gallery_patron_d", &"gallery_patron_e", &"gallery_patron_f", &"gallery_patron_g", &"npc_penthouse_guest_a", &"npc_penthouse_guest_b"],
+&"civ_waitstaff": [&"npc_penthouse_staff", &"gallery_waiter"],
 &"guard_hall": [&"gallery_guard"],
-&"guard_inspection": [&"gallery_guard"],
+&"guard_inspection": [&"gallery_guard", &"gallery_guard_b"],
 &"guard_mews": [&"gallery_guard_b"],
 &"guard_operator": [&"gallery_guard_b"],
 &"guard_rover_basement": [&"gallery_guard"],
@@ -43,7 +43,7 @@ heist_tag_characters = {
 &"guard_rover_upper": [&"gallery_guard_b"],
 &"guard_vaultline": [&"armored_car_crew", &"armored_car_crew_b"],
 &"staff_admin": [&"gallery_admin"],
-&"staff_cs": [&"gallery_attendant_b"]
+&"staff_cs": [&"gallery_conservator"]
 },
 &"dockside_burn": {
 &"civ_worker": [&"dock_worker", &"dock_worker_b", &"dock_packer"]

@@ -34,10 +34,14 @@ var alarms: Array[StringName] = []
 var lasers_tripped: int = 0
 var pagers: int = 0
 var ended: Array[Dictionary] = []
+## Objectives completed when heist_ended arrived (events.md v1.7: escape completes before it).
+var completed_at_end: Array[StringName] = []
 ## Objective ids in the order they completed.
 var completed: Array[StringName] = []
 var secured_loot: Array[StringName] = []
 var laser_waits: int = 0
+## Route facts a test asserts on (e.g. the GN curator card branch: &"curator_card_*").
+var facts: Dictionary = {}
 ## Laser grids the route crosses (guard_lasers) and the sign of their guarded side (local z).
 var guarded: Array[LaserGrid] = []
 var _inner_side: Dictionary = {}
@@ -64,10 +68,13 @@ func check(ok: bool, msg: String) -> bool:
 
 # --- Launch / teardown ---------------------------------------------------------------------------
 
-func launch(heist_id: StringName, seed_value: int) -> bool:
+## `options` are extra HeistLauncher options (e.g. "preplan" force_variants, "variant_table"); no AI teammates.
+func launch(heist_id: StringName, seed_value: int, options: Dictionary = {}) -> bool:
 	heist = heist_id
 	Engine.time_scale = 1.0
-	rt = await HeistLauncher.launch(heist_id, seed_value, Enums.Difficulty.ROUTINE, host, {"ai_teammates": 0})
+	var opts: Dictionary = options.duplicate()
+	opts["ai_teammates"] = 0
+	rt = await HeistLauncher.launch(heist_id, seed_value, Enums.Difficulty.ROUTINE, host, opts)
 	if not check(rt != null, "HeistLauncher.launch(%s, %d)" % [heist_id, seed_value]):
 		return false
 	crew = rt.crew_controller(0) as CrewController
@@ -79,7 +86,9 @@ func launch(heist_id: StringName, seed_value: int) -> bool:
 		note("ALARM %s" % reason))
 	_listen(EventBus.laser_tripped, func(_id: int) -> void: lasers_tripped += 1)
 	_listen(EventBus.pager_started, func(_p: int, _g: int) -> void: pagers += 1)
-	_listen(EventBus.heist_ended, func(r: Dictionary) -> void: ended.append(r))
+	_listen(EventBus.heist_ended, func(r: Dictionary) -> void:
+		completed_at_end = completed.duplicate()
+		ended.append(r))
 	_listen(EventBus.loot_secured, func(_b: int, loot_id: StringName, _v: int) -> void:
 		secured_loot.append(loot_id)
 		note("secured %s (%d)" % [loot_id, secured_loot.size()]))

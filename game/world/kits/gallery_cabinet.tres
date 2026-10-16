@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"gallery_cabinet"
+purpose = &"gallery"
+required_items = Array[StringName]([&"vitrine", &"plan_chest", &"bench", &"light_fixture"])
+optional_items = {}
+clutter_groups = {}
+min_density = 0.05
+max_density = 0.6
+min_props = 6
+lone_ok_kinds = Array[StringName]([&"bench", &"vitrine", &"plan_chest"])
+seed_salt = 104
+counts = {
+&"vitrine": Vector2i(2, 3)
+}
+assets = {
+&"bench": PackedStringArray("prop_bench_gallery"),
+&"light_fixture": PackedStringArray("prop_downlight"),
+&"vitrine": PackedStringArray("prop_vitrine_decor")
+}
+ceiling = {"prop_downlight": 2.6}
+notes = "DC Drawings Cabinet (50 lux): wall vitrines for works on paper, a plan chest, a bench."

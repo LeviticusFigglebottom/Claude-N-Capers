@@ -1,0 +1,18 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/props/prop_plinth_bronze_a/prop_plinth_bronze_a.glb" id="1_model"]
+
+[node name="PropPlinthBronzeA" type="Node3D"]
+metadata/kind = &"sculpture"
+
+[node name="Model" parent="." instance=ExtResource("1_model")]
+
+[node name="Plinth" parent="Model"]
+visibility_range_end = 60
+visibility_range_end_margin = 6
+visibility_range_fade_mode = 1
+
+[node name="Collision" parent="Model"]
+metadata/surface = &"plaster"
+
+[editable path="Model"]

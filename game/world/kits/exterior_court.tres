@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"exterior_court"
+purpose = &"exterior"
+required_items = Array[StringName]([&"sculpture", &"bench", &"heater", &"ashtray", &"wall_lamp"])
+optional_items = {}
+clutter_groups = {}
+min_density = 0.01
+max_density = 0.2
+min_props = 10
+lone_ok_kinds = Array[StringName]([&"sculpture", &"bench", &"heater", &"ashtray", &"wall_lamp", &"planter"])
+seed_salt = 126
+counts = {}
+assets = {}
+ceiling = {}
+notes = "X3 Sculpture Court: five bronzes, benches, standing heaters, the smokers' ashtray stand, lanterns on the walls."
