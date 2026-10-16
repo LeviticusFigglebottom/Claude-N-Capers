@@ -127,3 +127,22 @@ func _label_jobs() -> Array[Array]:
 		for sz: Vector2 in [Vector2(1130, 730), Vector2(755, 487)]:
 			out.append([heist, sz])
 	return out
+
+
+## Text audit (ND 1080p): zone names never overlap each other and sit inside their zone, every heist, every floor,
+## 1080p and 720p view.
+func test_zone_names_fit_and_do_not_overlap() -> void:
+	for job: Array in _label_jobs():
+		var view: BlueprintView = BlueprintView.new()
+		view.size = job[1]
+		add_child(view)
+		view.setup(PreplanBoard.build(job[0], Enums.Difficulty.ROUTINE))
+		for fl: int in range(view.board.blueprint.floor_count()):
+			view.set_floor(fl)
+			var zs: Array[Array] = view._zone_labels()
+			for i: int in range(zs.size()):
+				for j: int in range(i + 1, zs.size()):
+					assert_false((zs[i][2] as Rect2).intersects(zs[j][2] as Rect2), "%s floor %d @%s: '%s' / '%s' overlap"
+							% [job[0], fl, view.size, zs[i][0], zs[j][0]])
+		view.queue_free()
+		await wait_frames(1)

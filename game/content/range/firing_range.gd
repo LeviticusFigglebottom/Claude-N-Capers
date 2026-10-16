@@ -418,6 +418,8 @@ func _sync_weapon() -> void:
 	var ws: int = _test_slot()
 	weapon_def = ContentDB.weapon(_slot_id(ws))
 	weapon_stats = resolved.resolved_primary if ws == Enums.WeaponSlot.PRIMARY else resolved.resolved_secondary
+	# D-118: the readout, falloff graph and dummy simulation use the stats as the loaded shells fire them.
+	weapon_stats = AmmoStats.apply(weapon_stats, weapon_def, _slot_mods(ws))
 	if weapon_def == null or weapon_stats == null:
 		return
 	if spectator != null:

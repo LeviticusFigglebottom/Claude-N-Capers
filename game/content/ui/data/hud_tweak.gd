@@ -62,6 +62,9 @@ const DEFAULT_PATH: String = "res://content/data/ui/hud_tweak.tres"
 @export_flags_3d_physics var device_occlusion_mask: int = 1
 @export var device_occlusion_check_s: float = 0.2
 @export var device_occlusion_slack_m: float = 0.6
+## r224 GN 1080p capture: the Tab sheet's objectives column shows at most this many lines (the sheet ran off the
+## screen with 16 objectives); past it, the finished ones fold into one "N done" line and a "+N more" line closes.
+@export var scoreboard_objectives_max: int = 8
 
 
 static func load_default() -> HudTweak:

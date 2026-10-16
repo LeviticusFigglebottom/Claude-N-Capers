@@ -194,3 +194,31 @@ class LegacyModel:
 	extends Node
 	signal crew_changed()
 	var crew: Array[Dictionary] = []
+
+
+## r224 GN 1080p capture: 16 objectives ran the Tab sheet off the screen. Past HudTweak.scoreboard_objectives_max
+## lines the done ones fold into one line, the live ones fill the rest and "+N more" closes; the sheet fits.
+func test_long_objective_list_folds_and_the_sheet_fits() -> void:
+	var obs: Array[Dictionary] = []
+	for i: int in range(16):
+		var st: int = Enums.ObjectiveState.COMPLETED if i < 3 else Enums.ObjectiveState.ACTIVE
+		obs.append({"id": StringName("o%d" % i), "text_key": &"objective.test.drill_vault", "state": st, "args": {}})
+	_model.objectives = obs
+	var sb: ScoreboardOverlay = _board()
+	sb.set_shown(true)
+	sb.refresh()
+	await wait_frames(3)
+	var lines: Array[Node] = sb.objectives_box.get_children()
+	var cap: int = sb.tweak.scoreboard_objectives_max
+	assert_eq(lines.size(), cap, "capped at %d lines" % cap)
+	assert_eq((lines[0] as Label).text, UiText.t(&"ui.scoreboard.objectives_done", {"count": 3}), "done ones folded")
+	assert_eq((lines[lines.size() - 1] as Label).text, UiText.t(&"ui.scoreboard.objectives_more", {"count": 13 - (cap - 2)}))
+	var view: Rect2 = sb.get_viewport_rect()
+	assert_true(sb.sheet.get_global_rect().end.y <= view.end.y, "sheet ends on screen (%s)" % sb.sheet.get_global_rect())
+	var few: Array[Dictionary] = []
+	few.assign(obs.slice(0, 5))
+	_model.objectives = few
+	sb.set_shown(true)  # hold mode hides it again without the key
+	sb.refresh()
+	await wait_frames(2)
+	assert_eq(sb.objectives_box.get_child_count(), 5, "a short list shows whole, done ones included")
