@@ -8,26 +8,45 @@ const CASES: Array[Array] = [
 	[&"dockside_burn", "15_payday_failed", false, &"all_custody", false, 0],
 	[&"shadow_ledger", "14_payday_alarm_failed", false, &"stealth_only_alarm", false, 2],
 ]
+## B-GH / B-ND: the named heists' payday shows that heist's contract and its own bags (the minimum it asks for).
+const HEIST_BAGS: Dictionary = {
+	&"glasshouse": [&"loot.jewelry", &"loot.jewelry"],
+	&"night_deposit": [&"loot.cash", &"loot.cash", &"loot.cash_bricks", &"loot.cash_bricks"],
+}
 
 var _out: String = ""
+## B-GH / B-ND: heist ids after <out_dir> replace CASES with a stealth success and a loud custody failure for each.
+var _cases: Array[Array] = CASES
 
 
 func _ready() -> void:
 	var args: PackedStringArray = OS.get_cmdline_user_args()
 	_out = args[0] if args.size() > 0 else OS.get_user_data_dir() + "/heist_audit"
+	if args.size() > 1:
+		_cases = []
+		for i: int in range(1, args.size()):
+			_cases.append([StringName(args[i]), "14_payday_success", true, &"", true, 1])
+			_cases.append([StringName(args[i]), "15_payday_failed", false, &"all_custody", false, 2])
 	_run.call_deferred()
 
 
 func _run() -> void:
 	UiScreen.motion_enabled = false
 	SaveService.root_dir = "user://capture_profiles_%d" % OS.get_process_id()
-	for c: Array in CASES:
+	for c: Array in _cases:
 		var r: Dictionary = HeistCatalog.sample_result()
 		r["heist_id"] = c[0]
 		r["success"] = c[2]
 		r["fail_reason"] = c[3]
 		r["stealth"] = c[4]
 		r["pagers_answered"] = c[5]
+		if HEIST_BAGS.has(c[0]):
+			var def: HeistDef = HeistRegistry.get_def(c[0])
+			r["contract_pay"] = HeistCatalog.contract_preview(def.base_payout, int(r["difficulty"]))
+			var bags: Array = []
+			for id: StringName in HEIST_BAGS[c[0]] as Array:
+				bags.append({"loot_id": id, "value": ContentDB.loot(id).value})
+			r["loot"] = bags
 		var pd: PaydayScreen = (load(PAYDAY_SCENE) as PackedScene).instantiate() as PaydayScreen
 		pd.apply_to_profile = false
 		add_child(pd)

@@ -126,7 +126,7 @@ ui.tip.escape.1,The getaway is here. Head for the escape zone.
 ui.tip.escape.2,Unsecured bags pay nothing. Go now or grab more.
 ui.tip.escape.3,You leave when the whole crew is in the zone.
 ui.tip.heist_glasshouse.title,The workshop safe
-ui.tip.heist_glasshouse.1,The safe opens with the manager's keycard or the safe code.
+ui.tip.heist_glasshouse.1,"The safe opens with the manager's keycard or the safe code. Without either, it takes a slow, quiet lockpick."
 ui.tip.heist_glasshouse.2,The keycard could be anywhere. The code is on a note.
 ui.tip.heist_glasshouse.interact,Swipe the card or enter the code: quick and quiet.
 ui.tip.heist_glasshouse.drill,"A drill opens it too, but it's loud. The floor guard hears it."
@@ -1314,7 +1314,7 @@ ui.perks.state.locked,Locked
 ui.perks.reason.not_enough_points,Needs {cost} perk points ({have} available)
 ui.perks.dev_unlocked,Dev build: every perk card is unlocked.
 ui.perks.hint,Press a deck to equip it; only the equipped deck is active. Perk points come from experience.
-heist.glasshouse.briefing,"Vossberg Jewelers sits on the corner of Harlow Avenue and Pell Street and stays open late for its private viewing week. Tonight the estate consignment waits in the workshop safe. Case the floor as customers, find the manager's keycard or the safe code note, and take the back route. Without either, the safe needs the drill, and the drill is loud. Odile wants at least two bags before Friday."
+heist.glasshouse.briefing,"Vossberg Jewelers sits on the corner of Harlow Avenue and Pell Street and stays open late for its private viewing week. Tonight the estate consignment waits in the workshop safe. Case the floor as customers, find the manager's keycard or the safe code note, then get into the workshop. Without either, the safe takes a slow, quiet lockpick or a loud drill. Odile wants at least two bags before Friday."
 heist.glasshouse.briefing_loud,"The safe reader locks down: drill the safe, then hold until the van comes back."
 contact.role.fence,Fence
 contact.role.fixer,Fixer
@@ -1533,12 +1533,12 @@ objective.glasshouse.casing,Case the store
 objective.glasshouse.keycard,Find the manager's keycard
 objective.glasshouse.code,Or find the safe code
 objective.glasshouse.extra_bags,Secure more than two bags
-objective.glasshouse.salon,Search the salon
-objective.glasshouse.display_cases,Smash the display cases
+objective.glasshouse.salon,Empty the two salon cases
+objective.glasshouse.display_cases,Empty the sales-floor display cases
 objective.glasshouse.workshop_door,Get into the workshop
 objective.glasshouse.safe,Open the safe
 objective.glasshouse.safe_loot,Bag the consignment
-objective.glasshouse.secure,Secure the bags ({count}/{total})
+objective.glasshouse.secure,Secure two bags ({count}/{total})
 ui.payday_cards.title,Pick a card
 ui.payday_cards.hint,"One of three is yours. Mouse, Enter, the A button or keys 1-3."
 ui.payday_cards.timer,Auto-pick in {seconds} s
@@ -1602,18 +1602,18 @@ item.loot.cash_bricks.desc,Shrink-wrapped bricks of undeclared bills off the Co-
 heist.night_deposit.name,Nightfall Depository
 heist.night_deposit.subtitle,Harbor Savings & Loan
 heist.night_deposit.brief,A cartel front drops its week of cash down a bank's night chute. The Accountant wants the chute and the vault cage.
-heist.night_deposit.briefing,"Harbor Savings & Loan, Pier District branch, stands on the corner of Harbor Street and Wharf Lane. Every Friday night the Ortega Fisheries Co-op drops its takings down the night depository chute, and the bags wait in the basement until the 06:00 armoured car. The Co-op's friends keep more cash in the vault cage. The bank is closed: case it from the ATM vestibule, find the vault keycard and the time-lock code (or hack the lock from the server room), then hold the basement while the time lock runs. If it goes loud, the vault seals itself: drill the door and hold the basement. The Accountant wants at least four bags."
-heist.night_deposit.briefing_loud,Drill the vault door and hold the basement.
+heist.night_deposit.briefing,"Harbor Savings & Loan, Pier District branch, stands on the corner of Harbor Street and Wharf Lane. Every Friday night the Ortega Fisheries Co-op drops its takings down the night depository chute, and the bags wait in the basement until the 06:00 armoured car. The Co-op's friends keep more cash in the vault cage. The bank is closed: case it from the ATM vestibule, find the vault keycard and the time-lock code (or hack the lock from the server room), then hold the basement while the time lock runs. The Accountant wants at least four bags."
+heist.night_deposit.briefing_loud,"The vault seals itself and the time lock dies. Drill the vault door, then hold the basement until the ride comes back."
 objective.night_deposit.casing,Case the bank
 objective.night_deposit.keycard,Find the vault keycard
 objective.night_deposit.code,Find the time-lock code
 objective.night_deposit.server,Or hack the time lock from the server room
-objective.night_deposit.vault_gate,Get through the vault gate and the lasers
-objective.night_deposit.time_lock,Start the time lock
+objective.night_deposit.vault_gate,Open the vault gate with the keycard
+objective.night_deposit.time_lock,Cross the lasers and start the time lock
 objective.night_deposit.time_lock_wait,Hold the basement until the time lock opens
 objective.night_deposit.vault_loot,Bag the cage and the Co-op pallet
 objective.night_deposit.depository,Open the depository safe
-objective.night_deposit.secure,Secure the bags ({count}/{total})
+objective.night_deposit.secure,Secure four bags ({count}/{total})
 objective.night_deposit.escape,Get to the escape
 objective.night_deposit.vault_drill,Drill the vault door
 voice.vo.accountant.briefing_night_deposit_1,The Ortega Fisheries Co-op sells remarkably little fish and banks a remarkable amount of money. All of it goes through Harbor Savings and Loan.
@@ -1885,9 +1885,9 @@ voice.vo.mercer.glasshouse_keycard_found,That's the manager's card. The safe rea
 voice.vo.mercer.glasshouse_workshop_open,Workshop door's open. Safe's on the north wall.
 voice.vo.mercer.glasshouse_drill_jam,Drill's jammed. Somebody give it a hand.
 voice.vo.mercer.glasshouse_last_pager,That's {answered}. That's the last one they'll buy.
-voice.vo.mercer.glasshouse_lockdown,Alarm's up and the safe went into lockdown. Reader's dead. Put the drill on it.
-voice.vo.mercer.glasshouse_van_eta,Van's {seconds} seconds out. Hold what you've got.
-voice.vo.mercer.glasshouse_escape,"Van's at the curb. Bags in, then you."
+voice.vo.mercer.glasshouse_lockdown,"Alarm's up and the safe went into lockdown. Reader's dead. If it's still shut, put the drill on it."
+voice.vo.mercer.glasshouse_van_eta,"Van's pulled off. It's back in {seconds} seconds at the earliest, once the first wave breaks. Hold what you've got."
+voice.vo.mercer.glasshouse_escape,"Van's ready. Any more bags in, then you."
 voice.vo.mercer.night_deposit_intro,Harbor Savings closed hours ago. The Co-op's drop is in the basement. Case it from the ATM vestibule and the lot.
 voice.vo.accountant.night_deposit_contact_intro,The Co-op washes its money through Harbor S&L. Take the night drop and the cage. They can't report what they never declared.
 voice.vo.mercer.night_deposit_keycard_found,"That card opens the vault gate downstairs. One swipe, so don't waste it."
@@ -1897,11 +1897,11 @@ voice.vo.mercer.night_deposit_time_lock_started,Time lock's counting: {seconds} 
 voice.vo.mercer.night_deposit_time_lock_30,Thirty seconds on the lock.
 voice.vo.mercer.night_deposit_time_lock_open,Vault's open. Bag the cage.
 voice.vo.mercer.night_deposit_drill_jam,Thermal drill's stalled. Get it going again.
-voice.vo.mercer.night_deposit_last_pager,That was the fourth pager. No more of those.
-voice.vo.mercer.night_deposit_lockdown,Alarm. The vault sealed itself. Thermal drill on the door.
+voice.vo.mercer.night_deposit_last_pager,That's {answered} on the pagers. No more of those.
+voice.vo.mercer.night_deposit_lockdown,"Alarm. The vault sealed itself. If it's still shut, thermal drill on the door."
 voice.vo.mercer.night_deposit_armored_car,Armoured car's early. Two more guards at the sally port.
 voice.vo.mercer.night_deposit_fog_lifts,Fog's lifting. Anyone on the street can see the quay now.
-voice.vo.mercer.night_deposit_escape_eta,Your ride's {seconds} seconds out. Hold.
+voice.vo.mercer.night_deposit_escape_eta,"Your ride's pulled off. It's back in {seconds} seconds at the earliest, once the second wave breaks. Hold."
 voice.vo.mercer.night_deposit_escape,Ride's here. Bags in.
 voice.vo.mercer.shadow_ledger_intro,"Calder Tower, top floors, and the rain's doing us favours. Laptop first, then the server room. Masks stay in your pockets until you need them."
 voice.vo.accountant.shadow_ledger_contact_intro,"I want the whole ledger, every page of it. And when you leave, nobody in that building may ever learn it was gone."
@@ -2977,7 +2977,7 @@ voice.vo.vance.glasshouse_radio_casing,Seen enough of the showroom? Good. The pr
 voice.vo.vance.glasshouse_radio_keycard,The manager's keycard. He really should keep better company.
 voice.vo.vance.glasshouse_radio_code,"The code. Written on a sticky note, I imagine. Jewelers are so sentimental."
 voice.vo.vance.glasshouse_radio_extra_bags,"More than my minimum. You do spoil me."
-voice.vo.vance.glasshouse_radio_salon,"The salon. Clients leave the nicest things in their coats."
+voice.vo.vance.glasshouse_radio_salon,The salon cases. The by-appointment pieces always sparkle a little more.
 voice.vo.vance.glasshouse_radio_display_cases,"The cases. Loud, but honest work."
 voice.vo.vance.glasshouse_radio_workshop_door,"The workshop. Mind the tools, darling, they're worth more than you are."
 voice.vo.vance.glasshouse_radio_safe,"The safe's open. Steady hands, please. Those are estate pieces."
@@ -2986,12 +2986,12 @@ voice.vo.vance.glasshouse_radio_safe_loot,That's the estate consignment. I could
 voice.vo.vance.glasshouse_radio_secure,Two bags. My minimum is met. Anything more is a gesture of affection.
 voice.vo.vance.glasshouse_radio_escape_new,Vossberg has entertained you long enough. Find your way out.
 voice.vo.vance.glasshouse_radio_escape_available,"The van is yours. Leave the windows, they're only glass."
-voice.vo.vance.glasshouse_radio_escape,"The van's at the curb, darling. Don't scratch it."
+voice.vo.vance.glasshouse_radio_escape,"The van's here, darling. Don't scratch it."
 voice.vo.vance.glasshouse_radio_loot_jewelry,Jewels in the van. Vossberg will be inconsolable.
 voice.vo.vance.glasshouse_radio_loot,Another bag from Vossberg's. Lovely.
 voice.vo.accountant.night_deposit_radio_casing,Your survey is complete. The bank is exactly as dull as its books.
 voice.vo.accountant.night_deposit_radio_keycard,A keycard. Access is a line item I am always happy to see.
-voice.vo.accountant.night_deposit_radio_code,The code works. Clerks are so dependable.
+voice.vo.accountant.night_deposit_radio_code,You have the code. Clerks are so dependable.
 voice.vo.accountant.night_deposit_radio_server,The server has given up its secret. As servers do.
 voice.vo.accountant.night_deposit_radio_vault_gate,The vault gate is open. Mind the time lock.
 voice.vo.accountant.night_deposit_radio_time_lock_new,"Start the time lock. Patience, in this case, is billable."
@@ -3002,7 +3002,7 @@ voice.vo.accountant.night_deposit_radio_vault_drill_new,"Drill the vault door. N
 voice.vo.accountant.night_deposit_radio_vault_drill,The vault door is through. Proceed.
 voice.vo.accountant.night_deposit_radio_vault_loot_new,The cage is open. Take what the Co-op's favoured customers left there.
 voice.vo.accountant.night_deposit_radio_vault_loot,The cage has been emptied. An excellent audit.
-voice.vo.accountant.night_deposit_radio_depository,The night drop is cleared. Every envelope accounted for.
+voice.vo.accountant.night_deposit_radio_depository,The night-drop safe is open. The Co-op's week is yours to bag.
 voice.vo.accountant.night_deposit_radio_secure,Four bags. My account is settled. The rest is yours.
 voice.vo.accountant.night_deposit_radio_escape_new,Your exit is arranged. Bring the bags.
 voice.vo.accountant.night_deposit_radio_escape_available,Your way out of Harbor Savings and Loan is open. Leave quietly if you can.
