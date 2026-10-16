@@ -42,9 +42,9 @@
 ## lines are summed as integers. stash = roundi(gross x stash_fraction); spending absorbs the rest,
 ## so stash + spending == total always.
 ## Failed heist: no contract/loot/small-loot cash, crew-alive bonus off; civilian penalty per
-## tweak.civilian_penalty_on_failure. XP base = base_xp_success x base_xp_failure_fraction (no loot
-## XP); pro, difficulty and custody still apply; no crew-alive or stealth bonus, the bank is NOT
-## consumed and nothing new is banked.
+## tweak.civilian_penalty_on_failure (off since the D-120 addendum: a failure pays and costs nothing).
+## XP base = base_xp_success x base_xp_failure_fraction (no loot XP); pro, difficulty and custody still apply;
+## no crew-alive or stealth bonus, the bank is NOT consumed and nothing new is banked.
 ## Stealth bonus (S11.1, D-022 QB-13): the "stealth" XP line = running total x (banked_stealth_mult
 ## - 1), i.e. the bonus earned by the previous stealth heist. This heist's own stealth success only
 ## sets "stealth_bonus_banked"; SaveService.apply_heist_payout stores it in the profile.

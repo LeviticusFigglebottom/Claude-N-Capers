@@ -197,10 +197,14 @@ func test_failure_pays_no_cash_and_reduced_xp() -> void:
 	assert_eq(out["small_loot"], 0)
 	assert_eq((out["loot_lines"] as Array).size(), 0)
 	assert_near(float(out["crew_alive_mult"]), 1.0)
-	assert_eq(out["civilian_penalty"], 1000)
-	assert_eq(out["total"], -1000)
+	# D-120 addendum (LEAD r228): a failed heist pays nothing AND costs nothing (no civilian cleanup).
+	assert_eq(out["civilian_penalty"], 0)
+	assert_eq(out["total"], 0)
 	assert_eq(out["stash"], 0)
-	assert_eq(out["spending"], -1000)
+	assert_eq(out["spending"], 0)
+	var tw: PayoutTweak = _tweak()
+	tw.civilian_penalty_on_failure = true  # the switch still works if a mode ever wants it back
+	assert_eq(PayoutCalculator.compute(r, _diff(2.0, 2.0, 1000), tw, false, 0)["civilian_penalty"], 1000)
 	assert_eq(_xp(out, PayoutCalculator.XP_BASE), 500)
 	assert_eq(_xp(out, PayoutCalculator.XP_DIFFICULTY), 500)
 	assert_eq(_xp(out, PayoutCalculator.XP_ADDITIVE), 0)
