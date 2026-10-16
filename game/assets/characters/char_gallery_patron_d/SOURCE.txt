@@ -1,0 +1,19 @@
+asset: char_gallery_patron_d
+script: tools/blender/characters/char_p5_gallery.py
+params: {"age": 0.2, "beard_shadow": 0.2, "build": 0.4, "gender": 0.0, "hair": "short", "hair_color": "dark", "height": 1.83, "look": "patron_d", "skin": 5}
+seed: 1870637702  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category characters --asset char_gallery_patron_d
+edit policy: generated file, never edit by hand; change the script and rebuild
+attach_Back: bone chest, local [0.0000, 0.0918, 0.1089] (model [0.0000, 1.3365, 0.1279], Godot axes, rest pose)
+attach_Head: bone head, local [0.0000, 0.0833, -0.0912] (model [0.0000, 1.7128, -0.0789], Godot axes, rest pose)
+attach_Hip: bone hips, local [0.1844, 0.0522, 0.0366] (model [0.1844, 1.0322, 0.0392], Godot axes, rest pose)
+body_faces_culled: 4818
+body_params: {"age": 0.2, "beard_shadow": 0.2, "build": 0.4, "gender": 0.0, "hair": "short", "hair_color": "dark", "hair_peak": 0.0, "height": 1.83, "lip": "auto", "skin": 5}
+bones: 52
+look: Gala guest (man, 30s): all-black dinner suit with satin lapels over a black open-collar shirt (no tie), plum silk pocket square, watch
+meshes: Body,Gear,Hair,Outfit
+shape_keys: none (baked at body_params; do not set blend_shapes/*)
+tri_budget: 35000
+tris: 31534
+tris_by_mesh: {"Body": 9108, "Gear": 416, "Hair": 1728, "Outfit": 20282}

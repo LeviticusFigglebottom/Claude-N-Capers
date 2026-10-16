@@ -11,7 +11,7 @@ Node tree: ``Receiver`` (+ ``FeedCover`` with ``TopRail`` and the ``SightRail`` 
 hinge axis, opens 78 deg about local X (D-044), ``ReceiverDetails``, ``Grip``, ``Trigger``,
 ``ChargingHandle``), ``GasCylinder`` (+ ``GasRail``), ``Stock``. Stock parts: ``SightRail/StockSight``
 (tangent rear leaf, ``AimPoint``), ``Magwell/StockMagazine`` (100-round box + belt),
-``BarrelMount/StockBarrel`` (long barrel).
+``BarrelMount/StockBarrel`` (long barrel), ``StockMount/StockStock`` (wooden stock, D-118).
 """
 
 import math
@@ -148,7 +148,7 @@ def build(ctx) -> None:
     mats = c.Mats(ctx)
     cover = _receiver(ctx, mats)
     _gas(ctx, mats)
-    _stock(ctx, mats)
+    stock = _stock(ctx, mats)
 
     barrel_mount = ctx.marker("BarrelMount", (0.0, a.REC_FRONT_Y, a.BORE_Z))
     ctx.marker("Eject", (a.REC_HW, 0.075, a.BORE_Z - 0.026), rotation_euler=(0.0, 0.0, -math.pi / 2))
@@ -157,7 +157,7 @@ def build(ctx) -> None:
     magwell = ctx.marker("Magwell", a.MAGWELL_POS)
     ctx.marker("Underbarrel", (0.0, a.UNDER_Y, a.GAS_Z - a.GAS_R - 0.0062))
     ctx.marker("SideRail", (a.GAS_R + 0.0072, a.SIDE_Y, a.GAS_Z))
-    ctx.marker("StockMount", a.STOCK_MOUNT)
+    stock_mount = ctx.marker("StockMount", a.STOCK_MOUNT)
     ctx.marker("GripMount", (0.0, 0.0, 0.0))
     # Lead (ENV D, FP left-hand cup): under the GasCylinder (y 0.215-0.459, bottom z 0.044), x 0, 12 mm low, a third of the way forward.
     ctx.marker("LeftHandIK", (0.0, 0.296, 0.032))
@@ -169,6 +169,7 @@ def build(ctx) -> None:
     a.build_box(ctx, mats, big=False, parent=stock_mag)
     stock_barrel = ctx.marker("StockBarrel", (0.0, 0.0, 0.0), parent=barrel_mount)
     a.build_barrel(ctx, mats, short=False, parent=stock_barrel)
+    c.wrap_part(ctx, [stock], stock_mount, "StockStock", a.STOCK_MOUNT)  # D-118: swappable stock
 
     ctx.source_extra["tris_lod0"] = c.tris_of_scene()
     ctx.source_extra["origin"] = "firing-hand pivot: grip centre plane, mid grip depth, 20 mm below grip top"

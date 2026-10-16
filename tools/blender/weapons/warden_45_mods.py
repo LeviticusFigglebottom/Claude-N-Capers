@@ -7,6 +7,8 @@
 * ``mod_w45_suppressor``    SUPPRESSOR -> ``Muzzle``    (.45 can; own ``Muzzle``)
 * ``mod_w45_compensator``   BARREL_EXT -> ``Muzzle``    (slide-profile comp; own ``Muzzle``;
   data declares it conflicts with the suppressor)
+* ``mod_w45_rubber_grip`` GRIP -> ``GripMount`` (wrap-around rubber grip; hides ``StockGrip``; D-118)
+* ``mod_w45_slim_grip`` GRIP -> ``GripMount`` (thin smooth aluminium panels; hides ``StockGrip``; D-118)
 """
 
 import _common as c
@@ -21,6 +23,8 @@ VARIANTS = {
     "mod_w45_extended_mag": {"part": "mag_ext"},
     "mod_w45_suppressor": {"part": "suppressor"},
     "mod_w45_compensator": {"part": "comp"},
+    "mod_w45_rubber_grip": {"part": "grip_rubber"},
+    "mod_w45_slim_grip": {"part": "grip_slim"},
 }
 
 
@@ -40,6 +44,12 @@ def build(ctx) -> None:
         c.build_can(ctx, mats, length=0.160, r=0.0165, overlap=0.0)
     elif part == "comp":
         w.build_compensator(ctx, mats)
+    elif part == "grip_rubber":
+        c.build_grip_sleeve(ctx, mats, w.GRIP_HALF_DEPTH, w.GRIP_TAN, 0.012, -0.070, w.GRIP_HALF_WIDTH + 0.0012, grow=0.0018,
+                            ribs=4, segments=1)  # light: the akimbo pair draws it twice (25k FP budget)
+    elif part == "grip_slim":
+        c.build_slim_panels(ctx, mats, w.GRIP_HALF_DEPTH, w.GRIP_TAN, 0.012, -0.068, w.GRIP_HALF_WIDTH,
+                            t=0.0012, mat_name="alu")
     else:
         raise ValueError(f"unknown part {part!r}")
     ctx.source_extra["tris_lod0"] = c.tris_of_scene()

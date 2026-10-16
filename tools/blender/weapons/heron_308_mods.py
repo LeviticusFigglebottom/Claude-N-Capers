@@ -6,6 +6,8 @@
 * ``mod_heron_extended_mag``   MAGAZINE   -> ``Magwell``     (ten rounds)
 * ``mod_heron_suppressor``     SUPPRESSOR -> ``Muzzle``      (slips over the brake; own ``Muzzle``)
 * ``mod_heron_bipod``          FOREGRIP   -> ``Underbarrel`` (folded bipod)
+* ``mod_heron_skeleton_stock`` STOCK -> ``StockMount`` (light skeleton butt from the cut behind the thumbhole (``BUTT_CUT_Y``); hides ``StockStock``; D-118)
+* ``mod_heron_precision_stock`` STOCK -> ``StockMount`` (heavy precision butt, cheek riser + thick pad, from ``BUTT_CUT_Y``; hides ``StockStock``; D-118)
 """
 
 import _common as c
@@ -19,6 +21,8 @@ VARIANTS = {
     "mod_heron_extended_mag": {"part": "mag_ext"},
     "mod_heron_suppressor": {"part": "suppressor"},
     "mod_heron_bipod": {"part": "bipod"},
+    "mod_heron_skeleton_stock": {"part": "stock_light"},
+    "mod_heron_precision_stock": {"part": "stock_heavy"},
 }
 
 
@@ -37,6 +41,13 @@ def build(ctx) -> None:
         k.build_brake_suppressor(ctx, mats)
     elif part == "bipod":
         c.build_bipod(ctx, mats, leg_len=0.170)
+    elif part == "stock_light":
+        st = c.build_skeleton_stock(ctx, mats, 0.200, 0.014, -0.124, 0.0206, front_z=-0.100,
+                                    mat_name="olive")
+        st.location = (0.0, k.BUTT_CUT_Y - k.STOCK_MOUNT[1], 0.0)
+    elif part == "stock_heavy":
+        st = c.build_precision_stock(ctx, mats, 0.208, 0.014, -0.124, 0.0206, front_z=-0.100)
+        st.location = (0.0, k.BUTT_CUT_Y - k.STOCK_MOUNT[1], 0.0)
     else:
         raise ValueError(f"unknown part {part!r}")
     ctx.source_extra["tris_lod0"] = c.tris_of_scene()

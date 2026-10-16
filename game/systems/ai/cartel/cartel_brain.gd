@@ -7,6 +7,8 @@
 ## - wakes (-> COMBAT, woken_by) on a noise of CartelTweak.wake_noise_kinds that reaches it, a sighting
 ##   (crew in sight_range_m / sight_fov_deg with LOS for sight_time_s), damage, or a crew shout; a waking
 ##   gunman wakes every sleeping gunman within alert_share_radius_m.
+## - DB-12: a corpse (StealthDirector "corpse" stimulus) in the same sight cone with LOS for sight_time_s wakes it
+##   (woken_by &"body"); the registry is read directly, so it works after the stealth phase (S11.2).
 ## - COMBAT: holds its post: claims a COVER TacticalPoint within cover_search_m of the post with LOS to the
 ##   target (else stands at the post), never leaves post_leash_m; shoots the nearest visible crew member.
 ## - no pager, no cuffing, never dominated (on_shouted wakes it and fails), never surrenders.
@@ -44,6 +46,8 @@ var _route_index: int = 0
 var _walking: bool = false
 var _pause_left: float = 0.0
 var _sight: Dictionary[int, float] = {}
+## DB-12: corpse stimulus id -> seconds in sight.
+var _body_sight: Dictionary[int, float] = {}
 var _retarget_left: float = 0.0
 var _target_visible: bool = false
 ## DB-4: the seated idle activity this gunman plays at its post (&"" = stands), resolved once (_resolve_seat).
@@ -197,6 +201,34 @@ func _tick_sight(delta: float) -> void:
 		_sight[c.slot] = t
 		if t >= tweak.sight_time_s:
 			wake(&"sight")
+			return
+	if tweak.wake_on_body:
+		_tick_body_sight(delta, eye, fwd, cos_half)
+
+
+## DB-12: corpses in the sight cone (sight_range_m, LOS) for sight_time_s wake the gunman.
+func _tick_body_sight(delta: float, eye: Vector3, fwd: Vector3, cos_half: float) -> void:
+	var st: StealthDirector = HeistRuntime.get_service(G.SVC_STEALTH) as StealthDirector
+	if st == null:
+		return
+	var flat_fwd: Vector3 = Vector3(fwd.x, 0.0, fwd.z).normalized()
+	for s: Dictionary in st.stimuli():
+		if s.get("kind") != &"corpse" or s.get("source") == _npc:
+			continue
+		var id: int = int(s["id"])
+		var src: Node = s.get("source") as Node
+		var p: Vector3 = st.stimulus_position(id) + Vector3.UP * tweak.body_sight_up_m
+		var to: Vector3 = p - eye
+		var flat: Vector3 = Vector3(to.x, 0.0, to.z)
+		var exclude: Array = [_npc]
+		if is_instance_valid(src):
+			exclude.append(src)
+		var seen: bool = to.length() <= tweak.sight_range_m and flat.length() > 0.01 \
+			and flat.normalized().dot(flat_fwd) >= cos_half and CombatSystem.has_npc_los(_npc, eye, p, exclude)
+		var t: float = maxf(float(_body_sight.get(id, 0.0)) + (delta if seen else -delta), 0.0)
+		_body_sight[id] = t
+		if t >= tweak.sight_time_s:
+			wake(&"body")
 			return
 
 

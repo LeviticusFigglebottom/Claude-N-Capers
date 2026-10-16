@@ -53,7 +53,9 @@ mod_slots = {
 1: [&"mod.mule_breacher_brake"],
 3: [&"mod.mule_ghost_ring", &"mod.rail_reflex_sight"],
 6: [&"mod.mule_folding_stock"],
-7: [&"mod.mule_standard_tube", &"mod.mule_extended_tube"]
+7: [&"mod.mule_standard_tube", &"mod.mule_extended_tube"],
+8: [&"mod.rail_laser", &"mod.rail_flashlight", &"mod.rail_combo"],
+11: [&"mod.shotgun_slug", &"mod.shotgun_he", &"mod.shotgun_flechette", &"mod.shotgun_dragons_breath"]
 }
 default_mods = {
 3: &"mod.mule_ghost_ring",

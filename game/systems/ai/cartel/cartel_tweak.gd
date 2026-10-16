@@ -7,6 +7,9 @@ extends Resource
 @export var sight_range_m: float = 25.0
 @export var sight_fov_deg: float = 120.0
 @export var sight_time_s: float = 0.8
+## DB-12: a corpse in the same cone (range, LOS, sight_time_s) wakes the gunman; LOS aims this far above it.
+@export var wake_on_body: bool = true
+@export var body_sight_up_m: float = 0.3
 ## A noise of one of these kinds (HeistRuntime.noise_made) whose radius reaches the gunman wakes him.
 @export var wake_noise_kinds: Array[StringName] = [&"gunshot", &"explosion", &"alarm", &"glass"]
 ## A waking gunman shouts: every sleeping gunman within this radius wakes too.

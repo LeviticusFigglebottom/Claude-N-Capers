@@ -17,6 +17,11 @@
 ## WeaponStats.headshot_mult (a bonus, default 1.0) x weapon.headshot_mult modifiers. The target
 ## applies its own zone multiplier (NpcBase: EnemyDef.headshot_mult[difficulty] x headshot_bonus).
 ## Targets emit damage_applied themselves; this file never does.
+##
+## D-118 shotgun ammo (ShotgunAmmo, CrewWeapons.ammo_profile): a claim carries at most
+## CrewWeapons.pellet_count hits (the client fires exactly that many pellets; extra hits are dropped);
+## slug / AP params feed pierce_profile; HE turns each pellet hit into Explosion.apply at the hit point;
+## flechette / dragon's breath put a DoT (BurnStatus) on the NPCs hit; dragon's breath panics civilians.
 class_name CombatSystem
 extends RefCounted
 
@@ -47,7 +52,7 @@ static func validate_and_apply(claim: Dictionary, shooter: CrewController) -> Di
 	var origin: Vector3 = claim.get("origin", shooter.eye_position())
 	var ws: int = int(claim.get("weapon_slot", w.equipped_slot))
 	var special: Dictionary = SpecialWeapons.params_for(shooter, ws)
-	var tally: Dictionary = {"hit": false, "head": false}  # D-071: at most once per shot
+	var tally: Dictionary = {"hit": false, "head": false, "victims": []}  # D-071: at most once per shot
 	if SpecialWeapons.kind_of(special) != SpecialWeapons.KIND_HITSCAN:  # B4-18: flame / saw / projectile
 		out["results"] = SpecialWeapons.server_apply(shooter, ws, claim, special)
 		for r: Variant in out["results"]:
@@ -57,9 +62,12 @@ static func validate_and_apply(claim: Dictionary, shooter: CrewController) -> Di
 		CrewStatsService.record_shot(shooter, bool(tally["hit"]), false)
 		return out
 	var hits: Array = claim.get("hits", [])
+	var pellets: int = w.pellet_count(ws)
+	if hits.size() > pellets:  # D-118: never more hits than the (ammo-resolved) pellets of one shot
+		Log.debug(&"combat", "slot %d claim: %d hits > %d pellets, extra dropped" % [shooter.slot, hits.size(), pellets])
+		hits = hits.slice(0, pellets)
 	hits = validate_head_zones(shooter, origin, hits)  # L3.3 lead ruling: server checks claimed HEAD
-	var st: WeaponStats = w.stats(ws)
-	if st != null and st.pellets > 1:
+	if pellets > 1:
 		hits = pellet_headshots(hits)  # L3.3
 	var results: Array[Dictionary] = []
 	var hit_npcs: Array = []
@@ -74,6 +82,11 @@ static func validate_and_apply(claim: Dictionary, shooter: CrewController) -> Di
 	out["results"] = results
 	CrewStatsService.record_shot(shooter, bool(tally["hit"]), bool(tally["head"]))
 	_near_misses(shooter, w, ws, claim, origin, hit_npcs)  # A3-06 (L3.5)
+	var ammo: Dictionary = w.ammo_profile(ws)
+	if bool(ammo.get("panic_civilians", false)):  # D-118 dragon's breath
+		var dir_v: Variant = claim.get("direction")
+		var dir: Vector3 = dir_v as Vector3 if dir_v is Vector3 else shooter.aim_direction()
+		ShotgunAmmo.panic_civilians(shooter, origin, dir, ammo, tally["victims"] as Array)
 	return out
 
 
@@ -101,6 +114,10 @@ static func _apply_hit(shooter: CrewController, w: CrewWeapons, ws: int, origin:
 		return {}
 	if through_wall:
 		amount *= tw.wall_pierce_damage_mult
+	var ammo: Dictionary = w.ammo_profile(ws)
+	if float(ammo.get("explosion_radius_m", 0.0)) > 0.0:  # D-118 HE: the pellet explodes where it hit
+		return _apply_he(shooter, pos, amount * float(ammo["explosion_damage_mult"]), float(ammo["explosion_radius_m"]),
+			weapon_id, tally)
 	var info: Dictionary = Damage.info(amount, Enums.DamageType.BULLET,
 		int(hit.get("zone", Enums.HitZone.BODY)), weapon_id, pos, (pos - origin).normalized(), shooter.net_id)
 	info["headshot_bonus"] = w.headshot_bonus(ws)
@@ -112,6 +129,10 @@ static func _apply_hit(shooter: CrewController, w: CrewWeapons, ws: int, origin:
 	var npc: NpcBase = target as NpcBase
 	var was_corpse: bool = npc != null and not npc.alive
 	var res: Dictionary = deliver_hit(target, info, shooter.net_id)
+	if tally.has("victims"):
+		(tally["victims"] as Array).append(target)
+	if npc != null and npc.alive:
+		ShotgunAmmo.apply_dot(npc, shooter.net_id, weapon_id, ammo)  # D-118 flechette bleed / dragon's breath fire
 	if was_corpse:
 		return res  # PO6-19: a shot corpse bleeds and moves (NpcBase) but is no hit for stats or suppression
 	if CrewStatsService.enemy_of(target) != null:  # D-071: body, shield or plate, even for 0 damage
@@ -123,6 +144,17 @@ static func _apply_hit(shooter: CrewController, w: CrewWeapons, ws: int, origin:
 		if float(res.get("amount", 0.0)) > 0.0:
 			NpcSuppression.add_threat(npc, float(prof["suppression"]) * tw.threat_per_suppression_hit, origin)
 	return res
+
+
+## D-118 HE pellet: Explosion.apply at the hit point (the blast replaces the bullet hit). Returns the
+## blast's first result (its victims tally as hits), {} when it hurt nothing.
+static func _apply_he(shooter: CrewController, pos: Vector3, damage: float, radius: float, weapon_id: StringName,
+		tally: Dictionary) -> Dictionary:
+	var blast: Array[Dictionary] = Explosion.apply(shooter, pos, radius, damage, shooter.net_id, weapon_id)
+	for r: Dictionary in blast:
+		if CrewStatsService.enemy_of(r.get("victim") as Object) != null:
+			tally["hit"] = true
+	return blast[0] if not blast.is_empty() else {}
 
 
 ## L3.3: for a multi-pellet shot, any pellet on the head makes every pellet of that shot on the same
@@ -192,9 +224,12 @@ static func pierce_profile(shooter: CrewController, ws: int) -> Dictionary:
 		return out
 	var def: WeaponDef = ContentDB.weapon(w.weapon_id(ws))
 	var q: StringName = Enums.weapon_class_qualifier(def.weapon_class) if def != null else &"pistol"
-	out["armor_pierce"] = clampf(st.armor_pierce + Modifiers.add(shooter.slot, &"weapon.armor_pierce_add", q), 0.0, 1.0)
-	out["shield_pierce"] = st.shield_pierce or Modifiers.flag(shooter.slot, &"weapon.shield_pierce", q)
-	out["wall_pierce"] = st.wall_pierce
+	var ammo: Dictionary = w.ammo_profile(ws)  # D-118: slug / AP shotgun ammo
+	var ap: float = maxf(st.armor_pierce, float(ammo.get("armor_pierce", 0.0)))
+	out["armor_pierce"] = clampf(ap + Modifiers.add(shooter.slot, &"weapon.armor_pierce_add", q), 0.0, 1.0)
+	out["shield_pierce"] = st.shield_pierce or bool(ammo.get("shield_pierce", false)) \
+		or Modifiers.flag(shooter.slot, &"weapon.shield_pierce", q)
+	out["wall_pierce"] = w.wall_pierce(ws)
 	out["suppression"] = 0.0 if st.suppressed else st.suppression
 	return out
 

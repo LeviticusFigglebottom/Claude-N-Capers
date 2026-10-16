@@ -86,6 +86,7 @@ check.launcher_idle: reach_err=0.0mm step=0.1deg
 check.launcher_reload: reach_err=0.0mm step=33.5deg
 check.launcher_reload_empty: reach_err=0.0mm step=33.5deg
 check.launcher_sprint: reach_err=0.0mm step=3.2deg
+check.launcher_vgrip_hand: reach_err=0.0mm step=0.0deg
 check.lever_ads_idle: reach_err=0.0mm step=0.0deg
 check.lever_bash: reach_err=0.0mm step=33.3deg
 check.lever_draw: reach_err=0.0mm step=21.0deg
@@ -179,6 +180,7 @@ check.rifle_idle: reach_err=0.0mm step=0.1deg
 check.rifle_reload: reach_err=0.0mm step=35.1deg
 check.rifle_reload_empty: reach_err=0.0mm step=35.1deg
 check.rifle_sprint: reach_err=0.0mm step=2.9deg
+check.rifle_vgrip_hand: reach_err=0.0mm step=0.0deg
 check.saw_ads_idle: reach_err=0.0mm step=0.0deg
 check.saw_bash: reach_err=0.0mm step=14.9deg
 check.saw_cut_end: reach_err=0.0mm step=9.8deg
@@ -226,6 +228,7 @@ check.smg_idle: reach_err=0.0mm step=0.1deg
 check.smg_reload: reach_err=0.0mm step=36.4deg
 check.smg_reload_empty: reach_err=0.0mm step=36.4deg
 check.smg_sprint: reach_err=0.0mm step=2.9deg
+check.smg_vgrip_hand: reach_err=0.0mm step=0.0deg
 check.sniper_ads_idle: reach_err=0.0mm step=0.0deg
 check.sniper_bash: reach_err=0.0mm step=33.4deg
 check.sniper_bolt: reach_err=0.0mm step=35.6deg
@@ -325,6 +328,7 @@ clip.launcher_idle: 90f loop=True
 clip.launcher_reload: 90f loop=False events=breech_open@14,eject@22,round_in@52,breech_close@72,done@82
 clip.launcher_reload_empty: 90f loop=False events=breech_open@14,eject@22,round_in@52,breech_close@72,done@82
 clip.launcher_sprint: 18f loop=True
+clip.launcher_vgrip_hand: 2f loop=False
 clip.lever_ads_idle: 90f loop=True
 clip.lever_bash: 18f loop=False events=hit@7,done@18
 clip.lever_draw: 18f loop=False events=ready@18
@@ -418,6 +422,7 @@ clip.rifle_idle: 90f loop=True
 clip.rifle_reload: 72f loop=False events=mag_out@14,mag_swap@25,mag_in@43,done@61
 clip.rifle_reload_empty: 93f loop=False events=mag_out@14,mag_swap@25,mag_in@43,bolt_release@62,done@82
 clip.rifle_sprint: 18f loop=True
+clip.rifle_vgrip_hand: 2f loop=False
 clip.saw_ads_idle: 90f loop=True
 clip.saw_bash: 24f loop=False events=hit@10,done@24
 clip.saw_cut_end: 12f loop=False events=done@10
@@ -465,6 +470,7 @@ clip.smg_idle: 90f loop=True
 clip.smg_reload: 66f loop=False events=mag_out@13,mag_swap@23,mag_in@39,done@56
 clip.smg_reload_empty: 90f loop=False events=mag_out@13,mag_swap@23,mag_in@39,bolt_release@64,done@80
 clip.smg_sprint: 18f loop=True
+clip.smg_vgrip_hand: 2f loop=False
 clip.sniper_ads_idle: 90f loop=True
 clip.sniper_bash: 18f loop=False events=hit@7,done@18
 clip.sniper_bolt: 27f loop=False events=bolt_open@8,bolt_back@12,bolt_forward@15,bolt_close@18,done@25
@@ -525,6 +531,7 @@ fp.shotgun: pump folded into fire/fire_ads (events pump_back, pump_forward); she
 fp.shotgun_box: box / drum-fed self-loading shotguns (anim_set shotgun_box): the rifle hold (left hand on LeftHandIK under the fore-end / shroud) with a shotgun kick; fire / fire_ads 9 f (<= 1.5 shot intervals at the data's rpm, restarted every shot, semi or auto); reload: mag_out (the drum / box rocks forward off its front lip, magazine bone), mag_swap (old one stowed off screen, fresh one in the left hand), mag_in (rocked in front lip first: canted forward, hooked, rocked back until it latches; bone identity from mag_in), done; reload_empty: the empty drops at mag_out (falls on the magazine bone), then the same rock-in and the left hand racks the charging handle on the receiver's left side (0.070 m back) and lets it fly home at bolt_release; lengths from the first shotgun_box weapon data (sorted by file name) when present, else 3.6 s / 4.4 s / equip 0.7 s / 300 rpm
 fp.sniper: fire/fire_ads = recoil only (9 f); play bolt (hip) / bolt_ads after each shot (27 f; 9 + 27 = 36 f = 1.2 s = 50 rpm); during the bolt the right hand leaves the grip and the weapon bone moves relative to hand.R (the left hand holds the gun); reload_empty ends with the bolt cycle
 fp.throwable: throwable (ThrowableDef kinds frag / concussion / incendiary; proposal: ThrowableDef.anim_set): the grenade hangs identity on the weapon bone = its centre (Godot +Y up the fuse, -Z forward) in the right fist; draw: pin_pull@ (the left hand pulls the ring on the grenade's left: hide the model's Pin), ready@; throw (overhand) / throw_low (underhand): release@ = hide the held model and spawn the projectile at the weapon bone with the hand's velocity, done@ = both hands off screen (then draw the gun); holster gone@ (no throw)
+fp.vgrip: D-118 vertical foregrip mods: <set>_vgrip_hand (launcher, rifle, smg) is a one-frame hip hold with the left hand closed round the grip (palm on the mod's LeftHandIK, thumb tucked over it). With a vertical-grip mod equipped, blend the left-hand bones (hand.L and its fingers) to it and IK the left wrist to the mod's LeftHandIK + this offset (Godot weapon axes, m): launcher (-0.018, 0.000, 0.047); rifle (-0.018, 0.000, 0.047); smg (-0.018, 0.000, 0.047)
 loops: akimbo_ads_idle,akimbo_idle,akimbo_sprint,bow_ads_idle,bow_hold,bow_idle,bow_sprint,break_action_ads_idle,break_action_idle,break_action_sprint,crossbow_ads_idle,crossbow_idle,crossbow_sprint,deploy_bag_idle,deploy_sentry_idle,deploy_small_idle,flamethrower_ads_idle,flamethrower_fire_hold,flamethrower_idle,flamethrower_sprint,launcher_ads_idle,launcher_idle,launcher_sprint,lever_ads_idle,lever_idle,lever_sprint,lmg_ads_idle,lmg_idle,lmg_sprint,melee_blade_charge,melee_blade_idle,melee_blade_sprint,melee_blunt_charge,melee_blunt_idle,melee_blunt_sprint,melee_knife_charge,melee_knife_idle,melee_knife_sprint,minigun_ads_idle,minigun_fire_hold,minigun_idle,minigun_sprint,pistol_ads_idle,pistol_idle,pistol_sprint,revolver_ads_idle,revolver_idle,revolver_sprint,rifle_ads_idle,rifle_idle,rifle_sprint,saw_ads_idle,saw_cut_hold,saw_idle,saw_sprint,shotgun_ads_idle,shotgun_box_ads_idle,shotgun_box_idle,shotgun_box_sprint,shotgun_idle,shotgun_sprint,smg_ads_idle,smg_idle,smg_sprint,sniper_ads_idle,sniper_idle,sniper_sprint,throwable_idle,throwable_sprint
 root: camera origin = rig_humanoid eye midpoint (0.0000,0.0645,1.6660) m Blender
 sets: pistol,smg,rifle,shotgun,lmg,sniper,akimbo,revolver,break_action,lever,bow,crossbow,launcher,flamethrower,saw,minigun,shotgun_box,melee_knife,melee_blunt,melee_blade,throwable,deploy_bag,deploy_small,deploy_sentry

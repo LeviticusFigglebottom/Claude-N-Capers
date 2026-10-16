@@ -48,8 +48,10 @@ unlock_level = 5
 mod_slots = {
 2: [&"mod.sparrow_suppressor"],
 3: [&"mod.sparrow_iron_sights", &"mod.sparrow_reflex_sight"],
+4: [&"mod.sparrow_rubber_grip", &"mod.sparrow_slim_grip"],
 6: [&"mod.sparrow_wire_stock"],
-7: [&"mod.sparrow_standard_mag", &"mod.sparrow_extended_mag"]
+7: [&"mod.sparrow_standard_mag", &"mod.sparrow_extended_mag"],
+8: [&"mod.rail_laser", &"mod.rail_flashlight", &"mod.rail_combo"]
 }
 default_mods = {
 3: &"mod.sparrow_iron_sights",

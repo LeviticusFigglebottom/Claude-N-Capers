@@ -86,3 +86,25 @@ func test_gn_texting_walk_and_clip_mapping() -> void:
 	assert_true(AnimDriver.POSE_CLIPS.has(&"cower_stand") and AnimDriver.POSE_CLIPS.has(&"cower_seated"), "poses")
 	assert_eq(AnimDriver.FALLBACK_CLIPS[&"walk_text"], &"walk", "fallback")
 	assert_near(float(AnimTweak.data().clip_speeds[&"walk_text"]), 1.2, 0.001, "1.2 m/s")
+
+
+## D-115 cast roster: an authored `walk_text` activity walks texting too (walk_text clip), not a plain walk.
+func test_d115_walk_text_activity_walks_texting() -> void:
+	await _launch()
+	var pp: PatrolPoint = PatrolPoint.new()
+	pp.tags = [&"civilian"]
+	_rt.map.add_child(pp)
+	pp.global_position = Vector3(6, 0.05, 0)
+	var walker: NpcBase = _rt.spawn_npc(&"civilian", Transform3D(Basis.IDENTITY, Vector3(3, 0.05, 0)),
+		{"idle_activity": &"walk_text"})
+	await wait_physics_frames(1)
+	var b: CivilianBrain = _brain(walker)
+	b._wander_timer = 0.0
+	await wait_physics_frames(2)
+	assert_eq(b.mode, CivilianBrain.Mode.WANDER, "wanders")
+	assert_eq(b.anim_hint, &"walk_text", "walks texting")
+	await wait_physics_frames(20)
+	var d: AnimDriver = AnimDriver.of(walker)
+	if d != null and d.player != null and d.player.has_animation("%s/walk_text" % AnimDriver.LIBRARY) \
+			and d.horizontal_speed() > 0.3:
+		assert_eq(d.clip, &"walk_text", "the walk_text clip plays while walking")

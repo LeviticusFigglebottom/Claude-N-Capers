@@ -50,7 +50,8 @@ mod_slots = {
 3: [&"mod.lark_iron_sights", &"mod.rail_reflex_sight", &"mod.rail_prism_scope"],
 5: [&"mod.rail_vertical_grip"],
 6: [&"mod.lark_folded_stock"],
-7: [&"mod.lark_standard_mag", &"mod.lark_extended_mag"]
+7: [&"mod.lark_standard_mag", &"mod.lark_extended_mag"],
+8: [&"mod.rail_laser", &"mod.rail_flashlight", &"mod.rail_combo"]
 }
 default_mods = {
 3: &"mod.lark_iron_sights",

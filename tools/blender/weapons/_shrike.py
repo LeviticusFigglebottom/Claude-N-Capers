@@ -145,3 +145,28 @@ def build_suppressor(ctx, mats, parent=None, name="Suppressor"):
     """D-118 slim rifle can threaded on the octagonal barrel's crown; origin = Muzzle. Kept under the
     front-blade sight line. Adds its own ``Muzzle``."""
     return c.build_can(ctx, mats, length=0.170, r=0.0175, overlap=0.0, bore_r=0.0058, parent=parent, name=name)
+
+
+def build_alt_stock(ctx, mats, heavy: bool, parent=None, name="Stock"):
+    """D-118 STOCK options. The lever gun has no pistol grip: the stock carries the wrist the firing hand holds, so
+    both options keep the base wrist (same profile from the receiver back to the comb). Light = short trapper stock
+    (24 cm, lower toe, thin rubber pad); heavy = full-length target stock with a raised comb and a thick recoil pad.
+    Built in the weapon frame; the mod script shifts it by -``STOCK_MOUNT`` so the glb origin = ``StockMount``."""
+    y0 = REC_REAR_Y
+    yr = y0 - (0.306 if heavy else 0.240)
+    toe = -0.074 if heavy else -0.060
+    prof = [(y0 + 0.002, REC_TOP_Z - 0.016), (y0 - 0.030, REC_TOP_Z - 0.022), (yr + 0.010, 0.050), (yr, 0.046),
+            (yr - 0.002, -0.010), (yr, toe + 0.002), (yr + 0.014, toe), (y0 - 0.060, -0.048), (y0 - 0.034, -0.050),
+            (y0 - 0.010, -0.020)]
+    stock = c.build_butt_stock(ctx, mats, "wood", prof, 0.0185 if heavy else 0.0170, name=name, parent=parent,
+                               pad_y=yr - 0.001, pad_z=(toe + 0.003, 0.045),
+                               taper=lambda y, z: 0.80 + 0.20 * min(1.0, max(0.0, (y0 - y) / 0.10)))
+    if heavy:
+        cm = ctx.builder()
+        cm.prism([(yr + 0.030, 0.049), (y0 - 0.100, 0.049), (y0 - 0.112, 0.064), (yr + 0.040, 0.066)], axis="X",
+                 start=-0.0135, end=0.0135, mat=cm.material(mats.wood()))
+        c.finish(cm, name + "Comb", bevel=0.0030, segments=2, parent=stock)
+        pd = ctx.builder()
+        pd.box((-0.0190, yr - 0.026, toe + 0.001), (0.0190, yr - 0.012, 0.047), mat=pd.material(mats.rubber()))
+        c.finish(pd, name + "RecoilPad", bevel=0.0030, segments=2, parent=stock)
+    return stock

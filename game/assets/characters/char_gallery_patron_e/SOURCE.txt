@@ -1,0 +1,19 @@
+asset: char_gallery_patron_e
+script: tools/blender/characters/char_p5_gallery.py
+params: {"age": 0.25, "build": 0.3, "gender": 1.0, "hair": "bob", "hair_color": "blond", "height": 1.74, "lip": "char_lip_rose", "look": "patron_e", "skin": 2}
+seed: 410556944  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category characters --asset char_gallery_patron_e
+edit policy: generated file, never edit by hand; change the script and rebuild
+attach_Back: bone chest, local [0.0000, 0.0868, 0.0911] (model [0.0000, 1.2708, 0.1092], Godot axes, rest pose)
+attach_Head: bone head, local [0.0000, 0.0792, -0.0867] (model [0.0000, 1.6286, -0.0750], Godot axes, rest pose)
+attach_Hip: bone hips, local [0.1647, 0.0500, 0.0414] (model [0.1647, 0.9814, 0.0438], Godot axes, rest pose)
+body_faces_culled: 2464
+body_params: {"age": 0.25, "beard_shadow": 0.0, "build": 0.3, "gender": 1.0, "hair": "bob", "hair_color": "blond", "hair_peak": 0.0, "height": 1.74, "lip": "char_lip_rose", "skin": 2}
+bones: 52
+look: Gala guest (woman, 30s): sapphire satin cocktail dress with cap sleeves, thin silver belt, silver drop earrings, blond bob
+meshes: Body,Hair,Headwear,Outfit
+shape_keys: none (baked at body_params; do not set blend_shapes/*)
+tri_budget: 35000
+tris: 24396
+tris_by_mesh: {"Body": 13816, "Hair": 2088, "Headwear": 376, "Outfit": 8116}

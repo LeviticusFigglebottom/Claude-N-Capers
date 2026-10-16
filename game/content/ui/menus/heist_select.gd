@@ -138,6 +138,8 @@ func select_heist_id(heist_id: StringName) -> bool:
 	for i: int in range(_entries.size()):
 		if StringName(_entries[i]["id"]) == heist_id:
 			select_heist(i)
+			if is_inside_tree() and heist_buttons[i].is_visible_in_tree():
+				heist_buttons[i].grab_focus()  # flow capture: the focus ring follows the chosen job
 			return true
 	return false
 

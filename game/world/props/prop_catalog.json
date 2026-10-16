@@ -3037,6 +3037,40 @@
   "weight": 1.0,
   "z": 0.0
  },
+ "prop_customs_seal": {
+  "aabb": [
+   -0.0146,
+   0.0,
+   -0.015,
+   0.0292,
+   0.16,
+   0.03
+  ],
+  "clear": 0.0,
+  "fixture": false,
+  "glb": "res://assets/props/prop_customs_seal/prop_customs_seal.glb",
+  "group": "padlock",
+  "has_light": false,
+  "hosts": [],
+  "keepout": [],
+  "kind": "padlock",
+  "mount": "",
+  "nodes": [
+   "Body",
+   "Shackle"
+  ],
+  "place": "none",
+  "prefab": "padlock",
+  "scene": "res://world/props/padlock/prop_customs_seal.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": false,
+  "surface": "metal",
+  "top": 0.0,
+  "visibility_range_end": 0.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
  "prop_deploy_ammo_bag": {
   "aabb": [
    -0.285,

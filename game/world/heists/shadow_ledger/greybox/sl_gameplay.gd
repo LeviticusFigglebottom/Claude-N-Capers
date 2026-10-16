@@ -267,7 +267,7 @@ func _build_server(gp: Node3D) -> void:
 		reader.set(&"targets", [reader.get_path_to(door)] as Array[NodePath])
 	var cage: Node3D = prefab(srv, "safe", "CageLock", Vector3(27.55, L.F41, 10.9), 180.0,
 		{"size": "enum:LARGE", "methods": [&"code", &"saw"] as Array[StringName], "code_group": CAGE_GROUP,
-			"objective_tag": &"cage"}, null, {"kind": "safe"})
+			"objective_tag": &"cage", "saw_duration_s": 90.0}, null, {"kind": "safe"})  # D-115 SL-1: 90 s placed saw
 	if cage == null:
 		return
 	# The ledger rack's drive-bay release (hack_terminal, a 0.6 x 2.0 x 1.0 rack, front south), back to the

@@ -51,6 +51,7 @@ VARIANTS = {
                                             "cat": {"prefab": "ladder", "kind": "ladder"}}
        for h, g in ((360, 0), (440, 0), (360, 25), (360, 40), (800, 40), (520, 22))},
     "prop_padlock_brass": {"fn": "padlock", "cat": {"prefab": "padlock", "kind": "padlock"}},
+    "prop_customs_seal": {"fn": "customs_seal", "cat": {"prefab": "padlock", "kind": "padlock"}},
     "veh_van_secure": {"fn": "van", "cat": {"prefab": "secure_zone", "kind": "van"}},
     "prop_loot_bag_light": {"fn": "bag", "size": (0.5, 0.28, 0.26), "cat": {"prefab": "loot_bag", "kind": "loot_bag"}},
     "prop_loot_bag_medium": {"fn": "bag", "size": (0.62, 0.34, 0.31), "cat": {"prefab": "loot_bag", "kind": "loot_bag"}},
@@ -468,6 +469,26 @@ def _padlock(k: Kit, p: dict) -> None:
     n = 10
     pts = [(math.cos(math.pi * i / n) * r, 0.0, h + 0.014 + math.sin(math.pi * i / n) * r) for i in range(n + 1)]
     s2.tube(pts, 0.004, "chrome", segs=8)
+    sh.build()
+
+
+def _customs_seal(k: Kit, p: dict) -> None:
+    """Customs bolt seal on a container hasp (padlock prefab visual, D-115 DB-9: the non-weapons containers carry
+    only this; the Co-op's brass padlock marks the weapons ones). Bottom at the pivot (padlock contract): `Body` =
+    the yellow numbered tag (0-4.5 cm) under the moulded red seal head, `Shackle` = the steel bolt through the hasp
+    above it (hidden once cut)."""
+    b = k.obj("Body")
+    tag = b.part(bevel=0.0)
+    tag.bx((-0.009, -0.0015, 0.0), (0.009, 0.0015, 0.045), "metal_yellow")
+    tag.bx((-0.007, -0.0018, 0.01), (0.007, 0.0018, 0.017), "metal_dark")   # printed number strip
+    a = b.part(bevel=0.003, segments=2)
+    a.cyl(0.012, 0.032, (0.0, 0.0, 0.061), "metal_red", segs=14)
+    a.cyl(0.015, 0.006, (0.0, 0.0, 0.078), "metal_red", segs=14)
+    b.build()
+    sh = k.obj("Shackle")
+    s2 = sh.part(bevel=0.0)
+    s2.rod((0.0, 0.0, 0.081), (0.0, 0.0, 0.155), 0.004, "steel", segs=8)
+    s2.cyl(0.007, 0.006, (0.0, 0.0, 0.157), "steel", segs=10)
     sh.build()
 
 

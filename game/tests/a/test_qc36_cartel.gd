@@ -88,3 +88,36 @@ func test_shout_never_dominates_and_damage_wakes() -> void:
 	await wait_physics_frames(1)
 	assert_eq(b.alert_state, Enums.AlertState.COMBAT, "damage wakes it")
 	assert_eq(_brain(b).woken_by, &"damage")
+
+
+
+## DB-12: a corpse in a sleeping gunman's sight cone (range, LOS, sight_time_s) wakes it (woken_by body); a
+## corpse behind it does not; with wake_on_body off a corpse in view does not either.
+func _db12(ahead: bool, wake_on_body: bool) -> NpcBase:
+	var victim_z: float = -15.0 if ahead else -1.0
+	var g: Array[NpcBase] = await _launch([Vector3(0, 0.05, -8), Vector3(0, 0.05, victim_z)] as Array[Vector3])
+	_rt.teleport_crew(0, Transform3D(Basis.IDENTITY, Vector3(-40, 0.05, 30)))
+	var watcher: NpcBase = g[0] if absf(g[0].global_position.z + 8.0) < 0.5 else g[1]
+	var victim: NpcBase = g[1] if watcher == g[0] else g[0]
+	var tw: CartelTweak = _brain(watcher).tweak.duplicate() as CartelTweak
+	tw.wake_on_body = wake_on_body
+	_brain(watcher).tweak = tw
+	victim.die({}, 0)
+	await wait_seconds(tw.sight_time_s + 0.6)
+	return watcher
+
+
+func test_db12_body_ahead_wakes() -> void:
+	var w: NpcBase = await _db12(true, true)
+	assert_eq(w.alert_state, Enums.AlertState.COMBAT, "body 7 m ahead: awake")
+	assert_eq(_brain(w).woken_by, &"body")
+
+
+func test_db12_body_behind_or_off_sleeps() -> void:
+	var w: NpcBase = await _db12(false, true)
+	assert_eq(w.alert_state, Enums.AlertState.CALM, "body 7 m behind: still asleep")
+	_rt.teardown()
+	_rt = null
+	await wait_frames(2)
+	w = await _db12(true, false)
+	assert_eq(w.alert_state, Enums.AlertState.CALM, "wake_on_body off: body ahead does not wake")

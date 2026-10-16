@@ -6,6 +6,8 @@
 * ``mod_osprey_extended_mag``   MAGAZINE   -> ``Magwell``     (20 rounds)
 * ``mod_osprey_suppressor``     SUPPRESSOR -> ``Muzzle``      (large can over the brake; own ``Muzzle``)
 * ``mod_osprey_bipod``          FOREGRIP   -> ``Underbarrel`` (folding bipod on the handguard rail)
+* ``mod_osprey_skeleton_stock`` STOCK -> ``StockMount`` (light open-frame skeleton stock; hides ``StockStock``; D-118)
+* ``mod_osprey_precision_stock`` STOCK -> ``StockMount`` (heavy precision stock, cheek riser + thick pad; hides ``StockStock``; D-118)
 """
 
 import _common as c
@@ -19,6 +21,8 @@ VARIANTS = {
     "mod_osprey_extended_mag": {"part": "mag_ext"},
     "mod_osprey_suppressor": {"part": "suppressor"},
     "mod_osprey_bipod": {"part": "bipod"},
+    "mod_osprey_skeleton_stock": {"part": "stock_light"},
+    "mod_osprey_precision_stock": {"part": "stock_heavy"},
 }
 
 
@@ -35,6 +39,10 @@ def build(ctx) -> None:
         o.build_suppressor(ctx, mats)
     elif part == "bipod":
         c.build_bipod(ctx, mats, leg_len=0.170)
+    elif part == "stock_light":
+        c.build_skeleton_stock(ctx, mats, 0.230, 0.020, -0.116, 0.0170, front_z=-0.016)
+    elif part == "stock_heavy":
+        c.build_precision_stock(ctx, mats, 0.268, 0.020, -0.116, 0.0175, front_z=-0.016)
     else:
         raise ValueError(f"unknown part {part!r}")
     ctx.source_extra["tris_lod0"] = c.tris_of_scene()
