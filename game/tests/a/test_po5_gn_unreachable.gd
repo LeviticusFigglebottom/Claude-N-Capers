@@ -132,3 +132,20 @@ func test_po5_pilot_reloads_an_empty_mag() -> void:
 	var ok: bool = await pilot._ensure_ammo()
 	assert_true(ok, "can shoot again")
 	assert_true(w.mag(ws) > 0 and w.reserve(ws) < before, "reloaded from the reserve")
+
+
+## GN probe 7: a marker that stalled (nothing usable) comes back as soon as something is usable there again (the
+## interrupted Argus hack offers restart_hack), instead of staying skipped for the run.
+func test_po5_gn_stalled_marker_returns_when_usable_again() -> void:
+	var s: Dictionary = await _setup()
+	var flow: RefCounted = s["flow"]
+	var dp: DrillPoint = ATestMaps.add_prefab(_rt, "drill_point", Vector3(6, 1, 6), func(n: Node) -> void:
+		(n as DrillPoint).duration_s = 60.0) as DrillPoint
+	await wait_physics_frames(2)
+	var m: Dictionary = {"id": &"hack", "position": Vector3(6, 0, 6)}
+	(flow.get(&"_stalls") as Dictionary)[&"hack"] = 60.0
+	dp.interactable.enabled = false
+	assert_true(flow.call(&"_stalled", m), "nothing usable: still stalled")
+	dp.interactable.enabled = true
+	assert_false(flow.call(&"_stalled", m), "usable again: picked again")
+	assert_eq(float((flow.get(&"_stalls") as Dictionary)[&"hack"]), 0.0, "stall reset")

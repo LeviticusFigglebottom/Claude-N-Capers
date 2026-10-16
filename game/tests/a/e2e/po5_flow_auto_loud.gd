@@ -157,14 +157,13 @@ func _pick(markers: Array[Dictionary]) -> Dictionary:
 				and (_stalls.has(UNBLOCK_ID) or _usable_near(gate.global_position, 2.5) != null):
 			# GN probe 6: open the door in front of it first (then defend its drill there, up to 4 x STALL_SKIP_S)
 			return {"id": UNBLOCK_ID, "position": gate.global_position}
-		if StringName(m0["id"]) in FIRST_OBJECTIVES and float(_stalls.get(StringName(m0["id"]), 0.0)) < STALL_SKIP_S \
-				and not _is_marker_blocked(m0) \
+		if StringName(m0["id"]) in FIRST_OBJECTIVES and not _stalled(m0) and not _is_marker_blocked(m0) \
 				and _has_path(p.stand_point(m0["position"] as Vector3)):  # probe 5: the Argus terminal sits behind
 			return m0  # the coded ServerDoor; only first when reachable
 	for m: Dictionary in markers:
 		var mid: StringName = StringName(m["id"])
 		if not (mid in [&"secure", &"escape", &"casing"] or mid in AREA_OBJECTIVES) \
-				and float(_stalls.get(mid, 0.0)) < STALL_SKIP_S and not _is_marker_blocked(m):
+				and not _stalled(m) and not _is_marker_blocked(m):
 			return m
 	for m1: Dictionary in markers:
 		if not (StringName(m1["id"]) in [&"secure", &"escape", &"casing"]):
@@ -274,6 +273,19 @@ func _fetch_bag() -> bool:
 	await p.use(best, 20.0, func() -> bool: return p.crew.is_carrying_bag())
 	_mark_if_unreached(best)
 	return p.crew.is_carrying_bag()
+
+
+## A marker that waited STALL_SKIP_S with nothing usable, while that is still so. Something usable there again (GN
+## probe 7: the Argus hack interrupted, `restart_hack`) clears the stall, so the pilot goes back to it.
+func _stalled(m: Dictionary) -> bool:
+	var id: StringName = StringName(m["id"])
+	if float(_stalls.get(id, 0.0)) < STALL_SKIP_S:
+		return false
+	if _usable_near(m["position"] as Vector3, 2.5) == null:
+		return true
+	_stalls[id] = 0.0
+	f.note("marker %s: usable again, back to it" % _marker_key(m))
+	return false
 
 
 ## The first closed door on the navmesh path from the pilot to `to` the crew cannot open now (BARRED / CODE without
