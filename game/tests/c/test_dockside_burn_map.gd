@@ -91,7 +91,7 @@ func test_def() -> void:
 	var d: HeistDef = _map.heist_def
 	assert_eq(d.id, &"dockside_burn")
 	assert_eq(d.map_scene, SCENE)
-	assert_eq(d.base_payout, 95000, "doc base payout (placeholder, D-064 Q7)")
+	assert_eq(d.base_payout, 24000, "D-120 base payout")
 	assert_eq(d.contact, &"contact.reyes")
 	assert_eq(d.music_track, &"dockside_burn")
 	assert_eq(d.mode, Enums.HeistMode.LOUD_ONLY, "loud only (S11.3)")

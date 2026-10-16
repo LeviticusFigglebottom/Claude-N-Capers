@@ -31,8 +31,8 @@ the M heists: $75,000.
 ## Loot (proposed for ENV C)
 | id | Weight | Base | Role |
 |---|---|---|---|
-| `loot.cash_bricks` (existing) | MEDIUM | $1,600 | count-room money (the roadmap's "money MEDIUM") |
-| `loot.parcels` | LIGHT | $1,500 | back-office product ("coke LIGHT" in the roadmap; named tastefully) |
+| `loot.cash_bricks` (existing) | MEDIUM | $8,000 | count-room money (the roadmap's "money MEDIUM") |
+| `loot.parcels` | LIGHT | $7,500 | back-office product ("coke LIGHT" in the roadmap; named tastefully) |
 | `loot.small_valuables` (no def) | — | prefab | till and VIP-lounge small loot (S10.3) |
 
 ## Waiting on ENV C (G0 doc)

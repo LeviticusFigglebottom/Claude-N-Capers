@@ -198,6 +198,13 @@ func test_crew_cards_whole_without_scrolling() -> void:
 				bottom = maxf(bottom, kick.get_global_rect().end.y)
 			assert_true(bottom <= view.end.y, "%s card ends at %.0f, view at %.0f" % [
 				"host" if screen == hs else "client", bottom, view.end.y])
+		# r223 co-op capture: a card with Kick sat ~6 px lower; the heister rows of every human card line up.
+		var ys: Array[float] = []
+		for w2: Dictionary in screen.slot_widgets:
+			if (w2["panel"] as Control).is_visible_in_tree() and (w2["heister"] as Control).is_visible_in_tree():
+				ys.append((w2["heister"] as Control).get_global_rect().position.y)
+		for y: float in ys:
+			assert_near(y, ys[0], 1.0, "heister rows aligned across cards")
 	hs.queue_free()
 	cs.queue_free()
 	get_window().size = saved

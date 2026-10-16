@@ -33,6 +33,8 @@ MAG_HD = 0.0280
 UNDER_Y = 0.465
 UNDER_Z = 0.0360
 STOCK_HW = 0.0240
+STOCK_MOUNT = (0.0, -0.012, 0.074)
+BUTT_CUT_Y = -0.160              # D-118: the swappable butt starts 1 cm behind the thumbhole
 
 SCOPE_4X = dict(length=0.300, tube_r=0.0127, obj_r=0.0215, eye_r=0.0190, ring_h=0.042)
 SCOPE_10X = dict(length=0.370, tube_r=0.0150, obj_r=0.0275, eye_r=0.0200, ring_h=0.048, parallax=True,

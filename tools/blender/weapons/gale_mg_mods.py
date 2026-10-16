@@ -5,6 +5,8 @@
 * ``mod_gale_box_200``     MAGAZINE -> ``Magwell``     (200-round belt box)
 * ``mod_gale_bipod``       FOREGRIP -> ``Underbarrel`` (folding bipod under the jacket)
 * ``mod_gale_barrage_brake`` BARREL_EXT -> ``Muzzle``    (heavy brake over the stock brake; own ``Muzzle`` + ``MuzzlePortL``/``R``)
+* ``mod_gale_collapsed_stock`` STOCK -> ``StockMount`` (light telescoping stock pushed in; hides ``StockStock``; D-118)
+* ``mod_gale_heavy_stock`` STOCK -> ``StockMount`` (heavy stock, cheek riser + recoil pad; hides ``StockStock``; D-118)
 
 Optics are the shared ``mod_rail_reflex_sight`` / ``mod_rail_prism_scope`` on the feed-cover rail.
 """
@@ -19,6 +21,8 @@ VARIANTS = {
     "mod_gale_box_200": {"part": "box_big"},
     "mod_gale_bipod": {"part": "bipod"},
     "mod_gale_barrage_brake": {"part": "brake"},
+    "mod_gale_collapsed_stock": {"part": "stock_light"},
+    "mod_gale_heavy_stock": {"part": "stock_heavy"},
 }
 
 
@@ -36,6 +40,10 @@ def build(ctx) -> None:
         c.build_bipod(ctx, mats, leg_len=0.170)
     elif part == "brake":
         g.build_barrage_brake(ctx, mats)
+    elif part == "stock_light":
+        c.build_collapsed_stock(ctx, mats, 0.150, 0.038, -0.108, 0.0190)
+    elif part == "stock_heavy":
+        c.build_precision_stock(ctx, mats, 0.280, 0.038, -0.108, 0.0195, front_z=-0.036)
     else:
         raise ValueError(f"unknown part {part!r}")
     ctx.source_extra["tris_lod0"] = c.tris_of_scene()

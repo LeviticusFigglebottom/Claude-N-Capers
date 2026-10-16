@@ -28,7 +28,7 @@ tag_characters = {
 }
 heist_tag_characters = {
 &"gallery_night": {
-&"civ_admin": [&"npc_penthouse_guest_a"],
+&"civ_admin": [&"gallery_admin"],
 &"civ_attendant": [&"gallery_attendant"],
 &"civ_conservator": [&"gallery_attendant_b"],
 &"civ_curator": [&"gallery_curator"],
@@ -44,6 +44,44 @@ heist_tag_characters = {
 &"guard_vaultline": [&"armored_car_crew", &"armored_car_crew_b"],
 &"staff_admin": [&"gallery_admin"],
 &"staff_cs": [&"gallery_attendant_b"]
+},
+&"dockside_burn": {
+&"civ_worker": [&"dock_worker", &"dock_worker_b", &"dock_packer"]
+},
+&"glasshouse": {
+&"civ_customer": [&"civilian_customer_a", &"civilian_customer_b", &"bank_customer", &"bank_customer_b"],
+&"civ_staff_admin": [&"civilian_clerk"],
+&"civ_staff_counter": [&"civilian_sales"],
+&"civ_staff_floor": [&"civilian_sales_b"],
+&"civ_staff_manager": [&"civilian_manager_vossberg"],
+&"civ_staff_workshop": [&"civilian_jeweler"],
+&"guard_alley_smoker": [&"security_officer", &"security_officer_b"],
+&"guard_post_floor": [&"security_officer", &"security_officer_b"],
+&"guard_rover_boh": [&"security_officer", &"security_officer_b"],
+&"guard_rover_upper": [&"security_officer", &"security_officer_b"],
+&"security_operator": [&"security_officer"]
+},
+&"night_deposit": {
+&"civ_cleaner": [&"npc_bank_cleaner"],
+&"civ_manager": [&"npc_bank_night_manager"],
+&"guard_armored_car": [&"armored_car_crew", &"armored_car_crew_b"],
+&"guard_basement": [&"security_officer", &"security_officer_b"],
+&"guard_hall": [&"security_officer", &"security_officer_b"],
+&"guard_rover": [&"security_officer", &"security_officer_b"],
+&"security_operator": [&"npc_bank_guard"]
+},
+&"shadow_ledger": {
+&"civ_cleaner_l41": [&"npc_cleaner_sl", &"npc_cleaner_sl_b"],
+&"civ_cleaner_l42": [&"npc_cleaner_sl", &"npc_cleaner_sl_b"],
+&"civ_it": [&"npc_it_contractor"],
+&"civ_kessler": [&"npc_kessler"],
+&"civ_partner": [&"npc_helena_moor"],
+&"guard_reception": [&"npc_northgate_guard", &"npc_northgate_guard_b"],
+&"guard_roof": [&"npc_northgate_guard", &"npc_northgate_guard_b"],
+&"guard_rover_l41": [&"npc_northgate_guard", &"npc_northgate_guard_b"],
+&"guard_rover_l42": [&"npc_northgate_guard", &"npc_northgate_guard_b"],
+&"guard_stair": [&"npc_northgate_guard", &"npc_northgate_guard_b"],
+&"security_operator": [&"npc_northgate_guard", &"npc_northgate_guard_b"]
 }
 }
 role_characters = {

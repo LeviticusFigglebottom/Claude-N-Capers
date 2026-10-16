@@ -233,6 +233,8 @@ func test_every_weapon_has_markers_and_stock_parts() -> void:
 		for part: StringName in STOCK_PARTS.get(w.id, []):
 			assert_true(inst.find_child(String(part), true, false) is Node3D, "%s stock part %s" % [w.id, part])
 		for t: int in w.mod_slots:
+			if not WeaponVisual.MARKER_FOR_MOD_TYPE.has(t):
+				continue  # AMMO (D-118) and other marker-less types never attach a model
 			var marker: StringName = WeaponVisual.MARKER_FOR_MOD_TYPE.get(t, &"")
 			assert_true(inst.find_child(String(marker), true, false) != null, "%s has %s for type %d" % [w.id, marker, t])
 		inst.free()
@@ -273,6 +275,11 @@ func test_every_mod_attaches_on_every_weapon() -> void:
 				var v: WeaponVisual = _visual_for(w.id, [mod.id] as Array[StringName])
 				if is_default:
 					assert_eq(v.attached.size(), 0, "%s default %s uses the stock part" % [w.id, mid])
+					v.queue_free()
+					continue
+				if not WeaponVisual.MARKER_FOR_MOD_TYPE.has(mod.mod_type):
+					# AMMO (D-118): the model is an icon only, nothing goes on the gun
+					assert_eq(v.attached.size(), 0, "%s: %s attaches nothing" % [w.id, mid])
 					v.queue_free()
 					continue
 				var inst: Node3D = v.attached.get(mod.mod_type)
@@ -319,6 +326,8 @@ func test_heaviest_full_kit_fits_the_fp_budget() -> void:
 	for w: WeaponDef in ContentDB.all_weapons():
 		var total: int = _tris_of(w.model)
 		for slot: Variant in w.mod_slots:
+			if not WeaponVisual.MARKER_FOR_MOD_TYPE.has(int(slot)):
+				continue  # AMMO icons (D-118) are never drawn on the gun
 			var worst: int = 0
 			for mid: Variant in w.mod_slots[slot]:
 				var m: WeaponModDef = ContentDB.mod(StringName(mid))

@@ -4,12 +4,14 @@
 ##   xvfb-run -a -s "-screen 0 960x540x24" /opt/godot/godot --rendering-driver opengl3 --audio-driver Dummy \
 ##     --fixed-fps 60 --resolution 960x540 --path game res://tests/p/_review/gadget_capture.tscn -- --out=/abs/dir \
 ##     [--heist=glasshouse] [--weapons=weapon.corsair_ar,weapon.kestrel_p9]
+##     [--mods=weapon.kestrel_p9:mod.rail_combo,...]   real gadget mods (then WeaponStats.gadgets is not forced)
 ## Owner: ENV P.
 extends Node
 
 var _out: String = "user://gadget_capture"
 var _heist: StringName = &"glasshouse"
 var _weapons: PackedStringArray = ["weapon.corsair_ar", "weapon.kestrel_p9"]
+var _mods: PackedStringArray = []
 
 
 func _ready() -> void:
@@ -20,6 +22,7 @@ func _ready() -> void:
 			"out": _out = v
 			"heist": _heist = StringName(v)
 			"weapons": _weapons = v.split(",")
+			"mods": _mods = v.split(",", false)
 	DirAccess.make_dir_recursive_absolute(_out)
 	RenderingServer.render_loop_enabled = false
 	var rows: Array[Array] = []
@@ -44,13 +47,18 @@ func _weapon(wid: StringName) -> Array:
 	var def: WeaponDef = ContentDB.weapon(wid)
 	var secondary: bool = def != null and def.slot == Enums.WeaponSlot.SECONDARY
 	var l: Loadout = CrewWeapons.build_loadout(null).duplicate() as Loadout
+	var mods: Array[StringName] = []
+	for pair: String in _mods:
+		var wm: PackedStringArray = pair.split(":")
+		if wm.size() == 2 and StringName(wm[0]) == wid:
+			mods.append(StringName(wm[1]))
 	if secondary:
 		l.secondary = wid
-		l.secondary_mods = [] as Array[StringName]
+		l.secondary_mods = mods
 		l.resolved_secondary = LoadoutResolver.resolve_weapon(wid, l.secondary_mods)
 	else:
 		l.primary = wid
-		l.primary_mods = [] as Array[StringName]
+		l.primary_mods = mods
 		l.resolved_primary = LoadoutResolver.resolve_weapon(wid, l.primary_mods)
 	var rt: HeistRuntime = await HeistLauncher.launch(_heist, 1002, Enums.Difficulty.ROUTINE, self,
 		{"ai_teammates": 0, "crew_ai": false, "loadouts": {0: l}})
@@ -62,7 +70,10 @@ func _weapon(wid: StringName) -> Array:
 	await inp.tap(&"slot_secondary" if secondary else &"slot_primary")
 	await _ticks(90)
 	var st: WeaponStats = c.weapons.stats(c.weapons.equipped_slot)
-	st.gadgets = [&"laser", &"flashlight"] as Array[StringName]
+	if mods.is_empty():
+		st.gadgets = [&"laser", &"flashlight"] as Array[StringName]  # no gadget mod given: force both (Muzzle origin)
+	print("[GADGET] %s mods=%s gadgets=%s laser_origin=%s" % [wid, mods, st.gadgets,
+		(c.weapon_visual as WeaponVisual).get_marker(&"LaserOrigin") != null])
 	for _k: int in 6:
 		inp.look(0.0, 30.0)
 		await _ticks(1)

@@ -63,7 +63,7 @@ func test_drafts_load() -> void:
 	assert_true(_table != null, "variant table loads")
 	if _def != null:
 		assert_eq(_def.id, HEIST)
-		assert_eq(_def.base_payout, 105000)
+		assert_eq(_def.base_payout, 57000, "D-120 (C's def lands in the same round)")
 
 
 ## Lead ruling 6: the library assets hold the values; a def entry only references them ({}) or changes what is

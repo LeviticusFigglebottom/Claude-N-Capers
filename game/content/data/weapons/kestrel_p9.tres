@@ -46,7 +46,9 @@ unlock_level = 0
 mod_slots = {
 2: [&"mod.p9_suppressor"],
 3: [&"mod.p9_iron_sights", &"mod.p9_reflex_sight"],
-7: [&"mod.p9_standard_mag", &"mod.p9_extended_mag"]
+4: [&"mod.p9_rubber_grip"],
+7: [&"mod.p9_standard_mag", &"mod.p9_extended_mag"],
+8: [&"mod.rail_laser", &"mod.rail_flashlight", &"mod.rail_combo"]
 }
 default_mods = {
 3: &"mod.p9_iron_sights",

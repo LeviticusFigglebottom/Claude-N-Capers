@@ -50,7 +50,8 @@ mod_slots = {
 3: [&"mod.lancet_iron_sights", &"mod.rail_reflex_sight", &"mod.rail_prism_scope"],
 5: [&"mod.lancet_vertical_grip"],
 6: [&"mod.lancet_collapsed_stock", &"mod.lancet_tactical_stock"],
-7: [&"mod.lancet_standard_mag", &"mod.lancet_extended_mag"]
+7: [&"mod.lancet_standard_mag", &"mod.lancet_extended_mag"],
+8: [&"mod.rail_laser", &"mod.rail_flashlight", &"mod.rail_combo"]
 }
 default_mods = {
 3: &"mod.lancet_iron_sights",

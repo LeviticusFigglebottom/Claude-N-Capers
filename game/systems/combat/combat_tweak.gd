@@ -183,6 +183,27 @@ static var _cached: CombatTweak = null
 ## explosions go around shields).
 @export_flags_3d_physics var explosion_los_mask: int = (1 << 0) | (1 << 1)
 
+@export_group("Shotgun ammo (D-118)")
+## Fallback per-type params (ShotgunAmmo) when the resolved WeaponDef.params (ENV B's AMMO mod) leave a key out.
+## Keys are the `ammo_type` names; B's params always win, then the clamps below apply ◇.
+@export var shotgun_ammo_defaults: Dictionary = {
+	"slug": {"pellets": 1, "armor_pierce": 1.0, "shield_pierce": true, "penetration": true},
+	"he": {"pellets_mult": 0.5, "explosion_radius_m": 1.0, "explosion_damage_mult": 1.0, "penetration": false},
+	"flechette": {"pellets_mult": 1.4, "dot_dps": 8.0, "dot_s": 3.0},
+	"dragons_breath": {"ignite": true, "dot_dps": 20.0, "dot_s": 3.0, "panic_civilians": true, "range_mult": 1.0},
+}
+@export var shotgun_ammo_max_pellets: int = 32
+@export var shotgun_ammo_max_explosion_radius_m: float = 5.0
+@export var shotgun_ammo_max_explosion_damage_mult: float = 10.0
+@export var shotgun_ammo_max_dot_dps: float = 500.0
+@export var shotgun_ammo_max_dot_s: float = 20.0
+@export var shotgun_ammo_range_mult_min: float = 0.1
+@export var shotgun_ammo_range_mult_max: float = 4.0
+@export var shotgun_ammo_max_pickup_mult: float = 4.0
+## Dragon's breath: civilians within this range (x range_mult) and cone (full angle) of the shot panic ◇.
+@export var shotgun_panic_range_m: float = 12.0
+@export var shotgun_panic_cone_deg: float = 40.0
+
 static func data() -> CombatTweak:
 	if _cached == null:
 		_cached = load(PATH) as CombatTweak

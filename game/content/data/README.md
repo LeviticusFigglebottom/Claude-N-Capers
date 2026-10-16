@@ -89,21 +89,29 @@ Heister", `portrait_dir` (ENV D's 2D portraits `<dir>/<id>.png`; none exist yet,
 accent only). Names: strings `crew.<id>`.
 
 ## Loot: `loot/`
-Jewelry $1,000 LIGHT ◇, cash $1,200 LIGHT ◇, body bag $0 HEAVY (S6.3, D-032). Base values before the
+Jewelry $6,000 LIGHT ◇, cash $6,500 LIGHT ◇, body bag $0 HEAVY (S6.3, D-032). Base values before the
 difficulty multiplier.
+**D-115 balance pass (2026-10-16, ◇ shape, not PD2 numbers):** every profit bag was raised (about ×4–6) so that a
+full clear of a loot heist earns most of its pay from bags, as in PD2 (GH ≈ 55 %, ND ≈ 67 %, GN ≈ 53 %, DB ≈ 80 %;
+the objective heist SL stays contract-heavy at ≈ 39 %), with the per-bag order gold > money / contraband >
+art / jewelry / data, and a heavier bag worth more within its kind. This is paired with lower
+`HeistDef.base_payout`s proposed to ENV C (GH 12,000, ND 26,000, SL 70,000, DB 24,000, GN 57,000) that keep a
+full clear's total within about ±15 % of the old one. Until those land, payouts run about 1.4–2.2× high.
+Glasshouse's display cases read `loot.jewelry`'s value (DisplayCase.loot_value), so ENV C should point them
+at an unbagged id (falls back to `LootTweak.display_case_default_value`, $1,000).
 P2 heists (PD2 bag shape: a heavier bag is worth more per bag, but less per second of carrying):
 | id | weight | value | heist | src |
 |---|---|---|---|---|
-| `loot.cash_bricks` | MEDIUM | $1,600 | Night Deposit (Co-op pallet) | weight: lead (B4-09; the C doc asked HEAVY); value ◇ (1.33× LIGHT cash) |
-| `loot.ledger_laptop` | LIGHT | $2,000 | Shadow Ledger (required) | weight V (doc QC-15); value ◇ (one bag, the key to the data) |
-| `loot.ledger_drives` | MEDIUM | $1,800 | Shadow Ledger (required ×2, 3 spawn) | weight V (doc); value ◇ |
-| `loot.ledger_books` | MEDIUM | $2,400 | Shadow Ledger (optional, time-locked safe) | weight: lead (B4-10; the doc asked LIGHT); value ◇ (greed bag: costs a keycard + a time-lock hold) |
-| `loot.painting` | LIGHT | $1,500 | Shadow Ledger art hall ×2, reusable by `gallery_night` | weight: lead ruling (cut and rolled, PD2); value ◇ |
-| `loot.weapon_crate` | HEAVY | $2,000 | Dockside Burn (2 crates in each of 2 yard containers; PD2 Firestarter weapons analog) | weight V (G0 doc, QC-39); value ◇ (doc) |
-| `loot.contraband` | MEDIUM | $1,400 | Dockside Burn (product; a bonus that does **not** count toward the 4 required bags) | weight V (doc); value ◇ (doc: Reyes' buyer takes it at a discount) |
+| `loot.cash_bricks` | MEDIUM | $8,000 | Night Deposit (Co-op pallet) | weight: lead (B4-09; the C doc asked HEAVY); value ◇ (above LIGHT cash) |
+| `loot.ledger_laptop` | LIGHT | $5,000 | Shadow Ledger (required) | weight V (doc QC-15); value ◇ (one bag, the key to the data) |
+| `loot.ledger_drives` | MEDIUM | $7,500 | Shadow Ledger (required ×2, 3 spawn) | weight V (doc); value ◇ |
+| `loot.ledger_books` | MEDIUM | $8,000 | Shadow Ledger (optional, time-locked safe) | weight: lead (B4-10; the doc asked LIGHT); value ◇ (greed bag: costs a keycard + a time-lock hold) |
+| `loot.painting` | LIGHT | $4,500 | Shadow Ledger art hall ×2, reusable by `gallery_night` | weight: lead ruling (cut and rolled, PD2); value ◇ |
+| `loot.weapon_crate` | HEAVY | $8,500 | Dockside Burn (2 crates in each of 2 yard containers; PD2 Firestarter weapons analog) | weight V (G0 doc, QC-39); value ◇ (doc) |
+| `loot.contraband` | MEDIUM | $7,000 | Dockside Burn (product; a bonus that does **not** count toward the 4 required bags) | weight V (doc); value ◇ (doc: Reyes' buyer takes it at a discount) |
 | `loot.thermite` | HEAVY | $0 | Dockside Burn tool bag, consumed by the burn point | **tool bag**: value 0, in `PayoutTweak.xp_loot_excluded_ids` (no bag XP), excluded from `[secure]` by the mission (ENV A/C) |
 Shadow Ledger's archive safe uses the existing `loot.cash`.
-Dockside Burn's cash is the existing `loot.cash_bricks` (MEDIUM $1,600: strongroom pallets or the count-room cage). Per-difficulty values and
+Dockside Burn's cash is the existing `loot.cash_bricks` (MEDIUM $8,000: strongroom pallets or the count-room cage). Per-difficulty values and
 the C-side TODOs: `content/docs/heists/dockside_burn.md`.
 
 **Small loot (QB-52, D-049): no loot def.** Small loot (cash stacks, jewellery, deposit-box contents
@@ -117,20 +125,20 @@ until ENV C sets the prefab values.
 
 P5 heists (B6-01; no G0 docs yet, so every heist assignment is a proposal for ENV C). Weight classes
 follow the roadmap row and PD2's carry classes (S10.1); values ◇ use the same bag shape as the
-P2/P3 loot above: a class band of LIGHT $1,000–2,000, MEDIUM $1,400–2,400, HEAVY $2,000–3,000, and a
-heavier bag is worth more per bag. `pd2_research.md` lists no per-bag values, so no value is V.
+P2/P3 loot above: a class band of LIGHT $2,800–8,000, MEDIUM $7,000–8,000, HEAVY $8,500–14,000 (D-115), and a
+heavier bag is worth more per bag of the same kind. `pd2_research.md` lists no per-bag values, so no value is V.
 | id | weight | value | heist (proposed) | src |
 |---|---|---|---|---|
-| `loot.gold` | HEAVY | $2,800 | Ostrander Federal vault, Rolling Thunder trucks | weight V (roadmap, PD2 gold is a heavy bag); value ◇ (top bag: above the $2,000 weapon crate, PD2 gold is the best-paying common bag) |
-| `loot.cash_bricks` (existing) | MEDIUM | $1,600 | Ostrander Federal vault, Rolling Thunder trucks, Afterhours count room | the roadmap's "money MEDIUM" is this def; no new money def |
-| `loot.server_drives` | MEDIUM | $1,800 | Rolling Thunder (courier truck), Ostrander Federal (optional) | weight V (roadmap); value ◇ (= `loot.ledger_drives`, same kind of bag) |
-| `loot.bearer_bonds` | LIGHT | $1,400 | Ostrander Federal (vault cage) | weight V (roadmap); value ◇ (between cash $1,200 and the parcels) |
-| `loot.parcels` | LIGHT | $1,500 | Afterhours (back office) | weight V (roadmap "coke LIGHT"; PD2 carries it light); value ◇ (a LIGHT bag above cash, as PD2's product bags pay more than light cash). Display "Sealed Parcels": the tasteful analog, like `loot.contraband` (MEDIUM, Dockside's discounted product) |
-| `loot.painting_study` | LIGHT | $1,100 | Gallery Night (D-075) | weight: rolled canvas (LIGHT); value ◇ (a study for the Lantern Bearer, below the canvases) |
-| `loot.painting_tidewater_saint` | LIGHT | $1,300 | Gallery Night | weight V (PD2 cuts canvases from the frame and carries them rolled as a light bag); value ◇ |
-| `loot.painting_widow_in_blue` | LIGHT | $1,500 | Gallery Night | as above |
-| `loot.painting_salt_orchard` | LIGHT | $1,700 | Gallery Night | as above |
-| `loot.painting_lantern_bearer` | LIGHT | $2,000 | Gallery Night (centrepiece) | as above; the top of the LIGHT band |
+| `loot.gold` | HEAVY | $14,000 | Ostrander Federal vault, Rolling Thunder trucks | weight V (roadmap, PD2 gold is a heavy bag); value ◇ (top bag: above the $8,500 weapon crate, PD2 gold is the best-paying common bag) |
+| `loot.cash_bricks` (existing) | MEDIUM | $8,000 | Ostrander Federal vault, Rolling Thunder trucks, Afterhours count room | the roadmap's "money MEDIUM" is this def; no new money def |
+| `loot.server_drives` | MEDIUM | $7,500 | Rolling Thunder (courier truck), Ostrander Federal (optional) | weight V (roadmap); value ◇ (= `loot.ledger_drives`, same kind of bag) |
+| `loot.bearer_bonds` | LIGHT | $7,000 | Ostrander Federal (vault cage) | weight V (roadmap); value ◇ (between cash $6,500 and the parcels) |
+| `loot.parcels` | LIGHT | $7,500 | Afterhours (back office) | weight V (roadmap "coke LIGHT"; PD2 carries it light); value ◇ (a LIGHT bag above cash, as PD2's product bags pay more than light cash). Display "Sealed Parcels": the tasteful analog, like `loot.contraband` (MEDIUM, Dockside's discounted product) |
+| `loot.painting_study` | LIGHT | $2,800 | Gallery Night (D-075; D-081's $700 ×4, D-115) | weight: rolled canvas (LIGHT); value ◇ (a study for the Lantern Bearer, below the canvases) |
+| `loot.painting_tidewater_saint` | LIGHT | $5,200 | Gallery Night | weight V (PD2 cuts canvases from the frame and carries them rolled as a light bag); value ◇ |
+| `loot.painting_widow_in_blue` | LIGHT | $6,000 | Gallery Night | as above |
+| `loot.painting_salt_orchard` | LIGHT | $6,800 | Gallery Night | as above |
+| `loot.painting_lantern_bearer` | LIGHT | $8,000 | Gallery Night (centrepiece) | as above; the top of the LIGHT band |
 The four canvases are original works by invented painters (Maske, Sallow, Wilk, Calloway). Shadow
 Ledger's `loot.painting` is LIGHT too (lead ruling: cut and rolled); Gallery Night uses the rolled variants.
 **Deposit-box valuables: no loot def** (S10.3, QB-52): Ostrander Federal's deposit boxes spawn small loot
@@ -218,6 +226,19 @@ Shared rail foregrip (D-115): `rail_vertical_grip` (FOREGRIP: kick −0.12, hori
 every weapon with an `Underbarrel` rail and no grip of its own (Drover, Lark, Ferret, Hornet, Hush, Wasp);
 like the per-weapon vertical grips it has no `LeftHandIK`, so the support hand keeps the base marker
 (`test_rail_grip.gd`).
+Rail gadgets (D-118, GADGET -> `SideRail`, `rail_gadgets_mods.py`): `rail_laser` (hip spread −0.2 / conc −1, $3500,
+gadgets [laser], params gadget_laser_color/_range_m, `LaserOrigin`), `rail_flashlight` (conc −1, $2500, gadgets
+[flashlight], params gadget_light_range_m/_angle_deg/_energy, `LightOrigin`), `rail_combo` (hip −0.2 / conc −2, $5500,
+both gadgets, both param sets, both markers) on every conventional weapon (specials excluded: bow, crossbow,
+flamethrower, launcher, saw, rotary). The origin markers' −Z = weapon forward. Pistols' `SideRail` shares the
+dust-cover rail with `Underbarrel` and is turned 90° about the bore so the gadget hangs below; no pistol has a
+FOREGRIP slot, so no conflicts are needed. Shotgun ammo (D-118, AMMO, Plowman/Brute/Harrow/Mule/Reaper):
+`shotgun_slug` (dmg +2/pellet, spread −0.6, total ammo −6, AP 1.0 + shield pierce, $6000), `shotgun_he` (dmg +1.5,
+spread +0.4, ammo −8, $7000), `shotgun_flechette` (dmg −0.5, spread −0.3, $4500), `shotgun_dragons_breath`
+(dmg −1, $5500); the ammo behaviour is in `params` (ammo_type + keys per D-118, merged by D-057). Mod deltas never
+touch pellets or falloff (test_content_data), so slug/HE `pellets: 1`, flechette `pellets_mult` and dragon's
+breath `range_mult` are runtime params for ENV A. AMMO has no attach marker: its model (`shotgun_ammo_mods.py`,
+a shell caddy) is an icon and never goes on the gun (`test_gadgets_ammo.gd`).
 Audit slot fills (D-118): STOCK pairs on the four weapons whose base stock is `StockMount/StockStock` —
 a light `*_collapsed_stock` (conc +3 / kick +0.21, horiz +0.3, ADS spread +0.576, hip +0.72; Harrow kick
 +0.585, horiz +0.06; $2000) and a heavy `bastion_precision_stock` / `lancet_tactical_stock` /

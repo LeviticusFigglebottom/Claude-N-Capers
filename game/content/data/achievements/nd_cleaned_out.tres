@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="AchievementDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://content/defs/achievement_def.gd" id="1_ach"]
+
+[resource]
+script = ExtResource("1_ach")
+id = &"achievement.nd_cleaned_out"
+name_key = &"achievement.nd_cleaned_out.name"
+desc_key = &"achievement.nd_cleaned_out.desc"
+condition = {"event": &"heist_completed", "heist": &"night_deposit", "objectives_completed": [&"vault_loot", &"depository"], "all_loot_secured": true, "min_bags": 9, "count": 1}
+unlock = &""
+order = 722
+category = &"night_deposit"
+rewards = Array[StringName]([&"mask_pattern.chevron"])
+unlocks = Array[StringName]([])
+requires_facts = Array[StringName]([])

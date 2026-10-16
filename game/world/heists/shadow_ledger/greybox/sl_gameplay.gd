@@ -267,7 +267,7 @@ func _build_server(gp: Node3D) -> void:
 		reader.set(&"targets", [reader.get_path_to(door)] as Array[NodePath])
 	var cage: Node3D = prefab(srv, "safe", "CageLock", Vector3(27.55, L.F41, 10.9), 180.0,
 		{"size": "enum:LARGE", "methods": [&"code", &"saw"] as Array[StringName], "code_group": CAGE_GROUP,
-			"objective_tag": &"cage"}, null, {"kind": "safe"})
+			"objective_tag": &"cage", "saw_duration_s": 90.0}, null, {"kind": "safe"})  # D-115 SL-1: 90 s placed saw
 	if cage == null:
 		return
 	# The ledger rack's drive-bay release (hack_terminal, a 0.6 x 2.0 x 1.0 rack, front south), back to the
@@ -700,8 +700,8 @@ func _variants_escape(variants: Node3D) -> void:
 			"zone_size_m": Vector3(2.4, 2.4, 2.4), "visual_scene": load(SECURE_DROP_MARKER)},
 		null, {}, false)
 	prefab(e3, "escape_zone", "LiftEscapeE3", Vector3(22.5, L.F40, 9.0), 0.0,
-		{"objective_tag": &"escape_service", "escape_type": &"lift", "zone_size_m": Vector3(2.6, 2.4, 2.6),
-			"visual_scene": load(ESCAPE_LIFT_VISUAL)})
+		{"objective_tag": &"escape_service", "escape_type": &"lift", "zone_size_m": Vector3(8.8, 2.4, 4.8),
+			"zone_offset": Vector3(3.0, 0.0, 1.0), "visual_scene": load(ESCAPE_LIFT_VISUAL)})  # SL-7: car + lobby, one zone
 
 
 ## PO6-06 / D-063: a seat an NPC spawns seated in (as DB's `npc_seat` chairs and GH / GN's prop_chair_task): the

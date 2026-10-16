@@ -51,6 +51,9 @@ VARIANTS = {
                                             "cat": {"prefab": "ladder", "kind": "ladder"}}
        for h, g in ((360, 0), (440, 0), (360, 25), (360, 40), (800, 40), (520, 22))},
     "prop_padlock_brass": {"fn": "padlock", "cat": {"prefab": "padlock", "kind": "padlock"}},
+    "prop_customs_seal": {"fn": "customs_seal", "cat": {"prefab": "padlock", "kind": "padlock"}},
+    # hack_terminal prefab visual (Dockside Burn E1 `lift_dead`): the goods-lift breaker cabinet, wall-hung
+    "prop_lift_breaker": {"fn": "lift_breaker", "cat": {"prefab": "hack_terminal", "kind": "breaker_panel", "mount": "wall"}},
     "veh_van_secure": {"fn": "van", "cat": {"prefab": "secure_zone", "kind": "van"}},
     "prop_loot_bag_light": {"fn": "bag", "size": (0.5, 0.28, 0.26), "cat": {"prefab": "loot_bag", "kind": "loot_bag"}},
     "prop_loot_bag_medium": {"fn": "bag", "size": (0.62, 0.34, 0.31), "cat": {"prefab": "loot_bag", "kind": "loot_bag"}},
@@ -471,6 +474,26 @@ def _padlock(k: Kit, p: dict) -> None:
     sh.build()
 
 
+def _customs_seal(k: Kit, p: dict) -> None:
+    """Customs bolt seal on a container hasp (padlock prefab visual, D-115 DB-9: the non-weapons containers carry
+    only this; the Co-op's brass padlock marks the weapons ones). Bottom at the pivot (padlock contract): `Body` =
+    the yellow numbered tag (0-4.5 cm) under the moulded red seal head, `Shackle` = the steel bolt through the hasp
+    above it (hidden once cut)."""
+    b = k.obj("Body")
+    tag = b.part(bevel=0.0)
+    tag.bx((-0.009, -0.0015, 0.0), (0.009, 0.0015, 0.045), "metal_yellow")
+    tag.bx((-0.007, -0.0018, 0.01), (0.007, 0.0018, 0.017), "metal_dark")   # printed number strip
+    a = b.part(bevel=0.003, segments=2)
+    a.cyl(0.012, 0.032, (0.0, 0.0, 0.061), "metal_red", segs=14)
+    a.cyl(0.015, 0.006, (0.0, 0.0, 0.078), "metal_red", segs=14)
+    b.build()
+    sh = k.obj("Shackle")
+    s2 = sh.part(bevel=0.0)
+    s2.rod((0.0, 0.0, 0.081), (0.0, 0.0, 0.155), 0.004, "steel", segs=8)
+    s2.cyl(0.007, 0.006, (0.0, 0.0, 0.157), "steel", segs=10)
+    sh.build()
+
+
 # --------------------------------------------------------------------------------------- van
 
 def _van(k: Kit, p: dict) -> None:
@@ -605,3 +628,27 @@ def _drill(k: Kit, p: dict) -> None:
 def build(ctx) -> None:
     k = Kit(ctx)
     globals()["_" + ctx.params["fn"]](k, ctx.params)
+
+
+def _lift_breaker(k: Kit, p: dict) -> None:
+    """Goods-lift breaker cabinet: pivot back-centre on the floor, the cabinet 1.0-1.9 m up the wall.
+    `Panel` = cabinet, reset lever, labels; `Screen` = the status window the prefab tints with progress."""
+    w, d, z0, z1 = 0.6, 0.16, 1.0, 1.9
+    pn = k.obj("Panel")
+    a = pn.part(bevel=0.005, segments=2)
+    a.bx((-w / 2, 0.0, z0), (w / 2, d, z1), "metal_grey")
+    a.bx((-w / 2 + 0.02, d, z0 + 0.02), (w / 2 - 0.02, d + 0.008, z1 - 0.02), "metal_grey")
+    a.bx((-0.07, 0.0, z1), (0.07, 0.08, z1 + 0.6), "metal_dark")  # conduit up to the ceiling run
+    t = pn.part(bevel=0.0)
+    t.bx((-0.12, d + 0.008, z1 - 0.12), (0.12, d + 0.01, z1 - 0.06), "metal_yellow")  # "LIFT" warning plate
+    t.bx((-0.24, d + 0.008, z0 + 0.06), (-0.12, d + 0.01, z0 + 0.14), "paper")
+    lv = pn.part(bevel=0.004, segments=2)
+    lv.bx((w / 2 - 0.13, d + 0.008, z0 + 0.32), (w / 2 - 0.05, d + 0.05, z0 + 0.58), "plastic_black")  # lever boss
+    lv.rod((w / 2 - 0.09, d + 0.05, z0 + 0.45), (w / 2 - 0.09, d + 0.2, z0 + 0.62), 0.014, "steel", segs=8)
+    lv.cyl(0.024, 0.07, (w / 2 - 0.09, d + 0.2, z0 + 0.62), "metal_red", axis="Y", segs=12)
+    pn.build()
+    sc = k.obj("Screen")
+    c = sc.part(bevel=0.0)
+    c.bx((-0.22, d + 0.008, z0 + 0.38), (0.08, d + 0.012, z0 + 0.56), "emit_screen")
+    sc.build()
+

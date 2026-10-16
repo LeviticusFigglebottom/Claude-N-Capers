@@ -41,6 +41,15 @@ extends Resource
 ## assault_slot_max_dy_m of the target's floor.
 @export var assault_slot_snap_m: float = 0.6
 @export var assault_slot_max_dy_m: float = 1.0
+## X-5 ◇ (GH workshop doorway jam): a unit under the standoff band backs off to one latched stand point at the
+## preferred standoff from the target, re-picked when the target moved this far (m).
+@export var back_off_refresh_m: float = 1.5
+## X-5 ◇: a back-off that gains less than this (m of flat distance from the target) in back_off_stall_s is blocked
+## (a teammate holding in the doorway, a wall): the unit side-steps to the next heading.
+@export var back_off_progress_m: float = 0.3
+@export var back_off_stall_s: float = 1.5
+## X-5 ◇: back-off headings tried in order (deg from straight away from the target); none left = hold there.
+@export var back_off_side_deg: PackedFloat32Array = PackedFloat32Array([0.0, 60.0, -60.0])
 @export var fire_range_m: float = 40.0
 ## Flank-lite: chance a fresh unit first visits a FLANK point near the target.
 @export var flank_chance: float = 0.3

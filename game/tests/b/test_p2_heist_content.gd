@@ -28,9 +28,9 @@ const DB_TAGS: Array[String] = [
 	"escape",
 ]
 ## Placeholder HeistDef.base_payout (lead, B5-04 / doc QC open question 7); the def wins once it exists.
-const DB_BASE_PAYOUT: int = 95000
+const DB_BASE_PAYOUT: int = 24000  # D-120
 ## The content doc's contract pay table for DB_BASE_PAYOUT, Routine..Cataclysm.
-const DB_PAY_TABLE: Array[int] = [95000, 190000, 247000, 399000, 684000, 874000]
+const DB_PAY_TABLE: Array[int] = [24000, 48000, 62400, 100800, 172800, 220800]
 ## QC-40: the doc's five new pre-planning assets (library, ENV B).
 const DB_NEW_ASSETS: Array[StringName] = [
 	&"asset.gangway_raised", &"asset.intel_containers", &"asset.lift_power", &"asset.sniper_position",
@@ -52,8 +52,6 @@ const DB_POINTS: Array = [
 	[&"pp_perch_stack", &"drop_zone", {"variant_group": &"player_perch", "variant_slot": &"perch_stack"}],
 	[&"pp_gangway", &"insider", {"variant_group": &"east_gangway", "variant_slot": &"gangway_up"}],
 ]
-## Point ids shared with Night Deposit: their labels use heist-qualified keys (QB for C, B5-04).
-const DB_SHARED_POINT_IDS: Array[StringName] = [&"pp_drop_quay", &"pp_escape_boat"]
 ## The proposed HeistDef.preplanning (content doc), aligned with the G0 doc's block. The five new
 ## assets carry their fields in the library, so the def only lists them.
 const DB_PREPLAN: Dictionary = {
@@ -378,7 +376,8 @@ func test_dockside_burn_preplan() -> void:
 		assert_has(_table, "item.%s.desc" % id)
 	for row: Variant in DB_POINTS:
 		var pid: StringName = (row as Array)[0]
-		var key: String = "ui.preplan.point.%s%s" % ["dockside_burn." if DB_SHARED_POINT_IDS.has(pid) else "", pid]
+		# The map labels every point with a heist-qualified key (build_greybox, D-115).
+		var key: String = "ui.preplan.point.dockside_burn.%s" % pid
 		assert_has(_table, key, "label for %s" % pid)
 	var b: PreplanBoard = _db_board()
 	assert_eq(b.errors, [] as Array[String])

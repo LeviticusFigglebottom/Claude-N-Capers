@@ -17,6 +17,8 @@
 ## achievements, so career-stat achievements see this payday.
 ## Achievements (B4-20): _apply runs Achievements.on_payday on the profile before saving; ids unlocked by
 ## this payday are in `achievements_unlocked` and listed under the summary.
+## Heist achievements (D-115): the in-heist screen keeps a HeistFacts log (`facts`; MenuFlow calls
+## start_fact_log() before the launch, _ready starts it too when listening) and hands its snapshot to on_payday.
 ## Awards (B6-02; content/docs/scoreboard.md): HeistAwards.compute over result.crew -> `awards`, shown as
 ## their own "Crew Honours" section under the crew stats (`award_labels`: award id -> winner names Label).
 ## Continue emits continue_pressed; if nobody listens it returns to the main menu scene.
@@ -71,6 +73,8 @@ var awards: Array[Dictionary] = []
 var award_labels: Dictionary = {}
 ## Achievement ids this payday unlocked (B4-20).
 var achievements_unlocked: Array[StringName] = []
+## D-115: in-heist fact log (objective outcomes, device kinds, items, loot ids) for the heist achievements.
+var facts: HeistFacts = HeistFacts.new()
 ## Index of the picked card (-1 = not picked yet).
 var picked_index: int = -1
 ## True when the timer picked the card.
@@ -151,6 +155,8 @@ func build_ui() -> void:
 	_sync_cursor()
 	if listen_heist_ended and not EventBus.heist_ended.is_connected(_on_heist_ended):
 		EventBus.heist_ended.connect(_on_heist_ended)
+	if listen_heist_ended:
+		start_fact_log()
 	if not result.is_empty():
 		_render()
 
@@ -277,6 +283,7 @@ func _notification(what: int) -> void:
 
 func _exit_tree() -> void:
 	finish_card_pick()
+	facts.stop()
 
 
 ## Advance the pick timer (called from _process; tests call it directly).
@@ -426,7 +433,8 @@ func _apply() -> void:
 	SaveService.apply_heist_payout(profile, payout, XpCurve.level_for_xp)
 	profile.add_stat("heists_completed" if bool(payout.get("success", false)) else "heists_failed")
 	Career.record(profile, result, payout, Net.local_slot())
-	achievements_unlocked = Achievements.on_payday(profile, result, payout, is_pro)
+	var snap: Dictionary = facts.snapshot() if facts.started else {}
+	achievements_unlocked = Achievements.on_payday(profile, result, payout, is_pro, snap)
 	SaveService.save_profile(profile, profile_slot)
 
 
@@ -842,6 +850,11 @@ static func _level_progress(xp: int) -> float:
 		return 1.0
 	var step: int = XpCurve.step_xp(level + 1)
 	return clampf(float(xp - XpCurve.xp_for_level(level)) / float(maxi(step, 1)), 0.0, 1.0)
+
+
+## D-115: start recording the heist's facts (idempotent; before the launch so the mission's first objectives count).
+func start_fact_log() -> void:
+	facts.start()
 
 
 func _on_heist_ended(heist_result: Dictionary) -> void:

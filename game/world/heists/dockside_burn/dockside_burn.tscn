@@ -59,7 +59,7 @@
 [ext_resource type="Texture2D" path="res://assets/textures/fabric_upholstery/tex_fabric_upholstery_orm.png" id="57_db"]
 [ext_resource type="PackedScene" path="res://systems/prefabs/padlock/padlock.tscn" id="58_db"]
 [ext_resource type="Script" path="res://systems/prefabs/padlock/padlock.gd" id="59_db"]
-[ext_resource type="PackedScene" path="res://assets/props/prop_padlock_brass/prop_padlock_brass.glb" id="60_db"]
+[ext_resource type="PackedScene" path="res://assets/props/prop_customs_seal/prop_customs_seal.glb" id="60_db"]
 [ext_resource type="Script" path="res://systems/interaction/interactable_component.gd" id="61_db"]
 [ext_resource type="Script" path="res://world/lighting/heist_world_environment.gd" id="62_db"]
 [ext_resource type="Script" path="res://contracts/map/map_zone.gd" id="63_db"]
@@ -76,56 +76,57 @@
 [ext_resource type="PackedScene" path="res://world/props/door/prop_door_single_steel_t30.tscn" id="74_db"]
 [ext_resource type="PackedScene" path="res://world/props/door/prop_door_single_steel_t20.tscn" id="75_db"]
 [ext_resource type="PackedScene" path="res://world/props/door/prop_door_roller_twin_w360_h400.tscn" id="76_db"]
-[ext_resource type="PackedScene" path="res://world/props/door/prop_door_slide_coldstore_w240_h360.tscn" id="77_db"]
-[ext_resource type="PackedScene" path="res://world/props/door/prop_door_vault_strongroom_w200_h220.tscn" id="78_db"]
-[ext_resource type="PackedScene" path="res://systems/prefabs/drill_point/drill_point.tscn" id="79_db"]
-[ext_resource type="Script" path="res://systems/prefabs/drill_point/drill_point.gd" id="80_db"]
-[ext_resource type="PackedScene" path="res://world/props/drill/prop_thermal_drill_device.tscn" id="81_db"]
-[ext_resource type="PackedScene" path="res://world/heists/glasshouse/art/gh_empty.tscn" id="82_db"]
-[ext_resource type="PackedScene" path="res://world/props/door/prop_door_single_ivory_t30.tscn" id="83_db"]
-[ext_resource type="PackedScene" path="res://world/props/door/prop_door_single_steel_t10.tscn" id="84_db"]
-[ext_resource type="PackedScene" path="res://world/props/door/prop_door_double_steel_t10.tscn" id="85_db"]
-[ext_resource type="Script" path="res://world/heists/dockside_burn/db_container_latch.gd" id="86_db"]
-[ext_resource type="PackedScene" path="res://systems/prefabs/loot_spawn/loot_spawn.tscn" id="87_db"]
-[ext_resource type="Script" path="res://systems/prefabs/loot_spawn/loot_spawn.gd" id="88_db"]
-[ext_resource type="PackedScene" path="res://world/props/loot_spawn/prop_loot_weapon_crate.tscn" id="89_db"]
-[ext_resource type="PackedScene" path="res://systems/prefabs/safe/safe.tscn" id="90_db"]
-[ext_resource type="Script" path="res://systems/prefabs/safe/safe.gd" id="91_db"]
-[ext_resource type="PackedScene" path="res://world/props/safe/prop_safe_large.tscn" id="92_db"]
-[ext_resource type="PackedScene" path="res://systems/prefabs/small_loot/small_loot.tscn" id="93_db"]
-[ext_resource type="Script" path="res://systems/prefabs/small_loot/small_loot.gd" id="94_db"]
-[ext_resource type="PackedScene" path="res://world/props/small_loot/prop_cash_stack.tscn" id="95_db"]
-[ext_resource type="PackedScene" path="res://world/props/loot_spawn/prop_loot_thermite_drum.tscn" id="96_db"]
-[ext_resource type="PackedScene" path="res://systems/prefabs/bag_lift/bag_lift.tscn" id="97_db"]
-[ext_resource type="Script" path="res://systems/prefabs/bag_lift/bag_lift.gd" id="98_db"]
-[ext_resource type="PackedScene" path="res://world/heists/dockside_burn/greybox/goods_lift_visual.tscn" id="99_db"]
-[ext_resource type="Script" path="res://contracts/map/variant_slot.gd" id="100_db"]
-[ext_resource type="PackedScene" path="res://world/props/loot_spawn/prop_cash_pallet.tscn" id="101_db"]
-[ext_resource type="PackedScene" path="res://systems/prefabs/burn_point/burn_point.tscn" id="102_db"]
-[ext_resource type="Script" path="res://systems/prefabs/burn_point/burn_point.gd" id="103_db"]
-[ext_resource type="PackedScene" path="res://world/props/burn_point/prop_burn_barrel.tscn" id="104_db"]
-[ext_resource type="PackedScene" path="res://world/props/loot_spawn/prop_loot_contraband_bales.tscn" id="105_db"]
-[ext_resource type="PackedScene" path="res://systems/prefabs/hack_terminal/hack_terminal.tscn" id="106_db"]
-[ext_resource type="Script" path="res://systems/prefabs/hack_terminal/hack_terminal.gd" id="107_db"]
-[ext_resource type="PackedScene" path="res://world/props/hack_terminal/prop_server_rack_terminal.tscn" id="108_db"]
-[ext_resource type="PackedScene" path="res://systems/prefabs/ladder/ladder.tscn" id="109_db"]
-[ext_resource type="Script" path="res://systems/prefabs/ladder/ladder.gd" id="110_db"]
-[ext_resource type="PackedScene" path="res://world/props/ladder/prop_ladder_steel_h520_g22.tscn" id="111_db"]
-[ext_resource type="PackedScene" path="res://systems/prefabs/secure_zone/secure_zone.tscn" id="112_db"]
-[ext_resource type="Script" path="res://systems/prefabs/secure_zone/secure_zone.gd" id="113_db"]
-[ext_resource type="PackedScene" path="res://world/props/secure_zone/veh_van_secure.tscn" id="114_db"]
-[ext_resource type="PackedScene" path="res://systems/prefabs/escape_zone/escape_zone.tscn" id="115_db"]
-[ext_resource type="Script" path="res://systems/prefabs/escape_zone/escape_zone.gd" id="116_db"]
-[ext_resource type="PackedScene" path="res://world/heists/shared/escape_van_marker.tscn" id="117_db"]
-[ext_resource type="PackedScene" path="res://world/heists/dockside_burn/greybox/boat_drop_visual.tscn" id="118_db"]
-[ext_resource type="PackedScene" path="res://world/heists/shared/escape_boat_marker.tscn" id="119_db"]
-[ext_resource type="Script" path="res://world/heists/dockside_burn/dockside_burn_mission.gd" id="120_db"]
-[ext_resource type="Script" path="res://world/audio/cue_player.gd" id="121_db"]
-[ext_resource type="Script" path="res://world/audio/music_director.gd" id="122_db"]
-[ext_resource type="Script" path="res://world/audio/cue_emitter.gd" id="123_db"]
-[ext_resource type="PackedScene" path="res://world/props/assault_event/prop_breach_window.tscn" id="124_db"]
-[ext_resource type="PackedScene" path="res://world/props/assault_event/prop_breach_wall_t40.tscn" id="125_db"]
-[ext_resource type="PackedScene" path="res://world/props/assault_event/prop_breach_ceiling_p100_d800.tscn" id="126_db"]
+[ext_resource type="PackedScene" path="res://assets/props/prop_padlock_brass/prop_padlock_brass.glb" id="77_db"]
+[ext_resource type="PackedScene" path="res://world/props/door/prop_door_slide_coldstore_w240_h360.tscn" id="78_db"]
+[ext_resource type="PackedScene" path="res://world/props/door/prop_door_vault_strongroom_w200_h220.tscn" id="79_db"]
+[ext_resource type="PackedScene" path="res://systems/prefabs/drill_point/drill_point.tscn" id="80_db"]
+[ext_resource type="Script" path="res://systems/prefabs/drill_point/drill_point.gd" id="81_db"]
+[ext_resource type="PackedScene" path="res://world/props/drill/prop_thermal_drill_device.tscn" id="82_db"]
+[ext_resource type="PackedScene" path="res://world/heists/glasshouse/art/gh_empty.tscn" id="83_db"]
+[ext_resource type="PackedScene" path="res://world/props/door/prop_door_single_ivory_t30.tscn" id="84_db"]
+[ext_resource type="PackedScene" path="res://world/props/door/prop_door_single_steel_t10.tscn" id="85_db"]
+[ext_resource type="PackedScene" path="res://world/props/door/prop_door_double_steel_t10.tscn" id="86_db"]
+[ext_resource type="Script" path="res://world/heists/dockside_burn/db_container_latch.gd" id="87_db"]
+[ext_resource type="PackedScene" path="res://systems/prefabs/loot_spawn/loot_spawn.tscn" id="88_db"]
+[ext_resource type="Script" path="res://systems/prefabs/loot_spawn/loot_spawn.gd" id="89_db"]
+[ext_resource type="PackedScene" path="res://world/props/loot_spawn/prop_loot_weapon_crate.tscn" id="90_db"]
+[ext_resource type="PackedScene" path="res://systems/prefabs/safe/safe.tscn" id="91_db"]
+[ext_resource type="Script" path="res://systems/prefabs/safe/safe.gd" id="92_db"]
+[ext_resource type="PackedScene" path="res://world/props/safe/prop_safe_large.tscn" id="93_db"]
+[ext_resource type="PackedScene" path="res://systems/prefabs/small_loot/small_loot.tscn" id="94_db"]
+[ext_resource type="Script" path="res://systems/prefabs/small_loot/small_loot.gd" id="95_db"]
+[ext_resource type="PackedScene" path="res://world/props/small_loot/prop_cash_stack.tscn" id="96_db"]
+[ext_resource type="PackedScene" path="res://world/props/loot_spawn/prop_loot_thermite_drum.tscn" id="97_db"]
+[ext_resource type="PackedScene" path="res://systems/prefabs/bag_lift/bag_lift.tscn" id="98_db"]
+[ext_resource type="Script" path="res://systems/prefabs/bag_lift/bag_lift.gd" id="99_db"]
+[ext_resource type="PackedScene" path="res://world/heists/dockside_burn/greybox/goods_lift_visual.tscn" id="100_db"]
+[ext_resource type="Script" path="res://contracts/map/variant_slot.gd" id="101_db"]
+[ext_resource type="PackedScene" path="res://world/props/loot_spawn/prop_cash_pallet.tscn" id="102_db"]
+[ext_resource type="PackedScene" path="res://systems/prefabs/burn_point/burn_point.tscn" id="103_db"]
+[ext_resource type="Script" path="res://systems/prefabs/burn_point/burn_point.gd" id="104_db"]
+[ext_resource type="PackedScene" path="res://world/props/burn_point/prop_burn_barrel.tscn" id="105_db"]
+[ext_resource type="PackedScene" path="res://world/props/loot_spawn/prop_loot_contraband_bales.tscn" id="106_db"]
+[ext_resource type="PackedScene" path="res://systems/prefabs/hack_terminal/hack_terminal.tscn" id="107_db"]
+[ext_resource type="Script" path="res://systems/prefabs/hack_terminal/hack_terminal.gd" id="108_db"]
+[ext_resource type="PackedScene" path="res://world/props/hack_terminal/prop_server_rack_terminal.tscn" id="109_db"]
+[ext_resource type="PackedScene" path="res://systems/prefabs/ladder/ladder.tscn" id="110_db"]
+[ext_resource type="Script" path="res://systems/prefabs/ladder/ladder.gd" id="111_db"]
+[ext_resource type="PackedScene" path="res://world/props/ladder/prop_ladder_steel_h520_g22.tscn" id="112_db"]
+[ext_resource type="PackedScene" path="res://systems/prefabs/secure_zone/secure_zone.tscn" id="113_db"]
+[ext_resource type="Script" path="res://systems/prefabs/secure_zone/secure_zone.gd" id="114_db"]
+[ext_resource type="PackedScene" path="res://world/props/secure_zone/veh_van_secure.tscn" id="115_db"]
+[ext_resource type="PackedScene" path="res://systems/prefabs/escape_zone/escape_zone.tscn" id="116_db"]
+[ext_resource type="Script" path="res://systems/prefabs/escape_zone/escape_zone.gd" id="117_db"]
+[ext_resource type="PackedScene" path="res://world/heists/shared/escape_van_marker.tscn" id="118_db"]
+[ext_resource type="PackedScene" path="res://world/heists/dockside_burn/greybox/boat_drop_visual.tscn" id="119_db"]
+[ext_resource type="PackedScene" path="res://world/heists/shared/escape_boat_marker.tscn" id="120_db"]
+[ext_resource type="Script" path="res://world/heists/dockside_burn/dockside_burn_mission.gd" id="121_db"]
+[ext_resource type="Script" path="res://world/audio/cue_player.gd" id="122_db"]
+[ext_resource type="Script" path="res://world/audio/music_director.gd" id="123_db"]
+[ext_resource type="Script" path="res://world/audio/cue_emitter.gd" id="124_db"]
+[ext_resource type="PackedScene" path="res://world/props/assault_event/prop_breach_window.tscn" id="125_db"]
+[ext_resource type="PackedScene" path="res://world/props/assault_event/prop_breach_wall_t40.tscn" id="126_db"]
+[ext_resource type="PackedScene" path="res://world/props/assault_event/prop_breach_ceiling_p100_d800.tscn" id="127_db"]
 
 [sub_resource type="BoxShape3D" id="db_1"]
 size = Vector3(3.8, 3.6, 0.2)
@@ -18332,6 +18333,8 @@ mesh = SubResource("db_1009")
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 6.16, 1.1, 0.5)
 script = ExtResource("59_db")
 targets = Array[NodePath]([NodePath("../../../../Gameplay/Containers/LatchK1")])
+place_saw = true
+saw_duration_s = 45.0
 interaction_time_s = 8.0
 visual_scene = ExtResource("60_db")
 objective_tag = &"padlock_k1"
@@ -18362,6 +18365,8 @@ mesh = SubResource("db_1009")
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 6.16, 1.1, 0.5)
 script = ExtResource("59_db")
 targets = Array[NodePath]([NodePath("../../../../Gameplay/Containers/LatchK2")])
+place_saw = true
+saw_duration_s = 45.0
 interaction_time_s = 8.0
 visual_scene = ExtResource("60_db")
 objective_tag = &"padlock_k2"
@@ -18392,6 +18397,8 @@ mesh = SubResource("db_1011")
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 6.16, 1.1, 0.5)
 script = ExtResource("59_db")
 targets = Array[NodePath]([NodePath("../../../../Gameplay/Containers/LatchK3")])
+place_saw = true
+saw_duration_s = 45.0
 interaction_time_s = 8.0
 visual_scene = ExtResource("60_db")
 objective_tag = &"padlock_k3"
@@ -18422,6 +18429,8 @@ mesh = SubResource("db_1012")
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -6.16, 1.1, 0.5)
 script = ExtResource("59_db")
 targets = Array[NodePath]([NodePath("../../../../Gameplay/Containers/LatchK4")])
+place_saw = true
+saw_duration_s = 45.0
 interaction_time_s = 8.0
 visual_scene = ExtResource("60_db")
 objective_tag = &"padlock_k4"
@@ -18452,6 +18461,8 @@ mesh = SubResource("db_1009")
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -6.16, 1.1, 0.5)
 script = ExtResource("59_db")
 targets = Array[NodePath]([NodePath("../../../../Gameplay/Containers/LatchK5")])
+place_saw = true
+saw_duration_s = 45.0
 interaction_time_s = 8.0
 visual_scene = ExtResource("60_db")
 objective_tag = &"padlock_k5"
@@ -18482,6 +18493,8 @@ mesh = SubResource("db_1009")
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -6.16, 1.1, 0.5)
 script = ExtResource("59_db")
 targets = Array[NodePath]([NodePath("../../../../Gameplay/Containers/LatchK6")])
+place_saw = true
+saw_duration_s = 45.0
 interaction_time_s = 8.0
 visual_scene = ExtResource("60_db")
 objective_tag = &"padlock_k6"
@@ -21202,8 +21215,10 @@ metadata/fire_shutter = "prod_packing"
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.4499998, 1.1, -0.069999695)
 script = ExtResource("59_db")
 targets = Array[NodePath]([NodePath("..")])
+place_saw = true
+saw_duration_s = 30.0
 interaction_time_s = 8.0
-visual_scene = ExtResource("60_db")
+visual_scene = ExtResource("77_db")
 objective_tag = &"padlock"
 metadata/mount = "door"
 
@@ -21230,7 +21245,7 @@ script = ExtResource("70_db")
 swing = 2
 width_m = 2.4
 leaf_surface = &"metal"
-visual_scene = ExtResource("77_db")
+visual_scene = ExtResource("78_db")
 metadata/kind = "industrial_door"
 metadata/swing_side = "back"
 metadata/fire_shutter = "prod_chamber_a|prod_packing"
@@ -21241,7 +21256,7 @@ script = ExtResource("70_db")
 swing = 2
 width_m = 2.4
 leaf_surface = &"metal"
-visual_scene = ExtResource("77_db")
+visual_scene = ExtResource("78_db")
 metadata/kind = "industrial_door"
 metadata/swing_side = "back"
 metadata/fire_shutter = "prod_chamber_a"
@@ -21252,7 +21267,7 @@ script = ExtResource("70_db")
 swing = 2
 width_m = 2.4
 leaf_surface = &"metal"
-visual_scene = ExtResource("77_db")
+visual_scene = ExtResource("78_db")
 metadata/kind = "industrial_door"
 metadata/swing_side = "back"
 metadata/fire_shutter = "prod_chamber_a"
@@ -21263,7 +21278,7 @@ script = ExtResource("70_db")
 swing = 2
 width_m = 2.4
 leaf_surface = &"metal"
-visual_scene = ExtResource("77_db")
+visual_scene = ExtResource("78_db")
 metadata/kind = "industrial_door"
 metadata/swing_side = "back"
 metadata/fire_shutter = "prod_chamber_b"
@@ -21274,7 +21289,7 @@ script = ExtResource("70_db")
 swing = 2
 width_m = 2.4
 leaf_surface = &"metal"
-visual_scene = ExtResource("77_db")
+visual_scene = ExtResource("78_db")
 metadata/kind = "industrial_door"
 metadata/swing_side = "back"
 metadata/fire_shutter = "prod_chamber_b"
@@ -21285,7 +21300,7 @@ script = ExtResource("70_db")
 swing = 2
 width_m = 2.4
 leaf_surface = &"metal"
-visual_scene = ExtResource("77_db")
+visual_scene = ExtResource("78_db")
 metadata/kind = "industrial_door"
 metadata/swing_side = "back"
 metadata/fire_shutter = "prod_chamber_b"
@@ -21295,20 +21310,20 @@ transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 26, 
 script = ExtResource("70_db")
 lock = 6
 width_m = 2.0
-visual_scene = ExtResource("78_db")
+visual_scene = ExtResource("79_db")
 objective_tag = &"strongroom_door"
 metadata/kind = "door"
 metadata/swing_side = "back"
 
-[node name="StrongroomDrill" parent="Gameplay/Doors/StrongroomDoor" unique_id=103875 instance=ExtResource("79_db")]
+[node name="StrongroomDrill" parent="Gameplay/Doors/StrongroomDoor" unique_id=103875 instance=ExtResource("80_db")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.6000004, 1, -0.3600006)
-script = ExtResource("80_db")
+script = ExtResource("81_db")
 device = 1
 duration_s = 240.0
 target = NodePath("..")
-device_scene = ExtResource("81_db")
+device_scene = ExtResource("82_db")
 loud_only = true
-visual_scene = ExtResource("82_db")
+visual_scene = ExtResource("83_db")
 objective_tag = &"strongroom_drill"
 
 [node name="UsePoint" parent="Gameplay/Doors/StrongroomDoor/StrongroomDrill" index="1"]
@@ -21335,8 +21350,10 @@ metadata/swing_side = "back"
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.45000076, 1.1, -0.069999695)
 script = ExtResource("59_db")
 targets = Array[NodePath]([NodePath("..")])
+place_saw = true
+saw_duration_s = 30.0
 interaction_time_s = 8.0
-visual_scene = ExtResource("60_db")
+visual_scene = ExtResource("77_db")
 objective_tag = &"padlock"
 metadata/mount = "door"
 
@@ -21363,8 +21380,10 @@ metadata/swing_side = "back"
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.45000076, 1.1, -0.069999695)
 script = ExtResource("59_db")
 targets = Array[NodePath]([NodePath("..")])
+place_saw = true
+saw_duration_s = 30.0
 interaction_time_s = 8.0
-visual_scene = ExtResource("60_db")
+visual_scene = ExtResource("77_db")
 objective_tag = &"padlock"
 metadata/mount = "door"
 
@@ -21409,8 +21428,10 @@ metadata/swing_side = "back"
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.45000076, 1.1, -0.07)
 script = ExtResource("59_db")
 targets = Array[NodePath]([NodePath("..")])
+place_saw = true
+saw_duration_s = 30.0
 interaction_time_s = 8.0
-visual_scene = ExtResource("60_db")
+visual_scene = ExtResource("77_db")
 objective_tag = &"padlock"
 metadata/mount = "door"
 
@@ -21437,8 +21458,10 @@ metadata/swing_side = "back"
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.45000076, 1.1, -0.07)
 script = ExtResource("59_db")
 targets = Array[NodePath]([NodePath("..")])
+place_saw = true
+saw_duration_s = 30.0
 interaction_time_s = 8.0
-visual_scene = ExtResource("60_db")
+visual_scene = ExtResource("77_db")
 objective_tag = &"padlock"
 metadata/mount = "door"
 
@@ -21465,8 +21488,10 @@ metadata/swing_side = "back"
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.45000076, 1.1, -0.07)
 script = ExtResource("59_db")
 targets = Array[NodePath]([NodePath("..")])
+place_saw = true
+saw_duration_s = 30.0
 interaction_time_s = 8.0
-visual_scene = ExtResource("60_db")
+visual_scene = ExtResource("77_db")
 objective_tag = &"padlock"
 metadata/mount = "door"
 
@@ -21493,8 +21518,10 @@ metadata/swing_side = "back"
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.4499998, 1.1, -0.069999695)
 script = ExtResource("59_db")
 targets = Array[NodePath]([NodePath("..")])
+place_saw = true
+saw_duration_s = 30.0
 interaction_time_s = 8.0
-visual_scene = ExtResource("60_db")
+visual_scene = ExtResource("77_db")
 objective_tag = &"padlock"
 metadata/mount = "door"
 
@@ -21566,14 +21593,14 @@ metadata/service = true
 [node name="GatehouseNorth" type="Node3D" parent="Gameplay/Doors" unique_id=103897 instance=ExtResource("69_db")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 27, 0, -32)
 script = ExtResource("70_db")
-visual_scene = ExtResource("83_db")
+visual_scene = ExtResource("84_db")
 metadata/kind = "door"
 metadata/swing_side = "back"
 
 [node name="GatehouseSouth" type="Node3D" parent="Gameplay/Doors" unique_id=103898 instance=ExtResource("69_db")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 27, 0, -28)
 script = ExtResource("70_db")
-visual_scene = ExtResource("83_db")
+visual_scene = ExtResource("84_db")
 metadata/kind = "door"
 metadata/swing_side = "back"
 
@@ -21595,7 +21622,7 @@ metadata/swing_side = "back"
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0, -34)
 script = ExtResource("70_db")
 lock = 5
-visual_scene = ExtResource("84_db")
+visual_scene = ExtResource("85_db")
 objective_tag = &"police_gate"
 metadata/kind = "door"
 metadata/swing_side = "back"
@@ -21604,7 +21631,7 @@ metadata/swing_side = "back"
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -8, 0, -14)
 script = ExtResource("70_db")
 lock = 5
-visual_scene = ExtResource("84_db")
+visual_scene = ExtResource("85_db")
 objective_tag = &"police_gate"
 metadata/kind = "door"
 metadata/swing_side = "back"
@@ -21614,7 +21641,7 @@ transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -12,
 script = ExtResource("70_db")
 lock = 5
 swing = 2
-visual_scene = ExtResource("85_db")
+visual_scene = ExtResource("86_db")
 objective_tag = &"police_gate"
 metadata/kind = "door"
 metadata/swing_side = "back"
@@ -21624,7 +21651,7 @@ transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 66, 
 script = ExtResource("70_db")
 lock = 5
 swing = 2
-visual_scene = ExtResource("85_db")
+visual_scene = ExtResource("86_db")
 objective_tag = &"police_gate"
 metadata/kind = "door"
 metadata/swing_side = "back"
@@ -21634,7 +21661,7 @@ transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 84, 
 script = ExtResource("70_db")
 lock = 5
 swing = 2
-visual_scene = ExtResource("85_db")
+visual_scene = ExtResource("86_db")
 objective_tag = &"police_gate"
 metadata/kind = "door"
 metadata/swing_side = "back"
@@ -21643,90 +21670,90 @@ metadata/swing_side = "back"
 
 [node name="LatchK1" type="Node3D" parent="Gameplay/Containers" unique_id=103907]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.1, 1.1, -26.32)
-script = ExtResource("86_db")
+script = ExtResource("87_db")
 metadata/objective_tag = &"latch_k1"
 
-[node name="CratesK1" type="Node3D" parent="Gameplay/Containers" unique_id=103908 instance=ExtResource("87_db")]
+[node name="CratesK1" type="Node3D" parent="Gameplay/Containers" unique_id=103908 instance=ExtResource("88_db")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.2, 0, -27.52)
-script = ExtResource("88_db")
+script = ExtResource("89_db")
 loot_id = &"loot.weapon_crate"
 count = 2
-visual_scene = ExtResource("89_db")
+visual_scene = ExtResource("90_db")
 objective_tag = &"crates_k1"
 
 [node name="LatchK2" type="Node3D" parent="Gameplay/Containers" unique_id=103909]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.1, 1.1, -20.32)
-script = ExtResource("86_db")
+script = ExtResource("87_db")
 metadata/objective_tag = &"latch_k2"
 
-[node name="CratesK2" type="Node3D" parent="Gameplay/Containers" unique_id=103910 instance=ExtResource("87_db")]
+[node name="CratesK2" type="Node3D" parent="Gameplay/Containers" unique_id=103910 instance=ExtResource("88_db")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.2, 0, -21.52)
-script = ExtResource("88_db")
+script = ExtResource("89_db")
 loot_id = &"loot.weapon_crate"
 count = 2
-visual_scene = ExtResource("89_db")
+visual_scene = ExtResource("90_db")
 objective_tag = &"crates_k2"
 
 [node name="LatchK3" type="Node3D" parent="Gameplay/Containers" unique_id=103911]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.1, 1.1, -14.32)
-script = ExtResource("86_db")
+script = ExtResource("87_db")
 metadata/objective_tag = &"latch_k3"
 
-[node name="CratesK3" type="Node3D" parent="Gameplay/Containers" unique_id=103912 instance=ExtResource("87_db")]
+[node name="CratesK3" type="Node3D" parent="Gameplay/Containers" unique_id=103912 instance=ExtResource("88_db")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.2, 0, -15.52)
-script = ExtResource("88_db")
+script = ExtResource("89_db")
 loot_id = &"loot.weapon_crate"
 count = 2
-visual_scene = ExtResource("89_db")
+visual_scene = ExtResource("90_db")
 objective_tag = &"crates_k3"
 
 [node name="LatchK4" type="Node3D" parent="Gameplay/Containers" unique_id=103913]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 45.9, 1.1, -26.32)
-script = ExtResource("86_db")
+script = ExtResource("87_db")
 metadata/objective_tag = &"latch_k4"
 
-[node name="CratesK4" type="Node3D" parent="Gameplay/Containers" unique_id=103914 instance=ExtResource("87_db")]
+[node name="CratesK4" type="Node3D" parent="Gameplay/Containers" unique_id=103914 instance=ExtResource("88_db")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 44.8, 0, -27.52)
-script = ExtResource("88_db")
+script = ExtResource("89_db")
 loot_id = &"loot.weapon_crate"
 count = 2
-visual_scene = ExtResource("89_db")
+visual_scene = ExtResource("90_db")
 objective_tag = &"crates_k4"
 
 [node name="LatchK5" type="Node3D" parent="Gameplay/Containers" unique_id=103915]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 45.9, 1.1, -20.32)
-script = ExtResource("86_db")
+script = ExtResource("87_db")
 metadata/objective_tag = &"latch_k5"
 
-[node name="CratesK5" type="Node3D" parent="Gameplay/Containers" unique_id=103916 instance=ExtResource("87_db")]
+[node name="CratesK5" type="Node3D" parent="Gameplay/Containers" unique_id=103916 instance=ExtResource("88_db")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 44.8, 0, -21.52)
-script = ExtResource("88_db")
+script = ExtResource("89_db")
 loot_id = &"loot.weapon_crate"
 count = 2
-visual_scene = ExtResource("89_db")
+visual_scene = ExtResource("90_db")
 objective_tag = &"crates_k5"
 
 [node name="LatchK6" type="Node3D" parent="Gameplay/Containers" unique_id=103917]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 45.9, 1.1, -14.32)
-script = ExtResource("86_db")
+script = ExtResource("87_db")
 metadata/objective_tag = &"latch_k6"
 
-[node name="CratesK6" type="Node3D" parent="Gameplay/Containers" unique_id=103918 instance=ExtResource("87_db")]
+[node name="CratesK6" type="Node3D" parent="Gameplay/Containers" unique_id=103918 instance=ExtResource("88_db")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 44.8, 0, -15.52)
-script = ExtResource("88_db")
+script = ExtResource("89_db")
 loot_id = &"loot.weapon_crate"
 count = 2
-visual_scene = ExtResource("89_db")
+visual_scene = ExtResource("90_db")
 objective_tag = &"crates_k6"
 
 [node name="Misc" type="Node3D" parent="Gameplay" unique_id=103919]
 
-[node name="DispatchSafe" parent="Gameplay/Misc" unique_id=103920 instance=ExtResource("90_db")]
+[node name="DispatchSafe" parent="Gameplay/Misc" unique_id=103920 instance=ExtResource("91_db")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 9.55, 0, 0.56)
-script = ExtResource("91_db")
+script = ExtResource("92_db")
 size = 0
 methods = Array[StringName]([&"drill", &"c4"])
-visual_scene = ExtResource("92_db")
+visual_scene = ExtResource("93_db")
 objective_tag = &"dispatch_safe"
 metadata/kind = "safe"
 
@@ -21746,12 +21773,12 @@ metadata/surface = &"metal"
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0)
 shape = SubResource("db_1090")
 
-[node name="SafeCash1" parent="Gameplay/Misc/DispatchSafe" unique_id=103921 instance=ExtResource("93_db")]
+[node name="SafeCash1" parent="Gameplay/Misc/DispatchSafe" unique_id=103921 instance=ExtResource("94_db")]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 0.15999985, 0.25, 0)
-script = ExtResource("94_db")
+script = ExtResource("95_db")
 value = 1000
 loot_id = &"loot.cash"
-visual_scene = ExtResource("95_db")
+visual_scene = ExtResource("96_db")
 
 [node name="UsePoint" parent="Gameplay/Misc/DispatchSafe/SafeCash1" index="1"]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -0.93999994, -0.25, 0)
@@ -21761,12 +21788,12 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.06, 0)
 script = ExtResource("61_db")
 kind = &"take_loot"
 
-[node name="SafeCash2" parent="Gameplay/Misc/DispatchSafe" unique_id=103922 instance=ExtResource("93_db")]
+[node name="SafeCash2" parent="Gameplay/Misc/DispatchSafe" unique_id=103922 instance=ExtResource("94_db")]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 0, 0.25, 0)
-script = ExtResource("94_db")
+script = ExtResource("95_db")
 value = 1000
 loot_id = &"loot.cash"
-visual_scene = ExtResource("95_db")
+visual_scene = ExtResource("96_db")
 
 [node name="UsePoint" parent="Gameplay/Misc/DispatchSafe/SafeCash2" index="1"]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -0.94000006, -0.25, 0)
@@ -21776,12 +21803,12 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.06, 0)
 script = ExtResource("61_db")
 kind = &"take_loot"
 
-[node name="SafeCash3" parent="Gameplay/Misc/DispatchSafe" unique_id=103923 instance=ExtResource("93_db")]
+[node name="SafeCash3" parent="Gameplay/Misc/DispatchSafe" unique_id=103923 instance=ExtResource("94_db")]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -0.15999985, 0.25, 0)
-script = ExtResource("94_db")
+script = ExtResource("95_db")
 value = 1000
 loot_id = &"loot.cash"
-visual_scene = ExtResource("95_db")
+visual_scene = ExtResource("96_db")
 
 [node name="UsePoint" parent="Gameplay/Misc/DispatchSafe/SafeCash3" index="1"]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -0.94000006, -0.25, 0)
@@ -21791,12 +21818,12 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.06, 0)
 script = ExtResource("61_db")
 kind = &"take_loot"
 
-[node name="DeskCashO1" parent="Gameplay/Misc" unique_id=103924 instance=ExtResource("93_db")]
+[node name="DeskCashO1" parent="Gameplay/Misc" unique_id=103924 instance=ExtResource("94_db")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.8, 0.9, 3.2)
-script = ExtResource("94_db")
+script = ExtResource("95_db")
 value = 750
 loot_id = &"loot.cash"
-visual_scene = ExtResource("95_db")
+visual_scene = ExtResource("96_db")
 
 [node name="UsePoint" parent="Gameplay/Misc/DeskCashO1" index="1"]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, -0.9, -0.79999995)
@@ -21806,12 +21833,12 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.06, 0)
 script = ExtResource("61_db")
 kind = &"take_loot"
 
-[node name="DeskCashO2" parent="Gameplay/Misc" unique_id=103925 instance=ExtResource("93_db")]
+[node name="DeskCashO2" parent="Gameplay/Misc" unique_id=103925 instance=ExtResource("94_db")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13, 0.75, 0.9)
-script = ExtResource("94_db")
+script = ExtResource("95_db")
 value = 750
 loot_id = &"loot.cash"
-visual_scene = ExtResource("95_db")
+visual_scene = ExtResource("96_db")
 
 [node name="UsePoint" parent="Gameplay/Misc/DeskCashO2" index="1"]
 transform = Transform3D(0.97618717, 0, 0.21693027, 0, 1.0000001, 0, -0.21693027, 0, 0.97618717, 0.19999981, -0.75, 0.9)
@@ -21821,12 +21848,12 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.06, 0)
 script = ExtResource("61_db")
 kind = &"take_loot"
 
-[node name="DeskCashM1" parent="Gameplay/Misc" unique_id=103926 instance=ExtResource("93_db")]
+[node name="DeskCashM1" parent="Gameplay/Misc" unique_id=103926 instance=ExtResource("94_db")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.8, 4.5, 2.6)
-script = ExtResource("94_db")
+script = ExtResource("95_db")
 value = 750
 loot_id = &"loot.cash"
-visual_scene = ExtResource("95_db")
+visual_scene = ExtResource("96_db")
 
 [node name="UsePoint" parent="Gameplay/Misc/DeskCashM1" index="1"]
 transform = Transform3D(0.8320502, 0, -0.55470043, 0, 1.0000001, 0, 0.55470043, 0, 0.8320502, -0.6000004, -0.9000001, 0.9000001)
@@ -21836,33 +21863,33 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.06, 0)
 script = ExtResource("61_db")
 kind = &"take_loot"
 
-[node name="ThermiteBag" type="Node3D" parent="Gameplay/Misc" unique_id=103927 instance=ExtResource("87_db")]
+[node name="ThermiteBag" type="Node3D" parent="Gameplay/Misc" unique_id=103927 instance=ExtResource("88_db")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30.2, 0, -38)
-script = ExtResource("88_db")
+script = ExtResource("89_db")
 loot_id = &"loot.thermite"
-visual_scene = ExtResource("96_db")
+visual_scene = ExtResource("97_db")
 objective_tag = &"thermite_gate"
 
-[node name="ThermiteBagLane" type="Node3D" parent="Gameplay/Misc" unique_id=103928 instance=ExtResource("87_db")]
+[node name="ThermiteBagLane" type="Node3D" parent="Gameplay/Misc" unique_id=103928 instance=ExtResource("88_db")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0, -31)
-script = ExtResource("88_db")
+script = ExtResource("89_db")
 loot_id = &"loot.thermite"
-visual_scene = ExtResource("96_db")
+visual_scene = ExtResource("97_db")
 objective_tag = &"thermite_lane"
 
-[node name="ThermiteBagPontoon" type="Node3D" parent="Gameplay/Misc" unique_id=103929 instance=ExtResource("87_db")]
+[node name="ThermiteBagPontoon" type="Node3D" parent="Gameplay/Misc" unique_id=103929 instance=ExtResource("88_db")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24, -1.8, 51)
-script = ExtResource("88_db")
+script = ExtResource("89_db")
 loot_id = &"loot.thermite"
-visual_scene = ExtResource("96_db")
+visual_scene = ExtResource("97_db")
 objective_tag = &"thermite_pontoon"
 
-[node name="GoodsLift" parent="Gameplay/Misc" unique_id=103930 instance=ExtResource("97_db")]
+[node name="GoodsLift" parent="Gameplay/Misc" unique_id=103930 instance=ExtResource("98_db")]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 17.2, 0.05, 1.5)
-script = ExtResource("98_db")
+script = ExtResource("99_db")
 targets = Array[NodePath]([NodePath("LandingMezz")])
 car_size_m = Vector3(1.1, 1.2, 1.05)
-visual_scene = ExtResource("99_db")
+visual_scene = ExtResource("100_db")
 objective_tag = &"goods_lift"
 metadata/walkable = true
 
@@ -21892,7 +21919,7 @@ transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 3
 [node name="Group_guard_post" type="Node3D" parent="Variants" unique_id=103933]
 
 [node name="Slot_post_dock" type="Node3D" parent="Variants/Group_guard_post" unique_id=103934]
-script = ExtResource("100_db")
+script = ExtResource("101_db")
 slot_group = &"guard_post"
 slot_id = &"post_dock"
 
@@ -21911,7 +21938,7 @@ patrol_graph = NodePath("../../../../Patrols/Cartel")
 metadata/enemy_id = &"enemy.cartel_gunman"
 
 [node name="Slot_post_gate" type="Node3D" parent="Variants/Group_guard_post" unique_id=103937]
-script = ExtResource("100_db")
+script = ExtResource("101_db")
 slot_group = &"guard_post"
 slot_id = &"post_gate"
 
@@ -21932,7 +21959,7 @@ idle_activity = &"smoke"
 metadata/enemy_id = &"enemy.cartel_gunman"
 
 [node name="Slot_post_hall" type="Node3D" parent="Variants/Group_guard_post" unique_id=103940]
-script = ExtResource("100_db")
+script = ExtResource("101_db")
 slot_group = &"guard_post"
 slot_id = &"post_hall"
 
@@ -21951,7 +21978,7 @@ patrol_graph = NodePath("../../../../Patrols/Cartel")
 metadata/enemy_id = &"enemy.cartel_gunman"
 
 [node name="Slot_post_platform" type="Node3D" parent="Variants/Group_guard_post" unique_id=103943]
-script = ExtResource("100_db")
+script = ExtResource("101_db")
 slot_group = &"guard_post"
 slot_id = &"post_platform"
 
@@ -21972,7 +21999,7 @@ idle_activity = &"sit"
 metadata/enemy_id = &"enemy.cartel_gunman"
 
 [node name="Slot_post_quay" type="Node3D" parent="Variants/Group_guard_post" unique_id=103946]
-script = ExtResource("100_db")
+script = ExtResource("101_db")
 slot_group = &"guard_post"
 slot_id = &"post_quay"
 
@@ -21993,7 +22020,7 @@ idle_activity = &"smoke"
 metadata/enemy_id = &"enemy.cartel_gunman"
 
 [node name="Slot_post_yard_e" type="Node3D" parent="Variants/Group_guard_post" unique_id=103949]
-script = ExtResource("100_db")
+script = ExtResource("101_db")
 slot_group = &"guard_post"
 slot_id = &"post_yard_e"
 
@@ -22012,7 +22039,7 @@ patrol_graph = NodePath("../../../../Patrols/Cartel")
 metadata/enemy_id = &"enemy.cartel_gunman"
 
 [node name="Slot_post_yard_w" type="Node3D" parent="Variants/Group_guard_post" unique_id=103952]
-script = ExtResource("100_db")
+script = ExtResource("101_db")
 slot_group = &"guard_post"
 slot_id = &"post_yard_w"
 
@@ -22033,7 +22060,7 @@ metadata/enemy_id = &"enemy.cartel_gunman"
 [node name="Group_cash_location" type="Node3D" parent="Variants" unique_id=103955]
 
 [node name="Slot_cash_strongroom" type="Node3D" parent="Variants/Group_cash_location" unique_id=103956]
-script = ExtResource("100_db")
+script = ExtResource("101_db")
 slot_group = &"cash_location"
 slot_id = &"cash_strongroom"
 weight = 0.6
@@ -22041,24 +22068,24 @@ params = {
 "holdout": "H2"
 }
 
-[node name="StrongroomCashA" type="Node3D" parent="Variants/Group_cash_location/Slot_cash_strongroom" unique_id=103957 instance=ExtResource("87_db")]
+[node name="StrongroomCashA" type="Node3D" parent="Variants/Group_cash_location/Slot_cash_strongroom" unique_id=103957 instance=ExtResource("88_db")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 20.4, 0, 27.4)
-script = ExtResource("88_db")
+script = ExtResource("89_db")
 loot_id = &"loot.cash_bricks"
 count = 2
-visual_scene = ExtResource("101_db")
+visual_scene = ExtResource("102_db")
 objective_tag = &"cash_bricks"
 
-[node name="StrongroomCashB" type="Node3D" parent="Variants/Group_cash_location/Slot_cash_strongroom" unique_id=103958 instance=ExtResource("87_db")]
+[node name="StrongroomCashB" type="Node3D" parent="Variants/Group_cash_location/Slot_cash_strongroom" unique_id=103958 instance=ExtResource("88_db")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 20.4, 0, 30)
-script = ExtResource("88_db")
+script = ExtResource("89_db")
 loot_id = &"loot.cash_bricks"
 count = 2
-visual_scene = ExtResource("101_db")
+visual_scene = ExtResource("102_db")
 objective_tag = &"cash_bricks"
 
 [node name="Slot_cash_countroom" type="Node3D" parent="Variants/Group_cash_location" unique_id=103959]
-script = ExtResource("100_db")
+script = ExtResource("101_db")
 slot_group = &"cash_location"
 slot_id = &"cash_countroom"
 weight = 0.4
@@ -22066,12 +22093,13 @@ params = {
 "holdout": "H1"
 }
 
-[node name="CountCage" parent="Variants/Group_cash_location/Slot_cash_countroom" unique_id=103960 instance=ExtResource("90_db")]
+[node name="CountCage" parent="Variants/Group_cash_location/Slot_cash_countroom" unique_id=103960 instance=ExtResource("91_db")]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 9.5, 3.6, 4.4)
-script = ExtResource("91_db")
+script = ExtResource("92_db")
 size = 2
 methods = Array[StringName]([&"drill", &"c4"])
-visual_scene = ExtResource("92_db")
+drill_duration_s = 120.0
+visual_scene = ExtResource("93_db")
 objective_tag = &"count_cage"
 metadata/kind = "safe"
 
@@ -22091,12 +22119,12 @@ metadata/surface = &"metal"
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0)
 shape = SubResource("db_1090")
 
-[node name="CageCashA" parent="Variants/Group_cash_location/Slot_cash_countroom" unique_id=103961 instance=ExtResource("87_db")]
+[node name="CageCashA" parent="Variants/Group_cash_location/Slot_cash_countroom" unique_id=103961 instance=ExtResource("88_db")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 9.65, 3.6, 2.4)
-script = ExtResource("88_db")
+script = ExtResource("89_db")
 loot_id = &"loot.cash_bricks"
 count = 2
-visual_scene = ExtResource("101_db")
+visual_scene = ExtResource("102_db")
 objective_tag = &"cash_bricks"
 
 [node name="UsePoint" parent="Variants/Group_cash_location/Slot_cash_countroom/CageCashA" index="1"]
@@ -22107,12 +22135,12 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, -0.2)
 script = ExtResource("61_db")
 kind = &"bag_loot"
 
-[node name="CageCashB" parent="Variants/Group_cash_location/Slot_cash_countroom" unique_id=103962 instance=ExtResource("87_db")]
+[node name="CageCashB" parent="Variants/Group_cash_location/Slot_cash_countroom" unique_id=103962 instance=ExtResource("88_db")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 9.65, 3.6, 1.2)
-script = ExtResource("88_db")
+script = ExtResource("89_db")
 loot_id = &"loot.cash_bricks"
 count = 2
-visual_scene = ExtResource("101_db")
+visual_scene = ExtResource("102_db")
 objective_tag = &"cash_bricks"
 
 [node name="UsePoint" parent="Variants/Group_cash_location/Slot_cash_countroom/CageCashB" index="1"]
@@ -22140,7 +22168,7 @@ mesh = SubResource("db_1093")
 [node name="Group_weapons_containers" type="Node3D" parent="Variants" unique_id=103966]
 
 [node name="Slot_k1" type="Node3D" parent="Variants/Group_weapons_containers" unique_id=103967]
-script = ExtResource("100_db")
+script = ExtResource("101_db")
 slot_group = &"weapons_containers"
 slot_id = &"k1"
 params = {
@@ -22149,11 +22177,15 @@ params = {
 }
 
 [node name="BrassPadlock" type="Marker3D" parent="Variants/Group_weapons_containers/Slot_k1" unique_id=103968]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.16, 1.1, -26.32)
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 14.16, 1.1, -26.32)
 metadata/brass_padlock = true
 
-[node name="Slot_k2" type="Node3D" parent="Variants/Group_weapons_containers" unique_id=103969]
-script = ExtResource("100_db")
+[node name="BrassPadlockVisual" type="Node3D" parent="Variants/Group_weapons_containers/Slot_k1/BrassPadlock" unique_id=103969 instance=ExtResource("77_db")]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0.13, -0.051)
+metadata/mount = "wall"
+
+[node name="Slot_k2" type="Node3D" parent="Variants/Group_weapons_containers" unique_id=103970]
+script = ExtResource("101_db")
 slot_group = &"weapons_containers"
 slot_id = &"k2"
 params = {
@@ -22161,12 +22193,16 @@ params = {
 "crates": "Gameplay/Containers/CratesK2"
 }
 
-[node name="BrassPadlock" type="Marker3D" parent="Variants/Group_weapons_containers/Slot_k2" unique_id=103970]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.16, 1.1, -20.32)
+[node name="BrassPadlock" type="Marker3D" parent="Variants/Group_weapons_containers/Slot_k2" unique_id=103971]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 14.16, 1.1, -20.32)
 metadata/brass_padlock = true
 
-[node name="Slot_k3" type="Node3D" parent="Variants/Group_weapons_containers" unique_id=103971]
-script = ExtResource("100_db")
+[node name="BrassPadlockVisual" type="Node3D" parent="Variants/Group_weapons_containers/Slot_k2/BrassPadlock" unique_id=103972 instance=ExtResource("77_db")]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0.13, -0.051)
+metadata/mount = "wall"
+
+[node name="Slot_k3" type="Node3D" parent="Variants/Group_weapons_containers" unique_id=103973]
+script = ExtResource("101_db")
 slot_group = &"weapons_containers"
 slot_id = &"k3"
 params = {
@@ -22174,12 +22210,16 @@ params = {
 "crates": "Gameplay/Containers/CratesK3"
 }
 
-[node name="BrassPadlock" type="Marker3D" parent="Variants/Group_weapons_containers/Slot_k3" unique_id=103972]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.16, 1.1, -14.32)
+[node name="BrassPadlock" type="Marker3D" parent="Variants/Group_weapons_containers/Slot_k3" unique_id=103974]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 14.16, 1.1, -14.32)
 metadata/brass_padlock = true
 
-[node name="Slot_k4" type="Node3D" parent="Variants/Group_weapons_containers" unique_id=103973]
-script = ExtResource("100_db")
+[node name="BrassPadlockVisual" type="Node3D" parent="Variants/Group_weapons_containers/Slot_k3/BrassPadlock" unique_id=103975 instance=ExtResource("77_db")]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0.13, -0.051)
+metadata/mount = "wall"
+
+[node name="Slot_k4" type="Node3D" parent="Variants/Group_weapons_containers" unique_id=103976]
+script = ExtResource("101_db")
 slot_group = &"weapons_containers"
 slot_id = &"k4"
 params = {
@@ -22187,12 +22227,16 @@ params = {
 "crates": "Gameplay/Containers/CratesK4"
 }
 
-[node name="BrassPadlock" type="Marker3D" parent="Variants/Group_weapons_containers/Slot_k4" unique_id=103974]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 45.84, 1.1, -26.32)
+[node name="BrassPadlock" type="Marker3D" parent="Variants/Group_weapons_containers/Slot_k4" unique_id=103977]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 45.84, 1.1, -26.32)
 metadata/brass_padlock = true
 
-[node name="Slot_k5" type="Node3D" parent="Variants/Group_weapons_containers" unique_id=103975]
-script = ExtResource("100_db")
+[node name="BrassPadlockVisual" type="Node3D" parent="Variants/Group_weapons_containers/Slot_k4/BrassPadlock" unique_id=103978 instance=ExtResource("77_db")]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0.13, -0.051)
+metadata/mount = "wall"
+
+[node name="Slot_k5" type="Node3D" parent="Variants/Group_weapons_containers" unique_id=103979]
+script = ExtResource("101_db")
 slot_group = &"weapons_containers"
 slot_id = &"k5"
 params = {
@@ -22200,12 +22244,16 @@ params = {
 "crates": "Gameplay/Containers/CratesK5"
 }
 
-[node name="BrassPadlock" type="Marker3D" parent="Variants/Group_weapons_containers/Slot_k5" unique_id=103976]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 45.84, 1.1, -20.32)
+[node name="BrassPadlock" type="Marker3D" parent="Variants/Group_weapons_containers/Slot_k5" unique_id=103980]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 45.84, 1.1, -20.32)
 metadata/brass_padlock = true
 
-[node name="Slot_k6" type="Node3D" parent="Variants/Group_weapons_containers" unique_id=103977]
-script = ExtResource("100_db")
+[node name="BrassPadlockVisual" type="Node3D" parent="Variants/Group_weapons_containers/Slot_k5/BrassPadlock" unique_id=103981 instance=ExtResource("77_db")]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0.13, -0.051)
+metadata/mount = "wall"
+
+[node name="Slot_k6" type="Node3D" parent="Variants/Group_weapons_containers" unique_id=103982]
+script = ExtResource("101_db")
 slot_group = &"weapons_containers"
 slot_id = &"k6"
 params = {
@@ -22213,14 +22261,18 @@ params = {
 "crates": "Gameplay/Containers/CratesK6"
 }
 
-[node name="BrassPadlock" type="Marker3D" parent="Variants/Group_weapons_containers/Slot_k6" unique_id=103978]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 45.84, 1.1, -14.32)
+[node name="BrassPadlock" type="Marker3D" parent="Variants/Group_weapons_containers/Slot_k6" unique_id=103983]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 45.84, 1.1, -14.32)
 metadata/brass_padlock = true
 
-[node name="Group_product_location" type="Node3D" parent="Variants" unique_id=103979]
+[node name="BrassPadlockVisual" type="Node3D" parent="Variants/Group_weapons_containers/Slot_k6/BrassPadlock" unique_id=103984 instance=ExtResource("77_db")]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0.13, -0.051)
+metadata/mount = "wall"
 
-[node name="Slot_prod_chamber_a" type="Node3D" parent="Variants/Group_product_location" unique_id=103980]
-script = ExtResource("100_db")
+[node name="Group_product_location" type="Node3D" parent="Variants" unique_id=103985]
+
+[node name="Slot_prod_chamber_a" type="Node3D" parent="Variants/Group_product_location" unique_id=103986]
+script = ExtResource("101_db")
 slot_group = &"product_location"
 slot_id = &"prod_chamber_a"
 params = {
@@ -22228,28 +22280,28 @@ params = {
 "shutters": ["ChamberANorth", "PKChamberA", "ChamberASpine"]
 }
 
-[node name="ProductPallet" type="StaticBody3D" parent="Variants/Group_product_location/Slot_prod_chamber_a" unique_id=103981]
+[node name="ProductPallet" type="StaticBody3D" parent="Variants/Group_product_location/Slot_prod_chamber_a" unique_id=103987]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25, 0, 13.6)
 collision_mask = 0
 metadata/kind = "pallet_product"
 metadata/support = true
 metadata/surface = &"wood"
 
-[node name="Collision" type="CollisionShape3D" parent="Variants/Group_product_location/Slot_prod_chamber_a/ProductPallet" unique_id=103982]
+[node name="Collision" type="CollisionShape3D" parent="Variants/Group_product_location/Slot_prod_chamber_a/ProductPallet" unique_id=103988]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0)
 shape = SubResource("db_1094")
 
-[node name="Mesh" type="MeshInstance3D" parent="Variants/Group_product_location/Slot_prod_chamber_a/ProductPallet" unique_id=103983]
+[node name="Mesh" type="MeshInstance3D" parent="Variants/Group_product_location/Slot_prod_chamber_a/ProductPallet" unique_id=103989]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0)
 mesh = SubResource("db_1095")
 
-[node name="BurnPoint" parent="Variants/Group_product_location/Slot_prod_chamber_a" unique_id=103984 instance=ExtResource("102_db")]
+[node name="BurnPoint" parent="Variants/Group_product_location/Slot_prod_chamber_a" unique_id=103990 instance=ExtResource("103_db")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25, 1.2, 13.6)
-script = ExtResource("103_db")
+script = ExtResource("104_db")
 duration_s = 30.0
 fire_volume_size = Vector3(13.599998, 8, 13.65)
 loud_only = true
-visual_scene = ExtResource("104_db")
+visual_scene = ExtResource("105_db")
 objective_tag = &"burn"
 
 [node name="UsePoint" parent="Variants/Group_product_location/Slot_prod_chamber_a/BurnPoint" index="1"]
@@ -22263,24 +22315,24 @@ kind = &"place_thermite"
 [node name="FireVolume" parent="Variants/Group_product_location/Slot_prod_chamber_a/BurnPoint" index="3"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.2, 3.374998)
 
-[node name="Product1" type="Node3D" parent="Variants/Group_product_location/Slot_prod_chamber_a" unique_id=103985 instance=ExtResource("87_db")]
+[node name="Product1" type="Node3D" parent="Variants/Group_product_location/Slot_prod_chamber_a" unique_id=103991 instance=ExtResource("88_db")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25, 0, 20.8)
-script = ExtResource("88_db")
+script = ExtResource("89_db")
 loot_id = &"loot.contraband"
 count = 2
-visual_scene = ExtResource("105_db")
+visual_scene = ExtResource("106_db")
 objective_tag = &"product"
 
-[node name="Product2" type="Node3D" parent="Variants/Group_product_location/Slot_prod_chamber_a" unique_id=103986 instance=ExtResource("87_db")]
+[node name="Product2" type="Node3D" parent="Variants/Group_product_location/Slot_prod_chamber_a" unique_id=103992 instance=ExtResource("88_db")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 19.5, 0, 18)
-script = ExtResource("88_db")
+script = ExtResource("89_db")
 loot_id = &"loot.contraband"
 count = 2
-visual_scene = ExtResource("105_db")
+visual_scene = ExtResource("106_db")
 objective_tag = &"product"
 
-[node name="Slot_prod_chamber_b" type="Node3D" parent="Variants/Group_product_location" unique_id=103987]
-script = ExtResource("100_db")
+[node name="Slot_prod_chamber_b" type="Node3D" parent="Variants/Group_product_location" unique_id=103993]
+script = ExtResource("101_db")
 slot_group = &"product_location"
 slot_id = &"prod_chamber_b"
 params = {
@@ -22288,28 +22340,28 @@ params = {
 "shutters": ["ChamberBNorth", "SpineChamberB", "ChamberBSouth"]
 }
 
-[node name="ProductPallet" type="StaticBody3D" parent="Variants/Group_product_location/Slot_prod_chamber_b" unique_id=103988]
+[node name="ProductPallet" type="StaticBody3D" parent="Variants/Group_product_location/Slot_prod_chamber_b" unique_id=103994]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 41, 0, 13.6)
 collision_mask = 0
 metadata/kind = "pallet_product"
 metadata/support = true
 metadata/surface = &"wood"
 
-[node name="Collision" type="CollisionShape3D" parent="Variants/Group_product_location/Slot_prod_chamber_b/ProductPallet" unique_id=103989]
+[node name="Collision" type="CollisionShape3D" parent="Variants/Group_product_location/Slot_prod_chamber_b/ProductPallet" unique_id=103995]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0)
 shape = SubResource("db_1094")
 
-[node name="Mesh" type="MeshInstance3D" parent="Variants/Group_product_location/Slot_prod_chamber_b/ProductPallet" unique_id=103990]
+[node name="Mesh" type="MeshInstance3D" parent="Variants/Group_product_location/Slot_prod_chamber_b/ProductPallet" unique_id=103996]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0)
 mesh = SubResource("db_1095")
 
-[node name="BurnPoint" parent="Variants/Group_product_location/Slot_prod_chamber_b" unique_id=103991 instance=ExtResource("102_db")]
+[node name="BurnPoint" parent="Variants/Group_product_location/Slot_prod_chamber_b" unique_id=103997 instance=ExtResource("103_db")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 41, 1.2, 13.6)
-script = ExtResource("103_db")
+script = ExtResource("104_db")
 duration_s = 30.0
 fire_volume_size = Vector3(12.599998, 8, 13.65)
 loud_only = true
-visual_scene = ExtResource("104_db")
+visual_scene = ExtResource("105_db")
 objective_tag = &"burn"
 
 [node name="UsePoint" parent="Variants/Group_product_location/Slot_prod_chamber_b/BurnPoint" index="1"]
@@ -22323,24 +22375,24 @@ kind = &"place_thermite"
 [node name="FireVolume" parent="Variants/Group_product_location/Slot_prod_chamber_b/BurnPoint" index="3"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, -1.2, 3.374998)
 
-[node name="Product1" type="Node3D" parent="Variants/Group_product_location/Slot_prod_chamber_b" unique_id=103992 instance=ExtResource("87_db")]
+[node name="Product1" type="Node3D" parent="Variants/Group_product_location/Slot_prod_chamber_b" unique_id=103998 instance=ExtResource("88_db")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 41, 0, 20.8)
-script = ExtResource("88_db")
+script = ExtResource("89_db")
 loot_id = &"loot.contraband"
 count = 2
-visual_scene = ExtResource("105_db")
+visual_scene = ExtResource("106_db")
 objective_tag = &"product"
 
-[node name="Product2" type="Node3D" parent="Variants/Group_product_location/Slot_prod_chamber_b" unique_id=103993 instance=ExtResource("87_db")]
+[node name="Product2" type="Node3D" parent="Variants/Group_product_location/Slot_prod_chamber_b" unique_id=103999 instance=ExtResource("88_db")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 46.4, 0, 18)
-script = ExtResource("88_db")
+script = ExtResource("89_db")
 loot_id = &"loot.contraband"
 count = 2
-visual_scene = ExtResource("105_db")
+visual_scene = ExtResource("106_db")
 objective_tag = &"product"
 
-[node name="Slot_prod_packing" type="Node3D" parent="Variants/Group_product_location" unique_id=103994]
-script = ExtResource("100_db")
+[node name="Slot_prod_packing" type="Node3D" parent="Variants/Group_product_location" unique_id=104000]
+script = ExtResource("101_db")
 slot_group = &"product_location"
 slot_id = &"prod_packing"
 weight = 0.8
@@ -22349,28 +22401,28 @@ params = {
 "shutters": ["PKChamberA", "PKRoller", "PKQuay", "PKPlant", "PKWorkshop"]
 }
 
-[node name="ProductPallet" type="StaticBody3D" parent="Variants/Group_product_location/Slot_prod_packing" unique_id=103995]
+[node name="ProductPallet" type="StaticBody3D" parent="Variants/Group_product_location/Slot_prod_packing" unique_id=104001]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11, 0, 23.8)
 collision_mask = 0
 metadata/kind = "pallet_product"
 metadata/support = true
 metadata/surface = &"wood"
 
-[node name="Collision" type="CollisionShape3D" parent="Variants/Group_product_location/Slot_prod_packing/ProductPallet" unique_id=103996]
+[node name="Collision" type="CollisionShape3D" parent="Variants/Group_product_location/Slot_prod_packing/ProductPallet" unique_id=104002]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0)
 shape = SubResource("db_1094")
 
-[node name="Mesh" type="MeshInstance3D" parent="Variants/Group_product_location/Slot_prod_packing/ProductPallet" unique_id=103997]
+[node name="Mesh" type="MeshInstance3D" parent="Variants/Group_product_location/Slot_prod_packing/ProductPallet" unique_id=104003]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0)
 mesh = SubResource("db_1095")
 
-[node name="BurnPoint" parent="Variants/Group_product_location/Slot_prod_packing" unique_id=103998 instance=ExtResource("102_db")]
+[node name="BurnPoint" parent="Variants/Group_product_location/Slot_prod_packing" unique_id=104004 instance=ExtResource("103_db")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11, 1.2, 23.8)
-script = ExtResource("103_db")
+script = ExtResource("104_db")
 duration_s = 30.0
 fire_volume_size = Vector3(17.599998, 4.5, 8.699999)
 loud_only = true
-visual_scene = ExtResource("104_db")
+visual_scene = ExtResource("105_db")
 objective_tag = &"burn"
 
 [node name="UsePoint" parent="Variants/Group_product_location/Slot_prod_packing/BurnPoint" index="1"]
@@ -22384,26 +22436,26 @@ kind = &"place_thermite"
 [node name="FireVolume" parent="Variants/Group_product_location/Slot_prod_packing/BurnPoint" index="3"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, -1.2, 3.6500015)
 
-[node name="Product1" type="Node3D" parent="Variants/Group_product_location/Slot_prod_packing" unique_id=103999 instance=ExtResource("87_db")]
+[node name="Product1" type="Node3D" parent="Variants/Group_product_location/Slot_prod_packing" unique_id=104005 instance=ExtResource("88_db")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.6, 0, 23.6)
-script = ExtResource("88_db")
+script = ExtResource("89_db")
 loot_id = &"loot.contraband"
 count = 2
-visual_scene = ExtResource("105_db")
+visual_scene = ExtResource("106_db")
 objective_tag = &"product"
 
-[node name="Product2" type="Node3D" parent="Variants/Group_product_location/Slot_prod_packing" unique_id=104000 instance=ExtResource("87_db")]
+[node name="Product2" type="Node3D" parent="Variants/Group_product_location/Slot_prod_packing" unique_id=104006 instance=ExtResource("88_db")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.6, 0, 30.4)
-script = ExtResource("88_db")
+script = ExtResource("89_db")
 loot_id = &"loot.contraband"
 count = 2
-visual_scene = ExtResource("105_db")
+visual_scene = ExtResource("106_db")
 objective_tag = &"product"
 
-[node name="Group_warehouse_entry" type="Node3D" parent="Variants" unique_id=104001]
+[node name="Group_warehouse_entry" type="Node3D" parent="Variants" unique_id=104007]
 
-[node name="Slot_door_office" type="Node3D" parent="Variants/Group_warehouse_entry" unique_id=104002]
-script = ExtResource("100_db")
+[node name="Slot_door_office" type="Node3D" parent="Variants/Group_warehouse_entry" unique_id=104008]
+script = ExtResource("101_db")
 slot_group = &"warehouse_entry"
 slot_id = &"door_office"
 weight = 0.35
@@ -22411,11 +22463,11 @@ params = {
 "door": "O1Front"
 }
 
-[node name="EntryDoor" type="Marker3D" parent="Variants/Group_warehouse_entry/Slot_door_office" unique_id=104003]
+[node name="EntryDoor" type="Marker3D" parent="Variants/Group_warehouse_entry/Slot_door_office" unique_id=104009]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0, 0)
 
-[node name="Slot_door_quay" type="Node3D" parent="Variants/Group_warehouse_entry" unique_id=104004]
-script = ExtResource("100_db")
+[node name="Slot_door_quay" type="Node3D" parent="Variants/Group_warehouse_entry" unique_id=104010]
+script = ExtResource("101_db")
 slot_group = &"warehouse_entry"
 slot_id = &"door_quay"
 weight = 0.35
@@ -22423,11 +22475,11 @@ params = {
 "door": "ANQuay"
 }
 
-[node name="EntryDoor" type="Marker3D" parent="Variants/Group_warehouse_entry/Slot_door_quay" unique_id=104005]
+[node name="EntryDoor" type="Marker3D" parent="Variants/Group_warehouse_entry/Slot_door_quay" unique_id=104011]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 46, 0, 32)
 
-[node name="Slot_door_dock" type="Node3D" parent="Variants/Group_warehouse_entry" unique_id=104006]
-script = ExtResource("100_db")
+[node name="Slot_door_dock" type="Node3D" parent="Variants/Group_warehouse_entry" unique_id=104012]
+script = ExtResource("101_db")
 slot_group = &"warehouse_entry"
 slot_id = &"door_dock"
 weight = 0.3
@@ -22435,18 +22487,18 @@ params = {
 "door": "DockRoller"
 }
 
-[node name="EntryDoor" type="Marker3D" parent="Variants/Group_warehouse_entry/Slot_door_dock" unique_id=104007]
+[node name="EntryDoor" type="Marker3D" parent="Variants/Group_warehouse_entry/Slot_door_dock" unique_id=104013]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 48, 0, 4.8)
 
-[node name="Group_east_gangway" type="Node3D" parent="Variants" unique_id=104008]
+[node name="Group_east_gangway" type="Node3D" parent="Variants" unique_id=104014]
 
-[node name="Slot_gangway_down" type="Node3D" parent="Variants/Group_east_gangway" unique_id=104009]
-script = ExtResource("100_db")
+[node name="Slot_gangway_down" type="Node3D" parent="Variants/Group_east_gangway" unique_id=104015]
+script = ExtResource("101_db")
 slot_group = &"east_gangway"
 slot_id = &"gangway_down"
 weight = 0.6
 
-[node name="GangwayDeck" type="StaticBody3D" parent="Variants/Group_east_gangway/Slot_gangway_down" unique_id=104010]
+[node name="GangwayDeck" type="StaticBody3D" parent="Variants/Group_east_gangway/Slot_gangway_down" unique_id=104016]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 67, 0, -13)
 collision_mask = 0
 metadata/kind = "gangway"
@@ -22454,87 +22506,87 @@ metadata/support = true
 metadata/walkable = true
 metadata/surface = &"metal"
 
-[node name="Collision" type="CollisionShape3D" parent="Variants/Group_east_gangway/Slot_gangway_down/GangwayDeck" unique_id=104011]
+[node name="Collision" type="CollisionShape3D" parent="Variants/Group_east_gangway/Slot_gangway_down/GangwayDeck" unique_id=104017]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.06, 0)
 shape = SubResource("db_1096")
 
-[node name="Mesh" type="MeshInstance3D" parent="Variants/Group_east_gangway/Slot_gangway_down/GangwayDeck" unique_id=104012]
+[node name="Mesh" type="MeshInstance3D" parent="Variants/Group_east_gangway/Slot_gangway_down/GangwayDeck" unique_id=104018]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.06, 0)
 mesh = SubResource("db_1097")
 
-[node name="RailNCollision" type="CollisionShape3D" parent="Variants/Group_east_gangway/Slot_gangway_down/GangwayDeck" unique_id=104013]
+[node name="RailNCollision" type="CollisionShape3D" parent="Variants/Group_east_gangway/Slot_gangway_down/GangwayDeck" unique_id=104019]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.67, -1.45)
 shape = SubResource("db_1098")
 
-[node name="RailN" type="MeshInstance3D" parent="Variants/Group_east_gangway/Slot_gangway_down/GangwayDeck" unique_id=104014]
+[node name="RailN" type="MeshInstance3D" parent="Variants/Group_east_gangway/Slot_gangway_down/GangwayDeck" unique_id=104020]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.67, -1.45)
 mesh = SubResource("db_1099")
 
-[node name="RailSCollision" type="CollisionShape3D" parent="Variants/Group_east_gangway/Slot_gangway_down/GangwayDeck" unique_id=104015]
+[node name="RailSCollision" type="CollisionShape3D" parent="Variants/Group_east_gangway/Slot_gangway_down/GangwayDeck" unique_id=104021]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.67, 1.45)
 shape = SubResource("db_1098")
 
-[node name="RailS" type="MeshInstance3D" parent="Variants/Group_east_gangway/Slot_gangway_down/GangwayDeck" unique_id=104016]
+[node name="RailS" type="MeshInstance3D" parent="Variants/Group_east_gangway/Slot_gangway_down/GangwayDeck" unique_id=104022]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.67, 1.45)
 mesh = SubResource("db_1099")
 
-[node name="GangwayLink" type="NavigationLink3D" parent="Variants/Group_east_gangway/Slot_gangway_down" unique_id=104017]
+[node name="GangwayLink" type="NavigationLink3D" parent="Variants/Group_east_gangway/Slot_gangway_down" unique_id=104023]
 start_position = Vector3(60.6, 0, -13)
 end_position = Vector3(74, 0, -13)
 
-[node name="PolicePier10" type="Marker3D" parent="Variants/Group_east_gangway/Slot_gangway_down" unique_id=104018]
+[node name="PolicePier10" type="Marker3D" parent="Variants/Group_east_gangway/Slot_gangway_down" unique_id=104024]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 90, 0, -14)
 script = ExtResource("65_db")
 kind = 3
 tags = Array[StringName]([&"police_e", &"p3"])
 
-[node name="EntryGangway" type="Marker3D" parent="Variants/Group_east_gangway/Slot_gangway_down" unique_id=104019]
+[node name="EntryGangway" type="Marker3D" parent="Variants/Group_east_gangway/Slot_gangway_down" unique_id=104025]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 61.4, 0, -13)
 script = ExtResource("68_db")
 kind = 1
 tags = Array[StringName]([&"gangway", &"east"])
 
-[node name="Slot_gangway_up" type="Node3D" parent="Variants/Group_east_gangway" unique_id=104020]
-script = ExtResource("100_db")
+[node name="Slot_gangway_up" type="Node3D" parent="Variants/Group_east_gangway" unique_id=104026]
+script = ExtResource("101_db")
 slot_group = &"east_gangway"
 slot_id = &"gangway_up"
 weight = 0.4
 
-[node name="GangwayBarrier" type="StaticBody3D" parent="Variants/Group_east_gangway/Slot_gangway_up" unique_id=104021]
+[node name="GangwayBarrier" type="StaticBody3D" parent="Variants/Group_east_gangway/Slot_gangway_up" unique_id=104027]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 61.85, 0, -13)
 collision_mask = 0
 metadata/kind = "railing"
 metadata/hinged_barrier = true
 metadata/surface = &"metal"
 
-[node name="Collision" type="CollisionShape3D" parent="Variants/Group_east_gangway/Slot_gangway_up/GangwayBarrier" unique_id=104022]
+[node name="Collision" type="CollisionShape3D" parent="Variants/Group_east_gangway/Slot_gangway_up/GangwayBarrier" unique_id=104028]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.525, 0)
 shape = SubResource("db_1100")
 
-[node name="Mesh" type="MeshInstance3D" parent="Variants/Group_east_gangway/Slot_gangway_up/GangwayBarrier" unique_id=104023]
+[node name="Mesh" type="MeshInstance3D" parent="Variants/Group_east_gangway/Slot_gangway_up/GangwayBarrier" unique_id=104029]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.525, 0)
 mesh = SubResource("db_1101")
 
-[node name="Group_goods_lift" type="Node3D" parent="Variants" unique_id=104024]
+[node name="Group_goods_lift" type="Node3D" parent="Variants" unique_id=104030]
 
-[node name="Slot_lift_powered" type="Node3D" parent="Variants/Group_goods_lift" unique_id=104025]
-script = ExtResource("100_db")
+[node name="Slot_lift_powered" type="Node3D" parent="Variants/Group_goods_lift" unique_id=104031]
+script = ExtResource("101_db")
 slot_group = &"goods_lift"
 slot_id = &"lift_powered"
 weight = 0.6
 
-[node name="Slot_lift_dead" type="Node3D" parent="Variants/Group_goods_lift" unique_id=104026]
-script = ExtResource("100_db")
+[node name="Slot_lift_dead" type="Node3D" parent="Variants/Group_goods_lift" unique_id=104032]
+script = ExtResource("101_db")
 slot_group = &"goods_lift"
 slot_id = &"lift_dead"
 weight = 0.4
 
-[node name="LiftBreaker" parent="Variants/Group_goods_lift/Slot_lift_dead" unique_id=104027 instance=ExtResource("106_db")]
+[node name="LiftBreaker" parent="Variants/Group_goods_lift/Slot_lift_dead" unique_id=104033 instance=ExtResource("107_db")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 17.3, 0, 4.55)
-script = ExtResource("107_db")
+script = ExtResource("108_db")
 duration_s = 5.0
 interruptions = Vector2i(0, 0)
-visual_scene = ExtResource("108_db")
+visual_scene = ExtResource("109_db")
 objective_tag = &"lift_breaker"
 metadata/kind = "breaker_panel"
 
@@ -22554,10 +22606,10 @@ metadata/surface = &"metal"
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 shape = SubResource("db_1102")
 
-[node name="Group_player_perch" type="Node3D" parent="Variants" unique_id=104028]
+[node name="Group_player_perch" type="Node3D" parent="Variants" unique_id=104034]
 
-[node name="Slot_perch_roof" type="Node3D" parent="Variants/Group_player_perch" unique_id=104029]
-script = ExtResource("100_db")
+[node name="Slot_perch_roof" type="Node3D" parent="Variants/Group_player_perch" unique_id=104035]
+script = ExtResource("101_db")
 slot_group = &"player_perch"
 slot_id = &"perch_roof"
 weight = 0.3
@@ -22565,32 +22617,32 @@ params = {
 "door": "RoofDoor"
 }
 
-[node name="PerchRoof" type="Marker3D" parent="Variants/Group_player_perch/Slot_perch_roof" unique_id=104030]
+[node name="PerchRoof" type="Marker3D" parent="Variants/Group_player_perch/Slot_perch_roof" unique_id=104036]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 7.2, 5)
 
-[node name="Slot_perch_stack" type="Node3D" parent="Variants/Group_player_perch" unique_id=104031]
-script = ExtResource("100_db")
+[node name="Slot_perch_stack" type="Node3D" parent="Variants/Group_player_perch" unique_id=104037]
+script = ExtResource("101_db")
 slot_group = &"player_perch"
 slot_id = &"perch_stack"
 weight = 0.3
 
-[node name="D1Ladder" type="Node3D" parent="Variants/Group_player_perch/Slot_perch_stack" unique_id=104032 instance=ExtResource("109_db")]
+[node name="D1Ladder" type="Node3D" parent="Variants/Group_player_perch/Slot_perch_stack" unique_id=104038 instance=ExtResource("110_db")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 8, 0, -5.38)
-script = ExtResource("110_db")
+script = ExtResource("111_db")
 height_m = 5.2
-visual_scene = ExtResource("111_db")
+visual_scene = ExtResource("112_db")
 metadata/kind = "ladder"
 
-[node name="Slot_perch_none" type="Node3D" parent="Variants/Group_player_perch" unique_id=104033]
-script = ExtResource("100_db")
+[node name="Slot_perch_none" type="Node3D" parent="Variants/Group_player_perch" unique_id=104039]
+script = ExtResource("101_db")
 slot_group = &"player_perch"
 slot_id = &"perch_none"
 weight = 0.4
 
-[node name="Group_escape" type="Node3D" parent="Variants" unique_id=104034]
+[node name="Group_escape" type="Node3D" parent="Variants" unique_id=104040]
 
-[node name="Slot_esc_van_gate" type="Node3D" parent="Variants/Group_escape" unique_id=104035]
-script = ExtResource("100_db")
+[node name="Slot_esc_van_gate" type="Node3D" parent="Variants/Group_escape" unique_id=104041]
+script = ExtResource("101_db")
 slot_group = &"escape"
 slot_id = &"esc_van_gate"
 weight = 0.4
@@ -22599,22 +22651,22 @@ params = {
 "label": "E1"
 }
 
-[node name="VanSecureE1" type="Node3D" parent="Variants/Group_escape/Slot_esc_van_gate" unique_id=104036 instance=ExtResource("112_db")]
+[node name="VanSecureE1" type="Node3D" parent="Variants/Group_escape/Slot_esc_van_gate" unique_id=104042 instance=ExtResource("113_db")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 34, 0, -23)
-script = ExtResource("113_db")
-visual_scene = ExtResource("114_db")
+script = ExtResource("114_db")
+visual_scene = ExtResource("115_db")
 objective_tag = &"loot_secure"
 metadata/kind = "vehicle"
 
-[node name="VanEscapeE1" type="Node3D" parent="Variants/Group_escape/Slot_esc_van_gate" unique_id=104037 instance=ExtResource("115_db")]
+[node name="VanEscapeE1" type="Node3D" parent="Variants/Group_escape/Slot_esc_van_gate" unique_id=104043 instance=ExtResource("116_db")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 34, 0, -18.8)
-script = ExtResource("116_db")
+script = ExtResource("117_db")
 zone_size_m = Vector3(5, 3, 2.4)
-visual_scene = ExtResource("117_db")
+visual_scene = ExtResource("118_db")
 objective_tag = &"escape_van"
 
-[node name="Slot_esc_van_lane" type="Node3D" parent="Variants/Group_escape" unique_id=104038]
-script = ExtResource("100_db")
+[node name="Slot_esc_van_lane" type="Node3D" parent="Variants/Group_escape" unique_id=104044]
+script = ExtResource("101_db")
 slot_group = &"escape"
 slot_id = &"esc_van_lane"
 weight = 0.3
@@ -22623,22 +22675,22 @@ params = {
 "label": "E2"
 }
 
-[node name="VanSecureE2" type="Node3D" parent="Variants/Group_escape/Slot_esc_van_lane" unique_id=104039 instance=ExtResource("112_db")]
+[node name="VanSecureE2" type="Node3D" parent="Variants/Group_escape/Slot_esc_van_lane" unique_id=104045 instance=ExtResource("113_db")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -5, 0, 1)
-script = ExtResource("113_db")
-visual_scene = ExtResource("114_db")
+script = ExtResource("114_db")
+visual_scene = ExtResource("115_db")
 objective_tag = &"loot_secure"
 metadata/kind = "vehicle"
 
-[node name="VanEscapeE2" type="Node3D" parent="Variants/Group_escape/Slot_esc_van_lane" unique_id=104040 instance=ExtResource("115_db")]
+[node name="VanEscapeE2" type="Node3D" parent="Variants/Group_escape/Slot_esc_van_lane" unique_id=104046 instance=ExtResource("116_db")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 0, 5)
-script = ExtResource("116_db")
+script = ExtResource("117_db")
 zone_size_m = Vector3(3.6, 3, 2.4)
-visual_scene = ExtResource("117_db")
+visual_scene = ExtResource("118_db")
 objective_tag = &"escape_van"
 
-[node name="Slot_esc_boat" type="Node3D" parent="Variants/Group_escape" unique_id=104041]
-script = ExtResource("100_db")
+[node name="Slot_esc_boat" type="Node3D" parent="Variants/Group_escape" unique_id=104047]
+script = ExtResource("101_db")
 slot_group = &"escape"
 slot_id = &"esc_boat"
 weight = 0.3
@@ -22647,131 +22699,131 @@ params = {
 "label": "E3"
 }
 
-[node name="BoatSecureE3" type="Node3D" parent="Variants/Group_escape/Slot_esc_boat" unique_id=104042 instance=ExtResource("112_db")]
+[node name="BoatSecureE3" type="Node3D" parent="Variants/Group_escape/Slot_esc_boat" unique_id=104048 instance=ExtResource("113_db")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22.5, -1.6, 55.6)
-script = ExtResource("113_db")
+script = ExtResource("114_db")
 zone_size_m = Vector3(4, 2.5, 2.4)
 vehicle_collision = false
-visual_scene = ExtResource("118_db")
+visual_scene = ExtResource("119_db")
 objective_tag = &"loot_secure"
 metadata/kind = "boat_hatch"
 
-[node name="BoatEscapeE3" type="Node3D" parent="Variants/Group_escape/Slot_esc_boat" unique_id=104043 instance=ExtResource("115_db")]
+[node name="BoatEscapeE3" type="Node3D" parent="Variants/Group_escape/Slot_esc_boat" unique_id=104049 instance=ExtResource("116_db")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24, -1.8, 52.2)
-script = ExtResource("116_db")
+script = ExtResource("117_db")
 escape_type = &"boat"
 zone_size_m = Vector3(7, 3, 2.6)
-visual_scene = ExtResource("119_db")
+visual_scene = ExtResource("120_db")
 objective_tag = &"escape_boat"
 
-[node name="Group_night_shift" type="Node3D" parent="Variants" unique_id=104044]
+[node name="Group_night_shift" type="Node3D" parent="Variants" unique_id=104050]
 
-[node name="Slot_shift_1" type="Node3D" parent="Variants/Group_night_shift" unique_id=104045]
-script = ExtResource("100_db")
+[node name="Slot_shift_1" type="Node3D" parent="Variants/Group_night_shift" unique_id=104051]
+script = ExtResource("101_db")
 slot_group = &"night_shift"
 slot_id = &"shift_1"
 
-[node name="WorkerPK" type="Marker3D" parent="Variants/Group_night_shift/Slot_shift_1" unique_id=104046]
+[node name="WorkerPK" type="Marker3D" parent="Variants/Group_night_shift/Slot_shift_1" unique_id=104052]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0, 30)
 script = ExtResource("65_db")
 kind = 2
 tags = Array[StringName]([&"civ_worker"])
 idle_activity = &"browse"
 
-[node name="Slot_shift_2" type="Node3D" parent="Variants/Group_night_shift" unique_id=104047]
-script = ExtResource("100_db")
+[node name="Slot_shift_2" type="Node3D" parent="Variants/Group_night_shift" unique_id=104053]
+script = ExtResource("101_db")
 slot_group = &"night_shift"
 slot_id = &"shift_2"
 
-[node name="WorkerAN1" type="Marker3D" parent="Variants/Group_night_shift/Slot_shift_2" unique_id=104048]
+[node name="WorkerAN1" type="Marker3D" parent="Variants/Group_night_shift/Slot_shift_2" unique_id=104054]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 43, 0, 26.2)
 script = ExtResource("65_db")
 kind = 2
 tags = Array[StringName]([&"civ_worker"])
 idle_activity = &"browse"
 
-[node name="WorkerH" type="Marker3D" parent="Variants/Group_night_shift/Slot_shift_2" unique_id=104049]
+[node name="WorkerH" type="Marker3D" parent="Variants/Group_night_shift/Slot_shift_2" unique_id=104055]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 36, 0, 3)
 script = ExtResource("65_db")
 kind = 2
 tags = Array[StringName]([&"civ_worker"])
 idle_activity = &"browse"
 
-[node name="Slot_shift_3" type="Node3D" parent="Variants/Group_night_shift" unique_id=104050]
-script = ExtResource("100_db")
+[node name="Slot_shift_3" type="Node3D" parent="Variants/Group_night_shift" unique_id=104056]
+script = ExtResource("101_db")
 slot_group = &"night_shift"
 slot_id = &"shift_3"
 
-[node name="WorkerAN1" type="Marker3D" parent="Variants/Group_night_shift/Slot_shift_3" unique_id=104051]
+[node name="WorkerAN1" type="Marker3D" parent="Variants/Group_night_shift/Slot_shift_3" unique_id=104057]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 43, 0, 26.2)
 script = ExtResource("65_db")
 kind = 2
 tags = Array[StringName]([&"civ_worker"])
 idle_activity = &"browse"
 
-[node name="WorkerAN2" type="Marker3D" parent="Variants/Group_night_shift/Slot_shift_3" unique_id=104052]
+[node name="WorkerAN2" type="Marker3D" parent="Variants/Group_night_shift/Slot_shift_3" unique_id=104058]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 45.6, 0, 26.2)
 script = ExtResource("65_db")
 kind = 2
 tags = Array[StringName]([&"civ_worker"])
 idle_activity = &"browse"
 
-[node name="WorkerPK" type="Marker3D" parent="Variants/Group_night_shift/Slot_shift_3" unique_id=104053]
+[node name="WorkerPK" type="Marker3D" parent="Variants/Group_night_shift/Slot_shift_3" unique_id=104059]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0, 30)
 script = ExtResource("65_db")
 kind = 2
 tags = Array[StringName]([&"civ_worker"])
 idle_activity = &"browse"
 
-[node name="Group_perch_viaduct" type="Node3D" parent="Variants" unique_id=104054]
+[node name="Group_perch_viaduct" type="Node3D" parent="Variants" unique_id=104060]
 
-[node name="Slot_viaduct_on" type="Node3D" parent="Variants/Group_perch_viaduct" unique_id=104055]
-script = ExtResource("100_db")
+[node name="Slot_viaduct_on" type="Node3D" parent="Variants/Group_perch_viaduct" unique_id=104061]
+script = ExtResource("101_db")
 slot_group = &"perch_viaduct"
 slot_id = &"viaduct_on"
 
-[node name="SniperViaduct" type="Marker3D" parent="Variants/Group_perch_viaduct/Slot_viaduct_on" unique_id=104056]
+[node name="SniperViaduct" type="Marker3D" parent="Variants/Group_perch_viaduct/Slot_viaduct_on" unique_id=104062]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 10, 7, -51)
 script = ExtResource("68_db")
 kind = 3
 tags = Array[StringName]([&"viaduct", &"s3"])
 
-[node name="Slot_viaduct_off" type="Node3D" parent="Variants/Group_perch_viaduct" unique_id=104057]
-script = ExtResource("100_db")
+[node name="Slot_viaduct_off" type="Node3D" parent="Variants/Group_perch_viaduct" unique_id=104063]
+script = ExtResource("101_db")
 slot_group = &"perch_viaduct"
 slot_id = &"viaduct_off"
 
-[node name="Group_perch_trawler" type="Node3D" parent="Variants" unique_id=104058]
+[node name="Group_perch_trawler" type="Node3D" parent="Variants" unique_id=104064]
 
-[node name="Slot_trawler_on" type="Node3D" parent="Variants/Group_perch_trawler" unique_id=104059]
-script = ExtResource("100_db")
+[node name="Slot_trawler_on" type="Node3D" parent="Variants/Group_perch_trawler" unique_id=104065]
+script = ExtResource("101_db")
 slot_group = &"perch_trawler"
 slot_id = &"trawler_on"
 
-[node name="SniperTrawler" type="Marker3D" parent="Variants/Group_perch_trawler/Slot_trawler_on" unique_id=104060]
+[node name="SniperTrawler" type="Marker3D" parent="Variants/Group_perch_trawler/Slot_trawler_on" unique_id=104066]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 70, 4, 50.8)
 script = ExtResource("68_db")
 kind = 3
 tags = Array[StringName]([&"trawler", &"s4"])
 
-[node name="Slot_trawler_off" type="Node3D" parent="Variants/Group_perch_trawler" unique_id=104061]
-script = ExtResource("100_db")
+[node name="Slot_trawler_off" type="Node3D" parent="Variants/Group_perch_trawler" unique_id=104067]
+script = ExtResource("101_db")
 slot_group = &"perch_trawler"
 slot_id = &"trawler_off"
 
-[node name="Mission" type="Node" parent="." unique_id=104062]
-script = ExtResource("120_db")
+[node name="Mission" type="Node" parent="." unique_id=104068]
+script = ExtResource("121_db")
 
-[node name="Preplan" type="Node3D" parent="." unique_id=104063]
+[node name="Preplan" type="Node3D" parent="." unique_id=104069]
 
-[node name="pp_spawn_gate" type="Marker3D" parent="Preplan" unique_id=104064 groups=["preplan_point"]]
+[node name="pp_spawn_gate" type="Marker3D" parent="Preplan" unique_id=104070 groups=["preplan_point"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 33.75, 0, -38.5)
 metadata/category = &"spawn"
 metadata/label = &"ui.preplan.point.dockside_burn.pp_spawn_gate"
 metadata/floor = 1
 metadata/params = {}
 
-[node name="pp_spawn_lane" type="Marker3D" parent="Preplan" unique_id=104065 groups=["preplan_point"]]
+[node name="pp_spawn_lane" type="Marker3D" parent="Preplan" unique_id=104071 groups=["preplan_point"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.25, 0, -31.5)
 metadata/category = &"spawn"
 metadata/label = &"ui.preplan.point.dockside_burn.pp_spawn_lane"
@@ -22780,7 +22832,7 @@ metadata/params = {
 "spawn_tag": &"preplan_spawn_lane"
 }
 
-[node name="pp_spawn_pontoon" type="Marker3D" parent="Preplan" unique_id=104066 groups=["preplan_point"]]
+[node name="pp_spawn_pontoon" type="Marker3D" parent="Preplan" unique_id=104072 groups=["preplan_point"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24, -1.8, 52)
 metadata/category = &"spawn"
 metadata/label = &"ui.preplan.point.dockside_burn.pp_spawn_pontoon"
@@ -22789,35 +22841,35 @@ metadata/params = {
 "spawn_tag": &"preplan_spawn_pontoon"
 }
 
-[node name="pp_drop_gatehouse" type="Marker3D" parent="Preplan" unique_id=104067 groups=["preplan_point"]]
+[node name="pp_drop_gatehouse" type="Marker3D" parent="Preplan" unique_id=104073 groups=["preplan_point"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25.5, 0, -26.6)
 metadata/category = &"drop_zone"
 metadata/label = &"ui.preplan.point.dockside_burn.pp_drop_gatehouse"
 metadata/floor = 1
 metadata/params = {}
 
-[node name="pp_drop_lane" type="Marker3D" parent="Preplan" unique_id=104068 groups=["preplan_point"]]
+[node name="pp_drop_lane" type="Marker3D" parent="Preplan" unique_id=104074 groups=["preplan_point"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.6, 0, -2.6)
 metadata/category = &"drop_zone"
 metadata/label = &"ui.preplan.point.dockside_burn.pp_drop_lane"
 metadata/floor = 1
 metadata/params = {}
 
-[node name="pp_drop_quay" type="Marker3D" parent="Preplan" unique_id=104069 groups=["preplan_point"]]
+[node name="pp_drop_quay" type="Marker3D" parent="Preplan" unique_id=104075 groups=["preplan_point"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16, 0, 37)
 metadata/category = &"drop_zone"
 metadata/label = &"ui.preplan.point.dockside_burn.pp_drop_quay"
 metadata/floor = 1
 metadata/params = {}
 
-[node name="pp_drop_platform" type="Marker3D" parent="Preplan" unique_id=104070 groups=["preplan_point"]]
+[node name="pp_drop_platform" type="Marker3D" parent="Preplan" unique_id=104076 groups=["preplan_point"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 3.6, 2.6)
 metadata/category = &"drop_zone"
 metadata/label = &"ui.preplan.point.dockside_burn.pp_drop_platform"
 metadata/floor = 2
 metadata/params = {}
 
-[node name="pp_escape_gate" type="Marker3D" parent="Preplan" unique_id=104071 groups=["preplan_point"]]
+[node name="pp_escape_gate" type="Marker3D" parent="Preplan" unique_id=104077 groups=["preplan_point"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 34, 0, -22)
 metadata/category = &"escape"
 metadata/label = &"ui.preplan.point.dockside_burn.pp_escape_gate"
@@ -22827,7 +22879,7 @@ metadata/params = {
 "variant_slot": &"esc_van_gate"
 }
 
-[node name="pp_escape_lane" type="Marker3D" parent="Preplan" unique_id=104072 groups=["preplan_point"]]
+[node name="pp_escape_lane" type="Marker3D" parent="Preplan" unique_id=104078 groups=["preplan_point"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 0, 1.5)
 metadata/category = &"escape"
 metadata/label = &"ui.preplan.point.dockside_burn.pp_escape_lane"
@@ -22837,7 +22889,7 @@ metadata/params = {
 "variant_slot": &"esc_van_lane"
 }
 
-[node name="pp_escape_boat" type="Marker3D" parent="Preplan" unique_id=104073 groups=["preplan_point"]]
+[node name="pp_escape_boat" type="Marker3D" parent="Preplan" unique_id=104079 groups=["preplan_point"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 23, -1.6, 55.6)
 metadata/category = &"escape"
 metadata/label = &"ui.preplan.point.dockside_burn.pp_escape_boat"
@@ -22847,7 +22899,7 @@ metadata/params = {
 "variant_slot": &"esc_boat"
 }
 
-[node name="pp_perch_roof" type="Marker3D" parent="Preplan" unique_id=104074 groups=["preplan_point"]]
+[node name="pp_perch_roof" type="Marker3D" parent="Preplan" unique_id=104080 groups=["preplan_point"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 7.2, 5)
 metadata/category = &"drop_zone"
 metadata/label = &"ui.preplan.point.dockside_burn.pp_perch_roof"
@@ -22857,7 +22909,7 @@ metadata/params = {
 "variant_slot": &"perch_roof"
 }
 
-[node name="pp_perch_stack" type="Marker3D" parent="Preplan" unique_id=104075 groups=["preplan_point"]]
+[node name="pp_perch_stack" type="Marker3D" parent="Preplan" unique_id=104081 groups=["preplan_point"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0, -4.6)
 metadata/category = &"drop_zone"
 metadata/label = &"ui.preplan.point.dockside_burn.pp_perch_stack"
@@ -22867,7 +22919,7 @@ metadata/params = {
 "variant_slot": &"perch_stack"
 }
 
-[node name="pp_gangway" type="Marker3D" parent="Preplan" unique_id=104076 groups=["preplan_point"]]
+[node name="pp_gangway" type="Marker3D" parent="Preplan" unique_id=104082 groups=["preplan_point"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 60.4, 0, -13)
 metadata/category = &"insider"
 metadata/label = &"ui.preplan.point.dockside_burn.pp_gangway"
@@ -22877,147 +22929,147 @@ metadata/params = {
 "variant_slot": &"gangway_up"
 }
 
-[node name="ReviewCameras" type="Node3D" parent="." unique_id=104077]
+[node name="ReviewCameras" type="Node3D" parent="." unique_id=104083]
 
-[node name="TopDownSite" type="Marker3D" parent="ReviewCameras" unique_id=104078]
+[node name="TopDownSite" type="Marker3D" parent="ReviewCameras" unique_id=104084]
 transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 38, 140, 2)
 metadata/size = 150.0
 metadata/caption = "Top-down site: Pier 9 (building, yard, lane, apron, quay), Ferro St, Bellweather, the slip, Pier 10"
 
-[node name="TopDownBuilding" type="Marker3D" parent="ReviewCameras" unique_id=104079]
+[node name="TopDownBuilding" type="Marker3D" parent="ReviewCameras" unique_id=104085]
 transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 24, 70, 16)
 metadata/size = 56.0
 metadata/caption = "Top-down building: office block (+7.2), hall (+6.6), high bay (+9.0), west wing (+5.8)"
 
-[node name="ExtGate" type="Marker3D" parent="ReviewCameras" unique_id=104080]
+[node name="ExtGate" type="Marker3D" parent="ReviewCameras" unique_id=104086]
 transform = Transform3D(-1, 0, 0, 0, 0.9973219, -0.07313694, 0, -0.07313694, -0.9973219, 34, 1.7, -45)
 metadata/fov = 70.0
 metadata/caption = "Exterior: from Ferro St through the gate: weighbridge, gatehouse, hall roller doors, the mural (landmark 1)"
 
-[node name="ExtYardEast" type="Marker3D" parent="ReviewCameras" unique_id=104081]
+[node name="ExtYardEast" type="Marker3D" parent="ReviewCameras" unique_id=104087]
 transform = Transform3D(-0.2505669, -0.2724463, -0.9289721, 0, 0.9595835, -0.28142393, 0.9680993, -0.07051552, -0.24043986, 44, 1.7, -10.8)
 metadata/fov = 70.0
 metadata/caption = "Exterior: from K6 east: apron, gangway, the Pier 10 crane over the slip (landmark 2)"
 
-[node name="ExtQuay" type="Marker3D" parent="ReviewCameras" unique_id=104082]
+[node name="ExtQuay" type="Marker3D" parent="ReviewCameras" unique_id=104088]
 transform = Transform3D(1, 0, 0, 0, 0.98448044, -0.17549433, 0, 0.17549433, 0.98448044, 24, -0.1, 53)
 metadata/fov = 75.0
 metadata/caption = "Exterior: from the pontoon: quay, net store, AN / PK doors, condenser plumes (landmark 3)"
 
-[node name="ExtLane" type="Marker3D" parent="ReviewCameras" unique_id=104083]
+[node name="ExtLane" type="Marker3D" parent="ReviewCameras" unique_id=104089]
 transform = Transform3D(-1, 0, 0, 0, 0.99998266, -0.00588225, 0, -0.00588225, -0.99998266, -4, 1.7, -31)
 metadata/fov = 70.0
 metadata/caption = "Exterior: west lane from the north end: the fire stair, Bellweather fence, E2"
 
-[node name="YardWest" type="Marker3D" parent="ReviewCameras" unique_id=104084]
+[node name="YardWest" type="Marker3D" parent="ReviewCameras" unique_id=104090]
 transform = Transform3D(-0.87214303, -0.014563681, 0.48903418, 0, 0.99955684, 0.0297673, -0.489251, 0.025961343, -0.87175655, 17.5, 2.2, -32.5)
 metadata/fov = 70.0
 metadata/caption = "Yard west: K1-K3 alleys and D1 (player perch with the ladder)"
 
-[node name="Gatehouse" type="Marker3D" parent="ReviewCameras" unique_id=104085]
+[node name="Gatehouse" type="Marker3D" parent="ReviewCameras" unique_id=104091]
 transform = Transform3D(-0.48564294, 0.059297077, -0.8721438, 0, 0.99769676, 0.067833416, 0.8741573, 0.03294282, -0.48452434, 25, 1.7, -29)
 metadata/fov = 75.0
 metadata/caption = "GH gatehouse (H4): console, window to the weighbridge"
 
-[node name="HallPlatform" type="Marker3D" parent="ReviewCameras" unique_id=104086]
+[node name="HallPlatform" type="Marker3D" parent="ReviewCameras" unique_id=104092]
 transform = Transform3D(-0.24253562, 0.19588083, -0.9501617, 0, 0.9794042, 0.20190935, 0.9701425, 0.048970208, -0.23754042, 20, 5.25, 3)
 metadata/fov = 75.0
 metadata/caption = "H from the platform PF (H1): roller doors, the spine-aisle mouth"
 
-[node name="HallFloor" type="Marker3D" parent="ReviewCameras" unique_id=104087]
+[node name="HallFloor" type="Marker3D" parent="ReviewCameras" unique_id=104093]
 transform = Transform3D(0.1351132, 0.03344947, 0.9902654, 0, 0.99943, -0.03375904, -0.9908301, 0.0045612915, 0.13503619, 46.4, 1.7, 7.6)
 metadata/fov = 75.0
 metadata/caption = "H from the dock door: the platform, its stair, the goods-lift hatch"
 
-[node name="ChamberA" type="Marker3D" parent="ReviewCameras" unique_id=104088]
+[node name="ChamberA" type="Marker3D" parent="ReviewCameras" unique_id=104094]
 transform = Transform3D(1, 0, 0, 0, 0.99437064, -0.105957516, 0, 0.105957516, 0.99437064, 25, 1.7, 23.2)
 metadata/fov = 75.0
 metadata/caption = "C1 chamber A down the centre aisle (racking)"
 
-[node name="ChamberB" type="Marker3D" parent="ReviewCameras" unique_id=104089]
+[node name="ChamberB" type="Marker3D" parent="ReviewCameras" unique_id=104095]
 transform = Transform3D(1, 0, 0, 0, 0.99437064, -0.105957516, 0, 0.105957516, 0.99437064, 41, 1.7, 23.2)
 metadata/fov = 75.0
 metadata/caption = "C2 chamber B down the centre aisle"
 
-[node name="Spine" type="Marker3D" parent="ReviewCameras" unique_id=104090]
+[node name="Spine" type="Marker3D" parent="ReviewCameras" unique_id=104096]
 transform = Transform3D(-1, 0, 0, 0, 0.99988526, 0.015149781, 0, 0.015149781, -0.99988526, 33.5, 1.7, 10.8)
 metadata/fov = 70.0
 metadata/caption = "SP spine aisle from the hall end (strip curtains)"
 
-[node name="Anteroom" type="Marker3D" parent="ReviewCameras" unique_id=104091]
+[node name="Anteroom" type="Marker3D" parent="ReviewCameras" unique_id=104097]
 transform = Transform3D(0.17545328, -0.02398338, 0.9841956, 0, 0.9997032, 0.024361277, -0.9844878, -0.004274266, 0.17540121, 47.2, 1.7, 30.6)
 metadata/fov = 75.0
 metadata/caption = "AN anteroom (H2) from the east door: the vault door, quay roller doors, pallets"
 
-[node name="Strongroom" type="Marker3D" parent="ReviewCameras" unique_id=104092]
+[node name="Strongroom" type="Marker3D" parent="ReviewCameras" unique_id=104098]
 transform = Transform3D(0.54271543, 0.075663716, -0.8365016, 0, 0.99593407, 0.09008479, 0.83991665, -0.048890404, 0.5405088, 19, 1.7, 31.2)
 metadata/fov = 80.0
 metadata/caption = "SR strongroom (vault): cash pallets, the vault door"
 
-[node name="Packing" type="Marker3D" parent="ReviewCameras" unique_id=104093]
+[node name="Packing" type="Marker3D" parent="ReviewCameras" unique_id=104099]
 transform = Transform3D(-0.5407576, 0.07550624, -0.8377828, 0, 0.9959632, 0.08976245, 0.8411785, 0.048539728, -0.5385747, 0.8, 2.2, 23.8)
 metadata/fov = 75.0
 metadata/caption = "PK packing hall: the packing line, quay doors"
 
-[node name="Plant" type="Marker3D" parent="ReviewCameras" unique_id=104094]
+[node name="Plant" type="Marker3D" parent="ReviewCameras" unique_id=104100]
 transform = Transform3D(0.70710677, -0.07191434, 0.70344037, 0, 0.9948149, 0.10170223, -0.7071068, -0.07191434, 0.7034403, 9.3, 2.2, 17.3)
 metadata/fov = 75.0
 metadata/caption = "PL plant: compressors, the culvert grate"
 
-[node name="Workshop" type="Marker3D" parent="ReviewCameras" unique_id=104095]
+[node name="Workshop" type="Marker3D" parent="ReviewCameras" unique_id=104101]
 transform = Transform3D(-0.7577688, 0.09511836, -0.64555323, 0, 0.9893185, 0.1457701, 0.6525231, 0.110460036, -0.74967474, 10.8, 2.2, 8.8)
 metadata/fov = 75.0
 metadata/caption = "WS workshop: forklifts on charge"
 
-[node name="Reception" type="Marker3D" parent="ReviewCameras" unique_id=104096]
+[node name="Reception" type="Marker3D" parent="ReviewCameras" unique_id=104102]
 transform = Transform3D(0.7448353, -0.08220072, 0.66216564, 0, 0.99238265, 0.1231936, -0.6672483, -0.091758944, 0.7391617, 8.3, 1.8, 5.3)
 metadata/fov = 75.0
 metadata/caption = "O1 reception: counter, front door"
 
-[node name="Dispatch" type="Marker3D" parent="ReviewCameras" unique_id=104097]
+[node name="Dispatch" type="Marker3D" parent="ReviewCameras" unique_id=104103]
 transform = Transform3D(0.7448353, -0.08220072, 0.66216564, 0, 0.99238265, 0.1231936, -0.6672483, -0.091758944, 0.7391617, 14.3, 1.8, 5.3)
 metadata/fov = 75.0
 metadata/caption = "O2 dispatch / security room: desk, dispatch safe"
 
-[node name="CountRoom" type="Marker3D" parent="ReviewCameras" unique_id=104098]
+[node name="CountRoom" type="Marker3D" parent="ReviewCameras" unique_id=104104]
 transform = Transform3D(0.67501354, 0.13658252, -0.7250531, 0, 0.98271596, 0.18511999, 0.73780537, -0.1249585, 0.6633465, 9.8, 5.4, 5.3)
 metadata/fov = 75.0
 metadata/caption = "M1 count room (H1): counting table, cash cage slot, lift hatch"
 
-[node name="BreakRoom" type="Marker3D" parent="ReviewCameras" unique_id=104099]
+[node name="BreakRoom" type="Marker3D" parent="ReviewCameras" unique_id=104105]
 transform = Transform3D(0.7448353, -0.12214794, 0.6559728, 0, 0.98310137, 0.1830622, -0.6672483, -0.13635118, 0.73224866, 8.3, 5.4, 5.3)
 metadata/fov = 75.0
 metadata/caption = "M2 break room"
 
-[node name="LockerRoom" type="Marker3D" parent="ReviewCameras" unique_id=104100]
+[node name="LockerRoom" type="Marker3D" parent="ReviewCameras" unique_id=104106]
 transform = Transform3D(0.7071067, -0.10411585, 0.6993997, 0, 0.98910046, 0.14724202, -0.7071069, -0.10411582, 0.69939953, 4.3, 1.8, 22.3)
 metadata/fov = 75.0
 metadata/caption = "LK locker room"
 
-[node name="QuayShed" type="Marker3D" parent="ReviewCameras" unique_id=104101]
+[node name="QuayShed" type="Marker3D" parent="ReviewCameras" unique_id=104107]
 transform = Transform3D(-0.69253176, -0.06221528, 0.7186995, 0, 0.996274, 0.08624393, -0.7213874, 0.05972666, -0.6899514, 19, 1.8, 35.2)
 metadata/fov = 75.0
 metadata/caption = "QS quay net store (H3): the pontoon window"
 
-[node name="LandingStage" type="Marker3D" parent="ReviewCameras" unique_id=104102]
+[node name="LandingStage" type="Marker3D" parent="ReviewCameras" unique_id=104108]
 transform = Transform3D(-0.9363292, 0.13310082, -0.32491824, 0, 0.92536753, 0.37907127, 0.35112348, 0.3549355, -0.8664486, 57, 1.7, 39)
 metadata/fov = 75.0
 metadata/caption = "X4 quay steps down to the landing stage, P4 shed"
 
-[node name="RoofPerch" type="Marker3D" parent="ReviewCameras" unique_id=104103]
+[node name="RoofPerch" type="Marker3D" parent="ReviewCameras" unique_id=104109]
 transform = Transform3D(1, 0, 0, 0, 0.9994586, 0.032900333, 0, -0.032900333, 0.9994586, 10, 8.85, 6.2)
 metadata/fov = 70.0
 metadata/caption = "X5 office roof (player perch) toward the viaduct"
 
-[node name="SniperCrane" type="Marker3D" parent="ReviewCameras" unique_id=104104]
+[node name="SniperCrane" type="Marker3D" parent="ReviewCameras" unique_id=104110]
 transform = Transform3D(0.23431562, -0.4960271, 0.83609396, 0, 0.86003685, 0.5102317, -0.9721606, -0.11955525, 0.20152009, 79, 23.8, -2.6)
 metadata/fov = 70.0
 metadata/caption = "S1 crane cab: the Longshot's view over the yard and apron"
 
-[node name="Audio" type="Node3D" parent="." unique_id=104105]
+[node name="Audio" type="Node3D" parent="." unique_id=104111]
 
-[node name="CuePlayer" type="Node" parent="Audio" unique_id=104106]
-script = ExtResource("121_db")
+[node name="CuePlayer" type="Node" parent="Audio" unique_id=104112]
+script = ExtResource("122_db")
 device_cues = Dictionary[StringName, PackedStringArray]({
 &"drill": PackedStringArray("cue.drill_loop", "cue.drill_jam", "cue.drill_done"),
 &"hack": PackedStringArray("", "cue.hack_interrupt", "cue.hack_done", "cue.hack_start"),
@@ -23025,133 +23077,133 @@ device_cues = Dictionary[StringName, PackedStringArray]({
 &"thermal": PackedStringArray("cue.drill_loop", "cue.drill_jam", "cue.drill_done")
 })
 
-[node name="MusicDirector" type="Node" parent="Audio" unique_id=104107]
-script = ExtResource("122_db")
+[node name="MusicDirector" type="Node" parent="Audio" unique_id=104113]
+script = ExtResource("123_db")
 track_id = &"dockside_burn"
 
-[node name="BedColdStoreC1" type="Node3D" parent="Audio" unique_id=104108]
+[node name="BedColdStoreC1" type="Node3D" parent="Audio" unique_id=104114]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25, 3, 17)
-script = ExtResource("123_db")
+script = ExtResource("124_db")
 cue_id = &"cue.amb_cold_store"
 autoplay = true
 
-[node name="BedColdStoreC2" type="Node3D" parent="Audio" unique_id=104109]
+[node name="BedColdStoreC2" type="Node3D" parent="Audio" unique_id=104115]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 41.5, 3, 17)
-script = ExtResource("123_db")
+script = ExtResource("124_db")
 cue_id = &"cue.amb_cold_store"
 autoplay = true
 
-[node name="BedPlantRoom" type="Node3D" parent="Audio" unique_id=104110]
+[node name="BedPlantRoom" type="Node3D" parent="Audio" unique_id=104116]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 2.5, 13)
-script = ExtResource("123_db")
+script = ExtResource("124_db")
 cue_id = &"cue.amb_cold_store"
 autoplay = true
 volume_offset_db = -2.0
 
-[node name="BedHall" type="Node3D" parent="Audio" unique_id=104111]
+[node name="BedHall" type="Node3D" parent="Audio" unique_id=104117]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 33, 3, 5)
-script = ExtResource("123_db")
+script = ExtResource("124_db")
 cue_id = &"cue.amb_cold_store"
 autoplay = true
 volume_offset_db = -6.0
 
-[node name="BedOffices" type="Node3D" parent="Audio" unique_id=104112]
+[node name="BedOffices" type="Node3D" parent="Audio" unique_id=104118]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9, 1.8, 4)
-script = ExtResource("123_db")
+script = ExtResource("124_db")
 cue_id = &"cue.amb_cold_store"
 autoplay = true
 volume_offset_db = -10.0
 
-[node name="BedYard" type="Node3D" parent="Audio" unique_id=104113]
+[node name="BedYard" type="Node3D" parent="Audio" unique_id=104119]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24, 3, -16)
-script = ExtResource("123_db")
+script = ExtResource("124_db")
 cue_id = &"cue.amb_dockside_fog"
 autoplay = true
 
-[node name="BedQuay" type="Node3D" parent="Audio" unique_id=104114]
+[node name="BedQuay" type="Node3D" parent="Audio" unique_id=104120]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24, 2, 38)
-script = ExtResource("123_db")
+script = ExtResource("124_db")
 cue_id = &"cue.amb_dockside_fog"
 autoplay = true
 
-[node name="BedApron" type="Node3D" parent="Audio" unique_id=104115]
+[node name="BedApron" type="Node3D" parent="Audio" unique_id=104121]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 55, 3, 16)
-script = ExtResource("123_db")
+script = ExtResource("124_db")
 cue_id = &"cue.amb_dockside_fog"
 autoplay = true
 volume_offset_db = -3.0
 
-[node name="BedLane" type="Node3D" parent="Audio" unique_id=104116]
+[node name="BedLane" type="Node3D" parent="Audio" unique_id=104122]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 3, 16)
-script = ExtResource("123_db")
+script = ExtResource("124_db")
 cue_id = &"cue.amb_dockside_fog"
 autoplay = true
 volume_offset_db = -4.0
 
-[node name="BedAnnexDock" type="Node3D" parent="Audio" unique_id=104117]
+[node name="BedAnnexDock" type="Node3D" parent="Audio" unique_id=104123]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 37, 2.5, 28)
-script = ExtResource("123_db")
+script = ExtResource("124_db")
 cue_id = &"cue.amb_dockside_fog"
 autoplay = true
 volume_offset_db = -6.0
 
-[node name="AssaultEvents" type="Node3D" parent="." unique_id=104118 groups=["assault_events"]]
+[node name="AssaultEvents" type="Node3D" parent="." unique_id=104124 groups=["assault_events"]]
 
-[node name="TurretVan_1" type="Marker3D" parent="AssaultEvents" unique_id=104119]
+[node name="TurretVan_1" type="Marker3D" parent="AssaultEvents" unique_id=104125]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 34, 0, -46)
 
-[node name="TurretVan_2" type="Marker3D" parent="AssaultEvents" unique_id=104120]
+[node name="TurretVan_2" type="Marker3D" parent="AssaultEvents" unique_id=104126]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 55.5, 0, 6)
 
-[node name="HeliOrbit_1" type="Marker3D" parent="AssaultEvents" unique_id=104121]
+[node name="HeliOrbit_1" type="Marker3D" parent="AssaultEvents" unique_id=104127]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 28, 32, 4)
 metadata/radius = 26.0
 
-[node name="HeliDrop_1" type="Marker3D" parent="AssaultEvents" unique_id=104122]
+[node name="HeliDrop_1" type="Marker3D" parent="AssaultEvents" unique_id=104128]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 44.5, 9, 13.5)
 
-[node name="HeliDrop_2" type="Marker3D" parent="AssaultEvents" unique_id=104123]
+[node name="HeliDrop_2" type="Marker3D" parent="AssaultEvents" unique_id=104129]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 36, 0, -9)
 
-[node name="Breach_1" type="Marker3D" parent="AssaultEvents" unique_id=104124]
+[node name="Breach_1" type="Marker3D" parent="AssaultEvents" unique_id=104130]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 13.5, 3.6, 0.2)
 metadata/kind = "window"
 metadata/size = Vector2(1, 2.1)
 metadata/room = "M1"
 
-[node name="Visual" type="Node3D" parent="AssaultEvents/Breach_1" unique_id=104125 instance=ExtResource("124_db")]
+[node name="Visual" type="Node3D" parent="AssaultEvents/Breach_1" unique_id=104131 instance=ExtResource("125_db")]
 
-[node name="Breach_2" type="Marker3D" parent="AssaultEvents" unique_id=104126]
+[node name="Breach_2" type="Marker3D" parent="AssaultEvents" unique_id=104132]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 0.2, 0, 9)
 metadata/kind = "wall"
 metadata/size = Vector2(1, 2.2)
 metadata/room = "PL"
 
-[node name="Visual" type="Node3D" parent="AssaultEvents/Breach_2" unique_id=104127 instance=ExtResource("125_db")]
+[node name="Visual" type="Node3D" parent="AssaultEvents/Breach_2" unique_id=104133 instance=ExtResource("126_db")]
 
-[node name="Breach_3" type="Marker3D" parent="AssaultEvents" unique_id=104128]
+[node name="Breach_3" type="Marker3D" parent="AssaultEvents" unique_id=104134]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 34, 0, 31.8)
 metadata/kind = "wall"
 metadata/size = Vector2(1, 2.2)
 metadata/room = "AN"
 
-[node name="Visual" type="Node3D" parent="AssaultEvents/Breach_3" unique_id=104129 instance=ExtResource("125_db")]
+[node name="Visual" type="Node3D" parent="AssaultEvents/Breach_3" unique_id=104135 instance=ExtResource("126_db")]
 
-[node name="Breach_4" type="Marker3D" parent="AssaultEvents" unique_id=104130]
+[node name="Breach_4" type="Marker3D" parent="AssaultEvents" unique_id=104136]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 25, 8, 22.6)
 metadata/kind = "ceiling"
 metadata/size = Vector2(1.2, 1.2)
 metadata/room = "C1"
 
-[node name="Visual" type="Node3D" parent="AssaultEvents/Breach_4" unique_id=104131 instance=ExtResource("126_db")]
+[node name="Visual" type="Node3D" parent="AssaultEvents/Breach_4" unique_id=104137 instance=ExtResource("127_db")]
 
-[node name="Breach_5" type="Marker3D" parent="AssaultEvents" unique_id=104132]
+[node name="Breach_5" type="Marker3D" parent="AssaultEvents" unique_id=104138]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 41, 8, 22.6)
 metadata/kind = "ceiling"
 metadata/size = Vector2(1.2, 1.2)
 metadata/room = "C2"
 
-[node name="Visual" type="Node3D" parent="AssaultEvents/Breach_5" unique_id=104133 instance=ExtResource("126_db")]
+[node name="Visual" type="Node3D" parent="AssaultEvents/Breach_5" unique_id=104139 instance=ExtResource("127_db")]
 
 [editable path="Props/Exterior/ContainerK1/Padlock"]
 [editable path="Props/Exterior/ContainerK2/Padlock"]

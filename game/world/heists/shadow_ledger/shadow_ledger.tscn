@@ -19995,6 +19995,7 @@ script = ExtResource("92_sl")
 size = 2
 methods = Array[StringName]([&"code", &"saw"])
 code_group = &"cage"
+saw_duration_s = 90.0
 visual_scene = ExtResource("93_sl")
 objective_tag = &"cage"
 metadata/kind = "safe"
@@ -21626,7 +21627,8 @@ objective_tag = &"loot_secure"
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22.5, 0, 9)
 script = ExtResource("145_sl")
 escape_type = &"lift"
-zone_size_m = Vector3(2.6, 2.4, 2.6)
+zone_size_m = Vector3(8.8, 2.4, 4.8)
+zone_offset = Vector3(3, 0, 1)
 visual_scene = ExtResource("152_sl")
 objective_tag = &"escape_service"
 

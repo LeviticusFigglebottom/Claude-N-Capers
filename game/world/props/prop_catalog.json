@@ -3037,6 +3037,40 @@
   "weight": 1.0,
   "z": 0.0
  },
+ "prop_customs_seal": {
+  "aabb": [
+   -0.0146,
+   0.0,
+   -0.015,
+   0.0292,
+   0.16,
+   0.03
+  ],
+  "clear": 0.0,
+  "fixture": false,
+  "glb": "res://assets/props/prop_customs_seal/prop_customs_seal.glb",
+  "group": "padlock",
+  "has_light": false,
+  "hosts": [],
+  "keepout": [],
+  "kind": "padlock",
+  "mount": "",
+  "nodes": [
+   "Body",
+   "Shackle"
+  ],
+  "place": "none",
+  "prefab": "padlock",
+  "scene": "res://world/props/padlock/prop_customs_seal.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": false,
+  "surface": "metal",
+  "top": 0.0,
+  "visibility_range_end": 0.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
  "prop_deploy_ammo_bag": {
   "aabb": [
    -0.285,
@@ -6541,6 +6575,40 @@
   "visibility_range_end": 25.0,
   "weight": 1.0,
   "z": 1.3
+ },
+ "prop_lift_breaker": {
+  "aabb": [
+   -0.3,
+   1.0,
+   -0.395,
+   0.6,
+   1.5,
+   0.395
+  ],
+  "clear": 0.0,
+  "fixture": false,
+  "glb": "res://assets/props/prop_lift_breaker/prop_lift_breaker.glb",
+  "group": "hack_terminal",
+  "has_light": false,
+  "hosts": [],
+  "keepout": [],
+  "kind": "breaker_panel",
+  "mount": "wall",
+  "nodes": [
+   "Panel",
+   "Screen"
+  ],
+  "place": "none",
+  "prefab": "hack_terminal",
+  "scene": "res://world/props/hack_terminal/prop_lift_breaker.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": false,
+  "surface": "metal",
+  "top": 0.0,
+  "visibility_range_end": 0.0,
+  "weight": 1.0,
+  "z": 0.0
  },
  "prop_light_switch": {
   "aabb": [

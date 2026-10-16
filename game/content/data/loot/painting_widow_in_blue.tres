@@ -9,5 +9,5 @@ bag_model = ExtResource("2_bag")
 id = &"loot.painting_widow_in_blue"
 display_name = "Widow in Blue"
 weight = 0
-value = 1500
+value = 6000
 conceals = false

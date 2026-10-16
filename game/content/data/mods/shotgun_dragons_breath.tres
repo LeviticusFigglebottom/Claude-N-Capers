@@ -1,0 +1,29 @@
+[gd_resource type="Resource" script_class="WeaponModDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/weapon_mod_def.gd" id="1"]
+[ext_resource type="Script" path="res://contracts/data/weapon_stats.gd" id="2"]
+[ext_resource type="PackedScene" uid="uid://bsorhnxi4fl4n" path="res://assets/weapons/mod_shotgun_dragons_breath/mod_shotgun_dragons_breath.glb" id="3"]
+
+[sub_resource type="Resource" id="delta"]
+script = ExtResource("2")
+pellets = 0
+falloff_start_m = 0.0
+falloff_end_m = 0.0
+falloff_min_mult = 0.0
+headshot_mult = 0.0
+noise_radius_m = 0.0
+magnification = 0.0
+equip_time_s = 0.0
+ads_time_s = 0.0
+damage = -1.0
+
+[resource]
+script = ExtResource("1")
+id = &"mod.shotgun_dragons_breath"
+display_name = "Dragon's Breath"
+mod_type = 11
+delta = SubResource("delta")
+price = 5500
+unlock = &""
+model = ExtResource("3")
+params = {"ammo_type": &"dragons_breath", "dot_dps": 8.0, "dot_s": 4.0, "ignite": true, "panic_civilians": true, "range_mult": 0.7, "ammo_pickup_mult": 0.8}

@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="AchievementDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://content/defs/achievement_def.gd" id="1_ach"]
+
+[resource]
+script = ExtResource("1_ach")
+id = &"achievement.gn_quick_viewing"
+name_key = &"achievement.gn_quick_viewing.name"
+desc_key = &"achievement.gn_quick_viewing.desc"
+condition = {"event": &"heist_completed", "heist": &"gallery_night", "max_time_s": 540.0, "count": 1}
+unlock = &""
+order = 751
+category = &"gallery_night"
+rewards = Array[StringName]([])
+unlocks = Array[StringName]([])
+requires_facts = Array[StringName]([])

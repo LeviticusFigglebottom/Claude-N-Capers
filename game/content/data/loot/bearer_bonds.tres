@@ -9,5 +9,5 @@ bag_model = ExtResource("2_bag")
 id = &"loot.bearer_bonds"
 display_name = "Bearer Bonds"
 weight = 0
-value = 1400
+value = 7000
 conceals = false
