@@ -59,7 +59,7 @@ Cross-env requests are QC-51..QC-59.
 - **Difficulty notes:**
   - Routine/Tense: 1–2 guards (hall post + 0–1 rover; `rover_none` 20%) + operator (60%), 3–5 patrons, `sensors_treasury`
     likely.
-  - Hazardous/Brutal: 3–4 guards, 5–7 patrons, sweeping/timed lasers favoured, `sensors_all`
+  - Hazardous/Brutal: 3 guards on Hazardous, exactly 4 on Brutal (`difficulty_add`, `rover_none` 0), 5–7 patrons, sweeping/timed lasers favoured, `sensors_all`
     possible, `insurance_inspection` and `vaultline_early` events enabled. **From Brutal the guard
     count plus the operator can exceed the 4-pager cap**: some guards must be ghosted. Intended.
   - Lethal/Cataclysm: 5 guards, Titan cameras (S8.1), `argus_upgrade` enabled.
