@@ -1,4 +1,4 @@
-# Contract: visual slots (v1.3)
+# Contract: visual slots (v1.4)
 
 How art scenes (ENV C props/characters, ENV B weapons) plug into ENV A gameplay prefabs.
 
@@ -71,3 +71,8 @@ Heist maps/props (ENV A during the pass) tag their key lights; levelcheck gets a
   (pellets / pellets_mult, armor_pierce, shield_pierce, explosion_radius_m, explosion_damage_mult, penetration, dot_dps,
   dot_s, ignite, panic_civilians, range_mult, ammo_pickup_mult). B owns values; A reads resolved params and may clamp in
   its tweak; detection numbers stay in StealthTweak.
+
+## v1.4: pistol SideRail (D-118)
+On pistols `SideRail` is the dust-cover rail: the marker is turned 90° about the bore (`_common.DUST_COVER_SIDE_RAIL_ROT`),
+so its outward axis points **down** and a GADGET mod hangs under the barrel. `LaserOrigin` / `LightOrigin` sit at the lens,
+−Z along the bore. Long guns keep the right-side rail.

@@ -21,6 +21,8 @@ navy `#1E2A44` + hi-vis `#D7E34A` trim, TAC charcoal `#2B2F33` armour.
   plus `Charge`, `EntryPoint` (cops' side) and `ExitPoint` (inside). Origin = the opening on the
   **room-side face** (wall/window: bottom-centre; ceiling: centre of the ceiling underside); Godot
   -Z points into the room (the ceiling scene is authored rotated so -Z points down).
+* Map-sized variants (same nodes): ``prop_breach_wall_t40`` (0.4 m exterior wall, blockwork infill),
+  ``prop_breach_ceiling_p100_d800`` / ``_p100_d550`` (1.0 m ceiling-to-roof-top depth; floor 8.0 / 5.5 m below).
 """
 
 import math
@@ -46,6 +48,18 @@ VARIANTS = {
     # roof slab 7.6-7.8 over a 7.2 ceiling (GH upper floor): sealed skylight, 1.2 x 1.2 m; floor 3.0 m below
     "prop_breach_ceiling": {"fn": "breach_ceiling", "w": 1.2, "plenum": 0.6, "drop": 3.0,
                             "cat": {"prefab": "assault_event", "kind": "breach_ceiling", "surface": "concrete", "hidden": ["Blown"]}},
+    # Map-sized variants (same node contract, only the depths differ; kit-style suffixes in cm):
+    # exterior wall 0.4 m (DB plant / anteroom, ND lot): a doorway blocked up with blockwork, 1.0 x 2.2 m
+    "prop_breach_wall_t40": {"fn": "breach_wall", "w": 1.0, "h": 2.2, "t": 0.4, "room": "concrete_light", "out": "concrete",
+                             "cat": {"prefab": "assault_event", "kind": "breach_wall", "surface": "concrete", "hidden": ["Blown"]}},
+    # DB high bay: roof top 9.0 over the 8.0 cold-store ceiling (1.0 m), chamber floor 8.0 m below
+    "prop_breach_ceiling_p100_d800": {"fn": "breach_ceiling", "w": 1.2, "plenum": 1.0, "drop": 8.0,
+                                      "cat": {"prefab": "assault_event", "kind": "breach_ceiling", "surface": "concrete",
+                                              "hidden": ["Blown"]}},
+    # ND banking hall: roof top 6.5 over the 5.5 coffered ceiling (1.0 m), hall floor 5.5 m below
+    "prop_breach_ceiling_p100_d550": {"fn": "breach_ceiling", "w": 1.2, "plenum": 1.0, "drop": 5.5,
+                                      "cat": {"prefab": "assault_event", "kind": "breach_ceiling", "surface": "concrete",
+                                              "hidden": ["Blown"]}},
 }
 
 

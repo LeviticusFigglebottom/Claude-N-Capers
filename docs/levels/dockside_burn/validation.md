@@ -51,12 +51,12 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## floating: Nothing floats
 
-- 222 props checked
+- 224 props checked
 
 
 ## clipping: Nothing clips
 
-- 222 props, 49 doors checked
+- 224 props, 49 doors checked
 
 
 ## scale: Human scale
@@ -122,13 +122,13 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## slopes: No walkable slope < 50° outside the play mesh
 
-- 1809 x 1969 columns (0.25 m), 607470 surface samples, 0 collider(s) with reachable walkable surfaces outside play
+- 1809 x 1969 columns (0.25 m), 607578 surface samples, 0 collider(s) with reachable walkable surfaces outside play
 
 
 ## navmesh: Navmesh
 
-- navmesh: 2118 polygons, cell 0.10/0.10 m
-- 200 markers checked
+- navmesh: 2135 polygons, cell 0.10/0.10 m
+- 204 markers checked
 | room | walkable samples | covered | coverage |
 |---|---|---|---|
 | `Rooms/RoomO1` | 75 | 75 | 100% |
@@ -169,12 +169,12 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## reachability: Reachability (per variant)
 
-- 39 variant configuration(s), 114630 spawn->target path queries
+- 39 variant configuration(s), 116970 spawn->target path queries
 
 
 ## walkthrough: Walkthrough bot
 
-- 2070 / 2070 spawn->target walks ok
+- 2130 / 2130 spawn->target walks ok
 
 
 ## patrols: Patrol graphs

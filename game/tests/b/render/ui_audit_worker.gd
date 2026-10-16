@@ -81,6 +81,10 @@ func _menus() -> void:
 	var lsp: ItemPicker = (_flow.loadout_screen.armor_option as ItemSlot).open_picker()
 	await _shot("loadout_picker")
 	lsp.close()
+	# §B (Jay roster): the heister picker lists every heister (6) with accents / portraits at this resolution.
+	var hp: ItemPicker = (_flow.loadout_screen.heister_option as ItemSlot).open_picker()
+	await _shot("loadout_heister_picker")
+	hp.close()
 	_flow.show_hub()
 	_flow.open_station(&"armory")
 	await _shot("armory")

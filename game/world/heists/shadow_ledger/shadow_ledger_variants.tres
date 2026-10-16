@@ -126,7 +126,10 @@ rare_events = Array[Dictionary]([{
 "requires_slot": &"srv_contractor"
 },
 "good": true,
-"id": &"cage_left_open"
+"id": &"cage_left_open",
+"requires": {
+&"server_room": [&"srv_contractor"]
+}
 }, {
 "chance": 0.05,
 "effects": {

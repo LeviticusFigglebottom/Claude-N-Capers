@@ -4,6 +4,7 @@
 * ``mod_mule_standard_tube``    MAGAZINE -> ``Magwell``    (stock five-shell tube)
 * ``mod_mule_extended_tube``    MAGAZINE -> ``Magwell``    (seven shells, barrel clamp)
 * ``mod_mule_folding_stock``    STOCK    -> ``StockMount`` (deployed skeleton stock; the Mule ships stockless)
+* ``mod_mule_breacher_brake`` BARREL_EXT -> ``Muzzle``   (side-ported breacher brake; own ``Muzzle`` + ``MuzzlePortL``/``R``)
 
 The reflex optic is the shared ``mod_rail_reflex_sight``.
 """
@@ -17,6 +18,7 @@ VARIANTS = {
     "mod_mule_standard_tube": {"part": "tube"},
     "mod_mule_extended_tube": {"part": "tube_ext"},
     "mod_mule_folding_stock": {"part": "stock"},
+    "mod_mule_breacher_brake": {"part": "brake"},
 }
 
 
@@ -32,6 +34,8 @@ def build(ctx) -> None:
         p.build_tube(ctx, mats, extended=True)
     elif part == "stock":
         p.build_folding_stock(ctx, mats)
+    elif part == "brake":
+        p.build_breacher_brake(ctx, mats)
     else:
         raise ValueError(f"unknown part {part!r}")
     ctx.source_extra["tris_lod0"] = c.tris_of_scene()

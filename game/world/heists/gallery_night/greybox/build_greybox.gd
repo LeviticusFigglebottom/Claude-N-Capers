@@ -22,6 +22,8 @@
 extends "res://world/heists/gallery_night/greybox/gn_npc.gd"
 
 const FLOOR_INDEX: Dictionary = {"B": 0, "G": 1, "U": 2, "R": 3}
+const AM: GDScript = preload("res://world/heists/shared/assault_markers.gd")  # PO6-17 AssaultEvents markers
+const AE: GDScript = preload("res://world/heists/gallery_night/greybox/gn_assault.gd")  # their data + breach holes
 ## Slab underside above each floor's rooms (where the ceiling plane must stay below).
 const SLAB_ABOVE: Dictionary = {"B": -0.3, "G": 5.1, "R": 11.7}
 const SS_HOLE_Z: float = 6.35
@@ -98,12 +100,16 @@ func _build() -> void:
 	_build_spawns(n("Spawns"))
 	_build_preplan(n("Preplan"))
 	_build_review_cameras(n("ReviewCameras"))
+	_build_audio(add(map_root, node3d("Audio")) as Node3D)
 	build_npcs()
 	build_tactical(n("Tactical"))
 	build_lights(n("Lighting"))
 	_build_environment(n("Lighting"))
 	build_gameplay(n("Gameplay"))
 	build_variants(n("Variants"))
+	# PO6-17 markers (gn_assault.gd); the intact breach infills obstruct the bake
+	errors.append_array(AM.build(map_root, AE.TURRET_VANS, AE.HELI_ORBITS, AE.HELI_DROPS, [], AE.BREACHES, obstructions,
+		0.0))  # face_pad 0: the GN bake erodes a projected infill like the wall face (navmesh unchanged)
 	_build_nav_links(nav)
 	var polys: int = await _bake(nav)
 	if polys <= 0:
@@ -126,6 +132,25 @@ func _build() -> void:
 	normalize_scene(out, old_scene_uid)
 	print("gallery_night: saved %s (navmesh polygons: %d)" % [out, polys])
 	quit(0)
+
+
+## D-117 Audio node (as Golden Hour / Nightfall Depository): CuePlayer, the gallery_night MusicDirector and the
+## ambience beds of the heist doc (Audio/lighting): Great Hall gala / galleries, the basement art store and plant, and the uptown street.
+func _build_audio(parent: Node3D) -> void:
+	var beds: Array = [
+		["BedGreatHall", Vector3(22.0, 3.0, 17.0), &"cue.amb_gallery_gala", 0.0],
+		["BedVestibule", Vector3(22.0, 2.5, 28.0), &"cue.amb_gallery_gala", -6.0],
+		["BedWestGallery", Vector3(6.0, 2.5, 14.0), &"cue.amb_gallery_gala", -8.0],
+		["BedEastGallery", Vector3(38.0, 2.5, 18.0), &"cue.amb_gallery_gala", -8.0],
+		["BedUpperBalcony", Vector3(22.0, 7.5, 28.0), &"cue.amb_gallery_gala", -6.0],
+		["BedArtStore", Vector3(22.0, -2.5, 14.0), &"cue.amb_art_store", 0.0],
+		["BedPlant", Vector3(6.0, -2.5, 14.0), &"cue.amb_art_store", -3.0],
+		["BedParade", Vector3(22.0, 2.5, 40.0), &"cue.amb_uptown_night", 0.0],
+		["BedMews", Vector3(20.0, 2.5, -4.0), &"cue.amb_uptown_night", -4.0],
+		["BedMewsEast", Vector3(51.0, 2.5, 4.0), &"cue.amb_uptown_night", -4.0],
+		["BedCourt", Vector3(-8.0, 2.5, 15.0), &"cue.amb_uptown_night", -4.0],
+	]
+	load("res://world/audio/map_audio_builder.gd").call(&"build", parent, map_root, &"gallery_night", beds)
 
 
 func _fail(msg: String) -> void:
@@ -225,8 +250,9 @@ func _build_walls(parent: Node3D) -> void:
 		var holes: Array = []
 		for o: Array in L.OPENINGS:
 			if String(o[0]) == f2 and String(o[2]) == axis and absf(float(o[3]) - fixed) < 0.001 \
-					and float(o[5]) > float(w[3]) and float(o[4]) < float(w[4]):
+					and float(o[5]) > float(w[3]) and float(o[4]) < float(w[4]) and not AE.replaced(o):
 				holes.append_array(opening_holes(o)[0])
+		holes.append_array(AE.holes(f2, axis, fixed, float(w[3]), float(w[4])))  # PO6-17 breach openings (infilled)
 		var fit: Array = wall_fit(f2, axis, fixed, float(w[5]), float(w[3]), float(w[4]))
 		var thick: float = float(fit[1])
 		var mat: String = "wall_ext" if thick >= L.EXT_T - 0.001 and _on_foot(f2, axis, fixed) else "wall"
@@ -238,7 +264,7 @@ func _build_walls(parent: Node3D) -> void:
 	var glass: Node3D = add(parent, node3d("Glass")) as Node3D
 	for i: int in range(L.OPENINGS.size()):
 		var o2: Array = L.OPENINGS[i]
-		if String(o2[1]) != "W" or bool(opening_holes(o2)[1]):   # a WindowPrefab glazes it
+		if String(o2[1]) != "W" or bool(opening_holes(o2)[1]) or AE.replaced(o2):   # a WindowPrefab / breach glazes it
 			continue
 		var fx: float = float(o2[3])
 		var mn: Vector3 = Vector3(float(o2[4]), float(o2[6]), fx - 0.02) if String(o2[2]) == "x" \
@@ -281,6 +307,20 @@ func _build_sills(parent: Node3D) -> void:
 			var mn: Vector3 = Vector3(a0, ffl - L.SLAB_T, lo) if axis == "x" else Vector3(lo, ffl - L.SLAB_T, a0)
 			var mx: Vector3 = Vector3(a1, ffl, hi) if axis == "x" else Vector3(hi, ffl, a1)
 			box(parent, "Sill%02d_%s" % [i, String(o[8]).get_slice(" ", 0).replace("-", "")], mn, mx, "floor")
+	# PO6-17 ground-floor wall breaches: the floor under the (infilled) opening, inner half as above, for when it blows
+	for b: Array in AE.BREACHES:
+		var q: Array = AE.opening(b)
+		if String(b[1]) != "wall" or absf(float(q[4])) > 0.001:
+			continue
+		var ax: String = String(q[0])
+		var fx: float = float(q[1])
+		var ft2: Array = L.FOOT["G"]
+		var lo_out: bool = absf(fx - float(ft2[0 if ax == "z" else 1])) < 0.001
+		var s0: float = fx if lo_out else fx - L.EXT_T * 0.5
+		var s1: float = fx + L.EXT_T * 0.5 if lo_out else fx
+		var bmn: Vector3 = Vector3(float(q[2]), -L.SLAB_T, s0) if ax == "x" else Vector3(s0, -L.SLAB_T, float(q[2]))
+		var bmx: Vector3 = Vector3(float(q[3]), 0.0, s1) if ax == "x" else Vector3(s1, 0.0, float(q[3]))
+		box(parent, "SillBreach_%s" % String(b[0]).get_slice("_", 1), bmn, bmx, "floor")
 
 
 ## A wall run of a lower floor on the same line covering [a0, a1] whose top is at `ffl` (it carries the opening).

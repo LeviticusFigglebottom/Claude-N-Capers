@@ -8,6 +8,9 @@ the people who are really in the tower at 02:10:
   (same body and cut, ``_npc.cleaner_outfit``): graphite long-sleeve top, glass-teal tabard with a
   graphite binding and pocket, black work trousers, yellow rubber gloves, silver name tag. The cart
   is ENV C's prop.
+* ``char_npc_cleaner_sl_b`` (D-SL-2): the second night cleaner in the same Calder uniform (same
+  materials and name tag), a clearly different person so two or three cleaners on Brutal are not
+  twins: a sturdy woman in her late 50s, light skin, grey hair pinned up in a bun.
 * ``char_npc_it_contractor`` (``civ_it``): casual contractor: a rust pull-over hoodie (hood down,
   kangaroo pocket, drawstrings), dark jeans, grey trainers, dark-framed glasses, a blue lanyard with
   a white visitor badge on the chest and a dark grey messenger tool/laptop bag on the left hip on a
@@ -43,6 +46,8 @@ EXPORT = {"embed": False, "animations": False, "skins": True, "morph": False, "r
 VARIANTS = {
     "char_npc_cleaner_sl": {"height": 1.74, "build": 0.65, "gender": 0.0, "age": 0.45, "skin": 6, "beard_shadow": 0.8,
                             "hair": "buzz", "hair_color": "dark", "look": "cleaner_sl"},
+    "char_npc_cleaner_sl_b": {"height": 1.68, "build": 0.75, "gender": 1.0, "age": 0.72, "skin": 2,
+                              "hair": "side_part", "hair_color": "grey", "look": "cleaner_sl_b"},
     "char_npc_it_contractor": {"height": 1.78, "build": 0.5, "gender": 0.0, "age": 0.3, "skin": 2,
                                "beard_shadow": 0.7, "hair": "short", "hair_color": "brown", "look": "it"},
     "char_npc_northgate_guard": {"height": 1.84, "build": 0.7, "gender": 0.0, "age": 0.4, "skin": 5,
@@ -63,10 +68,21 @@ def _z(kit: Kit) -> tuple[float, float, float]:
     return hips_z, belt_z, belt_z - 0.02 * kit.k
 
 
-def cleaner_sl(kit: Kit) -> None:
+def _cleaner_sl(kit: Kit) -> None:
     n.cleaner_outfit(kit, "char_knit_graphite", "char_trousers_black", "char_cleaner_teal", "char_waistcoat_graphite",
                      "char_rubber_yellow", "char_metal_silver")
+
+
+def cleaner_sl(kit: Kit) -> None:
+    _cleaner_sl(kit)
     kit.notes["look"] = "Calder Tower night cleaner: glass-teal tabard, graphite binding and top (cleaner colour variant)"
+
+
+def cleaner_sl_b(kit: Kit) -> None:
+    _cleaner_sl(kit)
+    kit.add_head(cg.chignon(kit.fit, "char_hair_grey", size=0.85))
+    kit.notes["look"] = ("Calder Tower night cleaner, second face (D-SL-2): same glass-teal tabard uniform; a sturdy "
+                         "woman, late 50s, light skin, grey hair pinned up in a bun")
 
 
 def it(kit: Kit) -> None:
@@ -132,7 +148,8 @@ def helena(kit: Kit) -> None:
     kit.notes["prop_note"] = "phone in hand is a prop: attach at HandR/Socket (not skinned)"
 
 
-_looks = {"cleaner_sl": cleaner_sl, "it": it, "northgate": northgate, "northgate_b": northgate_b, "helena": helena}
+_looks = {"cleaner_sl": cleaner_sl, "cleaner_sl_b": cleaner_sl_b, "it": it, "northgate": northgate,
+          "northgate_b": northgate_b, "helena": helena}
 
 
 def recipe(kit: Kit) -> None:

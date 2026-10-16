@@ -1,4 +1,4 @@
-# Contract: characters (v1.16)
+# Contract: characters (v1.17)
 
 Producer: ENV C (generated humanoids + animations). Consumer: ENV A (NPC/crew prefabs).
 Until delivered, ENV A uses capsule placeholders with the same node names.
@@ -229,3 +229,11 @@ the hand Socket frame, attach as an identity child of `HandR/Socket` / `HandL/So
 clip change / death. Cast: `world/characters/p5_cast.json` v3 covers every built heist; `test_p5_cast` asserts every role
 in `docs/design/heists/<id>.md` has a delivered character. First-person one-handed pistol/revolver sets (D-116) carry
 `FPSet.grip_adjust` (hand.R re-seat behind/under the grip) — FP only; third-person rigs are unchanged.
+
+## v1.17: vertical foregrip hands (D-118)
+Sets whose guns take a vertical foregrip mod (smg, rifle, launcher) ship `<set>_vgrip_hand`, a one-frame hip hold with the
+left hand closed round the grip (palm on the mod's LeftHandIK, thumb over the grip). D owns the pose and the per-set
+left-wrist offset, published in char_arms_fp SOURCE `fp.vgrip` (Godot weapon axes; currently (-0.018, 0.000, 0.047) m for
+all three). When a vertical-grip mod is equipped, P switches the left-hand IK target to the mod's LeftHandIK + that offset
+and blends the left-hand bones (hand.L and its fingers) to `<set>_vgrip_hand`; without the mod, the handguard hold is
+unchanged. A new gun with a vertical grip gets a `vgrip_ik` marker and the clip in `_arms_sets.py`.

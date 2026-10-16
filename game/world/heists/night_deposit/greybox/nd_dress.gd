@@ -9,6 +9,9 @@ extends RefCounted
 const VIEWMODEL_LIT_LAYER: int = 1 << 20  # viewmodel_lit (visual_slots v1.2, D-095) = CrewView.VIEWMODEL_LIT_LAYER
 const L: GDScript = preload("res://world/heists/night_deposit/greybox/night_deposit_layout.gd")
 const D: GDScript = preload("res://world/heists/night_deposit/greybox/night_deposit_dressing.gd")
+const AM: GDScript = preload("res://world/heists/shared/assault_markers.gd")
+## PO6-17 breach openings: the dressing keeps this clear on both faces (and under a ceiling hatch).
+const BREACH_REACH: float = 1.2
 const CATALOG_PATH: String = "res://world/props/prop_catalog.json"
 const KITS_DIR: String = "res://world/kits/"
 ## Half size of the keep-out kept around every floor marker (spawn, patrol, use point...).
@@ -493,6 +496,7 @@ func _collect() -> void:
 		var cpos: Vector3 = cam[1]
 		_boxes.append(AABB(cpos - Vector3(0.6, 1.75, 0.6), Vector3(1.2, 2.1, 1.2)))
 	# the variant-only map props (srv_ground rack, the armoured car) are covered by KEEP_OUT
+	_boxes.append_array(AM.keep_outs(L.ASSAULT_BREACHES, BREACH_REACH))
 
 
 func _collect_node(n: Node) -> void:
