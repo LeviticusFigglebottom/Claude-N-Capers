@@ -141,7 +141,7 @@ ui.tip.heist_shadow_ledger.alarm,One alarm and the job is over.
 ui.tip.heist_dockside_burn.title,Burn the product
 ui.tip.heist_dockside_burn.thermite,Carry the thermite bag to the product and place it on the burn point.
 ui.tip.heist_dockside_burn.shutters,"It burns 30 s, then fire shutters close the room. Don't be inside."
-ui.tip.heist_dockside_burn.containers,The guns are in the containers with the Co-op's brass padlock. Customs seals hold nothing.
+ui.tip.heist_dockside_burn.containers,"Containers open with a saw on the padlock. Only two hold the rifles, so pick the ones worth it."
 ui.tip.heist_gallery_night.title,The gala clock
 ui.tip.heist_gallery_night.list,Only the listed canvases count. The Lantern Bearer is a must.
 ui.tip.heist_gallery_night.cut,"Cut a canvas from the stretcher, then carry it rolled."
