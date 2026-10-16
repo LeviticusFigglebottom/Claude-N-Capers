@@ -189,8 +189,8 @@ def clip_speedloader(kit, s: FPSet, N: int, ev: dict):
             Key(sl - 4, load, rk.hand_on(pre), grip, blade=bl, arc_l=(-0.06, 0.0, -0.02)),
             Key(sl, load, rk.hand_on(seat), grip, blade=bl, ease="snap"),
             Key(drop - 1, load, rk.hand_on(twist), grip, blade=bl),
-            # the loader released with a small wrist flick, the fingers relaxing but still curled
-            Key(drop + 1, load, flick_off.with_shape(hand_shape("grip", 0.35)), grip, blade=bl, ease="snap"),
+            # the loader released with a small wrist flick, the fingers staying curled (a loose fist, no splay)
+            Key(drop + 1, load, flick_off.with_shape(hand_shape("loose_fist", 0.75)), grip, blade=bl, ease="snap"),
             Key(cc - 6, tilt, rk.push_hand(1.0, 0.045).with_shape(hand_shape("loose_fist", 0.6)), grip, blade=bl,
                 arc_l=(-0.04, -0.02, 0.0)),
             Key(cc - 4, tilt, rk.push_hand(1.0, 0.012), grip, blade=bl),

@@ -234,11 +234,17 @@ func test_active_cap_freezes_the_oldest() -> void:
 	tw.max_active = cap
 
 
+## D-121: the freeze bakes the pose and replicates it; the gameplay root and the corpse hitbox stay on the
+## deterministic CorpseAnchor from the death frame (the ragdoll moves the visual only).
 func test_freeze_bakes_moves_the_root_and_replicates() -> void:
 	var npc: NpcBase = _npc(Vector3(-60, 0, 0))
 	var rd: NpcRagdoll = NpcRagdoll.of(npc)
 	await wait_physics_frames(3)
 	_shotgun(npc, Vector3(0, 0, 1), 1.0)
+	var anchor: Vector3 = npc.corpse_anchor
+	assert_true(anchor != Vector3.INF, "the anchor is set at death")
+	assert_true(npc.global_position.is_equal_approx(anchor), "the root is on the anchor at once")
+	assert_near(anchor.z, RagdollTweak.data().anchor_strong_offset_m, 0.01, "point-blank shotgun: the strong offset along the push")
 	var ok: bool = await wait_until(func() -> bool: return rd.freezes > 0, RagdollTweak.data().settle_s + 1.0)
 	assert_true(ok, "frozen after the settle")
 	assert_false(rd.sim.active or rd.sim.is_simulating_physics(), "simulator inactive")
@@ -246,12 +252,13 @@ func test_freeze_bakes_moves_the_root_and_replicates() -> void:
 		assert_eq(PhysicsServer3D.body_get_collision_layer(pb.get_rid()), 0, "%s stopped colliding" % pb.name)
 	await wait_physics_frames(5)
 	var hips: Vector3 = _skel_hips(rd)
-	assert_true(Vector2(hips.x - npc.global_position.x, hips.z - npc.global_position.z).length() < 0.05,
-		"the gameplay root moved under the hips (%s vs %s)" % [npc.global_position, hips])
+	assert_true(npc.global_position.is_equal_approx(anchor), "the freeze leaves the root on the anchor (%s vs %s)" % [
+		npc.global_position, anchor])
 	assert_true(hips.z > 0.5, "the baked pose stays where the body flew (hips z %.2f)" % hips.z)
 	var hb: Hitbox = npc.get_node(NpcBase.CORPSE_HITBOX) as Hitbox
-	assert_true(Vector2(hb.global_position.x - hips.x, hb.global_position.z - hips.z).length() < 1.0,
-		"the corpse hitbox lies with the body")
+	assert_true(Vector2(hb.global_position.x - anchor.x, hb.global_position.z - anchor.z).length() < 0.01,
+		"the corpse hitbox lies on the anchor")
+	assert_true(Vector2(hips.x - anchor.x, hips.z - anchor.z).length() < 1.5, "the cosmetic body lies near it")
 	var st: Dictionary = NetEntityCodec.state_of(npc)
 	assert_true(st.has("rs") and (st["rs"] as Array).size() == 3, "start fact replicated")
 	assert_true(st.has("rp") and ((st["rp"] as Array)[3] as Array).size() == 12, "frozen pose: 12 transforms")

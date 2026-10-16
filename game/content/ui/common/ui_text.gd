@@ -18,6 +18,11 @@ static func t(key: StringName, args: Dictionary = {}) -> String:
 	return StringTable.format(s, args)
 
 
+## True when `key` has a string (translation or the fallback table); t() of a missing key returns the key itself.
+static func has(key: StringName) -> bool:
+	return String(TranslationServer.translate(key)) != String(key) or _fallback().has(String(key))
+
+
 ## "$12,345" style money (sign kept), via `ui.common.money`.
 static func money(amount: int) -> String:
 	var prefix: String = "-" if amount < 0 else ""

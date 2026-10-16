@@ -395,6 +395,9 @@ func _create_services() -> void:
 	var oob: OutOfBoundsSystem = OutOfBoundsSystem.new()  # A3-09 (QC-14): OUT_OF_BOUNDS zones
 	oob.name = "OutOfBoundsSystem"
 	register_service(OutOfBoundsSystem.SERVICE, oob)
+	var barks: BarkDirector = BarkDirector.new()  # D-117 §6 (C8): VO barks, server only, replicated
+	barks.name = "BarkDirector"
+	register_service(BarkDirector.SERVICE, barks)
 	hud_model = LocalHudModel.new()
 	hud_model.name = "LocalHudModel"
 	add_child(hud_model)

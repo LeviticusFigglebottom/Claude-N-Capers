@@ -346,6 +346,12 @@ func bind() -> bool:
 	hold_layer = null
 	if _crew != null:  # v1.19 weapon holds; first among the modifiers (the hat lift fixes up after it)
 		hold_layer = UpperBodyLayer.ensure(rig.get_node_or_null(^"Skeleton3D") as Skeleton3D)
+	if clip == &"":
+		# P GH regression: never show the rig's bind pose before the first tick (a spawn / visual swap renders a
+		# frame before _process runs): start on idle at once; the next tick blends to the real state.
+		var first: String = _resolve(&"idle")
+		if first != "" and not player.is_playing():
+			player.play(first, 0.0)  # `clip` stays &"": the first tick's clip still starts without a fade
 	hat_lift = null
 	if HardHatHandLift.wears_hard_hat(rig):
 		hat_lift = HardHatHandLift.ensure(rig.get_node_or_null(^"Skeleton3D") as Skeleton3D)

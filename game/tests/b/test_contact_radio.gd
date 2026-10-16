@@ -10,8 +10,10 @@ const HEISTS: Dictionary = {
 ## Heists whose radio lines exist before their HeistDef is registered (`contact_for` cannot resolve them yet).
 ## Move each into HEISTS when its def lands (Gallery Night did with C's G1, trunk 55ce4d2a).
 const DRAFT_HEISTS: Dictionary = {}
-## Strings key suffix for an objective's loud text variant (objective.gallery_night.hack_loud).
-const LOUD_TEXT_SUFFIX: String = "_loud"
+## Strings key suffixes of an objective's text variants, not objectives of their own: the loud text
+## (objective.gallery_night.hack_loud) and Gallery Night's last-call casing text (casing_last_call; the mission
+## re-adds `casing` with it, so the radio line keyed to it was never said: removed by the D-117 §6 VO audit).
+const TEXT_VARIANT_SUFFIXES: Array[String] = ["_loud", "_last_call"]
 const RADIO_EVENTS: Array[StringName] = [
 	&"radio.objective_done", &"radio.objective_new", &"radio.objective_failed", &"radio.alarm",
 	&"radio.assault_build", &"radio.assault_sustain", &"radio.assault_fade", &"radio.escape_available",
@@ -415,8 +417,11 @@ func _objective_tags(heist: StringName) -> Array[String]:
 	var prefix: String = "objective.%s." % heist
 	for k: Variant in _strings:
 		var tag: String = String(k).trim_prefix(prefix)
-		# `<tag>_loud` is the loud text of objective <tag> (the mission swaps it), not an objective of its own.
-		if tag.ends_with(LOUD_TEXT_SUFFIX) and tags.has(tag.trim_suffix(LOUD_TEXT_SUFFIX)):
+		# `<tag>_loud` / `<tag>_last_call` are texts of objective <tag> (the mission swaps them), not objectives.
+		var variant: bool = false
+		for suffix: String in TEXT_VARIANT_SUFFIXES:
+			variant = variant or (tag.ends_with(suffix) and tags.has(tag.trim_suffix(suffix)))
+		if variant:
 			continue
 		if String(k).begins_with(prefix) and not tags.has(tag):
 			tags.append(tag)

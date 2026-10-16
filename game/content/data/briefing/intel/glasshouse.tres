@@ -1,0 +1,110 @@
+[gd_resource type="Resource" script_class="BriefingIntelData" format=3]
+
+[ext_resource type="Script" path="res://content/ui/briefing/briefing_intel_data.gd" id="1_5ec2p"]
+
+[resource]
+script = ExtResource("1_5ec2p")
+heist_id = &"glasshouse"
+map_path = "res://world/heists/glasshouse/glasshouse.tscn"
+variants_path = "res://world/heists/glasshouse/glasshouse_variants.tres"
+fixed = {
+&"alarm_button": 2,
+&"code_safe": 1,
+&"guard": 1,
+&"keycard_reader": 1,
+&"safe": 1
+}
+groups = {
+&"camera": {
+&"cam_c1": {
+"counts": {
+&"camera": 1
+},
+"rooms": {},
+"weight": 1.0
+},
+&"cam_c2": {
+"counts": {
+&"camera": 1
+},
+"rooms": {},
+"weight": 1.0
+},
+&"cam_c3": {
+"counts": {
+&"camera": 1
+},
+"rooms": {},
+"weight": 1.0
+},
+&"cam_c4": {
+"counts": {
+&"camera": 1
+},
+"rooms": {},
+"weight": 1.0
+},
+&"cam_c5": {
+"counts": {
+&"camera": 1
+},
+"rooms": {},
+"weight": 1.0
+},
+&"cam_c6": {
+"counts": {
+&"camera": 1
+},
+"rooms": {},
+"weight": 1.0
+}
+},
+&"guard_post": {
+&"alley_smoker": {
+"counts": {
+&"guard": 1
+},
+"rooms": {},
+"weight": 1.0
+},
+&"rover_boh": {
+"counts": {
+&"guard": 1
+},
+"rooms": {},
+"weight": 1.0
+},
+&"rover_upper": {
+"counts": {
+&"guard": 1
+},
+"rooms": {},
+"weight": 1.0
+}
+},
+&"security_room_staffed": {
+&"sec_empty": {
+"counts": {},
+"rooms": {},
+"weight": 0.4
+},
+&"sec_staffed": {
+"counts": {
+&"operator": 1
+},
+"rooms": {},
+"weight": 0.6
+}
+}
+}
+fixed_rooms = {
+&"code_safe": {
+&"G2": 1
+},
+&"keycard_reader": {
+&"G2": 1
+},
+&"safe": {
+&"G2": 1
+}
+}
