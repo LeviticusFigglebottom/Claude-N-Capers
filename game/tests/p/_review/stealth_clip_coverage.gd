@@ -86,7 +86,10 @@ func _civilians() -> void:
 		var b: CivilianBrain = civ.get_node_or_null(^"Brain") as CivilianBrain
 		if b == null:
 			continue
-		await pilot.goto(civ.global_position, 3.0, 20.0)
+		# The unit map has no baked nav: stand 3 m in front of the civilian instead of walking there.
+		var front: Vector3 = civ.global_position + _flat(civ.global_position.direction_to(c.global_position)) * 3.0
+		rt.teleport_crew(c.slot, Transform3D(Basis.IDENTITY, Vector3(front.x, 0.05, front.z)))
+		await wait_s(0.3)
 		var head: Vector3 = civ.global_position + Vector3(0, 1.5, 0)
 		for _k: int in 4:
 			if b.mode == CivilianBrain.Mode.DOWN:
@@ -98,12 +101,15 @@ func _civilians() -> void:
 		await shot("civ_down_%s" % civ.name)
 		for comp: Node in civ.find_children("*", "InteractableComponent", true, false):
 			var ic: InteractableComponent = comp as InteractableComponent
-			if ic.kind == &"tie" and ic.enabled:
+			if ic.kind == &"cable_tie" and ic.enabled:
 				var why: StringName = ic.availability(c)
 				if why != &"":
 					note("tie on %s unavailable: %s" % [civ.name, why])
 					break
-				if await pilot.use(ic, 15.0, func() -> bool: return b.mode == CivilianBrain.Mode.TIED):
+				var near: Vector3 = civ.global_position + _flat(civ.global_position.direction_to(c.global_position)) * 1.0
+				rt.teleport_crew(c.slot, Transform3D(Basis.IDENTITY, Vector3(near.x, 0.05, near.z)))
+				await wait_s(0.3)
+				if await pilot.use(ic, 15.0, func() -> bool: return b.mode == CivilianBrain.Mode.TIED, false):
 					_res["tied"] += 1
 				note("tie %s -> mode %d" % [civ.name, b.mode])
 				break
@@ -120,15 +126,20 @@ func _guard() -> void:
 		note("no guard")
 		await _teardown()
 		return
-	var back: Vector3 = g.global_position + g.global_basis.z.normalized() * 1.3
+	var back: Vector3 = g.global_position + g.global_basis.z.normalized() * 0.8
 	rt.teleport_crew(c.slot, Transform3D(Basis.IDENTITY, Vector3(back.x, 0.05, back.z)))
 	await wait_s(0.3)
+	var hits: Array[int] = [0, 0]
+	c.melee.hit_landed.connect(func(_t: Object) -> void: hits[0] += 1)
+	c.melee.swung.connect(func(_ch: bool) -> void: hits[1] += 1)
 	for _k: int in 4:
 		if not g.is_alive():
 			break
 		await pilot.face(g.global_position + Vector3(0, 1.1, 0), 0.05, 1.0)
 		await pilot.inp.hold(&"melee", 1.05)
 		await wait_s(0.6)
+		note("swing: dist %.2f, swings %d, hits %d, guard health %.2f alive %s, aim %s" % [pilot.flat_dist(
+			g.global_position, c.global_position), hits[1], hits[0], g.health, g.is_alive(), c.aim_direction()])
 	if g.is_alive():
 		note("guard not knifed (alert %d)" % g.alert_state)
 		await _teardown()
@@ -144,7 +155,7 @@ func _guard() -> void:
 	if pager != null:
 		note("answering the pager")
 		await shot("pager")
-		if await pilot.use(pager, 20.0, func() -> bool: return not pager.enabled):
+		if await pilot.use(pager, 20.0, func() -> bool: return not pager.enabled, false):
 			_res["pager"] += 1
 	else:
 		note("no pager (loud %s)" % rt.went_loud)
@@ -153,7 +164,7 @@ func _guard() -> void:
 		note("no bag_body interaction")
 	elif bag.availability(c) != &"":
 		note("bag_body unavailable: %s" % bag.availability(c))
-	elif await pilot.use(bag, 20.0, func() -> bool: return c.is_carrying_bag()):
+	elif await pilot.use(bag, 20.0, func() -> bool: return c.is_carrying_bag(), false):
 		_res["bagged"] += 1
 		pilot.inp.press(&"move_forward")
 		await wait_s(2.5)
@@ -165,6 +176,11 @@ func _guard() -> void:
 			_res["thrown"] += 1
 		await shot("thrown")
 	await _teardown()
+
+
+func _flat(v: Vector3) -> Vector3:
+	var f: Vector3 = Vector3(v.x, 0.0, v.z)
+	return f.normalized() if f.length_squared() > 1e-6 else Vector3.BACK
 
 
 func _find_kind(kind: StringName) -> InteractableComponent:

@@ -14,7 +14,12 @@ Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min;
   frozen crew_ai walk_bl / walk_fr, civilian tased; slides tac_heavy breach_standback, rappel_descend (heavy, light),
   longshot heli_door_idle. test_p_gn_traversal 8/8. Evidence: captures/gn_p1_2026-10-16/.
 - nd_stealth_pass (budget 180): civilian_call went loud at t=53 before any intimidate: 28 clips, no slides; the
-  intimidation / pager / bag clips unexercised -> new `--intimidate-first` mode (dae0680f), run pending.
+  intimidation / pager / bag clips unexercised -> new `--intimidate-first` mode (dae0680f): rerun went loud at
+  t=51 again (guard_radio right after the first shout; the tie kind was wrong, `cable_tie`, fixed).
+- stealth_clip_coverage.tscn (new, unit map, real input): tied 2 (3rd: requires_item, PD2 2 ties), knifed 1,
+  pager answered 1, body bagged / carried / thrown 1; civilian lie_down + tied moving, no frozen / slides /
+  no_clip (captures/d111_cov/stealth_clip_coverage_2026-10-16.*). Knife from 1.3 m flat behind the guard misses
+  (4 swings, 0 hits); 0.8 m one-shots.
 - D 107b16dd one-handed reloads (scratch merge): test_p_pistol_hold 3/3; Kestrel reload in frame, Marshal eject
   hand too close (palm across the top third, forearm wall): captures/d116/reload_107b16dd/. motion_clip `--reload-only`.
 
