@@ -76,6 +76,7 @@ func test_sl_cage_open_method_code_and_saw() -> void:
 	assert_true(cage != null, "SL cage lock")
 	if _completed_method(&"cage") == &"left_open":
 		return  # rare cage_left_open rolled: nothing else to open
+	cage.call(&"_lock_beaten", &"code")  # SL-6: the lock swings first (Safe._on_completed), then the fact
 	_rt.mission.call(&"_on_interaction_completed", int(cage.get(&"net_id")), 0, &"enter_code")
 	assert_eq(_completed_method(&"cage"), &"code", "keypad: open_method code (%s)" % [_facts])
 	_rt.teardown()
@@ -83,6 +84,7 @@ func test_sl_cage_open_method_code_and_saw() -> void:
 	EventBus.objective_updated.disconnect(_on_objective)
 	await _launch(&"shadow_ledger", 6)
 	cage = _first_tagged(&"cage")
+	cage.call(&"open_by_device")  # SL-6: the saw's DeviceRunner beat the lock, then device_finished
 	_rt.mission.call(&"_on_device_finished", int(cage.get(&"net_id")))
 	if _completed_method(&"cage") != &"left_open":
 		assert_eq(_completed_method(&"cage"), &"saw", "saw device: open_method saw")
