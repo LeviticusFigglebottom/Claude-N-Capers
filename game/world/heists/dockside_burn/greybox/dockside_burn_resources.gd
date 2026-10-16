@@ -26,7 +26,7 @@ static func make_def() -> HeistDef:
 	d.mode = Enums.HeistMode.LOUD_ONLY
 	d.map_scene = SCENE_PATH
 	# D-064 (Q7): $95k base and the loot values are placeholders; ENV B balances them in P6.
-	d.base_payout = 95000
+	d.base_payout = 24000  # D-120
 	d.stealth_bonus_mult = 1.0
 	# QC-39 (shipped, ENV B): loot.weapon_crate (HEAVY, $2,000) and loot.contraband (MEDIUM, $1,400) are LootDefs in
 	# content/data/loot/ (the thermite bag is a tool bag, not payout loot).

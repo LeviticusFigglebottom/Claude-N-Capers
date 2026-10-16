@@ -8,5 +8,5 @@ script = ExtResource("1")
 bag_model = ExtResource("2_bag")
 id = &"loot.painting"
 display_name = "Painting"
-value = 1500
+value = 4500
 conceals = false

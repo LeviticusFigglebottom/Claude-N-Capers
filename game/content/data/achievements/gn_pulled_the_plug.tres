@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="AchievementDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://content/defs/achievement_def.gd" id="1_ach"]
+
+[resource]
+script = ExtResource("1_ach")
+id = &"achievement.gn_pulled_the_plug"
+name_key = &"achievement.gn_pulled_the_plug.name"
+desc_key = &"achievement.gn_pulled_the_plug.desc"
+condition = {"event": &"heist_completed", "heist": &"gallery_night", "loud": true, "objectives_completed": [&"hack"], "objectives_not_completed": [&"vault_drill"], "count": 1}
+unlock = &""
+order = 753
+category = &"gallery_night"
+rewards = Array[StringName]([&"mask_base.boar"])
+unlocks = Array[StringName]([])
+requires_facts = Array[StringName]([])

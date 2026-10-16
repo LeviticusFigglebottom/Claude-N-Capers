@@ -28,9 +28,9 @@ const DB_TAGS: Array[String] = [
 	"escape",
 ]
 ## Placeholder HeistDef.base_payout (lead, B5-04 / doc QC open question 7); the def wins once it exists.
-const DB_BASE_PAYOUT: int = 95000
+const DB_BASE_PAYOUT: int = 24000  # D-120
 ## The content doc's contract pay table for DB_BASE_PAYOUT, Routine..Cataclysm.
-const DB_PAY_TABLE: Array[int] = [95000, 190000, 247000, 399000, 684000, 874000]
+const DB_PAY_TABLE: Array[int] = [24000, 48000, 62400, 100800, 172800, 220800]
 ## QC-40: the doc's five new pre-planning assets (library, ENV B).
 const DB_NEW_ASSETS: Array[StringName] = [
 	&"asset.gangway_raised", &"asset.intel_containers", &"asset.lift_power", &"asset.sniper_position",

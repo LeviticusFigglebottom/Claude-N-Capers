@@ -9,5 +9,5 @@ bag_model = ExtResource("2_bag")
 id = &"loot.contraband"
 display_name = "Contraband"
 weight = 1
-value = 1400
+value = 7000
 conceals = false

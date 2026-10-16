@@ -20,6 +20,10 @@
 ##     &"heists_all": distinct offered heists (HeistCatalog.ids()) won at least once; filters
 ##       "difficulty_min", "stealth", "loud" as above. "count" 0 (or absent) = every offered heist.
 ##   "count": int target (default 1).
+##   Run conditions (D-115, heist_completed / heist_failed only; HeistConditions, all optional, fail closed):
+##     HeistResult: "max_time_s", "max_time_variant", "max_kills", "max_civilian_kills", "max_downs",
+##     "max_custody", "max_pagers", "min_bags", "loot_all", "loot_min"; in-heist fact log (HeistFacts):
+##     "all_loot_secured", "objectives_completed", "objectives_not_completed", "facts_seen", "facts_not_seen".
 class_name AchievementDef
 extends Resource
 
@@ -40,6 +44,9 @@ extends Resource
 ## Extra unlock ids recorded on completion (MaskLocker.grant_unlock), beside `unlock` (B7-02). Weapon finishes
 ## (B7-04) use `unlock` itself (`unlock.finish.<id>`, one achievement each).
 @export var unlocks: Array[StringName] = []
+## Facts this achievement's condition only approximates until they exist (D-115 notes for ENV A, e.g.
+## &"heist_result.loot_available"). Documentation only: the evaluator never reads it.
+@export var requires_facts: Array[StringName] = []
 
 
 func target() -> int:

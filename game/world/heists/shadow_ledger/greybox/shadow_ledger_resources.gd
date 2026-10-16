@@ -25,7 +25,7 @@ static func make_def() -> HeistDef:
 	d.briefing = "heist.shadow_ledger.briefing"
 	d.mode = Enums.HeistMode.STEALTH_ONLY
 	d.map_scene = SCENE_PATH
-	d.base_payout = 110000
+	d.base_payout = 70000  # D-120
 	d.stealth_bonus_mult = 1.15
 	d.loot = [&"loot.ledger_laptop", &"loot.ledger_drives", &"loot.ledger_books", &"loot.painting",
 		&"loot.cash"] as Array[StringName]

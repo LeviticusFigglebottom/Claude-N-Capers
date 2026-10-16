@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="AchievementDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://content/defs/achievement_def.gd" id="1_ach"]
+
+[resource]
+script = ExtResource("1_ach")
+id = &"achievement.gn_full_collection"
+name_key = &"achievement.gn_full_collection.name"
+desc_key = &"achievement.gn_full_collection.desc"
+condition = {"event": &"heist_completed", "heist": &"gallery_night", "loot_all": [&"loot.painting_lantern_bearer", &"loot.painting_salt_orchard", &"loot.painting_widow_in_blue", &"loot.painting_tidewater_saint"], "loot_min": {&"loot.painting_study": 1}, "all_loot_secured": true, "count": 1}
+unlock = &""
+order = 752
+category = &"gallery_night"
+rewards = Array[StringName]([&"mask_base.cat"])
+unlocks = Array[StringName]([])
+requires_facts = Array[StringName]([])

@@ -563,18 +563,24 @@ def loft_down(m: Mesh, top: list[int], z_hem: Callable[[float], float], hull: Hu
 
 
 def skirt_weights(fit: Fit, z_top: float, z_hem: float, thigh_max: float = 0.85,
-                  centre_w: float = 0.05, ramp: float = 1.0, back_relax: float = 0.0) -> Callable[[Vector, float], dict]:
+                  centre_w: float = 0.05, ramp: float = 1.0, back_relax: float = 0.0,
+                  front_ramp: float | None = None) -> Callable[[Vector, float], dict]:
     """Hips at the waist, blending to the thigh of the vertex's side towards the hem (at most
     ``thigh_max`` at the hem). Within ``centre_w`` of the centre line the two thighs are mixed, so
     the cloth either side of a front split (coat and jacket tails: a wider ``centre_w``, a lower
     ``thigh_max``) moves together and the split does not gape on long strides. ``ramp`` < 1 reaches
     ``thigh_max`` that share of the way down (a closed skirt: the cloth over the thigh follows it early).
     ``back_relax`` takes that share of the thigh weight back to the hips behind the body, so a seated figure's
-    back panel stays under the seat instead of swinging up between the knees with the thighs."""
+    back panel stays under the seat instead of swinging up between the knees with the thighs. ``front_ramp`` (D-115
+    clip audit) replaces ``ramp`` in front of the body: a short ramp lays a closed front panel on the thigh from just
+    below the crease instead of blending through it (tabard in cower_stand)."""
     cy = fit.ring_centre("hips").y
     def w(p: Vector, _t: float) -> dict:
         t = clamp((z_top - p.z) / max(z_top - z_hem, 1e-3), 0.0, 1.0)
-        t = thigh_max * smoothstep(0.0, ramp, t)
+        rp = ramp
+        if front_ramp is not None:
+            rp = lerp(ramp, front_ramp, smoothstep(cy + 0.02 * fit.k, cy + 0.08 * fit.k, p.y))
+        t = thigh_max * smoothstep(0.0, rp, t)
         if back_relax:
             t *= 1.0 - back_relax * smoothstep(cy + 0.01 * fit.k, cy - 0.06 * fit.k, p.y)
         s_r = smoothstep(-centre_w * fit.k, centre_w * fit.k, p.x)

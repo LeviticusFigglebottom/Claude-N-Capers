@@ -9,5 +9,5 @@ bag_model = ExtResource("2_bag")
 id = &"loot.gold"
 display_name = "Gold Bars"
 weight = 2
-value = 2800
+value = 14000
 conceals = false
