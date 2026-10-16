@@ -44,8 +44,8 @@ const PROP_ART: Dictionary = {
 	"BoxStackB": ["prop_fish_crates", 90.0, "fish_crates"],
 	"RackC1W": ["prop_racking_coldstore", 0.0, ""],
 	"RackC1E": ["prop_racking_coldstore", 180.0, ""],
-	"RackC2W": ["prop_racking_coldstore", 0.0, ""],
-	"RackC2E": ["prop_racking_coldstore", 180.0, ""],
+	"RackC2W": ["prop_racking_coldstore_b", 0.0, ""],  # C2 reads half-empty, fish boxes
+	"RackC2E": ["prop_racking_coldstore_b", 180.0, ""],
 	"StrongroomShelf": ["prop_shelving_freezer", -90.0, "shelving"],
 	"ANPalletA": ["prop_pallet_wrapped", 0.0, ""],
 	"ANPalletB": ["prop_pallet_wrapped", 90.0, ""],
@@ -175,7 +175,7 @@ const LIGHT_TWEAKS: Dictionary = {
 	"PK": {"prop_led_batten_cold": {"light_energy": 2.2, "spot_range": 7.0}},
 	"H": {"prop_highbay_led": {"light_energy": 2.4, "spot_range": 9.0}},
 	"C1": {"prop_led_batten_cold": {"light_energy": 3.2, "spot_range": 11.0}},
-	"C2": {"prop_led_batten_cold": {"light_energy": 3.2, "spot_range": 11.0}},
+	"C2": {"prop_led_batten_cold": {"light_energy": 3.0, "spot_range": 11.0, "light_color": Color(0.82, 0.92, 1.0)}},
 	"SP": {"prop_led_batten_cold": {"light_energy": 2.8, "spot_range": 11.0}},
 	"AN": {"prop_highbay_led": {"light_energy": 2.6, "spot_range": 8.5, "light_color": Color(0.97, 0.96, 0.92)}},
 	"QS": {"prop_fluorescent": {"light_energy": 1.6, "light_color": Color(1.0, 0.9, 0.76)}},
@@ -190,4 +190,6 @@ const SHADOW_FIXTURES: Array = [
 const SHADOW_MASTS: Array[String] = ["MastYardGate", "MastYardE", "MastQuayMid", "MastFerroW"]
 ## Rooms without fill lights and the warm (3000-3500 K) fill rooms.
 const NO_FILL: Array[String] = ["LF"]
+## Tall rooms whose fills hang 2 m under the ceiling near the §3.7 cap (0.29 of 0.3, 12 m) to lift the soffit.
+const HIGH_FILL_ROOMS: Array[String] = ["H"]
 const WARM_ROOMS: Array[String] = ["M2", "GH", "QS", "SR"]

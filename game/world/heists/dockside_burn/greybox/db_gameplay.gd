@@ -597,7 +597,9 @@ func _variants_night_shift(variants: Node3D) -> void:
 		var s: VariantSlot = _slot(g, "night_shift", sid, 1.0)
 		for wid: Variant in L.NIGHT_SHIFT[sid]:
 			var w: Array = L.WORKERS[wid]
-			spawn(s, "Worker" + String(wid), "CIVILIAN", w[0], float(w[1]), ["civ_worker"], "browse", "")
+			# D's DB cast audit: the packing-table worker dresses as a packer (A NpcVisualTweak), the forklift posts not.
+			var role: String = "civ_worker_packer" if String(wid) == "PK" else "civ_worker"
+			spawn(s, "Worker" + String(wid), "CIVILIAN", w[0], float(w[1]), [role], "browse", "")
 
 
 ## Rare perches: S3 viaduct walkway (`fog_lifts`), S4 trawler wheelhouse (`harbor_unit`). Never rolled
