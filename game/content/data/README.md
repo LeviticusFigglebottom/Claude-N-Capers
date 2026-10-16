@@ -218,6 +218,15 @@ Shared rail foregrip (D-115): `rail_vertical_grip` (FOREGRIP: kick −0.12, hori
 every weapon with an `Underbarrel` rail and no grip of its own (Drover, Lark, Ferret, Hornet, Hush, Wasp);
 like the per-weapon vertical grips it has no `LeftHandIK`, so the support hand keeps the base marker
 (`test_rail_grip.gd`).
+Audit slot fills (D-118): STOCK pairs on the four weapons whose base stock is `StockMount/StockStock` —
+a light `*_collapsed_stock` (conc +3 / kick +0.21, horiz +0.3, ADS spread +0.576, hip +0.72; Harrow kick
++0.585, horiz +0.06; $2000) and a heavy `bastion_precision_stock` / `lancet_tactical_stock` /
+`mastiff_heavy_stock` / `harrow_padded_stock` (kick −0.21, horiz −0.3, ADS spread −0.384, hip −0.48; Harrow kick
+−0.585, horiz −0.06 / conc −3; $3000). BARREL_EXT: `brute_full_choke` (spreads −0.576 / −0.72 / conc −1,
+$3500), `mule_breacher_brake` (kick −0.585, horiz −0.06 / conc −1, $2500; own `MuzzlePortL`/`R`),
+`gale_barrage_brake` (kick −0.105, horiz −0.12 / conc −2, $4000; sleeves over the stock brake, own ports).
+SUPPRESSOR: `shrike_suppressor` (silent, threat 0 / dmg −15, conc −3, $6500; **conflicts** with the carbine
+barrel, whose own `Muzzle` would leave the can floating). `test_audit_slots.gd` checks them.
 Models: `tools/blender/weapons/<weapon>.py` + `<weapon>_mods.py` (+ `rail_optics_mods.py`, `rail_grips_mods.py`), helpers
 `_common.py` and `_<weapon>.py`; previews `game/assets/weapons/<weapon>_preview_*.png`. Tube
 magazines hang from `Magwell` at the loading port; the LMG's quick-change barrel is

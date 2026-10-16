@@ -5,6 +5,8 @@
 * ``mod_lancet_extended_mag``  MAGAZINE   -> ``Magwell``     (40 rounds)
 * ``mod_lancet_suppressor``    SUPPRESSOR -> ``Muzzle``      (long can over the flash hider; own ``Muzzle``)
 * ``mod_lancet_vertical_grip`` FOREGRIP   -> ``Underbarrel`` (vertical grip on the lower rail)
+* ``mod_lancet_collapsed_stock`` STOCK     -> ``StockMount``  (light telescoping stock pushed in; hides ``StockStock``)
+* ``mod_lancet_tactical_stock``  STOCK     -> ``StockMount``  (heavy stock, cheek riser + recoil pad; hides ``StockStock``)
 
 Optics are the shared ``mod_rail_reflex_sight`` / ``mod_rail_prism_scope``.
 """
@@ -19,6 +21,8 @@ VARIANTS = {
     "mod_lancet_extended_mag": {"part": "mag_ext"},
     "mod_lancet_suppressor": {"part": "suppressor"},
     "mod_lancet_vertical_grip": {"part": "grip"},
+    "mod_lancet_collapsed_stock": {"part": "stock_light"},
+    "mod_lancet_tactical_stock": {"part": "stock_heavy"},
 }
 
 
@@ -36,6 +40,10 @@ def build(ctx) -> None:
         v.build_suppressor(ctx, mats)
     elif part == "grip":
         c.build_vertical_grip(ctx, mats, length=0.070)
+    elif part == "stock_light":
+        c.build_collapsed_stock(ctx, mats, 0.120, 0.018, -0.090, 0.0150)
+    elif part == "stock_heavy":
+        c.build_precision_stock(ctx, mats, 0.255, 0.018, -0.090, 0.0170, front_z=-0.024)
     else:
         raise ValueError(f"unknown part {part!r}")
     ctx.source_extra["tris_lod0"] = c.tris_of_scene()

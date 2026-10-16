@@ -1,0 +1,32 @@
+[gd_resource type="Resource" script_class="WeaponModDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/weapon_mod_def.gd" id="1"]
+[ext_resource type="Script" path="res://contracts/data/weapon_stats.gd" id="2"]
+[ext_resource type="PackedScene" uid="uid://dvp0xet50gyva" path="res://assets/weapons/mod_shrike_suppressor/mod_shrike_suppressor.glb" id="3"]
+
+[sub_resource type="Resource" id="delta"]
+script = ExtResource("2")
+pellets = 0
+falloff_start_m = 0.0
+falloff_end_m = 0.0
+falloff_min_mult = 0.0
+headshot_mult = 0.0
+magnification = 0.0
+equip_time_s = 0.0
+ads_time_s = 0.0
+damage = -15.0
+concealment = -3
+suppression = -18.0
+suppressed = true
+noise_radius_m = 1.0
+
+[resource]
+script = ExtResource("1")
+id = &"mod.shrike_suppressor"
+display_name = "Shrike Suppressor"
+mod_type = 2
+delta = SubResource("delta")
+price = 6500
+unlock = &""
+model = ExtResource("3")
+conflicts = Array[StringName]([&"mod.shrike_carbine_barrel"])
