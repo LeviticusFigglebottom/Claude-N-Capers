@@ -157,8 +157,8 @@ check.pistol_fire_auto: reach_err=0.0mm step=3.6deg
 check.pistol_fire_auto_ads: reach_err=0.0mm step=1.9deg
 check.pistol_holster: reach_err=0.0mm step=9.9deg
 check.pistol_idle: reach_err=0.0mm step=0.1deg
-check.pistol_reload: reach_err=0.0mm step=41.4deg
-check.pistol_reload_empty: reach_err=0.0mm step=38.1deg
+check.pistol_reload: reach_err=0.0mm step=52.4deg
+check.pistol_reload_empty: reach_err=0.0mm step=46.9deg
 check.pistol_sprint: reach_err=0.0mm step=7.0deg
 check.revolver_ads_idle: reach_err=0.0mm step=0.0deg
 check.revolver_bash: reach_err=0.0mm step=43.5deg
@@ -167,8 +167,8 @@ check.revolver_fire: reach_err=0.0mm step=11.1deg
 check.revolver_fire_ads: reach_err=0.0mm step=5.8deg
 check.revolver_holster: reach_err=0.0mm step=9.1deg
 check.revolver_idle: reach_err=0.0mm step=0.1deg
-check.revolver_reload: reach_err=0.0mm step=116.5deg
-check.revolver_reload_empty: reach_err=0.0mm step=116.5deg
+check.revolver_reload: reach_err=0.0mm step=120.0deg
+check.revolver_reload_empty: reach_err=0.0mm step=120.0deg
 check.revolver_sprint: reach_err=0.0mm step=7.0deg
 check.rifle_ads_idle: reach_err=0.0mm step=0.0deg
 check.rifle_bash: reach_err=0.0mm step=33.3deg

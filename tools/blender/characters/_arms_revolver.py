@@ -141,8 +141,10 @@ def clip_speedloader(kit, s: FPSet, N: int, ev: dict):
     hip = hold_frame(s.hip)
     tilt = hold_frame(s.reload_tilt)
     flick = hold_frame(s.reload_tilt, (-0.006, 0.0, 0.004), yaw=4.0, pitch=2.0, roll=-14.0)
-    up = A.weapon_frame(v3(0.065, 0.30, -0.135), 8.0, 68.0, -12.0)            # muzzle up: eject
-    up_push = A.weapon_frame(v3(0.065, 0.30, -0.142), 8.0, 66.0, -12.0)
+    # muzzle up: eject (D-116 follow-up: high enough that the cylinder and the rod hand stay in frame under P's
+    # one-handed hip framing)
+    up = A.weapon_frame(v3(0.050, 0.30, -0.075), 8.0, 68.0, -12.0)
+    up_push = A.weapon_frame(v3(0.050, 0.30, -0.082), 8.0, 66.0, -12.0)
     # muzzle down and to the left, in front of the right forearm: the open cylinder faces the eye
     down = A.weapon_frame(v3(0.050, 0.30, -0.105), 50.0, -38.0, 18.0)
     load = A.weapon_frame(v3(0.045, 0.30, -0.100), 50.0, -34.0, 20.0)
