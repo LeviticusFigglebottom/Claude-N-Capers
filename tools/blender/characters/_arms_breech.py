@@ -426,6 +426,8 @@ def breech_fns(sk: Skeleton, s: FPSet) -> dict:
             fn = CL.clip_ads_idle(kit, s, N)
         elif clip == "sprint":
             fn = CL.clip_sprint(kit, s, N)
+        elif clip == "vgrip_hand":
+            fn = CL.clip_vgrip_hand(kit, s, N)
         elif clip in ("draw", "holster"):
             fn = CL.clip_draw(kit, s, N, reverse=clip == "holster")
         elif clip in ("fire", "fire_ads") and s.name == "lever":

@@ -3,6 +3,28 @@
 Owner: ENV D. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-16: GN-D1 polish (D-115 queue item 3: Gallery Night cast)
+- Seven new looks in `char_p5_gallery.py` (crowd LOD2 included, tris 24.4k-31.5k, budget 35k):
+  - patrons `gallery_patron_c` (woman 60s, black dress, gold), `_d` (man 30s, all-black dinner suit, open collar),
+    `_e` (woman 30s, sapphire satin), `_f` (heavy man 60s, navy dinner suit, wine bow tie), `_g` (woman 40s,
+    amethyst satin). With patron/_b and the penthouse guests that makes 9 patron looks (5 women, 4 men) for up to
+    9 live patrons;
+  - `gallery_waiter` (second waitstaff: wine waistcoat, long black apron);
+  - `gallery_conservator` (GN-D-c: knit vest, canvas apron, loupe glasses, staff lanyard; no longer reuses
+    attendant_b).
+  - New materials `char_satin_sapphire` and `char_satin_amethyst`.
+- `p5_cast.json` v4: the gallery_night roles gain `gallery_waitstaff` x2, `gallery_inspector` and
+  `gallery_vaultline`; the conservator is `gallery_conservator`. New `tag_map.gallery_night` (spawn tag -> ids)
+  is the map ENV A mirrors 1:1 into `NpcVisualTweak.heist_tag_characters.gallery_night`.
+- ENV A request (npc_visual_tweak.tres): `civ_admin` -> `gallery_admin` (still `npc_penthouse_guest_a`);
+  `civ_attendant` -> both attendant looks; `civ_conservator` and `staff_cs` -> `gallery_conservator`;
+  `civ_waitstaff` += `gallery_waiter`; `civ_patron` -> all 9; `guard_inspection` -> guard + guard_b. Hashing the node
+  name can still give two NPCs the same look; to avoid twins, A should pick distinct ids per tag.
+- Tests: test_p5_cast (+`test_gallery_tag_map`, `test_gallery_patron_variety`) 14/14, test_npcs 9/9, test_scenes
+  9/9, test_lod 6/6. Windowed review `_review/gn_d1_cast.png` (`render_gn_d1_review.gd`): the whole cast, idle front,
+  mid-walk back, head. The dresses do not clip at the walk frame. Gold satin rendered as canary yellow, so patron_g
+  was switched to amethyst.
+
 ## 2026-10-15 (later): PO6-18 deaths, PO6-11b pistol support hand, Wasp SMG refit
 - **PO6-18** (3fb66f28): death_crouch, death_kneel_cuffed, death_kneel (from surrender f48), death_prone,
   death_downed. Each starts on its source frame and the root stays fixed; checked in test_anims

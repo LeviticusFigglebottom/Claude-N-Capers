@@ -72,6 +72,11 @@ const REF_WEAPON: Dictionary = {
 	"crossbow": "vise_crossbow", "launcher": "thumper_40", "flamethrower": "furnace_ft", "saw": "rotor_saw",
 	"minigun": "cyclone_rotary", "shotgun_box": "brute_12",
 }
+## D-118: the sets whose guns take a vertical foregrip mod: {set: grip mod id}. `<set>_vgrip_hand` is the hip hold with the
+## left hand closed round that grip (ENV P blends the left-hand bones to it and IKs to the mod's LeftHandIK).
+const VGRIP: Dictionary = {
+	"smg": "mod_rail_vertical_grip", "rifle": "mod_corsair_vertical_grip", "launcher": "mod_thumper_vertical_grip",
+}
 ## D-116: one-handed first-person sets (the left hand waits off-screen except while a reload uses it).
 const ONE_HAND: Array[String] = ["pistol", "revolver"]
 ## The viewmodel camera's vertical FOV (FpViewmodel, 16:9) for the off-screen check.
@@ -1095,6 +1100,36 @@ func test_hands_and_sights_on_the_real_models() -> void:
 	_player.stop()
 	_check_long_gun_support_grip()
 	_check_support_skin_clear()
+	_check_vgrip_hands()
+
+
+## D-118: `<set>_vgrip_hand` exists and its left palm sits on the foregrip mod's LeftHandIK (mounted at Underbarrel).
+func _check_vgrip_hands() -> void:
+	for set_name: String in VGRIP:
+		var clip: String = "%s_vgrip_hand" % set_name
+		assert_true(_anim(clip) != null, "%s exists" % clip)
+		if _anim(clip) == null:
+			continue
+		var w: Dictionary = _weapon_model(String(REF_WEAPON[set_name]))
+		var mod_id: String = String(VGRIP[set_name])
+		var mod_path: String = "res://assets/weapons/%s/%s.glb" % [mod_id, mod_id]
+		if w.is_empty() or not ResourceLoader.exists(mod_path):
+			if not w.is_empty():
+				(w["root"] as Node3D).queue_free()
+			continue
+		var marks: Dictionary = w["marks"]
+		(w["root"] as Node3D).queue_free()
+		var mod: Node3D = (load(mod_path) as PackedScene).instantiate() as Node3D
+		# the mod's LeftHandIK is ENV B's D-118 addition: checked once their mods carry it
+		var lhik: Node3D = mod.find_child("LeftHandIK", true, false) as Node3D
+		assert_true(marks.has("Underbarrel"), "%s: %s has an Underbarrel mount" % [set_name, REF_WEAPON[set_name]])
+		if lhik != null and marks.has("Underbarrel"):
+			var target: Transform3D = (marks["Underbarrel"] as Transform3D) * lhik.transform
+			var pose: Dictionary = _pose_at(clip)
+			var d: float = (pose["palm_l"] as Vector3).distance_to((pose["weapon"] as Transform3D) * target.origin)
+			assert_true(d < 0.03, "%s: left palm %.3f m from the foregrip's LeftHandIK" % [clip, d])
+		mod.free()
+	_player.stop()
 
 
 ## PO feedback (long-gun hold): on every set whose LeftHandIK sits centred under the fore-end (B e18011f4) the support

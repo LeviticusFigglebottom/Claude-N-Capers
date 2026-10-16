@@ -170,6 +170,12 @@ def notes() -> dict:
                     + ", ".join(f"{k} {n} f hit@{h}" for k, (n, h) in sets.BASH.items())
                     + " (families: " + ", ".join(f"{k}={v}" for k, v in sorted(sets.BASH_FAMILY.items()))
                     + ", other sets long); akimbo bashes with the right gun only; hands stay on their grips"),
+        "fp.vgrip": ("D-118 vertical foregrip mods: <set>_vgrip_hand (" + ", ".join(sorted(_vgrip_wrists()))
+                     + ") is a one-frame hip hold with the left hand closed round the grip (palm on the mod's "
+                     "LeftHandIK, thumb tucked over it). With a vertical-grip mod equipped, blend the left-hand bones "
+                     "(hand.L and its fingers) to it and IK the left wrist to the mod's LeftHandIK + this offset "
+                     "(Godot weapon axes, m): "
+                     + "; ".join(f"{k} {_g(v)}" for k, v in sorted(_vgrip_wrists().items()))),
         "fp.melee": ("melee_knife / melee_blunt / melee_blade (MeleeDef; proposal: MeleeDef.anim_set): the melee weapon "
                      "hangs identity on the weapon bone, which carries the ITEM frame: Godot origin on the handle axis at "
                      "the grip pivot (20 mm below the top of the fist), handle along +Y (blade / head toward +Y), edge / "
@@ -193,6 +199,18 @@ def notes() -> dict:
                       "model), done@ = empty hands off screen; lengths from the first DeployableDef of the kind group "
                       "(deploy_time_s), else 2.0 s"),
     }
+
+
+def _vgrip_wrists() -> dict:
+    """{set: the left wrist of ``<set>_vgrip_hand`` minus the set's ``vgrip_ik`` marker} (Blender weapon space)."""
+    sk = arms.skeleton()
+    out = {}
+    for name, s in sets.SETS.items():
+        m = s.markers.get("vgrip_ik")
+        if m is not None:
+            w = clips_mod.left_vgrip(sk, m, s.pole_l).wrist - m
+            out[name] = w
+    return out
 
 
 def export_name(name: str, table: dict) -> str:
