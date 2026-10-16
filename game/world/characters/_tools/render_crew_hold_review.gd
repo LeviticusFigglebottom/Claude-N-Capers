@@ -7,7 +7,8 @@
 ##     --resolution 960x540 --path game res://world/characters/_tools/render_crew_hold_review.tscn -- --out=/abs/dir \
 ##     [--heist=glasshouse] [--after] [--bots=crew_rook:weapon.mule_12:rifle,...] [--poses=interact_low:0.6,...]
 ##     [--layer=crouch_walk]: each pose plays the locomotion clip and layers the pose clip's upper bones over it (the
-##     bone filter A uses for hold_<kind>, SOURCE weapon_holds); [--turn=deg]: every rig turned further (90 = profile)
+##     bone filter A uses for hold_<kind>, SOURCE weapon_holds; a pose `walk>hold_%s_walk:0.3` sets its own);
+##     [--turn=deg]: every rig turned further (90 = profile)
 ##     [--bags=light,medium,heavy]: per bot, that loot bag (world/props/loot_bag/prop_loot_bag_<size>.tscn) at
 ##     Back/Socket with character_spec.gd BACK_BAG_OFFSETS[size] (A's carried-bag visual)
 ##     [--props=book,...]: that hand prop (world/characters/_props/hand_<prop>.tscn, at its own socket) on every bot
@@ -143,10 +144,14 @@ func _ready() -> void:
 				clip = "aim_pistol" if PISTOL_KINDS.has(kind) else "aim_rifle"
 			elif clip.contains("%s"):
 				clip = clip % kind
-			if _layer.is_empty():
+			var lay: String = _layer
+			if clip.contains(">"):   # --poses=walk>hold_%s_walk:0.3: this pose's own layer (base>overlay)
+				lay = clip.get_slice(">", 0)
+				clip = clip.get_slice(">", 1)
+			if lay.is_empty():
 				_pose(rigs[i], clip, float(pose[2]))
 			else:
-				_pose(rigs[i], _layer, float(pose[2]))
+				_pose(rigs[i], lay, float(pose[2]))
 				_overlay(rigs[i], clip, float(pose[2]))
 		await get_tree().process_frame
 		cam.global_position = o + Vector3.UP * 1.55 - fwd * 0.6

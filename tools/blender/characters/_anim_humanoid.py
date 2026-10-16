@@ -2110,10 +2110,14 @@ def clips(sk: Skeleton, table: dict) -> dict[str, Clip]:
     import _anim_crew3p as crew3p  # noqa: PLC0415 - D-116 crew akimbo / downed / cuffed states; imports this module
 
     extra.update(crew3p.clips(sk, solver, table))
+    import _anim_loco_holds as loco  # noqa: PLC0415 - D-116 frame-locked locomotion holds; imports this module
+
     out: dict[str, Clip] = {}
     for name, row in table.items():
         N, loop, speed = int(row["frames"]), bool(row["loop"]), float(row["speed"])
         ev = dict(row.get("events", {}))
+        if name in loco.NAMES:
+            continue
         if name in extra:
             out[name] = extra[name]
             continue
@@ -2149,4 +2153,13 @@ def clips(sk: Skeleton, table: dict) -> dict[str, Clip]:
             out[name].floor = int(N * 0.62)
         if name.startswith("death_") or name in ("surrender", "cower", "interact_low", "throw_bag", "melee"):
             out[name].no_sink = True
+    if any(n in table for n in loco.NAMES):
+        # the layers take their base clips' frames: build any base a subset table (review renders) leaves out
+        from anim_humanoid import CLIPS as FULL  # noqa: PLC0415
+
+        missing = {src: FULL[src] for src in loco.GAITS.values() if src not in out}
+        base = dict(out)
+        if missing:
+            base.update(clips(sk, missing))
+        out.update(loco.clips(sk, solver, table, base))
     return out
