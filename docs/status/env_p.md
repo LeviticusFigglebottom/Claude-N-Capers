@@ -14,7 +14,19 @@ Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min;
   frozen crew_ai walk_bl / walk_fr, civilian tased; slides tac_heavy breach_standback, rappel_descend (heavy, light),
   longshot heli_door_idle. test_p_gn_traversal 8/8. Evidence: captures/gn_p1_2026-10-16/.
 - nd_stealth_pass (budget 180): civilian_call went loud at t=53 before any intimidate: 28 clips, no slides; the
-  intimidation / pager / bag clips unexercised -> new `--intimidate-first` mode (dae0680f), run pending.
+  intimidation / pager / bag clips unexercised -> new `--intimidate-first` mode (dae0680f): rerun went loud at
+  t=51 again (guard_radio right after the first shout; the tie kind was wrong, `cable_tie`, fixed).
+- stealth_clip_coverage.tscn (new, unit map, real input): tied 2 (3rd: requires_item, PD2 2 ties), knifed 1,
+  pager answered 1, body bagged / carried / thrown 1; civilian lie_down + tied moving, no frozen / slides /
+  no_clip (captures/d111_cov/stealth_clip_coverage_2026-10-16.*). Knife from 1.3 m flat behind the guard misses
+  (4 swings, 0 hits); 0.8 m one-shots -> test_p_knife_reach (red until A's fix, 57713e0f).
+- PO6-15 re-check on trunk 6c8083c8 (bot_strength_probe, glasshouse, passive human, 240 s): bot kills 15 / 17 / 15
+  (was 21 / 16 / 16 on A's wiring), acc 0.87 / 0.81 / 0.83 (was 0.3-0.5) on fewer shots (92 / 156 / 81), dmg/hit
+  14.5 / 9.1 / 14.0; every crew member down by t~100 and in custody by ~140 (unchanged). No retune.
+  captures/po6_15/r225_*.txt. Knife reach green with A's 9f3e7480 (scratch merge).
+- stealth_clip_coverage + C) guard domination (skill forced) + D) loud cop surrender (chance forced) + tie: all 8
+  steps pass. Guard kneel_cuffed reads right. Police: `surrender` one-shot ends and the player stops (PLAYER_MISMATCH
+  driver 'surrender', player '', FROZEN); after the cable tie the cop stands upright, hands in front (no kneel).
 - D 107b16dd one-handed reloads (scratch merge): test_p_pistol_hold 3/3; Kestrel reload in frame, Marshal eject
   hand too close (palm across the top third, forearm wall): captures/d116/reload_107b16dd/. motion_clip `--reload-only`.
 
