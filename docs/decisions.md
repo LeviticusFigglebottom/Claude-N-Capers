@@ -1010,6 +1010,9 @@ pd2_fidelity.md S4.2 holds: PD2 guards and cameras ignore flashlights and lasers
 laser or flashlight in stealth" was wrong. ENV A sets the StealthTweak "Weapon gadgets (D-118)" multipliers to **0** by default.
 The code stays behind the tweak, and nothing in the game enables it. The third-person beams and lights stay (visual only).
 
+**D-120 addendum (2026-10-16): a failed heist pays nothing and costs nothing.** Civilian cleanup costs are charged only
+against a successful payout; a failed payday shows $0 and no cleanup line, matching "A failed heist pays no cash".
+
 ## D-121: loud-path determinism rules (2026-10-16, LEAD; from ENV A's DET audit)
 * Heist navigation runs synchronous map/region iterations (`HeistRuntime.use_sync_navigation`; launch option `nav_sync`
   false opts out). Async iterations made door/breach link changes land on a timing-dependent frame.
