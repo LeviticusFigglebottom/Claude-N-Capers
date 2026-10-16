@@ -53,7 +53,9 @@ mod_slots = {
 1: [&"mod.plowman_choke"],
 3: [&"mod.plowman_ghost_ring", &"mod.rail_reflex_sight"],
 6: [&"mod.plowman_pistol_grip"],
-7: [&"mod.plowman_standard_tube", &"mod.plowman_extended_tube"]
+7: [&"mod.plowman_standard_tube", &"mod.plowman_extended_tube"],
+8: [&"mod.rail_laser", &"mod.rail_flashlight", &"mod.rail_combo"],
+11: [&"mod.shotgun_slug", &"mod.shotgun_he", &"mod.shotgun_flechette", &"mod.shotgun_dragons_breath"]
 }
 default_mods = {
 3: &"mod.plowman_ghost_ring",

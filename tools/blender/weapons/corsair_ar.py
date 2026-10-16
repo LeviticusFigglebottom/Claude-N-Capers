@@ -10,7 +10,7 @@ Node tree (Godot names): ``Lower`` (+ ``Grip``, ``Trigger``, ``Controls``), ``Up
 (buffer tube + tan stock). Markers per contracts/visual_slots.md: ``Muzzle``, ``Eject``,
 ``SightRail``, ``Magwell``, ``Underbarrel``, ``SideRail``, ``StockMount``, ``GripMount``,
 ``BarrelMount``, ``LeftHandIK``. Stock parts: ``SightRail/StockSight`` (flip-up irons, ``AimPoint``),
-``Magwell/StockMagazine`` (30-round magazine).
+``Magwell/StockMagazine`` (30-round magazine), ``StockMount/StockStock`` (buffer tube + stock, D-118).
 """
 
 import math
@@ -195,7 +195,7 @@ def build(ctx) -> None:
     _upper(ctx, mats)
     _handguard(ctx, mats)
     _barrel(ctx, mats)
-    _stock(ctx, mats)
+    stock = _stock(ctx, mats)
 
     ctx.marker("BarrelMount", (0.0, k.UPPER_FRONT_Y, k.BORE_Z))
     ctx.marker("Eject", (0.0135, 0.066, k.BORE_Z), rotation_euler=(0.0, 0.0, -math.pi / 2))
@@ -203,7 +203,8 @@ def build(ctx) -> None:
     magwell = ctx.marker("Magwell", k.MAGWELL_POS)
     ctx.marker("Underbarrel", (0.0, k.UNDER_Y, k.HG_BOTTOM_Z - 0.0057))
     ctx.marker("SideRail", (k.HG_HALF_WIDTH + 0.0057, k.SIDE_Y, k.HG_CENTRE_Z))
-    ctx.marker("StockMount", (0.0, k.RECEIVER_REAR_Y, k.HG_CENTRE_Z))
+    mount = (0.0, k.RECEIVER_REAR_Y, k.HG_CENTRE_Z)
+    stock_mount = ctx.marker("StockMount", mount)
     ctx.marker("GripMount", (0.0, 0.0, 0.0))
     # Lead (ENV D, FP left-hand cup): under the Handguard (y 0.170-0.440, bottom z 0.050), x 0, 12 mm low, a third of the way forward.
     ctx.marker("LeftHandIK", (0.0, 0.260, 0.038))
@@ -213,6 +214,7 @@ def build(ctx) -> None:
     ctx.marker("AimPoint", (0.0, k.REAR_IRON_Y, aim), parent=stock_sight)
     stock_mag = ctx.marker("StockMagazine", (0.0, 0.0, 0.0), parent=magwell)
     k.build_mag(ctx, mats, extended=False, parent=stock_mag)
+    c.wrap_part(ctx, [stock], stock_mount, "StockStock", mount)  # D-118: swappable stock
 
     ctx.source_extra["tris_lod0"] = c.tris_of_scene()
     ctx.source_extra["origin"] = "firing-hand pivot: grip centre plane, mid grip depth, 20 mm below grip top"

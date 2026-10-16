@@ -50,7 +50,8 @@ mod_slots = {
 3: [&"mod.mastiff_iron_sights", &"mod.rail_reflex_sight"],
 5: [&"mod.mastiff_vertical_grip"],
 6: [&"mod.mastiff_collapsed_stock", &"mod.mastiff_heavy_stock"],
-7: [&"mod.mastiff_standard_mag", &"mod.mastiff_extended_mag"]
+7: [&"mod.mastiff_standard_mag", &"mod.mastiff_extended_mag"],
+8: [&"mod.rail_laser", &"mod.rail_flashlight", &"mod.rail_combo"]
 }
 default_mods = {
 3: &"mod.mastiff_iron_sights",

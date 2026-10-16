@@ -6,9 +6,10 @@ trigger guard.
 
 Origin = firing-hand pivot on the grip (see _brute.py). Forward = Godot -Z.
 
-Node tree: ``Receiver`` (+ ``Butt``, ``CarryHandle``, ``ReceiverDetails``, ``ChargingHandle``, ``TriggerGroup``, ``Grip``,
+Node tree: ``Receiver`` (``CarryHandle``, ``ReceiverDetails``, ``ChargingHandle``, ``TriggerGroup``, ``Grip``,
 ``Shroud``), ``Barrel``. Stock parts: ``SightRail/StockSight`` (carry-handle aperture + front post,
-``AimPoint``), ``Magwell/StockMagazine`` (20-shell drum). ``StockMount`` = butt plate (no stock slot).
+``AimPoint``), ``Magwell/StockMagazine`` (20-shell drum), ``StockMount/StockStock`` (``Butt`` + pad, D-118;
+``StockMount`` sits on the butt plate, so the stock part runs forward from it).
 """
 
 import math
@@ -82,12 +83,12 @@ def _receiver(ctx, mats):
     sr = ctx.builder()
     c.rail_side(sr, sr.material(mats.alu()), u.SIDE_Y - 0.025, u.SIDE_Y + 0.025, 0.0220, u.BORE_Z, 1.0)
     c.finish(sr, "ShroudRail", bevel=0.0003, parent=shroud)
-    return rec
+    return rec, butt
 
 
 def build(ctx) -> None:
     mats = c.Mats(ctx)
-    _receiver(ctx, mats)
+    _rec, butt = _receiver(ctx, mats)
     barrel = c.build_barrel(ctx, mats, 0.0130, u.SHROUD_Y1 - 0.020, u.BARREL_END_Y, u.BORE_Z, bore_r=0.0092,
                             segments=28)
     # PO6-13: top-ported compensator sleeved over the barrel end, carrying Muzzle + MuzzlePortL/R
@@ -100,7 +101,7 @@ def build(ctx) -> None:
     magwell = ctx.marker("Magwell", u.MAGWELL_POS)
     ctx.marker("Underbarrel", (0.0, u.UNDER_Y, u.BORE_Z - 0.024))
     ctx.marker("SideRail", (0.0220 + 0.0057, u.SIDE_Y, u.BORE_Z))
-    ctx.marker("StockMount", u.STOCK_MOUNT)
+    stock_mount = ctx.marker("StockMount", u.STOCK_MOUNT)
     ctx.marker("GripMount", (0.0, 0.0, 0.0))
     # Lead (ENV D, FP left-hand cup): under the Shroud (y 0.250-0.420, bottom z 0.038), x 0, 12 mm low, a third of the way forward.
     ctx.marker("LeftHandIK", (0.0, 0.307, 0.026))
@@ -110,6 +111,7 @@ def build(ctx) -> None:
     ctx.marker("AimPoint", (0.0, u.REAR_IRON_Y, aim), parent=stock_sight)
     stock_mag = ctx.marker("StockMagazine", (0.0, 0.0, 0.0), parent=magwell)
     u.build_drum(ctx, mats, big=False, parent=stock_mag)
+    c.wrap_part(ctx, [butt], stock_mount, "StockStock", u.STOCK_MOUNT)  # D-118: swappable stock
 
     ctx.source_extra["tris_lod0"] = c.tris_of_scene()
     ctx.source_extra["origin"] = "firing-hand pivot: grip centre plane, mid grip depth, 20 mm below grip top"

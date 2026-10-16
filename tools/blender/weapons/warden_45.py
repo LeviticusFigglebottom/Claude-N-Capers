@@ -134,7 +134,7 @@ def _frame(ctx, mats):
 
 def build(ctx) -> None:
     mats = c.Mats(ctx)
-    _frame(ctx, mats)
+    frame = _frame(ctx, mats)
     _barrel(ctx, mats)
     slide = _slide(ctx, mats)
 
@@ -144,10 +144,10 @@ def build(ctx) -> None:
     sight_rail = ctx.marker("SightRail", (0.0, w.SIGHT_RAIL_Y, w.SLIDE_TOP_Z), parent=slide)
     magwell = ctx.marker("Magwell", w.MAGWELL_POS, rotation_euler=w.MAGWELL_ROT)
     rail = (0.0, 0.120, w.FRAME_BOTTOM_Z)
-    ctx.marker("SideRail", rail)
+    ctx.marker("SideRail", rail, rotation_euler=c.DUST_COVER_SIDE_RAIL_ROT)  # D-118: gadgets hang under the rail
     ctx.marker("Underbarrel", rail)
     ctx.marker("StockMount", (0.0, -0.058, 0.030))
-    ctx.marker("GripMount", (0.0, 0.0, 0.0))
+    grip_mount = ctx.marker("GripMount", (0.0, 0.0, 0.0))
     ctx.marker("LeftHandIK", (-(w.GRIP_HALF_WIDTH + 0.012), w.GRIP_HALF_DEPTH + w.GRIP_TAN * -0.020 - 0.004, -0.020))
 
     stock_sight = ctx.marker("StockSight", (0.0, 0.0, 0.0), parent=sight_rail)
@@ -155,6 +155,7 @@ def build(ctx) -> None:
     ctx.marker("AimPoint", (0.0, 0.0, w.SIGHT_DZ), parent=stock_sight)
     stock_mag = ctx.marker("StockMagazine", (0.0, 0.0, 0.0), parent=magwell)
     w.build_mag(ctx, mats, extended=False, parent=stock_mag)
+    c.wrap_part(ctx, [c.child(frame, "GripPanels")], grip_mount, "StockGrip", (0.0, 0.0, 0.0))  # D-118: swappable grip panels
 
     ctx.source_extra["tris_lod0"] = c.tris_of_scene()
     ctx.source_extra["origin"] = "firing-hand pivot: grip centre plane, mid grip depth, 20 mm below grip top"

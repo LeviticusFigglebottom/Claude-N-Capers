@@ -157,7 +157,11 @@ func _layout(entries: Array) -> void:
 
 func _draw() -> void:
 	var fs: int = UiTokens.FONT_SMALL
+	var shield: Rect2 = get_global_transform_with_canvas().affine_inverse() * avoid if avoid.has_area() else Rect2()
 	for d: Dictionary in drawn:
+		# Lead (flow capture): a marker over the Tab sheet hid its text; markers inside the sheet are not drawn there.
+		if shield.has_area() and shield.grow(SIZE * 1.6).has_point(d["pos"] as Vector2):
+			continue
 		# PO-4: the panel's current objective gets the full badge (ring + glyph); other live steps a small dot.
 		var cur: bool = bool(d["current"])
 		var c: Vector2 = d["pos"] as Vector2

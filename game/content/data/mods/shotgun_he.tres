@@ -1,0 +1,32 @@
+[gd_resource type="Resource" script_class="WeaponModDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/weapon_mod_def.gd" id="1"]
+[ext_resource type="Script" path="res://contracts/data/weapon_stats.gd" id="2"]
+[ext_resource type="PackedScene" uid="uid://cd8bte6flde54" path="res://assets/weapons/mod_shotgun_he/mod_shotgun_he.glb" id="3"]
+
+[sub_resource type="Resource" id="delta"]
+script = ExtResource("2")
+pellets = 0
+falloff_start_m = 0.0
+falloff_end_m = 0.0
+falloff_min_mult = 0.0
+headshot_mult = 0.0
+noise_radius_m = 0.0
+magnification = 0.0
+equip_time_s = 0.0
+ads_time_s = 0.0
+damage = 1.5
+spread_deg_hip = 0.4
+spread_deg_ads = 0.4
+total_ammo = -8
+
+[resource]
+script = ExtResource("1")
+id = &"mod.shotgun_he"
+display_name = "Blast Round"
+mod_type = 11
+delta = SubResource("delta")
+price = 7000
+unlock = &""
+model = ExtResource("3")
+params = {"ammo_type": &"he", "pellets": 1, "explosion_radius_m": 2.0, "explosion_damage_mult": 1.0, "penetration": false, "ammo_pickup_mult": 0.7}

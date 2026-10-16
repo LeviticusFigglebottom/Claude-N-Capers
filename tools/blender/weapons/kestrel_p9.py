@@ -6,7 +6,7 @@ Origin = firing-hand pivot (grip centre plane, centred front-to-back, 20 mm belo
 grip; see _p9.py). Forward = Godot -Z (muzzle), up = Godot +Y.
 
 Node tree (Godot names):
-* ``Frame`` (polymer frame, grip, trigger guard, accessory rail) with ``FrameTexture`` (stippling),
+* ``Frame`` (polymer frame, grip, trigger guard, accessory rail),
   ``Trigger``, ``Controls`` (slide stop, takedown lever)
 * ``Barrel``
 * ``Slide`` (separate so ENV A can cycle it along local +Z) with ``SlideDetails`` (front sight,
@@ -14,7 +14,8 @@ Node tree (Godot names):
 * markers per contracts/visual_slots.md: ``Muzzle``, ``Eject``, ``SightRail``, ``Magwell``,
   ``Underbarrel``, ``SideRail``, ``StockMount``, ``GripMount``, ``BarrelMount``, ``LeftHandIK``
 * stock parts under their markers (hidden by WeaponVisual when a mod replaces them):
-  ``SightRail/StockSight`` (rear sight, ``AimPoint`` in the notch), ``Magwell/StockMagazine``.
+  ``SightRail/StockSight`` (rear sight, ``AimPoint`` in the notch), ``Magwell/StockMagazine``,
+  ``GripMount/StockGrip`` (``FrameTexture``: grip stippling + front-strap grooves, D-118).
 
 Marker orientation: -Z (Godot) = forward for all, except ``Eject`` (-Z points out of the ejection
 port, to the right) and ``Magwell`` (rotated with the 18 deg grip rake, +Y = insertion axis).
@@ -22,6 +23,7 @@ port, to the right) and ``Magwell`` (rotated with the 18 deg grip rake, +Y = ins
 
 import math
 
+import _common as c
 import _p9 as p9
 
 ASSET_ID = "wpn_kestrel_p9"
@@ -165,7 +167,7 @@ def _frame(ctx, mats):
 
 def build(ctx) -> None:
     mats = p9.Mats(ctx)
-    _frame(ctx, mats)
+    frame = _frame(ctx, mats)
     _barrel(ctx, mats)
     slide = _slide(ctx, mats)
 
@@ -177,10 +179,10 @@ def build(ctx) -> None:
     sight_rail = ctx.marker("SightRail", (0.0, p9.SIGHT_RAIL_Y, p9.SLIDE_TOP_Z), parent=slide)
     magwell = ctx.marker("Magwell", p9.MAGWELL_POS, rotation_euler=p9.MAGWELL_ROT)
     rail = (0.0, (p9.RAIL_FRONT_Y + p9.RAIL_REAR_Y) / 2, p9.RAIL_BOTTOM_Z)
-    ctx.marker("SideRail", rail)
+    ctx.marker("SideRail", rail, rotation_euler=c.DUST_COVER_SIDE_RAIL_ROT)  # D-118: gadgets hang under the rail
     ctx.marker("Underbarrel", rail)
     ctx.marker("StockMount", (0.0, -0.043, 0.030))
-    ctx.marker("GripMount", (0.0, 0.0, 0.0))
+    grip_mount = ctx.marker("GripMount", (0.0, 0.0, 0.0))
     ctx.marker("LeftHandIK", (-(p9.GRIP_HALF_WIDTH + 0.010), p9.grip_front_y(-0.020) - 0.004, -0.020))
 
     # stock parts (WeaponVisual hides them when a mod of that type replaces them)
@@ -189,6 +191,7 @@ def build(ctx) -> None:
     ctx.marker("AimPoint", (0.0, 0.0, p9.SIGHT_LINE_DZ), parent=stock_sight)
     stock_mag = ctx.marker("StockMagazine", (0.0, 0.0, 0.0), parent=magwell)
     p9.build_magazine(ctx, mats, extended=False, parent=stock_mag)
+    c.wrap_part(ctx, [c.child(frame, "FrameTexture")], grip_mount, "StockGrip", (0.0, 0.0, 0.0))  # D-118: swappable grip texture
 
     ctx.source_extra["tris_lod0"] = p9.tris_of_scene()
     ctx.source_extra["origin"] = "firing-hand pivot: grip centre plane, mid grip depth, 20 mm below grip top"

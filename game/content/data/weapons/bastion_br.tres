@@ -50,7 +50,8 @@ mod_slots = {
 3: [&"mod.bastion_iron_sights", &"mod.rail_reflex_sight", &"mod.rail_prism_scope"],
 5: [&"mod.bastion_bipod"],
 6: [&"mod.bastion_collapsed_stock", &"mod.bastion_precision_stock"],
-7: [&"mod.bastion_standard_mag", &"mod.bastion_extended_mag"]
+7: [&"mod.bastion_standard_mag", &"mod.bastion_extended_mag"],
+8: [&"mod.rail_laser", &"mod.rail_flashlight", &"mod.rail_combo"]
 }
 default_mods = {
 3: &"mod.bastion_iron_sights",

@@ -365,6 +365,12 @@
 			"test": false
 		},
 		{
+			"asset": "char_gallery_conservator",
+			"id": "gallery_conservator",
+			"scene": "res://world/characters/gallery_conservator/gallery_conservator.tscn",
+			"test": false
+		},
+		{
 			"asset": "char_gallery_curator",
 			"id": "gallery_curator",
 			"scene": "res://world/characters/gallery_curator/gallery_curator.tscn",
@@ -392,6 +398,42 @@
 			"asset": "char_gallery_patron_b",
 			"id": "gallery_patron_b",
 			"scene": "res://world/characters/gallery_patron_b/gallery_patron_b.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_gallery_patron_c",
+			"id": "gallery_patron_c",
+			"scene": "res://world/characters/gallery_patron_c/gallery_patron_c.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_gallery_patron_d",
+			"id": "gallery_patron_d",
+			"scene": "res://world/characters/gallery_patron_d/gallery_patron_d.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_gallery_patron_e",
+			"id": "gallery_patron_e",
+			"scene": "res://world/characters/gallery_patron_e/gallery_patron_e.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_gallery_patron_f",
+			"id": "gallery_patron_f",
+			"scene": "res://world/characters/gallery_patron_f/gallery_patron_f.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_gallery_patron_g",
+			"id": "gallery_patron_g",
+			"scene": "res://world/characters/gallery_patron_g/gallery_patron_g.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_gallery_waiter",
+			"id": "gallery_waiter",
+			"scene": "res://world/characters/gallery_waiter/gallery_waiter.tscn",
 			"test": false
 		},
 		{

@@ -8,7 +8,8 @@ Origin = firing-hand pivot on the grip (see _gale.py). Forward = Godot -Z.
 
 Node tree: ``Receiver`` (+ ``FeedCover`` with ``TopRail`` and the ``SightRail`` marker; origin = the rear
 hinge, D-044), ``ReceiverDetails``, ``TriggerGroup``, ``Grip``, ``ChargingHandle``), ``Jacket`` (+ ``MuzzleBrake``),
-``Stock``. Stock parts: ``SightRail/StockSight`` (rear leaf, ``AimPoint``), ``Magwell/StockMagazine`` (belt box).
+``Stock``. Stock parts: ``SightRail/StockSight`` (rear leaf, ``AimPoint``), ``Magwell/StockMagazine`` (belt box),
+``StockMount/StockStock`` (polymer stock, D-118).
 """
 
 import math
@@ -113,7 +114,7 @@ def build(ctx) -> None:
     mats = c.Mats(ctx)
     cover = _receiver(ctx, mats)
     _jacket(ctx, mats)
-    _stock(ctx, mats)
+    stock = _stock(ctx, mats)
 
     ctx.marker("BarrelMount", (0.0, g.REC_FRONT_Y, g.BORE_Z))
     ctx.marker("Eject", (g.REC_HW, 0.060, g.BORE_Z - 0.026), rotation_euler=(0.0, 0.0, -math.pi / 2))
@@ -122,7 +123,7 @@ def build(ctx) -> None:
     magwell = ctx.marker("Magwell", g.MAGWELL_POS)
     ctx.marker("Underbarrel", (0.0, g.UNDER_Y, g.BORE_Z - g.JACKET_R - 0.0057))
     ctx.marker("SideRail", (g.JACKET_R + 0.002, g.SIDE_Y, g.BORE_Z))
-    ctx.marker("StockMount", g.STOCK_MOUNT)
+    stock_mount = ctx.marker("StockMount", g.STOCK_MOUNT)
     ctx.marker("GripMount", (0.0, 0.0, 0.0))
     # Lead (ENV D, FP left-hand cup): under the Jacket (y 0.160-0.555, bottom z 0.052), x 0, 12 mm low, a third of the way forward.
     ctx.marker("LeftHandIK", (0.0, 0.292, 0.040))
@@ -132,6 +133,7 @@ def build(ctx) -> None:
     ctx.marker("AimPoint", (0.0, g.REAR_IRON_Y, g.IRON_AIM_DZ), parent=stock_sight)
     stock_mag = ctx.marker("StockMagazine", (0.0, 0.0, 0.0), parent=magwell)
     g.build_box(ctx, mats, big=False, parent=stock_mag)
+    c.wrap_part(ctx, [stock], stock_mount, "StockStock", g.STOCK_MOUNT)  # D-118: swappable stock
 
     ctx.source_extra["tris_lod0"] = c.tris_of_scene()
     ctx.source_extra["origin"] = "firing-hand pivot: grip centre plane, mid grip depth, 20 mm below grip top"

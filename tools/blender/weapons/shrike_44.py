@@ -8,7 +8,7 @@ Origin = firing-hand pivot on the wrist (see _shrike.py). Forward = Godot -Z.
 
 Node tree: ``Receiver`` (+ ``ReceiverDetails``, ``Trigger``, ``Wrist``, ``Forend``), ``Lever`` (origin =
 lever pivot; ENV A swings it about local X), ``Stock``. Stock parts: ``SightRail/StockSight`` (buckhorn +
-front blade, ``AimPoint``), ``Magwell/StockMagazine`` (tube), ``BarrelMount/StockBarrel`` (octagonal barrel).
+front blade, ``AimPoint``), ``Magwell/StockMagazine`` (tube), ``BarrelMount/StockBarrel`` (octagonal barrel), ``StockMount/StockStock`` (walnut stock with the wrist, D-118).
 """
 
 import math
@@ -93,7 +93,7 @@ def build(ctx) -> None:
     mats = c.Mats(ctx)
     _receiver(ctx, mats)
     _lever(ctx, mats)
-    _stock(ctx, mats)
+    stock = _stock(ctx, mats)
 
     ctx.marker("Muzzle", (0.0, s.MUZZLE_Y, s.BORE_Z))
     bmount = ctx.marker("BarrelMount", (0.0, s.REC_FRONT_Y, s.BORE_Z))
@@ -102,7 +102,7 @@ def build(ctx) -> None:
     magwell = ctx.marker("Magwell", s.MAGWELL_POS)
     ctx.marker("Underbarrel", (0.0, 0.250, s.TUBE_Z - s.TUBE_R - 0.012))
     ctx.marker("SideRail", (0.0180, 0.250, s.BORE_Z - 0.010))
-    ctx.marker("StockMount", s.STOCK_MOUNT)
+    stock_mount = ctx.marker("StockMount", s.STOCK_MOUNT)
     ctx.marker("GripMount", (0.0, 0.0, 0.0))
     # Lead (ENV D, FP left-hand cup): under the Forend (y 0.150-0.330, bottom z 0.016), x 0, 12 mm low, a third of the way forward.
     ctx.marker("LeftHandIK", (0.0, 0.210, 0.004))
@@ -114,6 +114,7 @@ def build(ctx) -> None:
     ctx.marker("AimPoint", (0.0, s.REAR_IRON_Y, aim), parent=stock_sight)
     stock_mag = ctx.marker("StockMagazine", (0.0, 0.0, 0.0), parent=magwell)
     s.build_tube(ctx, mats, parent=stock_mag)
+    c.wrap_part(ctx, [stock], stock_mount, "StockStock", s.STOCK_MOUNT)  # D-118: swappable stock (wrist included: the stock mods carry their own wrist)
 
     ctx.source_extra["tris_lod0"] = c.tris_of_scene()
     ctx.source_extra["origin"] = "firing-hand pivot: wrist centre plane, mid grip depth, 20 mm below the wrist top"

@@ -4,6 +4,7 @@
 ##   xvfb-run -a -s "-screen 0 640x360x24" /opt/godot/godot --rendering-driver opengl3 --audio-driver Dummy \
 ##     --fixed-fps 60 --resolution 640x360 --path game res://tests/p/_review/hold_capture.tscn -- --out=/abs/dir \
 ##     [--weapons=weapon.kestrel_p9,...] [--heist=glasshouse]   (a lit map behind the silhouette; default unit map)
+##     [--mods=weapon.corsair_ar:mod.corsair_vertical_grip,...]   mods per weapon (weapon:mod pairs)
 ##     [--closeup]   also <out>/closeup_sheet.png: hip and ADS seen from below / left / right of the support hand
 ##                   (a review camera on the weapon's LeftHandIK marker that sees the viewmodel layers; finger clipping)
 ## Owner: ENV P.
@@ -17,6 +18,7 @@ const CLOSE_VIEWS: Dictionary = {"below": [Vector3(0.04, -0.24, 0.06), 2], "left
 var _out: String = "user://hold_capture"
 var _heist: StringName = &""
 var _closeup: bool = false
+var _mods: PackedStringArray = []
 var _close_rows: Array[Array] = []
 var _weapons: PackedStringArray = ["weapon.kestrel_p9", "weapon.hornet_9", "weapon.corsair_ar", "weapon.mule_12",
 	"weapon.anvil_lmg", "weapon.heron_308"]
@@ -31,6 +33,7 @@ func _ready() -> void:
 			"weapons": _weapons = v.split(",")
 			"heist": _heist = StringName(v)
 			"closeup": _closeup = true
+			"mods": _mods = v.split(",", false)
 	DirAccess.make_dir_recursive_absolute(_out)
 	# Like A's PO-5 fast mode: llvmpipe renders a lit heist at minutes per frame, so the render loop is off between
 	# shots (physics, animation and input stay real; _shot() renders the frame it saves).
@@ -50,13 +53,18 @@ func _weapon(wid: StringName) -> Array:
 	var def: WeaponDef = ContentDB.weapon(wid)
 	var secondary: bool = def != null and def.slot == Enums.WeaponSlot.SECONDARY
 	var l: Loadout = CrewWeapons.build_loadout(null).duplicate() as Loadout
+	var mods: Array[StringName] = []
+	for pair: String in _mods:
+		var wm: PackedStringArray = pair.split(":")
+		if wm.size() == 2 and StringName(wm[0]) == wid:
+			mods.append(StringName(wm[1]))
 	if secondary:
 		l.secondary = wid
-		l.secondary_mods = [] as Array[StringName]
+		l.secondary_mods = mods
 		l.resolved_secondary = LoadoutResolver.resolve_weapon(wid, l.secondary_mods)
 	else:
 		l.primary = wid
-		l.primary_mods = [] as Array[StringName]
+		l.primary_mods = mods
 		l.resolved_primary = LoadoutResolver.resolve_weapon(wid, l.primary_mods)
 	var rt: HeistRuntime = null
 	if _heist == &"":

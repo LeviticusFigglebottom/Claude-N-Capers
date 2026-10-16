@@ -2,6 +2,23 @@
 
 Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min; this file says where to resume.
 
+## 2026-10-16 (later): D-118 gadgets + vgrip, D-119 dark guns, ND spawn view, GN ladder test
+- D-118 gadgets (d8e8dbe6, f901e122): PlayerInput intent.gadget = just_pressed(gadget_toggle); FpViewmodelGadgets
+  (systems/anim/fp_viewmodel_gadgets.gd, world-space next to the crew): laser beam + dot from the apparent LaserOrigin,
+  SpotLight3D flashlight (no shadows, spot_angle = gadget_light_angle_deg as a half-angle, same as A's 3P) from
+  LightOrigin; Muzzle fallback; reads CrewWeapons.gadget_on (A 348daa39, verified on a scratch merge), local fallback
+  via the intent edge otherwise. B's rail_combo: beam leaves the lens (Kestrel under-barrel, Corsair side rail).
+  Tests test_p_gadgets; tools gadget_capture (--mods). Evidence captures/d118/.
+- D-118 vgrip (73d76f04): vertical-grip mod -> left-hand IK on the mod's LeftHandIK at D's wrist offset (weapon axes
+  -> marker axes), fingers from <set>_vgrip_hand frame 0, hand orientation vs the weapon from that clip (HandRestore).
+  test_p_vgrip (skips until D's clips are on the branch); D approved the contact.
+- D-119 (PO): viewmodel gun fill off by default (72ed6d48; code + gun layer kept); with C's finish revert the guns are
+  near-black again (captures/d119/black_gun_vs_reference.png).
+- ND spawn void (b4155aa5): the four CasingSidewalk spawns face a wall 1.0 m away (C's layout PLAYER_SPAWNS); routed
+  to C with a fix + tests/p/_review/spawn_view_probe.tscn (other heists fine).
+- test_p_gn_traversal ladders (6edd7798): AreawayLadder is gated by its grate (A b25c8dc5); the test opens it first.
+- nd_stealth_pass coverage running (~60x slower than real time on llvmpipe); GN-P1 pass next.
+
 ## 2026-10-16: D-116 one-handed FP pistol / revolver + organic motion (with ENV D)
 - One-handed FP: one_handed_fp_sets [pistol, revolver] skip the left-hand IK; LeftArmHide drops upper_arm.L out of view
   (eases back for the reload clips). D's clips (env/d-art up to b65aeb04: one-handed, re-seated grip

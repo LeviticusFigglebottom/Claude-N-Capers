@@ -6,6 +6,8 @@
 * ``mod_anvil_box_150``       MAGAZINE -> ``Magwell``     (150-round box)
 * ``mod_anvil_short_barrel``  BARREL   -> ``BarrelMount`` (short quick-change barrel; own ``Muzzle``)
 * ``mod_anvil_bipod``         FOREGRIP -> ``Underbarrel`` (folded bipod on the gas-cylinder rail)
+* ``mod_anvil_collapsed_stock`` STOCK -> ``StockMount`` (light telescoping stock pushed in; hides ``StockStock``; D-118)
+* ``mod_anvil_heavy_stock`` STOCK -> ``StockMount`` (heavy stock, cheek riser + recoil pad; hides ``StockStock``; D-118)
 
 Optics are the shared rail optics (``rail_optics_mods.py``).
 """
@@ -20,6 +22,8 @@ VARIANTS = {
     "mod_anvil_box_150": {"part": "box_big"},
     "mod_anvil_short_barrel": {"part": "barrel_short"},
     "mod_anvil_bipod": {"part": "bipod"},
+    "mod_anvil_collapsed_stock": {"part": "stock_light"},
+    "mod_anvil_heavy_stock": {"part": "stock_heavy"},
 }
 
 
@@ -37,6 +41,10 @@ def build(ctx) -> None:
         a.build_barrel(ctx, mats, short=True)   # its MuzzleBrake carries the own Muzzle
     elif part == "bipod":
         c.build_bipod(ctx, mats, leg_len=0.180)
+    elif part == "stock_light":
+        c.build_collapsed_stock(ctx, mats, 0.160, 0.038, -0.122, 0.0190)
+    elif part == "stock_heavy":
+        c.build_precision_stock(ctx, mats, 0.290, 0.038, -0.122, 0.0195, front_z=-0.048)
     else:
         raise ValueError(f"unknown part {part!r}")
     ctx.source_extra["tris_lod0"] = c.tris_of_scene()

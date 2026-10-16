@@ -77,6 +77,16 @@ class LeftArmHide:
 			vm._hide_left_arm()
 
 
+## D-118: with a vertical-grip mod the left hand takes D's `<set>_vgrip_hand` pose (before HandCapture / the IK).
+class VgripPose:
+	extends SkeletonModifier3D
+	var vm: FpViewmodel = null
+
+	func _process_modification_with_delta(_delta: float) -> void:
+		if vm != null and is_instance_valid(vm):
+			vm._apply_vgrip_pose()
+
+
 enum Action { NONE, FIRE, RELOAD, SWAP, MELEE, DEPLOY, THROW, INTERACT }
 
 const NODE_NAME: String = "FpViewmodel"
@@ -154,6 +164,12 @@ var _weapon_bone: int = -1
 var _hand_bone: int = -1
 var _hand_rel: Basis = Basis.IDENTITY
 var _hand_rel_set: bool = false
+## D-118: vertical grip: the target local rotations of hand.L and its finger bones (bone -> Quaternion, frame 0 of
+## `<set>_vgrip_hand`); empty = no vertical grip on this gun.
+var _vgrip_pose: Dictionary = {}
+## D-118: hand.L orientation relative to the weapon bone in the vgrip clip (HandCapture uses it instead of the playing
+## clip's while a vertical grip holds the hand).
+var _vgrip_rel: Basis = Basis.IDENTITY
 ## D-116: upper_arm.L and how far (0..1) the left arm is dropped out of view for a one-handed set.
 var _left_root_bone: int = -1
 var _left_drop: float = 0.0
@@ -244,6 +260,11 @@ func _bind(inst: Node3D, crew: CrewController) -> bool:
 		cap.vm = self
 		skeleton.add_child(cap)
 		skeleton.move_child(cap, left_hand_ik.ik.get_index())  # before the IK
+		var vg: VgripPose = VgripPose.new()
+		vg.name = "VgripPose"
+		vg.vm = self
+		skeleton.add_child(vg)
+		skeleton.move_child(vg, cap.get_index())  # before HandCapture: the captured hand is the grip pose
 		var res: HandRestore = HandRestore.new()
 		res.name = "HandRestore"
 		res.vm = self
@@ -595,6 +616,10 @@ func _breathing() -> Vector2:
 func _capture_hand() -> void:
 	if skeleton == null or _hand_bone < 0 or _weapon_bone < 0:
 		return
+	if not _vgrip_pose.is_empty():  # D-118: the vertical grip's hand orientation
+		_hand_rel = _vgrip_rel
+		_hand_rel_set = true
+		return
 	# PO6-11: mid ADS blend the clip's hand orientation is a blend artefact; keep the one from hip / full ADS.
 	if _hand_rel_set and ads_weight > 0.001 and ads_weight < 0.999 \
 			and FpViewmodelTweak.data().left_hand_hold_rel_sets.has(anim_set):
@@ -615,6 +640,96 @@ func _restore_hand() -> void:
 	var scale_v: Vector3 = pose.basis.get_scale()
 	var q: Quaternion = pose.basis.orthonormalized().get_rotation_quaternion().slerp(want.get_rotation_quaternion(), w)
 	skeleton.set_bone_global_pose(_hand_bone, Transform3D(Basis(q).scaled(scale_v), pose.origin))
+
+
+## D-118 (PD2 vertical grip): when the equipped gun's effective `LeftHandIK` is a mod's (WeaponVisual.get_marker
+## differs from get_base_marker) and the set has a `<set>_vgrip_hand` clip and a vgrip wrist offset, the IK target
+## moves to the grip (FpViewmodelTweak.set_vgrip_grip_offset) and the left hand / fingers take that clip's frame 0.
+func _setup_vgrip(wv: WeaponVisual, set_id: StringName) -> void:
+	_vgrip_pose.clear()
+	var tw: FpViewmodelTweak = FpViewmodelTweak.data()
+	if wv == null or skeleton == null or left_hand_ik == null or not tw.set_vgrip_grip_offset.has(set_id):
+		return
+	var mk: Node3D = wv.get_marker(&"LeftHandIK")
+	if mk == null or not wv.has_method(&"get_base_marker") or mk == wv.call(&"get_base_marker", &"LeftHandIK"):
+		return
+	if _resolve(set_id, &"vgrip_hand") != &"vgrip_hand":
+		return
+	var anim: Animation = player.get_animation("%s/vgrip_hand" % set_id)
+	var hand: int = skeleton.find_bone(FpLeftHandIk.END_BONE)
+	if anim == null or hand < 0:
+		return
+	for t: int in anim.get_track_count():
+		if anim.track_get_type(t) != Animation.TYPE_ROTATION_3D:
+			continue
+		var b: int = skeleton.find_bone(String(anim.track_get_path(t)).get_slice(":", 1))
+		if b >= 0 and _is_descendant(b, hand):  # the fingers; hand.L's orientation goes through HandRestore
+			_vgrip_pose[b] = anim.rotation_track_interpolate(t, 0.0)
+	if _vgrip_pose.is_empty() or _weapon_bone < 0:
+		_vgrip_pose.clear()
+		return
+	_vgrip_rel = _clip_global(anim, _weapon_bone).basis.orthonormalized().inverse() \
+		* _clip_global(anim, hand).basis.orthonormalized()
+	_hand_rel_set = false
+	var grip: Node3D = mk.get_node_or_null(FpLeftHandIk.GRIP_NAME) as Node3D
+	if grip != null:  # ENV D's offset is in weapon (WeaponVisual) axes; the grip node lives in the marker's
+		var to_marker: Basis = mk.global_basis.orthonormalized().inverse() * wv.global_basis.orthonormalized()
+		grip.position = to_marker * (tw.set_vgrip_grip_offset[set_id] as Vector3)
+
+
+## Skeleton-space pose of `bone` in `anim` at frame 0 (rest where the clip has no track).
+func _clip_global(anim: Animation, bone: int) -> Transform3D:
+	var chain: Array[int] = []
+	var b: int = bone
+	while b >= 0:
+		chain.push_front(b)
+		b = skeleton.get_bone_parent(b)
+	var g: Transform3D = Transform3D.IDENTITY
+	for i: int in chain:
+		var rest: Transform3D = skeleton.get_bone_rest(i)
+		var path: NodePath = NodePath("%s:%s" % [_skeleton_path(anim), skeleton.get_bone_name(i)])
+		var rt: int = anim.find_track(path, Animation.TYPE_ROTATION_3D)
+		var pt: int = anim.find_track(path, Animation.TYPE_POSITION_3D)
+		var q: Quaternion = anim.rotation_track_interpolate(rt, 0.0) if rt >= 0 else rest.basis.get_rotation_quaternion()
+		var o: Vector3 = anim.position_track_interpolate(pt, 0.0) if pt >= 0 else rest.origin
+		g = g * Transform3D(Basis(q).scaled(rest.basis.get_scale()), o)
+	return g
+
+
+## The node path prefix (before ":bone") the clip's bone tracks use.
+func _skeleton_path(anim: Animation) -> String:
+	for t: int in anim.get_track_count():
+		var p: String = String(anim.track_get_path(t))
+		if p.contains(":"):
+			return p.get_slice(":", 0)
+	return "."
+
+
+func _is_descendant(b: int, ancestor: int) -> bool:
+	var p: int = skeleton.get_bone_parent(b)
+	while p >= 0:
+		if p == ancestor:
+			return true
+		p = skeleton.get_bone_parent(p)
+	return false
+
+
+## VgripPose modifier: blend the left hand and fingers to the grip pose by the left-hand IK's influence (the clip owns
+## the hand while reloading / swapping, like the IK).
+func _apply_vgrip_pose() -> void:
+	if _vgrip_pose.is_empty() or skeleton == null or left_hand_ik == null or left_hand_ik.ik == null:
+		return
+	var w: float = left_hand_ik.ik.influence
+	if w <= 0.0:
+		return
+	for b: int in _vgrip_pose:
+		var cur: Quaternion = skeleton.get_bone_pose_rotation(b)
+		skeleton.set_bone_pose_rotation(b, cur.slerp(_vgrip_pose[b] as Quaternion, w))
+
+
+## Read only (tests): whether the equipped gun's vertical grip took over the left hand.
+func vgrip_active() -> bool:
+	return not _vgrip_pose.is_empty()
 
 
 ## D-116 (LeftArmHide modifier): move upper_arm.L (and so the whole left arm) by one_handed_left_drop (camera space,
@@ -979,6 +1094,7 @@ func _set_weapon(wv: WeaponVisual, set_id: StringName) -> void:
 	_magwell = wv.get_base_marker(&"Magwell") if wv != null else null
 	if left_hand_ik != null:
 		left_hand_ik.set_target(wv.get_marker(&"LeftHandIK") if wv != null else null, set_id)
+	_setup_vgrip(wv, set_id)
 	_magwell_rest = _magwell.transform if _magwell != null else Transform3D.IDENTITY
 	_check_aim_point(wv)
 

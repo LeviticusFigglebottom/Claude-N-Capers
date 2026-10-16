@@ -1,4 +1,4 @@
-# Contract: EventBus events (v1.6)
+# Contract: EventBus events (v1.7)
 
 Code: `game/core/event_bus.gd` (the signal list there is authoritative; this file adds emitter and
 replication rules). Rules: architecture.md §5.
@@ -101,3 +101,12 @@ event's replicated dynamic entity (AssaultEventEntity; clients spawn it through 
 peer); `position` = van park point / heli hover point (drop) or orbit centre (sniper only) / breach point. Facts only: the entities still emit their own
 `audio_cue_requested` (cue.assault_*). Consumers: B HUD/voice callouts ("Turret!", "Chopper!"), C audio/music stingers.
 
+
+## v1.7: achievement facts (D-115, B's per-heist achievements)
+* `HeistResult["loot_available"]` (int, additive): every valued bag the run offered. That means bags that existed (taken
+  from a LootSpawn, spawned by the mission or placed in the map) plus whatever is still left in LootSpawns, safe contents
+  and unopened ones included. Variant-disabled spawns count 0. Body bags and value-0 tool bags (e.g. thermite) are excluded.
+* `objective_updated` data carries `"open_method"` (StringName) before COMPLETED on:
+  * GH `safe`: `&"keycard"` / `&"code"` / `&"lockpick"` / `&"drill"` / `&"left_open"` (safe_open variant).
+  * SL `cage`: `&"code"` / `&"saw"` / `&"left_open"` (rare variant).
+* Every mission completes its `escape` objective on the escape trigger, before `heist_ended`.
