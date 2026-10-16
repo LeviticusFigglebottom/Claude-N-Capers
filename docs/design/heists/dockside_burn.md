@@ -848,7 +848,7 @@ its straight line is pontoon → K1 (≈ 102 m for a 75 m straight line, 1.4×).
 
 ## HeistDef (proposed data, `dockside_burn_def.tres`)
 `id dockside_burn`, display "Dockside Burn", contact `contact.reyes`, mode LOUD_ONLY, base_payout
-**$95,000** (D-064, Q7: a placeholder, like the loot values below; ENV B balances them in P6),
+**$24,000** (D-120; loot values below are placeholders ENV B balances in P6),
 loot `[loot.cash_bricks, loot.weapon_crate, loot.contraband]` (the new ids are B to confirm; `loot.thermite` is a
 tool bag, not payout loot), escape_options `[van, boat]`, music_track `dockside_burn`, objectives
 `[cartel, breach, product, burn, strongroom, count_cage, containers, secure, escape_wait, escape]`,
