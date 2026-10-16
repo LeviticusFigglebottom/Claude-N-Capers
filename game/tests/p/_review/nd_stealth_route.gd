@@ -310,15 +310,20 @@ func _antechamber() -> bool:
 		await pilot.inp.tap(&"slot_secondary")
 		await wait_s(1.0)
 		for _k: int in 6:
-			if not is_instance_valid(cam) or not cam.is_visible_in_tree():
+			if _cam_down(cam):
 				break
 			await pilot.face(cam.global_position, 0.01, 1.0)
 			await pilot.inp.tap(&"fire")
 			await wait_s(0.4)
-		note("camera C6 %s" % ("down" if not is_instance_valid(cam) or not cam.is_visible_in_tree() else "still up"))
+		note("camera C6 %s" % ("down" if _cam_down(cam) else "still up"))
 	else:
 		note("no C6 camera found near %s" % Po5Pilot._v(C6_AT))
 	return true
+
+
+## A shot camera keeps its mesh: SecurityCamera.destroyed (S8.1) is the state.
+static func _cam_down(cam: Node3D) -> bool:
+	return not is_instance_valid(cam) or bool(cam.get(&"destroyed")) or not cam.is_visible_in_tree()
 
 
 func _time_lock() -> bool:
