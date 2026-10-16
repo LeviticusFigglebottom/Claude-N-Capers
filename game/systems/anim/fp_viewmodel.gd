@@ -217,6 +217,12 @@ static func of(cam: Node) -> FpViewmodel:
 	return cam.get_node_or_null(NODE_NAME) as FpViewmodel if cam != null else null
 
 
+## The local first-person viewmodel of `crew` (its CrewView camera's), or null (remote peers, bots, no arms).
+static func of_crew(crew: Node) -> FpViewmodel:
+	var cv: CrewView = CrewView.of(crew)
+	return of(cv.camera()) if cv != null else null
+
+
 ## Arms for `crew` from `scene` (default FpViewmodelTweak.arms_scene); null when the scene is missing or has no
 ## Skeleton3D with the weapon bone and an AnimationPlayer (CrewView then keeps the static viewmodel).
 static func create(crew: CrewController, scene: PackedScene = null) -> FpViewmodel:
@@ -641,6 +647,13 @@ func _restore_hand() -> void:
 	var scale_v: Vector3 = pose.basis.get_scale()
 	var q: Quaternion = pose.basis.orthonormalized().get_rotation_quaternion().slerp(want.get_rotation_quaternion(), w)
 	skeleton.set_bone_global_pose(_hand_bone, Transform3D(Basis(q).scaled(scale_v), pose.origin))
+
+
+## Presentation origin for the NEXT shot's tracer / FX (ENV A's CrewWeapons._fx_origin, which runs before `fired`):
+## the Muzzle of the gun that fires it (akimbo: the left one on a left shot); null without a visual. Gameplay stays
+## at the eye (D-121).
+func fx_muzzle() -> Node3D:
+	return offhand.next_marker(weapon_visual, &"Muzzle")
 
 
 ## Read only (tests): whether the equipped gun's vertical grip took over the left hand.

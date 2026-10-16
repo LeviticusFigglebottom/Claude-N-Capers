@@ -89,6 +89,17 @@ func marker(wv: WeaponVisual, name: StringName) -> Node3D:
 	return wv.get_marker(name)
 
 
+## The marker of the gun that fires the NEXT shot (before begin_shot(): ENV A's FX origin runs before `fired`).
+func next_marker(wv: WeaponVisual, name: StringName) -> Node3D:
+	if wv == null or not is_instance_valid(wv):
+		return null
+	if _next_left and gun() != null:
+		var m: Node3D = wv.get_offhand_marker(name)
+		if m != null:
+			return m
+	return wv.get_marker(name)
+
+
 ## The left magazine has no bone (rig fp.akimbo): hidden between the reload's mag_out_l and mag_in_l.
 func set_mag_hidden(hidden: bool) -> void:
 	if _mag != null and is_instance_valid(_mag) and _mag.visible == hidden:

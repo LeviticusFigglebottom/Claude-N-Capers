@@ -130,3 +130,24 @@ func test_shots_alternate_and_left_mag_hides_in_reload() -> void:
 		return vm.action == FpViewmodel.Action.NONE and not c.weapons.reloading, 8.0), "reload finished")
 	assert_true(hidden[0] > 0, "the left magazine is hidden between mag_out_l and mag_in_l (%d frames)" % hidden[0])
 	assert_true(mag.visible, "the left magazine is back after the reload")
+
+
+## ENV A reads fx_muzzle() for the tracer origin BEFORE `fired`: it must name the gun of the upcoming shot.
+func test_fx_muzzle_predicts_the_next_gun() -> void:
+	if FpViewmodelTweak.data().arms_scene == null:
+		skip("char_arms_fp not delivered")
+		return
+	var c: CrewController = await _launch()
+	var vm: FpViewmodel = FpViewmodel.of_crew(c)
+	assert_true(vm != null and vm.offhand.gun() != null, "akimbo viewmodel via of_crew")
+	if vm == null or vm.offhand.gun() == null:
+		return
+	for k: int in 4:
+		var predicted: Node3D = vm.fx_muzzle()
+		await _inp.tap(&"fire")
+		await wait_physics_frames(3)
+		var fired: Node3D = vm.offhand.marker(vm.weapon_visual, &"Muzzle")
+		assert_true(predicted != null and predicted == fired, "shot %d: fx_muzzle() named the firing gun" % k)
+		assert_eq(vm.offhand.gun().is_ancestor_of(fired), k % 2 == 1, "shot %d is the %s gun" % [k,
+			"left" if k % 2 == 1 else "right"])
+		await wait_physics_frames(12)
