@@ -410,5 +410,5 @@ Each variable changes a decision.
 
 ## HeistDef (proposed data, `glasshouse_def.tres`)
 `id glasshouse`, display "Golden Hour" (D-117), contact `contact.vance`, mode STEALTH_OR_LOUD, base_payout
-proposed **$40,000** (lead/B to confirm), loot `[loot.jewelry, loot.cash]`, escape_options `[van]`,
+**$12,000** (D-120; display cases pay small loot, not jewelry bags), loot `[loot.jewelry, loot.cash]`, escape_options `[van]`,
 music_track `glasshouse`.

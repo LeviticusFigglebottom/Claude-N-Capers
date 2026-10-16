@@ -108,7 +108,9 @@ PISTOL = FPSet(
     # D-116 (lead): the gun never rolls its grip toward the camera; the mag change happens in frame, the left hand
     # coming in from below
     lowered=((0.14, 0.22, -0.42), 10.0, -35.0, -15.0),
-    reload_tilt=((0.05, 0.33, -0.10), 8.0, 10.0, -20.0),
+    # D-116 follow-up (lead): raised and canted so the magwell and the left hand seating the magazine are IN FRAME
+    # under P's one-handed hip framing (set_hip_offset / set_hip_rot_deg): the well at ~0.72 of the screen height, the gun angled like the hip hold
+    reload_tilt=((0.04, 0.33, 0.0), 15.0, 6.0, -45.0),
     support="pistol", blade=6.0, blade_ads=0.0,
     recoil={"back": 0.030, "up": 0.012, "pitch": 9.0, "roll": 1.5, "yaw": 0.6},
     recoil_ads={"back": 0.020, "up": 0.006, "pitch": 5.0, "roll": 0.8, "yaw": 0.3},
@@ -421,7 +423,7 @@ REVOLVER = FPSet(
     pole_r_ads=(0.0, -0.1, -1.0),
     sprint=((0.13, 0.30, -0.15), 10.0, -16.0, -26.0),
     lowered=((0.14, 0.22, -0.42), 10.0, -35.0, -15.0),
-    reload_tilt=((0.07, 0.34, -0.15), 12.0, 10.0, -20.0),
+    reload_tilt=((0.04, 0.33, -0.03), 14.0, 8.0, -28.0),   # D-116 follow-up: the open cylinder in frame
     support="pistol", blade=6.0, blade_ads=0.0, reload="speedloader",
     recoil={"back": 0.040, "up": 0.018, "pitch": 16.0, "roll": 2.5, "yaw": 1.0},
     recoil_ads={"back": 0.028, "up": 0.010, "pitch": 9.0, "roll": 1.4, "yaw": 0.5},

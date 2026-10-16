@@ -136,11 +136,11 @@ VARIANTS: dict[str, Variant] = {
         note="slim cobalt racing-jacket sleeve (white stripes on the body only: they run down the outside of the "
              "upper arm, off screen in first person) into a ribbed cuff, cognac driving gloves"),
     "wren": Variant(
-        "wren", "char_tac_glove",
+        "wren", "char_crew_glove_sage",
         (
-            Layer("char_tac_glove", ((-0.020, 0.0030), (-0.010, 0.0029), (0.0, 0.0027)),
+            Layer("char_crew_glove_sage", ((-0.020, 0.0030), (-0.010, 0.0029), (0.0, 0.0027)),
                   hems=("start",), hem=0.0013, glove=True),
-            Layer("char_tac_glove", ((-0.017, 0.0046), (-0.011, 0.0049), (-0.005, 0.0049)),
+            Layer("char_crew_glove_sage", ((-0.017, 0.0046), (-0.011, 0.0049), (-0.005, 0.0049)),
                   hems=("start", "end"), hem=0.0016, glove=True),
             Layer("char_shirt_blue", ((U_SHOULDER, 0.012), (-0.35, 0.012), (-0.31, 0.011), (-0.275, 0.011),
                                       (-0.268, 0.013), (-0.258, 0.017), (-0.248, 0.016), (-0.241, 0.012),
@@ -149,7 +149,7 @@ VARIANTS: dict[str, Variant] = {
         ),
         forearm_skin=True,
         note="pale-blue shirt sleeve rolled to just below the elbow (double roll tucked onto the skin), bare "
-             "forearm (body forearm region, skin tone of the variant), short tactical gloves with a strap"),
+             "forearm (body forearm region, skin tone of the variant), short sage tactical gloves with a strap"),
 }
 
 

@@ -8,12 +8,12 @@ edit policy: generated file, never edit by hand; change the script and rebuild
 attach_Back: bone chest, local [0.0000, 0.0847, 0.1113] (model [0.0000, 1.2270, 0.1288], Godot axes, rest pose)
 attach_Head: bone head, local [0.0000, 0.0764, -0.0837] (model [0.0000, 1.5724, -0.0724], Godot axes, rest pose)
 attach_Hip: bone hips, local [0.1973, 0.0484, 0.0426] (model [0.1973, 0.9476, 0.0450], Godot axes, rest pose)
-body_faces_culled: 5700
+body_faces_culled: 5744
 body_params: {"age": 0.72, "beard_shadow": 0.0, "build": 0.75, "gender": 1.0, "hair": "side_part", "hair_color": "grey", "hair_peak": 0.0, "height": 1.68, "lip": "auto", "skin": 2}
 bones: 52
 look: Calder Tower night cleaner, second face (D-SL-2): same glass-teal tabard uniform; a sturdy woman, late 50s, light skin, grey hair pinned up in a bun
 meshes: Body,Gear,Hair,Headwear,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 31240
-tris_by_mesh: {"Body": 7428, "Gear": 44, "Hair": 1856, "Headwear": 1144, "Outfit": 20768}
+tris: 31280
+tris_by_mesh: {"Body": 7340, "Gear": 44, "Hair": 1856, "Headwear": 1144, "Outfit": 20896}

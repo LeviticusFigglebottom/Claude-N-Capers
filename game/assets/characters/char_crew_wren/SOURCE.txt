@@ -12,7 +12,7 @@ body_faces_culled: 5496
 body_params: {"age": 0.08, "beard_shadow": 0.0, "build": 0.3, "gender": 1.0, "hair": "short", "hair_color": "brown", "hair_peak": 0.0, "height": 1.68, "lip": "auto", "skin": 2}
 bones: 52
 faces_hidden_by_waistcoat: 1169
-fp_sleeve: {"cuff": "bare forearm (skin), sleeve rolled to the elbow", "glove": "char_tac_glove", "sleeve": "char_shirt_blue"}
+fp_sleeve: {"cuff": "bare forearm (skin), sleeve rolled to the elbow", "glove": "char_crew_glove_sage", "sleeve": "char_shirt_blue"}
 head_note: hat-free; the crew mask attaches at Head (face centre)
 look: Wren: no jacket; fitted mustard waistcoat, pale blue shirt with rolled sleeves, loose skinny teal tie, grey slacks, headphones round the neck, messenger satchel on the left hip, short tactical gloves
 meshes: Body,Gear,Hair,Outfit

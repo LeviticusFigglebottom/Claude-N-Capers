@@ -1,7 +1,12 @@
 ## D-118: a masked crew member's switched-on flashlight / laser feeds the S2.1 detection meter of a guard or
 ## camera that sees the light even when it cannot see the body (StealthDirector._gadget_rate,
-## StealthTweak.gadget_*). Off, unmasked or pointed away: no fill.
+## StealthTweak.gadget_*). Off, unmasked or pointed away: no fill. D-118 correction (pd2_fidelity S4.2): PD2
+## observers ignore gadgets, so the multipliers default to 0 (test_d118_defaults_ignore_gadgets); the mechanism
+## tests force them on (0.6 / 0.4) and restore the defaults after.
 extends TestCase
+
+const FORCED_LIGHT: float = 0.6
+const FORCED_LASER: float = 0.4
 
 
 ## Minimal camera observer (same protocol as test_s3_8_cameras.gd).
@@ -27,15 +32,23 @@ class FakeCamera extends Node3D:
 
 var _rt: HeistRuntime = null
 var _st: StealthDirector = null
+var _defaults: Array[float] = []
 
 
 func before_each() -> void:
+	var tw: StealthTweak = Tweak.stealth()
+	_defaults = [tw.gadget_light_detect_mult, tw.gadget_laser_detect_mult] as Array[float]
+	tw.gadget_light_detect_mult = FORCED_LIGHT
+	tw.gadget_laser_detect_mult = FORCED_LASER
 	_rt = await HeistLauncher.launch(&"unit_map", 42, Enums.Difficulty.ROUTINE, self,
 		{"map_packed": ATestMaps.basic(0, 0), "ai_teammates": 0})
 	_st = _rt.stealth
 
 
 func after_each() -> void:
+	var tw: StealthTweak = Tweak.stealth()
+	tw.gadget_light_detect_mult = _defaults[0]
+	tw.gadget_laser_detect_mult = _defaults[1]
 	if _rt != null and is_instance_valid(_rt):
 		_rt.teardown()
 	_rt = null
@@ -175,3 +188,23 @@ func test_d118_camera_sees_flashlight_and_laser() -> void:
 	cam.look_at(Vector3(20, 3, -12), Vector3.UP)  # turned sideways: neither dot nor body in its cone
 	await wait_physics_frames(2)
 	assert_near(_st.fill_rate(cam, c), 0.0, 0.0001, "dot outside the camera cone: no fill")
+
+
+## D-118 correction: at the shipped defaults a flashlight on a guard's back and a laser dot in his view do nothing.
+func test_d118_defaults_ignore_gadgets() -> void:
+	var tw: StealthTweak = Tweak.stealth()
+	tw.gadget_light_detect_mult = _defaults[0]
+	tw.gadget_laser_detect_mult = _defaults[1]
+	assert_eq(_defaults, [0.0, 0.0] as Array[float], "PD2: gadget multipliers default to 0 (S4.2)")
+	var c: CrewController = _crew()
+	c.set_masked()
+	var g: NpcBase = _guard(Vector3.ZERO)  # faces -Z
+	await _place(Vector3(0, 0.05, 8), Vector3.ZERO)
+	_gadget(c, [&"flashlight", &"laser"] as Array[StringName])
+	await wait_physics_frames(2)
+	assert_near(_st.fill_rate(g, c), 0.0, 0.0001, "flashlight + laser on the guard's back: no fill")
+	await wait_seconds(0.6)
+	assert_near(_st.detection_value(g, 0), 0.0, 0.0001, "meter stays empty")
+	ATestMaps.add_wall(_rt.map, Vector3(0, 1, -6), Vector3(6, 3, 0.4))
+	await _place(Vector3(3, 0.05, 4), Vector3(0, 1, -6))  # dot on the wall in front of him
+	assert_near(_st.fill_rate(g, c), 0.0, 0.0001, "laser dot in his view: no fill")
