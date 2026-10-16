@@ -31,14 +31,14 @@ const BANDS: Array = [[2800, 8000], [7000, 8000], [8500, 14000]]
 const OBJECTIVES_DRAFTED: Array[StringName] = [&"gallery_night"]
 ## heist id -> [contact, district, placeholder base payout ◇ (unscaled)].
 const STUBS: Dictionary = {
-	&"gallery_night": [&"contact.vance", &"uptown", 105000],
+	&"gallery_night": [&"contact.vance", &"uptown", 57000],
 	&"ostrander_federal": [&"contact.accountant", &"financial", 160000],
 	&"rolling_thunder": [&"contact.reyes", &"southfield", 85000],
 	&"afterhours": [&"contact.accountant", &"midtown", 75000],  # D-075
 }
 ## Contract pay by difficulty (Routine..Cataclysm) for each placeholder payout, as the docs print it.
 const PAY_TABLES: Dictionary = {
-	&"gallery_night": [105000, 210000, 273000, 441000, 756000, 966000],
+	&"gallery_night": [57000, 114000, 148200, 239400, 410400, 524400],
 	&"ostrander_federal": [160000, 320000, 416000, 672000, 1152000, 1472000],
 	&"rolling_thunder": [85000, 170000, 221000, 357000, 612000, 782000],
 	&"afterhours": [75000, 150000, 195000, 315000, 540000, 690000],
