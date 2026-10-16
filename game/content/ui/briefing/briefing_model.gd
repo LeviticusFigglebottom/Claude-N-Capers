@@ -141,13 +141,19 @@ static func objective_lines(heist_id: StringName, ids: Array) -> Array[Dictionar
 	return out
 
 
-## One line per loot id with its unscaled LootDef value and the PayoutCalculator-scaled value.
-## Ids without a LootDef (small loot such as loot.small_valuables, QB-52) are skipped silently.
+## One line per loot id with its unscaled LootDef value and the PayoutCalculator-scaled value. An id without a LootDef
+## (small loot such as loot.small_valuables, QB-52; D-120 keeps it def-less so display cases pay
+## LootTweak.display_case_default_value) still lists by its display string, `"small": true` and no value, when the
+## string exists; otherwise it is skipped.
 static func loot_lines(ids: Array, difficulty: int) -> Array[Dictionary]:
 	var known: Array[LootDef] = []
 	var probe_loot: Array = []
+	var small: Array[Dictionary] = []
 	for raw: Variant in ids:
 		if not ContentDB.has(&"loot", StringName(raw)):
+			var key: StringName = UiText.item_key(StringName(raw))
+			if UiText.has(key):
+				small.append({"loot_id": StringName(raw), "base": 0, "value": 0, "text": UiText.t(key), "small": true})
 			continue
 		var l: LootDef = ContentDB.loot(StringName(raw))
 		if l == null:
@@ -166,6 +172,7 @@ static func loot_lines(ids: Array, difficulty: int) -> Array[Dictionary]:
 			"loot_id": known[i].id, "base": int(line["base"]), "value": int(line["value"]),
 			"text": UiText.t(UiText.item_key(known[i].id)),
 		})
+	out.append_array(small)
 	return out
 
 

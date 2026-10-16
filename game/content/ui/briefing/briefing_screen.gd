@@ -315,6 +315,9 @@ func _fill_loot() -> void:
 	if loot.is_empty():
 		loot_box.add_child(UiBuild.label(&"ui.briefing.loot_none", UiBuild.DIM))
 	for entry: Dictionary in loot:
+		if bool(entry.get("small", false)):  # def-less small loot (loot.small_valuables): no bag value
+			loot_box.add_child(UiBuild.label(&"ui.briefing.loot_line_small", &"", {"loot": String(entry["text"])}))
+			continue
 		loot_box.add_child(UiBuild.label(&"ui.briefing.loot_line", &"", {
 			"loot": String(entry["text"]), "value": UiText.money(int(entry["value"])),
 		}))

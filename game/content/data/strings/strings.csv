@@ -358,6 +358,11 @@ item.loot.jewelry.name,Jewelry
 item.loot.jewelry.desc,"Rings, necklaces and watches in a padded bag."
 item.loot.cash.name,Cash
 item.loot.cash.desc,"Bundled bills. Light, honest money."
+item.loot.small_valuables.name,Small valuables
+item.item.keycard.name,Keycard
+item.item.code_note.name,Code note
+item.item.gear.name,Gear bag
+item.item.c4.name,C4
 item.loot.body_bag.name,Body Bag
 item.loot.body_bag.desc,Heavy and awkward. Out of sight is out of mind.
 heist.glasshouse.name,Golden Hour
@@ -1341,6 +1346,7 @@ ui.briefing.optional,Optional
 ui.briefing.optional_line,• {text}
 ui.briefing.loot,Loot
 ui.briefing.loot_line,{loot}: {value} each
+ui.briefing.loot_line_small,{loot}: small loot
 ui.briefing.loot_none,No bagged loot on this job.
 ui.briefing.escape,Escape
 ui.briefing.escape_line,Escape: {options}
