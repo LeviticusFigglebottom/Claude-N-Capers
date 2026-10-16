@@ -8,6 +8,8 @@ func _cases(tw: AnimTweak) -> Array[Array]:
 	var out: Array[Array] = [
 		[tw.disarm_s(), &"downed_arrested", &"disarm", tw.arrest_disarm_s],
 		[tw.free_s(), &"crew_cuffed_free", &"free", tw.cuffed_free_s],
+		[tw.mask_on_s(), &"mask_on", &"mask_on", tw.mask_on_event_s],
+		[tw.throw_release_s(), &"throw_grenade", &"release", tw.throw_release_event_s],
 	]
 	for key: Variant in AnimTweak.RELOAD_CLIPS:
 		out.append([tw.reload_done(key), AnimTweak.RELOAD_CLIPS[key], &"done", float(tw.reload_done_s.get(key, -1.0))])

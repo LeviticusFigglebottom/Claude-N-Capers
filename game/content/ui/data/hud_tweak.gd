@@ -1,5 +1,5 @@
 ## HUD presentation tuning (data: res://content/data/ui/hud_tweak.tres). Owner: ENV B.
-## pd2_fidelity S2.1: blue below 0.5, orange from 0.5, red "!" at 1.0.
+## pd2_fidelity S2.1 / D-128: the detection ring and crosshair arcs run white below 0.5, orange from 0.5, red "!" at 1.0.
 class_name HudTweak
 extends Resource
 
@@ -7,14 +7,23 @@ const DEFAULT_PATH: String = "res://content/data/ui/hud_tweak.tres"
 
 @export var detection_orange_from: float = 0.5
 @export var detection_red_at: float = 1.0
-@export var detection_blue: Color = Color(0.35, 0.65, 1.0)
+## The "filling" colour (D-128: PD2 white; the field keeps its S2.1 name; palettes set it as detection_suspicious).
+@export var detection_blue: Color = Color(0.95, 0.95, 0.92)
 @export var detection_orange: Color = Color(1.0, 0.6, 0.15)
 @export var detection_red: Color = Color(1.0, 0.2, 0.2)
-## Chevron ring radius and size in px at the 1920x1080 base resolution (canvas_items stretch scales).
+## Crosshair arc radius in px at the 1920x1080 base (canvas_items stretch scales); chevron_size_px is unused since D-128.
 @export var chevron_radius_px: float = 96.0
 @export var chevron_size_px: float = 22.0
-## Chevrons below this value are not drawn (meter just started / decayed).
+## Indicators below this value are not drawn (meter just started / decayed), unless the row asks "?" (state).
 @export var detection_min_visible: float = 0.01
+## D-128 world ring over an observer: radius / stroke (px at the base) and height above world_pos (m; cameras lower).
+@export var ring_radius_px: float = 26.0
+@export var ring_width_px: float = 6.0
+@export var ring_head_offset_m: float = 2.15
+@export var ring_camera_offset_m: float = 0.35
+## D-128 crosshair arcs: angular span (deg) and stroke (px).
+@export var arc_span_deg: float = 34.0
+@export var arc_width_px: float = 6.0
 @export var health_color: Color = Color(0.85, 0.95, 0.85)
 @export var armor_color: Color = Color(0.6, 0.8, 1.0)
 @export var low_health_frac: float = 0.25

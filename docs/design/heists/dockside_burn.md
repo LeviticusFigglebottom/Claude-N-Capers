@@ -350,7 +350,7 @@ at 4.8–5.5 m on its north wall (exterior). The cold store has no windows (skyl
 | PF | (part of H) platform | 4 × 8 (at +3.6) | 2.2 headroom | — | Steel foreman's platform; RoomVolume H covers it (H's ceiling median stays 5.8: the platform is 32 of 300 m²). |
 | C1 | warehouse (freezer chamber A) | 14 × 14 | **8.0** (override 6.0–9.0) | `cold_store_racked` | 4 racking rows (2.7 m deep, 3-level, 3.0 m aisles), frosted product boxes. Doors: hall N, PK W, SP E. Skylight + RAPPEL over the centre aisle. `prod_chamber_a`. |
 | SP | warehouse (spine aisle) | 3 × 14 | **8.0** (override 6.0–9.0) | `cold_store_aisle` | Strip curtains N and S (3 m, walkable, block LOS). Doors to C1 and C2. Skylight + RAPPEL. |
-| C2 | warehouse (freezer chamber B) | 13 × 14 | **8.0** (override 6.0–9.0) | `cold_store_racked` | As C1, mirrored. Doors: hall N, SP W, AN S. `prod_chamber_b`. |
+| C2 | warehouse (freezer chamber B) | 13 × 14 | **8.0** (override 6.0–9.0) | `cold_store_racked_b` | As C1, mirrored, but told apart at a glance (lead DB G2 review): half-empty, stacked fish boxes not wrapped pallets, bare steel wall panels, colder light. Doors: hall N, SP W, AN S. `prod_chamber_b`. |
 | SR | vault (blast-freezer strongroom) | 8 × 8 | 3.5 | `strongroom_freezer` | The Co-op's cash: shrink-wrapped pallets of cash bricks (`cash_strongroom`: `loot_spawn` `loot.cash_bricks` × `cash_bags`). **Vault door `V`** (2.0 × 2.2, `door` lock VAULT), opened by the **thermal drill** at `T` (`drill_point` THERMAL, 240 s, jams). With `cash_countroom` it is an empty strongroom (fish blocks), and the door stays shut. |
 | AN | warehouse (anteroom / quay dock) | 22 × 8 | 5.8 | `quay_dock` | Dock for the quay side: pallet stacks, wrapping machine, a forklift. 2 roller doors S (quay), personnel doors S and E. Strip curtain N (SP), sliding door N (C2), vault door W (SR). Night-shift workers `c`. |
 | M1 | cash_office (count room) | 6 × 6 | 3.0 | `count_room_cash` (DB-C2: the shared `count_room` kit is purpose `office`) | Counting tables, money counters, vacuum sealer. `cash_countroom`: **cash cage** (`safe` LARGE, `methods [drill, c4]`, drill 120 s) with the cash-brick `loot_spawn`s as its contents. Goods-lift door E. Windows N. |
@@ -413,7 +413,7 @@ Support-space check (level_standards §2.2):
 | Cartel gunman (quay dock) | 2 | `post_dock` | `cartel_dock` | — | `cartel`, `cartel_dock` |
 | Cartel gunman (quay) | 2 | `post_quay` | `cartel_quay` | `smoke` | `cartel`, `cartel_quay` |
 | Cartel reinforcements | 4 | rare `cartel_reinforcements` (timed spawn at the gate, QC-25 hook) | `cartel_reinf` | — | — |
-| Night-shift worker | 1–3 | `night_shift` scalar | `civ_worker` (AN ×2, PK ×1, H ×1 candidates) | `browse` (forklift / packing) | `staff`, `staff_dock` |
+| Night-shift worker | 1–3 | `night_shift` scalar | `civ_worker` (AN ×2, H ×1 forklift candidates); `civ_worker_packer` (PK ×1, the packing table) | `browse` (forklift / packing) | `staff`, `staff_dock` |
 | Police | director | after `police_delay_s` | POLICE spawns `police_n`, `police_w`, `police_e`, `police_s`, `police_roof` | — | — |
 
 **Totals per difficulty:**

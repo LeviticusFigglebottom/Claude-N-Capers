@@ -149,14 +149,14 @@ func test_interaction_prompt_and_blocked_reason() -> void:
 			"PO-5.11: the casing block names the mask key")
 
 
-func test_detection_chevron_colors() -> void:
+func test_detection_ring_colors() -> void:  # D-128 (was the S2.1 chevrons)
 	_model.detection = [
 		{"observer_net_id": 1, "world_pos": Vector3(0, 0, -5), "value": 0.2, "kind": Enums.ObserverKind.GUARD},
 		{"observer_net_id": 2, "world_pos": Vector3(5, 0, 0), "value": 0.6, "kind": Enums.ObserverKind.CAMERA},
 		{"observer_net_id": 3, "world_pos": Vector3(0, 0, 5), "value": 1.0, "kind": Enums.ObserverKind.GUARD},
 	]
-	var c: Array[Dictionary] = _hud.chevrons.chevrons
-	assert_eq(c.size(), 3, "one chevron per observer")
+	var c: Array[Dictionary] = _hud.chevrons.rings
+	assert_eq(c.size(), 3, "one indicator per observer")
 	var tw: HudTweak = HudTweak.load_default()
 	assert_eq(c[0]["color"], tw.detection_blue)
 	assert_eq(c[1]["color"], tw.detection_orange)
@@ -164,11 +164,11 @@ func test_detection_chevron_colors() -> void:
 	var cam: Camera3D = Camera3D.new()
 	add_child(cam)
 	cam.current = true
-	assert_near(DetectionChevrons.screen_angle(cam, Vector3(0, 0, -5)), 0.0, 0.001, "ahead = up")
-	assert_near(DetectionChevrons.screen_angle(cam, Vector3(5, 0, 0)), PI / 2.0, 0.001, "right")
+	assert_near(DetectionRings.screen_angle(cam, Vector3(0, 0, -5)), 0.0, 0.001, "ahead = up")
+	assert_near(DetectionRings.screen_angle(cam, Vector3(5, 0, 0)), PI / 2.0, 0.001, "right")
 	cam.queue_free()
 	_model.detection = []
-	assert_eq(_hud.chevrons.chevrons.size(), 0)
+	assert_eq(_hud.chevrons.rings.size(), 0)
 
 
 func test_pager_objectives_assault_bag_crew_mask() -> void:

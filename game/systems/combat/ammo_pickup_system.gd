@@ -5,8 +5,10 @@
 ## * Pickup: a NORMAL / SWAN_SONG crew member within pickup_radius_m x weapon.ammo_pickup_range_mult
 ##   (horizontal) and pickup_height_m takes the box when at least one weapon is missing ammo. Each of
 ##   their weapons gets round(rand(WeaponStats.ammo_pickup_min, ammo_pickup_max) x
-##   weapon.ammo_pickup_mult[weapon class] x shotgun ammo ammo_pickup_mult, D-118) rounds (GameRng &"ammo"; at least 1
-##   when max > 0), capped at what it is missing (DeployablePrefab.max_ammo), per crew member's own weapons and modifiers.
+##   weapon.ammo_pickup_mult[weapon class] x shotgun ammo ammo_pickup_mult, D-118) rounds (GameRng &"ammo"), capped at
+##   what it is missing (DeployablePrefab.max_ammo), per crew member's own weapons and modifiers. D-124: whole rounds
+##   only, the fraction carries over per crew member and weapon (a Thumper's 0.2-0.4 gives a grenade every few boxes,
+##   so the expected pickup matches the data); the carry resets when the weapon fills up or changes.
 ##   A box nobody can use stays on the floor.
 ## * weapon.kill_ammo_drop {every_n_kills} (Scrounger aced): every n-th kill by that crew member drops an
 ##   extra box (on top of the normal drop roll).
@@ -17,7 +19,8 @@
 ##   mechanics such as perk.gambler.
 ##
 ## PUBLIC API: drop(position) -> AmmoPickup (server/test hook), boxes() -> Array[Node],
-##   try_pickup(crew, box) -> int (rounds added, 0 = not taken), static rounds_for(crew, ws, rng).
+##   try_pickup(crew, box) -> int (rounds added; -1 = not taken, 0 = taken for a carried-over fraction),
+##   static amount_for(crew, ws, rng) -> float, static rounds_for(crew, ws, rng) -> int, carry(crew, ws) -> float.
 class_name AmmoPickupSystem
 extends Node
 
@@ -35,6 +38,8 @@ var _boxes: Array[AmmoPickup] = []
 ## crew slot -> kills (weapon.kill_ammo_drop) / boxes taken without a throwable (weapon.ammo_pickup_throwable).
 var _kills: Dictionary[int, int] = {}
 var _dry_boxes: Dictionary[int, int] = {}
+## D-124: "<crew slot>|<weapon slot>" -> [weapon id, carried fraction of a round].
+var _carry: Dictionary[String, Array] = {}
 
 
 func _ready() -> void:
@@ -109,44 +114,69 @@ func _physics_process(_delta: float) -> void:
 				try_pickup(crew, box)
 
 
-## Server: `crew` takes `box` if any weapon is missing ammo. Returns the rounds added (0 = not taken).
+## Server: `crew` takes `box` if any weapon is missing ammo. Returns the rounds added over both weapons
+## (-1 = not taken; 0 = taken, the fractions only carried over).
 func try_pickup(crew: CrewController, box: AmmoPickup) -> int:
 	if not Net.is_authority() or crew == null or crew.weapons == null or box == null or not _boxes.has(box):
-		return 0
+		return -1
 	var w: CrewWeapons = crew.weapons
 	var rng: RandomNumberGenerator = GameRng.stream(RNG_STREAM)
 	var total: int = 0
+	var taken: bool = false
 	for ws: int in [Enums.WeaponSlot.PRIMARY, Enums.WeaponSlot.SECONDARY]:
 		if not w.has_weapon(ws):
 			continue
 		var missing: int = DeployablePrefab.max_ammo(crew, ws) - w.mag(ws) - w.reserve(ws)
 		if missing <= 0:
 			continue
-		var add: int = mini(rounds_for(crew, ws, rng), missing)
+		var amount: float = amount_for(crew, ws, rng)
+		if amount <= 0.0:
+			continue
+		taken = true
+		var n: float = amount + carry(crew, ws)
+		var add: int = mini(floori(n + 0.000001), missing)
+		_carry[_carry_key(crew, ws)] = [w.weapon_id(ws), 0.0 if add >= missing else maxf(n - add, 0.0)]
 		if add <= 0:
 			continue
 		w.set_ammo(ws, w.mag(ws), w.reserve(ws) + add)
 		total += add
-	if total <= 0:
-		return 0
+	if not taken:
+		return -1
 	_roll_throwable(crew, rng)
 	_remove(box)
 	ammo_picked.emit(crew, total)
 	return total
 
 
-## Rounds one box gives weapon slot `ws` of `crew` (before the missing-ammo cap).
-static func rounds_for(crew: CrewController, ws: int, rng: RandomNumberGenerator) -> int:
+## D-124: the fraction of a round weapon slot `ws` of `crew` carries into its next box (0 after a weapon change).
+func carry(crew: CrewController, ws: int) -> float:
+	var c: Array = _carry.get(_carry_key(crew, ws), [])
+	if c.size() < 2 or crew.weapons == null or StringName(c[0]) != crew.weapons.weapon_id(ws):
+		return 0.0
+	return float(c[1])
+
+
+static func _carry_key(crew: CrewController, ws: int) -> String:
+	return "%d|%d" % [crew.slot, ws]
+
+
+## Rounds (fractional) one box gives weapon slot `ws` of `crew` (before the carry-over and the missing-ammo cap).
+static func amount_for(crew: CrewController, ws: int, rng: RandomNumberGenerator) -> float:
 	var w: CrewWeapons = crew.weapons
 	var st: WeaponStats = w.stats(ws) if w != null else null
 	if st == null or st.ammo_pickup_max <= 0.0:
-		return 0
+		return 0.0
 	var def: WeaponDef = ContentDB.weapon(w.weapon_id(ws))
 	var q: StringName = Enums.weapon_class_qualifier(def.weapon_class) if def != null else &"pistol"
 	var lo: float = minf(st.ammo_pickup_min, st.ammo_pickup_max)
-	var n: float = rng.randf_range(lo, st.ammo_pickup_max) * Modifiers.mult(crew.slot, AMOUNT_KEY, q) \
+	return rng.randf_range(lo, st.ammo_pickup_max) * Modifiers.mult(crew.slot, AMOUNT_KEY, q) \
 		* w.ammo_pickup_mult(ws)  # D-118: shotgun ammo params.ammo_pickup_mult
-	return maxi(int(round(n)), 1)
+
+
+## One box rounded to whole rounds, at least 1 (no carry-over; kept for callers that want a single box's size).
+static func rounds_for(crew: CrewController, ws: int, rng: RandomNumberGenerator) -> int:
+	var n: float = amount_for(crew, ws, rng)
+	return maxi(int(round(n)), 1) if n > 0.0 else 0
 
 
 func _roll_throwable(crew: CrewController, rng: RandomNumberGenerator) -> void:

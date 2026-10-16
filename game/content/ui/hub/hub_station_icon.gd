@@ -44,6 +44,12 @@ func _draw() -> void:
 			_profile(c, u, w)
 		&"pistol":
 			_pistol(c, u, w)
+		&"smg":
+			_smg(c, u, w)
+		&"shotgun":
+			_shotgun(c, u, w)
+		&"saw":
+			_saw(c, u, w)
 		&"knife":
 			_knife(c, u, w)
 		&"vest":
@@ -166,6 +172,35 @@ func _pistol(c: Vector2, u: float, w: float) -> void:
 	draw_colored_polygon(PackedVector2Array([c + Vector2(-0.5, -0.08) * u, c + Vector2(-0.18, -0.08) * u,
 			c + Vector2(-0.08, 0.55) * u, c + Vector2(-0.42, 0.55) * u]), color)
 	draw_arc(c + Vector2(0.02, -0.02) * u, u * 0.16, 0.0, PI, 10, color, w)
+
+
+## D-126: SMG, a short receiver with a stubby barrel, a long magazine and a folded stock.
+func _smg(c: Vector2, u: float, w: float) -> void:
+	draw_colored_polygon(PackedVector2Array([c + Vector2(-0.45, -0.3) * u, c + Vector2(0.5, -0.3) * u,
+			c + Vector2(0.5, -0.06) * u, c + Vector2(-0.45, -0.06) * u]), Color(color, 0.85))
+	draw_rect(Rect2(c + Vector2(0.5, -0.24) * u, Vector2(0.28, 0.1) * u), color)
+	draw_rect(Rect2(c + Vector2(0.02, -0.06) * u, Vector2(0.15, 0.62) * u), color)
+	draw_colored_polygon(PackedVector2Array([c + Vector2(-0.38, -0.06) * u, c + Vector2(-0.16, -0.06) * u,
+			c + Vector2(-0.1, 0.36) * u, c + Vector2(-0.32, 0.36) * u]), color)
+	draw_line(c + Vector2(-0.45, -0.24) * u, c + Vector2(-0.8, -0.24) * u, color, w * 1.4)
+
+
+## D-126: shotgun, a long barrel over a pump, a short receiver and a full stock.
+func _shotgun(c: Vector2, u: float, w: float) -> void:
+	draw_line(c + Vector2(-0.1, -0.2) * u, c + Vector2(0.88, -0.2) * u, color, w * 2.2)
+	draw_rect(Rect2(c + Vector2(0.3, -0.12) * u, Vector2(0.34, 0.14) * u), color)
+	draw_colored_polygon(PackedVector2Array([c + Vector2(-0.3, -0.28) * u, c + Vector2(0.05, -0.28) * u,
+			c + Vector2(0.05, 0.04) * u, c + Vector2(-0.3, 0.04) * u]), Color(color, 0.85))
+	draw_colored_polygon(PackedVector2Array([c + Vector2(-0.3, -0.22) * u, c + Vector2(-0.88, 0.0) * u,
+			c + Vector2(-0.88, 0.22) * u, c + Vector2(-0.3, 0.04) * u]), color)
+
+
+## D-126: portable saw, a blade disc on a motor body with a handle.
+func _saw(c: Vector2, u: float, w: float) -> void:
+	draw_arc(c + Vector2(0.3, 0.05) * u, u * 0.42, 0.0, TAU, 32, color, w * 1.4, true)
+	draw_circle(c + Vector2(0.3, 0.05) * u, u * 0.1, color)
+	draw_rect(Rect2(c + Vector2(-0.75, -0.2) * u, Vector2(0.75, 0.36) * u), Color(color, 0.85))
+	draw_arc(c + Vector2(-0.42, -0.2) * u, u * 0.2, PI, TAU, 10, color, w)
 
 
 ## Folding knife: blade and handle.

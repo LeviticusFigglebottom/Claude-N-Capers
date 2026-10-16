@@ -56,7 +56,7 @@ var options_button: Button
 ## Quick Play: "Continue · <heist> · <difficulty>", hidden without a playable last job.
 var continue_button: Button
 ## PO-4 first-time pointer: the "START HERE" chip on the Board card while the profile has never
-## played a heist (career "played" == 0).
+## played a heist (is_first_time: career totals "played" absent / 0).
 var start_here: Label
 
 
@@ -170,6 +170,13 @@ func _wire_continue() -> void:
 	continue_button.set_focus_neighbor(SIDE_LEFT, continue_button.get_path_to(back_button))
 	continue_button.set_focus_neighbor(SIDE_TOP, continue_button.get_path_to(options_button))
 	options_button.set_focus_neighbor(SIDE_BOTTOM, options_button.get_path_to(continue_button) if on else NodePath())
+
+
+## D-115 new-player flow: true while `p` has never finished a heist (no payday banked: career totals "played"
+## absent or 0). The 2D hub's START HERE chip and the 3D safehouse's first-time note follow it. (The chip used to
+## read p.career["played"], which Career never writes: it never went away.)
+static func is_first_time(p: PlayerProfile) -> bool:
+	return p == null or Career.total(p, Career.PLAYED) <= 0
 
 
 func _refresh_continue(p: PlayerProfile) -> void:
@@ -294,7 +301,7 @@ func refresh_profile(p: PlayerProfile = null) -> void:
 	if level_label == null:
 		return
 	if start_here != null:
-		start_here.visible = int(profile.career.get(Career.PLAYED, 0)) == 0
+		start_here.visible = is_first_time(profile)
 	name_label.text = profile.profile_name
 	name_label.visible = profile.profile_name != ""
 	level_label.text = NotorietyScreen.level_text(profile.level, profile.notoriety)
@@ -322,9 +329,9 @@ func _refresh_points() -> void:
 	var perks: int = PerkProgress.available(profile, ProgressionUiTweak.load_default())
 	var parts: PackedStringArray = PackedStringArray()
 	if skills > 0:
-		parts.append(UiText.t(&"ui.hub.points.skills", {"points": skills}))
+		parts.append(UiText.t(&"ui.hub.points.skills_one" if skills == 1 else &"ui.hub.points.skills", {"points": skills}))
 	if perks > 0:
-		parts.append(UiText.t(&"ui.hub.points.perks", {"points": perks}))
+		parts.append(UiText.t(&"ui.hub.points.perks_one" if perks == 1 else &"ui.hub.points.perks", {"points": perks}))
 	skill_points_label.text = "  ·  ".join(parts)
 	skill_points_label.visible = not parts.is_empty()
 

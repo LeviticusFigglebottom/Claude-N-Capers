@@ -7,486 +7,486 @@ Result: **PASS** (0 failure(s))
 
 | spawn | target | kind | straight m | path m | ratio | status |
 |---|---|---|---|---|---|---|
-| `Spawns/CasingSidewalk1` | `Gameplay/Doors/SallyPersonnelDoor` | objective | 26.4 | 42.9 | 1.62 | ok |
-| `Spawns/CasingSidewalk1` | `Gameplay/Doors/SallyPersonnelDoor/UsePoint` | use_point | 26.4 | 42.9 | 1.62 | ok |
-| `Spawns/CasingSidewalk1` | `Gameplay/Doors/LoadingDoor/UsePoint` | use_point | 19.5 | 35.6 | 1.82 | ok |
-| `Spawns/CasingSidewalk1` | `Gameplay/Doors/SecurityRoomDoor/UsePoint` | use_point | 22.6 | 41.6 | 1.83 | ok |
-| `Spawns/CasingSidewalk1` | `Gameplay/Doors/BreakRoomDoor/UsePoint` | use_point | 25.3 | 41.4 | 1.64 | ok |
-| `Spawns/CasingSidewalk1` | `Gameplay/Doors/ElectricalDoor/UsePoint` | use_point | 27.9 | 37.9 | 1.36 | ok |
-| `Spawns/CasingSidewalk1` | `Gameplay/Doors/StorageDoor/UsePoint` | use_point | 31.1 | 34.5 | 1.11 | ok |
-| `Spawns/CasingSidewalk1` | `Gameplay/Doors/TellerDoor` | objective | 18.1 | 32.2 | 1.77 | ok |
-| `Spawns/CasingSidewalk1` | `Gameplay/Doors/TellerDoor/UsePoint` | use_point | 18.1 | 32.2 | 1.77 | ok |
-| `Spawns/CasingSidewalk1` | `Gameplay/Doors/LoanCorridorDoor/UsePoint` | use_point | 31.0 | 34.4 | 1.11 | ok |
-| `Spawns/CasingSidewalk1` | `Gameplay/Doors/FireExit` | objective | 32.6 | 35.5 | 1.09 | ok |
-| `Spawns/CasingSidewalk1` | `Gameplay/Doors/FireExit/UsePoint` | use_point | 32.6 | 35.5 | 1.09 | ok |
-| `Spawns/CasingSidewalk1` | `Gameplay/Doors/TellerGate` | objective | 14.1 | 28.5 | 2.02 | ok |
-| `Spawns/CasingSidewalk1` | `Gameplay/Doors/TellerGate/UsePoint` | use_point | 14.1 | 28.5 | 2.02 | ok |
-| `Spawns/CasingSidewalk1` | `Gameplay/Doors/LoanHallDoor/UsePoint` | use_point | 26.3 | 28.9 | 1.10 | ok |
-| `Spawns/CasingSidewalk1` | `Gameplay/Doors/ManagerHallDoor/UsePoint` | use_point | 24.6 | 26.8 | 1.09 | ok |
-| `Spawns/CasingSidewalk1` | `Gameplay/Doors/AtmInnerDoor` | objective | 24.6 | 26.1 | 1.06 | ok |
-| `Spawns/CasingSidewalk1` | `Gameplay/Doors/AtmInnerDoor/UsePoint` | use_point | 24.6 | 26.1 | 1.06 | ok |
-| `Spawns/CasingSidewalk1` | `Gameplay/Doors/VestibuleInnerDoors/UsePoint` | use_point | 13.8 | 15.0 | 1.09 | ok |
+| `Spawns/CasingSidewalk1` | `Gameplay/Doors/SallyPersonnelDoor` | objective | 26.4 | 41.9 | 1.58 | ok |
+| `Spawns/CasingSidewalk1` | `Gameplay/Doors/SallyPersonnelDoor/UsePoint` | use_point | 26.4 | 41.9 | 1.58 | ok |
+| `Spawns/CasingSidewalk1` | `Gameplay/Doors/LoadingDoor/UsePoint` | use_point | 19.5 | 34.6 | 1.77 | ok |
+| `Spawns/CasingSidewalk1` | `Gameplay/Doors/SecurityRoomDoor/UsePoint` | use_point | 22.6 | 40.6 | 1.79 | ok |
+| `Spawns/CasingSidewalk1` | `Gameplay/Doors/BreakRoomDoor/UsePoint` | use_point | 25.3 | 40.3 | 1.59 | ok |
+| `Spawns/CasingSidewalk1` | `Gameplay/Doors/ElectricalDoor/UsePoint` | use_point | 27.9 | 36.9 | 1.32 | ok |
+| `Spawns/CasingSidewalk1` | `Gameplay/Doors/StorageDoor/UsePoint` | use_point | 31.1 | 33.4 | 1.07 | ok |
+| `Spawns/CasingSidewalk1` | `Gameplay/Doors/TellerDoor` | objective | 18.1 | 31.2 | 1.72 | ok |
+| `Spawns/CasingSidewalk1` | `Gameplay/Doors/TellerDoor/UsePoint` | use_point | 18.1 | 31.2 | 1.72 | ok |
+| `Spawns/CasingSidewalk1` | `Gameplay/Doors/LoanCorridorDoor/UsePoint` | use_point | 31.0 | 33.3 | 1.07 | ok |
+| `Spawns/CasingSidewalk1` | `Gameplay/Doors/FireExit` | objective | 32.6 | 34.5 | 1.06 | ok |
+| `Spawns/CasingSidewalk1` | `Gameplay/Doors/FireExit/UsePoint` | use_point | 32.6 | 34.5 | 1.06 | ok |
+| `Spawns/CasingSidewalk1` | `Gameplay/Doors/TellerGate` | objective | 14.1 | 27.5 | 1.95 | ok |
+| `Spawns/CasingSidewalk1` | `Gameplay/Doors/TellerGate/UsePoint` | use_point | 14.1 | 27.5 | 1.95 | ok |
+| `Spawns/CasingSidewalk1` | `Gameplay/Doors/LoanHallDoor/UsePoint` | use_point | 26.3 | 27.9 | 1.06 | ok |
+| `Spawns/CasingSidewalk1` | `Gameplay/Doors/ManagerHallDoor/UsePoint` | use_point | 24.6 | 26.1 | 1.06 | ok |
+| `Spawns/CasingSidewalk1` | `Gameplay/Doors/AtmInnerDoor` | objective | 24.6 | 26.9 | 1.10 | ok |
+| `Spawns/CasingSidewalk1` | `Gameplay/Doors/AtmInnerDoor/UsePoint` | use_point | 24.6 | 26.9 | 1.10 | ok |
+| `Spawns/CasingSidewalk1` | `Gameplay/Doors/VestibuleInnerDoors/UsePoint` | use_point | 13.8 | 14.4 | 1.05 | ok |
 | `Spawns/CasingSidewalk1` | `Gameplay/Doors/MainEntrance` | objective | 13.1 | 13.1 | 1.00 | ok |
 | `Spawns/CasingSidewalk1` | `Gameplay/Doors/MainEntrance/UsePoint` | use_point | 13.1 | 13.1 | 1.00 | ok |
 | `Spawns/CasingSidewalk1` | `Gameplay/Doors/AtmStreetDoor` | objective | 26.5 | 26.8 | 1.01 | ok |
 | `Spawns/CasingSidewalk1` | `Gameplay/Doors/AtmStreetDoor/UsePoint` | use_point | 26.5 | 26.8 | 1.01 | ok |
-| `Spawns/CasingSidewalk1` | `Gameplay/Doors/XferDoor/UsePoint` | use_point | 19.0 | 55.3 | 2.90 | ok |
-| `Spawns/CasingSidewalk1` | `Gameplay/Doors/JanitorDoor/UsePoint` | use_point | 20.7 | 51.0 | 2.47 | ok |
-| `Spawns/CasingSidewalk1` | `Gameplay/Doors/LockerRoomDoor/UsePoint` | use_point | 23.0 | 52.1 | 2.27 | ok |
-| `Spawns/CasingSidewalk1` | `Gameplay/Doors/WCDoor/UsePoint` | use_point | 27.4 | 56.2 | 2.05 | ok |
-| `Spawns/CasingSidewalk1` | `Gameplay/Doors/PlantDoor/UsePoint` | use_point | 27.4 | 58.6 | 2.14 | ok |
-| `Spawns/CasingSidewalk1` | `Gameplay/Doors/ServerDoor` | objective | 31.3 | 63.6 | 2.03 | ok |
-| `Spawns/CasingSidewalk1` | `Gameplay/Doors/ServerDoor/UsePoint` | use_point | 31.3 | 63.6 | 2.03 | ok |
-| `Spawns/CasingSidewalk1` | `Gameplay/Doors/RecordsDoor/UsePoint` | use_point | 18.9 | 55.3 | 2.92 | ok |
-| `Spawns/CasingSidewalk1` | `Gameplay/Doors/InspectionWestDoor/UsePoint` | use_point | 20.7 | 50.8 | 2.45 | ok |
-| `Spawns/CasingSidewalk1` | `Gameplay/Doors/VaultGate` | objective | 24.2 | 54.1 | 2.24 | ok |
-| `Spawns/CasingSidewalk1` | `Gameplay/Doors/VaultGate/UsePoint` | use_point | 24.2 | 54.1 | 2.24 | ok |
-| `Spawns/CasingSidewalk1` | `Gameplay/Doors/InspectionEastDoor/UsePoint` | use_point | 28.5 | 60.1 | 2.11 | ok |
-| `Spawns/CasingSidewalk1` | `Gameplay/Doors/CountRoomDoor` | objective | 31.3 | 63.6 | 2.03 | ok |
-| `Spawns/CasingSidewalk1` | `Gameplay/Doors/CountRoomDoor/UsePoint` | use_point | 31.3 | 63.6 | 2.03 | ok |
-| `Spawns/CasingSidewalk1` | `Gameplay/Doors/DepositoryDoor` | objective | 28.1 | 68.2 | 2.43 | ok |
-| `Spawns/CasingSidewalk1` | `Gameplay/Doors/DepositoryDoor/UsePoint` | use_point | 28.1 | 68.2 | 2.43 | ok |
-| `Spawns/CasingSidewalk1` | `Gameplay/Doors/VaultDoor` | objective | 22.4 | 55.7 | 2.48 | ok |
-| `Spawns/CasingSidewalk1` | `Gameplay/Doors/VaultDoor/UsePoint` | use_point | 22.4 | 55.7 | 2.48 | ok |
-| `Spawns/CasingSidewalk1` | `Gameplay/Doors/VaultDoor/VaultDrill` | objective | 23.0 | 55.6 | 2.42 | ok |
-| `Spawns/CasingSidewalk1` | `Gameplay/Doors/VaultDoor/VaultDrill/UsePoint` | use_point | 23.0 | 55.6 | 2.42 | ok |
-| `Spawns/CasingSidewalk1` | `Gameplay/Doors/AreawayDoor` | objective | 32.5 | 57.7 | 1.77 | ok |
-| `Spawns/CasingSidewalk1` | `Gameplay/Doors/AreawayDoor/UsePoint` | use_point | 32.5 | 57.7 | 1.77 | ok |
-| `Spawns/CasingSidewalk1` | `Gameplay/Doors/AlleyGate` | objective | 38.7 | 67.3 | 1.74 | ok |
-| `Spawns/CasingSidewalk1` | `Gameplay/Doors/AlleyGate/UsePoint` | use_point | 38.7 | 67.3 | 1.74 | ok |
+| `Spawns/CasingSidewalk1` | `Gameplay/Doors/XferDoor/UsePoint` | use_point | 19.0 | 54.3 | 2.85 | ok |
+| `Spawns/CasingSidewalk1` | `Gameplay/Doors/JanitorDoor/UsePoint` | use_point | 20.7 | 50.0 | 2.42 | ok |
+| `Spawns/CasingSidewalk1` | `Gameplay/Doors/LockerRoomDoor/UsePoint` | use_point | 23.0 | 51.1 | 2.22 | ok |
+| `Spawns/CasingSidewalk1` | `Gameplay/Doors/WCDoor/UsePoint` | use_point | 27.4 | 55.2 | 2.02 | ok |
+| `Spawns/CasingSidewalk1` | `Gameplay/Doors/PlantDoor/UsePoint` | use_point | 27.4 | 57.6 | 2.10 | ok |
+| `Spawns/CasingSidewalk1` | `Gameplay/Doors/ServerDoor` | objective | 31.3 | 62.6 | 2.00 | ok |
+| `Spawns/CasingSidewalk1` | `Gameplay/Doors/ServerDoor/UsePoint` | use_point | 31.3 | 62.6 | 2.00 | ok |
+| `Spawns/CasingSidewalk1` | `Gameplay/Doors/RecordsDoor/UsePoint` | use_point | 18.9 | 54.3 | 2.87 | ok |
+| `Spawns/CasingSidewalk1` | `Gameplay/Doors/InspectionWestDoor/UsePoint` | use_point | 20.7 | 49.8 | 2.41 | ok |
+| `Spawns/CasingSidewalk1` | `Gameplay/Doors/VaultGate` | objective | 24.2 | 53.1 | 2.20 | ok |
+| `Spawns/CasingSidewalk1` | `Gameplay/Doors/VaultGate/UsePoint` | use_point | 24.2 | 53.1 | 2.20 | ok |
+| `Spawns/CasingSidewalk1` | `Gameplay/Doors/InspectionEastDoor/UsePoint` | use_point | 28.5 | 59.1 | 2.07 | ok |
+| `Spawns/CasingSidewalk1` | `Gameplay/Doors/CountRoomDoor` | objective | 31.3 | 62.6 | 2.00 | ok |
+| `Spawns/CasingSidewalk1` | `Gameplay/Doors/CountRoomDoor/UsePoint` | use_point | 31.3 | 62.6 | 2.00 | ok |
+| `Spawns/CasingSidewalk1` | `Gameplay/Doors/DepositoryDoor` | objective | 28.1 | 68.9 | 2.45 | ok |
+| `Spawns/CasingSidewalk1` | `Gameplay/Doors/DepositoryDoor/UsePoint` | use_point | 28.1 | 68.9 | 2.45 | ok |
+| `Spawns/CasingSidewalk1` | `Gameplay/Doors/VaultDoor` | objective | 22.4 | 54.7 | 2.44 | ok |
+| `Spawns/CasingSidewalk1` | `Gameplay/Doors/VaultDoor/UsePoint` | use_point | 22.4 | 54.7 | 2.44 | ok |
+| `Spawns/CasingSidewalk1` | `Gameplay/Doors/VaultDoor/VaultDrill` | objective | 23.0 | 54.7 | 2.37 | ok |
+| `Spawns/CasingSidewalk1` | `Gameplay/Doors/VaultDoor/VaultDrill/UsePoint` | use_point | 23.0 | 54.7 | 2.37 | ok |
+| `Spawns/CasingSidewalk1` | `Gameplay/Doors/AreawayDoor` | objective | 32.5 | 56.7 | 1.74 | ok |
+| `Spawns/CasingSidewalk1` | `Gameplay/Doors/AreawayDoor/UsePoint` | use_point | 32.5 | 56.7 | 1.74 | ok |
+| `Spawns/CasingSidewalk1` | `Gameplay/Doors/AlleyGate` | objective | 38.7 | 66.3 | 1.71 | ok |
+| `Spawns/CasingSidewalk1` | `Gameplay/Doors/AlleyGate/UsePoint` | use_point | 38.7 | 66.3 | 1.71 | ok |
 | `Spawns/CasingSidewalk1` | `Gameplay/Doors/HarborWestGate` | objective | 11.4 | 11.4 | 1.00 | ok |
 | `Spawns/CasingSidewalk1` | `Gameplay/Doors/HarborWestGate/UsePoint` | use_point | 11.4 | 11.4 | 1.00 | ok |
 | `Spawns/CasingSidewalk1` | `Gameplay/Doors/HarborEastGate` | objective | 41.3 | 41.3 | 1.00 | ok |
 | `Spawns/CasingSidewalk1` | `Gameplay/Doors/HarborEastGate/UsePoint` | use_point | 41.3 | 41.3 | 1.00 | ok |
-| `Spawns/CasingSidewalk1` | `Gameplay/Doors/WharfNorthGate` | objective | 48.0 | 57.1 | 1.19 | ok |
-| `Spawns/CasingSidewalk1` | `Gameplay/Doors/WharfNorthGate/UsePoint` | use_point | 48.0 | 57.1 | 1.19 | ok |
+| `Spawns/CasingSidewalk1` | `Gameplay/Doors/WharfNorthGate` | objective | 48.0 | 56.1 | 1.17 | ok |
+| `Spawns/CasingSidewalk1` | `Gameplay/Doors/WharfNorthGate/UsePoint` | use_point | 48.0 | 56.1 | 1.17 | ok |
 | `Spawns/CasingSidewalk1` | `Gameplay/Windows/HallBay1` | objective | 5.9 | 5.9 | 1.00 | ok |
 | `Spawns/CasingSidewalk1` | `Gameplay/Windows/HallBay1/UsePoint` | use_point | 5.9 | 5.9 | 1.00 | ok |
 | `Spawns/CasingSidewalk1` | `Gameplay/Windows/HallBay2` | objective | 8.9 | 8.9 | 1.00 | ok |
 | `Spawns/CasingSidewalk1` | `Gameplay/Windows/HallBay2/UsePoint` | use_point | 8.9 | 8.9 | 1.00 | ok |
-| `Spawns/CasingSidewalk1` | `Gameplay/Windows/HallBay3` | objective | 17.4 | 17.6 | 1.01 | ok |
-| `Spawns/CasingSidewalk1` | `Gameplay/Windows/HallBay3/UsePoint` | use_point | 17.4 | 17.6 | 1.01 | ok |
-| `Spawns/CasingSidewalk1` | `Gameplay/Windows/HallBay4` | objective | 20.8 | 21.1 | 1.01 | ok |
-| `Spawns/CasingSidewalk1` | `Gameplay/Windows/HallBay4/UsePoint` | use_point | 20.8 | 21.1 | 1.01 | ok |
-| `Spawns/CasingSidewalk1` | `Gameplay/Vault/TimeLockPanel` | objective | 25.7 | 58.7 | 2.28 | ok |
-| `Spawns/CasingSidewalk1` | `Gameplay/Vault/TimeLockPanel/UsePoint` | use_point | 25.7 | 58.7 | 2.28 | ok |
-| `Spawns/CasingSidewalk1` | `Gameplay/Vault/CageCash` | loot_spawn | 18.8 | 61.7 | 3.28 | detour (whitelisted) |
-| `Spawns/CasingSidewalk1` | `Gameplay/Vault/CageCash/UsePoint` | use_point | 19.3 | 60.8 | 3.16 | detour (whitelisted) |
-| `Spawns/CasingSidewalk1` | `Gameplay/Vault/CoopCashBricks` | loot_spawn | 17.4 | 64.8 | 3.71 | detour (whitelisted) |
-| `Spawns/CasingSidewalk1` | `Gameplay/Vault/CoopCashBricks/UsePoint` | use_point | 17.8 | 66.0 | 3.71 | detour (whitelisted) |
-| `Spawns/CasingSidewalk1` | `Gameplay/Vault/Box1` | objective | 18.1 | 59.8 | 3.31 | detour (whitelisted) |
-| `Spawns/CasingSidewalk1` | `Gameplay/Vault/Box1/UsePoint` | use_point | 18.1 | 59.8 | 3.31 | detour (whitelisted) |
-| `Spawns/CasingSidewalk1` | `Gameplay/Vault/Box2` | objective | 16.9 | 61.1 | 3.62 | detour (whitelisted) |
-| `Spawns/CasingSidewalk1` | `Gameplay/Vault/Box2/UsePoint` | use_point | 16.9 | 61.1 | 3.62 | detour (whitelisted) |
-| `Spawns/CasingSidewalk1` | `Gameplay/Vault/Box3` | objective | 15.8 | 62.7 | 3.97 | detour (whitelisted) |
-| `Spawns/CasingSidewalk1` | `Gameplay/Vault/Box3/UsePoint` | use_point | 15.8 | 62.7 | 3.97 | detour (whitelisted) |
-| `Spawns/CasingSidewalk1` | `Gameplay/Vault/Box4` | objective | 14.9 | 64.4 | 4.33 | detour (whitelisted) |
-| `Spawns/CasingSidewalk1` | `Gameplay/Vault/Box4/UsePoint` | use_point | 14.9 | 64.4 | 4.33 | detour (whitelisted) |
-| `Spawns/CasingSidewalk1` | `Gameplay/Vault/Box5` | objective | 23.5 | 60.1 | 2.56 | ok |
-| `Spawns/CasingSidewalk1` | `Gameplay/Vault/Box5/UsePoint` | use_point | 23.5 | 60.1 | 2.56 | ok |
-| `Spawns/CasingSidewalk1` | `Gameplay/Vault/Box6` | objective | 22.5 | 61.2 | 2.72 | ok |
-| `Spawns/CasingSidewalk1` | `Gameplay/Vault/Box6/UsePoint` | use_point | 22.5 | 61.2 | 2.72 | ok |
-| `Spawns/CasingSidewalk1` | `Gameplay/Vault/Box7` | objective | 21.7 | 62.7 | 2.89 | ok |
-| `Spawns/CasingSidewalk1` | `Gameplay/Vault/Box7/UsePoint` | use_point | 21.7 | 62.7 | 2.89 | ok |
-| `Spawns/CasingSidewalk1` | `Gameplay/Vault/Box8` | objective | 21.0 | 62.8 | 2.99 | ok |
-| `Spawns/CasingSidewalk1` | `Gameplay/Vault/Box8/UsePoint` | use_point | 21.0 | 62.8 | 2.99 | ok |
-| `Spawns/CasingSidewalk1` | `Gameplay/Depository/DepositorySafe` | objective | 25.9 | 72.0 | 2.78 | ok |
-| `Spawns/CasingSidewalk1` | `Gameplay/Depository/DepositorySafe/UsePoint` | use_point | 25.9 | 72.0 | 2.78 | ok |
-| `Spawns/CasingSidewalk1` | `Gameplay/Depository/DepositorySafe/NightDropBags` | loot_spawn | 25.7 | 73.2 | 2.85 | ok |
-| `Spawns/CasingSidewalk1` | `Gameplay/Depository/DepositorySafe/NightDropBags/UsePoint` | use_point | 25.7 | 73.2 | 2.85 | ok |
-| `Spawns/CasingSidewalk1` | `Gameplay/Misc/TellerDrawer1/UsePoint` | use_point | 16.5 | 32.2 | 1.95 | ok |
-| `Spawns/CasingSidewalk1` | `Gameplay/Misc/TellerDrawer2/UsePoint` | use_point | 18.9 | 37.2 | 1.96 | ok |
-| `Spawns/CasingSidewalk1` | `Gameplay/Misc/TellerDrawer3/UsePoint` | use_point | 22.2 | 42.2 | 1.90 | ok |
-| `Spawns/CasingSidewalk1` | `Gameplay/Misc/CameraStation/UsePoint` | use_point | 25.4 | 44.8 | 1.76 | ok |
-| `Spawns/CasingSidewalk1` | `Gameplay/Misc/AlarmSecurity/UsePoint` | use_point | 27.6 | 46.4 | 1.68 | ok |
-| `Spawns/CasingSidewalk1` | `Gameplay/Misc/AlarmManager/UsePoint` | use_point | 26.7 | 29.0 | 1.09 | ok |
-| `Spawns/CasingSidewalk1` | `Gameplay/Misc/AlarmTellers/UsePoint` | use_point | 23.5 | 43.2 | 1.84 | ok |
-| `Spawns/CasingSidewalk1` | `Gameplay/Misc/PhoneManager/UsePoint` | use_point | 27.6 | 32.4 | 1.17 | ok |
-| `Spawns/CasingSidewalk1` | `Gameplay/Misc/PhoneLoan/UsePoint` | use_point | 30.3 | 33.1 | 1.09 | ok |
-| `Spawns/CasingSidewalk1` | `Gameplay/Misc/CashLift` | objective | 23.7 | 40.1 | 1.69 | ok |
-| `Spawns/CasingSidewalk1` | `Gameplay/Misc/CashLift/UsePoint` | use_point | 23.7 | 40.1 | 1.69 | ok |
-| `Spawns/CasingSidewalk1` | `Gameplay/Atms/AtmCash1` | objective | 25.3 | 26.8 | 1.06 | ok |
-| `Spawns/CasingSidewalk1` | `Gameplay/Atms/AtmCash1/UsePoint` | use_point | 25.3 | 26.8 | 1.06 | ok |
-| `Spawns/CasingSidewalk1` | `Gameplay/Atms/AtmSaw1` | objective | 25.2 | 26.7 | 1.06 | ok |
-| `Spawns/CasingSidewalk1` | `Gameplay/Atms/AtmSaw1/UsePoint` | use_point | 25.2 | 26.7 | 1.06 | ok |
-| `Spawns/CasingSidewalk1` | `Gameplay/Atms/AtmCash2` | objective | 26.3 | 27.8 | 1.06 | ok |
-| `Spawns/CasingSidewalk1` | `Gameplay/Atms/AtmCash2/UsePoint` | use_point | 26.3 | 27.8 | 1.06 | ok |
-| `Spawns/CasingSidewalk1` | `Gameplay/Atms/AtmSaw2` | objective | 26.3 | 27.8 | 1.06 | ok |
-| `Spawns/CasingSidewalk1` | `Gameplay/Atms/AtmSaw2/UsePoint` | use_point | 26.3 | 27.8 | 1.06 | ok |
-| `Spawns/CasingSidewalk1` | `Variants/Group_code_note/Slot_code_break_board/CodeNote` | objective | 28.6 | 47.4 | 1.65 | ok |
-| `Spawns/CasingSidewalk1` | `Variants/Group_code_note/Slot_code_break_board/CodeNote/UsePoint` | use_point | 28.6 | 47.4 | 1.65 | ok |
-| `Spawns/CasingSidewalk1` | `Variants/Group_keycard/Slot_kc_break_locker/Keycard` | objective | 29.2 | 46.4 | 1.59 | ok |
-| `Spawns/CasingSidewalk1` | `Variants/Group_keycard/Slot_kc_break_locker/Keycard/UsePoint` | use_point | 29.2 | 46.4 | 1.59 | ok |
-| `Spawns/CasingSidewalk1` | `Variants/Group_server_room/Slot_srv_basement/HackTerminal` | objective | 34.7 | 67.9 | 1.96 | ok |
-| `Spawns/CasingSidewalk1` | `Variants/Group_server_room/Slot_srv_basement/HackTerminal/UsePoint` | use_point | 34.7 | 67.9 | 1.96 | ok |
-| `Spawns/CasingSidewalk1` | `Variants/Group_vent_open/Slot_vent_locked/AreawayGrate` | objective | 31.7 | 53.0 | 1.67 | ok |
-| `Spawns/CasingSidewalk1` | `Variants/Group_vent_open/Slot_vent_locked/AreawayGrate/UsePoint` | use_point | 31.7 | 53.0 | 1.67 | ok |
-| `Spawns/CasingSidewalk1` | `Variants/Group_vent_open/Slot_vent_locked/AreawayGrate/Padlock` | objective | 31.9 | 52.8 | 1.66 | ok |
-| `Spawns/CasingSidewalk1` | `Variants/Group_vent_open/Slot_vent_locked/AreawayGrate/Padlock/UsePoint` | use_point | 31.9 | 52.8 | 1.66 | ok |
-| `Spawns/CasingSidewalk1` | `Variants/Group_extra_loot/Slot_mgr_safe_empty/ManagerSafe` | objective | 27.9 | 32.3 | 1.15 | ok |
-| `Spawns/CasingSidewalk1` | `Variants/Group_extra_loot/Slot_mgr_safe_empty/ManagerSafe/UsePoint` | use_point | 27.9 | 32.3 | 1.15 | ok |
-| `Spawns/CasingSidewalk1` | `Variants/Group_escape/Slot_esc_boat_quay/BoatSecureE2/Zone` | secure_zone | 13.8 | 17.7 | 1.29 | ok |
-| `Spawns/CasingSidewalk1` | `Variants/Group_escape/Slot_esc_boat_quay/BoatEscapeE2/Zone` | escape_zone | 12.9 | 16.1 | 1.25 | ok |
-| `Spawns/CasingSidewalk2` | `Gameplay/Doors/SallyPersonnelDoor` | objective | 25.9 | 40.9 | 1.58 | ok |
-| `Spawns/CasingSidewalk2` | `Gameplay/Doors/SallyPersonnelDoor/UsePoint` | use_point | 25.9 | 40.9 | 1.58 | ok |
-| `Spawns/CasingSidewalk2` | `Gameplay/Doors/LoadingDoor/UsePoint` | use_point | 18.8 | 33.6 | 1.79 | ok |
-| `Spawns/CasingSidewalk2` | `Gameplay/Doors/SecurityRoomDoor/UsePoint` | use_point | 21.5 | 39.6 | 1.84 | ok |
-| `Spawns/CasingSidewalk2` | `Gameplay/Doors/BreakRoomDoor/UsePoint` | use_point | 23.9 | 39.4 | 1.65 | ok |
-| `Spawns/CasingSidewalk2` | `Gameplay/Doors/ElectricalDoor/UsePoint` | use_point | 26.4 | 36.0 | 1.36 | ok |
-| `Spawns/CasingSidewalk2` | `Gameplay/Doors/StorageDoor/UsePoint` | use_point | 29.5 | 31.2 | 1.06 | ok |
-| `Spawns/CasingSidewalk2` | `Gameplay/Doors/TellerDoor` | objective | 17.8 | 30.2 | 1.70 | ok |
-| `Spawns/CasingSidewalk2` | `Gameplay/Doors/TellerDoor/UsePoint` | use_point | 17.8 | 30.2 | 1.70 | ok |
-| `Spawns/CasingSidewalk2` | `Gameplay/Doors/LoanCorridorDoor/UsePoint` | use_point | 29.4 | 31.1 | 1.06 | ok |
-| `Spawns/CasingSidewalk2` | `Gameplay/Doors/FireExit` | objective | 30.9 | 32.2 | 1.04 | ok |
-| `Spawns/CasingSidewalk2` | `Gameplay/Doors/FireExit/UsePoint` | use_point | 30.9 | 32.2 | 1.04 | ok |
-| `Spawns/CasingSidewalk2` | `Gameplay/Doors/TellerGate` | objective | 13.8 | 26.6 | 1.92 | ok |
-| `Spawns/CasingSidewalk2` | `Gameplay/Doors/TellerGate/UsePoint` | use_point | 13.8 | 26.6 | 1.92 | ok |
-| `Spawns/CasingSidewalk2` | `Gameplay/Doors/LoanHallDoor/UsePoint` | use_point | 24.7 | 25.6 | 1.04 | ok |
-| `Spawns/CasingSidewalk2` | `Gameplay/Doors/ManagerHallDoor/UsePoint` | use_point | 22.9 | 23.5 | 1.03 | ok |
-| `Spawns/CasingSidewalk2` | `Gameplay/Doors/AtmInnerDoor` | objective | 22.7 | 24.2 | 1.07 | ok |
-| `Spawns/CasingSidewalk2` | `Gameplay/Doors/AtmInnerDoor/UsePoint` | use_point | 22.7 | 24.2 | 1.07 | ok |
-| `Spawns/CasingSidewalk2` | `Gameplay/Doors/VestibuleInnerDoors/UsePoint` | use_point | 12.0 | 13.1 | 1.09 | ok |
-| `Spawns/CasingSidewalk2` | `Gameplay/Doors/MainEntrance` | objective | 11.2 | 11.2 | 1.00 | ok |
-| `Spawns/CasingSidewalk2` | `Gameplay/Doors/MainEntrance/UsePoint` | use_point | 11.2 | 11.2 | 1.00 | ok |
-| `Spawns/CasingSidewalk2` | `Gameplay/Doors/AtmStreetDoor` | objective | 24.5 | 25.0 | 1.02 | ok |
-| `Spawns/CasingSidewalk2` | `Gameplay/Doors/AtmStreetDoor/UsePoint` | use_point | 24.5 | 25.0 | 1.02 | ok |
-| `Spawns/CasingSidewalk2` | `Gameplay/Doors/XferDoor/UsePoint` | use_point | 18.5 | 53.3 | 2.87 | ok |
-| `Spawns/CasingSidewalk2` | `Gameplay/Doors/JanitorDoor/UsePoint` | use_point | 19.8 | 49.1 | 2.48 | ok |
-| `Spawns/CasingSidewalk2` | `Gameplay/Doors/LockerRoomDoor/UsePoint` | use_point | 21.8 | 50.1 | 2.30 | ok |
-| `Spawns/CasingSidewalk2` | `Gameplay/Doors/WCDoor/UsePoint` | use_point | 26.2 | 54.3 | 2.07 | ok |
-| `Spawns/CasingSidewalk2` | `Gameplay/Doors/PlantDoor/UsePoint` | use_point | 26.0 | 56.6 | 2.18 | ok |
-| `Spawns/CasingSidewalk2` | `Gameplay/Doors/ServerDoor` | objective | 29.7 | 60.0 | 2.02 | ok |
-| `Spawns/CasingSidewalk2` | `Gameplay/Doors/ServerDoor/UsePoint` | use_point | 29.7 | 60.0 | 2.02 | ok |
-| `Spawns/CasingSidewalk2` | `Gameplay/Doors/RecordsDoor/UsePoint` | use_point | 18.4 | 53.3 | 2.89 | ok |
-| `Spawns/CasingSidewalk2` | `Gameplay/Doors/InspectionWestDoor/UsePoint` | use_point | 19.8 | 48.8 | 2.47 | ok |
-| `Spawns/CasingSidewalk2` | `Gameplay/Doors/VaultGate` | objective | 22.9 | 52.1 | 2.28 | ok |
-| `Spawns/CasingSidewalk2` | `Gameplay/Doors/VaultGate/UsePoint` | use_point | 22.9 | 52.1 | 2.28 | ok |
-| `Spawns/CasingSidewalk2` | `Gameplay/Doors/InspectionEastDoor/UsePoint` | use_point | 27.0 | 58.1 | 2.15 | ok |
-| `Spawns/CasingSidewalk2` | `Gameplay/Doors/CountRoomDoor` | objective | 29.7 | 60.0 | 2.02 | ok |
-| `Spawns/CasingSidewalk2` | `Gameplay/Doors/CountRoomDoor/UsePoint` | use_point | 29.7 | 60.0 | 2.02 | ok |
-| `Spawns/CasingSidewalk2` | `Gameplay/Doors/DepositoryDoor` | objective | 26.3 | 66.3 | 2.52 | ok |
-| `Spawns/CasingSidewalk2` | `Gameplay/Doors/DepositoryDoor/UsePoint` | use_point | 26.3 | 66.3 | 2.52 | ok |
-| `Spawns/CasingSidewalk2` | `Gameplay/Doors/VaultDoor` | objective | 21.0 | 53.7 | 2.55 | ok |
-| `Spawns/CasingSidewalk2` | `Gameplay/Doors/VaultDoor/UsePoint` | use_point | 21.0 | 53.7 | 2.55 | ok |
-| `Spawns/CasingSidewalk2` | `Gameplay/Doors/VaultDoor/VaultDrill` | objective | 21.6 | 53.7 | 2.48 | ok |
-| `Spawns/CasingSidewalk2` | `Gameplay/Doors/VaultDoor/VaultDrill/UsePoint` | use_point | 21.6 | 53.7 | 2.48 | ok |
-| `Spawns/CasingSidewalk2` | `Gameplay/Doors/AreawayDoor` | objective | 31.3 | 55.7 | 1.78 | ok |
-| `Spawns/CasingSidewalk2` | `Gameplay/Doors/AreawayDoor/UsePoint` | use_point | 31.3 | 55.7 | 1.78 | ok |
-| `Spawns/CasingSidewalk2` | `Gameplay/Doors/AlleyGate` | objective | 39.3 | 63.7 | 1.62 | ok |
-| `Spawns/CasingSidewalk2` | `Gameplay/Doors/AlleyGate/UsePoint` | use_point | 39.3 | 63.7 | 1.62 | ok |
+| `Spawns/CasingSidewalk1` | `Gameplay/Windows/HallBay3` | objective | 17.4 | 17.5 | 1.01 | ok |
+| `Spawns/CasingSidewalk1` | `Gameplay/Windows/HallBay3/UsePoint` | use_point | 17.4 | 17.5 | 1.01 | ok |
+| `Spawns/CasingSidewalk1` | `Gameplay/Windows/HallBay4` | objective | 20.8 | 21.0 | 1.01 | ok |
+| `Spawns/CasingSidewalk1` | `Gameplay/Windows/HallBay4/UsePoint` | use_point | 20.8 | 21.0 | 1.01 | ok |
+| `Spawns/CasingSidewalk1` | `Gameplay/Vault/TimeLockPanel` | objective | 25.7 | 57.7 | 2.25 | ok |
+| `Spawns/CasingSidewalk1` | `Gameplay/Vault/TimeLockPanel/UsePoint` | use_point | 25.7 | 57.7 | 2.25 | ok |
+| `Spawns/CasingSidewalk1` | `Gameplay/Vault/CageCash` | loot_spawn | 18.8 | 60.7 | 3.23 | detour (whitelisted) |
+| `Spawns/CasingSidewalk1` | `Gameplay/Vault/CageCash/UsePoint` | use_point | 19.3 | 59.8 | 3.11 | detour (whitelisted) |
+| `Spawns/CasingSidewalk1` | `Gameplay/Vault/CoopCashBricks` | loot_spawn | 17.4 | 65.5 | 3.75 | detour (whitelisted) |
+| `Spawns/CasingSidewalk1` | `Gameplay/Vault/CoopCashBricks/UsePoint` | use_point | 17.8 | 65.0 | 3.66 | detour (whitelisted) |
+| `Spawns/CasingSidewalk1` | `Gameplay/Vault/Box1` | objective | 18.1 | 58.8 | 3.25 | detour (whitelisted) |
+| `Spawns/CasingSidewalk1` | `Gameplay/Vault/Box1/UsePoint` | use_point | 18.1 | 58.8 | 3.25 | detour (whitelisted) |
+| `Spawns/CasingSidewalk1` | `Gameplay/Vault/Box2` | objective | 16.9 | 60.1 | 3.56 | detour (whitelisted) |
+| `Spawns/CasingSidewalk1` | `Gameplay/Vault/Box2/UsePoint` | use_point | 16.9 | 60.1 | 3.56 | detour (whitelisted) |
+| `Spawns/CasingSidewalk1` | `Gameplay/Vault/Box3` | objective | 15.8 | 61.7 | 3.90 | detour (whitelisted) |
+| `Spawns/CasingSidewalk1` | `Gameplay/Vault/Box3/UsePoint` | use_point | 15.8 | 61.7 | 3.90 | detour (whitelisted) |
+| `Spawns/CasingSidewalk1` | `Gameplay/Vault/Box4` | objective | 14.9 | 63.4 | 4.27 | detour (whitelisted) |
+| `Spawns/CasingSidewalk1` | `Gameplay/Vault/Box4/UsePoint` | use_point | 14.9 | 63.4 | 4.27 | detour (whitelisted) |
+| `Spawns/CasingSidewalk1` | `Gameplay/Vault/Box5` | objective | 23.5 | 59.1 | 2.52 | ok |
+| `Spawns/CasingSidewalk1` | `Gameplay/Vault/Box5/UsePoint` | use_point | 23.5 | 59.1 | 2.52 | ok |
+| `Spawns/CasingSidewalk1` | `Gameplay/Vault/Box6` | objective | 22.5 | 60.2 | 2.67 | ok |
+| `Spawns/CasingSidewalk1` | `Gameplay/Vault/Box6/UsePoint` | use_point | 22.5 | 60.2 | 2.67 | ok |
+| `Spawns/CasingSidewalk1` | `Gameplay/Vault/Box7` | objective | 21.7 | 61.7 | 2.84 | ok |
+| `Spawns/CasingSidewalk1` | `Gameplay/Vault/Box7/UsePoint` | use_point | 21.7 | 61.7 | 2.84 | ok |
+| `Spawns/CasingSidewalk1` | `Gameplay/Vault/Box8` | objective | 21.0 | 63.5 | 3.02 | detour (whitelisted) |
+| `Spawns/CasingSidewalk1` | `Gameplay/Vault/Box8/UsePoint` | use_point | 21.0 | 63.5 | 3.02 | detour (whitelisted) |
+| `Spawns/CasingSidewalk1` | `Gameplay/Depository/DepositorySafe` | objective | 25.9 | 72.7 | 2.80 | ok |
+| `Spawns/CasingSidewalk1` | `Gameplay/Depository/DepositorySafe/UsePoint` | use_point | 25.9 | 72.7 | 2.80 | ok |
+| `Spawns/CasingSidewalk1` | `Gameplay/Depository/DepositorySafe/NightDropBags` | loot_spawn | 25.7 | 73.9 | 2.88 | ok |
+| `Spawns/CasingSidewalk1` | `Gameplay/Depository/DepositorySafe/NightDropBags/UsePoint` | use_point | 25.7 | 73.9 | 2.88 | ok |
+| `Spawns/CasingSidewalk1` | `Gameplay/Misc/TellerDrawer1/UsePoint` | use_point | 16.5 | 31.2 | 1.89 | ok |
+| `Spawns/CasingSidewalk1` | `Gameplay/Misc/TellerDrawer2/UsePoint` | use_point | 18.9 | 36.2 | 1.91 | ok |
+| `Spawns/CasingSidewalk1` | `Gameplay/Misc/TellerDrawer3/UsePoint` | use_point | 22.2 | 41.2 | 1.85 | ok |
+| `Spawns/CasingSidewalk1` | `Gameplay/Misc/CameraStation/UsePoint` | use_point | 25.4 | 43.8 | 1.72 | ok |
+| `Spawns/CasingSidewalk1` | `Gameplay/Misc/AlarmSecurity/UsePoint` | use_point | 27.6 | 45.4 | 1.65 | ok |
+| `Spawns/CasingSidewalk1` | `Gameplay/Misc/AlarmManager/UsePoint` | use_point | 26.7 | 28.3 | 1.06 | ok |
+| `Spawns/CasingSidewalk1` | `Gameplay/Misc/AlarmTellers/UsePoint` | use_point | 23.5 | 42.2 | 1.80 | ok |
+| `Spawns/CasingSidewalk1` | `Gameplay/Misc/PhoneManager/UsePoint` | use_point | 27.6 | 33.1 | 1.20 | ok |
+| `Spawns/CasingSidewalk1` | `Gameplay/Misc/PhoneLoan/UsePoint` | use_point | 30.3 | 32.0 | 1.06 | ok |
+| `Spawns/CasingSidewalk1` | `Gameplay/Misc/CashLift` | objective | 23.7 | 39.1 | 1.65 | ok |
+| `Spawns/CasingSidewalk1` | `Gameplay/Misc/CashLift/UsePoint` | use_point | 23.7 | 39.1 | 1.65 | ok |
+| `Spawns/CasingSidewalk1` | `Gameplay/Atms/AtmCash1` | objective | 25.3 | 27.6 | 1.09 | ok |
+| `Spawns/CasingSidewalk1` | `Gameplay/Atms/AtmCash1/UsePoint` | use_point | 25.3 | 27.6 | 1.09 | ok |
+| `Spawns/CasingSidewalk1` | `Gameplay/Atms/AtmSaw1` | objective | 25.2 | 27.5 | 1.09 | ok |
+| `Spawns/CasingSidewalk1` | `Gameplay/Atms/AtmSaw1/UsePoint` | use_point | 25.2 | 27.5 | 1.09 | ok |
+| `Spawns/CasingSidewalk1` | `Gameplay/Atms/AtmCash2` | objective | 26.3 | 28.6 | 1.09 | ok |
+| `Spawns/CasingSidewalk1` | `Gameplay/Atms/AtmCash2/UsePoint` | use_point | 26.3 | 28.6 | 1.09 | ok |
+| `Spawns/CasingSidewalk1` | `Gameplay/Atms/AtmSaw2` | objective | 26.3 | 28.6 | 1.09 | ok |
+| `Spawns/CasingSidewalk1` | `Gameplay/Atms/AtmSaw2/UsePoint` | use_point | 26.3 | 28.6 | 1.09 | ok |
+| `Spawns/CasingSidewalk1` | `Variants/Group_code_note/Slot_code_break_board/CodeNote` | objective | 28.6 | 46.3 | 1.62 | ok |
+| `Spawns/CasingSidewalk1` | `Variants/Group_code_note/Slot_code_break_board/CodeNote/UsePoint` | use_point | 28.6 | 46.3 | 1.62 | ok |
+| `Spawns/CasingSidewalk1` | `Variants/Group_keycard/Slot_kc_break_locker/Keycard` | objective | 29.2 | 45.4 | 1.56 | ok |
+| `Spawns/CasingSidewalk1` | `Variants/Group_keycard/Slot_kc_break_locker/Keycard/UsePoint` | use_point | 29.2 | 45.4 | 1.56 | ok |
+| `Spawns/CasingSidewalk1` | `Variants/Group_server_room/Slot_srv_basement/HackTerminal` | objective | 34.7 | 66.9 | 1.93 | ok |
+| `Spawns/CasingSidewalk1` | `Variants/Group_server_room/Slot_srv_basement/HackTerminal/UsePoint` | use_point | 34.7 | 66.9 | 1.93 | ok |
+| `Spawns/CasingSidewalk1` | `Variants/Group_vent_open/Slot_vent_locked/AreawayGrate` | objective | 31.7 | 52.0 | 1.64 | ok |
+| `Spawns/CasingSidewalk1` | `Variants/Group_vent_open/Slot_vent_locked/AreawayGrate/UsePoint` | use_point | 31.7 | 52.0 | 1.64 | ok |
+| `Spawns/CasingSidewalk1` | `Variants/Group_vent_open/Slot_vent_locked/AreawayGrate/Padlock` | objective | 31.9 | 51.8 | 1.62 | ok |
+| `Spawns/CasingSidewalk1` | `Variants/Group_vent_open/Slot_vent_locked/AreawayGrate/Padlock/UsePoint` | use_point | 31.9 | 51.8 | 1.62 | ok |
+| `Spawns/CasingSidewalk1` | `Variants/Group_extra_loot/Slot_mgr_safe_empty/ManagerSafe` | objective | 27.9 | 32.9 | 1.18 | ok |
+| `Spawns/CasingSidewalk1` | `Variants/Group_extra_loot/Slot_mgr_safe_empty/ManagerSafe/UsePoint` | use_point | 27.9 | 32.9 | 1.18 | ok |
+| `Spawns/CasingSidewalk1` | `Variants/Group_escape/Slot_esc_boat_quay/BoatSecureE2/Zone` | secure_zone | 13.8 | 16.2 | 1.17 | ok |
+| `Spawns/CasingSidewalk1` | `Variants/Group_escape/Slot_esc_boat_quay/BoatEscapeE2/Zone` | escape_zone | 12.9 | 14.4 | 1.12 | ok |
+| `Spawns/CasingSidewalk2` | `Gameplay/Doors/SallyPersonnelDoor` | objective | 25.9 | 40.1 | 1.55 | ok |
+| `Spawns/CasingSidewalk2` | `Gameplay/Doors/SallyPersonnelDoor/UsePoint` | use_point | 25.9 | 40.1 | 1.55 | ok |
+| `Spawns/CasingSidewalk2` | `Gameplay/Doors/LoadingDoor/UsePoint` | use_point | 18.8 | 32.8 | 1.74 | ok |
+| `Spawns/CasingSidewalk2` | `Gameplay/Doors/SecurityRoomDoor/UsePoint` | use_point | 21.5 | 38.7 | 1.80 | ok |
+| `Spawns/CasingSidewalk2` | `Gameplay/Doors/BreakRoomDoor/UsePoint` | use_point | 23.9 | 38.5 | 1.61 | ok |
+| `Spawns/CasingSidewalk2` | `Gameplay/Doors/ElectricalDoor/UsePoint` | use_point | 26.4 | 35.0 | 1.33 | ok |
+| `Spawns/CasingSidewalk2` | `Gameplay/Doors/StorageDoor/UsePoint` | use_point | 29.5 | 31.6 | 1.07 | ok |
+| `Spawns/CasingSidewalk2` | `Gameplay/Doors/TellerDoor` | objective | 17.8 | 29.4 | 1.65 | ok |
+| `Spawns/CasingSidewalk2` | `Gameplay/Doors/TellerDoor/UsePoint` | use_point | 17.8 | 29.4 | 1.65 | ok |
+| `Spawns/CasingSidewalk2` | `Gameplay/Doors/LoanCorridorDoor/UsePoint` | use_point | 29.4 | 31.5 | 1.07 | ok |
+| `Spawns/CasingSidewalk2` | `Gameplay/Doors/FireExit` | objective | 30.9 | 32.7 | 1.06 | ok |
+| `Spawns/CasingSidewalk2` | `Gameplay/Doors/FireExit/UsePoint` | use_point | 30.9 | 32.7 | 1.06 | ok |
+| `Spawns/CasingSidewalk2` | `Gameplay/Doors/TellerGate` | objective | 13.8 | 25.7 | 1.86 | ok |
+| `Spawns/CasingSidewalk2` | `Gameplay/Doors/TellerGate/UsePoint` | use_point | 13.8 | 25.7 | 1.86 | ok |
+| `Spawns/CasingSidewalk2` | `Gameplay/Doors/LoanHallDoor/UsePoint` | use_point | 24.7 | 26.1 | 1.06 | ok |
+| `Spawns/CasingSidewalk2` | `Gameplay/Doors/ManagerHallDoor/UsePoint` | use_point | 22.9 | 24.3 | 1.06 | ok |
+| `Spawns/CasingSidewalk2` | `Gameplay/Doors/AtmInnerDoor` | objective | 22.7 | 25.1 | 1.11 | ok |
+| `Spawns/CasingSidewalk2` | `Gameplay/Doors/AtmInnerDoor/UsePoint` | use_point | 22.7 | 25.1 | 1.11 | ok |
+| `Spawns/CasingSidewalk2` | `Gameplay/Doors/VestibuleInnerDoors/UsePoint` | use_point | 12.0 | 12.6 | 1.05 | ok |
+| `Spawns/CasingSidewalk2` | `Gameplay/Doors/MainEntrance` | objective | 11.2 | 11.3 | 1.01 | ok |
+| `Spawns/CasingSidewalk2` | `Gameplay/Doors/MainEntrance/UsePoint` | use_point | 11.2 | 11.3 | 1.01 | ok |
+| `Spawns/CasingSidewalk2` | `Gameplay/Doors/AtmStreetDoor` | objective | 24.5 | 24.9 | 1.02 | ok |
+| `Spawns/CasingSidewalk2` | `Gameplay/Doors/AtmStreetDoor/UsePoint` | use_point | 24.5 | 24.9 | 1.02 | ok |
+| `Spawns/CasingSidewalk2` | `Gameplay/Doors/XferDoor/UsePoint` | use_point | 18.5 | 52.4 | 2.83 | ok |
+| `Spawns/CasingSidewalk2` | `Gameplay/Doors/JanitorDoor/UsePoint` | use_point | 19.8 | 48.2 | 2.44 | ok |
+| `Spawns/CasingSidewalk2` | `Gameplay/Doors/LockerRoomDoor/UsePoint` | use_point | 21.8 | 49.3 | 2.26 | ok |
+| `Spawns/CasingSidewalk2` | `Gameplay/Doors/WCDoor/UsePoint` | use_point | 26.2 | 53.4 | 2.04 | ok |
+| `Spawns/CasingSidewalk2` | `Gameplay/Doors/PlantDoor/UsePoint` | use_point | 26.0 | 55.8 | 2.15 | ok |
+| `Spawns/CasingSidewalk2` | `Gameplay/Doors/ServerDoor` | objective | 29.7 | 60.8 | 2.04 | ok |
+| `Spawns/CasingSidewalk2` | `Gameplay/Doors/ServerDoor/UsePoint` | use_point | 29.7 | 60.8 | 2.04 | ok |
+| `Spawns/CasingSidewalk2` | `Gameplay/Doors/RecordsDoor/UsePoint` | use_point | 18.4 | 52.4 | 2.84 | ok |
+| `Spawns/CasingSidewalk2` | `Gameplay/Doors/InspectionWestDoor/UsePoint` | use_point | 19.8 | 48.0 | 2.42 | ok |
+| `Spawns/CasingSidewalk2` | `Gameplay/Doors/VaultGate` | objective | 22.9 | 51.3 | 2.24 | ok |
+| `Spawns/CasingSidewalk2` | `Gameplay/Doors/VaultGate/UsePoint` | use_point | 22.9 | 51.3 | 2.24 | ok |
+| `Spawns/CasingSidewalk2` | `Gameplay/Doors/InspectionEastDoor/UsePoint` | use_point | 27.0 | 57.3 | 2.12 | ok |
+| `Spawns/CasingSidewalk2` | `Gameplay/Doors/CountRoomDoor` | objective | 29.7 | 60.8 | 2.05 | ok |
+| `Spawns/CasingSidewalk2` | `Gameplay/Doors/CountRoomDoor/UsePoint` | use_point | 29.7 | 60.8 | 2.05 | ok |
+| `Spawns/CasingSidewalk2` | `Gameplay/Doors/DepositoryDoor` | objective | 26.3 | 67.1 | 2.55 | ok |
+| `Spawns/CasingSidewalk2` | `Gameplay/Doors/DepositoryDoor/UsePoint` | use_point | 26.3 | 67.1 | 2.55 | ok |
+| `Spawns/CasingSidewalk2` | `Gameplay/Doors/VaultDoor` | objective | 21.0 | 52.8 | 2.51 | ok |
+| `Spawns/CasingSidewalk2` | `Gameplay/Doors/VaultDoor/UsePoint` | use_point | 21.0 | 52.8 | 2.51 | ok |
+| `Spawns/CasingSidewalk2` | `Gameplay/Doors/VaultDoor/VaultDrill` | objective | 21.6 | 52.8 | 2.44 | ok |
+| `Spawns/CasingSidewalk2` | `Gameplay/Doors/VaultDoor/VaultDrill/UsePoint` | use_point | 21.6 | 52.8 | 2.44 | ok |
+| `Spawns/CasingSidewalk2` | `Gameplay/Doors/AreawayDoor` | objective | 31.3 | 54.9 | 1.75 | ok |
+| `Spawns/CasingSidewalk2` | `Gameplay/Doors/AreawayDoor/UsePoint` | use_point | 31.3 | 54.9 | 1.75 | ok |
+| `Spawns/CasingSidewalk2` | `Gameplay/Doors/AlleyGate` | objective | 39.3 | 64.5 | 1.64 | ok |
+| `Spawns/CasingSidewalk2` | `Gameplay/Doors/AlleyGate/UsePoint` | use_point | 39.3 | 64.5 | 1.64 | ok |
 | `Spawns/CasingSidewalk2` | `Gameplay/Doors/HarborWestGate` | objective | 13.4 | 13.4 | 1.00 | ok |
 | `Spawns/CasingSidewalk2` | `Gameplay/Doors/HarborWestGate/UsePoint` | use_point | 13.4 | 13.4 | 1.00 | ok |
 | `Spawns/CasingSidewalk2` | `Gameplay/Doors/HarborEastGate` | objective | 39.3 | 39.3 | 1.00 | ok |
 | `Spawns/CasingSidewalk2` | `Gameplay/Doors/HarborEastGate/UsePoint` | use_point | 39.3 | 39.3 | 1.00 | ok |
-| `Spawns/CasingSidewalk2` | `Gameplay/Doors/WharfNorthGate` | objective | 46.8 | 55.2 | 1.18 | ok |
-| `Spawns/CasingSidewalk2` | `Gameplay/Doors/WharfNorthGate/UsePoint` | use_point | 46.8 | 55.2 | 1.18 | ok |
+| `Spawns/CasingSidewalk2` | `Gameplay/Doors/WharfNorthGate` | objective | 46.8 | 54.2 | 1.16 | ok |
+| `Spawns/CasingSidewalk2` | `Gameplay/Doors/WharfNorthGate/UsePoint` | use_point | 46.8 | 54.2 | 1.16 | ok |
 | `Spawns/CasingSidewalk2` | `Gameplay/Windows/HallBay1` | objective | 4.6 | 4.6 | 1.01 | ok |
 | `Spawns/CasingSidewalk2` | `Gameplay/Windows/HallBay1/UsePoint` | use_point | 4.6 | 4.6 | 1.01 | ok |
 | `Spawns/CasingSidewalk2` | `Gameplay/Windows/HallBay2` | objective | 7.1 | 7.2 | 1.01 | ok |
 | `Spawns/CasingSidewalk2` | `Gameplay/Windows/HallBay2/UsePoint` | use_point | 7.1 | 7.2 | 1.01 | ok |
-| `Spawns/CasingSidewalk2` | `Gameplay/Windows/HallBay3` | objective | 15.5 | 15.6 | 1.01 | ok |
-| `Spawns/CasingSidewalk2` | `Gameplay/Windows/HallBay3/UsePoint` | use_point | 15.5 | 15.6 | 1.01 | ok |
-| `Spawns/CasingSidewalk2` | `Gameplay/Windows/HallBay4` | objective | 18.9 | 19.3 | 1.02 | ok |
-| `Spawns/CasingSidewalk2` | `Gameplay/Windows/HallBay4/UsePoint` | use_point | 18.9 | 19.3 | 1.02 | ok |
-| `Spawns/CasingSidewalk2` | `Gameplay/Vault/TimeLockPanel` | objective | 24.1 | 56.7 | 2.35 | ok |
-| `Spawns/CasingSidewalk2` | `Gameplay/Vault/TimeLockPanel/UsePoint` | use_point | 24.1 | 56.7 | 2.35 | ok |
-| `Spawns/CasingSidewalk2` | `Gameplay/Vault/CageCash` | loot_spawn | 17.1 | 58.1 | 3.39 | detour (whitelisted) |
-| `Spawns/CasingSidewalk2` | `Gameplay/Vault/CageCash/UsePoint` | use_point | 17.6 | 58.8 | 3.34 | detour (whitelisted) |
-| `Spawns/CasingSidewalk2` | `Gameplay/Vault/CoopCashBricks` | loot_spawn | 15.6 | 62.9 | 4.02 | detour (whitelisted) |
-| `Spawns/CasingSidewalk2` | `Gameplay/Vault/CoopCashBricks/UsePoint` | use_point | 16.0 | 62.4 | 3.90 | detour (whitelisted) |
-| `Spawns/CasingSidewalk2` | `Gameplay/Vault/Box1` | objective | 16.7 | 57.8 | 3.46 | detour (whitelisted) |
-| `Spawns/CasingSidewalk2` | `Gameplay/Vault/Box1/UsePoint` | use_point | 16.7 | 57.8 | 3.46 | detour (whitelisted) |
-| `Spawns/CasingSidewalk2` | `Gameplay/Vault/Box2` | objective | 15.4 | 59.1 | 3.83 | detour (whitelisted) |
-| `Spawns/CasingSidewalk2` | `Gameplay/Vault/Box2/UsePoint` | use_point | 15.4 | 59.1 | 3.83 | detour (whitelisted) |
-| `Spawns/CasingSidewalk2` | `Gameplay/Vault/Box3` | objective | 14.2 | 60.7 | 4.26 | detour (whitelisted) |
-| `Spawns/CasingSidewalk2` | `Gameplay/Vault/Box3/UsePoint` | use_point | 14.2 | 60.7 | 4.26 | detour (whitelisted) |
-| `Spawns/CasingSidewalk2` | `Gameplay/Vault/Box4` | objective | 13.2 | 60.9 | 4.61 | detour (whitelisted) |
-| `Spawns/CasingSidewalk2` | `Gameplay/Vault/Box4/UsePoint` | use_point | 13.2 | 60.9 | 4.61 | detour (whitelisted) |
-| `Spawns/CasingSidewalk2` | `Gameplay/Vault/Box5` | objective | 21.8 | 56.6 | 2.59 | ok |
-| `Spawns/CasingSidewalk2` | `Gameplay/Vault/Box5/UsePoint` | use_point | 21.8 | 56.6 | 2.59 | ok |
-| `Spawns/CasingSidewalk2` | `Gameplay/Vault/Box6` | objective | 20.8 | 57.6 | 2.77 | ok |
-| `Spawns/CasingSidewalk2` | `Gameplay/Vault/Box6/UsePoint` | use_point | 20.8 | 57.6 | 2.77 | ok |
-| `Spawns/CasingSidewalk2` | `Gameplay/Vault/Box7` | objective | 19.9 | 59.2 | 2.97 | ok |
-| `Spawns/CasingSidewalk2` | `Gameplay/Vault/Box7/UsePoint` | use_point | 19.9 | 59.2 | 2.97 | ok |
-| `Spawns/CasingSidewalk2` | `Gameplay/Vault/Box8` | objective | 19.2 | 60.9 | 3.17 | detour (whitelisted) |
-| `Spawns/CasingSidewalk2` | `Gameplay/Vault/Box8/UsePoint` | use_point | 19.2 | 60.9 | 3.17 | detour (whitelisted) |
-| `Spawns/CasingSidewalk2` | `Gameplay/Depository/DepositorySafe` | objective | 24.0 | 70.1 | 2.92 | ok |
-| `Spawns/CasingSidewalk2` | `Gameplay/Depository/DepositorySafe/UsePoint` | use_point | 24.0 | 70.1 | 2.92 | ok |
-| `Spawns/CasingSidewalk2` | `Gameplay/Depository/DepositorySafe/NightDropBags` | loot_spawn | 23.7 | 71.3 | 3.00 | detour (whitelisted) |
-| `Spawns/CasingSidewalk2` | `Gameplay/Depository/DepositorySafe/NightDropBags/UsePoint` | use_point | 23.7 | 71.3 | 3.00 | detour (whitelisted) |
-| `Spawns/CasingSidewalk2` | `Gameplay/Misc/TellerDrawer1/UsePoint` | use_point | 15.9 | 30.2 | 1.90 | ok |
-| `Spawns/CasingSidewalk2` | `Gameplay/Misc/TellerDrawer2/UsePoint` | use_point | 17.8 | 35.2 | 1.97 | ok |
-| `Spawns/CasingSidewalk2` | `Gameplay/Misc/TellerDrawer3/UsePoint` | use_point | 20.8 | 40.2 | 1.93 | ok |
-| `Spawns/CasingSidewalk2` | `Gameplay/Misc/CameraStation/UsePoint` | use_point | 24.4 | 42.8 | 1.75 | ok |
-| `Spawns/CasingSidewalk2` | `Gameplay/Misc/AlarmSecurity/UsePoint` | use_point | 26.5 | 44.5 | 1.68 | ok |
-| `Spawns/CasingSidewalk2` | `Gameplay/Misc/AlarmManager/UsePoint` | use_point | 24.9 | 25.7 | 1.03 | ok |
-| `Spawns/CasingSidewalk2` | `Gameplay/Misc/AlarmTellers/UsePoint` | use_point | 22.1 | 41.3 | 1.87 | ok |
-| `Spawns/CasingSidewalk2` | `Gameplay/Misc/PhoneManager/UsePoint` | use_point | 25.7 | 30.5 | 1.19 | ok |
-| `Spawns/CasingSidewalk2` | `Gameplay/Misc/PhoneLoan/UsePoint` | use_point | 28.7 | 29.8 | 1.04 | ok |
-| `Spawns/CasingSidewalk2` | `Gameplay/Misc/CashLift` | objective | 23.2 | 38.2 | 1.64 | ok |
-| `Spawns/CasingSidewalk2` | `Gameplay/Misc/CashLift/UsePoint` | use_point | 23.2 | 38.2 | 1.64 | ok |
-| `Spawns/CasingSidewalk2` | `Gameplay/Atms/AtmCash1` | objective | 23.3 | 24.9 | 1.06 | ok |
-| `Spawns/CasingSidewalk2` | `Gameplay/Atms/AtmCash1/UsePoint` | use_point | 23.3 | 24.9 | 1.06 | ok |
-| `Spawns/CasingSidewalk2` | `Gameplay/Atms/AtmSaw1` | objective | 23.3 | 24.8 | 1.07 | ok |
-| `Spawns/CasingSidewalk2` | `Gameplay/Atms/AtmSaw1/UsePoint` | use_point | 23.3 | 24.8 | 1.07 | ok |
-| `Spawns/CasingSidewalk2` | `Gameplay/Atms/AtmCash2` | objective | 24.4 | 25.9 | 1.06 | ok |
-| `Spawns/CasingSidewalk2` | `Gameplay/Atms/AtmCash2/UsePoint` | use_point | 24.4 | 25.9 | 1.06 | ok |
-| `Spawns/CasingSidewalk2` | `Gameplay/Atms/AtmSaw2` | objective | 24.4 | 25.9 | 1.06 | ok |
-| `Spawns/CasingSidewalk2` | `Gameplay/Atms/AtmSaw2/UsePoint` | use_point | 24.4 | 25.9 | 1.06 | ok |
-| `Spawns/CasingSidewalk2` | `Variants/Group_code_note/Slot_code_break_board/CodeNote` | objective | 27.5 | 45.4 | 1.65 | ok |
-| `Spawns/CasingSidewalk2` | `Variants/Group_code_note/Slot_code_break_board/CodeNote/UsePoint` | use_point | 27.5 | 45.4 | 1.65 | ok |
-| `Spawns/CasingSidewalk2` | `Variants/Group_keycard/Slot_kc_break_locker/Keycard` | objective | 28.0 | 44.5 | 1.59 | ok |
-| `Spawns/CasingSidewalk2` | `Variants/Group_keycard/Slot_kc_break_locker/Keycard/UsePoint` | use_point | 28.0 | 44.5 | 1.59 | ok |
-| `Spawns/CasingSidewalk2` | `Variants/Group_server_room/Slot_srv_basement/HackTerminal` | objective | 33.2 | 65.9 | 1.99 | ok |
-| `Spawns/CasingSidewalk2` | `Variants/Group_server_room/Slot_srv_basement/HackTerminal/UsePoint` | use_point | 33.2 | 65.9 | 1.99 | ok |
-| `Spawns/CasingSidewalk2` | `Variants/Group_vent_open/Slot_vent_locked/AreawayGrate` | objective | 30.6 | 51.0 | 1.67 | ok |
-| `Spawns/CasingSidewalk2` | `Variants/Group_vent_open/Slot_vent_locked/AreawayGrate/UsePoint` | use_point | 30.6 | 51.0 | 1.67 | ok |
-| `Spawns/CasingSidewalk2` | `Variants/Group_vent_open/Slot_vent_locked/AreawayGrate/Padlock` | objective | 30.8 | 50.8 | 1.65 | ok |
-| `Spawns/CasingSidewalk2` | `Variants/Group_vent_open/Slot_vent_locked/AreawayGrate/Padlock/UsePoint` | use_point | 30.8 | 50.8 | 1.65 | ok |
-| `Spawns/CasingSidewalk2` | `Variants/Group_extra_loot/Slot_mgr_safe_empty/ManagerSafe` | objective | 26.1 | 30.4 | 1.16 | ok |
-| `Spawns/CasingSidewalk2` | `Variants/Group_extra_loot/Slot_mgr_safe_empty/ManagerSafe/UsePoint` | use_point | 26.1 | 30.4 | 1.16 | ok |
-| `Spawns/CasingSidewalk2` | `Variants/Group_escape/Slot_esc_boat_quay/BoatSecureE2/Zone` | secure_zone | 12.8 | 16.1 | 1.26 | ok |
-| `Spawns/CasingSidewalk2` | `Variants/Group_escape/Slot_esc_boat_quay/BoatEscapeE2/Zone` | escape_zone | 11.8 | 14.5 | 1.23 | ok |
-| `Spawns/CasingSidewalk3` | `Gameplay/Doors/SallyPersonnelDoor` | objective | 25.5 | 39.0 | 1.53 | ok |
-| `Spawns/CasingSidewalk3` | `Gameplay/Doors/SallyPersonnelDoor/UsePoint` | use_point | 25.5 | 39.0 | 1.53 | ok |
-| `Spawns/CasingSidewalk3` | `Gameplay/Doors/LoadingDoor/UsePoint` | use_point | 18.2 | 31.7 | 1.74 | ok |
-| `Spawns/CasingSidewalk3` | `Gameplay/Doors/SecurityRoomDoor/UsePoint` | use_point | 20.4 | 37.7 | 1.84 | ok |
-| `Spawns/CasingSidewalk3` | `Gameplay/Doors/BreakRoomDoor/UsePoint` | use_point | 22.6 | 37.5 | 1.66 | ok |
-| `Spawns/CasingSidewalk3` | `Gameplay/Doors/ElectricalDoor/UsePoint` | use_point | 25.0 | 34.0 | 1.36 | ok |
-| `Spawns/CasingSidewalk3` | `Gameplay/Doors/StorageDoor/UsePoint` | use_point | 27.9 | 29.4 | 1.05 | ok |
-| `Spawns/CasingSidewalk3` | `Gameplay/Doors/TellerDoor` | objective | 17.7 | 26.9 | 1.52 | ok |
-| `Spawns/CasingSidewalk3` | `Gameplay/Doors/TellerDoor/UsePoint` | use_point | 17.7 | 26.9 | 1.52 | ok |
-| `Spawns/CasingSidewalk3` | `Gameplay/Doors/LoanCorridorDoor/UsePoint` | use_point | 27.8 | 29.3 | 1.05 | ok |
-| `Spawns/CasingSidewalk3` | `Gameplay/Doors/FireExit` | objective | 29.3 | 30.5 | 1.04 | ok |
-| `Spawns/CasingSidewalk3` | `Gameplay/Doors/FireExit/UsePoint` | use_point | 29.3 | 30.5 | 1.04 | ok |
-| `Spawns/CasingSidewalk3` | `Gameplay/Doors/TellerGate` | objective | 13.8 | 23.2 | 1.68 | ok |
-| `Spawns/CasingSidewalk3` | `Gameplay/Doors/TellerGate/UsePoint` | use_point | 13.8 | 23.2 | 1.68 | ok |
-| `Spawns/CasingSidewalk3` | `Gameplay/Doors/LoanHallDoor/UsePoint` | use_point | 23.0 | 23.9 | 1.04 | ok |
-| `Spawns/CasingSidewalk3` | `Gameplay/Doors/ManagerHallDoor/UsePoint` | use_point | 21.1 | 21.7 | 1.03 | ok |
-| `Spawns/CasingSidewalk3` | `Gameplay/Doors/AtmInnerDoor` | objective | 20.7 | 22.5 | 1.08 | ok |
-| `Spawns/CasingSidewalk3` | `Gameplay/Doors/AtmInnerDoor/UsePoint` | use_point | 20.7 | 22.5 | 1.08 | ok |
-| `Spawns/CasingSidewalk3` | `Gameplay/Doors/VestibuleInnerDoors/UsePoint` | use_point | 10.3 | 11.4 | 1.10 | ok |
-| `Spawns/CasingSidewalk3` | `Gameplay/Doors/MainEntrance` | objective | 9.3 | 9.4 | 1.01 | ok |
-| `Spawns/CasingSidewalk3` | `Gameplay/Doors/MainEntrance/UsePoint` | use_point | 9.3 | 9.4 | 1.01 | ok |
+| `Spawns/CasingSidewalk2` | `Gameplay/Windows/HallBay3` | objective | 15.5 | 15.7 | 1.02 | ok |
+| `Spawns/CasingSidewalk2` | `Gameplay/Windows/HallBay3/UsePoint` | use_point | 15.5 | 15.7 | 1.02 | ok |
+| `Spawns/CasingSidewalk2` | `Gameplay/Windows/HallBay4` | objective | 18.9 | 19.2 | 1.02 | ok |
+| `Spawns/CasingSidewalk2` | `Gameplay/Windows/HallBay4/UsePoint` | use_point | 18.9 | 19.2 | 1.02 | ok |
+| `Spawns/CasingSidewalk2` | `Gameplay/Vault/TimeLockPanel` | objective | 24.1 | 55.9 | 2.31 | ok |
+| `Spawns/CasingSidewalk2` | `Gameplay/Vault/TimeLockPanel/UsePoint` | use_point | 24.1 | 55.9 | 2.31 | ok |
+| `Spawns/CasingSidewalk2` | `Gameplay/Vault/CageCash` | loot_spawn | 17.1 | 58.9 | 3.44 | detour (whitelisted) |
+| `Spawns/CasingSidewalk2` | `Gameplay/Vault/CageCash/UsePoint` | use_point | 17.6 | 58.0 | 3.29 | detour (whitelisted) |
+| `Spawns/CasingSidewalk2` | `Gameplay/Vault/CoopCashBricks` | loot_spawn | 15.6 | 63.6 | 4.07 | detour (whitelisted) |
+| `Spawns/CasingSidewalk2` | `Gameplay/Vault/CoopCashBricks/UsePoint` | use_point | 16.0 | 63.1 | 3.95 | detour (whitelisted) |
+| `Spawns/CasingSidewalk2` | `Gameplay/Vault/Box1` | objective | 16.7 | 57.0 | 3.41 | detour (whitelisted) |
+| `Spawns/CasingSidewalk2` | `Gameplay/Vault/Box1/UsePoint` | use_point | 16.7 | 57.0 | 3.41 | detour (whitelisted) |
+| `Spawns/CasingSidewalk2` | `Gameplay/Vault/Box2` | objective | 15.4 | 58.3 | 3.78 | detour (whitelisted) |
+| `Spawns/CasingSidewalk2` | `Gameplay/Vault/Box2/UsePoint` | use_point | 15.4 | 58.3 | 3.78 | detour (whitelisted) |
+| `Spawns/CasingSidewalk2` | `Gameplay/Vault/Box3` | objective | 14.2 | 59.9 | 4.20 | detour (whitelisted) |
+| `Spawns/CasingSidewalk2` | `Gameplay/Vault/Box3/UsePoint` | use_point | 14.2 | 59.9 | 4.20 | detour (whitelisted) |
+| `Spawns/CasingSidewalk2` | `Gameplay/Vault/Box4` | objective | 13.2 | 61.6 | 4.66 | detour (whitelisted) |
+| `Spawns/CasingSidewalk2` | `Gameplay/Vault/Box4/UsePoint` | use_point | 13.2 | 61.6 | 4.66 | detour (whitelisted) |
+| `Spawns/CasingSidewalk2` | `Gameplay/Vault/Box5` | objective | 21.8 | 57.3 | 2.62 | ok |
+| `Spawns/CasingSidewalk2` | `Gameplay/Vault/Box5/UsePoint` | use_point | 21.8 | 57.3 | 2.62 | ok |
+| `Spawns/CasingSidewalk2` | `Gameplay/Vault/Box6` | objective | 20.8 | 58.4 | 2.80 | ok |
+| `Spawns/CasingSidewalk2` | `Gameplay/Vault/Box6/UsePoint` | use_point | 20.8 | 58.4 | 2.80 | ok |
+| `Spawns/CasingSidewalk2` | `Gameplay/Vault/Box7` | objective | 19.9 | 59.9 | 3.00 | detour (whitelisted) |
+| `Spawns/CasingSidewalk2` | `Gameplay/Vault/Box7/UsePoint` | use_point | 19.9 | 59.9 | 3.00 | detour (whitelisted) |
+| `Spawns/CasingSidewalk2` | `Gameplay/Vault/Box8` | objective | 19.2 | 61.6 | 3.21 | detour (whitelisted) |
+| `Spawns/CasingSidewalk2` | `Gameplay/Vault/Box8/UsePoint` | use_point | 19.2 | 61.6 | 3.21 | detour (whitelisted) |
+| `Spawns/CasingSidewalk2` | `Gameplay/Depository/DepositorySafe` | objective | 24.0 | 70.9 | 2.95 | ok |
+| `Spawns/CasingSidewalk2` | `Gameplay/Depository/DepositorySafe/UsePoint` | use_point | 24.0 | 70.9 | 2.95 | ok |
+| `Spawns/CasingSidewalk2` | `Gameplay/Depository/DepositorySafe/NightDropBags` | loot_spawn | 23.7 | 72.1 | 3.04 | detour (whitelisted) |
+| `Spawns/CasingSidewalk2` | `Gameplay/Depository/DepositorySafe/NightDropBags/UsePoint` | use_point | 23.7 | 72.1 | 3.04 | detour (whitelisted) |
+| `Spawns/CasingSidewalk2` | `Gameplay/Misc/TellerDrawer1/UsePoint` | use_point | 15.9 | 29.3 | 1.84 | ok |
+| `Spawns/CasingSidewalk2` | `Gameplay/Misc/TellerDrawer2/UsePoint` | use_point | 17.8 | 34.3 | 1.93 | ok |
+| `Spawns/CasingSidewalk2` | `Gameplay/Misc/TellerDrawer3/UsePoint` | use_point | 20.8 | 39.3 | 1.89 | ok |
+| `Spawns/CasingSidewalk2` | `Gameplay/Misc/CameraStation/UsePoint` | use_point | 24.4 | 42.0 | 1.72 | ok |
+| `Spawns/CasingSidewalk2` | `Gameplay/Misc/AlarmSecurity/UsePoint` | use_point | 26.5 | 43.6 | 1.65 | ok |
+| `Spawns/CasingSidewalk2` | `Gameplay/Misc/AlarmManager/UsePoint` | use_point | 24.9 | 26.5 | 1.06 | ok |
+| `Spawns/CasingSidewalk2` | `Gameplay/Misc/AlarmTellers/UsePoint` | use_point | 22.1 | 40.4 | 1.83 | ok |
+| `Spawns/CasingSidewalk2` | `Gameplay/Misc/PhoneManager/UsePoint` | use_point | 25.7 | 31.2 | 1.22 | ok |
+| `Spawns/CasingSidewalk2` | `Gameplay/Misc/PhoneLoan/UsePoint` | use_point | 28.7 | 30.2 | 1.05 | ok |
+| `Spawns/CasingSidewalk2` | `Gameplay/Misc/CashLift` | objective | 23.2 | 37.3 | 1.61 | ok |
+| `Spawns/CasingSidewalk2` | `Gameplay/Misc/CashLift/UsePoint` | use_point | 23.2 | 37.3 | 1.61 | ok |
+| `Spawns/CasingSidewalk2` | `Gameplay/Atms/AtmCash1` | objective | 23.3 | 25.7 | 1.10 | ok |
+| `Spawns/CasingSidewalk2` | `Gameplay/Atms/AtmCash1/UsePoint` | use_point | 23.3 | 25.7 | 1.10 | ok |
+| `Spawns/CasingSidewalk2` | `Gameplay/Atms/AtmSaw1` | objective | 23.3 | 25.7 | 1.10 | ok |
+| `Spawns/CasingSidewalk2` | `Gameplay/Atms/AtmSaw1/UsePoint` | use_point | 23.3 | 25.7 | 1.10 | ok |
+| `Spawns/CasingSidewalk2` | `Gameplay/Atms/AtmCash2` | objective | 24.4 | 26.8 | 1.10 | ok |
+| `Spawns/CasingSidewalk2` | `Gameplay/Atms/AtmCash2/UsePoint` | use_point | 24.4 | 26.8 | 1.10 | ok |
+| `Spawns/CasingSidewalk2` | `Gameplay/Atms/AtmSaw2` | objective | 24.4 | 26.8 | 1.10 | ok |
+| `Spawns/CasingSidewalk2` | `Gameplay/Atms/AtmSaw2/UsePoint` | use_point | 24.4 | 26.8 | 1.10 | ok |
+| `Spawns/CasingSidewalk2` | `Variants/Group_code_note/Slot_code_break_board/CodeNote` | objective | 27.5 | 44.5 | 1.62 | ok |
+| `Spawns/CasingSidewalk2` | `Variants/Group_code_note/Slot_code_break_board/CodeNote/UsePoint` | use_point | 27.5 | 44.5 | 1.62 | ok |
+| `Spawns/CasingSidewalk2` | `Variants/Group_keycard/Slot_kc_break_locker/Keycard` | objective | 28.0 | 43.5 | 1.56 | ok |
+| `Spawns/CasingSidewalk2` | `Variants/Group_keycard/Slot_kc_break_locker/Keycard/UsePoint` | use_point | 28.0 | 43.5 | 1.56 | ok |
+| `Spawns/CasingSidewalk2` | `Variants/Group_server_room/Slot_srv_basement/HackTerminal` | objective | 33.2 | 65.1 | 1.96 | ok |
+| `Spawns/CasingSidewalk2` | `Variants/Group_server_room/Slot_srv_basement/HackTerminal/UsePoint` | use_point | 33.2 | 65.1 | 1.96 | ok |
+| `Spawns/CasingSidewalk2` | `Variants/Group_vent_open/Slot_vent_locked/AreawayGrate` | objective | 30.6 | 50.2 | 1.64 | ok |
+| `Spawns/CasingSidewalk2` | `Variants/Group_vent_open/Slot_vent_locked/AreawayGrate/UsePoint` | use_point | 30.6 | 50.2 | 1.64 | ok |
+| `Spawns/CasingSidewalk2` | `Variants/Group_vent_open/Slot_vent_locked/AreawayGrate/Padlock` | objective | 30.8 | 50.0 | 1.62 | ok |
+| `Spawns/CasingSidewalk2` | `Variants/Group_vent_open/Slot_vent_locked/AreawayGrate/Padlock/UsePoint` | use_point | 30.8 | 50.0 | 1.62 | ok |
+| `Spawns/CasingSidewalk2` | `Variants/Group_extra_loot/Slot_mgr_safe_empty/ManagerSafe` | objective | 26.1 | 31.1 | 1.19 | ok |
+| `Spawns/CasingSidewalk2` | `Variants/Group_extra_loot/Slot_mgr_safe_empty/ManagerSafe/UsePoint` | use_point | 26.1 | 31.1 | 1.19 | ok |
+| `Spawns/CasingSidewalk2` | `Variants/Group_escape/Slot_esc_boat_quay/BoatSecureE2/Zone` | secure_zone | 12.8 | 14.7 | 1.14 | ok |
+| `Spawns/CasingSidewalk2` | `Variants/Group_escape/Slot_esc_boat_quay/BoatEscapeE2/Zone` | escape_zone | 11.8 | 12.9 | 1.09 | ok |
+| `Spawns/CasingSidewalk3` | `Gameplay/Doors/SallyPersonnelDoor` | objective | 25.5 | 38.3 | 1.50 | ok |
+| `Spawns/CasingSidewalk3` | `Gameplay/Doors/SallyPersonnelDoor/UsePoint` | use_point | 25.5 | 38.3 | 1.50 | ok |
+| `Spawns/CasingSidewalk3` | `Gameplay/Doors/LoadingDoor/UsePoint` | use_point | 18.2 | 31.0 | 1.70 | ok |
+| `Spawns/CasingSidewalk3` | `Gameplay/Doors/SecurityRoomDoor/UsePoint` | use_point | 20.4 | 37.0 | 1.81 | ok |
+| `Spawns/CasingSidewalk3` | `Gameplay/Doors/BreakRoomDoor/UsePoint` | use_point | 22.6 | 36.8 | 1.62 | ok |
+| `Spawns/CasingSidewalk3` | `Gameplay/Doors/ElectricalDoor/UsePoint` | use_point | 25.0 | 33.3 | 1.33 | ok |
+| `Spawns/CasingSidewalk3` | `Gameplay/Doors/StorageDoor/UsePoint` | use_point | 27.9 | 29.9 | 1.07 | ok |
+| `Spawns/CasingSidewalk3` | `Gameplay/Doors/TellerDoor` | objective | 17.7 | 27.6 | 1.56 | ok |
+| `Spawns/CasingSidewalk3` | `Gameplay/Doors/TellerDoor/UsePoint` | use_point | 17.7 | 27.6 | 1.56 | ok |
+| `Spawns/CasingSidewalk3` | `Gameplay/Doors/LoanCorridorDoor/UsePoint` | use_point | 27.8 | 29.8 | 1.07 | ok |
+| `Spawns/CasingSidewalk3` | `Gameplay/Doors/FireExit` | objective | 29.3 | 30.9 | 1.06 | ok |
+| `Spawns/CasingSidewalk3` | `Gameplay/Doors/FireExit/UsePoint` | use_point | 29.3 | 30.9 | 1.06 | ok |
+| `Spawns/CasingSidewalk3` | `Gameplay/Doors/TellerGate` | objective | 13.8 | 24.0 | 1.73 | ok |
+| `Spawns/CasingSidewalk3` | `Gameplay/Doors/TellerGate/UsePoint` | use_point | 13.8 | 24.0 | 1.73 | ok |
+| `Spawns/CasingSidewalk3` | `Gameplay/Doors/LoanHallDoor/UsePoint` | use_point | 23.0 | 24.3 | 1.06 | ok |
+| `Spawns/CasingSidewalk3` | `Gameplay/Doors/ManagerHallDoor/UsePoint` | use_point | 21.1 | 22.5 | 1.07 | ok |
+| `Spawns/CasingSidewalk3` | `Gameplay/Doors/AtmInnerDoor` | objective | 20.7 | 23.4 | 1.13 | ok |
+| `Spawns/CasingSidewalk3` | `Gameplay/Doors/AtmInnerDoor/UsePoint` | use_point | 20.7 | 23.4 | 1.13 | ok |
+| `Spawns/CasingSidewalk3` | `Gameplay/Doors/VestibuleInnerDoors/UsePoint` | use_point | 10.3 | 10.8 | 1.05 | ok |
+| `Spawns/CasingSidewalk3` | `Gameplay/Doors/MainEntrance` | objective | 9.3 | 9.5 | 1.02 | ok |
+| `Spawns/CasingSidewalk3` | `Gameplay/Doors/MainEntrance/UsePoint` | use_point | 9.3 | 9.5 | 1.02 | ok |
 | `Spawns/CasingSidewalk3` | `Gameplay/Doors/AtmStreetDoor` | objective | 22.6 | 23.2 | 1.03 | ok |
 | `Spawns/CasingSidewalk3` | `Gameplay/Doors/AtmStreetDoor/UsePoint` | use_point | 22.6 | 23.2 | 1.03 | ok |
-| `Spawns/CasingSidewalk3` | `Gameplay/Doors/XferDoor/UsePoint` | use_point | 18.3 | 51.4 | 2.81 | ok |
-| `Spawns/CasingSidewalk3` | `Gameplay/Doors/JanitorDoor/UsePoint` | use_point | 19.1 | 47.1 | 2.47 | ok |
-| `Spawns/CasingSidewalk3` | `Gameplay/Doors/LockerRoomDoor/UsePoint` | use_point | 20.8 | 48.2 | 2.32 | ok |
-| `Spawns/CasingSidewalk3` | `Gameplay/Doors/WCDoor/UsePoint` | use_point | 25.1 | 52.4 | 2.08 | ok |
-| `Spawns/CasingSidewalk3` | `Gameplay/Doors/PlantDoor/UsePoint` | use_point | 24.6 | 54.7 | 2.23 | ok |
-| `Spawns/CasingSidewalk3` | `Gameplay/Doors/ServerDoor` | objective | 28.2 | 58.3 | 2.07 | ok |
-| `Spawns/CasingSidewalk3` | `Gameplay/Doors/ServerDoor/UsePoint` | use_point | 28.2 | 58.3 | 2.07 | ok |
-| `Spawns/CasingSidewalk3` | `Gameplay/Doors/RecordsDoor/UsePoint` | use_point | 18.2 | 51.4 | 2.83 | ok |
-| `Spawns/CasingSidewalk3` | `Gameplay/Doors/InspectionWestDoor/UsePoint` | use_point | 19.1 | 46.9 | 2.46 | ok |
-| `Spawns/CasingSidewalk3` | `Gameplay/Doors/VaultGate` | objective | 21.7 | 50.2 | 2.31 | ok |
-| `Spawns/CasingSidewalk3` | `Gameplay/Doors/VaultGate/UsePoint` | use_point | 21.7 | 50.2 | 2.31 | ok |
-| `Spawns/CasingSidewalk3` | `Gameplay/Doors/InspectionEastDoor/UsePoint` | use_point | 25.5 | 54.8 | 2.14 | ok |
-| `Spawns/CasingSidewalk3` | `Gameplay/Doors/CountRoomDoor` | objective | 28.1 | 58.3 | 2.07 | ok |
-| `Spawns/CasingSidewalk3` | `Gameplay/Doors/CountRoomDoor/UsePoint` | use_point | 28.1 | 58.3 | 2.07 | ok |
-| `Spawns/CasingSidewalk3` | `Gameplay/Doors/DepositoryDoor` | objective | 24.5 | 64.6 | 2.63 | ok |
-| `Spawns/CasingSidewalk3` | `Gameplay/Doors/DepositoryDoor/UsePoint` | use_point | 24.5 | 64.6 | 2.63 | ok |
-| `Spawns/CasingSidewalk3` | `Gameplay/Doors/VaultDoor` | objective | 19.7 | 51.8 | 2.62 | ok |
-| `Spawns/CasingSidewalk3` | `Gameplay/Doors/VaultDoor/UsePoint` | use_point | 19.7 | 51.8 | 2.62 | ok |
-| `Spawns/CasingSidewalk3` | `Gameplay/Doors/VaultDoor/VaultDrill` | objective | 20.3 | 51.8 | 2.54 | ok |
-| `Spawns/CasingSidewalk3` | `Gameplay/Doors/VaultDoor/VaultDrill/UsePoint` | use_point | 20.3 | 51.8 | 2.54 | ok |
-| `Spawns/CasingSidewalk3` | `Gameplay/Doors/AreawayDoor` | objective | 30.2 | 53.8 | 1.78 | ok |
-| `Spawns/CasingSidewalk3` | `Gameplay/Doors/AreawayDoor/UsePoint` | use_point | 30.2 | 53.8 | 1.78 | ok |
-| `Spawns/CasingSidewalk3` | `Gameplay/Doors/AlleyGate` | objective | 40.0 | 62.0 | 1.55 | ok |
-| `Spawns/CasingSidewalk3` | `Gameplay/Doors/AlleyGate/UsePoint` | use_point | 40.0 | 62.0 | 1.55 | ok |
+| `Spawns/CasingSidewalk3` | `Gameplay/Doors/XferDoor/UsePoint` | use_point | 18.3 | 50.7 | 2.77 | ok |
+| `Spawns/CasingSidewalk3` | `Gameplay/Doors/JanitorDoor/UsePoint` | use_point | 19.1 | 46.5 | 2.43 | ok |
+| `Spawns/CasingSidewalk3` | `Gameplay/Doors/LockerRoomDoor/UsePoint` | use_point | 20.8 | 47.5 | 2.29 | ok |
+| `Spawns/CasingSidewalk3` | `Gameplay/Doors/WCDoor/UsePoint` | use_point | 25.1 | 51.7 | 2.06 | ok |
+| `Spawns/CasingSidewalk3` | `Gameplay/Doors/PlantDoor/UsePoint` | use_point | 24.6 | 54.0 | 2.20 | ok |
+| `Spawns/CasingSidewalk3` | `Gameplay/Doors/ServerDoor` | objective | 28.2 | 59.0 | 2.09 | ok |
+| `Spawns/CasingSidewalk3` | `Gameplay/Doors/ServerDoor/UsePoint` | use_point | 28.2 | 59.0 | 2.09 | ok |
+| `Spawns/CasingSidewalk3` | `Gameplay/Doors/RecordsDoor/UsePoint` | use_point | 18.2 | 50.7 | 2.79 | ok |
+| `Spawns/CasingSidewalk3` | `Gameplay/Doors/InspectionWestDoor/UsePoint` | use_point | 19.1 | 46.2 | 2.42 | ok |
+| `Spawns/CasingSidewalk3` | `Gameplay/Doors/VaultGate` | objective | 21.7 | 49.5 | 2.28 | ok |
+| `Spawns/CasingSidewalk3` | `Gameplay/Doors/VaultGate/UsePoint` | use_point | 21.7 | 49.5 | 2.28 | ok |
+| `Spawns/CasingSidewalk3` | `Gameplay/Doors/InspectionEastDoor/UsePoint` | use_point | 25.5 | 55.5 | 2.17 | ok |
+| `Spawns/CasingSidewalk3` | `Gameplay/Doors/CountRoomDoor` | objective | 28.1 | 59.0 | 2.10 | ok |
+| `Spawns/CasingSidewalk3` | `Gameplay/Doors/CountRoomDoor/UsePoint` | use_point | 28.1 | 59.0 | 2.10 | ok |
+| `Spawns/CasingSidewalk3` | `Gameplay/Doors/DepositoryDoor` | objective | 24.5 | 65.3 | 2.66 | ok |
+| `Spawns/CasingSidewalk3` | `Gameplay/Doors/DepositoryDoor/UsePoint` | use_point | 24.5 | 65.3 | 2.66 | ok |
+| `Spawns/CasingSidewalk3` | `Gameplay/Doors/VaultDoor` | objective | 19.7 | 51.1 | 2.59 | ok |
+| `Spawns/CasingSidewalk3` | `Gameplay/Doors/VaultDoor/UsePoint` | use_point | 19.7 | 51.1 | 2.59 | ok |
+| `Spawns/CasingSidewalk3` | `Gameplay/Doors/VaultDoor/VaultDrill` | objective | 20.3 | 51.1 | 2.51 | ok |
+| `Spawns/CasingSidewalk3` | `Gameplay/Doors/VaultDoor/VaultDrill/UsePoint` | use_point | 20.3 | 51.1 | 2.51 | ok |
+| `Spawns/CasingSidewalk3` | `Gameplay/Doors/AreawayDoor` | objective | 30.2 | 53.1 | 1.76 | ok |
+| `Spawns/CasingSidewalk3` | `Gameplay/Doors/AreawayDoor/UsePoint` | use_point | 30.2 | 53.1 | 1.76 | ok |
+| `Spawns/CasingSidewalk3` | `Gameplay/Doors/AlleyGate` | objective | 40.0 | 62.7 | 1.57 | ok |
+| `Spawns/CasingSidewalk3` | `Gameplay/Doors/AlleyGate/UsePoint` | use_point | 40.0 | 62.7 | 1.57 | ok |
 | `Spawns/CasingSidewalk3` | `Gameplay/Doors/HarborWestGate` | objective | 15.4 | 15.4 | 1.00 | ok |
 | `Spawns/CasingSidewalk3` | `Gameplay/Doors/HarborWestGate/UsePoint` | use_point | 15.4 | 15.4 | 1.00 | ok |
 | `Spawns/CasingSidewalk3` | `Gameplay/Doors/HarborEastGate` | objective | 37.3 | 37.3 | 1.00 | ok |
 | `Spawns/CasingSidewalk3` | `Gameplay/Doors/HarborEastGate/UsePoint` | use_point | 37.3 | 37.3 | 1.00 | ok |
-| `Spawns/CasingSidewalk3` | `Gameplay/Doors/WharfNorthGate` | objective | 45.7 | 53.2 | 1.17 | ok |
-| `Spawns/CasingSidewalk3` | `Gameplay/Doors/WharfNorthGate/UsePoint` | use_point | 45.7 | 53.2 | 1.17 | ok |
+| `Spawns/CasingSidewalk3` | `Gameplay/Doors/WharfNorthGate` | objective | 45.7 | 52.5 | 1.15 | ok |
+| `Spawns/CasingSidewalk3` | `Gameplay/Doors/WharfNorthGate/UsePoint` | use_point | 45.7 | 52.5 | 1.15 | ok |
 | `Spawns/CasingSidewalk3` | `Gameplay/Windows/HallBay1` | objective | 3.8 | 3.9 | 1.01 | ok |
 | `Spawns/CasingSidewalk3` | `Gameplay/Windows/HallBay1/UsePoint` | use_point | 3.8 | 3.9 | 1.01 | ok |
 | `Spawns/CasingSidewalk3` | `Gameplay/Windows/HallBay2` | objective | 5.5 | 5.7 | 1.03 | ok |
 | `Spawns/CasingSidewalk3` | `Gameplay/Windows/HallBay2/UsePoint` | use_point | 5.5 | 5.7 | 1.03 | ok |
-| `Spawns/CasingSidewalk3` | `Gameplay/Windows/HallBay3` | objective | 13.5 | 13.8 | 1.02 | ok |
-| `Spawns/CasingSidewalk3` | `Gameplay/Windows/HallBay3/UsePoint` | use_point | 13.5 | 13.8 | 1.02 | ok |
-| `Spawns/CasingSidewalk3` | `Gameplay/Windows/HallBay4` | objective | 16.9 | 17.3 | 1.02 | ok |
-| `Spawns/CasingSidewalk3` | `Gameplay/Windows/HallBay4/UsePoint` | use_point | 16.9 | 17.3 | 1.02 | ok |
-| `Spawns/CasingSidewalk3` | `Gameplay/Vault/TimeLockPanel` | objective | 22.7 | 53.4 | 2.35 | ok |
-| `Spawns/CasingSidewalk3` | `Gameplay/Vault/TimeLockPanel/UsePoint` | use_point | 22.7 | 53.4 | 2.35 | ok |
-| `Spawns/CasingSidewalk3` | `Gameplay/Vault/CageCash` | loot_spawn | 15.5 | 56.4 | 3.63 | detour (whitelisted) |
-| `Spawns/CasingSidewalk3` | `Gameplay/Vault/CageCash/UsePoint` | use_point | 16.1 | 55.5 | 3.45 | detour (whitelisted) |
-| `Spawns/CasingSidewalk3` | `Gameplay/Vault/CoopCashBricks` | loot_spawn | 13.9 | 61.1 | 4.41 | detour (whitelisted) |
-| `Spawns/CasingSidewalk3` | `Gameplay/Vault/CoopCashBricks/UsePoint` | use_point | 14.3 | 60.6 | 4.25 | detour (whitelisted) |
-| `Spawns/CasingSidewalk3` | `Gameplay/Vault/Box1` | objective | 15.5 | 55.9 | 3.60 | detour (whitelisted) |
-| `Spawns/CasingSidewalk3` | `Gameplay/Vault/Box1/UsePoint` | use_point | 15.5 | 55.9 | 3.60 | detour (whitelisted) |
-| `Spawns/CasingSidewalk3` | `Gameplay/Vault/Box2` | objective | 14.1 | 57.2 | 4.05 | detour (whitelisted) |
-| `Spawns/CasingSidewalk3` | `Gameplay/Vault/Box2/UsePoint` | use_point | 14.1 | 57.2 | 4.05 | detour (whitelisted) |
-| `Spawns/CasingSidewalk3` | `Gameplay/Vault/Box3` | objective | 12.8 | 57.4 | 4.47 | detour (whitelisted) |
-| `Spawns/CasingSidewalk3` | `Gameplay/Vault/Box3/UsePoint` | use_point | 12.8 | 57.4 | 4.47 | detour (whitelisted) |
-| `Spawns/CasingSidewalk3` | `Gameplay/Vault/Box4` | objective | 11.7 | 59.1 | 5.07 | detour (whitelisted) |
-| `Spawns/CasingSidewalk3` | `Gameplay/Vault/Box4/UsePoint` | use_point | 11.7 | 59.1 | 5.07 | detour (whitelisted) |
-| `Spawns/CasingSidewalk3` | `Gameplay/Vault/Box5` | objective | 20.3 | 54.8 | 2.70 | ok |
-| `Spawns/CasingSidewalk3` | `Gameplay/Vault/Box5/UsePoint` | use_point | 20.3 | 54.8 | 2.70 | ok |
-| `Spawns/CasingSidewalk3` | `Gameplay/Vault/Box6` | objective | 19.2 | 55.9 | 2.91 | ok |
-| `Spawns/CasingSidewalk3` | `Gameplay/Vault/Box6/UsePoint` | use_point | 19.2 | 55.9 | 2.91 | ok |
-| `Spawns/CasingSidewalk3` | `Gameplay/Vault/Box7` | objective | 18.2 | 57.4 | 3.15 | detour (whitelisted) |
-| `Spawns/CasingSidewalk3` | `Gameplay/Vault/Box7/UsePoint` | use_point | 18.2 | 57.4 | 3.15 | detour (whitelisted) |
-| `Spawns/CasingSidewalk3` | `Gameplay/Vault/Box8` | objective | 17.4 | 59.1 | 3.40 | detour (whitelisted) |
-| `Spawns/CasingSidewalk3` | `Gameplay/Vault/Box8/UsePoint` | use_point | 17.4 | 59.1 | 3.40 | detour (whitelisted) |
-| `Spawns/CasingSidewalk3` | `Gameplay/Depository/DepositorySafe` | objective | 22.2 | 68.4 | 3.08 | detour (whitelisted) |
-| `Spawns/CasingSidewalk3` | `Gameplay/Depository/DepositorySafe/UsePoint` | use_point | 22.2 | 68.4 | 3.08 | detour (whitelisted) |
-| `Spawns/CasingSidewalk3` | `Gameplay/Depository/DepositorySafe/NightDropBags` | loot_spawn | 21.9 | 69.6 | 3.18 | detour (whitelisted) |
-| `Spawns/CasingSidewalk3` | `Gameplay/Depository/DepositorySafe/NightDropBags/UsePoint` | use_point | 21.9 | 69.6 | 3.18 | detour (whitelisted) |
-| `Spawns/CasingSidewalk3` | `Gameplay/Misc/TellerDrawer1/UsePoint` | use_point | 15.5 | 28.3 | 1.82 | ok |
-| `Spawns/CasingSidewalk3` | `Gameplay/Misc/TellerDrawer2/UsePoint` | use_point | 16.9 | 33.3 | 1.97 | ok |
-| `Spawns/CasingSidewalk3` | `Gameplay/Misc/TellerDrawer3/UsePoint` | use_point | 19.5 | 38.3 | 1.96 | ok |
-| `Spawns/CasingSidewalk3` | `Gameplay/Misc/CameraStation/UsePoint` | use_point | 23.6 | 40.9 | 1.74 | ok |
-| `Spawns/CasingSidewalk3` | `Gameplay/Misc/AlarmSecurity/UsePoint` | use_point | 25.6 | 42.6 | 1.66 | ok |
-| `Spawns/CasingSidewalk3` | `Gameplay/Misc/AlarmManager/UsePoint` | use_point | 23.2 | 24.0 | 1.03 | ok |
-| `Spawns/CasingSidewalk3` | `Gameplay/Misc/AlarmTellers/UsePoint` | use_point | 20.8 | 39.3 | 1.89 | ok |
-| `Spawns/CasingSidewalk3` | `Gameplay/Misc/PhoneManager/UsePoint` | use_point | 23.8 | 28.7 | 1.20 | ok |
-| `Spawns/CasingSidewalk3` | `Gameplay/Misc/PhoneLoan/UsePoint` | use_point | 27.0 | 28.0 | 1.04 | ok |
-| `Spawns/CasingSidewalk3` | `Gameplay/Misc/CashLift` | objective | 22.9 | 36.3 | 1.58 | ok |
-| `Spawns/CasingSidewalk3` | `Gameplay/Misc/CashLift/UsePoint` | use_point | 22.9 | 36.3 | 1.58 | ok |
-| `Spawns/CasingSidewalk3` | `Gameplay/Atms/AtmCash1` | objective | 21.4 | 23.1 | 1.08 | ok |
-| `Spawns/CasingSidewalk3` | `Gameplay/Atms/AtmCash1/UsePoint` | use_point | 21.4 | 23.1 | 1.08 | ok |
-| `Spawns/CasingSidewalk3` | `Gameplay/Atms/AtmSaw1` | objective | 21.4 | 23.1 | 1.08 | ok |
-| `Spawns/CasingSidewalk3` | `Gameplay/Atms/AtmSaw1/UsePoint` | use_point | 21.4 | 23.1 | 1.08 | ok |
-| `Spawns/CasingSidewalk3` | `Gameplay/Atms/AtmCash2` | objective | 22.5 | 24.2 | 1.07 | ok |
-| `Spawns/CasingSidewalk3` | `Gameplay/Atms/AtmCash2/UsePoint` | use_point | 22.5 | 24.2 | 1.07 | ok |
-| `Spawns/CasingSidewalk3` | `Gameplay/Atms/AtmSaw2` | objective | 22.4 | 24.2 | 1.08 | ok |
-| `Spawns/CasingSidewalk3` | `Gameplay/Atms/AtmSaw2/UsePoint` | use_point | 22.4 | 24.2 | 1.08 | ok |
-| `Spawns/CasingSidewalk3` | `Variants/Group_code_note/Slot_code_break_board/CodeNote` | objective | 26.5 | 43.5 | 1.64 | ok |
-| `Spawns/CasingSidewalk3` | `Variants/Group_code_note/Slot_code_break_board/CodeNote/UsePoint` | use_point | 26.5 | 43.5 | 1.64 | ok |
-| `Spawns/CasingSidewalk3` | `Variants/Group_keycard/Slot_kc_break_locker/Keycard` | objective | 26.9 | 42.5 | 1.58 | ok |
-| `Spawns/CasingSidewalk3` | `Variants/Group_keycard/Slot_kc_break_locker/Keycard/UsePoint` | use_point | 26.9 | 42.5 | 1.58 | ok |
-| `Spawns/CasingSidewalk3` | `Variants/Group_server_room/Slot_srv_basement/HackTerminal` | objective | 31.8 | 64.0 | 2.01 | ok |
-| `Spawns/CasingSidewalk3` | `Variants/Group_server_room/Slot_srv_basement/HackTerminal/UsePoint` | use_point | 31.8 | 64.0 | 2.01 | ok |
-| `Spawns/CasingSidewalk3` | `Variants/Group_vent_open/Slot_vent_locked/AreawayGrate` | objective | 29.6 | 49.1 | 1.66 | ok |
-| `Spawns/CasingSidewalk3` | `Variants/Group_vent_open/Slot_vent_locked/AreawayGrate/UsePoint` | use_point | 29.6 | 49.1 | 1.66 | ok |
-| `Spawns/CasingSidewalk3` | `Variants/Group_vent_open/Slot_vent_locked/AreawayGrate/Padlock` | objective | 29.8 | 48.9 | 1.64 | ok |
-| `Spawns/CasingSidewalk3` | `Variants/Group_vent_open/Slot_vent_locked/AreawayGrate/Padlock/UsePoint` | use_point | 29.8 | 48.9 | 1.64 | ok |
-| `Spawns/CasingSidewalk3` | `Variants/Group_extra_loot/Slot_mgr_safe_empty/ManagerSafe` | objective | 24.2 | 28.6 | 1.18 | ok |
-| `Spawns/CasingSidewalk3` | `Variants/Group_extra_loot/Slot_mgr_safe_empty/ManagerSafe/UsePoint` | use_point | 24.2 | 28.6 | 1.18 | ok |
-| `Spawns/CasingSidewalk3` | `Variants/Group_escape/Slot_esc_boat_quay/BoatSecureE2/Zone` | secure_zone | 12.1 | 14.7 | 1.21 | ok |
-| `Spawns/CasingSidewalk3` | `Variants/Group_escape/Slot_esc_boat_quay/BoatEscapeE2/Zone` | escape_zone | 10.9 | 13.1 | 1.21 | ok |
-| `Spawns/CasingSidewalk4` | `Gameplay/Doors/SallyPersonnelDoor` | objective | 25.3 | 37.2 | 1.47 | ok |
-| `Spawns/CasingSidewalk4` | `Gameplay/Doors/SallyPersonnelDoor/UsePoint` | use_point | 25.3 | 37.2 | 1.47 | ok |
-| `Spawns/CasingSidewalk4` | `Gameplay/Doors/LoadingDoor/UsePoint` | use_point | 17.9 | 29.8 | 1.67 | ok |
-| `Spawns/CasingSidewalk4` | `Gameplay/Doors/SecurityRoomDoor/UsePoint` | use_point | 19.5 | 35.8 | 1.84 | ok |
-| `Spawns/CasingSidewalk4` | `Gameplay/Doors/BreakRoomDoor/UsePoint` | use_point | 21.5 | 35.7 | 1.66 | ok |
-| `Spawns/CasingSidewalk4` | `Gameplay/Doors/ElectricalDoor/UsePoint` | use_point | 23.6 | 32.2 | 1.36 | ok |
-| `Spawns/CasingSidewalk4` | `Gameplay/Doors/StorageDoor/UsePoint` | use_point | 26.4 | 28.7 | 1.09 | ok |
+| `Spawns/CasingSidewalk3` | `Gameplay/Windows/HallBay3` | objective | 13.5 | 13.9 | 1.03 | ok |
+| `Spawns/CasingSidewalk3` | `Gameplay/Windows/HallBay3/UsePoint` | use_point | 13.5 | 13.9 | 1.03 | ok |
+| `Spawns/CasingSidewalk3` | `Gameplay/Windows/HallBay4` | objective | 16.9 | 17.4 | 1.03 | ok |
+| `Spawns/CasingSidewalk3` | `Gameplay/Windows/HallBay4/UsePoint` | use_point | 16.9 | 17.4 | 1.03 | ok |
+| `Spawns/CasingSidewalk3` | `Gameplay/Vault/TimeLockPanel` | objective | 22.7 | 54.1 | 2.39 | ok |
+| `Spawns/CasingSidewalk3` | `Gameplay/Vault/TimeLockPanel/UsePoint` | use_point | 22.7 | 54.1 | 2.39 | ok |
+| `Spawns/CasingSidewalk3` | `Gameplay/Vault/CageCash` | loot_spawn | 15.5 | 57.1 | 3.67 | detour (whitelisted) |
+| `Spawns/CasingSidewalk3` | `Gameplay/Vault/CageCash/UsePoint` | use_point | 16.1 | 56.2 | 3.50 | detour (whitelisted) |
+| `Spawns/CasingSidewalk3` | `Gameplay/Vault/CoopCashBricks` | loot_spawn | 13.9 | 61.9 | 4.46 | detour (whitelisted) |
+| `Spawns/CasingSidewalk3` | `Gameplay/Vault/CoopCashBricks/UsePoint` | use_point | 14.3 | 61.4 | 4.30 | detour (whitelisted) |
+| `Spawns/CasingSidewalk3` | `Gameplay/Vault/Box1` | objective | 15.5 | 55.2 | 3.55 | detour (whitelisted) |
+| `Spawns/CasingSidewalk3` | `Gameplay/Vault/Box1/UsePoint` | use_point | 15.5 | 55.2 | 3.55 | detour (whitelisted) |
+| `Spawns/CasingSidewalk3` | `Gameplay/Vault/Box2` | objective | 14.1 | 56.5 | 4.00 | detour (whitelisted) |
+| `Spawns/CasingSidewalk3` | `Gameplay/Vault/Box2/UsePoint` | use_point | 14.1 | 56.5 | 4.00 | detour (whitelisted) |
+| `Spawns/CasingSidewalk3` | `Gameplay/Vault/Box3` | objective | 12.8 | 58.1 | 4.53 | detour (whitelisted) |
+| `Spawns/CasingSidewalk3` | `Gameplay/Vault/Box3/UsePoint` | use_point | 12.8 | 58.1 | 4.53 | detour (whitelisted) |
+| `Spawns/CasingSidewalk3` | `Gameplay/Vault/Box4` | objective | 11.7 | 59.9 | 5.13 | detour (whitelisted) |
+| `Spawns/CasingSidewalk3` | `Gameplay/Vault/Box4/UsePoint` | use_point | 11.7 | 59.9 | 5.13 | detour (whitelisted) |
+| `Spawns/CasingSidewalk3` | `Gameplay/Vault/Box5` | objective | 20.3 | 55.6 | 2.74 | ok |
+| `Spawns/CasingSidewalk3` | `Gameplay/Vault/Box5/UsePoint` | use_point | 20.3 | 55.6 | 2.74 | ok |
+| `Spawns/CasingSidewalk3` | `Gameplay/Vault/Box6` | objective | 19.2 | 56.6 | 2.95 | ok |
+| `Spawns/CasingSidewalk3` | `Gameplay/Vault/Box6/UsePoint` | use_point | 19.2 | 56.6 | 2.95 | ok |
+| `Spawns/CasingSidewalk3` | `Gameplay/Vault/Box7` | objective | 18.2 | 58.1 | 3.19 | detour (whitelisted) |
+| `Spawns/CasingSidewalk3` | `Gameplay/Vault/Box7/UsePoint` | use_point | 18.2 | 58.1 | 3.19 | detour (whitelisted) |
+| `Spawns/CasingSidewalk3` | `Gameplay/Vault/Box8` | objective | 17.4 | 59.9 | 3.44 | detour (whitelisted) |
+| `Spawns/CasingSidewalk3` | `Gameplay/Vault/Box8/UsePoint` | use_point | 17.4 | 59.9 | 3.44 | detour (whitelisted) |
+| `Spawns/CasingSidewalk3` | `Gameplay/Depository/DepositorySafe` | objective | 22.2 | 69.1 | 3.12 | detour (whitelisted) |
+| `Spawns/CasingSidewalk3` | `Gameplay/Depository/DepositorySafe/UsePoint` | use_point | 22.2 | 69.1 | 3.12 | detour (whitelisted) |
+| `Spawns/CasingSidewalk3` | `Gameplay/Depository/DepositorySafe/NightDropBags` | loot_spawn | 21.9 | 70.3 | 3.22 | detour (whitelisted) |
+| `Spawns/CasingSidewalk3` | `Gameplay/Depository/DepositorySafe/NightDropBags/UsePoint` | use_point | 21.9 | 70.3 | 3.22 | detour (whitelisted) |
+| `Spawns/CasingSidewalk3` | `Gameplay/Misc/TellerDrawer1/UsePoint` | use_point | 15.5 | 27.6 | 1.78 | ok |
+| `Spawns/CasingSidewalk3` | `Gameplay/Misc/TellerDrawer2/UsePoint` | use_point | 16.9 | 32.6 | 1.93 | ok |
+| `Spawns/CasingSidewalk3` | `Gameplay/Misc/TellerDrawer3/UsePoint` | use_point | 19.5 | 37.6 | 1.93 | ok |
+| `Spawns/CasingSidewalk3` | `Gameplay/Misc/CameraStation/UsePoint` | use_point | 23.6 | 40.2 | 1.71 | ok |
+| `Spawns/CasingSidewalk3` | `Gameplay/Misc/AlarmSecurity/UsePoint` | use_point | 25.6 | 41.9 | 1.64 | ok |
+| `Spawns/CasingSidewalk3` | `Gameplay/Misc/AlarmManager/UsePoint` | use_point | 23.2 | 24.7 | 1.07 | ok |
+| `Spawns/CasingSidewalk3` | `Gameplay/Misc/AlarmTellers/UsePoint` | use_point | 20.8 | 38.7 | 1.86 | ok |
+| `Spawns/CasingSidewalk3` | `Gameplay/Misc/PhoneManager/UsePoint` | use_point | 23.8 | 29.5 | 1.24 | ok |
+| `Spawns/CasingSidewalk3` | `Gameplay/Misc/PhoneLoan/UsePoint` | use_point | 27.0 | 28.5 | 1.05 | ok |
+| `Spawns/CasingSidewalk3` | `Gameplay/Misc/CashLift` | objective | 22.9 | 35.6 | 1.55 | ok |
+| `Spawns/CasingSidewalk3` | `Gameplay/Misc/CashLift/UsePoint` | use_point | 22.9 | 35.6 | 1.55 | ok |
+| `Spawns/CasingSidewalk3` | `Gameplay/Atms/AtmCash1` | objective | 21.4 | 24.0 | 1.12 | ok |
+| `Spawns/CasingSidewalk3` | `Gameplay/Atms/AtmCash1/UsePoint` | use_point | 21.4 | 24.0 | 1.12 | ok |
+| `Spawns/CasingSidewalk3` | `Gameplay/Atms/AtmSaw1` | objective | 21.4 | 24.0 | 1.12 | ok |
+| `Spawns/CasingSidewalk3` | `Gameplay/Atms/AtmSaw1/UsePoint` | use_point | 21.4 | 24.0 | 1.12 | ok |
+| `Spawns/CasingSidewalk3` | `Gameplay/Atms/AtmCash2` | objective | 22.5 | 25.1 | 1.11 | ok |
+| `Spawns/CasingSidewalk3` | `Gameplay/Atms/AtmCash2/UsePoint` | use_point | 22.5 | 25.1 | 1.11 | ok |
+| `Spawns/CasingSidewalk3` | `Gameplay/Atms/AtmSaw2` | objective | 22.4 | 25.1 | 1.12 | ok |
+| `Spawns/CasingSidewalk3` | `Gameplay/Atms/AtmSaw2/UsePoint` | use_point | 22.4 | 25.1 | 1.12 | ok |
+| `Spawns/CasingSidewalk3` | `Variants/Group_code_note/Slot_code_break_board/CodeNote` | objective | 26.5 | 42.7 | 1.61 | ok |
+| `Spawns/CasingSidewalk3` | `Variants/Group_code_note/Slot_code_break_board/CodeNote/UsePoint` | use_point | 26.5 | 42.7 | 1.61 | ok |
+| `Spawns/CasingSidewalk3` | `Variants/Group_keycard/Slot_kc_break_locker/Keycard` | objective | 26.9 | 41.8 | 1.55 | ok |
+| `Spawns/CasingSidewalk3` | `Variants/Group_keycard/Slot_kc_break_locker/Keycard/UsePoint` | use_point | 26.9 | 41.8 | 1.55 | ok |
+| `Spawns/CasingSidewalk3` | `Variants/Group_server_room/Slot_srv_basement/HackTerminal` | objective | 31.8 | 63.3 | 1.99 | ok |
+| `Spawns/CasingSidewalk3` | `Variants/Group_server_room/Slot_srv_basement/HackTerminal/UsePoint` | use_point | 31.8 | 63.3 | 1.99 | ok |
+| `Spawns/CasingSidewalk3` | `Variants/Group_vent_open/Slot_vent_locked/AreawayGrate` | objective | 29.6 | 48.4 | 1.64 | ok |
+| `Spawns/CasingSidewalk3` | `Variants/Group_vent_open/Slot_vent_locked/AreawayGrate/UsePoint` | use_point | 29.6 | 48.4 | 1.64 | ok |
+| `Spawns/CasingSidewalk3` | `Variants/Group_vent_open/Slot_vent_locked/AreawayGrate/Padlock` | objective | 29.8 | 48.2 | 1.62 | ok |
+| `Spawns/CasingSidewalk3` | `Variants/Group_vent_open/Slot_vent_locked/AreawayGrate/Padlock/UsePoint` | use_point | 29.8 | 48.2 | 1.62 | ok |
+| `Spawns/CasingSidewalk3` | `Variants/Group_extra_loot/Slot_mgr_safe_empty/ManagerSafe` | objective | 24.2 | 29.4 | 1.21 | ok |
+| `Spawns/CasingSidewalk3` | `Variants/Group_extra_loot/Slot_mgr_safe_empty/ManagerSafe/UsePoint` | use_point | 24.2 | 29.4 | 1.21 | ok |
+| `Spawns/CasingSidewalk3` | `Variants/Group_escape/Slot_esc_boat_quay/BoatSecureE2/Zone` | secure_zone | 12.1 | 13.4 | 1.10 | ok |
+| `Spawns/CasingSidewalk3` | `Variants/Group_escape/Slot_esc_boat_quay/BoatEscapeE2/Zone` | escape_zone | 10.9 | 11.6 | 1.07 | ok |
+| `Spawns/CasingSidewalk4` | `Gameplay/Doors/SallyPersonnelDoor` | objective | 25.3 | 37.1 | 1.47 | ok |
+| `Spawns/CasingSidewalk4` | `Gameplay/Doors/SallyPersonnelDoor/UsePoint` | use_point | 25.3 | 37.1 | 1.47 | ok |
+| `Spawns/CasingSidewalk4` | `Gameplay/Doors/LoadingDoor/UsePoint` | use_point | 17.9 | 30.3 | 1.69 | ok |
+| `Spawns/CasingSidewalk4` | `Gameplay/Doors/SecurityRoomDoor/UsePoint` | use_point | 19.5 | 36.3 | 1.86 | ok |
+| `Spawns/CasingSidewalk4` | `Gameplay/Doors/BreakRoomDoor/UsePoint` | use_point | 21.5 | 36.1 | 1.68 | ok |
+| `Spawns/CasingSidewalk4` | `Gameplay/Doors/ElectricalDoor/UsePoint` | use_point | 23.6 | 32.6 | 1.38 | ok |
+| `Spawns/CasingSidewalk4` | `Gameplay/Doors/StorageDoor/UsePoint` | use_point | 26.4 | 29.1 | 1.10 | ok |
 | `Spawns/CasingSidewalk4` | `Gameplay/Doors/TellerDoor` | objective | 17.8 | 26.4 | 1.48 | ok |
 | `Spawns/CasingSidewalk4` | `Gameplay/Doors/TellerDoor/UsePoint` | use_point | 17.8 | 26.4 | 1.48 | ok |
-| `Spawns/CasingSidewalk4` | `Gameplay/Doors/LoanCorridorDoor/UsePoint` | use_point | 26.3 | 28.6 | 1.09 | ok |
-| `Spawns/CasingSidewalk4` | `Gameplay/Doors/FireExit` | objective | 27.7 | 29.8 | 1.07 | ok |
-| `Spawns/CasingSidewalk4` | `Gameplay/Doors/FireExit/UsePoint` | use_point | 27.7 | 29.8 | 1.07 | ok |
-| `Spawns/CasingSidewalk4` | `Gameplay/Doors/TellerGate` | objective | 14.1 | 22.8 | 1.61 | ok |
-| `Spawns/CasingSidewalk4` | `Gameplay/Doors/TellerGate/UsePoint` | use_point | 14.1 | 22.8 | 1.61 | ok |
-| `Spawns/CasingSidewalk4` | `Gameplay/Doors/LoanHallDoor/UsePoint` | use_point | 21.5 | 23.2 | 1.08 | ok |
-| `Spawns/CasingSidewalk4` | `Gameplay/Doors/ManagerHallDoor/UsePoint` | use_point | 19.4 | 21.1 | 1.09 | ok |
-| `Spawns/CasingSidewalk4` | `Gameplay/Doors/AtmInnerDoor` | objective | 18.9 | 21.8 | 1.16 | ok |
-| `Spawns/CasingSidewalk4` | `Gameplay/Doors/AtmInnerDoor/UsePoint` | use_point | 18.9 | 21.8 | 1.16 | ok |
-| `Spawns/CasingSidewalk4` | `Gameplay/Doors/VestibuleInnerDoors/UsePoint` | use_point | 8.7 | 9.5 | 1.09 | ok |
-| `Spawns/CasingSidewalk4` | `Gameplay/Doors/MainEntrance` | objective | 7.5 | 7.6 | 1.00 | ok |
-| `Spawns/CasingSidewalk4` | `Gameplay/Doors/MainEntrance/UsePoint` | use_point | 7.5 | 7.6 | 1.00 | ok |
-| `Spawns/CasingSidewalk4` | `Gameplay/Doors/AtmStreetDoor` | objective | 20.6 | 21.1 | 1.02 | ok |
-| `Spawns/CasingSidewalk4` | `Gameplay/Doors/AtmStreetDoor/UsePoint` | use_point | 20.6 | 21.1 | 1.02 | ok |
+| `Spawns/CasingSidewalk4` | `Gameplay/Doors/LoanCorridorDoor/UsePoint` | use_point | 26.3 | 29.0 | 1.10 | ok |
+| `Spawns/CasingSidewalk4` | `Gameplay/Doors/FireExit` | objective | 27.7 | 30.2 | 1.09 | ok |
+| `Spawns/CasingSidewalk4` | `Gameplay/Doors/FireExit/UsePoint` | use_point | 27.7 | 30.2 | 1.09 | ok |
+| `Spawns/CasingSidewalk4` | `Gameplay/Doors/TellerGate` | objective | 14.1 | 22.7 | 1.61 | ok |
+| `Spawns/CasingSidewalk4` | `Gameplay/Doors/TellerGate/UsePoint` | use_point | 14.1 | 22.7 | 1.61 | ok |
+| `Spawns/CasingSidewalk4` | `Gameplay/Doors/LoanHallDoor/UsePoint` | use_point | 21.5 | 23.6 | 1.10 | ok |
+| `Spawns/CasingSidewalk4` | `Gameplay/Doors/ManagerHallDoor/UsePoint` | use_point | 19.4 | 21.8 | 1.12 | ok |
+| `Spawns/CasingSidewalk4` | `Gameplay/Doors/AtmInnerDoor` | objective | 18.9 | 22.1 | 1.17 | ok |
+| `Spawns/CasingSidewalk4` | `Gameplay/Doors/AtmInnerDoor/UsePoint` | use_point | 18.9 | 22.1 | 1.17 | ok |
+| `Spawns/CasingSidewalk4` | `Gameplay/Doors/VestibuleInnerDoors/UsePoint` | use_point | 8.7 | 10.1 | 1.16 | ok |
+| `Spawns/CasingSidewalk4` | `Gameplay/Doors/MainEntrance` | objective | 7.5 | 8.3 | 1.10 | ok |
+| `Spawns/CasingSidewalk4` | `Gameplay/Doors/MainEntrance/UsePoint` | use_point | 7.5 | 8.3 | 1.10 | ok |
+| `Spawns/CasingSidewalk4` | `Gameplay/Doors/AtmStreetDoor` | objective | 20.6 | 21.9 | 1.06 | ok |
+| `Spawns/CasingSidewalk4` | `Gameplay/Doors/AtmStreetDoor/UsePoint` | use_point | 20.6 | 21.9 | 1.06 | ok |
 | `Spawns/CasingSidewalk4` | `Gameplay/Doors/XferDoor/UsePoint` | use_point | 18.2 | 49.5 | 2.72 | ok |
-| `Spawns/CasingSidewalk4` | `Gameplay/Doors/JanitorDoor/UsePoint` | use_point | 18.6 | 45.3 | 2.44 | ok |
-| `Spawns/CasingSidewalk4` | `Gameplay/Doors/LockerRoomDoor/UsePoint` | use_point | 19.9 | 46.4 | 2.33 | ok |
-| `Spawns/CasingSidewalk4` | `Gameplay/Doors/WCDoor/UsePoint` | use_point | 24.2 | 50.5 | 2.09 | ok |
-| `Spawns/CasingSidewalk4` | `Gameplay/Doors/PlantDoor/UsePoint` | use_point | 23.3 | 52.8 | 2.27 | ok |
-| `Spawns/CasingSidewalk4` | `Gameplay/Doors/ServerDoor` | objective | 26.7 | 57.8 | 2.17 | ok |
-| `Spawns/CasingSidewalk4` | `Gameplay/Doors/ServerDoor/UsePoint` | use_point | 26.7 | 57.8 | 2.17 | ok |
+| `Spawns/CasingSidewalk4` | `Gameplay/Doors/JanitorDoor/UsePoint` | use_point | 18.6 | 45.2 | 2.43 | ok |
+| `Spawns/CasingSidewalk4` | `Gameplay/Doors/LockerRoomDoor/UsePoint` | use_point | 19.9 | 46.8 | 2.35 | ok |
+| `Spawns/CasingSidewalk4` | `Gameplay/Doors/WCDoor/UsePoint` | use_point | 24.2 | 51.0 | 2.11 | ok |
+| `Spawns/CasingSidewalk4` | `Gameplay/Doors/PlantDoor/UsePoint` | use_point | 23.3 | 53.3 | 2.29 | ok |
+| `Spawns/CasingSidewalk4` | `Gameplay/Doors/ServerDoor` | objective | 26.7 | 58.3 | 2.19 | ok |
+| `Spawns/CasingSidewalk4` | `Gameplay/Doors/ServerDoor/UsePoint` | use_point | 26.7 | 58.3 | 2.19 | ok |
 | `Spawns/CasingSidewalk4` | `Gameplay/Doors/RecordsDoor/UsePoint` | use_point | 18.1 | 49.5 | 2.73 | ok |
-| `Spawns/CasingSidewalk4` | `Gameplay/Doors/InspectionWestDoor/UsePoint` | use_point | 18.6 | 45.1 | 2.43 | ok |
-| `Spawns/CasingSidewalk4` | `Gameplay/Doors/VaultGate` | objective | 20.7 | 48.4 | 2.34 | ok |
-| `Spawns/CasingSidewalk4` | `Gameplay/Doors/VaultGate/UsePoint` | use_point | 20.7 | 48.4 | 2.34 | ok |
-| `Spawns/CasingSidewalk4` | `Gameplay/Doors/InspectionEastDoor/UsePoint` | use_point | 24.2 | 54.3 | 2.25 | ok |
-| `Spawns/CasingSidewalk4` | `Gameplay/Doors/CountRoomDoor` | objective | 26.6 | 57.8 | 2.17 | ok |
-| `Spawns/CasingSidewalk4` | `Gameplay/Doors/CountRoomDoor/UsePoint` | use_point | 26.6 | 57.8 | 2.17 | ok |
+| `Spawns/CasingSidewalk4` | `Gameplay/Doors/InspectionWestDoor/UsePoint` | use_point | 18.6 | 45.0 | 2.43 | ok |
+| `Spawns/CasingSidewalk4` | `Gameplay/Doors/VaultGate` | objective | 20.7 | 48.8 | 2.36 | ok |
+| `Spawns/CasingSidewalk4` | `Gameplay/Doors/VaultGate/UsePoint` | use_point | 20.7 | 48.8 | 2.36 | ok |
+| `Spawns/CasingSidewalk4` | `Gameplay/Doors/InspectionEastDoor/UsePoint` | use_point | 24.2 | 54.8 | 2.27 | ok |
+| `Spawns/CasingSidewalk4` | `Gameplay/Doors/CountRoomDoor` | objective | 26.6 | 58.3 | 2.19 | ok |
+| `Spawns/CasingSidewalk4` | `Gameplay/Doors/CountRoomDoor/UsePoint` | use_point | 26.6 | 58.3 | 2.19 | ok |
 | `Spawns/CasingSidewalk4` | `Gameplay/Doors/DepositoryDoor` | objective | 22.8 | 64.1 | 2.81 | ok |
 | `Spawns/CasingSidewalk4` | `Gameplay/Doors/DepositoryDoor/UsePoint` | use_point | 22.8 | 64.1 | 2.81 | ok |
-| `Spawns/CasingSidewalk4` | `Gameplay/Doors/VaultDoor` | objective | 18.6 | 49.9 | 2.68 | ok |
-| `Spawns/CasingSidewalk4` | `Gameplay/Doors/VaultDoor/UsePoint` | use_point | 18.6 | 49.9 | 2.68 | ok |
-| `Spawns/CasingSidewalk4` | `Gameplay/Doors/VaultDoor/VaultDrill` | objective | 19.2 | 49.9 | 2.60 | ok |
-| `Spawns/CasingSidewalk4` | `Gameplay/Doors/VaultDoor/VaultDrill/UsePoint` | use_point | 19.2 | 49.9 | 2.60 | ok |
-| `Spawns/CasingSidewalk4` | `Gameplay/Doors/AreawayDoor` | objective | 29.2 | 51.9 | 1.78 | ok |
-| `Spawns/CasingSidewalk4` | `Gameplay/Doors/AreawayDoor/UsePoint` | use_point | 29.2 | 51.9 | 1.78 | ok |
+| `Spawns/CasingSidewalk4` | `Gameplay/Doors/VaultDoor` | objective | 18.6 | 50.4 | 2.71 | ok |
+| `Spawns/CasingSidewalk4` | `Gameplay/Doors/VaultDoor/UsePoint` | use_point | 18.6 | 50.4 | 2.71 | ok |
+| `Spawns/CasingSidewalk4` | `Gameplay/Doors/VaultDoor/VaultDrill` | objective | 19.2 | 50.4 | 2.63 | ok |
+| `Spawns/CasingSidewalk4` | `Gameplay/Doors/VaultDoor/VaultDrill/UsePoint` | use_point | 19.2 | 50.4 | 2.63 | ok |
+| `Spawns/CasingSidewalk4` | `Gameplay/Doors/AreawayDoor` | objective | 29.2 | 52.4 | 1.80 | ok |
+| `Spawns/CasingSidewalk4` | `Gameplay/Doors/AreawayDoor/UsePoint` | use_point | 29.2 | 52.4 | 1.80 | ok |
 | `Spawns/CasingSidewalk4` | `Gameplay/Doors/AlleyGate` | objective | 40.8 | 61.5 | 1.51 | ok |
 | `Spawns/CasingSidewalk4` | `Gameplay/Doors/AlleyGate/UsePoint` | use_point | 40.8 | 61.5 | 1.51 | ok |
 | `Spawns/CasingSidewalk4` | `Gameplay/Doors/HarborWestGate` | objective | 17.4 | 17.4 | 1.00 | ok |
 | `Spawns/CasingSidewalk4` | `Gameplay/Doors/HarborWestGate/UsePoint` | use_point | 17.4 | 17.4 | 1.00 | ok |
 | `Spawns/CasingSidewalk4` | `Gameplay/Doors/HarborEastGate` | objective | 35.3 | 35.3 | 1.00 | ok |
 | `Spawns/CasingSidewalk4` | `Gameplay/Doors/HarborEastGate/UsePoint` | use_point | 35.3 | 35.3 | 1.00 | ok |
-| `Spawns/CasingSidewalk4` | `Gameplay/Doors/WharfNorthGate` | objective | 44.6 | 51.4 | 1.15 | ok |
-| `Spawns/CasingSidewalk4` | `Gameplay/Doors/WharfNorthGate/UsePoint` | use_point | 44.6 | 51.4 | 1.15 | ok |
+| `Spawns/CasingSidewalk4` | `Gameplay/Doors/WharfNorthGate` | objective | 44.6 | 51.8 | 1.16 | ok |
+| `Spawns/CasingSidewalk4` | `Gameplay/Doors/WharfNorthGate/UsePoint` | use_point | 44.6 | 51.8 | 1.16 | ok |
 | `Spawns/CasingSidewalk4` | `Gameplay/Windows/HallBay1` | objective | 4.1 | 4.1 | 1.01 | ok |
 | `Spawns/CasingSidewalk4` | `Gameplay/Windows/HallBay1/UsePoint` | use_point | 4.1 | 4.1 | 1.01 | ok |
-| `Spawns/CasingSidewalk4` | `Gameplay/Windows/HallBay2` | objective | 4.3 | 4.3 | 1.01 | ok |
-| `Spawns/CasingSidewalk4` | `Gameplay/Windows/HallBay2/UsePoint` | use_point | 4.3 | 4.3 | 1.01 | ok |
-| `Spawns/CasingSidewalk4` | `Gameplay/Windows/HallBay3` | objective | 11.6 | 11.8 | 1.01 | ok |
-| `Spawns/CasingSidewalk4` | `Gameplay/Windows/HallBay3/UsePoint` | use_point | 11.6 | 11.8 | 1.01 | ok |
-| `Spawns/CasingSidewalk4` | `Gameplay/Windows/HallBay4` | objective | 15.0 | 15.3 | 1.02 | ok |
-| `Spawns/CasingSidewalk4` | `Gameplay/Windows/HallBay4/UsePoint` | use_point | 15.0 | 15.3 | 1.02 | ok |
-| `Spawns/CasingSidewalk4` | `Gameplay/Vault/TimeLockPanel` | objective | 21.3 | 53.0 | 2.49 | ok |
-| `Spawns/CasingSidewalk4` | `Gameplay/Vault/TimeLockPanel/UsePoint` | use_point | 21.3 | 53.0 | 2.49 | ok |
-| `Spawns/CasingSidewalk4` | `Gameplay/Vault/CageCash` | loot_spawn | 14.1 | 56.0 | 3.98 | detour (whitelisted) |
-| `Spawns/CasingSidewalk4` | `Gameplay/Vault/CageCash/UsePoint` | use_point | 14.7 | 55.1 | 3.76 | detour (whitelisted) |
+| `Spawns/CasingSidewalk4` | `Gameplay/Windows/HallBay2` | objective | 4.3 | 4.9 | 1.15 | ok |
+| `Spawns/CasingSidewalk4` | `Gameplay/Windows/HallBay2/UsePoint` | use_point | 4.3 | 4.9 | 1.15 | ok |
+| `Spawns/CasingSidewalk4` | `Gameplay/Windows/HallBay3` | objective | 11.6 | 12.7 | 1.09 | ok |
+| `Spawns/CasingSidewalk4` | `Gameplay/Windows/HallBay3/UsePoint` | use_point | 11.6 | 12.7 | 1.09 | ok |
+| `Spawns/CasingSidewalk4` | `Gameplay/Windows/HallBay4` | objective | 15.0 | 16.2 | 1.08 | ok |
+| `Spawns/CasingSidewalk4` | `Gameplay/Windows/HallBay4/UsePoint` | use_point | 15.0 | 16.2 | 1.08 | ok |
+| `Spawns/CasingSidewalk4` | `Gameplay/Vault/TimeLockPanel` | objective | 21.3 | 53.4 | 2.51 | ok |
+| `Spawns/CasingSidewalk4` | `Gameplay/Vault/TimeLockPanel/UsePoint` | use_point | 21.3 | 53.4 | 2.51 | ok |
+| `Spawns/CasingSidewalk4` | `Gameplay/Vault/CageCash` | loot_spawn | 14.1 | 55.9 | 3.98 | detour (whitelisted) |
+| `Spawns/CasingSidewalk4` | `Gameplay/Vault/CageCash/UsePoint` | use_point | 14.7 | 55.5 | 3.79 | detour (whitelisted) |
 | `Spawns/CasingSidewalk4` | `Gameplay/Vault/CoopCashBricks` | loot_spawn | 12.2 | 60.7 | 4.98 | detour (whitelisted) |
-| `Spawns/CasingSidewalk4` | `Gameplay/Vault/CoopCashBricks/UsePoint` | use_point | 12.6 | 60.2 | 4.77 | detour (whitelisted) |
-| `Spawns/CasingSidewalk4` | `Gameplay/Vault/Box1` | objective | 14.5 | 54.1 | 3.72 | detour (whitelisted) |
-| `Spawns/CasingSidewalk4` | `Gameplay/Vault/Box1/UsePoint` | use_point | 14.5 | 54.1 | 3.72 | detour (whitelisted) |
-| `Spawns/CasingSidewalk4` | `Gameplay/Vault/Box2` | objective | 13.0 | 55.4 | 4.25 | detour (whitelisted) |
-| `Spawns/CasingSidewalk4` | `Gameplay/Vault/Box2/UsePoint` | use_point | 13.0 | 55.4 | 4.25 | detour (whitelisted) |
-| `Spawns/CasingSidewalk4` | `Gameplay/Vault/Box3` | objective | 11.6 | 56.9 | 4.92 | detour (whitelisted) |
-| `Spawns/CasingSidewalk4` | `Gameplay/Vault/Box3/UsePoint` | use_point | 11.6 | 56.9 | 4.92 | detour (whitelisted) |
-| `Spawns/CasingSidewalk4` | `Gameplay/Vault/Box4` | objective | 10.3 | 58.7 | 5.71 | detour (whitelisted) |
-| `Spawns/CasingSidewalk4` | `Gameplay/Vault/Box4/UsePoint` | use_point | 10.3 | 58.7 | 5.71 | detour (whitelisted) |
-| `Spawns/CasingSidewalk4` | `Gameplay/Vault/Box5` | objective | 18.8 | 54.4 | 2.89 | ok |
-| `Spawns/CasingSidewalk4` | `Gameplay/Vault/Box5/UsePoint` | use_point | 18.8 | 54.4 | 2.89 | ok |
-| `Spawns/CasingSidewalk4` | `Gameplay/Vault/Box6` | objective | 17.6 | 55.4 | 3.14 | detour (whitelisted) |
-| `Spawns/CasingSidewalk4` | `Gameplay/Vault/Box6/UsePoint` | use_point | 17.6 | 55.4 | 3.14 | detour (whitelisted) |
-| `Spawns/CasingSidewalk4` | `Gameplay/Vault/Box7` | objective | 16.6 | 57.0 | 3.44 | detour (whitelisted) |
-| `Spawns/CasingSidewalk4` | `Gameplay/Vault/Box7/UsePoint` | use_point | 16.6 | 57.0 | 3.44 | detour (whitelisted) |
+| `Spawns/CasingSidewalk4` | `Gameplay/Vault/CoopCashBricks/UsePoint` | use_point | 12.6 | 60.2 | 4.76 | detour (whitelisted) |
+| `Spawns/CasingSidewalk4` | `Gameplay/Vault/Box1` | objective | 14.5 | 54.5 | 3.75 | detour (whitelisted) |
+| `Spawns/CasingSidewalk4` | `Gameplay/Vault/Box1/UsePoint` | use_point | 14.5 | 54.5 | 3.75 | detour (whitelisted) |
+| `Spawns/CasingSidewalk4` | `Gameplay/Vault/Box2` | objective | 13.0 | 55.8 | 4.29 | detour (whitelisted) |
+| `Spawns/CasingSidewalk4` | `Gameplay/Vault/Box2/UsePoint` | use_point | 13.0 | 55.8 | 4.29 | detour (whitelisted) |
+| `Spawns/CasingSidewalk4` | `Gameplay/Vault/Box3` | objective | 11.6 | 56.9 | 4.91 | detour (whitelisted) |
+| `Spawns/CasingSidewalk4` | `Gameplay/Vault/Box3/UsePoint` | use_point | 11.6 | 56.9 | 4.91 | detour (whitelisted) |
+| `Spawns/CasingSidewalk4` | `Gameplay/Vault/Box4` | objective | 10.3 | 58.6 | 5.70 | detour (whitelisted) |
+| `Spawns/CasingSidewalk4` | `Gameplay/Vault/Box4/UsePoint` | use_point | 10.3 | 58.6 | 5.70 | detour (whitelisted) |
+| `Spawns/CasingSidewalk4` | `Gameplay/Vault/Box5` | objective | 18.8 | 54.9 | 2.92 | ok |
+| `Spawns/CasingSidewalk4` | `Gameplay/Vault/Box5/UsePoint` | use_point | 18.8 | 54.9 | 2.92 | ok |
+| `Spawns/CasingSidewalk4` | `Gameplay/Vault/Box6` | objective | 17.6 | 55.9 | 3.17 | detour (whitelisted) |
+| `Spawns/CasingSidewalk4` | `Gameplay/Vault/Box6/UsePoint` | use_point | 17.6 | 55.9 | 3.17 | detour (whitelisted) |
+| `Spawns/CasingSidewalk4` | `Gameplay/Vault/Box7` | objective | 16.6 | 56.9 | 3.43 | detour (whitelisted) |
+| `Spawns/CasingSidewalk4` | `Gameplay/Vault/Box7/UsePoint` | use_point | 16.6 | 56.9 | 3.43 | detour (whitelisted) |
 | `Spawns/CasingSidewalk4` | `Gameplay/Vault/Box8` | objective | 15.7 | 58.7 | 3.75 | detour (whitelisted) |
 | `Spawns/CasingSidewalk4` | `Gameplay/Vault/Box8/UsePoint` | use_point | 15.7 | 58.7 | 3.75 | detour (whitelisted) |
 | `Spawns/CasingSidewalk4` | `Gameplay/Depository/DepositorySafe` | objective | 20.3 | 67.9 | 3.34 | detour (whitelisted) |
 | `Spawns/CasingSidewalk4` | `Gameplay/Depository/DepositorySafe/UsePoint` | use_point | 20.3 | 67.9 | 3.34 | detour (whitelisted) |
-| `Spawns/CasingSidewalk4` | `Gameplay/Depository/DepositorySafe/NightDropBags` | loot_spawn | 20.0 | 69.2 | 3.46 | detour (whitelisted) |
-| `Spawns/CasingSidewalk4` | `Gameplay/Depository/DepositorySafe/NightDropBags/UsePoint` | use_point | 20.0 | 69.2 | 3.46 | detour (whitelisted) |
-| `Spawns/CasingSidewalk4` | `Gameplay/Misc/TellerDrawer1/UsePoint` | use_point | 15.4 | 26.4 | 1.72 | ok |
-| `Spawns/CasingSidewalk4` | `Gameplay/Misc/TellerDrawer2/UsePoint` | use_point | 16.2 | 31.4 | 1.94 | ok |
-| `Spawns/CasingSidewalk4` | `Gameplay/Misc/TellerDrawer3/UsePoint` | use_point | 18.4 | 36.4 | 1.98 | ok |
-| `Spawns/CasingSidewalk4` | `Gameplay/Misc/CameraStation/UsePoint` | use_point | 22.8 | 39.0 | 1.71 | ok |
-| `Spawns/CasingSidewalk4` | `Gameplay/Misc/AlarmSecurity/UsePoint` | use_point | 24.8 | 40.7 | 1.64 | ok |
-| `Spawns/CasingSidewalk4` | `Gameplay/Misc/AlarmManager/UsePoint` | use_point | 21.5 | 23.3 | 1.09 | ok |
-| `Spawns/CasingSidewalk4` | `Gameplay/Misc/AlarmTellers/UsePoint` | use_point | 19.6 | 37.5 | 1.91 | ok |
-| `Spawns/CasingSidewalk4` | `Gameplay/Misc/PhoneManager/UsePoint` | use_point | 22.0 | 28.1 | 1.27 | ok |
-| `Spawns/CasingSidewalk4` | `Gameplay/Misc/PhoneLoan/UsePoint` | use_point | 25.4 | 27.4 | 1.08 | ok |
+| `Spawns/CasingSidewalk4` | `Gameplay/Depository/DepositorySafe/NightDropBags` | loot_spawn | 20.0 | 69.1 | 3.46 | detour (whitelisted) |
+| `Spawns/CasingSidewalk4` | `Gameplay/Depository/DepositorySafe/NightDropBags/UsePoint` | use_point | 20.0 | 69.1 | 3.46 | detour (whitelisted) |
+| `Spawns/CasingSidewalk4` | `Gameplay/Misc/TellerDrawer1/UsePoint` | use_point | 15.4 | 26.4 | 1.71 | ok |
+| `Spawns/CasingSidewalk4` | `Gameplay/Misc/TellerDrawer2/UsePoint` | use_point | 16.2 | 31.9 | 1.97 | ok |
+| `Spawns/CasingSidewalk4` | `Gameplay/Misc/TellerDrawer3/UsePoint` | use_point | 18.4 | 36.9 | 2.01 | ok |
+| `Spawns/CasingSidewalk4` | `Gameplay/Misc/CameraStation/UsePoint` | use_point | 22.8 | 39.5 | 1.73 | ok |
+| `Spawns/CasingSidewalk4` | `Gameplay/Misc/AlarmSecurity/UsePoint` | use_point | 24.8 | 41.2 | 1.66 | ok |
+| `Spawns/CasingSidewalk4` | `Gameplay/Misc/AlarmManager/UsePoint` | use_point | 21.5 | 24.0 | 1.12 | ok |
+| `Spawns/CasingSidewalk4` | `Gameplay/Misc/AlarmTellers/UsePoint` | use_point | 19.6 | 38.0 | 1.94 | ok |
+| `Spawns/CasingSidewalk4` | `Gameplay/Misc/PhoneManager/UsePoint` | use_point | 22.0 | 28.3 | 1.28 | ok |
+| `Spawns/CasingSidewalk4` | `Gameplay/Misc/PhoneLoan/UsePoint` | use_point | 25.4 | 27.8 | 1.09 | ok |
 | `Spawns/CasingSidewalk4` | `Gameplay/Misc/CashLift` | objective | 22.7 | 34.4 | 1.51 | ok |
 | `Spawns/CasingSidewalk4` | `Gameplay/Misc/CashLift/UsePoint` | use_point | 22.7 | 34.4 | 1.51 | ok |
-| `Spawns/CasingSidewalk4` | `Gameplay/Atms/AtmCash1` | objective | 19.6 | 22.4 | 1.15 | ok |
-| `Spawns/CasingSidewalk4` | `Gameplay/Atms/AtmCash1/UsePoint` | use_point | 19.6 | 22.4 | 1.15 | ok |
-| `Spawns/CasingSidewalk4` | `Gameplay/Atms/AtmSaw1` | objective | 19.5 | 22.4 | 1.15 | ok |
-| `Spawns/CasingSidewalk4` | `Gameplay/Atms/AtmSaw1/UsePoint` | use_point | 19.5 | 22.4 | 1.15 | ok |
-| `Spawns/CasingSidewalk4` | `Gameplay/Atms/AtmCash2` | objective | 20.6 | 23.5 | 1.14 | ok |
-| `Spawns/CasingSidewalk4` | `Gameplay/Atms/AtmCash2/UsePoint` | use_point | 20.6 | 23.5 | 1.14 | ok |
-| `Spawns/CasingSidewalk4` | `Gameplay/Atms/AtmSaw2` | objective | 20.5 | 23.5 | 1.14 | ok |
-| `Spawns/CasingSidewalk4` | `Gameplay/Atms/AtmSaw2/UsePoint` | use_point | 20.5 | 23.5 | 1.14 | ok |
-| `Spawns/CasingSidewalk4` | `Variants/Group_code_note/Slot_code_break_board/CodeNote` | objective | 25.6 | 41.6 | 1.63 | ok |
-| `Spawns/CasingSidewalk4` | `Variants/Group_code_note/Slot_code_break_board/CodeNote/UsePoint` | use_point | 25.6 | 41.6 | 1.63 | ok |
-| `Spawns/CasingSidewalk4` | `Variants/Group_keycard/Slot_kc_break_locker/Keycard` | objective | 25.9 | 40.7 | 1.57 | ok |
-| `Spawns/CasingSidewalk4` | `Variants/Group_keycard/Slot_kc_break_locker/Keycard/UsePoint` | use_point | 25.9 | 40.7 | 1.57 | ok |
-| `Spawns/CasingSidewalk4` | `Variants/Group_server_room/Slot_srv_basement/HackTerminal` | objective | 30.4 | 62.1 | 2.04 | ok |
-| `Spawns/CasingSidewalk4` | `Variants/Group_server_room/Slot_srv_basement/HackTerminal/UsePoint` | use_point | 30.4 | 62.1 | 2.04 | ok |
-| `Spawns/CasingSidewalk4` | `Variants/Group_vent_open/Slot_vent_locked/AreawayGrate` | objective | 28.7 | 47.2 | 1.65 | ok |
-| `Spawns/CasingSidewalk4` | `Variants/Group_vent_open/Slot_vent_locked/AreawayGrate/UsePoint` | use_point | 28.7 | 47.2 | 1.65 | ok |
-| `Spawns/CasingSidewalk4` | `Variants/Group_vent_open/Slot_vent_locked/AreawayGrate/Padlock` | objective | 28.9 | 47.0 | 1.63 | ok |
-| `Spawns/CasingSidewalk4` | `Variants/Group_vent_open/Slot_vent_locked/AreawayGrate/Padlock/UsePoint` | use_point | 28.9 | 47.0 | 1.63 | ok |
-| `Spawns/CasingSidewalk4` | `Variants/Group_extra_loot/Slot_mgr_safe_empty/ManagerSafe` | objective | 22.4 | 27.9 | 1.25 | ok |
-| `Spawns/CasingSidewalk4` | `Variants/Group_extra_loot/Slot_mgr_safe_empty/ManagerSafe/UsePoint` | use_point | 22.4 | 27.9 | 1.25 | ok |
-| `Spawns/CasingSidewalk4` | `Variants/Group_escape/Slot_esc_boat_quay/BoatSecureE2/Zone` | secure_zone | 11.7 | 13.7 | 1.17 | ok |
-| `Spawns/CasingSidewalk4` | `Variants/Group_escape/Slot_esc_boat_quay/BoatEscapeE2/Zone` | escape_zone | 10.3 | 12.1 | 1.18 | ok |
+| `Spawns/CasingSidewalk4` | `Gameplay/Atms/AtmCash1` | objective | 19.6 | 22.8 | 1.16 | ok |
+| `Spawns/CasingSidewalk4` | `Gameplay/Atms/AtmCash1/UsePoint` | use_point | 19.6 | 22.8 | 1.16 | ok |
+| `Spawns/CasingSidewalk4` | `Gameplay/Atms/AtmSaw1` | objective | 19.5 | 22.7 | 1.17 | ok |
+| `Spawns/CasingSidewalk4` | `Gameplay/Atms/AtmSaw1/UsePoint` | use_point | 19.5 | 22.7 | 1.17 | ok |
+| `Spawns/CasingSidewalk4` | `Gameplay/Atms/AtmCash2` | objective | 20.6 | 23.8 | 1.16 | ok |
+| `Spawns/CasingSidewalk4` | `Gameplay/Atms/AtmCash2/UsePoint` | use_point | 20.6 | 23.8 | 1.16 | ok |
+| `Spawns/CasingSidewalk4` | `Gameplay/Atms/AtmSaw2` | objective | 20.5 | 23.8 | 1.16 | ok |
+| `Spawns/CasingSidewalk4` | `Gameplay/Atms/AtmSaw2/UsePoint` | use_point | 20.5 | 23.8 | 1.16 | ok |
+| `Spawns/CasingSidewalk4` | `Variants/Group_code_note/Slot_code_break_board/CodeNote` | objective | 25.6 | 42.0 | 1.64 | ok |
+| `Spawns/CasingSidewalk4` | `Variants/Group_code_note/Slot_code_break_board/CodeNote/UsePoint` | use_point | 25.6 | 42.0 | 1.64 | ok |
+| `Spawns/CasingSidewalk4` | `Variants/Group_keycard/Slot_kc_break_locker/Keycard` | objective | 25.9 | 41.1 | 1.59 | ok |
+| `Spawns/CasingSidewalk4` | `Variants/Group_keycard/Slot_kc_break_locker/Keycard/UsePoint` | use_point | 25.9 | 41.1 | 1.59 | ok |
+| `Spawns/CasingSidewalk4` | `Variants/Group_server_room/Slot_srv_basement/HackTerminal` | objective | 30.4 | 62.6 | 2.06 | ok |
+| `Spawns/CasingSidewalk4` | `Variants/Group_server_room/Slot_srv_basement/HackTerminal/UsePoint` | use_point | 30.4 | 62.6 | 2.06 | ok |
+| `Spawns/CasingSidewalk4` | `Variants/Group_vent_open/Slot_vent_locked/AreawayGrate` | objective | 28.7 | 47.7 | 1.66 | ok |
+| `Spawns/CasingSidewalk4` | `Variants/Group_vent_open/Slot_vent_locked/AreawayGrate/UsePoint` | use_point | 28.7 | 47.7 | 1.66 | ok |
+| `Spawns/CasingSidewalk4` | `Variants/Group_vent_open/Slot_vent_locked/AreawayGrate/Padlock` | objective | 28.9 | 47.5 | 1.64 | ok |
+| `Spawns/CasingSidewalk4` | `Variants/Group_vent_open/Slot_vent_locked/AreawayGrate/Padlock/UsePoint` | use_point | 28.9 | 47.5 | 1.64 | ok |
+| `Spawns/CasingSidewalk4` | `Variants/Group_extra_loot/Slot_mgr_safe_empty/ManagerSafe` | objective | 22.4 | 28.1 | 1.26 | ok |
+| `Spawns/CasingSidewalk4` | `Variants/Group_extra_loot/Slot_mgr_safe_empty/ManagerSafe/UsePoint` | use_point | 22.4 | 28.1 | 1.26 | ok |
+| `Spawns/CasingSidewalk4` | `Variants/Group_escape/Slot_esc_boat_quay/BoatSecureE2/Zone` | secure_zone | 11.7 | 12.5 | 1.07 | ok |
+| `Spawns/CasingSidewalk4` | `Variants/Group_escape/Slot_esc_boat_quay/BoatEscapeE2/Zone` | escape_zone | 10.3 | 10.8 | 1.05 | ok |
 | `Spawns/PreplanLot1` | `Gameplay/Doors/SallyPersonnelDoor` | objective | 9.4 | 10.1 | 1.07 | ok |
 | `Spawns/PreplanLot1` | `Gameplay/Doors/SallyPersonnelDoor/UsePoint` | use_point | 9.4 | 10.1 | 1.07 | ok |
 | `Spawns/PreplanLot1` | `Gameplay/Doors/LoadingDoor/UsePoint` | use_point | 16.3 | 17.9 | 1.10 | ok |
@@ -534,8 +534,8 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PreplanLot1` | `Gameplay/Doors/AreawayDoor/UsePoint` | use_point | 19.1 | 21.3 | 1.12 | ok |
 | `Spawns/PreplanLot1` | `Gameplay/Doors/AlleyGate` | objective | 15.2 | 15.2 | 1.00 | ok |
 | `Spawns/PreplanLot1` | `Gameplay/Doors/AlleyGate/UsePoint` | use_point | 15.2 | 15.2 | 1.00 | ok |
-| `Spawns/PreplanLot1` | `Gameplay/Doors/HarborWestGate` | objective | 38.2 | 64.1 | 1.68 | ok |
-| `Spawns/PreplanLot1` | `Gameplay/Doors/HarborWestGate/UsePoint` | use_point | 38.2 | 64.1 | 1.68 | ok |
+| `Spawns/PreplanLot1` | `Gameplay/Doors/HarborWestGate` | objective | 38.2 | 64.9 | 1.70 | ok |
+| `Spawns/PreplanLot1` | `Gameplay/Doors/HarborWestGate/UsePoint` | use_point | 38.2 | 64.9 | 1.70 | ok |
 | `Spawns/PreplanLot1` | `Gameplay/Doors/HarborEastGate` | objective | 51.7 | 57.7 | 1.12 | ok |
 | `Spawns/PreplanLot1` | `Gameplay/Doors/HarborEastGate/UsePoint` | use_point | 51.7 | 57.7 | 1.12 | ok |
 | `Spawns/PreplanLot1` | `Gameplay/Doors/WharfNorthGate` | objective | 26.5 | 26.5 | 1.00 | ok |
@@ -605,8 +605,8 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PreplanLot1` | `Variants/Group_vent_open/Slot_vent_locked/AreawayGrate/Padlock/UsePoint` | use_point | 16.2 | 16.3 | 1.00 | ok |
 | `Spawns/PreplanLot1` | `Variants/Group_extra_loot/Slot_mgr_safe_empty/ManagerSafe` | objective | 33.4 | 49.7 | 1.49 | ok |
 | `Spawns/PreplanLot1` | `Variants/Group_extra_loot/Slot_mgr_safe_empty/ManagerSafe/UsePoint` | use_point | 33.4 | 49.7 | 1.49 | ok |
-| `Spawns/PreplanLot1` | `Variants/Group_escape/Slot_esc_boat_quay/BoatSecureE2/Zone` | secure_zone | 45.3 | 58.5 | 1.29 | ok |
-| `Spawns/PreplanLot1` | `Variants/Group_escape/Slot_esc_boat_quay/BoatEscapeE2/Zone` | escape_zone | 43.8 | 56.9 | 1.30 | ok |
+| `Spawns/PreplanLot1` | `Variants/Group_escape/Slot_esc_boat_quay/BoatSecureE2/Zone` | secure_zone | 45.3 | 59.1 | 1.30 | ok |
+| `Spawns/PreplanLot1` | `Variants/Group_escape/Slot_esc_boat_quay/BoatEscapeE2/Zone` | escape_zone | 43.8 | 55.3 | 1.26 | ok |
 | `Spawns/PreplanLot2` | `Gameplay/Doors/SallyPersonnelDoor` | objective | 8.8 | 8.9 | 1.01 | ok |
 | `Spawns/PreplanLot2` | `Gameplay/Doors/SallyPersonnelDoor/UsePoint` | use_point | 8.8 | 8.9 | 1.01 | ok |
 | `Spawns/PreplanLot2` | `Gameplay/Doors/LoadingDoor/UsePoint` | use_point | 16.0 | 16.6 | 1.04 | ok |
@@ -654,8 +654,8 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PreplanLot2` | `Gameplay/Doors/AreawayDoor/UsePoint` | use_point | 17.8 | 20.0 | 1.12 | ok |
 | `Spawns/PreplanLot2` | `Gameplay/Doors/AlleyGate` | objective | 16.7 | 16.7 | 1.00 | ok |
 | `Spawns/PreplanLot2` | `Gameplay/Doors/AlleyGate/UsePoint` | use_point | 16.7 | 16.7 | 1.00 | ok |
-| `Spawns/PreplanLot2` | `Gameplay/Doors/HarborWestGate` | objective | 38.8 | 62.9 | 1.62 | ok |
-| `Spawns/PreplanLot2` | `Gameplay/Doors/HarborWestGate/UsePoint` | use_point | 38.8 | 62.9 | 1.62 | ok |
+| `Spawns/PreplanLot2` | `Gameplay/Doors/HarborWestGate` | objective | 38.8 | 63.6 | 1.64 | ok |
+| `Spawns/PreplanLot2` | `Gameplay/Doors/HarborWestGate/UsePoint` | use_point | 38.8 | 63.6 | 1.64 | ok |
 | `Spawns/PreplanLot2` | `Gameplay/Doors/HarborEastGate` | objective | 50.6 | 56.4 | 1.12 | ok |
 | `Spawns/PreplanLot2` | `Gameplay/Doors/HarborEastGate/UsePoint` | use_point | 50.6 | 56.4 | 1.12 | ok |
 | `Spawns/PreplanLot2` | `Gameplay/Doors/WharfNorthGate` | objective | 25.0 | 25.1 | 1.01 | ok |
@@ -725,8 +725,8 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PreplanLot2` | `Variants/Group_vent_open/Slot_vent_locked/AreawayGrate/Padlock/UsePoint` | use_point | 14.9 | 14.9 | 1.00 | ok |
 | `Spawns/PreplanLot2` | `Variants/Group_extra_loot/Slot_mgr_safe_empty/ManagerSafe` | objective | 32.4 | 48.4 | 1.50 | ok |
 | `Spawns/PreplanLot2` | `Variants/Group_extra_loot/Slot_mgr_safe_empty/ManagerSafe/UsePoint` | use_point | 32.4 | 48.4 | 1.50 | ok |
-| `Spawns/PreplanLot2` | `Variants/Group_escape/Slot_esc_boat_quay/BoatSecureE2/Zone` | secure_zone | 45.2 | 57.2 | 1.27 | ok |
-| `Spawns/PreplanLot2` | `Variants/Group_escape/Slot_esc_boat_quay/BoatEscapeE2/Zone` | escape_zone | 43.6 | 55.7 | 1.28 | ok |
+| `Spawns/PreplanLot2` | `Variants/Group_escape/Slot_esc_boat_quay/BoatSecureE2/Zone` | secure_zone | 45.2 | 57.8 | 1.28 | ok |
+| `Spawns/PreplanLot2` | `Variants/Group_escape/Slot_esc_boat_quay/BoatEscapeE2/Zone` | escape_zone | 43.6 | 54.0 | 1.24 | ok |
 | `Spawns/PreplanLot3` | `Gameplay/Doors/SallyPersonnelDoor` | objective | 10.8 | 11.0 | 1.02 | ok |
 | `Spawns/PreplanLot3` | `Gameplay/Doors/SallyPersonnelDoor/UsePoint` | use_point | 10.8 | 11.0 | 1.02 | ok |
 | `Spawns/PreplanLot3` | `Gameplay/Doors/LoadingDoor/UsePoint` | use_point | 17.8 | 18.8 | 1.06 | ok |
@@ -774,8 +774,8 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PreplanLot3` | `Gameplay/Doors/AreawayDoor/UsePoint` | use_point | 19.8 | 22.8 | 1.16 | ok |
 | `Spawns/PreplanLot3` | `Gameplay/Doors/AlleyGate` | objective | 14.9 | 14.9 | 1.00 | ok |
 | `Spawns/PreplanLot3` | `Gameplay/Doors/AlleyGate/UsePoint` | use_point | 14.9 | 14.9 | 1.00 | ok |
-| `Spawns/PreplanLot3` | `Gameplay/Doors/HarborWestGate` | objective | 39.6 | 65.0 | 1.64 | ok |
-| `Spawns/PreplanLot3` | `Gameplay/Doors/HarborWestGate/UsePoint` | use_point | 39.6 | 65.0 | 1.64 | ok |
+| `Spawns/PreplanLot3` | `Gameplay/Doors/HarborWestGate` | objective | 39.6 | 65.7 | 1.66 | ok |
+| `Spawns/PreplanLot3` | `Gameplay/Doors/HarborWestGate/UsePoint` | use_point | 39.6 | 65.7 | 1.66 | ok |
 | `Spawns/PreplanLot3` | `Gameplay/Doors/HarborEastGate` | objective | 52.7 | 59.2 | 1.12 | ok |
 | `Spawns/PreplanLot3` | `Gameplay/Doors/HarborEastGate/UsePoint` | use_point | 52.7 | 59.2 | 1.12 | ok |
 | `Spawns/PreplanLot3` | `Gameplay/Doors/WharfNorthGate` | objective | 26.2 | 26.2 | 1.00 | ok |
@@ -845,8 +845,8 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PreplanLot3` | `Variants/Group_vent_open/Slot_vent_locked/AreawayGrate/Padlock/UsePoint` | use_point | 17.0 | 17.8 | 1.05 | ok |
 | `Spawns/PreplanLot3` | `Variants/Group_extra_loot/Slot_mgr_safe_empty/ManagerSafe` | objective | 34.5 | 50.6 | 1.47 | ok |
 | `Spawns/PreplanLot3` | `Variants/Group_extra_loot/Slot_mgr_safe_empty/ManagerSafe/UsePoint` | use_point | 34.5 | 50.6 | 1.47 | ok |
-| `Spawns/PreplanLot3` | `Variants/Group_escape/Slot_esc_boat_quay/BoatSecureE2/Zone` | secure_zone | 46.8 | 59.3 | 1.27 | ok |
-| `Spawns/PreplanLot3` | `Variants/Group_escape/Slot_esc_boat_quay/BoatEscapeE2/Zone` | escape_zone | 45.3 | 57.8 | 1.28 | ok |
+| `Spawns/PreplanLot3` | `Variants/Group_escape/Slot_esc_boat_quay/BoatSecureE2/Zone` | secure_zone | 46.8 | 59.9 | 1.28 | ok |
+| `Spawns/PreplanLot3` | `Variants/Group_escape/Slot_esc_boat_quay/BoatEscapeE2/Zone` | escape_zone | 45.3 | 56.1 | 1.24 | ok |
 | `Spawns/PreplanLot4` | `Gameplay/Doors/SallyPersonnelDoor` | objective | 10.2 | 10.2 | 1.00 | ok |
 | `Spawns/PreplanLot4` | `Gameplay/Doors/SallyPersonnelDoor/UsePoint` | use_point | 10.2 | 10.2 | 1.00 | ok |
 | `Spawns/PreplanLot4` | `Gameplay/Doors/LoadingDoor/UsePoint` | use_point | 17.5 | 18.0 | 1.03 | ok |
@@ -894,8 +894,8 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PreplanLot4` | `Gameplay/Doors/AreawayDoor/UsePoint` | use_point | 18.5 | 21.3 | 1.15 | ok |
 | `Spawns/PreplanLot4` | `Gameplay/Doors/AlleyGate` | objective | 16.4 | 16.4 | 1.00 | ok |
 | `Spawns/PreplanLot4` | `Gameplay/Doors/AlleyGate/UsePoint` | use_point | 16.4 | 16.4 | 1.00 | ok |
-| `Spawns/PreplanLot4` | `Gameplay/Doors/HarborWestGate` | objective | 40.2 | 64.2 | 1.60 | ok |
-| `Spawns/PreplanLot4` | `Gameplay/Doors/HarborWestGate/UsePoint` | use_point | 40.2 | 64.2 | 1.60 | ok |
+| `Spawns/PreplanLot4` | `Gameplay/Doors/HarborWestGate` | objective | 40.2 | 65.0 | 1.62 | ok |
+| `Spawns/PreplanLot4` | `Gameplay/Doors/HarborWestGate/UsePoint` | use_point | 40.2 | 65.0 | 1.62 | ok |
 | `Spawns/PreplanLot4` | `Gameplay/Doors/HarborEastGate` | objective | 51.6 | 57.8 | 1.12 | ok |
 | `Spawns/PreplanLot4` | `Gameplay/Doors/HarborEastGate/UsePoint` | use_point | 51.6 | 57.8 | 1.12 | ok |
 | `Spawns/PreplanLot4` | `Gameplay/Doors/WharfNorthGate` | objective | 24.8 | 24.8 | 1.00 | ok |
@@ -965,29 +965,29 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PreplanLot4` | `Variants/Group_vent_open/Slot_vent_locked/AreawayGrate/Padlock/UsePoint` | use_point | 15.7 | 16.3 | 1.04 | ok |
 | `Spawns/PreplanLot4` | `Variants/Group_extra_loot/Slot_mgr_safe_empty/ManagerSafe` | objective | 33.5 | 49.8 | 1.49 | ok |
 | `Spawns/PreplanLot4` | `Variants/Group_extra_loot/Slot_mgr_safe_empty/ManagerSafe/UsePoint` | use_point | 33.5 | 49.8 | 1.49 | ok |
-| `Spawns/PreplanLot4` | `Variants/Group_escape/Slot_esc_boat_quay/BoatSecureE2/Zone` | secure_zone | 46.7 | 58.6 | 1.26 | ok |
-| `Spawns/PreplanLot4` | `Variants/Group_escape/Slot_esc_boat_quay/BoatEscapeE2/Zone` | escape_zone | 45.1 | 57.0 | 1.26 | ok |
-| `Spawns/PreplanQuay1` | `Gameplay/Doors/SallyPersonnelDoor` | objective | 36.8 | 48.3 | 1.31 | ok |
-| `Spawns/PreplanQuay1` | `Gameplay/Doors/SallyPersonnelDoor/UsePoint` | use_point | 36.8 | 48.3 | 1.31 | ok |
-| `Spawns/PreplanQuay1` | `Gameplay/Doors/LoadingDoor/UsePoint` | use_point | 30.6 | 41.0 | 1.34 | ok |
+| `Spawns/PreplanLot4` | `Variants/Group_escape/Slot_esc_boat_quay/BoatSecureE2/Zone` | secure_zone | 46.7 | 59.2 | 1.27 | ok |
+| `Spawns/PreplanLot4` | `Variants/Group_escape/Slot_esc_boat_quay/BoatEscapeE2/Zone` | escape_zone | 45.1 | 55.4 | 1.23 | ok |
+| `Spawns/PreplanQuay1` | `Gameplay/Doors/SallyPersonnelDoor` | objective | 36.8 | 48.0 | 1.30 | ok |
+| `Spawns/PreplanQuay1` | `Gameplay/Doors/SallyPersonnelDoor/UsePoint` | use_point | 36.8 | 48.0 | 1.30 | ok |
+| `Spawns/PreplanQuay1` | `Gameplay/Doors/LoadingDoor/UsePoint` | use_point | 30.6 | 40.6 | 1.33 | ok |
 | `Spawns/PreplanQuay1` | `Gameplay/Doors/SecurityRoomDoor/UsePoint` | use_point | 27.5 | 40.7 | 1.48 | ok |
 | `Spawns/PreplanQuay1` | `Gameplay/Doors/BreakRoomDoor/UsePoint` | use_point | 26.0 | 36.7 | 1.41 | ok |
 | `Spawns/PreplanQuay1` | `Gameplay/Doors/ElectricalDoor/UsePoint` | use_point | 25.1 | 33.2 | 1.32 | ok |
 | `Spawns/PreplanQuay1` | `Gameplay/Doors/StorageDoor/UsePoint` | use_point | 24.7 | 29.2 | 1.18 | ok |
-| `Spawns/PreplanQuay1` | `Gameplay/Doors/TellerDoor` | objective | 33.0 | 37.6 | 1.14 | ok |
-| `Spawns/PreplanQuay1` | `Gameplay/Doors/TellerDoor/UsePoint` | use_point | 33.0 | 37.6 | 1.14 | ok |
+| `Spawns/PreplanQuay1` | `Gameplay/Doors/TellerDoor` | objective | 33.0 | 37.2 | 1.13 | ok |
+| `Spawns/PreplanQuay1` | `Gameplay/Doors/TellerDoor/UsePoint` | use_point | 33.0 | 37.2 | 1.13 | ok |
 | `Spawns/PreplanQuay1` | `Gameplay/Doors/LoanCorridorDoor/UsePoint` | use_point | 24.6 | 29.2 | 1.19 | ok |
 | `Spawns/PreplanQuay1` | `Gameplay/Doors/FireExit` | objective | 24.7 | 27.4 | 1.11 | ok |
 | `Spawns/PreplanQuay1` | `Gameplay/Doors/FireExit/UsePoint` | use_point | 24.7 | 27.4 | 1.11 | ok |
-| `Spawns/PreplanQuay1` | `Gameplay/Doors/TellerGate` | objective | 30.9 | 33.9 | 1.10 | ok |
-| `Spawns/PreplanQuay1` | `Gameplay/Doors/TellerGate/UsePoint` | use_point | 30.9 | 33.9 | 1.10 | ok |
+| `Spawns/PreplanQuay1` | `Gameplay/Doors/TellerGate` | objective | 30.9 | 33.6 | 1.09 | ok |
+| `Spawns/PreplanQuay1` | `Gameplay/Doors/TellerGate/UsePoint` | use_point | 30.9 | 33.6 | 1.09 | ok |
 | `Spawns/PreplanQuay1` | `Gameplay/Doors/LoanHallDoor/UsePoint` | use_point | 21.2 | 23.8 | 1.12 | ok |
 | `Spawns/PreplanQuay1` | `Gameplay/Doors/ManagerHallDoor/UsePoint` | use_point | 17.8 | 20.2 | 1.14 | ok |
 | `Spawns/PreplanQuay1` | `Gameplay/Doors/AtmInnerDoor` | objective | 13.6 | 15.4 | 1.13 | ok |
 | `Spawns/PreplanQuay1` | `Gameplay/Doors/AtmInnerDoor/UsePoint` | use_point | 13.6 | 15.4 | 1.13 | ok |
-| `Spawns/PreplanQuay1` | `Gameplay/Doors/VestibuleInnerDoors/UsePoint` | use_point | 18.5 | 21.2 | 1.14 | ok |
-| `Spawns/PreplanQuay1` | `Gameplay/Doors/MainEntrance` | objective | 17.2 | 19.9 | 1.16 | ok |
-| `Spawns/PreplanQuay1` | `Gameplay/Doors/MainEntrance/UsePoint` | use_point | 17.2 | 19.9 | 1.16 | ok |
+| `Spawns/PreplanQuay1` | `Gameplay/Doors/VestibuleInnerDoors/UsePoint` | use_point | 18.5 | 20.8 | 1.12 | ok |
+| `Spawns/PreplanQuay1` | `Gameplay/Doors/MainEntrance` | objective | 17.2 | 18.8 | 1.09 | ok |
+| `Spawns/PreplanQuay1` | `Gameplay/Doors/MainEntrance/UsePoint` | use_point | 17.2 | 18.8 | 1.09 | ok |
 | `Spawns/PreplanQuay1` | `Gameplay/Doors/AtmStreetDoor` | objective | 10.7 | 11.6 | 1.08 | ok |
 | `Spawns/PreplanQuay1` | `Gameplay/Doors/AtmStreetDoor/UsePoint` | use_point | 10.7 | 11.6 | 1.08 | ok |
 | `Spawns/PreplanQuay1` | `Gameplay/Doors/XferDoor/UsePoint` | use_point | 32.3 | 62.9 | 1.94 | ok |
@@ -1012,18 +1012,18 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PreplanQuay1` | `Gameplay/Doors/VaultDoor/VaultDrill/UsePoint` | use_point | 24.6 | 63.3 | 2.57 | ok |
 | `Spawns/PreplanQuay1` | `Gameplay/Doors/AreawayDoor` | objective | 32.9 | 50.0 | 1.52 | ok |
 | `Spawns/PreplanQuay1` | `Gameplay/Doors/AreawayDoor/UsePoint` | use_point | 32.9 | 50.0 | 1.52 | ok |
-| `Spawns/PreplanQuay1` | `Gameplay/Doors/AlleyGate` | objective | 57.6 | 72.7 | 1.26 | ok |
-| `Spawns/PreplanQuay1` | `Gameplay/Doors/AlleyGate/UsePoint` | use_point | 57.6 | 72.7 | 1.26 | ok |
+| `Spawns/PreplanQuay1` | `Gameplay/Doors/AlleyGate` | objective | 57.6 | 72.3 | 1.26 | ok |
+| `Spawns/PreplanQuay1` | `Gameplay/Doors/AlleyGate/UsePoint` | use_point | 57.6 | 72.3 | 1.26 | ok |
 | `Spawns/PreplanQuay1` | `Gameplay/Doors/HarborWestGate` | objective | 37.7 | 38.1 | 1.01 | ok |
 | `Spawns/PreplanQuay1` | `Gameplay/Doors/HarborWestGate/UsePoint` | use_point | 37.7 | 38.1 | 1.01 | ok |
 | `Spawns/PreplanQuay1` | `Gameplay/Doors/HarborEastGate` | objective | 16.2 | 16.6 | 1.02 | ok |
 | `Spawns/PreplanQuay1` | `Gameplay/Doors/HarborEastGate/UsePoint` | use_point | 16.2 | 16.6 | 1.02 | ok |
 | `Spawns/PreplanQuay1` | `Gameplay/Doors/WharfNorthGate` | objective | 44.8 | 45.5 | 1.01 | ok |
 | `Spawns/PreplanQuay1` | `Gameplay/Doors/WharfNorthGate/UsePoint` | use_point | 44.8 | 45.5 | 1.01 | ok |
-| `Spawns/PreplanQuay1` | `Gameplay/Windows/HallBay1` | objective | 24.0 | 26.7 | 1.11 | ok |
-| `Spawns/PreplanQuay1` | `Gameplay/Windows/HallBay1/UsePoint` | use_point | 24.0 | 26.7 | 1.11 | ok |
-| `Spawns/PreplanQuay1` | `Gameplay/Windows/HallBay2` | objective | 20.9 | 21.2 | 1.01 | ok |
-| `Spawns/PreplanQuay1` | `Gameplay/Windows/HallBay2/UsePoint` | use_point | 20.9 | 21.2 | 1.01 | ok |
+| `Spawns/PreplanQuay1` | `Gameplay/Windows/HallBay1` | objective | 24.0 | 25.0 | 1.04 | ok |
+| `Spawns/PreplanQuay1` | `Gameplay/Windows/HallBay1/UsePoint` | use_point | 24.0 | 25.0 | 1.04 | ok |
+| `Spawns/PreplanQuay1` | `Gameplay/Windows/HallBay2` | objective | 20.9 | 22.2 | 1.06 | ok |
+| `Spawns/PreplanQuay1` | `Gameplay/Windows/HallBay2/UsePoint` | use_point | 20.9 | 22.2 | 1.06 | ok |
 | `Spawns/PreplanQuay1` | `Gameplay/Windows/HallBay3` | objective | 14.0 | 15.5 | 1.11 | ok |
 | `Spawns/PreplanQuay1` | `Gameplay/Windows/HallBay3/UsePoint` | use_point | 14.0 | 15.5 | 1.11 | ok |
 | `Spawns/PreplanQuay1` | `Gameplay/Windows/HallBay4` | objective | 12.0 | 12.7 | 1.06 | ok |
@@ -1054,17 +1054,17 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PreplanQuay1` | `Gameplay/Depository/DepositorySafe/UsePoint` | use_point | 15.0 | 71.9 | 4.79 | detour (whitelisted) |
 | `Spawns/PreplanQuay1` | `Gameplay/Depository/DepositorySafe/NightDropBags` | loot_spawn | 13.8 | 73.2 | 5.31 | detour (whitelisted) |
 | `Spawns/PreplanQuay1` | `Gameplay/Depository/DepositorySafe/NightDropBags/UsePoint` | use_point | 13.8 | 73.2 | 5.31 | detour (whitelisted) |
-| `Spawns/PreplanQuay1` | `Gameplay/Misc/TellerDrawer1/UsePoint` | use_point | 30.0 | 37.6 | 1.25 | ok |
-| `Spawns/PreplanQuay1` | `Gameplay/Misc/TellerDrawer2/UsePoint` | use_point | 26.9 | 42.6 | 1.58 | ok |
-| `Spawns/PreplanQuay1` | `Gameplay/Misc/TellerDrawer3/UsePoint` | use_point | 24.4 | 45.8 | 1.88 | ok |
+| `Spawns/PreplanQuay1` | `Gameplay/Misc/TellerDrawer1/UsePoint` | use_point | 30.0 | 37.2 | 1.24 | ok |
+| `Spawns/PreplanQuay1` | `Gameplay/Misc/TellerDrawer2/UsePoint` | use_point | 26.9 | 42.2 | 1.57 | ok |
+| `Spawns/PreplanQuay1` | `Gameplay/Misc/TellerDrawer3/UsePoint` | use_point | 24.4 | 47.2 | 1.93 | ok |
 | `Spawns/PreplanQuay1` | `Gameplay/Misc/CameraStation/UsePoint` | use_point | 31.0 | 44.0 | 1.42 | ok |
 | `Spawns/PreplanQuay1` | `Gameplay/Misc/AlarmSecurity/UsePoint` | use_point | 31.8 | 45.5 | 1.43 | ok |
 | `Spawns/PreplanQuay1` | `Gameplay/Misc/AlarmManager/UsePoint` | use_point | 18.7 | 22.0 | 1.18 | ok |
-| `Spawns/PreplanQuay1` | `Gameplay/Misc/AlarmTellers/UsePoint` | use_point | 24.8 | 46.9 | 1.89 | ok |
+| `Spawns/PreplanQuay1` | `Gameplay/Misc/AlarmTellers/UsePoint` | use_point | 24.8 | 48.3 | 1.95 | ok |
 | `Spawns/PreplanQuay1` | `Gameplay/Misc/PhoneManager/UsePoint` | use_point | 16.1 | 26.8 | 1.66 | ok |
 | `Spawns/PreplanQuay1` | `Gameplay/Misc/PhoneLoan/UsePoint` | use_point | 22.8 | 27.5 | 1.21 | ok |
-| `Spawns/PreplanQuay1` | `Gameplay/Misc/CashLift` | objective | 35.2 | 45.5 | 1.29 | ok |
-| `Spawns/PreplanQuay1` | `Gameplay/Misc/CashLift/UsePoint` | use_point | 35.2 | 45.5 | 1.29 | ok |
+| `Spawns/PreplanQuay1` | `Gameplay/Misc/CashLift` | objective | 35.2 | 45.2 | 1.28 | ok |
+| `Spawns/PreplanQuay1` | `Gameplay/Misc/CashLift/UsePoint` | use_point | 35.2 | 45.2 | 1.28 | ok |
 | `Spawns/PreplanQuay1` | `Gameplay/Atms/AtmCash1` | objective | 13.9 | 15.2 | 1.09 | ok |
 | `Spawns/PreplanQuay1` | `Gameplay/Atms/AtmCash1/UsePoint` | use_point | 13.9 | 15.2 | 1.09 | ok |
 | `Spawns/PreplanQuay1` | `Gameplay/Atms/AtmSaw1` | objective | 13.8 | 15.1 | 1.10 | ok |
@@ -1085,29 +1085,29 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PreplanQuay1` | `Variants/Group_vent_open/Slot_vent_locked/AreawayGrate/Padlock/UsePoint` | use_point | 34.1 | 45.0 | 1.32 | ok |
 | `Spawns/PreplanQuay1` | `Variants/Group_extra_loot/Slot_mgr_safe_empty/ManagerSafe` | objective | 16.1 | 26.6 | 1.65 | ok |
 | `Spawns/PreplanQuay1` | `Variants/Group_extra_loot/Slot_mgr_safe_empty/ManagerSafe/UsePoint` | use_point | 16.1 | 26.6 | 1.65 | ok |
-| `Spawns/PreplanQuay1` | `Variants/Group_escape/Slot_esc_boat_quay/BoatSecureE2/Zone` | secure_zone | 19.2 | 21.0 | 1.10 | ok |
-| `Spawns/PreplanQuay1` | `Variants/Group_escape/Slot_esc_boat_quay/BoatEscapeE2/Zone` | escape_zone | 18.1 | 19.0 | 1.05 | ok |
-| `Spawns/PreplanQuay2` | `Gameplay/Doors/SallyPersonnelDoor` | objective | 37.6 | 49.7 | 1.32 | ok |
-| `Spawns/PreplanQuay2` | `Gameplay/Doors/SallyPersonnelDoor/UsePoint` | use_point | 37.6 | 49.7 | 1.32 | ok |
-| `Spawns/PreplanQuay2` | `Gameplay/Doors/LoadingDoor/UsePoint` | use_point | 31.5 | 42.4 | 1.35 | ok |
+| `Spawns/PreplanQuay1` | `Variants/Group_escape/Slot_esc_boat_quay/BoatSecureE2/Zone` | secure_zone | 19.2 | 20.6 | 1.08 | ok |
+| `Spawns/PreplanQuay1` | `Variants/Group_escape/Slot_esc_boat_quay/BoatEscapeE2/Zone` | escape_zone | 18.1 | 18.6 | 1.02 | ok |
+| `Spawns/PreplanQuay2` | `Gameplay/Doors/SallyPersonnelDoor` | objective | 37.6 | 49.4 | 1.32 | ok |
+| `Spawns/PreplanQuay2` | `Gameplay/Doors/SallyPersonnelDoor/UsePoint` | use_point | 37.6 | 49.4 | 1.32 | ok |
+| `Spawns/PreplanQuay2` | `Gameplay/Doors/LoadingDoor/UsePoint` | use_point | 31.5 | 42.1 | 1.34 | ok |
 | `Spawns/PreplanQuay2` | `Gameplay/Doors/SecurityRoomDoor/UsePoint` | use_point | 28.1 | 40.5 | 1.44 | ok |
 | `Spawns/PreplanQuay2` | `Gameplay/Doors/BreakRoomDoor/UsePoint` | use_point | 26.5 | 36.5 | 1.38 | ok |
 | `Spawns/PreplanQuay2` | `Gameplay/Doors/ElectricalDoor/UsePoint` | use_point | 25.4 | 33.0 | 1.30 | ok |
 | `Spawns/PreplanQuay2` | `Gameplay/Doors/StorageDoor/UsePoint` | use_point | 24.8 | 29.0 | 1.17 | ok |
-| `Spawns/PreplanQuay2` | `Gameplay/Doors/TellerDoor` | objective | 34.0 | 39.0 | 1.15 | ok |
-| `Spawns/PreplanQuay2` | `Gameplay/Doors/TellerDoor/UsePoint` | use_point | 34.0 | 39.0 | 1.15 | ok |
+| `Spawns/PreplanQuay2` | `Gameplay/Doors/TellerDoor` | objective | 34.0 | 38.7 | 1.14 | ok |
+| `Spawns/PreplanQuay2` | `Gameplay/Doors/TellerDoor/UsePoint` | use_point | 34.0 | 38.7 | 1.14 | ok |
 | `Spawns/PreplanQuay2` | `Gameplay/Doors/LoanCorridorDoor/UsePoint` | use_point | 24.7 | 29.0 | 1.17 | ok |
 | `Spawns/PreplanQuay2` | `Gameplay/Doors/FireExit` | objective | 24.7 | 27.2 | 1.10 | ok |
 | `Spawns/PreplanQuay2` | `Gameplay/Doors/FireExit/UsePoint` | use_point | 24.7 | 27.2 | 1.10 | ok |
-| `Spawns/PreplanQuay2` | `Gameplay/Doors/TellerGate` | objective | 32.1 | 35.3 | 1.10 | ok |
-| `Spawns/PreplanQuay2` | `Gameplay/Doors/TellerGate/UsePoint` | use_point | 32.1 | 35.3 | 1.10 | ok |
+| `Spawns/PreplanQuay2` | `Gameplay/Doors/TellerGate` | objective | 32.1 | 35.0 | 1.09 | ok |
+| `Spawns/PreplanQuay2` | `Gameplay/Doors/TellerGate/UsePoint` | use_point | 32.1 | 35.0 | 1.09 | ok |
 | `Spawns/PreplanQuay2` | `Gameplay/Doors/LoanHallDoor/UsePoint` | use_point | 21.5 | 23.6 | 1.10 | ok |
 | `Spawns/PreplanQuay2` | `Gameplay/Doors/ManagerHallDoor/UsePoint` | use_point | 18.2 | 20.1 | 1.11 | ok |
 | `Spawns/PreplanQuay2` | `Gameplay/Doors/AtmInnerDoor` | objective | 13.9 | 15.2 | 1.09 | ok |
 | `Spawns/PreplanQuay2` | `Gameplay/Doors/AtmInnerDoor/UsePoint` | use_point | 13.9 | 15.2 | 1.09 | ok |
-| `Spawns/PreplanQuay2` | `Gameplay/Doors/VestibuleInnerDoors/UsePoint` | use_point | 19.7 | 22.5 | 1.15 | ok |
-| `Spawns/PreplanQuay2` | `Gameplay/Doors/MainEntrance` | objective | 18.4 | 21.3 | 1.16 | ok |
-| `Spawns/PreplanQuay2` | `Gameplay/Doors/MainEntrance/UsePoint` | use_point | 18.4 | 21.3 | 1.16 | ok |
+| `Spawns/PreplanQuay2` | `Gameplay/Doors/VestibuleInnerDoors/UsePoint` | use_point | 19.7 | 22.2 | 1.13 | ok |
+| `Spawns/PreplanQuay2` | `Gameplay/Doors/MainEntrance` | objective | 18.4 | 20.3 | 1.10 | ok |
+| `Spawns/PreplanQuay2` | `Gameplay/Doors/MainEntrance/UsePoint` | use_point | 18.4 | 20.3 | 1.10 | ok |
 | `Spawns/PreplanQuay2` | `Gameplay/Doors/AtmStreetDoor` | objective | 10.8 | 11.4 | 1.06 | ok |
 | `Spawns/PreplanQuay2` | `Gameplay/Doors/AtmStreetDoor/UsePoint` | use_point | 10.8 | 11.4 | 1.06 | ok |
 | `Spawns/PreplanQuay2` | `Gameplay/Doors/XferDoor/UsePoint` | use_point | 33.3 | 62.6 | 1.88 | ok |
@@ -1132,18 +1132,18 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PreplanQuay2` | `Gameplay/Doors/VaultDoor/VaultDrill/UsePoint` | use_point | 25.2 | 63.0 | 2.50 | ok |
 | `Spawns/PreplanQuay2` | `Gameplay/Doors/AreawayDoor` | objective | 33.2 | 49.7 | 1.50 | ok |
 | `Spawns/PreplanQuay2` | `Gameplay/Doors/AreawayDoor/UsePoint` | use_point | 33.2 | 49.7 | 1.50 | ok |
-| `Spawns/PreplanQuay2` | `Gameplay/Doors/AlleyGate` | objective | 58.6 | 74.1 | 1.26 | ok |
-| `Spawns/PreplanQuay2` | `Gameplay/Doors/AlleyGate/UsePoint` | use_point | 58.6 | 74.1 | 1.26 | ok |
+| `Spawns/PreplanQuay2` | `Gameplay/Doors/AlleyGate` | objective | 58.6 | 73.8 | 1.26 | ok |
+| `Spawns/PreplanQuay2` | `Gameplay/Doors/AlleyGate/UsePoint` | use_point | 58.6 | 73.8 | 1.26 | ok |
 | `Spawns/PreplanQuay2` | `Gameplay/Doors/HarborWestGate` | objective | 39.1 | 39.6 | 1.01 | ok |
 | `Spawns/PreplanQuay2` | `Gameplay/Doors/HarborWestGate/UsePoint` | use_point | 39.1 | 39.6 | 1.01 | ok |
 | `Spawns/PreplanQuay2` | `Gameplay/Doors/HarborEastGate` | objective | 14.7 | 15.2 | 1.03 | ok |
 | `Spawns/PreplanQuay2` | `Gameplay/Doors/HarborEastGate/UsePoint` | use_point | 14.7 | 15.2 | 1.03 | ok |
 | `Spawns/PreplanQuay2` | `Gameplay/Doors/WharfNorthGate` | objective | 44.7 | 45.2 | 1.01 | ok |
 | `Spawns/PreplanQuay2` | `Gameplay/Doors/WharfNorthGate/UsePoint` | use_point | 44.7 | 45.2 | 1.01 | ok |
-| `Spawns/PreplanQuay2` | `Gameplay/Windows/HallBay1` | objective | 25.4 | 28.2 | 1.11 | ok |
-| `Spawns/PreplanQuay2` | `Gameplay/Windows/HallBay1/UsePoint` | use_point | 25.4 | 28.2 | 1.11 | ok |
-| `Spawns/PreplanQuay2` | `Gameplay/Windows/HallBay2` | objective | 22.2 | 22.7 | 1.02 | ok |
-| `Spawns/PreplanQuay2` | `Gameplay/Windows/HallBay2/UsePoint` | use_point | 22.2 | 22.7 | 1.02 | ok |
+| `Spawns/PreplanQuay2` | `Gameplay/Windows/HallBay1` | objective | 25.4 | 26.4 | 1.04 | ok |
+| `Spawns/PreplanQuay2` | `Gameplay/Windows/HallBay1/UsePoint` | use_point | 25.4 | 26.4 | 1.04 | ok |
+| `Spawns/PreplanQuay2` | `Gameplay/Windows/HallBay2` | objective | 22.2 | 23.6 | 1.06 | ok |
+| `Spawns/PreplanQuay2` | `Gameplay/Windows/HallBay2/UsePoint` | use_point | 22.2 | 23.6 | 1.06 | ok |
 | `Spawns/PreplanQuay2` | `Gameplay/Windows/HallBay3` | objective | 15.0 | 16.9 | 1.13 | ok |
 | `Spawns/PreplanQuay2` | `Gameplay/Windows/HallBay3/UsePoint` | use_point | 15.0 | 16.9 | 1.13 | ok |
 | `Spawns/PreplanQuay2` | `Gameplay/Windows/HallBay4` | objective | 12.8 | 14.1 | 1.10 | ok |
@@ -1174,17 +1174,17 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PreplanQuay2` | `Gameplay/Depository/DepositorySafe/UsePoint` | use_point | 15.2 | 71.7 | 4.70 | detour (whitelisted) |
 | `Spawns/PreplanQuay2` | `Gameplay/Depository/DepositorySafe/NightDropBags` | loot_spawn | 14.0 | 72.9 | 5.21 | detour (whitelisted) |
 | `Spawns/PreplanQuay2` | `Gameplay/Depository/DepositorySafe/NightDropBags/UsePoint` | use_point | 14.0 | 72.9 | 5.21 | detour (whitelisted) |
-| `Spawns/PreplanQuay2` | `Gameplay/Misc/TellerDrawer1/UsePoint` | use_point | 31.0 | 38.9 | 1.26 | ok |
-| `Spawns/PreplanQuay2` | `Gameplay/Misc/TellerDrawer2/UsePoint` | use_point | 27.7 | 43.9 | 1.58 | ok |
-| `Spawns/PreplanQuay2` | `Gameplay/Misc/TellerDrawer3/UsePoint` | use_point | 25.1 | 48.9 | 1.95 | ok |
+| `Spawns/PreplanQuay2` | `Gameplay/Misc/TellerDrawer1/UsePoint` | use_point | 31.0 | 38.7 | 1.25 | ok |
+| `Spawns/PreplanQuay2` | `Gameplay/Misc/TellerDrawer2/UsePoint` | use_point | 27.7 | 43.7 | 1.57 | ok |
+| `Spawns/PreplanQuay2` | `Gameplay/Misc/TellerDrawer3/UsePoint` | use_point | 25.1 | 48.7 | 1.94 | ok |
 | `Spawns/PreplanQuay2` | `Gameplay/Misc/CameraStation/UsePoint` | use_point | 31.6 | 43.7 | 1.38 | ok |
 | `Spawns/PreplanQuay2` | `Gameplay/Misc/AlarmSecurity/UsePoint` | use_point | 32.3 | 45.3 | 1.40 | ok |
 | `Spawns/PreplanQuay2` | `Gameplay/Misc/AlarmManager/UsePoint` | use_point | 18.9 | 21.8 | 1.15 | ok |
-| `Spawns/PreplanQuay2` | `Gameplay/Misc/AlarmTellers/UsePoint` | use_point | 25.4 | 50.0 | 1.97 | ok |
+| `Spawns/PreplanQuay2` | `Gameplay/Misc/AlarmTellers/UsePoint` | use_point | 25.4 | 49.7 | 1.96 | ok |
 | `Spawns/PreplanQuay2` | `Gameplay/Misc/PhoneManager/UsePoint` | use_point | 16.2 | 26.6 | 1.64 | ok |
 | `Spawns/PreplanQuay2` | `Gameplay/Misc/PhoneLoan/UsePoint` | use_point | 22.9 | 27.4 | 1.20 | ok |
-| `Spawns/PreplanQuay2` | `Gameplay/Misc/CashLift` | objective | 36.0 | 46.9 | 1.30 | ok |
-| `Spawns/PreplanQuay2` | `Gameplay/Misc/CashLift/UsePoint` | use_point | 36.0 | 46.9 | 1.30 | ok |
+| `Spawns/PreplanQuay2` | `Gameplay/Misc/CashLift` | objective | 36.0 | 46.7 | 1.29 | ok |
+| `Spawns/PreplanQuay2` | `Gameplay/Misc/CashLift/UsePoint` | use_point | 36.0 | 46.7 | 1.29 | ok |
 | `Spawns/PreplanQuay2` | `Gameplay/Atms/AtmCash1` | objective | 14.2 | 15.1 | 1.06 | ok |
 | `Spawns/PreplanQuay2` | `Gameplay/Atms/AtmCash1/UsePoint` | use_point | 14.2 | 15.1 | 1.06 | ok |
 | `Spawns/PreplanQuay2` | `Gameplay/Atms/AtmSaw1` | objective | 14.0 | 15.0 | 1.07 | ok |
@@ -1205,29 +1205,29 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PreplanQuay2` | `Variants/Group_vent_open/Slot_vent_locked/AreawayGrate/Padlock/UsePoint` | use_point | 34.5 | 44.8 | 1.30 | ok |
 | `Spawns/PreplanQuay2` | `Variants/Group_extra_loot/Slot_mgr_safe_empty/ManagerSafe` | objective | 16.1 | 26.5 | 1.64 | ok |
 | `Spawns/PreplanQuay2` | `Variants/Group_extra_loot/Slot_mgr_safe_empty/ManagerSafe/UsePoint` | use_point | 16.1 | 26.5 | 1.64 | ok |
-| `Spawns/PreplanQuay2` | `Variants/Group_escape/Slot_esc_boat_quay/BoatSecureE2/Zone` | secure_zone | 20.6 | 22.5 | 1.09 | ok |
-| `Spawns/PreplanQuay2` | `Variants/Group_escape/Slot_esc_boat_quay/BoatEscapeE2/Zone` | escape_zone | 19.6 | 20.4 | 1.04 | ok |
-| `Spawns/PreplanQuay3` | `Gameplay/Doors/SallyPersonnelDoor` | objective | 38.4 | 51.1 | 1.33 | ok |
-| `Spawns/PreplanQuay3` | `Gameplay/Doors/SallyPersonnelDoor/UsePoint` | use_point | 38.4 | 51.1 | 1.33 | ok |
-| `Spawns/PreplanQuay3` | `Gameplay/Doors/LoadingDoor/UsePoint` | use_point | 32.4 | 43.8 | 1.35 | ok |
+| `Spawns/PreplanQuay2` | `Variants/Group_escape/Slot_esc_boat_quay/BoatSecureE2/Zone` | secure_zone | 20.6 | 22.1 | 1.07 | ok |
+| `Spawns/PreplanQuay2` | `Variants/Group_escape/Slot_esc_boat_quay/BoatEscapeE2/Zone` | escape_zone | 19.6 | 20.1 | 1.02 | ok |
+| `Spawns/PreplanQuay3` | `Gameplay/Doors/SallyPersonnelDoor` | objective | 38.4 | 50.9 | 1.33 | ok |
+| `Spawns/PreplanQuay3` | `Gameplay/Doors/SallyPersonnelDoor/UsePoint` | use_point | 38.4 | 50.9 | 1.33 | ok |
+| `Spawns/PreplanQuay3` | `Gameplay/Doors/LoadingDoor/UsePoint` | use_point | 32.4 | 43.6 | 1.34 | ok |
 | `Spawns/PreplanQuay3` | `Gameplay/Doors/SecurityRoomDoor/UsePoint` | use_point | 28.9 | 40.3 | 1.40 | ok |
 | `Spawns/PreplanQuay3` | `Gameplay/Doors/BreakRoomDoor/UsePoint` | use_point | 27.0 | 36.3 | 1.34 | ok |
 | `Spawns/PreplanQuay3` | `Gameplay/Doors/ElectricalDoor/UsePoint` | use_point | 25.8 | 32.8 | 1.27 | ok |
 | `Spawns/PreplanQuay3` | `Gameplay/Doors/StorageDoor/UsePoint` | use_point | 24.9 | 28.8 | 1.16 | ok |
-| `Spawns/PreplanQuay3` | `Gameplay/Doors/TellerDoor` | objective | 35.1 | 40.4 | 1.15 | ok |
-| `Spawns/PreplanQuay3` | `Gameplay/Doors/TellerDoor/UsePoint` | use_point | 35.1 | 40.4 | 1.15 | ok |
+| `Spawns/PreplanQuay3` | `Gameplay/Doors/TellerDoor` | objective | 35.1 | 40.2 | 1.15 | ok |
+| `Spawns/PreplanQuay3` | `Gameplay/Doors/TellerDoor/UsePoint` | use_point | 35.1 | 40.2 | 1.15 | ok |
 | `Spawns/PreplanQuay3` | `Gameplay/Doors/LoanCorridorDoor/UsePoint` | use_point | 24.8 | 28.8 | 1.16 | ok |
 | `Spawns/PreplanQuay3` | `Gameplay/Doors/FireExit` | objective | 24.7 | 27.1 | 1.10 | ok |
 | `Spawns/PreplanQuay3` | `Gameplay/Doors/FireExit/UsePoint` | use_point | 24.7 | 27.1 | 1.10 | ok |
-| `Spawns/PreplanQuay3` | `Gameplay/Doors/TellerGate` | objective | 33.2 | 36.7 | 1.11 | ok |
-| `Spawns/PreplanQuay3` | `Gameplay/Doors/TellerGate/UsePoint` | use_point | 33.2 | 36.7 | 1.11 | ok |
+| `Spawns/PreplanQuay3` | `Gameplay/Doors/TellerGate` | objective | 33.2 | 36.5 | 1.10 | ok |
+| `Spawns/PreplanQuay3` | `Gameplay/Doors/TellerGate/UsePoint` | use_point | 33.2 | 36.5 | 1.10 | ok |
 | `Spawns/PreplanQuay3` | `Gameplay/Doors/LoanHallDoor/UsePoint` | use_point | 21.9 | 23.7 | 1.08 | ok |
 | `Spawns/PreplanQuay3` | `Gameplay/Doors/ManagerHallDoor/UsePoint` | use_point | 18.6 | 20.2 | 1.08 | ok |
 | `Spawns/PreplanQuay3` | `Gameplay/Doors/AtmInnerDoor` | objective | 14.4 | 15.3 | 1.06 | ok |
 | `Spawns/PreplanQuay3` | `Gameplay/Doors/AtmInnerDoor/UsePoint` | use_point | 14.4 | 15.3 | 1.06 | ok |
 | `Spawns/PreplanQuay3` | `Gameplay/Doors/VestibuleInnerDoors/UsePoint` | use_point | 20.8 | 24.0 | 1.15 | ok |
-| `Spawns/PreplanQuay3` | `Gameplay/Doors/MainEntrance` | objective | 19.7 | 22.8 | 1.16 | ok |
-| `Spawns/PreplanQuay3` | `Gameplay/Doors/MainEntrance/UsePoint` | use_point | 19.7 | 22.8 | 1.16 | ok |
+| `Spawns/PreplanQuay3` | `Gameplay/Doors/MainEntrance` | objective | 19.7 | 21.7 | 1.10 | ok |
+| `Spawns/PreplanQuay3` | `Gameplay/Doors/MainEntrance/UsePoint` | use_point | 19.7 | 21.7 | 1.10 | ok |
 | `Spawns/PreplanQuay3` | `Gameplay/Doors/AtmStreetDoor` | objective | 11.0 | 11.5 | 1.04 | ok |
 | `Spawns/PreplanQuay3` | `Gameplay/Doors/AtmStreetDoor/UsePoint` | use_point | 11.0 | 11.5 | 1.04 | ok |
 | `Spawns/PreplanQuay3` | `Gameplay/Doors/XferDoor/UsePoint` | use_point | 34.3 | 62.5 | 1.82 | ok |
@@ -1252,20 +1252,20 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PreplanQuay3` | `Gameplay/Doors/VaultDoor/VaultDrill/UsePoint` | use_point | 25.9 | 62.9 | 2.43 | ok |
 | `Spawns/PreplanQuay3` | `Gameplay/Doors/AreawayDoor` | objective | 33.5 | 49.6 | 1.48 | ok |
 | `Spawns/PreplanQuay3` | `Gameplay/Doors/AreawayDoor/UsePoint` | use_point | 33.5 | 49.6 | 1.48 | ok |
-| `Spawns/PreplanQuay3` | `Gameplay/Doors/AlleyGate` | objective | 59.6 | 75.5 | 1.27 | ok |
-| `Spawns/PreplanQuay3` | `Gameplay/Doors/AlleyGate/UsePoint` | use_point | 59.6 | 75.5 | 1.27 | ok |
-| `Spawns/PreplanQuay3` | `Gameplay/Doors/HarborWestGate` | objective | 40.6 | 41.0 | 1.01 | ok |
-| `Spawns/PreplanQuay3` | `Gameplay/Doors/HarborWestGate/UsePoint` | use_point | 40.6 | 41.0 | 1.01 | ok |
+| `Spawns/PreplanQuay3` | `Gameplay/Doors/AlleyGate` | objective | 59.6 | 75.3 | 1.26 | ok |
+| `Spawns/PreplanQuay3` | `Gameplay/Doors/AlleyGate/UsePoint` | use_point | 59.6 | 75.3 | 1.26 | ok |
+| `Spawns/PreplanQuay3` | `Gameplay/Doors/HarborWestGate` | objective | 40.6 | 41.1 | 1.01 | ok |
+| `Spawns/PreplanQuay3` | `Gameplay/Doors/HarborWestGate/UsePoint` | use_point | 40.6 | 41.1 | 1.01 | ok |
 | `Spawns/PreplanQuay3` | `Gameplay/Doors/HarborEastGate` | objective | 13.4 | 13.6 | 1.02 | ok |
 | `Spawns/PreplanQuay3` | `Gameplay/Doors/HarborEastGate/UsePoint` | use_point | 13.4 | 13.6 | 1.02 | ok |
 | `Spawns/PreplanQuay3` | `Gameplay/Doors/WharfNorthGate` | objective | 44.7 | 45.1 | 1.01 | ok |
 | `Spawns/PreplanQuay3` | `Gameplay/Doors/WharfNorthGate/UsePoint` | use_point | 44.7 | 45.1 | 1.01 | ok |
-| `Spawns/PreplanQuay3` | `Gameplay/Windows/HallBay1` | objective | 26.7 | 29.6 | 1.11 | ok |
-| `Spawns/PreplanQuay3` | `Gameplay/Windows/HallBay1/UsePoint` | use_point | 26.7 | 29.6 | 1.11 | ok |
-| `Spawns/PreplanQuay3` | `Gameplay/Windows/HallBay2` | objective | 23.6 | 24.2 | 1.02 | ok |
-| `Spawns/PreplanQuay3` | `Gameplay/Windows/HallBay2/UsePoint` | use_point | 23.6 | 24.2 | 1.02 | ok |
-| `Spawns/PreplanQuay3` | `Gameplay/Windows/HallBay3` | objective | 16.1 | 18.4 | 1.14 | ok |
-| `Spawns/PreplanQuay3` | `Gameplay/Windows/HallBay3/UsePoint` | use_point | 16.1 | 18.4 | 1.14 | ok |
+| `Spawns/PreplanQuay3` | `Gameplay/Windows/HallBay1` | objective | 26.7 | 27.9 | 1.04 | ok |
+| `Spawns/PreplanQuay3` | `Gameplay/Windows/HallBay1/UsePoint` | use_point | 26.7 | 27.9 | 1.04 | ok |
+| `Spawns/PreplanQuay3` | `Gameplay/Windows/HallBay2` | objective | 23.6 | 25.1 | 1.07 | ok |
+| `Spawns/PreplanQuay3` | `Gameplay/Windows/HallBay2/UsePoint` | use_point | 23.6 | 25.1 | 1.07 | ok |
+| `Spawns/PreplanQuay3` | `Gameplay/Windows/HallBay3` | objective | 16.1 | 18.3 | 1.14 | ok |
+| `Spawns/PreplanQuay3` | `Gameplay/Windows/HallBay3/UsePoint` | use_point | 16.1 | 18.3 | 1.14 | ok |
 | `Spawns/PreplanQuay3` | `Gameplay/Windows/HallBay4` | objective | 13.7 | 15.5 | 1.14 | ok |
 | `Spawns/PreplanQuay3` | `Gameplay/Windows/HallBay4/UsePoint` | use_point | 13.7 | 15.5 | 1.14 | ok |
 | `Spawns/PreplanQuay3` | `Gameplay/Vault/TimeLockPanel` | objective | 24.3 | 65.9 | 2.71 | ok |
@@ -1294,17 +1294,17 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PreplanQuay3` | `Gameplay/Depository/DepositorySafe/UsePoint` | use_point | 15.6 | 71.6 | 4.59 | detour (whitelisted) |
 | `Spawns/PreplanQuay3` | `Gameplay/Depository/DepositorySafe/NightDropBags` | loot_spawn | 14.4 | 72.8 | 5.06 | detour (whitelisted) |
 | `Spawns/PreplanQuay3` | `Gameplay/Depository/DepositorySafe/NightDropBags/UsePoint` | use_point | 14.4 | 72.8 | 5.06 | detour (whitelisted) |
-| `Spawns/PreplanQuay3` | `Gameplay/Misc/TellerDrawer1/UsePoint` | use_point | 32.0 | 40.4 | 1.26 | ok |
-| `Spawns/PreplanQuay3` | `Gameplay/Misc/TellerDrawer2/UsePoint` | use_point | 28.7 | 45.4 | 1.58 | ok |
-| `Spawns/PreplanQuay3` | `Gameplay/Misc/TellerDrawer3/UsePoint` | use_point | 25.8 | 50.4 | 1.95 | ok |
+| `Spawns/PreplanQuay3` | `Gameplay/Misc/TellerDrawer1/UsePoint` | use_point | 32.0 | 40.1 | 1.25 | ok |
+| `Spawns/PreplanQuay3` | `Gameplay/Misc/TellerDrawer2/UsePoint` | use_point | 28.7 | 45.1 | 1.58 | ok |
+| `Spawns/PreplanQuay3` | `Gameplay/Misc/TellerDrawer3/UsePoint` | use_point | 25.8 | 50.1 | 1.94 | ok |
 | `Spawns/PreplanQuay3` | `Gameplay/Misc/CameraStation/UsePoint` | use_point | 32.3 | 43.6 | 1.35 | ok |
 | `Spawns/PreplanQuay3` | `Gameplay/Misc/AlarmSecurity/UsePoint` | use_point | 32.9 | 45.1 | 1.37 | ok |
 | `Spawns/PreplanQuay3` | `Gameplay/Misc/AlarmManager/UsePoint` | use_point | 19.3 | 21.9 | 1.14 | ok |
-| `Spawns/PreplanQuay3` | `Gameplay/Misc/AlarmTellers/UsePoint` | use_point | 26.0 | 51.5 | 1.98 | ok |
+| `Spawns/PreplanQuay3` | `Gameplay/Misc/AlarmTellers/UsePoint` | use_point | 26.0 | 51.2 | 1.97 | ok |
 | `Spawns/PreplanQuay3` | `Gameplay/Misc/PhoneManager/UsePoint` | use_point | 16.4 | 26.7 | 1.63 | ok |
 | `Spawns/PreplanQuay3` | `Gameplay/Misc/PhoneLoan/UsePoint` | use_point | 23.0 | 27.4 | 1.19 | ok |
-| `Spawns/PreplanQuay3` | `Gameplay/Misc/CashLift` | objective | 36.9 | 48.4 | 1.31 | ok |
-| `Spawns/PreplanQuay3` | `Gameplay/Misc/CashLift/UsePoint` | use_point | 36.9 | 48.4 | 1.31 | ok |
+| `Spawns/PreplanQuay3` | `Gameplay/Misc/CashLift` | objective | 36.9 | 48.1 | 1.30 | ok |
+| `Spawns/PreplanQuay3` | `Gameplay/Misc/CashLift/UsePoint` | use_point | 36.9 | 48.1 | 1.30 | ok |
 | `Spawns/PreplanQuay3` | `Gameplay/Atms/AtmCash1` | objective | 14.6 | 15.2 | 1.04 | ok |
 | `Spawns/PreplanQuay3` | `Gameplay/Atms/AtmCash1/UsePoint` | use_point | 14.6 | 15.2 | 1.04 | ok |
 | `Spawns/PreplanQuay3` | `Gameplay/Atms/AtmSaw1` | objective | 14.5 | 15.0 | 1.04 | ok |
@@ -1325,27 +1325,27 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PreplanQuay3` | `Variants/Group_vent_open/Slot_vent_locked/AreawayGrate/Padlock/UsePoint` | use_point | 34.9 | 44.7 | 1.28 | ok |
 | `Spawns/PreplanQuay3` | `Variants/Group_extra_loot/Slot_mgr_safe_empty/ManagerSafe` | objective | 16.3 | 26.6 | 1.63 | ok |
 | `Spawns/PreplanQuay3` | `Variants/Group_extra_loot/Slot_mgr_safe_empty/ManagerSafe/UsePoint` | use_point | 16.3 | 26.6 | 1.63 | ok |
-| `Spawns/PreplanQuay3` | `Variants/Group_escape/Slot_esc_boat_quay/BoatSecureE2/Zone` | secure_zone | 22.1 | 24.0 | 1.08 | ok |
+| `Spawns/PreplanQuay3` | `Variants/Group_escape/Slot_esc_boat_quay/BoatSecureE2/Zone` | secure_zone | 22.1 | 23.9 | 1.08 | ok |
 | `Spawns/PreplanQuay3` | `Variants/Group_escape/Slot_esc_boat_quay/BoatEscapeE2/Zone` | escape_zone | 21.1 | 21.9 | 1.04 | ok |
-| `Spawns/PreplanQuay4` | `Gameplay/Doors/SallyPersonnelDoor` | objective | 39.2 | 52.6 | 1.34 | ok |
-| `Spawns/PreplanQuay4` | `Gameplay/Doors/SallyPersonnelDoor/UsePoint` | use_point | 39.2 | 52.6 | 1.34 | ok |
-| `Spawns/PreplanQuay4` | `Gameplay/Doors/LoadingDoor/UsePoint` | use_point | 33.4 | 45.3 | 1.35 | ok |
+| `Spawns/PreplanQuay4` | `Gameplay/Doors/SallyPersonnelDoor` | objective | 39.2 | 52.4 | 1.34 | ok |
+| `Spawns/PreplanQuay4` | `Gameplay/Doors/SallyPersonnelDoor/UsePoint` | use_point | 39.2 | 52.4 | 1.34 | ok |
+| `Spawns/PreplanQuay4` | `Gameplay/Doors/LoadingDoor/UsePoint` | use_point | 33.4 | 45.0 | 1.35 | ok |
 | `Spawns/PreplanQuay4` | `Gameplay/Doors/SecurityRoomDoor/UsePoint` | use_point | 29.7 | 40.4 | 1.36 | ok |
 | `Spawns/PreplanQuay4` | `Gameplay/Doors/BreakRoomDoor/UsePoint` | use_point | 27.7 | 36.4 | 1.31 | ok |
 | `Spawns/PreplanQuay4` | `Gameplay/Doors/ElectricalDoor/UsePoint` | use_point | 26.3 | 32.9 | 1.25 | ok |
 | `Spawns/PreplanQuay4` | `Gameplay/Doors/StorageDoor/UsePoint` | use_point | 25.2 | 28.9 | 1.15 | ok |
-| `Spawns/PreplanQuay4` | `Gameplay/Doors/TellerDoor` | objective | 36.2 | 41.9 | 1.16 | ok |
-| `Spawns/PreplanQuay4` | `Gameplay/Doors/TellerDoor/UsePoint` | use_point | 36.2 | 41.9 | 1.16 | ok |
+| `Spawns/PreplanQuay4` | `Gameplay/Doors/TellerDoor` | objective | 36.2 | 41.6 | 1.15 | ok |
+| `Spawns/PreplanQuay4` | `Gameplay/Doors/TellerDoor/UsePoint` | use_point | 36.2 | 41.6 | 1.15 | ok |
 | `Spawns/PreplanQuay4` | `Gameplay/Doors/LoanCorridorDoor/UsePoint` | use_point | 25.1 | 28.9 | 1.15 | ok |
 | `Spawns/PreplanQuay4` | `Gameplay/Doors/FireExit` | objective | 24.9 | 27.1 | 1.09 | ok |
 | `Spawns/PreplanQuay4` | `Gameplay/Doors/FireExit/UsePoint` | use_point | 24.9 | 27.1 | 1.09 | ok |
-| `Spawns/PreplanQuay4` | `Gameplay/Doors/TellerGate` | objective | 34.4 | 38.2 | 1.11 | ok |
-| `Spawns/PreplanQuay4` | `Gameplay/Doors/TellerGate/UsePoint` | use_point | 34.4 | 38.2 | 1.11 | ok |
+| `Spawns/PreplanQuay4` | `Gameplay/Doors/TellerGate` | objective | 34.4 | 38.0 | 1.10 | ok |
+| `Spawns/PreplanQuay4` | `Gameplay/Doors/TellerGate/UsePoint` | use_point | 34.4 | 38.0 | 1.10 | ok |
 | `Spawns/PreplanQuay4` | `Gameplay/Doors/LoanHallDoor/UsePoint` | use_point | 22.5 | 24.6 | 1.10 | ok |
 | `Spawns/PreplanQuay4` | `Gameplay/Doors/ManagerHallDoor/UsePoint` | use_point | 19.2 | 21.1 | 1.10 | ok |
 | `Spawns/PreplanQuay4` | `Gameplay/Doors/AtmInnerDoor` | objective | 15.0 | 16.3 | 1.08 | ok |
 | `Spawns/PreplanQuay4` | `Gameplay/Doors/AtmInnerDoor/UsePoint` | use_point | 15.0 | 16.3 | 1.08 | ok |
-| `Spawns/PreplanQuay4` | `Gameplay/Doors/VestibuleInnerDoors/UsePoint` | use_point | 22.0 | 25.4 | 1.16 | ok |
+| `Spawns/PreplanQuay4` | `Gameplay/Doors/VestibuleInnerDoors/UsePoint` | use_point | 22.0 | 25.4 | 1.15 | ok |
 | `Spawns/PreplanQuay4` | `Gameplay/Doors/MainEntrance` | objective | 20.9 | 24.2 | 1.16 | ok |
 | `Spawns/PreplanQuay4` | `Gameplay/Doors/MainEntrance/UsePoint` | use_point | 20.9 | 24.2 | 1.16 | ok |
 | `Spawns/PreplanQuay4` | `Gameplay/Doors/AtmStreetDoor` | objective | 11.5 | 12.5 | 1.09 | ok |
@@ -1372,22 +1372,22 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PreplanQuay4` | `Gameplay/Doors/VaultDoor/VaultDrill/UsePoint` | use_point | 26.7 | 62.9 | 2.36 | ok |
 | `Spawns/PreplanQuay4` | `Gameplay/Doors/AreawayDoor` | objective | 33.9 | 49.6 | 1.46 | ok |
 | `Spawns/PreplanQuay4` | `Gameplay/Doors/AreawayDoor/UsePoint` | use_point | 33.9 | 49.6 | 1.46 | ok |
-| `Spawns/PreplanQuay4` | `Gameplay/Doors/AlleyGate` | objective | 60.6 | 77.0 | 1.27 | ok |
-| `Spawns/PreplanQuay4` | `Gameplay/Doors/AlleyGate/UsePoint` | use_point | 60.6 | 77.0 | 1.27 | ok |
-| `Spawns/PreplanQuay4` | `Gameplay/Doors/HarborWestGate` | objective | 42.1 | 42.5 | 1.01 | ok |
-| `Spawns/PreplanQuay4` | `Gameplay/Doors/HarborWestGate/UsePoint` | use_point | 42.1 | 42.5 | 1.01 | ok |
+| `Spawns/PreplanQuay4` | `Gameplay/Doors/AlleyGate` | objective | 60.6 | 76.8 | 1.27 | ok |
+| `Spawns/PreplanQuay4` | `Gameplay/Doors/AlleyGate/UsePoint` | use_point | 60.6 | 76.8 | 1.27 | ok |
+| `Spawns/PreplanQuay4` | `Gameplay/Doors/HarborWestGate` | objective | 42.1 | 42.6 | 1.01 | ok |
+| `Spawns/PreplanQuay4` | `Gameplay/Doors/HarborWestGate/UsePoint` | use_point | 42.1 | 42.6 | 1.01 | ok |
 | `Spawns/PreplanQuay4` | `Gameplay/Doors/HarborEastGate` | objective | 12.0 | 12.1 | 1.01 | ok |
 | `Spawns/PreplanQuay4` | `Gameplay/Doors/HarborEastGate/UsePoint` | use_point | 12.0 | 12.1 | 1.01 | ok |
 | `Spawns/PreplanQuay4` | `Gameplay/Doors/WharfNorthGate` | objective | 44.7 | 45.1 | 1.01 | ok |
 | `Spawns/PreplanQuay4` | `Gameplay/Doors/WharfNorthGate/UsePoint` | use_point | 44.7 | 45.1 | 1.01 | ok |
-| `Spawns/PreplanQuay4` | `Gameplay/Windows/HallBay1` | objective | 28.1 | 31.1 | 1.11 | ok |
-| `Spawns/PreplanQuay4` | `Gameplay/Windows/HallBay1/UsePoint` | use_point | 28.1 | 31.1 | 1.11 | ok |
-| `Spawns/PreplanQuay4` | `Gameplay/Windows/HallBay2` | objective | 24.9 | 25.6 | 1.03 | ok |
-| `Spawns/PreplanQuay4` | `Gameplay/Windows/HallBay2/UsePoint` | use_point | 24.9 | 25.6 | 1.03 | ok |
+| `Spawns/PreplanQuay4` | `Gameplay/Windows/HallBay1` | objective | 28.1 | 29.4 | 1.05 | ok |
+| `Spawns/PreplanQuay4` | `Gameplay/Windows/HallBay1/UsePoint` | use_point | 28.1 | 29.4 | 1.05 | ok |
+| `Spawns/PreplanQuay4` | `Gameplay/Windows/HallBay2` | objective | 24.9 | 26.6 | 1.07 | ok |
+| `Spawns/PreplanQuay4` | `Gameplay/Windows/HallBay2/UsePoint` | use_point | 24.9 | 26.6 | 1.07 | ok |
 | `Spawns/PreplanQuay4` | `Gameplay/Windows/HallBay3` | objective | 17.2 | 19.8 | 1.15 | ok |
 | `Spawns/PreplanQuay4` | `Gameplay/Windows/HallBay3/UsePoint` | use_point | 17.2 | 19.8 | 1.15 | ok |
-| `Spawns/PreplanQuay4` | `Gameplay/Windows/HallBay4` | objective | 14.6 | 17.0 | 1.16 | ok |
-| `Spawns/PreplanQuay4` | `Gameplay/Windows/HallBay4/UsePoint` | use_point | 14.6 | 17.0 | 1.16 | ok |
+| `Spawns/PreplanQuay4` | `Gameplay/Windows/HallBay4` | objective | 14.6 | 14.8 | 1.01 | ok |
+| `Spawns/PreplanQuay4` | `Gameplay/Windows/HallBay4/UsePoint` | use_point | 14.6 | 14.8 | 1.01 | ok |
 | `Spawns/PreplanQuay4` | `Gameplay/Vault/TimeLockPanel` | objective | 24.9 | 66.0 | 2.65 | ok |
 | `Spawns/PreplanQuay4` | `Gameplay/Vault/TimeLockPanel/UsePoint` | use_point | 24.9 | 66.0 | 2.65 | ok |
 | `Spawns/PreplanQuay4` | `Gameplay/Vault/CageCash` | loot_spawn | 22.0 | 68.9 | 3.14 | detour (whitelisted) |
@@ -1414,17 +1414,17 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PreplanQuay4` | `Gameplay/Depository/DepositorySafe/UsePoint` | use_point | 16.1 | 71.6 | 4.45 | detour (whitelisted) |
 | `Spawns/PreplanQuay4` | `Gameplay/Depository/DepositorySafe/NightDropBags` | loot_spawn | 14.9 | 72.8 | 4.88 | detour (whitelisted) |
 | `Spawns/PreplanQuay4` | `Gameplay/Depository/DepositorySafe/NightDropBags/UsePoint` | use_point | 14.9 | 72.8 | 4.88 | detour (whitelisted) |
-| `Spawns/PreplanQuay4` | `Gameplay/Misc/TellerDrawer1/UsePoint` | use_point | 33.1 | 41.8 | 1.26 | ok |
-| `Spawns/PreplanQuay4` | `Gameplay/Misc/TellerDrawer2/UsePoint` | use_point | 29.6 | 46.8 | 1.58 | ok |
-| `Spawns/PreplanQuay4` | `Gameplay/Misc/TellerDrawer3/UsePoint` | use_point | 26.6 | 51.8 | 1.95 | ok |
+| `Spawns/PreplanQuay4` | `Gameplay/Misc/TellerDrawer1/UsePoint` | use_point | 33.1 | 41.6 | 1.26 | ok |
+| `Spawns/PreplanQuay4` | `Gameplay/Misc/TellerDrawer2/UsePoint` | use_point | 29.6 | 46.6 | 1.57 | ok |
+| `Spawns/PreplanQuay4` | `Gameplay/Misc/TellerDrawer3/UsePoint` | use_point | 26.6 | 51.6 | 1.94 | ok |
 | `Spawns/PreplanQuay4` | `Gameplay/Misc/CameraStation/UsePoint` | use_point | 33.0 | 43.6 | 1.32 | ok |
 | `Spawns/PreplanQuay4` | `Gameplay/Misc/AlarmSecurity/UsePoint` | use_point | 33.6 | 45.2 | 1.34 | ok |
 | `Spawns/PreplanQuay4` | `Gameplay/Misc/AlarmManager/UsePoint` | use_point | 19.7 | 22.9 | 1.16 | ok |
-| `Spawns/PreplanQuay4` | `Gameplay/Misc/AlarmTellers/UsePoint` | use_point | 26.8 | 52.9 | 1.98 | ok |
+| `Spawns/PreplanQuay4` | `Gameplay/Misc/AlarmTellers/UsePoint` | use_point | 26.8 | 52.7 | 1.97 | ok |
 | `Spawns/PreplanQuay4` | `Gameplay/Misc/PhoneManager/UsePoint` | use_point | 16.7 | 27.6 | 1.65 | ok |
 | `Spawns/PreplanQuay4` | `Gameplay/Misc/PhoneLoan/UsePoint` | use_point | 23.3 | 28.4 | 1.22 | ok |
-| `Spawns/PreplanQuay4` | `Gameplay/Misc/CashLift` | objective | 37.8 | 49.8 | 1.32 | ok |
-| `Spawns/PreplanQuay4` | `Gameplay/Misc/CashLift/UsePoint` | use_point | 37.8 | 49.8 | 1.32 | ok |
+| `Spawns/PreplanQuay4` | `Gameplay/Misc/CashLift` | objective | 37.8 | 49.6 | 1.31 | ok |
+| `Spawns/PreplanQuay4` | `Gameplay/Misc/CashLift/UsePoint` | use_point | 37.8 | 49.6 | 1.31 | ok |
 | `Spawns/PreplanQuay4` | `Gameplay/Atms/AtmCash1` | objective | 15.1 | 16.1 | 1.06 | ok |
 | `Spawns/PreplanQuay4` | `Gameplay/Atms/AtmCash1/UsePoint` | use_point | 15.1 | 16.1 | 1.06 | ok |
 | `Spawns/PreplanQuay4` | `Gameplay/Atms/AtmSaw1` | objective | 15.0 | 16.0 | 1.06 | ok |
@@ -1446,364 +1446,364 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PreplanQuay4` | `Variants/Group_extra_loot/Slot_mgr_safe_empty/ManagerSafe` | objective | 16.6 | 27.5 | 1.65 | ok |
 | `Spawns/PreplanQuay4` | `Variants/Group_extra_loot/Slot_mgr_safe_empty/ManagerSafe/UsePoint` | use_point | 16.6 | 27.5 | 1.65 | ok |
 | `Spawns/PreplanQuay4` | `Variants/Group_escape/Slot_esc_boat_quay/BoatSecureE2/Zone` | secure_zone | 23.6 | 25.4 | 1.08 | ok |
-| `Spawns/PreplanQuay4` | `Variants/Group_escape/Slot_esc_boat_quay/BoatEscapeE2/Zone` | escape_zone | 22.6 | 23.4 | 1.04 | ok |
-| `Spawns/OobQuaySteps1` | `Gameplay/Doors/SallyPersonnelDoor` | objective | 32.1 | 41.4 | 1.29 | ok |
-| `Spawns/OobQuaySteps1` | `Gameplay/Doors/SallyPersonnelDoor/UsePoint` | use_point | 32.1 | 41.4 | 1.29 | ok |
-| `Spawns/OobQuaySteps1` | `Gameplay/Doors/LoadingDoor/UsePoint` | use_point | 24.7 | 34.1 | 1.38 | ok |
-| `Spawns/OobQuaySteps1` | `Gameplay/Doors/SecurityRoomDoor/UsePoint` | use_point | 25.2 | 40.1 | 1.59 | ok |
-| `Spawns/OobQuaySteps1` | `Gameplay/Doors/BreakRoomDoor/UsePoint` | use_point | 26.3 | 39.5 | 1.50 | ok |
-| `Spawns/OobQuaySteps1` | `Gameplay/Doors/ElectricalDoor/UsePoint` | use_point | 27.7 | 36.0 | 1.30 | ok |
-| `Spawns/OobQuaySteps1` | `Gameplay/Doors/StorageDoor/UsePoint` | use_point | 29.7 | 32.6 | 1.10 | ok |
-| `Spawns/OobQuaySteps1` | `Gameplay/Doors/TellerDoor` | objective | 25.1 | 30.7 | 1.22 | ok |
-| `Spawns/OobQuaySteps1` | `Gameplay/Doors/TellerDoor/UsePoint` | use_point | 25.1 | 30.7 | 1.22 | ok |
-| `Spawns/OobQuaySteps1` | `Gameplay/Doors/LoanCorridorDoor/UsePoint` | use_point | 29.6 | 32.5 | 1.10 | ok |
-| `Spawns/OobQuaySteps1` | `Gameplay/Doors/FireExit` | objective | 30.7 | 33.6 | 1.10 | ok |
-| `Spawns/OobQuaySteps1` | `Gameplay/Doors/FireExit/UsePoint` | use_point | 30.7 | 33.6 | 1.10 | ok |
-| `Spawns/OobQuaySteps1` | `Gameplay/Doors/TellerGate` | objective | 21.6 | 27.1 | 1.26 | ok |
-| `Spawns/OobQuaySteps1` | `Gameplay/Doors/TellerGate/UsePoint` | use_point | 21.6 | 27.1 | 1.26 | ok |
-| `Spawns/OobQuaySteps1` | `Gameplay/Doors/LoanHallDoor/UsePoint` | use_point | 24.8 | 27.1 | 1.09 | ok |
-| `Spawns/OobQuaySteps1` | `Gameplay/Doors/ManagerHallDoor/UsePoint` | use_point | 21.9 | 24.9 | 1.14 | ok |
-| `Spawns/OobQuaySteps1` | `Gameplay/Doors/AtmInnerDoor` | objective | 19.9 | 25.6 | 1.29 | ok |
-| `Spawns/OobQuaySteps1` | `Gameplay/Doors/AtmInnerDoor/UsePoint` | use_point | 19.9 | 25.6 | 1.29 | ok |
-| `Spawns/OobQuaySteps1` | `Gameplay/Doors/VestibuleInnerDoors/UsePoint` | use_point | 13.2 | 13.4 | 1.01 | ok |
+| `Spawns/PreplanQuay4` | `Variants/Group_escape/Slot_esc_boat_quay/BoatEscapeE2/Zone` | escape_zone | 22.6 | 23.3 | 1.03 | ok |
+| `Spawns/OobQuaySteps1` | `Gameplay/Doors/SallyPersonnelDoor` | objective | 32.1 | 42.5 | 1.32 | ok |
+| `Spawns/OobQuaySteps1` | `Gameplay/Doors/SallyPersonnelDoor/UsePoint` | use_point | 32.1 | 42.5 | 1.32 | ok |
+| `Spawns/OobQuaySteps1` | `Gameplay/Doors/LoadingDoor/UsePoint` | use_point | 24.7 | 35.2 | 1.42 | ok |
+| `Spawns/OobQuaySteps1` | `Gameplay/Doors/SecurityRoomDoor/UsePoint` | use_point | 25.2 | 41.2 | 1.63 | ok |
+| `Spawns/OobQuaySteps1` | `Gameplay/Doors/BreakRoomDoor/UsePoint` | use_point | 26.3 | 40.9 | 1.56 | ok |
+| `Spawns/OobQuaySteps1` | `Gameplay/Doors/ElectricalDoor/UsePoint` | use_point | 27.7 | 37.4 | 1.35 | ok |
+| `Spawns/OobQuaySteps1` | `Gameplay/Doors/StorageDoor/UsePoint` | use_point | 29.7 | 34.0 | 1.14 | ok |
+| `Spawns/OobQuaySteps1` | `Gameplay/Doors/TellerDoor` | objective | 25.1 | 31.8 | 1.27 | ok |
+| `Spawns/OobQuaySteps1` | `Gameplay/Doors/TellerDoor/UsePoint` | use_point | 25.1 | 31.8 | 1.27 | ok |
+| `Spawns/OobQuaySteps1` | `Gameplay/Doors/LoanCorridorDoor/UsePoint` | use_point | 29.6 | 33.9 | 1.14 | ok |
+| `Spawns/OobQuaySteps1` | `Gameplay/Doors/FireExit` | objective | 30.7 | 35.0 | 1.14 | ok |
+| `Spawns/OobQuaySteps1` | `Gameplay/Doors/FireExit/UsePoint` | use_point | 30.7 | 35.0 | 1.14 | ok |
+| `Spawns/OobQuaySteps1` | `Gameplay/Doors/TellerGate` | objective | 21.6 | 28.1 | 1.31 | ok |
+| `Spawns/OobQuaySteps1` | `Gameplay/Doors/TellerGate/UsePoint` | use_point | 21.6 | 28.1 | 1.31 | ok |
+| `Spawns/OobQuaySteps1` | `Gameplay/Doors/LoanHallDoor/UsePoint` | use_point | 24.8 | 28.4 | 1.15 | ok |
+| `Spawns/OobQuaySteps1` | `Gameplay/Doors/ManagerHallDoor/UsePoint` | use_point | 21.9 | 26.3 | 1.20 | ok |
+| `Spawns/OobQuaySteps1` | `Gameplay/Doors/AtmInnerDoor` | objective | 19.9 | 27.0 | 1.36 | ok |
+| `Spawns/OobQuaySteps1` | `Gameplay/Doors/AtmInnerDoor/UsePoint` | use_point | 19.9 | 27.0 | 1.36 | ok |
+| `Spawns/OobQuaySteps1` | `Gameplay/Doors/VestibuleInnerDoors/UsePoint` | use_point | 13.2 | 13.4 | 1.02 | ok |
 | `Spawns/OobQuaySteps1` | `Gameplay/Doors/MainEntrance` | objective | 11.3 | 11.4 | 1.01 | ok |
 | `Spawns/OobQuaySteps1` | `Gameplay/Doors/MainEntrance/UsePoint` | use_point | 11.3 | 11.4 | 1.01 | ok |
-| `Spawns/OobQuaySteps1` | `Gameplay/Doors/AtmStreetDoor` | objective | 20.3 | 23.2 | 1.14 | ok |
-| `Spawns/OobQuaySteps1` | `Gameplay/Doors/AtmStreetDoor/UsePoint` | use_point | 20.3 | 23.2 | 1.14 | ok |
-| `Spawns/OobQuaySteps1` | `Gameplay/Doors/XferDoor/UsePoint` | use_point | 25.3 | 53.8 | 2.13 | ok |
-| `Spawns/OobQuaySteps1` | `Gameplay/Doors/JanitorDoor/UsePoint` | use_point | 25.0 | 49.6 | 1.98 | ok |
-| `Spawns/OobQuaySteps1` | `Gameplay/Doors/LockerRoomDoor/UsePoint` | use_point | 25.5 | 50.6 | 1.98 | ok |
-| `Spawns/OobQuaySteps1` | `Gameplay/Doors/WCDoor/UsePoint` | use_point | 29.5 | 54.8 | 1.86 | ok |
-| `Spawns/OobQuaySteps1` | `Gameplay/Doors/PlantDoor/UsePoint` | use_point | 27.5 | 57.1 | 2.07 | ok |
-| `Spawns/OobQuaySteps1` | `Gameplay/Doors/ServerDoor` | objective | 30.0 | 62.1 | 2.07 | ok |
-| `Spawns/OobQuaySteps1` | `Gameplay/Doors/ServerDoor/UsePoint` | use_point | 30.0 | 62.1 | 2.07 | ok |
-| `Spawns/OobQuaySteps1` | `Gameplay/Doors/RecordsDoor/UsePoint` | use_point | 25.2 | 53.8 | 2.14 | ok |
-| `Spawns/OobQuaySteps1` | `Gameplay/Doors/InspectionWestDoor/UsePoint` | use_point | 24.9 | 49.3 | 1.98 | ok |
-| `Spawns/OobQuaySteps1` | `Gameplay/Doors/VaultGate` | objective | 25.9 | 52.6 | 2.03 | ok |
-| `Spawns/OobQuaySteps1` | `Gameplay/Doors/VaultGate/UsePoint` | use_point | 25.9 | 52.6 | 2.03 | ok |
-| `Spawns/OobQuaySteps1` | `Gameplay/Doors/InspectionEastDoor/UsePoint` | use_point | 28.1 | 58.6 | 2.09 | ok |
-| `Spawns/OobQuaySteps1` | `Gameplay/Doors/CountRoomDoor` | objective | 29.9 | 62.1 | 2.08 | ok |
-| `Spawns/OobQuaySteps1` | `Gameplay/Doors/CountRoomDoor/UsePoint` | use_point | 29.9 | 62.1 | 2.08 | ok |
-| `Spawns/OobQuaySteps1` | `Gameplay/Doors/DepositoryDoor` | objective | 24.8 | 68.4 | 2.76 | ok |
-| `Spawns/OobQuaySteps1` | `Gameplay/Doors/DepositoryDoor/UsePoint` | use_point | 24.8 | 68.4 | 2.76 | ok |
-| `Spawns/OobQuaySteps1` | `Gameplay/Doors/VaultDoor` | objective | 23.5 | 54.2 | 2.30 | ok |
-| `Spawns/OobQuaySteps1` | `Gameplay/Doors/VaultDoor/UsePoint` | use_point | 23.5 | 54.2 | 2.30 | ok |
-| `Spawns/OobQuaySteps1` | `Gameplay/Doors/VaultDoor/VaultDrill` | objective | 24.0 | 54.2 | 2.26 | ok |
-| `Spawns/OobQuaySteps1` | `Gameplay/Doors/VaultDoor/VaultDrill/UsePoint` | use_point | 24.0 | 54.2 | 2.26 | ok |
-| `Spawns/OobQuaySteps1` | `Gameplay/Doors/AreawayDoor` | objective | 34.2 | 56.2 | 1.64 | ok |
-| `Spawns/OobQuaySteps1` | `Gameplay/Doors/AreawayDoor/UsePoint` | use_point | 34.2 | 56.2 | 1.64 | ok |
-| `Spawns/OobQuaySteps1` | `Gameplay/Doors/AlleyGate` | objective | 48.4 | 65.8 | 1.36 | ok |
-| `Spawns/OobQuaySteps1` | `Gameplay/Doors/AlleyGate/UsePoint` | use_point | 48.4 | 65.8 | 1.36 | ok |
-| `Spawns/OobQuaySteps1` | `Gameplay/Doors/HarborWestGate` | objective | 21.0 | 21.0 | 1.00 | ok |
-| `Spawns/OobQuaySteps1` | `Gameplay/Doors/HarborWestGate/UsePoint` | use_point | 21.0 | 21.0 | 1.00 | ok |
-| `Spawns/OobQuaySteps1` | `Gameplay/Doors/HarborEastGate` | objective | 32.7 | 33.6 | 1.03 | ok |
-| `Spawns/OobQuaySteps1` | `Gameplay/Doors/HarborEastGate/UsePoint` | use_point | 32.7 | 33.6 | 1.03 | ok |
-| `Spawns/OobQuaySteps1` | `Gameplay/Doors/WharfNorthGate` | objective | 49.2 | 55.2 | 1.12 | ok |
-| `Spawns/OobQuaySteps1` | `Gameplay/Doors/WharfNorthGate/UsePoint` | use_point | 49.2 | 55.2 | 1.12 | ok |
-| `Spawns/OobQuaySteps1` | `Gameplay/Windows/HallBay1` | objective | 11.6 | 12.2 | 1.05 | ok |
-| `Spawns/OobQuaySteps1` | `Gameplay/Windows/HallBay1/UsePoint` | use_point | 11.6 | 12.2 | 1.05 | ok |
-| `Spawns/OobQuaySteps1` | `Gameplay/Windows/HallBay2` | objective | 10.7 | 11.0 | 1.03 | ok |
-| `Spawns/OobQuaySteps1` | `Gameplay/Windows/HallBay2/UsePoint` | use_point | 10.7 | 11.0 | 1.03 | ok |
-| `Spawns/OobQuaySteps1` | `Gameplay/Windows/HallBay3` | objective | 13.4 | 13.5 | 1.01 | ok |
-| `Spawns/OobQuaySteps1` | `Gameplay/Windows/HallBay3/UsePoint` | use_point | 13.4 | 13.5 | 1.01 | ok |
-| `Spawns/OobQuaySteps1` | `Gameplay/Windows/HallBay4` | objective | 15.7 | 16.5 | 1.05 | ok |
-| `Spawns/OobQuaySteps1` | `Gameplay/Windows/HallBay4/UsePoint` | use_point | 15.7 | 16.5 | 1.05 | ok |
-| `Spawns/OobQuaySteps1` | `Gameplay/Vault/TimeLockPanel` | objective | 25.3 | 57.2 | 2.26 | ok |
-| `Spawns/OobQuaySteps1` | `Gameplay/Vault/TimeLockPanel/UsePoint` | use_point | 25.3 | 57.2 | 2.26 | ok |
-| `Spawns/OobQuaySteps1` | `Gameplay/Vault/CageCash` | loot_spawn | 17.9 | 60.2 | 3.36 | detour (whitelisted) |
-| `Spawns/OobQuaySteps1` | `Gameplay/Vault/CageCash/UsePoint` | use_point | 18.7 | 59.3 | 3.17 | detour (whitelisted) |
-| `Spawns/OobQuaySteps1` | `Gameplay/Vault/CoopCashBricks` | loot_spawn | 15.0 | 65.0 | 4.32 | detour (whitelisted) |
-| `Spawns/OobQuaySteps1` | `Gameplay/Vault/CoopCashBricks/UsePoint` | use_point | 15.8 | 64.5 | 4.08 | detour (whitelisted) |
-| `Spawns/OobQuaySteps1` | `Gameplay/Vault/Box1` | objective | 20.0 | 58.3 | 2.92 | ok |
-| `Spawns/OobQuaySteps1` | `Gameplay/Vault/Box1/UsePoint` | use_point | 20.0 | 58.3 | 2.92 | ok |
-| `Spawns/OobQuaySteps1` | `Gameplay/Vault/Box2` | objective | 18.2 | 59.6 | 3.27 | detour (whitelisted) |
-| `Spawns/OobQuaySteps1` | `Gameplay/Vault/Box2/UsePoint` | use_point | 18.2 | 59.6 | 3.27 | detour (whitelisted) |
-| `Spawns/OobQuaySteps1` | `Gameplay/Vault/Box3` | objective | 16.5 | 61.2 | 3.71 | detour (whitelisted) |
-| `Spawns/OobQuaySteps1` | `Gameplay/Vault/Box3/UsePoint` | use_point | 16.5 | 61.2 | 3.71 | detour (whitelisted) |
-| `Spawns/OobQuaySteps1` | `Gameplay/Vault/Box4` | objective | 14.8 | 63.0 | 4.26 | detour (whitelisted) |
-| `Spawns/OobQuaySteps1` | `Gameplay/Vault/Box4/UsePoint` | use_point | 14.8 | 63.0 | 4.26 | detour (whitelisted) |
-| `Spawns/OobQuaySteps1` | `Gameplay/Vault/Box5` | objective | 22.5 | 58.7 | 2.61 | ok |
-| `Spawns/OobQuaySteps1` | `Gameplay/Vault/Box5/UsePoint` | use_point | 22.5 | 58.7 | 2.61 | ok |
-| `Spawns/OobQuaySteps1` | `Gameplay/Vault/Box6` | objective | 20.9 | 59.7 | 2.85 | ok |
-| `Spawns/OobQuaySteps1` | `Gameplay/Vault/Box6/UsePoint` | use_point | 20.9 | 59.7 | 2.85 | ok |
-| `Spawns/OobQuaySteps1` | `Gameplay/Vault/Box7` | objective | 19.4 | 61.2 | 3.16 | detour (whitelisted) |
-| `Spawns/OobQuaySteps1` | `Gameplay/Vault/Box7/UsePoint` | use_point | 19.4 | 61.2 | 3.16 | detour (whitelisted) |
-| `Spawns/OobQuaySteps1` | `Gameplay/Vault/Box8` | objective | 17.9 | 63.0 | 3.51 | detour (whitelisted) |
-| `Spawns/OobQuaySteps1` | `Gameplay/Vault/Box8/UsePoint` | use_point | 17.9 | 63.0 | 3.51 | detour (whitelisted) |
-| `Spawns/OobQuaySteps1` | `Gameplay/Depository/DepositorySafe` | objective | 21.5 | 72.2 | 3.35 | detour (whitelisted) |
-| `Spawns/OobQuaySteps1` | `Gameplay/Depository/DepositorySafe/UsePoint` | use_point | 21.5 | 72.2 | 3.35 | detour (whitelisted) |
-| `Spawns/OobQuaySteps1` | `Gameplay/Depository/DepositorySafe/NightDropBags` | loot_spawn | 20.8 | 73.4 | 3.54 | detour (whitelisted) |
-| `Spawns/OobQuaySteps1` | `Gameplay/Depository/DepositorySafe/NightDropBags/UsePoint` | use_point | 20.8 | 73.4 | 3.54 | detour (whitelisted) |
-| `Spawns/OobQuaySteps1` | `Gameplay/Misc/TellerDrawer1/UsePoint` | use_point | 22.5 | 30.7 | 1.36 | ok |
-| `Spawns/OobQuaySteps1` | `Gameplay/Misc/TellerDrawer2/UsePoint` | use_point | 22.4 | 35.7 | 1.59 | ok |
-| `Spawns/OobQuaySteps1` | `Gameplay/Misc/TellerDrawer3/UsePoint` | use_point | 23.4 | 40.7 | 1.74 | ok |
-| `Spawns/OobQuaySteps1` | `Gameplay/Misc/CameraStation/UsePoint` | use_point | 28.8 | 43.3 | 1.51 | ok |
-| `Spawns/OobQuaySteps1` | `Gameplay/Misc/AlarmSecurity/UsePoint` | use_point | 30.5 | 45.0 | 1.47 | ok |
-| `Spawns/OobQuaySteps1` | `Gameplay/Misc/AlarmManager/UsePoint` | use_point | 23.9 | 27.2 | 1.14 | ok |
-| `Spawns/OobQuaySteps1` | `Gameplay/Misc/AlarmTellers/UsePoint` | use_point | 24.4 | 41.8 | 1.71 | ok |
-| `Spawns/OobQuaySteps1` | `Gameplay/Misc/PhoneManager/UsePoint` | use_point | 23.4 | 31.9 | 1.36 | ok |
-| `Spawns/OobQuaySteps1` | `Gameplay/Misc/PhoneLoan/UsePoint` | use_point | 28.4 | 31.2 | 1.10 | ok |
-| `Spawns/OobQuaySteps1` | `Gameplay/Misc/CashLift` | objective | 29.7 | 38.7 | 1.30 | ok |
-| `Spawns/OobQuaySteps1` | `Gameplay/Misc/CashLift/UsePoint` | use_point | 29.7 | 38.7 | 1.30 | ok |
-| `Spawns/OobQuaySteps1` | `Gameplay/Atms/AtmCash1` | objective | 20.6 | 26.3 | 1.27 | ok |
-| `Spawns/OobQuaySteps1` | `Gameplay/Atms/AtmCash1/UsePoint` | use_point | 20.6 | 26.3 | 1.27 | ok |
-| `Spawns/OobQuaySteps1` | `Gameplay/Atms/AtmSaw1` | objective | 20.5 | 26.3 | 1.28 | ok |
-| `Spawns/OobQuaySteps1` | `Gameplay/Atms/AtmSaw1/UsePoint` | use_point | 20.5 | 26.3 | 1.28 | ok |
-| `Spawns/OobQuaySteps1` | `Gameplay/Atms/AtmCash2` | objective | 21.4 | 26.2 | 1.22 | ok |
-| `Spawns/OobQuaySteps1` | `Gameplay/Atms/AtmCash2/UsePoint` | use_point | 21.4 | 26.2 | 1.22 | ok |
-| `Spawns/OobQuaySteps1` | `Gameplay/Atms/AtmSaw2` | objective | 21.3 | 26.0 | 1.22 | ok |
-| `Spawns/OobQuaySteps1` | `Gameplay/Atms/AtmSaw2/UsePoint` | use_point | 21.3 | 26.0 | 1.22 | ok |
-| `Spawns/OobQuaySteps1` | `Variants/Group_code_note/Slot_code_break_board/CodeNote` | objective | 31.1 | 45.5 | 1.46 | ok |
-| `Spawns/OobQuaySteps1` | `Variants/Group_code_note/Slot_code_break_board/CodeNote/UsePoint` | use_point | 31.1 | 45.5 | 1.46 | ok |
-| `Spawns/OobQuaySteps1` | `Variants/Group_keycard/Slot_kc_break_locker/Keycard` | objective | 31.2 | 44.5 | 1.43 | ok |
-| `Spawns/OobQuaySteps1` | `Variants/Group_keycard/Slot_kc_break_locker/Keycard/UsePoint` | use_point | 31.2 | 44.5 | 1.43 | ok |
-| `Spawns/OobQuaySteps1` | `Variants/Group_server_room/Slot_srv_basement/HackTerminal` | objective | 34.3 | 66.4 | 1.94 | ok |
-| `Spawns/OobQuaySteps1` | `Variants/Group_server_room/Slot_srv_basement/HackTerminal/UsePoint` | use_point | 34.3 | 66.4 | 1.94 | ok |
-| `Spawns/OobQuaySteps1` | `Variants/Group_vent_open/Slot_vent_locked/AreawayGrate` | objective | 34.1 | 51.5 | 1.51 | ok |
-| `Spawns/OobQuaySteps1` | `Variants/Group_vent_open/Slot_vent_locked/AreawayGrate/UsePoint` | use_point | 34.1 | 51.5 | 1.51 | ok |
-| `Spawns/OobQuaySteps1` | `Variants/Group_vent_open/Slot_vent_locked/AreawayGrate/Padlock` | objective | 34.4 | 51.3 | 1.49 | ok |
-| `Spawns/OobQuaySteps1` | `Variants/Group_vent_open/Slot_vent_locked/AreawayGrate/Padlock/UsePoint` | use_point | 34.4 | 51.3 | 1.49 | ok |
-| `Spawns/OobQuaySteps1` | `Variants/Group_extra_loot/Slot_mgr_safe_empty/ManagerSafe` | objective | 23.7 | 31.8 | 1.34 | ok |
-| `Spawns/OobQuaySteps1` | `Variants/Group_extra_loot/Slot_mgr_safe_empty/ManagerSafe/UsePoint` | use_point | 23.7 | 31.8 | 1.34 | ok |
-| `Spawns/OobQuaySteps1` | `Variants/Group_escape/Slot_esc_boat_quay/BoatSecureE2/Zone` | secure_zone | 5.0 | 6.3 | 1.26 | ok |
+| `Spawns/OobQuaySteps1` | `Gameplay/Doors/AtmStreetDoor` | objective | 20.3 | 20.5 | 1.01 | ok |
+| `Spawns/OobQuaySteps1` | `Gameplay/Doors/AtmStreetDoor/UsePoint` | use_point | 20.3 | 20.5 | 1.01 | ok |
+| `Spawns/OobQuaySteps1` | `Gameplay/Doors/XferDoor/UsePoint` | use_point | 25.3 | 54.9 | 2.17 | ok |
+| `Spawns/OobQuaySteps1` | `Gameplay/Doors/JanitorDoor/UsePoint` | use_point | 25.0 | 50.6 | 2.02 | ok |
+| `Spawns/OobQuaySteps1` | `Gameplay/Doors/LockerRoomDoor/UsePoint` | use_point | 25.5 | 51.7 | 2.03 | ok |
+| `Spawns/OobQuaySteps1` | `Gameplay/Doors/WCDoor/UsePoint` | use_point | 29.5 | 55.9 | 1.89 | ok |
+| `Spawns/OobQuaySteps1` | `Gameplay/Doors/PlantDoor/UsePoint` | use_point | 27.5 | 58.2 | 2.11 | ok |
+| `Spawns/OobQuaySteps1` | `Gameplay/Doors/ServerDoor` | objective | 30.0 | 63.2 | 2.11 | ok |
+| `Spawns/OobQuaySteps1` | `Gameplay/Doors/ServerDoor/UsePoint` | use_point | 30.0 | 63.2 | 2.11 | ok |
+| `Spawns/OobQuaySteps1` | `Gameplay/Doors/RecordsDoor/UsePoint` | use_point | 25.2 | 54.9 | 2.18 | ok |
+| `Spawns/OobQuaySteps1` | `Gameplay/Doors/InspectionWestDoor/UsePoint` | use_point | 24.9 | 50.4 | 2.02 | ok |
+| `Spawns/OobQuaySteps1` | `Gameplay/Doors/VaultGate` | objective | 25.9 | 53.7 | 2.07 | ok |
+| `Spawns/OobQuaySteps1` | `Gameplay/Doors/VaultGate/UsePoint` | use_point | 25.9 | 53.7 | 2.07 | ok |
+| `Spawns/OobQuaySteps1` | `Gameplay/Doors/InspectionEastDoor/UsePoint` | use_point | 28.1 | 59.7 | 2.12 | ok |
+| `Spawns/OobQuaySteps1` | `Gameplay/Doors/CountRoomDoor` | objective | 29.9 | 63.2 | 2.11 | ok |
+| `Spawns/OobQuaySteps1` | `Gameplay/Doors/CountRoomDoor/UsePoint` | use_point | 29.9 | 63.2 | 2.11 | ok |
+| `Spawns/OobQuaySteps1` | `Gameplay/Doors/DepositoryDoor` | objective | 24.8 | 69.5 | 2.80 | ok |
+| `Spawns/OobQuaySteps1` | `Gameplay/Doors/DepositoryDoor/UsePoint` | use_point | 24.8 | 69.5 | 2.80 | ok |
+| `Spawns/OobQuaySteps1` | `Gameplay/Doors/VaultDoor` | objective | 23.5 | 55.3 | 2.35 | ok |
+| `Spawns/OobQuaySteps1` | `Gameplay/Doors/VaultDoor/UsePoint` | use_point | 23.5 | 55.3 | 2.35 | ok |
+| `Spawns/OobQuaySteps1` | `Gameplay/Doors/VaultDoor/VaultDrill` | objective | 24.0 | 55.3 | 2.30 | ok |
+| `Spawns/OobQuaySteps1` | `Gameplay/Doors/VaultDoor/VaultDrill/UsePoint` | use_point | 24.0 | 55.3 | 2.30 | ok |
+| `Spawns/OobQuaySteps1` | `Gameplay/Doors/AreawayDoor` | objective | 34.2 | 57.3 | 1.67 | ok |
+| `Spawns/OobQuaySteps1` | `Gameplay/Doors/AreawayDoor/UsePoint` | use_point | 34.2 | 57.3 | 1.67 | ok |
+| `Spawns/OobQuaySteps1` | `Gameplay/Doors/AlleyGate` | objective | 48.4 | 66.9 | 1.38 | ok |
+| `Spawns/OobQuaySteps1` | `Gameplay/Doors/AlleyGate/UsePoint` | use_point | 48.4 | 66.9 | 1.38 | ok |
+| `Spawns/OobQuaySteps1` | `Gameplay/Doors/HarborWestGate` | objective | 21.0 | 21.2 | 1.01 | ok |
+| `Spawns/OobQuaySteps1` | `Gameplay/Doors/HarborWestGate/UsePoint` | use_point | 21.0 | 21.2 | 1.01 | ok |
+| `Spawns/OobQuaySteps1` | `Gameplay/Doors/HarborEastGate` | objective | 32.7 | 33.9 | 1.04 | ok |
+| `Spawns/OobQuaySteps1` | `Gameplay/Doors/HarborEastGate/UsePoint` | use_point | 32.7 | 33.9 | 1.04 | ok |
+| `Spawns/OobQuaySteps1` | `Gameplay/Doors/WharfNorthGate` | objective | 49.2 | 56.6 | 1.15 | ok |
+| `Spawns/OobQuaySteps1` | `Gameplay/Doors/WharfNorthGate/UsePoint` | use_point | 49.2 | 56.6 | 1.15 | ok |
+| `Spawns/OobQuaySteps1` | `Gameplay/Windows/HallBay1` | objective | 11.6 | 11.9 | 1.02 | ok |
+| `Spawns/OobQuaySteps1` | `Gameplay/Windows/HallBay1/UsePoint` | use_point | 11.6 | 11.9 | 1.02 | ok |
+| `Spawns/OobQuaySteps1` | `Gameplay/Windows/HallBay2` | objective | 10.7 | 13.6 | 1.26 | ok |
+| `Spawns/OobQuaySteps1` | `Gameplay/Windows/HallBay2/UsePoint` | use_point | 10.7 | 13.6 | 1.26 | ok |
+| `Spawns/OobQuaySteps1` | `Gameplay/Windows/HallBay3` | objective | 13.4 | 14.4 | 1.08 | ok |
+| `Spawns/OobQuaySteps1` | `Gameplay/Windows/HallBay3/UsePoint` | use_point | 13.4 | 14.4 | 1.08 | ok |
+| `Spawns/OobQuaySteps1` | `Gameplay/Windows/HallBay4` | objective | 15.7 | 17.3 | 1.10 | ok |
+| `Spawns/OobQuaySteps1` | `Gameplay/Windows/HallBay4/UsePoint` | use_point | 15.7 | 17.3 | 1.10 | ok |
+| `Spawns/OobQuaySteps1` | `Gameplay/Vault/TimeLockPanel` | objective | 25.3 | 58.3 | 2.31 | ok |
+| `Spawns/OobQuaySteps1` | `Gameplay/Vault/TimeLockPanel/UsePoint` | use_point | 25.3 | 58.3 | 2.31 | ok |
+| `Spawns/OobQuaySteps1` | `Gameplay/Vault/CageCash` | loot_spawn | 17.9 | 61.3 | 3.42 | detour (whitelisted) |
+| `Spawns/OobQuaySteps1` | `Gameplay/Vault/CageCash/UsePoint` | use_point | 18.7 | 60.4 | 3.23 | detour (whitelisted) |
+| `Spawns/OobQuaySteps1` | `Gameplay/Vault/CoopCashBricks` | loot_spawn | 15.0 | 66.1 | 4.39 | detour (whitelisted) |
+| `Spawns/OobQuaySteps1` | `Gameplay/Vault/CoopCashBricks/UsePoint` | use_point | 15.8 | 65.6 | 4.15 | detour (whitelisted) |
+| `Spawns/OobQuaySteps1` | `Gameplay/Vault/Box1` | objective | 20.0 | 59.4 | 2.97 | ok |
+| `Spawns/OobQuaySteps1` | `Gameplay/Vault/Box1/UsePoint` | use_point | 20.0 | 59.4 | 2.97 | ok |
+| `Spawns/OobQuaySteps1` | `Gameplay/Vault/Box2` | objective | 18.2 | 60.7 | 3.33 | detour (whitelisted) |
+| `Spawns/OobQuaySteps1` | `Gameplay/Vault/Box2/UsePoint` | use_point | 18.2 | 60.7 | 3.33 | detour (whitelisted) |
+| `Spawns/OobQuaySteps1` | `Gameplay/Vault/Box3` | objective | 16.5 | 62.3 | 3.77 | detour (whitelisted) |
+| `Spawns/OobQuaySteps1` | `Gameplay/Vault/Box3/UsePoint` | use_point | 16.5 | 62.3 | 3.77 | detour (whitelisted) |
+| `Spawns/OobQuaySteps1` | `Gameplay/Vault/Box4` | objective | 14.8 | 64.0 | 4.33 | detour (whitelisted) |
+| `Spawns/OobQuaySteps1` | `Gameplay/Vault/Box4/UsePoint` | use_point | 14.8 | 64.0 | 4.33 | detour (whitelisted) |
+| `Spawns/OobQuaySteps1` | `Gameplay/Vault/Box5` | objective | 22.5 | 59.8 | 2.66 | ok |
+| `Spawns/OobQuaySteps1` | `Gameplay/Vault/Box5/UsePoint` | use_point | 22.5 | 59.8 | 2.66 | ok |
+| `Spawns/OobQuaySteps1` | `Gameplay/Vault/Box6` | objective | 20.9 | 60.8 | 2.91 | ok |
+| `Spawns/OobQuaySteps1` | `Gameplay/Vault/Box6/UsePoint` | use_point | 20.9 | 60.8 | 2.91 | ok |
+| `Spawns/OobQuaySteps1` | `Gameplay/Vault/Box7` | objective | 19.4 | 62.3 | 3.21 | detour (whitelisted) |
+| `Spawns/OobQuaySteps1` | `Gameplay/Vault/Box7/UsePoint` | use_point | 19.4 | 62.3 | 3.21 | detour (whitelisted) |
+| `Spawns/OobQuaySteps1` | `Gameplay/Vault/Box8` | objective | 17.9 | 64.1 | 3.57 | detour (whitelisted) |
+| `Spawns/OobQuaySteps1` | `Gameplay/Vault/Box8/UsePoint` | use_point | 17.9 | 64.1 | 3.57 | detour (whitelisted) |
+| `Spawns/OobQuaySteps1` | `Gameplay/Depository/DepositorySafe` | objective | 21.5 | 73.3 | 3.40 | detour (whitelisted) |
+| `Spawns/OobQuaySteps1` | `Gameplay/Depository/DepositorySafe/UsePoint` | use_point | 21.5 | 73.3 | 3.40 | detour (whitelisted) |
+| `Spawns/OobQuaySteps1` | `Gameplay/Depository/DepositorySafe/NightDropBags` | loot_spawn | 20.8 | 74.5 | 3.59 | detour (whitelisted) |
+| `Spawns/OobQuaySteps1` | `Gameplay/Depository/DepositorySafe/NightDropBags/UsePoint` | use_point | 20.8 | 74.5 | 3.59 | detour (whitelisted) |
+| `Spawns/OobQuaySteps1` | `Gameplay/Misc/TellerDrawer1/UsePoint` | use_point | 22.5 | 31.8 | 1.41 | ok |
+| `Spawns/OobQuaySteps1` | `Gameplay/Misc/TellerDrawer2/UsePoint` | use_point | 22.4 | 36.8 | 1.64 | ok |
+| `Spawns/OobQuaySteps1` | `Gameplay/Misc/TellerDrawer3/UsePoint` | use_point | 23.4 | 41.8 | 1.79 | ok |
+| `Spawns/OobQuaySteps1` | `Gameplay/Misc/CameraStation/UsePoint` | use_point | 28.8 | 44.4 | 1.54 | ok |
+| `Spawns/OobQuaySteps1` | `Gameplay/Misc/AlarmSecurity/UsePoint` | use_point | 30.5 | 46.1 | 1.51 | ok |
+| `Spawns/OobQuaySteps1` | `Gameplay/Misc/AlarmManager/UsePoint` | use_point | 23.9 | 28.5 | 1.19 | ok |
+| `Spawns/OobQuaySteps1` | `Gameplay/Misc/AlarmTellers/UsePoint` | use_point | 24.4 | 42.8 | 1.75 | ok |
+| `Spawns/OobQuaySteps1` | `Gameplay/Misc/PhoneManager/UsePoint` | use_point | 23.4 | 33.3 | 1.42 | ok |
+| `Spawns/OobQuaySteps1` | `Gameplay/Misc/PhoneLoan/UsePoint` | use_point | 28.4 | 32.6 | 1.15 | ok |
+| `Spawns/OobQuaySteps1` | `Gameplay/Misc/CashLift` | objective | 29.7 | 39.8 | 1.34 | ok |
+| `Spawns/OobQuaySteps1` | `Gameplay/Misc/CashLift/UsePoint` | use_point | 29.7 | 39.8 | 1.34 | ok |
+| `Spawns/OobQuaySteps1` | `Gameplay/Atms/AtmCash1` | objective | 20.6 | 27.6 | 1.34 | ok |
+| `Spawns/OobQuaySteps1` | `Gameplay/Atms/AtmCash1/UsePoint` | use_point | 20.6 | 27.6 | 1.34 | ok |
+| `Spawns/OobQuaySteps1` | `Gameplay/Atms/AtmSaw1` | objective | 20.5 | 27.6 | 1.35 | ok |
+| `Spawns/OobQuaySteps1` | `Gameplay/Atms/AtmSaw1/UsePoint` | use_point | 20.5 | 27.6 | 1.35 | ok |
+| `Spawns/OobQuaySteps1` | `Gameplay/Atms/AtmCash2` | objective | 21.4 | 29.1 | 1.36 | ok |
+| `Spawns/OobQuaySteps1` | `Gameplay/Atms/AtmCash2/UsePoint` | use_point | 21.4 | 29.1 | 1.36 | ok |
+| `Spawns/OobQuaySteps1` | `Gameplay/Atms/AtmSaw2` | objective | 21.3 | 23.4 | 1.09 | ok |
+| `Spawns/OobQuaySteps1` | `Gameplay/Atms/AtmSaw2/UsePoint` | use_point | 21.3 | 23.4 | 1.09 | ok |
+| `Spawns/OobQuaySteps1` | `Variants/Group_code_note/Slot_code_break_board/CodeNote` | objective | 31.1 | 46.8 | 1.51 | ok |
+| `Spawns/OobQuaySteps1` | `Variants/Group_code_note/Slot_code_break_board/CodeNote/UsePoint` | use_point | 31.1 | 46.8 | 1.51 | ok |
+| `Spawns/OobQuaySteps1` | `Variants/Group_keycard/Slot_kc_break_locker/Keycard` | objective | 31.2 | 45.9 | 1.47 | ok |
+| `Spawns/OobQuaySteps1` | `Variants/Group_keycard/Slot_kc_break_locker/Keycard/UsePoint` | use_point | 31.2 | 45.9 | 1.47 | ok |
+| `Spawns/OobQuaySteps1` | `Variants/Group_server_room/Slot_srv_basement/HackTerminal` | objective | 34.3 | 67.5 | 1.97 | ok |
+| `Spawns/OobQuaySteps1` | `Variants/Group_server_room/Slot_srv_basement/HackTerminal/UsePoint` | use_point | 34.3 | 67.5 | 1.97 | ok |
+| `Spawns/OobQuaySteps1` | `Variants/Group_vent_open/Slot_vent_locked/AreawayGrate` | objective | 34.1 | 52.6 | 1.54 | ok |
+| `Spawns/OobQuaySteps1` | `Variants/Group_vent_open/Slot_vent_locked/AreawayGrate/UsePoint` | use_point | 34.1 | 52.6 | 1.54 | ok |
+| `Spawns/OobQuaySteps1` | `Variants/Group_vent_open/Slot_vent_locked/AreawayGrate/Padlock` | objective | 34.4 | 52.4 | 1.52 | ok |
+| `Spawns/OobQuaySteps1` | `Variants/Group_vent_open/Slot_vent_locked/AreawayGrate/Padlock/UsePoint` | use_point | 34.4 | 52.4 | 1.52 | ok |
+| `Spawns/OobQuaySteps1` | `Variants/Group_extra_loot/Slot_mgr_safe_empty/ManagerSafe` | objective | 23.7 | 33.1 | 1.40 | ok |
+| `Spawns/OobQuaySteps1` | `Variants/Group_extra_loot/Slot_mgr_safe_empty/ManagerSafe/UsePoint` | use_point | 23.7 | 33.1 | 1.40 | ok |
+| `Spawns/OobQuaySteps1` | `Variants/Group_escape/Slot_esc_boat_quay/BoatSecureE2/Zone` | secure_zone | 5.0 | 6.1 | 1.22 | ok |
 | `Spawns/OobQuaySteps1` | `Variants/Group_escape/Slot_esc_boat_quay/BoatEscapeE2/Zone` | escape_zone | 3.4 | 4.5 | 1.35 | ok |
-| `Spawns/OobQuaySteps2` | `Gameplay/Doors/SallyPersonnelDoor` | objective | 32.2 | 41.1 | 1.28 | ok |
-| `Spawns/OobQuaySteps2` | `Gameplay/Doors/SallyPersonnelDoor/UsePoint` | use_point | 32.2 | 41.1 | 1.28 | ok |
+| `Spawns/OobQuaySteps2` | `Gameplay/Doors/SallyPersonnelDoor` | objective | 32.2 | 41.2 | 1.28 | ok |
+| `Spawns/OobQuaySteps2` | `Gameplay/Doors/SallyPersonnelDoor/UsePoint` | use_point | 32.2 | 41.2 | 1.28 | ok |
 | `Spawns/OobQuaySteps2` | `Gameplay/Doors/LoadingDoor/UsePoint` | use_point | 24.8 | 33.8 | 1.36 | ok |
-| `Spawns/OobQuaySteps2` | `Gameplay/Doors/SecurityRoomDoor/UsePoint` | use_point | 24.9 | 39.6 | 1.59 | ok |
-| `Spawns/OobQuaySteps2` | `Gameplay/Doors/BreakRoomDoor/UsePoint` | use_point | 25.8 | 39.0 | 1.51 | ok |
-| `Spawns/OobQuaySteps2` | `Gameplay/Doors/ElectricalDoor/UsePoint` | use_point | 27.0 | 35.5 | 1.31 | ok |
-| `Spawns/OobQuaySteps2` | `Gameplay/Doors/StorageDoor/UsePoint` | use_point | 28.9 | 32.1 | 1.11 | ok |
-| `Spawns/OobQuaySteps2` | `Gameplay/Doors/TellerDoor` | objective | 25.4 | 30.4 | 1.19 | ok |
-| `Spawns/OobQuaySteps2` | `Gameplay/Doors/TellerDoor/UsePoint` | use_point | 25.4 | 30.4 | 1.19 | ok |
-| `Spawns/OobQuaySteps2` | `Gameplay/Doors/LoanCorridorDoor/UsePoint` | use_point | 28.8 | 32.0 | 1.11 | ok |
-| `Spawns/OobQuaySteps2` | `Gameplay/Doors/FireExit` | objective | 29.8 | 33.1 | 1.11 | ok |
-| `Spawns/OobQuaySteps2` | `Gameplay/Doors/FireExit/UsePoint` | use_point | 29.8 | 33.1 | 1.11 | ok |
-| `Spawns/OobQuaySteps2` | `Gameplay/Doors/TellerGate` | objective | 22.0 | 26.7 | 1.21 | ok |
-| `Spawns/OobQuaySteps2` | `Gameplay/Doors/TellerGate/UsePoint` | use_point | 22.0 | 26.7 | 1.21 | ok |
-| `Spawns/OobQuaySteps2` | `Gameplay/Doors/LoanHallDoor/UsePoint` | use_point | 24.0 | 26.6 | 1.11 | ok |
-| `Spawns/OobQuaySteps2` | `Gameplay/Doors/ManagerHallDoor/UsePoint` | use_point | 21.0 | 24.4 | 1.16 | ok |
-| `Spawns/OobQuaySteps2` | `Gameplay/Doors/AtmInnerDoor` | objective | 18.8 | 25.1 | 1.34 | ok |
-| `Spawns/OobQuaySteps2` | `Gameplay/Doors/AtmInnerDoor/UsePoint` | use_point | 18.8 | 25.1 | 1.34 | ok |
-| `Spawns/OobQuaySteps2` | `Gameplay/Doors/VestibuleInnerDoors/UsePoint` | use_point | 12.9 | 13.6 | 1.05 | ok |
-| `Spawns/OobQuaySteps2` | `Gameplay/Doors/MainEntrance` | objective | 10.9 | 11.1 | 1.02 | ok |
-| `Spawns/OobQuaySteps2` | `Gameplay/Doors/MainEntrance/UsePoint` | use_point | 10.9 | 11.1 | 1.02 | ok |
-| `Spawns/OobQuaySteps2` | `Gameplay/Doors/AtmStreetDoor` | objective | 19.0 | 21.7 | 1.14 | ok |
-| `Spawns/OobQuaySteps2` | `Gameplay/Doors/AtmStreetDoor/UsePoint` | use_point | 19.0 | 21.7 | 1.14 | ok |
+| `Spawns/OobQuaySteps2` | `Gameplay/Doors/SecurityRoomDoor/UsePoint` | use_point | 24.9 | 39.8 | 1.60 | ok |
+| `Spawns/OobQuaySteps2` | `Gameplay/Doors/BreakRoomDoor/UsePoint` | use_point | 25.8 | 39.5 | 1.53 | ok |
+| `Spawns/OobQuaySteps2` | `Gameplay/Doors/ElectricalDoor/UsePoint` | use_point | 27.0 | 36.0 | 1.33 | ok |
+| `Spawns/OobQuaySteps2` | `Gameplay/Doors/StorageDoor/UsePoint` | use_point | 28.9 | 32.6 | 1.13 | ok |
+| `Spawns/OobQuaySteps2` | `Gameplay/Doors/TellerDoor` | objective | 25.4 | 30.4 | 1.20 | ok |
+| `Spawns/OobQuaySteps2` | `Gameplay/Doors/TellerDoor/UsePoint` | use_point | 25.4 | 30.4 | 1.20 | ok |
+| `Spawns/OobQuaySteps2` | `Gameplay/Doors/LoanCorridorDoor/UsePoint` | use_point | 28.8 | 32.5 | 1.13 | ok |
+| `Spawns/OobQuaySteps2` | `Gameplay/Doors/FireExit` | objective | 29.8 | 33.7 | 1.13 | ok |
+| `Spawns/OobQuaySteps2` | `Gameplay/Doors/FireExit/UsePoint` | use_point | 29.8 | 33.7 | 1.13 | ok |
+| `Spawns/OobQuaySteps2` | `Gameplay/Doors/TellerGate` | objective | 22.0 | 26.8 | 1.22 | ok |
+| `Spawns/OobQuaySteps2` | `Gameplay/Doors/TellerGate/UsePoint` | use_point | 22.0 | 26.8 | 1.22 | ok |
+| `Spawns/OobQuaySteps2` | `Gameplay/Doors/LoanHallDoor/UsePoint` | use_point | 24.0 | 27.1 | 1.13 | ok |
+| `Spawns/OobQuaySteps2` | `Gameplay/Doors/ManagerHallDoor/UsePoint` | use_point | 21.0 | 24.9 | 1.19 | ok |
+| `Spawns/OobQuaySteps2` | `Gameplay/Doors/AtmInnerDoor` | objective | 18.8 | 25.7 | 1.36 | ok |
+| `Spawns/OobQuaySteps2` | `Gameplay/Doors/AtmInnerDoor/UsePoint` | use_point | 18.8 | 25.7 | 1.36 | ok |
+| `Spawns/OobQuaySteps2` | `Gameplay/Doors/VestibuleInnerDoors/UsePoint` | use_point | 12.9 | 14.2 | 1.10 | ok |
+| `Spawns/OobQuaySteps2` | `Gameplay/Doors/MainEntrance` | objective | 10.9 | 12.2 | 1.12 | ok |
+| `Spawns/OobQuaySteps2` | `Gameplay/Doors/MainEntrance/UsePoint` | use_point | 10.9 | 12.2 | 1.12 | ok |
+| `Spawns/OobQuaySteps2` | `Gameplay/Doors/AtmStreetDoor` | objective | 19.0 | 19.1 | 1.01 | ok |
+| `Spawns/OobQuaySteps2` | `Gameplay/Doors/AtmStreetDoor/UsePoint` | use_point | 19.0 | 19.1 | 1.01 | ok |
 | `Spawns/OobQuaySteps2` | `Gameplay/Doors/XferDoor/UsePoint` | use_point | 25.5 | 53.5 | 2.10 | ok |
-| `Spawns/OobQuaySteps2` | `Gameplay/Doors/JanitorDoor/UsePoint` | use_point | 25.0 | 49.0 | 1.96 | ok |
-| `Spawns/OobQuaySteps2` | `Gameplay/Doors/LockerRoomDoor/UsePoint` | use_point | 25.3 | 50.1 | 1.98 | ok |
-| `Spawns/OobQuaySteps2` | `Gameplay/Doors/WCDoor/UsePoint` | use_point | 29.2 | 54.3 | 1.86 | ok |
-| `Spawns/OobQuaySteps2` | `Gameplay/Doors/PlantDoor/UsePoint` | use_point | 26.9 | 56.6 | 2.10 | ok |
-| `Spawns/OobQuaySteps2` | `Gameplay/Doors/ServerDoor` | objective | 29.2 | 61.6 | 2.11 | ok |
-| `Spawns/OobQuaySteps2` | `Gameplay/Doors/ServerDoor/UsePoint` | use_point | 29.2 | 61.6 | 2.11 | ok |
-| `Spawns/OobQuaySteps2` | `Gameplay/Doors/RecordsDoor/UsePoint` | use_point | 25.4 | 53.5 | 2.10 | ok |
-| `Spawns/OobQuaySteps2` | `Gameplay/Doors/InspectionWestDoor/UsePoint` | use_point | 24.9 | 48.8 | 1.96 | ok |
-| `Spawns/OobQuaySteps2` | `Gameplay/Doors/VaultGate` | objective | 25.5 | 52.1 | 2.04 | ok |
-| `Spawns/OobQuaySteps2` | `Gameplay/Doors/VaultGate/UsePoint` | use_point | 25.5 | 52.1 | 2.04 | ok |
-| `Spawns/OobQuaySteps2` | `Gameplay/Doors/InspectionEastDoor/UsePoint` | use_point | 27.4 | 58.1 | 2.12 | ok |
-| `Spawns/OobQuaySteps2` | `Gameplay/Doors/CountRoomDoor` | objective | 29.1 | 61.6 | 2.12 | ok |
-| `Spawns/OobQuaySteps2` | `Gameplay/Doors/CountRoomDoor/UsePoint` | use_point | 29.1 | 61.6 | 2.12 | ok |
-| `Spawns/OobQuaySteps2` | `Gameplay/Doors/DepositoryDoor` | objective | 23.8 | 67.9 | 2.85 | ok |
-| `Spawns/OobQuaySteps2` | `Gameplay/Doors/DepositoryDoor/UsePoint` | use_point | 23.8 | 67.9 | 2.85 | ok |
-| `Spawns/OobQuaySteps2` | `Gameplay/Doors/VaultDoor` | objective | 23.1 | 53.7 | 2.32 | ok |
-| `Spawns/OobQuaySteps2` | `Gameplay/Doors/VaultDoor/UsePoint` | use_point | 23.1 | 53.7 | 2.32 | ok |
-| `Spawns/OobQuaySteps2` | `Gameplay/Doors/VaultDoor/VaultDrill` | objective | 23.6 | 53.7 | 2.28 | ok |
-| `Spawns/OobQuaySteps2` | `Gameplay/Doors/VaultDoor/VaultDrill/UsePoint` | use_point | 23.6 | 53.7 | 2.28 | ok |
-| `Spawns/OobQuaySteps2` | `Gameplay/Doors/AreawayDoor` | objective | 33.8 | 55.7 | 1.65 | ok |
-| `Spawns/OobQuaySteps2` | `Gameplay/Doors/AreawayDoor/UsePoint` | use_point | 33.8 | 55.7 | 1.65 | ok |
+| `Spawns/OobQuaySteps2` | `Gameplay/Doors/JanitorDoor/UsePoint` | use_point | 25.0 | 49.3 | 1.97 | ok |
+| `Spawns/OobQuaySteps2` | `Gameplay/Doors/LockerRoomDoor/UsePoint` | use_point | 25.3 | 50.3 | 1.99 | ok |
+| `Spawns/OobQuaySteps2` | `Gameplay/Doors/WCDoor/UsePoint` | use_point | 29.2 | 54.5 | 1.87 | ok |
+| `Spawns/OobQuaySteps2` | `Gameplay/Doors/PlantDoor/UsePoint` | use_point | 26.9 | 56.8 | 2.11 | ok |
+| `Spawns/OobQuaySteps2` | `Gameplay/Doors/ServerDoor` | objective | 29.2 | 61.8 | 2.12 | ok |
+| `Spawns/OobQuaySteps2` | `Gameplay/Doors/ServerDoor/UsePoint` | use_point | 29.2 | 61.8 | 2.12 | ok |
+| `Spawns/OobQuaySteps2` | `Gameplay/Doors/RecordsDoor/UsePoint` | use_point | 25.4 | 53.5 | 2.11 | ok |
+| `Spawns/OobQuaySteps2` | `Gameplay/Doors/InspectionWestDoor/UsePoint` | use_point | 24.9 | 49.1 | 1.97 | ok |
+| `Spawns/OobQuaySteps2` | `Gameplay/Doors/VaultGate` | objective | 25.5 | 52.3 | 2.05 | ok |
+| `Spawns/OobQuaySteps2` | `Gameplay/Doors/VaultGate/UsePoint` | use_point | 25.5 | 52.3 | 2.05 | ok |
+| `Spawns/OobQuaySteps2` | `Gameplay/Doors/InspectionEastDoor/UsePoint` | use_point | 27.4 | 58.3 | 2.13 | ok |
+| `Spawns/OobQuaySteps2` | `Gameplay/Doors/CountRoomDoor` | objective | 29.1 | 61.8 | 2.13 | ok |
+| `Spawns/OobQuaySteps2` | `Gameplay/Doors/CountRoomDoor/UsePoint` | use_point | 29.1 | 61.8 | 2.13 | ok |
+| `Spawns/OobQuaySteps2` | `Gameplay/Doors/DepositoryDoor` | objective | 23.8 | 68.1 | 2.86 | ok |
+| `Spawns/OobQuaySteps2` | `Gameplay/Doors/DepositoryDoor/UsePoint` | use_point | 23.8 | 68.1 | 2.86 | ok |
+| `Spawns/OobQuaySteps2` | `Gameplay/Doors/VaultDoor` | objective | 23.1 | 53.9 | 2.33 | ok |
+| `Spawns/OobQuaySteps2` | `Gameplay/Doors/VaultDoor/UsePoint` | use_point | 23.1 | 53.9 | 2.33 | ok |
+| `Spawns/OobQuaySteps2` | `Gameplay/Doors/VaultDoor/VaultDrill` | objective | 23.6 | 53.9 | 2.29 | ok |
+| `Spawns/OobQuaySteps2` | `Gameplay/Doors/VaultDoor/VaultDrill/UsePoint` | use_point | 23.6 | 53.9 | 2.29 | ok |
+| `Spawns/OobQuaySteps2` | `Gameplay/Doors/AreawayDoor` | objective | 33.8 | 55.9 | 1.66 | ok |
+| `Spawns/OobQuaySteps2` | `Gameplay/Doors/AreawayDoor/UsePoint` | use_point | 33.8 | 55.9 | 1.66 | ok |
 | `Spawns/OobQuaySteps2` | `Gameplay/Doors/AlleyGate` | objective | 49.0 | 65.5 | 1.34 | ok |
 | `Spawns/OobQuaySteps2` | `Gameplay/Doors/AlleyGate/UsePoint` | use_point | 49.0 | 65.5 | 1.34 | ok |
 | `Spawns/OobQuaySteps2` | `Gameplay/Doors/HarborWestGate` | objective | 22.4 | 22.5 | 1.00 | ok |
 | `Spawns/OobQuaySteps2` | `Gameplay/Doors/HarborWestGate/UsePoint` | use_point | 22.4 | 22.5 | 1.00 | ok |
-| `Spawns/OobQuaySteps2` | `Gameplay/Doors/HarborEastGate` | objective | 31.2 | 32.1 | 1.03 | ok |
-| `Spawns/OobQuaySteps2` | `Gameplay/Doors/HarborEastGate/UsePoint` | use_point | 31.2 | 32.1 | 1.03 | ok |
-| `Spawns/OobQuaySteps2` | `Gameplay/Doors/WharfNorthGate` | objective | 48.6 | 54.7 | 1.13 | ok |
-| `Spawns/OobQuaySteps2` | `Gameplay/Doors/WharfNorthGate/UsePoint` | use_point | 48.6 | 54.7 | 1.13 | ok |
-| `Spawns/OobQuaySteps2` | `Gameplay/Windows/HallBay1` | objective | 12.3 | 12.6 | 1.02 | ok |
-| `Spawns/OobQuaySteps2` | `Gameplay/Windows/HallBay1/UsePoint` | use_point | 12.3 | 12.6 | 1.02 | ok |
-| `Spawns/OobQuaySteps2` | `Gameplay/Windows/HallBay2` | objective | 11.0 | 12.1 | 1.10 | ok |
-| `Spawns/OobQuaySteps2` | `Gameplay/Windows/HallBay2/UsePoint` | use_point | 11.0 | 12.1 | 1.10 | ok |
-| `Spawns/OobQuaySteps2` | `Gameplay/Windows/HallBay3` | objective | 12.5 | 12.8 | 1.02 | ok |
-| `Spawns/OobQuaySteps2` | `Gameplay/Windows/HallBay3/UsePoint` | use_point | 12.5 | 12.8 | 1.02 | ok |
-| `Spawns/OobQuaySteps2` | `Gameplay/Windows/HallBay4` | objective | 14.6 | 15.7 | 1.07 | ok |
-| `Spawns/OobQuaySteps2` | `Gameplay/Windows/HallBay4/UsePoint` | use_point | 14.6 | 15.7 | 1.07 | ok |
-| `Spawns/OobQuaySteps2` | `Gameplay/Vault/TimeLockPanel` | objective | 24.6 | 56.7 | 2.30 | ok |
-| `Spawns/OobQuaySteps2` | `Gameplay/Vault/TimeLockPanel/UsePoint` | use_point | 24.6 | 56.7 | 2.30 | ok |
-| `Spawns/OobQuaySteps2` | `Gameplay/Vault/CageCash` | loot_spawn | 17.4 | 59.7 | 3.43 | detour (whitelisted) |
-| `Spawns/OobQuaySteps2` | `Gameplay/Vault/CageCash/UsePoint` | use_point | 18.2 | 58.8 | 3.23 | detour (whitelisted) |
-| `Spawns/OobQuaySteps2` | `Gameplay/Vault/CoopCashBricks` | loot_spawn | 14.4 | 64.5 | 4.48 | detour (whitelisted) |
-| `Spawns/OobQuaySteps2` | `Gameplay/Vault/CoopCashBricks/UsePoint` | use_point | 15.2 | 64.0 | 4.21 | detour (whitelisted) |
-| `Spawns/OobQuaySteps2` | `Gameplay/Vault/Box1` | objective | 19.8 | 57.8 | 2.92 | ok |
-| `Spawns/OobQuaySteps2` | `Gameplay/Vault/Box1/UsePoint` | use_point | 19.8 | 57.8 | 2.92 | ok |
-| `Spawns/OobQuaySteps2` | `Gameplay/Vault/Box2` | objective | 18.0 | 59.1 | 3.28 | detour (whitelisted) |
-| `Spawns/OobQuaySteps2` | `Gameplay/Vault/Box2/UsePoint` | use_point | 18.0 | 59.1 | 3.28 | detour (whitelisted) |
-| `Spawns/OobQuaySteps2` | `Gameplay/Vault/Box3` | objective | 16.2 | 60.7 | 3.74 | detour (whitelisted) |
-| `Spawns/OobQuaySteps2` | `Gameplay/Vault/Box3/UsePoint` | use_point | 16.2 | 60.7 | 3.74 | detour (whitelisted) |
-| `Spawns/OobQuaySteps2` | `Gameplay/Vault/Box4` | objective | 14.5 | 62.4 | 4.31 | detour (whitelisted) |
-| `Spawns/OobQuaySteps2` | `Gameplay/Vault/Box4/UsePoint` | use_point | 14.5 | 62.4 | 4.31 | detour (whitelisted) |
-| `Spawns/OobQuaySteps2` | `Gameplay/Vault/Box5` | objective | 21.8 | 58.2 | 2.66 | ok |
-| `Spawns/OobQuaySteps2` | `Gameplay/Vault/Box5/UsePoint` | use_point | 21.8 | 58.2 | 2.66 | ok |
-| `Spawns/OobQuaySteps2` | `Gameplay/Vault/Box6` | objective | 20.2 | 59.2 | 2.93 | ok |
-| `Spawns/OobQuaySteps2` | `Gameplay/Vault/Box6/UsePoint` | use_point | 20.2 | 59.2 | 2.93 | ok |
-| `Spawns/OobQuaySteps2` | `Gameplay/Vault/Box7` | objective | 18.6 | 60.7 | 3.26 | detour (whitelisted) |
-| `Spawns/OobQuaySteps2` | `Gameplay/Vault/Box7/UsePoint` | use_point | 18.6 | 60.7 | 3.26 | detour (whitelisted) |
-| `Spawns/OobQuaySteps2` | `Gameplay/Vault/Box8` | objective | 17.1 | 62.5 | 3.65 | detour (whitelisted) |
-| `Spawns/OobQuaySteps2` | `Gameplay/Vault/Box8/UsePoint` | use_point | 17.1 | 62.5 | 3.65 | detour (whitelisted) |
-| `Spawns/OobQuaySteps2` | `Gameplay/Depository/DepositorySafe` | objective | 20.5 | 71.7 | 3.50 | detour (whitelisted) |
-| `Spawns/OobQuaySteps2` | `Gameplay/Depository/DepositorySafe/UsePoint` | use_point | 20.5 | 71.7 | 3.50 | detour (whitelisted) |
-| `Spawns/OobQuaySteps2` | `Gameplay/Depository/DepositorySafe/NightDropBags` | loot_spawn | 19.7 | 72.9 | 3.71 | detour (whitelisted) |
-| `Spawns/OobQuaySteps2` | `Gameplay/Depository/DepositorySafe/NightDropBags/UsePoint` | use_point | 19.7 | 72.9 | 3.71 | detour (whitelisted) |
+| `Spawns/OobQuaySteps2` | `Gameplay/Doors/HarborEastGate` | objective | 31.2 | 32.6 | 1.04 | ok |
+| `Spawns/OobQuaySteps2` | `Gameplay/Doors/HarborEastGate/UsePoint` | use_point | 31.2 | 32.6 | 1.04 | ok |
+| `Spawns/OobQuaySteps2` | `Gameplay/Doors/WharfNorthGate` | objective | 48.6 | 55.2 | 1.14 | ok |
+| `Spawns/OobQuaySteps2` | `Gameplay/Doors/WharfNorthGate/UsePoint` | use_point | 48.6 | 55.2 | 1.14 | ok |
+| `Spawns/OobQuaySteps2` | `Gameplay/Windows/HallBay1` | objective | 12.3 | 13.1 | 1.07 | ok |
+| `Spawns/OobQuaySteps2` | `Gameplay/Windows/HallBay1/UsePoint` | use_point | 12.3 | 13.1 | 1.07 | ok |
+| `Spawns/OobQuaySteps2` | `Gameplay/Windows/HallBay2` | objective | 11.0 | 14.9 | 1.35 | ok |
+| `Spawns/OobQuaySteps2` | `Gameplay/Windows/HallBay2/UsePoint` | use_point | 11.0 | 14.9 | 1.35 | ok |
+| `Spawns/OobQuaySteps2` | `Gameplay/Windows/HallBay3` | objective | 12.5 | 13.0 | 1.04 | ok |
+| `Spawns/OobQuaySteps2` | `Gameplay/Windows/HallBay3/UsePoint` | use_point | 12.5 | 13.0 | 1.04 | ok |
+| `Spawns/OobQuaySteps2` | `Gameplay/Windows/HallBay4` | objective | 14.6 | 16.0 | 1.09 | ok |
+| `Spawns/OobQuaySteps2` | `Gameplay/Windows/HallBay4/UsePoint` | use_point | 14.6 | 16.0 | 1.09 | ok |
+| `Spawns/OobQuaySteps2` | `Gameplay/Vault/TimeLockPanel` | objective | 24.6 | 57.0 | 2.31 | ok |
+| `Spawns/OobQuaySteps2` | `Gameplay/Vault/TimeLockPanel/UsePoint` | use_point | 24.6 | 57.0 | 2.31 | ok |
+| `Spawns/OobQuaySteps2` | `Gameplay/Vault/CageCash` | loot_spawn | 17.4 | 59.9 | 3.45 | detour (whitelisted) |
+| `Spawns/OobQuaySteps2` | `Gameplay/Vault/CageCash/UsePoint` | use_point | 18.2 | 59.0 | 3.24 | detour (whitelisted) |
+| `Spawns/OobQuaySteps2` | `Gameplay/Vault/CoopCashBricks` | loot_spawn | 14.4 | 64.7 | 4.49 | detour (whitelisted) |
+| `Spawns/OobQuaySteps2` | `Gameplay/Vault/CoopCashBricks/UsePoint` | use_point | 15.2 | 64.2 | 4.22 | detour (whitelisted) |
+| `Spawns/OobQuaySteps2` | `Gameplay/Vault/Box1` | objective | 19.8 | 58.1 | 2.94 | ok |
+| `Spawns/OobQuaySteps2` | `Gameplay/Vault/Box1/UsePoint` | use_point | 19.8 | 58.1 | 2.94 | ok |
+| `Spawns/OobQuaySteps2` | `Gameplay/Vault/Box2` | objective | 18.0 | 59.3 | 3.30 | detour (whitelisted) |
+| `Spawns/OobQuaySteps2` | `Gameplay/Vault/Box2/UsePoint` | use_point | 18.0 | 59.3 | 3.30 | detour (whitelisted) |
+| `Spawns/OobQuaySteps2` | `Gameplay/Vault/Box3` | objective | 16.2 | 60.9 | 3.75 | detour (whitelisted) |
+| `Spawns/OobQuaySteps2` | `Gameplay/Vault/Box3/UsePoint` | use_point | 16.2 | 60.9 | 3.75 | detour (whitelisted) |
+| `Spawns/OobQuaySteps2` | `Gameplay/Vault/Box4` | objective | 14.5 | 62.7 | 4.33 | detour (whitelisted) |
+| `Spawns/OobQuaySteps2` | `Gameplay/Vault/Box4/UsePoint` | use_point | 14.5 | 62.7 | 4.33 | detour (whitelisted) |
+| `Spawns/OobQuaySteps2` | `Gameplay/Vault/Box5` | objective | 21.8 | 58.4 | 2.67 | ok |
+| `Spawns/OobQuaySteps2` | `Gameplay/Vault/Box5/UsePoint` | use_point | 21.8 | 58.4 | 2.67 | ok |
+| `Spawns/OobQuaySteps2` | `Gameplay/Vault/Box6` | objective | 20.2 | 59.4 | 2.94 | ok |
+| `Spawns/OobQuaySteps2` | `Gameplay/Vault/Box6/UsePoint` | use_point | 20.2 | 59.4 | 2.94 | ok |
+| `Spawns/OobQuaySteps2` | `Gameplay/Vault/Box7` | objective | 18.6 | 61.0 | 3.27 | detour (whitelisted) |
+| `Spawns/OobQuaySteps2` | `Gameplay/Vault/Box7/UsePoint` | use_point | 18.6 | 61.0 | 3.27 | detour (whitelisted) |
+| `Spawns/OobQuaySteps2` | `Gameplay/Vault/Box8` | objective | 17.1 | 62.7 | 3.67 | detour (whitelisted) |
+| `Spawns/OobQuaySteps2` | `Gameplay/Vault/Box8/UsePoint` | use_point | 17.1 | 62.7 | 3.67 | detour (whitelisted) |
+| `Spawns/OobQuaySteps2` | `Gameplay/Depository/DepositorySafe` | objective | 20.5 | 71.9 | 3.51 | detour (whitelisted) |
+| `Spawns/OobQuaySteps2` | `Gameplay/Depository/DepositorySafe/UsePoint` | use_point | 20.5 | 71.9 | 3.51 | detour (whitelisted) |
+| `Spawns/OobQuaySteps2` | `Gameplay/Depository/DepositorySafe/NightDropBags` | loot_spawn | 19.7 | 73.2 | 3.72 | detour (whitelisted) |
+| `Spawns/OobQuaySteps2` | `Gameplay/Depository/DepositorySafe/NightDropBags/UsePoint` | use_point | 19.7 | 73.2 | 3.72 | detour (whitelisted) |
 | `Spawns/OobQuaySteps2` | `Gameplay/Misc/TellerDrawer1/UsePoint` | use_point | 22.7 | 30.4 | 1.34 | ok |
-| `Spawns/OobQuaySteps2` | `Gameplay/Misc/TellerDrawer2/UsePoint` | use_point | 22.3 | 35.2 | 1.58 | ok |
-| `Spawns/OobQuaySteps2` | `Gameplay/Misc/TellerDrawer3/UsePoint` | use_point | 23.0 | 40.2 | 1.75 | ok |
-| `Spawns/OobQuaySteps2` | `Gameplay/Misc/CameraStation/UsePoint` | use_point | 28.6 | 42.8 | 1.50 | ok |
-| `Spawns/OobQuaySteps2` | `Gameplay/Misc/AlarmSecurity/UsePoint` | use_point | 30.3 | 44.5 | 1.47 | ok |
-| `Spawns/OobQuaySteps2` | `Gameplay/Misc/AlarmManager/UsePoint` | use_point | 23.0 | 26.6 | 1.16 | ok |
-| `Spawns/OobQuaySteps2` | `Gameplay/Misc/AlarmTellers/UsePoint` | use_point | 24.0 | 41.3 | 1.72 | ok |
-| `Spawns/OobQuaySteps2` | `Gameplay/Misc/PhoneManager/UsePoint` | use_point | 22.3 | 31.4 | 1.40 | ok |
-| `Spawns/OobQuaySteps2` | `Gameplay/Misc/PhoneLoan/UsePoint` | use_point | 27.5 | 30.7 | 1.12 | ok |
+| `Spawns/OobQuaySteps2` | `Gameplay/Misc/TellerDrawer2/UsePoint` | use_point | 22.3 | 35.4 | 1.59 | ok |
+| `Spawns/OobQuaySteps2` | `Gameplay/Misc/TellerDrawer3/UsePoint` | use_point | 23.0 | 40.4 | 1.76 | ok |
+| `Spawns/OobQuaySteps2` | `Gameplay/Misc/CameraStation/UsePoint` | use_point | 28.6 | 43.0 | 1.51 | ok |
+| `Spawns/OobQuaySteps2` | `Gameplay/Misc/AlarmSecurity/UsePoint` | use_point | 30.3 | 44.7 | 1.48 | ok |
+| `Spawns/OobQuaySteps2` | `Gameplay/Misc/AlarmManager/UsePoint` | use_point | 23.0 | 27.2 | 1.18 | ok |
+| `Spawns/OobQuaySteps2` | `Gameplay/Misc/AlarmTellers/UsePoint` | use_point | 24.0 | 41.5 | 1.73 | ok |
+| `Spawns/OobQuaySteps2` | `Gameplay/Misc/PhoneManager/UsePoint` | use_point | 22.3 | 31.9 | 1.43 | ok |
+| `Spawns/OobQuaySteps2` | `Gameplay/Misc/PhoneLoan/UsePoint` | use_point | 27.5 | 31.2 | 1.14 | ok |
 | `Spawns/OobQuaySteps2` | `Gameplay/Misc/CashLift` | objective | 29.8 | 38.4 | 1.29 | ok |
 | `Spawns/OobQuaySteps2` | `Gameplay/Misc/CashLift/UsePoint` | use_point | 29.8 | 38.4 | 1.29 | ok |
-| `Spawns/OobQuaySteps2` | `Gameplay/Atms/AtmCash1` | objective | 19.5 | 25.2 | 1.29 | ok |
-| `Spawns/OobQuaySteps2` | `Gameplay/Atms/AtmCash1/UsePoint` | use_point | 19.5 | 25.2 | 1.29 | ok |
-| `Spawns/OobQuaySteps2` | `Gameplay/Atms/AtmSaw1` | objective | 19.4 | 25.1 | 1.29 | ok |
-| `Spawns/OobQuaySteps2` | `Gameplay/Atms/AtmSaw1/UsePoint` | use_point | 19.4 | 25.1 | 1.29 | ok |
-| `Spawns/OobQuaySteps2` | `Gameplay/Atms/AtmCash2` | objective | 20.3 | 24.7 | 1.21 | ok |
-| `Spawns/OobQuaySteps2` | `Gameplay/Atms/AtmCash2/UsePoint` | use_point | 20.3 | 24.7 | 1.21 | ok |
-| `Spawns/OobQuaySteps2` | `Gameplay/Atms/AtmSaw2` | objective | 20.2 | 24.5 | 1.21 | ok |
-| `Spawns/OobQuaySteps2` | `Gameplay/Atms/AtmSaw2/UsePoint` | use_point | 20.2 | 24.5 | 1.21 | ok |
-| `Spawns/OobQuaySteps2` | `Variants/Group_code_note/Slot_code_break_board/CodeNote` | objective | 30.8 | 45.0 | 1.46 | ok |
-| `Spawns/OobQuaySteps2` | `Variants/Group_code_note/Slot_code_break_board/CodeNote/UsePoint` | use_point | 30.8 | 45.0 | 1.46 | ok |
-| `Spawns/OobQuaySteps2` | `Variants/Group_keycard/Slot_kc_break_locker/Keycard` | objective | 30.8 | 44.0 | 1.43 | ok |
-| `Spawns/OobQuaySteps2` | `Variants/Group_keycard/Slot_kc_break_locker/Keycard/UsePoint` | use_point | 30.8 | 44.0 | 1.43 | ok |
-| `Spawns/OobQuaySteps2` | `Variants/Group_server_room/Slot_srv_basement/HackTerminal` | objective | 33.5 | 65.9 | 1.96 | ok |
-| `Spawns/OobQuaySteps2` | `Variants/Group_server_room/Slot_srv_basement/HackTerminal/UsePoint` | use_point | 33.5 | 65.9 | 1.96 | ok |
-| `Spawns/OobQuaySteps2` | `Variants/Group_vent_open/Slot_vent_locked/AreawayGrate` | objective | 33.7 | 51.0 | 1.51 | ok |
-| `Spawns/OobQuaySteps2` | `Variants/Group_vent_open/Slot_vent_locked/AreawayGrate/UsePoint` | use_point | 33.7 | 51.0 | 1.51 | ok |
-| `Spawns/OobQuaySteps2` | `Variants/Group_vent_open/Slot_vent_locked/AreawayGrate/Padlock` | objective | 34.0 | 50.8 | 1.49 | ok |
-| `Spawns/OobQuaySteps2` | `Variants/Group_vent_open/Slot_vent_locked/AreawayGrate/Padlock/UsePoint` | use_point | 34.0 | 50.8 | 1.49 | ok |
-| `Spawns/OobQuaySteps2` | `Variants/Group_extra_loot/Slot_mgr_safe_empty/ManagerSafe` | objective | 22.6 | 31.3 | 1.38 | ok |
-| `Spawns/OobQuaySteps2` | `Variants/Group_extra_loot/Slot_mgr_safe_empty/ManagerSafe/UsePoint` | use_point | 22.6 | 31.3 | 1.38 | ok |
+| `Spawns/OobQuaySteps2` | `Gameplay/Atms/AtmCash1` | objective | 19.5 | 22.7 | 1.16 | ok |
+| `Spawns/OobQuaySteps2` | `Gameplay/Atms/AtmCash1/UsePoint` | use_point | 19.5 | 22.7 | 1.16 | ok |
+| `Spawns/OobQuaySteps2` | `Gameplay/Atms/AtmSaw1` | objective | 19.4 | 22.6 | 1.16 | ok |
+| `Spawns/OobQuaySteps2` | `Gameplay/Atms/AtmSaw1/UsePoint` | use_point | 19.4 | 22.6 | 1.16 | ok |
+| `Spawns/OobQuaySteps2` | `Gameplay/Atms/AtmCash2` | objective | 20.3 | 27.8 | 1.37 | ok |
+| `Spawns/OobQuaySteps2` | `Gameplay/Atms/AtmCash2/UsePoint` | use_point | 20.3 | 27.8 | 1.37 | ok |
+| `Spawns/OobQuaySteps2` | `Gameplay/Atms/AtmSaw2` | objective | 20.2 | 22.0 | 1.09 | ok |
+| `Spawns/OobQuaySteps2` | `Gameplay/Atms/AtmSaw2/UsePoint` | use_point | 20.2 | 22.0 | 1.09 | ok |
+| `Spawns/OobQuaySteps2` | `Variants/Group_code_note/Slot_code_break_board/CodeNote` | objective | 30.8 | 45.5 | 1.48 | ok |
+| `Spawns/OobQuaySteps2` | `Variants/Group_code_note/Slot_code_break_board/CodeNote/UsePoint` | use_point | 30.8 | 45.5 | 1.48 | ok |
+| `Spawns/OobQuaySteps2` | `Variants/Group_keycard/Slot_kc_break_locker/Keycard` | objective | 30.8 | 44.5 | 1.44 | ok |
+| `Spawns/OobQuaySteps2` | `Variants/Group_keycard/Slot_kc_break_locker/Keycard/UsePoint` | use_point | 30.8 | 44.5 | 1.44 | ok |
+| `Spawns/OobQuaySteps2` | `Variants/Group_server_room/Slot_srv_basement/HackTerminal` | objective | 33.5 | 66.1 | 1.97 | ok |
+| `Spawns/OobQuaySteps2` | `Variants/Group_server_room/Slot_srv_basement/HackTerminal/UsePoint` | use_point | 33.5 | 66.1 | 1.97 | ok |
+| `Spawns/OobQuaySteps2` | `Variants/Group_vent_open/Slot_vent_locked/AreawayGrate` | objective | 33.7 | 51.2 | 1.52 | ok |
+| `Spawns/OobQuaySteps2` | `Variants/Group_vent_open/Slot_vent_locked/AreawayGrate/UsePoint` | use_point | 33.7 | 51.2 | 1.52 | ok |
+| `Spawns/OobQuaySteps2` | `Variants/Group_vent_open/Slot_vent_locked/AreawayGrate/Padlock` | objective | 34.0 | 51.0 | 1.50 | ok |
+| `Spawns/OobQuaySteps2` | `Variants/Group_vent_open/Slot_vent_locked/AreawayGrate/Padlock/UsePoint` | use_point | 34.0 | 51.0 | 1.50 | ok |
+| `Spawns/OobQuaySteps2` | `Variants/Group_extra_loot/Slot_mgr_safe_empty/ManagerSafe` | objective | 22.6 | 31.8 | 1.41 | ok |
+| `Spawns/OobQuaySteps2` | `Variants/Group_extra_loot/Slot_mgr_safe_empty/ManagerSafe/UsePoint` | use_point | 22.6 | 31.8 | 1.41 | ok |
 | `Spawns/OobQuaySteps2` | `Variants/Group_escape/Slot_esc_boat_quay/BoatSecureE2/Zone` | secure_zone | 5.7 | 5.9 | 1.04 | ok |
-| `Spawns/OobQuaySteps2` | `Variants/Group_escape/Slot_esc_boat_quay/BoatEscapeE2/Zone` | escape_zone | 4.0 | 4.1 | 1.03 | ok |
-| `Spawns/OobQuaySteps3` | `Gameplay/Doors/SallyPersonnelDoor` | objective | 32.3 | 40.4 | 1.25 | ok |
-| `Spawns/OobQuaySteps3` | `Gameplay/Doors/SallyPersonnelDoor/UsePoint` | use_point | 32.3 | 40.4 | 1.25 | ok |
-| `Spawns/OobQuaySteps3` | `Gameplay/Doors/LoadingDoor/UsePoint` | use_point | 25.0 | 33.1 | 1.32 | ok |
-| `Spawns/OobQuaySteps3` | `Gameplay/Doors/SecurityRoomDoor/UsePoint` | use_point | 24.8 | 39.1 | 1.58 | ok |
-| `Spawns/OobQuaySteps3` | `Gameplay/Doors/BreakRoomDoor/UsePoint` | use_point | 25.4 | 38.5 | 1.52 | ok |
-| `Spawns/OobQuaySteps3` | `Gameplay/Doors/ElectricalDoor/UsePoint` | use_point | 26.5 | 35.0 | 1.32 | ok |
-| `Spawns/OobQuaySteps3` | `Gameplay/Doors/StorageDoor/UsePoint` | use_point | 28.1 | 31.6 | 1.12 | ok |
-| `Spawns/OobQuaySteps3` | `Gameplay/Doors/TellerDoor` | objective | 25.9 | 29.7 | 1.15 | ok |
-| `Spawns/OobQuaySteps3` | `Gameplay/Doors/TellerDoor/UsePoint` | use_point | 25.9 | 29.7 | 1.15 | ok |
-| `Spawns/OobQuaySteps3` | `Gameplay/Doors/LoanCorridorDoor/UsePoint` | use_point | 28.1 | 31.5 | 1.12 | ok |
-| `Spawns/OobQuaySteps3` | `Gameplay/Doors/FireExit` | objective | 29.0 | 32.6 | 1.13 | ok |
-| `Spawns/OobQuaySteps3` | `Gameplay/Doors/FireExit/UsePoint` | use_point | 29.0 | 32.6 | 1.13 | ok |
-| `Spawns/OobQuaySteps3` | `Gameplay/Doors/TellerGate` | objective | 22.6 | 26.1 | 1.15 | ok |
-| `Spawns/OobQuaySteps3` | `Gameplay/Doors/TellerGate/UsePoint` | use_point | 22.6 | 26.1 | 1.15 | ok |
-| `Spawns/OobQuaySteps3` | `Gameplay/Doors/LoanHallDoor/UsePoint` | use_point | 23.3 | 26.1 | 1.12 | ok |
-| `Spawns/OobQuaySteps3` | `Gameplay/Doors/ManagerHallDoor/UsePoint` | use_point | 20.2 | 23.9 | 1.18 | ok |
-| `Spawns/OobQuaySteps3` | `Gameplay/Doors/AtmInnerDoor` | objective | 17.8 | 23.9 | 1.34 | ok |
-| `Spawns/OobQuaySteps3` | `Gameplay/Doors/AtmInnerDoor/UsePoint` | use_point | 17.8 | 23.9 | 1.34 | ok |
-| `Spawns/OobQuaySteps3` | `Gameplay/Doors/VestibuleInnerDoors/UsePoint` | use_point | 12.7 | 13.1 | 1.03 | ok |
-| `Spawns/OobQuaySteps3` | `Gameplay/Doors/MainEntrance` | objective | 10.7 | 11.2 | 1.05 | ok |
-| `Spawns/OobQuaySteps3` | `Gameplay/Doors/MainEntrance/UsePoint` | use_point | 10.7 | 11.2 | 1.05 | ok |
-| `Spawns/OobQuaySteps3` | `Gameplay/Doors/AtmStreetDoor` | objective | 17.8 | 20.2 | 1.13 | ok |
-| `Spawns/OobQuaySteps3` | `Gameplay/Doors/AtmStreetDoor/UsePoint` | use_point | 17.8 | 20.2 | 1.13 | ok |
-| `Spawns/OobQuaySteps3` | `Gameplay/Doors/XferDoor/UsePoint` | use_point | 25.9 | 52.8 | 2.04 | ok |
-| `Spawns/OobQuaySteps3` | `Gameplay/Doors/JanitorDoor/UsePoint` | use_point | 25.1 | 48.6 | 1.93 | ok |
-| `Spawns/OobQuaySteps3` | `Gameplay/Doors/LockerRoomDoor/UsePoint` | use_point | 25.1 | 49.6 | 1.98 | ok |
-| `Spawns/OobQuaySteps3` | `Gameplay/Doors/WCDoor/UsePoint` | use_point | 28.9 | 53.8 | 1.86 | ok |
-| `Spawns/OobQuaySteps3` | `Gameplay/Doors/PlantDoor/UsePoint` | use_point | 26.4 | 56.1 | 2.12 | ok |
-| `Spawns/OobQuaySteps3` | `Gameplay/Doors/ServerDoor` | objective | 28.4 | 61.1 | 2.15 | ok |
-| `Spawns/OobQuaySteps3` | `Gameplay/Doors/ServerDoor/UsePoint` | use_point | 28.4 | 61.1 | 2.15 | ok |
-| `Spawns/OobQuaySteps3` | `Gameplay/Doors/RecordsDoor/UsePoint` | use_point | 25.8 | 52.8 | 2.05 | ok |
-| `Spawns/OobQuaySteps3` | `Gameplay/Doors/InspectionWestDoor/UsePoint` | use_point | 25.0 | 48.3 | 1.93 | ok |
-| `Spawns/OobQuaySteps3` | `Gameplay/Doors/VaultGate` | objective | 25.2 | 51.6 | 2.05 | ok |
-| `Spawns/OobQuaySteps3` | `Gameplay/Doors/VaultGate/UsePoint` | use_point | 25.2 | 51.6 | 2.05 | ok |
-| `Spawns/OobQuaySteps3` | `Gameplay/Doors/InspectionEastDoor/UsePoint` | use_point | 26.9 | 57.6 | 2.15 | ok |
-| `Spawns/OobQuaySteps3` | `Gameplay/Doors/CountRoomDoor` | objective | 28.3 | 61.1 | 2.16 | ok |
-| `Spawns/OobQuaySteps3` | `Gameplay/Doors/CountRoomDoor/UsePoint` | use_point | 28.3 | 61.1 | 2.16 | ok |
-| `Spawns/OobQuaySteps3` | `Gameplay/Doors/DepositoryDoor` | objective | 22.9 | 67.4 | 2.94 | ok |
-| `Spawns/OobQuaySteps3` | `Gameplay/Doors/DepositoryDoor/UsePoint` | use_point | 22.9 | 67.4 | 2.94 | ok |
-| `Spawns/OobQuaySteps3` | `Gameplay/Doors/VaultDoor` | objective | 22.8 | 53.2 | 2.33 | ok |
-| `Spawns/OobQuaySteps3` | `Gameplay/Doors/VaultDoor/UsePoint` | use_point | 22.8 | 53.2 | 2.33 | ok |
-| `Spawns/OobQuaySteps3` | `Gameplay/Doors/VaultDoor/VaultDrill` | objective | 23.2 | 53.2 | 2.29 | ok |
-| `Spawns/OobQuaySteps3` | `Gameplay/Doors/VaultDoor/VaultDrill/UsePoint` | use_point | 23.2 | 53.2 | 2.29 | ok |
-| `Spawns/OobQuaySteps3` | `Gameplay/Doors/AreawayDoor` | objective | 33.4 | 55.2 | 1.65 | ok |
-| `Spawns/OobQuaySteps3` | `Gameplay/Doors/AreawayDoor/UsePoint` | use_point | 33.4 | 55.2 | 1.65 | ok |
-| `Spawns/OobQuaySteps3` | `Gameplay/Doors/AlleyGate` | objective | 49.7 | 64.8 | 1.30 | ok |
-| `Spawns/OobQuaySteps3` | `Gameplay/Doors/AlleyGate/UsePoint` | use_point | 49.7 | 64.8 | 1.30 | ok |
-| `Spawns/OobQuaySteps3` | `Gameplay/Doors/HarborWestGate` | objective | 23.9 | 24.0 | 1.01 | ok |
-| `Spawns/OobQuaySteps3` | `Gameplay/Doors/HarborWestGate/UsePoint` | use_point | 23.9 | 24.0 | 1.01 | ok |
-| `Spawns/OobQuaySteps3` | `Gameplay/Doors/HarborEastGate` | objective | 29.8 | 30.6 | 1.03 | ok |
-| `Spawns/OobQuaySteps3` | `Gameplay/Doors/HarborEastGate/UsePoint` | use_point | 29.8 | 30.6 | 1.03 | ok |
-| `Spawns/OobQuaySteps3` | `Gameplay/Doors/WharfNorthGate` | objective | 48.0 | 54.2 | 1.13 | ok |
-| `Spawns/OobQuaySteps3` | `Gameplay/Doors/WharfNorthGate/UsePoint` | use_point | 48.0 | 54.2 | 1.13 | ok |
-| `Spawns/OobQuaySteps3` | `Gameplay/Windows/HallBay1` | objective | 13.1 | 13.2 | 1.01 | ok |
-| `Spawns/OobQuaySteps3` | `Gameplay/Windows/HallBay1/UsePoint` | use_point | 13.1 | 13.2 | 1.01 | ok |
-| `Spawns/OobQuaySteps3` | `Gameplay/Windows/HallBay2` | objective | 11.4 | 11.7 | 1.02 | ok |
-| `Spawns/OobQuaySteps3` | `Gameplay/Windows/HallBay2/UsePoint` | use_point | 11.4 | 11.7 | 1.02 | ok |
-| `Spawns/OobQuaySteps3` | `Gameplay/Windows/HallBay3` | objective | 11.8 | 11.9 | 1.01 | ok |
-| `Spawns/OobQuaySteps3` | `Gameplay/Windows/HallBay3/UsePoint` | use_point | 11.8 | 11.9 | 1.01 | ok |
-| `Spawns/OobQuaySteps3` | `Gameplay/Windows/HallBay4` | objective | 13.7 | 14.9 | 1.09 | ok |
-| `Spawns/OobQuaySteps3` | `Gameplay/Windows/HallBay4/UsePoint` | use_point | 13.7 | 14.9 | 1.09 | ok |
-| `Spawns/OobQuaySteps3` | `Gameplay/Vault/TimeLockPanel` | objective | 24.1 | 56.2 | 2.33 | ok |
-| `Spawns/OobQuaySteps3` | `Gameplay/Vault/TimeLockPanel/UsePoint` | use_point | 24.1 | 56.2 | 2.33 | ok |
-| `Spawns/OobQuaySteps3` | `Gameplay/Vault/CageCash` | loot_spawn | 17.0 | 59.2 | 3.49 | detour (whitelisted) |
-| `Spawns/OobQuaySteps3` | `Gameplay/Vault/CageCash/UsePoint` | use_point | 17.8 | 58.3 | 3.27 | detour (whitelisted) |
-| `Spawns/OobQuaySteps3` | `Gameplay/Vault/CoopCashBricks` | loot_spawn | 13.9 | 64.0 | 4.60 | detour (whitelisted) |
-| `Spawns/OobQuaySteps3` | `Gameplay/Vault/CoopCashBricks/UsePoint` | use_point | 14.7 | 63.5 | 4.31 | detour (whitelisted) |
-| `Spawns/OobQuaySteps3` | `Gameplay/Vault/Box1` | objective | 19.7 | 57.3 | 2.91 | ok |
-| `Spawns/OobQuaySteps3` | `Gameplay/Vault/Box1/UsePoint` | use_point | 19.7 | 57.3 | 2.91 | ok |
-| `Spawns/OobQuaySteps3` | `Gameplay/Vault/Box2` | objective | 17.9 | 58.6 | 3.28 | detour (whitelisted) |
-| `Spawns/OobQuaySteps3` | `Gameplay/Vault/Box2/UsePoint` | use_point | 17.9 | 58.6 | 3.28 | detour (whitelisted) |
-| `Spawns/OobQuaySteps3` | `Gameplay/Vault/Box3` | objective | 16.1 | 60.2 | 3.74 | detour (whitelisted) |
-| `Spawns/OobQuaySteps3` | `Gameplay/Vault/Box3/UsePoint` | use_point | 16.1 | 60.2 | 3.74 | detour (whitelisted) |
-| `Spawns/OobQuaySteps3` | `Gameplay/Vault/Box4` | objective | 14.3 | 62.0 | 4.32 | detour (whitelisted) |
-| `Spawns/OobQuaySteps3` | `Gameplay/Vault/Box4/UsePoint` | use_point | 14.3 | 62.0 | 4.32 | detour (whitelisted) |
-| `Spawns/OobQuaySteps3` | `Gameplay/Vault/Box5` | objective | 21.3 | 57.7 | 2.71 | ok |
-| `Spawns/OobQuaySteps3` | `Gameplay/Vault/Box5/UsePoint` | use_point | 21.3 | 57.7 | 2.71 | ok |
-| `Spawns/OobQuaySteps3` | `Gameplay/Vault/Box6` | objective | 19.6 | 58.7 | 2.99 | ok |
-| `Spawns/OobQuaySteps3` | `Gameplay/Vault/Box6/UsePoint` | use_point | 19.6 | 58.7 | 2.99 | ok |
-| `Spawns/OobQuaySteps3` | `Gameplay/Vault/Box7` | objective | 18.0 | 60.2 | 3.35 | detour (whitelisted) |
-| `Spawns/OobQuaySteps3` | `Gameplay/Vault/Box7/UsePoint` | use_point | 18.0 | 60.2 | 3.35 | detour (whitelisted) |
-| `Spawns/OobQuaySteps3` | `Gameplay/Vault/Box8` | objective | 16.4 | 62.0 | 3.79 | detour (whitelisted) |
-| `Spawns/OobQuaySteps3` | `Gameplay/Vault/Box8/UsePoint` | use_point | 16.4 | 62.0 | 3.79 | detour (whitelisted) |
-| `Spawns/OobQuaySteps3` | `Gameplay/Depository/DepositorySafe` | objective | 19.5 | 71.2 | 3.65 | detour (whitelisted) |
-| `Spawns/OobQuaySteps3` | `Gameplay/Depository/DepositorySafe/UsePoint` | use_point | 19.5 | 71.2 | 3.65 | detour (whitelisted) |
-| `Spawns/OobQuaySteps3` | `Gameplay/Depository/DepositorySafe/NightDropBags` | loot_spawn | 18.6 | 72.4 | 3.89 | detour (whitelisted) |
-| `Spawns/OobQuaySteps3` | `Gameplay/Depository/DepositorySafe/NightDropBags/UsePoint` | use_point | 18.6 | 72.4 | 3.89 | detour (whitelisted) |
-| `Spawns/OobQuaySteps3` | `Gameplay/Misc/TellerDrawer1/UsePoint` | use_point | 23.1 | 29.7 | 1.29 | ok |
-| `Spawns/OobQuaySteps3` | `Gameplay/Misc/TellerDrawer2/UsePoint` | use_point | 22.3 | 34.7 | 1.55 | ok |
-| `Spawns/OobQuaySteps3` | `Gameplay/Misc/TellerDrawer3/UsePoint` | use_point | 22.7 | 39.7 | 1.75 | ok |
-| `Spawns/OobQuaySteps3` | `Gameplay/Misc/CameraStation/UsePoint` | use_point | 28.4 | 42.3 | 1.49 | ok |
-| `Spawns/OobQuaySteps3` | `Gameplay/Misc/AlarmSecurity/UsePoint` | use_point | 30.1 | 44.0 | 1.46 | ok |
-| `Spawns/OobQuaySteps3` | `Gameplay/Misc/AlarmManager/UsePoint` | use_point | 22.1 | 26.2 | 1.18 | ok |
-| `Spawns/OobQuaySteps3` | `Gameplay/Misc/AlarmTellers/UsePoint` | use_point | 23.6 | 40.8 | 1.72 | ok |
-| `Spawns/OobQuaySteps3` | `Gameplay/Misc/PhoneManager/UsePoint` | use_point | 21.3 | 30.9 | 1.45 | ok |
-| `Spawns/OobQuaySteps3` | `Gameplay/Misc/PhoneLoan/UsePoint` | use_point | 26.7 | 30.2 | 1.13 | ok |
-| `Spawns/OobQuaySteps3` | `Gameplay/Misc/CashLift` | objective | 30.0 | 37.7 | 1.25 | ok |
-| `Spawns/OobQuaySteps3` | `Gameplay/Misc/CashLift/UsePoint` | use_point | 30.0 | 37.7 | 1.25 | ok |
-| `Spawns/OobQuaySteps3` | `Gameplay/Atms/AtmCash1` | objective | 18.5 | 23.7 | 1.28 | ok |
-| `Spawns/OobQuaySteps3` | `Gameplay/Atms/AtmCash1/UsePoint` | use_point | 18.5 | 23.7 | 1.28 | ok |
-| `Spawns/OobQuaySteps3` | `Gameplay/Atms/AtmSaw1` | objective | 18.4 | 23.6 | 1.28 | ok |
-| `Spawns/OobQuaySteps3` | `Gameplay/Atms/AtmSaw1/UsePoint` | use_point | 18.4 | 23.6 | 1.28 | ok |
-| `Spawns/OobQuaySteps3` | `Gameplay/Atms/AtmCash2` | objective | 19.2 | 23.2 | 1.21 | ok |
-| `Spawns/OobQuaySteps3` | `Gameplay/Atms/AtmCash2/UsePoint` | use_point | 19.2 | 23.2 | 1.21 | ok |
-| `Spawns/OobQuaySteps3` | `Gameplay/Atms/AtmSaw2` | objective | 19.1 | 23.1 | 1.20 | ok |
-| `Spawns/OobQuaySteps3` | `Gameplay/Atms/AtmSaw2/UsePoint` | use_point | 19.1 | 23.1 | 1.20 | ok |
-| `Spawns/OobQuaySteps3` | `Variants/Group_code_note/Slot_code_break_board/CodeNote` | objective | 30.5 | 44.5 | 1.46 | ok |
-| `Spawns/OobQuaySteps3` | `Variants/Group_code_note/Slot_code_break_board/CodeNote/UsePoint` | use_point | 30.5 | 44.5 | 1.46 | ok |
-| `Spawns/OobQuaySteps3` | `Variants/Group_keycard/Slot_kc_break_locker/Keycard` | objective | 30.5 | 43.5 | 1.43 | ok |
-| `Spawns/OobQuaySteps3` | `Variants/Group_keycard/Slot_kc_break_locker/Keycard/UsePoint` | use_point | 30.5 | 43.5 | 1.43 | ok |
-| `Spawns/OobQuaySteps3` | `Variants/Group_server_room/Slot_srv_basement/HackTerminal` | objective | 32.9 | 65.4 | 1.99 | ok |
-| `Spawns/OobQuaySteps3` | `Variants/Group_server_room/Slot_srv_basement/HackTerminal/UsePoint` | use_point | 32.9 | 65.4 | 1.99 | ok |
-| `Spawns/OobQuaySteps3` | `Variants/Group_vent_open/Slot_vent_locked/AreawayGrate` | objective | 33.4 | 50.5 | 1.51 | ok |
-| `Spawns/OobQuaySteps3` | `Variants/Group_vent_open/Slot_vent_locked/AreawayGrate/UsePoint` | use_point | 33.4 | 50.5 | 1.51 | ok |
-| `Spawns/OobQuaySteps3` | `Variants/Group_vent_open/Slot_vent_locked/AreawayGrate/Padlock` | objective | 33.7 | 50.3 | 1.49 | ok |
-| `Spawns/OobQuaySteps3` | `Variants/Group_vent_open/Slot_vent_locked/AreawayGrate/Padlock/UsePoint` | use_point | 33.7 | 50.3 | 1.49 | ok |
-| `Spawns/OobQuaySteps3` | `Variants/Group_extra_loot/Slot_mgr_safe_empty/ManagerSafe` | objective | 21.6 | 30.8 | 1.43 | ok |
-| `Spawns/OobQuaySteps3` | `Variants/Group_extra_loot/Slot_mgr_safe_empty/ManagerSafe/UsePoint` | use_point | 21.6 | 30.8 | 1.43 | ok |
+| `Spawns/OobQuaySteps2` | `Variants/Group_escape/Slot_esc_boat_quay/BoatEscapeE2/Zone` | escape_zone | 4.0 | 4.2 | 1.04 | ok |
+| `Spawns/OobQuaySteps3` | `Gameplay/Doors/SallyPersonnelDoor` | objective | 32.3 | 40.3 | 1.24 | ok |
+| `Spawns/OobQuaySteps3` | `Gameplay/Doors/SallyPersonnelDoor/UsePoint` | use_point | 32.3 | 40.3 | 1.24 | ok |
+| `Spawns/OobQuaySteps3` | `Gameplay/Doors/LoadingDoor/UsePoint` | use_point | 25.0 | 32.9 | 1.32 | ok |
+| `Spawns/OobQuaySteps3` | `Gameplay/Doors/SecurityRoomDoor/UsePoint` | use_point | 24.8 | 38.9 | 1.57 | ok |
+| `Spawns/OobQuaySteps3` | `Gameplay/Doors/BreakRoomDoor/UsePoint` | use_point | 25.4 | 38.6 | 1.52 | ok |
+| `Spawns/OobQuaySteps3` | `Gameplay/Doors/ElectricalDoor/UsePoint` | use_point | 26.5 | 35.1 | 1.33 | ok |
+| `Spawns/OobQuaySteps3` | `Gameplay/Doors/StorageDoor/UsePoint` | use_point | 28.1 | 31.7 | 1.13 | ok |
+| `Spawns/OobQuaySteps3` | `Gameplay/Doors/TellerDoor` | objective | 25.9 | 29.5 | 1.14 | ok |
+| `Spawns/OobQuaySteps3` | `Gameplay/Doors/TellerDoor/UsePoint` | use_point | 25.9 | 29.5 | 1.14 | ok |
+| `Spawns/OobQuaySteps3` | `Gameplay/Doors/LoanCorridorDoor/UsePoint` | use_point | 28.1 | 31.6 | 1.13 | ok |
+| `Spawns/OobQuaySteps3` | `Gameplay/Doors/FireExit` | objective | 29.0 | 32.8 | 1.13 | ok |
+| `Spawns/OobQuaySteps3` | `Gameplay/Doors/FireExit/UsePoint` | use_point | 29.0 | 32.8 | 1.13 | ok |
+| `Spawns/OobQuaySteps3` | `Gameplay/Doors/TellerGate` | objective | 22.6 | 25.9 | 1.15 | ok |
+| `Spawns/OobQuaySteps3` | `Gameplay/Doors/TellerGate/UsePoint` | use_point | 22.6 | 25.9 | 1.15 | ok |
+| `Spawns/OobQuaySteps3` | `Gameplay/Doors/LoanHallDoor/UsePoint` | use_point | 23.3 | 26.2 | 1.12 | ok |
+| `Spawns/OobQuaySteps3` | `Gameplay/Doors/ManagerHallDoor/UsePoint` | use_point | 20.2 | 24.1 | 1.19 | ok |
+| `Spawns/OobQuaySteps3` | `Gameplay/Doors/AtmInnerDoor` | objective | 17.8 | 24.8 | 1.39 | ok |
+| `Spawns/OobQuaySteps3` | `Gameplay/Doors/AtmInnerDoor/UsePoint` | use_point | 17.8 | 24.8 | 1.39 | ok |
+| `Spawns/OobQuaySteps3` | `Gameplay/Doors/VestibuleInnerDoors/UsePoint` | use_point | 12.7 | 13.3 | 1.05 | ok |
+| `Spawns/OobQuaySteps3` | `Gameplay/Doors/MainEntrance` | objective | 10.7 | 11.3 | 1.05 | ok |
+| `Spawns/OobQuaySteps3` | `Gameplay/Doors/MainEntrance/UsePoint` | use_point | 10.7 | 11.3 | 1.05 | ok |
+| `Spawns/OobQuaySteps3` | `Gameplay/Doors/AtmStreetDoor` | objective | 17.8 | 18.0 | 1.01 | ok |
+| `Spawns/OobQuaySteps3` | `Gameplay/Doors/AtmStreetDoor/UsePoint` | use_point | 17.8 | 18.0 | 1.01 | ok |
+| `Spawns/OobQuaySteps3` | `Gameplay/Doors/XferDoor/UsePoint` | use_point | 25.9 | 52.6 | 2.04 | ok |
+| `Spawns/OobQuaySteps3` | `Gameplay/Doors/JanitorDoor/UsePoint` | use_point | 25.1 | 48.4 | 1.93 | ok |
+| `Spawns/OobQuaySteps3` | `Gameplay/Doors/LockerRoomDoor/UsePoint` | use_point | 25.1 | 49.5 | 1.97 | ok |
+| `Spawns/OobQuaySteps3` | `Gameplay/Doors/WCDoor/UsePoint` | use_point | 28.9 | 53.6 | 1.86 | ok |
+| `Spawns/OobQuaySteps3` | `Gameplay/Doors/PlantDoor/UsePoint` | use_point | 26.4 | 55.9 | 2.12 | ok |
+| `Spawns/OobQuaySteps3` | `Gameplay/Doors/ServerDoor` | objective | 28.4 | 60.9 | 2.14 | ok |
+| `Spawns/OobQuaySteps3` | `Gameplay/Doors/ServerDoor/UsePoint` | use_point | 28.4 | 60.9 | 2.14 | ok |
+| `Spawns/OobQuaySteps3` | `Gameplay/Doors/RecordsDoor/UsePoint` | use_point | 25.8 | 52.6 | 2.04 | ok |
+| `Spawns/OobQuaySteps3` | `Gameplay/Doors/InspectionWestDoor/UsePoint` | use_point | 25.0 | 48.2 | 1.93 | ok |
+| `Spawns/OobQuaySteps3` | `Gameplay/Doors/VaultGate` | objective | 25.2 | 51.5 | 2.04 | ok |
+| `Spawns/OobQuaySteps3` | `Gameplay/Doors/VaultGate/UsePoint` | use_point | 25.2 | 51.5 | 2.04 | ok |
+| `Spawns/OobQuaySteps3` | `Gameplay/Doors/InspectionEastDoor/UsePoint` | use_point | 26.9 | 57.4 | 2.14 | ok |
+| `Spawns/OobQuaySteps3` | `Gameplay/Doors/CountRoomDoor` | objective | 28.3 | 60.9 | 2.15 | ok |
+| `Spawns/OobQuaySteps3` | `Gameplay/Doors/CountRoomDoor/UsePoint` | use_point | 28.3 | 60.9 | 2.15 | ok |
+| `Spawns/OobQuaySteps3` | `Gameplay/Doors/DepositoryDoor` | objective | 22.9 | 67.2 | 2.93 | ok |
+| `Spawns/OobQuaySteps3` | `Gameplay/Doors/DepositoryDoor/UsePoint` | use_point | 22.9 | 67.2 | 2.93 | ok |
+| `Spawns/OobQuaySteps3` | `Gameplay/Doors/VaultDoor` | objective | 22.8 | 53.0 | 2.32 | ok |
+| `Spawns/OobQuaySteps3` | `Gameplay/Doors/VaultDoor/UsePoint` | use_point | 22.8 | 53.0 | 2.32 | ok |
+| `Spawns/OobQuaySteps3` | `Gameplay/Doors/VaultDoor/VaultDrill` | objective | 23.2 | 53.0 | 2.28 | ok |
+| `Spawns/OobQuaySteps3` | `Gameplay/Doors/VaultDoor/VaultDrill/UsePoint` | use_point | 23.2 | 53.0 | 2.28 | ok |
+| `Spawns/OobQuaySteps3` | `Gameplay/Doors/AreawayDoor` | objective | 33.4 | 55.0 | 1.65 | ok |
+| `Spawns/OobQuaySteps3` | `Gameplay/Doors/AreawayDoor/UsePoint` | use_point | 33.4 | 55.0 | 1.65 | ok |
+| `Spawns/OobQuaySteps3` | `Gameplay/Doors/AlleyGate` | objective | 49.7 | 64.6 | 1.30 | ok |
+| `Spawns/OobQuaySteps3` | `Gameplay/Doors/AlleyGate/UsePoint` | use_point | 49.7 | 64.6 | 1.30 | ok |
+| `Spawns/OobQuaySteps3` | `Gameplay/Doors/HarborWestGate` | objective | 23.9 | 23.9 | 1.00 | ok |
+| `Spawns/OobQuaySteps3` | `Gameplay/Doors/HarborWestGate/UsePoint` | use_point | 23.9 | 23.9 | 1.00 | ok |
+| `Spawns/OobQuaySteps3` | `Gameplay/Doors/HarborEastGate` | objective | 29.8 | 31.4 | 1.06 | ok |
+| `Spawns/OobQuaySteps3` | `Gameplay/Doors/HarborEastGate/UsePoint` | use_point | 29.8 | 31.4 | 1.06 | ok |
+| `Spawns/OobQuaySteps3` | `Gameplay/Doors/WharfNorthGate` | objective | 48.0 | 54.3 | 1.13 | ok |
+| `Spawns/OobQuaySteps3` | `Gameplay/Doors/WharfNorthGate/UsePoint` | use_point | 48.0 | 54.3 | 1.13 | ok |
+| `Spawns/OobQuaySteps3` | `Gameplay/Windows/HallBay1` | objective | 13.1 | 13.1 | 1.00 | ok |
+| `Spawns/OobQuaySteps3` | `Gameplay/Windows/HallBay1/UsePoint` | use_point | 13.1 | 13.1 | 1.00 | ok |
+| `Spawns/OobQuaySteps3` | `Gameplay/Windows/HallBay2` | objective | 11.4 | 14.2 | 1.24 | ok |
+| `Spawns/OobQuaySteps3` | `Gameplay/Windows/HallBay2/UsePoint` | use_point | 11.4 | 14.2 | 1.24 | ok |
+| `Spawns/OobQuaySteps3` | `Gameplay/Windows/HallBay3` | objective | 11.8 | 12.0 | 1.02 | ok |
+| `Spawns/OobQuaySteps3` | `Gameplay/Windows/HallBay3/UsePoint` | use_point | 11.8 | 12.0 | 1.02 | ok |
+| `Spawns/OobQuaySteps3` | `Gameplay/Windows/HallBay4` | objective | 13.7 | 15.0 | 1.10 | ok |
+| `Spawns/OobQuaySteps3` | `Gameplay/Windows/HallBay4/UsePoint` | use_point | 13.7 | 15.0 | 1.10 | ok |
+| `Spawns/OobQuaySteps3` | `Gameplay/Vault/TimeLockPanel` | objective | 24.1 | 56.1 | 2.33 | ok |
+| `Spawns/OobQuaySteps3` | `Gameplay/Vault/TimeLockPanel/UsePoint` | use_point | 24.1 | 56.1 | 2.33 | ok |
+| `Spawns/OobQuaySteps3` | `Gameplay/Vault/CageCash` | loot_spawn | 17.0 | 59.1 | 3.48 | detour (whitelisted) |
+| `Spawns/OobQuaySteps3` | `Gameplay/Vault/CageCash/UsePoint` | use_point | 17.8 | 58.2 | 3.26 | detour (whitelisted) |
+| `Spawns/OobQuaySteps3` | `Gameplay/Vault/CoopCashBricks` | loot_spawn | 13.9 | 63.8 | 4.59 | detour (whitelisted) |
+| `Spawns/OobQuaySteps3` | `Gameplay/Vault/CoopCashBricks/UsePoint` | use_point | 14.7 | 63.3 | 4.30 | detour (whitelisted) |
+| `Spawns/OobQuaySteps3` | `Gameplay/Vault/Box1` | objective | 19.7 | 57.2 | 2.91 | ok |
+| `Spawns/OobQuaySteps3` | `Gameplay/Vault/Box1/UsePoint` | use_point | 19.7 | 57.2 | 2.91 | ok |
+| `Spawns/OobQuaySteps3` | `Gameplay/Vault/Box2` | objective | 17.9 | 58.5 | 3.27 | detour (whitelisted) |
+| `Spawns/OobQuaySteps3` | `Gameplay/Vault/Box2/UsePoint` | use_point | 17.9 | 58.5 | 3.27 | detour (whitelisted) |
+| `Spawns/OobQuaySteps3` | `Gameplay/Vault/Box3` | objective | 16.1 | 60.0 | 3.73 | detour (whitelisted) |
+| `Spawns/OobQuaySteps3` | `Gameplay/Vault/Box3/UsePoint` | use_point | 16.1 | 60.0 | 3.73 | detour (whitelisted) |
+| `Spawns/OobQuaySteps3` | `Gameplay/Vault/Box4` | objective | 14.3 | 61.8 | 4.31 | detour (whitelisted) |
+| `Spawns/OobQuaySteps3` | `Gameplay/Vault/Box4/UsePoint` | use_point | 14.3 | 61.8 | 4.31 | detour (whitelisted) |
+| `Spawns/OobQuaySteps3` | `Gameplay/Vault/Box5` | objective | 21.3 | 57.5 | 2.70 | ok |
+| `Spawns/OobQuaySteps3` | `Gameplay/Vault/Box5/UsePoint` | use_point | 21.3 | 57.5 | 2.70 | ok |
+| `Spawns/OobQuaySteps3` | `Gameplay/Vault/Box6` | objective | 19.6 | 58.5 | 2.99 | ok |
+| `Spawns/OobQuaySteps3` | `Gameplay/Vault/Box6/UsePoint` | use_point | 19.6 | 58.5 | 2.99 | ok |
+| `Spawns/OobQuaySteps3` | `Gameplay/Vault/Box7` | objective | 18.0 | 60.1 | 3.34 | detour (whitelisted) |
+| `Spawns/OobQuaySteps3` | `Gameplay/Vault/Box7/UsePoint` | use_point | 18.0 | 60.1 | 3.34 | detour (whitelisted) |
+| `Spawns/OobQuaySteps3` | `Gameplay/Vault/Box8` | objective | 16.4 | 61.8 | 3.78 | detour (whitelisted) |
+| `Spawns/OobQuaySteps3` | `Gameplay/Vault/Box8/UsePoint` | use_point | 16.4 | 61.8 | 3.78 | detour (whitelisted) |
+| `Spawns/OobQuaySteps3` | `Gameplay/Depository/DepositorySafe` | objective | 19.5 | 71.0 | 3.64 | detour (whitelisted) |
+| `Spawns/OobQuaySteps3` | `Gameplay/Depository/DepositorySafe/UsePoint` | use_point | 19.5 | 71.0 | 3.64 | detour (whitelisted) |
+| `Spawns/OobQuaySteps3` | `Gameplay/Depository/DepositorySafe/NightDropBags` | loot_spawn | 18.6 | 72.3 | 3.88 | detour (whitelisted) |
+| `Spawns/OobQuaySteps3` | `Gameplay/Depository/DepositorySafe/NightDropBags/UsePoint` | use_point | 18.6 | 72.3 | 3.88 | detour (whitelisted) |
+| `Spawns/OobQuaySteps3` | `Gameplay/Misc/TellerDrawer1/UsePoint` | use_point | 23.1 | 29.5 | 1.28 | ok |
+| `Spawns/OobQuaySteps3` | `Gameplay/Misc/TellerDrawer2/UsePoint` | use_point | 22.3 | 34.5 | 1.55 | ok |
+| `Spawns/OobQuaySteps3` | `Gameplay/Misc/TellerDrawer3/UsePoint` | use_point | 22.7 | 39.5 | 1.74 | ok |
+| `Spawns/OobQuaySteps3` | `Gameplay/Misc/CameraStation/UsePoint` | use_point | 28.4 | 42.1 | 1.48 | ok |
+| `Spawns/OobQuaySteps3` | `Gameplay/Misc/AlarmSecurity/UsePoint` | use_point | 30.1 | 43.8 | 1.46 | ok |
+| `Spawns/OobQuaySteps3` | `Gameplay/Misc/AlarmManager/UsePoint` | use_point | 22.1 | 26.3 | 1.19 | ok |
+| `Spawns/OobQuaySteps3` | `Gameplay/Misc/AlarmTellers/UsePoint` | use_point | 23.6 | 40.6 | 1.72 | ok |
+| `Spawns/OobQuaySteps3` | `Gameplay/Misc/PhoneManager/UsePoint` | use_point | 21.3 | 31.0 | 1.45 | ok |
+| `Spawns/OobQuaySteps3` | `Gameplay/Misc/PhoneLoan/UsePoint` | use_point | 26.7 | 30.3 | 1.14 | ok |
+| `Spawns/OobQuaySteps3` | `Gameplay/Misc/CashLift` | objective | 30.0 | 37.5 | 1.25 | ok |
+| `Spawns/OobQuaySteps3` | `Gameplay/Misc/CashLift/UsePoint` | use_point | 30.0 | 37.5 | 1.25 | ok |
+| `Spawns/OobQuaySteps3` | `Gameplay/Atms/AtmCash1` | objective | 18.5 | 21.6 | 1.17 | ok |
+| `Spawns/OobQuaySteps3` | `Gameplay/Atms/AtmCash1/UsePoint` | use_point | 18.5 | 21.6 | 1.17 | ok |
+| `Spawns/OobQuaySteps3` | `Gameplay/Atms/AtmSaw1` | objective | 18.4 | 21.5 | 1.17 | ok |
+| `Spawns/OobQuaySteps3` | `Gameplay/Atms/AtmSaw1/UsePoint` | use_point | 18.4 | 21.5 | 1.17 | ok |
+| `Spawns/OobQuaySteps3` | `Gameplay/Atms/AtmCash2` | objective | 19.2 | 26.8 | 1.39 | ok |
+| `Spawns/OobQuaySteps3` | `Gameplay/Atms/AtmCash2/UsePoint` | use_point | 19.2 | 26.8 | 1.39 | ok |
+| `Spawns/OobQuaySteps3` | `Gameplay/Atms/AtmSaw2` | objective | 19.1 | 20.9 | 1.09 | ok |
+| `Spawns/OobQuaySteps3` | `Gameplay/Atms/AtmSaw2/UsePoint` | use_point | 19.1 | 20.9 | 1.09 | ok |
+| `Spawns/OobQuaySteps3` | `Variants/Group_code_note/Slot_code_break_board/CodeNote` | objective | 30.5 | 44.6 | 1.46 | ok |
+| `Spawns/OobQuaySteps3` | `Variants/Group_code_note/Slot_code_break_board/CodeNote/UsePoint` | use_point | 30.5 | 44.6 | 1.46 | ok |
+| `Spawns/OobQuaySteps3` | `Variants/Group_keycard/Slot_kc_break_locker/Keycard` | objective | 30.5 | 43.6 | 1.43 | ok |
+| `Spawns/OobQuaySteps3` | `Variants/Group_keycard/Slot_kc_break_locker/Keycard/UsePoint` | use_point | 30.5 | 43.6 | 1.43 | ok |
+| `Spawns/OobQuaySteps3` | `Variants/Group_server_room/Slot_srv_basement/HackTerminal` | objective | 32.9 | 65.2 | 1.98 | ok |
+| `Spawns/OobQuaySteps3` | `Variants/Group_server_room/Slot_srv_basement/HackTerminal/UsePoint` | use_point | 32.9 | 65.2 | 1.98 | ok |
+| `Spawns/OobQuaySteps3` | `Variants/Group_vent_open/Slot_vent_locked/AreawayGrate` | objective | 33.4 | 50.3 | 1.51 | ok |
+| `Spawns/OobQuaySteps3` | `Variants/Group_vent_open/Slot_vent_locked/AreawayGrate/UsePoint` | use_point | 33.4 | 50.3 | 1.51 | ok |
+| `Spawns/OobQuaySteps3` | `Variants/Group_vent_open/Slot_vent_locked/AreawayGrate/Padlock` | objective | 33.7 | 50.1 | 1.49 | ok |
+| `Spawns/OobQuaySteps3` | `Variants/Group_vent_open/Slot_vent_locked/AreawayGrate/Padlock/UsePoint` | use_point | 33.7 | 50.1 | 1.49 | ok |
+| `Spawns/OobQuaySteps3` | `Variants/Group_extra_loot/Slot_mgr_safe_empty/ManagerSafe` | objective | 21.6 | 30.9 | 1.43 | ok |
+| `Spawns/OobQuaySteps3` | `Variants/Group_extra_loot/Slot_mgr_safe_empty/ManagerSafe/UsePoint` | use_point | 21.6 | 30.9 | 1.43 | ok |
 | `Spawns/OobQuaySteps3` | `Variants/Group_escape/Slot_esc_boat_quay/BoatSecureE2/Zone` | secure_zone | 6.6 | 8.0 | 1.22 | ok |
 | `Spawns/OobQuaySteps3` | `Variants/Group_escape/Slot_esc_boat_quay/BoatEscapeE2/Zone` | escape_zone | 5.0 | 5.2 | 1.03 | ok |

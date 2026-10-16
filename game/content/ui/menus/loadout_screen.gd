@@ -612,13 +612,38 @@ func close_workshop(refocus: bool = true) -> void:
 		workshop_button.grab_focus.call_deferred()
 
 
+## D-126: every secondary (pistols, SMGs, shotguns, then the rest; WorkshopModel order). Owned ones can be picked; the
+## others are listed disabled with what they take (a level, or buying in the Workshop), so the slot's range shows from
+## a fresh profile (the PO saw only the Kestrel and read the slot as pistols only).
 func _fill_weapons() -> void:
 	weapon_option.clear()
-	for wid: StringName in profile.owned_weapons:
+	for wid: StringName in WorkshopModel.weapon_ids():
 		var w: WeaponDef = ContentDB.weapon(wid)
-		if w != null and w.slot == Enums.WeaponSlot.SECONDARY:
-			_add_item(weapon_option, UiText.t(UiText.item_key(wid)), wid)
+		if w == null or w.slot != Enums.WeaponSlot.SECONDARY:
+			continue
+		var text: String = UiText.t(UiText.item_key(wid))
+		var owned: bool = profile.owned_weapons.has(wid)
+		if not owned:
+			text = UiText.t(&"ui.loadout.weapon_locked", {"name": text, "level": w.unlock_level}) \
+					if profile.level < w.unlock_level else UiText.t(&"ui.loadout.weapon_for_sale", {"name": text})
+		_add_item(weapon_option, text, wid)
+		weapon_option.set_item_disabled(weapon_option.item_count - 1, not owned)
+		weapon_option.set_item_glyph(weapon_option.item_count - 1, class_glyph(int(w.weapon_class)))
 	_select_id(weapon_option, profile.loadout.secondary)
+
+
+## HubStationIcon kind for a weapon class (D-126 picker tiles).
+static func class_glyph(weapon_class: int) -> StringName:
+	match weapon_class:
+		Enums.WeaponClass.SMG:
+			return &"smg"
+		Enums.WeaponClass.SHOTGUN:
+			return &"shotgun"
+		Enums.WeaponClass.SPECIAL:
+			return &"saw"
+		Enums.WeaponClass.PISTOL:
+			return &"pistol"
+	return &"armory"
 
 
 func _on_weapon_changed(_index: int) -> void:

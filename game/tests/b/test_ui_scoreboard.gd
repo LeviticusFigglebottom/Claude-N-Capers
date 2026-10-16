@@ -189,6 +189,44 @@ func test_payday_without_awards_says_so() -> void:
 	screen.free()
 
 
+## Lead r228 (payday capture): Crew Honours named "Player" (the row's generic name) where the stats list said the
+## heister; a failed job showed honours at all (PD2 shows none).
+func test_payday_honours_name_the_heister_and_skip_failed_jobs() -> void:
+	SaveService.root_dir = BTestUtil.profile_root()
+	var screen: PaydayScreen = PAYDAY_SCENE.instantiate() as PaydayScreen
+	screen.apply_to_profile = false
+	screen.setup(PlayerProfile.new_default())
+	screen.crew_heisters = {0: &"rook"}
+	add_child(screen)
+	await wait_frames(1)
+	var result: Dictionary = HeistCatalog.sample_result()
+	for row: Dictionary in result["crew"] as Array:
+		row["name"] = "Player"
+	screen.show_result(result)
+	var rook: String = Heisters.display_name(&"rook")
+	assert_eq(screen._crew_name(0, false), rook, "the stats row names the heister")
+	assert_eq((screen.award_labels[&"most_kills"] as Label).text, rook, "the honours name the same heister")
+	var failed: Dictionary = HeistCatalog.sample_result()
+	failed["success"] = false
+	failed["fail_reason"] = &"custody"
+	screen.show_result(failed)
+	assert_false(bool(screen.payout.get("success", true)), "failed job")
+	assert_eq(screen.awards.size(), 0, "no awards on a failed job")
+	assert_eq(screen.award_labels.size(), 0, "no Crew Honours section")
+	assert_false(_has_text(screen, UiText.t(&"ui.awards.title")), "the section is not drawn")
+	screen.free()
+	SaveService.root_dir = SaveService.DEFAULT_ROOT_DIR
+
+
+static func _has_text(n: Node, text: String) -> bool:
+	if n is Label and (n as Label).text == text:
+		return true
+	for c: Node in n.get_children():
+		if _has_text(c, text):
+			return true
+	return false
+
+
 ## A model with `crew` but no `crew_stats` (the shape of ENV A's LocalHudModel before the QB lands).
 class LegacyModel:
 	extends Node
@@ -222,3 +260,38 @@ func test_long_objective_list_folds_and_the_sheet_fits() -> void:
 	sb.refresh()
 	await wait_frames(2)
 	assert_eq(sb.objectives_box.get_child_count(), 5, "a short list shows whole, done ones included")
+
+
+## D-115 GN strings audit: at Gallery Night's start 13 steps are live and 9 of them optional; folding, the required
+## steps (find_canvases, centrepiece, canvases, secure) keep their lines and the order stays the mission's.
+func test_fold_keeps_required_steps_before_optional_ones() -> void:
+	var ids: Array[StringName] = [&"casing", &"find_canvases", &"keycard", &"server_code", &"hack", &"treasury",
+		&"art_store", &"centrepiece", &"canvases", &"secure", &"extras", &"lockers", &"curator_safe"]
+	var required: Array[StringName] = [&"find_canvases", &"centrepiece", &"canvases", &"secure"]
+	var obs: Array[Dictionary] = []
+	for id: StringName in ids:
+		var args: Dictionary = {}
+		if id == &"find_canvases":
+			args = {"found": 0, "total": 4}
+		elif id == &"secure":
+			args = {"count": 0, "total": 2}
+		if not required.has(id):
+			args["optional"] = true
+		obs.append({"id": id, "text_key": StringName("objective.gallery_night.%s" % id),
+			"state": Enums.ObjectiveState.ACTIVE, "args": args})
+	_model.objectives = obs
+	var sb: ScoreboardOverlay = _board()
+	sb.set_shown(true)
+	sb.refresh()
+	await wait_frames(2)
+	var texts: Array[String] = []
+	for l: Node in sb.objectives_box.get_children():
+		texts.append((l as Label).text)
+	var cap: int = sb.tweak.scoreboard_objectives_max
+	assert_eq(texts.size(), cap, "capped: %s" % [texts])
+	for id: StringName in required:
+		var want: String = ObjectivesPanel.objective_text(obs[ids.find(id)])
+		assert_true(texts.has(want), "required step %s keeps a line: %s" % [id, texts])
+	assert_true(texts.find(ObjectivesPanel.objective_text(obs[1])) < texts.find(ObjectivesPanel.objective_text(obs[7])),
+			"mission order kept")
+	assert_eq(texts[texts.size() - 1], UiText.t(&"ui.scoreboard.objectives_more", {"count": ids.size() - (cap - 1)}))

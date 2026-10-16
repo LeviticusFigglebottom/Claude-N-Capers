@@ -35,7 +35,8 @@ func _init(p: PlayerProfile) -> void:
 	profile = p
 
 
-## Every weapon id: primaries first, then secondaries; each by unlock level, then id.
+## Every weapon id: primaries first, then secondaries; each by class (D-126: pistols, SMGs, shotguns ... in
+## Enums.WeaponClass order), then unlock level, then id.
 static func weapon_ids() -> Array[StringName]:
 	var defs: Array[WeaponDef] = []
 	for r: Resource in ContentDB.all_weapons():
@@ -43,6 +44,8 @@ static func weapon_ids() -> Array[StringName]:
 	defs.sort_custom(func(a: WeaponDef, b: WeaponDef) -> bool:
 		if a.slot != b.slot:
 			return a.slot < b.slot
+		if a.weapon_class != b.weapon_class:
+			return a.weapon_class < b.weapon_class
 		if a.unlock_level != b.unlock_level:
 			return a.unlock_level < b.unlock_level
 		return ContentDB.id_less(a.id, b.id))
