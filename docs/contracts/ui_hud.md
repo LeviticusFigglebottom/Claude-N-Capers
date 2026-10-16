@@ -156,7 +156,9 @@ edge). 0 = not flashed. B renders a white-out that fades with it; P may add a ma
 interrupts a held interaction (A).
 
 ## v1.16: scoped ADS (P's FP scope overlay)
-HUD model gains `scoped_ads: bool` and `scope_ring: Rect2` (screen space, the ring's bounding rect), written by ENV P while
-the scope overlay is above its show threshold. ENV B moves text panels (device timers, the interaction prompt, hint strips)
-outside `scope_ring` while scoped. Gameplay markers, detection chevrons, hit markers and subtitles stay where they are
+HUD model gains `scoped_ads: bool` and `scope_ring: Rect2` (canvas coordinates at the 1920x1080 stretch base, the space B's Controls lay out in, not window
+pixels; the ring's bounding rect), written by ENV P while
+the scope overlay is above its show threshold. ENV B moves text panels (device timers, the interaction prompt, hint strips,
+first-time tips, assault banners) outside `scope_ring` while scoped; the ring leaves little room above or below it, so
+the side margins are the place. Gameplay markers, detection chevrons, hit markers and subtitles stay where they are
 (PD2 keeps them while scoped). No gadget on/off HUD hint: PD2 shows none.
