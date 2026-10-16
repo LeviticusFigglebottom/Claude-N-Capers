@@ -49,7 +49,7 @@ const MOUNT_META: StringName = &"mount"
 
 ## Horizontal field of view (degrees).
 @export var fov_deg: float = 60.0
-@export var range_m: float = 20.0
+@export var range_m: float = 15.0  # D-128 (LEAD): PD2 editor default; per-camera overrides stay
 ## Total pan arc (degrees). 0 = static.
 @export var pan_deg: float = 0.0
 ## Seconds for a full pan cycle.
