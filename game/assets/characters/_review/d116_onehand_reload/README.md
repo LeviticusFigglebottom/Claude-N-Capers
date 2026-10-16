@@ -14,3 +14,9 @@ of the screen height; wrist 0.34 m from the eye.
   with the fingers curled (no flat palm). The muzzle-up tilt is capped at 50 deg, so the top third shows the world,
   and the left hand is 0.31 m from the eye. The left forearm still crosses the lower-left as it reaches over the
   gun.
+- v3 (lead review of v2): `glasshouse_marshal_357_v3.png`, `marshal_eject_full_v3.png`,
+  `marshal_loader_release_full_v3.png`. The rod hand's elbow points straight down, so the forearm rises from the
+  bottom edge instead of cutting the lower-left wedge (moving the hold right or rolling the cylinder runs out of
+  arm reach). The speedloader hand curls round the loader, the trip to the pouch is a loose fist, the release
+  flick keeps the fingers curled, and the crane-closing fingers curl against the cylinder: no splayed or flat
+  palm anywhere.
