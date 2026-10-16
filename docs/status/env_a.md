@@ -3,6 +3,24 @@
 Owner: ENV A. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-16 04:00 UTC: PO6 done, D-115 / D-118 / X-3 / X-4 / X-5 closed (env/a-core f450497c)
+### Done (pushed; on trunk through c07f7e69, round 223 has 37bf88f9)
+- PO6-01..08, 14..20 (+17b) A-side; D-115 DB-2/3/4/8/12/13/16/17, SL-5/9, QC-36 TODO; D-117 mission VO.
+- D-118: CrewWeapons gadget_on / gadget_changed (net "gd"), 3P CrewGadgetVisual, shotgun AMMO runtime
+  (ShotgunAmmo; per-shot damage preserved), gadget detection behind StealthTweak (0 by default, S4.2).
+- D-cast: heist_tag_characters for GH/ND/DB/SL/GN (GN 1:1 from p5_cast v4), looks dealt round-robin per tag and
+  replicated (spawn "look"), HandProps on clip, roster activities, HardHatHandLift (D audit R1).
+- X-3 per-heist assault events at C markers (test_x3_*); X-4 stealth e2e ND/SL/GN + forced GN curator-keycard
+  (test_x4_*; HeistRuntime options["variant_table"] dev hook); escape objective completes before heist_ended.
+- X-5: GH doorway back_off latch, push-slot by net_id, nav-radius doorway test, staff return to marks, seated
+  aliases stand without a seat.
+- B facts: HeistResult.loot_available, safe / cage objective data open_method.
+### Open
+- test_x5_gh_police_do_not_park_under_the_crew_upstairs fails ~1 in 3 inside the full `police` filter (passes
+  alone): order-dependent leak, bisect lane running.
+- Backlog: GN loud pilot probe (below, HANDOFF 2026-10-14), ND loud gate attempt 24 (empty box only), co-op
+  ghost rounds, escape vehicles, split HeistRuntime.start(), Stinger cap check.
+
 ## 2026-10-15 23:10 UTC: D-115 mission audit, Dockside Burn + Shadow Ledger (read-only)
 Owners: A = mission script/systems, B = content, C = map/props/generator. Severity in brackets.
 ### Dockside Burn
