@@ -116,6 +116,12 @@ func _build_markers() -> void:
 		l.add_theme_color_override(&"font_color", tweak.label_color)
 		l.add_theme_color_override(&"font_outline_color", tweak.paper_color)
 		l.add_theme_constant_override(&"outline_size", 6)
+		# Lead r222: a thin translucent plate in the paper colour, so a line under a label never cuts its text.
+		var plate: StyleBoxFlat = StyleBoxFlat.new()
+		plate.bg_color = Color(tweak.paper_color, tweak.label_plate_alpha)
+		plate.set_content_margin_all(2.0)
+		plate.set_corner_radius_all(2)
+		l.add_theme_stylebox_override(&"normal", plate)
 		l.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		add_child(l)
 		marker_labels[pid] = l
