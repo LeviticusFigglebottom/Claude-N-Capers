@@ -1041,3 +1041,11 @@ concealment 21→25; P7 vise_crossbow damage 350→450; P8 akimbo_warden_45 tota
 Shape kept (PD2): no early weapon best in class; LMGs have the best ammo economy; every sniper out-damages every AR per
 shot; secondaries stay below primaries of the same role. ENV A reviews the Wrecker's Cataclysm HP scaling (×12 against
 the Heavy's ×4) against PD2's Bulldozer, and adds carry-over for fractional ammo pickups.
+
+## D-125: Wrecker HP curve (2026-10-16, LEAD; from ENV A's review of B's D-124 audit)
+Wrecker HP per difficulty (ROUTINE..CATACLYSM) becomes 2000 / 2000 / 3000 / 4500 / 7000 / 10000 (×5, was ×12 up to
+24000), so the Wrecker:Heavy ratio goes 12.5 → 15.6 instead of 12.5 → 37.5. wrecker_b/g/s share it; wrecker_m stays
+2× (4000 / 4000 / 6000 / 9000 / 14000 / 20000). Plates (150 / 160), head ×2.5, explosive ×1.1 and the damage table are
+unchanged. PD2 shape: tanky, killable by an AR player through the visor with headshots at about half the reserve, and
+not by body fire alone. ENV A pins the table, the ratio and a Corsair head-route budget in a test; ENV B re-runs the
+balance tool after landing and reports the "solo within reserve" count.
