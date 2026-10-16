@@ -58,9 +58,9 @@ Cross-env requests are QC-51..QC-59.
   holdout). The art-store vault door also takes a **thermal drill** (240 s) as the fallback.
 - **Difficulty notes:**
   - Routine/Tense: 1–2 guards (hall post + 0–1 rover; `rover_none` 20%) + operator (60%), 3–5 patrons, `sensors_treasury`
-    likely.
-  - Hazardous/Brutal: 3–4 guards, 5–7 patrons, sweeping/timed lasers favoured, `sensors_all`
-    possible, `insurance_inspection` and `vaultline_early` events enabled. **From Brutal the guard
+    most likely (`sensor_net` 50%; `sensors_upper` 35%, and `sensors_all` 15%, so all 17 frames can be wired even at Routine).
+  - Hazardous/Brutal: 3 guards on Hazardous, exactly 4 on Brutal (`difficulty_add`, `rover_none` 0), 5–7 patrons, sweeping/timed lasers favoured, `sensors_all`
+    40% (`sensors_upper` 40%, `sensors_treasury` 20%), `insurance_inspection` and `vaultline_early` events enabled. **From Brutal the guard
     count plus the operator can exceed the 4-pager cap**: some guards must be ghosted. Intended.
   - Lethal/Cataclysm: 5 guards, Titan cameras (S8.1), `argus_upgrade` enabled.
   - **Solo:** AI teammates wait at the van in stealth (D-014). In loud they carry canvases on
@@ -829,7 +829,7 @@ Hazardous (`sensor_net`, `laser_pattern`, `patrons`, `escape_eta_s`).
 | `canvas_orchard` (`loot_spot`) | `orchard_calloway` (UG1), `orchard_benefactors` (EB), `orchard_quarantine` (QR crate) | 1, 1, 0.7 | Upstairs behind the rover and the lockdown shutter, on the public ground floor, or in the basement. |
 | `canvas_widow` (`loot_spot`) | `widow_sallow` (UG2), `widow_founders` (WG), `widow_conservation` (CS easel) | 1, 1, 0.7 | As above; CS puts a civilian (conservator) and a keycard slot beside it. |
 | `canvas_saint` (`loot_spot`) | `saint_maritime` (UG3), `saint_harbour` (EG), `saint_store` (AS) | 1, 1, 0.7 | As above; `saint_store` makes the art store worth one of the two keycards. |
-| `sensor_net` | `sensors_treasury` (TR only), `sensors_upper` (all upper frames + TR + the landing), `sensors_all` (every hung frame) | Routine 0.5/0.35/0.15; Brutal+ 0.2/0.4/0.4 | **Whether the hack is needed in stealth**, and for which canvases. |
+| `sensor_net` | `sensors_treasury` (TR only), `sensors_upper` (all upper frames + TR + the landing), `sensors_all` (every hung frame) | Routine/Tense 0.5/0.35/0.15 (slot weights); Hazardous+ 0.2/0.4/0.4 (`weights_by_difficulty` 2-5) | **Whether the hack is needed in stealth**, and for which canvases. |
 | `conservator` (`civilian_cluster`) | `cons_late`, `cons_gone` | 0.5, 0.5 | A civilian in CS (by `widow_conservation` and `kc_conservator`). |
 | `keycard` | `kc_curator` (on her lanyard: tie or kill her, QC-52), `kc_security` (SC cabinet), `kc_registrar` (RG desk), `kc_conservator` (CS bench; requires `cons_late`) | 1, 0.75, 1, 1; **pick 2** | **2 cards for 3 readers (TR, AS vault, LD art door):** which door you give up, and whether you must deal with the operator or the curator. |
 | `code_note` | `code_security_log` (SC), `code_curator_planner` (CO), `code_admin_postit` (AO) | 1, 1, 1; pick 1 | **The SV door:** behind the operator, in the curator's office, or in the open office (C13's corridor). |
