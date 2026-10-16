@@ -25,7 +25,8 @@ backed to a wall | ``corner`` | ``floor`` free-standing | ``center`` | ``on`` on
 ``z`` (wall_mount centre height), ``hosts`` (kinds), ``clear`` (front clearance m), ``weight``,
 ``leaf_script`` (a LEAF_SCRIPTS key: a visual-only script set on the glb's ``Leaf`` node, GN-C2 shutters),
 ``leaf2`` (true: the same script on ``Leaf2`` too, D-111 Dockside Burn twin rollers / sliders),
-``hidden`` (top-level glb node names the wrapper hides, e.g. a breach point's ``Blown`` state, PO6-17).
+``hidden`` (top-level glb node names the wrapper hides, e.g. a breach point's ``Blown`` state, PO6-17),
+``fx`` {tip, glow} (device contact FX: a `Sparks` FX_SCRIPT node + a hidden `Glow` light at the tip).
 """
 
 from __future__ import annotations
@@ -47,6 +48,8 @@ PROPS_RES = "res://world/props"
 CATALOG = GAME / "world" / "props" / "prop_catalog.json"
 SURFACE_MAP = GAME / "world" / "materials" / "surface_map.json"
 COLLISION_SUFFIXES = ("-convcolonly", "-colonly", "-convcol", "-col")
+# Device contact FX (cat ``fx``): the procedural sparks script on the wrapper's `Sparks` node.
+FX_SCRIPT = "res://world/vfx/drill_sparks.gd"
 # Visual-only scripts a wrapper may put on the model's `Leaf` (cat ``leaf_script``).
 LEAF_SCRIPTS = {"shutter": "res://world/props/shutter_leaf.gd", "slide": "res://world/props/slide_leaf.gd"}
 _SURFACES: dict = {}
@@ -212,6 +215,22 @@ def _color(hx: str) -> str:
     return f"Color({_f(r)}, {_f(g)}, {_f(b)}, 1)"
 
 
+def _fx_nodes(fx: dict) -> list[str]:
+    """cat ``fx`` (device contact FX, PO: the lance's glow and sparks on the door): a `Sparks` node
+    (FX_SCRIPT: procedural particles, ``emitting`` off) and a hidden `Glow` OmniLight3D at ``tip`` (Godot
+    coordinates); ENV A's DrillPoint toggles both from the device state."""
+    t = fx.get("tip", [0.0, 0.0, 0.0])
+    g = fx.get("glow", {})
+    return ['[node name="Sparks" type="Node3D" parent="."]',
+            f"transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, {_f(t[0])}, {_f(t[1])}, {_f(t[2])})",
+            'script = ExtResource("3_fx")', "",
+            '[node name="Glow" type="OmniLight3D" parent="."]',
+            f"transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, {_f(t[0])}, {_f(t[1])}, {_f(t[2] + 0.06)})",
+            "visible = false", f"layers = {LIGHT_LAYERS}",
+            f"light_color = {_color(g.get('color', '#FF8A3A'))}", f"light_energy = {_f(g.get('energy', 2.5))}",
+            f"omni_range = {_f(g.get('range', 1.6))}", "omni_attenuation = 1.5", "light_size = 0.02"]
+
+
 def _light_node(light: dict) -> list[str]:
     kind = light.get("type", "omni")
     pos = light.get("pos", [0.0, 0.0, 0.0])
@@ -282,10 +301,14 @@ def entry(spec: meta.AssetSpec) -> tuple[dict, str]:
         # their RNG draws) stay exactly as they were before it existed
         e["pin_only"] = True
     leaf_script = LEAF_SCRIPTS[cat["leaf_script"]] if "leaf_script" in cat else ""
-    lines = [f'[gd_scene load_steps={3 if leaf_script else 2} format=3]', "",
+    fx = cat.get("fx")
+    steps = 2 + (1 if leaf_script else 0) + (1 if fx else 0)
+    lines = [f'[gd_scene load_steps={steps} format=3]', "",
              f'[ext_resource type="PackedScene" path="{e["glb"]}" id="1_model"]']
     if leaf_script:
         lines.append(f'[ext_resource type="Script" path="{leaf_script}" id="2_leaf"]')
+    if fx:
+        lines.append(f'[ext_resource type="Script" path="{FX_SCRIPT}" id="3_fx"]')
     lines.append("")
     # a visual that carries a light is its fixture (levelcheck `lights`: fixture ancestor)
     if prefab and "light" in cat:
@@ -332,6 +355,8 @@ def entry(spec: meta.AssetSpec) -> tuple[dict, str]:
         lines += ["", f'[node name="{hn}" parent="Model"]', "visible = false"]
     if "light" in cat:
         lines += [""] + _light_node(cat["light"])
+    if fx:
+        lines += [""] + _fx_nodes(fx)
     if vis > 0.0 or info["collisions"] or leaf_script or hidden or "texel_target" in cat:
         lines += ["", '[editable path="Model"]']
     return e, "\n".join(lines) + "\n"
