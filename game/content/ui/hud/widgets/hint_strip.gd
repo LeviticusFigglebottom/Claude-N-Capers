@@ -18,6 +18,12 @@ var prompt: KeyPrompt
 var note: Label
 ## Current hint id: &"" / &"resume" / &"mask_up" / &"throw_bag" (tests).
 var hint: StringName = &""
+## LEAD r229 real-input run: the open casing card already shows "[G] Hold to mask up"; the mask-up hint waits for it.
+var yield_to_card: bool = false:
+	set(v):
+		if v != yield_to_card:
+			yield_to_card = v
+			refresh()
 var capture_probe: Callable = func() -> bool:
 	return MouseCapture.is_captured() or not MouseCapture.wants_capture()
 var _captured: bool = true
@@ -68,7 +74,7 @@ func refresh() -> void:
 		hint = &""
 	note.visible = hint == &"mask_up"
 	var was: bool = visible
-	visible = hint != &""
+	visible = hint != &"" and not (hint == &"mask_up" and yield_to_card)
 	if hint != &"" and hint != _sounded_hint:
 		UiSfx.play(UiSfx.HINT)  # D-090: a new hint appears
 	_sounded_hint = hint
