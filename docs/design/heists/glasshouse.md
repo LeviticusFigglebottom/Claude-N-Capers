@@ -291,13 +291,17 @@ blocks movement and bullets. Frosted, tinted, mirrored and privacy glass stays o
   - U2 security room: window N. This is the designed sightline over the back door and the dumpsters (see above).
   - U5 admin: windows S ×2. U6 manager: window S (A). U7 stock: window S, windows E ×2.
   - Stair: the glass landing-well guard.
-- **Opaque:** U3 staff WC, the high frosted window N (layout `FROSTED_WINDOWS`). U6 window S (B) is the PO6-17
+- **Opaque:** U3 staff WC, the high frosted window N (layout `FROSTED_WINDOWS`; visual
+  `prop_window_w100_h120_frosted`, the shared frosted glass). U6 window S (B) is the PO6-17
   breach window, an opaque infill until it is blown.
 - **Not map-built:** the gameplay Window prefabs (shopfront ×3, salon ×2, break-room door-window) are
   see-through through their GlassBody (ENV A). The main entrance double glass door (`MainEntrance`, a glass-style
   visual) is a glass-leaf Door and reads clear, like the shopfront it sits in: it stays see-through (D-142 call).
-  The 8 display cases are DisplayCase prefabs (ENV A, not tagged yet). Catalog dressing is not tagged: the window display boxes have felt-lined sides and a glass front
-  only, the salon decor vitrine stands against the wall, and the bus shelter is street dressing.
+  The 8 display cases are DisplayCase prefabs: since ENV A's D-142 patch their glass band above the cabinet is
+  see-through automatically (cabinet and any cap stay opaque). Catalog dressing is not tagged: the window display
+  boxes have felt-lined sides and a glass front only, the salon decor vitrine stands against the wall, and the bus
+  shelter is street dressing (each has one collider over glass and solid parts; the catalog `see_through` flag is
+  for colliders that cover clear glass alone).
 
 ## Stealth routes
 1. **Front (customer):** case from the street and the sales floor. When the keycard is behind the

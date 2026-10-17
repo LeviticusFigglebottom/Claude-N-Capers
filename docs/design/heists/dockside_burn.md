@@ -476,7 +476,7 @@ loud-only, so this is for consistency only.
   the hall clerestory, the GH gatehouse window, the QS net store's pontoon window, and the roof skylights over
   C1, SP and C2.
 - **Opaque:** the O2 security room (dispatch and CCTV) windows N ×2 (privacy; `FROSTED_GLAZING` in
-  build_greybox.gd). M1 window N (E) is the PO6-17 breach window, an opaque infill until it is blown.
+  build_greybox.gd), finished in the shared frosted glass (`glass_frosted`). M1 window N (E) is the PO6-17 breach window, an opaque infill until it is blown.
 - **Not map-built:** the Pier 10 crane cab's tinted windows are part of the landmark visual.
 
 ## Stealth routes

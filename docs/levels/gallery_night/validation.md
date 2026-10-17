@@ -264,7 +264,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## materials: Materials and texel density
 
-- 3833 surfaces checked
+- 3836 surfaces checked
 
 
 ## zfight: Z-fighting
@@ -381,33 +381,33 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 | camera | draw calls | triangles | shadow lights |
 |---|---|---|---|
-| `TopDownPlan` | 1853 | 427860 | 6 |
-| `rc_ext_parade` | 2274 | 584128 | 6 |
-| `rc_ext_wexley` | 1951 | 454732 | 6 |
-| `rc_ext_mews` | 1774 | 419228 | 6 |
-| `rc_ext_court` | 1227 | 337044 | 4 |
-| `rc_hall_entry` | 2302 | 607962 | 6 |
-| `rc_hall_landing` | 1228 | 265512 | 3 |
-| `rc_balcony` | 1684 | 428008 | 5 |
-| `rc_founders` | 1062 | 243400 | 3 |
-| `rc_drawings` | 1198 | 309230 | 3 |
-| `rc_harbour` | 1889 | 477866 | 6 |
-| `rc_benefactors` | 2045 | 522196 | 6 |
-| `rc_cloakroom` | 1361 | 325888 | 3 |
-| `rc_back_corridor` | 2374 | 581168 | 6 |
-| `rc_security` | 1020 | 246306 | 2 |
-| `rc_loading` | 1732 | 453040 | 6 |
-| `rc_break` | 273 | 54128 | 0 |
-| `rc_calloway` | 905 | 208704 | 3 |
-| `rc_sallow` | 998 | 252198 | 3 |
-| `rc_maritime` | 983 | 217296 | 2 |
-| `rc_treasury` | 259 | 64850 | 0 |
-| `rc_upper_corridor` | 1996 | 505278 | 4 |
-| `rc_curator` | 296 | 74294 | 1 |
-| `rc_conservation` | 1590 | 423982 | 6 |
-| `rc_art_store` | 2045 | 520642 | 4 |
-| `rc_plant` | 704 | 169658 | 2 |
-| `rc_roof_deck` | 1854 | 438946 | 5 |
+| `TopDownPlan` | 1856 | 427860 | 6 |
+| `rc_ext_parade` | 2277 | 584128 | 6 |
+| `rc_ext_wexley` | 1954 | 454732 | 6 |
+| `rc_ext_mews` | 1777 | 419228 | 6 |
+| `rc_ext_court` | 1230 | 337044 | 4 |
+| `rc_hall_entry` | 2305 | 607962 | 6 |
+| `rc_hall_landing` | 1229 | 265512 | 3 |
+| `rc_balcony` | 1687 | 428008 | 5 |
+| `rc_founders` | 1065 | 243400 | 3 |
+| `rc_drawings` | 1201 | 309230 | 3 |
+| `rc_harbour` | 1892 | 477866 | 6 |
+| `rc_benefactors` | 2049 | 522208 | 6 |
+| `rc_cloakroom` | 1364 | 325888 | 3 |
+| `rc_back_corridor` | 2377 | 581168 | 6 |
+| `rc_security` | 1023 | 246306 | 2 |
+| `rc_loading` | 1735 | 453040 | 6 |
+| `rc_break` | 276 | 54128 | 0 |
+| `rc_calloway` | 908 | 208704 | 3 |
+| `rc_sallow` | 1001 | 252198 | 3 |
+| `rc_maritime` | 984 | 217296 | 2 |
+| `rc_treasury` | 259 | 64838 | 0 |
+| `rc_upper_corridor` | 1999 | 505278 | 4 |
+| `rc_curator` | 299 | 74294 | 1 |
+| `rc_conservation` | 1593 | 423982 | 6 |
+| `rc_art_store` | 2048 | 520642 | 4 |
+| `rc_plant` | 707 | 169658 | 2 |
+| `rc_roof_deck` | 1857 | 438946 | 5 |
 
 
 ## door_frame_gap: Doors and windows fill their wall openings (no gaps, no clipping)

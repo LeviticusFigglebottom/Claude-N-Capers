@@ -16,7 +16,7 @@ const LIBRARY: Array[String] = [
 	"plaster_painted", "drywall_painted", "concrete", "terrazzo", "marble_cream", "carpet_commercial",
 	"ceiling_tile", "wood_veneer_walnut", "brushed_steel", "chrome", "brass", "glass_clear",
 	"rubber_black", "plastic_matte", "asphalt", "tile_ceramic_white", "vinyl_floor",
-	"metal_painted", "paint_white", "fabric_upholstery", "brick_red",
+	"metal_painted", "paint_white", "fabric_upholstery", "brick_red", "glass_frosted",
 ]
 ## Tinted library surfaces (keep the library textures): key -> [library id, tint (sRGB multiply)]. The key ends in the
 ## library id so the bullet surface lookup (SurfaceTags.for_id strips leading `<prefix>_` segments) resolves it.
@@ -115,7 +115,8 @@ const WINDOW_CASING: float = 0.06
 ## Greybox surface class -> material key for the plain classes (all faces).
 const CLASS_MAT: Dictionary = {
 	"asphalt": "asphalt", "paving": "paving_concrete", "court_stone": "court_concrete", "glass": "glass_clear",
-	"trim": "dark_metal_painted", "prop": "dark_metal_painted", "door": "green_metal_painted", "frame": "dark_metal_painted",
+	"glass_frosted": "glass_frosted", "trim": "dark_metal_painted", "prop": "dark_metal_painted",
+	"door": "green_metal_painted", "frame": "dark_metal_painted",
 	"counter": "wood_veneer_walnut", "handrail": "bronze_brass", "steel": "brushed_steel", "gilt": "gilt_brass",
 	"stone": "ashlar_marble_cream", "limestone": "limestone_plaster_painted", "granite": "granite_marble_cream",
 	"partition": "silk_fabric_upholstery", "concrete": "concrete", "brick": "brick_red", "render": "render_plaster_painted",
@@ -354,7 +355,7 @@ static func _at_floor_level(y: float) -> bool:
 ## Queues a class box (drawn by draw_queued) and records it as a solid (not glass).
 func vis_box(mn: Vector3, mx: Vector3, cls: String) -> void:
 	var idx: int = -1
-	if cls != "glass":
+	if not cls.begins_with("glass"):  # clear or frosted (D-142) panes
 		idx = _solids.size()
 		_add_solid(AABB(mn, mx - mn))
 	if cls == "" or cls == "none" or cls == "hidden":
