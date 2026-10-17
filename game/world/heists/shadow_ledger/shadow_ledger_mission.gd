@@ -91,7 +91,8 @@ func _on_mission_start() -> void:
 	add_objective(&"hack", &"objective.shadow_ledger.hack", Enums.ObjectiveState.HIDDEN, {"marker_tags": [TAG_HACK]})
 	add_objective(&"drives", &"objective.shadow_ledger.drives", Enums.ObjectiveState.HIDDEN, {"marker_tags": [TAG_DRIVES]})
 	add_objective(&"secure", &"objective.shadow_ledger.secure", Enums.ObjectiveState.ACTIVE,
-		{"laptop": 1, "drives": MIN_DRIVES, "optional_more": true, "marker_tags": [TAG_LOOT_SECURE]})
+		{"laptop": 1, "drives": MIN_DRIVES, "optional_more": true, "marker_tags": [TAG_LOOT_SECURE],
+			"laptop_secured": false, "drives_secured": 0})  # B-SL audit: the HUD shows (0/2) from the start
 	add_objective(&"study_safe", &"objective.shadow_ledger.study_safe", Enums.ObjectiveState.ACTIVE,
 		{"optional": true, "marker_tags": [TAG_STUDY_SAFE]})
 	add_objective(&"paintings", &"objective.shadow_ledger.paintings", Enums.ObjectiveState.ACTIVE,
