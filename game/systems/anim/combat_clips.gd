@@ -138,7 +138,9 @@ static func brain_staggered(body: Node) -> bool:
 func armed_seat_clip(npc: NpcBase) -> StringName:
 	if npc == null or not _d._has_clip(&"sit_chair_armed"):
 		return &""
-	var armed: bool = npc.role == CartelBrain.ROLE or (npc.role == &"guard" and _d.weapon_visual != null)
+	# The clip lays a long gun across the lap: a pistol guard keeps sit_chair.
+	var armed: bool = npc.role == CartelBrain.ROLE \
+		or (npc.role == &"guard" and _d.weapon_visual != null and fam(false) == "rifle")
 	return &"sit_chair_armed" if armed else &""
 
 

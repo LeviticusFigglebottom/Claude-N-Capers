@@ -401,12 +401,17 @@ func test_db4_armed_seated_idle() -> void:
 	var trunk: NpcBase = _npc(CartelBrain.ROLE, false, 71634)
 	var gun: Node3D = Node3D.new()
 	_nodes.append(gun)
-	AnimDriver.of(guard).weapon_visual = gun  # a modelled weapon
-	for n: NpcBase in [cartel, guard, unarmed, civ, trunk]:
+	AnimDriver.of(guard).weapon_visual = gun  # a modelled long gun
+	AnimDriver.of(guard).weapon_kind = &"rifle"
+	var pistol: NpcBase = _npc(&"guard", true, 71635)
+	AnimDriver.of(pistol).weapon_visual = gun
+	AnimDriver.of(pistol).weapon_kind = &"pistol"
+	for n: NpcBase in [cartel, guard, unarmed, civ, trunk, pistol]:
 		_brain(n).anim_hint = &"sit"
 	assert_eq(AnimDriver.of(cartel).choose_clip(), &"sit_chair_armed", "cartel `sit`: sit_chair_armed")
 	assert_eq(AnimDriver.of(guard).choose_clip(), &"sit_chair_armed", "armed guard on a seat: sit_chair_armed")
 	assert_eq(AnimDriver.of(unarmed).choose_clip(), &"sit_chair", "guard without a weapon model: sit_chair")
+	assert_eq(AnimDriver.of(pistol).choose_clip(), &"sit_chair", "pistol guard: sit_chair (the clip holds a long gun)")
 	assert_eq(AnimDriver.of(civ).choose_clip(), &"sit_chair", "civilian: sit_chair")
 	assert_eq(AnimDriver.of(trunk).choose_clip(), &"sit_chair", "rig without sit_chair_armed: sit_chair (today)")
 	AnimDriver.of(cartel).tick(0.016)
