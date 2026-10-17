@@ -1365,3 +1365,26 @@ PO: "ensure they're fully finished before moving on to new ones." Ostrander Fede
 passes its D-115-style done check (G2 final, e2e stealth + loud, P windowed G2 pass, strings/VO, cast). Rolling Thunder
 and Afterhours groundwork already pushed (hidden behind the readiness gate; D-141/D-143 rulings) is parked as is: no
 further next-heist work in any env until OF is done. Idle capacity goes to OF, PO items and shipped-heist polish.
+
+## D-145: PO feel pass: ladders, low-difficulty loud, early armor, crew bots, run bob (2026-10-17, LEAD; product owner)
+PO: "ladders should be climbable when looked at, not a forced animation; loud is too hard on lower difficulties; the cops
+seem to have body armor which they shouldn't until later; AI bots need a little health regen / to be customizable to
+perform better (armor and weapons you can buy, customize, and equip to each helping bot slot); the run looks a little too
+wobbly and bobs the gun weirdly." Idle capacity, alongside Ostrander (D-144 unaffected: no next-heist work).
+1. **Ladders (P, A):** PD2-style free climbing. Walking into a ladder attaches; forward/back moves along it with the
+   direction set by look pitch (look up + forward climbs up, look down + forward climbs down); jump detaches; reaching
+   the top/bottom steps off. No forced/locked animation and no camera lock; the player keeps full look. Bag rule
+   unchanged (S10.1b). P: player controller; A: ladder prefab volume/exits + bot use unchanged.
+2. **Loud on Routine/Tense (A, B data):** compare our police damage, accuracy, wave size, special frequency and assault
+   length against PD2 Normal/Hard and bring Routine ≈ PD2 Normal, Tense ≈ PD2 Hard (Hazardous+ unchanged). Acceptance:
+   P windowed loud runs, solo + 3 bots, GH and DB on Routine and Tense, 3 seeds each: win, median ≤ 2 player downs.
+3. **No armor early (A, D):** on Routine and Tense no police unit has damage-reducing body armor (no TAC Heavy, no
+   armored vests); armored units start at Hazardous. D: Routine/Tense police looks carry no plate-carrier visual.
+4. **Crew bots (B, A):** (a) health regen: after 6 s without damage a bot regains 2 % max health per second
+   (tunable, `crew_tweak`), a deliberate deviation from PD2 (◇). (b) Per-bot-slot loadout: each of the 3 bot slots
+   equips a primary (any weapon the player owns, with its mods), an armor tier (owned armors) and a cosmetic mask/outfit;
+   bought through the existing armory economy, saved in the profile, shown in a Crew screen in the hub. Bots use the
+   equipped weapon's real stats through the bot accuracy profile and the armor's real values. B: UI, save, economy;
+   A: bot runtime.
+5. **Run bob (P):** calmer sprint/run: lower head-bob amplitude, smoother viewmodel bob (no sharp figure-8 snap), a
+   steady PD2-like sprint pose (gun lowered and angled, gentle sway). P judges windowed at 60 fps, before/after clip.
