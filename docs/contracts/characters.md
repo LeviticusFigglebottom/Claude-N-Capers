@@ -1,4 +1,4 @@
-# Contract: characters (v1.31)
+# Contract: characters (v1.32)
 
 Producer: ENV C (generated humanoids + animations). Consumer: ENV A (NPC/crew prefabs).
 Until delivered, ENV A uses capsule placeholders with the same node names.
@@ -381,3 +381,8 @@ New looks: `bank_vip_client`, `security_bodyguard` (Halden close protection, tag
 New clips: `queue_idle_a`/`_b`/`_c` (one variant group), `counter_customer` (at the 1.05 m ledge), `check_desk_write`
 (check-writing table). Manager spawn tags: `civ_manager_mgr_floor` / `civ_manager_mgr_gallery` / `civ_manager_mgr_vault`.
 Additive.
+
+## v1.32: Gallery Night guard pool 12 (D 6e3ee21b)
+`gallery_guard_a`..`_l` (12 faces, 6 women / 6 men) on the `gallery_guard` / `gallery_inspector` roles and every GN guard
+tag (p5_cast.json v11); sized for the Cataclysm inspection's 11 guards with no twins. A mirrors the lists in
+`heist_tag_characters.gallery_night`.
