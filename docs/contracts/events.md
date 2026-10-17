@@ -1,4 +1,4 @@
-# Contract: EventBus events (v1.7)
+# Contract: EventBus events (v1.8)
 
 Code: `game/core/event_bus.gd` (the signal list there is authoritative; this file adds emitter and
 replication rules). Rules: architecture.md §5.
@@ -110,3 +110,7 @@ peer); `position` = van park point / heli hover point (drop) or orbit centre (sn
   * GH `safe`: `&"keycard"` / `&"code"` / `&"lockpick"` / `&"drill"` / `&"left_open"` (safe_open variant).
   * SL `cage`: `&"code"` / `&"saw"` / `&"left_open"` (rare variant).
 * Every mission completes its `escape` objective on the escape trigger, before `heist_ended`.
+
+## v1.8: objective_updated carries state_changed (A 67ce6d5f, ui_hud v1.18)
+`objective_updated` still fires on data-only updates (counts, markers), but its data now carries `"state_changed": bool`
+(false when only data changed). Observers that log state transitions filter on it.
