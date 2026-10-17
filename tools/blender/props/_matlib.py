@@ -147,6 +147,17 @@ TINTED: dict[str, dict] = {
     "trailer_white": {"source": "metal_painted", "color": "#CFCDC6", "roughness": 0.9},
     "laminate_grey": {"source": "plastic_matte", "color": "#8E9090", "roughness": 0.6},
     "paint_hazard_orange": {"source": "drywall_painted", "color": "#D2611E", "roughness": 0.8},
+    # Shadow Ledger G2 (SL-1, shadow_ledger.md palette: graphite #2E3136 honed stone / carpet / BOH paint, glass teal
+    # #5D8C8F, walnut and leather inside GSR saturation)
+    "stone_graphite": {"source": "marble_cream", "color": "#3A3D41", "roughness": 0.55},
+    "leather_graphite": {"source": "leather_dark", "color": "#3C3E41", "roughness": 0.6},
+    "fabric_graphite": {"source": "fabric_upholstery", "color": "#43474C", "roughness": 1.0},
+    "paint_graphite": {"source": "drywall_painted", "color": "#3B3E43", "roughness": 0.8},
+    "metal_graphite": {"source": "metal_painted", "color": "#3A3D42", "roughness": 0.7, "metallic": 1.0},
+    "fabric_teal": {"source": "fabric_upholstery", "color": "#4E7174", "roughness": 1.0},
+    "linen_white": {"source": "fabric_upholstery", "color": "#D8D4CB", "roughness": 1.0},
+    "teak": {"source": "wood_veneer_walnut", "color": "#9A7A58", "roughness": 0.7},
+    "felt_dark": {"source": "fabric_upholstery", "color": "#2F3A35", "roughness": 1.0},
 }
 
 # Painted canvases (GN-C2): key -> albedo PNG from tools/texgen/paintings.py. The prop material is a plain
@@ -179,12 +190,16 @@ EMISSIVE: dict[str, dict] = {
     "emit_police_blue": {"color": "#0E1A3A", "emission": "#2F5BFF", "energy": 2.0},
     # Gallery Night gala uplights (the doc's lilac #B79CF2, emissive only)
     "emit_lilac": {"color": "#4A3A66", "emission": "#B79CF2", "energy": 3.0},
+    # Shadow Ledger (SL-1): the lounge bar's backlit teal glass, the 6500 K linear coves and crown LEDs
+    "emit_teal": {"color": "#23383A", "emission": "#7FC3C8", "energy": 2.2},
+    "emit_led_cold": {"color": "#8A8D92", "emission": "#E6EEFF", "energy": 3.0},
 }
 
 # Transparent variants of glass_clear (library albedo with alpha x colour).
 GLASS: dict[str, dict] = {
     "glass_frosted": {"source": "glass_clear", "color": "#E4E8E6", "alpha": 0.82},
     "glass_tinted": {"source": "glass_clear", "color": "#3A4044", "alpha": 0.9},
+    "glass_teal": {"source": "glass_clear", "color": "#5D8C8F", "alpha": 0.6},
 }
 
 # Prop ids (Godot) are prefixed so they can never collide with a library id.

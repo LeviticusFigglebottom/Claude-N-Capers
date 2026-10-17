@@ -174,7 +174,7 @@ def _ledger_drives(k: Kit, p: dict) -> None:
     led = o.part(bevel=0.0)
     for i in range(6):
         x = -0.19 + 0.076 * i
-        det.bx((x - 0.03, -0.12, 0.1), (x + 0.03, 0.12, 0.17), "alu_black")
+        det.bx((x - 0.03, -0.12, 0.1), (x + 0.03, 0.12, 0.17), "metal_graphite")  # SL-1: alu_black read 1022 px/m
         det.bx((x - 0.026, 0.12, 0.16), (x + 0.026, 0.13, 0.172), "plastic_grey")
         led.bx((x - 0.006, 0.13, 0.163), (x + 0.006, 0.132, 0.168), "emit_led_green" if i % 3 else "emit_amber")
     o.build()
@@ -185,7 +185,7 @@ def _laptop(k: Kit, p: dict) -> None:
     sl = o.part(bevel=0.012, segments=2)
     sl.bx((-0.2, -0.15, 0.0), (0.2, 0.15, 0.035), "bag_black")
     lp = o.part(bevel=0.004)
-    lp.bx((-0.17, -0.12, 0.035), (0.17, 0.12, 0.053), "alu_black")
+    lp.bx((-0.17, -0.12, 0.035), (0.17, 0.12, 0.053), "metal_graphite")  # SL-1: 512 px/m
     lp.bx((-0.168, -0.118, 0.053), (0.168, 0.118, 0.056), "metal_grey")
     lp.cyl(0.012, 0.002, (0.0, 0.0, 0.0565), "emit_cool", segs=12)
     ch = o.part(bevel=0.004)

@@ -1,0 +1,13 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/props/prop_compact_shelving_w400/prop_compact_shelving_w400.glb" id="1_model"]
+
+[node name="PropCompactShelvingW400" type="Node3D"]
+metadata/kind = &"shelving"
+
+[node name="Model" parent="." instance=ExtResource("1_model")]
+
+[node name="Collision" parent="Model"]
+metadata/surface = &"metal"
+
+[editable path="Model"]

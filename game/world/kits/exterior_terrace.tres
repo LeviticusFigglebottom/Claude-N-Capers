@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"exterior_terrace"
+purpose = &"exterior"
+required_items = Array[StringName]([&"planter", &"lounger", &"heater", &"counter_service"])
+optional_items = {}
+clutter_groups = {}
+min_density = 0.03
+max_density = 0.3
+min_props = 8
+lone_ok_kinds = Array[StringName]([&"planter", &"lounger", &"heater", &"counter_service", &"bollard_light", &"ladder"])
+seed_salt = 333
+counts = {}
+assets = {}
+ceiling = {}
+notes = "X1 terrace: planters, loungers, the outdoor kitchen and heaters are map-built (no kit pass); LED bollards along the balustrade."
