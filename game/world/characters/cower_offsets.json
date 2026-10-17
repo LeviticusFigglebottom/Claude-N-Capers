@@ -1,0 +1,11 @@
+{
+	"_doc": "QC-67 (OF G1 probe): cower_stand wants a wall 0.21 m behind the root (characters.md) and presses the back against it at the flinch: plain civilian bodies reach up to 0.235 m behind the root through the clip (max_back_m 0.24: at most 3 cm of cloth into the wall, read as leaning on it). Looks carrying a backpack or a bag on the back reach 0.36-0.38 m and push it 15 cm into the wall. offsets.<id> is how far (m) the NPC root steps forward along its facing when it plays cower_stand at a cower point, so its back stays within max_back_m. Ids not listed: 0. Hand-maintained by ENV D; game/tests/d/test_cower_offsets.gd re-measures every civilian look of p5_cast.json (CPU-skinned through cower_stand) and fails on a missing, short or stale entry. ENV A applies it.",
+	"version": 1,
+	"max_back_m": 0.24,
+	"offsets": {
+		"bank_customer_b": 0.14,
+		"bank_customer_d": 0.15,
+		"bank_customer_g": 0.12,
+		"npc_it_contractor": 0.13
+	}
+}
