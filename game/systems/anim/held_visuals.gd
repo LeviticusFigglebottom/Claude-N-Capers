@@ -60,7 +60,10 @@ func refresh_weapon() -> void:
 	var wv: WeaponVisual = WeaponVisual.new()
 	wv.name = AnimDriver.WEAPON_NODE
 	socket.add_child(wv)
-	wv.setup(def, LoadoutResolver.applied_mods(def, mod_ids))
+	if crew == null and wv.has_method(&"setup_npc"):
+		wv.call(&"setup_npc", def)  # LEAD r244 (b): NPCs carry the merged one-surface gun (B c7d83262)
+	else:
+		wv.setup(def, LoadoutResolver.applied_mods(def, mod_ids))
 	_d.weapon_visual = wv
 	_place_offhand(wv)
 	if npc != null:
