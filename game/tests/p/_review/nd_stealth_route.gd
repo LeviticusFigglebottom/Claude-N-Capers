@@ -9,7 +9,7 @@
 ## -> under the static lasers -> time-lock code -> the time lock runs out -> vault loot bagged and carried back out
 ## the same way to the lot van's secure zone -> escape. Stops at the first failed step ("[NDR] FAIL ...").
 ##   xvfb-run -a -s "-screen 0 1280x720x24" /opt/godot/godot --path game --resolution 960x540 --audio-driver Dummy \
-##     res://tests/p/_review/nd_stealth_route.tscn -- --out=/abs/dir [--seed=21] [--bags=2] [--obs-out=DIR] [--render]
+##     res://tests/p/_review/nd_stealth_route.tscn -- --out=/abs/dir [--seed=21] [--bags=4] [--obs-out=DIR] [--render]
 ## Fast mode (default; --render turns it off): the render loop is off and the HUD canvas layers are hidden between
 ## screenshots (as A's po5_flow set_fast; presentation only, input and gameplay untouched: under llvmpipe the route
 ## ran ~80 wall-s per game-s rendered). Stated shortcut: the time-lock wait (standing still at the panel) runs at
@@ -21,6 +21,11 @@ const GRATE_AT: Vector3 = Vector3(16.95, 0.0, -1.4)
 const MASK_AT: Vector3 = Vector3(18.5, -4.0, 3.0)
 const GATE_AT: Vector3 = Vector3(14.0, -4.0, 6.9)
 const C6_AT: Vector3 = Vector3(9.1, -1.4, 8.8)
+## Cash lift: where to stand in B1 to throw a bag through the hatch (west shaft wall x 5.6, z 1.2-2.4, sill 0.45 /
+## head 1.25 m) into the car (6.25, 1.8); G1 just inside the sally door; C4 looks at that door from 6 m.
+const B1_HATCH_STAND: Vector3 = Vector3(4.6, -4.0, 1.8)
+const SALLY_IN: Vector3 = Vector3(5.0, 0.0, 1.8)
+const C4_AT: Vector3 = Vector3(3.5, 2.6, 5.9)
 ## Just inside the vault gate (antechamber side), where C6 can be shot; short of the laser_static plane at z 8.5
 ## (capsule r 0.35: z 8.3 tripped it, ND run 2026-10-17 t=120.7).
 const GATE_IN: Vector3 = Vector3(14.0, -4.0, 7.95)
@@ -41,7 +46,7 @@ var rt: HeistRuntime = null
 var pilot: Po5Pilot = null
 var runner_out: String = ""
 var _seed: int = 21
-var _bags: int = 2
+var _bags: int = 4  # MIN_BAGS (night_deposit_mission)
 var _shot: int = 0
 var _alarm: StringName = &""
 var _t0_ms: int = 0
@@ -145,8 +150,13 @@ func _objective(id: StringName) -> int:
 
 func _run() -> void:
 	_t0_ms = Time.get_ticks_msec()
+	# A player brings a melee weapon: without a "loadouts" option every swing was the gun bash (30 of a Routine
+	# guard's 50; ENV A 2026-10-17). Folding knife: 50 quick, reach 1.8 m.
+	var lo: Loadout = CrewWeapons.build_loadout(null).duplicate()
+	lo.melee = &"melee.folding_knife"
 	rt = await HeistLauncher.launch(&"night_deposit", _seed, Enums.Difficulty.ROUTINE, self, {
-		"crew_ai": false, "preplanning": {&"asset.alternate_entry": &"pp_spawn_lot", &"asset.vent_access": &"pp_vent"}})
+		"crew_ai": false, "loadouts": {0: lo},
+		"preplanning": {&"asset.alternate_entry": &"pp_spawn_lot", &"asset.vent_access": &"pp_vent"}})
 	if rt == null:
 		print("[NDR] RESULT FAIL no runtime")
 		get_tree().quit(1)
@@ -505,39 +515,220 @@ func _time_lock() -> bool:
 	return vault != null and vault.is_open
 
 
+## Bags leave by the cash lift (design doc: B9 -> B5 -> B1 -> lift -> G1 -> sally door -> van): no ladder with a
+## bag (S10.1b), a throw tops out ~2.7 m in the 4 m areaway shaft, and the ground-floor stair carry met an alarm
+## button (ND run 2026-10-17 t=234). Per trip: call the car to B1, throw two vault bags in through the hatch, send it
+## up, climb out empty-handed (vault gap -> B5 -> B3 -> ladder), in by the sally door (lockpick; C4 shot), take the
+## bags out of the car and secure them at the van, send the car back down and climb back in for the next trip.
 func _loot() -> bool:
 	var zone: SecureZone = pilot.secure_zone()
-	if zone == null:
-		note("no secure zone")
+	var lift: BagLift = rt.find_children("*", "BagLift", true, false).front() as BagLift \
+		if not rt.find_children("*", "BagLift", true, false).is_empty() else null
+	if zone == null or lift == null:
+		note("no secure zone (%s) or no cash lift (%s)" % [zone, lift])
 		return false
-	for i: int in _bags:
-		var src: LootSpawn = null
-		for s: Node in rt.mission.find_tagged(&"vault_loot"):
-			var ls: LootSpawn = s as LootSpawn
-			if ls != null and ls.remaining > 0 and (src == null or ls.remaining > src.remaining):
-				src = ls
-		if src == null:
-			break
-		var ic: InteractableComponent = _comp(src)
-		if i > 0:  # back in through the gap for the next bag
-			for wp: Vector3 in [Vector3(LASER_GAP_X, GATE_AT.y, 7.9), Vector3(LASER_GAP_X, GATE_AT.y, 9.15)]:
-				await pilot.goto(wp, 0.12, 40.0)
-		if not await pilot.use(ic, 30.0, func() -> bool: return pilot.crew.is_carrying_bag()):
-			note("bag %d not taken" % i)
-			return false
-		note("carrying bag %d out to %s" % [i, Po5Pilot._v(zone.global_position)])
-		# Out through the laser grid's west bypass gap, as on the way in (the navmesh ignores beams: the straight
-		# carry tripped AntechamberLasers, ND run 2026-10-17 t=210).
-		for wp: Vector3 in [Vector3(LASER_GAP_X, GATE_AT.y, 9.15), Vector3(LASER_GAP_X, GATE_AT.y, 7.9)]:
-			if not await pilot.goto(wp, 0.12, 20.0):
-				note("laser gap out: could not reach %s (at %s)" % [Po5Pilot._v(wp), Po5Pilot._v(pilot.crew.global_position)])
+	for trip: int in ceili(_bags / 2.0):
+		var steps: Array[Callable] = [_lift_to.bind(lift, 1), _load_trip.bind(lift, trip), _lift_to.bind(lift, 0),
+			_surface, _into_g1, _unload_g1.bind(lift, zone)]
+		if trip > 0:
+			steps.push_front(_back_to_vault)
+		for st: Callable in steps:
+			if not await st.call():
+				note("trip %d failed at %s" % [trip, st.get_method()])
 				return false
-		if not await pilot.secure_carried_bag(zone):
-			note("bag %d not secured (at %s)" % [i, Po5Pilot._v(pilot.crew.global_position)])
-			await shot("bag_%d_not_secured" % i)
-			return false
-	await shot("bags_secured")
+		await shot("trip_%d_secured" % trip)
 	return true
+
+
+## Up to two vault bags thrown into the car at B1 (in through the laser gap for each).
+func _load_trip(lift: BagLift, trip: int) -> bool:
+	for b: int in mini(2, _bags - 2 * trip):
+		for wp: Vector3 in [Vector3(LASER_GAP_X, GATE_AT.y, 7.9), Vector3(LASER_GAP_X, GATE_AT.y, 9.15)]:
+			await pilot.goto(wp, 0.12, 60.0)
+		if not await _vault_bag_into_lift(lift, 2 * trip + b):
+			return false
+	note("trip %d: %d bags in the car at B1" % [trip, lift.bags_in_car().size()])
+	return true
+
+
+## G1: take each bag out of the car (through the hatch) and secure it at the van.
+func _unload_g1(lift: BagLift, zone: SecureZone) -> bool:
+	for _b: int in 2:
+		var bag: LootBag = null
+		for lb: LootBag in lift.bags_in_car():
+			bag = lb
+		if bag == null:
+			break
+		if not await pilot.use(_comp(bag), 20.0, func() -> bool: return pilot.crew.is_carrying_bag(), false):
+			note("bag in the car not taken (at %s, bag %s)" % [Po5Pilot._v(pilot.crew.global_position),
+				Po5Pilot._v(bag.global_position)])
+			await shot("lift_bag_not_taken")
+			return false
+		if not await pilot.secure_carried_bag(zone):
+			note("bag not secured (at %s)" % Po5Pilot._v(pilot.crew.global_position))
+			await shot("bag_not_secured")
+			return false
+		note("secured (objective secure %d)" % _objective(&"secure"))
+		if _b == 0 and not lift.bags_in_car().is_empty():
+			await pilot.goto(SALLY_IN, 0.4, 30.0)
+	return true
+
+
+## Car to `landing` (0 = G1, 1 = B1) from the panel on the pilot's floor; waits for it to arrive.
+func _lift_to(lift: BagLift, to: int) -> bool:
+	if lift.landing == to and not lift.is_moving():
+		return true
+	var here: int = 1 if pilot.crew.global_position.y < -2.0 else 0
+	var panel: InteractableComponent = lift.interactable if here == 0 else lift.get_node_or_null(
+		"%s%d" % [BagLift.PANEL_PREFIX, here]) as InteractableComponent
+	if panel == null:
+		note("lift panel %d missing" % here)
+		return false
+	await wait_until(func() -> bool: return not lift.is_moving(), 20.0)
+	if not await pilot.use(panel, 30.0, func() -> bool: return lift.is_moving()):
+		note("lift panel %d not used (at %s)" % [here, Po5Pilot._v(pilot.crew.global_position)])
+		return false
+	var ok: bool = await wait_until(func() -> bool: return not lift.is_moving() and lift.landing == to,
+		lift.travel_s + 5.0)
+	note("lift %s landing %d (%d bags in the car)" % ["at" if ok else "NOT at", to, lift.bags_in_car().size()])
+	return ok
+
+
+## One vault bag, out through the laser gap to B1, thrown into the car through the hatch (two tries).
+func _vault_bag_into_lift(lift: BagLift, i: int) -> bool:
+	var src: LootSpawn = null
+	for sp: Node in rt.mission.find_tagged(&"vault_loot"):
+		var ls: LootSpawn = sp as LootSpawn
+		if ls != null and ls.remaining > 0 and (src == null or ls.remaining > src.remaining):
+			src = ls
+	if src == null or not await pilot.use(_comp(src), 30.0, func() -> bool: return pilot.crew.is_carrying_bag()):
+		note("bag %d not taken (loot left %s)" % [i, src != null])
+		return false
+	# Out through the laser grid's west bypass gap, as on the way in (the navmesh ignores beams: the straight
+	# carry tripped AntechamberLasers, ND run 2026-10-17 t=210).
+	for wp: Vector3 in [Vector3(LASER_GAP_X, GATE_AT.y, 9.15), Vector3(LASER_GAP_X, GATE_AT.y, 7.9)]:
+		await pilot.goto(wp, 0.12, 20.0)
+	var before: int = lift.bags_in_car().size()
+	for attempt: int in 2:
+		if not await pilot.goto(B1_HATCH_STAND, 0.2, 60.0):
+			note("B1 hatch stand not reached (at %s)" % Po5Pilot._v(pilot.crew.global_position))
+			break
+		# Release is 1.3 m up, the hatch head 1.25 m: look down at the car floor so the launch clamps to -20 deg.
+		var car: Vector3 = lift.car_transform().origin
+		await pilot.face(Vector3(car.x, car.y, car.z), 0.02, 1.5)
+		await pilot.inp.tap(&"drop_bag")
+		await wait_s(1.5)
+		if lift.bags_in_car().size() > before:
+			note("bag %d in the car (%d)" % [i, lift.bags_in_car().size()])
+			return true
+		var bag: LootBag = null
+		for n: Node in get_tree().get_nodes_in_group(G.LOOT_BAG):
+			var lb: LootBag = n as LootBag
+			if lb != null and (bag == null or lb.global_position.distance_to(pilot.crew.global_position)
+					< bag.global_position.distance_to(pilot.crew.global_position)):
+				bag = lb
+		note("hatch throw %d missed: bag at %s" % [attempt, Po5Pilot._v(bag.global_position) if bag != null else "-"])
+		await shot("hatch_miss_%d" % attempt)
+		if bag == null or not await pilot.use(_comp(bag), 20.0, func() -> bool: return pilot.crew.is_carrying_bag()):
+			return false
+	return false
+
+
+## Vault gap -> B5 -> PlantDoor -> B3 -> AreawayLadder up to the lot (empty-handed).
+func _surface() -> bool:
+	var lad: Ladder = _ladder_near(GRATE_AT)
+	if lad == null:
+		return false
+	var bottom: Vector3 = lad.bottom_position()
+	var away: Vector3 = Vector3(bottom.x - lad.global_position.x, 0.0, bottom.z - lad.global_position.z)
+	away = away.normalized() if away.length() > 0.01 else Vector3.FORWARD
+	if not await pilot.goto(bottom + away * 0.5, 0.4, 90.0):
+		note("ladder bottom not reached (at %s)" % Po5Pilot._v(pilot.crew.global_position))
+		return false
+	await pilot.face(Vector3(lad.global_position.x, bottom.y + 1.5, lad.global_position.z), 0.05, 1.5)
+	pilot.inp.press(&"move_forward")
+	var top_y: float = lad.top_position().y
+	var t: float = 0.0
+	while t < lad.climb_time() + 8.0 and not (pilot.crew.global_position.y > top_y - 0.3 and not lad.is_climbing(
+			pilot.crew.slot)):
+		await wait_s(0.1)
+		t += 0.1
+	pilot.inp.release(&"move_forward")
+	note("ladder up: %s in %.1f s (at %s)" % [pilot.crew.global_position.y > top_y - 0.3, t,
+		Po5Pilot._v(pilot.crew.global_position)])
+	return pilot.crew.global_position.y > top_y - 0.3
+
+
+## Lot -> SallyPersonnelDoor (lockpick) -> shoot C4 (looks at the door from 6 m) -> in to the lift hatch.
+func _into_g1() -> bool:
+	var door: Door = _door("SallyPersonnelDoor")
+	if door == null:
+		note("no SallyPersonnelDoor")
+		return false
+	if not door.is_open and not await pilot.use(_comp(door), 40.0, func() -> bool: return door.is_open):
+		note("sally door not opened (lock %s)" % door.get(&"lock"))
+		await shot("sally_door_shut")
+		return false
+	var cam: Node3D = _camera_near(C4_AT)
+	if cam != null and not _cam_down(cam):
+		await _shoot_camera(cam, [pilot.crew.global_position, SALLY_IN])
+	return await pilot.goto(SALLY_IN, 0.4, 20.0)
+
+
+## Back down for the next trip: send the empty car to B1 from G1, out the sally door, down the ladder, B3 -> B5 -> gap.
+func _back_to_vault() -> bool:
+	var lift: BagLift = rt.find_children("*", "BagLift", true, false).front() as BagLift
+	if not await _lift_to(lift, 1):
+		return false
+	if not await _climb_down_near(GRATE_AT):
+		note("ladder not climbed down for trip 2 (at %s)" % Po5Pilot._v(pilot.crew.global_position))
+		return false
+	return true
+
+
+func _ladder_near(at: Vector3) -> Ladder:
+	var lad: Ladder = null
+	for n: Node in rt.find_children("*", "Ladder", true, false):
+		var l: Ladder = n as Ladder
+		if lad == null or l.global_position.distance_to(at) < lad.global_position.distance_to(at):
+			lad = l
+	return lad
+
+
+func _camera_near(at: Vector3) -> Node3D:
+	for n: Node in rt.find_children("*", "Node3D", true, false):
+		var n3: Node3D = n as Node3D
+		if n3.has_method(&"take_hit") and n3.global_position.distance_to(at) < 1.0 and String(n3.name).contains("Cam"):
+			return n3
+	return null
+
+
+## Secondary out, then from each spot in turn: aim at the camera's collision box, fire only on a ray that reaches it.
+func _shoot_camera(cam: Node3D, spots: Array[Vector3]) -> void:
+	await pilot.inp.tap(&"slot_secondary")
+	var k_spot: int = 0
+	await pilot.goto(spots[0], 0.3, 6.0)
+	for _k: int in 8:
+		if _cam_down(cam):
+			break
+		var aim_at: Vector3 = _cam_aim_point(cam)
+		await pilot.face(aim_at, 0.01, 1.0)
+		var c: CrewController = pilot.crew
+		var q: PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.create(c.eye_position(),
+			c.eye_position() + c.aim_direction() * 30.0)
+		q.exclude = [c.get_rid()]
+		var hit: Dictionary = c.get_world_3d().direct_space_state.intersect_ray(q)
+		var on_cam: bool = not hit.is_empty() and (hit["collider"] == cam or cam.is_ancestor_of(hit["collider"]))
+		note("%s shot from %s at %s (%.1f m): ray hits %s" % [cam.name, Po5Pilot._v(c.global_position),
+			Po5Pilot._v(aim_at), c.eye_position().distance_to(aim_at),
+			(hit["collider"] as Node).get_path() if not hit.is_empty() else ^"-"])
+		if not on_cam and k_spot + 1 < spots.size():
+			k_spot += 1
+			await pilot.goto(spots[k_spot], 0.3, 4.0)
+			continue
+		await pilot.inp.tap(&"fire")
+		await wait_s(0.4)
+	note("camera %s %s" % [cam.name, "down" if _cam_down(cam) else "still up"])
 
 
 func _escape() -> bool:
