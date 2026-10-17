@@ -194,6 +194,7 @@ func _run() -> void:
 	pilot.shout_blockers = false
 	await pilot.calibrate()
 	note("spawn %s" % Po5Pilot._v(c.global_position))
+	_watch_detection.call_deferred()
 	await shot("spawn_lot")
 	if _fast:
 		note("fast mode: render loop off between shots")
@@ -209,6 +210,30 @@ func _run() -> void:
 	note("RESULT PASS stealth, alarm %s" % _alarm)
 	print("[NDR] RESULT PASS")
 	get_tree().quit(0)
+
+
+## Every 0.25 s: log each observer whose meter on the pilot crosses 0.05 / 0.5 / 1.0 (who saw the pilot, where).
+func _watch_detection() -> void:
+	var sd: StealthDirector = HeistRuntime.get_service(G.SVC_STEALTH) as StealthDirector
+	var seen: Dictionary = {}
+	while sd != null and is_inside_tree() and _alarm == &"":
+		for e: Dictionary in sd.detection_entries(pilot.crew.slot):
+			var v: float = float(e["value"])
+			var id: int = int(e["observer_net_id"])
+			var band: int = 3 if v >= 1.0 else (2 if v >= 0.5 else (1 if v >= 0.05 else 0))
+			if band > int(seen.get(id, 0)):
+				note("DETECT %s kind %d meter %.2f at %s, pilot %s crouched %s" % [_observer_name(id),
+					int(e["kind"]), v, Po5Pilot._v(e["world_pos"]), Po5Pilot._v(pilot.crew.global_position),
+					pilot.crew.crouched])
+			seen[id] = band if band > 0 else 0
+		await wait_s(0.25)
+
+
+func _observer_name(net_id: int) -> String:
+	for n: Node in rt.find_children("*", "Node3D", true, false):
+		if (n is NpcBase or n.has_method(&"take_hit")) and NetIds.of(n) == net_id:
+			return String(n.name)
+	return str(net_id)
 
 
 ## Lot -> AreawayGrate (vent_open: casing-allowed) -> ladder -> AreawayDoor -> B3, mask.
@@ -599,7 +624,11 @@ func _unload_g1(lift: BagLift, zone: SecureZone) -> bool:
 			note("bag not secured (at %s)" % Po5Pilot._v(pilot.crew.global_position))
 			await shot("bag_not_secured")
 			return false
-		note("secured (objective secure %d)" % _objective(&"secure"))
+		var left: Array[String] = []
+		for n: Node in get_tree().get_nodes_in_group(G.LOOT_BAG):
+			left.append("%s %s" % [n.name, Po5Pilot._v((n as Node3D).global_position)])
+		note("secured (objective secure %d); bags now: %s; in the car %d" % [_objective(&"secure"), left,
+			lift.bags_in_car().size()])
 		if _b == 0 and not lift.bags_in_car().is_empty():
 			await pilot.goto(SALLY_IN, 0.4, 30.0)
 	return true
@@ -627,7 +656,11 @@ func _lift_to(lift: BagLift, to: int) -> bool:
 		return false
 	var ok: bool = await wait_until(func() -> bool: return not lift.is_moving() and lift.landing == to,
 		lift.travel_s + 5.0)
-	note("lift %s landing %d (%d bags in the car)" % ["at" if ok else "NOT at", to, lift.bags_in_car().size()])
+	var at: Array[String] = []
+	for lb: LootBag in lift.bags_in_car():
+		at.append(Po5Pilot._v(lb.global_position))
+	note("lift %s landing %d (%d bags in the car: %s; car floor %s)" % ["at" if ok else "NOT at", to,
+		lift.bags_in_car().size(), at, Po5Pilot._v(lift.car_transform().origin)])
 	return ok
 
 
