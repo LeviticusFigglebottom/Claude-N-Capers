@@ -174,6 +174,9 @@ func test_of_loud_escape_after_secure_and_eta() -> void:
 	assert_eq(_state(&"escape_wait"), ACTIVE, "[escape_wait]: the van comes back")
 	assert_eq(_state(&"escape"), HIDDEN, "not open yet")
 	var eta: float = float(_m().variant(&"escape_eta_s"))
+	for ob: Dictionary in _m().objectives():  # ENV B HUD: "ESCAPE mm:ss" counts down objective data `seconds`
+		if ob["id"] == &"escape_wait":
+			assert_near(float((ob["data"] as Dictionary).get("seconds", -1.0)), _m().loud_escape_eta(), 0.01, "ETA on the HUD")
 	assert_near(_m().timer_left(&"escape_eta"), eta, 0.5, "escape_eta_s after [secure] (D-136.10)")
 	assert_eq(_count(&"vo.mercer.ostrander_federal_van_eta"), 1, "van_eta line")
 	_m().call(&"open_escape")

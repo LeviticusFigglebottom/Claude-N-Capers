@@ -745,6 +745,7 @@ func _call_escape() -> void:
 		open_escape()
 		return
 	var eta: float = loud_escape_eta()
+	update_objective_data(&"escape_wait", {"seconds": eta})  # ENV B HUD: "ESCAPE mm:ss" countdown
 	activate(&"escape_wait")
 	say(VO_HELI_ETA if heli else VO_VAN_ETA, {"seconds": int(eta)})
 	start_timer(&"escape_eta", eta, open_escape)
