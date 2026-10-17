@@ -1,6 +1,7 @@
 ## D-130 (PO): S heists get fewer pagers and Titan cameras earlier by difficulty (HeistDef.pager_max_by_difficulty /
 ## camera_titan_min_difficulty, data_schemas v1.3); cameras detect ~20 % faster (pinned in test_d128_detection_pd2).
-## ui_hud v1.18: optional objectives are `side` steps; a data-only objective update says state_changed false.
+## ui_hud v1.18: bonus steps say `side: true` explicitly (optional alone is casing / an alternative, not side); a
+## data-only objective update says state_changed false.
 extends TestCase
 
 var _rt: HeistRuntime = null
@@ -83,9 +84,9 @@ func test_ui_hud_1_18_side_steps_and_state_changed() -> void:
 	var cb: Callable = func(id: StringName, state: int, data: Dictionary) -> void:
 		seen.append({"id": id, "state": state, "data": data})
 	EventBus.objective_updated.connect(cb)
-	m.add_objective(&"bonus", &"obj.bonus", Enums.ObjectiveState.ACTIVE, {"optional": true})
+	m.add_objective(&"bonus", &"obj.bonus", Enums.ObjectiveState.ACTIVE, {"optional": true, "side": true})
 	m.add_objective(&"main", &"obj.main", Enums.ObjectiveState.ACTIVE, {})
-	m.add_objective(&"kept", &"obj.kept", Enums.ObjectiveState.ACTIVE, {"optional": true, "side": false})
+	m.add_objective(&"alt", &"obj.alt", Enums.ObjectiveState.ACTIVE, {"optional": true, "alternative": &"main"})
 	m.update_objective_data(&"bonus", {"count": 1})
 	m.complete(&"bonus")
 	EventBus.objective_updated.disconnect(cb)
@@ -94,9 +95,9 @@ func test_ui_hud_1_18_side_steps_and_state_changed() -> void:
 	assert_eq(seen.size(), 5, "five facts")
 	if seen.size() < 5:
 		return
-	assert_true(bool(seen[0]["data"].get("side", false)), "an optional objective is a side step")
+	assert_true(bool(seen[0]["data"].get("side", false)), "a bonus step says side: true")
 	assert_false(bool(seen[1]["data"].get("side", false)), "a main step is not")
-	assert_false(bool(seen[2]["data"].get("side", true)), "an explicit side: false stays")
+	assert_false(bool(seen[2]["data"].get("side", false)), "LEAD/B: optional alone (casing, an alternative) is not side")
 	assert_true(bool(seen[0]["data"]["state_changed"]), "added: state_changed")
 	assert_false(bool(seen[3]["data"]["state_changed"]), "data-only update: state_changed false")
 	assert_eq(int(seen[3]["state"]), Enums.ObjectiveState.ACTIVE, "same state")

@@ -109,10 +109,6 @@ func add_objective(objective_id: StringName, text_key: StringName,
 	# GN-8 (B's GN audit): re-adding an id (a relabel: GN hack_loud, casing_last_call) keeps its place in the order.
 	var order: int = int(_objectives[objective_id]["order"]) if _objectives.has(objective_id) else _objectives.size()
 	var prev: int = int(_objectives[objective_id]["state"]) if _objectives.has(objective_id) else -1
-	# ui_hud v1.18: a bonus step is a `side` step (the HUD caption shows the live main step instead); every optional
-	# objective of the five missions is one unless the mission says otherwise.
-	if not data.has("side") and bool(data.get("optional", false)):
-		data["side"] = true
 	_objectives[objective_id] = {
 		"id": objective_id, "text_key": text_key, "state": state, "data": data, "order": order,
 	}
