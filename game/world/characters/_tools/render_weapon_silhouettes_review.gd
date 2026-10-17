@@ -1,30 +1,29 @@
 ## LEAD (k) review: each NPC weapon's full armory model (top row) above its far silhouette (make_weapon_silhouettes.gd,
 ## bottom row), side view (+X) at the same scale, lit; then the same pair seen from 3/4 front. Writes
 ## res://assets/characters/_review/weapon_silhouettes/weapon_silhouettes_side.png and _quarter.png. Owner: ENV D.
-##   xvfb-run -a -s "-screen 0 1280x720x24" /opt/godot/godot --audio-driver Dummy --rendering-driver opengl3 \
-##     --resolution 1800x400 --path game --script res://world/characters/_tools/render_weapon_silhouettes_review.gd
-extends SceneTree
+## Models come through B's NpcWeaponModels API (needs the autoloads, so it runs as a scene).
+##   xvfb-run -a -s "-screen 0 1800x400x24" /opt/godot/godot --audio-driver Dummy --rendering-driver opengl3 \
+##     --resolution 1800x400 --path game res://world/characters/_tools/render_weapon_silhouettes_review.tscn
+extends Node
 
 const DIR: String = "res://world/characters/_props/weapon_silhouettes/"
 const OUT: String = "res://assets/characters/_review/weapon_silhouettes/"
 const GAP: float = 1.5
 
 
-func _initialize() -> void:
-	_run.call_deferred()
-
-
-func _run() -> void:
+func _ready() -> void:
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(OUT))
 	var idx: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(DIR + "weapon_silhouettes.json")) as Dictionary
 	var models: Array[String] = []
+	var full_scenes: Dictionary = {}
 	for k: String in idx["silhouettes"]:
 		var m: String = String(idx["silhouettes"][k]).get_file().trim_prefix("weapon_silhouette_").trim_suffix(".tscn")
 		if not models.has(m):
 			models.append(m)
+			full_scenes[m] = NpcWeaponModels.weapon_def(StringName(k)).model
 	models.sort()
 	var world := Node3D.new()
-	root.add_child(world)
+	add_child(world)
 	var env := WorldEnvironment.new()
 	env.environment = Environment.new()
 	env.environment.background_mode = Environment.BG_COLOR
@@ -37,7 +36,7 @@ func _run() -> void:
 	world.add_child(sun)
 	for i: int in models.size():
 		var z: float = i * GAP
-		var full: Node3D = (load("res://content/data/weapons/%s.tres" % models[i]).get("model") as PackedScene).instantiate()
+		var full: Node3D = (full_scenes[models[i]] as PackedScene).instantiate()
 		world.add_child(full)
 		full.position = Vector3(0, 0.3, z)
 		var sil: Node3D = (load(DIR + "weapon_silhouette_%s.tscn" % models[i]) as PackedScene).instantiate()
@@ -58,7 +57,7 @@ func _run() -> void:
 		cam.size = models.size() * GAP
 		cam.look_at_from_position(Vector3(6.0, 0.6 if shot[1] > 0.0 else 0.0, mid), Vector3(0, 0, mid))
 		for _f: int in 6:
-			await process_frame
-		root.get_texture().get_image().save_png(ProjectSettings.globalize_path(OUT + "weapon_silhouettes_%s.png" % shot[0]))
+			await get_tree().process_frame
+		get_viewport().get_texture().get_image().save_png(ProjectSettings.globalize_path(OUT + "weapon_silhouettes_%s.png" % shot[0]))
 	print("render_weapon_silhouettes_review: %d models" % models.size())
-	quit()
+	get_tree().quit()

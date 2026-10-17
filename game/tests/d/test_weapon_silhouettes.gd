@@ -1,11 +1,10 @@
-## LEAD (k): far weapon silhouettes (world/characters/_tools/make_weapon_silhouettes.gd). Every NPC weapon id in ENV B's
-## npc_weapon_models.tres has a silhouette scene in weapon_silhouettes.json; each is one MeshInstance3D with one
+## LEAD (k): far weapon silhouettes (world/characters/_tools/make_weapon_silhouettes.gd). Every NPC weapon id mapped by
+## ENV B's NpcWeaponModels has a silhouette scene in weapon_silhouettes.json; each is one MeshInstance3D with one
 ## surface, a small triangle count, no shadow, visible only from the CrowdLod unit switch on, and spans its armory
 ## model's length (Z) and height (Y) within 2 cm (the same weapon frame, so it sits in the hand like the model).
 extends TestCase
 
 const CrowdLod: GDScript = preload("res://world/characters/_tools/crowd_lod.gd")
-const MAP: String = "res://content/data/npc/npc_weapon_models.tres"
 const INDEX: String = "res://world/characters/_props/weapon_silhouettes/weapon_silhouettes.json"
 const MAX_TRIS: int = 300
 const TOL: float = 0.02
@@ -18,7 +17,7 @@ func before_all() -> void:
 
 
 func test_every_npc_weapon_has_a_silhouette() -> void:
-	var models: Dictionary = load(MAP).get("models") as Dictionary
+	var models: Dictionary = NpcWeaponModels.data().models
 	var sil: Dictionary = _index.get("silhouettes", {}) as Dictionary
 	assert_eq(float(_index.get("switch_m", 0.0)), CrowdLod.UNIT_SWITCH_M, "switch_m = CrowdLod.UNIT_SWITCH_M")
 	for id: Variant in models:
@@ -42,14 +41,13 @@ func test_silhouettes_are_cheap_and_far_only() -> void:
 
 
 func test_silhouettes_span_their_model() -> void:
-	var models: Dictionary = load(MAP).get("models") as Dictionary
+	var models: Dictionary = NpcWeaponModels.data().models
 	for id: Variant in models:
-		var model_id: String = String(models[id]).trim_prefix("weapon.")
-		var def: Resource = load("res://content/data/weapons/%s.tres" % model_id)
+		var def: WeaponDef = NpcWeaponModels.weapon_def(StringName(id))
 		var path: String = String((_index.get("silhouettes", {}) as Dictionary).get(String(id), ""))
-		if def == null or def.get("model") == null or not ResourceLoader.exists(path):
+		if def == null or def.model == null or not ResourceLoader.exists(path):
 			continue
-		var full: Node3D = (def.get("model") as PackedScene).instantiate() as Node3D
+		var full: Node3D = def.model.instantiate() as Node3D
 		var ab: AABB = _bounds(full, full)
 		full.free()
 		var mi: MeshInstance3D = (load(path) as PackedScene).instantiate() as MeshInstance3D

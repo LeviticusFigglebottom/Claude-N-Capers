@@ -8,13 +8,13 @@
 ## pivot, -Z muzzle, +Y up), so ENV A parents it at HandR/Socket next to the WeaponVisual. One per model mapped in
 ## NpcWeaponModels (B's npc_weapon_models.tres).
 ## Writes res://world/characters/_props/weapon_silhouettes/weapon_silhouette_<model>.tscn (+ _mesh.res) and
-## weapon_silhouettes.json (NPC weapon id -> scene). Deterministic. Owner: ENV D.
-##   /opt/godot/godot --headless --path game --script res://world/characters/_tools/make_weapon_silhouettes.gd
-extends SceneTree
+## weapon_silhouettes.json (NPC weapon id -> scene). Models come through B's NpcWeaponModels API (needs the autoloads,
+## so it runs as a scene). The meshes are deterministic; a re-run only changes each scene node's random unique_id.
+## Owner: ENV D.
+##   /opt/godot/godot --headless --path game res://world/characters/_tools/make_weapon_silhouettes.tscn
+extends Node
 
 const CrowdLod: GDScript = preload("res://world/characters/_tools/crowd_lod.gd")
-const MAP: String = "res://content/data/npc/npc_weapon_models.tres"
-const DEFS: String = "res://content/data/weapons/%s.tres"
 const OUT_DIR: String = "res://world/characters/_props/weapon_silhouettes/"
 const MATERIAL: String = "res://world/materials/char_cartel_gunmetal.tres"
 ## slice length along Z (m) and the extent change (m) that starts a new box
@@ -24,9 +24,9 @@ const MERGE_TOL: float = 0.012
 const WIDTH_SHARE: float = 0.7
 
 
-func _initialize() -> void:
+func _ready() -> void:
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(OUT_DIR))
-	var models: Dictionary = load(MAP).get("models") as Dictionary
+	var models: Dictionary = NpcWeaponModels.data().models
 	var index: Dictionary = {}
 	var done: Dictionary = {}
 	var ids: Array = models.keys()
@@ -38,11 +38,11 @@ func _initialize() -> void:
 		if done.has(model_id):
 			continue
 		done[model_id] = true
-		var def: Resource = load(DEFS % model_id)
-		if def == null or def.get("model") == null:
+		var def: WeaponDef = NpcWeaponModels.weapon_def(StringName(npc_id))
+		if def == null or def.model == null:
 			push_error("make_weapon_silhouettes: no model for %s" % model_id)
 			continue
-		var mesh: ArrayMesh = _silhouette((def.get("model") as PackedScene).instantiate() as Node3D)
+		var mesh: ArrayMesh = _silhouette(def.model.instantiate() as Node3D)
 		var mesh_path: String = OUT_DIR + "weapon_silhouette_%s_mesh.res" % model_id
 		ResourceSaver.save(mesh, mesh_path)
 		_write_scene(scene_path, mesh_path, model_id, mesh)
@@ -51,7 +51,7 @@ func _initialize() -> void:
 			+ "shown from visibility_range_begin = UNIT_SWITCH_M, where ENV A culls the full weapon.",
 			"switch_m": CrowdLod.UNIT_SWITCH_M, "silhouettes": index}, "\t") + "\n")
 	f.close()
-	quit()
+	get_tree().quit()
 
 
 ## Side-profile boxes of `model` (freed here) as one ArrayMesh surface with the shared gunmetal material.
