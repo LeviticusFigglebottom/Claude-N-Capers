@@ -26,6 +26,9 @@
 ##    world/characters/<id>/<id>_<Node>.res and set as that node's mesh (node meta `source_materials` = the original
 ##    material paths). Run build_char_layers.gd and `godot --import` first (its header has the order); the LOD2 mesh
 ##    is built from the glb surfaces before the merge.
+##    Fallback (per character): add its id to world/characters/_layers/d1_exclude.json {"ids": [...]}, run
+##    build_char_layers.gd, `godot --import` and this script: the character gets its glb meshes and materials back
+##    (its <id>_<Node>.res files are removed). test_d1_layers.gd checks both states.
 ## 5. Writes world/characters/characters.json (the index ENV A and the tests read); D2-01 faction
 ##    variants get `variant_of` + `variant` fields (from SOURCE.txt).
 ##

@@ -124,3 +124,24 @@ camera, and corpse and gameplay anchors are already server-side (D-121).
 1. D2 + D3 (ENV D, one assemble, ~1 h with review renders).
 2. A's animation LOD (ENV A).
 3. D1 atlas merge (ENV D, ~1 day), then re-run this bench for the before/after table.
+
+## 6. D1 result (D-132, wip/d-d1-merge)
+
+Per-node surface merge (world/characters/_tools/char_layers.gd): each mesh node of the 110 CrowdLod characters draws
+its plain materials as one surface per texture tier (shared 256² / 512² texture arrays, 127 + 24 layers,
+char_layered.gdshader), the rest (1024² maps, double-sided coats) keep their own surface. Nodes, LOD2 and the
+fallback (`_layers/d1_exclude.json`) as documented in the tool headers.
+
+| | Before (fallback) | After |
+|---|---|---|
+| Surfaces: gallery_waiter / gallery_guard_d / security_officer / cartel_gunman / tac_light / patrol_officer | 17 / 21 / 31 / 24 / 21 / 27 | 8 / 11 / 14 / 12 / 11 / 11 |
+| GN 34 + layer: draws / prims / frame ms (llvmpipe) | 738 / 642k / 829 | **499 (-32 %)** / 642k / 814 |
+| Loud 50 + layer: draws / prims / frame ms | 2524 / 1.31M / 1967 | **2224 (-12 %)** / 1.31M / 1894 |
+| GN: texture / video memory (MB) | 118.3 / 186.9 | 147.3 / 232.5 |
+| Loud: texture / video memory (MB) | 112.9 / 175.4 | 154.4 / 220.8 |
+
+Loud gains less: its specials and crew (no CrowdLod) are out of scope. The memory rise is the whole texture arrays
+(all 151 layers resident once any merged character is on screen) plus the merged meshes' LOD index buffers.
+Review renders (Compatibility, before = all ids in d1_exclude.json): `d132_d1/lod_review_{before,after}*.png`
+(close, 2 / 10 / 20 m perspective, 30 m silhouette; pixel-identical but for < 0.01 % edge pixels),
+`d132_d1/hold_{lit,dark}*_before_after.png` (Glasshouse, render_crew_hold_review), `d132_d1/pager_outline_before_after.png`.
