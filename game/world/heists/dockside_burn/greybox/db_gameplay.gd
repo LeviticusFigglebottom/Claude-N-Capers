@@ -453,7 +453,7 @@ func _count_cage_padlock(slot: Node3D) -> void:
 	var xf: Transform3D = global_xform(gate)
 	var pl: Node3D = prefab(slot, "padlock", "CountCagePadlock", xf * Vector3(0.38, 1.1, -0.07), 0.0,
 		{"objective_tag": &"count_cage", "visual_scene": load(PADLOCK_VISUAL)},  # methods: A's D-138.2 options (drill / C4)
-		xf * Vector3(0.38, 0.0, -0.9), {"mount": "door", "kind": "padlock", "drill_duration_s": 120.0})
+		xf * Vector3(0.38, 0.0, -0.9), {"mount": "wall", "kind": "padlock", "drill_duration_s": 120.0})
 	if pl != null:
 		pl.set(&"targets", [pl.get_path_to(gate)] as Array[NodePath])
 
