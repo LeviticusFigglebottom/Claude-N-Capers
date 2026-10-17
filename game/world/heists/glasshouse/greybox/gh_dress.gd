@@ -539,6 +539,50 @@ func _collect_node(n: Node) -> void:
 	_boxes.append(box.grow(0.03))
 
 
+## Landmark 1: the circular chandelier display (2.4 m round glass case): its catalog visual on collision drums; the
+## ring chandelier above is a dressing anchor (layout ANCHORS). D-142: the walnut cabinet (0..glass_y) blocks stealth
+## vision; the clear glass case above it is its own `see_through` body (prop_display_case_round: cabinet top 0.75).
+func chandelier_display(parent: Node3D) -> void:
+	var ch: Dictionary = L.CHANDELIER
+	var pos: Vector3 = ch["pos"]
+	var r: float = float(ch["radius"])
+	var h: float = float(ch["height"])
+	var gy: float = float(ch["glass_y"])
+	var body: StaticBody3D = _drum(parent, "ChandelierDisplay", r, 0.0, gy)
+	body.position = pos
+	body.set_meta(&"kind", "display_plinth")
+	var glass: StaticBody3D = _drum(body, "GlassCase", r, gy, h)
+	glass.add_to_group(&"see_through", true)
+	SurfaceTags.tag(glass, &"glass")
+	var ps: PackedScene = scene("prop_display_case_round")
+	if ps != null:
+		var vis: Node3D = ps.instantiate() as Node3D
+		vis.name = "Display"
+		body.add_child(vis)
+		vis.owner = _root
+	_b.call(&"_obstruct_circle", pos, r, h)
+
+
+## A static cylinder collider (radius r, from y0 to y1 in its parent's space), owned by the map root.
+func _drum(parent: Node3D, nm: String, r: float, y0: float, y1: float) -> StaticBody3D:
+	var body: StaticBody3D = StaticBody3D.new()
+	body.name = nm
+	body.collision_layer = 1
+	body.collision_mask = 0
+	parent.add_child(body)
+	body.owner = _root
+	var col: CollisionShape3D = CollisionShape3D.new()
+	col.name = "Collision"
+	var cyl: CylinderShape3D = CylinderShape3D.new()
+	cyl.radius = r
+	cyl.height = y1 - y0
+	col.shape = cyl
+	col.position = Vector3(0.0, (y0 + y1) * 0.5, 0.0)
+	body.add_child(col)
+	col.owner = _root
+	return body
+
+
 func _gx(n: Node3D) -> Transform3D:
 	return _b.call(&"_global_xform", n)
 
