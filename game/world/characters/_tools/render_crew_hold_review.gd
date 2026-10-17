@@ -117,6 +117,7 @@ func _ready() -> void:
 		fwd = Vector3.FORWARD.rotated(Vector3.UP, deg_to_rad(_yaw))
 	fwd.y = 0.0
 	fwd = fwd.normalized()
+	print("[CREWHOLD] view origin %s yaw %.0f" % [o, rad_to_deg(Vector3.FORWARD.signed_angle_to(fwd, Vector3.UP))])
 	var side: Vector3 = fwd.cross(Vector3.UP).normalized()
 	var rigs: Array[Node3D] = []
 	for i: int in _bots.size():

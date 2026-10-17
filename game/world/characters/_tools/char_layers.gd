@@ -15,8 +15,11 @@
 ## character gets its glb meshes and materials back).
 ##
 ## The merged mesh keeps each source surface's automatic LODs: merged LOD k is the concatenation of every source
-## surface's LOD at threshold t_k, the t_k being the sources' own thresholds thinned to steps of at least LOD_STEP
-## (a source switches at the next kept threshold at the latest: never coarser than before, never more draws).
+## surface's LOD at threshold t_k, the t_k being the sources' own thresholds merged to steps of at least LOD_STEP
+## (a source switches at the next kept threshold at the latest: never coarser than before, never more draws). With
+## LOD_STEP 1.0 every source threshold is kept, so each source switches exactly where it did: primitives per frame
+## match the per-surface meshes (bench GN 642k vs 641.6k). A coarser step (1.6 was tried) saves ~20 % of the merged
+## .res size but draws +18 % primitives (sources reach their coarse LODs later).
 ## Node meta `source_materials` (META_SOURCE) = the original material resource paths, in original surface order.
 extends RefCounted
 
@@ -30,8 +33,8 @@ const COLUMNS: int = 16
 ## GL_MAX_ARRAY_TEXTURE_LAYERS minimum (GLES 3.0 / GL 3.3).
 const MAX_LAYERS: int = 256
 const META_SOURCE: StringName = &"source_materials"
-## Merged LOD thresholds are at least this factor apart.
-const LOD_STEP: float = 1.6
+## Merged LOD thresholds are at least this factor apart (1.0: all distinct source thresholds kept).
+const LOD_STEP: float = 1.0
 
 ## Properties a plain material may set (everything else must equal REFERENCE's value).
 const FREE_PROPERTIES: Array[String] = [
