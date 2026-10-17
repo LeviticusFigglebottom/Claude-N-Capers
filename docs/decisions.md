@@ -1293,3 +1293,35 @@ least once and is not in the rolling memory." PD2's job heat moves XP only; ours
    `rotation_step`=0.01, `rotation_cap`=0.10); profile schema +1 (migration: empty memory, completion flags seeded from
    career stats). Tests: the formula table (n = 0..10, k = 0..12, never completed), migration, payday line, two players
    with different memories in one crew.
+
+## D-140: stealth heists can't be beaten by killing every guard (PO-15, 2026-10-17, LEAD; product owner; REVISED 12:25)
+PO: "no stealth heist should be completable just by killing each guard except the jewelry heist or on the easiest
+difficulty." PO clarification (12:25): "pagers should always be 4 on Routine, and there should always be no more than 4
+guards on Routine (some maps should have 4), but further difficulties should EITHER add more guards OR lower the amount
+of pagers, not both, the lead's call per map (if more guards would overcrowd a map, lower the pager cap)."
+**Rule.** "Guards" = pager-carrying NPCs present at load (guards, the camera operator, escorts; not rare-event or timed
+spawns); counts are the **minimum over seeds** unless stated as fixed.
+(a) **Routine:** pager cap **4**, guards **≤ 4**.
+(b) **Tense and up: one lever per map.** Either **GUARDS** (the cap stays 4; guards rise above 4 from Tense) or **PAGERS**
+    (the guard count stays at its Routine number on every difficulty; the cap drops below it from Tense). Never both.
+(c) From Tense up, guards > pager cap on every seed. A rolled `pager_max_answers` variant scalar may lower the cap, never
+    raise it above the table (and never on a GUARDS map).
+**Per-heist tables** (Routine, Tense, Hazardous, Brutal, Lethal, Cataclysm):
+
+| Heist | Lever | Guards | Pager cap | Why |
+|---|---|---|---|---|
+| Ostrander Federal (L) | GUARDS | 4 / 5 / 6 / 6 / 7 / 8 (min) | 4 at every difficulty | big open bank, five levels: room for more patrols |
+| Gallery Night (M) | GUARDS | 4 / 5 / 5 / 6 / 6 / 7 (min) | 4 at every difficulty | wide gallery floors and the mews: extras fit |
+| Night Deposit (M, compact) | PAGERS | 4 fixed | 4 / 3 / 3 / 2 / 2 / 1 | 26 × 20 m, one storey + basement: more guards would crowd it |
+| Shadow Ledger (M, tower) | PAGERS | 4 fixed | 4 / 3 / 3 / 2 / 2 / 1 | narrow tower corridors and stair cores: slower, denser play |
+| Golden Hour (S, jewelry) | exempt (D-130) | as today | 4 / 4 / 3 / 3 / 2 / 1 | the PO's exception |
+
+For the GUARDS maps these minimums replace D-130 §1's guard percentages; on the PAGERS maps guards no longer scale with
+difficulty (D-130 §1 guards superseded). Civilians keep D-130 scaling everywhere. Every guard is a real spawn with its own
+route or post, never a doubled-up post.
+**Owners.** C: GN/ND/SL generator rows (GN Routine baseline 4 + `difficulty_add` to the table; ND/SL exactly 4 guards on
+every seed and difficulty, guard `difficulty_add` removed, `pager_max_by_difficulty` set; GN `pager_max_by_difficulty`
+empty = 4), regen, validate final. B: the OF values block per QB-2 (GUARDS: 4/5/6/6/7/8, no pager table) and the briefing
+/difficulty card "N pagers" line where the cap is below 4. A: PagerSystem scalar-lowers-only; re-pin test_d130_population;
+a test asserts (a)-(c) on 3 seeds for ND/GN/SL (OF once G1 lands); the stealth e2e tests still win. P: one windowed stealth
+run each on Tense and Lethal for ND/GN/SL afterwards.

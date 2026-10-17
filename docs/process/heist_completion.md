@@ -59,6 +59,7 @@ and reports a gap list; the LEAD folds the gaps in here as rows (id, heist, owne
 | SL-P1 | SL | P (C) | first real-input pass | PASS: won in stealth (e6b9dcf6) and RE-WALK PASS on G2 art + C's fixes (P c02d044f, seed 13, t=373: every bag secured first throw, no corner snag, headroom fine). Last STUCK row (Stair B landing ramp edge) fixed by C f170f6ee, P confirms on trunk |
 | PO-7 | all (seen on DB) | C (A) | PO report: NPC muzzle flash freezes in the air after the NPC dies/moves | FIXED (C e22dfbd8: a first tick > FLASH_S before a drawn frame left the pooled set up forever; HOLD_S rule for flash + sparks; regression test). Linked: A b8cdd674 found the multi-second first-fight hitch = lazy VFX pool growth stalling the renderer → VfxDirector.prewarm() at load (C applies A's patch) |
 | PO-14 | SL, DB (all) | A + C | PO report: SL server cage opened by sawing a stand-in safe (empty, invisible saw) that opened the gate with it; DB CountCage same pattern; safes without a DrillPoint run an invisible device | open: D-138 (gate keypad + padlock, placed-saw in stealth, every device visible + test; SL/DB regen) |
+| PO-15 | ND, GN, SL, OF | C + B + A (P) | PO: stealth heists must not be beatable by killing every guard (except GH / Routine); Routine 4 pagers, ≤ 4 guards; one lever per map | open: D-140 revised (GUARDS: OF, GN; PAGERS: ND, SL) |
 
 ## D-115 assessment at the D-135 close (2026-10-17 11:45, LEAD)
 All five envs reported QUEUE CLEAR (A 9a7df142, B da559160, C e8ec593d, D 6316e628, P 8774a733), merged in rounds 240a/240b.
@@ -68,7 +69,7 @@ verification, not game content; per D-135 and the PO's "skip irrelevant validati
 as low priority and does not hold the start:
 - **OF-X1 (A):** the e2e harness pilot pins in open doorways (ND LockerRoomDoor/JanitorDoor, DB mezzanine count room, SL r237 stalls)
   and stops ~4.6 m short of bags when the crew bunches. Blocks only full ND-2 4-bag and DB-7 escape runs.
-- **OF-X2 (A, C):** DB post-burn: ChamberBSouth door and the thermite bag re-pickup read "disabled" (seen by A and P independently).
+- **OF-X2 (A, C): CLOSED round 241** (bot held the tool bag; shutters seal nav, test). Was: DB post-burn: ChamberBSouth door and the thermite bag re-pickup read "disabled" (seen by A and P independently).
   Check whether a nav link survives through the shut door (game bug: AI could path through) or it's the pilot. **Highest of the carries.**
 - **OF-X3 (C):** drill review renders (DB strongroom, ND vault, GN vault, GN server door) with a lighter capture scene; db_finishes.gd
   unused crane/trawler rows.
