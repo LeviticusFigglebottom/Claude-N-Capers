@@ -116,6 +116,7 @@ ui.tip.casing.mask,Hold to mask up. It stays on.
 ui.tip.stealth.title,Stay quiet
 ui.tip.stealth.1,"Guards and cameras spot you over time. A ring over them fills, and ""!"" means you are seen."
 ui.tip.stealth.2,"Answer a downed guard's pager fast, or the alarm goes off."
+ui.tip.stealth.glass,Guards and cameras can see you through clear glass.
 ui.tip.stealth.interact,"Interact: doors, loot, pagers, cable ties."
 ui.tip.stealth.throw,Throw a carried bag. Heavy ones slow you down.
 ui.tip.loud.title,The alarm is up
@@ -1696,6 +1697,7 @@ ui.briefing.sec.hack_terminals,Hack terminals: {range}
 ui.briefing.sec.sensors,Frame sensors: {range}
 ui.briefing.sec.located,{line} ({rooms})
 ui.briefing.sec.rooms_more,{rooms} +{n} more
+ui.briefing.sec.glass,Clear glass: guards and cameras see straight through it
 ui.briefing.sec.surprises,Possible surprises: {events}
 ui.briefing.sec.event.night_deposit.armored_car_early,armoured car arrives early (2 guards)
 ui.briefing.sec.event.shadow_ledger.timelock_extended,longer study-safe time lock

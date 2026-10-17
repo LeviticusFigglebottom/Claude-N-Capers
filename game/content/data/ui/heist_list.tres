@@ -5,6 +5,12 @@
 [resource]
 script = ExtResource("1")
 heists = {
+&"glasshouse": {
+"glazing": true
+},
+&"shadow_ledger": {
+"glazing": true
+},
 &"afterhours": {
 "solo_ai_teammates": 3
 },

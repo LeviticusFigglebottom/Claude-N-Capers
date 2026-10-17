@@ -214,15 +214,23 @@ func _build_rows() -> void:
 		rows_box.remove_child(c)
 		c.queue_free()
 	_row_glyphs = row_glyphs(shown)
-	for r: Array in ROWS[shown] as Array:
+	for r: Array in rows_for(shown):
 		rows_box.add_child(_row(StringName(r[0]), StringName(r[1])))
 
 
 ## Key cap text of each row of card `id` for the current bindings and device ("" = a bullet row).
 static func row_glyphs(id: StringName) -> Array[String]:
 	var out: Array[String] = []
-	for r: Array in ROWS.get(id, []) as Array:
+	for r: Array in rows_for(id):
 		out.append(InteractionPanel.action_key_text(StringName(r[0])) if StringName(r[0]) != &"" else "")
+	return out
+
+
+## Rows of card `id` (ROWS), plus the D-142 glass row on the stealth card when HudTweak.d142_glass_tips is on.
+static func rows_for(id: StringName) -> Array:
+	var out: Array = (ROWS.get(id, []) as Array).duplicate()
+	if id == &"stealth" and HudTweak.load_default().d142_glass_tips:
+		out.insert(1, [&"", &"ui.tip.stealth.glass"])
 	return out
 
 
