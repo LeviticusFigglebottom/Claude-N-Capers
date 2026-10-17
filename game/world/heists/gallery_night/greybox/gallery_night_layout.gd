@@ -668,6 +668,8 @@ const SLOTS: Array = [
 		false,
 		"civ_admin at an AO desk; pick 0, only late_paperwork",
 	],
+	["gala_extra", "gx_cloakroom", 1.0, "G", "CK", 14.45, 0.0, 29.4, 0.0, false, false, "civ_waitstaff behind the CK counter"],
+	["gala_extra", "gx_drawings", 1.0, "G", "DC", 3.2, 0.0, 28.45, 180.0, false, false, "civ_attendant posted in DC"],
 ]
 const USE_POINT_M: float = 0.9
 const GROUP_ORDER: Array[String] = [
@@ -689,6 +691,7 @@ const GROUP_ORDER: Array[String] = [
 	"escape",
 	"xl_crate",
 	"admin_pa",
+	"gala_extra",
 ]
 ## Security cameras: [id, floor, room, x, mount y, z, layouts (cam_* slots or always)].
 const CAMERAS: Array = [

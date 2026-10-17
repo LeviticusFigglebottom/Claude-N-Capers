@@ -14,9 +14,9 @@ bones: 52
 hat: cream knit watch-cap beanie (Headwear)
 insignia: none (plain work wear; no police/faction material ids)
 look: smock: flare-orange oilskin work jacket, cream beanie, drab cargos, green rubber boots, fingerless gloves; sling + shell loops, slung pump-gun
-meshes: Body,Gear,Hair,Headwear,Outfit
+meshes: Body,Gear,Hair,Headwear,Outfit,Slung
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 slung_gun: non-weapon Gear on the back (chest-rigid), muzzle model [-0.219, 1.754, 0.183], butt [0.151, 0.788, 0.194] (Godot axes), 21 deg from vertical
 tri_budget: 35000
 tris: 29600
-tris_by_mesh: {"Body": 8276, "Gear": 2958, "Hair": 1200, "Headwear": 608, "Outfit": 16558}
+tris_by_mesh: {"Body": 8276, "Gear": 2398, "Hair": 1200, "Headwear": 608, "Outfit": 16558, "Slung": 560}

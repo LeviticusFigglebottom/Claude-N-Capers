@@ -21,6 +21,9 @@ const GRATE_AT: Vector3 = Vector3(16.95, 0.0, -1.4)
 const MASK_AT: Vector3 = Vector3(18.5, -4.0, 3.0)
 const GATE_AT: Vector3 = Vector3(14.0, -4.0, 6.9)
 const C6_AT: Vector3 = Vector3(9.1, -1.4, 8.8)
+## Just inside the vault gate (antechamber side), where C6 can be shot; short of the laser_static plane at z 8.5
+## (capsule r 0.35: z 8.3 tripped it, ND run 2026-10-17 t=120.7).
+const GATE_IN: Vector3 = Vector3(14.0, -4.0, 7.95)
 const LASER_GAP_X: float = 9.575
 const TIME_LOCK_SCALE: float = 4.0
 ## B3 side of PlantDoor (18.5, -4, 6.0), off the doorway's sight line; the corridor point just through the door.
@@ -314,39 +317,47 @@ func _gate_guard() -> bool:
 	return true
 
 
-## Steer at the guard's back with W held until in reach, then one quick swing. False (and back to the hide) when
-## he turns toward the pilot or walks out of reach first.
+## Steer at the guard's back with W held and swing on the move once he is in reach (stopping to face him first let
+## him walk 0.6 m out of reach, ND run 2026-10-17 t=66). False when he turns toward the pilot or no swing lands.
 func _chase_and_knife(g: NpcBase, sd: StealthDirector, hits: Array[int]) -> bool:
 	var c: CrewController = pilot.crew
 	pilot.inp.press(&"move_forward")
 	var frames: int = 0
-	while g.is_alive() and _back_turned(g) and frames < 4 * Engine.physics_ticks_per_second:
+	var swings: int = 0
+	var alert_before: int = g.alert_state
+	while g.is_alive() and _back_turned(g) and frames < 4 * Engine.physics_ticks_per_second and swings < 2:
 		var d: float = pilot.flat_dist(g.global_position, c.global_position)
 		if frames % 30 == 0:
 			note("knife trace: me %s guard %s dist %.2f alert %d meter %.2f" % [Po5Pilot._v(c.global_position),
 				Po5Pilot._v(g.global_position), d, g.alert_state, sd.detection_value(g, c.slot) if sd != null else -1.0])
-		if d <= 1.2:
-			break
 		if d > 2.5:
 			pilot.inp.press(&"sprint")
 		else:
 			pilot.inp.release(&"sprint")
 		pilot.steer_at(g.global_position + Vector3(0, 1.1, 0))
+		if d <= 1.6:
+			alert_before = g.alert_state
+			await pilot.inp.tap(&"melee")  # quick swing: S3.6 kills an unaware guard on any hit
+			swings += 1
+			frames += 3
+			for _f: int in 20:  # keep closing while the swing plays out
+				if not g.is_alive():
+					break
+				pilot.steer_at(g.global_position + Vector3(0, 1.1, 0))
+				await get_tree().physics_frame
+			frames += 20
+			note("swing: me %s guard %s fwd %s dist %.2f, swings %d, hits %d, health %.2f alive %s alert %d -> %d" % [
+				Po5Pilot._v(c.global_position), Po5Pilot._v(g.global_position), Po5Pilot._v(-g.global_basis.z),
+				pilot.flat_dist(g.global_position, c.global_position), hits[1], hits[0], g.health, g.is_alive(),
+				alert_before, g.alert_state])
+			continue
 		await get_tree().physics_frame
 		frames += 1
 	pilot.inp.release(&"sprint")
 	pilot.inp.release(&"move_forward")
-	if not g.is_alive() or not _back_turned(g) or pilot.flat_dist(g.global_position, c.global_position) > 1.7:
-		note("chase broke off: dist %.2f back %s alert %d" % [pilot.flat_dist(g.global_position, c.global_position),
-			_back_turned(g), g.alert_state])
-		return not g.is_alive()
-	var alert_before: int = g.alert_state
-	await pilot.inp.tap(&"melee")  # a quick swing: S3.6 kills an unaware guard on any hit; a charge let him walk on
-	await wait_s(0.6)
-	note("swing: me %s guard %s fwd %s dist %.2f, swings %d, hits %d, health %.2f alive %s alert %d -> %d" % [
-		Po5Pilot._v(c.global_position), Po5Pilot._v(g.global_position), Po5Pilot._v(-g.global_basis.z),
-		pilot.flat_dist(g.global_position, c.global_position), hits[1], hits[0], g.health, g.is_alive(),
-		alert_before, g.alert_state])
+	if g.is_alive():
+		note("chase broke off: dist %.2f back %s alert %d swings %d" % [
+			pilot.flat_dist(g.global_position, c.global_position), _back_turned(g), g.alert_state, swings])
 	return not g.is_alive()
 
 
@@ -419,8 +430,11 @@ func _antechamber() -> bool:
 			cam = n3
 	if cam != null:
 		await pilot.inp.tap(&"slot_secondary")
-		await wait_s(1.0)
-		for _k: int in 6:
+		# Through the open vault gate first: from the corridor the antechamber wall (B_Z7_5_06) is in the way.
+		var spots: Array[Vector3] = [GATE_IN, GATE_IN + Vector3(-0.6, 0, 0), GATE_IN + Vector3(0.6, 0, 0)]
+		var k_spot: int = 0
+		await pilot.goto(spots[0], 0.3, 6.0)
+		for _k: int in 8:
 			if _cam_down(cam):
 				break
 			var aim_at: Vector3 = _cam_aim_point(cam)
@@ -430,8 +444,13 @@ func _antechamber() -> bool:
 				c.eye_position() + c.aim_direction() * 30.0)
 			q.exclude = [c.get_rid()]
 			var hit: Dictionary = c.get_world_3d().direct_space_state.intersect_ray(q)
+			var on_cam: bool = not hit.is_empty() and (hit["collider"] == cam or cam.is_ancestor_of(hit["collider"]))
 			note("C6 shot from %s at %s (%.1f m): ray hits %s" % [Po5Pilot._v(c.global_position), Po5Pilot._v(aim_at),
 				c.eye_position().distance_to(aim_at), (hit["collider"] as Node).get_path() if not hit.is_empty() else ^"-"])
+			if not on_cam and k_spot + 1 < spots.size():
+				k_spot += 1
+				await pilot.goto(spots[k_spot], 0.3, 4.0)
+				continue
 			await pilot.inp.tap(&"fire")
 			await wait_s(0.4)
 		note("camera C6 %s" % ("down" if _cam_down(cam) else "still up"))
@@ -500,10 +519,19 @@ func _loot() -> bool:
 		if src == null:
 			break
 		var ic: InteractableComponent = _comp(src)
+		if i > 0:  # back in through the gap for the next bag
+			for wp: Vector3 in [Vector3(LASER_GAP_X, GATE_AT.y, 7.9), Vector3(LASER_GAP_X, GATE_AT.y, 9.15)]:
+				await pilot.goto(wp, 0.12, 40.0)
 		if not await pilot.use(ic, 30.0, func() -> bool: return pilot.crew.is_carrying_bag()):
 			note("bag %d not taken" % i)
 			return false
 		note("carrying bag %d out to %s" % [i, Po5Pilot._v(zone.global_position)])
+		# Out through the laser grid's west bypass gap, as on the way in (the navmesh ignores beams: the straight
+		# carry tripped AntechamberLasers, ND run 2026-10-17 t=210).
+		for wp: Vector3 in [Vector3(LASER_GAP_X, GATE_AT.y, 9.15), Vector3(LASER_GAP_X, GATE_AT.y, 7.9)]:
+			if not await pilot.goto(wp, 0.12, 20.0):
+				note("laser gap out: could not reach %s (at %s)" % [Po5Pilot._v(wp), Po5Pilot._v(pilot.crew.global_position)])
+				return false
 		if not await pilot.secure_carried_bag(zone):
 			note("bag %d not secured (at %s)" % [i, Po5Pilot._v(pilot.crew.global_position)])
 			await shot("bag_%d_not_secured" % i)
