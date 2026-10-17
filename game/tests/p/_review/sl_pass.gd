@@ -353,7 +353,8 @@ func _watcher() -> NpcBase:
 		fwd.y = 0.0
 		if to_me.length() > 1.0 and absf(fwd.angle_to(to_me)) > CAREFUL_HALF_FOV:
 			continue
-		if pilot.has_los(g.head_position(), g):
+		# D-142: what the player sees (vision rays pass see-through glass), not the bullet mask (Po5Pilot.has_los).
+		if rt.stealth.has_los(g.eye_position(), c.eye_position(), [g.get_rid(), c.get_rid()] as Array[RID]):
 			return g
 	return null
 
