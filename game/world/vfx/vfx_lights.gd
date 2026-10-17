@@ -96,7 +96,7 @@ func flash(pos: Vector3, color: Color, energy: float, light_range: float, durati
 	_left[i] = duration
 	_dur[i] = duration
 	_energy[i] = e
-	_drawn_at[i] = Engine.get_frames_drawn()
+	_drawn_at[i] = VfxSettings.frames_drawn()
 	_falloff[i] = maxf(falloff, 0.1)
 	_c0[i] = color
 	_c1[i] = color_end if color_end.a > 0.0 else color
