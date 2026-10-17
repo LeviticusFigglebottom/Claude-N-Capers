@@ -218,7 +218,7 @@ func cancel(slot: int) -> void:
 
 ## D-134 addendum (S9.1 amended, PD2 playerdamage.lua damage_bullet never interrupts; interupt_interact only on a
 ## state change): taking damage cancels NO held interaction, for any kind, humans and bots. Kept as the hook CrewHealth
-## calls; it does nothing. The modifier key interaction.no_interrupt_on_damage is obsolete (it changes nothing now).
+## calls; it does nothing (the old "no interrupt on damage" skill modifier is retired with it).
 func interrupt_on_damage(_slot: int) -> void:
 	pass
 
