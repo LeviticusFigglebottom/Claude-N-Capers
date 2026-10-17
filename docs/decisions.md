@@ -1248,3 +1248,23 @@ LEAD at merge). AnimCoverage flags FROZEN only on two consecutive identical samp
    `ostrander_federal_resources.gd`, as for every other heist. B owns the **values**: B sends C a ready-to-paste block in the
    generator's own format (D-130 population/pager tables, loot list, objectives, briefing_objectives, preplan overrides,
    variant rows); C pastes it verbatim and regenerates, with no edits to values. Value changes later go the same way.
+
+## D-138: a cage is locked like a cage; every device is visible (PO-14, 2026-10-17, LEAD; product owner)
+PO report: "on the ledger heist the door to the server lockup was a normal safe that needed sawing (the saw was
+invisible too); the safe door and the server door opened together, nothing was inside the safe." Confirmed in code:
+SL `CageLock` (sl_gameplay.gd) is a `prop_safe_large` standing at the CageGate whose opening only tells the mission to
+open the gate, and a Safe with a drill/saw method but no child DrillPoint runs its own runner with **no device
+visual** (safe.gd PO6-01 note). DB `CountCage` (db_gameplay.gd, LARGE safe, drill/c4) is the same pattern.
+Ruling (PD2: cage/server doors take a saw or a keypad on the gate itself; no stand-in safes):
+1. **No stand-in safes.** A cage, gate or door is beaten on the gate: a `keypad` on the gate post for the code route
+   (code_group as today) and a `padlock`/hasp on the gate for the saw/drill route; opening either opens the gate.
+   SL CageLock and DB CountCage become this. Safes are only real safes with loot inside.
+2. **Padlock (A):** `place_saw_stealth` (place a saw on the padlock in stealth, not only once loud; the noise is the saw's
+   own radius), plus `place_drill`/C4 parity where a doc asks (DB CountCage drill 120 s / C4). The objective's
+   open_method (`code` / `saw` / `drill` / `c4`) and the HUD device row are unchanged.
+3. **Every placed device is visible (A):** a Safe (or any prefab) running its own DeviceRunner spawns the device art
+   (DrillPoint.DEFAULT_DEVICE / DEFAULT_SAW / DEFAULT_THERMAL) at its DrillPoint marker or lock point, for the whole run.
+   A regression test fails any runner without a visual. Audit every heist's drill/saw/thermal spot (GH, ND, SL, GN, DB).
+4. **Map (C):** SL and DB generators swap the stand-in safes for the gate keypad + padlock on the existing CageGate /
+   cage gate; regenerate, validate final. Mission scripts (A) read the gate locks instead of the safe.
+5. Ostrander's padlocked bullion cage and the cash cage use the same pattern from G1.
