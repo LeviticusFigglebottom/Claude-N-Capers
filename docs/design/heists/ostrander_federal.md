@@ -1074,7 +1074,8 @@ rare event. **Player perches:** the main roof (S2, S3) and GA (the lantern rappe
 - **Throw spots:** GA → the hall floor (5.0 m); the terrace east parapet → the Tannery bay (E2);
   the LD personnel door → the E1 van. **Bag weights (D-102):** cash and drives MEDIUM (×0.75, no sprint, 4 m
   throw), gold and the drill parts HEAVY (×0.5, no sprint, 2 m throw), bonds LIGHT (×1.0, sprint, 4 m). So a HEAVY
-  throw from the terrace parapet must clear the ≥ 50° coping with its 2 m (§7.4), and the E1 zone sits ≤ 3.5 m from
+  throw from the terrace parapet must clear the ≥ 50° coping (§7.4, LEAD-amended: a HEAVY bag clears from ≤ 1.5 m off
+  the face at all three pitches; PD2 heavy bags are short throws, and the throw spot is marked on the floor), and the E1 zone sits ≤ 3.5 m from
   the personnel-door threshold (ghost line flag 2).
 - **Terrace → E2, as built (OF-C1 for OF-P1):** a throw leaves 1.3 m up and 0.7 m ahead of the thrower (LootManager), so
   over the 1.1 m guard with its outward-falling coping (Site) a **HEAVY** bag clears at −20° / 0° / +25° look pitch
