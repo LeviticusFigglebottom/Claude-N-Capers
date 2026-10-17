@@ -4,7 +4,6 @@
 ## (b) one lever per map from Tense: GUARDS maps (GN; OF once G1 lands) keep cap 4 everywhere and raise guards to the table
 ##     minimum; PAGERS maps (ND, SL) have exactly 4 guards on every difficulty and seed and drop the cap to the table;
 ## (c) from Tense, guards > cap on every seed (a rolled pager_max_answers scalar only lowers the cap; cap_for includes it).
-## Skipped per heist until ENV C's D-140 rows are on the map (PAGERS: the def's pager table; GUARDS: Routine has 4 guards).
 extends TestCase
 
 const SEEDS: Array[int] = [11, 21, 1792002290]
@@ -45,17 +44,11 @@ func _check(heist: StringName) -> void:
 		for sd: int in SEEDS:
 			_rt = await HeistLauncher.launch(heist, sd, diff, self, {"crew_ai": false, "ai_teammates": 0})
 			await wait_physics_frames(2)
-			var def: HeistDef = _rt.map.heist_def
 			var g: int = _rt.npcs(&"guard").size()
 			var cap: int = PagerSystem.cap_for(_rt)
-			var ready: bool = Array(def.pager_max_by_difficulty) == PAGERS_CAP if pagers \
-				else not (diff == Enums.Difficulty.ROUTINE and g < 4)
 			_rt.teardown()
 			_rt = null
 			await wait_frames(2)
-			if not ready:
-				skip("pending ENV C's D-140 rows for %s" % heist)
-				return
 			var label: String = "%s seed %d difficulty %d" % [heist, sd, diff]
 			print("[d140] %s: %d guards, cap %d" % [label, g, cap])
 			(guards[sd] as Array).append(g)
