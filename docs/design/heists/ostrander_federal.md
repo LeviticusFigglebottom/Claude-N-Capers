@@ -30,7 +30,7 @@ The G0 design stands (D-075). These are the build-plan fixes from `docs/process/
    notes, Escape.
 10. **D-128 "hidden" claims (§3b.11):** the counter and GA claims are validator-checked by LOS sample (`hide_los`,
     `teller_worktop`, OF-C3). The counter claim **fails as drawn** (a 1.05 m solid front never hides the 1.05 m
-    crouched detection point from a standing observer), so the solid bandit-screen base rises to **1.35 m**. The GA
+    crouched detection point from a standing observer), so the solid bandit-screen base rises to **1.50 m** (QC-g as amended by the LEAD, OF-C1). The GA
     solid base (1.0 m) holds. Changed: the legend, Ground notes, Sightlines.
 11. **Loot follows data (§3b.3, D-117 §3, D-137):** values from `game/content/data/loot/*.tres` and B's OF-B1 data;
     `base_payout` **$80,000** (D-137, was $160,000). Changed: Loot table, HeistDef.
@@ -233,7 +233,7 @@ Legend: `#` exterior wall, `|`/`-` interior wall, `+` junction, `D` door (single
 `DD` 1.8 m), `DDDD` the bronze doors / the vestibule inner doors (2 × 1.8 m), `R` roller door
 (3.6 × 4.0 m), `W` window or interior glazing, `^ v` U-stair (up-flight, return flight), `=v` the
 top floor of a stair (void over the arriving flight), `=` teller counter (customer ledge 1.05 m in front of a
-**solid bandit-screen base to 1.35 m**, D-136 §3b.11; bandit glass above it; teller work top 1.00 m), `g` teller gate, `t` teller station, `T` **the lid**
+**solid bandit-screen base to 1.50 m**, D-136 §3b.11, QC-g amended; bandit glass above it; teller work top 1.00 m), `g` teller gate, `t` teller station, `T` **the lid**
 (thermal-drill point over the vault), `m` the brass meridian line, `G` guard post / pause point,
 `c` the manager's desk, `Mo` the camera-station monitor wall, `$$` ATMs, `n` the night
 depository slot, `k` code-PC candidate (`code_pc`), `K` keycard reader (vault gate), `GGG` the vault
@@ -384,16 +384,20 @@ Basement notes:
 Ground notes:
 - The **teller line** runs the full width of TW at z 17: 12 windows (6 staffed stations `t`, the
   rest closed with brass grilles), a **customer ledge 1.05 m** projecting in front of a **solid bandit-screen
-  base to 1.35 m** with bandit glass above it, and a **teller work top 1.00 m whose near edge is 0.28 m in front
+  base to 1.50 m** with bandit glass above it, and a **teller work top 1.00 m whose near edge is 0.28 m in front
   of the teller's stand point** (characters.md v1.9 `teller_count` placement, lead note). The work top is a
   standing counter: levelcheck kind `teller_worktop` (0.95–1.05 m top, 0.45–0.9 m deep, a ≥ 0.9 m clear stand
-  zone on the teller side, the solid front checked against the crouch-hide claim; OF-C3). **Why 1.35 m (D-136
+  zone on the teller side, the solid front checked against the crouch-hide claim; OF-C3). **Why 1.50 m (D-136
   §3b.11, D-128):** a crouched player's detection points are 1.0 and 1.05 m above the feet (StealthTweak
   `los_heights` 1.6 / 1.0 clamped to the crouched eye 1.05). A ray from a standing observer's eye (1.62 m) down to
   the 1.05 m point stays above 1.05 m all the way, so a 1.05 m solid front never hides it. With the crew centre
   d ≈ 0.95 m behind the front (0.6 m work top + 0.35 m capsule radius) and the observer ≥ 2.0 m from the crew
   (inside 2 m PD2 uncovers a crouched player anyway, S2.2), the front must reach 1.05 + (1.62 − 1.05) × 0.95 / 2.0
-  = **1.32 m**, rounded up to 1.35 m. The 1.05 m ledge stays as the customers' writing ledge. The teller
+  = **1.32 m** for an observer straight out from the counter. **QC-g amended (LEAD, OF-C1 build):** `hide_los`
+  also samples observers along the counter face (z ≈ 17.75, the ledge's front plus the NPC radius) at the 2.0 m
+  flat uncover radius but only ~1.5 m out from the crew, whose sight line to the 1.05 m point crosses the screen
+  face (z 17.25) at ≈ 1.44 m; the solid base is therefore **1.50 m**, bandit glass 1.50–2.40 m. The 1.05 m
+  ledge stays as the customers' writing ledge. The teller
   gate `g` (x 24) is LOCKPICK and NPC-authorised.
 - **The lid** `T` at (24, 14): a 2.4 × 2.4 m brass-bordered marble panel in the TW floor marking
   the vault roof slab below (the tellers' name for it). In loud the drill is assembled here.
@@ -725,7 +729,7 @@ is not a plan**. The hall is cased unmasked and worked around, never subdued. Ci
   the slow trespass fill (S1.1). Masked, those doors are used while he is on loop (a)'s window leg
   (facing S) or on loop (c).
 - **Behind the counter:** the bandit glass is see-through. A crouched player behind the counter is
-  hidden from the hall by the **1.35 m solid bandit-screen base** (not by the 1.05 m ledge: D-128's crouched
+  hidden from the hall by the **1.50 m solid bandit-screen base** (not by the 1.05 m ledge: D-128's crouched
   detection point at 1.05 m clears a 1.05 m front from every standing observer; see Ground notes), for observers
   ≥ 2 m from the player (closer, PD2 uncovers a crouched player anyway). Tellers face the hall, so a masked player
   in TW behind them is unseen until a teller turns (rotation) or the hall guard walks loop (b). **Verified by LOS
