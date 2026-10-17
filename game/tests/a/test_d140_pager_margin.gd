@@ -2,13 +2,14 @@
 ## at load = role guard (guards, the camera operator, escorts), on 3 seeds at every difficulty:
 ## (a) Routine: pager cap 4, guards <= 4;
 ## (b) one lever per map from Tense: GUARDS maps (GN; OF once G1 lands) keep cap 4 everywhere and raise guards to the table
-##     minimum; PAGERS maps (ND, SL) keep the same guard count on every difficulty and drop the cap to the table;
+##     minimum; PAGERS maps (ND, SL) have exactly 4 guards on every difficulty and seed and drop the cap to the table;
 ## (c) from Tense, guards > cap on every seed (a rolled pager_max_answers scalar only lowers the cap; cap_for includes it).
 ## Skipped per heist until ENV C's D-140 rows are on the map (PAGERS: the def's pager table; GUARDS: Routine has 4 guards).
 extends TestCase
 
 const SEEDS: Array[int] = [11, 21, 1792002290]
 const PAGERS_CAP: Array = [4, 3, 3, 2, 2, 1]
+const PAGERS_GUARDS: int = 4
 ## GUARDS maps: minimum guards per difficulty (Routine .. Cataclysm).
 const GUARDS_MIN: Dictionary = {&"gallery_night": [4, 5, 5, 6, 6, 7]}
 const PAGERS_MAPS: Array[StringName] = [&"night_deposit", &"shadow_ledger"]
@@ -65,6 +66,7 @@ func _check(heist: StringName) -> void:
 				assert_true(g > cap, "%s: (c) guards %d > cap %d" % [label, g, cap])
 			if pagers:
 				assert_eq(cap, int(PAGERS_CAP[diff]), "%s: (b) PAGERS cap" % label)
+				assert_eq(g, PAGERS_GUARDS, "%s: (b) PAGERS map has exactly %d guards" % [label, PAGERS_GUARDS])
 			else:
 				assert_eq(cap, 4, "%s: (b) GUARDS map keeps cap 4" % label)
 	for sd: int in SEEDS:
