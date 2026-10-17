@@ -51,6 +51,7 @@ var _shot: int = 0
 var _alarm: StringName = &""
 var _t0_ms: int = 0
 var _fast: bool = true
+var _lift_probe: bool = false
 
 
 func _ready() -> void:
@@ -62,6 +63,7 @@ func _ready() -> void:
 			"seed": _seed = v.to_int()
 			"bags": _bags = v.to_int()
 			"render": _fast = false
+			"lift-probe": _lift_probe = true
 			"obs-out":
 				var n: Node = Node.new()
 				n.name = "POObserver"
@@ -168,6 +170,23 @@ func _run() -> void:
 	EventBus.objective_updated.connect(func(id: StringName, st: int, _d: Dictionary) -> void:
 		note("objective %s -> %d" % [id, st]))
 	note("variants %s" % rt.variants)
+	if _lift_probe:  # --lift-probe: print the cash lift's landings and panels, then quit
+		for n: Node in rt.find_children("*", "BagLift", true, false):
+			var bl: BagLift = n as BagLift
+			note("lift %s at %s landing %d count %d car %s" % [bl.get_path(), Po5Pilot._v(bl.global_position), bl.landing,
+				bl.landing_count(), Po5Pilot._v(bl.car_transform().origin)])
+			for i: int in bl.landing_count():
+				note("  landing %d %s" % [i, Po5Pilot._v(bl.landing_transform(i).origin)])
+			for c: Node in bl.find_children("*", "InteractableComponent", true, false):
+				note("  panel %s %s kind %s" % [c.name, Po5Pilot._v((c as Node3D).global_position), c.get(&"kind")])
+		var map: RID = get_tree().root.get_world_3d().navigation_map
+		for q: Vector3 in [Vector3(5.5, -2.5, 1.8), B1_HATCH_STAND, Vector3(3.5, -4.0, 3.0)]:
+			var path: PackedVector3Array = NavigationServer3D.map_get_path(map, Vector3(12.0, -4.0, 6.9), q, true)
+			note("  nav closest to %s: %s; path from B5 %d pts, ends %s" % [Po5Pilot._v(q),
+				Po5Pilot._v(NavigationServer3D.map_get_closest_point(map, q)), path.size(),
+				Po5Pilot._v(path[path.size() - 1]) if path.size() > 0 else "-"])
+		get_tree().quit(0)
+		return
 	var c: CrewController = rt.crew_controller(Net.local_slot()) as CrewController
 	await wait_s(2.0)
 	pilot = Po5Pilot.new(self, c)
@@ -530,6 +549,7 @@ func _loot() -> bool:
 	for trip: int in ceili(_bags / 2.0):
 		var steps: Array[Callable] = [_lift_to.bind(lift, 1), _load_trip.bind(lift, trip), _lift_to.bind(lift, 0),
 			_surface, _into_g1, _unload_g1.bind(lift, zone)]
+		steps.push_front(_gap_out)  # behind the laser grid since the time lock: out through the gap first
 		if trip > 0:
 			steps.push_front(_back_to_vault)
 		for st: Callable in steps:
@@ -537,6 +557,14 @@ func _loot() -> bool:
 				note("trip %d failed at %s" % [trip, st.get_method()])
 				return false
 		await shot("trip_%d_secured" % trip)
+	return true
+
+
+func _gap_out() -> bool:
+	for wp: Vector3 in [Vector3(LASER_GAP_X, GATE_AT.y, 9.15), Vector3(LASER_GAP_X, GATE_AT.y, 7.9)]:
+		if not await pilot.goto(wp, 0.12, 60.0):
+			note("laser gap out: could not reach %s (at %s)" % [Po5Pilot._v(wp), Po5Pilot._v(pilot.crew.global_position)])
+			return false
 	return true
 
 
@@ -584,6 +612,8 @@ func _lift_to(lift: BagLift, to: int) -> bool:
 	if panel == null:
 		note("lift panel %d missing" % here)
 		return false
+	note("lift: landing %d -> %d; panel %d at %s; landings %s" % [lift.landing, to, here, Po5Pilot._v(panel.global_position),
+		[Po5Pilot._v(lift.landing_transform(0).origin), Po5Pilot._v(lift.landing_transform(1).origin)]])
 	await wait_until(func() -> bool: return not lift.is_moving(), 20.0)
 	if not await pilot.use(panel, 30.0, func() -> bool: return lift.is_moving()):
 		note("lift panel %d not used (at %s)" % [here, Po5Pilot._v(pilot.crew.global_position)])
