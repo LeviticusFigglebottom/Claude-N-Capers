@@ -21,7 +21,7 @@ and reports a gap list; the LEAD folds the gaps in here as rows (id, heist, owne
 | X-5 | all | A | nav agent_radius 0.30 vs NPC capsule 0.35; tellers pushed off marks; GN StaffCO/CS/AO desk_work without seats; GH WorkshopDoor UsePoint police motor snag (7.8, z 5) | done: nav doorway test, mark-return for tellers, GN seats (A 61900a46/2727f197, round 223); x5 GH police flake not reproducing (A, 3/3 green under load; reopen if seen) |
 | GH-1 | GH | A, P | PO6-17 logic merge; P real-input pass | in progress |
 | ND-1 | ND | A | gate 2 (auto_loud, attempt 24, empty box) | open |
-| ND-2 | ND | P | windowed real-input pass | open |
+| ND-2 | ND | P | windowed real-input pass | stealth route clean to the vault loot (P 2af62b43, seed 21: grate, ladder, mask, knife, pager, keycard + code, C6, lasers, time lock, bag 1 out); OPEN: bag carry out (next: the doc's cash-lift route); A's prewarm fix: no load hang in ~17 launches |
 | SL-1 | SL | C | G2 art pass (GI, probes, occluders, dressing, review shots) | open |
 | SL-2 | SL | C | D-111 props/doors/loot | done (items 1-4 earlier; item 5 C a0f6099d: E1 net, E2 tarp + zipline anchor/cable, E3 lift blankets, laser emitter columns) |
 | SL-3 | SL | C | VictorKessler `sit` 4.1 m from a seat; camera station seat visual; ITContractor = phone (doc change APPROVED) | done (C a0f6099d) |
