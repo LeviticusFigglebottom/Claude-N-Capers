@@ -11,6 +11,11 @@
 ## ENV A parts (G2): HeistMission.police_delay_s holds the director (QC-35); burn_point telegraphs
 ## (cue.burn_warning) and lights its fire volume (QC-38); padlocks on the roller doors and the
 ## container latches (QC-37). Timed cartel reinforcements use spawn_guards (QC-25).
+## D-138.4 (no stand-in safes): the count-room cage is the BARRED CountCageGate opened by its CountCagePadlock
+## (tag count_cage: placed drill 120 s or C4, no lockpick). [count_cage] completes when the padlock is off (its
+## device_finished / lock_opened, or the gate open, polled) with open_method &"drill" / &"c4", and then the
+## count-room cash spawns are enabled. Read generically (`opened` + `beaten_by`), so a pre-D-138 CountCage safe
+## still works until the map is regenerated.
 extends HeistMission
 
 const MIN_BAGS: int = 4
@@ -28,6 +33,8 @@ const TAG_PRODUCT: StringName = &"product"
 const TAG_STRONGROOM_DRILL: StringName = &"strongroom_drill"
 const TAG_STRONGROOM_DOOR: StringName = &"strongroom_door"
 const TAG_COUNT_CAGE: StringName = &"count_cage"
+## D-138.4: the count-cage lock / gate is polled this often (s) until [count_cage] is done.
+const CAGE_POLL_S: float = 0.5
 const TAG_CASH: StringName = &"cash_bricks"
 const TAG_PADLOCK: StringName = &"padlock"
 ## D-115 (DB-4, doc §Loot path / §Stealth routes): the thermite bag starts at the crew's spawn. One loot_spawn per
@@ -93,6 +100,7 @@ var _containers_hint_said: bool = false
 var _payday_said: bool = false
 ## DB-2: required bags secured (REQUIRED_LOOT only; HeistMission.bags_secured counts every bag).
 var _required_secured: int = 0
+var _count_cage_open: bool = false
 
 
 func _on_mission_start() -> void:
@@ -136,6 +144,8 @@ func _on_mission_start() -> void:
 	on_event(&"objective_updated", _on_objective_updated)
 	_apply_thermite()
 	_apply_cash(countroom)
+	if countroom:
+		_watch_count_cage()
 	_apply_product()
 	_apply_containers()
 	_apply_lift()
@@ -415,9 +425,8 @@ func _on_device_finished(device_net_id: int) -> void:
 		say(&"vo.mercer.dockside_burn_strongroom_open")
 		complete(&"strongroom")
 	elif _is_tagged(device_net_id, TAG_COUNT_CAGE):
-		for ls: Node in find_tagged(TAG_CASH):
-			_set_enabled(ls, true)
-		complete(&"count_cage")
+		# The padlock opens right after its device_finished fact (DeviceRunner: fact, then `finished`).
+		_on_count_cage_device_done.call_deferred(device_net_id)
 	elif _is_tagged(device_net_id, TAG_BREAKER):
 		_set_lift_enabled(true)
 	elif _is_tagged(device_net_id, TAG_PADLOCK):
@@ -427,6 +436,92 @@ func _on_device_finished(device_net_id: int) -> void:
 func _on_device_jammed(device_net_id: int) -> void:
 	if _is_tagged(device_net_id, TAG_STRONGROOM_DRILL) or _is_tagged(device_net_id, TAG_COUNT_CAGE):
 		say(&"vo.mercer.dockside_burn_drill_jam")
+
+
+# --- D-138.4: the count-room cage gate ------------------------------------------------------------
+
+func _watch_count_cage() -> void:
+	for c: Node in find_tagged(TAG_COUNT_CAGE):
+		if c.has_signal(&"lock_opened") and not c.is_connected(&"lock_opened", _on_count_cage_lock_opened):
+			c.connect(&"lock_opened", _on_count_cage_lock_opened)
+	_poll_count_cage()
+
+
+func _poll_count_cage() -> void:
+	_sync_count_cage()
+	if not _count_cage_open:
+		start_timer(&"count_cage_watch", CAGE_POLL_S, _poll_count_cage)
+
+
+func _on_count_cage_lock_opened(_method: StringName) -> void:
+	_sync_count_cage()
+
+
+## device_finished of the cage lock: open the cage (the lock's own method; a fact without the lock off, e.g. a
+## driven test, counts as its device: the drill, or the C4 when the lock only takes C4).
+func _on_count_cage_device_done(device_net_id: int) -> void:
+	_sync_count_cage()
+	if _count_cage_open:
+		return
+	for c: Node in find_tagged(TAG_COUNT_CAGE):
+		if _net_id(c) == device_net_id:
+			var only_c4: bool = c.get(&"place_c4") == true and c.get(&"place_drill") != true
+			_open_count_cage(&"c4" if only_c4 else &"drill")
+			return
+
+
+## The cage lock is off (or the gate behind it is open): open the cage.
+func _sync_count_cage() -> void:
+	if _count_cage_open:
+		return
+	for c: Node in find_tagged(TAG_COUNT_CAGE):
+		var how: StringName = count_cage_method(c)
+		if how != &"":
+			_open_count_cage(how)
+			return
+		for g: Node in _lock_targets(c):
+			if bool(g.get(&"is_open")):
+				_open_count_cage(&"drill")
+				return
+
+
+## D-138.4: the [count_cage] open_method a cage lock reports: &"c4" (blown) or &"drill" (drilled / any other way),
+## &"" while it holds.
+static func count_cage_method(lock: Node) -> StringName:
+	if lock.get(&"is_open") != null or not bool(lock.get(&"opened")):
+		return &""  # a door tagged count_cage, or a lock still on
+	var how: Variant = lock.get(&"beaten_by")
+	return &"c4" if how != null and StringName(how) == &"c4" else &"drill"
+
+
+## The nodes a padlock opens (`targets`; [] for anything else).
+static func _lock_targets(lock: Node) -> Array[Node]:
+	var out: Array[Node] = []
+	var targets: Variant = lock.get(&"targets")
+	if targets is Array:
+		for path: Variant in targets:
+			var g: Node = lock.get_node_or_null(path as NodePath) if path is NodePath else null
+			if g != null:
+				out.append(g)
+	return out
+
+
+func _open_count_cage(method: StringName) -> void:
+	if _count_cage_open:
+		return
+	_count_cage_open = true
+	update_objective_data(&"count_cage", {"open_method": method})
+	for c: Node in find_tagged(TAG_COUNT_CAGE):
+		for g: Node in _lock_targets(c):
+			if g is Door and not (g as Door).is_open:
+				(g as Door).unlock()
+				(g as Door).set_open(true, false, true)
+		if not bool(c.get(&"opened")):
+			_set_enabled(c, false)
+	for ls: Node in find_tagged(TAG_CASH):
+		_set_enabled(ls, true)
+	if objective_state(&"count_cage") != Enums.ObjectiveState.COMPLETED:
+		complete(&"count_cage")
 
 
 ## DB-2: only REQUIRED_LOOT counts toward [secure] (HUD count / total); product and the rest pay only.
