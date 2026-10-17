@@ -177,3 +177,15 @@ func test_of_loud_escape_after_secure_and_eta() -> void:
 	var zone: EscapeZone = _m().find_tagged(&"escape")[0] as EscapeZone
 	assert_true(zone.active and zone.arrival_delay_s == 0.0, "the van is there")
 	assert_true(_ended.is_empty(), "no fail")
+
+
+## B's OF-B1 row: Mercer calls Brandt (captain_arrived, AegisCaptain L4.9) on each arrival.
+func test_of_captain_arrived_line() -> void:
+	if _pending() or not await _launch():
+		return
+	await _alarm()
+	await _fact(&"captain_arrived", [4242])
+	assert_eq(_count(&"vo.mercer.ostrander_federal_captain_arrived"), 1, "Mercer: Brandt is here")
+	await _fact(&"captain_retreated", [4242])
+	await _fact(&"captain_arrived", [4243])
+	assert_eq(_count(&"vo.mercer.ostrander_federal_captain_arrived"), 2, "and again when he comes back")

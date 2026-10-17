@@ -152,6 +152,8 @@ const VO_REQUIRED_SECURED: StringName = &"vo.mercer.ostrander_federal_required_s
 const VO_VAN_ETA: StringName = &"vo.mercer.ostrander_federal_van_eta"
 const VO_HELI_ETA: StringName = &"vo.mercer.ostrander_federal_heli_eta"
 const VO_ESCAPE: StringName = &"vo.mercer.ostrander_federal_escape"
+## Commander Brandt (the Aegis captain, L4.9) reaches the bank: B's OF-B1 row (Mercer, mission, priority 90).
+const VO_CAPTAIN: StringName = &"vo.mercer.ostrander_federal_captain_arrived"
 ## Longshot lines by the SNIPER_PERCH tag of the perch he holds (C: s1 Assay Office, s2 garage deck, s3 Corvino window).
 const SNIPER_LINES: Dictionary = {
 	&"s1": &"vo.mercer.ostrander_federal_sniper_assay",
@@ -199,6 +201,7 @@ func _on_mission_start() -> void:
 	on_event(&"loot_picked", _on_loot_picked)
 	on_event(&"small_loot_taken", _on_small_loot_taken)
 	on_event(&"special_spawned", _on_special_spawned)
+	on_event(&"captain_arrived", _on_captain_arrived)
 	_adopt_g1_metas()
 	_apply_scalars()
 	_watch_gate()
@@ -669,6 +672,11 @@ func _poll_cameras() -> void:
 					say(VO_CAMERA_WARNING)
 					return
 	start_timer(&"camera_watch", CAMERA_POLL_S, _poll_cameras)
+
+
+## Brandt arrives (AegisCaptain, L4.9): Mercer names him each time he comes in (PD2: Bain on every Winters arrival).
+func _on_captain_arrived(_npc_net_id: int) -> void:
+	say(VO_CAPTAIN)
 
 
 ## Longshots (L4.7): the line names the perch he holds (s1 Assay Office, s2 garage deck, s3 Corvino), once per perch.
