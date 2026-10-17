@@ -166,7 +166,7 @@ func test_screen_builds() -> void:
 	assert_eq(cells[7], UiText.clock(600.0), "fastest win")
 	assert_false(s.empty_label.visible)
 	assert_eq(s.focus_chain.back(), s.back_button as Control, "Back closes the focus chain")
-	assert_eq(s.focus_chain.size(), 3 + s.heist_rows.size() + 1, "panels + heist rows + Back")
+	assert_eq(s.focus_chain.size(), 3 + s.heist_rows.size() + s.recent_rows.size() + 1, "panels + heist rows + recent rows + Back")
 	var strings: Dictionary = StringTable.parse_csv()
 	for k: String in CareerScreen.RECORD_KEYS + CareerScreen.MONEY_KEYS + CareerScreen.COMBAT_KEYS:
 		assert_has(strings, "ui.career." + k)
@@ -213,3 +213,58 @@ func _result(heist: StringName, success: bool, stealth: bool, difficulty: int, t
 			{"slot": 1, "is_ai": true, "kills": 9, "specials_killed": 2, "downs": 1, "civilians_killed": 0, "in_custody": false},
 		],
 	}
+
+
+## Payday cards: a granted cash / XP card counts into card_cash / card_xp and cards_taken; the screen lists both.
+func test_payday_cards_recorded() -> void:
+	var p: PlayerProfile = PlayerProfile.new_default()
+	assert_eq(Career.total(p, Career.CARD_CASH), -1, "never counted")
+	Career.record_card(p, {"type": PaydayCards.CASH, "amount": 12000})
+	Career.record_card(p, {"type": PaydayCards.XP, "amount": 3500})
+	Career.record_card(p, {"type": PaydayCards.WEAPON_MOD, "item_id": &"mod.x"})
+	assert_eq(Career.total(p, Career.CARD_CASH), 12000)
+	assert_eq(Career.total(p, Career.CARD_XP), 3500)
+	assert_eq(Career.total(p, Career.CARDS_TAKEN), 3)
+	assert_has(CareerScreen.MONEY_KEYS, "card_cash")
+	assert_eq(CareerScreen.value_text(p, "card_cash"), UiText.money(12000))
+	Career.record_card(null, {"type": PaydayCards.CASH, "amount": 1})
+
+
+## D-139: the Recent heists panel lists the freshness memory oldest first and each heist's freshness, times in the
+## memory and runs since; its rows are in the focus chain (pad / keyboard scroll).
+func test_recent_heists_panel() -> void:
+	var p: PlayerProfile = PlayerProfile.new_default()
+	assert_eq(CareerScreen.recent_entries(p), [] as Array[String])
+	HeistFreshness.record(p, &"gallery_night", true)
+	for i: int in range(12):
+		HeistFreshness.record(p, &"night_deposit", true)
+	HeistFreshness.record(p, &"glasshouse", true)
+	HeistFreshness.record(p, &"glasshouse", false)
+	var entries: Array[String] = CareerScreen.recent_entries(p)
+	assert_eq(entries.size(), 10)
+	assert_eq(entries[0], "1. " + UiText.t(&"heist.night_deposit.name"))
+	assert_eq(entries[9], "10. " + UiText.t(&"heist.glasshouse.name"))
+	assert_eq(CareerScreen.recent_cells(p, &"glasshouse"), ["Golden Hour", "-20 %", "2", "0"] as Array[String])
+	assert_eq(CareerScreen.recent_cells(p, &"gallery_night")[1], "+4 %", "15 jobs since, k = 4")
+	assert_eq(CareerScreen.recent_cells(p, &"gallery_night")[3], "14")
+	assert_eq(CareerScreen.recent_cells(p, &"shadow_ledger")[1], "0 %")
+	assert_eq(CareerScreen.recent_cells(p, &"shadow_ledger")[3], "Never")
+	var s: CareerScreen = SCREEN_SCENE.instantiate() as CareerScreen
+	s.setup(p)
+	add_child(s)
+	await wait_frames(2)
+	assert_eq(s.recent_flow.get_child_count(), 10)
+	assert_false(s.recent_empty_label.visible)
+	assert_true(s.recent_rows.has(&"glasshouse"))
+	assert_true(s.focus_chain.has(s.recent_rows[&"glasshouse"] as Control), "recent rows are focusable")
+	assert_eq(s.focus_chain.back(), s.back_button)
+	# Colour-blind safety (lead r242): a drawn triangle and the sign carry the direction, not the colour alone.
+	for id: StringName in [&"glasshouse", &"gallery_night", &"shadow_ledger"]:
+		var mark: TrendMark = (s.recent_rows[id] as Node).find_child("Trend", true, false) as TrendMark
+		var text: String = CareerScreen.recent_cells(p, id)[1]
+		var pct: int = HeistFreshness.percent(float(HeistFreshness.evaluate(p, id)["mult"]))
+		assert_eq(mark.direction, signi(pct), "%s: the triangle follows the sign" % id)
+		if pct != 0:
+			assert_true(text.begins_with("+") or text.begins_with("-"), "%s: signed text %s" % [id, text])
+	s.queue_free()
+	await wait_frames(1)

@@ -459,3 +459,4 @@ func test_lobby_host_picks_and_client_sees_it() -> void:
 	client.queue_free()
 	host.queue_free()
 	await _drop_branches()
+

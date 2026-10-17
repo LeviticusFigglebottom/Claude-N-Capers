@@ -18,11 +18,14 @@ const INTERACT_ACTION: StringName = &"interact"
 const PROMPT_ACTIONS: Dictionary = {&"ui.prompt.mask_up": &"mask_up", &"ui.prompt.throw_bag": &"drop_bag",
 	&"ui.prompt.intimidate": &"shout"}
 
-## D-082 fix: pad players saw keyboard keys ("Hold F") in prompts. Xbox-style names for the pad.
-const PAD_BUTTON_NAMES: Dictionary = {JOY_BUTTON_A: "A", JOY_BUTTON_B: "B", JOY_BUTTON_X: "X", JOY_BUTTON_Y: "Y",
-	JOY_BUTTON_LEFT_SHOULDER: "LB", JOY_BUTTON_RIGHT_SHOULDER: "RB", JOY_BUTTON_LEFT_STICK: "LS",
-	JOY_BUTTON_RIGHT_STICK: "RS", JOY_BUTTON_BACK: "Back", JOY_BUTTON_START: "Start", JOY_BUTTON_DPAD_UP: "D-pad Up",
-	JOY_BUTTON_DPAD_DOWN: "D-pad Down", JOY_BUTTON_DPAD_LEFT: "D-pad Left", JOY_BUTTON_DPAD_RIGHT: "D-pad Right"}
+## D-082 fix: pad players saw keyboard keys ("Hold F") in prompts. Xbox-style names for the pad, as strings keys
+## (lead r242 hard-coded string scan: "Back", "Start" and "D-pad Up" were literals).
+const PAD_BUTTON_NAMES: Dictionary = {JOY_BUTTON_A: &"ui.key.pad.a", JOY_BUTTON_B: &"ui.key.pad.b",
+	JOY_BUTTON_X: &"ui.key.pad.x", JOY_BUTTON_Y: &"ui.key.pad.y", JOY_BUTTON_LEFT_SHOULDER: &"ui.key.pad.lb",
+	JOY_BUTTON_RIGHT_SHOULDER: &"ui.key.pad.rb", JOY_BUTTON_LEFT_STICK: &"ui.key.pad.ls",
+	JOY_BUTTON_RIGHT_STICK: &"ui.key.pad.rs", JOY_BUTTON_BACK: &"ui.key.pad.back", JOY_BUTTON_START: &"ui.key.start",
+	JOY_BUTTON_DPAD_UP: &"ui.key.pad.dpad_up", JOY_BUTTON_DPAD_DOWN: &"ui.key.pad.dpad_down",
+	JOY_BUTTON_DPAD_LEFT: &"ui.key.pad.dpad_left", JOY_BUTTON_DPAD_RIGHT: &"ui.key.pad.dpad_right"}
 
 ## Mouse-bound actions (fire, aim) on the keyboard / mouse device: short names for a key cap.
 const MOUSE_BUTTON_KEYS: Dictionary = {MOUSE_BUTTON_LEFT: &"ui.key.mouse_left",
@@ -138,10 +141,10 @@ static func pad_text(action: StringName) -> String:
 	for ev: InputEvent in InputMap.action_get_events(action):
 		var b: InputEventJoypadButton = ev as InputEventJoypadButton
 		if b != null and PAD_BUTTON_NAMES.has(int(b.button_index)):
-			return String(PAD_BUTTON_NAMES[int(b.button_index)])
+			return UiText.t(PAD_BUTTON_NAMES[int(b.button_index)] as StringName)
 		var m: InputEventJoypadMotion = ev as InputEventJoypadMotion
 		if m != null and m.axis in [JOY_AXIS_TRIGGER_LEFT, JOY_AXIS_TRIGGER_RIGHT]:
-			return "LT" if m.axis == JOY_AXIS_TRIGGER_LEFT else "RT"
+			return UiText.t(&"ui.key.pad.lt" if m.axis == JOY_AXIS_TRIGGER_LEFT else &"ui.key.pad.rt")
 	return ""
 
 

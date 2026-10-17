@@ -10,6 +10,12 @@ helmet, bare forearms, a soft crew cap with a curved peak.
 
 * ``char_armored_car_crew``: a heavy-set man, 40s, buzz cut and stubble.
 * ``char_armored_car_crew_b``: a woman, 30s, dark bob under the cap.
+* RT-D1 (Rolling Thunder: up to 3 trucks x driver + custodian, so six crew on screen, D-130): four more faces in
+  the same uniform, ``_c`` a man in his 50s (grey, short), ``_d`` a woman in her 40s (brown bob), ``_e`` a young man
+  (buzz cut), ``_f`` a man in his 30s (blond side part, stubble).
+* ``char_armored_car_marshal``: the route marshal (QC-86), a man in his 50s, stubble: the crew uniform with a
+  Vaultline-amber hi-vis vest (not the police yellow) in place of the ballistic vest, VAULTLINE in brown on its back
+  and the amber patch on its chest, so he reads as "the advance man" at 30 m.
 
 Both: duty belt with a holstered pistol, the radio on the right hip (= the ``Hip`` seat where the
 pager rides), a coiled cable up to a speaker-mic on the vest's right shoulder strap, pouches, black
@@ -28,6 +34,7 @@ import _npc as n
 import _outfit as o
 import _outfit_garments as g
 import _p5 as p5
+import char_dock_workers as dw
 from _outfit import Hull, Mesh, Vector
 from _outfit_build import Kit, build_character
 
@@ -39,15 +46,26 @@ VARIANTS = {
                               "beard_shadow": 0.7, "hair": "buzz", "hair_color": "dark", "look": "crew"},
     "char_armored_car_crew_b": {"height": 1.73, "build": 0.55, "gender": 1.0, "age": 0.3, "skin": 6, "hair": "bob",
                                 "hair_color": "dark", "look": "crew"},
+    "char_armored_car_crew_c": {"height": 1.78, "build": 0.6, "gender": 0.0, "age": 0.62, "skin": 4,
+                                "beard_shadow": 0.4, "hair": "short", "hair_color": "grey", "look": "crew"},
+    "char_armored_car_crew_d": {"height": 1.69, "build": 0.65, "gender": 1.0, "age": 0.45, "skin": 3, "hair": "bob",
+                                "hair_color": "brown", "look": "crew"},
+    "char_armored_car_crew_e": {"height": 1.80, "build": 0.5, "gender": 0.0, "age": 0.2, "skin": 5, "hair": "buzz",
+                                "hair_color": "dark", "look": "crew"},
+    "char_armored_car_crew_f": {"height": 1.76, "build": 0.65, "gender": 0.0, "age": 0.35, "skin": 1,
+                                "beard_shadow": 0.5, "hair": "side_part", "hair_color": "blond", "look": "crew"},
+    "char_armored_car_marshal": {"height": 1.81, "build": 0.7, "gender": 0.0, "age": 0.66, "skin": 3,
+                                 "beard_shadow": 0.8, "hair": "short", "hair_color": "grey", "look": "marshal"},
 }
 
 SHIRT = "char_vl_shirt"
 BROWN = "char_vl_trousers"
 VEST = "char_vl_vest"
 AMBER = "char_vl_amber"
+HIVIS = "char_vl_hivis"  # Vaultline amber hi-vis, never the police yellow
 
 
-def crew(kit: Kit) -> None:
+def crew(kit: Kit, marshal: bool = False) -> None:
     fit, k = kit.fit, kit.k
     hips_z = fit.ring_centre("hips").z
     belt_z = hips_z + 0.035 * k
@@ -67,13 +85,16 @@ def crew(kit: Kit) -> None:
     bg.extend(gk.pouch(b, math.radians(-150.0), 0.07, 0.06, 0.03, "char_leather_black", snap="char_metal_silver"))
     kit.add_gear(bg)
     kit.seats["Hip"] = b.point(a_radio, dz=0.0, out=0.045 * k)
-    # vest over the shirt, ending above the belt
+    # vest over the shirt, ending above the belt (the route marshal: a soft hi-vis vest instead of the carrier)
     n0 = len(kit.soft.f)
-    vest, _box = p5.carrier_vest(kit, VEST, belt_z + 0.04 * k)
+    if marshal:
+        vest = dw.hivis_vest(kit, HIVIS, stand=0.016)
+    else:
+        vest, _box = p5.carrier_vest(kit, VEST, belt_z + 0.04 * k)
     n.cull_under(kit, n0, vest, "faces_hidden_by_vest")
     p5.vaultline_patch(kit, lambda: p5._front_hit(kit.hull(), -0.095 * k, 1.315 * k, 0.1 * k),
                        Vector((0.0, 1.0, 0.0)), Vector((0, 0, 1)), 0.080, 0.060)
-    p5.stamp_back(kit, "VAULTLINE", 1.30, 0.036, AMBER)
+    p5.stamp_back(kit, "VAULTLINE", 1.30, 0.036, BROWN if marshal else AMBER)
     # sleeve patch on the left upper arm
     sh_l, el_l = Vector(fit.J["shoulder.L"]), Vector(fit.J["elbow.L"])
     axis = (sh_l - el_l).normalized()
@@ -109,7 +130,14 @@ def crew(kit: Kit) -> None:
                          "crew cap with the mark, duty belt (radio = Hip, holster, pouches), speaker-mic, boots")
 
 
-_looks = {"crew": crew}
+def marshal(kit: Kit) -> None:
+    crew(kit, marshal=True)
+    kit.notes["look"] = ("Vaultline route marshal: the crew uniform (sand shirt, brown trousers, crew cap, duty belt, "
+                         "speaker-mic) with an amber hi-vis vest instead of the ballistic vest, the amber patch on its "
+                         "chest and VAULTLINE in brown across its back")
+
+
+_looks = {"crew": crew, "marshal": marshal}
 
 
 def recipe(kit: Kit) -> None:

@@ -90,7 +90,7 @@ static func build(heist_id: StringName, difficulty: int, def: HeistDef = null,
 		"loot": loot_lines(loot, difficulty),
 		"contract_pay": HeistCatalog.contract_preview(base_payout, difficulty),
 		"mode": mode,
-		"mode_key": mode_key(mode),
+		"mode_key": HeistCatalog.mode_key(heist_id, mode),
 		"escape_options": escape_lines(escapes),
 		"security": BriefingIntel.lines(heist_id, difficulty, mode),
 		"voice_lines": voice_lines(heist_id, contact),
@@ -212,12 +212,7 @@ static func voice_lines(heist_id: StringName, contact: ContactDef, table: VoiceL
 
 
 static func mode_key(mode: int) -> StringName:
-	match mode:
-		Enums.HeistMode.STEALTH_ONLY:
-			return &"ui.heist_select.modes_stealth_only"
-		Enums.HeistMode.LOUD_ONLY:
-			return &"ui.heist_select.modes_loud_only"
-	return &"ui.heist_select.modes_stealth_loud"
+	return HeistCatalog.mode_key(&"", mode)
 
 
 ## True when `key` resolves to text (translation or the strings.csv fallback).

@@ -81,7 +81,7 @@ func refresh() -> void:
 	category_labels.clear()
 	focus_chain.clear()
 	grids.clear()
-	var defs: Array[AchievementDef] = Achievements.all()
+	var defs: Array[AchievementDef] = Achievements.shown()  # a staged (hidden) heist's set stays off the screen
 	var unlocked: int = 0
 	for cat: StringName in _categories(defs):
 		# Category head: a caption over a hairline (style.md §1, labels are captions).

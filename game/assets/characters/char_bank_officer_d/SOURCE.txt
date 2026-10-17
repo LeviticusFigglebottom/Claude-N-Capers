@@ -1,0 +1,20 @@
+asset: char_bank_officer_d
+script: tools/blender/characters/char_p5_bank.py
+params: {"age": 0.3, "build": 0.35, "gender": 1.0, "hair": "side_part", "hair_color": "dark", "height": 1.7, "look": "officer_d", "skin": 6}
+seed: 1889744770  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category characters --asset char_bank_officer_d
+edit policy: generated file, never edit by hand; change the script and rebuild
+attach_Back: bone chest, local [0.0000, 0.0850, 0.0951] (model [0.0000, 1.2416, 0.1127], Godot axes, rest pose)
+attach_Head: bone head, local [0.0000, 0.0774, -0.0847] (model [0.0000, 1.5911, -0.0733], Godot axes, rest pose)
+attach_Hip: bone hips, local [0.1723, 0.0489, 0.0420] (model [0.1723, 0.9588, 0.0444], Godot axes, rest pose)
+body_faces_culled: 4764
+body_params: {"age": 0.3, "beard_shadow": 0.0, "build": 0.35, "gender": 1.0, "hair": "side_part", "hair_color": "dark", "hair_peak": 0.0, "height": 1.7, "lip": "auto", "skin": 6}
+bones: 52
+faces_hidden_by_waistcoat: 1130
+look: Bank officer (OF-D1): a woman in her 30s, dark hair in a bun; grey worsted waistcoat and trousers over a white shirt (no jacket), the bank's red lanyard + ID badge, low heels, watch, black glasses
+meshes: Body,Gear,Hair,Headwear,Outfit
+shape_keys: none (baked at body_params; do not set blend_shapes/*)
+tri_budget: 35000
+tris: 28262
+tris_by_mesh: {"Body": 9216, "Gear": 896, "Hair": 1856, "Headwear": 1642, "Outfit": 14652}
