@@ -1139,3 +1139,5 @@ the PO's harsher-cameras ask). The round-229 merge regenerates GH/ND/SL/GN scene
 compression on a high grip; the hand seat stays (D-116 sight picture); d/test_fp_pistol_thumb guards at 4.5 mm.
 **QB-1 (B, 2026-10-16):** heist-specific escape radio lines that a mission escape say() always covers are deleted; the
 generic escape lines stay as the fallback. B's briefing_objectives lists for GN/DB/SL approved (C edits the generator rows).
+**D-128 addendum (B, 2026-10-17):** an observer whose world ring lands on the crosshair arc band draws no crosshair arc
+(the ring already marks that spot); every other observer keeps its arc. Ring/arc sizes live in `hud_tweak.tres` (B 98c39e44).
