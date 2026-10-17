@@ -29,6 +29,7 @@ const SLOTS: Dictionary = {
 	&"escape": [&"esc_mews", &"esc_parade"],
 	&"xl_crate": [&"xl_loan", &"xl_none"],  # QC-62: >= 2 slots per group (validate_level contract_nodes)
 	&"admin_pa": [&"pa_late", &"pa_none"],
+	&"gala_extra": [&"gx_cloakroom", &"gx_drawings"],  # C a5f115c1: D-130 GN civilian extras
 }
 ## HeistDef.preplanning override key -> PreplanAssetDef property (PreplanAssetDef.with_overrides).
 const FIELD_OF: Dictionary = {"params": "drop_params"}
@@ -42,7 +43,12 @@ var _nodes: Array[Node] = []
 func before_all() -> void:
 	_def = load(_path("%s_def.tres" % HEIST)) as HeistDef
 	_table = load(_path("%s_variants.tres" % HEIST)) as HeistVariantTable
+	var ruled: Array[StringName] = []
+	for r: Dictionary in _table.rules:
+		ruled.append(StringName(r.get("group", &"")))
 	for g: StringName in SLOTS:
+		if not ruled.has(g):
+			continue  # a group C has placed but this branch's table has no rule for yet (no "no rule" warning)
 		_slots[g] = []
 		for sid: StringName in SLOTS[g]:
 			var vs: VariantSlot = VariantSlot.new()

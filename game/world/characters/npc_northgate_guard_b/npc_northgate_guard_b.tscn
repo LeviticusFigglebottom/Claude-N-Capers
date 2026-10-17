@@ -213,23 +213,23 @@ height = 0.4699
 [node name="NpcNorthgateGuardB" unique_id=973178219 instance=ExtResource("1_glb")]
 
 [node name="Body" parent="Skeleton3D" index="0" unique_id=607914006]
-visibility_range_end = 20.0
+visibility_range_end = 15.0
 visibility_range_end_margin = 1.0
 
 [node name="Gear" parent="Skeleton3D" index="1" unique_id=608082695]
-visibility_range_end = 20.0
+visibility_range_end = 15.0
 visibility_range_end_margin = 1.0
 
 [node name="Hair" parent="Skeleton3D" index="2" unique_id=608114540]
-visibility_range_end = 20.0
+visibility_range_end = 15.0
 visibility_range_end_margin = 1.0
 
 [node name="Headwear" parent="Skeleton3D" index="3" unique_id=872949641]
-visibility_range_end = 20.0
+visibility_range_end = 15.0
 visibility_range_end_margin = 1.0
 
 [node name="Outfit" parent="Skeleton3D" index="4" unique_id=36079555]
-visibility_range_end = 20.0
+visibility_range_end = 15.0
 visibility_range_end_margin = 1.0
 
 [node name="Back" type="BoneAttachment3D" parent="Skeleton3D" index="5" unique_id=607898713]
@@ -273,7 +273,7 @@ bone_idx = 1
 transform = Transform3D(1, 0, 0, 0, 0.99875, 0.049939997, 0, -0.049939997, 0.99875, 0.20539999, 0.064399995, 0.0773)
 
 [node name="CrowdLod" type="MeshInstance3D" parent="Skeleton3D" index="10" unique_id=560548742 groups=["crowd_lod"]]
-visibility_range_begin = 20.0
+visibility_range_begin = 15.0
 visibility_range_begin_margin = 1.0
 mesh = ExtResource("3_lod")
 skin = SubResource("skin_lod")

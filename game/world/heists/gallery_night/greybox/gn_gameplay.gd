@@ -154,6 +154,7 @@ const SLOT_TODO: Dictionary = {
 	"escape": "escape_zone + secure_zone + vehicle visual (van / limo)",
 	"xl_crate": "loan crate with extra loot.painting_study (late_loan)",
 	"admin_pa": "CIVILIAN SpawnPoint civ_admin at an AO desk (late_paperwork)",
+	"gala_extra": "CIVILIAN SpawnPoint of a D-130 difficulty extra (cloakroom attendant / DC attendant)",
 }
 ## court_doors slot -> the French doors' lock (B2).
 const COURT_LOCK: Dictionary = {"court_doors_open": "NONE", "court_doors_locked": "LOCKPICK"}

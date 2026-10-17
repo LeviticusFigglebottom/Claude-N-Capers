@@ -1019,6 +1019,7 @@ func _apply(want: StringName, speed: float, tw: AnimTweak) -> void:
 		clip = want
 		_restart = false
 		hand_props = HandProps.sync(rig, StringName(full.get_slice("/", 1)))  # D-115 (characters.md v1.16)
+		HeldVisuals.update_slung(rig, StringName(full.get_slice("/", 1)))  # v1.27: no slung gun through the chair
 	if crew_action != null and want == crew_action.action:
 		player.seek(crew_action.time, true)  # v1.23: the action's time and rate are CrewActionAnim's (the hold drives it)
 		speed = crew_action.speed

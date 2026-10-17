@@ -63,7 +63,7 @@ EXTERIOR_KIT = {"X1": "exterior_boulevard", "X2": "exterior_mews", "X3": "exteri
 # Resolver order (= ENV B's rule order; `conservator` before `keycard`, since kc_conservator requires cons_late).
 GROUP_ORDER = ["centrepiece", "canvas_orchard", "canvas_widow", "canvas_saint", "sensor_net", "conservator", "keycard",
                "code_note", "guard_post", "security_room_staffed", "camera", "laser_pattern", "curator_route",
-               "court_doors", "areaway", "escape", "xl_crate", "admin_pa"]
+               "court_doors", "areaway", "escape", "xl_crate", "admin_pa", "gala_extra"]
 
 # SLOTS: (group, slot_id, base weight, floor, room, x, z, y, yaw, note). The VariantSlot sits at (x, FFL + y, z),
 # turned by `yaw` (degrees about +y; the content's front, -Z, faces 0 north (-z), 90 west (-x), 180 south (+z),
@@ -120,6 +120,9 @@ SLOTS: List[Tuple[str, str, float, str, str, float, float, float, float, str]] =
     ("xl_crate", "xl_loan", 1.0, "G", "LD", 38.0, 9.0, 0.0, 0.0, "late_loan crate (2 studies); pick 0, only the rare event"),
     ("admin_pa", "pa_none", 1.0, "U", "AO", 15.0, 4.0, 0.0, 0.0, "empty sibling (QC-62): no PA unless late_paperwork"),
     ("admin_pa", "pa_late", 1.0, "U", "AO", 15.0, 4.0, 0.0, 0.0, "civ_admin at an AO desk; pick 0, only late_paperwork"),
+    # D-130: gala staff that scale with difficulty (pick 0 + difficulty_add 0/1/1/2/2/2), each on its own work spot.
+    ("gala_extra", "gx_cloakroom", 1.0, "G", "CK", 14.45, 29.4, 0.0, 0.0, "civ_waitstaff behind the CK counter"),
+    ("gala_extra", "gx_drawings", 1.0, "G", "DC", 3.2, 28.45, 0.0, 180.0, "civ_attendant posted in DC"),
 ]
 # Slots hung on (or fixed to) a wall: --check wants the anchor <= WALL_HUNG_MAX_M from that wall's room face and the
 # yaw facing away from it (into the room), so the prefab clears the wall and its UsePoint lands on the floor.
@@ -381,6 +384,7 @@ B_SNAPSHOT = {
         ["escape", [1, 1], None, {}, {}],
         ["xl_crate", [0, 0], None, {}, {}],
         ["admin_pa", [0, 0], None, {}, {}],
+        ["gala_extra", [0, 0], [0, 1, 1, 2, 2, 2], {}, {}],  # D-130 (C adds it to the live table)
     ],
     "slots": {
         "centrepiece": [["cp_landing", 0.4], ["cp_treasury", 0.35], ["cp_store", 0.25]],
@@ -402,6 +406,7 @@ B_SNAPSHOT = {
         "escape": [["esc_mews", 0.55], ["esc_parade", 0.45]],
         "xl_crate": [["xl_loan", 1.0], ["xl_none", 1.0]],
         "admin_pa": [["pa_late", 1.0], ["pa_none", 1.0]],
+        "gala_extra": [["gx_cloakroom", 1.0], ["gx_drawings", 1.0]],
     },
     "scalars": {"last_call_s": [480, 600, 720], "patrons": [3, 5, 7, 9], "stragglers": [0, 1, 2],
                 "store_paintings": [4, 6, 8], "consignment_lockers": [4, 6, 8], "escape_eta_s": [90, 120, 150]},

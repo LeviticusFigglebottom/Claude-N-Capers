@@ -41,6 +41,8 @@ func _run() -> void:
 			HeistLauncher.next_seed_override = a.substr(11).to_int()  # replay a run (menus still clicked)
 		elif a.begins_with("--po5-budget="):
 			_budget_s = a.substr(13).to_float()
+		elif a.begins_with("--po5-crew-dmg="):  # D-133 harness-only dev option, named in the evidence
+			HeistLauncher.dev_options["crew_damage_taken_mult"] = a.substr(15).to_float()
 	if _budget_s > 0.0:
 		_watchdog.call_deferred()
 	if not await enter_heist():
@@ -111,6 +113,9 @@ func enter_heist() -> bool:
 	run_seed = rt.run_seed
 	note("in heist %s seed %d diff %d phase %d crew at %s" % [rt.heist_id, rt.run_seed, rt.difficulty, rt.phase,
 		Po5Pilot._v(crew.global_position)])
+	if rt.options.has("crew_damage_taken_mult"):
+		note("DEV OPTION crew_damage_taken_mult=%.2f (D-133 harness-only; assault events on)" % float(
+			rt.options["crew_damage_taken_mult"]))
 	await shot("heist_start")
 	pilot = Po5Pilot.new(self, crew)
 	await capture_like_player()

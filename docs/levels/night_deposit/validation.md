@@ -255,8 +255,8 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 - kit `banking_hall`: 1 room(s), 1 distinct layout(s)
 - kit `server_room`: 1 room(s), 1 distinct layout(s)
-- kit `break_room`: 1 room(s), 1 distinct layout(s)
 - kit `locker_room`: 1 room(s), 1 distinct layout(s)
+- kit `break_room`: 1 room(s), 1 distinct layout(s)
 - kit `depository`: 1 room(s), 1 distinct layout(s)
 - kit `exterior_harbor`: 1 room(s), 1 distinct layout(s)
 - kit `exterior_lot`: 1 room(s), 1 distinct layout(s)
