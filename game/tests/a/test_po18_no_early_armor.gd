@@ -120,3 +120,35 @@ func test_armor_classifier_over_every_enemy_def() -> void:
 	fake.params = fake.params.duplicate()
 	fake.params["armor_body_mult"] = 0.5
 	assert_true(EnemyRoster.has_body_armor(fake), "armor_body_mult < 1 counts as body armor")
+
+
+## D-145.3: Routine/Tense police wear ENV D's unarmoured `duty` look (NpcVisualTweak.difficulty_variants, only below
+## armored_min_difficulty): patrol officer, TAC Light, Stinger, Bulwark; Longshot / FRD keep their (unarmoured) base
+## look, which the base fallback serves. Hazardous+ never try `duty`.
+func test_low_difficulty_police_wear_duty_looks() -> void:
+	var tw: DirectorTweak = _tw()
+	for k: Variant in NpcVisuals.tweak().difficulty_variants.keys():
+		assert_true(int(k) < tw.armored_min_difficulty, "duty variant only below armored_min_difficulty (%s)" % k)
+	for d: int in LOW:
+		for id: StringName in [&"enemy.patrol_officer", &"enemy.tac_light", &"enemy.stinger", &"enemy.bulwark"]:
+			var def: EnemyDef = EnemyRoster.resolve(tw, d, id)
+			assert_true(def != null, "difficulty %d: %s resolves" % [d, id])
+			if def != null:
+				assert_eq(Array(NpcVisuals.variants(def, d)), ["duty", ""], "difficulty %d: %s tries duty first" % [d, id])
+	for d: int in HIGH:
+		for id: StringName in _spawnable_ids(tw, d):
+			var def: EnemyDef = EnemyRoster.resolve(tw, d, id)
+			if def != null:
+				assert_false(NpcVisuals.variants(def, d).has("duty"), "difficulty %d: %s keeps its armoured look" % [d, id])
+
+
+## D-145 §2/§3: the Corpsman, Wreckers and the Phantom never spawn on Routine/Tense (their groups weigh 0 there).
+func test_no_corpsman_wrecker_or_phantom_below_hazardous() -> void:
+	var tw: DirectorTweak = _tw()
+	for d: int in LOW:
+		for id: StringName in _spawnable_ids(tw, d):
+			var def: EnemyDef = EnemyRoster.resolve(tw, d, id)
+			if def == null:
+				continue
+			assert_false(def.id == &"enemy.corpsman" or def.id == &"enemy.phantom"
+				or String(def.id).begins_with("enemy.wrecker"), "difficulty %d: %s does not spawn" % [d, def.id])
