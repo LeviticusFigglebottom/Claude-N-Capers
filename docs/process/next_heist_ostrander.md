@@ -1,4 +1,4 @@
-# Next heist: Ostrander Federal build plan (APPROVED D-136; kickoff after D-135 queue clear)
+# Next heist: Ostrander Federal build plan (APPROVED D-136; STARTED 2026-10-17 after the D-135 close)
 
 Owner: LEAD. Status: **planning only** (D-115: no new heist until all five existing heists are "done" per
 `docs/process/heist_completion.md`; D-111 polish gate holds too; D-129 restates "planning only").
