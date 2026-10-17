@@ -350,9 +350,7 @@ func _on_heli_hover(heli: AssaultHeli, drop: Dictionary, p: Dictionary) -> void:
 	var breach: AssaultBreach = null
 	var bpath: String = String(drop.get("breach", ""))
 	if bpath != "" and _breach_used.has(bpath):
-		breach = _breach_used[bpath] as AssaultBreach  # already blown (or blowing): drop through the open hole
-		if breach != null and not is_instance_valid(breach):
-			breach = null
+		breach = _live(_breach_used[bpath]) as AssaultBreach  # already blown (or blowing): drop through the open hole
 	elif bpath != "":
 		var bp: Dictionary = tweak.params_for({"kind": AssaultEventsTweak.KIND_BREACH})
 		bp["squad"] = []  # the heli's squad goes through it
@@ -630,7 +628,7 @@ func _tick_queue(delta: float) -> void:
 		var npc: NpcBase = _spawn_unit(q["id"], q["xf"], q["kind"])
 		var legs: Array[Dictionary] = []
 		legs.assign(q["legs"] as Array)
-		var owner: Node = q.get("owner") as Node
+		var owner: Node = _live(q.get("owner")) as Node
 		if npc == null:
 			_rope_done(owner)
 			for leg: Dictionary in legs:
@@ -667,8 +665,8 @@ func _spawn_unit(id: StringName, xf: Transform3D, kind: StringName) -> NpcBase:
 func _tick_guides(delta: float) -> void:
 	for gi: int in range(_guides.size() - 1, -1, -1):
 		var g: Dictionary = _guides[gi]
-		var npc: NpcBase = g["npc"] as NpcBase
-		var motor: NpcMotor = npc.get_node_or_null(^"Motor") as NpcMotor if is_instance_valid(npc) else null
+		var npc: NpcBase = _live(g["npc"]) as NpcBase
+		var motor: NpcMotor = npc.get_node_or_null(^"Motor") as NpcMotor if npc != null else null
 		if not is_instance_valid(npc) or not npc.alive or motor == null:
 			if motor != null:
 				_release(npc, motor)
@@ -702,7 +700,7 @@ func _step_leg(g: Dictionary, npc: NpcBase, motor: NpcMotor, delta: float) -> bo
 		_set_anim(npc, StringName(leg.get("anim", &"")))
 		g["hold"] = float(g["hold"]) + delta
 		return float(g["hold"]) >= float(leg["hold_s"])
-	var wait: AssaultBreach = leg.get("wait_breach") as AssaultBreach
+	var wait: AssaultBreach = _live(leg.get("wait_breach")) as AssaultBreach
 	if wait != null and is_instance_valid(wait) and not wait.is_blown():
 		motor.rappelling = false
 		_set_anim(npc, StringName(leg.get("anim", &"")))
@@ -800,8 +798,8 @@ func _rope_users_add(owner: Node, idx: int) -> void:
 
 
 func _rope_users_done(rope: Array) -> void:
-	var owner: Node = rope[0] as Node
-	if owner == null or not is_instance_valid(owner):
+	var owner: Node = _live(rope[0]) as Node
+	if owner == null:
 		return
 	var key: String = "%d:%d" % [owner.get_instance_id(), int(rope[1])]
 	_rope_users[key] = int(_rope_users.get(key, 0)) - 1
@@ -822,7 +820,7 @@ func _land(g: Dictionary) -> void:
 	if bool(g.get("landed_done", false)):
 		return
 	g["landed_done"] = true
-	_rope_done(g.get("owner") as Node)
+	_rope_done(_live(g.get("owner")) as Node)
 
 
 func _rope_done(owner: Node) -> void:
@@ -882,3 +880,8 @@ func _floor_below(p: Vector3, min_y: float) -> Vector3:
 
 static func _flat(v: Vector3) -> Vector3:
 	return Vector3(v.x, 0.0, v.z)
+
+
+## P OF-A6 run (12,891 "Trying to cast a freed object"): a stored object reference, or null once it was freed.
+static func _live(v: Variant) -> Object:
+	return v if is_instance_valid(v) else null
