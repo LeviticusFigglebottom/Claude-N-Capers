@@ -6,7 +6,8 @@
 ## OF forces its vip_client slot. Writes user://cast_perf_<heist>_<view>.png. Owner: ENV D.
 ##   xvfb-run -a -s "-screen 0 1280x720x24" /opt/godot/godot --audio-driver Dummy --rendering-driver opengl3 \
 ##     --resolution 1280x720 --path game res://world/characters/_tools/heist_cast_perf.tscn -- \
-##     --heist=ostrander_federal [--seed=1037] [--loud] [--seconds=90]
+##     --heist=ostrander_federal [--seed=1037] [--loud] [--seconds=90] [--detail]
+## --detail adds per view: draws with every light's shadow off, and each on-screen NPC's own draws (top 8).
 extends Node
 
 ## heist -> [[view name, eye, look-at]]: the biggest live crowd in one view.
@@ -39,6 +40,7 @@ var _heist: String = "ostrander_federal"
 var _seed: int = 1037
 var _loud: bool = false
 var _seconds: float = 90.0
+var _detail: bool = false
 
 
 func _ready() -> void:
@@ -49,6 +51,7 @@ func _ready() -> void:
 			"seed": _seed = int(kv[1])
 			"loud": _loud = true
 			"seconds": _seconds = float(kv[1])
+			"detail": _detail = true
 	var opts: Dictionary = {"ai_teammates": 0}
 	if FORCE.has(_heist):
 		opts["preplan"] = {"force_variants": FORCE[_heist]}
@@ -121,6 +124,8 @@ func _ready() -> void:
 			gi.visible = true
 		print("[CASTPERF] view=%s attached never-LOD geometry: %d nodes, %d tris; hiding it: draws %d -> %d, prims %d -> %d"
 				% [v[0], extra_nodes, extra_tris, shown[0], no_extras[0], shown[1], no_extras[1]])
+		if _detail:
+			await _detail_report(String(v[0]), npcs, cam, shown)
 		_set_cast_visible(npcs, false)
 		for _i: int in 10:
 			await get_tree().process_frame
@@ -134,6 +139,47 @@ func _ready() -> void:
 		var img: Image = get_viewport().get_texture().get_image()
 		img.save_png(ProjectSettings.globalize_path("user://cast_perf_%s_%s.png" % [_heist, v[0]]))
 	get_tree().quit(0)
+
+
+## --detail: the frame's draws with every light's shadow off, the shadow-casting lights, and the draws each on-screen
+## NPC costs (hidden one at a time; the top 8).
+func _detail_report(view: String, npcs: Array[Node], cam: Camera3D, shown: Array) -> void:
+	var lit: Array[Light3D] = []
+	var kinds: Dictionary = {}
+	for l: Node in get_tree().root.find_children("*", "Light3D", true, false):
+		var li: Light3D = l as Light3D
+		if li.shadow_enabled and li.is_visible_in_tree():
+			lit.append(li)
+			kinds[li.get_class()] = int(kinds.get(li.get_class(), 0)) + 1
+	for li: Light3D in lit:
+		li.shadow_enabled = false
+	for _i: int in 10:
+		await get_tree().process_frame
+	var no_shadow: Array = _info()
+	for li: Light3D in lit:
+		li.shadow_enabled = true
+	print("[CASTPERF] view=%s shadowed lights %s; all shadows off: draws %d -> %d" % [view, kinds, shown[0], no_shadow[0]])
+	var rows: Array = []
+	for n: Node in npcs:
+		var nb: NpcBase = n as NpcBase
+		var vr: Node3D = nb.get("visual_root") as Node3D
+		if vr == null or not cam.is_position_in_frustum(nb.global_position + Vector3(0, 1.0, 0)):
+			continue
+		for _i: int in 4:
+			await get_tree().process_frame
+		var a: int = _info()[0]
+		vr.visible = false
+		for _i: int in 4:
+			await get_tree().process_frame
+		var b: int = _info()[0]
+		vr.visible = true
+		var scene: String = nb.visual_scene.resource_path.get_file().get_basename() if nb.visual_scene != null else "?"
+		rows.append([a - b, scene, cam.global_position.distance_to(nb.global_position)])
+	rows.sort_custom(func(x: Array, y: Array) -> bool: return x[0] > y[0])
+	var out: PackedStringArray = []
+	for r: Array in rows.slice(0, 8):
+		out.append("%s %d @%.0fm" % [r[1], r[0], r[2]])
+	print("[CASTPERF] view=%s per-NPC draws (top 8 of %d on screen): %s" % [view, rows.size(), ", ".join(out)])
 
 
 func _info() -> Array:
