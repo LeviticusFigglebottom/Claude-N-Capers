@@ -1,4 +1,4 @@
-# Contract: characters (v1.27)
+# Contract: characters (v1.28)
 
 Producer: ENV C (generated humanoids + animations). Consumer: ENV A (NPC/crew prefabs).
 Until delivered, ENV A uses capsule placeholders with the same node names.
@@ -350,3 +350,7 @@ to the old clips until D's land.
 Cartel looks with a slung long gun carry it on an optional `Skeleton3D/Slung` mesh (rigid on the chest). Consumers (ENV A's
 HeldVisuals) hide it while any `sit_*` clip plays; CrowdLod merges it like any other surface. `cartel_gunman_g` has no
 `Gear` mesh (by design).
+
+## v1.28: 45° turn-in-place (D 467f0dfb)
+`turn_l_45` / `turn_r_45`: 12 frames, `root_turn_deg` ±45, same rate as the 90° turns. ENV A's AnimDriver picks 45 or 90 by
+|yaw diff| (threshold ~20°) and speed-scales so the rig and the clip finish together (fixes the turn-in-place foot slide).
