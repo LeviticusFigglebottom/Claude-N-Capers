@@ -22,6 +22,18 @@ back spike) on wine enamel; staff wear it as a small round pin, security as a br
   crest on the breast pocket, white shirt, wine tie, mid-grey trousers, an earpiece (right ear) and
   a belt radio under the blazer on the right hip (= the ``Hip`` seat where the pager rides).
   ``_b`` is a woman (different skin, bob).
+* D-130 (Cataclysm: about +50 % guards, up to 7 guards + the operator + inspectors on the floor): seven more
+  Halberd faces so the guard pool (``gallery_guard`` a-i) never shows twins. Same livery; small
+  variations only (``jacket: False`` = shirtsleeve order: the bottle-green waistcoat with gold buttons and
+  the crest, the radio clipped to the waistband under its hem; glasses; a chignon):
+
+  * ``char_gallery_guard_c``: woman, mid-20s, deep skin, dark hair in a chignon; blazer.
+  * ``char_gallery_guard_d``: man, 30s, mid skin, short dark hair, stubble; shirtsleeve order (waistcoat).
+  * ``char_gallery_guard_e``: heavy older man (about 60), mid-deep skin, bald, beard shadow, silver glasses; blazer.
+  * ``char_gallery_guard_f``: woman, 50s, light skin, grey bob, gold-rimmed glasses; blazer.
+  * ``char_gallery_guard_g``: tall lean young man, light skin, short blond hair; shirtsleeve order.
+  * ``char_gallery_guard_h``: woman, 30s, mid skin, dark bob; shirtsleeve order.
+  * ``char_gallery_guard_i``: man, 40s, deep skin, side-parted dark hair, heavy stubble; blazer.
 * ``char_gallery_patron``: gala guest (woman): a sleeveless wine satin midi cocktail dress, gold
   belt, gold earrings, heels, dark bob.
 * ``char_gallery_patron_b``: gala guest (man, older): a midnight-blue velvet dinner jacket with
@@ -87,6 +99,21 @@ VARIANTS = {
                            "hair": "buzz", "hair_color": "grey", "look": "guard"},
     "char_gallery_guard_b": {"height": 1.72, "build": 0.5, "gender": 1.0, "age": 0.4, "skin": 4, "hair": "bob",
                              "hair_color": "brown", "look": "guard"},
+    # D-130: the nine-face guard pool (c-i)
+    "char_gallery_guard_c": {"height": 1.70, "build": 0.35, "gender": 1.0, "age": 0.25, "skin": 6,
+                             "hair": "side_part", "hair_color": "dark", "look": "guard", "chignon": "char_hair_dark"},
+    "char_gallery_guard_d": {"height": 1.80, "build": 0.6, "gender": 0.0, "age": 0.32, "skin": 3, "beard_shadow": 0.6,
+                             "hair": "short", "hair_color": "dark", "look": "guard", "jacket": False},
+    "char_gallery_guard_e": {"height": 1.77, "build": 0.85, "gender": 0.0, "age": 0.7, "skin": 5, "beard_shadow": 0.7,
+                             "hair": "bald", "hair_color": "grey", "look": "guard", "glasses": "char_metal_silver"},
+    "char_gallery_guard_f": {"height": 1.68, "build": 0.55, "gender": 1.0, "age": 0.55, "skin": 2, "hair": "bob",
+                             "hair_color": "grey", "look": "guard", "glasses": "brass"},
+    "char_gallery_guard_g": {"height": 1.88, "build": 0.3, "gender": 0.0, "age": 0.2, "skin": 1, "beard_shadow": 0.2,
+                             "hair": "short", "hair_color": "blond", "look": "guard", "jacket": False},
+    "char_gallery_guard_h": {"height": 1.74, "build": 0.5, "gender": 1.0, "age": 0.35, "skin": 3, "hair": "bob",
+                             "hair_color": "dark", "look": "guard", "jacket": False},
+    "char_gallery_guard_i": {"height": 1.83, "build": 0.7, "gender": 0.0, "age": 0.45, "skin": 6, "beard_shadow": 0.85,
+                             "hair": "side_part", "hair_color": "dark", "look": "guard"},
     "char_gallery_patron": {"height": 1.70, "build": 0.35, "gender": 1.0, "age": 0.45, "skin": 4, "hair": "bob",
                             "hair_color": "dark", "lip": "char_lip_rose", "look": "patron"},
     "char_gallery_patron_b": {"height": 1.79, "build": 0.55, "gender": 0.0, "age": 0.7, "skin": 2,
@@ -183,9 +210,12 @@ def attendant_b(kit: Kit) -> None:
 
 def guard(kit: Kit) -> None:
     """Halberd Gallery Security (in-house): bottle-green blazer with the Halberd crest, white shirt,
-    wine tie, grey trousers, earpiece, belt radio under the blazer (Hip)."""
+    wine tie, grey trousers, earpiece, belt radio under the blazer (Hip). D-130 options (kit.opts):
+    ``jacket: False`` = shirtsleeve order (bottle-green waistcoat with the crest, black belt carrying the
+    radio clipped to the waistband under its hem), ``glasses: <frame mat>``, ``chignon: <hair mat>``."""
     fit, k = kit.fit, kit.k
-    _hips_z, belt_z, tuck = _z(kit)
+    hips_z, belt_z, tuck = _z(kit)
+    jacket = bool(kit.opts.get("jacket", True))
     sh = n.shoes(kit)
     n.shirt(kit, "char_shirt_white", tuck, point_len=0.054)
     tr = n.trousers(kit, "char_slacks_grey", sh, belt_z + 0.022 * k)
@@ -197,16 +227,32 @@ def guard(kit: Kit) -> None:
     kit.add_gear(bg)
     kit.seats["Hip"] = b.point(a_radio, dz=0.0, out=0.045 * k)
     n0 = len(kit.soft.f)
-    jk, _info = n.jacket(kit, GREEN, 0.80 * k, 1.03 * k, button_mat="brass", lapel_w=0.055, neck_w=0.078,
-                         flare=0.07, chest_welt=False)
-    n.cull_under(kit, n0, jk, "faces_hidden_by_jacket")
+    if jacket:
+        cover, _info = n.jacket(kit, GREEN, 0.80 * k, 1.03 * k, button_mat="brass", lapel_w=0.055, neck_w=0.078,
+                                flare=0.07, chest_welt=False)
+        n.cull_under(kit, n0, cover, "faces_hidden_by_jacket")
+    else:
+        cover = n.waistcoat(kit, GREEN, hips_z - 0.01 * k, 1.13 * k, point=0.05, neck_w=0.07, buttons=5,
+                            button_mat="brass", base=0.012)
+        n.cull_under(kit, n0, cover, "faces_hidden_by_waistcoat")
     p5.halberd_crest(kit, -0.098, 1.305)
     hull = kit.hull()
     kit.add_gear(gk.name_tag(hull, Vector((0.098 * k, 0.3, 1.33 * k)), k=k, mat="brass"))
     n.earpiece(kit, "R")
-    kit.notes["hip_note"] = "Hip seat = the radio on the belt under the blazer (right hip); the pager rides there"
-    kit.notes["look"] = ("Halberd Gallery Security (in-house): bottle-green blazer, gold buttons, wine/gold Halberd "
-                         "breast crest, white shirt, wine tie, grey trousers, earpiece, belt radio under the blazer")
+    if "glasses" in kit.opts:
+        kit.add_head(gk.glasses(fit, str(kit.opts["glasses"])))
+    if "chignon" in kit.opts:
+        kit.add_head(cg.chignon(fit, str(kit.opts["chignon"])))
+    if jacket:
+        kit.notes["hip_note"] = "Hip seat = the radio on the belt under the blazer (right hip); the pager rides there"
+        kit.notes["look"] = ("Halberd Gallery Security (in-house): bottle-green blazer, gold buttons, wine/gold "
+                             "Halberd breast crest, white shirt, wine tie, grey trousers, earpiece, belt radio under "
+                             "the blazer")
+    else:
+        kit.notes["hip_note"] = "Hip seat = the radio on the waistband under the waistcoat (right hip); the pager rides there"
+        kit.notes["look"] = ("Halberd Gallery Security (in-house), shirtsleeve order: bottle-green waistcoat with "
+                             "gold buttons and the wine/gold Halberd crest, white shirt, wine tie, grey trousers, "
+                             "belt radio under the waistcoat, earpiece")
 
 
 def patron(kit: Kit) -> None:
