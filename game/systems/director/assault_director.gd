@@ -167,7 +167,7 @@ func _prewarm() -> int:
 		var scene: Variant = def.params.get("scene", "")
 		var sp: String = String(scene) if scene is String and String(scene) != "" \
 			else String(HeistRuntime.NPC_SCENES.get(_spawn_role(def), ""))
-		for p: String in [sp] + Array(NpcVisuals.def_scene_paths(def)):
+		for p: String in [sp] + Array(NpcVisuals.def_scene_paths(def, _difficulty())):
 			if p != "" and not paths.has(p):
 				paths.append(p)
 	var queued: int = 0

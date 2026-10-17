@@ -6,6 +6,10 @@ extends Resource
 ## EnemyDef id -> character id when it is not the id's `enemy.<id>` suffix (Aegis wears bulwark_aegis, the
 ## Wrecker weapon variants wear wrecker). The faction variant (params.visual_variant) still applies.
 @export var enemy_characters: Dictionary = {}
+## D-145.3 (PO-18): difficulty (Enums.Difficulty) -> look variant for an EnemyDef without its own
+## params.visual_variant: Routine/Tense police wear D's unarmoured `<id>_duty` look; Hazardous+ keep the base
+## (armoured) look. A missing `<id>_<variant>` scene falls back to the base look.
+@export var difficulty_variants: Dictionary = {0: "duty", 1: "duty"}
 ## SpawnPoint tag -> character ids (first matching tag wins; the pick is stable per NPC name).
 @export var tag_characters: Dictionary = {}
 ## D-103 §3b.1: heist id -> {SpawnPoint tag -> character ids}, checked before tag_characters so a heist can dress a
