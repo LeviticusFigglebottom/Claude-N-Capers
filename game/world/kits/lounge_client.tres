@@ -9,7 +9,6 @@ purpose = &"lobby"
 required_items = Array[StringName]([&"armchair", &"sofa", &"table", &"counter", &"plant", &"picture", &"light_fixture", &"coffee_machine", &"side_table", &"table_lamp"])
 optional_items = {
 &"leaflet_rack": 0.5,
-&"picture_light": 0.5,
 &"wall_lamp": 1
 }
 clutter_groups = {

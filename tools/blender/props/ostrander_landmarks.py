@@ -13,10 +13,9 @@ Landmarks (map-coordinate pieces use the dockside_landmarks `_Map` frame: blende
 * `prop_of_teller_line` (map pivot (24, 0, 17)): the banking counter over the G1 boxes: the 1.05 m customer ledge
   (walnut panels, marble top), the 1.50 m solid screen base, the bandit-glass mullions and rails (12 windows), the
   bronze gate piers and header, the limestone bulkhead with a bronze band and cornice. Every G1 dimension is kept.
-* `prop_of_teller_grille` (map pivot (0, 0, 17), placed at a bay centre): the brass grille of a closed window, on the
-  hall face of the bandit glass.
-* `prop_of_teller_worktop` (the 12 `teller_worktop` boxes, 2.46 x 1.00 x 0.48): walnut cabinet, cash drawers on the
-  teller side (front +Y = Godot -Z = the teller side, levelcheck `teller_worktop`), a linoleum-look top.
+  The 12 teller work tops (over the `teller_worktop` boxes, 2.46 x 1.00 x 0.48: walnut cabinets, cash drawers on
+  the teller side) and the brass grilles of the 6 closed windows are part of the same mesh (one object per material:
+  the counter is seen from the whole hall).
 * `prop_of_vault_portal` (map pivot (30, -4, 12.7)): the bronze architrave round the round vault door on the VC face,
   clear of the door visual's lip ring and studs (r <= 1.27 about (30, -2.85)).
 Rooms (wall / floor props, bottom-centre pivot, front +Y):
@@ -46,10 +45,6 @@ VARIANTS = {
                                                  "surface": "metal"}},
     "prop_of_teller_line": {"fn": "teller_line", "cat": {"kind": "landmark", "place": "none", "group": _G,
                                                          "pin_only": True, "surface": "wood"}},
-    "prop_of_teller_grille": {"fn": "teller_grille", "cat": {"kind": "grille", "place": "none", "group": _G,
-                                                             "pin_only": True, "surface": "metal"}},
-    "prop_of_teller_worktop": {"fn": "teller_worktop", "cat": {"kind": "teller_worktop", "place": "none", "group": _G,
-                                                               "pin_only": True, "surface": "wood"}},
     "prop_of_vault_portal": {"fn": "vault_portal", "cat": {"kind": "landmark", "place": "none", "group": _G,
                                                            "pin_only": True, "surface": "metal"}},
     "prop_of_box_unit_w950": {"fn": "box_unit", "cat": {"kind": "deposit_boxes", "place": "none", "group": _G,
@@ -276,6 +271,8 @@ RUNS = ((8.1, 22.9), (25.1, 39.9))
 Z_SCR0, Z_SCR1, Z_LEDGE, Z_BULK = 16.83, 16.93, 17.45, 17.5
 Z_GL0, Z_GL1 = 16.86, 16.9
 BAYS = 6
+## Closed windows (0-11, west to east): brass grilles; staffed: the bays of the stations x 13 / 15 / 17, 31 / 33 / 35.
+CLOSED_WINDOWS = (0, 4, 5, 6, 7, 11)
 
 
 def _bays(run: tuple[float, float]) -> list[float]:
@@ -335,55 +332,63 @@ def _teller_line(k: Kit, p: dict) -> None:
     for run in RUNS:
         for x in _bays(run)[1:-1]:
             _tl.box(ls, (x - 0.09, 2.47, Z_BULK), (x + 0.09, 4.0, Z_BULK + 0.025), "of_limestone")
+    # the 12 teller work tops (G1 boxes TellerWorktop01-12: centre x, z 16.59) and the 6 closed windows' grilles,
+    # one mesh with the counter (perf: the counter is seen from the whole hall)
+    idx = 0
+    for run in RUNS:
+        xs = _bays(run)
+        for i in range(BAYS):
+            cx = (xs[i] + xs[i + 1]) / 2
+            _worktop_geom(wd, br, (cx - 24.0, -(16.59 - 17.0) + 0.0, 0.0))
+            if idx in CLOSED_WINDOWS:
+                _grille_geom(br, cx - 24.0)
+            idx += 1
     o.build()
 
 
-def _teller_grille(k: Kit, p: dict) -> None:
+def _grille_geom(g, ox: float) -> None:
     """Brass grille closing one window (2.47 m bay less the mullions), on the hall face of the bandit glass
-    (z 16.903-16.93), 1.535-2.365 m."""
-    m = _Map((0.0, 0.0, 17.0))
-    o = k.obj("Grille")
-    g = o.part(bevel=0.0)
+    (z 16.903-16.93), 1.535-2.365 m, centred on map x = 24 + ox (counter frame: pivot (24, 0, 17))."""
     hw = 1.2
     z0, z1 = 16.903, 16.926
     y0, y1 = 1.535, 2.365
+    cx = 24.0 + ox
     x = -hw + 0.04
     while x <= hw - 0.0399:
-        m.box(g, (x - 0.007, y0, z0), (x + 0.007, y1, z1), "brass")
+        _tl.box(g, (cx + x - 0.007, y0, z0), (cx + x + 0.007, y1, z1), "brass")
         x += 0.08
     for y in (y0, y0 + 0.28, y1 - 0.28, y1 - 0.025):
-        m.box(g, (-hw, y, z0 - 0.0), (hw, y + 0.025, z1 + 0.004), "brass")
-    # a band of rings between the middle rails
+        _tl.box(g, (cx - hw, y, z0), (cx + hw, y + 0.025, z1 + 0.004), "brass")
     x = -hw + 0.12
     while x <= hw - 0.1199:
-        g.torus(0.06, 0.008, m.v(x, (y0 + y1) / 2, z1 + 0.002), "brass", segs=16, rsegs=4, axis="Y")
+        g.torus(0.06, 0.008, _tl.v(cx + x, (y0 + y1) / 2, z1 + 0.002), "brass", segs=16, rsegs=4, axis="Y")
         x += 0.16
-    o.build()
 
 
-def _teller_worktop(k: Kit, p: dict) -> None:
-    """Teller work top 2.46 x 1.00 x 0.48 (front +Y = the teller side): walnut cabinet, two cash drawers and cupboard
-    doors on the teller side, a 30 mm top with a brass nosing; the back (against the screen base) is solid."""
+def _worktop_geom(hard, trim, o: tuple[float, float, float]) -> None:
+    """Teller work top 2.46 x 1.00 x 0.48 at Blender offset `o` (front +Y = the teller side): walnut cabinet, two
+    cash drawers and cupboard doors on the teller side, a 30 mm top with a brass nosing; the back is solid."""
     w, d, h = 2.46, 0.48, 1.0
-    o = k.obj("Worktop")
-    hard = o.part(bevel=0.003)
-    trim = o.part(bevel=0.0015)
     y0, y1 = -d / 2, d / 2
-    hard.bx((-w / 2 + E, y0 + E, 0.0), (w / 2 - E, y1 - 0.06, h - 0.03), "walnut")
-    hard.bx((-w / 2 + E, y1 - 0.06, 0.0), (w / 2 - E, y1 - 0.05, 0.09), "stone_dark")
-    hard.bx((-w / 2, y0, h - 0.03), (w / 2, y1, h), "leather")
-    trim.bx((-w / 2, y1 - 0.012, h - 0.034), (w / 2, y1, h - 0.002), "brass")
+
+    def b(v: tuple[float, float, float]) -> tuple[float, float, float]:
+        return (v[0] + o[0], v[1] + o[1], v[2] + o[2])
+
+    hard.bx(b((-w / 2 + E, y0 + E, 0.0)), b((w / 2 - E, y1 - 0.06, h - 0.03)), "walnut")
+    hard.bx(b((-w / 2 + E, y1 - 0.06, 0.0)), b((w / 2 - E, y1 - 0.05, 0.09)), "stone_dark")
+    hard.bx(b((-w / 2, y0, h - 0.03)), b((w / 2, y1, h)), "leather")
+    trim.bx(b((-w / 2, y1 - 0.012, h - 0.034)), b((w / 2, y1, h - 0.002)), "brass")
     for i in range(2):
         x0 = -w / 2 + 0.06 + i * (w - 0.12) / 2
         x1 = x0 + (w - 0.12) / 2 - 0.02
-        hard.bx((x0, y1 - 0.06, h - 0.2), (x1, y1 - 0.004, h - 0.05), "walnut")
-        trim.bx(((x0 + x1) / 2 - 0.08, y1 - 0.004, h - 0.13), ((x0 + x1) / 2 + 0.08, y1, h - 0.115), "brass")
+        hard.bx(b((x0, y1 - 0.06, h - 0.2)), b((x1, y1 - 0.004, h - 0.05)), "walnut")
+        trim.bx(b(((x0 + x1) / 2 - 0.08, y1 - 0.004, h - 0.13)), b(((x0 + x1) / 2 + 0.08, y1, h - 0.115)), "brass")
         for j in range(2):
             c0 = x0 + j * (x1 - x0) / 2 + 0.01
             c1 = x0 + (j + 1) * (x1 - x0) / 2 - 0.01
-            hard.bx((c0, y1 - 0.06, 0.11), (c1, y1 - 0.004, h - 0.23), "walnut")
-            knob(trim, (c0 + c1) / 2 + (0.18 if j == 0 else -0.18), y1 - 0.004, h - 0.3)
-    o.build()
+            hard.bx(b((c0, y1 - 0.06, 0.11)), b((c1, y1 - 0.004, h - 0.23)), "walnut")
+            q = b(((c0 + c1) / 2 + (0.18 if j == 0 else -0.18), y1 - 0.004, h - 0.3))
+            knob(trim, q[0], q[1], q[2])
 
 
 def _vault_portal(k: Kit, p: dict) -> None:
@@ -465,7 +470,7 @@ def _box_bank(k: Kit, p: dict) -> None:
 
 def _box_door(k: Kit, p: dict) -> None:
     """One box door tile (MultiMesh mesh): back at y 0, centred in x / z, 17 mm thick plate with 2 mm gaps, two
-    keyholes and a brass number plate (no numerals)."""
+    keyhole bosses and a number-plate boss (no numerals), one material (one draw call per bank tile size)."""
     w, h = float(p["w"]), float(p["h"])
     o = k.obj("Door")
     pl = o.part(bevel=0.002)
@@ -474,8 +479,8 @@ def _box_door(k: Kit, p: dict) -> None:
     pl.bx((-w / 2 + g, 0.0, -h / 2 + g), (w / 2 - g, 0.017, h / 2 - g), "of_box_steel")
     kx = (-0.04, 0.04) if w < 0.3 else (-0.07, 0.07)
     for x in kx:
-        dt.cyl(0.009, 0.004, (x, 0.019, -h * 0.12), "metal_dark", axis="Y", segs=6)
-    dt.bx((-0.025, 0.017, h / 2 - g - 0.032), (0.025, 0.02, h / 2 - g - 0.014), "brass")
+        dt.cyl(0.009, 0.004, (x, 0.019, -h * 0.12), "of_box_steel", axis="Y", segs=6)
+    dt.bx((-0.025, 0.017, h / 2 - g - 0.032), (0.025, 0.02, h / 2 - g - 0.014), "of_box_steel")
     o.build()
 
 

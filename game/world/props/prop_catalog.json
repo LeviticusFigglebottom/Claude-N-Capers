@@ -11019,48 +11019,14 @@
   "weight": 1.0,
   "z": 0.0
  },
- "prop_of_teller_grille": {
-  "aabb": [
-   -1.2,
-   1.535,
-   -0.097,
-   2.4,
-   0.83,
-   0.033
-  ],
-  "clear": 0.0,
-  "fixture": false,
-  "glb": "res://assets/props/prop_of_teller_grille/prop_of_teller_grille.glb",
-  "group": "ostrander",
-  "has_light": false,
-  "hosts": [],
-  "keepout": [],
-  "kind": "grille",
-  "mount": "",
-  "nodes": [
-   "Grille"
-  ],
-  "pin_only": true,
-  "place": "none",
-  "prefab": "",
-  "scene": "res://world/props/ostrander/prop_of_teller_grille.tscn",
-  "seat_side": "front",
-  "standoff": 0.0,
-  "support": false,
-  "surface": "metal",
-  "top": 0.0,
-  "visibility_range_end": 60.0,
-  "weight": 1.0,
-  "z": 0.0
- },
  "prop_of_teller_line": {
   "aabb": [
    -15.9,
    -0.0028,
-   -0.1752,
+   -0.673,
    31.8,
    4.2028,
-   0.7252
+   1.223
   ],
   "clear": 0.0,
   "fixture": false,
@@ -11084,40 +11050,6 @@
   "surface": "wood",
   "top": 0.0,
   "visibility_range_end": 0.0,
-  "weight": 1.0,
-  "z": 0.0
- },
- "prop_of_teller_worktop": {
-  "aabb": [
-   -1.23,
-   0.0,
-   -0.263,
-   2.46,
-   1.004,
-   0.503
-  ],
-  "clear": 0.0,
-  "fixture": false,
-  "glb": "res://assets/props/prop_of_teller_worktop/prop_of_teller_worktop.glb",
-  "group": "ostrander",
-  "has_light": false,
-  "hosts": [],
-  "keepout": [],
-  "kind": "teller_worktop",
-  "mount": "",
-  "nodes": [
-   "Worktop"
-  ],
-  "pin_only": true,
-  "place": "none",
-  "prefab": "",
-  "scene": "res://world/props/ostrander/prop_of_teller_worktop.tscn",
-  "seat_side": "front",
-  "standoff": 0.0,
-  "support": false,
-  "surface": "wood",
-  "top": 0.0,
-  "visibility_range_end": 60.0,
   "weight": 1.0,
   "z": 0.0
  },

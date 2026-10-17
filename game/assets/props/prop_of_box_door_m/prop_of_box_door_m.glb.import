@@ -41,11 +41,6 @@ materials/extract_format=0
 materials/extract_path=""
 _subresources={
 "materials": {
-"M_pr_metal_dark": {
-"use_external/enabled": true,
-"use_external/fallback_path": "res://world/props/materials/pr_metal_dark.tres",
-"use_external/path": "res://world/props/materials/pr_metal_dark.tres"
-},
 "M_pr_of_box_steel": {
 "use_external/enabled": true,
 "use_external/fallback_path": "res://world/props/materials/pr_of_box_steel.tres",
