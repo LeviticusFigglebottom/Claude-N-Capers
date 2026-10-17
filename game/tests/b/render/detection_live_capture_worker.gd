@@ -76,6 +76,7 @@ func _fill_series(tag: String, game_seconds: float) -> void:
 			last_bucket = bucket
 			shots += 1
 			await _shot("%s_%02d_v%03d" % [tag, shots, int(v * 100.0)])
+			_dump_rings()
 			if v >= 1.0:
 				break
 	if shots == 0:
@@ -83,6 +84,19 @@ func _fill_series(tag: String, game_seconds: float) -> void:
 	print("LIVE RING %s: %d shots, peak %.2f after %.2f game s (%.0f s wall)" % [tag, shots, _max_value(), game_t,
 			(Time.get_ticks_msec() - t0) / 1000.0])
 	Engine.time_scale = 1.0
+
+
+## Each drawn indicator (on screen, where, angle) and the observer/camera positions, for the shot just saved.
+func _dump_rings() -> void:
+	var cam: Camera3D = get_viewport().get_camera_3d()
+	print("LIVE RING cam %s at %s" % [cam.get_path() if cam != null else "none", cam.global_position if cam else Vector3.ZERO])
+	for n: Node in get_tree().root.find_children("*", "DetectionRings", true, false):
+		for r: Dictionary in (n as DetectionRings).rings:
+			print("LIVE RING row id=%d v=%.2f on_screen=%s pos=%s angle=%.0f size=%s" % [int(r["observer_net_id"]),
+					float(r["value"]), r["on_screen"], r["ring_pos"], rad_to_deg(float(r["angle"])), (n as Control).size])
+	var hud: Hud = _hud()
+	for row: Dictionary in hud.model.get(&"detection") as Array:
+		print("LIVE RING model %s" % row)
 
 
 func _max_value() -> float:
