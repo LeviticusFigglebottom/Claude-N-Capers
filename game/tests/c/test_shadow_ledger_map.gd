@@ -232,8 +232,13 @@ func test_rule_constraints_hold() -> void:
 		if (v.get(&"code_note", []) as Array).has(&"code_contractor"):
 			assert_true((v.get(&"server_room", []) as Array).has(&"srv_contractor"), "code_contractor needs srv_contractor")
 		assert_eq((v.get(&"code_note", []) as Array).size(), 1, "one code note")
-		assert_eq((v.get(&"guard_post", []) as Array).size(), 1, "Routine: one rover")
-		assert_eq((v.get(&"guard_extra", []) as Array).size(), 0, "Routine: no extra guard")
+		# D-140 (PAGERS lever): 4 pager carriers on every seed: reception + both rovers + the operator (staffed room)
+		# or one watch post (empty room).
+		assert_eq((v.get(&"guard_post", []) as Array).size(), 2, "D-140: both rovers")
+		assert_eq((v.get(&"guard_extra", []) as Array).size(), 1, "D-140: one guard_extra pick")
+		var staffed: bool = (v.get(&"security_room_staffed", []) as Array).has(&"sec_staffed")
+		assert_eq((v.get(&"guard_extra", []) as Array).has(&"extra_none"), staffed,
+			"D-140: a watch post exactly when the security room is empty")
 		assert_eq((v.get(&"escape", []) as Array).size(), 1, "exactly one escape")
 		assert_false((v.get(&"cleaners", []) as Array).has(&"cleaners_3"), "Routine: never 3 cleaners")
 		assert_eq((v.get(&"late_staff", []) as Array).size(), 0, "Routine: no late staff (D-130)")
@@ -244,13 +249,14 @@ func test_rule_constraints_hold() -> void:
 	for s2: int in range(50):
 		GameRng.begin_run(9000 + s2)
 		var vh: Dictionary = VariantResolver.resolve(_map.variant_table, slots, Enums.Difficulty.HAZARDOUS)
-		assert_eq((vh.get(&"guard_post", []) as Array).size(), 2, "Hazardous+: both rovers")
+		assert_eq((vh.get(&"guard_post", []) as Array).size(), 2, "D-140: both rovers")
 		GameRng.begin_run(9500 + s2)
 		var vb: Dictionary = VariantResolver.resolve(_map.variant_table, slots, Enums.Difficulty.BRUTAL)
-		assert_false((vb.get(&"guard_extra", []) as Array).has(&"extra_none"), "Brutal: a walked extra (fire or roof watch)")
+		assert_eq((vb.get(&"guard_extra", []) as Array).has(&"extra_none"),
+			(vb.get(&"security_room_staffed", []) as Array).has(&"sec_staffed"), "D-140: operator or watch post")
 		GameRng.begin_run(9800 + s2)
 		var vl: Dictionary = VariantResolver.resolve(_map.variant_table, slots, Enums.Difficulty.LETHAL)
-		assert_eq((vl.get(&"guard_extra", []) as Array).size(), 2, "Lethal: both extras (5 guards)")
+		assert_eq((vl.get(&"guard_extra", []) as Array).size(), 1, "D-140: one extra on Lethal too (4 guards, pagers scale)")
 		assert_eq((vl.get(&"late_staff", []) as Array).size(), 1, "D-130: one late_staff pick from Tense (ls_none = none)")
 
 
@@ -265,12 +271,19 @@ func test_gameplay_prefabs() -> void:
 		assert_eq(hack.objective_tag, &"hack")
 		assert_near(hack.duration_s, 45.0, 0.001, "doc: 45 s")
 		assert_eq(hack.interruptions, Vector2i(1, 2), "doc: 1-2 interruptions")
-	var cage: Safe = _map.get_node_or_null("Gameplay/Server/CageLock") as Safe
-	assert_true(cage != null, "cage lock is a Safe")
-	if cage != null:
-		assert_eq(cage.size, Safe.Size.LARGE)
-		assert_eq(cage.methods, [&"code", &"saw"] as Array[StringName], "code or saw")
-		assert_eq(cage.code_group, &"cage")
+	# D-138 / PO-14: the cage is beaten on its gate (no stand-in safe): a keypad on the post, a padlock on the leaf.
+	assert_true(_map.get_node_or_null("Gameplay/Server/CageLock") == null, "no stand-in cage safe")
+	var kp: Keypad = _map.get_node_or_null("Gameplay/Doors/CageGate/CageKeypad") as Keypad
+	assert_true(kp != null, "cage gate keypad")
+	if kp != null:
+		assert_eq(kp.code_group, &"cage")
+		assert_eq(kp.targets, [NodePath("..")] as Array[NodePath], "keypad opens the gate")
+	var pl: Padlock = _map.get_node_or_null("Gameplay/Doors/CageGate/CagePadlock") as Padlock
+	assert_true(pl != null, "cage gate padlock")
+	if pl != null:
+		assert_eq(pl.targets, [NodePath("..")] as Array[NodePath], "padlock opens the gate")
+		assert_true(pl.place_saw, "placed saw on the padlock")
+		assert_near(pl.saw_duration_s, 90.0, 0.001, "doc: 90 s saw")
 	var study: Safe = _map.get_node_or_null("Gameplay/Study/StudySafe") as Safe
 	assert_true(study != null, "study safe")
 	if study != null:

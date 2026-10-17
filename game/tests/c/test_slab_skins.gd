@@ -21,8 +21,8 @@ const NAV_FINGERPRINT: Dictionary = {
 	# re-pinned: SL-P1 stair divider foot stubs + ramp run-ons (P re-walk); D-130 late-staff NPC seats (K4
 	# AssistantChairA, K8 PodAChairS1 no longer obstruct); SL-1 polish: the K16 bench / mail trolley, the S1 post room
 	# and the denser K8 / S1 kits obstruct their footprints
-	"shadow_ledger": [1811, 1833, "eb6583dee03540fcbbf07cb7168f3251fa7daff972b9e118fd9e637af4cd04f2"],
-	"dockside_burn": [2245, 2276, "677d48f8a950a07270e001cdccb952ca1a9fde9e1cb1208030ca8ae51b84782e"],  # re-pinned: DB-1 crane bogie colliders
+	"shadow_ledger": [1813, 1835, "319c14ec51bb522a75f2db61ad3973fd659b001cc74faf19f3a17e2f7a336b02"],  # D-138 cage locks
+	"dockside_burn": [2242, 2269, "5418a12eb2e46b21f25402c032723b9ed2e9af0ec48949b4194042b8926ef495"],  # D-138 count cage
 }
 const SKINS: String = "Geometry/Building/Skins"
 const OFFSET_MIN: float = 0.003

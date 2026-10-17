@@ -23,6 +23,9 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | lasers | PASS | 0 | 0 |
 | camera_spine | skipped | 0 | 0 |
 | camera_screen | skipped | 0 | 0 |
+| bag_line | skipped | 0 | 0 |
+| hide_los | skipped | 0 | 0 |
+| teller_worktop | skipped | 0 | 0 |
 | materials | PASS | 0 | 0 |
 | zfight | PASS | 0 | 0 |
 | lights | PASS | 0 | 0 |
@@ -132,7 +135,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 ## navmesh: Navmesh
 
 - navmesh: 1851 polygons, cell 0.10/0.10 m
-- 172 markers checked
+- 176 markers checked
 | room | walkable samples | covered | coverage |
 |---|---|---|---|
 | `Rooms/RoomG1` | 93 | 90 | 97% |
@@ -174,7 +177,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## reachability: Reachability (per variant)
 
-- 37 variant configuration(s), 103710 spawn->target path queries
+- 36 variant configuration(s), 103065 spawn->target path queries
 
 
 ## walkthrough: Walkthrough bot
@@ -187,7 +190,8 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 - graph `bank`: 41 points, 4 guard(s)
 - graph `exterior`: 6 points, 1 guard(s)
 - graph `armored_car`: 8 points, 2 guard(s)
-- 3 patrol graph(s)
+- graph `rounds`: 3 points, 1 guard(s)
+- 4 patrol graph(s)
 
 
 ## lasers: Laser grid bypass gaps
@@ -340,6 +344,6 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## furniture_logic: Furniture arranged plausibly
 
-- classified: counter 7, chair 4, desk 7, table 6, wall_unit 25, stool 4, visitor_chair 4, desk_chair 7, monitor 3
+- classified: counter 7, chair 4, desk 7, table 6, wall_unit 25, visitor_chair 4, desk_chair 7, stool 4, monitor 3
 - 19 seats, 20 tables/desks/counters, 36 doors checked
 

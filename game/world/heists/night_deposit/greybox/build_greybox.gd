@@ -458,7 +458,7 @@ func _build_glazing(bld: Node3D) -> void:
 		var nm: String = String(g[0])
 		var glass_key: String = "glass_green" if nm.begins_with("Atm") else "glass"
 		# collision is the full opening; the pane is inset 4 mm so its edges sit inside the frame bars
-		box(gl, nm, mn, mx, "")
+		box(gl, nm, mn, mx, "").add_to_group(&"see_through", true)  # D-142: clear glazing; stealth vision sees through it
 		var ins: Vector3 = Vector3(0.004, 0.004, 0.0) if along_x else Vector3(0.0, 0.004, 0.004)
 		art.vis_box(vis_group, mn + ins, mx - ins, glass_key)
 		var frame_key: String = "brass" if nm == "BanditGlass" else ("ironwork" if nm.begins_with("Atm") else "frame")
@@ -605,6 +605,8 @@ func _build_site(geo: Node3D) -> void:
 	for b: Array in L.BLOCKS:
 		var mat: String = String(b[2])
 		var blk: Node3D = box_a(blocks, String(b[0]), b[1], mat)
+		if mat == "glass":
+			blk.add_to_group(&"see_through", true)  # D-142: the clear hall skylight
 		if mat == "barrier":
 			RT.apply(blk)  # road / police barriers: a ridged top, not a perch over the closure (D-104)
 	_far_shore_lights()
@@ -887,6 +889,7 @@ func _build_patrols(patrols: Node3D) -> void:
 	_patrol_graph(patrols, "Bank", &"bank", L.PATROL_POINTS_BANK, L.PATROL_EDGES_BANK)
 	_patrol_graph(patrols, "Exterior", &"exterior", L.PATROL_POINTS_EXTERIOR, L.PATROL_EDGES_EXTERIOR)
 	_patrol_graph(patrols, "ArmoredCar", &"armored_car", L.PATROL_POINTS_ARMORED, L.PATROL_EDGES_ARMORED)
+	_patrol_graph(patrols, "Rounds", &"rounds", L.PATROL_POINTS_ROUNDS, L.PATROL_EDGES_ROUNDS)
 
 
 func _patrol_graph(parent: Node3D, nm: String, graph_id: StringName, points: Dictionary, edges: Array) -> void:

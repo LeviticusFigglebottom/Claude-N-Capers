@@ -1,0 +1,269 @@
+[gd_resource type="Resource" script_class="HeistVariantTable" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/heist_variant_table.gd" id="1_of"]
+
+[resource]
+script = ExtResource("1_of")
+rules = Array[Dictionary]([{
+"group": &"manager_route",
+"pick": Vector2i(1, 1)
+}, {
+"group": &"keycard",
+"pick": Vector2i(1, 1)
+}, {
+"group": &"code_pc",
+"pick": Vector2i(1, 1)
+}, {
+"group": &"officers",
+"pick": Vector2i(1, 1),
+"weights_by_difficulty": {
+1: {
+&"off_1": 0.3,
+&"off_2": 0.4,
+&"off_3": 0.3
+},
+2: {
+&"off_1": 0.3,
+&"off_2": 0.4,
+&"off_3": 0.3
+},
+3: {
+&"off_1": 0.2,
+&"off_2": 0.4,
+&"off_3": 0.4
+},
+4: {
+&"off_1": 0.2,
+&"off_2": 0.4,
+&"off_3": 0.4
+},
+5: {
+&"off_1": 0.2,
+&"off_2": 0.4,
+&"off_3": 0.4
+}
+}
+}, {
+"group": &"server_room",
+"pick": Vector2i(1, 1)
+}, {
+"difficulty_add": Array[int]([1, 2, 3, 3, 3, 3]),
+"group": &"guard_post",
+"pick": Vector2i(1, 1)
+}, {
+"group": &"security_room_staffed",
+"pick": Vector2i(1, 1),
+"weights_by_difficulty": {
+0: {
+&"sec_empty": 1.0,
+&"sec_staffed": 0.0
+},
+3: {
+&"sec_empty": 0.25,
+&"sec_staffed": 0.75
+},
+4: {
+&"sec_empty": 0.25,
+&"sec_staffed": 0.75
+},
+5: {
+&"sec_empty": 0.25,
+&"sec_staffed": 0.75
+}
+}
+}, {
+"group": &"camera",
+"pick": Vector2i(1, 1)
+}, {
+"group": &"laser_pattern",
+"pick": Vector2i(1, 1),
+"weights_by_difficulty": {
+3: {
+&"lz_static": 0.2,
+&"lz_sweep": 0.4,
+&"lz_timed": 0.4
+},
+4: {
+&"lz_static": 0.2,
+&"lz_sweep": 0.4,
+&"lz_timed": 0.4
+},
+5: {
+&"lz_static": 0.2,
+&"lz_sweep": 0.4,
+&"lz_timed": 0.4
+}
+}
+}, {
+"group": &"customers",
+"pick": Vector2i(1, 1),
+"weights_by_difficulty": {
+1: {
+&"cust_4": 0.3,
+&"cust_6": 0.4,
+&"cust_8": 0.3
+},
+2: {
+&"cust_4": 0.2,
+&"cust_6": 0.4,
+&"cust_8": 0.4
+},
+3: {
+&"cust_4": 0.1,
+&"cust_6": 0.4,
+&"cust_8": 0.5
+},
+4: {
+&"cust_4": 0.1,
+&"cust_6": 0.4,
+&"cust_8": 0.5
+},
+5: {
+&"cust_4": 0.1,
+&"cust_6": 0.4,
+&"cust_8": 0.5
+}
+}
+}, {
+"group": &"side_door",
+"pick": Vector2i(1, 1)
+}, {
+"group": &"fire_escape",
+"pick": Vector2i(1, 1)
+}, {
+"group": &"escape",
+"pick": Vector2i(1, 1)
+}, {
+"group": &"drill_delivery",
+"pick": Vector2i(1, 1)
+}, {
+"group": &"president_safe",
+"pick": Vector2i(1, 1)
+}, {
+"group": &"vip",
+"pick": Vector2i(1, 1)
+}, {
+"difficulty_add": Array[int]([0, 0, 0, 0, 1, 2]),
+"group": &"guard_extra",
+"pick": Vector2i(0, 0),
+"weights_by_difficulty": {
+1: {
+&"gx_none": 0.0
+},
+2: {
+&"gx_none": 0.0
+},
+3: {
+&"gx_none": 0.0
+},
+4: {
+&"gx_none": 0.0
+},
+5: {
+&"gx_none": 0.0
+}
+}
+}, {
+"difficulty_add": Array[int]([0, 1, 1, 2, 3, 4]),
+"group": &"civ_extra",
+"pick": Vector2i(0, 0),
+"weights_by_difficulty": {
+1: {
+&"cx_none": 6.0
+},
+2: {
+&"cx_none": 0.0
+},
+3: {
+&"cx_none": 2.0
+},
+4: {
+&"cx_none": 1.0
+},
+5: {
+&"cx_none": 0.51
+}
+}
+}])
+rare_events = Array[Dictionary]([{
+"chance": 0.04,
+"effects": {
+"time_lock_s": 30.0
+},
+"good": true,
+"id": &"time_lock_glitch"
+}, {
+"chance": 0.05,
+"effects": {
+"extra_bonds": 2
+},
+"good": true,
+"id": &"bond_delivery"
+}, {
+"chance": 0.06,
+"effects": {
+"force_active": {
+"group": &"vip",
+"slot": &"vip_in"
+}
+},
+"good": false,
+"id": &"vip_client"
+}, {
+"chance": 0.08,
+"effects": {
+"timed_spawn_s": 900.0
+},
+"good": false,
+"id": &"armored_car_early",
+"min_difficulty": 3
+}, {
+"chance": 0.06,
+"effects": {
+"heli_eta_add_s": 30.0,
+"perch_s3": true
+},
+"good": false,
+"id": &"tower_sniper",
+"min_difficulty": 2
+}])
+scalars = Array[Dictionary]([{
+"id": &"time_lock_s",
+"values": [150.0, 210.0, 270.0],
+"weights": PackedFloat32Array(0.4, 0.4, 0.2),
+"weights_by_difficulty": {
+3: PackedFloat32Array(0.1, 0.4, 0.5),
+4: PackedFloat32Array(0.1, 0.4, 0.5),
+5: PackedFloat32Array(0.1, 0.4, 0.5)
+}
+}, {
+"id": &"drill_eta_s",
+"values": [45.0, 60.0, 90.0],
+"weights": PackedFloat32Array(1, 1, 1)
+}, {
+"id": &"escape_eta_s",
+"values": [90.0, 120.0, 150.0],
+"weights": PackedFloat32Array(0.4, 0.4, 0.2),
+"weights_by_difficulty": {
+3: PackedFloat32Array(0.2, 0.4, 0.4),
+4: PackedFloat32Array(0.2, 0.4, 0.4),
+5: PackedFloat32Array(0.2, 0.4, 0.4)
+}
+}, {
+"id": &"cash_bags",
+"values": [6, 8, 10],
+"weights": PackedFloat32Array(0.4, 0.4, 0.2),
+"weights_by_difficulty": {
+3: PackedFloat32Array(0.2, 0.4, 0.4),
+4: PackedFloat32Array(0.2, 0.4, 0.4),
+5: PackedFloat32Array(0.2, 0.4, 0.4)
+}
+}, {
+"id": &"gold_bags",
+"values": [2, 3, 4],
+"weights": PackedFloat32Array(1, 1, 1)
+}, {
+"id": &"deposit_boxes",
+"values": [6, 9, 12],
+"weights": PackedFloat32Array(1, 1, 1)
+}])

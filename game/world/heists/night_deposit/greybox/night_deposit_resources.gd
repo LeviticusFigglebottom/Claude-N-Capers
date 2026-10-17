@@ -7,14 +7,12 @@ const OUT_DIR: String = "res://world/heists/night_deposit/"
 const SCENE_PATH: String = OUT_DIR + "night_deposit.tscn"
 const DEF_PATH: String = OUT_DIR + "night_deposit_def.tres"
 const VARIANTS_PATH: String = OUT_DIR + "night_deposit_variants.tres"
-## D-130 (population by difficulty, doc §Civilian and guard roster): ROVER_ADD / ROVER_NONE give expected guards
-## (2 fixed posts + rovers) 2.7 / 2.9 / 3.2 / 3.5 / 3.82 / 4.05 = Routine +0 / 7 / 19 / 30 / 41 / 50 %;
-## CLEANER_ADD / CLEANER_NONE give expected civilians (night manager 0.5 + cleaners) 1.2 / 1.28 / 1.38 / 1.45 /
-## 1.54 / 1.62 = +0 / 7 / 15 / 21 / 28 / 35 %, the second cleaner (the other floor's slot) from Lethal.
-## Indexed by Enums.Difficulty; game/tests/c/test_d130_population.gd pins the counts.
-const ROVER_ADD: Array[int] = [0, 0, 1, 1, 1, 2]
-## rover_none weight by difficulty (Routine 9/7 is the slot's own weight; Brutal 1 = the doc's 1-2 rovers at 50/50).
-const ROVER_NONE: Array[float] = [9.0 / 7.0, 1.0 / 3.0, 3.0, 1.0, 0.25, 3.0]
+## D-140 (PAGERS lever, doc §Civilian and guard roster): exactly 4 guards on every seed and difficulty (2 fixed
+## posts + 1 rover + the operator or the sec_empty roundsman); the pager cap falls instead, PAGER_MAX by
+## Enums.Difficulty (Routine 4). D-130 (civilians): CLEANER_ADD / CLEANER_NONE give expected civilians (night
+## manager 0.5 + cleaners) 1.2 / 1.28 / 1.38 / 1.45 / 1.54 / 1.62 = +0 / 7 / 15 / 21 / 28 / 35 %, the second cleaner
+## (the other floor's slot) from Lethal. Indexed by Enums.Difficulty; game/tests/c/test_d130_population.gd pins both.
+const PAGER_MAX: Array[int] = [4, 3, 3, 2, 2, 1]
 const CLEANER_ADD: Array[int] = [0, 0, 0, 0, 1, 1]
 ## cleaner_none weight by difficulty (Routine 0.3 is the slot's own weight).
 const CLEANER_NONE: Array[float] = [0.3, 0.2, 0.1, 0.04, 2.0, 0.9]
@@ -37,6 +35,7 @@ static func make_def() -> HeistDef:
 	d.map_scene = SCENE_PATH
 	d.base_payout = 26000  # D-120
 	d.stealth_bonus_mult = 1.15
+	d.pager_max_by_difficulty = PAGER_MAX.duplicate()  # D-140
 	d.loot = [&"loot.cash", &"loot.cash_bricks", &"loot.small_valuables"] as Array[StringName]
 	# Objective ids = the design doc's Objectives `[tag]`s (D-039 rule: ENV B reads them there).
 	# The loud vault_drill is the other way into the vault, so it sits before vault_loot (doc: drill -> bag -> depository).
@@ -74,8 +73,8 @@ static func make_def() -> HeistDef:
 
 ## Variable table (doc §Variable table, §Rare events). Per-difficulty weights (A2-08 / A3-10) apply
 ## from Brutal up (keys are exact difficulties, so Brutal / Lethal / Cataclysm are listed one by one;
-## Routine to Hazardous keep the Routine weights), except the D-130 population rows (ROVER_* / CLEANER_*).
-## guard_post: the doc's weighted rover count goes through the empty `rover_none` slot (see nd_gameplay.gd).
+## Routine to Hazardous keep the Routine weights), except the D-130 civilian rows (CLEANER_*).
+## guard_post: D-140, exactly one of the three rovers on every seed and difficulty (no difficulty_add).
 static func make_variants() -> HeistVariantTable:
 	var t: HeistVariantTable = null
 	if ResourceLoader.exists(VARIANTS_PATH):
@@ -83,8 +82,7 @@ static func make_variants() -> HeistVariantTable:
 	if t == null:
 		t = HeistVariantTable.new()
 	t.rules = [
-		{"group": &"guard_post", "pick": Vector2i(1, 1), "difficulty_add": ROVER_ADD,
-			"weights_by_difficulty": _from_tense(&"rover_none", ROVER_NONE)},
+		{"group": &"guard_post", "pick": Vector2i(1, 1)},
 		{"group": &"camera", "pick": Vector2i(1, 1)},
 		{"group": &"security_room_staffed", "pick": Vector2i(1, 1),
 			"weights_by_difficulty": _brutal_plus({&"sec_staffed": 0.75, &"sec_empty": 0.25})},

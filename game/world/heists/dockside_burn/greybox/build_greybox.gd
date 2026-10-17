@@ -11,6 +11,8 @@
 ## this file holds no path into another environment's folder.
 extends "res://world/heists/dockside_burn/greybox/db_gameplay.gd"
 
+## D-142: static glazing that is obscured glass (privacy; opaque for stealth vision). Every other pane is clear (`see_through`).
+const FROSTED_GLAZING: Array[String] = ["O2WindowW", "O2WindowE"]  # O2 security room (dispatch + CCTV)
 const VIEWMODEL_LIT_LAYER: int = 1 << 20  # viewmodel_lit (visual_slots v1.2, D-095) = CrewView.VIEWMODEL_LIT_LAYER
 const AM: GDScript = preload("res://world/heists/shared/assault_markers.gd")  # PO6-17 AssaultEvents markers
 ## G2 art pass (DB-C2): environment / fixtures / skyline / probes / occluders, and the KitPlacer dressing pass.
@@ -308,6 +310,8 @@ func _build_glazing(bld: Node3D) -> void:
 		var mn: Vector3 = Vector3(a0, y0, f - 0.02) if along_x else Vector3(f - 0.02, y0, a0)
 		var mx: Vector3 = Vector3(a1, y1, f + 0.02) if along_x else Vector3(f + 0.02, y1, a1)
 		var body: Node3D = box(gl, String(g[0]), mn, mx, "glass")
+		if not String(g[0]) in FROSTED_GLAZING:
+			body.add_to_group(&"see_through", true)  # D-142: clear glazing; stealth vision sees through it
 		var span: float = a1 - a0
 		# G2: the head bar stops 6 mm short of the reveals and rides 4 mm into the opening's head (zfight with the pane)
 		var fs: Vector3 = Vector3(span - 0.012, 0.05, 0.08) if along_x else Vector3(0.08, 0.05, span - 0.012)
@@ -597,6 +601,8 @@ func _build_site(geo: Node3D) -> void:
 	var blocks: Node3D = add(site, node3d("Blocks")) as Node3D
 	for b: Array in L.BLOCKS:
 		var blk: Node3D = box_a(blocks, String(b[0]), b[1], String(b[2]))
+		if String(b[2]) == "glass":
+			blk.add_to_group(&"see_through", true)  # D-142: the clear skylights
 		if b.size() > 3 and String(b[3]) == "ridge":
 			RT.apply(blk)  # an edge guard (gunwale), not a perch (D-104 slopes)
 	_far_shore_lights(blocks)

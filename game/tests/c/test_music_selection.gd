@@ -3,7 +3,7 @@
 extends TestCase
 
 const HEIST_TRACKS: Array[StringName] = [&"glasshouse", &"night_deposit", &"shadow_ledger", &"dockside_burn",
-		&"gallery_night"]
+		&"gallery_night", &"ostrander_federal"]
 const UNLOCKS: Dictionary = {
 	&"vault_hymn": &"unlock.music.vault_hymn", &"long_con": &"unlock.music.long_con",
 	&"last_call": &"unlock.music.last_call",
