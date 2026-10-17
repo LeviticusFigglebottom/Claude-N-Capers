@@ -11,6 +11,8 @@
 #   ["box", name, floor, base (bottom-centre), size, yaw, kind, support, surface class]   (Props/MapBuilt)
 #   ["marker", name, floor, pos, yaw, objective_tag, todo]
 #   ["tac", name, KIND, floor, pos, yaw, tags, breachable]
+#   ["route", name, route_id, ORDER, bind_tags, start_index, stops]   (A's CivilianRoute, OF-A4; ROUTE_ROWS)
+#       stop: [name, floor, pos, pause [min, max] s, pause_anim, away_window ("" none), facing yaw or None]
 # Design: docs/design/heists/ostrander_federal.md (Room list, Circulation, roster, Sightlines, Loud, Loot path,
 # Objectives); next_heist_ostrander.md §3b (D-136) / §4 / §7; D-138 (cage gates: keypad + padlock on the gate);
 # ENV D's placement conventions (teller_count root 0.28 m behind the 1.00 m work top's near edge; counter customers
@@ -398,17 +400,19 @@ ALWAYS: Dict[str, List[list]] = {
         P("keycard_reader", "VaultGateReader", "B", [18.65, 1.2, 8.9], 0.0, {"objective_tag": "vault_gate",
                                                                            "@targets": ["VaultGate"]},
           [18.65, 0.0, 8.2], {"mount": "wall"}, "prop_keycard_reader"),
+        # OF-A6 / D-136.1: no door target (the mission opens the vault door when the time lock runs out)
         P("keypad", "TimeLockConsole", "B", [33.9, 1.2, 11.6], 90.0, {"code_group": "vault", "stealth_only": True,
-                                                                     "objective_tag": "time_lock",
-                                                                     "@targets": ["VaultDoor"]},
+                                                                     "objective_tag": "time_lock"},
           [33.0, 0.0, 11.6], {"mount": "wall"}, "prop_keypad"),
         P("keypad", "CashCageKeypad", "B", [25.25, 1.2, 17.45], 0.0, {"code_group": "vault", "objective_tag": "cash_cage",
                                                                      "@targets": ["CashCageGate"]},
           [25.25, 0.0, 16.6], {"mount": "wall"}, "prop_keypad"),
         P("drill_point", "LidDrill", "G", [24.0, 1.0, 14.6], 180.0, {"device": "enum:THERMAL", "duration_s": 360.0,
-                                                                  "loud_only": True, "objective_tag": "vault_drill"},
-          [25.6, 0.0, 14.6], {"requires_loot": "loot.thermal_drill_part", "requires_count": 2,
-                              "todo": "OF-A1: requires_loot / requires_count (QC-60)"}, "prop_thermal_drill_device"),
+                                                                  "loud_only": True, "objective_tag": "vault_drill",
+                                                                  "requires_loot": "loot.thermal_drill_part",
+                                                                  "requires_count": 2},
+          [25.6, 0.0, 14.6], {"requires_loot": "loot.thermal_drill_part", "requires_count": 2},
+          "prop_thermal_drill_device"),
         _alarm("AlarmSR", "G", [18.2, 1.1, 0.2], 180.0), _alarm("AlarmBM", "G", [47.8, 1.1, 22.5], 90.0),
         _alarm("AlarmSD", "B", [34.1, 1.1, 11.0], -90.0),
     ] + [_alarm("AlarmTeller%d" % (i + 1), "G", [x + 0.3, 0.75, COUNTER["top"][0]], 0.0) for i, x in enumerate(STATIONS)] + [
@@ -427,7 +431,10 @@ ALWAYS: Dict[str, List[list]] = {
           [30.4, 0.0, 19.0], {}, "prop_cash_pallet"),
         P("safe", "BondSafe", "B", [14.71, 0.0, 20.5], -90.0, {"size": "enum:SMALL",
                                                              "methods": ["drill", "saw", "lockpick"],
-                                                             "objective_tag": "bond_safe"},
+                                                             "objective_tag": "bond_safe",
+                                                             "@contents": [["loot_spawn", "VaultBonds", [0.0, 0.3, 0.0],
+                                                                            {"loot_id": "loot.bearer_bonds", "count": 1,
+                                                                             "objective_tag": "bond_safe"}]]},
           [15.9, 0.0, 20.5], {}, "prop_safe_large"),
         P("loot_spawn", "ServerDrives", "M", [26.0, 0.0, 4.0], 180.0, {"loot_id": "loot.server_drives", "count": 2,
                                                                       "objective_tag": "server_drives"},
@@ -447,25 +454,28 @@ ALWAYS: Dict[str, List[list]] = {
           [11.5, 0.0, 2.2], {"walkable": True}, ""),
         P("bag_lift", "Hoist", "B", [24.0, 0.05, 15.2], 0.0, {"travel_s": 6.0, "capacity": 2, "car_size_m": HOIST_CAR,
                                                             "loud_only": True, "objective_tag": "hoist",
+                                                            "enabled_at_start": False,
                                                             "@landings": [["HoistLandingTW", [0.0, 4.0, 0.0]]]},
-          [25.1, 0.0, 15.2], {"starts_disabled": True, "hidden": True,
-                              "todo": "OF-A2: GameplayPrefab.set_enabled (QC-61); enabled at the burn-through"}, ""),
+          [25.1, 0.0, 15.2], {"starts_disabled": True, "hidden": True}, ""),
     ],
     "Gameplay/Ladders": [
         # rolled up under the lid until the burn (full length, its rails would sit in the lid plug): 3.2 m to the lid's
         # underside; OF-A2 sets height_m = burn_height_m (4.0, B -> G) when it enables the ladder at the burn (QC-61).
-        P("ladder", "RopeLadder", "B", [24.0, 0.0, 13.6], 180.0, {"height_m": ROPE_STOWED_M, "usable": False},
-          None, {"loud_only": True, "starts_disabled": True, "hidden": True, "burn_height_m": 4.0,
-                 "todo": "OF-A2: enabled at the burn-through (QC-61), height_m -> burn_height_m"}, ""),
+        P("ladder", "RopeLadder", "B", [24.0, 0.0, 13.6], 180.0, {"height_m": ROPE_STOWED_M, "usable": False,
+                                                              "enabled_at_start": False, "objective_tag": "rope_ladder"},
+          None, {"loud_only": True, "starts_disabled": True, "hidden": True, "burn_height_m": 4.0}, ""),
         P("ladder", "CagedLadder", "E", [46.0, 0.0, 17.55], 180.0, {"height_m": 3.6}, None, {}, ""),
     ],
     "Gameplay/Markers": [
         M("CasingHall", "G", [24.0, 0.0, 27.5], "casing", "casing objective marker: the hall at the meridian line"),
-        M("CodeHintPlanner", "G", [43.9, 0.75, 24.9], "code_hint",
-          "Ashgrove's desk planner (reveals code_pc; QC-63 intel note, OF-A3)"),
+        # Ashgrove's desk planner (QC-63): reading it reveals the code_pc group (no code_group: it names the PC only)
+        P("code_note", "CodeHintPlanner", "G", [43.9, 0.75, 23.9], 90.0, {"objective_tag": "code_hint",
+                                                                       "reveals_variant_group": "code_pc"},
+          [42.9, 0.0, 23.9], {}, "prop_notebook"),
         M("TimeLockWait", "B", [6.5, 0.0, 10.4], "time_lock_wait", "RC: the time-lock wait room"),
         M("VaultBreach", "G", [24.0, 0.0, 14.6], "vault_breach", "the lid / the hole (24, 14.6): burn-through"),
-        M("LidMarker", "G", [24.0, 0.0, 14.6], "lid", "the lid: hide Geometry/Building/Lid at the burn-through"),
+        # rare bond_delivery (+2 loot.bearer_bonds, HeistMission.spawn_loot): the open vault floor E of the bond safe
+        M("BondDelivery", "B", [16.5, 0.0, 18.0], "bond_delivery", "rare bond_delivery: +2 bond bags (OF-A6)"),
         M("RappelLanding", "R", [2.0, 0.0, 14.0], "police_rappel_roof", "rp: P5 rappel landing (police only)"),
     ] + [M("Holdout" + h, f, [x, 0.0, z], "holdout_" + h.lower(), "doc Loud holdout " + h)
          for h, f, x, z in [("H1", "G", 24.0, 13.0), ("H2", "B", 24.0, 10.0), ("H3", "G", 5.0, 4.5),
@@ -525,22 +535,69 @@ def _client(name: str, pos: list, yaw: float) -> list:
     return S(name, "CIVILIAN", "G", pos, yaw, ["civ_client"], "sit", "", "prop_chair_office")
 
 
-def _officer(name: str, f: str, x: float, z: float) -> list:
-    return S(name, "CIVILIAN", f, [x, 0.0, z], -90.0, ["civ_officer"], "desk_work", "", "prop_chair_office")
+def _officer(name: str, f: str, x: float, z: float) -> list:   # its own coffee route binds its per-desk tag
+    return S(name, "CIVILIAN", f, [x, 0.0, z], -90.0, ["civ_officer", "civ_officer_" + name[7:].lower()], "desk_work", "",
+             "prop_chair_office")
 
 
 OFFICER_SEATS = [("OfficerAO1", "M", 1.75, 12.5), ("OfficerOF", "M", 11.25, 12.5), ("OfficerVO", "M", 44.25, 12.5)]
 
+
+# --- civilian routes (OF-A4 CivilianRoute, D-136 §3b.4; doc Circulation) -------------------------------------------
+def R(name: str, rid: str, tags: list, stops: list, start: int = 0, order: str = "LOOP") -> list:
+    return ["route", name, rid, order, tags, start, stops]
+
+
+def _station(nm: str) -> list:   # the rotating teller's window (Teller4's mark, 0.1 m back onto the navmesh)
+    return [nm, "G", [33.0, 0.0, round(TELLER_Z - 0.1, 3)], [60, 120], "teller_count", "", 180.0]
+
+
+# Manager: mgr_away on his isolated stops (BM with the door shut, CF / PR upstairs, the LK WC). Officers: officer_away
+# on the coffee / WC run (50-90 s away from the desk with the walk). Teller: teller_away on BR / WC (40-80 s).
+ROUTES: List[list] = [
+    R("ManagerFloorRoute", "mgr_floor", ["civ_manager_mgr_floor"], [
+        ["Desk", "G", [45.4, 0.0, 25.6], [20, 40], "phone", "mgr_away", 90.0],
+        ["Hall", "G", [26.0, 0.0, 27.0], [10, 20], "idle", "", None],
+        ["TellerLine", "G", [28.0, 0.0, 13.0], [10, 20], "look", "", None],
+        ["Lounge", "G", [46.0, 0.0, 11.5], [10, 20], "idle", "", None]]),
+    R("ManagerGalleryRoute", "mgr_gallery", ["civ_manager_mgr_gallery"], [
+        ["VaultOps", "M", [45.5, 0.0, 15.5], [20, 40], "phone", "", None],
+        ["Conference", "M", [32.5, 0.0, 14.7], [30, 60], "phone", "mgr_away", None],
+        ["OpenOffice", "M", [20.0, 0.0, 14.5], [10, 20], "look", "", None],
+        ["Partner", "E", [30.0, 0.0, 4.5], [30, 60], "phone", "mgr_away", None]], 1),
+    R("ManagerVaultRoute", "mgr_vault", ["civ_manager_mgr_vault"], [
+        ["Attendant", "B", [37.0, 0.0, 11.3], [30, 60], "phone", "", 0.0],
+        ["CountRoom", "B", [21.0, 0.0, 5.0], [10, 20], "look", "", None],
+        ["LockerWC", "B", [7.25, 0.0, 2.2], [40, 70], "idle", "mgr_away", None],
+        ["ServiceCorridor", "G", [40.0, 0.0, 8.0], [10, 20], "idle", "", None]]),
+    R("CoffeeOfficerAO1", "officer_coffee", ["civ_officer_ao1"], [
+        ["Desk", "M", [4.0, 0.0, 15.5], [60, 120], "desk", "", None],
+        ["Coffee", "M", [7.5, 0.0, 5.5], [30, 60], "mug", "officer_away", None]]),
+    R("CoffeeOfficerOF", "officer_coffee_of", ["civ_officer_of"], [
+        ["Desk", "M", [14.0, 0.0, 15.0], [60, 120], "desk", "", None],
+        ["WC", "M", [33.5, 0.0, 3.5], [20, 40], "idle", "officer_away", None]]),
+    R("CoffeeOfficerVO", "officer_coffee_vo", ["civ_officer_vo"], [
+        ["Desk", "M", [45.5, 0.0, 14.5], [60, 120], "desk", "", None],
+        ["WC", "M", [33.5, 0.0, 3.5], [25, 55], "idle", "officer_away", None]]),
+]
+# The rotating teller (Teller4): BR coffee / the WW WC, or (door_fire_propped) a smoke outside the propped fire exit.
+# One `teller_rotation` route per roll: it lives in the side_door slots.
+TELLER_ROUTE = R("TellerRotation", "teller_rotation", ["civ_teller_rotating"], [
+    _station("Station"), ["Coffee", "M", [7.5, 0.0, 5.5], [8, 15], "mug", "teller_away", None],
+    _station("Station2"), ["WC", "G", [33.5, 0.0, 3.5], [25, 50], "idle", "teller_away", None]])
+TELLER_SMOKE_ROUTE = R("TellerRotation", "teller_rotation", ["civ_teller_rotating"], [
+    _station("Station"), ["Smoke", "G", [50.5, 0.0, 6.0], [30, 50], "smoke", "teller_away", 90.0]])
+
 # --- slot content ------------------------------------------------------------------------------------------
 def _code_pc(sid: str, f: str, x: float, z: float) -> list:
     return [P("hack_terminal", "CodePC", f, [x, 0.75, z], 90.0, {"duration_s": 45.0, "interruptions": [1, 1],
-                                                                "objective_tag": "code_pc"},
-              [x, 0.0, z + 1.1], {"reveals_code_group": "vault", "todo": "OF-A3: reveals_code_group (QC-63)"}, "")]
+                                                                "objective_tag": "code_pc", "reveals_code_group": "vault"},
+              [x, 0.0, z + 1.1], {"reveals_code_group": "vault"}, "")]
 
 
 def _server(f: str, rack: list, ctrl: list) -> list:
     return [P("hack_terminal", "VaultControlRack", f, rack, 180.0, {"duration_s": 90.0, "interruptions": [2, 2],
-                                                                    "objective_tag": "server", "@targets": ["VaultDoor"]},
+                                                                    "objective_tag": "server"},
               [rack[0], 0.0, rack[2] + 1.3], {}, "prop_server_rack_terminal"),
             wall("hack_terminal", "LaserController", f, ctrl, 90.0, {"duration_s": 20.0, "interruptions": [0, 0],
                                                                       "objective_tag": "lasers"}, "prop_lift_breaker")]
@@ -631,6 +688,10 @@ for _sid in ("ps_bonds", "ps_empty"):
                                                     {"loot_id": "loot.small_valuables", "value": 1500}]]},
                             [30.0, 0.0, 1.2], {"mount": "wall"}, "prop_safe_wall_small")]
 SLOT_CONTENT["sec_staffed"] = []
+# Routes by parent: "Patrols/Routes" (always) or a slot id (emitted into ostrander_federal_layout.gd: the line budget).
+ROUTE_ROWS: Dict[str, list] = {"Patrols/Routes": ROUTES}
+for _sid in ("door_fire_propped", "door_dock_open", "door_none"):
+    ROUTE_ROWS[_sid] = [TELLER_SMOKE_ROUTE if _sid == "door_fire_propped" else TELLER_ROUTE]
 SLOT_CONTENT["sec_empty"] = []
 SLOT_PARAMS = {"sec_staffed": {"operator_spawn": "Spawns/CameraOperatorSeat",
                                "station": "Gameplay/Devices/CameraStation"},
@@ -1057,9 +1118,10 @@ def check(fail: Callable[[str], None], note: Callable[[str], None]) -> bool:
                                                                          "OK" if ok[0] else "see FAIL"))
     print("Content inside rooms:")
     items = [it for v in ALWAYS.values() for it in v] + FIXED_SPAWNS + [it for v in SLOT_CONTENT.values() for it in v]
-    items += FURNITURE + TACTICAL
+    items += FURNITURE + TACTICAL + [it for v in ROUTE_ROWS.values() for it in v]
     cnt = 0
-    for it in items:
+    for it in [it for it in items if it[0] != "route"] + [["stop", r[1] + "/" + st[0], st[1], st[2]]
+                                                         for r in items if r[0] == "route" for st in r[6]]:
         f, pos = (it[3], it[4]) if it[0] in ("prefab", "spawn", "tac") else (it[2], it[3])
         if it[0] == "tac" and it[2] == "SNIPER_PERCH":
             continue

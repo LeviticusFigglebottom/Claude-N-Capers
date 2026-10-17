@@ -408,7 +408,6 @@ const SHELL_BOXES: Array = [
 	["Cages", "GoldCageW_Head", [28.95, -1.8, 18.0], [29.05, -1.4, 20.0], "trim"],
 	["Cages", "GoldCageN", [29.05, -4.0, 16.95], [33.7, -1.4, 17.05], "trim"],
 	["Cages", "GoldCageS", [29.05, -4.0, 20.95], [33.7, -1.4, 21.05], "trim"],
-	["Lid", "Lid", [23.4, -0.8, 13.5], [24.6, 0.0, 15.7], "floor"],
 	["Lantern", "CurbN", [14.0, 8.6, 22.0], [30.0, 9.2, 22.3], "wall_ext"],
 	["Lantern", "CurbS", [14.0, 8.6, 29.7], [30.0, 9.2, 30.0], "wall_ext"],
 	["Lantern", "CurbW", [14.0, 8.6, 22.3], [14.3, 9.2, 29.7], "wall_ext"],
@@ -704,7 +703,6 @@ const HANDRAILS: Array = [
 ## Visual-only boxes (no collision): [name, min, max, class].
 const VISUALS: Array = [
 	["Meridian", [23.95, 0.002, 17.5], [24.05, 0.006, 31.9], "trim"],
-	["LidPanel", [22.8, 0.002, 13.4], [25.2, 0.006, 15.8], "trim"],
 	["AreawayGrate", [29.4, 0.002, -1.6], [30.6, 0.006, -0.4], "trim"],
 ]
 ## Always-present nav links: [name, from, to, bidirectional, navigation_layers] (1 walkable, 4 vent): the street islands'
@@ -1099,3 +1097,95 @@ const ROUTE_DOORS: Array[String] = [
 	"DepositHallDoor",
 	"CartQueueDoor",
 ]
+## Civilian routes (OF-A4 CivilianRoute rows, see ostrander_federal_content.py): {parent path or slot id: rows}.
+const ROUTES: Dictionary = {
+	"Patrols/Routes": [
+		[
+			"route", "ManagerFloorRoute", "mgr_floor", "LOOP", ["civ_manager_mgr_floor"], 0,
+			[
+				["Desk", [45.4, 0.0, 25.6], [20.0, 40.0], "phone", "mgr_away", 90.0],
+				["Hall", [26.0, 0.0, 27.0], [10.0, 20.0], "idle", "", null],
+				["TellerLine", [28.0, 0.0, 13.0], [10.0, 20.0], "look", "", null],
+				["Lounge", [46.0, 0.0, 11.5], [10.0, 20.0], "idle", "", null],
+			],
+		],
+		[
+			"route", "ManagerGalleryRoute", "mgr_gallery", "LOOP", ["civ_manager_mgr_gallery"], 1,
+			[
+				["VaultOps", [45.5, 5.0, 15.5], [20.0, 40.0], "phone", "", null],
+				["Conference", [32.5, 5.0, 14.7], [30.0, 60.0], "phone", "mgr_away", null],
+				["OpenOffice", [20.0, 5.0, 14.5], [10.0, 20.0], "look", "", null],
+				["Partner", [30.0, 8.6, 4.5], [30.0, 60.0], "phone", "mgr_away", null],
+			],
+		],
+		[
+			"route", "ManagerVaultRoute", "mgr_vault", "LOOP", ["civ_manager_mgr_vault"], 0,
+			[
+				["Attendant", [37.0, -4.0, 11.3], [30.0, 60.0], "phone", "", 0.0],
+				["CountRoom", [21.0, -4.0, 5.0], [10.0, 20.0], "look", "", null],
+				["LockerWC", [7.25, -4.0, 2.2], [40.0, 70.0], "idle", "mgr_away", null],
+				["ServiceCorridor", [40.0, 0.0, 8.0], [10.0, 20.0], "idle", "", null],
+			],
+		],
+		[
+			"route", "CoffeeOfficerAO1", "officer_coffee", "LOOP", ["civ_officer_ao1"], 0,
+			[
+				["Desk", [4.0, 5.0, 15.5], [60.0, 120.0], "desk", "", null],
+				["Coffee", [7.5, 5.0, 5.5], [30.0, 60.0], "mug", "officer_away", null],
+			],
+		],
+		[
+			"route", "CoffeeOfficerOF", "officer_coffee_of", "LOOP", ["civ_officer_of"], 0,
+			[
+				["Desk", [14.0, 5.0, 15.0], [60.0, 120.0], "desk", "", null],
+				["WC", [33.5, 5.0, 3.5], [20.0, 40.0], "idle", "officer_away", null],
+			],
+		],
+		[
+			"route", "CoffeeOfficerVO", "officer_coffee_vo", "LOOP", ["civ_officer_vo"], 0,
+			[
+				["Desk", [45.5, 5.0, 14.5], [60.0, 120.0], "desk", "", null],
+				["WC", [33.5, 5.0, 3.5], [25.0, 55.0], "idle", "officer_away", null],
+			],
+		],
+	],
+	"door_fire_propped": [
+		[
+			"route", "TellerRotation", "teller_rotation", "LOOP", ["civ_teller_rotating"], 0,
+			[
+				["Station", [33.0, 0.0, 15.97], [60.0, 120.0], "teller_count", "", 180.0],
+				["Smoke", [50.5, 0.0, 6.0], [30.0, 50.0], "smoke", "teller_away", 90.0],
+			],
+		],
+	],
+	"door_dock_open": [
+		[
+			"route", "TellerRotation", "teller_rotation", "LOOP", ["civ_teller_rotating"], 0,
+			[
+				["Station", [33.0, 0.0, 15.97], [60.0, 120.0], "teller_count", "", 180.0],
+				["Coffee", [7.5, 5.0, 5.5], [8.0, 15.0], "mug", "teller_away", null],
+				["Station2", [33.0, 0.0, 15.97], [60.0, 120.0], "teller_count", "", 180.0],
+				["WC", [33.5, 0.0, 3.5], [25.0, 50.0], "idle", "teller_away", null],
+			],
+		],
+	],
+	"door_none": [
+		[
+			"route", "TellerRotation", "teller_rotation", "LOOP", ["civ_teller_rotating"], 0,
+			[
+				["Station", [33.0, 0.0, 15.97], [60.0, 120.0], "teller_count", "", 180.0],
+				["Coffee", [7.5, 5.0, 5.5], [8.0, 15.0], "mug", "teller_away", null],
+				["Station2", [33.0, 0.0, 15.97], [60.0, 120.0], "teller_count", "", 180.0],
+				["WC", [33.5, 0.0, 3.5], [25.0, 50.0], "idle", "teller_away", null],
+			],
+		],
+	],
+}
+## The lid (QC-61, OF-A6): a GameplayPrefab tagged `lid` at Gameplay/Devices/Lid holding the plug (Plug: the 1.2 x 2.2 m
+## hole's 0.8 m slab body) and the marble panel (Visual/LidPanel); the hole's footprint is a permanent navmesh hole
+## (projected obstruction), so nothing paths over it before or after the burn.
+const LID: Dictionary = {
+	"origin": [24.0, 0.0, 14.6],
+	"plug": [[23.4, -0.8, 13.5], [24.6, 0.0, 15.7], "floor"],
+	"panel": [[22.8, 0.002, 13.4], [25.2, 0.006, 15.8], "trim"],
+}

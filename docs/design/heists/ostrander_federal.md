@@ -1139,7 +1139,7 @@ clear, inside D-120's 39–81 % band.
   `loot.thermal_drill_part` at the active `drill_delivery` marker after `drill_eta_s` (QC-60), with
   `cue.escape_arrive_heli` or `_van` and a Mercer line. With `asset.thermal_drill_drop` the bags are
   already at the point.
-- **Burn-through:** `device_finished` on the lid's `drill_point` → hide the lid mesh, enable the
+- **Burn-through:** `device_finished` on the lid's `drill_point` → disable the `lid` prefab (see Map hooks), enable the
   hole's ladder, the hoist (`bag_lift`) and its nav links (QC-61), complete `[vault_breach]`.
 - **Code PC:** the active `code_pc` slot holds the `hack_terminal` (`reveals_code_group &"vault"`).
   The other four PCs are props (no interaction; their screens are dark).
@@ -1158,6 +1158,49 @@ clear, inside D-120's 39–81 % band.
   open, last pager, camera "!", lockdown, drill inbound / delivered / jam / burn-through, hoist,
   gold cage, required secured, sniper on the Assay Office / the garage / the tower, Brandt, van
   ETA, heli ETA, escape.
+
+### Map hooks the mission binds to (OF-C1 G1 fix for OF-A6; ENV C, 2026-10-17)
+The mission finds these by `objective_tag` / route id; the node paths are for art lanes and tests, not for the mission.
+- **The lid** `Gameplay/Devices/Lid`: a bare `GameplayPrefab` (no interaction) tagged `lid`, at (24, 0, 14.6). It holds
+  the 1.2 × 2.2 m plug over the hole (`Plug`, the 0.8 m slab body, floor surface) and the 2.4 m marble panel
+  (`Visual/LidPanel`), so the mission's `set_enabled(false)` at the burn-through hides both and removes the collision on
+  every peer (replicated "pe"). Meta `burn_lid` stays on the prefab root for the mission's G1 fallback; levelcheck kind
+  `hatch` (it sits in its slab hole like GN's floor hatch). Nothing else is in `Geometry/Building/Lid` any more. Art: the
+  burn's dust / scorched rim belongs outside the lid prefab (it vanishes at the burn): on the slab rim in Geometry, or a
+  separate prefab that A enables at the burn.
+- **Navmesh at the hole (LEAD ruling):** the hole's 1.2 × 2.2 m footprint (x 23.4–24.6, z 13.5–15.7) is a **permanent nav
+  hole**, baked from the start: the plug is not navmesh source geometry, and a projected obstruction carves the footprint
+  (y −0.2 to +2.0, the D-073 baked-doorway pattern). NPCs walk round the lid before the burn as after it; there is no
+  runtime rebake and no toggled region. After the burn the only ways through are A's links: the rope ladder's NavLink,
+  the hoist (bags) and the `hole_rappel` RAPPEL link. The nav edge stands ≈ 0.3 m (agent radius) back from the hole edge;
+  the drill's UsePoint (25.6, 0, 14.6) and the RAPPEL point (24, 0, 13.3) are on it.
+- **Burn prefabs:** the hoist (`hoist`) and the rope ladder (`rope_ladder`, `usable = false`) are placed with
+  `enabled_at_start = false`; the G1 metas `starts_disabled` / `hidden` / `burn_height_m` stay (the mission reads them).
+- **Drill:** `LidDrill` (`vault_drill`) has `requires_loot = loot.thermal_drill_part`, `requires_count = 2` as properties
+  (the matching metas stay). **Code PCs:** every `CodePC` (`code_pc`) has `reveals_code_group = vault`.
+- **The time-lock console and the vault-control rack have no `targets`:** only the mission opens the vault door
+  (D-136.1).
+- **The planner** `Gameplay/Markers/CodeHintPlanner`: a `code_note` (`code_hint`, `reveals_variant_group = code_pc`, no
+  `code_group`) on Ashgrove's desk (43.9, 0.75, 23.9), read from the hall side.
+- **Bonds:** the bond safe holds `VaultBonds` (`loot_spawn`, 1 × `loot.bearer_bonds`, tag `bond_safe`). The rare
+  `bond_delivery` spawns at the marker `Gameplay/Markers/BondDelivery` (vault floor, (16.5, −4, 18.0), the open floor E
+  of the bond safe; the doc names no spot).
+- **Civilian routes** (`CivilianRoute`, LOOP, stops are `CivilianRouteStop`s on the navmesh, every stop ≥ 1.0 m from a
+  door centre; `Patrols/Routes/`):
+
+  | route_id | node | binds (bind_tags) | stops (dwell s) | away window |
+  |---|---|---|---|---|
+  | `mgr_floor` | ManagerFloorRoute | `civ_manager_mgr_floor` | BM desk 20–40 → hall 10–20 → TW 10–20 → PC 10–20 | `mgr_away` at the BM desk |
+  | `mgr_gallery` | ManagerGalleryRoute (starts at CF) | `civ_manager_mgr_gallery` | VO 20–40 → CF 30–60 → OF 10–20 → PR 30–60 | `mgr_away` at CF, PR |
+  | `mgr_vault` | ManagerVaultRoute | `civ_manager_mgr_vault` | SD desk 30–60 → CP 10–20 → LK WC 40–70 → BC (via SB) 10–20 | `mgr_away` at the LK WC |
+  | `officer_coffee` | CoffeeOfficerAO1 | `civ_officer_ao1` | AO1 desk 60–120 → BR coffee 30–60 | `officer_away` |
+  | `officer_coffee_of` | CoffeeOfficerOF | `civ_officer_of` | OF desk 60–120 → gallery WC 20–40 | `officer_away` |
+  | `officer_coffee_vo` | CoffeeOfficerVO | `civ_officer_vo` | VO desk 60–120 → gallery WC 25–55 | `officer_away` |
+  | `teller_rotation` | `Variants/Group_side_door/Slot_<door>/TellerRotation` | `civ_teller_rotating` | station 60–120 → BR 8–15 → station → WW 25–50; **`door_fire_propped`:** station → smoke outside the fire exit (50.5, 0, 6) 30–50 | `teller_away` |
+
+  Each officer spawn carries `civ_officer` plus its desk tag (`civ_officer_ao1` / `_of` / `_vo`), so each officer has
+  its own route (a route's stops are fixed, so one shared route would walk every officer to the same desk). The away
+  times with the walk come to ≈ 50–90 s (officers), 40–80 s (teller), 47–67 s (smoke), as Circulation asks.
 
 ## Variable table
 Each variable changes a decision. Rules resolve in this order (heist_map.md §5). Per-difficulty

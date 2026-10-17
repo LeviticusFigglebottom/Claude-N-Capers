@@ -119,6 +119,11 @@ def item(it: list) -> list:
     if k == "marker":
         _k, name, f, pos, yaw, tag, todo = it
         return ["marker", name, absy(f, pos), float(yaw), tag, todo]
+    if k == "route":
+        _k, name, rid, order, tags, start, stops = it
+        return ["route", name, rid, order, tags, start, [[st[0], absy(st[1], st[2]), [float(st[3][0]), float(st[3][1])],
+                                                          st[4], st[5], None if st[6] is None else float(st[6])]
+                                                         for st in stops]]
     if k == "tac":
         _k, name, kind, f, pos, yaw, tags, breach = it
         return ["tac", name, kind, absy(f, pos), float(yaw), tags, breach]
@@ -165,7 +170,7 @@ def emit() -> tuple:
     fb, fhull = GM.fire_escape()
     flights, sboxes, srails = GM.stairs()
     gboxes, ghulls, gflights = GM.site()
-    shell = GM.sills() + GM.hall() + GM.cages() + GM.lid() + lb + sboxes + fb
+    shell = GM.sills() + GM.hall() + GM.cages() + lb + sboxes + fb
     s += const("SHELL_BOXES", shell, doc="Shell boxes (Geometry/Building/<group>): [group, name, min, max, class].")
     s += const("SITE_BOXES", gboxes, doc="Site boxes (Geometry/Site/<group>): grade, police islands, closures, neighbours.")
     cop = []
@@ -185,7 +190,6 @@ def emit() -> tuple:
                % GM.Z_START)
     s += const("HANDRAILS", srails, doc="Handrails (5 cm bars): [name, from, to].")
     vis = [["Meridian", [23.95, 0.002, 17.5], [24.05, 0.006, 31.9], "trim"],
-           ["LidPanel", [C.LID[0], 0.002, C.LID[1]], [C.LID[2], 0.006, C.LID[3]], "trim"],
            ["AreawayGrate", [29.4, 0.002, -1.6], [30.6, 0.006, -0.4], "trim"]]
     s += const("VISUALS", vis, doc="Visual-only boxes (no collision): [name, min, max, class].")
     links = [["IslandLink" + p[0], p[3], p[4], False, 1] for p in S.POLICE_ISLANDS] + S.NAV_LINKS
@@ -216,6 +220,15 @@ def emit() -> tuple:
     s += const("SIDE_DOORS", C.SIDE_DOORS, "Dictionary", "side_door slot -> {door: [lock, extra]}.")
     s += const("SIDE_DOOR_EXTRA", C.SIDE_DOOR_EXTRA, "Dictionary")
     s += const("ROUTE_DOORS", C.ROUTE_DOORS, "Array[String]")
+    lid = GM.lid()[0]
+    s += const("ROUTES", {k: [item(i) for i in v] for k, v in C.ROUTE_ROWS.items()}, "Dictionary",
+               "Civilian routes (OF-A4 CivilianRoute rows, see ostrander_federal_content.py): {parent path or slot id: rows}.")
+    s += const("LID", {"origin": [round((C.HOLE[0] + C.HOLE[2]) * 0.5, 3), 0.0, round((C.HOLE[1] + C.HOLE[3]) * 0.5, 3)],
+                       "plug": [lid[2], lid[3], lid[4]], "panel": [[C.LID[0], 0.002, C.LID[1]], [C.LID[2], 0.006, C.LID[3]],
+                                                                   "trim"]},
+               "Dictionary", "The lid (QC-61, OF-A6): a GameplayPrefab tagged `lid` at Gameplay/Devices/Lid holding the plug "
+               "(Plug: the 1.2 x 2.2 m hole's 0.8 m slab body) and the marble panel (Visual/LidPanel); the hole's footprint "
+               "is a permanent navmesh hole (projected obstruction), so nothing paths over it before or after the burn.")
     shell_text = s
     s = hdr.replace("layout data. GENERATED", "layout data, content half. GENERATED")
     s += const("PLAYER_SPAWNS", [[nm, tag, absy(f, [x, S.PLAZA_Y if rid == "X1" else 0.0, z]), float(yaw)]
