@@ -16,6 +16,8 @@
 ##   ghost       the design doc's ghost line ("The hardest roll and its ghost line"), solo on Cataclysm, 2 ECM (one
 ##               ECM with 2 charges), 1 cable tie: logs per-step game time, D-102 carry speeds, every observer's peak
 ##               D-128 fill meter and the total time. NPCs stay in.
+##   burn        OF-A6 loud line through the real burn-through: drill parts -> lid -> 360 s -> rope ladder (4.0 m) down
+##               -> bag into the hoist -> ride up -> ladder up -> take-out (needs A's mission, wip/a-of-a6 f326ad00+).
 ##   all         every G1 test above in turn (a fresh launch each); stops at the first failure.
 ## --dry runs the generic parts on EXISTING heists to prove the harness works today:
 ##   laser   night_deposit seed 21 (laser_static; bypass gap at x 9.575 found at runtime): lot -> grate -> ladder ->
@@ -307,7 +309,7 @@ func _run() -> void:
 	var tests: Array[String] = []
 	if _test == "all":
 		tests.assign(["laser", "throws", "ladder"] if _dry else ["laser", "throws", "fire_escape", "hole", "dock",
-			"fire_exit", "ghost"])
+			"fire_exit", "burn", "ghost"])
 	else:
 		tests.append(_test)
 	var ok: bool = true
@@ -1651,6 +1653,140 @@ func _test_hole() -> bool:
 		return await _fail("hole: thrown-down bag in VT %s, G-throw into the hoist car %s (rope ladder + hoist ride OK)"
 			% [in_vt, car_ok])
 	return true
+
+
+## OF-A6 (phase 2) loud line through the REAL burn-through, by real input: alarm -> the drill's 2 tool bags at the drop
+## (drill_dock forced: 30 m through LD) carried (HEAVY) to the lid and placed -> 360 s burn (jams fixed) -> the rope
+## ladder (4.0 m after the burn) down -> a bag into the hoist car -> the hoist sent up -> the rope ladder up -> the bag out
+## in TW. Stated shortcuts: traversal mode (NPCs despawned, police kept out), the alarm raised through the
+## StealthDirector (how the crew goes loud is not tested here), the burn waited out at Engine.time_scale TIME_LOCK_SCALE
+## while standing at the drill, the vault bag spawned at the crew's feet (picked up by F). Each step logs "BURN <step>
+## PASS|FAIL"; map-side misses (thrown bag not in the car) are FINDINGs and the flow goes on where it can.
+func _test_burn() -> bool:
+	var force: Dictionary = {&"drill_delivery": [&"drop_dock"]}
+	if not await _launch(OF_HEIST, _of_seed(), Enums.Difficulty.ROUTINE, _of_opts(force, OF_SPAWN_LANE), true):
+		return false
+	var m: Node = rt.mission
+	var drill: Node3D = _x("vault_drill")
+	var hoist: BagLift = _x("hoist") as BagLift
+	var rope: Ladder = _x("rope_ladder") as Ladder
+	if drill == null or hoist == null or rope == null:
+		return await _fail("no drill (%s) / hoist (%s) / rope ladder (%s)" % [drill, hoist, rope])
+	note("BURN before: rope ladder usable %s height %.2f (top %s bottom %s); hoist visible %s" % [rope.usable,
+		rope.height_m, Po5Pilot._v(rope.top_position()), Po5Pilot._v(rope.bottom_position()), hoist.is_visible_in_tree()])
+	if not await _mask():
+		return await _fail("mask")
+	var sd: Node = HeistRuntime.get_service(G.SVC_STEALTH)
+	sd.call(&"raise_alarm", &"ofp_burn", 0)
+	note("SHORTCUT alarm raised through the StealthDirector")
+	if not await wait_until(func() -> bool: return bool(m.get(&"lockdown")), 5.0):
+		return await _fail("lockdown")
+	note("BURN lockdown PASS; drill_delivery %s eta %s" % [rt.variants.get(&"drill_delivery"), rt.variants.get(
+		&"drill_eta_s")])
+	# 1. The parts arrive at the drop.
+	var parts: Array[LootBag] = []
+	var got: bool = await wait_until(func() -> bool:
+		parts = _drill_parts()
+		return parts.size() >= 2, 150.0)
+	if not got:
+		return await _fail("drill parts arrive (%d)" % parts.size())
+	note("BURN parts PASS at %s" % [Po5Pilot._v(parts[0].global_position)])
+	# 2. Each part carried to the lid and placed.
+	for i: int in 2:
+		parts = _drill_parts()
+		if parts.is_empty():
+			return await _fail("drill part %d to carry" % i)
+		var bag: LootBag = parts[0]
+		var t0: float = rt.heist_time_s
+		if not await pilot.use(_comp(bag), 240.0, func() -> bool: return pilot.crew.is_carrying_bag()):
+			return await _fail("pick up drill part %d at %s" % [i, Po5Pilot._v(bag.global_position)])
+		var before: int = int(drill.get(&"delivered"))
+		var place: InteractableComponent = _comp(drill)
+		if not await pilot.use(place, 240.0, func() -> bool: return int(drill.get(&"delivered")) > before
+				or int(drill.call(&"device_state")) != 0):
+			return await _fail("place drill part %d on the lid" % i)
+		note("BURN part %d PASS: drop -> lid in %.1f s (HEAVY), delivered %d" % [i, rt.heist_time_s - t0,
+			int(drill.get(&"delivered"))])
+	if int(drill.call(&"device_state")) == 0:
+		return await _fail("the drill runs")
+	await shot("burn_drill_running")
+	# 3. The burn: stand at the drill, fix jams.
+	var jams: int = 0
+	Engine.time_scale = TIME_LOCK_SCALE
+	note("SHORTCUT burn wait at x%.0f beside the drill" % TIME_LOCK_SCALE)
+	var tb: float = rt.heist_time_s
+	while not bool(m.get(&"burned_through")) and rt.heist_time_s - tb < 900.0:
+		await wait_s(1.0)
+		if int(drill.call(&"device_state")) == 2:  # DeviceRunner.State.JAMMED
+			Engine.time_scale = 1.0
+			jams += 1
+			var ok_fix: bool = await pilot.use(_comp(drill), 60.0, func() -> bool:
+				return int(drill.call(&"device_state")) != 2)
+			note("BURN jam %d fixed %s" % [jams, ok_fix])
+			Engine.time_scale = TIME_LOCK_SCALE
+	Engine.time_scale = 1.0
+	if not bool(m.get(&"burned_through")):
+		return await _fail("burn-through (%d jams, %.0f s)" % [jams, rt.heist_time_s - tb])
+	await wait_s(1.0)
+	var span: float = rope.top_position().y - rope.bottom_position().y
+	note("BURN burn-through PASS after %.0f s (%d jams); rope ladder usable %s height_m %.2f, top %s bottom %s (span %.2f m):"
+		% [rt.heist_time_s - tb, jams, rope.usable, rope.height_m, Po5Pilot._v(rope.top_position()),
+		Po5Pilot._v(rope.bottom_position()), span] + " %s; hoist enabled %s" % ["4.0 m OK" if absf(rope.height_m - 4.0)
+		< 0.05 else "NOT 4.0 m", hoist.call(&"is_enabled") if hoist.has_method(&"is_enabled") else hoist.visible])
+	await shot("burn_through")
+	var bad: PackedStringArray = PackedStringArray()
+	if absf(rope.height_m - 4.0) >= 0.05:
+		bad.append("rope ladder %.2f m" % rope.height_m)
+	# 4. Down the rope ladder.
+	if not await _climb(rope, false):
+		return await _fail("rope ladder down")
+	note("BURN ladder down PASS at %s" % Po5Pilot._v(pilot.crew.global_position))
+	# 5. A bag into the hoist car.
+	if await _get_bag(LOOT_MEDIUM) == null:
+		return await _fail("bag in VT")
+	var bottom: int = _lift_nearest_landing(hoist, pilot.crew.global_position)
+	var top: int = 1 - bottom if hoist.landing_count() == 2 else 0
+	var car_stand: Vector3 = pilot.stand_point(hoist.landing_transform(bottom).origin + Vector3(0.0, 0.0, 1.2))
+	if not await _lift_to(hoist, bottom, car_stand):
+		return await _fail("hoist car down at the vault floor")
+	var car_ok: bool = await _bag_into_car(hoist, car_stand)
+	note("BURN bag into the hoist car %s (car at %s)" % ["PASS" if car_ok else "FAIL", Po5Pilot._v(
+		hoist.car_transform().origin)])
+	if not car_ok:
+		bad.append("G-thrown bag not held by the hoist car")
+		if pilot.crew.is_carrying_bag():
+			await pilot.inp.tap(&"drop_bag")
+			await wait_s(1.0)
+		var mgr: LootManager = HeistRuntime.get_service(G.SVC_LOOT) as LootManager
+		mgr.spawn_bag(LOOT_MEDIUM, Transform3D(Basis.IDENTITY, hoist.car_transform().origin + Vector3.UP * 0.4), true)
+		await wait_s(1.0)
+		note("SHORTCUT bag placed in the hoist car (%d in the car)" % hoist.bags_in_car().size())
+	await shot("burn_hoist_loaded")
+	# 6. The ride up.
+	if not await _lift_to(hoist, top, car_stand):
+		return await _fail("hoist ride up (send from the vault floor)")
+	note("BURN hoist ride PASS: car at landing %d with %d bag(s)" % [hoist.landing, hoist.bags_in_car().size()])
+	# 7. Up the rope ladder, the bag out in TW.
+	if not await _climb(rope, true):
+		return await _fail("rope ladder up")
+	note("BURN ladder up PASS at %s" % Po5Pilot._v(pilot.crew.global_position))
+	var up: LootBag = hoist.bags_in_car().front() if not hoist.bags_in_car().is_empty() else null
+	if up == null or not await pilot.use(_comp(up), 60.0, func() -> bool: return pilot.crew.is_carrying_bag()):
+		return await _fail("take the bag out of the hoist in TW")
+	note("BURN take-out PASS at %s" % Po5Pilot._v(pilot.crew.global_position))
+	await shot("burn_take_out")
+	if not bad.is_empty():
+		return await _fail("burn flow done with map-side misses: %s" % ", ".join(bad))
+	return true
+
+
+func _drill_parts() -> Array[LootBag]:
+	var out: Array[LootBag] = []
+	for n: Node in get_tree().get_nodes_in_group(G.LOOT_BAG):
+		var lb: LootBag = n as LootBag
+		if lb != null and lb.loot_id == &"loot.thermal_drill_part" and not lb.is_carried() and lb.is_inside_tree():
+			out.append(lb)
+	return out
 
 
 ## SHORTCUT (G1 has no mission): the hole's ladder and hoist on, unless the mission's burn-through did it.
