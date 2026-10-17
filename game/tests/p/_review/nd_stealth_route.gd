@@ -506,6 +506,10 @@ func _wait_back_turned(g: NpcBase, timeout: float) -> bool:
 func _records() -> bool:
 	var kc: Node3D = _tagged(&"keycard")
 	var code: Node3D = _tagged(&"code_note")
+	# West along B5 and in by RecordsDoor (3.5, -4, 7.5): the navmesh otherwise tries the closed VaultGate (it needs
+	# this keycard) or loops at InspectionWestDoor (ND runs 2026-10-17 t=99).
+	for wp: Vector3 in [Vector3(4.2, GATE_AT.y, 6.9), Vector3(3.5, GATE_AT.y, 8.4)]:
+		await pilot.goto(wp, 0.4, 40.0)
 	for pair: Array in [[kc, &"keycard"], [code, &"code"]]:
 		var n: Node3D = pair[0]
 		if n == null:
