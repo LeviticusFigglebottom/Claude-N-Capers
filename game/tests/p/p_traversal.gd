@@ -72,7 +72,7 @@ func throw_bag(pos: Vector3, yaw: float, pitch: float, weight: int, loot_id: Str
 		Vector3.INF, "rest_s": float(Engine.get_physics_frames() - t0) / Engine.physics_ticks_per_second, "bag": bag}
 
 
-## Climb `ladder` up from its bottom with real input (walk into it), then back down from the top.
+## Climb `ladder` up from its bottom with real input (walk into it), then back down from the top (look down + W).
 ## Dictionary: {up, down, up_s, down_s}.
 func ladder(l: Ladder, and_down: bool = true) -> Dictionary:
 	var out: Dictionary = {"up": false, "down": false, "up_s": 0.0, "down_s": 0.0}
@@ -82,20 +82,24 @@ func ladder(l: Ladder, and_down: bool = true) -> Dictionary:
 	away.y = 0.0
 	away = away.normalized() if away.length() > 0.01 else Vector3.BACK
 	await place(bottom + away * 0.6, l.global_position)
+	await inp.turn_to_pitch(crew, deg_to_rad(10.0))  # PO-16 (PD2): the look pitch sets the climb direction
 	var t0: int = Engine.get_physics_frames()
 	inp.press(&"move_forward")
-	out["up"] = await _until(func() -> bool: return crew.global_position.y > top.y - 0.3 and not l.is_climbing(crew.slot),
-		l.climb_time() + 6.0)
+	var on_top: Callable = func() -> bool:
+		return crew.global_position.y > top.y - 0.3 and not l.is_climbing(crew.slot) and not crew.ladder.is_climbing()
+	out["up"] = await _until(on_top, l.climb_time() + 6.0)
 	inp.release(&"move_forward")
 	out["up_s"] = float(Engine.get_physics_frames() - t0) / Engine.physics_ticks_per_second
 	if not out["up"] or not and_down:
 		return out
 	await _ticks(10)
 	await inp.turn_to_yaw(crew, _yaw_to(crew.global_position, l.global_position))
+	await inp.turn_to_pitch(crew, deg_to_rad(-55.0))  # PO-16 (PD2): look down over the edge + W climbs down
 	t0 = Engine.get_physics_frames()
 	inp.press(&"move_forward")
-	out["down"] = await _until(func() -> bool: return crew.global_position.y < bottom.y + 0.3 and not l.is_climbing(crew.slot),
-		l.climb_time() + 6.0)
+	var on_floor: Callable = func() -> bool:
+		return crew.global_position.y < bottom.y + 0.3 and not l.is_climbing(crew.slot) and not crew.ladder.is_climbing()
+	out["down"] = await _until(on_floor, l.climb_time() + 6.0)
 	inp.release(&"move_forward")
 	out["down_s"] = float(Engine.get_physics_frames() - t0) / Engine.physics_ticks_per_second
 	return out
