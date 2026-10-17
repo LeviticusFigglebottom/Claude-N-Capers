@@ -172,13 +172,13 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## slopes: No walkable slope < 50° outside the play mesh
 
-- 153 x 105 columns (0.25 m), 79083 surface samples, 0 collider(s) with reachable walkable surfaces outside play
+- 153 x 105 columns (0.25 m), 79081 surface samples, 0 collider(s) with reachable walkable surfaces outside play
 
 
 ## navmesh: Navmesh
 
-- navmesh: 1825 polygons, cell 0.10/0.10 m
-- 231 markers checked
+- navmesh: 1813 polygons, cell 0.10/0.10 m
+- 233 markers checked
 | room | walkable samples | covered | coverage |
 |---|---|---|---|
 | `Rooms/RoomS1` | 83 | 83 | 100% |
@@ -190,11 +190,11 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `Rooms/RoomK1` | 74 | 74 | 100% |
 | `Rooms/RoomK2` | 12 | 12 | 100% |
 | `Rooms/RoomK3` | 160 | 160 | 100% |
-| `Rooms/RoomK4` | 51 | 51 | 100% |
+| `Rooms/RoomK4` | 53 | 53 | 100% |
 | `Rooms/RoomK5` | 64 | 64 | 100% |
 | `Rooms/RoomK6` | 46 | 46 | 100% |
 | `Rooms/RoomK7` | 46 | 46 | 100% |
-| `Rooms/RoomK8` | 178 | 178 | 100% |
+| `Rooms/RoomK8` | 181 | 181 | 100% |
 | `Rooms/RoomK9` | 20 | 20 | 100% |
 | `Rooms/RoomK10` | 18 | 18 | 100% |
 | `Rooms/RoomK11` | 12 | 12 | 100% |
@@ -248,7 +248,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## reachability: Reachability (per variant)
 
-- 47 variant configuration(s), 117425 spawn->target path queries
+- 50 variant configuration(s), 125455 spawn->target path queries
 
 
 ## walkthrough: Walkthrough bot
@@ -273,12 +273,12 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## materials: Materials and texel density
 
-- 3410 surfaces checked
+- 3415 surfaces checked
 
 
 ## zfight: Z-fighting
 
-- 361994 triangles checked
+- 362054 triangles checked
 
 
 ## lights: Lighting is deliberate
@@ -392,30 +392,30 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 ## bounds: No void / back faces
 
 - 43 navmesh sample(s) skipped: not reachable from a player spawn (police-only)
-- 297 eye samples, 24057 rays, sky yes, 0 void ray(s)
+- 295 eye samples, 23895 rays, sky yes, 0 void ray(s)
 
 
 ## perf: Per-shot performance budget
 
 | camera | draw calls | triangles | shadow lights |
 |---|---|---|---|
-| `TopDownSite` | 1500 | 312868 | 5 |
-| `TopDownTower` | 1498 | 313908 | 5 |
-| `ExtNorthCrown` | 1468 | 307154 | 5 |
-| `ExtWestArden` | 1760 | 373874 | 5 |
-| `ExtTerraceSE` | 2285 | 516142 | 5 |
+| `TopDownSite` | 1505 | 312928 | 5 |
+| `TopDownTower` | 1503 | 313968 | 5 |
+| `ExtNorthCrown` | 1473 | 307214 | 5 |
+| `ExtWestArden` | 1765 | 373934 | 5 |
+| `ExtTerraceSE` | 2290 | 516202 | 5 |
 | `ReceptionFromLifts` | 267 | 47008 | 3 |
-| `GalleryWalkway` | 1619 | 338990 | 3 |
+| `GalleryWalkway` | 1621 | 339014 | 3 |
 | `ArtHallLasers` | 474 | 107874 | 1 |
-| `StudySafe` | 1474 | 335492 | 1 |
+| `StudySafe` | 1474 | 335484 | 1 |
 | `ServerCage` | 634 | 142162 | 1 |
 | `SecurityRoom` | 795 | 187128 | 1 |
-| `SouthSpine` | 2173 | 468310 | 4 |
-| `TerraceWest` | 2092 | 434496 | 4 |
-| `RoofPlantBlock` | 2213 | 461736 | 5 |
-| `Helipad` | 1786 | 407286 | 3 |
-| `StairACore` | 1037 | 178852 | 5 |
-| `ServiceLobby` | 1560 | 296322 | 4 |
+| `SouthSpine` | 2178 | 468370 | 4 |
+| `TerraceWest` | 2097 | 434556 | 4 |
+| `RoofPlantBlock` | 2217 | 461784 | 5 |
+| `Helipad` | 1788 | 407310 | 3 |
+| `StairACore` | 1038 | 178856 | 5 |
+| `ServiceLobby` | 1564 | 296370 | 4 |
 | `KesslerOffice` | 155 | 35472 | 1 |
 | `OpenOffice` | 655 | 133310 | 2 |
 | `BreakRoom` | 756 | 198992 | 0 |

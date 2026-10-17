@@ -214,6 +214,8 @@ var layers: AnimLayers = null
 var hits: HitClips = null
 ## The third-person weapon / akimbo offhand and carried-bag visuals (HeldVisuals).
 var held_visuals: HeldVisuals = null
+## D-132 animation LOD (AnimLod): which frames an NPC ticks / samples vs the local camera.
+var lod: AnimLod = null
 ## WeaponDef.weapon_class of the held weapon (-1 without a WeaponDef): the D-116 class reloads.
 var weapon_class: int = -1
 ## Lead ruling (b): the upper-body hit-zone flinch layer (every animated body); see AnimLayers.play_flinch.
@@ -342,6 +344,7 @@ func _init() -> void:
 	layers = AnimLayers.new(self)
 	hits = HitClips.new(self)
 	held_visuals = HeldVisuals.new(self)
+	lod = AnimLod.new(self)
 
 
 func _ready() -> void:
@@ -375,6 +378,7 @@ func bind() -> bool:
 	combat = combat if combat != null else CombatClips.new(self)
 	_npc = _body as NpcBase
 	_crew = _body as CrewController
+	lod.reset()  # D-132: the old player back to IDLE, nothing banked
 	player = find_player(_body)
 	rig = player.get_parent() as Node3D if player != null else null
 	set_process(player != null)
@@ -417,7 +421,17 @@ func _process(delta: float) -> void:
 
 
 func _process_step(delta: float) -> void:
-	tick(delta)
+	step_lod(delta, Engine.get_process_frames())
+
+
+## D-132: one process frame through AnimLod: on its due frames the driver ticks with the banked time and the player
+## samples it (FULL band: every frame, as before). Tests drive it with simulated frame numbers.
+func step_lod(delta: float, frame: int) -> void:
+	var dt: float = lod.step(delta, frame)
+	if dt < 0.0:
+		return
+	tick(dt)
+	lod.after_tick()
 
 
 ## Advance one presentation frame (tests call it directly).

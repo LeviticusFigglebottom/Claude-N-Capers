@@ -51,6 +51,7 @@ var _shot: int = 0
 var _alarm: StringName = &""
 var _t0_ms: int = 0
 var _fast: bool = true
+var _lift_probe: bool = false
 
 
 func _ready() -> void:
@@ -62,6 +63,7 @@ func _ready() -> void:
 			"seed": _seed = v.to_int()
 			"bags": _bags = v.to_int()
 			"render": _fast = false
+			"lift-probe": _lift_probe = true
 			"obs-out":
 				var n: Node = Node.new()
 				n.name = "POObserver"
@@ -168,6 +170,23 @@ func _run() -> void:
 	EventBus.objective_updated.connect(func(id: StringName, st: int, _d: Dictionary) -> void:
 		note("objective %s -> %d" % [id, st]))
 	note("variants %s" % rt.variants)
+	if _lift_probe:  # --lift-probe: print the cash lift's landings and panels, then quit
+		for n: Node in rt.find_children("*", "BagLift", true, false):
+			var bl: BagLift = n as BagLift
+			note("lift %s at %s landing %d count %d car %s" % [bl.get_path(), Po5Pilot._v(bl.global_position), bl.landing,
+				bl.landing_count(), Po5Pilot._v(bl.car_transform().origin)])
+			for i: int in bl.landing_count():
+				note("  landing %d %s" % [i, Po5Pilot._v(bl.landing_transform(i).origin)])
+			for c: Node in bl.find_children("*", "InteractableComponent", true, false):
+				note("  panel %s %s kind %s" % [c.name, Po5Pilot._v((c as Node3D).global_position), c.get(&"kind")])
+		var map: RID = get_tree().root.get_world_3d().navigation_map
+		for q: Vector3 in [Vector3(5.5, -2.5, 1.8), B1_HATCH_STAND, Vector3(3.5, -4.0, 3.0)]:
+			var path: PackedVector3Array = NavigationServer3D.map_get_path(map, Vector3(12.0, -4.0, 6.9), q, true)
+			note("  nav closest to %s: %s; path from B5 %d pts, ends %s" % [Po5Pilot._v(q),
+				Po5Pilot._v(NavigationServer3D.map_get_closest_point(map, q)), path.size(),
+				Po5Pilot._v(path[path.size() - 1]) if path.size() > 0 else "-"])
+		get_tree().quit(0)
+		return
 	var c: CrewController = rt.crew_controller(Net.local_slot()) as CrewController
 	await wait_s(2.0)
 	pilot = Po5Pilot.new(self, c)
@@ -175,6 +194,7 @@ func _run() -> void:
 	pilot.shout_blockers = false
 	await pilot.calibrate()
 	note("spawn %s" % Po5Pilot._v(c.global_position))
+	_watch_detection.call_deferred()
 	await shot("spawn_lot")
 	if _fast:
 		note("fast mode: render loop off between shots")
@@ -190,6 +210,38 @@ func _run() -> void:
 	note("RESULT PASS stealth, alarm %s" % _alarm)
 	print("[NDR] RESULT PASS")
 	get_tree().quit(0)
+
+
+## Every 0.25 s: log each observer whose meter on the pilot crosses 0.05 / 0.5 / 1.0 (who saw the pilot, where).
+func _watch_detection() -> void:
+	var sd: StealthDirector = HeistRuntime.get_service(G.SVC_STEALTH) as StealthDirector
+	var seen: Dictionary = {}
+	var alert: Dictionary = {}
+	while sd != null and is_inside_tree() and _alarm == &"":
+		for role: StringName in [&"guard", &"civilian"]:
+			for n: Node in rt.npcs(role):
+				var npc: NpcBase = n as NpcBase
+				if npc != null and int(alert.get(npc, 0)) != npc.alert_state:
+					note("ALERT %s %d -> %d at %s (pilot %s)" % [npc.name, int(alert.get(npc, 0)), npc.alert_state,
+						Po5Pilot._v(npc.global_position), Po5Pilot._v(pilot.crew.global_position)])
+					alert[npc] = npc.alert_state
+		for e: Dictionary in sd.detection_entries(pilot.crew.slot):
+			var v: float = float(e["value"])
+			var id: int = int(e["observer_net_id"])
+			var band: int = 3 if v >= 1.0 else (2 if v >= 0.5 else (1 if v >= 0.05 else 0))
+			if band > int(seen.get(id, 0)):
+				note("DETECT %s kind %d meter %.2f at %s, pilot %s crouched %s" % [_observer_name(id),
+					int(e["kind"]), v, Po5Pilot._v(e["world_pos"]), Po5Pilot._v(pilot.crew.global_position),
+					pilot.crew.crouched])
+			seen[id] = band if band > 0 else 0
+		await wait_s(0.25)
+
+
+func _observer_name(net_id: int) -> String:
+	for n: Node in rt.find_children("*", "Node3D", true, false):
+		if (n is NpcBase or n.has_method(&"take_hit")) and NetIds.of(n) == net_id:
+			return String(n.name)
+	return str(net_id)
 
 
 ## Lot -> AreawayGrate (vent_open: casing-allowed) -> ladder -> AreawayDoor -> B3, mask.
@@ -530,6 +582,7 @@ func _loot() -> bool:
 	for trip: int in ceili(_bags / 2.0):
 		var steps: Array[Callable] = [_lift_to.bind(lift, 1), _load_trip.bind(lift, trip), _lift_to.bind(lift, 0),
 			_surface, _into_g1, _unload_g1.bind(lift, zone)]
+		steps.push_front(_gap_out)  # behind the laser grid since the time lock: out through the gap first
 		if trip > 0:
 			steps.push_front(_back_to_vault)
 		for st: Callable in steps:
@@ -540,10 +593,21 @@ func _loot() -> bool:
 	return true
 
 
+func _gap_out() -> bool:
+	for wp: Vector3 in [Vector3(LASER_GAP_X, GATE_AT.y, 9.15), Vector3(LASER_GAP_X, GATE_AT.y, 7.9)]:
+		if not await pilot.goto(wp, 0.12, 60.0):
+			note("laser gap out: could not reach %s (at %s)" % [Po5Pilot._v(wp), Po5Pilot._v(pilot.crew.global_position)])
+			return false
+	return true
+
+
 ## Up to two vault bags thrown into the car at B1 (in through the laser gap for each).
 func _load_trip(lift: BagLift, trip: int) -> bool:
 	for b: int in mini(2, _bags - 2 * trip):
-		for wp: Vector3 in [Vector3(LASER_GAP_X, GATE_AT.y, 7.9), Vector3(LASER_GAP_X, GATE_AT.y, 9.15)]:
+		# Along the grid's south side well clear of the beams (z 8.5): the navmesh path in through the vault gate cut
+		# the corner at z 8.0 and tripped them (ND run 2026-10-17 t=448).
+		for wp: Vector3 in [Vector3(14.0, GATE_AT.y, 7.6), Vector3(10.6, GATE_AT.y, 7.7),
+				Vector3(LASER_GAP_X, GATE_AT.y, 7.9), Vector3(LASER_GAP_X, GATE_AT.y, 9.15)]:
 			await pilot.goto(wp, 0.12, 60.0)
 		if not await _vault_bag_into_lift(lift, 2 * trip + b):
 			return false
@@ -568,7 +632,11 @@ func _unload_g1(lift: BagLift, zone: SecureZone) -> bool:
 			note("bag not secured (at %s)" % Po5Pilot._v(pilot.crew.global_position))
 			await shot("bag_not_secured")
 			return false
-		note("secured (objective secure %d)" % _objective(&"secure"))
+		var left: Array[String] = []
+		for n: Node in get_tree().get_nodes_in_group(G.LOOT_BAG):
+			left.append("%s %s" % [n.name, Po5Pilot._v((n as Node3D).global_position)])
+		note("secured (objective secure %d); bags now: %s; in the car %d" % [_objective(&"secure"), left,
+			lift.bags_in_car().size()])
 		if _b == 0 and not lift.bags_in_car().is_empty():
 			await pilot.goto(SALLY_IN, 0.4, 30.0)
 	return true
@@ -584,13 +652,23 @@ func _lift_to(lift: BagLift, to: int) -> bool:
 	if panel == null:
 		note("lift panel %d missing" % here)
 		return false
+	note("lift: landing %d -> %d; panel %d at %s; landings %s" % [lift.landing, to, here, Po5Pilot._v(panel.global_position),
+		[Po5Pilot._v(lift.landing_transform(0).origin), Po5Pilot._v(lift.landing_transform(1).origin)]])
 	await wait_until(func() -> bool: return not lift.is_moving(), 20.0)
-	if not await pilot.use(panel, 30.0, func() -> bool: return lift.is_moving()):
+	# Walk to the panel's floor ourselves: Po5Pilot's _use_stand put B1's panel stand on G1 above it (the walk went up
+	# the stair through the ground floor into an alarm button, ND run 2026-10-17 t=224).
+	var stand: Vector3 = B1_HATCH_STAND if here == 1 else SALLY_IN
+	await pilot.goto(stand, 0.3, 60.0)
+	if not await pilot.use(panel, 30.0, func() -> bool: return lift.is_moving(), false):
 		note("lift panel %d not used (at %s)" % [here, Po5Pilot._v(pilot.crew.global_position)])
 		return false
 	var ok: bool = await wait_until(func() -> bool: return not lift.is_moving() and lift.landing == to,
 		lift.travel_s + 5.0)
-	note("lift %s landing %d (%d bags in the car)" % ["at" if ok else "NOT at", to, lift.bags_in_car().size()])
+	var at: Array[String] = []
+	for lb: LootBag in lift.bags_in_car():
+		at.append(Po5Pilot._v(lb.global_position))
+	note("lift %s landing %d (%d bags in the car: %s; car floor %s)" % ["at" if ok else "NOT at", to,
+		lift.bags_in_car().size(), at, Po5Pilot._v(lift.car_transform().origin)])
 	return ok
 
 
@@ -613,9 +691,15 @@ func _vault_bag_into_lift(lift: BagLift, i: int) -> bool:
 		if not await pilot.goto(B1_HATCH_STAND, 0.2, 60.0):
 			note("B1 hatch stand not reached (at %s)" % Po5Pilot._v(pilot.crew.global_position))
 			break
-		# Release is 1.3 m up, the hatch head 1.25 m: look down at the car floor so the launch clamps to -20 deg.
+		# Up against the hatch: the throw releases 0.7 m ahead (drop_forward_m), already in the car. From 1 m back the
+		# bag (0.3 m tall, released 1.3 m up) hit the 1.25 m hatch head and bounced out (ND run 2026-10-17 t=284).
 		var car: Vector3 = lift.car_transform().origin
-		await pilot.face(Vector3(car.x, car.y, car.z), 0.02, 1.5)
+		await pilot.face(Vector3(car.x, car.y + 0.6, car.z), 0.02, 1.5)
+		pilot.inp.press(&"move_forward")
+		await wait_s(0.4)
+		pilot.inp.release(&"move_forward")
+		await pilot.face(Vector3(car.x, car.y + 0.4, car.z), 0.02, 1.0)
+		note("hatch throw %d from %s" % [attempt, Po5Pilot._v(pilot.crew.global_position)])
 		await pilot.inp.tap(&"drop_bag")
 		await wait_s(1.5)
 		if lift.bags_in_car().size() > before:

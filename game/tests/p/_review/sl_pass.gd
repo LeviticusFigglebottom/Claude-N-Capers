@@ -559,11 +559,17 @@ func _laptop() -> bool:
 
 
 ## Walks `points` in order (each a pilot goto); false at the first point not reached.
+## Crouched (D-128: a crouched crew is out of a camera's attention range beyond ~9.7 m at DR 4; standing, the K16
+## leg filled C4 to 1.0 at 11.8 m in 3.1 s on the G2 map, re-walk 2026-10-17 t=118).
 func _via(points: Array[Vector3], label: String) -> bool:
+	pilot.inp.press(&"crouch")
+	var ok: bool = true
 	for i: int in points.size():
 		if not await _go("%s %d" % [label, i], points[i], 90.0):
-			return false
-	return true
+			ok = false
+			break
+	pilot.inp.release(&"crouch")
+	return ok
 
 
 func _cage_code() -> bool:

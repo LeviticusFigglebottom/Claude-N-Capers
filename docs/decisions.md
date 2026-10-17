@@ -1186,3 +1186,33 @@ ragdoll/HandProps, VRAM, 2/10/30 m lineups; per-character fallback switch.
 civilians within 5.5 m uncover instantly; camera C4 at 4.95 m (D-130 presets) 3.89 s (3.85-4.07), decay 1.23 s (1.17); a
 careful crouched route keeps every meter at 0.00. All within ~5 % of A's formula; verdict: feels like PD2. Pending: GH
 Lethal (Titan, cap 2), 10 m camera fills, the SL leg.
+**D-130 addendum (C b7cfb928, SL):** SL civilians end at +75 % at Cataclysm (pre-D-130 SL already ran +45 % from Brutal and
+no tier may fall; SL's test cap is 1.9x, GN/ND keep 1.5x). SL guards stay flat at 5 for Lethal/Cataclysm (QC-e), as GN.
+New SL civilian group late_staff (one seated late worker, chance 0/25/25/33/44/67 % by tier).
+**D-132 addendum 2 (D1 parked, 2026-10-17):** D1 is done and verified on `wip/d-d1-merge` 78098c11 (fallback list, lighting
+diff 0.003, outline/ragdoll/hand props OK, lineups identical at close/30 m) but measured GN 738 → 499 draws (-32 %), loud
+-12 %, with llvmpipe frame time only -2 % (829 → 814 ms), for +29-45 MB VRAM and ~194 MB of committed merged meshes.
+Ruling: **park D1** (keep the branch, do not merge) until a real-GPU measurement shows draw calls bind; D2 and A's
+animation LOD stay. Real-GPU probe: ask the product owner to run the bench (`world/characters/_tools/bench_crowd.tscn`)
+on their machine, D1 on/off; land D1 (option A, or B if it binds hard) only on that evidence.
+**D-132 addendum 3 (A e6ee87d9, animation LOD):** AnimLod bands FULL < 15 m on screen / NEAR 15-30 m every 2nd frame, IK off /
+FAR > 30 m or off screen every 4th frame, layer off / PAUSED off screen > 30 m; staggered by net_id; skipped time advanced
+on the due frame. Bench 34 NPCs: 2.69 → 1.49 ms/frame (-45 %), event parity within one cadence step. Rulings: (a) TIED is
+LOD'd (steady pose), surrender transitions exempt; (b) "aimed at" = within 2 m of a crew aim ray; (c) "on screen" =
+frustum check without occlusion; (d) a paused body catches up its clip events on resume (fine under D-121).
+
+## D-134: taking damage does not cancel a revive (2026-10-17, LEAD; from ENV A's ND-1 analysis)
+ND-1 (×1.0 and ×0.25) both end in custody at t≈577: the pilot goes down carrying a bag, two AI bots stand inside revive
+range, but every hit restarts their 6 s revive (`InteractionSystem.interrupt_on_damage`, pd2_fidelity S9.1), so nobody is
+revived before bleed-out. PD2: being shot does not cancel a revive (only going down, a tase, a stun/flash or letting go
+does), which is why reviving under fire is the bots' and players' core job.
+Ruling: **(b)**: a revive in progress is never interrupted by damage, for humans and AI bots alike (interrupted by: the
+reviver going down, tased, stunned/flashed, moving out of range, or releasing). For **other** hold interactions S9.1 stays
+until ENV A source-checks PD2 (playerstandard / interaction ext: does damage cancel a held interaction?); A reports the
+finding with a citation and I amend S9.1 then. Test: a bot and a human revive complete under continuous fire; a tase
+still cancels.
+**D-134 addendum (LEAD source check, 2026-10-17):** steam-test1/Payday-2-LuaJIT-Complete `lib/units/beings/player/playerdamage.lua`
+`damage_bullet` (l.1290-1466) never interrupts an interaction; `interupt_interact` is called only when the active unit can
+no longer be interacted with (swansong path, l.2191) and by `PlayerStandard:exit` (l.309: a state change such as downed,
+tased, arrested). So in PD2 **damage cancels no held interaction**, not only revives. S9.1 amended: damage never cancels
+any hold interaction (humans and bots); the flash/stun cancel stays as ◇. ENV A removes the damage interrupt for all holds.

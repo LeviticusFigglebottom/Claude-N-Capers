@@ -683,6 +683,18 @@
 			"test": false
 		},
 		{
+			"asset": "char_npc_km_assistant",
+			"id": "npc_km_assistant",
+			"scene": "res://world/characters/npc_km_assistant/npc_km_assistant.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_npc_km_associate",
+			"id": "npc_km_associate",
+			"scene": "res://world/characters/npc_km_associate/npc_km_associate.tscn",
+			"test": false
+		},
+		{
 			"asset": "char_npc_northgate_guard",
 			"id": "npc_northgate_guard",
 			"scene": "res://world/characters/npc_northgate_guard/npc_northgate_guard.tscn",
