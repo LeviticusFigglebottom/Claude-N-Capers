@@ -24733,7 +24733,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.425, 0)
 shape = SubResource("db_1073")
 
 [node name="Seat" type="Marker3D" parent="Props/Ground/DispatchChair" unique_id=103246]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -0.12)
 
 [node name="Visual" parent="Props/Ground/DispatchChair" unique_id=103247 instance=ExtResource("111_db")]
 metadata/kind = &"chair"
@@ -24745,7 +24745,7 @@ visibility_range_fade_mode = 1
 mesh = SubResource("db_1075")
 
 [node name="Seat" parent="Props/Ground/DispatchChair/Visual/Model" index="1" unique_id=103249]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -0.12)
 
 [node name="Collision" parent="Props/Ground/DispatchChair/Visual/Model" index="2" unique_id=103250]
 collision_layer = 0
@@ -24768,7 +24768,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.425, 0)
 shape = SubResource("db_1073")
 
 [node name="Seat" type="Marker3D" parent="Props/Ground/ReceptionChair" unique_id=103254]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -0.12)
 
 [node name="Visual" parent="Props/Ground/ReceptionChair" unique_id=103255 instance=ExtResource("111_db")]
 metadata/kind = &"chair"
@@ -24780,7 +24780,7 @@ visibility_range_fade_mode = 1
 mesh = SubResource("db_1075")
 
 [node name="Seat" parent="Props/Ground/ReceptionChair/Visual/Model" index="1" unique_id=103257]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -0.12)
 
 [node name="Collision" parent="Props/Ground/ReceptionChair/Visual/Model" index="2" unique_id=103258]
 collision_layer = 0
@@ -25146,7 +25146,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.425, 0)
 shape = SubResource("db_1073")
 
 [node name="Seat" type="Marker3D" parent="Props/Mezzanine/CountChair" unique_id=103336]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -0.12)
 
 [node name="Visual" parent="Props/Mezzanine/CountChair" unique_id=103337 instance=ExtResource("111_db")]
 metadata/kind = &"chair"
@@ -25158,7 +25158,7 @@ visibility_range_fade_mode = 1
 mesh = SubResource("db_1075")
 
 [node name="Seat" parent="Props/Mezzanine/CountChair/Visual/Model" index="1" unique_id=103339]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -0.12)
 
 [node name="Collision" parent="Props/Mezzanine/CountChair/Visual/Model" index="2" unique_id=103340]
 collision_layer = 0
@@ -25169,13 +25169,13 @@ shape = SubResource("db_1076")
 disabled = true
 
 [node name="ForemanChair" type="Node3D" parent="Props/Mezzanine" unique_id=103342]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 19.4, 3.6, 2)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 19.4, 3.6, 2.12)
 metadata/kind = "chair"
 metadata/art_asset = "prop_chair_task"
 metadata/faces = NodePath("../ForemanDesk")
 
 [node name="Seat" type="Marker3D" parent="Props/Mezzanine/ForemanChair" unique_id=103343]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.47, -0.12)
 
 [node name="Visual" type="Node3D" parent="Props/Mezzanine/ForemanChair" unique_id=103344 instance=ExtResource("122_db")]
 metadata/kind = &"chair"
@@ -26106,7 +26106,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.425, 0)
 shape = SubResource("db_1073")
 
 [node name="Seat" type="Marker3D" parent="Props/Exterior/GateChair" unique_id=103532]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -0.12)
 
 [node name="Visual" parent="Props/Exterior/GateChair" unique_id=103533 instance=ExtResource("111_db")]
 metadata/kind = &"chair"
@@ -26118,7 +26118,7 @@ visibility_range_fade_mode = 1
 mesh = SubResource("db_1075")
 
 [node name="Seat" parent="Props/Exterior/GateChair/Visual/Model" index="1" unique_id=103535]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -0.12)
 
 [node name="Collision" parent="Props/Exterior/GateChair/Visual/Model" index="2" unique_id=103536]
 collision_layer = 0
@@ -32410,7 +32410,7 @@ slot_group = &"guard_post"
 slot_id = &"post_platform"
 
 [node name="GunmanPlatformA" type="Marker3D" parent="Variants/Group_guard_post/Slot_post_platform" unique_id=104551]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 19.4, 3.6, 2)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 19.4, 3.6, 1.9999999)
 script = ExtResource("221_db")
 tags = Array[StringName]([&"cartel", &"cartel_platform"])
 patrol_graph = NodePath("../../../../Patrols/Cartel")

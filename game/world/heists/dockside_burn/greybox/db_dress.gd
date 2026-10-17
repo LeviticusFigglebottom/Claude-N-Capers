@@ -12,6 +12,7 @@ const VIEWMODEL_LIT_LAYER: int = 1 << 20  # viewmodel_lit (visual_slots v1.2, D-
 const L: GDScript = preload("res://world/heists/dockside_burn/greybox/dockside_burn_layout.gd")
 const D: GDScript = preload("res://world/heists/dockside_burn/greybox/dockside_burn_dressing.gd")
 const AM: GDScript = preload("res://world/heists/shared/assault_markers.gd")
+const SEATS: GDScript = preload("res://world/heists/shared/npc_seat_spawns.gd")  # D-130 seated spawns
 const CATALOG_PATH: String = "res://world/props/prop_catalog.json"
 const KITS_DIR: String = "res://world/kits/"
 ## PO6-17 breach openings: the dressing keeps this clear on both faces.
@@ -100,6 +101,8 @@ func dress(props_root: Node3D) -> void:
 		var cat: Dictionary = _cat[asset]
 		_finish_node(nd, asset, String(cat.get("place", "floor")), String(cat.get("mount", "")), xf)
 	_shadow_fixtures()
+	for line: String in SEATS.snap(_root):  # D-130: seated spawns onto their chairs' Seats (no furniture moves)
+		report.append("seat " + line)
 
 
 func _folder(parent: Node3D, nm: String) -> Node3D:

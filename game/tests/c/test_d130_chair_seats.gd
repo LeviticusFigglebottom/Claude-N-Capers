@@ -1,8 +1,9 @@
-## D-130 (ENV D check_seated_clip): on Glasshouse, Night Deposit, Gallery Night and Shadow Ledger every seated NPC
+## D-130 (ENV D check_seated_clip): on Glasshouse, Night Deposit, Gallery Night, Shadow Ledger and Dockside Burn every seated NPC
 ## spawn on an office / task chair (prop_chair_office / prop_chair_task art) stands on that chair's `Seat`, which is
 ## 0.12 m in front of the chair's pivot (the catalog wrapper's moved Seat, tools/blender/props `seat_fwd`), so the
 ## desk_work torso clears the backrest; it faces the chair's way and stays on the baked navmesh. Owner: ENV C.
-## Generators: world/heists/shared/npc_seat_spawns.gd (after each map's dressing), sl_builder_base.chair.
+## Generators: world/heists/shared/npc_seat_spawns.gd (after each map's dressing), sl_builder_base.chair,
+## db_builder_base.chair.
 extends TestCase
 
 const MAPS: Dictionary = {
@@ -10,6 +11,7 @@ const MAPS: Dictionary = {
 	"res://world/heists/night_deposit/night_deposit.tscn": ["CameraOperatorSeat", "NightManager"],
 	"res://world/heists/gallery_night/gallery_night.tscn": ["Curator", "AdminPA"],
 	"res://world/heists/shadow_ledger/shadow_ledger.tscn": ["CameraOperatorSeat", "AssistantLate", "AssociateLate"],
+	"res://world/heists/dockside_burn/dockside_burn.tscn": ["GunmanPlatformA"],
 }
 const CHAIR_ART: Array[String] = ["prop_chair_office", "prop_chair_task"]
 const SEAT_FWD: float = 0.12
