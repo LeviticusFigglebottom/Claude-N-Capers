@@ -54,14 +54,14 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## floating: Nothing floats
 
-- 1790 props checked
+- 1868 props checked
 
 - WARN `Variants/Group_escape/Slot_esc_van_dock/EscapeDock` @ (10.50, 0.00, -3.00): prop has no geometry or collision; skipped
 - WARN `Variants/Group_escape/Slot_esc_van_tannery/EscapeTannery` @ (51.00, 0.00, 6.50): prop has no geometry or collision; skipped
 
 ## clipping: Nothing clips
 
-- 1791 props, 94 doors checked
+- 1869 props, 94 doors checked
 
 - WARN `Gameplay/Devices/Lid` @ (24.00, 0.00, 14.60): door has no Leaf node; swing arc not checked
 
@@ -202,12 +202,12 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## slopes: No walkable slope < 50° outside the play mesh
 
-- 561 x 569 columns (0.25 m), 306982 surface samples, 0 collider(s) with reachable walkable surfaces outside play
+- 561 x 569 columns (0.25 m), 307130 surface samples, 0 collider(s) with reachable walkable surfaces outside play
 
 
 ## navmesh: Navmesh
 
-- navmesh: 3653 polygons, cell 0.10/0.10 m
+- navmesh: 3739 polygons, cell 0.10/0.10 m
 - 432 markers checked
 | room | walkable samples | covered | coverage |
 |---|---|---|---|
@@ -224,7 +224,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `Rooms/RoomRC` | 206 | 206 | 100% |
 | `Rooms/RoomVC` | 227 | 227 | 100% |
 | `Rooms/RoomVT` | 579 | 579 | 100% |
-| `Rooms/RoomSD` | 556 | 556 | 100% |
+| `Rooms/RoomSD` | 510 | 510 | 100% |
 | `Rooms/RoomLD` | 276 | 274 | 99% |
 | `Rooms/RoomE1` | 17 | 17 | 100% |
 | `Rooms/RoomSR` | 124 | 124 | 100% |
@@ -236,7 +236,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `Rooms/RoomBC` | 225 | 225 | 100% |
 | `Rooms/RoomLO` | 214 | 214 | 100% |
 | `Rooms/RoomTW` | 720 | 708 | 98% |
-| `Rooms/RoomPC` | 255 | 255 | 100% |
+| `Rooms/RoomPC` | 212 | 212 | 100% |
 | `Rooms/RoomCN1` | 102 | 102 | 100% |
 | `Rooms/RoomCN2` | 93 | 93 | 100% |
 | `Rooms/RoomAV` | 173 | 173 | 100% |
@@ -263,7 +263,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `Rooms/RoomCO` | 127 | 127 | 100% |
 | `Rooms/RoomGA` | 283 | 283 | 100% |
 | `Rooms/RoomEL` | 159 | 159 | 100% |
-| `Rooms/RoomVO` | 164 | 164 | 100% |
+| `Rooms/RoomVO` | 140 | 140 | 100% |
 | `Rooms/RoomTR` | 149 | 149 | 100% |
 | `Rooms/RoomTT` | 122 | 122 | 100% |
 | `Rooms/RoomBD` | 97 | 97 | 100% |
@@ -362,7 +362,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## viewmodel_lit: Interior key lights light the viewmodel (D-095)
 
-- 609 interior key light(s) in 62 room(s); 0 lack `viewmodel_lit`
+- 635 interior key light(s) in 66 room(s); 0 lack `viewmodel_lit`
 
 
 ## door_frame_gap: Doors and windows fill their wall openings (no gaps, no clipping)
@@ -383,8 +383,8 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## furniture_logic: Furniture arranged plausibly
 
-- classified: counter 23, chair 11, desk 29, table 10, low_table 1, wall_unit 93, visitor_chair 7, desk_chair 46, stool 1, monitor 13
-- 65 seats, 63 tables/desks/counters, 94 doors checked
+- classified: counter 23, chair 13, desk 29, table 12, low_table 1, wall_unit 100, lounge_seat 2, visitor_chair 10, desk_chair 47, stool 1, monitor 14
+- 73 seats, 65 tables/desks/counters, 94 doors checked
 
 - WARN `Gameplay/Devices/LidDrill` @ (24.00, 1.00, 14.60): door_clear: in the clear zone of door `Gameplay/Devices/Lid` (1.0 / 1.0 m each side, leaf width 2.40 m) by 1.01 m (gameplay prefab / variant content: review)
 - WARN `Gameplay/Lifts/CashLift` @ (11.50, -3.95, 1.55): door_clear: in the clear zone of door `Gameplay/Doors/CashLiftDoorB` (1.0 / 1.0 m each side, leaf width 1.82 m) by 0.21 m (gameplay prefab / variant content: review)

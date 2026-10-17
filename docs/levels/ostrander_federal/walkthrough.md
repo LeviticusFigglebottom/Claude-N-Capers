@@ -117,7 +117,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerPlaza1` | `Gameplay/Devices/LidDrill/UsePoint` | use_point | 29.7 | 30.1 | 1.01 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Devices/AlarmSR/UsePoint` | use_point | 43.3 | 51.3 | 1.19 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Devices/AlarmBM/UsePoint` | use_point | 33.2 | 37.2 | 1.12 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Devices/AlarmSD/UsePoint` | use_point | 35.6 | 72.5 | 2.03 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Devices/AlarmSD/UsePoint` | use_point | 35.6 | 72.1 | 2.02 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Devices/AlarmTeller1/UsePoint` | use_point | 29.6 | 38.3 | 1.29 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Devices/AlarmTeller2/UsePoint` | use_point | 29.1 | 36.3 | 1.25 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Devices/AlarmTeller3/UsePoint` | use_point | 28.7 | 34.3 | 1.19 | ok |
@@ -127,9 +127,9 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerPlaza1` | `Gameplay/Devices/PhoneBM/UsePoint` | use_point | 31.1 | 38.4 | 1.23 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Devices/PhoneLO/UsePoint` | use_point | 39.5 | 43.7 | 1.11 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Devices/PhoneNA/UsePoint` | use_point | 26.9 | 35.7 | 1.33 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Devices/PhonePC/UsePoint` | use_point | 36.0 | 42.0 | 1.17 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Devices/PhonePC/UsePoint` | use_point | 36.0 | 42.2 | 1.17 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Devices/PhoneSR/UsePoint` | use_point | 41.3 | 49.7 | 1.20 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Devices/PhoneSD/UsePoint` | use_point | 36.6 | 71.9 | 1.97 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Devices/PhoneSD/UsePoint` | use_point | 36.6 | 72.4 | 1.98 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Devices/PhoneBR/UsePoint` | use_point | 44.6 | 69.7 | 1.56 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Devices/PhoneVO/UsePoint` | use_point | 38.2 | 77.5 | 2.03 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Devices/PhoneEA/UsePoint` | use_point | 43.5 | 75.2 | 1.73 | ok |
@@ -203,12 +203,12 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxS08/UsePoint` | use_point | 21.9 | 82.7 | 3.77 | detour (whitelisted) |
 | `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxS09` | objective | 22.8 | 84.0 | 3.69 | detour (whitelisted) |
 | `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxS09/UsePoint` | use_point | 22.8 | 84.0 | 3.69 | detour (whitelisted) |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/HallBox01` | objective | 34.1 | 74.6 | 2.18 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/HallBox01/UsePoint` | use_point | 34.1 | 74.6 | 2.18 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/HallBox02` | objective | 34.7 | 75.6 | 2.18 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/HallBox02/UsePoint` | use_point | 34.7 | 75.6 | 2.18 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/HallBox03` | objective | 35.2 | 76.8 | 2.18 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/HallBox03/UsePoint` | use_point | 35.2 | 76.8 | 2.18 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/HallBox01` | objective | 34.1 | 73.6 | 2.15 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/HallBox01/UsePoint` | use_point | 34.1 | 73.6 | 2.15 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/HallBox02` | objective | 34.7 | 74.6 | 2.15 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/HallBox02/UsePoint` | use_point | 34.7 | 74.6 | 2.15 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/HallBox03` | objective | 35.2 | 76.1 | 2.16 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/HallBox03/UsePoint` | use_point | 35.2 | 76.1 | 2.16 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Loot/HallBox04` | objective | 35.8 | 74.9 | 2.09 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Loot/HallBox04/UsePoint` | use_point | 35.8 | 74.9 | 2.09 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Loot/HallBox05` | objective | 36.4 | 73.7 | 2.02 | ok |
@@ -219,12 +219,12 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerPlaza1` | `Gameplay/Loot/HallBox07/UsePoint` | use_point | 37.7 | 71.3 | 1.89 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Loot/HallBox08` | objective | 38.4 | 70.2 | 1.83 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Loot/HallBox08/UsePoint` | use_point | 38.4 | 70.2 | 1.83 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/HallBox09` | objective | 29.7 | 79.6 | 2.68 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/HallBox09/UsePoint` | use_point | 29.7 | 79.6 | 2.68 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/HallBox10` | objective | 30.3 | 80.6 | 2.66 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/HallBox10/UsePoint` | use_point | 30.3 | 80.6 | 2.66 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/HallBox11` | objective | 30.9 | 81.8 | 2.65 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/HallBox11/UsePoint` | use_point | 30.9 | 81.8 | 2.65 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/HallBox09` | objective | 29.7 | 78.6 | 2.65 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/HallBox09/UsePoint` | use_point | 29.7 | 78.6 | 2.65 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/HallBox10` | objective | 30.3 | 79.6 | 2.63 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/HallBox10/UsePoint` | use_point | 30.3 | 79.6 | 2.63 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/HallBox11` | objective | 30.9 | 81.0 | 2.62 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/HallBox11/UsePoint` | use_point | 30.9 | 81.0 | 2.62 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Loot/HallBox12` | objective | 31.6 | 79.8 | 2.53 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Loot/HallBox12/UsePoint` | use_point | 31.6 | 79.8 | 2.53 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Loot/HallBox13` | objective | 32.3 | 78.6 | 2.44 | ok |
@@ -235,12 +235,12 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerPlaza1` | `Gameplay/Loot/HallBox15/UsePoint` | use_point | 33.7 | 76.3 | 2.26 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Loot/HallBox16` | objective | 34.5 | 75.2 | 2.18 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Loot/HallBox16/UsePoint` | use_point | 34.5 | 75.2 | 2.18 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/HallBox17` | objective | 25.5 | 84.6 | 3.32 | detour (whitelisted) |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/HallBox17/UsePoint` | use_point | 25.5 | 84.6 | 3.32 | detour (whitelisted) |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/HallBox18` | objective | 26.2 | 85.6 | 3.27 | detour (whitelisted) |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/HallBox18/UsePoint` | use_point | 26.2 | 85.6 | 3.27 | detour (whitelisted) |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/HallBox19` | objective | 26.9 | 86.8 | 3.23 | detour (whitelisted) |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/HallBox19/UsePoint` | use_point | 26.9 | 86.8 | 3.23 | detour (whitelisted) |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/HallBox17` | objective | 25.5 | 83.6 | 3.28 | detour (whitelisted) |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/HallBox17/UsePoint` | use_point | 25.5 | 83.6 | 3.28 | detour (whitelisted) |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/HallBox18` | objective | 26.2 | 84.6 | 3.24 | detour (whitelisted) |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/HallBox18/UsePoint` | use_point | 26.2 | 84.6 | 3.24 | detour (whitelisted) |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/HallBox19` | objective | 26.9 | 86.1 | 3.20 | detour (whitelisted) |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/HallBox19/UsePoint` | use_point | 26.9 | 86.1 | 3.20 | detour (whitelisted) |
 | `Spawns/PlayerPlaza1` | `Gameplay/Loot/HallBox20` | objective | 27.6 | 84.9 | 3.07 | detour (whitelisted) |
 | `Spawns/PlayerPlaza1` | `Gameplay/Loot/HallBox20/UsePoint` | use_point | 27.6 | 84.9 | 3.07 | detour (whitelisted) |
 | `Spawns/PlayerPlaza1` | `Gameplay/Loot/HallBox21` | objective | 28.4 | 83.7 | 2.94 | ok |
@@ -388,7 +388,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerPlaza2` | `Gameplay/Devices/LidDrill/UsePoint` | use_point | 29.5 | 30.0 | 1.02 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Devices/AlarmSR/UsePoint` | use_point | 43.4 | 51.2 | 1.18 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Devices/AlarmBM/UsePoint` | use_point | 32.1 | 36.4 | 1.13 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Devices/AlarmSD/UsePoint` | use_point | 35.1 | 71.6 | 2.04 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Devices/AlarmSD/UsePoint` | use_point | 35.1 | 71.3 | 2.03 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Devices/AlarmTeller1/UsePoint` | use_point | 30.1 | 38.2 | 1.27 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Devices/AlarmTeller2/UsePoint` | use_point | 29.5 | 36.2 | 1.23 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Devices/AlarmTeller3/UsePoint` | use_point | 29.0 | 34.2 | 1.18 | ok |
@@ -398,9 +398,9 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerPlaza2` | `Gameplay/Devices/PhoneBM/UsePoint` | use_point | 29.9 | 37.5 | 1.26 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Devices/PhoneLO/UsePoint` | use_point | 40.3 | 43.6 | 1.08 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Devices/PhoneNA/UsePoint` | use_point | 25.5 | 34.9 | 1.37 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Devices/PhonePC/UsePoint` | use_point | 35.0 | 41.2 | 1.18 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Devices/PhonePC/UsePoint` | use_point | 35.0 | 41.3 | 1.18 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Devices/PhoneSR/UsePoint` | use_point | 41.5 | 49.6 | 1.19 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Devices/PhoneSD/UsePoint` | use_point | 36.1 | 71.1 | 1.97 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Devices/PhoneSD/UsePoint` | use_point | 36.1 | 71.5 | 1.98 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Devices/PhoneBR/UsePoint` | use_point | 45.3 | 69.7 | 1.54 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Devices/PhoneVO/UsePoint` | use_point | 37.2 | 76.6 | 2.06 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Devices/PhoneEA/UsePoint` | use_point | 43.5 | 75.2 | 1.73 | ok |
@@ -474,12 +474,12 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxS08/UsePoint` | use_point | 21.4 | 82.6 | 3.86 | detour (whitelisted) |
 | `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxS09` | objective | 22.1 | 83.9 | 3.79 | detour (whitelisted) |
 | `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxS09/UsePoint` | use_point | 22.1 | 83.9 | 3.79 | detour (whitelisted) |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/HallBox01` | objective | 33.5 | 73.7 | 2.20 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/HallBox01/UsePoint` | use_point | 33.5 | 73.7 | 2.20 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/HallBox02` | objective | 34.0 | 74.8 | 2.20 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/HallBox02/UsePoint` | use_point | 34.0 | 74.8 | 2.20 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/HallBox03` | objective | 34.5 | 76.0 | 2.20 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/HallBox03/UsePoint` | use_point | 34.5 | 76.0 | 2.20 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/HallBox01` | objective | 33.5 | 72.7 | 2.17 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/HallBox01/UsePoint` | use_point | 33.5 | 72.7 | 2.17 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/HallBox02` | objective | 34.0 | 73.8 | 2.17 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/HallBox02/UsePoint` | use_point | 34.0 | 73.8 | 2.17 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/HallBox03` | objective | 34.5 | 75.2 | 2.18 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/HallBox03/UsePoint` | use_point | 34.5 | 75.2 | 2.18 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Loot/HallBox04` | objective | 35.1 | 74.0 | 2.11 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Loot/HallBox04/UsePoint` | use_point | 35.1 | 74.0 | 2.11 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Loot/HallBox05` | objective | 35.6 | 72.8 | 2.04 | ok |
@@ -490,12 +490,12 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerPlaza2` | `Gameplay/Loot/HallBox07/UsePoint` | use_point | 36.9 | 70.5 | 1.91 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Loot/HallBox08` | objective | 37.5 | 69.4 | 1.85 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Loot/HallBox08/UsePoint` | use_point | 37.5 | 69.4 | 1.85 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/HallBox09` | objective | 29.0 | 78.7 | 2.71 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/HallBox09/UsePoint` | use_point | 29.0 | 78.7 | 2.71 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/HallBox10` | objective | 29.6 | 79.8 | 2.70 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/HallBox10/UsePoint` | use_point | 29.6 | 79.8 | 2.70 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/HallBox11` | objective | 30.1 | 81.0 | 2.69 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/HallBox11/UsePoint` | use_point | 30.1 | 81.0 | 2.69 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/HallBox09` | objective | 29.0 | 77.7 | 2.68 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/HallBox09/UsePoint` | use_point | 29.0 | 77.7 | 2.68 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/HallBox10` | objective | 29.6 | 78.8 | 2.67 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/HallBox10/UsePoint` | use_point | 29.6 | 78.8 | 2.67 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/HallBox11` | objective | 30.1 | 80.2 | 2.66 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/HallBox11/UsePoint` | use_point | 30.1 | 80.2 | 2.66 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Loot/HallBox12` | objective | 30.8 | 79.0 | 2.57 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Loot/HallBox12/UsePoint` | use_point | 30.8 | 79.0 | 2.57 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Loot/HallBox13` | objective | 31.4 | 77.8 | 2.48 | ok |
@@ -506,12 +506,12 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerPlaza2` | `Gameplay/Loot/HallBox15/UsePoint` | use_point | 32.8 | 75.4 | 2.30 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Loot/HallBox16` | objective | 33.6 | 74.3 | 2.22 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Loot/HallBox16/UsePoint` | use_point | 33.6 | 74.3 | 2.22 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/HallBox17` | objective | 24.7 | 83.7 | 3.40 | detour (whitelisted) |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/HallBox17/UsePoint` | use_point | 24.7 | 83.7 | 3.40 | detour (whitelisted) |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/HallBox18` | objective | 25.3 | 84.8 | 3.35 | detour (whitelisted) |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/HallBox18/UsePoint` | use_point | 25.3 | 84.8 | 3.35 | detour (whitelisted) |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/HallBox19` | objective | 26.0 | 86.0 | 3.31 | detour (whitelisted) |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/HallBox19/UsePoint` | use_point | 26.0 | 86.0 | 3.31 | detour (whitelisted) |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/HallBox17` | objective | 24.7 | 82.7 | 3.36 | detour (whitelisted) |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/HallBox17/UsePoint` | use_point | 24.7 | 82.7 | 3.36 | detour (whitelisted) |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/HallBox18` | objective | 25.3 | 83.8 | 3.31 | detour (whitelisted) |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/HallBox18/UsePoint` | use_point | 25.3 | 83.8 | 3.31 | detour (whitelisted) |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/HallBox19` | objective | 26.0 | 85.2 | 3.28 | detour (whitelisted) |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/HallBox19/UsePoint` | use_point | 26.0 | 85.2 | 3.28 | detour (whitelisted) |
 | `Spawns/PlayerPlaza2` | `Gameplay/Loot/HallBox20` | objective | 26.7 | 84.0 | 3.15 | detour (whitelisted) |
 | `Spawns/PlayerPlaza2` | `Gameplay/Loot/HallBox20/UsePoint` | use_point | 26.7 | 84.0 | 3.15 | detour (whitelisted) |
 | `Spawns/PlayerPlaza2` | `Gameplay/Loot/HallBox21` | objective | 27.4 | 82.8 | 3.02 | detour (whitelisted) |
@@ -659,7 +659,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerPlaza3` | `Gameplay/Devices/LidDrill/UsePoint` | use_point | 29.4 | 30.0 | 1.02 | ok |
 | `Spawns/PlayerPlaza3` | `Gameplay/Devices/AlarmSR/UsePoint` | use_point | 43.6 | 51.3 | 1.18 | ok |
 | `Spawns/PlayerPlaza3` | `Gameplay/Devices/AlarmBM/UsePoint` | use_point | 31.0 | 36.2 | 1.17 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Devices/AlarmSD/UsePoint` | use_point | 34.6 | 71.4 | 2.06 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Devices/AlarmSD/UsePoint` | use_point | 34.6 | 71.1 | 2.05 | ok |
 | `Spawns/PlayerPlaza3` | `Gameplay/Devices/AlarmTeller1/UsePoint` | use_point | 30.6 | 38.3 | 1.25 | ok |
 | `Spawns/PlayerPlaza3` | `Gameplay/Devices/AlarmTeller2/UsePoint` | use_point | 29.9 | 36.3 | 1.21 | ok |
 | `Spawns/PlayerPlaza3` | `Gameplay/Devices/AlarmTeller3/UsePoint` | use_point | 29.3 | 34.3 | 1.17 | ok |
@@ -669,9 +669,9 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerPlaza3` | `Gameplay/Devices/PhoneBM/UsePoint` | use_point | 28.7 | 37.3 | 1.30 | ok |
 | `Spawns/PlayerPlaza3` | `Gameplay/Devices/PhoneLO/UsePoint` | use_point | 41.1 | 44.6 | 1.08 | ok |
 | `Spawns/PlayerPlaza3` | `Gameplay/Devices/PhoneNA/UsePoint` | use_point | 24.1 | 34.7 | 1.44 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Devices/PhonePC/UsePoint` | use_point | 34.0 | 41.0 | 1.21 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Devices/PhonePC/UsePoint` | use_point | 34.0 | 41.1 | 1.21 | ok |
 | `Spawns/PlayerPlaza3` | `Gameplay/Devices/PhoneSR/UsePoint` | use_point | 41.8 | 49.6 | 1.19 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Devices/PhoneSD/UsePoint` | use_point | 35.6 | 70.9 | 1.99 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Devices/PhoneSD/UsePoint` | use_point | 35.6 | 71.3 | 2.00 | ok |
 | `Spawns/PlayerPlaza3` | `Gameplay/Devices/PhoneBR/UsePoint` | use_point | 46.1 | 69.7 | 1.51 | ok |
 | `Spawns/PlayerPlaza3` | `Gameplay/Devices/PhoneVO/UsePoint` | use_point | 36.3 | 76.4 | 2.11 | ok |
 | `Spawns/PlayerPlaza3` | `Gameplay/Devices/PhoneEA/UsePoint` | use_point | 43.6 | 75.2 | 1.73 | ok |
@@ -745,12 +745,12 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxS08/UsePoint` | use_point | 21.0 | 82.7 | 3.94 | detour (whitelisted) |
 | `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxS09` | objective | 21.6 | 84.0 | 3.89 | detour (whitelisted) |
 | `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxS09/UsePoint` | use_point | 21.6 | 84.0 | 3.89 | detour (whitelisted) |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/HallBox01` | objective | 33.0 | 73.5 | 2.23 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/HallBox01/UsePoint` | use_point | 33.0 | 73.5 | 2.23 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/HallBox02` | objective | 33.4 | 74.6 | 2.23 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/HallBox02/UsePoint` | use_point | 33.4 | 74.6 | 2.23 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/HallBox03` | objective | 33.9 | 75.8 | 2.24 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/HallBox03/UsePoint` | use_point | 33.9 | 75.8 | 2.24 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/HallBox01` | objective | 33.0 | 72.5 | 2.20 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/HallBox01/UsePoint` | use_point | 33.0 | 72.5 | 2.20 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/HallBox02` | objective | 33.4 | 73.6 | 2.20 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/HallBox02/UsePoint` | use_point | 33.4 | 73.6 | 2.20 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/HallBox03` | objective | 33.9 | 75.0 | 2.21 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/HallBox03/UsePoint` | use_point | 33.9 | 75.0 | 2.21 | ok |
 | `Spawns/PlayerPlaza3` | `Gameplay/Loot/HallBox04` | objective | 34.4 | 73.8 | 2.15 | ok |
 | `Spawns/PlayerPlaza3` | `Gameplay/Loot/HallBox04/UsePoint` | use_point | 34.4 | 73.8 | 2.15 | ok |
 | `Spawns/PlayerPlaza3` | `Gameplay/Loot/HallBox05` | objective | 34.9 | 72.6 | 2.08 | ok |
@@ -761,12 +761,12 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerPlaza3` | `Gameplay/Loot/HallBox07/UsePoint` | use_point | 36.1 | 70.3 | 1.95 | ok |
 | `Spawns/PlayerPlaza3` | `Gameplay/Loot/HallBox08` | objective | 36.7 | 69.2 | 1.88 | ok |
 | `Spawns/PlayerPlaza3` | `Gameplay/Loot/HallBox08/UsePoint` | use_point | 36.7 | 69.2 | 1.88 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/HallBox09` | objective | 28.4 | 78.5 | 2.77 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/HallBox09/UsePoint` | use_point | 28.4 | 78.5 | 2.77 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/HallBox10` | objective | 28.9 | 79.6 | 2.76 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/HallBox10/UsePoint` | use_point | 28.9 | 79.6 | 2.76 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/HallBox11` | objective | 29.4 | 80.8 | 2.75 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/HallBox11/UsePoint` | use_point | 29.4 | 80.8 | 2.75 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/HallBox09` | objective | 28.4 | 77.5 | 2.73 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/HallBox09/UsePoint` | use_point | 28.4 | 77.5 | 2.73 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/HallBox10` | objective | 28.9 | 78.6 | 2.72 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/HallBox10/UsePoint` | use_point | 28.9 | 78.6 | 2.72 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/HallBox11` | objective | 29.4 | 80.0 | 2.72 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/HallBox11/UsePoint` | use_point | 29.4 | 80.0 | 2.72 | ok |
 | `Spawns/PlayerPlaza3` | `Gameplay/Loot/HallBox12` | objective | 30.0 | 78.8 | 2.63 | ok |
 | `Spawns/PlayerPlaza3` | `Gameplay/Loot/HallBox12/UsePoint` | use_point | 30.0 | 78.8 | 2.63 | ok |
 | `Spawns/PlayerPlaza3` | `Gameplay/Loot/HallBox13` | objective | 30.6 | 77.6 | 2.53 | ok |
@@ -777,12 +777,12 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerPlaza3` | `Gameplay/Loot/HallBox15/UsePoint` | use_point | 31.9 | 75.2 | 2.36 | ok |
 | `Spawns/PlayerPlaza3` | `Gameplay/Loot/HallBox16` | objective | 32.6 | 74.1 | 2.27 | ok |
 | `Spawns/PlayerPlaza3` | `Gameplay/Loot/HallBox16/UsePoint` | use_point | 32.6 | 74.1 | 2.27 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/HallBox17` | objective | 23.9 | 83.5 | 3.49 | detour (whitelisted) |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/HallBox17/UsePoint` | use_point | 23.9 | 83.5 | 3.49 | detour (whitelisted) |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/HallBox18` | objective | 24.5 | 84.6 | 3.45 | detour (whitelisted) |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/HallBox18/UsePoint` | use_point | 24.5 | 84.6 | 3.45 | detour (whitelisted) |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/HallBox19` | objective | 25.1 | 85.8 | 3.41 | detour (whitelisted) |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/HallBox19/UsePoint` | use_point | 25.1 | 85.8 | 3.41 | detour (whitelisted) |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/HallBox17` | objective | 23.9 | 82.5 | 3.45 | detour (whitelisted) |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/HallBox17/UsePoint` | use_point | 23.9 | 82.5 | 3.45 | detour (whitelisted) |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/HallBox18` | objective | 24.5 | 83.6 | 3.41 | detour (whitelisted) |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/HallBox18/UsePoint` | use_point | 24.5 | 83.6 | 3.41 | detour (whitelisted) |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/HallBox19` | objective | 25.1 | 85.0 | 3.38 | detour (whitelisted) |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/HallBox19/UsePoint` | use_point | 25.1 | 85.0 | 3.38 | detour (whitelisted) |
 | `Spawns/PlayerPlaza3` | `Gameplay/Loot/HallBox20` | objective | 25.8 | 83.8 | 3.25 | detour (whitelisted) |
 | `Spawns/PlayerPlaza3` | `Gameplay/Loot/HallBox20/UsePoint` | use_point | 25.8 | 83.8 | 3.25 | detour (whitelisted) |
 | `Spawns/PlayerPlaza3` | `Gameplay/Loot/HallBox21` | objective | 26.5 | 82.6 | 3.12 | detour (whitelisted) |
@@ -930,7 +930,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerPlaza4` | `Gameplay/Devices/LidDrill/UsePoint` | use_point | 29.4 | 30.1 | 1.02 | ok |
 | `Spawns/PlayerPlaza4` | `Gameplay/Devices/AlarmSR/UsePoint` | use_point | 43.9 | 51.3 | 1.17 | ok |
 | `Spawns/PlayerPlaza4` | `Gameplay/Devices/AlarmBM/UsePoint` | use_point | 30.0 | 36.3 | 1.21 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Devices/AlarmSD/UsePoint` | use_point | 34.2 | 71.5 | 2.09 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Devices/AlarmSD/UsePoint` | use_point | 34.2 | 71.1 | 2.08 | ok |
 | `Spawns/PlayerPlaza4` | `Gameplay/Devices/AlarmTeller1/UsePoint` | use_point | 31.2 | 38.3 | 1.23 | ok |
 | `Spawns/PlayerPlaza4` | `Gameplay/Devices/AlarmTeller2/UsePoint` | use_point | 30.4 | 36.3 | 1.20 | ok |
 | `Spawns/PlayerPlaza4` | `Gameplay/Devices/AlarmTeller3/UsePoint` | use_point | 29.7 | 34.3 | 1.15 | ok |
@@ -940,9 +940,9 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerPlaza4` | `Gameplay/Devices/PhoneBM/UsePoint` | use_point | 27.6 | 37.4 | 1.36 | ok |
 | `Spawns/PlayerPlaza4` | `Gameplay/Devices/PhoneLO/UsePoint` | use_point | 42.0 | 44.7 | 1.06 | ok |
 | `Spawns/PlayerPlaza4` | `Gameplay/Devices/PhoneNA/UsePoint` | use_point | 22.7 | 34.8 | 1.53 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Devices/PhonePC/UsePoint` | use_point | 33.0 | 41.1 | 1.24 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Devices/PhonePC/UsePoint` | use_point | 33.0 | 41.2 | 1.25 | ok |
 | `Spawns/PlayerPlaza4` | `Gameplay/Devices/PhoneSR/UsePoint` | use_point | 42.1 | 49.7 | 1.18 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Devices/PhoneSD/UsePoint` | use_point | 35.2 | 70.9 | 2.01 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Devices/PhoneSD/UsePoint` | use_point | 35.2 | 71.4 | 2.03 | ok |
 | `Spawns/PlayerPlaza4` | `Gameplay/Devices/PhoneBR/UsePoint` | use_point | 46.9 | 69.8 | 1.49 | ok |
 | `Spawns/PlayerPlaza4` | `Gameplay/Devices/PhoneVO/UsePoint` | use_point | 35.4 | 76.5 | 2.16 | ok |
 | `Spawns/PlayerPlaza4` | `Gameplay/Devices/PhoneEA/UsePoint` | use_point | 43.7 | 75.3 | 1.72 | ok |
@@ -1016,12 +1016,12 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxS08/UsePoint` | use_point | 20.7 | 82.8 | 4.01 | detour (whitelisted) |
 | `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxS09` | objective | 21.1 | 84.1 | 3.98 | detour (whitelisted) |
 | `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxS09/UsePoint` | use_point | 21.1 | 84.1 | 3.98 | detour (whitelisted) |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/HallBox01` | objective | 32.5 | 73.6 | 2.26 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/HallBox01/UsePoint` | use_point | 32.5 | 73.6 | 2.26 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/HallBox02` | objective | 32.9 | 74.7 | 2.27 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/HallBox02/UsePoint` | use_point | 32.9 | 74.7 | 2.27 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/HallBox03` | objective | 33.3 | 75.9 | 2.28 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/HallBox03/UsePoint` | use_point | 33.3 | 75.9 | 2.28 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/HallBox01` | objective | 32.5 | 72.6 | 2.23 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/HallBox01/UsePoint` | use_point | 32.5 | 72.6 | 2.23 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/HallBox02` | objective | 32.9 | 73.7 | 2.24 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/HallBox02/UsePoint` | use_point | 32.9 | 73.7 | 2.24 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/HallBox03` | objective | 33.3 | 75.1 | 2.25 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/HallBox03/UsePoint` | use_point | 33.3 | 75.1 | 2.25 | ok |
 | `Spawns/PlayerPlaza4` | `Gameplay/Loot/HallBox04` | objective | 33.8 | 73.9 | 2.19 | ok |
 | `Spawns/PlayerPlaza4` | `Gameplay/Loot/HallBox04/UsePoint` | use_point | 33.8 | 73.9 | 2.19 | ok |
 | `Spawns/PlayerPlaza4` | `Gameplay/Loot/HallBox05` | objective | 34.3 | 72.7 | 2.12 | ok |
@@ -1032,12 +1032,12 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerPlaza4` | `Gameplay/Loot/HallBox07/UsePoint` | use_point | 35.3 | 70.3 | 1.99 | ok |
 | `Spawns/PlayerPlaza4` | `Gameplay/Loot/HallBox08` | objective | 35.9 | 69.3 | 1.93 | ok |
 | `Spawns/PlayerPlaza4` | `Gameplay/Loot/HallBox08/UsePoint` | use_point | 35.9 | 69.3 | 1.93 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/HallBox09` | objective | 27.8 | 78.6 | 2.83 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/HallBox09/UsePoint` | use_point | 27.8 | 78.6 | 2.83 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/HallBox10` | objective | 28.3 | 79.7 | 2.82 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/HallBox10/UsePoint` | use_point | 28.3 | 79.7 | 2.82 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/HallBox11` | objective | 28.7 | 80.9 | 2.81 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/HallBox11/UsePoint` | use_point | 28.7 | 80.9 | 2.81 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/HallBox09` | objective | 27.8 | 77.6 | 2.79 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/HallBox09/UsePoint` | use_point | 27.8 | 77.6 | 2.79 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/HallBox10` | objective | 28.3 | 78.7 | 2.78 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/HallBox10/UsePoint` | use_point | 28.3 | 78.7 | 2.78 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/HallBox11` | objective | 28.7 | 80.0 | 2.78 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/HallBox11/UsePoint` | use_point | 28.7 | 80.0 | 2.78 | ok |
 | `Spawns/PlayerPlaza4` | `Gameplay/Loot/HallBox12` | objective | 29.3 | 78.8 | 2.69 | ok |
 | `Spawns/PlayerPlaza4` | `Gameplay/Loot/HallBox12/UsePoint` | use_point | 29.3 | 78.8 | 2.69 | ok |
 | `Spawns/PlayerPlaza4` | `Gameplay/Loot/HallBox13` | objective | 29.8 | 77.7 | 2.60 | ok |
@@ -1048,12 +1048,12 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerPlaza4` | `Gameplay/Loot/HallBox15/UsePoint` | use_point | 31.1 | 75.3 | 2.42 | ok |
 | `Spawns/PlayerPlaza4` | `Gameplay/Loot/HallBox16` | objective | 31.8 | 74.2 | 2.34 | ok |
 | `Spawns/PlayerPlaza4` | `Gameplay/Loot/HallBox16/UsePoint` | use_point | 31.8 | 74.2 | 2.34 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/HallBox17` | objective | 23.2 | 83.6 | 3.60 | detour (whitelisted) |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/HallBox17/UsePoint` | use_point | 23.2 | 83.6 | 3.60 | detour (whitelisted) |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/HallBox18` | objective | 23.8 | 84.7 | 3.56 | detour (whitelisted) |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/HallBox18/UsePoint` | use_point | 23.8 | 84.7 | 3.56 | detour (whitelisted) |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/HallBox19` | objective | 24.3 | 85.9 | 3.53 | detour (whitelisted) |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/HallBox19/UsePoint` | use_point | 24.3 | 85.9 | 3.53 | detour (whitelisted) |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/HallBox17` | objective | 23.2 | 82.6 | 3.55 | detour (whitelisted) |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/HallBox17/UsePoint` | use_point | 23.2 | 82.6 | 3.55 | detour (whitelisted) |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/HallBox18` | objective | 23.8 | 83.7 | 3.52 | detour (whitelisted) |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/HallBox18/UsePoint` | use_point | 23.8 | 83.7 | 3.52 | detour (whitelisted) |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/HallBox19` | objective | 24.3 | 85.1 | 3.49 | detour (whitelisted) |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/HallBox19/UsePoint` | use_point | 24.3 | 85.1 | 3.49 | detour (whitelisted) |
 | `Spawns/PlayerPlaza4` | `Gameplay/Loot/HallBox20` | objective | 25.0 | 83.9 | 3.36 | detour (whitelisted) |
 | `Spawns/PlayerPlaza4` | `Gameplay/Loot/HallBox20/UsePoint` | use_point | 25.0 | 83.9 | 3.36 | detour (whitelisted) |
 | `Spawns/PlayerPlaza4` | `Gameplay/Loot/HallBox21` | objective | 25.6 | 82.7 | 3.23 | detour (whitelisted) |
@@ -1201,7 +1201,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerLane1` | `Gameplay/Devices/LidDrill/UsePoint` | use_point | 21.1 | 40.4 | 1.91 | ok |
 | `Spawns/PlayerLane1` | `Gameplay/Devices/AlarmSR/UsePoint` | use_point | 7.4 | 38.3 | 5.14 | detour (whitelisted) |
 | `Spawns/PlayerLane1` | `Gameplay/Devices/AlarmBM/UsePoint` | use_point | 38.6 | 64.3 | 1.66 | ok |
-| `Spawns/PlayerLane1` | `Gameplay/Devices/AlarmSD/UsePoint` | use_point | 22.3 | 40.1 | 1.80 | ok |
+| `Spawns/PlayerLane1` | `Gameplay/Devices/AlarmSD/UsePoint` | use_point | 22.3 | 39.8 | 1.79 | ok |
 | `Spawns/PlayerLane1` | `Gameplay/Devices/AlarmTeller1/UsePoint` | use_point | 23.0 | 33.7 | 1.47 | ok |
 | `Spawns/PlayerLane1` | `Gameplay/Devices/AlarmTeller2/UsePoint` | use_point | 22.4 | 33.9 | 1.51 | ok |
 | `Spawns/PlayerLane1` | `Gameplay/Devices/AlarmTeller3/UsePoint` | use_point | 22.0 | 34.6 | 1.58 | ok |
@@ -1213,7 +1213,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerLane1` | `Gameplay/Devices/PhoneNA/UsePoint` | use_point | 48.6 | 70.8 | 1.46 | ok |
 | `Spawns/PlayerLane1` | `Gameplay/Devices/PhonePC/UsePoint` | use_point | 35.7 | 51.0 | 1.43 | ok |
 | `Spawns/PlayerLane1` | `Gameplay/Devices/PhoneSR/UsePoint` | use_point | 9.9 | 36.6 | 3.70 | detour (whitelisted) |
-| `Spawns/PlayerLane1` | `Gameplay/Devices/PhoneSD/UsePoint` | use_point | 21.5 | 39.6 | 1.84 | ok |
+| `Spawns/PlayerLane1` | `Gameplay/Devices/PhoneSD/UsePoint` | use_point | 21.5 | 40.1 | 1.86 | ok |
 | `Spawns/PlayerLane1` | `Gameplay/Devices/PhoneBR/UsePoint` | use_point | 23.5 | 55.4 | 2.36 | ok |
 | `Spawns/PlayerLane1` | `Gameplay/Devices/PhoneVO/UsePoint` | use_point | 34.5 | 68.5 | 1.98 | ok |
 | `Spawns/PlayerLane1` | `Gameplay/Devices/PhoneEA/UsePoint` | use_point | 11.5 | 60.9 | 5.31 | detour (whitelisted) |
@@ -1287,12 +1287,12 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerLane1` | `Gameplay/Loot/VaultBoxS08/UsePoint` | use_point | 31.5 | 59.9 | 1.90 | ok |
 | `Spawns/PlayerLane1` | `Gameplay/Loot/VaultBoxS09` | objective | 32.2 | 61.2 | 1.90 | ok |
 | `Spawns/PlayerLane1` | `Gameplay/Loot/VaultBoxS09/UsePoint` | use_point | 32.2 | 61.2 | 1.90 | ok |
-| `Spawns/PlayerLane1` | `Gameplay/Loot/HallBox01` | objective | 24.7 | 42.3 | 1.71 | ok |
-| `Spawns/PlayerLane1` | `Gameplay/Loot/HallBox01/UsePoint` | use_point | 24.7 | 42.3 | 1.71 | ok |
-| `Spawns/PlayerLane1` | `Gameplay/Loot/HallBox02` | objective | 25.4 | 43.3 | 1.71 | ok |
-| `Spawns/PlayerLane1` | `Gameplay/Loot/HallBox02/UsePoint` | use_point | 25.4 | 43.3 | 1.71 | ok |
-| `Spawns/PlayerLane1` | `Gameplay/Loot/HallBox03` | objective | 26.2 | 44.5 | 1.70 | ok |
-| `Spawns/PlayerLane1` | `Gameplay/Loot/HallBox03/UsePoint` | use_point | 26.2 | 44.5 | 1.70 | ok |
+| `Spawns/PlayerLane1` | `Gameplay/Loot/HallBox01` | objective | 24.7 | 41.2 | 1.67 | ok |
+| `Spawns/PlayerLane1` | `Gameplay/Loot/HallBox01/UsePoint` | use_point | 24.7 | 41.2 | 1.67 | ok |
+| `Spawns/PlayerLane1` | `Gameplay/Loot/HallBox02` | objective | 25.4 | 42.3 | 1.67 | ok |
+| `Spawns/PlayerLane1` | `Gameplay/Loot/HallBox02/UsePoint` | use_point | 25.4 | 42.3 | 1.67 | ok |
+| `Spawns/PlayerLane1` | `Gameplay/Loot/HallBox03` | objective | 26.2 | 43.5 | 1.66 | ok |
+| `Spawns/PlayerLane1` | `Gameplay/Loot/HallBox03/UsePoint` | use_point | 26.2 | 43.5 | 1.66 | ok |
 | `Spawns/PlayerLane1` | `Gameplay/Loot/HallBox04` | objective | 27.0 | 43.1 | 1.60 | ok |
 | `Spawns/PlayerLane1` | `Gameplay/Loot/HallBox04/UsePoint` | use_point | 27.0 | 43.1 | 1.60 | ok |
 | `Spawns/PlayerLane1` | `Gameplay/Loot/HallBox05` | objective | 27.8 | 42.0 | 1.51 | ok |
@@ -1303,12 +1303,12 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerLane1` | `Gameplay/Loot/HallBox07/UsePoint` | use_point | 29.6 | 39.6 | 1.34 | ok |
 | `Spawns/PlayerLane1` | `Gameplay/Loot/HallBox08` | objective | 30.5 | 38.5 | 1.26 | ok |
 | `Spawns/PlayerLane1` | `Gameplay/Loot/HallBox08/UsePoint` | use_point | 30.5 | 38.5 | 1.26 | ok |
-| `Spawns/PlayerLane1` | `Gameplay/Loot/HallBox09` | objective | 28.7 | 47.3 | 1.65 | ok |
-| `Spawns/PlayerLane1` | `Gameplay/Loot/HallBox09/UsePoint` | use_point | 28.7 | 47.3 | 1.65 | ok |
-| `Spawns/PlayerLane1` | `Gameplay/Loot/HallBox10` | objective | 29.4 | 48.3 | 1.65 | ok |
-| `Spawns/PlayerLane1` | `Gameplay/Loot/HallBox10/UsePoint` | use_point | 29.4 | 48.3 | 1.65 | ok |
-| `Spawns/PlayerLane1` | `Gameplay/Loot/HallBox11` | objective | 30.0 | 49.5 | 1.65 | ok |
-| `Spawns/PlayerLane1` | `Gameplay/Loot/HallBox11/UsePoint` | use_point | 30.0 | 49.5 | 1.65 | ok |
+| `Spawns/PlayerLane1` | `Gameplay/Loot/HallBox09` | objective | 28.7 | 46.2 | 1.61 | ok |
+| `Spawns/PlayerLane1` | `Gameplay/Loot/HallBox09/UsePoint` | use_point | 28.7 | 46.2 | 1.61 | ok |
+| `Spawns/PlayerLane1` | `Gameplay/Loot/HallBox10` | objective | 29.4 | 47.3 | 1.61 | ok |
+| `Spawns/PlayerLane1` | `Gameplay/Loot/HallBox10/UsePoint` | use_point | 29.4 | 47.3 | 1.61 | ok |
+| `Spawns/PlayerLane1` | `Gameplay/Loot/HallBox11` | objective | 30.0 | 48.5 | 1.61 | ok |
+| `Spawns/PlayerLane1` | `Gameplay/Loot/HallBox11/UsePoint` | use_point | 30.0 | 48.5 | 1.61 | ok |
 | `Spawns/PlayerLane1` | `Gameplay/Loot/HallBox12` | objective | 30.7 | 48.1 | 1.56 | ok |
 | `Spawns/PlayerLane1` | `Gameplay/Loot/HallBox12/UsePoint` | use_point | 30.7 | 48.1 | 1.56 | ok |
 | `Spawns/PlayerLane1` | `Gameplay/Loot/HallBox13` | objective | 31.5 | 46.9 | 1.49 | ok |
@@ -1319,12 +1319,12 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerLane1` | `Gameplay/Loot/HallBox15/UsePoint` | use_point | 33.0 | 44.5 | 1.35 | ok |
 | `Spawns/PlayerLane1` | `Gameplay/Loot/HallBox16` | objective | 33.9 | 43.5 | 1.28 | ok |
 | `Spawns/PlayerLane1` | `Gameplay/Loot/HallBox16/UsePoint` | use_point | 33.9 | 43.5 | 1.28 | ok |
-| `Spawns/PlayerLane1` | `Gameplay/Loot/HallBox17` | objective | 33.0 | 52.3 | 1.58 | ok |
-| `Spawns/PlayerLane1` | `Gameplay/Loot/HallBox17/UsePoint` | use_point | 33.0 | 52.3 | 1.58 | ok |
-| `Spawns/PlayerLane1` | `Gameplay/Loot/HallBox18` | objective | 33.6 | 53.3 | 1.59 | ok |
-| `Spawns/PlayerLane1` | `Gameplay/Loot/HallBox18/UsePoint` | use_point | 33.6 | 53.3 | 1.59 | ok |
-| `Spawns/PlayerLane1` | `Gameplay/Loot/HallBox19` | objective | 34.2 | 54.5 | 1.59 | ok |
-| `Spawns/PlayerLane1` | `Gameplay/Loot/HallBox19/UsePoint` | use_point | 34.2 | 54.5 | 1.59 | ok |
+| `Spawns/PlayerLane1` | `Gameplay/Loot/HallBox17` | objective | 33.0 | 51.2 | 1.55 | ok |
+| `Spawns/PlayerLane1` | `Gameplay/Loot/HallBox17/UsePoint` | use_point | 33.0 | 51.2 | 1.55 | ok |
+| `Spawns/PlayerLane1` | `Gameplay/Loot/HallBox18` | objective | 33.6 | 52.3 | 1.56 | ok |
+| `Spawns/PlayerLane1` | `Gameplay/Loot/HallBox18/UsePoint` | use_point | 33.6 | 52.3 | 1.56 | ok |
+| `Spawns/PlayerLane1` | `Gameplay/Loot/HallBox19` | objective | 34.2 | 54.3 | 1.59 | ok |
+| `Spawns/PlayerLane1` | `Gameplay/Loot/HallBox19/UsePoint` | use_point | 34.2 | 54.3 | 1.59 | ok |
 | `Spawns/PlayerLane1` | `Gameplay/Loot/HallBox20` | objective | 34.8 | 53.1 | 1.53 | ok |
 | `Spawns/PlayerLane1` | `Gameplay/Loot/HallBox20/UsePoint` | use_point | 34.8 | 53.1 | 1.53 | ok |
 | `Spawns/PlayerLane1` | `Gameplay/Loot/HallBox21` | objective | 35.5 | 52.0 | 1.46 | ok |
@@ -1472,7 +1472,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerLane2` | `Gameplay/Devices/LidDrill/UsePoint` | use_point | 20.8 | 42.0 | 2.02 | ok |
 | `Spawns/PlayerLane2` | `Gameplay/Devices/AlarmSR/UsePoint` | use_point | 8.1 | 39.9 | 4.90 | detour (whitelisted) |
 | `Spawns/PlayerLane2` | `Gameplay/Devices/AlarmBM/UsePoint` | use_point | 37.6 | 65.9 | 1.75 | ok |
-| `Spawns/PlayerLane2` | `Gameplay/Devices/AlarmSD/UsePoint` | use_point | 21.4 | 38.8 | 1.82 | ok |
+| `Spawns/PlayerLane2` | `Gameplay/Devices/AlarmSD/UsePoint` | use_point | 21.4 | 38.5 | 1.80 | ok |
 | `Spawns/PlayerLane2` | `Gameplay/Devices/AlarmTeller1/UsePoint` | use_point | 23.5 | 35.3 | 1.50 | ok |
 | `Spawns/PlayerLane2` | `Gameplay/Devices/AlarmTeller2/UsePoint` | use_point | 22.8 | 35.5 | 1.56 | ok |
 | `Spawns/PlayerLane2` | `Gameplay/Devices/AlarmTeller3/UsePoint` | use_point | 22.3 | 36.2 | 1.62 | ok |
@@ -1484,7 +1484,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerLane2` | `Gameplay/Devices/PhoneNA/UsePoint` | use_point | 47.8 | 72.4 | 1.51 | ok |
 | `Spawns/PlayerLane2` | `Gameplay/Devices/PhonePC/UsePoint` | use_point | 34.6 | 49.5 | 1.43 | ok |
 | `Spawns/PlayerLane2` | `Gameplay/Devices/PhoneSR/UsePoint` | use_point | 10.6 | 38.2 | 3.60 | detour (whitelisted) |
-| `Spawns/PlayerLane2` | `Gameplay/Devices/PhoneSD/UsePoint` | use_point | 20.6 | 38.3 | 1.86 | ok |
+| `Spawns/PlayerLane2` | `Gameplay/Devices/PhoneSD/UsePoint` | use_point | 20.6 | 38.7 | 1.88 | ok |
 | `Spawns/PlayerLane2` | `Gameplay/Devices/PhoneBR/UsePoint` | use_point | 24.7 | 57.0 | 2.30 | ok |
 | `Spawns/PlayerLane2` | `Gameplay/Devices/PhoneVO/UsePoint` | use_point | 33.4 | 67.0 | 2.01 | ok |
 | `Spawns/PlayerLane2` | `Gameplay/Devices/PhoneEA/UsePoint` | use_point | 11.4 | 62.5 | 5.48 | detour (whitelisted) |
@@ -1558,12 +1558,12 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerLane2` | `Gameplay/Loot/VaultBoxS08/UsePoint` | use_point | 31.1 | 58.6 | 1.88 | ok |
 | `Spawns/PlayerLane2` | `Gameplay/Loot/VaultBoxS09` | objective | 31.7 | 59.9 | 1.89 | ok |
 | `Spawns/PlayerLane2` | `Gameplay/Loot/VaultBoxS09/UsePoint` | use_point | 31.7 | 59.9 | 1.89 | ok |
-| `Spawns/PlayerLane2` | `Gameplay/Loot/HallBox01` | objective | 23.8 | 40.9 | 1.72 | ok |
-| `Spawns/PlayerLane2` | `Gameplay/Loot/HallBox01/UsePoint` | use_point | 23.8 | 40.9 | 1.72 | ok |
-| `Spawns/PlayerLane2` | `Gameplay/Loot/HallBox02` | objective | 24.5 | 42.0 | 1.72 | ok |
-| `Spawns/PlayerLane2` | `Gameplay/Loot/HallBox02/UsePoint` | use_point | 24.5 | 42.0 | 1.72 | ok |
-| `Spawns/PlayerLane2` | `Gameplay/Loot/HallBox03` | objective | 25.2 | 43.2 | 1.71 | ok |
-| `Spawns/PlayerLane2` | `Gameplay/Loot/HallBox03/UsePoint` | use_point | 25.2 | 43.2 | 1.71 | ok |
+| `Spawns/PlayerLane2` | `Gameplay/Loot/HallBox01` | objective | 23.8 | 39.9 | 1.68 | ok |
+| `Spawns/PlayerLane2` | `Gameplay/Loot/HallBox01/UsePoint` | use_point | 23.8 | 39.9 | 1.68 | ok |
+| `Spawns/PlayerLane2` | `Gameplay/Loot/HallBox02` | objective | 24.5 | 41.0 | 1.68 | ok |
+| `Spawns/PlayerLane2` | `Gameplay/Loot/HallBox02/UsePoint` | use_point | 24.5 | 41.0 | 1.68 | ok |
+| `Spawns/PlayerLane2` | `Gameplay/Loot/HallBox03` | objective | 25.2 | 42.2 | 1.67 | ok |
+| `Spawns/PlayerLane2` | `Gameplay/Loot/HallBox03/UsePoint` | use_point | 25.2 | 42.2 | 1.67 | ok |
 | `Spawns/PlayerLane2` | `Gameplay/Loot/HallBox04` | objective | 26.0 | 41.8 | 1.61 | ok |
 | `Spawns/PlayerLane2` | `Gameplay/Loot/HallBox04/UsePoint` | use_point | 26.0 | 41.8 | 1.61 | ok |
 | `Spawns/PlayerLane2` | `Gameplay/Loot/HallBox05` | objective | 26.8 | 40.6 | 1.52 | ok |
@@ -1574,12 +1574,12 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerLane2` | `Gameplay/Loot/HallBox07/UsePoint` | use_point | 28.5 | 38.3 | 1.34 | ok |
 | `Spawns/PlayerLane2` | `Gameplay/Loot/HallBox08` | objective | 29.4 | 37.2 | 1.27 | ok |
 | `Spawns/PlayerLane2` | `Gameplay/Loot/HallBox08/UsePoint` | use_point | 29.4 | 37.2 | 1.27 | ok |
-| `Spawns/PlayerLane2` | `Gameplay/Loot/HallBox09` | objective | 28.0 | 45.9 | 1.64 | ok |
-| `Spawns/PlayerLane2` | `Gameplay/Loot/HallBox09/UsePoint` | use_point | 28.0 | 45.9 | 1.64 | ok |
-| `Spawns/PlayerLane2` | `Gameplay/Loot/HallBox10` | objective | 28.6 | 47.0 | 1.65 | ok |
-| `Spawns/PlayerLane2` | `Gameplay/Loot/HallBox10/UsePoint` | use_point | 28.6 | 47.0 | 1.65 | ok |
-| `Spawns/PlayerLane2` | `Gameplay/Loot/HallBox11` | objective | 29.2 | 48.2 | 1.65 | ok |
-| `Spawns/PlayerLane2` | `Gameplay/Loot/HallBox11/UsePoint` | use_point | 29.2 | 48.2 | 1.65 | ok |
+| `Spawns/PlayerLane2` | `Gameplay/Loot/HallBox09` | objective | 28.0 | 44.9 | 1.61 | ok |
+| `Spawns/PlayerLane2` | `Gameplay/Loot/HallBox09/UsePoint` | use_point | 28.0 | 44.9 | 1.61 | ok |
+| `Spawns/PlayerLane2` | `Gameplay/Loot/HallBox10` | objective | 28.6 | 46.0 | 1.61 | ok |
+| `Spawns/PlayerLane2` | `Gameplay/Loot/HallBox10/UsePoint` | use_point | 28.6 | 46.0 | 1.61 | ok |
+| `Spawns/PlayerLane2` | `Gameplay/Loot/HallBox11` | objective | 29.2 | 47.2 | 1.62 | ok |
+| `Spawns/PlayerLane2` | `Gameplay/Loot/HallBox11/UsePoint` | use_point | 29.2 | 47.2 | 1.62 | ok |
 | `Spawns/PlayerLane2` | `Gameplay/Loot/HallBox12` | objective | 29.9 | 46.8 | 1.57 | ok |
 | `Spawns/PlayerLane2` | `Gameplay/Loot/HallBox12/UsePoint` | use_point | 29.9 | 46.8 | 1.57 | ok |
 | `Spawns/PlayerLane2` | `Gameplay/Loot/HallBox13` | objective | 30.6 | 45.6 | 1.49 | ok |
@@ -1590,12 +1590,12 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerLane2` | `Gameplay/Loot/HallBox15/UsePoint` | use_point | 32.1 | 43.2 | 1.35 | ok |
 | `Spawns/PlayerLane2` | `Gameplay/Loot/HallBox16` | objective | 32.8 | 42.1 | 1.28 | ok |
 | `Spawns/PlayerLane2` | `Gameplay/Loot/HallBox16/UsePoint` | use_point | 32.8 | 42.1 | 1.28 | ok |
-| `Spawns/PlayerLane2` | `Gameplay/Loot/HallBox17` | objective | 32.4 | 50.9 | 1.57 | ok |
-| `Spawns/PlayerLane2` | `Gameplay/Loot/HallBox17/UsePoint` | use_point | 32.4 | 50.9 | 1.57 | ok |
-| `Spawns/PlayerLane2` | `Gameplay/Loot/HallBox18` | objective | 32.9 | 52.0 | 1.58 | ok |
-| `Spawns/PlayerLane2` | `Gameplay/Loot/HallBox18/UsePoint` | use_point | 32.9 | 52.0 | 1.58 | ok |
-| `Spawns/PlayerLane2` | `Gameplay/Loot/HallBox19` | objective | 33.4 | 53.2 | 1.59 | ok |
-| `Spawns/PlayerLane2` | `Gameplay/Loot/HallBox19/UsePoint` | use_point | 33.4 | 53.2 | 1.59 | ok |
+| `Spawns/PlayerLane2` | `Gameplay/Loot/HallBox17` | objective | 32.4 | 49.9 | 1.54 | ok |
+| `Spawns/PlayerLane2` | `Gameplay/Loot/HallBox17/UsePoint` | use_point | 32.4 | 49.9 | 1.54 | ok |
+| `Spawns/PlayerLane2` | `Gameplay/Loot/HallBox18` | objective | 32.9 | 51.0 | 1.55 | ok |
+| `Spawns/PlayerLane2` | `Gameplay/Loot/HallBox18/UsePoint` | use_point | 32.9 | 51.0 | 1.55 | ok |
+| `Spawns/PlayerLane2` | `Gameplay/Loot/HallBox19` | objective | 33.4 | 53.0 | 1.59 | ok |
+| `Spawns/PlayerLane2` | `Gameplay/Loot/HallBox19/UsePoint` | use_point | 33.4 | 53.0 | 1.59 | ok |
 | `Spawns/PlayerLane2` | `Gameplay/Loot/HallBox20` | objective | 34.0 | 51.8 | 1.52 | ok |
 | `Spawns/PlayerLane2` | `Gameplay/Loot/HallBox20/UsePoint` | use_point | 34.0 | 51.8 | 1.52 | ok |
 | `Spawns/PlayerLane2` | `Gameplay/Loot/HallBox21` | objective | 34.6 | 50.6 | 1.46 | ok |
@@ -1671,7 +1671,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerLane3` | `Gameplay/Doors/ConsultDoor1/UsePoint` | use_point | 31.0 | 46.5 | 1.50 | ok |
 | `Spawns/PlayerLane3` | `Gameplay/Doors/ConsultDoor2/UsePoint` | use_point | 35.5 | 51.5 | 1.45 | ok |
 | `Spawns/PlayerLane3` | `Gameplay/Doors/ATMHallDoor/UsePoint` | use_point | 41.0 | 57.5 | 1.40 | ok |
-| `Spawns/PlayerLane3` | `Gameplay/Doors/ManagerDoor/UsePoint` | use_point | 32.8 | 53.6 | 1.63 | ok |
+| `Spawns/PlayerLane3` | `Gameplay/Doors/ManagerDoor/UsePoint` | use_point | 32.8 | 59.6 | 1.82 | ok |
 | `Spawns/PlayerLane3` | `Gameplay/Doors/RestroomDoor/UsePoint` | use_point | 38.2 | 63.6 | 1.66 | ok |
 | `Spawns/PlayerLane3` | `Gameplay/Doors/NewAccountsDoor/UsePoint` | use_point | 41.9 | 66.0 | 1.58 | ok |
 | `Spawns/PlayerLane3` | `Gameplay/Doors/VestibuleDoorsW/UsePoint` | use_point | 38.7 | 58.8 | 1.52 | ok |
@@ -1742,20 +1742,20 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerLane3` | `Gameplay/Devices/LidDrill` | objective | 20.7 | 43.5 | 2.11 | ok |
 | `Spawns/PlayerLane3` | `Gameplay/Devices/LidDrill/UsePoint` | use_point | 20.7 | 43.5 | 2.11 | ok |
 | `Spawns/PlayerLane3` | `Gameplay/Devices/AlarmSR/UsePoint` | use_point | 9.0 | 41.4 | 4.59 | detour (whitelisted) |
-| `Spawns/PlayerLane3` | `Gameplay/Devices/AlarmBM/UsePoint` | use_point | 36.7 | 61.0 | 1.66 | ok |
-| `Spawns/PlayerLane3` | `Gameplay/Devices/AlarmSD/UsePoint` | use_point | 20.5 | 37.6 | 1.83 | ok |
+| `Spawns/PlayerLane3` | `Gameplay/Devices/AlarmBM/UsePoint` | use_point | 36.7 | 67.4 | 1.84 | ok |
+| `Spawns/PlayerLane3` | `Gameplay/Devices/AlarmSD/UsePoint` | use_point | 20.5 | 37.2 | 1.81 | ok |
 | `Spawns/PlayerLane3` | `Gameplay/Devices/AlarmTeller1/UsePoint` | use_point | 24.1 | 36.8 | 1.53 | ok |
 | `Spawns/PlayerLane3` | `Gameplay/Devices/AlarmTeller2/UsePoint` | use_point | 23.3 | 37.0 | 1.58 | ok |
 | `Spawns/PlayerLane3` | `Gameplay/Devices/AlarmTeller3/UsePoint` | use_point | 22.7 | 37.7 | 1.66 | ok |
 | `Spawns/PlayerLane3` | `Gameplay/Devices/AlarmTeller4/UsePoint` | use_point | 22.8 | 48.9 | 2.14 | ok |
 | `Spawns/PlayerLane3` | `Gameplay/Devices/AlarmTeller5/UsePoint` | use_point | 23.6 | 50.8 | 2.15 | ok |
 | `Spawns/PlayerLane3` | `Gameplay/Devices/AlarmTeller6/UsePoint` | use_point | 24.4 | 52.7 | 2.16 | ok |
-| `Spawns/PlayerLane3` | `Gameplay/Devices/PhoneBM/UsePoint` | use_point | 39.5 | 62.1 | 1.57 | ok |
+| `Spawns/PlayerLane3` | `Gameplay/Devices/PhoneBM/UsePoint` | use_point | 39.5 | 68.5 | 1.74 | ok |
 | `Spawns/PlayerLane3` | `Gameplay/Devices/PhoneLO/UsePoint` | use_point | 28.4 | 44.0 | 1.55 | ok |
 | `Spawns/PlayerLane3` | `Gameplay/Devices/PhoneNA/UsePoint` | use_point | 47.1 | 73.9 | 1.57 | ok |
 | `Spawns/PlayerLane3` | `Gameplay/Devices/PhonePC/UsePoint` | use_point | 33.6 | 48.1 | 1.43 | ok |
 | `Spawns/PlayerLane3` | `Gameplay/Devices/PhoneSR/UsePoint` | use_point | 11.5 | 39.7 | 3.45 | detour (whitelisted) |
-| `Spawns/PlayerLane3` | `Gameplay/Devices/PhoneSD/UsePoint` | use_point | 19.7 | 37.0 | 1.88 | ok |
+| `Spawns/PlayerLane3` | `Gameplay/Devices/PhoneSD/UsePoint` | use_point | 19.7 | 37.5 | 1.90 | ok |
 | `Spawns/PlayerLane3` | `Gameplay/Devices/PhoneBR/UsePoint` | use_point | 26.1 | 58.5 | 2.25 | ok |
 | `Spawns/PlayerLane3` | `Gameplay/Devices/PhoneVO/UsePoint` | use_point | 32.3 | 65.5 | 2.03 | ok |
 | `Spawns/PlayerLane3` | `Gameplay/Devices/PhoneEA/UsePoint` | use_point | 11.6 | 64.0 | 5.54 | detour (whitelisted) |
@@ -1829,12 +1829,12 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerLane3` | `Gameplay/Loot/VaultBoxS08/UsePoint` | use_point | 30.8 | 57.4 | 1.86 | ok |
 | `Spawns/PlayerLane3` | `Gameplay/Loot/VaultBoxS09` | objective | 31.3 | 58.6 | 1.88 | ok |
 | `Spawns/PlayerLane3` | `Gameplay/Loot/VaultBoxS09/UsePoint` | use_point | 31.3 | 58.6 | 1.88 | ok |
-| `Spawns/PlayerLane3` | `Gameplay/Loot/HallBox01` | objective | 23.0 | 39.7 | 1.73 | ok |
-| `Spawns/PlayerLane3` | `Gameplay/Loot/HallBox01/UsePoint` | use_point | 23.0 | 39.7 | 1.73 | ok |
-| `Spawns/PlayerLane3` | `Gameplay/Loot/HallBox02` | objective | 23.6 | 40.8 | 1.73 | ok |
-| `Spawns/PlayerLane3` | `Gameplay/Loot/HallBox02/UsePoint` | use_point | 23.6 | 40.8 | 1.73 | ok |
-| `Spawns/PlayerLane3` | `Gameplay/Loot/HallBox03` | objective | 24.3 | 41.9 | 1.73 | ok |
-| `Spawns/PlayerLane3` | `Gameplay/Loot/HallBox03/UsePoint` | use_point | 24.3 | 41.9 | 1.73 | ok |
+| `Spawns/PlayerLane3` | `Gameplay/Loot/HallBox01` | objective | 23.0 | 38.7 | 1.68 | ok |
+| `Spawns/PlayerLane3` | `Gameplay/Loot/HallBox01/UsePoint` | use_point | 23.0 | 38.7 | 1.68 | ok |
+| `Spawns/PlayerLane3` | `Gameplay/Loot/HallBox02` | objective | 23.6 | 39.7 | 1.68 | ok |
+| `Spawns/PlayerLane3` | `Gameplay/Loot/HallBox02/UsePoint` | use_point | 23.6 | 39.7 | 1.68 | ok |
+| `Spawns/PlayerLane3` | `Gameplay/Loot/HallBox03` | objective | 24.3 | 40.9 | 1.68 | ok |
+| `Spawns/PlayerLane3` | `Gameplay/Loot/HallBox03/UsePoint` | use_point | 24.3 | 40.9 | 1.68 | ok |
 | `Spawns/PlayerLane3` | `Gameplay/Loot/HallBox04` | objective | 25.0 | 40.6 | 1.62 | ok |
 | `Spawns/PlayerLane3` | `Gameplay/Loot/HallBox04/UsePoint` | use_point | 25.0 | 40.6 | 1.62 | ok |
 | `Spawns/PlayerLane3` | `Gameplay/Loot/HallBox05` | objective | 25.8 | 39.4 | 1.53 | ok |
@@ -1845,12 +1845,12 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerLane3` | `Gameplay/Loot/HallBox07/UsePoint` | use_point | 27.4 | 37.0 | 1.35 | ok |
 | `Spawns/PlayerLane3` | `Gameplay/Loot/HallBox08` | objective | 28.3 | 35.9 | 1.27 | ok |
 | `Spawns/PlayerLane3` | `Gameplay/Loot/HallBox08/UsePoint` | use_point | 28.3 | 35.9 | 1.27 | ok |
-| `Spawns/PlayerLane3` | `Gameplay/Loot/HallBox09` | objective | 27.3 | 44.7 | 1.64 | ok |
-| `Spawns/PlayerLane3` | `Gameplay/Loot/HallBox09/UsePoint` | use_point | 27.3 | 44.7 | 1.64 | ok |
-| `Spawns/PlayerLane3` | `Gameplay/Loot/HallBox10` | objective | 27.8 | 45.8 | 1.65 | ok |
-| `Spawns/PlayerLane3` | `Gameplay/Loot/HallBox10/UsePoint` | use_point | 27.8 | 45.8 | 1.65 | ok |
-| `Spawns/PlayerLane3` | `Gameplay/Loot/HallBox11` | objective | 28.4 | 46.9 | 1.65 | ok |
-| `Spawns/PlayerLane3` | `Gameplay/Loot/HallBox11/UsePoint` | use_point | 28.4 | 46.9 | 1.65 | ok |
+| `Spawns/PlayerLane3` | `Gameplay/Loot/HallBox09` | objective | 27.3 | 43.7 | 1.60 | ok |
+| `Spawns/PlayerLane3` | `Gameplay/Loot/HallBox09/UsePoint` | use_point | 27.3 | 43.7 | 1.60 | ok |
+| `Spawns/PlayerLane3` | `Gameplay/Loot/HallBox10` | objective | 27.8 | 44.7 | 1.61 | ok |
+| `Spawns/PlayerLane3` | `Gameplay/Loot/HallBox10/UsePoint` | use_point | 27.8 | 44.7 | 1.61 | ok |
+| `Spawns/PlayerLane3` | `Gameplay/Loot/HallBox11` | objective | 28.4 | 45.9 | 1.62 | ok |
+| `Spawns/PlayerLane3` | `Gameplay/Loot/HallBox11/UsePoint` | use_point | 28.4 | 45.9 | 1.62 | ok |
 | `Spawns/PlayerLane3` | `Gameplay/Loot/HallBox12` | objective | 29.0 | 45.5 | 1.57 | ok |
 | `Spawns/PlayerLane3` | `Gameplay/Loot/HallBox12/UsePoint` | use_point | 29.0 | 45.5 | 1.57 | ok |
 | `Spawns/PlayerLane3` | `Gameplay/Loot/HallBox13` | objective | 29.7 | 44.3 | 1.49 | ok |
@@ -1861,12 +1861,12 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerLane3` | `Gameplay/Loot/HallBox15/UsePoint` | use_point | 31.1 | 42.0 | 1.35 | ok |
 | `Spawns/PlayerLane3` | `Gameplay/Loot/HallBox16` | objective | 31.9 | 40.9 | 1.28 | ok |
 | `Spawns/PlayerLane3` | `Gameplay/Loot/HallBox16/UsePoint` | use_point | 31.9 | 40.9 | 1.28 | ok |
-| `Spawns/PlayerLane3` | `Gameplay/Loot/HallBox17` | objective | 31.8 | 49.7 | 1.56 | ok |
-| `Spawns/PlayerLane3` | `Gameplay/Loot/HallBox17/UsePoint` | use_point | 31.8 | 49.7 | 1.56 | ok |
-| `Spawns/PlayerLane3` | `Gameplay/Loot/HallBox18` | objective | 32.2 | 50.8 | 1.57 | ok |
-| `Spawns/PlayerLane3` | `Gameplay/Loot/HallBox18/UsePoint` | use_point | 32.2 | 50.8 | 1.57 | ok |
-| `Spawns/PlayerLane3` | `Gameplay/Loot/HallBox19` | objective | 32.8 | 51.9 | 1.58 | ok |
-| `Spawns/PlayerLane3` | `Gameplay/Loot/HallBox19/UsePoint` | use_point | 32.8 | 51.9 | 1.58 | ok |
+| `Spawns/PlayerLane3` | `Gameplay/Loot/HallBox17` | objective | 31.8 | 48.7 | 1.53 | ok |
+| `Spawns/PlayerLane3` | `Gameplay/Loot/HallBox17/UsePoint` | use_point | 31.8 | 48.7 | 1.53 | ok |
+| `Spawns/PlayerLane3` | `Gameplay/Loot/HallBox18` | objective | 32.2 | 49.7 | 1.54 | ok |
+| `Spawns/PlayerLane3` | `Gameplay/Loot/HallBox18/UsePoint` | use_point | 32.2 | 49.7 | 1.54 | ok |
+| `Spawns/PlayerLane3` | `Gameplay/Loot/HallBox19` | objective | 32.8 | 51.8 | 1.58 | ok |
+| `Spawns/PlayerLane3` | `Gameplay/Loot/HallBox19/UsePoint` | use_point | 32.8 | 51.8 | 1.58 | ok |
 | `Spawns/PlayerLane3` | `Gameplay/Loot/HallBox20` | objective | 33.3 | 50.6 | 1.52 | ok |
 | `Spawns/PlayerLane3` | `Gameplay/Loot/HallBox20/UsePoint` | use_point | 33.3 | 50.6 | 1.52 | ok |
 | `Spawns/PlayerLane3` | `Gameplay/Loot/HallBox21` | objective | 33.9 | 49.4 | 1.46 | ok |
@@ -1881,10 +1881,10 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerLane3` | `Gameplay/Lifts/CashLift/UsePoint` | use_point | 15.5 | 40.5 | 2.62 | ok |
 | `Spawns/PlayerLane3` | `Gameplay/Lifts/Hoist` | objective | 21.6 | 51.5 | 2.38 | ok |
 | `Spawns/PlayerLane3` | `Gameplay/Lifts/Hoist/UsePoint` | use_point | 21.6 | 51.5 | 2.38 | ok |
-| `Spawns/PlayerLane3` | `Gameplay/Markers/CodeHintPlanner` | objective | 35.4 | 56.9 | 1.61 | ok |
-| `Spawns/PlayerLane3` | `Gameplay/Markers/CodeHintPlanner/UsePoint` | use_point | 35.4 | 56.9 | 1.61 | ok |
-| `Spawns/PlayerLane3` | `Variants/Group_keycard/Slot_kc_manager_desk/Keycard` | objective | 36.1 | 57.3 | 1.59 | ok |
-| `Spawns/PlayerLane3` | `Variants/Group_keycard/Slot_kc_manager_desk/Keycard/UsePoint` | use_point | 36.1 | 57.3 | 1.59 | ok |
+| `Spawns/PlayerLane3` | `Gameplay/Markers/CodeHintPlanner` | objective | 35.4 | 63.3 | 1.79 | ok |
+| `Spawns/PlayerLane3` | `Gameplay/Markers/CodeHintPlanner/UsePoint` | use_point | 35.4 | 63.3 | 1.79 | ok |
+| `Spawns/PlayerLane3` | `Variants/Group_keycard/Slot_kc_manager_desk/Keycard` | objective | 36.1 | 63.6 | 1.76 | ok |
+| `Spawns/PlayerLane3` | `Variants/Group_keycard/Slot_kc_manager_desk/Keycard/UsePoint` | use_point | 36.1 | 63.6 | 1.76 | ok |
 | `Spawns/PlayerLane3` | `Variants/Group_code_pc/Slot_pc_ao1/CodePC` | objective | 29.5 | 59.6 | 2.02 | ok |
 | `Spawns/PlayerLane3` | `Variants/Group_code_pc/Slot_pc_ao1/CodePC/UsePoint` | use_point | 29.5 | 59.6 | 2.02 | ok |
 | `Spawns/PlayerLane3` | `Variants/Group_server_room/Slot_srv_basement/VaultControlRack` | objective | 16.7 | 29.8 | 1.79 | ok |
@@ -1943,7 +1943,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerLane4` | `Gameplay/Doors/ConsultDoor2/UsePoint` | use_point | 36.1 | 52.6 | 1.46 | ok |
 | `Spawns/PlayerLane4` | `Gameplay/Doors/ATMHallDoor/UsePoint` | use_point | 41.5 | 58.6 | 1.41 | ok |
 | `Spawns/PlayerLane4` | `Gameplay/Doors/ManagerDoor/UsePoint` | use_point | 32.1 | 52.1 | 1.62 | ok |
-| `Spawns/PlayerLane4` | `Gameplay/Doors/RestroomDoor/UsePoint` | use_point | 37.6 | 58.1 | 1.54 | ok |
+| `Spawns/PlayerLane4` | `Gameplay/Doors/RestroomDoor/UsePoint` | use_point | 37.6 | 64.7 | 1.72 | ok |
 | `Spawns/PlayerLane4` | `Gameplay/Doors/NewAccountsDoor/UsePoint` | use_point | 41.4 | 67.1 | 1.62 | ok |
 | `Spawns/PlayerLane4` | `Gameplay/Doors/VestibuleDoorsW/UsePoint` | use_point | 38.8 | 59.9 | 1.54 | ok |
 | `Spawns/PlayerLane4` | `Gameplay/Doors/VestibuleDoorsE/UsePoint` | use_point | 38.7 | 59.9 | 1.55 | ok |
@@ -2014,7 +2014,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerLane4` | `Gameplay/Devices/LidDrill/UsePoint` | use_point | 20.6 | 44.6 | 2.17 | ok |
 | `Spawns/PlayerLane4` | `Gameplay/Devices/AlarmSR/UsePoint` | use_point | 10.0 | 42.5 | 4.23 | detour (whitelisted) |
 | `Spawns/PlayerLane4` | `Gameplay/Devices/AlarmBM/UsePoint` | use_point | 35.8 | 59.5 | 1.66 | ok |
-| `Spawns/PlayerLane4` | `Gameplay/Devices/AlarmSD/UsePoint` | use_point | 19.8 | 36.4 | 1.84 | ok |
+| `Spawns/PlayerLane4` | `Gameplay/Devices/AlarmSD/UsePoint` | use_point | 19.8 | 36.1 | 1.82 | ok |
 | `Spawns/PlayerLane4` | `Gameplay/Devices/AlarmTeller1/UsePoint` | use_point | 24.9 | 37.9 | 1.53 | ok |
 | `Spawns/PlayerLane4` | `Gameplay/Devices/AlarmTeller2/UsePoint` | use_point | 23.9 | 38.1 | 1.59 | ok |
 | `Spawns/PlayerLane4` | `Gameplay/Devices/AlarmTeller3/UsePoint` | use_point | 23.2 | 38.8 | 1.68 | ok |
@@ -2026,7 +2026,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerLane4` | `Gameplay/Devices/PhoneNA/UsePoint` | use_point | 46.3 | 75.0 | 1.62 | ok |
 | `Spawns/PlayerLane4` | `Gameplay/Devices/PhonePC/UsePoint` | use_point | 32.6 | 46.6 | 1.43 | ok |
 | `Spawns/PlayerLane4` | `Gameplay/Devices/PhoneSR/UsePoint` | use_point | 12.5 | 40.8 | 3.27 | detour (whitelisted) |
-| `Spawns/PlayerLane4` | `Gameplay/Devices/PhoneSD/UsePoint` | use_point | 18.9 | 35.9 | 1.89 | ok |
+| `Spawns/PlayerLane4` | `Gameplay/Devices/PhoneSD/UsePoint` | use_point | 18.9 | 36.3 | 1.92 | ok |
 | `Spawns/PlayerLane4` | `Gameplay/Devices/PhoneBR/UsePoint` | use_point | 27.4 | 59.6 | 2.18 | ok |
 | `Spawns/PlayerLane4` | `Gameplay/Devices/PhoneVO/UsePoint` | use_point | 31.2 | 64.1 | 2.05 | ok |
 | `Spawns/PlayerLane4` | `Gameplay/Devices/PhoneEA/UsePoint` | use_point | 11.9 | 65.1 | 5.48 | detour (whitelisted) |
@@ -2100,12 +2100,12 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerLane4` | `Gameplay/Loot/VaultBoxS08/UsePoint` | use_point | 30.5 | 56.2 | 1.84 | ok |
 | `Spawns/PlayerLane4` | `Gameplay/Loot/VaultBoxS09` | objective | 30.9 | 57.5 | 1.86 | ok |
 | `Spawns/PlayerLane4` | `Gameplay/Loot/VaultBoxS09/UsePoint` | use_point | 30.9 | 57.5 | 1.86 | ok |
-| `Spawns/PlayerLane4` | `Gameplay/Loot/HallBox01` | objective | 22.2 | 38.5 | 1.74 | ok |
-| `Spawns/PlayerLane4` | `Gameplay/Loot/HallBox01/UsePoint` | use_point | 22.2 | 38.5 | 1.74 | ok |
-| `Spawns/PlayerLane4` | `Gameplay/Loot/HallBox02` | objective | 22.8 | 39.6 | 1.74 | ok |
-| `Spawns/PlayerLane4` | `Gameplay/Loot/HallBox02/UsePoint` | use_point | 22.8 | 39.6 | 1.74 | ok |
-| `Spawns/PlayerLane4` | `Gameplay/Loot/HallBox03` | objective | 23.4 | 40.8 | 1.74 | ok |
-| `Spawns/PlayerLane4` | `Gameplay/Loot/HallBox03/UsePoint` | use_point | 23.4 | 40.8 | 1.74 | ok |
+| `Spawns/PlayerLane4` | `Gameplay/Loot/HallBox01` | objective | 22.2 | 37.5 | 1.69 | ok |
+| `Spawns/PlayerLane4` | `Gameplay/Loot/HallBox01/UsePoint` | use_point | 22.2 | 37.5 | 1.69 | ok |
+| `Spawns/PlayerLane4` | `Gameplay/Loot/HallBox02` | objective | 22.8 | 38.6 | 1.69 | ok |
+| `Spawns/PlayerLane4` | `Gameplay/Loot/HallBox02/UsePoint` | use_point | 22.8 | 38.6 | 1.69 | ok |
+| `Spawns/PlayerLane4` | `Gameplay/Loot/HallBox03` | objective | 23.4 | 39.8 | 1.70 | ok |
+| `Spawns/PlayerLane4` | `Gameplay/Loot/HallBox03/UsePoint` | use_point | 23.4 | 39.8 | 1.70 | ok |
 | `Spawns/PlayerLane4` | `Gameplay/Loot/HallBox04` | objective | 24.1 | 39.4 | 1.63 | ok |
 | `Spawns/PlayerLane4` | `Gameplay/Loot/HallBox04/UsePoint` | use_point | 24.1 | 39.4 | 1.63 | ok |
 | `Spawns/PlayerLane4` | `Gameplay/Loot/HallBox05` | objective | 24.8 | 38.2 | 1.54 | ok |
@@ -2116,12 +2116,12 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerLane4` | `Gameplay/Loot/HallBox07/UsePoint` | use_point | 26.4 | 35.9 | 1.36 | ok |
 | `Spawns/PlayerLane4` | `Gameplay/Loot/HallBox08` | objective | 27.2 | 34.8 | 1.28 | ok |
 | `Spawns/PlayerLane4` | `Gameplay/Loot/HallBox08/UsePoint` | use_point | 27.2 | 34.8 | 1.28 | ok |
-| `Spawns/PlayerLane4` | `Gameplay/Loot/HallBox09` | objective | 26.6 | 43.5 | 1.63 | ok |
-| `Spawns/PlayerLane4` | `Gameplay/Loot/HallBox09/UsePoint` | use_point | 26.6 | 43.5 | 1.63 | ok |
-| `Spawns/PlayerLane4` | `Gameplay/Loot/HallBox10` | objective | 27.1 | 44.6 | 1.64 | ok |
-| `Spawns/PlayerLane4` | `Gameplay/Loot/HallBox10/UsePoint` | use_point | 27.1 | 44.6 | 1.64 | ok |
-| `Spawns/PlayerLane4` | `Gameplay/Loot/HallBox11` | objective | 27.7 | 45.8 | 1.65 | ok |
-| `Spawns/PlayerLane4` | `Gameplay/Loot/HallBox11/UsePoint` | use_point | 27.7 | 45.8 | 1.65 | ok |
+| `Spawns/PlayerLane4` | `Gameplay/Loot/HallBox09` | objective | 26.6 | 42.5 | 1.60 | ok |
+| `Spawns/PlayerLane4` | `Gameplay/Loot/HallBox09/UsePoint` | use_point | 26.6 | 42.5 | 1.60 | ok |
+| `Spawns/PlayerLane4` | `Gameplay/Loot/HallBox10` | objective | 27.1 | 43.6 | 1.61 | ok |
+| `Spawns/PlayerLane4` | `Gameplay/Loot/HallBox10/UsePoint` | use_point | 27.1 | 43.6 | 1.61 | ok |
+| `Spawns/PlayerLane4` | `Gameplay/Loot/HallBox11` | objective | 27.7 | 44.8 | 1.62 | ok |
+| `Spawns/PlayerLane4` | `Gameplay/Loot/HallBox11/UsePoint` | use_point | 27.7 | 44.8 | 1.62 | ok |
 | `Spawns/PlayerLane4` | `Gameplay/Loot/HallBox12` | objective | 28.2 | 44.4 | 1.57 | ok |
 | `Spawns/PlayerLane4` | `Gameplay/Loot/HallBox12/UsePoint` | use_point | 28.2 | 44.4 | 1.57 | ok |
 | `Spawns/PlayerLane4` | `Gameplay/Loot/HallBox13` | objective | 28.9 | 43.2 | 1.50 | ok |
@@ -2132,12 +2132,12 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerLane4` | `Gameplay/Loot/HallBox15/UsePoint` | use_point | 30.2 | 40.8 | 1.35 | ok |
 | `Spawns/PlayerLane4` | `Gameplay/Loot/HallBox16` | objective | 30.9 | 39.7 | 1.28 | ok |
 | `Spawns/PlayerLane4` | `Gameplay/Loot/HallBox16/UsePoint` | use_point | 30.9 | 39.7 | 1.28 | ok |
-| `Spawns/PlayerLane4` | `Gameplay/Loot/HallBox17` | objective | 31.2 | 48.5 | 1.55 | ok |
-| `Spawns/PlayerLane4` | `Gameplay/Loot/HallBox17/UsePoint` | use_point | 31.2 | 48.5 | 1.55 | ok |
-| `Spawns/PlayerLane4` | `Gameplay/Loot/HallBox18` | objective | 31.7 | 49.6 | 1.57 | ok |
-| `Spawns/PlayerLane4` | `Gameplay/Loot/HallBox18/UsePoint` | use_point | 31.7 | 49.6 | 1.57 | ok |
-| `Spawns/PlayerLane4` | `Gameplay/Loot/HallBox19` | objective | 32.1 | 50.8 | 1.58 | ok |
-| `Spawns/PlayerLane4` | `Gameplay/Loot/HallBox19/UsePoint` | use_point | 32.1 | 50.8 | 1.58 | ok |
+| `Spawns/PlayerLane4` | `Gameplay/Loot/HallBox17` | objective | 31.2 | 47.5 | 1.52 | ok |
+| `Spawns/PlayerLane4` | `Gameplay/Loot/HallBox17/UsePoint` | use_point | 31.2 | 47.5 | 1.52 | ok |
+| `Spawns/PlayerLane4` | `Gameplay/Loot/HallBox18` | objective | 31.7 | 48.6 | 1.53 | ok |
+| `Spawns/PlayerLane4` | `Gameplay/Loot/HallBox18/UsePoint` | use_point | 31.7 | 48.6 | 1.53 | ok |
+| `Spawns/PlayerLane4` | `Gameplay/Loot/HallBox19` | objective | 32.1 | 50.6 | 1.58 | ok |
+| `Spawns/PlayerLane4` | `Gameplay/Loot/HallBox19/UsePoint` | use_point | 32.1 | 50.6 | 1.58 | ok |
 | `Spawns/PlayerLane4` | `Gameplay/Loot/HallBox20` | objective | 32.6 | 49.4 | 1.51 | ok |
 | `Spawns/PlayerLane4` | `Gameplay/Loot/HallBox20/UsePoint` | use_point | 32.6 | 49.4 | 1.51 | ok |
 | `Spawns/PlayerLane4` | `Gameplay/Loot/HallBox21` | objective | 33.2 | 48.2 | 1.45 | ok |
@@ -2285,7 +2285,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerTannery1` | `Gameplay/Devices/LidDrill/UsePoint` | use_point | 31.9 | 39.6 | 1.24 | ok |
 | `Spawns/PlayerTannery1` | `Gameplay/Devices/AlarmSR/UsePoint` | use_point | 43.2 | 50.6 | 1.17 | ok |
 | `Spawns/PlayerTannery1` | `Gameplay/Devices/AlarmBM/UsePoint` | use_point | 10.2 | 42.0 | 4.12 | detour (whitelisted) |
-| `Spawns/PlayerTannery1` | `Gameplay/Devices/AlarmSD/UsePoint` | use_point | 24.3 | 41.2 | 1.70 | ok |
+| `Spawns/PlayerTannery1` | `Gameplay/Devices/AlarmSD/UsePoint` | use_point | 24.3 | 40.9 | 1.68 | ok |
 | `Spawns/PlayerTannery1` | `Gameplay/Devices/AlarmTeller1/UsePoint` | use_point | 43.9 | 51.3 | 1.17 | ok |
 | `Spawns/PlayerTannery1` | `Gameplay/Devices/AlarmTeller2/UsePoint` | use_point | 41.9 | 49.4 | 1.18 | ok |
 | `Spawns/PlayerTannery1` | `Gameplay/Devices/AlarmTeller3/UsePoint` | use_point | 39.9 | 47.5 | 1.19 | ok |
@@ -2297,7 +2297,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerTannery1` | `Gameplay/Devices/PhoneNA/UsePoint` | use_point | 18.0 | 52.2 | 2.90 | ok |
 | `Spawns/PlayerTannery1` | `Gameplay/Devices/PhonePC/UsePoint` | use_point | 10.0 | 29.1 | 2.90 | ok |
 | `Spawns/PlayerTannery1` | `Gameplay/Devices/PhoneSR/UsePoint` | use_point | 43.6 | 49.1 | 1.13 | ok |
-| `Spawns/PlayerTannery1` | `Gameplay/Devices/PhoneSD/UsePoint` | use_point | 24.7 | 40.7 | 1.65 | ok |
+| `Spawns/PlayerTannery1` | `Gameplay/Devices/PhoneSD/UsePoint` | use_point | 24.7 | 41.2 | 1.67 | ok |
 | `Spawns/PlayerTannery1` | `Gameplay/Devices/PhoneBR/UsePoint` | use_point | 58.3 | 77.1 | 1.32 | ok |
 | `Spawns/PlayerTannery1` | `Gameplay/Devices/PhoneVO/UsePoint` | use_point | 11.8 | 46.6 | 3.95 | detour (whitelisted) |
 | `Spawns/PlayerTannery1` | `Gameplay/Devices/PhoneEA/UsePoint` | use_point | 40.3 | 73.5 | 1.82 | ok |
@@ -2371,12 +2371,12 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerTannery1` | `Gameplay/Loot/VaultBoxS08/UsePoint` | use_point | 27.6 | 84.6 | 3.07 | detour (whitelisted) |
 | `Spawns/PlayerTannery1` | `Gameplay/Loot/VaultBoxS09` | objective | 25.6 | 85.9 | 3.35 | detour (whitelisted) |
 | `Spawns/PlayerTannery1` | `Gameplay/Loot/VaultBoxS09/UsePoint` | use_point | 25.6 | 85.9 | 3.35 | detour (whitelisted) |
-| `Spawns/PlayerTannery1` | `Gameplay/Loot/HallBox01` | objective | 22.4 | 43.4 | 1.93 | ok |
-| `Spawns/PlayerTannery1` | `Gameplay/Loot/HallBox01/UsePoint` | use_point | 22.4 | 43.4 | 1.93 | ok |
-| `Spawns/PlayerTannery1` | `Gameplay/Loot/HallBox02` | objective | 21.3 | 44.4 | 2.08 | ok |
-| `Spawns/PlayerTannery1` | `Gameplay/Loot/HallBox02/UsePoint` | use_point | 21.3 | 44.4 | 2.08 | ok |
-| `Spawns/PlayerTannery1` | `Gameplay/Loot/HallBox03` | objective | 20.2 | 45.6 | 2.25 | ok |
-| `Spawns/PlayerTannery1` | `Gameplay/Loot/HallBox03/UsePoint` | use_point | 20.2 | 45.6 | 2.25 | ok |
+| `Spawns/PlayerTannery1` | `Gameplay/Loot/HallBox01` | objective | 22.4 | 42.3 | 1.89 | ok |
+| `Spawns/PlayerTannery1` | `Gameplay/Loot/HallBox01/UsePoint` | use_point | 22.4 | 42.3 | 1.89 | ok |
+| `Spawns/PlayerTannery1` | `Gameplay/Loot/HallBox02` | objective | 21.3 | 43.4 | 2.03 | ok |
+| `Spawns/PlayerTannery1` | `Gameplay/Loot/HallBox02/UsePoint` | use_point | 21.3 | 43.4 | 2.03 | ok |
+| `Spawns/PlayerTannery1` | `Gameplay/Loot/HallBox03` | objective | 20.2 | 44.8 | 2.22 | ok |
+| `Spawns/PlayerTannery1` | `Gameplay/Loot/HallBox03/UsePoint` | use_point | 20.2 | 44.8 | 2.22 | ok |
 | `Spawns/PlayerTannery1` | `Gameplay/Loot/HallBox04` | objective | 19.1 | 43.6 | 2.28 | ok |
 | `Spawns/PlayerTannery1` | `Gameplay/Loot/HallBox04/UsePoint` | use_point | 19.1 | 43.6 | 2.28 | ok |
 | `Spawns/PlayerTannery1` | `Gameplay/Loot/HallBox05` | objective | 18.0 | 42.4 | 2.35 | ok |
@@ -2387,12 +2387,12 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerTannery1` | `Gameplay/Loot/HallBox07/UsePoint` | use_point | 15.9 | 40.1 | 2.52 | ok |
 | `Spawns/PlayerTannery1` | `Gameplay/Loot/HallBox08` | objective | 14.9 | 39.0 | 2.62 | ok |
 | `Spawns/PlayerTannery1` | `Gameplay/Loot/HallBox08/UsePoint` | use_point | 14.9 | 39.0 | 2.62 | ok |
-| `Spawns/PlayerTannery1` | `Gameplay/Loot/HallBox09` | objective | 21.5 | 48.3 | 2.25 | ok |
-| `Spawns/PlayerTannery1` | `Gameplay/Loot/HallBox09/UsePoint` | use_point | 21.5 | 48.3 | 2.25 | ok |
-| `Spawns/PlayerTannery1` | `Gameplay/Loot/HallBox10` | objective | 20.3 | 49.4 | 2.44 | ok |
-| `Spawns/PlayerTannery1` | `Gameplay/Loot/HallBox10/UsePoint` | use_point | 20.3 | 49.4 | 2.44 | ok |
-| `Spawns/PlayerTannery1` | `Gameplay/Loot/HallBox11` | objective | 19.1 | 50.6 | 2.65 | ok |
-| `Spawns/PlayerTannery1` | `Gameplay/Loot/HallBox11/UsePoint` | use_point | 19.1 | 50.6 | 2.65 | ok |
+| `Spawns/PlayerTannery1` | `Gameplay/Loot/HallBox09` | objective | 21.5 | 47.3 | 2.21 | ok |
+| `Spawns/PlayerTannery1` | `Gameplay/Loot/HallBox09/UsePoint` | use_point | 21.5 | 47.3 | 2.21 | ok |
+| `Spawns/PlayerTannery1` | `Gameplay/Loot/HallBox10` | objective | 20.3 | 48.4 | 2.39 | ok |
+| `Spawns/PlayerTannery1` | `Gameplay/Loot/HallBox10/UsePoint` | use_point | 20.3 | 48.4 | 2.39 | ok |
+| `Spawns/PlayerTannery1` | `Gameplay/Loot/HallBox11` | objective | 19.1 | 49.8 | 2.60 | ok |
+| `Spawns/PlayerTannery1` | `Gameplay/Loot/HallBox11/UsePoint` | use_point | 19.1 | 49.8 | 2.60 | ok |
 | `Spawns/PlayerTannery1` | `Gameplay/Loot/HallBox12` | objective | 17.9 | 48.6 | 2.71 | ok |
 | `Spawns/PlayerTannery1` | `Gameplay/Loot/HallBox12/UsePoint` | use_point | 17.9 | 48.6 | 2.71 | ok |
 | `Spawns/PlayerTannery1` | `Gameplay/Loot/HallBox13` | objective | 16.8 | 47.4 | 2.82 | ok |
@@ -2403,12 +2403,12 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerTannery1` | `Gameplay/Loot/HallBox15/UsePoint` | use_point | 14.5 | 45.0 | 3.11 | detour (whitelisted) |
 | `Spawns/PlayerTannery1` | `Gameplay/Loot/HallBox16` | objective | 13.3 | 43.9 | 3.29 | detour (whitelisted) |
 | `Spawns/PlayerTannery1` | `Gameplay/Loot/HallBox16/UsePoint` | use_point | 13.3 | 43.9 | 3.29 | detour (whitelisted) |
-| `Spawns/PlayerTannery1` | `Gameplay/Loot/HallBox17` | objective | 21.6 | 53.3 | 2.47 | ok |
-| `Spawns/PlayerTannery1` | `Gameplay/Loot/HallBox17/UsePoint` | use_point | 21.6 | 53.3 | 2.47 | ok |
-| `Spawns/PlayerTannery1` | `Gameplay/Loot/HallBox18` | objective | 20.4 | 54.4 | 2.66 | ok |
-| `Spawns/PlayerTannery1` | `Gameplay/Loot/HallBox18/UsePoint` | use_point | 20.4 | 54.4 | 2.66 | ok |
-| `Spawns/PlayerTannery1` | `Gameplay/Loot/HallBox19` | objective | 19.3 | 55.6 | 2.88 | ok |
-| `Spawns/PlayerTannery1` | `Gameplay/Loot/HallBox19/UsePoint` | use_point | 19.3 | 55.6 | 2.88 | ok |
+| `Spawns/PlayerTannery1` | `Gameplay/Loot/HallBox17` | objective | 21.6 | 52.3 | 2.42 | ok |
+| `Spawns/PlayerTannery1` | `Gameplay/Loot/HallBox17/UsePoint` | use_point | 21.6 | 52.3 | 2.42 | ok |
+| `Spawns/PlayerTannery1` | `Gameplay/Loot/HallBox18` | objective | 20.4 | 53.4 | 2.61 | ok |
+| `Spawns/PlayerTannery1` | `Gameplay/Loot/HallBox18/UsePoint` | use_point | 20.4 | 53.4 | 2.61 | ok |
+| `Spawns/PlayerTannery1` | `Gameplay/Loot/HallBox19` | objective | 19.3 | 54.8 | 2.84 | ok |
+| `Spawns/PlayerTannery1` | `Gameplay/Loot/HallBox19/UsePoint` | use_point | 19.3 | 54.8 | 2.84 | ok |
 | `Spawns/PlayerTannery1` | `Gameplay/Loot/HallBox20` | objective | 18.1 | 53.6 | 2.96 | ok |
 | `Spawns/PlayerTannery1` | `Gameplay/Loot/HallBox20/UsePoint` | use_point | 18.1 | 53.6 | 2.96 | ok |
 | `Spawns/PlayerTannery1` | `Gameplay/Loot/HallBox21` | objective | 17.0 | 52.4 | 3.09 | detour (whitelisted) |
@@ -2556,7 +2556,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerTannery2` | `Gameplay/Devices/LidDrill/UsePoint` | use_point | 32.1 | 40.9 | 1.27 | ok |
 | `Spawns/PlayerTannery2` | `Gameplay/Devices/AlarmSR/UsePoint` | use_point | 43.9 | 51.9 | 1.18 | ok |
 | `Spawns/PlayerTannery2` | `Gameplay/Devices/AlarmBM/UsePoint` | use_point | 10.0 | 43.4 | 4.36 | detour (whitelisted) |
-| `Spawns/PlayerTannery2` | `Gameplay/Devices/AlarmSD/UsePoint` | use_point | 24.9 | 42.5 | 1.71 | ok |
+| `Spawns/PlayerTannery2` | `Gameplay/Devices/AlarmSD/UsePoint` | use_point | 24.9 | 42.2 | 1.70 | ok |
 | `Spawns/PlayerTannery2` | `Gameplay/Devices/AlarmTeller1/UsePoint` | use_point | 44.1 | 52.6 | 1.19 | ok |
 | `Spawns/PlayerTannery2` | `Gameplay/Devices/AlarmTeller2/UsePoint` | use_point | 42.1 | 50.7 | 1.20 | ok |
 | `Spawns/PlayerTannery2` | `Gameplay/Devices/AlarmTeller3/UsePoint` | use_point | 40.1 | 48.8 | 1.22 | ok |
@@ -2568,7 +2568,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerTannery2` | `Gameplay/Devices/PhoneNA/UsePoint` | use_point | 16.7 | 53.5 | 3.20 | detour (whitelisted) |
 | `Spawns/PlayerTannery2` | `Gameplay/Devices/PhonePC/UsePoint` | use_point | 10.4 | 30.4 | 2.93 | ok |
 | `Spawns/PlayerTannery2` | `Gameplay/Devices/PhoneSR/UsePoint` | use_point | 44.2 | 50.4 | 1.14 | ok |
-| `Spawns/PlayerTannery2` | `Gameplay/Devices/PhoneSD/UsePoint` | use_point | 25.3 | 42.0 | 1.66 | ok |
+| `Spawns/PlayerTannery2` | `Gameplay/Devices/PhoneSD/UsePoint` | use_point | 25.3 | 42.5 | 1.68 | ok |
 | `Spawns/PlayerTannery2` | `Gameplay/Devices/PhoneBR/UsePoint` | use_point | 58.7 | 78.4 | 1.34 | ok |
 | `Spawns/PlayerTannery2` | `Gameplay/Devices/PhoneVO/UsePoint` | use_point | 12.4 | 47.9 | 3.87 | detour (whitelisted) |
 | `Spawns/PlayerTannery2` | `Gameplay/Devices/PhoneEA/UsePoint` | use_point | 41.0 | 74.8 | 1.82 | ok |
@@ -2642,12 +2642,12 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerTannery2` | `Gameplay/Loot/VaultBoxS08/UsePoint` | use_point | 27.4 | 85.9 | 3.14 | detour (whitelisted) |
 | `Spawns/PlayerTannery2` | `Gameplay/Loot/VaultBoxS09` | objective | 25.4 | 87.2 | 3.43 | detour (whitelisted) |
 | `Spawns/PlayerTannery2` | `Gameplay/Loot/VaultBoxS09/UsePoint` | use_point | 25.4 | 87.2 | 3.43 | detour (whitelisted) |
-| `Spawns/PlayerTannery2` | `Gameplay/Loot/HallBox01` | objective | 23.0 | 44.7 | 1.95 | ok |
-| `Spawns/PlayerTannery2` | `Gameplay/Loot/HallBox01/UsePoint` | use_point | 23.0 | 44.7 | 1.95 | ok |
-| `Spawns/PlayerTannery2` | `Gameplay/Loot/HallBox02` | objective | 21.9 | 45.7 | 2.09 | ok |
-| `Spawns/PlayerTannery2` | `Gameplay/Loot/HallBox02/UsePoint` | use_point | 21.9 | 45.7 | 2.09 | ok |
-| `Spawns/PlayerTannery2` | `Gameplay/Loot/HallBox03` | objective | 20.8 | 46.9 | 2.26 | ok |
-| `Spawns/PlayerTannery2` | `Gameplay/Loot/HallBox03/UsePoint` | use_point | 20.8 | 46.9 | 2.26 | ok |
+| `Spawns/PlayerTannery2` | `Gameplay/Loot/HallBox01` | objective | 23.0 | 43.6 | 1.90 | ok |
+| `Spawns/PlayerTannery2` | `Gameplay/Loot/HallBox01/UsePoint` | use_point | 23.0 | 43.6 | 1.90 | ok |
+| `Spawns/PlayerTannery2` | `Gameplay/Loot/HallBox02` | objective | 21.9 | 44.7 | 2.05 | ok |
+| `Spawns/PlayerTannery2` | `Gameplay/Loot/HallBox02/UsePoint` | use_point | 21.9 | 44.7 | 2.05 | ok |
+| `Spawns/PlayerTannery2` | `Gameplay/Loot/HallBox03` | objective | 20.8 | 46.1 | 2.22 | ok |
+| `Spawns/PlayerTannery2` | `Gameplay/Loot/HallBox03/UsePoint` | use_point | 20.8 | 46.1 | 2.22 | ok |
 | `Spawns/PlayerTannery2` | `Gameplay/Loot/HallBox04` | objective | 19.7 | 44.9 | 2.28 | ok |
 | `Spawns/PlayerTannery2` | `Gameplay/Loot/HallBox04/UsePoint` | use_point | 19.7 | 44.9 | 2.28 | ok |
 | `Spawns/PlayerTannery2` | `Gameplay/Loot/HallBox05` | objective | 18.7 | 43.7 | 2.34 | ok |
@@ -2658,12 +2658,12 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerTannery2` | `Gameplay/Loot/HallBox07/UsePoint` | use_point | 16.6 | 41.4 | 2.49 | ok |
 | `Spawns/PlayerTannery2` | `Gameplay/Loot/HallBox08` | objective | 15.6 | 40.3 | 2.58 | ok |
 | `Spawns/PlayerTannery2` | `Gameplay/Loot/HallBox08/UsePoint` | use_point | 15.6 | 40.3 | 2.58 | ok |
-| `Spawns/PlayerTannery2` | `Gameplay/Loot/HallBox09` | objective | 21.6 | 49.7 | 2.29 | ok |
-| `Spawns/PlayerTannery2` | `Gameplay/Loot/HallBox09/UsePoint` | use_point | 21.6 | 49.7 | 2.29 | ok |
-| `Spawns/PlayerTannery2` | `Gameplay/Loot/HallBox10` | objective | 20.5 | 50.7 | 2.48 | ok |
-| `Spawns/PlayerTannery2` | `Gameplay/Loot/HallBox10/UsePoint` | use_point | 20.5 | 50.7 | 2.48 | ok |
-| `Spawns/PlayerTannery2` | `Gameplay/Loot/HallBox11` | objective | 19.3 | 51.9 | 2.69 | ok |
-| `Spawns/PlayerTannery2` | `Gameplay/Loot/HallBox11/UsePoint` | use_point | 19.3 | 51.9 | 2.69 | ok |
+| `Spawns/PlayerTannery2` | `Gameplay/Loot/HallBox09` | objective | 21.6 | 48.6 | 2.25 | ok |
+| `Spawns/PlayerTannery2` | `Gameplay/Loot/HallBox09/UsePoint` | use_point | 21.6 | 48.6 | 2.25 | ok |
+| `Spawns/PlayerTannery2` | `Gameplay/Loot/HallBox10` | objective | 20.5 | 49.7 | 2.43 | ok |
+| `Spawns/PlayerTannery2` | `Gameplay/Loot/HallBox10/UsePoint` | use_point | 20.5 | 49.7 | 2.43 | ok |
+| `Spawns/PlayerTannery2` | `Gameplay/Loot/HallBox11` | objective | 19.3 | 51.1 | 2.64 | ok |
+| `Spawns/PlayerTannery2` | `Gameplay/Loot/HallBox11/UsePoint` | use_point | 19.3 | 51.1 | 2.64 | ok |
 | `Spawns/PlayerTannery2` | `Gameplay/Loot/HallBox12` | objective | 18.2 | 49.9 | 2.75 | ok |
 | `Spawns/PlayerTannery2` | `Gameplay/Loot/HallBox12/UsePoint` | use_point | 18.2 | 49.9 | 2.75 | ok |
 | `Spawns/PlayerTannery2` | `Gameplay/Loot/HallBox13` | objective | 17.0 | 48.7 | 2.86 | ok |
@@ -2674,12 +2674,12 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerTannery2` | `Gameplay/Loot/HallBox15/UsePoint` | use_point | 14.8 | 46.3 | 3.14 | detour (whitelisted) |
 | `Spawns/PlayerTannery2` | `Gameplay/Loot/HallBox16` | objective | 13.6 | 45.3 | 3.32 | detour (whitelisted) |
 | `Spawns/PlayerTannery2` | `Gameplay/Loot/HallBox16/UsePoint` | use_point | 13.6 | 45.3 | 3.32 | detour (whitelisted) |
-| `Spawns/PlayerTannery2` | `Gameplay/Loot/HallBox17` | objective | 21.4 | 54.7 | 2.55 | ok |
-| `Spawns/PlayerTannery2` | `Gameplay/Loot/HallBox17/UsePoint` | use_point | 21.4 | 54.7 | 2.55 | ok |
-| `Spawns/PlayerTannery2` | `Gameplay/Loot/HallBox18` | objective | 20.3 | 55.7 | 2.75 | ok |
-| `Spawns/PlayerTannery2` | `Gameplay/Loot/HallBox18/UsePoint` | use_point | 20.3 | 55.7 | 2.75 | ok |
-| `Spawns/PlayerTannery2` | `Gameplay/Loot/HallBox19` | objective | 19.1 | 56.9 | 2.98 | ok |
-| `Spawns/PlayerTannery2` | `Gameplay/Loot/HallBox19/UsePoint` | use_point | 19.1 | 56.9 | 2.98 | ok |
+| `Spawns/PlayerTannery2` | `Gameplay/Loot/HallBox17` | objective | 21.4 | 53.6 | 2.50 | ok |
+| `Spawns/PlayerTannery2` | `Gameplay/Loot/HallBox17/UsePoint` | use_point | 21.4 | 53.6 | 2.50 | ok |
+| `Spawns/PlayerTannery2` | `Gameplay/Loot/HallBox18` | objective | 20.3 | 54.7 | 2.70 | ok |
+| `Spawns/PlayerTannery2` | `Gameplay/Loot/HallBox18/UsePoint` | use_point | 20.3 | 54.7 | 2.70 | ok |
+| `Spawns/PlayerTannery2` | `Gameplay/Loot/HallBox19` | objective | 19.1 | 56.1 | 2.94 | ok |
+| `Spawns/PlayerTannery2` | `Gameplay/Loot/HallBox19/UsePoint` | use_point | 19.1 | 56.1 | 2.94 | ok |
 | `Spawns/PlayerTannery2` | `Gameplay/Loot/HallBox20` | objective | 17.9 | 54.9 | 3.06 | detour (whitelisted) |
 | `Spawns/PlayerTannery2` | `Gameplay/Loot/HallBox20/UsePoint` | use_point | 17.9 | 54.9 | 3.06 | detour (whitelisted) |
 | `Spawns/PlayerTannery2` | `Gameplay/Loot/HallBox21` | objective | 16.8 | 53.7 | 3.21 | detour (whitelisted) |
@@ -2827,7 +2827,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerTannery3` | `Gameplay/Devices/LidDrill/UsePoint` | use_point | 32.5 | 42.2 | 1.30 | ok |
 | `Spawns/PlayerTannery3` | `Gameplay/Devices/AlarmSR/UsePoint` | use_point | 44.7 | 53.3 | 1.19 | ok |
 | `Spawns/PlayerTannery3` | `Gameplay/Devices/AlarmBM/UsePoint` | use_point | 9.9 | 44.7 | 4.51 | detour (whitelisted) |
-| `Spawns/PlayerTannery3` | `Gameplay/Devices/AlarmSD/UsePoint` | use_point | 25.6 | 43.9 | 1.72 | ok |
+| `Spawns/PlayerTannery3` | `Gameplay/Devices/AlarmSD/UsePoint` | use_point | 25.6 | 43.5 | 1.70 | ok |
 | `Spawns/PlayerTannery3` | `Gameplay/Devices/AlarmTeller1/UsePoint` | use_point | 44.3 | 53.9 | 1.22 | ok |
 | `Spawns/PlayerTannery3` | `Gameplay/Devices/AlarmTeller2/UsePoint` | use_point | 42.3 | 52.0 | 1.23 | ok |
 | `Spawns/PlayerTannery3` | `Gameplay/Devices/AlarmTeller3/UsePoint` | use_point | 40.4 | 50.2 | 1.24 | ok |
@@ -2839,7 +2839,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerTannery3` | `Gameplay/Devices/PhoneNA/UsePoint` | use_point | 15.6 | 54.9 | 3.53 | detour (whitelisted) |
 | `Spawns/PlayerTannery3` | `Gameplay/Devices/PhonePC/UsePoint` | use_point | 10.9 | 31.8 | 2.91 | ok |
 | `Spawns/PlayerTannery3` | `Gameplay/Devices/PhoneSR/UsePoint` | use_point | 44.9 | 51.7 | 1.15 | ok |
-| `Spawns/PlayerTannery3` | `Gameplay/Devices/PhoneSD/UsePoint` | use_point | 26.0 | 43.3 | 1.66 | ok |
+| `Spawns/PlayerTannery3` | `Gameplay/Devices/PhoneSD/UsePoint` | use_point | 26.0 | 43.8 | 1.68 | ok |
 | `Spawns/PlayerTannery3` | `Gameplay/Devices/PhoneBR/UsePoint` | use_point | 59.1 | 79.8 | 1.35 | ok |
 | `Spawns/PlayerTannery3` | `Gameplay/Devices/PhoneVO/UsePoint` | use_point | 13.1 | 49.2 | 3.75 | detour (whitelisted) |
 | `Spawns/PlayerTannery3` | `Gameplay/Devices/PhoneEA/UsePoint` | use_point | 41.8 | 76.2 | 1.82 | ok |
@@ -2913,12 +2913,12 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerTannery3` | `Gameplay/Loot/VaultBoxS08/UsePoint` | use_point | 27.3 | 87.3 | 3.20 | detour (whitelisted) |
 | `Spawns/PlayerTannery3` | `Gameplay/Loot/VaultBoxS09` | objective | 25.3 | 88.6 | 3.50 | detour (whitelisted) |
 | `Spawns/PlayerTannery3` | `Gameplay/Loot/VaultBoxS09/UsePoint` | use_point | 25.3 | 88.6 | 3.50 | detour (whitelisted) |
-| `Spawns/PlayerTannery3` | `Gameplay/Loot/HallBox01` | objective | 23.5 | 46.0 | 1.96 | ok |
-| `Spawns/PlayerTannery3` | `Gameplay/Loot/HallBox01/UsePoint` | use_point | 23.5 | 46.0 | 1.96 | ok |
-| `Spawns/PlayerTannery3` | `Gameplay/Loot/HallBox02` | objective | 22.5 | 47.1 | 2.10 | ok |
-| `Spawns/PlayerTannery3` | `Gameplay/Loot/HallBox02/UsePoint` | use_point | 22.5 | 47.1 | 2.10 | ok |
-| `Spawns/PlayerTannery3` | `Gameplay/Loot/HallBox03` | objective | 21.4 | 48.3 | 2.25 | ok |
-| `Spawns/PlayerTannery3` | `Gameplay/Loot/HallBox03/UsePoint` | use_point | 21.4 | 48.3 | 2.25 | ok |
+| `Spawns/PlayerTannery3` | `Gameplay/Loot/HallBox01` | objective | 23.5 | 45.0 | 1.91 | ok |
+| `Spawns/PlayerTannery3` | `Gameplay/Loot/HallBox01/UsePoint` | use_point | 23.5 | 45.0 | 1.91 | ok |
+| `Spawns/PlayerTannery3` | `Gameplay/Loot/HallBox02` | objective | 22.5 | 46.1 | 2.05 | ok |
+| `Spawns/PlayerTannery3` | `Gameplay/Loot/HallBox02/UsePoint` | use_point | 22.5 | 46.1 | 2.05 | ok |
+| `Spawns/PlayerTannery3` | `Gameplay/Loot/HallBox03` | objective | 21.4 | 47.5 | 2.22 | ok |
+| `Spawns/PlayerTannery3` | `Gameplay/Loot/HallBox03/UsePoint` | use_point | 21.4 | 47.5 | 2.22 | ok |
 | `Spawns/PlayerTannery3` | `Gameplay/Loot/HallBox04` | objective | 20.4 | 46.3 | 2.27 | ok |
 | `Spawns/PlayerTannery3` | `Gameplay/Loot/HallBox04/UsePoint` | use_point | 20.4 | 46.3 | 2.27 | ok |
 | `Spawns/PlayerTannery3` | `Gameplay/Loot/HallBox05` | objective | 19.4 | 45.1 | 2.33 | ok |
@@ -2929,12 +2929,12 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerTannery3` | `Gameplay/Loot/HallBox07/UsePoint` | use_point | 17.4 | 42.7 | 2.45 | ok |
 | `Spawns/PlayerTannery3` | `Gameplay/Loot/HallBox08` | objective | 16.5 | 41.7 | 2.53 | ok |
 | `Spawns/PlayerTannery3` | `Gameplay/Loot/HallBox08/UsePoint` | use_point | 16.5 | 41.7 | 2.53 | ok |
-| `Spawns/PlayerTannery3` | `Gameplay/Loot/HallBox09` | objective | 21.9 | 51.0 | 2.33 | ok |
-| `Spawns/PlayerTannery3` | `Gameplay/Loot/HallBox09/UsePoint` | use_point | 21.9 | 51.0 | 2.33 | ok |
-| `Spawns/PlayerTannery3` | `Gameplay/Loot/HallBox10` | objective | 20.8 | 52.1 | 2.51 | ok |
-| `Spawns/PlayerTannery3` | `Gameplay/Loot/HallBox10/UsePoint` | use_point | 20.8 | 52.1 | 2.51 | ok |
-| `Spawns/PlayerTannery3` | `Gameplay/Loot/HallBox11` | objective | 19.6 | 53.2 | 2.71 | ok |
-| `Spawns/PlayerTannery3` | `Gameplay/Loot/HallBox11/UsePoint` | use_point | 19.6 | 53.2 | 2.71 | ok |
+| `Spawns/PlayerTannery3` | `Gameplay/Loot/HallBox09` | objective | 21.9 | 50.0 | 2.28 | ok |
+| `Spawns/PlayerTannery3` | `Gameplay/Loot/HallBox09/UsePoint` | use_point | 21.9 | 50.0 | 2.28 | ok |
+| `Spawns/PlayerTannery3` | `Gameplay/Loot/HallBox10` | objective | 20.8 | 51.1 | 2.46 | ok |
+| `Spawns/PlayerTannery3` | `Gameplay/Loot/HallBox10/UsePoint` | use_point | 20.8 | 51.1 | 2.46 | ok |
+| `Spawns/PlayerTannery3` | `Gameplay/Loot/HallBox11` | objective | 19.6 | 52.4 | 2.67 | ok |
+| `Spawns/PlayerTannery3` | `Gameplay/Loot/HallBox11/UsePoint` | use_point | 19.6 | 52.4 | 2.67 | ok |
 | `Spawns/PlayerTannery3` | `Gameplay/Loot/HallBox12` | objective | 18.5 | 51.2 | 2.77 | ok |
 | `Spawns/PlayerTannery3` | `Gameplay/Loot/HallBox12/UsePoint` | use_point | 18.5 | 51.2 | 2.77 | ok |
 | `Spawns/PlayerTannery3` | `Gameplay/Loot/HallBox13` | objective | 17.4 | 50.0 | 2.88 | ok |
@@ -2945,12 +2945,12 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerTannery3` | `Gameplay/Loot/HallBox15/UsePoint` | use_point | 15.2 | 47.7 | 3.14 | detour (whitelisted) |
 | `Spawns/PlayerTannery3` | `Gameplay/Loot/HallBox16` | objective | 14.1 | 46.6 | 3.31 | detour (whitelisted) |
 | `Spawns/PlayerTannery3` | `Gameplay/Loot/HallBox16/UsePoint` | use_point | 14.1 | 46.6 | 3.31 | detour (whitelisted) |
-| `Spawns/PlayerTannery3` | `Gameplay/Loot/HallBox17` | objective | 21.4 | 56.0 | 2.62 | ok |
-| `Spawns/PlayerTannery3` | `Gameplay/Loot/HallBox17/UsePoint` | use_point | 21.4 | 56.0 | 2.62 | ok |
-| `Spawns/PlayerTannery3` | `Gameplay/Loot/HallBox18` | objective | 20.2 | 57.1 | 2.83 | ok |
-| `Spawns/PlayerTannery3` | `Gameplay/Loot/HallBox18/UsePoint` | use_point | 20.2 | 57.1 | 2.83 | ok |
-| `Spawns/PlayerTannery3` | `Gameplay/Loot/HallBox19` | objective | 19.0 | 58.2 | 3.06 | detour (whitelisted) |
-| `Spawns/PlayerTannery3` | `Gameplay/Loot/HallBox19/UsePoint` | use_point | 19.0 | 58.2 | 3.06 | detour (whitelisted) |
+| `Spawns/PlayerTannery3` | `Gameplay/Loot/HallBox17` | objective | 21.4 | 55.0 | 2.57 | ok |
+| `Spawns/PlayerTannery3` | `Gameplay/Loot/HallBox17/UsePoint` | use_point | 21.4 | 55.0 | 2.57 | ok |
+| `Spawns/PlayerTannery3` | `Gameplay/Loot/HallBox18` | objective | 20.2 | 56.1 | 2.78 | ok |
+| `Spawns/PlayerTannery3` | `Gameplay/Loot/HallBox18/UsePoint` | use_point | 20.2 | 56.1 | 2.78 | ok |
+| `Spawns/PlayerTannery3` | `Gameplay/Loot/HallBox19` | objective | 19.0 | 57.5 | 3.02 | detour (whitelisted) |
+| `Spawns/PlayerTannery3` | `Gameplay/Loot/HallBox19/UsePoint` | use_point | 19.0 | 57.5 | 3.02 | detour (whitelisted) |
 | `Spawns/PlayerTannery3` | `Gameplay/Loot/HallBox20` | objective | 17.9 | 56.3 | 3.15 | detour (whitelisted) |
 | `Spawns/PlayerTannery3` | `Gameplay/Loot/HallBox20/UsePoint` | use_point | 17.9 | 56.3 | 3.15 | detour (whitelisted) |
 | `Spawns/PlayerTannery3` | `Gameplay/Loot/HallBox21` | objective | 16.7 | 55.1 | 3.30 | detour (whitelisted) |
@@ -3098,7 +3098,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerTannery4` | `Gameplay/Devices/LidDrill/UsePoint` | use_point | 32.9 | 43.6 | 1.32 | ok |
 | `Spawns/PlayerTannery4` | `Gameplay/Devices/AlarmSR/UsePoint` | use_point | 45.4 | 54.7 | 1.20 | ok |
 | `Spawns/PlayerTannery4` | `Gameplay/Devices/AlarmBM/UsePoint` | use_point | 10.1 | 46.1 | 4.56 | detour (whitelisted) |
-| `Spawns/PlayerTannery4` | `Gameplay/Devices/AlarmSD/UsePoint` | use_point | 26.3 | 45.3 | 1.72 | ok |
+| `Spawns/PlayerTannery4` | `Gameplay/Devices/AlarmSD/UsePoint` | use_point | 26.3 | 44.9 | 1.71 | ok |
 | `Spawns/PlayerTannery4` | `Gameplay/Devices/AlarmTeller1/UsePoint` | use_point | 44.6 | 55.3 | 1.24 | ok |
 | `Spawns/PlayerTannery4` | `Gameplay/Devices/AlarmTeller2/UsePoint` | use_point | 42.6 | 53.4 | 1.25 | ok |
 | `Spawns/PlayerTannery4` | `Gameplay/Devices/AlarmTeller3/UsePoint` | use_point | 40.7 | 51.5 | 1.27 | ok |
@@ -3110,7 +3110,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerTannery4` | `Gameplay/Devices/PhoneNA/UsePoint` | use_point | 14.4 | 56.2 | 3.90 | detour (whitelisted) |
 | `Spawns/PlayerTannery4` | `Gameplay/Devices/PhonePC/UsePoint` | use_point | 11.6 | 33.2 | 2.85 | ok |
 | `Spawns/PlayerTannery4` | `Gameplay/Devices/PhoneSR/UsePoint` | use_point | 45.5 | 53.1 | 1.17 | ok |
-| `Spawns/PlayerTannery4` | `Gameplay/Devices/PhoneSD/UsePoint` | use_point | 26.8 | 44.7 | 1.67 | ok |
+| `Spawns/PlayerTannery4` | `Gameplay/Devices/PhoneSD/UsePoint` | use_point | 26.8 | 45.2 | 1.69 | ok |
 | `Spawns/PlayerTannery4` | `Gameplay/Devices/PhoneBR/UsePoint` | use_point | 59.6 | 81.2 | 1.36 | ok |
 | `Spawns/PlayerTannery4` | `Gameplay/Devices/PhoneVO/UsePoint` | use_point | 14.0 | 50.6 | 3.62 | detour (whitelisted) |
 | `Spawns/PlayerTannery4` | `Gameplay/Devices/PhoneEA/UsePoint` | use_point | 42.6 | 77.5 | 1.82 | ok |
@@ -3184,12 +3184,12 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerTannery4` | `Gameplay/Loot/VaultBoxS08/UsePoint` | use_point | 27.3 | 88.7 | 3.25 | detour (whitelisted) |
 | `Spawns/PlayerTannery4` | `Gameplay/Loot/VaultBoxS09` | objective | 25.3 | 90.0 | 3.55 | detour (whitelisted) |
 | `Spawns/PlayerTannery4` | `Gameplay/Loot/VaultBoxS09/UsePoint` | use_point | 25.3 | 90.0 | 3.55 | detour (whitelisted) |
-| `Spawns/PlayerTannery4` | `Gameplay/Loot/HallBox01` | objective | 24.2 | 47.4 | 1.96 | ok |
-| `Spawns/PlayerTannery4` | `Gameplay/Loot/HallBox01/UsePoint` | use_point | 24.2 | 47.4 | 1.96 | ok |
-| `Spawns/PlayerTannery4` | `Gameplay/Loot/HallBox02` | objective | 23.2 | 48.5 | 2.09 | ok |
-| `Spawns/PlayerTannery4` | `Gameplay/Loot/HallBox02/UsePoint` | use_point | 23.2 | 48.5 | 2.09 | ok |
-| `Spawns/PlayerTannery4` | `Gameplay/Loot/HallBox03` | objective | 22.2 | 49.6 | 2.24 | ok |
-| `Spawns/PlayerTannery4` | `Gameplay/Loot/HallBox03/UsePoint` | use_point | 22.2 | 49.6 | 2.24 | ok |
+| `Spawns/PlayerTannery4` | `Gameplay/Loot/HallBox01` | objective | 24.2 | 46.4 | 1.92 | ok |
+| `Spawns/PlayerTannery4` | `Gameplay/Loot/HallBox01/UsePoint` | use_point | 24.2 | 46.4 | 1.92 | ok |
+| `Spawns/PlayerTannery4` | `Gameplay/Loot/HallBox02` | objective | 23.2 | 47.4 | 2.05 | ok |
+| `Spawns/PlayerTannery4` | `Gameplay/Loot/HallBox02/UsePoint` | use_point | 23.2 | 47.4 | 2.05 | ok |
+| `Spawns/PlayerTannery4` | `Gameplay/Loot/HallBox03` | objective | 22.2 | 48.9 | 2.21 | ok |
+| `Spawns/PlayerTannery4` | `Gameplay/Loot/HallBox03/UsePoint` | use_point | 22.2 | 48.9 | 2.21 | ok |
 | `Spawns/PlayerTannery4` | `Gameplay/Loot/HallBox04` | objective | 21.2 | 47.7 | 2.25 | ok |
 | `Spawns/PlayerTannery4` | `Gameplay/Loot/HallBox04/UsePoint` | use_point | 21.2 | 47.7 | 2.25 | ok |
 | `Spawns/PlayerTannery4` | `Gameplay/Loot/HallBox05` | objective | 20.2 | 46.5 | 2.30 | ok |
@@ -3200,12 +3200,12 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerTannery4` | `Gameplay/Loot/HallBox07/UsePoint` | use_point | 18.3 | 44.1 | 2.41 | ok |
 | `Spawns/PlayerTannery4` | `Gameplay/Loot/HallBox08` | objective | 17.4 | 43.0 | 2.47 | ok |
 | `Spawns/PlayerTannery4` | `Gameplay/Loot/HallBox08/UsePoint` | use_point | 17.4 | 43.0 | 2.47 | ok |
-| `Spawns/PlayerTannery4` | `Gameplay/Loot/HallBox09` | objective | 22.3 | 52.4 | 2.35 | ok |
-| `Spawns/PlayerTannery4` | `Gameplay/Loot/HallBox09/UsePoint` | use_point | 22.3 | 52.4 | 2.35 | ok |
-| `Spawns/PlayerTannery4` | `Gameplay/Loot/HallBox10` | objective | 21.2 | 53.5 | 2.52 | ok |
-| `Spawns/PlayerTannery4` | `Gameplay/Loot/HallBox10/UsePoint` | use_point | 21.2 | 53.5 | 2.52 | ok |
-| `Spawns/PlayerTannery4` | `Gameplay/Loot/HallBox11` | objective | 20.1 | 54.6 | 2.72 | ok |
-| `Spawns/PlayerTannery4` | `Gameplay/Loot/HallBox11/UsePoint` | use_point | 20.1 | 54.6 | 2.72 | ok |
+| `Spawns/PlayerTannery4` | `Gameplay/Loot/HallBox09` | objective | 22.3 | 51.4 | 2.30 | ok |
+| `Spawns/PlayerTannery4` | `Gameplay/Loot/HallBox09/UsePoint` | use_point | 22.3 | 51.4 | 2.30 | ok |
+| `Spawns/PlayerTannery4` | `Gameplay/Loot/HallBox10` | objective | 21.2 | 52.4 | 2.48 | ok |
+| `Spawns/PlayerTannery4` | `Gameplay/Loot/HallBox10/UsePoint` | use_point | 21.2 | 52.4 | 2.48 | ok |
+| `Spawns/PlayerTannery4` | `Gameplay/Loot/HallBox11` | objective | 20.1 | 53.8 | 2.68 | ok |
+| `Spawns/PlayerTannery4` | `Gameplay/Loot/HallBox11/UsePoint` | use_point | 20.1 | 53.8 | 2.68 | ok |
 | `Spawns/PlayerTannery4` | `Gameplay/Loot/HallBox12` | objective | 18.9 | 52.6 | 2.78 | ok |
 | `Spawns/PlayerTannery4` | `Gameplay/Loot/HallBox12/UsePoint` | use_point | 18.9 | 52.6 | 2.78 | ok |
 | `Spawns/PlayerTannery4` | `Gameplay/Loot/HallBox13` | objective | 17.9 | 51.4 | 2.88 | ok |
@@ -3216,12 +3216,12 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerTannery4` | `Gameplay/Loot/HallBox15/UsePoint` | use_point | 15.7 | 49.1 | 3.12 | detour (whitelisted) |
 | `Spawns/PlayerTannery4` | `Gameplay/Loot/HallBox16` | objective | 14.7 | 48.0 | 3.27 | detour (whitelisted) |
 | `Spawns/PlayerTannery4` | `Gameplay/Loot/HallBox16/UsePoint` | use_point | 14.7 | 48.0 | 3.27 | detour (whitelisted) |
-| `Spawns/PlayerTannery4` | `Gameplay/Loot/HallBox17` | objective | 21.4 | 57.4 | 2.68 | ok |
-| `Spawns/PlayerTannery4` | `Gameplay/Loot/HallBox17/UsePoint` | use_point | 21.4 | 57.4 | 2.68 | ok |
-| `Spawns/PlayerTannery4` | `Gameplay/Loot/HallBox18` | objective | 20.2 | 58.5 | 2.89 | ok |
-| `Spawns/PlayerTannery4` | `Gameplay/Loot/HallBox18/UsePoint` | use_point | 20.2 | 58.5 | 2.89 | ok |
-| `Spawns/PlayerTannery4` | `Gameplay/Loot/HallBox19` | objective | 19.1 | 59.6 | 3.13 | detour (whitelisted) |
-| `Spawns/PlayerTannery4` | `Gameplay/Loot/HallBox19/UsePoint` | use_point | 19.1 | 59.6 | 3.13 | detour (whitelisted) |
+| `Spawns/PlayerTannery4` | `Gameplay/Loot/HallBox17` | objective | 21.4 | 56.4 | 2.63 | ok |
+| `Spawns/PlayerTannery4` | `Gameplay/Loot/HallBox17/UsePoint` | use_point | 21.4 | 56.4 | 2.63 | ok |
+| `Spawns/PlayerTannery4` | `Gameplay/Loot/HallBox18` | objective | 20.2 | 57.4 | 2.84 | ok |
+| `Spawns/PlayerTannery4` | `Gameplay/Loot/HallBox18/UsePoint` | use_point | 20.2 | 57.4 | 2.84 | ok |
+| `Spawns/PlayerTannery4` | `Gameplay/Loot/HallBox19` | objective | 19.1 | 58.9 | 3.09 | detour (whitelisted) |
+| `Spawns/PlayerTannery4` | `Gameplay/Loot/HallBox19/UsePoint` | use_point | 19.1 | 58.9 | 3.09 | detour (whitelisted) |
 | `Spawns/PlayerTannery4` | `Gameplay/Loot/HallBox20` | objective | 17.9 | 57.7 | 3.22 | detour (whitelisted) |
 | `Spawns/PlayerTannery4` | `Gameplay/Loot/HallBox20/UsePoint` | use_point | 17.9 | 57.7 | 3.22 | detour (whitelisted) |
 | `Spawns/PlayerTannery4` | `Gameplay/Loot/HallBox21` | objective | 16.7 | 56.5 | 3.37 | detour (whitelisted) |
