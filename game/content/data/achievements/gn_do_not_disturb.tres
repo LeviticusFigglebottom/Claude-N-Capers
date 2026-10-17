@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="AchievementDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://content/defs/achievement_def.gd" id="1_ach"]
+
+[resource]
+script = ExtResource("1_ach")
+id = &"achievement.gn_do_not_disturb"
+name_key = &"achievement.gn_do_not_disturb.name"
+desc_key = &"achievement.gn_do_not_disturb.desc"
+condition = {"event": &"heist_completed", "heist": &"gallery_night", "stealth": true, "max_pagers": 0, "count": 1}
+unlock = &""
+order = 756
+category = &"gallery_night"
+rewards = Array[StringName]([])
+unlocks = Array[StringName]([])
+requires_facts = Array[StringName]([])

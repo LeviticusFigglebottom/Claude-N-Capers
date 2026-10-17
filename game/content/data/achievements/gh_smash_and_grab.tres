@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="AchievementDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://content/defs/achievement_def.gd" id="1_ach"]
+
+[resource]
+script = ExtResource("1_ach")
+id = &"achievement.gh_smash_and_grab"
+name_key = &"achievement.gh_smash_and_grab.name"
+desc_key = &"achievement.gh_smash_and_grab.desc"
+condition = {"event": &"heist_completed", "heist": &"glasshouse", "loud": true, "objectives_completed": [&"safe", &"safe_loot"], "count": 1}
+unlock = &""
+order = 717
+category = &"glasshouse"
+rewards = Array[StringName]([])
+unlocks = Array[StringName]([])
+requires_facts = Array[StringName]([])

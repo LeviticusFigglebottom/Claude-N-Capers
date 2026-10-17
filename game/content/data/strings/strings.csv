@@ -3338,8 +3338,12 @@ achievement.gh_managers_combination.name,Manager's Combination
 achievement.gh_managers_combination.desc,"Complete Golden Hour after opening the Vossberg safe with the manager's code: not the keycard, not a lockpick, not the drill. Unlocks the Footlights mask base."
 achievement.gh_window_shopping.name,Window Shopping
 achievement.gh_window_shopping.desc,Complete Golden Hour in stealth without breaking a single pane of glass. Unlocks the Sash pattern.
-achievement.gh_cataclysm.name,Not a Fingerprint
-achievement.gh_cataclysm.desc,Complete Golden Hour in stealth on Cataclysm. Unlocks the Horned Fury mask base.
+achievement.gh_cataclysm.name,Diamond Standard
+achievement.gh_cataclysm.desc,Complete Golden Hour on Cataclysm. Unlocks the Horned Fury mask base.
+achievement.gh_nobody_called.name,Nobody Called In
+achievement.gh_nobody_called.desc,Complete Golden Hour in stealth without answering a single pager.
+achievement.gh_smash_and_grab.name,Smash and Grab
+achievement.gh_smash_and_grab.desc,Complete Golden Hour loud: drill the workshop safe and take what is in it.
 achievement.nd_quiet_deposit.name,Quiet Deposit
 achievement.nd_quiet_deposit.desc,Complete Nightfall Depository in stealth without anyone being killed. Unlocks the Stripes pattern.
 achievement.nd_bankers_hours.name,Banker's Hours
@@ -3350,6 +3354,10 @@ achievement.nd_clockwork.name,Clockwork
 achievement.nd_clockwork.desc,Complete Nightfall Depository after starting the time lock by hacking the server room instead of using the code. Unlocks the Circuitry pattern.
 achievement.nd_cataclysm.name,Foreclosure
 achievement.nd_cataclysm.desc,Complete Nightfall Depository on Cataclysm. Unlocks the Night Owl mask base.
+achievement.nd_off_the_hook.name,Off the Hook
+achievement.nd_off_the_hook.desc,Complete Nightfall Depository in stealth without answering a single pager.
+achievement.nd_hard_withdrawal.name,Hard Withdrawal
+achievement.nd_hard_withdrawal.desc,Complete Nightfall Depository loud by drilling the sealed vault.
 achievement.sl_silent_audit.name,Silent Audit
 achievement.sl_silent_audit.desc,Complete Shadow Ledger without anyone being killed. Unlocks the Scales pattern.
 achievement.sl_express_elevator.name,Express Elevator
@@ -3372,6 +3380,8 @@ achievement.db_buyers_discount.name,Buyer's Discount
 achievement.db_buyers_discount.desc,Complete Dockside Burn with at least 4 bags of the product secured before the rest goes up in smoke.
 achievement.db_cataclysm.name,Scorched Earth
 achievement.db_cataclysm.desc,Complete Dockside Burn on Cataclysm. Unlocks the Shark mask base.
+achievement.db_all_hands.name,All Hands on Deck
+achievement.db_all_hands.desc,Complete Dockside Burn on Brutal or higher with nobody in custody.
 achievement.gn_gala_manners.name,Gala Manners
 achievement.gn_gala_manners.desc,Complete Gallery Night in stealth without anyone being killed.
 achievement.gn_quick_viewing.name,Quick Viewing
@@ -3384,6 +3394,8 @@ achievement.gn_last_call.name,Gone Before Last Call
 achievement.gn_last_call.desc,Complete Gallery Night in stealth before the gala's last call.
 achievement.gn_cataclysm.name,Closing Night
 achievement.gn_cataclysm.desc,Complete Gallery Night on Cataclysm. Unlocks the Welder mask base.
+achievement.gn_do_not_disturb.name,Do Not Disturb
+achievement.gn_do_not_disturb.desc,Complete Gallery Night in stealth without answering a single pager.
 ui.achievements.category.career,Career
 ui.achievements.category.heists,Heists
 ui.achievements.category.glasshouse,Golden Hour
@@ -3402,7 +3414,7 @@ achievement.of_clearing_house.desc,Complete Ostrander Federal with every bag in 
 achievement.of_burn_and_hoist.name,Burn and Hoist
 achievement.of_burn_and_hoist.desc,Complete Ostrander Federal loud by burning through the vault roof and hoisting the loot out.
 achievement.of_cataclysm.name,Monday Never Comes
-achievement.of_cataclysm.desc,Complete Ostrander Federal on Cataclysm in stealth.
+achievement.of_cataclysm.desc,Complete Ostrander Federal on Cataclysm.
 ui.achievements.category.ostrander_federal,Ostrander Federal
 ui.achievements.category.stealth,Stealth
 ui.achievements.category.loud,Loud
