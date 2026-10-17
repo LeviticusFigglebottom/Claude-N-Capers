@@ -90,6 +90,8 @@ func place_prefab(parent: Node3D, it: Array) -> Node3D:
 		var key2: String = String(k2)
 		if key2 == "@landings":
 			_landings(inst, props[k2])
+		elif key2 == "@rig":
+			_rig(inst, props[k2])
 		elif key2 == "@contents":
 			for c: Array in props[k2]:
 				_content(inst, c)
@@ -110,6 +112,23 @@ func _landings(lift: Node3D, rows: Array) -> void:
 		add(lift, m)
 		targets.append(lift.get_path_to(m))
 	lift.set(&"targets", targets)
+
+
+## OF-P1 §7.7: the hoist rig ([name, world min, world max] rows, ostrander_federal_content.HOIST_RIG) as static boxes
+## under `host`/Rig: they come and go with the prefab (disabled = hidden and out of physics). world_dynamic (layer 2):
+## crew and bags collide, interaction and vision rays (world_static) pass. Each box is a permanent nav obstruction (the
+## hole's D-121 pattern: the navmesh never changes at the burn).
+func _rig(host: Node3D, rows: Array) -> void:
+	var rig: Node3D = add(host, node3d("Rig")) as Node3D
+	var inv: Transform3D = global_xform(host).affine_inverse()
+	for r: Array in rows:
+		var mn: Vector3 = v3(r[1])
+		var mx: Vector3 = v3(r[2])
+		var sb: StaticBody3D = box(rig, String(r[0]), inv * mn, inv * mx, "trim")
+		if sb != null:
+			sb.collision_layer = 2
+			sb.set_meta(&"lc_subprop", true)   # levelcheck: each its own prop (not merged into the hoist's box)
+		obstruct(Transform3D.IDENTITY, AABB(mn, mx - mn))
 
 
 ## A prefab inside another (a safe's contents): [kind, name, local offset, props].

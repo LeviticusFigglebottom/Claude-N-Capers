@@ -39,8 +39,31 @@ CAGE_T = 0.1
 # inside the vault (inner face z 13.3) and both fit.
 LID = [22.8, 13.4, 25.2, 15.8]
 HOLE = [23.4, 13.5, 24.6, 15.7]
-HOIST_CAR = [1.0, 1.0, 1.0]
+# OF-P1 (ENV P windowed pass) §7.7: the car is 1.0 x 0.75 m (x, z; 2 bags: two HEAVY 0.75 x 0.4 bags stack or sit side
+# by side across x) against the hole's south edge, and the rope ladder hangs 0.04 m inside the north edge, so the ladder's
+# Bottom grab point (0.4 m off its climb face, ladder_placeholder.tscn) stands >= 1.0 m clear of the car footprint.
+TANNERY_SECURE_X = 51.2       # the E2 SECURE_LOOT strip's centre (x 48.2-54.2; ostrander_federal_slots.ESCAPE_ZONES)
+HOIST_CAR = [1.0, 1.0, 0.75]
+HOIST_Z = round(HOLE[3] - HOIST_CAR[2] / 2, 3)          # 15.325
+ROPE_Z = round(HOLE[1] + 0.04, 3)                       # 13.54 (rails 0.05 thick: clear of the slab edge)
+LADDER_BOTTOM_OFF = 0.4                                 # ladder_placeholder.tscn Bottom (0, 0, -0.4)
 ROPE_STOWED_M = 3.2           # the rope ladder rolled up to the lid's underside (0.8 m slab) until the burn
+# The hoist rig (OF-P1 §7.7; built under Gameplay/Lifts/Hoist, so it appears with the hoist at the burn and is gone
+# before it: GameplayPrefab disabled = hidden + out of physics). World boxes [name, min, max]; world_dynamic (layer 2:
+# crew and bags collide, interaction / vision rays (layer 1) pass, so the car's bags stay pick-up-able over the guard).
+# Vault (FFL -4): a shaft round the car open to the south over a 0.6 m sill (ND's lift-hatch precedent): a bag thrown
+# north from the vault floor hits the backstop (the first contact keeps 15 % of its speed, LootTweak) and drops into the
+# car. TW (FFL 0): 1.5 m guard screens on the hole's W / E / S edges (the north edge stays open for the ladder top and
+# the hole_rappel point): a bag thrown across the hole from an edge hits the far screen flush with the edge and falls in.
+HOIST_RIG = [
+    ["ShaftBackstop", [23.36, -4.0, 14.92], [24.64, -1.6, 14.97]],
+    ["ShaftW", [23.36, -4.0, 14.97], [23.41, -1.6, 15.75]],
+    ["ShaftE", [24.59, -4.0, 14.97], [24.64, -1.6, 15.75]],
+    ["ShaftSill", [23.36, -4.0, 15.75], [24.64, -3.4, 15.8]],
+    ["HoleGuardW", [23.35, 0.0, 13.5], [23.4, 1.5, 15.75]],
+    ["HoleGuardE", [24.6, 0.0, 13.5], [24.65, 1.5, 15.75]],
+    ["HoleGuardS", [23.4, 0.0, 15.7], [24.6, 1.5, 15.75]],
+]
 # Teller counter (z 17 line; §7.2, D-128 / D-136 §3b.11 and OF-C0): 12 work tops (props, kind teller_worktop, top 1.00,
 # z 16.35-16.83, 0.48 deep, teller side north = local -Z), a SOLID bandit-screen base to 1.50 m (z 16.83-16.93; QC-g
 # amended by the LEAD: the original 1.35 m is teller_worktop's perpendicular formula, but hide_los samples observers
@@ -452,19 +475,21 @@ ALWAYS: Dict[str, List[list]] = {
                                                                  "objective_tag": "cash_lift",
                                                                  "@landings": [["CashLiftLandingG", [0.0, 4.0, 0.0]]]},
           [11.5, 0.0, 2.2], {"walkable": True}, ""),
-        P("bag_lift", "Hoist", "B", [24.0, 0.05, 15.2], 0.0, {"travel_s": 6.0, "capacity": 2, "car_size_m": HOIST_CAR,
+        P("bag_lift", "Hoist", "B", [24.0, 0.05, HOIST_Z], 0.0, {"travel_s": 6.0, "capacity": 2, "car_size_m": HOIST_CAR,
                                                             "loud_only": True, "objective_tag": "hoist",
                                                             "enabled_at_start": False,
-                                                            "@landings": [["HoistLandingTW", [0.0, 4.0, 0.0]]]},
-          [25.1, 0.0, 15.2], {"starts_disabled": True, "hidden": True}, ""),
+                                                            "@landings": [["HoistLandingTW", [0.0, 4.0, 0.0]]],
+                                                            "@rig": HOIST_RIG},
+          [25.1, 0.0, HOIST_Z], {"starts_disabled": True, "hidden": True}, ""),
     ],
     "Gameplay/Ladders": [
         # rolled up under the lid until the burn (full length, its rails would sit in the lid plug): 3.2 m to the lid's
         # underside; OF-A2 sets height_m = burn_height_m (4.0, B -> G) when it enables the ladder at the burn (QC-61).
-        P("ladder", "RopeLadder", "B", [24.0, 0.0, 13.6], 180.0, {"height_m": ROPE_STOWED_M, "usable": False,
+        P("ladder", "RopeLadder", "B", [24.0, 0.0, ROPE_Z], 180.0, {"height_m": ROPE_STOWED_M, "usable": False,
                                                               "enabled_at_start": False, "objective_tag": "rope_ladder"},
           None, {"loud_only": True, "starts_disabled": True, "hidden": True, "burn_height_m": 4.0}, ""),
-        P("ladder", "CagedLadder", "E", [46.0, 0.0, 17.55], 180.0, {"height_m": 3.6}, None, {}, ""),
+        P("ladder", "CagedLadder", "E", [46.0, 0.0, 17.55], 180.0, {"height_m": 3.6, "objective_tag": "caged_ladder"},
+          None, {}, ""),
     ],
     "Gameplay/Markers": [
         M("CasingHall", "G", [24.0, 0.0, 27.5], "casing", "casing objective marker: the hall at the meridian line"),
@@ -506,6 +531,12 @@ FIXED_SPAWNS: List[list] = [
       "prop_chair_office"),
 ] + [S("Teller%d" % (i + 1), "CIVILIAN", "G", [x, 0.0, TELLER_Z], 180.0,
        ["civ_teller"] + (["civ_teller_rotating"] if i == 3 else []), "teller_count") for i, x in enumerate(TELLERS)] + [
+    # D-136 §3b.5 (LEAD, OF-C1): the SD attendant, always, at her desk (AttendantDesk z 9.9-10.6) on lane B's
+    # ChairSDAttendant (of_art_rooms.gd: prop_chair_office at (37, -4, 9.55), yaw 180): on its Seat, 0.12 m to the chair's
+    # front (catalog `seat`), facing the desk. The art rooms are built after NpcSeatSpawns.snap, so the Seat is
+    # placed here. Tags: `civ_sd_attendant` (the doc's roster tag; no D look yet) then `civ_teller` (D's teller looks,
+    # staff doors; NOT civ_officer: the mission binds any unrouted civ_officer to officer_coffee).
+    S("SDAttendant", "CIVILIAN", "B", [37.0, 0.0, 9.67], 180.0, ["civ_sd_attendant", "civ_teller"], "desk_work"),
     S("PlazaPedestrian1", "CIVILIAN", "G", [10.0, -0.75, 44.0], 90.0, ["civ_plaza"], "walk_text"),
     S("PlazaPedestrian2", "CIVILIAN", "G", [44.0, -0.75, 44.0], -90.0, ["civ_plaza"], "walk_text"),
     # Rare armored_car_early (QC-25 timed spawn, HeistRuntime scripted tag): the Vaultline crew at the dock.
@@ -604,14 +635,17 @@ def _server(f: str, rack: list, ctrl: list) -> list:
 
 
 def _escape(kind: str, sec_pos: list, sec_yaw: float, sec_size: list, esc_pos: list, esc_size: list, f: str,
-            vis: str, esc_type: str, delay: float, esc_vis: str) -> list:
+            vis: str, esc_type: str, delay: float, esc_vis: str, label: str) -> list:
+    """The escape slot's SECURE_LOOT zone, ESCAPE zone and wait marker. objective_tag stays `secure` / `escape` /
+    `escape_wait` (the mission binds those; one escape slot is resolved per run, so tag + class is unique in a run);
+    meta `escape_label` (E1 / E2 / E3, the doc's ids) names which escape a node belongs to for tools and tests."""
     props = {"objective_tag": "escape", "escape_type": esc_type, "zone_size_m": esc_size}
     if delay > 0.0:
         props["arrival_delay_s"] = delay
+    m = M("EscapeWait" + kind, f, [esc_pos[0], 0.0, esc_pos[2]], "escape_wait", "loud: hold until the escape arrives")
     return [P("secure_zone", "Secure" + kind, f, sec_pos, sec_yaw, {"objective_tag": "secure", "zone_size_m": sec_size},
-              None, {"kind": "vehicle"}, vis),
-            P("escape_zone", "Escape" + kind, f, esc_pos, 0.0, props, None, {}, esc_vis),
-            M("EscapeWait" + kind, f, [esc_pos[0], 0.0, esc_pos[2]], "escape_wait", "loud: hold until the escape arrives")]
+              None, {"kind": "vehicle", "escape_label": label}, vis),
+            P("escape_zone", "Escape" + kind, f, esc_pos, 0.0, props, None, {"escape_label": label}, esc_vis), m]
 
 
 SLOT_CONTENT: Dict[str, List[list]] = {
@@ -649,12 +683,15 @@ SLOT_CONTENT: Dict[str, List[list]] = {
                   None, {}, "")],
     "fe_up": [M("FireEscapeLadderUp", "G", [0.6, 3.0, -2.6], "", "the drop ladder raised (no climb)")],
     "esc_van_dock": _escape("Dock", [5.0, 0.0, -4.32], 180.0, [4.0, 3.0, 8.0], [10.5, 0.0, -3.0], [4.0, 3.0, 4.0], "G",
-                            "veh_van_secure", "van", 0.0, "res://world/heists/shared/escape_van_marker.tscn"),
-    "esc_van_tannery": _escape("Tannery", [50.4, 0.0, 14.28], 180.0, [4.4, 3.0, 14.0], [51.0, 0.0, 6.5],
+                            "veh_van_secure", "van", 0.0, "res://world/heists/shared/escape_van_marker.tscn", "E1"),
+    # E2: the SECURE_LOOT strip runs from the van's rear doors (z 7.3) north under the terrace's SE corner (z 21.3), so
+    # the terrace east parapet throw (§7.4) lands in it: x 48.2-54.2 (6.0 m: a HEAVY throw from the face lands at
+    # x 51.5-52.9, a MEDIUM one at 54.7-56.3, within 2.1 m beside it).
+    "esc_van_tannery": _escape("Tannery", [TANNERY_SECURE_X, 0.0, 14.28], 180.0, [6.0, 3.0, 14.0], [51.0, 0.0, 6.5],
                                [4.0, 3.0, 3.0], "G", "veh_van_secure", "van", 0.0,
-                               "res://world/heists/shared/escape_van_marker.tscn"),
+                               "res://world/heists/shared/escape_van_marker.tscn", "E2"),
     "esc_heli_terrace": _escape("Terrace", [42.5, 0.0, 26.0], 0.0, [4.0, 3.0, 5.0], [35.5, 0.0, 27.0], [6.0, 3.0, 6.0],
-                                "E", "prop_secure_cargo_net", "heli", 45.0, "veh_heli_escape"),
+                                "E", "prop_secure_cargo_net", "heli", 45.0, "veh_heli_escape", "E3"),
     "drop_terrace": [M("DrillDrop", "E", [20.0, 0.0, 33.0], "drill_delivery",
                        "loud: 2 x loot.thermal_drill_part (HeistMission.spawn_loot, OF-A1)")],
     "drop_dock": [M("DrillDrop", "G", [14.0, 0.0, -4.0], "drill_delivery",
@@ -701,12 +738,38 @@ SLOT_PARAMS = {"sec_staffed": {"operator_spawn": "Spawns/CameraOperatorSeat",
                "cust_8": {"customers": 8, "pc_clients": 2}, "off_1": {"officers": 1}, "off_2": {"officers": 2},
                "off_3": {"officers": 3}}
 # Laser grids (laser_pattern slots): the grid plane at x 21 across VC; its local X runs along -z (yaw 90).
+# lz_sweep (OF-P1 §7.1): 2 vertical beams half a cycle apart sweep the 3.3 m width and back every 7 s, so they cross the
+# centre together every 3.5 s and the centre lane (0.8 m: capsule 0.35 + 0.05 each side, beams 0.03) is clear for
+# 3.5 - 0.83 / 0.943 = 2.62 s (>= 2.0; a MEDIUM carrier needs 4 m / 2.63 m/s = 1.52 s). The 3-beam 8 s sweep left
+# 0.33 s at the centre (6 passes per cycle). sweep_window_s() below is the same arithmetic as ENV P's lane read-out.
+SWEEP_BEAMS = 2
+SWEEP_PERIOD_S = 7.0
+SWEEP_LANE_HALF_M = 0.4
+SWEEP_BEAM_T_M = 0.03
+
+
+def sweep_window_s(lx: float, beams: int = SWEEP_BEAMS, period: float = SWEEP_PERIOD_S, width: float = 3.3,
+                   dt: float = 0.01) -> float:
+    """Longest clear window (s) over two cycles for the lane centred at local x `lx` (LaserGrid.beam_offset)."""
+    best = run = 0.0
+    th = SWEEP_BEAM_T_M / 2
+    for k in range(int(2 * period / dt)):
+        t = k * dt
+        clear = True
+        for i in range(beams):
+            u = (t / period + i / beams) % 1.0
+            x = (1.0 - abs(2.0 * u - 1.0) - 0.5) * width
+            if x + th >= lx - SWEEP_LANE_HALF_M and x - th <= lx + SWEEP_LANE_HALF_M:
+                clear = False
+        run = run + dt if clear else 0.0
+        best = max(best, run)
+    return best
 LASERS = {
     "lz_static": {"pattern": "static", "z": [LASER_Z[0] + 0.15, LASER_GAP[0] - 0.15], "y": 1.0, "h": 1.8, "beams": 3,
                   "posts": [[LASER_Z[0], LASER_Z[0] + 0.15], [LASER_GAP[0] - 0.15, LASER_GAP[0]]],
                   "metas": {"crouch_under": True, "bypass": True}},
     "lz_sweep": {"pattern": "sweeping", "z": [LASER_Z[0] + 0.15, LASER_Z[1] - 0.15], "y": 0.0, "h": 2.6,
-                 "sweep_beams": 3, "period_s": 8.0,
+                 "sweep_beams": SWEEP_BEAMS, "period_s": SWEEP_PERIOD_S,
                  "posts": [[LASER_Z[0], LASER_Z[0] + 0.15], [LASER_Z[1] - 0.15, LASER_Z[1]]], "metas": {"bypass": False}},
     "lz_timed": {"pattern": "timed_off", "z": [LASER_Z[0] + 0.15, LASER_Z[1] - 0.15], "y": 0.0, "h": 2.6, "beams": 4,
                  "period_s": 20.0, "off_s": 6.0,
@@ -1144,15 +1207,31 @@ def check(fail: Callable[[str], None], note: Callable[[str], None]) -> bool:
     print("  7.1 laser bypass gap %.2f m (>= 1.0); lz_static low beam centre %.2f m" % (gap, LASERS["lz_static"]["y"] + 0.3))
     if gap < 1.0:
         bad("laser bypass gap")
+    win = sweep_window_s(0.0)
+    print("  7.1 lz_sweep %d beams, %.1f s: centre lane clear %.2f s (>= 2.0)" % (SWEEP_BEAMS, SWEEP_PERIOD_S, win))
+    if win < 2.0:
+        bad("lz_sweep centre window")
     print("  7.2 counter solid upstand %.2f m (crouch capsule 1.2); ledge %.2f, work top %.2f" %
           (COUNTER["upstand"][2], COUNTER["ledge"][2], COUNTER["top"][2]))
     if COUNTER["upstand"][2] < 1.25:
         bad("counter upstand")
+    import ostrander_federal_geometry as GM
+    tp = GM.THROW_PARAPET
+    slope = math.degrees(math.atan2(tp["fall"], GM.EXT_T))
+    print("  7.4 terrace east parapet (x %.0f): guard %.2f m (solid %.2f + mono coping %.2f m outward, %.1f deg)" %
+          (tp["fixed"], tp["guard"], tp["guard"] - tp["fall"], tp["fall"], slope))
+    if slope < 50.0 or tp["guard"] < 1.1 - 1e-6 or tp["guard"] >= 1.3:
+        bad("throw parapet: guard >= 1.1 (fall safety, jump apex 1.08) and < 1.3 (the throw release height)")
     hole_w = HOLE[2] - HOLE[0]
     print("  7.7 hole %.1f x %.1f m, hoist car %.1f m in its south half, ladder landing %.2f m" %
           (hole_w, HOLE[3] - HOLE[1], HOIST_CAR[0], (HOLE[3] - HOIST_CAR[2]) - HOLE[1]))
     if hole_w < 1.2 or (HOLE[3] - HOIST_CAR[2]) - HOLE[1] < 1.0:
         bad("hole / hoist / ladder landing")
+    sep = (HOIST_Z - HOIST_CAR[2] / 2) - (ROPE_Z + LADDER_BOTTOM_OFF)
+    print("  7.7 rope ladder Bottom z %.2f, hoist car z %.3f-%.2f: %.2f m clear (>= 1.0)" %
+          (ROPE_Z + LADDER_BOTTOM_OFF, HOIST_Z - HOIST_CAR[2] / 2, HOIST_Z + HOIST_CAR[2] / 2, sep))
+    if sep < 1.0 - 1e-6 or HOIST_Z + HOIST_CAR[2] / 2 > HOLE[3] + 1e-6:
+        bad("rope ladder landing vs the hoist car")
     for a, b, _z in QUEUE_RAILS:
         pass
     return ok[0]

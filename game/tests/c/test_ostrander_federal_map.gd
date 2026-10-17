@@ -19,6 +19,12 @@ const BLD: String = "Geometry/Building/"
 const VC_SOUTH_FACE: float = 12.7
 ## §7.2 / QC-g amended: the solid screen base, the customers' ledge, the work tops.
 const SCREEN_BASE_MIN: float = 1.5
+## OF-P1 (ENV P windowed pass) numbers: §7.4 the terrace east parapet guard (solid part) / §7.1 the sweep's centre
+## window / §7.7 the rope ladder's Bottom grab point clear of the hoist car footprint.
+const THROW_GUARD_M: float = 1.1
+const THROW_GUARD_SOLID_M: float = 0.5
+const SWEEP_WINDOW_MIN_S: float = 2.0
+const LADDER_CAR_CLEAR_MIN_M: float = 1.0
 ## Spawn tags the roster reads (coordinator, LEAD rulings): each on at least one spawn.
 const SPAWN_TAGS: Array[StringName] = [&"civ_manager_mgr_floor", &"civ_manager_mgr_gallery", &"civ_manager_mgr_vault",
 	&"guard_lobby", &"guard_vault", &"guard_rover_hall", &"guard_rover_gallery", &"guard_rover_basement",
@@ -133,6 +139,15 @@ func test_laser_gap() -> void:
 	for sid: String in ["lz_static", "lz_sweep", "lz_timed"]:
 		assert_true(_map.get_node_or_null("Variants/Group_laser_pattern/Slot_%s/LaserPost0/VaultLasers" % sid) != null,
 			"%s grid hangs off its emitter post" % sid)
+	# OF-P1 §7.1: the sweep's centre lane (capsule 0.35 + 0.05 each side) is clear >= 2.0 s (MEDIUM 4 m: 1.52 s).
+	var sweep: LaserGrid = _map.get_node("Variants/Group_laser_pattern/Slot_lz_sweep/LaserPost0/VaultLasers") as LaserGrid
+	assert_eq(sweep.sweep_beams, 2, "lz_sweep: 2 beams")
+	assert_near(sweep.period_s, 7.0, 0.001, "lz_sweep: 7 s")
+	var win: float = _sweep_window(sweep, 0.0)
+	assert_true(win >= SWEEP_WINDOW_MIN_S, "lz_sweep centre lane clear %.2f s >= %.1f" % [win, SWEEP_WINDOW_MIN_S])
+	var timed: LaserGrid = _map.get_node("Variants/Group_laser_pattern/Slot_lz_timed/LaserPost0/VaultLasers") as LaserGrid
+	assert_true(timed.beam_count == 4 and is_equal_approx(timed.period_s, 20.0) and is_equal_approx(timed.off_s, 6.0),
+		"lz_timed unchanged (4 beams, off 6 s of 20 s)")
 
 
 ## §7.2 / QC-g amended: the solid screen base >= 1.50 m, the ledge 1.05, 12 work tops at 1.00, glass see_through.
@@ -169,6 +184,16 @@ func test_guard_slopes_and_oob() -> void:
 	assert_true(copings.size() >= 10, "parapet copings built (%d)" % copings.size())
 	for c: Node in copings:
 		assert_true(_min_up_slope(c) >= 50.0, "%s faces >= 50 deg (%.1f)" % [c.name, _min_up_slope(c)])
+	# OF-P1 §7.4: the terrace east parapet (the E2 throw spot) is a 1.1 m guard: solid to 0.5 m, a mono-pitch coping
+	# from the terrace face's 1.1 m top edge falling outward; nothing past the face above 1.1 m (test_of_bag_throws.gd).
+	var e: float = 8.6
+	var tw: AABB = _box(_map.get_node(BLD + "Walls/FloorE/EZ0480_1_00") as StaticBody3D)
+	assert_near(tw.end.y - e, THROW_GUARD_SOLID_M, 0.001, "terrace east parapet solid to %.2f m" % THROW_GUARD_SOLID_M)
+	var tc: Node3D = _map.get_node(BLD + "Coping/CopingEZ0480_0170") as Node3D
+	var tca: AABB = _xform(tc) * (tc.get_node("Mesh") as MeshInstance3D).get_aabb()
+	assert_near(tca.end.y - e, THROW_GUARD_M, 0.001, "terrace east parapet guard %.2f m (coping top)" % THROW_GUARD_M)
+	assert_true(_coping_top_beyond(tc, tca.position.x + 0.05) <= tca.end.y - 0.07 and _min_up_slope(tc) >= 50.0,
+		"the throw-spot coping falls outward from its inner edge (%.1f deg)" % _min_up_slope(tc))
 	var lantern: Node = _map.get_node(BLD + "Lantern/Glazing")
 	assert_true(_min_up_slope(lantern) >= 50.0, "lantern glazing >= 50 deg (%.1f)" % _min_up_slope(lantern))
 	assert_true(lantern.is_in_group(&"see_through"), "lantern glazing see_through")
@@ -209,6 +234,49 @@ func test_hole_hoist_ladder() -> void:
 	assert_eq(float(lad.get_meta(&"burn_height_m", 0.0)), 4.0, "rope ladder 4.0 m after the burn")
 	assert_true(float(lad.get(&"height_m")) <= 3.2 + 0.001, "stowed under the lid until the burn")
 	assert_false(bool(lad.get(&"usable")), "the rope ladder is not usable at start (QC-61)")
+	# OF-P1 §7.7 (c): the ladder's Bottom grab point (ladder_placeholder.tscn's Bottom marker) >= 1.0 m clear of the car's
+	# footprint, inside the hole; the car against the hole's south edge.
+	var ph: Node3D = (load("res://systems/prefabs/ladder/ladder_placeholder.tscn") as PackedScene).instantiate() as Node3D
+	var bottom: Vector3 = _xform(lad as Node3D) * (ph.get_node("Bottom") as Node3D).position
+	ph.free()
+	var hx: Transform3D = _xform(_map.get_node("Gameplay/Lifts/Hoist") as Node3D)
+	var car_lo: Vector2 = Vector2(hx.origin.x - car.x * 0.5, hx.origin.z - car.z * 0.5)
+	var car_hi: Vector2 = Vector2(hx.origin.x + car.x * 0.5, hx.origin.z + car.z * 0.5)
+	var clear: float = Vector2(maxf(maxf(car_lo.x - bottom.x, bottom.x - car_hi.x), 0.0),
+		maxf(maxf(car_lo.y - bottom.z, bottom.z - car_hi.y), 0.0)).length()
+	assert_true(clear >= LADDER_CAR_CLEAR_MIN_M - 0.001, "rope ladder Bottom %s is %.2f m clear of the car" % [bottom, clear])
+	var lo: Vector3 = lid.position
+	var hi: Vector3 = lid.end
+	assert_true(bottom.x > lo.x and bottom.x < hi.x and bottom.z - 0.35 >= lo.z - 0.001 and bottom.z < hi.z,
+		"the climber's column is inside the hole")
+	assert_true(car_hi.y <= hi.z + 0.001 and car_lo.x >= lo.x - 0.001 and car_hi.x <= hi.x + 0.001, "the car fits the hole")
+	# §7.7 (a) / (b): the hoist rig (the vault shaft with its backstop and sill, the TW guard screens) rides with the hoist
+	# (disabled until the burn) on world_dynamic; the throws themselves: test_of_bag_throws.gd.
+	var rig: Node = _map.get_node_or_null("Gameplay/Lifts/Hoist/Rig")
+	assert_true(rig != null, "the hoist rig under the hoist")
+	if rig != null:
+		for nm: String in ["ShaftBackstop", "ShaftW", "ShaftE", "ShaftSill", "HoleGuardW", "HoleGuardE", "HoleGuardS"]:
+			var b: StaticBody3D = rig.get_node_or_null(nm) as StaticBody3D
+			assert_true(b != null and b.collision_layer == 2, "rig %s on world_dynamic" % nm)
+		var gs: AABB = _box(rig.get_node("HoleGuardS") as StaticBody3D)
+		assert_true(gs.end.y >= 1.5 - 0.001, "TW guard screens 1.5 m")
+	# D-136 §3b.5 (LEAD): the SD attendant at her desk, on lane B's chair Seat, never a civ_officer (officer_coffee).
+	var att: SpawnPoint = _map.find_child("SDAttendant", true, false) as SpawnPoint
+	assert_true(att != null and att.idle_activity == &"desk_work" and att.tags.has(&"civ_sd_attendant")
+		and not att.tags.has(&"civ_officer"), "the SD attendant (desk_work, civ_sd_attendant)")
+	if att != null:
+		assert_true(_xform(att).origin.distance_to(Vector3(37.0, -4.0, 9.67)) < 0.01, "on ChairSDAttendant's Seat")
+	var caged: Node = _map.get_node("Gameplay/Ladders/CagedLadder")
+	assert_eq(caged.get(&"objective_tag"), &"caged_ladder", "caged ladder tag")
+	for e: Array in [["Dock", "E1"], ["Tannery", "E2"], ["Terrace", "E3"]]:
+		var slot: String = "Variants/Group_escape/Slot_%s/" % {"Dock": "esc_van_dock", "Tannery": "esc_van_tannery",
+			"Terrace": "esc_heli_terrace"}[e[0]]
+		var sz: Node = _map.get_node(slot + "Secure" + String(e[0]))
+		var ez: Node = _map.get_node(slot + "Escape" + String(e[0]))
+		assert_true(sz.get(&"objective_tag") == &"secure" and ez.get(&"objective_tag") == &"escape",
+			"%s: mission tags secure / escape" % e[0])
+		assert_true(String(sz.get_meta(&"escape_label", "")) == e[1] and String(ez.get_meta(&"escape_label", "")) == e[1],
+			"%s: escape_label %s" % [e[0], e[1]])
 
 
 ## OF-A6 map hooks: the lid is a replicated GameplayPrefab tagged `lid` holding the plug and the panel, the hole is a
@@ -360,6 +428,43 @@ func _box(body: StaticBody3D) -> AABB:
 	var cs: CollisionShape3D = body.get_node("Collision") as CollisionShape3D
 	var sz: Vector3 = (cs.shape as BoxShape3D).size
 	return _xform(cs) * AABB(-sz * 0.5, sz)
+
+
+## Highest mesh vertex (map y) of a hull body at map x >= `x`.
+func _coping_top_beyond(body: Node3D, x: float) -> float:
+	var mi: MeshInstance3D = body.get_node("Mesh") as MeshInstance3D
+	var xf: Transform3D = _xform(mi)
+	var top: float = -INF
+	for s: int in range(mi.mesh.get_surface_count()):
+		for v: Vector3 in mi.mesh.surface_get_arrays(s)[Mesh.ARRAY_VERTEX]:
+			var w: Vector3 = xf * v
+			if w.x >= x:
+				top = maxf(top, w.y)
+	return top
+
+
+## Longest clear window (s) over two cycles for the 0.8 m lane at local x `lx` (ENV P's read-out: lane half capsule
+## + 0.05, the beams' thickness), from the grid's own beam_offset.
+func _sweep_window(grid: LaserGrid, lx: float) -> float:
+	var r: float = Tweak.crew().capsule_radius + 0.05
+	var th: float = Tweak.interaction().laser_beam_thickness_m * 0.5
+	var t0: float = grid.time_s
+	var best: float = 0.0
+	var run: float = 0.0
+	var dt: float = 0.01
+	var t: float = 0.0
+	while t < grid.period_s * 2.0:
+		grid.time_s = t
+		var clear: bool = true
+		for i: int in grid.beam_total():
+			var x: float = grid.beam_offset(i)
+			if x + th >= lx - r and x - th <= lx + r:
+				clear = false
+		run = run + dt if clear else 0.0
+		best = maxf(best, run)
+		t += dt
+	grid.time_s = t0
+	return best
 
 
 ## Up-facing, non-flat mesh triangle slopes (deg from horizontal) of a hull body's Mesh: [min, max] (a coping's 2 mm

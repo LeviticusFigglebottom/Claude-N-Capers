@@ -37,7 +37,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | door_frame_gap | PASS | 0 | 0 |
 | frame_proud | PASS | 0 | 0 |
 | seam_gaps | PASS | 0 | 0 |
-| furniture_logic | PASS | 0 | 3 |
+| furniture_logic | PASS | 0 | 5 |
 
 ## contract_nodes: Contract nodes
 
@@ -54,14 +54,14 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## floating: Nothing floats
 
-- 1868 props checked
+- 1875 props checked
 
 - WARN `Variants/Group_escape/Slot_esc_van_dock/EscapeDock` @ (10.50, 0.00, -3.00): prop has no geometry or collision; skipped
 - WARN `Variants/Group_escape/Slot_esc_van_tannery/EscapeTannery` @ (51.00, 0.00, 6.50): prop has no geometry or collision; skipped
 
 ## clipping: Nothing clips
 
-- 1869 props, 94 doors checked
+- 1876 props, 94 doors checked
 
 - WARN `Gameplay/Devices/Lid` @ (24.00, 0.00, 14.60): door has no Leaf node; swing arc not checked
 
@@ -202,13 +202,13 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## slopes: No walkable slope < 50° outside the play mesh
 
-- 561 x 569 columns (0.25 m), 307130 surface samples, 0 collider(s) with reachable walkable surfaces outside play
+- 561 x 569 columns (0.25 m), 307200 surface samples, 0 collider(s) with reachable walkable surfaces outside play
 
 
 ## navmesh: Navmesh
 
-- navmesh: 3739 polygons, cell 0.10/0.10 m
-- 432 markers checked
+- navmesh: 3772 polygons, cell 0.10/0.10 m
+- 433 markers checked
 | room | walkable samples | covered | coverage |
 |---|---|---|---|
 | `Rooms/RoomLK` | 174 | 174 | 100% |
@@ -223,7 +223,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `Rooms/RoomBB` | 285 | 285 | 100% |
 | `Rooms/RoomRC` | 206 | 206 | 100% |
 | `Rooms/RoomVC` | 227 | 227 | 100% |
-| `Rooms/RoomVT` | 579 | 579 | 100% |
+| `Rooms/RoomVT` | 579 | 576 | 99% |
 | `Rooms/RoomSD` | 510 | 510 | 100% |
 | `Rooms/RoomLD` | 276 | 274 | 99% |
 | `Rooms/RoomE1` | 17 | 17 | 100% |
@@ -283,7 +283,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `Rooms/RoomRP` | 341 | 341 | 100% |
 | `Rooms/RoomX1` | 786 | 786 | 100% |
 | `Rooms/RoomX2` | 775 | 775 | 100% |
-| `Rooms/RoomX3` | 779 | 779 | 100% |
+| `Rooms/RoomX3` | 777 | 777 | 100% |
 
 
 ## barred_doors: BARRED doorways are closed in the navmesh
@@ -293,7 +293,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## reachability: Reachability (per variant)
 
-- 56 variant configuration(s), 305064 spawn->target path queries
+- 56 variant configuration(s), 305736 spawn->target path queries
 
 
 ## walkthrough: Walkthrough bot
@@ -389,3 +389,5 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 - WARN `Gameplay/Devices/LidDrill` @ (24.00, 1.00, 14.60): door_clear: in the clear zone of door `Gameplay/Devices/Lid` (1.0 / 1.0 m each side, leaf width 2.40 m) by 1.01 m (gameplay prefab / variant content: review)
 - WARN `Gameplay/Lifts/CashLift` @ (11.50, -3.95, 1.55): door_clear: in the clear zone of door `Gameplay/Doors/CashLiftDoorB` (1.0 / 1.0 m each side, leaf width 1.82 m) by 0.21 m (gameplay prefab / variant content: review)
 - WARN `Gameplay/Lifts/CashLift` @ (11.50, -3.95, 1.55): use_point: stands in the user's spot of `Gameplay/Doors/CashLiftDoorB` (UsePoint @ (11.50, -4.00, 2.30)) by 0.11 m (gameplay prefab / variant content: review)
+- WARN `Gameplay/Lifts/Hoist/Rig/HoleGuardE` @ (24.62, 0.75, 14.62): door_clear: in the clear zone of door `Gameplay/Devices/Lid` (1.0 / 1.0 m each side, leaf width 2.40 m) by 0.60 m (gameplay prefab / variant content: review)
+- WARN `Gameplay/Lifts/Hoist/Rig/HoleGuardW` @ (23.38, 0.75, 14.62): door_clear: in the clear zone of door `Gameplay/Devices/Lid` (1.0 / 1.0 m each side, leaf width 2.40 m) by 0.60 m (gameplay prefab / variant content: review)

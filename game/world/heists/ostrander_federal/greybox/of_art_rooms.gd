@@ -65,6 +65,9 @@ const PC_PROPS: Array = [
 	["PendantPC2", "prop_pendant_brass", [44.6, 4.2, 17.6], 0.0],
 	["SwitchPC", "prop_light_switch", [40.1, 1.2, 17.15], -90.0],
 ]
+## Chairs a spawned NPC sits on (OF-C1, D-136 §3b.5: the SD attendant, Spawns/SDAttendant on its Seat): no collider
+## and no nav obstruction, so the seated spawn stays on the navmesh (SL npc_seat, D-063 / D-130).
+const NPC_SEATS: Array[String] = ["ChairSDAttendant"]
 ## SD (x 34-48, z 9-25, floor -4, ceiling -0.8): the attendant's desk set, the booth chairs / lamps / slips, a viewing
 ## table with a chair in each wide aisle, a bench, the clock, a 4000 K panel grid over the aisles.
 const SD_PROPS: Array = [
@@ -285,6 +288,14 @@ func _place(parent: Node3D, nm: String, asset: String, pos: Vector3, yaw: float)
 	var place: String = String(cat.get("place", "floor"))
 	var mount: String = String(cat.get("mount", ""))
 	if mount != "" or place in ["on", "ceiling", "wall_mount", "above_door", "rug"]:
+		return inst
+	if nm in NPC_SEATS:   # a sitter's chair: no collider, no nav obstruction (SL npc_seat precedent)
+		inst.set_meta(&"npc_seat", true)
+		for co: Node in inst.find_children("*", "CollisionObject3D", true, false):
+			(co as CollisionObject3D).collision_layer = 0
+			for cs: Node in co.find_children("*", "CollisionShape3D", true, false):
+				(cs as CollisionShape3D).disabled = true
+		(b.get(&"map_root") as Node).set_editable_instance(inst, true)   # keep the overrides in the saved scene
 		return inst
 	_collide(inst, cat, xf)
 	return inst

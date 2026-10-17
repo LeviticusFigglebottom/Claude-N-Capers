@@ -284,7 +284,7 @@ const WALLS: Array = [
 	["E", "z", 42.0, 0.0, 7.0, 0.2, 8.6, 11.6, "wall", []],
 	["E", "z", 45.0, 0.0, 7.0, 0.3, 8.6, 12.2, "wall", []],
 	["E", "z", 48.0, 0.0, 17.0, 0.4, 8.6, 12.2, "wall_ext", []],
-	["E", "z", 48.0, 17.0, 36.0, 0.4, 8.6, 9.7, "wall_ext", []],
+	["E", "z", 48.0, 17.0, 36.0, 0.4, 8.6, 9.1, "wall_ext", []],
 	["R", "x", 0.0, 0.0, 13.0, 0.4, 12.2, 13.3, "wall_ext", [[0.4, 1.4, 12.8, 13.7]]],
 	["R", "x", 0.0, 13.0, 16.0, 0.4, 12.2, 15.2, "wall_ext", []],
 	["R", "x", 0.0, 16.0, 48.0, 0.4, 12.2, 13.3, "wall_ext", []],
@@ -486,7 +486,8 @@ const SITE_BOXES: Array = [
 ]
 ## Convex hulls (collision + mesh): [group, name, points, faces (point-index polygons, counter-clockwise seen from outside),
 ## class]: the lantern glazing, the fire-escape flights / rails, the Tannery St ramp, the parapet copings (a 0.3 m ridge
-## over the 0.2 m half wall: 56 deg >= 50, §7.5).
+## over the 0.2 m half wall: 56 deg >= 50, §7.5; the terrace east parapet's throw-spot coping falls 0.6 m outward from its
+## 1.1 m inner edge: 56 deg, §7.4).
 const HULLS: Array = [
 	[
 		"Lantern", "Glazing",
@@ -588,10 +589,10 @@ const HULLS: Array = [
 	[
 		"Coping", "CopingEZ0480_0170",
 		[
-			[47.8, 9.7, 17.0], [47.999, 10.0, 17.0], [48.001, 10.0, 17.0], [48.2, 9.7, 17.0], [47.8, 9.7, 36.0],
-			[47.999, 10.0, 36.0], [48.001, 10.0, 36.0], [48.2, 9.7, 36.0],
+			[47.8, 9.1, 17.0], [47.8, 9.7, 17.0], [47.8, 9.7, 17.0], [48.2, 9.1, 17.0], [47.8, 9.1, 36.0], [47.8, 9.7, 36.0],
+			[47.8, 9.7, 36.0], [48.2, 9.1, 36.0],
 		],
-		[[3, 0, 1, 2], [1, 0, 4, 5], [4, 0, 3, 7], [2, 1, 5, 6], [7, 3, 2, 6], [6, 5, 4, 7]], "wall_ext",
+		[[3, 0, 1], [5, 1, 0, 4], [4, 0, 3, 7], [3, 1, 5, 7], [5, 4, 7]], "wall_ext",
 	],
 	[
 		"Coping", "CopingRX0000_0000",
@@ -759,7 +760,7 @@ const SLOTS: Array = [
 	["camera", "cam_b", 1.0, "G", "SR", 18.0, 0.0, 3.0, 0.0, "C2 C4 C5 C9 C10 C12 C15 C16"],
 	["camera", "cam_c", 1.0, "G", "SR", 18.0, 0.0, 3.0, 0.0, "C1 C2 C3 C7 C9 C11 C13 C15"],
 	["laser_pattern", "lz_static", 0.5, "B", "VC", 21.0, -4.0, 11.0, 90.0, "beams 1.30 / 1.90 / 2.50, 1.1 m bypass gap S"],
-	["laser_pattern", "lz_sweep", 0.2, "B", "VC", 21.0, -4.0, 11.0, 90.0, "3 vertical beams, 8 s sweep, full width"],
+	["laser_pattern", "lz_sweep", 0.2, "B", "VC", 21.0, -4.0, 11.0, 90.0, "2 vertical beams, 7 s sweep, full width"],
 	["laser_pattern", "lz_timed", 0.3, "B", "VC", 21.0, -4.0, 11.0, 90.0, "4 beams, off 6 s of 20 s, full width"],
 	["customers", "cust_4", 0.4, "G", "BH", 24.0, 0.0, 24.0, 0.0, "4 hall customers"],
 	["customers", "cust_6", 0.4, "G", "BH", 24.0, 0.0, 24.0, 0.0, "6 (5 hall + 1 PC client)"],
@@ -770,7 +771,7 @@ const SLOTS: Array = [
 	["fire_escape", "fe_down", 0.45, "G", "X2", 0.6, 0.0, -2.4, 180.0, "Corvino drop ladder lowered (3.0 m)"],
 	["fire_escape", "fe_up", 0.55, "G", "X2", 0.6, 0.0, -2.4, 180.0, "drop ladder up (no roof route)"],
 	["escape", "esc_van_dock", 0.45, "G", "X2", 5.0, 0.0, -4.32, 180.0, "E1 van at the roller door"],
-	["escape", "esc_van_tannery", 0.3, "G", "X3", 50.4, 0.0, 14.28, 180.0, "E2 van in the Tannery bay"],
+	["escape", "esc_van_tannery", 0.3, "G", "X3", 51.2, 0.0, 14.28, 180.0, "E2 van in the Tannery bay"],
 	["escape", "esc_heli_terrace", 0.25, "E", "X4", 36.0, 8.6, 27.0, 0.0, "E3 heli over the terrace net"],
 	["drill_delivery", "drop_terrace", 0.5, "E", "X4", 20.0, 8.6, 33.0, 0.0, "heli crate on the terrace"],
 	["drill_delivery", "drop_dock", 0.5, "G", "X2", 14.0, 0.0, -4.0, 0.0, "Mercer's second van at the dock"],

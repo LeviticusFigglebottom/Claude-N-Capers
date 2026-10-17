@@ -350,6 +350,8 @@ PlayerTannery2 Gameplay/Devices/PhoneNA/UsePoint
 PlayerTannery2 Gameplay/Devices/PhoneVO/UsePoint
 PlayerTannery2 Gameplay/Doors/TrainingDoor/UsePoint
 PlayerTannery2 Gameplay/Doors/TreasuryDoor/UsePoint
+PlayerTannery2 Gameplay/Loot/HallBox14
+PlayerTannery2 Gameplay/Loot/HallBox14/UsePoint
 PlayerTannery2 Gameplay/Loot/HallBox15
 PlayerTannery2 Gameplay/Loot/HallBox15/UsePoint
 PlayerTannery2 Gameplay/Loot/HallBox16

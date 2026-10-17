@@ -174,17 +174,18 @@ def emit() -> tuple:
     s += const("SHELL_BOXES", shell, doc="Shell boxes (Geometry/Building/<group>): [group, name, min, max, class].")
     s += const("SITE_BOXES", gboxes, doc="Site boxes (Geometry/Site/<group>): grade, police islands, closures, neighbours.")
     cop = []
-    for nm, axis, fixed, a0, a1, y, t in GM.copings():
+    for nm, axis, fixed, a0, a1, y, _t, prof in GM.copings():
         pts = []
         for a in (a0, a1):
-            for q in ((-t / 2, 0.0), (-0.001, GM.COPING_RISE), (0.001, GM.COPING_RISE), (t / 2, 0.0)):
+            for q in prof:
                 pts.append([GM.r3(a), GM.r3(y + q[1]), GM.r3(fixed + q[0])] if axis == "x"
                            else [GM.r3(fixed + q[0]), GM.r3(y + q[1]), GM.r3(a)])
         cop.append(["Coping", nm, pts, "wall_ext"])
     hulls = [[h[0], h[1], h[2], GM.hull_faces(h[2]), h[3]] for h in lhull + fhull + ghulls + cop]
     s += const("HULLS", hulls, doc="Convex hulls (collision + mesh): [group, name, points, faces (point-index polygons, "
                "counter-clockwise seen from outside), class]: the lantern glazing, the fire-escape flights / rails, the "
-               "Tannery St ramp, the parapet copings (a 0.3 m ridge over the 0.2 m half wall: 56 deg >= 50, §7.5).")
+               "Tannery St ramp, the parapet copings (a 0.3 m ridge over the 0.2 m half wall: 56 deg >= 50, §7.5; the "
+               "terrace east parapet's throw-spot coping falls 0.6 m outward from its 1.1 m inner edge: 56 deg, §7.4).")
     s += const("FLIGHTS", flights + gflights, doc="Stair flights (ramp collision, visual steps): [name, origin (first riser "
                "line), yaw, width, risers, riser, tread]; Stairs A / B (U-stairs, first riser z %.2f) and the plaza steps."
                % GM.Z_START)

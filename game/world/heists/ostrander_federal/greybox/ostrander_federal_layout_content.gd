@@ -39,7 +39,7 @@ const PREPLAN: Array = [
 	["pp_drop_lockers", "drop_zone", 0, [5.0, -4.0, 4.5], {}],
 	["pp_drop_terrace", "drop_zone", 3, [6.0, 8.6, 30.0], {}],
 	["pp_escape_dock", "escape", 1, [5.0, 0.0, -4.3], {"variant_group": "escape", "variant_slot": "esc_van_dock"}],
-	["pp_escape_tannery", "escape", 1, [50.4, 0.0, 14.3], {"variant_group": "escape", "variant_slot": "esc_van_tannery"}],
+	["pp_escape_tannery", "escape", 1, [51.2, 0.0, 14.3], {"variant_group": "escape", "variant_slot": "esc_van_tannery"}],
 	["pp_escape_heli", "escape", 3, [36.0, 8.6, 27.0], {"variant_group": "escape", "variant_slot": "esc_heli_terrace"}],
 	[
 		"pp_drill_terrace", "drop_zone", 3, [20.0, 8.6, 33.0],
@@ -641,26 +641,35 @@ const ALWAYS: Dictionary = {
 			[11.5, -4.0, 2.2], {"walkable": true}, "",
 		],
 		[
-			"prefab", "bag_lift", "Hoist", [24.0, -3.95, 15.2], 0.0,
+			"prefab", "bag_lift", "Hoist", [24.0, -3.95, 15.325], 0.0,
 			{
 				"travel_s": 6.0,
 				"capacity": 2,
-				"car_size_m": [1.0, 1.0, 1.0],
+				"car_size_m": [1.0, 1.0, 0.75],
 				"loud_only": true,
 				"objective_tag": "hoist",
 				"enabled_at_start": false,
 				"@landings": [["HoistLandingTW", [0.0, 4.0, 0.0]]],
+				"@rig": [
+					["ShaftBackstop", [23.36, -4.0, 14.92], [24.64, -1.6, 14.97]], ["ShaftW", [23.36, -4.0, 14.97], [23.41, -1.6, 15.75]],
+					["ShaftE", [24.59, -4.0, 14.97], [24.64, -1.6, 15.75]], ["ShaftSill", [23.36, -4.0, 15.75], [24.64, -3.4, 15.8]],
+					["HoleGuardW", [23.35, 0.0, 13.5], [23.4, 1.5, 15.75]], ["HoleGuardE", [24.6, 0.0, 13.5], [24.65, 1.5, 15.75]],
+					["HoleGuardS", [23.4, 0.0, 15.7], [24.6, 1.5, 15.75]],
+				],
 			},
-			[25.1, -4.0, 15.2], {"starts_disabled": true, "hidden": true}, "",
+			[25.1, -4.0, 15.325], {"starts_disabled": true, "hidden": true}, "",
 		],
 	],
 	"Gameplay/Ladders": [
 		[
-			"prefab", "ladder", "RopeLadder", [24.0, -4.0, 13.6], 180.0,
+			"prefab", "ladder", "RopeLadder", [24.0, -4.0, 13.54], 180.0,
 			{"height_m": 3.2, "usable": false, "enabled_at_start": false, "objective_tag": "rope_ladder"}, null,
 			{"loud_only": true, "starts_disabled": true, "hidden": true, "burn_height_m": 4.0}, "",
 		],
-		["prefab", "ladder", "CagedLadder", [46.0, 8.6, 17.55], 180.0, {"height_m": 3.6}, null, {}, ""],
+		[
+			"prefab", "ladder", "CagedLadder", [46.0, 8.6, 17.55], 180.0, {"height_m": 3.6, "objective_tag": "caged_ladder"}, null,
+			{}, "",
+		],
 	],
 	"Gameplay/Markers": [
 		["marker", "CasingHall", [24.0, 0.0, 27.5], 0.0, "casing", "casing objective marker: the hall at the meridian line"],
@@ -720,6 +729,7 @@ const FIXED_SPAWNS: Array = [
 	["spawn", "Teller2", "CIVILIAN", [17.0, 0.0, 16.07], 180.0, ["civ_teller"], "teller_count", "", ""],
 	["spawn", "Teller3", "CIVILIAN", [31.0, 0.0, 16.07], 180.0, ["civ_teller"], "teller_count", "", ""],
 	["spawn", "Teller4", "CIVILIAN", [33.0, 0.0, 16.07], 180.0, ["civ_teller", "civ_teller_rotating"], "teller_count", "", ""],
+	["spawn", "SDAttendant", "CIVILIAN", [37.0, -4.0, 9.67], 180.0, ["civ_sd_attendant", "civ_teller"], "desk_work", "", ""],
 	["spawn", "PlazaPedestrian1", "CIVILIAN", [10.0, -0.75, 44.0], 90.0, ["civ_plaza"], "walk_text", "", ""],
 	["spawn", "PlazaPedestrian2", "CIVILIAN", [44.0, -0.75, 44.0], -90.0, ["civ_plaza"], "walk_text", "", ""],
 	["spawn", "VaultlineA", "GUARD", [3.0, 0.0, 4.5], 0.0, ["scripted", "guard_vaultline"], "", "BankGround", ""],
@@ -936,23 +946,25 @@ const SLOT_ITEMS: Dictionary = {
 	"esc_van_dock": [
 		[
 			"prefab", "secure_zone", "SecureDock", [5.0, 0.0, -4.32], 180.0,
-			{"objective_tag": "secure", "zone_size_m": [4.0, 3.0, 8.0]}, null, {"kind": "vehicle"}, "veh_van_secure",
+			{"objective_tag": "secure", "zone_size_m": [4.0, 3.0, 8.0]}, null, {"kind": "vehicle", "escape_label": "E1"},
+			"veh_van_secure",
 		],
 		[
 			"prefab", "escape_zone", "EscapeDock", [10.5, 0.0, -3.0], 0.0,
-			{"objective_tag": "escape", "escape_type": "van", "zone_size_m": [4.0, 3.0, 4.0]}, null, {},
+			{"objective_tag": "escape", "escape_type": "van", "zone_size_m": [4.0, 3.0, 4.0]}, null, {"escape_label": "E1"},
 			"res://world/heists/shared/escape_van_marker.tscn",
 		],
 		["marker", "EscapeWaitDock", [10.5, 0.0, -3.0], 0.0, "escape_wait", "loud: hold until the escape arrives"],
 	],
 	"esc_van_tannery": [
 		[
-			"prefab", "secure_zone", "SecureTannery", [50.4, 0.0, 14.28], 180.0,
-			{"objective_tag": "secure", "zone_size_m": [4.4, 3.0, 14.0]}, null, {"kind": "vehicle"}, "veh_van_secure",
+			"prefab", "secure_zone", "SecureTannery", [51.2, 0.0, 14.28], 180.0,
+			{"objective_tag": "secure", "zone_size_m": [6.0, 3.0, 14.0]}, null, {"kind": "vehicle", "escape_label": "E2"},
+			"veh_van_secure",
 		],
 		[
 			"prefab", "escape_zone", "EscapeTannery", [51.0, 0.0, 6.5], 0.0,
-			{"objective_tag": "escape", "escape_type": "van", "zone_size_m": [4.0, 3.0, 3.0]}, null, {},
+			{"objective_tag": "escape", "escape_type": "van", "zone_size_m": [4.0, 3.0, 3.0]}, null, {"escape_label": "E2"},
 			"res://world/heists/shared/escape_van_marker.tscn",
 		],
 		["marker", "EscapeWaitTannery", [51.0, 0.0, 6.5], 0.0, "escape_wait", "loud: hold until the escape arrives"],
@@ -960,12 +972,13 @@ const SLOT_ITEMS: Dictionary = {
 	"esc_heli_terrace": [
 		[
 			"prefab", "secure_zone", "SecureTerrace", [42.5, 8.6, 26.0], 0.0,
-			{"objective_tag": "secure", "zone_size_m": [4.0, 3.0, 5.0]}, null, {"kind": "vehicle"}, "prop_secure_cargo_net",
+			{"objective_tag": "secure", "zone_size_m": [4.0, 3.0, 5.0]}, null, {"kind": "vehicle", "escape_label": "E3"},
+			"prop_secure_cargo_net",
 		],
 		[
 			"prefab", "escape_zone", "EscapeTerrace", [35.5, 8.6, 27.0], 0.0,
-			{"objective_tag": "escape", "escape_type": "heli", "zone_size_m": [6.0, 3.0, 6.0], "arrival_delay_s": 45.0}, null, {},
-			"veh_heli_escape",
+			{"objective_tag": "escape", "escape_type": "heli", "zone_size_m": [6.0, 3.0, 6.0], "arrival_delay_s": 45.0}, null,
+			{"escape_label": "E3"}, "veh_heli_escape",
 		],
 		["marker", "EscapeWaitTerrace", [35.5, 8.6, 27.0], 0.0, "escape_wait", "loud: hold until the escape arrives"],
 	],
@@ -1045,8 +1058,8 @@ const LASERS: Dictionary = {
 		"z": [9.25, 12.55],
 		"y": 0.0,
 		"h": 2.6,
-		"sweep_beams": 3,
-		"period_s": 8.0,
+		"sweep_beams": 2,
+		"period_s": 7.0,
 		"posts": [[9.1, 9.25], [12.55, 12.7]],
 		"metas": {"bypass": false},
 	},
