@@ -126,12 +126,12 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## slopes: No walkable slope < 50° outside the play mesh
 
-- 1809 x 1969 columns (0.25 m), 608829 surface samples, 0 collider(s) with reachable walkable surfaces outside play
+- 1809 x 1969 columns (0.25 m), 609021 surface samples, 0 collider(s) with reachable walkable surfaces outside play
 
 
 ## navmesh: Navmesh
 
-- navmesh: 2258 polygons, cell 0.10/0.10 m
+- navmesh: 2276 polygons, cell 0.10/0.10 m
 - 204 markers checked
 | room | walkable samples | covered | coverage |
 |---|---|---|---|
@@ -194,12 +194,12 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## materials: Materials and texel density
 
-- 3185 surfaces checked
+- 3199 surfaces checked
 
 
 ## zfight: Z-fighting
 
-- 331042 triangles checked
+- 340835 triangles checked
 
 
 ## lights: Lighting is deliberate
@@ -275,7 +275,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## bounds: No void / back faces
 
-- 366 navmesh sample(s) skipped: not reachable from a player spawn (police-only)
+- 382 navmesh sample(s) skipped: not reachable from a player spawn (police-only)
 - 271 eye samples, 21951 rays, sky yes, 0 void ray(s)
 
 
@@ -283,33 +283,33 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 | camera | draw calls | triangles | shadow lights |
 |---|---|---|---|
-| `TopDownSite` | 2159 | 343636 | 8 |
-| `TopDownBuilding` | 1620 | 259556 | 5 |
-| `ExtGate` | 2063 | 340430 | 8 |
-| `ExtYardEast` | 208 | 15550 | 1 |
-| `ExtQuay` | 2404 | 414204 | 8 |
-| `ExtLane` | 1775 | 293200 | 7 |
+| `TopDownSite` | 2173 | 353658 | 8 |
+| `TopDownBuilding` | 1624 | 266016 | 5 |
+| `ExtGate` | 2077 | 350452 | 8 |
+| `ExtYardEast` | 223 | 25584 | 1 |
+| `ExtQuay` | 2404 | 420916 | 8 |
+| `ExtLane` | 1789 | 296510 | 7 |
 | `YardWest` | 1613 | 271450 | 7 |
-| `Gatehouse` | 902 | 126582 | 7 |
-| `HallPlatform` | 1019 | 133794 | 6 |
+| `Gatehouse` | 916 | 136604 | 7 |
+| `HallPlatform` | 1033 | 143816 | 6 |
 | `HallFloor` | 1808 | 315592 | 8 |
-| `ChamberA` | 1724 | 298248 | 6 |
-| `ChamberB` | 1208 | 187336 | 7 |
-| `Spine` | 696 | 120928 | 5 |
+| `ChamberA` | 1734 | 304780 | 6 |
+| `ChamberB` | 1212 | 193946 | 7 |
+| `Spine` | 710 | 124238 | 5 |
 | `Anteroom` | 1892 | 330150 | 7 |
-| `Strongroom` | 1308 | 198970 | 8 |
-| `Packing` | 1002 | 163478 | 5 |
+| `Strongroom` | 1322 | 208992 | 8 |
+| `Packing` | 1018 | 173374 | 5 |
 | `Plant` | 994 | 165762 | 2 |
-| `Workshop` | 1148 | 181322 | 5 |
+| `Workshop` | 1168 | 191266 | 5 |
 | `Reception` | 510 | 81604 | 2 |
 | `Dispatch` | 762 | 129604 | 2 |
-| `CountRoom` | 1085 | 183192 | 6 |
+| `CountRoom` | 1085 | 189904 | 6 |
 | `BreakRoom` | 567 | 82898 | 2 |
 | `LockerRoom` | 756 | 112378 | 2 |
 | `QuayShed` | 133 | 19136 | 1 |
-| `LandingStage` | 55 | 2772 | 0 |
+| `LandingStage` | 69 | 6082 | 0 |
 | `RoofPerch` | 526 | 86362 | 3 |
-| `SniperCrane` | 2015 | 342952 | 8 |
+| `SniperCrane` | 1990 | 344926 | 8 |
 
 
 ## door_frame_gap: Doors and windows fill their wall openings (no gaps, no clipping)

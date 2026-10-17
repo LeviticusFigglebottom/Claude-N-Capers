@@ -9,6 +9,7 @@ extends RefCounted
 
 const VIEWMODEL_LIT_LAYER: int = 1 << 20  # viewmodel_lit (visual_slots v1.2, D-095) = CrewView.VIEWMODEL_LIT_LAYER
 const L: GDScript = preload("res://world/heists/gallery_night/greybox/gallery_night_layout.gd")
+const SEATS: GDScript = preload("res://world/heists/shared/npc_seat_spawns.gd")  # D-130 seated spawns
 const D: GDScript = preload("res://world/heists/gallery_night/greybox/gallery_night_dressing.gd")
 const AM: GDScript = preload("res://world/heists/shared/assault_markers.gd")
 const AE: GDScript = preload("res://world/heists/gallery_night/greybox/gn_assault.gd")
@@ -107,6 +108,8 @@ func dress(props_root: Node3D) -> void:
 		_finish_node(nd, asset, String(cat.get("place", "floor")), String(cat.get("mount", "")), xf)
 		_tweak_light(nd, String(d[0]).get_slice("_", 0))
 	_shadow_fixtures()
+	for line: String in SEATS.snap(_root):  # D-130: seated spawns onto their chairs' Seats (no furniture moves)
+		report.append("seat " + line)
 
 
 func _folder(parent: Node3D, nm: String) -> Node3D:

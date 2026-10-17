@@ -409,7 +409,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `GalleryWalkway` | 1696 | 356928 | 3 |
 | `ArtHallLasers` | 483 | 117354 | 1 |
 | `StudySafe` | 1523 | 349044 | 1 |
-| `ServerCage` | 649 | 153798 | 1 |
+| `ServerCage` | 650 | 153818 | 1 |
 | `SecurityRoom` | 831 | 200774 | 1 |
 | `SouthSpine` | 2297 | 493274 | 4 |
 | `TerraceWest` | 2160 | 451682 | 4 |
