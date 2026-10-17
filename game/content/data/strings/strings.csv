@@ -3391,6 +3391,19 @@ ui.achievements.category.night_deposit,Nightfall Depository
 ui.achievements.category.shadow_ledger,Shadow Ledger
 ui.achievements.category.dockside_burn,Dockside Burn
 ui.achievements.category.gallery_night,Gallery Night
+achievement.of_quiet_weekend.name,Quiet Weekend
+achievement.of_quiet_weekend.desc,Complete Ostrander Federal in stealth without answering a single pager.
+achievement.of_no_harm_done.name,No Harm Done
+achievement.of_no_harm_done.desc,Complete Ostrander Federal in stealth without anyone being killed.
+achievement.of_bank_holiday.name,Bank Holiday
+achievement.of_bank_holiday.desc,Complete Ostrander Federal in under 20 minutes.
+achievement.of_clearing_house.name,Clearing House
+achievement.of_clearing_house.desc,Complete Ostrander Federal with every bag in the building secured.
+achievement.of_burn_and_hoist.name,Burn and Hoist
+achievement.of_burn_and_hoist.desc,Complete Ostrander Federal loud by burning through the vault roof and hoisting the loot out.
+achievement.of_cataclysm.name,Monday Never Comes
+achievement.of_cataclysm.desc,Complete Ostrander Federal on Cataclysm in stealth.
+ui.achievements.category.ostrander_federal,Ostrander Federal
 ui.achievements.category.stealth,Stealth
 ui.achievements.category.loud,Loud
 ui.achievements.category.combat,Combat

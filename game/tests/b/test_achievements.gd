@@ -124,8 +124,8 @@ func test_screen_instantiates_with_progress() -> void:
 	s.setup(p)
 	add_child(s)
 	await wait_frames(1)
-	assert_eq(s.rows.size(), Achievements.all().size())
-	assert_eq(s.count_label.text, UiText.t(&"ui.achievements.count", {"unlocked": 1, "total": Achievements.all().size()}))
+	assert_eq(s.rows.size(), Achievements.shown().size())  # a staged (hidden) heist's set is not on the screen
+	assert_eq(s.count_label.text, UiText.t(&"ui.achievements.count", {"unlocked": 1, "total": Achievements.shown().size()}))
 	var first: PanelContainer = s.rows[&"achievement.first_score"] as PanelContainer
 	assert_eq((first.find_child("Status", true, false) as Label).text, UiText.t(&"ui.achievements.unlocked"))
 	assert_near((s.rows[&"achievement.ghost_crew"] as Control).find_child("Progress", true, false).get(&"value"), 0.2)

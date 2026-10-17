@@ -48,7 +48,9 @@ func test_every_condition_evaluates() -> void:
 		assert_eq(Achievements.display_progress(p, a), 0)
 		var c: Dictionary = a.condition
 		if c.has("heist"):
-			assert_true(HeistCatalog.ids().has(StringName(c["heist"])), "%s names an offered heist" % a.id)
+			var h: StringName = StringName(c["heist"])
+			assert_true(HeistCatalog.ids().has(h) or HeistCatalog.heist_list().heists.has(h),
+					"%s names a known heist (offered, or staged in heist_list)" % a.id)
 		if a.event() == Achievements.CAREER_STAT:
 			var stat: String = String(c.get("stat", ""))
 			var known: bool = Career.CREW_COUNTERS.has(stat) or stat in [Career.PLAYED, Career.WON, Career.FAILED,
@@ -216,9 +218,10 @@ func test_screen_groups_and_shows_live_progress() -> void:
 	s.setup(p)
 	add_child(s)
 	await wait_frames(1)
-	assert_eq(s.rows.size(), Achievements.all().size())
+	assert_eq(s.rows.size(), Achievements.shown().size())
 	for c: StringName in Achievements.CATEGORIES:
-		assert_true(s.category_labels.has(c), "header for %s" % c)
+		var staged: bool = HeistCatalog.heist_list().heists.has(c) and not HeistCatalog.ids().has(c)
+		assert_eq(s.category_labels.has(c), not staged, "header for %s (none while the heist is staged)" % c)
 	var row: Control = s.rows[&"achievement.career_criminal"] as Control
 	var want: String = UiText.t(&"ui.achievements.progress", {"progress": "37", "target": "100"})
 	var found: bool = false
