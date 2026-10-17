@@ -19,6 +19,8 @@ const RAY: float = 0.5
 ## a covered leg vertex has the cloth over it within this distance at rest (not the far side of the skirt between the legs)
 const REST_HIT: float = 0.12
 const DOWN_SKIP: float = -0.6
+## m: Outfit vertices below this are shoes, not a skirt hem
+const SHOE_TOP: float = 0.2
 
 var _ids: PackedStringArray = []
 var _clips: PackedStringArray = []
@@ -62,7 +64,7 @@ func _run() -> void:
 			total += int(r["poke"])
 			line.append("%s=%d@%.2f(inv %d)" % [clip, r["poke"], r["time"], r["inv"]])
 			if _verbose:
-				line.append(str(r["where"]))
+				line.append(str(r["where"]) + " inv " + str(r.get("inv_where", {})))
 		print("DRAPE %s covered=%d total=%d | %s" % [id, _covered_count(rig), total, " ".join(line)])
 		rig.free()
 	quit()
@@ -155,10 +157,10 @@ static func _prep(rig: Node3D) -> Dictionary:
 		var bn: String = String(outfit.skin.get_bind_name(b))
 		if bn in LEG_BONES or bn == "hips":
 			skirt_binds[b] = true
-	# the skirt hem: the lowest Outfit vertex on the hips/thighs/shins (shoes ride the feet)
+	# the skirt hem: the lowest Outfit vertex on the hips/thighs/shins above the shoes (a shoe collar can ride the shin)
 	var hem: float = INF
 	for i: int in ops.size():
-		if skirt_binds.has(odom[i]):
+		if skirt_binds.has(odom[i]) and ops[i].y > SHOE_TOP:
 			hem = minf(hem, ops[i].y)
 	var tm: TriangleMesh = TriangleMesh.new()
 	tm.create_from_faces(_faces(outfit, ops))
@@ -236,19 +238,26 @@ static func measure(rig: Node3D, clip: String, times: Array[float]) -> Dictionar
 				continue
 			if tm.intersect_segment(bps[i] + bns[i] * 0.002, bps[i] + bns[i] * RAY).is_empty():
 				poke += 1
-				var key: String = "%s_%s" % [prep["bone"][i], prep["face"][i]]
+				var key: String = "%s_%s@%.2f" % [prep["bone"][i], prep["face"][i], snappedf(bps[i].y, 0.05)]
 				where[key] = int(where.get(key, 0)) + 1
 		var inv: int = 0
-		var omats: Array[Transform3D] = _mats(outfit, skel)
+		var inv_where: Dictionary = {}
 		var odom: PackedInt32Array = osk[2]
 		for k: int in tris.size() / 3:
 			var a: Vector3 = ops[tris[k * 3]]
 			var n: Vector3 = (ops[tris[k * 3 + 1]] - a).cross(ops[tris[k * 3 + 2]] - a)
-			if n.dot(omats[odom[tris[k * 3]]].basis * rest_n[k]) < 0.0:
+			var ns: PackedVector3Array = osk[1]
+			# Godot winds front faces clockwise: the cross product points inside on a face that is not folded over
+			if n.dot(ns[tris[k * 3]] + ns[tris[k * 3 + 1]] + ns[tris[k * 3 + 2]]) > 0.0:
 				inv += 1
+				var side: String = "front" if rest_n[k].z < -0.4 else ("back" if rest_n[k].z > 0.4 else "side")
+				var ikey: String = "%s@%.1f" % [side, snappedf(ops[tris[k * 3]].y, 0.1)]
+				inv_where[ikey] = int(inv_where.get(ikey, 0)) + 1
 		if poke > int(out["poke"]):
 			out["poke"] = poke
 			out["time"] = t
 			out["where"] = where
-		out["inv"] = maxi(int(out["inv"]), inv)
+		if inv > int(out["inv"]):
+			out["inv"] = inv
+			out["inv_where"] = inv_where
 	return out
