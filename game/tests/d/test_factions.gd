@@ -12,6 +12,7 @@
 extends TestCase
 
 const Spec: GDScript = preload("res://world/characters/_tools/character_spec.gd")
+const Layers: GDScript = preload("res://world/characters/_tools/char_layers.gd")
 const BASES: Array[String] = [
 	"patrol_officer", "tac_light", "tac_heavy", "phantom", "stinger", "bulwark", "wrecker", "longshot", "corpsman",
 ]
@@ -58,8 +59,9 @@ static func _materials(root: Node) -> Array[String]:
 		nodes.append(root)
 	for n: Node in nodes:
 		var mi: MeshInstance3D = n as MeshInstance3D
-		for s: int in range(mi.mesh.get_surface_count()):
-			var m: Material = mi.mesh.surface_get_material(s)
+		var look: Array[Material] = Layers.look_materials(mi, false)
+		for s: int in range(look.size()):
+			var m: Material = look[s]
 			out.append(m.resource_path if m != null else "<null>")
 	return out
 
