@@ -1,0 +1,20 @@
+asset: char_npc_bank_teller_e
+script: tools/blender/characters/char_npc_bank.py
+params: {"age": 0.4, "beard_shadow": 0.6, "build": 0.5, "gender": 0.0, "hair": "buzz", "hair_color": "dark", "height": 1.73, "look": "teller_e", "skin": 6}
+seed: 2892505453  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category characters --asset char_npc_bank_teller_e
+edit policy: generated file, never edit by hand; change the script and rebuild
+attach_Back: bone chest, local [0.0000, 0.0869, 0.1058] (model [0.0000, 1.2635, 0.1238], Godot axes, rest pose)
+attach_Head: bone head, local [0.0000, 0.0787, -0.0862] (model [0.0000, 1.6192, -0.0745], Godot axes, rest pose)
+attach_Hip: bone hips, local [0.1795, 0.0494, 0.0342] (model [0.1795, 0.9758, 0.0366], Godot axes, rest pose)
+body_faces_culled: 4896
+body_params: {"age": 0.4, "beard_shadow": 0.6, "build": 0.5, "gender": 0.0, "hair": "buzz", "hair_color": "dark", "hair_peak": 0.0, "height": 1.73, "lip": "auto", "skin": 6}
+bones: 52
+faces_hidden_by_waistcoat: 1241
+look: Teller (OF-D1): a man about 40, deep skin, dark buzz cut and stubble; cream shirt, bank-red tie, slate tailored waistcoat, dark slate trousers, name badge, keyhole pin
+meshes: Body,Gear,Hair,Outfit
+shape_keys: none (baked at body_params; do not set blend_shapes/*)
+tri_budget: 35000
+tris: 25754
+tris_by_mesh: {"Body": 8952, "Gear": 1060, "Hair": 1200, "Outfit": 14542}

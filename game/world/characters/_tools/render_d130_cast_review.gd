@@ -155,6 +155,8 @@ func _clips_sheet() -> void:
 	var sheet: Image = Image.create(TILE.x * cols, TILE.y * _chars.size(), false, Image.FORMAT_RGBA8)
 	sheet.fill(Color(0.2, 0.2, 0.2))
 	_vp.size = TILE
+	_label.position = Vector3(0.0, 1.95, 0.0)  # in frame for the lower camera
+	_label.pixel_size = 0.0018
 	for c: int in range(_chars.size()):
 		var body: Node3D = (load(Spec.scene_path(_chars[c])) as PackedScene).instantiate() as Node3D
 		CrowdLod.force_level(body, false)

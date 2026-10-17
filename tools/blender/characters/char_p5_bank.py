@@ -272,8 +272,8 @@ def courier(kit: Kit) -> None:
     fit, k = kit.fit, kit.k
     hips_z, belt_z, _tuck = _z(kit)
     sh = _trainers(kit)
-    kit.add_soft(g.knit_top(fit, kit.hull(), "char_knit_graphite", hips_z - 0.02 * k, neck="crew", base=0.006))
     n.trousers(kit, "char_work_charcoal", sh, belt_z + 0.022 * k, hem_r=0.060)
+    kit.add_soft(g.knit_top(fit, kit.hull(), "char_knit_graphite", hips_z - 0.02 * k, neck="crew", base=0.006))
     n0 = len(kit.soft.f)
     jk = crew.bomber(kit, "char_nylon_black", "char_knit_graphite", "char_nylon_black", hips_z - 0.01 * k, 1.30 * k,
                      neck_w=0.06)
@@ -290,8 +290,8 @@ def retiree(kit: Kit) -> None:
     hips_z = fit.ring_centre("hips").z
     shoes = g.shoes(fit, "char_shoe_brown", "rubber_black", top_z=0.09, base=0.006)
     kit.add_soft(shoes)
-    kit.add_soft(g.knit_top(fit, kit.hull(), "char_knit_navy", hips_z + 0.02 * k, neck="crew", base=0.006))
     n.trousers(kit, "char_slacks_grey", shoes, hips_z + 0.05 * k, hem_r=0.056)
+    kit.add_soft(g.knit_top(fit, kit.hull(), "char_knit_navy", hips_z - 0.02 * k, neck="crew", base=0.006))
     crew.scarf(kit, "char_knit_cream", 1.06 * k)
     n0 = len(kit.soft.f)
     jk, _info = g.jacket(fit, kit.hull(), "char_coat_heather", 0.47 * k, 1.05 * k, neck_w=0.075, base=0.016,
@@ -346,8 +346,8 @@ def trades(kit: Kit) -> None:
     hips_z, belt_z, _tuck = _z(kit)
     sh = g.shoes(fit, "char_shoe_brown", "rubber_black", top_z=0.15, base=0.006, boot=True)
     kit.add_soft(sh)
-    kit.add_soft(g.knit_top(fit, kit.hull(), "char_knit_grey", hips_z - 0.02 * k, neck="crew", base=0.006))
     n.trousers(kit, "char_work_navy", sh, belt_z + 0.022 * k, hem_r=0.064)
+    kit.add_soft(g.knit_top(fit, kit.hull(), "char_knit_grey", hips_z - 0.02 * k, neck="crew", base=0.006))
     n0 = len(kit.soft.f)
     jk, _info = n.jacket(kit, "char_canvas_tan", 0.80 * k, 1.12 * k, button_mat="char_button_dark", lapel_w=0.035,
                          neck_w=0.075, flare=0.07, chest_welt=False, base=0.014)
@@ -361,8 +361,8 @@ def parent_knit(kit: Kit) -> None:
     fit, k = kit.fit, kit.k
     hips_z, belt_z, _tuck = _z(kit)
     sh = _trainers(kit)
-    kit.add_soft(g.knit_top(fit, kit.hull(), "char_fleece_maroon", hips_z - 0.02 * k, neck="crew", base=0.007))
     n.trousers(kit, "char_chino_khaki", sh, belt_z + 0.022 * k, hem_r=0.060)
+    kit.add_soft(g.knit_top(fit, kit.hull(), "char_fleece_maroon", hips_z - 0.02 * k, neck="crew", base=0.007))
     n.watch(kit, "L", strap="char_nylon_black", case="chrome")
     kit.notes["look"] = "Parent customer (OF-D1): maroon crew knit, khaki chinos, grey trainers, watch"
 
@@ -371,8 +371,8 @@ def rollneck(kit: Kit) -> None:
     fit, k = kit.fit, kit.k
     hips_z, belt_z, _tuck = _z(kit)
     sh = n.shoes(kit, heel=True)
-    kit.add_soft(g.knit_top(fit, kit.hull(), "char_knit_cream", hips_z + 0.02 * k, neck="roll", base=0.006))
     n.trousers(kit, "char_trousers_black", sh, belt_z + 0.022 * k, hem_r=0.054)
+    kit.add_soft(g.knit_top(fit, kit.hull(), "char_knit_cream", hips_z - 0.02 * k, neck="roll", base=0.006))
     n0 = len(kit.soft.f)
     jk, _info = n.jacket(kit, "char_suit_brown", 0.79 * k, 1.04 * k, button_mat="char_button_dark", lapel_w=0.05,
                          neck_w=0.10, flare=0.07)
