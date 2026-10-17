@@ -355,7 +355,15 @@ func _launch(heist: StringName, seed: int, diff: Enums.Difficulty, opts: Diction
 	if traversal and not _keep_npcs:
 		rt.isolate_npc(null)
 		c.stealth_hidden = true
-		note("SHORTCUT traversal: NPCs despawned, crew stealth_hidden")
+		# Cameras still see a masked crew (G1 throws run: camera alarm -> loud -> police -> custody at t 215).
+		var cams: int = 0
+		for n: Node in rt.find_children("*", "SecurityCamera", true, false):
+			if n.has_method(&"set_enabled"):  # OF-A2 (trunk); older bases have no prefab enable
+				n.call(&"set_enabled", false)
+				cams += 1
+		note("SHORTCUT traversal: NPCs despawned, crew stealth_hidden, %d cameras disabled (GameplayPrefab.set_enabled)"
+			% cams)
+		_quiet_watch.call_deferred()
 	pilot = Po5Pilot.new(self, c)
 	pilot.quiet = true
 	pilot.shout_blockers = false
@@ -813,6 +821,15 @@ func _climb(lad: Ladder, up: bool) -> bool:
 	note("LADDER %s %s: %s in %.1f s (climb %.1f s, height %.1f m; at %s)" % [lad.name, "up" if up else "down",
 		"OK" if ok else "NOT DONE", t, lad.climb_time(), lad.height_m, Po5Pilot._v(pilot.crew.global_position)])
 	return ok
+
+
+## Traversal runs: should anything still raise the alarm, keep the map empty of NPCs (police included) every second.
+func _quiet_watch() -> void:
+	var my_rt: HeistRuntime = rt
+	while is_inside_tree() and rt == my_rt and is_instance_valid(rt):
+		if rt.went_loud and not rt.npcs().is_empty():
+			rt.isolate_npc(null)
+		await wait_s(1.0)
 
 
 ## Every tick: a ladder climb this harness did not start (_climbing false) is a stray grab.
