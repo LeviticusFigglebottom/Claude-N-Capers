@@ -428,7 +428,7 @@ func _build_argus(_gp: Node3D) -> void:
 	var kp: Node3D = wall_prefab(dev, "keypad", "ServerKeypad", Vector3(26.0, 6.6, 6.1), 180.0, 5.4, "prop_keypad",
 		{"code_group": CODE_GROUP, "objective_tag": &"server_keypad"})
 	_bind_targets(kp, [sv])
-	_drill(dev, "ServerDoorDrill", Vector3(25.0, 6.4, 6.15), 0.0, Vector3(25.0, 5.4, 6.9), SERVER_DRILL_S, "DRILL",
+	_drill(dev, "ServerDoorDrill", Vector3(25.0, 6.4, 6.035), 0.0, Vector3(25.0, 5.4, 6.9), SERVER_DRILL_S, "DRILL",
 		"server_door", sv)
 	var tr: Node3D = wall_prefab(dev, "keycard_reader", "TreasuryReader", Vector3(40.0, 6.6, 23.9), 0.0, 5.4,
 		"prop_keycard_reader", {"objective_tag": &"treasury_door"})
@@ -437,7 +437,7 @@ func _build_argus(_gp: Node3D) -> void:
 	var vr: Node3D = wall_prefab(dev, "keycard_reader", "VaultReader", Vector3(23.2, -3.0, 7.8), 0.0, -4.2,
 		"prop_keycard_reader", {"objective_tag": &"vault_reader", "stealth_only": true})
 	_bind_targets(vr, [vd])
-	_drill(dev, "VaultDrill", Vector3(21.5, -3.2, 7.75), 180.0, Vector3(21.5, -4.2, 7.0), VAULT_DRILL_S, "THERMAL",
+	_drill(dev, "VaultDrill", Vector3(21.5, -3.2, 7.965), 180.0, Vector3(21.5, -4.2, 7.0), VAULT_DRILL_S, "THERMAL",
 		"vault_drill", vd)
 	var ad: Node3D = wall_prefab(dev, "keycard_reader", "ArtDoorReader", Vector3(39.6, 1.2, 11.9), 0.0, 0.0,
 		"prop_keycard_reader", {"objective_tag": &"art_door_reader"})

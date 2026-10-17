@@ -7,6 +7,7 @@ script = ExtResource("1_radio")
 settle_s = 0.75
 max_wait_s = 4.0
 mission_suppress_s = 3.0
+defer_events = Array[StringName]([&"radio.objective_done", &"radio.objective_new", &"radio.objective_failed"])
 no_repeat_depth = 2
 event_priority = {
 &"radio.alarm": 80,

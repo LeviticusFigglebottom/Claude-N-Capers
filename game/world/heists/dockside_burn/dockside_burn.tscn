@@ -31819,7 +31819,7 @@ metadata/kind = "door"
 metadata/swing_side = "back"
 
 [node name="StrongroomDrill" parent="Gameplay/Doors/StrongroomDoor" unique_id=104487 instance=ExtResource("233_db")]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.6000004, 1, -0.3600006)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.6000004, 1, -0.034999847)
 script = ExtResource("234_db")
 device = 1
 duration_s = 240.0
@@ -31830,7 +31830,7 @@ visual_scene = ExtResource("236_db")
 objective_tag = &"strongroom_drill"
 
 [node name="UsePoint" parent="Gameplay/Doors/StrongroomDoor/StrongroomDrill" index="1"]
-transform = Transform3D(1, 0, -4.371139e-08, 0, 1, 0, 4.371139e-08, 0, 1, 0, -1, 0.84000015)
+transform = Transform3D(1, 0, -4.371139e-08, 0, 1, 0, 4.371139e-08, 0, 1, 0, -1, 1.1650009)
 
 [node name="Interactable" parent="Gameplay/Doors/StrongroomDoor/StrongroomDrill" index="2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.05)

@@ -1,4 +1,4 @@
-# Contract: data schemas (v1.2)
+# Contract: data schemas (v1.3)
 
 Schemas are in `game/contracts/data/*.gd` (lead). Data instances are `.tres` files owned by the env
 listed. All data ids follow `groups.md`. The code headers are authoritative for field lists.
@@ -66,3 +66,11 @@ WeaponStats gains `is_scope: bool` (merged OR; true for magnified optics with ma
 ADS), `scope_reticle: StringName` (&"duplex" default / &"mildot" / &"chevron" / &"dot"; last non-empty wins) and
 `scope_reticle_color: Color` (alpha 0 = default near-black, bright = illuminated; last alpha > 0 wins). ENV B sets them on
 sight-mod deltas; make_delta() needs no change (defaults contribute nothing).
+
+## v1.3: HeistDef stealth difficulty fields (D-130)
+* `pager_max_by_difficulty: Array[int] = []`: pagers the crew may answer, indexed by `Enums.Difficulty`; empty =
+  `StealthTweak.pager_max_answers`. Producer C (the heist's def / generator row), consumers A (PagerSystem,
+  LocalHudModel `pagers_max`), B (briefing/difficulty card).
+* `camera_titan_min_difficulty: int = -1`: cameras are Titan (indestructible) from this `Enums.Difficulty`; -1 =
+  `StealthTweak.camera_titan_min_difficulty`. A camera's own `titan` export still wins. Producer C, consumers A
+  (`SecurityCamera.is_titan()`), B (card).

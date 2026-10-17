@@ -113,12 +113,20 @@ func test_04_pager_answer() -> void:
 	if rt.has_method(&"isolate_npc"):
 		rt.call(&"isolate_npc", guard)
 		await wait_physics_frames(2)
-	# Stand 3 m in front of the guard's back, masked, aim at head, fire.
-	rt.call(&"teleport_crew", 0, guard.global_transform.translated_local(Vector3(0, 0, 3.0)))
+	# D-128: a PD2 camera fills in ~3-4 s even at range, so one watching the body would (correctly) end the
+	# 10 s answer with its alarm; cameras are switched off too.
+	for cam: Node in get_tree().get_nodes_in_group(G.OBSERVER):
+		if cam is SecurityCamera:
+			(cam as SecurityCamera).active = false
+	# Mask up where we are, then stand 3 m behind the guard's back, aim at head, fire. D-128: masking up
+	# 3 m behind a patrolling guard let him turn round and spot the crew member (PD2 detection: a ~0.6 s fill
+	# there) before the shot, so the 1.2 s mask-up happens first and the teleport right before the shot.
 	var i: CrewIntent = CrewIntent.new()
 	i.mask_up = true
 	rt.call(&"set_bot_intent", 0, i)
 	await wait_seconds(1.2)
+	rt.call(&"teleport_crew", 0, guard.global_transform.translated_local(Vector3(0, 0, 3.0)))
+	await wait_physics_frames(2)
 	var head: Vector3 = guard.global_position + Vector3(0, 1.65, 0)
 	var aim: CrewIntent = BotUtil.look_at_intent(crew.global_position + Vector3(0, 1.65, 0), head)
 	aim.fire = true

@@ -492,6 +492,10 @@ func _other_humans() -> Dictionary:
 
 ## Toast a strings key for `seconds` (default TOAST_S).
 func toast(key: StringName, args: Dictionary = {}, seconds: float = TOAST_S) -> void:
+	# LEAD r229: an assault event the banner already lists is not toasted as well (its world marker stays).
+	if AssaultEventMarkers.KIND_KEYS.values().has(key) and assault != null and assault.events_label != null \
+			and assault.events_label.visible and assault.events_label.text.split(" · ").has(UiText.t(key, args)):
+		return
 	toast_label.text = UiText.t(key, args)
 	toast_label.visible = true
 	_toast_t = seconds
@@ -547,7 +551,8 @@ func _process(delta: float) -> void:
 				and not (toast_label != null and toast_label.visible) \
 				and not (downed != null and downed.active)  # lane 2 audit: the card sat over the downed screen
 	if hint != null and onboarding != null:
-		hint.note.visible = hint.hint == &"mask_up" and onboarding.shown == &""  # the card already says it
+		hint.yield_to_card = onboarding.visible and onboarding.shown == &"casing"  # the card shows the mask row
+		hint.note.visible = hint.hint == &"mask_up" and onboarding.shown == &""  # any card already says it
 	if _toast_t > 0.0:
 		_toast_t -= delta
 		# Not over the Tab sheet, nor over the downed screen (its block sits where toasts do).

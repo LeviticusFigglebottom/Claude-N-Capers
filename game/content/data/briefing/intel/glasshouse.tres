@@ -108,3 +108,4 @@ fixed_rooms = {
 &"G2": 1
 }
 }
+surprises = Array[StringName]([&"nervous_manager"])

@@ -3,6 +3,35 @@
 Owner: ENV D. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-17: new LEAD session (session_01HwYKRgCdkLfJCt4ZM6rfTk); police combat verified, DB cast to 12, thumb probe
+Resumed on origin tip 0e4e2a0f (trunk already merged). Done since the GN-D1 entry, from `git log` (old team, 10-16):
+- D-116 organic 3P pass: crew states, mask_on / throw_grenade (lob), carried bag at Back/Socket, FP knife / melee /
+  grenade framing, FP akimbo reload, glances + lag on idle/holds, seated drape + sit_chair_read / sit_chair_armed
+  (DB-4 clip, v1.24), pistol thumb along the frame (033c1514), frame-locked hold_<kind>_<gait> (a8f4609e, v1.25),
+  police combat movement (3ef303da, 21 clips; v1.26 is the LEAD's), DB/SL cast pools (Northgate a-f, cleaners a-c,
+  Halden security_officer a-d, cartel a-f), p5_cast civ_worker_packer -> dock_packer (74f15c4c).
+This session:
+- **Police combat (queue 1)**, verified windowed in lit Glasshouse (`_review/d116_police_combat/`): aim_<fam>_<gait>,
+  cover peeks / low cover, stagger, class reloads. Fix (190f40c7): reload_sniper's bolt phase put the right hand on the
+  knob, so the 3P gun (at HandR/Socket) pointed at the floor for f50-60. The right hand now stays on the grip and the
+  left hand cycles the bolt over the top. ENV A has the anim_driver map (DM, LEAD cc'd).
+- **DB-4 (queue 2)**: the clip is sit_chair_armed (v1.24). A's `_ambient_hint` still maps `sit` -> sit_chair; asked A
+  to map sit_chair_armed for cartel `sit` posts and armed guards on seats.
+- **DB cast (queue 3)** (45894565): cartel_gunman_g..l, so the pool has 12 faces (Cataclysm posts 12; 3 women, 6 slung
+  guns), plus dock_worker_c (civ_worker spawns up to 3). p5_cast v5. Review `_review/d115_db_cast/`. A mirrors:
+  cartel_gunman.tres visual_alternates, npc_visual_tweak civ_worker. SL already fits its pools (<= 6 guards incl. the
+  operator, <= 3 cleaners).
+- **FP pistols (queue 4)**: P's PFingerClip long guns are <= 0.9 mm on all 8 (no residuals). New d/test_fp_pistol_thumb
+  measures the one-handed firing thumb in the real game pose: the tips are on the frame (gap 0-3.7 mm). On every pistol,
+  1-9 web-of-hand vertices go 1.7-4.0 mm into the tang. Thumb angles do not move it; tried in both directions
+  (scratch, reverted). Clearing it means lowering the hand seat, which moves P's sights. **QD-1 ruled by the LEAD:** accepted as skin
+  compression on a high grip, the seat stays, and the test guards at 4.5 mm.
+- Tests: test_police_combat 4/4, test_anims 18/18, test_loco_holds 5/5, test_fp_pistol_thumb 1/1, test_cartel 5/5,
+  test_npcs 9/9, test_p5_cast 16/16, test_scenes 9/9, test_lod 6/6.
+- Next: SL cast check vs the doc's non-guard roles (IT contractor / Moor / Kessler looks, crowd LODs);
+  respond to A's mapping questions.
+- Gotcha: `pgrep -f <name>` inside a wait loop matches the loop's own command line. Use `pgrep -f "godot.*<name>"`.
+
 ## 2026-10-16: GN-D1 polish (D-115 queue item 3: Gallery Night cast)
 - Seven new looks in `char_p5_gallery.py` (crowd LOD2 included, tris 24.4k-31.5k, budget 35k):
   - patrons `gallery_patron_c` (woman 60s, black dress, gold), `_d` (man 30s, all-black dinner suit, open collar),

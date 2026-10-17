@@ -91,14 +91,15 @@ const ROSTER_FALLBACK: Dictionary = {
 ## D-116 DB / SL cast polish (in the spirit of GN-D1): roles that put several NPCs on screen draw from a shared pool of
 ## looks ([heist, the roles of the pool, minimum looks, both genders]). Every pool lists the same looks on each of
 ## its roles, has at least that many distinct looks, and no two looks share a face (gender, skin, hair, hair colour
-## and an age bucket from SOURCE.txt params), so two NPCs drawn from the pool are never twins.
+## and an age bucket from SOURCE.txt params), so two NPCs drawn from the pool are never twins. D-115 DB cast: the cartel
+## pool has 12 looks (up to 12 posted gunmen at Cataclysm), civ_worker the three yard hands dock_worker a-c.
 const POOLS: Array = [
 	["dockside_burn", ["cartel_gate", "cartel_yard_w", "cartel_yard_e", "cartel_hall", "cartel_platform", "cartel_dock",
-		"cartel_quay", "cartel_reinf"], 6, true],
+		"cartel_quay", "cartel_reinf"], 12, true],
 	["shadow_ledger", ["guard_reception", "guard_rover_l41", "guard_rover_l42", "guard_stair", "guard_roof",
 		"security_operator"], 6, true],
 	["shadow_ledger", ["civ_cleaner_l41", "civ_cleaner_l42"], 3, false],
-	["dockside_burn", ["civ_worker"], 3, false],
+	["dockside_burn", ["civ_worker"], 3, true],
 	["night_deposit", ["guard_hall", "guard_basement", "guard_rover"], 4, true],
 ]
 ## Northgate Executive Protection's own shirt; no other firm's livery (Halden char_sec_, bank, police).
@@ -596,6 +597,8 @@ func test_db_sl_pooled_variety() -> void:
 			genders[f.get_slice("/", 0)] = true
 		if bool(pool[3]):
 			assert_eq(genders.size(), 2, "%s/%s: both genders in the pool" % [heist, roles[0]])
+	# D-115 DB cast: the packer in processing whites works the packing table (civ_worker_packer), never the yard pool.
+	assert_false(_role_ids("dockside_burn", "civ_worker").has("dock_packer"), "dockside_burn/civ_worker: no dock_packer")
 
 
 func test_northgate_livery() -> void:

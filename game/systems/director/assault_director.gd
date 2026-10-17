@@ -172,9 +172,7 @@ func _prewarm() -> int:
 				paths.append(p)
 	var queued: int = 0
 	for p: String in paths:
-		if ResourceLoader.has_cached(p) or not ResourceLoader.exists(p):
-			continue
-		if ResourceLoader.load_threaded_request(p, "", false) == OK:
+		if WarmLoader.request(p):  # GN-8: collected as they finish; spawning never load()s beside them
 			queued += 1
 			_warm_paths.append(p)
 	Log.info(&"director", "prewarm: %d of %d scenes queued" % [queued, paths.size()])
@@ -182,10 +180,9 @@ func _prewarm() -> int:
 
 
 func _exit_tree() -> void:
-	# Collect the background loads (ResourceLoader holds an uncollected threaded load until load_threaded_get).
-	for p: String in _warm_paths:
-		if ResourceLoader.load_threaded_get_status(p) != ResourceLoader.THREAD_LOAD_INVALID_RESOURCE:
-			ResourceLoader.load_threaded_get(p)
+	# GN-8: collect the background loads still in flight (none may run into the next scene) and drop the holds.
+	if not _warm_paths.is_empty():
+		WarmLoader.release()
 	_warm_paths.clear()
 	if EventBus.hostage_count_changed.is_connected(_on_hostage_count_changed):
 		EventBus.hostage_count_changed.disconnect(_on_hostage_count_changed)
@@ -423,6 +420,8 @@ func is_spawn_valid(pos: Vector3, crew: Array[CrewController] = []) -> bool:
 
 func _physics_process(delta: float) -> void:
 	var fp: int = FrameProf.begin()
+	if not _warm_paths.is_empty() and WarmLoader.pending_count() > 0:
+		WarmLoader.poll()  # GN-8: collect each finished prewarm load at once
 	_physics_step(delta)
 	FrameProf.end(&"assault_director", fp)
 

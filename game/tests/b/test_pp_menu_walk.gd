@@ -20,7 +20,7 @@ func _click(c: Control) -> void:
 	if c == null:
 		return
 	var vis: Rect2 = c.get_viewport().get_visible_rect()
-	assert_true(vis.encloses(c.get_global_rect()), "%s on screen" % c.name)
+	assert_true(vis.encloses(c.get_global_rect()), "%s on screen (%s in %s)" % [c.get_path(), c.get_global_rect(), vis])
 	var pos: Vector2 = c.get_global_rect().get_center()
 	var vp: Viewport = c.get_viewport()
 	var m: InputEventMouseMotion = InputEventMouseMotion.new()

@@ -285,3 +285,32 @@ func test_d117_barks_pager_last_answer_pool() -> void:
 	assert_true([&"vo.mercer.pager_last_answer_1", &"vo.mercer.pager_last_answer_2", &"vo.mercer.pager_last"].has(id),
 		"the cap line comes from Mercer's pager_last_answer pool (%s)" % id)
 	assert_eq(_rep.size(), 1, "replicated")
+
+
+## B-SL audit: the generic casing line is dropped once the heist said its own intro, or once the crew masked.
+func test_casing_line_dropped_after_own_intro() -> void:
+	await _launch(false, true)
+	if _d == null:
+		return
+	var m: HeistMission = HeistMission.new()
+	var had: HeistMission = _rt.mission
+	_rt.mission = m
+	m.say(&"vo.mercer.unit_barks_intro")
+	assert_true(m.own_intro_line, "a Mercer *_intro line marks the heist's own intro")
+	_d.request(BarkDirector.CH_MERCER, &"heist_start_casing")
+	_drain()
+	assert_eq(_count(&"mercer.heist_start_casing"), 0, "no generic casing line after the heist's own intro")
+	_rt.mission = had
+	m.free()
+
+
+func test_casing_line_dropped_after_mask_up() -> void:
+	await _launch(false, true)
+	if _d == null:
+		return
+	_d.queue.clear()
+	_d.request(BarkDirector.CH_MERCER, &"heist_start_casing")
+	assert_eq(_d.queue.size(), 1, "queued while casing")
+	(_rt.crew_controller(0) as CrewController).set_masked()
+	_drain()
+	assert_eq(_count(&"mercer.heist_start_casing"), 0, "masked before it played: dropped")

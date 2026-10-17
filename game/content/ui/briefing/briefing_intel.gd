@@ -68,6 +68,9 @@ const THREAT_EFFECTS: Array[StringName] = [
 ]
 ## SpawnPoint.Kind values that are hostile (GUARD, POLICE, SNIPER_PERCH, CAMERA_OPERATOR).
 const HOSTILE_SPAWNS: Array[int] = [1, 3, 4, 5]
+## SpawnPoint.Kind.CIVILIAN: a bad rare event that forces a civilian into play adds a witness, which stealth has to deal
+## with like a guard (SL kessler_sleepover, LEAD r229), so it is a surprise too.
+const SPAWN_CIVILIAN: int = 2
 ## TacticalPoint.Kind.SNIPER_PERCH (contracts/map/tactical_point.gd): a police sniper perch.
 const TACTICAL_SNIPER_PERCH: int = 3
 
@@ -589,7 +592,7 @@ static func scan(heist_id: StringName, map_path: String) -> BriefingIntelData:
 	out.groups = groups
 	locks.sort()
 	out.time_locks_s = locks
-	# Surprises: slots holding security or a hostile spawn (scripted ones too), and the sensor gate's.
+	# Surprises: slots holding security, a hostile or a civilian spawn (scripted ones too), and the sensor gate's.
 	var threat: Dictionary = {}  # group -> Array[StringName] slot ids
 	for n: Dictionary in nodes:
 		var sp2: String = _slot_ancestor(String(n["path"]), slots)
@@ -597,7 +600,8 @@ static func scan(heist_id: StringName, map_path: String) -> BriefingIntelData:
 		var base: String = String(n["instance"] if n["instance"] != "" else n["script"]).get_file().get_basename()
 		var kind: String = String((n["props"] as Dictionary).get("kind", ""))
 		if base == "spawn_point":
-			hostile = HOSTILE_SPAWNS.has(int(kind if kind != "" else str(SPAWN_GUARD)))
+			var k: int = int(kind if kind != "" else str(SPAWN_GUARD))
+			hostile = HOSTILE_SPAWNS.has(k) or k == SPAWN_CIVILIAN
 		elif base == "tactical_point":
 			hostile = kind == str(TACTICAL_SNIPER_PERCH)
 		if sp2 != "" and (hostile or cats_at.has(n["path"])):

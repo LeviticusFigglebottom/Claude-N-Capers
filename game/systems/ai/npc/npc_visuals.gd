@@ -142,6 +142,7 @@ static func look_index(npc: NpcBase, tag: String, n: int) -> int:
 static func _load(path: String) -> PackedScene:
 	if _cache.has(path):
 		return _cache[path]
-	var ps: PackedScene = load(path) as PackedScene if ResourceLoader.exists(path) else null
+	# GN-8: WarmLoader, never beside the director's background loads of the same characters.
+	var ps: PackedScene = WarmLoader.get_or_load(path) as PackedScene if ResourceLoader.exists(path) else null
 	_cache[path] = ps
 	return ps

@@ -272,6 +272,29 @@ static func with_doorway_wall(guards: int = 0, civilians: int = 0, room: Vector2
 		b.add_child(cs)
 		b.position = Vector3(side * (0.45 + box.size.x * 0.5), 1.5, 0.0)
 		geo.add_child(b)
+	return _bake_nav(root, geo)
+
+
+## PO6-15: basic() plus a straight corridor along Z (walls at x = +-width / 2, z in [-length / 2, length / 2],
+## 3 m high, open at both ends) and a baked navmesh (`Navigation`, project nav defaults D-025).
+static func with_corridor(width: float = 2.4, length: float = 16.0) -> PackedScene:
+	var root: HeistMap = basic(0, 0).instantiate() as HeistMap
+	var geo: Node3D = root.get_node("Geometry")
+	for side: float in [-1.0, 1.0]:
+		var b: StaticBody3D = StaticBody3D.new()
+		b.name = "Corridor%s" % ("W" if side < 0.0 else "E")
+		var cs: CollisionShape3D = CollisionShape3D.new()
+		var box: BoxShape3D = BoxShape3D.new()
+		box.size = Vector3(0.2, 3.0, length)
+		cs.shape = box
+		b.add_child(cs)
+		b.position = Vector3(side * (width * 0.5 + 0.1), 1.5, 0.0)
+		geo.add_child(b)
+	return _bake_nav(root, geo)
+
+
+## Bakes a navmesh over `geo` (project nav defaults D-025) into a `Navigation` region of `root`, packs and frees root.
+static func _bake_nav(root: HeistMap, geo: Node3D) -> PackedScene:
 	var nav: NavigationRegion3D = NavigationRegion3D.new()
 	nav.name = "Navigation"
 	root.add_child(nav)
