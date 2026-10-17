@@ -230,6 +230,7 @@ Previous team (session_01XAPqm… lead + its envs) was in another account and is
   - Info for A (PP-C-1 walk rows, not failures): night_deposit STUCK-DOOR at AtmInnerDoor (23.4,0,17.6), AlarmSecurity (21.7,0,18.0), SallyPersonnelDoor (13.2,0,1.5).
 
 ## Rules in force
+- KNOWN RED (order-dependent, full `b` dir only; passes alone): b/test_gadgets_ammo test_resolved_gadgets_and_deltas (on trunk since round 229: my round-229 re-run was filtered and missed it) and b/test_range test_real_crew_shot_damages_target_once (round 230 tree). Routed to B 02:05 (find the cached-resource writer, add a b zz drift guard).
 - D-088: targeted checks only before env pushes; the full gate runs at the lead per merge round, in the background.
 
 ## Open questions (id → answer)
