@@ -1,17 +1,17 @@
-## D-140 (PO-15): a stealth heist can't be beaten by killing every guard. For Night Deposit, Gallery Night and Shadow
-## Ledger (Ostrander Federal once G1 lands): pager carriers at load (role guard: guards, the camera operator, escorts; the
-## minimum over seeds) are >= the per-heist table (>= 5 everywhere), the pager cap is the table (4 on Routine), and from
-## Tense up guards > cap on every seed. Golden Hour is exempt (D-130). Skipped per heist until ENV C's D-140 rows are on
-## the map (its def carries the D-140 pager_max_by_difficulty).
+## D-140 (PO-15, revised 12:25): a stealth heist can't be beaten by killing every guard (Golden Hour exempt). Pager carriers
+## at load = role guard (guards, the camera operator, escorts), on 3 seeds at every difficulty:
+## (a) Routine: pager cap 4, guards <= 4;
+## (b) one lever per map from Tense: GUARDS maps (GN; OF once G1 lands) keep cap 4 everywhere and raise guards to the table
+##     minimum; PAGERS maps (ND, SL) keep the same guard count on every difficulty and drop the cap to the table;
+## (c) from Tense, guards > cap on every seed (a rolled pager_max_answers scalar only lowers the cap; cap_for includes it).
+## Skipped per heist until ENV C's D-140 rows are on the map (PAGERS: the def's pager table; GUARDS: Routine has 4 guards).
 extends TestCase
 
 const SEEDS: Array[int] = [11, 21, 1792002290]
-## heist -> [guards min per difficulty, pager cap per difficulty] (Routine .. Cataclysm).
-const TABLE: Dictionary = {
-	&"night_deposit": [[5, 5, 5, 6, 6, 7], [4, 4, 3, 3, 2, 2]],
-	&"gallery_night": [[5, 5, 6, 6, 7, 8], [4, 4, 4, 3, 3, 2]],
-	&"shadow_ledger": [[5, 5, 6, 6, 7, 8], [4, 4, 4, 3, 3, 2]],
-}
+const PAGERS_CAP: Array = [4, 3, 3, 2, 2, 1]
+## GUARDS maps: minimum guards per difficulty (Routine .. Cataclysm).
+const GUARDS_MIN: Dictionary = {&"gallery_night": [4, 5, 5, 6, 6, 7]}
+const PAGERS_MAPS: Array[StringName] = [&"night_deposit", &"shadow_ledger"]
 
 var _rt: HeistRuntime = null
 
@@ -23,45 +23,59 @@ func after_each() -> void:
 	await wait_frames(2)
 
 
-func test_d140_night_deposit() -> void:
+func test_d140_night_deposit_pagers_lever() -> void:
 	await _check(&"night_deposit")
 
 
-func test_d140_gallery_night() -> void:
-	await _check(&"gallery_night")
-
-
-func test_d140_shadow_ledger() -> void:
+func test_d140_shadow_ledger_pagers_lever() -> void:
 	await _check(&"shadow_ledger")
 
 
+func test_d140_gallery_night_guards_lever() -> void:
+	await _check(&"gallery_night")
+
+
 func _check(heist: StringName) -> void:
-	var want_g: Array = (TABLE[heist] as Array)[0]
-	var want_cap: Array = (TABLE[heist] as Array)[1]
-	var def: HeistDef = null
+	var pagers: bool = PAGERS_MAPS.has(heist)
+	var guards: Dictionary = {}
+	for sd: int in SEEDS:
+		guards[sd] = []
 	for diff: int in Enums.Difficulty.values():
-		var min_g: int = 1 << 20
 		for sd: int in SEEDS:
 			_rt = await HeistLauncher.launch(heist, sd, diff, self, {"crew_ai": false, "ai_teammates": 0})
 			await wait_physics_frames(2)
-			if def == null:
-				def = _rt.map.heist_def
-			if def == null or Array(def.pager_max_by_difficulty) != want_cap:
-				_rt.teardown()
-				_rt = null
-				skip("pending ENV C's D-140 rows for %s (pager_max_by_difficulty %s)" % [heist,
-					def.pager_max_by_difficulty if def != null else "none"])
-				return
+			var def: HeistDef = _rt.map.heist_def
 			var g: int = _rt.npcs(&"guard").size()
 			var cap: int = PagerSystem.cap_for(_rt)
-			var label: String = "%s seed %d difficulty %d" % [heist, sd, diff]
-			print("[d140] %s: %d guards, cap %d" % [label, g, cap])
-			assert_eq(cap, int(want_cap[diff]), "%s: pager cap" % label)
-			if diff >= Enums.Difficulty.TENSE:
-				assert_true(g > cap, "%s: guards %d > cap %d" % [label, g, cap])
-			min_g = mini(min_g, g)
+			var ready: bool = Array(def.pager_max_by_difficulty) == PAGERS_CAP if pagers \
+				else not (diff == Enums.Difficulty.ROUTINE and g < 4)
 			_rt.teardown()
 			_rt = null
 			await wait_frames(2)
-		assert_true(min_g >= int(want_g[diff]) and min_g >= 5, "%s difficulty %d: min guards %d >= %d" % [heist, diff, min_g,
-			want_g[diff]])
+			if not ready:
+				skip("pending ENV C's D-140 rows for %s" % heist)
+				return
+			var label: String = "%s seed %d difficulty %d" % [heist, sd, diff]
+			print("[d140] %s: %d guards, cap %d" % [label, g, cap])
+			(guards[sd] as Array).append(g)
+			if diff == Enums.Difficulty.ROUTINE:
+				assert_eq(cap, 4, "%s: (a) Routine cap 4" % label)
+				assert_true(g <= 4, "%s: (a) Routine guards %d <= 4" % [label, g])
+			else:
+				assert_true(g > cap, "%s: (c) guards %d > cap %d" % [label, g, cap])
+			if pagers:
+				assert_eq(cap, int(PAGERS_CAP[diff]), "%s: (b) PAGERS cap" % label)
+			else:
+				assert_eq(cap, 4, "%s: (b) GUARDS map keeps cap 4" % label)
+	for sd: int in SEEDS:
+		var row: Array = guards[sd]
+		if pagers:
+			assert_true(row.all(func(x: int) -> bool: return x == int(row[0])), "%s seed %d: (b) PAGERS guards fixed %s" % [
+				heist, sd, row])
+	if not pagers:
+		var want: Array = GUARDS_MIN[heist]
+		for diff: int in Enums.Difficulty.values():
+			var lo: int = 1 << 20
+			for sd: int in SEEDS:
+				lo = mini(lo, int((guards[sd] as Array)[diff]))
+			assert_true(lo >= int(want[diff]), "%s difficulty %d: (b) min guards %d >= %d" % [heist, diff, lo, want[diff]])
