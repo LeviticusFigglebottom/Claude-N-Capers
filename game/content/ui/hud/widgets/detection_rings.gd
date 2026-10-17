@@ -59,11 +59,17 @@ func refresh() -> void:
 			if Rect2(Vector2.ZERO, size).grow(-r).has_point(p):
 				row["on_screen"] = true
 				row["ring_pos"] = p
-				if absf(p.distance_to(size * 0.5) - tweak.chevron_radius_px) < r + tweak.arc_width_px:
+				if absf(p.distance_to(size * 0.5) - tweak.chevron_radius_px) < arc_clearance():
 					row["arc"] = false
 		rings.append(row)
 	set_process(not rings.is_empty())
 	queue_redraw()
+
+
+## Least distance between a ring's centre and the crosshair arc circle for the two not to touch: the ring's backing
+## disc (_ring) plus half the arc's backing stroke (_crosshair_arc) plus a small gap.
+func arc_clearance() -> float:
+	return tweak.ring_radius_px + tweak.ring_width_px * 0.5 + 2.0 + (tweak.arc_width_px + 4.0) * 0.5 + 4.0
 
 
 func color_for(value: float) -> Color:

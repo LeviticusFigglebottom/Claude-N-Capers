@@ -127,8 +127,14 @@ func test_no_arc_stacked_on_its_own_ring() -> void:
 		if not bool(r["on_screen"]):
 			assert_true(bool(r["arc"]), "off screen: the arc shows the way")
 			continue
-		var on_band: bool = absf((r["ring_pos"] as Vector2).distance_to(centre) - tw.chevron_radius_px) \
-				< tw.ring_radius_px + tw.arc_width_px
+		# Geometric, from the drawn sizes: the ring's backing disc and the arc's backing stroke must not touch.
+		var ring_outer: float = tw.ring_radius_px + tw.ring_width_px * 0.5 + 2.0
+		var arc_half: float = (tw.arc_width_px + 4.0) * 0.5
+		var gap: float = absf((r["ring_pos"] as Vector2).distance_to(centre) - tw.chevron_radius_px)
+		var on_band: bool = gap < _hud.chevrons.arc_clearance()
+		assert_true(_hud.chevrons.arc_clearance() >= ring_outer + arc_half, "the clearance covers both strokes")
+		if bool(r["arc"]):
+			assert_true(gap >= ring_outer + arc_half, "a drawn arc never touches its ring (gap %.1f)" % gap)
 		assert_eq(bool(r["arc"]), not on_band, "arc only when the ring is off the band: %s" % r["ring_pos"])
 		if on_band:
 			skipped += 1
