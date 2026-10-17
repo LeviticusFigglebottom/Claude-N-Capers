@@ -33552,6 +33552,7 @@ metadata/swing_side = "back"
 [node name="BenefactorsWindowS1" parent="Gameplay/Windows" unique_id=103660 instance=ExtResource("191_gn")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 34, 0.9, 30)
 script = ExtResource("192_gn")
+see_through = false
 visual_scene = ExtResource("193_gn")
 metadata/kind = "window"
 
@@ -33574,6 +33575,7 @@ shape = SubResource("gn_1205")
 [node name="BenefactorsWindowS2" parent="Gameplay/Windows" unique_id=103661 instance=ExtResource("191_gn")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 38, 0.9, 30)
 script = ExtResource("192_gn")
+see_through = false
 visual_scene = ExtResource("193_gn")
 metadata/kind = "window"
 
@@ -33596,6 +33598,7 @@ shape = SubResource("gn_1205")
 [node name="BenefactorsWindowS3" parent="Gameplay/Windows" unique_id=103662 instance=ExtResource("191_gn")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 42, 0.9, 30)
 script = ExtResource("192_gn")
+see_through = false
 visual_scene = ExtResource("193_gn")
 metadata/kind = "window"
 
@@ -33618,6 +33621,7 @@ shape = SubResource("gn_1205")
 [node name="BenefactorsWindowE1" parent="Gameplay/Windows" unique_id=103663 instance=ExtResource("191_gn")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 44, 0.9, 26)
 script = ExtResource("192_gn")
+see_through = false
 visual_scene = ExtResource("193_gn")
 metadata/kind = "window"
 
@@ -33640,6 +33644,7 @@ shape = SubResource("gn_1205")
 [node name="BenefactorsWindowE2" parent="Gameplay/Windows" unique_id=103664 instance=ExtResource("191_gn")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 44, 0.9, 28)
 script = ExtResource("192_gn")
+see_through = false
 visual_scene = ExtResource("193_gn")
 metadata/kind = "window"
 
