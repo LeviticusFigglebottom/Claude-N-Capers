@@ -68,7 +68,7 @@ verification, not game content; per D-135 and the PO's "skip irrelevant validati
 as low priority and does not hold the start:
 - **OF-X1 (A):** the e2e harness pilot pins in open doorways (ND LockerRoomDoor/JanitorDoor, DB mezzanine count room, SL r237 stalls)
   and stops ~4.6 m short of bags when the crew bunches. Blocks only full ND-2 4-bag and DB-7 escape runs.
-- **OF-X2 (A, C):** DB post-burn: ChamberBSouth door and the thermite bag re-pickup read "disabled" (seen by A and P independently).
+- **OF-X2 (A, C): CLOSED round 241** (bot held the tool bag; shutters seal nav, test). Was: DB post-burn: ChamberBSouth door and the thermite bag re-pickup read "disabled" (seen by A and P independently).
   Check whether a nav link survives through the shut door (game bug: AI could path through) or it's the pilot. **Highest of the carries.**
 - **OF-X3 (C):** drill review renders (DB strongroom, ND vault, GN vault, GN server door) with a lighter capture scene; db_finishes.gd
   unused crane/trawler rows.
