@@ -30,7 +30,7 @@ and reports a gap list; the LEAD folds the gaps in here as rows (id, heist, owne
 | DB-2 | DB | C | D-111 doors (twin roller, cold-store slider, strongroom), launch, burn barrels, thermal drill | done (9fbc1930, 1be2c23d, e8da2cba, 262e4b3e); wip/c-sldb-props superseded |
 | DB-4 | DB | A | cartel `sit` plays no seated clip | done (A c5d4563d + 1b326212 sit_chair_armed; D verified windowed 278dc464). C: ForemanChair too close to its desk (shins through the modesty panel) |
 | DB-6 | DB | C, A | stale QC-36/39 TODOs (C); QC-25 S3 perch after fog lifts needs a director hook (A) | done (A e13f762f; C a0f6099d comments/doc; ForemanChair moved back) |
-| DB-7 | DB | A | mission audit + windowed auto_loud | flow verified windowed to the thermite carry (seed 1003: breach t77, product t85, cartel t120; custody t266, pilot lost the fight); win pending a D-133 rerun (crew_damage_taken_mult 0.25) |
+| DB-7 | DB | A (C) | mission audit + windowed auto_loud | flow verified to the thermite carry (×1.0 custody t=266; ×0.25 budget-bound t=461). BLOCKER: pilot stalls 3×60 s in the ChamberBSouth doorway (41.2, 0, 24.1): C threshold lip / leaf clearance; A re-runs ×0.25 on C's fix |
 | GN-1 | GN | C | G2 (GN-C2): 50 props vs GH 628, GI/probes/occluders, moon light | done: G2 FINAL (C 8a7872c4, round 224); gala dressing top-up optional |
 | GN-2 | GN | C | 5 patron spawns vs 12 in doc (7/9 rolls capped) | done (round 219) |
 | GN-3 | GN | C | 2 BODY_HIDE spots vs 8 | done (round 219) |
