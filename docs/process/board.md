@@ -238,6 +238,7 @@ Previous team (session_01XAPqm… lead + its envs) was in another account and is
 
 ## Rules in force
 - D-135 (PO, 08:40): no new scope; every env closes its queue and reports QUEUE CLEAR, then Ostrander Federal kicks off for all envs together.
+  QUEUE CLEAR status: A open (ND-1, DB-7, anim lane + civ panic wiring) · B open (1080p GN/DB/SL) · C open (DB-1, chair Seat) · D open (dress knee clipping, seated re-check, GN scatter capture; D1 parked on the PO GPU run) · P open (ND-2, SL confirm, D-128/D-130 remainder, DB-P1).
 - D-088: targeted checks only before env pushes; the full gate runs at the lead per merge round, in the background.
 
 ## Open questions (id → answer)
