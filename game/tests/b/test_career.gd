@@ -213,3 +213,18 @@ func _result(heist: StringName, success: bool, stealth: bool, difficulty: int, t
 			{"slot": 1, "is_ai": true, "kills": 9, "specials_killed": 2, "downs": 1, "civilians_killed": 0, "in_custody": false},
 		],
 	}
+
+
+## Payday cards: a granted cash / XP card counts into card_cash / card_xp and cards_taken; the screen lists both.
+func test_payday_cards_recorded() -> void:
+	var p: PlayerProfile = PlayerProfile.new_default()
+	assert_eq(Career.total(p, Career.CARD_CASH), -1, "never counted")
+	Career.record_card(p, {"type": PaydayCards.CASH, "amount": 12000})
+	Career.record_card(p, {"type": PaydayCards.XP, "amount": 3500})
+	Career.record_card(p, {"type": PaydayCards.WEAPON_MOD, "item_id": &"mod.x"})
+	assert_eq(Career.total(p, Career.CARD_CASH), 12000)
+	assert_eq(Career.total(p, Career.CARD_XP), 3500)
+	assert_eq(Career.total(p, Career.CARDS_TAKEN), 3)
+	assert_has(CareerScreen.MONEY_KEYS, "card_cash")
+	assert_eq(CareerScreen.value_text(p, "card_cash"), UiText.money(12000))
+	Career.record_card(null, {"type": PaydayCards.CASH, "amount": 1})

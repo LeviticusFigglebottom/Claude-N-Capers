@@ -3135,6 +3135,8 @@ ui.career.stash_earned,Offshore earned
 ui.career.cash_spent,Spending cash spent
 ui.career.offshore_spent,Offshore spent
 ui.career.xp_earned,XP earned
+ui.career.card_cash,Payday card cash
+ui.career.card_xp,Payday card XP
 ui.career.bags,Bags secured
 ui.career.small_loot,Small loot
 ui.career.favourite_weapon,Favourite weapon

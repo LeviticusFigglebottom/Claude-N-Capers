@@ -2,7 +2,7 @@
 ## (HubMenu.career_requested -> MenuFlow._open_career); Back returns to the hub.
 ## Shows the profile's lifetime career (Career, save v7): a record summary (level + Notoriety badge,
 ## heists played / won / failed, success rate, stealth vs loud wins, time on the job), money (earned,
-## spent, XP, bags, small loot, favourite weapon), combat (kills, specials, civilians, downs, custody, and
+## spent, XP, bags, small loot, payday card cash / XP, favourite weapon), combat (kills, specials, civilians, downs, custody, and
 ## shots / hits / headshots / accuracy only when the HeistResult carried them) and a per-heist table
 ## (played, won, failed, stealth, loud, best difficulty, fastest win). A counter that was never counted
 ## reads `ui.career.not_tracked`, never 0.
@@ -14,11 +14,12 @@ extends UiScreen
 ## Totals keys shown in each panel, in order (label key = `ui.career.<key>`).
 const RECORD_KEYS: Array[String] = ["played", "won", "failed", "stealth_wins", "loud_wins"]
 const MONEY_KEYS: Array[String] = ["spending_earned", "stash_earned", "cash_spent", "offshore_spent", "xp_earned",
-	"bags", "small_loot"]
+	"bags", "small_loot", "card_cash", "card_xp"]
 const COMBAT_KEYS: Array[String] = ["kills", "specials_killed", "civilians_killed", "downs", "custody", "shots", "hits",
 	"headshots"]
 ## Totals keys that are money amounts.
-const MONEY_AMOUNTS: Array[String] = ["spending_earned", "stash_earned", "cash_spent", "offshore_spent", "small_loot"]
+const MONEY_AMOUNTS: Array[String] = ["spending_earned", "stash_earned", "cash_spent", "offshore_spent", "small_loot",
+	"card_cash"]
 ## Per-heist table columns (header key = `ui.career.col.<id>`).
 const COLUMNS: Array[String] = ["heist", "played", "won", "failed", "stealth", "loud", "best", "fastest"]
 const COLUMN_WIDTH: float = 160.0
