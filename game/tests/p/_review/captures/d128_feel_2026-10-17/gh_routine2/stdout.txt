@@ -1,0 +1,62 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+Vulkan 1.4.318 - Forward+ - Using Device #0: Unknown - llvmpipe (LLVM 20.1.2, 256 bits)
+
+[INFO][rng][p1] run seed 1002
+[INFO][variants][p1] seed 1002 resolved { &"guard_post": [&"rover_upper"], &"back_door": [&"back_propped"], &"open_window": [&"ow_breakroom_open"], &"keycard": [&"kc_counter"], &"jeweler": [&"jw_working"], &"admin_clerk": [&"clerk_in"], &"salon": [&"salon_locked"], &"extra_loot": [&"xl_delivery"], &"escape": [&"esc_pell"], &"customers": [&"cust_1", &"cust_3", &"cust_4", &"cust_5"], &"manager_present": [&"mgr_out"], &"safe_state": [&"safe_closed"], &"estate": [&"estate_none"], &"camera": [&"cam_c3", &"cam_c4", &"cam_c6"], &"security_room_staffed": [&"sec_empty"], &"code_note": [&"code_admin"], "rare": [] }
+[INFO][heist][p1] phase LOADING -> CASING
+[INFO][director][p1] prewarm: 18 of 18 scenes loaded in 1168 ms
+[INFO][prefab][p1] CameraStation: security room unstaffed
+[D128 189.6s t=2.53] pilot: calibrated 0.001600 rad/px yaw, 0.001600 rad/px pitch (settings formula said (0.0016, 0.0016))
+[D128 189.6s t=2.53] run 1: difficulty 0 pagers_max 4
+[D128 189.6s t=2.53] run 1: glasshouse seed 1002 phase 1 crew (3.0, 0.0, 14.4) masked false mode casing DR 4
+[D128 235.3s t=3.07] shot glasshouse_01_hud_pagers_routine.png
+[D128 462.1s t=8.07] pilot: t=5 at (8.7, 0.0, 13.0) corner (9.4, 0.2, 12.8) yaw_err 0.00 fwd=true path=46 mouse_mode=2 state=0 look=(-1.31,0.00) pin_yaw=-1.31218309126416 bot=false
+[D128 611.9s t=10.67] pilot: use MainEntrance (open_door) -> OK in 0.0 s
+[D128 877.4s t=15.58] pilot: t=10 at (7.7, 0.0, 10.7) corner (6.6, 0.2, 10.5) yaw_err -0.00 fwd=true path=35 mouse_mode=2 state=0 look=(-4.90,0.00) pin_yaw=-4.90343285701238 bot=false
+[D128 1193.7s t=20.58] pilot: t=15 at (4.0, 0.0, 9.2) corner (2.8, 0.2, 8.4) yaw_err 0.05 fwd=true path=28 mouse_mode=2 state=0 look=(-5.32,0.00) pin_yaw=-5.27217476614169 bot=false
+[D128 1349.9s t=23.50] pilot: use StaffDoor (open_door) -> OK in 0.0 s
+[D128 1519.9s t=26.25] pilot: use ReceivingDoor (open_door) -> OK in 0.0 s
+[D128 1608.7s t=28.08] pilot: t=20 at (3.4, 0.0, 3.8) corner (3.4, 0.2, 4.4) yaw_err -0.44 fwd=true path=13 mouse_mode=2 state=0 look=(-2.67,0.00) pin_yaw=-2.86532538198662 bot=false
+[D128 1823.6s t=33.10] pilot: t=25 at (1.6, 0.0, -0.8) corner (2.2, 0.2, -0.7) yaw_err 2.73 fwd=false path=2 mouse_mode=2 state=0 look=(-4.55,0.00) pin_yaw=-4.3564952933084 bot=false
+[D128 1986.9s t=38.10] pilot: t=30 at (-3.8, 0.0, -2.1) corner (-5.8, 0.2, -2.5) yaw_err 0.00 fwd=true path=2 mouse_mode=2 state=0 look=(-4.94,0.00) pin_yaw=-4.9341581135086 bot=false
+[D128 2025.8s t=39.32] careful: at mask spot (-5.6, 0.0, -2.4), max meter 0.00
+[INFO][heist][p1] phase CASING -> STEALTH
+[INFO][crew][p1] slot 0 masked (forced=false)
+WARNING: Sub-surface scattering is not supported in viewports with a transparent background. Disabling SSS in transparent viewport.
+     at: _render_scene (servers/rendering/renderer_rd/forward_clustered/render_forward_clustered.cpp:1963)
+[D128 2060.8s t=40.63] careful: masked true
+[D128 2064.8s t=40.67] shot glasshouse_02_careful_masked.png
+[D128 2294.5s t=45.13] careful: leg 1 -> (-1.0, 0.0, -0.7) reached true, max meter now 0.00 (-) alarm 
+[D128 2500.3s t=49.28] careful: leg 2 -> (2.8, 0.0, -0.6) reached true, max meter now 0.00 (-) alarm 
+[D128 2634.6s t=51.50] careful: leg 3 -> (3.5, 0.0, 1.2) reached true, max meter now 0.00 (-) alarm 
+[D128 2759.8s t=53.50] careful: leg 4 -> (3.2, 0.0, 3.0) reached true, max meter now 0.00 (-) alarm 
+[D128 2934.5s t=56.78] careful: leg 5 -> (2.0, 0.0, 5.2) reached true, max meter now 0.00 (-) alarm 
+[D128 2941.5s t=56.80] shot glasshouse_03_careful_end.png
+[D128 2941.5s t=56.80] careful: camera CameraC3 closest 14.1 m (ang 12) peak meter 0.00
+[D128 2941.5s t=56.80] careful: camera CameraC4 closest 2.6 m (ang 84) peak meter 0.00
+[D128 2941.5s t=56.80] careful: camera CameraC6 closest 6.1 m (ang 72) peak meter 0.00
+[D128 2941.5s t=56.80] careful: guard Npc_guard closest 10.2 m (ang 146) peak meter 0.00
+[D128 2941.5s t=56.80] careful: guard Npc_guard2 closest 10.3 m (ang 2) peak meter 0.00
+[D128 2941.5s t=56.80] careful: civilian Npc_civilian closest 2.1 m (ang 166) peak meter 0.00
+[D128 2941.5s t=56.80] careful: civilian Npc_civilian2 closest 6.4 m (ang 60) peak meter 0.00
+[D128 2941.5s t=56.80] careful: civilian Npc_civilian3 closest 5.1 m (ang 86) peak meter 0.00
+[D128 2941.5s t=56.80] careful: civilian Npc_civilian4 closest 5.8 m (ang 164) peak meter 0.00
+[D128 2941.5s t=56.80] careful: civilian Npc_civilian5 closest 9.8 m (ang 148) peak meter 0.00
+[D128 2941.5s t=56.80] careful: civilian Npc_civilian6 closest 9.7 m (ang 151) peak meter 0.00
+[D128 2941.5s t=56.80] careful: civilian Npc_civilian7 closest 6.9 m (ang 52) peak meter 0.00
+[D128 2941.5s t=56.80] careful: civilian Npc_civilian8 closest 3.7 m (ang 20) peak meter 0.00
+[D128 2941.5s t=56.80] careful: RESULT CLEAN (alarm )
+[INFO][stealth][p1] camera alert: alarm in 7.0 s
+[D128 3185.8s t=62.78] SAMPLE CameraC3:10:20:stand:decay: SKIP no reachable point with sight at 10.0 m / 20 deg
+[INFO][stealth][p1] ALARM: camera (source 55)
+[INFO][heist][p1] alarm (camera): going loud
+[INFO][heist][p1] phase STEALTH -> LOUD
+[INFO][director][p1] assault phase CONTROL (wave 1, 20 s)
+[D128 3374.1s t=66.72] ALARM camera
+[INFO][director][p1] assault events: 3 rows for glasshouse (tweak)
+[D128 3464.1s t=68.78] SAMPLE CameraC3:8:15:crouch: SKIP no reachable point with sight at 8.0 m / 15 deg
+[D128 3464.1s t=68.78] DONE runs=1
+[D128ROW] glasshouse|careful|CLEAN|alarm 
+[D128ROW] glasshouse|CameraC3:10:20:stand:decay|camera|SKIP unreachable
+[D128ROW] glasshouse|CameraC3:8:15:crouch|camera|SKIP unreachable
+[D128] RESULT DONE

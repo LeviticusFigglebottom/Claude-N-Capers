@@ -22,8 +22,27 @@ CLEAN, every meter stayed 0.00.
 D-130 (Routine): pagers_max = 4 in LocalHudModel; the HUD's "pagers left" label is hidden until a pager is active or
 answered (PagerPanel, by design), so no cap readout in the screenshots yet. Suppressed pistol at C3 from 15.5 m:
 destroyed after <= 6 shots (titan false) - correct for Routine. Camera fill matches 1.6/2.4 s presets (D-130).
-LETHAL leg and SHADOW LEDGER: not run (time). Resume: see the report.
+
+RESUME 1 (tree + env/p-play 61c4747d = trunk r233), GOLDEN HOUR LETHAL (gh_lethal, gh_lethal2):
+* pagers_max = 2 on Lethal (4 on Routine) in LocalHudModel = D-130 [4,4,3,3,2,1]. HUD "pagers left" still hidden
+  until a pager event (PagerPanel by design); no cap readout without killing a guard.
+* Camera C4 ~5 m (4.96 m / 29-35 deg, panning): first non-zero 0.33 s after the mask, fill 3.89 s (extrapolated from
+  0.51), decay 1.17 s (PD2 1.17 s). Same as Routine (difficulty does not change detection speed; PD2 neither).
+* Camera C4 ~7 m (6.98 m / 30 deg, cone edge): the meter showed 0.07, then the 40 deg pan swung the cone off: no fill
+  (edge sample inconclusive; a panning camera edge is forgiving, as in PD2).
+* Titan: suppressed pistol, 6 rounds at C4 from 7.3 m: destroyed false, is_titan true -> correct (Hazardous+ on GH).
+  Routine: C3 destroyed by <= 6 rounds (titan false). Screenshot gh_lethal2/05: intact camera with its ring.
+* Careful route on Lethal (3-4 guards, cameras C1 C2 C4 C6): CLEAN but a near miss - Npc_guard2 (extra Lethal
+  guard in G1/G4) reached 0.81 at 2.8 m / 89 deg while the pilot waited 17.5 s at the G1 door; the crosshair arc for
+  that off-screen guard shows orange (gh_lethal/05). Lethal rolls no C3, so the C3 10 m sample needs Routine.
+* SHADOW LEDGER (sl/): launched (seed 13, cam_c, service-lobby preplan, pagers_max 4) but the game ran ~150x slower
+  than wall time (5 game-s per 13 min); stopped on the Stair B walk before the mask-up. Not measured.
 
 Files: gh/survey_log.txt (observers), gh/run_a_samples_log.txt, gh/run_b_samples_log.txt, gh_routine/careful_log.txt,
 PNGs: gh/glasshouse_01/02 (guard ring filling with civilian "!"), gh_routine/01 (casing HUD), 02 (camera ring 51 %),
 03 (masked in alley), 04 (careful end), 05 (C3 shot, broken).
+* GH ROUTINE 2nd careful run (gh_routine2): CLEAN again (all meters 0.00). Camera C3 corridor samples at ~10 m / 20 deg
+  standing and ~8 m crouched: SKIP, no nav point accepted, even with 6 x 1 s pan retries; the survey also found no C3
+  point at any distance. Likely harness cause: _pick_point's sight ray from the lens hits the camera's own collision
+  box (only a CollisionObject3D root is excluded). Fix: exclude the camera's child bodies, or test sight with
+  StealthDirector._crew_visible-style rays. Not a game finding.
