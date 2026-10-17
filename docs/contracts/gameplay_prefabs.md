@@ -93,3 +93,8 @@ New prefab requests from ENV C go to the lead as a status-file question.
 - **HackTerminal:** `reveals_code_group` (also a variant param): finishing the hack reveals that code group.
 - **CodeNote:** `reveals_variant_group` (reading it reveals a variant group at runtime, e.g. the planner `[code_hint]`).
 - **Padlock (D-138, pending A):** `allow_lockpick`, `place_saw_stealth`, `place_drill` + `drill_duration_s`, `place_c4`.
+- **CivilianRoute (OF-A4, A 405a3169):** a Node3D with ordered `CivilianRouteStop` children (PatrolPoint + `away_window`);
+  mode LOOP / PING_PONG / ONCE; dwell from `pause_range` (GameRng `civilian_routes`), stop clip from `pause_anim`;
+  cross-floor on the normal navmesh (ladder-only stops skipped); binding by the spawn's `patrol_graph`, `bind_tags` or
+  `route.bind(npc)`. Panic/intimidation preempt it. Unreachable stops are skipped and logged once. Mission API:
+  `away_changed` / `stop_reached`, `is_away`, static `any_away(rt, window)`, `find`, `for_civilian`.
