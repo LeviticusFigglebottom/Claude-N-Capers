@@ -11,7 +11,7 @@ const VARIANTS_PATH: String = OUT_DIR + "shadow_ledger_variants.tres"
 ## D-130 (population by difficulty, doc §roster "Totals per difficulty"): `late_staff` adds one seated member of staff
 ## (K4 assistant or K8 associate) from Tense up; LATE_NONE is the empty `ls_none` slot's weight per difficulty against
 ## 1 + 1, so P(one late worker) = 0 / 0.25 / 0.25 / 0.33 / 0.44 / 0.67 (Routine..Cataclysm). With the pre-D-130
-## cleaners / Moor / contractor rows, expected civilians 2.26 / 2.52 / 3.03 / 3.62 / 3.73 / 3.96 (+0 / 11 / 34 / 60 /
+## cleaners / Moor / contractor rows, expected civilians 2.26 / 2.50 / 3.04 / 3.63 / 3.74 / 3.96 (+0 / 11 / 34 / 60 /
 ## 65 / 75 %), each tier above the one below and above its pre-D-130 count. Guards keep their rows (2 / 2.5 / 3.5 /
 ## 4 / 5 / 5, already +150 % at Lethal). game/tests/c/test_d130_population.gd pins the counts.
 const LATE_ADD: Array[int] = [0, 1, 1, 1, 1, 1]
