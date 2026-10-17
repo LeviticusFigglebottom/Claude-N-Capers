@@ -1332,6 +1332,26 @@ func _test_dry_throws() -> bool:
 	return true
 
 
+## Logs what stands in front of `from` along `dir` at 0.25 m height steps (0.25-3.0 m above the feet): the height of
+## a parapet / guard as the crew meets it, and what it is.
+func _wall_profile(from: Vector3, dir: Vector3, label: String) -> void:
+	var space: PhysicsDirectSpaceState3D = pilot.crew.get_world_3d().direct_space_state
+	var rows: PackedStringArray = PackedStringArray()
+	var top: float = 0.0
+	for k: int in 12:
+		var h: float = 0.25 * float(k + 1)
+		var a: Vector3 = from + Vector3.UP * h
+		var q: PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.create(a, a + dir * 3.0, 1 | 2)
+		q.exclude = [pilot.crew.get_rid()]
+		var hit: Dictionary = space.intersect_ray(q)
+		if hit.is_empty():
+			rows.append("%.2f: open" % h)
+		else:
+			top = h
+			rows.append("%.2f: %.2f m %s" % [h, a.distance_to(hit["position"] as Vector3), (hit["collider"] as Node).name])
+	note("WALL %s from %s: blocked up to ~%.2f m above the feet; %s" % [label, Po5Pilot._v(from), top, "; ".join(rows)])
+
+
 ## Half extent of a secure zone's box along horizontal `dir`.
 static func _zone_extent(z: SecureZone, dir: Vector3) -> float:
 	var l: Vector3 = z.global_basis.inverse() * dir
@@ -1468,28 +1488,42 @@ func _test_throws() -> bool:
 	if not await _of_to_floor(3):
 		return await _fail("SA up to the Executive level")
 	var e2: SecureZone = _x("e2_secure") as SecureZone
+	await _go(pilot.stand_point(_of(OF_TERRACE_E_STAND)), 0.3, 180.0)
+	_wall_profile(pilot.crew.global_position, Vector3.RIGHT, "terrace east parapet")
+	# From the parapet face first, then 0.8 / 1.6 m back (the release point is 0.7 m ahead at 1.3 m: against the
+	# 1.1 m guard it can start inside the coping): the first stand whose throw clears the parapet counts.
 	for loot: StringName in [LOOT_MEDIUM, LOOT_HEAVY]:
 		for pitch: float in THROW_PITCHES:
-			if not await _go(_of(OF_TERRACE_E_STAND), 0.3, 180.0):
-				return await _fail("terrace east stand")
-			if await _get_bag(loot) == null:
-				return await _fail("bag")
-			await _go(pilot.stand_point(_of(OF_TERRACE_E_STAND)), 0.25, 10.0)
-			var r: Dictionary = await _throw(_of(OF_TERRACE_E_AIM), pitch)
-			var p: Vector3 = r.get("rest", Vector3.ZERO)
-			var zd: float = _zone_dist(p, e2) if e2 != null else INF
 			var verdict: String = "?"
-			if bool(r.get("secured", false)):
-				verdict = "OK in the E2 zone"
-			elif p.y < OF_FFL[1] + 0.6 and p.x > _of(OF_FIRE_EXIT).x + 0.3:
-				verdict = ("OK Tannery Street, %.1f m from E2" % zd) if zd <= OF_E2_BESIDE_M else (
-					"FAIL Tannery Street but %.1f m from the E2 zone (> %.0f m)" % [zd, OF_E2_BESIDE_M])
-			elif p.y > OF_FFL[3] + 0.3:
-				verdict = "FAIL on the coping / terrace"
-			else:
-				verdict = "FAIL caught at y %.1f (awning / ledge)" % p.y
+			for back: float in [0.0, 0.8, 1.6]:
+				var stand: Vector3 = pilot.stand_point(_of(OF_TERRACE_E_STAND) - Vector3(back, 0.0, 0.0))
+				if not await _go(stand, 0.3, 180.0):
+					return await _fail("terrace east stand")
+				if await _get_bag(loot, 3.0) == null:  # the last throw's bag if it came back at our feet
+					return await _fail("bag")
+				await _go(stand, 0.25, 10.0)
+				var r: Dictionary = await _throw(_of(OF_TERRACE_E_AIM), pitch)
+				var p: Vector3 = r.get("rest", Vector3.ZERO)
+				var zd: float = _zone_dist(p, e2) if e2 != null else INF
+				if bool(r.get("secured", false)):
+					verdict = "OK in the E2 zone"
+				elif p.y < OF_FFL[1] + 0.6 and p.x > _of(OF_FIRE_EXIT).x + 0.3:
+					verdict = ("OK Tannery Street, %.1f m from E2" % zd) if zd <= OF_E2_BESIDE_M else (
+						"FAIL Tannery Street but %.1f m from the E2 zone (> %.0f m)" % [zd, OF_E2_BESIDE_M])
+				elif p.y > OF_FFL[3] + 0.3 and p.x < _of(OF_FIRE_EXIT).x:
+					verdict = "FAIL bounced back off the parapet / coping onto the terrace"
+				elif p.y > OF_FFL[3] + 0.3:
+					verdict = "FAIL on the coping"
+				else:
+					verdict = "FAIL caught at y %.1f (awning / ledge)" % p.y
+				_throw_note("terrace %s %+.0f deg from %.1f m back of the parapet stand" % [loot, pitch, back], r,
+					verdict)
+				if not verdict.begins_with("FAIL bounced"):
+					break
+				var lb: LootBag = _bag_near(p, 1.5)
+				if lb != null:
+					await pilot.use(_comp(lb), 20.0, func() -> bool: return pilot.crew.is_carrying_bag())
 			bad += 0 if verdict.begins_with("OK") else 1
-			_throw_note("terrace %s %+.0f deg" % [loot, pitch], r, verdict)
 			if not verdict.begins_with("OK"):
 				await shot("terrace_throw_bad")
 	await shot("terrace_throws")
@@ -1583,8 +1617,21 @@ func _test_hole() -> bool:
 	var car_stand: Vector3 = pilot.stand_point(hoist.landing_transform(bottom).origin + Vector3(0.0, 0.0, 1.2))
 	if not await _lift_to(hoist, bottom, car_stand):
 		return await _fail("hoist down")
-	if not await _bag_into_car(hoist, car_stand):
-		return await _fail("bag into the hoist")
+	var car_ok: bool = await _bag_into_car(hoist, car_stand)
+	if not car_ok:
+		# G is always a throw (2-4 m): an open hoist car does not hold it. Note it, then place a bag in the car
+		# (SHORTCUT) so the ride up, the rope ladder up and the take-out in TW are still checked.
+		note("FINDING a G-thrown bag does not stay in the open hoist car (car at %s)" % Po5Pilot._v(
+			hoist.car_transform().origin))
+		if pilot.crew.is_carrying_bag():
+			await pilot.inp.tap(&"drop_bag")
+			await wait_s(1.0)
+		var mgr: LootManager = HeistRuntime.get_service(G.SVC_LOOT) as LootManager
+		mgr.spawn_bag(LOOT_MEDIUM, Transform3D(Basis.IDENTITY, hoist.car_transform().origin + Vector3.UP * 0.4), true)
+		await wait_s(1.0)
+		note("SHORTCUT bag placed in the hoist car (%d in the car)" % hoist.bags_in_car().size())
+		if hoist.bags_in_car().is_empty():
+			return await _fail("bag into the hoist")
 	if not await _lift_to(hoist, top, car_stand):
 		return await _fail("hoist up")
 	if not await _climb(rope, true):
@@ -1594,8 +1641,9 @@ func _test_hole() -> bool:
 		return await _fail("bag out of the hoist in TW")
 	note("HOIST cycle OK: the bag rode up and was taken out in TW")
 	await shot("hoist_done")
-	if not in_vt:
-		return await _fail("bag thrown down the hole did not land in VT (rope ladder + hoist cycle OK)")
+	if not in_vt or not car_ok:
+		return await _fail("hole: thrown-down bag in VT %s, G-throw into the hoist car %s (rope ladder + hoist ride OK)"
+			% [in_vt, car_ok])
 	return true
 
 
@@ -1668,18 +1716,28 @@ func _test_dock() -> bool:
 		await _go(in_pt, 0.3, 60.0)
 		var w: int = int((pilot.crew.carried_bag as LootBag).weight)
 		var reach: float = Tweak.crew().bag_throw_distance_m[w]
-		var stand: Vector3 = in_pt
-		if _zone_dist(in_pt, e1) > reach:
-			# Walk out toward the van until its zone is within the throw.
-			var dir: Vector3 = (e1.global_position - in_pt)
-			dir.y = 0.0
-			stand = pilot.stand_point(e1.global_position - dir.normalized() * (_zone_extent(e1, dir.normalized())
-				+ reach * 0.6))
-			await _go(stand, 0.3, 30.0)
-		var r: Dictionary = await _throw(e1.global_position, 10.0)
-		var ok: bool = bool(r.get("secured", false))
-		_throw_note("LD -> E1 %s from %.1f m (door %.1f m)" % [loot, _zone_dist(pilot.crew.global_position, e1),
-			pilot.flat_dist(pilot.crew.global_position, in_pt)], r, "OK in E1" if ok else "FAIL not in E1")
+		# Throw stands, nearest the dock first: on the door's threshold, 0.7 m out in the lane, then (out of reach)
+		# walked out toward the van until its zone is within the throw. The first that secures the bag counts.
+		var dir: Vector3 = (e1.global_position - door.global_position)
+		dir.y = 0.0
+		var stands: Array[Vector3] = [pilot.stand_point(door.global_position), pilot.stand_point(door.global_position
+			+ (out_pt - door.global_position).normalized() * 0.7), pilot.stand_point(e1.global_position
+			- dir.normalized() * (_zone_extent(e1, dir.normalized()) + reach * 0.6))]
+		var ok: bool = false
+		for si: int in stands.size():
+			if not pilot.crew.is_carrying_bag():
+				var lb: LootBag = _bag_near(pilot.crew.global_position, 4.0)
+				if lb == null or not await pilot.use(_comp(lb), 20.0, func() -> bool: return pilot.crew.is_carrying_bag()):
+					break
+			await _go(stands[si], 0.25, 30.0)
+			var r: Dictionary = await _throw(e1.global_position, 10.0)
+			ok = bool(r.get("secured", false))
+			_throw_note("LD -> E1 %s stand %d %s: %.1f m from the zone, %.1f m from the door" % [loot, si,
+				Po5Pilot._v(pilot.crew.global_position), _zone_dist(pilot.crew.global_position, e1),
+				pilot.flat_dist(pilot.crew.global_position, door.global_position)], r, "OK in E1" if ok
+				else "FAIL not in E1")
+			if ok:
+				break
 		await shot("dock_%s" % String(loot).get_slice(".", 1))
 		if not ok:
 			return await _fail("LD -> E1 throw (%s)" % loot)
@@ -1707,17 +1765,27 @@ func _test_fire_exit() -> bool:
 	var t0: float = rt.heist_time_s
 	if not door.is_open and not await pilot.use(_comp(door), 30.0, func() -> bool: return door.is_open):
 		return await _fail("fire exit (push bar)")
-	var reach: float = Tweak.crew().bag_throw_distance_m[Enums.LootWeight.HEAVY]
-	var dir: Vector3 = e2.global_position - _of(OF_FIRE_EXIT)
-	dir.y = 0.0
-	var stand: Vector3 = pilot.stand_point(e2.global_position - dir.normalized() * (_zone_extent(e2, dir.normalized())
-		+ reach * 0.6))
-	if not await _go(stand, 0.3, 60.0):
-		return await _fail("out to the E2 throw stand")
-	var r: Dictionary = await _throw(e2.global_position, 10.0)
-	var ok: bool = bool(r.get("secured", false))
-	_throw_note("fire exit -> E2 HEAVY (BC east -> stand %.1f s, STUCK rows %d)" % [rt.heist_time_s - t0,
-		pilot.stuck_spots.size() - stuck0], r, "OK in E2" if ok else "FAIL not in E2")
+	# Out through the fire exit (outward = away from BC east), then throw at the zone from 0.9 m / 1.8 m outside.
+	var outward: Vector3 = door.global_position - _of(OF_BC_EAST)
+	outward.y = 0.0
+	outward = outward.normalized()
+	var ok: bool = false
+	for si: int in 2:
+		if not pilot.crew.is_carrying_bag():
+			var lb: LootBag = _bag_near(pilot.crew.global_position, 4.0)
+			if lb == null or not await pilot.use(_comp(lb), 20.0, func() -> bool: return pilot.crew.is_carrying_bag()):
+				break
+		var stand: Vector3 = pilot.stand_point(door.global_position + outward * (0.9 + 0.9 * si))
+		if not await _go(stand, 0.3, 60.0):
+			return await _fail("out to the E2 throw stand")
+		var aim: Vector3 = e2.global_position
+		var r: Dictionary = await _throw(aim, 10.0)
+		ok = bool(r.get("secured", false))
+		_throw_note("fire exit -> E2 HEAVY stand %d %s (%.1f m from the zone; BC east -> stand %.1f s, STUCK rows %d)"
+			% [si, Po5Pilot._v(pilot.crew.global_position), _zone_dist(pilot.crew.global_position, e2),
+			rt.heist_time_s - t0, pilot.stuck_spots.size() - stuck0], r, "OK in E2" if ok else "FAIL not in E2")
+		if ok:
+			break
 	await shot("fire_exit_e2")
 	if not ok:
 		return await _fail("fire exit -> E2 throw")
