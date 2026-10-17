@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="PreplanAssetDef" format=3]
+
+[ext_resource type="Script" path="res://content/preplanning/preplan_asset_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"asset.thermal_drill_drop"
+category = &"supply"
+cost = 2500
+favors = 2
+point_ids = Array[StringName]([&"pp_drill_terrace", &"pp_drill_dock"])
+exclusive_group = &"drill_delivery"
+drop = &"loot.thermal_drill_part"
+drop_params = {
+"count": 2
+}
+tags = Array[StringName]([&"loud"])
+effect = &"force_variant"
