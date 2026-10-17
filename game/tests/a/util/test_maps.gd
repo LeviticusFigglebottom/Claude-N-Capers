@@ -294,7 +294,8 @@ static func with_corridor(width: float = 2.4, length: float = 16.0) -> PackedSce
 
 
 ## Bakes a navmesh over `geo` (project nav defaults D-025) into a `Navigation` region of `root`, packs and frees root.
-static func _bake_nav(root: HeistMap, geo: Node3D) -> PackedScene:
+static func _bake_nav(root: HeistMap, geo: Node3D,
+		bake_aabb: AABB = AABB(Vector3(-15.0, -1.0, -15.0), Vector3(30.0, 4.0, 30.0))) -> PackedScene:
 	var nav: NavigationRegion3D = NavigationRegion3D.new()
 	nav.name = "Navigation"
 	root.add_child(nav)
@@ -308,7 +309,7 @@ static func _bake_nav(root: HeistMap, geo: Node3D) -> PackedScene:
 	nm.geometry_parsed_geometry_type = NavigationMesh.PARSED_GEOMETRY_STATIC_COLLIDERS
 	nm.geometry_collision_mask = 1
 	nm.geometry_source_geometry_mode = NavigationMesh.SOURCE_GEOMETRY_ROOT_NODE_CHILDREN
-	nm.filter_baking_aabb = AABB(Vector3(-15.0, -1.0, -15.0), Vector3(30.0, 4.0, 30.0))
+	nm.filter_baking_aabb = bake_aabb
 	var holder: Node3D = Node3D.new()  # parse needs the geometry in a tree for global transforms
 	var tree: SceneTree = Engine.get_main_loop() as SceneTree
 	tree.root.add_child(holder)
@@ -376,3 +377,49 @@ static func with_tagged_spawns(specs: Array[Dictionary], guards: int = 0, civili
 	ps.pack(root)
 	root.free()
 	return ps
+
+
+## OF-A2 / OF-A5: basic() plus static slabs (`slabs`: [[centre: Vector3, size: Vector3], ...], world_static),
+## RAPPEL TacticalPoints under `Tactical` (`rappels`: [{"name": String, "pos": Vector3, "tags": [StringName]}]),
+## extra SpawnPoints (`spawns`: with_tagged_spawns specs) and a navmesh baked over the floor and the slab tops
+## inside `bake_aabb` (slabs farther apart than agent_max_climb are separate navmesh islands).
+static func with_slabs(slabs: Array, rappels: Array = [], spawns: Array = [],
+		bake_aabb: AABB = AABB(Vector3(-15.0, -1.0, -15.0), Vector3(30.0, 20.0, 30.0))) -> PackedScene:
+	var root: HeistMap = basic(0, 0).instantiate() as HeistMap
+	var geo: Node3D = root.get_node("Geometry")
+	for i: int in range(slabs.size()):
+		var spec: Array = slabs[i]
+		var b: StaticBody3D = StaticBody3D.new()
+		b.name = "Slab%d" % i
+		var cs: CollisionShape3D = CollisionShape3D.new()
+		var box: BoxShape3D = BoxShape3D.new()
+		box.size = spec[1]
+		cs.shape = box
+		b.add_child(cs)
+		b.position = spec[0]
+		geo.add_child(b)
+	var tactical: Node = root.get_node("Tactical")
+	for i: int in range(rappels.size()):
+		var r: Dictionary = rappels[i]
+		var tp: TacticalPoint = TacticalPoint.new()
+		tp.name = String(r.get("name", "Rappel%d" % i))
+		tp.kind = TacticalPoint.Kind.RAPPEL
+		var tags: Array[StringName] = []
+		for t: Variant in r.get("tags", []):
+			tags.append(StringName(t))
+		tp.tags = tags
+		tp.position = r.get("pos", Vector3.ZERO)
+		tactical.add_child(tp)
+	var sp_root: Node = root.get_node("Spawns")
+	for i: int in range(spawns.size()):
+		var spec: Dictionary = spawns[i]
+		var sp: SpawnPoint = SpawnPoint.new()
+		sp.name = String(spec.get("name", "Extra%d" % i))
+		sp.kind = int(spec.get("kind", SpawnPoint.Kind.POLICE)) as SpawnPoint.Kind
+		var tags: Array[StringName] = []
+		for t: Variant in spec.get("tags", []):
+			tags.append(StringName(t))
+		sp.tags = tags
+		sp.position = spec.get("pos", Vector3.ZERO)
+		sp_root.add_child(sp)
+	return _bake_nav(root, geo, bake_aabb)
