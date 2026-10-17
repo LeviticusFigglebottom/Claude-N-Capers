@@ -404,7 +404,10 @@ func _hide_body() -> bool:
 			note("gate guard not bagged / body bag not picked up (bag %s)" % bag)
 			return false
 	note("carrying the gate guard's body bag to the janitor closet")
-	if not await pilot.goto(CLOSET_IN, 0.3, 40.0):
+	# Along the corridor to the closet door, then in: the navmesh route went round by (12, 5.1) and the heavy-bag
+	# carry pinned on that corner for 40 s (ND run 2026-10-17 t=90).
+	await pilot.goto(Vector3(CLOSET_IN.x, GATE_AT.y, 6.9), 0.3, 30.0)
+	if not await pilot.goto(CLOSET_IN, 0.3, 20.0):
 		note("janitor closet not reached (at %s)" % Po5Pilot._v(pilot.crew.global_position))
 		return false
 	await pilot.face(CLOSET_IN + Vector3(0, 0, -0.8), 0.03, 1.0)
