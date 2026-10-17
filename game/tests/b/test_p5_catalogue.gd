@@ -28,20 +28,21 @@ const PAINTINGS: Array[StringName] = [
 ## crate ($8,500) to gold ($14,000), the top bag.
 const BANDS: Array = [[2800, 8000], [7000, 8000], [8500, 14000]]
 ## Stubs whose G0 doc is approved and whose objective strings are drafted (GN-B1, D-103).
-const OBJECTIVES_DRAFTED: Array[StringName] = [&"gallery_night", &"ostrander_federal"]  # OF: D-137 kickoff
+const OBJECTIVES_DRAFTED: Array[StringName] = [&"gallery_night", &"ostrander_federal", &"rolling_thunder",
+		&"afterhours"]  # OF: D-137; RT, AH: G0 (D-075)
 ## heist id -> [contact, district, placeholder base payout ◇ (unscaled)].
 const STUBS: Dictionary = {
 	&"gallery_night": [&"contact.vance", &"uptown", 57000],
 	&"ostrander_federal": [&"contact.accountant", &"financial", 80000],  # D-137 (D-120 shape)
-	&"rolling_thunder": [&"contact.reyes", &"southfield", 85000],
-	&"afterhours": [&"contact.accountant", &"midtown", 75000],  # D-075
+	&"rolling_thunder": [&"contact.reyes", &"southfield", 30000],  # D-141
+	&"afterhours": [&"contact.accountant", &"midtown", 40000],  # D-075; D-143 payout
 }
 ## Contract pay by difficulty (Routine..Cataclysm) for each placeholder payout, as the docs print it.
 const PAY_TABLES: Dictionary = {
 	&"gallery_night": [57000, 114000, 148200, 239400, 410400, 524400],
 	&"ostrander_federal": [80000, 160000, 208000, 336000, 576000, 736000],
-	&"rolling_thunder": [85000, 170000, 221000, 357000, 612000, 782000],
-	&"afterhours": [75000, 150000, 195000, 315000, 540000, 690000],
+	&"rolling_thunder": [30000, 60000, 78000, 126000, 216000, 276000],  # D-141
+	&"afterhours": [40000, 80000, 104000, 168000, 288000, 368000],  # D-143
 }
 const BODY_TEXT: float = 4.5
 const RESERVED_CYAN: Color = Color(0.3098, 0.8196, 0.9098, 1)

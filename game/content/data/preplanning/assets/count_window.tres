@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="PreplanAssetDef" format=3]
+
+[ext_resource type="Script" path="res://content/preplanning/preplan_asset_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"asset.count_window"
+category = &"access"
+cost = 1500
+favors = 1
+max_count = 1
+point_ids = Array[StringName]([&"pp_count_window"])
+tags = Array[StringName]([&"stealth"])
+effect = &"force_variant"

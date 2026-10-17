@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="PreplanAssetDef" format=3]
+
+[ext_resource type="Script" path="res://content/preplanning/preplan_asset_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"asset.gear_drop"
+category = &"access"
+cost = 1000
+favors = 1
+max_count = 1
+point_ids = Array[StringName]([&"pp_gear_wc", &"pp_gear_cloak", &"pp_gear_booth", &"pp_gear_van"])
+tags = Array[StringName]([&"stealth"])
+effect = &"force_variant"

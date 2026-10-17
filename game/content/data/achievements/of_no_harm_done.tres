@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="AchievementDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://content/defs/achievement_def.gd" id="1_ach"]
+
+[resource]
+script = ExtResource("1_ach")
+id = &"achievement.of_no_harm_done"
+name_key = &"achievement.of_no_harm_done.name"
+desc_key = &"achievement.of_no_harm_done.desc"
+condition = {"event": &"heist_completed", "heist": &"ostrander_federal", "stealth": true, "max_kills": 0, "max_civilian_kills": 0, "count": 1}
+unlock = &""
+order = 761
+category = &"ostrander_federal"
+rewards = Array[StringName]([])
+unlocks = Array[StringName]([])
+requires_facts = Array[StringName]([])

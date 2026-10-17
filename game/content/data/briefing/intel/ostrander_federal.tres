@@ -1,0 +1,292 @@
+[gd_resource type="Resource" script_class="BriefingIntelData" format=3]
+
+[ext_resource type="Script" path="res://content/ui/briefing/briefing_intel_data.gd" id="1_wnrsk"]
+
+[resource]
+script = ExtResource("1_wnrsk")
+heist_id = &"ostrander_federal"
+map_path = "res://world/heists/ostrander_federal/ostrander_federal.tscn"
+variants_path = "res://world/heists/ostrander_federal/ostrander_federal_variants.tres"
+fixed = {
+&"alarm_button": 9,
+&"guard": 2,
+&"keycard_door": 1,
+&"keypad": 2,
+&"padlock": 2,
+&"safe": 1,
+&"vault_door": 1
+}
+groups = {
+&"camera": {
+&"cam_a": {
+"counts": {
+&"camera": 8
+},
+"rooms": {},
+"weight": 1.0
+},
+&"cam_b": {
+"counts": {
+&"camera": 8
+},
+"rooms": {},
+"weight": 1.0
+},
+&"cam_c": {
+"counts": {
+&"camera": 8
+},
+"rooms": {},
+"weight": 1.0
+}
+},
+&"code_pc": {
+&"pc_ao1": {
+"counts": {
+&"hack_terminal": 1
+},
+"rooms": {
+&"hack_terminal": {
+&"AO1": 1
+}
+},
+"weight": 1.0
+},
+&"pc_ao2": {
+"counts": {
+&"hack_terminal": 1
+},
+"rooms": {
+&"hack_terminal": {
+&"AO2": 1
+}
+},
+"weight": 1.0
+},
+&"pc_ao3": {
+"counts": {
+&"hack_terminal": 1
+},
+"rooms": {
+&"hack_terminal": {
+&"AO3": 1
+}
+},
+"weight": 1.0
+},
+&"pc_exec": {
+"counts": {
+&"hack_terminal": 1
+},
+"rooms": {
+&"hack_terminal": {
+&"EA": 1
+}
+},
+"weight": 0.75
+},
+&"pc_ops": {
+"counts": {
+&"hack_terminal": 1
+},
+"rooms": {
+&"hack_terminal": {
+&"OF": 1
+}
+},
+"weight": 0.75
+},
+&"pc_vault_ops": {
+"counts": {
+&"hack_terminal": 1
+},
+"rooms": {
+&"hack_terminal": {
+&"VO": 1
+}
+},
+"weight": 1.0
+}
+},
+&"guard_extra": {
+&"gx_basement": {
+"counts": {
+&"guard": 1
+},
+"rooms": {},
+"weight": 1.0
+},
+&"gx_hall": {
+"counts": {
+&"guard": 1
+},
+"rooms": {},
+"weight": 1.0
+},
+&"gx_none": {
+"counts": {},
+"rooms": {},
+"weight": 0.0
+}
+},
+&"guard_post": {
+&"rover_basement": {
+"counts": {
+&"guard": 1
+},
+"rooms": {},
+"weight": 1.0
+},
+&"rover_dock": {
+"counts": {
+&"guard": 1
+},
+"rooms": {},
+"weight": 1.0
+},
+&"rover_gallery": {
+"counts": {
+&"guard": 1
+},
+"rooms": {},
+"weight": 1.0
+},
+&"rover_hall": {
+"counts": {
+&"guard": 1
+},
+"rooms": {},
+"weight": 1.0
+}
+},
+&"laser_pattern": {
+&"lz_static": {
+"counts": {
+&"laser": 1
+},
+"rooms": {
+&"laser": {
+&"VC": 1
+}
+},
+"weight": 0.5
+},
+&"lz_sweep": {
+"counts": {
+&"laser": 1
+},
+"rooms": {
+&"laser": {
+&"VC": 1
+}
+},
+"weight": 0.2
+},
+&"lz_timed": {
+"counts": {
+&"laser": 1
+},
+"rooms": {
+&"laser": {
+&"VC": 1
+}
+},
+"weight": 0.3
+}
+},
+&"president_safe": {
+&"ps_bonds": {
+"counts": {
+&"safe": 1
+},
+"rooms": {
+&"safe": {
+&"PR": 1
+}
+},
+"weight": 0.5
+},
+&"ps_empty": {
+"counts": {
+&"safe": 1
+},
+"rooms": {
+&"safe": {
+&"PR": 1
+}
+},
+"weight": 0.5
+}
+},
+&"security_room_staffed": {
+&"sec_empty": {
+"counts": {},
+"rooms": {},
+"weight": 0.4
+},
+&"sec_staffed": {
+"counts": {
+&"operator": 1
+},
+"rooms": {},
+"weight": 0.6
+}
+},
+&"server_room": {
+&"srv_basement": {
+"counts": {
+&"hack_terminal": 2
+},
+"rooms": {
+&"hack_terminal": {
+&"CM": 2
+}
+},
+"weight": 0.45
+},
+&"srv_gallery": {
+"counts": {
+&"hack_terminal": 2
+},
+"rooms": {
+&"hack_terminal": {
+&"SV": 2
+}
+},
+"weight": 0.55
+}
+},
+&"vip": {
+&"vip_in": {
+"counts": {
+&"guard": 1
+},
+"rooms": {},
+"weight": 0.0
+},
+&"vip_out": {
+"counts": {},
+"rooms": {},
+"weight": 1.0
+}
+}
+}
+fixed_rooms = {
+&"keycard_door": {
+&"VC": 1
+},
+&"keypad": {
+&"VC": 1,
+&"VT": 1
+},
+&"safe": {
+&"VT": 1
+},
+&"time_lock": {
+&"VC": 1
+},
+&"vault_door": {
+&"VC": 1
+}
+}
+surprises = Array[StringName]([&"vip_client"])

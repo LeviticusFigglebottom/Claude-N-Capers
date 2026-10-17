@@ -70,22 +70,36 @@ func test_gh_safe_open_method_keycard_and_drill() -> void:
 	assert_eq(_completed_method(&"safe"), &"drill", "drill: open_method drill")
 
 
+## D-138.4: the SL cage lock of `cls` (the CageGate's Keypad / Padlock); on a pre-D-138 map the CageLock safe.
+func _cage_lock(cls: Variant) -> Node:
+	for n: Node in _rt.mission.find_tagged(&"cage"):
+		if is_instance_of(n, cls):
+			return n
+	return _first_tagged(&"cage")  # legacy: pre-D-138 maps, remove after C b4ad9153 is on trunk
+
+
 func test_sl_cage_open_method_code_and_saw() -> void:
 	await _launch(&"shadow_ledger", 5)
-	var cage: Node = _first_tagged(&"cage")
-	assert_true(cage != null, "SL cage lock")
+	var kp: Node = _cage_lock(Keypad)
+	assert_true(kp != null, "SL cage lock")
 	if _completed_method(&"cage") == &"left_open":
 		return  # rare cage_left_open rolled: nothing else to open
-	cage.call(&"_lock_beaten", &"code")  # SL-6: the lock swings first (Safe._on_completed), then the fact
-	_rt.mission.call(&"_on_interaction_completed", int(cage.get(&"net_id")), 0, &"enter_code")
+	if kp is Keypad:
+		kp.call(&"_on_completed", _rt.crew_controller(0))  # the code entered: the keypad opens the gate
+	else:
+		kp.call(&"_lock_beaten", &"code")  # legacy: pre-D-138 maps (Safe._on_completed), remove after C b4ad9153
+	_rt.mission.call(&"_on_interaction_completed", int(kp.get(&"net_id")), 0, &"enter_code")
 	assert_eq(_completed_method(&"cage"), &"code", "keypad: open_method code (%s)" % [_facts])
 	_rt.teardown()
 	await wait_frames(2)
 	EventBus.objective_updated.disconnect(_on_objective)
 	await _launch(&"shadow_ledger", 6)
-	cage = _first_tagged(&"cage")
-	cage.call(&"open_by_device")  # SL-6: the saw's DeviceRunner beat the lock, then device_finished
-	_rt.mission.call(&"_on_device_finished", int(cage.get(&"net_id")))
+	var saw: Node = _cage_lock(Padlock)
+	if saw is Padlock:
+		(saw as Padlock).open_lock(true, &"saw")  # the placed saw's DeviceRunner beat the padlock
+	else:
+		saw.call(&"open_by_device")  # legacy: pre-D-138 maps, remove after C b4ad9153 is on trunk
+	_rt.mission.call(&"_on_device_finished", int(saw.get(&"net_id")))
 	if _completed_method(&"cage") != &"left_open":
 		assert_eq(_completed_method(&"cage"), &"saw", "saw device: open_method saw")
 

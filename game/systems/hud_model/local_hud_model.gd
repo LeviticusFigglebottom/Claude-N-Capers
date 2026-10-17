@@ -742,7 +742,7 @@ func _poll_devices() -> void:
 
 
 ## {kind, state, progress, duration, anchor, target, fix_key, restart_in, out} of a timed device node ({} = none).
-## kinds: drill / thermal / saw (DeviceRunner), hack (HackTerminal), c4 / time_lock (Safe timers).
+## kinds: drill / thermal / saw (DeviceRunner), hack (HackTerminal), c4 / time_lock (Safe timers), c4 (Padlock).
 static func _device_info(n: Node) -> Dictionary:
 	var ht: HackTerminal = n as HackTerminal
 	if ht != null:
@@ -758,6 +758,11 @@ static func _device_info(n: Node) -> Dictionary:
 		var total: float = maxf(Tweak.interaction().c4_fuse_s if c4 else safe.time_lock_s, 0.01)
 		return {"kind": &"c4" if c4 else &"time_lock", "state": &"running", "progress": 1.0 - safe.timer_left / total,
 			"duration": total, "anchor": safe, "target": safe, "fix_key": &"", "restart_in": -1.0, "out": -1.0}
+	var pl: Padlock = n as Padlock
+	if pl != null and pl.c4_armed():  # D-138.2: a C4 charge on a padlock
+		var fuse: float = maxf(Tweak.interaction().c4_fuse_s, 0.01)
+		return {"kind": &"c4", "state": &"running", "progress": 1.0 - pl.timer_left / fuse, "duration": fuse,
+			"anchor": pl, "target": null, "fix_key": &"", "restart_in": -1.0, "out": 1.0}
 	var r: Variant = n.get(&"runner")
 	if not (r is DeviceRunner):
 		return {}

@@ -41,6 +41,7 @@ const KEYS: Dictionary = {
 	&"safes": &"ui.briefing.sec.safes", &"padlocks": &"ui.briefing.sec.padlocks",
 	&"hack_terminals": &"ui.briefing.sec.hack_terminals", &"sensors": &"ui.briefing.sec.sensors",
 	&"surprises": &"ui.briefing.sec.surprises", &"located": &"ui.briefing.sec.located",
+	&"glass": &"ui.briefing.sec.glass",
 }
 ## Per-event display keys: ui.briefing.sec.event.<heist>.<event_id>.
 const EVENT_KEY_FMT: String = "ui.briefing.sec.event.%s.%s"
@@ -82,7 +83,7 @@ const CATEGORIES: Array[StringName] = [
 const LINE_ORDER: Array[StringName] = [
 	&"guards", &"cartel", &"cameras", &"operator", &"pagers", &"alarm_buttons", &"keycards", &"keypads",
 	&"lasers", &"sensors", &"alarm_cases", &"time_lock", &"vault_doors", &"safes", &"padlocks", &"hack_terminals",
-	&"surprises",
+	&"glass", &"surprises",
 ]
 
 ## Line id -> the scan categories it sums (pagers and the time lock come from the tweak / variant scalars).
@@ -171,6 +172,11 @@ static func lines(heist_id: StringName, difficulty: int, mode: int, data: Briefi
 					_add(out, id, id, {"range": range_text(tl)}, tl)
 			&"sensors":
 				_add_count(out, id, sensor_range(d, t, difficulty))
+			&"glass":
+				# D-142: a heist with notable glazing (heist_list.tres "glazing") warns that glass does not hide you.
+				if mode != Enums.HeistMode.LOUD_ONLY and HudTweak.load_default().d142_glass_tips \
+						and HeistCatalog.heist_list().has_glazing(heist_id):
+					_add(out, id, id, {}, Vector2i.ZERO)
 			&"surprises":
 				var names: PackedStringArray = PackedStringArray()
 				for ev: StringName in surprises_at(d, t, difficulty):

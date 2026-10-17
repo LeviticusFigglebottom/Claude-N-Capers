@@ -9,7 +9,7 @@ extends TestCase
 const Drape = preload("res://world/characters/_tools/check_skirt_drape.gd")
 const LOOKS: Array[String] = ["civilian_sales", "npc_penthouse_guest_a", "club_patron", "gallery_patron",
 	"gallery_patron_c", "gallery_patron_e", "gallery_patron_g", "gallery_patron_h", "gallery_patron_j",
-	"npc_bank_teller", "npc_bank_night_manager", "bank_officer"]
+	"npc_bank_teller", "npc_bank_night_manager", "bank_officer", "npc_bank_teller_d", "bank_customer_c"]
 ## clip -> sample times (s): the peak knee bends (walk/run/flee contact and passing frames, the squats, the seat)
 const FRAMES: Dictionary = {
 	"walk": [0.12, 0.38, 0.62], "run": [0.09, 0.26, 0.44], "flee": [0.0, 0.25],
@@ -28,6 +28,7 @@ const CLOTH: Dictionary = {
 	"gallery_patron_g": "char_satin_amethyst", "gallery_patron_h": "char_satin_gold",
 	"gallery_patron_j": "char_silk_graphite", "npc_bank_teller": "char_bank_slate_dark",
 	"npc_bank_night_manager": "char_bank_slate_dark", "bank_officer": "char_suit_grey",
+	"npc_bank_teller_d": "char_bank_slate_dark", "bank_customer_c": "char_skirt_navy",
 }
 
 

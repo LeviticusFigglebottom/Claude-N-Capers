@@ -290,7 +290,10 @@ func pick(index: int) -> void:
 	if picked_index >= 0 or index < 0 or index >= cards.size():
 		return
 	picked_index = index
-	if PaydayCards.grant(profile, cards[index] as Dictionary) and apply_to_profile:
+	var granted: bool = PaydayCards.grant(profile, cards[index] as Dictionary)
+	if granted:
+		Career.record_card(profile, cards[index] as Dictionary)
+	if granted and apply_to_profile:
 		SaveService.save_profile(profile, profile_slot)
 	_reveal()
 	if continue_button != null:

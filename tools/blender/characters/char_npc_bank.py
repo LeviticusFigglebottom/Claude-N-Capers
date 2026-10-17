@@ -8,6 +8,14 @@ Glasshouse civilians (camel, navy, black):
   waistcoat, bank-red neckerchief, dark slate knee skirt, black low heels, brown bob, name badge.
 * ``char_npc_bank_teller_b``: middle-aged man, cream shirt, bank-red tie, slate knit sweater vest,
   dark slate trousers, silver glasses, name badge (the gender/skin/age mix of the teller pair).
+* OF-D1 (Ostrander Federal by day, D-130: 3 tellers + 1 rotating, x1.35 at Cataclysm, so five teller faces), the
+  same teller uniform on other people:
+  ``char_npc_bank_teller_c``: a young man (early 20s), light skin, short blond hair; teller_b's men's uniform (cream
+  shirt, bank-red tie, slate knit sweater vest, dark slate trousers), no glasses.
+  ``char_npc_bank_teller_d``: a woman about 50, mid-light skin, brown hair pinned up in a bun; the women's uniform
+  (cream band-collar blouse, slate waistcoat, red neckerchief, dark slate knee skirt, low heels).
+  ``char_npc_bank_teller_e``: a man about 40, deep skin, dark buzz cut and stubble; cream shirt, bank-red tie and the
+  slate tailored waistcoat over dark slate trousers.
 * ``char_npc_bank_night_manager``: older woman (grey bob), bank-red skirt suit over a cream blouse,
   dark slate skirt, brass name badge and keyhole lapel badge. She is the ``code_on_manager`` carrier.
 * ``char_npc_bank_cleaner``: night cleaner (contractor), grey long-sleeve top under a blue-grey
@@ -43,6 +51,13 @@ VARIANTS = {
                              "hair_color": "brown", "look": "teller"},
     "char_npc_bank_teller_b": {"height": 1.75, "build": 0.6, "gender": 0.0, "age": 0.6, "skin": 3, "beard_shadow": 0.4,
                                "hair": "side_part", "hair_color": "dark", "look": "teller_b"},
+    # OF-D1: tellers c-e (Ostrander Federal day shift)
+    "char_npc_bank_teller_c": {"height": 1.78, "build": 0.35, "gender": 0.0, "age": 0.15, "skin": 1,
+                               "beard_shadow": 0.2, "hair": "short", "hair_color": "blond", "look": "teller_c"},
+    "char_npc_bank_teller_d": {"height": 1.68, "build": 0.55, "gender": 1.0, "age": 0.55, "skin": 3,
+                               "hair": "side_part", "hair_color": "brown", "look": "teller_d"},
+    "char_npc_bank_teller_e": {"height": 1.73, "build": 0.5, "gender": 0.0, "age": 0.4, "skin": 6,
+                               "beard_shadow": 0.6, "hair": "buzz", "hair_color": "dark", "look": "teller_e"},
     "char_npc_bank_night_manager": {"height": 1.71, "build": 0.45, "gender": 1.0, "age": 0.7, "skin": 1, "hair": "bob",
                                     "hair_color": "grey", "look": "manager"},
     "char_npc_bank_cleaner": {"height": 1.74, "build": 0.65, "gender": 0.0, "age": 0.45, "skin": 6, "beard_shadow": 0.8,
@@ -95,6 +110,48 @@ def teller_b(kit: Kit) -> None:
     n.knit_vest(kit, "char_knit_slate", hips_z - 0.01 * k, 1.13 * k)
     kit.add_gear(gk.name_tag(kit.hull(), Vector((-0.09 * k, 0.2, 1.33 * k)), k=k))
     kit.add_head(gk.glasses(kit.fit, "char_metal_silver"))
+
+
+def teller_c(kit: Kit) -> None:
+    """OF-D1: teller_b's men's uniform on a young man (no glasses)."""
+    k = kit.k
+    hips_z, belt_z, tuck = _z(kit)
+    sh = n.shoes(kit)
+    n.shirt(kit, CREAM, tuck)
+    tr = n.trousers(kit, SLATE_DARK, sh, belt_z + 0.022 * k)
+    n.belt(kit, tr, belt_z)
+    n.tie(kit, RED, belt_z + 0.03 * k, width=0.07)
+    n.knit_vest(kit, "char_knit_slate", hips_z - 0.01 * k, 1.13 * k)
+    kit.add_gear(gk.name_tag(kit.hull(), Vector((-0.09 * k, 0.2, 1.33 * k)), k=k))
+    kit.notes["look"] = ("Teller (OF-D1): a young man, light skin, short blond hair; cream shirt, bank-red tie, slate "
+                         "knit sweater vest, dark slate trousers, black belt, name badge")
+
+
+def teller_d(kit: Kit) -> None:
+    """OF-D1: the women's teller uniform on a woman about 50 with her hair in a bun."""
+    teller(kit)
+    kit.add_head(cg.chignon(kit.fit, "char_hair_brown", size=0.9))
+    kit.notes["look"] = ("Teller (OF-D1): a woman about 50, mid-light skin, brown hair pinned up in a bun; cream "
+                         "band-collar blouse, slate waistcoat, bank-red neckerchief, dark slate knee skirt, low heels, "
+                         "name badge")
+
+
+def teller_e(kit: Kit) -> None:
+    """OF-D1: cream shirt, red tie and the slate tailored waistcoat over the slate trousers (a man about 40)."""
+    k = kit.k
+    hips_z, belt_z, tuck = _z(kit)
+    sh = n.shoes(kit)
+    n.shirt(kit, CREAM, tuck, point_len=0.054)
+    n.trousers(kit, SLATE_DARK, sh, belt_z + 0.022 * k)
+    n.tie(kit, RED, belt_z + 0.03 * k, width=0.072)
+    n0 = len(kit.soft.f)
+    vest = n.waistcoat(kit, SLATE, hips_z - 0.01 * k, 1.13 * k, point=0.05, neck_w=0.068, buttons=5)
+    n.cull_under(kit, n0, vest, "faces_hidden_by_waistcoat")
+    kit.add_gear(gk.name_tag(kit.hull(), Vector((0.09 * k, 0.2, 1.32 * k)), k=k))
+    kit.add_gear(n.bank_badge(kit.hull(), Vector((-0.09 * k, 0.2, 1.33 * k)), Vector((0, 1, 0.1)), 0.020, 0.024, k,
+                              rim="brass", fill=SLATE_DARK, glyph="brass", depth=0.003))
+    kit.notes["look"] = ("Teller (OF-D1): a man about 40, deep skin, dark buzz cut and stubble; cream shirt, bank-red "
+                         "tie, slate tailored waistcoat, dark slate trousers, name badge, keyhole pin")
 
 
 def manager(kit: Kit) -> None:
@@ -151,8 +208,8 @@ def guard(kit: Kit) -> None:
                          "burgundy chest badge, duty belt (radio = Hip), bare-headed")
 
 
-_looks = {"teller": teller, "teller_b": teller_b, "manager": manager, "cleaner": cleaner, "cleaner_b": cleaner_b,
-          "guard": guard}
+_looks = {"teller": teller, "teller_b": teller_b, "teller_c": teller_c, "teller_d": teller_d, "teller_e": teller_e,
+          "manager": manager, "cleaner": cleaner, "cleaner_b": cleaner_b, "guard": guard}
 
 
 def recipe(kit: Kit) -> None:

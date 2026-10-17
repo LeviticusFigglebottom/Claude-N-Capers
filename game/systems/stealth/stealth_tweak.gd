@@ -228,7 +228,7 @@ extends Resource
 ## X-5: the seated aliases too (`desk` = the desk_work clip, D-115; desk_type / sit_chair / sit_chair_watch are seated
 ## rig clips, anim_humanoid.py). The standing desk clip is teller_count (`teller`), standing hands-on-counter.
 @export var civilian_unseated_activity: Dictionary = {&"desk_work": &"teller", &"phone_seated": &"phone", &"sit": &"queue",
-	&"desk": &"teller", &"desk_type": &"teller", &"sit_chair": &"queue", &"sit_chair_watch": &"idle"}
+	&"desk": &"teller", &"desk_type": &"teller", &"sit_chair": &"queue", &"sit_chair_watch": &"idle", &"sit_eat": &"idle"}
 @export var civilian_seat_radius_m: float = 0.45
 ## X-5 ◇ (PD2: staff hold their post): a CALM IDLE civilian whose activity keeps it on its spawn mark (not a wander
 ## activity: a teller, a desk clerk, a seated customer) that is off the mark (a crew yield, a drift while alerted)

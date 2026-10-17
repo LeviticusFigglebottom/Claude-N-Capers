@@ -2,11 +2,13 @@
 ## byte-stable. Each generator runs twice in its own headless Godot process (`-- --out=<scratch>`), the
 ## two scenes must be byte-identical, and they must equal the committed scene (no hand edits, no stale
 ## regen). PO-9: KitPlacer sorted StringName keys with Array.sort(), which orders StringNames by interned
-## pointer, so dressing drifted between regens. Owner: ENV C. Slow (10 generator runs, about two minutes).
-## Gallery Night joined at G1 step 2 (GN-C1; this replaces tools/levelcheck/gn_regen_twice.sh).
+## pointer, so dressing drifted between regens. Owner: ENV C. Slow (12 generator runs, a few minutes).
+## Gallery Night joined at G1 step 2 (GN-C1; this replaces tools/levelcheck/gn_regen_twice.sh); Ostrander Federal at G1
+## (OF-C1; tools/levelcheck/of_regen_twice.sh also checks the emitted layout is current).
 extends TestCase
 
-const HEISTS: Array[String] = ["glasshouse", "night_deposit", "dockside_burn", "shadow_ledger", "gallery_night"]
+const HEISTS: Array[String] = ["glasshouse", "night_deposit", "dockside_burn", "shadow_ledger", "gallery_night",
+	"ostrander_federal"]
 const SCRATCH: String = "user://gen_determinism"
 
 

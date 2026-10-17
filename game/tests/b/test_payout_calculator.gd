@@ -254,17 +254,20 @@ func test_xp_mult_joins_additive_line() -> void:
 	assert_eq(int(boosted["total"]), int(plain["total"]), "cash unaffected")
 
 
-## S11.1: the banked stealth bonus scales by heist size via HeistDef.stealth_bonus_mult; the tweak covers a heist
-## without a def (or a def left at 1.0, e.g. a loud-only heist).
+## S11.1: the banked stealth bonus scales by heist size via HeistDef.stealth_bonus_mult (1.0 = none, a loud-only
+## heist); the tweak covers a heist without a def.
 func test_stealth_bonus_by_heist() -> void:
 	var tw: PayoutTweak = _tweak()
 	assert_near(PayoutCalculator.stealth_bonus_for(&"no_such_heist", tw), tw.stealth_xp_bonus_mult, 0.0001)
 	assert_near(PayoutCalculator.stealth_bonus_for(&"", tw), tw.stealth_xp_bonus_mult, 0.0001)
 	for id: StringName in HeistRegistry.ids():
 		var def: HeistDef = HeistRegistry.get_def(id)
-		var want: float = def.stealth_bonus_mult if def.stealth_bonus_mult > 1.0 else tw.stealth_xp_bonus_mult
+		var want: float = maxf(def.stealth_bonus_mult, 1.0)
 		assert_near(PayoutCalculator.stealth_bonus_for(id, tw), want, 0.0001, String(id))
-		assert_true(want >= 1.05 and want <= 1.25, "%s: S11.1 range 5-25 %% (%.2f)" % [id, want])
+		if def.mode == Enums.HeistMode.LOUD_ONLY:
+			assert_near(want, 1.0, 0.0001, "%s: loud-only, no stealth bonus" % id)
+		else:
+			assert_true(want >= 1.05 and want <= 1.25, "%s: S11.1 range 5-25 %% (%.2f)" % [id, want])
 	var r: Dictionary = _result(true, true)
 	r["heist_id"] = &"no_such_heist"
 	var out: Dictionary = PayoutCalculator.compute(r, _diff(1.0, 1.0, 0), tw)

@@ -10,6 +10,7 @@ contact = &"contact.vance"
 briefing = "heist.glasshouse.briefing"
 map_scene = "res://world/heists/glasshouse/glasshouse.tscn"
 base_payout = 12000
+stealth_bonus_mult = 1.1
 loot = Array[StringName]([&"loot.jewelry"])
 objectives = Array[StringName]([&"casing", &"keycard", &"code", &"workshop_door", &"safe", &"safe_loot", &"secure", &"escape"])
 briefing_objectives = Array[StringName]([&"casing", &"keycard", &"code", &"workshop_door", &"safe", &"safe_loot", &"secure", &"escape"])

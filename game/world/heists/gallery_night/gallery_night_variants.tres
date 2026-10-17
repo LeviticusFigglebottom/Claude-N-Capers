@@ -56,23 +56,9 @@ rules = Array[Dictionary]([{
 "group": &"code_note",
 "pick": Vector2i(1, 1)
 }, {
-"difficulty_add": Array[int]([0, 0, 1, 2, 3, 3]),
+"difficulty_add": Array[int]([0, 1, 1, 2, 2, 3]),
 "group": &"guard_post",
-"pick": Vector2i(1, 1),
-"weights_by_difficulty": {
-2: {
-&"rover_none": 0.0
-},
-3: {
-&"rover_none": 0.0
-},
-4: {
-&"rover_none": 0.0
-},
-5: {
-&"rover_none": 0.0
-}
-}
+"pick": Vector2i(2, 2)
 }, {
 "group": &"security_room_staffed",
 "pick": Vector2i(1, 1),

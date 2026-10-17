@@ -6,8 +6,10 @@ extends TestCase
 
 const HEIST: StringName = &"gallery_night"
 const DRAFT_DIR: String = "res://content/_drafts/gallery_night/"
-## guard_post picks (rovers + smoker, the hall post is fixed) by Enums.Difficulty, lead ruling 2.
-const GUARD_PICKS: Array[int] = [1, 1, 2, 3, 4, 4]
+## guard_post picks (rovers + smoker + the court rover; the hall post is fixed) by Enums.Difficulty: D-140 GUARDS lever
+## (C 115e2716): pick 2 + difficulty_add [0, 1, 1, 2, 2, 3], no empty slot; with the hall post and the SC officer
+## (operator or roundsman) that is 4 / 5 / 5 / 6 / 6 / 7 guards.
+const GUARD_PICKS: Array[int] = [2, 3, 3, 4, 4, 5]
 const SEEDS: int = 200
 ## Map slot ids per variant group (README "Map slot names"), stand-ins for the greybox's VariantSlots.
 const SLOTS: Dictionary = {
@@ -19,7 +21,7 @@ const SLOTS: Dictionary = {
 	&"conservator": [&"cons_gone", &"cons_late"],
 	&"keycard": [&"kc_conservator", &"kc_curator", &"kc_registrar", &"kc_security"],
 	&"code_note": [&"code_admin_postit", &"code_curator_planner", &"code_security_log"],
-	&"guard_post": [&"dock_smoker", &"rover_basement", &"rover_ground", &"rover_none", &"rover_upper"],
+	&"guard_post": [&"dock_smoker", &"rover_basement", &"rover_court", &"rover_ground", &"rover_upper"],
 	&"security_room_staffed": [&"sec_empty", &"sec_staffed"],
 	&"camera": [&"cam_a", &"cam_b", &"cam_c"],
 	&"laser_pattern": [&"lz_static", &"lz_sweep", &"lz_timed"],
@@ -108,20 +110,13 @@ func test_def_preplanning_merges_cleanly() -> void:
 	assert_eq(int(merged.get("favors", 0)), 5)
 
 
-## Lead ruling 2: 1 pick at Routine/Tense (rover_none ~20%), 2 at Hazardous, 3 at Brutal, 4 at Lethal+.
+## D-140 (GUARDS lever, revised): 2 / 3 / 3 / 4 / 4 / 5 real rover posts on every seed (no empty rover slot).
 func test_guard_post_picks_per_difficulty() -> void:
 	for d: int in range(GUARD_PICKS.size()):
-		var none: int = 0
 		for s: int in range(SEEDS):
 			var picked: Array = _roll(d, s).get(&"guard_post", [])
 			assert_eq(picked.size(), GUARD_PICKS[d], "difficulty %d seed %d picks" % [d, s])
-			if picked.has(&"rover_none"):
-				none += 1
-		if d >= Enums.Difficulty.HAZARDOUS:
-			assert_eq(none, 0, "no rover_none from Hazardous (difficulty %d)" % d)
-		else:
-			var share: float = float(none) / SEEDS
-			assert_true(share > 0.1 and share < 0.3, "rover_none ~20%% at difficulty %d (got %.2f)" % [d, share])
+			assert_false(picked.has(&"rover_none"), "no empty rover slot (D-140)")
 
 
 ## Lead ruling 1: Tense keeps the Routine (base) weights, Hazardous uses the Brutal+ weights.

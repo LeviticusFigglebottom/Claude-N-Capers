@@ -84,11 +84,6 @@ groups = {
 },
 "rooms": {},
 "weight": 1.0
-},
-&"rover_none": {
-"counts": {},
-"rooms": {},
-"weight": 1.2857142857142858
 }
 },
 &"laser_pattern": {
@@ -128,7 +123,9 @@ groups = {
 },
 &"security_room_staffed": {
 &"sec_empty": {
-"counts": {},
+"counts": {
+&"guard": 1
+},
 "rooms": {},
 "weight": 0.4
 },
