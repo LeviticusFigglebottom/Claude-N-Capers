@@ -180,3 +180,24 @@ func test_of_heist_map_beats_the_shared_map() -> void:
 	var cid: StringName = StringName(cust.visual_scene.resource_path.get_file().get_basename())
 	assert_true(of_ids.has(cid), "OF civ_customer deals from the OF pool (%s)" % cid)
 	assert_true(shared.size() < of_ids.size(), "the OF pool is the bigger one (12 vs the shared 2)")
+
+
+## D-140 twins audit (D p5_cast v12): Glasshouse's five pager carriers share one 10-look pool (gh_guards), so they no
+## longer twin on every seed; customers have 12 looks.
+func test_gh_guards_share_one_pool() -> void:
+	await _launch(&"glasshouse")
+	var m: Dictionary = NpcVisuals.tweak().heist_tag_characters[&"glasshouse"]
+	var tags: Array[StringName] = [&"guard_post_floor", &"guard_rover_boh", &"guard_rover_upper", &"guard_alley_smoker",
+		&"security_operator"]
+	for t: StringName in tags:
+		assert_eq(NpcVisuals.tweak().heist_tag_pools[&"glasshouse"][t], &"gh_guards", "%s in gh_guards" % t)
+		assert_eq((m[t] as Array).size(), 10, "%s lists 10 looks" % t)
+	assert_eq((m[&"civ_customer"] as Array).size(), 12, "GH customers: 12 looks")
+	var pool: int = _delivered(m[&"guard_post_floor"])
+	if pool < 2:
+		skip("fewer than 2 security_officer looks delivered")
+		return
+	var npcs: Array[NpcBase] = []
+	for i: int in tags.size():
+		npcs.append(_spawn(&"guard", i, {"tags": [tags[i]]}))
+	_check(npcs, pool, "GH guards")
