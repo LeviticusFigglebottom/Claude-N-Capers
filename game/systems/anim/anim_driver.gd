@@ -83,13 +83,17 @@ const VARIANT_GROUPS: Dictionary = {
 	&"surrender": [&"surrender", &"surrender_b", &"surrender_c"],
 	&"surrender_idle": [&"surrender_idle", &"surrender_idle_b", &"surrender_idle_c"],
 	&"kneel_cuffed": [&"kneel_cuffed", &"kneel_cuffed_b", &"kneel_cuffed_c"],
+	# D-116 civ_panic_variants (same index: cower_b <-> flee_b <-> hands_up_b ...).
+	&"cower": [&"cower", &"cower_b", &"cower_c"],
+	&"flee": [&"flee", &"flee_b", &"flee_c"],
 }
 ## Variant loops that start at a per-body random offset (SOURCE surrender_variants: the periods differ, so they never
 ## re-sync). surrender_idle* reached from its surrender* one-shot starts on frame 0 instead (the chain frame).
-const OFFSET_LOOP_GROUPS: Array[StringName] = [&"hands_up", &"kneel_cuffed", &"surrender_idle"]
+## D-116: cower too (flee keeps the gait phase).
+const OFFSET_LOOP_GROUPS: Array[StringName] = [&"hands_up", &"kneel_cuffed", &"surrender_idle", &"cower"]
 const POSE_CLIPS: Array[StringName] = [
 	&"tied", &"kneel_cuffed", &"lie_down", &"cower", &"hands_up", &"surrender", &"downed", &"tased",
-	&"cower_stand", &"cower_seated", &"surrender_idle",
+	&"cower_stand", &"cower_seated", &"surrender_idle", &"cower_b", &"cower_c", &"panic_start",
 	&"hands_up_b", &"hands_up_c", &"surrender_b", &"surrender_c", &"surrender_idle_b", &"surrender_idle_c",
 	&"kneel_cuffed_b", &"kneel_cuffed_c",
 	# v1.21 crew states (the weapon follows weapon_shown(), not this list, for the downed set).
@@ -166,6 +170,7 @@ const FALLBACK_CLIPS: Dictionary = {
 	&"shield_bang": &"idle_alert", &"heal_ally": &"interact_mid",
 	&"desk_work": &"desk_type", &"phone_seated": &"phone_call", &"sit_chair_watch": &"sit_chair", &"mop": &"browse",
 	&"sit_bed_read": &"sit_chair", &"sit_chair_read": &"sit_bed_read", &"mug_idle": &"idle", &"mug_carry_walk": &"walk", &"idle_thug": &"idle",
+	&"cower_b": &"cower", &"cower_c": &"cower", &"panic_start": &"cower", &"flee_b": &"run", &"flee_c": &"run",
 	&"rappel": &"climb_ladder", &"climb_ladder": &"idle", &"turn_l_45": &"turn_l", &"turn_r_45": &"turn_r",
 	# D-111: drill / crawl / gala and club ambient clips (characters.md v1.9-v1.10).
 	&"drill_place": &"interact_mid", &"downed_crawl": &"downed", &"bartender_wipe": &"browse",
@@ -223,6 +228,8 @@ var lod: AnimLod = null
 var loop_resume: LoopResume = null
 ## D-116: turn in place (TurnInPlace).
 var turn: TurnInPlace = null
+## D-116: a civilian's panic_start before its first cower* (CivPanic).
+var civ_panic: CivPanic = null
 ## WeaponDef.weapon_class of the held weapon (-1 without a WeaponDef): the D-116 class reloads.
 var weapon_class: int = -1
 ## Lead ruling (b): the upper-body hit-zone flinch layer (every animated body); see AnimLayers.play_flinch.
@@ -355,6 +362,7 @@ func _init() -> void:
 	lod = AnimLod.new(self)
 	loop_resume = LoopResume.new(self)
 	turn = TurnInPlace.new(self)
+	civ_panic = CivPanic.new(self)
 
 
 func _ready() -> void:
@@ -468,7 +476,7 @@ func tick(delta: float) -> void:
 			play_oneshot(once, -1.0, true)
 	_update_turn(delta, tw)
 	combat.update_door_kick(_npc)  # D-116: the loud breach of a locked door (door_kick_<fam>)
-	var want: StringName = choose_clip()
+	var want: StringName = civ_panic.apply(choose_clip(), delta)
 	if _npc != null and _npc.alive:
 		_seated = SEATED_CLIPS.has(want)
 		_alive_clip = want
@@ -819,7 +827,7 @@ func _special_locomotion(speed: float, tw: AnimTweak) -> StringName:
 		out = &"walk_text"  # D-103: walking while texting (characters.md v1.9, 1.2 m/s)
 	elif _npc != null and _npc.role == &"civilian" and (
 			_npc.alert_state == Enums.AlertState.PANICKED or _hint() == &"run" or _hint() == &"flee"):
-		out = &"flee"
+		out = pose_variant(&"flee")  # D-116 flee_b / flee_c (the same gait)
 	elif _npc != null:
 		out = _unit_walk_clip(speed, tw)
 	return out
@@ -1010,11 +1018,13 @@ func _apply(want: StringName, speed: float, tw: AnimTweak) -> void:
 			blend = 0.0  # surrender* -> surrender_idle* (v1.18); downed_arrested / crew_cuffed_enter -> crew_cuffed (v1.21)
 		elif clip == &"downed_getup":
 			blend = tw.getup_blend_s  # v1.21: from hold_pistol f0 into the current weapon's hold
+		elif CivPanic.blend(clip, want) >= 0.0:
+			blend = CivPanic.blend(clip, want)  # D-116 panic_start in 0.1 s; out: cower 0, cower_b / _c, flee*
 		elif want == _oneshot:
 			blend = tw.hit_zone_blend_in_s if HIT_ZONE_CLIPS.has(want) else tw.oneshot_blend_s
 		elif HIT_ZONE_CLIPS.has(clip):
 			blend = tw.hit_zone_blend_out_s
-		var chained: bool = HOLD_END.get(clip, &"") == want
+		var chained: bool = HOLD_END.get(clip, &"") == want or CivPanic.chained(clip, want)
 		loop_resume.leaving(clip, want)
 		player.play(full, blend)
 		last_blend_s = blend

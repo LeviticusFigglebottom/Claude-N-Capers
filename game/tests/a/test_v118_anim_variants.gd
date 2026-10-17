@@ -84,7 +84,7 @@ func test_variant_pick_is_stable_and_spreads() -> void:
 				print("[v118] skip pick %s: no %s" % [group, want])
 				continue
 			assert_eq(d.pose_variant(group), want, "index %d: %s -> %s (same index in every group)" % [idx, group, want])
-	assert_eq(d.pose_variant(&"cower"), &"cower", "not a variant group: unchanged")
+	assert_eq(d.pose_variant(&"cower_stand"), &"cower_stand", "not a variant group: unchanged")
 
 
 func test_surrender_b_holds_surrender_idle_b() -> void:
@@ -206,8 +206,12 @@ func test_death_from_variant_pose_is_posed() -> void:
 func test_hard_hat_lift_on_the_variants() -> void:
 	var tw: AnimTweak = AnimTweak.data()
 	for group: StringName in AnimDriver.VARIANT_GROUPS:
+		if group == &"flee" or group == &"cower":
+			continue  # D-116 civ panic: flee* runs; cower_c holds the hands by the face (cower / cower_b below)
 		for v: Variant in AnimDriver.VARIANT_GROUPS[group]:
 			assert_true(tw.hard_hat_lift_clips.has(v), "%s is a hard-hat lift clip" % v)
+	assert_true(tw.hard_hat_lift_clips.has(&"cower") and tw.hard_hat_lift_clips.has(&"cower_b"),
+		"cower / cower_b (forearms over the head) lift")
 	for pair: Array in [[&"hands_up", 1], [&"kneel_cuffed", 2]]:
 		var npc: NpcBase = _npc(_id_for(int(pair[1]), 95000 + int(pair[1]) * 100))
 		await wait_frames(1)

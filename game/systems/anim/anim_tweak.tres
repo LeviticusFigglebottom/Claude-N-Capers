@@ -14,6 +14,8 @@ clip_speeds = {
 &"crouch_walk": 1.5,
 &"dozer_walk": 1.6,
 &"flee": 4.0,
+&"flee_b": 4.0,
+&"flee_c": 4.0,
 &"run": 3.5,
 &"shield_walk": 1.6,
 &"sprint": 5.75,

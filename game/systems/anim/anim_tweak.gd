@@ -23,7 +23,7 @@ static var _cached: AnimTweak = null
 ## Root speed of each locomotion clip at 1.78 m (m/s). speed_scale = v / (clip speed x motion_scale).
 @export var clip_speeds: Dictionary = {
 	&"walk": 1.6, &"run": 3.5, &"sprint": 5.75, &"crouch_walk": 1.5, &"strafe_l": 1.2, &"strafe_r": 1.2,
-	&"walk_back": 1.3, &"flee": 4.0, &"carry_bag_walk": 2.4, &"shield_walk": 1.6, &"dozer_walk": 1.6,
+	&"walk_back": 1.3, &"flee": 4.0, &"flee_b": 4.0, &"flee_c": 4.0, &"carry_bag_walk": 2.4, &"shield_walk": 1.6, &"dozer_walk": 1.6,
 	&"mug_carry_walk": 1.3, &"walk_text": 1.2, &"run_l": 3.5, &"run_r": 3.5, &"run_b": 3.5,
 }
 ## Seconds from clip start to the reload `done` event (SOURCE.txt: pistol done@34, rifle done@58, 30 fps).
@@ -77,7 +77,7 @@ static var _cached: AnimTweak = null
 ## frame instead (the body dies in place).
 @export var death_by_pose: Dictionary = {
 	&"kneel_cuffed": &"death_kneel_cuffed", &"tied": &"death_kneel_cuffed", &"surrender": &"death_kneel",
-	&"cower": &"death_crouch", &"crouch_idle": &"death_crouch", &"crouch_walk": &"death_crouch",
+	&"cower": &"death_crouch", &"cower_b": &"death_crouch", &"crouch_idle": &"death_crouch", &"crouch_walk": &"death_crouch",
 	&"lie_down": &"death_prone", &"downed": &"death_downed", &"downed_crawl": &"death_downed",
 	# characters.md v1.18 variants: every surrender* / surrender_idle* kneels (death_kneel starts on their chain
 	# frame), kneel_cuffed_b/_c share kneel_cuffed's frame 0 (death_kneel_cuffed).
@@ -175,7 +175,7 @@ static var _cached: AnimTweak = null
 ## Hands-on-head clips during which the hands are lifted over the hat shell.
 @export var hard_hat_lift_clips: Array[StringName] = [&"surrender", &"surrender_b", &"surrender_c",
 	&"surrender_idle", &"surrender_idle_b", &"surrender_idle_c", &"hands_up", &"hands_up_b", &"hands_up_c",
-	&"cower", &"cower_seated", &"cower_stand", &"kneel_cuffed", &"kneel_cuffed_b", &"kneel_cuffed_c"]
+	&"cower", &"cower_b", &"cower_seated", &"cower_stand", &"kneel_cuffed", &"kneel_cuffed_b", &"kneel_cuffed_c"]
 ## Lift (m) of a hand resting on the head: the shell stands ~2.4 cm off the skull (ENV D audit R1).
 @export var hard_hat_hand_lift_m: float = 0.03
 ## A hand within this distance (m) of the head bone counts as resting on it.
