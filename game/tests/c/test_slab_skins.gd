@@ -22,8 +22,8 @@ const NAV_FINGERPRINT: Dictionary = {
 	# AssistantChairA, K8 PodAChairS1 no longer obstruct); SL-1 polish: the K16 bench / mail trolley, the S1 post room
 	# and the denser K8 / S1 kits obstruct their footprints
 	# D-142 / PO-14: the K17 ArchiveSafe moved 0.5 m east (its footprint obstructs); the M2 upstand and the frosted
-	# K11 panel leave the bake unchanged (checked with the safe at its old place)
-	"shadow_ledger": [1814, 1836, "44888337e6986d200a41f7ad20d42593f479608b6ea6669155aa778a1327e48c"],
+	# K11 panel leave the bake unchanged (checked with the safe at its old place); P round 243: K12 desk A moved 0.8 m west of the ITDoor
+	"shadow_ledger": [1813, 1835, "123f456baa29c46d7c6fdbe1dbf4c388c72138fdc6da84ff6557f26c32e8f200"],
 	"dockside_burn": [2242, 2269, "5418a12eb2e46b21f25402c032723b9ed2e9af0ec48949b4194042b8926ef495"],  # D-138 count cage
 }
 const SKINS: String = "Geometry/Building/Skins"

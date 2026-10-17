@@ -26121,7 +26121,7 @@ links = Array[NodePath]([NodePath("../G8West"), NodePath("../G9Compass")])
 tags = Array[StringName]([&"guard", &"staff", &"staff_cleaner", &"staff_manager"])
 
 [node name="G9Compass" type="Marker3D" parent="Patrols/Bank" unique_id=102916]
-transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 8, 0, 13)
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 8, 0, 15)
 script = ExtResource("172_nd")
 links = Array[NodePath]([NodePath("../G9Gate"), NodePath("../G9Windows"), NodePath("../G9LoanDoor"), NodePath("../G9Vestibule")])
 pause_range = Vector2(4, 8)

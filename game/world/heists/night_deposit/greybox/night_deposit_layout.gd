@@ -462,7 +462,8 @@ const PATROL_POINTS_BANK: Dictionary = {
 	"G8Mid": [Vector3(10.5, 0.0, 9.0), Vector2(3.0, 6.0), "idle", ["guard", "staff", "staff_manager"], null],
 	"G8East": [Vector3(18.0, 0.0, 9.0), Vector2.ZERO, "idle", ["guard"], null],
 	"G9Gate": [Vector3(1.0, 0.0, 11.0), Vector2.ZERO, "idle", ["guard", "staff", "staff_cleaner", "staff_manager"], null],
-	"G9Compass": [Vector3(8.0, 0.0, 13.0), Vector2(4.0, 8.0), "idle", ["guard", "staff", "staff_cleaner"], -90.0],
+	# P round 243: 2 m south of the GuardHall post at (8, 13), so a rover never parks on the hall guard.
+	"G9Compass": [Vector3(8.0, 0.0, 15.0), Vector2(4.0, 8.0), "idle", ["guard", "staff", "staff_cleaner"], -90.0],
 	"G9Windows": [Vector3(6.0, 0.0, 18.6), Vector2(2.0, 4.0), "idle", ["guard", "staff", "staff_cleaner"], 180.0],
 	"G9Vestibule": [Vector3(13.6, 0.0, 17.2), Vector2.ZERO, "idle", ["guard", "staff", "staff_cleaner"], null],
 	"G9Atm": [Vector3(19.8, 0.0, 18.5), Vector2(2.0, 4.0), "check_door", ["guard"], -90.0],

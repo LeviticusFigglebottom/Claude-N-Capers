@@ -425,7 +425,7 @@ blocks movement and bullets. Frosted, tinted, mirrored and privacy glass stays o
   not tagged).
 - **Open (D-142):** the Sightlines claim that crouched players behind the counter are hidden from the hall
   guard does not hold with the rail. It is not sampled (no `hide_spot`; adding one would fail `hide_los`). The
-  hall guard stands at his post (`G9Compass`, idle, eye 1.62 m, 3 m from the glass). A crouched player
+  hall guard stands at his post (the `GuardHall` spawn at (8, 13), idle, eye 1.62 m, 3 m from the glass). A crouched player
   behind the counter (feet z <= 8.95, detection points 1.0 and 1.05 m) is seen over the 1.15 m rail: the
   sightline crosses the rail line at about 1.20 m, or about 1.29 m from the back of the workroom. The rail hides a
   crouched player only from observers more than about 5 m from the glass. Holding the claim at the post

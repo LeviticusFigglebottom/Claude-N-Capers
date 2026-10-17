@@ -408,7 +408,9 @@ const PROPS: Array = [
 	["CracUnit", Vector3(30.2, F41, 11.9), Vector3(1.0, 1.9, 0.8), 0.0, "crac", false, "trim"],
 	["UpsUnit", Vector3(26.0, F41, 8.0), Vector3(0.8, 1.6, 0.6), 0.0, "ups", false, "trim"],
 	# K12 IT
-	["ITDeskA", Vector3(33.0, F41, 9.0), Vector3(1.4, 0.75, 0.7), 0.0, "desk", true, "prop"],
+	# P round 243: desk A west of the ITDoor (x 33.05-33.95) so the door-to-desk lane is >= 2 m; the west slot stays
+	# under an agent's width (no nav strip).
+	["ITDeskA", Vector3(32.2, F41, 9.0), Vector3(1.4, 0.75, 0.7), 0.0, "desk", true, "prop"],
 	["ITDeskB", Vector3(33.0, F41, 11.2), Vector3(1.4, 0.75, 0.7), 0.0, "desk", true, "prop"],
 	["ITSpares", Vector3(35.54, F41, 9.6), Vector3(0.5, 2.0, 1.6), 0.0, "shelf", true, "prop"],
 	# K13 security room (station against the east wall, the door behind the operator)
@@ -563,7 +565,7 @@ const CHAIRS: Array = [
 	# K12 IT: both desks are worked from the north side, facing south. Desk A's seat is rolled
 	# to the west end, out of the ITDoor swing; desk B's sits between the desks, east of the K12IT patrol spot,
 	# leaving the kc_it / PhoneIT / code-note UsePoints on the south sides clear.
-	["ITChairA", Vector3(32.6, F41, 8.2), 180.0, "ITDeskA"],
+	["ITChairA", Vector3(31.8, F41, 8.2), 180.0, "ITDeskA"],
 	["ITChairB", Vector3(33.4, F41, 10.4), 180.0, "ITDeskB"],
 	# K20-K23 associates: the desk is 0.65 m off the window, so the seat is on the room side, facing it.
 	["K20Chair", Vector3(19.5, F41, 22.0), 180.0, "K20Desk"],

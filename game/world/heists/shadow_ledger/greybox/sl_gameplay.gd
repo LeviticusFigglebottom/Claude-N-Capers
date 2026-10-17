@@ -533,7 +533,7 @@ func _variants_keycards(variants: Node3D) -> void:
 	var rows: Array = [
 		["kc_reception", 1.0, Vector3(18.9, L.F41 + 1.05, 5.1), Vector3(18.9, L.F41, 4.35)],
 		["kc_security", 0.75, Vector3(26.2, L.F41 + 1.0, 12.76), Vector3(26.2, L.F41, 13.45)],
-		["kc_it", 1.0, Vector3(33.4, L.F41 + 0.75, 9.0), Vector3(33.4, L.F41, 9.75)],
+		["kc_it", 1.0, Vector3(32.6, L.F41 + 0.75, 9.0), Vector3(32.6, L.F41, 9.75)],
 		["kc_kessler", 1.0, Vector3(3.6, L.F41 + 0.75, 2.4), Vector3(3.6, L.F41, 3.05)],
 		["kc_lounge", 1.0, Vector3(3.3, L.F42 + 1.1, 1.6), Vector3(3.3, L.F42, 2.35)],
 		["kc_guest", 1.0, Vector3(0.46, L.F42 + 0.6, 8.85), Vector3(1.2, L.F42, 8.4)],
