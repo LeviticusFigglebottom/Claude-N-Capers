@@ -1,0 +1,55 @@
+[gd_scene format=3]
+
+[ext_resource type="ArrayMesh" path="res://assets/weapons/npc/brute_12_npc3p_mesh.res" id="1_tpnp5"]
+
+[node name="brute_12_npc3p" type="Node3D" unique_id=341035001]
+
+[node name="Merged" type="MeshInstance3D" parent="." unique_id=965804748]
+mesh = ExtResource("1_tpnp5")
+
+[node name="Muzzle" type="Node3D" parent="." unique_id=1754586428]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.062, -0.469)
+
+[node name="MuzzlePortL" type="Node3D" parent="." unique_id=1332752976]
+transform = Transform3D(0.34202015, 0.66446304, 0.66446304, 0, 0.70710677, -0.70710677, -0.9396926, 0.24184477, 0.24184477, -0.0048, 0.07478, -0.4555)
+
+[node name="MuzzlePortR" type="Node3D" parent="." unique_id=695482229]
+transform = Transform3D(0.34202015, -0.66446304, -0.66446304, 0, 0.70710677, -0.70710677, 0.9396926, 0.24184477, 0.24184477, 0.0048, 0.07478, -0.4555)
+
+[node name="BarrelMount" type="Node3D" parent="." unique_id=473860806]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.062, -0.25)
+
+[node name="Eject" type="Node3D" parent="." unique_id=932080170]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 0.024, 0.062, -0.05)
+
+[node name="SightRail" type="Node3D" parent="." unique_id=713297208]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1342, -0.04)
+
+[node name="StockSight" type="Node3D" parent="." unique_id=859283546]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1342, -0.04)
+
+[node name="AimPoint" type="Node3D" parent="." unique_id=1311331819]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1482, 0.04)
+
+[node name="Magwell" type="Node3D" parent="." unique_id=950632923]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.022, -0.15)
+
+[node name="StockMagazine" type="Node3D" parent="." unique_id=1205450931]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.022, -0.15)
+
+[node name="Underbarrel" type="Node3D" parent="." unique_id=260023593]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.038, -0.33)
+
+[node name="SideRail" type="Node3D" parent="." unique_id=1369057367]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0277, 0.062, -0.33)
+
+[node name="StockMount" type="Node3D" parent="." unique_id=1251878262]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.06, 0.33)
+
+[node name="StockStock" type="Node3D" parent="." unique_id=2087609130]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.06, 0.33)
+
+[node name="GripMount" type="Node3D" parent="." unique_id=1045504663]
+
+[node name="LeftHandIK" type="Node3D" parent="." unique_id=282901579]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.026, -0.307)
