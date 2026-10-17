@@ -395,7 +395,7 @@ func _hide_body() -> bool:
 	if not await pilot.use(ic, 20.0, func() -> bool: return pilot.crew.is_carrying_bag()):
 		note("gate guard not bagged")
 		return false
-	var bag: LootBag = pilot.crew.carried_bag() if pilot.crew.has_method(&"carried_bag") else null
+	var bag: LootBag = pilot.crew.carried_bag as LootBag
 	if not await pilot.goto(CLOSET_IN, 0.3, 40.0):
 		note("janitor closet not reached (at %s)" % Po5Pilot._v(pilot.crew.global_position))
 		return false
