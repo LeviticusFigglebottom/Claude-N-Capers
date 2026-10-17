@@ -123,6 +123,7 @@ const ROSTER_FALLBACK: Dictionary = {
 ## ND cleaners 2, GN patrons 12; GN gala_extra
 ## (cloakroom waitstaff + drawings-cabinet attendant): GN waitstaff 3, GN attendants 3. OF-D1 (an L heist, up to 6 guards,
 ## 4 tellers, 3 officers and 13 customers): OF Halden guards 10 (at least 3 women), tellers 5, officers 4, customers 12.
+## D-140 twins audit: Glasshouse guards 10 (one Halden pool on every post + the operator), customers 12.
 ## RT-D1 (three trucks x driver + custodian): Vaultline crew 6 (at least 2 women), site guards 10, street civilians 12.
 const POOLS: Array = [
 	["dockside_burn", ["cartel_gate", "cartel_yard_w", "cartel_yard_e", "cartel_hall", "cartel_platform", "cartel_dock",
@@ -143,6 +144,9 @@ const POOLS: Array = [
 	["ostrander_federal", ["bank_teller", "civ_teller"], 5, 2],
 	["ostrander_federal", ["bank_officer", "civ_officer"], 4, 1],
 	["ostrander_federal", ["civ_customer", "civ_plaza", "civ_client"], 12, 4],
+	["glasshouse", ["guard_post_floor", "guard_rover_boh", "guard_rover_upper", "guard_alley_smoker",
+		"security_operator"], 10, 3],
+	["glasshouse", ["civ_customer"], 12, 4],
 	["rolling_thunder", ["convoy_t1", "convoy_t2", "convoy_t3"], 6, 2],
 	["rolling_thunder", ["site_guard", "guard_site_gate", "guard_site_frame", "guard_site_cabins"], 10, 3],
 	["rolling_thunder", ["street_civilian", "civ_street", "civ_bus", "civ_diner"], 12, 4],
