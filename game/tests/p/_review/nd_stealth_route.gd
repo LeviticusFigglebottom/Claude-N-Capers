@@ -251,8 +251,15 @@ func _gate_guard() -> bool:
 	# through his moving body, ND run 2026-10-17 t=50) and swing as soon as he is in reach with his back turned.
 	var swings: int = 0
 	var t_end: float = rt.heist_time_s + 60.0
+	var sd: StealthDirector = HeistRuntime.get_service(G.SVC_STEALTH) as StealthDirector
+	var next_trace: float = 0.0
 	while g.is_alive() and g.alert_state <= Enums.AlertState.CURIOUS and swings < 4 and rt.heist_time_s < t_end:
 		var d: float = pilot.flat_dist(g.global_position, c.global_position)
+		if rt.heist_time_s >= next_trace:
+			next_trace = rt.heist_time_s + 0.5
+			note("knife trace: me %s guard %s dist %.2f back %s alert %d meter %.2f crouch %s" % [
+				Po5Pilot._v(c.global_position), Po5Pilot._v(g.global_position), d, _back_turned(g), g.alert_state,
+				sd.detection_value(g, c.slot) if sd != null else -1.0, c.crouched])
 		if not _back_turned(g):
 			await wait_s(0.2)  # stand still while he faces this way
 			continue
@@ -271,7 +278,8 @@ func _gate_guard() -> bool:
 			alert_before, g.alert_state])
 	pilot.inp.release(&"crouch")
 	if g.is_alive():
-		note("gate guard not knifed (alert %d)" % g.alert_state)
+		note("gate guard not knifed (alert %d, meter %.2f, dist %.2f)" % [g.alert_state,
+			sd.detection_value(g, c.slot) if sd != null else -1.0, pilot.flat_dist(g.global_position, c.global_position)])
 		return false
 	await shot("gate_guard_knifed")
 	for _k: int in 60:
