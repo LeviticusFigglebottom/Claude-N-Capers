@@ -191,7 +191,7 @@ EMISSIVE: dict[str, dict] = {
     # Gallery Night gala uplights (the doc's lilac #B79CF2, emissive only)
     "emit_lilac": {"color": "#4A3A66", "emission": "#B79CF2", "energy": 3.0},
     # Shadow Ledger (SL-1): the lounge bar's backlit teal glass, the 6500 K linear coves and crown LEDs
-    "emit_teal": {"color": "#23383A", "emission": "#7FC3C8", "energy": 2.2},
+    "emit_teal": {"color": "#23383A", "emission": "#4F9EA6", "energy": 0.7},
     "emit_led_cold": {"color": "#8A8D92", "emission": "#E6EEFF", "energy": 3.0},
     # SL-2 laser beams: a deep red at a low energy, so thin beams stay red under the filmic tonemap (emit_led_red
     # at 3.0 blooms to orange-white on a 14 mm rod)
