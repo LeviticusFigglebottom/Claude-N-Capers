@@ -185,6 +185,19 @@ static func lines(heist_id: StringName, difficulty: int, mode: int, data: Briefi
 	return out
 
 
+## D-140: the pager carriers (guards + the camera operator) `heist_id` can field at `difficulty`, [min, max] over seeds;
+## (-1, -1) when the heist has no exported intel.
+static func guard_range(heist_id: StringName, difficulty: int) -> Vector2i:
+	var d: BriefingIntelData = data_for(heist_id)
+	if d == null:
+		return Vector2i(-1, -1)
+	var t: HeistVariantTable = null
+	if d.variants_path != "" and ResourceLoader.exists(d.variants_path):
+		t = load(d.variants_path) as HeistVariantTable
+	var cats: Array = (LINE_CATEGORIES[&"guards"] as Array) + (LINE_CATEGORIES[&"operator"] as Array)
+	return count_range(d, t, cats, difficulty)
+
+
 ## D-130: the difficulty from which `heist_id`'s cameras are Titan (the def's value when >= 0, else StealthTweak's).
 static func titan_min_difficulty(heist_id: StringName) -> int:
 	var def: HeistDef = HeistRegistry.get_def(heist_id) if heist_id != &"" else null

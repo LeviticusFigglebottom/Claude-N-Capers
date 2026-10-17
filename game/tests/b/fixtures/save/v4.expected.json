@@ -1,5 +1,5 @@
 {
-	"version": 8,
+	"version": 9,
 	"profile_name": "Maskmaker",
 	"cash": 230000,
 	"stash": 1900000,
@@ -32,6 +32,7 @@
 	"music_choice": "",
 	"career": {"totals": {}, "heists": {}, "difficulties": {}, "bags": {}, "weapons": {}},
 	"weapon_finishes": {},
+	"freshness": {"recent": [], "runs": 0, "last_run": {}, "completed": []},
 	"stats": {"heists_completed": 40, "heists_failed": 4},
 	"settings": {}
 }
