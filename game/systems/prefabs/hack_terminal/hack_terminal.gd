@@ -200,6 +200,19 @@ func start_hack(crew_slot: int) -> void:
 	_set_state(State.RUNNING)
 
 
+## Server (mission, GN-8): a finished terminal can be run again (GN: the stealth hack took the sensors offline; the
+## loud lockdown needs the same hack to lift the shutters). DONE -> IDLE, usable again. True when it re-armed.
+func rearm() -> bool:
+	if not Net.is_authority() or state != State.DONE:
+		return false
+	progress = 0.0
+	pending_interruptions.clear()
+	rolled_interruptions = 0
+	interactable.enabled = true
+	_set_state(State.IDLE)
+	return true
+
+
 ## Server: resume after an interruption.
 func restart_hack(crew_slot: int) -> void:
 	if not Net.is_authority() or state != State.INTERRUPTED:

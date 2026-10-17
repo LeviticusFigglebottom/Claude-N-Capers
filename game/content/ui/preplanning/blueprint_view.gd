@@ -139,13 +139,13 @@ func _build_markers() -> void:
 func _layout_markers() -> void:
 	# Zone names are soft (a label may cover one when nothing else is free); the scale bar, the north arrow and
 	# labels already placed are hard: a label with no spot clear of them hides (crowded, shown on hover).
-	var taken: Array[Rect2] = _zone_label_rects()
-	var hard: Array[Rect2] = _furniture_rects()
 	for pid: Variant in markers:
 		var p: Dictionary = board.blueprint.point(StringName(pid))
 		var b: Button = markers[pid] as Button
 		b.position = world_to_view(p.get("pos", Vector2.ZERO) as Vector2) - b.size * 0.5
 	_separate_markers()
+	var taken: Array[Rect2] = _zone_label_rects()  # after the markers move: zone names keep off them
+	var hard: Array[Rect2] = _furniture_rects()
 	var marker_rects: Array[Rect2] = []
 	for pid: Variant in markers:
 		marker_rects.append((markers[pid] as Button).get_rect().grow(2.0))
@@ -264,6 +264,13 @@ func _zone_labels() -> Array[Array]:
 	var placed: Array[Rect2] = []
 	var shown: Dictionary = {}
 	var narrow: Dictionary = {}  # text -> union view rect of its zones that are too small for it
+	# LEAD r229 real-input run: "STAIRS" sat under marker 2. A name inside its zone that a marker covers goes beside
+	# the zone instead (markers are hard for the beside spots too).
+	var marker_rects: Array[Rect2] = []
+	for pid: Variant in markers:
+		var mb: Button = markers[pid] as Button
+		if mb.visible:
+			marker_rects.append(mb.get_rect().grow(2.0))
 	for sh: Dictionary in board.blueprint.shapes:
 		var key: StringName = StringName(sh.get("label", &""))
 		var fl: int = int(sh.get("floor", -1))
@@ -274,7 +281,10 @@ func _zone_labels() -> Array[Array]:
 		var text: String = UiText.t(key).to_upper()
 		var ts: Vector2 = font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, ZONE_FONT)
 		var rect: Rect2 = Rect2(vr.position + Vector2(6, 4), ts)
-		if ts.x > vr.size.x - 8.0 or ts.y > vr.size.y - 4.0:
+		var under_marker: bool = false
+		for m: Rect2 in marker_rects:
+			under_marker = under_marker or m.intersects(rect)
+		if ts.x > vr.size.x - 8.0 or ts.y > vr.size.y - 4.0 or under_marker:
 			narrow[text] = (narrow[text] as Rect2).merge(vr) if narrow.has(text) else vr
 			continue
 		var clash: bool = shown.has(text)
@@ -286,6 +296,7 @@ func _zone_labels() -> Array[Array]:
 		shown[text] = true
 		out.append([text, vr.position + Vector2(6, 18), rect, null])
 	var hard: Array[Rect2] = _furniture_rects()
+	hard.append_array(marker_rects)
 	var edges: Array[Rect2] = _shape_edge_rects()
 	var view: Rect2 = Rect2(Vector2.ZERO, size)
 	for text: String in narrow:

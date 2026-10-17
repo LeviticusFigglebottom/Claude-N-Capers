@@ -16,6 +16,11 @@ static var _cached: RadioTweak = null
 ## A comms line from someone else (mission say(), abort, last pager) keeps the radio quiet for at least
 ## this long, or for that line's own subtitle time when it is longer.
 @export var mission_suppress_s: float = 3.0
+## D-117 §6 (every written line is heard): a fact of these events that has a line written for this heist (keyed to
+## its objective `[tag]`) waits out a mission line's suppression instead of being dropped; max_wait_s then counts
+## from the end of the suppression. Generic lines are still dropped (no doubling).
+@export var defer_events: Array[StringName] = [&"radio.objective_done", &"radio.objective_new",
+		&"radio.objective_failed"]
 ## The last N lines picked for an event are not repeated while other lines are available.
 @export var no_repeat_depth: int = 2
 ## radio event tag -> priority. One fact waits at a time: a higher priority fact replaces the waiting one.

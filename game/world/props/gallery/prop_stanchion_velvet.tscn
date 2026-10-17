@@ -13,6 +13,9 @@ visibility_range_end_margin = 6
 visibility_range_fade_mode = 1
 
 [node name="Collision" parent="Model"]
+collision_layer = 0
+collision_mask = 0
 metadata/surface = &"metal"
+metadata/walk_through = "GN-8: the velvet rope is walk-through (next_heist 7.9 'or none'; GN dressing NO_COLLIDE); the GN navmesh runs under it"
 
 [editable path="Model"]

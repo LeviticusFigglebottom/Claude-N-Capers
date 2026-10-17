@@ -3,7 +3,8 @@
 ## Door prefab with lock BARRED, every NavigationLink3D under a door is disabled, then a navmesh path
 ## is queried from 1.2 m in front of the door to 1.2 m behind it (and back). FAIL when a path
 ## segment crosses the doorway (the door line within the half width + 0.3 m, between 0.5 m below
-## and 2.5 m above the door's floor). A detour through another opening passes. Doors inside a
+## and 2.5 m above the door's floor). A detour through another opening passes. Doors the mission bars at runtime
+## count too: `shutter` doors (GN lockdown) and DB fire shutters (meta `fire_shutter`). Doors inside a
 ## VariantSlot are skipped (noted): the navmesh is baked once for every variant, so a slot door that
 ## another slot leaves open cannot be baked closed.
 class_name LcCheckBarredDoors
@@ -26,14 +27,16 @@ func run(ctx: LcContext) -> void:
 	var skipped: PackedStringArray = PackedStringArray()
 	for n: Node in ctx.map.find_children("*", "", true, false):
 		var d: Door = n as Door
-		if d == null or d.lock != Door.Lock.BARRED or not ctx.is_active(d):
+		if d == null or not ctx.is_active(d):
+			continue
+		if d.lock != Door.Lock.BARRED and not d.shutter and not d.has_meta(&"fire_shutter"):
 			continue
 		if _in_slot(ctx, d):
 			skipped.append("`%s`" % ctx.node_path(d))
 			continue
 		barred.append(d)
 	var saved: Array[Array] = ctx.set_door_links(false)
-	await ctx.await_sync(8)  # 3 frames was not always enough for the link disable to reach the map (flaky FAIL)
+	await ctx.await_nav_update()  # a fixed frame count was not always enough for the link disable to reach the map
 	for d2: Door in barred:
 		_check_door(ctx, d2)
 	ctx.restore_links(saved)

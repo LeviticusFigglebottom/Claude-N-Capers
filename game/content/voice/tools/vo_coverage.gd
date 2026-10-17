@@ -56,6 +56,12 @@ const RX_DONE: String = "\\b(?:complete|_complete_once|_skip_if_active|require_i
 const RX_NEW: String = "\\bactivate\\(\\s*&\"(\\w+)\""
 const RX_FAIL: String = "\\bfail\\(\\s*&\"(\\w+)\""
 const RX_STATE: String = "ObjectiveState\\.(\\w+)"
+## HeistRuntime's generic stealth-only abort line, and the HeistMission flag (SL-6, env/a-core 47d08435) with which a
+## STEALTH_ONLY mission says its own abort line instead (HeistRuntime then skips the generic one).
+const GENERIC_ABORT: StringName = &"vo.mercer.abort"
+const RX_OWN_ABORT: String = "(?m)^\\s*own_abort_line\\s*=\\s*true"
+## The mission's own abort line: the first vo id said in its `_on_alarm`.
+const RX_ALARM_LINE: String = "func _on_alarm\\([^)]*\\)[^:]*:[\\s\\S]*?\"(vo\\.[A-Za-z0-9_]+\\.[A-Za-z0-9_]+)\""
 
 
 ## Runs the audit and writes REPORT_PATH; returns the audit.
@@ -104,6 +110,7 @@ static func audit() -> Dictionary:
 			heists.append(h)
 	heists.sort_custom(func(a: StringName, b: StringName) -> bool: return String(a) < String(b))
 	var tweak: RadioTweak = RadioTweak.load_default()
+	var aborts: Dictionary = {}
 	for h: StringName in heists:
 		var hf: Dictionary = heist_files[h]
 		var def: HeistDef = load(String(hf["def"])) as HeistDef
@@ -112,6 +119,10 @@ static func audit() -> Dictionary:
 		var facts: Dictionary = radio_facts(def, String(hf.get("mission", "")), tweak)
 		_radio_builder(h, facts, table, tweak, rows, ids)
 		_briefing_builder(h, def, table, rows, ids)
+		var ab: StringName = abort_line(def, String(hf.get("mission", "")))
+		if ab != &"":
+			aborts[h] = ab
+	_abort_builder(aborts, rows, ids)
 	var strings: Dictionary = StringTable.parse_csv()
 	var orphans: Array[String] = []
 	for k: String in strings:
@@ -124,7 +135,41 @@ static func audit() -> Dictionary:
 			no_text.append(String(row["id"]))
 		if (row["sites"] as Array).is_empty() and String(row["reason"]) == "":
 			row["reason"] = "nothing says it: no literal id or builder, and no code maps the `%s` fact to its lines" % row["event"]
-	return {"lines": rows, "missing": missing, "orphan_strings": orphans, "no_text": no_text, "heists": heists}
+	return {"lines": rows, "missing": missing, "orphan_strings": orphans, "no_text": no_text, "heists": heists,
+		"aborts": aborts}
+
+
+## The abort line a STEALTH_ONLY heist plays on the alarm (&"" for any other mode): its mission's own line when the
+## mission sets `own_abort_line = true` (SL-6), else HeistRuntime's generic GENERIC_ABORT.
+static func abort_line(def: HeistDef, mission_path: String) -> StringName:
+	if def == null or def.mode != Enums.HeistMode.STEALTH_ONLY:
+		return &""
+	var src: String = strip_comments(FileAccess.get_file_as_string(mission_path)) if mission_path != "" else ""
+	if RegEx.create_from_string(RX_OWN_ABORT).search(src) != null:
+		var m: RegExMatch = RegEx.create_from_string(RX_ALARM_LINE).search(src)
+		if m != null:
+			return StringName(m.get_string(1))
+	return GENERIC_ABORT
+
+
+## D-115 (LEAD r228, SL-6): the generic abort is said only for the STEALTH_ONLY heists without their own line. With
+## none left, its HeistRuntime literal is not a trigger: the line is B's reserve (kept for new stealth-only heists).
+static func _abort_builder(aborts: Dictionary, rows: Array[Dictionary], ids: Dictionary) -> void:
+	if not ids.has(GENERIC_ABORT):
+		return
+	var row: Dictionary = rows[ids[GENERIC_ABORT]]
+	var users: Array[String] = []
+	for h: StringName in aborts:
+		if aborts[h] == GENERIC_ABORT:
+			users.append(String(h))
+	if not users.is_empty():
+		return
+	(row["sites"] as Array).clear()
+	row["owner"] = "R"
+	var own: Array[String] = []
+	for h2: StringName in aborts:
+		own.append("%s: %s" % [h2, aborts[h2]])
+	row["reason"] = "every STEALTH_ONLY heist says its own abort line (HeistMission.own_abort_line): %s" % ", ".join(own)
 
 
 ## "glasshouse" when the id names one of the report heists, else "shared".
@@ -188,7 +233,8 @@ static func radio_facts(def: HeistDef, mission_path: String, tweak: RadioTweak) 
 		for oid: StringName in list:
 			def_objectives[oid] = true
 	var events: Dictionary = {}
-	# A stealth-only heist's alarm is the abort: HeistRuntime's vo.mercer.abort (a comms speaker) always wins.
+	# A stealth-only heist's alarm is the abort: its abort line (abort_line(): HeistRuntime's generic one, or the
+	# mission's own with own_abort_line) is a comms speaker and always wins.
 	if def.mode != Enums.HeistMode.STEALTH_ONLY:
 		events[EV_ALARM] = true
 		for tag: Variant in tweak.assault_tags.values():

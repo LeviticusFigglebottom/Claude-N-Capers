@@ -287,13 +287,27 @@ static func hint_fits(l: Label) -> bool:
 func _build_map_column() -> VBoxContainer:
 	var col: VBoxContainer = UiBuild.vbox(10)
 	col.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	var bar: HBoxContainer = UiBuild.hbox(10)
+	# r229 menu walk: with the MAP caption a 4-floor heist's tab row was 20 units wider than the 1920 canvas and pushed
+	# Confirm off screen. The row wraps instead of widening the screen.
+	var bar: HFlowContainer = HFlowContainer.new()
+	bar.add_theme_constant_override(&"h_separation", 10)
+	bar.add_theme_constant_override(&"v_separation", 6)
 	crew_button = UiBuild.tab(_small_button(&"ui.preplan.crew_assets"))
+	crew_button.name = "CrewButton"
 	crew_button.pressed.connect(_on_crew_pressed)
 	bar.add_child(crew_button)
 	if board.blueprint.floor_count() > 1:
+		# LEAD r229 real-input run: the crew tab and the floor tabs are separate choices (no map point picked / the
+		# floor shown) and both showed "selected"; a divider and a MAP caption make the floors their own group.
+		var sep: VSeparator = VSeparator.new()
+		sep.custom_minimum_size = Vector2(UiTokens.S3, 0)
+		bar.add_child(sep)
+		var cap: Label = UiBuild.caption(&"ui.preplan.floor_caption")
+		cap.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		bar.add_child(cap)
 		for i: int in range(board.blueprint.floor_count()):
 			var fb: Button = UiBuild.tab(_small_button(board.blueprint.floor_names[i]))
+			fb.name = "FloorTab%d" % i
 			fb.set_pressed_no_signal(i == 0)
 			fb.pressed.connect(_on_floor.bind(i))
 			bar.add_child(fb)
@@ -359,7 +373,9 @@ func _build_panel() -> PanelContainer:
 func _build_bottom() -> HBoxContainer:
 	var bottom: HBoxContainer = UiBuild.hbox(UiTokens.S3)
 	back_button = UiBuild.ghost(UiBuild.button(&"ui.menu.back"))
+	back_button.name = "BackButton"
 	confirm_button = UiBuild.primary(UiBuild.button(&"ui.preplan.confirm"))
+	confirm_button.name = "ConfirmButton"
 	back_button.pressed.connect(back_requested.emit)
 	confirm_button.pressed.connect(confirm)
 	bottom.add_child(back_button)

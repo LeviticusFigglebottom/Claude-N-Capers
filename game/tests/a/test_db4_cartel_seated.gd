@@ -48,7 +48,9 @@ func test_db4_cartel_sit_on_a_seat_plays_seated() -> void:
 		assert_true(d <= 0.1, "%s stays on the seat (moved %.2f m)" % [g.name, d])
 		var ad: AnimDriver = g.get_node_or_null(^"AnimDriver") as AnimDriver
 		if ad != null and ad.player != null:
-			assert_eq(ad.choose_clip(), &"sit_chair", "%s plays sit_chair" % g.name)
+			# DB-4 (characters.md v1.24): the armed seated idle when the rig has it, else sit_chair.
+			var want_seat: StringName = &"sit_chair_armed" if ad._has_clip(&"sit_chair_armed") else &"sit_chair"
+			assert_eq(ad.choose_clip(), want_seat, "%s plays %s" % [g.name, want_seat])
 		print("DB-4 %s seated: hint %s, clip %s, moved %.3f" % [g.name, b.anim_hint, ad.choose_clip() if ad else &"-", d])
 	var sb: CartelBrain = standing.get_node(^"Brain") as CartelBrain
 	assert_false(CivilianBrain.has_seat_under(standing), "no seat under the floor gunman")

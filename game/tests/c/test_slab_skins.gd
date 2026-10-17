@@ -18,8 +18,9 @@ const MAPS: Dictionary = {
 ## Navmesh fingerprints of the bakes committed before the skins (PO-13 surface passes):
 ## [vertex count, polygon count, sha256 of the vertices + polygons].
 const NAV_FINGERPRINT: Dictionary = {
-	"shadow_ledger": [1797, 1820, "383f3acd5853306e83f2137ef576cffd9d847f69fc82eed89b17a5ade0288900"],  # re-pinned: SL-1 G2 dressing
-	"dockside_burn": [2274, 2339, "59a95ed7db2ed6b32f456ded7dec59d5436e6d6677af347dd22c605b8e702edd"],  # re-pinned: DB G2 + C2 kit
+	# re-pinned: SL-P1 corridor corner caps + the stair dividers' head clearance
+	"shadow_ledger": [1599, 1643, "3de1ddf171b64145b28fb4391f33cbd0727ebaafd29e196a8c9dd15c923fc3b3"],
+	"dockside_burn": [2211, 2258, "eba34e479cfc9b5759685a5da6c9694c34c61ac330122af6a9b596c1688f3f4c"],  # re-pinned: shutters baked shut
 }
 const SKINS: String = "Geometry/Building/Skins"
 const OFFSET_MIN: float = 0.003

@@ -171,7 +171,11 @@ func test_unknown_zone_falls_back_to_hit_react() -> void:
 		d._last_hit_react_t = -100.0
 		EventBus.damage_applied.emit(npc.net_id, 0, info)
 		d.tick(0.016)
-		assert_eq(d.clip, &"hit_react", "no usable zone (%s, type %s) -> directional hit_react" % [
+		var want: StringName = &"hit_react"
+		if int(info.get("type", -1)) == Enums.DamageType.EXPLOSION and d.combat.stagger_clip() != &"":
+			want = d.combat.stagger_clip()  # D-116: an explosion staggers a non-shield NPC (stagger_<fam>)
+		d._oneshot_left = 0.0
+		assert_eq(d.clip, want, "no usable zone (%s, type %s) -> directional hit_react" % [
 			info.get("zone", "none"), info.get("type", "none")])
 
 

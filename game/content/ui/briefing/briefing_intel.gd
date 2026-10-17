@@ -68,6 +68,9 @@ const THREAT_EFFECTS: Array[StringName] = [
 ]
 ## SpawnPoint.Kind values that are hostile (GUARD, POLICE, SNIPER_PERCH, CAMERA_OPERATOR).
 const HOSTILE_SPAWNS: Array[int] = [1, 3, 4, 5]
+## SpawnPoint.Kind.CIVILIAN: a bad rare event that forces a civilian into play adds a witness, which stealth has to deal
+## with like a guard (SL kessler_sleepover, LEAD r229), so it is a surprise too.
+const SPAWN_CIVILIAN: int = 2
 ## TacticalPoint.Kind.SNIPER_PERCH (contracts/map/tactical_point.gd): a police sniper perch.
 const TACTICAL_SNIPER_PERCH: int = 3
 
@@ -147,7 +150,7 @@ static func lines(heist_id: StringName, difficulty: int, mode: int, data: Briefi
 	for id: StringName in LINE_ORDER:
 		match id:
 			&"cameras":
-				var titan: bool = difficulty >= tw.camera_titan_min_difficulty
+				var titan: bool = difficulty >= titan_min_difficulty(heist_id)
 				_add_count(out, id, r[id], &"cameras_titan" if titan else &"cameras")
 			&"operator":
 				if op.y > 0:
@@ -155,7 +158,10 @@ static func lines(heist_id: StringName, difficulty: int, mode: int, data: Briefi
 			&"pagers":
 				if mode != Enums.HeistMode.LOUD_ONLY and (guards.y > 0 or op.y > 0):
 					var pagers: Vector2i = scalar_range(t, PagerSystem.MAX_ANSWERS_SCALAR, difficulty)
-					if pagers.y < 0:
+					var def_cap: int = pager_cap(heist_id, difficulty)
+					if def_cap >= 0:
+						pagers = Vector2i(def_cap, def_cap)  # D-130: the def's per-difficulty cap wins
+					elif pagers.y < 0:
 						pagers = Vector2i(tw.pager_max_answers, tw.pager_max_answers)
 					_add(out, id, id, {"range": range_text(pagers)}, pagers)
 			&"time_lock":
@@ -176,6 +182,22 @@ static func lines(heist_id: StringName, difficulty: int, mode: int, data: Briefi
 		if LOCATED_LINES.has(l["id"]):
 			_locate(l, heist_id, room_counts(d, t, line_categories(d, StringName(l["id"])), difficulty))
 	return out
+
+
+## D-130: the difficulty from which `heist_id`'s cameras are Titan (the def's value when >= 0, else StealthTweak's).
+static func titan_min_difficulty(heist_id: StringName) -> int:
+	var def: HeistDef = HeistRegistry.get_def(heist_id) if heist_id != &"" else null
+	if def != null and def.camera_titan_min_difficulty >= 0:
+		return def.camera_titan_min_difficulty
+	return Tweak.stealth().camera_titan_min_difficulty
+
+
+## D-130: `heist_id`'s pager cap at `difficulty` from HeistDef.pager_max_by_difficulty, or -1 when the def sets none.
+static func pager_cap(heist_id: StringName, difficulty: int) -> int:
+	var def: HeistDef = HeistRegistry.get_def(heist_id) if heist_id != &"" else null
+	if def == null or def.pager_max_by_difficulty.is_empty():
+		return -1
+	return def.pager_max_by_difficulty[clampi(difficulty, 0, def.pager_max_by_difficulty.size() - 1)]
 
 
 ## The scan categories a line's rooms come from (LINE_CATEGORIES, the time lock, every sensor zone).
@@ -589,7 +611,7 @@ static func scan(heist_id: StringName, map_path: String) -> BriefingIntelData:
 	out.groups = groups
 	locks.sort()
 	out.time_locks_s = locks
-	# Surprises: slots holding security or a hostile spawn (scripted ones too), and the sensor gate's.
+	# Surprises: slots holding security, a hostile or a civilian spawn (scripted ones too), and the sensor gate's.
 	var threat: Dictionary = {}  # group -> Array[StringName] slot ids
 	for n: Dictionary in nodes:
 		var sp2: String = _slot_ancestor(String(n["path"]), slots)
@@ -597,7 +619,8 @@ static func scan(heist_id: StringName, map_path: String) -> BriefingIntelData:
 		var base: String = String(n["instance"] if n["instance"] != "" else n["script"]).get_file().get_basename()
 		var kind: String = String((n["props"] as Dictionary).get("kind", ""))
 		if base == "spawn_point":
-			hostile = HOSTILE_SPAWNS.has(int(kind if kind != "" else str(SPAWN_GUARD)))
+			var k: int = int(kind if kind != "" else str(SPAWN_GUARD))
+			hostile = HOSTILE_SPAWNS.has(k) or k == SPAWN_CIVILIAN
 		elif base == "tactical_point":
 			hostile = kind == str(TACTICAL_SNIPER_PERCH)
 		if sp2 != "" and (hostile or cats_at.has(n["path"])):

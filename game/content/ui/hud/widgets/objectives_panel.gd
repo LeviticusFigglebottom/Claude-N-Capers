@@ -9,6 +9,8 @@ extends HudWidget
 const FLASH_S: float = 2.4
 ## Seconds the finished step stays struck through before the next one slides in.
 const STRIKE_S: float = 1.0
+## A mid-grey scene behind the HUD (the PO's greybox interiors at their brightest): the heist caption must read on it.
+const WORLD_BG: Color = Color(0.42, 0.40, 0.37)
 
 ## objective_text()'s cleanup patterns for unfilled "{arg}" placeholders (compiled on first use).
 static var _unfilled_group: RegEx = null
@@ -138,9 +140,13 @@ func _apply_accent() -> void:
 	panel.add_theme_stylebox_override(&"panel", edge)
 	if accent.a <= 0.0:
 		return
-	var sb: StyleBoxFlat = panel.get_theme_stylebox(&"panel") as StyleBoxFlat
-	var back: Color = UiAccent.over(sb.bg_color, UiAccent.app_bg()) if sb != null else UiAccent.app_bg()
-	header_label.add_theme_color_override(&"font_color", UiAccent.readable(accent, back, UiAccent.table().min_text_contrast))
+	header_label.add_theme_color_override(&"font_color", caption_color(accent))
+
+
+## LEAD r229 (ND crowding shot): the frameless HUD panel is mostly see-through, so the caption is lifted until it reads
+## over a mid-grey scene (WORLD_BG), the worst case behind it, not over the panel's own near-black tint.
+static func caption_color(heist_accent: Color) -> Color:
+	return UiAccent.readable(heist_accent, WORLD_BG, UiAccent.table().min_text_contrast)
 
 
 ## PO-4 motion (style.md §8): "OBJECTIVE COMPLETE" in OK green over the finished step, struck through,
@@ -198,15 +204,20 @@ func refresh() -> void:
 		_active.add_theme_font_size_override(&"font_size", UiTokens.FONT_LEAD)
 		_active.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		_active.custom_minimum_size = Vector2(380, 0)
-	for o: Dictionary in prop(&"objectives", []) as Array:
+	var rows: Array = prop(&"objectives", []) as Array
+	var main_live: bool = _has_live_main_step(rows)
+	for o: Dictionary in rows:
 		if int(o.get("state", Enums.ObjectiveState.ACTIVE)) != Enums.ObjectiveState.ACTIVE:
 			continue
 		if StringName(o.get("id", &"")) == shown_id:
 			still_active = true
 		if new_id != &"":
 			continue
-		if bool((o.get("args", {}) as Dictionary).get("disabled", false)):
+		var args: Dictionary = o.get("args", {}) as Dictionary
+		if bool(args.get("disabled", false)):
 			continue  # PO-5.6: e.g. the keycard step in a lockdown; the next live step shows instead
+		if main_live and bool(args.get("side", false)):
+			continue  # P DB pass: a side task running alongside (DB [cartel]) never hides the current main step
 		var t: String = UiText.t(&"ui.hud.objective_active", {"text": objective_text(o, secured_count)})
 		if _active.text != t:
 			_active.text = t
@@ -224,6 +235,16 @@ func refresh() -> void:
 	_device_last()
 	_shown_text = (list_box.get_child(0) as Label).text if list_box.get_child_count() > 0 else ""
 	visible = list_box.get_child_count() > 0 or flashing
+
+
+## True when some ACTIVE, live (not disabled) step is not a side task (data `side: true`, set by the mission).
+static func _has_live_main_step(rows: Array) -> bool:
+	for o: Dictionary in rows:
+		var args: Dictionary = o.get("args", {}) as Dictionary
+		if int(o.get("state", Enums.ObjectiveState.ACTIVE)) == Enums.ObjectiveState.ACTIVE \
+				and not bool(args.get("disabled", false)) and not bool(args.get("side", false)):
+			return true
+	return false
 
 
 static func _state_key(st: int) -> StringName:

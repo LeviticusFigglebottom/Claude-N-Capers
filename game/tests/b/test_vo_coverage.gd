@@ -15,22 +15,18 @@ const HEISTS: Array[StringName] = [
 const UNSAID_A: Array[StringName] = []  # every A line is said: the D-117 bark director, env/a-core dd20d1f0 (round 226)
 
 ## B reserve: a contact's generic radio lines that no current heist reaches (each fact has an always-ready heist
-## line, or no heist with that contact has the fact: only Night Deposit fails an objective). Kept on purpose for
-## RadioTweak.speaker_overrides and new heists (content/docs/radio.md "Coverage").
+## line, or no heist with that contact has the fact: Night Deposit, and Dockside Burn's [cartel] since A 4b4fef68,
+## fail an objective). Kept on purpose for
+## RadioTweak.speaker_overrides and new heists (content/docs/radio.md "Coverage"). The generic escape lines are
+## reached again since QB-1 (LEAD 2026-10-16) deleted the heist escape lines a mission escape line always covered.
 const UNSAID_B_RESERVE: Array[StringName] = [
 	&"vo.vance.radio_objective_done_1", &"vo.vance.radio_objective_done_2", &"vo.vance.radio_objective_done_3",
 	&"vo.vance.radio_objective_failed_1", &"vo.vance.radio_objective_failed_2", &"vo.vance.radio_objective_failed_3",
-	&"vo.vance.radio_escape_available_1", &"vo.vance.radio_escape_available_2", &"vo.vance.radio_escape_available_3",
-	&"vo.vance.radio_escape_1", &"vo.vance.radio_escape_2", &"vo.vance.radio_escape_3",
 	&"vo.reyes.radio_objective_done_1", &"vo.reyes.radio_objective_done_2", &"vo.reyes.radio_objective_done_3",
 	&"vo.reyes.radio_objective_new_1", &"vo.reyes.radio_objective_new_2", &"vo.reyes.radio_objective_new_3",
-	&"vo.reyes.radio_objective_failed_1", &"vo.reyes.radio_objective_failed_2", &"vo.reyes.radio_objective_failed_3",
-	&"vo.reyes.radio_escape_available_1", &"vo.reyes.radio_escape_available_2", &"vo.reyes.radio_escape_available_3",
-	&"vo.reyes.radio_escape_1", &"vo.reyes.radio_escape_2", &"vo.reyes.radio_escape_3",
+	# LEAD: reyes radio_objective_failed_1..3 are reached since A 4b4fef68 ([cartel] fails at the police call).
 	&"vo.accountant.radio_objective_done_1", &"vo.accountant.radio_objective_done_2", &"vo.accountant.radio_objective_done_3",
 	&"vo.accountant.radio_objective_new_1", &"vo.accountant.radio_objective_new_2", &"vo.accountant.radio_objective_new_3",
-	&"vo.accountant.radio_escape_available_1", &"vo.accountant.radio_escape_available_2", &"vo.accountant.radio_escape_available_3",
-	&"vo.accountant.radio_escape_1", &"vo.accountant.radio_escape_2", &"vo.accountant.radio_escape_3",
 	&"vo.mercer.radio_objective_failed_1", &"vo.mercer.radio_objective_failed_2", &"vo.mercer.radio_objective_failed_3",
 ]
 
@@ -77,7 +73,51 @@ func test_unsaid_a_allowlist() -> void:
 
 
 func test_unsaid_b_reserve_allowlist() -> void:
-	_check_allowlist("R", UNSAID_B_RESERVE)
+	var allow: Array[StringName] = UNSAID_B_RESERVE.duplicate()
+	if _generic_abort_retired():
+		allow.append(VoCoverage.GENERIC_ABORT)  # SL-6: no STEALTH_ONLY heist plays the generic abort any more
+	_check_allowlist("R", allow)
+
+
+## LEAD r228 (SL-6): a STEALTH_ONLY mission with `own_abort_line = true` covers its alarm with its own line, and the
+## generic vo.mercer.abort is not counted for it. Shadow Ledger's own line is vo.mercer.shadow_ledger_abort.
+func test_stealth_only_abort_coverage() -> void:
+	var aborts: Dictionary = _r.get("aborts", {}) as Dictionary
+	assert_false(aborts.has(&"dockside_burn"), "a LOUD_ONLY heist has no abort line")
+	assert_true(aborts.has(&"shadow_ledger"), "SL is STEALTH_ONLY: %s" % aborts)
+	var sl_def: HeistDef = HeistRegistry.get_def(&"shadow_ledger")
+	var mission: String = "res://world/heists/shadow_ledger/shadow_ledger_mission.gd"
+	var src: String = FileAccess.get_file_as_string(mission)
+	assert_true(src.contains("say(&\"vo.mercer.shadow_ledger_abort\")"), "SL's _on_alarm says its own abort line")
+	if src.contains("own_abort_line = true"):
+		assert_eq(aborts[&"shadow_ledger"], &"vo.mercer.shadow_ledger_abort", "SL abort coverage is its own line")
+	# The rule itself, on a fixture: with the flag the mission's line, without it the generic one.
+	var fixture: String = "user://vo_cov_abort_fixture.gd"
+	for own: bool in [true, false]:
+		var f: FileAccess = FileAccess.open(fixture, FileAccess.WRITE)
+		var src_fx: String = "extends HeistMission\n\n\nfunc _on_mission_start() -> void:\n%s"
+		src_fx += "\tsay(&\"vo.mercer.shadow_ledger_intro\")\n\n\nfunc _on_alarm(_reason: StringName) -> void:\n"
+		src_fx += "\tsay(&\"vo.mercer.shadow_ledger_abort\")\n"
+		f.store_string(src_fx % ("\town_abort_line = true\n" if own else ""))
+		f.close()
+		assert_eq(VoCoverage.call(&"abort_line", sl_def, fixture),
+				&"vo.mercer.shadow_ledger_abort" if own else VoCoverage.GENERIC_ABORT, "own_abort_line %s" % own)
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(fixture))
+	var generic: Dictionary = {}
+	for row: Dictionary in _r["lines"] as Array:
+		if row["id"] == VoCoverage.GENERIC_ABORT:
+			generic = row
+	assert_false(generic.is_empty(), "the generic abort line is inventoried")
+	var users: Array = aborts.values().filter(func(v: Variant) -> bool: return v == VoCoverage.GENERIC_ABORT)
+	assert_eq((generic["sites"] as Array).is_empty(), users.is_empty(),
+			"the generic abort counts as said only while a STEALTH_ONLY heist uses it: %s" % aborts)
+
+
+func _generic_abort_retired() -> bool:
+	for v: Variant in (_r.get("aborts", {}) as Dictionary).values():
+		if v == VoCoverage.GENERIC_ABORT:
+			return false
+	return true
 
 
 func test_unsaid_c_allowlist() -> void:

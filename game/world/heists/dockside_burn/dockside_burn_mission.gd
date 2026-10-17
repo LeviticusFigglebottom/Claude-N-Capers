@@ -56,6 +56,15 @@ const RARE_FOG: StringName = &"fog_lifts"
 ## DB-6: the S3 viaduct perch (Variants/Group_perch_viaduct, tag `s3`): police-only, usable once the fog lifts.
 const TAG_PERCH_FOG: StringName = &"s3"
 const SPECIAL_LONGSHOT: StringName = &"longshot"
+## B-DB audit: [product] completes when a crew member sees the product: within PRODUCT_SEEN_M (flat) of a product
+## loot spawn, on its floor (PRODUCT_SEEN_DY_M), with a clear world line from the eye. Polled every PRODUCT_POLL_S.
+const PRODUCT_SEEN_M: float = 6.0
+const PRODUCT_SEEN_DY_M: float = 2.0
+const PRODUCT_POLL_S: float = 0.5
+const PRODUCT_LOS_MASK: int = 1  # world_static
+const VO_PAYDAY: StringName = &"vo.reyes.dockside_burn_payday"
+## A crew member this close (flat) to the variant's open entry door is going through it: [breach].
+const BREACH_DOOR_M: float = 1.5
 ## D-115 (DB-13): Mercer's Longshot line by the SNIPER_PERCH tag of the perch the Longshot holds (doc §Loud: S1 the
 ## Pier 10 crane, S2 the Bellweather roof; S3 / S4 have no line).
 const SNIPER_LINES: Dictionary = {
@@ -80,6 +89,8 @@ var _gunmen_down: int = 0
 var _weapons: Array[String] = []
 var _weapons_found: bool = false
 var _sniper_lines_said: Dictionary = {}
+var _containers_hint_said: bool = false
+var _payday_said: bool = false
 ## DB-2: required bags secured (REQUIRED_LOOT only; HeistMission.bags_secured counts every bag).
 var _required_secured: int = 0
 
@@ -122,6 +133,7 @@ func _on_mission_start() -> void:
 	on_event(&"npc_alert_state_changed", _on_npc_alert)
 	on_event(&"npc_killed", _on_npc_killed)
 	on_event(&"special_spawned", _on_special_spawned)
+	on_event(&"objective_updated", _on_objective_updated)
 	_apply_thermite()
 	_apply_cash(countroom)
 	_apply_product()
@@ -131,6 +143,8 @@ func _on_mission_start() -> void:
 	_watch_entry_doors()
 	_schedule_police()
 	_schedule_rare_events()
+	start_timer(&"product_watch", PRODUCT_POLL_S, _poll_product)
+	start_timer(&"entry_watch", PRODUCT_POLL_S, _poll_open_entries)
 
 
 # --- Setup ------------------------------------------------------------------------------------
@@ -236,9 +250,43 @@ func _watch_entry_doors() -> void:
 				d.connect(&"open_changed", _on_entry_door)
 
 
-func _on_entry_door(open: bool, _by_net_id: int) -> void:
-	if open:
+## P DB pass (run2 seed 1792194538: [breach] completed at t=132 with no crew input): an NPC opening an entry door
+## (a worker, a cop) is not the crew getting in; `by_net_id` is the NPC / AI opener, 0 for a player.
+func _on_entry_door(open: bool, by_net_id: int) -> void:
+	if open and (by_net_id == 0 or _is_crew(by_net_id)):
 		_breach()
+
+
+func _is_crew(net_id: int) -> bool:
+	var rt: HeistRuntime = HeistRuntime.of(self)
+	if rt == null:
+		return false
+	for c: CrewController in rt.crew_members():
+		if c.net_id == net_id:
+			return true
+	return false
+
+
+## P DB pass: the variant's entry door starts open, so no open_changed comes: walking through it is the breach. Polls
+## the open entry doors for a crew member within BREACH_DOOR_M (flat, same floor) until [breach] completes.
+func _poll_open_entries() -> void:
+	if objective_state(&"breach") != Enums.ObjectiveState.ACTIVE:
+		return
+	var rt: HeistRuntime = HeistRuntime.of(self)
+	if rt != null:
+		for sid: StringName in ENTRY_DOORS:
+			if not _slot_active(&"warehouse_entry", sid):
+				continue
+			var d: Node3D = get_node_or_null(NodePath(String(DOORS) + "/" + String(ENTRY_DOORS[sid]))) as Node3D
+			if d == null:
+				continue
+			for c: CrewController in rt.crew_members():
+				var p: Vector3 = c.global_position
+				if absf(p.y - d.global_position.y) <= PRODUCT_SEEN_DY_M \
+						and Vector2(p.x - d.global_position.x, p.z - d.global_position.z).length() <= BREACH_DOOR_M:
+					_breach()
+					return
+	start_timer(&"entry_watch", PRODUCT_POLL_S, _poll_open_entries)
 
 
 ## Cartel phase, then the police (D-064 Q1, QC-35): police_delay_s holds the assault director for the
@@ -275,7 +323,11 @@ func _on_police_called() -> void:
 		g.call(&"set_open", true)
 	if objective_state(&"cartel") == Enums.ObjectiveState.ACTIVE:
 		update_objective_data(&"cartel", {"gunmen_down": _gunmen_down})
-		complete(&"cartel")
+		# B-DB audit: "thin out the Co-op" is done only if a gunman went down before the police; else it failed.
+		if _gunmen_down > 0:
+			complete(&"cartel")
+		else:
+			fail(&"cartel")
 
 
 func _on_reinforcements() -> void:
@@ -339,7 +391,7 @@ func _on_interaction_completed(interactable_net_id: int, _crew_slot: int, _kind:
 
 func _on_device_started(device_net_id: int, _kind: StringName, duration: float) -> void:
 	if _is_tagged(device_net_id, TAG_BURN):
-		_product_found()
+		_product_found(false)  # B-DB audit: the thermite is already on the burn point, no "bring the thermite"
 		if not _burn_started:
 			_burn_started = true
 			say(&"vo.mercer.dockside_burn_burn_started")
@@ -397,19 +449,56 @@ func _breach() -> void:
 		say(&"vo.mercer.dockside_burn_breach")
 
 
-func _product_found() -> void:
+## `lines`: Mercer's "product found" + thermite reminder (false when the burn itself is what found it).
+func _product_found(lines: bool = true) -> void:
 	if objective_state(&"product") == Enums.ObjectiveState.ACTIVE:
 		complete(&"product")
 		activate(&"burn")
-		say(&"vo.mercer.dockside_burn_product_found")
-		say(&"vo.mercer.dockside_burn_thermite_reminder")
+		if lines:
+			say(&"vo.mercer.dockside_burn_product_found")
+			say(&"vo.mercer.dockside_burn_thermite_reminder")
+
+
+## B-DB audit: walking into the product's room finds it (doc `[product]` "Find the product"), not only an interaction.
+func _poll_product() -> void:
+	if objective_state(&"product") != Enums.ObjectiveState.ACTIVE:
+		return
+	if product_seen():
+		_product_found()
+		return
+	start_timer(&"product_watch", PRODUCT_POLL_S, _poll_product)
+
+
+## A crew member sees a product loot spawn (PRODUCT_SEEN_M flat, same floor, clear world line from the eye).
+func product_seen() -> bool:
+	var rt: HeistRuntime = HeistRuntime.of(self)
+	if rt == null:
+		return false
+	for c: CrewController in rt.crew_members():
+		var space: PhysicsDirectSpaceState3D = c.get_world_3d().direct_space_state
+		var eye: Vector3 = c.eye_position()
+		for n: Node in find_tagged(TAG_PRODUCT):
+			var p: Node3D = n as Node3D
+			if p == null:
+				continue
+			var at: Vector3 = p.global_position
+			if absf(at.y - c.global_position.y) > PRODUCT_SEEN_DY_M \
+					or Vector2(at.x - eye.x, at.z - eye.z).length() > PRODUCT_SEEN_M:
+				continue
+			var q: PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.create(eye, at + Vector3.UP * 0.5,
+				PRODUCT_LOS_MASK)
+			if space.intersect_ray(q).is_empty():
+				return true
+	return false
 
 
 ## A container's padlock came off (picked or sawn; its latch opened): crates for a weapons container,
 ## nothing for the others.
 func _open_container(k: String) -> void:
 	if not _weapons.has(k):
-		say(&"vo.mercer.dockside_burn_containers_hint")
+		if not _containers_hint_said:  # B-DB audit: once, not on every empty container
+			_containers_hint_said = true
+			say(&"vo.mercer.dockside_burn_containers_hint")
 		return
 	var crates: Node3D = get_node_or_null(NodePath(String(CRATES) + "/Crates" + k.to_upper())) as Node3D
 	if crates != null:
@@ -477,8 +566,15 @@ func _try_escape() -> void:
 	start_timer(&"escape_arrival", eta, func() -> void:
 		complete(&"escape_wait")
 		activate(&"escape")
-		say(&"vo.mercer.dockside_burn_escape")
-		say(&"vo.reyes.dockside_burn_payday", {}, &"reyes"))
+		say(&"vo.mercer.dockside_burn_escape"))
+
+
+## B-DB audit: Reyes' payday line ("smoke over Pier 9 ... you've earned it") plays once the crew got away
+## (escape completed, before heist_ended), not when the ride arrives.
+func _on_objective_updated(objective_id: StringName, state: int, _data: Dictionary) -> void:
+	if objective_id == &"escape" and state == Enums.ObjectiveState.COMPLETED and not _payday_said:
+		_payday_said = true
+		say(VO_PAYDAY, {}, &"reyes")
 
 
 # --- Helpers ----------------------------------------------------------------------------------

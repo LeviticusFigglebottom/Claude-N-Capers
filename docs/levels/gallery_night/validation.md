@@ -153,8 +153,8 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## navmesh: Navmesh
 
-- navmesh: 2561 polygons, cell 0.10/0.10 m
-- 277 markers checked
+- navmesh: 2544 polygons, cell 0.10/0.10 m
+- 279 markers checked
 | room | walkable samples | covered | coverage |
 |---|---|---|---|
 | `Rooms/RoomSS` | 12 | 12 | 100% |
@@ -208,13 +208,13 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## barred_doors: BARRED doorways are closed in the navmesh
 
-- 0 BARRED door(s) checked
+- 3 BARRED door(s) checked
 - variant-slot BARRED doors not checked (one bake for every variant): `Variants/Group_areaway/Slot_grate_padlocked/AreawayGrate`
 
 
 ## reachability: Reachability (per variant)
 
-- 50 variant configuration(s), 174588 spawn->target path queries
+- 50 variant configuration(s), 175788 spawn->target path queries
 
 
 ## walkthrough: Walkthrough bot
@@ -224,7 +224,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## patrols: Patrol graphs
 
-- graph `halberd`: 49 points, 8 guard(s)
+- graph `halberd`: 49 points, 10 guard(s)
 - graph `mews`: 6 points, 1 guard(s)
 - graph `gala`: 17 points, 0 guard(s)
 - graph `staff`: 17 points, 0 guard(s)
@@ -329,8 +329,8 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 ## variety: Layout variety
 
 - kit `server_room`: 1 room(s), 1 distinct layout(s)
-- kit `break_room`: 1 room(s), 1 distinct layout(s)
 - kit `locker_room`: 1 room(s), 1 distinct layout(s)
+- kit `break_room`: 1 room(s), 1 distinct layout(s)
 - kit `art_store`: 1 room(s), 1 distinct layout(s)
 - kit `exterior_court`: 1 room(s), 1 distinct layout(s)
 - kit `exterior_mews`: 1 room(s), 1 distinct layout(s)
@@ -368,7 +368,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 ## bounds: No void / back faces
 
 - 119 navmesh sample(s) skipped: not reachable from a player spawn (police-only)
-- 272 eye samples, 22032 rays, sky yes, 0 void ray(s)
+- 270 eye samples, 21870 rays, sky yes, 0 void ray(s)
 
 
 ## perf: Per-shot performance budget

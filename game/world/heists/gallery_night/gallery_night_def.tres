@@ -12,9 +12,9 @@ map_scene = "res://world/heists/gallery_night/gallery_night.tscn"
 base_payout = 57000
 loot = Array[StringName]([&"loot.painting_lantern_bearer", &"loot.painting_salt_orchard", &"loot.painting_widow_in_blue", &"loot.painting_tidewater_saint", &"loot.painting_study"])
 objectives = Array[StringName]([&"casing", &"find_canvases", &"keycard", &"server_code", &"hack", &"treasury", &"art_store", &"centrepiece", &"canvases", &"secure", &"extras", &"lockers", &"curator_safe", &"lockdown", &"server_door", &"vault_drill", &"escape_wait", &"escape"])
-briefing_objectives = Array[StringName]([&"find_canvases", &"keycard", &"centrepiece", &"canvases", &"secure", &"escape"])
+briefing_objectives = Array[StringName]([&"casing", &"find_canvases", &"ui.briefing.step.gallery_night.access", &"ui.briefing.step.gallery_night.cut", &"secure", &"escape"])
 briefing_loud_key = &"heist.gallery_night.briefing_loud"
-briefing_optional = Array[StringName]([&"extras", &"lockers", &"curator_safe"])
+briefing_optional = Array[StringName]([&"extras"])
 preplanning = {
 "assets": {
 &"asset.ammo_bag_drop": {

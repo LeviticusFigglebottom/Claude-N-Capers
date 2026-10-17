@@ -254,6 +254,8 @@ const STAIR_WEST: Vector2 = Vector2(0.2, 1.4)
 const STAIR_WELL: Vector2 = Vector2(1.4, 1.6)
 const STAIR_EAST: Vector2 = Vector2(1.6, 2.8)
 const STAIR_CLEAR: Vector2 = Vector2(0.15, 2.85)
+## SL-P1 (ENV P real-input pass): clear headroom over every stair / landing walk line (a bag carrier's head).
+const STAIR_HEADROOM: float = 2.1
 ## Handrails (level_standards §2 MUST 1.0-1.1 m): bar centre above the riser-to-riser nosing line
 ## (top 1.05 m), offset from the wall / divider / balustrade face.
 const HANDRAIL_H: float = 1.025
@@ -359,10 +361,10 @@ const CITY_LIGHTS: Array = [
 	["ArdenLit5", [-20.25, 23.6, 14.0, -20.15, 24.6, 34.0]], ["ArdenLit6", [-20.25, -26.8, -26.0, -20.15, -25.8, 10.0]],
 	["SkylineSLit", [-6.0, -20.0, 69.9, 18.0, -19.0, 70.0]], ["SkylineSELit", [32.0, -48.0, 65.9, 56.0, -47.0, 66.0]],
 ]
-## Cables (dressing): [name, from, to]. Insertion line from Arden; the E2 line down to Vantage.
+## Cables (dressing): [name, from, to]. Insertion line from Arden. (SL-2: the E2 line down to Vantage is the bag
+## line's own cable, drawn by the zipline from its anchor only when `esc_line` is rolled.)
 const CABLES: Array = [
 	["InsertionLine", Vector3(0.9, FRF + 1.4, 17.2), Vector3(-20.2, 24.0, 16.0)],
-	["E2LineCable", Vector3(35.3, FRF + 2.2, 16.5), Vector3(68.0, 1.0, 15.0)],
 ]
 ## Zipline far end (Vantage House roof, beyond the OOB curtain).
 const E2_LINE_END: Vector3 = Vector3(68.0, 0.0, 15.0)

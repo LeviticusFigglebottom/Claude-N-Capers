@@ -193,6 +193,9 @@ EMISSIVE: dict[str, dict] = {
     # Shadow Ledger (SL-1): the lounge bar's backlit teal glass, the 6500 K linear coves and crown LEDs
     "emit_teal": {"color": "#23383A", "emission": "#7FC3C8", "energy": 2.2},
     "emit_led_cold": {"color": "#8A8D92", "emission": "#E6EEFF", "energy": 3.0},
+    # SL-2 laser beams: a deep red at a low energy, so thin beams stay red under the filmic tonemap (emit_led_red
+    # at 3.0 blooms to orange-white on a 14 mm rod)
+    "emit_laser": {"color": "#3A0806", "emission": "#FF0E06", "energy": 1.4},
 }
 
 # Transparent variants of glass_clear (library albedo with alpha x colour).

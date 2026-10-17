@@ -3,6 +3,47 @@
 Owner: ENV A. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-17 00:45 UTC: new team resume; GN-8 B3 + race fix, B audit logic, round-229 reds (env/a-core df7d3727)
+Session session_01EoHohP5E4RVEPzabfnFk8y (lead session_01HwYKRgCdkLfJCt4ZM6rfTk).
+### Done (pushed)
+- f9fd76eb trunk merge.
+- 4b4fef68 B-DB/B-SL audit logic:
+  - DB: the burn finds [product] silently; containers_hint once; [cartel] fails with 0 down; [product] on room entry
+    (crew eye ≤ 6 m flat, same floor, clear world ray); Reyes payday on [escape] completed.
+  - SL: [secure] seeds drives_secured 0. Test: test_bdb_mission_gaps.
+- 291ce51d GN-8 lane:
+  - B3 inspectors walk to the centrepiece slot and radio the alarm if it is empty.
+  - WarmLoader: the director prewarm never overlaps a main-thread load of the same scenes (seed-99 race).
+  - GN gaps: wall studies count for [extras]; the loud hack completes vault_drill and server_door; the server keypad
+    completes server_door.
+  - Tests: test_gn_inspectors_empty_slot, test_gn8_warm_loader, test_gn8_mission_gaps.
+- 10572baf D cast: cartel_gunman g..l, dock_worker_c (dock_worker_c PENDING in test_d115 until D 45894565 lands).
+- 585008d0 B3 Halberd escorts: guard_inspection_escort spawns, used when C's markers (c-worlds 2133b0aa) exist.
+- df7d3727 round-229 a/ reds, tests only:
+  - gait-locked holds and mask_on in test_v119 / test_v120; death_back_b variety.
+  - test_s2_detection_meter leaked a ×2 DifficultyDef into test_s3_8_cameras (it now mutates a copy).
+- Verified on trunk, nothing to do:
+  - item 3 (unknown weapons id) is fixed by B ff0be43c.
+  - DB-4 / DB-6 / SL-6 / D-4 rows were already done by the previous A.
+  - The x5 GH police flake does not reproduce (3/3 green under load).
+  - The knife finding is reach/timing, not damage; no ruling needed.
+### Open / in progress
+- GN-8 seed-99 crash: race fixed, unconfirmed. Needs a seed-99 run that reaches ESCAPE on a quiet box (the pilot loses
+  to custody first).
+- Pilot lane (worktree agent-aa105032f09babcd6, WIP 19ec7c45): _has_path on nav layer 1 (D-122), reload, vertical
+  Door near-check (ND VaultGate), BronzeDoorsE unstick.
+- Anim lane (worktree agent-a3830ca90edfdd278): D's 190f40c7 clips (aim_<fam>_<gait>, class reloads, cover peek/low,
+  stagger_<fam>, sit_chair_armed for DB-4 armed seated posts), with fallbacks.
+- DB-7 windowed auto_loud, ND-1 gate 2 (attempt 24): next once the box is quiet.
+### heist_completion statuses
+- DB-4 done (seated clip; sit_chair_armed in the anim lane).
+- DB-6 A side done.
+- SL-6 done.
+- D-4 done.
+- GN-8: B3 done (escorts pair with C 2133b0aa); audit gaps done; crash race fixed, unconfirmed.
+- x5 GH police flake: not reproducing.
+- DB-7 / ND-1 open.
+
 ## 2026-10-16 04:00 UTC: PO6 done, D-115 / D-118 / X-3 / X-4 / X-5 closed (env/a-core f450497c)
 ### Done (pushed; on trunk through c07f7e69, round 223 has 37bf88f9)
 - PO6-01..08, 14..20 (+17b) A-side; D-115 DB-2/3/4/8/12/13/16/17, SL-5/9, QC-36 TODO; D-117 mission VO.
@@ -216,101 +257,3 @@ runs: none (GN probe 3 stopped, ND attempt 24 not started).
   specials wear characters (subagent); Glasshouse loud rerun for payday → hub; ND marker_tags staged (wait for map lane).
 ### Queued
 - ND / SL / DB loud via auto_loud; ND/SL/DB stealth; D-094 viewmodel_lit lights; P's duplicate prop colliders.
-
-## 2026-10-13 20:10 UTC — PO-5 (D-086 windowed playthrough), team v3
-### Done (pushed to env/a-core; last 097d8432)
-- Harness `game/tests/a/e2e/` (po5_runner.tscn, po5_flow.gd, po5_pilot.gd, po5_flow_gh_loud.gd): the real game runs
-  windowed (xvfb, NOT --headless). Real menu clicks (InputEventMouseButton at the button's screen position): main menu →
-  Safehouse → Planning Table → <heist> → <difficulty> → Briefing → Continue → Confirm plan → Start Heist. In the heist the
-  pilot plays through PlayerInputDriver only (mouse motion turns, WASD on a navmesh route, F holds, G masks/throws, opens
-  doors on its route, shoots enemies in sight). Every stuck spot is logged (slide colliders + rays + screenshot); telemetry
-  every 10 s of game time. llvmpipe draws ~1 fps, so between screenshots the harness sets
-  RenderingServer.render_loop_enabled=false (the window and input stay real; game time then runs at ~real time).
-  Run: `xvfb-run -a -s "-screen 0 1280x720x24" /opt/godot/godot --path game --resolution 960x540
-  res://tests/a/e2e/po5_runner.tscn -- --po5-flow=gh_loud --po5-out=<dir>` (flows: smoke, dump, gh_loud; gh_stealth WIP).
-  KNOWN SHORTCUT: the harness sets Input.mouse_mode=CAPTURED itself (PO-5.1; P's MouseCapture is now on trunk, so recheck).
-- Fixes (each has a test): PO-5.2 civilians on the floor don't body-block, and a stalled flee cowers. PO-5.3 the AI leash/cover
-  needs line of sight to the leader, and downed bots hold fire. PO-5.8 the Glasshouse drill finish really opens the safe
-  (it used to set `opened` only). PO-5.11 casing players can open unlocked doors. PO-5.12 a safe opened by its code completes
-  the objective. D-089 LocalHudModel.objective_markers + Glasshouse marker_tags (`loot_secure` tag on the van zones). The loud
-  transition skips the keycard step. PO-5.7 NPCs wear ENV D characters (NpcVisuals; specials keep their scene visuals).
-### PO-5 rows
-| Row | Owner | Status | What / where |
-|---|---|---|---|
-| PO-5.1 | P | trunk MouseCapture (round 36) | game never captured the mouse; harness still forces it, recheck |
-| PO-5.2 | A | fixed, verified windowed | fleeing civilian pinned the player in the workshop doorway (7.5,0,4.0) |
-| PO-5.3 | A | fixed, verified windowed | AI took "cover" in the alley through walls, custody by t=169; now they follow into the workshop |
-| PO-5.4 | A | open | solo+bots Routine: 31 enemies @t=180, 70 @t=520 (KR-1) |
-| PO-5.5/5.6/5.9 | B | routed | no primary (QB-1 yes), objective placeholders, difficulty lock order |
-| PO-5.7 | A | fixed, verified windowed | capsule NPCs: EnemyDefs had no visual (wiring) |
-| PO-5.8 | A | fixed, verified windowed | drill DONE but safe never opened (mission set opened, Safe ignored the drill) |
-| PO-5.10 | A/C | minor | workshop door prompt hidden from a 1.7 m diagonal (wall G_Corridor_N_W_02) |
-| PO-5.11 | A | fixed | casing players could not open any unlocked door |
-| PO-5.12 | A | fixed | safe opened by its keypad code didn't complete the objective |
-| PO-5.13 | A | QA-PO5-2 | all crew permanently TASED from t≈312 (long tase = helpless, no bleedout): soft-lock |
-| PO-5.14 | A | open | police stand off for minutes (23 enemies, nobody engages) while crew holds the workshop |
-### In progress
-- KR-1/KR-2 (test_p3_loud test_01/test_10) subagent; Glasshouse stealth flow subagent; loud run to payday → hub.
-### Questions for lead
-- QA-PO5-2: helpless (long tase / cloaker) not revived in bleedout_time_s → custody, no down counted? (proposed)
-### Ready for integration
-- yes for pushed lanes (targeted checks per D-088)
-
-## 2026-10-12 ~18:30 ET: D-082 freeze, PP-A-1, D-085, hand-play attempt
-### Done (pushed)
-- 86757557 PP-A-1: LocalHudModel.dominate_target (guard net id) / dominate_window_s + dominate_prompt_changed;
-  NPC net state carries "dom" so clients see the window (test_s5_8 8/8, hud suites 38/38).
-  **Ask ENV B:** render a shout prompt / "!" telegraph while dominate_target != 0. LEAD: add the two
-  properties to the ui_hud contract.
-- 0dab334e S9.5 trip mine deployable (committed before the D-082 freeze; kept, no further work).
-- d57383b6 D-085: CrewAiBrain.offset_corners pushes interior nav corners 0.1 m (CrewAiTweak.corner_margin_m)
-  off the turn's inner side. test_d085 2/2, a2_01 10/10, crew_ai 4/4. NOTE: the 0.9 m angled-door test also
-  passes with margin 0, so it guards regressions but does not reproduce a stall.
-### Frozen (D-082)
-- Trip mines + remaining A4-04 keys. defense.interact_damage_taken_mult work is in `git stash` (not committed).
-- P4 allowlist (game/tests/integration/test_p4_progression.gd, LEAD-owned): hooked keys the lead may drop:
-  interaction.speed_mult, interaction.device_fix_speed_mult, defense.healing_received_mult,
-  weapon.fire_rate_mult, defense.bleedout_health_mult, loot.small_loot_value_mult, deploy.trip_mine_radius_mult.
-### Blocked
-- Round 34 not on trunk yet (origin trunk 64f10747, already merged); docs/process/playability_pass.md absent.
-- Hand play: launched `--heist=night_deposit --seed=7` on the box display (:3). Renderer is llvmpipe (software
-  Vulkan); after ~100 s in CASING the view never changed with mouse/W input and the HUD read Armor 0 / Health 0 /
-  Downs 0 / 0/0 ammo. That may just be a slow first frame, not a bug, so nothing is logged as a game issue.
-  The process used 2.8 GB RSS with other envs' tests running, so I stopped it. Real hand play needs a GPU
-  machine (Aaron's) or a lighter renderer (e.g. --rendering-driver opengl3 / compatibility) to try next.
-- Retry with `--rendering-method gl_compatibility --rendering-driver opengl3` at 960x540: the HUD now fills
-  in (Armor 20, Health 230, 3 downs, 17/136, AI 1-3 cards, "Unmasked: casing"), but the 3D world draws
-  black (llvmpipe + compatibility), so no AI or interaction play was possible. Things seen, not in A's area:
-  - [B] objective line shows the raw text "Secure the bags ({count}/{total})" (placeholders not filled in).
-  - [P] the FP weapon viewmodel is drawn while unmasked/casing (PD2: no weapon while casing; CrewView only
-    hides it for civilians). Could be intended, worth a P check.
-  No A issues logged: guards, civilians, pagers and interact timing still need a GPU session.
-
-## 2026-10-12 19:00 ET: S9.5 doors, phase-2/4 keys, L2.4, fidelity table, A4-04 start
-### Done (local; targeted tests PASS under timeout; gdlint clean on changed files)
-- ecfc2a9a S9.5/A5-03 doors: Door.charges_required (>0) on CODE/ELECTRONIC/BARRED: place_c4 hold, C4 first else
-  trip mines (interaction.shaped_charge), fuse, explosion noise/cue/blast, unlock + open (test_s9_ 26/26, door 23/23).
-  Shared Safe.charge_source_for / consume_charges_for.
-- d65c8ad5 interaction.speed_mult (all holds), interaction.device_fix_speed_mult (fix_drill), defense.healing_received_mult.
-- d5054a2c L2.4 melee hits can be dodged; knockback still applied by NpcGunner (test_l2_4 4/4, a3_13, l4_3, p4_perk).
-- a0ba851b docs/status/env_a_fidelity.md: 108 A rows, 90 with a referencing test (scan, not a completeness claim) +
-  unconsumed key list.
-- (next commit) A4-04: weapon.fire_rate_mult (client + server cadence), defense.bleedout_health_mult,
-  loot.small_loot_value_mult (test_a4_keys_phase24 5/5, l3_ 38/38, weapon 25/25).
-- Push: 403 until ~19:00 ET; then env/a-core pushed to origin (d65c8ad5..78a6fabd).
-### In progress / next
-- A4-04: remaining unconsumed keys (env_a_fidelity.md list); ENV P must mirror weapon.fire_rate_mult in fp_viewmodel.
-- Trip-mine placement runtime (deployable kind trip_mine); B strings for door place_c4 prompt reuse ui.prompt.place_c4.
-- PP-A-1 S5.8 HUD cue; confirm D-079 "domination skill" = ability.intimidate_cops.
-
-## 2026-10-12 18:15 ET: D-079 guard domination range / cone / hostages
-### Decisions
-- D-079 (lead ruling): dominated guards count as hostages (tradeable), PD2 exactly. Domination range 10 m base,
-  x1.5 with the domination skill, x1.25 with Crew Chief (multiplicative). Aim cone half-angle =
-  max(8°, linear 90° at 0 m -> 30° at 12 m). Replaces 15 m / 20°.
-  - Implementation: ShoutSystem.guard_dominate_range_for / guard_dominate_cone_half_deg; StealthTweak keys.
-  - Assumption to confirm: "domination skill" = `ability.intimidate_cops` (Turncoat, the PD2 Dominator analog);
-    Crew Chief = `ability.shout_range_mult` (foreman card 3 grants 1.25).
-  - Dominated guards were already in G.HOSTAGE, so CustodySystem.hostage_candidates includes them (test added).
-### Tests
-- test_s5_8 7/7, shout suites 16/16; gdlint clean on all changed files.

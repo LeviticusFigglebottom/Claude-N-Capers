@@ -183,7 +183,7 @@ func test_model_from_a_heist_def() -> void:
 	var obj: Array = m["objectives"] as Array
 	assert_eq(String((obj[0] as Dictionary)["text"]), String(_strings["objective.glasshouse.casing"]))
 	assert_eq(String((obj[1] as Dictionary)["text"]), "No such step", "missing key falls back to the id")
-	assert_eq(String((obj[2] as Dictionary)["text"]), "Secure the bags", "counters stripped")
+	assert_eq(String((obj[2] as Dictionary)["text"]), "Secure two bags", "counters stripped")
 	var esc: Array = m["escape_options"] as Array
 	assert_eq(String((esc[0] as Dictionary)["text"]), String(_strings["ui.briefing.escape.boat"]))
 	assert_eq(String((esc[1] as Dictionary)["text"]), "Zeppelin")

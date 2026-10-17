@@ -11,9 +11,9 @@ briefing = "heist.shadow_ledger.briefing"
 mode = 1
 map_scene = "res://world/heists/shadow_ledger/shadow_ledger.tscn"
 base_payout = 70000
-loot = Array[StringName]([&"loot.ledger_laptop", &"loot.ledger_drives", &"loot.ledger_books", &"loot.painting", &"loot.cash"])
+loot = Array[StringName]([&"loot.ledger_laptop", &"loot.ledger_drives", &"loot.ledger_books", &"loot.painting", &"loot.cash", &"loot.small_valuables"])
 objectives = Array[StringName]([&"casing", &"laptop", &"keycard", &"server_door", &"cage_code", &"cage", &"hack", &"drives", &"secure", &"study_safe", &"paintings", &"archive_safe", &"escape"])
-briefing_objectives = Array[StringName]([&"casing", &"laptop", &"keycard", &"cage", &"hack", &"drives", &"secure", &"escape"])
+briefing_objectives = Array[StringName]([&"laptop", &"keycard", &"cage", &"hack", &"secure", &"escape"])
 briefing_optional = Array[StringName]([&"study_safe", &"paintings", &"archive_safe"])
 preplanning = {
 "assets": {

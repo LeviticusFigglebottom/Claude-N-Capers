@@ -141,8 +141,8 @@ func _ready() -> void:
 
 
 ## ND loud FrameProf: the first spawn of each unit type loaded its NPC scene and character on the main thread
-## (3-10 s frames on llvmpipe). Server, at director start: queue a background load of every scene the spawn
-## tables can use, so spawning only instantiates. Returns how many paths were queued.
+## (3-10 s frames on llvmpipe). Server, at director start: load every scene the spawn tables can use (in parallel on
+## worker threads, collected before returning), so spawning only instantiates. Returns how many paths were queued.
 func _prewarm() -> int:
 	var groups: Array[SpawnGroupDef] = []
 	if tweak.first_responder_group != null:
@@ -172,20 +172,22 @@ func _prewarm() -> int:
 				paths.append(p)
 	var queued: int = 0
 	for p: String in paths:
-		if ResourceLoader.has_cached(p) or not ResourceLoader.exists(p):
-			continue
-		if ResourceLoader.load_threaded_request(p, "", false) == OK:
+		if WarmLoader.request(p):  # GN-8: collected as they finish; spawning never load()s beside them
 			queued += 1
 			_warm_paths.append(p)
-	Log.info(&"director", "prewarm: %d of %d scenes queued" % [queued, paths.size()])
+	# GN-8 / P ND-2 hang (main thread parked on a condvar right after "prewarm queued", CASING): heist-start spawns
+	# load characters on the main thread while the workers load the same sub-resources. Wait for the workers here,
+	# at heist start (parallel loads, one blocking step), so no background load ever runs beside gameplay loads.
+	var t0: int = Time.get_ticks_msec()
+	WarmLoader.collect_all()
+	Log.info(&"director", "prewarm: %d of %d scenes loaded in %d ms" % [queued, paths.size(), Time.get_ticks_msec() - t0])
 	return queued
 
 
 func _exit_tree() -> void:
-	# Collect the background loads (ResourceLoader holds an uncollected threaded load until load_threaded_get).
-	for p: String in _warm_paths:
-		if ResourceLoader.load_threaded_get_status(p) != ResourceLoader.THREAD_LOAD_INVALID_RESOURCE:
-			ResourceLoader.load_threaded_get(p)
+	# GN-8: collect the background loads still in flight (none may run into the next scene) and drop the holds.
+	if not _warm_paths.is_empty():
+		WarmLoader.release()
 	_warm_paths.clear()
 	if EventBus.hostage_count_changed.is_connected(_on_hostage_count_changed):
 		EventBus.hostage_count_changed.disconnect(_on_hostage_count_changed)
@@ -423,6 +425,8 @@ func is_spawn_valid(pos: Vector3, crew: Array[CrewController] = []) -> bool:
 
 func _physics_process(delta: float) -> void:
 	var fp: int = FrameProf.begin()
+	if not _warm_paths.is_empty() and WarmLoader.pending_count() > 0:
+		WarmLoader.poll()  # GN-8: collect each finished prewarm load at once
 	_physics_step(delta)
 	FrameProf.end(&"assault_director", fp)
 

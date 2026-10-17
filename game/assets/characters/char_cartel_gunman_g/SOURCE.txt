@@ -1,0 +1,22 @@
+asset: char_cartel_gunman_g
+script: tools/blender/characters/char_cartel.py
+params: {"age": 0.2, "beard_shadow": 0.4, "build": 0.7, "gender": 0.0, "hair": "buzz", "hair_color": "dark", "height": 1.76, "look": "navy_hood", "skin": 4}
+seed: 4080338126  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category characters --asset char_cartel_gunman_g
+edit policy: generated file, never edit by hand; change the script and rebuild
+attach_Back: bone chest, local [0.0000, 0.0886, 0.1110] (model [0.0000, 1.2854, 0.1292], Godot axes, rest pose)
+attach_Head: bone head, local [0.0000, 0.0801, -0.0877] (model [0.0000, 1.6473, -0.0758], Godot axes, rest pose)
+attach_Hip: bone hips, local [0.1887, 0.0503, 0.0359] (model [0.1887, 0.9927, 0.0384], Godot axes, rest pose)
+body_faces_culled: 5299
+body_params: {"age": 0.2, "beard_shadow": 0.4, "build": 0.7, "gender": 0.0, "hair": "buzz", "hair_color": "dark", "hair_peak": 0.0, "height": 1.76, "lip": "auto", "skin": 4}
+bones: 52
+hat: navy hood up, face bare (Headwear)
+insignia: none (plain work wear; no police/faction material ids)
+look: navy_hood: navy hoodie with the hood up (face bare), drab cargos, green rubber boots, fingerless gloves; sling over the right shoulder, slung pump-gun
+meshes: Body,Gear,Hair,Headwear,Outfit
+shape_keys: none (baked at body_params; do not set blend_shapes/*)
+slung_gun: non-weapon Gear on the back (chest-rigid), muzzle model [0.207, 1.660, 0.160], butt [-0.143, 0.746, 0.169] (Godot axes), 21 deg from vertical
+tri_budget: 35000
+tris: 27194
+tris_by_mesh: {"Body": 8150, "Gear": 564, "Hair": 1200, "Headwear": 960, "Outfit": 16320}

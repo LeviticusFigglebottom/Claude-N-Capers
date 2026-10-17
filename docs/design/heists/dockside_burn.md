@@ -462,7 +462,8 @@ beyond 30 m except on Cataclysm):**
 | **S4** trawler wheelhouse (rare `harbor_unit`) | (70, 50, +4.5) | the quay east half, the AN quay doors, the landing stage | AN doors ~38 m | the pontoon (QS and the net stacks block it), the yard |
 
 The perches are `TacticalPoint` SNIPER_PERCH (the Longshot spawns there via `SpecialSpawner`). S3 and
-S4 are VariantSlot children, enabled by their rare events. **D-064 (Q8): the two always-on perches
+S4 are VariantSlot children, enabled by their rare events; S3 (tag `s3`) is also closed by the mission from the
+start of a `fog_lifts` run until the fog thins at 6:00 (QC-25 hook, DB-6: `set_sniper_perches_open`). **D-064 (Q8): the two always-on perches
 (S1, S2) are enough** for the P3 gate. **Player perches:** the office roof
 (`perch_roof`, +7.2) has LOS to S3 (54 m) and the yard. D1's top (`perch_stack`, +5.2) has LOS to S1
 (73 m, through fog) and the whole yard. Counter-sniping a Longshot is the player answer.
@@ -848,7 +849,7 @@ its straight line is pontoon → K1 (≈ 102 m for a 75 m straight line, 1.4×).
 
 ## HeistDef (proposed data, `dockside_burn_def.tres`)
 `id dockside_burn`, display "Dockside Burn", contact `contact.reyes`, mode LOUD_ONLY, base_payout
-**$24,000** (D-120; loot values below are placeholders ENV B balances in P6),
+**$24,000** (D-120; bag values are B's D-120 data: cash_bricks $8,000, weapon_crate $8,500, contraband $7,000),
 loot `[loot.cash_bricks, loot.weapon_crate, loot.contraband]` (the new ids are B to confirm; `loot.thermite` is a
 tool bag, not payout loot), escape_options `[van, boat]`, music_track `dockside_burn`, objectives
 `[cartel, breach, product, burn, strongroom, count_cage, containers, secure, escape_wait, escape]`,
@@ -864,7 +865,9 @@ preplanning as above. Map `game/world/heists/dockside_burn/dockside_burn.tscn`;
   per L4.10 (no pager, not dominatable, no cuffs, hostile to the crew only). It must **start
   unalerted on GUARD spawns with a PatrolGraph** and wake on gunfire, explosions, sightings or a
   shout. It does not count in `alive_units()` (police). ENV D: the model (Co-op workwear + plate
-  carrier, 3 head variants).
+  carrier, 3 head variants). **Shipped (ENV A):** the `cartel` spawn tag on the GUARD posts spawns
+  `npc_cartel.tscn` (role `cartel`, `CartelBrain`, `enemy.cartel_gunman`); the mission's `[cartel]` counts
+  cartel kills only and Mercer's wake line keys on CartelBrain gunmen (DB-17).
 - **QC-37 (ENV A):** `saw_target` implementers (D-057). (a) `drill_point` with device SAW and `safe`
   with the `saw` method join the group, so a hand-held saw's `saw_cut(seconds)` advances the placed-saw
   progress. (b) A small **`padlock`** prefab (`saw_target`, bound `targets`, opens a door or roller
@@ -875,9 +878,11 @@ preplanning as above. Map `game/world/heists/dockside_burn/dockside_burn.tscn`;
   kind `&"thermite"`), then enables a child **fire volume**: fire damage per L3.4 (ignores armor,
   DoT ◇ 20/s inside), a nav obstacle, and AI avoidance. Fallback for G1: a `drill_point` THERMAL
   with `duration_s` 30 and no bag (so the greybox mission works) until it exists.
-- **QC-39 (ENV B loot/strings):** `loot.weapon_crate` (HEAVY, PD2 weapons-bag value shape ◇ 2,000),
-  `loot.contraband` (MEDIUM, ◇ 1,400), `loot.thermite` (HEAVY, value 0, excluded from payout and
+- **QC-39 (ENV B loot/strings):** `loot.weapon_crate` (HEAVY, $8,500 per D-120),
+  `loot.contraband` (MEDIUM, $7,000 per D-120), `loot.thermite` (HEAVY, value 0, excluded from payout and
   from the `[secure]` count), plus objective strings for the `[tag]`s above and the VO text.
+  **Shipped (ENV B):** the three LootDefs are in `content/data/loot/` (`loot.thermite` with `is_tool`); the
+  values above are B's live D-120 data (the G0 proposal was ◇ 2,000 / 1,400).
 - **QC-40 (ENV B assets):** `asset.sniper_position`, `asset.thermite_drop`, `asset.gangway_raised`,
   `asset.intel_containers` and `asset.lift_power` (shapes above). `asset.thermite_drop` needs a
   **bag drop kind** (`drop` = a loot id: ENV A spawns a loot bag at the point, not a deployable).
@@ -903,7 +908,7 @@ preplanning as above. Map `game/world/heists/dockside_burn/dockside_burn.tscn`;
 6. **Fire:** damages players (fire ignores armour) as damage over time inside the fire volume.
    Telegraph: a warning cue, then the shutters drop after a 5 s countdown. The shutters are the main
    level change.
-7. **Payout:** $95k base and the loot values are placeholders; ENV B balances them in P6.
+7. **Payout:** superseded by D-120: base $24,000; bag values in B's loot data (see §HeistDef).
 8. **Perches:** the two always-on perches (S1, S2) are enough.
 - **QC-42:** yes: police never spawn inside the building, only via ENTRY TacticalPoints (breach,
   rappel, doors). Building ENTRY points carry the tag `breach_only`.
@@ -911,4 +916,6 @@ preplanning as above. Map `game/world/heists/dockside_burn/dockside_burn.tscn`;
   saw-able things; ENV A ships `saw_cut()` later.
 - **QC-35/36/38/39/40/41** are routed to ENV A/B/D. Until they ship, the G1 greybox uses placeholders
   that degrade gracefully (each marked with a `TODO(QC-nn)` in the code; listed in
-  `docs/levels/dockside_burn/validation.md` notes and the G1 report).
+  `docs/levels/dockside_burn/validation.md` notes and the G1 report). **DB-6 status:** QC-36 and QC-39 have
+  shipped (notes above) and the QC-25 perch hook too (the S3 note under the perch table); no `TODO(QC-nn)` is
+  left in the Dockside Burn generator.

@@ -138,7 +138,9 @@ func _tile(i: int) -> Button:
 		v.add_child(tag)
 	if _slot.is_item_disabled(i):
 		b.disabled = true
-		b.focus_mode = Control.FOCUS_NONE
+		# LEAD r229 reach pass: a locked tile still takes d-pad focus (the grid neighbours point at it, and the pad
+		# previews its stats like the mouse does); being disabled, it cannot be picked.
+		b.focus_mode = Control.FOCUS_ALL
 		name_label.add_theme_color_override(&"font_color", UiTokens.PAPER_MUTE)
 	b.pressed.connect(_on_tile.bind(i))
 	b.focus_entered.connect(previewed.emit.bind(i))
@@ -148,7 +150,7 @@ func _tile(i: int) -> Button:
 
 ## Arrow / d-pad neighbours that follow the grid (wrap off). D-115: the picker is modal, so focus never
 ## leaves the grid for the screen under the scrim: an edge points at the tile itself, down from a row
-## above a short last row lands on the last tile, and Tab / Shift+Tab cycle the enabled tiles.
+## above a short last row lands on the last tile, and Tab / Shift+Tab cycle the tiles (locked ones too).
 func _link_grid() -> void:
 	var n: int = tiles.size()
 	var last_row: int = floori((n - 1) / float(COLUMNS))
@@ -164,14 +166,12 @@ func _link_grid() -> void:
 		elif floori(i / float(COLUMNS)) < last_row:
 			below = tiles[n - 1]
 		t.focus_neighbor_bottom = t.get_path_to(below)
-	var enabled: Array[Button] = []
-	for t: Button in tiles:
-		if not t.disabled:
-			enabled.append(t)
-	for k: int in range(enabled.size()):
-		var t: Button = enabled[k]
-		t.focus_next = t.get_path_to(enabled[(k + 1) % enabled.size()])
-		t.focus_previous = t.get_path_to(enabled[(k - 1 + enabled.size()) % enabled.size()])
+	# Tab / Shift+Tab cycle every tile: locked ones take focus too (they preview), so the cycle must hold them or
+	# Tab from a locked tile would leave the modal picker.
+	for k: int in range(n):
+		var t: Button = tiles[k]
+		t.focus_next = t.get_path_to(tiles[(k + 1) % n])
+		t.focus_previous = t.get_path_to(tiles[(k - 1 + n) % n])
 
 
 func _on_tile(i: int) -> void:
