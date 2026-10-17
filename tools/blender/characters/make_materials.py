@@ -66,7 +66,12 @@ EMISSION = {"char_goggle_glow": ("#3BFF6A", 1.0), "char_prop_ember": ("#FF6A2A",
 #: D-116: open long garments (robe, long coats, below the knee) show their inside where they part, a front split
 #: gaping on a seated body or a hem flaring on a stride; drawn single-sided, the far panel vanished there and left only
 #: its folded hem edge floating as a thin strip. These cloths render both faces (cull_mode = 2, CULL_DISABLED).
-DOUBLE_SIDED = {"char_silk_ice", "char_coat_ice", "char_crew_rook_coat", "char_coat_camel", "char_coat_command"}
+DOUBLE_SIDED = {"char_silk_ice", "char_coat_ice", "char_crew_rook_coat", "char_coat_camel", "char_coat_command",
+                # D-116 stride drape: dress and skirt cloths (g.dress, n.skirt). The skirt between the legs folds over
+                # on a stride or squat, and a squat or a seat shows the skirt's inside past the hem: single-sided, both
+                # read as holes (a hem ring floating round the knees)
+                "char_dress_black", "char_satin_wine", "char_satin_sapphire", "char_satin_amethyst", "char_satin_gold",
+                "char_satin_teal", "char_silk_graphite", "char_bank_slate_dark", "char_suit_grey"}
 
 
 def srgb_bytes(h: str) -> tuple[int, int, int]:

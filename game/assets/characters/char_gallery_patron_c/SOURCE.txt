@@ -8,12 +8,12 @@ edit policy: generated file, never edit by hand; change the script and rebuild
 attach_Back: bone chest, local [0.0000, 0.0841, 0.0945] (model [0.0000, 1.2270, 0.1119], Godot axes, rest pose)
 attach_Head: bone head, local [0.0000, 0.0764, -0.0837] (model [0.0000, 1.5724, -0.0724], Godot axes, rest pose)
 attach_Hip: bone hips, local [0.1657, 0.0482, 0.0384] (model [0.1657, 0.9476, 0.0408], Godot axes, rest pose)
-body_faces_culled: 3072
+body_faces_culled: 3054
 body_params: {"age": 0.75, "beard_shadow": 0.0, "build": 0.4, "gender": 1.0, "hair": "side_part", "hair_color": "grey", "hair_peak": 0.0, "height": 1.68, "lip": "char_lip_rose", "skin": 1}
 bones: 52
 look: Gala guest (woman, 60s): half-sleeved black cocktail dress, gold belt, gold earrings, gold-rimmed glasses, silver chignon
 meshes: Body,Hair,Headwear,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 25918
-tris_by_mesh: {"Body": 12600, "Hair": 1856, "Headwear": 2082, "Outfit": 9380}
+tris: 25954
+tris_by_mesh: {"Body": 12636, "Hair": 1856, "Headwear": 2082, "Outfit": 9380}
