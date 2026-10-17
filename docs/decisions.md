@@ -1164,3 +1164,7 @@ change, test_lod/test_scenes/test_npcs green, P's vm/arms probes unaffected (FP 
 off screen > 30 m; staggered per NPC; clip events kept on a timer so footsteps/barks/hand props still fire; never applied to
 crew AI or anything a player is aiming at. Est. GN 3.3 → ~1.3 ms, loud 5 → ~2 ms; test: event parity over a 30 s bench.
 Real-GPU numbers are still unmeasured (open risk, handoff §4.14); these counters are exact on llvmpipe.
+**D-130 addendum (C a5f115c1, 2026-10-17):** targets are met on the **expected** count per tier (1500-seed rolls on the real
+maps); on tiny bases the maxima may rise more than the % (ND guards max 3 → 5). Counts never fall with difficulty and
+never fall below a tier's pre-D-130 value (QC-b). D-130 §1's +50 % / +35 % are floors, not caps: GN's existing guard
+curve (1.8 → 5, ruling 2) stays (QC-a). ND Hazardous+ rolls can exceed the 4-pager cap; accepted (PD2 has the same pressure).
