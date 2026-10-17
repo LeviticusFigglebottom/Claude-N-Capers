@@ -1,6 +1,6 @@
 asset: prop_workstation_pod
 script: tools/blender/props/calder.py
-params: {"cat": {"group": "calder", "kind": "desk", "pin_only": true, "place": "center", "support": true}, "fn": "pod"}
+params: {"cat": {"group": "calder", "keepout": [[-1.2, -0.09, 1.2, 0.09]], "kind": "desk", "pin_only": true, "place": "center", "support": true, "top": 0.74}, "fn": "pod"}
 seed: 1852393026  (zlib.crc32(asset_id))
 generator: Blender 4.5, tools/blender/lib 1.0.0
 rebuild: python3 tools/blender/build.py --category props --asset prop_workstation_pod

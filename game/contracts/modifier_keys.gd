@@ -56,7 +56,6 @@ const KEYS: Dictionary = {
 	&"interaction.device_melee_restart": [Type.FLAG, 2, "Melee a jammed device to try restarting it."],
 	&"interaction.shaped_charge": [Type.FLAG, 3, "Trip mines can be used as shaped charges on doors/safes."],
 	&"interaction.revive_speed_mult": [Type.MULT, 1, "Revive speed."],
-	&"interaction.no_interrupt_on_damage": [Type.FLAG, 3, "Taking damage does not interrupt interactions."],
 
 	# --- Loot ------------------------------------------------------------------
 	&"loot.carry_speed_penalty_mult": [Type.MULT, 2, "Bag move-speed penalty multiplier (lower = faster)."],

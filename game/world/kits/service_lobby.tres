@@ -6,25 +6,33 @@
 script = ExtResource("1_kit")
 id = &"service_lobby"
 purpose = &"lobby"
-required_items = Array[StringName]([&"cart", &"lectern", &"bulletin_board", &"fire_extinguisher", &"light_fixture"])
+required_items = Array[StringName]([&"cart", &"lectern", &"bulletin_board", &"fire_extinguisher", &"light_fixture", &"mail_bins", &"cleaning_cart"])
 optional_items = {
 &"bin": 0.8,
-&"picture": 1,
+&"box": 1,
+&"cart": 2,
+&"picture": 1.5,
 &"switch": 0.6
 }
 clutter_groups = {}
 min_density = 0.15
-max_density = 0.8
-min_props = 6
-lone_ok_kinds = Array[StringName]([&"cart", &"lectern"])
+max_density = 1.2
+min_props = 10
+lone_ok_kinds = Array[StringName]([&"cart", &"lectern", &"mail_bins", &"cleaning_cart", &"box"])
 seed_salt = 301
-counts = {}
+counts = {
+&"box": Vector2i(1, 2),
+&"picture": Vector2i(2, 3)
+}
 assets = {
 &"bin": PackedStringArray("prop_bin_office"),
-&"cart": PackedStringArray("prop_freight_dolly"),
+&"box": PackedStringArray("prop_box_stack"),
+&"cart": PackedStringArray("prop_mail_trolley"),
+&"cleaning_cart": PackedStringArray("prop_cleaner_cart"),
 &"lectern": PackedStringArray("prop_lectern_signin"),
 &"light_fixture": PackedStringArray("prop_ceiling_panel_cool"),
+&"mail_bins": PackedStringArray("prop_mail_bins"),
 &"picture": PackedStringArray("prop_notice_frame")
 }
 ceiling = {"prop_ceiling_panel_cool": 2.6}
-notes = "S1 service lift lobby (PUBLIC): the freight dolly and the contractor sign-in lectern are map-built; the lift car opening and the sealed fire door stay clear. 5000 K panels."
+notes = "S1 service lift lobby (PUBLIC): the freight dolly and the contractor sign-in lectern are map-built; the kit adds the post room's mail trolley and bin rack, a parked cleaner's cart, flattened boxes and framed notices (SL-1 polish). The lift car opening, the sealed fire door and the service spawns stay clear. 5000 K panels."

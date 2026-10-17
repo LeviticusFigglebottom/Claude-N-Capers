@@ -1216,3 +1216,19 @@ still cancels.
 no longer be interacted with (swansong path, l.2191) and by `PlayerStandard:exit` (l.309: a state change such as downed,
 tased, arrested). So in PD2 **damage cancels no held interaction**, not only revives. S9.1 amended: damage never cancels
 any hold interaction (humans and bots); the flash/stun cancel stays as ◇. ENV A removes the damage interrupt for all holds.
+
+## D-135: close the queue, then start Ostrander Federal together (2026-10-17, LEAD; product owner)
+PO: "finish all currently queued work and instruct each environment to do so together." No new scope enters any env's
+queue from now on; each env closes its open `heist_completion.md` rows and in-flight lanes and reports QUEUE CLEAR (last
+sha + anything that cannot close, with the reason). When all five have reported and the LEAD has merged and gated the
+final round, the D-115 gate is assessed and Ostrander Federal (`docs/process/next_heist_ostrander.md`, finalised by the
+LEAD meanwhile) starts for all envs at once with one kickoff dispatch. Parked items that do not block: D-132 D1 (waits on
+the PO's real-GPU bench run).
+
+## D-136: Ostrander Federal build rulings (2026-10-17, LEAD)
+The OF-L1 build plan (`docs/process/next_heist_ostrander.md`) is approved. Its §3b rulings 1-11 are adopted as written:
+vault on the ND pattern (no new Safe API); manager keycard = QC-52 carrier_tag at 1 s; D-120 re-price by B; a general
+`CivilianRoute` system (A) for timed cross-floor civilian routines; the SD customer escort descoped; assault events
+(turret van, heli rappel, breach points) added; D-122 breach layer on every loud-breachable shell door (not the vault);
+D-102/D-104 doc fixes by C; no stealth-only fail and no soft lock; loud escape on `[secure]` + `escape_eta_s`; D-128
+"hidden" claims verified with A's LOS sampling. Build starts for all envs together after D-135 (all queues clear).
