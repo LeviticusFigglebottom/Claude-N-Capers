@@ -245,6 +245,31 @@ func test_l2_12_ai_uncuffs_and_revives_cuffed_downed_human() -> void:
 		assert_true(_ai_slots().has(freed_by[0]), "by an AI slot (%d), not the self-free" % freed_by[0])
 
 
+## L2.12 / L6.1: the officer who cuffed the downed human is still next to him: the AI shoot him first (arrester_score_mult)
+## and free the human only once he is down (arrester_guard_m; freed next to him he would re-arrest before the revive).
+func test_l2_12_ai_kill_the_arresting_cop_before_uncuffing() -> void:
+	Engine.time_scale = TIME_SCALE
+	await _go_loud()
+	_rt.teleport_crew(0, Transform3D(Basis.IDENTITY, Vector3(4, 0.05, 0)))
+	await wait_physics_frames(2)
+	var c: CrewController = _crew(0)
+	var cop: NpcBase = ATestMaps.add_npc_observer(_rt, &"police", Vector3(4.8, 0.05, 0.4), Vector3.LEFT)
+	cop.max_health = 1.0e9  # soaks the AI fire: the guard window is observable
+	cop.health = cop.max_health
+	c.health.go_down()
+	c.health.down_s = CustodyTweak.data().police_cuff_grace_s
+	var cuffs: CrewCuffs = CrewCuffs.of(c, true)
+	await wait_physics_frames(2)
+	assert_true(cuffs.cuff_downed(cop.net_id), "cuffed by the cop")
+	# Long enough to walk over and hold the uncuff several times over (uncuff_s), had the cop not been there.
+	await wait_until(func() -> bool: return c.crew_state != Enums.CrewState.CUFFED, Tweak.stealth().uncuff_s + 8.0)
+	assert_eq(c.crew_state, Enums.CrewState.CUFFED, "not freed while the arresting cop stands next to him")
+	assert_true(cop.health < cop.max_health, "the AI shoot the arresting cop")
+	cop.die({}, 0)
+	var ok: bool = await wait_until(func() -> bool: return c.crew_state == Enums.CrewState.NORMAL, 30.0)
+	assert_true(ok, "freed and revived once the cop is down (state %d)" % c.crew_state)
+
+
 func test_p3_ai_shoots_the_tasing_stinger_first() -> void:
 	await _go_loud()
 	var brain: CrewAiBrain = CrewAiBrain.of(_crew(1))
