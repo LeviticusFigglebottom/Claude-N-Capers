@@ -201,12 +201,12 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## slopes: No walkable slope < 50° outside the play mesh
 
-- 561 x 569 columns (0.25 m), 302799 surface samples, 0 collider(s) with reachable walkable surfaces outside play
+- 561 x 569 columns (0.25 m), 303030 surface samples, 0 collider(s) with reachable walkable surfaces outside play
 
 
 ## navmesh: Navmesh
 
-- navmesh: 2498 polygons, cell 0.10/0.10 m
+- navmesh: 2510 polygons, cell 0.10/0.10 m
 - 402 markers checked
 | room | walkable samples | covered | coverage |
 |---|---|---|---|
@@ -344,18 +344,18 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## teller_worktop: Teller work tops: depth, stand zone, crouch-hide front (OF-C3)
 
-- `Props/MapBuilt/TellerWorktop01`: solid front 1.50 m, the crouch-hide claim needs 1.35 m (observer >= 2.0 m)
-- `Props/MapBuilt/TellerWorktop02`: solid front 1.50 m, the crouch-hide claim needs 1.35 m (observer >= 2.0 m)
-- `Props/MapBuilt/TellerWorktop03`: solid front 1.50 m, the crouch-hide claim needs 1.35 m (observer >= 2.0 m)
-- `Props/MapBuilt/TellerWorktop04`: solid front 1.50 m, the crouch-hide claim needs 1.35 m (observer >= 2.0 m)
-- `Props/MapBuilt/TellerWorktop05`: solid front 1.50 m, the crouch-hide claim needs 1.35 m (observer >= 2.0 m)
-- `Props/MapBuilt/TellerWorktop06`: solid front 1.50 m, the crouch-hide claim needs 1.35 m (observer >= 2.0 m)
-- `Props/MapBuilt/TellerWorktop07`: solid front 1.50 m, the crouch-hide claim needs 1.35 m (observer >= 2.0 m)
-- `Props/MapBuilt/TellerWorktop08`: solid front 1.50 m, the crouch-hide claim needs 1.35 m (observer >= 2.0 m)
-- `Props/MapBuilt/TellerWorktop09`: solid front 1.50 m, the crouch-hide claim needs 1.35 m (observer >= 2.0 m)
-- `Props/MapBuilt/TellerWorktop10`: solid front 1.50 m, the crouch-hide claim needs 1.35 m (observer >= 2.0 m)
-- `Props/MapBuilt/TellerWorktop11`: solid front 1.50 m, the crouch-hide claim needs 1.35 m (observer >= 2.0 m)
-- `Props/MapBuilt/TellerWorktop12`: solid front 1.50 m, the crouch-hide claim needs 1.35 m (observer >= 2.0 m)
+- `Props/MapBuilt/TellerWorktop01`: solid front 1.50 m, the crouch-hide claim needs 1.32 m (observer >= 2.0 m)
+- `Props/MapBuilt/TellerWorktop02`: solid front 1.50 m, the crouch-hide claim needs 1.32 m (observer >= 2.0 m)
+- `Props/MapBuilt/TellerWorktop03`: solid front 1.50 m, the crouch-hide claim needs 1.32 m (observer >= 2.0 m)
+- `Props/MapBuilt/TellerWorktop04`: solid front 1.50 m, the crouch-hide claim needs 1.32 m (observer >= 2.0 m)
+- `Props/MapBuilt/TellerWorktop05`: solid front 1.50 m, the crouch-hide claim needs 1.32 m (observer >= 2.0 m)
+- `Props/MapBuilt/TellerWorktop06`: solid front 1.50 m, the crouch-hide claim needs 1.32 m (observer >= 2.0 m)
+- `Props/MapBuilt/TellerWorktop07`: solid front 1.50 m, the crouch-hide claim needs 1.32 m (observer >= 2.0 m)
+- `Props/MapBuilt/TellerWorktop08`: solid front 1.50 m, the crouch-hide claim needs 1.32 m (observer >= 2.0 m)
+- `Props/MapBuilt/TellerWorktop09`: solid front 1.50 m, the crouch-hide claim needs 1.32 m (observer >= 2.0 m)
+- `Props/MapBuilt/TellerWorktop10`: solid front 1.50 m, the crouch-hide claim needs 1.32 m (observer >= 2.0 m)
+- `Props/MapBuilt/TellerWorktop11`: solid front 1.50 m, the crouch-hide claim needs 1.32 m (observer >= 2.0 m)
+- `Props/MapBuilt/TellerWorktop12`: solid front 1.50 m, the crouch-hide claim needs 1.32 m (observer >= 2.0 m)
 - 12 teller work top(s)
 
 

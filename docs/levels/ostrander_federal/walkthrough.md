@@ -7,41 +7,41 @@ Result: **PASS** (0 failure(s))
 
 | spawn | target | kind | straight m | path m | ratio | status |
 |---|---|---|---|---|---|---|
-| `Spawns/PlayerPlaza1` | `Gameplay/Doors/LockerDoor/UsePoint` | use_point | 40.1 | 62.6 | 1.56 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Doors/CashLiftDoorB/UsePoint` | use_point | 43.1 | 60.4 | 1.40 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Doors/CartQueueDoor/UsePoint` | use_point | 37.7 | 55.6 | 1.47 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Doors/StairDoorSAB/UsePoint` | use_point | 37.2 | 53.7 | 1.45 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Doors/CountRoomDoor/UsePoint` | use_point | 36.5 | 59.7 | 1.64 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Doors/PlantDoor/UsePoint` | use_point | 37.4 | 68.7 | 1.84 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Doors/LockerDoor/UsePoint` | use_point | 40.1 | 62.8 | 1.56 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Doors/CashLiftDoorB/UsePoint` | use_point | 43.1 | 60.6 | 1.41 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Doors/CartQueueDoor/UsePoint` | use_point | 37.7 | 55.8 | 1.48 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Doors/StairDoorSAB/UsePoint` | use_point | 37.2 | 53.9 | 1.45 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Doors/CountRoomDoor/UsePoint` | use_point | 36.5 | 59.8 | 1.64 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Doors/PlantDoor/UsePoint` | use_point | 37.4 | 68.8 | 1.84 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Doors/CommsDoor/UsePoint` | use_point | 39.5 | 69.1 | 1.75 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Doors/SuppliesDoor/UsePoint` | use_point | 41.7 | 64.1 | 1.54 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Doors/StairDoorSBB/UsePoint` | use_point | 44.1 | 60.3 | 1.37 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Doors/RecordsDoor/UsePoint` | use_point | 39.2 | 61.6 | 1.57 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Doors/VaultGate` | objective | 36.2 | 55.8 | 1.54 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Doors/VaultGate/UsePoint` | use_point | 36.2 | 55.8 | 1.54 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Doors/RecordsDoor/UsePoint` | use_point | 39.2 | 61.8 | 1.58 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Doors/VaultGate` | objective | 36.2 | 56.0 | 1.55 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Doors/VaultGate/UsePoint` | use_point | 36.2 | 56.0 | 1.55 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Doors/DepositHallDoor/UsePoint` | use_point | 41.2 | 64.2 | 1.56 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Doors/VaultDoor` | objective | 32.9 | 70.3 | 2.14 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Doors/VaultDoor/UsePoint` | use_point | 32.9 | 70.3 | 2.14 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Doors/DockRollerDoor/UsePoint` | use_point | 47.7 | 54.3 | 1.14 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Doors/CashLiftDoorG/UsePoint` | use_point | 43.9 | 52.0 | 1.18 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Doors/DockCorridorDoor/UsePoint` | use_point | 37.7 | 43.4 | 1.15 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Doors/ElectricalDoorG/UsePoint` | use_point | 37.6 | 42.3 | 1.13 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Doors/StairDoorSAG/UsePoint` | use_point | 37.0 | 41.1 | 1.11 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Doors/SecurityDoor/UsePoint` | use_point | 36.4 | 44.8 | 1.23 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Doors/GuardLockerDoor/UsePoint` | use_point | 36.6 | 47.9 | 1.31 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Doors/StaffWCDoorM/UsePoint` | use_point | 37.2 | 43.9 | 1.18 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Doors/StaffWCDoorW/UsePoint` | use_point | 38.0 | 41.3 | 1.09 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Doors/JanitorDoorG/UsePoint` | use_point | 39.0 | 42.3 | 1.08 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Doors/MailDoor/UsePoint` | use_point | 41.1 | 47.1 | 1.15 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Doors/VaultDoor` | objective | 32.9 | 70.5 | 2.14 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Doors/VaultDoor/UsePoint` | use_point | 32.9 | 70.5 | 2.14 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Doors/DockRollerDoor/UsePoint` | use_point | 47.7 | 54.4 | 1.14 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Doors/CashLiftDoorG/UsePoint` | use_point | 43.9 | 52.2 | 1.19 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Doors/DockCorridorDoor/UsePoint` | use_point | 37.7 | 43.6 | 1.16 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Doors/ElectricalDoorG/UsePoint` | use_point | 37.6 | 42.5 | 1.13 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Doors/StairDoorSAG/UsePoint` | use_point | 37.0 | 41.2 | 1.11 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Doors/SecurityDoor/UsePoint` | use_point | 36.4 | 44.9 | 1.23 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Doors/GuardLockerDoor/UsePoint` | use_point | 36.6 | 48.0 | 1.31 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Doors/StaffWCDoorM/UsePoint` | use_point | 37.2 | 44.0 | 1.18 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Doors/StaffWCDoorW/UsePoint` | use_point | 38.0 | 41.4 | 1.09 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Doors/JanitorDoorG/UsePoint` | use_point | 39.0 | 42.4 | 1.09 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Doors/MailDoor/UsePoint` | use_point | 41.1 | 47.2 | 1.15 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Doors/StairDoorSBG/UsePoint` | use_point | 43.9 | 47.9 | 1.09 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Doors/StaffDoorTWW/UsePoint` | use_point | 36.5 | 40.5 | 1.11 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Doors/StaffDoorTWE/UsePoint` | use_point | 37.8 | 40.5 | 1.07 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Doors/StaffDoorTWW/UsePoint` | use_point | 36.5 | 41.0 | 1.12 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Doors/StaffDoorTWE/UsePoint` | use_point | 37.8 | 40.9 | 1.08 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Doors/ClientServiceDoor/UsePoint` | use_point | 42.1 | 45.9 | 1.09 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Doors/LoanTellerDoor/UsePoint` | use_point | 35.1 | 39.2 | 1.12 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Doors/ClientTellerDoor/UsePoint` | use_point | 37.2 | 41.5 | 1.12 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Doors/LoanHallDoor/UsePoint` | use_point | 29.1 | 32.5 | 1.12 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Doors/ClientHallDoor/UsePoint` | use_point | 31.4 | 33.4 | 1.07 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Doors/TellerGate/UsePoint` | use_point | 26.2 | 26.3 | 1.01 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Doors/TellerGate/UsePoint` | use_point | 26.5 | 26.7 | 1.01 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Doors/ConsultDoor1/UsePoint` | use_point | 26.5 | 30.0 | 1.14 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Doors/ConsultDoor2/UsePoint` | use_point | 22.2 | 27.3 | 1.23 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Doors/ATMHallDoor/UsePoint` | use_point | 17.7 | 26.5 | 1.49 | ok |
@@ -56,151 +56,151 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerPlaza1` | `Gameplay/Doors/BronzeDoorsE/UsePoint` | use_point | 9.4 | 9.6 | 1.03 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Doors/ATMStreetDoor` | objective | 19.8 | 23.7 | 1.20 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Doors/ATMStreetDoor/UsePoint` | use_point | 19.8 | 23.7 | 1.20 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Doors/BreakRoomDoor/UsePoint` | use_point | 40.4 | 64.7 | 1.60 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Doors/ElectricalDoorM/UsePoint` | use_point | 38.0 | 57.7 | 1.52 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Doors/StairDoorSAM/UsePoint` | use_point | 37.5 | 55.8 | 1.49 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Doors/ITDoor/UsePoint` | use_point | 36.9 | 59.5 | 1.61 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Doors/ServerDoor/UsePoint` | use_point | 37.0 | 66.5 | 1.80 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Doors/GalleryWCDoorM/UsePoint` | use_point | 37.7 | 70.5 | 1.87 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Doors/GalleryWCDoorW/UsePoint` | use_point | 38.4 | 73.5 | 1.91 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Doors/BreakRoomDoor/UsePoint` | use_point | 40.4 | 64.9 | 1.61 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Doors/ElectricalDoorM/UsePoint` | use_point | 38.0 | 57.9 | 1.52 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Doors/StairDoorSAM/UsePoint` | use_point | 37.5 | 55.9 | 1.49 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Doors/ITDoor/UsePoint` | use_point | 36.9 | 59.6 | 1.62 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Doors/ServerDoor/UsePoint` | use_point | 37.0 | 66.6 | 1.80 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Doors/GalleryWCDoorM/UsePoint` | use_point | 37.7 | 70.6 | 1.87 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Doors/GalleryWCDoorW/UsePoint` | use_point | 38.4 | 73.6 | 1.92 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Doors/JanitorDoorM/UsePoint` | use_point | 39.4 | 72.1 | 1.83 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Doors/ArchiveDoor/UsePoint` | use_point | 41.5 | 67.1 | 1.62 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Doors/StairDoorSBM/UsePoint` | use_point | 44.3 | 62.2 | 1.40 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Doors/LoggiaDoorW/UsePoint` | use_point | 39.1 | 62.8 | 1.61 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Doors/OperationsDoor/UsePoint` | use_point | 37.5 | 57.9 | 1.55 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Doors/ConferenceDoor/UsePoint` | use_point | 37.3 | 71.5 | 1.92 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Doors/LoggiaDoorW/UsePoint` | use_point | 39.1 | 62.9 | 1.61 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Doors/OperationsDoor/UsePoint` | use_point | 37.5 | 58.0 | 1.55 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Doors/ConferenceDoor/UsePoint` | use_point | 37.3 | 71.6 | 1.92 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Doors/ComplianceDoor/UsePoint` | use_point | 39.2 | 71.2 | 1.81 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Doors/LoggiaDoorE/UsePoint` | use_point | 41.0 | 67.2 | 1.64 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Doors/OfficerDoor1/UsePoint` | use_point | 34.9 | 66.9 | 1.91 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Doors/OfficerDoor2/UsePoint` | use_point | 27.3 | 75.9 | 2.78 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Doors/OfficerDoor3/UsePoint` | use_point | 20.7 | 84.9 | 4.10 | detour (whitelisted) |
+| `Spawns/PlayerPlaza1` | `Gameplay/Doors/OfficerDoor1/UsePoint` | use_point | 34.9 | 67.0 | 1.92 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Doors/OfficerDoor2/UsePoint` | use_point | 27.3 | 76.0 | 2.79 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Doors/OfficerDoor3/UsePoint` | use_point | 20.7 | 85.0 | 4.11 | detour (whitelisted) |
 | `Spawns/PlayerPlaza1` | `Gameplay/Doors/VaultOpsDoor/UsePoint` | use_point | 37.1 | 71.3 | 1.92 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Doors/TreasuryDoor/UsePoint` | use_point | 30.0 | 80.3 | 2.68 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Doors/TrainingDoor/UsePoint` | use_point | 24.2 | 89.3 | 3.70 | detour (whitelisted) |
-| `Spawns/PlayerPlaza1` | `Gameplay/Doors/OperationsGalleryDoor/UsePoint` | use_point | 27.2 | 68.9 | 2.53 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Doors/ConferenceGalleryDoor/UsePoint` | use_point | 28.5 | 81.3 | 2.85 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Doors/GalleryDoorW/UsePoint` | use_point | 30.3 | 71.9 | 2.37 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Doors/OperationsGalleryDoor/UsePoint` | use_point | 27.2 | 69.1 | 2.54 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Doors/ConferenceGalleryDoor/UsePoint` | use_point | 28.5 | 81.4 | 2.86 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Doors/GalleryDoorW/UsePoint` | use_point | 30.3 | 72.0 | 2.38 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Doors/GalleryDoorE/UsePoint` | use_point | 32.7 | 76.3 | 2.34 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Doors/BoardroomDoor/UsePoint` | use_point | 41.1 | 73.7 | 1.79 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Doors/ElectricalDoorE/UsePoint` | use_point | 38.7 | 66.7 | 1.72 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Doors/StairDoorSAE/UsePoint` | use_point | 38.2 | 64.7 | 1.69 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Doors/AssistantDoor/UsePoint` | use_point | 37.6 | 68.4 | 1.82 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Doors/PresidentDoor/UsePoint` | use_point | 38.0 | 77.4 | 2.04 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Doors/BoardroomDoor/UsePoint` | use_point | 41.1 | 73.8 | 1.80 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Doors/ElectricalDoorE/UsePoint` | use_point | 38.7 | 66.8 | 1.73 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Doors/StairDoorSAE/UsePoint` | use_point | 38.2 | 64.8 | 1.70 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Doors/AssistantDoor/UsePoint` | use_point | 37.6 | 68.6 | 1.83 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Doors/PresidentDoor/UsePoint` | use_point | 38.0 | 77.6 | 2.04 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Doors/PantryDoor/UsePoint` | use_point | 40.9 | 79.1 | 1.94 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Doors/ExecWCDoor/UsePoint` | use_point | 43.1 | 74.1 | 1.72 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Doors/StairDoorSBE/UsePoint` | use_point | 44.9 | 71.1 | 1.58 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Doors/LoungeDoor/UsePoint` | use_point | 40.1 | 72.7 | 1.81 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Doors/LegalDoor/UsePoint` | use_point | 36.9 | 71.5 | 1.94 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Doors/TrustDoor/UsePoint` | use_point | 38.9 | 83.5 | 2.15 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Doors/LoungeDoor/UsePoint` | use_point | 40.1 | 72.9 | 1.82 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Doors/LegalDoor/UsePoint` | use_point | 36.9 | 71.6 | 1.94 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Doors/TrustDoor/UsePoint` | use_point | 38.9 | 83.6 | 2.15 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Doors/RecordsDoorE/UsePoint` | use_point | 43.1 | 73.2 | 1.70 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Doors/TerraceDoorsW/UsePoint` | use_point | 32.2 | 81.4 | 2.52 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Doors/TerraceDoorsE/UsePoint` | use_point | 30.1 | 82.6 | 2.75 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Doors/HeadHouseDoor` | objective | 39.2 | 73.6 | 1.88 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Doors/HeadHouseDoor/UsePoint` | use_point | 39.2 | 73.6 | 1.88 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Doors/RoofPlantDoor/UsePoint` | use_point | 36.1 | 86.7 | 2.40 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Doors/CashCageGate` | objective | 27.5 | 78.4 | 2.85 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Doors/CashCageGate/UsePoint` | use_point | 27.5 | 78.4 | 2.85 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Doors/CashCageGate/Padlock` | objective | 27.6 | 78.3 | 2.84 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Doors/CashCageGate/Padlock/UsePoint` | use_point | 27.6 | 78.3 | 2.84 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Doors/GoldCageGate` | objective | 26.0 | 77.3 | 2.97 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Doors/GoldCageGate/UsePoint` | use_point | 26.0 | 77.3 | 2.97 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Doors/GoldCageGate/Padlock` | objective | 26.0 | 77.3 | 2.97 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Doors/GoldCageGate/Padlock/UsePoint` | use_point | 26.0 | 77.3 | 2.97 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Devices/CameraStation/UsePoint` | use_point | 42.4 | 50.3 | 1.19 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Devices/VaultGateReader` | objective | 36.1 | 57.4 | 1.59 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Devices/VaultGateReader/UsePoint` | use_point | 36.1 | 57.4 | 1.59 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Devices/TimeLockConsole` | objective | 34.5 | 73.2 | 2.12 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Devices/TimeLockConsole/UsePoint` | use_point | 34.5 | 73.2 | 2.12 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Devices/CashCageKeypad` | objective | 27.8 | 77.2 | 2.77 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Devices/CashCageKeypad/UsePoint` | use_point | 27.8 | 77.2 | 2.77 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Devices/LidDrill` | objective | 31.5 | 31.7 | 1.01 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Devices/LidDrill/UsePoint` | use_point | 31.5 | 31.7 | 1.01 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Devices/AlarmSR/UsePoint` | use_point | 43.3 | 51.1 | 1.18 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Doors/TerraceDoorsW/UsePoint` | use_point | 32.2 | 81.6 | 2.53 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Doors/TerraceDoorsE/UsePoint` | use_point | 30.1 | 82.7 | 2.75 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Doors/HeadHouseDoor` | objective | 39.2 | 73.8 | 1.88 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Doors/HeadHouseDoor/UsePoint` | use_point | 39.2 | 73.8 | 1.88 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Doors/RoofPlantDoor/UsePoint` | use_point | 36.1 | 86.9 | 2.41 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Doors/CashCageGate` | objective | 27.5 | 78.5 | 2.86 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Doors/CashCageGate/UsePoint` | use_point | 27.5 | 78.5 | 2.86 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Doors/CashCageGate/Padlock` | objective | 27.6 | 78.5 | 2.84 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Doors/CashCageGate/Padlock/UsePoint` | use_point | 27.6 | 78.5 | 2.84 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Doors/GoldCageGate` | objective | 26.0 | 77.4 | 2.97 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Doors/GoldCageGate/UsePoint` | use_point | 26.0 | 77.4 | 2.97 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Doors/GoldCageGate/Padlock` | objective | 26.0 | 77.4 | 2.98 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Doors/GoldCageGate/Padlock/UsePoint` | use_point | 26.0 | 77.4 | 2.98 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Devices/CameraStation/UsePoint` | use_point | 42.4 | 50.5 | 1.19 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Devices/VaultGateReader` | objective | 36.1 | 57.5 | 1.59 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Devices/VaultGateReader/UsePoint` | use_point | 36.1 | 57.5 | 1.59 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Devices/TimeLockConsole` | objective | 34.5 | 73.3 | 2.13 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Devices/TimeLockConsole/UsePoint` | use_point | 34.5 | 73.3 | 2.13 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Devices/CashCageKeypad` | objective | 27.8 | 77.3 | 2.78 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Devices/CashCageKeypad/UsePoint` | use_point | 27.8 | 77.3 | 2.78 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Devices/LidDrill` | objective | 29.7 | 30.1 | 1.01 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Devices/LidDrill/UsePoint` | use_point | 29.7 | 30.1 | 1.01 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Devices/AlarmSR/UsePoint` | use_point | 43.3 | 51.3 | 1.19 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Devices/AlarmBM/UsePoint` | use_point | 33.2 | 37.2 | 1.12 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Devices/AlarmSD/UsePoint` | use_point | 35.6 | 72.5 | 2.03 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Devices/AlarmTeller1/UsePoint` | use_point | 29.4 | 38.0 | 1.29 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Devices/AlarmTeller2/UsePoint` | use_point | 28.9 | 36.0 | 1.25 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Devices/AlarmTeller3/UsePoint` | use_point | 28.5 | 34.0 | 1.19 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Devices/AlarmTeller4/UsePoint` | use_point | 29.7 | 34.6 | 1.17 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Devices/AlarmTeller5/UsePoint` | use_point | 30.4 | 36.6 | 1.20 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Devices/AlarmTeller6/UsePoint` | use_point | 31.3 | 38.6 | 1.24 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Devices/AlarmTeller1/UsePoint` | use_point | 29.6 | 38.3 | 1.29 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Devices/AlarmTeller2/UsePoint` | use_point | 29.1 | 36.3 | 1.25 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Devices/AlarmTeller3/UsePoint` | use_point | 28.7 | 34.3 | 1.19 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Devices/AlarmTeller4/UsePoint` | use_point | 29.9 | 34.8 | 1.16 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Devices/AlarmTeller5/UsePoint` | use_point | 30.6 | 36.8 | 1.20 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Devices/AlarmTeller6/UsePoint` | use_point | 31.4 | 38.8 | 1.24 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Devices/PhoneBM/UsePoint` | use_point | 31.1 | 38.4 | 1.23 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Devices/PhoneLO/UsePoint` | use_point | 39.5 | 43.5 | 1.10 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Devices/PhoneNA/UsePoint` | use_point | 26.9 | 36.8 | 1.37 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Devices/PhonePC/UsePoint` | use_point | 36.0 | 42.0 | 1.17 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Devices/PhoneSR/UsePoint` | use_point | 41.3 | 49.5 | 1.20 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Devices/PhoneSR/UsePoint` | use_point | 41.3 | 49.7 | 1.20 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Devices/PhoneSD/UsePoint` | use_point | 36.6 | 71.9 | 1.97 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Devices/PhoneBR/UsePoint` | use_point | 44.6 | 69.6 | 1.56 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Devices/PhoneBR/UsePoint` | use_point | 44.6 | 69.7 | 1.56 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Devices/PhoneVO/UsePoint` | use_point | 38.2 | 77.5 | 2.03 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Devices/PhoneEA/UsePoint` | use_point | 43.5 | 75.1 | 1.73 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultCash` | loot_spawn | 23.8 | 82.0 | 3.44 | detour (whitelisted) |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultCash/UsePoint` | use_point | 25.3 | 80.5 | 3.18 | detour (whitelisted) |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultGold` | loot_spawn | 27.2 | 80.9 | 2.97 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultGold/UsePoint` | use_point | 26.7 | 79.3 | 2.97 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/BondSafe` | objective | 24.4 | 87.3 | 3.57 | detour (whitelisted) |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/BondSafe/UsePoint` | use_point | 24.4 | 87.3 | 3.57 | detour (whitelisted) |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/ServerDrives` | loot_spawn | 40.6 | 69.6 | 1.71 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/ServerDrives/UsePoint` | use_point | 39.4 | 68.3 | 1.73 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/TellerDrawer1` | objective | 29.7 | 38.9 | 1.31 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/TellerDrawer1/UsePoint` | use_point | 29.7 | 38.9 | 1.31 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/TellerDrawer2` | objective | 29.2 | 36.9 | 1.27 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/TellerDrawer2/UsePoint` | use_point | 29.2 | 36.9 | 1.27 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/TellerDrawer3` | objective | 28.7 | 34.9 | 1.22 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/TellerDrawer3/UsePoint` | use_point | 28.7 | 34.9 | 1.22 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/TellerDrawer4` | objective | 29.5 | 33.8 | 1.14 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/TellerDrawer4/UsePoint` | use_point | 29.5 | 33.8 | 1.14 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/TellerDrawer5` | objective | 30.2 | 35.8 | 1.19 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/TellerDrawer5/UsePoint` | use_point | 30.2 | 35.8 | 1.19 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/TellerDrawer6` | objective | 30.9 | 37.7 | 1.22 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/TellerDrawer6/UsePoint` | use_point | 30.9 | 37.7 | 1.22 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/CountStraps1` | objective | 39.7 | 63.4 | 1.60 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/CountStraps1/UsePoint` | use_point | 39.7 | 63.4 | 1.60 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/CountStraps2` | objective | 39.6 | 62.5 | 1.58 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/CountStraps2/UsePoint` | use_point | 39.6 | 62.5 | 1.58 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/CountStraps3` | objective | 39.5 | 62.9 | 1.59 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/CountStraps3/UsePoint` | use_point | 39.5 | 62.9 | 1.59 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/CountStraps4` | objective | 39.6 | 63.9 | 1.61 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/CountStraps4/UsePoint` | use_point | 39.6 | 63.9 | 1.61 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxN01` | objective | 30.8 | 86.6 | 2.81 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxN01/UsePoint` | use_point | 30.8 | 86.6 | 2.81 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxN02` | objective | 30.6 | 85.6 | 2.80 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxN02/UsePoint` | use_point | 30.6 | 85.6 | 2.80 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxN03` | objective | 30.4 | 84.6 | 2.78 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxN03/UsePoint` | use_point | 30.4 | 84.6 | 2.78 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxN04` | objective | 30.3 | 83.6 | 2.76 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxN04/UsePoint` | use_point | 30.3 | 83.6 | 2.76 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxN05` | objective | 30.2 | 82.6 | 2.74 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxN05/UsePoint` | use_point | 30.2 | 82.6 | 2.74 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxN06` | objective | 30.1 | 81.6 | 2.71 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxN06/UsePoint` | use_point | 30.1 | 81.6 | 2.71 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxN07` | objective | 30.0 | 80.6 | 2.68 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxN07/UsePoint` | use_point | 30.0 | 80.6 | 2.68 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxN08` | objective | 30.0 | 79.6 | 2.65 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxN08/UsePoint` | use_point | 30.0 | 79.6 | 2.65 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxN09` | objective | 30.3 | 76.0 | 2.51 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxN09/UsePoint` | use_point | 30.3 | 76.0 | 2.51 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxN10` | objective | 30.4 | 75.2 | 2.48 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxN10/UsePoint` | use_point | 30.4 | 75.2 | 2.48 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxN11` | objective | 30.5 | 74.4 | 2.44 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxN11/UsePoint` | use_point | 30.5 | 74.4 | 2.44 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxS01` | objective | 21.1 | 89.3 | 4.23 | detour (whitelisted) |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxS01/UsePoint` | use_point | 21.1 | 89.3 | 4.23 | detour (whitelisted) |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxS02` | objective | 20.7 | 88.1 | 4.26 | detour (whitelisted) |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxS02/UsePoint` | use_point | 20.7 | 88.1 | 4.26 | detour (whitelisted) |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxS03` | objective | 20.4 | 87.2 | 4.28 | detour (whitelisted) |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxS03/UsePoint` | use_point | 20.4 | 87.2 | 4.28 | detour (whitelisted) |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxS04` | objective | 20.3 | 86.9 | 4.28 | detour (whitelisted) |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxS04/UsePoint` | use_point | 20.3 | 86.9 | 4.28 | detour (whitelisted) |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxS05` | objective | 20.4 | 83.8 | 4.10 | detour (whitelisted) |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxS05/UsePoint` | use_point | 20.4 | 83.8 | 4.10 | detour (whitelisted) |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxS06` | objective | 20.8 | 82.6 | 3.98 | detour (whitelisted) |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxS06/UsePoint` | use_point | 20.8 | 82.6 | 3.98 | detour (whitelisted) |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxS07` | objective | 21.3 | 82.2 | 3.87 | detour (whitelisted) |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxS07/UsePoint` | use_point | 21.3 | 82.2 | 3.87 | detour (whitelisted) |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxS08` | objective | 21.9 | 82.6 | 3.77 | detour (whitelisted) |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxS08/UsePoint` | use_point | 21.9 | 82.6 | 3.77 | detour (whitelisted) |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxS09` | objective | 22.8 | 83.9 | 3.69 | detour (whitelisted) |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxS09/UsePoint` | use_point | 22.8 | 83.9 | 3.69 | detour (whitelisted) |
+| `Spawns/PlayerPlaza1` | `Gameplay/Devices/PhoneEA/UsePoint` | use_point | 43.5 | 75.2 | 1.73 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultCash` | loot_spawn | 23.8 | 82.2 | 3.45 | detour (whitelisted) |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultCash/UsePoint` | use_point | 25.3 | 80.7 | 3.19 | detour (whitelisted) |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultGold` | loot_spawn | 27.2 | 81.0 | 2.98 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultGold/UsePoint` | use_point | 26.7 | 79.4 | 2.98 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/BondSafe` | objective | 24.4 | 87.4 | 3.58 | detour (whitelisted) |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/BondSafe/UsePoint` | use_point | 24.4 | 87.4 | 3.58 | detour (whitelisted) |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/ServerDrives` | loot_spawn | 40.6 | 69.7 | 1.72 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/ServerDrives/UsePoint` | use_point | 39.4 | 68.4 | 1.74 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/TellerDrawer1` | objective | 29.7 | 39.2 | 1.32 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/TellerDrawer1/UsePoint` | use_point | 29.7 | 39.2 | 1.32 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/TellerDrawer2` | objective | 29.2 | 37.2 | 1.28 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/TellerDrawer2/UsePoint` | use_point | 29.2 | 37.2 | 1.28 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/TellerDrawer3` | objective | 28.7 | 35.2 | 1.23 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/TellerDrawer3/UsePoint` | use_point | 28.7 | 35.2 | 1.23 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/TellerDrawer4` | objective | 29.5 | 33.9 | 1.15 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/TellerDrawer4/UsePoint` | use_point | 29.5 | 33.9 | 1.15 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/TellerDrawer5` | objective | 30.2 | 35.9 | 1.19 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/TellerDrawer5/UsePoint` | use_point | 30.2 | 35.9 | 1.19 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/TellerDrawer6` | objective | 30.9 | 37.9 | 1.23 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/TellerDrawer6/UsePoint` | use_point | 30.9 | 37.9 | 1.23 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/CountStraps1` | objective | 39.7 | 63.6 | 1.60 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/CountStraps1/UsePoint` | use_point | 39.7 | 63.6 | 1.60 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/CountStraps2` | objective | 39.6 | 62.7 | 1.58 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/CountStraps2/UsePoint` | use_point | 39.6 | 62.7 | 1.58 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/CountStraps3` | objective | 39.5 | 63.1 | 1.59 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/CountStraps3/UsePoint` | use_point | 39.5 | 63.1 | 1.59 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/CountStraps4` | objective | 39.6 | 64.1 | 1.62 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/CountStraps4/UsePoint` | use_point | 39.6 | 64.1 | 1.62 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxN01` | objective | 30.8 | 86.7 | 2.82 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxN01/UsePoint` | use_point | 30.8 | 86.7 | 2.82 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxN02` | objective | 30.6 | 85.7 | 2.80 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxN02/UsePoint` | use_point | 30.6 | 85.7 | 2.80 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxN03` | objective | 30.4 | 84.7 | 2.79 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxN03/UsePoint` | use_point | 30.4 | 84.7 | 2.79 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxN04` | objective | 30.3 | 83.7 | 2.77 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxN04/UsePoint` | use_point | 30.3 | 83.7 | 2.77 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxN05` | objective | 30.2 | 82.7 | 2.74 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxN05/UsePoint` | use_point | 30.2 | 82.7 | 2.74 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxN06` | objective | 30.1 | 81.7 | 2.72 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxN06/UsePoint` | use_point | 30.1 | 81.7 | 2.72 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxN07` | objective | 30.0 | 80.7 | 2.69 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxN07/UsePoint` | use_point | 30.0 | 80.7 | 2.69 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxN08` | objective | 30.0 | 79.7 | 2.66 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxN08/UsePoint` | use_point | 30.0 | 79.7 | 2.66 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxN09` | objective | 30.3 | 76.2 | 2.52 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxN09/UsePoint` | use_point | 30.3 | 76.2 | 2.52 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxN10` | objective | 30.4 | 75.4 | 2.48 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxN10/UsePoint` | use_point | 30.4 | 75.4 | 2.48 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxN11` | objective | 30.5 | 74.6 | 2.44 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxN11/UsePoint` | use_point | 30.5 | 74.6 | 2.44 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxS01` | objective | 21.1 | 89.4 | 4.24 | detour (whitelisted) |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxS01/UsePoint` | use_point | 21.1 | 89.4 | 4.24 | detour (whitelisted) |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxS02` | objective | 20.7 | 88.2 | 4.27 | detour (whitelisted) |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxS02/UsePoint` | use_point | 20.7 | 88.2 | 4.27 | detour (whitelisted) |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxS03` | objective | 20.4 | 87.4 | 4.29 | detour (whitelisted) |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxS03/UsePoint` | use_point | 20.4 | 87.4 | 4.29 | detour (whitelisted) |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxS04` | objective | 20.3 | 87.0 | 4.29 | detour (whitelisted) |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxS04/UsePoint` | use_point | 20.3 | 87.0 | 4.29 | detour (whitelisted) |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxS05` | objective | 20.4 | 84.0 | 4.11 | detour (whitelisted) |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxS05/UsePoint` | use_point | 20.4 | 84.0 | 4.11 | detour (whitelisted) |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxS06` | objective | 20.8 | 82.8 | 3.99 | detour (whitelisted) |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxS06/UsePoint` | use_point | 20.8 | 82.8 | 3.99 | detour (whitelisted) |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxS07` | objective | 21.3 | 82.4 | 3.88 | detour (whitelisted) |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxS07/UsePoint` | use_point | 21.3 | 82.4 | 3.88 | detour (whitelisted) |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxS08` | objective | 21.9 | 82.7 | 3.77 | detour (whitelisted) |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxS08/UsePoint` | use_point | 21.9 | 82.7 | 3.77 | detour (whitelisted) |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxS09` | objective | 22.8 | 84.0 | 3.69 | detour (whitelisted) |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxS09/UsePoint` | use_point | 22.8 | 84.0 | 3.69 | detour (whitelisted) |
 | `Spawns/PlayerPlaza1` | `Gameplay/Loot/HallBox01` | objective | 34.1 | 74.6 | 2.18 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Loot/HallBox01/UsePoint` | use_point | 34.1 | 74.6 | 2.18 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Loot/HallBox02` | objective | 34.7 | 75.6 | 2.18 | ok |
@@ -249,66 +249,66 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerPlaza1` | `Gameplay/Loot/HallBox23/UsePoint` | use_point | 30.1 | 81.3 | 2.70 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Loot/HallBox24` | objective | 31.0 | 80.2 | 2.59 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Loot/HallBox24/UsePoint` | use_point | 31.0 | 80.2 | 2.59 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Lifts/CashLift` | objective | 43.2 | 60.5 | 1.40 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Lifts/CashLift/UsePoint` | use_point | 43.2 | 60.5 | 1.40 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Lifts/Hoist` | objective | 29.2 | 76.7 | 2.63 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Lifts/Hoist/UsePoint` | use_point | 29.2 | 76.7 | 2.63 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Lifts/CashLift` | objective | 43.2 | 60.7 | 1.41 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Lifts/CashLift/UsePoint` | use_point | 43.2 | 60.7 | 1.41 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Lifts/Hoist` | objective | 29.2 | 76.9 | 2.63 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Lifts/Hoist/UsePoint` | use_point | 29.2 | 76.9 | 2.63 | ok |
 | `Spawns/PlayerPlaza1` | `Variants/Group_keycard/Slot_kc_manager_desk/Keycard` | objective | 28.6 | 33.4 | 1.17 | ok |
 | `Spawns/PlayerPlaza1` | `Variants/Group_keycard/Slot_kc_manager_desk/Keycard/UsePoint` | use_point | 28.6 | 33.4 | 1.17 | ok |
-| `Spawns/PlayerPlaza1` | `Variants/Group_code_pc/Slot_pc_ao1/CodePC` | objective | 36.4 | 70.7 | 1.94 | ok |
-| `Spawns/PlayerPlaza1` | `Variants/Group_code_pc/Slot_pc_ao1/CodePC/UsePoint` | use_point | 36.4 | 70.7 | 1.94 | ok |
+| `Spawns/PlayerPlaza1` | `Variants/Group_code_pc/Slot_pc_ao1/CodePC` | objective | 36.4 | 70.8 | 1.94 | ok |
+| `Spawns/PlayerPlaza1` | `Variants/Group_code_pc/Slot_pc_ao1/CodePC/UsePoint` | use_point | 36.4 | 70.8 | 1.94 | ok |
 | `Spawns/PlayerPlaza1` | `Variants/Group_server_room/Slot_srv_basement/VaultControlRack` | objective | 45.1 | 74.2 | 1.65 | ok |
 | `Spawns/PlayerPlaza1` | `Variants/Group_server_room/Slot_srv_basement/VaultControlRack/UsePoint` | use_point | 45.1 | 74.2 | 1.65 | ok |
 | `Spawns/PlayerPlaza1` | `Variants/Group_server_room/Slot_srv_basement/LaserController` | objective | 43.3 | 72.5 | 1.67 | ok |
 | `Spawns/PlayerPlaza1` | `Variants/Group_server_room/Slot_srv_basement/LaserController/UsePoint` | use_point | 43.3 | 72.5 | 1.67 | ok |
 | `Spawns/PlayerPlaza1` | `Variants/Group_side_door/Slot_door_dock_open/FireExitDoor` | objective | 44.2 | 48.5 | 1.10 | ok |
 | `Spawns/PlayerPlaza1` | `Variants/Group_side_door/Slot_door_dock_open/FireExitDoor/UsePoint` | use_point | 44.2 | 48.5 | 1.10 | ok |
-| `Spawns/PlayerPlaza1` | `Variants/Group_side_door/Slot_door_dock_open/DockPersonnelDoor` | objective | 46.8 | 53.1 | 1.13 | ok |
-| `Spawns/PlayerPlaza1` | `Variants/Group_side_door/Slot_door_dock_open/DockPersonnelDoor/UsePoint` | use_point | 46.8 | 53.1 | 1.13 | ok |
-| `Spawns/PlayerPlaza1` | `Variants/Group_escape/Slot_esc_heli_terrace/SecureTerrace/Zone` | secure_zone | 29.4 | 113.4 | 3.86 | detour (whitelisted) |
-| `Spawns/PlayerPlaza1` | `Variants/Group_escape/Slot_esc_heli_terrace/EscapeTerrace/Zone` | escape_zone | 24.5 | 110.1 | 4.50 | detour (whitelisted) |
-| `Spawns/PlayerPlaza1` | `Variants/Group_president_safe/Slot_ps_bonds/PresidentSafe` | objective | 44.6 | 83.8 | 1.88 | ok |
-| `Spawns/PlayerPlaza1` | `Variants/Group_president_safe/Slot_ps_bonds/PresidentSafe/UsePoint` | use_point | 44.6 | 83.8 | 1.88 | ok |
-| `Spawns/PlayerPlaza1` | `Variants/Group_president_safe/Slot_ps_bonds/PresidentSafe/PresidentBonds` | loot_spawn | 44.6 | 83.8 | 1.88 | ok |
-| `Spawns/PlayerPlaza1` | `Variants/Group_president_safe/Slot_ps_bonds/PresidentSafe/PresidentBonds/UsePoint` | use_point | 44.6 | 83.8 | 1.88 | ok |
-| `Spawns/PlayerPlaza1` | `Variants/Group_president_safe/Slot_ps_bonds/PresidentSafe/PresidentValuables1/UsePoint` | use_point | 44.6 | 83.8 | 1.88 | ok |
-| `Spawns/PlayerPlaza1` | `Variants/Group_president_safe/Slot_ps_bonds/PresidentSafe/PresidentValuables2/UsePoint` | use_point | 44.6 | 83.8 | 1.88 | ok |
-| `Spawns/PlayerPlaza1` | `Variants/Group_president_safe/Slot_ps_bonds/PresidentSafe/PresidentValuables3/UsePoint` | use_point | 44.6 | 83.8 | 1.88 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Doors/LockerDoor/UsePoint` | use_point | 40.8 | 62.5 | 1.53 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Doors/CashLiftDoorB/UsePoint` | use_point | 43.4 | 60.3 | 1.39 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Doors/CartQueueDoor/UsePoint` | use_point | 38.1 | 55.5 | 1.46 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Doors/StairDoorSAB/UsePoint` | use_point | 37.5 | 53.7 | 1.43 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Doors/CountRoomDoor/UsePoint` | use_point | 36.5 | 59.6 | 1.63 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Doors/PlantDoor/UsePoint` | use_point | 37.1 | 68.6 | 1.85 | ok |
+| `Spawns/PlayerPlaza1` | `Variants/Group_side_door/Slot_door_dock_open/DockPersonnelDoor` | objective | 46.8 | 53.2 | 1.14 | ok |
+| `Spawns/PlayerPlaza1` | `Variants/Group_side_door/Slot_door_dock_open/DockPersonnelDoor/UsePoint` | use_point | 46.8 | 53.2 | 1.14 | ok |
+| `Spawns/PlayerPlaza1` | `Variants/Group_escape/Slot_esc_heli_terrace/SecureTerrace/Zone` | secure_zone | 29.4 | 113.6 | 3.87 | detour (whitelisted) |
+| `Spawns/PlayerPlaza1` | `Variants/Group_escape/Slot_esc_heli_terrace/EscapeTerrace/Zone` | escape_zone | 24.5 | 110.3 | 4.51 | detour (whitelisted) |
+| `Spawns/PlayerPlaza1` | `Variants/Group_president_safe/Slot_ps_bonds/PresidentSafe` | objective | 44.6 | 83.9 | 1.88 | ok |
+| `Spawns/PlayerPlaza1` | `Variants/Group_president_safe/Slot_ps_bonds/PresidentSafe/UsePoint` | use_point | 44.6 | 83.9 | 1.88 | ok |
+| `Spawns/PlayerPlaza1` | `Variants/Group_president_safe/Slot_ps_bonds/PresidentSafe/PresidentBonds` | loot_spawn | 44.6 | 83.9 | 1.88 | ok |
+| `Spawns/PlayerPlaza1` | `Variants/Group_president_safe/Slot_ps_bonds/PresidentSafe/PresidentBonds/UsePoint` | use_point | 44.6 | 83.9 | 1.88 | ok |
+| `Spawns/PlayerPlaza1` | `Variants/Group_president_safe/Slot_ps_bonds/PresidentSafe/PresidentValuables1/UsePoint` | use_point | 44.6 | 83.9 | 1.88 | ok |
+| `Spawns/PlayerPlaza1` | `Variants/Group_president_safe/Slot_ps_bonds/PresidentSafe/PresidentValuables2/UsePoint` | use_point | 44.6 | 83.9 | 1.88 | ok |
+| `Spawns/PlayerPlaza1` | `Variants/Group_president_safe/Slot_ps_bonds/PresidentSafe/PresidentValuables3/UsePoint` | use_point | 44.6 | 83.9 | 1.88 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Doors/LockerDoor/UsePoint` | use_point | 40.8 | 62.7 | 1.54 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Doors/CashLiftDoorB/UsePoint` | use_point | 43.4 | 60.5 | 1.39 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Doors/CartQueueDoor/UsePoint` | use_point | 38.1 | 55.7 | 1.46 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Doors/StairDoorSAB/UsePoint` | use_point | 37.5 | 53.8 | 1.44 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Doors/CountRoomDoor/UsePoint` | use_point | 36.5 | 59.7 | 1.64 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Doors/PlantDoor/UsePoint` | use_point | 37.1 | 68.7 | 1.85 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Doors/CommsDoor/UsePoint` | use_point | 39.0 | 68.3 | 1.75 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Doors/SuppliesDoor/UsePoint` | use_point | 41.0 | 63.3 | 1.54 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Doors/StairDoorSBB/UsePoint` | use_point | 43.2 | 59.4 | 1.37 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Doors/RecordsDoor/UsePoint` | use_point | 39.8 | 61.6 | 1.55 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Doors/VaultGate` | objective | 36.4 | 55.7 | 1.53 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Doors/VaultGate/UsePoint` | use_point | 36.4 | 55.7 | 1.53 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Doors/RecordsDoor/UsePoint` | use_point | 39.8 | 61.7 | 1.55 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Doors/VaultGate` | objective | 36.4 | 55.9 | 1.54 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Doors/VaultGate/UsePoint` | use_point | 36.4 | 55.9 | 1.54 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Doors/DepositHallDoor/UsePoint` | use_point | 40.5 | 63.4 | 1.57 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Doors/VaultDoor` | objective | 32.6 | 70.3 | 2.16 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Doors/VaultDoor/UsePoint` | use_point | 32.6 | 70.3 | 2.16 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Doors/DockRollerDoor/UsePoint` | use_point | 48.3 | 54.2 | 1.12 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Doors/CashLiftDoorG/UsePoint` | use_point | 44.3 | 51.9 | 1.17 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Doors/DockCorridorDoor/UsePoint` | use_point | 38.1 | 43.4 | 1.14 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Doors/ElectricalDoorG/UsePoint` | use_point | 38.0 | 42.2 | 1.11 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Doors/StairDoorSAG/UsePoint` | use_point | 37.3 | 41.0 | 1.10 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Doors/SecurityDoor/UsePoint` | use_point | 36.6 | 44.7 | 1.22 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Doors/GuardLockerDoor/UsePoint` | use_point | 36.4 | 47.8 | 1.31 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Doors/StaffWCDoorM/UsePoint` | use_point | 36.9 | 43.9 | 1.19 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Doors/StaffWCDoorW/UsePoint` | use_point | 37.6 | 41.2 | 1.10 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Doors/JanitorDoorG/UsePoint` | use_point | 38.5 | 42.2 | 1.10 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Doors/MailDoor/UsePoint` | use_point | 40.4 | 47.0 | 1.16 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Doors/VaultDoor` | objective | 32.6 | 70.4 | 2.16 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Doors/VaultDoor/UsePoint` | use_point | 32.6 | 70.4 | 2.16 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Doors/DockRollerDoor/UsePoint` | use_point | 48.3 | 54.4 | 1.13 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Doors/CashLiftDoorG/UsePoint` | use_point | 44.3 | 52.1 | 1.18 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Doors/DockCorridorDoor/UsePoint` | use_point | 38.1 | 43.5 | 1.14 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Doors/ElectricalDoorG/UsePoint` | use_point | 38.0 | 42.4 | 1.11 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Doors/StairDoorSAG/UsePoint` | use_point | 37.3 | 41.1 | 1.10 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Doors/SecurityDoor/UsePoint` | use_point | 36.6 | 44.8 | 1.23 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Doors/GuardLockerDoor/UsePoint` | use_point | 36.4 | 47.9 | 1.32 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Doors/StaffWCDoorM/UsePoint` | use_point | 36.9 | 44.0 | 1.19 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Doors/StaffWCDoorW/UsePoint` | use_point | 37.6 | 41.3 | 1.10 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Doors/JanitorDoorG/UsePoint` | use_point | 38.5 | 42.3 | 1.10 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Doors/MailDoor/UsePoint` | use_point | 40.4 | 47.1 | 1.17 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Doors/StairDoorSBG/UsePoint` | use_point | 43.1 | 47.0 | 1.09 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Doors/StaffDoorTWW/UsePoint` | use_point | 36.9 | 40.4 | 1.10 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Doors/StaffDoorTWE/UsePoint` | use_point | 37.3 | 40.4 | 1.08 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Doors/StaffDoorTWW/UsePoint` | use_point | 36.9 | 40.9 | 1.11 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Doors/StaffDoorTWE/UsePoint` | use_point | 37.3 | 40.9 | 1.10 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Doors/ClientServiceDoor/UsePoint` | use_point | 41.3 | 45.0 | 1.09 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Doors/LoanTellerDoor/UsePoint` | use_point | 35.8 | 39.1 | 1.09 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Doors/ClientTellerDoor/UsePoint` | use_point | 36.5 | 40.7 | 1.12 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Doors/LoanHallDoor/UsePoint` | use_point | 29.8 | 32.5 | 1.09 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Doors/ClientHallDoor/UsePoint` | use_point | 30.6 | 32.6 | 1.07 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Doors/TellerGate/UsePoint` | use_point | 26.1 | 26.3 | 1.01 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Doors/TellerGate/UsePoint` | use_point | 26.4 | 26.6 | 1.01 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Doors/ConsultDoor1/UsePoint` | use_point | 27.2 | 30.0 | 1.10 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Doors/ConsultDoor2/UsePoint` | use_point | 23.2 | 27.2 | 1.17 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Doors/ATMHallDoor/UsePoint` | use_point | 18.9 | 26.4 | 1.40 | ok |
@@ -323,151 +323,151 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerPlaza2` | `Gameplay/Doors/BronzeDoorsE/UsePoint` | use_point | 8.9 | 9.1 | 1.02 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Doors/ATMStreetDoor` | objective | 21.1 | 24.0 | 1.13 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Doors/ATMStreetDoor/UsePoint` | use_point | 21.1 | 24.0 | 1.13 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Doors/BreakRoomDoor/UsePoint` | use_point | 41.0 | 64.7 | 1.58 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Doors/ElectricalDoorM/UsePoint` | use_point | 38.4 | 57.7 | 1.50 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Doors/StairDoorSAM/UsePoint` | use_point | 37.8 | 55.7 | 1.47 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Doors/ITDoor/UsePoint` | use_point | 37.0 | 59.4 | 1.61 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Doors/ServerDoor/UsePoint` | use_point | 36.9 | 66.4 | 1.80 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Doors/GalleryWCDoorM/UsePoint` | use_point | 37.4 | 70.4 | 1.88 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Doors/GalleryWCDoorW/UsePoint` | use_point | 38.0 | 73.4 | 1.93 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Doors/BreakRoomDoor/UsePoint` | use_point | 41.0 | 64.8 | 1.58 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Doors/ElectricalDoorM/UsePoint` | use_point | 38.4 | 57.8 | 1.50 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Doors/StairDoorSAM/UsePoint` | use_point | 37.8 | 55.9 | 1.48 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Doors/ITDoor/UsePoint` | use_point | 37.0 | 59.6 | 1.61 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Doors/ServerDoor/UsePoint` | use_point | 36.9 | 66.5 | 1.81 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Doors/GalleryWCDoorM/UsePoint` | use_point | 37.4 | 70.5 | 1.89 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Doors/GalleryWCDoorW/UsePoint` | use_point | 38.0 | 73.5 | 1.93 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Doors/JanitorDoorM/UsePoint` | use_point | 38.9 | 71.3 | 1.83 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Doors/ArchiveDoor/UsePoint` | use_point | 40.8 | 66.3 | 1.62 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Doors/StairDoorSBM/UsePoint` | use_point | 43.5 | 61.4 | 1.41 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Doors/LoggiaDoorW/UsePoint` | use_point | 39.6 | 62.7 | 1.58 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Doors/OperationsDoor/UsePoint` | use_point | 37.9 | 57.8 | 1.53 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Doors/ConferenceDoor/UsePoint` | use_point | 37.0 | 71.4 | 1.93 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Doors/LoggiaDoorW/UsePoint` | use_point | 39.6 | 62.9 | 1.59 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Doors/OperationsDoor/UsePoint` | use_point | 37.9 | 58.0 | 1.53 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Doors/ConferenceDoor/UsePoint` | use_point | 37.0 | 71.6 | 1.94 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Doors/ComplianceDoor/UsePoint` | use_point | 38.7 | 70.3 | 1.82 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Doors/LoggiaDoorE/UsePoint` | use_point | 40.3 | 66.4 | 1.65 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Doors/OfficerDoor1/UsePoint` | use_point | 35.6 | 66.8 | 1.88 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Doors/OfficerDoor2/UsePoint` | use_point | 28.1 | 75.8 | 2.70 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Doors/OfficerDoor3/UsePoint` | use_point | 21.8 | 84.8 | 3.89 | detour (whitelisted) |
+| `Spawns/PlayerPlaza2` | `Gameplay/Doors/OfficerDoor1/UsePoint` | use_point | 35.6 | 67.0 | 1.88 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Doors/OfficerDoor2/UsePoint` | use_point | 28.1 | 76.0 | 2.70 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Doors/OfficerDoor3/UsePoint` | use_point | 21.8 | 84.9 | 3.89 | detour (whitelisted) |
 | `Spawns/PlayerPlaza2` | `Gameplay/Doors/VaultOpsDoor/UsePoint` | use_point | 36.3 | 70.5 | 1.94 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Doors/TreasuryDoor/UsePoint` | use_point | 29.0 | 79.5 | 2.74 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Doors/TrainingDoor/UsePoint` | use_point | 23.0 | 88.5 | 3.85 | detour (whitelisted) |
-| `Spawns/PlayerPlaza2` | `Gameplay/Doors/OperationsGalleryDoor/UsePoint` | use_point | 27.4 | 68.8 | 2.51 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Doors/ConferenceGalleryDoor/UsePoint` | use_point | 28.0 | 81.2 | 2.90 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Doors/GalleryDoorW/UsePoint` | use_point | 31.0 | 71.8 | 2.31 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Doors/OperationsGalleryDoor/UsePoint` | use_point | 27.4 | 69.0 | 2.51 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Doors/ConferenceGalleryDoor/UsePoint` | use_point | 28.0 | 81.3 | 2.90 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Doors/GalleryDoorW/UsePoint` | use_point | 31.0 | 71.9 | 2.32 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Doors/GalleryDoorE/UsePoint` | use_point | 31.8 | 75.5 | 2.37 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Doors/BoardroomDoor/UsePoint` | use_point | 41.7 | 73.6 | 1.77 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Doors/ElectricalDoorE/UsePoint` | use_point | 39.1 | 66.6 | 1.70 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Doors/StairDoorSAE/UsePoint` | use_point | 38.5 | 64.6 | 1.68 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Doors/AssistantDoor/UsePoint` | use_point | 37.7 | 68.4 | 1.81 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Doors/PresidentDoor/UsePoint` | use_point | 37.8 | 77.4 | 2.05 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Doors/BoardroomDoor/UsePoint` | use_point | 41.7 | 73.7 | 1.77 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Doors/ElectricalDoorE/UsePoint` | use_point | 39.1 | 66.8 | 1.71 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Doors/StairDoorSAE/UsePoint` | use_point | 38.5 | 64.8 | 1.68 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Doors/AssistantDoor/UsePoint` | use_point | 37.7 | 68.5 | 1.82 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Doors/PresidentDoor/UsePoint` | use_point | 37.8 | 77.5 | 2.05 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Doors/PantryDoor/UsePoint` | use_point | 40.3 | 78.2 | 1.94 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Doors/ExecWCDoor/UsePoint` | use_point | 42.4 | 73.3 | 1.73 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Doors/StairDoorSBE/UsePoint` | use_point | 44.1 | 70.3 | 1.59 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Doors/LoungeDoor/UsePoint` | use_point | 40.7 | 72.6 | 1.78 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Doors/LegalDoor/UsePoint` | use_point | 36.9 | 71.4 | 1.93 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Doors/TrustDoor/UsePoint` | use_point | 38.4 | 83.4 | 2.17 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Doors/LoungeDoor/UsePoint` | use_point | 40.7 | 72.8 | 1.79 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Doors/LegalDoor/UsePoint` | use_point | 36.9 | 71.6 | 1.94 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Doors/TrustDoor/UsePoint` | use_point | 38.4 | 83.5 | 2.17 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Doors/RecordsDoorE/UsePoint` | use_point | 42.3 | 72.4 | 1.71 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Doors/TerraceDoorsW/UsePoint` | use_point | 33.0 | 81.3 | 2.46 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Doors/TerraceDoorsE/UsePoint` | use_point | 30.6 | 82.5 | 2.69 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Doors/HeadHouseDoor` | objective | 39.5 | 73.5 | 1.86 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Doors/HeadHouseDoor/UsePoint` | use_point | 39.5 | 73.5 | 1.86 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Doors/RoofPlantDoor/UsePoint` | use_point | 35.9 | 86.7 | 2.41 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Doors/CashCageGate` | objective | 27.4 | 78.3 | 2.86 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Doors/CashCageGate/UsePoint` | use_point | 27.4 | 78.3 | 2.86 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Doors/CashCageGate/Padlock` | objective | 27.5 | 78.2 | 2.84 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Doors/CashCageGate/Padlock/UsePoint` | use_point | 27.5 | 78.2 | 2.84 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Doors/GoldCageGate` | objective | 25.7 | 77.2 | 3.00 | detour (whitelisted) |
-| `Spawns/PlayerPlaza2` | `Gameplay/Doors/GoldCageGate/UsePoint` | use_point | 25.7 | 77.2 | 3.00 | detour (whitelisted) |
-| `Spawns/PlayerPlaza2` | `Gameplay/Doors/GoldCageGate/Padlock` | objective | 25.7 | 77.2 | 3.00 | detour (whitelisted) |
-| `Spawns/PlayerPlaza2` | `Gameplay/Doors/GoldCageGate/Padlock/UsePoint` | use_point | 25.7 | 77.2 | 3.00 | detour (whitelisted) |
-| `Spawns/PlayerPlaza2` | `Gameplay/Devices/CameraStation/UsePoint` | use_point | 42.5 | 50.2 | 1.18 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Devices/VaultGateReader` | objective | 36.2 | 57.3 | 1.58 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Devices/VaultGateReader/UsePoint` | use_point | 36.2 | 57.3 | 1.58 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Devices/TimeLockConsole` | objective | 34.0 | 73.1 | 2.15 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Devices/TimeLockConsole/UsePoint` | use_point | 34.0 | 73.1 | 2.15 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Devices/CashCageKeypad` | objective | 27.7 | 77.1 | 2.79 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Devices/CashCageKeypad/UsePoint` | use_point | 27.7 | 77.1 | 2.79 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Devices/LidDrill` | objective | 31.4 | 31.6 | 1.01 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Devices/LidDrill/UsePoint` | use_point | 31.4 | 31.6 | 1.01 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Devices/AlarmSR/UsePoint` | use_point | 43.4 | 51.1 | 1.18 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Doors/TerraceDoorsW/UsePoint` | use_point | 33.0 | 81.5 | 2.47 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Doors/TerraceDoorsE/UsePoint` | use_point | 30.6 | 82.6 | 2.70 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Doors/HeadHouseDoor` | objective | 39.5 | 73.7 | 1.86 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Doors/HeadHouseDoor/UsePoint` | use_point | 39.5 | 73.7 | 1.86 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Doors/RoofPlantDoor/UsePoint` | use_point | 35.9 | 86.8 | 2.42 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Doors/CashCageGate` | objective | 27.4 | 78.4 | 2.86 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Doors/CashCageGate/UsePoint` | use_point | 27.4 | 78.4 | 2.86 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Doors/CashCageGate/Padlock` | objective | 27.5 | 78.4 | 2.85 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Doors/CashCageGate/Padlock/UsePoint` | use_point | 27.5 | 78.4 | 2.85 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Doors/GoldCageGate` | objective | 25.7 | 77.3 | 3.01 | detour (whitelisted) |
+| `Spawns/PlayerPlaza2` | `Gameplay/Doors/GoldCageGate/UsePoint` | use_point | 25.7 | 77.3 | 3.01 | detour (whitelisted) |
+| `Spawns/PlayerPlaza2` | `Gameplay/Doors/GoldCageGate/Padlock` | objective | 25.7 | 77.4 | 3.01 | detour (whitelisted) |
+| `Spawns/PlayerPlaza2` | `Gameplay/Doors/GoldCageGate/Padlock/UsePoint` | use_point | 25.7 | 77.4 | 3.01 | detour (whitelisted) |
+| `Spawns/PlayerPlaza2` | `Gameplay/Devices/CameraStation/UsePoint` | use_point | 42.5 | 50.4 | 1.18 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Devices/VaultGateReader` | objective | 36.2 | 57.5 | 1.59 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Devices/VaultGateReader/UsePoint` | use_point | 36.2 | 57.5 | 1.59 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Devices/TimeLockConsole` | objective | 34.0 | 73.3 | 2.16 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Devices/TimeLockConsole/UsePoint` | use_point | 34.0 | 73.3 | 2.16 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Devices/CashCageKeypad` | objective | 27.7 | 77.3 | 2.79 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Devices/CashCageKeypad/UsePoint` | use_point | 27.7 | 77.3 | 2.79 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Devices/LidDrill` | objective | 29.5 | 30.0 | 1.02 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Devices/LidDrill/UsePoint` | use_point | 29.5 | 30.0 | 1.02 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Devices/AlarmSR/UsePoint` | use_point | 43.4 | 51.2 | 1.18 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Devices/AlarmBM/UsePoint` | use_point | 32.1 | 36.4 | 1.13 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Devices/AlarmSD/UsePoint` | use_point | 35.1 | 71.6 | 2.04 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Devices/AlarmTeller1/UsePoint` | use_point | 29.9 | 38.0 | 1.27 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Devices/AlarmTeller2/UsePoint` | use_point | 29.3 | 36.0 | 1.23 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Devices/AlarmTeller3/UsePoint` | use_point | 28.8 | 34.0 | 1.18 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Devices/AlarmTeller4/UsePoint` | use_point | 29.3 | 34.6 | 1.18 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Devices/AlarmTeller5/UsePoint` | use_point | 29.9 | 36.6 | 1.22 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Devices/AlarmTeller6/UsePoint` | use_point | 30.6 | 38.6 | 1.26 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Devices/AlarmTeller1/UsePoint` | use_point | 30.1 | 38.2 | 1.27 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Devices/AlarmTeller2/UsePoint` | use_point | 29.5 | 36.2 | 1.23 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Devices/AlarmTeller3/UsePoint` | use_point | 29.0 | 34.2 | 1.18 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Devices/AlarmTeller4/UsePoint` | use_point | 29.5 | 34.8 | 1.18 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Devices/AlarmTeller5/UsePoint` | use_point | 30.1 | 36.8 | 1.22 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Devices/AlarmTeller6/UsePoint` | use_point | 30.8 | 38.8 | 1.26 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Devices/PhoneBM/UsePoint` | use_point | 29.9 | 37.5 | 1.26 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Devices/PhoneLO/UsePoint` | use_point | 40.3 | 43.4 | 1.08 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Devices/PhoneNA/UsePoint` | use_point | 25.5 | 35.9 | 1.41 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Devices/PhonePC/UsePoint` | use_point | 35.0 | 41.2 | 1.18 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Devices/PhoneSR/UsePoint` | use_point | 41.5 | 49.4 | 1.19 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Devices/PhoneSR/UsePoint` | use_point | 41.5 | 49.6 | 1.19 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Devices/PhoneSD/UsePoint` | use_point | 36.1 | 71.1 | 1.97 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Devices/PhoneBR/UsePoint` | use_point | 45.3 | 69.5 | 1.53 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Devices/PhoneBR/UsePoint` | use_point | 45.3 | 69.7 | 1.54 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Devices/PhoneVO/UsePoint` | use_point | 37.2 | 76.6 | 2.06 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Devices/PhoneEA/UsePoint` | use_point | 43.5 | 75.0 | 1.72 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultCash` | loot_spawn | 23.7 | 81.9 | 3.45 | detour (whitelisted) |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultCash/UsePoint` | use_point | 25.2 | 80.4 | 3.19 | detour (whitelisted) |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultGold` | loot_spawn | 26.7 | 80.8 | 3.03 | detour (whitelisted) |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultGold/UsePoint` | use_point | 26.2 | 79.2 | 3.02 | detour (whitelisted) |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/BondSafe` | objective | 24.8 | 87.2 | 3.51 | detour (whitelisted) |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/BondSafe/UsePoint` | use_point | 24.8 | 87.2 | 3.51 | detour (whitelisted) |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/ServerDrives` | loot_spawn | 40.5 | 69.5 | 1.72 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/ServerDrives/UsePoint` | use_point | 39.2 | 68.2 | 1.74 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/TellerDrawer1` | objective | 30.2 | 38.9 | 1.29 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/TellerDrawer1/UsePoint` | use_point | 30.2 | 38.9 | 1.29 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/TellerDrawer2` | objective | 29.6 | 36.9 | 1.25 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/TellerDrawer2/UsePoint` | use_point | 29.6 | 36.9 | 1.25 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/TellerDrawer3` | objective | 29.0 | 34.9 | 1.20 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/TellerDrawer3/UsePoint` | use_point | 29.0 | 34.9 | 1.20 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/TellerDrawer4` | objective | 29.1 | 33.7 | 1.16 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/TellerDrawer4/UsePoint` | use_point | 29.1 | 33.7 | 1.16 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/TellerDrawer5` | objective | 29.7 | 35.7 | 1.20 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/TellerDrawer5/UsePoint` | use_point | 29.7 | 35.7 | 1.20 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/TellerDrawer6` | objective | 30.3 | 37.7 | 1.24 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/TellerDrawer6/UsePoint` | use_point | 30.3 | 37.7 | 1.24 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/CountStraps1` | objective | 39.8 | 63.3 | 1.59 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/CountStraps1/UsePoint` | use_point | 39.8 | 63.3 | 1.59 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/CountStraps2` | objective | 39.7 | 62.5 | 1.57 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/CountStraps2/UsePoint` | use_point | 39.7 | 62.5 | 1.57 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/CountStraps3` | objective | 39.5 | 62.8 | 1.59 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/CountStraps3/UsePoint` | use_point | 39.5 | 62.8 | 1.59 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/CountStraps4` | objective | 39.5 | 63.8 | 1.61 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/CountStraps4/UsePoint` | use_point | 39.5 | 63.8 | 1.61 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxN01` | objective | 31.1 | 86.5 | 2.78 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxN01/UsePoint` | use_point | 31.1 | 86.5 | 2.78 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxN02` | objective | 30.9 | 85.5 | 2.77 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxN02/UsePoint` | use_point | 30.9 | 85.5 | 2.77 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxN03` | objective | 30.7 | 84.5 | 2.76 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxN03/UsePoint` | use_point | 30.7 | 84.5 | 2.76 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxN04` | objective | 30.5 | 83.5 | 2.74 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxN04/UsePoint` | use_point | 30.5 | 83.5 | 2.74 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxN05` | objective | 30.3 | 82.5 | 2.72 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxN05/UsePoint` | use_point | 30.3 | 82.5 | 2.72 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxN06` | objective | 30.2 | 81.5 | 2.70 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxN06/UsePoint` | use_point | 30.2 | 81.5 | 2.70 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxN07` | objective | 30.1 | 80.5 | 2.67 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxN07/UsePoint` | use_point | 30.1 | 80.5 | 2.67 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxN08` | objective | 30.1 | 79.5 | 2.65 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxN08/UsePoint` | use_point | 30.1 | 79.5 | 2.65 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxN09` | objective | 30.1 | 75.9 | 2.52 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxN09/UsePoint` | use_point | 30.1 | 75.9 | 2.52 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxN10` | objective | 30.2 | 75.1 | 2.49 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxN10/UsePoint` | use_point | 30.2 | 75.1 | 2.49 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxN11` | objective | 30.3 | 74.3 | 2.45 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxN11/UsePoint` | use_point | 30.3 | 74.3 | 2.45 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxS01` | objective | 21.6 | 89.2 | 4.14 | detour (whitelisted) |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxS01/UsePoint` | use_point | 21.6 | 89.2 | 4.14 | detour (whitelisted) |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxS02` | objective | 21.0 | 88.0 | 4.19 | detour (whitelisted) |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxS02/UsePoint` | use_point | 21.0 | 88.0 | 4.19 | detour (whitelisted) |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxS03` | objective | 20.6 | 87.1 | 4.24 | detour (whitelisted) |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxS03/UsePoint` | use_point | 20.6 | 87.1 | 4.24 | detour (whitelisted) |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxS04` | objective | 20.4 | 86.8 | 4.27 | detour (whitelisted) |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxS04/UsePoint` | use_point | 20.4 | 86.8 | 4.27 | detour (whitelisted) |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxS05` | objective | 20.3 | 83.7 | 4.12 | detour (whitelisted) |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxS05/UsePoint` | use_point | 20.3 | 83.7 | 4.12 | detour (whitelisted) |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxS06` | objective | 20.5 | 82.6 | 4.03 | detour (whitelisted) |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxS06/UsePoint` | use_point | 20.5 | 82.6 | 4.03 | detour (whitelisted) |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxS07` | objective | 20.9 | 82.1 | 3.94 | detour (whitelisted) |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxS07/UsePoint` | use_point | 20.9 | 82.1 | 3.94 | detour (whitelisted) |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxS08` | objective | 21.4 | 82.5 | 3.85 | detour (whitelisted) |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxS08/UsePoint` | use_point | 21.4 | 82.5 | 3.85 | detour (whitelisted) |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxS09` | objective | 22.1 | 83.8 | 3.79 | detour (whitelisted) |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxS09/UsePoint` | use_point | 22.1 | 83.8 | 3.79 | detour (whitelisted) |
+| `Spawns/PlayerPlaza2` | `Gameplay/Devices/PhoneEA/UsePoint` | use_point | 43.5 | 75.2 | 1.73 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultCash` | loot_spawn | 23.7 | 82.1 | 3.46 | detour (whitelisted) |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultCash/UsePoint` | use_point | 25.2 | 80.6 | 3.20 | detour (whitelisted) |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultGold` | loot_spawn | 26.7 | 80.9 | 3.03 | detour (whitelisted) |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultGold/UsePoint` | use_point | 26.2 | 79.3 | 3.03 | detour (whitelisted) |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/BondSafe` | objective | 24.8 | 87.3 | 3.52 | detour (whitelisted) |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/BondSafe/UsePoint` | use_point | 24.8 | 87.3 | 3.52 | detour (whitelisted) |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/ServerDrives` | loot_spawn | 40.5 | 69.6 | 1.72 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/ServerDrives/UsePoint` | use_point | 39.2 | 68.3 | 1.74 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/TellerDrawer1` | objective | 30.2 | 39.1 | 1.29 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/TellerDrawer1/UsePoint` | use_point | 30.2 | 39.1 | 1.29 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/TellerDrawer2` | objective | 29.6 | 37.1 | 1.26 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/TellerDrawer2/UsePoint` | use_point | 29.6 | 37.1 | 1.26 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/TellerDrawer3` | objective | 29.0 | 35.1 | 1.21 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/TellerDrawer3/UsePoint` | use_point | 29.0 | 35.1 | 1.21 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/TellerDrawer4` | objective | 29.1 | 33.9 | 1.16 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/TellerDrawer4/UsePoint` | use_point | 29.1 | 33.9 | 1.16 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/TellerDrawer5` | objective | 29.7 | 35.9 | 1.21 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/TellerDrawer5/UsePoint` | use_point | 29.7 | 35.9 | 1.21 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/TellerDrawer6` | objective | 30.3 | 37.9 | 1.25 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/TellerDrawer6/UsePoint` | use_point | 30.3 | 37.9 | 1.25 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/CountStraps1` | objective | 39.8 | 63.5 | 1.59 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/CountStraps1/UsePoint` | use_point | 39.8 | 63.5 | 1.59 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/CountStraps2` | objective | 39.7 | 62.6 | 1.58 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/CountStraps2/UsePoint` | use_point | 39.7 | 62.6 | 1.58 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/CountStraps3` | objective | 39.5 | 63.0 | 1.59 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/CountStraps3/UsePoint` | use_point | 39.5 | 63.0 | 1.59 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/CountStraps4` | objective | 39.5 | 64.0 | 1.62 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/CountStraps4/UsePoint` | use_point | 39.5 | 64.0 | 1.62 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxN01` | objective | 31.1 | 86.7 | 2.78 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxN01/UsePoint` | use_point | 31.1 | 86.7 | 2.78 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxN02` | objective | 30.9 | 85.7 | 2.77 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxN02/UsePoint` | use_point | 30.9 | 85.7 | 2.77 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxN03` | objective | 30.7 | 84.7 | 2.76 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxN03/UsePoint` | use_point | 30.7 | 84.7 | 2.76 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxN04` | objective | 30.5 | 83.7 | 2.74 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxN04/UsePoint` | use_point | 30.5 | 83.7 | 2.74 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxN05` | objective | 30.3 | 82.7 | 2.73 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxN05/UsePoint` | use_point | 30.3 | 82.7 | 2.73 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxN06` | objective | 30.2 | 81.7 | 2.70 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxN06/UsePoint` | use_point | 30.2 | 81.7 | 2.70 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxN07` | objective | 30.1 | 80.7 | 2.68 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxN07/UsePoint` | use_point | 30.1 | 80.7 | 2.68 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxN08` | objective | 30.1 | 79.7 | 2.65 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxN08/UsePoint` | use_point | 30.1 | 79.7 | 2.65 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxN09` | objective | 30.1 | 76.1 | 2.53 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxN09/UsePoint` | use_point | 30.1 | 76.1 | 2.53 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxN10` | objective | 30.2 | 75.3 | 2.49 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxN10/UsePoint` | use_point | 30.2 | 75.3 | 2.49 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxN11` | objective | 30.3 | 74.5 | 2.46 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxN11/UsePoint` | use_point | 30.3 | 74.5 | 2.46 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxS01` | objective | 21.6 | 89.4 | 4.14 | detour (whitelisted) |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxS01/UsePoint` | use_point | 21.6 | 89.4 | 4.14 | detour (whitelisted) |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxS02` | objective | 21.0 | 88.1 | 4.20 | detour (whitelisted) |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxS02/UsePoint` | use_point | 21.0 | 88.1 | 4.20 | detour (whitelisted) |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxS03` | objective | 20.6 | 87.3 | 4.24 | detour (whitelisted) |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxS03/UsePoint` | use_point | 20.6 | 87.3 | 4.24 | detour (whitelisted) |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxS04` | objective | 20.4 | 87.0 | 4.27 | detour (whitelisted) |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxS04/UsePoint` | use_point | 20.4 | 87.0 | 4.27 | detour (whitelisted) |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxS05` | objective | 20.3 | 83.9 | 4.13 | detour (whitelisted) |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxS05/UsePoint` | use_point | 20.3 | 83.9 | 4.13 | detour (whitelisted) |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxS06` | objective | 20.5 | 82.7 | 4.04 | detour (whitelisted) |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxS06/UsePoint` | use_point | 20.5 | 82.7 | 4.04 | detour (whitelisted) |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxS07` | objective | 20.9 | 82.3 | 3.95 | detour (whitelisted) |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxS07/UsePoint` | use_point | 20.9 | 82.3 | 3.95 | detour (whitelisted) |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxS08` | objective | 21.4 | 82.6 | 3.86 | detour (whitelisted) |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxS08/UsePoint` | use_point | 21.4 | 82.6 | 3.86 | detour (whitelisted) |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxS09` | objective | 22.1 | 83.9 | 3.79 | detour (whitelisted) |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxS09/UsePoint` | use_point | 22.1 | 83.9 | 3.79 | detour (whitelisted) |
 | `Spawns/PlayerPlaza2` | `Gameplay/Loot/HallBox01` | objective | 33.5 | 73.7 | 2.20 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Loot/HallBox01/UsePoint` | use_point | 33.5 | 73.7 | 2.20 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Loot/HallBox02` | objective | 34.0 | 74.8 | 2.20 | ok |
@@ -516,66 +516,66 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerPlaza2` | `Gameplay/Loot/HallBox23/UsePoint` | use_point | 29.0 | 80.5 | 2.77 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Loot/HallBox24` | objective | 29.9 | 79.4 | 2.66 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Loot/HallBox24/UsePoint` | use_point | 29.9 | 79.4 | 2.66 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Lifts/CashLift` | objective | 43.5 | 60.4 | 1.39 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Lifts/CashLift/UsePoint` | use_point | 43.5 | 60.4 | 1.39 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Lifts/Hoist` | objective | 29.0 | 76.6 | 2.64 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Lifts/Hoist/UsePoint` | use_point | 29.0 | 76.6 | 2.64 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Lifts/CashLift` | objective | 43.5 | 60.6 | 1.39 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Lifts/CashLift/UsePoint` | use_point | 43.5 | 60.6 | 1.39 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Lifts/Hoist` | objective | 29.0 | 76.8 | 2.64 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Lifts/Hoist/UsePoint` | use_point | 29.0 | 76.8 | 2.64 | ok |
 | `Spawns/PlayerPlaza2` | `Variants/Group_keycard/Slot_kc_manager_desk/Keycard` | objective | 27.5 | 32.6 | 1.19 | ok |
 | `Spawns/PlayerPlaza2` | `Variants/Group_keycard/Slot_kc_manager_desk/Keycard/UsePoint` | use_point | 27.5 | 32.6 | 1.19 | ok |
-| `Spawns/PlayerPlaza2` | `Variants/Group_code_pc/Slot_pc_ao1/CodePC` | objective | 37.3 | 70.6 | 1.90 | ok |
-| `Spawns/PlayerPlaza2` | `Variants/Group_code_pc/Slot_pc_ao1/CodePC/UsePoint` | use_point | 37.3 | 70.6 | 1.90 | ok |
+| `Spawns/PlayerPlaza2` | `Variants/Group_code_pc/Slot_pc_ao1/CodePC` | objective | 37.3 | 70.8 | 1.90 | ok |
+| `Spawns/PlayerPlaza2` | `Variants/Group_code_pc/Slot_pc_ao1/CodePC/UsePoint` | use_point | 37.3 | 70.8 | 1.90 | ok |
 | `Spawns/PlayerPlaza2` | `Variants/Group_server_room/Slot_srv_basement/VaultControlRack` | objective | 44.5 | 73.4 | 1.65 | ok |
 | `Spawns/PlayerPlaza2` | `Variants/Group_server_room/Slot_srv_basement/VaultControlRack/UsePoint` | use_point | 44.5 | 73.4 | 1.65 | ok |
 | `Spawns/PlayerPlaza2` | `Variants/Group_server_room/Slot_srv_basement/LaserController` | objective | 42.7 | 71.6 | 1.68 | ok |
 | `Spawns/PlayerPlaza2` | `Variants/Group_server_room/Slot_srv_basement/LaserController/UsePoint` | use_point | 42.7 | 71.6 | 1.68 | ok |
 | `Spawns/PlayerPlaza2` | `Variants/Group_side_door/Slot_door_dock_open/FireExitDoor` | objective | 43.3 | 47.7 | 1.10 | ok |
 | `Spawns/PlayerPlaza2` | `Variants/Group_side_door/Slot_door_dock_open/FireExitDoor/UsePoint` | use_point | 43.3 | 47.7 | 1.10 | ok |
-| `Spawns/PlayerPlaza2` | `Variants/Group_side_door/Slot_door_dock_open/DockPersonnelDoor` | objective | 47.2 | 53.0 | 1.12 | ok |
-| `Spawns/PlayerPlaza2` | `Variants/Group_side_door/Slot_door_dock_open/DockPersonnelDoor/UsePoint` | use_point | 47.2 | 53.0 | 1.12 | ok |
-| `Spawns/PlayerPlaza2` | `Variants/Group_escape/Slot_esc_heli_terrace/SecureTerrace/Zone` | secure_zone | 28.4 | 113.4 | 3.99 | detour (whitelisted) |
-| `Spawns/PlayerPlaza2` | `Variants/Group_escape/Slot_esc_heli_terrace/EscapeTerrace/Zone` | escape_zone | 23.8 | 110.0 | 4.62 | detour (whitelisted) |
-| `Spawns/PlayerPlaza2` | `Variants/Group_president_safe/Slot_ps_bonds/PresidentSafe` | objective | 44.3 | 83.7 | 1.89 | ok |
-| `Spawns/PlayerPlaza2` | `Variants/Group_president_safe/Slot_ps_bonds/PresidentSafe/UsePoint` | use_point | 44.3 | 83.7 | 1.89 | ok |
-| `Spawns/PlayerPlaza2` | `Variants/Group_president_safe/Slot_ps_bonds/PresidentSafe/PresidentBonds` | loot_spawn | 44.3 | 83.7 | 1.89 | ok |
-| `Spawns/PlayerPlaza2` | `Variants/Group_president_safe/Slot_ps_bonds/PresidentSafe/PresidentBonds/UsePoint` | use_point | 44.3 | 83.7 | 1.89 | ok |
-| `Spawns/PlayerPlaza2` | `Variants/Group_president_safe/Slot_ps_bonds/PresidentSafe/PresidentValuables1/UsePoint` | use_point | 44.3 | 83.7 | 1.89 | ok |
-| `Spawns/PlayerPlaza2` | `Variants/Group_president_safe/Slot_ps_bonds/PresidentSafe/PresidentValuables2/UsePoint` | use_point | 44.3 | 83.7 | 1.89 | ok |
-| `Spawns/PlayerPlaza2` | `Variants/Group_president_safe/Slot_ps_bonds/PresidentSafe/PresidentValuables3/UsePoint` | use_point | 44.3 | 83.7 | 1.89 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Doors/LockerDoor/UsePoint` | use_point | 41.5 | 62.6 | 1.51 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Doors/CashLiftDoorB/UsePoint` | use_point | 43.9 | 60.4 | 1.38 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Doors/CartQueueDoor/UsePoint` | use_point | 38.6 | 55.6 | 1.44 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Doors/StairDoorSAB/UsePoint` | use_point | 37.9 | 53.7 | 1.42 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Doors/CountRoomDoor/UsePoint` | use_point | 36.6 | 59.6 | 1.63 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Doors/PlantDoor/UsePoint` | use_point | 36.8 | 68.6 | 1.86 | ok |
+| `Spawns/PlayerPlaza2` | `Variants/Group_side_door/Slot_door_dock_open/DockPersonnelDoor` | objective | 47.2 | 53.2 | 1.13 | ok |
+| `Spawns/PlayerPlaza2` | `Variants/Group_side_door/Slot_door_dock_open/DockPersonnelDoor/UsePoint` | use_point | 47.2 | 53.2 | 1.13 | ok |
+| `Spawns/PlayerPlaza2` | `Variants/Group_escape/Slot_esc_heli_terrace/SecureTerrace/Zone` | secure_zone | 28.4 | 113.5 | 4.00 | detour (whitelisted) |
+| `Spawns/PlayerPlaza2` | `Variants/Group_escape/Slot_esc_heli_terrace/EscapeTerrace/Zone` | escape_zone | 23.8 | 110.2 | 4.62 | detour (whitelisted) |
+| `Spawns/PlayerPlaza2` | `Variants/Group_president_safe/Slot_ps_bonds/PresidentSafe` | objective | 44.3 | 83.9 | 1.89 | ok |
+| `Spawns/PlayerPlaza2` | `Variants/Group_president_safe/Slot_ps_bonds/PresidentSafe/UsePoint` | use_point | 44.3 | 83.9 | 1.89 | ok |
+| `Spawns/PlayerPlaza2` | `Variants/Group_president_safe/Slot_ps_bonds/PresidentSafe/PresidentBonds` | loot_spawn | 44.3 | 83.9 | 1.89 | ok |
+| `Spawns/PlayerPlaza2` | `Variants/Group_president_safe/Slot_ps_bonds/PresidentSafe/PresidentBonds/UsePoint` | use_point | 44.3 | 83.9 | 1.89 | ok |
+| `Spawns/PlayerPlaza2` | `Variants/Group_president_safe/Slot_ps_bonds/PresidentSafe/PresidentValuables1/UsePoint` | use_point | 44.3 | 83.9 | 1.89 | ok |
+| `Spawns/PlayerPlaza2` | `Variants/Group_president_safe/Slot_ps_bonds/PresidentSafe/PresidentValuables2/UsePoint` | use_point | 44.3 | 83.9 | 1.89 | ok |
+| `Spawns/PlayerPlaza2` | `Variants/Group_president_safe/Slot_ps_bonds/PresidentSafe/PresidentValuables3/UsePoint` | use_point | 44.3 | 83.9 | 1.89 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Doors/LockerDoor/UsePoint` | use_point | 41.5 | 62.7 | 1.51 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Doors/CashLiftDoorB/UsePoint` | use_point | 43.9 | 60.5 | 1.38 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Doors/CartQueueDoor/UsePoint` | use_point | 38.6 | 55.7 | 1.44 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Doors/StairDoorSAB/UsePoint` | use_point | 37.9 | 53.9 | 1.42 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Doors/CountRoomDoor/UsePoint` | use_point | 36.6 | 59.8 | 1.63 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Doors/PlantDoor/UsePoint` | use_point | 36.8 | 68.8 | 1.87 | ok |
 | `Spawns/PlayerPlaza3` | `Gameplay/Doors/CommsDoor/UsePoint` | use_point | 38.4 | 68.1 | 1.77 | ok |
 | `Spawns/PlayerPlaza3` | `Gameplay/Doors/SuppliesDoor/UsePoint` | use_point | 40.3 | 63.1 | 1.56 | ok |
 | `Spawns/PlayerPlaza3` | `Gameplay/Doors/StairDoorSBB/UsePoint` | use_point | 42.4 | 59.2 | 1.40 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Doors/RecordsDoor/UsePoint` | use_point | 40.5 | 61.6 | 1.52 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Doors/VaultGate` | objective | 36.7 | 55.8 | 1.52 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Doors/VaultGate/UsePoint` | use_point | 36.7 | 55.8 | 1.52 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Doors/RecordsDoor/UsePoint` | use_point | 40.5 | 61.8 | 1.53 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Doors/VaultGate` | objective | 36.7 | 55.9 | 1.52 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Doors/VaultGate/UsePoint` | use_point | 36.7 | 55.9 | 1.52 | ok |
 | `Spawns/PlayerPlaza3` | `Gameplay/Doors/DepositHallDoor/UsePoint` | use_point | 39.8 | 63.2 | 1.59 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Doors/VaultDoor` | objective | 32.3 | 70.3 | 2.18 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Doors/VaultDoor/UsePoint` | use_point | 32.3 | 70.3 | 2.18 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Doors/DockRollerDoor/UsePoint` | use_point | 48.9 | 54.2 | 1.11 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Doors/CashLiftDoorG/UsePoint` | use_point | 44.8 | 52.0 | 1.16 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Doors/DockCorridorDoor/UsePoint` | use_point | 38.7 | 43.4 | 1.12 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Doors/ElectricalDoorG/UsePoint` | use_point | 38.5 | 42.3 | 1.10 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Doors/StairDoorSAG/UsePoint` | use_point | 37.7 | 41.0 | 1.09 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Doors/SecurityDoor/UsePoint` | use_point | 36.8 | 44.7 | 1.22 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Doors/GuardLockerDoor/UsePoint` | use_point | 36.3 | 47.8 | 1.32 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Doors/StaffWCDoorM/UsePoint` | use_point | 36.7 | 43.8 | 1.20 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Doors/StaffWCDoorW/UsePoint` | use_point | 37.2 | 41.2 | 1.11 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Doors/JanitorDoorG/UsePoint` | use_point | 38.0 | 42.2 | 1.11 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Doors/MailDoor/UsePoint` | use_point | 39.8 | 47.0 | 1.18 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Doors/VaultDoor` | objective | 32.3 | 70.4 | 2.18 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Doors/VaultDoor/UsePoint` | use_point | 32.3 | 70.4 | 2.18 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Doors/DockRollerDoor/UsePoint` | use_point | 48.9 | 54.4 | 1.11 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Doors/CashLiftDoorG/UsePoint` | use_point | 44.8 | 52.1 | 1.16 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Doors/DockCorridorDoor/UsePoint` | use_point | 38.7 | 43.5 | 1.13 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Doors/ElectricalDoorG/UsePoint` | use_point | 38.5 | 42.4 | 1.10 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Doors/StairDoorSAG/UsePoint` | use_point | 37.7 | 41.2 | 1.09 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Doors/SecurityDoor/UsePoint` | use_point | 36.8 | 44.9 | 1.22 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Doors/GuardLockerDoor/UsePoint` | use_point | 36.3 | 47.9 | 1.32 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Doors/StaffWCDoorM/UsePoint` | use_point | 36.7 | 43.9 | 1.20 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Doors/StaffWCDoorW/UsePoint` | use_point | 37.2 | 41.3 | 1.11 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Doors/JanitorDoorG/UsePoint` | use_point | 38.0 | 42.3 | 1.11 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Doors/MailDoor/UsePoint` | use_point | 39.8 | 47.1 | 1.18 | ok |
 | `Spawns/PlayerPlaza3` | `Gameplay/Doors/StairDoorSBG/UsePoint` | use_point | 42.3 | 46.8 | 1.11 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Doors/StaffDoorTWW/UsePoint` | use_point | 37.3 | 40.5 | 1.08 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Doors/StaffDoorTWE/UsePoint` | use_point | 36.9 | 40.4 | 1.10 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Doors/StaffDoorTWW/UsePoint` | use_point | 37.3 | 40.9 | 1.10 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Doors/StaffDoorTWE/UsePoint` | use_point | 36.9 | 40.8 | 1.11 | ok |
 | `Spawns/PlayerPlaza3` | `Gameplay/Doors/ClientServiceDoor/UsePoint` | use_point | 40.6 | 44.8 | 1.10 | ok |
 | `Spawns/PlayerPlaza3` | `Gameplay/Doors/LoanTellerDoor/UsePoint` | use_point | 36.5 | 40.1 | 1.10 | ok |
 | `Spawns/PlayerPlaza3` | `Gameplay/Doors/ClientTellerDoor/UsePoint` | use_point | 35.8 | 40.5 | 1.13 | ok |
 | `Spawns/PlayerPlaza3` | `Gameplay/Doors/LoanHallDoor/UsePoint` | use_point | 30.6 | 33.4 | 1.09 | ok |
 | `Spawns/PlayerPlaza3` | `Gameplay/Doors/ClientHallDoor/UsePoint` | use_point | 29.8 | 32.4 | 1.09 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Doors/TellerGate/UsePoint` | use_point | 26.1 | 26.3 | 1.01 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Doors/TellerGate/UsePoint` | use_point | 26.4 | 26.6 | 1.01 | ok |
 | `Spawns/PlayerPlaza3` | `Gameplay/Doors/ConsultDoor1/UsePoint` | use_point | 28.1 | 30.9 | 1.10 | ok |
 | `Spawns/PlayerPlaza3` | `Gameplay/Doors/ConsultDoor2/UsePoint` | use_point | 24.1 | 28.2 | 1.17 | ok |
 | `Spawns/PlayerPlaza3` | `Gameplay/Doors/ATMHallDoor/UsePoint` | use_point | 20.1 | 27.4 | 1.37 | ok |
@@ -590,151 +590,151 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerPlaza3` | `Gameplay/Doors/BronzeDoorsE/UsePoint` | use_point | 8.7 | 8.9 | 1.02 | ok |
 | `Spawns/PlayerPlaza3` | `Gameplay/Doors/ATMStreetDoor` | objective | 22.5 | 24.7 | 1.10 | ok |
 | `Spawns/PlayerPlaza3` | `Gameplay/Doors/ATMStreetDoor/UsePoint` | use_point | 22.5 | 24.7 | 1.10 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Doors/BreakRoomDoor/UsePoint` | use_point | 41.7 | 64.7 | 1.55 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Doors/ElectricalDoorM/UsePoint` | use_point | 38.9 | 57.7 | 1.48 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Doors/StairDoorSAM/UsePoint` | use_point | 38.2 | 55.7 | 1.46 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Doors/ITDoor/UsePoint` | use_point | 37.2 | 59.4 | 1.60 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Doors/ServerDoor/UsePoint` | use_point | 36.8 | 66.4 | 1.81 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Doors/GalleryWCDoorM/UsePoint` | use_point | 37.1 | 70.4 | 1.90 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Doors/GalleryWCDoorW/UsePoint` | use_point | 37.7 | 73.4 | 1.95 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Doors/BreakRoomDoor/UsePoint` | use_point | 41.7 | 64.8 | 1.55 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Doors/ElectricalDoorM/UsePoint` | use_point | 38.9 | 57.9 | 1.49 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Doors/StairDoorSAM/UsePoint` | use_point | 38.2 | 55.9 | 1.46 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Doors/ITDoor/UsePoint` | use_point | 37.2 | 59.6 | 1.60 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Doors/ServerDoor/UsePoint` | use_point | 36.8 | 66.6 | 1.81 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Doors/GalleryWCDoorM/UsePoint` | use_point | 37.1 | 70.6 | 1.90 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Doors/GalleryWCDoorW/UsePoint` | use_point | 37.7 | 73.6 | 1.95 | ok |
 | `Spawns/PlayerPlaza3` | `Gameplay/Doors/JanitorDoorM/UsePoint` | use_point | 38.4 | 71.1 | 1.85 | ok |
 | `Spawns/PlayerPlaza3` | `Gameplay/Doors/ArchiveDoor/UsePoint` | use_point | 40.2 | 66.1 | 1.65 | ok |
 | `Spawns/PlayerPlaza3` | `Gameplay/Doors/StairDoorSBM/UsePoint` | use_point | 42.7 | 61.1 | 1.43 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Doors/LoggiaDoorW/UsePoint` | use_point | 40.3 | 62.7 | 1.56 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Doors/OperationsDoor/UsePoint` | use_point | 38.3 | 57.8 | 1.51 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Doors/ConferenceDoor/UsePoint` | use_point | 36.7 | 71.5 | 1.95 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Doors/LoggiaDoorW/UsePoint` | use_point | 40.3 | 62.9 | 1.56 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Doors/OperationsDoor/UsePoint` | use_point | 38.3 | 58.0 | 1.51 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Doors/ConferenceDoor/UsePoint` | use_point | 36.7 | 71.6 | 1.95 | ok |
 | `Spawns/PlayerPlaza3` | `Gameplay/Doors/ComplianceDoor/UsePoint` | use_point | 38.2 | 70.1 | 1.84 | ok |
 | `Spawns/PlayerPlaza3` | `Gameplay/Doors/LoggiaDoorE/UsePoint` | use_point | 39.6 | 66.2 | 1.67 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Doors/OfficerDoor1/UsePoint` | use_point | 36.3 | 66.9 | 1.84 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Doors/OfficerDoor2/UsePoint` | use_point | 29.0 | 75.8 | 2.61 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Doors/OfficerDoor3/UsePoint` | use_point | 23.0 | 84.8 | 3.69 | detour (whitelisted) |
+| `Spawns/PlayerPlaza3` | `Gameplay/Doors/OfficerDoor1/UsePoint` | use_point | 36.3 | 67.0 | 1.84 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Doors/OfficerDoor2/UsePoint` | use_point | 29.0 | 76.0 | 2.62 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Doors/OfficerDoor3/UsePoint` | use_point | 23.0 | 85.0 | 3.70 | detour (whitelisted) |
 | `Spawns/PlayerPlaza3` | `Gameplay/Doors/VaultOpsDoor/UsePoint` | use_point | 35.6 | 70.3 | 1.97 | ok |
 | `Spawns/PlayerPlaza3` | `Gameplay/Doors/TreasuryDoor/UsePoint` | use_point | 28.1 | 79.3 | 2.82 | ok |
 | `Spawns/PlayerPlaza3` | `Gameplay/Doors/TrainingDoor/UsePoint` | use_point | 21.8 | 88.3 | 4.05 | detour (whitelisted) |
-| `Spawns/PlayerPlaza3` | `Gameplay/Doors/OperationsGalleryDoor/UsePoint` | use_point | 27.8 | 68.9 | 2.48 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Doors/ConferenceGalleryDoor/UsePoint` | use_point | 27.6 | 81.2 | 2.94 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Doors/GalleryDoorW/UsePoint` | use_point | 31.8 | 71.8 | 2.26 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Doors/OperationsGalleryDoor/UsePoint` | use_point | 27.8 | 69.0 | 2.49 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Doors/ConferenceGalleryDoor/UsePoint` | use_point | 27.6 | 81.4 | 2.94 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Doors/GalleryDoorW/UsePoint` | use_point | 31.8 | 72.0 | 2.26 | ok |
 | `Spawns/PlayerPlaza3` | `Gameplay/Doors/GalleryDoorE/UsePoint` | use_point | 31.0 | 75.3 | 2.43 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Doors/BoardroomDoor/UsePoint` | use_point | 42.4 | 73.6 | 1.74 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Doors/ElectricalDoorE/UsePoint` | use_point | 39.6 | 66.6 | 1.68 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Doors/StairDoorSAE/UsePoint` | use_point | 38.9 | 64.7 | 1.66 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Doors/AssistantDoor/UsePoint` | use_point | 37.9 | 68.4 | 1.80 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Doors/PresidentDoor/UsePoint` | use_point | 37.6 | 77.4 | 2.06 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Doors/BoardroomDoor/UsePoint` | use_point | 42.4 | 73.8 | 1.74 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Doors/ElectricalDoorE/UsePoint` | use_point | 39.6 | 66.8 | 1.69 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Doors/StairDoorSAE/UsePoint` | use_point | 38.9 | 64.8 | 1.67 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Doors/AssistantDoor/UsePoint` | use_point | 37.9 | 68.6 | 1.81 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Doors/PresidentDoor/UsePoint` | use_point | 37.6 | 77.6 | 2.06 | ok |
 | `Spawns/PlayerPlaza3` | `Gameplay/Doors/PantryDoor/UsePoint` | use_point | 39.8 | 78.0 | 1.96 | ok |
 | `Spawns/PlayerPlaza3` | `Gameplay/Doors/ExecWCDoor/UsePoint` | use_point | 41.7 | 73.0 | 1.75 | ok |
 | `Spawns/PlayerPlaza3` | `Gameplay/Doors/StairDoorSBE/UsePoint` | use_point | 43.3 | 70.1 | 1.62 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Doors/LoungeDoor/UsePoint` | use_point | 41.4 | 72.7 | 1.76 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Doors/LegalDoor/UsePoint` | use_point | 37.0 | 71.4 | 1.93 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Doors/TrustDoor/UsePoint` | use_point | 38.0 | 83.4 | 2.19 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Doors/LoungeDoor/UsePoint` | use_point | 41.4 | 72.8 | 1.76 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Doors/LegalDoor/UsePoint` | use_point | 37.0 | 71.6 | 1.93 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Doors/TrustDoor/UsePoint` | use_point | 38.0 | 83.6 | 2.20 | ok |
 | `Spawns/PlayerPlaza3` | `Gameplay/Doors/RecordsDoorE/UsePoint` | use_point | 41.6 | 72.2 | 1.73 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Doors/TerraceDoorsW/UsePoint` | use_point | 33.9 | 81.4 | 2.40 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Doors/TerraceDoorsE/UsePoint` | use_point | 31.3 | 82.5 | 2.64 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Doors/HeadHouseDoor` | objective | 39.9 | 73.6 | 1.84 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Doors/HeadHouseDoor/UsePoint` | use_point | 39.9 | 73.6 | 1.84 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Doors/RoofPlantDoor/UsePoint` | use_point | 35.8 | 86.7 | 2.42 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Doors/CashCageGate` | objective | 27.4 | 78.3 | 2.86 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Doors/CashCageGate/UsePoint` | use_point | 27.4 | 78.3 | 2.86 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Doors/CashCageGate/Padlock` | objective | 27.5 | 78.3 | 2.85 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Doors/CashCageGate/Padlock/UsePoint` | use_point | 27.5 | 78.3 | 2.85 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Doors/GoldCageGate` | objective | 25.5 | 77.2 | 3.03 | detour (whitelisted) |
-| `Spawns/PlayerPlaza3` | `Gameplay/Doors/GoldCageGate/UsePoint` | use_point | 25.5 | 77.2 | 3.03 | detour (whitelisted) |
-| `Spawns/PlayerPlaza3` | `Gameplay/Doors/GoldCageGate/Padlock` | objective | 25.4 | 77.2 | 3.04 | detour (whitelisted) |
-| `Spawns/PlayerPlaza3` | `Gameplay/Doors/GoldCageGate/Padlock/UsePoint` | use_point | 25.4 | 77.2 | 3.04 | detour (whitelisted) |
-| `Spawns/PlayerPlaza3` | `Gameplay/Devices/CameraStation/UsePoint` | use_point | 42.7 | 50.3 | 1.18 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Devices/VaultGateReader` | objective | 36.5 | 57.3 | 1.57 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Devices/VaultGateReader/UsePoint` | use_point | 36.5 | 57.3 | 1.57 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Devices/TimeLockConsole` | objective | 33.6 | 73.1 | 2.18 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Devices/TimeLockConsole/UsePoint` | use_point | 33.6 | 73.1 | 2.18 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Devices/CashCageKeypad` | objective | 27.6 | 77.1 | 2.80 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Devices/CashCageKeypad/UsePoint` | use_point | 27.6 | 77.1 | 2.80 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Devices/LidDrill` | objective | 31.4 | 31.6 | 1.01 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Devices/LidDrill/UsePoint` | use_point | 31.4 | 31.6 | 1.01 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Devices/AlarmSR/UsePoint` | use_point | 43.6 | 51.1 | 1.17 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Doors/TerraceDoorsW/UsePoint` | use_point | 33.9 | 81.5 | 2.41 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Doors/TerraceDoorsE/UsePoint` | use_point | 31.3 | 82.7 | 2.64 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Doors/HeadHouseDoor` | objective | 39.9 | 73.7 | 1.85 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Doors/HeadHouseDoor/UsePoint` | use_point | 39.9 | 73.7 | 1.85 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Doors/RoofPlantDoor/UsePoint` | use_point | 35.8 | 86.8 | 2.43 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Doors/CashCageGate` | objective | 27.4 | 78.5 | 2.86 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Doors/CashCageGate/UsePoint` | use_point | 27.4 | 78.5 | 2.86 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Doors/CashCageGate/Padlock` | objective | 27.5 | 78.4 | 2.85 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Doors/CashCageGate/Padlock/UsePoint` | use_point | 27.5 | 78.4 | 2.85 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Doors/GoldCageGate` | objective | 25.5 | 77.4 | 3.04 | detour (whitelisted) |
+| `Spawns/PlayerPlaza3` | `Gameplay/Doors/GoldCageGate/UsePoint` | use_point | 25.5 | 77.4 | 3.04 | detour (whitelisted) |
+| `Spawns/PlayerPlaza3` | `Gameplay/Doors/GoldCageGate/Padlock` | objective | 25.4 | 77.4 | 3.04 | detour (whitelisted) |
+| `Spawns/PlayerPlaza3` | `Gameplay/Doors/GoldCageGate/Padlock/UsePoint` | use_point | 25.4 | 77.4 | 3.04 | detour (whitelisted) |
+| `Spawns/PlayerPlaza3` | `Gameplay/Devices/CameraStation/UsePoint` | use_point | 42.7 | 50.4 | 1.18 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Devices/VaultGateReader` | objective | 36.5 | 57.5 | 1.58 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Devices/VaultGateReader/UsePoint` | use_point | 36.5 | 57.5 | 1.58 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Devices/TimeLockConsole` | objective | 33.6 | 73.3 | 2.18 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Devices/TimeLockConsole/UsePoint` | use_point | 33.6 | 73.3 | 2.18 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Devices/CashCageKeypad` | objective | 27.6 | 77.3 | 2.80 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Devices/CashCageKeypad/UsePoint` | use_point | 27.6 | 77.3 | 2.80 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Devices/LidDrill` | objective | 29.4 | 30.0 | 1.02 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Devices/LidDrill/UsePoint` | use_point | 29.4 | 30.0 | 1.02 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Devices/AlarmSR/UsePoint` | use_point | 43.6 | 51.3 | 1.18 | ok |
 | `Spawns/PlayerPlaza3` | `Gameplay/Devices/AlarmBM/UsePoint` | use_point | 31.0 | 36.2 | 1.17 | ok |
 | `Spawns/PlayerPlaza3` | `Gameplay/Devices/AlarmSD/UsePoint` | use_point | 34.6 | 71.4 | 2.06 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Devices/AlarmTeller1/UsePoint` | use_point | 30.4 | 38.0 | 1.25 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Devices/AlarmTeller2/UsePoint` | use_point | 29.7 | 36.0 | 1.21 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Devices/AlarmTeller3/UsePoint` | use_point | 29.1 | 34.0 | 1.17 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Devices/AlarmTeller4/UsePoint` | use_point | 28.9 | 34.6 | 1.20 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Devices/AlarmTeller5/UsePoint` | use_point | 29.4 | 36.6 | 1.24 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Devices/AlarmTeller6/UsePoint` | use_point | 30.1 | 38.5 | 1.28 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Devices/AlarmTeller1/UsePoint` | use_point | 30.6 | 38.3 | 1.25 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Devices/AlarmTeller2/UsePoint` | use_point | 29.9 | 36.3 | 1.21 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Devices/AlarmTeller3/UsePoint` | use_point | 29.3 | 34.3 | 1.17 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Devices/AlarmTeller4/UsePoint` | use_point | 29.1 | 34.8 | 1.19 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Devices/AlarmTeller5/UsePoint` | use_point | 29.6 | 36.8 | 1.24 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Devices/AlarmTeller6/UsePoint` | use_point | 30.3 | 38.7 | 1.28 | ok |
 | `Spawns/PlayerPlaza3` | `Gameplay/Devices/PhoneBM/UsePoint` | use_point | 28.7 | 37.3 | 1.30 | ok |
 | `Spawns/PlayerPlaza3` | `Gameplay/Devices/PhoneLO/UsePoint` | use_point | 41.1 | 44.4 | 1.08 | ok |
 | `Spawns/PlayerPlaza3` | `Gameplay/Devices/PhoneNA/UsePoint` | use_point | 24.1 | 35.7 | 1.48 | ok |
 | `Spawns/PlayerPlaza3` | `Gameplay/Devices/PhonePC/UsePoint` | use_point | 34.0 | 41.0 | 1.21 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Devices/PhoneSR/UsePoint` | use_point | 41.8 | 49.5 | 1.18 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Devices/PhoneSR/UsePoint` | use_point | 41.8 | 49.6 | 1.19 | ok |
 | `Spawns/PlayerPlaza3` | `Gameplay/Devices/PhoneSD/UsePoint` | use_point | 35.6 | 70.9 | 1.99 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Devices/PhoneBR/UsePoint` | use_point | 46.1 | 69.6 | 1.51 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Devices/PhoneBR/UsePoint` | use_point | 46.1 | 69.7 | 1.51 | ok |
 | `Spawns/PlayerPlaza3` | `Gameplay/Devices/PhoneVO/UsePoint` | use_point | 36.3 | 76.4 | 2.11 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Devices/PhoneEA/UsePoint` | use_point | 43.6 | 75.1 | 1.72 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultCash` | loot_spawn | 23.7 | 82.0 | 3.45 | detour (whitelisted) |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultCash/UsePoint` | use_point | 25.2 | 80.5 | 3.19 | detour (whitelisted) |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultGold` | loot_spawn | 26.2 | 80.8 | 3.08 | detour (whitelisted) |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultGold/UsePoint` | use_point | 25.8 | 79.2 | 3.07 | detour (whitelisted) |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/BondSafe` | objective | 25.3 | 87.2 | 3.44 | detour (whitelisted) |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/BondSafe/UsePoint` | use_point | 25.3 | 87.2 | 3.44 | detour (whitelisted) |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/ServerDrives` | loot_spawn | 40.4 | 69.5 | 1.72 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/ServerDrives/UsePoint` | use_point | 39.1 | 68.2 | 1.74 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/TellerDrawer1` | objective | 30.8 | 38.9 | 1.26 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/TellerDrawer1/UsePoint` | use_point | 30.8 | 38.9 | 1.26 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/TellerDrawer2` | objective | 30.0 | 36.9 | 1.23 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/TellerDrawer2/UsePoint` | use_point | 30.0 | 36.9 | 1.23 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/TellerDrawer3` | objective | 29.4 | 34.9 | 1.19 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/TellerDrawer3/UsePoint` | use_point | 29.4 | 34.9 | 1.19 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/TellerDrawer4` | objective | 28.8 | 33.7 | 1.17 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/TellerDrawer4/UsePoint` | use_point | 28.8 | 33.7 | 1.17 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/TellerDrawer5` | objective | 29.2 | 35.7 | 1.22 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/TellerDrawer5/UsePoint` | use_point | 29.2 | 35.7 | 1.22 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/TellerDrawer6` | objective | 29.8 | 37.7 | 1.26 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/TellerDrawer6/UsePoint` | use_point | 29.8 | 37.7 | 1.26 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/CountStraps1` | objective | 40.1 | 63.4 | 1.58 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/CountStraps1/UsePoint` | use_point | 40.1 | 63.4 | 1.58 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/CountStraps2` | objective | 39.9 | 62.5 | 1.57 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/CountStraps2/UsePoint` | use_point | 39.9 | 62.5 | 1.57 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/CountStraps3` | objective | 39.6 | 62.9 | 1.59 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/CountStraps3/UsePoint` | use_point | 39.6 | 62.9 | 1.59 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/CountStraps4` | objective | 39.5 | 63.9 | 1.62 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/CountStraps4/UsePoint` | use_point | 39.5 | 63.9 | 1.62 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxN01` | objective | 31.6 | 86.5 | 2.74 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxN01/UsePoint` | use_point | 31.6 | 86.5 | 2.74 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxN02` | objective | 31.3 | 85.5 | 2.74 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxN02/UsePoint` | use_point | 31.3 | 85.5 | 2.74 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxN03` | objective | 31.0 | 84.5 | 2.73 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxN03/UsePoint` | use_point | 31.0 | 84.5 | 2.73 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxN04` | objective | 30.8 | 83.5 | 2.71 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxN04/UsePoint` | use_point | 30.8 | 83.5 | 2.71 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxN05` | objective | 30.6 | 82.5 | 2.70 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxN05/UsePoint` | use_point | 30.6 | 82.5 | 2.70 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxN06` | objective | 30.4 | 81.5 | 2.68 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxN06/UsePoint` | use_point | 30.4 | 81.5 | 2.68 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxN07` | objective | 30.3 | 80.5 | 2.66 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxN07/UsePoint` | use_point | 30.3 | 80.5 | 2.66 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxN08` | objective | 30.2 | 79.5 | 2.64 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxN08/UsePoint` | use_point | 30.2 | 79.5 | 2.64 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxN09` | objective | 30.0 | 76.0 | 2.53 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxN09/UsePoint` | use_point | 30.0 | 76.0 | 2.53 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxN10` | objective | 30.1 | 75.2 | 2.50 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxN10/UsePoint` | use_point | 30.1 | 75.2 | 2.50 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxN11` | objective | 30.1 | 74.4 | 2.47 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxN11/UsePoint` | use_point | 30.1 | 74.4 | 2.47 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxS01` | objective | 22.1 | 89.3 | 4.04 | detour (whitelisted) |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxS01/UsePoint` | use_point | 22.1 | 89.3 | 4.04 | detour (whitelisted) |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxS02` | objective | 21.4 | 88.0 | 4.11 | detour (whitelisted) |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxS02/UsePoint` | use_point | 21.4 | 88.0 | 4.11 | detour (whitelisted) |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxS03` | objective | 20.9 | 87.2 | 4.18 | detour (whitelisted) |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxS03/UsePoint` | use_point | 20.9 | 87.2 | 4.18 | detour (whitelisted) |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxS04` | objective | 20.5 | 86.9 | 4.24 | detour (whitelisted) |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxS04/UsePoint` | use_point | 20.5 | 86.9 | 4.24 | detour (whitelisted) |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxS05` | objective | 20.3 | 83.8 | 4.12 | detour (whitelisted) |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxS05/UsePoint` | use_point | 20.3 | 83.8 | 4.12 | detour (whitelisted) |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxS06` | objective | 20.4 | 82.6 | 4.06 | detour (whitelisted) |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxS06/UsePoint` | use_point | 20.4 | 82.6 | 4.06 | detour (whitelisted) |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxS07` | objective | 20.6 | 82.2 | 4.00 | detour (whitelisted) |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxS07/UsePoint` | use_point | 20.6 | 82.2 | 4.00 | detour (whitelisted) |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxS08` | objective | 21.0 | 82.5 | 3.93 | detour (whitelisted) |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxS08/UsePoint` | use_point | 21.0 | 82.5 | 3.93 | detour (whitelisted) |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxS09` | objective | 21.6 | 83.8 | 3.89 | detour (whitelisted) |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxS09/UsePoint` | use_point | 21.6 | 83.8 | 3.89 | detour (whitelisted) |
+| `Spawns/PlayerPlaza3` | `Gameplay/Devices/PhoneEA/UsePoint` | use_point | 43.6 | 75.2 | 1.73 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultCash` | loot_spawn | 23.7 | 82.1 | 3.46 | detour (whitelisted) |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultCash/UsePoint` | use_point | 25.2 | 80.6 | 3.20 | detour (whitelisted) |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultGold` | loot_spawn | 26.2 | 81.0 | 3.09 | detour (whitelisted) |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultGold/UsePoint` | use_point | 25.8 | 79.4 | 3.07 | detour (whitelisted) |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/BondSafe` | objective | 25.3 | 87.4 | 3.45 | detour (whitelisted) |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/BondSafe/UsePoint` | use_point | 25.3 | 87.4 | 3.45 | detour (whitelisted) |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/ServerDrives` | loot_spawn | 40.4 | 69.7 | 1.72 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/ServerDrives/UsePoint` | use_point | 39.1 | 68.4 | 1.75 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/TellerDrawer1` | objective | 30.8 | 39.1 | 1.27 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/TellerDrawer1/UsePoint` | use_point | 30.8 | 39.1 | 1.27 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/TellerDrawer2` | objective | 30.0 | 37.2 | 1.24 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/TellerDrawer2/UsePoint` | use_point | 30.0 | 37.2 | 1.24 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/TellerDrawer3` | objective | 29.4 | 35.2 | 1.19 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/TellerDrawer3/UsePoint` | use_point | 29.4 | 35.2 | 1.19 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/TellerDrawer4` | objective | 28.8 | 33.8 | 1.18 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/TellerDrawer4/UsePoint` | use_point | 28.8 | 33.8 | 1.18 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/TellerDrawer5` | objective | 29.2 | 35.8 | 1.23 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/TellerDrawer5/UsePoint` | use_point | 29.2 | 35.8 | 1.23 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/TellerDrawer6` | objective | 29.8 | 37.8 | 1.27 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/TellerDrawer6/UsePoint` | use_point | 29.8 | 37.8 | 1.27 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/CountStraps1` | objective | 40.1 | 63.5 | 1.59 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/CountStraps1/UsePoint` | use_point | 40.1 | 63.5 | 1.59 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/CountStraps2` | objective | 39.9 | 62.6 | 1.57 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/CountStraps2/UsePoint` | use_point | 39.9 | 62.6 | 1.57 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/CountStraps3` | objective | 39.6 | 63.0 | 1.59 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/CountStraps3/UsePoint` | use_point | 39.6 | 63.0 | 1.59 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/CountStraps4` | objective | 39.5 | 64.0 | 1.62 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/CountStraps4/UsePoint` | use_point | 39.5 | 64.0 | 1.62 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxN01` | objective | 31.6 | 86.7 | 2.75 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxN01/UsePoint` | use_point | 31.6 | 86.7 | 2.75 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxN02` | objective | 31.3 | 85.7 | 2.74 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxN02/UsePoint` | use_point | 31.3 | 85.7 | 2.74 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxN03` | objective | 31.0 | 84.7 | 2.73 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxN03/UsePoint` | use_point | 31.0 | 84.7 | 2.73 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxN04` | objective | 30.8 | 83.7 | 2.72 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxN04/UsePoint` | use_point | 30.8 | 83.7 | 2.72 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxN05` | objective | 30.6 | 82.7 | 2.70 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxN05/UsePoint` | use_point | 30.6 | 82.7 | 2.70 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxN06` | objective | 30.4 | 81.7 | 2.69 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxN06/UsePoint` | use_point | 30.4 | 81.7 | 2.69 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxN07` | objective | 30.3 | 80.7 | 2.67 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxN07/UsePoint` | use_point | 30.3 | 80.7 | 2.67 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxN08` | objective | 30.2 | 79.7 | 2.64 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxN08/UsePoint` | use_point | 30.2 | 79.7 | 2.64 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxN09` | objective | 30.0 | 76.1 | 2.53 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxN09/UsePoint` | use_point | 30.0 | 76.1 | 2.53 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxN10` | objective | 30.1 | 75.3 | 2.50 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxN10/UsePoint` | use_point | 30.1 | 75.3 | 2.50 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxN11` | objective | 30.1 | 74.5 | 2.47 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxN11/UsePoint` | use_point | 30.1 | 74.5 | 2.47 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxS01` | objective | 22.1 | 89.4 | 4.04 | detour (whitelisted) |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxS01/UsePoint` | use_point | 22.1 | 89.4 | 4.04 | detour (whitelisted) |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxS02` | objective | 21.4 | 88.2 | 4.12 | detour (whitelisted) |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxS02/UsePoint` | use_point | 21.4 | 88.2 | 4.12 | detour (whitelisted) |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxS03` | objective | 20.9 | 87.3 | 4.19 | detour (whitelisted) |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxS03/UsePoint` | use_point | 20.9 | 87.3 | 4.19 | detour (whitelisted) |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxS04` | objective | 20.5 | 87.0 | 4.24 | detour (whitelisted) |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxS04/UsePoint` | use_point | 20.5 | 87.0 | 4.24 | detour (whitelisted) |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxS05` | objective | 20.3 | 83.9 | 4.13 | detour (whitelisted) |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxS05/UsePoint` | use_point | 20.3 | 83.9 | 4.13 | detour (whitelisted) |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxS06` | objective | 20.4 | 82.8 | 4.07 | detour (whitelisted) |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxS06/UsePoint` | use_point | 20.4 | 82.8 | 4.07 | detour (whitelisted) |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxS07` | objective | 20.6 | 82.3 | 4.00 | detour (whitelisted) |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxS07/UsePoint` | use_point | 20.6 | 82.3 | 4.00 | detour (whitelisted) |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxS08` | objective | 21.0 | 82.7 | 3.94 | detour (whitelisted) |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxS08/UsePoint` | use_point | 21.0 | 82.7 | 3.94 | detour (whitelisted) |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxS09` | objective | 21.6 | 84.0 | 3.89 | detour (whitelisted) |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxS09/UsePoint` | use_point | 21.6 | 84.0 | 3.89 | detour (whitelisted) |
 | `Spawns/PlayerPlaza3` | `Gameplay/Loot/HallBox01` | objective | 33.0 | 73.5 | 2.23 | ok |
 | `Spawns/PlayerPlaza3` | `Gameplay/Loot/HallBox01/UsePoint` | use_point | 33.0 | 73.5 | 2.23 | ok |
 | `Spawns/PlayerPlaza3` | `Gameplay/Loot/HallBox02` | objective | 33.4 | 74.6 | 2.23 | ok |
@@ -783,66 +783,66 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerPlaza3` | `Gameplay/Loot/HallBox23/UsePoint` | use_point | 28.0 | 80.3 | 2.86 | ok |
 | `Spawns/PlayerPlaza3` | `Gameplay/Loot/HallBox24` | objective | 28.8 | 79.2 | 2.75 | ok |
 | `Spawns/PlayerPlaza3` | `Gameplay/Loot/HallBox24/UsePoint` | use_point | 28.8 | 79.2 | 2.75 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Lifts/CashLift` | objective | 44.0 | 60.5 | 1.38 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Lifts/CashLift/UsePoint` | use_point | 44.0 | 60.5 | 1.38 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Lifts/Hoist` | objective | 29.0 | 76.7 | 2.65 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Lifts/Hoist/UsePoint` | use_point | 29.0 | 76.7 | 2.65 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Lifts/CashLift` | objective | 44.0 | 60.6 | 1.38 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Lifts/CashLift/UsePoint` | use_point | 44.0 | 60.6 | 1.38 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Lifts/Hoist` | objective | 29.0 | 76.8 | 2.65 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Lifts/Hoist/UsePoint` | use_point | 29.0 | 76.8 | 2.65 | ok |
 | `Spawns/PlayerPlaza3` | `Variants/Group_keycard/Slot_kc_manager_desk/Keycard` | objective | 26.4 | 32.4 | 1.22 | ok |
 | `Spawns/PlayerPlaza3` | `Variants/Group_keycard/Slot_kc_manager_desk/Keycard/UsePoint` | use_point | 26.4 | 32.4 | 1.22 | ok |
-| `Spawns/PlayerPlaza3` | `Variants/Group_code_pc/Slot_pc_ao1/CodePC` | objective | 38.1 | 70.6 | 1.85 | ok |
-| `Spawns/PlayerPlaza3` | `Variants/Group_code_pc/Slot_pc_ao1/CodePC/UsePoint` | use_point | 38.1 | 70.6 | 1.85 | ok |
+| `Spawns/PlayerPlaza3` | `Variants/Group_code_pc/Slot_pc_ao1/CodePC` | objective | 38.1 | 70.8 | 1.86 | ok |
+| `Spawns/PlayerPlaza3` | `Variants/Group_code_pc/Slot_pc_ao1/CodePC/UsePoint` | use_point | 38.1 | 70.8 | 1.86 | ok |
 | `Spawns/PlayerPlaza3` | `Variants/Group_server_room/Slot_srv_basement/VaultControlRack` | objective | 44.1 | 73.2 | 1.66 | ok |
 | `Spawns/PlayerPlaza3` | `Variants/Group_server_room/Slot_srv_basement/VaultControlRack/UsePoint` | use_point | 44.1 | 73.2 | 1.66 | ok |
 | `Spawns/PlayerPlaza3` | `Variants/Group_server_room/Slot_srv_basement/LaserController` | objective | 42.2 | 71.4 | 1.69 | ok |
 | `Spawns/PlayerPlaza3` | `Variants/Group_server_room/Slot_srv_basement/LaserController/UsePoint` | use_point | 42.2 | 71.4 | 1.69 | ok |
 | `Spawns/PlayerPlaza3` | `Variants/Group_side_door/Slot_door_dock_open/FireExitDoor` | objective | 42.5 | 47.5 | 1.12 | ok |
 | `Spawns/PlayerPlaza3` | `Variants/Group_side_door/Slot_door_dock_open/FireExitDoor/UsePoint` | use_point | 42.5 | 47.5 | 1.12 | ok |
-| `Spawns/PlayerPlaza3` | `Variants/Group_side_door/Slot_door_dock_open/DockPersonnelDoor` | objective | 47.7 | 53.0 | 1.11 | ok |
-| `Spawns/PlayerPlaza3` | `Variants/Group_side_door/Slot_door_dock_open/DockPersonnelDoor/UsePoint` | use_point | 47.7 | 53.0 | 1.11 | ok |
-| `Spawns/PlayerPlaza3` | `Variants/Group_escape/Slot_esc_heli_terrace/SecureTerrace/Zone` | secure_zone | 27.5 | 113.4 | 4.13 | detour (whitelisted) |
-| `Spawns/PlayerPlaza3` | `Variants/Group_escape/Slot_esc_heli_terrace/EscapeTerrace/Zone` | escape_zone | 23.3 | 110.1 | 4.73 | detour (whitelisted) |
-| `Spawns/PlayerPlaza3` | `Variants/Group_president_safe/Slot_ps_bonds/PresidentSafe` | objective | 44.1 | 83.8 | 1.90 | ok |
-| `Spawns/PlayerPlaza3` | `Variants/Group_president_safe/Slot_ps_bonds/PresidentSafe/UsePoint` | use_point | 44.1 | 83.8 | 1.90 | ok |
-| `Spawns/PlayerPlaza3` | `Variants/Group_president_safe/Slot_ps_bonds/PresidentSafe/PresidentBonds` | loot_spawn | 44.1 | 83.8 | 1.90 | ok |
-| `Spawns/PlayerPlaza3` | `Variants/Group_president_safe/Slot_ps_bonds/PresidentSafe/PresidentBonds/UsePoint` | use_point | 44.1 | 83.8 | 1.90 | ok |
-| `Spawns/PlayerPlaza3` | `Variants/Group_president_safe/Slot_ps_bonds/PresidentSafe/PresidentValuables1/UsePoint` | use_point | 44.1 | 83.8 | 1.90 | ok |
-| `Spawns/PlayerPlaza3` | `Variants/Group_president_safe/Slot_ps_bonds/PresidentSafe/PresidentValuables2/UsePoint` | use_point | 44.1 | 83.8 | 1.90 | ok |
-| `Spawns/PlayerPlaza3` | `Variants/Group_president_safe/Slot_ps_bonds/PresidentSafe/PresidentValuables3/UsePoint` | use_point | 44.1 | 83.8 | 1.90 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Doors/LockerDoor/UsePoint` | use_point | 42.2 | 62.7 | 1.49 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Doors/CashLiftDoorB/UsePoint` | use_point | 44.4 | 60.5 | 1.36 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Doors/CartQueueDoor/UsePoint` | use_point | 39.1 | 55.7 | 1.42 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Doors/StairDoorSAB/UsePoint` | use_point | 38.3 | 53.8 | 1.40 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Doors/CountRoomDoor/UsePoint` | use_point | 36.8 | 59.7 | 1.62 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Doors/PlantDoor/UsePoint` | use_point | 36.6 | 68.7 | 1.88 | ok |
+| `Spawns/PlayerPlaza3` | `Variants/Group_side_door/Slot_door_dock_open/DockPersonnelDoor` | objective | 47.7 | 53.2 | 1.11 | ok |
+| `Spawns/PlayerPlaza3` | `Variants/Group_side_door/Slot_door_dock_open/DockPersonnelDoor/UsePoint` | use_point | 47.7 | 53.2 | 1.11 | ok |
+| `Spawns/PlayerPlaza3` | `Variants/Group_escape/Slot_esc_heli_terrace/SecureTerrace/Zone` | secure_zone | 27.5 | 113.5 | 4.13 | detour (whitelisted) |
+| `Spawns/PlayerPlaza3` | `Variants/Group_escape/Slot_esc_heli_terrace/EscapeTerrace/Zone` | escape_zone | 23.3 | 110.2 | 4.74 | detour (whitelisted) |
+| `Spawns/PlayerPlaza3` | `Variants/Group_president_safe/Slot_ps_bonds/PresidentSafe` | objective | 44.1 | 83.9 | 1.90 | ok |
+| `Spawns/PlayerPlaza3` | `Variants/Group_president_safe/Slot_ps_bonds/PresidentSafe/UsePoint` | use_point | 44.1 | 83.9 | 1.90 | ok |
+| `Spawns/PlayerPlaza3` | `Variants/Group_president_safe/Slot_ps_bonds/PresidentSafe/PresidentBonds` | loot_spawn | 44.1 | 83.9 | 1.90 | ok |
+| `Spawns/PlayerPlaza3` | `Variants/Group_president_safe/Slot_ps_bonds/PresidentSafe/PresidentBonds/UsePoint` | use_point | 44.1 | 83.9 | 1.90 | ok |
+| `Spawns/PlayerPlaza3` | `Variants/Group_president_safe/Slot_ps_bonds/PresidentSafe/PresidentValuables1/UsePoint` | use_point | 44.1 | 83.9 | 1.90 | ok |
+| `Spawns/PlayerPlaza3` | `Variants/Group_president_safe/Slot_ps_bonds/PresidentSafe/PresidentValuables2/UsePoint` | use_point | 44.1 | 83.9 | 1.90 | ok |
+| `Spawns/PlayerPlaza3` | `Variants/Group_president_safe/Slot_ps_bonds/PresidentSafe/PresidentValuables3/UsePoint` | use_point | 44.1 | 83.9 | 1.90 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Doors/LockerDoor/UsePoint` | use_point | 42.2 | 62.8 | 1.49 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Doors/CashLiftDoorB/UsePoint` | use_point | 44.4 | 60.6 | 1.37 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Doors/CartQueueDoor/UsePoint` | use_point | 39.1 | 55.8 | 1.43 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Doors/StairDoorSAB/UsePoint` | use_point | 38.3 | 53.9 | 1.41 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Doors/CountRoomDoor/UsePoint` | use_point | 36.8 | 59.9 | 1.63 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Doors/PlantDoor/UsePoint` | use_point | 36.6 | 68.9 | 1.88 | ok |
 | `Spawns/PlayerPlaza4` | `Gameplay/Doors/CommsDoor/UsePoint` | use_point | 38.0 | 68.2 | 1.79 | ok |
 | `Spawns/PlayerPlaza4` | `Gameplay/Doors/SuppliesDoor/UsePoint` | use_point | 39.7 | 63.2 | 1.59 | ok |
 | `Spawns/PlayerPlaza4` | `Gameplay/Doors/StairDoorSBB/UsePoint` | use_point | 41.7 | 59.3 | 1.42 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Doors/RecordsDoor/UsePoint` | use_point | 41.2 | 61.7 | 1.50 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Doors/VaultGate` | objective | 37.0 | 55.9 | 1.51 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Doors/VaultGate/UsePoint` | use_point | 37.0 | 55.9 | 1.51 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Doors/RecordsDoor/UsePoint` | use_point | 41.2 | 61.8 | 1.50 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Doors/VaultGate` | objective | 37.0 | 56.0 | 1.51 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Doors/VaultGate/UsePoint` | use_point | 37.0 | 56.0 | 1.51 | ok |
 | `Spawns/PlayerPlaza4` | `Gameplay/Doors/DepositHallDoor/UsePoint` | use_point | 39.2 | 63.2 | 1.62 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Doors/VaultDoor` | objective | 32.1 | 70.4 | 2.19 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Doors/VaultDoor/UsePoint` | use_point | 32.1 | 70.4 | 2.19 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Doors/DockRollerDoor/UsePoint` | use_point | 49.5 | 54.3 | 1.10 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Doors/CashLiftDoorG/UsePoint` | use_point | 45.3 | 52.1 | 1.15 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Doors/DockCorridorDoor/UsePoint` | use_point | 39.2 | 43.5 | 1.11 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Doors/ElectricalDoorG/UsePoint` | use_point | 39.0 | 42.3 | 1.09 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Doors/StairDoorSAG/UsePoint` | use_point | 38.2 | 41.1 | 1.08 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Doors/SecurityDoor/UsePoint` | use_point | 37.0 | 44.8 | 1.21 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Doors/GuardLockerDoor/UsePoint` | use_point | 36.3 | 47.9 | 1.32 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Doors/StaffWCDoorM/UsePoint` | use_point | 36.5 | 43.9 | 1.20 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Doors/StaffWCDoorW/UsePoint` | use_point | 36.9 | 41.3 | 1.12 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Doors/JanitorDoorG/UsePoint` | use_point | 37.6 | 42.3 | 1.12 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Doors/MailDoor/UsePoint` | use_point | 39.2 | 47.1 | 1.20 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Doors/VaultDoor` | objective | 32.1 | 70.5 | 2.20 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Doors/VaultDoor/UsePoint` | use_point | 32.1 | 70.5 | 2.20 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Doors/DockRollerDoor/UsePoint` | use_point | 49.5 | 54.5 | 1.10 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Doors/CashLiftDoorG/UsePoint` | use_point | 45.3 | 52.2 | 1.15 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Doors/DockCorridorDoor/UsePoint` | use_point | 39.2 | 43.6 | 1.11 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Doors/ElectricalDoorG/UsePoint` | use_point | 39.0 | 42.5 | 1.09 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Doors/StairDoorSAG/UsePoint` | use_point | 38.2 | 41.3 | 1.08 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Doors/SecurityDoor/UsePoint` | use_point | 37.0 | 45.0 | 1.21 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Doors/GuardLockerDoor/UsePoint` | use_point | 36.3 | 48.0 | 1.32 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Doors/StaffWCDoorM/UsePoint` | use_point | 36.5 | 44.0 | 1.21 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Doors/StaffWCDoorW/UsePoint` | use_point | 36.9 | 41.4 | 1.12 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Doors/JanitorDoorG/UsePoint` | use_point | 37.6 | 42.4 | 1.13 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Doors/MailDoor/UsePoint` | use_point | 39.2 | 47.2 | 1.20 | ok |
 | `Spawns/PlayerPlaza4` | `Gameplay/Doors/StairDoorSBG/UsePoint` | use_point | 41.6 | 46.9 | 1.13 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Doors/StaffDoorTWW/UsePoint` | use_point | 37.8 | 40.5 | 1.07 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Doors/StaffDoorTWE/UsePoint` | use_point | 36.5 | 40.5 | 1.11 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Doors/StaffDoorTWW/UsePoint` | use_point | 37.8 | 41.0 | 1.09 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Doors/StaffDoorTWE/UsePoint` | use_point | 36.5 | 40.9 | 1.12 | ok |
 | `Spawns/PlayerPlaza4` | `Gameplay/Doors/ClientServiceDoor/UsePoint` | use_point | 39.9 | 44.9 | 1.13 | ok |
 | `Spawns/PlayerPlaza4` | `Gameplay/Doors/LoanTellerDoor/UsePoint` | use_point | 37.2 | 40.2 | 1.08 | ok |
 | `Spawns/PlayerPlaza4` | `Gameplay/Doors/ClientTellerDoor/UsePoint` | use_point | 35.1 | 40.5 | 1.15 | ok |
 | `Spawns/PlayerPlaza4` | `Gameplay/Doors/LoanHallDoor/UsePoint` | use_point | 31.4 | 33.5 | 1.07 | ok |
 | `Spawns/PlayerPlaza4` | `Gameplay/Doors/ClientHallDoor/UsePoint` | use_point | 29.1 | 32.5 | 1.12 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Doors/TellerGate/UsePoint` | use_point | 26.2 | 26.4 | 1.01 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Doors/TellerGate/UsePoint` | use_point | 26.5 | 26.7 | 1.01 | ok |
 | `Spawns/PlayerPlaza4` | `Gameplay/Doors/ConsultDoor1/UsePoint` | use_point | 28.9 | 31.0 | 1.07 | ok |
 | `Spawns/PlayerPlaza4` | `Gameplay/Doors/ConsultDoor2/UsePoint` | use_point | 25.2 | 28.2 | 1.12 | ok |
 | `Spawns/PlayerPlaza4` | `Gameplay/Doors/ATMHallDoor/UsePoint` | use_point | 21.3 | 27.5 | 1.29 | ok |
@@ -857,151 +857,151 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerPlaza4` | `Gameplay/Doors/BronzeDoorsE/UsePoint` | use_point | 8.8 | 9.0 | 1.02 | ok |
 | `Spawns/PlayerPlaza4` | `Gameplay/Doors/ATMStreetDoor` | objective | 23.9 | 25.8 | 1.08 | ok |
 | `Spawns/PlayerPlaza4` | `Gameplay/Doors/ATMStreetDoor/UsePoint` | use_point | 23.9 | 25.8 | 1.08 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Doors/BreakRoomDoor/UsePoint` | use_point | 42.5 | 64.8 | 1.53 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Doors/ElectricalDoorM/UsePoint` | use_point | 39.4 | 57.8 | 1.47 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Doors/StairDoorSAM/UsePoint` | use_point | 38.6 | 55.8 | 1.45 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Doors/ITDoor/UsePoint` | use_point | 37.5 | 59.5 | 1.59 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Doors/ServerDoor/UsePoint` | use_point | 36.8 | 66.5 | 1.81 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Doors/GalleryWCDoorM/UsePoint` | use_point | 36.9 | 70.5 | 1.91 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Doors/GalleryWCDoorW/UsePoint` | use_point | 37.4 | 73.5 | 1.97 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Doors/BreakRoomDoor/UsePoint` | use_point | 42.5 | 64.9 | 1.53 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Doors/ElectricalDoorM/UsePoint` | use_point | 39.4 | 57.9 | 1.47 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Doors/StairDoorSAM/UsePoint` | use_point | 38.6 | 56.0 | 1.45 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Doors/ITDoor/UsePoint` | use_point | 37.5 | 59.7 | 1.59 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Doors/ServerDoor/UsePoint` | use_point | 36.8 | 66.7 | 1.81 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Doors/GalleryWCDoorM/UsePoint` | use_point | 36.9 | 70.7 | 1.91 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Doors/GalleryWCDoorW/UsePoint` | use_point | 37.4 | 73.7 | 1.97 | ok |
 | `Spawns/PlayerPlaza4` | `Gameplay/Doors/JanitorDoorM/UsePoint` | use_point | 38.0 | 71.2 | 1.87 | ok |
 | `Spawns/PlayerPlaza4` | `Gameplay/Doors/ArchiveDoor/UsePoint` | use_point | 39.6 | 66.2 | 1.67 | ok |
 | `Spawns/PlayerPlaza4` | `Gameplay/Doors/StairDoorSBM/UsePoint` | use_point | 42.0 | 61.2 | 1.46 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Doors/LoggiaDoorW/UsePoint` | use_point | 41.0 | 62.8 | 1.53 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Doors/OperationsDoor/UsePoint` | use_point | 38.9 | 57.9 | 1.49 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Doors/ConferenceDoor/UsePoint` | use_point | 36.5 | 71.5 | 1.96 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Doors/LoggiaDoorW/UsePoint` | use_point | 41.0 | 63.0 | 1.54 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Doors/OperationsDoor/UsePoint` | use_point | 38.9 | 58.1 | 1.49 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Doors/ConferenceDoor/UsePoint` | use_point | 36.5 | 71.7 | 1.97 | ok |
 | `Spawns/PlayerPlaza4` | `Gameplay/Doors/ComplianceDoor/UsePoint` | use_point | 37.7 | 70.2 | 1.86 | ok |
 | `Spawns/PlayerPlaza4` | `Gameplay/Doors/LoggiaDoorE/UsePoint` | use_point | 39.1 | 66.2 | 1.70 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Doors/OfficerDoor1/UsePoint` | use_point | 37.1 | 66.9 | 1.80 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Doors/OfficerDoor2/UsePoint` | use_point | 30.0 | 75.9 | 2.53 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Doors/OfficerDoor3/UsePoint` | use_point | 24.2 | 84.9 | 3.51 | detour (whitelisted) |
+| `Spawns/PlayerPlaza4` | `Gameplay/Doors/OfficerDoor1/UsePoint` | use_point | 37.1 | 67.1 | 1.81 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Doors/OfficerDoor2/UsePoint` | use_point | 30.0 | 76.1 | 2.54 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Doors/OfficerDoor3/UsePoint` | use_point | 24.2 | 85.1 | 3.52 | detour (whitelisted) |
 | `Spawns/PlayerPlaza4` | `Gameplay/Doors/VaultOpsDoor/UsePoint` | use_point | 34.9 | 70.4 | 2.01 | ok |
 | `Spawns/PlayerPlaza4` | `Gameplay/Doors/TreasuryDoor/UsePoint` | use_point | 27.3 | 79.4 | 2.91 | ok |
 | `Spawns/PlayerPlaza4` | `Gameplay/Doors/TrainingDoor/UsePoint` | use_point | 20.7 | 88.4 | 4.27 | detour (whitelisted) |
-| `Spawns/PlayerPlaza4` | `Gameplay/Doors/OperationsGalleryDoor/UsePoint` | use_point | 28.2 | 69.0 | 2.45 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Doors/ConferenceGalleryDoor/UsePoint` | use_point | 27.3 | 81.3 | 2.97 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Doors/GalleryDoorW/UsePoint` | use_point | 32.7 | 71.9 | 2.20 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Doors/OperationsGalleryDoor/UsePoint` | use_point | 28.2 | 69.1 | 2.45 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Doors/ConferenceGalleryDoor/UsePoint` | use_point | 27.3 | 81.5 | 2.98 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Doors/GalleryDoorW/UsePoint` | use_point | 32.7 | 72.1 | 2.20 | ok |
 | `Spawns/PlayerPlaza4` | `Gameplay/Doors/GalleryDoorE/UsePoint` | use_point | 30.3 | 75.4 | 2.49 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Doors/BoardroomDoor/UsePoint` | use_point | 43.1 | 73.7 | 1.71 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Doors/ElectricalDoorE/UsePoint` | use_point | 40.1 | 66.7 | 1.66 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Doors/StairDoorSAE/UsePoint` | use_point | 39.3 | 64.7 | 1.65 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Doors/AssistantDoor/UsePoint` | use_point | 38.2 | 68.5 | 1.79 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Doors/PresidentDoor/UsePoint` | use_point | 37.5 | 77.5 | 2.06 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Doors/BoardroomDoor/UsePoint` | use_point | 43.1 | 73.9 | 1.71 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Doors/ElectricalDoorE/UsePoint` | use_point | 40.1 | 66.9 | 1.67 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Doors/StairDoorSAE/UsePoint` | use_point | 39.3 | 64.9 | 1.65 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Doors/AssistantDoor/UsePoint` | use_point | 38.2 | 68.6 | 1.80 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Doors/PresidentDoor/UsePoint` | use_point | 37.5 | 77.6 | 2.07 | ok |
 | `Spawns/PlayerPlaza4` | `Gameplay/Doors/PantryDoor/UsePoint` | use_point | 39.3 | 78.1 | 1.99 | ok |
 | `Spawns/PlayerPlaza4` | `Gameplay/Doors/ExecWCDoor/UsePoint` | use_point | 41.1 | 73.1 | 1.78 | ok |
 | `Spawns/PlayerPlaza4` | `Gameplay/Doors/StairDoorSBE/UsePoint` | use_point | 42.6 | 70.2 | 1.65 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Doors/LoungeDoor/UsePoint` | use_point | 42.1 | 72.8 | 1.73 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Doors/LegalDoor/UsePoint` | use_point | 37.1 | 71.5 | 1.93 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Doors/TrustDoor/UsePoint` | use_point | 37.7 | 83.5 | 2.21 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Doors/LoungeDoor/UsePoint` | use_point | 42.1 | 72.9 | 1.73 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Doors/LegalDoor/UsePoint` | use_point | 37.1 | 71.7 | 1.93 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Doors/TrustDoor/UsePoint` | use_point | 37.7 | 83.7 | 2.22 | ok |
 | `Spawns/PlayerPlaza4` | `Gameplay/Doors/RecordsDoorE/UsePoint` | use_point | 41.0 | 72.3 | 1.76 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Doors/TerraceDoorsW/UsePoint` | use_point | 34.7 | 81.5 | 2.35 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Doors/TerraceDoorsE/UsePoint` | use_point | 32.0 | 82.6 | 2.58 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Doors/HeadHouseDoor` | objective | 40.3 | 73.7 | 1.83 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Doors/HeadHouseDoor/UsePoint` | use_point | 40.3 | 73.7 | 1.83 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Doors/RoofPlantDoor/UsePoint` | use_point | 35.7 | 86.8 | 2.43 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Doors/CashCageGate` | objective | 27.5 | 78.4 | 2.85 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Doors/CashCageGate/UsePoint` | use_point | 27.5 | 78.4 | 2.85 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Doors/CashCageGate/Padlock` | objective | 27.6 | 78.4 | 2.84 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Doors/CashCageGate/Padlock/UsePoint` | use_point | 27.6 | 78.4 | 2.84 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Doors/GoldCageGate` | objective | 25.3 | 77.3 | 3.06 | detour (whitelisted) |
-| `Spawns/PlayerPlaza4` | `Gameplay/Doors/GoldCageGate/UsePoint` | use_point | 25.3 | 77.3 | 3.06 | detour (whitelisted) |
-| `Spawns/PlayerPlaza4` | `Gameplay/Doors/GoldCageGate/Padlock` | objective | 25.3 | 77.3 | 3.06 | detour (whitelisted) |
-| `Spawns/PlayerPlaza4` | `Gameplay/Doors/GoldCageGate/Padlock/UsePoint` | use_point | 25.3 | 77.3 | 3.06 | detour (whitelisted) |
-| `Spawns/PlayerPlaza4` | `Gameplay/Devices/CameraStation/UsePoint` | use_point | 42.9 | 50.4 | 1.17 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Devices/VaultGateReader` | objective | 36.7 | 57.4 | 1.56 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Devices/VaultGateReader/UsePoint` | use_point | 36.7 | 57.4 | 1.56 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Devices/TimeLockConsole` | objective | 33.3 | 73.2 | 2.20 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Devices/TimeLockConsole/UsePoint` | use_point | 33.3 | 73.2 | 2.20 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Devices/CashCageKeypad` | objective | 27.6 | 77.2 | 2.80 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Devices/CashCageKeypad/UsePoint` | use_point | 27.6 | 77.2 | 2.80 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Devices/LidDrill` | objective | 31.5 | 31.7 | 1.01 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Devices/LidDrill/UsePoint` | use_point | 31.5 | 31.7 | 1.01 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Devices/AlarmSR/UsePoint` | use_point | 43.9 | 51.2 | 1.17 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Doors/TerraceDoorsW/UsePoint` | use_point | 34.7 | 81.6 | 2.35 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Doors/TerraceDoorsE/UsePoint` | use_point | 32.0 | 82.8 | 2.59 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Doors/HeadHouseDoor` | objective | 40.3 | 73.8 | 1.83 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Doors/HeadHouseDoor/UsePoint` | use_point | 40.3 | 73.8 | 1.83 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Doors/RoofPlantDoor/UsePoint` | use_point | 35.7 | 86.9 | 2.43 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Doors/CashCageGate` | objective | 27.5 | 78.6 | 2.86 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Doors/CashCageGate/UsePoint` | use_point | 27.5 | 78.6 | 2.86 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Doors/CashCageGate/Padlock` | objective | 27.6 | 78.5 | 2.85 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Doors/CashCageGate/Padlock/UsePoint` | use_point | 27.6 | 78.5 | 2.85 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Doors/GoldCageGate` | objective | 25.3 | 77.5 | 3.06 | detour (whitelisted) |
+| `Spawns/PlayerPlaza4` | `Gameplay/Doors/GoldCageGate/UsePoint` | use_point | 25.3 | 77.5 | 3.06 | detour (whitelisted) |
+| `Spawns/PlayerPlaza4` | `Gameplay/Doors/GoldCageGate/Padlock` | objective | 25.3 | 77.5 | 3.06 | detour (whitelisted) |
+| `Spawns/PlayerPlaza4` | `Gameplay/Doors/GoldCageGate/Padlock/UsePoint` | use_point | 25.3 | 77.5 | 3.06 | detour (whitelisted) |
+| `Spawns/PlayerPlaza4` | `Gameplay/Devices/CameraStation/UsePoint` | use_point | 42.9 | 50.5 | 1.18 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Devices/VaultGateReader` | objective | 36.7 | 57.6 | 1.57 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Devices/VaultGateReader/UsePoint` | use_point | 36.7 | 57.6 | 1.57 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Devices/TimeLockConsole` | objective | 33.3 | 73.4 | 2.21 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Devices/TimeLockConsole/UsePoint` | use_point | 33.3 | 73.4 | 2.21 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Devices/CashCageKeypad` | objective | 27.6 | 77.4 | 2.80 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Devices/CashCageKeypad/UsePoint` | use_point | 27.6 | 77.4 | 2.80 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Devices/LidDrill` | objective | 29.4 | 30.1 | 1.02 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Devices/LidDrill/UsePoint` | use_point | 29.4 | 30.1 | 1.02 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Devices/AlarmSR/UsePoint` | use_point | 43.9 | 51.3 | 1.17 | ok |
 | `Spawns/PlayerPlaza4` | `Gameplay/Devices/AlarmBM/UsePoint` | use_point | 30.0 | 36.3 | 1.21 | ok |
 | `Spawns/PlayerPlaza4` | `Gameplay/Devices/AlarmSD/UsePoint` | use_point | 34.2 | 71.5 | 2.09 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Devices/AlarmTeller1/UsePoint` | use_point | 31.0 | 38.1 | 1.23 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Devices/AlarmTeller2/UsePoint` | use_point | 30.2 | 36.1 | 1.19 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Devices/AlarmTeller3/UsePoint` | use_point | 29.5 | 34.1 | 1.15 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Devices/AlarmTeller4/UsePoint` | use_point | 28.6 | 34.6 | 1.21 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Devices/AlarmTeller5/UsePoint` | use_point | 29.0 | 36.6 | 1.26 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Devices/AlarmTeller6/UsePoint` | use_point | 29.6 | 38.6 | 1.31 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Devices/AlarmTeller1/UsePoint` | use_point | 31.2 | 38.3 | 1.23 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Devices/AlarmTeller2/UsePoint` | use_point | 30.4 | 36.3 | 1.20 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Devices/AlarmTeller3/UsePoint` | use_point | 29.7 | 34.3 | 1.15 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Devices/AlarmTeller4/UsePoint` | use_point | 28.8 | 34.8 | 1.21 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Devices/AlarmTeller5/UsePoint` | use_point | 29.2 | 36.8 | 1.26 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Devices/AlarmTeller6/UsePoint` | use_point | 29.8 | 38.8 | 1.30 | ok |
 | `Spawns/PlayerPlaza4` | `Gameplay/Devices/PhoneBM/UsePoint` | use_point | 27.6 | 37.4 | 1.36 | ok |
 | `Spawns/PlayerPlaza4` | `Gameplay/Devices/PhoneLO/UsePoint` | use_point | 42.0 | 44.4 | 1.06 | ok |
 | `Spawns/PlayerPlaza4` | `Gameplay/Devices/PhoneNA/UsePoint` | use_point | 22.7 | 35.8 | 1.58 | ok |
 | `Spawns/PlayerPlaza4` | `Gameplay/Devices/PhonePC/UsePoint` | use_point | 33.0 | 41.1 | 1.24 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Devices/PhoneSR/UsePoint` | use_point | 42.1 | 49.5 | 1.18 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Devices/PhoneSR/UsePoint` | use_point | 42.1 | 49.7 | 1.18 | ok |
 | `Spawns/PlayerPlaza4` | `Gameplay/Devices/PhoneSD/UsePoint` | use_point | 35.2 | 70.9 | 2.01 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Devices/PhoneBR/UsePoint` | use_point | 46.9 | 69.6 | 1.49 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Devices/PhoneBR/UsePoint` | use_point | 46.9 | 69.8 | 1.49 | ok |
 | `Spawns/PlayerPlaza4` | `Gameplay/Devices/PhoneVO/UsePoint` | use_point | 35.4 | 76.5 | 2.16 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Devices/PhoneEA/UsePoint` | use_point | 43.7 | 75.1 | 1.72 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultCash` | loot_spawn | 23.8 | 82.1 | 3.44 | detour (whitelisted) |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultCash/UsePoint` | use_point | 25.3 | 80.6 | 3.18 | detour (whitelisted) |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultGold` | loot_spawn | 25.9 | 80.9 | 3.13 | detour (whitelisted) |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultGold/UsePoint` | use_point | 25.5 | 79.3 | 3.10 | detour (whitelisted) |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/BondSafe` | objective | 25.9 | 87.3 | 3.37 | detour (whitelisted) |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/BondSafe/UsePoint` | use_point | 25.9 | 87.3 | 3.37 | detour (whitelisted) |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/ServerDrives` | loot_spawn | 40.4 | 69.6 | 1.72 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/ServerDrives/UsePoint` | use_point | 39.1 | 68.3 | 1.75 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/TellerDrawer1` | objective | 31.4 | 39.0 | 1.24 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/TellerDrawer1/UsePoint` | use_point | 31.4 | 39.0 | 1.24 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/TellerDrawer2` | objective | 30.6 | 37.0 | 1.21 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/TellerDrawer2/UsePoint` | use_point | 30.6 | 37.0 | 1.21 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/TellerDrawer3` | objective | 29.9 | 35.0 | 1.17 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/TellerDrawer3/UsePoint` | use_point | 29.9 | 35.0 | 1.17 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/TellerDrawer4` | objective | 28.5 | 33.7 | 1.18 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/TellerDrawer4/UsePoint` | use_point | 28.5 | 33.7 | 1.18 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/TellerDrawer5` | objective | 28.9 | 35.7 | 1.24 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/TellerDrawer5/UsePoint` | use_point | 28.9 | 35.7 | 1.24 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/TellerDrawer6` | objective | 29.4 | 37.7 | 1.29 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/TellerDrawer6/UsePoint` | use_point | 29.4 | 37.7 | 1.29 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/CountStraps1` | objective | 40.3 | 63.5 | 1.57 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/CountStraps1/UsePoint` | use_point | 40.3 | 63.5 | 1.57 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/CountStraps2` | objective | 40.1 | 62.6 | 1.56 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/CountStraps2/UsePoint` | use_point | 40.1 | 62.6 | 1.56 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/CountStraps3` | objective | 39.7 | 62.9 | 1.59 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/CountStraps3/UsePoint` | use_point | 39.7 | 62.9 | 1.59 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/CountStraps4` | objective | 39.6 | 64.0 | 1.62 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/CountStraps4/UsePoint` | use_point | 39.6 | 64.0 | 1.62 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxN01` | objective | 32.1 | 86.6 | 2.70 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxN01/UsePoint` | use_point | 32.1 | 86.6 | 2.70 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxN02` | objective | 31.7 | 85.6 | 2.70 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxN02/UsePoint` | use_point | 31.7 | 85.6 | 2.70 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxN03` | objective | 31.4 | 84.6 | 2.69 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxN03/UsePoint` | use_point | 31.4 | 84.6 | 2.69 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxN04` | objective | 31.1 | 83.6 | 2.69 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxN04/UsePoint` | use_point | 31.1 | 83.6 | 2.69 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxN05` | objective | 30.9 | 82.6 | 2.67 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxN05/UsePoint` | use_point | 30.9 | 82.6 | 2.67 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxN06` | objective | 30.7 | 81.6 | 2.66 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxN06/UsePoint` | use_point | 30.7 | 81.6 | 2.66 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxN07` | objective | 30.5 | 80.6 | 2.65 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxN07/UsePoint` | use_point | 30.5 | 80.6 | 2.65 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxN08` | objective | 30.3 | 79.6 | 2.63 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxN08/UsePoint` | use_point | 30.3 | 79.6 | 2.63 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxN09` | objective | 30.0 | 76.0 | 2.53 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxN09/UsePoint` | use_point | 30.0 | 76.0 | 2.53 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxN10` | objective | 30.0 | 75.3 | 2.51 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxN10/UsePoint` | use_point | 30.0 | 75.3 | 2.51 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxN11` | objective | 30.0 | 74.5 | 2.48 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxN11/UsePoint` | use_point | 30.0 | 74.5 | 2.48 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxS01` | objective | 22.8 | 89.3 | 3.93 | detour (whitelisted) |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxS01/UsePoint` | use_point | 22.8 | 89.3 | 3.93 | detour (whitelisted) |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxS02` | objective | 21.9 | 88.1 | 4.02 | detour (whitelisted) |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxS02/UsePoint` | use_point | 21.9 | 88.1 | 4.02 | detour (whitelisted) |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxS03` | objective | 21.3 | 87.3 | 4.11 | detour (whitelisted) |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxS03/UsePoint` | use_point | 21.3 | 87.3 | 4.11 | detour (whitelisted) |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxS04` | objective | 20.8 | 86.9 | 4.19 | detour (whitelisted) |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxS04/UsePoint` | use_point | 20.8 | 86.9 | 4.19 | detour (whitelisted) |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxS05` | objective | 20.4 | 83.9 | 4.10 | detour (whitelisted) |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxS05/UsePoint` | use_point | 20.4 | 83.9 | 4.10 | detour (whitelisted) |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxS06` | objective | 20.3 | 82.7 | 4.07 | detour (whitelisted) |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxS06/UsePoint` | use_point | 20.3 | 82.7 | 4.07 | detour (whitelisted) |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxS07` | objective | 20.4 | 82.3 | 4.04 | detour (whitelisted) |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxS07/UsePoint` | use_point | 20.4 | 82.3 | 4.04 | detour (whitelisted) |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxS08` | objective | 20.7 | 82.6 | 4.00 | detour (whitelisted) |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxS08/UsePoint` | use_point | 20.7 | 82.6 | 4.00 | detour (whitelisted) |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxS09` | objective | 21.1 | 83.9 | 3.97 | detour (whitelisted) |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxS09/UsePoint` | use_point | 21.1 | 83.9 | 3.97 | detour (whitelisted) |
+| `Spawns/PlayerPlaza4` | `Gameplay/Devices/PhoneEA/UsePoint` | use_point | 43.7 | 75.3 | 1.72 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultCash` | loot_spawn | 23.8 | 82.2 | 3.45 | detour (whitelisted) |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultCash/UsePoint` | use_point | 25.3 | 80.7 | 3.19 | detour (whitelisted) |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultGold` | loot_spawn | 25.9 | 81.1 | 3.13 | detour (whitelisted) |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultGold/UsePoint` | use_point | 25.5 | 79.5 | 3.11 | detour (whitelisted) |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/BondSafe` | objective | 25.9 | 87.5 | 3.38 | detour (whitelisted) |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/BondSafe/UsePoint` | use_point | 25.9 | 87.5 | 3.38 | detour (whitelisted) |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/ServerDrives` | loot_spawn | 40.4 | 69.8 | 1.73 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/ServerDrives/UsePoint` | use_point | 39.1 | 68.5 | 1.75 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/TellerDrawer1` | objective | 31.4 | 39.2 | 1.25 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/TellerDrawer1/UsePoint` | use_point | 31.4 | 39.2 | 1.25 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/TellerDrawer2` | objective | 30.6 | 37.2 | 1.22 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/TellerDrawer2/UsePoint` | use_point | 30.6 | 37.2 | 1.22 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/TellerDrawer3` | objective | 29.9 | 35.2 | 1.18 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/TellerDrawer3/UsePoint` | use_point | 29.9 | 35.2 | 1.18 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/TellerDrawer4` | objective | 28.5 | 33.9 | 1.19 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/TellerDrawer4/UsePoint` | use_point | 28.5 | 33.9 | 1.19 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/TellerDrawer5` | objective | 28.9 | 35.9 | 1.24 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/TellerDrawer5/UsePoint` | use_point | 28.9 | 35.9 | 1.24 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/TellerDrawer6` | objective | 29.4 | 37.9 | 1.29 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/TellerDrawer6/UsePoint` | use_point | 29.4 | 37.9 | 1.29 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/CountStraps1` | objective | 40.3 | 63.6 | 1.58 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/CountStraps1/UsePoint` | use_point | 40.3 | 63.6 | 1.58 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/CountStraps2` | objective | 40.1 | 62.7 | 1.57 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/CountStraps2/UsePoint` | use_point | 40.1 | 62.7 | 1.57 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/CountStraps3` | objective | 39.7 | 63.1 | 1.59 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/CountStraps3/UsePoint` | use_point | 39.7 | 63.1 | 1.59 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/CountStraps4` | objective | 39.6 | 64.1 | 1.62 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/CountStraps4/UsePoint` | use_point | 39.6 | 64.1 | 1.62 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxN01` | objective | 32.1 | 86.8 | 2.71 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxN01/UsePoint` | use_point | 32.1 | 86.8 | 2.71 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxN02` | objective | 31.7 | 85.8 | 2.70 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxN02/UsePoint` | use_point | 31.7 | 85.8 | 2.70 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxN03` | objective | 31.4 | 84.8 | 2.70 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxN03/UsePoint` | use_point | 31.4 | 84.8 | 2.70 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxN04` | objective | 31.1 | 83.8 | 2.69 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxN04/UsePoint` | use_point | 31.1 | 83.8 | 2.69 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxN05` | objective | 30.9 | 82.8 | 2.68 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxN05/UsePoint` | use_point | 30.9 | 82.8 | 2.68 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxN06` | objective | 30.7 | 81.8 | 2.67 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxN06/UsePoint` | use_point | 30.7 | 81.8 | 2.67 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxN07` | objective | 30.5 | 80.8 | 2.65 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxN07/UsePoint` | use_point | 30.5 | 80.8 | 2.65 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxN08` | objective | 30.3 | 79.8 | 2.63 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxN08/UsePoint` | use_point | 30.3 | 79.8 | 2.63 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxN09` | objective | 30.0 | 76.2 | 2.54 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxN09/UsePoint` | use_point | 30.0 | 76.2 | 2.54 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxN10` | objective | 30.0 | 75.4 | 2.51 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxN10/UsePoint` | use_point | 30.0 | 75.4 | 2.51 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxN11` | objective | 30.0 | 74.6 | 2.48 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxN11/UsePoint` | use_point | 30.0 | 74.6 | 2.48 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxS01` | objective | 22.8 | 89.5 | 3.93 | detour (whitelisted) |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxS01/UsePoint` | use_point | 22.8 | 89.5 | 3.93 | detour (whitelisted) |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxS02` | objective | 21.9 | 88.3 | 4.03 | detour (whitelisted) |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxS02/UsePoint` | use_point | 21.9 | 88.3 | 4.03 | detour (whitelisted) |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxS03` | objective | 21.3 | 87.4 | 4.11 | detour (whitelisted) |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxS03/UsePoint` | use_point | 21.3 | 87.4 | 4.11 | detour (whitelisted) |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxS04` | objective | 20.8 | 87.1 | 4.20 | detour (whitelisted) |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxS04/UsePoint` | use_point | 20.8 | 87.1 | 4.20 | detour (whitelisted) |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxS05` | objective | 20.4 | 84.0 | 4.11 | detour (whitelisted) |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxS05/UsePoint` | use_point | 20.4 | 84.0 | 4.11 | detour (whitelisted) |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxS06` | objective | 20.3 | 82.8 | 4.08 | detour (whitelisted) |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxS06/UsePoint` | use_point | 20.3 | 82.8 | 4.08 | detour (whitelisted) |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxS07` | objective | 20.4 | 82.4 | 4.04 | detour (whitelisted) |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxS07/UsePoint` | use_point | 20.4 | 82.4 | 4.04 | detour (whitelisted) |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxS08` | objective | 20.7 | 82.8 | 4.01 | detour (whitelisted) |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxS08/UsePoint` | use_point | 20.7 | 82.8 | 4.01 | detour (whitelisted) |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxS09` | objective | 21.1 | 84.1 | 3.98 | detour (whitelisted) |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxS09/UsePoint` | use_point | 21.1 | 84.1 | 3.98 | detour (whitelisted) |
 | `Spawns/PlayerPlaza4` | `Gameplay/Loot/HallBox01` | objective | 32.5 | 73.6 | 2.26 | ok |
 | `Spawns/PlayerPlaza4` | `Gameplay/Loot/HallBox01/UsePoint` | use_point | 32.5 | 73.6 | 2.26 | ok |
 | `Spawns/PlayerPlaza4` | `Gameplay/Loot/HallBox02` | objective | 32.9 | 74.7 | 2.27 | ok |
@@ -1050,31 +1050,31 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerPlaza4` | `Gameplay/Loot/HallBox23/UsePoint` | use_point | 27.1 | 80.3 | 2.97 | ok |
 | `Spawns/PlayerPlaza4` | `Gameplay/Loot/HallBox24` | objective | 27.8 | 79.3 | 2.85 | ok |
 | `Spawns/PlayerPlaza4` | `Gameplay/Loot/HallBox24/UsePoint` | use_point | 27.8 | 79.3 | 2.85 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Lifts/CashLift` | objective | 44.4 | 60.6 | 1.36 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Lifts/CashLift/UsePoint` | use_point | 44.4 | 60.6 | 1.36 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Lifts/Hoist` | objective | 29.0 | 76.8 | 2.65 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Lifts/Hoist/UsePoint` | use_point | 29.0 | 76.8 | 2.65 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Lifts/CashLift` | objective | 44.4 | 60.7 | 1.37 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Lifts/CashLift/UsePoint` | use_point | 44.4 | 60.7 | 1.37 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Lifts/Hoist` | objective | 29.0 | 76.9 | 2.65 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Lifts/Hoist/UsePoint` | use_point | 29.0 | 76.9 | 2.65 | ok |
 | `Spawns/PlayerPlaza4` | `Variants/Group_keycard/Slot_kc_manager_desk/Keycard` | objective | 25.4 | 32.4 | 1.28 | ok |
 | `Spawns/PlayerPlaza4` | `Variants/Group_keycard/Slot_kc_manager_desk/Keycard/UsePoint` | use_point | 25.4 | 32.4 | 1.28 | ok |
-| `Spawns/PlayerPlaza4` | `Variants/Group_code_pc/Slot_pc_ao1/CodePC` | objective | 39.0 | 70.7 | 1.81 | ok |
-| `Spawns/PlayerPlaza4` | `Variants/Group_code_pc/Slot_pc_ao1/CodePC/UsePoint` | use_point | 39.0 | 70.7 | 1.81 | ok |
+| `Spawns/PlayerPlaza4` | `Variants/Group_code_pc/Slot_pc_ao1/CodePC` | objective | 39.0 | 70.9 | 1.82 | ok |
+| `Spawns/PlayerPlaza4` | `Variants/Group_code_pc/Slot_pc_ao1/CodePC/UsePoint` | use_point | 39.0 | 70.9 | 1.82 | ok |
 | `Spawns/PlayerPlaza4` | `Variants/Group_server_room/Slot_srv_basement/VaultControlRack` | objective | 43.6 | 73.3 | 1.68 | ok |
 | `Spawns/PlayerPlaza4` | `Variants/Group_server_room/Slot_srv_basement/VaultControlRack/UsePoint` | use_point | 43.6 | 73.3 | 1.68 | ok |
 | `Spawns/PlayerPlaza4` | `Variants/Group_server_room/Slot_srv_basement/LaserController` | objective | 41.7 | 71.5 | 1.72 | ok |
 | `Spawns/PlayerPlaza4` | `Variants/Group_server_room/Slot_srv_basement/LaserController/UsePoint` | use_point | 41.7 | 71.5 | 1.72 | ok |
 | `Spawns/PlayerPlaza4` | `Variants/Group_side_door/Slot_door_dock_open/FireExitDoor` | objective | 41.7 | 47.6 | 1.14 | ok |
 | `Spawns/PlayerPlaza4` | `Variants/Group_side_door/Slot_door_dock_open/FireExitDoor/UsePoint` | use_point | 41.7 | 47.6 | 1.14 | ok |
-| `Spawns/PlayerPlaza4` | `Variants/Group_side_door/Slot_door_dock_open/DockPersonnelDoor` | objective | 48.3 | 53.1 | 1.10 | ok |
-| `Spawns/PlayerPlaza4` | `Variants/Group_side_door/Slot_door_dock_open/DockPersonnelDoor/UsePoint` | use_point | 48.3 | 53.1 | 1.10 | ok |
-| `Spawns/PlayerPlaza4` | `Variants/Group_escape/Slot_esc_heli_terrace/SecureTerrace/Zone` | secure_zone | 26.6 | 113.5 | 4.26 | detour (whitelisted) |
-| `Spawns/PlayerPlaza4` | `Variants/Group_escape/Slot_esc_heli_terrace/EscapeTerrace/Zone` | escape_zone | 22.8 | 110.2 | 4.84 | detour (whitelisted) |
-| `Spawns/PlayerPlaza4` | `Variants/Group_president_safe/Slot_ps_bonds/PresidentSafe` | objective | 44.0 | 83.8 | 1.91 | ok |
-| `Spawns/PlayerPlaza4` | `Variants/Group_president_safe/Slot_ps_bonds/PresidentSafe/UsePoint` | use_point | 44.0 | 83.8 | 1.91 | ok |
-| `Spawns/PlayerPlaza4` | `Variants/Group_president_safe/Slot_ps_bonds/PresidentSafe/PresidentBonds` | loot_spawn | 44.0 | 83.8 | 1.91 | ok |
-| `Spawns/PlayerPlaza4` | `Variants/Group_president_safe/Slot_ps_bonds/PresidentSafe/PresidentBonds/UsePoint` | use_point | 44.0 | 83.8 | 1.91 | ok |
-| `Spawns/PlayerPlaza4` | `Variants/Group_president_safe/Slot_ps_bonds/PresidentSafe/PresidentValuables1/UsePoint` | use_point | 44.0 | 83.8 | 1.91 | ok |
-| `Spawns/PlayerPlaza4` | `Variants/Group_president_safe/Slot_ps_bonds/PresidentSafe/PresidentValuables2/UsePoint` | use_point | 44.0 | 83.8 | 1.91 | ok |
-| `Spawns/PlayerPlaza4` | `Variants/Group_president_safe/Slot_ps_bonds/PresidentSafe/PresidentValuables3/UsePoint` | use_point | 44.0 | 83.8 | 1.91 | ok |
+| `Spawns/PlayerPlaza4` | `Variants/Group_side_door/Slot_door_dock_open/DockPersonnelDoor` | objective | 48.3 | 53.3 | 1.10 | ok |
+| `Spawns/PlayerPlaza4` | `Variants/Group_side_door/Slot_door_dock_open/DockPersonnelDoor/UsePoint` | use_point | 48.3 | 53.3 | 1.10 | ok |
+| `Spawns/PlayerPlaza4` | `Variants/Group_escape/Slot_esc_heli_terrace/SecureTerrace/Zone` | secure_zone | 26.6 | 113.6 | 4.27 | detour (whitelisted) |
+| `Spawns/PlayerPlaza4` | `Variants/Group_escape/Slot_esc_heli_terrace/EscapeTerrace/Zone` | escape_zone | 22.8 | 110.3 | 4.84 | detour (whitelisted) |
+| `Spawns/PlayerPlaza4` | `Variants/Group_president_safe/Slot_ps_bonds/PresidentSafe` | objective | 44.0 | 84.0 | 1.91 | ok |
+| `Spawns/PlayerPlaza4` | `Variants/Group_president_safe/Slot_ps_bonds/PresidentSafe/UsePoint` | use_point | 44.0 | 84.0 | 1.91 | ok |
+| `Spawns/PlayerPlaza4` | `Variants/Group_president_safe/Slot_ps_bonds/PresidentSafe/PresidentBonds` | loot_spawn | 44.0 | 84.0 | 1.91 | ok |
+| `Spawns/PlayerPlaza4` | `Variants/Group_president_safe/Slot_ps_bonds/PresidentSafe/PresidentBonds/UsePoint` | use_point | 44.0 | 84.0 | 1.91 | ok |
+| `Spawns/PlayerPlaza4` | `Variants/Group_president_safe/Slot_ps_bonds/PresidentSafe/PresidentValuables1/UsePoint` | use_point | 44.0 | 84.0 | 1.91 | ok |
+| `Spawns/PlayerPlaza4` | `Variants/Group_president_safe/Slot_ps_bonds/PresidentSafe/PresidentValuables2/UsePoint` | use_point | 44.0 | 84.0 | 1.91 | ok |
+| `Spawns/PlayerPlaza4` | `Variants/Group_president_safe/Slot_ps_bonds/PresidentSafe/PresidentValuables3/UsePoint` | use_point | 44.0 | 84.0 | 1.91 | ok |
 | `Spawns/PlayerLane1` | `Gameplay/Doors/LockerDoor/UsePoint` | use_point | 21.4 | 45.2 | 2.11 | ok |
 | `Spawns/PlayerLane1` | `Gameplay/Doors/CashLiftDoorB/UsePoint` | use_point | 13.2 | 43.0 | 3.25 | detour (whitelisted) |
 | `Spawns/PlayerLane1` | `Gameplay/Doors/CartQueueDoor/UsePoint` | use_point | 16.9 | 38.2 | 2.26 | ok |
@@ -1109,19 +1109,19 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerLane1` | `Gameplay/Doors/ClientTellerDoor/UsePoint` | use_point | 26.7 | 45.7 | 1.71 | ok |
 | `Spawns/PlayerLane1` | `Gameplay/Doors/LoanHallDoor/UsePoint` | use_point | 27.0 | 40.8 | 1.51 | ok |
 | `Spawns/PlayerLane1` | `Gameplay/Doors/ClientHallDoor/UsePoint` | use_point | 30.2 | 52.1 | 1.73 | ok |
-| `Spawns/PlayerLane1` | `Gameplay/Doors/TellerGate/UsePoint` | use_point | 24.1 | 40.8 | 1.69 | ok |
+| `Spawns/PlayerLane1` | `Gameplay/Doors/TellerGate/UsePoint` | use_point | 23.8 | 40.6 | 1.71 | ok |
 | `Spawns/PlayerLane1` | `Gameplay/Doors/ConsultDoor1/UsePoint` | use_point | 29.7 | 43.4 | 1.46 | ok |
 | `Spawns/PlayerLane1` | `Gameplay/Doors/ConsultDoor2/UsePoint` | use_point | 34.3 | 48.4 | 1.41 | ok |
 | `Spawns/PlayerLane1` | `Gameplay/Doors/ATMHallDoor/UsePoint` | use_point | 39.9 | 54.4 | 1.36 | ok |
 | `Spawns/PlayerLane1` | `Gameplay/Doors/ManagerDoor/UsePoint` | use_point | 34.3 | 56.4 | 1.64 | ok |
 | `Spawns/PlayerLane1` | `Gameplay/Doors/RestroomDoor/UsePoint` | use_point | 39.5 | 60.5 | 1.53 | ok |
-| `Spawns/PlayerLane1` | `Gameplay/Doors/NewAccountsDoor/UsePoint` | use_point | 43.1 | 63.0 | 1.46 | ok |
-| `Spawns/PlayerLane1` | `Gameplay/Doors/VestibuleDoorsW/UsePoint` | use_point | 38.7 | 55.5 | 1.43 | ok |
-| `Spawns/PlayerLane1` | `Gameplay/Doors/VestibuleDoorsE/UsePoint` | use_point | 38.9 | 55.6 | 1.43 | ok |
-| `Spawns/PlayerLane1` | `Gameplay/Doors/BronzeDoorsW` | objective | 41.3 | 58.1 | 1.41 | ok |
-| `Spawns/PlayerLane1` | `Gameplay/Doors/BronzeDoorsW/UsePoint` | use_point | 41.3 | 58.1 | 1.41 | ok |
-| `Spawns/PlayerLane1` | `Gameplay/Doors/BronzeDoorsE` | objective | 41.5 | 58.2 | 1.40 | ok |
-| `Spawns/PlayerLane1` | `Gameplay/Doors/BronzeDoorsE/UsePoint` | use_point | 41.5 | 58.2 | 1.40 | ok |
+| `Spawns/PlayerLane1` | `Gameplay/Doors/NewAccountsDoor/UsePoint` | use_point | 43.1 | 62.9 | 1.46 | ok |
+| `Spawns/PlayerLane1` | `Gameplay/Doors/VestibuleDoorsW/UsePoint` | use_point | 38.7 | 55.7 | 1.44 | ok |
+| `Spawns/PlayerLane1` | `Gameplay/Doors/VestibuleDoorsE/UsePoint` | use_point | 38.9 | 55.7 | 1.43 | ok |
+| `Spawns/PlayerLane1` | `Gameplay/Doors/BronzeDoorsW` | objective | 41.3 | 58.3 | 1.41 | ok |
+| `Spawns/PlayerLane1` | `Gameplay/Doors/BronzeDoorsW/UsePoint` | use_point | 41.3 | 58.3 | 1.41 | ok |
+| `Spawns/PlayerLane1` | `Gameplay/Doors/BronzeDoorsE` | objective | 41.5 | 58.3 | 1.40 | ok |
+| `Spawns/PlayerLane1` | `Gameplay/Doors/BronzeDoorsE/UsePoint` | use_point | 41.5 | 58.3 | 1.40 | ok |
 | `Spawns/PlayerLane1` | `Gameplay/Doors/ATMStreetDoor` | objective | 44.7 | 59.9 | 1.34 | ok |
 | `Spawns/PlayerLane1` | `Gameplay/Doors/ATMStreetDoor/UsePoint` | use_point | 44.7 | 59.9 | 1.34 | ok |
 | `Spawns/PlayerLane1` | `Gameplay/Doors/BreakRoomDoor/UsePoint` | use_point | 21.6 | 50.6 | 2.34 | ok |
@@ -1181,20 +1181,20 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerLane1` | `Gameplay/Devices/TimeLockConsole/UsePoint` | use_point | 21.7 | 50.5 | 2.33 | ok |
 | `Spawns/PlayerLane1` | `Gameplay/Devices/CashCageKeypad` | objective | 23.3 | 54.5 | 2.34 | ok |
 | `Spawns/PlayerLane1` | `Gameplay/Devices/CashCageKeypad/UsePoint` | use_point | 23.3 | 54.5 | 2.34 | ok |
-| `Spawns/PlayerLane1` | `Gameplay/Devices/LidDrill` | objective | 18.8 | 37.9 | 2.01 | ok |
-| `Spawns/PlayerLane1` | `Gameplay/Devices/LidDrill/UsePoint` | use_point | 18.8 | 37.9 | 2.01 | ok |
+| `Spawns/PlayerLane1` | `Gameplay/Devices/LidDrill` | objective | 21.1 | 40.1 | 1.90 | ok |
+| `Spawns/PlayerLane1` | `Gameplay/Devices/LidDrill/UsePoint` | use_point | 21.1 | 40.1 | 1.90 | ok |
 | `Spawns/PlayerLane1` | `Gameplay/Devices/AlarmSR/UsePoint` | use_point | 7.4 | 38.3 | 5.14 | detour (whitelisted) |
 | `Spawns/PlayerLane1` | `Gameplay/Devices/AlarmBM/UsePoint` | use_point | 38.6 | 63.8 | 1.65 | ok |
 | `Spawns/PlayerLane1` | `Gameplay/Devices/AlarmSD/UsePoint` | use_point | 22.3 | 40.1 | 1.80 | ok |
-| `Spawns/PlayerLane1` | `Gameplay/Devices/AlarmTeller1/UsePoint` | use_point | 23.2 | 33.9 | 1.47 | ok |
-| `Spawns/PlayerLane1` | `Gameplay/Devices/AlarmTeller2/UsePoint` | use_point | 22.6 | 34.1 | 1.51 | ok |
-| `Spawns/PlayerLane1` | `Gameplay/Devices/AlarmTeller3/UsePoint` | use_point | 22.2 | 34.8 | 1.57 | ok |
-| `Spawns/PlayerLane1` | `Gameplay/Devices/AlarmTeller4/UsePoint` | use_point | 24.2 | 45.9 | 1.90 | ok |
-| `Spawns/PlayerLane1` | `Gameplay/Devices/AlarmTeller5/UsePoint` | use_point | 25.1 | 47.7 | 1.90 | ok |
-| `Spawns/PlayerLane1` | `Gameplay/Devices/AlarmTeller6/UsePoint` | use_point | 26.1 | 49.7 | 1.90 | ok |
+| `Spawns/PlayerLane1` | `Gameplay/Devices/AlarmTeller1/UsePoint` | use_point | 23.0 | 33.7 | 1.47 | ok |
+| `Spawns/PlayerLane1` | `Gameplay/Devices/AlarmTeller2/UsePoint` | use_point | 22.4 | 33.9 | 1.51 | ok |
+| `Spawns/PlayerLane1` | `Gameplay/Devices/AlarmTeller3/UsePoint` | use_point | 22.0 | 34.6 | 1.58 | ok |
+| `Spawns/PlayerLane1` | `Gameplay/Devices/AlarmTeller4/UsePoint` | use_point | 24.0 | 45.8 | 1.91 | ok |
+| `Spawns/PlayerLane1` | `Gameplay/Devices/AlarmTeller5/UsePoint` | use_point | 24.9 | 47.7 | 1.92 | ok |
+| `Spawns/PlayerLane1` | `Gameplay/Devices/AlarmTeller6/UsePoint` | use_point | 25.9 | 49.6 | 1.91 | ok |
 | `Spawns/PlayerLane1` | `Gameplay/Devices/PhoneBM/UsePoint` | use_point | 41.3 | 65.0 | 1.57 | ok |
 | `Spawns/PlayerLane1` | `Gameplay/Devices/PhoneLO/UsePoint` | use_point | 26.0 | 40.9 | 1.57 | ok |
-| `Spawns/PlayerLane1` | `Gameplay/Devices/PhoneNA/UsePoint` | use_point | 48.6 | 71.9 | 1.48 | ok |
+| `Spawns/PlayerLane1` | `Gameplay/Devices/PhoneNA/UsePoint` | use_point | 48.6 | 71.8 | 1.48 | ok |
 | `Spawns/PlayerLane1` | `Gameplay/Devices/PhonePC/UsePoint` | use_point | 35.7 | 50.9 | 1.42 | ok |
 | `Spawns/PlayerLane1` | `Gameplay/Devices/PhoneSR/UsePoint` | use_point | 9.9 | 36.6 | 3.70 | detour (whitelisted) |
 | `Spawns/PlayerLane1` | `Gameplay/Devices/PhoneSD/UsePoint` | use_point | 21.5 | 39.6 | 1.84 | ok |
@@ -1376,19 +1376,19 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerLane2` | `Gameplay/Doors/ClientTellerDoor/UsePoint` | use_point | 25.6 | 44.2 | 1.73 | ok |
 | `Spawns/PlayerLane2` | `Gameplay/Doors/LoanHallDoor/UsePoint` | use_point | 27.7 | 42.4 | 1.53 | ok |
 | `Spawns/PlayerLane2` | `Gameplay/Doors/ClientHallDoor/UsePoint` | use_point | 29.3 | 50.6 | 1.73 | ok |
-| `Spawns/PlayerLane2` | `Gameplay/Doors/TellerGate/UsePoint` | use_point | 24.0 | 42.4 | 1.77 | ok |
+| `Spawns/PlayerLane2` | `Gameplay/Doors/TellerGate/UsePoint` | use_point | 23.7 | 42.2 | 1.78 | ok |
 | `Spawns/PlayerLane2` | `Gameplay/Doors/ConsultDoor1/UsePoint` | use_point | 30.3 | 45.0 | 1.48 | ok |
 | `Spawns/PlayerLane2` | `Gameplay/Doors/ConsultDoor2/UsePoint` | use_point | 34.8 | 50.0 | 1.44 | ok |
 | `Spawns/PlayerLane2` | `Gameplay/Doors/ATMHallDoor/UsePoint` | use_point | 40.4 | 56.0 | 1.39 | ok |
 | `Spawns/PlayerLane2` | `Gameplay/Doors/ManagerDoor/UsePoint` | use_point | 33.5 | 54.9 | 1.64 | ok |
 | `Spawns/PlayerLane2` | `Gameplay/Doors/RestroomDoor/UsePoint` | use_point | 38.8 | 60.9 | 1.57 | ok |
-| `Spawns/PlayerLane2` | `Gameplay/Doors/NewAccountsDoor/UsePoint` | use_point | 42.5 | 64.6 | 1.52 | ok |
-| `Spawns/PlayerLane2` | `Gameplay/Doors/VestibuleDoorsW/UsePoint` | use_point | 38.7 | 57.1 | 1.48 | ok |
-| `Spawns/PlayerLane2` | `Gameplay/Doors/VestibuleDoorsE/UsePoint` | use_point | 38.8 | 57.2 | 1.47 | ok |
-| `Spawns/PlayerLane2` | `Gameplay/Doors/BronzeDoorsW` | objective | 41.3 | 59.7 | 1.45 | ok |
-| `Spawns/PlayerLane2` | `Gameplay/Doors/BronzeDoorsW/UsePoint` | use_point | 41.3 | 59.7 | 1.45 | ok |
-| `Spawns/PlayerLane2` | `Gameplay/Doors/BronzeDoorsE` | objective | 41.4 | 59.7 | 1.44 | ok |
-| `Spawns/PlayerLane2` | `Gameplay/Doors/BronzeDoorsE/UsePoint` | use_point | 41.4 | 59.7 | 1.44 | ok |
+| `Spawns/PlayerLane2` | `Gameplay/Doors/NewAccountsDoor/UsePoint` | use_point | 42.5 | 64.5 | 1.52 | ok |
+| `Spawns/PlayerLane2` | `Gameplay/Doors/VestibuleDoorsW/UsePoint` | use_point | 38.7 | 57.3 | 1.48 | ok |
+| `Spawns/PlayerLane2` | `Gameplay/Doors/VestibuleDoorsE/UsePoint` | use_point | 38.8 | 57.3 | 1.48 | ok |
+| `Spawns/PlayerLane2` | `Gameplay/Doors/BronzeDoorsW` | objective | 41.3 | 59.9 | 1.45 | ok |
+| `Spawns/PlayerLane2` | `Gameplay/Doors/BronzeDoorsW/UsePoint` | use_point | 41.3 | 59.9 | 1.45 | ok |
+| `Spawns/PlayerLane2` | `Gameplay/Doors/BronzeDoorsE` | objective | 41.4 | 59.9 | 1.45 | ok |
+| `Spawns/PlayerLane2` | `Gameplay/Doors/BronzeDoorsE/UsePoint` | use_point | 41.4 | 59.9 | 1.45 | ok |
 | `Spawns/PlayerLane2` | `Gameplay/Doors/ATMStreetDoor` | objective | 45.3 | 61.5 | 1.36 | ok |
 | `Spawns/PlayerLane2` | `Gameplay/Doors/ATMStreetDoor/UsePoint` | use_point | 45.3 | 61.5 | 1.36 | ok |
 | `Spawns/PlayerLane2` | `Gameplay/Doors/BreakRoomDoor/UsePoint` | use_point | 22.8 | 52.2 | 2.29 | ok |
@@ -1448,20 +1448,20 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerLane2` | `Gameplay/Devices/TimeLockConsole/UsePoint` | use_point | 20.9 | 49.2 | 2.36 | ok |
 | `Spawns/PlayerLane2` | `Gameplay/Devices/CashCageKeypad` | objective | 23.1 | 53.2 | 2.30 | ok |
 | `Spawns/PlayerLane2` | `Gameplay/Devices/CashCageKeypad/UsePoint` | use_point | 23.1 | 53.2 | 2.30 | ok |
-| `Spawns/PlayerLane2` | `Gameplay/Devices/LidDrill` | objective | 18.7 | 39.5 | 2.12 | ok |
-| `Spawns/PlayerLane2` | `Gameplay/Devices/LidDrill/UsePoint` | use_point | 18.7 | 39.5 | 2.12 | ok |
+| `Spawns/PlayerLane2` | `Gameplay/Devices/LidDrill` | objective | 20.8 | 41.7 | 2.00 | ok |
+| `Spawns/PlayerLane2` | `Gameplay/Devices/LidDrill/UsePoint` | use_point | 20.8 | 41.7 | 2.00 | ok |
 | `Spawns/PlayerLane2` | `Gameplay/Devices/AlarmSR/UsePoint` | use_point | 8.1 | 39.9 | 4.90 | detour (whitelisted) |
 | `Spawns/PlayerLane2` | `Gameplay/Devices/AlarmBM/UsePoint` | use_point | 37.6 | 62.3 | 1.66 | ok |
 | `Spawns/PlayerLane2` | `Gameplay/Devices/AlarmSD/UsePoint` | use_point | 21.4 | 38.8 | 1.82 | ok |
-| `Spawns/PlayerLane2` | `Gameplay/Devices/AlarmTeller1/UsePoint` | use_point | 23.7 | 35.5 | 1.50 | ok |
-| `Spawns/PlayerLane2` | `Gameplay/Devices/AlarmTeller2/UsePoint` | use_point | 23.0 | 35.7 | 1.55 | ok |
-| `Spawns/PlayerLane2` | `Gameplay/Devices/AlarmTeller3/UsePoint` | use_point | 22.5 | 36.4 | 1.62 | ok |
-| `Spawns/PlayerLane2` | `Gameplay/Devices/AlarmTeller4/UsePoint` | use_point | 23.6 | 47.5 | 2.01 | ok |
-| `Spawns/PlayerLane2` | `Gameplay/Devices/AlarmTeller5/UsePoint` | use_point | 24.4 | 49.3 | 2.02 | ok |
-| `Spawns/PlayerLane2` | `Gameplay/Devices/AlarmTeller6/UsePoint` | use_point | 25.3 | 50.9 | 2.01 | ok |
+| `Spawns/PlayerLane2` | `Gameplay/Devices/AlarmTeller1/UsePoint` | use_point | 23.5 | 35.3 | 1.50 | ok |
+| `Spawns/PlayerLane2` | `Gameplay/Devices/AlarmTeller2/UsePoint` | use_point | 22.8 | 35.5 | 1.56 | ok |
+| `Spawns/PlayerLane2` | `Gameplay/Devices/AlarmTeller3/UsePoint` | use_point | 22.3 | 36.2 | 1.62 | ok |
+| `Spawns/PlayerLane2` | `Gameplay/Devices/AlarmTeller4/UsePoint` | use_point | 23.4 | 47.4 | 2.03 | ok |
+| `Spawns/PlayerLane2` | `Gameplay/Devices/AlarmTeller5/UsePoint` | use_point | 24.2 | 49.3 | 2.04 | ok |
+| `Spawns/PlayerLane2` | `Gameplay/Devices/AlarmTeller6/UsePoint` | use_point | 25.2 | 50.7 | 2.02 | ok |
 | `Spawns/PlayerLane2` | `Gameplay/Devices/PhoneBM/UsePoint` | use_point | 40.4 | 63.5 | 1.57 | ok |
 | `Spawns/PlayerLane2` | `Gameplay/Devices/PhoneLO/UsePoint` | use_point | 27.2 | 42.5 | 1.56 | ok |
-| `Spawns/PlayerLane2` | `Gameplay/Devices/PhoneNA/UsePoint` | use_point | 47.8 | 73.4 | 1.54 | ok |
+| `Spawns/PlayerLane2` | `Gameplay/Devices/PhoneNA/UsePoint` | use_point | 47.8 | 73.4 | 1.53 | ok |
 | `Spawns/PlayerLane2` | `Gameplay/Devices/PhonePC/UsePoint` | use_point | 34.6 | 49.4 | 1.43 | ok |
 | `Spawns/PlayerLane2` | `Gameplay/Devices/PhoneSR/UsePoint` | use_point | 10.6 | 38.2 | 3.60 | detour (whitelisted) |
 | `Spawns/PlayerLane2` | `Gameplay/Devices/PhoneSD/UsePoint` | use_point | 20.6 | 38.3 | 1.86 | ok |
@@ -1643,19 +1643,19 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerLane3` | `Gameplay/Doors/ClientTellerDoor/UsePoint` | use_point | 24.6 | 42.8 | 1.74 | ok |
 | `Spawns/PlayerLane3` | `Gameplay/Doors/LoanHallDoor/UsePoint` | use_point | 28.5 | 43.9 | 1.54 | ok |
 | `Spawns/PlayerLane3` | `Gameplay/Doors/ClientHallDoor/UsePoint` | use_point | 28.5 | 49.2 | 1.73 | ok |
-| `Spawns/PlayerLane3` | `Gameplay/Doors/TellerGate/UsePoint` | use_point | 24.0 | 43.9 | 1.83 | ok |
+| `Spawns/PlayerLane3` | `Gameplay/Doors/TellerGate/UsePoint` | use_point | 23.6 | 43.7 | 1.85 | ok |
 | `Spawns/PlayerLane3` | `Gameplay/Doors/ConsultDoor1/UsePoint` | use_point | 31.0 | 46.5 | 1.50 | ok |
 | `Spawns/PlayerLane3` | `Gameplay/Doors/ConsultDoor2/UsePoint` | use_point | 35.5 | 51.5 | 1.45 | ok |
 | `Spawns/PlayerLane3` | `Gameplay/Doors/ATMHallDoor/UsePoint` | use_point | 41.0 | 57.5 | 1.40 | ok |
 | `Spawns/PlayerLane3` | `Gameplay/Doors/ManagerDoor/UsePoint` | use_point | 32.8 | 53.4 | 1.63 | ok |
 | `Spawns/PlayerLane3` | `Gameplay/Doors/RestroomDoor/UsePoint` | use_point | 38.2 | 59.4 | 1.56 | ok |
 | `Spawns/PlayerLane3` | `Gameplay/Doors/NewAccountsDoor/UsePoint` | use_point | 41.9 | 63.4 | 1.51 | ok |
-| `Spawns/PlayerLane3` | `Gameplay/Doors/VestibuleDoorsW/UsePoint` | use_point | 38.7 | 58.6 | 1.51 | ok |
-| `Spawns/PlayerLane3` | `Gameplay/Doors/VestibuleDoorsE/UsePoint` | use_point | 38.7 | 58.7 | 1.52 | ok |
-| `Spawns/PlayerLane3` | `Gameplay/Doors/BronzeDoorsW` | objective | 41.3 | 61.2 | 1.48 | ok |
-| `Spawns/PlayerLane3` | `Gameplay/Doors/BronzeDoorsW/UsePoint` | use_point | 41.3 | 61.2 | 1.48 | ok |
-| `Spawns/PlayerLane3` | `Gameplay/Doors/BronzeDoorsE` | objective | 41.3 | 61.2 | 1.48 | ok |
-| `Spawns/PlayerLane3` | `Gameplay/Doors/BronzeDoorsE/UsePoint` | use_point | 41.3 | 61.2 | 1.48 | ok |
+| `Spawns/PlayerLane3` | `Gameplay/Doors/VestibuleDoorsW/UsePoint` | use_point | 38.7 | 58.8 | 1.52 | ok |
+| `Spawns/PlayerLane3` | `Gameplay/Doors/VestibuleDoorsE/UsePoint` | use_point | 38.7 | 58.8 | 1.52 | ok |
+| `Spawns/PlayerLane3` | `Gameplay/Doors/BronzeDoorsW` | objective | 41.3 | 61.4 | 1.49 | ok |
+| `Spawns/PlayerLane3` | `Gameplay/Doors/BronzeDoorsW/UsePoint` | use_point | 41.3 | 61.4 | 1.49 | ok |
+| `Spawns/PlayerLane3` | `Gameplay/Doors/BronzeDoorsE` | objective | 41.3 | 61.4 | 1.49 | ok |
+| `Spawns/PlayerLane3` | `Gameplay/Doors/BronzeDoorsE/UsePoint` | use_point | 41.3 | 61.4 | 1.49 | ok |
 | `Spawns/PlayerLane3` | `Gameplay/Doors/ATMStreetDoor` | objective | 45.9 | 63.0 | 1.37 | ok |
 | `Spawns/PlayerLane3` | `Gameplay/Doors/ATMStreetDoor/UsePoint` | use_point | 45.9 | 63.0 | 1.37 | ok |
 | `Spawns/PlayerLane3` | `Gameplay/Doors/BreakRoomDoor/UsePoint` | use_point | 24.0 | 53.7 | 2.24 | ok |
@@ -1715,17 +1715,17 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerLane3` | `Gameplay/Devices/TimeLockConsole/UsePoint` | use_point | 20.2 | 48.0 | 2.38 | ok |
 | `Spawns/PlayerLane3` | `Gameplay/Devices/CashCageKeypad` | objective | 23.0 | 52.0 | 2.26 | ok |
 | `Spawns/PlayerLane3` | `Gameplay/Devices/CashCageKeypad/UsePoint` | use_point | 23.0 | 52.0 | 2.26 | ok |
-| `Spawns/PlayerLane3` | `Gameplay/Devices/LidDrill` | objective | 18.6 | 41.0 | 2.20 | ok |
-| `Spawns/PlayerLane3` | `Gameplay/Devices/LidDrill/UsePoint` | use_point | 18.6 | 41.0 | 2.20 | ok |
+| `Spawns/PlayerLane3` | `Gameplay/Devices/LidDrill` | objective | 20.7 | 43.2 | 2.09 | ok |
+| `Spawns/PlayerLane3` | `Gameplay/Devices/LidDrill/UsePoint` | use_point | 20.7 | 43.2 | 2.09 | ok |
 | `Spawns/PlayerLane3` | `Gameplay/Devices/AlarmSR/UsePoint` | use_point | 9.0 | 41.4 | 4.59 | detour (whitelisted) |
 | `Spawns/PlayerLane3` | `Gameplay/Devices/AlarmBM/UsePoint` | use_point | 36.7 | 60.9 | 1.66 | ok |
 | `Spawns/PlayerLane3` | `Gameplay/Devices/AlarmSD/UsePoint` | use_point | 20.5 | 37.6 | 1.83 | ok |
-| `Spawns/PlayerLane3` | `Gameplay/Devices/AlarmTeller1/UsePoint` | use_point | 24.3 | 37.0 | 1.52 | ok |
-| `Spawns/PlayerLane3` | `Gameplay/Devices/AlarmTeller2/UsePoint` | use_point | 23.5 | 37.2 | 1.58 | ok |
-| `Spawns/PlayerLane3` | `Gameplay/Devices/AlarmTeller3/UsePoint` | use_point | 22.9 | 37.9 | 1.66 | ok |
-| `Spawns/PlayerLane3` | `Gameplay/Devices/AlarmTeller4/UsePoint` | use_point | 23.0 | 49.0 | 2.12 | ok |
-| `Spawns/PlayerLane3` | `Gameplay/Devices/AlarmTeller5/UsePoint` | use_point | 23.7 | 50.8 | 2.14 | ok |
-| `Spawns/PlayerLane3` | `Gameplay/Devices/AlarmTeller6/UsePoint` | use_point | 24.6 | 49.4 | 2.01 | ok |
+| `Spawns/PlayerLane3` | `Gameplay/Devices/AlarmTeller1/UsePoint` | use_point | 24.1 | 36.8 | 1.53 | ok |
+| `Spawns/PlayerLane3` | `Gameplay/Devices/AlarmTeller2/UsePoint` | use_point | 23.3 | 37.0 | 1.58 | ok |
+| `Spawns/PlayerLane3` | `Gameplay/Devices/AlarmTeller3/UsePoint` | use_point | 22.7 | 37.7 | 1.66 | ok |
+| `Spawns/PlayerLane3` | `Gameplay/Devices/AlarmTeller4/UsePoint` | use_point | 22.8 | 48.9 | 2.14 | ok |
+| `Spawns/PlayerLane3` | `Gameplay/Devices/AlarmTeller5/UsePoint` | use_point | 23.6 | 50.8 | 2.15 | ok |
+| `Spawns/PlayerLane3` | `Gameplay/Devices/AlarmTeller6/UsePoint` | use_point | 24.4 | 49.3 | 2.02 | ok |
 | `Spawns/PlayerLane3` | `Gameplay/Devices/PhoneBM/UsePoint` | use_point | 39.5 | 62.1 | 1.57 | ok |
 | `Spawns/PlayerLane3` | `Gameplay/Devices/PhoneLO/UsePoint` | use_point | 28.4 | 44.0 | 1.55 | ok |
 | `Spawns/PlayerLane3` | `Gameplay/Devices/PhoneNA/UsePoint` | use_point | 47.1 | 72.0 | 1.53 | ok |
@@ -1910,19 +1910,19 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerLane4` | `Gameplay/Doors/ClientTellerDoor/UsePoint` | use_point | 23.6 | 41.3 | 1.75 | ok |
 | `Spawns/PlayerLane4` | `Gameplay/Doors/LoanHallDoor/UsePoint` | use_point | 29.3 | 45.0 | 1.54 | ok |
 | `Spawns/PlayerLane4` | `Gameplay/Doors/ClientHallDoor/UsePoint` | use_point | 27.7 | 47.7 | 1.72 | ok |
-| `Spawns/PlayerLane4` | `Gameplay/Doors/TellerGate/UsePoint` | use_point | 24.0 | 45.0 | 1.87 | ok |
+| `Spawns/PlayerLane4` | `Gameplay/Doors/TellerGate/UsePoint` | use_point | 23.7 | 44.8 | 1.89 | ok |
 | `Spawns/PlayerLane4` | `Gameplay/Doors/ConsultDoor1/UsePoint` | use_point | 31.8 | 47.6 | 1.50 | ok |
 | `Spawns/PlayerLane4` | `Gameplay/Doors/ConsultDoor2/UsePoint` | use_point | 36.1 | 52.6 | 1.46 | ok |
 | `Spawns/PlayerLane4` | `Gameplay/Doors/ATMHallDoor/UsePoint` | use_point | 41.5 | 58.6 | 1.41 | ok |
 | `Spawns/PlayerLane4` | `Gameplay/Doors/ManagerDoor/UsePoint` | use_point | 32.1 | 52.0 | 1.62 | ok |
 | `Spawns/PlayerLane4` | `Gameplay/Doors/RestroomDoor/UsePoint` | use_point | 37.6 | 58.0 | 1.54 | ok |
 | `Spawns/PlayerLane4` | `Gameplay/Doors/NewAccountsDoor/UsePoint` | use_point | 41.4 | 61.9 | 1.50 | ok |
-| `Spawns/PlayerLane4` | `Gameplay/Doors/VestibuleDoorsW/UsePoint` | use_point | 38.8 | 59.7 | 1.54 | ok |
-| `Spawns/PlayerLane4` | `Gameplay/Doors/VestibuleDoorsE/UsePoint` | use_point | 38.7 | 59.8 | 1.54 | ok |
-| `Spawns/PlayerLane4` | `Gameplay/Doors/BronzeDoorsW` | objective | 41.4 | 62.3 | 1.51 | ok |
-| `Spawns/PlayerLane4` | `Gameplay/Doors/BronzeDoorsW/UsePoint` | use_point | 41.4 | 62.3 | 1.51 | ok |
-| `Spawns/PlayerLane4` | `Gameplay/Doors/BronzeDoorsE` | objective | 41.3 | 62.4 | 1.51 | ok |
-| `Spawns/PlayerLane4` | `Gameplay/Doors/BronzeDoorsE/UsePoint` | use_point | 41.3 | 62.4 | 1.51 | ok |
+| `Spawns/PlayerLane4` | `Gameplay/Doors/VestibuleDoorsW/UsePoint` | use_point | 38.8 | 59.9 | 1.54 | ok |
+| `Spawns/PlayerLane4` | `Gameplay/Doors/VestibuleDoorsE/UsePoint` | use_point | 38.7 | 59.9 | 1.55 | ok |
+| `Spawns/PlayerLane4` | `Gameplay/Doors/BronzeDoorsW` | objective | 41.4 | 62.5 | 1.51 | ok |
+| `Spawns/PlayerLane4` | `Gameplay/Doors/BronzeDoorsW/UsePoint` | use_point | 41.4 | 62.5 | 1.51 | ok |
+| `Spawns/PlayerLane4` | `Gameplay/Doors/BronzeDoorsE` | objective | 41.3 | 62.5 | 1.51 | ok |
+| `Spawns/PlayerLane4` | `Gameplay/Doors/BronzeDoorsE/UsePoint` | use_point | 41.3 | 62.5 | 1.51 | ok |
 | `Spawns/PlayerLane4` | `Gameplay/Doors/ATMStreetDoor` | objective | 46.6 | 64.1 | 1.38 | ok |
 | `Spawns/PlayerLane4` | `Gameplay/Doors/ATMStreetDoor/UsePoint` | use_point | 46.6 | 64.1 | 1.38 | ok |
 | `Spawns/PlayerLane4` | `Gameplay/Doors/BreakRoomDoor/UsePoint` | use_point | 25.2 | 54.8 | 2.18 | ok |
@@ -1982,17 +1982,17 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerLane4` | `Gameplay/Devices/TimeLockConsole/UsePoint` | use_point | 19.5 | 46.8 | 2.40 | ok |
 | `Spawns/PlayerLane4` | `Gameplay/Devices/CashCageKeypad` | objective | 23.0 | 50.8 | 2.21 | ok |
 | `Spawns/PlayerLane4` | `Gameplay/Devices/CashCageKeypad/UsePoint` | use_point | 23.0 | 50.8 | 2.21 | ok |
-| `Spawns/PlayerLane4` | `Gameplay/Devices/LidDrill` | objective | 18.7 | 42.1 | 2.26 | ok |
-| `Spawns/PlayerLane4` | `Gameplay/Devices/LidDrill/UsePoint` | use_point | 18.7 | 42.1 | 2.26 | ok |
+| `Spawns/PlayerLane4` | `Gameplay/Devices/LidDrill` | objective | 20.6 | 44.3 | 2.15 | ok |
+| `Spawns/PlayerLane4` | `Gameplay/Devices/LidDrill/UsePoint` | use_point | 20.6 | 44.3 | 2.15 | ok |
 | `Spawns/PlayerLane4` | `Gameplay/Devices/AlarmSR/UsePoint` | use_point | 10.0 | 42.5 | 4.23 | detour (whitelisted) |
 | `Spawns/PlayerLane4` | `Gameplay/Devices/AlarmBM/UsePoint` | use_point | 35.8 | 59.4 | 1.66 | ok |
 | `Spawns/PlayerLane4` | `Gameplay/Devices/AlarmSD/UsePoint` | use_point | 19.8 | 36.4 | 1.84 | ok |
-| `Spawns/PlayerLane4` | `Gameplay/Devices/AlarmTeller1/UsePoint` | use_point | 25.0 | 38.1 | 1.52 | ok |
-| `Spawns/PlayerLane4` | `Gameplay/Devices/AlarmTeller2/UsePoint` | use_point | 24.1 | 38.3 | 1.59 | ok |
-| `Spawns/PlayerLane4` | `Gameplay/Devices/AlarmTeller3/UsePoint` | use_point | 23.3 | 39.0 | 1.67 | ok |
-| `Spawns/PlayerLane4` | `Gameplay/Devices/AlarmTeller4/UsePoint` | use_point | 22.6 | 50.1 | 2.21 | ok |
-| `Spawns/PlayerLane4` | `Gameplay/Devices/AlarmTeller5/UsePoint` | use_point | 23.2 | 49.6 | 2.14 | ok |
-| `Spawns/PlayerLane4` | `Gameplay/Devices/AlarmTeller6/UsePoint` | use_point | 23.9 | 47.9 | 2.00 | ok |
+| `Spawns/PlayerLane4` | `Gameplay/Devices/AlarmTeller1/UsePoint` | use_point | 24.9 | 37.9 | 1.53 | ok |
+| `Spawns/PlayerLane4` | `Gameplay/Devices/AlarmTeller2/UsePoint` | use_point | 23.9 | 38.1 | 1.59 | ok |
+| `Spawns/PlayerLane4` | `Gameplay/Devices/AlarmTeller3/UsePoint` | use_point | 23.2 | 38.8 | 1.68 | ok |
+| `Spawns/PlayerLane4` | `Gameplay/Devices/AlarmTeller4/UsePoint` | use_point | 22.4 | 50.0 | 2.23 | ok |
+| `Spawns/PlayerLane4` | `Gameplay/Devices/AlarmTeller5/UsePoint` | use_point | 23.0 | 49.5 | 2.15 | ok |
+| `Spawns/PlayerLane4` | `Gameplay/Devices/AlarmTeller6/UsePoint` | use_point | 23.8 | 47.8 | 2.01 | ok |
 | `Spawns/PlayerLane4` | `Gameplay/Devices/PhoneBM/UsePoint` | use_point | 38.6 | 60.6 | 1.57 | ok |
 | `Spawns/PlayerLane4` | `Gameplay/Devices/PhoneLO/UsePoint` | use_point | 29.6 | 45.1 | 1.52 | ok |
 | `Spawns/PlayerLane4` | `Gameplay/Devices/PhoneNA/UsePoint` | use_point | 46.3 | 70.6 | 1.52 | ok |
@@ -2018,8 +2018,8 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerLane4` | `Gameplay/Loot/TellerDrawer3/UsePoint` | use_point | 23.6 | 38.6 | 1.63 | ok |
 | `Spawns/PlayerLane4` | `Gameplay/Loot/TellerDrawer4` | objective | 22.3 | 49.2 | 2.20 | ok |
 | `Spawns/PlayerLane4` | `Gameplay/Loot/TellerDrawer4/UsePoint` | use_point | 22.3 | 49.2 | 2.20 | ok |
-| `Spawns/PlayerLane4` | `Gameplay/Loot/TellerDrawer5` | objective | 22.9 | 50.3 | 2.20 | ok |
-| `Spawns/PlayerLane4` | `Gameplay/Loot/TellerDrawer5/UsePoint` | use_point | 22.9 | 50.3 | 2.20 | ok |
+| `Spawns/PlayerLane4` | `Gameplay/Loot/TellerDrawer5` | objective | 22.9 | 51.1 | 2.23 | ok |
+| `Spawns/PlayerLane4` | `Gameplay/Loot/TellerDrawer5/UsePoint` | use_point | 22.9 | 51.1 | 2.23 | ok |
 | `Spawns/PlayerLane4` | `Gameplay/Loot/TellerDrawer6` | objective | 23.5 | 48.6 | 2.07 | ok |
 | `Spawns/PlayerLane4` | `Gameplay/Loot/TellerDrawer6/UsePoint` | use_point | 23.5 | 48.6 | 2.07 | ok |
 | `Spawns/PlayerLane4` | `Gameplay/Loot/CountStraps1` | objective | 13.4 | 29.3 | 2.18 | ok |
@@ -2173,13 +2173,13 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerTannery1` | `Gameplay/Doors/StaffDoorTWW/UsePoint` | use_point | 44.6 | 49.3 | 1.11 | ok |
 | `Spawns/PlayerTannery1` | `Gameplay/Doors/StaffDoorTWE/UsePoint` | use_point | 25.8 | 29.3 | 1.14 | ok |
 | `Spawns/PlayerTannery1` | `Gameplay/Doors/ClientServiceDoor/UsePoint` | use_point | 17.5 | 19.3 | 1.10 | ok |
-| `Spawns/PlayerTannery1` | `Gameplay/Doors/LoanTellerDoor/UsePoint` | use_point | 50.3 | 56.9 | 1.13 | ok |
+| `Spawns/PlayerTannery1` | `Gameplay/Doors/LoanTellerDoor/UsePoint` | use_point | 50.3 | 56.5 | 1.12 | ok |
 | `Spawns/PlayerTannery1` | `Gameplay/Doors/ClientTellerDoor/UsePoint` | use_point | 18.2 | 24.0 | 1.32 | ok |
-| `Spawns/PlayerTannery1` | `Gameplay/Doors/LoanHallDoor/UsePoint` | use_point | 48.3 | 57.0 | 1.18 | ok |
+| `Spawns/PlayerTannery1` | `Gameplay/Doors/LoanHallDoor/UsePoint` | use_point | 48.3 | 62.8 | 1.30 | ok |
 | `Spawns/PlayerTannery1` | `Gameplay/Doors/ClientHallDoor/UsePoint` | use_point | 17.8 | 30.3 | 1.70 | ok |
-| `Spawns/PlayerTannery1` | `Gameplay/Doors/TellerGate/UsePoint` | use_point | 33.1 | 42.1 | 1.27 | ok |
-| `Spawns/PlayerTannery1` | `Gameplay/Doors/ConsultDoor1/UsePoint` | use_point | 48.3 | 57.7 | 1.19 | ok |
-| `Spawns/PlayerTannery1` | `Gameplay/Doors/ConsultDoor2/UsePoint` | use_point | 48.7 | 59.3 | 1.22 | ok |
+| `Spawns/PlayerTannery1` | `Gameplay/Doors/TellerGate/UsePoint` | use_point | 33.1 | 42.8 | 1.29 | ok |
+| `Spawns/PlayerTannery1` | `Gameplay/Doors/ConsultDoor1/UsePoint` | use_point | 48.3 | 61.2 | 1.27 | ok |
+| `Spawns/PlayerTannery1` | `Gameplay/Doors/ConsultDoor2/UsePoint` | use_point | 48.7 | 62.5 | 1.28 | ok |
 | `Spawns/PlayerTannery1` | `Gameplay/Doors/ATMHallDoor/UsePoint` | use_point | 49.8 | 61.7 | 1.24 | ok |
 | `Spawns/PlayerTannery1` | `Gameplay/Doors/ManagerDoor/UsePoint` | use_point | 18.0 | 34.6 | 1.93 | ok |
 | `Spawns/PlayerTannery1` | `Gameplay/Doors/RestroomDoor/UsePoint` | use_point | 19.9 | 40.6 | 2.05 | ok |
@@ -2249,19 +2249,19 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerTannery1` | `Gameplay/Devices/TimeLockConsole/UsePoint` | use_point | 25.7 | 75.2 | 2.92 | ok |
 | `Spawns/PlayerTannery1` | `Gameplay/Devices/CashCageKeypad` | objective | 32.2 | 79.2 | 2.46 | ok |
 | `Spawns/PlayerTannery1` | `Gameplay/Devices/CashCageKeypad/UsePoint` | use_point | 32.2 | 79.2 | 2.46 | ok |
-| `Spawns/PlayerTannery1` | `Gameplay/Devices/LidDrill` | objective | 33.8 | 40.5 | 1.20 | ok |
-| `Spawns/PlayerTannery1` | `Gameplay/Devices/LidDrill/UsePoint` | use_point | 33.8 | 40.5 | 1.20 | ok |
+| `Spawns/PlayerTannery1` | `Gameplay/Devices/LidDrill` | objective | 31.9 | 39.6 | 1.24 | ok |
+| `Spawns/PlayerTannery1` | `Gameplay/Devices/LidDrill/UsePoint` | use_point | 31.9 | 39.6 | 1.24 | ok |
 | `Spawns/PlayerTannery1` | `Gameplay/Devices/AlarmSR/UsePoint` | use_point | 43.2 | 50.6 | 1.17 | ok |
 | `Spawns/PlayerTannery1` | `Gameplay/Devices/AlarmBM/UsePoint` | use_point | 10.2 | 42.1 | 4.12 | detour (whitelisted) |
 | `Spawns/PlayerTannery1` | `Gameplay/Devices/AlarmSD/UsePoint` | use_point | 24.3 | 41.2 | 1.70 | ok |
-| `Spawns/PlayerTannery1` | `Gameplay/Devices/AlarmTeller1/UsePoint` | use_point | 43.9 | 51.5 | 1.17 | ok |
-| `Spawns/PlayerTannery1` | `Gameplay/Devices/AlarmTeller2/UsePoint` | use_point | 41.9 | 49.5 | 1.18 | ok |
+| `Spawns/PlayerTannery1` | `Gameplay/Devices/AlarmTeller1/UsePoint` | use_point | 43.9 | 51.3 | 1.17 | ok |
+| `Spawns/PlayerTannery1` | `Gameplay/Devices/AlarmTeller2/UsePoint` | use_point | 41.9 | 49.4 | 1.18 | ok |
 | `Spawns/PlayerTannery1` | `Gameplay/Devices/AlarmTeller3/UsePoint` | use_point | 39.9 | 47.5 | 1.19 | ok |
-| `Spawns/PlayerTannery1` | `Gameplay/Devices/AlarmTeller4/UsePoint` | use_point | 26.0 | 34.0 | 1.31 | ok |
-| `Spawns/PlayerTannery1` | `Gameplay/Devices/AlarmTeller5/UsePoint` | use_point | 24.1 | 32.2 | 1.34 | ok |
-| `Spawns/PlayerTannery1` | `Gameplay/Devices/AlarmTeller6/UsePoint` | use_point | 22.1 | 30.6 | 1.38 | ok |
+| `Spawns/PlayerTannery1` | `Gameplay/Devices/AlarmTeller4/UsePoint` | use_point | 26.1 | 33.9 | 1.30 | ok |
+| `Spawns/PlayerTannery1` | `Gameplay/Devices/AlarmTeller5/UsePoint` | use_point | 24.1 | 32.1 | 1.33 | ok |
+| `Spawns/PlayerTannery1` | `Gameplay/Devices/AlarmTeller6/UsePoint` | use_point | 22.1 | 30.5 | 1.38 | ok |
 | `Spawns/PlayerTannery1` | `Gameplay/Devices/PhoneBM/UsePoint` | use_point | 11.6 | 43.3 | 3.74 | detour (whitelisted) |
-| `Spawns/PlayerTannery1` | `Gameplay/Devices/PhoneLO/UsePoint` | use_point | 56.9 | 63.4 | 1.11 | ok |
+| `Spawns/PlayerTannery1` | `Gameplay/Devices/PhoneLO/UsePoint` | use_point | 56.9 | 63.0 | 1.11 | ok |
 | `Spawns/PlayerTannery1` | `Gameplay/Devices/PhoneNA/UsePoint` | use_point | 18.0 | 53.2 | 2.96 | ok |
 | `Spawns/PlayerTannery1` | `Gameplay/Devices/PhonePC/UsePoint` | use_point | 10.0 | 29.1 | 2.90 | ok |
 | `Spawns/PlayerTannery1` | `Gameplay/Devices/PhoneSR/UsePoint` | use_point | 43.6 | 49.1 | 1.13 | ok |
@@ -2277,10 +2277,10 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerTannery1` | `Gameplay/Loot/BondSafe/UsePoint` | use_point | 41.3 | 89.3 | 2.16 | ok |
 | `Spawns/PlayerTannery1` | `Gameplay/Loot/ServerDrives` | loot_spawn | 35.2 | 54.3 | 1.54 | ok |
 | `Spawns/PlayerTannery1` | `Gameplay/Loot/ServerDrives/UsePoint` | use_point | 34.7 | 53.0 | 1.53 | ok |
-| `Spawns/PlayerTannery1` | `Gameplay/Loot/TellerDrawer1` | objective | 44.8 | 52.3 | 1.17 | ok |
-| `Spawns/PlayerTannery1` | `Gameplay/Loot/TellerDrawer1/UsePoint` | use_point | 44.8 | 52.3 | 1.17 | ok |
-| `Spawns/PlayerTannery1` | `Gameplay/Loot/TellerDrawer2` | objective | 42.8 | 50.4 | 1.18 | ok |
-| `Spawns/PlayerTannery1` | `Gameplay/Loot/TellerDrawer2/UsePoint` | use_point | 42.8 | 50.4 | 1.18 | ok |
+| `Spawns/PlayerTannery1` | `Gameplay/Loot/TellerDrawer1` | objective | 44.8 | 52.2 | 1.17 | ok |
+| `Spawns/PlayerTannery1` | `Gameplay/Loot/TellerDrawer1/UsePoint` | use_point | 44.8 | 52.2 | 1.17 | ok |
+| `Spawns/PlayerTannery1` | `Gameplay/Loot/TellerDrawer2` | objective | 42.8 | 50.3 | 1.17 | ok |
+| `Spawns/PlayerTannery1` | `Gameplay/Loot/TellerDrawer2/UsePoint` | use_point | 42.8 | 50.3 | 1.17 | ok |
 | `Spawns/PlayerTannery1` | `Gameplay/Loot/TellerDrawer3` | objective | 40.8 | 48.4 | 1.19 | ok |
 | `Spawns/PlayerTannery1` | `Gameplay/Loot/TellerDrawer3/UsePoint` | use_point | 40.8 | 48.4 | 1.19 | ok |
 | `Spawns/PlayerTannery1` | `Gameplay/Loot/TellerDrawer4` | objective | 26.9 | 34.8 | 1.29 | ok |
@@ -2440,12 +2440,12 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerTannery2` | `Gameplay/Doors/StaffDoorTWW/UsePoint` | use_point | 45.0 | 50.6 | 1.13 | ok |
 | `Spawns/PlayerTannery2` | `Gameplay/Doors/StaffDoorTWE/UsePoint` | use_point | 26.5 | 30.6 | 1.15 | ok |
 | `Spawns/PlayerTannery2` | `Gameplay/Doors/ClientServiceDoor/UsePoint` | use_point | 18.5 | 20.6 | 1.11 | ok |
-| `Spawns/PlayerTannery2` | `Gameplay/Doors/LoanTellerDoor/UsePoint` | use_point | 50.6 | 58.2 | 1.15 | ok |
+| `Spawns/PlayerTannery2` | `Gameplay/Doors/LoanTellerDoor/UsePoint` | use_point | 50.6 | 57.8 | 1.14 | ok |
 | `Spawns/PlayerTannery2` | `Gameplay/Doors/ClientTellerDoor/UsePoint` | use_point | 18.9 | 25.3 | 1.34 | ok |
-| `Spawns/PlayerTannery2` | `Gameplay/Doors/LoanHallDoor/UsePoint` | use_point | 48.4 | 58.3 | 1.20 | ok |
+| `Spawns/PlayerTannery2` | `Gameplay/Doors/LoanHallDoor/UsePoint` | use_point | 48.4 | 64.1 | 1.32 | ok |
 | `Spawns/PlayerTannery2` | `Gameplay/Doors/ClientHallDoor/UsePoint` | use_point | 18.0 | 31.7 | 1.75 | ok |
-| `Spawns/PlayerTannery2` | `Gameplay/Doors/TellerGate/UsePoint` | use_point | 33.2 | 43.4 | 1.31 | ok |
-| `Spawns/PlayerTannery2` | `Gameplay/Doors/ConsultDoor1/UsePoint` | use_point | 48.3 | 59.0 | 1.22 | ok |
+| `Spawns/PlayerTannery2` | `Gameplay/Doors/TellerGate/UsePoint` | use_point | 33.2 | 44.1 | 1.33 | ok |
+| `Spawns/PlayerTannery2` | `Gameplay/Doors/ConsultDoor1/UsePoint` | use_point | 48.3 | 62.5 | 1.29 | ok |
 | `Spawns/PlayerTannery2` | `Gameplay/Doors/ConsultDoor2/UsePoint` | use_point | 48.5 | 61.5 | 1.27 | ok |
 | `Spawns/PlayerTannery2` | `Gameplay/Doors/ATMHallDoor/UsePoint` | use_point | 49.4 | 60.7 | 1.23 | ok |
 | `Spawns/PlayerTannery2` | `Gameplay/Doors/ManagerDoor/UsePoint` | use_point | 17.8 | 35.9 | 2.02 | ok |
@@ -2516,19 +2516,19 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerTannery2` | `Gameplay/Devices/TimeLockConsole/UsePoint` | use_point | 26.3 | 76.6 | 2.91 | ok |
 | `Spawns/PlayerTannery2` | `Gameplay/Devices/CashCageKeypad` | objective | 32.4 | 80.6 | 2.49 | ok |
 | `Spawns/PlayerTannery2` | `Gameplay/Devices/CashCageKeypad/UsePoint` | use_point | 32.4 | 80.6 | 2.49 | ok |
-| `Spawns/PlayerTannery2` | `Gameplay/Devices/LidDrill` | objective | 34.2 | 41.8 | 1.22 | ok |
-| `Spawns/PlayerTannery2` | `Gameplay/Devices/LidDrill/UsePoint` | use_point | 34.2 | 41.8 | 1.22 | ok |
+| `Spawns/PlayerTannery2` | `Gameplay/Devices/LidDrill` | objective | 32.1 | 40.9 | 1.27 | ok |
+| `Spawns/PlayerTannery2` | `Gameplay/Devices/LidDrill/UsePoint` | use_point | 32.1 | 40.9 | 1.27 | ok |
 | `Spawns/PlayerTannery2` | `Gameplay/Devices/AlarmSR/UsePoint` | use_point | 43.9 | 51.9 | 1.18 | ok |
 | `Spawns/PlayerTannery2` | `Gameplay/Devices/AlarmBM/UsePoint` | use_point | 10.0 | 43.4 | 4.36 | detour (whitelisted) |
 | `Spawns/PlayerTannery2` | `Gameplay/Devices/AlarmSD/UsePoint` | use_point | 24.9 | 42.5 | 1.71 | ok |
-| `Spawns/PlayerTannery2` | `Gameplay/Devices/AlarmTeller1/UsePoint` | use_point | 44.1 | 52.8 | 1.20 | ok |
-| `Spawns/PlayerTannery2` | `Gameplay/Devices/AlarmTeller2/UsePoint` | use_point | 42.1 | 50.8 | 1.21 | ok |
+| `Spawns/PlayerTannery2` | `Gameplay/Devices/AlarmTeller1/UsePoint` | use_point | 44.1 | 52.6 | 1.19 | ok |
+| `Spawns/PlayerTannery2` | `Gameplay/Devices/AlarmTeller2/UsePoint` | use_point | 42.1 | 50.7 | 1.20 | ok |
 | `Spawns/PlayerTannery2` | `Gameplay/Devices/AlarmTeller3/UsePoint` | use_point | 40.1 | 48.8 | 1.22 | ok |
-| `Spawns/PlayerTannery2` | `Gameplay/Devices/AlarmTeller4/UsePoint` | use_point | 26.3 | 35.3 | 1.34 | ok |
-| `Spawns/PlayerTannery2` | `Gameplay/Devices/AlarmTeller5/UsePoint` | use_point | 24.4 | 33.5 | 1.38 | ok |
-| `Spawns/PlayerTannery2` | `Gameplay/Devices/AlarmTeller6/UsePoint` | use_point | 22.4 | 31.9 | 1.42 | ok |
+| `Spawns/PlayerTannery2` | `Gameplay/Devices/AlarmTeller4/UsePoint` | use_point | 26.4 | 35.2 | 1.34 | ok |
+| `Spawns/PlayerTannery2` | `Gameplay/Devices/AlarmTeller5/UsePoint` | use_point | 24.4 | 33.4 | 1.37 | ok |
+| `Spawns/PlayerTannery2` | `Gameplay/Devices/AlarmTeller6/UsePoint` | use_point | 22.5 | 31.8 | 1.41 | ok |
 | `Spawns/PlayerTannery2` | `Gameplay/Devices/PhoneBM/UsePoint` | use_point | 10.9 | 44.6 | 4.10 | detour (whitelisted) |
-| `Spawns/PlayerTannery2` | `Gameplay/Devices/PhoneLO/UsePoint` | use_point | 57.2 | 64.7 | 1.13 | ok |
+| `Spawns/PlayerTannery2` | `Gameplay/Devices/PhoneLO/UsePoint` | use_point | 57.2 | 64.3 | 1.13 | ok |
 | `Spawns/PlayerTannery2` | `Gameplay/Devices/PhoneNA/UsePoint` | use_point | 16.7 | 54.5 | 3.26 | detour (whitelisted) |
 | `Spawns/PlayerTannery2` | `Gameplay/Devices/PhonePC/UsePoint` | use_point | 10.4 | 30.4 | 2.93 | ok |
 | `Spawns/PlayerTannery2` | `Gameplay/Devices/PhoneSR/UsePoint` | use_point | 44.2 | 50.4 | 1.14 | ok |
@@ -2544,10 +2544,10 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerTannery2` | `Gameplay/Loot/BondSafe/UsePoint` | use_point | 41.3 | 90.6 | 2.19 | ok |
 | `Spawns/PlayerTannery2` | `Gameplay/Loot/ServerDrives` | loot_spawn | 35.9 | 55.6 | 1.55 | ok |
 | `Spawns/PlayerTannery2` | `Gameplay/Loot/ServerDrives/UsePoint` | use_point | 35.3 | 54.3 | 1.54 | ok |
-| `Spawns/PlayerTannery2` | `Gameplay/Loot/TellerDrawer1` | objective | 45.0 | 53.6 | 1.19 | ok |
-| `Spawns/PlayerTannery2` | `Gameplay/Loot/TellerDrawer1/UsePoint` | use_point | 45.0 | 53.6 | 1.19 | ok |
-| `Spawns/PlayerTannery2` | `Gameplay/Loot/TellerDrawer2` | objective | 43.0 | 51.7 | 1.20 | ok |
-| `Spawns/PlayerTannery2` | `Gameplay/Loot/TellerDrawer2/UsePoint` | use_point | 43.0 | 51.7 | 1.20 | ok |
+| `Spawns/PlayerTannery2` | `Gameplay/Loot/TellerDrawer1` | objective | 45.0 | 53.5 | 1.19 | ok |
+| `Spawns/PlayerTannery2` | `Gameplay/Loot/TellerDrawer1/UsePoint` | use_point | 45.0 | 53.5 | 1.19 | ok |
+| `Spawns/PlayerTannery2` | `Gameplay/Loot/TellerDrawer2` | objective | 43.0 | 51.6 | 1.20 | ok |
+| `Spawns/PlayerTannery2` | `Gameplay/Loot/TellerDrawer2/UsePoint` | use_point | 43.0 | 51.6 | 1.20 | ok |
 | `Spawns/PlayerTannery2` | `Gameplay/Loot/TellerDrawer3` | objective | 41.0 | 49.7 | 1.21 | ok |
 | `Spawns/PlayerTannery2` | `Gameplay/Loot/TellerDrawer3/UsePoint` | use_point | 41.0 | 49.7 | 1.21 | ok |
 | `Spawns/PlayerTannery2` | `Gameplay/Loot/TellerDrawer4` | objective | 27.2 | 36.1 | 1.33 | ok |
@@ -2707,12 +2707,12 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerTannery3` | `Gameplay/Doors/StaffDoorTWW/UsePoint` | use_point | 45.4 | 53.7 | 1.18 | ok |
 | `Spawns/PlayerTannery3` | `Gameplay/Doors/StaffDoorTWE/UsePoint` | use_point | 27.3 | 33.7 | 1.24 | ok |
 | `Spawns/PlayerTannery3` | `Gameplay/Doors/ClientServiceDoor/UsePoint` | use_point | 19.6 | 23.7 | 1.21 | ok |
-| `Spawns/PlayerTannery3` | `Gameplay/Doors/LoanTellerDoor/UsePoint` | use_point | 50.9 | 61.3 | 1.20 | ok |
+| `Spawns/PlayerTannery3` | `Gameplay/Doors/LoanTellerDoor/UsePoint` | use_point | 50.9 | 60.9 | 1.20 | ok |
 | `Spawns/PlayerTannery3` | `Gameplay/Doors/ClientTellerDoor/UsePoint` | use_point | 19.7 | 28.4 | 1.44 | ok |
-| `Spawns/PlayerTannery3` | `Gameplay/Doors/LoanHallDoor/UsePoint` | use_point | 48.6 | 61.4 | 1.27 | ok |
+| `Spawns/PlayerTannery3` | `Gameplay/Doors/LoanHallDoor/UsePoint` | use_point | 48.6 | 67.2 | 1.38 | ok |
 | `Spawns/PlayerTannery3` | `Gameplay/Doors/ClientHallDoor/UsePoint` | use_point | 18.4 | 34.8 | 1.89 | ok |
-| `Spawns/PlayerTannery3` | `Gameplay/Doors/TellerGate/UsePoint` | use_point | 33.4 | 46.5 | 1.39 | ok |
-| `Spawns/PlayerTannery3` | `Gameplay/Doors/ConsultDoor1/UsePoint` | use_point | 48.3 | 62.1 | 1.28 | ok |
+| `Spawns/PlayerTannery3` | `Gameplay/Doors/TellerGate/UsePoint` | use_point | 33.4 | 47.2 | 1.41 | ok |
+| `Spawns/PlayerTannery3` | `Gameplay/Doors/ConsultDoor1/UsePoint` | use_point | 48.3 | 63.7 | 1.32 | ok |
 | `Spawns/PlayerTannery3` | `Gameplay/Doors/ConsultDoor2/UsePoint` | use_point | 48.4 | 60.9 | 1.26 | ok |
 | `Spawns/PlayerTannery3` | `Gameplay/Doors/ATMHallDoor/UsePoint` | use_point | 49.1 | 60.1 | 1.22 | ok |
 | `Spawns/PlayerTannery3` | `Gameplay/Doors/ManagerDoor/UsePoint` | use_point | 17.7 | 39.0 | 2.21 | ok |
@@ -2783,19 +2783,19 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerTannery3` | `Gameplay/Devices/TimeLockConsole/UsePoint` | use_point | 26.9 | 79.7 | 2.96 | ok |
 | `Spawns/PlayerTannery3` | `Gameplay/Devices/CashCageKeypad` | objective | 32.6 | 83.7 | 2.56 | ok |
 | `Spawns/PlayerTannery3` | `Gameplay/Devices/CashCageKeypad/UsePoint` | use_point | 32.6 | 83.7 | 2.56 | ok |
-| `Spawns/PlayerTannery3` | `Gameplay/Devices/LidDrill` | objective | 34.6 | 44.9 | 1.30 | ok |
-| `Spawns/PlayerTannery3` | `Gameplay/Devices/LidDrill/UsePoint` | use_point | 34.6 | 44.9 | 1.30 | ok |
+| `Spawns/PlayerTannery3` | `Gameplay/Devices/LidDrill` | objective | 32.5 | 44.0 | 1.35 | ok |
+| `Spawns/PlayerTannery3` | `Gameplay/Devices/LidDrill/UsePoint` | use_point | 32.5 | 44.0 | 1.35 | ok |
 | `Spawns/PlayerTannery3` | `Gameplay/Devices/AlarmSR/UsePoint` | use_point | 44.7 | 55.1 | 1.23 | ok |
 | `Spawns/PlayerTannery3` | `Gameplay/Devices/AlarmBM/UsePoint` | use_point | 9.9 | 46.5 | 4.69 | detour (whitelisted) |
 | `Spawns/PlayerTannery3` | `Gameplay/Devices/AlarmSD/UsePoint` | use_point | 25.6 | 45.6 | 1.79 | ok |
-| `Spawns/PlayerTannery3` | `Gameplay/Devices/AlarmTeller1/UsePoint` | use_point | 44.3 | 55.9 | 1.26 | ok |
-| `Spawns/PlayerTannery3` | `Gameplay/Devices/AlarmTeller2/UsePoint` | use_point | 42.3 | 53.9 | 1.27 | ok |
-| `Spawns/PlayerTannery3` | `Gameplay/Devices/AlarmTeller3/UsePoint` | use_point | 40.3 | 51.9 | 1.29 | ok |
-| `Spawns/PlayerTannery3` | `Gameplay/Devices/AlarmTeller4/UsePoint` | use_point | 26.7 | 38.4 | 1.44 | ok |
-| `Spawns/PlayerTannery3` | `Gameplay/Devices/AlarmTeller5/UsePoint` | use_point | 24.8 | 36.7 | 1.48 | ok |
-| `Spawns/PlayerTannery3` | `Gameplay/Devices/AlarmTeller6/UsePoint` | use_point | 22.8 | 35.0 | 1.53 | ok |
+| `Spawns/PlayerTannery3` | `Gameplay/Devices/AlarmTeller1/UsePoint` | use_point | 44.3 | 55.7 | 1.26 | ok |
+| `Spawns/PlayerTannery3` | `Gameplay/Devices/AlarmTeller2/UsePoint` | use_point | 42.3 | 53.8 | 1.27 | ok |
+| `Spawns/PlayerTannery3` | `Gameplay/Devices/AlarmTeller3/UsePoint` | use_point | 40.4 | 51.9 | 1.29 | ok |
+| `Spawns/PlayerTannery3` | `Gameplay/Devices/AlarmTeller4/UsePoint` | use_point | 26.7 | 38.4 | 1.43 | ok |
+| `Spawns/PlayerTannery3` | `Gameplay/Devices/AlarmTeller5/UsePoint` | use_point | 24.8 | 36.6 | 1.47 | ok |
+| `Spawns/PlayerTannery3` | `Gameplay/Devices/AlarmTeller6/UsePoint` | use_point | 22.9 | 34.9 | 1.52 | ok |
 | `Spawns/PlayerTannery3` | `Gameplay/Devices/PhoneBM/UsePoint` | use_point | 10.3 | 47.7 | 4.61 | detour (whitelisted) |
-| `Spawns/PlayerTannery3` | `Gameplay/Devices/PhoneLO/UsePoint` | use_point | 57.5 | 67.8 | 1.18 | ok |
+| `Spawns/PlayerTannery3` | `Gameplay/Devices/PhoneLO/UsePoint` | use_point | 57.5 | 67.4 | 1.17 | ok |
 | `Spawns/PlayerTannery3` | `Gameplay/Devices/PhoneNA/UsePoint` | use_point | 15.6 | 57.6 | 3.70 | detour (whitelisted) |
 | `Spawns/PlayerTannery3` | `Gameplay/Devices/PhonePC/UsePoint` | use_point | 10.9 | 33.5 | 3.07 | detour (whitelisted) |
 | `Spawns/PlayerTannery3` | `Gameplay/Devices/PhoneSR/UsePoint` | use_point | 44.9 | 53.5 | 1.19 | ok |
@@ -2811,10 +2811,10 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerTannery3` | `Gameplay/Loot/BondSafe/UsePoint` | use_point | 41.4 | 93.7 | 2.27 | ok |
 | `Spawns/PlayerTannery3` | `Gameplay/Loot/ServerDrives` | loot_spawn | 36.7 | 58.7 | 1.60 | ok |
 | `Spawns/PlayerTannery3` | `Gameplay/Loot/ServerDrives/UsePoint` | use_point | 36.0 | 57.5 | 1.59 | ok |
-| `Spawns/PlayerTannery3` | `Gameplay/Loot/TellerDrawer1` | objective | 45.2 | 56.8 | 1.26 | ok |
-| `Spawns/PlayerTannery3` | `Gameplay/Loot/TellerDrawer1/UsePoint` | use_point | 45.2 | 56.8 | 1.26 | ok |
-| `Spawns/PlayerTannery3` | `Gameplay/Loot/TellerDrawer2` | objective | 43.2 | 54.8 | 1.27 | ok |
-| `Spawns/PlayerTannery3` | `Gameplay/Loot/TellerDrawer2/UsePoint` | use_point | 43.2 | 54.8 | 1.27 | ok |
+| `Spawns/PlayerTannery3` | `Gameplay/Loot/TellerDrawer1` | objective | 45.2 | 56.6 | 1.25 | ok |
+| `Spawns/PlayerTannery3` | `Gameplay/Loot/TellerDrawer1/UsePoint` | use_point | 45.2 | 56.6 | 1.25 | ok |
+| `Spawns/PlayerTannery3` | `Gameplay/Loot/TellerDrawer2` | objective | 43.2 | 54.7 | 1.27 | ok |
+| `Spawns/PlayerTannery3` | `Gameplay/Loot/TellerDrawer2/UsePoint` | use_point | 43.2 | 54.7 | 1.27 | ok |
 | `Spawns/PlayerTannery3` | `Gameplay/Loot/TellerDrawer3` | objective | 41.2 | 52.8 | 1.28 | ok |
 | `Spawns/PlayerTannery3` | `Gameplay/Loot/TellerDrawer3/UsePoint` | use_point | 41.2 | 52.8 | 1.28 | ok |
 | `Spawns/PlayerTannery3` | `Gameplay/Loot/TellerDrawer4` | objective | 27.6 | 39.2 | 1.42 | ok |
@@ -2974,11 +2974,11 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerTannery4` | `Gameplay/Doors/StaffDoorTWW/UsePoint` | use_point | 46.0 | 54.9 | 1.19 | ok |
 | `Spawns/PlayerTannery4` | `Gameplay/Doors/StaffDoorTWE/UsePoint` | use_point | 28.1 | 34.9 | 1.24 | ok |
 | `Spawns/PlayerTannery4` | `Gameplay/Doors/ClientServiceDoor/UsePoint` | use_point | 20.8 | 24.9 | 1.20 | ok |
-| `Spawns/PlayerTannery4` | `Gameplay/Doors/LoanTellerDoor/UsePoint` | use_point | 51.2 | 62.4 | 1.22 | ok |
+| `Spawns/PlayerTannery4` | `Gameplay/Doors/LoanTellerDoor/UsePoint` | use_point | 51.2 | 62.0 | 1.21 | ok |
 | `Spawns/PlayerTannery4` | `Gameplay/Doors/ClientTellerDoor/UsePoint` | use_point | 20.5 | 29.5 | 1.44 | ok |
-| `Spawns/PlayerTannery4` | `Gameplay/Doors/LoanHallDoor/UsePoint` | use_point | 48.7 | 62.6 | 1.28 | ok |
+| `Spawns/PlayerTannery4` | `Gameplay/Doors/LoanHallDoor/UsePoint` | use_point | 48.7 | 68.4 | 1.40 | ok |
 | `Spawns/PlayerTannery4` | `Gameplay/Doors/ClientHallDoor/UsePoint` | use_point | 18.9 | 35.9 | 1.90 | ok |
-| `Spawns/PlayerTannery4` | `Gameplay/Doors/TellerGate/UsePoint` | use_point | 33.6 | 47.7 | 1.42 | ok |
+| `Spawns/PlayerTannery4` | `Gameplay/Doors/TellerGate/UsePoint` | use_point | 33.7 | 48.4 | 1.44 | ok |
 | `Spawns/PlayerTannery4` | `Gameplay/Doors/ConsultDoor1/UsePoint` | use_point | 48.4 | 62.2 | 1.28 | ok |
 | `Spawns/PlayerTannery4` | `Gameplay/Doors/ConsultDoor2/UsePoint` | use_point | 48.3 | 59.4 | 1.23 | ok |
 | `Spawns/PlayerTannery4` | `Gameplay/Doors/ATMHallDoor/UsePoint` | use_point | 48.9 | 58.6 | 1.20 | ok |
@@ -3050,19 +3050,19 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerTannery4` | `Gameplay/Devices/TimeLockConsole/UsePoint` | use_point | 27.5 | 80.8 | 2.93 | ok |
 | `Spawns/PlayerTannery4` | `Gameplay/Devices/CashCageKeypad` | objective | 33.0 | 84.8 | 2.57 | ok |
 | `Spawns/PlayerTannery4` | `Gameplay/Devices/CashCageKeypad/UsePoint` | use_point | 33.0 | 84.8 | 2.57 | ok |
-| `Spawns/PlayerTannery4` | `Gameplay/Devices/LidDrill` | objective | 35.1 | 46.0 | 1.31 | ok |
-| `Spawns/PlayerTannery4` | `Gameplay/Devices/LidDrill/UsePoint` | use_point | 35.1 | 46.0 | 1.31 | ok |
+| `Spawns/PlayerTannery4` | `Gameplay/Devices/LidDrill` | objective | 32.9 | 45.1 | 1.37 | ok |
+| `Spawns/PlayerTannery4` | `Gameplay/Devices/LidDrill/UsePoint` | use_point | 32.9 | 45.1 | 1.37 | ok |
 | `Spawns/PlayerTannery4` | `Gameplay/Devices/AlarmSR/UsePoint` | use_point | 45.4 | 56.2 | 1.24 | ok |
 | `Spawns/PlayerTannery4` | `Gameplay/Devices/AlarmBM/UsePoint` | use_point | 10.1 | 47.6 | 4.71 | detour (whitelisted) |
 | `Spawns/PlayerTannery4` | `Gameplay/Devices/AlarmSD/UsePoint` | use_point | 26.3 | 46.8 | 1.78 | ok |
-| `Spawns/PlayerTannery4` | `Gameplay/Devices/AlarmTeller1/UsePoint` | use_point | 44.5 | 57.0 | 1.28 | ok |
-| `Spawns/PlayerTannery4` | `Gameplay/Devices/AlarmTeller2/UsePoint` | use_point | 42.6 | 55.0 | 1.29 | ok |
-| `Spawns/PlayerTannery4` | `Gameplay/Devices/AlarmTeller3/UsePoint` | use_point | 40.6 | 53.1 | 1.31 | ok |
-| `Spawns/PlayerTannery4` | `Gameplay/Devices/AlarmTeller4/UsePoint` | use_point | 27.1 | 39.6 | 1.46 | ok |
-| `Spawns/PlayerTannery4` | `Gameplay/Devices/AlarmTeller5/UsePoint` | use_point | 25.2 | 37.8 | 1.50 | ok |
-| `Spawns/PlayerTannery4` | `Gameplay/Devices/AlarmTeller6/UsePoint` | use_point | 23.4 | 36.1 | 1.55 | ok |
+| `Spawns/PlayerTannery4` | `Gameplay/Devices/AlarmTeller1/UsePoint` | use_point | 44.6 | 56.8 | 1.27 | ok |
+| `Spawns/PlayerTannery4` | `Gameplay/Devices/AlarmTeller2/UsePoint` | use_point | 42.6 | 54.9 | 1.29 | ok |
+| `Spawns/PlayerTannery4` | `Gameplay/Devices/AlarmTeller3/UsePoint` | use_point | 40.7 | 53.0 | 1.30 | ok |
+| `Spawns/PlayerTannery4` | `Gameplay/Devices/AlarmTeller4/UsePoint` | use_point | 27.2 | 39.5 | 1.45 | ok |
+| `Spawns/PlayerTannery4` | `Gameplay/Devices/AlarmTeller5/UsePoint` | use_point | 25.3 | 37.7 | 1.49 | ok |
+| `Spawns/PlayerTannery4` | `Gameplay/Devices/AlarmTeller6/UsePoint` | use_point | 23.4 | 36.0 | 1.54 | ok |
 | `Spawns/PlayerTannery4` | `Gameplay/Devices/PhoneBM/UsePoint` | use_point | 10.0 | 48.8 | 4.87 | detour (whitelisted) |
-| `Spawns/PlayerTannery4` | `Gameplay/Devices/PhoneLO/UsePoint` | use_point | 57.8 | 69.0 | 1.19 | ok |
+| `Spawns/PlayerTannery4` | `Gameplay/Devices/PhoneLO/UsePoint` | use_point | 57.8 | 68.6 | 1.19 | ok |
 | `Spawns/PlayerTannery4` | `Gameplay/Devices/PhoneNA/UsePoint` | use_point | 14.4 | 58.8 | 4.07 | detour (whitelisted) |
 | `Spawns/PlayerTannery4` | `Gameplay/Devices/PhonePC/UsePoint` | use_point | 11.6 | 34.7 | 2.98 | ok |
 | `Spawns/PlayerTannery4` | `Gameplay/Devices/PhoneSR/UsePoint` | use_point | 45.5 | 54.6 | 1.20 | ok |
@@ -3078,10 +3078,10 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerTannery4` | `Gameplay/Loot/BondSafe/UsePoint` | use_point | 41.5 | 94.9 | 2.29 | ok |
 | `Spawns/PlayerTannery4` | `Gameplay/Loot/ServerDrives` | loot_spawn | 37.5 | 59.9 | 1.60 | ok |
 | `Spawns/PlayerTannery4` | `Gameplay/Loot/ServerDrives/UsePoint` | use_point | 36.8 | 58.6 | 1.59 | ok |
-| `Spawns/PlayerTannery4` | `Gameplay/Loot/TellerDrawer1` | objective | 45.4 | 57.9 | 1.27 | ok |
-| `Spawns/PlayerTannery4` | `Gameplay/Loot/TellerDrawer1/UsePoint` | use_point | 45.4 | 57.9 | 1.27 | ok |
-| `Spawns/PlayerTannery4` | `Gameplay/Loot/TellerDrawer2` | objective | 43.5 | 55.9 | 1.29 | ok |
-| `Spawns/PlayerTannery4` | `Gameplay/Loot/TellerDrawer2/UsePoint` | use_point | 43.5 | 55.9 | 1.29 | ok |
+| `Spawns/PlayerTannery4` | `Gameplay/Loot/TellerDrawer1` | objective | 45.4 | 57.7 | 1.27 | ok |
+| `Spawns/PlayerTannery4` | `Gameplay/Loot/TellerDrawer1/UsePoint` | use_point | 45.4 | 57.7 | 1.27 | ok |
+| `Spawns/PlayerTannery4` | `Gameplay/Loot/TellerDrawer2` | objective | 43.5 | 55.8 | 1.28 | ok |
+| `Spawns/PlayerTannery4` | `Gameplay/Loot/TellerDrawer2/UsePoint` | use_point | 43.5 | 55.8 | 1.28 | ok |
 | `Spawns/PlayerTannery4` | `Gameplay/Loot/TellerDrawer3` | objective | 41.5 | 53.9 | 1.30 | ok |
 | `Spawns/PlayerTannery4` | `Gameplay/Loot/TellerDrawer3/UsePoint` | use_point | 41.5 | 53.9 | 1.30 | ok |
 | `Spawns/PlayerTannery4` | `Gameplay/Loot/TellerDrawer4` | objective | 28.0 | 40.4 | 1.44 | ok |

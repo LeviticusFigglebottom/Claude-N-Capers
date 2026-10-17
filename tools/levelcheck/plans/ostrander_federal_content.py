@@ -40,20 +40,23 @@ HOLE = [23.4, 13.5, 24.6, 15.7]
 HOIST_CAR = [1.0, 1.0, 1.0]
 ROPE_STOWED_M = 3.2           # the rope ladder rolled up to the lid's underside (0.8 m slab) until the burn
 # Teller counter (z 17 line; §7.2, D-128 / D-136 §3b.11 and OF-C0): 12 work tops (props, kind teller_worktop, top 1.00,
-# z 16.55-17.15, teller side north = local -Z), a SOLID bandit-screen base to 1.50 m (z 17.15-17.25; QC-g amended by
-# the LEAD: the original 1.35 m is teller_worktop's perpendicular formula, but hide_los samples observers along the
-# counter at the 2.0 m uncover radius, whose sight line to the 1.05 m crouched point crosses the face at 1.44 m), the customers'
-# 1.05 m ledge in front of it (z 17.25-17.45), bandit glass 1.50-2.40 m (meta + group see_through), the bulkhead 2.40 m
-# -> the slab (z 17.15-17.5: C1 hangs on its south face over the hall floor), the teller gate's piers x 22.9-23.4 /
-# 24.6-25.1 and its header on the z 17.25 line (z 17.15-17.35: a 0.2 m "wall" the service-door kit fits).
-COUNTER = {"z": 17.0, "line": 17.25, "body": [16.55, 17.45], "ledge": [17.25, 17.45, 1.05], "top": [16.55, 17.15, 1.0],
-           "upstand": [17.15, 17.25, 1.5], "glass": [17.18, 17.22, 1.5, 2.40], "bulkhead": [17.15, 17.5, 2.40],
+# z 16.35-16.83, 0.48 deep, teller side north = local -Z), a SOLID bandit-screen base to 1.50 m (z 16.83-16.93; QC-g
+# amended by the LEAD: the original 1.35 m is teller_worktop's perpendicular formula, but hide_los samples observers
+# along the counter at the 2.0 m uncover radius, whose sight line to the 1.05 m crouched point crosses the face at
+# ~1.44 m), the customers' 1.05 m ledge in front of it (z 16.93-17.45, 0.52 deep), bandit glass 1.50-2.40 m (meta + group
+# see_through), the bulkhead 2.40 m -> the slab (z 16.83-17.5: C1 hangs on its south face over the hall floor), the
+# teller gate's piers x 22.9-23.4 / 24.6-25.1 and its header on the screen line z 16.93 (z 16.83-17.03: a 0.2 m "wall"
+# the service-door kit fits). QC-67 (ENV D probe of counter_customer): the screen face is 0.82 m ahead of the customer
+# marks (z 17.75), clear of the clip's forearms (0.69 m ahead at 1.04-1.2 m).
+COUNTER = {"z": 17.0, "line": 16.93, "body": [16.35, 17.45], "ledge": [16.93, 17.45, 1.05], "top": [16.35, 16.83, 1.0],
+           "upstand": [16.83, 16.93, 1.5], "glass": [16.86, 16.90, 1.5, 2.40], "bulkhead": [16.83, 17.5, 2.40],
            "x": [8.1, 39.9], "gate": [23.4, 24.6], "piers": [[22.9, 23.4], [24.6, 25.1]], "gate_head": 2.2,
-           "pier_z": [17.15, 17.35]}
+           "pier_z": [16.83, 17.03]}
 STATIONS = [13.0, 15.0, 17.0, 31.0, 33.0, 35.0]     # the 6 staffed of 12 windows
 TELLERS = [15.0, 17.0, 31.0, 33.0]                  # 3 staffed + 1 rotating (doc roster)
 TELLER_Z = COUNTER["top"][0] - 0.28                 # D: root 0.28 m behind the work top's near edge
 COUNTER_CUSTOMER_Z = COUNTER["body"][1] + 0.30      # D: root 0.30 m off the hall face
+HIDE_Z = COUNTER["top"][0] - 0.35                   # a crouched crew centre 0.35 m behind the work top's teller edge
 CHECK_DESKS = [[14.0, 25.5], [19.5, 25.5], [28.5, 25.5], [34.0, 25.5]]   # 1.6 x 0.6, top 1.0
 CHECK_D = [1.6, 1.0, 0.6]
 # ENV D clip marks (env/d-art b2527e4d): check_desk_write root 0.25 m off the desk's near (hall) edge; queue_idle marks
@@ -122,7 +125,7 @@ DOORS: List[list] = [
     ["ClientTellerDoor", "G", "z", 40, 11.5, "LOCKPICK", "E", {"npc": ["@guards", "@staff"]}],
     ["LoanHallDoor", "G", "z", 8, 17.5, "NONE", "E", {}],
     ["ClientHallDoor", "G", "z", 40, 17.5, "NONE", "W", {}],
-    ["TellerGate", "G", "x", 17, 23.4, "LOCKPICK", "S", {"npc": ["@guards", "@staff"], "leaf": "metal", "line": 17.25}],
+    ["TellerGate", "G", "x", 17, 23.4, "LOCKPICK", "S", {"npc": ["@guards", "@staff"], "leaf": "metal", "line": COUNTER["line"]}],
     ["ConsultDoor1", "G", "z", 8, 20.5, "NONE", "E", {}],
     ["ConsultDoor2", "G", "z", 8, 25.5, "NONE", "E", {}],
     ["ATMHallDoor", "G", "z", 8, 31.5, "NONE", "E", {"visual": "prop_door_single_glass_t20", "leaf": "glass",
@@ -305,7 +308,8 @@ FURNITURE: List[list] = [
     B("WCPartitionPW", "G", [44.0, 0.0, 28.0], [0.05, 2.0, 1.8], 0.0, "partition", False, "trim"),
     B("CoffeeServicePC", "G", [47.55, 0.0, 16.5], [0.45, 0.9, 1.6], 0.0, "counter", True),
     B("CoffeeTablePC", "G", [44.25, 0.0, 14.0], [0.8, 0.45, 0.8], 0.0, "table", True),
-] + [B("TellerWorktop%02d" % (i + 1), "G", [x0 + 1.233 + 2.467 * k, 0.0, 16.85], [2.46, 1.0, 0.6], 0.0,
+] + [B("TellerWorktop%02d" % (i + 1), "G", [x0 + 1.233 + 2.467 * k, 0.0, (COUNTER["top"][0] + COUNTER["top"][1]) / 2],
+       [2.46, COUNTER["top"][2], round(COUNTER["top"][1] - COUNTER["top"][0], 3)], 0.0,
        "teller_worktop", True, "counter", {"hide_behind": True}) for i, (x0, k) in
      enumerate([(8.1, k) for k in range(6)] + [(25.1, k) for k in range(6)])] + [B("CheckDesk%d" % (i + 1), "G", [x, 0.0, z], CHECK_D, 0.0, "check_desk", True) for i, (x, z) in enumerate(CHECK_DESKS)
      ] + [
@@ -401,9 +405,9 @@ ALWAYS: Dict[str, List[list]] = {
         P("keypad", "CashCageKeypad", "B", [25.25, 1.2, 17.45], 0.0, {"code_group": "vault", "objective_tag": "cash_cage",
                                                                      "@targets": ["CashCageGate"]},
           [25.25, 0.0, 16.6], {"mount": "wall"}, "prop_keypad"),
-        P("drill_point", "LidDrill", "G", [24.0, 1.0, 14.6], 0.0, {"device": "enum:THERMAL", "duration_s": 360.0,
+        P("drill_point", "LidDrill", "G", [24.0, 1.0, 14.6], 180.0, {"device": "enum:THERMAL", "duration_s": 360.0,
                                                                   "loud_only": True, "objective_tag": "vault_drill"},
-          [24.0, 0.0, 12.6], {"requires_loot": "loot.thermal_drill_part", "requires_count": 2,
+          [25.6, 0.0, 14.6], {"requires_loot": "loot.thermal_drill_part", "requires_count": 2,
                               "todo": "OF-A1: requires_loot / requires_count (QC-60)"}, "prop_thermal_drill_device"),
         _alarm("AlarmSR", "G", [18.2, 1.1, 0.2], 180.0), _alarm("AlarmBM", "G", [47.8, 1.1, 22.5], 90.0),
         _alarm("AlarmSD", "B", [34.1, 1.1, 11.0], -90.0),
@@ -607,7 +611,7 @@ SLOT_CONTENT: Dict[str, List[list]] = {
     "gx_basement": [S("GuardExtraBasement", "GUARD", "B", [38.0, 0.0, 8.0], 90.0, ["guard_extra_basement"], "", "Bank")],
     "gx_none": [],
     "cx_hall_1": [_customer("LateCustomerCheck", [34.0, 0.0, CHECK_Z], 0.0, "check_desk_write", TAG_CHECK)],
-    "cx_hall_2": [_customer("LateCustomerQueue", [33.0, 0.0, QUEUE_Z], 0.0, "queue_idle", TAG_QUEUE)],
+    "cx_hall_2": [_customer("LateCustomerQueue", [34.0, 0.0, QUEUE_Z], 0.0, "queue_idle", TAG_QUEUE)],
     "cx_pc": [S("LateClientPC", "CIVILIAN", "G", [45.6, 0.0, 12.0], 90.0, ["civ_client"], "browse")],
     "cx_sd": [S("LateCustomerSD", "CIVILIAN", "B", [46.6, 0.0, 19.0], -90.0, ["civ_customer"], "browse")],
     "cx_none": [],
@@ -794,7 +798,7 @@ CIV: Dict[str, list] = {
     "CowerCounterE": ["G", 36.0, COUNTER["body"][1] + 0.21, [0, 0], "cower_stand", ["cower"], 180.0],
     "CowerWallW": ["G", 8.31, 30.5, [0, 0], "cower_stand", ["cower"], -90.0],
     "CowerWallE": ["G", 39.69, 31.0, [0, 0], "cower_stand", ["cower"], 90.0],
-    "CowerPillar": ["G", 19.0, 20.46, [0, 0], "cower_stand", ["cower"], 0.0],
+    "CowerPillar": ["G", 19.0, 20.46, [0, 0], "cower_stand", ["cower"], 180.0],   # back to the pillar (QC-67)
     "ExitPlaza": ["G", 24.0, 42.0, [0, 0], "idle", ["exit", "exit_guests"], 180.0],
     "PlazaW": ["G", 6.0, 44.0, [10, 20], "walk_text", ["civilian_plaza"], None],
     "PlazaE": ["G", 42.0, 44.0, [10, 20], "walk_text", ["civilian_plaza"], None],
@@ -927,9 +931,9 @@ LINES = [
     ["BagLineE1", {"bag_line": "vault_e1", "bag_line_layouts": ["cam_b", "cam_c"]},
      [["G", 9.0, 1.5], ["G", 8.0, 0.8], ["G", 8.0, -0.8], ["G", 6.5, -2.0]]],
     ["HideCounterW", {"hide_spot": True, "hide_from": ["BH"], "hide_posture": "crouch"},
-     [["G", 9.5, 16.2], ["G", 22.5, 16.2]]],
+     [["G", 9.5, HIDE_Z], ["G", 22.5, HIDE_Z]]],
     ["HideCounterE", {"hide_spot": True, "hide_from": ["BH"], "hide_posture": "crouch"},
-     [["G", 25.5, 16.2], ["G", 38.5, 16.2]]],
+     [["G", 25.5, HIDE_Z], ["G", 38.5, HIDE_Z]]],
     ["HideGallery", {"hide_spot": True, "hide_from": ["BH"], "hide_posture": "crouch"},
      [["M", 9.0, 18.6], ["M", 39.0, 18.6]]],
     ["HideRecordsAisle", {"hide_spot": True, "hide_from": ["BB"], "hide_posture": "crouch"},
