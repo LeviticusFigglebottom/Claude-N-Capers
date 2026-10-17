@@ -1,4 +1,5 @@
-## D-130 §1 / D-140: stealth population by difficulty on the M heists (Gallery Night, Night Deposit, Shadow Ledger).
+## D-130 §1 / D-140: stealth population by difficulty on the M / L heists (Gallery Night, Night Deposit, Shadow Ledger,
+## Ostrander Federal).
 ## Owner: ENV C (the map-side pin; ENV A has its own D-140 runtime test).
 ## Rolls each map's real variant table on its real VariantSlots (VariantResolver, many seeds) and counts what
 ## HeistRuntime / the CameraStation would spawn at load:
@@ -13,13 +14,15 @@
 ## cap on every seed. D-130: every tier adds civilians (expected count), never below the tier below or the pre-D-130
 ## count (addendum; guards too on a GUARDS map), Cataclysm / Routine civilians >= +35 % (a floor), and each map's pool
 ## covers the largest roll.
-## Design: docs/design/heists/night_deposit.md, gallery_night.md, shadow_ledger.md (§roster "Totals per difficulty").
+## Design: docs/design/heists/night_deposit.md, gallery_night.md, shadow_ledger.md, ostrander_federal.md (§roster
+## "Totals per difficulty"; OF: ENV B's OF-B1 block b6d96a85, D-140 corrected).
 extends TestCase
 
 const MAPS: Dictionary = {
 	&"night_deposit": "res://world/heists/night_deposit/night_deposit.tscn",
 	&"gallery_night": "res://world/heists/gallery_night/gallery_night.tscn",
 	&"shadow_ledger": "res://world/heists/shadow_ledger/shadow_ledger.tscn",
+	&"ostrander_federal": "res://world/heists/ostrander_federal/ostrander_federal.tscn",
 }
 const RUNS: int = 1500
 const SCRIPTED: StringName = &"scripted"
@@ -28,6 +31,7 @@ const PATRON_TAG: StringName = &"civ_patron"
 ## Brutal..Cataclysm rows were already x1.46 and every tier must still add civilians.
 const CIV_RATIO: Dictionary = {
 	&"night_deposit": [1.33, 1.5], &"gallery_night": [1.33, 1.5], &"shadow_ledger": [1.33, 1.9],
+	&"ostrander_federal": [1.33, 1.5],
 }
 ## D-140 per-heist table (decisions.md, revised 12:25), Routine..Cataclysm: lever, guards (GUARDS: the minimum over
 ## seeds; PAGERS: exact on every seed), pager cap (HeistDef.pager_max_by_difficulty; empty = 4).
@@ -40,6 +44,9 @@ const D140: Dictionary = {
 	&"gallery_night": {"lever": GUARDS_LEVER, "guards": [4, 5, 5, 6, 6, 7], "cap": [4, 4, 4, 4, 4, 4], "operator": true},
 	&"night_deposit": {"lever": PAGERS_LEVER, "guards": [4, 4, 4, 4, 4, 4], "cap": [4, 3, 3, 2, 2, 1], "operator": true},
 	&"shadow_ledger": {"lever": PAGERS_LEVER, "guards": [4, 4, 4, 4, 4, 4], "cap": [4, 3, 3, 2, 2, 1], "operator": true},
+	# OF (B's block, D-140 corrected): 2 fixed posts + 4 rover slots ([1, 2, 3, 3, 3, 3]) + guard_extra [0, 0, 0, 0, 1, 2];
+	# the security room is empty at Routine (sec Routine forced empty) and its operator counts when staffed.
+	&"ostrander_federal": {"lever": GUARDS_LEVER, "guards": [4, 5, 6, 6, 7, 8], "cap": [4, 4, 4, 4, 4, 4], "operator": true},
 }
 
 ## Expected counts per tier before D-130 (ROUTINE..CATACLYSM; same seeds, the a5b797f8 variant tables; SL: the 708a9cd1
@@ -49,7 +56,16 @@ const PRE_D130: Dictionary = {
 	&"night_deposit": {"g": [2.71, 2.71, 2.71, 3.50, 3.50, 3.50], "c": [1.20, 1.20, 1.20, 1.19, 1.19, 1.19]},
 	&"gallery_night": {"g": [1.82, 1.82, 3.00, 4.00, 5.00, 5.00], "c": [10.13, 10.13, 12.54, 12.51, 13.44, 13.44]},
 	&"shadow_ledger": {"g": [2.00, 2.51, 3.47, 4.00, 5.00, 5.00], "c": [2.26, 2.27, 2.78, 3.29, 3.29, 3.29]},
+	# OF has no pre-D-130 table (built after it): ENV B's D-130 expectations stand in (coordinator, OF-B1).
+	&"ostrander_federal": {"g": [4.00, 5.00, 6.00, 6.00, 7.00, 8.00], "c": [14.4, 15.4, 16.4, 17.4, 18.4, 19.4]},
 }
+
+## Slots only a rare event activates (force_active; table weight 0): their spawns are rare-event additions, not counted
+## (as `scripted` spawns). OF: vip_in (the vip_client event: the VIP client + a Halden bodyguard, 6 %).
+const RARE_EVENT_SLOTS: Dictionary = {&"ostrander_federal": [&"vip_in"]}
+## OF Cataclysm pool: max guards (8 posts + the staffed operator) and the civilian pool's ceiling (QC-h: <= 22).
+const OF_MAX_G: int = 9
+const OF_MAX_C: int = 22
 
 var _maps: Dictionary = {}
 ## heist -> difficulty -> {"g": [min, max, sum], "c": [min, max, sum]}
@@ -88,6 +104,8 @@ func _roll_all(map: HeistMap, id: StringName) -> Dictionary:
 				ng += int(fixed["op"])
 			for group: Variant in slots:
 				for vs: VariantSlot in slots[group]:
+					if (RARE_EVENT_SLOTS.get(id, []) as Array).has(vs.slot_id):
+						continue
 					if (v.get(group, []) as Array).has(vs.slot_id):
 						var k: Dictionary = _count(vs, false)
 						ng += int(k["g"]) + (int(k["op"]) if staffed else 0)
@@ -213,7 +231,8 @@ func test_cataclysm_civilian_ratios() -> void:
 
 ## The largest roll fits the pool: Cataclysm's max is reachable (the pool has that many distinct spawn points).
 func test_pools_cover_the_max() -> void:
-	var want: Dictionary = {&"night_deposit": [4, 3], &"gallery_night": [7, 21], &"shadow_ledger": [4, 7]}
+	var want: Dictionary = {&"night_deposit": [4, 3], &"gallery_night": [7, 21], &"shadow_ledger": [4, 7],
+		&"ostrander_federal": [OF_MAX_G, OF_MAX_C]}
 	for id: StringName in _stats:
 		var g: Array = _row(id, Enums.Difficulty.CATACLYSM, "g")
 		var c: Array = _row(id, Enums.Difficulty.CATACLYSM, "c")

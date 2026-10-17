@@ -40,9 +40,9 @@ HOLE = [23.4, 13.5, 24.6, 15.7]
 HOIST_CAR = [1.0, 1.0, 1.0]
 ROPE_STOWED_M = 3.2           # the rope ladder rolled up to the lid's underside (0.8 m slab) until the burn
 # Teller counter (z 17 line; §7.2, D-128 / D-136 §3b.11 and OF-C0): 12 work tops (props, kind teller_worktop, top 1.00,
-# z 16.55-17.15, teller side north = local -Z), a SOLID bandit-screen base to 1.50 m (z 17.15-17.25; QC-g's 1.35 m is
-# teller_worktop's perpendicular formula, but hide_los samples observers along the counter at the 2.0 m uncover radius,
-# whose sight line to the 1.05 m crouched point crosses the screen face at 1.44 m: flagged for the lead), the customers'
+# z 16.55-17.15, teller side north = local -Z), a SOLID bandit-screen base to 1.50 m (z 17.15-17.25; QC-g amended by
+# the LEAD: the original 1.35 m is teller_worktop's perpendicular formula, but hide_los samples observers along the
+# counter at the 2.0 m uncover radius, whose sight line to the 1.05 m crouched point crosses the face at 1.44 m), the customers'
 # 1.05 m ledge in front of it (z 17.25-17.45), bandit glass 1.50-2.40 m (meta + group see_through), the bulkhead 2.40 m
 # -> the slab (z 17.15-17.5: C1 hangs on its south face over the hall floor), the teller gate's piers x 22.9-23.4 /
 # 24.6-25.1 and its header on the z 17.25 line (z 17.15-17.35: a 0.2 m "wall" the service-door kit fits).
