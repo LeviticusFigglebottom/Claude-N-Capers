@@ -462,9 +462,7 @@ func _get_bag(loot_id: StringName, walk_m: float = 0.0) -> LootBag:
 	if mgr == null:
 		note("no LootManager")
 		return null
-	var fwd: Vector3 = -pilot.crew.global_transform.basis.z
-	fwd.y = 0.0
-	var at: Vector3 = pilot.crew.global_position + fwd.normalized() * 1.0 + Vector3.UP * 0.3
+	var at: Vector3 = _open_spot(pilot.crew.global_position, 1.0) + Vector3.UP * 0.3
 	var bag: LootBag = mgr.spawn_bag(loot_id, Transform3D(Basis.IDENTITY, at), true)
 	if bag == null:
 		return null
@@ -474,6 +472,51 @@ func _get_bag(loot_id: StringName, walk_m: float = 0.0) -> LootBag:
 		note("spawned bag not picked up (bag at %s)" % Po5Pilot._v(bag.global_position))
 		return null
 	return pilot.crew.carried_bag as LootBag
+
+
+## A navmesh point `r` m from `p` (8 headings, the crew's facing first) in clear view of `p` at chest height: where a
+## spawned bag can lie without landing in a wall or behind a door.
+func _open_spot(p: Vector3, r: float) -> Vector3:
+	var fwd: Vector3 = -pilot.crew.global_transform.basis.z
+	var yaw0: float = atan2(fwd.x, fwd.z)
+	var space: PhysicsDirectSpaceState3D = pilot.crew.get_world_3d().direct_space_state
+	for k: int in 8:
+		var a: float = yaw0 + TAU * float(k) / 8.0
+		var cand: Vector3 = p + Vector3(sin(a), 0.0, cos(a)) * r
+		var on: Vector3 = pilot.stand_point(cand)
+		if pilot.flat_dist(on, cand) > 0.15 or absf(on.y - p.y) > 0.3:
+			continue
+		var q: PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.create(p + Vector3.UP * 1.0,
+			on + Vector3.UP * 0.6, 1 | 2)
+		q.exclude = [pilot.crew.get_rid()]
+		if space.intersect_ray(q).is_empty():
+			return on
+	return p
+
+
+## A throw stand `dist` m from `target` (with `zone`: from the zone box's edge on that heading) in the open: on the
+## navmesh, with a clear line from chest height to target + `aim_up` (16 headings; the one nearest the crew).
+func _open_stand(target: Vector3, dist: float, zone: SecureZone = null, aim_up: float = 0.8) -> Vector3:
+	var space: PhysicsDirectSpaceState3D = pilot.crew.get_world_3d().direct_space_state
+	var best: Vector3 = Vector3.INF
+	for k: int in 16:
+		var a: float = TAU * float(k) / 16.0
+		var hd: Vector3 = Vector3(sin(a), 0.0, cos(a))
+		var cand: Vector3 = target + hd * (dist + (_zone_extent(zone, hd) if zone != null else 0.0))
+		var on: Vector3 = pilot.stand_point(cand)
+		if pilot.flat_dist(on, cand) > 0.3:
+			continue
+		var q: PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.create(on + Vector3.UP * 1.3,
+			target + Vector3.UP * aim_up, 1 | 2)
+		q.exclude = [pilot.crew.get_rid()]
+		var hit: Dictionary = space.intersect_ray(q)
+		# The van's own body (the zone's vehicle collision) counts as reaching it.
+		if not hit.is_empty() and not (zone != null and (zone.is_ancestor_of(hit["collider"] as Node)
+				or _zone_dist(hit["position"] as Vector3, zone) < 0.3)):
+			continue
+		if best == Vector3.INF or on.distance_to(pilot.crew.global_position) < best.distance_to(pilot.crew.global_position):
+			best = on
+	return best
 
 
 ## Throw the carried bag (G) toward `aim` at `pitch_deg` (0 = level) and follow it until it rests or is secured.
@@ -505,6 +548,8 @@ func _throw(aim: Vector3, pitch_deg: float) -> Dictionary:
 		still = still + pilot.dt() if bag.linear_velocity.length() < 0.05 and not bag.in_flight else 0.0
 		if still >= 0.3:
 			break
+	# A secure zone takes a bag a moment after it settles in the zone: give it 1.5 s.
+	await wait_until(func() -> bool: return _secured_ids.has(id) or not is_instance_valid(bag) or bag.secured, 1.5)
 	var secured: bool = _secured_ids.has(id) or (is_instance_valid(bag) and bag.secured)
 	var under: String = "-"
 	if is_instance_valid(bag):
@@ -932,16 +977,17 @@ func _test_dry_throws() -> bool:
 	if zone == null:
 		return await _fail("no secure zone")
 	var target: Vector3 = zone.global_position
-	var dir: Vector3 = Vector3(pilot.crew.global_position.x - target.x, 0.0, pilot.crew.global_position.z - target.z)
-	dir = dir.normalized() if dir.length() > 0.1 else Vector3.BACK
+	note("secure zone %s at %s size %s" % [zone.get_path(), Po5Pilot._v(target), zone.zone_size_m])
 	var tw: CrewTweak = Tweak.crew()
 	var n_in: int = 0
 	for loot: StringName in [LOOT_MEDIUM, LOOT_HEAVY]:
 		for pitch: float in THROW_PITCHES:
 			var w: int = int(LootManager.loot_info(loot)["weight"])
 			var throw_m: float = tw.bag_throw_distance_m[w]
-			# Stand so the throw distance reaches the zone's near half: edge + half the throw.
-			var stand: Vector3 = pilot.stand_point(target + dir * (_zone_extent(zone, dir) + throw_m * 0.5))
+			# In the open, so the throw distance reaches the zone's near half: the zone's long half + half the throw.
+			var stand: Vector3 = _open_stand(target, throw_m * 0.5, zone)
+			if stand == Vector3.INF:
+				return await _fail("no open throw stand round the zone")
 			if not await _go(stand, 0.4, 60.0):
 				return await _fail("throw stand")
 			if await _get_bag(loot) == null:
