@@ -258,5 +258,13 @@ func test_recent_heists_panel() -> void:
 	assert_true(s.recent_rows.has(&"glasshouse"))
 	assert_true(s.focus_chain.has(s.recent_rows[&"glasshouse"] as Control), "recent rows are focusable")
 	assert_eq(s.focus_chain.back(), s.back_button)
+	# Colour-blind safety (lead r242): a drawn triangle and the sign carry the direction, not the colour alone.
+	for id: StringName in [&"glasshouse", &"gallery_night", &"shadow_ledger"]:
+		var mark: TrendMark = (s.recent_rows[id] as Node).find_child("Trend", true, false) as TrendMark
+		var text: String = CareerScreen.recent_cells(p, id)[1]
+		var pct: int = HeistFreshness.percent(float(HeistFreshness.evaluate(p, id)["mult"]))
+		assert_eq(mark.direction, signi(pct), "%s: the triangle follows the sign" % id)
+		if pct != 0:
+			assert_true(text.begins_with("+") or text.begins_with("-"), "%s: signed text %s" % [id, text])
 	s.queue_free()
 	await wait_frames(1)

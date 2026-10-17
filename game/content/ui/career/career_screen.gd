@@ -242,16 +242,36 @@ func _fill_recent() -> void:
 			l.text = cells[i]
 			l.custom_minimum_size = Vector2(HEIST_COLUMN_WIDTH if i == 0 else RECENT_COLUMN_WIDTH, 0)
 			l.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-			if i == 1:  # freshness: a penalty reads as danger, a bonus as good (colour plus the sign)
-				var pct: int = HeistFreshness.percent(float(HeistFreshness.evaluate(profile, id)["mult"]))
-				if pct != 0:
-					l.add_theme_color_override(&"font_color", UiTokens.ALERT if pct < 0 else UiTokens.OK)
+			if i == 1:
+				row.add_child(_freshness_cell(l, id))
+				continue
 			row.add_child(l)
 		var panel: PanelContainer = UiBuild.panel(row)
 		UiBuild.focus_panel(panel)
 		panel.name = "Recent_%s" % id
 		recent_table.add_child(panel)
 		recent_rows[id] = panel
+
+
+## The freshness cell: a drawn ▲ / ▼ and the signed text, red for a penalty and green for a bonus. Shape and sign carry
+## the direction without colour (colour-blind safety: red / green are close under protanopia / deuteranopia).
+func _freshness_cell(l: Label, heist_id: StringName) -> HBoxContainer:
+	var cell: HBoxContainer = UiBuild.hbox(UiTokens.S1)
+	cell.custom_minimum_size = l.custom_minimum_size
+	l.custom_minimum_size = Vector2.ZERO
+	l.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING  # short ("-20 %"); trimming let it shrink to nothing
+	l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	var mark: TrendMark = TrendMark.new()
+	mark.name = "Trend"
+	var pct: int = HeistFreshness.percent(float(HeistFreshness.evaluate(profile, heist_id)["mult"]))
+	mark.direction = signi(pct)
+	if pct != 0:
+		var c: Color = UiTokens.ALERT if pct < 0 else UiTokens.OK
+		mark.color = c
+		l.add_theme_color_override(&"font_color", c)
+	cell.add_child(mark)
+	cell.add_child(l)
+	return cell
 
 
 func _panel_box(parent: Control, title: StringName) -> VBoxContainer:
