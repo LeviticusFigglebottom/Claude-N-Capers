@@ -136,6 +136,30 @@ func test_of_guard_posts_share_one_pool() -> void:
 	_check(npcs, pool, "OF guards")
 
 
+## RT-D1: the three convoy trucks deal one Vaultline pool, the site posts one Halden pool, the street / bus / diner
+## one civilian pool.
+func test_rt_pools() -> void:
+	await _launch(&"rolling_thunder")
+	var tw: NpcVisualTweak = NpcVisuals.tweak()
+	var pools: Dictionary = tw.heist_tag_pools[&"rolling_thunder"]
+	for t: StringName in [&"convoy_t1", &"convoy_t2", &"convoy_t3"]:
+		assert_eq(pools[t], &"rt_convoy", "%s in rt_convoy" % t)
+	for t: StringName in [&"guard_site_gate", &"guard_site_frame", &"guard_site_cabins"]:
+		assert_eq(pools[t], &"rt_site_guards", "%s in rt_site_guards" % t)
+	for t: StringName in [&"civ_street", &"civ_bus", &"civ_diner"]:
+		assert_eq(pools[t], &"rt_civilians", "%s in rt_civilians" % t)
+	var m: Dictionary = tw.heist_tag_characters[&"rolling_thunder"]
+	var pool: int = _delivered(m[&"convoy_t1"])
+	if pool < 2:
+		skip("fewer than 2 armored_car_crew looks delivered")
+		return
+	var npcs: Array[NpcBase] = []
+	var tags: Array[StringName] = [&"convoy_t1", &"convoy_t2", &"convoy_t3"]
+	for i: int in pool:
+		npcs.append(_spawn(&"guard", i, {"tags": [tags[i % tags.size()]]}))
+	_check(npcs, pool, "RT convoy")
+
+
 ## OF-A6 / D-3 lesson (GH's civ_manager): the shared tag_characters must not dress an OF spawn the heist map covers,
 ## even when the spawn also carries the shared tag (civ_manager, civ_customer, security_operator).
 func test_of_heist_map_beats_the_shared_map() -> void:

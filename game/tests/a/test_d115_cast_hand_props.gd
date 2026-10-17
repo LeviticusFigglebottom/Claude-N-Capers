@@ -21,7 +21,9 @@ const PENDING: Array[String] = ["npc_cleaner_sl_b", "npc_cleaner_sl_c", "npc_nor
 	"security_officer_g", "security_officer_h", "security_officer_i", "security_officer_j", "security_bodyguard",
 	"npc_bank_teller_c", "npc_bank_teller_d", "npc_bank_teller_e", "bank_officer_c", "bank_officer_d",
 	"bank_customer_c", "bank_customer_d", "bank_customer_e", "bank_customer_f", "bank_customer_g", "bank_customer_h",
-	"bank_customer_i", "bank_customer_j", "bank_vip_client"]
+	"bank_customer_i", "bank_customer_j", "bank_vip_client",
+	# RT-D1 Rolling Thunder pools (D 0621b4f2, p5_cast v10), mirrored by A ahead of D's scenes:
+	"armored_car_crew_c", "armored_car_crew_d", "armored_car_crew_e", "armored_car_crew_f", "armored_car_marshal"]
 
 var _nodes: Array[Node] = []
 
@@ -85,6 +87,25 @@ func test_d115_tag_map_mirrors_cast() -> void:
 	assert_eq((of[&"civ_customer"] as Array).size(), 12, "OF: one pool of 12 customer faces")
 	assert_eq(of[&"civ_customer"], of[&"civ_plaza"], "hall and plaza share the customer pool")
 	assert_eq(of[&"civ_customer"], of[&"civ_client"], "hall and lounge share the customer pool")
+	# RT-D1 (p5_cast v10 tag_map.rolling_thunder): mirrored 1:1 the same way; convoy_lead / convoy_rear stay on the
+	# EnemyDef visual_variant (not in the map).
+	var rt_cast: Dictionary = (JSON.parse_string(FileAccess.get_file_as_string(CAST_PATH)) as Dictionary) \
+		.get("tag_map", {}).get("rolling_thunder", {})
+	var rt: Dictionary = tw.heist_tag_characters.get(&"rolling_thunder", {})
+	assert_false(rt.is_empty(), "rolling_thunder has a tag map")
+	if not rt_cast.is_empty():
+		assert_eq(rt.size(), rt_cast.size(), "RT: the same tags as the cast tag_map")
+		for tag: String in rt_cast:
+			var want_rt: Array = []
+			for id: Variant in rt_cast[tag]:
+				want_rt.append(StringName(String(id)))
+			assert_eq(rt.get(StringName(tag), []), want_rt, "RT %s mirrors the cast tag_map 1:1" % tag)
+	assert_false(rt.has(&"convoy_lead") or rt.has(&"convoy_rear"), "RT convoy lead / rear dress by EnemyDef")
+	assert_eq((rt[&"convoy_t1"] as Array).size(), 6, "RT: six Vaultline crew faces per truck")
+	assert_eq(rt[&"vl_marshal"], [&"armored_car_marshal"], "RT route marshal")
+	assert_eq(rt[&"cop_plaza"], [&"patrol_officer"], "RT plaza cop")
+	assert_eq((rt[&"guard_site_gate"] as Array).size(), 10, "RT: the 10 Halden faces on the site posts")
+	assert_eq(rt[&"civ_street"], rt[&"civ_diner"], "RT street and diner share the civilian pool")
 	# heist_tag_pools: the tags of one pool list the same ids (one shared round-robin deal, no twins up to the pool size).
 	for heist: Variant in tw.heist_tag_pools:
 		var pools: Dictionary = tw.heist_tag_pools[heist]

@@ -92,6 +92,20 @@ heist_tag_characters = {
 &"guard_vip": [&"security_bodyguard"],
 &"security_operator": [&"npc_bank_guard"]
 },
+&"rolling_thunder": {
+&"civ_bus": [&"bank_customer", &"bank_customer_b", &"bank_customer_c", &"bank_customer_d", &"bank_customer_e", &"bank_customer_f", &"bank_customer_g", &"bank_customer_h", &"bank_customer_i", &"bank_customer_j", &"civilian_customer_a", &"civilian_customer_b"],
+&"civ_diner": [&"bank_customer", &"bank_customer_b", &"bank_customer_c", &"bank_customer_d", &"bank_customer_e", &"bank_customer_f", &"bank_customer_g", &"bank_customer_h", &"bank_customer_i", &"bank_customer_j", &"civilian_customer_a", &"civilian_customer_b"],
+&"civ_street": [&"bank_customer", &"bank_customer_b", &"bank_customer_c", &"bank_customer_d", &"bank_customer_e", &"bank_customer_f", &"bank_customer_g", &"bank_customer_h", &"bank_customer_i", &"bank_customer_j", &"civilian_customer_a", &"civilian_customer_b"],
+&"convoy_t1": [&"armored_car_crew", &"armored_car_crew_b", &"armored_car_crew_c", &"armored_car_crew_d", &"armored_car_crew_e", &"armored_car_crew_f"],
+&"convoy_t2": [&"armored_car_crew", &"armored_car_crew_b", &"armored_car_crew_c", &"armored_car_crew_d", &"armored_car_crew_e", &"armored_car_crew_f"],
+&"convoy_t3": [&"armored_car_crew", &"armored_car_crew_b", &"armored_car_crew_c", &"armored_car_crew_d", &"armored_car_crew_e", &"armored_car_crew_f"],
+&"cop_diner": [&"patrol_officer"],
+&"cop_plaza": [&"patrol_officer"],
+&"guard_site_cabins": [&"security_officer", &"security_officer_b", &"security_officer_c", &"security_officer_d", &"security_officer_e", &"security_officer_f", &"security_officer_g", &"security_officer_h", &"security_officer_i", &"security_officer_j"],
+&"guard_site_frame": [&"security_officer", &"security_officer_b", &"security_officer_c", &"security_officer_d", &"security_officer_e", &"security_officer_f", &"security_officer_g", &"security_officer_h", &"security_officer_i", &"security_officer_j"],
+&"guard_site_gate": [&"security_officer", &"security_officer_b", &"security_officer_c", &"security_officer_d", &"security_officer_e", &"security_officer_f", &"security_officer_g", &"security_officer_h", &"security_officer_i", &"security_officer_j"],
+&"vl_marshal": [&"armored_car_marshal"]
+},
 &"shadow_ledger": {
 &"civ_assistant": [&"npc_km_assistant"],
 &"civ_associate": [&"npc_km_associate"],
@@ -134,6 +148,17 @@ heist_tag_pools = {
 &"guard_rover_gallery": &"of_guards",
 &"guard_rover_hall": &"of_guards",
 &"guard_vault": &"of_guards"
+},
+&"rolling_thunder": {
+&"civ_bus": &"rt_civilians",
+&"civ_diner": &"rt_civilians",
+&"civ_street": &"rt_civilians",
+&"convoy_t1": &"rt_convoy",
+&"convoy_t2": &"rt_convoy",
+&"convoy_t3": &"rt_convoy",
+&"guard_site_cabins": &"rt_site_guards",
+&"guard_site_frame": &"rt_site_guards",
+&"guard_site_gate": &"rt_site_guards"
 },
 &"shadow_ledger": {
 &"civ_cleaner_l41": &"sl_cleaners",
