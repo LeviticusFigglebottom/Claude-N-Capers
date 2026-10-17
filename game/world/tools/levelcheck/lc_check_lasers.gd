@@ -116,7 +116,7 @@ static func beam_boxes(g: Node3D) -> Array[Dictionary]:
 func _other_beam_dist(g: Node3D, a: Vector3, b: Vector3) -> float:
 	var best: float = INF
 	for bx: Dictionary in _beams:
-		if bx["grid"] == g:
+		if bx["grid"] == g or _alternatives(g, bx["grid"]):
 			continue
 		var xf: Transform3D = bx["xf"]
 		var inv: Transform3D = xf.affine_inverse()
@@ -128,6 +128,21 @@ func _other_beam_dist(g: Node3D, a: Vector3, b: Vector3) -> float:
 		if hit != null:
 			best = minf(best, a.distance_to(xf * (hit as Vector3)))
 	return best
+
+
+## Grids in different slots of one variant group (e.g. ND's laser_pattern static / sweep / timed at the same spot) are
+## alternatives: never both in a run, so one's beams do not close the other's gap (all-slots-active passes included).
+static func _alternatives(a: Node, b: Node) -> bool:
+	var sa: Node = _slot_of(a)
+	var sb: Node = _slot_of(b)
+	return sa != null and sb != null and sa != sb and sa.get_parent() == sb.get_parent()
+
+
+static func _slot_of(n: Node) -> Node:
+	var cur: Node = n
+	while cur != null and not (cur is VariantSlot):
+		cur = cur.get_parent()
+	return cur
 
 
 ## Beam volume x-extent [min, max] in grid-local space (unscaled grid basis assumed orthonormal).
