@@ -56,6 +56,9 @@ const CAREFUL_HALF_FOV: float = 1.4
 ## po5_flow's fast mode (read by po_observer as PO5Driver.fast): the render loop is off and the HUD canvas layers
 ## hidden between screenshots (llvmpipe: a drawn 960x540 frame took ~20 s on the shared box, 1 game s per 150 s).
 var fast: bool = false
+## heist_ended's success flag once it came (run 5: E3's lift zone covers the car + lobby, so throwing the last drive
+## bag from the lobby ended the heist, success + stealth, before the escape step ran).
+var ended_ok: bool = false
 var rt: HeistRuntime = null
 var pilot: Po5Pilot = null
 var runner_out: String = ""
@@ -221,6 +224,7 @@ func _run() -> void:
 	EventBus.pager_started.connect(func(_p: int, gid: int) -> void: note("PAGER started (guard %s)" % gid))
 	EventBus.heist_ended.connect(func(r: Dictionary) -> void:
 		note("HEIST ENDED %s" % r)
+		ended_ok = bool(r.get("success", false))
 		if _alarm != &"":
 			_fail.call_deferred("heist ended after the alarm"))
 	var vparts: PackedStringArray = PackedStringArray()
@@ -500,9 +504,15 @@ func _secure(zone: SecureZone) -> bool:
 	EventBus.loot_secured.connect(cb)
 	var target: Vector3 = zone.global_position
 	for attempt: int in 2:
-		var stand: Vector3 = pilot.stand_point(target)
-		await pilot.goto(stand, 0.4, 120.0)
-		await pilot.face(target + Vector3(0, 0.6, 0), 0.04, 2.0)
+		# Run 4: standing in the car at the zone centre and aiming at its middle, both throws hit the car walls and the
+		# bags came to rest on the zone's faces (x 21.3 / z 10.2, not secured). Stand 1.6 m back on the approach
+		# side and aim at the floor in the zone's middle so the bag lands inside.
+		var away: Vector3 = pilot.crew.global_position - target
+		away.y = 0.0
+		away = away.normalized() if away.length() > 0.3 else Vector3.RIGHT
+		var stand: Vector3 = pilot.stand_point(target + away * (1.6 + 0.4 * attempt))
+		await pilot.goto(stand, 0.3, 120.0)
+		await pilot.face(Vector3(target.x, target.y + 0.1, target.z), 0.03, 2.0)
 		note("secure try %d: throw from %s at %s (stand %s)" % [attempt, Po5Pilot._v(pilot.crew.global_position),
 			Po5Pilot._v(target), Po5Pilot._v(stand)])
 		await pilot.inp.tap(&"drop_bag")
@@ -629,6 +639,9 @@ func _drives() -> bool:
 
 
 func _escape() -> bool:
+	if ended_ok:
+		note("heist already ended with success (the pilot stood in the escape zone)")
+		return true
 	var ez: EscapeZone = pilot.active_escape()
 	if ez == null:
 		note("no active escape (secure %d)" % _objective(&"secure"))
