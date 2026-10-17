@@ -155,3 +155,9 @@ extends Resource
 @export var thrown_bag_pickup_window_s: float = 6.0
 ## Vertical tolerance (m) for the resting pickup (same floor).
 @export var thrown_bag_pickup_max_dy_m: float = 1.5
+
+@export_group("Health regen (D-145 §4a)")
+## A bot regains health after this long (s) without taking damage ◇ (PD2 bots don't; PO deviation).
+@export var bot_regen_delay_s: float = 6.0
+## ...at this fraction of its max health per second ◇.
+@export var bot_regen_frac_per_s: float = 0.02
