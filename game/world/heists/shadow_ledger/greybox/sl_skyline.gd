@@ -24,6 +24,8 @@ const STOREYS: Array[float] = [3.5, 3.8, 4.2]
 const MODULES: Array[float] = [1.6, 2.0, 2.4, 3.0]
 ## Windows below this depth under a tower's top are not drawn (the rain haze hides them; vertex budget).
 const WINDOW_DEPTH: float = 84.0
+## Windows stand this far off their face: 45-200 m away, a 2 cm offset z-fought with the facade (hatched windows).
+const WINDOW_PROUD: float = 0.1
 const BODY_MATS: Array[String] = ["tower", "tower_dark", "tower_stone"]
 
 var b: Object
@@ -132,7 +134,7 @@ func _tower(lo: Vector3, size: Vector3, top: float) -> Array:
 
 
 ## Lit windows on the faces of the box lo..hi turned towards Calder (and its sides), from WINDOW_DEPTH under the top
-## up, 2 cm proud of the face. Per floor: dark (30 %), fully lit (12 %), else each window lit at `occupancy`.
+## up, WINDOW_PROUD off the face. Per floor: dark (30 %), fully lit (12 %), else each window lit at `occupancy`.
 func _windows(lo: Vector3, hi: Vector3, storey: float, module: float, warm: bool, occupancy: float) -> int:
 	var id: String = "city_lights" if warm else "city_lights_cool"
 	var c: Vector2 = Vector2((lo.x + hi.x) * 0.5, (lo.z + hi.z) * 0.5)
@@ -152,7 +154,7 @@ func _windows(lo: Vector3, hi: Vector3, storey: float, module: float, warm: bool
 		var margin: float = (a1 - a0 - float(cols) * module) * 0.5
 		var win_w: float = module * _rng.randf_range(0.55, 0.8)
 		var win_h: float = storey * _rng.randf_range(0.45, 0.62)
-		var face: float = float(f[1]) + (nrm.z if bool(f[2]) else nrm.x) * 0.02
+		var face: float = float(f[1]) + (nrm.z if bool(f[2]) else nrm.x) * WINDOW_PROUD
 		var y: float = hi.y - storey * 0.85
 		var floor_y: float = maxf(lo.y + 2.0, hi.y - WINDOW_DEPTH)
 		while y > floor_y:

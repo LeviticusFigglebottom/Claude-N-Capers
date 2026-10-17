@@ -278,7 +278,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## zfight: Z-fighting
 
-- 381470 triangles checked
+- 381148 triangles checked
 
 
 ## lights: Lighting is deliberate
@@ -352,6 +352,10 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 ## variety: Layout variety
 
 - kit `conference_room`: 1 room(s), 1 distinct layout(s)
+- kit `exterior_roof_tower`: 1 room(s), 1 distinct layout(s)
+- kit `exterior_terrace`: 1 room(s), 1 distinct layout(s)
+- kit `plant_room_roof`: 1 room(s), 1 distinct layout(s)
+- kit `plant_riser`: 1 room(s), 1 distinct layout(s)
 - kit `linen_janitor`: 1 room(s), 1 distinct layout(s)
 - kit `corridor_glazed`: 1 room(s), 1 distinct layout(s)
 - kit `boardroom`: 1 room(s), 1 distinct layout(s)
@@ -384,10 +388,6 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 - kit `refuse_room`: 1 room(s), 1 distinct layout(s)
 - kit `corridor_service`: 3 room(s), 3 distinct layout(s)
 - kit `service_lobby`: 1 room(s), 1 distinct layout(s)
-- kit `exterior_roof_tower`: 1 room(s), 1 distinct layout(s)
-- kit `exterior_terrace`: 1 room(s), 1 distinct layout(s)
-- kit `plant_room_roof`: 1 room(s), 1 distinct layout(s)
-- kit `plant_riser`: 1 room(s), 1 distinct layout(s)
 
 
 ## bounds: No void / back faces
@@ -403,27 +403,27 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `TopDownSite` | 1528 | 322610 | 5 |
 | `TopDownTower` | 1541 | 325982 | 5 |
 | `ExtNorthCrown` | 1500 | 317702 | 5 |
-| `ExtWestArden` | 1806 | 388152 | 5 |
+| `ExtWestArden` | 1806 | 387132 | 5 |
 | `ExtTerraceSE` | 2367 | 533936 | 5 |
 | `ReceptionFromLifts` | 274 | 56000 | 3 |
 | `GalleryWalkway` | 1696 | 356928 | 3 |
 | `ArtHallLasers` | 483 | 117354 | 1 |
 | `StudySafe` | 1523 | 349044 | 1 |
-| `ServerCage` | 650 | 153818 | 1 |
+| `ServerCage` | 649 | 153798 | 1 |
 | `SecurityRoom` | 831 | 200774 | 1 |
 | `SouthSpine` | 2297 | 493274 | 4 |
 | `TerraceWest` | 2160 | 451682 | 4 |
 | `RoofPlantBlock` | 2294 | 478814 | 5 |
 | `Helipad` | 1861 | 424606 | 3 |
-| `StairACore` | 1103 | 200570 | 5 |
-| `ServiceLobby` | 1652 | 321232 | 4 |
+| `StairACore` | 1103 | 199550 | 5 |
+| `ServiceLobby` | 1652 | 320212 | 4 |
 | `KesslerOffice` | 162 | 44464 | 1 |
-| `OpenOffice` | 732 | 156536 | 2 |
+| `OpenOffice` | 732 | 155516 | 2 |
 | `BreakRoom` | 789 | 210074 | 0 |
 | `LawLibrary` | 344 | 89546 | 1 |
-| `Lounge` | 436 | 88718 | 2 |
-| `GuestSuite` | 365 | 79492 | 2 |
-| `Dining` | 736 | 160126 | 2 |
+| `Lounge` | 436 | 87698 | 2 |
+| `GuestSuite` | 365 | 78472 | 2 |
+| `Dining` | 736 | 159106 | 2 |
 | `Boardroom` | 791 | 172306 | 1 |
 
 
