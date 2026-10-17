@@ -1,0 +1,36 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"deposit_hall"
+purpose = &"vault"
+required_items = Array[StringName]([&"deposit_boxes", &"deposit_box", &"counter", &"partition", &"desk", &"chair", &"table", &"bench", &"light_fixture", &"fire_extinguisher"])
+optional_items = {
+&"clock": 0.5,
+&"convex_mirror": 0.5,
+&"plant": 0.3
+}
+clutter_groups = {
+&"desk": {
+"anchors": Array[StringName]([&"desk"]),
+"count": Vector2i(3, 5),
+"items": {&"desk_lamp": 1, &"desk_phone": 1, &"keyboard": 1, &"monitor": 1, &"papers": 1},
+"radius": 0.7
+}
+}
+min_density = 0.15
+max_density = 1.5
+min_props = 30
+lone_ok_kinds = Array[StringName]([&"plant", &"bench", &"table"])
+seed_salt = 4102
+counts = {}
+assets = {
+&"bench": PackedStringArray("prop_vault_bench"),
+&"chair": PackedStringArray("prop_chair_consult", "prop_chair_visitor", "prop_chair_office"),
+&"light_fixture": PackedStringArray("prop_ceiling_panel_neutral"),
+&"table": PackedStringArray("prop_vault_table")
+}
+ceiling = {"prop_ceiling_panel_neutral": 3.5}
+notes = "OF SD safe-deposit hall (OF-C2 lane B, of_art_rooms.gd): three double-sided box units (exact-fit carcasses; every non-interactive box door is a MultiMesh tile, the 24 HallBox prefabs are flush drawers in the grid), the viewing-booth counter with partitions on the east wall, the attendant's desk by the door, a viewing table in each wide aisle, a bench, a 4000 K panel grid."

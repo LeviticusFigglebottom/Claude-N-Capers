@@ -1,0 +1,8 @@
+asset: prop_of_box_door_l
+script: tools/blender/props/ostrander_landmarks.py
+params: {"cat": {"group": "ostrander", "kind": "box_door", "pin_only": true, "place": "none"}, "fn": "box_door", "h": 0.225, "w": 0.4}
+seed: 3804870330  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_of_box_door_l
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 60000
