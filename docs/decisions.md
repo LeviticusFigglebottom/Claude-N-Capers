@@ -1381,7 +1381,7 @@ wobbly and bobs the gun weirdly." Idle capacity, alongside Ostrander (D-144 unaf
 3. **No armor early (A, D):** on Routine and Tense no police unit has damage-reducing body armor (no TAC Heavy, no
    armored vests); armored units start at Hazardous. D: Routine/Tense police looks carry no plate-carrier visual.
 4. **Crew bots (B, A):** (a) health regen: after 6 s without damage a bot regains 2 % max health per second
-   (tunable, `crew_tweak`), a deliberate deviation from PD2 (◇). (b) Per-bot-slot loadout: each of the 3 bot slots
+   (tunable, `CrewAiTweak`, bot-only), a deliberate deviation from PD2 (◇). (b) Per-bot-slot loadout: each of the 3 bot slots
    equips a primary (any weapon the player owns, with its mods), an armor tier (owned armors) and a cosmetic mask/outfit;
    bought through the existing armory economy, saved in the profile, shown in a Crew screen in the hub. Bots use the
    equipped weapon's real stats through the bot accuracy profile and the armor's real values. B: UI, save, economy;
