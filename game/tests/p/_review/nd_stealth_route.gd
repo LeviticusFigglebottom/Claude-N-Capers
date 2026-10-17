@@ -314,39 +314,47 @@ func _gate_guard() -> bool:
 	return true
 
 
-## Steer at the guard's back with W held until in reach, then one quick swing. False (and back to the hide) when
-## he turns toward the pilot or walks out of reach first.
+## Steer at the guard's back with W held and swing on the move once he is in reach (stopping to face him first let
+## him walk 0.6 m out of reach, ND run 2026-10-17 t=66). False when he turns toward the pilot or no swing lands.
 func _chase_and_knife(g: NpcBase, sd: StealthDirector, hits: Array[int]) -> bool:
 	var c: CrewController = pilot.crew
 	pilot.inp.press(&"move_forward")
 	var frames: int = 0
-	while g.is_alive() and _back_turned(g) and frames < 4 * Engine.physics_ticks_per_second:
+	var swings: int = 0
+	var alert_before: int = g.alert_state
+	while g.is_alive() and _back_turned(g) and frames < 4 * Engine.physics_ticks_per_second and swings < 2:
 		var d: float = pilot.flat_dist(g.global_position, c.global_position)
 		if frames % 30 == 0:
 			note("knife trace: me %s guard %s dist %.2f alert %d meter %.2f" % [Po5Pilot._v(c.global_position),
 				Po5Pilot._v(g.global_position), d, g.alert_state, sd.detection_value(g, c.slot) if sd != null else -1.0])
-		if d <= 1.2:
-			break
 		if d > 2.5:
 			pilot.inp.press(&"sprint")
 		else:
 			pilot.inp.release(&"sprint")
 		pilot.steer_at(g.global_position + Vector3(0, 1.1, 0))
+		if d <= 1.6:
+			alert_before = g.alert_state
+			await pilot.inp.tap(&"melee")  # quick swing: S3.6 kills an unaware guard on any hit
+			swings += 1
+			frames += 3
+			for _f: int in 20:  # keep closing while the swing plays out
+				if not g.is_alive():
+					break
+				pilot.steer_at(g.global_position + Vector3(0, 1.1, 0))
+				await get_tree().physics_frame
+			frames += 20
+			note("swing: me %s guard %s fwd %s dist %.2f, swings %d, hits %d, health %.2f alive %s alert %d -> %d" % [
+				Po5Pilot._v(c.global_position), Po5Pilot._v(g.global_position), Po5Pilot._v(-g.global_basis.z),
+				pilot.flat_dist(g.global_position, c.global_position), hits[1], hits[0], g.health, g.is_alive(),
+				alert_before, g.alert_state])
+			continue
 		await get_tree().physics_frame
 		frames += 1
 	pilot.inp.release(&"sprint")
 	pilot.inp.release(&"move_forward")
-	if not g.is_alive() or not _back_turned(g) or pilot.flat_dist(g.global_position, c.global_position) > 1.7:
-		note("chase broke off: dist %.2f back %s alert %d" % [pilot.flat_dist(g.global_position, c.global_position),
-			_back_turned(g), g.alert_state])
-		return not g.is_alive()
-	var alert_before: int = g.alert_state
-	await pilot.inp.tap(&"melee")  # a quick swing: S3.6 kills an unaware guard on any hit; a charge let him walk on
-	await wait_s(0.6)
-	note("swing: me %s guard %s fwd %s dist %.2f, swings %d, hits %d, health %.2f alive %s alert %d -> %d" % [
-		Po5Pilot._v(c.global_position), Po5Pilot._v(g.global_position), Po5Pilot._v(-g.global_basis.z),
-		pilot.flat_dist(g.global_position, c.global_position), hits[1], hits[0], g.health, g.is_alive(),
-		alert_before, g.alert_state])
+	if g.is_alive():
+		note("chase broke off: dist %.2f back %s alert %d swings %d" % [
+			pilot.flat_dist(g.global_position, c.global_position), _back_turned(g), g.alert_state, swings])
 	return not g.is_alive()
 
 
