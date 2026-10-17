@@ -216,19 +216,19 @@ height = 0.4753
 visibility_range_end = 35.0
 visibility_range_end_margin = 1.0
 
-[node name="Gear" parent="Skeleton3D" index="1" unique_id=409432405]
+[node name="Hair" parent="Skeleton3D" index="1" unique_id=409464250]
 visibility_range_end = 35.0
 visibility_range_end_margin = 1.0
 
-[node name="Hair" parent="Skeleton3D" index="2" unique_id=409464250]
+[node name="Headwear" parent="Skeleton3D" index="2" unique_id=573535447]
 visibility_range_end = 35.0
 visibility_range_end_margin = 1.0
 
-[node name="Headwear" parent="Skeleton3D" index="3" unique_id=573535447]
+[node name="Outfit" parent="Skeleton3D" index="3" unique_id=601762193]
 visibility_range_end = 35.0
 visibility_range_end_margin = 1.0
 
-[node name="Outfit" parent="Skeleton3D" index="4" unique_id=601762193]
+[node name="Slung" parent="Skeleton3D" index="4" unique_id=640871807]
 visibility_range_end = 35.0
 visibility_range_end_margin = 1.0
 

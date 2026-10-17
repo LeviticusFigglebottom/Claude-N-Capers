@@ -232,7 +232,11 @@ visibility_range_end_margin = 1.0
 visibility_range_end = 35.0
 visibility_range_end_margin = 1.0
 
-[node name="Back" type="BoneAttachment3D" parent="Skeleton3D" index="5" unique_id=821900323]
+[node name="Slung" parent="Skeleton3D" index="5" unique_id=299740795]
+visibility_range_end = 35.0
+visibility_range_end_margin = 1.0
+
+[node name="Back" type="BoneAttachment3D" parent="Skeleton3D" index="6" unique_id=821900323]
 transform = Transform3D(1, -4.440892e-16, 2.9802308e-08, 1.1911401e-09, 0.99920094, -0.03996805, -2.977849e-08, 0.039968047, 0.999201, -7.922766e-16, 1.2696067, 0.015674157)
 bone_name = "chest"
 bone_idx = 3
@@ -240,7 +244,7 @@ bone_idx = 3
 [node name="Socket" type="Marker3D" parent="Skeleton3D/Back" index="0" unique_id=1039600539]
 transform = Transform3D(0.643, 0, 0.766, -0.76539, -0.03997, 0.64248997, 0.03062, -0.9992, -0.0257, 0.052199997, 0.0036, 0.48389998)
 
-[node name="HandL" type="BoneAttachment3D" parent="Skeleton3D" index="6" unique_id=286292377]
+[node name="HandL" type="BoneAttachment3D" parent="Skeleton3D" index="7" unique_id=286292377]
 transform = Transform3D(0.07391272, -0.70323294, -0.7071068, 0.07391279, -0.70323306, 0.70710653, -0.99452156, -0.10452833, 7.9736296e-08, -0.58452624, 1.0946984, -0.009043684)
 bone_name = "hand.L"
 bone_idx = 9
@@ -248,7 +252,7 @@ bone_idx = 9
 [node name="Socket" type="Marker3D" parent="Skeleton3D/HandL" index="0" unique_id=258134097]
 transform = Transform3D(0, 0.95106, -0.30901998, 0, -0.30901998, -0.95106, -1, 0, 0, 0.012499999, 0.0753, -0.0313)
 
-[node name="HandR" type="BoneAttachment3D" parent="Skeleton3D" index="7" unique_id=286292383]
+[node name="HandR" type="BoneAttachment3D" parent="Skeleton3D" index="8" unique_id=286292383]
 transform = Transform3D(0.073912814, 0.7032329, 0.7071068, -0.07391284, -0.703233, 0.7071066, 0.9945217, -0.1045284, 4.912445e-08, 0.58452654, 1.0946985, -0.009043736)
 bone_name = "hand.R"
 bone_idx = 28
@@ -256,7 +260,7 @@ bone_idx = 28
 [node name="Socket" type="Marker3D" parent="Skeleton3D/HandR" index="0" unique_id=418237847]
 transform = Transform3D(0, -0.95106, 0.30901998, 0, -0.30901998, -0.95106, 1, 0, 0, -0.012499999, 0.0753, -0.0313)
 
-[node name="Head" type="BoneAttachment3D" parent="Skeleton3D" index="8" unique_id=822120228]
+[node name="Head" type="BoneAttachment3D" parent="Skeleton3D" index="9" unique_id=822120228]
 transform = Transform3D(1, -5.3290705e-15, 1.4210855e-14, 0, 0.99999994, 4.4703484e-08, -7.1054274e-14, -3.7252903e-08, 1.0000001, -4.8228836e-15, 1.6562359, 0.012539339)
 bone_name = "head"
 bone_idx = 5
@@ -264,7 +268,7 @@ bone_idx = 5
 [node name="Socket" type="Marker3D" parent="Skeleton3D/Head" index="0" unique_id=260561788]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.084699996, -0.092599995)
 
-[node name="Hip" type="BoneAttachment3D" parent="Skeleton3D" index="9" unique_id=968504179]
+[node name="Hip" type="BoneAttachment3D" parent="Skeleton3D" index="10" unique_id=968504179]
 transform = Transform3D(1, 1.11022296e-16, 6.365779e-08, 3.1789198e-09, 0.9987523, -0.049937647, -6.357836e-08, 0.049937643, 0.99875236, 0, 0.99792135, 0)
 bone_name = "hips"
 bone_idx = 1
@@ -272,7 +276,7 @@ bone_idx = 1
 [node name="Socket" type="Marker3D" parent="Skeleton3D/Hip" index="0" unique_id=47296747]
 transform = Transform3D(1, 0, 0, 0, 0.99875, 0.049939997, 0, -0.049939997, 0.99875, 0.21249999, 0.053099997, 0.0376)
 
-[node name="CrowdLod" type="MeshInstance3D" parent="Skeleton3D" index="10" unique_id=1020102736 groups=["crowd_lod"]]
+[node name="CrowdLod" type="MeshInstance3D" parent="Skeleton3D" index="11" unique_id=1020102736 groups=["crowd_lod"]]
 visibility_range_begin = 35.0
 visibility_range_begin_margin = 1.0
 mesh = ExtResource("3_lod")
@@ -280,7 +284,7 @@ skin = SubResource("skin_lod")
 skeleton = NodePath("..")
 script = ExtResource("3_tjge7")
 
-[node name="Ragdoll" type="PhysicalBoneSimulator3D" parent="Skeleton3D" index="11" unique_id=408786647]
+[node name="Ragdoll" type="PhysicalBoneSimulator3D" parent="Skeleton3D" index="12" unique_id=408786647]
 active = false
 
 [node name="Hips" type="PhysicalBone3D" parent="Skeleton3D/Ragdoll" index="0" unique_id=922162458]

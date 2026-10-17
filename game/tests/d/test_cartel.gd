@@ -130,8 +130,10 @@ func test_scene_contract_and_budget() -> void:
 			assert_true(mi.get_parent() == skel, "%s/%s: child of Skeleton3D" % [id, mi.name])
 			assert_true(mi.skin != null, "%s/%s: skinned" % [id, mi.name])
 			tris += _tris(mi.mesh)
-		for need: String in ["Body", "Outfit", "Gear"]:
+		for need: String in ["Body", "Outfit"]:
 			assert_has(names, need, "%s: has %s" % [id, need])
+		# rigid kit: Gear, and/or the slung gun's own Slung mesh (v1.27; gunman_g's sling is part of its Outfit)
+		assert_true(names.has("Gear") or names.has("Slung"), "%s: has Gear or Slung" % id)
 		assert_true(tris > 5000 and tris <= TRI_BUDGET, "%s: %d triangles within %d" % [id, tris, TRI_BUDGET])
 		var h: float = _height(root)
 		assert_true(h >= MIN_HEIGHT and h <= MAX_HEIGHT, "%s: height %.3f m" % [id, h])
@@ -181,7 +183,7 @@ func test_sling_and_slung_gun() -> void:
 			with_gun.append(id)
 			# v1.27: the slung gun is its own mesh, Skeleton3D/Slung (ENV A hides it while a sit_* clip plays)
 			var gear: MeshInstance3D = root.get_node_or_null("Skeleton3D/Slung") as MeshInstance3D
-			assert_not_null(gear, "%s: Skeleton3D/Slung" % id)
+			assert_true(gear != null, "%s: Skeleton3D/Slung" % id)
 			if gear == null:
 				root.queue_free()
 				continue

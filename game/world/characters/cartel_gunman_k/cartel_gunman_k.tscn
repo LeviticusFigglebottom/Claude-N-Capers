@@ -228,7 +228,11 @@ visibility_range_end_margin = 1.0
 visibility_range_end = 35.0
 visibility_range_end_margin = 1.0
 
-[node name="Back" type="BoneAttachment3D" parent="Skeleton3D" index="4" unique_id=657686447]
+[node name="Slung" parent="Skeleton3D" index="4" unique_id=249392007]
+visibility_range_end = 35.0
+visibility_range_end_margin = 1.0
+
+[node name="Back" type="BoneAttachment3D" parent="Skeleton3D" index="5" unique_id=657686447]
 transform = Transform3D(1, 4.440892e-16, 1.1057275e-07, 4.4193755e-09, 0.99920094, -0.039968044, -1.1048439e-07, 0.039968044, 0.999201, 1.3650489e-15, 1.2491292, 0.015421351)
 bone_name = "chest"
 bone_idx = 3
@@ -236,7 +240,7 @@ bone_idx = 3
 [node name="Socket" type="Marker3D" parent="Skeleton3D/Back" index="0" unique_id=415981991]
 transform = Transform3D(0.643, 0, 0.766, -0.76539, -0.03997, 0.64248997, 0.03062, -0.9992, -0.0257, 0.0514, 0.0033999998, 0.4723)
 
-[node name="HandL" type="BoneAttachment3D" parent="Skeleton3D" index="5" unique_id=235943589]
+[node name="HandL" type="BoneAttachment3D" parent="Skeleton3D" index="6" unique_id=235943589]
 transform = Transform3D(0.07391274, -0.7032328, -0.7071071, 0.073912725, -0.7032334, 0.7071066, -0.9945219, -0.104528345, -1.9720963e-08, -0.5750987, 1.0770423, -0.008897811)
 bone_name = "hand.L"
 bone_idx = 9
@@ -244,7 +248,7 @@ bone_idx = 9
 [node name="Socket" type="Marker3D" parent="Skeleton3D/HandL" index="0" unique_id=79816669]
 transform = Transform3D(0, 0.95106, -0.30901998, 0, -0.30901998, -0.95106, -1, 0, 0, 0.0123, 0.074, -0.0308)
 
-[node name="HandR" type="BoneAttachment3D" parent="Skeleton3D" index="6" unique_id=235943595]
+[node name="HandR" type="BoneAttachment3D" parent="Skeleton3D" index="7" unique_id=235943595]
 transform = Transform3D(0.07391286, 0.703233, 0.707107, -0.07391277, -0.7032335, 0.7071066, 0.9945218, -0.10452847, -7.4877356e-08, 0.5750985, 1.0770423, -0.00889788)
 bone_name = "hand.R"
 bone_idx = 28
@@ -252,7 +256,7 @@ bone_idx = 28
 [node name="Socket" type="Marker3D" parent="Skeleton3D/HandR" index="0" unique_id=239920419]
 transform = Transform3D(0, -0.95106, 0.30901998, 0, -0.30901998, -0.95106, 1, 0, 0, -0.0123, 0.074, -0.0308)
 
-[node name="Head" type="BoneAttachment3D" parent="Skeleton3D" index="7" unique_id=657906352]
+[node name="Head" type="BoneAttachment3D" parent="Skeleton3D" index="8" unique_id=657906352]
 transform = Transform3D(1, -2.6645353e-15, 0, -8.881784e-16, 0.9999998, 1.4901161e-08, -2.1316282e-14, -2.9802322e-08, 1.0000001, 7.831317e-16, 1.6295222, 0.012337098)
 bone_name = "head"
 bone_idx = 5
@@ -260,7 +264,7 @@ bone_idx = 5
 [node name="Socket" type="Marker3D" parent="Skeleton3D/Head" index="0" unique_id=710685064]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.083299994, -0.091199994)
 
-[node name="Hip" type="BoneAttachment3D" parent="Skeleton3D" index="8" unique_id=1028603263]
+[node name="Hip" type="BoneAttachment3D" parent="Skeleton3D" index="9" unique_id=1028603263]
 transform = Transform3D(1, 6.6613376e-16, 1.4675943e-07, 7.3288184e-09, 0.9987523, -0.04993764, -1.4657633e-07, 0.049937636, 0.99875236, 0, 0.9818258, 0)
 bone_name = "hips"
 bone_idx = 1
@@ -268,7 +272,7 @@ bone_idx = 1
 [node name="Socket" type="Marker3D" parent="Skeleton3D/Hip" index="0" unique_id=841839991]
 transform = Transform3D(1, 0, 0, 0, 0.99875, 0.049939997, 0, -0.049939997, 0.99875, 0.2023, 0.0523, 0.0371)
 
-[node name="CrowdLod" type="MeshInstance3D" parent="Skeleton3D" index="9" unique_id=890681820 groups=["crowd_lod"]]
+[node name="CrowdLod" type="MeshInstance3D" parent="Skeleton3D" index="10" unique_id=890681820 groups=["crowd_lod"]]
 visibility_range_begin = 35.0
 visibility_range_begin_margin = 1.0
 mesh = ExtResource("3_lod")
@@ -276,7 +280,7 @@ skin = SubResource("skin_lod")
 skeleton = NodePath("..")
 script = ExtResource("3_ywgth")
 
-[node name="Ragdoll" type="PhysicalBoneSimulator3D" parent="Skeleton3D" index="10" unique_id=339789539]
+[node name="Ragdoll" type="PhysicalBoneSimulator3D" parent="Skeleton3D" index="11" unique_id=339789539]
 active = false
 
 [node name="Hips" type="PhysicalBone3D" parent="Skeleton3D/Ragdoll" index="0" unique_id=743845030]
