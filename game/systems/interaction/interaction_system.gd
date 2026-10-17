@@ -7,6 +7,9 @@ extends Node
 
 signal session_changed(slot: int)
 
+## D-134: the revive interactable kind (CrewHealth ReviveInteractable).
+const REVIVE_KIND: StringName = &"revive"
+
 ## slot -> { "comp": InteractableComponent, "progress": float, "duration": float,
 ##           "start_pos": Vector3, "aimed": bool }
 var _sessions: Dictionary[int, Dictionary] = {}
@@ -215,8 +218,21 @@ func cancel(slot: int) -> void:
 	session_changed.emit(slot)
 
 
-## Damage interrupt (S9.1) unless `interaction.no_interrupt_on_damage`.
+## Damage interrupt (S9.1) unless `interaction.no_interrupt_on_damage`. D-134: a revive in progress is never
+## interrupted by damage (humans and bots); going down, a tase, a stun / flash, leaving range or releasing still end it.
 func interrupt_on_damage(slot: int) -> void:
+	if Modifiers.flag(slot, &"interaction.no_interrupt_on_damage"):
+		return
+	var s: Dictionary = _sessions.get(slot, {})
+	var comp: InteractableComponent = s.get("comp") as InteractableComponent
+	if comp != null and is_instance_valid(comp) and comp.kind == REVIVE_KIND:
+		return
+	cancel(slot)
+
+
+## A stun / flash (PO6-17b) interrupts any hold interaction, a revive included (D-134), unless
+## `interaction.no_interrupt_on_damage`.
+func interrupt_on_stun(slot: int) -> void:
 	if Modifiers.flag(slot, &"interaction.no_interrupt_on_damage"):
 		return
 	cancel(slot)

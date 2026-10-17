@@ -417,14 +417,14 @@ func _tick_down_states(delta: float) -> bool:
 
 
 ## Server (PO6-17b): a breach blast / flashbang blinds this member for `seconds` (the longer of the two wins) and
-## interrupts a hold interaction (S9.1, as damage does).
+## interrupts a hold interaction, a revive included (D-134: unlike damage).
 func flash(seconds: float) -> void:
 	if _crew == null or not Net.is_authority() or seconds <= 0.0 or _crew.crew_state != Enums.CrewState.NORMAL:
 		return
 	flashed_left = maxf(flashed_left, seconds)
 	var rt: HeistRuntime = HeistRuntime.of(_crew)
 	if rt != null and rt.interaction != null:
-		rt.interaction.interrupt_on_damage(_crew.slot)
+		rt.interaction.interrupt_on_stun(_crew.slot)
 
 
 ## Authority: every physics tick (CrewController._tick_server_actions).
