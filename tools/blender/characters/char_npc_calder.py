@@ -34,6 +34,14 @@ the people who are really in the tower at 02:10:
   hung up in her office): an ivory silk blouse with the sleeves rolled, charcoal tailored trousers with a slim
   belt, low heels, a slim watch on the left wrist, no jewellery. The phone in her hand is a prop
   (not skinned).
+* ``char_npc_km_assistant`` (``civ_assistant``, D-130 ``late_staff``): Kessler & Moor's executive assistant at her K4
+  desk after hours. A woman in her early 30s, deep skin, dark hair in a low chignon: an open slate-green knit cardigan
+  (unbuttoned: the end-of-day look) over a plum silk blouse, black trousers, low heels, watch, and the firm's staff
+  lanyard (black strap, chrome band, white ID card). Trousers, not a skirt: she is seated (``desk_work``).
+* ``char_npc_km_associate`` (``civ_associate``, D-130 ``late_staff``): a junior associate at a K8 pod after
+  hours. A man in his late 20s, olive skin, short dark hair, late-night stubble: no jacket, a pale-blue shirt with the
+  sleeves rolled and the collar open, a burgundy tie pulled loose (knot dropped below the open collar), navy suit
+  trousers, black belt, brown shoes, watch.
 
 Meshes: ``Body`` (covered skin removed), ``Hair``, ``Outfit``, ``Gear``, ``Headwear`` (glasses,
 chignon). No blend shapes (baked at the params below).
@@ -44,6 +52,7 @@ import math
 import _contact_gear as cg
 import _gear_kit as gk
 import _npc as n
+import _outfit as o
 import _outfit_garments as g
 from _outfit import Hull, Mesh, Vector
 from _outfit_build import Kit, build_character
@@ -83,6 +92,11 @@ VARIANTS = {
                               "hair_color": "dark", "look": "cleaner_sl_d"},
     "char_npc_helena_moor": {"height": 1.78, "build": 0.3, "gender": 1.0, "age": 0.65, "skin": 2, "hair": "bob",
                              "hair_color": "grey", "look": "helena"},
+    # D-130 late_staff (seated desk_work): K4 executive assistant, K8 junior associate
+    "char_npc_km_assistant": {"height": 1.68, "build": 0.45, "gender": 1.0, "age": 0.3, "skin": 5,
+                              "hair": "side_part", "hair_color": "dark", "look": "km_assistant"},
+    "char_npc_km_associate": {"height": 1.80, "build": 0.5, "gender": 0.0, "age": 0.22, "skin": 3,
+                              "beard_shadow": 0.75, "hair": "short", "hair_color": "dark", "look": "km_associate"},
 }
 
 SUIT = "char_suit_dark"
@@ -225,12 +239,66 @@ def helena(kit: Kit) -> None:
     kit.notes["prop_note"] = "phone in hand is a prop: attach at HandR/Socket (not skinned)"
 
 
+def km_assistant(kit: Kit) -> None:
+    fit, k = kit.fit, kit.k
+    _hips_z, belt_z, tuck = _z(kit)
+    sh = n.shoes(kit, heel=True)
+    n.shirt(kit, "char_silk_plum", tuck, collar="fold", point_len=0.046, spread=0.34)
+    # trousers, not a skirt: the shared skirt loft lets the thighs poke through when seated (desk_work)
+    n.trousers(kit, "char_trousers_black", sh, belt_z + 0.022 * k, hem_r=0.056)
+    n0 = len(kit.soft.f)
+    # hip-length open cardigan (no button: unbuttoned at the end of the day); short enough to clear the seat
+    jk, _info = n.jacket(kit, "char_knit_slate", 0.82 * k, 1.02 * k, lapel_w=0.028, neck_w=0.095, flare=0.05,
+                         chest_welt=False, buttons=False, open_below=0.05, base=0.012)
+    n.cull_under(kit, n0, jk, "faces_hidden_by_jacket")
+    n.lanyard(kit, "char_dress_black", "char_medic_white", card_z=1.15, band_mat="chrome")
+    n.watch(kit, "L", strap="char_leather_black", case="chrome")
+    kit.add_head(cg.chignon(fit, "char_hair_dark", size=0.9))
+    kit.notes["look"] = ("K&M executive assistant (D-130 late_staff): open slate-green knit cardigan over a plum silk "
+                         "blouse, black trousers, low heels, watch, K&M staff lanyard (black strap, chrome band, white "
+                         "ID card); early 30s, deep skin, dark low chignon")
+
+
+def _loose_tie(kit: Kit, mat: str, z_tip: float, drop: float = 0.045, width: float = 0.07) -> None:
+    """A tie pulled loose: the knot hangs ``drop`` m below the (open) collar, slightly off-centre."""
+    k = kit.k
+    nk = g.Neck(kit.fit)
+    det = Mesh()
+    knot = g.tie(det, kit.hull(), kit.fit, nk.point(0.0, 0.0, 0.0).z - (0.035 + drop) * k, z_tip, mat, width=width)
+    kit.add_soft(det)
+    tk = _knot(k, mat)
+    kp = knot + Vector((0.006 * k, 0.002 * k, 0.026 * k))
+    kit.add_gear(tk.to_mesh(o.frame_from(kp, Vector((0.08, 1.0, 0.3))), anchor=kp))
+
+
+def _knot(k: float, mat: str):
+    tk = o.Gear()
+    tk.prism([(0.016 * k, 0.016 * k), (-0.016 * k, 0.016 * k), (-0.010 * k, -0.019 * k), (0.010 * k, -0.019 * k)],
+             0.0, 0.016 * k, mat)
+    tk.bevel(0.004 * k, 2, 30.0)
+    return tk
+
+
+def km_associate(kit: Kit) -> None:
+    k = kit.k
+    _hips_z, belt_z, tuck = _z(kit)
+    sh = n.shoes(kit, mat="char_shoe_brown")
+    n.shirt(kit, "char_shirt_blue", tuck, point_len=0.056, spread=0.36, sleeve=1.3, roll=0.007)
+    tr = n.trousers(kit, "char_suit_navy", sh, belt_z + 0.022 * k)
+    _loose_tie(kit, "char_tie_burgundy", belt_z + 0.06 * k)
+    n.belt(kit, tr, belt_z, buckle="chrome", height=0.030)
+    n.watch(kit, "L", strap="char_leather_black", case="chrome")
+    kit.notes["look"] = ("K&M junior associate (D-130 late_staff): no jacket, pale-blue shirt with the sleeves rolled, "
+                         "burgundy tie pulled loose under an open collar, navy suit trousers, black belt, brown shoes, "
+                         "watch; late 20s, olive skin, short dark hair, late-night stubble")
+
+
 _looks = {"cleaner_sl": cleaner_sl, "cleaner_sl_b": cleaner_sl_b, "cleaner_sl_c": cleaner_sl_c, "cleaner_sl_d": cleaner_sl_d,
           "it": it,
           "northgate": northgate, "northgate_b": northgate_b, "northgate_c": northgate_c, "northgate_d": northgate_d,
           "northgate_e": northgate_e, "northgate_f": northgate_f, "northgate_g": northgate_g, "northgate_h": northgate_h,
           "northgate_i": northgate_i,
-          "helena": helena}
+          "helena": helena, "km_assistant": km_assistant, "km_associate": km_associate}
 
 
 def recipe(kit: Kit) -> None:

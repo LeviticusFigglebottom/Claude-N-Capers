@@ -8,6 +8,14 @@ const OUT_DIR: String = "res://world/heists/shadow_ledger/"
 const SCENE_PATH: String = OUT_DIR + "shadow_ledger.tscn"
 const DEF_PATH: String = OUT_DIR + "shadow_ledger_def.tres"
 const VARIANTS_PATH: String = OUT_DIR + "shadow_ledger_variants.tres"
+## D-130 (population by difficulty, doc §roster "Totals per difficulty"): `late_staff` adds one seated member of staff
+## (K4 assistant or K8 associate) from Tense up; LATE_NONE is the empty `ls_none` slot's weight per difficulty against
+## 1 + 1, so P(one late worker) = 0 / 0.25 / 0.25 / 0.33 / 0.44 / 0.67 (Routine..Cataclysm). With the pre-D-130
+## cleaners / Moor / contractor rows, expected civilians 2.26 / 2.50 / 3.04 / 3.63 / 3.74 / 3.96 (+0 / 11 / 34 / 60 /
+## 65 / 75 %), each tier above the one below and above its pre-D-130 count. Guards keep their rows (2 / 2.5 / 3.5 /
+## 4 / 5 / 5, already +150 % at Lethal). game/tests/c/test_d130_population.gd pins the counts.
+const LATE_ADD: Array[int] = [0, 1, 1, 1, 1, 1]
+const LATE_NONE: Array[float] = [6.0, 6.0, 6.0, 4.0, 2.5, 1.0]
 
 
 # --- Resources --------------------------------------------------------------------------------
@@ -101,6 +109,10 @@ static func make_variants() -> HeistVariantTable:
 		{"group": &"cleaners", "pick": Vector2i(1, 1), "weights_by_difficulty": cleaners},
 		# kessler_sleepover (rare) pins kessler_in.
 		{"group": &"kessler", "pick": Vector2i(1, 1)},
+		# D-130: a seated late worker from Tense (K4 assistant / K8 associate; `ls_none` sets the odds). Last, so the
+		# earlier groups keep their draws.
+		{"group": &"late_staff", "pick": Vector2i(0, 0), "difficulty_add": LATE_ADD,
+			"weights_by_difficulty": _per_tier(&"ls_none", LATE_NONE)},
 	]
 	t.rare_events = [
 		{"id": &"ledger_printout", "chance": 0.06, "good": true, "effects": {"extra_books": 1}},
@@ -125,6 +137,14 @@ static func _from(first: int, value: Variant) -> Dictionary:
 	var out: Dictionary = {}
 	for dv: int in range(first, Enums.Difficulty.CATACLYSM + 1):
 		out[dv] = value
+	return out
+
+
+## D-130: {Tense..Cataclysm: {slot: weights[d]}} (Routine keeps the slot's own weight).
+static func _per_tier(slot: StringName, weights: Array[float]) -> Dictionary:
+	var out: Dictionary = {}
+	for dv: int in range(Enums.Difficulty.TENSE, Enums.Difficulty.CATACLYSM + 1):
+		out[dv] = {slot: weights[dv]}
 	return out
 
 

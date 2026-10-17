@@ -11,6 +11,8 @@
 ## their contract class names, so this file holds no path into another environment's folder.
 extends "res://world/heists/shadow_ledger/greybox/sl_gameplay.gd"
 
+## How far a flight's ramp collider runs flat onto the floor at its top (no seam with the landing).
+const RAMP_TONGUE: float = 0.3
 const VIEWMODEL_LIT_LAYER: int = 1 << 20  # viewmodel_lit (visual_slots v1.2, D-095) = CrewView.VIEWMODEL_LIT_LAYER
 ## G2 art pass (SL-1): environment / fixtures / city / probes / occluders, and the KitPlacer dressing pass.
 const DA: GDScript = preload("res://world/heists/shadow_ledger/greybox/sl_art.gd")
@@ -688,7 +690,10 @@ func _flight(parent: Node3D, nm: String, origin: Vector3, yaw: float, w: float, 
 		mesh_box(f, "Step%02d" % k, Vector3(-w * 0.5, lo, float(k - 1) * t), Vector3(w * 0.5, top, float(k) * t + SEAM), "stair")
 	var ramp_t: float = 0.3
 	var end_z: float = float(nr - 1) * t
-	_ramp(f, -w * 0.5, w * 0.5, [[Vector2(-t, 0.0), Vector2(end_z, float(nr) * r), Vector2(end_z, float(nr) * r - ramp_t),
+	# The ramp runs RAMP_TONGUE flat onto the floor at its top: no edge-to-edge seam with the landing (GN grand stair).
+	var h: float = float(nr) * r
+	var tip: float = end_z + RAMP_TONGUE
+	_ramp(f, -w * 0.5, w * 0.5, [[Vector2(-t, 0.0), Vector2(end_z, h), Vector2(tip, h), Vector2(tip, h - ramp_t),
 		Vector2(-t, -ramp_t)]])
 	return f
 
@@ -755,6 +760,12 @@ func _build_core(parent: Node3D, cid: String, core: Dictionary) -> void:
 			box(c, "Divider%sHead" % tag, Vector3(x0 + L.STAIR_WELL.x, prev_yh + L.STAIR_HEADROOM, zh),
 				Vector3(x0 + L.STAIR_WELL.y, ytop_d, zd), "wall")
 		box(c, "Divider%s" % tag, Vector3(x0 + L.STAIR_WELL.x, y0, zd), Vector3(x0 + L.STAIR_WELL.y, ytop_d, L.STAIR_Z_START), "wall")
+		if i >= 0:
+			# P's SL re-walk (Stair B, +1.8): the divider ended at zh, so the up-flight's ramp side stood up to a riser proud
+			# where the capsule turns round it. A stub on the landing runs the divider to the ramp's foot (zh - t), 3 mm
+			# into the divider / its head.
+			box(c, "Divider%sFoot" % tag, Vector3(x0 + L.STAIR_WELL.x, yh, zh - t), Vector3(x0 + L.STAIR_WELL.y, ytop_d, zh + 0.003),
+				"wall")
 		prev_zh = zh
 		prev_yh = yh
 	var ytop: float = float(levels[levels.size() - 1])
@@ -1037,7 +1048,7 @@ func _build_props(props: Node3D) -> void:
 	for c: Array in L.CHAIRS:
 		var cp: Vector3 = c[1]
 		var parent: Node3D = by_level[_prop_level(cp)]
-		chair(parent, String(c[0]), cp, float(c[2]))
+		chair(parent, String(c[0]), cp, float(c[2]), L.NPC_SEAT_CHAIRS.has(String(c[0])))
 		var ch: Node3D = parent.get_node(String(c[0])) as Node3D
 		ch.set_meta(&"faces", ch.get_path_to(parent.get_node(String(c[3]))))
 
