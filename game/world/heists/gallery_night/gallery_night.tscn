@@ -34846,9 +34846,9 @@ transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, -2.2
 script = ExtResource("257_gn")
 size_m = Vector3(11.2, 2.4, 0.1)
 beam_count = 5
-enabled_at_start = false
 visual_scene = ExtResource("258_gn")
 objective_tag = &"landing_curtain"
+enabled_at_start = false
 metadata/kind = "laser_grid"
 
 [node name="Slot_cp_treasury" type="Node3D" parent="Variants/Group_centrepiece" unique_id=103754]
