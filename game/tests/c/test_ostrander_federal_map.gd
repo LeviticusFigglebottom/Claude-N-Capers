@@ -201,7 +201,7 @@ func test_hole_hoist_ladder() -> void:
 	if _map == null:
 		fail("map missing")
 		return
-	var lid: AABB = _box(_map.get_node(BLD + "Lid/Lid") as StaticBody3D)
+	var lid: AABB = _box(_map.get_node("Gameplay/Devices/Lid/Plug") as StaticBody3D)
 	assert_true(lid.size.x >= 1.2 - 0.001 and lid.size.z >= 2.2 - 0.001, "hole %.2f x %.2f" % [lid.size.x, lid.size.z])
 	var car: Vector3 = _map.get_node("Gameplay/Lifts/Hoist").get(&"car_size_m")
 	assert_true(car.x <= lid.size.x and lid.size.z - car.z >= 1.0, "hoist car fits with a >= 1.0 m landing")
@@ -209,6 +209,61 @@ func test_hole_hoist_ladder() -> void:
 	assert_eq(float(lad.get_meta(&"burn_height_m", 0.0)), 4.0, "rope ladder 4.0 m after the burn")
 	assert_true(float(lad.get(&"height_m")) <= 3.2 + 0.001, "stowed under the lid until the burn")
 	assert_false(bool(lad.get(&"usable")), "the rope ladder is not usable at start (QC-61)")
+
+
+## OF-A6 map hooks: the lid is a replicated GameplayPrefab tagged `lid` holding the plug and the panel, the hole is a
+## permanent navmesh hole, the burn prefabs start disabled, the console / rack open no door, the planner is a CodeNote,
+## the bond bag / bond_delivery marker, and every expected CivilianRoute (stops >= 1.0 m from door centres).
+func test_of_a6_hooks() -> void:
+	if _map == null:
+		fail("map missing")
+		return
+	var lid: GameplayPrefab = _map.get_node_or_null("Gameplay/Devices/Lid") as GameplayPrefab
+	assert_true(lid != null and lid.objective_tag == &"lid", "the lid prefab (tag lid)")
+	if lid != null:
+		assert_true(lid.get_node_or_null("Visual/LidPanel") is MeshInstance3D, "the panel is part of the lid")
+		assert_true(lid.get_node_or_null("Plug") is StaticBody3D, "the plug is part of the lid")
+	assert_true(_map.get_node_or_null(BLD + "Lid") == null and _map.get_node_or_null(BLD + "Visual/LidPanel") == null,
+		"no lid left in Geometry")
+	var nm: NavigationMesh = (_map.get_node("Navigation") as NavigationRegion3D).navigation_mesh
+	var over: int = 0
+	for i: int in range(nm.get_polygon_count()):
+		for vi: int in nm.get_polygon(i):
+			var v: Vector3 = nm.vertices[vi]
+			if absf(v.y) < 0.5 and v.x > 23.4 and v.x < 24.6 and v.z > 13.5 and v.z < 15.7:
+				over += 1
+	assert_eq(over, 0, "no navmesh vertex over the hole (permanent nav hole)")
+	for nm2: String in ["Gameplay/Lifts/Hoist", "Gameplay/Ladders/RopeLadder"]:
+		assert_false(bool(_map.get_node(nm2).get(&"enabled_at_start")), "%s placed disabled" % nm2)
+	assert_eq(_map.get_node("Gameplay/Ladders/RopeLadder").get(&"objective_tag"), &"rope_ladder", "rope ladder tag")
+	var drill: DrillPoint = _map.get_node("Gameplay/Devices/LidDrill") as DrillPoint
+	assert_true(drill.requires_loot == &"loot.thermal_drill_part" and drill.requires_count == 2, "drill parts x2")
+	assert_true((_map.get_node("Gameplay/Devices/TimeLockConsole").get(&"targets") as Array).is_empty(),
+		"the time-lock console opens no door")
+	for rack: Node in _map.find_children("VaultControlRack", "", true, false):
+		assert_true((rack.get(&"targets") as Array).is_empty(), "the rack opens no door")
+	for pc: Node in _map.find_children("CodePC", "", true, false):
+		assert_eq(pc.get(&"reveals_code_group"), &"vault", "%s reveals vault" % pc.get_parent().name)
+	var note: CodeNote = _map.get_node("Gameplay/Markers/CodeHintPlanner") as CodeNote
+	assert_true(note != null and note.reveals_variant_group == &"code_pc" and note.code_group == &"", "the planner")
+	var bonds: LootSpawn = _map.get_node_or_null("Gameplay/Loot/BondSafe/VaultBonds") as LootSpawn
+	assert_true(bonds != null and bonds.loot_id == &"loot.bearer_bonds", "a bond bag in the bond safe")
+	assert_true(_map.get_node_or_null("Gameplay/Markers/BondDelivery") != null, "bond_delivery marker")
+	var doors: Array[Node] = _map.find_children("*", "Door", true, false)
+	var ids: Dictionary = {}
+	for r: Node in _map.find_children("*", "CivilianRoute", true, false):
+		var route: CivilianRoute = r as CivilianRoute
+		ids[route.id()] = true
+		assert_true(route.stop_count() >= 2, "route %s has stops" % route.id())
+		for st: PatrolPoint in route.stop_list():
+			var p: Vector3 = _xform(st).origin
+			for d: Node in doors:
+				var dp: Vector3 = _xform(d as Node3D).origin
+				if absf(dp.y - p.y) < 1.5:
+					assert_true(Vector2(dp.x - p.x, dp.z - p.z).length() >= 1.0, "%s/%s >= 1 m from %s" % [r.name,
+						st.name, d.name])
+	for id: StringName in [&"mgr_floor", &"mgr_gallery", &"mgr_vault", &"teller_rotation", &"officer_coffee"]:
+		assert_true(ids.has(id), "civilian route %s" % id)
 
 
 ## Stairs A / B are ramp-collision flights; RC aisles >= 1.0; the queue rails are one collider each.

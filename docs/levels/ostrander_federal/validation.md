@@ -11,7 +11,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | cameras | PASS | 0 | 0 |
 | secure_zones | PASS | 0 | 0 |
 | floating | PASS | 0 | 2 |
-| clipping | PASS | 0 | 0 |
+| clipping | PASS | 0 | 1 |
 | orientation | skipped | 0 | 0 |
 | scale | PASS | 0 | 0 |
 | slopes | PASS | 0 | 0 |
@@ -37,7 +37,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | door_frame_gap | PASS | 0 | 0 |
 | frame_proud | PASS | 0 | 0 |
 | seam_gaps | PASS | 0 | 0 |
-| furniture_logic | PASS | 0 | 2 |
+| furniture_logic | PASS | 0 | 3 |
 
 ## contract_nodes: Contract nodes
 
@@ -54,15 +54,16 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## floating: Nothing floats
 
-- 372 props checked
+- 373 props checked
 
 - WARN `Variants/Group_escape/Slot_esc_van_dock/EscapeDock` @ (10.50, 0.00, -3.00): prop has no geometry or collision; skipped
 - WARN `Variants/Group_escape/Slot_esc_van_tannery/EscapeTannery` @ (51.00, 0.00, 6.50): prop has no geometry or collision; skipped
 
 ## clipping: Nothing clips
 
-- 372 props, 93 doors checked
+- 374 props, 94 doors checked
 
+- WARN `Gameplay/Devices/Lid` @ (24.00, 0.00, 14.60): door has no Leaf node; swing arc not checked
 
 ## scale: Human scale
 
@@ -206,8 +207,8 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## navmesh: Navmesh
 
-- navmesh: 2510 polygons, cell 0.10/0.10 m
-- 402 markers checked
+- navmesh: 2517 polygons, cell 0.10/0.10 m
+- 432 markers checked
 | room | walkable samples | covered | coverage |
 |---|---|---|---|
 | `Rooms/RoomLK` | 187 | 187 | 100% |
@@ -234,7 +235,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `Rooms/RoomMO` | 130 | 130 | 100% |
 | `Rooms/RoomBC` | 225 | 225 | 100% |
 | `Rooms/RoomLO` | 244 | 244 | 100% |
-| `Rooms/RoomTW` | 770 | 770 | 100% |
+| `Rooms/RoomTW` | 770 | 758 | 98% |
 | `Rooms/RoomPC` | 255 | 255 | 100% |
 | `Rooms/RoomCN1` | 110 | 110 | 100% |
 | `Rooms/RoomCN2` | 110 | 110 | 100% |
@@ -292,12 +293,12 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## reachability: Reachability (per variant)
 
-- 56 variant configuration(s), 287616 spawn->target path queries
+- 56 variant configuration(s), 305064 spawn->target path queries
 
 
 ## walkthrough: Walkthrough bot
 
-- 3204 / 3204 spawn->target walks ok
+- 3252 / 3252 spawn->target walks ok
 
 
 ## patrols: Patrol graphs
@@ -383,7 +384,8 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 ## furniture_logic: Furniture arranged plausibly
 
 - classified: counter 13, desk 23, table 11, wall_unit 9, desk_chair 10
-- 10 seats, 47 tables/desks/counters, 93 doors checked
+- 10 seats, 47 tables/desks/counters, 94 doors checked
 
+- WARN `Gameplay/Devices/LidDrill` @ (24.00, 1.00, 14.60): door_clear: in the clear zone of door `Gameplay/Devices/Lid` (1.0 / 1.0 m each side, leaf width 2.40 m) by 1.01 m (gameplay prefab / variant content: review)
 - WARN `Gameplay/Lifts/CashLift` @ (11.50, -3.95, 1.55): door_clear: in the clear zone of door `Gameplay/Doors/CashLiftDoorB` (1.0 / 1.0 m each side, leaf width 1.82 m) by 0.21 m (gameplay prefab / variant content: review)
 - WARN `Gameplay/Lifts/CashLift` @ (11.50, -3.95, 1.55): use_point: stands in the user's spot of `Gameplay/Doors/CashLiftDoorB` (UsePoint @ (11.50, -4.00, 2.30)) by 0.11 m (gameplay prefab / variant content: review)

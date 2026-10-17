@@ -23,6 +23,8 @@ PlayerPlaza1 Gameplay/Doors/OfficerDoor3/UsePoint
 PlayerPlaza1 Gameplay/Doors/TrainingDoor/UsePoint
 PlayerPlaza1 Gameplay/Loot/BondSafe
 PlayerPlaza1 Gameplay/Loot/BondSafe/UsePoint
+PlayerPlaza1 Gameplay/Loot/BondSafe/VaultBonds
+PlayerPlaza1 Gameplay/Loot/BondSafe/VaultBonds/UsePoint
 PlayerPlaza1 Gameplay/Loot/HallBox17
 PlayerPlaza1 Gameplay/Loot/HallBox17/UsePoint
 PlayerPlaza1 Gameplay/Loot/HallBox18
@@ -61,6 +63,8 @@ PlayerPlaza2 Gameplay/Doors/OfficerDoor3/UsePoint
 PlayerPlaza2 Gameplay/Doors/TrainingDoor/UsePoint
 PlayerPlaza2 Gameplay/Loot/BondSafe
 PlayerPlaza2 Gameplay/Loot/BondSafe/UsePoint
+PlayerPlaza2 Gameplay/Loot/BondSafe/VaultBonds
+PlayerPlaza2 Gameplay/Loot/BondSafe/VaultBonds/UsePoint
 PlayerPlaza2 Gameplay/Loot/HallBox17
 PlayerPlaza2 Gameplay/Loot/HallBox17/UsePoint
 PlayerPlaza2 Gameplay/Loot/HallBox18
@@ -103,6 +107,8 @@ PlayerPlaza3 Gameplay/Doors/OfficerDoor3/UsePoint
 PlayerPlaza3 Gameplay/Doors/TrainingDoor/UsePoint
 PlayerPlaza3 Gameplay/Loot/BondSafe
 PlayerPlaza3 Gameplay/Loot/BondSafe/UsePoint
+PlayerPlaza3 Gameplay/Loot/BondSafe/VaultBonds
+PlayerPlaza3 Gameplay/Loot/BondSafe/VaultBonds/UsePoint
 PlayerPlaza3 Gameplay/Loot/HallBox17
 PlayerPlaza3 Gameplay/Loot/HallBox17/UsePoint
 PlayerPlaza3 Gameplay/Loot/HallBox18
@@ -145,6 +151,8 @@ PlayerPlaza4 Gameplay/Doors/OfficerDoor3/UsePoint
 PlayerPlaza4 Gameplay/Doors/TrainingDoor/UsePoint
 PlayerPlaza4 Gameplay/Loot/BondSafe
 PlayerPlaza4 Gameplay/Loot/BondSafe/UsePoint
+PlayerPlaza4 Gameplay/Loot/BondSafe/VaultBonds
+PlayerPlaza4 Gameplay/Loot/BondSafe/VaultBonds/UsePoint
 PlayerPlaza4 Gameplay/Loot/HallBox17
 PlayerPlaza4 Gameplay/Loot/HallBox17/UsePoint
 PlayerPlaza4 Gameplay/Loot/HallBox18
@@ -358,6 +366,8 @@ PlayerTannery2 Gameplay/Loot/VaultGold/UsePoint
 PlayerTannery2 Variants/Group_escape/Slot_esc_heli_terrace/EscapeTerrace/Zone
 PlayerTannery2 Variants/Group_escape/Slot_esc_heli_terrace/SecureTerrace/Zone
 PlayerTannery3 Gameplay/Devices/AlarmBM/UsePoint
+PlayerTannery3 Gameplay/Markers/CodeHintPlanner
+PlayerTannery3 Gameplay/Markers/CodeHintPlanner/UsePoint
 PlayerTannery3 Gameplay/Devices/PhoneBM/UsePoint
 PlayerTannery3 Gameplay/Devices/PhoneNA/UsePoint
 PlayerTannery3 Gameplay/Devices/PhonePC/UsePoint
@@ -395,6 +405,8 @@ PlayerTannery3 Variants/Group_escape/Slot_esc_heli_terrace/SecureTerrace/Zone
 PlayerTannery3 Variants/Group_keycard/Slot_kc_manager_desk/Keycard
 PlayerTannery3 Variants/Group_keycard/Slot_kc_manager_desk/Keycard/UsePoint
 PlayerTannery4 Gameplay/Devices/AlarmBM/UsePoint
+PlayerTannery4 Gameplay/Markers/CodeHintPlanner
+PlayerTannery4 Gameplay/Markers/CodeHintPlanner/UsePoint
 PlayerTannery4 Gameplay/Devices/PhoneBM/UsePoint
 PlayerTannery4 Gameplay/Devices/PhoneNA/UsePoint
 PlayerTannery4 Gameplay/Devices/PhoneVO/UsePoint
