@@ -20,7 +20,6 @@ const UNHOOKED: Dictionary = {
 	&"defense.bullseye": "A",
 	&"defense.dodge_per_concealment": "A",
 	&"defense.flashbang_duration_mult": "A",
-	&"defense.interact_damage_taken_mult": "A",
 	&"defense.outnumbered": "A",
 	&"defense.post_revive_buff": "A",
 	&"defense.reviving_damage_taken_mult": "A",
