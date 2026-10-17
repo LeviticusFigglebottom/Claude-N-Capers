@@ -95,3 +95,5 @@ Every reader (B's BriefingIntel, the HUD) uses the same order.
   compute, recorded after the payday is applied.
 - **S11.1 (B b6d96a85):** payout `stealth_bonus_banked` is the heist's `HeistDef.stealth_bonus_mult` when > 1.0 (S 1.10,
   M 1.15, L 1.25), else `PayoutTweak.stealth_xp_bonus_mult` (1.2; no def / loud-only).
+- **OF-A6 (A c017fd51):** `AssaultEventsTweak.heists.ostrander_federal` rows (turret van ×2, police heli ×2, breach ×4).
+  D-136.10: Ostrander `[secure]` counts `loot.cash_bricks`, `loot.gold`, `loot.bearer_bonds` only (6 bags, 4 on Routine).
