@@ -5,7 +5,7 @@
 ##     --rendering-driver opengl3 --path game --script res://world/characters/_tools/render_d130_cast_review.gd \
 ##     -- --pool=gn_guards
 ##
-## Pools: gn_guards, sl_guards, nd_guards, civilians. Writes to res://assets/characters/_review/d130_cast/:
+## Pools: gn_guards, sl_guards, nd_guards, civilians, gn_waitstaff, gn_attendants. Writes to res://assets/characters/_review/d130_cast/:
 ##   <pool>_sheet.png           per character: full body front (idle), three-quarter back mid-walk, head close-up
 ##   <pool>_lineup_30m.png      all of them side by side seen from 30 m (natural LOD switching, telephoto framing)
 ##   <pool>_silhouette_30m.png  the same view with every surface flat black (the 30 m silhouette read)
@@ -36,6 +36,9 @@ const POOLS: Dictionary = {
 		"char_gallery_patron_g", "char_gallery_patron_h", "char_gallery_patron_i", "char_gallery_patron_j",
 		"char_npc_penthouse_guest_a", "char_npc_penthouse_guest_b",
 	],
+	# GN gala_extra (cloakroom waitstaff + drawings-cabinet attendant): the third look in each pool.
+	"gn_waitstaff": ["char_npc_penthouse_staff", "char_gallery_waiter", "char_gallery_waiter_b"],
+	"gn_attendants": ["char_gallery_attendant", "char_gallery_attendant_b", "char_gallery_attendant_c"],
 }
 const COLS: int = 9
 const TILE: Vector2i = Vector2i(200, 340)
