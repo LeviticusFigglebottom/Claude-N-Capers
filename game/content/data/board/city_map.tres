@@ -68,8 +68,11 @@ heists = {
 },
 &"ostrander_federal": {
 "contact": &"contact.accountant",
+"difficulty_min": 0,
 "district": &"financial",
-"pos": Vector2(0.84, 0.24)
+"pos": Vector2(0.84, 0.24),
+"pro": true,
+"weight": 0.75
 },
 &"night_deposit": {
 "contact": &"contact.accountant",

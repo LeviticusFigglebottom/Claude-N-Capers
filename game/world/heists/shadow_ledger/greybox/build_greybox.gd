@@ -212,6 +212,7 @@ func _glass(parent: Node3D, nm: String, axis: String, fixed: float, a0: float, a
 	var body: Node3D = box(parent, nm, mn, mx, "glass")
 	if body == null:
 		return
+	_see_through(body)
 	var span: float = a1 - a0
 	# G2: the head bar stops 6 mm short of the reveals and rides 4 mm into the opening's head (zfight with the pane)
 	var fs: Vector3 = Vector3(span - 0.012, 0.05, 0.06) if axis == "x" else Vector3(0.06, 0.05, span - 0.012)
@@ -220,6 +221,14 @@ func _glass(parent: Node3D, nm: String, axis: String, fixed: float, a0: float, a
 	head.mesh = box_mesh(fs, "frame")
 	head.position = Vector3(0.0, (y1 - y0) * 0.5 - 0.021, 0.0)
 	add(body, head)
+
+
+## D-142: a clear glass collider (curtain wall, vision panel, glass balustrade) joins `see_through`: it still blocks
+## movement and bullets, stealth vision sees through it. Saved in the scene (persistent group).
+static func _see_through(body: Node3D) -> Node3D:
+	if body != null:
+		body.add_to_group(&"see_through", true)
+	return body
 
 
 ## Interval list minus cuts: [[a, b], ...] - [[c, d], ...].
@@ -716,6 +725,7 @@ func railing(parent: Node3D, nm: String, mn: Vector3, mx: Vector3, glass: bool =
 	top.position = Vector3(0.0, size.y * 0.5 - 0.025, 0.0)
 	add(body, top)
 	if glass:
+		_see_through(body)
 		# G2: the pane stops 3 cm inside its end posts and 3 mm inside the rail's faces (zfight with the posts and with
 		# the next railing's end)
 		var ia: Vector3 = Vector3(0.03, 0.0, 0.003) if along_x else Vector3(0.003, 0.0, 0.03)
@@ -875,12 +885,12 @@ func _build_feature_stair(parent: Node3D) -> void:
 	for side: Array in [["N", float(zs[0]) - 0.03, float(zs[0]) + 0.03], ["S", float(zs[1]) - 0.03, float(zs[1]) + 0.03]]:
 		# G2: 3 mm off the floor (their bottoms were coplanar with the solid steps' and the landing's: zfight)
 		# and 3 mm short of the landing's ends (their end faces were coplanar with the landing's / the first step's)
-		RT.apply(box(fst, "Balustrade%s1" % side[0], Vector3(xa - t, y0 + 0.003, float(side[1])), Vector3(xl - 0.003, ym + 1.1,
-			float(side[2])), "teal_glass"))
-		RT.apply(box(fst, "Balustrade%sL" % side[0], Vector3(xl + 0.003, y0 + 0.003, float(side[1])), Vector3(xb - 0.003,
-			ym + 1.1, float(side[2])), "teal_glass"))
-		RT.apply(box(fst, "Balustrade%s2" % side[0], Vector3(xb + 0.003, y0 + 0.003, float(side[1])), Vector3(xe, y1 + 1.1,
-			float(side[2])), "teal_glass"))
+		RT.apply(_see_through(box(fst, "Balustrade%s1" % side[0], Vector3(xa - t, y0 + 0.003, float(side[1])), Vector3(xl - 0.003, ym + 1.1,
+			float(side[2])), "teal_glass")))
+		RT.apply(_see_through(box(fst, "Balustrade%sL" % side[0], Vector3(xl + 0.003, y0 + 0.003, float(side[1])), Vector3(xb - 0.003,
+			ym + 1.1, float(side[2])), "teal_glass")))
+		RT.apply(_see_through(box(fst, "Balustrade%s2" % side[0], Vector3(xb + 0.003, y0 + 0.003, float(side[1])), Vector3(xe, y1 + 1.1,
+			float(side[2])), "teal_glass")))
 	# Handrails on both balustrades (flights and landing).
 	for k: int in range(2):
 		var zr: float = float(zs[0]) + L.HANDRAIL_OFF if k == 0 else float(zs[1]) - L.HANDRAIL_OFF

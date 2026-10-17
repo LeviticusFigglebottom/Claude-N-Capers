@@ -5,7 +5,15 @@
 [resource]
 script = ExtResource("1")
 heists = {
+&"glasshouse": {
+"glazing": true
+},
+&"shadow_ledger": {
+"glazing": true
+},
 &"afterhours": {
+"hidden": true,
+"requires": ["res://world/heists/afterhours/afterhours_mission.gd"],
 "solo_ai_teammates": 3
 },
 &"dockside_burn": {
@@ -15,10 +23,14 @@ heists = {
 "solo_ai_teammates": 3
 },
 &"ostrander_federal": {
+"hidden": true,
 "requires": ["res://world/heists/ostrander_federal/ostrander_federal_mission.gd"],
 "solo_ai_teammates": 3
 },
 &"rolling_thunder": {
+"hidden": true,
+"mode_key": &"ui.heist_select.modes_loud_ambush",
+"requires": ["res://world/heists/rolling_thunder/rolling_thunder_mission.gd"],
 "solo_ai_teammates": 3
 }
 }

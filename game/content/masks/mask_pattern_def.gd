@@ -8,6 +8,7 @@ extends MaskPartDef
 enum Procedural {
 	SOLID, SPLIT, BROW_BAND, STRIPES, CHEVRON, DOTS, SASH, DIAMONDS,
 	SCALES, CIRCUIT, PROWL, HALFTONE, CRACKLE, STARBURST,
+	GUILLOCHE, VAULT_BOLTS, ACANTHUS, FACETS, TIME_LOCK_DIAL, STENCIL,  # round 244 achievement parts (append-only)
 }
 
 ## Texture id requested from ENV D (e.g. &"tex_mask_pattern_split"); a reference only.

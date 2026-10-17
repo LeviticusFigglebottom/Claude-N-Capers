@@ -152,7 +152,8 @@ func select_heist(index: int) -> void:
 	var e: Dictionary = _entries[index]
 	brief_label.text = UiText.t(StringName(e["brief_key"]))
 	name_label.text = UiText.t(StringName(e["name_key"]))
-	mode_label.text = "%s  |  %s" % [UiText.t(StringName(e["subtitle_key"])), UiText.t(_mode_key(int(e["mode"])))]
+	var mode: String = UiText.t(HeistCatalog.mode_key(StringName(e["id"]), int(e["mode"])))
+	mode_label.text = "%s  |  %s" % [UiText.t(StringName(e["subtitle_key"])), mode]
 	_update_preview()
 
 
@@ -244,12 +245,3 @@ static func stealth_note(heist_id: StringName, difficulty: int, mode: int) -> St
 func _on_next() -> void:
 	if selected_heist_id() != &"":
 		heist_chosen.emit(selected_heist_id(), selected_difficulty)
-
-
-static func _mode_key(mode: int) -> StringName:
-	match mode:
-		Enums.HeistMode.STEALTH_ONLY:
-			return &"ui.heist_select.modes_stealth_only"
-		Enums.HeistMode.LOUD_ONLY:
-			return &"ui.heist_select.modes_loud_only"
-	return &"ui.heist_select.modes_stealth_loud"

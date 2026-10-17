@@ -73,7 +73,7 @@ func test_launch_routine_seed_1001() -> void:
 	await _teardown(rt)
 
 
-## Brutal: both rovers and a walked extra spawn; then the cage -> hack -> drives chain on the real
+## Brutal: both rovers and (D-140) the operator or a walked extra spawn; then the cage -> hack -> drives chain on the real
 ## prefabs (the mission gates the hack terminal on the cage and the drive sleds on the hack).
 func test_launch_brutal_seed_1001() -> void:
 	if _launcher == null:
@@ -87,9 +87,12 @@ func test_launch_brutal_seed_1001() -> void:
 	Log.info(&"test", "shadow_ledger seed %d Brutal resolved: %s" % [SEED, _table(v)])
 	assert_eq((v.get(&"guard_post", []) as Array).size(), 2, "Brutal: both rovers")
 	var extras: Array = v.get(&"guard_extra", [])
-	assert_true(extras.size() == 1 and not extras.has(&"extra_none"), "Brutal: one walked extra (%s)" % [extras])
+	var staffed: bool = CameraStation.room_staffed(v)
+	assert_eq(extras.size() == 1 and not extras.has(&"extra_none"), not staffed,
+		"D-140: a walked extra exactly when the security room is empty (%s)" % [extras])
 	var guards: Array = rt.call(&"npcs", &"guard")
-	assert_true(guards.size() >= 4, "Brutal: reception + 2 rovers + 1 extra spawned (got %d)" % guards.size())
+	assert_true(guards.size() >= (3 if staffed else 4),
+		"Brutal: reception + 2 rovers (+ the extra when the room is empty) spawned (got %d)" % guards.size())
 	var map: HeistMap = rt.get(&"map") as HeistMap
 	var mission: HeistMission = rt.get(&"mission") as HeistMission
 	if map != null and mission != null:
@@ -98,7 +101,7 @@ func test_launch_brutal_seed_1001() -> void:
 
 
 func _check_cage_and_hack(map: HeistMap, mission: HeistMission) -> void:
-	var cage: Safe = map.get_node_or_null("Gameplay/Server/CageLock") as Safe
+	var cage: Padlock = map.get_node_or_null("Gameplay/Doors/CageGate/CagePadlock") as Padlock  # D-138: the gate padlock
 	var ht: HackTerminal = map.get_node_or_null("Gameplay/Server/HackTerminal") as HackTerminal
 	var drives: Node = map.get_node_or_null("Gameplay/Server/Drives1")
 	assert_true(cage != null and ht != null and drives != null, "cage lock, hack terminal and drive sleds are live")
@@ -106,9 +109,8 @@ func _check_cage_and_hack(map: HeistMap, mission: HeistMission) -> void:
 		return
 	assert_false(_enabled(ht), "hack terminal locked until the cage opens")
 	assert_false(_enabled(drives), "drive sleds locked until the hack")
-	# In play the saw's DrillPoint swings the lock (open_by_device) and then reports device_finished;
-	# SL-6 counts the cage open only on a real lock swing.
-	cage.open_by_device()
+	# In play the placed saw opens the padlock (which opens the CageGate) and then reports device_finished.
+	cage.open_lock()
 	EventBus.device_finished.emit(int(cage.get(&"net_id")))
 	await wait_physics_frames(2)
 	assert_eq(mission.objective_state(&"cage"), Enums.ObjectiveState.COMPLETED, "cage objective")

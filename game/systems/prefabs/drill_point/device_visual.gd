@@ -30,8 +30,9 @@ static func scene_for(kind: StringName, override: PackedScene = null) -> PackedS
 	return load(path) as PackedScene if ResourceLoader.exists(path) else null
 
 
-## Show / hide for runner state `s` (DeviceRunner.State) of a `kind` device under `mount`.
-func update(s: int, kind: StringName, mount: Node, override: PackedScene = null) -> void:
+## Show / hide for runner state `s` (DeviceRunner.State) of a `kind` device under `mount`, set `out_m` out along the
+## mount's +Z (out of the lock: a padlock on a door leaf, PO-14 device review).
+func update(s: int, kind: StringName, mount: Node, override: PackedScene = null, out_m: float = 0.0) -> void:
 	var placed: bool = s == DeviceRunner.State.RUNNING or s == DeviceRunner.State.JAMMED
 	if placed and node == null and mount != null:
 		var scene: PackedScene = scene_for(kind, override)
@@ -40,6 +41,7 @@ func update(s: int, kind: StringName, mount: Node, override: PackedScene = null)
 			if node != null:
 				node.name = "Device"
 				mount.add_child(node)
+				node.position += Vector3(0.0, 0.0, out_m)
 				_bit = node.find_child("Bit", true, false) as Node3D
 	if not placed:
 		clear()

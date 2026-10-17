@@ -1,0 +1,21 @@
+asset: char_security_bodyguard
+script: tools/blender/characters/char_security.py
+params: {"age": 0.5, "beard_shadow": 0.9, "build": 0.8, "gender": 0.0, "hair": "bald", "hair_color": "dark", "height": 1.87, "look": "bodyguard", "skin": 5}
+seed: 3032797373  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category characters --asset char_security_bodyguard
+edit policy: generated file, never edit by hand; change the script and rebuild
+attach_Back: bone chest, local [0.0000, 0.0942, 0.1209] (model [0.0000, 1.3657, 0.1403], Godot axes, rest pose)
+attach_Head: bone head, local [0.0000, 0.0851, -0.0932] (model [0.0000, 1.7502, -0.0806], Godot axes, rest pose)
+attach_Hip: bone hips, local [0.2442, 0.0668, 0.0432] (model [0.2442, 1.0679, 0.0465], Godot axes, rest pose)
+body_faces_culled: 4886
+body_params: {"age": 0.5, "beard_shadow": 0.9, "build": 0.8, "gender": 0.0, "hair": "bald", "hair_color": "dark", "hair_peak": 0.0, "height": 1.87, "lip": "auto", "skin": 5}
+bones: 52
+faces_hidden_by_jacket: 2813
+hip_note: Hip seat = the radio on the belt under the jacket (right hip); the pager rides there
+look: Halden close protection (OF-D1 guard_vip): near-black suit, white shirt open at the collar, no tie, earpiece + coiled cable (right ear), Halden shield lapel pin, belt radio bulge on the right hip under the jacket
+meshes: Body,Gear,Hair,Outfit
+shape_keys: none (baked at body_params; do not set blend_shapes/*)
+tri_budget: 35000
+tris: 25384
+tris_by_mesh: {"Body": 8972, "Gear": 1086, "Hair": 580, "Outfit": 14746}

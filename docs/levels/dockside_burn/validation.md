@@ -23,6 +23,9 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | lasers | PASS | 0 | 0 |
 | camera_spine | skipped | 0 | 0 |
 | camera_screen | skipped | 0 | 0 |
+| bag_line | skipped | 0 | 0 |
+| hide_los | skipped | 0 | 0 |
+| teller_worktop | skipped | 0 | 0 |
 | materials | PASS | 0 | 0 |
 | zfight | PASS | 0 | 0 |
 | lights | PASS | 0 | 0 |
@@ -56,7 +59,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## clipping: Nothing clips
 
-- 470 props, 49 doors checked
+- 470 props, 50 doors checked
 
 
 ## orientation: Flush and oriented
@@ -126,13 +129,13 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## slopes: No walkable slope < 50° outside the play mesh
 
-- 1809 x 1969 columns (0.25 m), 609021 surface samples, 0 collider(s) with reachable walkable surfaces outside play
+- 1809 x 1969 columns (0.25 m), 609011 surface samples, 0 collider(s) with reachable walkable surfaces outside play
 
 
 ## navmesh: Navmesh
 
-- navmesh: 2276 polygons, cell 0.10/0.10 m
-- 204 markers checked
+- navmesh: 2269 polygons, cell 0.10/0.10 m
+- 205 markers checked
 | room | walkable samples | covered | coverage |
 |---|---|---|---|
 | `Rooms/RoomO1` | 72 | 72 | 100% |
@@ -152,7 +155,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `Rooms/RoomC2` | 357 | 357 | 100% |
 | `Rooms/RoomSR` | 143 | 143 | 100% |
 | `Rooms/RoomAN` | 442 | 440 | 100% |
-| `Rooms/RoomM1` | 64 | 64 | 100% |
+| `Rooms/RoomM1` | 55 | 55 | 100% |
 | `Rooms/RoomM2` | 58 | 58 | 100% |
 | `Rooms/RoomM3` | 13 | 13 | 100% |
 | `Rooms/RoomMC` | 105 | 105 | 100% |
@@ -168,17 +171,17 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## barred_doors: BARRED doorways are closed in the navmesh
 
-- 21 BARRED door(s) checked
+- 22 BARRED door(s) checked
 
 
 ## reachability: Reachability (per variant)
 
-- 39 variant configuration(s), 116970 spawn->target path queries
+- 39 variant configuration(s), 118170 spawn->target path queries
 
 
 ## walkthrough: Walkthrough bot
 
-- 2130 / 2130 spawn->target walks ok
+- 2160 / 2160 spawn->target walks ok
 
 
 ## patrols: Patrol graphs
@@ -194,12 +197,12 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## materials: Materials and texel density
 
-- 3199 surfaces checked
+- 3204 surfaces checked
 
 
 ## zfight: Z-fighting
 
-- 340835 triangles checked
+- 340715 triangles checked
 
 
 ## lights: Lighting is deliberate
@@ -231,7 +234,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `Rooms/RoomC2` | cold_store_racked_b | 16 | 182.0 | 0.09 |
 | `Rooms/RoomSR` | strongroom_freezer | 7 | 64.0 | 0.11 |
 | `Rooms/RoomAN` | quay_dock | 22 | 176.0 | 0.12 |
-| `Rooms/RoomM1` | count_room_cash | 19 | 36.0 | 0.53 |
+| `Rooms/RoomM1` | count_room_cash | 18 | 36.0 | 0.50 |
 | `Rooms/RoomM2` | break_room | 24 | 36.0 | 0.67 |
 | `Rooms/RoomM3` | restroom_single | 8 | 9.0 | 0.89 |
 | `Rooms/RoomMC` | corridor_service | 14 | 36.0 | 0.39 |
@@ -276,51 +279,51 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 ## bounds: No void / back faces
 
 - 382 navmesh sample(s) skipped: not reachable from a player spawn (police-only)
-- 271 eye samples, 21951 rays, sky yes, 0 void ray(s)
+- 270 eye samples, 21870 rays, sky yes, 0 void ray(s)
 
 
 ## perf: Per-shot performance budget
 
 | camera | draw calls | triangles | shadow lights |
 |---|---|---|---|
-| `TopDownSite` | 2173 | 353658 | 8 |
-| `TopDownBuilding` | 1624 | 266016 | 5 |
-| `ExtGate` | 2077 | 350452 | 8 |
+| `TopDownSite` | 2178 | 353406 | 8 |
+| `TopDownBuilding` | 1629 | 265764 | 5 |
+| `ExtGate` | 2082 | 350200 | 8 |
 | `ExtYardEast` | 223 | 25584 | 1 |
-| `ExtQuay` | 2404 | 420916 | 8 |
-| `ExtLane` | 1789 | 296510 | 7 |
-| `YardWest` | 1613 | 271450 | 7 |
+| `ExtQuay` | 2409 | 420664 | 8 |
+| `ExtLane` | 1794 | 296258 | 7 |
+| `YardWest` | 1618 | 271198 | 7 |
 | `Gatehouse` | 916 | 136604 | 7 |
 | `HallPlatform` | 1033 | 143816 | 6 |
-| `HallFloor` | 1808 | 315592 | 8 |
-| `ChamberA` | 1734 | 304780 | 6 |
-| `ChamberB` | 1212 | 193946 | 7 |
+| `HallFloor` | 1813 | 315340 | 8 |
+| `ChamberA` | 1747 | 305254 | 6 |
+| `ChamberB` | 1214 | 193970 | 7 |
 | `Spine` | 710 | 124238 | 5 |
-| `Anteroom` | 1892 | 330150 | 7 |
+| `Anteroom` | 1897 | 329898 | 7 |
 | `Strongroom` | 1322 | 208992 | 8 |
 | `Packing` | 1018 | 173374 | 5 |
-| `Plant` | 994 | 165762 | 2 |
+| `Plant` | 999 | 165576 | 2 |
 | `Workshop` | 1168 | 191266 | 5 |
 | `Reception` | 510 | 81604 | 2 |
-| `Dispatch` | 762 | 129604 | 2 |
-| `CountRoom` | 1085 | 189904 | 6 |
-| `BreakRoom` | 567 | 82898 | 2 |
+| `Dispatch` | 755 | 127666 | 2 |
+| `CountRoom` | 1086 | 188692 | 6 |
+| `BreakRoom` | 561 | 82130 | 2 |
 | `LockerRoom` | 756 | 112378 | 2 |
 | `QuayShed` | 133 | 19136 | 1 |
 | `LandingStage` | 69 | 6082 | 0 |
-| `RoofPerch` | 526 | 86362 | 3 |
-| `SniperCrane` | 1990 | 344926 | 8 |
+| `RoofPerch` | 525 | 86002 | 3 |
+| `SniperCrane` | 1995 | 344674 | 8 |
 
 
 ## door_frame_gap: Doors and windows fill their wall openings (no gaps, no clipping)
 
-- 49 door / window prefab(s) measured; gap > 0.02 m and clip > 0.01 m fail
-- leaf bullet surfaces (D-105, Door.leaf_surface_id): metal 41, wood 8; 0 look glass / metal but resolve to wood (WARN)
+- 50 door / window prefab(s) measured; gap > 0.02 m and clip > 0.01 m fail
+- leaf bullet surfaces (D-105, Door.leaf_surface_id): metal 42, wood 8; 0 look glass / metal but resolve to wood (WARN)
 
 
 ## frame_proud: Door / window frame colliders are flush with the wall (no proud or narrowing collision)
 
-- 49 door / window prefab(s), 49 with frame colliders; proud > 0.01 m and narrowing > 0.01 m fail; worst proud 0.000 m, narrowing 0.000 m
+- 50 door / window prefab(s), 50 with frame colliders; proud > 0.01 m and narrowing > 0.01 m fail; worst proud 0.000 m, narrowing 0.000 m
 
 
 ## seam_gaps: No see-through slits at wall corners, junctions, floors and ceilings
@@ -331,5 +334,5 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 ## furniture_logic: Furniture arranged plausibly
 
 - classified: counter 7, chair 9, desk 2, table 1, wall_unit 9, monitor 1
-- 9 seats, 10 tables/desks/counters, 49 doors checked
+- 9 seats, 10 tables/desks/counters, 50 doors checked
 

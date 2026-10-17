@@ -135,6 +135,8 @@ const WINDOWS: Array = [
 	["StockEastA", "arch_window_w100_h120", Vector3(18.0, 5.1, 8.4), -90.0, false],
 	["StockEastB", "arch_window_w100_h120", Vector3(18.0, 5.1, 9.6), -90.0, false],
 ]
+## D-142: static windows whose glass is frosted (opaque for stealth vision); every other pane is clear (`see_through`).
+const FROSTED_WINDOWS: Array[String] = ["WCUpperNorth"]  # U3 staff WC: high frosted window (design doc)
 ## Break-room window (U1, variable `open_window`): built inside the variant slots. A walk-through
 ## door-window (PO-5): sill flush with the U1 floor and the landing (both UPPER), clear opening
 ## 1.09 x 2.05 m; the prefab is `walkable` (its own NavLink, live while open or broken).
@@ -433,7 +435,7 @@ const SHADOW_FIXTURES: Array = [["G5", Vector3(3.0, 3.6, 9.5)], ["G6", Vector3(1
 
 ## Chandelier display (landmark): the round display case visual on a collision drum; the ring
 ## chandelier above is an anchor (ANCHORS, G5).
-const CHANDELIER: Dictionary = {"pos": Vector3(7.0, 0.0, 9.0), "radius": 1.2, "height": 1.2, "ceiling": 3.6}
+const CHANDELIER: Dictionary = {"pos": Vector3(7.0, 0.0, 9.0), "radius": 1.2, "height": 1.2, "glass_y": 0.75, "ceiling": 3.6}
 
 # --- Lighting ------------------------------------------------------------------------------
 

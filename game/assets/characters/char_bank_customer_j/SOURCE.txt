@@ -1,0 +1,20 @@
+asset: char_bank_customer_j
+script: tools/blender/characters/char_p5_bank.py
+params: {"age": 0.66, "build": 0.45, "gender": 1.0, "hair": "short", "hair_color": "grey", "height": 1.72, "look": "rollneck", "skin": 5}
+seed: 1205576860  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category characters --asset char_bank_customer_j
+edit policy: generated file, never edit by hand; change the script and rebuild
+attach_Back: bone chest, local [0.0000, 0.0863, 0.1025] (model [0.0000, 1.2562, 0.1204], Godot axes, rest pose)
+attach_Head: bone head, local [0.0000, 0.0783, -0.0857] (model [0.0000, 1.6098, -0.0741], Godot axes, rest pose)
+attach_Hip: bone hips, local [0.1864, 0.0495, 0.0425] (model [0.1864, 0.9701, 0.0449], Godot axes, rest pose)
+body_faces_culled: 4791
+body_params: {"age": 0.66, "beard_shadow": 0.0, "build": 0.45, "gender": 1.0, "hair": "short", "hair_color": "grey", "hair_peak": 0.0, "height": 1.72, "lip": "auto", "skin": 5}
+bones: 52
+faces_hidden_by_jacket: 2986
+look: Customer (OF-D1): a woman in her 60s, short grey hair; brown suit jacket over a cream roll-neck, black trousers, low heels, silver drop earrings, black glasses
+meshes: Body,Gear,Hair,Headwear,Outfit
+shape_keys: none (baked at body_params; do not set blend_shapes/*)
+tri_budget: 35000
+tris: 26372
+tris_by_mesh: {"Body": 9162, "Gear": 116, "Hair": 1728, "Headwear": 906, "Outfit": 14460}

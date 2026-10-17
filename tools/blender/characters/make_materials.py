@@ -20,7 +20,8 @@ Textures are generated with ENV C's ``tools/texgen`` library (used read-only: no
 ``materials.base.Ctx/Maps/finalize`` which enforces the style-guide albedo rules (linear luminance
 0.04-0.85, saturation <= 0.75, never near the interactable accent) and the ``godot`` writers).
 The generators here are ENV D's: one per material *kind* (cloth, knit, leather, skin, hair, eye,
-metal, plastic, gloss), coloured from the palette, so the glb placeholder colours and the game
+metal, plastic, gloss; the achievement mask surfaces stone, bronze, canvas, rust, velvet, crinkle, gilt live in
+``_mask_surfaces.py``), coloured from the palette, so the glb placeholder colours and the game
 materials come from the same numbers. Deterministic (seed = crc32(id), texgen's PNG writer).
 Adding a material = adding an id to ``_outfit_palette`` (or ``_body``) and re-running this.
 Not an asset script (no ASSET_ID/VARIANTS), so build.py skips it.
@@ -46,6 +47,8 @@ from texgen import io as tio
 from texgen import noise as nz
 from texgen.materials.base import Ctx, Maps, finalize
 
+from _mask_surfaces import GENERATORS as MASK_GENERATORS
+from _mask_surfaces import MASK_KINDS
 from _outfit_palette import SKIN_SPECULAR, all_char_materials
 
 MAT_DIR = REPO / "game" / "world" / "materials"
@@ -53,6 +56,7 @@ TEX_DIR = REPO / "game" / "assets" / "characters" / "_textures"
 TEX_RES = "res://assets/characters/_textures"
 SIZE = 256
 SKIN_SIZE = 512          # the skin atlas carries the face colour: head tile = 256 px round the head
+MASK_SIZE = 512          # mask surface kinds (_mask_surfaces): one tile ~ 12 cm of mask face
 HAIR_SIZE = 512          # hair: body hair UVs go twice round the head (_head.hair_uvs): ~0.5 mm/texel across strands
 SKIN_RE = re.compile(r"^char_skin_(\d)(_stubble|_beard)?$")
 TILE_M = 2.0
@@ -71,7 +75,9 @@ DOUBLE_SIDED = {"char_silk_ice", "char_coat_ice", "char_crew_rook_coat", "char_c
                 # on a stride or squat, and a squat or a seat shows the skirt's inside past the hem: single-sided, both
                 # read as holes (a hem ring floating round the knees)
                 "char_dress_black", "char_satin_wine", "char_satin_sapphire", "char_satin_amethyst", "char_satin_gold",
-                "char_satin_teal", "char_silk_graphite", "char_bank_slate_dark", "char_suit_grey"}
+                "char_satin_teal", "char_silk_graphite", "char_bank_slate_dark", "char_suit_grey",
+                # OF-D1: the navy pencil skirt; the long wool coats (below the knee)
+                "char_skirt_navy", "char_coat_heather", "char_coat_stone"}
 
 
 def srgb_bytes(h: str) -> tuple[int, int, int]:
@@ -97,7 +103,7 @@ def check(mats: dict) -> list[str]:
             errors.append(f"{mid}: roughness/metallic out of range")
         if metal == 1.0 and rough < 0.15:
             errors.append(f"{mid}: metal roughness below 0.15")
-        if kind not in ("skin", "eye", "hair", "cloth", "leather", "metal", "plastic", "gloss"):
+        if kind not in ("skin", "eye", "hair", "cloth", "leather", "metal", "plastic", "gloss", *MASK_KINDS):
             errors.append(f"{mid}: unknown kind {kind}")
     return errors
 
@@ -277,6 +283,8 @@ def generate(ctx: Ctx, kind: str, hexc: str, rough: float, metal: float, tint: n
         return _skin(ctx, base, rough, metal)
     if kind == "hair":
         return _hair(ctx, base, rough, metal)
+    if kind in MASK_GENERATORS:
+        return MASK_GENERATORS[kind](ctx, base, rough, metal)
     if kind == "metal":
         return _smooth(ctx, base, rough, metal, 0.04, brushed=True)
     return _smooth(ctx, base, rough, metal, 0.02 if kind in ("eye", "gloss") else 0.03)
@@ -288,6 +296,10 @@ def build_one(mid: str, spec: tuple, preset: dict) -> dict:
     sk = SKIN_RE.match(mid)
     tint = None
     size, seed_id, extra = SIZE, mid, []
+    if k in MASK_KINDS:
+        size = MASK_SIZE
+        extra = ["use: achievement mask surface grain (MaskMaterialDef, content/docs/masks.md); features "
+                 "sized per texture tile (~12 cm of mask at uv_tile 1.5); generator tools/blender/characters/_mask_surfaces.py"]
     if k == "hair":
         size = HAIR_SIZE
         extra = ["uv: body hair along the strands (tools/blender/characters/_head.py hair_uvs); detail along v"]
@@ -366,7 +378,9 @@ def main() -> int:
     for mid, spec in mats.items():
         if only and mid not in only:
             continue
-        build_one(mid, spec, preset)
+        stats = build_one(mid, spec, preset)
+        if only:
+            print(f"{mid}: {stats}")
         n += 1
     print(f"wrote {n} materials: game/world/materials/char_*.tres + game/assets/characters/_textures/")
     return 0

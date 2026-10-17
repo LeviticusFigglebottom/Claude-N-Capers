@@ -9,6 +9,8 @@
 ##   { "favors": int,                         # favors budget (default PreplanTweak.default_favors)
 ##     "disable": [asset ids],                # library assets this heist does not offer
 ##     "assets": { asset_id: {overrides} } }  # AssetDef field overrides; a new id adds a heist-only asset
+## Allow-list (D-143): a LIBRARY asset with a non-empty `heists` list is offered only on those heists (or where the heist
+## lists it in its own preplanning.assets).
 ## Variant groups (QB-53, D-049): a LIBRARY asset whose payload (`reveals` / `force_variants`) names a
 ## variant group this heist does not have is hidden automatically (e.g. `asset.intel_laptop` reveals
 ## `laptop`); see heist_variant_groups(). A heist-listed asset (preplanning.assets) naming an unknown
@@ -64,8 +66,13 @@ static func build(p_heist_id: StringName, p_difficulty: int, def: HeistDef = nul
 	b.assets = merged["assets"]
 	b.favors_budget = int(merged.get("favors", b.tweak.default_favors))
 	b.variant_groups = heist_variant_groups(p_heist_id, b.blueprint)
+	var listed: Dictionary = pre.get("assets", {}) as Dictionary if pre.get("assets") is Dictionary else {}
+	for id: StringName in b.asset_ids():  # D-143: a library asset allow-listed to other heists is not offered here
+		var a: PreplanAssetDef = b.assets[id] as PreplanAssetDef
+		if not a.offered_on(p_heist_id) and not (listed.has(id) or listed.has(String(id))):
+			b.assets.erase(id)
+			b.hidden_assets.append(id)
 	if not b.variant_groups.is_empty():
-		var listed: Dictionary = pre.get("assets", {}) as Dictionary if pre.get("assets") is Dictionary else {}
 		for id: StringName in b.asset_ids():
 			var missing: Array[StringName] = missing_groups(b.assets[id] as PreplanAssetDef, b.variant_groups)
 			if missing.is_empty():

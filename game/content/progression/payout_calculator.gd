@@ -92,13 +92,13 @@ static func compute(result: Dictionary, difficulty_def: DifficultyDef = null, tw
 
 
 ## S11.1: the stealth bonus a stealth win of `heist_id` banks, "5-25 % scaled by heist size": the heist's
-## HeistDef.stealth_bonus_mult when set (> 1.0; per-size values in the generator rows), else
-## tweak.stealth_xp_bonus_mult (an unknown heist / no def).
+## HeistDef.stealth_bonus_mult (per-size values in the generator rows, D-141: S 1.10 / M 1.15 / L 1.25; 1.0 = none, a
+## loud heist), else tweak.stealth_xp_bonus_mult (an unknown heist / no def).
 static func stealth_bonus_for(heist_id: StringName, tweak: PayoutTweak = null) -> float:
 	var tw: PayoutTweak = tweak if tweak != null else _load_tweak()
 	var def: HeistDef = HeistRegistry.get_def(heist_id) if heist_id != &"" else null
-	if def != null and def.stealth_bonus_mult > 1.0:
-		return def.stealth_bonus_mult
+	if def != null:
+		return maxf(def.stealth_bonus_mult, 1.0)
 	return tw.stealth_xp_bonus_mult
 
 

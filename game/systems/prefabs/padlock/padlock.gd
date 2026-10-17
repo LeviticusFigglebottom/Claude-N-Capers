@@ -45,6 +45,9 @@ const METHOD_UI: Dictionary = {
 const ORDER_STEALTH: Array[StringName] = [&"lockpick", &"drill", &"saw", &"c4"]
 const ORDER_LOUD: Array[StringName] = [&"drill", &"saw", &"c4", &"lockpick"]
 const DRILL_DURATION_META: StringName = &"drill_duration_s"
+## PO-14 device review (D cb022207): the saw blade / drill bit stand off the door leaf by this much (m) out of the lock.
+const SAW_OUT_M: float = 0.08
+const DRILL_OUT_M: float = 0.04
 
 @export var targets: Array[NodePath] = []
 ## D-138: false = no lockpick (nor its requires_item hold): only the placed methods / handheld saw open it.
@@ -350,7 +353,7 @@ func _loud() -> bool:
 
 ## While the device RUNS the padlock offers nothing (the HUD device row); jammed it offers "fix".
 func _on_device_state(s: int) -> void:
-	_visual.update(s, runner.kind, self, device_scene)
+	_visual.update(s, runner.kind, self, device_scene, SAW_OUT_M if runner.kind == &"saw" else DRILL_OUT_M)
 	if opened:
 		return
 	match s:

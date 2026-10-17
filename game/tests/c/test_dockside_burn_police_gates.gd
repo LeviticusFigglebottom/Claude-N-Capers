@@ -48,7 +48,8 @@ func _run(run_seed: int) -> void:
 	_rt.isolate_npc(null)
 	var gates: Array[Door] = []
 	for n: Node in _rt.map.get_node("Gameplay/Doors").get_children():
-		if n is Door and String(n.name).ends_with("Gate") and (n as Door).lock == Door.Lock.BARRED \
+		# The play-space closures are tagged police_gate (the BARRED count-room cage gate, D-138, is not one).
+		if n is Door and (n as Door).objective_tag == &"police_gate" and (n as Door).lock == Door.Lock.BARRED \
 				and (n as Node3D).is_visible_in_tree():
 			gates.append(n as Door)
 	assert_true(gates.size() >= 4, "seed %d: police gates found (%d)" % [run_seed, gates.size()])

@@ -81,17 +81,42 @@ const HALBERD_EDGES: Array = [
 	["PL1", "PL2"], ["BB1", "LK1"], ["BB2", "LK1"], ["BB1", "FR1"], ["BB2", "FR1"], ["QR1", "BB3"], ["QR1", "BBVault"],
 	["QR1", "BB4"],
 ]
+## The Mews points carry `guard` (the route tag a guard walks, as Court / Rounds) and the beat tag `guard_mews`.
 const MEWS: Dictionary = {
-	"MewsDoor": [Vector3(42.5, 0.0, -1.5), Vector2(20, 40), "smoke", ["guard_mews"], 180.0],
-	"MewsBins": [Vector3(29.7, 0.0, -2.4), Vector2.ZERO, "idle", ["guard_mews"], null],
-	"MewsLadder": [Vector3(11.5, 0.0, -2.0), Vector2(4, 8), "look", ["guard_mews"], 180.0],
-	"MewsVan": [Vector3(36.5, 0.0, -6.8), Vector2.ZERO, "idle", ["guard_mews"], null],
-	"MewsMouth": [Vector3(47.0, 0.0, -4.0), Vector2(20, 40), "smoke", ["guard_mews"], 90.0],
-	"MewsLD": [Vector3(41.0, 0.0, 3.0), Vector2(6, 10), "look", ["guard_mews"], 0.0],
+	"MewsDoor": [Vector3(42.5, 0.0, -1.5), Vector2(20, 40), "smoke", ["guard", "guard_mews"], 180.0],
+	"MewsBins": [Vector3(29.7, 0.0, -2.4), Vector2.ZERO, "idle", ["guard", "guard_mews"], null],
+	"MewsLadder": [Vector3(11.5, 0.0, -2.0), Vector2(4, 8), "look", ["guard", "guard_mews"], 180.0],
+	"MewsVan": [Vector3(36.5, 0.0, -6.8), Vector2.ZERO, "idle", ["guard", "guard_mews"], null],
+	"MewsMouth": [Vector3(47.0, 0.0, -4.0), Vector2(20, 40), "smoke", ["guard", "guard_mews"], 90.0],
+	"MewsLD": [Vector3(41.0, 0.0, 3.0), Vector2(6, 10), "look", ["guard", "guard_mews"], 0.0],
 }
 const MEWS_EDGES: Array = [
 	["MewsDoor", "MewsBins"], ["MewsBins", "MewsLadder"], ["MewsLadder", "MewsVan"], ["MewsVan", "MewsMouth"],
 	["MewsMouth", "MewsDoor"], ["MewsDoor", "MewsLD"], ["MewsLD", "MewsBins"], ["MewsVan", "MewsDoor"],
+]
+## D-140 (GUARDS lever): `court` = the `rover_court` beat, the Sculpture Court (X3) behind the West Gallery: the north
+## bronzes, the areaway grate (watched from the south, 2 m off the light well, facing the grate and the French doors),
+## the court gate and the west benches; >= 1.2 m off the bronzes, heaters, pool rim, the patrons' smoking spots and
+## every UsePoint / door. `rounds` = the `sec_empty` roundsman: with the security room unstaffed the console officer
+## walks the closed upper west wing (UG1 Calloway partition, the BW balcony, UG2 Sallow, the SL loggia), off the
+## Halberd upper points (>= 2 m) and the partition screens. One guard on each graph (no shared-post loop rule).
+const COURT: Dictionary = {
+	"CourtNE": [Vector3(-3.0, 0.0, 8.0), Vector2.ZERO, "idle", ["guard"], null],
+	"CourtGrate": [Vector3(-5.0, 0.0, 17.0), Vector2(6, 10), "look", ["guard"], 0.0],
+	"CourtGate": [Vector3(-8.0, 0.0, 26.5), Vector2(4, 8), "look", ["guard"], 180.0],
+	"CourtWest": [Vector3(-14.0, 0.0, 13.0), Vector2.ZERO, "idle", ["guard"], null],
+}
+const COURT_EDGES: Array = [
+	["CourtNE", "CourtGrate"], ["CourtGrate", "CourtGate"], ["CourtGate", "CourtWest"], ["CourtWest", "CourtNE"],
+]
+const ROUNDS: Dictionary = {
+	"RndUG1": [Vector3(9.0, 5.4, 17.5), Vector2(6, 10), "look", ["guard"], 90.0],
+	"RndBW": [Vector3(13.5, 5.4, 16.5), Vector2(4, 8), "look", ["guard"], -90.0],
+	"RndUG2": [Vector3(9.0, 5.4, 23.0), Vector2(6, 10), "look", ["guard"], 90.0],
+	"RndSL": [Vector3(17.0, 5.4, 28.5), Vector2(4, 8), "look", ["guard"], 0.0],
+}
+const ROUNDS_EDGES: Array = [
+	["RndUG1", "RndBW"], ["RndBW", "RndUG2"], ["RndUG2", "RndSL"], ["RndSL", "RndUG1"], ["RndUG1", "RndUG2"],
 ]
 const GALA: Dictionary = {
 	"GalaHallW": [Vector3(19.5, 0.0, 20.0), Vector2(10, 30), "browse", ["civilian"], null],
@@ -188,6 +213,12 @@ const SLOT_NPCS: Dictionary = {
 	"rover_basement": ["GuardRoverBasement", "GUARD", Vector3(10.0, -4.2, 7.0), -90.0, ["guard_rover_basement"], "",
 		"Halberd"],
 	"dock_smoker": ["GuardDockSmoker", "GUARD", Vector3(43.5, 0.0, -2.5), 90.0, ["guard_mews"], "smoke", "Mews"],
+	# D-140: the court rover (exterior beat, the mews pool's look) and the sec_empty roundsman (the operator's look:
+	# the same officer, at the console or on his rounds), each on its own graph.
+	"rover_court": ["GuardRoverCourt", "GUARD", Vector3(-3.5, 0.0, 6.0), 180.0, ["guard_mews", "guard_court"], "",
+		"Court"],
+	"sec_empty": ["GuardRounds", "GUARD", Vector3(9.0, 5.4, 19.0), 180.0, ["guard_operator", "guard_rounds"], "",
+		"Rounds"],
 	# standing (teller) at BenchCS (0.9 m), 0.28 m off its north edge (z 9.65), clear of the kc_conservator UsePoint
 	"cons_late": ["Conservator", "CIVILIAN", Vector3(39.55, 5.4, 9.37), 180.0, ["civ_conservator"], "teller", ""],
 	"curator_hall": ["Curator", "CIVILIAN", Vector3(17.5, 0.0, 15.5), -90.0, ["civ_curator"], "curator_inspect", ""],
@@ -291,6 +322,8 @@ var _seat_links: Array = []
 func build_npcs() -> void:
 	_graph("Halberd", &"halberd", 1, HALBERD, HALBERD_EDGES)
 	_graph("Mews", &"mews", 1, MEWS, MEWS_EDGES)
+	_graph("Court", &"court", 1, COURT, COURT_EDGES)
+	_graph("Rounds", &"rounds", 2, ROUNDS, ROUNDS_EDGES)
 	_graph("Gala", &"gala", 1, GALA, GALA_EDGES)
 	_graph("Staff", &"staff", 1, STAFF, STAFF_EDGES)
 	for s: Array in FIXED_SPAWNS:
@@ -301,7 +334,7 @@ func npc_slot(vs: VariantSlot, _group: String, slot_id: String, _at: Vector3, _y
 	if SLOT_NPCS.has(slot_id):
 		_npc(vs, SLOT_NPCS[slot_id])
 		return true
-	return slot_id in ["rover_none", "sec_empty", "cons_gone", "pa_none", "xl_none"]
+	return slot_id in ["cons_gone", "pa_none", "xl_none"]
 
 
 func _npc(parent: Node3D, s: Array) -> void:

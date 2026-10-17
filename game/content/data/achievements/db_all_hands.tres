@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="AchievementDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://content/defs/achievement_def.gd" id="1_ach"]
+
+[resource]
+script = ExtResource("1_ach")
+id = &"achievement.db_all_hands"
+name_key = &"achievement.db_all_hands.name"
+desc_key = &"achievement.db_all_hands.desc"
+condition = {"event": &"heist_completed", "heist": &"dockside_burn", "difficulty_min": 3, "max_custody": 0, "count": 1}
+unlock = &""
+order = 745
+category = &"dockside_burn"
+rewards = Array[StringName]([&"mask_pattern.stencil"])
+unlocks = Array[StringName]([])
+requires_facts = Array[StringName]([])

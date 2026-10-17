@@ -23,8 +23,8 @@ func after_all() -> void:
 func test_data_is_complete() -> void:
 	var defs: Array[AchievementDef] = Achievements.all()
 	# B7-02 set of about 40, plus D-111's unlock achievements (Deep Water, Main Event, Private Viewing, The Planner,
-	# Wheelman), plus D-115's 28 per-heist achievements (5-6 per heist).
-	assert_true(defs.size() >= 60 and defs.size() <= 80, "about 40 (B7-02) + D-111 + 28 (D-115): %d" % defs.size())
+	# Wheelman), plus the per-heist sets (D-115's 28, OF-B1's 6 for Ostrander Federal, LEAD r244's 6 parity additions).
+	assert_true(defs.size() >= 80 and defs.size() <= 95, "about 40 (B7-02) + D-111 + 40 per-heist: %d" % defs.size())
 	var strings: Dictionary = StringTable.parse_csv()
 	for a: AchievementDef in defs:
 		assert_true(String(a.id).begins_with("achievement."), String(a.id))
@@ -124,8 +124,8 @@ func test_screen_instantiates_with_progress() -> void:
 	s.setup(p)
 	add_child(s)
 	await wait_frames(1)
-	assert_eq(s.rows.size(), Achievements.all().size())
-	assert_eq(s.count_label.text, UiText.t(&"ui.achievements.count", {"unlocked": 1, "total": Achievements.all().size()}))
+	assert_eq(s.rows.size(), Achievements.shown().size())  # a staged (hidden) heist's set is not on the screen
+	assert_eq(s.count_label.text, UiText.t(&"ui.achievements.count", {"unlocked": 1, "total": Achievements.shown().size()}))
 	var first: PanelContainer = s.rows[&"achievement.first_score"] as PanelContainer
 	assert_eq((first.find_child("Status", true, false) as Label).text, UiText.t(&"ui.achievements.unlocked"))
 	assert_near((s.rows[&"achievement.ghost_crew"] as Control).find_child("Progress", true, false).get(&"value"), 0.2)

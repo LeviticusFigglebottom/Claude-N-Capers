@@ -14,6 +14,11 @@
 ## crouched capsule (r 0.35, h 1.2, 2 cm off the floor) must fit, colliding with nothing, along a
 ## contiguous stretch of the grid width at least 0.8 m wide (capsule centres sampled every 0.05 m;
 ## stretch = centre run + 2 r). Such grids are checked even when their pattern is not static.
+## OF-C3 (D-104 §7.1, opt-in so older maps keep their numbers): HeistMap meta `laser_min_gap_m` (default 0.8) sets
+## the clear width (side gap and crouch stretch), grid meta `min_gap_m` overrides it per grid; HeistMap meta
+## `laser_crouch_face_m` (default 1.22 = 1.2 + 0.02) sets the minimum lowest-beam lower face for crouch-under.
+## Between emitters: the side clear width also stops at any other laser grid's beam volume (BeamArea / Trigger
+## shapes) on the probe rays, so two grids in one opening cannot share a gap that neither leaves.
 class_name LcCheckLasers
 extends LcCheck
 
@@ -26,6 +31,11 @@ const PROBE_DEPTHS: Array[float] = [-0.35, 0.0, 0.35]
 const SEARCH: float = 4.0
 const CROUCH_LIFT: float = 0.02
 const CROUCH_STEP: float = 0.05
+const META_MIN_GAP: StringName = &"laser_min_gap_m"
+const META_CROUCH_FACE: StringName = &"laser_crouch_face_m"
+
+## Beam boxes of every active grid: [{ "grid": Node3D, "xf": Transform3D, "aabb": AABB }].
+var _beams: Array[Dictionary] = []
 
 
 func _init() -> void:
@@ -66,6 +76,9 @@ func run(ctx: LcContext) -> void:
 			par = par.get_parent()
 		if not nested:
 			grids.append(n as Node3D)
+	_beams.clear()
+	for g0: Node3D in grids:
+		_beams.append_array(beam_boxes(g0))
 	var checked: int = 0
 	for g: Node3D in grids:
 		if not needs_gap(g):
@@ -74,6 +87,62 @@ func run(ctx: LcContext) -> void:
 		checked += 1
 		_check_grid(ctx, g)
 	note("%d laser grid(s), %d with an asserted bypass gap" % [grids.size(), checked])
+
+
+## Required clear width for grid g (grid meta min_gap_m, else HeistMap meta laser_min_gap_m, else MIN_CLEAR).
+static func min_gap(ctx: LcContext, g: Node) -> float:
+	return LcLines.meta_float(g, &"min_gap_m", LcLines.meta_float(ctx.map, META_MIN_GAP, MIN_CLEAR))
+
+
+## Minimum lowest-beam lower face above the floor for crouch-under (HeistMap meta laser_crouch_face_m).
+static func crouch_face(ctx: LcContext) -> float:
+	return LcLines.meta_float(ctx.map, META_CROUCH_FACE, CROUCH_H + CROUCH_LIFT)
+
+
+## The grid's BeamArea / Trigger collision boxes (global transform + local AABB).
+static func beam_boxes(g: Node3D) -> Array[Dictionary]:
+	var out: Array[Dictionary] = []
+	for a: Node in g.get_children():
+		if not (a is Area3D) or not (String(a.name).begins_with("BeamArea") or a.name == &"Trigger"):
+			continue
+		for cs: Node in a.find_children("*", "CollisionShape3D", true, false):
+			var shape: Shape3D = (cs as CollisionShape3D).shape
+			if shape != null:
+				out.append({"grid": g, "xf": (cs as Node3D).global_transform, "aabb": shape.get_debug_mesh().get_aabb()})
+	return out
+
+
+## Distance from a along a -> b to the first other grid's beam box, INF when none is crossed.
+func _other_beam_dist(g: Node3D, a: Vector3, b: Vector3) -> float:
+	var best: float = INF
+	for bx: Dictionary in _beams:
+		if bx["grid"] == g or _alternatives(g, bx["grid"]):
+			continue
+		var xf: Transform3D = bx["xf"]
+		var inv: Transform3D = xf.affine_inverse()
+		var la: Vector3 = inv * a
+		var aabb: AABB = bx["aabb"]
+		if aabb.has_point(la):
+			return 0.0
+		var hit: Variant = aabb.intersects_segment(la, inv * b)
+		if hit != null:
+			best = minf(best, a.distance_to(xf * (hit as Vector3)))
+	return best
+
+
+## Grids in different slots of one variant group (e.g. ND's laser_pattern static / sweep / timed at the same spot) are
+## alternatives: never both in a run, so one's beams do not close the other's gap (all-slots-active passes included).
+static func _alternatives(a: Node, b: Node) -> bool:
+	var sa: Node = _slot_of(a)
+	var sb: Node = _slot_of(b)
+	return sa != null and sb != null and sa != sb and sa.get_parent() == sb.get_parent()
+
+
+static func _slot_of(n: Node) -> Node:
+	var cur: Node = n
+	while cur != null and not (cur is VariantSlot):
+		cur = cur.get_parent()
+	return cur
 
 
 ## Beam volume x-extent [min, max] in grid-local space (unscaled grid basis assumed orthonormal).
@@ -107,6 +176,7 @@ func _check_grid(ctx: LcContext, g: Node3D) -> void:
 	var floor_y: float = (fl["position"] as Vector3).y if not fl.is_empty() else g.global_position.y
 	var results: PackedStringArray = PackedStringArray()
 	var ok: bool = false
+	var need_gap: float = min_gap(ctx, g)
 	var crouch: bool = LcUtil.meta_b(g, &"crouch_under")
 	if crouch:
 		var cu: Dictionary = _crouch_under(ctx, g, xf, ext, floor_y)
@@ -120,19 +190,19 @@ func _check_grid(ctx: LcContext, g: Node3D) -> void:
 		var edge: float = ext.x if side < 0.0 else ext.y
 		var clear: float = _clear_width(ctx, g, xf, edge, side, floor_y)
 		var fit: String = "none"
-		if clear >= MIN_CLEAR - 0.005:
+		if clear >= need_gap - 0.005:
 			var centre: Vector3 = xf * Vector3(edge + side * (CAPSULE_R + 0.05), 0.0, 0.0)
 			if _capsule_free(ctx, g, centre, floor_y, STAND_H):
 				fit = "standing"
 			elif _capsule_free(ctx, g, centre, floor_y, CROUCH_H):
 				fit = "crouched"
 		results.append("%s side: clear %.2f m, capsule %s" % ["-X" if side < 0.0 else "+X", clear, fit])
-		if clear >= MIN_CLEAR - 0.005 and fit != "none":
+		if clear >= need_gap - 0.005 and fit != "none":
 			ok = true
 	note("`%s`: beams x %.2f..%.2f m; %s" % [ctx.node_path(g), ext.x, ext.y, "; ".join(results)])
 	if not ok and (not crouch or side_gap):
-		fail(ctx, g, null, "no passable bypass gap (need clear width >= %.1f m and a r %.2f capsule %.1f m standing or %.1f m crouched): %s"
-			% [MIN_CLEAR, CAPSULE_R, STAND_H, CROUCH_H, "; ".join(results)])
+		fail(ctx, g, null, "no passable bypass gap (need clear width >= %.2f m and a r %.2f capsule %.1f m standing or %.1f m crouched): %s"
+			% [need_gap, CAPSULE_R, STAND_H, CROUCH_H, "; ".join(results)])
 
 
 func _not_grid(ctx: LcContext, g: Node3D) -> Callable:
@@ -159,6 +229,7 @@ func _clear_width(ctx: LcContext, g: Node3D, xf: Transform3D, edge: float, side:
 			var r: Dictionary = ctx.ray(a, b, accept)
 			if not r.is_empty():
 				best = minf(best, a.distance_to(r["position"]))
+			best = minf(best, _other_beam_dist(g, a, b))
 	return best
 
 
@@ -198,7 +269,7 @@ func _crouch_under(ctx: LcContext, g: Node3D, xf: Transform3D, ext: Vector2, flo
 	if low == INF:
 		return {"ok": false, "text": "no horizontal beams found (BeamArea shapes)"}
 	var beam_h: float = g.global_position.y + low - floor_y
-	var need: float = CROUCH_H + CROUCH_LIFT
+	var need: float = crouch_face(ctx)
 	if beam_h < need - 0.001:
 		return {"ok": false, "text": "lowest beam %.2f m above the floor, a crouched player needs %.2f m" % [beam_h, need]}
 	var run: float = 0.0
@@ -216,4 +287,4 @@ func _crouch_under(ctx: LcContext, g: Node3D, xf: Transform3D, ext: Vector2, flo
 		x += CROUCH_STEP
 	var width: float = best + 2.0 * CAPSULE_R if any_free else 0.0
 	var text: String = "lowest beam %.2f m, crouched clear stretch %.2f m" % [beam_h, width]
-	return {"ok": width >= MIN_CLEAR - 0.005, "text": text}
+	return {"ok": width >= min_gap(ctx, g) - 0.005, "text": text}

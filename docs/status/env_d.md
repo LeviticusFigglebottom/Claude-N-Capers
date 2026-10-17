@@ -3,6 +3,40 @@
 Owner: ENV D. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-17 (OF-D1): Ostrander Federal cast + clips
+### Done
+- **VIP pair** (rare `vip_client`): `bank_vip_client` (camel overcoat, silk scarf, attaché) and `security_bodyguard`
+  (Halden close protection: charcoal suit, earpiece, Halden pin). Halden guards g-j added: ten faces, a-j.
+- **D-130 pools sized for an L heist**: tellers `npc_bank_teller` a-e, officers `bank_officer` a-d, customers
+  `bank_customer` a-j + `civilian_customer_a/b` (twelve faces). New materials: char_skirt_navy, char_knit_mustard,
+  char_coat_heather, char_coat_stone and char_canvas_tan. `p5_cast.json` v9 adds `tag_map.ostrander_federal` (the spawn
+  tag -> ids map for A), checked by test_p5_cast's `test_of_tag_map` and the OF pool rows (no twins, gender minima).
+- **Clips** for the gaps the OF audit found: `queue_idle` / `_b` / `_c` (variant group), `counter_customer` and
+  `check_desk_write` (`_anim_bank.py`, test_bank_clips). The skirt looks pass check_skirt_drape and check_seated_clip.
+- Review: `game/assets/characters/_review/of_d1_cast/`, `game/assets/characters/_review/of_d1_clips/`.
+- Manager name **Lionel Ashgrove** (`bank_manager`) confirmed and sent to B.
+### In progress
+- QC-67: teller_count / cower placements, once C's OF G1 is on trunk.
+### Blocked
+- —
+### Questions for lead
+- `docs/design/heists/ostrander_federal.md` roster: `guard_vip` is now `security_bodyguard` (it was `security_officer_b`),
+  `civ_vip` is `bank_vip_client`, and the guard pool is a-j. The manager tags are assumed to be
+  `civ_manager_mgr_floor|gallery|vault`. characters.md needs the new clips and looks.
+### Ready for integration
+- yes
+
+## 2026-10-17 (final, 11:07 UTC): D-135 closed: dress drape + seated re-check; QUEUE CLEAR (6316e628)
+- **Long-dress / skirt knee clipping** fixed for all 12 looks (9 dresses, 3 skirts). Method: STRIDE_DRAPE weighting
+  (each panel on its thigh, then the shin past the knee) plus knee slack 1.8 cm; the dress/skirt cloths are
+  double-sided. Checker `_tools/check_skirt_drape.gd` + test_skirt_drape. Legs through the skirt, worst frame:
+  56-145 before, ≤ 12 after (0 in cower/sit). Review `_review/d116_dress_drape/`.
+- **Seated re-check** on C's chair Seat (z −0.12, a13f5735): the backrest clip is gone (body on all 5 sampled NPCs,
+  outfit on 4; dock_worker's hi-vis vest grazes 2.4 cm, and DB workers don't use these chairs).
+- **Civilian panic** wired by A (61b70043); the GN coverage shows cower/b/c and flee/b/c in use, and panic_start plays.
+  `_tools/render_crowd_scatter.tscn`, `_review/d116_crowd_scatter/`.
+- Open: D1 parked for the PO GPU run. Nothing else carried.
+
 ## 2026-10-17 (end): QUEUE CLEAR for the Ostrander Federal start (PO directive 08:40)
 Done since the last entry (all on env/d-art, head at this commit):
 - **D-132 D1** (per-node material merge) is PARKED on origin/wip/d-d1-merge (2dbd1772; LEAD ruling, D-132 addendum 2).

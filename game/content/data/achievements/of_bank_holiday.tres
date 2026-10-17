@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="AchievementDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://content/defs/achievement_def.gd" id="1_ach"]
+
+[resource]
+script = ExtResource("1_ach")
+id = &"achievement.of_bank_holiday"
+name_key = &"achievement.of_bank_holiday.name"
+desc_key = &"achievement.of_bank_holiday.desc"
+condition = {"event": &"heist_completed", "heist": &"ostrander_federal", "max_time_s": 1200.0, "count": 1}
+unlock = &""
+order = 762
+category = &"ostrander_federal"
+rewards = Array[StringName]([&"mask_pattern.guilloche"])
+unlocks = Array[StringName]([])
+requires_facts = Array[StringName]([])

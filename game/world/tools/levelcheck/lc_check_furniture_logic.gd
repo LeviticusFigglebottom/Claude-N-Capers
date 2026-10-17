@@ -47,7 +47,7 @@ const FURNITURE_BY_KIND: Dictionary = {
 	&"camera_station": &"desk",
 	&"table": &"table", &"check_table": &"table", &"mirror_table": &"table", &"coffee_table": &"low_table",
 	&"counter_service": &"counter", &"counter_transaction": &"counter", &"counter_bar": &"counter",
-	&"kitchen_counter": &"counter",
+	&"kitchen_counter": &"counter", &"teller_worktop": &"counter",
 	&"sofa": &"wall_unit", &"credenza": &"wall_unit", &"bookshelf": &"wall_unit", &"lockers": &"wall_unit",
 	&"file_cabinet": &"wall_unit", &"wardrobe": &"wall_unit", &"fridge": &"wall_unit", &"key_cabinet": &"wall_unit",
 	&"monitor": &"monitor", &"tv": &"monitor",

@@ -28,6 +28,7 @@ import music_dockside_burn  # noqa: E402
 import music_gallery_night  # noqa: E402
 import music_glasshouse  # noqa: E402
 import music_night_deposit  # noqa: E402
+import music_ostrander_federal  # noqa: E402
 import music_shadow_ledger  # noqa: E402
 import registry  # noqa: E402
 from synth import loudness, wavio  # noqa: E402
@@ -38,7 +39,7 @@ SFX_DIR = Path("game/assets/audio/sfx")
 CUE_TRES = Path("game/world/audio/cues.tres")
 # every heist music track (D-117): one module per track, all on the music_engine.py parts
 TRACKS = {m.TRACK: m for m in (music_glasshouse, music_night_deposit, music_shadow_ledger, music_dockside_burn,
-                               music_gallery_night)}
+                               music_gallery_night, music_ostrander_federal)}
 
 
 def mus_dir(track: str) -> Path:

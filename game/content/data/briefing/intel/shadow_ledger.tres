@@ -9,11 +9,12 @@ map_path = "res://world/heists/shadow_ledger/shadow_ledger.tscn"
 variants_path = "res://world/heists/shadow_ledger/shadow_ledger_variants.tres"
 fixed = {
 &"alarm_button": 3,
-&"code_safe": 1,
 &"guard": 1,
 &"hack_terminal": 1,
 &"keycard_reader": 2,
-&"safe": 3
+&"keypad": 1,
+&"padlock": 1,
+&"safe": 2
 }
 groups = {
 &"camera": {
@@ -128,9 +129,6 @@ groups = {
 }
 time_locks_s = Array[float]([90.0])
 fixed_rooms = {
-&"code_safe": {
-&"K11": 1
-},
 &"hack_terminal": {
 &"K11": 1
 },
@@ -138,8 +136,10 @@ fixed_rooms = {
 &"K11": 1,
 &"M4": 1
 },
+&"keypad": {
+&"K11": 1
+},
 &"safe": {
-&"K11": 1,
 &"K17": 1,
 &"M4": 1
 },

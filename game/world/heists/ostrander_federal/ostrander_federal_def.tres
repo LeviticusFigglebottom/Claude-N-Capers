@@ -1,0 +1,80 @@
+[gd_resource type="Resource" script_class="HeistDef" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/heist_def.gd" id="1_of"]
+
+[resource]
+script = ExtResource("1_of")
+id = &"ostrander_federal"
+display_name = "Ostrander Federal"
+contact = &"contact.accountant"
+briefing = "heist.ostrander_federal.briefing"
+map_scene = "res://world/heists/ostrander_federal/ostrander_federal.tscn"
+base_payout = 80000
+stealth_bonus_mult = 1.25
+loot = Array[StringName]([&"loot.cash_bricks", &"loot.gold", &"loot.bearer_bonds", &"loot.server_drives", &"loot.small_valuables"])
+objectives = Array[StringName]([&"casing", &"keycard", &"code_hint", &"code_pc", &"server", &"vault_gate", &"lasers", &"time_lock", &"time_lock_wait", &"vault_loot", &"gold_cage", &"secure", &"deposit_boxes", &"bond_safe", &"president_safe", &"server_drives", &"drill_delivery", &"vault_drill", &"vault_breach", &"escape_wait", &"escape"])
+briefing_objectives = Array[StringName]([&"casing", &"keycard", &"ui.briefing.step.ostrander_federal.code", &"ui.briefing.step.ostrander_federal.vault", &"secure", &"escape"])
+briefing_loud_key = &"heist.ostrander_federal.briefing_loud"
+briefing_optional = Array[StringName]([&"gold_cage", &"deposit_boxes", &"bond_safe", &"president_safe", &"server_drives"])
+preplanning = {
+"assets": {
+&"asset.alternate_entry": {
+"point_categories": [&"spawn"],
+"point_ids": [&"pp_spawn_lane", &"pp_spawn_tannery"]
+},
+&"asset.ammo_bag_drop": {
+"point_ids": [&"pp_drop_lane", &"pp_drop_lockers", &"pp_drop_terrace"]
+},
+&"asset.body_bag_case_drop": {
+"point_ids": [&"pp_drop_lane", &"pp_drop_restroom", &"pp_drop_lockers"]
+},
+&"asset.doctor_bag_drop": {
+"point_ids": [&"pp_drop_lane", &"pp_drop_lockers", &"pp_drop_terrace"]
+},
+&"asset.escape_position": {
+"force_variants": {},
+"point_categories": [&"escape"]
+},
+&"asset.extra_cable_ties": {},
+&"asset.fire_escape_ladder": {
+"force_variants": {},
+"point_ids": [&"pp_fire_escape"]
+},
+&"asset.inside_keycard": {
+"cost": 2500,
+"favors": 2,
+"force_variants": {},
+"point_ids": [&"pp_vault_ops"]
+},
+&"asset.intel_cameras": {
+"reveals": [&"camera"]
+},
+&"asset.intel_code_pc": {
+"reveals": [&"code_pc"]
+},
+&"asset.intel_guard_posts": {
+"reveals": [&"guard_post", &"guard_extra"]
+},
+&"asset.intel_keycards": {
+"reveals": [&"keycard"]
+},
+&"asset.manager_schedule": {
+"reveals": [&"manager_route", &"keycard"]
+},
+&"asset.propped_door": {
+"exclusive_group": &"side_door",
+"force_variants": {},
+"max_count": 1,
+"point_ids": [&"pp_fire_exit", &"pp_dock_door"]
+},
+&"asset.spare_body_bags": {},
+&"asset.thermal_drill_drop": {
+"force_variants": {},
+"point_ids": [&"pp_drill_terrace", &"pp_drill_dock"]
+}
+},
+"disable": [],
+"favors": 8
+}
+escape_options = Array[StringName]([&"van", &"heli"])
+music_track = &"ostrander_federal"
