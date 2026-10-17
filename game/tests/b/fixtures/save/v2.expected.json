@@ -1,5 +1,5 @@
 {
-	"version": 8,
+	"version": 9,
 	"profile_name": "Ghost",
 	"cash": 1500,
 	"stash": 64000,
@@ -32,6 +32,7 @@
 	"music_choice": "",
 	"career": {"totals": {}, "heists": {}, "difficulties": {}, "bags": {}, "weapons": {}},
 	"weapon_finishes": {},
+	"freshness": {"recent": [], "runs": 0, "last_run": {}, "completed": []},
 	"stats": {"heists_completed": 3},
 	"settings": {}
 }

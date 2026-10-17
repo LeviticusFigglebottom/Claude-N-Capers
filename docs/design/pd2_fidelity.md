@@ -181,7 +181,7 @@ Thunder, Afterhours) keep placeholder $75–160k contracts and need the same cut
 
 | # | (a) PD2 | (b) Ours | (c) | P |
 |---|---|---|---|---|
-| S11.1 | **Stealth bonus**: an XP bonus applied to the *next* heist (0–25%). | Stealth bonus of 5–25%, scaled by heist size; stored in the profile and applied to the next payday. | B | P4 |
+| S11.1 | **Stealth bonus**: an XP bonus applied to the *next* heist (0–25%). | Stealth bonus of 5–25%, scaled by heist size; stored in the profile and applied to the next payday. Values (LEAD 2026-10-17, B): S 1.10 (GH), M 1.15 (ND, GN, SL), L 1.25 (OF), loud-only 1.0; PayoutCalculator banks `HeistDef.stealth_bonus_mult` when > 1.0, else the tweak. | B | P4 |
 | S11.2 | **Seamless transition**: when the alarm sounds the heist becomes loud with no load and no reset. Everything persists. | `HeistPhase.STEALTH → LOUD` is a state change only. Bodies, bags, doors and devices persist. Guards switch to combat AI. Civilians panic. The director starts **CONTROL** (first responders) → first assault. Music crossfades. **Tested in P1 gate.** | A | P1 |
 | S11.3 | Stealth-only heists: an alarm = fail (or a scripted "loud failure"). Loud-only heists start loud. | `HeistDef.mode`. On STEALTH_ONLY, alarm → `heist_ended(failed)` after a 5 s Mercer abort line. | A | P2 |
 

@@ -33,12 +33,25 @@ static func entries() -> Array[Dictionary]:
 		var def: HeistDef = HeistRegistry.get_def(id)
 		if def != null:
 			defs[id] = def
-	return entries_from(defs, has_map)
+	return entries_from(defs, is_ready)
 
 
 ## True when the heist's map scene exists (HeistRegistry.map_scene_path).
 static func has_map(heist_id: StringName) -> bool:
 	return ResourceLoader.exists(HeistRegistry.map_scene_path(heist_id))
+
+
+## The menus' readiness gate: the map exists and so does every heist_list.tres "requires" path (OF-B1: Ostrander
+## Federal waits on its mission script, OF-A6, on top of C's G1 def + map). `exists` = Callable(String) -> bool
+## (default ResourceLoader.exists; tests pass a fake).
+static func is_ready(heist_id: StringName, exists: Callable = Callable()) -> bool:
+	var check: Callable = exists if exists.is_valid() else func(p: String) -> bool: return ResourceLoader.exists(p)
+	if not bool(check.call(HeistRegistry.map_scene_path(heist_id))):
+		return false
+	for p: String in heist_list().requires_for(heist_id):
+		if not bool(check.call(p)):
+			return false
+	return true
 
 
 ## Pure builder behind entries(): `defs` is { heist id: HeistDef } (the registry's view); `map_exists`
@@ -64,7 +77,7 @@ static func entries_from(defs: Dictionary, map_exists: Callable = Callable()) ->
 	return out
 
 
-## Ids of every heist the menus offer (registry def + map); direct launch validates against it.
+## Ids of every heist the menus offer (registry def + is_ready); direct launch validates against it.
 static func ids() -> Array[StringName]:
 	var out: Array[StringName] = []
 	for e: Dictionary in entries():

@@ -1,4 +1,4 @@
-# Ostrander Federal VO draft (OF-B1, ENV B). NOT loaded by StringTable: D-117 §6 (every written line is said or
+# Ostrander Federal VO draft (OF-B1, ENV B), CSV rows in a .txt so Godot does not import it as a translation. NOT loaded by StringTable: D-117 §6 (every written line is said or
 # deleted) and test_vo_coverage forbid voice strings without a VoiceLineTable line that something says. When OF-A6 (the
 # mission script) lands, B moves each line the mission says into strings.csv + content/data/voice/lines.tres (mission
 # lines: event mission; radio lines: event radio.objective_done / _new / loot_secured with heist + objective; briefing

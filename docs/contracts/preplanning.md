@@ -1,4 +1,4 @@
-# Contract: pre-planning and assets (v1.0, D-038)
+# Contract: pre-planning and assets (v1.2, D-038)
 
 PD2 rows: C3 (assets, favors, plans, votes), C1/C2 (board and briefing hand-off).
 
@@ -64,3 +64,7 @@ PreplanResult through ENV B's resolver (`PreplanPlan.resolve_ids(heist_id, ids)`
   → `loot.thermite`). Tool loot (`LootDef.is_tool`) never counts toward [secure].
 * Point ids are per map and may repeat across heists; point `label` strings are heist-qualified,
   `ui.preplan.point.<heist>.<point_id>` (existing unqualified labels may stay).
+
+## v1.2 (OF-A3)
+`PreplanAssets.reveals()` can grow during the run: `reveal_group(group)` (server service `reveals`, replicated). Readers
+(HUD, blueprint) must re-read on change. Nothing on screen consumes runtime reveals yet (B, when needed).

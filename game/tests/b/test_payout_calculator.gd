@@ -98,7 +98,8 @@ func test_golden_brutal_pro_stealth() -> void:
 	assert_eq(_xp(out, PayoutCalculator.XP_ADDITIVE), 9900)
 	assert_eq(_xp(out, PayoutCalculator.XP_STEALTH), 0)
 	assert_eq(out["xp_total"], 42900)
-	assert_near(float(out["stealth_bonus_banked"]), 1.2, 0.0001, "banked for the next payday")
+	assert_near(float(out["stealth_bonus_banked"]), HeistRegistry.get_def(&"glasshouse").stealth_bonus_mult, 0.0001,
+			"banked for the next payday (S11.1: the heist's own size value)")
 	assert_false(out["stealth_bonus_consumed"])
 
 
@@ -112,7 +113,7 @@ func test_golden_brutal_pro_stealth_with_bank() -> void:
 	assert_eq(_xp(out, PayoutCalculator.XP_STEALTH), 8580)
 	assert_eq(out["xp_total"], 51480)
 	assert_true(out["stealth_bonus_consumed"])
-	assert_near(float(out["stealth_bonus_banked"]), 1.2)
+	assert_near(float(out["stealth_bonus_banked"]), PayoutCalculator.stealth_bonus_for(&"glasshouse", _tweak()))
 
 
 func test_loud_success_consumes_bank_and_banks_nothing() -> void:
@@ -227,7 +228,7 @@ func test_xp_lines_follow_c6_order() -> void:
 	assert_eq(keys, PayoutCalculator.XP_ORDER)
 	assert_eq(keys, [&"ui.results.xp.base", &"ui.results.xp.pro", &"ui.results.xp.difficulty",
 		&"ui.results.xp.custody", &"ui.results.xp.additive", &"ui.results.xp.notoriety",
-		&"ui.results.xp.stealth"] as Array[StringName])
+		&"ui.results.xp.stealth", &"ui.results.xp.freshness"] as Array[StringName])  # D-139: freshness last
 	var sum: int = 0
 	for l: Dictionary in out["xp_lines"] as Array:
 		sum += int(l["amount"])
@@ -251,3 +252,20 @@ func test_xp_mult_joins_additive_line() -> void:
 			roundi(float(before_additive) * (float(add_plain) / float(before_additive) + 0.45)),
 			"Low Profile +45% XP is additive with the crew-alive bonus (PD2)")
 	assert_eq(int(boosted["total"]), int(plain["total"]), "cash unaffected")
+
+
+## S11.1: the banked stealth bonus scales by heist size via HeistDef.stealth_bonus_mult; the tweak covers a heist
+## without a def (or a def left at 1.0, e.g. a loud-only heist).
+func test_stealth_bonus_by_heist() -> void:
+	var tw: PayoutTweak = _tweak()
+	assert_near(PayoutCalculator.stealth_bonus_for(&"no_such_heist", tw), tw.stealth_xp_bonus_mult, 0.0001)
+	assert_near(PayoutCalculator.stealth_bonus_for(&"", tw), tw.stealth_xp_bonus_mult, 0.0001)
+	for id: StringName in HeistRegistry.ids():
+		var def: HeistDef = HeistRegistry.get_def(id)
+		var want: float = def.stealth_bonus_mult if def.stealth_bonus_mult > 1.0 else tw.stealth_xp_bonus_mult
+		assert_near(PayoutCalculator.stealth_bonus_for(id, tw), want, 0.0001, String(id))
+		assert_true(want >= 1.05 and want <= 1.25, "%s: S11.1 range 5-25 %% (%.2f)" % [id, want])
+	var r: Dictionary = _result(true, true)
+	r["heist_id"] = &"no_such_heist"
+	var out: Dictionary = PayoutCalculator.compute(r, _diff(1.0, 1.0, 0), tw)
+	assert_near(float(out["stealth_bonus_banked"]), tw.stealth_xp_bonus_mult, 0.0001, "no def: the tweak")

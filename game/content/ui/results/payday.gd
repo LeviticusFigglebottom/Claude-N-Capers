@@ -61,8 +61,10 @@ const COUNT_TICK_MS: int = 80
 var profile: PlayerProfile
 ## PayoutCalculator.compute output for the shown result.
 var payout: Dictionary = {}
+## D-139: HeistFreshness.evaluate for the shown result, taken before _apply records the run.
+var freshness_eval: Dictionary = {}
 var result: Dictionary = {}
-## Line id -> value Label (ids: contract, loot, small_loot, crew_alive, civilian_penalty, total,
+## Line id -> value Label (ids: contract, loot, small_loot, crew_alive, freshness, civilian_penalty, total,
 ## stash, spending, xp.<key>, xp_total, level).
 var value_labels: Dictionary = {}
 var level_bar: ProgressBar
@@ -192,7 +194,8 @@ func show_result(heist_result: Dictionary) -> void:
 	result = heist_result
 	if profile == null:
 		profile = SaveService.load_profile(profile_slot)
-	payout = compute_payout(result, profile, Net.local_slot(), is_pro)
+	freshness_eval = HeistFreshness.evaluate(profile, StringName(result.get("heist_id", &"")))
+	payout = compute_payout(result, profile, Net.local_slot(), is_pro, freshness_eval)
 	xp_before = profile.xp
 	xp_after = xp_before + int(payout.get("xp_total", 0))
 	_applied = false
@@ -446,7 +449,13 @@ func _update_timer_label() -> void:
 
 ## PayoutCalculator.compute for `crew_slot` with the profile's banked stealth multiplier (D-022);
 ## `pro` = a pro job contract. The profile's Notoriety rank adds its XP bonus line (Notoriety.xp_bonus).
-static func compute_payout(heist_result: Dictionary, p: PlayerProfile, crew_slot: int, pro: bool = false) -> Dictionary:
+## D-139: the profile's own heist freshness (HeistFreshness.evaluate, before this run is recorded) scales money and
+## XP; `fresh` = an evaluation to use instead (show_result's freshness_eval, also for the loss panel built after _apply
+## recorded the run).
+static func compute_payout(heist_result: Dictionary, p: PlayerProfile, crew_slot: int, pro: bool = false,
+		fresh: Dictionary = {}) -> Dictionary:
+	var ev: Dictionary = fresh if not fresh.is_empty() \
+			else HeistFreshness.evaluate(p, StringName(heist_result.get("heist_id", &"")))
 	var banked: float = p.banked_stealth_mult if p != null else 1.0
 	var xp_mult: float = 1.0
 	var notoriety: float = 0.0
@@ -454,7 +463,8 @@ static func compute_payout(heist_result: Dictionary, p: PlayerProfile, crew_slot
 		var mods: Dictionary = LoadoutResolver.resolve(p.loadout).modifiers
 		xp_mult = float(mods.get(&"progression.xp_mult", 1.0))
 		notoriety = Notoriety.xp_bonus(p.notoriety)
-	return PayoutCalculator.compute(heist_result, null, null, pro, crew_slot, banked, xp_mult, notoriety)
+	return PayoutCalculator.compute(heist_result, null, null, pro, crew_slot, banked, xp_mult, notoriety,
+			float(ev.get("mult", 1.0)))
 
 
 func _apply() -> void:
@@ -464,6 +474,7 @@ func _apply() -> void:
 	SaveService.apply_heist_payout(profile, payout, XpCurve.level_for_xp)
 	profile.add_stat("heists_completed" if bool(payout.get("success", false)) else "heists_failed")
 	Career.record(profile, result, payout, Net.local_slot())
+	HeistFreshness.record(profile, StringName(result.get("heist_id", &"")), bool(payout.get("success", false)))
 	var snap: Dictionary = facts.snapshot() if facts.started else {}
 	achievements_unlocked = Achievements.on_payday(profile, result, payout, is_pro, snap)
 	_ensure_toast().push(achievements_unlocked)
@@ -661,7 +672,8 @@ func _build_loss() -> VBoxContainer:
 	v.add_child(UiBuild.label(&"ui.results.loss_header", UiBuild.SUBHEADER))
 	var as_won: Dictionary = result.duplicate(true)
 	as_won["success"] = true
-	var would: Dictionary = compute_payout(as_won, profile, Net.local_slot(), is_pro)
+	var would: Dictionary = compute_payout(as_won, profile, Net.local_slot(), is_pro,
+			freshness_eval)
 	var grid: GridContainer = _grid(v)
 	_line(grid, &"lost_total", UiText.t(&"ui.results.lost_total"), UiText.money(int(would.get("total", 0))))
 	var bags: int = (result.get("loot", []) as Array).size()
@@ -771,12 +783,25 @@ func _build_cash() -> VBoxContainer:
 				UiText.t(&"ui.results.loot_line", {"loot": loot_name, "count": line["count"]}), UiText.money(int(line["value"])))
 	_line(grid, &"small_loot", UiText.t(&"ui.results.small_loot"), UiText.money(int(payout.get("small_loot", 0))))
 	var mult: float = float(payout.get("crew_alive_mult", 1.0))
-	var bonus: int = int(payout.get("gross", 0)) - int(payout.get("subtotal", 0))
+	var fresh_money: int = int(payout.get("freshness_money", 0))
+	var bonus: int = int(payout.get("gross", 0)) - int(payout.get("subtotal", 0)) - fresh_money
 	_line(grid, &"crew_alive", UiText.t(&"ui.results.crew_alive", {"mult": "%.2f" % mult}), UiText.money(bonus))
+	_line(grid, &"freshness", freshness_caption(float(payout.get("freshness", 1.0))), UiText.money(fresh_money))
 	_line(grid, &"civilian_penalty", UiText.t(&"ui.results.civilian_penalty"),
 			UiText.money(-int(payout.get("civilian_penalty", 0))))
 	_line(grid, &"total", UiText.t(&"ui.results.total"), UiText.money(int(payout.get("total", 0))))
+	var why: String = HeistFreshness.reason_text(freshness_eval)
+	if why != "":
+		var reason: Label = UiBuild.label(&"", UiBuild.DIM)
+		reason.name = "FreshnessReason"
+		reason.text = why
+		v.add_child(reason)
 	return v
+
+
+## D-139: "Heist freshness +5 %" / "Heist freshness -20 %" for the payday money line.
+static func freshness_caption(mult: float) -> String:
+	return UiText.t(&"ui.results.freshness", {"pct": HeistFreshness.badge_text(mult)})
 
 
 func _build_xp() -> VBoxContainer:
@@ -785,7 +810,9 @@ func _build_xp() -> VBoxContainer:
 	var grid: GridContainer = _grid(v)
 	for line: Dictionary in payout.get("xp_lines", []) as Array:
 		var key: StringName = StringName(line["key"])
-		_line(grid, StringName("xp." + String(key)), UiText.t(key), UiText.group_digits(int(line["amount"])))
+		var caption: String = freshness_caption(float(payout.get("freshness", 1.0))) \
+				if key == PayoutCalculator.XP_FRESHNESS else UiText.t(key)
+		_line(grid, StringName("xp." + String(key)), caption, UiText.group_digits(int(line["amount"])))
 	_line(grid, &"xp_total", UiText.t(&"ui.results.xp_total"), UiText.group_digits(int(payout.get("xp_total", 0))))
 	var banked: float = float(payout.get("stealth_bonus_banked", 0.0))
 	if banked > 1.0:

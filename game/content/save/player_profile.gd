@@ -54,7 +54,7 @@ const LOADOUT_ID_FIELDS: Array[String] = [
 ]
 const LOADOUT_LIST_FIELDS: Array[String] = ["primary_mods", "secondary_mods"]
 
-var version: int = 8
+var version: int = 9
 var profile_name: String = ""
 var cash: int = 0
 var stash: int = 0
@@ -88,6 +88,8 @@ var held_skill_sets: Array[Dictionary] = []
 var music_choice: StringName = &""
 ## Lifetime career stats (v7, Career); JSON-shaped: String keys, int values.
 var career: Dictionary = Career.empty()
+## D-139 heist freshness memory (save v9; shape and rules in HeistFreshness).
+var freshness: Dictionary = HeistFreshness.empty()
 ## Weapon id (StringName) -> finish id (StringName) (v7, B7-04); &"" = default finish.
 var weapon_finishes: Dictionary = {}
 var stats: Dictionary = {}
@@ -161,6 +163,7 @@ static func from_dict(d: Dictionary) -> PlayerProfile:
 			p.held_skill_sets.append(_skills_from(e))
 	p.music_choice = StringName(String(d.get("music_choice", "")))
 	p.career = _career_from(d.get("career", {}))
+	p.freshness = _freshness_from(d.get("freshness", {}))
 	p.weapon_finishes = {}
 	var wf: Variant = d.get("weapon_finishes", {})
 	if wf is Dictionary:
@@ -174,6 +177,23 @@ static func from_dict(d: Dictionary) -> PlayerProfile:
 	var se: Variant = d.get("settings", {})
 	p.settings = (se as Dictionary).duplicate(true) if se is Dictionary else {}
 	return p
+
+
+## D-139: the saved freshness dict with ids as Strings and counters as ints (JSON floats come back as float).
+static func _freshness_from(v: Variant) -> Dictionary:
+	var out: Dictionary = HeistFreshness.empty()
+	if not v is Dictionary:
+		return out
+	var d: Dictionary = v as Dictionary
+	for id: Variant in d.get("recent", []) as Array if d.get("recent") is Array else []:
+		(out["recent"] as Array).append(String(id))
+	out["runs"] = int(d.get("runs", 0)) if (d.get("runs") is int or d.get("runs") is float) else 0
+	if d.get("last_run") is Dictionary:
+		for k: Variant in d["last_run"] as Dictionary:
+			(out["last_run"] as Dictionary)[String(k)] = int((d["last_run"] as Dictionary)[k])
+	for id2: Variant in d.get("completed", []) as Array if d.get("completed") is Array else []:
+		(out["completed"] as Array).append(String(id2))
+	return out
 
 
 func to_dict() -> Dictionary:
@@ -209,6 +229,7 @@ func to_dict() -> Dictionary:
 		"held_skill_sets": _held_to_list(),
 		"music_choice": String(music_choice),
 		"career": career.duplicate(true),
+		"freshness": freshness.duplicate(true),
 		"weapon_finishes": _finishes_to(weapon_finishes),
 		"stats": st,
 		"settings": settings.duplicate(true),

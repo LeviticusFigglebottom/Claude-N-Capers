@@ -78,7 +78,8 @@ func owner_net_id() -> int:
 
 ## Reason key why `crew` cannot use this now (&"" = available).
 func availability(crew: Node) -> StringName:
-	var reason: StringName = BLOCK_DISABLED if not enabled or not is_inside_tree() else _phase_block()
+	var reason: StringName = BLOCK_DISABLED if not enabled or not is_inside_tree() or _owner_disabled() \
+		else _phase_block()
 	if reason == BLOCK_NONE and crew != null:
 		reason = _crew_block(crew)
 	if reason == BLOCK_NONE and extra_check.is_valid():
@@ -86,6 +87,12 @@ func availability(crew: Node) -> StringName:
 		if r is StringName:
 			reason = r
 	return reason
+
+
+## OF-A2 (QC-61): the owning GameplayPrefab is switched off (GameplayPrefab.set_enabled(false)).
+func _owner_disabled() -> bool:
+	var o: GameplayPrefab = owner_node() as GameplayPrefab
+	return o != null and not o.prefab_enabled
 
 
 func _phase_block() -> StringName:
