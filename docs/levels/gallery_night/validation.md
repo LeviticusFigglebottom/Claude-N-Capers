@@ -392,7 +392,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `rc_founders` | 1065 | 243400 | 3 |
 | `rc_drawings` | 1201 | 309230 | 3 |
 | `rc_harbour` | 1892 | 477866 | 6 |
-| `rc_benefactors` | 2049 | 522208 | 6 |
+| `rc_benefactors` | 2048 | 522196 | 6 |
 | `rc_cloakroom` | 1364 | 325888 | 3 |
 | `rc_back_corridor` | 2377 | 581168 | 6 |
 | `rc_security` | 1023 | 246306 | 2 |
@@ -401,7 +401,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `rc_calloway` | 908 | 208704 | 3 |
 | `rc_sallow` | 1001 | 252198 | 3 |
 | `rc_maritime` | 984 | 217296 | 2 |
-| `rc_treasury` | 259 | 64838 | 0 |
+| `rc_treasury` | 260 | 64850 | 0 |
 | `rc_upper_corridor` | 1999 | 505278 | 4 |
 | `rc_curator` | 299 | 74294 | 1 |
 | `rc_conservation` | 1593 | 423982 | 6 |

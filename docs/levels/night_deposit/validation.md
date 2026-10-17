@@ -24,7 +24,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | camera_spine | skipped | 0 | 0 |
 | camera_screen | skipped | 0 | 0 |
 | bag_line | skipped | 0 | 0 |
-| hide_los | skipped | 0 | 0 |
+| hide_los | PASS | 0 | 0 |
 | teller_worktop | skipped | 0 | 0 |
 | materials | PASS | 0 | 0 |
 | zfight | PASS | 0 | 0 |
@@ -200,6 +200,11 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 - `Variants/Group_laser_pattern/Slot_laser_sweep/AntechamberLasers`: pattern `sweeping`, bypass gap not required
 - `Variants/Group_laser_pattern/Slot_laser_timed/AntechamberLasers`: pattern `timed_off`, bypass gap not required
 - 3 laser grid(s), 1 with an asserted bypass gap
+
+
+## hide_los: Hidden spots are hidden by LOS sample (D-128)
+
+- `Gameplay/Lines/HideCounter`: crouched, 33 sample(s), 197 observer point(s) in G9, points 1.00, 1.05 m: hidden
 
 
 ## materials: Materials and texel density

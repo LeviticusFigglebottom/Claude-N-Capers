@@ -11,7 +11,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | cameras | PASS | 0 | 0 |
 | secure_zones | PASS | 0 | 0 |
 | floating | PASS | 0 | 2 |
-| clipping | PASS | 0 | 0 |
+| clipping | PASS | 0 | 1 |
 | orientation | skipped | 0 | 0 |
 | scale | PASS | 0 | 0 |
 | slopes | PASS | 0 | 0 |
@@ -37,7 +37,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | door_frame_gap | PASS | 0 | 0 |
 | frame_proud | PASS | 0 | 0 |
 | seam_gaps | PASS | 0 | 0 |
-| furniture_logic | PASS | 0 | 2 |
+| furniture_logic | PASS | 0 | 3 |
 
 ## contract_nodes: Contract nodes
 
@@ -61,8 +61,9 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## clipping: Nothing clips
 
-- 1790 props, 93 doors checked
+- 1791 props, 94 doors checked
 
+- WARN `Gameplay/Devices/Lid` @ (24.00, 0.00, 14.60): door has no Leaf node; swing arc not checked
 
 ## scale: Human scale
 
@@ -201,13 +202,13 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## slopes: No walkable slope < 50° outside the play mesh
 
-- 561 x 569 columns (0.25 m), 306986 surface samples, 0 collider(s) with reachable walkable surfaces outside play
+- 561 x 569 columns (0.25 m), 306982 surface samples, 0 collider(s) with reachable walkable surfaces outside play
 
 
 ## navmesh: Navmesh
 
-- navmesh: 3647 polygons, cell 0.10/0.10 m
-- 402 markers checked
+- navmesh: 3653 polygons, cell 0.10/0.10 m
+- 432 markers checked
 | room | walkable samples | covered | coverage |
 |---|---|---|---|
 | `Rooms/RoomLK` | 174 | 174 | 100% |
@@ -234,14 +235,14 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `Rooms/RoomMO` | 114 | 114 | 100% |
 | `Rooms/RoomBC` | 225 | 225 | 100% |
 | `Rooms/RoomLO` | 214 | 214 | 100% |
-| `Rooms/RoomTW` | 720 | 720 | 100% |
+| `Rooms/RoomTW` | 720 | 708 | 98% |
 | `Rooms/RoomPC` | 255 | 255 | 100% |
 | `Rooms/RoomCN1` | 102 | 102 | 100% |
 | `Rooms/RoomCN2` | 93 | 93 | 100% |
 | `Rooms/RoomAV` | 173 | 173 | 100% |
 | `Rooms/RoomBH` | 412 | 412 | 100% |
 | `Rooms/RoomVE` | 105 | 105 | 100% |
-| `Rooms/RoomBM` | 145 | 145 | 100% |
+| `Rooms/RoomBM` | 148 | 148 | 100% |
 | `Rooms/RoomPW` | 86 | 86 | 100% |
 | `Rooms/RoomNA` | 98 | 98 | 100% |
 | `Rooms/RoomBR` | 152 | 152 | 100% |
@@ -292,12 +293,12 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## reachability: Reachability (per variant)
 
-- 56 variant configuration(s), 287616 spawn->target path queries
+- 56 variant configuration(s), 305064 spawn->target path queries
 
 
 ## walkthrough: Walkthrough bot
 
-- 3204 / 3204 spawn->target walks ok
+- 3252 / 3252 spawn->target walks ok
 
 
 ## patrols: Patrol graphs
@@ -361,7 +362,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## viewmodel_lit: Interior key lights light the viewmodel (D-095)
 
-- 608 interior key light(s) in 62 room(s); 0 lack `viewmodel_lit`
+- 609 interior key light(s) in 62 room(s); 0 lack `viewmodel_lit`
 
 
 ## door_frame_gap: Doors and windows fill their wall openings (no gaps, no clipping)
@@ -383,7 +384,8 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 ## furniture_logic: Furniture arranged plausibly
 
 - classified: counter 23, chair 11, desk 29, table 10, low_table 1, wall_unit 93, visitor_chair 7, desk_chair 46, stool 1, monitor 13
-- 65 seats, 63 tables/desks/counters, 93 doors checked
+- 65 seats, 63 tables/desks/counters, 94 doors checked
 
+- WARN `Gameplay/Devices/LidDrill` @ (24.00, 1.00, 14.60): door_clear: in the clear zone of door `Gameplay/Devices/Lid` (1.0 / 1.0 m each side, leaf width 2.40 m) by 1.01 m (gameplay prefab / variant content: review)
 - WARN `Gameplay/Lifts/CashLift` @ (11.50, -3.95, 1.55): door_clear: in the clear zone of door `Gameplay/Doors/CashLiftDoorB` (1.0 / 1.0 m each side, leaf width 1.82 m) by 0.21 m (gameplay prefab / variant content: review)
 - WARN `Gameplay/Lifts/CashLift` @ (11.50, -3.95, 1.55): use_point: stands in the user's spot of `Gameplay/Doors/CashLiftDoorB` (UsePoint @ (11.50, -4.00, 2.30)) by 0.11 m (gameplay prefab / variant content: review)
