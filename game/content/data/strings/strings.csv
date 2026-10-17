@@ -40,6 +40,7 @@ ui.heist_select.payout,Contract pay: {amount}
 ui.heist_select.modes_stealth_loud,Stealth or loud
 ui.heist_select.modes_stealth_only,Stealth only
 ui.heist_select.modes_loud_only,Loud only
+ui.heist_select.modes_loud_ambush,Loud (ambush start)
 ui.heist_select.start,Start Heist
 ui.heist_select.next,Briefing
 ui.heist_select.crew_ai,Fill empty slots with crew AI
@@ -115,6 +116,7 @@ ui.tip.casing.mask,Hold to mask up. It stays on.
 ui.tip.stealth.title,Stay quiet
 ui.tip.stealth.1,"Guards and cameras spot you over time. A ring over them fills, and ""!"" means you are seen."
 ui.tip.stealth.2,"Answer a downed guard's pager fast, or the alarm goes off."
+ui.tip.stealth.glass,Guards and cameras can see you through clear glass.
 ui.tip.stealth.interact,"Interact: doors, loot, pagers, cable ties."
 ui.tip.stealth.throw,Throw a carried bag. Heavy ones slow you down.
 ui.tip.loud.title,The alarm is up
@@ -659,6 +661,21 @@ ui.key.mouse_right,RMB
 ui.key.mouse_middle,MMB
 ui.key.tab,Tab
 ui.key.start,Start
+ui.key.pad.a,A
+ui.key.pad.b,B
+ui.key.pad.x,X
+ui.key.pad.y,Y
+ui.key.pad.lb,LB
+ui.key.pad.rb,RB
+ui.key.pad.ls,LS
+ui.key.pad.rs,RS
+ui.key.pad.lt,LT
+ui.key.pad.rt,RT
+ui.key.pad.back,Back
+ui.key.pad.dpad_up,D-pad Up
+ui.key.pad.dpad_down,D-pad Down
+ui.key.pad.dpad_left,D-pad Left
+ui.key.pad.dpad_right,D-pad Right
 ui.range.dummy.light,Light Tactical Dummy
 ui.range.zone.body,Body
 ui.range.zone.head,Head
@@ -1695,6 +1712,7 @@ ui.briefing.sec.hack_terminals,Hack terminals: {range}
 ui.briefing.sec.sensors,Frame sensors: {range}
 ui.briefing.sec.located,{line} ({rooms})
 ui.briefing.sec.rooms_more,{rooms} +{n} more
+ui.briefing.sec.glass,Clear glass: guards and cameras see straight through it
 ui.briefing.sec.surprises,Possible surprises: {events}
 ui.briefing.sec.event.night_deposit.armored_car_early,armoured car arrives early (2 guards)
 ui.briefing.sec.event.shadow_ledger.timelock_extended,longer study-safe time lock
@@ -1916,7 +1934,7 @@ voice.vo.accountant.shadow_ledger_contact_intro,"I want the whole ledger, every 
 voice.vo.mercer.shadow_ledger_laptop_found,"That's the partners' laptop. It holds the key, so treat it like it's made of glass."
 voice.vo.mercer.shadow_ledger_keycard_found,"Keycard. The server room door and the study safe each eat one, so spend it on the job first."
 voice.vo.mercer.shadow_ledger_code_found,Cage code's yours. No need to make noise in the server room.
-voice.vo.mercer.glasshouse_code_found,That's the safe code. Quiet way in, no drill needed.
+voice.vo.mercer.glasshouse_code_found,"That's the safe code. Quiet way in, no drill needed."
 voice.vo.mercer.shadow_ledger_camera_warning,"Camera's getting curious. Get out of its eye line, now."
 voice.vo.mercer.shadow_ledger_cage_open,Cage is open. The terminal at the back releases the drive bays.
 voice.vo.mercer.shadow_ledger_hack_started,Release is running: {seconds} seconds. Keep the floor quiet while it works.
@@ -2738,10 +2756,50 @@ ui.preplan.point.ostrander_federal.pp_fire_escape,Insider: Corvino fire-escape l
 music.ostrander_federal.name,Clearing House
 heist.rolling_thunder.name,Rolling Thunder
 heist.rolling_thunder.subtitle,Armored Convoy
-heist.rolling_thunder.brief,"Three armored trucks on the Southfield bypass, one bad turn from a standstill. Hollis brings the roadblock; you bring the saws."
+heist.rolling_thunder.brief,"A Vaultline convoy through the Southfield junction, two or three armored trucks deep. Hollis brings the roadblock; you bring the saws."
+heist.rolling_thunder.briefing,"Vaultline moves the Southfield branches' takings by road: an escort car, two or three armored trucks, another escort behind. Their route crosses the Orchard and Tannery junction in a few minutes. Rig the signals and the convoy stops clean on the red; leave them and Hollis rams the lead car in the middle of the junction. Either way it ends loud. Open the trucks, bag the cash and the gold, and hold for the ride."
+objective.rolling_thunder.casing,Case the junction
+objective.rolling_thunder.signals,Rig the junction signals before the convoy arrives
+objective.rolling_thunder.charges,Take the breaking charges from the site magazine
+objective.rolling_thunder.thermite,Take the thermite from the site tool store
+objective.rolling_thunder.marshal,Deal with the Vaultline route marshal
+objective.rolling_thunder.convoy,Take your positions: the convoy is coming
+objective.rolling_thunder.ambush,Spring the ambush
+objective.rolling_thunder.escort,Take down the escort and the Vaultline crews
+objective.rolling_thunder.trucks,Open the trucks ({opened}/{total})
+objective.rolling_thunder.cargo,Bag the cargo
+objective.rolling_thunder.secure,Secure four bags of cash or gold ({count}/{total})
+objective.rolling_thunder.escape_wait,Hold until the escape arrives
+objective.rolling_thunder.escape,Get to the escape
+item.asset.signal_insider.name,Insider: signal cabinet
+item.asset.signal_insider.desc,A council contact leaves the junction controller cabinet unlocked.
+item.asset.intel_route.name,Insider: convoy route
+item.asset.intel_route.desc,"You know which way the convoy comes in, and where the route marshal walks."
 heist.afterhours.name,Afterhours
 heist.afterhours.subtitle,The Velvet
 heist.afterhours.brief,"The Velvet launders the Co-op's week behind a velvet rope. The Accountant wants its books and its count room emptied before the doors close."
+heist.afterhours.briefing,"The Velvet on Keston Row washes the Co-op's week through a velvet rope and a cash bar. Crale counts it upstairs and locks it in his office safe until the pickup. You walk in as guests: an insider leaves your gear front of house, and nothing you do out there can get you seen. Once the gear is on, it is the usual rules: find the office keycard, the safe combination or a drill, and get three bags of the Co-op's cash to the van. The product and the count room are a bonus. Never mask up in front of the crowd."
+objective.afterhours.casing,Look around the club
+objective.afterhours.gear,Get the gear the insider left
+objective.afterhours.keycard,Find the office keycard
+objective.afterhours.office,Get into Crale's office
+objective.afterhours.safe_code,Find the safe combination
+objective.afterhours.safe,Open the safe
+objective.afterhours.safe_loot,Bag the Co-op's cash
+objective.afterhours.secure,Secure three bags of cash ({count}/{total})
+objective.afterhours.product,Take the product
+objective.afterhours.count_room,Take the count room's cash
+objective.afterhours.escape_wait,Hold until the van arrives
+objective.afterhours.escape,Get to the van
+item.asset.gear_drop.name,Insider: gear drop
+item.asset.gear_drop.desc,"You choose where the insider leaves the crew's gear: the WC duct, the cloakroom or the reserved booth."
+item.asset.count_window.name,Insider: count room window
+item.asset.count_window.desc,The count room window is left unlatched: a quiet way onto the roof and a throw into the alley.
+item.asset.intel_safe_code.name,Insider: safe combination
+item.asset.intel_safe_code.desc,You know where tonight's safe combination is written down.
+item.asset.intel_product.name,Insider: product stash
+item.asset.intel_product.desc,You know where the Co-op's product is kept tonight.
+music.afterhours.name,Velvet Rope
 ui.jukebox.no_stems,{name} has no recording yet.
 ui.options.controls.scoreboard_mode,Scoreboard
 ui.scoreboard.title,Crew Tally
@@ -3135,6 +3193,17 @@ ui.career.stash_earned,Offshore earned
 ui.career.cash_spent,Spending cash spent
 ui.career.offshore_spent,Offshore spent
 ui.career.xp_earned,XP earned
+ui.career.card_cash,Payday card cash
+ui.career.card_xp,Payday card XP
+ui.career.recent,Recent heists
+ui.career.recent_note,"Heist freshness: your last {memory} jobs that reached payday, oldest first. A heist you keep repeating pays less; one you have not played in a while pays a little more."
+ui.career.recent_empty,No jobs on the record yet.
+ui.career.recent_entry,{n}. {heist}
+ui.career.rcol.heist,Heist
+ui.career.rcol.freshness,Freshness
+ui.career.rcol.in_memory,Times in recent
+ui.career.rcol.since,Jobs since played
+ui.career.since_never,Never
 ui.career.bags,Bags secured
 ui.career.small_loot,Small loot
 ui.career.favourite_weapon,Favourite weapon
@@ -3322,6 +3391,19 @@ ui.achievements.category.night_deposit,Nightfall Depository
 ui.achievements.category.shadow_ledger,Shadow Ledger
 ui.achievements.category.dockside_burn,Dockside Burn
 ui.achievements.category.gallery_night,Gallery Night
+achievement.of_quiet_weekend.name,Quiet Weekend
+achievement.of_quiet_weekend.desc,Complete Ostrander Federal in stealth without answering a single pager.
+achievement.of_no_harm_done.name,No Harm Done
+achievement.of_no_harm_done.desc,Complete Ostrander Federal in stealth without anyone being killed.
+achievement.of_bank_holiday.name,Bank Holiday
+achievement.of_bank_holiday.desc,Complete Ostrander Federal in under 20 minutes.
+achievement.of_clearing_house.name,Clearing House
+achievement.of_clearing_house.desc,Complete Ostrander Federal with every bag in the building secured.
+achievement.of_burn_and_hoist.name,Burn and Hoist
+achievement.of_burn_and_hoist.desc,Complete Ostrander Federal loud by burning through the vault roof and hoisting the loot out.
+achievement.of_cataclysm.name,Monday Never Comes
+achievement.of_cataclysm.desc,Complete Ostrander Federal on Cataclysm in stealth.
+ui.achievements.category.ostrander_federal,Ostrander Federal
 ui.achievements.category.stealth,Stealth
 ui.achievements.category.loud,Loud
 ui.achievements.category.combat,Combat
@@ -3787,3 +3869,17 @@ ui.preplan.bp.ostrander_federal.ea,Executive assistant
 ui.preplan.bp.ostrander_federal.pr,President's office
 ui.preplan.bp.ostrander_federal.pn,Pantry
 ui.preplan.bp.ostrander_federal.hh,Stair head house
+ui.preplan.bp.ostrander_federal.ct,Trust department
+ui.preplan.bp.ostrander_federal.lg,Legal
+ui.preplan.bp.ostrander_federal.ra,Records
+ui.preplan.bp.ostrander_federal.rp,Roof plant
+ui.preplan.bp.ostrander_federal.wm2,Men's room
+ui.preplan.bp.ostrander_federal.ww2,Women's room
+ui.preplan.bp.ostrander_federal.x1,Ostrander Plaza
+ui.preplan.bp.ostrander_federal.x2,Ledger Lane
+ui.preplan.bp.ostrander_federal.x3,Tannery Street
+ui.preplan.bp.ostrander_federal.x4,Terrace
+ui.preplan.bp.ostrander_federal.x5,Main roof
+ui.preplan.bp.ostrander_federal.xc,Executive corridor
+ui.preplan.bp.ostrander_federal.xl,Executive lounge
+ui.preplan.bp.ostrander_federal.xw,Executive restroom

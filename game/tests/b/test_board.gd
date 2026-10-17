@@ -189,3 +189,33 @@ func test_pool_contacts() -> void:
 	assert_eq(pool[0]["contact"], &"contact.reyes", "HeistDef.contact first")
 	assert_eq(pool[1]["contact"], &"contact.accountant", "then the city map")
 	assert_true(not BoardContracts.pool().is_empty(), "the live catalog offers heists")
+
+
+## OF-B1 Board entry: per-heist weight / pro / difficulty floor from the city map. Equal weights keep the shipped
+## uniform draw (same contracts as before); OF's staged entry is 0.75 / pro / Routine.
+func test_per_heist_board_fields() -> void:
+	var city: BoardCityMap = BoardCityMap.load_default()
+	assert_near(city.heist_weight(&"ostrander_federal"), 0.75, 0.0001)
+	assert_true(city.heist_pro(&"ostrander_federal"))
+	assert_eq(city.heist_difficulty_min(&"ostrander_federal"), 0)
+	assert_eq(city.heist_contact(&"ostrander_federal"), &"contact.accountant")
+	assert_near(city.heist_weight(&"glasshouse"), 1.0, 0.0001, "unset = 1.0")
+	var tw: BoardTweak = BoardTweak.new()
+	tw.board_seed = 7
+	var even: Array[Dictionary] = [{"id": &"a", "weight": 1.0}, {"id": &"b", "weight": 1.0}, {"id": &"c", "weight": 1.0}]
+	var bare: Array[Dictionary] = [{"id": &"a"}, {"id": &"b"}, {"id": &"c"}]
+	var allowed: Array[int] = [0, 1, 2, 3]
+	for b: int in range(40):
+		assert_eq(BoardContracts.contract_for(0, b, allowed, even, tw, null)["heist_id"],
+				BoardContracts.contract_for(0, b, allowed, bare, tw, null)["heist_id"], "equal weights = the uniform draw")
+	var skewed: Array[Dictionary] = [{"id": &"a", "weight": 9.0}, {"id": &"b", "weight": 1.0}]
+	var a_count: int = 0
+	for b: int in range(400):
+		a_count += int(BoardContracts.contract_for(0, b, allowed, skewed, tw, null)["heist_id"] == &"a")
+	assert_true(a_count > 320 and a_count < 400, "weight 9:1 (%d of 400)" % a_count)
+	var floored: Array[Dictionary] = [{"id": &"a", "difficulty_min": 2, "pro": false}]
+	tw.pro_chance = 1.0
+	for b: int in range(40):
+		var c: Dictionary = BoardContracts.contract_for(0, b, allowed, floored, tw, null)
+		assert_true(int(c["difficulty"]) >= 2, "difficulty floor")
+		assert_false(bool(c["is_pro"]), "pro: false never rolls pro")

@@ -2,10 +2,12 @@
 ## (HubMenu.career_requested -> MenuFlow._open_career); Back returns to the hub.
 ## Shows the profile's lifetime career (Career, save v7): a record summary (level + Notoriety badge,
 ## heists played / won / failed, success rate, stealth vs loud wins, time on the job), money (earned,
-## spent, XP, bags, small loot, favourite weapon), combat (kills, specials, civilians, downs, custody, and
+## spent, XP, bags, small loot, payday card cash / XP, favourite weapon), combat (kills, specials, civilians, downs, custody, and
 ## shots / hits / headshots / accuracy only when the HeistResult carried them) and a per-heist table
 ## (played, won, failed, stealth, loud, best difficulty, fastest win). A counter that was never counted
 ## reads `ui.career.not_tracked`, never 0.
+## D-139 "Recent heists" panel: the freshness memory (the last PayoutTweak.freshness_memory runs that reached payday,
+## oldest first) and, per heist, its current freshness (HeistFreshness), times in the memory and runs since it was played.
 ## The panels and the heist rows are focusable so keyboard / gamepad scroll the page (follow_focus).
 ## API: setup(profile) before or after entering the tree (null = load profile_slot); refresh().
 class_name CareerScreen
@@ -14,11 +16,15 @@ extends UiScreen
 ## Totals keys shown in each panel, in order (label key = `ui.career.<key>`).
 const RECORD_KEYS: Array[String] = ["played", "won", "failed", "stealth_wins", "loud_wins"]
 const MONEY_KEYS: Array[String] = ["spending_earned", "stash_earned", "cash_spent", "offshore_spent", "xp_earned",
-	"bags", "small_loot"]
+	"bags", "small_loot", "card_cash", "card_xp"]
 const COMBAT_KEYS: Array[String] = ["kills", "specials_killed", "civilians_killed", "downs", "custody", "shots", "hits",
 	"headshots"]
 ## Totals keys that are money amounts.
-const MONEY_AMOUNTS: Array[String] = ["spending_earned", "stash_earned", "cash_spent", "offshore_spent", "small_loot"]
+const MONEY_AMOUNTS: Array[String] = ["spending_earned", "stash_earned", "cash_spent", "offshore_spent", "small_loot",
+	"card_cash"]
+## Recent heists (D-139) table columns (header key = `ui.career.rcol.<id>`).
+const RECENT_COLUMNS: Array[String] = ["heist", "freshness", "in_memory", "since"]
+const RECENT_COLUMN_WIDTH: float = 220.0
 ## Per-heist table columns (header key = `ui.career.col.<id>`).
 const COLUMNS: Array[String] = ["heist", "played", "won", "failed", "stealth", "loud", "best", "fastest"]
 const COLUMN_WIDTH: float = 160.0
@@ -35,6 +41,12 @@ var badge_label: Label
 var value_labels: Dictionary = {}
 ## Heist id -> its table row PanelContainer.
 var heist_rows: Dictionary = {}
+## D-139: the "1. Golden Hour" entries of the freshness memory, oldest first.
+var recent_flow: HFlowContainer
+## D-139: heist id -> its Recent heists row PanelContainer.
+var recent_rows: Dictionary = {}
+var recent_table: VBoxContainer
+var recent_empty_label: Label
 var table: VBoxContainer
 var empty_label: Label
 var back_button: Button
@@ -81,6 +93,7 @@ func build_ui() -> void:
 	empty_label = UiBuild.label(&"ui.career.empty", UiBuild.DIM)
 	heists.add_child(empty_label)
 	page.add_child(UiBuild.panel(heists))
+	page.add_child(UiBuild.panel(_build_recent()))
 	back_button = UiBuild.button(&"ui.menu.back")
 	back_button.pressed.connect(back_requested.emit)
 	root.add_child(UiBuild.footer(back_button))  # PO-4: a read-only page, so no primary
@@ -103,6 +116,9 @@ func refresh() -> void:
 	focus_chain.append_array(_panels)
 	for id: Variant in heist_rows:
 		focus_chain.append(heist_rows[id] as Control)
+	_fill_recent()
+	for id: Variant in recent_rows:
+		focus_chain.append(recent_rows[id] as Control)
 	focus_chain.append(back_button)
 	UiNav.chain_vertical(focus_chain)
 
@@ -139,6 +155,28 @@ static func table_heists(p: PlayerProfile) -> Array[StringName]:
 	return out
 
 
+## D-139: the freshness memory as "1. Golden Hour" entries, oldest first.
+static func recent_entries(p: PlayerProfile) -> Array[String]:
+	var out: Array[String] = []
+	var recent: Array = HeistFreshness.state(p)["recent"] as Array
+	for i: int in range(recent.size()):
+		var heist: String = UiText.t(StringName("heist.%s.name" % String(recent[i])))
+		out.append(UiText.t(&"ui.career.recent_entry", {"n": i + 1, "heist": heist}))
+	return out
+
+
+## D-139: cell texts of one Recent heists row, in RECENT_COLUMNS order: name, freshness ("+5 %" / "-20 %" / "0 %"),
+## times in the memory, runs since it was last played ("Never" when never played).
+static func recent_cells(p: PlayerProfile, heist_id: StringName) -> Array[String]:
+	var ev: Dictionary = HeistFreshness.evaluate(p, heist_id)
+	var badge: String = HeistFreshness.badge_text(float(ev["mult"]))
+	var since: int = int(ev["since"])
+	return [UiText.t(StringName("heist.%s.name" % heist_id)),
+		badge if badge != "" else UiText.t(&"ui.freshness.badge", {"pct": "0"}),
+		UiText.group_digits(int(ev["n"])),
+		UiText.group_digits(since) if since >= 0 else UiText.t(&"ui.career.since_never")]
+
+
 ## Cell texts of one heist row, in COLUMNS order.
 static func heist_cells(p: PlayerProfile, heist_id: StringName) -> Array[String]:
 	var h: Dictionary = Career.heist(p, heist_id)
@@ -154,6 +192,86 @@ static func heist_cells(p: PlayerProfile, heist_id: StringName) -> Array[String]
 
 static func _percent(v: float) -> String:
 	return UiText.t(&"ui.career.percent", {"value": "%.1f" % (v * 100.0)})
+
+
+func _build_recent() -> VBoxContainer:
+	var v: VBoxContainer = UiBuild.vbox(UiTokens.S2)
+	v.name = "RecentHeists"
+	v.add_child(UiBuild.label(&"ui.career.recent", UiBuild.SUBHEADER))
+	var note: Label = UiBuild.label(&"ui.career.recent_note", UiBuild.DIM, {"memory": PayoutCalculator._load_tweak().freshness_memory})
+	note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	v.add_child(note)
+	recent_flow = HFlowContainer.new()
+	recent_flow.add_theme_constant_override(&"h_separation", UiTokens.S4)
+	recent_flow.add_theme_constant_override(&"v_separation", UiTokens.S1)
+	v.add_child(recent_flow)
+	recent_empty_label = UiBuild.label(&"ui.career.recent_empty", UiBuild.DIM)
+	v.add_child(recent_empty_label)
+	var head: HBoxContainer = UiBuild.hbox(UiTokens.S2)
+	var pad: MarginContainer = MarginContainer.new()
+	pad.add_theme_constant_override(&"margin_left", UiTokens.S4)
+	pad.add_child(head)
+	for c: String in RECENT_COLUMNS:
+		var l: Label = UiBuild.caption(StringName("ui.career.rcol.%s" % c))
+		l.custom_minimum_size = Vector2(HEIST_COLUMN_WIDTH if c == "heist" else RECENT_COLUMN_WIDTH, 0)
+		head.add_child(l)
+	v.add_child(pad)
+	recent_table = UiBuild.vbox(UiTokens.S1)
+	v.add_child(recent_table)
+	return v
+
+
+func _fill_recent() -> void:
+	for c: Node in recent_flow.get_children():
+		recent_flow.remove_child(c)
+		c.queue_free()
+	for t: String in recent_entries(profile):
+		var l: Label = UiBuild.label()
+		l.text = t
+		recent_flow.add_child(l)
+	recent_empty_label.visible = recent_flow.get_child_count() == 0
+	for c: Node in recent_table.get_children():
+		recent_table.remove_child(c)
+		c.queue_free()
+	recent_rows.clear()
+	for id: StringName in table_heists(profile):
+		var row: HBoxContainer = UiBuild.hbox(UiTokens.S2)
+		var cells: Array[String] = recent_cells(profile, id)
+		for i: int in range(cells.size()):
+			var l: Label = UiBuild.label()
+			l.text = cells[i]
+			l.custom_minimum_size = Vector2(HEIST_COLUMN_WIDTH if i == 0 else RECENT_COLUMN_WIDTH, 0)
+			l.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+			if i == 1:
+				row.add_child(_freshness_cell(l, id))
+				continue
+			row.add_child(l)
+		var panel: PanelContainer = UiBuild.panel(row)
+		UiBuild.focus_panel(panel)
+		panel.name = "Recent_%s" % id
+		recent_table.add_child(panel)
+		recent_rows[id] = panel
+
+
+## The freshness cell: a drawn ▲ / ▼ and the signed text, red for a penalty and green for a bonus. Shape and sign carry
+## the direction without colour (colour-blind safety: red / green are close under protanopia / deuteranopia).
+func _freshness_cell(l: Label, heist_id: StringName) -> HBoxContainer:
+	var cell: HBoxContainer = UiBuild.hbox(UiTokens.S1)
+	cell.custom_minimum_size = l.custom_minimum_size
+	l.custom_minimum_size = Vector2.ZERO
+	l.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING  # short ("-20 %"); trimming let it shrink to nothing
+	l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	var mark: TrendMark = TrendMark.new()
+	mark.name = "Trend"
+	var pct: int = HeistFreshness.percent(float(HeistFreshness.evaluate(profile, heist_id)["mult"]))
+	mark.direction = signi(pct)
+	if pct != 0:
+		var c: Color = UiTokens.ALERT if pct < 0 else UiTokens.OK
+		mark.color = c
+		l.add_theme_color_override(&"font_color", c)
+	cell.add_child(mark)
+	cell.add_child(l)
+	return cell
 
 
 func _panel_box(parent: Control, title: StringName) -> VBoxContainer:

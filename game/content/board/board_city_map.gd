@@ -22,7 +22,9 @@ const DEFAULT_PATH: String = "res://content/data/board/city_map.tres"
 @export var avenues: Array[PackedVector2Array] = []
 @export var streets: Array[PackedVector2Array] = []
 ## heist id -> { "pos": Vector2 (map units), "district": StringName, "contact": StringName (optional,
-## used when the HeistDef names no contact) }. Heists missing here get a deterministic spot in
+## used when the HeistDef names no contact), OF-B1 Board entry (all optional): "weight": float (rotation weight,
+## default 1.0), "pro": bool (may roll as a pro job, default true), "difficulty_min": int (lowest difficulty
+## offered, default Routine) }. Heists missing here get a deterministic spot in
 ## `fallback_area`.
 @export var heists: Dictionary = {}
 @export var fallback_area: Rect2 = Rect2(0.3, 0.3, 0.4, 0.4)
@@ -83,6 +85,21 @@ func heist_district(heist_id: StringName) -> StringName:
 
 func heist_contact(heist_id: StringName) -> StringName:
 	return StringName((heists.get(heist_id, {}) as Dictionary).get("contact", &""))
+
+
+## OF-B1: the heist's Board rotation weight (1.0 when unset).
+func heist_weight(heist_id: StringName) -> float:
+	return float((heists.get(heist_id, {}) as Dictionary).get("weight", 1.0))
+
+
+## OF-B1: whether the heist may roll as a pro job (true when unset).
+func heist_pro(heist_id: StringName) -> bool:
+	return bool((heists.get(heist_id, {}) as Dictionary).get("pro", true))
+
+
+## OF-B1: the lowest difficulty the Board offers the heist on (Routine when unset).
+func heist_difficulty_min(heist_id: StringName) -> int:
+	return int((heists.get(heist_id, {}) as Dictionary).get("difficulty_min", 0))
 
 
 ## Where a district's name is drawn: its "label_pos", else the average of its polygon's points.

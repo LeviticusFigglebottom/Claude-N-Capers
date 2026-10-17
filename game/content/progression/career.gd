@@ -13,8 +13,8 @@
 ##     Notoriety rank-up cost (spending cash) and the Board broker (offshore, OFFSHORE_SPENT).
 ##   * Weapons: the profile loadout's primary / secondary at payday (heists carried, not kills: the
 ##     HeistResult has no per-weapon data). favourite_weapon() = most carried.
-## TODO (no source yet): per-weapon kills, melee / throwable kills, pagers answered per player, payday card
-## cash/XP (not a heist payout), time spent in menus.
+##   * Payday cards (record_card, after PaydayCards.grant): card_cash / card_xp amounts, cards_taken.
+## TODO (no source yet): per-weapon kills, melee / throwable kills, pagers answered per player, time spent in menus.
 class_name Career
 extends RefCounted
 
@@ -34,6 +34,10 @@ const CASH_SPENT: String = "cash_spent"
 const OFFSHORE_SPENT: String = "offshore_spent"
 const CUSTODY: String = "custody"
 const TIME_PLAYED_S: String = "time_played_s"
+## Payday cards: cash and XP from picked cards (not a heist payout), and how many cards were taken.
+const CARD_CASH: String = "card_cash"
+const CARD_XP: String = "card_xp"
+const CARDS_TAKEN: String = "cards_taken"
 ## Per-heist keys (besides played / won / failed / stealth_wins / loud_wins).
 const FASTEST_WIN_MS: String = "fastest_win_ms"
 ## "won_d<difficulty>": wins of that heist on that difficulty.
@@ -85,6 +89,21 @@ static func record(p: PlayerProfile, result: Dictionary, payout: Dictionary, cre
 
 
 ## Spending (or with `offshore`, stash) money spent. A negative amount (a refund) lowers it, never below 0.
+## Banks one granted payday card (PaydayCards.grant returned true): cards_taken + 1, and a cash / XP card's
+## amount into card_cash / card_xp.
+static func record_card(p: PlayerProfile, card: Dictionary) -> void:
+	if p == null:
+		return
+	_ensure(p)
+	_add(p, "totals", CARDS_TAKEN, 1)
+	var amount: int = maxi(int(card.get("amount", 0)), 0)
+	match StringName(card.get("type", &"")):
+		PaydayCards.CASH:
+			_add(p, "totals", CARD_CASH, amount)
+		PaydayCards.XP:
+			_add(p, "totals", CARD_XP, amount)
+
+
 static func add_spent(p: PlayerProfile, amount: int, offshore: bool = false) -> void:
 	if p == null or amount == 0:
 		return
