@@ -1,0 +1,19 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/props/prop_outdoor_kitchen/prop_outdoor_kitchen.glb" id="1_model"]
+
+[node name="PropOutdoorKitchen" type="Node3D"]
+metadata/kind = &"counter_service"
+metadata/support = true
+
+[node name="Model" parent="." instance=ExtResource("1_model")]
+
+[node name="Counter" parent="Model"]
+visibility_range_end = 60
+visibility_range_end_margin = 6
+visibility_range_fade_mode = 1
+
+[node name="Collision" parent="Model"]
+metadata/surface = &"metal"
+
+[editable path="Model"]

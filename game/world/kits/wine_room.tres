@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"wine_room"
+purpose = &"storage"
+required_items = Array[StringName]([&"shelving", &"cabinet", &"light_fixture"])
+optional_items = {}
+clutter_groups = {}
+min_density = 0.2
+max_density = 2
+min_props = 3
+lone_ok_kinds = Array[StringName]([&"shelving", &"cabinet"])
+seed_salt = 329
+counts = {}
+assets = {
+&"light_fixture": PackedStringArray("prop_downlight")
+}
+ceiling = {"prop_downlight": 1.8}
+notes = "M13: the wine wall and the humidor (two small_loot) are map-built."

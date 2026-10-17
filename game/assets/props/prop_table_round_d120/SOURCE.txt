@@ -1,0 +1,8 @@
+asset: prop_table_round_d120
+script: tools/blender/props/calder.py
+params: {"cat": {"group": "calder", "kind": "table", "pin_only": true, "place": "center", "support": true}, "fn": "table_round", "h": 0.75, "r": 0.6}
+seed: 1858704310  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_table_round_d120
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 16000

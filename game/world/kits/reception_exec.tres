@@ -1,0 +1,32 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"reception_exec"
+purpose = &"lobby"
+required_items = Array[StringName]([&"counter_transaction", &"armchair", &"side_table", &"light_fixture"])
+optional_items = {
+&"floor_lamp": 0.5,
+&"plant": 2,
+&"rug": 0.8
+}
+clutter_groups = {}
+min_density = 0.08
+max_density = 0.6
+min_props = 8
+lone_ok_kinds = Array[StringName]([&"plant", &"armchair", &"side_table", &"floor_lamp", &"counter_transaction"])
+seed_salt = 305
+counts = {}
+assets = {
+&"bin": PackedStringArray("prop_bin_office"),
+&"fire_extinguisher": PackedStringArray("prop_fire_extinguisher"),
+&"light_fixture": PackedStringArray("prop_downlight"),
+&"picture": PackedStringArray("prop_wall_art_a", "prop_wall_art_c", "prop_wall_art_b"),
+&"plant": PackedStringArray("prop_plant_tall"),
+&"rug": PackedStringArray("prop_rug_rect"),
+&"side_table": PackedStringArray("prop_side_table")
+}
+ceiling = {"prop_downlight": 2.6}
+notes = "K3 (landmark): reception desk with the guard post, the club chairs, the K&M logo wall and the feature stair are map-built; the lift doors, the stair foot and the glass doors stay clear."

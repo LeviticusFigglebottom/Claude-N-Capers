@@ -1,0 +1,29 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"refuse_room"
+purpose = &"storage"
+required_items = Array[StringName]([&"cage", &"fire_extinguisher", &"light_fixture"])
+optional_items = {
+&"bin": 1,
+&"box": 1.5
+}
+clutter_groups = {}
+min_density = 0.15
+max_density = 1.2
+min_props = 4
+lone_ok_kinds = Array[StringName]([&"cage", &"box", &"bin"])
+seed_salt = 302
+counts = {}
+assets = {
+&"bin": PackedStringArray("prop_bin_kitchen"),
+&"box": PackedStringArray("prop_box_stack"),
+&"cage": PackedStringArray("prop_recycling_cage"),
+&"light_fixture": PackedStringArray("prop_ceiling_panel_cool"),
+&"picture": PackedStringArray("prop_notice_frame")
+}
+ceiling = {"prop_fluorescent": 2.4}
+notes = "S2 refuse: the two wheelie bins are body_container prefabs (keep-outs), the recycling cage is map-built; flattened boxes by the door. Fluorescents."

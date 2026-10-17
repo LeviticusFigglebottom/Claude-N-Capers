@@ -1,0 +1,8 @@
+asset: prop_anchor_frame_h140
+script: tools/blender/props/calder.py
+params: {"cat": {"group": "calder", "kind": "anchor_frame", "pin_only": true, "place": "none"}, "fn": "anchor_frame", "h": 1.4}
+seed: 2647637894  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_anchor_frame_h140
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 16000

@@ -1,0 +1,8 @@
+asset: prop_recycling_cage
+script: tools/blender/props/calder.py
+params: {"cat": {"group": "calder", "kind": "cage", "pin_only": true, "place": "wall"}, "d": 0.9, "fn": "recycling_cage", "h": 1.6, "w": 1.2}
+seed: 1357782154  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_recycling_cage
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 16000

@@ -1,0 +1,18 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/props/prop_lift_motors/prop_lift_motors.glb" id="1_model"]
+
+[node name="PropLiftMotors" type="Node3D"]
+metadata/kind = &"lift_motor"
+
+[node name="Model" parent="." instance=ExtResource("1_model")]
+
+[node name="Motors" parent="Model"]
+visibility_range_end = 60
+visibility_range_end_margin = 6
+visibility_range_fade_mode = 1
+
+[node name="Collision" parent="Model"]
+metadata/surface = &"metal"
+
+[editable path="Model"]

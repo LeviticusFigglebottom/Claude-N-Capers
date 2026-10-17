@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"electrical_sl"
+purpose = &"electrical"
+required_items = Array[StringName]([&"switchboard", &"breaker_panel", &"it_rack", &"light_fixture"])
+optional_items = {
+&"box": 0.5
+}
+clutter_groups = {}
+min_density = 0.3
+max_density = 2.5
+min_props = 3
+lone_ok_kinds = Array[StringName]([&"switchboard", &"it_rack"])
+seed_salt = 316
+counts = {}
+assets = {
+&"light_fixture": PackedStringArray("prop_fluorescent")
+}
+ceiling = {"prop_fluorescent": 2}
+notes = "K14 / M12: the switchboard (sub-board) is map-built; breaker panel, telecom / AV rack."

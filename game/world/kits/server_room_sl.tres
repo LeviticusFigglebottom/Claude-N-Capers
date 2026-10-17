@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"server_room_sl"
+purpose = &"server_room"
+required_items = Array[StringName]([&"server_rack", &"ups", &"crac", &"fire_extinguisher", &"light_fixture"])
+optional_items = {
+&"box": 0.5
+}
+clutter_groups = {}
+min_density = 0.15
+max_density = 1.2
+min_props = 5
+lone_ok_kinds = Array[StringName]([&"server_rack", &"ups", &"crac", &"box"])
+seed_salt = 309
+counts = {}
+assets = {
+&"box": PackedStringArray("prop_box_stack"),
+&"light_fixture": PackedStringArray("prop_ceiling_panel_cool")
+}
+ceiling = {"prop_ceiling_panel_cool": 2.2}
+notes = "K11: the cage (ledger rack, hack terminal, drive sleds), the CRAC and the UPS are map-built; the cage gate, the server door swing and the contractor spot stay clear. 6500 K, rack LEDs."
