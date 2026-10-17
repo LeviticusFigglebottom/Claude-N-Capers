@@ -156,3 +156,23 @@ func test_gn8_lockdown_bars_the_door_under_each_shutter() -> void:
 		var d: Door = p[1]
 		assert_false(d.locked, "%s unlocked when the shutters lift" % d.name)
 		assert_true(d.is_open, "%s open" % d.name)
+
+
+## LEAD (GN win frames 10_auto_367): when the escape is called, access steps still open (an interrupted hack, the
+## vault drill, the server door) are skipped, so none of them stays the current step during escape_wait.
+func test_gn8_escape_skips_stale_access_steps() -> void:
+	var m: HeistMission = await _launch()
+	_rt.stealth.raise_alarm(&"test", 0)  # the real alarm: went_loud + the lockdown
+	await wait_physics_frames(3)
+	assert_eq(m.objective_state(&"hack"), Enums.ObjectiveState.ACTIVE, "setup: the loud hack is open")
+	m.call(&"_call_escape")
+	for id: StringName in [&"hack", &"vault_drill", &"server_door"]:
+		if m.objective_state(id) == Enums.ObjectiveState.HIDDEN:
+			continue
+		assert_eq(m.objective_state(id), Enums.ObjectiveState.COMPLETED, "%s closed at the escape" % id)
+	var hack_data: Dictionary = {}
+	for o: Dictionary in m.objectives():
+		if o["id"] == &"hack":
+			hack_data = o["data"]
+	assert_true(bool(hack_data.get("skipped", false)), "hack marked skipped (reason escape)")
+	assert_eq(m.objective_state(&"escape_wait"), Enums.ObjectiveState.ACTIVE, "escape_wait is the live step")

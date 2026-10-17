@@ -84,7 +84,6 @@ var _crew: Dictionary[int, CrewController] = {}
 var _bot_intents: Dictionary[int, CrewIntent] = {}
 var _services: Dictionary[StringName, Node] = {}
 var _crew_tick_handlers: Array[Callable] = []
-var _start_msec: int = 0
 var _loot_secured: Array[Dictionary] = []
 ## B achievements (HeistResult.loot_available): net ids of valued bags that existed this run (spawned or placed).
 var _offered_bags: Dictionary[int, bool] = {}
@@ -144,7 +143,6 @@ func start(p_heist_id: StringName, map_scene: PackedScene, p_seed: int, p_diffic
 	_launch_options = p_options
 	_resolve_difficulty_def()
 	GameRng.begin_run(run_seed)
-	_start_msec = Time.get_ticks_msec()
 	var inst: Node = map_scene.instantiate()
 	map = inst as HeistMap
 	if map == null:
@@ -252,7 +250,6 @@ func _start_replica(data: Dictionary, map_scene: PackedScene, p_options: Diction
 	_launch_options.merge(data.get("launch_options", {}) as Dictionary, true)  # D-062: the host's pick wins
 	_resolve_difficulty_def()
 	GameRng.begin_run(run_seed)
-	_start_msec = Time.get_ticks_msec()
 	var inst: Node = map_scene.instantiate()
 	map = inst as HeistMap
 	if map == null:
@@ -679,7 +676,7 @@ func end_heist(success: bool, escaped_slots: Array[int] = [], fail_reason: Strin
 		})
 	var result: Dictionary = {
 		"heist_id": heist_id, "success": success, "stealth": not went_loud,
-		"time_s": float(Time.get_ticks_msec() - _start_msec) / 1000.0, "difficulty": difficulty,
+		"time_s": heist_time_s, "difficulty": difficulty,  # heist clock (pauses, time scale), not wall time
 		"contract_pay": map.heist_def.base_payout if map != null and map.heist_def != null else 0,
 		"loot": _loot_secured.duplicate(true), "small_loot": _small_loot, "crew": crew_rows,
 		"pagers_answered": _pagers_answered, "seed": run_seed, "variants": variants.duplicate(true),
