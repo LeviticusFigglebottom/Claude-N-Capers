@@ -234,7 +234,7 @@ bone_name = "chest"
 bone_idx = 3
 
 [node name="Socket" type="Marker3D" parent="Skeleton3D/Back" index="0" unique_id=295692899]
-transform = Transform3D(0.643, 0, 0.766, -0.76539, -0.03997, 0.64248997, 0.03062, -0.9992, -0.0257, 0.0525, 0.003, 0.4705)
+transform = Transform3D(0.643, 0, 0.766, -0.76539, -0.03997, 0.64248997, 0.03062, -0.9992, -0.0257, 0.0525, 0.0030999999, 0.47149998)
 
 [node name="HandL" type="BoneAttachment3D" parent="Skeleton3D" index="5" unique_id=407626337]
 transform = Transform3D(0.073912844, -0.70323366, -0.7071067, 0.07391283, -0.7032331, 0.7071072, -0.99452186, -0.10452851, 5.0527845e-08, -0.587669, 1.1005832, -0.009092359)
@@ -266,7 +266,7 @@ bone_name = "hips"
 bone_idx = 1
 
 [node name="Socket" type="Marker3D" parent="Skeleton3D/Hip" index="0" unique_id=838194867]
-transform = Transform3D(1, 0, 0, 0, 0.99875, 0.049939997, 0, -0.049939997, 0.99875, 0.24329999, 0.0669, 0.0435)
+transform = Transform3D(1, 0, 0, 0, 0.99875, 0.049939997, 0, -0.049939997, 0.99875, 0.24419999, 0.0669, 0.043199997)
 
 [node name="CrowdLod" type="MeshInstance3D" parent="Skeleton3D" index="9" unique_id=933075992 groups=["crowd_lod"]]
 visibility_range_begin = 25.0

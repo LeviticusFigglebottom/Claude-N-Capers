@@ -13,7 +13,7 @@ body_params: {"age": 0.8, "beard_shadow": 0.25, "build": 0.55, "gender": 0.0, "h
 bones: 52
 faces_hidden_by_coat: 2634
 faces_hidden_by_waistcoat: 1231
-look: VIP private client (OF-D1 civ_vip): open camel overcoat below the knee over a charcoal-grey suit waistcoat and trousers, white shirt, burgundy tie, ivory silk scarf, dark brown leather gloves, brown oxfords, gold watch (left); about 70, silver side-parted hair
+look: VIP private client (OF-D1 civ_vip): open camel overcoat below the knee over a charcoal-grey suit waistcoat and trousers, white shirt, burgundy tie, sapphire silk scarf, dark brown leather gloves, brown oxfords, gold watch (left); about 70, silver side-parted hair
 meshes: Body,Gear,Hair,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000

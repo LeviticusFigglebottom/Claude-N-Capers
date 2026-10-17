@@ -21,7 +21,7 @@ customers are ordinary civilians in daylight colours.
   knit, jeans, white trainers and a navy daypack on both shoulders.
 * ``char_bank_vip_client`` (OF-D1, rare ``vip_client``, ``civ_vip``, seated in the SD hall): a high-value private
   client, an older man (about 70, light skin, silver side-parted hair): a single-breasted camel overcoat to below the
-  knee (open, no belt: the seated drape) over a charcoal-grey suit (waistcoat), white shirt and burgundy tie, an ivory
+  knee (open, no belt: the seated drape) over a charcoal-grey suit (waistcoat), white shirt and burgundy tie, a sapphire
   silk scarf hanging open, dark brown leather gloves, brown oxfords and a gold watch on the left wrist.
 * Reused (listed in ``world/characters/p5_cast.json``, not rebuilt): tellers ``npc_bank_teller`` /
   ``_b`` (D-063), customers ``civilian_customer_a`` (camel coat) / ``_b`` (the elderly customer: grey
@@ -198,14 +198,14 @@ def vip(kit: Kit) -> None:
 
     _drop_faces(kit.soft, len(kit.soft.f) - added, back)
     g.delete_faces(vest, back)   # the hull the coat is lofted over
-    crew.scarf(kit, "char_silk_ivory", 1.00 * k)
+    crew.scarf(kit, "char_satin_sapphire", 1.00 * k)   # not ivory: it vanished on the white shirt
     n0 = len(kit.soft.f)
     # flare / base kept modest: the coat's back skirt must clear the chair back seated (check_seated_clip, Seat 0.12)
     coat, _info = n.jacket(kit, "char_coat_camel", 0.46 * k, 0.99 * k, neck_w=0.100, lapel_w=0.074, flare=0.06,
                            base=0.010, open_below=0.06, sleeve=1.93, buttons=False, chest_welt=False)
     n.cull_under(kit, n0, coat, "faces_hidden_by_coat")
     kit.notes["look"] = ("VIP private client (OF-D1 civ_vip): open camel overcoat below the knee over a charcoal-grey "
-                         "suit waistcoat and trousers, white shirt, burgundy tie, ivory silk scarf, dark brown leather "
+                         "suit waistcoat and trousers, white shirt, burgundy tie, sapphire silk scarf, dark brown leather "
                          "gloves, brown oxfords, gold watch (left); about 70, silver side-parted hair")
 
 

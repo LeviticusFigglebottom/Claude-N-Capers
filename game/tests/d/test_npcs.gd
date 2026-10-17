@@ -171,10 +171,10 @@ const D115_CAST: Dictionary = {
 		"Outfit": ["char_shirt_blue", "char_knit_grey", "char_work_charcoal", "char_glove_white", "char_chino_khaki"],
 		"Gear": ["char_medic_white"], "Headwear": ["char_metal_silver", "polymer_black"],
 	},
-	# OF-D1 vip_client: the private client (camel overcoat, grey suit, ivory silk scarf, leather gloves, gold watch)
+	# OF-D1 vip_client: the private client (camel overcoat, grey suit, sapphire silk scarf, leather gloves, gold watch)
 	"char_bank_vip_client": {
 		"Outfit": [
-			"char_coat_camel", "char_suit_grey", "char_shirt_white", "char_tie_burgundy", "char_silk_ivory",
+			"char_coat_camel", "char_suit_grey", "char_shirt_white", "char_tie_burgundy", "char_satin_sapphire",
 			"leather_dark",
 		],
 		"Gear": ["brass"],
@@ -558,14 +558,14 @@ func test_bodyguard_is_halden_close_protection() -> void:
 
 
 ## OF-D1 civ_vip: the VIP client is nobody else in the bank: no other customer, officer or manager wears the camel coat
-## with the ivory silk scarf, or shares his skin and suit.
+## with the sapphire silk scarf, or wears his outfit.
 func test_vip_client_is_distinct() -> void:
 	var vip: Dictionary = _materials(VIP)
 	assert_false(vip.has("Headwear"), "VIP: no glasses or hat (the manager wears silver glasses)")
 	for id: String in VIP_OTHERS:
 		var other: Dictionary = _materials(id)
 		var mats: Array[String] = _all_materials(other)
-		assert_false(mats.has("char_coat_camel") and mats.has("char_silk_ivory"), "%s: not the VIP's coat + scarf" % id)
+		assert_false(mats.has("char_coat_camel") and mats.has("char_satin_sapphire"), "%s: not the VIP's coat + scarf" % id)
 		assert_ne(other.get("Outfit", []), vip.get("Outfit", []), "%s: not the VIP's outfit" % id)
 
 

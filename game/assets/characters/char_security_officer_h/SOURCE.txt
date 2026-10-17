@@ -1,6 +1,6 @@
 asset: char_security_officer_h
 script: tools/blender/characters/char_security.py
-params: {"age": 0.72, "beard_shadow": 0.45, "build": 0.5, "gender": 0.0, "glasses": "char_metal_silver", "hair": "short", "hair_color": "grey", "height": 1.78, "skin": 1}
+params: {"age": 0.72, "beard_shadow": 0.45, "build": 0.5, "gender": 0.0, "hair": "short", "hair_color": "grey", "height": 1.78, "moustache": "char_hair_grey", "skin": 1}
 seed: 1558758849  (zlib.crc32(asset_id))
 generator: Blender 4.5, tools/blender/lib 1.0.0
 rebuild: python3 tools/blender/build.py --category characters --asset char_security_officer_h
@@ -15,5 +15,5 @@ hat: peaked cap (Headwear), crown top z 1.817 m
 meshes: Body,Gear,Hair,Headwear,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 33329
-tris_by_mesh: {"Body": 8952, "Gear": 2372, "Hair": 1728, "Headwear": 2402, "Outfit": 17875}
+tris: 33099
+tris_by_mesh: {"Body": 8952, "Gear": 2372, "Hair": 1728, "Headwear": 2172, "Outfit": 17875}

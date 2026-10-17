@@ -15,14 +15,15 @@ skin, dark bob under the cap, and ``_d`` a tall young man, deep skin, buzz cut. 
 option), and ``_f`` a broad man in his 40s, mid-deep skin, short dark hair, a dark moustache (``moustache`` option).
 OF-D1 (Ostrander Federal, the L heist's Halden day shift: up to 6 guards + the VIP bodyguard, D-130-sized): ``_g`` a slim
 young woman, deep skin, dark hair in a low bun under the cap (``bun`` option); ``_h`` a man in his 60s, light skin, short
-grey hair, silver-rimmed glasses; ``_i`` a tall broad woman in her 40s, olive skin, brown bob, small gold ear studs
+grey hair, a grey moustache; ``_i`` a tall broad woman in her 40s, olive skin, blond bob, small gold ear studs
 (``earrings`` option); ``_j`` a slight young man, light skin, short blond hair. Same uniform and badge set on all ten.
 
 ``char_security_bodyguard`` (OF-D1, ``guard_vip``): the Halden close-protection officer who escorts the VIP client.
 Plainclothes but clearly security: a near-black two-piece suit, white shirt open at the collar (no tie), an earpiece
 with a coiled cable behind the right ear, the Halden lapel pin (a small gold-rimmed burgundy shield with the gold "H")
-on the left lapel, and a radio plus a pistol holster on the belt under the jacket on the right hip (the jacket rides
-over both: the bulge; the radio = the ``Hip`` seat where the pager rides). No cap, no shirt livery: a suit silhouette.
+on the left lapel, and a radio clipped to the waistband under the jacket on the right hip (the jacket rides over it:
+the bulge; the radio = the ``Hip`` seat where the pager rides). No cap, no shirt livery: a suit silhouette. A big man in
+his 40s, mid-deep skin, shaved head, heavy stubble (not the bare-headed npc_bank_guard's face).
 
 Meshes (Godot ``<root>/Skeleton3D/``, exported with ``remove_armature``): ``Body`` (covered skin removed), ``Hair``,
 ``Outfit`` (cloth, belt, cable), ``Gear`` (rigid hard parts), ``Headwear`` (cap). No blend shapes:
@@ -61,14 +62,14 @@ VARIANTS = {
     "char_security_officer_g": {"height": 1.68, "build": 0.3, "gender": 1.0, "age": 0.2, "skin": 6,
                                 "hair": "side_part", "hair_color": "dark", "bun": "char_hair_dark"},
     "char_security_officer_h": {"height": 1.78, "build": 0.5, "gender": 0.0, "age": 0.72, "skin": 1, "beard_shadow": 0.45,
-                                "hair": "short", "hair_color": "grey", "glasses": "char_metal_silver"},
+                                "hair": "short", "hair_color": "grey", "moustache": "char_hair_grey"},
     "char_security_officer_i": {"height": 1.76, "build": 0.8, "gender": 1.0, "age": 0.45, "skin": 3,
-                                "hair": "bob", "hair_color": "brown", "earrings": "brass"},
+                                "hair": "bob", "hair_color": "blond", "earrings": "brass"},
     "char_security_officer_j": {"height": 1.72, "build": 0.28, "gender": 0.0, "age": 0.15, "skin": 2, "beard_shadow": 0.2,
                                 "hair": "short", "hair_color": "blond"},
     # OF-D1 vip_client: the Halden close-protection officer (guard_vip)
-    "char_security_bodyguard": {"height": 1.87, "build": 0.8, "gender": 0.0, "age": 0.4, "skin": 3, "beard_shadow": 0.8,
-                                "hair": "buzz", "hair_color": "dark", "look": "bodyguard"},
+    "char_security_bodyguard": {"height": 1.87, "build": 0.8, "gender": 0.0, "age": 0.5, "skin": 5, "beard_shadow": 0.9,
+                                "hair": "bald", "hair_color": "dark", "look": "bodyguard"},
 }
 
 SHIRT = "char_sec_shirt"
@@ -228,14 +229,13 @@ def bodyguard(kit: Kit) -> None:
     sh = n.shoes(kit)
     n.shirt(kit, "char_shirt_white", tuck, point_len=0.056, spread=0.34)
     tr = n.trousers(kit, BG_SUIT, sh, belt_z + 0.022 * k)
-    n.belt(kit, tr, belt_z, mat="char_leather_black", buckle="chrome", height=0.030)
-    # radio (the Hip seat) and a pistol holster behind it on the belt, under the jacket: the jacket is lofted over
-    # both, so they read as the bulge on the right hip
+    # radio (the Hip seat) clipped to the waistband under the jacket: the jacket is lofted over it, so it reads as the
+    # bulge on the right hip. The belt itself is hidden by the jacket (only its ring is sampled, no belt mesh); a duty
+    # holster hung below the jacket hem at the back, so the sidearm is left to HandR (drawn) like the Northgate detail
     b = gk.Belt(fit, Hull(fit, [tr], body_regions=set()), belt_z, height=0.034, thick=0.0045)
     bg = Mesh()
     a_radio = math.radians(100.0)
     bg.extend(gk.radio(b, a_radio))
-    bg.extend(gk.holster(b, math.radians(142.0)))
     kit.add_gear(bg)
     kit.seats["Hip"] = b.point(a_radio, dz=0.0, out=0.045 * k)
     n0 = len(kit.soft.f)
@@ -246,7 +246,7 @@ def bodyguard(kit: Kit) -> None:
     n.earpiece(kit, "R")
     kit.notes["hip_note"] = "Hip seat = the radio on the belt under the jacket (right hip); the pager rides there"
     kit.notes["look"] = ("Halden close protection (OF-D1 guard_vip): near-black suit, white shirt open at the collar, no "
-                         "tie, earpiece + coiled cable (right ear), Halden shield lapel pin, radio + holster bulge on "
+                         "tie, earpiece + coiled cable (right ear), Halden shield lapel pin, belt radio bulge on "
                          "the right hip under the jacket")
 
 
