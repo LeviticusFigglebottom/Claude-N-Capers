@@ -752,7 +752,9 @@ func _pick_leader() -> CrewController:
 func _bag_goal() -> Vector3:
 	_secure_look = Vector3.INF
 	if _crew.is_carrying_bag():
-		return _secure_goal() if stance != &"hold" else Vector3.INF
+		# OF-X2: a tool bag (D-068, never secured) is not walked to the van; the bot follows with it.
+		var tool: bool = LootManager.is_tool_loot((_crew.carried_bag as LootBag).loot_id)
+		return _secure_goal() if stance != &"hold" and not tool else Vector3.INF
 	return _fetch_goal()
 
 
@@ -795,7 +797,7 @@ func _fetch_goal() -> Vector3:
 ## PO6-14 (D-114 §6, PD2 bots take thrown bags): catch a bag a human threw when it flies within
 ## bag_catch_radius_m of this bot's chest, else fetch (task carry_bag) one that came to rest within
 ## thrown_bag_pickup_radius_m less than thrown_bag_pickup_window_s after the throw (nearest free bot only, not
-## inside a SECURE_LOOT zone). The thrower becomes the leader. A bot waiting at the van in stealth only takes it
+## inside a SECURE_LOOT zone; never a tool bag, OF-X2). The thrower becomes the leader. A bot waiting at the van in stealth only takes it
 ## under the D-014 P4 option (stealth_follow_enabled; it then leaves the van, detectable like after an order).
 func _thrown_bags() -> void:
 	if _crew.crew_state != Enums.CrewState.NORMAL or _crew.is_carrying_bag():
@@ -811,8 +813,8 @@ func _thrown_bags() -> void:
 	var claim_d: float = tweak.thrown_bag_pickup_radius_m
 	for bag: LootBag in lm.bags():
 		if bag.secured or bag.is_carried() or bag.thrown_by_slot < 0 \
-				or bag.since_thrown_s > tweak.thrown_bag_pickup_window_s:
-			continue
+				or bag.since_thrown_s > tweak.thrown_bag_pickup_window_s or LootManager.is_tool_loot(bag.loot_id):
+			continue  # OF-X2: tool bags (thermite, drill parts) stay where the human put them
 		var thrower: CrewController = _rt.crew_controller(bag.thrown_by_slot) as CrewController
 		if thrower == null or thrower.is_ai or thrower == _crew:
 			continue

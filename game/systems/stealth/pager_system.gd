@@ -140,19 +140,21 @@ func pager_state(pager_id: int) -> int:
 
 
 ## Test hook: set the team-wide answered count.
-## S5.3 / D-130 team pager cap of a run: a rolled `pager_max_answers` variant scalar, else the heist's
-## HeistDef.pager_max_by_difficulty[difficulty] (S heists: Golden Hour 4/4/3/3/2/1), else StealthTweak.pager_max_answers.
+## S5.3 / D-130 / D-140 team pager cap of a run: the heist's HeistDef.pager_max_by_difficulty[difficulty] (Golden Hour
+## 4/4/3/3/2/1), else StealthTweak.pager_max_answers; a rolled `pager_max_answers` variant scalar only lowers it.
 static func cap_for(rt: HeistRuntime) -> int:
 	var tw: StealthTweak = Tweak.stealth()
 	if rt == null:
 		return tw.pager_max_answers
-	var v: Variant = rt.variants.get(MAX_ANSWERS_SCALAR)
-	if v is int or v is float:
-		return int(v)
+	var cap: int = tw.pager_max_answers
 	var def: HeistDef = rt.map.heist_def if rt.map != null else null
 	if def != null and not def.pager_max_by_difficulty.is_empty():
-		return def.pager_max_by_difficulty[clampi(rt.difficulty, 0, def.pager_max_by_difficulty.size() - 1)]
-	return tw.pager_max_answers
+		cap = def.pager_max_by_difficulty[clampi(rt.difficulty, 0, def.pager_max_by_difficulty.size() - 1)]
+	# D-140: a rolled scalar may lower the per-difficulty cap, never raise it.
+	var v: Variant = rt.variants.get(MAX_ANSWERS_SCALAR)
+	if v is int or v is float:
+		cap = mini(cap, int(v))
+	return cap
 
 
 ## LocalHudModel reads these names (pagers_max / pagers_answered).
