@@ -37,6 +37,15 @@ static var _cached: AnimTweak = null
 ## Turn-in-place clip: the root yaws this many degrees over `turn_time_s`.
 @export var turn_clip_deg: float = 90.0
 @export var turn_time_s: float = 0.8
+## D-116 turn_l_45 / turn_r_45 (ENV D, 12 f, root_turn 45 deg at turn_l's 112.5 deg/s): their own turn (TurnInPlace).
+@export var turn_45_clip_deg: float = 45.0
+## Yaw change (degrees) from which turn_l / turn_r (90) play; below it (down to turn_threshold_deg) turn_*_45.
+@export var turn_90_min_deg: float = 67.5
+## Turn clip speed_scale = clip deg / yaw change, clamped to this range (TurnInPlace).
+@export var turn_speed_min: float = 0.75
+@export var turn_speed_max: float = 1.5
+## Below turn_threshold_deg no clip plays: the rig snaps to the body over this many seconds.
+@export var turn_snap_s: float = 0.15
 
 @export_group("Selection")
 ## Horizontal speed (m/s) under which a body counts as standing.
@@ -52,8 +61,8 @@ static var _cached: AnimTweak = null
 ## speed_scale clamp for locomotion clips.
 @export var speed_scale_min: float = 0.4
 @export var speed_scale_max: float = 2.0
-## Idle yaw change (degrees) that plays turn_l / turn_r instead of sliding the feet.
-@export var turn_threshold_deg: float = 60.0
+## Idle yaw change (degrees) that plays a turn clip (turn_*_45 / turn_l / turn_r) instead of sliding the feet.
+@export var turn_threshold_deg: float = 20.0
 ## Interaction clip by the interactable's height above the feet (m): low below, high above.
 @export var interact_low_max_m: float = 0.7
 @export var interact_high_min_m: float = 1.5
@@ -105,7 +114,8 @@ static var _cached: AnimTweak = null
 @export var shield_clips: Dictionary = {
 	&"idle": &"shield_idle", &"idle_alert": &"shield_idle", &"aim_pistol": &"shield_idle",
 	&"aim_rifle": &"shield_idle", &"fire_pistol": &"shield_idle", &"fire_rifle": &"shield_idle",
-	&"turn_l": &"shield_idle", &"turn_r": &"shield_idle", &"investigate_look": &"shield_idle",
+	&"turn_l": &"shield_idle", &"turn_r": &"shield_idle", &"turn_l_45": &"shield_idle", &"turn_r_45": &"shield_idle",
+	&"investigate_look": &"shield_idle",
 	&"walk": &"shield_walk", &"strafe_l": &"shield_walk", &"strafe_r": &"shield_walk",
 	&"walk_back": &"shield_walk",
 }

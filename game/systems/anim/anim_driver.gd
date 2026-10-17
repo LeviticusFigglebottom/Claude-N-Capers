@@ -22,8 +22,9 @@
 ## shield_idle*, walk family -> shield_walk*), so the left hand stays on the grip and the shield Visual
 ## follows HandL/Socket. Guard down (stagger: hit_react), dropped, dead or a rig without the clip: the normal
 ## clips play.
-## Turn in place: a standing body whose yaw moved more than AnimTweak.turn_threshold_deg plays turn_l/r while
-## the rig root yaws toward the body at 90 deg / 0.8 s (the rig is counter-rotated; the body itself is untouched).
+## Turn in place (TurnInPlace): a standing body whose yaw moved more than AnimTweak.turn_threshold_deg (20) plays
+## turn_l_45 / turn_r_45 (below 67.5 deg) or turn_l / turn_r while the rig root yaws toward the body at the clip's
+## rate (the rig is counter-rotated; the body itself is untouched); smaller changes snap over turn_snap_s.
 ## Third-person weapon: WeaponVisual (ENV B, by class name) of WeaponDef.model at `HandR/Socket` (crew: the
 ## equipped weapon, NPC: EnemyDef.weapon when it has a WeaponDef with a model; otherwise none).
 ## D-116 police combat (CombatClips): aim on the move, class / moving reloads, cover poses, stagger, DB-4 sit_chair_armed;
@@ -165,7 +166,7 @@ const FALLBACK_CLIPS: Dictionary = {
 	&"shield_bang": &"idle_alert", &"heal_ally": &"interact_mid",
 	&"desk_work": &"desk_type", &"phone_seated": &"phone_call", &"sit_chair_watch": &"sit_chair", &"mop": &"browse",
 	&"sit_bed_read": &"sit_chair", &"sit_chair_read": &"sit_bed_read", &"mug_idle": &"idle", &"mug_carry_walk": &"walk", &"idle_thug": &"idle",
-	&"rappel": &"climb_ladder", &"climb_ladder": &"idle",
+	&"rappel": &"climb_ladder", &"climb_ladder": &"idle", &"turn_l_45": &"turn_l", &"turn_r_45": &"turn_r",
 	# D-111: drill / crawl / gala and club ambient clips (characters.md v1.9-v1.10).
 	&"drill_place": &"interact_mid", &"downed_crawl": &"downed", &"bartender_wipe": &"browse",
 	&"bartender_pour": &"browse", &"bouncer_idle": &"idle", &"teller_count": &"desk_type", &"dance_a": &"idle",
@@ -220,6 +221,8 @@ var held_visuals: HeldVisuals = null
 var lod: AnimLod = null
 ## D-115: a loop cut by a one-shot resumes its running phase (LoopResume).
 var loop_resume: LoopResume = null
+## D-116: turn in place (TurnInPlace).
+var turn: TurnInPlace = null
 ## WeaponDef.weapon_class of the held weapon (-1 without a WeaponDef): the D-116 class reloads.
 var weapon_class: int = -1
 ## Lead ruling (b): the upper-body hit-zone flinch layer (every animated body); see AnimLayers.play_flinch.
@@ -350,6 +353,7 @@ func _init() -> void:
 	held_visuals = HeldVisuals.new(self)
 	lod = AnimLod.new(self)
 	loop_resume = LoopResume.new(self)
+	turn = TurnInPlace.new(self)
 
 
 func _ready() -> void:
@@ -452,7 +456,6 @@ func tick(delta: float) -> void:
 	_oneshot_left = maxf(_oneshot_left - delta, 0.0)
 	_update_start_stop(tw)
 	_aim_hold_left = maxf(_aim_hold_left - delta, 0.0)
-	_turning_left = maxf(_turning_left - delta, 0.0)
 	_update_crew_state_clips(delta)
 	if crew_action != null:
 		crew_action.update(delta)
@@ -982,32 +985,9 @@ func _update_velocity(delta: float, tw: AnimTweak) -> void:
 		_vel = Vector3.ZERO
 
 
+## Turn in place (TurnInPlace: turn_*_45 / turn_l / turn_r, the rig yaw matched to the clip).
 func _update_turn(delta: float, tw: AnimTweak) -> void:
-	var body_yaw: float = _body.global_rotation.y if _body.is_inside_tree() else _body.rotation.y
-	if clip == &"":
-		# First frame: the spawner places the body after add_child (bind() saw yaw 0): no spawn spin.
-		_visual_yaw = body_yaw
-		_prev_body_yaw = body_yaw
-	var standing: bool = horizontal_speed() <= tw.move_threshold_mps
-	var held: bool = (_npc != null and not _npc.alive) or _interact_kind != &""
-	var now: StringName = choose_clip() if standing and not held else &""
-	if held:
-		pass
-	elif not standing or POSE_CLIPS.has(now) or ACTION_CLIPS.has(now):
-		_visual_yaw = body_yaw
-		_turning_left = 0.0
-	else:
-		var diff: float = wrapf(body_yaw - _visual_yaw, -PI, PI)
-		var step: float = deg_to_rad(tw.turn_clip_deg) / maxf(tw.turn_time_s, 0.01) * delta
-		var body_turned: bool = absf(wrapf(body_yaw - _prev_body_yaw, -PI, PI)) > 0.0005
-		if _turning_left <= 0.0 and absf(diff) > deg_to_rad(tw.turn_threshold_deg):
-			_turning_left = tw.turn_time_s
-			play_oneshot(&"turn_l" if diff > 0.0 else &"turn_r", tw.turn_time_s)
-		if _turning_left > 0.0 or not body_turned:
-			_visual_yaw += clampf(diff, -step, step)
-	_prev_body_yaw = body_yaw
-	if rig != null:
-		rig.rotation.y = _rig_base_yaw + wrapf(_visual_yaw - body_yaw, -PI, PI)
+	turn.update(delta, tw)
 
 
 func _apply(want: StringName, speed: float, tw: AnimTweak) -> void:
