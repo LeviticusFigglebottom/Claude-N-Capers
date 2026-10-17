@@ -33647,6 +33647,7 @@ shape = SubResource("gn_1205")
 [node name="CameraC11" type="Node3D" parent="Gameplay/Cameras" unique_id=103660 instance=ExtResource("194_gn")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 43.8, 8, 24.6)
 script = ExtResource("195_gn")
+range_m = 20.0
 pan_deg = 40.0
 visual_scene = ExtResource("196_gn")
 objective_tag = &"security_camera"
@@ -33657,6 +33658,7 @@ metadata/camera_id = "C11"
 [node name="CameraC14" type="Node3D" parent="Gameplay/Cameras" unique_id=103661 instance=ExtResource("194_gn")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 31.8, -1, 8.8)
 script = ExtResource("195_gn")
+range_m = 20.0
 pan_deg = 40.0
 visual_scene = ExtResource("196_gn")
 objective_tag = &"security_camera"
@@ -35425,6 +35427,7 @@ metadata/room = "SC"
 [node name="CameraC1" type="Node3D" parent="Variants/Group_camera/Slot_cam_a" unique_id=103809 instance=ExtResource("194_gn")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.4, 3.2, 26.8)
 script = ExtResource("195_gn")
+range_m = 20.0
 pan_deg = 40.0
 visual_scene = ExtResource("196_gn")
 objective_tag = &"security_camera"
@@ -35435,6 +35438,7 @@ metadata/camera_id = "C1"
 [node name="CameraC3" type="Node3D" parent="Variants/Group_camera/Slot_cam_a" unique_id=103810 instance=ExtResource("194_gn")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -0.70000076, 3.2, 6)
 script = ExtResource("195_gn")
+range_m = 20.0
 pan_deg = 40.0
 visual_scene = ExtResource("196_gn")
 objective_tag = &"security_camera"
@@ -35445,6 +35449,7 @@ metadata/camera_id = "C3"
 [node name="CameraC6" type="Node3D" parent="Variants/Group_camera/Slot_cam_a" unique_id=103811 instance=ExtResource("194_gn")]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 19.499998, 3.2, -2.2)
 script = ExtResource("195_gn")
+range_m = 20.0
 pan_deg = 40.0
 visual_scene = ExtResource("196_gn")
 objective_tag = &"security_camera"
@@ -35455,6 +35460,7 @@ metadata/camera_id = "C6"
 [node name="CameraC7" type="Node3D" parent="Variants/Group_camera/Slot_cam_a" unique_id=103812 instance=ExtResource("194_gn")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 23.324999, 3.2, -4.15)
 script = ExtResource("195_gn")
+range_m = 20.0
 pan_deg = 40.0
 visual_scene = ExtResource("196_gn")
 objective_tag = &"security_camera"
@@ -35465,6 +35471,7 @@ metadata/camera_id = "C7"
 [node name="CameraC9" type="Node3D" parent="Variants/Group_camera/Slot_cam_a" unique_id=103813 instance=ExtResource("194_gn")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -0.70000076, 8.6, 14.5)
 script = ExtResource("195_gn")
+range_m = 20.0
 pan_deg = 40.0
 visual_scene = ExtResource("196_gn")
 objective_tag = &"security_camera"
@@ -35475,6 +35482,7 @@ metadata/camera_id = "C9"
 [node name="CameraC13" type="Node3D" parent="Variants/Group_camera/Slot_cam_a" unique_id=103814 instance=ExtResource("194_gn")]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -9.35, 8.2, 4)
 script = ExtResource("195_gn")
+range_m = 20.0
 pan_deg = 40.0
 visual_scene = ExtResource("196_gn")
 objective_tag = &"security_camera"
@@ -35492,6 +35500,7 @@ metadata/room = "SC"
 [node name="CameraC2" type="Node3D" parent="Variants/Group_camera/Slot_cam_b" unique_id=103816 instance=ExtResource("194_gn")]
 transform = Transform3D(0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, 0.70710677, 18.4, 5.1, 19)
 script = ExtResource("195_gn")
+range_m = 20.0
 pan_deg = 40.0
 visual_scene = ExtResource("269_gn")
 objective_tag = &"security_camera"
@@ -35502,6 +35511,7 @@ metadata/camera_id = "C2"
 [node name="CameraC4" type="Node3D" parent="Variants/Group_camera/Slot_cam_b" unique_id=103817 instance=ExtResource("194_gn")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 31.199999, 3.2, 20)
 script = ExtResource("195_gn")
+range_m = 20.0
 pan_deg = 40.0
 visual_scene = ExtResource("196_gn")
 objective_tag = &"security_camera"
@@ -35512,6 +35522,7 @@ metadata/camera_id = "C4"
 [node name="CameraC6" type="Node3D" parent="Variants/Group_camera/Slot_cam_b" unique_id=103818 instance=ExtResource("194_gn")]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 19.499998, 3.2, -2.2)
 script = ExtResource("195_gn")
+range_m = 20.0
 pan_deg = 40.0
 visual_scene = ExtResource("196_gn")
 objective_tag = &"security_camera"
@@ -35522,6 +35533,7 @@ metadata/camera_id = "C6"
 [node name="CameraC8" type="Node3D" parent="Variants/Group_camera/Slot_cam_b" unique_id=103819 instance=ExtResource("194_gn")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -12.8, 3, 6)
 script = ExtResource("195_gn")
+range_m = 20.0
 pan_deg = 40.0
 visual_scene = ExtResource("196_gn")
 objective_tag = &"security_camera"
@@ -35532,6 +35544,7 @@ metadata/camera_id = "C8"
 [node name="CameraC10" type="Node3D" parent="Variants/Group_camera/Slot_cam_b" unique_id=103820 instance=ExtResource("194_gn")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 19.999998, 8.6, 9.1)
 script = ExtResource("195_gn")
+range_m = 20.0
 pan_deg = 40.0
 visual_scene = ExtResource("196_gn")
 objective_tag = &"security_camera"
@@ -35542,6 +35555,7 @@ metadata/camera_id = "C10"
 [node name="CameraC12" type="Node3D" parent="Variants/Group_camera/Slot_cam_b" unique_id=103821 instance=ExtResource("194_gn")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 19.199999, -1.4, 4)
 script = ExtResource("195_gn")
+range_m = 20.0
 pan_deg = 40.0
 visual_scene = ExtResource("196_gn")
 objective_tag = &"security_camera"
@@ -35559,6 +35573,7 @@ metadata/room = "SC"
 [node name="CameraC1" type="Node3D" parent="Variants/Group_camera/Slot_cam_c" unique_id=103823 instance=ExtResource("194_gn")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.4, 3.2, 26.8)
 script = ExtResource("195_gn")
+range_m = 20.0
 pan_deg = 40.0
 visual_scene = ExtResource("196_gn")
 objective_tag = &"security_camera"
@@ -35569,6 +35584,7 @@ metadata/camera_id = "C1"
 [node name="CameraC4" type="Node3D" parent="Variants/Group_camera/Slot_cam_c" unique_id=103824 instance=ExtResource("194_gn")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 31.199999, 3.2, 20)
 script = ExtResource("195_gn")
+range_m = 20.0
 pan_deg = 40.0
 visual_scene = ExtResource("196_gn")
 objective_tag = &"security_camera"
@@ -35579,6 +35595,7 @@ metadata/camera_id = "C4"
 [node name="CameraC5" type="Node3D" parent="Variants/Group_camera/Slot_cam_c" unique_id=103825 instance=ExtResource("194_gn")]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -9.35, 2.8, 4)
 script = ExtResource("195_gn")
+range_m = 20.0
 pan_deg = 40.0
 visual_scene = ExtResource("196_gn")
 objective_tag = &"security_camera"
@@ -35589,6 +35606,7 @@ metadata/camera_id = "C5"
 [node name="CameraC8" type="Node3D" parent="Variants/Group_camera/Slot_cam_c" unique_id=103826 instance=ExtResource("194_gn")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -12.8, 3, 6)
 script = ExtResource("195_gn")
+range_m = 20.0
 pan_deg = 40.0
 visual_scene = ExtResource("196_gn")
 objective_tag = &"security_camera"
@@ -35599,6 +35617,7 @@ metadata/camera_id = "C8"
 [node name="CameraC10" type="Node3D" parent="Variants/Group_camera/Slot_cam_c" unique_id=103827 instance=ExtResource("194_gn")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 19.999998, 8.6, 9.1)
 script = ExtResource("195_gn")
+range_m = 20.0
 pan_deg = 40.0
 visual_scene = ExtResource("196_gn")
 objective_tag = &"security_camera"
@@ -35609,6 +35628,7 @@ metadata/camera_id = "C10"
 [node name="CameraC12" type="Node3D" parent="Variants/Group_camera/Slot_cam_c" unique_id=103828 instance=ExtResource("194_gn")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 19.199999, -1.4, 4)
 script = ExtResource("195_gn")
+range_m = 20.0
 pan_deg = 40.0
 visual_scene = ExtResource("196_gn")
 objective_tag = &"security_camera"
