@@ -129,6 +129,10 @@ const TAG_LANTERN_MOVED: StringName = &"canvas_lantern_moved"
 ## KEYCARD LD art door; TR and the AS vault door list them already): authorised when they walk in.
 const COURIER_SPAWN_TAG: StringName = &"guard_vaultline"
 const INSPECTOR_SPAWN_TAG: StringName = &"guard_inspection"
+## B3 (LEAD: the doc wins): the inspectors' two Halberd escorts, at GUARD SpawnPoints tagged this (ENV C markers at
+## LD). They walk with the inspectors and can radio the empty slot too; no markers = no escorts (logged once).
+const ESCORT_SPAWN_TAG: StringName = &"guard_inspection_escort"
+const ESCORT_COUNT: int = 2
 ## Courier errand states (`courier_state`): walking to the slot, carrying to AS, the canvas put down on the AS rack
 ## (`stored`), the carrier stopped (killed / intimidated / fighting: `intercepted`), the slot found empty (`alarm`).
 const COURIER_TO_SLOT: StringName = &"to_slot"
@@ -485,7 +489,7 @@ func _on_timed_spawn(id: StringName, tag: StringName) -> void:
 	if id == RARE_VAULTLINE_ID:
 		_start_couriers(spawned)
 	elif id == RARE_INSPECTION_ID:
-		_start_inspectors(spawned)
+		_start_inspectors(spawned + _spawn_escorts())
 
 
 # --- Vaultline couriers (QC-57) --------------------------------------------------------------------
@@ -563,6 +567,18 @@ func _courier_carry() -> void:
 
 # --- Insurance inspectors (GN-8 B3) ----------------------------------------------------------------
 
+## B3: the Halberd escorts at their LD markers (empty when the map has none).
+func _spawn_escorts() -> Array[Node]:
+	if _runtime == null or _runtime.map == null:
+		return []
+	for n: Node in _runtime.map.get_slots(G.GUARD_SPAWN):
+		var sp: SpawnPoint = n as SpawnPoint
+		if sp != null and sp.tags.has(ESCORT_SPAWN_TAG):
+			return spawn_guards(ESCORT_COUNT, ESCORT_SPAWN_TAG)
+	Log.info(&"mission", "GN B3: no %s SpawnPoint, inspectors walk in without escorts" % ESCORT_SPAWN_TAG)
+	return []
+
+
 ## The inspectors walk in at LD (last call + delay_s) and head for the rolled centrepiece slot.
 func _start_inspectors(spawned: Array[Node]) -> void:
 	if inspector_state != &"":
@@ -576,6 +592,7 @@ func _start_inspectors(spawned: Array[Node]) -> void:
 		return
 	for d: Door in _doors(TAG_ART_DOOR, PATHS_ART_DOOR):
 		d.authorise_npc_tag(INSPECTOR_SPAWN_TAG)
+		d.authorise_npc_tag(ESCORT_SPAWN_TAG)
 	inspector_state = INSPECTOR_TO_SLOT
 	_group_walk(inspectors, _stand_of(slot))
 	start_timer(&"inspector_tick", COURIER_TICK_S, _inspector_tick)

@@ -162,3 +162,36 @@ func test_gn_inspectors_walk_to_the_treasury_slot() -> void:
 		(_inspectors()[0] as NpcBase).global_position if not _inspectors().is_empty() else Vector3.ZERO])
 	assert_eq(_state(), &"satisfied", "and find it in order")
 	assert_false(_rt.went_loud, "no alarm on the way")
+
+
+## B3 (LEAD ruling, the doc wins): with C's two `guard_inspection_escort` markers, two Halberd escorts walk in with
+## the inspectors and head for the slot too; their tag map gives them the Halberd look.
+func test_gn_inspectors_bring_two_escorts_when_the_markers_exist() -> void:
+	if not await _launch():
+		return
+	var spawns: Node = _rt.map.get_node(^"Spawns")
+	for i: int in 2:
+		var sp: SpawnPoint = SpawnPoint.new()
+		sp.name = "TestEscort%d" % i
+		sp.kind = SpawnPoint.Kind.GUARD
+		sp.tags = [&"scripted", &"guard_inspection_escort"]
+		spawns.add_child(sp)
+		sp.global_position = Vector3(40.5 + 1.5 * i, 0.0, 4.5)
+	await _spawn_inspectors()
+	assert_eq(_inspectors().size(), 4, "two inspectors + two escorts walk in")
+	assert_eq(_state(), &"to_slot", "all head for the slot")
+	var escorts: int = 0
+	for c: Variant in _inspectors():
+		var tags: Array = (c as NpcBase).spawn_info.get("tags", []) as Array
+		if tags.has(&"guard_inspection_escort"):
+			escorts += 1
+	assert_eq(escorts, 2, "two of them are the escorts")
+	var looks: Dictionary = NpcVisuals.tweak().heist_tag_characters[&"gallery_night"]
+	assert_true(looks.has(&"guard_inspection_escort"), "escorts have a GN look")
+
+
+func test_gn_inspectors_without_escort_markers_walk_alone() -> void:
+	if not await _launch():
+		return
+	await _spawn_inspectors()
+	assert_eq(_inspectors().size(), 2, "no escort markers: the two inspectors only")

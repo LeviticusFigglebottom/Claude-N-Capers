@@ -36,6 +36,7 @@ heist_tag_characters = {
 &"civ_waitstaff": [&"npc_penthouse_staff", &"gallery_waiter"],
 &"guard_hall": [&"gallery_guard"],
 &"guard_inspection": [&"gallery_guard", &"gallery_guard_b"],
+&"guard_inspection_escort": [&"gallery_guard", &"gallery_guard_b"],
 &"guard_mews": [&"gallery_guard_b"],
 &"guard_operator": [&"gallery_guard_b"],
 &"guard_rover_basement": [&"gallery_guard"],
