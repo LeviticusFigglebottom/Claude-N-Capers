@@ -1,0 +1,13 @@
+asset: mask_base_keystone
+script: tools/blender/masks/base_keystone.py
+params: {"brow": 1.6, "chamfer": 0.0016, "cheek": 1.3, "coverage": "full", "edge_res": 0.0075, "eye_height": 0.013, "eye_shape": "almond", "eye_spacing": 0.068, "eye_tilt_deg": -4.0, "eye_width": 0.032, "face_half_width": 0.11, "fit_clearance": 0.0045, "jaw": 1.0, "mouth": "closed", "mouth_v": -0.074, "mouth_width": 0.04, "nose": 1.7, "res": 0.011, "res_back": 0.016, "thickness": 0.005, "wrap_radius": 0.11}
+seed: 459179172  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category masks --asset mask_base_keystone
+edit policy: generated file, never edit by hand; change the script and rebuild
+coverage: full
+fit: crew face envelope (_crew_face_envelope.json), clearance 4.5 mm, max lift 5.4 mm
+pivot: face centre: midway between the eye centres at eye (cornea) depth; Blender +Y = Godot -Z = forward, +Z = up
+tri_budget: 8000
+tris_lod0: 7816
+uv0: front planar along -Z (Godot), x 0..1 = +X..-X (viewer's left to right), y 0..1 = top..bottom; bounds x +-0.1031 m, z -0.1230..0.1009 m
