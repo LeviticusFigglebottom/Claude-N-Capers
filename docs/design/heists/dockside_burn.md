@@ -468,6 +468,17 @@ start of a `fog_lifts` run until the fog thins at 6:00 (QC-25 hook, DB-6: `set_s
 (`perch_roof`, +7.2) has LOS to S3 (54 m) and the yard. D1's top (`perch_stack`, +5.2) has LOS to S1
 (73 m, through fog) and the whole yard. Counter-sniping a Longshot is the player answer.
 
+### Glazing (D-142)
+Clear glass is see-through for stealth vision (D-142). Its collider joins the `see_through` group and still
+blocks movement and bullets. Frosted, tinted, mirrored and privacy glass stays opaque. The heist is
+loud-only, so this is for consistency only.
+- **Clear (11 colliders):** O1 reception windows N ×2, M2 break room windows N ×2, M1 count room window N (W),
+  the hall clerestory, the GH gatehouse window, the QS net store's pontoon window, and the roof skylights over
+  C1, SP and C2.
+- **Opaque:** the O2 security room (dispatch and CCTV) windows N ×2 (privacy; `FROSTED_GLAZING` in
+  build_greybox.gd). M1 window N (E) is the PO6-17 breach window, an opaque infill until it is blown.
+- **Not map-built:** the Pier 10 crane cab's tinted windows are part of the landmark visual.
+
 ## Stealth routes
 **None.** Dockside Burn is loud-only (S11.3): the crew starts masked and the heist is LOUD from the
 first frame. The template section is kept for the format. The equivalent decision is the

@@ -21,6 +21,9 @@
 ## `window` prefabs on the EB / SL gameplay windows (F7); other windows stay greybox glass panes.
 extends "res://world/heists/gallery_night/greybox/gn_npc.gd"
 
+## D-142: rooms whose greybox window panes are obscured glass (privacy; opaque for stealth vision). Every other pane is
+## clear (`see_through`).
+const FROSTED_PANE_ROOMS: Array[String] = ["SC"]  # security room: the Argus operator's office onto the Mews
 const FLOOR_INDEX: Dictionary = {"B": 0, "G": 1, "U": 2, "R": 3}
 const AM: GDScript = preload("res://world/heists/shared/assault_markers.gd")  # PO6-17 AssaultEvents markers
 const AE: GDScript = preload("res://world/heists/gallery_night/greybox/gn_assault.gd")  # their data + breach holes
@@ -287,7 +290,10 @@ func _build_walls(parent: Node3D) -> void:
 			else Vector3(fx - 0.02, float(o2[6]), float(o2[4]))
 		var mx: Vector3 = Vector3(float(o2[5]), float(o2[7]), fx + 0.02) if String(o2[2]) == "x" \
 			else Vector3(fx + 0.02, float(o2[7]), float(o2[5]))
-		box(glass, "Pane%02d_%s" % [i, String(o2[8]).get_slice(" ", 0)], mn, mx, "glass")
+		var room: String = String(o2[8]).get_slice(" ", 0)
+		var pane: StaticBody3D = box(glass, "Pane%02d_%s" % [i, room], mn, mx, "glass")
+		if not room in FROSTED_PANE_ROOMS:
+			pane.add_to_group(&"see_through", true)  # D-142: clear glazing; stealth vision sees through it
 
 
 ## Rehearsal F1: the floor slabs stop at the facade's inner face and the outside grade / areaway floor at its centre
@@ -436,7 +442,7 @@ func _build_oculus(parent: Node3D) -> void:
 	box(oc, "LiningS", Vector3(x0 - t, y0, z1), Vector3(x1 + t, y1, z1 + t), "wall")
 	box(oc, "LiningW", Vector3(x0 - t, y0, z0), Vector3(x0, y1, z1), "wall")
 	box(oc, "LiningE", Vector3(x1, y0, z0), Vector3(x1 + t, y1, z1), "wall")
-	box(oc, "Glass", Vector3(x0, y2 - 0.04, z0), Vector3(x1, y2, z1), "glass")
+	box(oc, "Glass", Vector3(x0, y2 - 0.04, z0), Vector3(x1, y2, z1), "glass").add_to_group(&"see_through", true)  # D-142
 
 
 ## Stair SS: per storey a west up-flight (north from z 6.35), the half landing, an east return flight (south to

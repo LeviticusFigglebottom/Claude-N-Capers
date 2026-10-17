@@ -41,8 +41,8 @@ preplanning = {
 "point_ids": [&"pp_fire_escape"]
 },
 &"asset.inside_keycard": {
-"cost": 3000,
-"favors": 3,
+"cost": 2500,
+"favors": 2,
 "force_variants": {},
 "point_ids": [&"pp_vault_ops"]
 },

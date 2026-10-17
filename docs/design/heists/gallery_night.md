@@ -612,6 +612,21 @@ and become `validate_level` checks built at G1 (design note; not implemented yet
 | `cam_b` | C2, C4, C6, C8, C10, C12 | BC and UC free (C5/C13 off) | the roof deck → SS; the Mews ladder (C7 off) |
 | `cam_c` | C1, C4, C5, C8, C10, C12 | UC free; BC watched (SC needs ECM or the operator) | the LD personnel door (C6/C7 off); the roof deck → SS |
 
+### Glazing (D-142)
+Clear glass is see-through for stealth vision (D-142). Its collider joins the `see_through` group and still
+blocks movement and bullets. Frosted, tinted, mirrored and privacy glass stays opaque.
+- **Clear (14 greybox panes):**
+  - Ground floor: the BR break room and RG registrar windows N (Mews), and the CK cloakroom ×2 and GS gift
+    shop ×2 shop-front glazing (Parade).
+  - Upper floor: the CO curator and FS windows N (Mews) and the CS sawtooth-studio windows E ×5 (Wexley St).
+  - Roof: the oculus glass (the P5 rappel entry).
+- **Opaque:** the SC security room window N (privacy; `FROSTED_PANE_ROOMS` in build_greybox.gd). The AO
+  window is the PO6-17 breach infill. The laylights are ceilings, and the lantern glazing is roof visual only.
+- **Not map-built:** the EB windows ×5 and the SL loggia windows ×4 are Window prefabs, see-through through
+  their GlassBody (ENV A). The EB windows have closed blinds (Room list), so they should not be (open question).
+  The Treasury vitrines are DisplayCase prefabs, and the DC / EB decor vitrines are catalog dressing.
+  Neither is tagged.
+
 ## Stealth routes
 Spawns: the portico (default, unmasked guests), the Mews (`pp_spawn_mews`, unmasked, outside the
 LD), the roof deck (`pp_spawn_roof`, unmasked on a RESTRICTED roof, masked to move freely).

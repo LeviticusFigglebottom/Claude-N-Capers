@@ -1,0 +1,11 @@
+[FLASH t=1.1] pilot: calibrated 0.001600 rad/px yaw, 0.001600 rad/px pitch (settings formula said (0.0016, 0.0016))
+[FLASH t=2.4] masked true at (31.5, 0.0, -38.5)
+[FLASH t=7.4] pilot: t=5 at (29.5, 0.0, -33.5) corner (25.9, 0.2, -32.9) yaw_err 0.00 fwd=true path=12 mouse_mode=2 state=0 look=(-10.82,0.00) pin_yaw=-10.819297050158 bot=false
+[FLASH t=13.5] pilot: t=5 at (23.3, 0.0, -32.0) corner (22.9, 0.2, -31.4) yaw_err 0.00 fwd=true path=6 mouse_mode=2 state=0 look=(-10.06,0.00) pin_yaw=-10.0620446551505 bot=false
+[FLASH t=20.4] pilot: t=5 at (20.9, 0.0, -25.7) corner (19.8, 0.2, -22.5) yaw_err -0.00 fwd=true path=74 mouse_mode=2 state=0 look=(-16.02,0.00) pin_yaw=-16.0200744500661 bot=false
+[FLASH t=26.5] pilot: t=5 at (18.8, 0.0, -19.4) corner (18.1, 0.2, -17.0) yaw_err -0.00 fwd=true path=69 mouse_mode=2 state=0 look=(-22.30,0.00) pin_yaw=-22.3051457153241 bot=false
+[FLASH t=32.6] pilot: t=5 at (16.8, 0.0, -13.0) corner (16.4, 0.2, -11.8) yaw_err -0.00 fwd=true path=64 mouse_mode=2 state=0 look=(-28.59,0.00) pin_yaw=-28.5932477253344 bot=false
+[FLASH t=38.7] pilot: t=5 at (14.8, 0.0, -6.7) corner (14.4, 0.2, -5.5) yaw_err -0.00 fwd=true path=61 mouse_mode=2 state=0 look=(-34.88,0.00) pin_yaw=-34.8781586627709 bot=false
+[FLASH t=44.9] pilot: t=5 at (9.7, 0.0, -2.6) corner (6.4, 0.2, -0.5) yaw_err 0.00 fwd=true path=59 mouse_mode=2 state=0 look=(-35.57,0.00) pin_yaw=-35.5727166034456 bot=false
+[FLASH t=51.0] pilot: t=5 at (4.3, 0.0, 2.6) corner (4.7, 0.2, 2.3) yaw_err 2.23 fwd=false path=52 mouse_mode=2 state=0 look=(-34.50,0.00) pin_yaw=-34.311241112079 bot=false
+[FLASH t=53.6] pilot: use O1Corridor (open_door) -> OK in 0.0 s

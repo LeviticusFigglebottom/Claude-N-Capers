@@ -239,7 +239,9 @@ func _build_windows(gp: Node3D) -> void:
 		prefab(wins, "window", String(w[0]), pos, yaw,
 			{"breakable": true, "openable": false, "visual_scene": catalog_scene(String(w[1])), "objective_tag": &"hall_window"},
 			Vector3(pos.x, 0.0, pos.z) + front * 0.7, {"kind": "window"})
-		box(gl, String(w[0]) + "Blocker", Vector3(pos.x - 1.5, pos.y, pos.z - 0.02), Vector3(pos.x + 1.5, pos.y + 2.4, pos.z + 0.02), "")
+		var blocker: Node3D = box(gl, String(w[0]) + "Blocker", Vector3(pos.x - 1.5, pos.y, pos.z - 0.02),
+			Vector3(pos.x + 1.5, pos.y + 2.4, pos.z + 0.02), "")
+		blocker.add_to_group(&"see_through", true)  # D-142: clear glass (with the prefab's GlassBody)
 
 
 ## Vault: round door (VAULT lock, 2.2 m; prop_vault_door_round), the thermal drill point (loud), the

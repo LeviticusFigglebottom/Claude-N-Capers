@@ -132,6 +132,60 @@ scale = 8.0
 id = &"mask_pattern.starburst"
 display_name = "Starburst"
 
+[sub_resource type="Resource" id="Resource_d4_guilloche"]
+script = ExtResource("2_835kq")
+texture_id = &"tex_mask_pattern_guilloche"
+texture_path = "res://assets/masks/patterns/tex_mask_pattern_guilloche.png"
+procedural = 14
+scale = 8.0
+id = &"mask_pattern.guilloche"
+display_name = "Guilloche"
+
+[sub_resource type="Resource" id="Resource_d4_vault_bolts"]
+script = ExtResource("2_835kq")
+texture_id = &"tex_mask_pattern_vault_bolts"
+texture_path = "res://assets/masks/patterns/tex_mask_pattern_vault_bolts.png"
+procedural = 15
+scale = 8.0
+id = &"mask_pattern.vault_bolts"
+display_name = "Vault Bolts"
+
+[sub_resource type="Resource" id="Resource_d4_acanthus"]
+script = ExtResource("2_835kq")
+texture_id = &"tex_mask_pattern_acanthus"
+texture_path = "res://assets/masks/patterns/tex_mask_pattern_acanthus.png"
+procedural = 16
+scale = 1.0
+id = &"mask_pattern.acanthus"
+display_name = "Acanthus"
+
+[sub_resource type="Resource" id="Resource_d4_facets"]
+script = ExtResource("2_835kq")
+texture_id = &"tex_mask_pattern_facets"
+texture_path = "res://assets/masks/patterns/tex_mask_pattern_facets.png"
+procedural = 17
+scale = 8.0
+id = &"mask_pattern.facets"
+display_name = "Facets"
+
+[sub_resource type="Resource" id="Resource_d4_time_lock_dial"]
+script = ExtResource("2_835kq")
+texture_id = &"tex_mask_pattern_time_lock_dial"
+texture_path = "res://assets/masks/patterns/tex_mask_pattern_time_lock_dial.png"
+procedural = 18
+scale = 8.0
+id = &"mask_pattern.time_lock_dial"
+display_name = "Time Lock"
+
+[sub_resource type="Resource" id="Resource_d4_stencil"]
+script = ExtResource("2_835kq")
+texture_id = &"tex_mask_pattern_stencil"
+texture_path = "res://assets/masks/patterns/tex_mask_pattern_stencil.png"
+procedural = 19
+scale = 6.0
+id = &"mask_pattern.stencil"
+display_name = "Stencil"
+
 [resource]
 script = ExtResource("3_j0gmk")
-entries = Array[ExtResource("1_0tqkf")]([SubResource("Resource_o1gxy"), SubResource("Resource_67ef6"), SubResource("Resource_4f7mj"), SubResource("Resource_phs65"), SubResource("Resource_ca77l"), SubResource("Resource_8wpff"), SubResource("Resource_xk0rb"), SubResource("Resource_sawdh"), SubResource("Resource_b415_scales"), SubResource("Resource_b415_circuit"), SubResource("Resource_b415_prowl"), SubResource("Resource_b415_halftone"), SubResource("Resource_b415_crackle"), SubResource("Resource_b415_starburst")])
+entries = Array[ExtResource("1_0tqkf")]([SubResource("Resource_o1gxy"), SubResource("Resource_67ef6"), SubResource("Resource_4f7mj"), SubResource("Resource_phs65"), SubResource("Resource_ca77l"), SubResource("Resource_8wpff"), SubResource("Resource_xk0rb"), SubResource("Resource_sawdh"), SubResource("Resource_b415_scales"), SubResource("Resource_b415_circuit"), SubResource("Resource_b415_prowl"), SubResource("Resource_b415_halftone"), SubResource("Resource_b415_crackle"), SubResource("Resource_b415_starburst"), SubResource("Resource_d4_guilloche"), SubResource("Resource_d4_vault_bolts"), SubResource("Resource_d4_acanthus"), SubResource("Resource_d4_facets"), SubResource("Resource_d4_time_lock_dial"), SubResource("Resource_d4_stencil")])

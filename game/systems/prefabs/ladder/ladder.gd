@@ -20,6 +20,9 @@
 ## areaway ladder); GameplayPrefab `set_enabled` / `enabled_at_start` (replicated "pe") = present at all (hidden,
 ## no collision, not climbable, NavLink off: a rope ladder dropped down a breached hole). Climbable =
 ## `is_climbable()` = both; the NavLink always follows `is_climbable()`.
+## OF-A6 (D-136, lead): `height_m` may change at runtime (the OF rope ladder stowed at 3.2 m, dropped to its
+## `burn_height_m` 4.0 m at the burn-through): the placeholder's rails / Top and the NavLink ends re-fit (replicated,
+## NetEntityCodec GENERIC_PROPS). An art visual keeps its own Top marker.
 class_name Ladder
 extends GameplayPrefab
 
@@ -37,7 +40,13 @@ const GRAB_HEIGHT_M: float = 0.6
 const NAV_LAYER: int = 8
 const NAV_LINK_NAME: String = "NavLink"
 
-@export var height_m: float = 3.0
+@export var height_m: float = 3.0:
+	set(v):
+		if is_equal_approx(height_m, v):
+			return
+		height_m = v
+		if _nav_link != null:
+			_fit_height()
 ## False: nobody can climb and the NavLink is disabled (the ladder stays visible; see set_enabled).
 @export var usable: bool = true:
 	set(v):
@@ -60,17 +69,30 @@ func required_visual_nodes() -> PackedStringArray:
 
 
 func _prefab_ready() -> void:
-	if using_placeholder:
-		var rails: Node3D = visual_node("Rails") as Node3D
-		if rails != null:
-			rails.scale.y = height_m / PLACEHOLDER_HEIGHT_M
-		var top: Node3D = visual_node("Top") as Node3D
-		if top != null:
-			top.position.y = height_m
+	_fit_placeholder()
 	_setup_nav_link()
 	var rt: HeistRuntime = HeistRuntime.of(self)
 	if rt != null:
 		rt.add_crew_tick_handler(_on_crew_tick)
+
+
+## The placeholder's rails and Top follow height_m.
+func _fit_placeholder() -> void:
+	if not using_placeholder:
+		return
+	var rails: Node3D = visual_node("Rails") as Node3D
+	if rails != null:
+		rails.scale.y = height_m / PLACEHOLDER_HEIGHT_M
+	var top: Node3D = visual_node("Top") as Node3D
+	if top != null:
+		top.position.y = height_m
+
+
+## OF-A6: a runtime height change re-fits the placeholder and the NavLink ends.
+func _fit_height() -> void:
+	_fit_placeholder()
+	_nav_link.start_position = _local_of(bottom_position())
+	_nav_link.end_position = _local_of(top_position())
 
 
 ## OF-A2: climbable now (usable and the prefab enabled).

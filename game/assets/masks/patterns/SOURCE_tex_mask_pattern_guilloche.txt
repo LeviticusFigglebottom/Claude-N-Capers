@@ -1,0 +1,10 @@
+asset: tex_mask_pattern_guilloche
+generator: python3 tools/blender/masks/make_mask_patterns.py --only guilloche
+motif: banknote guilloche rosette: two 12-lobed interlaced ring families round the nose bridge (UV 0.5, 0.42), a 36-wave lathe-work band between two rings, a looping crown ring, fine wave ground outside
+size_px: 1024 x 1024 (supersampled 2x, box filtered); grey PNG, RED channel = pattern mask
+mapping: once over mask UV0 (x 0..1 viewer's left..right, y 0..1 forehead..chin, front-planar); drawn in physical units over 0.17 x 0.235 m
+values: 0 = MaskDef colour A, 1 = colour B (mask_surface.gdshader)
+share_b (red >= 0.5): 0.377
+import: lossless, mipmaps (filter_linear_mipmap)
+deterministic: no randomness; PNG via tools/texgen io (ENV C, read-only)
+edit policy: generated, never edit by hand
