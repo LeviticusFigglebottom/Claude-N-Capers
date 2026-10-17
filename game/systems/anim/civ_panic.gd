@@ -1,11 +1,13 @@
 ## D-116 civ panic variants (ENV D SOURCE `civ_panic_variants`) for AnimDriver. Owner: ENV A. Presentation only.
 ## The cower / flee variants themselves are AnimDriver.VARIANT_GROUPS (one index per body, hash(net_id) % 3, as the
-## surrender groups). This helper adds `panic_start` (24 f one-shot, in place, ends exactly on cower frame 0): played
-## once when a civilian first panics, before its first cower* (a civilian whose first panic clip is a flee* is
-## already running: no panic_start). Crossfades: ~0.1 s in from the ambient clip, then cower with no crossfade (the
-## exact chain), cower_b 0.2 s, cower_c 0.3 s, flee* 0.2 s. A rig without panic_start goes straight to cower* as
-## before. The host picks it from the clip the driver chooses and sends it (NetOneshot, npc_oneshot); a client plays
-## it only on that cue (start_net), never from its own alert-state cower guess.
+## surrender groups). This helper adds `panic_start` (24 f one-shot, in place, idle f0 -> cower f0): played once per
+## civilian, before its first cower* (lead fix: CivilianBrain always flees or runs to call first, then cowers on
+## arrival / a stalled flee / in place with no way out, so a first flee* no longer uses it up; a seated civilian's
+## cower_seated and a cower point's cower_stand are not cower*, so they never play it). Crossfades: ~0.1 s in from
+## the clip before (ambient or flee*), then cower with no crossfade (the exact chain), cower_b 0.2 s, cower_c 0.3 s,
+## flee* 0.2 s (it set off running again). A rig without panic_start goes straight to cower* as before. The host
+## picks it from the clip the driver chooses and sends it (NetOneshot, npc_oneshot); a client plays it only on that
+## cue (start_net), never from its own alert-state cower guess.
 class_name CivPanic
 extends RefCounted
 
@@ -51,10 +53,10 @@ func apply(want: StringName, delta: float) -> StringName:
 			return PANIC_START
 		left = 0.0  # it ran out, or the civilian set off running: the chosen clip takes over
 		return want
-	if done or fam == &"":
-		return want
+	if done or fam != &"cower":
+		return want  # a flee* first does not use it up: the real brain always runs before it cowers
 	done = true
-	if fam != &"cower" or not _d._has_clip(PANIC_START) or not Net.is_authority():
+	if not _d._has_clip(PANIC_START) or not Net.is_authority():
 		return want  # a client plays panic_start only on the host's npc_oneshot (start_net)
 	left = _length()
 	NetOneshot.relay(_d, PANIC_START, 0.0, 1.0)

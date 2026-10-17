@@ -112,20 +112,96 @@ func test_panic_start_then_cower_chain() -> void:
 		assert_eq(d.clip, c[1], "panic_start plays once per body")
 
 
-func test_running_civilian_skips_panic_start() -> void:
+## Lead fix: the real brain always runs first, so a first flee* does not use panic_start up; it plays before the
+## first cower* (once).
+func test_flee_first_then_panic_start_before_the_first_cower() -> void:
 	var npc: NpcBase = _civ(1, true)
 	var d: AnimDriver = AnimDriver.of(npc)
 	npc.alert_state = Enums.AlertState.PANICKED
 	_hint(npc, &"flee")
 	npc.velocity = Vector3(0, 0, -4.0)
 	d.tick(DT)
-	assert_eq(d.clip, &"flee_b", "a first flee* skips panic_start")
-	assert_true(d.last_net_oneshot.is_empty(), "no npc_oneshot without a panic_start")
+	assert_eq(d.clip, &"flee_b", "a first flee* runs at once")
+	assert_true(d.last_net_oneshot.is_empty(), "no npc_oneshot while fleeing")
 	assert_near(d.player.speed_scale, 1.0, 0.001, "flee_b runs at flee's 4.0 m/s")
 	npc.velocity = Vector3.ZERO
 	_hint(npc, &"cower")
 	d.tick(DT)
-	assert_eq(d.clip, &"cower_b", "no panic_start later either")
+	assert_eq(d.clip, &"panic_start", "arrived: panic_start before the first cower")
+	assert_eq(d.last_net_oneshot, [&"panic_start", 0.0, 1.0], "sent to the clients")
+	for _i: int in 60:
+		d.tick(DT)
+	assert_eq(d.clip, &"cower_b", "then cower_b")
+	_hint(npc, &"flee")
+	npc.velocity = Vector3(0, 0, -4.0)
+	d.tick(DT)
+	npc.velocity = Vector3.ZERO
+	_hint(npc, &"cower")
+	d.tick(DT)
+	assert_eq(d.clip, &"cower_b", "once per body: no panic_start at the next cower")
+
+
+## The real CivilianBrain panic path (unit_map, a civilian on the code-built rig + D's clips): notify_crew_spotted with
+## no phone -> PANICKED, FLEE (flee*), then the brain cowers on arrival -> panic_start once, sent as npc_oneshot,
+## then this body's cower*.
+func test_real_brain_panic_plays_panic_start_once() -> void:
+	var rt: HeistRuntime = await HeistLauncher.launch(&"unit_map", 4242, Enums.Difficulty.ROUTINE, self,
+		{"map_packed": ATestMaps.basic(0, 1)})
+	var civ: NpcBase = rt.npcs(&"civilian")[0] as NpcBase
+	var visual: Node3D = civ.get_node_or_null(^"Visual") as Node3D
+	if visual == null:
+		visual = Node3D.new()
+		visual.name = "Visual"
+		civ.add_child(visual)
+	for c: Node in visual.get_children():
+		c.queue_free()
+	var rig: Node3D = ANIM_TEST._test_rig()
+	var lib: AnimationLibrary = (rig.get_node(^"AnimationPlayer") as AnimationPlayer).get_animation_library(
+		AnimDriver.LIBRARY)
+	for c: StringName in NEW_LOOPS:
+		var a: Animation = Animation.new()
+		a.length = 1.0
+		a.loop_mode = Animation.LOOP_LINEAR
+		lib.add_animation(c, a)
+	var o: Animation = Animation.new()
+	o.length = PANIC_LEN
+	lib.add_animation(&"panic_start", o)
+	await wait_frames(1)
+	visual.add_child(rig)
+	var d: AnimDriver = AnimDriver.ensure(civ)
+	assert_true(d != null and d.player != null, "the civilian is animated")
+	if d == null or d.player == null:
+		rt.teardown()
+		return
+	civ.global_position = Vector3(0, 0.05, 0)
+	var crew: CrewController = rt.crew_controller(0) as CrewController
+	crew.set_masked(true)
+	rt.teleport_crew(0, Transform3D(Basis.IDENTITY, Vector3(0, 0.05, 3)))
+	await wait_physics_frames(3)
+	var b: CivilianBrain = civ.get_node(^"Brain") as CivilianBrain
+	civ.notify_crew_spotted(crew)
+	assert_eq(civ.alert_state, Enums.AlertState.PANICKED, "panicked")
+	var seq: Array[StringName] = []
+	var starts: int = 0
+	var t: float = 0.0
+	while t < 20.0:
+		await wait_frames(1)
+		t += get_process_delta_time()
+		if seq.is_empty() or seq[-1] != d.clip:
+			seq.append(d.clip)
+			if d.clip == &"panic_start":
+				starts += 1
+		if CivPanic.family(d.clip) == &"cower" and b.mode == CivilianBrain.Mode.COWER:
+			break
+	var fled: bool = seq.any(func(c: StringName) -> bool: return CivPanic.family(c) == &"flee")
+	assert_true(fled, "the brain fled first (%s)" % [seq])
+	assert_eq(starts, 1, "panic_start once, on the brain's first cower (%s)" % [seq])
+	var i: int = seq.find(&"panic_start")
+	assert_true(i >= 0 and i + 1 < seq.size() and CivPanic.family(seq[i + 1]) == &"cower",
+		"then cower* (%s)" % [seq])
+	assert_eq(d.last_net_oneshot, [&"panic_start", 0.0, 1.0], "panic_start sent as npc_oneshot")
+	rt.teardown()
+	await wait_frames(1)
 
 
 func test_deaths_by_pose() -> void:
