@@ -23,7 +23,8 @@ pauldrons). The base ids are faction ``tac`` and are unchanged.
 Duty looks (D-145.3, PO-18): ``char_patrol_officer_duty`` / ``char_tac_light_duty`` carry no body armour for Routine and
 Tense. Patrol: the uniform shirt with the hi-vis epaulettes, chest radio and badge, no stab vest (a slim shirted torso
 under the tall chequered cap). TAC: the charcoal tactical uniform, gloves, knee pads and drop-leg holster with the
-magazine and radio pouches on the belt, no plate carrier, and a soft charcoal cap instead of the helmet.
+magazine and radio pouches on the belt, POLICE across the back, no plate carrier, and a soft charcoal cap instead of
+the helmet.
 
 FRD field agent (D-067, ``enemy.frd_agent``, FRD-only): ``char_frd_agent`` / ``char_frd_agent_b`` (a second
 body: woman, darker skin, younger) = the FRD look: a plain-clothes agent in suit trousers, white shirt and
@@ -383,6 +384,8 @@ def tac(kit: Kit) -> None:
         for a_deg in (-28.0, -48.0, -68.0):
             gear.extend(gk.pouch(belt, math.radians(a_deg), 0.05, 0.085, 0.032, TAC_GEAR, snap="polymer_black"))
         gear.extend(gk.radio(belt, math.radians(-100.0)))
+        # without the carrier the dark shirt alone reads as a civilian: POLICE across the back in the hi-vis yellow
+        p5.stamp_back(kit, "POLICE", 1.27, 0.075, HIVIS)
     # duty belt: buckle, pouches, drop-leg holster on the right thigh
     gear.extend(gk.buckle(belt, "polymer_black", w=0.055, h=0.045))
     gear.extend(gk.pouch(belt, math.radians(-140.0), 0.08, 0.07, 0.035, TAC_GEAR, snap="polymer_black"))

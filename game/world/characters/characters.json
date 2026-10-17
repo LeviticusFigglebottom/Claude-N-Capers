@@ -905,6 +905,12 @@
 			"test": false
 		},
 		{
+			"asset": "char_patrol_officer_duty",
+			"id": "patrol_officer_duty",
+			"scene": "res://world/characters/patrol_officer_duty/patrol_officer_duty.tscn",
+			"test": false
+		},
+		{
 			"asset": "char_patrol_officer_frd",
 			"id": "patrol_officer_frd",
 			"scene": "res://world/characters/patrol_officer_frd/patrol_officer_frd.tscn",
@@ -1088,6 +1094,12 @@
 			"asset": "char_tac_light",
 			"id": "tac_light",
 			"scene": "res://world/characters/tac_light/tac_light.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_tac_light_duty",
+			"id": "tac_light_duty",
+			"scene": "res://world/characters/tac_light_duty/tac_light_duty.tscn",
 			"test": false
 		},
 		{
