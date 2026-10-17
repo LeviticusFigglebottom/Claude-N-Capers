@@ -117,6 +117,10 @@ func test_point_labels_do_not_collide() -> void:
 					assert_false(shown[i].intersects(m.grow(-1.0)), "%s floor %d: label %d over a marker" % [heist, fl, i])
 				for j: int in range(i + 1, shown.size()):
 					assert_false(shown[i].intersects(shown[j].grow(-1.0)), "%s floor %d: labels %d/%d collide" % [heist, fl, i, j])
+				for zr: Rect2 in view._zone_label_rects():  # lead r242: no point label printed over a drawn zone name
+					if not view.is_zone_yielded(zr) and shown[i].intersects(zr):
+						assert_true(shown[i].intersection(zr).get_area() <= 4.0, "%s floor %d @%s: label %d over a zone name"
+								% [heist, fl, view.size, i])
 		view.queue_free()
 		await wait_frames(1)
 
@@ -124,7 +128,7 @@ func test_point_labels_do_not_collide() -> void:
 func _label_jobs() -> Array[Array]:
 	var out: Array[Array] = []
 	for heist: StringName in [&"glasshouse", &"night_deposit", &"shadow_ledger", &"dockside_burn", &"gallery_night"]:
-		for sz: Vector2 in [Vector2(1130, 730), Vector2(755, 487)]:
+		for sz: Vector2 in [Vector2(1130, 730), Vector2(755, 487), Vector2(347, 400)]:  # + the 720p briefing view
 			out.append([heist, sz])
 	return out
 
