@@ -76,13 +76,12 @@ func test_heist_select_shows_the_note() -> void:
 
 ## D-140: the card says "N pagers" on the PAGERS maps (ND / SL) where the def's row is below 4 (Tense up); the briefing
 ## intel's pager count follows the row everywhere; the GUARDS maps (GN / OF) keep the cap 4 and the card says nothing.
-## Skips a map whose row has not landed (C).
+## C's ND / SL rows are on trunk (env/c-worlds 115e2716): no skip.
 func test_d140_pager_line_on_pagers_maps() -> void:
-	var missing: PackedStringArray = PackedStringArray()
 	for heist: StringName in D140_PAGERS:
 		var def: HeistDef = HeistRegistry.get_def(heist)
-		if def == null or def.pager_max_by_difficulty.is_empty():
-			missing.append(String(heist))
+		assert_true(def != null and not def.pager_max_by_difficulty.is_empty(), "%s: the D-140 pager row" % heist)
+		if def == null:
 			continue
 		var want: Array = D140_PAGERS[heist] as Array
 		assert_eq(Array(def.pager_max_by_difficulty), want, "%s: the D-140 pager row" % heist)
@@ -105,8 +104,6 @@ func test_d140_pager_line_on_pagers_maps() -> void:
 		assert_true(def.pager_max_by_difficulty.is_empty(), "%s: GUARDS map, no pager table" % heist)
 		for d: int in range(Enums.Difficulty.CATACLYSM + 1):
 			assert_false(_note(heist, d).contains("pager"), "%s d%d: no pager line" % [heist, d])
-	if not missing.is_empty():
-		skip("D-140 rows not landed yet: %s" % ", ".join(missing))
 
 
 ## D-140: on the GUARDS maps (GN / OF: no pager row) the card says "More guards: N" (N = the minimum carriers over

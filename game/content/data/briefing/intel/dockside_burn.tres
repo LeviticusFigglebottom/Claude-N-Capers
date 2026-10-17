@@ -8,29 +8,11 @@ heist_id = &"dockside_burn"
 map_path = "res://world/heists/dockside_burn/dockside_burn.tscn"
 variants_path = "res://world/heists/dockside_burn/dockside_burn_variants.tres"
 fixed = {
-&"padlock": 13,
+&"padlock": 14,
 &"safe": 1,
 &"vault_door": 1
 }
 groups = {
-&"cash_location": {
-&"cash_countroom": {
-"counts": {
-&"safe": 1
-},
-"rooms": {
-&"safe": {
-&"M1": 1
-}
-},
-"weight": 0.4
-},
-&"cash_strongroom": {
-"counts": {},
-"rooms": {},
-"weight": 0.6
-}
-},
 &"goods_lift": {
 &"lift_dead": {
 "counts": {
