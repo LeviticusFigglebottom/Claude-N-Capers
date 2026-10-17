@@ -129,18 +129,16 @@ def reload_sniper(sk: Skeleton, solver: Solver, N: int) -> Keys:
         return r.on(p, wf, mw + v3(*off), (0.3, 0.5, 0.8), (1.0, 0.0, -0.1), shape)
 
     def bolt(back: float) -> Pose:
-        """The weapon back up near the shoulder, the left hand on the fore-end, the right hand on the bolt knob."""
+        """The weapon back up near the shoulder, the right hand stays on the grip (the third-person gun rides
+        HandR/Socket, so a right hand on the knob would drag the whole rifle), the left hand reaches over the receiver
+        and works the bolt knob (the over-the-top left-hand bolt of precision shooters)."""
         p = H.gun_pose(sk, True, 0.0, sway=0.0)
         A.spine(p, lean=6, twist=-12, chest_lean=5, chest_twist=-10, neck=(6, 0, 4), head=(10, 6, 8), hips=(2, 0, -6))
         wf = A.weapon_frame(v3(0.10 * k, 0.27 * k, 1.34 * k), yaw=6.0, pitch=4.0, roll=-8.0)
-        H.rifle_support(sk, p, wf, at=r.m["left_ik"])
-        R = wf[0]
-        knob = r.m["knob"] + v3(0.0, -back, 0.0)
-        A.hand_on(sk, p, "R", A.wf_point(wf, knob + v3(0.012, 0.0, 0.0)), R @ v3(-0.2, 0.3, -0.9),
-                  R @ v3(-1.0, 0.0, 0.0), pole=v3(0.8, -0.4, -0.5), along_share=0.75)
-        p.hands["R"] = hand_shape("pinch")
-        # the gun rides in the left hand alone: keep the right hand's grip off it (the bolt hand moves free)
-        return p
+        A.hold_weapon(sk, p, wf, pole=v3(0.8, -0.2, -0.6))
+        p.hands["R"] = hand_shape("trigger")
+        knob = r.m["knob"] + v3(-0.004, -back, 0.012)
+        return r.on(p, wf, knob, (0.85, 0.25, 0.45), (0.5, 0.0, -0.85), "pinch", share=0.8, pole=(-0.5, -0.5, -0.7))
     p_sup, wf_sup = r.tilt(droll=-14.0, dpitch=-6.0)
     return Keys(solver, [
         (0, r.aim(), "inout"),

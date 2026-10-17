@@ -1,0 +1,21 @@
+asset: char_cartel_gunman_l
+script: tools/blender/characters/char_cartel.py
+params: {"age": 0.6, "beard_shadow": 0.5, "build": 0.2, "gender": 0.0, "hair": "bald", "hair_color": "dark", "height": 1.88, "look": "cream_hoodie", "skin": 6}
+seed: 1692917062  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category characters --asset char_cartel_gunman_l
+edit policy: generated file, never edit by hand; change the script and rebuild
+attach_Back: bone chest, local [0.0000, 0.0944, 0.1133] (model [0.0000, 1.3730, 0.1328], Godot axes, rest pose)
+attach_Head: bone head, local [0.0000, 0.0856, -0.0937] (model [0.0000, 1.7596, -0.0810], Godot axes, rest pose)
+attach_Hip: bone hips, local [0.1883, 0.0536, 0.0364] (model [0.1883, 1.0604, 0.0390], Godot axes, rest pose)
+body_faces_culled: 5396
+body_params: {"age": 0.6, "beard_shadow": 0.5, "build": 0.2, "gender": 0.0, "hair": "bald", "hair_color": "dark", "hair_peak": 0.0, "height": 1.88, "lip": "auto", "skin": 6}
+bones: 52
+hat: bare shaved head
+insignia: none (plain work wear; no police/faction material ids)
+look: cream_hoodie: cream pull-over hoodie (hood down), shaved head, black cargos, brown work boots, fingerless gloves; sling across the chest
+meshes: Body,Gear,Hair,Outfit
+shape_keys: none (baked at body_params; do not set blend_shapes/*)
+tri_budget: 35000
+tris: 26090
+tris_by_mesh: {"Body": 7956, "Gear": 136, "Hair": 580, "Outfit": 17418}
