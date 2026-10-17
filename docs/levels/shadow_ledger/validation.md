@@ -172,12 +172,12 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## slopes: No walkable slope < 50° outside the play mesh
 
-- 153 x 105 columns (0.25 m), 79077 surface samples, 0 collider(s) with reachable walkable surfaces outside play
+- 153 x 105 columns (0.25 m), 79081 surface samples, 0 collider(s) with reachable walkable surfaces outside play
 
 
 ## navmesh: Navmesh
 
-- navmesh: 1818 polygons, cell 0.10/0.10 m
+- navmesh: 1813 polygons, cell 0.10/0.10 m
 - 233 markers checked
 | room | walkable samples | covered | coverage |
 |---|---|---|---|
@@ -273,12 +273,12 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## materials: Materials and texel density
 
-- 3410 surfaces checked
+- 3415 surfaces checked
 
 
 ## zfight: Z-fighting
 
-- 361994 triangles checked
+- 362054 triangles checked
 
 
 ## lights: Lighting is deliberate
@@ -392,30 +392,30 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 ## bounds: No void / back faces
 
 - 43 navmesh sample(s) skipped: not reachable from a player spawn (police-only)
-- 296 eye samples, 23976 rays, sky yes, 0 void ray(s)
+- 295 eye samples, 23895 rays, sky yes, 0 void ray(s)
 
 
 ## perf: Per-shot performance budget
 
 | camera | draw calls | triangles | shadow lights |
 |---|---|---|---|
-| `TopDownSite` | 1500 | 312868 | 5 |
-| `TopDownTower` | 1498 | 313908 | 5 |
-| `ExtNorthCrown` | 1468 | 307154 | 5 |
-| `ExtWestArden` | 1760 | 373874 | 5 |
-| `ExtTerraceSE` | 2285 | 516142 | 5 |
+| `TopDownSite` | 1505 | 312928 | 5 |
+| `TopDownTower` | 1503 | 313968 | 5 |
+| `ExtNorthCrown` | 1473 | 307214 | 5 |
+| `ExtWestArden` | 1765 | 373934 | 5 |
+| `ExtTerraceSE` | 2290 | 516202 | 5 |
 | `ReceptionFromLifts` | 267 | 47008 | 3 |
-| `GalleryWalkway` | 1619 | 338990 | 3 |
+| `GalleryWalkway` | 1621 | 339014 | 3 |
 | `ArtHallLasers` | 474 | 107874 | 1 |
-| `StudySafe` | 1473 | 335472 | 1 |
+| `StudySafe` | 1474 | 335484 | 1 |
 | `ServerCage` | 634 | 142162 | 1 |
 | `SecurityRoom` | 795 | 187128 | 1 |
-| `SouthSpine` | 2173 | 468310 | 4 |
-| `TerraceWest` | 2092 | 434496 | 4 |
-| `RoofPlantBlock` | 2213 | 461736 | 5 |
-| `Helipad` | 1786 | 407286 | 3 |
-| `StairACore` | 1036 | 178832 | 5 |
-| `ServiceLobby` | 1560 | 296322 | 4 |
+| `SouthSpine` | 2178 | 468370 | 4 |
+| `TerraceWest` | 2097 | 434556 | 4 |
+| `RoofPlantBlock` | 2217 | 461784 | 5 |
+| `Helipad` | 1788 | 407310 | 3 |
+| `StairACore` | 1038 | 178856 | 5 |
+| `ServiceLobby` | 1564 | 296370 | 4 |
 | `KesslerOffice` | 155 | 35472 | 1 |
 | `OpenOffice` | 655 | 133310 | 2 |
 | `BreakRoom` | 756 | 198992 | 0 |
