@@ -10,6 +10,8 @@ const ND_GUARD_TAGS: Array[StringName] = [&"guard_hall", &"guard_basement", &"gu
 const ND_CIV_TAGS: Array[StringName] = [&"civ_manager", &"civ_cleaner"]
 const GN_GUARD_TAGS: Array[StringName] = [&"guard_hall", &"guard_rover_ground", &"guard_rover_upper",
 	&"guard_rover_basement", &"guard_mews"]
+const SL_GUARD_TAGS: Array[StringName] = [&"guard_reception", &"guard_rover_l41", &"guard_rover_l42", &"guard_stair",
+	&"guard_roof"]
 
 var _rt: HeistRuntime = null
 
@@ -33,6 +35,13 @@ func test_d130_gallery_night_population() -> void:
 		skip("pending ENV C's D-130 GN rows (gala_extra)")
 		return
 	await _check(&"gallery_night", GN_GUARD_TAGS, [1, 2], [5, 5], [], [8, 14], [12, 21])  # C 71d55467
+
+
+func test_d130_shadow_ledger_population() -> void:
+	if not _has_rule(&"shadow_ledger", &"late_staff"):
+		skip("pending ENV C's D-130 SL rows (late_staff)")
+		return
+	await _check(&"shadow_ledger", SL_GUARD_TAGS, [2, 2], [5, 5], [], [1, 5], [2, 7])  # C b7cfb928
 
 
 func _check(heist: StringName, guard_tags: Array[StringName], g_r: Array, g_c: Array, civ_tags: Array[StringName],
