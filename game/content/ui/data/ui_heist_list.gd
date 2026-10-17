@@ -8,6 +8,8 @@ extends Resource
 ##   "solo_ai_teammates": int            overrides the default below for "Play solo"
 ##   "requires": Array[String]           res:// paths that must exist before the menus offer the heist (readiness gate,
 ##                                       on top of HeistCatalog's def + map; e.g. the mission script a new heist waits on)
+##   "hidden": bool                      readiness gate: true keeps the heist out of the menus even with def, map and
+##                                       "requires" present (C's G1 ships a mission STUB; flipped when A's mission lands)
 ##   "glazing": bool                     D-142: notable clear glass (storefront, tower); the briefing says glass does not
 ##                                       hide you (behind HudTweak.d142_glass_tips)
 ##   "mode_key": StringName              the Board / heist select / briefing mode label instead of the HeistMode's
@@ -47,3 +49,8 @@ func mode_key_for(heist_id: StringName) -> StringName:
 ## D-142: true when `heist_id` is marked "glazing" (notable clear glass).
 func has_glazing(heist_id: StringName) -> bool:
 	return bool((heists.get(heist_id, {}) as Dictionary).get("glazing", false))
+
+
+## True when `heist_id` is held back from the menus ("hidden"; the readiness gate's switch).
+func is_hidden(heist_id: StringName) -> bool:
+	return bool((heists.get(heist_id, {}) as Dictionary).get("hidden", false))

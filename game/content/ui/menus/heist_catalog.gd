@@ -41,11 +41,13 @@ static func has_map(heist_id: StringName) -> bool:
 	return ResourceLoader.exists(HeistRegistry.map_scene_path(heist_id))
 
 
-## The menus' readiness gate: the map exists and so does every heist_list.tres "requires" path (OF-B1: Ostrander
+## The menus' readiness gate: not "hidden", the map exists and so does every heist_list.tres "requires" path (OF-B1: Ostrander
 ## Federal waits on its mission script, OF-A6, on top of C's G1 def + map). `exists` = Callable(String) -> bool
 ## (default ResourceLoader.exists; tests pass a fake).
 static func is_ready(heist_id: StringName, exists: Callable = Callable()) -> bool:
 	var check: Callable = exists if exists.is_valid() else func(p: String) -> bool: return ResourceLoader.exists(p)
+	if heist_list().is_hidden(heist_id):  # C's G1 ships a mission stub: the switch flips when A's mission lands
+		return false
 	if not bool(check.call(HeistRegistry.map_scene_path(heist_id))):
 		return false
 	for p: String in heist_list().requires_for(heist_id):

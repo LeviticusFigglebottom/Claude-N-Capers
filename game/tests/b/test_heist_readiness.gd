@@ -9,7 +9,8 @@ const OF_BLUEPRINT: String = "res://content/data/preplanning/blueprints/ostrande
 const OF_ROOMS: Array[String] = ["lk", "gl", "cq", "sa", "cp", "pl", "cm", "ss", "sb", "bb", "rc", "vc", "vt", "sd",
 	"ld", "e1", "sr", "gr", "wm", "ww", "j1", "mo", "bc", "lo", "tw", "pc", "cn1", "cn2", "av", "bh", "ve", "bm", "pw",
 	"na", "br", "e2", "e3", "it", "sv", "j2", "ar", "uc", "ao1", "ao2", "ao3", "wl", "el", "of", "cf", "co", "ga", "vo",
-	"tr", "tt", "bd", "ea", "pr", "pn", "hh"]
+	"tr", "tt", "bd", "ea", "pr", "pn", "hh", "ct", "lg", "ra", "rp", "wm2", "ww2", "x1", "x2", "x3", "x4", "x5", "xc",
+	"xl", "xw"]
 
 
 func test_of_requires_its_mission() -> void:
@@ -23,9 +24,20 @@ func test_gate_needs_map_and_requires() -> void:
 	var exists: Callable = func(p: String) -> bool: return have.has(p)
 	assert_false(HeistCatalog.is_ready(OF, exists), "G1 map without the OF-A6 mission: hidden")
 	have.append(OF_MISSION)
-	assert_true(HeistCatalog.is_ready(OF, exists), "map + mission: offered")
+	assert_eq(HeistCatalog.is_ready(OF, exists), not HeistCatalog.heist_list().is_hidden(OF),
+			"map + mission: offered once the hidden switch is off")
 	have.erase(map_path)
 	assert_false(HeistCatalog.is_ready(OF, exists), "mission without a map: hidden")
+
+
+## C's G1 ships a mission STUB at the same path: the "hidden" switch keeps OF, RT and AH out until A's mission lands.
+func test_hidden_switch() -> void:
+	var have: Callable = func(_p: String) -> bool: return true
+	for h: StringName in [OF, &"rolling_thunder", &"afterhours"]:
+		assert_true(HeistCatalog.heist_list().is_hidden(h), "%s hidden" % h)
+		assert_false(HeistCatalog.is_ready(h, have), "%s: hidden even with map + mission present" % h)
+		assert_false(HeistCatalog.ids().has(h))
+	assert_false(HeistCatalog.heist_list().is_hidden(&"glasshouse"))
 
 
 func test_of_menu_entry_follows_the_gate() -> void:

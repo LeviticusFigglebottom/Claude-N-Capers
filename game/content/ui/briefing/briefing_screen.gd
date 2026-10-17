@@ -223,6 +223,7 @@ func _show_blueprint() -> void:
 	if not real:
 		return
 	blueprint_view.setup(board)
+	blueprint_view.set_floor(board.blueprint.entry_floor())  # OF-B1 dry run: OF opened on its basement, not the plaza
 	for b: Variant in blueprint_view.markers.values():
 		(b as Control).focus_mode = Control.FOCUS_NONE
 		(b as Control).mouse_filter = Control.MOUSE_FILTER_IGNORE

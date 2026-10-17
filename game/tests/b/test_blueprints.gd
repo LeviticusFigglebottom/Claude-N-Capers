@@ -179,3 +179,15 @@ func test_narrow_zones_are_named_beside() -> void:
 			assert_eq(texts.count(t), 1, "%s named once @%s (%s)" % [t, sz, texts])
 		view.queue_free()
 		await wait_frames(1)
+
+
+## OF-B1 dry run: the briefing opens the blueprint on the floor the crew starts on (the default spawn point's floor),
+## not floor 0 (OF opened on its basement; SL starts on the roof).
+func test_entry_floor_is_the_default_spawn() -> void:
+	var want: Dictionary = {&"glasshouse": 0, &"night_deposit": 1, &"shadow_ledger": 3, &"dockside_burn": 1,
+		&"gallery_night": 1}
+	for heist: StringName in want:
+		var bp: PreplanBlueprint = PreplanBoard.build(heist, Enums.Difficulty.ROUTINE).blueprint
+		assert_eq(bp.entry_floor(), int(want[heist]), "%s entry floor" % heist)
+	var empty: PreplanBlueprint = PreplanBlueprint.new()
+	assert_eq(empty.entry_floor(), 0, "no spawn point: floor 0")
