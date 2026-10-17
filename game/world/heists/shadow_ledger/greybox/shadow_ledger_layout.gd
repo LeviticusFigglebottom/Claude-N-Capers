@@ -359,10 +359,10 @@ const CITY_LIGHTS: Array = [
 	["ArdenLit5", [-20.25, 23.6, 14.0, -20.15, 24.6, 34.0]], ["ArdenLit6", [-20.25, -26.8, -26.0, -20.15, -25.8, 10.0]],
 	["SkylineSLit", [-6.0, -20.0, 69.9, 18.0, -19.0, 70.0]], ["SkylineSELit", [32.0, -48.0, 65.9, 56.0, -47.0, 66.0]],
 ]
-## Cables (dressing): [name, from, to]. Insertion line from Arden; the E2 line down to Vantage.
+## Cables (dressing): [name, from, to]. Insertion line from Arden. (SL-2: the E2 line down to Vantage is the bag
+## line's own cable, drawn by the zipline from its anchor only when `esc_line` is rolled.)
 const CABLES: Array = [
 	["InsertionLine", Vector3(0.9, FRF + 1.4, 17.2), Vector3(-20.2, 24.0, 16.0)],
-	["E2LineCable", Vector3(35.3, FRF + 2.2, 16.5), Vector3(68.0, 1.0, 15.0)],
 ]
 ## Zipline far end (Vantage House roof, beyond the OOB curtain).
 const E2_LINE_END: Vector3 = Vector3(68.0, 0.0, 15.0)

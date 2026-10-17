@@ -286,6 +286,57 @@ func test_gameplay_prefabs() -> void:
 	assert_eq(grids.size(), 3, "one art-hall grid per laser_pattern slot")
 
 
+## D-111 SL-2: the secure drops, the laser grids / emitter columns and the E2 bag line use catalog art (no greybox
+## visual), and the bag line draws its cable from the anchor's `Line`, BAG_DROP over the bag's start.
+func test_sl2_catalog_art() -> void:
+	if _map == null:
+		fail("map missing")
+		return
+	for p: Array in [["Slot_esc_heli/HeliNetE1", "prop_secure_cargo_net"], ["Slot_esc_line/LineSecureE2", "prop_secure_line_tarp"],
+			["Slot_esc_service/LiftSecureE3", "prop_secure_lift_blanket"]]:
+		var sz: SecureZone = _map.get_node_or_null("Variants/Group_escape/" + String(p[0])) as SecureZone
+		assert_true(sz != null and sz.visual_scene != null, "%s has a visual" % p[0])
+		if sz != null and sz.visual_scene != null:
+			assert_eq(sz.visual_scene.resource_path, "res://world/props/secure_zone/%s.tscn" % p[1], "%s: catalog drop" % p[0])
+			assert_false(sz.vehicle_collision, "%s: walk-over drop, no vehicle collider" % p[0])
+	for em: Node in _map.get_node("Variants/Group_laser_pattern").find_children("LaserEmitters", "", true, false):
+		for c: String in ["Column0", "Column1"]:
+			var col: Node = em.get_node_or_null(c)
+			assert_true(col != null and col.scene_file_path.ends_with("prop_laser_emitter_column.tscn"), "%s/%s art" % [em.get_parent().name, c])
+		var grid: LaserGrid = em.get_node_or_null("ArtHallLasers") as LaserGrid
+		assert_true(grid != null and grid.visual_scene != null and grid.visual_scene.resource_path.contains("prop_laser_beams_"),
+			"%s: catalog beam set" % em.get_parent().name)
+	var zl: Zipline = _map.get_node_or_null("Variants/Group_escape/Slot_esc_line/BagLineE2") as Zipline
+	assert_true(zl != null and zl.visual_scene != null, "E2 bag line anchor art")
+	if zl == null or zl.visual_scene == null:
+		return
+	var vis: Node3D = zl.visual_scene.instantiate() as Node3D
+	var line: Node3D = vis.get_node_or_null(String(zl.cable_start).trim_prefix("Visual/" + String(vis.name) + "/")) as Node3D
+	assert_true(String(zl.cable_start).begins_with("Visual/%s/" % vis.name) and line != null, "cable_start = the anchor's Line")
+	var zxf: Transform3D = _world(zl)
+	var ce: Node3D = zl.get_node_or_null(zl.cable_end) as Node3D
+	var end: Node3D = zl.get_node_or_null(zl.end) as Node3D
+	assert_true(ce != null and end != null, "cable end and line end")
+	if line != null and ce != null and end != null:
+		var drop: Vector3 = zxf * line.transform.origin - _world(zl.get_node("Interactable") as Node3D).origin
+		assert_near(drop.x, 0.0, 0.01, "bag starts under the sheave (x)")
+		assert_near(drop.z, 0.0, 0.01, "bag starts under the sheave (z)")
+		assert_true(drop.y > 0.25 and drop.y < 0.45, "bag hangs %.2f m under the sheave" % drop.y)
+		assert_near((_world(ce).origin - _world(end).origin).y, drop.y, 0.01, "cable end raised by the same drop")
+	vis.free()
+
+
+## World transform of a map node (the map is not in the tree here).
+func _world(n: Node3D) -> Transform3D:
+	var xf: Transform3D = n.transform
+	var p: Node = n.get_parent()
+	while p != null and p != _map:
+		if p is Node3D:
+			xf = (p as Node3D).transform * xf
+		p = p.get_parent()
+	return xf
+
+
 ## ENV B's board merges the nested D-046 `assets` data without errors and offers the heist assets on
 ## this map's points (category `spawn` for the service entry).
 func test_preplan_board_merges() -> void:

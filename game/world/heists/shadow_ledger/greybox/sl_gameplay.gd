@@ -9,9 +9,26 @@ extends "res://world/heists/shadow_ledger/greybox/sl_builder_base.gd"
 const CAGE_GROUP: StringName = &"cage"
 const HACK_S: float = 45.0
 const HELI_DELAY_S: float = 45.0
-const SECURE_NET_VISUAL: String = "res://world/heists/shadow_ledger/greybox/secure_net_visual.tscn"
-const SECURE_CART_VISUAL: String = "res://world/heists/shadow_ledger/greybox/secure_cart_visual.tscn"
-const SECURE_DROP_MARKER: String = "res://world/heists/shadow_ledger/greybox/secure_drop_marker.tscn"
+## D-111 SL-2 bag-secure drops (tools/blender/props/secure_drops.py; low lying, no collider): the cargo net on the
+## pad (E1), the crew's rigging tarp at the line anchor (E2), freight blankets in the service-lift car (E3).
+const SECURE_NET_VISUAL: String = "prop_secure_cargo_net"
+const SECURE_TARP_VISUAL: String = "prop_secure_line_tarp"
+const SECURE_LIFT_VISUAL: String = "prop_secure_lift_blanket"
+## D-111 SL-2 lasers (tools/blender/props/lasers.py): the emitter column art and the beam set per laser_pattern slot.
+const LASER_COLUMN: String = "prop_laser_emitter_column"
+const LASER_BEAMS: Dictionary = {
+	"lz_static": "prop_laser_beams_h688x3", "lz_sweep": "prop_laser_beams_v260x3", "lz_timed": "prop_laser_beams_h688x4",
+}
+## D-111 SL-2 E2 bag line: the catalog anchor (prop_zipline_anchor, wall-mounted, `Line` at the sheave groove) bolted
+## to the east face of the roof's E2AnchorFrame, ANCHOR_Y over the roof, the line leaving east over the parapet.
+## The zipline's Interactable (the bag's start) hangs BAG_DROP below the sheave, so bags ride under the cable; the
+## drawn cable (Zipline cable_start / cable_end) runs from the sheave to the far end raised by the same drop.
+const ZIPLINE_ANCHOR: String = "prop_zipline_anchor"
+const ANCHOR_FRAME: String = "E2AnchorFrame"
+const ANCHOR_Y: float = 1.75
+const ANCHOR_LINE: Vector3 = Vector3(0.0, 0.042, -0.27)  # the anchor's `Line` marker, anchor-local (equipment.py)
+const BAG_DROP: float = 0.34
+const ANCHOR_LINE_PATH: NodePath = ^"Visual/PropZiplineAnchor/Model/Line"
 ## PO-13 escape_zone visuals (tools/blender/props/escape.py): the landed heli, the crew's clip-on rig at the
 ## E2 anchor, the service-lift car fit-out.
 const ESCAPE_HELI_VISUAL: String = "res://world/props/escape_zone/veh_heli_escape.tscn"
@@ -547,6 +564,7 @@ func _variants_lasers(variants: Node3D) -> void:
 		var em: StaticBody3D = _emitters(s, Vector3(L.LASER_X, L.F42, mid), span)
 		var props: Dictionary = (r[3] as Dictionary).duplicate()
 		props["objective_tag"] = &"art_hall_lasers"
+		props["visual_scene"] = _catalog_scene(String(LASER_BEAMS[String(r[0])]))  # SL-2: beams only, no posts
 		var metas: Dictionary = {"kind": "laser_grid"}
 		if String(r[0]) == "lz_static":
 			metas["bypass"] = false
@@ -555,7 +573,8 @@ func _variants_lasers(variants: Node3D) -> void:
 
 
 ## Laser emitter columns (one prop root, yaw 90: local x runs along the room's z) at both ends of
-## the laser span, 2.7 m.
+## the laser span, 2.7 m. SL-2: each column is the catalog prop_laser_emitter_column (its lens face, +X, turned to
+## the other column) over the root's 0.15 x 2.7 x 0.12 collider.
 func _emitters(parent: Node3D, base: Vector3, span: float) -> StaticBody3D:
 	var em: StaticBody3D = StaticBody3D.new()
 	em.name = "LaserEmitters"
@@ -574,7 +593,10 @@ func _emitters(parent: Node3D, base: Vector3, span: float) -> StaticBody3D:
 		col.shape = box_shape(Vector3(0.15, 2.7, 0.12))
 		col.position = Vector3(x, 1.35, 0.0)
 		add(em, col)
-		mesh_box(em, "Column%d" % i, Vector3(x - 0.075, 0.0, -0.06), Vector3(x + 0.075, 2.7, 0.06), "trim")
+		var column: Node3D = _catalog_scene(LASER_COLUMN).instantiate() as Node3D
+		column.name = "Column%d" % i
+		column.transform = Transform3D(yaw_basis(0.0 if i == 0 else 180.0), Vector3(x, 0.0, 0.0))
+		add(em, column)
 		obstruct(em.transform, AABB(Vector3(x - 0.075, 0.0, -0.06), Vector3(0.15, 2.7, 0.12)))
 	return em
 
@@ -675,33 +697,61 @@ func _variants_escape(variants: Node3D) -> void:
 	var e1: VariantSlot = _slot(esc, "escape", "esc_heli", 0.4, {"label": "E1"})
 	prefab(e1, "secure_zone", "HeliNetE1", Vector3(28.0, L.FRF, 9.8), 0.0,
 		{"objective_tag": &"loot_secure", "vehicle_collision": false,
-			"zone_size_m": Vector3(5.6, 2.5, 5.6), "visual_scene": load(SECURE_NET_VISUAL)},
+			"zone_size_m": Vector3(5.6, 2.5, 5.6), "visual_scene": _catalog_scene(SECURE_NET_VISUAL)},
 		null, {"kind": "cargo_net"}, false)
 	prefab(e1, "escape_zone", "HeliEscapeE1", Vector3(33.0, L.FRF, 8.0), 0.0,
 		{"objective_tag": &"escape_heli", "escape_type": &"heli", "zone_size_m": Vector3(3.6, 3.0, 6.0),
 			"arrival_delay_s": HELI_DELAY_S, "visual_scene": load(ESCAPE_HELI_VISUAL)})
 	var e2: VariantSlot = _slot(esc, "escape", "esc_line", 0.35, {"label": "E2"})
-	var zl: Node3D = prefab(e2, "zipline", "BagLineE2", Vector3(34.9, L.FRF, 16.5), 90.0,
-		{"objective_tag": &"bag_line"}, Vector3(34.2, L.FRF, 16.5), {"kind": "zipline_anchor"})
-	var far: Marker3D = marker(e2, "LineEndVantage", L.E2_LINE_END)
-	if zl != null:
-		zl.set(&"end", zl.get_path_to(far))
+	_bag_line(e2)
 	prefab(e2, "secure_zone", "LineSecureE2", Vector3(33.9, L.FRF, 16.6), 0.0,
 		{"objective_tag": &"loot_secure", "vehicle_collision": false,
-			"zone_size_m": Vector3(2.0, 2.5, 2.0), "visual_scene": load(SECURE_CART_VISUAL)},
-		null, {"kind": "bag_cart"}, false)
+			"zone_size_m": Vector3(2.0, 2.5, 2.0), "visual_scene": _catalog_scene(SECURE_TARP_VISUAL)},
+		null, {"kind": "drop_tarp"}, false)
 	prefab(e2, "escape_zone", "LineEscapeE2", Vector3(31.3, L.FRF, 16.6), 0.0,
 		{"objective_tag": &"escape_line", "escape_type": &"zipline", "zone_size_m": Vector3(2.8, 3.0, 2.0),
 			"visual_scene": load(ESCAPE_LINE_VISUAL)})
 	var e3: VariantSlot = _slot(esc, "escape", "esc_service", 0.25, {"label": "E3"})
-	# The car itself is the drop (no cart visual); ESCAPE covers the car floor.
+	# The car itself is the drop (freight blankets spread on its floor mark it); ESCAPE covers the car floor.
 	prefab(e3, "secure_zone", "LiftSecureE3", Vector3(22.5, L.F40, 9.0), 0.0,
 		{"objective_tag": &"loot_secure", "vehicle_collision": false,
-			"zone_size_m": Vector3(2.4, 2.4, 2.4), "visual_scene": load(SECURE_DROP_MARKER)},
-		null, {}, false)
+			"zone_size_m": Vector3(2.4, 2.4, 2.4), "visual_scene": _catalog_scene(SECURE_LIFT_VISUAL)},
+		null, {"kind": "drop_blanket", "inside": "LiftEscapeE3"}, false)  # levelcheck: inside the car's fit-out
 	prefab(e3, "escape_zone", "LiftEscapeE3", Vector3(22.5, L.F40, 9.0), 0.0,
 		{"objective_tag": &"escape_service", "escape_type": &"lift", "zone_size_m": Vector3(8.8, 2.4, 4.8),
 			"zone_offset": Vector3(3.0, 0.0, 1.0), "visual_scene": load(ESCAPE_LIFT_VISUAL)})  # SL-7: car + lobby, one zone
+
+
+## E2 bag line (zipline to Vantage House): the anchor on the E2AnchorFrame's east face (the frame is a layout prop
+## row; its east face and centre z place the anchor), the Interactable BAG_DROP under the sheave and just east of the
+## frame (reached round its south side from the UsePoint), the far end, and the drawn cable from the anchor's `Line`
+## to the far end raised by BAG_DROP (the bags hang that far under it all the way).
+func _bag_line(e2: Node3D) -> void:
+	var frame: Array = []
+	for p: Array in L.PROPS:
+		if String(p[0]) == ANCHOR_FRAME:
+			frame = p
+	if frame.is_empty():
+		errors.append("E2 bag line: layout prop %s not found" % ANCHOR_FRAME)
+		return
+	var fb: Vector3 = frame[1]
+	var fs: Vector3 = frame[2]
+	var pivot: Vector3 = Vector3(fb.x + fs.x * 0.5, L.FRF + ANCHOR_Y, fb.z)
+	var zl: Node3D = prefab(e2, "zipline", "BagLineE2", pivot, -90.0,
+		{"objective_tag": &"bag_line", "visual_scene": _catalog_scene(ZIPLINE_ANCHOR)},
+		Vector3(fb.x, L.FRF, fb.z + fs.z * 0.5 + 0.7), {"kind": "zipline_anchor", "mount": "wall"})
+	if zl == null:
+		return
+	var line: Vector3 = Transform3D(yaw_basis(-90.0), pivot) * ANCHOR_LINE
+	var start: Vector3 = line - Vector3(0.0, BAG_DROP, 0.0)
+	var it: Node3D = zl.get_node(^"Interactable") as Node3D
+	it.transform = Transform3D(Basis.IDENTITY, global_xform(zl).affine_inverse() * start)
+	map_root.set_editable_instance(zl, true)
+	var far: Marker3D = marker(e2, "LineEndVantage", L.E2_LINE_END)
+	var cable_end: Marker3D = marker(e2, "LineCableVantage", L.E2_LINE_END + Vector3(0.0, BAG_DROP, 0.0))
+	zl.set(&"end", zl.get_path_to(far))
+	zl.set(&"cable_start", ANCHOR_LINE_PATH)
+	zl.set(&"cable_end", zl.get_path_to(cable_end))
 
 
 ## PO6-06 / D-063: a seat an NPC spawns seated in (as DB's `npc_seat` chairs and GH / GN's prop_chair_task): the
