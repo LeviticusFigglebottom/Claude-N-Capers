@@ -125,8 +125,13 @@ const GHOST_RARE: StringName = &"vip_client"
 ## rover_dock's smoke pause at the Tannery corner (~48, -5); LK (locker room, x 0-10 z 0-7, door (5, -4, 7)); EA (pc_exec,
 ## door (19, 8.6, 7)); E3 (x 10-13, door (12, 8.6, 7)); RC (records, door (6, -4, 9)), an end aisle by its west wall;
 ## CQ + the cash lift GL (basement x 10-13, z 0-7) -> LD; the E1 throw from the personnel door).
+## Step 1's walk: the plaza's east end -> down Tannery Street (x 48-62) -> into Ledger Lane.
+const GHOST_STREET: Array[Vector3] = [Vector3(46.0, 0.0, 44.0), Vector3(55.0, 0.0, 30.0), Vector3(55.0, 0.0, 5.0),
+	Vector3(52.0, 0.0, -6.0)]
 const GHOST_MASK_AT: Vector3 = Vector3(28.0, 0.0, -6.8)
 const GHOST_SMOKE_AT: Vector3 = Vector3(48.0, 0.0, -5.0)
+## The lane counts as clear when every Ledger Lane guard is this far from the dock door (m).
+const LANE_CLEAR_M: float = 20.0
 const GHOST_LK_WAIT: Vector3 = Vector3(3.0, -4.0, 4.0)
 const GHOST_E3_WAIT: Vector3 = Vector3(11.5, 8.6, 4.0)
 const GHOST_RC_WAIT: Vector3 = Vector3(1.0, -4.0, 16.0)
@@ -235,10 +240,12 @@ func _ready() -> void:
 	if runner_out == "":
 		runner_out = OS.get_user_data_dir() + "/of_g1_pass"
 	DirAccess.make_dir_recursive_absolute(runner_out)
-	EventBus.alarm_raised.connect(func(reason: StringName, _s: int) -> void:
+	EventBus.alarm_raised.connect(func(reason: StringName, src: int) -> void:
 		if _alarm == &"":
 			_alarm = reason
-		note("ALARM %s" % reason))
+		var who: String = _observer_name(src) if rt != null and is_instance_valid(rt) and src != 0 else str(src)
+		note("ALARM %s by %s (pilot at %s)" % [reason, who, Po5Pilot._v(pilot.crew.global_position)
+			if pilot != null and is_instance_valid(pilot.crew) else "-"]))
 	EventBus.laser_tripped.connect(func(_id: int) -> void:
 		_laser_trips += 1
 		note("LASER TRIPPED"))
@@ -1684,10 +1691,8 @@ func _test_burn() -> bool:
 	note("BURN lockdown PASS; drill_delivery %s eta %s" % [rt.variants.get(&"drill_delivery"), rt.variants.get(
 		&"drill_eta_s")])
 	# 1. The parts arrive at the drop.
-	var parts: Array[LootBag] = []
-	var got: bool = await wait_until(func() -> bool:
-		parts = _drill_parts()
-		return parts.size() >= 2, 150.0)
+	var got: bool = await wait_until(func() -> bool: return _drill_parts().size() >= 2, 150.0)
+	var parts: Array[LootBag] = _drill_parts()
 	if not got:
 		return await _fail("drill parts arrive (%d)" % parts.size())
 	note("BURN parts PASS at %s" % [Po5Pilot._v(parts[0].global_position)])
@@ -1702,8 +1707,9 @@ func _test_burn() -> bool:
 			return await _fail("pick up drill part %d at %s" % [i, Po5Pilot._v(bag.global_position)])
 		var before: int = int(drill.get(&"delivered"))
 		var place: InteractableComponent = _comp(drill)
-		if not await pilot.use(place, 240.0, func() -> bool: return int(drill.get(&"delivered")) > before
-				or int(drill.call(&"device_state")) != 0):
+		var placed: Callable = func() -> bool:
+			return int(drill.get(&"delivered")) > before or int(drill.call(&"device_state")) != 0
+		if not await pilot.use(place, 240.0, placed):
 			return await _fail("place drill part %d on the lid" % i)
 		note("BURN part %d PASS: drop -> lid in %.1f s (HEAVY), delivered %d" % [i, rt.heist_time_s - t0,
 			int(drill.get(&"delivered"))])
@@ -2033,17 +2039,38 @@ func _ecm_left() -> String:
 
 ## 1. Plaza spawn, unmasked down Tannery Street into Ledger Lane (PUBLIC); to the dumpsters.
 func _g1_lane() -> bool:
+	for wp: Vector3 in GHOST_STREET:  # outside the bank: the navmesh's shortest way runs through the hall
+		if not await _go(_of(wp), 1.5, 240.0):
+			return false
 	return await _go(_of(GHOST_MASK_AT), 1.0, 240.0)
 
 
 ## 2. rover_dock at his Tannery-corner smoke pause -> mask behind the dumpsters -> ECM #1 -> lockpick the personnel
 ## door -> LD -> BC west -> SA down.
 func _g2_dock() -> bool:
-	var g: NpcBase = null
-	await wait_until(func() -> bool:
-		g = _guard_near(_of(GHOST_SMOKE_AT), 4.0)
-		return g != null and Vector2(g.velocity.x, g.velocity.z).length() < 0.1, 240.0)
-	note("rover_dock at the Tannery corner: %s" % (g.name if g != null else "not seen (going anyway)"))
+	# The doc's cue is rover_dock's smoke pause at the Tannery corner; the first live run (G1 + OF-A6 f326ad00) never saw
+	# him there: he stood at (14, 0, -5) by the dock door and filled 0 -> 1.0 in 1.3 s at 2.6 m. Read the lane instead:
+	# wait until every guard in Ledger Lane is > LANE_CLEAR_M from the dock door, logging where they walk.
+	var door_at: Vector3 = _of(OF_LD_DOOR)
+	var waited: float = 0.0
+	var clear: bool = false
+	while waited < 600.0 and not clear:
+		clear = true
+		var where: PackedStringArray = PackedStringArray()
+		for n: Node in rt.npcs(&"guard"):
+			var g: NpcBase = n as NpcBase
+			if g == null or not g.is_alive() or g.global_position.z > 0.5 or absf(g.global_position.y) > 1.5:
+				continue
+			where.append("%s %s" % [g.name, Po5Pilot._v(g.global_position)])
+			if pilot.flat_dist(g.global_position, door_at) < LANE_CLEAR_M \
+					or pilot.flat_dist(g.global_position, pilot.crew.global_position) < 12.0:
+				clear = false
+		if int(waited) % 20 == 0:
+			note("GHOST lane guards: %s" % (", ".join(where) if not where.is_empty() else "none"))
+		if not clear:
+			await wait_s(1.0)
+			waited += 1.0
+	note("GHOST lane %s after %.0f s" % ["clear" if clear else "NOT clear (going anyway)", waited])
 	if not await _mask():
 		return false
 	if not await _deploy_ecm():
