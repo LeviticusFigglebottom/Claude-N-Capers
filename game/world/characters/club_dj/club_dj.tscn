@@ -213,23 +213,23 @@ height = 0.4807
 [node name="ClubDj" unique_id=935664083 instance=ExtResource("1_glb")]
 
 [node name="Body" parent="Skeleton3D" index="0" unique_id=464990846]
-visibility_range_end = 20.0
+visibility_range_end = 15.0
 visibility_range_end_margin = 1.0
 
 [node name="Gear" parent="Skeleton3D" index="1" unique_id=465159535]
-visibility_range_end = 20.0
+visibility_range_end = 15.0
 visibility_range_end_margin = 1.0
 
 [node name="Hair" parent="Skeleton3D" index="2" unique_id=465191380]
-visibility_range_end = 20.0
+visibility_range_end = 15.0
 visibility_range_end_margin = 1.0
 
 [node name="Headwear" parent="Skeleton3D" index="3" unique_id=811746801]
-visibility_range_end = 20.0
+visibility_range_end = 15.0
 visibility_range_end_margin = 1.0
 
 [node name="Outfit" parent="Skeleton3D" index="4" unique_id=85322795]
-visibility_range_end = 20.0
+visibility_range_end = 15.0
 visibility_range_end_margin = 1.0
 
 [node name="Back" type="BoneAttachment3D" parent="Skeleton3D" index="5" unique_id=464975553]
@@ -273,7 +273,7 @@ bone_idx = 1
 transform = Transform3D(1, 0, 0, 0, 0.99875, 0.049939997, 0, -0.049939997, 0.99875, 0.1891, 0.050899997, 0.0369)
 
 [node name="CrowdLod" type="MeshInstance3D" parent="Skeleton3D" index="10" unique_id=499345902 groups=["crowd_lod"]]
-visibility_range_begin = 20.0
+visibility_range_begin = 15.0
 visibility_range_begin_margin = 1.0
 mesh = ExtResource("3_lod")
 skin = SubResource("skin_lod")
