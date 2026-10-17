@@ -21,6 +21,36 @@
 			"test": false
 		},
 		{
+			"asset": "char_armored_car_crew_c",
+			"id": "armored_car_crew_c",
+			"scene": "res://world/characters/armored_car_crew_c/armored_car_crew_c.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_armored_car_crew_d",
+			"id": "armored_car_crew_d",
+			"scene": "res://world/characters/armored_car_crew_d/armored_car_crew_d.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_armored_car_crew_e",
+			"id": "armored_car_crew_e",
+			"scene": "res://world/characters/armored_car_crew_e/armored_car_crew_e.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_armored_car_crew_f",
+			"id": "armored_car_crew_f",
+			"scene": "res://world/characters/armored_car_crew_f/armored_car_crew_f.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_armored_car_marshal",
+			"id": "armored_car_marshal",
+			"scene": "res://world/characters/armored_car_marshal/armored_car_marshal.tscn",
+			"test": false
+		},
+		{
 			"asset": "char_bank_customer",
 			"id": "bank_customer",
 			"scene": "res://world/characters/bank_customer/bank_customer.tscn",

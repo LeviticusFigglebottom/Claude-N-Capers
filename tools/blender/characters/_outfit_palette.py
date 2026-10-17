@@ -199,6 +199,7 @@ OUTFIT: dict[str, tuple[str, float, float, str]] = {
     "char_coat_heather": ("#6B5E66", 0.92, 0.0, "cloth"),  # OF-D1: the retiree's heather wool coat
     "char_coat_stone": ("#A49C88", 0.88, 0.0, "cloth"),  # OF-D1: the office man's stone trench coat
     "char_canvas_tan": ("#8A7352", 0.86, 0.0, "cloth"),  # OF-D1: the tradesperson's canvas chore jacket
+    "char_vl_hivis": ("#E0963E", 0.62, 0.0, "cloth"),  # RT-D1: Vaultline route marshal's amber hi-vis vest
     # D-115 hand props (char_hand_props.py)
     "char_prop_paper": ("#DCDAD2", 0.85, 0.0, "plastic"),  # cigarette paper, book pages, cash strap, bottle label
     "char_prop_filter": ("#C08A52", 0.80, 0.0, "plastic"),  # cigarette cork filter

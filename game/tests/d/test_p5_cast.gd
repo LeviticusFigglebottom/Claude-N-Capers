@@ -51,6 +51,11 @@ const NEW: Array[String] = [
 	"char_bank_customer_b",
 	"char_armored_car_crew",
 	"char_armored_car_crew_b",
+	"char_armored_car_crew_c",
+	"char_armored_car_crew_d",
+	"char_armored_car_crew_e",
+	"char_armored_car_crew_f",
+	"char_armored_car_marshal",
 	"char_club_bouncer",
 	"char_club_bouncer_b",
 	"char_club_bartender",
@@ -114,6 +119,7 @@ const ROSTER_FALLBACK: Dictionary = {
 ## Northgate guards 9, ND Halden guards 6; civilians: SL cleaners 4, ND cleaners 2, GN patrons 12; GN gala_extra
 ## (cloakroom waitstaff + drawings-cabinet attendant): GN waitstaff 3, GN attendants 3. OF-D1 (an L heist, up to 6 guards,
 ## 4 tellers, 3 officers and 13 customers): OF Halden guards 10 (at least 3 women), tellers 5, officers 4, customers 12.
+## RT-D1 (three trucks x driver + custodian): Vaultline crew 6 (at least 2 women), site guards 10, street civilians 12.
 const POOLS: Array = [
 	["dockside_burn", ["cartel_gate", "cartel_yard_w", "cartel_yard_e", "cartel_hall", "cartel_platform", "cartel_dock",
 		"cartel_quay", "cartel_reinf"], 12, 1],
@@ -133,6 +139,9 @@ const POOLS: Array = [
 	["ostrander_federal", ["bank_teller", "civ_teller"], 5, 2],
 	["ostrander_federal", ["bank_officer", "civ_officer"], 4, 1],
 	["ostrander_federal", ["civ_customer", "civ_plaza", "civ_client"], 12, 4],
+	["rolling_thunder", ["convoy_t1", "convoy_t2", "convoy_t3"], 6, 2],
+	["rolling_thunder", ["site_guard", "guard_site_gate", "guard_site_frame", "guard_site_cabins"], 10, 3],
+	["rolling_thunder", ["street_civilian", "civ_street", "civ_bus", "civ_diner"], 12, 4],
 ]
 ## Northgate Executive Protection's own shirt; no other firm's livery (Halden char_sec_, bank, police).
 const NORTHGATE_SHIRT: String = "char_ng_shirt"
@@ -147,11 +156,18 @@ const RADIO: Array[String] = [
 	"char_gallery_guard", "char_gallery_guard_b", "char_gallery_guard_c", "char_gallery_guard_d", "char_gallery_guard_e",
 	"char_gallery_guard_f", "char_gallery_guard_g", "char_gallery_guard_h", "char_gallery_guard_i",
 	"char_armored_car_crew", "char_armored_car_crew_b", "char_club_bouncer", "char_club_bouncer_b",
+	"char_armored_car_crew_c", "char_armored_car_crew_d", "char_armored_car_crew_e", "char_armored_car_crew_f",
+	"char_armored_car_marshal",
 ]
 ## Halberd Gallery Security (D-130: nine faces a-i).
 const GN_GUARDS: Array[String] = [
 	"char_gallery_guard", "char_gallery_guard_b", "char_gallery_guard_c", "char_gallery_guard_d", "char_gallery_guard_e",
 	"char_gallery_guard_f", "char_gallery_guard_g", "char_gallery_guard_h", "char_gallery_guard_i",
+]
+## Vaultline Armored Transport (RT-D1: six crew faces a-f and the route marshal).
+const VAULTLINE: Array[String] = [
+	"char_armored_car_crew", "char_armored_car_crew_b", "char_armored_car_crew_c", "char_armored_car_crew_d",
+	"char_armored_car_crew_e", "char_armored_car_crew_f", "char_armored_car_marshal",
 ]
 ## Roles whose bodies carry a pager (p5_cast.json pager_roles; club_bouncer per QC-70).
 const PAGER_ROLES: Array[String] = ["gallery_guard", "bank_guard", "armored_car_crew", "club_bouncer"]
@@ -505,7 +521,7 @@ func test_radio_hip_sockets() -> void:
 ## TAC or the bank livery; each wears its own mark.
 func test_company_liveries() -> void:
 	var ids: Array[String] = GN_GUARDS.duplicate()
-	ids.append_array(["char_armored_car_crew", "char_armored_car_crew_b"])
+	ids.append_array(VAULTLINE)
 	for id: String in ids:
 		var mats: Array[String] = _materials(id)
 		for m: String in mats:
