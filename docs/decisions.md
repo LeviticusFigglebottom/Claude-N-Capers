@@ -1349,3 +1349,13 @@ changes sightlines on every shipped heist with windows (GH storefront, SL tower,
 heist (clear vs opaque list in the heist doc), A re-runs the stealth e2e routes, and P re-walks each stealth heist's
 main route windowed before the round that enables it reaches trunk; any route that dies on new sightlines gets a C cover
 fix or that pane made frosted, not a revert. The OF checks assume see-through.
+
+## D-143: Afterhours groundwork rulings (QB-AH1..5, 2026-10-17, LEAD)
+1. **Payout:** `base_payout` **$40k** (D-120 shape: full clear ≈ $126k at Routine, bag share 63 %, required-only ≈ $64k;
+   table 40k/80k/104k/168k/288k/368k). Afterhours `stealth_bonus_mult` 1.15 (size M, S11.1).
+2. **D-140 lever: PAGERS** (crowded club; more guards would crowd it): exactly 4 guards at every difficulty (door + rope +
+   2 rovers from the rover pool, no guard `difficulty_add`), `pager_max_by_difficulty` [4, 3, 3, 2, 2, 1].
+3. `escape_options` = [van] only (D-075 ruling 9: no walk-out).
+4. Mode label stays "Stealth or loud"; the loadout's civilian-start notice (B5-05) carries the civilian start.
+5. `asset.intel_safe_code` / `asset.intel_product` are AH-only: assets gain a per-heist allow-list (`heists: []`, empty =
+   every heist), B's library field, so no other heist's def needs a `disable`.
