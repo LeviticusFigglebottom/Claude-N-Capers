@@ -1359,3 +1359,9 @@ fix or that pane made frosted, not a revert. The OF checks assume see-through.
 4. Mode label stays "Stealth or loud"; the loadout's civilian-start notice (B5-05) carries the civilian start.
 5. `asset.intel_safe_code` / `asset.intel_product` are AH-only: assets gain a per-heist allow-list (`heists: []`, empty =
    every heist), B's library field, so no other heist's def needs a `disable`.
+
+## D-144: one new heist at a time (2026-10-17, LEAD; product owner)
+PO: "ensure they're fully finished before moving on to new ones." Ostrander Federal is the only heist in build until it
+passes its D-115-style done check (G2 final, e2e stealth + loud, P windowed G2 pass, strings/VO, cast). Rolling Thunder
+and Afterhours groundwork already pushed (hidden behind the readiness gate; D-141/D-143 rulings) is parked as is: no
+further next-heist work in any env until OF is done. Idle capacity goes to OF, PO items and shipped-heist polish.
