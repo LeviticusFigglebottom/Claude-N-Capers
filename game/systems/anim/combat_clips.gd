@@ -160,10 +160,11 @@ func update_door_kick(npc: NpcBase) -> void:
 	if pos < 0.0 or pos >= length:
 		return
 	if _d._oneshot != c or _d._oneshot_left <= 0.0:
-		_d.play_oneshot(c, (length - pos) / s, false, s, pos)
+		NetOneshot.play(_d, c, (length - pos) / s, s, pos)  # npc_oneshot: the clients play it on the same time
 	elif _d.clip == c and absf(_d.player.current_animation_position - pos) > 0.05 \
 			and String(_d.player.current_animation).ends_with(String(c)):
 		_d.player.seek(pos, true)  # shown late (the unit stepped to its stand first): back on the breach's time
+		NetOneshot.relay(_d, c, pos, s)
 
 
 ## DB-4: `sit` -> sit_chair_armed for a cartel gunman or an armed guard when the rig has it; else &"".

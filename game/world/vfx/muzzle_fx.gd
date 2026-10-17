@@ -74,6 +74,13 @@ func clear() -> void:
 		s.reset_all()
 
 
+## Build every set up to the cap now (hidden), so fire() never builds one mid-fight. Idempotent.
+func prewarm() -> void:
+	while _sets.size() < _cap:
+		_take().reset_all()
+	_cursor = -1
+
+
 ## Trailing wisps on every set that is flashing now (tools; third person starts per-shot wisps itself).
 func burst_end() -> void:
 	for s: MuzzleFlash in _sets:

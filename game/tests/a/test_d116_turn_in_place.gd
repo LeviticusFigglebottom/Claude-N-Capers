@@ -1,7 +1,8 @@
 ## D-116 turn in place with ENV D's turn_l_45 / turn_r_45 (12 f = 0.4 s, 45 deg; turn_l / turn_r 90 deg over 0.8 s,
-## both 112.5 deg/s). TurnInPlace: 20..67.5 deg -> turn_*_45, above -> turn_l / turn_r, below 20 a short snap with no
-## clip; speed_scale = clip deg / diff (0.75..1.5) and the rig yaws at diff / (length / speed_scale) so the rig and
-## the clip finish together. A rig without the 45 clips turns with turn_l / turn_r.
+## both 112.5 deg/s). TurnInPlace (lead ruling): 20..67.5 deg -> turn_*_45, above -> turn_l / turn_r, below 20 a short
+## snap with no clip. The clip plays at speed_scale 1 and the rig yaws at the clip's own rate (clip deg / length) for
+## the whole clip; the residual (diff - clip deg, signed) eases in over the blend-out (AnimTweak.blend_s). A rig
+## without the 45 clips turns with turn_l / turn_r.
 extends TestCase
 
 const ANIM_TEST: GDScript = preload("res://tests/a/test_anim_driver.gd")
@@ -53,7 +54,8 @@ func _npc(with_45: bool) -> NpcBase:
 
 
 ## Turn the body by `deg` (positive = left) and run the turn: [clip, speed_scale, mid-turn rig yaw rate deg/s,
-## seconds until the rig met the body, final rig offset deg].
+## seconds until the rig met the body, final rig offset deg, rig offset deg when the first clip ended (body - rig),
+## largest per-tick rig step deg during the ease].
 func _turn(npc: NpcBase, deg: float) -> Array:
 	var d: AnimDriver = AnimDriver.of(npc)
 	npc.rotation.y += deg_to_rad(deg)
@@ -64,17 +66,26 @@ func _turn(npc: NpcBase, deg: float) -> Array:
 	d.tick(DT)
 	var rate: float = absf(rad_to_deg(d.rig.rotation.y - y0)) / DT
 	var t: float = 2.0 * DT
-	while absf(d.rig.rotation.y) > 0.0001 and t < 3.0:
+	while d.turn.left > 0.0 and t < 3.0:
 		d.tick(DT)
 		t += DT
-	return [c, spd, rate, t, rad_to_deg(d.rig.rotation.y)]
+	var residual: float = -rad_to_deg(d.rig.rotation.y)
+	var max_step: float = 0.0
+	while (d.turn.busy() or absf(d.rig.rotation.y) > 0.0001) and t < 3.0:
+		var prev: float = d.rig.rotation.y
+		d.tick(DT)
+		t += DT
+		max_step = maxf(max_step, absf(rad_to_deg(d.rig.rotation.y - prev)))
+	return [c, spd, rate, t, rad_to_deg(d.rig.rotation.y), residual, max_step]
 
 
-## The rig yaws at the clip's own turn rate (clip deg / clip length = 112.5 deg/s, the planted feet's
-## counter-rotation) within 5 % for 30 / 50 / 80 / 120 deg turns, both ways, and lands on the body with the clip.
-func test_rig_yaw_matches_the_clip_turn_rate() -> void:
+## The clip plays at speed_scale 1 and the rig yaws at its own turn rate (clip deg / clip length = 112.5 deg/s, the
+## planted feet's counter-rotation) within 5 % for 30 / 50 / 66 / 80 / 110 deg turns, both ways: the rig turns exactly
+## the clip's degrees, then the residual (diff - clip deg, -25 .. 22.5 deg: never another clip) eases in over blend_s.
+func test_clip_at_speed_one_and_rig_at_the_clip_rate() -> void:
 	assert_near(AnimTweak.data().turn_threshold_deg, 20.0, 0.001, "threshold 20 deg")
-	for deg: float in [30.0, 50.0, 80.0, 120.0, -30.0, -50.0, -80.0, -120.0]:
+	var blend: float = AnimTweak.data().blend_s
+	for deg: float in [30.0, 50.0, 66.0, 80.0, 110.0, -30.0, -50.0, -66.0, -80.0, -110.0]:
 		var npc: NpcBase = _npc(true)
 		var r: Array = _turn(npc, deg)
 		var use_45: bool = absf(deg) < 67.5
@@ -82,12 +93,36 @@ func test_rig_yaw_matches_the_clip_turn_rate() -> void:
 		var length: float = 0.4 if use_45 else 0.8
 		var want_clip: String = ("turn_l" if deg > 0.0 else "turn_r") + ("_45" if use_45 else "")
 		assert_eq(String(r[0]), want_clip, "%.0f deg -> %s" % [deg, want_clip])
-		var s: float = clampf(clip_deg / absf(deg), 0.75, 1.5)
-		assert_near(float(r[1]), s, 0.001, "%.0f deg: speed_scale = clip deg / diff" % deg)
+		assert_near(float(r[1]), 1.0, 0.001, "%.0f deg: speed_scale 1" % deg)
 		var clip_rate: float = clip_deg / length
 		assert_near(float(r[2]), clip_rate, clip_rate * 0.05, "%.0f deg: rig yaw rate = clip rate (no slide)" % deg)
-		assert_near(float(r[3]), length / s, 2.0 * DT, "%.0f deg: the rig and the clip finish together" % deg)
+		var want_res: float = signf(deg) * (absf(deg) - clip_deg)
+		assert_near(float(r[5]), want_res, 0.5, "%.0f deg: the rig turned the clip's degrees" % deg)
+		assert_true(absf(float(r[5])) <= 22.5 + 0.5, "%.0f deg: residual <= 22.5" % deg)
+		assert_near(float(r[3]), length + blend, 3.0 * DT, "%.0f deg: residual eased over the blend-out" % deg)
 		assert_near(float(r[4]), 0.0, 0.01, "%.0f deg: the rig met the body" % deg)
+
+
+## The residual eases (smoothstep): no tick of the ease moves the rig more than a linear blend's 1.5x (no pop).
+func test_residual_eases_without_a_pop() -> void:
+	var blend: float = AnimTweak.data().blend_s
+	for deg: float in [66.0, -25.0, 112.0]:
+		var npc: NpcBase = _npc(true)
+		var r: Array = _turn(npc, deg)
+		var res: float = absf(float(r[5]))
+		var linear_step: float = res / blend * DT
+		assert_true(float(r[6]) <= linear_step * 1.5 + 0.01,
+			"%.0f deg: ease step %.2f <= 1.5 x linear %.2f" % [deg, r[6], linear_step])
+
+
+## Above clip deg + threshold on the 90 clip (120 deg) a second clip finishes the turn, then the ease.
+func test_large_turn_chains_a_second_clip() -> void:
+	var npc: NpcBase = _npc(true)
+	var r: Array = _turn(npc, 120.0)
+	assert_eq(r[0], &"turn_l")
+	assert_near(float(r[5]), 30.0, 0.5, "30 deg left after the 90 clip")
+	assert_near(float(r[3]), 0.8 + 0.4 + AnimTweak.data().blend_s, 4.0 * DT, "turn_l, turn_l_45, then the ease")
+	assert_near(float(r[4]), 0.0, 0.01, "the rig met the body")
 
 
 func test_small_turn_snaps_without_a_clip() -> void:
@@ -124,9 +159,11 @@ func test_fallback_without_the_45_clips() -> void:
 		var npc: NpcBase = _npc(false)
 		var r: Array = _turn(npc, deg)
 		assert_eq(r[0], &"turn_l" if deg > 0.0 else &"turn_r", "%.0f deg: turn_l / turn_r without the 45s" % deg)
-		var s: float = clampf(90.0 / absf(deg), 0.75, 1.5)
-		assert_near(float(r[1]), s, 0.001, "speed_scale from the 90 deg clip")
-		assert_near(float(r[3]), 0.8 / s, 2.0 * DT, "the rig and the clip finish together")
+		assert_near(float(r[1]), 1.0, 0.001, "speed_scale 1")
+		assert_near(float(r[2]), 112.5, 112.5 * 0.05, "the 90 clip's own rate")
+		assert_near(float(r[5]), signf(deg) * (absf(deg) - 90.0), 0.5, "the rig turned 90, the overshoot eases back")
+		assert_near(float(r[3]), 0.8 + AnimTweak.data().blend_s, 3.0 * DT, "clip length, then the ease")
+		assert_near(float(r[4]), 0.0, 0.01, "the rig met the body")
 
 
 func test_shield_maps_the_45_clips() -> void:

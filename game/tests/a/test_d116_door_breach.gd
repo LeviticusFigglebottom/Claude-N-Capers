@@ -103,6 +103,11 @@ func test_breacher_plays_door_kick_on_time_and_square() -> void:
 	assert_near(float(r[0]), impact, frame_clip_s * 1.5 + 0.001,
 		"impact (%.3f) vs the clip time when the door opened (%.3f): within a frame" % [impact, r[0]])
 	assert_true(float(r[2]) <= 10.0, "square to the door while kicking (%.1f deg)" % r[2])
+	assert_eq(d.last_net_oneshot.size(), 3, "npc_oneshot sent to the clients")
+	if d.last_net_oneshot.size() == 3:
+		assert_eq(d.last_net_oneshot[0], _kick_clip(d), "npc_oneshot clip")
+		assert_near(float(d.last_net_oneshot[2]), want_speed, 0.001, "npc_oneshot speed = the breach scale")
+		assert_true(float(d.last_net_oneshot[1]) >= 0.0, "npc_oneshot start offset")
 	var stand: Vector3 = door.breach_stand(cop.global_position)[0] as Vector3
 	assert_true(Vector2(cop.global_position.x - stand.x, cop.global_position.z - stand.z).length() < 0.15,
 		"stood at the breach stand, %.2f m from the door plane" % absf((door.global_transform.affine_inverse()

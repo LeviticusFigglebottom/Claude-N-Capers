@@ -402,6 +402,7 @@ func _create_services() -> void:
 	vfx = VfxDirector.new()  # D-105: ENV C's combat VFX, presentation only, on every peer (host and replica)
 	vfx.name = "VfxDirector"
 	add_child(vfx)
+	_prewarm_vfx()
 	net_sync = HeistNetSync.new()  # A3-07: idle in solo
 	net_sync.name = HeistNetSync.NODE_NAME
 	register_service(HeistNetSync.SERVICE, net_sync)
@@ -415,6 +416,19 @@ func _create_services() -> void:
 			var n: Node = (f as Callable).call(self)
 			if n != null and not n.is_inside_tree():
 				add_child(n)
+
+
+## PERF (npc_gunner HITCH): build every VFX pool now, at load, instead of lazily inside the first shots of each kind
+## (muzzle flashes, impact sets, decals, blood, lights). Windowed on llvmpipe each new GPU resource waits for the
+## frames in flight, which booked 1-22 s stalls to npc_gunner. Rendering peers only (headless draws nothing;
+## options.vfx_prewarm forces it). Duck-typed: VfxDirector.prewarm() is ENV C's.
+func _prewarm_vfx() -> void:
+	var on: bool = DisplayServer.get_name() != "headless"
+	if not bool(options.get("vfx_prewarm", on)) or not vfx.has_method(&"prewarm"):
+		return
+	var t0: int = Time.get_ticks_msec()
+	vfx.call(&"prewarm")
+	Log.info(&"heist", "vfx prewarm: %d ms" % (Time.get_ticks_msec() - t0))
 
 
 ## Register a manager node (adds it as a child if needed and publishes it in Services).
