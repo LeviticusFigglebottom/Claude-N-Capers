@@ -23,13 +23,13 @@ and reports a gap list; the LEAD folds the gaps in here as rows (id, heist, owne
 | ND-1 | ND | A | gate 2 (auto_loud, attempt 24, empty box) | open |
 | ND-2 | ND | P | windowed real-input pass | open |
 | SL-1 | SL | C | G2 art pass (GI, probes, occluders, dressing, review shots) | open |
-| SL-2 | SL | C | D-111 props/doors/loot | items 1-4 done (on trunk); OPEN item 5: secure-drop/net/cart visuals, laser emitters, zipline anchors |
-| SL-3 | SL | C | VictorKessler `sit` 4.1 m from a seat; camera station seat visual; ITContractor = phone (doc change APPROVED) | open |
+| SL-2 | SL | C | D-111 props/doors/loot | done (items 1-4 earlier; item 5 C a0f6099d: E1 net, E2 tarp + zipline anchor/cable, E3 lift blankets, laser emitter columns) |
+| SL-3 | SL | C | VictorKessler `sit` 4.1 m from a seat; camera station seat visual; ITContractor = phone (doc change APPROVED) | done (C a0f6099d) |
 | SL-6 | SL | A | mission audit + stealth e2e | done (A 47d08435 + camera_warning poll, test_sl6_*) |
 | DB-1 | DB | C | G2 art pass | done: G2 FINAL (C 40274739, round 227); chamber variety + trawler/crane art follow-ups |
 | DB-2 | DB | C | D-111 doors (twin roller, cold-store slider, strongroom), launch, burn barrels, thermal drill | done (9fbc1930, 1be2c23d, e8da2cba, 262e4b3e); wip/c-sldb-props superseded |
 | DB-4 | DB | A | cartel `sit` plays no seated clip | done (A c5d4563d + 1b326212 sit_chair_armed; D verified windowed 278dc464). C: ForemanChair too close to its desk (shins through the modesty panel) |
-| DB-6 | DB | C, A | stale QC-36/39 TODOs (C); QC-25 S3 perch after fog lifts needs a director hook (A) | A side done (e13f762f, test_db6_fog_perch); C TODOs open |
+| DB-6 | DB | C, A | stale QC-36/39 TODOs (C); QC-25 S3 perch after fog lifts needs a director hook (A) | done (A e13f762f; C a0f6099d comments/doc; ForemanChair moved back) |
 | DB-7 | DB | A | mission audit + windowed auto_loud | open |
 | GN-1 | GN | C | G2 (GN-C2): 50 props vs GH 628, GI/probes/occluders, moon light | done: G2 FINAL (C 8a7872c4, round 224); gala dressing top-up optional |
 | GN-2 | GN | C | 5 patron spawns vs 12 in doc (7/9 rolls capped) | done (round 219) |
