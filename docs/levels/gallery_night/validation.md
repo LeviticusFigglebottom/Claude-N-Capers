@@ -140,6 +140,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 - stair chain: `Geometry/Building/Stairs/StairSS/Flight1W` -> `Geometry/Building/Stairs/StairSS/Flight1E` joined by a landing at 2.700 m
 - stair chain: `Geometry/Building/Stairs/StairSS/Flight1E` -> `Geometry/Building/Stairs/StairSS/Flight2W` joined by a landing at 5.400 m
 - stair chain: `Geometry/Building/Stairs/StairSS/Flight2W` -> `Geometry/Building/Stairs/StairSS/Flight2E` joined by a landing at 7.200 m
+- stair chain: `Geometry/Building/Stairs/StairSS/Flight0E` -> `Geometry/Building/Stairs/GrandStair/Central` joined by a landing at -0.000 m
 - stair chain: `Geometry/Building/Stairs/GrandStair/Central` -> `Geometry/Building/Stairs/GrandStair/ReturnW` joined by a landing at 2.700 m
 - stair chain: `Geometry/Building/Stairs/GrandStair/ReturnW` -> `Geometry/Building/Stairs/StairSS/Flight2W` joined by a landing at 5.400 m
 - stair chain: `Geometry/Building/Stairs/GrandStair/Central` -> `Geometry/Building/Stairs/GrandStair/ReturnE` joined by a landing at 2.700 m
@@ -148,12 +149,12 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## slopes: No walkable slope < 50° outside the play mesh
 
-- 561 x 345 columns (0.25 m), 216715 surface samples, 0 collider(s) with reachable walkable surfaces outside play
+- 561 x 345 columns (0.25 m), 216699 surface samples, 0 collider(s) with reachable walkable surfaces outside play
 
 
 ## navmesh: Navmesh
 
-- navmesh: 2544 polygons, cell 0.10/0.10 m
+- navmesh: 2542 polygons, cell 0.10/0.10 m
 - 279 markers checked
 | room | walkable samples | covered | coverage |
 |---|---|---|---|
@@ -174,13 +175,13 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `Rooms/RoomLD` | 493 | 492 | 100% |
 | `Rooms/RoomBC` | 171 | 171 | 100% |
 | `Rooms/RoomWG` | 482 | 482 | 100% |
-| `Rooms/RoomGH` | 417 | 417 | 100% |
+| `Rooms/RoomGH` | 423 | 423 | 100% |
 | `Rooms/RoomEG` | 480 | 480 | 100% |
 | `Rooms/RoomDC` | 207 | 207 | 100% |
 | `Rooms/RoomPWW` | 60 | 60 | 100% |
 | `Rooms/RoomPWM` | 60 | 60 | 100% |
 | `Rooms/RoomCK` | 28 | 28 | 100% |
-| `Rooms/RoomVE` | 79 | 79 | 100% |
+| `Rooms/RoomVE` | 94 | 94 | 100% |
 | `Rooms/RoomGS` | 44 | 44 | 100% |
 | `Rooms/RoomEB` | 191 | 191 | 100% |
 | `Rooms/RoomCO` | 94 | 94 | 100% |
@@ -367,7 +368,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## bounds: No void / back faces
 
-- 119 navmesh sample(s) skipped: not reachable from a player spawn (police-only)
+- 118 navmesh sample(s) skipped: not reachable from a player spawn (police-only)
 - 270 eye samples, 21870 rays, sky yes, 0 void ray(s)
 
 

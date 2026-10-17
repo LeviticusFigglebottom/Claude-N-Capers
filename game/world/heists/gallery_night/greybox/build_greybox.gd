@@ -38,6 +38,8 @@ const CORE_FACE_W: float = 0.2
 const BAL_T: float = 0.15
 const BAL_TOP: float = 1.05
 const BAL_BELOW: float = 0.25
+## Extra navmesh clearance round each stone balustrade panel (the NPC capsule is 0.05 m wider than the bake radius).
+const BAL_NAV_M: float = 0.1
 ## Sculpture Court reflecting pool (B4.4 / next_heist §7.4, ENV P review): [x0, z0, x1, z1] outer rim, rim width, rim
 ## height (= the basin's depth: the pool floor is the court grade), water level. 0.3 m stays under the 0.35 m step.
 const POOL: Array = [-12.0, 15.0, -7.0, 21.0]
@@ -575,6 +577,13 @@ func _balustrade(parent: Node3D, nm: String, x0: float, x1: float, a: Vector2, b
 	for x: float in [x0, x1]:
 		c.append_array([Vector3(x, a.y - d, a.x), Vector3(x, a.y, a.x), Vector3(x, b.y, b.x), Vector3(x, b.y - d, b.x)])
 	_hexahedron(parent, nm, c, "ashlar_marble_cream")
+	# Nav margin BAL_NAV_M round the panel (+ the agent radius in the bake): paths keep the 0.35 m capsule off the stone
+	# where they turn onto the half landing (A's pilot snag at the central flight's top, x 22.7 z 10.5).
+	var z0: float = minf(a.x, b.x) - BAL_NAV_M
+	var z1: float = maxf(a.x, b.x) + BAL_NAV_M
+	var y0: float = minf(a.y, b.y) - d
+	obstruct(Transform3D.IDENTITY, AABB(Vector3(x0 - BAL_NAV_M, y0, z0),
+		Vector3(x1 - x0 + 2.0 * BAL_NAV_M, maxf(a.y, b.y) - y0, z1 - z0)))
 
 
 ## Static convex hexahedron from 8 corners (0-3 one face, 4-7 the opposite face, same order): collision + mesh.

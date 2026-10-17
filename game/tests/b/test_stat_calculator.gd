@@ -15,7 +15,9 @@ func _with(mods: Array[StringName]) -> WeaponStats:
 func test_display_stock_pistol() -> void:
 	var d: Dictionary = StatCalculator.display(_base())
 	assert_near(d["damage"], 35.0)
-	assert_eq(d["accuracy"], 52, "ADS 2.3 deg on a 0..4.8 deg scale (PD2: s = ADS / 2.4, Accuracy = (2 - s) / 0.02)")
+	# D-131: the effective cone is spread_deg_ads x CombatTweak.ads_spread_mult (52 at 1.0).
+	assert_eq(d["accuracy"], roundi((4.8 - 2.3 * StatCalculator.ads_spread_mult()) / 4.8 * 100.0),
+			"ADS 2.3 deg on a 0..4.8 deg scale (PD2: s = ADS / 2.4, Accuracy = (2 - s) / 0.02)")
 	assert_eq(d["stability"], 78, "kick 2.25 + 0.5 * 0.75 on a 0..12 deg scale")
 	assert_eq(d["concealment"], 30)
 	assert_eq(d["threat"], 8)
@@ -46,7 +48,8 @@ func test_display_clamps() -> void:
 
 func test_reflex_sight_improves_accuracy_costs_concealment() -> void:
 	var d: Dictionary = StatCalculator.delta(_base(), _with([&"mod.p9_reflex_sight"] as Array[StringName]))
-	assert_eq(d["accuracy"]["modded"], 60, "ADS 2.3 - 0.384 (+2 PD2 accuracy steps) on the 0..4.8 deg scale")
+	assert_eq(d["accuracy"]["modded"], roundi((4.8 - (2.3 - 0.384) * StatCalculator.ads_spread_mult()) / 4.8 * 100.0),
+			"ADS 2.3 - 0.384 (+2 PD2 accuracy steps) on the 0..4.8 deg scale (60 at mult 1.0)")
 	assert_true(d["accuracy"]["better"])
 	assert_true(d["concealment"]["changed"])
 	assert_false(d["concealment"]["better"])

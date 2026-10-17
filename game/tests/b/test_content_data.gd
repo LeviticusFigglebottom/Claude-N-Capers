@@ -214,7 +214,7 @@ func test_make_delta_is_neutral() -> void:
 	for f: StringName in [&"reload_per_round_s", &"reload_start_s", &"reload_end_s"]:
 		assert_eq(zero.get(f), 0.0, "make_delta zeroes %s (QB-43)" % f)
 	for wid: StringName in [&"weapon.kestrel_p9", &"weapon.plowman_12"]:
-		var base: WeaponStats = ContentDB.weapon(wid).base
+		var base: WeaponStats = (ContentDB.weapon(wid).base as WeaponStats).duplicate(true) as WeaponStats
 		var got: WeaponStats = base.plus(zero)
 		for p: Dictionary in base.get_property_list():
 			if not (int(p["usage"]) & PROPERTY_USAGE_SCRIPT_VARIABLE):
@@ -233,7 +233,10 @@ func test_every_non_stock_mod_has_a_downside() -> void:
 	for m: WeaponModDef in ContentDB.all_mods():
 		if stock.has(m.id):
 			continue
-		var d: Dictionary = StatCalculator.delta(w0.base, w0.base.plus(m.delta))
+		# r230 order-dependent red: WeaponStats.plus() shares its source's gadgets array (shallow duplicate), so
+		# plus() on the cached base wrote the rail gadgets into kestrel_p9 for every later test. Work on a copy.
+		var base: WeaponStats = w0.base.duplicate(true) as WeaponStats
+		var d: Dictionary = StatCalculator.delta(base, base.duplicate(true).plus(m.delta))
 		var worse: bool = m.delta.ads_time_s > 0.0 or m.delta.equip_time_s > 0.0
 		for k: String in d:
 			if d[k]["changed"] and not d[k]["better"]:
