@@ -157,12 +157,13 @@ static func lines(heist_id: StringName, difficulty: int, mode: int, data: Briefi
 					_add(out, id, &"operator_always" if op.x >= op.y else &"operator_maybe", {}, op)
 			&"pagers":
 				if mode != Enums.HeistMode.LOUD_ONLY and (guards.y > 0 or op.y > 0):
+					# data_schemas v1.3 precedence (as PagerSystem.cap_for): a rolled pager_max_answers scalar, then the
+					# def's per-difficulty row (D-130), then the tweak.
 					var pagers: Vector2i = scalar_range(t, PagerSystem.MAX_ANSWERS_SCALAR, difficulty)
-					var def_cap: int = pager_cap(heist_id, difficulty)
-					if def_cap >= 0:
-						pagers = Vector2i(def_cap, def_cap)  # D-130: the def's per-difficulty cap wins
-					elif pagers.y < 0:
-						pagers = Vector2i(tw.pager_max_answers, tw.pager_max_answers)
+					if pagers.y < 0:
+						var def_cap: int = pager_cap(heist_id, difficulty)
+						pagers = Vector2i(def_cap, def_cap) if def_cap >= 0 \
+								else Vector2i(tw.pager_max_answers, tw.pager_max_answers)
 					_add(out, id, id, {"range": range_text(pagers)}, pagers)
 			&"time_lock":
 				var tl: Vector2i = time_lock_range(d, t, difficulty)
