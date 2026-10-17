@@ -346,7 +346,7 @@ LMG → lmg, SNIPER → sniper, rifle/pistol/akimbo unchanged. (c) cover_* loops
 `cover_peek_l` / `cover_peek_r` / `cover_low`). (d) `stagger_F` replaces hit_react on a stagger-strength hit. Fall back
 to the old clips until D's land.
 
-## v1.27: slung long gun as its own mesh (D f0a73a2a, D-132 follow-up)
+## v1.27: slung long gun as its own mesh (D 7dc91bd0, D-132 follow-up)
 Cartel looks with a slung long gun carry it on an optional `Skeleton3D/Slung` mesh (rigid on the chest). Consumers (ENV A's
 HeldVisuals) hide it while any `sit_*` clip plays; CrowdLod merges it like any other surface. `cartel_gunman_g` has no
 `Gear` mesh (by design).
