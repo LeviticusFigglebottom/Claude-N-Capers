@@ -3241,6 +3241,9 @@ item.mask_base.kraken.name,Kraken
 item.mask_base.shark.name,Shark
 item.mask_base.pierrot.name,Pierrot
 item.mask_base.welder.name,Welder
+item.mask_base.vault_dial.name,Combination
+item.mask_base.keystone.name,Keystone
+item.mask_base.bust.name,Gallery Bust
 item.mask_base.wicker.name,Wicker
 item.mask_base.lucha.name,Lucha
 item.mask_base.signal.name,Signal
@@ -3383,7 +3386,7 @@ achievement.db_cataclysm.desc,Complete Dockside Burn on Cataclysm. Unlocks the S
 achievement.db_all_hands.name,All Hands on Deck
 achievement.db_all_hands.desc,Complete Dockside Burn on Brutal or higher with nobody in custody.
 achievement.gn_gala_manners.name,Gala Manners
-achievement.gn_gala_manners.desc,Complete Gallery Night in stealth without anyone being killed.
+achievement.gn_gala_manners.desc,Complete Gallery Night in stealth without anyone being killed. Unlocks the Gallery Bust mask base.
 achievement.gn_quick_viewing.name,Quick Viewing
 achievement.gn_quick_viewing.desc,Complete Gallery Night in under 9 minutes.
 achievement.gn_full_collection.name,Full Collection
@@ -3410,11 +3413,11 @@ achievement.of_no_harm_done.desc,Complete Ostrander Federal in stealth without a
 achievement.of_bank_holiday.name,Bank Holiday
 achievement.of_bank_holiday.desc,Complete Ostrander Federal in under 20 minutes.
 achievement.of_clearing_house.name,Nothing Left Behind
-achievement.of_clearing_house.desc,Complete Ostrander Federal with every bag in the building secured.
+achievement.of_clearing_house.desc,Complete Ostrander Federal with every bag in the building secured. Unlocks the Keystone mask base.
 achievement.of_burn_and_hoist.name,Burn and Hoist
 achievement.of_burn_and_hoist.desc,Complete Ostrander Federal loud by burning through the vault roof and hoisting the loot out.
 achievement.of_cataclysm.name,Monday Never Comes
-achievement.of_cataclysm.desc,Complete Ostrander Federal on Cataclysm.
+achievement.of_cataclysm.desc,Complete Ostrander Federal on Cataclysm. Unlocks the Combination mask base.
 ui.achievements.category.ostrander_federal,Ostrander Federal
 ui.achievements.category.stealth,Stealth
 ui.achievements.category.loud,Loud
@@ -3571,6 +3574,7 @@ voice.vo.mercer.ostrander_federal_sniper_tower,Someone's in a Corvino window up 
 voice.vo.mercer.ostrander_federal_van_eta,Van's {seconds} seconds out. Hold the door.
 voice.vo.mercer.ostrander_federal_heli_eta,Chopper's {seconds} seconds out. Hold the terrace.
 voice.vo.mercer.ostrander_federal_escape,"Ride's here. Bags in, then you."
+voice.vo.mercer.ostrander_federal_captain_arrived,Halden's captain is on the plaza. He brought friends.
 voice.vo.accountant.ostrander_federal_radio_casing,"Your survey is complete. A bank in business hours: everyone is busy, and nobody is looking."
 voice.vo.accountant.ostrander_federal_radio_keycard,The vault keycard. Mr Ashgrove will notice eventually. Eventually is acceptable.
 voice.vo.accountant.ostrander_federal_radio_code_hint,The planner names the officer. Bankers write everything down.

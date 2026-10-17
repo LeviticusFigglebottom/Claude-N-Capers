@@ -12,7 +12,9 @@ const HEISTS: Array[StringName] = [
 
 ## ENV A: lines only A code can trigger and does not yet (pd2_fidelity C8 barks). Empty since A's D-117 bark
 ## director; it stays shrink-only like the others.
-const UNSAID_A: Array[StringName] = []  # every A line is said: the D-117 bark director, env/a-core dd20d1f0 (round 226)
+## Every A line is said (the D-117 bark director, env/a-core dd20d1f0, round 226), except OF's captain line (LEAD r244):
+## A hooks vo.mercer.ostrander_federal_captain_arrived to captain_arrived in OF-A6 phase 2. Shrink-only.
+const UNSAID_A: Array[StringName] = [&"vo.mercer.ostrander_federal_captain_arrived"]
 
 ## B reserve: a contact's generic radio lines that no current heist reaches (each fact has an always-ready heist
 ## line, or no heist with that contact has the fact: Night Deposit, and Dockside Burn's [cartel] since A 4b4fef68,

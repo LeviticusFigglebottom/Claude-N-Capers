@@ -97,13 +97,22 @@ static func is_unlocked(profile: PlayerProfile, id: StringName) -> bool:
 	return unlock == &"" or (profile != null and profile.unlocks.has(unlock))
 
 
-## The ids `profile` may pick, sorted.
+## The ids `profile` may pick, sorted. A track whose default heist is staged (in heist_list.tres but not offered yet,
+## e.g. Ostrander Federal behind its "hidden" switch) is not pickable until the heist is.
 static func available(profile: PlayerProfile) -> Array[StringName]:
 	var out: Array[StringName] = []
 	for t: Dictionary in tracks():
-		if is_unlocked(profile, t["id"]):
+		if is_unlocked(profile, t["id"]) and not _for_staged_heist(t):
 			out.append(t["id"])
 	return out
+
+
+static func _for_staged_heist(t: Dictionary) -> bool:
+	var list: UiHeistList = HeistCatalog.heist_list()
+	for h: StringName in t["default_for_heists"] as Array[StringName]:
+		if list.heists.has(h) and not HeistCatalog.ids().has(h):
+			return true
+	return false
 
 
 ## strings.csv key of a track's name: `music.<id>.name` (&"" -> the "Heist default" key).

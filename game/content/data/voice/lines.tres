@@ -3661,6 +3661,13 @@ lines = Array[Dictionary]([{
 "text_key": &"voice.vo.mercer.ostrander_federal_escape"
 }, {
 "cooldown_s": 0.0,
+"event": &"mission",
+"id": &"vo.mercer.ostrander_federal_captain_arrived",
+"priority": 90,
+"speaker": &"mercer",
+"text_key": &"voice.vo.mercer.ostrander_federal_captain_arrived"
+}, {
+"cooldown_s": 0.0,
 "event": &"radio.objective_done",
 "heist": &"ostrander_federal",
 "id": &"vo.accountant.ostrander_federal_radio_casing",
