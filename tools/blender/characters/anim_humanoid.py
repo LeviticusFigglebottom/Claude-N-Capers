@@ -18,6 +18,7 @@ Locomotion clips plant the stance foot exactly: at ``speed`` m/s (for 1.78 m; mu
 
 import _anim as anim
 import _anim_assault as assault
+import _anim_civ_panic as civ
 import _anim_crew3p as crew3p
 import _anim_d304 as d304
 import _anim_hitzones as hitzones
@@ -91,6 +92,14 @@ CLIPS = {
     "lie_down": {"frames": 90, "loop": True, "speed": 0.0, "priority": 1},
     "tied": {"frames": 90, "loop": True, "speed": 0.0, "priority": 1},
     "flee": {"frames": 20, "loop": True, "speed": 4.0, "priority": 1},
+    # D-116 civilian panic variety (priority 8, _anim_civ_panic): per-NPC variants of cower / flee and the startle;
+    # groups and how to pick in SOURCE `variants.<group>` / `civ_panic_variants`. flee_b/_c = the flee gait (same
+    # frames, speed, foot plants) with another upper body; cower_b/_c own periods; panic_start ends exactly on cower 0.
+    "cower_b": {"frames": 52, "loop": True, "speed": 0.0, "priority": 8},
+    "cower_c": {"frames": 46, "loop": True, "speed": 0.0, "priority": 8},
+    "flee_b": {"frames": 20, "loop": True, "speed": 4.0, "priority": 8},
+    "flee_c": {"frames": 20, "loop": True, "speed": 4.0, "priority": 8},
+    "panic_start": {"frames": 24, "loop": False, "speed": 0.0, "priority": 8, "events": {"flinch": 2}},
     "phone_call": {"frames": 120, "loop": True, "speed": 0.0, "priority": 1},
     "radio_call": {"frames": 60, "loop": False, "speed": 0.0, "priority": 1, "events": {"key_on": 11, "key_off": 44}},
     "pager_answer": {"frames": 90, "loop": True, "speed": 0.0, "priority": 1},
@@ -301,7 +310,7 @@ def build(ctx) -> None:
     for name in sorted(CLIPS):
         baked = anim.bake(solver, clips[name])
         if (name in KEEP or name in d304.KEEP or name in assault.KEEP or name in hitzones.KEEP
-                or name in surr.KEEP or name in holds.KEEP or name in crew3p.KEEP):
+                or name in surr.KEEP or name in civ.KEEP or name in holds.KEEP or name in crew3p.KEEP):
             keep[name] = baked
         anim.write_action(arm, baked, export_name(name))
         c = baked.checks
@@ -321,6 +330,8 @@ def build(ctx) -> None:
             row += hitzones.check_row(sk, CLIPS, name, baked, keep)
         if name in surr.NAMES:
             row += surr.check_row(name, baked, keep)
+        if name in civ.NAMES:
+            row += civ.check_row(name, baked, keep)
         report.append(row)
         print(f"[anim] {row}")
     for pb in arm.pose.bones:
@@ -356,6 +367,8 @@ def build(ctx) -> None:
         ctx.source_extra[key] = text
     for key, text in surr.source_notes(CLIPS, keep).items():
         ctx.source_extra[key] = text
+    for key, text in civ.source_notes(CLIPS, keep).items():
+        ctx.source_extra[key] = text
     for key, text in loco.source_notes().items():
         ctx.source_extra[key] = text
     for key, text in police.source_notes().items():
@@ -375,7 +388,7 @@ def build(ctx) -> None:
             extra += f" travel_axis={row['axis']}"
         if "bpm" in row:
             extra += f" bpm={row['bpm']} beats={row['beats']} beat_frames={row['frames'] // row['beats']}"
-        extra += d304.row_extra(row) + assault.row_extra(row) + surr.row_extra(name)
+        extra += d304.row_extra(row) + assault.row_extra(row) + surr.row_extra(name) + civ.row_extra(name)
         ctx.source_extra[f"clip.{name}"] = extra
     for i, row in enumerate(report):
         ctx.source_extra[f"check.{i:02d}"] = row
