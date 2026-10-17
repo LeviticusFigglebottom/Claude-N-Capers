@@ -195,6 +195,11 @@ const SLOT_NPCS: Dictionary = {
 		"prop_chair_task", "DeskCO"],
 	"pa_late": ["AdminPA", "CIVILIAN", Vector3(14.0, 5.4, 3.3), 180.0, ["civ_admin"], "desk_work", "",
 		"prop_chair_task", "DeskAO"],
+	# D-130 gala_extra (Tense+): a cloakroom attendant (event staff, leaves with the waitstaff) standing behind the CK
+	# counter's west half, 1.05 m off the till's UsePoint, facing the room; a room attendant posted in the Drawings
+	# Cabinet at the south vitrine (curator_inspect, as the attendants' gallery checks), off DC1 and the studies.
+	"gx_cloakroom": ["CloakroomAttendant", "CIVILIAN", Vector3(14.45, 0.0, 29.4), 0.0, ["civ_waitstaff"], "teller", ""],
+	"gx_drawings": ["AttendantDC", "CIVILIAN", Vector3(3.2, 0.0, 28.45), 180.0, ["civ_attendant"], "curator_inspect", ""],
 }
 ## TacticalPoints (doc Loud: police entries, perches, anchors, flanks): [name, kind, position, yaw, tags, breachable].
 const TACTICAL: Array = [

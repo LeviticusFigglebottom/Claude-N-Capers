@@ -1,26 +1,15 @@
 ## D-130 (data_schemas v1.3): the heist select's difficulty card and the briefing intel say "Titan cameras" from the heist's
 ## effective camera_titan_min_difficulty (def value if >= 0, else StealthTweak's) and "N pagers" from the def's
-## pager_max_by_difficulty (none when empty). The GH values (C's generator row) are set here as a fixture.
+## pager_max_by_difficulty (none when empty). Golden Hour's row is C's generator data (round 231).
 extends TestCase
 
 const GH_PAGERS: Array[int] = [4, 4, 3, 3, 2, 1]
 
-var _gh: HeistDef
-var _saved_pagers: Array[int] = []
-var _saved_titan: int = -1
 
-
-func before_each() -> void:
-	_gh = HeistRegistry.get_def(&"glasshouse")
-	_saved_pagers = _gh.pager_max_by_difficulty.duplicate()
-	_saved_titan = _gh.camera_titan_min_difficulty
-	_gh.pager_max_by_difficulty = GH_PAGERS.duplicate()
-	_gh.camera_titan_min_difficulty = Enums.Difficulty.HAZARDOUS
-
-
-func after_each() -> void:
-	_gh.pager_max_by_difficulty = _saved_pagers
-	_gh.camera_titan_min_difficulty = _saved_titan
+func test_gh_def_carries_the_d130_row() -> void:
+	var gh: HeistDef = HeistRegistry.get_def(&"glasshouse")
+	assert_eq(gh.pager_max_by_difficulty, GH_PAGERS, "D-130 GH pagers by difficulty")
+	assert_eq(gh.camera_titan_min_difficulty, Enums.Difficulty.HAZARDOUS, "D-130 GH Titan from Hazardous")
 
 
 func _note(heist: StringName, d: int) -> String:

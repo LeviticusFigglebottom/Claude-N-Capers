@@ -198,6 +198,7 @@ func _fill_objectives() -> void:
 			continue
 		shown.append(ob)
 		done += int(st == Enums.ObjectiveState.COMPLETED)
+	shown = beside_alternatives(shown)
 	var cap: int = maxi(tweak.scoreboard_objectives_max, 3) if tweak != null else 8
 	var fold: bool = shown.size() > cap
 	if fold and done > 0:
@@ -232,6 +233,31 @@ func _fill_objectives() -> void:
 		_objective_line(UiText.t(ObjectivesPanel._state_key(st), {"text": ObjectivesPanel.objective_text(ob)}), col)
 	if left > 0:
 		_objective_line(UiText.t(&"ui.scoreboard.objectives_more", {"count": left}), UiTokens.PAPER_MUTE)
+
+
+## Real-input GH run (r231): the model lists an ACTIVE optional step after the last required one (required_first), so
+## "Or find the safe code" sat under "Secure two bags", far from the keycard step it replaces. A row whose args name an
+## `alternative` that is also listed moves to just after that row; the rest keep their order.
+static func beside_alternatives(rows: Array[Dictionary]) -> Array[Dictionary]:
+	var out: Array[Dictionary] = []
+	var placed: Dictionary = {}
+	for r: Dictionary in rows:
+		var id: StringName = StringName(r.get("id", &""))
+		if placed.has(id):
+			continue
+		out.append(r)
+		placed[id] = true
+		var alt: StringName = _alternative_of(r)
+		for o: Dictionary in rows:
+			var oid: StringName = StringName(o.get("id", &""))
+			if not placed.has(oid) and (_alternative_of(o) == id or oid == alt):
+				out.append(o)
+				placed[oid] = true
+	return out
+
+
+static func _alternative_of(row: Dictionary) -> StringName:
+	return StringName((row.get("args", {}) as Dictionary).get("alternative", &""))
 
 
 func _objective_line(text: String, col: Color) -> void:
