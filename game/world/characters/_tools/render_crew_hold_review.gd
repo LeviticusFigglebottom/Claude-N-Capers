@@ -14,6 +14,7 @@
 ##     [--props=book,...]: that hand prop (world/characters/_props/hand_<prop>.tscn, at its own socket) on every bot
 ##     [--chair=res://...tscn] [--chair_off=x,y,z]: a chair under every bot (its origin at the rig's, turned with it,
 ##     offset in the rig's space), for the seated clips
+##     [--desk=res://...tscn] [--desk_off=x,y,z] [--desk_yaw=deg]: the same for a desk (D-130 seated desk_work check)
 ## Owner: ENV D.
 extends Node
 
@@ -50,6 +51,10 @@ var _bags: PackedStringArray = []
 var _props: PackedStringArray = []
 var _chair: String = ""
 var _chair_off: Vector3 = Vector3.ZERO
+## --desk / --desk_off / --desk_yaw: a desk in each rig's space (desk_work: near edge 0.22 m ahead, top 0.74 m)
+var _desk: String = ""
+var _desk_off: Vector3 = Vector3.ZERO
+var _desk_yaw: float = 0.0
 ## --close_h=<m>: the close-up camera's height and look-at height (seated bodies: ~0.7)
 var _close_h: float = 1.12
 ## --debug_surfaces: every mesh surface of the rigs in its own flat colour (the legend is printed): find a stray piece
@@ -72,6 +77,11 @@ func _ready() -> void:
 			"bags": _bags = v.split(",")
 			"props": _props = v.split(",")
 			"chair": _chair = v
+			"desk": _desk = v
+			"desk_yaw": _desk_yaw = float(v)
+			"desk_off":
+				var d: PackedStringArray = v.split(",")
+				_desk_off = Vector3(float(d[0]), float(d[1]), float(d[2]))
 			"close_h": _close_h = float(v)
 			"debug_surfaces": _debug_surfaces = true
 			"grid": _grid = int(v)
@@ -124,6 +134,11 @@ func _ready() -> void:
 			var chair: Node3D = (load(_chair) as PackedScene).instantiate() as Node3D
 			rig.add_child(chair)
 			chair.position = _chair_off
+		if not _desk.is_empty():
+			var desk: Node3D = (load(_desk) as PackedScene).instantiate() as Node3D
+			rig.add_child(desk)
+			desk.position = _desk_off
+			desk.rotation.y = deg_to_rad(_desk_yaw)
 		if i < _bags.size() and not _bags[i].is_empty():
 			_attach_bag(rig, _bags[i])
 		if spec[2] == &"akimbo":
