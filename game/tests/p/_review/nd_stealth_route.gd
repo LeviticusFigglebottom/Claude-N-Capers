@@ -242,7 +242,14 @@ func _gate_guard() -> bool:
 		var ok: bool = await wait_until(clear, 60.0)
 		note("B5 entry: guard %.1f m from PlantDoor, back turned %s (waited ok %s)" % [
 			pilot.flat_dist(g.global_position, at_door), _back_turned_to(g, at_door), ok])
-	pilot.inp.press(&"crouch")
+	# Walk, don't crouch: crouched he outpaced the pilot down the corridor (ND run 2026-10-17, 3.5-4.8 m behind
+	# for 3 s) and turned back into a pilot standing in his view (meter 0 -> 1 in ~1 s at 3.4 m, D-128).
+	var hide_at: Vector3 = MASK_AT
+	if plant != null:
+		var into_b3: Vector3 = MASK_AT - plant.global_position
+		into_b3.y = 0.0
+		hide_at = plant.global_position + into_b3.normalized() * 1.5
+		hide_at.y = MASK_AT.y
 	c.melee.hit_landed.connect(func(_t: Object) -> void: hits[0] += 1)
 	c.melee.swung.connect(func(_ch: bool) -> void: hits[1] += 1)
 	# He patrols the B5 corridor: only close in while his back is to us (a re-close walked in front of him once and
@@ -261,7 +268,11 @@ func _gate_guard() -> bool:
 				Po5Pilot._v(c.global_position), Po5Pilot._v(g.global_position), d, _back_turned(g), g.alert_state,
 				sd.detection_value(g, c.slot) if sd != null else -1.0, c.crouched])
 		if not _back_turned(g):
-			await wait_s(0.2)  # stand still while he faces this way
+			# He faces this way: back behind PlantDoor (out of his line of sight) until he turns again.
+			if pilot.flat_dist(c.global_position, hide_at) > 0.5:
+				await pilot.goto(hide_at, 0.4, 0.6)
+			else:
+				await wait_s(0.2)
 			continue
 		if d > 1.5:
 			var back: Vector3 = g.global_position + g.global_basis.z.normalized() * 0.9
@@ -276,7 +287,6 @@ func _gate_guard() -> bool:
 			Po5Pilot._v(c.global_position), Po5Pilot._v(g.global_position), Po5Pilot._v(-g.global_basis.z),
 			pilot.flat_dist(g.global_position, c.global_position), hits[1], hits[0], g.health, g.is_alive(),
 			alert_before, g.alert_state])
-	pilot.inp.release(&"crouch")
 	if g.is_alive():
 		note("gate guard not knifed (alert %d, meter %.2f, dist %.2f)" % [g.alert_state,
 			sd.detection_value(g, c.slot) if sd != null else -1.0, pilot.flat_dist(g.global_position, c.global_position)])
