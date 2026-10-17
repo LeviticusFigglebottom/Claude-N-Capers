@@ -18,6 +18,8 @@ DIFF="${6:-Routine}"
 mkdir -p "$OUT"
 ARGS=(--po5-flow="$FLOW" --po5-out="$OUT" --po5-budget="$BUDGET" --po5-heist="$HEIST" --po5-difficulty="$DIFF")
 [[ "$SEED" != "-" ]] && ARGS+=(--po5-seed="$SEED")
+# D-133: CREW_DMG=0.25 runs the loud flow gate with the harness-only crew_damage_taken_mult (named in run.log).
+[[ -n "${CREW_DMG:-}" ]] && ARGS+=(--po5-crew-dmg="$CREW_DMG")
 "$GODOT" --headless --path "$ROOT/game" --import >/dev/null 2>&1 || true
 timeout $((BUDGET + 300)) xvfb-run -a -s "-screen 0 1280x720x24" "$GODOT" --path "$ROOT/game" --resolution 960x540 \
 	res://tests/a/e2e/po5_runner.tscn -- "${ARGS[@]}" > "$OUT/run.log" 2>&1

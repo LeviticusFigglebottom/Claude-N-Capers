@@ -18,15 +18,33 @@ const BUILTIN_MAPS: Dictionary = {
 	&"dev_sandbox": "res://systems/dev/dev_sandbox.tscn",
 }
 
+## D-133: the harness-only dev option keys (see dev_options).
+const DEV_KEYS: Array[String] = ["crew_damage_taken_mult"]
+
 static var _registry: Dictionary = {}
 ## TEST HOOK (PO-5 release e2e): the next launch() uses this run seed instead of the caller's (the menu
 ## picks a time seed), then it resets to -1. Lets a windowed menu-driven playthrough be replayed exactly.
 static var next_seed_override: int = -1
+## D-133 HARNESS-ONLY dev options (the e2e runners set them before boot; no menu, profile or save writes them). Only
+## DEV_KEYS are honoured, and only from here: launch() strips the same keys from the caller's options (menus build
+## those), then merges these over them. Printed in the heist log header.
+static var dev_options: Dictionary = {}
 static var _auto_join: Dictionary = {}
 ## launch_client() calls waiting for a bring-up (auto_join stands aside while > 0).
 static var _client_pending: int = 0
 ## Bumped by cancel_launch_client(): every pending launch_client() returns null.
 static var _client_gen: int = 0
+
+
+## D-133: `options` without any caller-supplied DEV_KEYS, plus the harness's dev_options.
+static func with_dev_options(options: Dictionary) -> Dictionary:
+	var out: Dictionary = options.duplicate()
+	for k: String in DEV_KEYS:
+		out.erase(k)
+	for k: Variant in dev_options:
+		if DEV_KEYS.has(String(k)):
+			out[String(k)] = dev_options[k]
+	return out
 
 
 ## Register an id -> map scene path (used until the lead publishes a heist catalog, QA-1).
@@ -58,6 +76,7 @@ static func launch(heist_id: StringName, seed: int, difficulty: Enums.Difficulty
 		next_seed_override = -1
 	if parent == null:
 		parent = tree.root
+	options = with_dev_options(options)
 	var scene: PackedScene = options.get("map_packed") as PackedScene
 	if scene == null:
 		var path: String = map_path(heist_id, options)
