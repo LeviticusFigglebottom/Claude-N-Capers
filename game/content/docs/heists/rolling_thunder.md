@@ -15,7 +15,7 @@ Hidden from the menus, the Board and the broker until its def, its map **and** i
 | Accent | road-sign lime `#B8D648` ◇ (raw WCAG AA for text: 7.8:1 or better on our panels) | `data/ui/heist_accents.tres` |
 | Heist list | `solo_ai_teammates` 3 (loud: a full bot crew, as Dockside Burn) | `data/ui/heist_list.tres` |
 | Strings | `heist.rolling_thunder.name` / `.subtitle` / `.brief` | `data/strings/strings.csv` |
-| Base payout (`HeistDef.base_payout`, unscaled) | **$85,000 placeholder**; **$30,000 proposed** (D-120 shape, QB-RT1) ◇ | this doc (the def carries it) |
+| Base payout (`HeistDef.base_payout`, unscaled) | **$30,000** (D-141; D-120 shape) ◇ | this doc (the def carries it) |
 | Mode label | "Loud (ambush start)" (D-075): `heist_list.tres` `mode_key` = `ui.heist_select.modes_loud_ambush` | Board, heist select, briefing |
 
 ## Contact: Hollis "Hammer" Reyes
@@ -23,12 +23,12 @@ Hidden from the menus, the Board and the broker until its def, its map **and** i
 convoy is the textbook Reyes job.
 
 ## Payout ◇
-PD2's Transport contracts pay little up front; the trucks' loot is the money. Ours sits under Dockside
-Burn ($95,000): $85,000. A loud job gets no stealth bonus.
+PD2's Transport contracts pay little up front; the trucks' loot is the money. D-141: $30,000 (the $85,000
+placeholder predated D-120; see the audit). A loud job gets no stealth bonus.
 
 | Routine | Tense | Hazardous | Brutal | Lethal | Cataclysm |
 |---|---|---|---|---|---|
-| $85,000 | $170,000 | $221,000 | $357,000 | $612,000 | $782,000 |
+| $30,000 | $60,000 | $78,000 | $126,000 | $216,000 | $276,000 |
 
 ## Loot (proposed for ENV C)
 | id | Weight | Base | Role |
@@ -71,11 +71,9 @@ Answered by the G0 doc (D-075); what remains open is in the audit below.
   `ui.preplan.point.rolling_thunder.*`, blueprint room labels, the `item.c4` HUD count (QC-84 B part), the cue ids for
   audio_cues v1.4 (QC-85).
 
-### Open questions (QB-RT, to the lead)
-1. **QB-RT1** base_payout $30,000 (proposed) or keep $85,000?
-2. **QB-RT2** RT exempt from D-130 §1 and D-140 (loud heist with a stealth setup)?
-3. **QB-RT3** `asset.c4_drop`: B drafts it once A5-03 defines the item drop kind (`drop: item.c4`, `params.count`); OK to
-   wait?
-4. **QB-RT4** Reyes in-heist radio: speaker id `reyes` with lines `vo.reyes.*` (B7-03 contact radio shape) or mission
-   `say(..., &"reyes")` only? Decides where B writes the VO.
-5. **QB-RT5** The doc's `ui.preplan.point.rolling_thunder.<point_id>` labels: B writes them with the VO round (after G1)?
+### QB-RT rulings (D-141, LEAD)
+1. base_payout **$30,000** (pinned in `test_p5_catalogue`).
+2. RT is **exempt** from D-130 §1 and D-140: default pager cap 4; civilians on the scalar + `rush_hour`.
+3. `asset.c4_drop`: B drafts it after A5-03.
+4. Reyes is speaker `reyes` with `vo.reyes.*` lines (B7-03 contact radio shape).
+5. Preplan point and room labels: with the VO round (after G1).

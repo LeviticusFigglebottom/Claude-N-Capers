@@ -33,14 +33,14 @@ const OBJECTIVES_DRAFTED: Array[StringName] = [&"gallery_night", &"ostrander_fed
 const STUBS: Dictionary = {
 	&"gallery_night": [&"contact.vance", &"uptown", 57000],
 	&"ostrander_federal": [&"contact.accountant", &"financial", 80000],  # D-137 (D-120 shape)
-	&"rolling_thunder": [&"contact.reyes", &"southfield", 85000],
+	&"rolling_thunder": [&"contact.reyes", &"southfield", 30000],  # D-141
 	&"afterhours": [&"contact.accountant", &"midtown", 75000],  # D-075
 }
 ## Contract pay by difficulty (Routine..Cataclysm) for each placeholder payout, as the docs print it.
 const PAY_TABLES: Dictionary = {
 	&"gallery_night": [57000, 114000, 148200, 239400, 410400, 524400],
 	&"ostrander_federal": [80000, 160000, 208000, 336000, 576000, 736000],
-	&"rolling_thunder": [85000, 170000, 221000, 357000, 612000, 782000],
+	&"rolling_thunder": [30000, 60000, 78000, 126000, 216000, 276000],  # D-141
 	&"afterhours": [75000, 150000, 195000, 315000, 540000, 690000],
 }
 const BODY_TEXT: float = 4.5
