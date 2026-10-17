@@ -8,6 +8,8 @@ signal heist_chosen(heist_id: StringName, difficulty: int)
 
 var heist_buttons: Array[Button] = []
 var difficulty_buttons: Array[Button] = []
+## D-130 line under the difficulty row ("Titan cameras  ·  3 pagers"); hidden when the heist has neither.
+var stealth_label: Label
 var payout_label: Label
 var brief_label: Label
 var mode_label: Label
@@ -68,6 +70,10 @@ func build_ui() -> void:
 	detail.add_child(gap)
 	detail.add_child(UiBuild.caption(&"ui.heist_select.difficulty"))
 	_build_difficulties(detail)
+	# D-130: what this difficulty changes in the heist's stealth (Titan cameras, the pager cap); hidden when nothing.
+	stealth_label = UiBuild.label(&"", UiBuild.DIM)
+	stealth_label.name = "StealthNote"
+	detail.add_child(stealth_label)
 	detail.add_child(UiBuild.caption(&"ui.heist_select.pay_caption"))
 	payout_label = UiBuild.label(&"", UiBuild.MONEY)
 	payout_label.add_theme_font_size_override(&"font_size", UiTokens.FONT_H1)
@@ -137,7 +143,7 @@ func select_heist(index: int) -> void:
 	if index < 0 or index >= _entries.size():
 		return
 	selected_heist = index
-	heist_buttons[index].set_pressed_no_signal(true)
+	_press_only(heist_buttons, index)
 	var e: Dictionary = _entries[index]
 	brief_label.text = UiText.t(StringName(e["brief_key"]))
 	name_label.text = UiText.t(StringName(e["name_key"]))
@@ -146,6 +152,13 @@ func select_heist(index: int) -> void:
 
 
 ## Select the heist with `heist_id` (as if its button were pressed). False when it is not offered.
+## set_pressed_no_signal leaves the rest of a ButtonGroup pressed: a programmatic pick (saved difficulty, a flow)
+## showed two tabs selected (D-130 capture). Only `index` stays pressed.
+static func _press_only(buttons: Array[Button], index: int) -> void:
+	for i: int in range(buttons.size()):
+		buttons[i].set_pressed_no_signal(i == index)
+
+
 func select_heist_id(heist_id: StringName) -> bool:
 	for i: int in range(_entries.size()):
 		if StringName(_entries[i]["id"]) == heist_id:
@@ -160,7 +173,7 @@ func select_difficulty(d: int) -> void:
 	if not HeistCatalog.is_difficulty_unlocked(d):
 		return
 	selected_difficulty = d
-	difficulty_buttons[d].set_pressed_no_signal(true)
+	_press_only(difficulty_buttons, d)
 	_update_preview()
 
 
@@ -179,6 +192,22 @@ func _update_preview() -> void:
 	if payout_label == null:
 		return
 	payout_label.text = UiText.money(preview_amount())  # PO-4: the caption above says what it is
+	if stealth_label != null and selected_heist < _entries.size():
+		stealth_label.text = stealth_note(selected_heist_id(), selected_difficulty, int(_entries[selected_heist]["mode"]))
+		stealth_label.visible = stealth_label.text != ""
+
+
+## D-130: "Titan cameras" from the heist's effective camera_titan_min_difficulty, and "N pagers" when its def sets a
+## per-difficulty pager cap (not on a loud-only heist), joined; "" when neither applies.
+static func stealth_note(heist_id: StringName, difficulty: int, mode: int) -> String:
+	var parts: PackedStringArray = PackedStringArray()
+	if mode != Enums.HeistMode.LOUD_ONLY:
+		if difficulty >= BriefingIntel.titan_min_difficulty(heist_id):
+			parts.append(UiText.t(&"ui.heist_select.titan_cameras"))
+		var cap: int = BriefingIntel.pager_cap(heist_id, difficulty)
+		if cap >= 0:
+			parts.append(UiText.t(&"ui.heist_select.pager_one" if cap == 1 else &"ui.heist_select.pagers", {"n": cap}))
+	return UiText.t(&"ui.heist_select.stealth_note_sep").join(parts)
 
 
 func _on_next() -> void:
