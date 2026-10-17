@@ -615,7 +615,11 @@ func _lift_to(lift: BagLift, to: int) -> bool:
 	note("lift: landing %d -> %d; panel %d at %s; landings %s" % [lift.landing, to, here, Po5Pilot._v(panel.global_position),
 		[Po5Pilot._v(lift.landing_transform(0).origin), Po5Pilot._v(lift.landing_transform(1).origin)]])
 	await wait_until(func() -> bool: return not lift.is_moving(), 20.0)
-	if not await pilot.use(panel, 30.0, func() -> bool: return lift.is_moving()):
+	# Walk to the panel's floor ourselves: Po5Pilot's _use_stand put B1's panel stand on G1 above it (the walk went up
+	# the stair through the ground floor into an alarm button, ND run 2026-10-17 t=224).
+	var stand: Vector3 = B1_HATCH_STAND if here == 1 else SALLY_IN
+	await pilot.goto(stand, 0.3, 60.0)
+	if not await pilot.use(panel, 30.0, func() -> bool: return lift.is_moving(), false):
 		note("lift panel %d not used (at %s)" % [here, Po5Pilot._v(pilot.crew.global_position)])
 		return false
 	var ok: bool = await wait_until(func() -> bool: return not lift.is_moving() and lift.landing == to,
