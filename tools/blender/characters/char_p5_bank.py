@@ -19,6 +19,10 @@ customers are ordinary civilians in daylight colours.
   white shirt, navy chinos, brown shoes, a watch.
 * ``char_bank_customer_b``: a parent on an errand: an olive nylon bomber zipped over a cream crew
   knit, jeans, white trainers and a navy daypack on both shoulders.
+* ``char_bank_vip_client`` (OF-D1, rare ``vip_client``, ``civ_vip``, seated in the SD hall): a high-value private
+  client, an older man (about 70, light skin, silver side-parted hair): a single-breasted camel overcoat to below the
+  knee (open, no belt: the seated drape) over a charcoal-grey two-piece suit, white shirt and burgundy tie, an ivory
+  silk scarf hanging open, dark brown leather gloves, brown oxfords and a gold watch on the left wrist.
 * Reused (listed in ``world/characters/p5_cast.json``, not rebuilt): tellers ``npc_bank_teller`` /
   ``_b`` (D-063), customers ``civilian_customer_a`` (camel coat) / ``_b`` (the elderly customer: grey
   hair, gilet), guards ``security_officer`` / ``_b`` (Halden Security day shift, peaked cap) and
@@ -50,6 +54,9 @@ VARIANTS = {
                            "beard_shadow": 0.6, "hair": "short", "hair_color": "brown", "look": "business"},
     "char_bank_customer_b": {"height": 1.68, "build": 0.45, "gender": 1.0, "age": 0.35, "skin": 5,
                              "hair": "side_part", "hair_color": "brown", "look": "parent"},
+    # OF-D1 rare vip_client (civ_vip, sit in the SD hall)
+    "char_bank_vip_client": {"height": 1.80, "build": 0.55, "gender": 0.0, "age": 0.8, "skin": 2, "beard_shadow": 0.25,
+                             "hair": "side_part", "hair_color": "grey", "look": "vip"},
 }
 
 NAVY = "char_suit_navy"
@@ -160,7 +167,31 @@ def parent(kit: Kit) -> None:
                          "daypack on both shoulders")
 
 
-_looks = {"manager": manager, "officer": officer, "officer_b": officer_b, "business": business, "parent": parent}
+def vip(kit: Kit) -> None:
+    fit, k = kit.fit, kit.k
+    _hips_z, belt_z, tuck = _z(kit)
+    sh = n.shoes(kit, mat="char_shoe_brown")
+    n.shirt(kit, "char_shirt_white", tuck, point_len=0.054)
+    n.trousers(kit, GREY, sh, belt_z + 0.022 * k)
+    n.tie(kit, "char_tie_burgundy", belt_z + 0.03 * k, width=0.072)
+    n.watch(kit, "L", strap="leather_dark", case="brass")
+    kit.add_soft(g.gloves(fit, "leather_dark", cuff_len=0.05))
+    n0 = len(kit.soft.f)
+    jk, _info = n.jacket(kit, GREY, 0.80 * k, 1.04 * k, button_mat="char_button_dark", lapel_w=0.054, neck_w=0.08,
+                         flare=0.07, pockets=False)
+    n.cull_under(kit, n0, jk, "faces_hidden_by_jacket")
+    crew.scarf(kit, "char_silk_ivory", 1.00 * k)
+    n0 = len(kit.soft.f)
+    coat, _info = n.jacket(kit, "char_coat_camel", 0.46 * k, 0.99 * k, neck_w=0.100, lapel_w=0.074, flare=0.12,
+                           base=0.016, open_below=0.06, sleeve=1.93, buttons=False, chest_welt=False)
+    n.cull_under(kit, n0, coat, "faces_hidden_by_coat")
+    kit.notes["look"] = ("VIP private client (OF-D1 civ_vip): open camel overcoat below the knee over a charcoal-grey "
+                         "suit, white shirt, burgundy tie, ivory silk scarf, dark brown leather gloves, brown oxfords, "
+                         "gold watch (left); about 70, silver side-parted hair")
+
+
+_looks = {"manager": manager, "officer": officer, "officer_b": officer_b, "business": business, "parent": parent,
+          "vip": vip}
 
 
 def recipe(kit: Kit) -> None:

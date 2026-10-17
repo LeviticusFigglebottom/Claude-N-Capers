@@ -13,6 +13,16 @@ Two body variants so guards don't look cloned: ``char_security_officer`` (lean, 
 skin, dark bob under the cap, and ``_d`` a tall young man, deep skin, buzz cut. D-130 (Night Deposit at Cataclysm: about
 +50 % guards, up to 6 on the floor): ``_e`` a woman in her 50s, light skin, grey bob, gold-rimmed glasses (``glasses``
 option), and ``_f`` a broad man in his 40s, mid-deep skin, short dark hair, a dark moustache (``moustache`` option).
+OF-D1 (Ostrander Federal, the L heist's Halden day shift: up to 6 guards + the VIP bodyguard, D-130-sized): ``_g`` a slim
+young woman, deep skin, dark hair in a low bun under the cap (``bun`` option); ``_h`` a man in his 60s, light skin, short
+grey hair, silver-rimmed glasses; ``_i`` a tall broad woman in her 40s, olive skin, brown bob, small gold ear studs
+(``earrings`` option); ``_j`` a slight young man, light skin, short blond hair. Same uniform and badge set on all ten.
+
+``char_security_bodyguard`` (OF-D1, ``guard_vip``): the Halden close-protection officer who escorts the VIP client.
+Plainclothes but clearly security: a near-black two-piece suit, white shirt open at the collar (no tie), an earpiece
+with a coiled cable behind the right ear, the Halden lapel pin (a small gold-rimmed burgundy shield with the gold "H")
+on the left lapel, and a radio plus a pistol holster on the belt under the jacket on the right hip (the jacket rides
+over both: the bulge; the radio = the ``Hip`` seat where the pager rides). No cap, no shirt livery: a suit silhouette.
 
 Meshes (Godot ``<root>/Skeleton3D/``, exported with ``remove_armature``): ``Body`` (covered skin removed), ``Hair``,
 ``Outfit`` (cloth, belt, cable), ``Gear`` (rigid hard parts), ``Headwear`` (cap). No blend shapes:
@@ -23,6 +33,7 @@ import math
 
 import _contact_gear as cg
 import _gear_kit as gk
+import _npc as n
 import _outfit as o
 import _outfit_garments as g
 from _outfit import Hull, Mesh, Vector
@@ -46,6 +57,18 @@ VARIANTS = {
                                 "hair": "bob", "hair_color": "grey", "glasses": "brass"},
     "char_security_officer_f": {"height": 1.86, "build": 0.75, "gender": 0.0, "age": 0.5, "skin": 4, "beard_shadow": 0.6,
                                 "hair": "short", "hair_color": "dark", "moustache": "char_hair_dark"},
+    # OF-D1 (Ostrander Federal day shift, D-130-sized: up to 6 Halden guards + the bodyguard): four more faces
+    "char_security_officer_g": {"height": 1.68, "build": 0.3, "gender": 1.0, "age": 0.2, "skin": 6,
+                                "hair": "side_part", "hair_color": "dark", "bun": "char_hair_dark"},
+    "char_security_officer_h": {"height": 1.78, "build": 0.5, "gender": 0.0, "age": 0.72, "skin": 1, "beard_shadow": 0.45,
+                                "hair": "short", "hair_color": "grey", "glasses": "char_metal_silver"},
+    "char_security_officer_i": {"height": 1.76, "build": 0.8, "gender": 1.0, "age": 0.45, "skin": 3,
+                                "hair": "bob", "hair_color": "brown", "earrings": "brass"},
+    "char_security_officer_j": {"height": 1.72, "build": 0.28, "gender": 0.0, "age": 0.15, "skin": 2, "beard_shadow": 0.2,
+                                "hair": "short", "hair_color": "blond"},
+    # OF-D1 vip_client: the Halden close-protection officer (guard_vip)
+    "char_security_bodyguard": {"height": 1.87, "build": 0.8, "gender": 0.0, "age": 0.4, "skin": 3, "beard_shadow": 0.8,
+                                "hair": "buzz", "hair_color": "dark", "look": "bodyguard"},
 }
 
 SHIRT = "char_sec_shirt"
@@ -56,6 +79,13 @@ GOLD = "brass"
 
 
 def recipe(kit: Kit) -> None:
+    if kit.opts.get("look") == "bodyguard":
+        bodyguard(kit)
+    else:
+        uniform(kit)
+
+
+def uniform(kit: Kit) -> None:
     fit, k = kit.fit, kit.k
     hips_z = fit.ring_centre("hips").z
     belt_z = hips_z + 0.038 * k
@@ -173,7 +203,51 @@ def recipe(kit: Kit) -> None:
         kit.add_head(gk.glasses(fit, str(kit.opts["glasses"])))
     if "moustache" in kit.opts:
         kit.add_head(cg.moustache(fit, str(kit.opts["moustache"])))
+    if "bun" in kit.opts:
+        # a low bun at the nape, under the cap's back band
+        kit.add_head(cg.chignon(fit, str(kit.opts["bun"]), size=0.72, lift=-0.045))
+    if "earrings" in kit.opts:
+        kit.add_head(cg.earrings(fit, str(kit.opts["earrings"]), drop=False))
     kit.notes["hat"] = "peaked cap (Headwear), crown top z {:.3f} m".format(info["crown_top_z"])
+
+
+BG_SUIT = "char_tux_black"
+
+
+def halden_pin(hull: Hull, p: Vector, k: float) -> Mesh:
+    """Halden lapel pin: a small gold-rimmed burgundy shield with the raised gold "H" (the sleeve patch in miniature)."""
+    return gk.shield_badge(hull, p, Vector((0.0, 1.0, 0.15)), 0.020, 0.024, GOLD, BURGUNDY, k=k, letter="H",
+                           depth=0.0016)
+
+
+def bodyguard(kit: Kit) -> None:
+    fit, k = kit.fit, kit.k
+    hips_z = fit.ring_centre("hips").z
+    belt_z = hips_z + 0.035 * k
+    tuck = belt_z - 0.02 * k
+    sh = n.shoes(kit)
+    n.shirt(kit, "char_shirt_white", tuck, point_len=0.056, spread=0.34)
+    tr = n.trousers(kit, BG_SUIT, sh, belt_z + 0.022 * k)
+    n.belt(kit, tr, belt_z, mat="char_leather_black", buckle="chrome", height=0.030)
+    # radio (the Hip seat) and a pistol holster behind it on the belt, under the jacket: the jacket is lofted over
+    # both, so they read as the bulge on the right hip
+    b = gk.Belt(fit, Hull(fit, [tr], body_regions=set()), belt_z, height=0.034, thick=0.0045)
+    bg = Mesh()
+    a_radio = math.radians(100.0)
+    bg.extend(gk.radio(b, a_radio))
+    bg.extend(gk.holster(b, math.radians(142.0)))
+    kit.add_gear(bg)
+    kit.seats["Hip"] = b.point(a_radio, dz=0.0, out=0.045 * k)
+    n0 = len(kit.soft.f)
+    jk, _info = n.jacket(kit, BG_SUIT, 0.79 * k, 1.03 * k, button_mat="char_button_dark", lapel_w=0.052, neck_w=0.085,
+                         flare=0.08)
+    n.cull_under(kit, n0, jk, "faces_hidden_by_jacket")
+    kit.add_gear(halden_pin(kit.hull(), Vector((-0.090 * k, 0.3, 1.335 * k)), k))
+    n.earpiece(kit, "R")
+    kit.notes["hip_note"] = "Hip seat = the radio on the belt under the jacket (right hip); the pager rides there"
+    kit.notes["look"] = ("Halden close protection (OF-D1 guard_vip): near-black suit, white shirt open at the collar, no "
+                         "tie, earpiece + coiled cable (right ear), Halden shield lapel pin, radio + holster bulge on "
+                         "the right hip under the jacket")
 
 
 def build(ctx) -> None:
