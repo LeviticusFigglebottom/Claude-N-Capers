@@ -1335,7 +1335,7 @@ run each on Tense and Lethal for ND/GN/SL afterwards.
 4. Reyes in-heist radio uses speaker `reyes` with `vo.reyes.*` lines in the B7-03 contact-radio shape; the mission's
    `say(…, &"reyes")` plays those ids.
 5. RT preplan point and room labels wait for the VO round after G1.
-**D-141 addendum (OF-C0 QCs, 2026-10-17, LEAD):** QC-g the teller counter gets a 1.35 m solid bandit-screen base in front
+**D-141 addendum (OF-C0 QCs, 2026-10-17, LEAD):** QC-g the teller counter gets a solid bandit-screen base (1.35 m proposed; **1.50 m adopted**, C hide_los: oblique observers saw a crouched player over 1.35 m) in front
 of the 1.05 m ledge (a crouched player's top detection point is 1.05 m), glazing above; QC-h civilian budget ≤ 22;
 QC-i no new "door" assault kind: XL/HH doors breach via D-122 NAV_LAYER_BREACH, Breach_3/4 stay police-entry points;
 QC-j C's call in OF-C2.
