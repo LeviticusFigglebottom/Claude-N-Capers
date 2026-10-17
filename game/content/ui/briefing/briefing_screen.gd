@@ -219,6 +219,7 @@ func _show_blueprint() -> void:
 	var board: PreplanBoard = PreplanBoard.build(heist_id, difficulty) if heist_id != &"" else null
 	var real: bool = board != null and board.blueprint != null and not board.blueprint.placeholder
 	blueprint_view.visible = real
+	blueprint.note.visible = not real  # the "plans pending" note stays under a real blueprint otherwise (UI QA walk)
 	if not real:
 		return
 	blueprint_view.setup(board)
