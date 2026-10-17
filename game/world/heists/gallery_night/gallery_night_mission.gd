@@ -32,6 +32,10 @@ const TAG_SHUTTER: StringName = &"shutter"
 const TAG_SERVER_DOOR: StringName = &"server_door"
 const TAG_VAULT_DRILL: StringName = &"vault_drill"
 const TAG_STORE_STUDY: StringName = &"store_study"
+## GN-8 (B's strings audit): the 13 wall studies (1-2 per gallery; late_loan's crate studies carry the same tag).
+const TAG_STUDY: StringName = &"study"
+## GN-8: the SV keypad (code group argus); entering the code opens the server door ([server_door]).
+const TAG_SERVER_KEYPAD: StringName = &"server_keypad"
 const TAG_CURTAIN: StringName = &"landing_curtain"
 ## GN-C1 step 2d: the curator_tipsy lanyard on the bar (kc_curator's carried card is the `keycard` one, QC-52).
 const TAG_KEYCARD_BAR: StringName = &"keycard_bar"
@@ -707,8 +711,12 @@ func _on_interaction_completed(interactable_net_id: int, _crew_slot: int, _kind:
 		_taken[interactable_net_id] = true
 		if _all_taken([TAG_LOCKERS]):
 			_complete_once(&"lockers")  # Vance: "Friday's auction will be very short."
-	elif _is_tagged(interactable_net_id, TAG_STORE_STUDY):
-		_taken[interactable_net_id] = true
+	elif _is_tagged(interactable_net_id, TAG_STORE_STUDY) or _is_tagged(interactable_net_id, TAG_STUDY):
+		_taken[interactable_net_id] = true  # GN-8: wall studies count for [extras] like the AS rack ones
+	elif _is_tagged(interactable_net_id, TAG_SERVER_KEYPAD):
+		# GN-8: the code on the SV keypad opens the server door: [server_door] (loud: code OR drill) is done.
+		if objective_state(&"server_door") == Enums.ObjectiveState.ACTIVE:
+			complete(&"server_door")
 	else:
 		for tag: StringName in LIST_TAGS:
 			if _is_tagged(interactable_net_id, tag):
@@ -891,6 +899,13 @@ func _lift_lockdown() -> void:
 			(r as KeycardReader).set_disabled(false)
 	_complete_once(&"treasury")
 	_complete_once(&"art_store")
+	# GN-8 (doc §Objectives Loud 7: [hack] OR [vault_drill]): the loud hack opened the AS vault door, so the drill step
+	# is moot (a drill left running still finishes harmlessly).
+	if objective_state(&"vault_drill") == Enums.ObjectiveState.ACTIVE:
+		update_objective_data(&"vault_drill", {"skipped": true, "reason": &"hack"})
+		complete(&"vault_drill")
+	if objective_state(&"server_door") == Enums.ObjectiveState.ACTIVE:
+		complete(&"server_door")  # the hack ran inside SV: the crew got through the server door
 	_say_once(VO_SHUTTERS_UP)
 
 
@@ -970,12 +985,15 @@ func _proximity_area(area_name: String, radius: float) -> Area3D:
 func _check_extras() -> void:
 	if objective_state(&"extras") != Enums.ObjectiveState.ACTIVE:
 		return
+	# GN-8: the centrepiece counts by its objective (cut from the slot, or taken back from the Vaultline couriers: its
+	# take was never recorded in _taken, so [extras] could not complete).
 	if objective_state(&"lockers") != Enums.ObjectiveState.COMPLETED \
-			or objective_state(&"curator_safe") != Enums.ObjectiveState.COMPLETED:
+			or objective_state(&"curator_safe") != Enums.ObjectiveState.COMPLETED \
+			or objective_state(&"centrepiece") != Enums.ObjectiveState.COMPLETED:
 		return
 	var tags: Array[StringName] = LIST_TAGS.duplicate()
-	tags.append(TAG_LANTERN)
 	tags.append(TAG_STORE_STUDY)
+	tags.append(TAG_STUDY)
 	if _all_taken(tags):
 		complete(&"extras")  # Vance: "The whole list and the studies too."
 
