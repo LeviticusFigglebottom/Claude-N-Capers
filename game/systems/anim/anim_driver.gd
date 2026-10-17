@@ -72,6 +72,9 @@ const HINT_CLIPS: Dictionary = {
 	&"check_desk": &"check_desk_write", &"check_desk_write": &"check_desk_write",
 	# OF-A6 (S3.1): a panicked civilian pressing an alarm_button (CivilianBrain CALLING at REASON_BUTTON).
 	&"press_alarm": &"interact_mid",
+	# RT-D1 (Rolling Thunder, clips announced by ENV D): seated in a car / cab, eating in a diner booth, the diner cook.
+	&"sit_vehicle": &"sit_vehicle", &"vehicle": &"sit_vehicle", &"sit_eat": &"sit_eat", &"eat": &"sit_eat",
+	&"cook_stove": &"cook_stove", &"cook": &"cook_stove",
 }
 ## Clips that win over locomotion (the body holds a pose).
 ## One-shot poses that must stay held when they end (P coverage: a surrendered cop froze with a stopped player):
@@ -118,7 +121,12 @@ const META_NET_HINT: StringName = &"net_anim_hint"
 ## Hints played once when the hint changes to them.
 const ONESHOT_HINTS: Array[StringName] = [&"melee", &"kick_hit", &"hit_react"]
 ## characters.md v1.11: clips that mean "seated at a desk / chair" for the seated deaths.
-const SEATED_CLIPS: Array[StringName] = [&"desk_work", &"phone_seated", &"sit_chair_watch", &"cower_seated"]
+const SEATED_CLIPS: Array[StringName] = [&"desk_work", &"phone_seated", &"sit_chair_watch", &"cower_seated",
+	&"sit_eat", &"sit_vehicle"]
+## RT-D1 vehicle dismounts (~45 f one-shots with root motion, step events, ending on idle_alert f0): played only when
+## the rig has them (play_vehicle_exit; no fallback clip). No caller yet: the convoy / police dismount is QC-83/86.
+const VEHICLE_EXIT_L: StringName = &"vehicle_exit_l"
+const VEHICLE_EXIT_R: StringName = &"vehicle_exit_r"
 const DEATH_SEATED_SLUMP: StringName = &"death_seated_slump"
 const DEATH_SEATED_FALL: StringName = &"death_seated_fall"
 ## characters.md v1.10 8-way locomotion by 45 deg sector clockwise from forward (index 0 = forward).
@@ -198,9 +206,12 @@ const FALLBACK_CLIPS: Dictionary = {
 	&"rappel_hang": &"climb_ladder", &"rappel_descend": &"climb_ladder", &"rappel_land": &"idle_alert",
 	&"heli_door_idle": &"aim_rifle", &"heli_door_aim": &"aim_rifle", &"van_exit": &"walk",
 	&"breach_place": &"interact_mid", &"breach_standback": &"crouch_idle",
-	# OF-D1 bank customer clips: before them a queue stood in idle; the counter / check-desk loops stand at a ledge.
+	# OF-D1 bank customer clips: before them a queue stood in idle; the counter / check-desk loops stand at a ledge
 	&"queue_idle": &"idle", &"queue_idle_b": &"queue_idle", &"queue_idle_c": &"queue_idle",
-	&"counter_customer": &"desk_type", &"check_desk_write": &"desk_type",
+	# (not desk_type: it is a seated clip; not teller_count: it holds the cash stack)
+	&"counter_customer": &"idle", &"check_desk_write": &"idle",
+	# RT-D1: seated loops sit on the chair loop, the cook stands.
+	&"sit_vehicle": &"sit_chair", &"sit_eat": &"sit_chair", &"cook_stove": &"idle",
 }
 ## PO6-17: an NPC meta (StringName clip) that wins over every NPC state / brain hint while set (host). The
 ## assault-event runner sets it for scripted moments: rope descent, landing, heli door, van exit, breach charge.
@@ -999,6 +1010,15 @@ func _update_start_stop(tw: AnimTweak) -> void:
 			_play_if_present(&"walk_start" if speed <= tw.walk_run_split_mps else &"run_start", true)
 	elif clip == &"walk" or clip == &"run":
 		_play_if_present(&"walk_stop" if clip == &"walk" else &"run_stop", false)
+
+
+## RT-D1: the vehicle dismount one-shot out of the `left` / right door; false (nothing plays) when the rig lacks it.
+func play_vehicle_exit(left: bool) -> bool:
+	var c: StringName = VEHICLE_EXIT_L if left else VEHICLE_EXIT_R
+	if player == null or not player.has_animation("%s/%s" % [LIBRARY, c]):
+		return false
+	play_oneshot(c, -1.0, true)
+	return true
 
 
 ## A one-shot only when the library has exactly that clip (the fallback chain would play idle / walk instead).

@@ -119,9 +119,9 @@ func test_of_a6_fallback_when_clip_absent() -> void:
 	var d: AnimDriver = _hint(n, &"queue")
 	assert_eq(_playing(d), "humanoid/idle", "no queue_idle*: a queue stands in idle (the old mapping)")
 	_hint(n, &"counter")
-	assert_eq(_playing(d), "humanoid/desk_type", "no counter_customer: desk_type at the ledge")
+	assert_eq(_playing(d), "humanoid/idle", "no counter_customer: idle (desk_type is seated, teller_count holds cash)")
 	_hint(n, &"check_desk")
-	assert_eq(_playing(d), "humanoid/desk_type", "no check_desk_write: desk_type at the desk")
+	assert_eq(_playing(d), "humanoid/idle", "no check_desk_write: idle")
 	var g: NpcBase = _npc(&"guard", _id_for(2))
 	g.spawn_info = {"tags": [&"guard_vip"]}
 	var gd: AnimDriver = _hint(g, &"idle")
