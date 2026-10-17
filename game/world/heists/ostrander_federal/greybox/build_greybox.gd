@@ -78,7 +78,7 @@ func _build() -> void:
 	build_variants(n("Variants"))
 	build_lines(n("Gameplay/Lines"))
 	bind_targets()
-	errors.append_array(AM.build(map_root, AE.TURRET_VANS, AE.HELI_ORBITS, AE.HELI_DROPS, [], AE.BREACHES, obstructions))
+	errors.append_array(AM.build(map_root, AE.TURRET_VANS, AE.HELI_ORBITS, AE.HELI_DROPS, [], _breaches(), obstructions))
 	build_nav_links(nav)
 	for line: String in NS.snap(map_root):
 		print("seat: " + line)
@@ -104,6 +104,14 @@ func _build() -> void:
 	normalize_scene(out, old_scene_uid)
 	print("ostrander_federal: saved %s (navmesh polygons: %d)" % [out, polys])
 	quit(0)
+
+
+## Breach rows (layout ASSAULT_BREACHES) with the Vector3 / Vector2 fields assault_markers.gd reads.
+static func _breaches() -> Array:
+	var out: Array = []
+	for b: Array in L.ASSAULT_BREACHES:
+		out.append([b[0], b[1], b[2], v3(b[3]), float(b[4]), Vector2(float(b[5][0]), float(b[5][1])), b[6], float(b[7])])
+	return out
 
 
 ## HeistDef + variant table from ENV B's values block (ostrander_federal_resources.gd), byte-stable.

@@ -12,13 +12,15 @@ extends "res://world/heists/ostrander_federal/greybox/of_shell.gd"
 const GUARD_TAGS: Array = ["guard_lobby", "guard_vault", "guard_rover_hall", "guard_rover_gallery", "guard_rover_basement",
 	"guard_rover_dock", "guard_extra_hall", "guard_extra_basement", "guard_extra_exec", "guard_extra_tannery",
 	"guard_vaultline"]
-const STAFF_TAGS: Array = ["civ_teller", "civ_manager_floor", "civ_manager_gallery", "civ_manager_vault", "civ_officer"]
+const STAFF_TAGS: Array = ["civ_teller", "civ_manager_mgr_floor", "civ_manager_mgr_gallery", "civ_manager_mgr_vault",
+	"civ_officer"]
 const LOCKPICK_S: float = 8.0
 ## Door bake-closed (D-073 / D-122): the projected obstruction fills the opening, +0.15 m into each jamb, 0.3 m each side.
 const BAKE_DEPTH: float = 0.3
 ## Catalog visuals whose bodies block the bake.
+## (Not loot_spawn: its marker is a navmesh target, within 0.25 m of the bake.)
 const OBSTRUCT_KINDS: Array[String] = ["safe", "body_container", "secure_zone", "camera_station", "hack_terminal",
-	"loot_spawn", "bag_lift"]
+	"bag_lift"]
 
 ## [node, property, names] bound once everything is built (targets, operator spawn).
 var _binds: Array[Array] = []
@@ -117,6 +119,12 @@ func _content(host: Node3D, c: Array) -> void:
 	inst.set_meta(&"inside", true)
 	host.add_child(inst)
 	inst.owner = map_root
+	# PO6-05: stowed loot is taken from the safe's own UsePoint (the floor in front of the door)
+	var hup: Node3D = host.get_node_or_null("UsePoint") as Node3D
+	var cup: Node3D = inst.get_node_or_null("UsePoint") as Node3D
+	if hup != null and cup != null:
+		cup.transform = global_xform(inst).affine_inverse() * global_xform(hup)
+		map_root.set_editable_instance(inst, true)
 
 
 func _spawn_row(parent: Node3D, it: Array) -> SpawnPoint:
@@ -299,7 +307,7 @@ func build_variants(variants: Node3D) -> void:
 func security_camera(parent: Node3D, c: Array) -> Node3D:
 	var pos: Array = c[3]
 	return place_prefab(parent, ["prefab", "security_camera", "Camera" + String(c[0]), pos, float(c[4]),
-		{"fov_deg": 60.0, "range_m": 20.0, "pan_deg": 40.0}, null,
+		{"fov_deg": 60.0, "range_m": 20.0, "pan_deg": float(c[6])}, null,
 		{"mount": "wall", "kind": "security_camera", "camera_id": String(c[0])}, "prop_security_camera_wall"])
 
 
@@ -309,10 +317,13 @@ func _lasers(vs: VariantSlot, sid: String) -> void:
 	var z0: float = float(lz["z"][0])
 	var z1: float = float(lz["z"][1])
 	var fy: float = LC.LASER_FLOOR
+	var post0: Node3D = vs
 	for i: int in range((lz["posts"] as Array).size()):
 		var p: Array = lz["posts"][i]
-		_box_row(vs, ["box", "LaserPost%d" % i, [LC.LASER_X, fy, (float(p[0]) + float(p[1])) * 0.5],
+		var post: StaticBody3D = _box_row(vs, ["box", "LaserPost%d" % i, [LC.LASER_X, fy, (float(p[0]) + float(p[1])) * 0.5],
 			[0.12, 2.7, float(p[1]) - float(p[0])], 0.0, "laser_emitter", true, "trim"])
+		if i == 0 and post != null:
+			post0 = post   # the grid hangs off its emitter post (as GN's TreasuryLasers)
 	var props: Dictionary = {"pattern": String(lz["pattern"]), "size_m": [z1 - z0, float(lz["h"]), 0.1],
 		"enabled_at_start": true, "objective_tag": "laser_grid"}
 	for k: String in ["beams", "sweep_beams", "period_s", "off_s"]:
@@ -320,7 +331,7 @@ func _lasers(vs: VariantSlot, sid: String) -> void:
 			props["beam_count" if k == "beams" else k] = lz[k]
 	var metas: Dictionary = (lz["metas"] as Dictionary).duplicate()
 	metas["kind"] = "laser_grid"
-	place_prefab(vs, ["prefab", "laser_grid", "VaultLasers", [LC.LASER_X, fy + float(lz["y"]), (z0 + z1) * 0.5], 90.0,
+	place_prefab(post0, ["prefab", "laser_grid", "VaultLasers", [LC.LASER_X, fy + float(lz["y"]), (z0 + z1) * 0.5], 90.0,
 		props, null, metas, ""])
 
 

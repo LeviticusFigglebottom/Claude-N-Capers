@@ -191,6 +191,10 @@ def emit() -> tuple:
     links = [["IslandLink" + p[0], p[3], p[4], False, 1] for p in S.POLICE_ISLANDS] + S.NAV_LINKS
     s += const("NAV_LINKS", links, doc="Always-present nav links: [name, from, to, bidirectional, navigation_layers] (1 "
                "walkable, 4 vent): the street islands' one-way links, P5's rappels, the lantern rappel, the areaway vent.")
+    brs = [[nm, "window", "prop_breach_window", [float(bx), FFL["G"], round(bz - 0.2, 3)], 0.0, list(S.BREACH_SIZE),
+            rid, 0.0] for nm, bx, bz, rid in S.BREACH_WINDOWS]
+    s += const("ASSAULT_BREACHES", brs, doc="PO6-17 breaches (assault_markers.gd rows): [name, kind, scene id, room-side "
+               "face pos, yaw, size, room, depth].")
     s += const("OOB", S.OOB, doc="OUT_OF_BOUNDS curtains (D-040): [name, [x0, y0, z0, x1, y1, z1]].")
     slots = []
     for g, sid, w, f, rid, x, z, y, yaw, note in S.SLOTS:
@@ -199,9 +203,10 @@ def emit() -> tuple:
                "z, yaw, note].")
     s += const("GROUP_ORDER", S.GROUP_ORDER, "Array[String]")
     s += const("SLOT_PARAMS", C.SLOT_PARAMS, "Dictionary", "VariantSlot.params per slot (mission data).")
-    cams = [[cid, r[0], r[1], [float(r[2]), round(FFL[r[0]] + r[4], 3), float(r[3])], float(r[5]), list(r[6])]
+    cams = [[cid, r[0], r[1], [float(r[2]), round(FFL[r[0]] + r[4], 3), float(r[3])], float(r[5]), list(r[6]),
+             float(r[7]) if len(r) > 7 else 40.0]
             for cid, r in S.CAMERAS.items()]
-    s += const("CAMERAS", cams, doc="Security cameras: [id, floor, room, pivot (on its wall face), yaw, layouts].")
+    s += const("CAMERAS", cams, doc="Security cameras: [id, floor, room, pivot (on its wall face), yaw, layouts, pan_deg].")
     s += "const CAMERA_SPINE_ROOMS: Array[String] = %s\n" % fmt(list(S.CAMERA_SPINE_ROOMS))
     doors = []
     for d in GM.resolved_doors():

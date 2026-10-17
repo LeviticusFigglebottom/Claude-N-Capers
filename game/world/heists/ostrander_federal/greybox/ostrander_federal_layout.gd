@@ -147,7 +147,7 @@ const WALLS: Array = [
 	["B", "z", 40.0, 0.0, 7.0, 0.2, -4.0, -0.8, "wall", []],
 	["B", "z", 45.0, 0.0, 7.0, 0.3, -4.0, 0.0, "wall", []],
 	["B", "z", 48.0, 0.0, 25.0, 0.4, -4.0, 0.0, "wall_ext", []],
-	["G", "x", 0.0, 0.0, 48.0, 0.4, 0.0, 5.0, "wall_ext", [[3.2, 6.8, 0.0, 4.0], [7.4, 8.6, 0.0, 2.2], [0.6, 1.6, 0.9, 2.4]]],
+	["G", "x", 0.0, 0.0, 48.0, 0.4, 0.0, 5.0, "wall_ext", [[3.1, 6.9, 0.0, 4.1], [7.4, 8.6, 0.0, 2.2], [0.6, 1.6, 0.9, 2.4]]],
 	["G", "x", 3.0, 10.0, 13.0, 0.2, 0.0, 4.2, "wall", []],
 	["G", "x", 7.0, 10.0, 13.0, 0.2, 0.0, 4.2, "wall", [[11.5, 12.5, 0.0, 2.2]]],
 	["G", "x", 7.0, 13.0, 16.0, 0.3, 0.0, 5.0, "wall", [[13.9, 15.1, 0.0, 2.2]]],
@@ -170,8 +170,8 @@ const WALLS: Array = [
 	[
 		"G", "x", 36.0, 0.0, 48.0, 0.4, 0.0, 5.0, "wall_ext",
 		[
-			[21.9, 23.9, 0.0, 2.2], [24.1, 26.1, 0.0, 2.2], [3.0, 5.0, 0.0, 2.2], [10.2, 13.4, 1.0, 6.5], [14.6, 17.8, 1.0, 6.5],
-			[30.2, 33.4, 1.0, 6.5], [34.6, 37.8, 1.0, 6.5],
+			[21.9, 23.9, 0.0, 2.2], [24.1, 26.1, 0.0, 2.2], [3.0, 5.0, 0.0, 2.2], [11.3, 12.3, 0.0, 2.1], [35.7, 36.7, 0.0, 2.1],
+			[10.2, 13.4, 1.0, 6.5], [14.6, 17.8, 1.0, 6.5], [30.2, 33.4, 1.0, 6.5], [34.6, 37.8, 1.0, 6.5],
 		],
 	],
 	["G", "z", 0.0, 0.0, 36.0, 0.4, 0.0, 5.0, "wall_ext", []],
@@ -302,10 +302,14 @@ const WALLS: Array = [
 ## Window glass: [name, min, max].
 const PANES: Array = [
 	["Pane15_G", [0.6, 0.9, -0.02], [1.6, 2.4, 0.02]],
-	["Pane45_G", [10.2, 1.0, 35.98], [13.4, 6.5, 36.02]],
+	["Pane45_GW", [10.2, 1.0, 35.98], [11.3, 6.5, 36.02]],
+	["Pane45_GE", [12.3, 1.0, 35.98], [13.4, 6.5, 36.02]],
+	["Pane45_GHead", [11.3, 2.1, 35.98], [12.3, 6.5, 36.02]],
 	["Pane46_G", [14.6, 1.0, 35.98], [17.8, 6.5, 36.02]],
 	["Pane47_G", [30.2, 1.0, 35.98], [33.4, 6.5, 36.02]],
-	["Pane48_G", [34.6, 1.0, 35.98], [37.8, 6.5, 36.02]],
+	["Pane48_GW", [34.6, 1.0, 35.98], [35.7, 6.5, 36.02]],
+	["Pane48_GE", [36.7, 1.0, 35.98], [37.8, 6.5, 36.02]],
+	["Pane48_GHead", [35.7, 2.1, 35.98], [36.7, 6.5, 36.02]],
 	["Pane49_G", [47.98, 0.9, 10.5], [48.02, 2.4, 11.5]],
 	["Pane50_G", [47.98, 0.9, 14.5], [48.02, 2.4, 15.5]],
 	["Pane51_G", [47.98, 0.9, 20.5], [48.02, 2.4, 21.5]],
@@ -364,22 +368,24 @@ const CEILINGS: Array = [
 const CEIL_T: float = 0.05
 ## Shell boxes (Geometry/Building/<group>): [group, name, min, max, class].
 const SHELL_BOXES: Array = [
-	["Sills", "Sill_DockRollerDoor", [3.2, -0.3, -0.2], [6.8, 0.0, 0.2], "floor"],
+	["Sills", "Sill_DockRollerDoor", [3.1, -0.3, -0.2], [6.9, 0.0, 0.2], "floor"],
 	["Sills", "Sill_DockPersonnelDoor", [7.4, -0.3, -0.2], [8.6, 0.0, 0.2], "floor"],
 	["Sills", "Sill_FireExitDoor", [47.8, -0.3, 7.4], [48.2, 0.0, 8.6], "floor"],
 	["Sills", "Sill_BronzeDoorsW", [21.9, -0.3, 35.8], [23.9, 0.0, 36.2], "floor"],
 	["Sills", "Sill_BronzeDoorsE", [24.1, -0.3, 35.8], [26.1, 0.0, 36.2], "floor"],
 	["Sills", "Sill_ATMStreetDoor", [3.0, -0.3, 35.8], [5.0, 0.0, 36.2], "floor"],
+	["Sills", "Sill_Breach_1", [11.3, -0.3, 35.8], [12.3, 0.0, 36.2], "floor"],
+	["Sills", "Sill_Breach_2", [35.7, -0.3, 35.8], [36.7, 0.0, 36.2], "floor"],
 	["Sills", "Sill_CagedLadderTop", [45.4, 11.9, 16.8], [46.6, 12.2, 17.2], "roof"],
-	["Counter", "ScreenBaseW", [8.1, 0.0, 17.15], [22.9, 1.35, 17.25], "counter"],
+	["Counter", "ScreenBaseW", [8.1, 0.0, 17.15], [22.9, 1.5, 17.25], "counter"],
 	["Counter", "CustomerLedgeW", [8.1, 0.0, 17.25], [22.9, 1.05, 17.45], "counter"],
-	["Counter", "BanditGlassW", [8.1, 1.35, 17.18], [22.9, 2.4, 17.22], "glass"],
-	["Counter", "ScreenBaseE", [25.1, 0.0, 17.15], [39.9, 1.35, 17.25], "counter"],
+	["Counter", "BanditGlassW", [8.1, 1.5, 17.18], [22.9, 2.4, 17.22], "glass"],
+	["Counter", "ScreenBaseE", [25.1, 0.0, 17.15], [39.9, 1.5, 17.25], "counter"],
 	["Counter", "CustomerLedgeE", [25.1, 0.0, 17.25], [39.9, 1.05, 17.45], "counter"],
-	["Counter", "BanditGlassE", [25.1, 1.35, 17.18], [39.9, 2.4, 17.22], "glass"],
+	["Counter", "BanditGlassE", [25.1, 1.5, 17.18], [39.9, 2.4, 17.22], "glass"],
 	["Counter", "GatePier0", [22.9, 0.0, 17.15], [23.4, 2.4, 17.35], "wall"],
 	["Counter", "GatePier1", [24.6, 0.0, 17.15], [25.1, 2.4, 17.35], "wall"],
-	["Counter", "Bulkhead", [8.1, 2.4, 17.15], [39.9, 4.2, 17.35], "wall"],
+	["Counter", "Bulkhead", [8.1, 2.4, 17.15], [39.9, 4.2, 17.5], "wall"],
 	["Counter", "GateHeader", [23.4, 2.2, 17.15], [24.6, 2.4, 17.35], "wall"],
 	["GalleryGuard", "GuardBase", [8.1, 5.0, 19.9], [39.9, 6.0, 20.0], "trim"],
 	["GalleryGuard", "GuardCap", [8.1, 6.0, 19.9], [39.9, 6.1, 20.0], "glass"],
@@ -458,7 +464,7 @@ const SITE_BOXES: Array = [
 	["Grade", "GradeTanneryMouth", [48.0, -1.5, 42.0], [66.0, -0.75, 48.0], "asphalt"],
 	["Grade", "GradeAvenue", [-16.0, -1.5, 48.0], [66.0, -0.75, 62.0], "asphalt"],
 	["Grade", "GradeAvenueEastKerb", [62.0, -1.5, 38.0], [66.0, -0.75, 42.0], "paving"],
-	["Grade", "GradeApronSteps", [18.0, -1.5, 38.0], [30.0, 0.0, 38.4], "paving"],
+	["Grade", "GradeApronSteps", [18.0, -1.5, 38.0], [30.0, 0.0, 38.8], "paving"],
 	["PoliceIslands", "PoliceIslandP1", [-44.0, -1.35, 48.0], [-16.4, -0.75, 62.0], "asphalt"],
 	["PoliceIslands", "PoliceIslandP2", [66.4, -1.35, 42.0], [94.0, -0.75, 62.0], "asphalt"],
 	["PoliceIslands", "PoliceIslandP3", [-44.0, -0.6, -10.0], [-16.4, 0.0, -0.2], "asphalt"],
@@ -662,7 +668,7 @@ const FLIGHTS: Array = [
 	["SBFlight1E", [47.225, 2.5, 1.91], 0.0, 1.25, 14, 0.179, 0.28],
 	["SBFlight2W", [45.775, 5.0, 5.55], 180.0, 1.25, 10, 0.18, 0.28],
 	["SBFlight2E", [47.225, 6.8, 3.03], 0.0, 1.25, 10, 0.18, 0.28],
-	["PlazaSteps", [24.0, -0.75, 40.0], 180.0, 12.0, 5, 0.15, 0.4],
+	["PlazaSteps", [24.0, -0.75, 40.0], 180.0, 12.0, 5, 0.15, 0.3],
 ]
 ## Handrails (5 cm bars): [name, from, to].
 const HANDRAILS: Array = [
@@ -704,7 +710,7 @@ const VISUALS: Array = [
 ## Always-present nav links: [name, from, to, bidirectional, navigation_layers] (1 walkable, 4 vent): the street islands'
 ## one-way links, P5's rappels, the lantern rappel, the areaway vent.
 const NAV_LINKS: Array = [
-	["IslandLinkP1", [-18.0, -0.75, 55.0], [-14.6, -0.75, 55.0], false, 1],
+	["IslandLinkP1", [-18.0, -0.75, 60.0], [-14.6, -0.75, 60.0], false, 1],
 	["IslandLinkP2", [68.0, -0.75, 55.0], [64.6, -0.75, 55.0], false, 1],
 	["IslandLinkP3", [-18.0, 0.0, -5.0], [-14.6, 0.0, -5.0], false, 1],
 	["IslandLinkP4", [55.0, 0.0, -16.0], [55.0, 0.0, -12.6], false, 1],
@@ -712,6 +718,11 @@ const NAV_LINKS: Array = [
 	["RappelSetbackTerrace", [-1.2, 16.0, 20.0], [1.6, 8.6, 20.0], false, 1],
 	["RappelLantern", [13.3, 8.6, 26.0], [16.0, 0.0, 26.0], false, 1],
 	["AreawayVent", [30.0, 0.0, -1.6], [30.0, -4.0, 3.5], true, 4],
+]
+## PO6-17 breaches (assault_markers.gd rows): [name, kind, scene id, room-side face pos, yaw, size, room, depth].
+const ASSAULT_BREACHES: Array = [
+	["Breach_1", "window", "prop_breach_window", [11.8, 0.0, 35.8], 0.0, [1.0, 2.1], "BH", 0.0],
+	["Breach_2", "window", "prop_breach_window", [36.2, 0.0, 35.8], 0.0, [1.0, 2.1], "BH", 0.0],
 ]
 ## OUT_OF_BOUNDS curtains (D-040): [name, [x0, y0, z0, x1, y1, z1]].
 const OOB: Array = [
@@ -811,24 +822,24 @@ const SLOT_PARAMS: Dictionary = {
 	"off_2": {"officers": 2},
 	"off_3": {"officers": 3},
 }
-## Security cameras: [id, floor, room, pivot (on its wall face), yaw, layouts].
+## Security cameras: [id, floor, room, pivot (on its wall face), yaw, layouts, pan_deg].
 const CAMERAS: Array = [
-	["C1", "G", "BH", [38.5, 3.0, 17.1], 180.0, ["cam_a", "cam_c"]],
-	["C2", "G", "BH", [9.0, 3.0, 35.8], 0.0, ["cam_b", "cam_c"]],
-	["C3", "G", "TW", [8.1, 3.0, 10.0], -90.0, ["cam_a", "cam_c"]],
-	["C4", "G", "BC", [47.8, 2.8, 8.0], 90.0, ["cam_b"]],
-	["C5", "G", "LD", [9.9, 3.0, 4.0], 90.0, ["cam_b"]],
-	["C6", "G", "X2", [19.925, 3.0, -5.7], 90.0, ["cam_a"]],
-	["C7", "G", "AV", [7.9, 2.8, 30.0], 90.0, ["cam_c"]],
-	["C8", "M", "UC", [0.2, 7.8, 8.0], -90.0, ["cam_a"]],
-	["C9", "M", "GA", [39.9, 7.7, 19.3], 90.0, ["cam_b", "cam_c"]],
-	["C10", "M", "VO", [47.8, 7.8, 10.0], 90.0, ["cam_b"]],
-	["C11", "E", "XC", [47.8, 11.4, 8.0], 90.0, ["cam_a", "cam_c"]],
-	["C12", "E", "X4", [24.0, 11.6, 17.2], 180.0, ["cam_a", "cam_b"]],
-	["C13", "B", "BB", [47.8, -1.2, 8.0], 90.0, ["cam_a", "cam_c"]],
-	["C14", "B", "SD", [35.0, -1.2, 9.1], 180.0, ["cam_a"]],
-	["C15", "B", "CP", [17.0, -1.2, 0.2], 180.0, ["cam_b", "cam_c"]],
-	["C16", "G", "PC", [47.0, 2.8, 9.1], 180.0, ["cam_b"]],
+	["C1", "G", "BH", [38.5, 3.0, 17.5], 180.0, ["cam_a", "cam_c"], 40.0],
+	["C2", "G", "BH", [9.0, 3.0, 35.8], 0.0, ["cam_b", "cam_c"], 40.0],
+	["C3", "G", "TW", [8.1, 3.0, 10.0], -90.0, ["cam_a", "cam_c"], 40.0],
+	["C4", "G", "BC", [47.8, 2.8, 8.0], 90.0, ["cam_b"], 40.0],
+	["C5", "G", "LD", [9.9, 3.0, 4.0], 90.0, ["cam_b"], 40.0],
+	["C6", "G", "X2", [19.925, 3.0, -5.7], 90.0, ["cam_a"], 40.0],
+	["C7", "G", "AV", [7.9, 2.8, 30.0], 90.0, ["cam_c"], 40.0],
+	["C8", "M", "UC", [0.2, 7.8, 8.0], -90.0, ["cam_a"], 40.0],
+	["C9", "M", "GA", [39.9, 7.7, 19.3], 90.0, ["cam_b", "cam_c"], 40.0],
+	["C10", "M", "VO", [47.8, 7.8, 10.0], 90.0, ["cam_b"], 40.0],
+	["C11", "E", "XC", [47.8, 11.4, 8.0], 90.0, ["cam_a", "cam_c"], 40.0],
+	["C12", "E", "X4", [24.0, 11.6, 17.2], 180.0, ["cam_a", "cam_b"], 0.0],
+	["C13", "B", "BB", [47.8, -1.2, 8.0], 90.0, ["cam_a", "cam_c"], 40.0],
+	["C14", "B", "SD", [35.0, -1.2, 9.1], 180.0, ["cam_a"], 40.0],
+	["C15", "B", "CP", [17.0, -1.2, 0.2], 180.0, ["cam_b", "cam_c"], 40.0],
+	["C16", "G", "PC", [47.0, 2.8, 9.1], 180.0, ["cam_b"], 40.0],
 ]
 const CAMERA_SPINE_ROOMS: Array[String] = ["BC", "BB"]
 ## Doors (lock table): [name, floor, origin (bottom-centre of the opening on the wall line), yaw (front -Z = UsePoint side),

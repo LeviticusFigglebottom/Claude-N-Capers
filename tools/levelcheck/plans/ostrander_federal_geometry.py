@@ -90,9 +90,9 @@ def resolved_doors() -> List[list]:
         span = (o[2], o[4]) if axis == "x" else (o[3], o[5])
         width = round(span[1] - span[0], 3)
         c = ex.get("c", (span[0] + span[1]) / 2.0)
-        kind = {1.0: "single", 1.2: "service", 2.0: "double", 4.2: "double", 2.4: "vault", 3.6: "roller"}[width]
-        hw = {"single": 0.5, "service": 0.6, "double": 1.0, "vault": 1.2, "roller": 1.8}[kind]
-        head = {"vault": 2.3, "roller": 4.0}.get(kind, DOOR_HEAD)
+        kind = {1.0: "single", 1.2: "service", 2.0: "double", 4.2: "double", 2.4: "vault", 3.8: "roller"}[width]
+        hw = {"single": 0.5, "service": 0.6, "double": 1.0, "vault": 1.2, "roller": 1.9}[kind]
+        head = {"vault": 2.3, "roller": 4.1}.get(kind, DOOR_HEAD)
         t = _wall_t(f, axis, fixed, c)
         tt = "t%02d" % int(round(t * 100))
         vis = ex.get("visual") or "prop_door_%s_%s_%s" % (kind, "steel" if ex.get("leaf") == "metal" or tt == "t30"
@@ -176,6 +176,9 @@ def _opening_y(o: tuple) -> Tuple[float, float]:
 def holes() -> List[list]:
     """Every wall hole [axis, fixed, a0, a1, y0, y1]: the door kits' openings and the plan's windows / ladder tops."""
     out = [d[9] for d in resolved_doors() if d[9] is not None]
+    for _nm, bx, bz, _rid in S.BREACH_WINDOWS:
+        out.append(["x", bz, r3(bx - S.BREACH_SIZE[0] / 2), r3(bx + S.BREACH_SIZE[0] / 2), FFL["G"],
+                    r3(FFL["G"] + S.BREACH_SIZE[1])])
     for o in P.OPEN:
         if o[1] in ("W", "h"):
             y0, y1 = _opening_y(o)
@@ -234,6 +237,13 @@ def panes() -> List[list]:
             mn, mx = [o[2], y0, o[3] - 0.02], [o[4], y1, o[3] + 0.02]
         else:
             mn, mx = [o[2] - 0.02, y0, o[3]], [o[2] + 0.02, y1, o[5]]
+        cut = [b for b in S.BREACH_WINDOWS if o[0] == "G" and o[3] == o[5] == b[2] and o[2] < b[1] < o[4]]
+        if cut:   # the breach slot: panes W / E of it and over its 2.1 m head
+            bx, hw, top = cut[0][1], S.BREACH_SIZE[0] / 2, FFL["G"] + S.BREACH_SIZE[1]
+            for sfx, a, b, ya in [("W", mn[0], bx - hw, mn[1]), ("E", bx + hw, mx[0], mn[1]),
+                                  ("Head", bx - hw, bx + hw, top)]:
+                out.append(["Pane%02d_%s%s" % (i, o[0], sfx), [r3(a), r3(ya), r3(mn[2])], [r3(b), r3(mx[1]), r3(mx[2])]])
+            continue
         out.append(["Pane%02d_%s" % (i, o[0]), [r3(v) for v in mn], [r3(v) for v in mx]])
     return out
 
@@ -258,6 +268,9 @@ def sills() -> List[list]:
             out.append(box("Sills", "Sill_" + d[0], h[2], y - 0.3, fixed - t / 2, h[3], y, fixed + t / 2, "floor"))
         else:
             out.append(box("Sills", "Sill_" + d[0], fixed - t / 2, y - 0.3, h[2], fixed + t / 2, y, h[3], "floor"))
+    for nm, bx, bz, _rid in S.BREACH_WINDOWS:   # the blown breach is walked through at FFL
+        out.append(box("Sills", "Sill_" + nm, bx - S.BREACH_SIZE[0] / 2, -0.3, bz - EXT_T / 2, bx + S.BREACH_SIZE[0] / 2,
+                       0.0, bz + EXT_T / 2, "floor"))
     # the caged-ladder top (roof parapet z 17) and the fire-escape crossing (north parapet, lowered to 0.6 m)
     out.append(box("Sills", "Sill_CagedLadderTop", 45.4, 11.9, 16.8, 46.6, 12.2, 17.2, "roof"))
     return out
@@ -320,12 +333,12 @@ def hall() -> List[list]:
         out.append(box("Counter", "BanditGlass" + nm, a, k["glass"][2], k["glass"][0], b, k["glass"][3], k["glass"][1],
                        "glass"))
     for i, (a, b) in enumerate(k["piers"]):
-        out.append(box("Counter", "GatePier%d" % i, a, 0.0, k["bulkhead"][0], b, k["bulkhead"][2], k["bulkhead"][1],
+        out.append(box("Counter", "GatePier%d" % i, a, 0.0, k["pier_z"][0], b, k["bulkhead"][2], k["pier_z"][1],
                        "wall"))
     out.append(box("Counter", "Bulkhead", xa, k["bulkhead"][2], k["bulkhead"][0], xb, SLAB_UNDER["G"],
                    k["bulkhead"][1], "wall"))
-    out.append(box("Counter", "GateHeader", g0, k["gate_head"], k["bulkhead"][0], g1, k["bulkhead"][2],
-                   k["bulkhead"][1], "wall"))
+    out.append(box("Counter", "GateHeader", g0, k["gate_head"], k["pier_z"][0], g1, k["bulkhead"][2],
+                   k["pier_z"][1], "wall"))
     # the officers' gallery guard (§7.3: true to the 1.1 m visual, solid bronze base to 1.0 m + glass cap)
     out.append(box("GalleryGuard", "GuardBase", 8.1, 5.0, 19.9, 39.9, 6.0, 20.0, "trim"))
     out.append(box("GalleryGuard", "GuardCap", 8.1, 6.0, 19.9, 39.9, 6.1, 20.0, "glass"))

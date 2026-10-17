@@ -108,10 +108,11 @@ DOC_VARIABLES = ["manager_route", "keycard", "code_pc", "officers", "server_room
                  "president_safe"]
 
 # Security cameras (Sightlines): id -> (floor, room, x, z, mount height above FFL, look x, look z, layouts).
-CAMERAS: Dict[str, Tuple[str, str, float, float, float, float, Tuple[str, ...]]] = {
+CAMERAS: Dict[str, tuple] = {
     # id: (floor, room, pivot x, pivot z (on a wall face), mount height above FFL, yaw (front -Z), layouts). Wall mounts
-    # face straight out of their wall (the validator's flush rule) and pan 40 deg; the doc's look directions in notes.
-    "C1": ("G", "BH", 38.5, 17.1, 3.0, 180.0, ("cam_a", "cam_c")),     # bulkhead over the counter, E end: the hall, VE
+    # face straight out of their wall (the validator's flush rule) and pan 40 deg unless an 8th field gives the pan; the
+    # doc's look directions in notes.
+    "C1": ("G", "BH", 38.5, 17.5, 3.0, 180.0, ("cam_a", "cam_c")),     # bulkhead over the counter, E end: the hall, VE
     "C2": ("G", "BH", 9.0, 35.8, 3.0, 0.0, ("cam_b", "cam_c")),        # S facade, W end: the counter front, the gate
     "C3": ("G", "TW", 8.1, 10.0, 3.0, -90.0, ("cam_a", "cam_c")),      # TW W end: the teller line, the lid
     "C4": ("G", "BC", 47.8, 8.0, 2.8, 90.0, ("cam_b",)),               # BC E end, over the fire exit: W along BC
@@ -122,7 +123,7 @@ CAMERAS: Dict[str, Tuple[str, str, float, float, float, float, Tuple[str, ...]]]
     "C9": ("M", "GA", 39.9, 19.3, 2.7, 90.0, ("cam_b", "cam_c")),      # GA E end: W along the gallery
     "C10": ("M", "VO", 47.8, 10.0, 2.8, 90.0, ("cam_b",)),             # VO E wall: the VO desk
     "C11": ("E", "XC", 47.8, 8.0, 2.8, 90.0, ("cam_a", "cam_c")),      # XC E end: W along XC
-    "C12": ("E", "X4", 24.0, 17.2, 3.0, 180.0, ("cam_a", "cam_b")),    # terrace, on the N block facade: S over the terrace
+    "C12": ("E", "X4", 24.0, 17.2, 3.0, 180.0, ("cam_a", "cam_b"), 0.0),  # terrace, N block facade: S, fixed (E3 line)
     "C13": ("B", "BB", 47.8, 8.0, 2.8, 90.0, ("cam_a", "cam_c")),      # BB E end: W along BB to x ~ 28
     "C14": ("B", "SD", 35.0, 9.1, 2.8, 180.0, ("cam_a",)),             # SD N wall, W end: over the box rows
     "C15": ("B", "CP", 17.0, 0.2, 2.8, 180.0, ("cam_b", "cam_c")),     # CP N wall, W end: over the counting tables
@@ -223,7 +224,7 @@ REVIEW_CAMERAS = [
     ("rc_count_room", "B", "CP", 25.3, 6.3, 1.7, 17.0, 1.0, 0.9),
     ("rc_records", "B", "RC", 12.5, 24.3, 1.7, 1.0, 10.0, 1.2),
     ("rc_roof", "R", "X5", 17.0, 8.5, 1.7, 1.0, 2.0, 1.5),
-    ("rc_sniper_assay", "G", "X1", 24.0, 63.0, 13.0, 24.0, 32.0, 2.0),
+    ("rc_sniper_assay", "G", "X1", 24.0, 63.0, 15.6, 24.0, 32.0, 2.0),
 ]
 
 # --- the site ------------------------------------------------------------------------------------
@@ -242,14 +243,20 @@ GRADE = [
 ]
 # Ramps (collide as one ramp, §7.9): [name, x0, x1, z_high, z_low, y_high, y_low] (rising toward z_high).
 RAMPS = [
-    ["PlazaStepsRamp", 18.0, 30.0, 38.0, 40.0, 0.0, PLAZA_Y],      # 5 x 0.15 m steps, 0.4 m treads
+    ["PlazaStepsRamp", 18.0, 30.0, 38.0, 40.0, 0.0, PLAZA_Y],      # 5 x 0.15 m steps, 0.3 m treads
     ["TanneryRamp", 48.0, 62.0, 38.0, 42.0, 0.0, PLAZA_Y],          # Tannery St falls 0.75 m to the avenue (10.6 deg)
 ]
-PLAZA_STEPS = {"x": [18.0, 30.0], "z_top": 38.0, "risers": 5, "riser": 0.15, "tread": 0.4}
+# PO6-17 window breaches (LEAD ruling QC-i: the hall bays stay normal breach markers): prop_breach_window (1.0 x 2.1 m
+# in the 0.4 m facade) at the centre of the arched bays W1 / E2 (x 11.8 / 36.2; the doc's 11.75 / 35.25 are not bay
+# centres: flagged), a floor-level slot through the bay's 1.0 m sill; the arched pane is cut round it.
+# [name, x, facade z, room]: marker on the room-side face (z 35.8), yaw 0 (-Z north into the hall).
+BREACH_WINDOWS = [["Breach_1", 11.8, 36.0, "BH"], ["Breach_2", 36.2, 36.0, "BH"]]
+BREACH_SIZE = [1.0, 2.1]
+PLAZA_STEPS = {"x": [18.0, 30.0], "z_top": 38.0, "risers": 5, "riser": 0.15, "tread": 0.3}
 # The apron's plinth faces (0.75 m) where the apron meets the plaza (no ramp): [name, [x0, z0, x1, z1]].
 # Police islands behind the closures (QC-42 / D-064): [spawn, grade [x0, z0, x1, z1], y, link from, link to].
 POLICE_ISLANDS = [
-    ["P1", [-44.0, 48.0, -16.4, 62.0], PLAZA_Y, [-18.0, PLAZA_Y, 55.0], [-14.6, PLAZA_Y, 55.0]],
+    ["P1", [-44.0, 48.0, -16.4, 62.0], PLAZA_Y, [-18.0, PLAZA_Y, 60.0], [-14.6, PLAZA_Y, 60.0]],
     ["P2", [66.4, 42.0, 94.0, 62.0], PLAZA_Y, [68.0, PLAZA_Y, 55.0], [64.6, PLAZA_Y, 55.0]],
     ["P3", [-44.0, -10.0, -16.4, -0.2], 0.0, [-18.0, 0.0, -5.0], [-14.6, 0.0, -5.0]],
     ["P4", [48.2, -50.0, 62.0, -14.4], 0.0, [55.0, 0.0, -16.0], [55.0, 0.0, -12.6]],
@@ -332,6 +339,37 @@ def count_cycles(adj: Dict[str, List[str]], start: str, cap: int = 8) -> int:
     return len(found)
 
 
+def lc_cycles(adj: Dict[int, List[int]], start: int, cap: int, budget: int = 200000) -> int:
+    """LcGeom.count_cycles_through, step for step (sorted neighbour indices, the 200k DFS step budget): the validator's
+    loop count for a guard post, so the plan check fails where levelcheck `patrols` would."""
+    seen = set()
+    state = {"steps": 0}
+    path, on_path = [start], {start}
+
+    def dfs(cur: int) -> None:
+        if len(seen) >= cap or state["steps"] >= budget:
+            return
+        state["steps"] += 1
+        for nb in sorted(adj.get(cur, [])):
+            if nb == start and len(path) >= 3:
+                n = len(path)
+                seen.add(tuple(sorted((min(path[i], path[(i + 1) % n]), max(path[i], path[(i + 1) % n]))
+                                      for i in range(n))))
+                if len(seen) >= cap:
+                    return
+                continue
+            if nb in on_path:
+                continue
+            path.append(nb)
+            on_path.add(nb)
+            dfs(nb)
+            path.pop()
+            on_path.discard(nb)
+
+    dfs(start)
+    return min(len(seen), cap)
+
+
 # --------------------------------------------------------------------------------------------- check
 def check() -> bool:
     import ostrander_federal_content as C
@@ -372,7 +410,7 @@ def check() -> bool:
     print("  %d slots in %d groups" % (len(SLOTS), len(idx)))
     print("Cameras:")
     lay: Dict[str, set] = {"cam_a": set(), "cam_b": set(), "cam_c": set()}
-    for cid, (f, rid, x, z, h, _yaw, layouts) in CAMERAS.items():
+    for cid, (f, rid, x, z, h, _yaw, layouts, *_pan) in CAMERAS.items():
         if not inside(f, rid, x, z):
             fail("camera %s not inside %s" % (cid, rid))
         if not (2.4 <= h <= 3.2):

@@ -1,8 +1,8 @@
 ## Ostrander Federal PO6-17 RNG assault-event markers (D-114 §5, D-136 §3b.6; doc Loud "Assault events"). Owner: ENV C.
 ## Built by world/heists/shared/assault_markers.gd (contract: docs/levels/_art/po6_17/README.md) under `AssaultEvents`.
-## G1: the turret vans, the heli orbit and the three rappel drops. The breaches are deferred: Breach_1/2 sit in the
-## 5.5 m arched bays (OF-C2's `prop_breach_window_s100` with a 1.0 m sill), and Breach_3/4 are the doc's new kind "door"
-## (the XL / HH doors as their own infill), which assault_markers.gd does not build yet (open question, lead / A).
+## G1: the turret vans, the heli orbit and the three rappel drops here; the breaches Breach_1/2 (prop_breach_window in
+## the hall bays W1 / E2) are layout rows (ostrander_federal_layout.gd ASSAULT_BREACHES, with their wall slots). QC-i:
+## no "door" breach kind; the XL / HH doors are breached as doors (D-122) and stay police ENTRY TacticalPoints.
 extends RefCounted
 
 ## [name, pos (road, bottom-centre), yaw_deg (+Z = the van's forward)]: Halloran Ave opposite the hall bays.
@@ -18,4 +18,3 @@ const HELI_DROPS: Array = [
 	["HeliDrop_2", Vector3(30.0, 12.2, 14.0)],
 	["HeliDrop_3", Vector3(36.0, -0.75, 46.0)],
 ]
-const BREACHES: Array = []

@@ -128,9 +128,16 @@ func box(parent: Node3D, nm: String, mn: Vector3, mx: Vector3, cls: String) -> S
 	mi.mesh = _box_mesh(size, cls)
 	add(sb, mi)
 	SurfaceTags.tag(sb, _surface(cls))
-	if cls == "glass":
-		sb.set_meta(&"see_through", true)   # OF-C3: vision / hide_los rays pass glazing
+	_glaze(sb, cls)
 	return sb
+
+
+## Clear glazing (all greybox glass is clear at G1): meta `see_through` (OF-C3 levelcheck) + the persistent group
+## `see_through` (D-142: vision passes it; it still blocks movement and bullets).
+static func _glaze(body: StaticBody3D, cls: String) -> void:
+	if cls == "glass":
+		body.set_meta(&"see_through", true)
+		body.add_to_group(&"see_through", true)
 
 
 ## Visual-only box (no collision) from world corners.
@@ -221,6 +228,7 @@ func hull(parent: Node3D, nm: String, pts: Array, faces: Array, cls: String) -> 
 	mi.mesh = mesh
 	add(body, mi)
 	SurfaceTags.tag(body, _surface(cls))
+	_glaze(body, cls)
 	return body
 
 

@@ -21,7 +21,7 @@ from typing import Callable, Dict, List
 
 G_GUARDS = ["guard_lobby", "guard_vault", "guard_rover_hall", "guard_rover_gallery", "guard_rover_basement",
             "guard_rover_dock", "guard_extra_hall", "guard_extra_basement", "guard_vaultline", "guard_vip"]
-G_STAFF = ["civ_teller", "civ_manager_floor", "civ_manager_gallery", "civ_manager_vault", "civ_officer"]
+G_STAFF = ["civ_teller", "civ_manager_mgr_floor", "civ_manager_mgr_gallery", "civ_manager_mgr_vault", "civ_officer"]
 LOCKPICK_S = 8.0
 # Spawn / placement tags for ENV D (OF-D1): the counter windows and the check desks.
 TAG_COUNTER = "counter_window"
@@ -38,20 +38,28 @@ CAGE_T = 0.1
 LID = [22.8, 13.4, 25.2, 15.8]
 HOLE = [23.4, 13.5, 24.6, 15.7]
 HOIST_CAR = [1.0, 1.0, 1.0]
+ROPE_STOWED_M = 3.2           # the rope ladder rolled up to the lid's underside (0.8 m slab) until the burn
 # Teller counter (z 17 line; §7.2, D-128 / D-136 §3b.11 and OF-C0): 12 work tops (props, kind teller_worktop, top 1.00,
-# z 16.55-17.15, teller side north = local -Z), a SOLID bandit-screen base to 1.35 m (z 17.15-17.25; the crouch-hide
-# formula needs 1.32 m), the customers' 1.05 m ledge in front of it (z 17.25-17.45), bandit glass 1.35-2.40 m (meta
-# see_through), the bulkhead 2.40 m -> the slab (z 17.15-17.35), the teller gate's piers x 22.9-23.4 / 24.6-25.1 on the
-# z 17.25 line (a 0.2 m "wall" the service-door kit fits).
+# z 16.55-17.15, teller side north = local -Z), a SOLID bandit-screen base to 1.50 m (z 17.15-17.25; QC-g's 1.35 m is
+# teller_worktop's perpendicular formula, but hide_los samples observers along the counter at the 2.0 m uncover radius,
+# whose sight line to the 1.05 m crouched point crosses the screen face at 1.44 m: flagged for the lead), the customers'
+# 1.05 m ledge in front of it (z 17.25-17.45), bandit glass 1.50-2.40 m (meta + group see_through), the bulkhead 2.40 m
+# -> the slab (z 17.15-17.5: C1 hangs on its south face over the hall floor), the teller gate's piers x 22.9-23.4 /
+# 24.6-25.1 and its header on the z 17.25 line (z 17.15-17.35: a 0.2 m "wall" the service-door kit fits).
 COUNTER = {"z": 17.0, "line": 17.25, "body": [16.55, 17.45], "ledge": [17.25, 17.45, 1.05], "top": [16.55, 17.15, 1.0],
-           "upstand": [17.15, 17.25, 1.35], "glass": [17.18, 17.22, 1.35, 2.40], "bulkhead": [17.15, 17.35, 2.40],
-           "x": [8.1, 39.9], "gate": [23.4, 24.6], "piers": [[22.9, 23.4], [24.6, 25.1]], "gate_head": 2.2}
+           "upstand": [17.15, 17.25, 1.5], "glass": [17.18, 17.22, 1.5, 2.40], "bulkhead": [17.15, 17.5, 2.40],
+           "x": [8.1, 39.9], "gate": [23.4, 24.6], "piers": [[22.9, 23.4], [24.6, 25.1]], "gate_head": 2.2,
+           "pier_z": [17.15, 17.35]}
 STATIONS = [13.0, 15.0, 17.0, 31.0, 33.0, 35.0]     # the 6 staffed of 12 windows
 TELLERS = [15.0, 17.0, 31.0, 33.0]                  # 3 staffed + 1 rotating (doc roster)
 TELLER_Z = COUNTER["top"][0] - 0.28                 # D: root 0.28 m behind the work top's near edge
 COUNTER_CUSTOMER_Z = COUNTER["body"][1] + 0.30      # D: root 0.30 m off the hall face
 CHECK_DESKS = [[14.0, 25.5], [19.5, 25.5], [28.5, 25.5], [34.0, 25.5]]   # 1.6 x 0.6, top 1.0
 CHECK_D = [1.6, 1.0, 0.6]
+# ENV D clip marks (env/d-art b2527e4d): check_desk_write root 0.25 m off the desk's near (hall) edge; queue_idle marks
+# >= 0.91 m apart, the first >= 0.62 m in front of the rope rail (z 21.5) on the counter side.
+CHECK_Z = 25.5 + 0.3 + 0.25
+QUEUE_Z = 21.5 - 0.62
 QUEUE_RAILS = [[10.5, 19.5, 21.5], [28.5, 37.5, 21.5]]   # [x0, x1, z]: one collider per run (§7.13)
 PILLARS = [11.0, 15.0, 19.0, 29.0, 33.0, 37.0]           # z 20, under the gallery slab edge
 LASER_X = 21.0
@@ -90,7 +98,7 @@ DOORS: List[list] = [
                                                       "tag": "vault_door", "kind_meta": "vault_door",
                                                       "bake_closed": True}],
     # --- Ground ---
-    ["DockRollerDoor", "G", "x", 0, 3.2, "ELECTRONIC", "N", {"visual": "prop_door_roller_twin_w360_h400", "leaf": "metal",
+    ["DockRollerDoor", "G", "x", 0, 3.1, "ELECTRONIC", "N", {"visual": "prop_door_roller_twin_w360_h400", "leaf": "metal",
                                                               "w": 3.6, "kind_meta": "industrial_door",
                                                               "bake_closed": True}],
     ["DockPersonnelDoor", "G", "x", 0, 7.4, "", "N", {"slot": "side_door"}],
@@ -254,12 +262,12 @@ def _desk(name: str, f: str, x: float, z: float, along_z: bool = True) -> list:
 
 FURNITURE: List[list] = [
     # Basement
-    B("LockersLK", "B", [0.47, 0.0, 4.5], [0.52, 1.8, 3.0], 0.0, "lockers", False),
+    B("LockersLK", "B", [0.47, 0.0, 4.65], [0.52, 1.8, 3.0], 0.0, "lockers", False),
     B("WCPartitionLK1", "B", [6.5, 0.0, 0.95], [0.05, 2.0, 1.5], 0.0, "partition", False, "trim"),
     B("WCPartitionLK2", "B", [8.0, 0.0, 0.95], [0.05, 2.0, 1.5], 0.0, "partition", False, "trim"),
     B("SinksLK", "B", [9.6, 0.0, 4.0], [0.5, 0.9, 1.6], 0.0, "counter", True),
     B("BenchLK", "B", [4.0, 0.0, 4.5], [1.6, 0.45, 0.4], 0.0, "bench", True),
-    B("CartShelfCQ", "B", [10.35, 0.0, 5.0], [0.4, 1.8, 2.4], 0.0, "shelf", True),
+    B("CartShelfCQ", "B", [10.35, 0.0, 5.5], [0.4, 1.8, 2.2], 0.0, "shelf", True),
     B("CountTableW", "B", [19.0, 0.0, 3.5], [2.4, 0.9, 1.0], 0.0, "table", True),
     B("CountTableE", "B", [23.5, 0.0, 3.5], [2.4, 0.9, 1.0], 0.0, "table", True),
     B("BoilerPL", "B", [28.2, 0.0, 2.0], [2.0, 1.6, 2.0], 0.0, "plant", False),
@@ -276,15 +284,15 @@ FURNITURE: List[list] = [
 ] + [B("BoothPartition%d" % (i + 1), "B", [46.9, 0.0, z], [0.6, 2.0, 0.05], 0.0, "partition", False, "trim")
      for i, z in enumerate([14.0, 17.0, 20.0])] + [
     # Ground
-    B("CartsLD", "B", [1.0, 0.0, 6.5], [1.2, 1.2, 1.6], 0.0, "cart", False),
-    B("BenchLD", "B", [7.0, 0.0, 8.55], [1.6, 0.45, 0.4], 0.0, "bench", True),
-    B("PanelsE1", "B", [11.5, 0.0, 3.4], [2.0, 2.0, 0.4], 0.0, "panel", False),
-    B("CoffeeCounterSR", "B", [16.45, 0.0, 5.0], [0.5, 0.9, 1.2], 0.0, "counter", True),
-    B("KeyChestSR", "B", [22.57, 0.0, 5.6], [0.65, 1.32, 0.47], 0.0, "file_cabinet", True),
-    B("LockersGR", "B", [26.0, 0.0, 0.47], [4.0, 1.8, 0.52], 0.0, "lockers", False),
-    B("KitBenchGR", "B", [26.0, 0.0, 3.5], [1.6, 0.45, 0.4], 0.0, "bench", True),
-    B("SortingTableMO", "B", [41.5, 0.0, 3.0], [2.4, 0.9, 1.0], 0.0, "table", True),
-    B("CopierMO", "B", [44.4, 0.0, 1.0], [0.7, 1.2, 0.8], 0.0, "copier", False),
+    B("CartsLD", "G", [1.0, 0.0, 6.5], [1.2, 1.2, 1.6], 0.0, "cart", False),
+    B("BenchLD", "G", [7.0, 0.0, 8.55], [1.6, 0.45, 0.4], 0.0, "bench", True),
+    B("PanelsE1", "G", [11.5, 0.0, 3.4], [2.0, 2.0, 0.4], 0.0, "panel", False),
+    B("CoffeeCounterSR", "G", [16.45, 0.0, 5.0], [0.5, 0.9, 1.2], 0.0, "counter", True),
+    B("KeyChestSR", "G", [22.57, 0.0, 5.6], [0.65, 1.32, 0.47], 0.0, "file_cabinet", True),
+    B("LockersGR", "G", [26.0, 0.0, 0.47], [4.0, 1.8, 0.52], 0.0, "lockers", False),
+    B("KitBenchGR", "G", [26.0, 0.0, 3.5], [1.6, 0.45, 0.4], 0.0, "bench", True),
+    B("SortingTableMO", "G", [41.5, 0.0, 3.0], [2.4, 0.9, 1.0], 0.0, "table", True),
+    B("CopierMO", "G", [44.4, 0.0, 1.0], [0.7, 1.2, 0.8], 0.0, "copier", False),
     _desk("DeskLO1", "G", 2.5, 12.0), _desk("DeskLO2", "G", 2.5, 16.0),
     B("FilesLO", "G", [7.6, 0.0, 15.0], [0.47, 1.32, 1.3], 0.0, "file_cabinet", True),
     B("TableCN1", "G", [4.0, 0.0, 21.5], [1.2, 0.75, 1.2], 0.0, "table", True),
@@ -386,20 +394,20 @@ ALWAYS: Dict[str, List[list]] = {
         P("keycard_reader", "VaultGateReader", "B", [18.65, 1.2, 8.9], 0.0, {"objective_tag": "vault_gate",
                                                                            "@targets": ["VaultGate"]},
           [18.65, 0.0, 8.2], {"mount": "wall"}, "prop_keycard_reader"),
-        P("keypad", "TimeLockConsole", "B", [33.7, 1.2, 11.6], 90.0, {"code_group": "vault", "stealth_only": True,
+        P("keypad", "TimeLockConsole", "B", [33.9, 1.2, 11.6], 90.0, {"code_group": "vault", "stealth_only": True,
                                                                      "objective_tag": "time_lock",
                                                                      "@targets": ["VaultDoor"]},
           [33.0, 0.0, 11.6], {"mount": "wall"}, "prop_keypad"),
         P("keypad", "CashCageKeypad", "B", [25.25, 1.2, 17.45], 0.0, {"code_group": "vault", "objective_tag": "cash_cage",
                                                                      "@targets": ["CashCageGate"]},
           [25.25, 0.0, 16.6], {"mount": "wall"}, "prop_keypad"),
-        P("drill_point", "LidDrill", "G", [24.0, 0.0, 14.6], 0.0, {"device": "enum:THERMAL", "duration_s": 360.0,
+        P("drill_point", "LidDrill", "G", [24.0, 1.0, 14.6], 0.0, {"device": "enum:THERMAL", "duration_s": 360.0,
                                                                   "loud_only": True, "objective_tag": "vault_drill"},
           [24.0, 0.0, 12.6], {"requires_loot": "loot.thermal_drill_part", "requires_count": 2,
                               "todo": "OF-A1: requires_loot / requires_count (QC-60)"}, "prop_thermal_drill_device"),
-        _alarm("AlarmSR", "G", [18.2, 1.1, 0.2], 180.0), _alarm("AlarmBM", "G", [47.8, 1.1, 24.0], 90.0),
+        _alarm("AlarmSR", "G", [18.2, 1.1, 0.2], 180.0), _alarm("AlarmBM", "G", [47.8, 1.1, 22.5], 90.0),
         _alarm("AlarmSD", "B", [34.1, 1.1, 11.0], -90.0),
-    ] + [_alarm("AlarmTeller%d" % (i + 1), "G", [x + 0.5, 0.75, COUNTER["top"][0]], 0.0) for i, x in enumerate(STATIONS)] + [
+    ] + [_alarm("AlarmTeller%d" % (i + 1), "G", [x + 0.3, 0.75, COUNTER["top"][0]], 0.0) for i, x in enumerate(STATIONS)] + [
         _phone("PhoneBM", "G", [47.8, 1.4, 26.0], 90.0), _phone("PhoneLO", "G", [0.2, 1.4, 10.5], -90.0),
         _phone("PhoneNA", "G", [47.8, 1.4, 35.0], 90.0), _phone("PhonePC", "G", [47.8, 1.4, 18.4], 90.0),
         _phone("PhoneSR", "G", [16.15, 1.4, 3.0], -90.0), _phone("PhoneSD", "B", [34.1, 1.4, 10.0], -90.0),
@@ -428,20 +436,23 @@ ALWAYS: Dict[str, List[list]] = {
           "prop_cash_stack") for i, x in enumerate([18.3, 19.7, 22.8, 24.2])
     ] + VAULT_BOXES + SD_BOXES,
     "Gameplay/Lifts": [
-        P("bag_lift", "CashLift", "B", [11.5, 0.0, 1.55], 180.0, {"travel_s": 8.0, "capacity": 2,
+        P("bag_lift", "CashLift", "B", [11.5, 0.05, 1.55], 180.0, {"travel_s": 8.0, "capacity": 2, "door_fold": True,
                                                                  "car_size_m": [2.2, 2.4, 2.2],
                                                                  "objective_tag": "cash_lift",
                                                                  "@landings": [["CashLiftLandingG", [0.0, 4.0, 0.0]]]},
           [11.5, 0.0, 2.2], {"walkable": True}, ""),
-        P("bag_lift", "Hoist", "B", [24.0, 0.0, 15.2], 0.0, {"travel_s": 6.0, "capacity": 2, "car_size_m": HOIST_CAR,
+        P("bag_lift", "Hoist", "B", [24.0, 0.05, 15.2], 0.0, {"travel_s": 6.0, "capacity": 2, "car_size_m": HOIST_CAR,
                                                             "loud_only": True, "objective_tag": "hoist",
                                                             "@landings": [["HoistLandingTW", [0.0, 4.0, 0.0]]]},
           [25.1, 0.0, 15.2], {"starts_disabled": True, "hidden": True,
                               "todo": "OF-A2: GameplayPrefab.set_enabled (QC-61); enabled at the burn-through"}, ""),
     ],
     "Gameplay/Ladders": [
-        P("ladder", "RopeLadder", "B", [24.0, 0.0, 13.6], 180.0, {"height_m": 4.0, "usable": False},
-          None, {"loud_only": True, "starts_disabled": True, "hidden": True, "todo": "OF-A2: enabled at the burn-through (QC-61)"}, ""),
+        # rolled up under the lid until the burn (full length, its rails would sit in the lid plug): 3.2 m to the lid's
+        # underside; OF-A2 sets height_m = burn_height_m (4.0, B -> G) when it enables the ladder at the burn (QC-61).
+        P("ladder", "RopeLadder", "B", [24.0, 0.0, 13.6], 180.0, {"height_m": ROPE_STOWED_M, "usable": False},
+          None, {"loud_only": True, "starts_disabled": True, "hidden": True, "burn_height_m": 4.0,
+                 "todo": "OF-A2: enabled at the burn-through (QC-61), height_m -> burn_height_m"}, ""),
         P("ladder", "CagedLadder", "E", [46.0, 0.0, 17.55], 180.0, {"height_m": 3.6}, None, {}, ""),
     ],
     "Gameplay/Markers": [
@@ -460,9 +471,9 @@ ALWAYS: Dict[str, List[list]] = {
           "prop_dumpster"),
         P("body_container", "DumpsterE", "G", [29.0, 0.0, -0.76], 0.0, {"capacity": 2}, None, {"kind": "dumpster"},
           "prop_dumpster"),
-        P("body_container", "LockerHideLK1", "B", [0.47, 0.0, 1.2], -90.0, {"capacity": 1}, None, {"kind": "lockers"},
+        P("body_container", "LockerHideLK1", "B", [0.63, 0.0, 1.0], -90.0, {"capacity": 1}, None, {"kind": "lockers"},
           "prop_crate_hide"),
-        P("body_container", "LockerHideLK2", "B", [0.47, 0.0, 2.2], -90.0, {"capacity": 1}, None, {"kind": "lockers"},
+        P("body_container", "LockerHideLK2", "B", [0.63, 0.0, 2.45], -90.0, {"capacity": 1}, None, {"kind": "lockers"},
           "prop_crate_hide"),
         P("body_container", "JanitorCartJ1", "G", [36.5, 0.0, 0.66], 180.0, {"capacity": 1}, None, {"kind": "cart"},
           "prop_cart_hide"),
@@ -477,10 +488,10 @@ ALWAYS: Dict[str, List[list]] = {
 FIXED_SPAWNS: List[list] = [
     S("GuardLobby", "GUARD", "G", [24.0, 0.0, 30.0], 0.0, ["guard_lobby"], "look", "Bank"),
     S("GuardVault", "GUARD", "B", [26.0, 0.0, 11.0], 90.0, ["guard_vault"], "look", "Bank"),
-    S("CameraOperatorSeat", "CAMERA_OPERATOR", "G", [19.5, 0.0, 1.6], 0.0, ["guard_operator"], "desk_work", "",
+    S("CameraOperatorSeat", "CAMERA_OPERATOR", "G", [19.5, 0.0, 1.6], 0.0, ["security_operator"], "desk_work", "",
       "prop_chair_office"),
 ] + [S("Teller%d" % (i + 1), "CIVILIAN", "G", [x, 0.0, TELLER_Z], 180.0,
-       ["civ_teller"] + (["civ_teller_rotating"] if i == 3 else []), "teller") for i, x in enumerate(TELLERS)] + [
+       ["civ_teller"] + (["civ_teller_rotating"] if i == 3 else []), "teller_count") for i, x in enumerate(TELLERS)] + [
     S("PlazaPedestrian1", "CIVILIAN", "G", [10.0, -0.75, 44.0], 90.0, ["civ_plaza"], "walk_text"),
     S("PlazaPedestrian2", "CIVILIAN", "G", [44.0, -0.75, 44.0], -90.0, ["civ_plaza"], "walk_text"),
     # Rare armored_car_early (QC-25 timed spawn, HeistRuntime scripted tag): the Vaultline crew at the dock.
@@ -495,14 +506,14 @@ def _customer(name: str, pos: list, yaw: float, idle: str, tag: str) -> list:
 
 
 HALL_CUSTOMERS = [
-    _customer("CustomerWindow1", [15.0, 0.0, COUNTER_CUSTOMER_Z], 0.0, "queue", TAG_COUNTER),
-    _customer("CustomerWindow2", [31.0, 0.0, COUNTER_CUSTOMER_Z], 0.0, "queue", TAG_COUNTER),
-    _customer("CustomerQueue1", [12.0, 0.0, 21.05], 0.0, "queue", TAG_QUEUE),
-    _customer("CustomerCheck1", [19.5, 0.0, 25.5 + 0.3 + 0.25], 0.0, "browse", TAG_CHECK),
-    _customer("CustomerWindow3", [17.0, 0.0, COUNTER_CUSTOMER_Z], 0.0, "queue", TAG_COUNTER),
-    _customer("CustomerQueue2", [12.9, 0.0, 21.05], 0.0, "queue", TAG_QUEUE),
-    _customer("CustomerCheck2", [28.5, 0.0, 25.5 + 0.3 + 0.25], 0.0, "browse", TAG_CHECK),
-    _customer("CustomerQueue3", [29.5, 0.0, 21.05], 0.0, "queue", TAG_QUEUE),
+    _customer("CustomerWindow1", [15.0, 0.0, COUNTER_CUSTOMER_Z], 0.0, "counter_customer", TAG_COUNTER),
+    _customer("CustomerWindow2", [31.0, 0.0, COUNTER_CUSTOMER_Z], 0.0, "counter_customer", TAG_COUNTER),
+    _customer("CustomerQueue1", [12.0, 0.0, QUEUE_Z], 0.0, "queue_idle", TAG_QUEUE),
+    _customer("CustomerCheck1", [19.5, 0.0, CHECK_Z], 0.0, "check_desk_write", TAG_CHECK),
+    _customer("CustomerWindow3", [17.0, 0.0, COUNTER_CUSTOMER_Z], 0.0, "counter_customer", TAG_COUNTER),
+    _customer("CustomerQueue2", [13.0, 0.0, QUEUE_Z], 0.0, "queue_idle", TAG_QUEUE),
+    _customer("CustomerCheck2", [28.5, 0.0, CHECK_Z], 0.0, "check_desk_write", TAG_CHECK),
+    _customer("CustomerQueue3", [29.5, 0.0, QUEUE_Z], 0.0, "queue_idle", TAG_QUEUE),
 ]
 
 
@@ -543,10 +554,10 @@ def _escape(kind: str, sec_pos: list, sec_yaw: float, sec_size: list, esc_pos: l
 
 
 SLOT_CONTENT: Dict[str, List[list]] = {
-    "mgr_floor": [S("ManagerFloor", "CIVILIAN", "G", [45.0, 0.0, 24.3], 90.0, ["civ_manager_floor", CARRIER], "phone")],
-    "mgr_gallery": [S("ManagerGallery", "CIVILIAN", "M", [32.5, 0.0, 14.7], 0.0, ["civ_manager_gallery", CARRIER],
+    "mgr_floor": [S("ManagerFloor", "CIVILIAN", "G", [45.0, 0.0, 24.3], 90.0, ["civ_manager_mgr_floor", CARRIER], "phone")],
+    "mgr_gallery": [S("ManagerGallery", "CIVILIAN", "M", [32.5, 0.0, 14.7], 0.0, ["civ_manager_mgr_gallery", CARRIER],
                       "phone")],
-    "mgr_vault": [S("ManagerVault", "CIVILIAN", "B", [37.0, 0.0, 11.3], 0.0, ["civ_manager_vault", CARRIER], "phone")],
+    "mgr_vault": [S("ManagerVault", "CIVILIAN", "B", [37.0, 0.0, 11.3], 0.0, ["civ_manager_mgr_vault", CARRIER], "phone")],
     "kc_on_manager": [P("keycard_pickup", "Keycard", "G", [47.5, 0.75, 21.0], 90.0,
                         {"objective_tag": "keycard", "carrier_tag": CARRIER}, [46.5, 0.0, 21.0], {}, "prop_keycard_bank")],
     "kc_manager_desk": [P("keycard_pickup", "Keycard", "G", [44.0, 0.75, 24.8], 90.0, {"objective_tag": "keycard"},
@@ -581,7 +592,7 @@ SLOT_CONTENT: Dict[str, List[list]] = {
     "esc_van_tannery": _escape("Tannery", [50.4, 0.0, 14.28], 180.0, [4.4, 3.0, 14.0], [51.0, 0.0, 6.5],
                                [4.0, 3.0, 3.0], "G", "veh_van_secure", "van", 0.0,
                                "res://world/heists/shared/escape_van_marker.tscn"),
-    "esc_heli_terrace": _escape("Terrace", [36.0, 0.0, 27.0], 0.0, [6.0, 3.0, 6.0], [36.0, 0.0, 27.0], [6.0, 3.0, 6.0],
+    "esc_heli_terrace": _escape("Terrace", [42.5, 0.0, 26.0], 0.0, [4.0, 3.0, 5.0], [35.5, 0.0, 27.0], [6.0, 3.0, 6.0],
                                 "E", "prop_secure_cargo_net", "heli", 45.0, "veh_heli_escape"),
     "drop_terrace": [M("DrillDrop", "E", [20.0, 0.0, 33.0], "drill_delivery",
                        "loud: 2 x loot.thermal_drill_part (HeistMission.spawn_loot, OF-A1)")],
@@ -595,8 +606,8 @@ SLOT_CONTENT: Dict[str, List[list]] = {
     "gx_hall": [S("GuardExtraHall", "GUARD", "G", [16.0, 0.0, 27.0], 0.0, ["guard_extra_hall"], "", "Bank")],
     "gx_basement": [S("GuardExtraBasement", "GUARD", "B", [38.0, 0.0, 8.0], 90.0, ["guard_extra_basement"], "", "Bank")],
     "gx_none": [],
-    "cx_hall_1": [_customer("LateCustomerCheck", [34.0, 0.0, 26.55], 0.0, "browse", TAG_CHECK)],
-    "cx_hall_2": [_customer("LateCustomerQueue", [33.0, 0.0, 21.05], 0.0, "queue", TAG_QUEUE)],
+    "cx_hall_1": [_customer("LateCustomerCheck", [34.0, 0.0, CHECK_Z], 0.0, "check_desk_write", TAG_CHECK)],
+    "cx_hall_2": [_customer("LateCustomerQueue", [33.0, 0.0, QUEUE_Z], 0.0, "queue_idle", TAG_QUEUE)],
     "cx_pc": [S("LateClientPC", "CIVILIAN", "G", [45.6, 0.0, 12.0], 90.0, ["civ_client"], "browse")],
     "cx_sd": [S("LateCustomerSD", "CIVILIAN", "B", [46.6, 0.0, 19.0], -90.0, ["civ_customer"], "browse")],
     "cx_none": [],
@@ -779,11 +790,11 @@ CIV: Dict[str, list] = {
     "CivPW": ["G", 44.0, 30.2, [10, 20], "idle", ["civilian"], None],
     "CivAV": ["G", 4.5, 31.0, [5, 15], "browse", ["civilian"], -90.0],
     "CivVE": ["G", 26.5, 30.8, [5, 10], "browse", ["civilian"], None],
-    "CowerCounterW": ["G", 12.0, COUNTER["body"][1] + 0.21, [0, 0], "idle", ["cower"], 180.0],
-    "CowerCounterE": ["G", 36.0, COUNTER["body"][1] + 0.21, [0, 0], "idle", ["cower"], 180.0],
-    "CowerWallW": ["G", 8.31, 30.5, [0, 0], "idle", ["cower"], -90.0],
-    "CowerWallE": ["G", 39.69, 31.0, [0, 0], "idle", ["cower"], 90.0],
-    "CowerPillar": ["G", 19.0, 20.46, [0, 0], "idle", ["cower"], 0.0],
+    "CowerCounterW": ["G", 12.0, COUNTER["body"][1] + 0.21, [0, 0], "cower_stand", ["cower"], 180.0],
+    "CowerCounterE": ["G", 36.0, COUNTER["body"][1] + 0.21, [0, 0], "cower_stand", ["cower"], 180.0],
+    "CowerWallW": ["G", 8.31, 30.5, [0, 0], "cower_stand", ["cower"], -90.0],
+    "CowerWallE": ["G", 39.69, 31.0, [0, 0], "cower_stand", ["cower"], 90.0],
+    "CowerPillar": ["G", 19.0, 20.46, [0, 0], "cower_stand", ["cower"], 0.0],
     "ExitPlaza": ["G", 24.0, 42.0, [0, 0], "idle", ["exit", "exit_guests"], 180.0],
     "PlazaW": ["G", 6.0, 44.0, [10, 20], "walk_text", ["civilian_plaza"], None],
     "PlazaE": ["G", 42.0, 44.0, [10, 20], "walk_text", ["civilian_plaza"], None],
@@ -846,8 +857,26 @@ STAFF_EDGES = [["TellerStationW", "TellerTW"], ["TellerStationE", "TellerTW"], [
                ["StaffStairAB", "StaffBBWest"], ["StaffStairBB", "StaffBBEast"], ["StaffBBWest", "StaffBBEast"],
                ["StaffBBEast", "ManagerSD"], ["ManagerSD", "ManagerCP"], ["ManagerCP", "ManagerLKWC"],
                ["ManagerLKWC", "StaffBBWest"]]
-GRAPHS = {"Bank": ["bank", 1, BANK, BANK_EDGES], "Lane": ["lane", 1, LANE, LANE_EDGES],
-          "Civilians": ["civilians", 1, CIV, CIV_EDGES], "Staff": ["staff", 1, STAFF, STAFF_EDGES]}
+# The bank's guard graph per level group (each its own PatrolGraph): one 73-point graph exhausts levelcheck's cycle
+# budget (LcGeom.count_cycles_through, 200k DFS steps) before it finds the posts' loops; guards do not change level on
+# patrol at G1 (the stair points stay as each graph's stair-door ends). [node name, graph_id, floor_index, floors].
+BANK_PARTS = [["BankBasement", "bank_basement", 0, ("B",)], ["BankGround", "bank_ground", 1, ("G",)],
+              ["BankUpper", "bank_upper", 2, ("M", "E")]]
+GRAPHS: Dict[str, list] = {}
+for _nm, _gid, _fi, _fl in BANK_PARTS:
+    _pts = {k: v for k, v in BANK.items() if v[0] in _fl}
+    GRAPHS[_nm] = [_gid, _fi, _pts, [e for e in BANK_EDGES if e[0] in _pts and e[1] in _pts]]
+GRAPHS.update({"Lane": ["lane", 1, LANE, LANE_EDGES], "Civilians": ["civilians", 1, CIV, CIV_EDGES],
+               "Staff": ["staff", 1, STAFF, STAFF_EDGES]})
+
+
+def _bank_graph(f: str) -> str:
+    return next(nm for nm, _g, _i, fl in BANK_PARTS if f in fl)
+
+
+for _row in FIXED_SPAWNS + [it for _items in SLOT_CONTENT.values() for it in _items]:
+    if _row[0] == "spawn" and _row[8] == "Bank":
+        _row[8] = _bank_graph(_row[3])
 
 # --- tactical points --------------------------------------------------------------------------------------------
 TACTICAL: List[list] = [
@@ -894,7 +923,7 @@ LINES = [
       ["G", 49.5, 8.0]]],
     ["BagLineVaultE3", {"bag_line": "vault_e3"},
      [["E", 14.5, 6.3], ["E", 14.5, 8.0], ["E", 6.0, 8.0], ["E", 6.0, 12.0], ["E", 5.6, 16.0], ["E", 5.6, 17.7],
-      ["E", 20.0, 17.7], ["E", 40.0, 17.7], ["E", 42.0, 24.0], ["E", 38.0, 27.0]]],
+      ["E", 20.0, 17.7], ["E", 40.0, 17.7], ["E", 44.0, 21.0], ["E", 42.5, 25.0]]],
     ["BagLineE1", {"bag_line": "vault_e1", "bag_line_layouts": ["cam_b", "cam_c"]},
      [["G", 9.0, 1.5], ["G", 8.0, 0.8], ["G", 8.0, -0.8], ["G", 6.5, -2.0]]],
     ["HideCounterW", {"hide_spot": True, "hide_from": ["BH"], "hide_posture": "crouch"},
@@ -1008,16 +1037,19 @@ def check(fail: Callable[[str], None], note: Callable[[str], None]) -> bool:
             if not SL.inside(p[0], _room_at(PL, p[0], p[1], p[2]), p[1], p[2]):
                 bad("patrol point %s outside any room" % pn)
         starts = []
+        names = list(pts)
         for s in FIXED_SPAWNS + [it for items in SLOT_CONTENT.values() for it in items if it[0] == "spawn"]:
             if s[2] == "GUARD" and s[8] == gname:
-                best = min(pts, key=lambda k: (pts[k][1] - s[4][0]) ** 2 + (pts[k][2] - s[4][2]) ** 2
-                           + (100.0 if pts[k][0] != s[3] else 0.0))
+                sy = PL.FLOOR_HEIGHTS[s[3]] + s[4][1]
+                best = min(names, key=lambda k: ((pts[k][1] - s[4][0]) ** 2 + (pts[k][2] - s[4][2]) ** 2
+                                                 + (PL.FLOOR_HEIGHTS[pts[k][0]] - sy) ** 2, names.index(k)))
                 starts.append((s[1], best))
+        idx_adj = {names.index(k): sorted(names.index(n) for n in v) for k, v in adj.items()}
         for sname, st in starts:
-            loops = SL.count_cycles(adj, st, 3)
+            loops = SL.lc_cycles(idx_adj, names.index(st), 3)
             if len(starts) >= 2 and loops < 3:
                 bad("guard %s start %s has %d loops in %s" % (sname, st, loops, gname))
-        print("  %-9s %3d points, %3d edges, %d guard start(s) -> %s" % (gname, len(pts), len(edges), len(starts),
+        print("  %-12s %3d points, %3d edges, %d guard start(s) -> %s" % (gname, len(pts), len(edges), len(starts),
                                                                          "OK" if ok[0] else "see FAIL"))
     print("Content inside rooms:")
     items = [it for v in ALWAYS.values() for it in v] + FIXED_SPAWNS + [it for v in SLOT_CONTENT.values() for it in v]

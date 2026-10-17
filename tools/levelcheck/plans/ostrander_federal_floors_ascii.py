@@ -168,7 +168,7 @@ OPEN: List[Tuple[str, str, float, float, float, float, str]] = [
     ("B", "D", 41.4, 9, 42.6, 9, "SD (service)"),
     ("B", "V", 28.8, 13, 31.2, 13, "vault door: round 2.4 m, VAULT lock, time lock"),
     # --- Ground ---
-    ("G", "R", 3.2, 0, 6.8, 0, "LD roller door N (Ledger Lane), 3.6 x 4.0"),
+    ("G", "R", 3.1, 0, 6.9, 0, "LD roller door N (Ledger Lane), 3.6 x 4.0 leaves in a 3.8 x 4.1 opening"),
     ("G", "D", 7.4, 0, 8.6, 0, "LD personnel door N (Ledger Lane), LOCKPICK, NPC-authorised"),
     ("G", "W", 0.6, 0, 1.6, 0, "LD window N"),
     ("G", "D", 10, 0.5, 10, 2.5, "GL cash-lift landing door W (LD), 1.8 m"),

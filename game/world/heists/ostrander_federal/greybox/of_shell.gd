@@ -59,7 +59,7 @@ func build_shell(geo: Node3D) -> void:
 				groups[hg] = add(bld, node3d(hg))
 			parent = groups[hg]
 		hull(parent, String(h[1]), h[2], h[3], String(h[4]))
-	var stairs: Node3D = add(bld, node3d("Stairs")) as Node3D
+	var stairs: Node3D = add(bld, node3d("StairFlights")) as Node3D
 	for fl: Array in L.FLIGHTS:
 		if String(fl[0]) == "PlazaSteps":
 			continue
@@ -129,7 +129,10 @@ func build_site(geo: Node3D) -> void:
 		box(groups[g], String(b[1]), v3(b[2]), v3(b[3]), String(b[4]))
 	for fl: Array in L.FLIGHTS:
 		if String(fl[0]) == "PlazaSteps":
-			flight(site, String(fl[0]), v3(fl[1]), float(fl[2]), float(fl[3]), int(fl[4]), float(fl[5]), float(fl[6]))
+			# a 0.75 m plinth step-down, not a stair between levels: ramp collision + visual steps, no `kind stairs`
+			var ps: Node3D = flight(site, String(fl[0]), v3(fl[1]), float(fl[2]), float(fl[3]), int(fl[4]), float(fl[5]),
+				float(fl[6]))
+			ps.remove_meta(&"kind")
 
 
 # --- Rooms, zones, spawns, preplan, review cameras --------------------------------------------------
