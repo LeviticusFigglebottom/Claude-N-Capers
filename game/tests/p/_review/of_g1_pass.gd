@@ -96,7 +96,7 @@ const OF_VT_RECT: Rect2 = Rect2(14.0, 13.0, 20.0, 12.0)
 ## Dock (Ground notes / Escape): LD personnel door (8, 0); roller door x 3-6.6 on z 0; LD interior; E1 van at (5, -3)
 ## in Ledger Lane. §7.8.
 const OF_LD_DOOR: Vector3 = Vector3(8.0, 0.0, 0.0)
-const OF_LANE_START: Vector3 = Vector3(20.0, 0.0, -5.0)
+const OF_LANE_START: Vector3 = Vector3(24.0, 0.0, -4.0)  # clear of the C6 pole (20, -6): a bag behind it was not aimable
 const OF_LD_IN: Vector3 = Vector3(5.0, 0.0, 4.0)
 const OF_E1_AT: Vector3 = Vector3(5.0, 0.0, -3.0)
 ## Tannery fire exit (48, 8) at BC's east end (push_bar; door_fire_propped props it); BC east (46, 0, 8.5). §7.8.
@@ -611,8 +611,12 @@ func _get_bag(loot_id: StringName, walk_m: float = 0.0) -> LootBag:
 	note("SHORTCUT bag %s (weight %d) spawned by LootManager.spawn_bag at %s" % [loot_id, bag.weight, Po5Pilot._v(at)])
 	await wait_s(0.6)
 	if not await pilot.use(_comp(bag), 20.0, func() -> bool: return pilot.crew.is_carrying_bag()):
-		note("spawned bag not picked up (bag at %s)" % Po5Pilot._v(bag.global_position))
-		return null
+		note("spawned bag not picked up (bag at %s): one more, 1 m the other way" % Po5Pilot._v(bag.global_position))
+		var at2: Vector3 = pilot.crew.global_position + (pilot.crew.global_position - bag.global_position).normalized()
+		bag = mgr.spawn_bag(loot_id, Transform3D(Basis.IDENTITY, pilot.stand_point(at2) + Vector3.UP * 0.3), true)
+		await wait_s(0.6)
+		if bag == null or not await pilot.use(_comp(bag), 20.0, func() -> bool: return pilot.crew.is_carrying_bag()):
+			return null
 	return pilot.crew.carried_bag as LootBag
 
 
@@ -882,7 +886,9 @@ func _lift_to(lift: BagLift, to: int, stand: Vector3) -> bool:
 		note("lift %s: no panel at landing %d" % [lift.name, here])
 		return false
 	await _go(stand, 0.3, 60.0)
-	if not await pilot.use(panel, 30.0, func() -> bool: return lift.is_moving(), false):
+	# Walk to the panel when the stand is out of reach of it (G1 hoist: panel 2.0 m from the car-side stand).
+	var walk_to: bool = pilot.crew.global_position.distance_to(panel.global_position) > 1.4
+	if not await pilot.use(panel, 30.0, func() -> bool: return lift.is_moving(), walk_to):
 		note("lift %s panel %d not used (at %s)" % [lift.name, here, Po5Pilot._v(pilot.crew.global_position)])
 		return false
 	var ok: bool = await wait_until(func() -> bool: return not lift.is_moving() and lift.landing == to,
@@ -1510,7 +1516,7 @@ func _test_throws() -> bool:
 				elif p.y < OF_FFL[1] + 0.6 and p.x > _of(OF_FIRE_EXIT).x + 0.3:
 					verdict = ("OK Tannery Street, %.1f m from E2" % zd) if zd <= OF_E2_BESIDE_M else (
 						"FAIL Tannery Street but %.1f m from the E2 zone (> %.0f m)" % [zd, OF_E2_BESIDE_M])
-				elif p.y > OF_FFL[3] + 0.3 and p.x < _of(OF_FIRE_EXIT).x:
+				elif p.y > OF_FFL[3] - 0.6 and p.x < _of(OF_FIRE_EXIT).x:
 					verdict = "FAIL bounced back off the parapet / coping onto the terrace"
 				elif p.y > OF_FFL[3] + 0.3:
 					verdict = "FAIL on the coping"

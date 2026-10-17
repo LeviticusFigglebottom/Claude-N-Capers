@@ -2,3 +2,49 @@ Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
 Vulkan 1.4.318 - Forward+ - Using Device #0: Unknown - llvmpipe (LLVM 20.1.2, 256 bits)
 
 [OFP 0.0s t=-1.0] === fire_exit ===
+[INFO][rng][p1] run seed 1002
+[INFO][preplan][p1] assets []
+[INFO][variants][p1] seed 1002 resolved { &"manager_route": [&"mgr_gallery"], &"keycard": [&"kc_security"], &"code_pc": [&"pc_ops"], &"officers": [&"off_1"], &"server_room": [&"srv_gallery"], &"guard_post": [&"rover_basement", &"rover_dock"], &"security_room_staffed": [&"sec_empty"], &"camera": [&"cam_c"], &"laser_pattern": [&"lz_timed"], &"customers": [&"cust_4"], &"side_door": [&"door_fire_propped"], &"fire_escape": [&"fe_down"], &"escape": [&"esc_van_tannery"], &"drill_delivery": [&"drop_terrace"], &"president_safe": [&"ps_empty"], &"vip": [&"vip_out"], &"guard_extra": [], &"civ_extra": [], &"time_lock_s": 150.0, &"drill_eta_s": 60.0, &"escape_eta_s": 120.0, &"cash_bags": 10, &"gold_bags": 4, &"deposit_boxes": 9, "rare": [] }
+[INFO][heist][p1] vfx prewarm: 581 ms
+[INFO][heist][p1] phase LOADING -> CASING
+[OFP 6.6s t=-1.0] objective casing -> 1
+[OFP 6.6s t=-1.0] objective keycard -> 1
+[OFP 6.6s t=-1.0] objective code_pc -> 1
+[OFP 6.6s t=-1.0] objective vault_gate -> 1
+[OFP 6.6s t=-1.0] objective time_lock -> 1
+[OFP 6.6s t=-1.0] objective vault_loot -> 1
+[OFP 6.6s t=-1.0] objective secure -> 1
+[OFP 6.6s t=-1.0] objective escape -> 1
+[INFO][director][p1] prewarm: 18 of 18 scenes loaded in 1718 ms
+[INFO][prefab][p1] CameraStation: security room unstaffed
+[OFP 23.3s t=0.0] launched ostrander_federal seed 1002 diff 0 variants { &"manager_route": [&"mgr_gallery"], &"keycard": [&"kc_security"], &"code_pc": [&"pc_ops"], &"officers": [&"off_1"], &"server_room": [&"srv_gallery"], &"guard_post": [&"rover_basement", &"rover_dock"], &"security_room_staffed": [&"sec_empty"], &"camera": [&"cam_c"], &"laser_pattern": [&"lz_timed"], &"customers": [&"cust_4"], &"side_door": [&"door_fire_propped"], &"fire_escape": [&"fe_down"], &"escape": [&"esc_van_tannery"], &"drill_delivery": [&"drop_terrace"], &"president_safe": [&"ps_empty"], &"vip": [&"vip_out"], &"guard_extra": [], &"civ_extra": [], &"time_lock_s": 150.0, &"drill_eta_s": 60.0, &"escape_eta_s": 120.0, &"cash_bags": 10, &"gold_bags": 4, &"deposit_boxes": 9, "rare": [] }
+[INFO][prefab][p1] CameraC1 disabled
+[INFO][prefab][p1] CameraC2 disabled
+[INFO][prefab][p1] CameraC3 disabled
+[INFO][prefab][p1] CameraC7 disabled
+[INFO][prefab][p1] CameraC9 disabled
+[INFO][prefab][p1] CameraC11 disabled
+[INFO][prefab][p1] CameraC13 disabled
+[INFO][prefab][p1] CameraC15 disabled
+[OFP 50.1s t=2.0] SHORTCUT traversal: NPCs despawned, crew stealth_hidden, 8 cameras disabled (GameplayPrefab.set_enabled)
+[OFP 61.9s t=3.1] pilot: calibrated 0.001600 rad/px yaw, 0.001600 rad/px pitch (settings formula said (0.0016, 0.0016))
+[OFP 61.9s t=3.1] spawn (57.0, 0.0, 20.0)
+[INFO][heist][p1] phase CASING -> STEALTH
+[INFO][crew][p1] slot 0 masked (forced=false)
+[OFP 66.4s t=4.8] masked true
+[OFP 71.5s t=9.8] pilot: t=5 at (54.1, 0.0, 15.2) corner (52.4, 0.2, 12.4) yaw_err 0.00 fwd=true path=12 mouse_mode=2 state=0 look=(0.55,0.00) pin_yaw=0.54956585342734 bot=false
+[OFP 76.4s t=14.8] pilot: t=10 at (50.9, 0.0, 10.4) corner (49.0, 0.2, 8.4) yaw_err -1.20 fwd=false path=7 mouse_mode=2 state=0 look=(1.95,0.00) pin_yaw=1.76121193029394 bot=false
+[OFP 80.6s t=19.0] SHORTCUT bag loot.gold (weight 2) spawned by LootManager.spawn_bag at (44.9, 0.5, 8.4)
+[OFP 82.4s t=20.8] pilot: use Bag_gold (pick_bag) -> OK in 1.0 s
+[OFP 86.3s t=24.6] secured loot.gold (bag 218)
+ERROR: Lambda capture at index 1 was freed. Passed "null" instead.
+   at: call (modules/gdscript/gdscript_lambda_callable.cpp:242)
+   GDScript backtrace (most recent call first):
+       [0] wait_until (res://tests/p/_review/of_g1_pass.gd:286)
+[OFP 86.3s t=24.6] THROW fire exit -> E2 HEAVY stand 0 (48.7, 0.0, 8.1) (0.0 m from the zone; BC east -> stand 3.8 s, STUCK rows 0) weight 2 pitch -> rests (49.4, -0.0, 10.6) (2.6 m from the stand, 1.0 s) on - secured true: OK in E2
+WARNING: Sub-surface scattering is not supported in viewports with a transparent background. Disabling SSS in transparent viewport.
+     at: _render_scene (servers/rendering/renderer_rd/forward_clustered/render_forward_clustered.cpp:1963)
+[OFP] RESULT PASS fire_exit
+[OFP] RESULT PASS (fire_exit PASS)
+WARNING: 132 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)
