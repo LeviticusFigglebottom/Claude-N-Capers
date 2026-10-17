@@ -1325,3 +1325,13 @@ empty = 4), regen, validate final. B: the OF values block per QB-2 (GUARDS: 4/5/
 /difficulty card "N pagers" line where the cap is below 4. A: PagerSystem scalar-lowers-only; re-pin test_d130_population;
 a test asserts (a)-(c) on 3 seeds for ND/GN/SL (OF once G1 lands); the stealth e2e tests still win. P: one windowed stealth
 run each on Tense and Lethal for ND/GN/SL afterwards.
+
+## D-141: Rolling Thunder groundwork rulings (QB-RT1..5, 2026-10-17, LEAD)
+1. **Payout:** `base_payout` **$30k** (B's D-120 shape: full clear ≈ $135k at Routine, bag share 76 %, required-only ≈ $62k;
+   table 30k/60k/78k/126k/216k/276k). The $85k placeholder predates D-120. test_p5_catalogue pins it.
+2. **D-130 §1 / D-140 exempt:** RT is loud with a stealth set-up (an early alarm is a penalty, not a fail), so it has no
+   stealth win to protect. The site guard keeps the default pager cap 4; civilians stay on the 6/9/12 scalar + `rush_hour`.
+3. `asset.c4_drop` is drafted by B after A5-03's item drop kind lands.
+4. Reyes in-heist radio uses speaker `reyes` with `vo.reyes.*` lines in the B7-03 contact-radio shape; the mission's
+   `say(…, &"reyes")` plays those ids.
+5. RT preplan point and room labels wait for the VO round after G1.
