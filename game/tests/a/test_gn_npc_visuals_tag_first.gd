@@ -4,7 +4,9 @@
 extends TestCase
 
 ## Characters ENV D has announced but not shipped yet (NpcVisuals falls through to the next rule meanwhile).
-const PENDING_CHARACTERS: Array[String] = []
+## D-130 cast pools (D a04f3536), merged by the LEAD with A's map.
+const PENDING_CHARACTERS: Array[String] = ["gallery_guard_c", "gallery_guard_d", "gallery_guard_e", "gallery_guard_f",
+	"gallery_guard_g", "gallery_guard_h", "gallery_guard_i", "gallery_patron_h", "gallery_patron_i", "gallery_patron_j"]
 const GUARD_DEF: String = "res://systems/ai/data/enemies/security_officer.tres"
 
 var _rt: HeistRuntime = null
@@ -47,7 +49,8 @@ func test_gn_heist_scoped_tags_only_apply_to_their_heist() -> void:
 	assert_eq(_path(elsewhere), NpcVisuals.scene_path("security_officer"), "guard_hall outside Gallery Night: unchanged")
 	_rt.heist_id = &"gallery_night"
 	var gn: NpcBase = _guard(Vector3(0, 0.05, -4), [&"guard_hall"])
-	assert_eq(_path(gn), NpcVisuals.scene_path("gallery_guard"), "Gallery Night guard_hall wears gallery_guard")
+	# D-130: guard_hall deals from the 9-look gn_guards pool (the delivered ones).
+	assert_true(_path(gn).contains("/gallery_guard"), "Gallery Night guard_hall wears a gallery guard (%s)" % _path(gn))
 	var cur: NpcBase = _rt.spawn_npc(&"civilian", Transform3D(Basis.IDENTITY, Vector3(2, 0.05, -4)), {"tags": [&"civ_curator"]})
 	assert_eq(_path(cur), NpcVisuals.scene_path("gallery_curator"), "the curator")
 	var tw: NpcVisualTweak = NpcVisuals.tweak()
