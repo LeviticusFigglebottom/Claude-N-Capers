@@ -1919,7 +1919,7 @@ voice.vo.accountant.shadow_ledger_contact_intro,"I want the whole ledger, every 
 voice.vo.mercer.shadow_ledger_laptop_found,"That's the partners' laptop. It holds the key, so treat it like it's made of glass."
 voice.vo.mercer.shadow_ledger_keycard_found,"Keycard. The server room door and the study safe each eat one, so spend it on the job first."
 voice.vo.mercer.shadow_ledger_code_found,Cage code's yours. No need to make noise in the server room.
-voice.vo.mercer.glasshouse_code_found,That's the safe code. Quiet way in, no drill needed.
+voice.vo.mercer.glasshouse_code_found,"That's the safe code. Quiet way in, no drill needed."
 voice.vo.mercer.shadow_ledger_camera_warning,"Camera's getting curious. Get out of its eye line, now."
 voice.vo.mercer.shadow_ledger_cage_open,Cage is open. The terminal at the back releases the drive bays.
 voice.vo.mercer.shadow_ledger_hack_started,Release is running: {seconds} seconds. Keep the floor quiet while it works.
@@ -2763,6 +2763,24 @@ item.asset.intel_route.desc,"You know which way the convoy comes in, and where t
 heist.afterhours.name,Afterhours
 heist.afterhours.subtitle,The Velvet
 heist.afterhours.brief,"The Velvet launders the Co-op's week behind a velvet rope. The Accountant wants its books and its count room emptied before the doors close."
+heist.afterhours.briefing,"The Velvet on Keston Row washes the Co-op's week through a velvet rope and a cash bar. Crale counts it upstairs and locks it in his office safe until the pickup. You walk in as guests: an insider leaves your gear front of house, and nothing you do out there can get you seen. Once the gear is on, it is the usual rules: find the office keycard, the safe combination or a drill, and get three bags of the Co-op's cash to the van. The product and the count room are a bonus. Never mask up in front of the crowd."
+objective.afterhours.casing,Look around the club
+objective.afterhours.gear,Get the gear the insider left
+objective.afterhours.keycard,Find the office keycard
+objective.afterhours.office,Get into Crale's office
+objective.afterhours.safe_code,Find the safe combination
+objective.afterhours.safe,Open the safe
+objective.afterhours.safe_loot,Bag the Co-op's cash
+objective.afterhours.secure,Secure three bags of cash ({count}/{total})
+objective.afterhours.product,Take the product
+objective.afterhours.count_room,Take the count room's cash
+objective.afterhours.escape_wait,Hold until the van arrives
+objective.afterhours.escape,Get to the van
+item.asset.gear_drop.name,Insider: gear drop
+item.asset.gear_drop.desc,"You choose where the insider leaves the crew's gear: the WC duct, the cloakroom or the reserved booth."
+item.asset.count_window.name,Insider: count room window
+item.asset.count_window.desc,The count room window is left unlatched: a quiet way onto the roof and a throw into the alley.
+music.afterhours.name,Velvet Rope
 ui.jukebox.no_stems,{name} has no recording yet.
 ui.options.controls.scoreboard_mode,Scoreboard
 ui.scoreboard.title,Crew Tally

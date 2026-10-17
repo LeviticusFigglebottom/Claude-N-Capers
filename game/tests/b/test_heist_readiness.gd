@@ -81,3 +81,20 @@ func test_rolling_thunder_staged() -> void:
 	for a: String in ["signal_insider", "intel_route"]:
 		assert_true(ResourceLoader.exists("res://content/data/preplanning/assets/%s.tres" % a), a)
 		assert_true(UiText.has(StringName("item.asset.%s.name" % a)), a + " name")
+
+
+## Afterhours groundwork (data only): hidden until its mission script lands; objective, asset and music strings staged.
+func test_afterhours_staged() -> void:
+	var ah: StringName = &"afterhours"
+	var mission: String = "res://world/heists/afterhours/afterhours_mission.gd"
+	assert_eq(HeistCatalog.heist_list().requires_for(ah), PackedStringArray([mission]))
+	if not ResourceLoader.exists(mission):
+		assert_false(HeistCatalog.ids().has(ah), "AH hidden until its mission")
+	for tag: String in ["casing", "gear", "keycard", "office", "safe_code", "safe", "safe_loot", "secure", "product",
+			"count_room", "escape_wait", "escape"]:
+		assert_true(UiText.has(StringName("objective.afterhours.%s" % tag)), "objective %s" % tag)
+	for a: String in ["gear_drop", "count_window"]:
+		var def: PreplanAssetDef = load("res://content/data/preplanning/assets/%s.tres" % a) as PreplanAssetDef
+		assert_true(def != null and not def.point_ids.is_empty(), a + ": point-limited (Afterhours only)")
+		assert_true(UiText.has(StringName("item.asset.%s.name" % a)), a + " name")
+	assert_true(UiText.has(&"music.afterhours.name"))

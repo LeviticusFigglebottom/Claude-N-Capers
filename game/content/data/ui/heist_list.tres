@@ -12,6 +12,7 @@ heists = {
 "glazing": true
 },
 &"afterhours": {
+"requires": ["res://world/heists/afterhours/afterhours_mission.gd"],
 "solo_ai_teammates": 3
 },
 &"dockside_burn": {
