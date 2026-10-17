@@ -20,8 +20,7 @@ import math
 from typing import Callable, Dict, List
 
 G_GUARDS = ["guard_lobby", "guard_vault", "guard_rover_hall", "guard_rover_gallery", "guard_rover_basement",
-            "guard_rover_dock", "guard_extra_hall", "guard_extra_basement", "guard_extra_exec", "guard_extra_tannery",
-            "guard_vaultline", "guard_vip"]
+            "guard_rover_dock", "guard_extra_hall", "guard_extra_basement", "guard_vaultline", "guard_vip"]
 G_STAFF = ["civ_teller", "civ_manager_floor", "civ_manager_gallery", "civ_manager_vault", "civ_officer"]
 LOCKPICK_S = 8.0
 # Spawn / placement tags for ENV D (OF-D1): the counter windows and the check desks.
@@ -39,11 +38,13 @@ CAGE_T = 0.1
 LID = [22.8, 13.4, 25.2, 15.8]
 HOLE = [23.4, 13.5, 24.6, 15.7]
 HOIST_CAR = [1.0, 1.0, 1.0]
-# Teller counter (z 17 line; §7.2, D-128): body z 16.55-17.45, hall ledge 1.05 (z 17.15-17.45), work top 1.00
-# (z 16.55-16.85), a solid upstand z 16.85-17.15 to 1.30 m (crouched 1.2 m capsule hidden; the bandit glass above it to
-# 2.40 m), the bulkhead 2.40 m -> the slab; the teller gate's piers x 22.9-23.4 / 24.6-25.1.
-COUNTER = {"z": 17.0, "body": [16.55, 17.45], "ledge": [17.15, 17.45, 1.05], "top": [16.55, 16.85, 1.0],
-           "upstand": [16.85, 17.15, 1.30], "glass": [16.97, 17.03, 1.30, 2.40], "bulkhead": [16.9, 17.1, 2.40],
+# Teller counter (z 17 line; §7.2, D-128 / D-136 §3b.11 and OF-C0): 12 work tops (props, kind teller_worktop, top 1.00,
+# z 16.55-17.15, teller side north = local -Z), a SOLID bandit-screen base to 1.35 m (z 17.15-17.25; the crouch-hide
+# formula needs 1.32 m), the customers' 1.05 m ledge in front of it (z 17.25-17.45), bandit glass 1.35-2.40 m (meta
+# see_through), the bulkhead 2.40 m -> the slab (z 17.15-17.35), the teller gate's piers x 22.9-23.4 / 24.6-25.1 on the
+# z 17.25 line (a 0.2 m "wall" the service-door kit fits).
+COUNTER = {"z": 17.0, "line": 17.25, "body": [16.55, 17.45], "ledge": [17.25, 17.45, 1.05], "top": [16.55, 17.15, 1.0],
+           "upstand": [17.15, 17.25, 1.35], "glass": [17.18, 17.22, 1.35, 2.40], "bulkhead": [17.15, 17.35, 2.40],
            "x": [8.1, 39.9], "gate": [23.4, 24.6], "piers": [[22.9, 23.4], [24.6, 25.1]], "gate_head": 2.2}
 STATIONS = [13.0, 15.0, 17.0, 31.0, 33.0, 35.0]     # the 6 staffed of 12 windows
 TELLERS = [15.0, 17.0, 31.0, 33.0]                  # 3 staffed + 1 rotating (doc roster)
@@ -113,7 +114,7 @@ DOORS: List[list] = [
     ["ClientTellerDoor", "G", "z", 40, 11.5, "LOCKPICK", "E", {"npc": ["@guards", "@staff"]}],
     ["LoanHallDoor", "G", "z", 8, 17.5, "NONE", "E", {}],
     ["ClientHallDoor", "G", "z", 40, 17.5, "NONE", "W", {}],
-    ["TellerGate", "G", "x", 17, 23.4, "LOCKPICK", "S", {"npc": ["@guards", "@staff"], "leaf": "metal"}],
+    ["TellerGate", "G", "x", 17, 23.4, "LOCKPICK", "S", {"npc": ["@guards", "@staff"], "leaf": "metal", "line": 17.25}],
     ["ConsultDoor1", "G", "z", 8, 20.5, "NONE", "E", {}],
     ["ConsultDoor2", "G", "z", 8, 25.5, "NONE", "E", {}],
     ["ATMHallDoor", "G", "z", 8, 31.5, "NONE", "E", {"visual": "prop_door_single_glass_t20", "leaf": "glass",
@@ -174,10 +175,10 @@ DOORS: List[list] = [
     ["TrustDoor", "E", "x", 9, 33.5, "NONE", "N", {}],
     ["RecordsDoorE", "E", "x", 9, 43.5, "NONE", "N", {}],
     ["TerraceDoorsW", "E", "x", 17, 4.6, "LOCKPICK", "S", {"visual": "prop_door_double_glass_t40", "leaf": "glass",
-                                                            "npc": ["guard_rover_gallery", "guard_extra_exec"],
+                                                            "npc": ["guard_rover_gallery"],
                                                             "bake_closed": True}],
     ["TerraceDoorsE", "E", "x", 17, 9.6, "LOCKPICK", "S", {"visual": "prop_door_double_glass_t40", "leaf": "glass",
-                                                            "npc": ["guard_rover_gallery", "guard_extra_exec"],
+                                                            "npc": ["guard_rover_gallery"],
                                                             "bake_closed": True}],
     # --- Roof ---
     ["HeadHouseDoor", "R", "x", 7, 13.9, "LOCKPICK", "S", {"leaf": "metal", "bake_closed": True,
@@ -199,7 +200,7 @@ SIDE_DOORS = {
     "door_none": {"FireExitDoor": ["NONE", {"push_bar": True}], "DockPersonnelDoor": ["LOCKPICK", {}]},
 }
 SIDE_DOOR_EXTRA = {"FireExitDoor": {"leaf": "metal", "bake_closed": True, "tag": "fire_exit",
-                                    "npc": ["guard_rover_hall", "guard_extra_tannery", "civ_teller"]},
+                                    "npc": ["guard_rover_hall", "civ_teller"]},
                    "DockPersonnelDoor": {"leaf": "metal", "bake_closed": True, "tag": "dock_door",
                                          "npc": ["guard_rover_dock", "guard_vaultline", "guard_rover_hall"]}}
 # Doors on the §7.12 routes (>= 1.0 m leaves): stairs, BC, PC service, LK, J1, SV, EA, XL, HH, the teller gate, the TW
@@ -221,8 +222,8 @@ def S(name: str, kind: str, f: str, pos: list, yaw: float, tags: list, idle: str
 
 
 def B(name: str, f: str, base: list, size: list, yaw: float, kind: str, support: bool = False,
-      mat: str = "prop") -> list:
-    return ["box", name, f, base, size, yaw, kind, support, mat]
+      mat: str = "prop", metas: Dict = None) -> list:
+    return ["box", name, f, base, size, yaw, kind, support, mat, metas or {}]
 
 
 def M(name: str, f: str, pos: list, tag: str, todo: str, yaw: float = 0.0) -> list:
@@ -296,7 +297,9 @@ FURNITURE: List[list] = [
     B("WCPartitionPW", "G", [44.0, 0.0, 28.0], [0.05, 2.0, 1.8], 0.0, "partition", False, "trim"),
     B("CoffeeServicePC", "G", [47.55, 0.0, 16.5], [0.45, 0.9, 1.6], 0.0, "counter", True),
     B("CoffeeTablePC", "G", [44.25, 0.0, 14.0], [0.8, 0.45, 0.8], 0.0, "table", True),
-] + [B("CheckDesk%d" % (i + 1), "G", [x, 0.0, z], CHECK_D, 0.0, "check_desk", True) for i, (x, z) in enumerate(CHECK_DESKS)
+] + [B("TellerWorktop%02d" % (i + 1), "G", [x0 + 1.233 + 2.467 * k, 0.0, 16.85], [2.46, 1.0, 0.6], 0.0,
+       "teller_worktop", True, "counter", {"hide_behind": True}) for i, (x0, k) in
+     enumerate([(8.1, k) for k in range(6)] + [(25.1, k) for k in range(6)])] + [B("CheckDesk%d" % (i + 1), "G", [x, 0.0, z], CHECK_D, 0.0, "check_desk", True) for i, (x, z) in enumerate(CHECK_DESKS)
      ] + [
     B("HallBenchW1", "G", [8.35, 0.0, 23.0], [0.5, 0.45, 1.8], 0.0, "bench", True),
     B("HallBenchW2", "G", [8.35, 0.0, 28.5], [0.5, 0.45, 1.8], 0.0, "bench", True),
@@ -437,9 +440,8 @@ ALWAYS: Dict[str, List[list]] = {
                               "todo": "OF-A2: GameplayPrefab.set_enabled (QC-61); enabled at the burn-through"}, ""),
     ],
     "Gameplay/Ladders": [
-        P("ladder", "RopeLadder", "B", [24.0, 0.0, 13.6], 180.0, {"height_m": 4.0, "usable": False,
-                                                                 "loud_only": True},
-          None, {"starts_disabled": True, "hidden": True, "todo": "OF-A2: enabled at the burn-through (QC-61)"}, ""),
+        P("ladder", "RopeLadder", "B", [24.0, 0.0, 13.6], 180.0, {"height_m": 4.0, "usable": False},
+          None, {"loud_only": True, "starts_disabled": True, "hidden": True, "todo": "OF-A2: enabled at the burn-through (QC-61)"}, ""),
         P("ladder", "CagedLadder", "E", [46.0, 0.0, 17.55], 180.0, {"height_m": 3.6}, None, {}, ""),
     ],
     "Gameplay/Markers": [
@@ -459,9 +461,9 @@ ALWAYS: Dict[str, List[list]] = {
         P("body_container", "DumpsterE", "G", [29.0, 0.0, -0.76], 0.0, {"capacity": 2}, None, {"kind": "dumpster"},
           "prop_dumpster"),
         P("body_container", "LockerHideLK1", "B", [0.47, 0.0, 1.2], -90.0, {"capacity": 1}, None, {"kind": "lockers"},
-          "prop_lockers"),
+          "prop_crate_hide"),
         P("body_container", "LockerHideLK2", "B", [0.47, 0.0, 2.2], -90.0, {"capacity": 1}, None, {"kind": "lockers"},
-          "prop_lockers"),
+          "prop_crate_hide"),
         P("body_container", "JanitorCartJ1", "G", [36.5, 0.0, 0.66], 180.0, {"capacity": 1}, None, {"kind": "cart"},
           "prop_cart_hide"),
         P("body_container", "JanitorCartJ2", "M", [36.5, 0.0, 0.66], 180.0, {"capacity": 1}, None, {"kind": "cart"},
@@ -592,8 +594,6 @@ SLOT_CONTENT: Dict[str, List[list]] = {
                S("VIPBodyguard", "GUARD", "B", [44.0, 0.0, 15.0], 90.0, ["guard_vip"], "look")],
     "gx_hall": [S("GuardExtraHall", "GUARD", "G", [16.0, 0.0, 27.0], 0.0, ["guard_extra_hall"], "", "Bank")],
     "gx_basement": [S("GuardExtraBasement", "GUARD", "B", [38.0, 0.0, 8.0], 90.0, ["guard_extra_basement"], "", "Bank")],
-    "gx_exec": [S("GuardExtraExec", "GUARD", "E", [30.0, 0.0, 8.0], 90.0, ["guard_extra_exec"], "", "Bank")],
-    "gx_tannery": [S("GuardExtraTannery", "GUARD", "G", [55.0, 0.0, 2.0], 180.0, ["guard_extra_tannery"], "", "Lane")],
     "gx_none": [],
     "cx_hall_1": [_customer("LateCustomerCheck", [34.0, 0.0, 26.55], 0.0, "browse", TAG_CHECK)],
     "cx_hall_2": [_customer("LateCustomerQueue", [33.0, 0.0, 21.05], 0.0, "queue", TAG_QUEUE)],
@@ -603,9 +603,8 @@ SLOT_CONTENT: Dict[str, List[list]] = {
 }
 for _sid in ("ps_bonds", "ps_empty"):
     SLOT_CONTENT[_sid] = [P("safe", "PresidentSafe", "E", [30.0, 0.85, 0.2], 180.0,
-                            {"size": "enum:MEDIUM", "methods": ["drill", "saw"], "objective_tag": "president_safe"},
-                            [30.0, 0.0, 1.2], {"mount": "wall",
-                                               "@contents": [] if _sid == "ps_empty" else [
+                            {"size": "enum:MEDIUM", "methods": ["drill", "saw"], "objective_tag": "president_safe",
+                             "@contents": [] if _sid == "ps_empty" else [
                                                    ["loot_spawn", "PresidentBonds", [0.0, 0.05, 0.0],
                                                     {"loot_id": "loot.bearer_bonds", "count": 1,
                                                      "objective_tag": "president_safe"}],
@@ -615,7 +614,7 @@ for _sid in ("ps_bonds", "ps_empty"):
                                                     {"loot_id": "loot.small_valuables", "value": 1500}],
                                                    ["small_loot", "PresidentValuables3", [0.15, 0.05, 0.0],
                                                     {"loot_id": "loot.small_valuables", "value": 1500}]]},
-                            "prop_safe_wall_small")]
+                            [30.0, 0.0, 1.2], {"mount": "wall"}, "prop_safe_wall_small")]
 SLOT_CONTENT["sec_staffed"] = []
 SLOT_CONTENT["sec_empty"] = []
 SLOT_PARAMS = {"sec_staffed": {"operator_spawn": "Spawns/CameraOperatorSeat",
@@ -864,6 +863,7 @@ TACTICAL: List[list] = [
     T("EntryTerraceDoorsE", "ENTRY", "E", [10.6, 0.0, 18.2], 0.0, ["door", "roof", "breach_only"], True),
     T("RappelLantern", "RAPPEL", "E", [13.3, 0.0, 26.0], -90.0, ["lantern", "roof", "breach_only"], True),
     T("EntryLantern", "ENTRY", "E", [13.3, 0.0, 26.0], -90.0, ["skylight", "roof", "breach_only"], True),
+    T("RappelHole", "RAPPEL", "G", [24.0, 0.0, 13.3], 180.0, ["hole_rappel", "rappel_disabled", "breach_only"], False),
     T("RappelSetbackRoof", "RAPPEL", "R", [1.6, 0.0, 14.0], -90.0, ["setback", "roof", "one_way"], False),
     T("RappelSetbackTerrace", "RAPPEL", "E", [1.6, 0.0, 20.0], -90.0, ["setback", "roof", "one_way"], False),
     T("FlankAreaway", "FLANK", "G", [30.0, 0.0, -1.6], 180.0, ["areaway", "vent", "phantom"], False),
@@ -877,6 +877,34 @@ TACTICAL: List[list] = [
     T("SniperAssay", "SNIPER_PERCH", "G", [24.0, 14.0, 63.4], 0.0, ["s1", "assay_office"], False),
     T("SniperGarage", "SNIPER_PERCH", "G", [40.0, 12.0, -11.0], 180.0, ["s2", "garage_deck"], False),
     T("SniperTower", "SNIPER_PERCH", "G", [-5.4, 20.0, 24.0], -90.0, ["s3", "tower_sniper"], False),
+]
+
+
+# OF-C3 levelcheck lines (doc §Budgets "Levelcheck configuration"): [name, metas, [[floor, x, z], ...]] -> a Node3D with
+# Marker3D children at the crew's feet (LcLines). Bag lines must be camera-free per layout; hide spots hidden by LOS.
+# vault_e2: C13 (BB E end, W along BB to x ~ 28, doc Sightlines) watches the BB leg in cam_a / cam_c, so the line is
+# camera-free in cam_b only (doc claim "every layout": flagged for the lead). RC: observers from RC itself would see
+# into the aisle (a line in an aisle is open along it), so hide_from is BB only (flagged).
+LINES = [
+    ["BagLineVaultSACQ", {"bag_line": "vault_sa_cq"},
+     [["B", 24.0, 16.6], ["B", 30.0, 14.5], ["B", 30.0, 12.2], ["B", 21.0, 12.2], ["B", 17.0, 11.0], ["B", 17.0, 8.0],
+      ["B", 14.5, 8.0], ["B", 12.0, 8.0], ["B", 12.0, 5.0]]],
+    ["BagLineVaultE2", {"bag_line": "vault_e2", "bag_line_layouts": ["cam_b"]},
+     [["B", 17.0, 8.0], ["B", 30.0, 8.0], ["B", 46.5, 8.0], ["B", 46.5, 6.3], ["G", 46.5, 6.3], ["G", 46.5, 8.0],
+      ["G", 49.5, 8.0]]],
+    ["BagLineVaultE3", {"bag_line": "vault_e3"},
+     [["E", 14.5, 6.3], ["E", 14.5, 8.0], ["E", 6.0, 8.0], ["E", 6.0, 12.0], ["E", 5.6, 16.0], ["E", 5.6, 17.7],
+      ["E", 20.0, 17.7], ["E", 40.0, 17.7], ["E", 42.0, 24.0], ["E", 38.0, 27.0]]],
+    ["BagLineE1", {"bag_line": "vault_e1", "bag_line_layouts": ["cam_b", "cam_c"]},
+     [["G", 9.0, 1.5], ["G", 8.0, 0.8], ["G", 8.0, -0.8], ["G", 6.5, -2.0]]],
+    ["HideCounterW", {"hide_spot": True, "hide_from": ["BH"], "hide_posture": "crouch"},
+     [["G", 9.5, 16.2], ["G", 22.5, 16.2]]],
+    ["HideCounterE", {"hide_spot": True, "hide_from": ["BH"], "hide_posture": "crouch"},
+     [["G", 25.5, 16.2], ["G", 38.5, 16.2]]],
+    ["HideGallery", {"hide_spot": True, "hide_from": ["BH"], "hide_posture": "crouch"},
+     [["M", 9.0, 18.6], ["M", 39.0, 18.6]]],
+    ["HideRecordsAisle", {"hide_spot": True, "hide_from": ["BB"], "hide_posture": "crouch"},
+     [["B", 0.95, 11.5], ["B", 0.95, 22.5]]],
 ]
 
 

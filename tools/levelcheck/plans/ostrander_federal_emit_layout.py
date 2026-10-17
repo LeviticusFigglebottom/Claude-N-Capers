@@ -114,8 +114,8 @@ def item(it: list) -> list:
         _k, name, kind, f, pos, yaw, tags, idle, graph, seat = it
         return ["spawn", name, kind, absy(f, pos), float(yaw), tags, idle, graph, seat]
     if k == "box":
-        _k, name, f, base, size, yaw, kind, support, mat = it
-        return ["box", name, absy(f, base), [float(v) for v in size], float(yaw), kind, support, mat]
+        _k, name, f, base, size, yaw, kind, support, mat, metas = it
+        return ["box", name, absy(f, base), [float(v) for v in size], float(yaw), kind, support, mat, metas]
     if k == "marker":
         _k, name, f, pos, yaw, tag, todo = it
         return ["marker", name, absy(f, pos), float(yaw), tag, todo]
@@ -212,7 +212,7 @@ def emit() -> tuple:
     s += const("SIDE_DOOR_EXTRA", C.SIDE_DOOR_EXTRA, "Dictionary")
     s += const("ROUTE_DOORS", C.ROUTE_DOORS, "Array[String]")
     shell_text = s
-    s = hdr.replace("layout data.", "layout data (content half: spawns, items, graphs, tactical).")
+    s = hdr.replace("layout data. GENERATED", "layout data, content half. GENERATED")
     s += const("PLAYER_SPAWNS", [[nm, tag, absy(f, [x, S.PLAZA_Y if rid == "X1" else 0.0, z]), float(yaw)]
                                  for nm, tag, f, rid, x, z, yaw in S.PLAYER_SPAWNS],
                doc="PLAYER spawns: [name, spawn_tag (\"\" = default), position, yaw].")
@@ -246,6 +246,10 @@ def emit() -> tuple:
         graphs[gname] = [gid, fi, rows, edges]
     s += const("GRAPHS", graphs, "Dictionary", "Patrol graphs: name -> [graph_id, floor index, {point: [position, pause, "
                "anim, tags, facing yaw or null]}, edges].")
+    s += const("LINES", [[nm, metas, [absy(f, [x, 0.0, z]) for f, x, z in pts]] for nm, metas, pts in C.LINES],
+               doc="OF-C3 levelcheck lines (bag_line / hide_spot): [name, metas, points at the crew's feet].")
+    s += const("MAP_METAS", {"laser_min_gap_m": 1.0, "laser_crouch_face_m": 1.215, "camera_layout_group": "camera"},
+               "Dictionary", "HeistMap metas for levelcheck (OF-C3: lasers §7.1).")
     s += const("TACTICAL", [item(i) for i in C.TACTICAL], doc="TacticalPoints: police entries (breach_only), rappels, "
                "flanks, shield anchors, sniper perches S1-S3, COVER.")
     return shell_text, s

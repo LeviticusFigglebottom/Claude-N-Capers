@@ -100,7 +100,8 @@ def resolved_doors() -> List[list]:
         if kind in ("single", "service", "double") and "liftgate" not in vis and not vis.endswith(tt):
             raise SystemExit("door %s: visual %s does not fit the %.1f m wall" % (name, vis, t))
         leaf = {"single": 0.9, "service": 1.1, "double": 1.8, "vault": 2.2, "roller": 3.6}[kind]
-        pos = [r3(c), FFL[f], r3(fixed)] if axis == "x" else [r3(fixed), FFL[f], r3(c)]
+        line = ex.get("line", fixed)
+        pos = [r3(c), FFL[f], r3(line)] if axis == "x" else [r3(line), FFL[f], r3(c)]
         hole = [axis, fixed, r3(c - hw), r3(c + hw), FFL[f], r3(FFL[f] + head)]
         out.append([name, f, pos, front_yaw[fr], kind, lock, vis, ex.get("w", leaf), ex, hole])
     return out
@@ -306,17 +307,15 @@ def ceilings() -> List[list]:
 # --------------------------------------------------------------------------------------------- hall pieces
 def hall() -> List[list]:
     k = C.COUNTER
-    z = k["z"]
     out = []
     xa, xb = k["x"]
     g0, g1 = k["gate"]
     pieces = [[xa, k["piers"][0][0]], [k["piers"][1][1], xb]]
     for i, (a, b) in enumerate(pieces):
         nm = "W" if i == 0 else "E"
-        out.append(box("Counter", "CounterBody" + nm, a, 0.0, k["top"][0], b, k["top"][2], k["top"][1], "counter"))
-        out.append(box("Counter", "CounterUpstand" + nm, a, 0.0, k["upstand"][0], b, k["upstand"][2], k["upstand"][1],
+        out.append(box("Counter", "ScreenBase" + nm, a, 0.0, k["upstand"][0], b, k["upstand"][2], k["upstand"][1],
                        "counter"))
-        out.append(box("Counter", "CounterLedge" + nm, a, 0.0, k["ledge"][0], b, k["ledge"][2], k["ledge"][1],
+        out.append(box("Counter", "CustomerLedge" + nm, a, 0.0, k["ledge"][0], b, k["ledge"][2], k["ledge"][1],
                        "counter"))
         out.append(box("Counter", "BanditGlass" + nm, a, k["glass"][2], k["glass"][0], b, k["glass"][3], k["glass"][1],
                        "glass"))
