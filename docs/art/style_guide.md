@@ -54,6 +54,7 @@ against them.
 | night_deposit | slate green `#3F5A52` | marble cream `#D9D2C2` | bank red `#9E2B25` | night, sodium streetlights |
 | shadow_ledger | graphite `#2E3136` | glass teal `#5D8C8F` | cold white LED `#CFE3EE` | late night, rain |
 | dockside_burn | rust `#7A4A2E` | concrete `#7D7F7C` | flare orange `#FF6B1A` | pre-dawn fog |
+| ostrander_federal | limestone `#CBC3B0` | deep ultramarine `#2F3F6B` | meridian bronze `#B8873A` | Friday afternoon 15:10, broken cloud, low SW sun shafts (LUT `lut_ostrander_federal`: warm highlights, clean neutral mids; C, OF-C2) |
 
 ## 4. Materials and textures
 
