@@ -39,6 +39,8 @@ const NPCS: Array[String] = [
 	"char_npc_northgate_guard_h",
 	"char_npc_northgate_guard_i",
 	"char_npc_helena_moor",
+	"char_npc_km_assistant",
+	"char_npc_km_associate",
 ]
 const GUARD: String = "char_npc_bank_guard"
 ## Every NPC whose pager is answered at Hip/Socket (the radio on the belt).
@@ -509,6 +511,29 @@ func test_helena_moor_look() -> void:
 	var by_mesh: Dictionary = _materials("char_npc_helena_moor")
 	assert_has(by_mesh.get("Outfit", []) as Array, "char_silk_ivory", "Helena: ivory silk blouse")
 	assert_true(by_mesh.has("Headwear"), "Helena: reading glasses (Headwear)")
+
+
+## D-130 late_staff (seated desk_work at K4 / K8): the K&M executive assistant (open slate cardigan over a plum
+## blouse, staff lanyard, chignon) and the junior associate (pale-blue shirt, loose burgundy tie, navy trousers, no
+## jacket) are their own people: neither shares Moor's skin or blouse, and neither wears the IT contractor's lanyard.
+func test_km_late_staff_looks() -> void:
+	var asst: Dictionary = _materials("char_npc_km_assistant")
+	var assoc: Dictionary = _materials("char_npc_km_associate")
+	var moor: Dictionary = _materials("char_npc_helena_moor")
+	assert_has(asst.get("Outfit", []) as Array, "char_knit_slate", "assistant: slate cardigan")
+	assert_has(asst.get("Outfit", []) as Array, "char_silk_plum", "assistant: plum blouse")
+	assert_has(asst.get("Gear", []) as Array, "char_medic_white", "assistant: staff ID card (Gear)")
+	assert_has(asst.get("Headwear", []) as Array, "char_hair_dark", "assistant: dark chignon (Headwear)")
+	assert_has(assoc.get("Outfit", []) as Array, "char_shirt_blue", "associate: pale-blue shirt")
+	assert_has(assoc.get("Outfit", []) as Array, "char_tie_burgundy", "associate: burgundy tie")
+	assert_has(assoc.get("Outfit", []) as Array, "char_suit_navy", "associate: navy suit trousers")
+	assert_false((assoc.get("Outfit", []) as Array).has("char_suit_dark"), "associate: no charcoal (Northgate) suit")
+	for pair: Array in [["assistant", asst], ["associate", assoc]]:
+		var by_mesh: Dictionary = pair[1]
+		assert_ne(by_mesh.get("Body", []), moor.get("Body", []), "%s: a different skin from Moor" % pair[0])
+		assert_false(_all_materials(by_mesh).has("char_silk_ivory"), "%s: not Moor's ivory blouse" % pair[0])
+		assert_false(_all_materials(by_mesh).has("char_lanyard"), "%s: not the contractor's visitor lanyard" % pair[0])
+	assert_ne(asst.get("Body", []), assoc.get("Body", []), "assistant and associate: different skins")
 
 
 ## Players must find Kessler in a crowd: in both looks the tallest NPC and the only one wearing the
