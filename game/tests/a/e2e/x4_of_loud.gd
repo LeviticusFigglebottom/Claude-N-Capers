@@ -140,9 +140,11 @@ func _burn() -> bool:
 			return bool(_m().get(&"burned_through")) or drill.device_state() == DeviceRunner.State.JAMMED, budget)
 		if drill.device_state() == DeviceRunner.State.JAMMED:
 			jams_fixed += 1
-			if not await _up("fix the drill (jam #%d)" % jams_fixed) or not await f.go_to(drill) or not await f.use(drill, func() -> bool:
+			var fix: Callable = func() -> bool:
+				return await f.go_to(drill) and await f.use(drill, func() -> bool:
 					return drill.device_state() != DeviceRunner.State.JAMMED,
-					_tw().drill_fix_s + X4StealthFlow.MARGIN_S, "fix the drill (jam #%d)" % jams_fixed):
+					_tw().drill_fix_s + X4StealthFlow.MARGIN_S, "fix the drill (jam #%d)" % jams_fixed)
+			if not await _act("fix the drill (jam #%d)" % jams_fixed, true, fix):
 				return false
 		if not await _up("hold the teller line through the burn", false):
 			return false
@@ -190,11 +192,9 @@ func _cage() -> bool:
 			if tries > 8:
 				break
 			var what: String = "fix the padlock saw" if jammed else "work the cash cage padlock"
-			if not await _up(what):
-				return false
 			var moved: Callable = func() -> bool:
 				return padlock.opened or (padlock.runner != null and padlock.runner.state == DeviceRunner.State.RUNNING)
-			if not await f.take(padlock, moved, _tw().lockpick_door_s, what):
+			if not await _act(what, true, func() -> bool: return await f.take(padlock, moved, _tw().lockpick_door_s, what)):
 				return false
 		await f.fast_until(func() -> bool:
 			return padlock.opened or (padlock.runner != null and padlock.runner.state != DeviceRunner.State.RUNNING),
@@ -228,7 +228,8 @@ func _hoist_trip(cash: LootSpawn, zone: Area3D, n_load: int) -> int:
 	for bag: LootBag in hoist.bags_in_car():
 		if not await _pick_up(bag, "take %s off the hoist" % bag.name, true):
 			return 0
-		if not await _still_carrying("secure %s" % bag.name) or not await f._secure_carried(zone):
+		if not await _act("secure %s" % bag.name, false, func() -> bool:
+				return await _still_carrying("secure the bag") and await f._secure_carried(zone)):
 			return 0
 		done += 1
 	return done if f.check(done == n_load, "%d bags came up the hoist (%d sent)" % [done, n_load]) else 0
@@ -243,9 +244,10 @@ func _load_hoist(cash: LootSpawn, n_load: int) -> bool:
 	for _i: int in range(n_load):
 		if not f.check(cash.remaining > 0, "vault cash left to bag"):
 			return false
-		if not await _up("bag VaultCash") or not await f._bag_from(cash):
+		if not await _act("bag VaultCash", true, func() -> bool: return await f._bag_from(cash)):
 			return false
-		if not await _still_carrying("into the hoist") or not await _into_hoist():
+		if not await _act("into the hoist", false, func() -> bool:
+				return await _still_carrying("into the hoist") and await _into_hoist()):
 			return false
 	return true
 
@@ -255,10 +257,11 @@ func _call_hoist(i: int) -> bool:
 	await f.wait_until(func() -> bool: return not hoist.is_moving(), 15.0)
 	if _car_at(i):
 		return true
-	if not await _up("call the hoist to landing %d" % i) or not await f.go_to(hoist, hoist.landing_transform(i).origin):
-		return false
-	if not await f.use(hoist, func() -> bool: return hoist.is_moving(), _tw().bag_lift_send_s + X4StealthFlow.MARGIN_S,
-			"call the hoist to landing %d" % i):
+	var call_car: Callable = func() -> bool:
+		return await f.go_to(hoist, hoist.landing_transform(i).origin) and await f.use(hoist,
+			func() -> bool: return hoist.is_moving(), _tw().bag_lift_send_s + X4StealthFlow.MARGIN_S,
+			"call the hoist to landing %d" % i)
+	if not await _act("call the hoist to landing %d" % i, true, call_car):
 		return false
 	return f.check(await f.fast_until(func() -> bool: return not hoist.is_moving() and _car_at(i), hoist.travel_s + 5.0),
 		"the hoist car at landing %d" % i)
@@ -297,10 +300,11 @@ func _into_hoist() -> bool:
 
 
 func _send_hoist() -> bool:
-	if not await _up("send the hoist up") or not await f.go_to(hoist, hoist.landing_transform(0).origin):
-		return false
-	if not await f.use(hoist, func() -> bool: return hoist.is_moving(), _tw().bag_lift_send_s + X4StealthFlow.MARGIN_S,
-			"send the hoist up (%d bags)" % hoist.bags_in_car().size()):
+	var send_car: Callable = func() -> bool:
+		return await f.go_to(hoist, hoist.landing_transform(0).origin) and await f.use(hoist,
+			func() -> bool: return hoist.is_moving(), _tw().bag_lift_send_s + X4StealthFlow.MARGIN_S,
+			"send the hoist up (%d bags)" % hoist.bags_in_car().size())
+	if not await _act("send the hoist up", true, send_car):
 		return false
 	hoist_trips += 1
 	# Up the rope ladder while the car travels (stated shortcut: a teleport to the teller line beside the hole).
@@ -374,6 +378,26 @@ func _up(what: String, drop: bool = true) -> bool:
 		if not f.check(not f.crew.is_carrying_bag(), "%s: hands free" % what):
 			return false
 	return true
+
+
+## One flow action (`action` returns its success) with the up-check first (_up, `drop` as there). When it fails because
+## the bot went down / was tased / cuffed during it (a fight beat, not a flow error), its failure lines are withdrawn,
+## the bot waits for its revive and the action runs again (up to 3 times); any other failure stands.
+func _act(what: String, drop: bool, action: Callable) -> bool:
+	for attempt: int in range(3):
+		if not await _up(what, drop):
+			return false
+		var n_fail: int = f.failures.size()
+		var downs_before: int = downs
+		if await action.call():
+			return true
+		var hit: bool = downs > downs_before or int(f.crew.crew_state) != Enums.CrewState.NORMAL
+		if not hit or attempt == 2:
+			return false
+		f.failures.resize(n_fail)
+		f.note("%s: interrupted by a down (state %d), again after the revive (try %d)" % [what, int(f.crew.crew_state),
+			attempt + 2])
+	return false
 
 
 ## The bot still carries the bag it just took; downed / cuffed meanwhile (the bag falls, LootManager), it waits for the
