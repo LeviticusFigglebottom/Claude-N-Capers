@@ -25,6 +25,13 @@ const HOLD_THREAT_M: float = 20.0
 const CLEAR_MAX_S: float = 15.0
 ## Eye-ray probe drops below the head for visibility / aim: head, chest, hips (m).
 const AIM_DROPS: Array[float] = [0.0, 0.45, 0.8]
+## D-122: the crew (and this pilot) path on navigation layer 1 only. Breach links of loud-breachable locked doors sit on
+## Door.NAV_LAYER_BREACH (layer 2, police / specials), so a shut locked door reads as no path.
+const NAV_LAYERS_CREW: int = 1
+## P's GN-P1 rerun (out of ammo at the Argus terminal): reload in a lull once the mag is below this share of its size.
+const TOP_UP_FRACTION: float = 0.5
+## goto(): seconds between lull reload checks while walking.
+const TOP_UP_EVERY_S: float = 1.0
 
 var d: Node = null  # po5_flow driver (note(), shot())
 var inp: PlayerInputDriver = null
@@ -57,6 +64,11 @@ var arrive_dy: float = NEAR_DY_M
 ## The closed door the last goto() gave up at because the crew cannot open it now (GN loud: the lockdown-BARRED
 ## Calloway shutter; the navmesh still runs through the doorway), else null.
 var last_blocked_door: Door = null
+## goto(): stuck recoveries in one leg before it gives up, 0 = never (auto_loud sets it: the caller re-plans, sets the
+## target aside, other markers first). P's GN loud rerun: STUCK x4 on the BronzeDoorsE LeafBody2, then 1200 s there.
+var stuck_give_up: int = 0
+## The last goto() gave up after `stuck_give_up` stuck recoveries (no progress), not at a door or a timeout.
+var last_goto_stuck: bool = false
 ## Stealth: never press F unless the component is aimed (a press with nothing usable aimed is a shout,
 ## S7.1: it puts every civilian within shout_all_within_m down, the sales floor through the wall).
 var no_blind_press: bool = false
@@ -163,7 +175,7 @@ func face(point: Vector3, tol: float = 0.03, timeout_s: float = 3.0) -> bool:
 
 func nav_path(to: Vector3) -> PackedVector3Array:
 	var map: RID = crew.get_world_3d().navigation_map
-	return NavigationServer3D.map_get_path(map, crew.global_position, to, true)
+	return NavigationServer3D.map_get_path(map, crew.global_position, to, true, NAV_LAYERS_CREW)
 
 
 ## Within `r` horizontally AND on the same floor (|dy| <= NEAR_DY_M).
@@ -185,7 +197,9 @@ func goto(target: Vector3, arrive_m: float = 0.8, timeout_s: float = 60.0, sprin
 	var hist_t: float = 0.0
 	var recover: int = 0
 	var ok: bool = false
+	var top_up_t: float = 0.0
 	last_blocked_door = null
+	last_goto_stuck = false
 	while t < timeout_s:
 		if combat and crew.crew_state != Enums.CrewState.NORMAL:
 			d.note("pilot: goto aborted, crew state %d (fight from the floor)" % crew.crew_state)
@@ -213,6 +227,9 @@ func goto(target: Vector3, arrive_m: float = 0.8, timeout_s: float = 60.0, sprin
 			hist_pos = crew.global_position
 			hist_t = 0.0
 			continue
+		if combat and t >= top_up_t:
+			top_up_t = t + TOP_UP_EVERY_S
+			await top_up()  # a player reloads on the move between fights (the tap takes 2 ticks; walking goes on)
 		var corner: Vector3 = target
 		for p: Vector3 in path:
 			if flat_dist(p, crew.global_position) > 0.45:
@@ -254,6 +271,11 @@ func goto(target: Vector3, arrive_m: float = 0.8, timeout_s: float = 60.0, sprin
 			if moved < stuck_min_m and inp.is_held(&"move_forward"):
 				await _log_stuck(corner)
 				recover += 1
+				if stuck_give_up > 0 and recover >= stuck_give_up and _detour_depth == 0:
+					inp.release(&"move_forward")
+					d.note("pilot: goto gave up after %d stuck recoveries at %s (re-plan)" % [recover, _v(crew.global_position)])
+					last_goto_stuck = true
+					break
 				var leaf: Door = _leaf_contact() if doors else null
 				if leaf != null and not leaf.is_open and _door_blocked(leaf):
 					# P's GN loud rerun: 80 s+ pushing into StudioDoor, a closed leaf with no prompt (door_ahead finds
@@ -471,8 +493,14 @@ func use(comp: InteractableComponent, timeout_s: float = 30.0, done: Callable = 
 	var stand: Vector3 = _use_stand(comp)
 	if walk and not await goto(stand, 0.5, 60.0) and is_instance_valid(comp):
 		d.note("pilot: could not reach %s (%s)" % [comp.get_path(), comp.kind])
-		if last_blocked_door != null:
-			return false  # behind a door it cannot open: pressing F through the wall for 30 s does nothing (P GN-P1)
+		# Behind a door it cannot open: pressing F through the wall for 30 s does nothing (P GN-P1). Out of reach (PO5
+		# GN 1792002290: the walk to the Argus terminal timed out 3.2 m short on the stairs, then F at nothing for 30 s):
+		# hand back, the caller walks again.
+		var far: bool = is_instance_valid(comp) and crew.eye_position().distance_to(target) > Tweak.interaction().explicit_reach_m
+		if far:
+			d.note("pilot: %s out of reach after the walk: not pressing" % comp.kind)
+		if last_blocked_door != null or far:
+			return false
 	if not is_instance_valid(comp):
 		return false
 	await face(target)
@@ -772,6 +800,26 @@ func _ensure_ammo() -> bool:
 	return false
 
 
+## Lull reload (P's GN-P1 rerun: the pilot ran dry at the Argus terminal): with the equipped mag below `fraction` of
+## its size, reserve left, not reloading yet and no enemy in sight within HOLD_THREAT_M, press R (the player's reload
+## action; CrewWeapons starts it on the press edge). True when a reload started.
+func top_up(fraction: float = TOP_UP_FRACTION) -> bool:
+	var w: CrewWeapons = crew.weapons
+	if w == null or w.reloading or crew.crew_state != Enums.CrewState.NORMAL:
+		return false
+	var ws: int = w.equipped_slot
+	var size: int = w.mag_size(ws)
+	if size <= 0 or w.reserve(ws) <= 0 or float(w.mag(ws)) >= float(size) * fraction:
+		return false
+	if nearest_enemy(HOLD_THREAT_M) != null:
+		return false
+	inp.release(&"fire")
+	await inp.tap(&"reload")
+	if w.reloading:
+		d.note("pilot: reload in a lull (%s %d/%d, reserve %d)" % [w.weapon_id(ws), w.mag(ws), size, w.reserve(ws)])
+	return w.reloading
+
+
 ## Fights whatever is in sight for `seconds` (standing still), reloading between targets.
 func hold_position(seconds: float, until: Callable = Callable()) -> void:
 	var t: float = 0.0
@@ -785,7 +833,7 @@ func hold_position(seconds: float, until: Callable = Callable()) -> void:
 		else:
 			if watch_point != Vector3.INF:
 				await face(watch_point, 0.05, 0.3)
-			await inp.tap(&"reload")
+			await top_up(1.0)  # holding with nobody in sight: fill the mag like a player in a lull
 			await inp.ticks(10)
 			t += 0.5
 

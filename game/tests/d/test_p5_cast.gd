@@ -22,6 +22,13 @@ const NEW: Array[String] = [
 	"char_gallery_attendant_b",
 	"char_gallery_guard",
 	"char_gallery_guard_b",
+	"char_gallery_guard_c",
+	"char_gallery_guard_d",
+	"char_gallery_guard_e",
+	"char_gallery_guard_f",
+	"char_gallery_guard_g",
+	"char_gallery_guard_h",
+	"char_gallery_guard_i",
 	"char_gallery_patron",
 	"char_gallery_patron_b",
 	"char_gallery_admin",
@@ -30,6 +37,9 @@ const NEW: Array[String] = [
 	"char_gallery_patron_e",
 	"char_gallery_patron_f",
 	"char_gallery_patron_g",
+	"char_gallery_patron_h",
+	"char_gallery_patron_i",
+	"char_gallery_patron_j",
 	"char_gallery_waiter",
 	"char_gallery_conservator",
 	"char_bank_manager",
@@ -89,31 +99,44 @@ const ROSTER_FALLBACK: Dictionary = {
 		"civ_conservator", "civ_admin", "civ_patron"],
 }
 ## D-116 DB / SL cast polish (in the spirit of GN-D1): roles that put several NPCs on screen draw from a shared pool of
-## looks ([heist, the roles of the pool, minimum looks, both genders]). Every pool lists the same looks on each of
+## looks ([heist, the roles of the pool, minimum looks, minimum looks of each gender (0: any mix)]); a gallery_night
+## role missing from heists.gallery_night is read from tag_map.gallery_night (its spawn tags). Every pool lists the same looks on each of
 ## its roles, has at least that many distinct looks, and no two looks share a face (gender, skin, hair, hair colour
 ## and an age bucket from SOURCE.txt params), so two NPCs drawn from the pool are never twins. D-115 DB cast: the cartel
-## pool has 12 looks (up to 12 posted gunmen at Cataclysm), civ_worker the three yard hands dock_worker a-c.
+## pool has 12 looks (up to 12 posted gunmen at Cataclysm), civ_worker the three yard hands dock_worker a-c. D-130
+## (Cataclysm: about +50 % guards, +35 % civilians on GN, SL and ND): GN guards 9 looks (at least 3 women), SL
+## Northgate guards 9, ND Halden guards 6; civilians: SL cleaners 4, ND cleaners 2, GN patrons 12.
 const POOLS: Array = [
 	["dockside_burn", ["cartel_gate", "cartel_yard_w", "cartel_yard_e", "cartel_hall", "cartel_platform", "cartel_dock",
-		"cartel_quay", "cartel_reinf"], 12, true],
+		"cartel_quay", "cartel_reinf"], 12, 1],
 	["shadow_ledger", ["guard_reception", "guard_rover_l41", "guard_rover_l42", "guard_stair", "guard_roof",
-		"security_operator"], 6, true],
-	["shadow_ledger", ["civ_cleaner_l41", "civ_cleaner_l42"], 3, false],
-	["dockside_burn", ["civ_worker"], 3, true],
-	["night_deposit", ["guard_hall", "guard_basement", "guard_rover"], 4, true],
+		"security_operator"], 9, 1],
+	["shadow_ledger", ["civ_cleaner_l41", "civ_cleaner_l42"], 4, 1],
+	["dockside_burn", ["civ_worker"], 3, 1],
+	["night_deposit", ["guard_hall", "guard_basement", "guard_rover"], 6, 1],
+	["gallery_night", ["gallery_guard", "gallery_inspector", "guard_hall", "guard_rover_ground", "guard_rover_upper",
+		"guard_rover_basement", "guard_mews", "guard_operator", "guard_inspection"], 9, 3],
+	["night_deposit", ["civ_cleaner"], 2, 1],
+	["gallery_night", ["gallery_patron", "civ_patron"], 12, 3],
 ]
 ## Northgate Executive Protection's own shirt; no other firm's livery (Halden char_sec_, bank, police).
 const NORTHGATE_SHIRT: String = "char_ng_shirt"
 ## Minimum ids per role where the brief asks for several.
 const MIN_COUNT: Dictionary = {
-	"gallery_attendant": 2, "gallery_patron": 9, "gallery_waitstaff": 2, "bank_teller": 2, "bank_officer": 2,
+	"gallery_attendant": 2, "gallery_patron": 12, "gallery_waitstaff": 2, "bank_teller": 2, "bank_officer": 2,
 	"bank_customer": 4, "armored_car_crew": 2,
 	"club_bouncer": 2, "club_bartender": 2, "club_patron": 4,
 }
 ## New characters whose pager is answered at Hip/Socket (a belt radio).
 const RADIO: Array[String] = [
-	"char_gallery_guard", "char_gallery_guard_b", "char_armored_car_crew", "char_armored_car_crew_b",
-	"char_club_bouncer", "char_club_bouncer_b",
+	"char_gallery_guard", "char_gallery_guard_b", "char_gallery_guard_c", "char_gallery_guard_d", "char_gallery_guard_e",
+	"char_gallery_guard_f", "char_gallery_guard_g", "char_gallery_guard_h", "char_gallery_guard_i",
+	"char_armored_car_crew", "char_armored_car_crew_b", "char_club_bouncer", "char_club_bouncer_b",
+]
+## Halberd Gallery Security (D-130: nine faces a-i).
+const GN_GUARDS: Array[String] = [
+	"char_gallery_guard", "char_gallery_guard_b", "char_gallery_guard_c", "char_gallery_guard_d", "char_gallery_guard_e",
+	"char_gallery_guard_f", "char_gallery_guard_g", "char_gallery_guard_h", "char_gallery_guard_i",
 ]
 ## Roles whose bodies carry a pager (p5_cast.json pager_roles; club_bouncer per QC-70).
 const PAGER_ROLES: Array[String] = ["gallery_guard", "bank_guard", "armored_car_crew", "club_bouncer"]
@@ -140,9 +163,9 @@ const GALA_KIT: Array[String] = ["char_tux_black", "char_satin_black", "char_vel
 ## camera operator CAMERA_OPERATOR; the greybox spawn (gn_content.gd) tags it guard_operator.
 const GN: String = "gallery_night"
 const GN_OPERATOR_TAG: String = "guard_operator"
-## Up to nine patrons are live at once (gallery_night.md: `patrons` 3-9), so nine looks keep the crowd
-## free of twins; at least this many of each gender.
-const GN_MAX_PATRONS: int = 9
+## Up to nine patrons are live at once (gallery_night.md: `patrons` 3-9), twelve at Cataclysm (D-130: about +35 %
+## civilians), so twelve looks keep the crowd free of twins; at least this many of each gender.
+const GN_MAX_PATRONS: int = 12
 const GN_MIN_PER_GENDER: int = 3
 ## Tags whose several live NPCs must be able to wear different looks (2 attendants, 1-2 waitstaff).
 const GN_PAIRED_TAGS: Array[String] = ["civ_attendant", "civ_waitstaff"]
@@ -221,6 +244,14 @@ func _materials(asset_id: String) -> Array[String]:
 func _role_ids(heist: String, role: String) -> Array:
 	var heists: Dictionary = _cast.get("heists", {}) as Dictionary
 	return (heists.get(heist, {}) as Dictionary).get(role, []) as Array
+
+
+## A pool role's ids: the heist role, or (gallery_night spawn tags) the tag_map entry.
+func _pool_ids(heist: String, role: String) -> Array:
+	var heists: Dictionary = _cast.get("heists", {}) as Dictionary
+	if (heists.get(heist, {}) as Dictionary).has(role):
+		return _role_ids(heist, role)
+	return ((_cast.get("tag_map", {}) as Dictionary).get(heist, {}) as Dictionary).get(role, []) as Array
 
 
 func test_index_lists_every_new_character() -> void:
@@ -451,7 +482,9 @@ func test_radio_hip_sockets() -> void:
 ## Halberd Gallery Security and Vaultline wear their own colours, never Halden, Northgate, police,
 ## TAC or the bank livery; each wears its own mark.
 func test_company_liveries() -> void:
-	for id: String in ["char_gallery_guard", "char_gallery_guard_b", "char_armored_car_crew", "char_armored_car_crew_b"]:
+	var ids: Array[String] = GN_GUARDS.duplicate()
+	ids.append_array(["char_armored_car_crew", "char_armored_car_crew_b"])
+	for id: String in ids:
 		var mats: Array[String] = _materials(id)
 		for m: String in mats:
 			for bad: String in OTHER_LIVERY:
@@ -579,24 +612,26 @@ func test_db_sl_pooled_variety() -> void:
 	for pool: Array in POOLS:
 		var heist: String = pool[0]
 		var roles: Array = pool[1]
-		var first: Array = _role_ids(heist, String(roles[0]))
+		var first: Array = _pool_ids(heist, String(roles[0]))
 		for role: Variant in roles:
-			assert_eq(_role_ids(heist, String(role)), first, "%s/%s: the pool's looks" % [heist, role])
+			assert_eq(_pool_ids(heist, String(role)), first, "%s/%s: the pool's looks" % [heist, role])
 		var uniq: Dictionary = {}
 		for cid: Variant in first:
 			uniq[String(cid)] = true
 		assert_eq(uniq.size(), first.size(), "%s/%s: no id listed twice" % [heist, roles[0]])
 		assert_true(uniq.size() >= int(pool[2]), "%s/%s: %d looks (>= %d)" % [heist, roles[0], uniq.size(), pool[2]])
 		var faces: Dictionary = {}
-		var genders: Dictionary = {}
+		var genders: Dictionary = {"0": 0, "1": 0}
 		for id: String in uniq:
 			var f: String = _face("char_" + id)
 			assert_false(f.is_empty(), "char_%s: SOURCE.txt params" % id)
 			assert_false(faces.has(f), "%s: %s and %s share a face (%s)" % [heist, id, faces.get(f, ""), f])
 			faces[f] = id
-			genders[f.get_slice("/", 0)] = true
-		if bool(pool[3]):
-			assert_eq(genders.size(), 2, "%s/%s: both genders in the pool" % [heist, roles[0]])
+			var gk: String = f.get_slice("/", 0)
+			genders[gk] = int(genders.get(gk, 0)) + 1
+		var per: int = int(pool[3])
+		assert_true(int(genders["0"]) >= per and int(genders["1"]) >= per,
+				"%s/%s: >= %d of each gender (%d men, %d women)" % [heist, roles[0], per, genders["0"], genders["1"]])
 	# D-115 DB cast: the packer in processing whites works the packing table (civ_worker_packer), never the yard pool.
 	assert_false(_role_ids("dockside_burn", "civ_worker").has("dock_packer"), "dockside_burn/civ_worker: no dock_packer")
 

@@ -1,0 +1,19 @@
+asset: char_npc_cleaner_sl_d
+script: tools/blender/characters/char_npc_calder.py
+params: {"age": 0.38, "build": 0.6, "gender": 1.0, "hair": "bob", "hair_color": "dark", "height": 1.7, "look": "cleaner_sl_d", "skin": 4}
+seed: 6018568  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category characters --asset char_npc_cleaner_sl_d
+edit policy: generated file, never edit by hand; change the script and rebuild
+attach_Back: bone chest, local [0.0000, 0.0855, 0.1070] (model [0.0000, 1.2416, 0.1246], Godot axes, rest pose)
+attach_Head: bone head, local [0.0000, 0.0774, -0.0847] (model [0.0000, 1.5911, -0.0733], Godot axes, rest pose)
+attach_Hip: bone hips, local [0.1928, 0.0490, 0.0441] (model [0.1928, 0.9588, 0.0465], Godot axes, rest pose)
+body_faces_culled: 5748
+body_params: {"age": 0.38, "beard_shadow": 0.0, "build": 0.6, "gender": 1.0, "hair": "bob", "hair_color": "dark", "hair_peak": 0.0, "height": 1.7, "lip": "auto", "skin": 4}
+bones: 52
+look: Calder Tower night cleaner, fourth face (D-130): same glass-teal tabard uniform; a woman in her late 30s, mid-deep skin, dark bob
+meshes: Body,Gear,Hair,Outfit
+shape_keys: none (baked at body_params; do not set blend_shapes/*)
+tri_budget: 35000
+tris: 30360
+tris_by_mesh: {"Body": 7332, "Gear": 44, "Hair": 2088, "Outfit": 20896}

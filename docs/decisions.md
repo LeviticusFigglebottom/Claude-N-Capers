@@ -1150,3 +1150,35 @@ Ruling: a single runtime multiplier `ads_spread_mult = 0.7` (◇, ENV A's CrewWe
 class keeps its shape and B's weapon data stays as is (2.3 → 1.61°, 100/100 in A's sweep). Acceptance: A's
 test_l3_ads_pistol_accuracy at ≥ 98/100 for every pistol and revolver at 10 m; SMGs reported, not gated. B reports any weapon
 whose ADS readout in the armory needs the multiplier shown (stat display = effective cone).
+
+## D-132: character render/animation budget for D-130 crowds (2026-10-17, LEAD; from ENV D's perf audit)
+Audit: `docs/art/d130_character_perf_audit.md` (D 53fa7154, bench `world/characters/_tools/bench_crowd.tscn`). Live skinned
+characters at Cataclysm: GN ~35, SL ~20, ND ~16, any loud Cataclysm fight ~50. Triangles are fine; **draw calls dominate**
+(16-32 surfaces per character, each again per shadow pass: GN ~1011 draws/frame, loud ~2860); animation ~0.07-0.1 ms per
+character at every distance.
+Approved, in order: (1) **D2** LOD2 from 15 m for civilians/staff, 25 m for combat units, and **D3** no shadow casting from
+tiny surfaces (badges, glasses, buttons): measured GN 1011 → 489 draws. (2) **D1** per-character material atlas (surfaces
+16-32 → 1-2; est. GN ~150, loud ~600 draws), supersedes D3; acceptance = before/after lineups at 2/10/30 m with no visible
+change, test_lod/test_scenes/test_npcs green, P's vm/arms probes unaffected (FP arms keep their own materials).
+(3) **ENV A animation LOD**: full rate < 15 m; every 2nd frame 15-30 m with IK off; every 4th > 30 m or off screen; paused
+off screen > 30 m; staggered per NPC; clip events kept on a timer so footsteps/barks/hand props still fire; never applied to
+crew AI or anything a player is aiming at. Est. GN 3.3 → ~1.3 ms, loud 5 → ~2 ms; test: event parity over a 30 s bench.
+Real-GPU numbers are still unmeasured (open risk, handoff §4.14); these counters are exact on llvmpipe.
+**D-130 addendum (C a5f115c1, 2026-10-17):** targets are met on the **expected** count per tier (1500-seed rolls on the real
+maps); on tiny bases the maxima may rise more than the % (ND guards max 3 → 5). Counts never fall with difficulty and
+never fall below a tier's pre-D-130 value (QC-b). D-130 §1's +50 % / +35 % are floors, not caps: GN's existing guard
+curve (1.8 → 5, ruling 2) stays (QC-a). ND Hazardous+ rolls can exceed the 4-pager cap; accepted (PD2 has the same pressure).
+
+## D-133: loud e2e gates may use a harness-only damage option (2026-10-17, LEAD; from ENV A's DB-7 / GN runs)
+The windowed `auto_loud` pilot reaches every loud objective (DB: breach, product, burn, cartel, thermite carry; GN: hack,
+vault drill) but loses the fight before the end-game, so no loud heist can show a full windowed win, while the mission flow
+itself has no errors. D-115 item 3 is a **flow** gate (objectives, transitions, escape, payday), not a difficulty check
+(difficulty feel is P's real-input pass, item 4). Ruling: an e2e gate run may set a harness-only dev option
+`crew_damage_taken_mult` (ENV A; default 1.0, only settable through the e2e launcher's options, never from menus or
+saves, logged in the run header) to **0.25**, on Routine, with assault events ON. Full immunity and turning assault events
+off are not allowed. The evidence names the option. A mission run that passes this way closes D-115 item 3 for that heist.
+**D-132 addendum (D 87e7bf4b):** D2 landed (LOD2 at 15 m crowd / 25 m units: GN 1011 → 738 draws, loud 2860 → 2524). D3 is
+folded into D1 (Godot casts shadows per node, not per surface). D1 becomes shared Texture2DArray tiers (256²/512², repeat
+wrap) + one ShaderMaterial per merged node instead of a flat atlas (189 uniform ORM materials, tiled UVs up to 3.75),
+crowd + unit characters only; checks: Compatibility lighting/shadows/fog/viewmodel_lit parity, outline + bleed next_pass,
+ragdoll/HandProps, VRAM, 2/10/30 m lineups; per-character fallback switch.

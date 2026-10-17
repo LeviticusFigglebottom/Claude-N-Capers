@@ -1,0 +1,21 @@
+asset: char_gallery_guard_i
+script: tools/blender/characters/char_p5_gallery.py
+params: {"age": 0.45, "beard_shadow": 0.85, "build": 0.7, "gender": 0.0, "hair": "side_part", "hair_color": "dark", "height": 1.83, "look": "guard", "skin": 6}
+seed: 1463521377  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category characters --asset char_gallery_guard_i
+edit policy: generated file, never edit by hand; change the script and rebuild
+attach_Back: bone chest, local [0.0000, 0.0921, 0.1164] (model [0.0000, 1.3365, 0.1354], Godot axes, rest pose)
+attach_Head: bone head, local [0.0000, 0.0833, -0.0912] (model [0.0000, 1.7128, -0.0789], Godot axes, rest pose)
+attach_Hip: bone hips, local [0.2226, 0.0674, 0.0731] (model [0.2226, 1.0455, 0.0764], Godot axes, rest pose)
+body_faces_culled: 4892
+body_params: {"age": 0.45, "beard_shadow": 0.85, "build": 0.7, "gender": 0.0, "hair": "side_part", "hair_color": "dark", "hair_peak": 0.0, "height": 1.83, "lip": "auto", "skin": 6}
+bones: 52
+faces_hidden_by_jacket: 2829
+hip_note: Hip seat = the radio on the belt under the blazer (right hip); the pager rides there
+look: Halberd Gallery Security (in-house): bottle-green blazer, gold buttons, wine/gold Halberd breast crest, white shirt, wine tie, grey trousers, earpiece, belt radio under the blazer
+meshes: Body,Gear,Hair,Outfit
+shape_keys: none (baked at body_params; do not set blend_shapes/*)
+tri_budget: 35000
+tris: 26773
+tris_by_mesh: {"Body": 8960, "Gear": 916, "Hair": 1856, "Outfit": 15041}
