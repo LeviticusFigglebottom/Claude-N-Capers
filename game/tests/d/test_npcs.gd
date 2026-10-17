@@ -17,6 +17,7 @@ const NPCS: Array[String] = [
 	"char_npc_bank_teller_b",
 	"char_npc_bank_night_manager",
 	"char_npc_bank_cleaner",
+	"char_npc_bank_cleaner_b",
 	"char_npc_bank_guard",
 	"char_npc_penthouse_guest_a",
 	"char_npc_penthouse_guest_b",
@@ -26,6 +27,7 @@ const NPCS: Array[String] = [
 	"char_npc_cleaner_sl",
 	"char_npc_cleaner_sl_b",
 	"char_npc_cleaner_sl_c",
+	"char_npc_cleaner_sl_d",
 	"char_npc_it_contractor",
 	"char_npc_northgate_guard",
 	"char_npc_northgate_guard_b",
@@ -97,6 +99,17 @@ const D115_CAST: Dictionary = {
 		],
 		"Gear": ["char_metal_silver"], "Headwear": ["char_hair_grey"],
 	},
+	"char_npc_cleaner_sl_d": {   # D-130: the fourth SL cleaner face, same Calder uniform
+		"Outfit": [
+			"char_cleaner_teal", "char_waistcoat_graphite", "char_knit_graphite", "char_trousers_black",
+			"char_rubber_yellow",
+		],
+		"Gear": ["char_metal_silver"],
+	},
+	"char_npc_bank_cleaner_b": {   # D-130: the second ND cleaner, same contractor uniform, brown bun
+		"Outfit": ["char_cleaner_tabard", "char_bank_cream", "char_knit_grey", "char_bank_slate_dark", "char_rubber_yellow"],
+		"Headwear": ["char_hair_brown"],
+	},
 	"char_dock_packer": {   # D-116: processing whites (packing wing), not a third yard hand
 		"Outfit": ["char_shirt_white", "char_rubber_yellow", "char_work_charcoal", "char_sneaker_white"],
 		"Headwear": ["char_shirt_white"],
@@ -112,6 +125,12 @@ const D115_CAST: Dictionary = {
 		"Headwear": ["char_metal_silver"],
 	},
 	"char_gallery_patron_g": {"Outfit": ["char_satin_amethyst", "char_satin_black"], "Headwear": ["brass"]},
+	# D-130: three more patrons (twelve-look pool)
+	"char_gallery_patron_h": {"Outfit": ["char_satin_gold", "char_satin_black"], "Headwear": ["brass"]},
+	"char_gallery_patron_i": {
+		"Outfit": ["char_suit_plum", "char_satin_black", "char_shirt_white", "char_tux_black"], "Gear": ["brass"],
+	},
+	"char_gallery_patron_j": {"Outfit": ["char_silk_graphite", "char_satin_gold"], "Headwear": ["chrome"]},
 	"char_gallery_waiter": {
 		"Outfit": ["char_gallery_wine", "char_shirt_white", "char_tux_black"], "Gear": ["brass", "char_tie_black"],
 	},
@@ -195,6 +214,7 @@ func test_index_lists_every_npc() -> void:
 ## hat or beanie, Vossberg's plum suit and gold, the clerk's lanyard card); the packer has no hard hat.
 ## D-SL-2: the second Shadow Ledger cleaner wears exactly npc_cleaner_sl's uniform but is another person.
 ## GN-D1 polish: the new Gallery Night looks (patrons c-g, waiter, conservator); test_p5_cast checks their roles.
+## D-130: patrons h-j, the fourth SL cleaner (same uniform as cleaner_sl) and the second ND cleaner.
 func _check_d115_cast() -> void:
 	for id: String in D115_CAST:
 		assert_true(_index.has(id), "%s in characters.json" % id)
@@ -211,15 +231,17 @@ func _check_d115_cast() -> void:
 	var packer: Array[String] = _all_materials(_materials("char_dock_packer"))
 	assert_false(packer.has("char_hardhat_white") or packer.has("char_hardhat_blue"), "dock_packer: no hard hat")
 	var sl: Dictionary = _materials("char_npc_cleaner_sl")
-	var sl_b: Dictionary = _materials("char_npc_cleaner_sl_b")
-	for mesh: String in ["Outfit", "Gear"]:
-		var a: Array = (sl.get(mesh, []) as Array).duplicate()
-		var b: Array = (sl_b.get(mesh, []) as Array).duplicate()
-		a.sort()
-		b.sort()
-		assert_eq(b, a, "cleaner_sl_b: same %s uniform as cleaner_sl" % mesh)
-	assert_ne(sl_b.get("Body", []), sl.get("Body", []), "cleaner_sl_b: a different skin from cleaner_sl")
-	assert_ne(sl_b.get("Hair", []), sl.get("Hair", []), "cleaner_sl_b: different hair from cleaner_sl")
+	for other: String in ["char_npc_cleaner_sl_b", "char_npc_cleaner_sl_d"]:   # D-130: _d wears it too
+		var sl_b: Dictionary = _materials(other)
+		for mesh: String in ["Outfit", "Gear"]:
+			var a: Array = (sl.get(mesh, []) as Array).duplicate()
+			var b: Array = (sl_b.get(mesh, []) as Array).duplicate()
+			a.sort()
+			b.sort()
+			assert_eq(b, a, "%s: same %s uniform as cleaner_sl" % [other, mesh])
+		assert_ne(sl_b.get("Body", []), sl.get("Body", []), "%s: a different skin from cleaner_sl" % other)
+	assert_ne(_materials("char_npc_cleaner_sl_b").get("Hair", []), sl.get("Hair", []),
+			"cleaner_sl_b: different hair from cleaner_sl")
 
 
 func test_scene_contract_and_budget() -> void:

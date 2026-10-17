@@ -58,6 +58,15 @@ back spike) on wine enamel; staff wear it as a small round pin, security as a br
     satin lapels, white shirt, wine bow tie, silver glasses and watch.
   * ``char_gallery_patron_g``: woman, 40s, dark chignon: an amethyst satin dress with short
     sleeves and a wide black satin belt, gold earrings.
+* D-130 (Cataclysm: about +35 % civilians, up to 12 live patrons): three more guests (twelve patron looks,
+  seven women and five men), still dark or jewel-toned evening wear:
+
+  * ``char_gallery_patron_h``: woman, 20s, deep skin, side-parted dark hair: a sleeveless gold satin cocktail dress,
+    thin black satin belt, gold earrings.
+  * ``char_gallery_patron_i``: man, 40s, mid-deep skin, short dark hair, stubble: a plum dinner jacket with black
+    satin lapels, white shirt, black bow tie, satin-striped black trousers, watch.
+  * ``char_gallery_patron_j``: woman, about 60, mid skin, grey bob: a long-sleeved graphite silk dress with a wide
+    gold satin belt, silver drop earrings.
 * ``char_gallery_waiter``: the second waitstaff (1-2 spawn): a young man in a white shirt, black bow
   tie, Halberd-wine waistcoat with gold buttons, long black bistro apron, Halberd pin and name tag
   (beside ``npc_penthouse_staff``, the waitress in the graphite waistcoat).
@@ -130,6 +139,13 @@ VARIANTS = {
                               "beard_shadow": 0.8, "hair": "bald", "hair_color": "grey", "look": "patron_f"},
     "char_gallery_patron_g": {"height": 1.71, "build": 0.5, "gender": 1.0, "age": 0.5, "skin": 5, "hair": "side_part",
                               "hair_color": "dark", "lip": "char_lip_rose", "look": "patron_g"},
+    # D-130: three more patrons (twelve-look pool)
+    "char_gallery_patron_h": {"height": 1.72, "build": 0.3, "gender": 1.0, "age": 0.2, "skin": 6, "hair": "side_part",
+                              "hair_color": "dark", "lip": "char_lip_rose", "look": "patron_h"},
+    "char_gallery_patron_i": {"height": 1.81, "build": 0.6, "gender": 0.0, "age": 0.45, "skin": 4, "beard_shadow": 0.6,
+                              "hair": "short", "hair_color": "dark", "look": "patron_i"},
+    "char_gallery_patron_j": {"height": 1.69, "build": 0.55, "gender": 1.0, "age": 0.62, "skin": 3, "hair": "bob",
+                              "hair_color": "grey", "lip": "char_lip_rose", "look": "patron_j"},
     "char_gallery_waiter": {"height": 1.77, "build": 0.35, "gender": 0.0, "age": 0.15, "skin": 4, "beard_shadow": 0.1,
                             "hair": "side_part", "hair_color": "brown", "look": "waiter"},
     "char_gallery_conservator": {"height": 1.75, "build": 0.45, "gender": 0.0, "age": 0.7, "skin": 2,
@@ -391,6 +407,50 @@ def patron_g(kit: Kit) -> None:
                          "belt, gold earrings, dark chignon")
 
 
+def patron_h(kit: Kit) -> None:
+    """D-130, young woman: sleeveless gold satin cocktail dress, thin black satin belt, gold earrings."""
+    fit, k = kit.fit, kit.k
+    n.shoes(kit, heel=True)
+    d = g.dress(fit, "char_satin_gold", 0.33 * k, sleeve=0.0, scoop=0.07, flare=0.13)
+    kit.add_soft(d)
+    waist = fit.ring_centre("waist").z
+    b = gk.Belt(fit, Hull(fit, [d], body_regions=set()), waist, height=0.014, thick=0.003, drop=0.0)
+    kit.add_soft(b.mesh(SATIN))
+    kit.add_head(cg.earrings(fit, "brass"))
+    kit.notes["look"] = ("Gala guest (woman, 20s): sleeveless gold satin cocktail dress, thin black satin belt, gold "
+                         "earrings, side-parted dark hair")
+
+
+def patron_i(kit: Kit) -> None:
+    """D-130, man in his 40s: plum dinner jacket, black satin lapels, black bow tie, striped trousers, watch."""
+    k = kit.k
+    _hips_z, belt_z, tuck = _z(kit)
+    sh = n.shoes(kit)
+    n.shirt(kit, "char_shirt_white", tuck, point_len=0.05)
+    tr = n.trousers(kit, BLACK, sh, belt_z + 0.022 * k)
+    n.trouser_stripes(kit, tr, SATIN, belt_z + 0.022 * k, half_w=0.006)
+    n.bow_tie(kit, "char_tie_black")
+    n.jacket(kit, "char_suit_plum", 0.79 * k, 1.02 * k, lapel_mat=SATIN, button_mat=SATIN, lapel_w=0.065,
+             neck_w=0.09)
+    n.watch(kit, "L", strap="char_leather_black", case="brass")
+    kit.notes["look"] = ("Gala guest (man, 40s): plum dinner jacket with black satin lapels, white shirt, black bow "
+                         "tie, satin-striped black trousers, gold watch")
+
+
+def patron_j(kit: Kit) -> None:
+    """D-130, older woman: long-sleeved graphite silk dress, wide gold satin belt, silver drop earrings."""
+    fit, k = kit.fit, kit.k
+    n.shoes(kit, heel=True)
+    d = g.dress(fit, "char_silk_graphite", 0.28 * k, sleeve=1.8, scoop=0.05, flare=0.10)
+    kit.add_soft(d)
+    waist = fit.ring_centre("waist").z
+    b = gk.Belt(fit, Hull(fit, [d], body_regions=set()), waist, height=0.030, thick=0.003, drop=0.0)
+    kit.add_soft(b.mesh("char_satin_gold"))
+    kit.add_head(cg.earrings(fit, "chrome"))
+    kit.notes["look"] = ("Gala guest (woman, about 60): long-sleeved graphite silk dress, wide gold satin belt, "
+                         "silver drop earrings, grey bob")
+
+
 def waiter(kit: Kit) -> None:
     """Second waitstaff (man): white shirt, black bow tie, wine waistcoat, long black bistro apron."""
     k = kit.k
@@ -426,7 +486,8 @@ def conservator(kit: Kit) -> None:
 
 _looks = {"admin": admin, "curator": curator, "attendant": attendant, "attendant_b": attendant_b, "guard": guard,
           "patron": patron, "patron_b": patron_b, "patron_c": patron_c, "patron_d": patron_d, "patron_e": patron_e,
-          "patron_f": patron_f, "patron_g": patron_g, "waiter": waiter, "conservator": conservator}
+          "patron_f": patron_f, "patron_g": patron_g, "patron_h": patron_h, "patron_i": patron_i,
+          "patron_j": patron_j, "waiter": waiter, "conservator": conservator}
 
 
 def recipe(kit: Kit) -> None:

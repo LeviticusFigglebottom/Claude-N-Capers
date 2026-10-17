@@ -37,6 +37,9 @@ const NEW: Array[String] = [
 	"char_gallery_patron_e",
 	"char_gallery_patron_f",
 	"char_gallery_patron_g",
+	"char_gallery_patron_h",
+	"char_gallery_patron_i",
+	"char_gallery_patron_j",
 	"char_gallery_waiter",
 	"char_gallery_conservator",
 	"char_bank_manager",
@@ -102,23 +105,25 @@ const ROSTER_FALLBACK: Dictionary = {
 ## and an age bucket from SOURCE.txt params), so two NPCs drawn from the pool are never twins. D-115 DB cast: the cartel
 ## pool has 12 looks (up to 12 posted gunmen at Cataclysm), civ_worker the three yard hands dock_worker a-c. D-130
 ## (Cataclysm: about +50 % guards, +35 % civilians on GN, SL and ND): GN guards 9 looks (at least 3 women), SL
-## Northgate guards 9, ND Halden guards 6.
+## Northgate guards 9, ND Halden guards 6; civilians: SL cleaners 4, ND cleaners 2, GN patrons 12.
 const POOLS: Array = [
 	["dockside_burn", ["cartel_gate", "cartel_yard_w", "cartel_yard_e", "cartel_hall", "cartel_platform", "cartel_dock",
 		"cartel_quay", "cartel_reinf"], 12, 1],
 	["shadow_ledger", ["guard_reception", "guard_rover_l41", "guard_rover_l42", "guard_stair", "guard_roof",
 		"security_operator"], 9, 1],
-	["shadow_ledger", ["civ_cleaner_l41", "civ_cleaner_l42"], 3, 0],
+	["shadow_ledger", ["civ_cleaner_l41", "civ_cleaner_l42"], 4, 1],
 	["dockside_burn", ["civ_worker"], 3, 1],
 	["night_deposit", ["guard_hall", "guard_basement", "guard_rover"], 6, 1],
 	["gallery_night", ["gallery_guard", "gallery_inspector", "guard_hall", "guard_rover_ground", "guard_rover_upper",
 		"guard_rover_basement", "guard_mews", "guard_operator", "guard_inspection"], 9, 3],
+	["night_deposit", ["civ_cleaner"], 2, 1],
+	["gallery_night", ["gallery_patron", "civ_patron"], 12, 3],
 ]
 ## Northgate Executive Protection's own shirt; no other firm's livery (Halden char_sec_, bank, police).
 const NORTHGATE_SHIRT: String = "char_ng_shirt"
 ## Minimum ids per role where the brief asks for several.
 const MIN_COUNT: Dictionary = {
-	"gallery_attendant": 2, "gallery_patron": 9, "gallery_waitstaff": 2, "bank_teller": 2, "bank_officer": 2,
+	"gallery_attendant": 2, "gallery_patron": 12, "gallery_waitstaff": 2, "bank_teller": 2, "bank_officer": 2,
 	"bank_customer": 4, "armored_car_crew": 2,
 	"club_bouncer": 2, "club_bartender": 2, "club_patron": 4,
 }
@@ -158,9 +163,9 @@ const GALA_KIT: Array[String] = ["char_tux_black", "char_satin_black", "char_vel
 ## camera operator CAMERA_OPERATOR; the greybox spawn (gn_content.gd) tags it guard_operator.
 const GN: String = "gallery_night"
 const GN_OPERATOR_TAG: String = "guard_operator"
-## Up to nine patrons are live at once (gallery_night.md: `patrons` 3-9), so nine looks keep the crowd
-## free of twins; at least this many of each gender.
-const GN_MAX_PATRONS: int = 9
+## Up to nine patrons are live at once (gallery_night.md: `patrons` 3-9), twelve at Cataclysm (D-130: about +35 %
+## civilians), so twelve looks keep the crowd free of twins; at least this many of each gender.
+const GN_MAX_PATRONS: int = 12
 const GN_MIN_PER_GENDER: int = 3
 ## Tags whose several live NPCs must be able to wear different looks (2 attendants, 1-2 waitstaff).
 const GN_PAIRED_TAGS: Array[String] = ["civ_attendant", "civ_waitstaff"]

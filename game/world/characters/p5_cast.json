@@ -14,7 +14,8 @@
 				"gallery_guard_g", "gallery_guard_h", "gallery_guard_i"],
 			"gallery_vaultline": ["armored_car_crew", "armored_car_crew_b"],
 			"gallery_patron": ["gallery_patron", "gallery_patron_b", "gallery_patron_c", "gallery_patron_d", "gallery_patron_e",
-				"gallery_patron_f", "gallery_patron_g", "npc_penthouse_guest_a", "npc_penthouse_guest_b"]
+				"gallery_patron_f", "gallery_patron_g", "gallery_patron_h", "gallery_patron_i", "gallery_patron_j",
+				"npc_penthouse_guest_a", "npc_penthouse_guest_b"]
 		},
 		"ostrander_federal": {
 			"bank_teller": ["npc_bank_teller", "npc_bank_teller_b"],
@@ -52,7 +53,7 @@
 			"guard_rover": ["security_officer", "security_officer_b", "security_officer_c", "security_officer_d", "security_officer_e", "security_officer_f"],
 			"security_operator": ["npc_bank_guard"],
 			"guard_armored_car": ["armored_car_crew", "armored_car_crew_b"],
-			"civ_cleaner": ["npc_bank_cleaner"],
+			"civ_cleaner": ["npc_bank_cleaner", "npc_bank_cleaner_b"],
 			"civ_manager": ["npc_bank_night_manager"]
 		},
 		"dockside_burn": {
@@ -75,8 +76,8 @@
 			"guard_stair": ["npc_northgate_guard", "npc_northgate_guard_b", "npc_northgate_guard_c", "npc_northgate_guard_d", "npc_northgate_guard_e", "npc_northgate_guard_f", "npc_northgate_guard_g", "npc_northgate_guard_h", "npc_northgate_guard_i"],
 			"guard_roof": ["npc_northgate_guard", "npc_northgate_guard_b", "npc_northgate_guard_c", "npc_northgate_guard_d", "npc_northgate_guard_e", "npc_northgate_guard_f", "npc_northgate_guard_g", "npc_northgate_guard_h", "npc_northgate_guard_i"],
 			"security_operator": ["npc_northgate_guard", "npc_northgate_guard_b", "npc_northgate_guard_c", "npc_northgate_guard_d", "npc_northgate_guard_e", "npc_northgate_guard_f", "npc_northgate_guard_g", "npc_northgate_guard_h", "npc_northgate_guard_i"],
-			"civ_cleaner_l41": ["npc_cleaner_sl", "npc_cleaner_sl_b", "npc_cleaner_sl_c"],
-			"civ_cleaner_l42": ["npc_cleaner_sl", "npc_cleaner_sl_b", "npc_cleaner_sl_c"],
+			"civ_cleaner_l41": ["npc_cleaner_sl", "npc_cleaner_sl_b", "npc_cleaner_sl_c", "npc_cleaner_sl_d"],
+			"civ_cleaner_l42": ["npc_cleaner_sl", "npc_cleaner_sl_b", "npc_cleaner_sl_c", "npc_cleaner_sl_d"],
 			"civ_it": ["npc_it_contractor"],
 			"civ_partner": ["npc_helena_moor"],
 			"civ_kessler": ["npc_kessler"]
@@ -105,18 +106,19 @@
 			"civ_conservator": ["gallery_conservator"],
 			"civ_admin": ["gallery_admin"],
 			"civ_patron": ["gallery_patron", "gallery_patron_b", "gallery_patron_c", "gallery_patron_d", "gallery_patron_e",
-				"gallery_patron_f", "gallery_patron_g", "npc_penthouse_guest_a", "npc_penthouse_guest_b"]
+				"gallery_patron_f", "gallery_patron_g", "gallery_patron_h", "gallery_patron_i", "gallery_patron_j",
+				"npc_penthouse_guest_a", "npc_penthouse_guest_b"]
 		}
 	},
 	"pager_roles": ["gallery_guard", "bank_guard", "armored_car_crew", "club_bouncer"],
 	"notes": {
-		"gallery_night": "Halberd Gallery Security is the gallery's in-house guard (bottle-green blazer, Halberd crest), not Halden or Northgate. The curator is the keycard carrier and the one pale suit at the gala. GN-D1 polish: nine distinct patron looks (five women, four men, evening wear in dark or jewel tones) for up to nine live patrons; two attendant looks (man in the waistcoat, woman in the jacket); two waitstaff (npc_penthouse_staff the waitress, gallery_waiter in the wine waistcoat); the conservator has his own work-wear look (gallery_conservator: knit vest, canvas apron, loupe) instead of reusing gallery_attendant_b. D-130: one pool of nine Halberd guard faces (gallery_guard a-i: four women, five men; blazer or shirtsleeve waistcoat order) on every guard tag (hall, rovers, mews, operator, inspection), so Cataclysm's extra guards are never twins. Insurance inspectors wear the Halberd livery (QC-58d); the Vaultline couriers are armored_car_crew/_b.",
+		"gallery_night": "Halberd Gallery Security is the gallery's in-house guard (bottle-green blazer, Halberd crest), not Halden or Northgate. The curator is the keycard carrier and the one pale suit at the gala. GN-D1 polish: nine distinct patron looks (five women, four men, evening wear in dark or jewel tones) for up to nine live patrons, twelve since D-130 (gallery_patron_h-j: seven women, five men, for Cataclysm's +35 % civilians); two attendant looks (man in the waistcoat, woman in the jacket); two waitstaff (npc_penthouse_staff the waitress, gallery_waiter in the wine waistcoat); the conservator has his own work-wear look (gallery_conservator: knit vest, canvas apron, loupe) instead of reusing gallery_attendant_b. D-130: one pool of nine Halberd guard faces (gallery_guard a-i: four women, five men; blazer or shirtsleeve waistcoat order) on every guard tag (hall, rovers, mews, operator, inspection), so Cataclysm's extra guards are never twins. Insurance inspectors wear the Halberd livery (QC-58d); the Vaultline couriers are armored_car_crew/_b.",
 		"ostrander_federal": "Ostrander Federal (D-075). Tellers keep the D2-02 bank livery and the new day manager (keycard carrier) matches it; the gallery-level loan/accounts officers (D-075) wear grey suits with the bank's red lanyard and ID badge. Guards are Halden Security: the day officers (peaked cap) and the bare-headed night guard (camera operator). civilian_customer_b is the elderly customer; bank_customer_b is the parent with a backpack.",
 		"rolling_thunder": "The crew works for Vaultline Armored Transport (original). The escort is the police/TAC roster plus its frd/sentinel/zero reskins by difficulty; no new escort model.",
 		"afterhours": "Staff wear black and the Velvet's violet; patrons are mixed club wear. club_bouncer_b's Hip/Socket is on a belt radio; club_bouncer's is the default hip seat (radio under the bomber is not modelled).",
 		"glasshouse": "Golden Hour (D-115). Guards and the operator are Halden. Greta Vossberg (owner/manager, rare nervous_manager) is civilian_manager_vossberg; the two associates are told apart (civilian_sales at the counter, civilian_sales_b on the floor); the upstairs admin clerk wears civilian_clerk office wear, not the shop-floor dress. Customers add the Ostrander bank_customer looks for variety. Guard tags and the operator are not in the roster table: they come from the guard_post variant table and the CameraOperatorSeat spawn.",
-		"night_deposit": "Nightfall Depository (D-115). Halden on the floor (D-116: four faces security_officer a-d; D-130: six faces a-f for Cataclysm's extra guards, two women; one pool for hall, basement and rovers); the seated operator is the bare-headed Halden night guard (npc_bank_guard). The night manager (code carrier) is npc_bank_night_manager (bank livery, D2-02). The armored_car_early guards are the Vaultline crew (guard_armored_car, from the rare-event table, not the roster).",
+		"night_deposit": "Nightfall Depository (D-115). Halden on the floor (D-116: four faces security_officer a-d; D-130: six faces a-f for Cataclysm's extra guards, two women; one pool for hall, basement and rovers); the seated operator is the bare-headed Halden night guard (npc_bank_guard). Cleaners (civ_cleaner, D-130): npc_bank_cleaner (man, buzz cut) and npc_bank_cleaner_b (woman, brown bun), the same contractor uniform. The night manager (code carrier) is npc_bank_night_manager (bank livery, D2-02). The armored_car_early guards are the Vaultline crew (guard_armored_car, from the rare-event table, not the roster).",
 		"dockside_burn": "Dockside Burn (D-115). Co-op cartel gunmen on every cartel post (EnemyDef enemy.cartel_gunman visual_alternates), one pool of twelve faces cartel_gunman a-l (D-115 DB cast: up to 12 posted at Cataclysm, no twins; three women, slung long gun on six); night-shift workers are the dock crew (civ_worker: dock_worker, dock_worker_b and dock_worker_c, one pool of three yard-hand faces, D-115 DB cast; civ_worker_packer, DB-C2: the packing-table worker, dock_packer), never bank staff. Police are the director roster plus faction reskins.",
-		"shadow_ledger": "Shadow Ledger (D-115). Every guard and the operator are Northgate Executive Protection, never Halden: one pool of nine faces (npc_northgate_guard a-f, D-116; g-i, D-130: three women, six men) for the reception, rover, stair, roof and operator tags, so Cataclysm's extra guards (about +50 %) + the operator are never twins. Cleaners wear the Calder tabard on both floors, one pool of three faces: npc_cleaner_sl (man, buzz cut), npc_cleaner_sl_b (D-SL-2: woman, late 50s, grey bun), npc_cleaner_sl_c (D-116: young man, glasses). Helena Moor is npc_helena_moor, Victor Kessler npc_kessler (robe, reading in the bedside armchair: sit_chair_read)."
+		"shadow_ledger": "Shadow Ledger (D-115). Every guard and the operator are Northgate Executive Protection, never Halden: one pool of nine faces (npc_northgate_guard a-f, D-116; g-i, D-130: three women, six men) for the reception, rover, stair, roof and operator tags, so Cataclysm's extra guards (about +50 %) + the operator are never twins. Cleaners wear the Calder tabard on both floors, one pool of three faces: npc_cleaner_sl (man, buzz cut), npc_cleaner_sl_b (D-SL-2: woman, late 50s, grey bun), npc_cleaner_sl_c (D-116: young man, glasses), npc_cleaner_sl_d (D-130: woman, late 30s, dark bob; four faces for Cataclysm). Helena Moor is npc_helena_moor, Victor Kessler npc_kessler (robe, reading in the bedside armchair: sit_chair_read)."
 	}
 }

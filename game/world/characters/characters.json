@@ -533,6 +533,24 @@
 			"test": false
 		},
 		{
+			"asset": "char_gallery_patron_h",
+			"id": "gallery_patron_h",
+			"scene": "res://world/characters/gallery_patron_h/gallery_patron_h.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_gallery_patron_i",
+			"id": "gallery_patron_i",
+			"scene": "res://world/characters/gallery_patron_i/gallery_patron_i.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_gallery_patron_j",
+			"id": "gallery_patron_j",
+			"scene": "res://world/characters/gallery_patron_j/gallery_patron_j.tscn",
+			"test": false
+		},
+		{
 			"asset": "char_gallery_waiter",
 			"id": "gallery_waiter",
 			"scene": "res://world/characters/gallery_waiter/gallery_waiter.tscn",
@@ -575,6 +593,12 @@
 			"test": false
 		},
 		{
+			"asset": "char_npc_bank_cleaner_b",
+			"id": "npc_bank_cleaner_b",
+			"scene": "res://world/characters/npc_bank_cleaner_b/npc_bank_cleaner_b.tscn",
+			"test": false
+		},
+		{
 			"asset": "char_npc_bank_guard",
 			"id": "npc_bank_guard",
 			"scene": "res://world/characters/npc_bank_guard/npc_bank_guard.tscn",
@@ -614,6 +638,12 @@
 			"asset": "char_npc_cleaner_sl_c",
 			"id": "npc_cleaner_sl_c",
 			"scene": "res://world/characters/npc_cleaner_sl_c/npc_cleaner_sl_c.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_npc_cleaner_sl_d",
+			"id": "npc_cleaner_sl_d",
+			"scene": "res://world/characters/npc_cleaner_sl_d/npc_cleaner_sl_d.tscn",
 			"test": false
 		},
 		{

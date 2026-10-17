@@ -11,7 +11,8 @@ the people who are really in the tower at 02:10:
 * ``char_npc_cleaner_sl_b`` (D-SL-2): the second night cleaner in the same Calder uniform (same
   materials and name tag), a clearly different person so two or three cleaners on Brutal are not
   twins: a sturdy woman in her late 50s, light skin, grey hair pinned up in a bun. ``_c`` (D-116, three
-  cleaners on Brutal): a slim young man, olive skin, dark short hair, glasses, same uniform.
+  cleaners on Brutal): a slim young man, olive skin, dark short hair, glasses, same uniform. ``_d`` (D-130, four
+  cleaners at Cataclysm): a woman in her late 30s, mid-deep skin, dark bob, same uniform.
 * ``char_npc_it_contractor`` (``civ_it``): casual contractor: a rust pull-over hoodie (hood down,
   kangaroo pocket, drawstrings), dark jeans, grey trainers, dark-framed glasses, a blue lanyard with
   a white visitor badge on the chest and a dark grey messenger tool/laptop bag on the left hip on a
@@ -78,6 +79,8 @@ VARIANTS = {
                                    "beard_shadow": 0.4, "hair": "short", "hair_color": "grey", "look": "northgate_h"},
     "char_npc_northgate_guard_i": {"height": 1.86, "build": 0.85, "gender": 0.0, "age": 0.3, "skin": 6,
                                    "beard_shadow": 0.3, "hair": "bald", "hair_color": "dark", "look": "northgate_i"},
+    "char_npc_cleaner_sl_d": {"height": 1.70, "build": 0.6, "gender": 1.0, "age": 0.38, "skin": 4, "hair": "bob",
+                              "hair_color": "dark", "look": "cleaner_sl_d"},
     "char_npc_helena_moor": {"height": 1.78, "build": 0.3, "gender": 1.0, "age": 0.65, "skin": 2, "hair": "bob",
                              "hair_color": "grey", "look": "helena"},
 }
@@ -114,6 +117,12 @@ def cleaner_sl_c(kit: Kit) -> None:
     kit.add_head(gk.glasses(kit.fit, "char_button_dark"))
     kit.notes["look"] = ("Calder Tower night cleaner, third face (D-116): same glass-teal tabard uniform; a slim "
                          "young man, olive skin, dark short hair, glasses")
+
+
+def cleaner_sl_d(kit: Kit) -> None:
+    _cleaner_sl(kit)
+    kit.notes["look"] = ("Calder Tower night cleaner, fourth face (D-130): same glass-teal tabard uniform; a woman in "
+                         "her late 30s, mid-deep skin, dark bob")
 
 
 def it(kit: Kit) -> None:
@@ -216,7 +225,8 @@ def helena(kit: Kit) -> None:
     kit.notes["prop_note"] = "phone in hand is a prop: attach at HandR/Socket (not skinned)"
 
 
-_looks = {"cleaner_sl": cleaner_sl, "cleaner_sl_b": cleaner_sl_b, "cleaner_sl_c": cleaner_sl_c, "it": it,
+_looks = {"cleaner_sl": cleaner_sl, "cleaner_sl_b": cleaner_sl_b, "cleaner_sl_c": cleaner_sl_c, "cleaner_sl_d": cleaner_sl_d,
+          "it": it,
           "northgate": northgate, "northgate_b": northgate_b, "northgate_c": northgate_c, "northgate_d": northgate_d,
           "northgate_e": northgate_e, "northgate_f": northgate_f, "northgate_g": northgate_g, "northgate_h": northgate_h,
           "northgate_i": northgate_i,
