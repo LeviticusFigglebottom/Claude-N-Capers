@@ -42,6 +42,13 @@ const KESSLER_SEAT: Vector3 = Vector3(3.0, L.F42, 12.3)
 ## npc_seat adds one over its cushion centre, 0.09 m in front of the pivot.
 const KESSLER_CHAIR: String = "prop_armchair"
 const ARMCHAIR_SEAT: Vector3 = Vector3(0.0, 0.45, -0.09)
+## D-130 `late_staff` work spots (doc §roster): [slot, spawn name, seat centre = spawn, yaw (faces the desk), tags]. The
+## seats are the layout chairs L.NPC_SEAT_CHAIRS (K4 AssistantChairA at desk A, K8 PodAChairS1 at pod A), built as
+## D-063 NPC seats; there with or without their worker (as OperatorChair), who does `desk_work` on the `Seat`.
+const LATE_STAFF: Array = [
+	["ls_assistant", "AssistantLate", Vector3(25.6, L.F41, 1.2), 180.0, ["civ_assistant", "civ_staff"]],
+	["ls_associate", "AssociateLate", Vector3(2.4, L.F41, 11.25), 0.0, ["civ_associate", "civ_staff"]],
+]
 ## D-111 prop art pass: catalog visual (tools/blender/props) per prefab type, as on Night Deposit
 ## (nd_gameplay.PREFAB_VISUALS). Doors, ladders, lasers, loot and escapes choose theirs where they are built.
 const PREFAB_VISUALS: Dictionary = {
@@ -462,6 +469,14 @@ func _variants_people(variants: Node3D) -> void:
 	spawn(ki, "VictorKessler", "CIVILIAN", KESSLER_SEAT, 0.0, ["civ_kessler", "civ_staff"], "sit", "")
 	npc_seat(ki, "KesslerArmchair", KESSLER_SEAT, 0.0, KESSLER_CHAIR, ARMCHAIR_SEAT)
 	_slot(kg, "kessler", "kessler_out", 1.0)
+	# D-130 (population by difficulty): one of the firm's staff working late from Tense up (pick 0 + difficulty_add,
+	# the empty `ls_none` sets the odds per tier, shadow_ledger_resources.gd), seated at a desk: the executive
+	# assistant in K4 (next to Moor's office and C5's corridor) or an associate in the K8 open office (C11's room).
+	var ls: Node3D = _group(variants, "late_staff")
+	for r: Array in LATE_STAFF:
+		var s: VariantSlot = _slot(ls, "late_staff", String(r[0]), 1.0)
+		spawn(s, String(r[1]), "CIVILIAN", r[2], float(r[3]), r[4], "desk_work", "")
+	_slot(ls, "late_staff", "ls_none", 6.0)
 
 
 ## Laptop (LIGHT bag `loot.ledger_laptop`): K1, K5, M4 study (behind the lasers), M14 boardroom.

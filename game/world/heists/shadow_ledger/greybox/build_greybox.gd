@@ -1037,7 +1037,7 @@ func _build_props(props: Node3D) -> void:
 	for c: Array in L.CHAIRS:
 		var cp: Vector3 = c[1]
 		var parent: Node3D = by_level[_prop_level(cp)]
-		chair(parent, String(c[0]), cp, float(c[2]))
+		chair(parent, String(c[0]), cp, float(c[2]), L.NPC_SEAT_CHAIRS.has(String(c[0])))
 		var ch: Node3D = parent.get_node(String(c[0])) as Node3D
 		ch.set_meta(&"faces", ch.get_path_to(parent.get_node(String(c[3]))))
 

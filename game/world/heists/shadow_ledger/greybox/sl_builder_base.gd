@@ -552,10 +552,12 @@ func _art_visual(body: Node3D, nm: String, asset: String, yaw: float, offset: Ve
 	return vis
 
 
-func chair(parent: Node3D, nm: String, base: Vector3, yaw: float) -> void:
+## `npc_seat` (D-063 / D-130): no collision (layer 0, shape disabled) and no navmesh obstruction, so an NPC spawned
+## seated on it stays on the navmesh; the art, the `Seat` and the kit's view of it (virtual anchor + box) are unchanged.
+func chair(parent: Node3D, nm: String, base: Vector3, yaw: float, npc_seat: bool = false) -> void:
 	var body: StaticBody3D = StaticBody3D.new()
 	body.name = nm
-	body.collision_layer = 1
+	body.collision_layer = 0 if npc_seat else 1
 	body.collision_mask = 0
 	body.position = base
 	body.basis = yaw_basis(yaw)
@@ -566,6 +568,7 @@ func chair(parent: Node3D, nm: String, base: Vector3, yaw: float) -> void:
 	col.name = "Collision"
 	col.shape = box_shape(size)
 	col.position = Vector3(0.0, size.y * 0.5, 0.0)
+	col.disabled = npc_seat
 	add(body, col)
 	var m: Marker3D = Marker3D.new()
 	m.name = "Seat"
@@ -577,7 +580,10 @@ func chair(parent: Node3D, nm: String, base: Vector3, yaw: float) -> void:
 	else:
 		mesh_box(body, "SeatMesh", Vector3(-0.225, 0.0, -0.225), Vector3(0.225, 0.45, 0.225), "chair")
 		mesh_box(body, "BackMesh", Vector3(-0.225, 0.45, 0.165), Vector3(0.225, 0.85, 0.225), "chair")
-	obstruct(body.transform, AABB(Vector3(-0.225, 0.0, -0.225), size))
+	if npc_seat:
+		body.set_meta(&"npc_seat", true)
+	else:
+		obstruct(body.transform, AABB(Vector3(-0.225, 0.0, -0.225), size))
 
 
 func area_boxes(area: Area3D, boxes: Array) -> void:
