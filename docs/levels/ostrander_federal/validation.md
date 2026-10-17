@@ -54,14 +54,14 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## floating: Nothing floats
 
-- 372 props checked
+- 1790 props checked
 
 - WARN `Variants/Group_escape/Slot_esc_van_dock/EscapeDock` @ (10.50, 0.00, -3.00): prop has no geometry or collision; skipped
 - WARN `Variants/Group_escape/Slot_esc_van_tannery/EscapeTannery` @ (51.00, 0.00, 6.50): prop has no geometry or collision; skipped
 
 ## clipping: Nothing clips
 
-- 372 props, 93 doors checked
+- 1790 props, 93 doors checked
 
 
 ## scale: Human scale
@@ -201,88 +201,88 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## slopes: No walkable slope < 50° outside the play mesh
 
-- 561 x 569 columns (0.25 m), 303030 surface samples, 0 collider(s) with reachable walkable surfaces outside play
+- 561 x 569 columns (0.25 m), 306986 surface samples, 0 collider(s) with reachable walkable surfaces outside play
 
 
 ## navmesh: Navmesh
 
-- navmesh: 2510 polygons, cell 0.10/0.10 m
+- navmesh: 3647 polygons, cell 0.10/0.10 m
 - 402 markers checked
 | room | walkable samples | covered | coverage |
 |---|---|---|---|
-| `Rooms/RoomLK` | 187 | 187 | 100% |
+| `Rooms/RoomLK` | 174 | 174 | 100% |
 | `Rooms/RoomGL` | 20 | 20 | 100% |
-| `Rooms/RoomCQ` | 29 | 29 | 100% |
+| `Rooms/RoomCQ` | 17 | 17 | 100% |
 | `Rooms/RoomSA` | 12 | 12 | 100% |
-| `Rooms/RoomCP` | 181 | 181 | 100% |
-| `Rooms/RoomPL` | 118 | 118 | 100% |
-| `Rooms/RoomCM` | 91 | 91 | 100% |
-| `Rooms/RoomSS` | 97 | 97 | 100% |
+| `Rooms/RoomCP` | 134 | 134 | 100% |
+| `Rooms/RoomPL` | 93 | 93 | 100% |
+| `Rooms/RoomCM` | 47 | 47 | 100% |
+| `Rooms/RoomSS` | 62 | 62 | 100% |
 | `Rooms/RoomSB` | 12 | 12 | 100% |
 | `Rooms/RoomBB` | 285 | 285 | 100% |
-| `Rooms/RoomRC` | 252 | 252 | 100% |
+| `Rooms/RoomRC` | 206 | 206 | 100% |
 | `Rooms/RoomVC` | 227 | 227 | 100% |
-| `Rooms/RoomVT` | 627 | 627 | 100% |
+| `Rooms/RoomVT` | 579 | 579 | 100% |
 | `Rooms/RoomSD` | 556 | 556 | 100% |
-| `Rooms/RoomLD` | 301 | 301 | 100% |
-| `Rooms/RoomE1` | 30 | 30 | 100% |
-| `Rooms/RoomSR` | 139 | 139 | 100% |
-| `Rooms/RoomGR` | 108 | 108 | 100% |
-| `Rooms/RoomWM` | 65 | 65 | 100% |
-| `Rooms/RoomWW` | 65 | 65 | 100% |
-| `Rooms/RoomJ1` | 55 | 55 | 100% |
-| `Rooms/RoomMO` | 130 | 130 | 100% |
+| `Rooms/RoomLD` | 276 | 274 | 99% |
+| `Rooms/RoomE1` | 17 | 17 | 100% |
+| `Rooms/RoomSR` | 124 | 124 | 100% |
+| `Rooms/RoomGR` | 96 | 96 | 100% |
+| `Rooms/RoomWM` | 49 | 49 | 100% |
+| `Rooms/RoomWW` | 54 | 54 | 100% |
+| `Rooms/RoomJ1` | 38 | 38 | 100% |
+| `Rooms/RoomMO` | 114 | 114 | 100% |
 | `Rooms/RoomBC` | 225 | 225 | 100% |
-| `Rooms/RoomLO` | 244 | 244 | 100% |
-| `Rooms/RoomTW` | 770 | 770 | 100% |
+| `Rooms/RoomLO` | 214 | 214 | 100% |
+| `Rooms/RoomTW` | 720 | 720 | 100% |
 | `Rooms/RoomPC` | 255 | 255 | 100% |
-| `Rooms/RoomCN1` | 110 | 110 | 100% |
-| `Rooms/RoomCN2` | 110 | 110 | 100% |
-| `Rooms/RoomAV` | 181 | 181 | 100% |
+| `Rooms/RoomCN1` | 102 | 102 | 100% |
+| `Rooms/RoomCN2` | 93 | 93 | 100% |
+| `Rooms/RoomAV` | 173 | 173 | 100% |
 | `Rooms/RoomBH` | 412 | 412 | 100% |
 | `Rooms/RoomVE` | 105 | 105 | 100% |
-| `Rooms/RoomBM` | 203 | 203 | 100% |
-| `Rooms/RoomPW` | 93 | 93 | 100% |
-| `Rooms/RoomNA` | 120 | 120 | 100% |
-| `Rooms/RoomBR` | 194 | 194 | 100% |
-| `Rooms/RoomE2` | 60 | 60 | 100% |
-| `Rooms/RoomIT` | 132 | 132 | 100% |
-| `Rooms/RoomSV` | 104 | 104 | 100% |
-| `Rooms/RoomWM2` | 65 | 65 | 100% |
-| `Rooms/RoomWW2` | 65 | 65 | 100% |
-| `Rooms/RoomJ2` | 55 | 55 | 100% |
-| `Rooms/RoomAR` | 149 | 149 | 100% |
+| `Rooms/RoomBM` | 145 | 145 | 100% |
+| `Rooms/RoomPW` | 86 | 86 | 100% |
+| `Rooms/RoomNA` | 98 | 98 | 100% |
+| `Rooms/RoomBR` | 152 | 152 | 100% |
+| `Rooms/RoomE2` | 40 | 40 | 100% |
+| `Rooms/RoomIT` | 114 | 114 | 100% |
+| `Rooms/RoomSV` | 75 | 75 | 100% |
+| `Rooms/RoomWM2` | 51 | 51 | 100% |
+| `Rooms/RoomWW2` | 50 | 50 | 100% |
+| `Rooms/RoomJ2` | 41 | 41 | 100% |
+| `Rooms/RoomAR` | 107 | 107 | 100% |
 | `Rooms/RoomUC` | 285 | 285 | 100% |
-| `Rooms/RoomAO1` | 164 | 164 | 100% |
-| `Rooms/RoomAO2` | 167 | 167 | 100% |
-| `Rooms/RoomAO3` | 167 | 167 | 100% |
+| `Rooms/RoomAO1` | 150 | 150 | 100% |
+| `Rooms/RoomAO2` | 146 | 146 | 100% |
+| `Rooms/RoomAO3` | 147 | 147 | 100% |
 | `Rooms/RoomWL` | 159 | 159 | 100% |
-| `Rooms/RoomOF` | 475 | 475 | 100% |
-| `Rooms/RoomCF` | 120 | 120 | 100% |
-| `Rooms/RoomCO` | 150 | 150 | 100% |
-| `Rooms/RoomGA` | 297 | 297 | 100% |
+| `Rooms/RoomOF` | 450 | 450 | 100% |
+| `Rooms/RoomCF` | 84 | 84 | 100% |
+| `Rooms/RoomCO` | 127 | 127 | 100% |
+| `Rooms/RoomGA` | 283 | 283 | 100% |
 | `Rooms/RoomEL` | 159 | 159 | 100% |
 | `Rooms/RoomVO` | 164 | 164 | 100% |
-| `Rooms/RoomTR` | 172 | 172 | 100% |
-| `Rooms/RoomTT` | 152 | 152 | 100% |
-| `Rooms/RoomBD` | 172 | 172 | 100% |
-| `Rooms/RoomE3` | 65 | 65 | 100% |
-| `Rooms/RoomEA` | 149 | 149 | 100% |
-| `Rooms/RoomPR` | 248 | 248 | 100% |
-| `Rooms/RoomPN` | 128 | 128 | 100% |
-| `Rooms/RoomXW` | 65 | 65 | 100% |
+| `Rooms/RoomTR` | 149 | 149 | 100% |
+| `Rooms/RoomTT` | 122 | 122 | 100% |
+| `Rooms/RoomBD` | 97 | 97 | 100% |
+| `Rooms/RoomE3` | 43 | 43 | 100% |
+| `Rooms/RoomEA` | 126 | 126 | 100% |
+| `Rooms/RoomPR` | 215 | 215 | 100% |
+| `Rooms/RoomPN` | 90 | 90 | 100% |
+| `Rooms/RoomXW` | 52 | 52 | 100% |
 | `Rooms/RoomXC` | 285 | 285 | 100% |
-| `Rooms/RoomXL` | 401 | 401 | 100% |
-| `Rooms/RoomLG` | 300 | 300 | 100% |
-| `Rooms/RoomCT` | 300 | 300 | 100% |
-| `Rooms/RoomRA` | 212 | 212 | 100% |
-| `Rooms/RoomX4` | 664 | 664 | 100% |
-| `Rooms/RoomX5` | 754 | 754 | 100% |
+| `Rooms/RoomXL` | 337 | 337 | 100% |
+| `Rooms/RoomLG` | 248 | 248 | 100% |
+| `Rooms/RoomCT` | 250 | 250 | 100% |
+| `Rooms/RoomRA` | 179 | 179 | 100% |
+| `Rooms/RoomX4` | 627 | 627 | 100% |
+| `Rooms/RoomX5` | 734 | 734 | 100% |
 | `Rooms/RoomHH` | 6 | 6 | 100% |
-| `Rooms/RoomRP` | 405 | 405 | 100% |
+| `Rooms/RoomRP` | 341 | 341 | 100% |
 | `Rooms/RoomX1` | 786 | 786 | 100% |
-| `Rooms/RoomX2` | 785 | 785 | 100% |
-| `Rooms/RoomX3` | 788 | 788 | 100% |
+| `Rooms/RoomX2` | 775 | 775 | 100% |
+| `Rooms/RoomX3` | 779 | 779 | 100% |
 
 
 ## barred_doors: BARRED doorways are closed in the navmesh
@@ -361,7 +361,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## viewmodel_lit: Interior key lights light the viewmodel (D-095)
 
-- 0 interior key light(s) in 0 room(s); 0 lack `viewmodel_lit`
+- 608 interior key light(s) in 62 room(s); 0 lack `viewmodel_lit`
 
 
 ## door_frame_gap: Doors and windows fill their wall openings (no gaps, no clipping)
@@ -382,8 +382,8 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## furniture_logic: Furniture arranged plausibly
 
-- classified: counter 13, desk 23, table 11, wall_unit 9, desk_chair 10
-- 10 seats, 47 tables/desks/counters, 93 doors checked
+- classified: counter 23, chair 11, desk 29, table 10, low_table 1, wall_unit 93, visitor_chair 7, desk_chair 46, stool 1, monitor 13
+- 65 seats, 63 tables/desks/counters, 93 doors checked
 
 - WARN `Gameplay/Lifts/CashLift` @ (11.50, -3.95, 1.55): door_clear: in the clear zone of door `Gameplay/Doors/CashLiftDoorB` (1.0 / 1.0 m each side, leaf width 1.82 m) by 0.21 m (gameplay prefab / variant content: review)
 - WARN `Gameplay/Lifts/CashLift` @ (11.50, -3.95, 1.55): use_point: stands in the user's spot of `Gameplay/Doors/CashLiftDoorB` (UsePoint @ (11.50, -4.00, 2.30)) by 0.11 m (gameplay prefab / variant content: review)

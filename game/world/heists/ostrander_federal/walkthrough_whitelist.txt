@@ -186,7 +186,10 @@ PlayerPlaza4 Variants/Group_escape/Slot_esc_heli_terrace/SecureTerrace/Zone
 # security room and the camera station (SR, x 16-23, z 0-7) are round the LD / BC wall (the straight line goes through
 # the north facade), the upper levels (gallery WCs, IT, server, legal, conference, the president's office and safe,
 # the terrace, the roof plant room and head house) are Stair A / B up from BC; the cash-lift landing door B is down
-# Stair A -> BB -> CQ.
+# Stair A -> BB -> CQ. OF-C2: Lane4 -> the E3 secure zone (3.09x) is the same terrace walk; the dressed navmesh routes it
+# through the west terrace door instead of the east one (polygon split, nothing on the route). Lane1 -> PantryDoor (3.12x)
+# and Lane4 -> StaffDoorTWE (3.07x), Lane2 -> ComplianceDoor (3.10x) are the direct dock-door -> LD -> BC (-> stair) walk
+# (Lane2 / Lane3 -> PantryDoor, Lane4 -> ComplianceDoor already listed).
 PlayerLane1 Gameplay/Devices/AlarmSR/UsePoint
 PlayerLane1 Gameplay/Devices/CameraStation/UsePoint
 PlayerLane1 Gameplay/Devices/PhoneEA/UsePoint
@@ -200,6 +203,7 @@ PlayerLane1 Gameplay/Doors/HeadHouseDoor
 PlayerLane1 Gameplay/Doors/HeadHouseDoor/UsePoint
 PlayerLane1 Gameplay/Doors/ITDoor/UsePoint
 PlayerLane1 Gameplay/Doors/LegalDoor/UsePoint
+PlayerLane1 Gameplay/Doors/PantryDoor/UsePoint
 PlayerLane1 Gameplay/Doors/PresidentDoor/UsePoint
 PlayerLane1 Gameplay/Doors/RoofPlantDoor/UsePoint
 PlayerLane1 Gameplay/Doors/ServerDoor/UsePoint
@@ -220,6 +224,7 @@ PlayerLane2 Gameplay/Devices/CameraStation/UsePoint
 PlayerLane2 Gameplay/Devices/PhoneEA/UsePoint
 PlayerLane2 Gameplay/Devices/PhoneSR/UsePoint
 PlayerLane2 Gameplay/Doors/AssistantDoor/UsePoint
+PlayerLane2 Gameplay/Doors/ComplianceDoor/UsePoint
 PlayerLane2 Gameplay/Doors/ConferenceDoor/UsePoint
 PlayerLane2 Gameplay/Doors/GalleryWCDoorM/UsePoint
 PlayerLane2 Gameplay/Doors/GalleryWCDoorW/UsePoint
@@ -290,11 +295,13 @@ PlayerLane4 Gameplay/Doors/PresidentDoor/UsePoint
 PlayerLane4 Gameplay/Doors/RoofPlantDoor/UsePoint
 PlayerLane4 Gameplay/Doors/ServerDoor/UsePoint
 PlayerLane4 Gameplay/Doors/StaffWCDoorM/UsePoint
+PlayerLane4 Gameplay/Doors/StaffDoorTWE/UsePoint
 PlayerLane4 Gameplay/Doors/StaffWCDoorW/UsePoint
 PlayerLane4 Gameplay/Doors/TrustDoor/UsePoint
 PlayerLane4 Gameplay/Loot/ServerDrives
 PlayerLane4 Gameplay/Loot/ServerDrives/UsePoint
 PlayerLane4 Variants/Group_escape/Slot_esc_heli_terrace/EscapeTerrace/Zone
+PlayerLane4 Variants/Group_escape/Slot_esc_heli_terrace/SecureTerrace/Zone
 PlayerLane4 Variants/Group_president_safe/Slot_ps_bonds/PresidentSafe
 PlayerLane4 Variants/Group_president_safe/Slot_ps_bonds/PresidentSafe/PresidentBonds
 PlayerLane4 Variants/Group_president_safe/Slot_ps_bonds/PresidentSafe/PresidentBonds/UsePoint

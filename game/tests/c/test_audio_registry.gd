@@ -83,10 +83,11 @@ const AMBIENCE_BEDS: Array[StringName] = [
 	&"cue.amb_shadow_ledger_interior", &"cue.amb_rooftop_rain",
 	&"cue.amb_cold_store", &"cue.amb_dockside_fog",
 	&"cue.amb_gallery_gala", &"cue.amb_art_store", &"cue.amb_uptown_night",
+	&"cue.amb_bank_hall_day", &"cue.amb_bank_boh", &"cue.amb_vault", &"cue.amb_city_afternoon",
 ]
 ## D-117 §7: every built heist has its own music track. Shadow Ledger is stealth-only.
 const HEIST_MUSIC: Array[StringName] = [&"glasshouse", &"night_deposit", &"shadow_ledger", &"dockside_burn",
-		&"gallery_night"]
+		&"gallery_night", &"ostrander_federal"]
 const ALL_STEMS: Array[StringName] = [&"stealth", &"control", &"anticipation", &"assault", &"fade"]
 const BUSES: Array[StringName] = [&"Music", &"SFX", &"Weapons", &"Enemies", &"World", &"UI", &"Voice", &"Ambience"]
 ## PO-14 registry coverage scan (test_every_cue_referenced_in_code_is_registered).
@@ -113,6 +114,7 @@ func test_registry_has_every_p1_cue() -> void:
 	for id: StringName in P1_CUES:
 		assert_true(_reg.has_cue(id), "registry has %s" % id)
 	assert_true(_reg.has_cue(&"cue.alarm_bell_glasshouse"), "glasshouse alarm variant")
+	assert_true(_reg.has_cue(&"cue.alarm_bell_ostrander_federal"), "ostrander_federal two-tone bank bell (OF-C2)")
 
 
 func test_weapon_family_cues() -> void:
@@ -397,6 +399,8 @@ func test_heist_maps_place_their_audio() -> void:
 		&"shadow_ledger": [&"cue.amb_shadow_ledger_interior", &"cue.amb_rooftop_rain"],
 		&"dockside_burn": [&"cue.amb_cold_store", &"cue.amb_dockside_fog"],
 		&"gallery_night": [&"cue.amb_gallery_gala", &"cue.amb_art_store", &"cue.amb_uptown_night"],
+		&"ostrander_federal": [&"cue.amb_bank_hall_day", &"cue.amb_bank_boh", &"cue.amb_vault",
+			&"cue.amb_city_afternoon"],
 	}
 	for h: StringName in HEIST_MUSIC:
 		var txt: String = FileAccess.get_file_as_string("res://world/heists/%s/%s.tscn" % [h, h])
