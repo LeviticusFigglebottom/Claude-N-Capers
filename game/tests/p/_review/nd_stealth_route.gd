@@ -519,10 +519,19 @@ func _loot() -> bool:
 		if src == null:
 			break
 		var ic: InteractableComponent = _comp(src)
+		if i > 0:  # back in through the gap for the next bag
+			for wp: Vector3 in [Vector3(LASER_GAP_X, GATE_AT.y, 7.9), Vector3(LASER_GAP_X, GATE_AT.y, 9.15)]:
+				await pilot.goto(wp, 0.12, 40.0)
 		if not await pilot.use(ic, 30.0, func() -> bool: return pilot.crew.is_carrying_bag()):
 			note("bag %d not taken" % i)
 			return false
 		note("carrying bag %d out to %s" % [i, Po5Pilot._v(zone.global_position)])
+		# Out through the laser grid's west bypass gap, as on the way in (the navmesh ignores beams: the straight
+		# carry tripped AntechamberLasers, ND run 2026-10-17 t=210).
+		for wp: Vector3 in [Vector3(LASER_GAP_X, GATE_AT.y, 9.15), Vector3(LASER_GAP_X, GATE_AT.y, 7.9)]:
+			if not await pilot.goto(wp, 0.12, 20.0):
+				note("laser gap out: could not reach %s (at %s)" % [Po5Pilot._v(wp), Po5Pilot._v(pilot.crew.global_position)])
+				return false
 		if not await pilot.secure_carried_bag(zone):
 			note("bag %d not secured (at %s)" % [i, Po5Pilot._v(pilot.crew.global_position)])
 			await shot("bag_%d_not_secured" % i)
