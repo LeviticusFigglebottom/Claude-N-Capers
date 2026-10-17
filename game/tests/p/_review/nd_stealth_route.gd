@@ -247,19 +247,23 @@ func _gate_guard() -> bool:
 	c.melee.swung.connect(func(_ch: bool) -> void: hits[1] += 1)
 	# He patrols the B5 corridor: only close in while his back is to us (a re-close walked in front of him once and
 	# he was ALARMED before the knife landed; S3.6 one-shots only CALM / CURIOUS guards).
-	for _k: int in 6:
-		if not g.is_alive() or g.alert_state > Enums.AlertState.CURIOUS:
-			break
-		if not await _wait_back_turned(g, 40.0):
-			note("gate guard never turned his back (alert %d)" % g.alert_state)
-			break
-		var back: Vector3 = g.global_position + g.global_basis.z.normalized() * 0.8
-		await pilot.goto(Vector3(back.x, g.global_position.y, back.z), 0.4, 6.0)
-		if pilot.flat_dist(g.global_position, c.global_position) > 1.2 or not _back_turned(g):
+	# Track him with short legs re-aimed behind him every ~0.5 s (a single goto to a point computed once walked
+	# through his moving body, ND run 2026-10-17 t=50) and swing as soon as he is in reach with his back turned.
+	var swings: int = 0
+	var t_end: float = rt.heist_time_s + 60.0
+	while g.is_alive() and g.alert_state <= Enums.AlertState.CURIOUS and swings < 4 and rt.heist_time_s < t_end:
+		var d: float = pilot.flat_dist(g.global_position, c.global_position)
+		if not _back_turned(g):
+			await wait_s(0.2)  # stand still while he faces this way
 			continue
-		await pilot.face(g.global_position + Vector3(0, 1.1, 0), 0.05, 0.5)
+		if d > 1.5:
+			var back: Vector3 = g.global_position + g.global_basis.z.normalized() * 0.9
+			await pilot.goto(Vector3(back.x, g.global_position.y, back.z), 0.3, 0.5)
+			continue
+		await pilot.face(g.global_position + Vector3(0, 1.1, 0), 0.05, 0.3)
 		var alert_before: int = g.alert_state
 		await pilot.inp.tap(&"melee")  # a quick swing: S3.6 kills an unaware guard on any hit; a charge let him walk on
+		swings += 1
 		await wait_s(0.6)
 		note("swing: me %s guard %s fwd %s dist %.2f, swings %d, hits %d, health %.2f alive %s alert %d -> %d" % [
 			Po5Pilot._v(c.global_position), Po5Pilot._v(g.global_position), Po5Pilot._v(-g.global_basis.z),
