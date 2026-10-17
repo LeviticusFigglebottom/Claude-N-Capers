@@ -139,3 +139,19 @@ func clear_bag() -> void:
 	if lb != null and lb.visual_root != null:
 		lb.visual_root.visible = true
 	_shown_bag = null
+
+
+## characters.md v1.27 (D 7dc91bd0): the cartel looks with a gun on the back carry it as `Skeleton3D/Slung`; it clips
+## through the chair, so it hides while a seated clip plays (sit_*, desk_work, phone_seated, cower_seated,
+## death_seated_*) and shows otherwise. Rigs without the node: nothing.
+static func update_slung(rig: Node3D, clip: StringName) -> void:
+	var slung: Node3D = rig.get_node_or_null(^"Skeleton3D/Slung") as Node3D if rig != null else null
+	if slung != null:
+		slung.visible = not seated_clip(clip)
+
+
+static func seated_clip(clip: StringName) -> bool:
+	var c: String = String(clip)
+	return c.begins_with("sit_") or c.begins_with("death_seated_") \
+		or c in ["desk_work", "phone_seated", "cower_seated"]
+
