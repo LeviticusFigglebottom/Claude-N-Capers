@@ -1224,3 +1224,11 @@ sha + anything that cannot close, with the reason). When all five have reported 
 final round, the D-115 gate is assessed and Ostrander Federal (`docs/process/next_heist_ostrander.md`, finalised by the
 LEAD meanwhile) starts for all envs at once with one kickoff dispatch. Parked items that do not block: D-132 D1 (waits on
 the PO's real-GPU bench run).
+
+## D-136: Ostrander Federal build rulings (2026-10-17, LEAD)
+The OF-L1 build plan (`docs/process/next_heist_ostrander.md`) is approved. Its §3b rulings 1-11 are adopted as written:
+vault on the ND pattern (no new Safe API); manager keycard = QC-52 carrier_tag at 1 s; D-120 re-price by B; a general
+`CivilianRoute` system (A) for timed cross-floor civilian routines; the SD customer escort descoped; assault events
+(turret van, heli rappel, breach points) added; D-122 breach layer on every loud-breachable shell door (not the vault);
+D-102/D-104 doc fixes by C; no stealth-only fail and no soft lock; loud escape on `[secure]` + `escape_eta_s`; D-128
+"hidden" claims verified with A's LOS sampling. Build starts for all envs together after D-135 (all queues clear).
