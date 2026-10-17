@@ -169,6 +169,15 @@ static func _quad(st: SurfaceTool, lo: Vector3, hi: Vector3, nrm: Vector3, along
 		st.add_vertex(p)
 
 
+## SurfaceTool.append_from with an index on every source: a non-indexed surface (box caps, slab tiles) appended after
+## an indexed one adds its vertices but no indices, and its triangles vanish from the merged mesh.
+static func append_indexed(st: SurfaceTool, mesh: Mesh, surface: int, xf: Transform3D) -> void:
+	var tmp: SurfaceTool = SurfaceTool.new()
+	tmp.create_from(mesh, surface)
+	tmp.index()
+	st.append_from(tmp.commit(), 0, xf)
+
+
 # --- Railings ------------------------------------------------------------------------------------
 
 ## Every railing's top rail and posts become one mesh (one draw instead of up to 41); the glass pane stays its own
@@ -188,7 +197,7 @@ func merge_railings(root: Node) -> int:
 		st.begin(Mesh.PRIMITIVE_TRIANGLES)
 		var mat: Material = null
 		for mi: MeshInstance3D in parts:
-			st.append_from(mi.mesh, 0, mi.transform)
+			append_indexed(st, mi.mesh, 0, mi.transform)
 			mat = mi.mesh.surface_get_material(0)
 		st.set_material(mat)
 		var merged: MeshInstance3D = MeshInstance3D.new()
@@ -239,7 +248,7 @@ func merge_city(root: Node) -> int:
 			var fixture: bool = false
 			for p: Variant in parts:
 				var mi2: MeshInstance3D = p
-				st.append_from(mi2.mesh, 0, mi2.transform)
+				append_indexed(st, mi2.mesh, 0, mi2.transform)
 				mat = mi2.mesh.surface_get_material(0)
 				fixture = fixture or mi2.has_meta(&"fixture")
 			st.set_material(mat)
@@ -255,6 +264,59 @@ func merge_city(root: Node) -> int:
 			holder.add_child(merged)
 			merged.owner = root
 			saved += parts.size() - 1
+	return saved
+
+
+## The opaque curtain-wall visuals of one storey (Geometry/Building/Facade/<level>: spandrels, bands, mullions, sills)
+## become one mesh per material (the exterior views drew every facade box: perf). Visual only: the bodies keep their
+## colliders and metas; the glass panes (transparent) stay whole and separate. Runs after the occluders (colliders).
+func merge_facade(root: Node) -> int:
+	var saved: int = 0
+	var holder: Node = root.get_node_or_null("Geometry/Building/Facade")
+	if holder == null:
+		return 0
+	for lvl: Node in holder.get_children():
+		var lxf: Transform3D = (b.call(&"global_xform", lvl) as Transform3D).affine_inverse()
+		var groups: Dictionary = {}  # "<material id>|<shadow>" -> [SurfaceTool, Material, ShadowCastingSetting]
+		var order: Array[String] = []
+		var parts: Array[MeshInstance3D] = []
+		for c: Node in lvl.find_children("*", "MeshInstance3D", true, false):
+			var mi: MeshInstance3D = c as MeshInstance3D
+			if mi.mesh == null or mi.get_child_count() > 0 or mi.owner != root or not mi.get_meta_list().is_empty():
+				continue
+			var opaque: bool = true
+			for s: int in range(mi.mesh.get_surface_count()):
+				var bm: BaseMaterial3D = mi.get_active_material(s) as BaseMaterial3D
+				opaque = opaque and bm != null and bm.transparency == BaseMaterial3D.TRANSPARENCY_DISABLED
+			if not opaque:
+				continue
+			var xf: Transform3D = lxf * (b.call(&"global_xform", mi) as Transform3D)
+			for s2: int in range(mi.mesh.get_surface_count()):
+				var mat: Material = mi.get_active_material(s2)
+				var key: String = "%d|%d" % [mat.get_instance_id(), mi.cast_shadow]
+				if not groups.has(key):
+					var st: SurfaceTool = SurfaceTool.new()
+					st.begin(Mesh.PRIMITIVE_TRIANGLES)
+					groups[key] = [st, mat, mi.cast_shadow]
+					order.append(key)
+				append_indexed(groups[key][0] as SurfaceTool, mi.mesh, s2, xf)
+			parts.append(mi)
+		if parts.size() < 2:
+			continue
+		for k: int in range(order.size()):
+			var g: Array = groups[order[k]]
+			var st2: SurfaceTool = g[0]
+			st2.set_material(g[1])
+			var merged: MeshInstance3D = MeshInstance3D.new()
+			merged.name = "FacadeMesh%02d" % k
+			merged.mesh = st2.commit()
+			merged.cast_shadow = g[2]
+			lvl.add_child(merged)
+			merged.owner = root
+		for mi2: MeshInstance3D in parts:
+			mi2.get_parent().remove_child(mi2)
+			mi2.free()
+		saved += parts.size() - order.size()
 	return saved
 
 

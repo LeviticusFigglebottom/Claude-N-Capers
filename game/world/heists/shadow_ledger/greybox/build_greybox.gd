@@ -372,7 +372,8 @@ func _end_cap(axis: String, fixed: float, pos: float, _dir: float) -> float:
 			above = true
 		if a <= fixed + 0.001 and b >= fixed - 0.001:
 			t = maxf(t, L.CORE_T if bool(s[2]) else L.INT_T)
-	return t * 0.5 if below != above else 0.0
+	# G2 (SL-1): 3 mm past the face, so the run's end cap is not coplanar with that wall's face (zfight)
+	return t * 0.5 + 0.003 if below != above else 0.0
 
 
 func _wall_line(parent: Node3D, lv: String, ffl: float, top: float, axis: String, fixed: float, segs: Array) -> void:
@@ -1134,14 +1135,16 @@ func _build_dressing() -> void:
 			errors.append(line)
 
 
-## After the bake: the lit city windows, merged railing visuals, reflection probes per room, occluders.
+## After the bake: the lit city windows, merged railing visuals, reflection probes per room, occluders, merged facade.
 func _build_art() -> void:
 	var art: RefCounted = DA.new(self)
 	var win: int = art.call(&"city_windows", n("Geometry/Site"), map_root)
 	var merged: int = art.call(&"merge_railings", map_root) + int(art.call(&"merge_city", map_root))
 	var probes: int = art.call(&"reflection_probes", add(n("Lighting"), node3d("ReflectionProbes")) as Node3D, map_root)
 	var occ: int = art.call(&"occluders", add(n("Geometry"), node3d("Occluders")) as Node3D, map_root)
-	printerr("art: %d city windows, %d railing meshes merged away, %d probes, %d occluders" % [win, merged, probes, occ])
+	var fac: int = art.call(&"merge_facade", map_root)
+	printerr("art: %d city windows, %d railing meshes merged away, %d probes, %d occluders, %d facade meshes merged away"
+		% [win, merged, probes, occ, fac])
 
 
 # --- Rooms and zones --------------------------------------------------------------------------

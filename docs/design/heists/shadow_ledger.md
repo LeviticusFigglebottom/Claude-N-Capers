@@ -782,8 +782,10 @@ Crew assets with no point: `asset.intel_cameras` (reveals `camera`), `asset.inte
   house keep their map lights in catalog fixtures. 5 shadow-casting fixtures (K3, K8, M1, M2, M4). Lit office floors on
   Arden, Vantage and the south / east skyline (`sl_art.WINDOW_GRIDS`) close the views through the glazing. One soft fill per
   room (meta fill). WorldEnvironment: overcast sky with an orange-teal city glow on the horizon, rain haze (fog), SSAO,
-  glow, `lut_shadow_ledger`; one dim directional (CityGlow), no sun or moon. 58 reflection probes, 125 occluders (slabs,
-  solid walls), near-range (30 m) interior props for the draw-call budget.
+  glow, `lut_shadow_ledger`; one dim directional (CityGlow), no sun or moon. 33 reflection probes (none in BOH, stair, corridor
+  or exterior rooms), 125 occluders (slabs, solid walls); for the draw-call budget (2500 per review camera, worst
+  ExtTerraceSE 2293 with every variant slot on) near-range (30 m) interior props, merged railing, city-light and
+  opaque curtain-wall meshes (one per material per storey).
 
 ## HeistDef (proposed data, `shadow_ledger_def.tres`)
 `id shadow_ledger`, display "Shadow Ledger", contact `contact.accountant`, mode STEALTH_ONLY,
