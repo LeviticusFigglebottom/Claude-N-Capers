@@ -48,17 +48,16 @@ Status: APPROVED (lead, 2026-10-10) (D-042)
   on two patrol loops. It is there so a bad code roll never makes the job impossible, not as the
   normal way in. The archive safe saw is the optional greed choice: it is far from the security
   room but on the L41 rover's south loop and the cleaner's route.
-- **Difficulty notes:** Routine runs 2 guards + operator (60%), 1–2 cleaners. Brutal runs 4 guards
-  + operator, 2–3 cleaners, sweeping lasers more often, and the `timelock_extended` event.
-  Lethal/Cataclysm run 5 guards; **from Hazardous up the guard count can exceed the pager cap**, so
-  ghosting some guards is required. That is intended. Lethal+ cameras are Titan (indestructible,
-  S8.1): ECM or the operator only.
+- **Difficulty notes (D-140, PAGERS lever):** every difficulty runs exactly **4 pager carriers**: the
+  reception guard, both rovers, and the camera operator when the security room is staffed (60%), else one
+  watch post (fire watch or roof). The pager cap does the scaling: **4 / 3 / 3 / 2 / 2 / 1** (Routine →
+  Cataclysm), so from Tense up some guards must be ghosted. Brutal adds 2–3 cleaners, sweeping lasers more
+  often and the `timelock_extended` event. Lethal+ cameras are Titan (indestructible, S8.1): ECM or the
+  operator only.
   - **D-130 (population by difficulty):** every tier adds civilians (expected count, +11 % Tense to +75 %
     Cataclysm): from Tense one of the firm's staff may be working late (`late_staff`: the executive
     assistant at her K4 desk or an associate in the K8 open office, seated at work), more likely each tier.
-    Guards keep their rows: they already pass D-130's floors (+25 % Tense, +150 % from Lethal). Stealth-only
-    means every extra guard and the operator press on the **4-pager cap**: from Hazardous a full clear needs
-    more answers than the cap (PD2 pressure, accepted by D-130's addendum). Table: §roster, Totals per difficulty.
+    Guards follow D-140 (above), which supersedes their D-130 rows. Table: §roster, Totals per difficulty.
 
 ## Site
 - **Building:** Calder Tower, 42 storeys. The play space is the top: **L40** (service level, only
@@ -496,8 +495,8 @@ stair cores** for > 2 floors ✓; fire exits = both stairs; the longest travel t
 | Security Officer (reception) | 1 | always (fixed spawn, K3 desk) | `guard_reception` | — (desk pause) | `guard`, `guard_l41` |
 | Security Officer (L41 rover) | 0–1 | `guard_post` = `rover_l41` | `guard_rover_l41` | — | `guard`, `guard_l41` |
 | Security Officer (L42 rover) | 0–1 | `guard_post` = `rover_l42` | `guard_rover_l42` | — | `guard`, `guard_l42` |
-| Security Officer (fire watch) | 0–1 | `guard_extra` = `stair_watch` | `guard_stair` | — | `guard_stair` |
-| Security Officer (roof) | 0–1 | `guard_extra` = `roof_watch` | `guard_roof` | — (pause `smoke`) | `guard_roof` |
+| Security Officer (fire watch) | 0–1 | `guard_extra` = `stair_watch` (only with `sec_empty`, D-140) | `guard_stair` | — | `guard_stair` |
+| Security Officer (roof) | 0–1 | `guard_extra` = `roof_watch` (only with `sec_empty`, D-140) | `guard_roof` | — (pause `smoke`) | `guard_roof` |
 | Camera operator | 0–1 | `security_room_staffed` | CAMERA_OPERATOR in K13 | `desk_work` (seated at the monitor wall: on the `OperatorChair` task chair's `Seat` at (28.65, 14.5), D-063 seat 0.47 / desk 0.74, SL-3) | — |
 | Cleaner (L41) | 1–2 | always 1; 2nd when `cleaners` = 3 | `civ_cleaner_l41` | `browse` (cleaning) | `staff`, `staff_clean_l41` |
 | Cleaner (L42) | 0–1 | `cleaners` ≥ 2 | `civ_cleaner_l42` | `browse` (cleaning) | `staff`, `staff_clean_l42` |
@@ -507,21 +506,22 @@ stair cores** for > 2 floors ✓; fire exits = both stairs; the longest travel t
 | Associate (D-130) | 0–1 | `late_staff` = `ls_associate` (Tense+) | `civ_associate` | `desk_work` (seated at K8 pod A on `PodAChairS1`, a D-063 NPC seat at (2.4, 11.25), in C11's room) | — (stays at the pod) |
 | Victor Kessler | 0–1 | rare `kessler_sleepover` | `civ_kessler` | `sit` (reading in the bedside armchair, the catalog `prop_armchair`: on its `Seat` at (3.0, 12.3), back to the M5 south wall, PO6-06 / D-063 npc seat, SL-3) | — (stays in M5) |
 
-**Totals per difficulty** (guards = reception + `guard_post` rovers + `guard_extra`, without the operator; civilians at
-load = cleaners + contractor + Moor + `late_staff` + Kessler on `kessler_sleepover`; "E" = the expected count over
-1500 seeded rolls, % against Routine, pre-D-130 E in brackets; D-130, pinned by `game/tests/c/test_d130_population.gd`):
+**Totals per difficulty** (D-140: guards = pager carriers at load = reception + `guard_post` rovers + the operator or
+a `guard_extra` watch post; civilians at load = cleaners + contractor + Moor + `late_staff` + Kessler on
+`kessler_sleepover`; "E" = the expected count over 1500 seeded rolls, % against Routine, pre-D-130 E in brackets;
+pinned by `game/tests/c/test_d130_population.gd`):
 
-| Difficulty | Guards (recep. + rovers + extras) (E, %) | Operator | Pagers to clear everyone | Civilians (E, %) [pre-D-130] | `late_staff` | Notes |
+| Difficulty | Guards (old → new) | Operator / watch post | Pager cap (old → new) | Margin (guards − cap) | Civilians (E, %) [pre-D-130] | `late_staff` |
 |---|---|---|---|---|---|---|
-| Routine | 1 + 1 + 0 = **2** (2.0) | 60% | 2–3 | 1–5 (2.26) [2.26] | 0 | Everything can be killed and answered. |
-| Tense | 1 + 1 + 0–1 = **2–3** (2.51, +25 %) | 60% | 2–4 | 1–6 (2.50, +11 %) [2.27] | 0–1 (25 %) | At the cap at worst. |
-| Hazardous | 1 + 2 + 0–1 = **3–4** (3.47, +73 %) | 60% | 3–5 | 1–6 (3.04, +34 %) [2.78] | 0–1 (25 %) | Can exceed the cap. |
-| Brutal | 1 + 2 + 1 = **4** (4.0, +100 %) | 60% | 4–5 | 2–6 (3.63, +60 %) [3.29] | 0–1 (33 %) | Exceeds the cap when the operator is in. |
-| Lethal | 1 + 2 + 2 = **5** (5.0, +150 %) | 60% | 5–6 | 2–7 (3.74, +65 %) [3.29] | 0–1 (44 %) | 1–2 guards must be ghosted; Titan cameras. |
-| Cataclysm | 1 + 2 + 2 = **5** (5.0, +150 %) | 60% | 5–6 | 2–7 (3.96, +75 %) [3.29] | 0–1 (67 %) | As Lethal. |
+| Routine | 2 (+ operator 60%) → **4** | 60% / 40% | 4 → **4** | 0 | 1–5 (2.26) [2.26] | 0 |
+| Tense | 2–3 (+ op.) → **4** | 60% / 40% | 4 → **3** | 1 | 1–6 (2.50, +11 %) [2.27] | 0–1 (25 %) |
+| Hazardous | 3–4 (+ op.) → **4** | 60% / 40% | 4 → **3** | 1 | 1–6 (3.04, +34 %) [2.78] | 0–1 (25 %) |
+| Brutal | 4 (+ op.) → **4** | 60% / 40% | 4 → **2** | 2 | 2–6 (3.63, +60 %) [3.29] | 0–1 (33 %) |
+| Lethal | 5 (+ op.) → **4** | 60% / 40% | 4 → **2** | 2 | 2–7 (3.74, +65 %) [3.29] | 0–1 (44 %) |
+| Cataclysm | 5 (+ op.) → **4** | 60% / 40% | 4 → **1** | 3 | 2–7 (3.96, +75 %) [3.29] | 0–1 (67 %) |
 
-The guard rows are the pre-D-130 ones (they already meet every D-130 floor); the civilian percentages run above
-D-130's targets because the pre-D-130 cleaner rows were already +45 % from Brutal and no tier may fall below it.
+The civilian percentages run above D-130's targets because the pre-D-130 cleaner rows were already +45 % from Brutal
+and no tier may fall below it.
 The late worker is seated and stays put (no wander), so the cost is a fixed pair of eyes on K4 (C5's corridor side,
 Moor's neighbour) or the K8 pods, plus a phone call if spooked.
 
@@ -585,6 +585,22 @@ never needs more than 2 ECM windows; see the hardest roll):
 Server door → Stair B (for `esc_service`) is camera-free in every layout: C3 looks N and the stair
 door is 5.75 m S of it.
 
+### Glazing (D-142)
+Clear glass is see-through for stealth vision (D-142). Its collider joins the `see_through` group and still
+blocks movement and bullets. Frosted, tinted, mirrored and privacy glass stays opaque.
+- **Clear (62 colliders):**
+  - L41 curtain wall (26 panes, above the 0.9 m spandrel): K1, K2, K4, K5, K8, K12, K15, K17–K24, the K6 /
+    K7 / K16 corridors and one core span.
+  - L42 curtain wall (22 panes): M1, M3, M4, M5, M14, one core span, and the terrace front (M8 dining ×4 and
+    the M15 glazed corridor ×6 onto X1).
+  - Interior glazing: the K11 / K12 vision panel and the M1 lounge's glass wall over the reception void.
+  - Glass balustrades (glass teal, a light architectural tint, see-through): the feature stair ×6, the M2
+    gallery void edge ×3 and the X1 terrace ×3.
+- **Opaque:** the partner, conference and boardroom fronts are frosted (built solid, with no glass collider),
+  as are the fritted spandrel band and the solid facade bays. The backlit teal bar glass in M1 has no collider.
+- **Not map-built:** the reception glass doors, the terrace sliders and the glass-leaf doors are Door prefabs
+  (ENV A, not tagged). The stair-door vision panels belong to the door kit.
+
 ## Stealth routes
 All five approaches start on the roof (default spawn, SW corner under the insertion line) except
 the service level, which is a spawn choice.
@@ -616,12 +632,13 @@ the service level, which is a spawn choice.
 **Inside, the required line is:** laptop (one of 4 places) + keycard (server door, unless
 `srv_contractor`) + cage code (or the saw) + the 45 s hack + 2 of 3 drive bags out.
 
-**Pager budget:** pagers per guard as in the roster table. Routine to Tense can clear the floor
-with pagers; from Hazardous up, at least one guard must be avoided. The operator is the most
+**Pager budget (D-140):** 4 pager carriers on every roll against a cap of 4 / 3 / 3 / 2 / 2 / 1. Routine can clear
+the floor with pagers; from Tense up, at least one guard must be avoided (three at Cataclysm). The operator is the most
 valuable pager (all cameras off, S8.2) but sits in the busiest corridor.
 
 **The hardest roll and its ghost line** (verifies the level_standards §4 MUST). Cataclysm, `cam_b`
-(Titan), operator in, 5 guards (both rovers, fire watch, roof), `lap_study`, `lz_sweep`,
+(Titan), operator in, 3 guards (reception, both rovers; written before D-140 against 5 guards with the fire watch
+and roof, so the steps that dodge those two hold a fortiori, and the empty-room roll swaps the operator for one of them), `lap_study`, `lz_sweep`,
 `gon_stowed`, `vent_sealed`, `srv_locked`, keycards `kc_security` + `kc_reception`,
 `code_security_log`, `esc_heli`, 3 cleaners, `kessler_sleepover`. Solo, one ECM deployable (2
 charges), **no kills, no pagers**:

@@ -20,7 +20,7 @@ const CODE_GROUP: StringName = &"argus"
 ## Vaultline couriers walk to the centrepiece slot, so they also pass the TR door (cp_treasury); the LD personnel door
 ## (push_bar) lets the dock smoker and the waitstaff (Circulation: they leave by it at last call + 120 s) out.
 const GUARD_TAGS: Array = ["guard_hall", "guard_rover_ground", "guard_rover_upper", "guard_rover_basement",
-	"guard_inspection", "guard_inspection_escort", "guard_vaultline"]
+	"guard_inspection", "guard_inspection_escort", "guard_vaultline", "guard_court", "guard_rounds"]
 const STAFF_TAGS: Array = ["civ_curator", "civ_attendant", "civ_waitstaff", "civ_conservator", "civ_admin"]
 ## B2: boundary doors into BOH are LOCKPICK 8 s.
 const LOCKPICK_S: float = 8.0
@@ -144,8 +144,8 @@ const SLOT_TODO: Dictionary = {
 	"conservator": "CIVILIAN SpawnPoint civ_conservator (cons_late) / empty (cons_gone)",
 	"keycard": "keycard_pickup objective_tag keycard (kc_curator: NPC-carried, QC-52)",
 	"code_note": "code_note code_group argus, objective_tag code_note",
-	"guard_post": "GUARD SpawnPoint + PatrolGraph post (rover_none: empty)",
-	"security_room_staffed": "CAMERA_OPERATOR SpawnPoint at the SC console (sec_staffed) / empty",
+	"guard_post": "GUARD SpawnPoint + PatrolGraph post (D-140: rover_court on its own Court graph)",
+	"security_room_staffed": "CAMERA_OPERATOR SpawnPoint at the SC console (sec_staffed) / D-140 roundsman (sec_empty)",
 	"camera": "security_camera instances of this layout (C* placeholders below)",
 	"laser_pattern": "laser_grid TR z 26.5 with this pattern (B4: low beam centre >= 1.30 m)",
 	"curator_route": "civ_curator SpawnPoint + staff_curator PatrolPoints",

@@ -280,6 +280,24 @@ and the salon door. The window to move behind the counter opens when both are at
 - **P2 cameras (designed now):** C1 G5 NE corner → entrance; C2 G5 SW corner → counter/staff door;
   C3 G4 east end → corridor; C4 alley over the back door; C5 G2 over the safe; C6 U4 west end → corridor.
 
+### Glazing (D-142)
+Clear glass is see-through for stealth vision (D-142). Its collider joins the `see_through` group and still
+blocks movement and bullets. Frosted, tinted, mirrored and privacy glass stays opaque.
+- **Clear (15 map-built colliders):**
+  - G5 sales floor: shopfront bays A/B/C to Harlow Ave (full-opening blockers next to the Window prefabs'
+    GlassBody) and the chandelier display's glass case (0.75–1.2 m). Its walnut cabinet (0–0.75 m) stays opaque.
+  - G6 salon: the south (Harlow Ave) and east (Pell St) windows (blockers next to the prefabs).
+  - G2 workshop: the high barred window N (sill 1.8 m, alley).
+  - U2 security room: window N. This is the designed sightline over the back door and the dumpsters (see above).
+  - U5 admin: windows S ×2. U6 manager: window S (A). U7 stock: window S, windows E ×2.
+  - Stair: the glass landing-well guard.
+- **Opaque:** U3 staff WC, the high frosted window N (layout `FROSTED_WINDOWS`). U6 window S (B) is the PO6-17
+  breach window, an opaque infill until it is blown.
+- **Not map-built:** the gameplay Window prefabs (shopfront ×3, salon ×2, break-room door-window) are
+  see-through through their GlassBody (ENV A). The 8 display cases are DisplayCase prefabs (ENV A, not
+  tagged yet). Catalog dressing is not tagged: the window display boxes have felt-lined sides and a glass front
+  only, the salon decor vitrine stands against the wall, and the bus shelter is street dressing.
+
 ## Stealth routes
 1. **Front (customer):** case from the street and the sales floor. When the keycard is behind the
    counter (`kc_counter`), take it **unmasked** (casing-allowed pickup) while the counter staff work

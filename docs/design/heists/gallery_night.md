@@ -57,6 +57,10 @@ Cross-env requests are QC-51..QC-59.
   dead). **The same hack lifts the lockdown** (now 120 s, 2–3 interruptions, in the upper BOH
   holdout). The art-store vault door also takes a **thermal drill** (240 s) as the fallback.
 - **Difficulty notes:**
+  - **D-140 (GUARDS lever, revised 12:25):** pager cap **4 on every difficulty** (`pager_max_by_difficulty` empty);
+    guards (pager carriers at load: posts, rovers, the operator or his sec_empty roundsman) **4 / 5 / 5 / 6 / 6 / 7**
+    (Routine..Cataclysm) on every seed, so from Tense killing every guard always runs out of pagers. Table: §roster
+    Totals per difficulty. The guard counts in the bullets below are the pre-D-140 curve (history).
   - Routine/Tense: 1–2 guards (hall post + 0–1 rover; `rover_none` 20%) + operator (60%), 3–5 patrons, `sensors_treasury`
     most likely (`sensor_net` 50%; `sensors_upper` 35%, and `sensors_all` 15%, so all 17 frames can be wired even at Routine).
   - Hazardous/Brutal: 3 guards on Hazardous, exactly 4 on Brutal (`difficulty_add`, `rover_none` 0), 5–9 patrons (E 7.0, D-130), sweeping/timed lasers favoured, `sensors_all`
@@ -513,7 +517,9 @@ Support-space check (level_standards §2.2):
 | Security Officer, upper rover (`gallery_guard_b`) | 0–1 | `rover_upper` | `guard_rover_upper` | — | `guard`, `guard_upper` |
 | Security Officer, basement rover (`gallery_guard`) | 0–1 | `rover_basement` | `guard_rover_basement` | — | `guard`, `guard_basement` |
 | Security Officer, dock smoker (`gallery_guard_b`) | 0–1 | `dock_smoker` | `guard_mews` | `smoke` | `guard_mews` |
-| Camera operator (`gallery_guard_b`) | 0–1 | `security_room_staffed` | CAMERA_OPERATOR in SC | `desk_work` | — |
+| Security Officer, court rover (`gallery_guard`, D-140) | 0–1 | `rover_court` (graph `court`: north bronzes → grate watch → court gate → west benches) | `guard_mews` (second tag guard_court, unmapped) | — | `guard` |
+| Camera operator (`gallery_guard_b`) | 0–1 | `security_room_staffed` = `sec_staffed` | CAMERA_OPERATOR in SC | `desk_work` | — |
+| Roundsman (the operator off his desk, D-140) | 0–1 | `sec_empty` (graph `rounds`: UG1 Calloway → BW → UG2 Sallow → SL loggia) | `guard_operator` (second tag guard_rounds, unmapped) | — | `guard` |
 | Insurance inspectors (`gallery_guard`) | 2 | rare `insurance_inspection` (timed spawn at LD, QC-25) | `guard_inspection` | — | `guard` |
 | Vaultline couriers (`armored_car_crew`) | 2 | rare `vaultline_early` (timed spawn at LD) | `guard_vaultline` | — | `guard_vaultline` |
 | Curator Margit Sorell (`gallery_curator`) | 1 | always; route by `curator_route` | `civ_curator` | `curator_inspect` / `desk_work` (`curator_office`: on her DeskCO chair's `Seat`, PO6-06) | `staff`, `staff_curator` |
@@ -525,18 +531,21 @@ Support-space check (level_standards §2.2):
 | Drawings attendant (`gallery_attendant`, D-130) | 0–1 | `gala_extra` (Brutal+, or the Tense pick); stays after last call | `civ_attendant` | `curator_inspect` (at the DC south vitrine) | — |
 | Patrons (`gallery_patron`) | 3–12 | `patrons` scalar; `stragglers` after last call | `civ_patron` (GH ×4, WG ×2, EG ×2, EB ×2, court ×2) | `browse` / `sit` / `smoke` (court) | `civilian`, `civilian_court` |
 
-**Totals per difficulty** (guards from `guard_post` picks with `difficulty_add`; civilians at load, before last
-call: curator, 2 attendants, 2 waitstaff, conservator 0–1, `gala_extra`, the first `patrons` patrons, PA on
-`late_paperwork`; "E" = expected count, % against Routine; every tier >= the tier below and its pre-D-130 E; D-130, pinned by `game/tests/c/test_d130_population.gd`):
+**Totals per difficulty** (D-140, GUARDS lever: guards = pager carriers at load = the hall post + the `guard_post`
+picks + the operator (`sec_staffed`) or his roundsman (`sec_empty`), the same on every seed; the rare-event inspectors,
+escorts and couriers are timed spawns, not counted. Civilians at load, before last call: curator, 2 attendants, 2
+waitstaff, conservator 0–1, `gala_extra`, the first `patrons` patrons, PA on `late_paperwork`; "E" = expected count, %
+against Routine; every tier >= the tier below and its pre-D-130 E; D-130 / D-140, pinned by
+`game/tests/c/test_d130_population.gd`):
 
-| Difficulty | Guards (hall + rovers/smoker) | Operator | Pagers to clear every guard | Civilians before last call (E, %) | `gala_extra` | Notes |
+| Difficulty | Guards (hall + `guard_post` + operator/roundsman) | was (pre-D-140, + operator 60–75 %) | Pager cap | Margin (guards − cap) | Civilians before last call (E, %) | `gala_extra` |
 |---|---|---|---|---|---|---|
-| Routine | 1 + 0–1 = **1–2** (1.8) | 60% | 1–3 | 8–14 (10.1) | 0 | |
-| Tense | 1 + 0–1 = **1–2** (1.8) | 60% | 1–3 | 9–15 (11.2, +10 %) | 1 | Same guard_post pick as Routine (GN-B1 Q2: the Variable table rules). |
-| Hazardous | 1 + 2 = **3** | 65% | 3–4 | 11–17 (13.5, +33 %) | 1 | |
-| Brutal | 1 + 3 = **4** | 75% | 4–5 | 12–18 (14.5, +43 %) | 2 | Exceeds the cap with the operator. |
-| Lethal | 1 + 4 = **5** | 75% | 5–6 | 12–21 (14.7, +45 %) | 2 | Ghost 1–2 guards; Titan cameras. |
-| Cataclysm | 1 + 4 = **5** | 75% | 5–6 | 12–21 (15.0, +48 %) | 2 | As Lethal. |
+| Routine | 1 + 2 + 1 = **4** | 1–2 (1.8) | 4 | 0 | 8–14 (10.1) | 0 |
+| Tense | 1 + 3 + 1 = **5** | 1–2 (1.8) | 4 | 1 | 9–15 (11.2, +10 %) | 1 |
+| Hazardous | 1 + 3 + 1 = **5** | 3 | 4 | 1 | 11–17 (13.5, +33 %) | 1 |
+| Brutal | 1 + 4 + 1 = **6** | 4 | 4 | 2 | 12–18 (14.5, +43 %) | 2 |
+| Lethal | 1 + 4 + 1 = **6** | 5 | 4 | 2 | 12–21 (14.7, +45 %) | 2 |
+| Cataclysm | 1 + 5 + 1 = **7** | 5 | 4 | 3 | 12–21 (15.0, +48 %) | 2 |
 
 After last call the guests and waitstaff (with the cloakroom attendant) leave; the curator, the attendants (with the
 DC attendant), the conservator and `stragglers` stay (E 4.3 Routine to 5.85 Cataclysm, +36 %).
@@ -603,6 +612,21 @@ and become `validate_level` checks built at G1 (design note; not implemented yet
 | `cam_b` | C2, C4, C6, C8, C10, C12 | BC and UC free (C5/C13 off) | the roof deck → SS; the Mews ladder (C7 off) |
 | `cam_c` | C1, C4, C5, C8, C10, C12 | UC free; BC watched (SC needs ECM or the operator) | the LD personnel door (C6/C7 off); the roof deck → SS |
 
+### Glazing (D-142)
+Clear glass is see-through for stealth vision (D-142). Its collider joins the `see_through` group and still
+blocks movement and bullets. Frosted, tinted, mirrored and privacy glass stays opaque.
+- **Clear (14 greybox panes):**
+  - Ground floor: the BR break room and RG registrar windows N (Mews), and the CK cloakroom ×2 and GS gift
+    shop ×2 shop-front glazing (Parade).
+  - Upper floor: the CO curator and FS windows N (Mews) and the CS sawtooth-studio windows E ×5 (Wexley St).
+  - Roof: the oculus glass (the P5 rappel entry).
+- **Opaque:** the SC security room window N (privacy; `FROSTED_PANE_ROOMS` in build_greybox.gd). The AO
+  window is the PO6-17 breach infill. The laylights are ceilings, and the lantern glazing is roof visual only.
+- **Not map-built:** the EB windows ×5 and the SL loggia windows ×4 are Window prefabs, see-through through
+  their GlassBody (ENV A). The EB windows have closed blinds (Room list), so they should not be (open question).
+  The Treasury vitrines are DisplayCase prefabs, and the DC / EB decor vitrines are catalog dressing.
+  Neither is tagged.
+
 ## Stealth routes
 Spawns: the portico (default, unmasked guests), the Mews (`pp_spawn_mews`, unmasked, outside the
 LD), the roof deck (`pp_spawn_roof`, unmasked on a RESTRICTED roof, masked to move freely).
@@ -640,12 +664,13 @@ keycard) → cut (4 s) → carry out.
 **Keycards:** 2 cards (`keycard` picks 2 of 4), 3 readers (TR, AS vault, LD → EG art door). Readers
 consume cards (D-042 precedent). Spending one on the art door can cost the Treasury.
 
-**Pager budget:** Routine–Hazardous can pager every guard. Brutal+ cannot: the dock smoker and the
+**Pager budget (D-140):** 4 pagers on every difficulty. Routine (4 guards) can pager every guard; from Tense
+(5–7 guards) nobody can, so 1–3 guards must be avoided. Pre-D-140 text: Routine–Hazardous can pager every guard. Brutal+ cannot: the dock smoker and the
 basement rover are the natural guards to avoid (their loops are separable). The operator is worth a
 pager: killing or dominating him turns every camera off, the two inner ones included (S8.2).
 
 **The hardest roll and its ghost line** (level_standards §4 MUST). Cataclysm, Titan cameras, operator
-in, 5 guards (hall, 3 rovers, smoker), `cp_treasury`, `orchard_calloway`, `widow_sallow`, `saint_store`,
+in, 7 guards (D-140: hall, 3 rovers, smoker, court rover, operator), `cp_treasury`, `orchard_calloway`, `widow_sallow`, `saint_store`,
 `sensor_net = sensors_all` (+ `argus_upgrade`), `laser_pattern = lz_sweep`, keycards `kc_curator` +
 `kc_security`, `code_security_log`, `grate_padlocked`, `court_doors_locked`, `curator_hall`,
 `cons_gone`, 9 patrons, 2 stragglers, `esc_parade`. Solo, one ECM deployable (2 charges), **no kills,
@@ -847,8 +872,8 @@ Hazardous (`sensor_net`, `laser_pattern`, `patrons`, `escape_eta_s`).
 | `conservator` (`civilian_cluster`) | `cons_late`, `cons_gone` | 0.5, 0.5 | A civilian in CS (by `widow_conservation` and `kc_conservator`). |
 | `keycard` | `kc_curator` (on her lanyard: tie or kill her, QC-52), `kc_security` (SC cabinet), `kc_registrar` (RG desk), `kc_conservator` (CS bench; requires `cons_late`) | 1, 0.75, 1, 1; **pick 2** | **2 cards for 3 readers (TR, AS vault, LD art door):** which door you give up, and whether you must deal with the operator or the curator. |
 | `code_note` | `code_security_log` (SC), `code_curator_planner` (CO), `code_admin_postit` (AO) | 1, 1, 1; pick 1 | **The SV door:** behind the operator, in the curator's office, or in the open office (C13's corridor). |
-| `guard_post` | `rover_ground`, `rover_upper`, `rover_basement`, `dock_smoker`, `rover_none` (encodes counts as Night Deposit) | Routine/Tense pick 1 (`rover_none` 1 vs 1 each: P(none) = 0.2); Hazardous pick 2; Brutal 3; Lethal+ 4 (`difficulty_add`) | **Which floor and which entry has a walker**: the smoker shuts the Mews; the basement rover makes the grate and the vault slow. |
-| `security_room_staffed` | `sec_staffed`, `sec_empty` | Routine 0.6/0.4; Hazardous 0.65/0.35; Brutal+ 0.75/0.25 | Live cameras or not; SC's cabinet and log are free when empty. |
+| `guard_post` | `rover_ground`, `rover_upper`, `rover_basement`, `dock_smoker`, `rover_court` (D-140: `rover_none` removed, the court rover added) | D-140: pick 2 + `difficulty_add` [0, 1, 1, 2, 2, 3] = exactly 2 / 3 / 3 / 4 / 4 / 5 of the five (Routine..Cataclysm), all at weight 1 | **Which floor and which entry has a walker**: the smoker shuts the Mews; the basement rover makes the grate and the vault slow. |
+| `security_room_staffed` | `sec_staffed`, `sec_empty` (D-140: the operator walks his upper-floor rounds instead, graph `rounds`) | Routine 0.6/0.4; Hazardous 0.65/0.35; Brutal+ 0.75/0.25 | Live cameras or a sixth walker upstairs; SC's cabinet and log are free when empty. Either way one pager. |
 | `camera` | `cam_a`, `cam_b`, `cam_c` (table in Sightlines) | 1, 1, 1 | Which corridor and which entry needs ECM or timing. |
 | `laser_pattern` (TR grid) | `lz_static` (3 beams 1.30/1.90/2.50 m, evenly spaced by the prefab: crouch under the 1.30 m beam, Build rulings B4), `lz_sweep` (3 vertical, 6 s, ~2.4 m apart, full room width; beams pair up at the side walls, ~1.4 s gap, ~0.7 s mid-room: timing kept, lead r165 option a, Mercer hint by B), `lz_timed` (4 beams, off 4 s of 16 s, full width) (G1, lead r165) | Routine 0.5/0.2/0.3; Brutal+ 0.2/0.4/0.4 | Crouch, time the sweep or wait, in C11's cone. |
 | `curator_route` (`civilian_cluster`) | `curator_hall`, `curator_office` | 0.5, 0.5 | **Where the keycard walks:** in the public hall among guests (tie her and every patron sees) or upstairs near CO/SV (quiet tie, near the upper rover). |
