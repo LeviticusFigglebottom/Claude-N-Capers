@@ -9,7 +9,8 @@
 ##   follows its leader, mirrors the leader's mask and crouch, and stays detectable for the rest of
 ##   the stealth phase (even when later ordered to hold).
 ## - L6.1 loud: unhidden and masked (the alarm masks everyone). Priorities each tick:
-##   1. revive a DOWNED, CLOAKER_DOWNED or TASED crew member (needs_help; humans first, then AI; each is assigned the nearest
+##   1. revive a DOWNED, CLOAKER_DOWNED or TASED crew member, uncuff a CUFFED one (needs_help; humans first, then AI;
+##      each is assigned the nearest
 ##      free AI) — walk to revive_range_m, hold interact with interact_target_net_id for the full
 ##      revive (L2.7, 6 s), and keep at it under fire (re-press after a damage interrupt, S9.1);
 ##   2. fight: nearest visible hostile police/special/guard (guards only when ALARMED/COMBAT; a Stinger
@@ -239,10 +240,13 @@ func ordered_revive_target() -> CrewController:
 
 
 ## L2.7/L2.8 (P3 gate): crew members the ReviveInteractable frees: DOWNED, CLOAKER_DOWNED (kicked)
-## and TASED (also freed by killing the Stinger, which AI then prioritises).
+## and TASED (also freed by killing the Stinger, which AI then prioritises). L2.12 / L6.1: CUFFED too (PD2 bots free
+## an arrested player): the same hold on the crew member resolves to its UncuffInteractable (priority 100), a cuffed
+## downed crew member goes back to DOWNED and is then revived. Without it a downed human cuffed by police while the AI
+## were down stayed cuffed until custody even after they were back up (OF loud seed 1, round 245).
 static func needs_help(c: CrewController) -> bool:
 	return c.crew_state == Enums.CrewState.DOWNED or c.crew_state == Enums.CrewState.CLOAKER_DOWNED \
-		or c.crew_state == Enums.CrewState.TASED
+		or c.crew_state == Enums.CrewState.TASED or c.crew_state == Enums.CrewState.CUFFED
 
 
 ## Automatic revive assignment may send this AI to `t` (hold: only within hold_revive_radius_m).

@@ -222,6 +222,29 @@ func test_p3_ai_frees_cloaker_downed_and_tased_human() -> void:
 		await wait_physics_frames(10)
 
 
+## L2.12 / L6.1 (PD2 bots free an arrested player): a downed human cuffed by police is uncuffed by an AI teammate
+## (back to DOWNED) and then revived.
+func test_l2_12_ai_uncuffs_and_revives_cuffed_downed_human() -> void:
+	Engine.time_scale = TIME_SCALE
+	await _go_loud()
+	_rt.teleport_crew(0, Transform3D(Basis.IDENTITY, Vector3(4, 0.05, 0)))
+	await wait_physics_frames(2)
+	var c: CrewController = _crew(0)
+	c.health.go_down()
+	c.health.down_s = CustodyTweak.data().police_cuff_grace_s  # D-108 grace elapsed
+	var cuffs: CrewCuffs = CrewCuffs.of(c, true)
+	await wait_physics_frames(2)
+	assert_true(cuffs.cuff_downed(777), "cuff_downed")
+	assert_eq(c.crew_state, Enums.CrewState.CUFFED)
+	var freed_by: Array[int] = []
+	cuffs.freed.connect(func(by: int) -> void: freed_by.append(by))
+	var ok: bool = await wait_until(func() -> bool: return c.crew_state == Enums.CrewState.NORMAL, 30.0)
+	assert_true(ok, "uncuffed and revived by the AI (state %d)" % c.crew_state)
+	assert_eq(freed_by.size(), 1, "freed once")
+	if freed_by.size() == 1:
+		assert_true(_ai_slots().has(freed_by[0]), "by an AI slot (%d), not the self-free" % freed_by[0])
+
+
 func test_p3_ai_shoots_the_tasing_stinger_first() -> void:
 	await _go_loud()
 	var brain: CrewAiBrain = CrewAiBrain.of(_crew(1))
