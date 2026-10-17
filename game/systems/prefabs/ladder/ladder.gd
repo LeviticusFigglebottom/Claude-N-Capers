@@ -15,7 +15,11 @@
 ## the climb face on -Z on the floor, Top is on the landing), on navigation layer NAV_LAYER only. Every
 ## default agent / path query (NPCs, police, CrewAiBrain bots, civilians) uses layer 1 (`walkable`), so
 ## they never route over a ladder they cannot climb; a climber's query uses `1 | Ladder.NAV_LAYER`.
-## The link is enabled while `usable`.
+## The link is enabled while `usable` and the prefab is enabled.
+## OF-A2 (QC-61): two switches, one NavLink. `usable` (replicated) = climbable while still shown (a grate-covered
+## areaway ladder); GameplayPrefab `set_enabled` / `enabled_at_start` (replicated "pe") = present at all (hidden,
+## no collision, not climbable, NavLink off: a rope ladder dropped down a breached hole). Climbable =
+## `is_climbable()` = both; the NavLink always follows `is_climbable()`.
 class_name Ladder
 extends GameplayPrefab
 
@@ -34,12 +38,11 @@ const NAV_LAYER: int = 8
 const NAV_LINK_NAME: String = "NavLink"
 
 @export var height_m: float = 3.0
-## False: nobody can climb and the NavLink is disabled.
+## False: nobody can climb and the NavLink is disabled (the ladder stays visible; see set_enabled).
 @export var usable: bool = true:
 	set(v):
 		usable = v
-		if _nav_link != null:
-			_nav_link.enabled = v
+		_refresh_nav_link()
 
 ## slot -> { "path": PackedVector3Array, "length": float, "d": float (m travelled), "up": bool }
 var _climbs: Dictionary[int, Dictionary] = {}
@@ -70,6 +73,32 @@ func _prefab_ready() -> void:
 		rt.add_crew_tick_handler(_on_crew_tick)
 
 
+## OF-A2: climbable now (usable and the prefab enabled).
+func is_climbable() -> bool:
+	return usable and prefab_enabled
+
+
+func _on_enabled_changed(on: bool) -> void:
+	_refresh_nav_link()
+	if not on:
+		for slot: int in _climbs.keys():  # a climber on a ladder that goes away lets go where he is
+			var crew: CrewController = _crew_of(slot)
+			if crew != null:
+				_end(crew)
+			else:
+				_climbs.erase(slot)
+
+
+func _refresh_nav_link() -> void:
+	if _nav_link != null:
+		_nav_link.enabled = is_climbable()
+
+
+func _crew_of(slot: int) -> CrewController:
+	var rt: HeistRuntime = HeistRuntime.of(self)
+	return rt.crew_controller(slot) as CrewController if rt != null else null
+
+
 ## The ladder's NavigationLink3D (layer NAV_LAYER), or null before ready.
 func nav_link() -> NavigationLink3D:
 	return _nav_link
@@ -84,7 +113,7 @@ func _setup_nav_link() -> void:
 	_nav_link.navigation_layers = NAV_LAYER
 	_nav_link.start_position = _local_of(bottom_position())
 	_nav_link.end_position = _local_of(top_position())
-	_nav_link.enabled = usable
+	_nav_link.enabled = is_climbable()
 	add_child(_nav_link)
 
 
@@ -133,7 +162,7 @@ func start_climb(crew: CrewController, up: bool) -> bool:
 
 
 func _can_climb(crew: CrewController) -> bool:
-	if not usable:
+	if not is_climbable():
 		return false
 	if crew.crew_state != Enums.CrewState.NORMAL or crew.is_casing():  # S1.1
 		return false

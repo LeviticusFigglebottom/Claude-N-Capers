@@ -1,4 +1,4 @@
-# Contract: EventBus events (v1.8)
+# Contract: EventBus events (v1.9)
 
 Code: `game/core/event_bus.gd` (the signal list there is authoritative; this file adds emitter and
 replication rules). Rules: architecture.md §5.
@@ -114,3 +114,8 @@ peer); `position` = van park point / heli hover point (drop) or orbit centre (sn
 ## v1.8: objective_updated carries state_changed (A 67ce6d5f, ui_hud v1.18)
 `objective_updated` still fires on data-only updates (counts, markers), but its data now carries `"state_changed": bool`
 (false when only data changed). Observers that log state transitions filter on it.
+
+## v1.9 (OF-A4 CivilianRoute, A 405a3169)
+`civilian_away_changed(net_id: int, window: StringName, away: bool)` [R]: a routed civilian (Ostrander's manager, the
+rotating teller, officers) entered or left a named away window. Server-authoritative; replicated so client HUD/intel can
+name the window.

@@ -1,5 +1,5 @@
 {
-	"version": 8,
+	"version": 9,
 	"profile_name": "Planner",
 	"cash": 8800,
 	"stash": 125000,
@@ -32,6 +32,7 @@
 	"music_choice": "",
 	"career": {"totals": {}, "heists": {}, "difficulties": {}, "bags": {}, "weapons": {}},
 	"weapon_finishes": {},
+	"freshness": {"recent": [], "runs": 0, "last_run": {}, "completed": []},
 	"stats": {"heists_completed": 9, "heists_failed": 2},
 	"settings": {"name_tag": "planner"}
 }

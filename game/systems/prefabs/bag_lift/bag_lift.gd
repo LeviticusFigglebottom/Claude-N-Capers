@@ -25,6 +25,9 @@
 ## place when the doors open (a SECURE_LOOT zone in the car at the far landing secures them as usual).
 ## Server-authoritative. Cues: cue.bag_lift_start (doors close, car leaves), cue.bag_lift_arrive.
 ## P2 limitation: clients do not see the car move (no replicated car state yet).
+## OF-A2 (QC-61): GameplayPrefab `set_enabled` / `enabled_at_start` (a hoist installed mid-heist): disabled =
+## hidden, CarBody and every panel off, the car does not run; an external panel (`panel_path` outside the
+## prefab) is hidden with it. Disabling it mid-trip completes the trip at once (no bag stays frozen in the car).
 class_name BagLift
 extends GameplayPrefab
 
@@ -126,6 +129,13 @@ func _prefab_ready() -> void:
 	_spawn_landing_panels.call_deferred()
 	_place_car(landing_transform(landing))
 	_set_doors(true)
+
+
+func _on_enabled_changed(on: bool) -> void:
+	if panel_external and is_instance_valid(panel_node) and not is_ancestor_of(panel_node):
+		panel_node.visible = on
+	if not on and is_moving() and Net.is_authority():
+		_arrive()
 
 
 ## Number of landings (this prefab + targets).

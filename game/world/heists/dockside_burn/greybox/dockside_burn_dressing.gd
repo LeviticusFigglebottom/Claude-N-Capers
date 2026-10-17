@@ -132,6 +132,7 @@ const KEEP_OUT: Dictionary = {
 	"PL": [[0.2, 0.0, 13.4, 3.6, 2.4, 16.6]],
 	"SR": [[18.2, 0.0, 26.6, 23.0, 2.4, 31.8]],
 	"AN": [[26.2, 0.0, 26.8, 28.6, 2.4, 29.4]],
+	"M1": [[9.0, 3.6, 0.2, 10.7, 6.0, 4.4]],  # D-138: the cash cage and its gate's swing (no kit props inside)
 }
 ## Rooms whose kit ceiling grid is off (none: every kit room takes its fixtures from the kit).
 const NO_CEILING_GRID: Array[String] = []

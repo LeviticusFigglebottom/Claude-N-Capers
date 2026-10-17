@@ -266,6 +266,7 @@ ui.results.loot_line,{loot} x{count}
 ui.results.small_loot,Small loot
 ui.results.difficulty_mult,Difficulty x{mult}
 ui.results.crew_alive,Crew alive bonus x{mult}
+ui.results.freshness,Heist freshness {pct}
 ui.results.civilian_penalty,Cleanup costs (civilians)
 ui.results.subtotal,Subtotal
 ui.results.total,Total payout
@@ -280,6 +281,7 @@ ui.results.xp.difficulty,Difficulty bonus
 ui.results.xp.custody,Custody penalty
 ui.results.xp.additive,Crew and gear bonuses
 ui.results.xp.stealth,Stealth bonus
+ui.results.xp.freshness,Heist freshness
 ui.results.stealth_bonus_banked,Stealth bonus banked for your next job: +{pct}%
 ui.results.xp_total,Total experience
 ui.results.level_up,Level up! Now level {level}
@@ -582,6 +584,7 @@ ui.heist_select.difficulty_locked_progress,"{name} is locked: win any heist on {
 ui.heist_select.titan_cameras,Titan cameras
 ui.heist_select.pagers,{n} pagers
 ui.heist_select.pager_one,1 pager
+ui.heist_select.more_guards,More guards: {n}
 ui.heist_select.stealth_note_sep,"  ·  "
 ui.loadout.none,None
 ui.loadout.stock,Stock
@@ -2580,6 +2583,16 @@ item.asset.sniper_position.name,Sniper position
 item.asset.sniper_position.desc,"A counter-sniper spot is ready for you, with an ammo bag waiting: the roof door left unlocked, or a ladder up the double-stacked container."
 item.asset.thermite_drop.name,Thermite drop
 item.asset.thermite_drop.desc,The thermite bag is left here instead of at your start: a shorter carry to the burn.
+item.asset.thermal_drill_drop.name,Thermal drill drop
+item.asset.thermal_drill_drop.desc,"The two drill bags are left at this spot before you go in, so nobody waits for a delivery once it goes loud."
+item.asset.intel_code_pc.name,Insider: code PC
+item.asset.intel_code_pc.desc,You know which officer's computer holds the vault code today.
+item.asset.manager_schedule.name,Insider: manager's schedule
+item.asset.manager_schedule.desc,You know Lionel Ashgrove's rounds today and where the vault keycard is.
+item.asset.fire_escape_ladder.name,Fire escape ladder
+item.asset.fire_escape_ladder.desc,The Corvino fire escape's drop ladder is left down: a way up to the roof from Ledger Lane.
+item.loot.thermal_drill_part.name,Thermal Drill Part
+item.loot.thermal_drill_part.desc,"Half of the thermal drill. Heavy, worth nothing at payday, and the drill needs both halves on the floor."
 item.asset.gangway_raised.name,Raised gangway
 item.asset.gangway_raised.desc,A harbour hand swings the Pier 10 gangway away before you arrive. The police lose their way in from the east.
 item.asset.intel_containers.name,Insider: weapons containers
@@ -2676,8 +2689,53 @@ heist.gallery_night.name,Gallery Night
 heist.gallery_night.subtitle,Halberd Gallery
 heist.gallery_night.brief,"The Halberd hangs four canvases a collector wants quietly gone. Odile wants them rolled, not framed."
 heist.ostrander_federal.name,Ostrander Federal
-heist.ostrander_federal.subtitle,Ostrander Federal Bank
-heist.ostrander_federal.brief,"The biggest vault in the Financial District, and the Accountant has its floor plans. Cash, gold and bonds, if you can reach them."
+heist.ostrander_federal.subtitle,Ostrander Plaza main branch
+heist.ostrander_federal.brief,Every branch in the region sends its surplus to one vault for the weekend. The Accountant wants it emptied before Monday's armoured run.
+heist.ostrander_federal.briefing,"Ostrander Federal, the city's clearing bank, keeps its 1928 main branch on Ostrander Plaza, facing Halloran Avenue at the corner of Tannery Street. This weekend every branch in the region has sent its surplus to the basement vault for Monday's Vaultline run: strapped cash, the bank's gold, bearer bonds and two walls of deposit boxes. It is Friday afternoon and the bank is open. Case the hall unmasked, get the vault keycard (the day manager, Lionel Ashgrove, may be carrying it), get the vault code from the right officer's computer or hack the vault-control rack, then hold the basement while the time lock runs. The Accountant wants six bags of cash, gold or bonds (four on Routine). Out by the van in Ledger Lane or on Tannery Street, or the helicopter on the hall-roof terrace."
+heist.ostrander_federal.briefing_loud,"The vault locks down and the time lock dies. Bring in the thermal drill, burn through the teller-workroom floor into the vault, hoist the bags up and hold until the escape arrives."
+objective.ostrander_federal.casing,Case the bank
+objective.ostrander_federal.keycard,Get the vault keycard
+objective.ostrander_federal.code_hint,Check the manager's planner for the officer who has the code
+objective.ostrander_federal.code_pc,Find the vault code on an officer's computer
+objective.ostrander_federal.server,Or hack the vault-control rack to start the time lock
+objective.ostrander_federal.vault_gate,Open the vault gate with the keycard
+objective.ostrander_federal.lasers,Switch off the concourse lasers
+objective.ostrander_federal.time_lock,Cross the lasers and start the time lock
+objective.ostrander_federal.time_lock_wait,Hold the basement until the time lock opens
+objective.ostrander_federal.vault_loot,Bag the cash cage
+objective.ostrander_federal.gold_cage,Open the bullion cage
+objective.ostrander_federal.secure,"Secure bags of cash, gold or bonds ({count}/{total})"
+objective.ostrander_federal.deposit_boxes,Saw open the deposit boxes
+objective.ostrander_federal.bond_safe,Open the bond safe
+objective.ostrander_federal.president_safe,Open the president's safe
+objective.ostrander_federal.server_drives,Take the server drives
+objective.ostrander_federal.drill_delivery,Get both thermal drill bags from the drop
+objective.ostrander_federal.vault_drill,Drill the marked slab in the teller workroom and hold the room
+objective.ostrander_federal.vault_breach,Burn through the floor into the vault
+objective.ostrander_federal.escape_wait,Hold until the escape arrives
+objective.ostrander_federal.escape,Get to the escape
+ui.briefing.step.ostrander_federal.code,"Get the vault code from the right officer's computer, or hack the vault-control rack"
+ui.briefing.step.ostrander_federal.vault,"Open the vault gate, start the time lock and hold the basement until it opens"
+ui.briefing.sec.event.ostrander_federal.vip_client,a client with a Halden bodyguard in the deposit hall (1 guard and 1 civilian downstairs)
+ui.briefing.sec.event.ostrander_federal.armored_car_early,Vaultline crew arrives early at the dock (2 guards)
+ui.briefing.sec.event.ostrander_federal.tower_sniper,a sniper in a Corvino Building window (slower helicopter)
+ui.preplan.point.ostrander_federal.pp_spawn_plaza,Ostrander Plaza: the front steps
+ui.preplan.point.ostrander_federal.pp_spawn_lane,Ledger Lane: by the dumpsters
+ui.preplan.point.ostrander_federal.pp_spawn_tannery,Tannery Street: the loading bay
+ui.preplan.point.ostrander_federal.pp_drop_lane,Ledger Lane: behind the dumpsters
+ui.preplan.point.ostrander_federal.pp_drop_restroom,Customer restrooms
+ui.preplan.point.ostrander_federal.pp_drop_lockers,Basement: staff lockers
+ui.preplan.point.ostrander_federal.pp_drop_terrace,Hall-roof terrace
+ui.preplan.point.ostrander_federal.pp_escape_dock,Van: Ledger Lane dock
+ui.preplan.point.ostrander_federal.pp_escape_tannery,Van: Tannery Street bay
+ui.preplan.point.ostrander_federal.pp_escape_heli,Helicopter: hall-roof terrace
+ui.preplan.point.ostrander_federal.pp_drill_terrace,Thermal drill: hall-roof terrace
+ui.preplan.point.ostrander_federal.pp_drill_dock,Thermal drill: Ledger Lane dock
+ui.preplan.point.ostrander_federal.pp_fire_exit,Insider: Tannery fire exit
+ui.preplan.point.ostrander_federal.pp_dock_door,Insider: dock personnel door
+ui.preplan.point.ostrander_federal.pp_vault_ops,Insider: vault-ops keycard
+ui.preplan.point.ostrander_federal.pp_fire_escape,Insider: Corvino fire-escape ladder
+music.ostrander_federal.name,Clearing House
 heist.rolling_thunder.name,Rolling Thunder
 heist.rolling_thunder.subtitle,Armored Convoy
 heist.rolling_thunder.brief,"Three armored trucks on the Southfield bypass, one bad turn from a standstill. Hollis brings the roadblock; you bring the saws."
@@ -3454,6 +3512,8 @@ ui.preplan.floor.mezzanine,Mezzanine
 ui.preplan.floor.level_40,Level 40 (service)
 ui.preplan.floor.level_41,Level 41
 ui.preplan.floor.level_42,Level 42
+ui.preplan.floor.gallery,Gallery level
+ui.preplan.floor.executive,Executive level
 ui.preplan.bp.glasshouse.g1,Receiving
 ui.preplan.bp.glasshouse.g2,Workshop
 ui.preplan.bp.glasshouse.g3,WC
@@ -3664,3 +3724,66 @@ item.mod.sparrow_rubber_grip.name,Rubber Grip Sleeve
 item.mod.sparrow_rubber_grip.desc,A slip-on rubber sleeve that keeps the long bursts steadier. A little bulkier.
 item.mod.sparrow_slim_grip.name,Slim Grip Panels
 item.mod.sparrow_slim_grip.desc,"Flush smooth polymer panels without stippling. Easier to hide, a little harder to hold steady."
+ui.freshness.badge,{pct} %
+ui.freshness.reason_repeat,Played {n}× in your last {memory} heists
+ui.freshness.reason_rotation,Not played in {since} heists
+ui.heist_select.freshness,Freshness {pct}
+ui.preplan.bp.ostrander_federal.lk,Staff lockers
+ui.preplan.bp.ostrander_federal.gl,Cash lift
+ui.preplan.bp.ostrander_federal.cq,Cart queue
+ui.preplan.bp.ostrander_federal.sa,Stair A
+ui.preplan.bp.ostrander_federal.cp,Count room
+ui.preplan.bp.ostrander_federal.pl,Plant room
+ui.preplan.bp.ostrander_federal.cm,Comms room
+ui.preplan.bp.ostrander_federal.ss,Supplies
+ui.preplan.bp.ostrander_federal.sb,Stair B
+ui.preplan.bp.ostrander_federal.bb,Basement corridor
+ui.preplan.bp.ostrander_federal.rc,Records
+ui.preplan.bp.ostrander_federal.vc,Vault concourse
+ui.preplan.bp.ostrander_federal.vt,Vault
+ui.preplan.bp.ostrander_federal.sd,Safe-deposit hall
+ui.preplan.bp.ostrander_federal.ld,Loading dock
+ui.preplan.bp.ostrander_federal.e1,Electrical
+ui.preplan.bp.ostrander_federal.sr,Security room
+ui.preplan.bp.ostrander_federal.gr,Guard lockers
+ui.preplan.bp.ostrander_federal.wm,Men's room
+ui.preplan.bp.ostrander_federal.ww,Women's room
+ui.preplan.bp.ostrander_federal.j1,Janitor
+ui.preplan.bp.ostrander_federal.mo,Mail room
+ui.preplan.bp.ostrander_federal.bc,Back corridor
+ui.preplan.bp.ostrander_federal.lo,Loans
+ui.preplan.bp.ostrander_federal.tw,Teller workroom
+ui.preplan.bp.ostrander_federal.pc,Private clients
+ui.preplan.bp.ostrander_federal.cn1,Consultation 1
+ui.preplan.bp.ostrander_federal.cn2,Consultation 2
+ui.preplan.bp.ostrander_federal.av,ATM vestibule
+ui.preplan.bp.ostrander_federal.bh,Banking hall
+ui.preplan.bp.ostrander_federal.ve,Vestibule
+ui.preplan.bp.ostrander_federal.bm,Manager's office
+ui.preplan.bp.ostrander_federal.pw,Customer restrooms
+ui.preplan.bp.ostrander_federal.na,New accounts
+ui.preplan.bp.ostrander_federal.br,Break room
+ui.preplan.bp.ostrander_federal.e2,Riser
+ui.preplan.bp.ostrander_federal.e3,Riser
+ui.preplan.bp.ostrander_federal.it,IT office
+ui.preplan.bp.ostrander_federal.sv,Server room
+ui.preplan.bp.ostrander_federal.j2,Janitor
+ui.preplan.bp.ostrander_federal.ar,Archive
+ui.preplan.bp.ostrander_federal.uc,Gallery corridor
+ui.preplan.bp.ostrander_federal.ao1,Officer 1
+ui.preplan.bp.ostrander_federal.ao2,Officer 2
+ui.preplan.bp.ostrander_federal.ao3,Officer 3
+ui.preplan.bp.ostrander_federal.wl,West loggia
+ui.preplan.bp.ostrander_federal.el,East loggia
+ui.preplan.bp.ostrander_federal.of,Operations
+ui.preplan.bp.ostrander_federal.cf,Conference
+ui.preplan.bp.ostrander_federal.co,Compliance
+ui.preplan.bp.ostrander_federal.ga,Officers' gallery
+ui.preplan.bp.ostrander_federal.vo,Vault operations
+ui.preplan.bp.ostrander_federal.tr,Treasury
+ui.preplan.bp.ostrander_federal.tt,Training room
+ui.preplan.bp.ostrander_federal.bd,Boardroom
+ui.preplan.bp.ostrander_federal.ea,Executive assistant
+ui.preplan.bp.ostrander_federal.pr,President's office
+ui.preplan.bp.ostrander_federal.pn,Pantry
+ui.preplan.bp.ostrander_federal.hh,Stair head house

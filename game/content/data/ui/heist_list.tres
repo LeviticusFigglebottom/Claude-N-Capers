@@ -15,6 +15,7 @@ heists = {
 "solo_ai_teammates": 3
 },
 &"ostrander_federal": {
+"requires": ["res://world/heists/ostrander_federal/ostrander_federal_mission.gd"],
 "solo_ai_teammates": 3
 },
 &"rolling_thunder": {

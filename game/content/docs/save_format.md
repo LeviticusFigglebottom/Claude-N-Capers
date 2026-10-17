@@ -72,6 +72,7 @@ that has the field. v0 is the pre-versioned dev save; its `money` became `cash` 
 | `music_choice` | string | `""` | 6 | Chosen heist music track id (B5-03). `""` = the heist's default. At most 64 characters; anything longer, or a non-string, falls back to `""` with a warning. Load only type-checks it. At launch `MusicCatalog.resolve_choice` turns an unknown or locked id into `""` (B5-03, `content/docs/music.md`). |
 | `career` | object | 5 empty sections | 7 | Lifetime career stats (B7-01, `Career`). See "career" below. |
 | `weapon_finishes` | object | `{}` | 7 | Weapon id → finish id (reserved for B7-04 weapon finishes). `""` or no entry = the default finish. Keys and values are strings of at most 64 characters; anything else is dropped with a warning. |
+| `freshness` | object | empty memory | 9 | Heist freshness (D-139, `HeistFreshness`): `recent` = the heist ids of the last `PayoutTweak.freshness_memory` runs that reached payday (oldest first), `runs` = runs counted, `last_run` = heist id → the `runs` value of its last run, `completed` = heist ids won at least once. Bad lists / counters are emptied or dropped with a warning. |
 | `stats` | object | `{}` | 0 | Counter name → int (`heists_completed`, `heists_failed`, ...). |
 | `settings` | object | `{}` | 0 | Any JSON values, stored as-is (numbers come back as float). |
 
@@ -127,6 +128,7 @@ that is not an int ≥ 0, a key over 64 characters, or a non-integer difficulty 
 | 5 → 6 | `notoriety = 0`, `notoriety_xp = 0`, `notoriety_choices = {}`, `held_skill_sets = []`, `music_choice = ""`. |
 | 6 → 7 | `career` = 5 empty sections (nothing was counted before v7), `weapon_finishes = {}`. Fixtures `v6` (migration) and `v7_damaged`. |
 | 7 → 8 | No new field (lead, round 64): `owned_weapons` gains the starter `weapon.corsair_ar` (SaveService.STARTER_PRIMARY; new profiles have owned it since round 38) when missing, and an EMPTY `loadout.primary` gets it equipped (with no mods); an equipped primary is kept. Fixtures `v7` and `v7_own_primary`. |
+| 8 → 9 | `freshness` (D-139): an empty memory (`runs = 0`); every `career.heists` id with `won > 0` goes into `completed` with `last_run = 0`, so its rotation bonus ramps from the migration on. A save that already has `freshness` keeps it. Fixture `v8`. |
 
 ### Adding a version
 1. Bump `SaveService.CURRENT_VERSION` and `PlayerProfile.version`.

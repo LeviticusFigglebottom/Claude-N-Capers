@@ -32,6 +32,8 @@ const SHORT_ID_MAX_LENGTH: int = 64
 const CAREER: StringName = &"career"
 ## String -> String map whose keys and values are at most SHORT_ID_MAX_LENGTH characters (weapon_finishes).
 const SHORT_STRING_MAP: StringName = &"short_string_map"
+## Heist freshness (v9, D-139): {"recent": [id], "runs": int >= 0, "last_run": {id: int >= 0}, "completed": [id]}.
+const FRESHNESS: StringName = &"freshness"
 ## Career sections whose values are counter maps (the others are counters directly).
 const CAREER_NESTED: Array[String] = ["heists", "difficulties"]
 ## Top-level field -> [kind, default, since-version]. Order = file order of the doc.
@@ -62,6 +64,7 @@ const FIELDS: Dictionary = {
 	"music_choice": [SHORT_ID, "", 6],
 	"career": [CAREER, {"totals": {}, "heists": {}, "difficulties": {}, "bags": {}, "weapons": {}}, 7],
 	"weapon_finishes": [SHORT_STRING_MAP, {}, 7],
+	"freshness": [FRESHNESS, {"recent": [], "runs": 0, "last_run": {}, "completed": []}, 9],
 	"stats": [INT_MAP, {}, 0],
 	"settings": [ANY_MAP, {}, 0],
 }
@@ -140,6 +143,8 @@ static func _container(path: String, v: Variant, kind: StringName) -> Variant:
 				out = _short_string_map(path, m)
 			CAREER:
 				out = _career(path, m)
+			FRESHNESS:
+				out = _freshness(path, m)
 	elif v is Array:
 		match kind:
 			SKILL_SETS:
@@ -227,6 +232,35 @@ static func _career(path: String, m: Dictionary) -> Dictionary:
 				continue
 			nested[String(id)] = _counters("%s.%s" % [sp, id], e as Dictionary)
 		out[sec] = nested
+	return out
+
+
+## Every freshness key present: id lists of short ids, "runs" and "last_run" counters ints >= 0 (bad parts warn and
+## reset / drop).
+static func _freshness(path: String, m: Dictionary) -> Dictionary:
+	var out: Dictionary = {}
+	for k: String in ["recent", "completed"]:
+		var v: Variant = m.get(k, [])
+		if not v is Array:
+			_warn("%s.%s: expected a list; emptied" % [path, k])
+			v = []
+		var ids: Array = []
+		for id: String in _id_list("%s.%s" % [path, k], v as Array):
+			if id.length() <= SHORT_ID_MAX_LENGTH:
+				ids.append(id)
+			else:
+				_warn("%s.%s: id over %d chars; dropped" % [path, k, SHORT_ID_MAX_LENGTH])
+		out[k] = ids
+	var runs: Variant = _as_int(m.get("runs", 0))
+	if runs == null or int(runs) < 0:
+		_warn("%s.runs: expected an int >= 0; using 0" % path)
+		runs = 0
+	out["runs"] = runs
+	var last: Variant = m.get("last_run", {})
+	if not last is Dictionary:
+		_warn("%s.last_run: expected a map; emptied" % path)
+		last = {}
+	out["last_run"] = _counters("%s.last_run" % path, last as Dictionary)
 	return out
 
 

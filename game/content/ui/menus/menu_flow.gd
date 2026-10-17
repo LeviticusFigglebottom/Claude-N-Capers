@@ -210,6 +210,7 @@ func show_hub() -> void:
 		show_lobby()
 		return
 	profile = SaveService.load_profile(profile_slot)
+	HeistCatalog.progress_profile = profile  # D-139: the heist select freshness note reads the fresh profile
 	if safehouse.show_home(profile):
 		return
 	hub.refresh_profile(profile)
@@ -246,6 +247,8 @@ func open_station(station_id: StringName) -> bool:
 		TARGET_BOARD:
 			_open_board()
 		TARGET_HEIST_SELECT:
+			_menu_profile()
+			heist_select.refresh_preview()  # D-139: freshness changes after every payday
 			show_screen(heist_select)
 		TARGET_LOADOUT:
 			_open_armory()
@@ -962,6 +965,8 @@ func _on_lobby_contract_requested(target: StringName) -> void:
 	if target == TARGET_BOARD:
 		_open_board()
 	else:
+		_menu_profile()
+		heist_select.refresh_preview()
 		show_screen(heist_select)
 
 

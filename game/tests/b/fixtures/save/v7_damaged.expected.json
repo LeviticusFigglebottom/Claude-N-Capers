@@ -1,5 +1,5 @@
 {
-	"version": 8,
+	"version": 9,
 	"profile_name": "Scrambler",
 	"cash": 900000,
 	"stash": 3000000,
@@ -38,6 +38,7 @@
 		"weapons": {"weapon.kestrel_p9": 9}
 	},
 	"weapon_finishes": {"weapon.kestrel_p9": "finish.gunmetal_blue"},
+	"freshness": {"recent": [], "runs": 0, "last_run": {"glasshouse": 0}, "completed": ["glasshouse"]},
 	"stats": {},
 	"settings": {}
 }
