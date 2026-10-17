@@ -232,10 +232,13 @@ func test_rule_constraints_hold() -> void:
 		if (v.get(&"code_note", []) as Array).has(&"code_contractor"):
 			assert_true((v.get(&"server_room", []) as Array).has(&"srv_contractor"), "code_contractor needs srv_contractor")
 		assert_eq((v.get(&"code_note", []) as Array).size(), 1, "one code note")
-		# D-140 (PAGERS lever): 4 guards on every seed: reception + both rovers + one watch post.
+		# D-140 (PAGERS lever): 4 pager carriers on every seed: reception + both rovers + the operator (staffed room)
+		# or one watch post (empty room).
 		assert_eq((v.get(&"guard_post", []) as Array).size(), 2, "D-140: both rovers")
-		assert_eq((v.get(&"guard_extra", []) as Array).size(), 1, "D-140: one watch post")
-		assert_false((v.get(&"guard_extra", []) as Array).has(&"extra_none"), "D-140: the watch post is a real guard")
+		assert_eq((v.get(&"guard_extra", []) as Array).size(), 1, "D-140: one guard_extra pick")
+		var staffed: bool = (v.get(&"security_room_staffed", []) as Array).has(&"sec_staffed")
+		assert_eq((v.get(&"guard_extra", []) as Array).has(&"extra_none"), staffed,
+			"D-140: a watch post exactly when the security room is empty")
 		assert_eq((v.get(&"escape", []) as Array).size(), 1, "exactly one escape")
 		assert_false((v.get(&"cleaners", []) as Array).has(&"cleaners_3"), "Routine: never 3 cleaners")
 		assert_eq((v.get(&"late_staff", []) as Array).size(), 0, "Routine: no late staff (D-130)")
@@ -249,7 +252,8 @@ func test_rule_constraints_hold() -> void:
 		assert_eq((vh.get(&"guard_post", []) as Array).size(), 2, "D-140: both rovers")
 		GameRng.begin_run(9500 + s2)
 		var vb: Dictionary = VariantResolver.resolve(_map.variant_table, slots, Enums.Difficulty.BRUTAL)
-		assert_false((vb.get(&"guard_extra", []) as Array).has(&"extra_none"), "D-140: a walked extra (stair or roof watch)")
+		assert_eq((vb.get(&"guard_extra", []) as Array).has(&"extra_none"),
+			(vb.get(&"security_room_staffed", []) as Array).has(&"sec_staffed"), "D-140: operator or watch post")
 		GameRng.begin_run(9800 + s2)
 		var vl: Dictionary = VariantResolver.resolve(_map.variant_table, slots, Enums.Difficulty.LETHAL)
 		assert_eq((vl.get(&"guard_extra", []) as Array).size(), 1, "D-140: one extra on Lethal too (4 guards, pagers scale)")

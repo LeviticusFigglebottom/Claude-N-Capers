@@ -35,12 +35,11 @@ const GUARDS_LEVER: StringName = &"guards"
 const PAGERS_LEVER: StringName = &"pagers"
 const ROUTINE_CAP: int = 4
 ## "operator": the CAMERA_OPERATOR seat counts as a guard when the room is staffed. ND / GN pair the operator with a
-## sec_empty roundsman, so the room always holds exactly one pager; SL counts its posts only (guard_reception,
-## guard_rover_l41/_l42, guard_stair, guard_roof, as ENV A's D-140 test), the operator excluded (LEAD, 6ee71b62).
+## sec_empty roundsman (SL: with a stair or roof watch post), so the room always holds exactly one pager.
 const D140: Dictionary = {
 	&"gallery_night": {"lever": GUARDS_LEVER, "guards": [4, 5, 5, 6, 6, 7], "cap": [4, 4, 4, 4, 4, 4], "operator": true},
 	&"night_deposit": {"lever": PAGERS_LEVER, "guards": [4, 4, 4, 4, 4, 4], "cap": [4, 3, 3, 2, 2, 1], "operator": true},
-	&"shadow_ledger": {"lever": PAGERS_LEVER, "guards": [4, 4, 4, 4, 4, 4], "cap": [4, 3, 3, 2, 2, 1], "operator": false},
+	&"shadow_ledger": {"lever": PAGERS_LEVER, "guards": [4, 4, 4, 4, 4, 4], "cap": [4, 3, 3, 2, 2, 1], "operator": true},
 }
 
 ## Expected counts per tier before D-130 (ROUTINE..CATACLYSM; same seeds, the a5b797f8 variant tables; SL: the 708a9cd1

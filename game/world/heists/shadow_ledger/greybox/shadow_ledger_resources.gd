@@ -96,12 +96,15 @@ static func make_variants() -> HeistVariantTable:
 		{"group": &"keycard", "pick": Vector2i(2, 2)},
 		{"group": &"code_note", "pick": Vector2i(1, 1),
 			"slot_requires": {&"code_contractor": {&"server_room": [&"srv_contractor"]}}},
-		# D-140 (PO-15, revised; SL = PAGERS lever): exactly 4 guards on every seed and difficulty: the reception guard,
-		# both rovers and one watch post (stair or roof; extra_none never). The pager cap does the scaling (make_def).
+		# D-140 (PO-15, revised; SL = PAGERS lever): exactly 4 pager carriers (decisions D-140: the camera operator
+		# counts) on every seed and difficulty: the reception guard, both rovers, and the operator when the security
+		# room is staffed, else one watch post (stair or roof). The pager cap does the scaling (make_def).
 		{"group": &"guard_post", "pick": Vector2i(2, 2)},
-		{"group": &"guard_extra", "pick": Vector2i(1, 1),
-			"weights_by_difficulty": _from(Enums.Difficulty.ROUTINE, {&"extra_none": 0.0})},
 		{"group": &"security_room_staffed", "pick": Vector2i(1, 1)},
+		{"group": &"guard_extra", "pick": Vector2i(1, 1), "slot_requires": {
+			&"stair_watch": {&"security_room_staffed": [&"sec_empty"]},
+			&"roof_watch": {&"security_room_staffed": [&"sec_empty"]},
+			&"extra_none": {&"security_room_staffed": [&"sec_staffed"]}}},
 		{"group": &"camera", "pick": Vector2i(1, 1)},
 		{"group": &"laser_pattern", "pick": Vector2i(1, 1),
 			"weights_by_difficulty": _from(Enums.Difficulty.BRUTAL, {&"lz_static": 0.2, &"lz_sweep": 0.4, &"lz_timed": 0.4})},
