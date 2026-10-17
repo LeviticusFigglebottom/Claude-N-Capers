@@ -70,6 +70,17 @@ func test_every_heist_has_its_set() -> void:
 			parts.append(id)
 
 
+## LEAD r245 (OF real-run payday: Burn and Hoist named marker tags, so it never fired): every objective an achievement
+## names is one of its heist's HeistDef.objectives.
+func test_named_objectives_exist_in_the_heist() -> void:
+	for a: AchievementDef in _heist_defs():
+		var def: HeistDef = HeistRegistry.get_def(StringName(a.condition.get("heist", &"")))
+		if def == null:
+			continue
+		for id: Variant in a.condition.get("objectives_completed", []) as Array:
+			assert_has(def.objectives, StringName(id), "%s: objective %s is one of %s's" % [a.id, id, def.id])
+
+
 func test_every_heist_achievement_has_a_case() -> void:
 	var cases: Dictionary = _cases()
 	for a: AchievementDef in _heist_defs():
@@ -411,11 +422,13 @@ func _cases() -> Dictionary:
 					"loot_available": 10}), {}, "no gold"),
 		],
 	}
+	# LEAD r245 real-run check: the loud line's burn-through objective is vault_breach (lid / hoist are marker tags,
+	# not objectives); every loud bag comes up the hoist (no bypass), so the burn is the condition.
 	out[&"achievement.of_burn_and_hoist"] = {
-		"pass": _run(_res(of, false), _facts([], {&"lid": DONE, &"hoist": DONE}), "burned and hoisted"),
+		"pass": _run(_res(of, false), _facts([], {&"vault_drill": DONE, &"vault_breach": DONE}), "burned and hoisted"),
 		"miss": [
-			_run(_res(of, false), _facts([], {&"lid": DONE, &"hoist": ACTIVE}), "not hoisted"),
-			_run(_res(of, true), _facts([], {&"lid": DONE, &"hoist": DONE}), "stealth"),
+			_run(_res(of, false), _facts([], {&"vault_drill": DONE, &"vault_breach": ACTIVE}), "not burned through"),
+			_run(_res(of, true), _facts([], {&"vault_breach": DONE}), "stealth"),
 		],
 	}
 	out[&"achievement.of_cataclysm"] = _top_case(of, false)  # any mode (LEAD r244)

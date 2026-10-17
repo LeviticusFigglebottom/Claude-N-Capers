@@ -3685,6 +3685,8 @@ ui.hud.device.hack,HACK
 ui.hud.device.time_lock,TIME LOCK
 ui.hud.device.c4,C4
 ui.hud.device.thermite,THERMITE
+ui.hud.device.escape,ESCAPE
+ui.hud.device.wait,WAIT
 ui.hud.device.time,{mm}:{ss}
 ui.hud.device.jammed,JAMMED
 ui.hud.device.interrupted,INTERRUPTED
