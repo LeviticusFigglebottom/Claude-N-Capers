@@ -286,6 +286,107 @@ func test_gameplay_prefabs() -> void:
 	assert_eq(grids.size(), 3, "one art-hall grid per laser_pattern slot")
 
 
+## D-111 SL-2: the secure drops, the laser grids / emitter columns and the E2 bag line use catalog art (no greybox
+## visual), and the bag line draws its cable from the anchor's `Line`, BAG_DROP over the bag's start.
+func test_sl2_catalog_art() -> void:
+	if _map == null:
+		fail("map missing")
+		return
+	for p: Array in [["Slot_esc_heli/HeliNetE1", "prop_secure_cargo_net"], ["Slot_esc_line/LineSecureE2", "prop_secure_line_tarp"],
+			["Slot_esc_service/LiftSecureE3", "prop_secure_lift_blanket"]]:
+		var sz: SecureZone = _map.get_node_or_null("Variants/Group_escape/" + String(p[0])) as SecureZone
+		assert_true(sz != null and sz.visual_scene != null, "%s has a visual" % p[0])
+		if sz != null and sz.visual_scene != null:
+			assert_eq(sz.visual_scene.resource_path, "res://world/props/secure_zone/%s.tscn" % p[1], "%s: catalog drop" % p[0])
+			assert_false(sz.vehicle_collision, "%s: walk-over drop, no vehicle collider" % p[0])
+	for em: Node in _map.get_node("Variants/Group_laser_pattern").find_children("LaserEmitters", "", true, false):
+		for c: String in ["Column0", "Column1"]:
+			var col: Node = em.get_node_or_null(c)
+			assert_true(col != null and col.scene_file_path.ends_with("prop_laser_emitter_column.tscn"), "%s/%s art" % [em.get_parent().name, c])
+		var grid: LaserGrid = em.get_node_or_null("ArtHallLasers") as LaserGrid
+		assert_true(grid != null and grid.visual_scene != null and grid.visual_scene.resource_path.contains("prop_laser_beams_"),
+			"%s: catalog beam set" % em.get_parent().name)
+	var zl: Zipline = _map.get_node_or_null("Variants/Group_escape/Slot_esc_line/BagLineE2") as Zipline
+	assert_true(zl != null and zl.visual_scene != null, "E2 bag line anchor art")
+	if zl == null or zl.visual_scene == null:
+		return
+	var vis: Node3D = zl.visual_scene.instantiate() as Node3D
+	var line: Node3D = vis.get_node_or_null(String(zl.cable_start).trim_prefix("Visual/" + String(vis.name) + "/")) as Node3D
+	assert_true(String(zl.cable_start).begins_with("Visual/%s/" % vis.name) and line != null, "cable_start = the anchor's Line")
+	var zxf: Transform3D = _world(zl)
+	var ce: Node3D = zl.get_node_or_null(zl.cable_end) as Node3D
+	var end: Node3D = zl.get_node_or_null(zl.end) as Node3D
+	assert_true(ce != null and end != null, "cable end and line end")
+	if line != null and ce != null and end != null:
+		var drop: Vector3 = zxf * line.transform.origin - _world(zl.get_node("Interactable") as Node3D).origin
+		assert_near(drop.x, 0.0, 0.01, "bag starts under the sheave (x)")
+		assert_near(drop.z, 0.0, 0.01, "bag starts under the sheave (z)")
+		assert_true(drop.y > 0.25 and drop.y < 0.45, "bag hangs %.2f m under the sheave" % drop.y)
+		assert_near((_world(ce).origin - _world(end).origin).y, drop.y, 0.01, "cable end raised by the same drop")
+	vis.free()
+
+
+## SL-3: Victor Kessler and the camera operator spawn on their seats' `Seat` markers (catalog armchair / task chair);
+## the IT contractor stands on a call (no seat in K11).
+func test_sl3_seated_npcs() -> void:
+	if _map == null:
+		fail("map missing")
+		return
+	for p: Array in [["Variants/Group_kessler/Slot_kessler_in/VictorKessler", "Variants/Group_kessler/Slot_kessler_in/KesslerArmchair"],
+			["Spawns/CameraOperatorSeat", "Gameplay/Misc/OperatorChair"]]:
+		var sp: SpawnPoint = _map.get_node_or_null(String(p[0])) as SpawnPoint
+		var chair: Node3D = _map.get_node_or_null(String(p[1])) as Node3D
+		assert_true(sp != null and chair != null, "%s and its seat" % p[0])
+		if sp == null or chair == null:
+			continue
+		var seat: Node3D = chair.find_child("Seat", true, false) as Node3D
+		assert_true(seat != null, "%s has a Seat marker" % p[1])
+		if seat == null:
+			continue
+		var s: Vector3 = _world(seat).origin
+		var o: Vector3 = _world(sp).origin
+		assert_true(Vector2(s.x - o.x, s.z - o.z).length() < 0.05, "%s on its seat (%.3f m)" % [p[0], Vector2(s.x - o.x, s.z - o.z).length()])
+		assert_true(s.y - o.y > 0.4 and s.y - o.y < 0.5, "%s seat %.2f m up" % [p[1], s.y - o.y])
+		assert_true(chair.scene_file_path.begins_with("res://world/props/"), "%s is catalog art" % p[1])
+	var it: SpawnPoint = _map.get_node_or_null("Variants/Group_server_room/Slot_srv_contractor/ITContractor") as SpawnPoint
+	assert_true(it != null and it.idle_activity == &"phone", "IT contractor on the phone (standing)")
+
+
+## SL-P1 (ENV P real-input pass): ENV P's unsecured lift throws now land in the car's SECURE zone, which stays
+## inside the 2.7 m car; the 4.4 m storey's divider keeps 2.1 m over the half landing below it in both cores.
+func test_sl_p1_real_input_fixes() -> void:
+	if _map == null:
+		fail("map missing")
+		return
+	var sz: SecureZone = _map.get_node_or_null("Variants/Group_escape/Slot_esc_service/LiftSecureE3") as SecureZone
+	assert_true(sz != null, "E3 lift secure zone")
+	if sz != null:
+		var c: Vector3 = _world(sz).origin
+		var half: Vector3 = sz.zone_size_m * 0.5
+		for p: Vector3 in [Vector3(21.3, 0.0, 8.6), Vector3(22.0, 0.0, 10.2), Vector3(22.1, 0.0, 7.8), Vector3(21.2, 0.0, 10.3)]:
+			assert_true(absf(p.x - c.x) <= half.x and absf(p.z - c.z) <= half.z, "throw at %s is inside the zone" % p)
+		assert_true(c.x - half.x >= 21.15 and c.z - half.z >= 7.65 and c.z + half.z <= 10.35 and c.x + half.x <= 23.85,
+			"zone stays inside the car")
+	for core: String in ["StairA", "StairB"]:
+		var head: Node3D = _map.get_node_or_null("Geometry/Building/Stairs/%s/Divider2Head" % core) as Node3D
+		assert_true(head != null, "%s: divider head piece over the L40-L41 half landing" % core)
+		if head != null:
+			var cs: CollisionShape3D = head.get_node_or_null("Collision") as CollisionShape3D
+			var bottom: float = _world(head).origin.y + (cs.position.y - (cs.shape as BoxShape3D).size.y * 0.5 if cs != null else 0.0)
+			assert_true(bottom >= 1.8 + 2.1 - 0.001, "%s: %.2f m headroom over the +1.8 landing" % [core, bottom - 1.8])
+
+
+## World transform of a map node (the map is not in the tree here).
+func _world(n: Node3D) -> Transform3D:
+	var xf: Transform3D = n.transform
+	var p: Node = n.get_parent()
+	while p != null and p != _map:
+		if p is Node3D:
+			xf = (p as Node3D).transform * xf
+		p = p.get_parent()
+	return xf
+
+
 ## ENV B's board merges the nested D-046 `assets` data without errors and offers the heist assets on
 ## this map's points (category `spawn` for the service entry).
 func test_preplan_board_merges() -> void:

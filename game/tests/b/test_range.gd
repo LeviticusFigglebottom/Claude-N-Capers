@@ -310,6 +310,9 @@ func _crew_range() -> FiringRange:
 	if not RangeCrewBridge.available():
 		skip("CrewController.spawn_for_range not in this tree (fallback covered above)")
 		return null
+	# r230 order-dependent red: the crew's real shot draws its spread from GameRng, so a run seed left by an earlier
+	# file (test_radio_defer's 1234) made the one-press hit at 10 m miss. Crew tests start from the default run state.
+	GameRng.begin_run(0)
 	var r: FiringRange = await _spawn_range()
 	await wait_physics_frames(10)  # settle on the floor
 	# PO6-12: the crew draws the starter weapon (holster/draw path) before it can fire; wait for that, not a time.

@@ -18,7 +18,8 @@ const EPS: float = 0.0001
 static func display(stats: WeaponStats) -> Dictionary:
 	var t: DisplayStatTweak = ContentDB.tweak(TWEAK) as DisplayStatTweak
 	var dmg: float = stats.damage * pow(float(maxi(stats.pellets, 1)), t.damage_pellet_exponent) * t.damage_scale
-	var acc: float = _linear_score(stats.spread_deg_ads, t.accuracy_spread_best_deg, t.accuracy_spread_worst_deg, t.accuracy_max)
+	var acc: float = _linear_score(stats.spread_deg_ads * ads_spread_mult(), t.accuracy_spread_best_deg,
+			t.accuracy_spread_worst_deg, t.accuracy_max)
 	var recoil: float = stats.recoil_kick_deg + stats.recoil_horizontal_deg * t.stability_horizontal_weight
 	var stab: float = _linear_score(recoil, t.stability_recoil_best_deg, t.stability_recoil_worst_deg, t.stability_max)
 	var threat: float = clampf(stats.suppression * t.threat_scale, 0.0, t.threat_max)
@@ -35,6 +36,13 @@ static func display(stats: WeaponStats) -> Dictionary:
 		"reload": reload.x,
 		"reload_empty": reload.y,
 	}
+
+
+## D-131 (ENV A): the runtime multiplier on spread_deg_ads (CombatTweak.ads_spread_mult), so Accuracy shows the cone
+## the crew actually fires; 1.0 while the tweak has no such field.
+static func ads_spread_mult() -> float:
+	var v: Variant = CombatTweak.data().get(&"ads_spread_mult")
+	return float(v) if v != null else 1.0
 
 
 static func delta(base: WeaponStats, modded: WeaponStats) -> Dictionary:

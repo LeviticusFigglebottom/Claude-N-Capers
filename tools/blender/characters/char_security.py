@@ -10,7 +10,9 @@ handcuff case, torch), black shoes.
 
 Two body variants so guards don't look cloned: ``char_security_officer`` (lean, 30s) and
 ``char_security_officer_b`` (heavy-set, older, darker skin, grey buzz cut); D-116: ``_c`` a woman in her 30s, mid
-skin, dark bob under the cap, and ``_d`` a tall young man, deep skin, buzz cut.
+skin, dark bob under the cap, and ``_d`` a tall young man, deep skin, buzz cut. D-130 (Night Deposit at Cataclysm: about
++50 % guards, up to 6 on the floor): ``_e`` a woman in her 50s, light skin, grey bob, gold-rimmed glasses (``glasses``
+option), and ``_f`` a broad man in his 40s, mid-deep skin, short dark hair, a dark moustache (``moustache`` option).
 
 Meshes (Godot ``<root>/Skeleton3D/``, exported with ``remove_armature``): ``Body`` (covered skin removed), ``Hair``,
 ``Outfit`` (cloth, belt, cable), ``Gear`` (rigid hard parts), ``Headwear`` (cap). No blend shapes:
@@ -19,6 +21,7 @@ the body is baked at the params below (see ``_outfit_build``).
 
 import math
 
+import _contact_gear as cg
 import _gear_kit as gk
 import _outfit as o
 import _outfit_garments as g
@@ -38,6 +41,11 @@ VARIANTS = {
                                 "hair": "bob", "hair_color": "dark"},
     "char_security_officer_d": {"height": 1.84, "build": 0.6, "gender": 0.0, "age": 0.22, "skin": 6, "beard_shadow": 0.7,
                                 "hair": "buzz", "hair_color": "dark"},
+    # D-130 (Cataclysm: up to 6 Halden guards on the Night Deposit floor): two more faces
+    "char_security_officer_e": {"height": 1.68, "build": 0.6, "gender": 1.0, "age": 0.55, "skin": 1,
+                                "hair": "bob", "hair_color": "grey", "glasses": "brass"},
+    "char_security_officer_f": {"height": 1.86, "build": 0.75, "gender": 0.0, "age": 0.5, "skin": 4, "beard_shadow": 0.6,
+                                "hair": "short", "hair_color": "dark", "moustache": "char_hair_dark"},
 }
 
 SHIRT = "char_sec_shirt"
@@ -161,6 +169,10 @@ def recipe(kit: Kit) -> None:
     # peaked cap
     cap, info = gk.peaked_cap(fit, CHARCOAL, "char_shirt_white", "char_visor_gloss", GOLD)  # PP-D-1: light cap band
     kit.add_head(cap)
+    if "glasses" in kit.opts:
+        kit.add_head(gk.glasses(fit, str(kit.opts["glasses"])))
+    if "moustache" in kit.opts:
+        kit.add_head(cg.moustache(fit, str(kit.opts["moustache"])))
     kit.notes["hat"] = "peaked cap (Headwear), crown top z {:.3f} m".format(info["crown_top_z"])
 
 

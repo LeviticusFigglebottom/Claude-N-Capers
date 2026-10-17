@@ -23,6 +23,9 @@ const EXEC_ROOMS: Array[String] = ["K3", "M1", "M2", "M4", "K1", "K5", "M5", "M8
 const BOH_ROOMS: Array[String] = ["K10", "K14", "J41", "J42", "M10", "M11", "M12", "M13", "S1", "S2", "S3", "R1", "R3",
 	"WCW41", "WCM41", "WCW42", "WCM42", "M6"]
 
+## The level's interior wall lines while _build_interior_walls runs (key "<axis>|<fixed>" -> [from, to, core]).
+var _lv_lines: Dictionary = {}
+
 
 func _initialize() -> void:
 	_build.call_deferred()
@@ -324,11 +327,36 @@ func _build_interior_walls(parent: Node3D) -> void:
 				(lines[key] as Array).append([float(e[2]), float(e[3]), bool(r[5])])
 		var keys: Array = lines.keys()
 		keys.sort()
+		_lv_lines = lines
 		var lvl: Node3D = add(parent, node3d(lv)) as Node3D
 		for key2: String in keys:
 			var axis: String = key2.get_slice("|", 0)
 			var fixed: float = float(key2.get_slice("|", 1))
 			_wall_line(lvl, lv, ffl, top, axis, fixed, lines[key2])
+
+
+## SL-P1: a WALL_OPEN cut ending on a perpendicular wall's centre line that stops there (an L / T corner of two
+## corridors) left a half-thickness notch in the corner (K7 / K10 at (25.4, L41, 7.4): the navmesh path hugged it
+## and the capsule caught on both pieces). The wall run beside the cut then reaches that wall's face: the cut
+## shrinks by its half thickness. 0 when the perpendicular wall runs through the junction (no notch).
+func _end_cap(axis: String, fixed: float, pos: float, _dir: float) -> float:
+	var other: String = "z" if axis == "x" else "x"
+	var key: String = "%s|%08.3f" % [other, pos]
+	if not _lv_lines.has(key):
+		return 0.0
+	var below: bool = false
+	var above: bool = false
+	var t: float = 0.0
+	for s: Array in _lv_lines[key]:
+		var a: float = float(s[0])
+		var b: float = float(s[1])
+		if a < fixed - 0.001 and b > fixed - 0.05:
+			below = true
+		if b > fixed + 0.001 and a < fixed + 0.05:
+			above = true
+		if a <= fixed + 0.001 and b >= fixed - 0.001:
+			t = maxf(t, L.CORE_T if bool(s[2]) else L.INT_T)
+	return t * 0.5 if below != above else 0.0
 
 
 func _wall_line(parent: Node3D, lv: String, ffl: float, top: float, axis: String, fixed: float, segs: Array) -> void:
@@ -341,7 +369,7 @@ func _wall_line(parent: Node3D, lv: String, ffl: float, top: float, axis: String
 	var cuts: Array = []
 	for o: Array in L.WALL_OPEN:
 		if String(o[0]) == lv and String(o[1]) == axis and absf(float(o[2]) - fixed) < 0.001:
-			cuts.append([float(o[3]), float(o[4])])
+			cuts.append([float(o[3]) + _end_cap(axis, fixed, float(o[3]), 1.0), float(o[4]) - _end_cap(axis, fixed, float(o[4]), -1.0)])
 	# Elementary intervals -> thickness, merged into runs of equal thickness.
 	var runs: Array = []
 	for i: int in range(pts.size() - 1):
@@ -602,6 +630,8 @@ func _build_core(parent: Node3D, cid: String, core: Dictionary) -> void:
 	var xe: float = x0 + (L.STAIR_EAST.x + L.STAIR_EAST.y) * 0.5
 	var w: float = L.STAIR_WEST.y - L.STAIR_WEST.x
 	var t: float = L.STAIR_TREAD
+	var prev_zh: float = -INF
+	var prev_yh: float = 0.0
 	for i: int in range(-1, levels.size() - 1):
 		var y0: float = float(levels[i]) if i >= 0 else L.F40 - 3.6
 		var y1: float = float(levels[i + 1]) if i >= 0 else L.F40
@@ -622,8 +652,17 @@ func _build_core(parent: Node3D, cid: String, core: Dictionary) -> void:
 				zh, yh, L.STAIR_Z_START, yh + float(m) * r)
 		box(c, "HalfLanding%s" % tag, Vector3(x0 + L.STAIR_CLEAR.x, yh - 0.3, L.STAIR_Z_N), Vector3(x0 + L.STAIR_CLEAR.y, yh, zh), "stair")
 		var top_storey: bool = i == levels.size() - 2
-		box(c, "Divider%s" % tag, Vector3(x0 + L.STAIR_WELL.x, y0, zh), Vector3(x0 + L.STAIR_WELL.y, y1 + (1.1 if top_storey else 0.0),
-			L.STAIR_Z_START), "wall")
+		var ytop_d: float = y1 + (1.1 if top_storey else 0.0)
+		# SL-P1: a taller storey's divider starts further north than the one below, over the lower half landing
+		# (L41 -> L42, 4.4 m, over the L40 -> L41 landing at +1.8). That overhang keeps STAIR_HEADROOM over the landing.
+		var zd: float = zh
+		if prev_zh > zh:
+			zd = prev_zh
+			box(c, "Divider%sHead" % tag, Vector3(x0 + L.STAIR_WELL.x, prev_yh + L.STAIR_HEADROOM, zh),
+				Vector3(x0 + L.STAIR_WELL.y, ytop_d, zd), "wall")
+		box(c, "Divider%s" % tag, Vector3(x0 + L.STAIR_WELL.x, y0, zd), Vector3(x0 + L.STAIR_WELL.y, ytop_d, L.STAIR_Z_START), "wall")
+		prev_zh = zh
+		prev_yh = yh
 	var ytop: float = float(levels[levels.size() - 1])
 	railing(c, "TopRail", Vector3(x0 + L.STAIR_CLEAR.x, ytop, L.STAIR_Z_START - 0.06), Vector3(x0 + L.STAIR_WELL.x, ytop + 1.1,
 		L.STAIR_Z_START))
