@@ -73,30 +73,13 @@ func _on_completed(crew: Node) -> void:
 	var bag: LootBag = thermite_for(c)
 	if bag == null:
 		return
-	if c.carried_bag == bag:
-		c.set_carried_bag(null)
-	if bag.get_parent() != null:
-		bag.get_parent().remove_child(bag)
-	bag.queue_free()
+	LootManager.consume_bag(bag)
 	start_burn()
 
 
 ## The thermite bag `crew` would use: the one it carries, else the nearest loose one within burn_bag_radius_m.
 func thermite_for(crew: Node) -> LootBag:
-	var carried: LootBag = crew.get(&"carried_bag") as LootBag if crew != null else null
-	if carried != null and is_instance_valid(carried) and carried.loot_id == requires_loot:
-		return carried
-	var best: LootBag = null
-	var best_d: float = Tweak.interaction().burn_bag_radius_m
-	for n: Node in get_tree().get_nodes_in_group(G.LOOT_BAG):
-		var b: LootBag = n as LootBag
-		if b == null or b.loot_id != requires_loot or b.is_carried() or b.secured:
-			continue
-		var d: float = b.global_position.distance_to(global_position)
-		if d <= best_d:
-			best = b
-			best_d = d
-	return best
+	return LootManager.tool_bag_for(crew, requires_loot, global_position, Tweak.interaction().burn_bag_radius_m)
 
 
 ## Server: start the burn now (also the mission's fallback without a bag).

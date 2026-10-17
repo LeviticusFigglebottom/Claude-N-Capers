@@ -21,6 +21,8 @@
 ## Argus hack: 60 s / 1-2 in stealth -> 120 s / 2-3 once loud); a running hack keeps its progress fraction, takes
 ## the new duration and re-rolls the interruptions still ahead. `clears_alarm_group` is disabled on finish
 ## (AlarmGroups: the frame sensors go offline).
+## QC-63 (OF code PC): `reveals_code_group` is revealed to the crew on finish (CodeRegistry.reveal, credited to the
+## slot that started the hack), exactly as reading a code_note. Variant params {"reveals_code_group": &"..."}.
 class_name HackTerminal
 extends GameplayPrefab
 
@@ -46,6 +48,8 @@ const SCREEN_COLORS: Array[Color] = [
 @export var clears_alarm_group: StringName = &""
 ## GN (C's gap 6): more AlarmGroups disabled on finish, besides `clears_alarm_group`.
 @export var clears_alarm_groups: Array[StringName] = []
+## QC-63: keypad code group revealed when the hack finishes (&"" = none), e.g. &"vault".
+@export var reveals_code_group: StringName = &""
 ## Collision box size (m), placed on the pivot; ZERO = fit to the visual (or use the visual's own
 ## `Collision`), see GameplayPrefab "Collision fitting".
 @export var collision_size_override: Vector3 = Vector3.ZERO
@@ -75,6 +79,8 @@ var pending_interruptions: Array[float] = []
 var rolled_interruptions: int = 0
 
 var _start_time: float = 0.0
+## Slot that started the run (credited with a revealed code).
+var _started_by: int = -1
 ## Pause reasons held (keys; values true).
 var _pause: Dictionary = {}
 var _event_cbs: Array[Array] = []
@@ -193,6 +199,7 @@ func start_hack(crew_slot: int) -> void:
 		return
 	duration = maxf(effective_duration(), 0.01)
 	progress = 0.0
+	_started_by = crew_slot
 	_roll_interruptions()
 	_emit_fact(&"device_started", [net_id, KIND, duration])
 	_cue(&"cue.hack_start", global_position)
@@ -241,6 +248,24 @@ func _physics_process(delta: float) -> void:
 			AlarmGroups.disable(HeistRuntime.of(self), clears_alarm_group)
 		for g: StringName in clears_alarm_groups:
 			AlarmGroups.disable(HeistRuntime.of(self), g)
+		_reveal_code()
+
+
+## QC-63: the finished hack reveals `reveals_code_group` (as a code_note read).
+func _reveal_code() -> void:
+	if reveals_code_group == &"":
+		return
+	var reg: CodeRegistry = CodeRegistry.of(self)
+	if reg == null:
+		Log.warn(LOG_CHANNEL, "%s: reveals_code_group without a heist" % name)
+		return
+	reg.reveal(reveals_code_group, _started_by)
+
+
+## VariantSlot params (heist_map.md §5): {"reveals_code_group": StringName} (OF: the active `code_pc` slot).
+func configure_variant(params: Dictionary) -> void:
+	if params.has("reveals_code_group"):
+		reveals_code_group = StringName(params["reveals_code_group"])
 
 
 ## Server (mission): new run time (s; -1 = the tweak) and interruption range ([min, max]; negative = the tweak).

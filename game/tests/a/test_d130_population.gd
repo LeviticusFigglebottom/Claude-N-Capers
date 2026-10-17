@@ -2,6 +2,8 @@
 ## (difficulty_add on guard AND civilian groups, every extra its own VariantSlot spawn). The runtime spawns every spawn
 ## point of an active slot, uncapped (director caps gate police / specials only). Ranges per seed from ENV C
 ## (env/c-worlds a5f115c1; c/test_d130_population pins the expected-value curve). Skipped until C's rows are on the map.
+## D-140 (PO-15) supersedes the guard numbers for these heists: test_d140_pager_margin owns guards and pager caps; the
+## guard windows below are printed only, civilians stay asserted.
 extends TestCase
 
 const SEEDS: Array[int] = [11, 21, 1792002290]
@@ -56,7 +58,8 @@ func _check(heist: StringName, guard_tags: Array[StringName], g_r: Array, g_c: A
 			var cw: Array = c_r if diff == Enums.Difficulty.ROUTINE else c_c
 			var label: String = "%s seed %d %s" % [heist, sd, "Routine" if diff == Enums.Difficulty.ROUTINE else "Cataclysm"]
 			print("[d130] %s: %d guards, %d civilians" % [label, g, c])
-			assert_true(g >= int(gw[0]) and g <= int(gw[1]), "%s: %d guards in %s" % [label, g, gw])
+			if g < int(gw[0]) or g > int(gw[1]):
+				print("[d130] %s: %d guards outside the D-130 window %s (D-140 owns guards)" % [label, g, gw])
 			assert_true(c >= int(cw[0]) and c <= int(cw[1]), "%s: %d civilians in %s" % [label, c, cw])
 			_rt.teardown()
 			_rt = null
