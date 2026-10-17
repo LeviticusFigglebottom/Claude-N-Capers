@@ -13,14 +13,15 @@ extends Resource
 ## 2 x angle_max (deg; the half angle is angle_max), delay_min / delay_max (s, the `delay` pair), attention =
 ## which player attention class the observer reads (&"combatant": guards, police, gangsters, cameras;
 ## &"non_combatant": civilians). Cameras: far = detection_range, fov_deg = the full cone, delay pair =
-## the ElementSecurityCamera editor defaults (PD2 sets them per camera; SecurityCamera.detection_overrides()
+## the ElementSecurityCamera editor defaults {2, 3} x 0.8 (D-130 PO: cameras ~20 % faster, ◇; PD2 sets them per
+## camera; SecurityCamera.detection_overrides()
 ## supplies fov_deg / far). gadget_time: D-118 gadget base fill time (s, ◇; PD2 ignores flashlights/lasers).
 @export var observer_presets: Dictionary = {
 	&"guard": {"far": 40.0, "fov_deg": 120.0, "delay_min": 0.2, "delay_max": 2.0, "attention": &"combatant",
 		"gadget_time": 1.0},
 	&"civilian": {"far": 20.0, "fov_deg": 120.0, "delay_min": 0.2, "delay_max": 3.0, "attention": &"non_combatant",
 		"gadget_time": 1.4},
-	&"camera": {"far": 15.0, "fov_deg": 60.0, "delay_min": 2.0, "delay_max": 3.0, "attention": &"combatant",
+	&"camera": {"far": 15.0, "fov_deg": 60.0, "delay_min": 1.6, "delay_max": 2.4, "attention": &"combatant",
 		"gadget_time": 2.0},
 	&"police": {"far": 40.0, "fov_deg": 120.0, "delay_min": 0.2, "delay_max": 2.0, "attention": &"combatant",
 		"gadget_time": 0.6},

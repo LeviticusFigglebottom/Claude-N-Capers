@@ -1141,3 +1141,12 @@ compression on a high grip; the hand seat stays (D-116 sight picture); d/test_fp
 generic escape lines stay as the fallback. B's briefing_objectives lists for GN/DB/SL approved (C edits the generator rows).
 **D-128 addendum (B, 2026-10-17):** an observer whose world ring lands on the crosshair arc band draws no crosshair arc
 (the ring already marks that spot); every other observer keeps its arc. Ring/arc sizes live in `hud_tweak.tres` (B 98c39e44).
+
+## D-131: aimed (ADS) spread multiplier (2026-10-17, LEAD; from ENV A's accuracy test, B's 372f3bd7 finding)
+A's test (100 seeds, real hitscan, ADS, standing still, guard chest at 10 m) hits 92/100 with kestrel_p9's
+`spread_deg_ads` 2.3; 18 weapons sit above that (up to 4.0), so most pistols/SMGs miss aimed torso shots at 10 m. PD2's
+steelsight spread is well under its standing spread; an aimed pistol at 10 m does not miss a torso.
+Ruling: a single runtime multiplier `ads_spread_mult = 0.7` (◇, ENV A's CrewWeapons tweak) on `spread_deg_ads`, so each
+class keeps its shape and B's weapon data stays as is (2.3 → 1.61°, 100/100 in A's sweep). Acceptance: A's
+test_l3_ads_pistol_accuracy at ≥ 98/100 for every pistol and revolver at 10 m; SMGs reported, not gated. B reports any weapon
+whose ADS readout in the armory needs the multiplier shown (stat display = effective cone).

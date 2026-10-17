@@ -118,11 +118,16 @@ func test_pagers_titan_and_loud_only() -> void:
 			var p: Dictionary = by_id.get(&"pagers", {"max": -1})
 			var want: Vector2i = BriefingIntel.scalar_range(load(BriefingIntel.data_for(id).variants_path) as HeistVariantTable,
 					PagerSystem.MAX_ANSWERS_SCALAR, diff)
+			if want.y < 0 and not def.pager_max_by_difficulty.is_empty():  # LEAD: D-130 def value (C's GH row)
+				var cap: int = def.pager_max_by_difficulty[clampi(diff, 0, def.pager_max_by_difficulty.size() - 1)]
+				want = Vector2i(cap, cap)
 			if want.y < 0:
 				want = Vector2i(tw.pager_max_answers, tw.pager_max_answers)
 			assert_eq(int(p["max"]), want.y, "%s pager answers from the data" % id)
 			if by_id.has(&"cameras"):
-				var titan: bool = diff >= tw.camera_titan_min_difficulty
+				var titan_min: int = def.camera_titan_min_difficulty if def.camera_titan_min_difficulty >= 0 \
+						else tw.camera_titan_min_difficulty  # LEAD: D-130 def threshold (GH: HAZARDOUS)
+				var titan: bool = diff >= titan_min
 				assert_eq(StringName((by_id[&"cameras"] as Dictionary)["key"]),
 						&"ui.briefing.sec.cameras_titan" if titan else &"ui.briefing.sec.cameras", "%s @%d titan" % [id, diff])
 	assert_true(_def(&"dockside_burn").mode == Enums.HeistMode.LOUD_ONLY, "dockside is the loud-only case")
