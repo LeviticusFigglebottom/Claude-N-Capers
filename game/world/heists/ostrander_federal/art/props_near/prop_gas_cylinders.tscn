@@ -1,0 +1,12 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://world/props/plant/prop_gas_cylinders.tscn" id="1_base"]
+
+[node name="PropGasCylinders" instance=ExtResource("1_base")]
+
+[node name="Bank" parent="Model"]
+visibility_range_end = 34.0
+visibility_range_end_margin = 3.4
+visibility_range_fade_mode = 1
+
+[editable path="Model"]
