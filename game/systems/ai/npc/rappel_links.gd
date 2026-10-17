@@ -9,6 +9,8 @@
 ## carrying `tag`). Enabling re-casts the floor below (a hole lid disabled before it no
 ## longer counts). Server only: links matter to the authority's NPC navigation; replicas build none. Heist
 ## navigation iterates synchronously (D-121), so the change is visible to path queries after this physics frame.
+## OF-A5 (QC-68) chains: a link's exit may land on another island whose own RAPPEL point continues the descent
+## (setback -> terrace -> lantern); NpcMotor rappels each link and walks between them.
 class_name RappelLinks
 extends RefCounted
 
