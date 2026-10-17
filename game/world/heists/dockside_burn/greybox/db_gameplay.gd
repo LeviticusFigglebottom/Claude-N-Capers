@@ -603,8 +603,9 @@ func _variants_night_shift(variants: Node3D) -> void:
 
 
 ## Rare perches: S3 viaduct walkway (`fog_lifts`), S4 trawler wheelhouse (`harbor_unit`). Never rolled
-## (pick 0): the rare event pins the `_on` slot. TODO(QC-25): S3 should only become a valid perch at
-## the event time (the director has no perch-enable hook); G1 enables it for the whole run.
+## (pick 0): the rare event pins the `_on` slot. QC-25 (shipped, ENV A, DB-6: HeistMission.set_sniper_perches_open,
+## SpecialSpawner perch_closed): the mission closes S3 (tag `s3`) when `fog_lifts` rolls and reopens it at the event
+## time (FOG_LIFTS_AT_S), so the director's Longshots only take it once the fog thins.
 func _variants_rare_perches(variants: Node3D) -> void:
 	for r: Array in [["perch_viaduct", "viaduct", L.SNIPER_VIADUCT], ["perch_trawler", "trawler", L.SNIPER_TRAWLER]]:
 		var g: Node3D = _group(variants, String(r[0]))

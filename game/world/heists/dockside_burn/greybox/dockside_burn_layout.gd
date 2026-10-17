@@ -594,7 +594,7 @@ const CHAIRS: Array = [
 	["BreakChairW", Vector3(4.75, MEZZ, 2.8), -90.0],
 	["BreakChairE", Vector3(7.25, MEZZ, 2.8), 90.0],
 	["CountChair", Vector3(11.85, MEZZ, 3.55), 0.0],
-	["ForemanChair", Vector3(19.4, MEZZ, 1.75), 0.0, true],
+	["ForemanChair", Vector3(19.4, MEZZ, 2.0), 0.0, true],  # DB-6 (D DB-4 shot): 0.25 m back, shins clear the desk panel
 	# PO-9: the receptionist's seat on the staff side of the O1 counter (the DeskCashO1 UsePoint is on the
 	# front-door side) and the gate man's seat at the gatehouse console, clear of both door zones.
 	["ReceptionChair", Vector3(6.0, 0.0, 3.95), 0.0],
@@ -704,7 +704,7 @@ const CARTEL_POSTS: Dictionary = {
 		"cartel_yard_e", ""],
 	"post_hall": [[["GunmanHallA", Vector3(34.6, 0.0, 5.0), 0.0], ["GunmanHallB", Vector3(46.4, 0.0, 3.4), -90.0]],
 		"cartel_hall", ""],
-	"post_platform": [[["GunmanPlatformA", Vector3(19.4, MEZZ, 1.75), 0.0], ["GunmanPlatformB", Vector3(6.0, MEZZ, 3.7), 0.0]],
+	"post_platform": [[["GunmanPlatformA", Vector3(19.4, MEZZ, 2.0), 0.0], ["GunmanPlatformB", Vector3(6.0, MEZZ, 3.7), 0.0]],
 		"cartel_platform", "sit"],
 	"post_dock": [[["GunmanDockA", Vector3(28.6, 0.0, 26.6), 90.0], ["GunmanDockB", Vector3(37.0, 0.0, 27.8), 90.0]],
 		"cartel_dock", ""],

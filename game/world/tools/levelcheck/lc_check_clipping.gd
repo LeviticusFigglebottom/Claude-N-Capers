@@ -29,7 +29,7 @@ func run(ctx: LcContext) -> void:
 		for j: int in range(i + 1, active.size()):
 			var a: LcProp = active[i]
 			var b: LcProp = active[j]
-			if a.has_colliders() or b.has_colliders() or _exclusive(a, b):
+			if a.has_colliders() or b.has_colliders() or _exclusive(a, b) or _contained(a, b) or _contained(b, a):
 				continue
 			if not a.global_aabb.grow(0.01).intersects(b.global_aabb):
 				continue
@@ -40,6 +40,14 @@ func run(ctx: LcContext) -> void:
 		if ctx.is_active(d):
 			_check_door_arc(ctx, d, active)
 	note("%d props, %d doors checked" % [active.size(), ctx.doors.size()])
+
+
+## SL-2: designed contents of a hollow prop (meta `inside` = the sibling prop's node name, e.g. a lift car's floor
+## drop inside the escape fit-out of the same car): skipped only while `a`'s box lies wholly inside `b`'s.
+static func _contained(a: LcProp, b: LcProp) -> bool:
+	if String(a.node.get_meta(&"inside", "")) != String(b.node.name) or a.node.get_parent() != b.node.get_parent():
+		return false
+	return b.global_aabb.grow(0.01).encloses(a.global_aabb)
 
 
 ## Props in different slots of the same group never coexist.

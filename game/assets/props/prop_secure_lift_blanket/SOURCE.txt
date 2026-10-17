@@ -1,0 +1,8 @@
+asset: prop_secure_lift_blanket
+script: tools/blender/props/secure_drops.py
+params: {"cat": {"kind": "drop_blanket", "prefab": "secure_zone", "surface": "fabric"}, "fn": "lift_blanket"}
+seed: 3378385226  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_secure_lift_blanket
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 8000
