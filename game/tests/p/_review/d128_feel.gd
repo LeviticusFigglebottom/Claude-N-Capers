@@ -32,6 +32,7 @@ var route_arg: String = ""
 var difficulty: int = Enums.Difficulty.ROUTINE
 var pre_arg: String = ""
 var shoot_arg: String = ""
+var post_arg: String = ""
 var _seed: int = 1002
 var _shots_left: int = 6
 var _shot: int = 0
@@ -57,6 +58,7 @@ func _ready() -> void:
 			"difficulty": difficulty = Enums.Difficulty.LETHAL if v == "lethal" else Enums.Difficulty.ROUTINE
 			"pre": pre_arg = v
 			"shoot": shoot_arg = v
+			"post": post_arg = v
 	if runner_out == "":
 		runner_out = OS.get_user_data_dir() + "/d128_feel"
 	DirAccess.make_dir_recursive_absolute(runner_out)
@@ -417,7 +419,9 @@ func _sample(smp: Dictionary) -> bool:
 		o.name, Po5Pilot._v(p["pos"]), p["d"], p["ang"], p["zones"], p["path"], c.masked])
 	# Masked already: approach crouched when the crouched range does not reach the point, then stand up there
 	# (standing up is the start, like the mask going on).
-	var sneak: bool = c.masked and not crouch and float(p["d"]) > _range(o, true)
+	var sneak: bool = c.masked and not crouch
+	if sneak:
+		note("  sneak approach (crouched range %.1f m, point %.1f m)" % [_range(o, true), p["d"]])
 	if crouch or sneak:
 		pilot.inp.press(&"crouch")
 	var pre_max: float = 0.0
@@ -548,7 +552,8 @@ func _sample(smp: Dictionary) -> bool:
 	if exited:
 		var off: float = dr / 100.0
 		var prog: float = (v_exit - off) / (1.0 - off)
-		exp_decay = prog * (3.0 if _kind(o) == Enums.ObserverKind.CAMERA else 1.0 / Tweak.stealth().npc_decay_per_s)
+		exp_decay = prog * (float(Tweak.stealth().observer_presets[&"camera"]["delay_max"])
+			if _kind(o) == Enums.ObserverKind.CAMERA else 1.0 / Tweak.stealth().npc_decay_per_s)
 	note("  RESULT %s: first %.2f full %.2f -> fill %.2f s (live-rate integral %.2f, formula at start geom %.2f) "
 		% [id, t_first, t_full, fill, t_live_full, tbl]
 		+ "geom start d %.2f/%.1f first %.2f/%.1f full %.2f/%.1f end %.2f/%.1f crouched %s DR %d" % [g0.x, g0.y,
@@ -668,6 +673,8 @@ func _careful() -> void:
 		if await _sample(smp):
 			note("careful: pre-sample spent the run")
 			return
+	if c.masked:
+		pilot.inp.press(&"crouch")
 	await pilot.goto(pts[0], 0.5, 90.0)
 	note("careful: at mask spot %s, max meter %.2f" % [Po5Pilot._v(c.global_position), _max_meter()[0]])
 	pilot.inp.press(&"crouch")
@@ -728,3 +735,6 @@ func _careful() -> void:
 			break
 	if shoot_arg != "" and _alarm == &"":
 		await _shoot_camera(_find_obs(shoot_arg))
+	for smp: Dictionary in (_parse_samples(post_arg) if post_arg != "" else ([] as Array[Dictionary])):
+		if _alarm != &"" or await _sample(smp):
+			break

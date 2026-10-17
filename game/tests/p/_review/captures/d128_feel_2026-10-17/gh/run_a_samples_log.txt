@@ -1,0 +1,13 @@
+[D128 175.1s t=2.53] pilot: calibrated 0.001600 rad/px yaw, 0.001600 rad/px pitch (settings formula said (0.0016, 0.0016))
+[D128 175.1s t=2.53] run 1: glasshouse seed 1002 phase 1 crew (3.0, 0.0, 14.4) masked false mode casing DR 4
+[D128 175.1s t=2.53] SAMPLE Npc_guard:1.5:0:stand (guard Npc_guard): walk to (10.3, 0.2, 9.4) (planned d 1.5 ang 2 zones [1] path 10.9) masked false
+[D128 409.0s t=7.53] pilot: t=5 at (8.7, 0.0, 13.0) corner (9.4, 0.2, 12.8) yaw_err 0.00 fwd=true path=11 mouse_mode=2 state=0 look=(-1.31,0.00) pin_yaw=-1.31218309126416 bot=false
+[D128 518.2s t=10.13] pilot: use MainEntrance (open_door) -> OK in 0.0 s
+[D128 747.6s t=14.20]   arrived true at (10.4, 0.0, 9.5) d 3.27 ang 166.4 crouched false meter 0.00 (max any 0.00) alarm 
+[D128 906.5s t=16.93] shot glasshouse_01_guard_Npc_guard_2m_stand_mid.png
+[D128 937.8s t=17.47] shot glasshouse_02_guard_Npc_guard_2m_full.png
+[D128 937.8s t=17.47]   RESULT Npc_guard:1.5:0:stand: first 1.03 full 2.17 -> fill 1.13 s (live-rate integral -1.00, formula at start geom inf) geom start d 3.27/166.4 first 4.29/119.9 full 4.85/42.3 end 4.85/42.3 crouched false DR 4
+[D128 937.8s t=17.47]     HUD first: meter 0.12 hud -1.00 ring - | mid: meter 0.58 hud 0.50 ring ? 0.50 on+arc | full: meter 1.00 hud 0.92 ring ? 0.92 on+arc
+[D128 1083.0s t=2.53] pilot: calibrated 0.001600 rad/px yaw, 0.001600 rad/px pitch (settings formula said (0.0016, 0.0016))
+[D128 1083.0s t=2.53] run 2: glasshouse seed 1002 phase 1 crew (3.0, 0.0, 14.4) masked false mode casing DR 4
+[D128 1083.0s t=2.53] SAMPLE Npc_civilian2:7.5:0:stand (civilian Npc_civilian2): walk to (1.1, 0.2, 8.2) (planned d 7.5 ang 2 zones [1] path 18.7) masked false
