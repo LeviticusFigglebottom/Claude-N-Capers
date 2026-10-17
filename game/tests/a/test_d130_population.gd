@@ -32,7 +32,7 @@ func test_d130_gallery_night_population() -> void:
 	if not _has_rule(&"gallery_night", &"gala_extra"):
 		skip("pending ENV C's D-130 GN rows (gala_extra)")
 		return
-	await _check(&"gallery_night", GN_GUARD_TAGS, [1, 2], [5, 5], [], [8, 14], [10, 21])
+	await _check(&"gallery_night", GN_GUARD_TAGS, [1, 2], [5, 5], [], [8, 14], [12, 21])  # C 71d55467
 
 
 func _check(heist: StringName, guard_tags: Array[StringName], g_r: Array, g_c: Array, civ_tags: Array[StringName],
