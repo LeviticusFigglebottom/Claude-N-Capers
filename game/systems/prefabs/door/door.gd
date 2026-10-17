@@ -122,6 +122,9 @@ var _leaves: Array[Node3D] = []
 var _nav_link: NavigationLink3D = null
 ## NPC open requested and not yet applied (stealth animation delay).
 var _npc_open_pending: bool = false
+## D-116: the NPC breaching this door (its net id, 0 = none) and the breach timer (door_kick_<fam> times from it).
+var _breacher_net_id: int = 0
+var _breach_timer: SceneTreeTimer = null
 var _opened_by_net_id: int = 0
 ## PO-6 swing: open fraction of the leaves now (0 closed .. 1 at door_open_angle_deg), the swing's start /
 ## target fractions, its linear progress (0..1, eased into the fraction) and duration (s).
@@ -460,7 +463,9 @@ func npc_open(agent: Node) -> bool:
 		delay = tw.npc_door_breach_s
 		was_locked = false
 		_npc_open_pending = true
-		get_tree().create_timer(delay, false, true).timeout.connect(_npc_apply_breach.bind(by))
+		_breacher_net_id = by
+		_breach_timer = get_tree().create_timer(delay, false, true)
+		_breach_timer.timeout.connect(_npc_apply_breach.bind(by))
 		return true
 	if delay <= 0.0:
 		_npc_apply_open(by, was_locked)
@@ -487,6 +492,8 @@ func _on_phase_for_breach(_old: int, _new: int) -> void:
 
 func _npc_apply_breach(by_net_id: int) -> void:
 	_npc_open_pending = false
+	_breacher_net_id = 0
+	_breach_timer = null
 	if not is_inside_tree() or is_open:
 		return
 	unlock()
@@ -494,6 +501,25 @@ func _npc_apply_breach(by_net_id: int) -> void:
 	var p: Vector3 = global_position + Vector3(0.0, 1.0, 0.0)
 	EventBus.audio_cue_requested.emit(&"cue.door_breach", p, by_net_id)
 	Net.replicate_event(&"audio_cue_requested", [&"cue.door_breach", p, by_net_id])
+
+
+## D-116: seconds since `agent` started breaching this door (the breach timer), or -1 when it is not the breacher.
+func breach_elapsed_s(agent: Node) -> float:
+	if _breach_timer == null or _breacher_net_id == 0 or NetIds.of(agent) != _breacher_net_id:
+		return -1.0
+	return maxf(Tweak.interaction().npc_door_breach_s - _breach_timer.time_left, 0.0)
+
+
+## D-116: where the breacher stands (InteractionTweak.npc_door_breach_stand_m from the door plane on `from`'s side,
+## laterally within the middle half of the leaf) and the direction it faces (the door normal, toward the door).
+func breach_stand(from: Vector3) -> Array:
+	var lp: Vector3 = global_transform.affine_inverse() * from
+	var side: float = 1.0 if lp.z >= 0.0 else -1.0
+	var half: float = effective_width() * 0.25
+	var stand: Vector3 = global_transform * Vector3(clampf(lp.x, -half, half), lp.y,
+		side * Tweak.interaction().npc_door_breach_stand_m)
+	var n: Vector3 = global_transform.basis.z * -side
+	return [stand, Vector3(n.x, 0.0, n.z).normalized()]
 
 
 func _npc_auto_close() -> void:

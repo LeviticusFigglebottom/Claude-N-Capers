@@ -1,4 +1,4 @@
-# Next heist: Ostrander Federal build plan (DRAFT; LEAD review pending, paper only under D-115)
+# Next heist: Ostrander Federal build plan (APPROVED D-136; kickoff after D-135 queue clear)
 
 Owner: LEAD. Status: **planning only** (D-115: no new heist until all five existing heists are "done" per
 `docs/process/heist_completion.md`; D-111 polish gate holds too; D-129 restates "planning only").
@@ -113,7 +113,7 @@ Gallery Night's groundwork (next_heist.md §3b.6) already covers about half of t
 - Doc takes the card in "2 s"; the shipped carried-card take is `carried_item_s` 1.0 s (GN). One value for all carried cards.
 - `armored_car_early` crew "LD → lift → CQ": NPCs cannot ride `bag_lift`; route them by SA.
 
-## 3b. Proposed lead rulings for the build (to adopt as a D-entry)
+## 3b. Lead rulings for the build (ADOPTED as D-136)
 1. **Vault = ND pattern.** Time lock on a mission timer + Door VAULT; lockdown = cancel timer, disable TL/hack
    (`pause(&"lockdown")`), `KeycardReader.set_disabled(true)`, vault gate `relock(BARRED)`. QC-64 closed with no Safe API.
 2. **QC-62 = QC-52.** The manager's card is a `keycard_pickup` with `carrier_tag`; take time = `carried_item_s` (doc → 1 s).

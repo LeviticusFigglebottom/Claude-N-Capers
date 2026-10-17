@@ -422,7 +422,7 @@ reception, lounge, gallery, study, dining and the terrace corridor have feature 
 | K13 | security_room | 4.5 × 4 | 2.7 | `security_office_sl` (SL-1: the operator's place stays clear) | **`camera_station` with its monitor wall against the solid east wall** (K14 partition); the operator faces **east**, so the door (west) is directly behind him. Key cabinet on the north wall behind him (`kc_security`), logbook on the SW counter (`code_security_log`), lockers, coffee, phone, `alarm_button` on the console. Door unlocked (closed; the operator's coffee runs). No windows. |
 | K14 | electrical | 2.5 × 4 | 2.7 | `electrical_sl` (SL-1) | Switchboard, telecom rack. Door S. |
 | K15 | storage (copy and mail) | 3.5 × 4 | 3.0 | `copy_room` | Copier, paper stock, shredder, mail sorter. Windows E. |
-| K16 | corridor (C2, south spine) | 36 × 1.5 | 2.7 | `corridor_office` | Full-width spine with end windows. C4 (east end). The L41 rover's main loop. |
+| K16 | corridor (C2, south spine) | 36 × 1.5 | 2.7 | `corridor_spine_sl` (SL-1 polish; was `corridor_office`) | Full-width spine with end windows. C4 (east end). The L41 rover's main loop. |
 | K17 | storage (records archive) | 6 × 6 | 3.0 | `archive_records` (SL-1: the shared `storage_archive` is a stock room) | Compact shelving, file boxes, the **document safe** (`safe` MEDIUM, `methods [saw]`, 1 bag `loot.cash`: the partners' cash float). Windows W and S. |
 | K18 | break_room | 6 × 6 | 3.0 | `break_room_office` (SL-1: no lockers) | Fridge, counter with sink, microwave, coffee machine, table with 6 chairs, bulletin board, phone. Windows S. |
 | K19 | office (law library) | 6 × 6 | 3.0 | `library_law` | Book stacks, reading table, lamps. |
@@ -803,6 +803,19 @@ Crew assets with no point: `asset.intel_cameras` (reveals `camera`), `asset.inte
   or exterior rooms), 125 occluders (slabs, solid walls); for the draw-call budget (2500 per review camera, worst
   ExtTerraceSE 2293 with every variant slot on) near-range (30 m) interior props, merged railing, city-light and
   opaque curtain-wall meshes (one per material per storey).
+- **SL-1 polish (the LEAD's G2 contact-sheet review):** K16 gets its own kit (`corridor_spine_sl`: framed notices and art,
+  a room sign beside each of its doors on the handle side) plus a bench against the K8 wall (x 7) and the internal-mail
+  trolley parked against the K13 wall (x 26.9): both against the north wall between the patrol points and outside every
+  door's clear zone, leaving >= 0.85 m of the 1.3 m spine; the trolley is one more crouch spot on the 36 m sightline
+  (the door recesses stay the main cover). S1 adds the post room (mail trolley, bin rack), a parked cleaner's cart,
+  flattened boxes and notices around the PUBLIC spawns. K8: fabric spine screens on the three pods (visual only, as the
+  monitors), a working day's desk clutter, a second printer (doc: 2 printers), a whiteboard, more cabinets. The south /
+  south-west / east skyline is generated (`sl_skyline.gd`, fixed seed): 29 towers of varied footprint and height, setback
+  crowns, roof plant, antenna masts, warm or cool lit floors (dark, full or partly lit per floor), 17 aircraft warning
+  lights (emissive, no Light3D); ~8 merged meshes. Helipad: a painted H and a yellow touchdown circle north of the E1 net,
+  18 green edge lights round the deck (emissive, no Light3D, off the roof patrol's lines), a windsock on the plant block's
+  east face. Stair cores: the core walls' well faces run on through each slab's depth (the slab's hole edge showed its
+  floor finish as a strip, e.g. terrazzo at Stair A L41). Worst review camera ExtTerraceSE 2360 draw calls (< 2500).
 
 ## HeistDef (proposed data, `shadow_ledger_def.tres`)
 `id shadow_ledger`, display "Shadow Ledger", contact `contact.accountant`, mode STEALTH_ONLY,

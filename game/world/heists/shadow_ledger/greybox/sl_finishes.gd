@@ -51,6 +51,9 @@ const FINISHES: Dictionary = {
 	"laminate_white": ["paint_white", Color(0.9, 0.9, 0.9)],
 	"tower": ["metal_painted", Color(0.85, 0.9, 0.95)],
 	"tower_dark": ["alu_anodized_black", null],
+	"tower_stone": ["concrete", Color(0.62, 0.64, 0.68)],  # SL-1 polish: skyline towers in pale precast
+	"pad_paint_white": ["paint_white", Color(0.92, 0.93, 0.92)],  # helipad markings (H, perimeter)
+	"pad_paint_yellow": ["paint_white", Color(0.95, 0.78, 0.2)],  # helipad touchdown circle
 }
 ## Library ids whose native density is the 256 px/m ceiling target (kept; everything else is scaled to
 ## 512 px/m, style guide §4).

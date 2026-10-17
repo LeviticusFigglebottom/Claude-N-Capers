@@ -173,6 +173,8 @@ func take_hit(info: Dictionary, attacker_net_id: int = 0) -> Dictionary:
 	var dmg: float = maxf(float(info.get("amount", 0.0)), 0.0) * Modifiers.mult(_slot(), &"defense.damage_taken_mult")
 	if int(info.get("type", Enums.DamageType.BULLET)) == Enums.DamageType.MELEE:
 		dmg *= Modifiers.mult(_slot(), &"defense.melee_damage_taken_mult")  # A3-13: enemy melee
+	if _interacting():
+		dmg *= Modifiers.mult(_slot(), &"defense.interact_damage_taken_mult")  # Hold the Line ACED (D-134: holds go on)
 	dmg = TeamModifiers.hostage_reduced(_slot(), dmg, TeamModifiers.hostage_count(_crew))  # QB-60
 	if st == Enums.CrewState.DOWNED or _is_cuffed_while_down():
 		bleedout_health -= dmg
@@ -417,14 +419,14 @@ func _tick_down_states(delta: float) -> bool:
 
 
 ## Server (PO6-17b): a breach blast / flashbang blinds this member for `seconds` (the longer of the two wins) and
-## interrupts a hold interaction (S9.1, as damage does).
+## interrupts a hold interaction, a revive included (D-134: unlike damage).
 func flash(seconds: float) -> void:
 	if _crew == null or not Net.is_authority() or seconds <= 0.0 or _crew.crew_state != Enums.CrewState.NORMAL:
 		return
 	flashed_left = maxf(flashed_left, seconds)
 	var rt: HeistRuntime = HeistRuntime.of(_crew)
 	if rt != null and rt.interaction != null:
-		rt.interaction.interrupt_on_damage(_crew.slot)
+		rt.interaction.interrupt_on_stun(_crew.slot)
 
 
 ## Authority: every physics tick (CrewController._tick_server_actions).
@@ -497,3 +499,10 @@ func _slot() -> int:
 func _difficulty() -> int:
 	var rt: HeistRuntime = HeistRuntime.of(_crew) if _crew != null else null
 	return rt.difficulty if rt != null else Enums.Difficulty.ROUTINE
+
+
+## True while this crew member holds an interaction (InteractionSystem session on its slot).
+func _interacting() -> bool:
+	var rt: HeistRuntime = HeistRuntime.of(_crew) if _crew != null else null
+	return rt != null and rt.interaction != null and not rt.interaction.session(_slot()).is_empty()
+

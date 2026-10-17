@@ -225,7 +225,7 @@ func test_l2_7_revive_speed_mult_halves_time() -> void:
 	assert_eq(c.crew_state, Enums.CrewState.NORMAL, "revived in half the time")
 
 
-func test_l2_7_downed_cannot_revive_self_and_damage_interrupts() -> void:
+func test_l2_7_downed_cannot_revive_self_and_damage_does_not_interrupt() -> void:
 	var c: CrewController = _crew(0)
 	c.set_masked()
 	_down(c)
@@ -236,7 +236,7 @@ func test_l2_7_downed_cannot_revive_self_and_damage_interrupts() -> void:
 	await wait_seconds(0.5)
 	_rt.clear_bot_intent(0)
 	assert_true(_rt.interaction.session(0).is_empty(), "no self revive")
-	# Damage interrupts the victim's interaction (S9.1).
+	# D-134 (was S9.1): damage never interrupts a revive in progress (other holds still cancel, test_d134).
 	var r: CrewController = _crew(1)
 	r.set_masked()
 	_rt.teleport_crew(0, Transform3D(Basis.IDENTITY, Vector3(0, 0.05, 0)))
@@ -246,5 +246,5 @@ func test_l2_7_downed_cannot_revive_self_and_damage_interrupts() -> void:
 	await wait_seconds(1.0)
 	assert_false(_rt.interaction.session(1).is_empty(), "reviving")
 	_hit(r, 5.0)
-	assert_true(_rt.interaction.session(1).is_empty(), "damage interrupted the revive")
+	assert_false(_rt.interaction.session(1).is_empty(), "D-134: the revive survives the hit")
 	_rt.clear_bot_intent(1)

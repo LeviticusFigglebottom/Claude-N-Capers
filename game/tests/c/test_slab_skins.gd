@@ -19,8 +19,9 @@ const MAPS: Dictionary = {
 ## [vertex count, polygon count, sha256 of the vertices + polygons].
 const NAV_FINGERPRINT: Dictionary = {
 	# re-pinned: SL-P1 stair divider foot stubs + ramp run-ons (P re-walk); D-130 late-staff NPC seats (K4
-	# AssistantChairA, K8 PodAChairS1 no longer obstruct)
-	"shadow_ledger": [1791, 1813, "32795abbf810416a90e2598b31f8e570a9e3893f5a211a084df5d79d884505dd"],
+	# AssistantChairA, K8 PodAChairS1 no longer obstruct); SL-1 polish: the K16 bench / mail trolley, the S1 post room
+	# and the denser K8 / S1 kits obstruct their footprints
+	"shadow_ledger": [1811, 1833, "eb6583dee03540fcbbf07cb7168f3251fa7daff972b9e118fd9e637af4cd04f2"],
 	"dockside_burn": [2211, 2258, "eba34e479cfc9b5759685a5da6c9694c34c61ac330122af6a9b596c1688f3f4c"],  # re-pinned: shutters baked shut
 }
 const SKINS: String = "Geometry/Building/Skins"

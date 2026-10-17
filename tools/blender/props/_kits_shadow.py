@@ -19,6 +19,10 @@ TABLE_CLUTTER = {"anchors": ["table"], "items": {"papers": 2, "notebook": 1.5, "
 COUNTER = {"anchors": ["kitchen_counter"], "items": {"mug": 3, "bottles": 1.5, "kettle": 0.8, "glassware": 1},
            "count": (1, 3), "radius": 0.5}
 FLOOR_OFFICE = {"anchors": ["wall", "door"], "items": {"bin": 2, "box": 1}, "count": (0, 1), "radius": 0.8}
+# SL-1 polish: a four-seat bench pod carries a working day's clutter (the LEAD's G2 review: the pods read bare)
+POD_CLUTTER = {"anchors": ["desk"], "items": {"papers": 3, "mug": 2, "pen_cup": 1, "binders": 1.5, "notebook": 1,
+                                              "desk_phone": 1, "desk_lamp": 0.4, "plant_small": 0.6},
+               "count": (4, 7), "radius": 1.1}
 ART = ["prop_wall_art_a", "prop_wall_art_c", "prop_wall_art_b"]
 OFFICE = {"picture": ART, "plant": ["prop_plant_tall"], "bin": ["prop_bin_office"], "light_fixture": ["prop_ceiling_panel_neutral"],
           "fire_extinguisher": ["prop_fire_extinguisher"], "rug": ["prop_rug_rect"]}
@@ -28,14 +32,19 @@ BOH = {"picture": ["prop_notice_frame"], "light_fixture": ["prop_ceiling_panel_c
 SHADOW_KITS: dict[str, dict] = {
     # ---- L40 service level
     "service_lobby": {
-        "purpose": "lobby", "min_density": 0.15, "max_density": 0.8, "min_props": 6, "salt": 301,
-        "required": ["cart", "lectern", "bulletin_board", "fire_extinguisher", "light_fixture"],
-        "optional": {"picture": 1, "bin": 0.8, "switch": 0.6},
-        "assets": {**BOH, "cart": ["prop_freight_dolly"], "lectern": ["prop_lectern_signin"]},
+        "purpose": "lobby", "min_density": 0.15, "max_density": 1.2, "min_props": 10, "salt": 301,
+        "required": ["cart", "lectern", "bulletin_board", "fire_extinguisher", "light_fixture", "mail_bins",
+                     "cleaning_cart"],
+        "optional": {"cart": 2, "picture": 1.5, "bin": 0.8, "switch": 0.6, "box": 1},
+        "counts": {"picture": (2, 3), "box": (1, 2)},
+        "assets": {**BOH, "cart": ["prop_mail_trolley"], "lectern": ["prop_lectern_signin"],
+                   "mail_bins": ["prop_mail_bins"], "cleaning_cart": ["prop_cleaner_cart"], "box": ["prop_box_stack"]},
         "ceiling": {"prop_ceiling_panel_cool": 2.6},
-        "lone_ok": ["cart", "lectern"],
+        "lone_ok": ["cart", "lectern", "mail_bins", "cleaning_cart", "box"],
         "notes": "S1 service lift lobby (PUBLIC): the freight dolly and the contractor sign-in lectern are map-built; "
-                 "the lift car opening and the sealed fire door stay clear. 5000 K panels.",
+                 "the kit adds the post room's mail trolley and bin rack, a parked cleaner's cart, flattened boxes and "
+                 "framed notices (SL-1 polish). The lift car opening, the sealed fire door and the service spawns stay "
+                 "clear. 5000 K panels.",
     },
     "refuse_room": {
         "purpose": "storage", "min_density": 0.15, "max_density": 1.2, "min_props": 4, "salt": 302,
@@ -46,6 +55,19 @@ SHADOW_KITS: dict[str, dict] = {
         "lone_ok": ["cage", "box", "bin"],
         "notes": "S2 refuse: the two wheelie bins are body_container prefabs (keep-outs), the recycling cage is "
                  "map-built; flattened boxes by the door. Fluorescents.",
+    },
+    "corridor_spine_sl": {
+        "purpose": "corridor", "min_density": 0.05, "max_density": 1.2, "min_props": 12, "salt": 311,
+        "required": ["fire_extinguisher", "light_fixture", "picture", "door_sign"],
+        "optional": {"picture": 2, "bulletin_board": 0.5, "switch": 1.0, "thermostat": 0.4, "outlet": 0.6},
+        "counts": {"picture": (4, 6), "door_sign": (1, 13)},
+        "assets": {"picture": ["prop_notice_frame", "prop_wall_art_a", "prop_notice_frame", "prop_wall_art_b"],
+                   "door_sign": ["prop_door_sign"], "light_fixture": ["prop_ceiling_panel_neutral"]},
+        "ceiling": {"prop_ceiling_panel_neutral": 3.0},
+        "lone_ok": ["bench", "cart"],
+        "notes": "K16 south spine (C2, 36 m): room signs beside its doors (anchors from sl_dress), framed notices and "
+                 "art; the floor stays clear but for a bench by K8 and a parked mail trolley by K13 (direct props, "
+                 "against the wall, off the patrol line and the door clear zones). SL-1 polish.",
     },
     # ---- L41 offices
     "office_partner": {
@@ -93,15 +115,17 @@ SHADOW_KITS: dict[str, dict] = {
     "office_open_law": {
         "purpose": "office", "min_density": 0.2, "max_density": 1.2, "min_props": 16, "salt": 307,
         "required": ["desk", "chair", "monitor", "keyboard", "printer", "file_cabinet", "water_cooler", "plant",
-                     "light_fixture"],
-        "optional": {"plant": 1, "picture": 1, "bin": 1, "coat_rail": 0.5},
-        "counts": {"monitor": (6, 10), "keyboard": (4, 8), "file_cabinet": (2, 3)},
-        "assets": {**OFFICE, "printer": ["prop_printer_mfp"]},
+                     "whiteboard", "light_fixture"],
+        "optional": {"plant": 1, "picture": 1, "bin": 1, "coat_rail": 0.6, "printer": 1.2, "file_cabinet": 1.5,
+                     "bulletin_board": 0.6, "box": 0.5},
+        "counts": {"monitor": (10, 12), "keyboard": (8, 12), "file_cabinet": (3, 4), "printer": (2, 2)},
+        "assets": {**OFFICE, "printer": ["prop_printer_mfp"], "whiteboard": ["prop_whiteboard"]},
         "ceiling": {"prop_ceiling_panel_neutral": 2.6},
-        "clutter": {"desk": DESK_CLUTTER, "floor": FLOOR_OFFICE},
-        "lone_ok": ["plant", "water_cooler", "printer", "coat_rail"],
-        "notes": "K8 associates' open plan: three map-built four-seat bench pods (12 chairs) and the printer; the kit "
-                 "puts screens and keyboards on the pods, cabinets, a cooler, plants. C11 sightlines stay clear.",
+        "clutter": {"desk": POD_CLUTTER, "floor": FLOOR_OFFICE},
+        "lone_ok": ["plant", "water_cooler", "printer", "coat_rail", "file_cabinet"],
+        "notes": "K8 associates' open plan: three map-built four-seat bench pods (12 chairs, fabric spine screens) and "
+                 "the printer; the kit puts screens, keyboards and a working day's clutter on the pods, a second "
+                 "printer, cabinets, a whiteboard, a cooler, plants. C11 sightlines stay clear.",
     },
     "office_it": {
         "purpose": "office", "min_density": 0.3, "max_density": 1.6, "min_props": 8, "salt": 308,

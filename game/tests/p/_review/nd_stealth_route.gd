@@ -26,6 +26,10 @@ const C6_AT: Vector3 = Vector3(9.1, -1.4, 8.8)
 const B1_HATCH_STAND: Vector3 = Vector3(4.6, -4.0, 1.8)
 const SALLY_IN: Vector3 = Vector3(5.0, 0.0, 1.8)
 const C4_AT: Vector3 = Vector3(3.5, 2.6, 5.9)
+## Inside the janitor closet (BODY_HIDE x 7.15-8.35, z 3.65-5.85; JanitorDoor at (7.75, -4, 6.0) off B5).
+const CLOSET_IN: Vector3 = Vector3(7.75, -4.0, 4.9)
+## B5 corridor centre line (walls z 6.0 / 7.5: at z 6.9 by x 8 the walk took InspectionWestDoor, ND run 2026-10-17).
+const B5_MID_Z: float = 6.65
 ## Just inside the vault gate (antechamber side), where C6 can be shot; short of the laser_static plane at z 8.5
 ## (capsule r 0.35: z 8.3 tripped it, ND run 2026-10-17 t=120.7).
 const GATE_IN: Vector3 = Vector3(14.0, -4.0, 7.95)
@@ -52,6 +56,7 @@ var _alarm: StringName = &""
 var _t0_ms: int = 0
 var _fast: bool = true
 var _lift_probe: bool = false
+var _gate_npc: NpcBase = null
 
 
 func _ready() -> void:
@@ -199,7 +204,7 @@ func _run() -> void:
 	if _fast:
 		note("fast mode: render loop off between shots")
 		_set_fast(true)
-	for step: Callable in [_to_b3, _gate_guard, _records, _vault_gate, _antechamber, _time_lock, _loot, _escape]:
+	for step: Callable in [_to_b3, _gate_guard, _hide_body, _records, _vault_gate, _antechamber, _time_lock, _loot, _escape]:
 		if _alarm != &"":
 			await _fail("alarm before %s" % step.get_method())
 			return
@@ -305,6 +310,7 @@ func _gate_guard() -> bool:
 	if g == null:
 		note("no guard at the gate (moved / rover); carrying on")
 		return true
+	_gate_npc = g
 	var hits: Array[int] = [0, 0]
 	var c: CrewController = pilot.crew
 	c.melee.hit_landed.connect(func(_t: Object) -> void: hits[0] += 1)
@@ -377,6 +383,52 @@ func _gate_guard() -> bool:
 		await wait_s(0.25)
 	note("no pager came")
 	return true
+
+
+## Bag the gate guard and drop him in the janitor closet (BODY_HIDE, off B5's west end): the cleaner comes down
+## B5 around t 505 and panicked at the body, then pressed the alarm button (ND runs 2026-10-17, t=509 / 518).
+func _hide_body() -> bool:
+	if _gate_npc == null or not is_instance_valid(_gate_npc) or _gate_npc.is_alive():
+		return true
+	var ic: InteractableComponent = _comp(_gate_npc, &"bag_body")
+	if ic == null:
+		note("no bag_body interactable on the gate guard")
+		return false
+	var at: Vector3 = _gate_npc.global_position
+	await pilot.use(ic, 20.0, func() -> bool: return not is_instance_valid(ic) or not ic.enabled)
+	var bag: LootBag = pilot.crew.carried_bag as LootBag
+	if bag == null:  # bagging leaves the body bag on the floor (PD2): pick it up
+		for n: Node in get_tree().get_nodes_in_group(G.LOOT_BAG):
+			var lb: LootBag = n as LootBag
+			if lb != null and lb.is_body_bag() and lb.global_position.distance_to(at) < 3.0:
+				bag = lb
+		if bag == null or not await pilot.use(_comp(bag), 20.0, func() -> bool: return pilot.crew.is_carrying_bag()):
+			note("gate guard not bagged / body bag not picked up (bag %s)" % bag)
+			return false
+	note("carrying the gate guard's body bag to the janitor closet")
+	# Along the corridor to the closet door, then in: the navmesh route went round by (12, 5.1) and the heavy-bag
+	# carry pinned on that corner for 40 s (ND run 2026-10-17 t=90).
+	await pilot.goto(Vector3(CLOSET_IN.x, GATE_AT.y, B5_MID_Z), 0.3, 30.0, false, false)
+	if not await pilot.goto(CLOSET_IN, 0.3, 20.0):
+		note("janitor closet not reached (at %s)" % Po5Pilot._v(pilot.crew.global_position))
+		return false
+	await pilot.face(CLOSET_IN + Vector3(0, 0, -0.8), 0.03, 1.0)
+	await pilot.inp.tap(&"drop_bag")
+	await wait_s(1.5)
+	if bag == null:
+		for n: Node in get_tree().get_nodes_in_group(G.LOOT_BAG):
+			var lb: LootBag = n as LootBag
+			if lb != null and lb.is_body_bag() and (bag == null or lb.global_position.distance_to(CLOSET_IN)
+					< bag.global_position.distance_to(CLOSET_IN)):
+				bag = lb
+	var hidden: bool = bag != null and bag.hidden_from_stealth
+	note("body bag at %s hidden %s" % [Po5Pilot._v(bag.global_position) if bag != null else "-", hidden])
+	await shot("body_hidden")
+	# Back to the gate side of B5, where the records leg always started (from the closet the navmesh route went by
+	# InspectionWestDoor and the pilot looped at (8.0, -4, 8.4) for 90 s, ND run 2026-10-17 t=99).
+	await pilot.goto(Vector3(CLOSET_IN.x, GATE_AT.y, B5_MID_Z), 0.4, 20.0, false, false)
+	await pilot.goto(Vector3(13.5, GATE_AT.y, B5_MID_Z), 0.4, 30.0, false, false)
+	return hidden
 
 
 ## Steer at the guard's back with W held and swing on the move once he is in reach (stopping to face him first let
@@ -456,6 +508,10 @@ func _wait_back_turned(g: NpcBase, timeout: float) -> bool:
 func _records() -> bool:
 	var kc: Node3D = _tagged(&"keycard")
 	var code: Node3D = _tagged(&"code_note")
+	# West along B5 and in by RecordsDoor (3.5, -4, 7.5): the navmesh otherwise tries the closed VaultGate (it needs
+	# this keycard) or loops at InspectionWestDoor (ND runs 2026-10-17 t=99).
+	await pilot.goto(Vector3(4.2, GATE_AT.y, B5_MID_Z), 0.4, 40.0, false, false)
+	await pilot.goto(Vector3(3.5, GATE_AT.y, 8.4), 0.4, 20.0)
 	for pair: Array in [[kc, &"keycard"], [code, &"code"]]:
 		var n: Node3D = pair[0]
 		if n == null:
