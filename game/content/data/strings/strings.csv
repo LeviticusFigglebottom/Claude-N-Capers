@@ -3687,6 +3687,26 @@ ui.hud.device.c4,C4
 ui.hud.device.thermite,THERMITE
 ui.hud.device.escape,ESCAPE
 ui.hud.device.wait,WAIT
+ui.crew.default_weapon,Standard issue
+ui.crew.default_armor,Standard vest
+ui.crew.no_mask,No mask
+ui.crew.any_heister,Any free heister
+ui.crew.outfit.suit_charcoal,"Classic Suit, Charcoal"
+ui.crew.outfit.suit_navy,"Classic Suit, Navy"
+ui.crew.crumb,Safehouse / Bot Crew
+ui.crew.title,Bot Crew
+ui.crew.subtitle,"Gear your three crew bots from your armory: a primary with its mods, armor, a mask and an outfit. Changes save at once."
+ui.crew.bot,Bot {n}
+ui.crew.summary,Your crew
+ui.crew.card,"Bot {n}: {weapon}, {armor}
+{mask} · {outfit}"
+ui.crew.workshop_hint,Buy more weapons and mods in the Workshop; armor unlocks with your level.
+ui.crew.reset,Reset bot
+ui.crew.row.weapon,Primary
+ui.crew.row.armor,Armor
+ui.crew.row.mask,Mask
+ui.crew.row.outfit,Outfit
+ui.hub.crew,Bot Crew
 ui.hud.device.time,{mm}:{ss}
 ui.hud.device.jammed,JAMMED
 ui.hud.device.interrupted,INTERRUPTED

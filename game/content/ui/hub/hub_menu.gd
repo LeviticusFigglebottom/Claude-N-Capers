@@ -17,6 +17,8 @@ extends UiScreen
 
 signal station_requested(station_id: StringName)
 signal achievements_requested()
+## PO-19: the profile panel's Bot Crew button.
+signal crew_requested()
 signal options_requested()
 signal notoriety_requested()
 signal career_requested()
@@ -51,6 +53,8 @@ var skill_points_label: Label
 var notoriety_label: Label
 ## Profile panel button -> achievements_requested (B4-20).
 var achievements_button: Button
+## PO-19: Bot Crew (crew_requested).
+var crew_button: Button
 ## Profile panel button -> options_requested (B5-01).
 var options_button: Button
 ## Quick Play: "Continue · <heist> · <difficulty>", hidden without a playable last job.
@@ -108,6 +112,10 @@ func build_ui() -> void:
 	achievements_button.pressed.connect(achievements_requested.emit)
 	side.add_child(achievements_button)
 	focus_chain.append(achievements_button)
+	crew_button = UiBuild.button(&"ui.hub.crew")
+	crew_button.pressed.connect(crew_requested.emit)
+	side.add_child(crew_button)
+	focus_chain.append(crew_button)
 	options_button = UiBuild.button(&"ui.menu.options")
 	options_button.pressed.connect(options_requested.emit)
 	side.add_child(options_button)
@@ -155,7 +163,7 @@ func chain_grid() -> void:
 		b.set_focus_neighbor(SIDE_TOP, b.get_path_to(up))
 		var down: Control = cards[i + CARD_COLUMNS] if i + CARD_COLUMNS < n else back_button
 		b.set_focus_neighbor(SIDE_BOTTOM, b.get_path_to(down))
-	for c: Control in [achievements_button, options_button]:
+	for c: Control in [achievements_button, crew_button, options_button]:
 		c.set_focus_neighbor(SIDE_LEFT, c.get_path_to(cards[0]))
 	back_button.set_focus_neighbor(SIDE_TOP, back_button.get_path_to(cards[n - 1]))
 	back_button.set_focus_neighbor(SIDE_BOTTOM, back_button.get_path_to(cards[0]))
