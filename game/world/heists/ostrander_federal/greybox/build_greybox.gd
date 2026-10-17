@@ -84,6 +84,7 @@ func _build() -> void:
 	for line: String in NS.snap(map_root):
 		print("seat: " + line)
 	_build_environment(n("Lighting"))
+	preload("res://world/heists/ostrander_federal/greybox/of_art_rooms.gd").new(self).call(&"build")  # OF-C2 lane B
 	var polys: int = await _bake(nav)
 	if polys <= 0:
 		_fail("navmesh bake produced no polygons")

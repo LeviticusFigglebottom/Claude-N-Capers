@@ -158,6 +158,15 @@ TINTED: dict[str, dict] = {
     "linen_white": {"source": "fabric_upholstery", "color": "#D8D4CB", "roughness": 1.0},
     "teak": {"source": "wood_veneer_walnut", "color": "#9A7A58", "roughness": 0.7},
     "felt_dark": {"source": "fabric_upholstery", "color": "#2F3A35", "roughness": 1.0},
+    # Ostrander Federal G2 landmarks / rooms (OF-C2 lane B, ostrander_federal.md palette: limestone #CBC3B0, deep
+    # ultramarine #2F3F6B, meridian bronze #B8873A; the sunburst is gilded). `of_` keys: one block per lane.
+    "of_bronze": {"source": "metal_painted", "color": "#B8873A", "roughness": 0.55, "metallic": 1.0},
+    "of_bronze_dark": {"source": "metal_painted", "color": "#6B4E2C", "roughness": 0.7, "metallic": 1.0},
+    "of_gilt": {"source": "metal_painted", "color": "#C9A55A", "roughness": 0.4, "metallic": 1.0},
+    "of_limestone": {"source": "marble_cream", "color": "#CBC3B0", "roughness": 1.3},
+    "of_ultramarine": {"source": "fabric_upholstery", "color": "#2F3F6B", "roughness": 1.0},
+    "of_leather_ultramarine": {"source": "leather_dark", "color": "#2F3F6B", "roughness": 0.8},
+    "of_box_steel": {"source": "metal_painted", "color": "#A9ACAD", "roughness": 0.45, "metallic": 1.0},
 }
 
 # Painted canvases (GN-C2): key -> albedo PNG from tools/texgen/paintings.py. The prop material is a plain
