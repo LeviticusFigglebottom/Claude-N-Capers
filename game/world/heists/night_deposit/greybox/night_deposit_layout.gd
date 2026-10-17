@@ -528,6 +528,19 @@ const PATROL_EDGES_EXTERIOR: Array = [
 	["LotAlleyMouth", "LotWest"], ["LotWest", "LotSallyDoor"], ["LotCars", "LotDumpster"],
 ]
 
+## D-140 (doc roster): the `sec_empty` roundsman. When the security room is unstaffed the console officer walks his
+## rounds of the back-of-house rooms off G7 instead (security room -> electrical -> storage), so the room's officer is
+## either at the console (sec_staffed) or on this beat (sec_empty): always one pager. His own graph (the only guard
+## on it); the points stay clear of the rooms' UsePoints and door clear zones, and the beat's doors are unlocked.
+const PATROL_POINTS_ROUNDS: Dictionary = {
+	"RndSecurity": [Vector3(13.0, 0.0, 1.3), Vector2(6.0, 10.0), "lean", ["guard"], 90.0],
+	"RndElectrical": [Vector3(19.5, 0.0, 2.6), Vector2(4.0, 8.0), "idle", ["guard"], 0.0],
+	"RndStorage": [Vector3(22.6, 0.0, 2.4), Vector2(3.0, 6.0), "idle", ["guard"], 0.0],
+}
+const PATROL_EDGES_ROUNDS: Array = [
+	["RndSecurity", "RndElectrical"], ["RndElectrical", "RndStorage"], ["RndStorage", "RndSecurity"],
+]
+
 ## Rare `armored_car_early` (Brutal+, doc §Rare events): the armoured car parks in the lot west of the
 ## E1 van bay, rear doors to the building (behind the building: out of the casing sidewalk's view).
 ## Its 2 extra guards spawn at the rear (GUARD SpawnPoints tagged `scripted` + `guard_armored_car`,
