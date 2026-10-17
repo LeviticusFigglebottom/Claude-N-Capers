@@ -81,6 +81,7 @@ const CHAIN_MAX_CELLS: int = 60000
 const PROP_RULES: Dictionary = {
 	&"counter_service": ["height", Vector2(0.9, 0.9)],
 	&"counter_transaction": ["height", Vector2(1.05, 1.1)],
+	&"teller_worktop": ["height", Vector2(0.95, 1.05)],  # OF-C3: the teller's standing work top (lc_check_teller_worktop)
 	&"counter_bar": ["height", Vector2(1.05, 1.1)],
 	&"desk": ["height", Vector2(0.72, 0.76)],
 	&"railing": ["height", Vector2(1.0, 1.1)],
