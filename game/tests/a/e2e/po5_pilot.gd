@@ -20,7 +20,7 @@ const DOOR_LOOKAHEAD_M: float = 1.8
 ## _pass_leaf: half width of a clear lane through a doorway (crew capsule radius 0.35, less a little) (m).
 const LANE_HALF_M: float = 0.3
 ## _through_link: inside this (m) of an open door's plane the pilot walks straight across, ending this far past it.
-const THROUGH_DOOR_M: float = 0.8
+const THROUGH_DOOR_M: float = 1.0
 const THROUGH_PAST_M: float = 0.9
 ## Loud: a visible enemy within this range is fought before / during a hold (S9.1: damage cancels holds) (m).
 const HOLD_THREAT_M: float = 20.0
@@ -205,6 +205,23 @@ func _through_link(target: Vector3) -> Variant:
 	return null
 
 
+## DB-7 (ChamberASpine): the door whose plane is within THROUGH_DOOR_M of the crew (inside its width, same floor) with
+## `target` beyond it, open or not; door_ahead misses D-073 doors (the path ends at the NavLink end). Else null.
+func _door_on_line(target: Vector3) -> Door:
+	for n: Node in crew.get_tree().get_nodes_in_group(Door.GROUP):
+		var door: Door = n as Door
+		if door == null:
+			continue
+		var inv: Transform3D = door.global_transform.affine_inverse()
+		var me: Vector3 = inv * crew.global_position
+		if absf(me.z) >= THROUGH_DOOR_M or absf(me.y) > NEAR_DY_M or absf(me.x) > door.effective_width() * 0.5:
+			continue
+		var tz: float = (inv * target).z
+		if absf(tz) >= 0.05 and not (signf(tz) == signf(me.z) and absf(tz) <= absf(me.z)):
+			return door
+	return null
+
+
 ## Within `r` horizontally AND on the same floor (|dy| <= NEAR_DY_M).
 func near(a: Vector3, b: Vector3, r: float) -> bool:
 	return flat_dist(a, b) <= r and absf(a.y - b.y) <= NEAR_DY_M
@@ -262,6 +279,18 @@ func goto(target: Vector3, arrive_m: float = 0.8, timeout_s: float = 60.0, sprin
 			if flat_dist(p, crew.global_position) > 0.45:
 				corner = p
 				break
+		var line_door: Door = _door_on_line(target) if doors else null
+		if line_door != null and not line_door.is_open:
+			inp.release(&"move_forward")
+			if _door_blocked(line_door):
+				d.note("pilot: goto blocked by %s (%s); giving up this leg" % [line_door.name, _door_why(line_door)])
+				last_blocked_door = line_door
+				break
+			await open_door(line_door)  # DB-7 ChamberASpine: a D-073 door the path only crosses as a NavLink
+			repath_t = 0.0
+			hist_pos = crew.global_position
+			hist_t = 0.0
+			continue
 		var through: Variant = _through_link(target)
 		if through != null:
 			corner = through as Vector3
