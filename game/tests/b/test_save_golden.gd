@@ -1,11 +1,11 @@
-## Save golden migration fixtures v0..v8 (v8: the starter AR for old saves; P4 gate "save v2"; tests/b/fixtures/save/<name>.json ->
-## <name>.expected.json, hand-written), round trip, future-version refusal, truncated / corrupt files,
+## Save golden migration fixtures v0..v9 (v8: the starter AR for old saves; v9: D-139 heist freshness; P4 gate "save v2";
+## tests/b/fixtures/save/<name>.json -> <name>.expected.json, hand-written), round trip, future-version refusal, truncated / corrupt files,
 ## wrong types sanitized with a warning, unknown ids pruned, illegal skill sets reset.
 extends TestCase
 
 const FIXTURES: String = "res://tests/b/fixtures/save"
 const GOLDEN: Array[String] = ["v0", "v1", "v2", "v3", "v4", "v5", "v5_damaged", "v6_damaged", "v6_heister", "v6", "v7_damaged",
-		"v7", "v7_own_primary"]
+		"v7", "v7_own_primary", "v8"]
 const SLOT: int = 5
 
 
@@ -25,8 +25,8 @@ func after_all() -> void:
 	SaveService.root_dir = SaveService.DEFAULT_ROOT_DIR
 
 
-func test_current_version_is_8() -> void:
-	assert_eq(SaveService.CURRENT_VERSION, 8)
+func test_current_version_is_9() -> void:
+	assert_eq(SaveService.CURRENT_VERSION, 9)
 	assert_eq(PlayerProfile.new().version, SaveService.CURRENT_VERSION)
 	assert_eq(ProfileSchema.FIELDS.size(), PlayerProfile.new_default().to_dict().size(), "schema covers every saved field")
 	for f: String in PlayerProfile.new_default().to_dict():
@@ -57,7 +57,7 @@ func test_each_migration_step_kept() -> void:
 	assert_false(m.has("money"))
 	for k: String in ["banked_stealth_mult", "skill_sets", "perk_cards", "owned_mask_parts", "custom_masks",
 			"unlocks", "achievements", "pro_job_locks", "notoriety", "notoriety_xp", "notoriety_choices",
-			"held_skill_sets", "music_choice", "career", "weapon_finishes"]:
+			"held_skill_sets", "music_choice", "career", "weapon_finishes", "freshness"]:
 		assert_true(m.has(k), "v0 gains %s" % k)
 	var v4: Dictionary = _fixture("v4")
 	var m4: Dictionary = SaveService.migrate(v4)

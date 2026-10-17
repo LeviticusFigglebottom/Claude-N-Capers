@@ -266,6 +266,7 @@ ui.results.loot_line,{loot} x{count}
 ui.results.small_loot,Small loot
 ui.results.difficulty_mult,Difficulty x{mult}
 ui.results.crew_alive,Crew alive bonus x{mult}
+ui.results.freshness,Heist freshness {pct}
 ui.results.civilian_penalty,Cleanup costs (civilians)
 ui.results.subtotal,Subtotal
 ui.results.total,Total payout
@@ -280,6 +281,7 @@ ui.results.xp.difficulty,Difficulty bonus
 ui.results.xp.custody,Custody penalty
 ui.results.xp.additive,Crew and gear bonuses
 ui.results.xp.stealth,Stealth bonus
+ui.results.xp.freshness,Heist freshness
 ui.results.stealth_bonus_banked,Stealth bonus banked for your next job: +{pct}%
 ui.results.xp_total,Total experience
 ui.results.level_up,Level up! Now level {level}
@@ -3719,3 +3721,7 @@ item.mod.sparrow_rubber_grip.name,Rubber Grip Sleeve
 item.mod.sparrow_rubber_grip.desc,A slip-on rubber sleeve that keeps the long bursts steadier. A little bulkier.
 item.mod.sparrow_slim_grip.name,Slim Grip Panels
 item.mod.sparrow_slim_grip.desc,"Flush smooth polymer panels without stippling. Easier to hide, a little harder to hold steady."
+ui.freshness.badge,{pct} %
+ui.freshness.reason_repeat,Played {n}× in your last {memory} heists
+ui.freshness.reason_rotation,Not played in {since} heists
+ui.heist_select.freshness,Freshness {pct}

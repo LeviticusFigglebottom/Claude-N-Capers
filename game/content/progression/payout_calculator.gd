@@ -3,7 +3,10 @@
 ## HeistResult.contract_pay and every HeistResult.loot[i].value are UNSCALED base values.
 ##
 ## compute(result, difficulty_def = null, tweak = null, is_pro = false, crew_slot = -1,
-##         banked_stealth_mult = 1.0, xp_mult = 1.0, notoriety_bonus = 0.0) -> Dictionary
+##         banked_stealth_mult = 1.0, xp_mult = 1.0, notoriety_bonus = 0.0, freshness = 1.0) -> Dictionary
+##   freshness           -> D-139 HeistFreshness.evaluate(profile, heist)["mult"] for this player (0.10..1.10):
+##                          scales gross (after the crew-alive mult; the civilian penalty is taken after,
+##                          unscaled) and adds the last XP line "freshness" (running total x (freshness - 1)).
 ##   xp_mult             -> the player's progression.xp_mult; (xp_mult - 1) joins the additive XP line
 ##   notoriety_bonus     -> Notoriety.xp_bonus(profile.notoriety) (B5-02, P10): additive like the
 ##                          additive line (same running total), shown as its own "notoriety" line;
@@ -26,12 +29,14 @@
 ##     "civilian_penalty": int,                   kills x DifficultyDef.civilian_kill_penalty (>= 0)
 ##     "subtotal": int,                           contract + loot + small_loot
 ##     "crew_alive_mult": float,                  tweak.crew_alive_bonus_mult or 1.0
-##     "gross": int,                              subtotal x crew_alive_mult
+##     "freshness": float,                        the freshness argument (D-139)
+##     "freshness_money": int,                    roundi(roundi(subtotal x crew_alive_mult) x (freshness - 1))
+##     "gross": int,                              subtotal x crew_alive_mult + freshness_money
 ##     "total": int,                              gross - civilian_penalty (may be negative)
 ##     "stash": int,                              gross x stash_fraction
 ##     "spending": int,                           total - stash (the penalty comes out of spending)
-##     "xp_lines": [{ "key": StringName, "amount": int }],  always 7 lines, C6 order (base, pro,
-##                                                difficulty, custody, additive, notoriety, stealth);
+##     "xp_lines": [{ "key": StringName, "amount": int }],  always 8 lines, C6 order (base, pro,
+##                                                difficulty, custody, additive, notoriety, stealth) + freshness (D-139);
 ##                                                0 = n/a
 ##     "xp_total": int,                           sum of xp_lines (>= 0)
 ##     "stealth_bonus_consumed": bool,            success and banked_stealth_mult > 1 (bank spent)
@@ -62,20 +67,22 @@ const XP_CUSTODY: StringName = &"ui.results.xp.custody"
 const XP_ADDITIVE: StringName = &"ui.results.xp.additive"
 const XP_STEALTH: StringName = &"ui.results.xp.stealth"
 const XP_NOTORIETY: StringName = &"ui.results.xp.notoriety"
+const XP_FRESHNESS: StringName = &"ui.results.xp.freshness"
 ## C6 order (+ the Notoriety line next to the other additive bonus). The payday UI lists xp_lines in
-## exactly this order.
-const XP_ORDER: Array[StringName] = [XP_BASE, XP_PRO, XP_DIFFICULTY, XP_CUSTODY, XP_ADDITIVE, XP_NOTORIETY, XP_STEALTH]
+## exactly this order. D-139: the freshness step comes last (a multiplier on everything before it).
+const XP_ORDER: Array[StringName] = [XP_BASE, XP_PRO, XP_DIFFICULTY, XP_CUSTODY, XP_ADDITIVE, XP_NOTORIETY, XP_STEALTH,
+		XP_FRESHNESS]
 
 
 static func compute(result: Dictionary, difficulty_def: DifficultyDef = null, tweak: PayoutTweak = null,
 		is_pro: bool = false, crew_slot: int = -1, banked_stealth_mult: float = 1.0,
-		xp_mult: float = 1.0, notoriety_bonus: float = 0.0) -> Dictionary:
+		xp_mult: float = 1.0, notoriety_bonus: float = 0.0, freshness: float = 1.0) -> Dictionary:
 	var diff: DifficultyDef = difficulty_def if difficulty_def != null else _load_difficulty(int(result.get("difficulty", 0)))
 	var tw: PayoutTweak = tweak if tweak != null else _load_tweak()
 	var success: bool = bool(result.get("success", false))
 	var stealth: bool = bool(result.get("stealth", false))
 	var crew: Array = result.get("crew", []) as Array
-	var out: Dictionary = {"success": success, "stealth": stealth}
+	var out: Dictionary = {"success": success, "stealth": stealth, "freshness": freshness}
 	_compute_cash(out, result, diff, tw, success, crew, crew_slot)
 	_compute_xp(out, result, diff, tw, success, is_pro, crew, crew_slot, banked_stealth_mult,
 			{"xp_mult": xp_mult, "notoriety": notoriety_bonus})
@@ -110,7 +117,9 @@ static func _compute_cash(out: Dictionary, result: Dictionary, diff: DifficultyD
 	var penalty: int = maxi(kills * diff.civilian_kill_penalty, 0)
 	var subtotal: int = contract + loot_total + small
 	var crew_mult: float = tw.crew_alive_bonus_mult if success and not _anyone_in_custody(crew) else 1.0
-	var gross: int = roundi(float(subtotal) * crew_mult)
+	var alive_gross: int = roundi(float(subtotal) * crew_mult)
+	var fresh_money: int = roundi(float(alive_gross) * (float(out.get("freshness", 1.0)) - 1.0))
+	var gross: int = alive_gross + fresh_money
 	var total: int = gross - penalty
 	var stash: int = roundi(float(gross) * tw.stash_fraction)
 	out["contract"] = contract
@@ -120,6 +129,7 @@ static func _compute_cash(out: Dictionary, result: Dictionary, diff: DifficultyD
 	out["civilian_penalty"] = penalty
 	out["subtotal"] = subtotal
 	out["crew_alive_mult"] = crew_mult
+	out["freshness_money"] = fresh_money
 	out["gross"] = gross
 	out["total"] = total
 	out["stash"] = stash
@@ -164,7 +174,9 @@ static func _compute_xp(out: Dictionary, result: Dictionary, diff: DifficultyDef
 	if consumed:
 		stealth_bonus = roundi(float(running) * (banked_stealth_mult - 1.0))
 	running += stealth_bonus
-	var amounts: Array[int] = [base, pro, difficulty, custody, additive, notoriety, stealth_bonus]
+	var fresh: int = roundi(float(running) * (float(out.get("freshness", 1.0)) - 1.0))
+	running += fresh
+	var amounts: Array[int] = [base, pro, difficulty, custody, additive, notoriety, stealth_bonus, fresh]
 	var lines: Array[Dictionary] = []
 	for i: int in range(XP_ORDER.size()):
 		lines.append({"key": XP_ORDER[i], "amount": amounts[i]})
