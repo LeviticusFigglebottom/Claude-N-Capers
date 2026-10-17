@@ -26,7 +26,7 @@ const P1: Array[String] = [
 ]
 ## Priority 2 clips delivered by D1-03.
 const P2: Array[String] = [
-	"idle_alert", "sprint", "strafe_l", "strafe_r", "walk_back", "turn_l", "turn_r", "surrender",
+	"idle_alert", "sprint", "strafe_l", "strafe_r", "walk_back", "turn_l", "turn_r", "turn_l_45", "turn_r_45", "surrender",
 	"kneel_cuffed", "melee", "investigate_look", "smoke", "lean_wall", "sit_chair", "desk_type",
 	"browse", "drill_place", "climb_ladder", "tased",
 ]
@@ -191,7 +191,7 @@ func test_delivered_p2_clips_are_present() -> void:
 		assert_true(_player.has_animation(StringName(clip)), "P2 clip %s" % clip)
 	var names: PackedStringArray = _player.get_animation_list()
 	assert_eq(names.size(), P1.size() + P2.size() + SPECIALS.size() + NPC.size() + POLICE.size() + P5.size() + _d304().size()
-		+ _assault().size() + 22 + preload("res://tests/d/test_surrender_variants.gd").VARIANTS.size() + 15 + 48 + 21,  # D-116
+		+ _assault().size() + 22 + preload("res://tests/d/test_surrender_variants.gd").VARIANTS.size() + 15 + 48 + 23,  # D-116
 		"no extra or misnamed clips: %s" % [names])
 	for n: String in names:
 		assert_false(n.ends_with("-loop") or n.ends_with("_loop"), "%s: loop suffix stripped" % n)

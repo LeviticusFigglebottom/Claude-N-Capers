@@ -56,6 +56,9 @@ CLIPS = {
     "walk_back": {"frames": 30, "loop": True, "speed": 1.3, "priority": 2},
     "turn_l": {"frames": 24, "loop": False, "speed": 0.0, "priority": 2, "turn_deg": 90.0},
     "turn_r": {"frames": 24, "loop": False, "speed": 0.0, "priority": 2, "turn_deg": -90.0},
+    # small turns (the 3P turn-in-place foot-slide fix): the same footwork over 45 deg at the 90 clips' rate
+    "turn_l_45": {"frames": 12, "loop": False, "speed": 0.0, "priority": 2, "turn_deg": 45.0},
+    "turn_r_45": {"frames": 12, "loop": False, "speed": 0.0, "priority": 2, "turn_deg": -45.0},
     "aim_rifle": {"frames": 90, "loop": True, "speed": 0.0, "priority": 1},
     "aim_pistol": {"frames": 90, "loop": True, "speed": 0.0, "priority": 1},
     "fire_rifle": {"frames": 6, "loop": False, "speed": 0.0, "priority": 1, "events": {"shot": 0}},
