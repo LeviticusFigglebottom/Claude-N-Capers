@@ -48,3 +48,5 @@ preplanning = {
 }
 escape_options = Array[StringName]([&"van"])
 music_track = &"glasshouse"
+pager_max_by_difficulty = Array[int]([4, 4, 3, 3, 2, 1])
+camera_titan_min_difficulty = 2

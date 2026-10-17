@@ -89,6 +89,29 @@ func test_resolve_ids_dev_path() -> void:
 			same.apply()["modifier_sources"], "same resolver as the UI")
 
 
+func test_resolve_ids_dictionary_form_keeps_its_point() -> void:
+	# P SL-P1: {asset, point} lost its point (only "asset.x@point" kept it). Both forms resolve the same.
+	var def: HeistDef = HeistDef.new()
+	def.id = &"test_heist"
+	var plan: PreplanPlan = PreplanPlan.new(_board(), 0, [0] as Array[int])
+	var first: StringName = plan.first_free_point(&"asset.ammo_bag_drop")
+	var other: StringName = &""
+	for pid: StringName in _board().blueprint.point_ids():
+		if pid != first and plan.can_add(&"asset.ammo_bag_drop", pid, 0) == PreplanPlan.OK:
+			other = pid
+			break
+	assert_ne(other, &"", "a second drop zone to name")
+	var as_string: Dictionary = PreplanPlan.resolve_ids(&"test_heist", ["asset.ammo_bag_drop@" + String(other),
+			"asset.escape_position@" + String(ESC_W)], Enums.Difficulty.ROUTINE, def)
+	var as_dict: Dictionary = PreplanPlan.resolve_ids(&"test_heist", [{"asset": &"asset.ammo_bag_drop", "point": other},
+			{"asset": &"asset.escape_position", "point": ESC_W}], Enums.Difficulty.ROUTINE, def)
+	assert_eq(StringName((as_dict["drops"] as Array)[0]["point"]), other, "the named drop zone, not the first free one")
+	assert_eq(as_dict, as_string, "the Dictionary and string forms resolve identically")
+	var no_point: Dictionary = PreplanPlan.resolve_ids(&"test_heist", [{"asset": &"asset.ammo_bag_drop"}],
+			Enums.Difficulty.ROUTINE, def)
+	assert_eq(StringName((no_point["drops"] as Array)[0]["point"]), first, "no point: the first free one, as the string form")
+
+
 func test_points_read_from_the_map_scene() -> void:
 	var map: Node3D = Node3D.new()
 	map.name = "TestMap"

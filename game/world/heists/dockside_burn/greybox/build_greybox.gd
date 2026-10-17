@@ -1050,10 +1050,15 @@ func _build_nav_links(nav: NavigationRegion3D) -> void:
 ## baked CLOSED: a projected obstruction fills the opening (+0.15 m into each jamb, 0.3 m each side of
 ## the wall line), so the agent-radius erosion leaves no navmesh through it. ENV A's door NavLink
 ## (InteractionTweak.door_nav_link_half_m) bridges the gap while the door is passable. validate_level
-## `barred_doors` asserts it.
+## `barred_doors` asserts it. The fire-shutter doors (L.SHUTTERS, lock NONE until the mission bars them after the burn)
+## are baked closed too: a doorway baked open keeps a navmesh path through a barred shutter (P's DB pass, ChamberANorth).
 func _close_barred_doorways() -> void:
+	var shutters: Dictionary = {}
+	for names: Variant in L.SHUTTERS.values():
+		for nm: Variant in names:
+			shutters[String(nm)] = true
 	for d: Array in L.DOORS:
-		if not (String(d[4]) in ["BARRED", "VAULT"]):
+		if not (String(d[4]) in ["BARRED", "VAULT"]) and not shutters.has(String(d[0])):
 			continue
 		var w: float = float(L.DOOR_OPENINGS[_door_type(d)][0]) + 0.3
 		var o: Vector3 = d[2]

@@ -103,6 +103,18 @@ func await_sync(frames: int = 3) -> void:
 		await tree().process_frame
 
 
+## Waits until the navigation map has synced a change made just before the call (its iteration id moves on), plus
+## `settle` more frames; at most `max_frames` (a loaded box can take longer than a fixed frame count).
+func await_nav_update(settle: int = 2, max_frames: int = 120) -> void:
+	var start: int = NavigationServer3D.map_get_iteration_id(_nav_map())
+	for i: int in range(max_frames):
+		await tree().physics_frame
+		await tree().process_frame
+		if NavigationServer3D.map_get_iteration_id(_nav_map()) != start:
+			break
+	await await_sync(settle)
+
+
 # --- props ---------------------------------------------------------------------------------
 
 func prop_of(obj: Object) -> LcProp:
