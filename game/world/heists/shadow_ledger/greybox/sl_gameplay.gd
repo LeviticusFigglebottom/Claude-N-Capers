@@ -325,7 +325,8 @@ func _cage_locks(gate: Node3D) -> void:
 	prefab(gate, "keypad", "CageKeypad", key, yaw, {"code_group": CAGE_GROUP, "targets": to_gate,
 		"objective_tag": &"cage"}, use_key, {"mount": "wall", "kind": "keypad"})
 	prefab(gate, "padlock", "CagePadlock", pad, yaw, {"targets": to_gate.duplicate(), "place_saw": true,
-		"saw_duration_s": 90.0, "objective_tag": &"cage", "visual_scene": load(PADLOCK_VISUAL)}, use_pad,
+		"place_saw_stealth": true, "saw_duration_s": 90.0, "allow_lockpick": false, "objective_tag": &"cage",
+		"visual_scene": load(PADLOCK_VISUAL)}, use_pad,
 		{"mount": "door", "kind": "padlock"})  # D-115 SL-1: the doc's 90 s placed saw
 
 
