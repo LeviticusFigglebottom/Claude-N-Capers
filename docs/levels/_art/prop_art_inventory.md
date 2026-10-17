@@ -1,6 +1,7 @@
 # Prop art inventory: GH / ND / DB / SL (ENV C helper, read-only survey, 2026-10-14)
 
 Branch surveyed: env/c-worlds @ 587f9977. Stages: GH = final, ND = final, DB = greybox, SL = greybox.
+Update 2026-10-17 (SL-1): SL G2 art pass done (item 12); see below.
 Method: parsed each heist .tscn for prefab instances and their `visual_scene` override (DEFAULT means the A placeholder
 is shown), read the prefab scripts and placeholders, the LootDef/DeployableDef/ThrowableDef data, and the glb material
 slots (glb JSON) against the library (`game/world/materials`, `game/world/props/materials`).
@@ -130,6 +131,17 @@ Abbreviations: Hook = how C can supply the art without touching A files. SC = sc
     origin/backup/2026-10-12/env-c-sl (19 tower props, 26 kits) and env-c-db-wip. Quick wins: swap the greybox containers,
     bollards and pallets for catalog props. New harbor props: `prop_gantry_crane`, `prop_forklift`, `prop_reefer_unit`,
     `prop_net_pile`, `prop_fish_tote`.
+    **SL: done (SL-1, G2).** 66 Calder props (`tools/blender/props/calder.py`, all pin_only, modelled to the layout boxes:
+    desks, credenzas, bookcases, the conference / boardroom / dining / meeting tables, the reception desk, bench pods,
+    printers, compact and library shelving, the ledger rack pair, CRAC, UPS, the security room's key cabinet / counter /
+    lockers, switchboards, kitchen / pantry counters, vanities, fridges, the lounge bar, sofas, a baby grand, sculpture
+    plinths, the guest bed, nightstands, wardrobes, the wine wall, the humidor, the cleaner's cart, the IT trolley, terrace
+    planters / loungers / outdoor kitchen / heaters, the roof AHU / chiller / tank / lift machines / BMU / cradle garage /
+    line anchors; fixtures: a 6500 K linear LED, a brass picture light, an LED bollard) cover every map-built prop and
+    chair (`shadow_ledger_dressing.gd` PROP_ART / CHAIR_ART); 33 SL kits (`_kits_shadow.py`) dress every kit room
+    (`sl_dress.gd`). `prop_loot_laptop` / `prop_loot_ledger_drives` moved off alu_black (it read 1022 px/m on the
+    materials check). Open on SL: the laser emitters, the zipline anchor and the secure net / cart visuals (SL-2/SL-3
+    lane), Kessler's and the camera operator's npc seats.
 13. **ND G3 backlog (brief item 7).** Low. There is no exterior "Harbor Savings & Loan" sign
     (`prop_sign_vossberg` shows the pattern: add `prop_sign_harbor_savings` with pr_emit_warm letters, brass, pr_metal_dark),
     a vault-cage cash-brick dressing pallet beyond the loot_spawn's `prop_cash_pallet`, and teller desk personal touches

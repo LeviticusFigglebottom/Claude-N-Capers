@@ -97,18 +97,18 @@ const ROOM_META: Dictionary = {
 	"S3": ["corridor", "corridor_service", 3.0, 0.9, null],
 	"SA": ["stair", "", 0.0, 0.0, null], "SB": ["stair", "", 0.0, 0.0, null],
 	"SL": ["elevator", "", 2.6, 0.0, null], "LF1": ["shaft", "", 0.0, 0.0, null], "LF2": ["shaft", "", 0.0, 0.0, null],
-	"J41": ["storage", "janitor_closet", 2.7, 0.9, null], "J42": ["storage", "janitor_closet", 2.7, 0.9, null],
-	"WCW41": ["restroom", "restroom_multi", 2.7, 0.9, null], "WCM41": ["restroom", "restroom_multi", 2.7, 0.9, null],
-	"WCW42": ["restroom", "restroom_multi", 2.7, 0.9, null], "WCM42": ["restroom", "restroom_multi", 2.7, 0.9, null],
+	"J41": ["storage", "janitor_sl", 2.7, 0.9, null], "J42": ["storage", "linen_janitor", 2.7, 0.9, null],
+	"WCW41": ["restroom", "restroom_exec", 2.7, 0.9, null], "WCM41": ["restroom", "restroom_exec", 2.7, 0.9, null],
+	"WCW42": ["restroom", "restroom_exec", 2.7, 0.9, null], "WCM42": ["restroom", "restroom_exec", 2.7, 0.9, null],
 	"K1": ["office", "office_partner", 3.0, 0.9, null], "K2": ["office", "conference_room", 3.0, 0.9, null],
 	"K3": ["lobby", "reception_exec", 3.6, 0.3, null], "K4": ["office", "office_small", 3.0, 0.9, null],
 	"K5": ["office", "office_partner", 3.0, 0.9, null], "K6": ["corridor", "corridor_office", 2.7, 0.9, null],
-	"K7": ["corridor", "corridor_office", 2.7, 0.9, null], "K8": ["office", "office_open", 3.0, 0.9, null],
+	"K7": ["corridor", "corridor_office", 2.7, 0.9, null], "K8": ["office", "office_open_law", 3.0, 0.9, null],
 	"K9": ["corridor", "corridor_office", 2.7, 0.9, null], "K10": ["corridor", "corridor_service", 2.7, 0.9, null],
-	"K11": ["server_room", "server_room", 2.7, 0.9, null], "K12": ["office", "office_it", 3.0, 0.9, null],
-	"K13": ["security_room", "security_office", 2.7, 0.9, null], "K14": ["electrical", "electrical_closet", 2.7, 0.9, null],
+	"K11": ["server_room", "server_room_sl", 2.7, 0.9, null], "K12": ["office", "office_it", 3.0, 0.9, null],
+	"K13": ["security_room", "security_office_sl", 2.7, 0.9, null], "K14": ["electrical", "electrical_sl", 2.7, 0.9, null],
 	"K15": ["storage", "copy_room", 3.0, 0.9, null], "K16": ["corridor", "corridor_office", 2.7, 0.9, null],
-	"K17": ["storage", "storage_archive", 3.0, 0.9, null], "K18": ["break_room", "break_room", 3.0, 0.9, null],
+	"K17": ["storage", "archive_records", 3.0, 0.9, null], "K18": ["break_room", "break_room_office", 3.0, 0.9, null],
 	"K19": ["office", "library_law", 3.0, 0.9, null], "K20": ["office", "office_small", 3.0, 0.9, null],
 	"K21": ["office", "office_small", 3.0, 0.9, null], "K22": ["office", "office_small", 3.0, 0.9, null],
 	"K23": ["office", "office_small", 3.0, 0.9, null], "K24": ["office", "meeting_small", 3.0, 0.9, null],
@@ -117,10 +117,10 @@ const ROOM_META: Dictionary = {
 	"M5": ["bedroom", "bedroom_exec", 3.0, 0.9, null], "M6": ["restroom", "bathroom_ensuite", 2.7, 0.9, null],
 	"M7": ["dressing", "dressing_room", 2.7, 0.9, Vector2(2.6, 3.0)], "M8": ["dining_room", "dining_exec", 3.0, 0.3, Vector2(2.6, 3.0)],
 	"M9": ["corridor", "corridor_office", 2.7, 0.9, null], "M10": ["corridor", "corridor_service", 2.7, 0.9, null],
-	"M11": ["break_room", "break_room", 2.7, 0.9, null], "M12": ["electrical", "electrical_closet", 2.7, 0.9, null],
+	"M11": ["break_room", "break_room_office", 2.7, 0.9, null], "M12": ["electrical", "electrical_sl", 2.7, 0.9, null],
 	"M13": ["storage", "wine_room", 2.7, 0.9, null], "M14": ["office", "boardroom", 3.0, 0.9, null],
 	"M15": ["corridor", "corridor_glazed", 2.7, 0.3, null],
-	"R1": ["plant", "plant_riser", 3.5, 0.0, null], "R2": ["stair", "", 3.5, 0.0, null], "R3": ["plant", "plant_room", 3.5, 0.0, null],
+	"R1": ["plant", "plant_riser", 3.5, 0.0, null], "R2": ["stair", "", 3.5, 0.0, null], "R3": ["plant", "plant_room_roof", 3.5, 0.0, null],
 }
 ## RoomVolume / ceiling rectangles where they differ from the plan rectangle: K3 and M2 leave out
 ## the feature stair / void; J and R1 leave out the services riser.
@@ -140,7 +140,7 @@ const TALL_ROOMS: Array = [
 ## Exterior rooms: [id, purpose, kit, floor index, boxes].
 const EXTERIOR_ROOMS: Array = [
 	["X1", "exterior", "exterior_terrace", 2, [[0.0, F42, 18.0, 36.0, FRF, 24.0]]],
-	["X2", "exterior", "exterior_roof", 3, [[0.0, FRF, 0.0, 36.0, 15.5, 7.5], [0.0, FRF, 16.5, 36.0, 15.5, 18.0],
+	["X2", "exterior", "exterior_roof_tower", 3, [[0.0, FRF, 0.0, 36.0, 15.5, 7.5], [0.0, FRF, 16.5, 36.0, 15.5, 18.0],
 		[0.0, FRF, 7.5, 12.0, 15.5, 16.5], [24.0, FRF, 7.5, 36.0, 15.5, 16.5]]],
 ]
 
@@ -836,4 +836,17 @@ const REVIEW_CAMERAS: Array = [
 	["StairACore", Vector3(13.8, F41 + 1.7, 15.8), Vector3(13.0, F41 + 1.4, 11.0), 80.0, "Stair A at L41 (U-stair, 0.3 m core walls)"],
 	["ServiceLobby", Vector3(29.3, F40 + 1.7, 11.8), Vector3(22.5, F40 + 1.0, 9.0), 75.0,
 		"L40 service lobby (PUBLIC): service lift car (E3), service spawn"],
+	# G2 (SL-1): the remaining main rooms
+	["KesslerOffice", Vector3(6.3, F41 + 1.65, 5.4), Vector3(1.5, F41 + 1.0, 1.0), 80.0,
+		"K1 Victor Kessler's office: walnut desk, credenza, bookcase, the west facade access door"],
+	["OpenOffice", Vector3(9.8, F41 + 1.7, 16.0), Vector3(1.0, F41 + 0.8, 8.5), 80.0,
+		"K8 associates' open plan: three bench pods, C11"],
+	["BreakRoom", Vector3(6.6, F41 + 1.65, 18.6), Vector3(11.0, F41 + 0.9, 23.3), 80.0, "K18 break room"],
+	["LawLibrary", Vector3(17.4, F41 + 1.65, 18.6), Vector3(12.5, F41 + 1.0, 23.0), 80.0, "K19 law library: the stacks"],
+	["Lounge", Vector3(11.3, F42 + 1.65, 7.0), Vector3(1.0, F42 + 1.0, 1.0), 80.0,
+		"M1 partners' lounge: the backlit teal bar (kc_lounge), sofas, the baby grand"],
+	["GuestSuite", Vector3(6.0, F42 + 1.65, 12.5), Vector3(0.5, F42 + 0.6, 8.5), 80.0, "M5 guest suite (kc_guest nightstand)"],
+	["Dining", Vector3(10.0, F42 + 1.65, 17.5), Vector3(1.0, F42 + 0.8, 13.5), 80.0, "M8 private dining, the terrace slider"],
+	["Boardroom", Vector3(31.5, F42 + 1.65, 16.0), Vector3(35.0, F42 + 0.8, 8.0), 80.0,
+		"M14 boardroom: the table for twelve, the credenza (lap_boardroom)"],
 ]

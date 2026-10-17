@@ -290,7 +290,7 @@ def _bookcase(k: Kit, p: dict) -> None:
         a.bx((x - 0.012, -d / 2 + 0.02, 0.08), (x + 0.012, d / 2 - 0.005, h - 0.03), "walnut")
     ns = 5
     pitch = (h - 0.11) / ns
-    b = o.part(bevel=0.002)
+    b = o.part(bevel=0.0)
     keys = ("leather", "canvas_bank", "velvet_red", "fabric_graphite", "leather_cognac", "paint_slate", "canvas_walnut")
     for s in range(ns):
         z = 0.08 + s * pitch

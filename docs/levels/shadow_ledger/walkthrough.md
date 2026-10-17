@@ -31,14 +31,14 @@ Result: **PASS** (0 failure(s))
 | `Spawns/RoofSpawn1` | `Gameplay/Doors/WCMenL41/UsePoint` | use_point | 19.2 | 38.2 | 1.99 | ok |
 | `Spawns/RoofSpawn1` | `Gameplay/Doors/StairBL41` | objective | 23.9 | 44.3 | 1.85 | ok |
 | `Spawns/RoofSpawn1` | `Gameplay/Doors/StairBL41/UsePoint` | use_point | 23.9 | 44.3 | 1.85 | ok |
-| `Spawns/RoofSpawn1` | `Gameplay/Doors/ServerDoor` | objective | 24.5 | 40.4 | 1.65 | ok |
-| `Spawns/RoofSpawn1` | `Gameplay/Doors/ServerDoor/UsePoint` | use_point | 24.5 | 40.4 | 1.65 | ok |
+| `Spawns/RoofSpawn1` | `Gameplay/Doors/ServerDoor` | objective | 24.5 | 40.8 | 1.66 | ok |
+| `Spawns/RoofSpawn1` | `Gameplay/Doors/ServerDoor/UsePoint` | use_point | 24.5 | 40.8 | 1.66 | ok |
 | `Spawns/RoofSpawn1` | `Gameplay/Doors/ITDoor/UsePoint` | use_point | 33.4 | 46.5 | 1.39 | ok |
-| `Spawns/RoofSpawn1` | `Gameplay/Doors/SecurityDoor/UsePoint` | use_point | 24.0 | 44.9 | 1.87 | ok |
+| `Spawns/RoofSpawn1` | `Gameplay/Doors/SecurityDoor/UsePoint` | use_point | 24.0 | 45.3 | 1.89 | ok |
 | `Spawns/RoofSpawn1` | `Gameplay/Doors/ElectricalL41/UsePoint` | use_point | 30.4 | 50.2 | 1.65 | ok |
 | `Spawns/RoofSpawn1` | `Gameplay/Doors/CopyRoomDoor/UsePoint` | use_point | 32.9 | 52.7 | 1.60 | ok |
-| `Spawns/RoofSpawn1` | `Gameplay/Doors/CageGate` | objective | 27.9 | 44.5 | 1.60 | ok |
-| `Spawns/RoofSpawn1` | `Gameplay/Doors/CageGate/UsePoint` | use_point | 27.9 | 44.5 | 1.60 | ok |
+| `Spawns/RoofSpawn1` | `Gameplay/Doors/CageGate` | objective | 27.9 | 44.8 | 1.61 | ok |
+| `Spawns/RoofSpawn1` | `Gameplay/Doors/CageGate/UsePoint` | use_point | 27.9 | 44.8 | 1.61 | ok |
 | `Spawns/RoofSpawn1` | `Gameplay/Doors/ArchiveDoor/UsePoint` | use_point | 8.3 | 35.2 | 4.23 | detour (whitelisted) |
 | `Spawns/RoofSpawn1` | `Gameplay/Doors/BreakRoomDoor/UsePoint` | use_point | 10.7 | 32.2 | 3.01 | detour (whitelisted) |
 | `Spawns/RoofSpawn1` | `Gameplay/Doors/LibraryDoor/UsePoint` | use_point | 15.2 | 33.7 | 2.21 | ok |
@@ -66,32 +66,32 @@ Result: **PASS** (0 failure(s))
 | `Spawns/RoofSpawn1` | `Gameplay/Doors/DiningDoor/UsePoint` | use_point | 9.7 | 21.8 | 2.24 | ok |
 | `Spawns/RoofSpawn1` | `Gameplay/Doors/PantryDoor/UsePoint` | use_point | 23.5 | 34.8 | 1.48 | ok |
 | `Spawns/RoofSpawn1` | `Gameplay/Doors/ElectricalL42/UsePoint` | use_point | 22.9 | 37.9 | 1.65 | ok |
-| `Spawns/RoofSpawn1` | `Gameplay/Doors/WineRoomDoor/UsePoint` | use_point | 27.6 | 41.9 | 1.52 | ok |
-| `Spawns/RoofSpawn1` | `Gameplay/Doors/BoardroomDoor/UsePoint` | use_point | 31.6 | 43.6 | 1.38 | ok |
+| `Spawns/RoofSpawn1` | `Gameplay/Doors/WineRoomDoor/UsePoint` | use_point | 27.6 | 40.0 | 1.45 | ok |
+| `Spawns/RoofSpawn1` | `Gameplay/Doors/BoardroomDoor/UsePoint` | use_point | 31.6 | 44.0 | 1.39 | ok |
 | `Spawns/RoofSpawn1` | `Gameplay/Doors/SliderDining` | objective | 5.5 | 29.8 | 5.40 | detour (whitelisted) |
 | `Spawns/RoofSpawn1` | `Gameplay/Doors/SliderDining/UsePoint` | use_point | 5.5 | 29.8 | 5.40 | detour (whitelisted) |
-| `Spawns/RoofSpawn1` | `Gameplay/Doors/SliderWest` | objective | 13.3 | 26.0 | 1.95 | ok |
-| `Spawns/RoofSpawn1` | `Gameplay/Doors/SliderWest/UsePoint` | use_point | 13.3 | 26.0 | 1.95 | ok |
-| `Spawns/RoofSpawn1` | `Gameplay/Doors/SliderEast` | objective | 28.7 | 40.5 | 1.41 | ok |
-| `Spawns/RoofSpawn1` | `Gameplay/Doors/SliderEast/UsePoint` | use_point | 28.7 | 40.5 | 1.41 | ok |
+| `Spawns/RoofSpawn1` | `Gameplay/Doors/SliderWest` | objective | 13.3 | 25.9 | 1.95 | ok |
+| `Spawns/RoofSpawn1` | `Gameplay/Doors/SliderWest/UsePoint` | use_point | 13.3 | 25.9 | 1.95 | ok |
+| `Spawns/RoofSpawn1` | `Gameplay/Doors/SliderEast` | objective | 28.7 | 41.8 | 1.45 | ok |
+| `Spawns/RoofSpawn1` | `Gameplay/Doors/SliderEast/UsePoint` | use_point | 28.7 | 41.8 | 1.45 | ok |
 | `Spawns/RoofSpawn1` | `Gameplay/Doors/RoofDoor` | objective | 9.1 | 9.1 | 1.00 | ok |
 | `Spawns/RoofSpawn1` | `Gameplay/Doors/RoofDoor/UsePoint` | use_point | 9.1 | 9.1 | 1.00 | ok |
 | `Spawns/RoofSpawn1` | `Gameplay/Doors/RiserBayDoor` | objective | 11.0 | 11.0 | 1.00 | ok |
 | `Spawns/RoofSpawn1` | `Gameplay/Doors/RiserBayDoor/UsePoint` | use_point | 11.0 | 11.0 | 1.00 | ok |
 | `Spawns/RoofSpawn1` | `Gameplay/Doors/HeadHousePlantDoor/UsePoint` | use_point | 12.1 | 12.1 | 1.00 | ok |
-| `Spawns/RoofSpawn1` | `Gameplay/Doors/PlantDoor/UsePoint` | use_point | 19.2 | 20.3 | 1.06 | ok |
-| `Spawns/RoofSpawn1` | `Gameplay/Server/ServerReader` | objective | 24.7 | 39.6 | 1.61 | ok |
-| `Spawns/RoofSpawn1` | `Gameplay/Server/ServerReader/UsePoint` | use_point | 24.7 | 39.6 | 1.61 | ok |
-| `Spawns/RoofSpawn1` | `Gameplay/Server/CageLock` | objective | 26.8 | 43.5 | 1.62 | ok |
-| `Spawns/RoofSpawn1` | `Gameplay/Server/CageLock/UsePoint` | use_point | 26.8 | 43.5 | 1.62 | ok |
-| `Spawns/RoofSpawn1` | `Gameplay/Server/HackTerminal` | objective | 28.2 | 45.3 | 1.61 | ok |
-| `Spawns/RoofSpawn1` | `Gameplay/Server/HackTerminal/UsePoint` | use_point | 28.2 | 45.3 | 1.61 | ok |
-| `Spawns/RoofSpawn1` | `Gameplay/Server/Drives1` | loot_spawn | 27.0 | 46.3 | 1.72 | ok |
-| `Spawns/RoofSpawn1` | `Gameplay/Server/Drives1/UsePoint` | use_point | 26.9 | 46.3 | 1.72 | ok |
-| `Spawns/RoofSpawn1` | `Gameplay/Server/Drives2` | loot_spawn | 28.9 | 46.1 | 1.59 | ok |
-| `Spawns/RoofSpawn1` | `Gameplay/Server/Drives2/UsePoint` | use_point | 28.9 | 46.0 | 1.59 | ok |
-| `Spawns/RoofSpawn1` | `Gameplay/Server/Drives3` | loot_spawn | 29.5 | 46.7 | 1.58 | ok |
-| `Spawns/RoofSpawn1` | `Gameplay/Server/Drives3/UsePoint` | use_point | 29.5 | 46.6 | 1.58 | ok |
+| `Spawns/RoofSpawn1` | `Gameplay/Doors/PlantDoor/UsePoint` | use_point | 19.2 | 21.0 | 1.09 | ok |
+| `Spawns/RoofSpawn1` | `Gameplay/Server/ServerReader` | objective | 24.7 | 40.0 | 1.62 | ok |
+| `Spawns/RoofSpawn1` | `Gameplay/Server/ServerReader/UsePoint` | use_point | 24.7 | 40.0 | 1.62 | ok |
+| `Spawns/RoofSpawn1` | `Gameplay/Server/CageLock` | objective | 26.8 | 43.9 | 1.64 | ok |
+| `Spawns/RoofSpawn1` | `Gameplay/Server/CageLock/UsePoint` | use_point | 26.8 | 43.9 | 1.64 | ok |
+| `Spawns/RoofSpawn1` | `Gameplay/Server/HackTerminal` | objective | 28.2 | 45.7 | 1.62 | ok |
+| `Spawns/RoofSpawn1` | `Gameplay/Server/HackTerminal/UsePoint` | use_point | 28.2 | 45.7 | 1.62 | ok |
+| `Spawns/RoofSpawn1` | `Gameplay/Server/Drives1` | loot_spawn | 27.0 | 46.7 | 1.73 | ok |
+| `Spawns/RoofSpawn1` | `Gameplay/Server/Drives1/UsePoint` | use_point | 26.9 | 46.7 | 1.73 | ok |
+| `Spawns/RoofSpawn1` | `Gameplay/Server/Drives2` | loot_spawn | 28.9 | 46.5 | 1.61 | ok |
+| `Spawns/RoofSpawn1` | `Gameplay/Server/Drives2/UsePoint` | use_point | 28.9 | 46.3 | 1.61 | ok |
+| `Spawns/RoofSpawn1` | `Gameplay/Server/Drives3` | loot_spawn | 29.5 | 47.1 | 1.59 | ok |
+| `Spawns/RoofSpawn1` | `Gameplay/Server/Drives3/UsePoint` | use_point | 29.5 | 47.0 | 1.59 | ok |
 | `Spawns/RoofSpawn1` | `Gameplay/Study/StudyReader` | objective | 31.2 | 37.3 | 1.20 | ok |
 | `Spawns/RoofSpawn1` | `Gameplay/Study/StudyReader/UsePoint` | use_point | 31.2 | 37.3 | 1.20 | ok |
 | `Spawns/RoofSpawn1` | `Gameplay/Study/StudySafe` | objective | 32.3 | 37.7 | 1.17 | ok |
@@ -113,11 +113,11 @@ Result: **PASS** (0 failure(s))
 | `Spawns/RoofSpawn1` | `Gameplay/Misc/PhoneSecurity/UsePoint` | use_point | 26.2 | 47.4 | 1.81 | ok |
 | `Spawns/RoofSpawn1` | `Gameplay/Misc/PhoneBreakRoom/UsePoint` | use_point | 12.4 | 37.9 | 3.06 | detour (whitelisted) |
 | `Spawns/RoofSpawn1` | `Gameplay/Misc/PhoneGuestSuite/UsePoint` | use_point | 5.0 | 34.6 | 6.98 | detour (whitelisted) |
-| `Spawns/RoofSpawn1` | `Gameplay/Misc/PhonePantry/UsePoint` | use_point | 25.9 | 37.0 | 1.43 | ok |
-| `Spawns/RoofSpawn1` | `Gameplay/Misc/ArchiveSafe` | objective | 10.8 | 41.6 | 3.85 | detour (whitelisted) |
-| `Spawns/RoofSpawn1` | `Gameplay/Misc/ArchiveSafe/UsePoint` | use_point | 10.8 | 41.6 | 3.85 | detour (whitelisted) |
-| `Spawns/RoofSpawn1` | `Gameplay/Misc/ArchiveSafe/ArchiveCash` | loot_spawn | 10.6 | 42.5 | 4.00 | detour (whitelisted) |
-| `Spawns/RoofSpawn1` | `Gameplay/Misc/ArchiveSafe/ArchiveCash/UsePoint` | use_point | 10.6 | 42.5 | 4.00 | detour (whitelisted) |
+| `Spawns/RoofSpawn1` | `Gameplay/Misc/PhonePantry/UsePoint` | use_point | 25.9 | 36.9 | 1.43 | ok |
+| `Spawns/RoofSpawn1` | `Gameplay/Misc/ArchiveSafe` | objective | 10.8 | 44.7 | 4.14 | detour (whitelisted) |
+| `Spawns/RoofSpawn1` | `Gameplay/Misc/ArchiveSafe/UsePoint` | use_point | 10.8 | 44.7 | 4.14 | detour (whitelisted) |
+| `Spawns/RoofSpawn1` | `Gameplay/Misc/ArchiveSafe/ArchiveCash` | loot_spawn | 10.6 | 43.5 | 4.09 | detour (whitelisted) |
+| `Spawns/RoofSpawn1` | `Gameplay/Misc/ArchiveSafe/ArchiveCash/UsePoint` | use_point | 10.6 | 43.5 | 4.09 | detour (whitelisted) |
 | `Spawns/RoofSpawn1` | `Gameplay/Misc/Painting1` | loot_spawn | 26.8 | 32.4 | 1.21 | ok |
 | `Spawns/RoofSpawn1` | `Gameplay/Misc/Painting1/UsePoint` | use_point | 26.8 | 32.4 | 1.21 | ok |
 | `Spawns/RoofSpawn1` | `Gameplay/Misc/Painting2` | loot_spawn | 27.8 | 33.2 | 1.20 | ok |
@@ -126,16 +126,16 @@ Result: **PASS** (0 failure(s))
 | `Spawns/RoofSpawn1` | `Gameplay/Misc/PrintoutBooks/UsePoint` | use_point | 14.1 | 32.5 | 2.31 | ok |
 | `Spawns/RoofSpawn1` | `Gameplay/Misc/KesslerWatch/UsePoint` | use_point | 14.6 | 33.7 | 2.30 | ok |
 | `Spawns/RoofSpawn1` | `Gameplay/Misc/MoorBracelet/UsePoint` | use_point | 34.1 | 47.5 | 1.40 | ok |
-| `Spawns/RoofSpawn1` | `Gameplay/Misc/HumidorCigars1/UsePoint` | use_point | 27.9 | 44.5 | 1.59 | ok |
-| `Spawns/RoofSpawn1` | `Gameplay/Misc/HumidorCigars2/UsePoint` | use_point | 27.9 | 44.2 | 1.58 | ok |
-| `Spawns/RoofSpawn1` | `Variants/Group_laptop/Slot_lap_boardroom/Laptop` | loot_spawn | 33.7 | 52.5 | 1.56 | ok |
-| `Spawns/RoofSpawn1` | `Variants/Group_laptop/Slot_lap_boardroom/Laptop/UsePoint` | use_point | 33.5 | 51.7 | 1.54 | ok |
+| `Spawns/RoofSpawn1` | `Gameplay/Misc/HumidorCigars1/UsePoint` | use_point | 27.9 | 42.5 | 1.52 | ok |
+| `Spawns/RoofSpawn1` | `Gameplay/Misc/HumidorCigars2/UsePoint` | use_point | 27.9 | 42.2 | 1.51 | ok |
+| `Spawns/RoofSpawn1` | `Variants/Group_laptop/Slot_lap_boardroom/Laptop` | loot_spawn | 33.7 | 52.9 | 1.57 | ok |
+| `Spawns/RoofSpawn1` | `Variants/Group_laptop/Slot_lap_boardroom/Laptop/UsePoint` | use_point | 33.5 | 52.1 | 1.55 | ok |
 | `Spawns/RoofSpawn1` | `Variants/Group_keycard/Slot_kc_cleaner/Keycard` | objective | 13.1 | 24.8 | 1.89 | ok |
 | `Spawns/RoofSpawn1` | `Variants/Group_keycard/Slot_kc_cleaner/Keycard/UsePoint` | use_point | 13.1 | 24.8 | 1.89 | ok |
-| `Spawns/RoofSpawn1` | `Variants/Group_code_note/Slot_code_contractor/CodeNote` | objective | 25.4 | 42.3 | 1.67 | ok |
-| `Spawns/RoofSpawn1` | `Variants/Group_code_note/Slot_code_contractor/CodeNote/UsePoint` | use_point | 25.4 | 42.3 | 1.67 | ok |
-| `Spawns/RoofSpawn1` | `Variants/Group_escape/Slot_esc_heli/HeliNetE1/Zone` | secure_zone | 24.7 | 26.5 | 1.07 | ok |
-| `Spawns/RoofSpawn1` | `Variants/Group_escape/Slot_esc_heli/HeliEscapeE1/Zone` | escape_zone | 31.0 | 32.5 | 1.05 | ok |
+| `Spawns/RoofSpawn1` | `Variants/Group_code_note/Slot_code_contractor/CodeNote` | objective | 25.4 | 42.7 | 1.68 | ok |
+| `Spawns/RoofSpawn1` | `Variants/Group_code_note/Slot_code_contractor/CodeNote/UsePoint` | use_point | 25.4 | 42.7 | 1.68 | ok |
+| `Spawns/RoofSpawn1` | `Variants/Group_escape/Slot_esc_heli/HeliNetE1/Zone` | secure_zone | 24.7 | 27.1 | 1.10 | ok |
+| `Spawns/RoofSpawn1` | `Variants/Group_escape/Slot_esc_heli/HeliEscapeE1/Zone` | escape_zone | 31.0 | 33.0 | 1.07 | ok |
 | `Spawns/RoofSpawn2` | `Gameplay/Doors/RefuseDoor/UsePoint` | use_point | 24.4 | 56.9 | 2.34 | ok |
 | `Spawns/RoofSpawn2` | `Gameplay/Doors/StairBL40/UsePoint` | use_point | 24.3 | 56.1 | 2.31 | ok |
 | `Spawns/RoofSpawn2` | `Gameplay/Doors/StairAGate` | objective | 15.8 | 42.0 | 2.65 | ok |
@@ -160,14 +160,14 @@ Result: **PASS** (0 failure(s))
 | `Spawns/RoofSpawn2` | `Gameplay/Doors/WCMenL41/UsePoint` | use_point | 18.1 | 37.2 | 2.06 | ok |
 | `Spawns/RoofSpawn2` | `Gameplay/Doors/StairBL41` | objective | 22.8 | 43.3 | 1.90 | ok |
 | `Spawns/RoofSpawn2` | `Gameplay/Doors/StairBL41/UsePoint` | use_point | 22.8 | 43.3 | 1.90 | ok |
-| `Spawns/RoofSpawn2` | `Gameplay/Doors/ServerDoor` | objective | 23.4 | 39.4 | 1.68 | ok |
-| `Spawns/RoofSpawn2` | `Gameplay/Doors/ServerDoor/UsePoint` | use_point | 23.4 | 39.4 | 1.68 | ok |
+| `Spawns/RoofSpawn2` | `Gameplay/Doors/ServerDoor` | objective | 23.4 | 39.8 | 1.70 | ok |
+| `Spawns/RoofSpawn2` | `Gameplay/Doors/ServerDoor/UsePoint` | use_point | 23.4 | 39.8 | 1.70 | ok |
 | `Spawns/RoofSpawn2` | `Gameplay/Doors/ITDoor/UsePoint` | use_point | 32.3 | 45.5 | 1.41 | ok |
-| `Spawns/RoofSpawn2` | `Gameplay/Doors/SecurityDoor/UsePoint` | use_point | 22.9 | 43.9 | 1.92 | ok |
+| `Spawns/RoofSpawn2` | `Gameplay/Doors/SecurityDoor/UsePoint` | use_point | 22.9 | 44.3 | 1.94 | ok |
 | `Spawns/RoofSpawn2` | `Gameplay/Doors/ElectricalL41/UsePoint` | use_point | 29.3 | 49.2 | 1.68 | ok |
 | `Spawns/RoofSpawn2` | `Gameplay/Doors/CopyRoomDoor/UsePoint` | use_point | 31.7 | 51.7 | 1.63 | ok |
-| `Spawns/RoofSpawn2` | `Gameplay/Doors/CageGate` | objective | 26.7 | 43.5 | 1.63 | ok |
-| `Spawns/RoofSpawn2` | `Gameplay/Doors/CageGate/UsePoint` | use_point | 26.7 | 43.5 | 1.63 | ok |
+| `Spawns/RoofSpawn2` | `Gameplay/Doors/CageGate` | objective | 26.7 | 43.8 | 1.64 | ok |
+| `Spawns/RoofSpawn2` | `Gameplay/Doors/CageGate/UsePoint` | use_point | 26.7 | 43.8 | 1.64 | ok |
 | `Spawns/RoofSpawn2` | `Gameplay/Doors/ArchiveDoor/UsePoint` | use_point | 8.3 | 34.2 | 4.12 | detour (whitelisted) |
 | `Spawns/RoofSpawn2` | `Gameplay/Doors/BreakRoomDoor/UsePoint` | use_point | 10.0 | 31.2 | 3.13 | detour (whitelisted) |
 | `Spawns/RoofSpawn2` | `Gameplay/Doors/LibraryDoor/UsePoint` | use_point | 14.2 | 32.7 | 2.30 | ok |
@@ -180,8 +180,8 @@ Result: **PASS** (0 failure(s))
 | `Spawns/RoofSpawn2` | `Gameplay/Doors/ArtHallStaffDoor/UsePoint` | use_point | 22.8 | 32.0 | 1.40 | ok |
 | `Spawns/RoofSpawn2` | `Gameplay/Doors/StudyDoor` | objective | 27.7 | 31.4 | 1.13 | ok |
 | `Spawns/RoofSpawn2` | `Gameplay/Doors/StudyDoor/UsePoint` | use_point | 27.7 | 31.4 | 1.13 | ok |
-| `Spawns/RoofSpawn2` | `Gameplay/Doors/StudyFacadeDoor` | objective | 33.2 | 37.0 | 1.12 | ok |
-| `Spawns/RoofSpawn2` | `Gameplay/Doors/StudyFacadeDoor/UsePoint` | use_point | 33.2 | 37.0 | 1.12 | ok |
+| `Spawns/RoofSpawn2` | `Gameplay/Doors/StudyFacadeDoor` | objective | 33.2 | 37.2 | 1.12 | ok |
+| `Spawns/RoofSpawn2` | `Gameplay/Doors/StudyFacadeDoor/UsePoint` | use_point | 33.2 | 37.2 | 1.12 | ok |
 | `Spawns/RoofSpawn2` | `Gameplay/Doors/LinenL42/UsePoint` | use_point | 10.7 | 21.8 | 2.04 | ok |
 | `Spawns/RoofSpawn2` | `Gameplay/Doors/StairAL42` | objective | 8.7 | 20.5 | 2.36 | ok |
 | `Spawns/RoofSpawn2` | `Gameplay/Doors/StairAL42/UsePoint` | use_point | 8.7 | 20.5 | 2.36 | ok |
@@ -195,32 +195,32 @@ Result: **PASS** (0 failure(s))
 | `Spawns/RoofSpawn2` | `Gameplay/Doors/DiningDoor/UsePoint` | use_point | 8.6 | 20.6 | 2.39 | ok |
 | `Spawns/RoofSpawn2` | `Gameplay/Doors/PantryDoor/UsePoint` | use_point | 22.3 | 33.8 | 1.51 | ok |
 | `Spawns/RoofSpawn2` | `Gameplay/Doors/ElectricalL42/UsePoint` | use_point | 21.7 | 36.7 | 1.69 | ok |
-| `Spawns/RoofSpawn2` | `Gameplay/Doors/WineRoomDoor/UsePoint` | use_point | 26.4 | 40.8 | 1.54 | ok |
-| `Spawns/RoofSpawn2` | `Gameplay/Doors/BoardroomDoor/UsePoint` | use_point | 30.4 | 42.4 | 1.40 | ok |
+| `Spawns/RoofSpawn2` | `Gameplay/Doors/WineRoomDoor/UsePoint` | use_point | 26.4 | 38.8 | 1.47 | ok |
+| `Spawns/RoofSpawn2` | `Gameplay/Doors/BoardroomDoor/UsePoint` | use_point | 30.4 | 42.8 | 1.41 | ok |
 | `Spawns/RoofSpawn2` | `Gameplay/Doors/SliderDining` | objective | 5.1 | 28.6 | 5.57 | detour (whitelisted) |
 | `Spawns/RoofSpawn2` | `Gameplay/Doors/SliderDining/UsePoint` | use_point | 5.1 | 28.6 | 5.57 | detour (whitelisted) |
-| `Spawns/RoofSpawn2` | `Gameplay/Doors/SliderWest` | objective | 12.2 | 24.8 | 2.03 | ok |
-| `Spawns/RoofSpawn2` | `Gameplay/Doors/SliderWest/UsePoint` | use_point | 12.2 | 24.8 | 2.03 | ok |
-| `Spawns/RoofSpawn2` | `Gameplay/Doors/SliderEast` | objective | 27.6 | 39.3 | 1.43 | ok |
-| `Spawns/RoofSpawn2` | `Gameplay/Doors/SliderEast/UsePoint` | use_point | 27.6 | 39.3 | 1.43 | ok |
+| `Spawns/RoofSpawn2` | `Gameplay/Doors/SliderWest` | objective | 12.2 | 24.7 | 2.03 | ok |
+| `Spawns/RoofSpawn2` | `Gameplay/Doors/SliderWest/UsePoint` | use_point | 12.2 | 24.7 | 2.03 | ok |
+| `Spawns/RoofSpawn2` | `Gameplay/Doors/SliderEast` | objective | 27.6 | 40.6 | 1.47 | ok |
+| `Spawns/RoofSpawn2` | `Gameplay/Doors/SliderEast/UsePoint` | use_point | 27.6 | 40.6 | 1.47 | ok |
 | `Spawns/RoofSpawn2` | `Gameplay/Doors/RoofDoor` | objective | 7.9 | 7.9 | 1.00 | ok |
 | `Spawns/RoofSpawn2` | `Gameplay/Doors/RoofDoor/UsePoint` | use_point | 7.9 | 7.9 | 1.00 | ok |
 | `Spawns/RoofSpawn2` | `Gameplay/Doors/RiserBayDoor` | objective | 10.0 | 10.0 | 1.00 | ok |
 | `Spawns/RoofSpawn2` | `Gameplay/Doors/RiserBayDoor/UsePoint` | use_point | 10.0 | 10.0 | 1.00 | ok |
 | `Spawns/RoofSpawn2` | `Gameplay/Doors/HeadHousePlantDoor/UsePoint` | use_point | 10.9 | 10.9 | 1.00 | ok |
-| `Spawns/RoofSpawn2` | `Gameplay/Doors/PlantDoor/UsePoint` | use_point | 18.2 | 19.4 | 1.07 | ok |
-| `Spawns/RoofSpawn2` | `Gameplay/Server/ServerReader` | objective | 23.6 | 38.6 | 1.64 | ok |
-| `Spawns/RoofSpawn2` | `Gameplay/Server/ServerReader/UsePoint` | use_point | 23.6 | 38.6 | 1.64 | ok |
-| `Spawns/RoofSpawn2` | `Gameplay/Server/CageLock` | objective | 25.6 | 42.5 | 1.66 | ok |
-| `Spawns/RoofSpawn2` | `Gameplay/Server/CageLock/UsePoint` | use_point | 25.6 | 42.5 | 1.66 | ok |
-| `Spawns/RoofSpawn2` | `Gameplay/Server/HackTerminal` | objective | 27.1 | 44.3 | 1.64 | ok |
-| `Spawns/RoofSpawn2` | `Gameplay/Server/HackTerminal/UsePoint` | use_point | 27.1 | 44.3 | 1.64 | ok |
-| `Spawns/RoofSpawn2` | `Gameplay/Server/Drives1` | loot_spawn | 25.9 | 45.3 | 1.75 | ok |
-| `Spawns/RoofSpawn2` | `Gameplay/Server/Drives1/UsePoint` | use_point | 25.8 | 45.3 | 1.75 | ok |
-| `Spawns/RoofSpawn2` | `Gameplay/Server/Drives2` | loot_spawn | 27.8 | 45.1 | 1.62 | ok |
-| `Spawns/RoofSpawn2` | `Gameplay/Server/Drives2/UsePoint` | use_point | 27.7 | 45.0 | 1.62 | ok |
-| `Spawns/RoofSpawn2` | `Gameplay/Server/Drives3` | loot_spawn | 28.4 | 45.7 | 1.61 | ok |
-| `Spawns/RoofSpawn2` | `Gameplay/Server/Drives3/UsePoint` | use_point | 28.3 | 45.6 | 1.61 | ok |
+| `Spawns/RoofSpawn2` | `Gameplay/Doors/PlantDoor/UsePoint` | use_point | 18.2 | 20.1 | 1.11 | ok |
+| `Spawns/RoofSpawn2` | `Gameplay/Server/ServerReader` | objective | 23.6 | 39.0 | 1.65 | ok |
+| `Spawns/RoofSpawn2` | `Gameplay/Server/ServerReader/UsePoint` | use_point | 23.6 | 39.0 | 1.65 | ok |
+| `Spawns/RoofSpawn2` | `Gameplay/Server/CageLock` | objective | 25.6 | 42.9 | 1.67 | ok |
+| `Spawns/RoofSpawn2` | `Gameplay/Server/CageLock/UsePoint` | use_point | 25.6 | 42.9 | 1.67 | ok |
+| `Spawns/RoofSpawn2` | `Gameplay/Server/HackTerminal` | objective | 27.1 | 44.7 | 1.65 | ok |
+| `Spawns/RoofSpawn2` | `Gameplay/Server/HackTerminal/UsePoint` | use_point | 27.1 | 44.7 | 1.65 | ok |
+| `Spawns/RoofSpawn2` | `Gameplay/Server/Drives1` | loot_spawn | 25.9 | 45.7 | 1.77 | ok |
+| `Spawns/RoofSpawn2` | `Gameplay/Server/Drives1/UsePoint` | use_point | 25.8 | 45.7 | 1.77 | ok |
+| `Spawns/RoofSpawn2` | `Gameplay/Server/Drives2` | loot_spawn | 27.8 | 45.5 | 1.64 | ok |
+| `Spawns/RoofSpawn2` | `Gameplay/Server/Drives2/UsePoint` | use_point | 27.7 | 45.3 | 1.64 | ok |
+| `Spawns/RoofSpawn2` | `Gameplay/Server/Drives3` | loot_spawn | 28.4 | 46.1 | 1.62 | ok |
+| `Spawns/RoofSpawn2` | `Gameplay/Server/Drives3/UsePoint` | use_point | 28.3 | 46.0 | 1.62 | ok |
 | `Spawns/RoofSpawn2` | `Gameplay/Study/StudyReader` | objective | 30.1 | 36.3 | 1.21 | ok |
 | `Spawns/RoofSpawn2` | `Gameplay/Study/StudyReader/UsePoint` | use_point | 30.1 | 36.3 | 1.21 | ok |
 | `Spawns/RoofSpawn2` | `Gameplay/Study/StudySafe` | objective | 31.2 | 36.7 | 1.18 | ok |
@@ -242,11 +242,11 @@ Result: **PASS** (0 failure(s))
 | `Spawns/RoofSpawn2` | `Gameplay/Misc/PhoneSecurity/UsePoint` | use_point | 25.0 | 46.4 | 1.86 | ok |
 | `Spawns/RoofSpawn2` | `Gameplay/Misc/PhoneBreakRoom/UsePoint` | use_point | 11.9 | 36.9 | 3.11 | detour (whitelisted) |
 | `Spawns/RoofSpawn2` | `Gameplay/Misc/PhoneGuestSuite/UsePoint` | use_point | 5.3 | 33.4 | 6.27 | detour (whitelisted) |
-| `Spawns/RoofSpawn2` | `Gameplay/Misc/PhonePantry/UsePoint` | use_point | 24.8 | 36.0 | 1.45 | ok |
-| `Spawns/RoofSpawn2` | `Gameplay/Misc/ArchiveSafe` | objective | 11.0 | 40.6 | 3.70 | detour (whitelisted) |
-| `Spawns/RoofSpawn2` | `Gameplay/Misc/ArchiveSafe/UsePoint` | use_point | 11.0 | 40.6 | 3.70 | detour (whitelisted) |
-| `Spawns/RoofSpawn2` | `Gameplay/Misc/ArchiveSafe/ArchiveCash` | loot_spawn | 10.7 | 41.6 | 3.89 | detour (whitelisted) |
-| `Spawns/RoofSpawn2` | `Gameplay/Misc/ArchiveSafe/ArchiveCash/UsePoint` | use_point | 10.7 | 41.6 | 3.89 | detour (whitelisted) |
+| `Spawns/RoofSpawn2` | `Gameplay/Misc/PhonePantry/UsePoint` | use_point | 24.8 | 35.9 | 1.45 | ok |
+| `Spawns/RoofSpawn2` | `Gameplay/Misc/ArchiveSafe` | objective | 11.0 | 43.8 | 3.98 | detour (whitelisted) |
+| `Spawns/RoofSpawn2` | `Gameplay/Misc/ArchiveSafe/UsePoint` | use_point | 11.0 | 43.8 | 3.98 | detour (whitelisted) |
+| `Spawns/RoofSpawn2` | `Gameplay/Misc/ArchiveSafe/ArchiveCash` | loot_spawn | 10.7 | 42.5 | 3.98 | detour (whitelisted) |
+| `Spawns/RoofSpawn2` | `Gameplay/Misc/ArchiveSafe/ArchiveCash/UsePoint` | use_point | 10.7 | 42.5 | 3.98 | detour (whitelisted) |
 | `Spawns/RoofSpawn2` | `Gameplay/Misc/Painting1` | loot_spawn | 25.7 | 31.4 | 1.22 | ok |
 | `Spawns/RoofSpawn2` | `Gameplay/Misc/Painting1/UsePoint` | use_point | 25.7 | 31.4 | 1.22 | ok |
 | `Spawns/RoofSpawn2` | `Gameplay/Misc/Painting2` | loot_spawn | 26.7 | 32.2 | 1.21 | ok |
@@ -255,16 +255,16 @@ Result: **PASS** (0 failure(s))
 | `Spawns/RoofSpawn2` | `Gameplay/Misc/PrintoutBooks/UsePoint` | use_point | 14.0 | 31.5 | 2.26 | ok |
 | `Spawns/RoofSpawn2` | `Gameplay/Misc/KesslerWatch/UsePoint` | use_point | 14.5 | 32.7 | 2.25 | ok |
 | `Spawns/RoofSpawn2` | `Gameplay/Misc/MoorBracelet/UsePoint` | use_point | 33.0 | 46.5 | 1.41 | ok |
-| `Spawns/RoofSpawn2` | `Gameplay/Misc/HumidorCigars1/UsePoint` | use_point | 26.8 | 43.4 | 1.62 | ok |
-| `Spawns/RoofSpawn2` | `Gameplay/Misc/HumidorCigars2/UsePoint` | use_point | 26.7 | 43.1 | 1.61 | ok |
-| `Spawns/RoofSpawn2` | `Variants/Group_laptop/Slot_lap_boardroom/Laptop` | loot_spawn | 32.5 | 51.4 | 1.58 | ok |
-| `Spawns/RoofSpawn2` | `Variants/Group_laptop/Slot_lap_boardroom/Laptop/UsePoint` | use_point | 32.4 | 50.6 | 1.56 | ok |
+| `Spawns/RoofSpawn2` | `Gameplay/Misc/HumidorCigars1/UsePoint` | use_point | 26.8 | 41.3 | 1.54 | ok |
+| `Spawns/RoofSpawn2` | `Gameplay/Misc/HumidorCigars2/UsePoint` | use_point | 26.7 | 41.0 | 1.53 | ok |
+| `Spawns/RoofSpawn2` | `Variants/Group_laptop/Slot_lap_boardroom/Laptop` | loot_spawn | 32.5 | 51.7 | 1.59 | ok |
+| `Spawns/RoofSpawn2` | `Variants/Group_laptop/Slot_lap_boardroom/Laptop/UsePoint` | use_point | 32.4 | 50.9 | 1.57 | ok |
 | `Spawns/RoofSpawn2` | `Variants/Group_keycard/Slot_kc_cleaner/Keycard` | objective | 12.1 | 23.8 | 1.97 | ok |
 | `Spawns/RoofSpawn2` | `Variants/Group_keycard/Slot_kc_cleaner/Keycard/UsePoint` | use_point | 12.1 | 23.8 | 1.97 | ok |
-| `Spawns/RoofSpawn2` | `Variants/Group_code_note/Slot_code_contractor/CodeNote` | objective | 24.3 | 41.3 | 1.70 | ok |
-| `Spawns/RoofSpawn2` | `Variants/Group_code_note/Slot_code_contractor/CodeNote/UsePoint` | use_point | 24.3 | 41.3 | 1.70 | ok |
-| `Spawns/RoofSpawn2` | `Variants/Group_escape/Slot_esc_heli/HeliNetE1/Zone` | secure_zone | 23.6 | 25.6 | 1.09 | ok |
-| `Spawns/RoofSpawn2` | `Variants/Group_escape/Slot_esc_heli/HeliEscapeE1/Zone` | escape_zone | 29.9 | 31.6 | 1.06 | ok |
+| `Spawns/RoofSpawn2` | `Variants/Group_code_note/Slot_code_contractor/CodeNote` | objective | 24.3 | 41.7 | 1.72 | ok |
+| `Spawns/RoofSpawn2` | `Variants/Group_code_note/Slot_code_contractor/CodeNote/UsePoint` | use_point | 24.3 | 41.7 | 1.72 | ok |
+| `Spawns/RoofSpawn2` | `Variants/Group_escape/Slot_esc_heli/HeliNetE1/Zone` | secure_zone | 23.6 | 26.3 | 1.12 | ok |
+| `Spawns/RoofSpawn2` | `Variants/Group_escape/Slot_esc_heli/HeliEscapeE1/Zone` | escape_zone | 29.9 | 32.2 | 1.08 | ok |
 | `Spawns/RoofSpawn3` | `Gameplay/Doors/RefuseDoor/UsePoint` | use_point | 23.3 | 56.0 | 2.40 | ok |
 | `Spawns/RoofSpawn3` | `Gameplay/Doors/StairBL40/UsePoint` | use_point | 23.2 | 55.2 | 2.38 | ok |
 | `Spawns/RoofSpawn3` | `Gameplay/Doors/StairAGate` | objective | 15.0 | 41.0 | 2.73 | ok |
@@ -289,14 +289,14 @@ Result: **PASS** (0 failure(s))
 | `Spawns/RoofSpawn3` | `Gameplay/Doors/WCMenL41/UsePoint` | use_point | 17.0 | 36.3 | 2.13 | ok |
 | `Spawns/RoofSpawn3` | `Gameplay/Doors/StairBL41` | objective | 21.6 | 42.4 | 1.96 | ok |
 | `Spawns/RoofSpawn3` | `Gameplay/Doors/StairBL41/UsePoint` | use_point | 21.6 | 42.4 | 1.96 | ok |
-| `Spawns/RoofSpawn3` | `Gameplay/Doors/ServerDoor` | objective | 22.3 | 38.5 | 1.72 | ok |
-| `Spawns/RoofSpawn3` | `Gameplay/Doors/ServerDoor/UsePoint` | use_point | 22.3 | 38.5 | 1.72 | ok |
+| `Spawns/RoofSpawn3` | `Gameplay/Doors/ServerDoor` | objective | 22.3 | 38.9 | 1.74 | ok |
+| `Spawns/RoofSpawn3` | `Gameplay/Doors/ServerDoor/UsePoint` | use_point | 22.3 | 38.9 | 1.74 | ok |
 | `Spawns/RoofSpawn3` | `Gameplay/Doors/ITDoor/UsePoint` | use_point | 31.1 | 44.5 | 1.43 | ok |
-| `Spawns/RoofSpawn3` | `Gameplay/Doors/SecurityDoor/UsePoint` | use_point | 21.7 | 43.0 | 1.98 | ok |
+| `Spawns/RoofSpawn3` | `Gameplay/Doors/SecurityDoor/UsePoint` | use_point | 21.7 | 43.4 | 1.99 | ok |
 | `Spawns/RoofSpawn3` | `Gameplay/Doors/ElectricalL41/UsePoint` | use_point | 28.1 | 48.3 | 1.72 | ok |
 | `Spawns/RoofSpawn3` | `Gameplay/Doors/CopyRoomDoor/UsePoint` | use_point | 30.5 | 50.8 | 1.66 | ok |
-| `Spawns/RoofSpawn3` | `Gameplay/Doors/CageGate` | objective | 25.6 | 42.5 | 1.66 | ok |
-| `Spawns/RoofSpawn3` | `Gameplay/Doors/CageGate/UsePoint` | use_point | 25.6 | 42.5 | 1.66 | ok |
+| `Spawns/RoofSpawn3` | `Gameplay/Doors/CageGate` | objective | 25.6 | 42.9 | 1.67 | ok |
+| `Spawns/RoofSpawn3` | `Gameplay/Doors/CageGate/UsePoint` | use_point | 25.6 | 42.9 | 1.67 | ok |
 | `Spawns/RoofSpawn3` | `Gameplay/Doors/ArchiveDoor/UsePoint` | use_point | 8.4 | 33.2 | 3.94 | detour (whitelisted) |
 | `Spawns/RoofSpawn3` | `Gameplay/Doors/BreakRoomDoor/UsePoint` | use_point | 9.4 | 30.3 | 3.23 | detour (whitelisted) |
 | `Spawns/RoofSpawn3` | `Gameplay/Doors/LibraryDoor/UsePoint` | use_point | 13.3 | 31.8 | 2.39 | ok |
@@ -309,8 +309,8 @@ Result: **PASS** (0 failure(s))
 | `Spawns/RoofSpawn3` | `Gameplay/Doors/ArtHallStaffDoor/UsePoint` | use_point | 21.7 | 31.0 | 1.43 | ok |
 | `Spawns/RoofSpawn3` | `Gameplay/Doors/StudyDoor` | objective | 26.7 | 30.5 | 1.14 | ok |
 | `Spawns/RoofSpawn3` | `Gameplay/Doors/StudyDoor/UsePoint` | use_point | 26.7 | 30.5 | 1.14 | ok |
-| `Spawns/RoofSpawn3` | `Gameplay/Doors/StudyFacadeDoor` | objective | 32.1 | 36.1 | 1.12 | ok |
-| `Spawns/RoofSpawn3` | `Gameplay/Doors/StudyFacadeDoor/UsePoint` | use_point | 32.1 | 36.1 | 1.12 | ok |
+| `Spawns/RoofSpawn3` | `Gameplay/Doors/StudyFacadeDoor` | objective | 32.1 | 36.4 | 1.13 | ok |
+| `Spawns/RoofSpawn3` | `Gameplay/Doors/StudyFacadeDoor/UsePoint` | use_point | 32.1 | 36.4 | 1.13 | ok |
 | `Spawns/RoofSpawn3` | `Gameplay/Doors/LinenL42/UsePoint` | use_point | 9.8 | 20.9 | 2.13 | ok |
 | `Spawns/RoofSpawn3` | `Gameplay/Doors/StairAL42` | objective | 7.6 | 19.3 | 2.53 | ok |
 | `Spawns/RoofSpawn3` | `Gameplay/Doors/StairAL42/UsePoint` | use_point | 7.6 | 19.3 | 2.53 | ok |
@@ -318,38 +318,38 @@ Result: **PASS** (0 failure(s))
 | `Spawns/RoofSpawn3` | `Gameplay/Doors/StairBL42/UsePoint` | use_point | 20.4 | 33.7 | 1.65 | ok |
 | `Spawns/RoofSpawn3` | `Gameplay/Doors/WCWestL42/UsePoint` | use_point | 12.6 | 24.6 | 1.96 | ok |
 | `Spawns/RoofSpawn3` | `Gameplay/Doors/WCMenL42/UsePoint` | use_point | 15.5 | 27.6 | 1.79 | ok |
-| `Spawns/RoofSpawn3` | `Gameplay/Doors/SuiteDoor/UsePoint` | use_point | 5.5 | 27.5 | 5.02 | detour (whitelisted) |
-| `Spawns/RoofSpawn3` | `Gameplay/Doors/BathDoor/UsePoint` | use_point | 6.4 | 24.5 | 3.86 | detour (whitelisted) |
+| `Spawns/RoofSpawn3` | `Gameplay/Doors/SuiteDoor/UsePoint` | use_point | 5.5 | 26.2 | 4.78 | detour (whitelisted) |
+| `Spawns/RoofSpawn3` | `Gameplay/Doors/BathDoor/UsePoint` | use_point | 6.4 | 24.9 | 3.92 | detour (whitelisted) |
 | `Spawns/RoofSpawn3` | `Gameplay/Doors/DressingDoor/UsePoint` | use_point | 8.2 | 22.3 | 2.73 | ok |
 | `Spawns/RoofSpawn3` | `Gameplay/Doors/DiningDoor/UsePoint` | use_point | 7.5 | 19.4 | 2.57 | ok |
 | `Spawns/RoofSpawn3` | `Gameplay/Doors/PantryDoor/UsePoint` | use_point | 21.2 | 32.8 | 1.55 | ok |
 | `Spawns/RoofSpawn3` | `Gameplay/Doors/ElectricalL42/UsePoint` | use_point | 20.6 | 35.5 | 1.73 | ok |
-| `Spawns/RoofSpawn3` | `Gameplay/Doors/WineRoomDoor/UsePoint` | use_point | 25.2 | 39.6 | 1.57 | ok |
-| `Spawns/RoofSpawn3` | `Gameplay/Doors/BoardroomDoor/UsePoint` | use_point | 29.2 | 41.3 | 1.41 | ok |
+| `Spawns/RoofSpawn3` | `Gameplay/Doors/WineRoomDoor/UsePoint` | use_point | 25.2 | 37.6 | 1.49 | ok |
+| `Spawns/RoofSpawn3` | `Gameplay/Doors/BoardroomDoor/UsePoint` | use_point | 29.2 | 41.6 | 1.43 | ok |
 | `Spawns/RoofSpawn3` | `Gameplay/Doors/SliderDining` | objective | 5.0 | 27.4 | 5.46 | detour (whitelisted) |
 | `Spawns/RoofSpawn3` | `Gameplay/Doors/SliderDining/UsePoint` | use_point | 5.0 | 27.4 | 5.46 | detour (whitelisted) |
-| `Spawns/RoofSpawn3` | `Gameplay/Doors/SliderWest` | objective | 11.1 | 23.6 | 2.12 | ok |
-| `Spawns/RoofSpawn3` | `Gameplay/Doors/SliderWest/UsePoint` | use_point | 11.1 | 23.6 | 2.12 | ok |
-| `Spawns/RoofSpawn3` | `Gameplay/Doors/SliderEast` | objective | 26.4 | 38.1 | 1.44 | ok |
-| `Spawns/RoofSpawn3` | `Gameplay/Doors/SliderEast/UsePoint` | use_point | 26.4 | 38.1 | 1.44 | ok |
+| `Spawns/RoofSpawn3` | `Gameplay/Doors/SliderWest` | objective | 11.1 | 23.5 | 2.12 | ok |
+| `Spawns/RoofSpawn3` | `Gameplay/Doors/SliderWest/UsePoint` | use_point | 11.1 | 23.5 | 2.12 | ok |
+| `Spawns/RoofSpawn3` | `Gameplay/Doors/SliderEast` | objective | 26.4 | 39.4 | 1.49 | ok |
+| `Spawns/RoofSpawn3` | `Gameplay/Doors/SliderEast/UsePoint` | use_point | 26.4 | 39.4 | 1.49 | ok |
 | `Spawns/RoofSpawn3` | `Gameplay/Doors/RoofDoor` | objective | 6.7 | 6.7 | 1.00 | ok |
 | `Spawns/RoofSpawn3` | `Gameplay/Doors/RoofDoor/UsePoint` | use_point | 6.7 | 6.7 | 1.00 | ok |
 | `Spawns/RoofSpawn3` | `Gameplay/Doors/RiserBayDoor` | objective | 9.1 | 9.1 | 1.00 | ok |
 | `Spawns/RoofSpawn3` | `Gameplay/Doors/RiserBayDoor/UsePoint` | use_point | 9.1 | 9.1 | 1.00 | ok |
 | `Spawns/RoofSpawn3` | `Gameplay/Doors/HeadHousePlantDoor/UsePoint` | use_point | 9.7 | 9.7 | 1.00 | ok |
-| `Spawns/RoofSpawn3` | `Gameplay/Doors/PlantDoor/UsePoint` | use_point | 17.1 | 18.6 | 1.09 | ok |
-| `Spawns/RoofSpawn3` | `Gameplay/Server/ServerReader` | objective | 22.5 | 37.7 | 1.67 | ok |
-| `Spawns/RoofSpawn3` | `Gameplay/Server/ServerReader/UsePoint` | use_point | 22.5 | 37.7 | 1.67 | ok |
-| `Spawns/RoofSpawn3` | `Gameplay/Server/CageLock` | objective | 24.5 | 41.6 | 1.69 | ok |
-| `Spawns/RoofSpawn3` | `Gameplay/Server/CageLock/UsePoint` | use_point | 24.5 | 41.6 | 1.69 | ok |
-| `Spawns/RoofSpawn3` | `Gameplay/Server/HackTerminal` | objective | 25.9 | 43.4 | 1.67 | ok |
-| `Spawns/RoofSpawn3` | `Gameplay/Server/HackTerminal/UsePoint` | use_point | 25.9 | 43.4 | 1.67 | ok |
-| `Spawns/RoofSpawn3` | `Gameplay/Server/Drives1` | loot_spawn | 24.8 | 44.4 | 1.79 | ok |
-| `Spawns/RoofSpawn3` | `Gameplay/Server/Drives1/UsePoint` | use_point | 24.7 | 44.3 | 1.79 | ok |
-| `Spawns/RoofSpawn3` | `Gameplay/Server/Drives2` | loot_spawn | 26.7 | 44.1 | 1.65 | ok |
-| `Spawns/RoofSpawn3` | `Gameplay/Server/Drives2/UsePoint` | use_point | 26.6 | 44.0 | 1.65 | ok |
-| `Spawns/RoofSpawn3` | `Gameplay/Server/Drives3` | loot_spawn | 27.3 | 44.7 | 1.64 | ok |
-| `Spawns/RoofSpawn3` | `Gameplay/Server/Drives3/UsePoint` | use_point | 27.2 | 44.7 | 1.64 | ok |
+| `Spawns/RoofSpawn3` | `Gameplay/Doors/PlantDoor/UsePoint` | use_point | 17.1 | 19.3 | 1.13 | ok |
+| `Spawns/RoofSpawn3` | `Gameplay/Server/ServerReader` | objective | 22.5 | 38.1 | 1.69 | ok |
+| `Spawns/RoofSpawn3` | `Gameplay/Server/ServerReader/UsePoint` | use_point | 22.5 | 38.1 | 1.69 | ok |
+| `Spawns/RoofSpawn3` | `Gameplay/Server/CageLock` | objective | 24.5 | 41.9 | 1.71 | ok |
+| `Spawns/RoofSpawn3` | `Gameplay/Server/CageLock/UsePoint` | use_point | 24.5 | 41.9 | 1.71 | ok |
+| `Spawns/RoofSpawn3` | `Gameplay/Server/HackTerminal` | objective | 25.9 | 43.8 | 1.69 | ok |
+| `Spawns/RoofSpawn3` | `Gameplay/Server/HackTerminal/UsePoint` | use_point | 25.9 | 43.8 | 1.69 | ok |
+| `Spawns/RoofSpawn3` | `Gameplay/Server/Drives1` | loot_spawn | 24.8 | 44.8 | 1.81 | ok |
+| `Spawns/RoofSpawn3` | `Gameplay/Server/Drives1/UsePoint` | use_point | 24.7 | 44.7 | 1.81 | ok |
+| `Spawns/RoofSpawn3` | `Gameplay/Server/Drives2` | loot_spawn | 26.7 | 44.5 | 1.67 | ok |
+| `Spawns/RoofSpawn3` | `Gameplay/Server/Drives2/UsePoint` | use_point | 26.6 | 44.4 | 1.67 | ok |
+| `Spawns/RoofSpawn3` | `Gameplay/Server/Drives3` | loot_spawn | 27.3 | 45.1 | 1.65 | ok |
+| `Spawns/RoofSpawn3` | `Gameplay/Server/Drives3/UsePoint` | use_point | 27.2 | 45.0 | 1.66 | ok |
 | `Spawns/RoofSpawn3` | `Gameplay/Study/StudyReader` | objective | 28.9 | 35.4 | 1.22 | ok |
 | `Spawns/RoofSpawn3` | `Gameplay/Study/StudyReader/UsePoint` | use_point | 28.9 | 35.4 | 1.22 | ok |
 | `Spawns/RoofSpawn3` | `Gameplay/Study/StudySafe` | objective | 30.1 | 35.8 | 1.19 | ok |
@@ -371,11 +371,11 @@ Result: **PASS** (0 failure(s))
 | `Spawns/RoofSpawn3` | `Gameplay/Misc/PhoneSecurity/UsePoint` | use_point | 23.9 | 45.5 | 1.90 | ok |
 | `Spawns/RoofSpawn3` | `Gameplay/Misc/PhoneBreakRoom/UsePoint` | use_point | 11.5 | 36.0 | 3.13 | detour (whitelisted) |
 | `Spawns/RoofSpawn3` | `Gameplay/Misc/PhoneGuestSuite/UsePoint` | use_point | 5.9 | 32.2 | 5.43 | detour (whitelisted) |
-| `Spawns/RoofSpawn3` | `Gameplay/Misc/PhonePantry/UsePoint` | use_point | 23.6 | 35.1 | 1.48 | ok |
-| `Spawns/RoofSpawn3` | `Gameplay/Misc/ArchiveSafe` | objective | 11.3 | 39.6 | 3.51 | detour (whitelisted) |
-| `Spawns/RoofSpawn3` | `Gameplay/Misc/ArchiveSafe/UsePoint` | use_point | 11.3 | 39.6 | 3.51 | detour (whitelisted) |
-| `Spawns/RoofSpawn3` | `Gameplay/Misc/ArchiveSafe/ArchiveCash` | loot_spawn | 10.9 | 40.6 | 3.74 | detour (whitelisted) |
-| `Spawns/RoofSpawn3` | `Gameplay/Misc/ArchiveSafe/ArchiveCash/UsePoint` | use_point | 10.9 | 40.6 | 3.74 | detour (whitelisted) |
+| `Spawns/RoofSpawn3` | `Gameplay/Misc/PhonePantry/UsePoint` | use_point | 23.6 | 35.0 | 1.48 | ok |
+| `Spawns/RoofSpawn3` | `Gameplay/Misc/ArchiveSafe` | objective | 11.3 | 42.8 | 3.79 | detour (whitelisted) |
+| `Spawns/RoofSpawn3` | `Gameplay/Misc/ArchiveSafe/UsePoint` | use_point | 11.3 | 42.8 | 3.79 | detour (whitelisted) |
+| `Spawns/RoofSpawn3` | `Gameplay/Misc/ArchiveSafe/ArchiveCash` | loot_spawn | 10.9 | 41.6 | 3.83 | detour (whitelisted) |
+| `Spawns/RoofSpawn3` | `Gameplay/Misc/ArchiveSafe/ArchiveCash/UsePoint` | use_point | 10.9 | 41.6 | 3.83 | detour (whitelisted) |
 | `Spawns/RoofSpawn3` | `Gameplay/Misc/Painting1` | loot_spawn | 24.6 | 30.5 | 1.24 | ok |
 | `Spawns/RoofSpawn3` | `Gameplay/Misc/Painting1/UsePoint` | use_point | 24.6 | 30.5 | 1.24 | ok |
 | `Spawns/RoofSpawn3` | `Gameplay/Misc/Painting2` | loot_spawn | 25.5 | 31.3 | 1.22 | ok |
@@ -384,16 +384,16 @@ Result: **PASS** (0 failure(s))
 | `Spawns/RoofSpawn3` | `Gameplay/Misc/PrintoutBooks/UsePoint` | use_point | 13.9 | 30.6 | 2.20 | ok |
 | `Spawns/RoofSpawn3` | `Gameplay/Misc/KesslerWatch/UsePoint` | use_point | 14.6 | 31.7 | 2.17 | ok |
 | `Spawns/RoofSpawn3` | `Gameplay/Misc/MoorBracelet/UsePoint` | use_point | 31.9 | 45.6 | 1.43 | ok |
-| `Spawns/RoofSpawn3` | `Gameplay/Misc/HumidorCigars1/UsePoint` | use_point | 25.6 | 42.2 | 1.65 | ok |
-| `Spawns/RoofSpawn3` | `Gameplay/Misc/HumidorCigars2/UsePoint` | use_point | 25.6 | 41.9 | 1.64 | ok |
-| `Spawns/RoofSpawn3` | `Variants/Group_laptop/Slot_lap_boardroom/Laptop` | loot_spawn | 31.4 | 50.2 | 1.60 | ok |
-| `Spawns/RoofSpawn3` | `Variants/Group_laptop/Slot_lap_boardroom/Laptop/UsePoint` | use_point | 31.2 | 49.4 | 1.58 | ok |
+| `Spawns/RoofSpawn3` | `Gameplay/Misc/HumidorCigars1/UsePoint` | use_point | 25.6 | 40.1 | 1.57 | ok |
+| `Spawns/RoofSpawn3` | `Gameplay/Misc/HumidorCigars2/UsePoint` | use_point | 25.6 | 39.8 | 1.56 | ok |
+| `Spawns/RoofSpawn3` | `Variants/Group_laptop/Slot_lap_boardroom/Laptop` | loot_spawn | 31.4 | 50.5 | 1.61 | ok |
+| `Spawns/RoofSpawn3` | `Variants/Group_laptop/Slot_lap_boardroom/Laptop/UsePoint` | use_point | 31.2 | 49.7 | 1.59 | ok |
 | `Spawns/RoofSpawn3` | `Variants/Group_keycard/Slot_kc_cleaner/Keycard` | objective | 11.1 | 22.8 | 2.06 | ok |
 | `Spawns/RoofSpawn3` | `Variants/Group_keycard/Slot_kc_cleaner/Keycard/UsePoint` | use_point | 11.1 | 22.8 | 2.06 | ok |
-| `Spawns/RoofSpawn3` | `Variants/Group_code_note/Slot_code_contractor/CodeNote` | objective | 23.2 | 40.4 | 1.74 | ok |
-| `Spawns/RoofSpawn3` | `Variants/Group_code_note/Slot_code_contractor/CodeNote/UsePoint` | use_point | 23.2 | 40.4 | 1.74 | ok |
-| `Spawns/RoofSpawn3` | `Variants/Group_escape/Slot_esc_heli/HeliNetE1/Zone` | secure_zone | 22.4 | 24.8 | 1.10 | ok |
-| `Spawns/RoofSpawn3` | `Variants/Group_escape/Slot_esc_heli/HeliEscapeE1/Zone` | escape_zone | 28.7 | 30.8 | 1.07 | ok |
+| `Spawns/RoofSpawn3` | `Variants/Group_code_note/Slot_code_contractor/CodeNote` | objective | 23.2 | 40.7 | 1.76 | ok |
+| `Spawns/RoofSpawn3` | `Variants/Group_code_note/Slot_code_contractor/CodeNote/UsePoint` | use_point | 23.2 | 40.7 | 1.76 | ok |
+| `Spawns/RoofSpawn3` | `Variants/Group_escape/Slot_esc_heli/HeliNetE1/Zone` | secure_zone | 22.4 | 25.5 | 1.14 | ok |
+| `Spawns/RoofSpawn3` | `Variants/Group_escape/Slot_esc_heli/HeliEscapeE1/Zone` | escape_zone | 28.7 | 31.4 | 1.09 | ok |
 | `Spawns/RoofSpawn4` | `Gameplay/Doors/RefuseDoor/UsePoint` | use_point | 22.3 | 55.1 | 2.47 | ok |
 | `Spawns/RoofSpawn4` | `Gameplay/Doors/StairBL40/UsePoint` | use_point | 22.2 | 54.3 | 2.45 | ok |
 | `Spawns/RoofSpawn4` | `Gameplay/Doors/StairAGate` | objective | 14.3 | 40.1 | 2.80 | ok |
@@ -418,14 +418,14 @@ Result: **PASS** (0 failure(s))
 | `Spawns/RoofSpawn4` | `Gameplay/Doors/WCMenL41/UsePoint` | use_point | 16.0 | 35.4 | 2.21 | ok |
 | `Spawns/RoofSpawn4` | `Gameplay/Doors/StairBL41` | objective | 20.5 | 41.5 | 2.02 | ok |
 | `Spawns/RoofSpawn4` | `Gameplay/Doors/StairBL41/UsePoint` | use_point | 20.5 | 41.5 | 2.02 | ok |
-| `Spawns/RoofSpawn4` | `Gameplay/Doors/ServerDoor` | objective | 21.3 | 37.6 | 1.77 | ok |
-| `Spawns/RoofSpawn4` | `Gameplay/Doors/ServerDoor/UsePoint` | use_point | 21.3 | 37.6 | 1.77 | ok |
+| `Spawns/RoofSpawn4` | `Gameplay/Doors/ServerDoor` | objective | 21.3 | 38.0 | 1.79 | ok |
+| `Spawns/RoofSpawn4` | `Gameplay/Doors/ServerDoor/UsePoint` | use_point | 21.3 | 38.0 | 1.79 | ok |
 | `Spawns/RoofSpawn4` | `Gameplay/Doors/ITDoor/UsePoint` | use_point | 30.0 | 43.6 | 1.45 | ok |
-| `Spawns/RoofSpawn4` | `Gameplay/Doors/SecurityDoor/UsePoint` | use_point | 20.6 | 42.1 | 2.04 | ok |
+| `Spawns/RoofSpawn4` | `Gameplay/Doors/SecurityDoor/UsePoint` | use_point | 20.6 | 42.5 | 2.06 | ok |
 | `Spawns/RoofSpawn4` | `Gameplay/Doors/ElectricalL41/UsePoint` | use_point | 27.0 | 47.4 | 1.76 | ok |
 | `Spawns/RoofSpawn4` | `Gameplay/Doors/CopyRoomDoor/UsePoint` | use_point | 29.4 | 49.9 | 1.70 | ok |
-| `Spawns/RoofSpawn4` | `Gameplay/Doors/CageGate` | objective | 24.5 | 41.6 | 1.70 | ok |
-| `Spawns/RoofSpawn4` | `Gameplay/Doors/CageGate/UsePoint` | use_point | 24.5 | 41.6 | 1.70 | ok |
+| `Spawns/RoofSpawn4` | `Gameplay/Doors/CageGate` | objective | 24.5 | 42.0 | 1.72 | ok |
+| `Spawns/RoofSpawn4` | `Gameplay/Doors/CageGate/UsePoint` | use_point | 24.5 | 42.0 | 1.72 | ok |
 | `Spawns/RoofSpawn4` | `Gameplay/Doors/ArchiveDoor/UsePoint` | use_point | 8.7 | 32.3 | 3.70 | detour (whitelisted) |
 | `Spawns/RoofSpawn4` | `Gameplay/Doors/BreakRoomDoor/UsePoint` | use_point | 8.9 | 29.4 | 3.32 | detour (whitelisted) |
 | `Spawns/RoofSpawn4` | `Gameplay/Doors/LibraryDoor/UsePoint` | use_point | 12.4 | 30.9 | 2.50 | ok |
@@ -438,8 +438,8 @@ Result: **PASS** (0 failure(s))
 | `Spawns/RoofSpawn4` | `Gameplay/Doors/ArtHallStaffDoor/UsePoint` | use_point | 20.6 | 30.1 | 1.47 | ok |
 | `Spawns/RoofSpawn4` | `Gameplay/Doors/StudyDoor` | objective | 25.6 | 29.6 | 1.16 | ok |
 | `Spawns/RoofSpawn4` | `Gameplay/Doors/StudyDoor/UsePoint` | use_point | 25.6 | 29.6 | 1.16 | ok |
-| `Spawns/RoofSpawn4` | `Gameplay/Doors/StudyFacadeDoor` | objective | 31.0 | 35.2 | 1.13 | ok |
-| `Spawns/RoofSpawn4` | `Gameplay/Doors/StudyFacadeDoor/UsePoint` | use_point | 31.0 | 35.2 | 1.13 | ok |
+| `Spawns/RoofSpawn4` | `Gameplay/Doors/StudyFacadeDoor` | objective | 31.0 | 35.7 | 1.15 | ok |
+| `Spawns/RoofSpawn4` | `Gameplay/Doors/StudyFacadeDoor/UsePoint` | use_point | 31.0 | 35.7 | 1.15 | ok |
 | `Spawns/RoofSpawn4` | `Gameplay/Doors/LinenL42/UsePoint` | use_point | 9.0 | 20.0 | 2.21 | ok |
 | `Spawns/RoofSpawn4` | `Gameplay/Doors/StairAL42` | objective | 6.6 | 18.1 | 2.75 | ok |
 | `Spawns/RoofSpawn4` | `Gameplay/Doors/StairAL42/UsePoint` | use_point | 6.6 | 18.1 | 2.75 | ok |
@@ -454,31 +454,31 @@ Result: **PASS** (0 failure(s))
 | `Spawns/RoofSpawn4` | `Gameplay/Doors/PantryDoor/UsePoint` | use_point | 20.0 | 31.9 | 1.60 | ok |
 | `Spawns/RoofSpawn4` | `Gameplay/Doors/ElectricalL42/UsePoint` | use_point | 19.4 | 34.3 | 1.77 | ok |
 | `Spawns/RoofSpawn4` | `Gameplay/Doors/WineRoomDoor/UsePoint` | use_point | 24.1 | 36.4 | 1.51 | ok |
-| `Spawns/RoofSpawn4` | `Gameplay/Doors/BoardroomDoor/UsePoint` | use_point | 28.0 | 40.1 | 1.43 | ok |
+| `Spawns/RoofSpawn4` | `Gameplay/Doors/BoardroomDoor/UsePoint` | use_point | 28.0 | 40.4 | 1.44 | ok |
 | `Spawns/RoofSpawn4` | `Gameplay/Doors/SliderDining` | objective | 5.2 | 26.2 | 5.06 | detour (whitelisted) |
 | `Spawns/RoofSpawn4` | `Gameplay/Doors/SliderDining/UsePoint` | use_point | 5.2 | 26.2 | 5.06 | detour (whitelisted) |
-| `Spawns/RoofSpawn4` | `Gameplay/Doors/SliderWest` | objective | 10.0 | 22.4 | 2.23 | ok |
-| `Spawns/RoofSpawn4` | `Gameplay/Doors/SliderWest/UsePoint` | use_point | 10.0 | 22.4 | 2.23 | ok |
-| `Spawns/RoofSpawn4` | `Gameplay/Doors/SliderEast` | objective | 25.2 | 37.0 | 1.47 | ok |
-| `Spawns/RoofSpawn4` | `Gameplay/Doors/SliderEast/UsePoint` | use_point | 25.2 | 37.0 | 1.47 | ok |
+| `Spawns/RoofSpawn4` | `Gameplay/Doors/SliderWest` | objective | 10.0 | 22.3 | 2.22 | ok |
+| `Spawns/RoofSpawn4` | `Gameplay/Doors/SliderWest/UsePoint` | use_point | 10.0 | 22.3 | 2.22 | ok |
+| `Spawns/RoofSpawn4` | `Gameplay/Doors/SliderEast` | objective | 25.2 | 38.2 | 1.52 | ok |
+| `Spawns/RoofSpawn4` | `Gameplay/Doors/SliderEast/UsePoint` | use_point | 25.2 | 38.2 | 1.52 | ok |
 | `Spawns/RoofSpawn4` | `Gameplay/Doors/RoofDoor` | objective | 5.5 | 5.5 | 1.00 | ok |
 | `Spawns/RoofSpawn4` | `Gameplay/Doors/RoofDoor/UsePoint` | use_point | 5.5 | 5.5 | 1.00 | ok |
 | `Spawns/RoofSpawn4` | `Gameplay/Doors/RiserBayDoor` | objective | 8.3 | 8.3 | 1.00 | ok |
 | `Spawns/RoofSpawn4` | `Gameplay/Doors/RiserBayDoor/UsePoint` | use_point | 8.3 | 8.3 | 1.00 | ok |
 | `Spawns/RoofSpawn4` | `Gameplay/Doors/HeadHousePlantDoor/UsePoint` | use_point | 8.5 | 8.5 | 1.00 | ok |
-| `Spawns/RoofSpawn4` | `Gameplay/Doors/PlantDoor/UsePoint` | use_point | 16.1 | 19.6 | 1.22 | ok |
-| `Spawns/RoofSpawn4` | `Gameplay/Server/ServerReader` | objective | 21.4 | 36.8 | 1.72 | ok |
-| `Spawns/RoofSpawn4` | `Gameplay/Server/ServerReader/UsePoint` | use_point | 21.4 | 36.8 | 1.72 | ok |
-| `Spawns/RoofSpawn4` | `Gameplay/Server/CageLock` | objective | 23.4 | 40.7 | 1.74 | ok |
-| `Spawns/RoofSpawn4` | `Gameplay/Server/CageLock/UsePoint` | use_point | 23.4 | 40.7 | 1.74 | ok |
-| `Spawns/RoofSpawn4` | `Gameplay/Server/HackTerminal` | objective | 24.8 | 42.5 | 1.71 | ok |
-| `Spawns/RoofSpawn4` | `Gameplay/Server/HackTerminal/UsePoint` | use_point | 24.8 | 42.5 | 1.71 | ok |
-| `Spawns/RoofSpawn4` | `Gameplay/Server/Drives1` | loot_spawn | 23.7 | 43.5 | 1.84 | ok |
-| `Spawns/RoofSpawn4` | `Gameplay/Server/Drives1/UsePoint` | use_point | 23.6 | 43.4 | 1.84 | ok |
-| `Spawns/RoofSpawn4` | `Gameplay/Server/Drives2` | loot_spawn | 25.6 | 43.3 | 1.69 | ok |
-| `Spawns/RoofSpawn4` | `Gameplay/Server/Drives2/UsePoint` | use_point | 25.5 | 43.1 | 1.69 | ok |
-| `Spawns/RoofSpawn4` | `Gameplay/Server/Drives3` | loot_spawn | 26.2 | 43.8 | 1.68 | ok |
-| `Spawns/RoofSpawn4` | `Gameplay/Server/Drives3/UsePoint` | use_point | 26.1 | 43.8 | 1.68 | ok |
+| `Spawns/RoofSpawn4` | `Gameplay/Doors/PlantDoor/UsePoint` | use_point | 16.1 | 18.6 | 1.16 | ok |
+| `Spawns/RoofSpawn4` | `Gameplay/Server/ServerReader` | objective | 21.4 | 37.2 | 1.74 | ok |
+| `Spawns/RoofSpawn4` | `Gameplay/Server/ServerReader/UsePoint` | use_point | 21.4 | 37.2 | 1.74 | ok |
+| `Spawns/RoofSpawn4` | `Gameplay/Server/CageLock` | objective | 23.4 | 41.1 | 1.75 | ok |
+| `Spawns/RoofSpawn4` | `Gameplay/Server/CageLock/UsePoint` | use_point | 23.4 | 41.1 | 1.75 | ok |
+| `Spawns/RoofSpawn4` | `Gameplay/Server/HackTerminal` | objective | 24.8 | 42.9 | 1.73 | ok |
+| `Spawns/RoofSpawn4` | `Gameplay/Server/HackTerminal/UsePoint` | use_point | 24.8 | 42.9 | 1.73 | ok |
+| `Spawns/RoofSpawn4` | `Gameplay/Server/Drives1` | loot_spawn | 23.7 | 43.9 | 1.85 | ok |
+| `Spawns/RoofSpawn4` | `Gameplay/Server/Drives1/UsePoint` | use_point | 23.6 | 43.8 | 1.86 | ok |
+| `Spawns/RoofSpawn4` | `Gameplay/Server/Drives2` | loot_spawn | 25.6 | 43.6 | 1.71 | ok |
+| `Spawns/RoofSpawn4` | `Gameplay/Server/Drives2/UsePoint` | use_point | 25.5 | 43.5 | 1.71 | ok |
+| `Spawns/RoofSpawn4` | `Gameplay/Server/Drives3` | loot_spawn | 26.2 | 44.2 | 1.69 | ok |
+| `Spawns/RoofSpawn4` | `Gameplay/Server/Drives3/UsePoint` | use_point | 26.1 | 44.2 | 1.69 | ok |
 | `Spawns/RoofSpawn4` | `Gameplay/Study/StudyReader` | objective | 27.8 | 34.5 | 1.24 | ok |
 | `Spawns/RoofSpawn4` | `Gameplay/Study/StudyReader/UsePoint` | use_point | 27.8 | 34.5 | 1.24 | ok |
 | `Spawns/RoofSpawn4` | `Gameplay/Study/StudySafe` | objective | 28.9 | 34.9 | 1.21 | ok |
@@ -494,17 +494,17 @@ Result: **PASS** (0 failure(s))
 | `Spawns/RoofSpawn4` | `Gameplay/Misc/AlarmGuestSuite/UsePoint` | use_point | 6.7 | 30.9 | 4.62 | detour (whitelisted) |
 | `Spawns/RoofSpawn4` | `Gameplay/Misc/PhoneKessler/UsePoint` | use_point | 14.9 | 31.6 | 2.11 | ok |
 | `Spawns/RoofSpawn4` | `Gameplay/Misc/PhoneReception/UsePoint` | use_point | 17.5 | 28.2 | 1.61 | ok |
-| `Spawns/RoofSpawn4` | `Gameplay/Misc/PhoneAssistant/UsePoint` | use_point | 24.7 | 40.1 | 1.62 | ok |
+| `Spawns/RoofSpawn4` | `Gameplay/Misc/PhoneAssistant/UsePoint` | use_point | 24.7 | 40.2 | 1.62 | ok |
 | `Spawns/RoofSpawn4` | `Gameplay/Misc/PhoneMoor/UsePoint` | use_point | 29.9 | 44.1 | 1.48 | ok |
 | `Spawns/RoofSpawn4` | `Gameplay/Misc/PhoneIT/UsePoint` | use_point | 28.2 | 49.5 | 1.76 | ok |
 | `Spawns/RoofSpawn4` | `Gameplay/Misc/PhoneSecurity/UsePoint` | use_point | 22.8 | 44.6 | 1.96 | ok |
 | `Spawns/RoofSpawn4` | `Gameplay/Misc/PhoneBreakRoom/UsePoint` | use_point | 11.2 | 35.1 | 3.13 | detour (whitelisted) |
 | `Spawns/RoofSpawn4` | `Gameplay/Misc/PhoneGuestSuite/UsePoint` | use_point | 6.7 | 30.6 | 4.58 | detour (whitelisted) |
-| `Spawns/RoofSpawn4` | `Gameplay/Misc/PhonePantry/UsePoint` | use_point | 22.5 | 34.2 | 1.52 | ok |
-| `Spawns/RoofSpawn4` | `Gameplay/Misc/ArchiveSafe` | objective | 11.7 | 38.8 | 3.31 | detour (whitelisted) |
-| `Spawns/RoofSpawn4` | `Gameplay/Misc/ArchiveSafe/UsePoint` | use_point | 11.7 | 38.8 | 3.31 | detour (whitelisted) |
-| `Spawns/RoofSpawn4` | `Gameplay/Misc/ArchiveSafe/ArchiveCash` | loot_spawn | 11.2 | 39.7 | 3.56 | detour (whitelisted) |
-| `Spawns/RoofSpawn4` | `Gameplay/Misc/ArchiveSafe/ArchiveCash/UsePoint` | use_point | 11.2 | 39.7 | 3.56 | detour (whitelisted) |
+| `Spawns/RoofSpawn4` | `Gameplay/Misc/PhonePantry/UsePoint` | use_point | 22.5 | 34.1 | 1.52 | ok |
+| `Spawns/RoofSpawn4` | `Gameplay/Misc/ArchiveSafe` | objective | 11.7 | 41.9 | 3.58 | detour (whitelisted) |
+| `Spawns/RoofSpawn4` | `Gameplay/Misc/ArchiveSafe/UsePoint` | use_point | 11.7 | 41.9 | 3.58 | detour (whitelisted) |
+| `Spawns/RoofSpawn4` | `Gameplay/Misc/ArchiveSafe/ArchiveCash` | loot_spawn | 11.2 | 40.7 | 3.65 | detour (whitelisted) |
+| `Spawns/RoofSpawn4` | `Gameplay/Misc/ArchiveSafe/ArchiveCash/UsePoint` | use_point | 11.2 | 40.7 | 3.65 | detour (whitelisted) |
 | `Spawns/RoofSpawn4` | `Gameplay/Misc/Painting1` | loot_spawn | 23.5 | 29.6 | 1.26 | ok |
 | `Spawns/RoofSpawn4` | `Gameplay/Misc/Painting1/UsePoint` | use_point | 23.5 | 29.6 | 1.26 | ok |
 | `Spawns/RoofSpawn4` | `Gameplay/Misc/Painting2` | loot_spawn | 24.4 | 30.4 | 1.24 | ok |
@@ -513,16 +513,16 @@ Result: **PASS** (0 failure(s))
 | `Spawns/RoofSpawn4` | `Gameplay/Misc/PrintoutBooks/UsePoint` | use_point | 14.0 | 29.7 | 2.12 | ok |
 | `Spawns/RoofSpawn4` | `Gameplay/Misc/KesslerWatch/UsePoint` | use_point | 14.7 | 30.8 | 2.09 | ok |
 | `Spawns/RoofSpawn4` | `Gameplay/Misc/MoorBracelet/UsePoint` | use_point | 30.8 | 44.7 | 1.45 | ok |
-| `Spawns/RoofSpawn4` | `Gameplay/Misc/HumidorCigars1/UsePoint` | use_point | 24.4 | 41.0 | 1.68 | ok |
-| `Spawns/RoofSpawn4` | `Gameplay/Misc/HumidorCigars2/UsePoint` | use_point | 24.4 | 40.7 | 1.67 | ok |
-| `Spawns/RoofSpawn4` | `Variants/Group_laptop/Slot_lap_boardroom/Laptop` | loot_spawn | 30.2 | 49.0 | 1.62 | ok |
-| `Spawns/RoofSpawn4` | `Variants/Group_laptop/Slot_lap_boardroom/Laptop/UsePoint` | use_point | 30.0 | 48.2 | 1.61 | ok |
+| `Spawns/RoofSpawn4` | `Gameplay/Misc/HumidorCigars1/UsePoint` | use_point | 24.4 | 38.9 | 1.59 | ok |
+| `Spawns/RoofSpawn4` | `Gameplay/Misc/HumidorCigars2/UsePoint` | use_point | 24.4 | 38.6 | 1.58 | ok |
+| `Spawns/RoofSpawn4` | `Variants/Group_laptop/Slot_lap_boardroom/Laptop` | loot_spawn | 30.2 | 49.3 | 1.63 | ok |
+| `Spawns/RoofSpawn4` | `Variants/Group_laptop/Slot_lap_boardroom/Laptop/UsePoint` | use_point | 30.0 | 48.5 | 1.62 | ok |
 | `Spawns/RoofSpawn4` | `Variants/Group_keycard/Slot_kc_cleaner/Keycard` | objective | 10.1 | 21.9 | 2.17 | ok |
 | `Spawns/RoofSpawn4` | `Variants/Group_keycard/Slot_kc_cleaner/Keycard/UsePoint` | use_point | 10.1 | 21.9 | 2.17 | ok |
-| `Spawns/RoofSpawn4` | `Variants/Group_code_note/Slot_code_contractor/CodeNote` | objective | 22.1 | 39.5 | 1.79 | ok |
-| `Spawns/RoofSpawn4` | `Variants/Group_code_note/Slot_code_contractor/CodeNote/UsePoint` | use_point | 22.1 | 39.5 | 1.79 | ok |
-| `Spawns/RoofSpawn4` | `Variants/Group_escape/Slot_esc_heli/HeliNetE1/Zone` | secure_zone | 21.3 | 25.2 | 1.18 | ok |
-| `Spawns/RoofSpawn4` | `Variants/Group_escape/Slot_esc_heli/HeliEscapeE1/Zone` | escape_zone | 27.6 | 31.3 | 1.13 | ok |
+| `Spawns/RoofSpawn4` | `Variants/Group_code_note/Slot_code_contractor/CodeNote` | objective | 22.1 | 39.9 | 1.81 | ok |
+| `Spawns/RoofSpawn4` | `Variants/Group_code_note/Slot_code_contractor/CodeNote/UsePoint` | use_point | 22.1 | 39.9 | 1.81 | ok |
+| `Spawns/RoofSpawn4` | `Variants/Group_escape/Slot_esc_heli/HeliNetE1/Zone` | secure_zone | 21.3 | 24.8 | 1.16 | ok |
+| `Spawns/RoofSpawn4` | `Variants/Group_escape/Slot_esc_heli/HeliEscapeE1/Zone` | escape_zone | 27.6 | 30.6 | 1.11 | ok |
 | `Spawns/ServiceSpawn1` | `Gameplay/Doors/RefuseDoor/UsePoint` | use_point | 5.7 | 5.7 | 1.00 | ok |
 | `Spawns/ServiceSpawn1` | `Gameplay/Doors/StairBL40/UsePoint` | use_point | 6.9 | 6.9 | 1.00 | ok |
 | `Spawns/ServiceSpawn1` | `Gameplay/Doors/StairAGate` | objective | 13.2 | 48.3 | 3.66 | detour (whitelisted) |
@@ -572,8 +572,8 @@ Result: **PASS** (0 failure(s))
 | `Spawns/ServiceSpawn1` | `Gameplay/Doors/LinenL42/UsePoint` | use_point | 16.9 | 47.1 | 2.78 | ok |
 | `Spawns/ServiceSpawn1` | `Gameplay/Doors/StairAL42` | objective | 18.2 | 44.8 | 2.46 | ok |
 | `Spawns/ServiceSpawn1` | `Gameplay/Doors/StairAL42/UsePoint` | use_point | 18.2 | 44.8 | 2.46 | ok |
-| `Spawns/ServiceSpawn1` | `Gameplay/Doors/StairBL42` | objective | 10.6 | 30.0 | 2.84 | ok |
-| `Spawns/ServiceSpawn1` | `Gameplay/Doors/StairBL42/UsePoint` | use_point | 10.6 | 30.0 | 2.84 | ok |
+| `Spawns/ServiceSpawn1` | `Gameplay/Doors/StairBL42` | objective | 10.6 | 30.1 | 2.84 | ok |
+| `Spawns/ServiceSpawn1` | `Gameplay/Doors/StairBL42/UsePoint` | use_point | 10.6 | 30.1 | 2.84 | ok |
 | `Spawns/ServiceSpawn1` | `Gameplay/Doors/WCWestL42/UsePoint` | use_point | 15.0 | 38.7 | 2.58 | ok |
 | `Spawns/ServiceSpawn1` | `Gameplay/Doors/WCMenL42/UsePoint` | use_point | 13.3 | 35.7 | 2.69 | ok |
 | `Spawns/ServiceSpawn1` | `Gameplay/Doors/SuiteDoor/UsePoint` | use_point | 20.8 | 53.1 | 2.55 | ok |
@@ -595,7 +595,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/ServiceSpawn1` | `Gameplay/Doors/RiserBayDoor` | objective | 18.9 | 53.1 | 2.81 | ok |
 | `Spawns/ServiceSpawn1` | `Gameplay/Doors/RiserBayDoor/UsePoint` | use_point | 18.9 | 53.1 | 2.81 | ok |
 | `Spawns/ServiceSpawn1` | `Gameplay/Doors/HeadHousePlantDoor/UsePoint` | use_point | 17.9 | 54.4 | 3.03 | detour (whitelisted) |
-| `Spawns/ServiceSpawn1` | `Gameplay/Doors/PlantDoor/UsePoint` | use_point | 13.6 | 62.3 | 4.59 | detour (whitelisted) |
+| `Spawns/ServiceSpawn1` | `Gameplay/Doors/PlantDoor/UsePoint` | use_point | 13.6 | 63.0 | 4.64 | detour (whitelisted) |
 | `Spawns/ServiceSpawn1` | `Gameplay/Server/ServerReader` | objective | 3.9 | 25.8 | 6.63 | detour (whitelisted) |
 | `Spawns/ServiceSpawn1` | `Gameplay/Server/ServerReader/UsePoint` | use_point | 3.9 | 25.8 | 6.63 | detour (whitelisted) |
 | `Spawns/ServiceSpawn1` | `Gameplay/Server/CageLock` | objective | 4.8 | 27.8 | 5.73 | detour (whitelisted) |
@@ -628,12 +628,12 @@ Result: **PASS** (0 failure(s))
 | `Spawns/ServiceSpawn1` | `Gameplay/Misc/PhoneIT/UsePoint` | use_point | 7.9 | 42.0 | 5.30 | detour (whitelisted) |
 | `Spawns/ServiceSpawn1` | `Gameplay/Misc/PhoneSecurity/UsePoint` | use_point | 7.4 | 22.6 | 3.03 | detour (whitelisted) |
 | `Spawns/ServiceSpawn1` | `Gameplay/Misc/PhoneBreakRoom/UsePoint` | use_point | 23.3 | 41.5 | 1.78 | ok |
-| `Spawns/ServiceSpawn1` | `Gameplay/Misc/PhoneGuestSuite/UsePoint` | use_point | 26.4 | 59.1 | 2.24 | ok |
+| `Spawns/ServiceSpawn1` | `Gameplay/Misc/PhoneGuestSuite/UsePoint` | use_point | 26.4 | 58.4 | 2.21 | ok |
 | `Spawns/ServiceSpawn1` | `Gameplay/Misc/PhonePantry/UsePoint` | use_point | 8.0 | 37.6 | 4.67 | detour (whitelisted) |
-| `Spawns/ServiceSpawn1` | `Gameplay/Misc/ArchiveSafe` | objective | 28.6 | 48.3 | 1.69 | ok |
-| `Spawns/ServiceSpawn1` | `Gameplay/Misc/ArchiveSafe/UsePoint` | use_point | 28.6 | 48.3 | 1.69 | ok |
-| `Spawns/ServiceSpawn1` | `Gameplay/Misc/ArchiveSafe/ArchiveCash` | loot_spawn | 27.5 | 49.2 | 1.79 | ok |
-| `Spawns/ServiceSpawn1` | `Gameplay/Misc/ArchiveSafe/ArchiveCash/UsePoint` | use_point | 27.5 | 49.2 | 1.79 | ok |
+| `Spawns/ServiceSpawn1` | `Gameplay/Misc/ArchiveSafe` | objective | 28.6 | 51.4 | 1.80 | ok |
+| `Spawns/ServiceSpawn1` | `Gameplay/Misc/ArchiveSafe/UsePoint` | use_point | 28.6 | 51.4 | 1.80 | ok |
+| `Spawns/ServiceSpawn1` | `Gameplay/Misc/ArchiveSafe/ArchiveCash` | loot_spawn | 27.5 | 50.2 | 1.83 | ok |
+| `Spawns/ServiceSpawn1` | `Gameplay/Misc/ArchiveSafe/ArchiveCash/UsePoint` | use_point | 27.5 | 50.2 | 1.83 | ok |
 | `Spawns/ServiceSpawn1` | `Gameplay/Misc/Painting1` | loot_spawn | 8.5 | 40.5 | 4.78 | detour (whitelisted) |
 | `Spawns/ServiceSpawn1` | `Gameplay/Misc/Painting1/UsePoint` | use_point | 8.5 | 40.5 | 4.78 | detour (whitelisted) |
 | `Spawns/ServiceSpawn1` | `Gameplay/Misc/Painting2` | loot_spawn | 8.7 | 41.5 | 4.79 | detour (whitelisted) |
@@ -650,7 +650,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/ServiceSpawn1` | `Variants/Group_keycard/Slot_kc_cleaner/Keycard/UsePoint` | use_point | 15.0 | 44.8 | 2.98 | ok |
 | `Spawns/ServiceSpawn1` | `Variants/Group_code_note/Slot_code_contractor/CodeNote` | objective | 4.3 | 26.6 | 6.14 | detour (whitelisted) |
 | `Spawns/ServiceSpawn1` | `Variants/Group_code_note/Slot_code_contractor/CodeNote/UsePoint` | use_point | 4.3 | 26.6 | 6.14 | detour (whitelisted) |
-| `Spawns/ServiceSpawn1` | `Variants/Group_escape/Slot_esc_heli/HeliNetE1/Zone` | secure_zone | 11.9 | 58.1 | 4.87 | detour (whitelisted) |
+| `Spawns/ServiceSpawn1` | `Variants/Group_escape/Slot_esc_heli/HeliNetE1/Zone` | secure_zone | 11.9 | 61.2 | 5.14 | detour (whitelisted) |
 | `Spawns/ServiceSpawn1` | `Variants/Group_escape/Slot_esc_heli/HeliEscapeE1/Zone` | escape_zone | 13.5 | 56.7 | 4.21 | detour (whitelisted) |
 | `Spawns/ServiceSpawn2` | `Gameplay/Doors/RefuseDoor/UsePoint` | use_point | 6.1 | 6.2 | 1.02 | ok |
 | `Spawns/ServiceSpawn2` | `Gameplay/Doors/StairBL40/UsePoint` | use_point | 7.3 | 7.5 | 1.03 | ok |
@@ -724,7 +724,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/ServiceSpawn2` | `Gameplay/Doors/RiserBayDoor` | objective | 19.8 | 53.7 | 2.70 | ok |
 | `Spawns/ServiceSpawn2` | `Gameplay/Doors/RiserBayDoor/UsePoint` | use_point | 19.8 | 53.7 | 2.70 | ok |
 | `Spawns/ServiceSpawn2` | `Gameplay/Doors/HeadHousePlantDoor/UsePoint` | use_point | 18.8 | 54.9 | 2.93 | ok |
-| `Spawns/ServiceSpawn2` | `Gameplay/Doors/PlantDoor/UsePoint` | use_point | 14.2 | 62.8 | 4.42 | detour (whitelisted) |
+| `Spawns/ServiceSpawn2` | `Gameplay/Doors/PlantDoor/UsePoint` | use_point | 14.2 | 63.6 | 4.47 | detour (whitelisted) |
 | `Spawns/ServiceSpawn2` | `Gameplay/Server/ServerReader` | objective | 4.5 | 26.3 | 5.88 | detour (whitelisted) |
 | `Spawns/ServiceSpawn2` | `Gameplay/Server/ServerReader/UsePoint` | use_point | 4.5 | 26.3 | 5.88 | detour (whitelisted) |
 | `Spawns/ServiceSpawn2` | `Gameplay/Server/CageLock` | objective | 4.7 | 28.3 | 6.08 | detour (whitelisted) |
@@ -757,12 +757,12 @@ Result: **PASS** (0 failure(s))
 | `Spawns/ServiceSpawn2` | `Gameplay/Misc/PhoneIT/UsePoint` | use_point | 7.0 | 42.5 | 6.09 | detour (whitelisted) |
 | `Spawns/ServiceSpawn2` | `Gameplay/Misc/PhoneSecurity/UsePoint` | use_point | 7.4 | 23.1 | 3.12 | detour (whitelisted) |
 | `Spawns/ServiceSpawn2` | `Gameplay/Misc/PhoneBreakRoom/UsePoint` | use_point | 24.2 | 42.0 | 1.73 | ok |
-| `Spawns/ServiceSpawn2` | `Gameplay/Misc/PhoneGuestSuite/UsePoint` | use_point | 27.6 | 59.6 | 2.16 | ok |
+| `Spawns/ServiceSpawn2` | `Gameplay/Misc/PhoneGuestSuite/UsePoint` | use_point | 27.6 | 59.0 | 2.14 | ok |
 | `Spawns/ServiceSpawn2` | `Gameplay/Misc/PhonePantry/UsePoint` | use_point | 8.0 | 38.1 | 4.75 | detour (whitelisted) |
-| `Spawns/ServiceSpawn2` | `Gameplay/Misc/ArchiveSafe` | objective | 29.6 | 48.8 | 1.65 | ok |
-| `Spawns/ServiceSpawn2` | `Gameplay/Misc/ArchiveSafe/UsePoint` | use_point | 29.6 | 48.8 | 1.65 | ok |
-| `Spawns/ServiceSpawn2` | `Gameplay/Misc/ArchiveSafe/ArchiveCash` | loot_spawn | 28.5 | 49.7 | 1.75 | ok |
-| `Spawns/ServiceSpawn2` | `Gameplay/Misc/ArchiveSafe/ArchiveCash/UsePoint` | use_point | 28.5 | 49.7 | 1.75 | ok |
+| `Spawns/ServiceSpawn2` | `Gameplay/Misc/ArchiveSafe` | objective | 29.6 | 51.9 | 1.75 | ok |
+| `Spawns/ServiceSpawn2` | `Gameplay/Misc/ArchiveSafe/UsePoint` | use_point | 29.6 | 51.9 | 1.75 | ok |
+| `Spawns/ServiceSpawn2` | `Gameplay/Misc/ArchiveSafe/ArchiveCash` | loot_spawn | 28.5 | 50.7 | 1.78 | ok |
+| `Spawns/ServiceSpawn2` | `Gameplay/Misc/ArchiveSafe/ArchiveCash/UsePoint` | use_point | 28.5 | 50.7 | 1.78 | ok |
 | `Spawns/ServiceSpawn2` | `Gameplay/Misc/Painting1` | loot_spawn | 8.4 | 41.1 | 4.88 | detour (whitelisted) |
 | `Spawns/ServiceSpawn2` | `Gameplay/Misc/Painting1/UsePoint` | use_point | 8.4 | 41.1 | 4.88 | detour (whitelisted) |
 | `Spawns/ServiceSpawn2` | `Gameplay/Misc/Painting2` | loot_spawn | 8.5 | 42.0 | 4.97 | detour (whitelisted) |
@@ -779,7 +779,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/ServiceSpawn2` | `Variants/Group_keycard/Slot_kc_cleaner/Keycard/UsePoint` | use_point | 16.1 | 45.4 | 2.83 | ok |
 | `Spawns/ServiceSpawn2` | `Variants/Group_code_note/Slot_code_contractor/CodeNote` | objective | 4.5 | 27.1 | 5.96 | detour (whitelisted) |
 | `Spawns/ServiceSpawn2` | `Variants/Group_code_note/Slot_code_contractor/CodeNote/UsePoint` | use_point | 4.5 | 27.1 | 5.96 | detour (whitelisted) |
-| `Spawns/ServiceSpawn2` | `Variants/Group_escape/Slot_esc_heli/HeliNetE1/Zone` | secure_zone | 12.0 | 58.6 | 4.87 | detour (whitelisted) |
+| `Spawns/ServiceSpawn2` | `Variants/Group_escape/Slot_esc_heli/HeliNetE1/Zone` | secure_zone | 12.0 | 61.7 | 5.13 | detour (whitelisted) |
 | `Spawns/ServiceSpawn2` | `Variants/Group_escape/Slot_esc_heli/HeliEscapeE1/Zone` | escape_zone | 13.0 | 57.2 | 4.39 | detour (whitelisted) |
 | `Spawns/ServiceSpawn3` | `Gameplay/Doors/RefuseDoor/UsePoint` | use_point | 4.3 | 4.4 | 1.02 | ok |
 | `Spawns/ServiceSpawn3` | `Gameplay/Doors/StairBL40/UsePoint` | use_point | 5.6 | 5.7 | 1.02 | ok |
@@ -853,7 +853,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/ServiceSpawn3` | `Gameplay/Doors/RiserBayDoor` | objective | 18.9 | 51.9 | 2.74 | ok |
 | `Spawns/ServiceSpawn3` | `Gameplay/Doors/RiserBayDoor/UsePoint` | use_point | 18.9 | 51.9 | 2.74 | ok |
 | `Spawns/ServiceSpawn3` | `Gameplay/Doors/HeadHousePlantDoor/UsePoint` | use_point | 17.5 | 53.1 | 3.04 | detour (whitelisted) |
-| `Spawns/ServiceSpawn3` | `Gameplay/Doors/PlantDoor/UsePoint` | use_point | 13.9 | 61.0 | 4.39 | detour (whitelisted) |
+| `Spawns/ServiceSpawn3` | `Gameplay/Doors/PlantDoor/UsePoint` | use_point | 13.9 | 61.7 | 4.45 | detour (whitelisted) |
 | `Spawns/ServiceSpawn3` | `Gameplay/Server/ServerReader` | objective | 4.1 | 24.5 | 6.02 | detour (whitelisted) |
 | `Spawns/ServiceSpawn3` | `Gameplay/Server/ServerReader/UsePoint` | use_point | 4.1 | 24.5 | 6.02 | detour (whitelisted) |
 | `Spawns/ServiceSpawn3` | `Gameplay/Server/CageLock` | objective | 4.1 | 26.5 | 6.39 | detour (whitelisted) |
@@ -886,12 +886,12 @@ Result: **PASS** (0 failure(s))
 | `Spawns/ServiceSpawn3` | `Gameplay/Misc/PhoneIT/UsePoint` | use_point | 7.5 | 40.7 | 5.42 | detour (whitelisted) |
 | `Spawns/ServiceSpawn3` | `Gameplay/Misc/PhoneSecurity/UsePoint` | use_point | 6.3 | 21.3 | 3.39 | detour (whitelisted) |
 | `Spawns/ServiceSpawn3` | `Gameplay/Misc/PhoneBreakRoom/UsePoint` | use_point | 22.5 | 40.2 | 1.79 | ok |
-| `Spawns/ServiceSpawn3` | `Gameplay/Misc/PhoneGuestSuite/UsePoint` | use_point | 26.3 | 57.8 | 2.20 | ok |
+| `Spawns/ServiceSpawn3` | `Gameplay/Misc/PhoneGuestSuite/UsePoint` | use_point | 26.3 | 57.1 | 2.17 | ok |
 | `Spawns/ServiceSpawn3` | `Gameplay/Misc/PhonePantry/UsePoint` | use_point | 8.2 | 36.3 | 4.40 | detour (whitelisted) |
-| `Spawns/ServiceSpawn3` | `Gameplay/Misc/ArchiveSafe` | objective | 28.0 | 47.0 | 1.68 | ok |
-| `Spawns/ServiceSpawn3` | `Gameplay/Misc/ArchiveSafe/UsePoint` | use_point | 28.0 | 47.0 | 1.68 | ok |
-| `Spawns/ServiceSpawn3` | `Gameplay/Misc/ArchiveSafe/ArchiveCash` | loot_spawn | 26.8 | 47.9 | 1.79 | ok |
-| `Spawns/ServiceSpawn3` | `Gameplay/Misc/ArchiveSafe/ArchiveCash/UsePoint` | use_point | 26.8 | 47.9 | 1.79 | ok |
+| `Spawns/ServiceSpawn3` | `Gameplay/Misc/ArchiveSafe` | objective | 28.0 | 50.1 | 1.79 | ok |
+| `Spawns/ServiceSpawn3` | `Gameplay/Misc/ArchiveSafe/UsePoint` | use_point | 28.0 | 50.1 | 1.79 | ok |
+| `Spawns/ServiceSpawn3` | `Gameplay/Misc/ArchiveSafe/ArchiveCash` | loot_spawn | 26.8 | 48.9 | 1.82 | ok |
+| `Spawns/ServiceSpawn3` | `Gameplay/Misc/ArchiveSafe/ArchiveCash/UsePoint` | use_point | 26.8 | 48.9 | 1.82 | ok |
 | `Spawns/ServiceSpawn3` | `Gameplay/Misc/Painting1` | loot_spawn | 9.0 | 39.2 | 4.35 | detour (whitelisted) |
 | `Spawns/ServiceSpawn3` | `Gameplay/Misc/Painting1/UsePoint` | use_point | 9.0 | 39.2 | 4.35 | detour (whitelisted) |
 | `Spawns/ServiceSpawn3` | `Gameplay/Misc/Painting2` | loot_spawn | 9.2 | 40.2 | 4.38 | detour (whitelisted) |
@@ -908,7 +908,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/ServiceSpawn3` | `Variants/Group_keycard/Slot_kc_cleaner/Keycard/UsePoint` | use_point | 15.0 | 43.5 | 2.90 | ok |
 | `Spawns/ServiceSpawn3` | `Variants/Group_code_note/Slot_code_contractor/CodeNote` | objective | 3.7 | 25.3 | 6.76 | detour (whitelisted) |
 | `Spawns/ServiceSpawn3` | `Variants/Group_code_note/Slot_code_contractor/CodeNote/UsePoint` | use_point | 3.7 | 25.3 | 6.76 | detour (whitelisted) |
-| `Spawns/ServiceSpawn3` | `Variants/Group_escape/Slot_esc_heli/HeliNetE1/Zone` | secure_zone | 12.2 | 56.8 | 4.66 | detour (whitelisted) |
+| `Spawns/ServiceSpawn3` | `Variants/Group_escape/Slot_esc_heli/HeliNetE1/Zone` | secure_zone | 12.2 | 59.9 | 4.92 | detour (whitelisted) |
 | `Spawns/ServiceSpawn3` | `Variants/Group_escape/Slot_esc_heli/HeliEscapeE1/Zone` | escape_zone | 13.9 | 55.4 | 3.98 | detour (whitelisted) |
 | `Spawns/ServiceSpawn4` | `Gameplay/Doors/RefuseDoor/UsePoint` | use_point | 4.9 | 5.2 | 1.07 | ok |
 | `Spawns/ServiceSpawn4` | `Gameplay/Doors/StairBL40/UsePoint` | use_point | 6.0 | 6.4 | 1.07 | ok |
@@ -982,7 +982,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/ServiceSpawn4` | `Gameplay/Doors/RiserBayDoor` | objective | 19.9 | 52.6 | 2.65 | ok |
 | `Spawns/ServiceSpawn4` | `Gameplay/Doors/RiserBayDoor/UsePoint` | use_point | 19.9 | 52.6 | 2.65 | ok |
 | `Spawns/ServiceSpawn4` | `Gameplay/Doors/HeadHousePlantDoor/UsePoint` | use_point | 18.3 | 53.9 | 2.94 | ok |
-| `Spawns/ServiceSpawn4` | `Gameplay/Doors/PlantDoor/UsePoint` | use_point | 14.5 | 61.7 | 4.26 | detour (whitelisted) |
+| `Spawns/ServiceSpawn4` | `Gameplay/Doors/PlantDoor/UsePoint` | use_point | 14.5 | 62.5 | 4.32 | detour (whitelisted) |
 | `Spawns/ServiceSpawn4` | `Gameplay/Server/ServerReader` | objective | 4.6 | 25.2 | 5.45 | detour (whitelisted) |
 | `Spawns/ServiceSpawn4` | `Gameplay/Server/ServerReader/UsePoint` | use_point | 4.6 | 25.2 | 5.45 | detour (whitelisted) |
 | `Spawns/ServiceSpawn4` | `Gameplay/Server/CageLock` | objective | 3.9 | 27.3 | 6.95 | detour (whitelisted) |
@@ -1015,12 +1015,12 @@ Result: **PASS** (0 failure(s))
 | `Spawns/ServiceSpawn4` | `Gameplay/Misc/PhoneIT/UsePoint` | use_point | 6.5 | 41.5 | 6.37 | detour (whitelisted) |
 | `Spawns/ServiceSpawn4` | `Gameplay/Misc/PhoneSecurity/UsePoint` | use_point | 6.2 | 22.0 | 3.55 | detour (whitelisted) |
 | `Spawns/ServiceSpawn4` | `Gameplay/Misc/PhoneBreakRoom/UsePoint` | use_point | 23.5 | 41.0 | 1.75 | ok |
-| `Spawns/ServiceSpawn4` | `Gameplay/Misc/PhoneGuestSuite/UsePoint` | use_point | 27.4 | 58.6 | 2.14 | ok |
+| `Spawns/ServiceSpawn4` | `Gameplay/Misc/PhoneGuestSuite/UsePoint` | use_point | 27.4 | 57.9 | 2.11 | ok |
 | `Spawns/ServiceSpawn4` | `Gameplay/Misc/PhonePantry/UsePoint` | use_point | 8.2 | 37.1 | 4.51 | detour (whitelisted) |
-| `Spawns/ServiceSpawn4` | `Gameplay/Misc/ArchiveSafe` | objective | 29.0 | 47.7 | 1.64 | ok |
-| `Spawns/ServiceSpawn4` | `Gameplay/Misc/ArchiveSafe/UsePoint` | use_point | 29.0 | 47.7 | 1.64 | ok |
-| `Spawns/ServiceSpawn4` | `Gameplay/Misc/ArchiveSafe/ArchiveCash` | loot_spawn | 27.9 | 48.7 | 1.75 | ok |
-| `Spawns/ServiceSpawn4` | `Gameplay/Misc/ArchiveSafe/ArchiveCash/UsePoint` | use_point | 27.9 | 48.7 | 1.75 | ok |
+| `Spawns/ServiceSpawn4` | `Gameplay/Misc/ArchiveSafe` | objective | 29.0 | 50.9 | 1.75 | ok |
+| `Spawns/ServiceSpawn4` | `Gameplay/Misc/ArchiveSafe/UsePoint` | use_point | 29.0 | 50.9 | 1.75 | ok |
+| `Spawns/ServiceSpawn4` | `Gameplay/Misc/ArchiveSafe/ArchiveCash` | loot_spawn | 27.9 | 49.7 | 1.78 | ok |
+| `Spawns/ServiceSpawn4` | `Gameplay/Misc/ArchiveSafe/ArchiveCash/UsePoint` | use_point | 27.9 | 49.7 | 1.78 | ok |
 | `Spawns/ServiceSpawn4` | `Gameplay/Misc/Painting1` | loot_spawn | 8.9 | 40.0 | 4.47 | detour (whitelisted) |
 | `Spawns/ServiceSpawn4` | `Gameplay/Misc/Painting1/UsePoint` | use_point | 8.9 | 40.0 | 4.47 | detour (whitelisted) |
 | `Spawns/ServiceSpawn4` | `Gameplay/Misc/Painting2` | loot_spawn | 9.0 | 41.0 | 4.56 | detour (whitelisted) |
@@ -1037,7 +1037,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/ServiceSpawn4` | `Variants/Group_keycard/Slot_kc_cleaner/Keycard/UsePoint` | use_point | 16.1 | 44.3 | 2.76 | ok |
 | `Spawns/ServiceSpawn4` | `Variants/Group_code_note/Slot_code_contractor/CodeNote` | objective | 4.0 | 26.1 | 6.53 | detour (whitelisted) |
 | `Spawns/ServiceSpawn4` | `Variants/Group_code_note/Slot_code_contractor/CodeNote/UsePoint` | use_point | 4.0 | 26.1 | 6.53 | detour (whitelisted) |
-| `Spawns/ServiceSpawn4` | `Variants/Group_escape/Slot_esc_heli/HeliNetE1/Zone` | secure_zone | 12.3 | 57.6 | 4.68 | detour (whitelisted) |
+| `Spawns/ServiceSpawn4` | `Variants/Group_escape/Slot_esc_heli/HeliNetE1/Zone` | secure_zone | 12.3 | 60.7 | 4.94 | detour (whitelisted) |
 | `Spawns/ServiceSpawn4` | `Variants/Group_escape/Slot_esc_heli/HeliEscapeE1/Zone` | escape_zone | 13.5 | 56.2 | 4.17 | detour (whitelisted) |
 | `Spawns/OobRoof1` | `Gameplay/Doors/RefuseDoor/UsePoint` | use_point | 25.4 | 57.0 | 2.24 | ok |
 | `Spawns/OobRoof1` | `Gameplay/Doors/StairBL40/UsePoint` | use_point | 25.5 | 56.1 | 2.20 | ok |
@@ -1063,14 +1063,14 @@ Result: **PASS** (0 failure(s))
 | `Spawns/OobRoof1` | `Gameplay/Doors/WCMenL41/UsePoint` | use_point | 19.5 | 37.2 | 1.91 | ok |
 | `Spawns/OobRoof1` | `Gameplay/Doors/StairBL41` | objective | 24.0 | 43.3 | 1.80 | ok |
 | `Spawns/OobRoof1` | `Gameplay/Doors/StairBL41/UsePoint` | use_point | 24.0 | 43.3 | 1.80 | ok |
-| `Spawns/OobRoof1` | `Gameplay/Doors/ServerDoor` | objective | 24.2 | 39.4 | 1.63 | ok |
-| `Spawns/OobRoof1` | `Gameplay/Doors/ServerDoor/UsePoint` | use_point | 24.2 | 39.4 | 1.63 | ok |
+| `Spawns/OobRoof1` | `Gameplay/Doors/ServerDoor` | objective | 24.2 | 39.8 | 1.65 | ok |
+| `Spawns/OobRoof1` | `Gameplay/Doors/ServerDoor/UsePoint` | use_point | 24.2 | 39.8 | 1.65 | ok |
 | `Spawns/OobRoof1` | `Gameplay/Doors/ITDoor/UsePoint` | use_point | 32.9 | 45.5 | 1.38 | ok |
-| `Spawns/OobRoof1` | `Gameplay/Doors/SecurityDoor/UsePoint` | use_point | 24.0 | 43.9 | 1.83 | ok |
+| `Spawns/OobRoof1` | `Gameplay/Doors/SecurityDoor/UsePoint` | use_point | 24.0 | 44.3 | 1.85 | ok |
 | `Spawns/OobRoof1` | `Gameplay/Doors/ElectricalL41/UsePoint` | use_point | 30.7 | 49.2 | 1.61 | ok |
 | `Spawns/OobRoof1` | `Gameplay/Doors/CopyRoomDoor/UsePoint` | use_point | 33.1 | 51.7 | 1.56 | ok |
-| `Spawns/OobRoof1` | `Gameplay/Doors/CageGate` | objective | 27.6 | 43.5 | 1.57 | ok |
-| `Spawns/OobRoof1` | `Gameplay/Doors/CageGate/UsePoint` | use_point | 27.6 | 43.5 | 1.57 | ok |
+| `Spawns/OobRoof1` | `Gameplay/Doors/CageGate` | objective | 27.6 | 43.9 | 1.59 | ok |
+| `Spawns/OobRoof1` | `Gameplay/Doors/CageGate/UsePoint` | use_point | 27.6 | 43.9 | 1.59 | ok |
 | `Spawns/OobRoof1` | `Gameplay/Doors/ArchiveDoor/UsePoint` | use_point | 9.1 | 34.2 | 3.75 | detour (whitelisted) |
 | `Spawns/OobRoof1` | `Gameplay/Doors/BreakRoomDoor/UsePoint` | use_point | 11.3 | 31.3 | 2.76 | ok |
 | `Spawns/OobRoof1` | `Gameplay/Doors/LibraryDoor/UsePoint` | use_point | 15.7 | 32.7 | 2.09 | ok |
@@ -1083,8 +1083,8 @@ Result: **PASS** (0 failure(s))
 | `Spawns/OobRoof1` | `Gameplay/Doors/ArtHallStaffDoor/UsePoint` | use_point | 23.4 | 32.0 | 1.37 | ok |
 | `Spawns/OobRoof1` | `Gameplay/Doors/StudyDoor` | objective | 28.0 | 31.4 | 1.12 | ok |
 | `Spawns/OobRoof1` | `Gameplay/Doors/StudyDoor/UsePoint` | use_point | 28.0 | 31.4 | 1.12 | ok |
-| `Spawns/OobRoof1` | `Gameplay/Doors/StudyFacadeDoor` | objective | 33.4 | 36.4 | 1.09 | ok |
-| `Spawns/OobRoof1` | `Gameplay/Doors/StudyFacadeDoor/UsePoint` | use_point | 33.4 | 36.4 | 1.09 | ok |
+| `Spawns/OobRoof1` | `Gameplay/Doors/StudyFacadeDoor` | objective | 33.4 | 36.7 | 1.10 | ok |
+| `Spawns/OobRoof1` | `Gameplay/Doors/StudyFacadeDoor/UsePoint` | use_point | 33.4 | 36.7 | 1.10 | ok |
 | `Spawns/OobRoof1` | `Gameplay/Doors/LinenL42/UsePoint` | use_point | 10.6 | 21.8 | 2.06 | ok |
 | `Spawns/OobRoof1` | `Gameplay/Doors/StairAL42` | objective | 10.2 | 22.1 | 2.17 | ok |
 | `Spawns/OobRoof1` | `Gameplay/Doors/StairAL42/UsePoint` | use_point | 10.2 | 22.1 | 2.17 | ok |
@@ -1092,38 +1092,38 @@ Result: **PASS** (0 failure(s))
 | `Spawns/OobRoof1` | `Gameplay/Doors/StairBL42/UsePoint` | use_point | 23.0 | 36.5 | 1.59 | ok |
 | `Spawns/OobRoof1` | `Gameplay/Doors/WCWestL42/UsePoint` | use_point | 15.3 | 27.4 | 1.79 | ok |
 | `Spawns/OobRoof1` | `Gameplay/Doors/WCMenL42/UsePoint` | use_point | 18.2 | 30.4 | 1.67 | ok |
-| `Spawns/OobRoof1` | `Gameplay/Doors/SuiteDoor/UsePoint` | use_point | 6.2 | 28.9 | 4.63 | detour (whitelisted) |
-| `Spawns/OobRoof1` | `Gameplay/Doors/BathDoor/UsePoint` | use_point | 7.4 | 27.7 | 3.75 | detour (whitelisted) |
+| `Spawns/OobRoof1` | `Gameplay/Doors/SuiteDoor/UsePoint` | use_point | 6.2 | 28.4 | 4.55 | detour (whitelisted) |
+| `Spawns/OobRoof1` | `Gameplay/Doors/BathDoor/UsePoint` | use_point | 7.4 | 27.1 | 3.68 | detour (whitelisted) |
 | `Spawns/OobRoof1` | `Gameplay/Doors/DressingDoor/UsePoint` | use_point | 9.7 | 25.0 | 2.57 | ok |
 | `Spawns/OobRoof1` | `Gameplay/Doors/DiningDoor/UsePoint` | use_point | 9.9 | 22.1 | 2.23 | ok |
 | `Spawns/OobRoof1` | `Gameplay/Doors/PantryDoor/UsePoint` | use_point | 23.1 | 33.8 | 1.46 | ok |
 | `Spawns/OobRoof1` | `Gameplay/Doors/ElectricalL42/UsePoint` | use_point | 22.9 | 38.2 | 1.67 | ok |
-| `Spawns/OobRoof1` | `Gameplay/Doors/WineRoomDoor/UsePoint` | use_point | 27.9 | 42.6 | 1.53 | ok |
-| `Spawns/OobRoof1` | `Gameplay/Doors/BoardroomDoor/UsePoint` | use_point | 31.8 | 44.2 | 1.39 | ok |
+| `Spawns/OobRoof1` | `Gameplay/Doors/WineRoomDoor/UsePoint` | use_point | 27.9 | 40.4 | 1.45 | ok |
+| `Spawns/OobRoof1` | `Gameplay/Doors/BoardroomDoor/UsePoint` | use_point | 31.8 | 44.4 | 1.40 | ok |
 | `Spawns/OobRoof1` | `Gameplay/Doors/SliderDining` | objective | 7.1 | 30.2 | 4.24 | detour (whitelisted) |
 | `Spawns/OobRoof1` | `Gameplay/Doors/SliderDining/UsePoint` | use_point | 7.1 | 30.2 | 4.24 | detour (whitelisted) |
-| `Spawns/OobRoof1` | `Gameplay/Doors/SliderWest` | objective | 14.0 | 26.3 | 1.88 | ok |
-| `Spawns/OobRoof1` | `Gameplay/Doors/SliderWest/UsePoint` | use_point | 14.0 | 26.3 | 1.88 | ok |
-| `Spawns/OobRoof1` | `Gameplay/Doors/SliderEast` | objective | 29.1 | 41.1 | 1.41 | ok |
-| `Spawns/OobRoof1` | `Gameplay/Doors/SliderEast/UsePoint` | use_point | 29.1 | 41.1 | 1.41 | ok |
+| `Spawns/OobRoof1` | `Gameplay/Doors/SliderWest` | objective | 14.0 | 26.2 | 1.87 | ok |
+| `Spawns/OobRoof1` | `Gameplay/Doors/SliderWest/UsePoint` | use_point | 14.0 | 26.2 | 1.87 | ok |
+| `Spawns/OobRoof1` | `Gameplay/Doors/SliderEast` | objective | 29.1 | 42.2 | 1.45 | ok |
+| `Spawns/OobRoof1` | `Gameplay/Doors/SliderEast/UsePoint` | use_point | 29.1 | 42.2 | 1.45 | ok |
 | `Spawns/OobRoof1` | `Gameplay/Doors/RoofDoor` | objective | 9.5 | 9.5 | 1.00 | ok |
 | `Spawns/OobRoof1` | `Gameplay/Doors/RoofDoor/UsePoint` | use_point | 9.5 | 9.5 | 1.00 | ok |
 | `Spawns/OobRoof1` | `Gameplay/Doors/RiserBayDoor` | objective | 9.9 | 9.9 | 1.00 | ok |
 | `Spawns/OobRoof1` | `Gameplay/Doors/RiserBayDoor/UsePoint` | use_point | 9.9 | 9.9 | 1.00 | ok |
 | `Spawns/OobRoof1` | `Gameplay/Doors/HeadHousePlantDoor/UsePoint` | use_point | 12.4 | 12.5 | 1.00 | ok |
-| `Spawns/OobRoof1` | `Gameplay/Doors/PlantDoor/UsePoint` | use_point | 18.4 | 19.0 | 1.03 | ok |
-| `Spawns/OobRoof1` | `Gameplay/Server/ServerReader` | objective | 24.2 | 38.6 | 1.59 | ok |
-| `Spawns/OobRoof1` | `Gameplay/Server/ServerReader/UsePoint` | use_point | 24.2 | 38.6 | 1.59 | ok |
-| `Spawns/OobRoof1` | `Gameplay/Server/CageLock` | objective | 26.6 | 42.5 | 1.60 | ok |
-| `Spawns/OobRoof1` | `Gameplay/Server/CageLock/UsePoint` | use_point | 26.6 | 42.5 | 1.60 | ok |
-| `Spawns/OobRoof1` | `Gameplay/Server/HackTerminal` | objective | 27.9 | 44.3 | 1.59 | ok |
-| `Spawns/OobRoof1` | `Gameplay/Server/HackTerminal/UsePoint` | use_point | 27.9 | 44.3 | 1.59 | ok |
-| `Spawns/OobRoof1` | `Gameplay/Server/Drives1` | loot_spawn | 26.6 | 45.3 | 1.70 | ok |
-| `Spawns/OobRoof1` | `Gameplay/Server/Drives1/UsePoint` | use_point | 26.6 | 45.3 | 1.70 | ok |
-| `Spawns/OobRoof1` | `Gameplay/Server/Drives2` | loot_spawn | 28.6 | 45.1 | 1.58 | ok |
-| `Spawns/OobRoof1` | `Gameplay/Server/Drives2/UsePoint` | use_point | 28.5 | 45.0 | 1.58 | ok |
-| `Spawns/OobRoof1` | `Gameplay/Server/Drives3` | loot_spawn | 29.2 | 45.7 | 1.56 | ok |
-| `Spawns/OobRoof1` | `Gameplay/Server/Drives3/UsePoint` | use_point | 29.2 | 45.6 | 1.56 | ok |
+| `Spawns/OobRoof1` | `Gameplay/Doors/PlantDoor/UsePoint` | use_point | 18.4 | 19.6 | 1.06 | ok |
+| `Spawns/OobRoof1` | `Gameplay/Server/ServerReader` | objective | 24.2 | 39.0 | 1.61 | ok |
+| `Spawns/OobRoof1` | `Gameplay/Server/ServerReader/UsePoint` | use_point | 24.2 | 39.0 | 1.61 | ok |
+| `Spawns/OobRoof1` | `Gameplay/Server/CageLock` | objective | 26.6 | 42.9 | 1.61 | ok |
+| `Spawns/OobRoof1` | `Gameplay/Server/CageLock/UsePoint` | use_point | 26.6 | 42.9 | 1.61 | ok |
+| `Spawns/OobRoof1` | `Gameplay/Server/HackTerminal` | objective | 27.9 | 44.7 | 1.60 | ok |
+| `Spawns/OobRoof1` | `Gameplay/Server/HackTerminal/UsePoint` | use_point | 27.9 | 44.7 | 1.60 | ok |
+| `Spawns/OobRoof1` | `Gameplay/Server/Drives1` | loot_spawn | 26.6 | 45.7 | 1.72 | ok |
+| `Spawns/OobRoof1` | `Gameplay/Server/Drives1/UsePoint` | use_point | 26.6 | 45.7 | 1.72 | ok |
+| `Spawns/OobRoof1` | `Gameplay/Server/Drives2` | loot_spawn | 28.6 | 45.5 | 1.59 | ok |
+| `Spawns/OobRoof1` | `Gameplay/Server/Drives2/UsePoint` | use_point | 28.5 | 45.4 | 1.59 | ok |
+| `Spawns/OobRoof1` | `Gameplay/Server/Drives3` | loot_spawn | 29.2 | 46.1 | 1.58 | ok |
+| `Spawns/OobRoof1` | `Gameplay/Server/Drives3/UsePoint` | use_point | 29.2 | 46.0 | 1.58 | ok |
 | `Spawns/OobRoof1` | `Gameplay/Study/StudyReader` | objective | 30.7 | 36.4 | 1.18 | ok |
 | `Spawns/OobRoof1` | `Gameplay/Study/StudyReader/UsePoint` | use_point | 30.7 | 36.4 | 1.18 | ok |
 | `Spawns/OobRoof1` | `Gameplay/Study/StudySafe` | objective | 31.8 | 36.8 | 1.16 | ok |
@@ -1136,7 +1136,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/OobRoof1` | `Gameplay/Misc/CameraStation/UsePoint` | use_point | 27.4 | 47.7 | 1.74 | ok |
 | `Spawns/OobRoof1` | `Gameplay/Misc/AlarmReception/UsePoint` | use_point | 19.5 | 30.6 | 1.57 | ok |
 | `Spawns/OobRoof1` | `Gameplay/Misc/AlarmSecurity/UsePoint` | use_point | 27.5 | 47.7 | 1.73 | ok |
-| `Spawns/OobRoof1` | `Gameplay/Misc/AlarmGuestSuite/UsePoint` | use_point | 3.9 | 35.2 | 9.09 | detour (whitelisted) |
+| `Spawns/OobRoof1` | `Gameplay/Misc/AlarmGuestSuite/UsePoint` | use_point | 3.9 | 34.7 | 8.97 | detour (whitelisted) |
 | `Spawns/OobRoof1` | `Gameplay/Misc/PhoneKessler/UsePoint` | use_point | 12.8 | 33.4 | 2.62 | ok |
 | `Spawns/OobRoof1` | `Gameplay/Misc/PhoneReception/UsePoint` | use_point | 18.9 | 30.0 | 1.59 | ok |
 | `Spawns/OobRoof1` | `Gameplay/Misc/PhoneAssistant/UsePoint` | use_point | 26.8 | 42.0 | 1.57 | ok |
@@ -1144,12 +1144,12 @@ Result: **PASS** (0 failure(s))
 | `Spawns/OobRoof1` | `Gameplay/Misc/PhoneIT/UsePoint` | use_point | 31.5 | 51.3 | 1.63 | ok |
 | `Spawns/OobRoof1` | `Gameplay/Misc/PhoneSecurity/UsePoint` | use_point | 26.3 | 46.5 | 1.77 | ok |
 | `Spawns/OobRoof1` | `Gameplay/Misc/PhoneBreakRoom/UsePoint` | use_point | 13.8 | 36.9 | 2.67 | ok |
-| `Spawns/OobRoof1` | `Gameplay/Misc/PhoneGuestSuite/UsePoint` | use_point | 3.9 | 34.9 | 9.00 | detour (whitelisted) |
-| `Spawns/OobRoof1` | `Gameplay/Misc/PhonePantry/UsePoint` | use_point | 25.4 | 36.0 | 1.42 | ok |
-| `Spawns/OobRoof1` | `Gameplay/Misc/ArchiveSafe` | objective | 12.4 | 40.6 | 3.28 | detour (whitelisted) |
-| `Spawns/OobRoof1` | `Gameplay/Misc/ArchiveSafe/UsePoint` | use_point | 12.4 | 40.6 | 3.28 | detour (whitelisted) |
-| `Spawns/OobRoof1` | `Gameplay/Misc/ArchiveSafe/ArchiveCash` | loot_spawn | 12.2 | 41.6 | 3.41 | detour (whitelisted) |
-| `Spawns/OobRoof1` | `Gameplay/Misc/ArchiveSafe/ArchiveCash/UsePoint` | use_point | 12.2 | 41.6 | 3.41 | detour (whitelisted) |
+| `Spawns/OobRoof1` | `Gameplay/Misc/PhoneGuestSuite/UsePoint` | use_point | 3.9 | 34.4 | 8.87 | detour (whitelisted) |
+| `Spawns/OobRoof1` | `Gameplay/Misc/PhonePantry/UsePoint` | use_point | 25.4 | 36.0 | 1.41 | ok |
+| `Spawns/OobRoof1` | `Gameplay/Misc/ArchiveSafe` | objective | 12.4 | 43.8 | 3.54 | detour (whitelisted) |
+| `Spawns/OobRoof1` | `Gameplay/Misc/ArchiveSafe/UsePoint` | use_point | 12.4 | 43.8 | 3.54 | detour (whitelisted) |
+| `Spawns/OobRoof1` | `Gameplay/Misc/ArchiveSafe/ArchiveCash` | loot_spawn | 12.2 | 42.5 | 3.49 | detour (whitelisted) |
+| `Spawns/OobRoof1` | `Gameplay/Misc/ArchiveSafe/ArchiveCash/UsePoint` | use_point | 12.2 | 42.5 | 3.49 | detour (whitelisted) |
 | `Spawns/OobRoof1` | `Gameplay/Misc/Painting1` | loot_spawn | 26.2 | 31.4 | 1.20 | ok |
 | `Spawns/OobRoof1` | `Gameplay/Misc/Painting1/UsePoint` | use_point | 26.2 | 31.4 | 1.20 | ok |
 | `Spawns/OobRoof1` | `Gameplay/Misc/Painting2` | loot_spawn | 27.2 | 32.2 | 1.19 | ok |
@@ -1158,16 +1158,16 @@ Result: **PASS** (0 failure(s))
 | `Spawns/OobRoof1` | `Gameplay/Misc/PrintoutBooks/UsePoint` | use_point | 12.4 | 31.6 | 2.55 | ok |
 | `Spawns/OobRoof1` | `Gameplay/Misc/KesslerWatch/UsePoint` | use_point | 12.8 | 32.7 | 2.55 | ok |
 | `Spawns/OobRoof1` | `Gameplay/Misc/MoorBracelet/UsePoint` | use_point | 33.3 | 46.5 | 1.40 | ok |
-| `Spawns/OobRoof1` | `Gameplay/Misc/HumidorCigars1/UsePoint` | use_point | 28.0 | 45.2 | 1.62 | ok |
-| `Spawns/OobRoof1` | `Gameplay/Misc/HumidorCigars2/UsePoint` | use_point | 28.0 | 44.9 | 1.60 | ok |
-| `Spawns/OobRoof1` | `Variants/Group_laptop/Slot_lap_boardroom/Laptop` | loot_spawn | 33.3 | 53.2 | 1.60 | ok |
-| `Spawns/OobRoof1` | `Variants/Group_laptop/Slot_lap_boardroom/Laptop/UsePoint` | use_point | 33.2 | 52.4 | 1.58 | ok |
+| `Spawns/OobRoof1` | `Gameplay/Misc/HumidorCigars1/UsePoint` | use_point | 28.0 | 42.8 | 1.53 | ok |
+| `Spawns/OobRoof1` | `Gameplay/Misc/HumidorCigars2/UsePoint` | use_point | 28.0 | 42.5 | 1.52 | ok |
+| `Spawns/OobRoof1` | `Variants/Group_laptop/Slot_lap_boardroom/Laptop` | loot_spawn | 33.3 | 53.3 | 1.60 | ok |
+| `Spawns/OobRoof1` | `Variants/Group_laptop/Slot_lap_boardroom/Laptop/UsePoint` | use_point | 33.2 | 52.5 | 1.58 | ok |
 | `Spawns/OobRoof1` | `Variants/Group_keycard/Slot_kc_cleaner/Keycard` | objective | 12.3 | 23.8 | 1.93 | ok |
 | `Spawns/OobRoof1` | `Variants/Group_keycard/Slot_kc_cleaner/Keycard/UsePoint` | use_point | 12.3 | 23.8 | 1.93 | ok |
-| `Spawns/OobRoof1` | `Variants/Group_code_note/Slot_code_contractor/CodeNote` | objective | 25.2 | 41.3 | 1.64 | ok |
-| `Spawns/OobRoof1` | `Variants/Group_code_note/Slot_code_contractor/CodeNote/UsePoint` | use_point | 25.2 | 41.3 | 1.64 | ok |
-| `Spawns/OobRoof1` | `Variants/Group_escape/Slot_esc_heli/HeliNetE1/Zone` | secure_zone | 24.1 | 25.2 | 1.05 | ok |
-| `Spawns/OobRoof1` | `Variants/Group_escape/Slot_esc_heli/HeliEscapeE1/Zone` | escape_zone | 30.4 | 31.2 | 1.03 | ok |
+| `Spawns/OobRoof1` | `Variants/Group_code_note/Slot_code_contractor/CodeNote` | objective | 25.2 | 41.7 | 1.66 | ok |
+| `Spawns/OobRoof1` | `Variants/Group_code_note/Slot_code_contractor/CodeNote/UsePoint` | use_point | 25.2 | 41.7 | 1.66 | ok |
+| `Spawns/OobRoof1` | `Variants/Group_escape/Slot_esc_heli/HeliNetE1/Zone` | secure_zone | 24.1 | 25.8 | 1.07 | ok |
+| `Spawns/OobRoof1` | `Variants/Group_escape/Slot_esc_heli/HeliEscapeE1/Zone` | escape_zone | 30.4 | 31.6 | 1.04 | ok |
 | `Spawns/OobRoof2` | `Gameplay/Doors/RefuseDoor/UsePoint` | use_point | 24.4 | 55.8 | 2.29 | ok |
 | `Spawns/OobRoof2` | `Gameplay/Doors/StairBL40/UsePoint` | use_point | 24.4 | 55.0 | 2.25 | ok |
 | `Spawns/OobRoof2` | `Gameplay/Doors/StairAGate` | objective | 15.9 | 40.9 | 2.57 | ok |
@@ -1192,14 +1192,14 @@ Result: **PASS** (0 failure(s))
 | `Spawns/OobRoof2` | `Gameplay/Doors/WCMenL41/UsePoint` | use_point | 18.5 | 36.1 | 1.96 | ok |
 | `Spawns/OobRoof2` | `Gameplay/Doors/StairBL41` | objective | 22.9 | 42.2 | 1.84 | ok |
 | `Spawns/OobRoof2` | `Gameplay/Doors/StairBL41/UsePoint` | use_point | 22.9 | 42.2 | 1.84 | ok |
-| `Spawns/OobRoof2` | `Gameplay/Doors/ServerDoor` | objective | 23.0 | 38.3 | 1.66 | ok |
-| `Spawns/OobRoof2` | `Gameplay/Doors/ServerDoor/UsePoint` | use_point | 23.0 | 38.3 | 1.66 | ok |
+| `Spawns/OobRoof2` | `Gameplay/Doors/ServerDoor` | objective | 23.0 | 38.7 | 1.68 | ok |
+| `Spawns/OobRoof2` | `Gameplay/Doors/ServerDoor/UsePoint` | use_point | 23.0 | 38.7 | 1.68 | ok |
 | `Spawns/OobRoof2` | `Gameplay/Doors/ITDoor/UsePoint` | use_point | 31.8 | 44.4 | 1.40 | ok |
-| `Spawns/OobRoof2` | `Gameplay/Doors/SecurityDoor/UsePoint` | use_point | 22.9 | 42.8 | 1.87 | ok |
+| `Spawns/OobRoof2` | `Gameplay/Doors/SecurityDoor/UsePoint` | use_point | 22.9 | 43.2 | 1.89 | ok |
 | `Spawns/OobRoof2` | `Gameplay/Doors/ElectricalL41/UsePoint` | use_point | 29.5 | 48.1 | 1.63 | ok |
 | `Spawns/OobRoof2` | `Gameplay/Doors/CopyRoomDoor/UsePoint` | use_point | 31.9 | 50.6 | 1.59 | ok |
-| `Spawns/OobRoof2` | `Gameplay/Doors/CageGate` | objective | 26.5 | 42.4 | 1.60 | ok |
-| `Spawns/OobRoof2` | `Gameplay/Doors/CageGate/UsePoint` | use_point | 26.5 | 42.4 | 1.60 | ok |
+| `Spawns/OobRoof2` | `Gameplay/Doors/CageGate` | objective | 26.5 | 42.8 | 1.61 | ok |
+| `Spawns/OobRoof2` | `Gameplay/Doors/CageGate/UsePoint` | use_point | 26.5 | 42.8 | 1.61 | ok |
 | `Spawns/OobRoof2` | `Gameplay/Doors/ArchiveDoor/UsePoint` | use_point | 9.1 | 33.1 | 3.64 | detour (whitelisted) |
 | `Spawns/OobRoof2` | `Gameplay/Doors/BreakRoomDoor/UsePoint` | use_point | 10.7 | 30.2 | 2.83 | ok |
 | `Spawns/OobRoof2` | `Gameplay/Doors/LibraryDoor/UsePoint` | use_point | 14.7 | 31.6 | 2.15 | ok |
@@ -1212,8 +1212,8 @@ Result: **PASS** (0 failure(s))
 | `Spawns/OobRoof2` | `Gameplay/Doors/ArtHallStaffDoor/UsePoint` | use_point | 22.2 | 30.9 | 1.39 | ok |
 | `Spawns/OobRoof2` | `Gameplay/Doors/StudyDoor` | objective | 26.9 | 30.3 | 1.13 | ok |
 | `Spawns/OobRoof2` | `Gameplay/Doors/StudyDoor/UsePoint` | use_point | 26.9 | 30.3 | 1.13 | ok |
-| `Spawns/OobRoof2` | `Gameplay/Doors/StudyFacadeDoor` | objective | 32.3 | 35.4 | 1.10 | ok |
-| `Spawns/OobRoof2` | `Gameplay/Doors/StudyFacadeDoor/UsePoint` | use_point | 32.3 | 35.4 | 1.10 | ok |
+| `Spawns/OobRoof2` | `Gameplay/Doors/StudyFacadeDoor` | objective | 32.3 | 35.7 | 1.11 | ok |
+| `Spawns/OobRoof2` | `Gameplay/Doors/StudyFacadeDoor/UsePoint` | use_point | 32.3 | 35.7 | 1.11 | ok |
 | `Spawns/OobRoof2` | `Gameplay/Doors/LinenL42/UsePoint` | use_point | 9.6 | 20.7 | 2.17 | ok |
 | `Spawns/OobRoof2` | `Gameplay/Doors/StairAL42` | objective | 9.1 | 20.9 | 2.30 | ok |
 | `Spawns/OobRoof2` | `Gameplay/Doors/StairAL42/UsePoint` | use_point | 9.1 | 20.9 | 2.30 | ok |
@@ -1226,33 +1226,33 @@ Result: **PASS** (0 failure(s))
 | `Spawns/OobRoof2` | `Gameplay/Doors/DressingDoor/UsePoint` | use_point | 8.6 | 23.7 | 2.74 | ok |
 | `Spawns/OobRoof2` | `Gameplay/Doors/DiningDoor/UsePoint` | use_point | 8.8 | 20.9 | 2.37 | ok |
 | `Spawns/OobRoof2` | `Gameplay/Doors/PantryDoor/UsePoint` | use_point | 21.9 | 32.7 | 1.49 | ok |
-| `Spawns/OobRoof2` | `Gameplay/Doors/ElectricalL42/UsePoint` | use_point | 21.7 | 37.1 | 1.71 | ok |
-| `Spawns/OobRoof2` | `Gameplay/Doors/WineRoomDoor/UsePoint` | use_point | 26.7 | 41.5 | 1.55 | ok |
-| `Spawns/OobRoof2` | `Gameplay/Doors/BoardroomDoor/UsePoint` | use_point | 30.6 | 43.1 | 1.41 | ok |
+| `Spawns/OobRoof2` | `Gameplay/Doors/ElectricalL42/UsePoint` | use_point | 21.7 | 36.7 | 1.69 | ok |
+| `Spawns/OobRoof2` | `Gameplay/Doors/WineRoomDoor/UsePoint` | use_point | 26.7 | 39.2 | 1.47 | ok |
+| `Spawns/OobRoof2` | `Gameplay/Doors/BoardroomDoor/UsePoint` | use_point | 30.6 | 43.2 | 1.41 | ok |
 | `Spawns/OobRoof2` | `Gameplay/Doors/SliderDining` | objective | 6.8 | 29.0 | 4.25 | detour (whitelisted) |
 | `Spawns/OobRoof2` | `Gameplay/Doors/SliderDining/UsePoint` | use_point | 6.8 | 29.0 | 4.25 | detour (whitelisted) |
-| `Spawns/OobRoof2` | `Gameplay/Doors/SliderWest` | objective | 13.0 | 25.1 | 1.94 | ok |
-| `Spawns/OobRoof2` | `Gameplay/Doors/SliderWest/UsePoint` | use_point | 13.0 | 25.1 | 1.94 | ok |
-| `Spawns/OobRoof2` | `Gameplay/Doors/SliderEast` | objective | 27.9 | 40.0 | 1.43 | ok |
-| `Spawns/OobRoof2` | `Gameplay/Doors/SliderEast/UsePoint` | use_point | 27.9 | 40.0 | 1.43 | ok |
+| `Spawns/OobRoof2` | `Gameplay/Doors/SliderWest` | objective | 13.0 | 25.1 | 1.93 | ok |
+| `Spawns/OobRoof2` | `Gameplay/Doors/SliderWest/UsePoint` | use_point | 13.0 | 25.1 | 1.93 | ok |
+| `Spawns/OobRoof2` | `Gameplay/Doors/SliderEast` | objective | 27.9 | 41.0 | 1.47 | ok |
+| `Spawns/OobRoof2` | `Gameplay/Doors/SliderEast/UsePoint` | use_point | 27.9 | 41.0 | 1.47 | ok |
 | `Spawns/OobRoof2` | `Gameplay/Doors/RoofDoor` | objective | 8.4 | 8.4 | 1.00 | ok |
 | `Spawns/OobRoof2` | `Gameplay/Doors/RoofDoor/UsePoint` | use_point | 8.4 | 8.4 | 1.00 | ok |
 | `Spawns/OobRoof2` | `Gameplay/Doors/RiserBayDoor` | objective | 8.9 | 8.9 | 1.00 | ok |
 | `Spawns/OobRoof2` | `Gameplay/Doors/RiserBayDoor/UsePoint` | use_point | 8.9 | 8.9 | 1.00 | ok |
 | `Spawns/OobRoof2` | `Gameplay/Doors/HeadHousePlantDoor/UsePoint` | use_point | 11.2 | 11.3 | 1.01 | ok |
-| `Spawns/OobRoof2` | `Gameplay/Doors/PlantDoor/UsePoint` | use_point | 17.3 | 18.0 | 1.04 | ok |
-| `Spawns/OobRoof2` | `Gameplay/Server/ServerReader` | objective | 23.1 | 37.5 | 1.62 | ok |
-| `Spawns/OobRoof2` | `Gameplay/Server/ServerReader/UsePoint` | use_point | 23.1 | 37.5 | 1.62 | ok |
-| `Spawns/OobRoof2` | `Gameplay/Server/CageLock` | objective | 25.5 | 41.4 | 1.63 | ok |
-| `Spawns/OobRoof2` | `Gameplay/Server/CageLock/UsePoint` | use_point | 25.5 | 41.4 | 1.63 | ok |
-| `Spawns/OobRoof2` | `Gameplay/Server/HackTerminal` | objective | 26.7 | 43.2 | 1.62 | ok |
-| `Spawns/OobRoof2` | `Gameplay/Server/HackTerminal/UsePoint` | use_point | 26.7 | 43.2 | 1.62 | ok |
-| `Spawns/OobRoof2` | `Gameplay/Server/Drives1` | loot_spawn | 25.5 | 44.2 | 1.73 | ok |
-| `Spawns/OobRoof2` | `Gameplay/Server/Drives1/UsePoint` | use_point | 25.5 | 44.2 | 1.73 | ok |
-| `Spawns/OobRoof2` | `Gameplay/Server/Drives2` | loot_spawn | 27.4 | 44.0 | 1.60 | ok |
-| `Spawns/OobRoof2` | `Gameplay/Server/Drives2/UsePoint` | use_point | 27.4 | 43.9 | 1.60 | ok |
-| `Spawns/OobRoof2` | `Gameplay/Server/Drives3` | loot_spawn | 28.1 | 44.6 | 1.59 | ok |
-| `Spawns/OobRoof2` | `Gameplay/Server/Drives3/UsePoint` | use_point | 28.0 | 44.5 | 1.59 | ok |
+| `Spawns/OobRoof2` | `Gameplay/Doors/PlantDoor/UsePoint` | use_point | 17.3 | 18.6 | 1.08 | ok |
+| `Spawns/OobRoof2` | `Gameplay/Server/ServerReader` | objective | 23.1 | 37.9 | 1.64 | ok |
+| `Spawns/OobRoof2` | `Gameplay/Server/ServerReader/UsePoint` | use_point | 23.1 | 37.9 | 1.64 | ok |
+| `Spawns/OobRoof2` | `Gameplay/Server/CageLock` | objective | 25.5 | 41.8 | 1.64 | ok |
+| `Spawns/OobRoof2` | `Gameplay/Server/CageLock/UsePoint` | use_point | 25.5 | 41.8 | 1.64 | ok |
+| `Spawns/OobRoof2` | `Gameplay/Server/HackTerminal` | objective | 26.7 | 43.6 | 1.63 | ok |
+| `Spawns/OobRoof2` | `Gameplay/Server/HackTerminal/UsePoint` | use_point | 26.7 | 43.6 | 1.63 | ok |
+| `Spawns/OobRoof2` | `Gameplay/Server/Drives1` | loot_spawn | 25.5 | 44.6 | 1.75 | ok |
+| `Spawns/OobRoof2` | `Gameplay/Server/Drives1/UsePoint` | use_point | 25.5 | 44.6 | 1.75 | ok |
+| `Spawns/OobRoof2` | `Gameplay/Server/Drives2` | loot_spawn | 27.4 | 44.4 | 1.62 | ok |
+| `Spawns/OobRoof2` | `Gameplay/Server/Drives2/UsePoint` | use_point | 27.4 | 44.2 | 1.61 | ok |
+| `Spawns/OobRoof2` | `Gameplay/Server/Drives3` | loot_spawn | 28.1 | 45.0 | 1.60 | ok |
+| `Spawns/OobRoof2` | `Gameplay/Server/Drives3/UsePoint` | use_point | 28.0 | 44.9 | 1.60 | ok |
 | `Spawns/OobRoof2` | `Gameplay/Study/StudyReader` | objective | 29.5 | 35.2 | 1.19 | ok |
 | `Spawns/OobRoof2` | `Gameplay/Study/StudyReader/UsePoint` | use_point | 29.5 | 35.2 | 1.19 | ok |
 | `Spawns/OobRoof2` | `Gameplay/Study/StudySafe` | objective | 30.6 | 35.6 | 1.16 | ok |
@@ -1275,10 +1275,10 @@ Result: **PASS** (0 failure(s))
 | `Spawns/OobRoof2` | `Gameplay/Misc/PhoneBreakRoom/UsePoint` | use_point | 13.4 | 35.8 | 2.67 | ok |
 | `Spawns/OobRoof2` | `Gameplay/Misc/PhoneGuestSuite/UsePoint` | use_point | 4.3 | 33.3 | 7.66 | detour (whitelisted) |
 | `Spawns/OobRoof2` | `Gameplay/Misc/PhonePantry/UsePoint` | use_point | 24.3 | 34.9 | 1.44 | ok |
-| `Spawns/OobRoof2` | `Gameplay/Misc/ArchiveSafe` | objective | 12.5 | 39.5 | 3.15 | detour (whitelisted) |
-| `Spawns/OobRoof2` | `Gameplay/Misc/ArchiveSafe/UsePoint` | use_point | 12.5 | 39.5 | 3.15 | detour (whitelisted) |
-| `Spawns/OobRoof2` | `Gameplay/Misc/ArchiveSafe/ArchiveCash` | loot_spawn | 12.2 | 40.5 | 3.31 | detour (whitelisted) |
-| `Spawns/OobRoof2` | `Gameplay/Misc/ArchiveSafe/ArchiveCash/UsePoint` | use_point | 12.2 | 40.5 | 3.31 | detour (whitelisted) |
+| `Spawns/OobRoof2` | `Gameplay/Misc/ArchiveSafe` | objective | 12.5 | 42.7 | 3.40 | detour (whitelisted) |
+| `Spawns/OobRoof2` | `Gameplay/Misc/ArchiveSafe/UsePoint` | use_point | 12.5 | 42.7 | 3.40 | detour (whitelisted) |
+| `Spawns/OobRoof2` | `Gameplay/Misc/ArchiveSafe/ArchiveCash` | loot_spawn | 12.2 | 41.4 | 3.39 | detour (whitelisted) |
+| `Spawns/OobRoof2` | `Gameplay/Misc/ArchiveSafe/ArchiveCash/UsePoint` | use_point | 12.2 | 41.4 | 3.39 | detour (whitelisted) |
 | `Spawns/OobRoof2` | `Gameplay/Misc/Painting1` | loot_spawn | 25.1 | 30.3 | 1.21 | ok |
 | `Spawns/OobRoof2` | `Gameplay/Misc/Painting1/UsePoint` | use_point | 25.1 | 30.3 | 1.21 | ok |
 | `Spawns/OobRoof2` | `Gameplay/Misc/Painting2` | loot_spawn | 26.0 | 31.1 | 1.20 | ok |
@@ -1287,16 +1287,16 @@ Result: **PASS** (0 failure(s))
 | `Spawns/OobRoof2` | `Gameplay/Misc/PrintoutBooks/UsePoint` | use_point | 12.2 | 30.4 | 2.49 | ok |
 | `Spawns/OobRoof2` | `Gameplay/Misc/KesslerWatch/UsePoint` | use_point | 12.8 | 31.6 | 2.47 | ok |
 | `Spawns/OobRoof2` | `Gameplay/Misc/MoorBracelet/UsePoint` | use_point | 32.2 | 45.4 | 1.41 | ok |
-| `Spawns/OobRoof2` | `Gameplay/Misc/HumidorCigars1/UsePoint` | use_point | 26.8 | 44.1 | 1.65 | ok |
-| `Spawns/OobRoof2` | `Gameplay/Misc/HumidorCigars2/UsePoint` | use_point | 26.8 | 43.8 | 1.63 | ok |
+| `Spawns/OobRoof2` | `Gameplay/Misc/HumidorCigars1/UsePoint` | use_point | 26.8 | 41.6 | 1.56 | ok |
+| `Spawns/OobRoof2` | `Gameplay/Misc/HumidorCigars2/UsePoint` | use_point | 26.8 | 41.4 | 1.54 | ok |
 | `Spawns/OobRoof2` | `Variants/Group_laptop/Slot_lap_boardroom/Laptop` | loot_spawn | 32.1 | 52.1 | 1.62 | ok |
 | `Spawns/OobRoof2` | `Variants/Group_laptop/Slot_lap_boardroom/Laptop/UsePoint` | use_point | 32.0 | 51.3 | 1.60 | ok |
 | `Spawns/OobRoof2` | `Variants/Group_keycard/Slot_kc_cleaner/Keycard` | objective | 11.2 | 22.7 | 2.02 | ok |
 | `Spawns/OobRoof2` | `Variants/Group_keycard/Slot_kc_cleaner/Keycard/UsePoint` | use_point | 11.2 | 22.7 | 2.02 | ok |
-| `Spawns/OobRoof2` | `Variants/Group_code_note/Slot_code_contractor/CodeNote` | objective | 24.0 | 40.2 | 1.67 | ok |
-| `Spawns/OobRoof2` | `Variants/Group_code_note/Slot_code_contractor/CodeNote/UsePoint` | use_point | 24.0 | 40.2 | 1.67 | ok |
-| `Spawns/OobRoof2` | `Variants/Group_escape/Slot_esc_heli/HeliNetE1/Zone` | secure_zone | 22.9 | 24.2 | 1.06 | ok |
-| `Spawns/OobRoof2` | `Variants/Group_escape/Slot_esc_heli/HeliEscapeE1/Zone` | escape_zone | 29.2 | 30.2 | 1.03 | ok |
+| `Spawns/OobRoof2` | `Variants/Group_code_note/Slot_code_contractor/CodeNote` | objective | 24.0 | 40.6 | 1.69 | ok |
+| `Spawns/OobRoof2` | `Variants/Group_code_note/Slot_code_contractor/CodeNote/UsePoint` | use_point | 24.0 | 40.6 | 1.69 | ok |
+| `Spawns/OobRoof2` | `Variants/Group_escape/Slot_esc_heli/HeliNetE1/Zone` | secure_zone | 22.9 | 24.8 | 1.08 | ok |
+| `Spawns/OobRoof2` | `Variants/Group_escape/Slot_esc_heli/HeliEscapeE1/Zone` | escape_zone | 29.2 | 30.7 | 1.05 | ok |
 | `Spawns/OobRoof3` | `Gameplay/Doors/RefuseDoor/UsePoint` | use_point | 23.3 | 54.8 | 2.35 | ok |
 | `Spawns/OobRoof3` | `Gameplay/Doors/StairBL40/UsePoint` | use_point | 23.4 | 53.9 | 2.31 | ok |
 | `Spawns/OobRoof3` | `Gameplay/Doors/StairAGate` | objective | 15.1 | 39.8 | 2.64 | ok |
@@ -1321,14 +1321,14 @@ Result: **PASS** (0 failure(s))
 | `Spawns/OobRoof3` | `Gameplay/Doors/WCMenL41/UsePoint` | use_point | 17.4 | 35.0 | 2.01 | ok |
 | `Spawns/OobRoof3` | `Gameplay/Doors/StairBL41` | objective | 21.8 | 41.1 | 1.89 | ok |
 | `Spawns/OobRoof3` | `Gameplay/Doors/StairBL41/UsePoint` | use_point | 21.8 | 41.1 | 1.89 | ok |
-| `Spawns/OobRoof3` | `Gameplay/Doors/ServerDoor` | objective | 21.9 | 37.2 | 1.70 | ok |
-| `Spawns/OobRoof3` | `Gameplay/Doors/ServerDoor/UsePoint` | use_point | 21.9 | 37.2 | 1.70 | ok |
+| `Spawns/OobRoof3` | `Gameplay/Doors/ServerDoor` | objective | 21.9 | 37.6 | 1.72 | ok |
+| `Spawns/OobRoof3` | `Gameplay/Doors/ServerDoor/UsePoint` | use_point | 21.9 | 37.6 | 1.72 | ok |
 | `Spawns/OobRoof3` | `Gameplay/Doors/ITDoor/UsePoint` | use_point | 30.6 | 43.3 | 1.41 | ok |
-| `Spawns/OobRoof3` | `Gameplay/Doors/SecurityDoor/UsePoint` | use_point | 21.8 | 41.7 | 1.92 | ok |
+| `Spawns/OobRoof3` | `Gameplay/Doors/SecurityDoor/UsePoint` | use_point | 21.8 | 42.1 | 1.93 | ok |
 | `Spawns/OobRoof3` | `Gameplay/Doors/ElectricalL41/UsePoint` | use_point | 28.4 | 47.0 | 1.66 | ok |
 | `Spawns/OobRoof3` | `Gameplay/Doors/CopyRoomDoor/UsePoint` | use_point | 30.8 | 49.5 | 1.61 | ok |
-| `Spawns/OobRoof3` | `Gameplay/Doors/CageGate` | objective | 25.4 | 41.3 | 1.63 | ok |
-| `Spawns/OobRoof3` | `Gameplay/Doors/CageGate/UsePoint` | use_point | 25.4 | 41.3 | 1.63 | ok |
+| `Spawns/OobRoof3` | `Gameplay/Doors/CageGate` | objective | 25.4 | 41.7 | 1.64 | ok |
+| `Spawns/OobRoof3` | `Gameplay/Doors/CageGate/UsePoint` | use_point | 25.4 | 41.7 | 1.64 | ok |
 | `Spawns/OobRoof3` | `Gameplay/Doors/ArchiveDoor/UsePoint` | use_point | 9.2 | 32.0 | 3.47 | detour (whitelisted) |
 | `Spawns/OobRoof3` | `Gameplay/Doors/BreakRoomDoor/UsePoint` | use_point | 10.1 | 29.1 | 2.88 | ok |
 | `Spawns/OobRoof3` | `Gameplay/Doors/LibraryDoor/UsePoint` | use_point | 13.8 | 30.5 | 2.21 | ok |
@@ -1341,8 +1341,8 @@ Result: **PASS** (0 failure(s))
 | `Spawns/OobRoof3` | `Gameplay/Doors/ArtHallStaffDoor/UsePoint` | use_point | 21.1 | 29.8 | 1.41 | ok |
 | `Spawns/OobRoof3` | `Gameplay/Doors/StudyDoor` | objective | 25.8 | 29.2 | 1.13 | ok |
 | `Spawns/OobRoof3` | `Gameplay/Doors/StudyDoor/UsePoint` | use_point | 25.8 | 29.2 | 1.13 | ok |
-| `Spawns/OobRoof3` | `Gameplay/Doors/StudyFacadeDoor` | objective | 31.2 | 34.5 | 1.11 | ok |
-| `Spawns/OobRoof3` | `Gameplay/Doors/StudyFacadeDoor/UsePoint` | use_point | 31.2 | 34.5 | 1.11 | ok |
+| `Spawns/OobRoof3` | `Gameplay/Doors/StudyFacadeDoor` | objective | 31.2 | 34.8 | 1.12 | ok |
+| `Spawns/OobRoof3` | `Gameplay/Doors/StudyFacadeDoor/UsePoint` | use_point | 31.2 | 34.8 | 1.12 | ok |
 | `Spawns/OobRoof3` | `Gameplay/Doors/LinenL42/UsePoint` | use_point | 8.6 | 19.6 | 2.28 | ok |
 | `Spawns/OobRoof3` | `Gameplay/Doors/StairAL42` | objective | 8.1 | 19.8 | 2.45 | ok |
 | `Spawns/OobRoof3` | `Gameplay/Doors/StairAL42/UsePoint` | use_point | 8.1 | 19.8 | 2.45 | ok |
@@ -1356,32 +1356,32 @@ Result: **PASS** (0 failure(s))
 | `Spawns/OobRoof3` | `Gameplay/Doors/DiningDoor/UsePoint` | use_point | 7.8 | 19.8 | 2.55 | ok |
 | `Spawns/OobRoof3` | `Gameplay/Doors/PantryDoor/UsePoint` | use_point | 20.7 | 31.6 | 1.52 | ok |
 | `Spawns/OobRoof3` | `Gameplay/Doors/ElectricalL42/UsePoint` | use_point | 20.5 | 35.6 | 1.73 | ok |
-| `Spawns/OobRoof3` | `Gameplay/Doors/WineRoomDoor/UsePoint` | use_point | 25.5 | 40.4 | 1.58 | ok |
+| `Spawns/OobRoof3` | `Gameplay/Doors/WineRoomDoor/UsePoint` | use_point | 25.5 | 38.1 | 1.49 | ok |
 | `Spawns/OobRoof3` | `Gameplay/Doors/BoardroomDoor/UsePoint` | use_point | 29.4 | 42.1 | 1.43 | ok |
 | `Spawns/OobRoof3` | `Gameplay/Doors/SliderDining` | objective | 6.7 | 27.9 | 4.14 | detour (whitelisted) |
 | `Spawns/OobRoof3` | `Gameplay/Doors/SliderDining/UsePoint` | use_point | 6.7 | 27.9 | 4.14 | detour (whitelisted) |
-| `Spawns/OobRoof3` | `Gameplay/Doors/SliderWest` | objective | 12.0 | 24.0 | 2.00 | ok |
-| `Spawns/OobRoof3` | `Gameplay/Doors/SliderWest/UsePoint` | use_point | 12.0 | 24.0 | 2.00 | ok |
-| `Spawns/OobRoof3` | `Gameplay/Doors/SliderEast` | objective | 26.8 | 38.9 | 1.45 | ok |
-| `Spawns/OobRoof3` | `Gameplay/Doors/SliderEast/UsePoint` | use_point | 26.8 | 38.9 | 1.45 | ok |
+| `Spawns/OobRoof3` | `Gameplay/Doors/SliderWest` | objective | 12.0 | 23.9 | 2.00 | ok |
+| `Spawns/OobRoof3` | `Gameplay/Doors/SliderWest/UsePoint` | use_point | 12.0 | 23.9 | 2.00 | ok |
+| `Spawns/OobRoof3` | `Gameplay/Doors/SliderEast` | objective | 26.8 | 39.9 | 1.49 | ok |
+| `Spawns/OobRoof3` | `Gameplay/Doors/SliderEast/UsePoint` | use_point | 26.8 | 39.9 | 1.49 | ok |
 | `Spawns/OobRoof3` | `Gameplay/Doors/RoofDoor` | objective | 7.2 | 7.2 | 1.00 | ok |
 | `Spawns/OobRoof3` | `Gameplay/Doors/RoofDoor/UsePoint` | use_point | 7.2 | 7.2 | 1.00 | ok |
 | `Spawns/OobRoof3` | `Gameplay/Doors/RiserBayDoor` | objective | 7.8 | 7.8 | 1.00 | ok |
 | `Spawns/OobRoof3` | `Gameplay/Doors/RiserBayDoor/UsePoint` | use_point | 7.8 | 7.8 | 1.00 | ok |
 | `Spawns/OobRoof3` | `Gameplay/Doors/HeadHousePlantDoor/UsePoint` | use_point | 10.1 | 10.2 | 1.01 | ok |
-| `Spawns/OobRoof3` | `Gameplay/Doors/PlantDoor/UsePoint` | use_point | 16.1 | 17.1 | 1.06 | ok |
-| `Spawns/OobRoof3` | `Gameplay/Server/ServerReader` | objective | 22.0 | 36.4 | 1.66 | ok |
-| `Spawns/OobRoof3` | `Gameplay/Server/ServerReader/UsePoint` | use_point | 22.0 | 36.4 | 1.66 | ok |
-| `Spawns/OobRoof3` | `Gameplay/Server/CageLock` | objective | 24.3 | 40.3 | 1.66 | ok |
-| `Spawns/OobRoof3` | `Gameplay/Server/CageLock/UsePoint` | use_point | 24.3 | 40.3 | 1.66 | ok |
-| `Spawns/OobRoof3` | `Gameplay/Server/HackTerminal` | objective | 25.6 | 42.2 | 1.65 | ok |
-| `Spawns/OobRoof3` | `Gameplay/Server/HackTerminal/UsePoint` | use_point | 25.6 | 42.2 | 1.65 | ok |
-| `Spawns/OobRoof3` | `Gameplay/Server/Drives1` | loot_spawn | 24.4 | 43.2 | 1.77 | ok |
-| `Spawns/OobRoof3` | `Gameplay/Server/Drives1/UsePoint` | use_point | 24.3 | 43.1 | 1.77 | ok |
-| `Spawns/OobRoof3` | `Gameplay/Server/Drives2` | loot_spawn | 26.3 | 42.9 | 1.63 | ok |
-| `Spawns/OobRoof3` | `Gameplay/Server/Drives2/UsePoint` | use_point | 26.3 | 42.8 | 1.63 | ok |
-| `Spawns/OobRoof3` | `Gameplay/Server/Drives3` | loot_spawn | 26.9 | 43.5 | 1.62 | ok |
-| `Spawns/OobRoof3` | `Gameplay/Server/Drives3/UsePoint` | use_point | 26.9 | 43.4 | 1.62 | ok |
+| `Spawns/OobRoof3` | `Gameplay/Doors/PlantDoor/UsePoint` | use_point | 16.1 | 17.7 | 1.10 | ok |
+| `Spawns/OobRoof3` | `Gameplay/Server/ServerReader` | objective | 22.0 | 36.8 | 1.67 | ok |
+| `Spawns/OobRoof3` | `Gameplay/Server/ServerReader/UsePoint` | use_point | 22.0 | 36.8 | 1.67 | ok |
+| `Spawns/OobRoof3` | `Gameplay/Server/CageLock` | objective | 24.3 | 40.7 | 1.67 | ok |
+| `Spawns/OobRoof3` | `Gameplay/Server/CageLock/UsePoint` | use_point | 24.3 | 40.7 | 1.67 | ok |
+| `Spawns/OobRoof3` | `Gameplay/Server/HackTerminal` | objective | 25.6 | 42.5 | 1.66 | ok |
+| `Spawns/OobRoof3` | `Gameplay/Server/HackTerminal/UsePoint` | use_point | 25.6 | 42.5 | 1.66 | ok |
+| `Spawns/OobRoof3` | `Gameplay/Server/Drives1` | loot_spawn | 24.4 | 43.5 | 1.79 | ok |
+| `Spawns/OobRoof3` | `Gameplay/Server/Drives1/UsePoint` | use_point | 24.3 | 43.5 | 1.79 | ok |
+| `Spawns/OobRoof3` | `Gameplay/Server/Drives2` | loot_spawn | 26.3 | 43.3 | 1.65 | ok |
+| `Spawns/OobRoof3` | `Gameplay/Server/Drives2/UsePoint` | use_point | 26.3 | 43.2 | 1.64 | ok |
+| `Spawns/OobRoof3` | `Gameplay/Server/Drives3` | loot_spawn | 26.9 | 43.9 | 1.63 | ok |
+| `Spawns/OobRoof3` | `Gameplay/Server/Drives3/UsePoint` | use_point | 26.9 | 43.8 | 1.63 | ok |
 | `Spawns/OobRoof3` | `Gameplay/Study/StudyReader` | objective | 28.4 | 34.2 | 1.20 | ok |
 | `Spawns/OobRoof3` | `Gameplay/Study/StudyReader/UsePoint` | use_point | 28.4 | 34.2 | 1.20 | ok |
 | `Spawns/OobRoof3` | `Gameplay/Study/StudySafe` | objective | 29.5 | 34.6 | 1.17 | ok |
@@ -1404,10 +1404,10 @@ Result: **PASS** (0 failure(s))
 | `Spawns/OobRoof3` | `Gameplay/Misc/PhoneBreakRoom/UsePoint` | use_point | 13.0 | 34.7 | 2.66 | ok |
 | `Spawns/OobRoof3` | `Gameplay/Misc/PhoneGuestSuite/UsePoint` | use_point | 5.1 | 32.2 | 6.37 | detour (whitelisted) |
 | `Spawns/OobRoof3` | `Gameplay/Misc/PhonePantry/UsePoint` | use_point | 23.1 | 33.8 | 1.46 | ok |
-| `Spawns/OobRoof3` | `Gameplay/Misc/ArchiveSafe` | objective | 12.8 | 38.4 | 3.00 | detour (whitelisted) |
-| `Spawns/OobRoof3` | `Gameplay/Misc/ArchiveSafe/UsePoint` | use_point | 12.8 | 38.4 | 3.00 | detour (whitelisted) |
-| `Spawns/OobRoof3` | `Gameplay/Misc/ArchiveSafe/ArchiveCash` | loot_spawn | 12.4 | 39.4 | 3.18 | detour (whitelisted) |
-| `Spawns/OobRoof3` | `Gameplay/Misc/ArchiveSafe/ArchiveCash/UsePoint` | use_point | 12.4 | 39.4 | 3.18 | detour (whitelisted) |
+| `Spawns/OobRoof3` | `Gameplay/Misc/ArchiveSafe` | objective | 12.8 | 41.6 | 3.25 | detour (whitelisted) |
+| `Spawns/OobRoof3` | `Gameplay/Misc/ArchiveSafe/UsePoint` | use_point | 12.8 | 41.6 | 3.25 | detour (whitelisted) |
+| `Spawns/OobRoof3` | `Gameplay/Misc/ArchiveSafe/ArchiveCash` | loot_spawn | 12.4 | 40.4 | 3.26 | detour (whitelisted) |
+| `Spawns/OobRoof3` | `Gameplay/Misc/ArchiveSafe/ArchiveCash/UsePoint` | use_point | 12.4 | 40.4 | 3.26 | detour (whitelisted) |
 | `Spawns/OobRoof3` | `Gameplay/Misc/Painting1` | loot_spawn | 23.9 | 29.2 | 1.22 | ok |
 | `Spawns/OobRoof3` | `Gameplay/Misc/Painting1/UsePoint` | use_point | 23.9 | 29.2 | 1.22 | ok |
 | `Spawns/OobRoof3` | `Gameplay/Misc/Painting2` | loot_spawn | 24.9 | 30.0 | 1.21 | ok |
@@ -1416,13 +1416,13 @@ Result: **PASS** (0 failure(s))
 | `Spawns/OobRoof3` | `Gameplay/Misc/PrintoutBooks/UsePoint` | use_point | 12.2 | 29.4 | 2.41 | ok |
 | `Spawns/OobRoof3` | `Gameplay/Misc/KesslerWatch/UsePoint` | use_point | 12.8 | 30.5 | 2.38 | ok |
 | `Spawns/OobRoof3` | `Gameplay/Misc/MoorBracelet/UsePoint` | use_point | 31.1 | 44.4 | 1.42 | ok |
-| `Spawns/OobRoof3` | `Gameplay/Misc/HumidorCigars1/UsePoint` | use_point | 25.6 | 43.0 | 1.68 | ok |
-| `Spawns/OobRoof3` | `Gameplay/Misc/HumidorCigars2/UsePoint` | use_point | 25.6 | 42.7 | 1.67 | ok |
+| `Spawns/OobRoof3` | `Gameplay/Misc/HumidorCigars1/UsePoint` | use_point | 25.6 | 40.5 | 1.58 | ok |
+| `Spawns/OobRoof3` | `Gameplay/Misc/HumidorCigars2/UsePoint` | use_point | 25.6 | 40.2 | 1.57 | ok |
 | `Spawns/OobRoof3` | `Variants/Group_laptop/Slot_lap_boardroom/Laptop` | loot_spawn | 31.0 | 51.0 | 1.65 | ok |
 | `Spawns/OobRoof3` | `Variants/Group_laptop/Slot_lap_boardroom/Laptop/UsePoint` | use_point | 30.8 | 50.2 | 1.63 | ok |
 | `Spawns/OobRoof3` | `Variants/Group_keycard/Slot_kc_cleaner/Keycard` | objective | 10.2 | 21.6 | 2.13 | ok |
 | `Spawns/OobRoof3` | `Variants/Group_keycard/Slot_kc_cleaner/Keycard/UsePoint` | use_point | 10.2 | 21.6 | 2.13 | ok |
-| `Spawns/OobRoof3` | `Variants/Group_code_note/Slot_code_contractor/CodeNote` | objective | 22.9 | 39.1 | 1.71 | ok |
-| `Spawns/OobRoof3` | `Variants/Group_code_note/Slot_code_contractor/CodeNote/UsePoint` | use_point | 22.9 | 39.1 | 1.71 | ok |
-| `Spawns/OobRoof3` | `Variants/Group_escape/Slot_esc_heli/HeliNetE1/Zone` | secure_zone | 21.8 | 23.2 | 1.07 | ok |
-| `Spawns/OobRoof3` | `Variants/Group_escape/Slot_esc_heli/HeliEscapeE1/Zone` | escape_zone | 28.1 | 29.2 | 1.04 | ok |
+| `Spawns/OobRoof3` | `Variants/Group_code_note/Slot_code_contractor/CodeNote` | objective | 22.9 | 39.5 | 1.73 | ok |
+| `Spawns/OobRoof3` | `Variants/Group_code_note/Slot_code_contractor/CodeNote/UsePoint` | use_point | 22.9 | 39.5 | 1.73 | ok |
+| `Spawns/OobRoof3` | `Variants/Group_escape/Slot_esc_heli/HeliNetE1/Zone` | secure_zone | 21.8 | 23.9 | 1.10 | ok |
+| `Spawns/OobRoof3` | `Variants/Group_escape/Slot_esc_heli/HeliEscapeE1/Zone` | escape_zone | 28.1 | 29.8 | 1.06 | ok |
