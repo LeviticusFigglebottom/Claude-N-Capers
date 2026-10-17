@@ -1,4 +1,4 @@
-# Contract: characters (v1.26)
+# Contract: characters (v1.27)
 
 Producer: ENV C (generated humanoids + animations). Consumer: ENV A (NPC/crew prefabs).
 Until delivered, ENV A uses capsule placeholders with the same node names.
@@ -345,3 +345,8 @@ plays `reload_<class>` as the upper-body layer, full body when standing; class m
 LMG → lmg, SNIPER → sniper, rifle/pistol/akimbo unchanged. (c) cover_* loops play on a brain cover post (anim_hint
 `cover_peek_l` / `cover_peek_r` / `cover_low`). (d) `stagger_F` replaces hit_react on a stagger-strength hit. Fall back
 to the old clips until D's land.
+
+## v1.27: slung long gun as its own mesh (D 7dc91bd0, D-132 follow-up)
+Cartel looks with a slung long gun carry it on an optional `Skeleton3D/Slung` mesh (rigid on the chest). Consumers (ENV A's
+HeldVisuals) hide it while any `sit_*` clip plays; CrowdLod merges it like any other surface. `cartel_gunman_g` has no
+`Gear` mesh (by design).

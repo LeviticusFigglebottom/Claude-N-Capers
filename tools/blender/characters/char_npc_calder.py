@@ -11,7 +11,8 @@ the people who are really in the tower at 02:10:
 * ``char_npc_cleaner_sl_b`` (D-SL-2): the second night cleaner in the same Calder uniform (same
   materials and name tag), a clearly different person so two or three cleaners on Brutal are not
   twins: a sturdy woman in her late 50s, light skin, grey hair pinned up in a bun. ``_c`` (D-116, three
-  cleaners on Brutal): a slim young man, olive skin, dark short hair, glasses, same uniform.
+  cleaners on Brutal): a slim young man, olive skin, dark short hair, glasses, same uniform. ``_d`` (D-130, four
+  cleaners at Cataclysm): a woman in her late 30s, mid-deep skin, dark bob, same uniform.
 * ``char_npc_it_contractor`` (``civ_it``): casual contractor: a rust pull-over hoodie (hood down,
   kangaroo pocket, drawstrings), dark jeans, grey trainers, dark-framed glasses, a blue lanyard with
   a white visitor badge on the chest and a dark grey messenger tool/laptop bag on the left hip on a
@@ -24,8 +25,10 @@ the people who are really in the tower at 02:10:
   ``Hip`` seat where the pager rides). ``_b`` is a woman (different skin, hair in a chignon). D-116 (no twins
   among up to 6 detail + operator): ``_c`` an older heavy-set man, bald, mid-deep skin, glasses; ``_d`` a tall
   young man, light skin, short blond hair, heavy stubble; ``_e`` a woman in her 50s, deep skin, dark bob; ``_f`` a
-  man in his 40s, olive skin, side-parted brown hair, stubble (Lethal: 5 guards + the operator). Same suit,
-  earpiece, pin and radio on all six.
+  man in his 40s, olive skin, side-parted brown hair, stubble (Lethal: 5 guards + the operator). D-130 (Cataclysm:
+  about +50 % guards, up to 8 detail + the operator): ``_g`` a young woman, mid-deep skin, dark hair in a chignon; ``_h`` a man
+  in his late 60s, light skin, short grey hair, grey stubble; ``_i`` a big man in his 30s, deep skin, shaved bald
+  head. Same suit, earpiece, pin and radio on all nine.
 * ``char_npc_helena_moor`` (``civ_partner``): Helena Moor, founding partner working late. About 52,
   tall and composed, silver-grey chin-length bob, reading glasses on, no jacket (it is
   hung up in her office): an ivory silk blouse with the sleeves rolled, charcoal tailored trousers with a slim
@@ -69,6 +72,15 @@ VARIANTS = {
                                    "hair": "bob", "hair_color": "dark", "look": "northgate_e"},
     "char_npc_northgate_guard_f": {"height": 1.82, "build": 0.75, "gender": 0.0, "age": 0.45, "skin": 3,
                                    "beard_shadow": 0.9, "hair": "side_part", "hair_color": "brown", "look": "northgate_f"},
+    # D-130: the nine-face Northgate pool (g-i)
+    "char_npc_northgate_guard_g": {"height": 1.70, "build": 0.4, "gender": 1.0, "age": 0.25, "skin": 4,
+                                   "hair": "side_part", "hair_color": "dark", "look": "northgate_g"},
+    "char_npc_northgate_guard_h": {"height": 1.78, "build": 0.6, "gender": 0.0, "age": 0.68, "skin": 1,
+                                   "beard_shadow": 0.4, "hair": "short", "hair_color": "grey", "look": "northgate_h"},
+    "char_npc_northgate_guard_i": {"height": 1.86, "build": 0.85, "gender": 0.0, "age": 0.3, "skin": 6,
+                                   "beard_shadow": 0.3, "hair": "bald", "hair_color": "dark", "look": "northgate_i"},
+    "char_npc_cleaner_sl_d": {"height": 1.70, "build": 0.6, "gender": 1.0, "age": 0.38, "skin": 4, "hair": "bob",
+                              "hair_color": "dark", "look": "cleaner_sl_d"},
     "char_npc_helena_moor": {"height": 1.78, "build": 0.3, "gender": 1.0, "age": 0.65, "skin": 2, "hair": "bob",
                              "hair_color": "grey", "look": "helena"},
 }
@@ -105,6 +117,12 @@ def cleaner_sl_c(kit: Kit) -> None:
     kit.add_head(gk.glasses(kit.fit, "char_button_dark"))
     kit.notes["look"] = ("Calder Tower night cleaner, third face (D-116): same glass-teal tabard uniform; a slim "
                          "young man, olive skin, dark short hair, glasses")
+
+
+def cleaner_sl_d(kit: Kit) -> None:
+    _cleaner_sl(kit)
+    kit.notes["look"] = ("Calder Tower night cleaner, fourth face (D-130): same glass-teal tabard uniform; a woman in "
+                         "her late 30s, mid-deep skin, dark bob")
 
 
 def it(kit: Kit) -> None:
@@ -177,6 +195,22 @@ def northgate_f(kit: Kit) -> None:
     kit.notes["face"] = "D-116: man in his 40s, olive skin, side-parted brown hair, heavy stubble"
 
 
+def northgate_g(kit: Kit) -> None:
+    _northgate(kit)
+    kit.add_head(cg.chignon(kit.fit, "char_hair_dark"))
+    kit.notes["face"] = "D-130: young woman, mid-deep skin, dark hair in a chignon"
+
+
+def northgate_h(kit: Kit) -> None:
+    _northgate(kit)
+    kit.notes["face"] = "D-130: man in his late 60s, light skin, short grey hair, grey stubble"
+
+
+def northgate_i(kit: Kit) -> None:
+    _northgate(kit)
+    kit.notes["face"] = "D-130: big man in his 30s, deep skin, shaved bald head"
+
+
 def helena(kit: Kit) -> None:
     fit, k = kit.fit, kit.k
     _hips_z, belt_z, tuck = _z(kit)
@@ -191,9 +225,11 @@ def helena(kit: Kit) -> None:
     kit.notes["prop_note"] = "phone in hand is a prop: attach at HandR/Socket (not skinned)"
 
 
-_looks = {"cleaner_sl": cleaner_sl, "cleaner_sl_b": cleaner_sl_b, "cleaner_sl_c": cleaner_sl_c, "it": it,
+_looks = {"cleaner_sl": cleaner_sl, "cleaner_sl_b": cleaner_sl_b, "cleaner_sl_c": cleaner_sl_c, "cleaner_sl_d": cleaner_sl_d,
+          "it": it,
           "northgate": northgate, "northgate_b": northgate_b, "northgate_c": northgate_c, "northgate_d": northgate_d,
-          "northgate_e": northgate_e, "northgate_f": northgate_f,
+          "northgate_e": northgate_e, "northgate_f": northgate_f, "northgate_g": northgate_g, "northgate_h": northgate_h,
+          "northgate_i": northgate_i,
           "helena": helena}
 
 

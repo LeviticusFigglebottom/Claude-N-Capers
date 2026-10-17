@@ -25,10 +25,11 @@ static func make_def() -> HeistDef:
 	d.briefing = "heist.dockside_burn.briefing"
 	d.mode = Enums.HeistMode.LOUD_ONLY
 	d.map_scene = SCENE_PATH
-	d.base_payout = 24000  # D-120 (was the D-064 $95k placeholder)
+	# D-120 base payout; the loot values are ENV B's LootDefs (D-115 balance pass), not set here.
+	d.base_payout = 24000  # D-120
 	d.stealth_bonus_mult = 1.0
-	# QC-39 (shipped, ENV B): loot.weapon_crate (HEAVY) and loot.contraband (MEDIUM) are LootDefs in content/data/loot/,
-	# values per D-120 (B's data); the thermite bag is a tool bag, not payout loot.
+	# QC-39 (shipped, ENV B): loot.weapon_crate (HEAVY) and loot.contraband (MEDIUM) are LootDefs in content/data/loot/
+	# beside loot.cash_bricks; loot.thermite is a tool bag (is_tool, value 0), not payout loot, so it is not listed.
 	d.loot = [&"loot.cash_bricks", &"loot.weapon_crate", &"loot.contraband"] as Array[StringName]
 	# Objective ids = the design doc's Objectives `[tag]`s (D-039 rule: ENV B reads them there).
 	d.objectives = [&"cartel", &"breach", &"product", &"burn", &"strongroom", &"count_cage", &"containers",

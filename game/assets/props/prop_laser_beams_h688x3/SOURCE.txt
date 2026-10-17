@@ -1,0 +1,8 @@
+asset: prop_laser_beams_h688x3
+script: tools/blender/props/lasers.py
+params: {"cat": {"kind": "laser_beams", "prefab": "laser_grid", "surface": "glass"}, "fn": "beams", "len": 6.88, "n": 3, "vertical": false}
+seed: 3985359980  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_laser_beams_h688x3
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 8000

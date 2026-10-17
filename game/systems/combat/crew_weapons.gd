@@ -691,7 +691,7 @@ static func _strip_objects(claim: Dictionary) -> Dictionary:
 
 func _spread_deg(s: WeaponState, intent: CrewIntent) -> float:
 	var tw: CombatTweak = CombatTweak.data()
-	var base: float = s.stats.spread_deg_ads if intent.aim else s.stats.spread_deg_hip
+	var base: float = s.stats.spread_deg_ads * tw.ads_spread_mult if intent.aim else s.stats.spread_deg_hip  # D-131
 	var hv: float = Vector2(_crew.velocity.x, _crew.velocity.z).length()
 	var mult: float = tw.spread_mult_still
 	if _crew.crouched:

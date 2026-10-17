@@ -25259,7 +25259,7 @@ shape = SubResource("db_1086")
 disabled = true
 
 [node name="ForemanChair" type="Node3D" parent="Props/Mezzanine" unique_id=103347]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 19.4, 3.6, 1.75)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 19.4, 3.6, 2)
 metadata/kind = "chair"
 metadata/art_asset = "prop_chair_task"
 metadata/faces = NodePath("../ForemanDesk")
@@ -32502,7 +32502,7 @@ slot_group = &"guard_post"
 slot_id = &"post_platform"
 
 [node name="GunmanPlatformA" type="Marker3D" parent="Variants/Group_guard_post/Slot_post_platform" unique_id=104556]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 19.4, 3.6, 1.75)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 19.4, 3.6, 2)
 script = ExtResource("218_db")
 tags = Array[StringName]([&"cartel", &"cartel_platform"])
 patrol_graph = NodePath("../../../../Patrols/Cartel")
