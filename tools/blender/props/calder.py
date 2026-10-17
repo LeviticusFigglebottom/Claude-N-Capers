@@ -21,7 +21,7 @@ instances them over that collider with a yaw (shadow_ledger_dressing.gd PROP_ART
 
 import math
 
-from _pb import Kit, bar_handle, knob, legs4, panel_door
+from _pb import Kit, bar_handle, knob, legs4, lettering, panel_door
 
 TRI_BUDGET = 16000
 COLD = "#E6EEFF"
@@ -61,7 +61,9 @@ BASE_VARIANTS = {
     "prop_printer_mfp": {"fn": "printer", "w": 0.6, "d": 0.5, "h": 1.0, "cat": {"kind": "printer", "place": "wall", "group": _G}},
     "prop_copier": {"fn": "printer", "w": 1.0, "d": 0.7, "h": 1.1, "big": True, "cat": {"kind": "copier", "place": "wall",
                                                                                       "group": _G}},
-    "prop_workstation_pod": {"fn": "pod", "cat": {"kind": "desk", "place": "center", "support": True, "group": _G}},
+    # the work top stays 0.74 under the spine screen; "on" items keep off the screen's strip
+    "prop_workstation_pod": {"fn": "pod", "cat": {"kind": "desk", "place": "center", "support": True, "top": 0.74,
+                                                  "keepout": [[-1.2, -0.09, 1.2, 0.09]], "group": _G}},
     "prop_compact_shelving_w400": {"fn": "compact", "cat": {"kind": "shelving", "place": "none", "group": _G}},
     "prop_library_stack_w400": {"fn": "library_stack", "cat": {"kind": "bookshelf", "place": "none", "group": _G}},
     # back of house
@@ -130,6 +132,13 @@ BASE_VARIANTS = {
     "prop_cradle_garage": {"fn": "garage", "cat": {"kind": "garage", "place": "none", "group": _G}},
     "prop_anchor_frame_h140": {"fn": "anchor_frame", "h": 1.4, "cat": {"kind": "anchor_frame", "place": "none", "group": _G}},
     "prop_anchor_frame_h220": {"fn": "anchor_frame", "h": 2.2, "cat": {"kind": "anchor_frame", "place": "none", "group": _G}},
+    # SL-1 polish: back-of-house and open-office dressing, the helipad windsock
+    "prop_pod_screen": {"fn": "pod_screen", "cat": {"kind": "desk_screen", "place": "on", "group": _G}},
+    "prop_door_sign": {"fn": "door_sign", "cat": {"kind": "door_sign", "place": "wall_mount", "z": 1.5, "group": _G}},
+    "prop_mail_trolley": {"fn": "mail_trolley", "cat": {"kind": "cart", "place": "wall", "group": _G}},
+    "prop_mail_bins": {"fn": "mail_bins", "cat": {"kind": "mail_bins", "place": "wall", "group": _G}},
+    "prop_whiteboard": {"fn": "whiteboard", "cat": {"kind": "whiteboard", "place": "wall_mount", "z": 1.45, "group": _G}},
+    "prop_windsock": {"fn": "windsock", "cat": {"kind": "windsock", "place": "wall_mount", "z": 2.2, "group": _G}},
     # fixtures
     "prop_led_linear": {"fn": "led_linear", "cat": {"kind": "light_fixture", "place": "ceiling", "fixture": True, "group": _G,
                                                     "light": {"type": "spot", "color": COLD, "energy": 1.1, "range": 4.5,
@@ -1260,6 +1269,162 @@ def _anchor_frame(k: Kit, p: dict) -> None:
             t.rod((sx * 0.25, sy * 0.25, 0.08), (0.0, 0.0, h - 0.08), 0.025, "steel_galv", segs=8)
     t.cyl(0.05, 0.12, (0.0, 0.0, h - 0.07), "steel_galv", segs=12)
     t.torus(0.04, 0.01, (0.0, 0.0, h - 0.05), "steel", segs=12, rsegs=4, axis="Y")
+    o.build()
+
+
+# ------------------------------------------------------------------------------------------ SL-1 polish
+
+def _pod_screen(k: Kit, p: dict) -> None:
+    """Desk-mounted acoustic screen for the bench pod's spine (an "on" item, bottom on z 0): a 2.26 x 0.032 x 0.32 m
+    teal fabric panel in a graphite cap and end posts, two clamp feet."""
+    w = 2.26
+    o = k.obj("PodScreen")
+    s = o.part(bevel=0.003)
+    s.bx((-w / 2 + 0.02, -0.012, 0.0), (w / 2 - 0.02, 0.012, 0.3), "fabric_teal")
+    s.bx((-w / 2, -0.016, 0.3), (w / 2, 0.016, 0.32), "metal_graphite")
+    for sx in (-1, 1):
+        x0, x1 = sorted((sx * w / 2, sx * (w / 2 - 0.02)))
+        s.bx((x0, -0.016, 0.0), (x1, 0.016, 0.3), "metal_graphite")
+    f = o.part(bevel=0.0)
+    for x in (-0.6, 0.6):
+        f.bx((x - 0.03, -0.03, 0.0), (x + 0.03, 0.03, 0.02), "metal_graphite")
+    o.build()
+
+
+def _door_sign(k: Kit, p: dict) -> None:
+    """Room sign beside a door (wall mount, back at y 0, centred on z 0): a 0.24 x 0.12 m graphite plate with a brushed
+    face, a room number and a name line."""
+    o = k.obj("DoorSign")
+    a = o.part(bevel=0.002)
+    a.bx((-0.12, 0.0, -0.06), (0.12, 0.01, 0.06), "metal_graphite")
+    t = o.part(bevel=0.0)
+    t.bx((-0.11, 0.01, -0.05), (0.11, 0.013, 0.05), "steel")
+    t.bx((-0.09, 0.013, 0.005), (-0.02, 0.0145, 0.035), "plastic_black")
+    t.bx((-0.09, 0.013, -0.03), (0.08, 0.0145, -0.02), "plastic_black")
+    o.build()
+
+
+def _mail_trolley(k: Kit, p: dict) -> None:
+    """Internal-mail trolley 0.86 x 0.41 x 1.05 m: a steel tube frame on castors, two canvas sacks, a sorting tray of
+    pigeonholes with envelopes on top."""
+    w, d, h = 0.86, 0.41, 1.05
+    o = k.obj("MailTrolley")
+    c = o.part(bevel=0.0)
+    for sx in (-1, 1):
+        for sy in (-1, 1):
+            x, y = sx * (w / 2 - 0.03), sy * (d / 2 - 0.03)
+            c.rod((x, y, 0.13), (x, y, h - 0.03), 0.012, "steel", segs=8)
+            wx, wy = sx * (w / 2 - 0.07), sy * (d / 2 - 0.08)
+            c.bx((wx - 0.02, wy - 0.02, 0.1), (wx + 0.02, wy + 0.02, 0.13), "metal_dark")
+            _wheel(c, wx, wy, 0.05)
+    for z in (0.75, h - 0.03):
+        for y in (-d / 2 + 0.03, d / 2 - 0.03):
+            c.rod((-w / 2 + 0.03, y, z), (w / 2 - 0.03, y, z), 0.01, "steel", segs=8)
+    a = o.part(bevel=0.003)
+    a.bx((-w / 2 + 0.02, -d / 2 + 0.02, 0.13), (w / 2 - 0.02, d / 2 - 0.02, 0.16), "metal_grey")
+    a.bx((-w / 2 + 0.02, -d / 2 + 0.02, 0.78), (w / 2 - 0.02, d / 2 - 0.02, 0.8), "metal_grey")
+    for i in range(5):
+        x = -w / 2 + 0.03 + i * (w - 0.06) / 4
+        a.bx((x - 0.004, -d / 2 + 0.02, 0.8), (x + 0.004, d / 2 - 0.02, h - 0.06), "metal_grey")
+    b = o.part(bevel=0.02, segments=2)
+    b.bx((-w / 2 + 0.06, -d / 2 + 0.06, 0.16), (-0.02, d / 2 - 0.06, 0.7), "canvas_ivory")
+    b.bx((0.02, -d / 2 + 0.07, 0.16), (w / 2 - 0.06, d / 2 - 0.07, 0.62), "canvas_bank")
+    e = o.part(bevel=0.0)
+    for i in range(4):
+        x = -w / 2 + 0.03 + (i + 0.5) * (w - 0.06) / 4
+        n = 2 + _rnd(i, 3, 4)
+        for j in range(n):
+            y = -d / 2 + 0.06 + j * 0.05
+            e.bx((x - 0.08, y, 0.8), (x + 0.08, y + 0.008, 0.8 + 0.11 + 0.02 * (j % 2)), "paper")
+    o.build()
+
+
+def _mail_bins(k: Kit, p: dict) -> None:
+    """Post-room bin rack 1.19 x 0.39 x 1.3 m: a graphite steel frame with three shelves of grey mail tubs, envelopes
+    and parcels standing in them."""
+    w, d, h = 1.19, 0.39, 1.3
+    o = k.obj("MailBins")
+    a = o.part(bevel=0.0)
+    for sx in (-1, 1):
+        for sy in (-1, 1):
+            x0, x1 = sorted((sx * w / 2, sx * (w / 2 - 0.03)))
+            y0, y1 = sorted((sy * d / 2, sy * (d / 2 - 0.03)))
+            a.bx((x0, y0, 0.0), (x1, y1, h), "metal_graphite")
+    shelves = (0.12, 0.52, 0.92)
+    for z in shelves + (h - 0.02,):
+        a.bx((-w / 2 + 0.03, -d / 2, z - 0.02), (w / 2 - 0.03, d / 2, z), "metal_graphite")
+    t = o.part(bevel=0.004)
+    e = o.part(bevel=0.0)
+    for si, z in enumerate(shelves):
+        for i, x0 in enumerate((-w / 2 + 0.05, 0.02)):
+            x1 = x0 + w / 2 - 0.07
+            t.bx((x0, -d / 2 + 0.03, z), (x1, -d / 2 + 0.05, z + 0.22), "plastic_grey")
+            t.bx((x0, d / 2 - 0.05, z), (x1, d / 2 - 0.03, z + 0.22), "plastic_grey")
+            t.bx((x0, -d / 2 + 0.05, z), (x0 + 0.02, d / 2 - 0.05, z + 0.22), "plastic_grey")
+            t.bx((x1 - 0.02, -d / 2 + 0.05, z), (x1, d / 2 - 0.05, z + 0.22), "plastic_grey")
+            t.bx((x0 + 0.02, -d / 2 + 0.05, z), (x1 - 0.02, d / 2 - 0.05, z + 0.02), "plastic_grey")
+            r = _rnd(si * 2 + i, 11, 5)
+            for j in range(2 + r):
+                xa = x0 + 0.05 + j * 0.09
+                if xa + 0.07 > x1 - 0.03:
+                    break
+                e.bx((xa, -d / 2 + 0.07, z + 0.02), (xa + 0.006, d / 2 - 0.07, z + 0.2 + 0.03 * (j % 2)), "paper")
+            if r % 2 == 0:
+                e.bx((x1 - 0.2, -0.1, z + 0.02), (x1 - 0.04, 0.08, z + 0.15), "cardboard")
+    o.build()
+
+
+def _whiteboard(k: Kit, p: dict) -> None:
+    """Whiteboard 1.8 x 1.0 m (wall mount, back at y 0, centred on z 0): brushed aluminium frame, marker tray with three
+    markers, a case plan in blue marker (boxes, arrows, a few words: straight-stroke glyphs only) and two pinned sheets."""
+    w, hh = 1.8, 1.0
+    o = k.obj("Whiteboard")
+    a = o.part(bevel=0.003)
+    a.bx((-w / 2, 0.0, -hh / 2), (w / 2, 0.02, hh / 2), "steel")
+    t = o.part(bevel=0.0)
+    t.bx((-w / 2 + 0.025, 0.02, -hh / 2 + 0.025), (w / 2 - 0.025, 0.024, hh / 2 - 0.025), "plastic_white")
+    t.bx((-0.45, 0.02, -hh / 2 - 0.02), (0.45, 0.07, -hh / 2 + 0.005), "steel")
+    for i, key in enumerate(("plastic_blue", "plastic_black", "metal_red")):
+        x = -0.3 + i * 0.16
+        t.rod((x - 0.06, 0.05, -hh / 2 + 0.015), (x + 0.06, 0.05, -hh / 2 + 0.015), 0.009, key, segs=8)
+    m = o.part(bevel=0.0)
+    y = 0.024
+    lettering(m, "NEW TAX LAW", 0.07, 0.3, y, 0.33, "plastic_blue", stroke=0.007, depth=0.002)
+    lettering(m, "NEXT", 0.05, -0.45, y, -0.02, "plastic_black", stroke=0.006, depth=0.002)
+    for (x0, z0, x1, z1) in ((0.1, 0.0, 0.6, 0.22), (-0.7, -0.35, -0.2, -0.1), (0.25, -0.38, 0.75, -0.16)):
+        for (a0, a1) in (((x0, z0), (x1, z0)), ((x1, z0), (x1, z1)), ((x1, z1), (x0, z1)), ((x0, z1), (x0, z0))):
+            m.rod((a0[0], y + 0.001, a0[1]), (a1[0], y + 0.001, a1[1]), 0.0035, "plastic_blue", square=True)
+    for (a0, a1) in (((-0.2, -0.22), (0.1, 0.05)), ((0.42, 0.0), (0.48, -0.16))):
+        m.rod((a0[0], y + 0.001, a0[1]), (a1[0], y + 0.001, a1[1]), 0.0035, "metal_red", square=True)
+    s = o.part(bevel=0.0)
+    for (x, z) in ((-0.78, 0.2), (-0.56, 0.24)):
+        s.bx((x - 0.1, y, z - 0.14), (x + 0.1, y + 0.002, z + 0.14), "paper")
+        s.cyl(0.012, 0.008, (x, y + 0.006, z + 0.12), "metal_red", axis="Y", segs=8)
+    o.build()
+
+
+def _windsock(k: Kit, p: dict) -> None:
+    """Helipad windsock clamped to a wall (wall mount, back at y 0, back-centre pivot: the pole foot at z -2.2): a 4.3 m
+    graphite pole in three clamps, a swivel ring and a five-band orange / white sock streaming away from the wall."""
+    zb = -2.2
+    o = k.obj("Windsock")
+    a = o.part(bevel=0.0)
+    py = 0.1
+    a.rod((0.0, py, zb), (0.0, py, zb + 4.3), 0.04, "metal_graphite", segs=12)
+    a.cyl(0.07, 0.02, (0.0, py, zb + 0.01), "metal_graphite", segs=12)
+    for z in (0.4, 1.8, 3.3):
+        a.bx((-0.06, 0.0, zb + z - 0.04), (0.06, py, zb + z + 0.04), "metal_graphite")
+        a.cyl(0.055, 0.08, (0.0, py, zb + z), "metal_graphite", segs=12)
+    a.cyl(0.05, 0.06, (0.0, py, zb + 4.2), "steel", segs=12)
+    a.rod((0.0, py, zb + 4.2), (0.0, py + 0.25, zb + 4.2), 0.015, "steel", segs=8)
+    a.torus(0.22, 0.012, (0.0, py + 0.25, zb + 4.18), "steel", segs=20, rsegs=6, axis="Y")
+    s = o.part(bevel=0.0)
+    keys = ("paint_hazard_orange", "plastic_white", "paint_hazard_orange", "plastic_white", "paint_hazard_orange")
+    y0, z0 = py + 0.25, zb + 4.18
+    for i, key in enumerate(keys):
+        r = 0.2 - i * 0.022
+        ya, yb = y0 + i * 0.3, y0 + (i + 1) * 0.3 - (0.004 if i < 4 else 0.0)
+        s.rod((0.0, ya, z0 - 0.006 * i * i), (0.0, yb, z0 - 0.006 * (i + 1) * (i + 1)), r, key, segs=14)
     o.build()
 
 
