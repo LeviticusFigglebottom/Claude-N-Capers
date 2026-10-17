@@ -73,7 +73,19 @@ static func track(id: StringName) -> Dictionary:
 
 
 static func has(id: StringName) -> bool:
-	return id != &"" and not track(id).is_empty()
+	return id != &"" and (not track(id).is_empty() or is_pending(id))
+
+
+## OF G1: `id` is registered while its stems are pending (MusicCatalogTweak.pending); never in tracks() / available().
+static func is_pending(id: StringName) -> bool:
+	return TWEAK.pending.has(id) or TWEAK.pending.has(String(id))
+
+
+## The track `id` plays as: its pending fallback while its stems are missing, else itself.
+static func playable_id(id: StringName) -> StringName:
+	if track(id).is_empty() and is_pending(id):
+		return StringName(String(TWEAK.pending.get(id, TWEAK.pending.get(String(id), ""))))
+	return id
 
 
 ## True when `id` is a known track the profile may play (its unlock is &"" or owned). Unknown -> false.

@@ -28,7 +28,7 @@ const EVENTS: Array[StringName] = [HEIST_COMPLETED, HEIST_FAILED, STASH_EARNED, 
 ## Screen categories, in display order (strings `ui.achievements.category.<id>`).
 ## D-115: one category per heist (id = heist id) after the general heist list.
 const CATEGORIES: Array[StringName] = [&"career", &"heists", &"glasshouse", &"night_deposit", &"shadow_ledger",
-	&"dockside_burn", &"gallery_night", &"stealth", &"loud", &"combat", &"wealth", &"notoriety"]
+	&"dockside_burn", &"gallery_night", &"ostrander_federal", &"stealth", &"loud", &"combat", &"wealth", &"notoriety"]
 
 
 ## Every def in display order (order, then id).
@@ -39,6 +39,19 @@ static func all() -> Array[AchievementDef]:
 			out.append(r as AchievementDef)
 	out.sort_custom(func(a: AchievementDef, b: AchievementDef) -> bool:
 		return a.order < b.order if a.order != b.order else ContentDB.id_less(a.id, b.id))
+	return out
+
+
+## all() minus the achievements of a heist the menus do not offer yet (a staged heist_list entry, e.g. Ostrander
+## Federal behind its "hidden" switch): the achievements screen shows these.
+static func shown() -> Array[AchievementDef]:
+	var list: UiHeistList = HeistCatalog.heist_list()
+	var offered: Array[StringName] = HeistCatalog.ids()
+	var out: Array[AchievementDef] = []
+	for a: AchievementDef in all():
+		if list.heists.has(a.category) and not offered.has(a.category):
+			continue
+		out.append(a)
 	return out
 
 

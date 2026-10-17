@@ -7,13 +7,15 @@
 ##   hash([BoardTweak.board_seed, slot, bucket]) (never the global RNG; GameRng is per heist run and
 ##   the board lives outside runs). Same seed + slot + bucket + player level + heist pool = same
 ##   contract on every machine, so a crew with synced clocks sees the same board.
-## Rolls, in this fixed order: heist (uniform over the pool), difficulty (BoardTweak.difficulty_weights
+## Rolls, in this fixed order: heist (uniform over the pool; by the pool's "weight" when the weights differ, same one
+##   draw), difficulty (BoardTweak.difficulty_weights
 ##   over the unlocked ones), pro roll (always drawn; pro when difficulty >= pro_min_difficulty and
 ##   roll < pro_chance), contact pick (drawn always; used only when the heist names no contact), pin
 ##   jitter x, y.
 ##
 ## Pool entry (pool()): { "id": StringName, "base_payout": int (UNSCALED), "mode": int,
-##   "contact": StringName ("" = pick from fallback_contacts) }
+##   "contact": StringName ("" = pick from fallback_contacts), "weight": float, "pro": bool, "difficulty_min": int }
+##   (the last three from the city map's heist entry, OF-B1; defaults 1.0 / true / Routine).
 ## Contract (generate()/contract_for()): { "slot": int, "bucket": int, "heist_id": StringName,
 ##   "difficulty": int, "is_pro": bool, "contact_id": StringName, "payout": int (contract pay preview,
 ##   PayoutCalculator-consistent), "base_payout": int, "mode": int,
@@ -41,6 +43,9 @@ static func pool_from(entries: Array[Dictionary], city: BoardCityMap) -> Array[D
 		out.append({
 			"id": id, "base_payout": int(e.get("base_payout", 0)), "mode": int(e.get("mode", 0)),
 			"contact": contact,
+			"weight": city.heist_weight(id) if city != null else 1.0,
+			"pro": city.heist_pro(id) if city != null else true,
+			"difficulty_min": city.heist_difficulty_min(id) if city != null else 0,
 		})
 	return out
 
@@ -107,10 +112,16 @@ static func contract_for(slot: int, bucket: int, allowed: Array[int], heist_pool
 		tweak: BoardTweak, city: BoardCityMap) -> Dictionary:
 	var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 	rng.seed = hash([tweak.board_seed, slot, bucket])
-	var heist: Dictionary = heist_pool[rng.randi_range(0, heist_pool.size() - 1)]
-	var difficulty: int = _pick_difficulty(rng, allowed, tweak)
+	var heist: Dictionary = _pick_heist(rng, heist_pool)
+	var floor_d: int = int(heist.get("difficulty_min", 0))
+	var heist_allowed: Array[int] = []
+	for d: int in allowed:
+		if d >= floor_d:
+			heist_allowed.append(d)
+	var difficulty: int = _pick_difficulty(rng, heist_allowed if not heist_allowed.is_empty() else allowed, tweak)
 	var pro_roll: float = rng.randf()
-	var is_pro: bool = difficulty >= tweak.pro_min_difficulty and pro_roll < tweak.pro_chance
+	var is_pro: bool = difficulty >= tweak.pro_min_difficulty and pro_roll < tweak.pro_chance \
+			and bool(heist.get("pro", true))
 	var contact: StringName = StringName(heist.get("contact", &""))
 	var contact_pick: int = rng.randi_range(0, maxi(tweak.fallback_contacts.size() - 1, 0))
 	if contact == &"" and not tweak.fallback_contacts.is_empty():
@@ -148,6 +159,26 @@ static func next_expiry(contracts: Array[Dictionary]) -> float:
 	for c: Dictionary in contracts:
 		t = minf(t, float(c.get("expires_at", INF)))
 	return t
+
+
+## The heist of one roll: uniform (one randi_range, the shipped draw) while every pool weight is equal, else one
+## weighted randf draw (OF-B1 Board weights).
+static func _pick_heist(rng: RandomNumberGenerator, heist_pool: Array[Dictionary]) -> Dictionary:
+	var w0: float = float(heist_pool[0].get("weight", 1.0))
+	var total: float = 0.0
+	var equal: bool = true
+	for h: Dictionary in heist_pool:
+		var w: float = maxf(float(h.get("weight", 1.0)), 0.0)
+		total += w
+		equal = equal and is_equal_approx(w, w0)
+	if equal or total <= 0.0:
+		return heist_pool[rng.randi_range(0, heist_pool.size() - 1)]
+	var roll: float = rng.randf() * total
+	for h: Dictionary in heist_pool:
+		roll -= maxf(float(h.get("weight", 1.0)), 0.0)
+		if roll < 0.0:
+			return h
+	return heist_pool.back()
 
 
 static func _pick_difficulty(rng: RandomNumberGenerator, allowed: Array[int], tweak: BoardTweak) -> int:

@@ -113,6 +113,10 @@ func _unhandled_input(event: InputEvent) -> void:
 ## updated, so focusing right away would find no visible control (menu transitions lost focus).
 func _on_visibility_changed() -> void:
 	focus_default.call_deferred()
+	# Pad QA walk (lead r242): a screen hidden when the player switched device kept the old key caps until its next
+	# input ("Enter / Escape" on the Board after pad play).
+	if visible and control_hints != null and InteractionPanel.pad_active != _hints_pad:
+		refresh_control_hints()
 	if visible and motion_enabled and UiTokens.motion_ok() and is_inside_tree() and DisplayServer.get_name() != "headless":
 		modulate.a = 0.0
 		var tw: Tween = create_tween()

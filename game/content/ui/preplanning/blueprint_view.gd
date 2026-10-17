@@ -30,6 +30,9 @@ var markers: Dictionary = {}
 var marker_labels: Dictionary = {}
 ## point id -> 1-based number shown on the marker
 var marker_numbers: Dictionary = {}
+## Zone-name rects a shown point label had to cover (no clear spot, e.g. the small briefing view): _draw() leaves
+## those names out instead of printing two texts over each other (lead r242, DB "Pontoon" over "LANDING STAGE").
+var yielded_zones: Array[Rect2] = []
 var _styles: Dictionary = {}
 
 
@@ -145,6 +148,7 @@ func _layout_markers() -> void:
 		b.position = world_to_view(p.get("pos", Vector2.ZERO) as Vector2) - b.size * 0.5
 	_separate_markers()
 	var taken: Array[Rect2] = _zone_label_rects()  # after the markers move: zone names keep off them
+	yielded_zones.clear()
 	var hard: Array[Rect2] = _furniture_rects()
 	var marker_rects: Array[Rect2] = []
 	for pid: Variant in markers:
@@ -192,6 +196,9 @@ func _layout_markers() -> void:
 		l.position = best
 		if not best_blocked:
 			hard.append(Rect2(best, w))
+			for t: Rect2 in taken:
+				if t.intersects(Rect2(best, w)) and t.intersection(Rect2(best, w)).get_area() > 4.0:
+					yielded_zones.append(t)
 		l.set_meta(&"crowded", best_blocked)
 		l.visible = not best_blocked
 	queue_redraw()
@@ -238,6 +245,14 @@ func _separate_markers() -> void:
 			if not moved:
 				break
 		placed.append(b)
+
+
+## True when a shown point label covers this zone name's rect (the name is not drawn; see yielded_zones).
+func is_zone_yielded(r: Rect2) -> bool:
+	for y: Rect2 in yielded_zones:
+		if y.is_equal_approx(r):
+			return true
+	return false
 
 
 ## Rects of the zone names _draw() prints (see _zone_labels).
@@ -423,6 +438,8 @@ func _draw() -> void:
 		draw_rect(vr, fill)
 		draw_rect(vr, tweak.line_color, false, 2.0 if StringName(sh.get("kind", &"")) == &"building" else 1.0)
 	for z: Array in _zone_labels():
+		if is_zone_yielded(z[2] as Rect2):
+			continue
 		if z[3] != null:  # beside a narrow zone: plate + leader
 			var lead: Array = z[3] as Array
 			draw_line(lead[0] as Vector2, lead[1] as Vector2, tweak.label_color, 1.0, true)

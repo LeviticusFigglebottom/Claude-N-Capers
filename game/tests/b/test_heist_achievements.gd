@@ -1,12 +1,13 @@
 ## D-115: per-heist achievements (5-6 each for Golden Hour, Nightfall Depository, Shadow Ledger, Dockside Burn,
-## Gallery Night). Every one unlocks from a scripted HeistResult + in-heist fact log (HeistFacts) that satisfies
+## Gallery Night; OF-B1: Ostrander Federal). Every one unlocks from a scripted HeistResult + in-heist fact log (HeistFacts) that satisfies
 ## it, and a near miss (one condition broken) does not; rewards are granted; strings, categories and condition
 ## keys are valid; fact conditions fail closed without a log; the PaydayScreen hands its log to on_payday.
 extends TestCase
 
 const PAYDAY_SCENE: PackedScene = preload("res://content/ui/results/payday.tscn")
 const SLOT: int = 0
-const HEISTS: Array[StringName] = [&"glasshouse", &"night_deposit", &"shadow_ledger", &"dockside_burn", &"gallery_night"]
+const HEISTS: Array[StringName] = [&"glasshouse", &"night_deposit", &"shadow_ledger", &"dockside_burn", &"gallery_night",
+	&"ostrander_federal"]
 const DONE: int = Enums.ObjectiveState.COMPLETED
 const ACTIVE: int = Enums.ObjectiveState.ACTIVE
 const LANTERN: StringName = &"loot.painting_lantern_bearer"
@@ -37,7 +38,8 @@ func test_every_heist_has_its_set() -> void:
 		var c: Dictionary = a.condition
 		var heist: StringName = StringName(c.get("heist", &""))
 		assert_eq(a.category, heist, "%s: category is its heist" % a.id)
-		assert_true(HeistCatalog.ids().has(heist), "%s names an offered heist" % a.id)
+		assert_true(HeistCatalog.ids().has(heist) or HeistCatalog.heist_list().heists.has(heist),
+				"%s names a known heist (offered, or staged in heist_list)" % a.id)
 		assert_eq(a.event(), Achievements.HEIST_COMPLETED, "%s is a clear" % a.id)
 		assert_has(strings, String(a.name_key))
 		assert_has(strings, String(a.desc_key))
@@ -367,6 +369,34 @@ func _cases() -> Dictionary:
 		],
 	}
 	out[&"achievement.gn_cataclysm"] = _top_case(gn, false)
+	# --- Ostrander Federal (OF-B1; hidden until OF-A6)
+	var of: StringName = &"ostrander_federal"
+	out[&"achievement.of_quiet_weekend"] = {
+		"pass": _run(_res(of, true, {"pagers_answered": 0}), {}, "no pagers"),
+		"miss": [_run(_res(of, true, {"pagers_answered": 1}), {}, "one pager"),
+			_run(_res(of, false, {"pagers_answered": 0}), {}, "loud")],
+	}
+	out[&"achievement.of_no_harm_done"] = _quiet_case(of)
+	out[&"achievement.of_bank_holiday"] = _speed_case(of, 1150.0, 1260.0)
+	var vault: Array = _bags(&"loot.cash_bricks", 6) + _bags(&"loot.gold", 2) + _bags(&"loot.server_drives", 2)
+	out[&"achievement.of_clearing_house"] = {
+		"pass": _run(_res(of, true, {"loot": vault, "loot_available": 10}), {}, "every bag"),
+		"miss": [
+			_run(_res(of, true, {"loot": vault, "loot_available": 12}), {}, "bags left"),
+			_run(_res(of, true, {"loot": _bags(&"loot.cash_bricks", 8) + _bags(&"loot.server_drives", 2),
+					"loot_available": 10}), {}, "no gold"),
+		],
+	}
+	out[&"achievement.of_burn_and_hoist"] = {
+		"pass": _run(_res(of, false), _facts([], {&"lid": DONE, &"hoist": DONE}), "burned and hoisted"),
+		"miss": [
+			_run(_res(of, false), _facts([], {&"lid": DONE, &"hoist": ACTIVE}), "not hoisted"),
+			_run(_res(of, true), _facts([], {&"lid": DONE, &"hoist": DONE}), "stealth"),
+		],
+	}
+	var of_top: Dictionary = _top_case(of, true)
+	(of_top["miss"] as Array).append(_run(_res(of, false, {"difficulty": Enums.Difficulty.CATACLYSM}), {}, "loud"))
+	out[&"achievement.of_cataclysm"] = of_top
 	return out
 
 

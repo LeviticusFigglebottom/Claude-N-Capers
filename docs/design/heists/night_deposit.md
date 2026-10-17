@@ -35,6 +35,10 @@ Status: APPROVED (lead, 2026-10-10) (D-040)
   The depository safe needs a **saw** (or the drill). The crew holds the basement, which has one stair
   plus the cash lift: a strong but trap-like position.
 - **Difficulty notes:**
+  - **D-140 (PAGERS lever, revised 12:25; supersedes the guard counts below):** exactly **4 guards** (pager carriers:
+    2 posts, 1 rover, the operator or his `sec_empty` roundsman) on every seed and difficulty; the pager cap falls
+    **4 / 3 / 3 / 2 / 2 / 1** (Routine..Cataclysm), so from Tense killing every guard always runs out of pagers.
+    Civilians keep D-130. Table: §Civilian and guard roster, Totals.
   - Routine: 2–3 guards (2 fixed posts + 0–1 rover, P(no rover) = 0.3) + operator (staffed 60%).
   - Brutal: 3–4 guards + operator, sweeping lasers allowed, and the `armored_car_early` bad event
     enabled.
@@ -349,31 +353,36 @@ Support-space check (level_standards §2.2):
 |---|---|---|---|---|---|
 | Security Officer (hall) | 1 | always | `guard_hall` | — | `guard` |
 | Security Officer (basement) | 1 | always | `guard_basement` | — | `guard` |
-| Security Officer (rover) | 0–3 | `guard_post` rovers: `rover_ground`, `rover_basement`, `rover_exterior` | `guard_rover` | — | `guard` |
-| Camera operator (P2) | 0–1 | `security_room_staffed` | CAMERA_OPERATOR in G3 | `desk_work` | — |
+| Security Officer (rover) | 1 (D-140) | `guard_post` rovers: `rover_ground`, `rover_basement`, `rover_exterior` (exactly one) | `guard_rover` | — | `guard` |
+| Camera operator (P2) | 0–1 | `security_room_staffed` = `sec_staffed` | CAMERA_OPERATOR in G3 | `desk_work` | — |
+| Roundsman (the operator off his desk, D-140) | 0–1 | `sec_empty` (graph `rounds`: G3 → G5 electrical → G6 storage) | `guard_rover` (second tag guard_rounds, unmapped) | — | `guard` |
 | Cleaner | 0–1 (0–2 from Lethal, D-130: both floors' slots) | `cleaner` | `civ_cleaner` | `browse` (mopping) | `staff`, `staff_cleaner` |
 | Night manager | 0–1 | `night_manager` | `civ_manager` | `desk_work` | `staff`, `staff_manager` |
 
-**Totals** (D-130: guards = the 2 fixed posts + rovers, without the operator and the rare armoured-car crew;
-civilians = night manager + cleaners; "E" = the expected count, % against Routine; pinned by
+**Totals** (D-140, PAGERS lever, revised 12:25: guards = pager carriers at load = the 2 fixed posts + 1 rover + the
+operator (`sec_staffed`) or his roundsman (`sec_empty`), **exactly 4 on every seed and difficulty**; the cap falls instead
+(`HeistDef.pager_max_by_difficulty` [4, 3, 3, 2, 2, 1]); the rare armoured-car crew is a timed spawn, not counted.
+Civilians (D-130) = night manager + cleaners; "E" = the expected count, % against Routine; pinned by
 `game/tests/c/test_d130_population.gd`):
 
-| Difficulty | Guards (E, %) | Operator | Pagers (all) | Civilians (E, %) | Rule rows (`guard_post` pick + add, `rover_none` w; `cleaner` pick + add, `cleaner_none` w) |
-|---|---|---|---|---|---|
-| Routine | 2–3 (2.7) | 60% | ≤ 4 | 0–2 (1.2) | 1, 9/7 (P no rover 0.3); 1, 0.3 |
-| Tense | 2–3 (2.9, +7 %) | 60% | ≤ 4 | 0–2 (1.28, +7 %) | 1, 1/3 (P 0.1); 1, 0.2 |
-| Hazardous | 3–4 (3.2, +19 %) | 60% | ≤ 5 | 0–2 (1.38, +15 %) | 2, 3 (2 rovers 20 %); 1, 0.1 |
-| Brutal | 3–4 (3.5, +30 %) | 75% | ≤ 5 | 0–2 (1.45, +21 %) | 2, 1 (2 rovers 50 %); 1, 0.04 |
-| Lethal | 3–4 (3.82, +41 %) | 75% | ≤ 5 | 1–3 (1.54, +28 %) | 2, 0.25 (2 rovers 82 %); 2, 2.0 |
-| Cataclysm | 4–5 (4.05, +50 %) | 75% | ≤ 6 | 1–3 (1.62, +35 %) | 3, 3 (3 rovers 5 %); 2, 0.9 |
+| Difficulty | Guards (all pager carriers) | was (pre-D-140: posts + rovers, E; + operator) | Pager cap | Margin (guards − cap) | Civilians (E, %) | Rule rows (`cleaner` pick + add, `cleaner_none` w) |
+|---|---|---|---|---|---|---|
+| Routine | **4** | 2–3 (2.7) + 60 % | 4 | 0 | 0–2 (1.2) | 1, 0.3 |
+| Tense | **4** | 2–3 (2.9) + 60 % | 3 | 1 | 0–2 (1.28, +7 %) | 1, 0.2 |
+| Hazardous | **4** | 3–4 (3.2) + 60 % | 3 | 1 | 0–2 (1.38, +15 %) | 1, 0.1 |
+| Brutal | **4** | 3–4 (3.5) + 75 % | 2 | 2 | 0–2 (1.45, +21 %) | 1, 0.04 |
+| Lethal | **4** | 3–4 (3.82) + 75 % | 2 | 2 | 1–3 (1.54, +28 %) | 2, 2.0 |
+| Cataclysm | **4** | 4–5 (4.05) + 75 % | 1 | 3 | 1–3 (1.62, +35 %) | 2, 0.9 |
 
-Every extra is one of the existing posts with its own route: the three rovers (`rover_ground` G7/G9 loops,
+`guard_post` is pick 1 of the three rovers at every difficulty (D-140 removed `rover_none` and the rovers'
+`difficulty_add`); the security-room officer is either at the console or on the `rounds` beat, so the room always
+holds one pager. Every NPC is on its own post or route: the three rovers (`rover_ground` G7/G9 loops,
 `rover_basement` B5 loops, `rover_exterior` lot loop) and the two cleaner spots (`cleaner_ground` in G9,
 `cleaner_basement` in B5, each wandering its own floor's `staff_cleaner` points), so no post is doubled.
 Cable ties: 2 per player is enough up to Brutal.
 
-On Brutal (and on a Hazardous two-rover roll, D-130), pager use can exceed the cap of 4, so at least one guard must be avoided, not killed:
-the exterior rover is the natural candidate. That is the intended Brutal skill check.
+D-140: from Tense the cap (3, then 2, then 1 on Cataclysm) is below the 4 guards, so 1–3 guards must be avoided, not
+killed: the rover (wherever he rolled) and the roundsman / operator are the natural candidates. That is the intended skill check.
 
 ## Sightlines
 - **Hall guard post** (G9, by the compass, facing E): covers the hall, the ATM glass door, the
@@ -500,9 +509,9 @@ Each variable changes a decision.
 | `code_note` | `code_manager_planner` (G12), `code_break_board` (G4), `code_records_ledger` (B6), `code_on_manager` (the night manager carries it; requires `night_manager`) | 1, 1, 1, 1.5; pick 1 | **Route, or whether you must intimidate the manager** (cable tie + shout window) to read it. `code_on_manager` excludes the others' notes. |
 | `server_room` | `srv_basement` (B4), `srv_ground` (G6 storage rack) | 0.6, 0.4 | **The code-free alternative:** hacking avoids the code hunt but costs 60 s plus interruptions and puts a crew member far from the vault (ground variant). |
 | `time_lock_s` (scalar) | 60, 90, 120 | Routine 0.4/0.4/0.2; Brutal 0.1/0.4/0.5 | **How long to hold the basement**, which decides whether to clear or pager the basement guard before starting it. |
-| `guard_post` | `rover_ground`, `rover_basement`, `rover_exterior`, plus the empty `rover_none` (the 2 base posts are fixed spawns; `rover_none` encodes the rover-count weights, since the resolver rolls counts uniformly: Routine pick 1 with `rover_none` 9/7 against 1 each, so P(no rover) = 0.3; Brutal pick 2 with `rover_none` 1, so 1 or 2 rovers at 50/50; D-130 rows per difficulty in the roster Totals) | `difficulty_add` [0, 0, 1, 1, 1, 2]; `rover_none` 9/7, 1/3, 3, 1, 0.25, 3 (Routine..Cataclysm): 0–1 rover Routine/Tense, 1–2 Hazardous–Lethal, 2–3 Cataclysm | **Which route is covered:** exterior locks down the lot/vent, basement makes the time-lock hold harder, ground covers the front. |
+| `guard_post` | `rover_ground`, `rover_basement`, `rover_exterior` (the 2 base posts are fixed spawns; D-140 removed the empty `rover_none` and the D-130 rows) | 1, 1, 1; pick 1 at every difficulty: exactly one rover | **Which route is covered:** exterior locks down the lot/vent, basement makes the time-lock hold harder, ground covers the front. |
 | `camera` | `cam_a` (C1, C3, C5, C6), `cam_b` (C2, C4, C5, C7), `cam_c` (C1, C4, C6, C8) | 1, 1, 1 | **Which entry needs a loop/ECM:** C4 covers the sally door, C7 the lot and grate, C1 the ATM door. |
-| `security_room_staffed` | `sec_staffed`, `sec_empty` | Routine 0.6/0.4; Brutal 0.75/0.25 | **Kill/dominate the operator** (a pager, which counts toward Brutal's cap) **or live with cameras**. |
+| `security_room_staffed` | `sec_staffed`, `sec_empty` (D-140: the operator walks the `rounds` beat G3 → G5 → G6 instead) | Routine 0.6/0.4; Brutal 0.75/0.25 | **Kill/dominate the operator** (a pager) **or live with cameras**; when empty, the cameras are unwatched but a fourth officer walks the back rooms (also a pager). |
 | `vent_open` | `vent_open` (grate unlocked), `vent_locked` (padlock: lockpick 8 s) | 0.5, 0.5 | **The cost of the areaway route.** |
 | `laser_pattern` (antechamber) | `laser_static`, `laser_sweep`, `laser_timed` | Routine 0.5/0.2/0.3; Brutal 0.2/0.4/0.4 | **Crawl gap, timing, or waiting window** at the panel and vault door; affects how long players stand in C6's cone. |
 | `night_manager` (`civilian_cluster`) | `mgr_in` (G12/B11 route), `mgr_out` | 0.5, 0.5 | **An extra civilian** walking G12 → G8 → B11, possibly carrying the code. |
@@ -566,7 +575,8 @@ Each variable changes a decision.
 ## HeistDef (proposed data, `night_deposit_def.tres`)
 `id night_deposit`, display "Nightfall Depository" (D-117), contact `contact.accountant`, mode STEALTH_OR_LOUD,
 base_payout **$26,000** (D-120), loot `[loot.cash, loot.cash_bricks,
-loot.small_valuables]` (B to confirm ids), escape_options `[van, boat]`, music_track `night_deposit`.
+loot.small_valuables]` (B to confirm ids), escape_options `[van, boat]`, music_track `night_deposit`,
+`pager_max_by_difficulty [4, 3, 3, 2, 2, 1]` (D-140).
 
 ## Requests (to the lead)
 - **QC-11 (ENV A prefab):** `bag_lift`, a vertical cash lift. Bags placed in it travel to the other
