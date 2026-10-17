@@ -53,6 +53,12 @@ Status: APPROVED (lead, 2026-10-10) (D-042)
   Lethal/Cataclysm run 5 guards; **from Hazardous up the guard count can exceed the pager cap**, so
   ghosting some guards is required. That is intended. Lethal+ cameras are Titan (indestructible,
   S8.1): ECM or the operator only.
+  - **D-130 (population by difficulty):** every tier adds civilians (expected count, +11 % Tense to +75 %
+    Cataclysm): from Tense one of the firm's staff may be working late (`late_staff`: the executive
+    assistant at her K4 desk or an associate in the K8 open office, seated at work), more likely each tier.
+    Guards keep their rows: they already pass D-130's floors (+25 % Tense, +150 % from Lethal). Stealth-only
+    means every extra guard and the operator press on the **4-pager cap**: from Hazardous a full clear needs
+    more answers than the cap (PD2 pressure, accepted by D-130's addendum). Table: §roster, Totals per difficulty.
 
 ## Site
 - **Building:** Calder Tower, 42 storeys. The play space is the top: **L40** (service level, only
@@ -497,17 +503,27 @@ stair cores** for > 2 floors ✓; fire exits = both stairs; the longest travel t
 | Cleaner (L42) | 0–1 | `cleaners` ≥ 2 | `civ_cleaner_l42` | `browse` (cleaning) | `staff`, `staff_clean_l42` |
 | IT contractor | 0–1 | `server_room` = `srv_contractor` | `civ_it` | `phone` (standing at the racks; no seat in K11, PO6-06) | `staff`, `staff_it` |
 | Helena Moor | 0–1 | `late_partner` = `moor_late` | `civ_partner` | `phone` | `staff`, `staff_partner` |
+| Executive assistant (D-130) | 0–1 | `late_staff` = `ls_assistant` (Tense+) | `civ_assistant` | `desk_work` (seated at K4 desk A on `AssistantChairA`, a D-063 NPC seat at (25.6, 1.2), back to the window; the K4 phone is beside her) | — (stays at her desk) |
+| Associate (D-130) | 0–1 | `late_staff` = `ls_associate` (Tense+) | `civ_associate` | `desk_work` (seated at K8 pod A on `PodAChairS1`, a D-063 NPC seat at (2.4, 11.25), in C11's room) | — (stays at the pod) |
 | Victor Kessler | 0–1 | rare `kessler_sleepover` | `civ_kessler` | `sit` (reading in the bedside armchair, the catalog `prop_armchair`: on its `Seat` at (3.0, 12.3), back to the M5 south wall, PO6-06 / D-063 npc seat, SL-3) | — (stays in M5) |
 
-**Totals per difficulty** (guard counts from `guard_post`/`guard_extra` picks, `difficulty_add`):
+**Totals per difficulty** (guards = reception + `guard_post` rovers + `guard_extra`, without the operator; civilians at
+load = cleaners + contractor + Moor + `late_staff` + Kessler on `kessler_sleepover`; "E" = the expected count over
+1500 seeded rolls, % against Routine, pre-D-130 E in brackets; D-130, pinned by `game/tests/c/test_d130_population.gd`):
 
-| Difficulty | Guards (recep. + rovers + extras) | Operator | Pagers to clear everyone | Civilians (cleaners + contractor + Moor) | Notes |
-|---|---|---|---|---|---|
-| Routine | 1 + 1 + 0 = **2** | 60% | 2–3 | 1–2 + 0–1 + 0–1 = **1–4** | Everything can be killed and answered. |
-| Tense | 1 + 1 + 0–1 = **2–3** | 60% | 2–4 | 1–4 | At the cap at worst. |
-| Hazardous | 1 + 2 + 0–1 = **3–4** | 60% | 3–5 | 1–5 | Can exceed the cap. |
-| Brutal | 1 + 2 + 1 = **4** | 60% | 4–5 | 2–5 | Exceeds the cap when the operator is in. |
-| Lethal / Cataclysm | 1 + 2 + 2 = **5** | 60% | 5–6 | 2–5 | 1–2 guards must be ghosted; Titan cameras. |
+| Difficulty | Guards (recep. + rovers + extras) (E, %) | Operator | Pagers to clear everyone | Civilians (E, %) [pre-D-130] | `late_staff` | Notes |
+|---|---|---|---|---|---|---|
+| Routine | 1 + 1 + 0 = **2** (2.0) | 60% | 2–3 | 1–5 (2.26) [2.26] | 0 | Everything can be killed and answered. |
+| Tense | 1 + 1 + 0–1 = **2–3** (2.51, +25 %) | 60% | 2–4 | 1–6 (2.50, +11 %) [2.27] | 0–1 (25 %) | At the cap at worst. |
+| Hazardous | 1 + 2 + 0–1 = **3–4** (3.47, +73 %) | 60% | 3–5 | 1–6 (3.04, +34 %) [2.78] | 0–1 (25 %) | Can exceed the cap. |
+| Brutal | 1 + 2 + 1 = **4** (4.0, +100 %) | 60% | 4–5 | 2–6 (3.63, +60 %) [3.29] | 0–1 (33 %) | Exceeds the cap when the operator is in. |
+| Lethal | 1 + 2 + 2 = **5** (5.0, +150 %) | 60% | 5–6 | 2–7 (3.74, +65 %) [3.29] | 0–1 (44 %) | 1–2 guards must be ghosted; Titan cameras. |
+| Cataclysm | 1 + 2 + 2 = **5** (5.0, +150 %) | 60% | 5–6 | 2–7 (3.96, +75 %) [3.29] | 0–1 (67 %) | As Lethal. |
+
+The guard rows are the pre-D-130 ones (they already meet every D-130 floor); the civilian percentages run above
+D-130's targets because the pre-D-130 cleaner rows were already +45 % from Brutal and no tier may fall below it.
+The late worker is seated and stays put (no wander), so the cost is a fixed pair of eyes on K4 (C5's corridor side,
+Moor's neighbour) or the K8 pods, plus a phone call if spooked.
 
 `kessler_sleepover` adds 1 civilian. Cable ties: 2 per player. Solo (AI wait at the van, D-014)
 means **avoiding** civilians, not tying them all.
@@ -706,6 +722,7 @@ Each variable changes a decision. Rules resolve in this order (heist_map.md §5)
 | `gondola` (heist group) | `gon_west_l41`, `gon_north_l42`, `gon_stowed` | 0.3, 0.3, 0.4 | **A camera-free entry straight into a target room:** Kessler's office (keycard/laptop slots), or the study behind the lasers. |
 | `escape` | `esc_heli` (E1 pad), `esc_line` (E2 E parapet), `esc_service` (E3 L40) | 0.4, 0.35, 0.25 | **The whole loot path:** 2 storeys up through Stair A (heli/line) or 1 storey down Stair B (service), which makes the gallery throw and the service spawn valuable. |
 | `cleaners` (scalar) | 1, 2, 3 | Routine 0.5/0.5/0; Hazardous 0.2/0.6/0.2; Brutal+ 0/0.5/0.5 | **How many routes a civilian with a cart crosses:** a cleaner on L42 puts a civilian on M1/M2/M15, and the cart can hold `kc_cleaner`. |
+| `late_staff` (`civilian_cluster`, D-130) | `ls_assistant` (K4 desk A), `ls_associate` (K8 pod A), `ls_none` (empty) | 1, 1; pick 0, `difficulty_add` [0, 1, 1, 1, 1, 1]; `ls_none` 6 / 6 / 4 / 2.5 / 1 (Tense..Cataclysm), so one late worker 25 / 25 / 33 / 44 / 67 % | **A seated civilian next to a target route:** the assistant watches K4's door on the Moor / laptop / code-planner side of K7; the associate the K8 pods on the cleaner's loop and the archive approach. Cable tie or time it. |
 | `time_lock_s` (scalar) | 90, 120 | Routine 0.7/0.3; Brutal+ 0.3/0.7 | **How long to hold the study:** shorter than one L42 rover loop (90) or longer (120), which decides whether to start it at all. |
 
 ## Rare events

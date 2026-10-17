@@ -8,7 +8,7 @@ const REQUIRED: Dictionary = {
 	"Zones": "Node3D", "Rooms": "Node3D", "Spawns": "Node3D", "Patrols": "Node3D", "Tactical": "Node3D",
 	"Gameplay": "Node3D", "Variants": "Node3D", "Mission": "Node", "Preplan": "Node3D", "ReviewCameras": "Node3D",
 }
-## Design doc variable table (+ the cleaners count and the kessler helper group) -> slot ids.
+## Design doc variable table (+ the cleaners count, the kessler helper group and D-130 late_staff) -> slot ids.
 const GROUPS: Dictionary = {
 	"late_partner": ["moor_late", "moor_gone"],
 	"laptop": ["lap_kessler", "lap_moor", "lap_study", "lap_boardroom"],
@@ -25,6 +25,7 @@ const GROUPS: Dictionary = {
 	"escape": ["esc_heli", "esc_line", "esc_service"],
 	"cleaners": ["cleaners_1", "cleaners_2", "cleaners_3"],
 	"kessler": ["kessler_in", "kessler_out"],
+	"late_staff": ["ls_assistant", "ls_associate", "ls_none"],  # D-130: a seated late worker from Tense
 }
 const SCALARS: Dictionary = {"time_lock_s": [90.0, 120.0]}
 const RARE: Array[StringName] = [&"ledger_printout", &"cage_left_open", &"kessler_sleepover", &"timelock_extended"]
@@ -235,6 +236,7 @@ func test_rule_constraints_hold() -> void:
 		assert_eq((v.get(&"guard_extra", []) as Array).size(), 0, "Routine: no extra guard")
 		assert_eq((v.get(&"escape", []) as Array).size(), 1, "exactly one escape")
 		assert_false((v.get(&"cleaners", []) as Array).has(&"cleaners_3"), "Routine: never 3 cleaners")
+		assert_eq((v.get(&"late_staff", []) as Array).size(), 0, "Routine: no late staff (D-130)")
 		assert_false((v.get(&"rare", []) as Array).has(&"timelock_extended"), "timelock_extended is Brutal+ only")
 		var kes: bool = (v.get(&"kessler", []) as Array).has(&"kessler_in")
 		assert_eq(kes, (v.get(&"rare", []) as Array).has(&"kessler_sleepover"), "Kessler only with kessler_sleepover")
@@ -249,6 +251,7 @@ func test_rule_constraints_hold() -> void:
 		GameRng.begin_run(9800 + s2)
 		var vl: Dictionary = VariantResolver.resolve(_map.variant_table, slots, Enums.Difficulty.LETHAL)
 		assert_eq((vl.get(&"guard_extra", []) as Array).size(), 2, "Lethal: both extras (5 guards)")
+		assert_eq((vl.get(&"late_staff", []) as Array).size(), 1, "D-130: one late_staff pick from Tense (ls_none = none)")
 
 
 ## ENV A prefabs in their doc roles.
