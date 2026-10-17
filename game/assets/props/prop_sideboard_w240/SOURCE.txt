@@ -1,0 +1,8 @@
+asset: prop_sideboard_w240
+script: tools/blender/props/calder.py
+params: {"cat": {"group": "calder", "kind": "credenza", "pin_only": true, "place": "wall", "support": true}, "d": 0.45, "fn": "cabinet", "h": 0.9, "style": "stone", "w": 2.4}
+seed: 2675558419  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_sideboard_w240
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 16000

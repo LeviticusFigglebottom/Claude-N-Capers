@@ -1,0 +1,8 @@
+asset: prop_wine_fridge
+script: tools/blender/props/calder.py
+params: {"cat": {"group": "calder", "kind": "fridge", "pin_only": true, "place": "wall", "support": true}, "d": 0.6, "fn": "fridge", "h": 0.9, "w": 0.6, "wine": true}
+seed: 3550672896  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_wine_fridge
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 16000

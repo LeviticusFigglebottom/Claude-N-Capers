@@ -1,0 +1,18 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/props/prop_sofa_w220/prop_sofa_w220.glb" id="1_model"]
+
+[node name="PropSofaW220" type="Node3D"]
+metadata/kind = &"sofa"
+
+[node name="Model" parent="." instance=ExtResource("1_model")]
+
+[node name="Sofa" parent="Model"]
+visibility_range_end = 60
+visibility_range_end_margin = 6
+visibility_range_fade_mode = 1
+
+[node name="Collision" parent="Model"]
+metadata/surface = &"fabric"
+
+[editable path="Model"]

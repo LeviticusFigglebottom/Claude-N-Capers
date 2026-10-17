@@ -1,0 +1,36 @@
+[NDR 18.4s t=0.0] variants { &"guard_post": [&"rover_ground"], &"camera": [&"cam_c"], &"security_room_staffed": [&"sec_empty"], &"night_manager": [&"mgr_in"], &"code_note": [&"code_records_ledger"], &"keycard": [&"kc_records"], &"server_room": [&"srv_ground"], &"vent_open": [&"vent_open"], &"laser_pattern": [&"laser_static"], &"cleaner": [&"cleaner_ground"], &"escape": [&"esc_van_lot"], &"extra_loot": [&"mgr_safe_full"], &"armored_car": [], &"time_lock_s": 60.0, &"depository_bags": 3, &"deposit_boxes": 6, "rare": [] }
+[NDR 165.8s t=3.1] pilot: calibrated 0.001600 rad/px yaw, 0.001600 rad/px pitch (settings formula said (0.0016, 0.0016))
+[NDR 165.8s t=3.1] spawn (1.5, 0.0, -9.0)
+[NDR 178.2s t=3.2] fast mode: render loop off between shots
+[NDR 183.1s t=8.2] pilot: t=5 at (6.6, 0.0, -6.8) corner (11.1, 0.2, -4.3) yaw_err 0.00 fwd=true path=12 mouse_mode=2 state=0 look=(-2.08,0.00) pin_yaw=-2.07791632512388 bot=false
+[NDR 188.0s t=13.2] pilot: t=10 at (11.5, 0.0, -4.0) corner (14.0, 0.2, -2.7) yaw_err -1.15 fwd=false path=8 mouse_mode=2 state=0 look=(-0.92,0.00) pin_yaw=-1.11210703022814 bot=false
+[NDR 195.1s t=20.2] pilot: use AreawayGrate (open_door) -> OK in 3.0 s
+[NDR 213.5s t=23.4] ladder AreawayLadder: down true in 1.6 s
+[NDR 213.8s t=23.7] pilot: use AreawayDoor (open_door) -> OK in 0.0 s
+[NDR 217.5s t=27.3] objective casing -> 2
+[NDR 217.8s t=27.6] masked in B3 (masked true)
+[NDR 252.9s t=34.8] B5 entry: guard 3.0 m from PlantDoor, back turned true (waited ok true)
+[NDR 252.9s t=34.8] knife trace: me (18.5, -4.0, 2.4) guard (15.7, -4.0, 7.0) dist 5.42 back true alert 0 meter 0.00 crouch false
+[NDR 253.5s t=35.3] knife trace: me (18.4, -4.0, 2.8) guard (15.3, -4.0, 7.1) dist 5.28 back true alert 0 meter 0.00 crouch false
+[NDR 254.0s t=35.9] knife trace: me (18.4, -4.0, 3.4) guard (14.9, -4.0, 7.1) dist 5.08 back true alert 0 meter 0.00 crouch false
+[NDR 254.6s t=36.4] knife trace: me (18.4, -4.0, 4.0) guard (14.3, -4.0, 7.7) dist 5.52 back true alert 0 meter 0.00 crouch false
+[NDR 256.1s t=37.9] pilot: use PlantDoor (open_door) -> OK in 0.0 s
+[NDR 256.6s t=38.4] knife trace: me (18.2, -4.0, 5.5) guard (14.3, -4.0, 7.7) dist 4.52 back true alert 0 meter 0.00 crouch false
+[NDR 257.1s t=39.0] knife trace: me (18.4, -4.0, 5.8) guard (14.3, -4.0, 7.7) dist 4.53 back true alert 0 meter 0.00 crouch false
+[NDR 257.7s t=39.5] knife trace: me (18.3, -4.0, 6.3) guard (14.3, -4.0, 7.7) dist 4.31 back false alert 0 meter 0.00 crouch false
+[NDR 258.3s t=40.2] knife trace: me (18.4, -4.0, 5.8) guard (14.3, -4.0, 7.7) dist 4.56 back true alert 0 meter 0.00 crouch false
+[NDR 258.9s t=40.7] knife trace: me (18.4, -4.0, 6.2) guard (14.3, -4.0, 7.7) dist 4.39 back true alert 0 meter 0.00 crouch false
+[NDR 259.4s t=41.3] knife trace: me (17.8, -4.0, 6.5) guard (14.3, -4.0, 7.7) dist 3.78 back false alert 0 meter 0.00 crouch false
+[NDR 260.0s t=41.9] knife trace: me (18.3, -4.0, 6.3) guard (14.3, -4.0, 7.7) dist 4.29 back false alert 0 meter 0.00 crouch false
+[NDR 260.7s t=42.5] knife trace: me (18.4, -4.0, 5.7) guard (14.3, -4.0, 7.7) dist 4.61 back true alert 0 meter 0.00 crouch false
+[NDR 261.2s t=43.1] knife trace: me (18.4, -4.0, 6.3) guard (14.3, -4.0, 7.7) dist 4.33 back true alert 0 meter 0.00 crouch false
+[NDR 261.8s t=43.6] knife trace: me (17.8, -4.0, 6.5) guard (13.7, -4.0, 7.4) dist 4.23 back true alert 0 meter 0.00 crouch false
+[NDR 262.3s t=44.2] knife trace: me (17.2, -4.0, 6.6) guard (13.0, -4.0, 7.1) dist 4.26 back true alert 0 meter 0.00 crouch false
+[NDR 262.9s t=44.7] knife trace: me (16.6, -4.0, 6.7) guard (12.1, -4.0, 7.0) dist 4.51 back true alert 0 meter 0.00 crouch false
+[NDR 263.4s t=45.3] knife trace: me (16.0, -4.0, 6.8) guard (11.2, -4.0, 6.9) dist 4.76 back true alert 0 meter 0.00 crouch false
+[NDR 264.0s t=45.8] knife trace: me (15.4, -4.0, 6.8) guard (10.3, -4.0, 6.8) dist 5.02 back true alert 0 meter 0.00 crouch false
+[NDR 264.5s t=46.4] knife trace: me (14.7, -4.0, 6.8) guard (9.8, -4.0, 6.8) dist 4.91 back true alert 0 meter 0.00 crouch false
+[NDR 265.1s t=46.9] knife trace: me (14.1, -4.0, 6.8) guard (10.7, -4.0, 6.8) dist 3.41 back false alert 0 meter 0.49 crouch false
+[NDR 265.7s t=47.6] gate guard not knifed (alert 3, meter 1.00, dist 3.36)
+[NDR 265.7s t=47.6] FAIL _gate_guard (alarm )
+[NDR] RESULT FAIL at _gate_guard

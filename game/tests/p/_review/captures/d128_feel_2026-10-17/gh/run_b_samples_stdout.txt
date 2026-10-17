@@ -1,0 +1,19 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+Vulkan 1.4.318 - Forward+ - Using Device #0: Unknown - llvmpipe (LLVM 20.1.2, 256 bits)
+
+[INFO][rng][p1] run seed 1002
+[INFO][variants][p1] seed 1002 resolved { &"guard_post": [&"rover_upper"], &"back_door": [&"back_propped"], &"open_window": [&"ow_breakroom_open"], &"keycard": [&"kc_counter"], &"jeweler": [&"jw_working"], &"admin_clerk": [&"clerk_in"], &"salon": [&"salon_locked"], &"extra_loot": [&"xl_delivery"], &"escape": [&"esc_pell"], &"customers": [&"cust_1", &"cust_3", &"cust_4", &"cust_5"], &"manager_present": [&"mgr_out"], &"safe_state": [&"safe_closed"], &"estate": [&"estate_none"], &"camera": [&"cam_c3", &"cam_c4", &"cam_c6"], &"security_room_staffed": [&"sec_empty"], &"code_note": [&"code_admin"], "rare": [] }
+[INFO][heist][p1] phase LOADING -> CASING
+[INFO][director][p1] prewarm: 18 of 18 scenes queued
+[INFO][prefab][p1] CameraStation: security room unstaffed
+[D128 206.5s t=2.53] pilot: calibrated 0.001600 rad/px yaw, 0.001600 rad/px pitch (settings formula said (0.0016, 0.0016))
+[D128 206.5s t=2.53] run 1: glasshouse seed 1002 phase 1 crew (3.0, 0.0, 14.4) masked false mode casing DR 4
+[D128 206.6s t=2.53] SAMPLE Npc_civilian2:7.5:0:stand (civilian Npc_civilian2): walk to (1.1, 0.2, 8.2) (planned d 7.5 ang 2 zones [1] path 18.7) masked false
+[D128 451.8s t=7.53] pilot: t=5 at (8.7, 0.0, 13.0) corner (9.4, 0.2, 12.8) yaw_err 0.00 fwd=true path=27 mouse_mode=2 state=0 look=(-1.31,0.00) pin_yaw=-1.31218309126416 bot=false
+[D128 613.6s t=10.13] pilot: use MainEntrance (open_door) -> OK in 0.0 s
+[D128 891.0s t=15.05] pilot: t=10 at (7.8, 0.0, 10.9) corner (6.6, 0.2, 10.5) yaw_err -0.00 fwd=true path=16 mouse_mode=2 state=0 look=(-5.02,0.00) pin_yaw=-5.02316794657963 bot=false
+[D128 946.9s t=16.52] pilot: STUCK at (7.6, 0.0, 10.9) heading to (6.6, 0.2, 10.5); rays: h0.05:/root/D128Feel/HeistRuntime/Dynamic/Npc_civilian8@(7.2, 0.1, 10.7), h0.20:/root/D128Feel/HeistRuntime/Dynamic/Npc_civilian8@(7.3, 0.2, 10.7), h0.40:/root/D128Feel/HeistRuntime/Dynamic/Npc_civilian8@(7.3, 0.4, 10.8), h1.00:/root/D128Feel/HeistRuntime/Dynamic/Npc_civilian8@(7.3, 1.0, 10.8), slide:/root/D128Feel/HeistRuntime/Dynamic/Npc_civilian8@(7.3, 0.9, 10.8) n=(1.0, 0.0, 0.2), vel=(0.0, 0.0, 0.0) floor=true state=0
+[D128 951.5s t=16.53] shot glasshouse_01_stuck_1.png
+[D128 951.5s t=16.53] pilot: civilian Npc_civilian8 (mode 0) blocks the way: back off and let them pass
+[D128 1342.5s t=23.68] pilot: t=15 at (3.7, 0.0, 9.3) corner (2.9, 0.2, 9.0) yaw_err 0.00 fwd=true path=8 mouse_mode=2 state=0 look=(-5.10,0.00) pin_yaw=-5.10203063974041 bot=false
+Terminated

@@ -1,0 +1,29 @@
+D-128 / D-130 feel check (ENV P helper lane, 2026-10-17), windowed real input (Po5Pilot: mouse, WASD, crouch, G hold)
+Tree: wip/p-d128-feel = env/p-play + trunk r229 (runs a/b, survey) then + trunk r231 a445be9b (gh_routine: D-130 live).
+Script: game/tests/p/_review/d128_feel.gd/.tscn. Seed 1002, crew_ai off, solo, B's real HUD instanced, direct launch.
+Default loadout DR = 4 (not A's table DR 35): expected values below are A's formula at DR 4 (fill_time() and an
+independent re-implementation of S2.2), with A's DR-35 table values alongside.
+Method: walk UNMASKED to the point (PUBLIC: no fill), stand still facing the observer, hold G: the meter starts when
+the mask is on; time = first non-zero meter -> 1.0 in game time (heist_time_s). Game ran 25-65x slower than wall time.
+
+GOLDEN HOUR (glasshouse)
+| observer        | dist / angle (geometry seen)            | stance | DR | fill seen | PD2 expect DR4 | A table DR35          | decay seen (exp) | HUD ring |
+| guard (patrol)  | 4.3 m/120 deg -> 4.85 m/42 deg (moving)  | stand  | 4  | 1.13 s*   | 1.17-1.24 s    | 5 m: 0.70 c / 1.09 e  | -                | "?" orange 0.50 mid, red "!" at full |
+| civilians x3    | < 5.5 m, in front (sales floor)          | stand  | 4  | instant   | 0 (uncover 5.5)| 0 (uncover)           | -                | three red "!" the moment the mask went on |
+| camera C4 (D-130)| 4.95 m / 29 deg (cone edge, panning)    | stand  | 4  | 3.89 s**  | 3.85-4.07 s    | 5 m ~2.97 s (DR35)    | 1.23 s (1.17)    | "?" orange 0.51 + crosshair arc |
+| camera C3 10 m  | SKIP: no nav point with sight at 10 m/15 deg at that pan moment (corridor camera pans 40 deg)
+| civilian crouch | ABORT: civilian_call alarm while crossing the sales floor crouched+masked (end of run)
+| guard 1-2 m centre, civilian 7.5 m: not measured (run b stalled behind a civilian at ~60x; stopped to merge r231)
+ * run a (pre-r231): the guard walked off and came back; screenshot awaits could drop a frame or two of timing.
+ ** strafed out at shown 0.51 to keep the run alive; the meter is linear, so fill = (t_exit - t_first) x (1-0.04)/(0.51-0.04).
+Careful route (gh_routine, r231): alley W end (unobserved mask-up) -> crouched along the back wall UNDER C4 (2.6 m,
+87 deg off axis) -> propped back door -> G1 -> G4 west (floor guard closest 8.1 m at 105 deg; C3 14.1 m; C6 6.1 m):
+CLEAN, every meter stayed 0.00.
+D-130 (Routine): pagers_max = 4 in LocalHudModel; the HUD's "pagers left" label is hidden until a pager is active or
+answered (PagerPanel, by design), so no cap readout in the screenshots yet. Suppressed pistol at C3 from 15.5 m:
+destroyed after <= 6 shots (titan false) - correct for Routine. Camera fill matches 1.6/2.4 s presets (D-130).
+LETHAL leg and SHADOW LEDGER: not run (time). Resume: see the report.
+
+Files: gh/survey_log.txt (observers), gh/run_a_samples_log.txt, gh/run_b_samples_log.txt, gh_routine/careful_log.txt,
+PNGs: gh/glasshouse_01/02 (guard ring filling with civilian "!"), gh_routine/01 (casing HUD), 02 (camera ring 51 %),
+03 (masked in alley), 04 (careful end), 05 (C3 shot, broken).

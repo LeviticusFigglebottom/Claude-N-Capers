@@ -1,0 +1,8 @@
+asset: prop_picture_light
+script: tools/blender/props/calder.py
+params: {"cat": {"fixture": true, "group": "calder", "kind": "picture_light", "light": {"angle": 50, "color": "#FFC58F", "energy": 1.6, "pos": [0.0, -0.08, -0.26], "range": 2.6, "type": "spot"}, "pin_only": true, "place": "wall_mount", "z": 2.25}, "fn": "picture_light"}
+seed: 975689712  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_picture_light
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 16000

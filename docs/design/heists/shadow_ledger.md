@@ -400,29 +400,29 @@ reception, lounge, gallery, study, dining and the terrace corridor have feature 
 | SB | stair (B) | 3 × 6 | open | — | L40 → L41 → L42 (top). L40 door to S3 always open (egress). L41/L42 doors as SA. |
 | LF1, LF2 | lift shaft | 3 × 2.5 | — | — | Passenger lifts, **locked out 22:00–06:00** (key switch at the ground lobby). Doors open N into K3 (L41) and M2 (L42); closed, no interaction. |
 | SL | lift shaft (service) | 3 × 3 | — | — | Car parked at L40 (`E3`). Landing doors at L41/L42 open into K10/M10 and are **locked out** (the K&M key switch is with ground-lobby security). No interaction on L41/L42. |
-| WCW, WCM | restroom | 3 × 6.5 each | 2.7 | `restroom_multi` | On L41 and L42: 3 stalls/urinals, sink counter, mirror. Doors S. |
-| J (L41) | storage (janitor + riser access) | 3 × 3 | 2.7 | `janitor_closet` | Mop sink, cleaner's cart, shelving. **Riser access panel `R`** (1.5 × 1.5 riser in the NE corner; `vent_l41` = panel off). BODY_HIDE (1). |
+| WCW, WCM | restroom | 3 × 6.5 each | 2.7 | `restroom_exec` (SL-1: stone vanity, downlights) | On L41 and L42: 3 stalls/urinals, sink counter, mirror. Doors S. |
+| J (L41) | storage (janitor + riser access) | 3 × 3 | 2.7 | `janitor_sl` (SL-1) | Mop sink, cleaner's cart, shelving. **Riser access panel `R`** (1.5 × 1.5 riser in the NE corner; `vent_l41` = panel off). BODY_HIDE (1). |
 | K1 | office (partner: Victor Kessler) | 7 × 6 | 3.0 | `office_partner` | Desk, credenza, sofa, bookshelves, bar cart, phone. `kc_kessler`, `lap_kessler`. **Facade access door `A`** on the west wall (gondola west stop; door prefab, lockpick 8 s from the cradle side). |
 | K2 | office (conference) | 5 × 6 | 3.0 | `conference_room` | Table for 10, screen, credenza, frosted front. |
 | K3 | lobby (reception) | 12 × 7.5 | 3.6 / void 7.4 | `reception_exec` | **Landmark.** Reception desk (1.05 m transaction ledge, 0.72 m work top) with the **fixed guard post**; `kc_reception` in the desk drawer; desk phone + `alarm_button` under the ledge. Feature stair up the north glazing, "K&M" logo wall (east), lounge chairs, lift doors (S). Glass doors W and E (0.9 m). Camera C1. |
 | K4 | office (executive assistant) | 5 × 6 | 3.0 | `office_small` | Two desks, partner calendars, printer, phone. |
 | K5 | office (partner: Helena Moor) | 7 × 6 | 3.0 | `office_partner` | Desk, meeting table, phone. `lap_moor`, `code_moor_planner`. Windows N and E. |
 | K6, K7 | corridor (office, NW and NE) | 12 × 1.5 each | 2.7 | `corridor_office` | End windows W / E. C2, C5. |
-| K8 | office (open plan, associates) | 10.5 × 9 | 3.0 | `office_open` | 12 workstations in 3 clusters, 2 printers, plants, coat rack. Doors to K6, K9 and K16. C11. |
+| K8 | office (open plan, associates) | 10.5 × 9 | 3.0 | `office_open_law` (SL-1: the shared `office_open` wants a gem scope) | 12 workstations in 3 clusters, 2 printers, plants, coat rack. Doors to K6, K9 and K16. C11. |
 | K9 | corridor (C1, west core) | 1.5 × 9 | 2.7 | `corridor_office` | Stair A door, janitor door. |
 | K10 | corridor (C3, east core) | 1.5 × 9 | 2.7 | `corridor_service` | Server door (keycard), service lift door, Stair B door, security door. C3 (above the server door, looking N). |
-| K11 | server_room | 5.5 × 5 | 2.7 | `server_room` | **The cage** (3.5 × 2.0 m mesh enclosure at x 27–30.5, z 8.5–10.5, gate on its S side, clear of the server door's swing; `safe` LARGE, `methods [code, saw]`, `code_group cage`): the ledger rack with the **`hack_terminal`** (drive-bay release) and 3 drive-sled `loot_spawn`s (`loot.ledger_drives`), all children of the cage (enabled when it opens). CRAC unit, UPS, cable trays. Door: **keycard** (`keycard_reader` on K10). Vision panel to K12. No facade. `code_contractor` on the contractor's laptop (srv_contractor). |
+| K11 | server_room | 5.5 × 5 | 2.7 | `server_room_sl` (SL-1: no desk in K11, PO6-06) | **The cage** (3.5 × 2.0 m mesh enclosure at x 27–30.5, z 8.5–10.5, gate on its S side, clear of the server door's swing; `safe` LARGE, `methods [code, saw]`, `code_group cage`): the ledger rack with the **`hack_terminal`** (drive-bay release) and 3 drive-sled `loot_spawn`s (`loot.ledger_drives`), all children of the cage (enabled when it opens). CRAC unit, UPS, cable trays. Door: **keycard** (`keycard_reader` on K10). Vision panel to K12. No facade. `code_contractor` on the contractor's laptop (srv_contractor). |
 | K12 | office (IT) | 5 × 5 | 3.0 | `office_it` | Two desks, spares shelving, whiteboard (`code_it_board`), `kc_it`, phone. Vision panel into K11. Windows E. |
-| K13 | security_room | 4.5 × 4 | 2.7 | `security_office` | **`camera_station` with its monitor wall against the solid east wall** (K14 partition); the operator faces **east**, so the door (west) is directly behind him. Key cabinet on the north wall behind him (`kc_security`), logbook on the SW counter (`code_security_log`), lockers, coffee, phone, `alarm_button` on the console. Door unlocked (closed; the operator's coffee runs). No windows. |
-| K14 | electrical | 2.5 × 4 | 2.7 | `electrical_closet` | Switchboard, telecom rack. Door S. |
+| K13 | security_room | 4.5 × 4 | 2.7 | `security_office_sl` (SL-1: the operator's place stays clear) | **`camera_station` with its monitor wall against the solid east wall** (K14 partition); the operator faces **east**, so the door (west) is directly behind him. Key cabinet on the north wall behind him (`kc_security`), logbook on the SW counter (`code_security_log`), lockers, coffee, phone, `alarm_button` on the console. Door unlocked (closed; the operator's coffee runs). No windows. |
+| K14 | electrical | 2.5 × 4 | 2.7 | `electrical_sl` (SL-1) | Switchboard, telecom rack. Door S. |
 | K15 | storage (copy and mail) | 3.5 × 4 | 3.0 | `copy_room` | Copier, paper stock, shredder, mail sorter. Windows E. |
 | K16 | corridor (C2, south spine) | 36 × 1.5 | 2.7 | `corridor_office` | Full-width spine with end windows. C4 (east end). The L41 rover's main loop. |
-| K17 | storage (records archive) | 6 × 6 | 3.0 | `storage_archive` | Compact shelving, file boxes, the **document safe** (`safe` MEDIUM, `methods [saw]`, 1 bag `loot.cash`: the partners' cash float). Windows W and S. |
-| K18 | break_room | 6 × 6 | 3.0 | `break_room` | Fridge, counter with sink, microwave, coffee machine, table with 6 chairs, bulletin board, phone. Windows S. |
+| K17 | storage (records archive) | 6 × 6 | 3.0 | `archive_records` (SL-1: the shared `storage_archive` is a stock room) | Compact shelving, file boxes, the **document safe** (`safe` MEDIUM, `methods [saw]`, 1 bag `loot.cash`: the partners' cash float). Windows W and S. |
+| K18 | break_room | 6 × 6 | 3.0 | `break_room_office` (SL-1: no lockers) | Fridge, counter with sink, microwave, coffee machine, table with 6 chairs, bulletin board, phone. Windows S. |
 | K19 | office (law library) | 6 × 6 | 3.0 | `library_law` | Book stacks, reading table, lamps. |
 | K20–K23 | office (associates) | 3 × 6 each | 3.0 | `office_small` | Desk, 2 chairs, shelf; one is a paralegal file room. |
 | K24 | office (interview room) | 6 × 6 | 3.0 | `meeting_small` | Round table, 4 chairs, screen. Windows S and E. |
-| J (L42) | storage (linen and janitor + riser) | 3 × 3 | 2.7 | `janitor_closet` | Linen shelves, the L42 cleaner's cart (`kc_cleaner`), **riser panel `R`** (`vent_l42`). BODY_HIDE (1). |
+| J (L42) | storage (linen and janitor + riser) | 3 × 3 | 2.7 | `linen_janitor` (SL-1) | Linen shelves, the L42 cleaner's cart (`kc_cleaner`), **riser panel `R`** (`vent_l42`). BODY_HIDE (1). |
 | M1 | lounge (partners' lounge) | 12 × 7.5 | 3.0 | `lounge_exec` | Bar with backlit teal glass (`kc_lounge`), 2 sofa groups, piano, glass wall over the reception void. Windows N and W (from 0.3 m). Ceiling override 2.6–3.0 (QC-31): a residential lounge, same band as living_room; no `lounge` row in the table. |
 | M2 | lobby (gallery / mezzanine) | 56 m² (walkway 8.5 × 3.5 + landing 3.5 × 7.5) | 3.0 | `gallery_mezzanine` | Walkway along the void (1.1 m glass balustrade), feature-stair arrival, lift doors (locked out), sculpture plinths. C6. |
 | M3 | gallery (art hall) | 5 × 7.5 | 3.0 | `art_hall` | **Laser grid** across the room at x 26.5 (full 7.5 m width; 0–2.6 m high, 0.9–2.5 m for `lz_static`). West part: sculpture and art dressing. East part: **2 paintings** (`loot_spawn` `loot.painting`, cut from the frame 4 s) and the study door (lockpick 8 s). Double doors from M2 (1.8 m, open), staff door from M10. C7 (NE corner). Picture lights. Ceiling override 3.0–4.5 (D-075): `gallery` is now the top-lit 4.5–6.5 m band; this private art hall keeps the partners' floor 3.0 m ceiling (the retail/lobby band it validated against before). |
@@ -433,16 +433,16 @@ reception, lounge, gallery, study, dining and the terrace corridor have feature 
 | M8 | dining_room (private dining) | 10.5 × 5 | 3.0 | `dining_exec` | Table for 10, sideboard, wine fridge; **terrace slider** (S, lockpick 8 s from outside). Windows W and S. Ceiling override 2.6–3.0 (QC-31): private dining is residential space at the 3.0 m partners' floor ceiling; no `dining_room` row in the table. |
 | M9 | corridor (W42) | 1.5 × 9 | 2.7 | `corridor_office` | Stair A door, linen door, suite and dining doors. |
 | M10 | corridor (E42) | 1.5 × 9 | 2.7 | `corridor_service` | Dead end **with a reason**: it ends at the service lift door and the art-hall staff door. Stair B door, pantry and electrical doors. |
-| M11 | break_room (pantry) | 5.5 × 4.5 | 2.7 | `break_room` | Catering pantry and staff kitchen: fridge, counter with sink, microwave, coffee, table for 4, bulletin board, phone. |
-| M12 | electrical | 2.5 × 4.5 | 2.7 | `electrical_closet` | Sub-board, AV rack. |
+| M11 | break_room (pantry) | 5.5 × 4.5 | 2.7 | `break_room_office` | Catering pantry and staff kitchen: fridge, counter with sink, microwave, coffee, table for 4, bulletin board, phone. |
+| M12 | electrical | 2.5 × 4.5 | 2.7 | `electrical_sl` | Sub-board, AV rack. |
 | M13 | storage (wine room) | 3 × 4.5 | 2.7 | `wine_room` | Wine racks, humidor (2 `small_loot`). Door S. |
 | M14 | office (partners' boardroom) | 5 × 9 | 3.0 | `boardroom` | Table for 12, screen, credenza (`lap_boardroom`). Windows E. |
 | M15 | corridor (S42 terrace corridor) | 25.5 × 1.5 | 2.7 | `corridor_glazed` | Glazed to the terrace with 2 sliders (lockpick 8 s from outside). C8 (west end, looking E). |
 | X1 | exterior (terrace, L42 level) | 36 × 6 | — | `exterior_terrace` | Planters, loungers, outdoor kitchen, heaters, C12 on a solid facade bay (x 5.5–6.5), **fixed caged ladder** (3.6 m) to the roof at the SE bay (x 34–35). |
 | R1 | plant (riser bay, roof) | 3 × 3 | 3.5 | `plant_riser` | Riser hatch + **caged ladder down the riser** (8.0 m, intermediate grating at L42). Padlocked door W to the roof (lockpick 8 s). |
 | R2 | stair (A head house) | 3 × 6 | 3.5 | — | Stair A top landing; roof door W (lockpick 8 s from the roof; push bar from inside); door E to R3. |
-| R3 | plant | 9 × 9 | 3.5 | `plant_room` | Lift motor room, AHU, water tank, chiller. Door N to the roof. BODY_HIDE behind the AHU (2). Drop zone `pp_drop_plant`. |
-| X2 | exterior (roof) | 36 × 18 | — | `exterior_roof` | Helipad 10 × 10 m (x 25–35, z 3–13; green perimeter lights; the `E1` SECURE net), BMU on the N/W rail with its cradle garage (NW), boarding ladders `h`, insertion-line anchor (SW), E2 line anchor (E), aircraft beacons, roof drains, rain. |
+| R3 | plant | 9 × 9 | 3.5 | `plant_room_roof` (SL-1: the shared `plant_room` wants a boiler) | Lift motor room, AHU, water tank, chiller. Door N to the roof. BODY_HIDE behind the AHU (2). Drop zone `pp_drop_plant`. |
+| X2 | exterior (roof) | 36 × 18 | — | `exterior_roof_tower` (SL-1) | Helipad 10 × 10 m (x 25–35, z 3–13; green perimeter lights; the `E1` SECURE net), BMU on the N/W rail with its cradle garage (NW), boarding ladders `h`, insertion-line anchor (SW), E2 line anchor (E), aircraft beacons, roof drains, rain. |
 
 Support-space check (level_standards §2.2): restrooms on L41 and L42 (2 each; L40's core WCs exist on
 the vacant side) ✓; break room K18 and pantry M11 ✓; janitor J on both floors ✓; electrical K14/M12
@@ -774,6 +774,18 @@ Crew assets with no point: `asset.intel_cameras` (reveals `camera`), `asset.inte
   texture, a ticking motif for the hack and the time lock) plus a **fail sting** on the abort. No
   assault stems are needed for a stealth-only heist.
 - **LUT:** `lut_shadow_ledger`: cool, desaturated, teal mids, neutral whites.
+- **G2 art pass (SL-1, as built):** every map-built prop carries a Calder catalog model over its unchanged layout
+  collider (tools/blender/props/calder.py; `shadow_ledger_dressing.gd` PROP_ART / CHAIR_ART); every kit room is dressed by
+  KitPlacer (`sl_dress.gd`, kits in `tools/blender/props/_kits_shadow.py`). Fixtures: executive rooms 3000 K brass downlights
+  (pools) and 6500 K linear LEDs over the void, offices / corridors 4000 K panels at the night level, BOH 5000 K panels, the
+  server room 6500 K, the security room dim blue, brass picture lights over the art-hall paintings; the stairs and the head
+  house keep their map lights in catalog fixtures. 5 shadow-casting fixtures (K3, K8, M1, M2, M4). Lit office floors on
+  Arden, Vantage and the south / east skyline (`sl_art.WINDOW_GRIDS`) close the views through the glazing. One soft fill per
+  room (meta fill). WorldEnvironment: overcast sky with an orange-teal city glow on the horizon, rain haze (fog), SSAO,
+  glow, `lut_shadow_ledger`; one dim directional (CityGlow), no sun or moon. 33 reflection probes (none in BOH, stair, corridor
+  or exterior rooms), 125 occluders (slabs, solid walls); for the draw-call budget (2500 per review camera, worst
+  ExtTerraceSE 2293 with every variant slot on) near-range (30 m) interior props, merged railing, city-light and
+  opaque curtain-wall meshes (one per material per storey).
 
 ## HeistDef (proposed data, `shadow_ledger_def.tres`)
 `id shadow_ledger`, display "Shadow Ledger", contact `contact.accountant`, mode STEALTH_ONLY,

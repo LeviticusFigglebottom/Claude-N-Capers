@@ -12,6 +12,9 @@
 extends "res://world/heists/shadow_ledger/greybox/sl_gameplay.gd"
 
 const VIEWMODEL_LIT_LAYER: int = 1 << 20  # viewmodel_lit (visual_slots v1.2, D-095) = CrewView.VIEWMODEL_LIT_LAYER
+## G2 art pass (SL-1): environment / fixtures / city / probes / occluders, and the KitPlacer dressing pass.
+const DA: GDScript = preload("res://world/heists/shadow_ledger/greybox/sl_art.gd")
+const DR: GDScript = preload("res://world/heists/shadow_ledger/greybox/sl_dress.gd")
 ## Storey tops for the curtain wall (next FFL).
 const STOREY_TOP: Dictionary = {"L41": 8.0, "L42": 11.6}
 const ROOM_LIGHT: Dictionary = {
@@ -87,12 +90,14 @@ func _build() -> void:
 	build_variants(n("Variants"))
 	_build_nav_links(nav)
 	_close_barred_doorways()
+	_build_dressing()
 	var polys: int = await _bake(nav)
 	if polys <= 0:
 		_fail("navmesh bake produced no polygons")
 		return
 	for untagged: String in SurfaceTags.tag_tree(map_root):  # PO-8 bullet surface ids
 		errors.append("no surface id for %s" % untagged)
+	_build_art()
 	if not errors.is_empty():
 		_fail("\n".join(errors))
 		return
@@ -176,8 +181,17 @@ func _door_holes(ffl: float, axis: String, fixed: float) -> Array:
 			continue
 		var c: float = p.x if d_axis == "x" else p.z
 		var w: float = 2.0 if String(d[1]).contains("double") else 1.0
-		out.append([c - w * 0.5, c + w * 0.5, ffl, ffl + L.DOOR_H])
+		# G2: curtain-wall doors 3 mm wider each side (the t04 frame's jambs were coplanar with the reveals: zfight)
+		var pad: float = 0.003 if _on_facade(_level_of_ffl(ffl), d_axis, d_fixed, c - w * 0.5, c + w * 0.5) else 0.0
+		out.append([c - w * 0.5 - pad, c + w * 0.5 + pad, ffl, ffl + L.DOOR_H])
 	return out
+
+
+static func _level_of_ffl(ffl: float) -> String:
+	for lv: String in L.LEVELS:
+		if absf(float(L.LEVELS[lv][0]) - ffl) < 0.01:
+			return lv
+	return ""
 
 
 ## Glass blocker + pane (+ head frame bar) for a glazed hole in a wall line.
@@ -188,11 +202,12 @@ func _glass(parent: Node3D, nm: String, axis: String, fixed: float, a0: float, a
 	if body == null:
 		return
 	var span: float = a1 - a0
-	var fs: Vector3 = Vector3(span, 0.05, 0.06) if axis == "x" else Vector3(0.06, 0.05, span)
+	# G2: the head bar stops 6 mm short of the reveals and rides 4 mm into the opening's head (zfight with the pane)
+	var fs: Vector3 = Vector3(span - 0.012, 0.05, 0.06) if axis == "x" else Vector3(0.06, 0.05, span - 0.012)
 	var head: MeshInstance3D = MeshInstance3D.new()
 	head.name = "FrameHead"
 	head.mesh = box_mesh(fs, "frame")
-	head.position = Vector3(0.0, (y1 - y0) * 0.5 - 0.025, 0.0)
+	head.position = Vector3(0.0, (y1 - y0) * 0.5 - 0.021, 0.0)
 	add(body, head)
 
 
@@ -285,9 +300,10 @@ func _build_shell(geo: Node3D) -> void:
 	_build_riser(add(bld, node3d("Riser")) as Node3D)
 	wall_tile = 0.0
 	var fills: Node3D = add(bld, node3d("ShaftFills")) as Node3D
-	box(fills, "LiftShaft1", Vector3(15.15, L.TOP40, 7.65), Vector3(17.85, L.FRF, 9.85), "trim")
-	box(fills, "LiftShaft2", Vector3(18.15, L.TOP40, 7.65), Vector3(20.85, L.FRF, 9.85), "trim")
-	box(fills, "ServiceLiftShaft", Vector3(21.15, 2.6, 7.65), Vector3(23.85, L.FRF, 10.35), "trim")
+	# G2: 3 mm inside the slab faces they meet (zfight); the shafts are sealed (no navmesh)
+	box(fills, "LiftShaft1", Vector3(15.15, L.TOP40 + 0.003, 7.65), Vector3(17.85, L.FRF - 0.003, 9.85), "trim")
+	box(fills, "LiftShaft2", Vector3(18.15, L.TOP40 + 0.003, 7.65), Vector3(20.85, L.FRF - 0.003, 9.85), "trim")
+	box(fills, "ServiceLiftShaft", Vector3(21.15, 2.6, 7.65), Vector3(23.85, L.FRF - 0.003, 10.35), "trim")
 	var rails: Node3D = add(bld, node3d("Railings")) as Node3D
 	for r: Array in L.BALUSTRADES:
 		railing(rails, String(r[0]), v3(r[1], 0), v3(r[1], 3), true)
@@ -356,7 +372,8 @@ func _end_cap(axis: String, fixed: float, pos: float, _dir: float) -> float:
 			above = true
 		if a <= fixed + 0.001 and b >= fixed - 0.001:
 			t = maxf(t, L.CORE_T if bool(s[2]) else L.INT_T)
-	return t * 0.5 if below != above else 0.0
+	# G2 (SL-1): 3 mm past the face, so the run's end cap is not coplanar with that wall's face (zfight)
+	return t * 0.5 + 0.003 if below != above else 0.0
 
 
 func _wall_line(parent: Node3D, lv: String, ffl: float, top: float, axis: String, fixed: float, segs: Array) -> void:
@@ -433,7 +450,7 @@ func _build_facade(parent: Node3D) -> void:
 			var holes: Array = doors.duplicate(true)
 			var panes: Array = []
 			for s: Array in spans:
-				var head: float = ffl + float(s[3])
+				var head: float = ffl + float(s[3]) - 0.008  # G2: 8 mm under the slab / ceiling line and its skin (zfight)
 				var cut: Array = solid.duplicate(true)
 				for d: Array in doors:
 					cut.append([float(d[0]), float(d[1])])
@@ -455,10 +472,11 @@ func _build_facade(parent: Node3D) -> void:
 				_glass(lvl, "%sPane%02d" % [nm, i], axis, fixed, float(pn[0]), float(pn[1]), float(pn[2]), float(pn[3]))
 	# L40 (service level; the rest of the floor is sealed): solid facade from below the slab.
 	var l40: Node3D = add(parent, node3d("L40")) as Node3D
-	box(l40, "FacadeL40N", Vector3(-0.2, -0.6, -0.2), Vector3(36.2, L.F41, 0.2), "wall_ext", true, SLAB_TILE, true)
-	box(l40, "FacadeL40S", Vector3(-0.2, -0.6, 23.8), Vector3(36.2, L.F41, 24.2), "wall_ext", true, SLAB_TILE, true)
-	box(l40, "FacadeL40W", Vector3(-0.2, -0.6, 0.2), Vector3(0.2, L.F41, 23.8), "wall_ext", true, SLAB_TILE, true)
-	box(l40, "FacadeL40E", Vector3(35.8, -0.6, 0.2), Vector3(36.2, L.F41, 23.8), "wall_ext", true, SLAB_TILE, true)
+	# G2: no top cap (it stands under the L41 slab and the L41 curtain wall: zfight)
+	box(l40, "FacadeL40N", Vector3(-0.2, -0.6, -0.2), Vector3(36.2, L.F41, 0.2), "wall_ext", true, SLAB_TILE, true, 2)
+	box(l40, "FacadeL40S", Vector3(-0.2, -0.6, 23.8), Vector3(36.2, L.F41, 24.2), "wall_ext", true, SLAB_TILE, true, 2)
+	box(l40, "FacadeL40W", Vector3(-0.2, -0.6, 0.2), Vector3(0.2, L.F41, 23.8), "wall_ext", true, SLAB_TILE, true, 2)
+	box(l40, "FacadeL40E", Vector3(35.8, -0.6, 0.2), Vector3(36.2, L.F41, 23.8), "wall_ext", true, SLAB_TILE, true, 2)
 
 
 func _build_slabs(parent: Node3D) -> void:
@@ -474,8 +492,9 @@ func _build_slabs(parent: Node3D) -> void:
 		l40.append([x02 + L.STAIR_CLEAR.x, L.STAIR_Z_START, x02 + L.STAIR_CLEAR.y, L.STAIR_Z_S])
 	for i: int in range(l40.size()):
 		var r: Array = l40[i]
+		# G2: sides inside the walls left out (zfight); the stair landings keep their edge over the flight below
 		box(parent, "SlabL40_%d" % i, Vector3(float(r[0]), -0.3, float(r[1])), Vector3(float(r[2]), L.F40, float(r[3])), "floor", true,
-			SLAB_TILE)
+			SLAB_TILE, false, 4 | 8 | 32 if i >= 2 else 4 | 8 | 16 | 32)
 	# The sealed vacant rest of L40 (D-115): its slab inside the solid L40 facade, round the in-play rooms,
 	# the service lift and the two stair cores (walls included). Bare concrete; never reached, so a navmesh
 	# obstruction keeps it from baking an island. The pre-planning blueprint draws L40 as the floor plate.
@@ -487,26 +506,65 @@ func _build_slabs(parent: Node3D) -> void:
 	for j: int in range(vacant.size()):
 		var v: Array = vacant[j]
 		box(parent, "SlabL40Vacant_%02d" % j, Vector3(float(v[0]), -0.3, float(v[1])), Vector3(float(v[2]), L.F40, float(v[3])),
-			"floor", true, SLAB_TILE)
+			"floor", true, SLAB_TILE, false, 4 | 8 | 16 | 32)
 		obstruct(Transform3D.IDENTITY, AABB(Vector3(float(v[0]), -0.5, float(v[1])),
 			Vector3(float(v[2]) - float(v[0]), 2.5, float(v[3]) - float(v[1]))))
-	var plate: Array = [-0.2, -0.2, 36.2, 24.2]
+	# G2: 4 mm inside the curtain wall's outer face (the slab ends were coplanar with the facade skin: zfight); the
+	# strip stands under the facade wall, so the walkable floor and the bake are unchanged.
+	var plate: Array = [-0.196, -0.196, 36.196, 24.196]
 	_slab(parent, "SlabL41", plate, core_holes, L.TOP40, L.F41, "floor")
 	var void_hole: Array = [12.1, 0.2, 20.5, 4.0]
 	var riser: Array = L.RISER["inner"]
 	_slab(parent, "SlabL42", plate, core_holes + [void_hole, riser], L.TOP41, L.F42, "floor")
-	_slab(parent, "SlabRoof", [-0.2, -0.2, 36.2, 18.2], sa + [L.RISER["hatch"]], L.TOP42, L.FRF, "roof")
+	_slab(parent, "SlabRoof", [-0.196, -0.196, 36.196, 18.196], sa + [L.RISER["hatch"]], L.TOP42, L.FRF, "roof")
 	box(parent, "PlantBlockRoof", Vector3(11.85, L.TOPRF, 7.35), Vector3(24.15, L.PLANT_ROOF, 16.65), "roof", true, SLAB_TILE)
 	# Riser grating at L42 (open over the lower ladder).
 	_slab(parent, "RiserGrating", riser, [L.RISER["lower_hole"]], L.F42 - 0.05, L.F42, "fence")
 
 
+## G2: a slab rect draws only the side faces on a hole's edge (the void, the stair wells, the riser): the others meet
+## the next rect or stand inside the walls, where they were coplanar with the wall faces (zfight). A rect wholly inside
+## the curtain wall's band (the strip north of the void) draws nothing. Visual only: the colliders are unchanged.
 func _slab(parent: Node3D, nm: String, outer: Array, holes: Array, y0: float, y1: float, mat: String) -> void:
 	var rects: Array = _rects_minus(outer, holes)
+	var plate: bool = float(outer[2]) - float(outer[0]) > 10.0  # a floor plate (its edge band is the curtain wall)
+	var hidden: Array[Node3D] = []
+	var shown: Node3D = null
 	for i: int in range(rects.size()):
 		var r: Array = rects[i]
-		box(parent, "%s_%02d" % [nm, i], Vector3(float(r[0]), y0, float(r[1])), Vector3(float(r[2]), y1, float(r[3])), mat, true,
-			SLAB_TILE)
+		var x0: float = float(r[0])
+		var z0: float = float(r[1])
+		var x1: float = float(r[2])
+		var z1: float = float(r[3])
+		var in_band: bool = plate and ((z1 - z0 <= L.EXT_T + 0.01 and (absf(z0 - float(outer[1])) < 0.001
+			or absf(z1 - float(outer[3])) < 0.001)) or (x1 - x0 <= L.EXT_T + 0.01 and (absf(x0 - float(outer[0])) < 0.001
+			or absf(x1 - float(outer[2])) < 0.001)))
+		var caps: int = 0
+		for side: Array in [[4, "x", x0, z0, z1], [8, "x", x1, z0, z1], [16, "z", z0, x0, x1], [32, "z", z1, x0, x1]]:
+			if not _on_hole_edge(holes, String(side[1]), float(side[2]), float(side[3]), float(side[4])):
+				caps |= int(side[0])
+		var body: Node3D = box(parent, "%s_%02d" % [nm, i], Vector3(x0, y0, z0), Vector3(x1, y1, z1), "" if in_band else mat, true,
+			SLAB_TILE, true, caps | 64)  # seamless tiles: no tile faces inside the slab (zfight with the walls' ends)
+		if in_band:
+			hidden.append(body)
+		elif shown == null:
+			shown = body
+	for hb: Node3D in hidden:  # PO-8: the collider-only strips take the slab's bullet surface
+		if shown != null:
+			SurfaceTags.tag(hb as CollisionObject3D, SurfaceTags.from_meshes(shown as CollisionObject3D))
+
+
+## True when the rect side (axis "x": the side at x = `at` spanning z a0..a1; "z": at z = `at` spanning x) runs along a
+## hole's edge for some length.
+static func _on_hole_edge(holes: Array, axis: String, at: float, a0: float, a1: float) -> bool:
+	for h: Array in holes:
+		var e0: float = float(h[0]) if axis == "x" else float(h[1])
+		var e1: float = float(h[2]) if axis == "x" else float(h[3])
+		var s0: float = float(h[1]) if axis == "x" else float(h[0])
+		var s1: float = float(h[3]) if axis == "x" else float(h[2])
+		if (absf(at - e0) < 0.001 or absf(at - e1) < 0.001) and minf(a1, s1) - maxf(a0, s0) > 0.01:
+			return true
+	return false
 
 
 ## Ceilings (0.05 m, underside at the room's ceiling) where the room is lower than the slab above.
@@ -525,7 +583,39 @@ func _build_ceilings(parent: Node3D) -> void:
 			var rects: Array = L.ROOM_RECTS.get(uid, [[r[1], r[2], r[3], r[4]]])
 			for i: int in range(rects.size()):
 				var q: Array = rects[i]
-				box(parent, "Ceil%s_%d" % [uid, i], Vector3(float(q[0]), cy, float(q[1])), Vector3(float(q[2]), cy + 0.05, float(q[3])), "ceiling")
+				_edgeless(box(parent, "Ceil%s_%d" % [uid, i], Vector3(float(q[0]), cy, float(q[1])), Vector3(float(q[2]), cy + 0.05,
+					float(q[3])), "ceiling"))
+
+
+## G2 (SL-1, as DB-C2): a ceiling box draws only its underside and top (its 5 cm edges stand inside the walls, where
+## they were coplanar with the wall pieces' ends: zfight). Visual only; the collider is unchanged.
+func _edgeless(body: Node3D) -> void:
+	if body == null:
+		return
+	for c: Node in body.get_children():
+		var mi: MeshInstance3D = c as MeshInstance3D
+		if mi == null:
+			continue
+		var bm: Mesh = mi.mesh
+		var key: String = "flat|%s|%s" % [str(bm.get_aabb()), bm.surface_get_material(0).resource_name]
+		if not _box_mesh_cache.has(key):
+			var h: Vector3 = bm.get_aabb().size * 0.5
+			var st: SurfaceTool = SurfaceTool.new()
+			st.begin(Mesh.PRIMITIVE_TRIANGLES)
+			for f: Array in [[Vector3.DOWN, Vector3.BACK, Vector3.RIGHT], [Vector3.UP, Vector3.RIGHT, Vector3.BACK]]:
+				var n: Vector3 = f[0]
+				var u: Vector3 = f[1] * absf((f[1] as Vector3).dot(h))
+				var v: Vector3 = f[2] * absf((f[2] as Vector3).dot(h))
+				var q: Array = [n * h - u - v, n * h + u - v, n * h + u + v, n * h - u + v]
+				for k: int in [0, 1, 2, 0, 2, 3]:
+					st.set_normal(n)
+					st.set_uv(Vector2((q[k] as Vector3).x, (q[k] as Vector3).z))
+					st.add_vertex(q[k])
+			st.generate_tangents()
+			st.set_material(bm.surface_get_material(0))
+			_box_mesh_cache[key] = st.commit()
+		mi.mesh = _box_mesh_cache[key]
+		mi.position.y += 0.003  # G2: 3 mm over the glazing heads / wall pieces at the ceiling line (zfight)
 
 
 ## PO-13 slab skins (sl_builder_base.slab_skins): per-room floor (sl_finishes ROOM_FLOOR) and ceiling
@@ -563,14 +653,18 @@ func railing(parent: Node3D, nm: String, mn: Vector3, mx: Vector3, glass: bool =
 	top.position = Vector3(0.0, size.y * 0.5 - 0.025, 0.0)
 	add(body, top)
 	if glass:
-		mesh_box(body, "Pane", Vector3(-size.x * 0.5, -size.y * 0.5, -size.z * 0.5) + Vector3(0.0, 0.05, 0.0),
-			Vector3(size.x * 0.5, size.y * 0.5 - 0.05, size.z * 0.5), "teal_glass")
+		# G2: the pane stops 3 cm inside its end posts and 3 mm inside the rail's faces (zfight with the posts and with
+		# the next railing's end)
+		var ia: Vector3 = Vector3(0.03, 0.0, 0.003) if along_x else Vector3(0.003, 0.0, 0.03)
+		mesh_box(body, "Pane", Vector3(-size.x * 0.5, -size.y * 0.5 + 0.05, -size.z * 0.5) + ia,
+			Vector3(size.x * 0.5, size.y * 0.5 - 0.053, size.z * 0.5) - ia, "teal_glass")
 	var posts: int = mini(maxi(2, int(ceil(length / 1.5)) + 1), 40)
 	for i: int in range(posts):
 		var off: float = -length * 0.5 + 0.025 + (length - 0.05) * float(i) / float(posts - 1)
 		var post: MeshInstance3D = MeshInstance3D.new()
 		post.name = "Post%d" % i
-		post.mesh = box_mesh(Vector3(0.05, size.y, t + 0.02), "trim")
+		# G2: posts across the rail on both orientations (along z they were 2 mm off the pane: zfight)
+		post.mesh = box_mesh(Vector3(0.05, size.y, t + 0.02) if along_x else Vector3(t + 0.02, size.y, 0.05), "trim")
 		post.position = Vector3(off, 0.0, 0.0) if along_x else Vector3(0.0, 0.0, off)
 		add(body, post)
 
@@ -671,10 +765,11 @@ func _build_core(parent: Node3D, cid: String, core: Dictionary) -> void:
 	box(c, "BelowFloor", Vector3(x0 + L.STAIR_CLEAR.x, yb - 0.3, L.STAIR_Z_N), Vector3(x0 + L.STAIR_CLEAR.y, yb, L.STAIR_Z_S), "stair")
 	# The closure is a guard at the half-landing edge (1.1 m): ridged collider top, not a perch (D-104 slopes).
 	RT.apply(box(c, "BelowClosure", Vector3(x0 + L.STAIR_CLEAR.x, yb, 12.51), Vector3(x0 + L.STAIR_WELL.x, L.F40 - 0.7, 12.61), "wall"))
-	box(c, "BelowWallW", Vector3(x0 - 0.15, yb, 10.5), Vector3(x0 + 0.15, L.F40, 16.5), "wall")
-	box(c, "BelowWallE", Vector3(x0 + 2.85, yb, 10.5), Vector3(x0 + 3.15, L.F40, 16.5), "wall")
-	box(c, "BelowWallN", Vector3(x0 + 0.15, yb, 10.35), Vector3(x0 + 2.85, L.F40, 10.65), "wall")
-	box(c, "BelowWallS", Vector3(x0 + 0.15, yb, 16.35), Vector3(x0 + 2.85, L.F40, 16.65), "wall")
+	# G2: no top cap (under the L40 slab / landing: zfight)
+	box(c, "BelowWallW", Vector3(x0 - 0.15, yb, 10.5), Vector3(x0 + 0.15, L.F40, 16.5), "wall", true, 0.0, false, 2)
+	box(c, "BelowWallE", Vector3(x0 + 2.85, yb, 10.5), Vector3(x0 + 3.15, L.F40, 16.5), "wall", true, 0.0, false, 2)
+	box(c, "BelowWallN", Vector3(x0 + 0.15, yb, 10.35), Vector3(x0 + 2.85, L.F40, 10.65), "wall", true, 0.0, false, 2)
+	box(c, "BelowWallS", Vector3(x0 + 0.15, yb, 16.35), Vector3(x0 + 2.85, L.F40, 16.65), "wall", true, 0.0, false, 2)
 	# Steel-mesh security gate on the L40 landing (the gate leaf is Gameplay/Doors/Stair?Gate).
 	var gx: float = x0 + 2.15
 	box(c, "GateMeshW", Vector3(x0 + L.STAIR_WELL.x, L.F40, 15.07), Vector3(gx - 0.5, L.TOP40, 15.13), "cage_mesh")
@@ -706,12 +801,14 @@ func _build_feature_stair(parent: Node3D) -> void:
 	var xe: float = xb + run
 	# Glass balustrades: ridged collider tops, not a perch over the void (D-104 slopes).
 	for side: Array in [["N", float(zs[0]) - 0.03, float(zs[0]) + 0.03], ["S", float(zs[1]) - 0.03, float(zs[1]) + 0.03]]:
-		RT.apply(box(fst, "Balustrade%s1" % side[0], Vector3(xa - t, y0, float(side[1])), Vector3(xl, ym + 1.1, float(side[2])),
-			"teal_glass"))
-		RT.apply(box(fst, "Balustrade%sL" % side[0], Vector3(xl, y0, float(side[1])), Vector3(xb, ym + 1.1, float(side[2])),
-			"teal_glass"))
-		RT.apply(box(fst, "Balustrade%s2" % side[0], Vector3(xb, y0, float(side[1])), Vector3(xe, y1 + 1.1, float(side[2])),
-			"teal_glass"))
+		# G2: 3 mm off the floor (their bottoms were coplanar with the solid steps' and the landing's: zfight)
+		# and 3 mm short of the landing's ends (their end faces were coplanar with the landing's / the first step's)
+		RT.apply(box(fst, "Balustrade%s1" % side[0], Vector3(xa - t, y0 + 0.003, float(side[1])), Vector3(xl - 0.003, ym + 1.1,
+			float(side[2])), "teal_glass"))
+		RT.apply(box(fst, "Balustrade%sL" % side[0], Vector3(xl + 0.003, y0 + 0.003, float(side[1])), Vector3(xb - 0.003,
+			ym + 1.1, float(side[2])), "teal_glass"))
+		RT.apply(box(fst, "Balustrade%s2" % side[0], Vector3(xb + 0.003, y0 + 0.003, float(side[1])), Vector3(xe, y1 + 1.1,
+			float(side[2])), "teal_glass"))
 	# Handrails on both balustrades (flights and landing).
 	for k: int in range(2):
 		var zr: float = float(zs[0]) + L.HANDRAIL_OFF if k == 0 else float(zs[1]) - L.HANDRAIL_OFF
@@ -796,20 +893,44 @@ func _build_cage(bld: Node3D) -> void:
 	var y1: float = L.F41 + float(L.CAGE["h"])
 	var g: Array = L.CAGE["gate"]
 	# See-through wire-mesh panels (collision kept) on a frame of posts and a top rail.
-	box(cg, "CageN", Vector3(float(b[0]), y0, float(b[1]) - 0.03), Vector3(float(b[2]), y1, float(b[1]) + 0.03), "cage_mesh")
+	# G2: the mesh panels stop 3 mm inside the top rail and the posts are 1 cm fatter and 3 mm proud of the rails, so no
+	# face of the frame is coplanar with a panel's or a rail's (zfight); the colliders are unchanged.
+	var cn: Node3D = box(cg, "CageN", Vector3(float(b[0]), y0, float(b[1]) - 0.03), Vector3(float(b[2]), y1, float(b[1]) + 0.03),
+		"cage_mesh")
 	wall(cg, "CageS", "x", float(b[3]), float(b[0]), float(b[2]), 0.06, Vector2(y0, y1),
 		[[float(g[0]), float(g[1]), y0, y0 + L.DOOR_H]], "cage_mesh")
-	box(cg, "CageW", Vector3(float(b[0]) - 0.03, y0, float(b[1]) + 0.03), Vector3(float(b[0]) + 0.03, y1, float(b[3]) - 0.03), "cage_mesh")
-	box(cg, "CageE", Vector3(float(b[2]) - 0.03, y0, float(b[1]) + 0.03), Vector3(float(b[2]) + 0.03, y1, float(b[3]) - 0.03), "cage_mesh")
+	var cw: Node3D = box(cg, "CageW", Vector3(float(b[0]) - 0.03, y0, float(b[1]) + 0.03), Vector3(float(b[0]) + 0.03, y1,
+		float(b[3]) - 0.03), "cage_mesh")
+	var ce: Node3D = box(cg, "CageE", Vector3(float(b[2]) - 0.03, y0, float(b[1]) + 0.03), Vector3(float(b[2]) + 0.03, y1,
+		float(b[3]) - 0.03), "cage_mesh")
+	for pn: Node3D in [cn, cw, ce]:
+		_trim_panel(pn, 0.057)
+	for sp: Node in cg.get_children():
+		if String(sp.name).begins_with("CageS"):
+			_trim_panel(sp as Node3D, 0.057)
 	var posts: Array = [[b[0], b[1]], [b[2], b[1]], [b[0], b[3]], [b[2], b[3]], [g[0], b[3]], [g[1], b[3]]]
 	for i: int in range(posts.size()):
 		var px: float = float(posts[i][0])
 		var pz: float = float(posts[i][1])
-		mesh_box(cg, "Post%d" % i, Vector3(px - 0.035, y0, pz - 0.035), Vector3(px + 0.035, y1, pz + 0.035), "trim")
+		mesh_box(cg, "Post%d" % i, Vector3(px - 0.04, y0 + 0.003, pz - 0.04), Vector3(px + 0.04, y1 + 0.003, pz + 0.04), "trim")
 	for e: Array in [["RailN", b[0], b[1], b[2], b[1]], ["RailS", b[0], b[3], b[2], b[3]], ["RailW", b[0], b[1], b[0], b[3]],
 			["RailE", b[2], b[1], b[2], b[3]]]:
 		mesh_box(cg, String(e[0]), Vector3(minf(float(e[1]), float(e[3])) - 0.035, y1 - 0.06, minf(float(e[2]), float(e[4])) - 0.035),
 			Vector3(maxf(float(e[1]), float(e[3])) + 0.035, y1, maxf(float(e[2]), float(e[4])) + 0.035), "trim")
+
+
+## G2: a cage mesh panel's visual shrunk by `top` at its top edge (it then stops inside the top rail). Visual only.
+func _trim_panel(body: Node3D, top: float) -> void:
+	if body == null or top <= 0.0:
+		return
+	for c: Node in body.get_children():
+		var mi: MeshInstance3D = c as MeshInstance3D
+		if mi == null:
+			continue
+		var sz: Vector3 = mi.mesh.get_aabb().size
+		var mat_key: String = String(mi.mesh.surface_get_material(0).resource_name).trim_prefix("sl_")
+		mi.mesh = box_mesh(sz - Vector3(0.0, top, 0.0), mat_key)
+		mi.position.y -= top * 0.5
 
 
 ## Handrail (MUST 1.0-1.1 m): a 5 cm bar from a to b (world), small collision, beside the walk line.
@@ -933,42 +1054,11 @@ static func _prop_level(p: Vector3) -> String:
 
 # --- Lighting ---------------------------------------------------------------------------------
 
-## 02:10, overcast, no sun or moon: city glow from below (one dim directional), night-mode interiors.
+## 02:10, overcast, no sun or moon: city glow from below (one dim directional), the LUT (sl_art.environment); the
+## rooms' fixtures come from the dressing kits (sl_dress.gd), the map keeps only KEEP_MAP_LIGHTS (rooms without a kit:
+## the stairs, the head house; the reception void).
 func _build_lighting(lighting: Node3D) -> void:
-	var we: WorldEnvironment = WorldEnvironment.new()
-	we.name = "WorldEnvironment"
-	var env: Environment = Environment.new()
-	env.resource_name = "env_shadow_ledger_greybox"
-	var sky_mat: ProceduralSkyMaterial = ProceduralSkyMaterial.new()
-	sky_mat.sky_top_color = Color(0.03, 0.04, 0.06)
-	sky_mat.sky_horizon_color = Color(0.22, 0.17, 0.13)
-	sky_mat.ground_bottom_color = Color(0.02, 0.03, 0.04)
-	sky_mat.ground_horizon_color = Color(0.2, 0.16, 0.12)
-	sky_mat.sky_energy_multiplier = 0.7
-	var sky: Sky = Sky.new()
-	sky.sky_material = sky_mat
-	env.background_mode = Environment.BG_SKY
-	env.sky = sky
-	env.ambient_light_source = Environment.AMBIENT_SOURCE_SKY
-	env.ambient_light_energy = 0.8
-	env.tonemap_mode = Environment.TONE_MAPPER_FILMIC
-	env.tonemap_exposure = 1.3
-	env.fog_enabled = true
-	env.fog_light_color = Color(0.3, 0.33, 0.36)
-	env.fog_density = 0.004
-	env.fog_sky_affect = 0.5
-	env.glow_enabled = true
-	env.glow_intensity = 0.4
-	we.environment = env
-	add(lighting, we)
-	var glow: DirectionalLight3D = DirectionalLight3D.new()
-	glow.name = "CityGlow"
-	glow.basis = Basis.looking_at(Vector3(-0.3, -0.45, 0.85).normalized(), Vector3.UP)
-	glow.position = Vector3(18.0, 40.0, 12.0)
-	glow.light_color = Color(0.85, 0.7, 0.55)
-	glow.light_energy = 0.1
-	glow.shadow_enabled = false
-	add(lighting, glow)
+	DA.new(self).call(&"environment", lighting, map_root)
 	var fx: Node3D = add(lighting, node3d("Fixtures")) as Node3D
 	_room_lights(fx)
 	_ceiling_light(fx, "LightReceptionVoid", Vector3(16.5, L.TOP42, 2.4), ROOM_LIGHT["exec"][0], 0.8, 9.0)
@@ -987,7 +1077,7 @@ func _room_lights(fx: Node3D) -> void:
 		for r: Array in _level_rooms(lv):
 			var uid: String = String(r[0])
 			var meta: Array = L.ROOM_META.get(uid, [])
-			if meta.is_empty() or float(meta[2]) <= 0.0 or uid in ["SL", "R2", "K3"]:
+			if meta.is_empty() or float(meta[2]) <= 0.0 or uid in ["SL", "K3"] or not ("Light" + uid in DD.KEEP_MAP_LIGHTS):
 				continue
 			var rects: Array = L.ROOM_RECTS.get(uid, [[r[1], r[2], r[3], r[4]]])
 			var q: Array = rects[rects.size() - 1]
@@ -1008,7 +1098,6 @@ func _room_lights(fx: Node3D) -> void:
 			if uid == "K11":
 				pos = Vector3(28.75, cy, 11.6)
 			_ceiling_light(fx, "Light" + uid, pos, row[0], float(row[1]), float(row[2]))
-	_ceiling_light(fx, "LightK3Desk", Vector3(18.0, L.TOP41, 6.2), ROOM_LIGHT["exec"][0], 0.6, 8.0)
 
 
 ## Ceiling-mounted fixture: pivot at the ceiling surface (top-centre), panel below, light under it.
@@ -1018,20 +1107,44 @@ func _ceiling_light(parent: Node3D, nm: String, pivot: Vector3, color: Color, en
 	r.set_meta(&"fixture", true)
 	r.set_meta(&"kind", "light_fixture")
 	add(parent, r)
-	var size: Vector3 = Vector3(0.6, 0.05, 0.6)
-	var mi: MeshInstance3D = MeshInstance3D.new()
-	mi.name = "Panel"
-	mi.mesh = box_mesh(size, "fixture")
-	mi.position = Vector3(0.0, -size.y * 0.5 - 0.002, 0.0)
-	add(r, mi)
+	# G2 (SL-1): the catalog fixture model (6500 K linear LED over the void, 5000 K panels in the stairs / head house)
+	var art: String = String(DD.MAP_FIXTURE_ART["void" if nm.contains("Void") else "ceiling"])
+	DA.new(self).call(&"fixture_model", r, art, map_root)
 	var light: OmniLight3D = OmniLight3D.new()
 	light.name = "Light"
-	light.position = Vector3(0.0, -size.y - 0.2, 0.0)
+	light.position = Vector3(0.0, -0.2, 0.0)
 	light.light_color = color
 	light.light_energy = energy
 	light.omni_range = rng
 	light.layers |= VIEWMODEL_LIT_LAYER  # D-095: also lights the FP viewmodel
 	add(r, light)
+
+
+# --- G2 dressing and art (SL-1) -----------------------------------------------------------------
+
+## The KitPlacer pass (sl_dress.gd + shadow_ledger_dressing.gd): every kit room, the direct props; the fill lights.
+## Floor props obstruct the navmesh bake that follows.
+func _build_dressing() -> void:
+	var dress: RefCounted = DR.new()
+	dress.call(&"setup", self, map_root)
+	dress.call(&"dress", n("Props"))
+	dress.call(&"fill_lights", add(n("Lighting"), node3d("Fill")) as Node3D)
+	for line: String in dress.get(&"report"):
+		printerr("dress: " + line)
+		if line.begins_with("ERROR"):
+			errors.append(line)
+
+
+## After the bake: the lit city windows, merged railing visuals, reflection probes per room, occluders, merged facade.
+func _build_art() -> void:
+	var art: RefCounted = DA.new(self)
+	var win: int = art.call(&"city_windows", n("Geometry/Site"), map_root)
+	var merged: int = art.call(&"merge_railings", map_root) + int(art.call(&"merge_city", map_root))
+	var probes: int = art.call(&"reflection_probes", add(n("Lighting"), node3d("ReflectionProbes")) as Node3D, map_root)
+	var occ: int = art.call(&"occluders", add(n("Geometry"), node3d("Occluders")) as Node3D, map_root)
+	var fac: int = art.call(&"merge_facade", map_root)
+	printerr("art: %d city windows, %d railing meshes merged away, %d probes, %d occluders, %d facade meshes merged away"
+		% [win, merged, probes, occ, fac])
 
 
 # --- Rooms and zones --------------------------------------------------------------------------
