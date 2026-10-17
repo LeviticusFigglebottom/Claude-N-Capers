@@ -19,6 +19,8 @@ heists = {
 "solo_ai_teammates": 3
 },
 &"rolling_thunder": {
+"mode_key": &"ui.heist_select.modes_loud_ambush",
+"requires": ["res://world/heists/rolling_thunder/rolling_thunder_mission.gd"],
 "solo_ai_teammates": 3
 }
 }

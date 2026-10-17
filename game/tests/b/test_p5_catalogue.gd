@@ -28,7 +28,7 @@ const PAINTINGS: Array[StringName] = [
 ## crate ($8,500) to gold ($14,000), the top bag.
 const BANDS: Array = [[2800, 8000], [7000, 8000], [8500, 14000]]
 ## Stubs whose G0 doc is approved and whose objective strings are drafted (GN-B1, D-103).
-const OBJECTIVES_DRAFTED: Array[StringName] = [&"gallery_night", &"ostrander_federal"]  # OF: D-137 kickoff
+const OBJECTIVES_DRAFTED: Array[StringName] = [&"gallery_night", &"ostrander_federal", &"rolling_thunder"]  # OF: D-137; RT: G0 (D-075)
 ## heist id -> [contact, district, placeholder base payout ◇ (unscaled)].
 const STUBS: Dictionary = {
 	&"gallery_night": [&"contact.vance", &"uptown", 57000],

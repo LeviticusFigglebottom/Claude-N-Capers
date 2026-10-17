@@ -61,3 +61,23 @@ func test_of_blueprint_staged() -> void:
 			var label: StringName = StringName(sh.get("label", &""))
 			if label != &"":
 				assert_true(UiText.has(label), "blueprint label %s" % label)
+
+
+## Rolling Thunder groundwork (data only): hidden until its mission script lands; the Board / select / briefing say
+## "Loud (ambush start)" (D-075) from heist_list.tres "mode_key".
+func test_rolling_thunder_staged() -> void:
+	var rt: StringName = &"rolling_thunder"
+	var mission: String = "res://world/heists/rolling_thunder/rolling_thunder_mission.gd"
+	assert_eq(HeistCatalog.heist_list().requires_for(rt), PackedStringArray([mission]))
+	if not ResourceLoader.exists(mission):
+		assert_false(HeistCatalog.ids().has(rt), "RT hidden until its mission")
+	assert_eq(HeistCatalog.mode_key(rt, Enums.HeistMode.STEALTH_OR_LOUD), &"ui.heist_select.modes_loud_ambush")
+	assert_eq(UiText.t(&"ui.heist_select.modes_loud_ambush"), "Loud (ambush start)")
+	assert_eq(HeistCatalog.mode_key(&"glasshouse", Enums.HeistMode.STEALTH_OR_LOUD), &"ui.heist_select.modes_stealth_loud")
+	assert_eq(HeistCatalog.mode_key(&"dockside_burn", Enums.HeistMode.LOUD_ONLY), &"ui.heist_select.modes_loud_only")
+	for tag: String in ["casing", "signals", "charges", "thermite", "marshal", "convoy", "ambush", "escort", "trucks",
+			"cargo", "secure", "escape_wait", "escape"]:
+		assert_true(UiText.has(StringName("objective.rolling_thunder.%s" % tag)), "objective %s" % tag)
+	for a: String in ["signal_insider", "intel_route"]:
+		assert_true(ResourceLoader.exists("res://content/data/preplanning/assets/%s.tres" % a), a)
+		assert_true(UiText.has(StringName("item.asset.%s.name" % a)), a + " name")

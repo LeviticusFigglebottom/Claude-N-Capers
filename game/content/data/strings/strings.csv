@@ -40,6 +40,7 @@ ui.heist_select.payout,Contract pay: {amount}
 ui.heist_select.modes_stealth_loud,Stealth or loud
 ui.heist_select.modes_stealth_only,Stealth only
 ui.heist_select.modes_loud_only,Loud only
+ui.heist_select.modes_loud_ambush,Loud (ambush start)
 ui.heist_select.start,Start Heist
 ui.heist_select.next,Briefing
 ui.heist_select.crew_ai,Fill empty slots with crew AI
@@ -2738,7 +2739,25 @@ ui.preplan.point.ostrander_federal.pp_fire_escape,Insider: Corvino fire-escape l
 music.ostrander_federal.name,Clearing House
 heist.rolling_thunder.name,Rolling Thunder
 heist.rolling_thunder.subtitle,Armored Convoy
-heist.rolling_thunder.brief,"Three armored trucks on the Southfield bypass, one bad turn from a standstill. Hollis brings the roadblock; you bring the saws."
+heist.rolling_thunder.brief,"A Vaultline convoy through the Southfield junction, two or three armored trucks deep. Hollis brings the roadblock; you bring the saws."
+heist.rolling_thunder.briefing,"Vaultline moves the Southfield branches' takings by road: an escort car, two or three armored trucks, another escort behind. Their route crosses the Orchard and Tannery junction in a few minutes. Rig the signals and the convoy stops clean on the red; leave them and Hollis rams the lead car in the middle of the junction. Either way it ends loud. Open the trucks, bag the cash and the gold, and hold for the ride."
+objective.rolling_thunder.casing,Case the junction
+objective.rolling_thunder.signals,Rig the junction signals before the convoy arrives
+objective.rolling_thunder.charges,Take the breaking charges from the site magazine
+objective.rolling_thunder.thermite,Take the thermite from the site tool store
+objective.rolling_thunder.marshal,Deal with the Vaultline route marshal
+objective.rolling_thunder.convoy,Take your positions: the convoy is coming
+objective.rolling_thunder.ambush,Spring the ambush
+objective.rolling_thunder.escort,Take down the escort and the Vaultline crews
+objective.rolling_thunder.trucks,Open the trucks ({opened}/{total})
+objective.rolling_thunder.cargo,Bag the cargo
+objective.rolling_thunder.secure,Secure four bags of cash or gold ({count}/{total})
+objective.rolling_thunder.escape_wait,Hold until the escape arrives
+objective.rolling_thunder.escape,Get to the escape
+item.asset.signal_insider.name,Insider: signal cabinet
+item.asset.signal_insider.desc,A council contact leaves the junction controller cabinet unlocked.
+item.asset.intel_route.name,Insider: convoy route
+item.asset.intel_route.desc,"You know which way the convoy comes in, and where the route marshal walks."
 heist.afterhours.name,Afterhours
 heist.afterhours.subtitle,The Velvet
 heist.afterhours.brief,"The Velvet launders the Co-op's week behind a velvet rope. The Accountant wants its books and its count room emptied before the doors close."

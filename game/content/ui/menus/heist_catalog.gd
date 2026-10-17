@@ -77,6 +77,20 @@ static func entries_from(defs: Dictionary, map_exists: Callable = Callable()) ->
 	return out
 
 
+## The mode label key for `heist_id`: heist_list.tres "mode_key" when set (D-075), else the HeistMode's label
+## (one source for the Board, the heist select and the briefing).
+static func mode_key(heist_id: StringName, mode: int) -> StringName:
+	var override: StringName = heist_list().mode_key_for(heist_id) if heist_id != &"" else &""
+	if override != &"":
+		return override
+	match mode:
+		Enums.HeistMode.STEALTH_ONLY:
+			return &"ui.heist_select.modes_stealth_only"
+		Enums.HeistMode.LOUD_ONLY:
+			return &"ui.heist_select.modes_loud_only"
+	return &"ui.heist_select.modes_stealth_loud"
+
+
 ## Ids of every heist the menus offer (registry def + is_ready); direct launch validates against it.
 static func ids() -> Array[StringName]:
 	var out: Array[StringName] = []

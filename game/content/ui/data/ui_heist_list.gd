@@ -8,6 +8,8 @@ extends Resource
 ##   "solo_ai_teammates": int            overrides the default below for "Play solo"
 ##   "requires": Array[String]           res:// paths that must exist before the menus offer the heist (readiness gate,
 ##                                       on top of HeistCatalog's def + map; e.g. the mission script a new heist waits on)
+##   "mode_key": StringName              the Board / heist select / briefing mode label instead of the HeistMode's
+##                                       (D-075: Rolling Thunder "Loud (ambush start)")
 ## Display text is always strings.csv `heist.<id>.name` / `.subtitle` / `.brief`.
 @export var heists: Dictionary = {}
 ## Difficulties selectable in this build (Enums.Difficulty values); others show as locked (C4: P1 = 2).
@@ -32,3 +34,9 @@ func requires_for(heist_id: StringName) -> PackedStringArray:
 	for p: Variant in d.get("requires", []) as Array:
 		out.append(String(p))
 	return out
+
+
+## The mode label key override for `heist_id` ("mode_key"), or &"" for the HeistMode's own label.
+func mode_key_for(heist_id: StringName) -> StringName:
+	var d: Dictionary = heists.get(heist_id, {}) as Dictionary
+	return StringName(d.get("mode_key", &""))
