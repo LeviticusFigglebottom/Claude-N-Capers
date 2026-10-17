@@ -1186,3 +1186,6 @@ ragdoll/HandProps, VRAM, 2/10/30 m lineups; per-character fallback switch.
 civilians within 5.5 m uncover instantly; camera C4 at 4.95 m (D-130 presets) 3.89 s (3.85-4.07), decay 1.23 s (1.17); a
 careful crouched route keeps every meter at 0.00. All within ~5 % of A's formula; verdict: feels like PD2. Pending: GH
 Lethal (Titan, cap 2), 10 m camera fills, the SL leg.
+**D-130 addendum (C b7cfb928, SL):** SL civilians end at +75 % at Cataclysm (pre-D-130 SL already ran +45 % from Brutal and
+no tier may fall; SL's test cap is 1.9x, GN/ND keep 1.5x). SL guards stay flat at 5 for Lethal/Cataclysm (QC-e), as GN.
+New SL civilian group late_staff (one seated late worker, chance 0/25/25/33/44/67 % by tier).
