@@ -21,7 +21,7 @@ and reports a gap list; the LEAD folds the gaps in here as rows (id, heist, owne
 | X-5 | all | A | nav agent_radius 0.30 vs NPC capsule 0.35; tellers pushed off marks; GN StaffCO/CS/AO desk_work without seats; GH WorkshopDoor UsePoint police motor snag (7.8, z 5) | done: nav doorway test, mark-return for tellers, GN seats (A 61900a46/2727f197, round 223); x5 GH police flake not reproducing (A, 3/3 green under load; reopen if seen) |
 | GH-1 | GH | A, P | PO6-17 logic merge; P real-input pass | in progress |
 | ND-1 | ND | A | gate 2 (auto_loud, attempt 24, empty box) | open |
-| ND-2 | ND | P | windowed real-input pass | open |
+| ND-2 | ND | P | windowed real-input pass | stealth route clean to the vault loot (P 2af62b43, seed 21: grate, ladder, mask, knife, pager, keycard + code, C6, lasers, time lock, bag 1 out); OPEN: bag carry out (next: the doc's cash-lift route); A's prewarm fix: no load hang in ~17 launches |
 | SL-1 | SL | C | G2 art pass (GI, probes, occluders, dressing, review shots) | open |
 | SL-2 | SL | C | D-111 props/doors/loot | done (items 1-4 earlier; item 5 C a0f6099d: E1 net, E2 tarp + zipline anchor/cable, E3 lift blankets, laser emitter columns) |
 | SL-3 | SL | C | VictorKessler `sit` 4.1 m from a seat; camera station seat visual; ITContractor = phone (doc change APPROVED) | done (C a0f6099d) |
@@ -30,12 +30,12 @@ and reports a gap list; the LEAD folds the gaps in here as rows (id, heist, owne
 | DB-2 | DB | C | D-111 doors (twin roller, cold-store slider, strongroom), launch, burn barrels, thermal drill | done (9fbc1930, 1be2c23d, e8da2cba, 262e4b3e); wip/c-sldb-props superseded |
 | DB-4 | DB | A | cartel `sit` plays no seated clip | done (A c5d4563d + 1b326212 sit_chair_armed; D verified windowed 278dc464). C: ForemanChair too close to its desk (shins through the modesty panel) |
 | DB-6 | DB | C, A | stale QC-36/39 TODOs (C); QC-25 S3 perch after fog lifts needs a director hook (A) | done (A e13f762f; C a0f6099d comments/doc; ForemanChair moved back) |
-| DB-7 | DB | A | mission audit + windowed auto_loud | open |
+| DB-7 | DB | A | mission audit + windowed auto_loud | flow verified windowed to the thermite carry (seed 1003: breach t77, product t85, cartel t120; custody t266, pilot lost the fight); win pending a D-133 rerun (crew_damage_taken_mult 0.25) |
 | GN-1 | GN | C | G2 (GN-C2): 50 props vs GH 628, GI/probes/occluders, moon light | done: G2 FINAL (C 8a7872c4, round 224); gala dressing top-up optional |
 | GN-2 | GN | C | 5 patron spawns vs 12 in doc (7/9 rolls capped) | done (round 219) |
 | GN-3 | GN | C | 2 BODY_HIDE spots vs 8 | done (round 219) |
 | GN-4 | GN | C | 6 COVER points vs ~50 | done (round 219) |
-| GN-8 | GN | A | e2e stealth + loud; QC-57 Vaultline courier; 17 unsaid mission lines (D-117 §6) | mostly done (A 31fcaab4, 291ce51d: B3 inspectors + empty-slot alarm, WarmLoader for the seed-99 threaded-load race, extras/keycard/vault_drill/server_door logic). OPEN: seed-99 crash + P's ND CASING hang: fixed by reasoning (WarmLoader 291ce51d, prewarm waits for its loads aab638dc), unconfirmed (needs quiet-box runs); 2 Halberd escorts need C markers; GN loud pilot harness (A lane) |
+| GN-8 | GN | A | e2e stealth + loud; QC-57 Vaultline courier; 17 unsaid mission lines (D-117 §6) | LOUD E2E WIN windowed at ×1.0 (A b17c37ec: seed 1792002290, Routine, ENDED t=519, 2 paintings, payday, hub; 0 STUCK, confirms C's GrandStair fix; first windowed LOUD → ESCAPE on the race-fix tree with no crash). Stealth e2e: X-4 headless + P's GN-P1. OPEN: stale 'hack interrupted' objective during escape_wait; payday time shows wall-clock; seed 99 itself still loses before ESCAPE (transition covered headless) |
 | GN-10 | GN | D, P | cast polish; §7 traversal tests | done (round 222, pending tests); GN look map after D lands |
 | B-1 | all | B | D-117 names/briefing/unlocks; GH/SL/GN content gaps | DONE r216 |
 | D-1 | GH | D | design manager Greta Vossberg (female) vs male civilian_manager; civilian_sales_b + clerk look | done (round 220) |

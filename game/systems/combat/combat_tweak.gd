@@ -28,6 +28,9 @@ static var _cached: CombatTweak = null
 @export var spread_mult_still: float = 1.0
 @export var spread_mult_moving: float = 1.0
 @export var spread_mult_crouched: float = 0.4
+## D-131 (◇): aiming down sights scales WeaponStats.spread_deg_ads by this at runtime (ENV B's data unchanged), so an
+## ADS pistol / revolver hits a torso at 10 m essentially always (test_l3_ads_pistol_accuracy, >= 98 / 100).
+@export var ads_spread_mult: float = 0.7
 ## PO-8 (impact_fx.md, presentation only): an NPC miss lands this far (m) to the side of its aim point, and
 ## a replayed crew shot's (client-supplied) spread is clamped to this cone half-angle (deg).
 @export var fx_npc_miss_offset_min_m: float = 0.6

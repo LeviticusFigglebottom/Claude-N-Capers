@@ -7,7 +7,7 @@
 ##   door_clear    no prop in a door's clear zone (leaf width x DOOR_DEPTH each side)
 ##   use_point     no prop in the standing volume of a gameplay UsePoint
 ##   duplicate     no identical props stacked on the same spot
-##   overlap       (WARN) props whose boxes interpenetrate outside designed stacks
+##   overlap       (WARN) props whose boxes interpenetrate outside designed stacks (or meta `inside` contents, clipping)
 ##   wall_back     wall furniture stands with its back to the wall, never facing it
 ## Classification lives in ONE place: FURNITURE_BY_ASSET (catalog asset id = scene file basename)
 ## then FURNITURE_BY_KIND (meta kind); a node meta `furniture` overrides both. Owner: ENV C.
@@ -441,7 +441,8 @@ func _check_duplicates_and_overlaps(ctx: LcContext, active: Array[LcProp]) -> vo
 					fail(ctx, first.node, null, "duplicate: identical prop `%s` on the same spot (%.3f m apart)"
 						% [ctx.node_path(other.node), a.xform.origin.distance_to(b.xform.origin)])
 					continue
-			if a.global_aabb.size.y <= THIN or b.global_aabb.size.y <= THIN or _designed_stack(a, b):
+			if a.global_aabb.size.y <= THIN or b.global_aabb.size.y <= THIN or _designed_stack(a, b) \
+					or LcCheckClipping._contained(a, b) or LcCheckClipping._contained(b, a):
 				continue
 			var depth: float = LcGeom.obb_overlap(a.obb, b.obb)
 			if depth > OVERLAP_DEPTH:

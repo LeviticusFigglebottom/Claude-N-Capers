@@ -492,12 +492,12 @@ stair cores** for > 2 floors ✓; fire exits = both stairs; the longest travel t
 | Security Officer (L42 rover) | 0–1 | `guard_post` = `rover_l42` | `guard_rover_l42` | — | `guard`, `guard_l42` |
 | Security Officer (fire watch) | 0–1 | `guard_extra` = `stair_watch` | `guard_stair` | — | `guard_stair` |
 | Security Officer (roof) | 0–1 | `guard_extra` = `roof_watch` | `guard_roof` | — (pause `smoke`) | `guard_roof` |
-| Camera operator | 0–1 | `security_room_staffed` | CAMERA_OPERATOR in K13 | `desk_work` | — |
+| Camera operator | 0–1 | `security_room_staffed` | CAMERA_OPERATOR in K13 | `desk_work` (seated at the monitor wall: on the `OperatorChair` task chair's `Seat` at (28.65, 14.5), D-063 seat 0.47 / desk 0.74, SL-3) | — |
 | Cleaner (L41) | 1–2 | always 1; 2nd when `cleaners` = 3 | `civ_cleaner_l41` | `browse` (cleaning) | `staff`, `staff_clean_l41` |
 | Cleaner (L42) | 0–1 | `cleaners` ≥ 2 | `civ_cleaner_l42` | `browse` (cleaning) | `staff`, `staff_clean_l42` |
 | IT contractor | 0–1 | `server_room` = `srv_contractor` | `civ_it` | `phone` (standing at the racks; no seat in K11, PO6-06) | `staff`, `staff_it` |
 | Helena Moor | 0–1 | `late_partner` = `moor_late` | `civ_partner` | `phone` | `staff`, `staff_partner` |
-| Victor Kessler | 0–1 | rare `kessler_sleepover` | `civ_kessler` | `sit` (reading in the bedside armchair: on its `Seat` at (3.0, 12.3), back to the M5 south wall, PO6-06 / D-063 npc seat) | — (stays in M5) |
+| Victor Kessler | 0–1 | rare `kessler_sleepover` | `civ_kessler` | `sit` (reading in the bedside armchair, the catalog `prop_armchair`: on its `Seat` at (3.0, 12.3), back to the M5 south wall, PO6-06 / D-063 npc seat, SL-3) | — (stays in M5) |
 
 **Totals per difficulty** (guard counts from `guard_post`/`guard_extra` picks, `difficulty_add`):
 

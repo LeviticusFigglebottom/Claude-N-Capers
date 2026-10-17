@@ -193,8 +193,6 @@ const ALERT_STATES: Array[int] = [
 	Enums.AlertState.CURIOUS, Enums.AlertState.INVESTIGATING, Enums.AlertState.ALARMED, Enums.AlertState.COMBAT,
 ]
 
-static var _weapon_defs: Dictionary = {}
-
 ## The AnimationPlayer driven (null = inactive, e.g. capsule placeholder).
 var player: AnimationPlayer = null
 ## The character visual root (the AnimationPlayer's parent).
@@ -210,9 +208,15 @@ var hat_lift: HardHatHandLift = null
 var hold_layer: UpperBodyLayer = null
 ## D-116 police combat clip choices (CombatClips).
 var combat: CombatClips = null
+## The upper-body layers (weapon hold / aim gait / moving reload, hit-zone flinch) and the left-hand IK (AnimLayers).
+var layers: AnimLayers = null
+## Hit reacts, hit-zone flinches and death clips (HitClips).
+var hits: HitClips = null
+## The third-person weapon / akimbo offhand and carried-bag visuals (HeldVisuals).
+var held_visuals: HeldVisuals = null
 ## WeaponDef.weapon_class of the held weapon (-1 without a WeaponDef): the D-116 class reloads.
 var weapon_class: int = -1
-## Lead ruling (b): the upper-body hit-zone flinch layer (every animated body); see _play_flinch_layer.
+## Lead ruling (b): the upper-body hit-zone flinch layer (every animated body); see AnimLayers.play_flinch.
 var flinch_layer: UpperBodyLayer = null
 ## Lead ruling (c): the third-person left hand on the weapon's LeftHandIK (rifle-family holds); null without a rig.
 var left_hand_ik: ThirdPersonLeftHandIK = null
@@ -227,11 +231,8 @@ var weapon_kind: StringName = &"pistol"
 var weapon_visual: Node3D = null
 ## v1.20 akimbo: the pair's second gun, moved to HandL/Socket (null otherwise).
 var weapon_offhand: Node3D = null
-## v1.20: the carried-bag visual at Back/Socket (null when not carrying), and the LootBag it shows.
+## v1.20: the carried-bag visual at Back/Socket (null when not carrying).
 var bag_visual: Node3D = null
-var _shown_bag: Node = null
-## Lead ruling (b): seconds left of the upper-body flinch.
-var _flinch_left: float = 0.0
 ## v1.21 crew-state one-shot (downed_fire / downed_reload / downed_getup / downed_arrested / crew_cuffed_enter /
 ## crew_cuffed_free): wins over the crew state's own clip while it lasts; `_state_oneshot_t` = seconds since it began.
 var _state_oneshot: StringName = &""
@@ -337,6 +338,12 @@ static func ensure(body: Node) -> AnimDriver:
 	return d
 
 
+func _init() -> void:
+	layers = AnimLayers.new(self)
+	hits = HitClips.new(self)
+	held_visuals = HeldVisuals.new(self)
+
+
 func _ready() -> void:
 	bind()
 	EventBus.damage_applied.connect(_on_damage_applied)
@@ -359,7 +366,7 @@ func _exit_tree() -> void:
 		var sig: Signal = pair[0]
 		if sig.is_connected(pair[1]):
 			sig.disconnect(pair[1])
-	_clear_bag_visual()  # v1.20: the LootBag shows its own visual again
+	held_visuals.clear_bag()  # v1.20: the LootBag shows its own visual again
 
 
 ## (Re)find the visual's AnimationPlayer and the weapon; returns true when active.
@@ -442,16 +449,16 @@ func tick(delta: float) -> void:
 		_alive_clip = want
 	_apply(want, _speed_scale_for(want, tw), tw)
 	_hold_pose_end()
-	_update_hold_layer(delta, tw)
-	_update_flinch_layer(delta, tw)
-	_update_left_hand_ik(delta, tw)
+	layers.update_hold(delta, tw)
+	layers.update_flinch(delta, tw)
+	layers.update_left_hand_ik(delta, tw)
 	if weapon_visual != null and is_instance_valid(weapon_visual):
 		weapon_visual.visible = weapon_shown(want)
 		if weapon_offhand != null and is_instance_valid(weapon_offhand):
 			weapon_offhand.visible = weapon_visual.visible
 	if crew_action != null:
 		crew_action.update_visuals(delta, tw)
-	_update_bag_visual(tw)
+	held_visuals.update_bag(tw)
 	if hat_lift != null and is_instance_valid(hat_lift):
 		var lift_on: float = 1.0 if tw.hard_hat_lift_clips.has(clip) else 0.0
 		hat_lift.influence = move_toward(hat_lift.influence, lift_on, delta * tw.hard_hat_lift_rate)
@@ -540,7 +547,7 @@ func play_oneshot(p_clip: StringName, duration: float = -1.0, while_moving: bool
 func choose_clip() -> StringName:
 	if _npc != null and not _npc.alive:
 		if _death_clip == &"":
-			_death_clip = _pick_death_clip(AnimTweak.data())
+			_death_clip = hits.pick_death_clip(AnimTweak.data())
 		return _death_clip
 	var state_clip: StringName = _state_clip()
 	if state_clip != &"":
@@ -691,53 +698,9 @@ func horizontal_speed() -> float:
 	return Vector2(_vel.x, _vel.z).length()
 
 
-## Rebuild the third-person weapon at `HandR/Socket` (crew: equipped weapon; NPC: EnemyDef.weapon).
+## Rebuild the third-person weapon at `HandR/Socket` (crew: equipped weapon; NPC: EnemyDef.weapon; HeldVisuals).
 func refresh_weapon() -> void:
-	for n: Node3D in [weapon_visual, weapon_offhand]:
-		if n != null and is_instance_valid(n):
-			n.get_parent().remove_child(n)
-			n.queue_free()
-	weapon_visual = null
-	weapon_offhand = null
-	var def: WeaponDef = null
-	var mod_ids: Array[StringName] = []
-	if _crew != null and _crew.weapons != null:
-		var ws: int = _crew.weapons.equipped_slot
-		if _crew.weapons.has_weapon(ws):
-			def = _weapon_def(_crew.weapons.weapon_id(ws))
-		var l: Loadout = _crew.loadout
-		if l != null:
-			mod_ids = l.primary_mods if ws == Enums.WeaponSlot.PRIMARY else l.secondary_mods
-	elif _npc != null and _npc.enemy_def != null:
-		# NPC weapon ids (weapon.npc_*) have no model of their own: ENV B's mapping to an armory model (PO6-16 review).
-		def = NpcWeaponModels.weapon_def(_npc.enemy_def.weapon)
-	weapon_kind = _kind_for(def)
-	weapon_class = def.weapon_class if def != null else -1
-	_holds_weapon = def != null
-	var socket: Node3D = rig.get_node_or_null(^"Skeleton3D/HandR/Socket") as Node3D if rig != null else null
-	if def == null or def.model == null or socket == null:
-		return
-	var wv: WeaponVisual = WeaponVisual.new()
-	wv.name = WEAPON_NODE
-	socket.add_child(wv)
-	wv.setup(def, LoadoutResolver.applied_mods(def, mod_ids))
-	weapon_visual = wv
-	_place_offhand(wv)
-
-
-## v1.20 akimbo: WeaponVisual builds the pair as the gun plus `offhand` beside it (the first-person rest pose); in
-## third person the second gun goes in the left fist: HandL/Socket, the mirrored weapon-grip convention (identity).
-## One gun per hand, never the pair in one hand.
-func _place_offhand(wv: WeaponVisual) -> void:
-	var socket: Node3D = rig.get_node_or_null(^"Skeleton3D/HandL/Socket") as Node3D
-	if not wv.is_akimbo() or socket == null:
-		return
-	var off: Node3D = wv.offhand
-	off.get_parent().remove_child(off)
-	off.name = OFFHAND_NODE
-	socket.add_child(off)
-	off.transform = Transform3D.IDENTITY
-	weapon_offhand = off
+	held_visuals.refresh_weapon()
 
 
 # --- Selection helpers ---------------------------------------------------------------------
@@ -865,48 +828,9 @@ func armed_clip(c: StringName) -> StringName:
 	return a if player.has_animation("%s/%s" % [LIBRARY, a]) else c
 
 
-## v1.20: while the crew body carries a LootBag, its LootDef.bag_model (else the bag's own visual scene) sits at
-## Back/Socket (v1.22: the bag pivot) shifted by AnimTweak.carried_bag_offset_by_weight; the LootBag's own visual
-## (which follows the carrier's back) is hidden meanwhile. Dropped / thrown / secured: removed, the bag shows again.
+## v1.20 carried-bag visual at Back/Socket (HeldVisuals.update_bag).
 func _update_bag_visual(tw: AnimTweak) -> void:
-	var bag: Node = _crew.carried_bag if _crew != null and _crew.is_carrying_bag() else null
-	if bag == _shown_bag and (bag == null or (bag_visual != null and is_instance_valid(bag_visual))):
-		return
-	_clear_bag_visual()
-	var socket: Node3D = rig.get_node_or_null(^"Skeleton3D/Back/Socket") as Node3D if rig != null else null
-	if bag == null or socket == null:
-		return
-	var lb: LootBag = bag as LootBag
-	var def: LootDef = ContentDB.loot(lb.loot_id) if lb != null and lb.loot_id != &"" else null
-	var scene: PackedScene = def.bag_model if def != null and def.bag_model != null else null
-	if scene == null and lb != null:
-		scene = lb.visual_scene if lb.visual_scene != null else LootBag.PLACEHOLDER
-	if scene == null:
-		return
-	var inst: Node3D = scene.instantiate() as Node3D
-	if inst == null:
-		return
-	inst.name = CARRIED_BAG_NODE
-	socket.add_child(inst)
-	inst.transform = Transform3D(Basis.IDENTITY, tw.carried_bag_offset_by_weight.get(
-		int(lb.weight) if lb != null else Enums.LootWeight.MEDIUM, Vector3.ZERO))
-	if lb != null and lb.visual_instance != null and is_instance_valid(lb.visual_instance) and scene == LootBag.PLACEHOLDER:
-		inst.scale = lb.visual_instance.scale  # the placeholder is sized by weight class
-	if lb != null and lb.visual_root != null:
-		lb.visual_root.visible = false
-	bag_visual = inst
-	_shown_bag = bag
-
-
-func _clear_bag_visual() -> void:
-	if bag_visual != null and is_instance_valid(bag_visual):
-		bag_visual.get_parent().remove_child(bag_visual)
-		bag_visual.queue_free()
-	bag_visual = null
-	var lb: LootBag = _shown_bag as LootBag if _shown_bag != null and is_instance_valid(_shown_bag) else null
-	if lb != null and lb.visual_root != null:
-		lb.visual_root.visible = true
-	_shown_bag = null
+	held_visuals.update_bag(tw)
 
 
 func _idle_clip() -> StringName:
@@ -931,64 +855,6 @@ func _held_weapon_clip(prefix: String) -> StringName:
 		return &""
 	var c: StringName = StringName(prefix + String(weapon_kind))
 	return c if player.has_animation("%s/%s" % [LIBRARY, c]) else &""
-
-
-## v1.19: the upper-body layer over walk / run / strafe* (weight 1, AnimTweak.hold_layer_blend_s): hold_<kind> while
-## the crew body holds a weapon; while aiming, aim_* keeps priority (the layer carries aim_<kind>, never hold_*).
-## Off for every other clip (idle uses idle_alert_<kind>, poses, deaths, one-shots).
-func _update_hold_layer(delta: float, tw: AnimTweak) -> void:
-	if hold_layer == null or not is_instance_valid(hold_layer):
-		return
-	var want: StringName = &""
-	var plain: StringName = &""
-	var aim_move: StringName = &""  # D-116: aim_<fam>_<gait>, phase-locked to the base gait
-	var moving_reload: bool = _oneshot_left > 0.0 and String(_oneshot).begins_with("reload_")
-	if _layered_locomotion(clip):
-		if moving_reload:
-			want = _oneshot  # D-116: a reload while moving rides the layer at its own time
-		elif _aiming():
-			aim_move = combat.aim_move_clip(clip)
-			want = aim_move if aim_move != &"" else aim_clip()
-			if (_crew != null and _held_weapon_clip(&"hold_") == &"") or (_crew == null and aim_move == &"") \
-					or not player.has_animation("%s/%s" % [LIBRARY, want]):
-				want = &""
-		elif _crew != null:
-			plain = _held_weapon_clip(&"hold_")
-			want = HoldGait.clip_for(plain, clip, player, LIBRARY)  # v1.25: hold_<kind>_<gait> when D has it
-	var gait_locked: bool = want != &"" and want != plain and not moving_reload
-	if want != &"" and want != hold_layer.clip:
-		var a: Animation = player.get_animation("%s/%s" % [LIBRARY, want])
-		var start: float = 0.0 if gait_locked else _loop_offset(&"weapon_hold") * a.length
-		hold_layer.set_clip(want, a, start if String(want).begins_with("hold_") else 0.0)
-	hold_layer.advance(delta)
-	if want == _oneshot and moving_reload:
-		hold_layer.time = (_oneshot_dur - _oneshot_left) * _oneshot_speed
-	elif gait_locked and player.is_playing():  # v1.25: frame-locked to the base gait, every tick
-		hold_layer.time = CombatClips.gait_time(player, want, aim_move != &"")
-	var target: float = 1.0 if want != &"" else 0.0
-	hold_layer.influence = move_toward(hold_layer.influence, target, delta / maxf(tw.hold_layer_blend_s, 0.001))
-	hold_layer.active = hold_layer.influence > 0.0
-
-
-## Lead ruling (c) / characters.md v1.19: the left hand goes onto the held weapon's LeftHandIK (HandL/Socket on the
-## marker) while a rifle-family weapon shows and the clip holds it with both hands (idle_alert_<kind>, aim_rifle,
-## fire_rifle, or the hold_* / aim_rifle upper-body layer over locomotion); blends out for anything else (reloads,
-## armed interactions, the bag carry, poses, pistols and akimbo).
-func _update_left_hand_ik(delta: float, tw: AnimTweak) -> void:
-	if left_hand_ik == null or not is_instance_valid(left_hand_ik):
-		return
-	var wv: WeaponVisual = weapon_visual as WeaponVisual
-	var marker: Node3D = wv.get_marker(&"LeftHandIK") if wv != null and is_instance_valid(wv) else null
-	var two_hands: bool = String(clip).begins_with("idle_alert_") or clip == &"aim_rifle" or clip == &"fire_rifle" \
-		or (hold_layer != null and hold_layer.active and _layered_locomotion(clip) \
-			and not String(hold_layer.clip).begins_with("reload_"))
-	two_hands = two_hands and (crew_action == null or crew_action.action == &"")  # v1.23: not during an action
-	var want: bool = marker != null and aim_family() == &"rifle" and weapon_visual.visible and two_hands \
-		and not (flinch_layer != null and flinch_layer.active)
-	left_hand_ik.set_target(marker if want else left_hand_ik.marker,
-		rig.get_node_or_null(^"Skeleton3D/HandR/Socket") as Node3D, rig.get_node_or_null(^"Skeleton3D/HandL/Socket") as Node3D)
-	left_hand_ik.influence = move_toward(left_hand_ik.influence, 1.0 if want else 0.0, delta * tw.left_hand_ik_rate)
-	left_hand_ik.active = left_hand_ik.influence > 0.0 and left_hand_ik.marker != null
 
 
 ## Locomotion clips the v1.19 weapon-hold layer goes over (SOURCE weapon_holds: walk / run / strafe*; v1.25 also
@@ -1024,76 +890,7 @@ func _hint() -> StringName:
 	if b == null:
 		return &""
 	var h: Variant = b.get(&"anim_hint")
-	return _ambient_hint(_dance_pick(h if h is StringName else &""))
-
-
-## D-111: `dance` is one of the three dance loops, stable per NPC name (every peer agrees).
-func _dance_pick(h: StringName) -> StringName:
-	if h != &"dance" or _npc == null:
-		return h
-	return [&"dance_a", &"dance_b", &"dance_c"][absi(hash(String(_npc.name))) % 3]
-
-
-## D-069 per-NPC ambient substitutions: cleaners mop instead of browsing, Kessler reads in his armchair instead of
-## sitting, the camera operator watches the monitors, a seated phone call, cartel gunmen idle as thugs.
-func _ambient_hint(h: StringName) -> StringName:
-	var tags: Array = _npc.spawn_info.get("tags", []) as Array
-	if h == &"browse" and tags.any(func(t: Variant) -> bool: return String(t).begins_with("civ_cleaner")):
-		return &"mop"
-	if h == &"sit" and (tags.has(&"civ_kessler") or combat.armed_seat_clip(_npc) != &""):
-		# LEAD (D's SL audit): Kessler's Seat is an armchair (falls back to sit_bed_read); DB-4 (characters.md v1.24):
-		# a cartel gunman / armed guard sits armed, the long gun across the lap
-		return &"sit_chair_read" if tags.has(&"civ_kessler") else &"sit_chair_armed"
-	if h == &"phone" and String(_npc.spawn_info.get("idle_activity", "")) == "sit":
-		return &"phone_seated"
-	if (h == &"" or h == &"idle") and _npc.role == CartelBrain.ROLE and _npc.alert_state == Enums.AlertState.CALM:
-		return &"idle_thug"
-	if (h == &"" or h == &"idle") and bool(_npc.spawn_info.get("no_patrol", false)) and _npc.role == &"guard" \
-			and _npc.alert_state == Enums.AlertState.CALM:
-		return &"sit_chair_watch"  # S8.2 camera operator at his station
-	return h
-
-
-## PO6-18 / D-114 §7: a kneeling / cuffed / crouched / prone / downed body dies from that pose: its pose death,
-## or (rig without it) the pose itself, frozen where it is. &"" = a standing body.
-func _pose_death_clip(tw: AnimTweak) -> StringName:
-	if not tw.death_by_pose.has(_alive_clip):
-		return &""
-	var posed: StringName = tw.death_by_pose[_alive_clip]
-	if player == null or player.has_animation("%s/%s" % [LIBRARY, posed]):
-		return posed
-	_death_hold = true
-	return _alive_clip
-
-
-func _pick_death_clip(tw: AnimTweak) -> StringName:
-	var posed: StringName = _pose_death_clip(tw)
-	if posed != &"":
-		return posed
-	var dir: Vector3 = _hit_dir
-	if dir == Vector3.ZERO and _npc != null:
-		dir = _npc.last_damage.get("direction", Vector3.ZERO)
-	dir.y = 0.0
-	var facing: Vector3 = -_body.global_transform.basis.z
-	facing.y = 0.0
-	# Bullet travelling along the facing = hit from behind (pitched forward, face down); against it = frontal.
-	var from_behind: bool = dir.length() >= 0.001 and dir.normalized().dot(facing.normalized()) > tw.death_front_dot
-	if _seated:  # characters.md v1.11: slump on the desk from a frontal or melee kill, else off the chair
-		var melee: bool = _npc != null and int(_npc.last_damage.get("type", -1)) == Enums.DamageType.MELEE
-		var seated_clip: StringName = DEATH_SEATED_SLUMP if melee or not from_behind else DEATH_SEATED_FALL
-		if player == null or player.has_animation("%s/%s" % [LIBRARY, seated_clip]):
-			return seated_clip
-	if dir.length() < 0.001:
-		return &"death_back"
-	# v1.10 variety: a strong side hit falls sideways; otherwise front / back, half of the bodies with the _b
-	# variant. Picked from the replicated node name, so every peer shows the same death.
-	var right: Vector3 = _body.global_transform.basis.x
-	if absf(dir.normalized().dot(right)) > tw.death_side_dot:
-		return &"death_side"
-	var b: bool = absi(hash(String(_body.name) + "death")) % 2 == 1
-	if from_behind:
-		return &"death_front_b" if b else &"death_front"
-	return &"death_back_b" if b else &"death_back"
+	return AmbientHints.resolve(_npc, combat, h if h is StringName else &"")  # D-111 dance pick, D-069 substitutions
 
 
 func _speed_scale_for(p_clip: StringName, tw: AnimTweak) -> float:
@@ -1222,6 +1019,7 @@ func _apply(want: StringName, speed: float, tw: AnimTweak) -> void:
 		clip = want
 		_restart = false
 		hand_props = HandProps.sync(rig, StringName(full.get_slice("/", 1)))  # D-115 (characters.md v1.16)
+		HeldVisuals.update_slung(rig, StringName(full.get_slice("/", 1)))  # v1.27: no slung gun through the chair
 	if crew_action != null and want == crew_action.action:
 		player.seek(crew_action.time, true)  # v1.23: the action's time and rate are CrewActionAnim's (the hold drives it)
 		speed = crew_action.speed
@@ -1269,30 +1067,9 @@ func aim_family() -> StringName:
 	return &"pistol" if PISTOL_KINDS.has(weapon_kind) else &"rifle"
 
 
-## Hold kind (characters.md v1.20, SOURCE weapon_holds): WeaponDef.weapon_class -> rifle / smg / sniper / lmg /
-## pistol / akimbo (KIND_BY_CLASS; an akimbo pair of pistols is `akimbo`); NPCs without a WeaponDef: rifle / pistol.
+## Hold kind (characters.md v1.20) of `def` (HeldVisuals.kind_for).
 func _kind_for(def: WeaponDef) -> StringName:
-	if def != null:
-		if def.weapon_class == Enums.WeaponClass.PISTOL and def.akimbo:
-			return &"akimbo"
-		return KIND_BY_CLASS.get(def.weapon_class, &"rifle")
-	if _npc != null:
-		if _npc.enemy_def != null and _npc.enemy_def.params.has("anim_weapon"):
-			return StringName(_npc.enemy_def.params["anim_weapon"])
-		return AnimTweak.data().npc_weapon_anim_by_role.get(_npc.role, &"pistol")
-	return &"pistol"
-
-
-## WeaponDef by id without ContentDB's unknown-id error (NPC weapons usually have no WeaponDef).
-static func _weapon_def(id: StringName) -> WeaponDef:
-	if id == &"":
-		return null
-	if _weapon_defs.is_empty():
-		for r: Variant in ContentDB.all_weapons():
-			var w: WeaponDef = r as WeaponDef
-			if w != null:
-				_weapon_defs[w.id] = w
-	return _weapon_defs.get(id) as WeaponDef
+	return held_visuals.kind_for(def)
 
 
 func _net_id() -> int:
@@ -1320,84 +1097,19 @@ func _on_damage_applied(victim_net_id: int, _attacker: int, info: Dictionary) ->
 	# D-116: an explosion staggers a non-shield NPC in place (stagger_<fam>), else the flinches
 	var stagger: StringName = combat.stagger_clip() if combat.explosion_staggers(_npc, info) else &""
 	var zone_clip: StringName = hit_zone_clip(info) if stagger == &"" else &""
-	if zone_clip != &"" and horizontal_speed() > AnimTweak.data().move_threshold_mps and _play_flinch_layer(zone_clip):
+	if zone_clip != &"" and horizontal_speed() > AnimTweak.data().move_threshold_mps and layers.play_flinch(zone_clip):
 		return  # lead ruling (b): moving, the legs keep their locomotion
 	play_oneshot(stagger if stagger != &"" else (zone_clip if zone_clip != &"" else hit_react_clip(_hit_dir)), -1.0, true)
 
 
-## Lead ruling (b) / SOURCE hit_zones: a hit-zone flinch on a moving body plays on the upper body only (spine and up,
-## UpperBodyLayer `FlinchLayer` over whatever the legs do) at AnimTweak.hit_zone_layer_weight (head: _head_weight),
-## fading in / out over hit_zone_blend_in_s / _out_s. False when the rig has no layer / clip (then full body).
-func _play_flinch_layer(c: StringName) -> bool:
-	if flinch_layer == null or not is_instance_valid(flinch_layer) or not _has_clip(c):
-		return false
-	flinch_layer.set_clip(&"", null)
-	flinch_layer.set_clip(c, player.get_animation("%s/%s" % [LIBRARY, c]), 0.0)
-	_flinch_left = player.get_animation("%s/%s" % [LIBRARY, c]).length
-	return true
-
-
-func _update_flinch_layer(delta: float, tw: AnimTweak) -> void:
-	if flinch_layer == null or not is_instance_valid(flinch_layer):
-		return
-	var dead: bool = _npc != null and not _npc.alive
-	if _flinch_left <= 0.0 or dead:
-		_flinch_left = 0.0
-		flinch_layer.influence = move_toward(flinch_layer.influence, 0.0, delta / maxf(tw.hit_zone_blend_out_s, 0.001))
-	else:
-		flinch_layer.advance(delta)
-		_flinch_left = maxf(_flinch_left - delta, 0.0)
-		var peak: float = tw.hit_zone_layer_head_weight if flinch_layer.clip == HIT_HEAD else tw.hit_zone_layer_weight
-		var target: float = peak if _flinch_left > tw.hit_zone_blend_out_s else peak * _flinch_left / maxf(tw.hit_zone_blend_out_s, 0.001)
-		flinch_layer.influence = move_toward(flinch_layer.influence, target, delta * peak / maxf(tw.hit_zone_blend_in_s, 0.001))
-	flinch_layer.active = flinch_layer.influence > 0.0
-
-
-## characters.md v1.18 (SOURCE `hit_zones:`): the flinch for damage `info` from its `zone` and hit `position` in the
-## body's root space: HEAD -> hit_head, BODY -> hit_chest, LIMB above the hips joint -> hit_shoulder_l / _r, below ->
-## hit_leg_l / _r (left = root-space x < 0). D-123: a `limb` sub-zone (upper-arm / thigh hitbox, zone BODY) wins
-## on a BODY / LIMB hit: shoulder_l / _r -> hit_shoulder_l / _r, leg_l / _r -> hit_leg_l / _r.
-## &"" when no zone is known (no `zone`, WEAKPOINT, a type other than
-## bullet / melee, a LIMB hit without a position) or the rig lacks the clip: the directional hit_react* set plays.
+## characters.md v1.18 / D-123: the hit-zone flinch for damage `info`, &"" for the directional set (HitClips.zone_clip).
 func hit_zone_clip(info: Dictionary) -> StringName:
-	if not info.has("zone") or not HIT_ZONE_TYPES.has(int(info.get("type", Enums.DamageType.BULLET))):
-		return &""
-	var out: StringName = &""
-	var limb: StringName = StringName(info.get("limb", &""))
-	match int(info["zone"]):
-		Enums.HitZone.BODY, Enums.HitZone.LIMB when LIMB_CLIPS.has(limb):
-			out = LIMB_CLIPS[limb]  # D-123: a limb box's sub-zone (zone BODY) names its shoulder / leg flinch
-		Enums.HitZone.HEAD:
-			out = HIT_HEAD
-		Enums.HitZone.BODY:
-			out = HIT_CHEST
-		Enums.HitZone.LIMB:
-			var pos: Variant = info.get("position")
-			if pos is Vector3:
-				var xf: Transform3D = _body.global_transform if _body.is_inside_tree() else _body.transform
-				var local: Vector3 = xf.affine_inverse() * (pos as Vector3)
-				var left: bool = local.x < 0.0
-				if local.y > HIT_ZONE_HIPS_Y_M * _motion_scale():
-					out = HIT_SHOULDER_L if left else HIT_SHOULDER_R
-				else:
-					out = HIT_LEG_L if left else HIT_LEG_R
-	if out == &"" or player == null or not player.has_animation("%s/%s" % [LIBRARY, out]):
-		return &""
-	return out
+	return hits.zone_clip(info)
 
 
-## v1.10: the hit react for a bullet travelling along world direction `dir` (body frame: from the front, back,
-## left or right).
+## v1.10: the directional hit react for a bullet travelling along `dir` (HitClips.react_clip).
 func hit_react_clip(dir: Vector3) -> StringName:
-	var d: Vector3 = _body.global_transform.basis.inverse() * Vector3(dir.x, 0.0, dir.z)
-	if d.length() < 0.001:
-		return HIT_FRONT
-	d = d.normalized()
-	if d.z > 0.5:
-		return HIT_FRONT
-	if d.z < -0.5:
-		return HIT_BACK
-	return HIT_LEFT if d.x > 0.5 else HIT_RIGHT
+	return hits.react_clip(dir)
 
 
 func _on_weapon_fired(shooter_net_id: int, _weapon_id: StringName, _suppressed: bool, _pos: Vector3) -> void:

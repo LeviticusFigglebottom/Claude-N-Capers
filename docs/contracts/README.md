@@ -8,7 +8,7 @@ major version and comes with a `docs/decisions.md` entry and a migration note to
 | [heist_map.md](heist_map.md) | 1.0 | C → A (and B for UI) | `game/contracts/map/*`, `HeistDef`, `HeistVariantTable` |
 | [gameplay_prefabs.md](gameplay_prefabs.md) | 1.0 | A → C (C places A's prefabs in maps) | `game/systems/prefabs/**` |
 | [visual_slots.md](visual_slots.md) | 1.5 | C/B → A (art that plugs into prefabs) | — |
-| [characters.md](characters.md) | 1.26 | C → A (rigs, animation names) | — |
+| [characters.md](characters.md) | 1.27 | C → A (rigs, animation names) | — |
 | [events.md](events.md) | 1.8 | all ↔ all | `game/core/event_bus.gd` |
 | [modifiers.md](modifiers.md) | 1.0 | B → A | `game/core/modifiers.gd`, `game/contracts/modifier_keys.gd` |
 | [data_schemas.md](data_schemas.md) | 1.3 | B (data) → A (runtime) | `game/contracts/data/*` |

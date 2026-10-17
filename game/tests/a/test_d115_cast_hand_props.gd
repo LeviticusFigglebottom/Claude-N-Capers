@@ -10,7 +10,12 @@ const CAST_PATH: String = "res://world/characters/p5_cast.json"
 ## Ids listed ahead of ENV D's delivery (the deal skips them until their scenes exist; LEAD DB/SL cast audit).
 const PENDING: Array[String] = ["npc_cleaner_sl_b", "npc_cleaner_sl_c", "npc_northgate_guard_c", "npc_northgate_guard_d",
 	"npc_northgate_guard_e", "npc_northgate_guard_f", "security_officer_c", "security_officer_d",
-	"dock_worker_c"]  # D 45894565 (merged by the LEAD with A's map)
+	"dock_worker_c",  # D 45894565 (merged by the LEAD with A's map)
+	# D-130 cast pools (D a04f3536, p5_cast v6), merged by the LEAD with A's map:
+	"gallery_guard_c", "gallery_guard_d", "gallery_guard_e", "gallery_guard_f", "gallery_guard_g", "gallery_guard_h",
+	"gallery_guard_i", "gallery_patron_h", "gallery_patron_i", "gallery_patron_j", "npc_northgate_guard_g",
+	"npc_northgate_guard_h", "npc_northgate_guard_i", "npc_cleaner_sl_d", "security_officer_e", "security_officer_f",
+	"npc_bank_cleaner_b", "gallery_waiter_b", "gallery_attendant_c"]  # + D 48a7cc3a (p5_cast v7)
 
 var _nodes: Array[Node] = []
 
@@ -41,17 +46,28 @@ func test_d115_tag_map_mirrors_cast() -> void:
 				assert_true((m.get(tag, []) as Array).has(StringName(String(id))),
 					"%s/%s wears %s (cast)" % [heist, role, id])
 	assert_eq(tw.heist_tag_characters[&"gallery_night"][&"civ_admin"], [&"gallery_admin"], "GN admin = gallery_admin")
-	# D b95cc5e4 (p5_cast v4): tag_map.gallery_night is copied 1:1 (staff_cs / staff_admin are A's extra tags).
+	# D b95cc5e4 (p5_cast v4): tag_map.gallery_night is mirrored (staff_cs / staff_admin are A's extra tags); since D-130
+	# (p5_cast v6) every cast id must be in A's list, so A's map may land before or after D's cast file.
 	var gn_cast: Dictionary = (JSON.parse_string(FileAccess.get_file_as_string(CAST_PATH)) as Dictionary) \
 		.get("tag_map", {}).get("gallery_night", {})
 	var gn: Dictionary = tw.heist_tag_characters[&"gallery_night"]
 	assert_false(gn_cast.is_empty(), "p5_cast v4 has tag_map.gallery_night")
 	for tag: String in gn_cast:
-		var want: Array[StringName] = []
+		var have: Array = gn.get(StringName(tag), [])
 		for id: Variant in gn_cast[tag]:
-			want.append(StringName(String(id)))
-		assert_eq(Array(gn.get(StringName(tag), [])), Array(want), "GN %s mirrors the cast tag_map" % tag)
+			assert_true(have.has(StringName(String(id))), "GN %s mirrors the cast tag_map (%s)" % [tag, id])
 	assert_eq(gn[&"staff_cs"], [&"gallery_conservator"], "staff_cs wears the conservator")
+	# heist_tag_pools: the tags of one pool list the same ids (one shared round-robin deal, no twins up to the pool size).
+	for heist: Variant in tw.heist_tag_pools:
+		var pools: Dictionary = tw.heist_tag_pools[heist]
+		var first: Dictionary = {}
+		for tag: Variant in pools:
+			var pool: StringName = pools[tag]
+			var lst: Array = tw.heist_tag_characters[heist].get(tag, [])
+			if not first.has(pool):
+				first[pool] = lst
+			assert_eq(lst, first[pool], "%s pool %s: %s lists the pool's ids" % [heist, pool, tag])
+	assert_eq((gn[&"guard_hall"] as Array).size(), 9, "D-130: 9 GN guard looks")
 	for heist: Variant in tw.heist_tag_characters:
 		var m: Dictionary = tw.heist_tag_characters[heist]
 		for tag: Variant in m:

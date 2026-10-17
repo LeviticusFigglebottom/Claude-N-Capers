@@ -97,6 +97,8 @@ var onboarding: OnboardingCard
 var scoreboard: ScoreboardOverlay
 var toast_label: Label
 var secured_bags: int = 0
+var _subtitles: WeakRef = null
+var _subtitle_seek: int = 0
 var _lookup_t: float = 0.0
 var _toast_t: float = 0.0
 var _watched_crew: Node = null
@@ -536,6 +538,24 @@ func _input(event: InputEvent) -> void:
 		refresh_keys()
 
 
+## Global rect of the in-heist subtitle box while it shows rows (ContactRadio's SubtitleOverlay, a sibling layer), or
+## an empty rect. The overlay is found once and held weakly.
+func _subtitle_rect() -> Rect2:
+	var sub: SubtitleOverlay = _subtitles.get_ref() as SubtitleOverlay if _subtitles != null else null
+	if sub == null:
+		_subtitle_seek -= 1
+		if _subtitle_seek > 0:
+			return Rect2()
+		_subtitle_seek = 30  # look again twice a second, not every frame
+		for n: Node in get_tree().get_nodes_in_group(SubtitleOverlay.GROUP):
+			sub = n as SubtitleOverlay
+			_subtitles = weakref(sub)
+			break
+	if sub == null or sub.box == null or sub.rows.is_empty() or not sub.box.is_visible_in_tree():
+		return Rect2()
+	return sub.box.get_global_rect()
+
+
 func _process(delta: float) -> void:
 	_update_crosshair(delta)
 	_stack_captain()
@@ -545,6 +565,8 @@ func _process(delta: float) -> void:
 		objective_markers.z_index = 1 if scoreboard.visible else 0  # drawn over the sheet, not under it
 		var sheet: Control = scoreboard.sheet if scoreboard.visible else null
 		objective_markers.avoid = sheet.get_global_rect() if sheet != null else Rect2()  # badges only on it
+	if objective_markers != null:
+		objective_markers.subtitle_band = _subtitle_rect()
 	if onboarding != null and scoreboard != null:
 		# The Tab sheet and the pause menu's job card sit on the card's spot and win (h02 / fail captures).
 		onboarding.visible = onboarding.shown != &"" and not scoreboard.visible and not MouseCapture.is_released(&"pause") \

@@ -295,3 +295,19 @@ func test_fold_keeps_required_steps_before_optional_ones() -> void:
 	assert_true(texts.find(ObjectivesPanel.objective_text(obs[1])) < texts.find(ObjectivesPanel.objective_text(obs[7])),
 			"mission order kept")
 	assert_eq(texts[texts.size() - 1], UiText.t(&"ui.scoreboard.objectives_more", {"count": ids.size() - (cap - 1)}))
+
+
+## Real-input GH run (r231): the model moves an ACTIVE optional step after the last required one, so "Or find the
+## safe code" listed under "Secure two bags". On the sheet an alternative sits right after the step it replaces.
+func test_alternative_step_sits_beside_its_partner() -> void:
+	var rows: Array[Dictionary] = [
+		{"id": &"keycard", "args": {"alternative": &"code"}}, {"id": &"workshop_door", "args": {}},
+		{"id": &"safe", "args": {}}, {"id": &"secure", "args": {}},
+		{"id": &"code", "args": {"alternative": &"keycard", "optional": true}}, {"id": &"extra_bags", "args": {}},
+	]
+	var ids: Array[StringName] = []
+	for r: Dictionary in ScoreboardOverlay.beside_alternatives(rows):
+		ids.append(StringName(r["id"]))
+	assert_eq(ids, [&"keycard", &"code", &"workshop_door", &"safe", &"secure", &"extra_bags"] as Array[StringName])
+	var plain: Array[Dictionary] = [{"id": &"a", "args": {}}, {"id": &"b", "args": {}}]
+	assert_eq(ScoreboardOverlay.beside_alternatives(plain), plain, "no alternatives: unchanged")

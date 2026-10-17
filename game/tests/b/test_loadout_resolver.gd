@@ -110,7 +110,7 @@ func test_resolved_stats_equal_base_plus_deltas() -> void:
 	var mods: Array[StringName] = [&"mod.p9_extended_mag", &"mod.p9_reflex_sight", &"mod.p9_suppressor"]
 	var got: WeaponStats = LoadoutResolver.resolve_weapon(PISTOL, mods)
 	var def: WeaponDef = ContentDB.weapon(PISTOL)
-	var want: WeaponStats = def.base
+	var want: WeaponStats = def.base.duplicate(true) as WeaponStats  # plus() shares the gadgets array: never on the cached base
 	# Ordered by ModType: SUPPRESSOR(2), SIGHT(3), MAGAZINE(7).
 	for mid: StringName in [&"mod.p9_suppressor", &"mod.p9_reflex_sight", &"mod.p9_extended_mag"]:
 		want = want.plus(ContentDB.mod(mid).delta)

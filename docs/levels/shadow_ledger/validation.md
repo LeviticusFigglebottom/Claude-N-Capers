@@ -51,12 +51,12 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## floating: Nothing floats
 
-- 360 props checked
+- 362 props checked
 
 
 ## clipping: Nothing clips
 
-- 360 props, 57 doors checked
+- 362 props, 57 doors checked
 
 
 ## scale: Human scale
@@ -167,12 +167,12 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## slopes: No walkable slope < 50° outside the play mesh
 
-- 153 x 105 columns (0.25 m), 78427 surface samples, 0 collider(s) with reachable walkable surfaces outside play
+- 153 x 105 columns (0.25 m), 78504 surface samples, 0 collider(s) with reachable walkable surfaces outside play
 
 
 ## navmesh: Navmesh
 
-- navmesh: 1642 polygons, cell 0.10/0.10 m
+- navmesh: 1643 polygons, cell 0.10/0.10 m
 - 231 markers checked
 | room | walkable samples | covered | coverage |
 |---|---|---|---|
@@ -215,7 +215,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `Rooms/RoomM2` | 160 | 160 | 100% |
 | `Rooms/RoomM3` | 111 | 111 | 100% |
 | `Rooms/RoomM4` | 123 | 123 | 100% |
-| `Rooms/RoomM5` | 78 | 78 | 100% |
+| `Rooms/RoomM5` | 71 | 71 | 100% |
 | `Rooms/RoomM6` | 30 | 30 | 100% |
 | `Rooms/RoomM7` | 11 | 11 | 100% |
 | `Rooms/RoomM8` | 104 | 104 | 100% |
@@ -289,8 +289,8 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## furniture_logic: Furniture arranged plausibly
 
-- classified: counter 6, chair 58, desk 15, table 8, wall_unit 8, lounge_seat 4
-- 62 seats, 29 tables/desks/counters, 57 doors checked
+- classified: counter 6, chair 58, desk 15, table 8, wall_unit 8, lounge_seat 4, desk_chair 1
+- 63 seats, 29 tables/desks/counters, 57 doors checked
 
 - WARN `Variants/Group_gondola/Slot_gon_north_l42/CradleDeck` @ (33.00, 7.85, -0.20): door_clear: in the clear zone of door `Gameplay/Doors/StudyFacadeDoor` (1.0 / 1.0 m each side, leaf width 0.90 m) by 0.74 m (gameplay prefab / variant content: review)
 - WARN `Variants/Group_gondola/Slot_gon_west_l41/CradleDeck` @ (-0.20, 3.45, 2.65): door_clear: in the clear zone of door `Gameplay/Doors/K1FacadeDoor` (1.0 / 1.0 m each side, leaf width 0.90 m) by 0.74 m (gameplay prefab / variant content: review)
