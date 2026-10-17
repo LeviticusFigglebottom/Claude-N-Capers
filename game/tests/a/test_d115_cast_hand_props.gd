@@ -16,7 +16,12 @@ const PENDING: Array[String] = ["npc_cleaner_sl_b", "npc_cleaner_sl_c", "npc_nor
 	"gallery_guard_i", "gallery_patron_h", "gallery_patron_i", "gallery_patron_j", "npc_northgate_guard_g",
 	"npc_northgate_guard_h", "npc_northgate_guard_i", "npc_cleaner_sl_d", "security_officer_e", "security_officer_f",
 	"npc_bank_cleaner_b", "gallery_waiter_b", "gallery_attendant_c",  # + D 48a7cc3a (p5_cast v7)
-	"npc_km_assistant", "npc_km_associate"]  # SL late_staff (D, next p5_cast)
+	"npc_km_assistant", "npc_km_associate",  # SL late_staff (D, next p5_cast)
+	# OF-D1 Ostrander Federal pools (D b2527e4d, p5_cast v9), mirrored by A (OF-A6) ahead of D's scenes:
+	"security_officer_g", "security_officer_h", "security_officer_i", "security_officer_j", "security_bodyguard",
+	"npc_bank_teller_c", "npc_bank_teller_d", "npc_bank_teller_e", "bank_officer_c", "bank_officer_d",
+	"bank_customer_c", "bank_customer_d", "bank_customer_e", "bank_customer_f", "bank_customer_g", "bank_customer_h",
+	"bank_customer_i", "bank_customer_j", "bank_vip_client"]
 
 var _nodes: Array[Node] = []
 
@@ -58,6 +63,28 @@ func test_d115_tag_map_mirrors_cast() -> void:
 		for id: Variant in gn_cast[tag]:
 			assert_true(have.has(StringName(String(id))), "GN %s mirrors the cast tag_map (%s)" % [tag, id])
 	assert_eq(gn[&"staff_cs"], [&"gallery_conservator"], "staff_cs wears the conservator")
+	# OF-A6 (p5_cast v9 tag_map.ostrander_federal): mirrored 1:1 (same tags, same ids, same order) once D's cast file
+	# carries it; A's map may land first, so the fixed expectations below hold either way.
+	var of_cast: Dictionary = (JSON.parse_string(FileAccess.get_file_as_string(CAST_PATH)) as Dictionary) \
+		.get("tag_map", {}).get("ostrander_federal", {})
+	var of: Dictionary = tw.heist_tag_characters.get(&"ostrander_federal", {})
+	assert_false(of.is_empty(), "ostrander_federal has a tag map")
+	if not of_cast.is_empty():
+		assert_eq(of.size(), of_cast.size(), "OF: the same tags as the cast tag_map")
+		for tag: String in of_cast:
+			var want: Array = []
+			for id: Variant in of_cast[tag]:
+				want.append(StringName(String(id)))
+			assert_eq(of.get(StringName(tag), []), want, "OF %s mirrors the cast tag_map 1:1" % tag)
+	assert_eq((of[&"guard_lobby"] as Array).size(), 10, "OF-D1: 10 Halden faces on every guard post")
+	assert_eq(of[&"security_operator"], [&"npc_bank_guard"], "OF operator = npc_bank_guard (not the shared map's)")
+	assert_eq(of[&"guard_vip"], [&"security_bodyguard"], "OF VIP bodyguard")
+	assert_eq(of[&"civ_vip"], [&"bank_vip_client"], "OF VIP client")
+	for route: String in ["mgr_floor", "mgr_gallery", "mgr_vault"]:
+		assert_eq(of[StringName("civ_manager_" + route)], [&"bank_manager"], "OF civ_manager_%s = bank_manager" % route)
+	assert_eq((of[&"civ_customer"] as Array).size(), 12, "OF: one pool of 12 customer faces")
+	assert_eq(of[&"civ_customer"], of[&"civ_plaza"], "hall and plaza share the customer pool")
+	assert_eq(of[&"civ_customer"], of[&"civ_client"], "hall and lounge share the customer pool")
 	# heist_tag_pools: the tags of one pool list the same ids (one shared round-robin deal, no twins up to the pool size).
 	for heist: Variant in tw.heist_tag_pools:
 		var pools: Dictionary = tw.heist_tag_pools[heist]

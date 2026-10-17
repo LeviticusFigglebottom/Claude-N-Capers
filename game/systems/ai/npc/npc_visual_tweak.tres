@@ -72,6 +72,26 @@ heist_tag_characters = {
 &"guard_rover": [&"security_officer", &"security_officer_b", &"security_officer_c", &"security_officer_d", &"security_officer_e", &"security_officer_f"],
 &"security_operator": [&"npc_bank_guard"]
 },
+&"ostrander_federal": {
+&"civ_client": [&"bank_customer", &"bank_customer_b", &"bank_customer_c", &"bank_customer_d", &"bank_customer_e", &"bank_customer_f", &"bank_customer_g", &"bank_customer_h", &"bank_customer_i", &"bank_customer_j", &"civilian_customer_a", &"civilian_customer_b"],
+&"civ_customer": [&"bank_customer", &"bank_customer_b", &"bank_customer_c", &"bank_customer_d", &"bank_customer_e", &"bank_customer_f", &"bank_customer_g", &"bank_customer_h", &"bank_customer_i", &"bank_customer_j", &"civilian_customer_a", &"civilian_customer_b"],
+&"civ_manager_mgr_floor": [&"bank_manager"],
+&"civ_manager_mgr_gallery": [&"bank_manager"],
+&"civ_manager_mgr_vault": [&"bank_manager"],
+&"civ_officer": [&"bank_officer", &"bank_officer_b", &"bank_officer_c", &"bank_officer_d"],
+&"civ_plaza": [&"bank_customer", &"bank_customer_b", &"bank_customer_c", &"bank_customer_d", &"bank_customer_e", &"bank_customer_f", &"bank_customer_g", &"bank_customer_h", &"bank_customer_i", &"bank_customer_j", &"civilian_customer_a", &"civilian_customer_b"],
+&"civ_teller": [&"npc_bank_teller", &"npc_bank_teller_b", &"npc_bank_teller_c", &"npc_bank_teller_d", &"npc_bank_teller_e"],
+&"civ_vip": [&"bank_vip_client"],
+&"guard_lobby": [&"security_officer", &"security_officer_b", &"security_officer_c", &"security_officer_d", &"security_officer_e", &"security_officer_f", &"security_officer_g", &"security_officer_h", &"security_officer_i", &"security_officer_j"],
+&"guard_rover_basement": [&"security_officer", &"security_officer_b", &"security_officer_c", &"security_officer_d", &"security_officer_e", &"security_officer_f", &"security_officer_g", &"security_officer_h", &"security_officer_i", &"security_officer_j"],
+&"guard_rover_dock": [&"security_officer", &"security_officer_b", &"security_officer_c", &"security_officer_d", &"security_officer_e", &"security_officer_f", &"security_officer_g", &"security_officer_h", &"security_officer_i", &"security_officer_j"],
+&"guard_rover_gallery": [&"security_officer", &"security_officer_b", &"security_officer_c", &"security_officer_d", &"security_officer_e", &"security_officer_f", &"security_officer_g", &"security_officer_h", &"security_officer_i", &"security_officer_j"],
+&"guard_rover_hall": [&"security_officer", &"security_officer_b", &"security_officer_c", &"security_officer_d", &"security_officer_e", &"security_officer_f", &"security_officer_g", &"security_officer_h", &"security_officer_i", &"security_officer_j"],
+&"guard_vault": [&"security_officer", &"security_officer_b", &"security_officer_c", &"security_officer_d", &"security_officer_e", &"security_officer_f", &"security_officer_g", &"security_officer_h", &"security_officer_i", &"security_officer_j"],
+&"guard_vaultline": [&"armored_car_crew", &"armored_car_crew_b"],
+&"guard_vip": [&"security_bodyguard"],
+&"security_operator": [&"npc_bank_guard"]
+},
 &"shadow_ledger": {
 &"civ_assistant": [&"npc_km_assistant"],
 &"civ_associate": [&"npc_km_associate"],
@@ -103,6 +123,17 @@ heist_tag_pools = {
 &"guard_basement": &"nd_guards",
 &"guard_hall": &"nd_guards",
 &"guard_rover": &"nd_guards"
+},
+&"ostrander_federal": {
+&"civ_client": &"of_customers",
+&"civ_customer": &"of_customers",
+&"civ_plaza": &"of_customers",
+&"guard_lobby": &"of_guards",
+&"guard_rover_basement": &"of_guards",
+&"guard_rover_dock": &"of_guards",
+&"guard_rover_gallery": &"of_guards",
+&"guard_rover_hall": &"of_guards",
+&"guard_vault": &"of_guards"
 },
 &"shadow_ledger": {
 &"civ_cleaner_l41": &"sl_cleaners",
