@@ -93,3 +93,5 @@ Every reader (B's BriefingIntel, the HUD) uses the same order.
   `round(running × (mult − 1))`, the last multiplicative step, applied on failure too (`XP_FRESHNESS`).
 - **HeistFreshness** (`content/progression/heist_freshness.gd`): evaluated per player from their own profile before
   compute, recorded after the payday is applied.
+- **S11.1 (B b6d96a85):** payout `stealth_bonus_banked` is the heist's `HeistDef.stealth_bonus_mult` when > 1.0 (S 1.10,
+  M 1.15, L 1.25), else `PayoutTweak.stealth_xp_bonus_mult` (1.2; no def / loud-only).
