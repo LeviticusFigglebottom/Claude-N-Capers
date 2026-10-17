@@ -797,6 +797,18 @@
 			"test": false
 		},
 		{
+			"asset": "char_security_officer_e",
+			"id": "security_officer_e",
+			"scene": "res://world/characters/security_officer_e/security_officer_e.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_security_officer_f",
+			"id": "security_officer_f",
+			"scene": "res://world/characters/security_officer_f/security_officer_f.tscn",
+			"test": false
+		},
+		{
 			"asset": "char_stinger",
 			"id": "stinger",
 			"scene": "res://world/characters/stinger/stinger.tscn",

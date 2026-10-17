@@ -44,6 +44,7 @@ const WALK_T: float = 0.3
 const LINEUP_SIZE: Vector2i = Vector2i(2400, 420)
 const LINEUP_SPACING: float = 1.3
 const LINEUP_DIST: float = 30.0
+const LINEUP_MIN_HALF_H: float = 1.25
 
 var _pool: String = "gn_guards"
 var _chars: Array[String] = []
@@ -132,6 +133,7 @@ func _lineup() -> void:
 	_vp.size = LINEUP_SIZE
 	var half_w: float = -x0 + 0.8
 	var vfov: float = rad_to_deg(2.0 * atan(half_w / LINEUP_DIST * float(LINEUP_SIZE.y) / float(LINEUP_SIZE.x)))
+	vfov = maxf(vfov, rad_to_deg(2.0 * atan(LINEUP_MIN_HALF_H / LINEUP_DIST)))  # short pools: keep heads and feet in
 	_cam.fov = vfov
 	var eye: Vector3 = Vector3(0.0, 1.7, -LINEUP_DIST)
 	var img: Image = await _grab(_view(eye, Vector3(0.0, 1.0, 0.0)))

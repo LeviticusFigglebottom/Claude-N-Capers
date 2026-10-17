@@ -102,7 +102,7 @@ const ROSTER_FALLBACK: Dictionary = {
 ## and an age bucket from SOURCE.txt params), so two NPCs drawn from the pool are never twins. D-115 DB cast: the cartel
 ## pool has 12 looks (up to 12 posted gunmen at Cataclysm), civ_worker the three yard hands dock_worker a-c. D-130
 ## (Cataclysm: about +50 % guards, +35 % civilians on GN, SL and ND): GN guards 9 looks (at least 3 women), SL
-## Northgate guards 9.
+## Northgate guards 9, ND Halden guards 6.
 const POOLS: Array = [
 	["dockside_burn", ["cartel_gate", "cartel_yard_w", "cartel_yard_e", "cartel_hall", "cartel_platform", "cartel_dock",
 		"cartel_quay", "cartel_reinf"], 12, 1],
@@ -110,7 +110,7 @@ const POOLS: Array = [
 		"security_operator"], 9, 1],
 	["shadow_ledger", ["civ_cleaner_l41", "civ_cleaner_l42"], 3, 0],
 	["dockside_burn", ["civ_worker"], 3, 1],
-	["night_deposit", ["guard_hall", "guard_basement", "guard_rover"], 4, 1],
+	["night_deposit", ["guard_hall", "guard_basement", "guard_rover"], 6, 1],
 	["gallery_night", ["gallery_guard", "gallery_inspector", "guard_hall", "guard_rover_ground", "guard_rover_upper",
 		"guard_rover_basement", "guard_mews", "guard_operator", "guard_inspection"], 9, 3],
 ]
