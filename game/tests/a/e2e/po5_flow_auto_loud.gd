@@ -33,6 +33,8 @@ const CODE_BONUS_M: float = 2.0
 ## Pseudo objective: work on the door that blocks a FIRST_OBJECTIVES marker (GN loud: the coded ServerDoor in front
 ## of the Argus terminal: its keypad once the code is read, else its drill).
 const UNBLOCK_ID: StringName = &"_unblock"
+## Dockside Burn: the objective whose marker is the burn point (`place_thermite`, needs the thermite TOOL bag).
+const BURN_ID: StringName = &"burn"
 ## Failed pick-ups of one loose bag before the pilot leaves it.
 const BAG_FAIL_LIMIT: int = 3
 ## Longest the pilot leads one teammate-carried bag to the secure zone (s; CrewAiBrain secures within its
@@ -43,6 +45,9 @@ const ESCORT_LIMIT_S: float = 120.0
 ## heist time, so the other markers go first; it comes back after.
 const WALK_FAIL_LIMIT: int = 3
 const WALK_SKIP_S: float = 90.0
+## A walk with this many stuck recoveries and no progress gives up (Po5Pilot.stuck_give_up) and counts as a failed walk
+## (P's GN loud rerun: STUCK x4 on the BronzeDoorsE LeafBody2 at (22.3, 30.0), then 1200 s on the same leg).
+const STUCK_GIVE_UP: int = 6
 
 var f: Node = null
 var p: Po5Pilot = null
@@ -79,6 +84,7 @@ func play(flow: Node) -> int:
 		f.note("EVENT loot_secured %s %d t=%.0f" % [l, v, rt.heist_time_s]))
 	await p.inp.hold(&"mask_up", Tweak.crew().mask_up_time_s + 0.4)
 	p.combat = true
+	p.stuck_give_up = STUCK_GIVE_UP
 	# GN probe 6: the pilot walked past three downed teammates on its way to the vault drill (t=275-288), then went
 	# down itself with nobody left to revive it. A player turns to a downed teammate in range mid-walk / mid-hold.
 	p.hook_need = func() -> bool: return _downed_mate() != null
@@ -118,9 +124,7 @@ func step() -> void:
 	var m: Dictionary = _pick(markers)
 	var id: StringName = StringName(m["id"])
 	var pos: Vector3 = m["position"]
-	if p.crew.is_carrying_bag() or await _escort_mate_bag():
-		if p.crew.is_carrying_bag():
-			await _secure_bag()
+	if await _bag_work(markers, id, pos):
 		return
 	if await _to_the_ride(id, pos):
 		return
@@ -144,12 +148,27 @@ func step() -> void:
 			_note_once(id, "objective %s: marker at %s not reachable" % [id, Po5Pilot._v(pos)])
 			if p.last_blocked_door != null:
 				_marker_blocked[_marker_key(m)] = p.last_blocked_door  # GN probe 6: behind the BARRED shutter -> yield at once
-			elif not _has_path(_marker_stand(pos)):
+			elif not _has_path(_marker_stand(pos)) or p.last_goto_stuck:
 				_stalls[id] = maxf(float(_stalls.get(id, 0.0)), STALL_SKIP_S)  # GN probe 4: no path -> yield at once
 	_stalls[id] = _stalls.get(id, 0.0) + 3.0
 	if int(_stalls[id]) % 60 == 0:
 		f.note("waiting at %s for %.0f s (nothing usable within 2.5 m)" % [id, _stalls[id]])
 	await p.hold_position(3.0)
+
+
+## Bags first: the thermite (a tool) goes to the burn point (DB), a [burn] marker without it fetches it, a carried
+## loot bag goes to the van, a teammate's bag is led there. True when it acted.
+func _bag_work(markers: Array[Dictionary], id: StringName, pos: Vector3) -> bool:
+	if _carrying_tool():
+		await _deliver_tool(markers)  # P's DB pass: the thermite bag went into the van as loot
+		return true
+	if id == BURN_ID and await _fetch_thermite(pos):
+		return true
+	if p.crew.is_carrying_bag() or await _escort_mate_bag():
+		if p.crew.is_carrying_bag():
+			await _secure_bag()
+		return true
+	return false
 
 
 ## The escape marker: stand in the open escape zone. GN-8: `escape_wait` (required loot in, the ride is coming): walk to
@@ -184,6 +203,8 @@ func _pick(markers: Array[Dictionary]) -> Dictionary:
 			# P's GN-P1 rerun (a): the navmesh runs through the closed CODE ServerDoor, so a path alone said "go" and
 			# the pilot pressed the Argus terminal through the wall for 9 min. Check the doors on that path first.
 			var on_path: Door = _path_blocker(p.stand_point(m0["position"] as Vector3))
+			if on_path == null:  # D-122: a shut LOCKED door (the CODE ServerDoor, its drill running) blocks the crew
+				on_path = _locked_on_path(p.stand_point(m0["position"] as Vector3))
 			if on_path != null:
 				_marker_blocked[_marker_key(m0)] = on_path
 				f.note("marker %s: %s on the way cannot be opened now" % [_marker_key(m0), on_path.name])
@@ -236,8 +257,8 @@ func _usable_near(pos: Vector3, radius: float) -> InteractableComponent:
 			continue
 		if c.availability(p.crew) != &"" or _is_unreachable(c):
 			continue
-		if _is_body_bag(c):
-			continue  # ND attempt 11: a body bag by the drill marker sent the pilot up the stairs mid-wave
+		if _is_body_bag(c) or _is_tool_source(c):
+			continue  # thermite: [burn] only. ND attempt 11: a body bag by the drill marker sent the pilot up the stairs mid-wave
 		var door: Door = c.owner_node() as Door
 		if door != null and door.is_open:
 			continue  # using an open door closes it (ND: the pilot toggled the vault gate while drilling)
@@ -311,8 +332,8 @@ func _fetch_bag() -> bool:
 		var c: InteractableComponent = n as InteractableComponent
 		if c == null or not c.enabled or not rt.is_ancestor_of(c) or not (c.kind in [&"bag_loot", &"pick_bag"]):
 			continue
-		if c.availability(p.crew) != &"" or _is_body_bag(c) or _is_unreachable(c):
-			continue
+		if c.availability(p.crew) != &"" or _is_body_bag(c) or _is_unreachable(c) or _is_tool_source(c):
+			continue  # P's DB pass: the thermite bag went into the van as loot (a tool, D-068)
 		var o: Node = c.owner_node()
 		if o is Node3D and p.secure_zone() != null and (o as Node3D).global_position.distance_to(p.secure_zone().global_position) < 4.0:
 			continue  # already in the van
@@ -345,7 +366,7 @@ func _escort_mate_bag() -> bool:
 		if c == p.crew or c.crew_state != Enums.CrewState.NORMAL or not c.is_carrying_bag():
 			continue
 		var bag: LootBag = c.carried_bag as LootBag
-		if bag == null or bag.is_body_bag():
+		if bag == null or bag.is_body_bag() or LootManager.is_tool_loot(bag.loot_id):
 			continue
 		var key: int = bag.get_instance_id()
 		if float(_escort_s.get(key, 0.0)) >= ESCORT_LIMIT_S:
@@ -369,7 +390,8 @@ func _loose_bag() -> InteractableComponent:
 	var zone: SecureZone = p.secure_zone()
 	for n: Node in f.get_tree().get_nodes_in_group(G.INTERACTABLE):
 		var c: InteractableComponent = n as InteractableComponent
-		if c == null or c.kind != &"pick_bag" or not c.enabled or not rt.is_ancestor_of(c) or _is_body_bag(c):
+		if c == null or c.kind != &"pick_bag" or not c.enabled or not rt.is_ancestor_of(c) or _is_body_bag(c) \
+				or _is_tool_source(c):
 			continue
 		if c.availability(p.crew) != &"" or _is_unreachable(c):
 			continue
@@ -416,10 +438,34 @@ func _path_blocker(to: Vector3) -> Door:
 
 
 ## GN probe 4: a navmesh path from the pilot ends within 1.5 m of `to` (a long walk that timed out is not "unreachable").
+## D-122: crew navigation layer 1 only (Po5Pilot.nav_path), so a breach link (layer 2) through a shut locked door is
+## no path. Maps baked through every doorway still pass there: `_pick` checks the doors on the way (`_path_blocker`,
+## `_locked_on_path`) before it sends the pilot to a FIRST objective.
 func _has_path(to: Vector3) -> bool:
-	var map: RID = p.crew.get_world_3d().navigation_map
-	var path: PackedVector3Array = NavigationServer3D.map_get_path(map, p.crew.global_position, to, true)
+	var path: PackedVector3Array = p.nav_path(to)
 	return not path.is_empty() and path[path.size() - 1].distance_to(to) <= 1.5
+
+
+## The first closed, LOCKED door whose doorway the crew's (layer 1) path to `to` crosses, else null. Stricter than
+## `_path_blocker`: a lock the crew could work on (a drill to place, a keypad) still blocks the walk until it is open.
+## P's GN-P1 rerun: `hack` went first through the CODE ServerDoor while its drill ran; the pilot pressed the Argus
+## terminal through the wall t=597..1143.
+func _locked_on_path(to: Vector3) -> Door:
+	var path: PackedVector3Array = p.nav_path(to)
+	if path.size() < 2:
+		return null
+	for i: int in range(1, path.size()):
+		for n: Node in f.get_tree().get_nodes_in_group(Door.GROUP):
+			var door: Door = n as Door
+			if door == null or not _locked_shut(door) or not rt.is_ancestor_of(door):
+				continue
+			if door.doorway_crossing(path[i - 1] + Vector3.UP * 0.5, path[i] + Vector3.UP * 0.5) != Vector3.INF:
+				return door
+	return null
+
+
+static func _locked_shut(door: Door) -> bool:
+	return not door.is_open and door.locked
 
 
 ## GN probe 3: a target still out of reach after use() (the walk failed: no navmesh path, or a door the crew cannot
@@ -478,13 +524,15 @@ func _passable(door: Door) -> bool:
 	return not p._door_blocked(door)
 
 
-## A marker whose walk a door the crew cannot open stopped (`_marker_blocked`), while that door still blocks.
+## A marker whose walk a door the crew cannot open stopped (`_marker_blocked`), while that door still blocks. For a
+## FIRST objective a shut locked door blocks until it is open (`_locked_on_path`; the `_unblock` pseudo objective
+## works its keypad / drill meanwhile).
 func _is_marker_blocked(m: Dictionary) -> bool:
 	var key: String = _marker_key(m)
 	if not _marker_blocked.has(key):
 		return false
 	var door: Door = _marker_blocked[key]
-	if is_instance_valid(door) and not _passable(door):
+	if is_instance_valid(door) and (not _passable(door) or (StringName(m["id"]) in FIRST_OBJECTIVES and _locked_shut(door))):
 		return true
 	_marker_blocked.erase(key)
 	f.note("marker %s: %s is passable again" % [key, door.name if is_instance_valid(door) else "door"])
@@ -505,6 +553,75 @@ func _blocked_on_path(m: Dictionary) -> bool:
 static func _marker_key(m: Dictionary) -> String:
 	var pos: Vector3 = m["position"]
 	return "%s@%d,%d,%d" % [m["id"], roundi(pos.x), roundi(pos.y), roundi(pos.z)]
+
+
+## A tool bag source (D-068, LootDef.is_tool: the DB thermite bag), a loose LootBag or a LootSpawn: never loot.
+static func _is_tool_source(c: InteractableComponent) -> bool:
+	var o: Node = c.owner_node()
+	var lid: Variant = o.get(&"loot_id") if (o is LootBag or o is LootSpawn) else null
+	return lid is StringName and LootManager.is_tool_loot(lid)
+
+
+func _carrying_tool() -> bool:
+	var bag: LootBag = p.crew.carried_bag as LootBag if p.crew.is_carrying_bag() else null
+	return bag != null and LootManager.is_tool_loot(bag.loot_id)
+
+
+## The enabled `place_thermite` interactable (BurnPoint) within 2.5 m of `pos`, else null.
+func _burn_comp_near(pos: Vector3) -> InteractableComponent:
+	for n: Node in f.get_tree().get_nodes_in_group(G.INTERACTABLE):
+		var c: InteractableComponent = n as InteractableComponent
+		if c != null and c.kind == &"place_thermite" and c.enabled and rt.is_ancestor_of(c) \
+				and c.global_position.distance_to(pos) <= 2.5:
+			return c
+	return null
+
+
+## P's DB pass (env/p-play eb8817eb): the [burn] marker is up but the burn point wants the thermite bag (BLOCK_ITEM):
+## fetch the nearest usable thermite bag (its loot spawn at the crew's spawn, or a dropped one) like a player. The
+## carry and the placing follow (`_deliver_tool`). True when it acted.
+func _fetch_thermite(pos: Vector3) -> bool:
+	var bp: InteractableComponent = _burn_comp_near(pos)
+	if bp == null or bp.availability(p.crew) == &"" or p.crew.is_carrying_bag():
+		return false
+	var best: InteractableComponent = null
+	var best_d: float = INF
+	for n: Node in f.get_tree().get_nodes_in_group(G.INTERACTABLE):
+		var c: InteractableComponent = n as InteractableComponent
+		if c == null or not c.enabled or not rt.is_ancestor_of(c) or not (c.kind in [&"bag_loot", &"pick_bag"]):
+			continue
+		if not _is_tool_source(c) or c.availability(p.crew) != &"" or _is_unreachable(c):
+			continue
+		var dd: float = c.global_position.distance_to(p.crew.global_position)
+		if dd < best_d:
+			best = c
+			best_d = dd
+	if best == null:
+		_note_once(&"_nothermite", "burn is marked but no thermite bag is usable")
+		return false
+	f.note("burn: fetching the thermite bag %s (%.0f m)" % [best.get_path(), best_d])
+	p.watch_point = Vector3.INF
+	await p.use(best, 20.0, func() -> bool: return p.crew.is_carrying_bag())
+	_mark_if_unreached(best)
+	return true
+
+
+## Carrying the thermite (a tool, D-068): with the [burn] marker up, carry it to the burn point and hold F there
+## (place_thermite consumes it); without one, put it down (it is no loot: never thrown into the van).
+func _deliver_tool(markers: Array[Dictionary]) -> void:
+	for m: Dictionary in markers:
+		if StringName(m["id"]) != BURN_ID:
+			continue
+		var bp: InteractableComponent = _burn_comp_near(m["position"] as Vector3)
+		if bp == null:
+			break
+		f.note("burn: carrying the thermite to %s" % Po5Pilot._v(bp.global_position))
+		p.watch_point = Vector3.INF
+		await p.use(bp, 30.0, func() -> bool: return not _carrying_tool() or not bp.enabled)
+		return
+	f.note("carrying a tool bag with no burn point marked: putting it down")
+	await p.inp.tap(&"drop_bag")
+	await p.inp.ticks(10)
 
 
 ## Body bags are not loot (S6.2): the loud pilot never picks them up.
