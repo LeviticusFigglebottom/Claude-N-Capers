@@ -45,6 +45,8 @@ func _run() -> void:
 	get_tree().root.add_child(screen)
 	screen.setup(p)
 	screen.show_result(result)
+	await get_tree().process_frame
+	screen.skip_count()  # the hero total lands at once (the count-up runs windowed)
 	await _shot("payday_%s" % tired)
 	SaveService.delete_profile(SLOT)
 	print("FRESH done")

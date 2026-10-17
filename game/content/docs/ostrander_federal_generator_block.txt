@@ -12,24 +12,29 @@
 ## * Scalars the MISSION reads (no NPCs): time_lock_s, drill_eta_s, escape_eta_s, cash_bags, gold_bags, deposit_boxes.
 ## * Rare-event effect keys are proposals for A's mission (OF-A6): time_lock_s (set), extra_bonds, timed_spawn_s,
 ##   perch_s3 + heli_eta_add_s. vip_client uses force_active (resolver-native).
-## * D-130 (population by difficulty, L heist, D-137 kickoff: same shape as GN/SL, % targets are floors):
-##   guards  = 2 fixed + guard_post (doc 1/1/2/3/4/4) + guard_extra (expected 0/0.4/0.2/0.2/0.3/0.6)
-##           = 3 / 3.4 / 4.2 / 5.2 / 6.3 / 6.6 (+0 / 13 / 40 / 73 / 110 / 120 %), each tier above the one below.
+## * D-140 (PO-15) guards, superseding D-130's guard %: 2 fixed + guard_post rovers (3/3/4/4/4/4 of the 4 rover slots)
+##   + guard_extra (0/0/0/0/1/2 of gx_hall / gx_basement, gx_none weight 0 so every pick is a real post)
+##           = exactly 5 / 5 / 6 / 6 / 7 / 8 on every seed (the D-140 minimums; a staffed security room's operator and
+##           the vip bodyguard are on top). Pager cap 4 / 4 / 4 / 3 / 3 / 2 -> margin 1 / 1 / 2 / 3 / 4 / 6.
+## * D-130 civilians (L heist, D-137 kickoff: same shape as GN/SL, % targets are floors):
 ##   civilians = 4 tellers + 1 manager + 2 plaza + customers (5.6/6.0/6.4/6.8/6.8/6.8) + officers (1.8/2.0/2.0/2.2/2.2/2.2)
 ##           + civ_extra (0/0.4/1.0/1.4/2.4/3.4) = 14.4 / 15.4 / 16.4 / 17.4 / 18.4 / 19.4 (+0 / 7 / 14 / 21 / 28 / 35 %),
 ##           max 8 + 3 + 4 + 7 = 22 < the 30 cap. GX_NONE / CX_NONE are the empty slots' weights against the real slots
 ##           (weight 1 each), solved for those expectations (sequential draws without replacement). Pin the counts in
 ##           a test like game/tests/c/test_d130_population.gd.
-##   No pager_max_by_difficulty (empty = StealthTweak 4) and camera_titan_min_difficulty -1 (Lethal): D-130 §2/§3 are
-##   the S-heist (GH) rules.
+##   pager_max_by_difficulty [4, 4, 4, 3, 3, 2] (D-140); camera_titan_min_difficulty -1 (Lethal): D-130 §3 is the
+##   S-heist (GH) rule.
 
 const OUT_DIR: String = "res://world/heists/ostrander_federal/"
 const SCENE_PATH: String = OUT_DIR + "ostrander_federal.tscn"
 const DEF_PATH: String = OUT_DIR + "ostrander_federal_def.tres"
 const VARIANTS_PATH: String = OUT_DIR + "ostrander_federal_variants.tres"
-## D-130: extra guards (gx_hall / gx_basement) from Tense, and extra civilians (cx_*) from Tense; see the header.
-const GUARD_EXTRA_ADD: Array[int] = [0, 1, 1, 1, 1, 1]
-const GX_NONE: Array[float] = [3.0, 3.0, 8.0, 8.0, 4.67, 1.33]
+## D-140: extra guards (gx_hall / gx_basement) on Lethal (1) and Cataclysm (2), always real posts (gx_none weight 0);
+## D-130: extra civilians (cx_*) from Tense; see the header.
+const GUARD_EXTRA_ADD: Array[int] = [0, 0, 0, 0, 1, 2]
+const GX_NONE: Array[float] = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+## D-140 pager cap per difficulty (Routine .. Cataclysm).
+const PAGER_MAX: Array[int] = [4, 4, 4, 3, 3, 2]
 const CIV_EXTRA_ADD: Array[int] = [0, 1, 1, 2, 3, 4]
 const CX_NONE: Array[float] = [6.0, 6.0, 0.0, 2.0, 1.0, 0.51]
 
@@ -92,6 +97,7 @@ static func make_def() -> HeistDef:
 	}
 	d.escape_options = [&"van", &"heli"] as Array[StringName]
 	d.music_track = &"ostrander_federal"
+	d.pager_max_by_difficulty = PAGER_MAX.duplicate()  # D-140
 	return d
 
 
@@ -103,8 +109,8 @@ static func make_variants() -> HeistVariantTable:
 		t = load(VARIANTS_PATH) as HeistVariantTable
 	if t == null:
 		t = HeistVariantTable.new()
-	# guard_post: 1 / 1 / 2 / 3 / 4 / 4 rovers (doc).
-	var rovers: Array[int] = [0, 0, 1, 2, 3, 3]
+	# guard_post: 3 / 3 / 4 / 4 / 4 / 4 rovers (D-140; 4 rover slots).
+	var rovers: Array[int] = [2, 2, 3, 3, 3, 3]
 	var staffed: Dictionary = _from(Enums.Difficulty.BRUTAL, {&"sec_staffed": 0.75, &"sec_empty": 0.25})
 	var lasers: Dictionary = _from(Enums.Difficulty.BRUTAL, {&"lz_static": 0.2, &"lz_sweep": 0.4, &"lz_timed": 0.4})
 	# D-130: customers 5.6 / 6.0 / 6.4 / 6.8 (Brutal+), officers 1.8 / 2.0 / 2.0 / 2.2 (Brutal+).
@@ -186,5 +192,5 @@ static func _per_tier(slot: StringName, weights: Array[float]) -> Dictionary:
 ## lz_sweep 0.2 / lz_timed 0.3; customers cust_4 0.4 / cust_6 0.4 / cust_8 0.2; side_door door_fire_propped 0.3 /
 ## door_dock_open 0.3 / door_none 0.4; fire_escape fe_down 0.45 / fe_up 0.55; escape esc_van_dock 0.45 / esc_van_tannery
 ## 0.3 / esc_heli_terrace 0.25; drill_delivery drop_terrace 0.5 / drop_dock 0.5; president_safe ps_bonds 0.5 / ps_empty
-## 0.5; vip vip_out 1 / vip_in 0; guard_extra gx_hall 1 / gx_basement 1 / gx_none 3 (Routine, unused: pick 0);
+## 0.5; vip vip_out 1 / vip_in 0; guard_extra gx_hall 1 / gx_basement 1 / gx_none 0 (D-140: never picked);
 ## civ_extra cx_hall_1 / cx_hall_2 / cx_pc / cx_sd 1 each / cx_none 6.

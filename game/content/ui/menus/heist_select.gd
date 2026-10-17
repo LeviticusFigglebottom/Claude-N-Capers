@@ -193,6 +193,12 @@ func preview_amount() -> int:
 	return HeistCatalog.contract_preview(int(_entries[selected_heist]["base_payout"]), selected_difficulty)
 
 
+## Re-reads the preview for the current selection (pay, stealth note, D-139 freshness note of
+## HeistCatalog.progress_profile).
+func refresh_preview() -> void:
+	_update_preview()
+
+
 func _update_preview() -> void:
 	if payout_label == null:
 		return
