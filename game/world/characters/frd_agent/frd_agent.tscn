@@ -213,19 +213,19 @@ height = 0.4915
 [node name="FrdAgent" unique_id=191534465 instance=ExtResource("1_glb")]
 
 [node name="Body" parent="Skeleton3D" index="0" unique_id=946112172]
-visibility_range_end = 35.0
+visibility_range_end = 25.0
 visibility_range_end_margin = 1.0
 
 [node name="Gear" parent="Skeleton3D" index="1" unique_id=946280861]
-visibility_range_end = 35.0
+visibility_range_end = 25.0
 visibility_range_end_margin = 1.0
 
 [node name="Hair" parent="Skeleton3D" index="2" unique_id=946312706]
-visibility_range_end = 35.0
+visibility_range_end = 25.0
 visibility_range_end_margin = 1.0
 
 [node name="Outfit" parent="Skeleton3D" index="3" unique_id=40436697]
-visibility_range_end = 35.0
+visibility_range_end = 25.0
 visibility_range_end_margin = 1.0
 
 [node name="Back" type="BoneAttachment3D" parent="Skeleton3D" index="4" unique_id=946096879]
@@ -269,7 +269,7 @@ bone_idx = 1
 transform = Transform3D(1, 0, 0, 0, 0.99875, 0.049939997, 0, -0.049939997, 0.99875, 0.2357, 0.065, 0.0426)
 
 [node name="CrowdLod" type="MeshInstance3D" parent="Skeleton3D" index="9" unique_id=1010509084 groups=["crowd_lod"]]
-visibility_range_begin = 35.0
+visibility_range_begin = 25.0
 visibility_range_begin_margin = 1.0
 mesh = ExtResource("3_lod")
 skin = SubResource("skin_lod")

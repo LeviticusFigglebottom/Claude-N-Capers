@@ -1,0 +1,1 @@
+[SCC] RESULT { "tied": 2, "knifed": 1, "pager": 1, "bagged": 1, "thrown": 1, "dominated": 1, "surrendered": 1, "cop_tied": 1 }

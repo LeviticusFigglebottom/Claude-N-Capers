@@ -1,0 +1,20 @@
+asset: char_gallery_attendant_c
+script: tools/blender/characters/char_p5_gallery.py
+params: {"age": 0.55, "beard_shadow": 0.6, "build": 0.6, "gender": 0.0, "hair": "bald", "hair_color": "dark", "height": 1.78, "look": "attendant_c", "skin": 6}
+seed: 2584383664  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category characters --asset char_gallery_attendant_c
+edit policy: generated file, never edit by hand; change the script and rebuild
+attach_Back: bone chest, local [0.0000, 0.0896, 0.1130] (model [0.0000, 1.3000, 0.1315], Godot axes, rest pose)
+attach_Head: bone head, local [0.0000, 0.0810, -0.0887] (model [0.0000, 1.6660, -0.0767], Godot axes, rest pose)
+attach_Hip: bone hips, local [0.1885, 0.0508, 0.0347] (model [0.1885, 1.0040, 0.0372], Godot axes, rest pose)
+body_faces_culled: 5778
+body_params: {"age": 0.55, "beard_shadow": 0.6, "build": 0.6, "gender": 0.0, "hair": "bald", "hair_color": "dark", "hair_peak": 0.0, "height": 1.78, "lip": "auto", "skin": 6}
+bones: 52
+faces_hidden_by_jacket: 2758
+look: Drawings-cabinet attendant (man, about 50): grey knit cardigan over a white band-collar shirt, black trousers, white cotton gloves for works on paper, staff lanyard, Halberd pin
+meshes: Body,Gear,Hair,Outfit
+shape_keys: none (baked at body_params; do not set blend_shapes/*)
+tri_budget: 35000
+tris: 25156
+tris_by_mesh: {"Body": 7272, "Gear": 552, "Hair": 580, "Outfit": 16752}
