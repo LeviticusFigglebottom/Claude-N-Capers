@@ -9,8 +9,8 @@ const PISTOLS: Array[StringName] = [&"weapon.kestrel_p9", &"weapon.marshal_357",
 	&"weapon.warden_45", &"weapon.wren_380", &"weapon.akimbo_warden_45"]
 ## 2026-10-16: the thumb tips are on the frame and never inside; 1-9 base vertices go 1.7-4.0 mm in, all at the web of
 ## the hand against the tang / beavertail just above the grip (gun-local x -0.013..+0.002, z 0.01..0.04). That is the
-## high grip's web pressed on the frame; it stays until the LEAD rules on lowering the hand seat (moves P's sights).
-## This bound is a no-regression guard at today's worst (wren_380 ads 4.0 mm); the target is 2 mm, as PFingerClip.
+## high grip's web pressed on the frame. LEAD ruling QD-1 (2026-10-17): accepted as skin compression on a high grip; the
+## hand seat stays (the PO-approved D-116 sight picture). This bound guards today's worst (wren_380 ads 4.0 mm).
 const MAX_DEPTH_MM: float = 4.5
 const MAX_GAP_MM: float = 4.0
 

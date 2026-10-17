@@ -24,11 +24,11 @@ This session:
 - **FP pistols (queue 4)**: P's PFingerClip long guns are <= 0.9 mm on all 8 (no residuals). New d/test_fp_pistol_thumb
   measures the one-handed firing thumb in the real game pose: the tips are on the frame (gap 0-3.7 mm). On every pistol,
   1-9 web-of-hand vertices go 1.7-4.0 mm into the tang. Thumb angles do not move it; tried in both directions
-  (scratch, reverted). Clearing it means lowering the hand seat, which moves P's sights: **QD-1 to the LEAD**. The test
-  guards at 4.5 mm until the ruling.
+  (scratch, reverted). Clearing it means lowering the hand seat, which moves P's sights. **QD-1 ruled by the LEAD:** accepted as skin
+  compression on a high grip, the seat stays, and the test guards at 4.5 mm.
 - Tests: test_police_combat 4/4, test_anims 18/18, test_loco_holds 5/5, test_fp_pistol_thumb 1/1, test_cartel 5/5,
   test_npcs 9/9, test_p5_cast 16/16, test_scenes 9/9, test_lod 6/6.
-- Next: QD-1 per ruling; SL cast check vs the doc's non-guard roles (IT contractor / Moor / Kessler looks, crowd LODs);
+- Next: SL cast check vs the doc's non-guard roles (IT contractor / Moor / Kessler looks, crowd LODs);
   respond to A's mapping questions.
 - Gotcha: `pgrep -f <name>` inside a wait loop matches the loop's own command line. Use `pgrep -f "godot.*<name>"`.
 
