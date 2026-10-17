@@ -1,0 +1,4 @@
+[FLASH t=1.1] pilot: calibrated 0.001600 rad/px yaw, 0.001600 rad/px pitch (settings formula said (0.0016, 0.0016))
+[FLASH t=2.4] masked true at (31.5, 0.0, -38.5)
+[FLASH t=12.7] RESULT PASS: 0 flashes seen, 0 stuck > 1.0 s, frames drawn 694
+[FLASH] RESULT PASS

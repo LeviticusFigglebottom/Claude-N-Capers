@@ -78,7 +78,7 @@ Status: APPROVED (lead, 2026-10-11) (D-064). The lead's answers to the G0 open q
     service yard between them (the **P2** police spawn). Its SE roof corner is sniper perch
     **S2**.
   - **Pier 10 container terminal** (east, across the slip): a rail-mounted **gantry crane** (legs
-    at x 76/82, cab at +22 m, sniper perch **S1**), container stacks behind a 2.4 m hoarding at x 84
+    at x 74/80 on rail bogies, cab at +22 m, sniper perch **S1**), container stacks behind a 2.4 m hoarding at x 84
     (the **P3** spawn behind it).
   - **Rail viaduct** (north, over Ferro Street): a service walkway with a parapet at +7.0, sniper
     perch **S3** (fog-gated, rare event).
@@ -766,6 +766,23 @@ Blueprint: `docs/levels/dockside_burn/blueprint.png` from the plan renderer.
   - the burn: flare-orange fire light (an animated OmniLight on a fire-VFX fixture) through the
     shutters' vision slots and the skylights.
   - Every light has a fixture.
+- **Landmark visuals (DB-1, art notes):** the Pier 10 crane and the trawler are catalog props
+  (`tools/blender/props/dockside_landmarks.py`) modelled in map coordinates over their unchanged hidden `BLOCKS`
+  colliders (as the launch, D-111). **Crane** (`veh_gantry_crane`): weathered-orange box legs on yellow/graphite
+  hazard bands and rail bogies (each bogie has its own 1.0 × 3.0 × 1.65 m collider, the only gameplay change: the
+  navmesh is re-pinned) over two embedded rails (z ±11.5, clear of the gangway landing), the portal beams, girders,
+  knee braces, A-frame struts and an apex with stays carrying the 54 m box boom, the trolley parked on the boom tail (x 89, out of the S1 view) with
+  a 40 ft spreader at +18, the machinery house on the boom tail, four sodium boom floods and a red aviation light.
+  The S1 cab: a graphite floor plate on the cab collider (+22.2), the open full-height front (the Longshot's view),
+  tinted side windows, the operator's seat and joysticks behind the perch spot, a back door onto a girder walkway
+  reached by the caged ladder up the NE leg. The two hazard beacons are `prop_beacon_hazard` fixtures on the portal
+  beams under the unchanged CraneBeaconLight omnis. The `rc_sniper_crane` camera now stands just west of the cab's
+  open front (inside the cab its roof blocks the cameras check's sky ray). **Trawler** (`veh_trawler_dockside`): a
+  17 m stern trawler, bow west: navy topsides, white sheer stripe and bulwark cap (at the collider top, +0.5),
+  anti-fouling boot top at the waterline, a whaleback forecastle, tyre fenders on the landing-stage side, the
+  white wheelhouse (S4 on its flat roof at +4.0, low roof rail, searchlight, radar), the mast with the outrigger
+  booms raised, the stern A-frame with otter boards, net drum, net pile and floats, trawl winch, fish-hold hatch,
+  fish boxes. It still closes the east view from the landing stage.
 - **GI:** VoxelGI for the building interior (ground + mezzanine), ReflectionProbe per room,
   SDFGI off. OccluderInstance3D for the building shell, Bellweather, the Pier 10 stacks and each
   container block.

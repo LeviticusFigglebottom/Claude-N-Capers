@@ -279,6 +279,7 @@ func _subdue_threat() -> bool:
 	if civ == null:
 		return false
 	var b: CivilianBrain = civ.get_node_or_null(^"Brain") as CivilianBrain
+	var back_to: Vector3 = pilot.crew.global_position
 	pilot.inp.release(&"move_forward")
 	pilot.inp.release(&"sprint")
 	# Keep a carried bag: G is a throw (no plain drop; even looking down it lands ~3.6 m away), and one throw landed
@@ -302,6 +303,9 @@ func _subdue_threat() -> bool:
 				break
 	note("subdue: %s mode %d (alarm %s)" % [civ.name, b.mode, _alarm])
 	await shot("subdued_%s" % civ.name)
+	# Back to where the hook cut in, so the interrupted leg resumes from its own route (resuming 5 m away took the
+	# navmesh's LockerRoomDoor route and pinned there, ND run 2026-10-17 t=529).
+	await pilot.goto(back_to, 0.5, 20.0, false, false)
 	return true
 
 
@@ -710,7 +714,10 @@ func _loot() -> bool:
 func _to_b1() -> void:
 	if pilot.crew.global_position.x < 5.5 and pilot.crew.global_position.z < 6.0:
 		return  # already in B1
-	await pilot.goto(Vector3(4.2, GATE_AT.y, B5_MID_Z), 0.4, 60.0, false, false)
+	for wp: Vector3 in [Vector3(10.0, GATE_AT.y, B5_MID_Z), Vector3(7.0, GATE_AT.y, B5_MID_Z),
+			Vector3(4.2, GATE_AT.y, B5_MID_Z)]:
+		if pilot.crew.global_position.x > wp.x + 0.5:
+			await pilot.goto(wp, 0.4, 30.0, false, false)
 	await pilot.goto(Vector3(3.5, GATE_AT.y, 5.2), 0.4, 20.0)
 
 

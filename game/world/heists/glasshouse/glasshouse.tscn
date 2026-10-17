@@ -22095,7 +22095,7 @@ tags = Array[StringName]([&"civ_staff_floor"])
 idle_activity = &"browse"
 
 [node name="CameraOperatorSeat" type="Marker3D" parent="Spawns" unique_id=102429]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 6.85, 4.2, 2)
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 6.73, 4.2, 2)
 script = ExtResource("145_gh")
 kind = 5
 tags = Array[StringName]([&"security_operator"])
@@ -23352,7 +23352,7 @@ slot_id = &"clerk_in"
 weight = 0.5
 
 [node name="AdminClerk" type="Marker3D" parent="Variants/Group_admin_clerk/Slot_clerk_in" unique_id=102599]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 1.6, 4.2, 8.3)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 1.6, 4.2, 8.42)
 script = ExtResource("145_gh")
 kind = 2
 tags = Array[StringName]([&"civ_staff_admin"])

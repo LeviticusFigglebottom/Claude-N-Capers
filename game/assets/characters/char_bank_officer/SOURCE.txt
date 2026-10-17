@@ -7,14 +7,14 @@ rebuild: python3 tools/blender/build.py --category characters --asset char_bank_
 edit policy: generated file, never edit by hand; change the script and rebuild
 attach_Back: bone chest, local [0.0000, 0.0843, 0.1007] (model [0.0000, 1.2270, 0.1181], Godot axes, rest pose)
 attach_Head: bone head, local [0.0000, 0.0764, -0.0837] (model [0.0000, 1.5724, -0.0724], Godot axes, rest pose)
-attach_Hip: bone hips, local [0.1757, 0.0483, 0.0404] (model [0.1757, 0.9476, 0.0428], Godot axes, rest pose)
-body_faces_culled: 3889
+attach_Hip: bone hips, local [0.1758, 0.0483, 0.0404] (model [0.1758, 0.9476, 0.0428], Godot axes, rest pose)
+body_faces_culled: 3873
 body_params: {"age": 0.6, "beard_shadow": 0.0, "build": 0.5, "gender": 1.0, "hair": "bob", "hair_color": "dark", "hair_peak": 0.0, "height": 1.68, "lip": "auto", "skin": 2}
 bones: 52
-faces_hidden_by_jacket: 2835
+faces_hidden_by_jacket: 2837
 look: Bank officer (gallery level): grey worsted skirt suit, cream band-collar blouse, the bank's red lanyard + ID badge, keyhole lapel badge, brass name tag, black low heels
 meshes: Body,Gear,Hair,Outfit
 shape_keys: none (baked at body_params; do not set blend_shapes/*)
 tri_budget: 35000
-tris: 26568
-tris_by_mesh: {"Body": 10966, "Gear": 620, "Hair": 2088, "Outfit": 12894}
+tris: 26596
+tris_by_mesh: {"Body": 10998, "Gear": 620, "Hair": 2088, "Outfit": 12890}

@@ -1,0 +1,271 @@
+[PO5 10.9s] shot /home/user/Claude-N-Capers/game/tests/p/_review/captures/db_p1_2026-10-17/01_main_menu.png
+[PO5 11.8s] click 'SAFEHOUSE' at (162.0, 266.75)
+[PO5 12.4s] click '' at (358.25, 160.75)
+[PO5 13.5s] shot /home/user/Claude-N-Capers/game/tests/p/_review/captures/db_p1_2026-10-17/02_planning_table.png
+[PO5 13.6s] click 'Dockside Burn' at (142.0, 130.5)
+[PO5 14.6s] click 'ROUTINE' at (313.5, 250.0)
+[PO5 17.7s] click 'Briefing' at (848.0, 494.5)
+[PO5 17.8s] shot /home/user/Claude-N-Capers/game/tests/p/_review/captures/db_p1_2026-10-17/03_briefing.png
+[PO5 17.9s] click 'Continue' at (856.0, 502.5)
+[PO5 18.9s] shot /home/user/Claude-N-Capers/game/tests/p/_review/captures/db_p1_2026-10-17/04_continue.png
+[PO5 19.1s] click 'Confirm plan' at (856.0, 500.25)
+[PO5 20.0s] shot /home/user/Claude-N-Capers/game/tests/p/_review/captures/db_p1_2026-10-17/05_confirm_plan.png
+[PO5 20.2s] click 'Start Heist' at (848.0, 494.5)
+[PO5 89.2s] in heist dockside_burn seed 1792194538 diff 0 phase 3 crew at (31.5, 0.0, -38.5)
+[PO5 128.6s] shot /home/user/Claude-N-Capers/game/tests/p/_review/captures/db_p1_2026-10-17/06_heist_start.png
+[PO5 146.2s] mouse captured by the game (MouseCapture)
+[PO5 146.2s] pilot: calibrated 0.001600 rad/px yaw, 0.001600 rad/px pitch (settings formula said (0.0016, 0.0016))
+[PO5 146.2s] DB variants: { &"guard_post": [&"post_dock", &"post_quay", &"post_yard_w"], &"cash_location": [&"cash_strongroom"], &"weapons_containers": [&"k1", &"k5"], &"product_location": [&"prod_chamber_a"], &"warehouse_entry": [&"door_office"], &"east_gangway": [&"gangway_up"], &"goods_lift": [&"lift_powered"], &"player_perch": [&"perch_none"], &"escape": [&"esc_boat"], &"night_shift": [&"shift_2"], &"perch_viaduct": [], &"perch_trawler": [], &"police_delay_s": 120.0, &"cash_bags": 6, &"product_bags": 4, &"escape_eta_s": 150.0, &"extra_container_pick": 1, "rare": [] }
+[PO5 146.2s] DB map origin (0.0, 0.0, 0.0) (snag tour uses layout coordinates)
+[PO5 146.2s] SNAG LEG start t=2 (28 points, 30 s per leg)
+[PO5 194.2s] shot /home/user/Claude-N-Capers/game/tests/p/_review/captures/db_p1_2026-10-17/07_snag_start.png
+[PO5 206.2s] pilot: t=5 at (35.6, 0.0, -34.5) corner (36.1, 0.2, -34.1) yaw_err -0.00 fwd=true path=34 mouse_mode=2 state=0 look=(-8.59,0.00) pin_yaw=-8.59487293656573 bot=false
+[PO5 218.5s] TEL worst_frame=28639ms t=12 phase=3 phys=136.9ms proc=25.6ms nodes=8865 enemies=6 civs=2 crew=[0:0@(39.0, 0.0, -30.2) 1:0@(38.4, 0.0, -33.5) 2:0@(36.9, 0.0, -33.4) 3:0@(35.6, 0.0, -31.7) nearest_enemy=23.6m within15=0 input_enabled=true captured=true paused_by={  }]
+[PO5 218.6s] pilot: t=10 at (39.0, 0.0, -30.2) corner (40.3, 0.2, -24.6) yaw_err 1.20 fwd=false path=22 mouse_mode=2 state=0 look=(-10.40,0.00) pin_yaw=-10.2102433967332 bot=false
+[PO5 640.8s] pilot: t=15 at (40.3, -0.3, -24.4) corner (40.5, 0.2, -23.5) yaw_err 3.14 fwd=false path=20 mouse_mode=2 state=0 look=(-12.34,0.00) pin_yaw=-12.1467350773339 bot=false
+[PO5 862.7s] TEL worst_frame=39705ms t=22 phase=3 phys=10.3ms proc=25178.5ms nodes=9438 enemies=6 civs=2 crew=[0:0@(41.6, 0.0, -18.7) 1:0@(44.3, 0.0, -20.8) 2:0@(41.1, 0.0, -23.2) 3:0@(38.7, 0.0, -24.4) nearest_enemy=17.3m within15=0 input_enabled=true captured=true paused_by={  }]
+[PO5 862.8s] pilot: t=20 at (41.6, 0.0, -18.6) corner (41.5, 0.2, -19.2) yaw_err -1.58 fwd=false path=16 mouse_mode=2 state=0 look=(-10.75,0.00) pin_yaw=-10.9390862787289 bot=false
+[PO5 970.7s] TL t=   25 objective cartel -> ACTIVE
+[PO5 1037.2s] pilot: t=25 at (42.9, 0.0, -13.0) corner (44.1, 0.2, -7.2) yaw_err -0.00 fwd=true path=12 mouse_mode=2 state=0 look=(-9.20,0.00) pin_yaw=-9.20397932324274 bot=false
+[PO5 1110.1s] TEL worst_frame=37956ms t=32 phase=3 phys=75.7ms proc=14.5ms nodes=9502 enemies=5 civs=2 crew=[0:0@(44.0, 0.0, -7.9) 1:0@(45.0, 0.0, -13.4) 2:0@(42.8, 0.0, -12.6) 3:0@(40.6, 0.0, -11.5) nearest_enemy=35.5m within15=0 input_enabled=true captured=true paused_by={  }]
+[PO5 1110.2s] pilot: t=30 at (44.1, 0.0, -7.6) corner (44.6, 0.2, -5.0) yaw_err -0.40 fwd=true path=12 mouse_mode=2 state=0 look=(-8.80,0.00) pin_yaw=-8.99695092409391 bot=false
+[PO5 1110.2s] pilot: goto (56.0, 0.2, 14.0) FAILED at (44.1, 0.0, -7.6) after 30.0 s
+[PO5 1110.2s] SNAG apron_south              FAIL  30.0 s from (31.5, 0.0, -38.5) to (56.0, 0.2, 14.0) (snap 0.2 m, nav path yes, stuck x0) ended at (44.1, 0.0, -7.6)
+[PO5 1145.2s] shot /home/user/Claude-N-Capers/game/tests/p/_review/captures/db_p1_2026-10-17/08_snag_apron_south.png
+[PO5 1208.8s] pilot: t=5 at (45.7, 0.0, -2.2) corner (48.4, 0.2, -0.5) yaw_err 0.02 fwd=true path=8 mouse_mode=2 state=0 look=(-14.72,0.00) pin_yaw=-14.7042864211574 bot=false
+[OBS t=38.2] CREW_STACK AI 1 and 2 0.43 m apart at (45.1, 0.0, -3.8)
+[OBS t=39.7] CREW_STACK AI 3 inside the player (0.48 m) at (47.9, 0.0, -0.8)
+[PO5 1214.2s] TEL worst_frame=24364ms t=42 phase=3 phys=195.4ms proc=40.8ms nodes=9509 enemies=5 civs=2 crew=[0:0@(48.9, 0.0, 2.0) 1:0@(50.4, 0.0, -2.1) 2:0@(48.3, 0.0, -0.9) 3:0@(48.4, 0.0, -0.5) nearest_enemy=28.5m within15=0 input_enabled=true captured=true paused_by={  }]
+[PO5 1214.7s] pilot: t=10 at (48.9, 0.0, 1.9) corner (49.7, 0.2, 6.0) yaw_err -1.20 fwd=false path=4 mouse_mode=2 state=0 look=(-14.33,0.00) pin_yaw=-14.52523335921 bot=false
+[PO5 1219.7s] SNAG dock_door_out            OK    13.4 s from (44.1, 0.0, -7.6) to (49.8, 0.2, 6.8) (snap 0.2 m, nav path yes, stuck x0)
+[PO5 1226.0s] pilot: t=5 at (49.7, 0.0, 11.3) corner (49.7, 0.2, 15.6) yaw_err 0.00 fwd=true path=44 mouse_mode=2 state=0 look=(-15.70,0.00) pin_yaw=-15.6958951054433 bot=false
+[PO5 1227.3s] TEL worst_frame=641ms t=52 phase=3 phys=116.0ms proc=12.3ms nodes=9509 enemies=5 civs=2 crew=[0:0@(49.7, 0.0, 13.0) 1:0@(51.9, 0.0, 13.0) 2:0@(52.6, 0.0, 10.4) 3:0@(49.6, 0.0, 10.0) nearest_enemy=19.5m within15=0 input_enabled=true captured=true paused_by={  }]
+[PO5 1231.0s] pilot: t=10 at (49.7, 0.0, 16.9) corner (49.8, 0.2, 17.5) yaw_err 1.22 fwd=false path=40 mouse_mode=2 state=0 look=(-16.91,0.00) pin_yaw=-16.7193628671114 bot=false
+[OBS t=56.5] CREW_STACK AI 3 inside the player (0.54 m) at (49.8, 0.0, 18.2)
+[PO5 1236.0s] pilot: t=15 at (49.8, 0.0, 22.7) corner (48.6, 0.2, 27.6) yaw_err 2.89 fwd=false path=37 mouse_mode=2 state=0 look=(-18.85,0.00) pin_yaw=-18.6530877996222 bot=false
+[PO5 1237.3s] TEL worst_frame=105ms t=62 phase=3 phys=70.6ms proc=13.0ms nodes=9509 enemies=5 civs=2 crew=[0:0@(49.7, 0.0, 23.7) 1:0@(52.6, 0.0, 21.3) 2:0@(50.7, 0.0, 19.7) 3:0@(49.5, 0.0, 21.7) nearest_enemy=13.3m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 1247.3s] TEL worst_frame=158ms t=72 phase=3 phys=76.9ms proc=10.4ms nodes=9509 enemies=5 civs=2 crew=[0:0@(48.8, 0.0, 28.2) 1:0@(52.4, 0.0, 24.0) 2:0@(50.8, 0.0, 23.7) 3:0@(48.6, 0.0, 26.3) nearest_enemy=11.8m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 1249.1s] TL t=   74 objective breach -> COMPLETED
+[PO5 1249.3s] pilot: use ANEast (open_door) -> OK in 8.0 s
+[PO5 1250.6s] TL t=   75 objective cartel -> ACTIVE
+[PO5 1307.8s] pilot: t=20 at (46.3, 0.0, 27.6) corner (45.0, 0.2, 26.8) yaw_err 2.56 fwd=false path=31 mouse_mode=2 state=0 look=(-7.81,-0.00) pin_yaw=-7.61551876169258 bot=false
+[PO5 1421.3s] TL t=   79 objective cartel -> ACTIVE
+[PO5 1477.1s] pilot: use ChamberBSouth (open_door) -> OK in 0.0 s
+[PO5 1477.9s] pilot: t=25 at (41.5, 0.0, 23.0) corner (41.5, 0.0, 23.1) yaw_err -3.14 fwd=false path=20 mouse_mode=2 state=0 look=(-6.28,-0.00) pin_yaw=-6.47518519984979 bot=false
+[PO5 1478.4s] TEL worst_frame=56517ms t=82 phase=3 phys=82.9ms proc=8.7ms nodes=9562 enemies=3 civs=2 crew=[0:0@(41.5, 0.0, 22.8) 1:0@(43.9, 0.3, 27.0) 2:0@(41.1, 0.0, 24.9) 3:0@(43.1, 0.0, 25.3) nearest_enemy=18.9m within15=0 input_enabled=true captured=true paused_by={  }]
+[OBS t=83.4] CREW_STACK AI 2 and 3 0.48 m apart at (40.6, 0.0, 23.9)
+[PO5 1483.0s] pilot: t=30 at (41.7, -0.3, 18.9) corner (41.8, 0.2, 15.8) yaw_err 0.00 fwd=true path=16 mouse_mode=2 state=0 look=(-12.61,0.00) pin_yaw=-12.6069584162014 bot=false
+[PO5 1483.0s] pilot: goto (34.6, 0.2, 6.0) FAILED at (41.7, -0.3, 18.8) after 30.0 s
+[PO5 1483.0s] SNAG hall_centre              FAIL  40.9 s from (49.7, 0.0, 5.9) to (34.6, 0.2, 6.0) (snap 0.2 m, nav path yes, stuck x0) ended at (41.7, -0.3, 18.8)
+[PO5 1529.9s] shot /home/user/Claude-N-Capers/game/tests/p/_review/captures/db_p1_2026-10-17/09_snag_hall_centre.png
+[PO5 1642.4s] pilot: t=5 at (41.9, 0.0, 13.3) corner (41.8, 0.2, 12.7) yaw_err 0.00 fwd=true path=23 mouse_mode=2 state=0 look=(-25.02,0.00) pin_yaw=-25.0231985712871 bot=false
+[PO5 1642.6s] TEL worst_frame=43075ms t=92 phase=3 phys=84.0ms proc=18.1ms nodes=9558 enemies=3 civs=2 crew=[0:0@(41.8, 0.0, 12.8) 1:0@(39.9, 0.0, 15.8) 2:0@(41.6, 0.0, 16.8) 3:0@(42.5, 0.0, 21.9) nearest_enemy=28.8m within15=0 input_enabled=true captured=true paused_by={  }]
+[PO5 1647.3s] pilot: t=10 at (39.1, 0.0, 7.8) corner (35.4, 0.2, 6.0) yaw_err 0.60 fwd=true path=14 mouse_mode=2 state=0 look=(-24.61,0.00) pin_yaw=-24.4137748460033 bot=false
+[PO5 1652.3s] pilot: t=15 at (33.6, 0.0, 5.2) corner (27.9, 0.2, 2.5) yaw_err 2.50 fwd=false path=12 mouse_mode=2 state=0 look=(-26.51,0.00) pin_yaw=-26.3141200255394 bot=false
+[PO5 1652.6s] TEL worst_frame=131ms t=102 phase=3 phys=70.8ms proc=8.9ms nodes=9558 enemies=3 civs=2 crew=[0:0@(33.5, 0.0, 5.1) 1:0@(37.1, 0.0, 9.3) 2:0@(37.3, 0.0, 6.8) 3:0@(37.1, 0.0, 4.1) nearest_enemy=33.2m within15=0 input_enabled=true captured=true paused_by={  }]
+[PO5 1657.4s] pilot: t=20 at (28.0, 0.0, 2.5) corner (28.6, 0.2, 2.8) yaw_err -2.54 fwd=false path=12 mouse_mode=2 state=0 look=(-24.60,0.00) pin_yaw=-24.7903522085234 bot=false
+[PO5 1661.0s] SNAG hall_west                OK    23.6 s from (41.7, -0.3, 18.7) to (24.6, 0.2, 4.0) (snap 0.2 m, nav path yes, stuck x0)
+[OBS t=111.1] CREW_STACK AI 1 and 2 0.44 m apart at (26.4, 0.0, 2.2)
+[OBS t=112.2] CREW_STACK AI 3 inside the player (0.04 m) at (25.7, 0.0, 2.2)
+[PO5 1662.6s] TEL worst_frame=84ms t=112 phase=3 phys=67.6ms proc=21.5ms nodes=9558 enemies=3 civs=2 crew=[0:0@(25.7, 0.0, 2.2) 1:0@(27.9, 0.0, 3.1) 2:0@(25.6, 0.0, 1.2) 3:0@(25.7, 0.0, 2.2) nearest_enemy=32.3m within15=0 input_enabled=true captured=true paused_by={  }]
+[OBS t=114.8] CREW_STACK AI 1 inside the player (0.17 m) at (28.0, 0.0, 3.3)
+[OBS t=115.3] CREW_STACK AI 2 and 3 0.36 m apart at (25.6, 0.0, 1.9)
+[PO5 1666.0s] pilot: t=5 at (28.3, 0.0, 4.5) corner (28.2, 0.2, 3.9) yaw_err 2.35 fwd=false path=6 mouse_mode=2 state=0 look=(-20.99,0.00) pin_yaw=-20.7931059142119 bot=false
+[PO5 1670.4s] TL t=  120 objective cartel -> ACTIVE
+[PO5 1670.4s] TL t=  120 objective cartel -> COMPLETED
+[PO5 1671.0s] pilot: t=10 at (26.2, 1.6, 7.3) corner (25.6, 2.0, 7.4) yaw_err -0.00 fwd=true path=4 mouse_mode=2 state=0 look=(-23.44,0.00) pin_yaw=-23.4376168775833 bot=false
+[PO5 1671.1s] SNAG platform_stair_landing   OK    10.1 s from (24.6, 0.0, 3.2) to (25.1, 2.0, 7.4) (snap 0.2 m, nav path yes, stuck x0)
+[PO5 1672.6s] TEL worst_frame=84ms t=122 phase=3 phys=73.3ms proc=13.4ms nodes=9770 enemies=5 civs=2 crew=[0:0@(24.5, 2.1, 7.3) 1:0@(28.9, 0.0, 8.0) 2:0@(28.2, 0.2, 7.3) 3:0@(28.9, 0.0, 6.8) nearest_enemy=19.1m within15=0 input_enabled=true captured=true paused_by={  }]
+[OBS t=124.1] CREW_STACK AI 1 and 3 0.26 m apart at (28.3, 0.2, 7.5)
+[PO5 1675.4s] SNAG platform_stair_top       OK     4.3 s from (26.0, 1.7, 7.3) to (20.8, 3.8, 7.2) (snap 0.2 m, nav path yes, stuck x0)
+[PO5 1678.7s] pilot: use MCPlatform (open_door) -> OK in 0.0 s
+[PO5 1680.2s] pilot: use M3Corridor (open_door) -> OK in 0.0 s
+[OBS t=130.8] CREW_STACK AI 2 and 3 0.36 m apart at (18.1, 3.6, 7.0)
+[PO5 1682.7s] TEL worst_frame=201ms t=132 phase=3 phys=86.0ms proc=12.8ms nodes=9974 enemies=7 civs=2 crew=[0:0@(16.5, 3.6, 4.9) 1:0@(15.9, 3.6, 6.6) 2:0@(17.1, 3.6, 7.5) 3:0@(17.2, 3.6, 6.7) nearest_enemy=17.9m within15=0 input_enabled=true captured=true paused_by={  }]
+[PO5 1682.8s] pilot: t=5 at (16.5, 3.6, 5.1) corner (16.5, 3.6, 5.1) yaw_err -0.00 fwd=true path=13 mouse_mode=2 state=0 look=(-59.69,0.00) pin_yaw=-59.6902587838175 bot=false
+[PO5 1687.8s] pilot: t=10 at (16.5, 3.6, 5.1) corner (16.5, 3.6, 5.1) yaw_err 0.00 fwd=true path=13 mouse_mode=2 state=0 look=(-103.67,0.00) pin_yaw=-103.67255881307 bot=false
+[PO5 1688.5s] pilot: STUCK at (16.5, 3.6, 5.1) heading to (16.5, 3.6, 5.1); rays: vel=(-0.0, 0.0, 3.0) floor=true state=0
+[PO5 1738.0s] shot /home/user/Claude-N-Capers/game/tests/p/_review/captures/db_p1_2026-10-17/10_stuck_1.png
+[PO5 1738.0s] pilot: detour right 0.7 m to (17.2, 3.8, 5.3) (attempt 1)
+[PO5 1766.0s] TEL worst_frame=25327ms t=142 phase=3 phys=309.2ms proc=23.6ms nodes=9978 enemies=7 civs=2 crew=[0:0@(16.5, 3.6, 5.3) 1:0@(15.5, 3.6, 6.5) 2:0@(16.7, 3.6, 7.3) 3:0@(17.5, 3.6, 6.7) nearest_enemy=17.1m within15=0 input_enabled=true captured=true paused_by={  }]
+[PO5 1767.6s] pilot: t=15 at (16.5, 3.6, 4.9) corner (16.5, 3.8, 5.4) yaw_err -1.65 fwd=false path=13 mouse_mode=2 state=0 look=(-133.48,0.00) pin_yaw=-133.674898499119 bot=false
+[PO5 1773.1s] pilot: t=20 at (16.5, 3.6, 4.9) corner (16.4, 3.8, 5.4) yaw_err -2.63 fwd=false path=13 mouse_mode=2 state=0 look=(-176.51,0.00) pin_yaw=-176.697190977362 bot=false
+[PO5 1828.3s] TEL worst_frame=39593ms t=152 phase=3 phys=81.4ms proc=5.2ms nodes=9631 enemies=7 civs=2 crew=[0:0@(16.5, 3.6, 5.3) 1:0@(15.5, 3.6, 6.5) 2:0@(16.7, 3.6, 7.3) 3:0@(17.5, 3.6, 6.7) nearest_enemy=16.9m within15=0 input_enabled=true captured=true paused_by={  }]
+[PO5 1829.4s] pilot: t=25 at (16.5, 3.6, 4.9) corner (16.5, 3.8, 5.4) yaw_err -2.33 fwd=false path=12 mouse_mode=2 state=0 look=(-220.68,0.00) pin_yaw=-220.871485093105 bot=false
+[PO5 1834.4s] pilot: t=30 at (16.5, 3.6, 5.1) corner (16.5, 3.6, 5.1) yaw_err 0.00 fwd=true path=12 mouse_mode=2 state=0 look=(-263.89,0.00) pin_yaw=-263.893795652917 bot=false
+[PO5 1834.4s] pilot: goto (13.4, 3.8, 4.4) FAILED at (16.5, 3.6, 5.0) after 30.0 s
+[PO5 1834.4s] SNAG mezz_count_room          FAIL  33.3 s from (21.6, 3.6, 7.3) to (13.4, 3.8, 4.4) (snap 0.2 m, nav path yes, stuck x1) ended at (16.5, 3.6, 5.0)
+[PO5 1874.4s] shot /home/user/Claude-N-Capers/game/tests/p/_review/captures/db_p1_2026-10-17/11_snag_mezz_count_room.png
+[OBS t=160.3] CREW_STACK AI 3 inside the player (0.44 m) at (18.3, 3.6, 7.1)
+[OBS t=161.3] CREW_STACK AI 1 and 2 0.48 m apart at (17.0, 3.6, 6.6)
+[PO5 1900.6s] TEL worst_frame=22587ms t=162 phase=3 phys=61.7ms proc=21.9ms nodes=9631 enemies=7 civs=2 crew=[0:0@(20.9, 3.6, 7.2) 1:0@(18.9, 3.6, 5.6) 2:0@(17.3, 3.6, 6.5) 3:0@(18.3, 3.6, 7.1) nearest_enemy=13.8m within15=2 input_enabled=true captured=true paused_by={  }]
+[PO5 1902.0s] pilot: t=5 at (22.3, 3.5, 7.3) corner (22.7, 3.3, 7.3) yaw_err -0.00 fwd=true path=16 mouse_mode=2 state=0 look=(-278.08,0.00) pin_yaw=-278.085442797017 bot=false
+[PO5 1907.6s] pilot: t=10 at (27.7, 0.6, 7.4) corner (28.7, 0.2, 7.6) yaw_err 0.96 fwd=false path=8 mouse_mode=2 state=0 look=(-260.33,0.00) pin_yaw=-260.136426198331 bot=false
+[OBS t=168.7] CREW_STACK AI 1 and 3 0.36 m apart at (26.3, 1.5, 7.3)
+[OBS t=170.8] CREW_STACK AI 2 and 3 0.31 m apart at (28.0, 0.4, 7.5)
+[PO5 1948.0s] TEL worst_frame=22199ms t=172 phase=3 phys=149.8ms proc=34.0ms nodes=9635 enemies=7 civs=2 crew=[0:0@(31.8, -0.3, 9.3) 1:0@(28.2, 0.0, 4.3) 2:0@(26.5, 0.0, 8.9) 3:0@(27.6, -0.3, 8.6) nearest_enemy=13.7m within15=2 input_enabled=true captured=true paused_by={  }]
+[PO5 1949.3s] pilot: t=15 at (32.5, 0.0, 10.0) corner (32.6, 0.2, 10.8) yaw_err 3.00 fwd=false path=4 mouse_mode=2 state=0 look=(-257.32,0.00) pin_yaw=-257.12828389881 bot=false
+[OBS t=175.5] CREW_STACK AI 1 and 2 0.43 m apart at (32.4, 0.0, 9.1)
+[OBS t=177.6] CREW_STACK AI 3 inside the player (0.29 m) at (33.2, 0.0, 14.7)
+[PO5 1954.8s] pilot: t=20 at (33.4, 0.0, 16.0) corner (33.3, 0.2, 15.4) yaw_err -1.58 fwd=false path=2 mouse_mode=2 state=0 look=(-255.87,0.00) pin_yaw=-256.057700166215 bot=false
+[PO5 1955.4s] SNAG spine_mid                OK    20.5 s from (16.5, 3.6, 5.0) to (33.5, 0.2, 17.0) (snap 0.2 m, nav path yes, stuck x0)
+[PO5 2029.8s] TEL worst_frame=25118ms t=182 phase=3 phys=82.2ms proc=12.9ms nodes=9631 enemies=7 civs=2 crew=[0:0@(33.4, 0.0, 19.5) 1:0@(35.0, 0.0, 19.2) 2:0@(33.5, 0.0, 14.8) 3:0@(31.4, 0.0, 16.1) nearest_enemy=9.0m within15=4 input_enabled=true captured=true paused_by={  }]
+[PO5 2031.6s] pilot: t=5 at (33.4, 0.0, 21.3) corner (33.5, 0.2, 23.5) yaw_err 0.00 fwd=true path=8 mouse_mode=2 state=0 look=(-254.45,0.00) pin_yaw=-254.449427512021 bot=false
+[PO5 2033.9s] SNAG anteroom_spine           OK     7.4 s from (33.4, 0.0, 16.1) to (33.5, 0.2, 25.3) (snap 0.2 m, nav path yes, stuck x0)
+[OBS t=189.9] CREW_STACK AI 1 inside the player (0.17 m) at (37.1, -0.3, 26.7)
+[OBS t=190.4] CREW_STACK AI 3 inside the player (0.43 m) at (37.3, -0.3, 26.8)
+[PO5 2039.0s] pilot: t=5 at (38.0, -0.3, 27.0) corner (39.9, 0.2, 27.2) yaw_err 0.00 fwd=true path=14 mouse_mode=2 state=0 look=(-246.70,0.00) pin_yaw=-246.699708517253 bot=false
+[OBS t=191.4] CREW_STACK AI 1 and 3 0.23 m apart at (37.9, -0.3, 28.0)
+[PO5 2039.8s] TEL worst_frame=164ms t=192 phase=3 phys=76.3ms proc=20.4ms nodes=9631 enemies=7 civs=2 crew=[0:0@(38.8, 0.0, 27.1) 1:0@(37.2, 0.0, 26.8) 2:0@(32.9, 0.0, 26.9) 3:0@(38.8, 0.0, 28.1) nearest_enemy=12.8m within15=5 input_enabled=true captured=true paused_by={  }]
+[PO5 2044.0s] pilot: t=10 at (43.6, -0.3, 27.5) corner (44.7, 0.2, 27.6) yaw_err -1.21 fwd=false path=7 mouse_mode=2 state=0 look=(-251.78,0.00) pin_yaw=-251.972343663217 bot=false
+[PO5 2045.3s] SNAG anteroom_east            OK    11.4 s from (33.5, 0.0, 24.4) to (46.4, 0.2, 28.0) (snap 0.2 m, nav path yes, stuck x0)
+[OBS t=200.6] CREW_STACK AI 2 and 3 0.43 m apart at (44.1, 0.0, 27.3)
+[OBS t=202.1] CREW_STACK AI 1 and 2 0.09 m apart at (47.8, 0.0, 27.9)
+[OBS t=202.1] CREW_STACK AI 1 and 3 0.09 m apart at (47.8, 0.0, 27.9)
+[PO5 2049.7s] TEL worst_frame=113ms t=202 phase=3 phys=67.5ms proc=12.7ms nodes=9627 enemies=7 civs=2 crew=[0:0@(49.6, 0.0, 26.2) 1:0@(47.8, 0.0, 27.9) 2:0@(47.8, 0.0, 27.9) 3:0@(48.0, -0.0, 28.0) nearest_enemy=14.3m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 2050.3s] pilot: t=5 at (50.0, 0.0, 25.0) corner (49.8, 0.2, 25.6) yaw_err 1.58 fwd=false path=25 mouse_mode=2 state=0 look=(-256.37,0.00) pin_yaw=-256.181986543908 bot=false
+[PO5 2055.3s] pilot: t=10 at (51.7, -0.3, 19.6) corner (52.2, 0.2, 18.1) yaw_err 0.00 fwd=true path=19 mouse_mode=2 state=0 look=(-257.91,0.00) pin_yaw=-257.90896209439 bot=false
+[PO5 2059.7s] TEL worst_frame=95ms t=212 phase=3 phys=60.7ms proc=16.3ms nodes=9627 enemies=7 civs=2 crew=[0:0@(53.2, -0.3, 14.8) 1:0@(55.4, 0.0, 18.1) 2:0@(54.0, -0.3, 18.7) 3:0@(54.5, -0.3, 21.7) nearest_enemy=15.9m within15=0 input_enabled=true captured=true paused_by={  }]
+[PO5 2060.3s] pilot: t=15 at (53.4, -0.3, 14.3) corner (54.1, 0.2, 12.1) yaw_err 0.77 fwd=false path=14 mouse_mode=2 state=0 look=(-258.69,0.00) pin_yaw=-258.498683873628 bot=false
+[PO5 2065.3s] pilot: t=20 at (55.0, 0.0, 9.1) corner (55.9, 0.2, 6.3) yaw_err -0.00 fwd=true path=13 mouse_mode=2 state=0 look=(-257.92,0.00) pin_yaw=-257.923110229376 bot=false
+[PO5 2069.8s] TEL worst_frame=110ms t=222 phase=3 phys=63.0ms proc=9.3ms nodes=9627 enemies=7 civs=2 crew=[0:0@(56.7, 0.0, 4.0) 1:0@(53.6, 0.0, 5.7) 2:0@(55.1, 0.0, 9.0) 3:0@(57.6, 0.0, 9.2) nearest_enemy=23.6m within15=0 input_enabled=true captured=true paused_by={  }]
+[PO5 2070.3s] pilot: t=25 at (56.8, 0.0, 3.7) corner (58.6, 0.2, -2.1) yaw_err -0.82 fwd=false path=10 mouse_mode=2 state=0 look=(-257.10,0.00) pin_yaw=-257.295091364516 bot=false
+[PO5 2075.3s] pilot: t=30 at (58.6, 0.0, -2.0) corner (58.8, 0.2, -2.7) yaw_err -2.76 fwd=false path=10 mouse_mode=2 state=0 look=(-255.17,0.00) pin_yaw=-255.36224254214 bot=false
+[PO5 2075.4s] pilot: goto (60.0, 0.2, -6.5) FAILED at (58.6, 0.0, -2.0) after 30.0 s
+[PO5 2075.4s] SNAG apron_north              FAIL  30.1 s from (45.5, 0.0, 27.7) to (60.0, 0.2, -6.5) (snap 0.2 m, nav path yes, stuck x0) ended at (58.6, 0.0, -2.0)
+[PO5 2110.4s] shot /home/user/Claude-N-Capers/game/tests/p/_review/captures/db_p1_2026-10-17/12_snag_apron_north.png
+[PO5 2127.5s] TEL worst_frame=18119ms t=232 phase=3 phys=176.5ms proc=27.5ms nodes=9627 enemies=7 civs=2 crew=[0:0@(59.4, 0.0, -6.8) 1:0@(58.9, 0.0, -4.6) 2:0@(59.4, 0.0, -2.9) 3:0@(61.6, 0.0, -3.3) nearest_enemy=33.0m within15=0 input_enabled=true captured=true paused_by={  }]
+[PO5 2128.2s] pilot: t=5 at (59.5, 0.0, -8.0) corner (59.4, 0.2, -7.4) yaw_err 2.72 fwd=false path=5 mouse_mode=2 state=0 look=(-257.35,0.00) pin_yaw=-257.155137505955 bot=false
+[PO5 2154.4s] SNAG gangway_west             OK     8.6 s from (58.6, 0.0, -2.0) to (60.2, 0.2, -13.0) (snap 0.3 m, nav path yes, stuck x0)
+[PO5 2176.2s] pilot: t=5 at (60.4, 0.0, -17.4) corner (60.5, 0.2, -19.3) yaw_err 0.00 fwd=true path=28 mouse_mode=2 state=0 look=(-251.39,0.00) pin_yaw=-251.393502948418 bot=false
+[PO5 2176.9s] TEL worst_frame=16945ms t=242 phase=3 phys=100.7ms proc=12.6ms nodes=9978 enemies=9 civs=2 crew=[0:0@(60.5, 0.0, -18.5) 1:0@(58.1, 0.0, -16.4) 2:0@(59.5, 0.0, -14.0) 3:0@(61.6, 0.0, -15.6) nearest_enemy=46.6m within15=0 input_enabled=true captured=true paused_by={  }]
+[PO5 2181.2s] pilot: t=10 at (60.8, 0.0, -23.1) corner (60.9, 0.2, -23.7) yaw_err 1.22 fwd=false path=24 mouse_mode=2 state=0 look=(-252.61,0.00) pin_yaw=-252.419900771425 bot=false
+[PO5 2186.2s] pilot: t=15 at (61.4, 0.0, -29.0) corner (61.7, 0.2, -32.1) yaw_err 3.12 fwd=false path=14 mouse_mode=2 state=0 look=(-254.56,0.00) pin_yaw=-254.365043232587 bot=false
+[PO5 2186.9s] TEL worst_frame=114ms t=252 phase=3 phys=96.9ms proc=19.1ms nodes=9978 enemies=9 civs=2 crew=[0:0@(61.4, 0.0, -29.8) 1:0@(58.5, 0.0, -26.5) 2:0@(60.3, 0.0, -24.5) 3:0@(61.6, 0.0, -26.6) nearest_enemy=22.8m within15=0 input_enabled=true captured=true paused_by={  }]
+[PO5 2265.0s] pilot: t=20 at (64.4, 0.0, -32.4) corner (63.9, 0.2, -32.4) yaw_err -3.10 fwd=false path=13 mouse_mode=2 state=0 look=(-252.90,0.00) pin_yaw=-253.092585729877 bot=false
+[OBS t=260.6] CREW_STACK AI 2 and 3 0.25 m apart at (65.3, 0.0, -32.5)
+[PO5 2348.4s] pilot: t=25 at (70.1, 0.0, -32.4) corner (71.4, 0.2, -32.4) yaw_err -0.01 fwd=true path=13 mouse_mode=2 state=0 look=(-252.90,0.00) pin_yaw=-252.904787572077 bot=false
+[PO5 2348.9s] TEL worst_frame=27092ms t=262 phase=3 phys=91.6ms proc=10.9ms nodes=10001 enemies=7 civs=2 crew=[0:0@(71.0, 0.0, -32.4) 1:0@(41.8, 0.0, -33.5) 2:0@(67.3, 0.0, -32.5) 3:0@(68.4, 0.0, -32.4) nearest_enemy=28.4m within15=0 input_enabled=true captured=true paused_by={  }]
+[PO5 2408.7s] pilot: t=30 at (73.4, 0.0, -28.5) corner (77.4, 0.2, -15.0) yaw_err 0.38 fwd=true path=9 mouse_mode=2 state=0 look=(-254.57,0.00) pin_yaw=-254.374801566211 bot=false
+[PO5 2408.7s] pilot: goto (78.0, 0.2, -13.0) FAILED at (73.4, 0.0, -28.5) after 30.0 s
+[PO5 2408.7s] SNAG pier10_apron             FAIL  30.1 s from (60.1, 0.0, -12.1) to (78.0, 0.2, -13.0) (snap 0.2 m, nav path yes, stuck x0) ended at (73.4, 0.0, -28.5)
+[PO5 2429.8s] shot /home/user/Claude-N-Capers/game/tests/p/_review/captures/db_p1_2026-10-17/13_snag_pier10_apron.png
+[PO5 2504.0s] pilot: t=5 at (70.5, 0.0, -32.4) corner (71.1, 0.2, -32.4) yaw_err 1.61 fwd=false path=11 mouse_mode=2 state=0 look=(-254.50,0.00) pin_yaw=-254.311688199252 bot=false
+[PO5 2504.4s] TEL worst_frame=24048ms t=272 phase=3 phys=88.1ms proc=11.2ms nodes=9907 enemies=7 civs=2 crew=[0:0@(70.6, 0.0, -32.4) 1:0@(69.7, 0.0, -33.4) 2:0@(72.4, 0.0, -29.7) 3:0@(73.4, 0.0, -32.5) nearest_enemy=12.4m within15=1 input_enabled=true captured=true paused_by={  }]
+[OBS t=273.1] CREW_STACK AI 1 and 3 0.20 m apart at (71.1, 0.0, -32.8)
+[PO5 2509.0s] pilot: t=10 at (64.9, 0.0, -32.4) corner (61.9, 0.2, -32.4) yaw_err 0.00 fwd=true path=11 mouse_mode=2 state=0 look=(-249.76,0.00) pin_yaw=-249.756370054563 bot=false
+[OBS t=277.6] CREW_STACK AI 2 inside the player (0.51 m) at (64.0, 0.0, -32.4)
+[PO5 2548.3s] pilot: t=15 at (60.6, 0.0, -30.0) corner (59.6, 0.2, -27.9) yaw_err 0.77 fwd=false path=9 mouse_mode=2 state=0 look=(-255.70,0.00) pin_yaw=-255.508449417813 bot=false
+[PO5 2548.7s] TEL worst_frame=21635ms t=282 phase=3 phys=76.4ms proc=14.4ms nodes=9917 enemies=6 civs=2 crew=[0:0@(60.4, 0.0, -29.5) 1:0@(63.4, 0.0, -33.2) 2:0@(60.5, 0.0, -33.0) 3:0@(57.8, 0.0, -32.0) nearest_enemy=45.4m within15=0 input_enabled=true captured=true paused_by={  }]
+[PO5 2553.4s] pilot: t=20 at (58.1, 0.0, -25.2) corner (57.6, 0.2, -25.2) yaw_err -0.02 fwd=true path=6 mouse_mode=2 state=0 look=(-255.89,0.00) pin_yaw=-255.904425394108 bot=false
+[OBS t=287.9] CREW_STACK AI 2 and 3 0.38 m apart at (58.7, 0.0, -26.2)
+[PO5 2557.7s] SNAG yard_east_alley          OK    24.4 s from (73.4, 0.0, -28.5) to (52.0, 0.2, -23.8) (snap 0.2 m, nav path yes, stuck x0)
+[PO5 2569.6s] TEL worst_frame=10947ms t=292 phase=3 phys=4.9ms proc=2.7ms nodes=9689 enemies=6 civs=2 crew=[0:0@(51.8, 0.0, -24.2) 1:0@(57.0, 0.0, -22.4) 2:0@(56.3, 0.0, -24.2) 3:0@(54.4, 0.0, -25.2) nearest_enemy=37.1m within15=0 input_enabled=true captured=true paused_by={  }]
+[PO5 2574.3s] pilot: t=5 at (47.9, 0.0, -24.9) corner (46.6, 0.2, -25.2) yaw_err 0.00 fwd=true path=22 mouse_mode=2 state=0 look=(-256.21,0.00) pin_yaw=-256.209778474314 bot=false
+[OBS t=299.5] CREW_STACK AI 1 inside the player (0.52 m) at (45.1, 0.0, -25.7)
+[PO5 2634.1s] pilot: t=10 at (43.8, -0.3, -26.9) corner (38.6, 0.2, -31.9) yaw_err 1.19 fwd=false path=15 mouse_mode=2 state=0 look=(-251.71,0.00) pin_yaw=-251.520154385003 bot=false
+[OBS t=301.5] CREW_STACK AI 1 and 2 0.44 m apart at (45.3, -0.3, -27.1)
+[PO5 2642.4s] TEL worst_frame=16378ms t=302 phase=3 phys=20.6ms proc=14.4ms nodes=9906 enemies=7 civs=2 crew=[0:0@(42.9, -0.3, -27.8) 1:0@(44.6, -0.3, -25.0) 2:0@(45.5, -0.3, -27.3) 3:0@(45.4, 0.0, -28.6) nearest_enemy=14.2m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 2688.9s] pilot: t=15 at (39.5, 0.0, -31.0) corner (38.6, 0.2, -31.9) yaw_err 3.12 fwd=false path=15 mouse_mode=2 state=0 look=(-253.64,0.00) pin_yaw=-253.448746998465 bot=false
+[PO5 2693.8s] pilot: t=20 at (35.0, 0.0, -35.0) corner (35.5, 0.2, -34.6) yaw_err -1.57 fwd=false path=5 mouse_mode=2 state=0 look=(-258.28,0.00) pin_yaw=-258.467039774643 bot=false
+[PO5 2694.6s] SNAG gate                     OK    20.8 s from (52.9, 0.0, -24.0) to (33.8, 0.2, -36.0) (snap 0.2 m, nav path yes, stuck x0)
+[PO5 2694.6s] SNAG LEG end t=312: 1 stuck rows
+[PO5 2705.7s] shot /home/user/Claude-N-Capers/game/tests/p/_review/captures/db_p1_2026-10-17/14_snag_end.png
+[PO5 2705.8s] LOUD start t=312 phase=3 went_loud=true masked=true
+[PO5 2705.8s] TEL worst_frame=25978ms t=312 phase=3 phys=74.9ms proc=5592.4ms nodes=9920 enemies=6 civs=2 crew=[0:0@(34.5, 0.0, -35.4) 1:0@(37.5, 0.0, -31.1) 2:0@(37.2, 0.0, -33.4) 3:0@(37.9, 0.0, -35.3) nearest_enemy=20.8m within15=0 input_enabled=true captured=true paused_by={  }]
+[PO5 2717.6s] shot /home/user/Claude-N-Capers/game/tests/p/_review/captures/db_p1_2026-10-17/15_auto_312.png
+[PO5 2717.6s] THERMITE fetching from ThermiteBag at (30.2, 0.3, -38.2) (t=312)
+[PO5 2740.6s] pilot: use ThermiteBag (bag_loot) -> OK in 1.0 s
+[PO5 2740.6s] THERMITE carrying to BurnPoint at (25.0, 1.2, 13.6) (t=318)
+[PO5 2745.0s] TEL worst_frame=6773ms t=322 phase=3 phys=140.3ms proc=7.6ms nodes=9923 enemies=6 civs=2 crew=[0:0@(30.4, 0.0, -34.6) 1:0@(31.4, 0.0, -35.3) 2:0@(33.1, 0.0, -36.6) 3:0@(34.0, 0.0, -38.3) nearest_enemy=16.7m within15=0 input_enabled=true captured=true paused_by={  }]
+[PO5 2745.8s] pilot: t=5 at (30.4, 0.0, -34.0) corner (25.8, 0.2, -32.9) yaw_err -0.00 fwd=true path=81 mouse_mode=2 state=0 look=(-262.07,0.00) pin_yaw=-262.07097942053 bot=false
+[PO5 2746.8s] pilot: goto (25.0, 0.2, 14.9) FAILED at (29.6, 0.0, -33.5) after 6.0 s
+[PO5 2751.8s] pilot: t=5 at (24.8, 0.0, -32.7) corner (23.7, 0.2, -32.5) yaw_err 0.00 fwd=true path=76 mouse_mode=2 state=0 look=(-262.15,0.00) pin_yaw=-262.145700144012 bot=false
+[PO5 2784.4s] pilot: goto (25.0, 0.2, 14.9) FAILED at (23.9, 0.0, -32.5) after 6.0 s
+[PO5 2784.7s] carry: enemy in sight, bag down to clear the way (t=330)
+[PO5 2786.6s] TEL worst_frame=13109ms t=332 phase=3 phys=149.3ms proc=32.0ms nodes=9831 enemies=5 civs=2 crew=[0:0@(23.2, 0.0, -31.6) 1:0@(26.7, 0.0, -32.4) 2:0@(26.8, 0.0, -33.0) 3:0@(30.1, 0.0, -33.6) nearest_enemy=52.2m within15=0 input_enabled=true captured=true paused_by={  }]
+[OBS t=333.5] CREW_STACK AI 1 and 2 0.35 m apart at (24.3, 0.0, -32.6)
+[PO5 2788.3s] pilot: use Bag_thermite (pick_bag) -> OK in 1.0 s
+[OBS t=334.1] CREW_STACK AI 2 and 3 0.37 m apart at (24.4, 0.0, -32.8)
+[OBS t=334.6] CREW_STACK AI 1 and 3 0.48 m apart at (24.1, 0.0, -32.6)
+[PO5 2811.8s] pilot: t=5 at (21.4, 0.0, -26.7) corner (20.0, 0.2, -22.4) yaw_err -0.00 fwd=true path=71 mouse_mode=2 state=0 look=(-261.07,0.00) pin_yaw=-261.073985625809 bot=false
+[PO5 2812.9s] pilot: goto (25.0, 0.2, 14.9) FAILED at (21.1, 0.0, -25.8) after 6.0 s
+[PO5 2824.2s] TEL worst_frame=14231ms t=342 phase=3 phys=104.0ms proc=22.5ms nodes=9612 enemies=5 civs=2 crew=[0:0@(20.3, 0.0, -23.4) 1:0@(23.5, 0.0, -27.5) 2:0@(21.2, 0.0, -27.1) 3:0@(19.4, 0.0, -28.8) nearest_enemy=45.2m within15=0 input_enabled=true captured=true paused_by={  }]
+[PO5 2834.0s] pilot: t=5 at (19.6, -0.3, -21.2) corner (19.4, 0.2, -20.5) yaw_err 0.00 fwd=true path=70 mouse_mode=2 state=0 look=(-261.06,0.00) pin_yaw=-261.063472364303 bot=false
+[PO5 2854.8s] pilot: goto (25.0, 0.2, 14.9) FAILED at (19.3, 0.0, -20.3) after 6.0 s
+[PO5 2926.8s] pilot: t=5 at (17.8, -0.3, -15.7) corner (17.6, 0.2, -15.2) yaw_err -0.00 fwd=true path=65 mouse_mode=2 state=0 look=(-261.06,0.00) pin_yaw=-261.059478112083 bot=false
+[PO5 2927.8s] pilot: goto (25.0, 0.2, 14.9) FAILED at (17.5, 0.0, -14.8) after 6.0 s
+[PO5 2928.2s] carry: enemy in sight, bag down to clear the way (t=352)
+[PO5 2928.4s] TEL worst_frame=19646ms t=352 phase=3 phys=195.9ms proc=17.1ms nodes=10167 enemies=7 civs=2 crew=[0:0@(17.7, 0.0, -14.4) 1:0@(21.4, 0.0, -16.8) 2:0@(15.2, 0.3, -13.4) 3:0@(16.5, 0.0, -18.3) nearest_enemy=22.5m within15=0 input_enabled=true captured=true paused_by={  }]
+[PO5 2929.3s] pilot: aimed <none>, wanted /root/HeistRuntime/Dynamic/Bag_thermite/Interactable (dist 1.02, angle 0.0 deg, avail 'ui.blocked.disabled', LOS ray hit - at -)
+[PO5 2929.8s] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.02, angle 0.0 deg)
+[PO5 2930.2s] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.02, angle 0.0 deg)
+[PO5 2931.4s] pilot: use pick_bag hold dropped, cleared threats before re-pressing
+[PO5 2931.7s] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.02, angle 0.0 deg)
+[PO5 2932.1s] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.02, angle 0.0 deg)
+[PO5 2932.5s] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.02, angle 0.0 deg)
+[PO5 2933.0s] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.02, angle 0.0 deg)
+[PO5 2968.9s] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.02, angle 0.0 deg)
+[PO5 2969.1s] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.02, angle 0.0 deg)
+[PO5 3001.8s] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.02, angle 0.0 deg)
+[PO5 3002.1s] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.02, angle 0.0 deg)
+[PO5 3037.0s] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.02, angle 0.0 deg)
+[PO5 3037.3s] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.02, angle 0.0 deg)
+[PO5 3068.5s] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.02, angle 0.0 deg)
+[PO5 3100.4s] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.02, angle 0.0 deg)
+[PO5 3116.9s] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.02, angle 0.0 deg)
+[PO5 3149.7s] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.02, angle 0.0 deg)
+[PO5 3150.1s] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.02, angle 0.0 deg)
+[PO5 3150.5s] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.02, angle 0.0 deg)
+[PO5 3183.7s] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.02, angle 0.0 deg)
+[PO5 3184.1s] TEL worst_frame=34544ms t=362 phase=3 phys=69.9ms proc=4.4ms nodes=10417 enemies=8 civs=2 crew=[0:0@(18.0, -0.3, -13.9) 1:0@(20.5, -0.3, -16.2) 2:0@(15.6, 0.0, -12.9) 3:0@(16.5, -0.3, -18.3) nearest_enemy=17.0m within15=0 input_enabled=true captured=true paused_by={  }]
+[PO5 3415.0s] pilot: mag empty (0/121), reloading
+[PO5 3436.8s] pilot: use pick_bag hold dropped, cleared threats before re-pressing
+[PO5 3445.3s] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.02, angle 0.0 deg)
+[PO5 3445.7s] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.02, angle 0.0 deg)
+[PO5 3446.1s] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.02, angle 0.0 deg)
+[PO5 3446.5s] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.02, angle 0.0 deg)
+[PO5 3496.1s] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.02, angle 0.0 deg)
+[PO5 3496.4s] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.02, angle 0.0 deg)
+[PO5 3496.8s] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.02, angle 0.0 deg)
+[PO5 3497.3s] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.02, angle 0.0 deg)
+[PO5 3497.4s] TEL worst_frame=17595ms t=372 phase=3 phys=94.1ms proc=19.1ms nodes=10537 enemies=8 civs=2 crew=[0:0@(18.0, -0.3, -13.9) 1:0@(20.5, -0.3, -16.2) 2:0@(15.6, 0.0, -12.9) 3:0@(16.5, -0.3, -18.3) nearest_enemy=20.2m within15=0 input_enabled=true captured=true paused_by={  }]
+[PO5 3497.6s] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.02, angle 0.0 deg)
+[PO5 3498.0s] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.02, angle 0.0 deg)
+[PO5 3498.4s] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.02, angle 0.0 deg)
+[PO5 3498.8s] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.02, angle 0.0 deg)
+[PO5 3499.3s] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.02, angle 0.0 deg)
+[PO5 3499.6s] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.02, angle 0.0 deg)
+[PO5 3500.0s] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.02, angle 0.0 deg)
+[PO5 3745.5s] pilot: use pick_bag hold dropped, cleared threats before re-pressing
+[PO5 3755.2s] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.02, angle 0.0 deg)
+[PO5 3755.6s] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.02, angle 0.0 deg)
+[PO5 3756.1s] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.02, angle 0.0 deg)
+[PO5 3756.4s] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.02, angle 0.0 deg)
+[PO5 3756.8s] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.02, angle 0.0 deg)
+[PO5 3757.2s] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.02, angle 0.0 deg)
+[PO5 3757.6s] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.02, angle 0.0 deg)
+[PO5 3758.1s] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.02, angle 0.0 deg)
+[PO5 3758.4s] TEL worst_frame=12545ms t=382 phase=3 phys=95.3ms proc=17.7ms nodes=10674 enemies=8 civs=2 crew=[0:0@(18.0, -0.3, -13.9) 1:0@(20.5, -0.3, -16.2) 2:0@(15.6, 0.0, -12.9) 3:0@(16.5, -0.3, -18.3) nearest_enemy=20.2m within15=0 input_enabled=true captured=true paused_by={  }]
+[PO5 3758.4s] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.02, angle 0.0 deg)
+[PO5 3758.9s] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.02, angle 0.0 deg)
+[PO5 3878.7s] pilot: use pick_bag hold dropped, cleared threats before re-pressing
+[PO5 3887.3s] pilot: use pick_bag re-press skipped: aimed <none> (dist 0.98, angle 0.0 deg)
+[PO5 3887.4s] pilot: use Bag_thermite (pick_bag) -> FAILED in 15.0 s
+[PO5 3887.4s] pilot: reload in a lull (weapon.corsair_ar 0/30, reserve 91)
+[PO5 3893.2s] pilot: t=5 at (15.8, 0.0, -8.8) corner (15.5, 0.2, -8.1) yaw_err -0.00 fwd=true path=60 mouse_mode=2 state=0 look=(-261.17,0.00) pin_yaw=-261.173611203725 bot=false
+[PO5 3896.0s] TEL worst_frame=12448ms t=392 phase=3 phys=213.8ms proc=23.5ms nodes=10911 enemies=8 civs=2 crew=[0:0@(14.9, -0.3, -6.5) 1:0@(18.3, -0.3, -9.6) 2:0@(15.6, 0.0, -12.9) 3:0@(13.4, -0.3, -9.1) nearest_enemy=21.8m within15=0 input_enabled=true captured=true paused_by={  }]
+[PO5 3898.7s] pilot: t=10 at (13.1, 0.0, -4.6) corner (6.4, 0.2, -0.5) yaw_err 1.02 fwd=false path=56 mouse_mode=2 state=0 look=(-262.80,0.00) pin_yaw=-262.604609436275 bot=false
+[PO5 3927.7s] pilot: t=15 at (8.0, -0.3, -1.5) corner (6.4, 0.2, -0.5) yaw_err 3.12 fwd=false path=56 mouse_mode=2 state=0 look=(-264.90,0.00) pin_yaw=-264.705381771738 bot=false
+[PO5 3960.7s] TEL worst_frame=23796ms t=402 phase=3 phys=193.3ms proc=28.7ms nodes=10253 enemies=8 civs=2 crew=[0:0@(6.1, -0.3, 0.7) 1:0@(10.8, -0.3, -1.2) 2:0@(9.5, -0.3, -2.9) 3:0@(8.3, 0.0, -5.0) nearest_enemy=19.8m within15=0 input_enabled=true captured=true paused_by={  }]
+[PO5 4034.4s] pilot: t=20 at (4.5, 0.0, 2.5) corner (4.2, 0.2, 3.2) yaw_err 0.11 fwd=true path=50 mouse_mode=2 state=0 look=(-267.59,0.00) pin_yaw=-267.47798932554 bot=false
+[PO5 4037.2s] pilot: use O1Corridor (open_door) -> OK in 0.0 s
+[OBS t=408.0] CREW_STACK AI 3 inside the player (0.58 m) at (3.7, 0.0, 5.1)
+[PO5 4038.9s] pilot: use PLCorridor (open_door) -> OK in 0.0 s
+[PO5 4065.7s] TEL worst_frame=53648ms t=412 phase=3 phys=180.3ms proc=36.0ms nodes=10382 enemies=8 civs=2 crew=[0:0@(4.0, 0.0, 8.7) 1:0@(5.0, 0.0, 7.4) 2:0@(4.0, 0.0, 5.9) 3:0@(3.0, 0.0, 7.5) nearest_enemy=10.9m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 4065.8s] pilot: t=25 at (4.0, 0.0, 8.7) corner (4.0, 0.0, 8.9) yaw_err -0.65 fwd=false path=44 mouse_mode=2 state=0 look=(-285.24,0.00) pin_yaw=-285.43134733507 bot=false
+[PO5 4291.2s] pilot: t=30 at (4.1, 0.0, 8.9) corner (4.1, 0.0, 8.9) yaw_err -0.09 fwd=true path=44 mouse_mode=2 state=0 look=(-298.46,0.00) pin_yaw=-298.55372233064 bot=false
+[PO5 4296.2s] TEL worst_frame=52786ms t=422 phase=3 phys=189.8ms proc=26.9ms nodes=10403 enemies=8 civs=2 crew=[0:0@(4.0, 0.0, 8.7) 1:0@(5.0, 0.0, 7.5) 2:0@(4.0, 0.0, 5.9) 3:0@(3.1, 0.0, 7.5) nearest_enemy=15.3m within15=0 input_enabled=true captured=true paused_by={  }]
+[PO5 4297.2s] pilot: t=35 at (4.0, 0.0, 8.7) corner (4.0, 0.0, 8.9) yaw_err -0.26 fwd=true path=44 mouse_mode=2 state=0 look=(-342.17,0.00) pin_yaw=-342.364018811882 bot=false
+[PO5 4423.6s] pilot: t=40 at (4.0, 0.0, 8.7) corner (4.0, 0.0, 8.9) yaw_err -0.65 fwd=false path=44 mouse_mode=2 state=0 look=(-373.20,-0.00) pin_yaw=-373.39593218067 bot=false
+[PO5 4426.5s] pilot: STUCK at (4.0, 0.0, 9.0) heading to (4.1, 0.2, 8.5); rays: vel=(-0.1, 0.0, -0.5) floor=true state=0

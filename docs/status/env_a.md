@@ -3,6 +3,37 @@
 Owner: ENV A. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-17 11:10 UTC: D-135 queue close: anim lane, npc_oneshot, VFX hitch root cause, pilot doors (env/a-core 06fab719 + this)
+### Done since 02:45 (pushed, all on trunk by round 239)
+- Pilot (DB-7):
+  - 0ea5bfba / 626bfc14: a closed D-073 door on the step to the next path corner is opened first.
+  - 3d803379: the through-link radius is 0.8 m (< THROUGH_PAST_M); the closed-door check has its own LINE_DOOR_M 1.0.
+- 2b97d701 anim lane (D-115 / D-116):
+  - Police cuff hint is `cuff`; melee plays once only.
+  - A crew interaction beats every one-shot; a hit while interacting is a flinch only.
+  - LoopResume (aim loops resume their phase after a fire/turn).
+  - turn_*_45; door_kick_<fam> at breach start; civ panic variants.
+  - Loud coverage: MISMATCH 0, NO_CLIP 0, FROZEN 0–2 one-offs (P to require 2 consecutive samples).
+- 61b70043:
+  - Turn at speed 1, rig on the clip's root rate, the residual eased over blend_s.
+  - Replicated `npc_oneshot` cue + `"ah"` NPC key (net.md v1.3).
+  - panic_start before the first cower* (it never played: the first flee* used it up).
+- b8cdd674 npc_gunner HITCH root cause:
+  - Not gunner code. C's VFX pools grew lazily inside the first shots, and every new GPU resource stalls llvmpipe for seconds.
+  - Fix: VfxDirector.prewarm() at heist load (C bb6a06f8, from A's patch) + HeistRuntime._prewarm_vfx().
+  - FrameProf npc_gunner.{los,fired,fx,hit} sub-scopes; HITCH lines print drawn=.
+  - PO-7 frozen flashes: render loop off → frame_drawn_since (A patch); render loop on → C a3172294.
+### Evidence
+- DB-7 1003 ×0.25 windowed, before (q4) / after (q6, prewarm):
+  - worst npc_gunner frame 17.4 s → 17.6 ms; gunner frames > 500 ms: 8 → 0;
+  - start → breach 574 → 244 s real.
+- The remaining long frames carry ≤ ~20 ms of script time: llvmpipe draw cost plus spawn-time GPU allocations (police waves, node count +1.3k). Not game code; on real GPUs this is minor.
+- DB-7 flow in q6: cartel, breach, product, burn started, cartel done (t=120), thermite fetched. Still running at the cutoff, with no full win yet.
+### Not closed (carry to the Ostrander sprint, low priority)
+- DB-7 full windowed win: the pilot's final approach to a bag sometimes stops at about 4.6 m (crew bunching). Harness-only.
+- ND-1 ×1.0 solo run: waived by LEAD (D-134 + the ND-1 test cover it).
+- Spawn-time llvmpipe stalls: if ever needed, prewarm NPC skin/material instances. Not a game bug.
+
 ## 2026-10-17 02:45 UTC: D-130, R229/R230 fixes, anim clips + split, pilot, crew stack (env/a-core d10c9908)
 ### Done since 00:45 (pushed)
 - df7d3727 / da8d9fc4 round-229 reds:
@@ -258,20 +289,3 @@ runs: none (GN probe 3 stopped, ND attempt 24 not started).
   who can hear it: clear line of sight (other NPCs don't block) or a navmesh path <= 6 m x shout_path_mult
   1.3. Walls and floors block it (PD2: you intimidate who hears/sees you). The cone beyond 6 m already
   required line of sight.
-
-## 2026-10-14 01:50 UTC — freeze gate 1 (gh_loud PASS), PO-8 shot_fx, ND loud, D-102/D-106
-### Done (pushed; last bcebbad9)
-- GATE 1: gh_loud PASS end to end, windowed, real menus (seed 1791914030): drill jam fixed by the pilot, safe 182 s
-  after placing, bags t=250/293, Pell escape, Payday card pick ($40,000) → Continue → Safehouse hub (4f391c1e, fa09ae00).
-- ec27e45c PO-8 (D-105): EventBus.shot_fx per pellet/ray on every peer (crew, bots, NPCs, melee) + explosion_fx; 3 new
-  reliable [R] facts on HeistNetSync (crew shot replay by seed, NPC/melee impact, explosion); 3P muzzle origins.
-- 41025a1a HUD: no markers for disabled objectives (ND lockdown pointed at the server room); 18cc33d0 QC-60 markers
-  re-resolve on objective data updates; D-102 equip(slot, redraw) for bag pickup; 68fd1268 ui_hud 1.12 reload progress.
-- 5930a66a SL/DB marker_tags (readiness gate); 582b8c5c/e2d5cf6f S10 tests for D-102 carry.
-- 1c578b4f pilot stands at the prefab UsePoint (ND keycard behind the teller glass).
-### In progress
-- ND loud via auto_loud (seed 1791938638): keycard t=65, vault gate t=99, drill next. Stealth win lane (subagent).
-- PO-6 door swing: implemented + tests green, HELD: integration test_p3_loud test_01 (crew wipe) A/B vs snap running.
-- Prefab metadata/surface lane (subagent).
-### Queued
-- Gallery Night (D-103) groundwork after the freeze gates; CrewMelee.hit_landed to the attacker's owner (P backlog).
