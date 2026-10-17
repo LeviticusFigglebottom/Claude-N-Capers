@@ -321,6 +321,9 @@ func _watcher() -> NpcBase:
 	who.append_array(rt.npcs(&"civilian"))
 	for n: Node in who:
 		var g: NpcBase = n as NpcBase
+		var cb: CivilianBrain = g.get_node_or_null(^"Brain") as CivilianBrain if g != null else null
+		if cb != null and cb.mode in [CivilianBrain.Mode.TIED, CivilianBrain.Mode.DOWN, CivilianBrain.Mode.DEAD]:
+			continue
 		if g == null or not g.is_alive() or absf(g.global_position.y - c.global_position.y) > 2.0:
 			continue
 		var to_me: Vector3 = c.global_position - g.global_position
@@ -354,6 +357,8 @@ func _careful() -> bool:
 	if w == null:
 		return false
 	_waits += 1
+	if w.is_in_group(G.CIVILIAN):
+		return await _subdue(w)
 	note("careful: %s faces the pilot at %.1f m (alert %d): back off to %s and wait" % [w.name,
 		w.global_position.distance_to(pilot.crew.global_position), w.alert_state, Po5Pilot._v(_safe_pos)])
 	pilot.inp.release(&"move_forward")
@@ -364,6 +369,37 @@ func _careful() -> bool:
 	await wait_s(1.0)
 	pilot.inp.release(&"crouch")
 	note("careful: %s (waited, watcher now %s)" % ["clear" if clear else "timed out", _watcher()])
+	return true
+
+
+## PD2 (S7.1 / S3.2): a civilian who can see the masked pilot is shouted to the floor (F tap aimed at them) and
+## cable-tied (hold F on them). Run 2: crouching and waiting in her view let her meter fill in 3.6 s (civilian_call).
+func _subdue(civ: NpcBase) -> bool:
+	var b: CivilianBrain = civ.get_node_or_null(^"Brain") as CivilianBrain
+	if b == null or b.mode in [CivilianBrain.Mode.TIED, CivilianBrain.Mode.DEAD]:
+		return false
+	pilot.inp.release(&"move_forward")
+	for k: int in 4:
+		if b.mode == CivilianBrain.Mode.DOWN or b.mode == CivilianBrain.Mode.TIED:
+			break
+		note("subdue: shouting %s (mode %d, %.1f m, meter %.2f)" % [civ.name, b.mode,
+			civ.global_position.distance_to(pilot.crew.global_position), rt.detection_value(civ, pilot.crew.slot)])
+		await pilot.face(civ.global_position + Vector3(0, 1.3, 0), 0.05, 1.0)
+		await pilot.inp.tap(&"shout")
+		await wait_s(1.0)
+		if b.mode != CivilianBrain.Mode.DOWN and k >= 1:
+			await pilot.goto(civ.global_position, 3.0, 3.0, false, false)
+	if b.mode != CivilianBrain.Mode.DOWN:
+		note("subdue: %s not down (mode %d)" % [civ.name, b.mode])
+		return true
+	for comp: Node in civ.find_children("*", "InteractableComponent", true, false):
+		var ic: InteractableComponent = comp as InteractableComponent
+		if ic.kind == &"cable_tie" and ic.enabled:
+			note("subdue: tying %s (%s)" % [civ.name, ic.availability(pilot.crew)])
+			await pilot.use(ic, 20.0, func() -> bool: return b.mode == CivilianBrain.Mode.TIED)
+			break
+	note("subdue: %s mode %d" % [civ.name, b.mode])
+	await shot("subdued_%s" % civ.name)
 	return true
 
 
@@ -449,10 +485,44 @@ func _carry_and_secure(src: Node3D, what: String) -> bool:
 		note("no secure zone")
 		return false
 	note("%s bagged: carrying to %s" % [what, Po5Pilot._v(zone.global_position)])
-	var ok: bool = await pilot.secure_carried_bag(zone)
+	var ok: bool = await _secure(zone)
 	note("%s secured %s (at %s)" % [what, ok, Po5Pilot._v(pilot.crew.global_position)])
 	await shot("%s_secured" % what.replace(" ", "_"))
 	return ok
+
+
+## Po5Pilot.secure_carried_bag stops 3 m short (run 3: at (24.5, 0, 11.0), 2 m from the lift's nav point, it threw
+## the laptop into the lobby wall beside the car opening). Walk to the zone's nearest nav point, face the zone's
+## centre and throw (G); one retry from closer after picking the bag back up.
+func _secure(zone: SecureZone) -> bool:
+	var secured: Array[int] = [0]
+	var cb: Callable = func(_b: int, _l: StringName, _v: int) -> void: secured[0] += 1
+	EventBus.loot_secured.connect(cb)
+	var target: Vector3 = zone.global_position
+	for attempt: int in 2:
+		var stand: Vector3 = pilot.stand_point(target)
+		await pilot.goto(stand, 0.4, 120.0)
+		await pilot.face(target + Vector3(0, 0.6, 0), 0.04, 2.0)
+		note("secure try %d: throw from %s at %s (stand %s)" % [attempt, Po5Pilot._v(pilot.crew.global_position),
+			Po5Pilot._v(target), Po5Pilot._v(stand)])
+		await pilot.inp.tap(&"drop_bag")
+		await wait_until(func() -> bool: return secured[0] > 0, 6.0)
+		if secured[0] > 0:
+			break
+		var bag: LootBag = null
+		for n: Node in get_tree().get_nodes_in_group(G.LOOT_BAG):
+			var lb: LootBag = n as LootBag
+			if lb != null and (bag == null or lb.global_position.distance_to(pilot.crew.global_position)
+					< bag.global_position.distance_to(pilot.crew.global_position)):
+				bag = lb
+		await shot("secure_miss_%d" % attempt)
+		if bag == null:
+			note("secure: thrown bag not found")
+			break
+		note("secure: bag landed at %s; picking it up again" % Po5Pilot._v(bag.global_position))
+		await pilot.use(_comp(bag), 30.0, func() -> bool: return pilot.crew.is_carrying_bag())
+	EventBus.loot_secured.disconnect(cb)
+	return secured[0] > 0
 
 
 func _laptop() -> bool:
