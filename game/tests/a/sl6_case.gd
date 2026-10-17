@@ -108,3 +108,44 @@ func _rare_on(id: StringName) -> bool:
 
 func _slot(group: StringName) -> Array:
 	return _rt.variants.get(group, []) as Array
+
+
+# --- D-138.4: the SL cage on either map layout ------------------------------------------------------------
+
+## True on ENV C's regenerated map (the CageGate carries a CageKeypad + CagePadlock); false on a pre-D-138 map
+## whose cage is the stand-in CageLock safe.
+func _cage_new_layout() -> bool:
+	return _cage_keypad() != null
+
+
+func _cage_keypad() -> Keypad:
+	var gate: Node = _one(&"cage_gate")
+	return gate.get_node_or_null(^"CageKeypad") as Keypad if gate != null else null
+
+
+## The CagePadlock with the D-138.4 options pinned (saw also in stealth, no lockpick) until C's next regen sets them.
+func _cage_padlock() -> Padlock:
+	var gate: Node = _one(&"cage_gate")
+	var pl: Padlock = gate.get_node_or_null(^"CagePadlock") as Padlock if gate != null else null
+	if pl != null:
+		pin_padlock(pl, {&"place_saw": true, &"place_saw_stealth": true, &"saw_duration_s": 90.0,
+			&"allow_lockpick": false})
+	return pl
+
+
+## Sets Padlock exports at runtime (map nodes C has not configured yet) and rebuilds what _prefab_ready derives
+## from them: the placed-device runner and the prompt.
+static func pin_padlock(pl: Padlock, opts: Dictionary) -> void:
+	for k: StringName in opts:
+		pl.set(k, opts[k])
+	var kind: StringName = &"drill" if pl.place_drill else (&"saw" if pl.place_saw else &"")
+	if kind != &"" and (pl.runner == null or pl.runner.kind != kind):
+		if pl.runner != null:
+			pl.runner.shutdown()
+		var r: DeviceRunner = DeviceRunner.new(pl, kind)
+		r.state_changed.connect(pl._on_device_state)
+		r.finished.connect(func() -> void: pl.open_lock(true, r.kind))
+		pl.runner = r
+	if not pl.opened:
+		var first: StringName = StringName(pl._pick(null)[0])
+		pl._apply_ui(first if first != &"" else (&"lockpick" if pl.allow_lockpick else &"saw"))

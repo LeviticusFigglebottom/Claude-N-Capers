@@ -28,7 +28,9 @@ func _sl_locks() -> Array:
 	assert_true(gate != null, "the CageGate (tag cage_gate)")
 	if gate == null:
 		return []
-	if gate.get_node_or_null(^"CagePadlock") == null:
+	if gate.get_node_or_null(^"CagePadlock") != null:
+		_cage_padlock()  # C's map: pin the D-138.4 padlock options its next regen sets
+	else:  # legacy: pre-D-138 maps, remove after C b4ad9153 is on trunk
 		_drop_tagged_safes(&"cage")
 		var kp: Keypad = _prefab("keypad") as Keypad
 		kp.name = "CageKeypad"
@@ -119,9 +121,9 @@ func test_sl_cage_handheld_saw() -> void:
 
 # --- DB count cage -------------------------------------------------------------------------------------------
 
-func _db_launch() -> HeistMission:
+func _db_launch(cash: StringName = &"cash_countroom") -> HeistMission:
 	_rt = await HeistLauncher.launch(&"dockside_burn", 9001, Enums.Difficulty.ROUTINE, self,
-		{"crew_ai": false, "ai_teammates": 0, "preplan": {"force_variants": {&"cash_location": [&"cash_countroom"]}}})
+		{"crew_ai": false, "ai_teammates": 0, "preplan": {"force_variants": {&"cash_location": [cash]}}})
 	await wait_physics_frames(3)
 	assert_true(_rt != null and _rt.mission != null, "DB launched")
 	return _rt.mission if _rt != null else null
@@ -133,7 +135,10 @@ func _db_lock() -> Array:
 	for n: Node in _rt.find_by_tag(&"count_cage"):
 		if n is Padlock:
 			lock = n as Padlock
-	if lock == null:
+	if lock != null:  # C's map: pin the D-138.4 options (drill 120 s / C4, no lockpick) its next regen sets
+		pin_padlock(lock, {&"place_drill": true, &"drill_duration_s": 120.0, &"place_c4": true,
+			&"allow_lockpick": false})
+	else:  # legacy: pre-D-138 maps, remove after C b4ad9153 is on trunk
 		var pos: Vector3 = Vector3.ZERO
 		for n: Node in _rt.find_by_tag(&"count_cage"):
 			pos = (n as Node3D).global_position
@@ -198,3 +203,19 @@ func test_db_count_cage_c4() -> void:
 		Tweak.interaction().c4_fuse_s + 2.0)
 	assert_true(ok, "blown")
 	_assert_count_cage(m, pair[0], &"c4")
+
+
+## The CountCagePadlock sits on the gate in every cash variant (C's map): off unless cash_countroom.
+func test_db_count_cage_padlock_only_with_countroom() -> void:
+	var m: HeistMission = await _db_launch(&"cash_strongroom")
+	assert_eq(m.objective_state(&"count_cage"), Enums.ObjectiveState.HIDDEN, "strongroom: [count_cage] hidden")
+	for n: Node in _rt.find_by_tag(&"count_cage"):
+		if n is Padlock:
+			assert_false((n as Padlock).is_enabled(), "strongroom: the cage padlock is off")
+			assert_ne((n as Padlock).interactable.availability(_rt.crew_controller(0)), InteractableComponent.BLOCK_NONE,
+				"and offers nothing")
+	await _teardown()
+	await _db_launch()
+	for n: Node in _rt.find_by_tag(&"count_cage"):
+		if n is Padlock:
+			assert_true((n as Padlock).is_enabled(), "countroom: the cage padlock is on")

@@ -146,6 +146,8 @@ func _on_mission_start() -> void:
 	_apply_cash(countroom)
 	if countroom:
 		_watch_count_cage()
+	else:
+		_disable_count_cage_locks()
 	_apply_product()
 	_apply_containers()
 	_apply_lift()
@@ -439,6 +441,14 @@ func _on_device_jammed(device_net_id: int) -> void:
 
 
 # --- D-138.4: the count-room cage gate ------------------------------------------------------------
+
+## D-138.4: the CountCagePadlock sits on the gate in every cash variant; only cash_countroom uses it, so in the
+## others it is switched off (no prompt, no marker, no device on a cage with nothing behind it).
+func _disable_count_cage_locks() -> void:
+	for c: Node in find_tagged(TAG_COUNT_CAGE):
+		if c is GameplayPrefab and not c is Door:
+			(c as GameplayPrefab).set_enabled(false)
+
 
 func _watch_count_cage() -> void:
 	for c: Node in find_tagged(TAG_COUNT_CAGE):
