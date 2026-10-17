@@ -1150,3 +1150,17 @@ Ruling: a single runtime multiplier `ads_spread_mult = 0.7` (◇, ENV A's CrewWe
 class keeps its shape and B's weapon data stays as is (2.3 → 1.61°, 100/100 in A's sweep). Acceptance: A's
 test_l3_ads_pistol_accuracy at ≥ 98/100 for every pistol and revolver at 10 m; SMGs reported, not gated. B reports any weapon
 whose ADS readout in the armory needs the multiplier shown (stat display = effective cone).
+
+## D-132: character render/animation budget for D-130 crowds (2026-10-17, LEAD; from ENV D's perf audit)
+Audit: `docs/art/d130_character_perf_audit.md` (D 53fa7154, bench `world/characters/_tools/bench_crowd.tscn`). Live skinned
+characters at Cataclysm: GN ~35, SL ~20, ND ~16, any loud Cataclysm fight ~50. Triangles are fine; **draw calls dominate**
+(16-32 surfaces per character, each again per shadow pass: GN ~1011 draws/frame, loud ~2860); animation ~0.07-0.1 ms per
+character at every distance.
+Approved, in order: (1) **D2** LOD2 from 15 m for civilians/staff, 25 m for combat units, and **D3** no shadow casting from
+tiny surfaces (badges, glasses, buttons): measured GN 1011 → 489 draws. (2) **D1** per-character material atlas (surfaces
+16-32 → 1-2; est. GN ~150, loud ~600 draws), supersedes D3; acceptance = before/after lineups at 2/10/30 m with no visible
+change, test_lod/test_scenes/test_npcs green, P's vm/arms probes unaffected (FP arms keep their own materials).
+(3) **ENV A animation LOD**: full rate < 15 m; every 2nd frame 15-30 m with IK off; every 4th > 30 m or off screen; paused
+off screen > 30 m; staggered per NPC; clip events kept on a timer so footsteps/barks/hand props still fire; never applied to
+crew AI or anything a player is aiming at. Est. GN 3.3 → ~1.3 ms, loud 5 → ~2 ms; test: event parity over a 30 s bench.
+Real-GPU numbers are still unmeasured (open risk, handoff §4.14); these counters are exact on llvmpipe.
