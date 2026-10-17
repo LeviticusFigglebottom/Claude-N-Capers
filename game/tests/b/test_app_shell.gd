@@ -145,7 +145,7 @@ func test_catalog_needs_def_and_map() -> void:
 		assert_true(HeistRegistry.get_def(id) != null, "%s has a def" % id)
 		assert_true(ResourceLoader.exists(HeistRegistry.map_scene_path(id)), "%s has a map" % id)
 	for id: StringName in HeistRegistry.ids():
-		assert_eq(HeistCatalog.ids().has(id), HeistCatalog.has_map(id), "registry heist offered iff its map exists: %s" % id)
+		assert_eq(HeistCatalog.ids().has(id), HeistCatalog.is_ready(id), "registry heist offered iff ready (map + requires): %s" % id)
 	if not ResourceLoader.exists(HeistRegistry.def_path(&"shadow_ledger")):
 		assert_false(HeistCatalog.ids().has(&"shadow_ledger"), "Shadow Ledger hidden until its G1 def + map land")
 	assert_false(BoardContracts.pool().any(func(h: Dictionary) -> bool: return not HeistCatalog.ids().has(StringName(h["id"]))),
@@ -180,7 +180,7 @@ func test_catalog_matches_registry() -> void:
 	var reg: Array[StringName] = HeistRegistry.ids()
 	var ids: Array[StringName] = HeistCatalog.ids()
 	for id: StringName in reg:
-		if HeistCatalog.has_map(id):
+		if HeistCatalog.is_ready(id):
 			assert_has(ids, id)
 	assert_true(ids.has(&"glasshouse"), "Glasshouse listed (def + map)")
 

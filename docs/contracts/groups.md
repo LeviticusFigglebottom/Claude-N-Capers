@@ -1,4 +1,4 @@
-# Contract: groups and ids (v1.1)
+# Contract: groups and ids (v1.2)
 
 All group names and service names are constants in `game/contracts/ids.gd` (class `G`). Never type
 the literal strings. Map-placed groups are added automatically by the contract node scripts in
@@ -17,3 +17,6 @@ Id formats (StringName): `weapon.<name>`, `mod.<name>`, `melee.<name>`, `throwab
 ## v1.1 (D-072)
 `G.HUB_STATION` = `&"hub_station"` (safehouse stations, hub_map.md), `G.DROP_IN_SERVICE` = `&"drop_in_service"` (ENV A's
 drop-in service during a heist, net.md v1.1).
+
+## v1.2 (OF-A4)
+`civilian_route`: every CivilianRoute node (ordered CivilianRouteStop children; LOOP / PING_PONG / ONCE).

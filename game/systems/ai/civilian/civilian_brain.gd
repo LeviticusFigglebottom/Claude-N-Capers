@@ -43,11 +43,14 @@ const WANDER_ACTIVITIES: Array[StringName] = [&"", &"idle", &"browse", &"phone",
 ## D-103 (characters.md v1.9) adds inspect (curator_inspect at a hung work), text (walks texting: walk_text);
 ## D-111 the bar / club / bank loops: bartender, bartender_pour, bouncer, dance (dance_a/b/c), teller.
 ## D-115 cast roster activities: look (investigate_look), desk (desk_work), curator_inspect, walk_text, smoke.
+## OF-A6 (OF-D1 clips): counter (counter_customer at a teller window), check_desk (check_desk_write); queue plays
+## queue_idle* (AnimDriver). RT-A1 (Rolling Thunder diner): sit_eat (a booth seat), cook (cook_stove).
 const KNOWN_ACTIVITIES: Array[StringName] = [&"browse", &"phone", &"desk_work", &"queue", &"sit", &"mug", &"mop",
 	&"phone_seated", &"inspect", &"text", &"bartender", &"bartender_pour", &"bouncer", &"dance", &"teller",
-	&"look", &"desk", &"curator_inspect", &"walk_text", &"smoke"]
+	&"look", &"desk", &"curator_inspect", &"walk_text", &"smoke", &"counter", &"check_desk",
+	&"sit_eat", &"cook"]
 ## Seated activities: a panicked civilian still in its seat cowers there (cower_seated) instead of running.
-const SEATED_ACTIVITIES: Array[StringName] = [&"sit", &"phone_seated"]
+const SEATED_ACTIVITIES: Array[StringName] = [&"sit", &"phone_seated", &"sit_eat"]
 ## Within this of its seat (m) a seated civilian counts as still seated.
 const SEAT_M: float = 0.4
 ## Within this of its claimed cower point (m) a cowering civilian plays cower_stand, back to the wall.
@@ -390,7 +393,8 @@ func _tick_run(delta: float) -> void:
 			_motor.stop()
 			_motor.face_point(node.global_position)
 		mode = Mode.CALLING
-		anim_hint = &"call"
+		# OF-A6 (S3.1): pressing an alarm button is a hand on the button (interact_mid), a phone is a call.
+		anim_hint = &"press_alarm" if call_target.get("reason", &"") == CivilianTargets.REASON_BUTTON else &"call"
 		call_progress = 0.0
 
 
@@ -521,8 +525,14 @@ func _cower() -> void:
 	elif _cower_point != null and is_instance_valid(_cower_point) \
 			and _flat_dist(_npc.global_position, _cower_point.global_position) <= COWER_POINT_M:
 		anim_hint = &"cower_stand"  # characters.md v1.9: back to the wall, facing out (the point's -Z)
+		var out: Vector3 = -_cower_point.global_transform.basis.z
+		out.y = 0.0
 		if _motor != null:
-			_motor.face(-_cower_point.global_transform.basis.z)
+			_motor.face(out)
+		var step: float = NpcVisuals.cower_offset(_npc)  # QC-67: a back bag would sink into the wall
+		if step > 0.0 and out.length() > 0.01:
+			var at: Vector3 = _cower_point.global_position + out.normalized() * step
+			_npc.global_position = Vector3(at.x, _npc.global_position.y, at.z)  # from the point: never accumulates
 
 
 ## Still in the seat it spawned in (a seated activity, not moved off it).

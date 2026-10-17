@@ -1325,3 +1325,43 @@ empty = 4), regen, validate final. B: the OF values block per QB-2 (GUARDS: 4/5/
 /difficulty card "N pagers" line where the cap is below 4. A: PagerSystem scalar-lowers-only; re-pin test_d130_population;
 a test asserts (a)-(c) on 3 seeds for ND/GN/SL (OF once G1 lands); the stealth e2e tests still win. P: one windowed stealth
 run each on Tense and Lethal for ND/GN/SL afterwards.
+
+## D-141: Rolling Thunder groundwork rulings (QB-RT1..5, 2026-10-17, LEAD)
+1. **Payout:** `base_payout` **$30k** (B's D-120 shape: full clear ≈ $135k at Routine, bag share 76 %, required-only ≈ $62k;
+   table 30k/60k/78k/126k/216k/276k). The $85k placeholder predates D-120. test_p5_catalogue pins it.
+2. **D-130 §1 / D-140 exempt:** RT is loud with a stealth set-up (an early alarm is a penalty, not a fail), so it has no
+   stealth win to protect. The site guard keeps the default pager cap 4; civilians stay on the 6/9/12 scalar + `rush_hour`.
+3. `asset.c4_drop` is drafted by B after A5-03's item drop kind lands.
+4. Reyes in-heist radio uses speaker `reyes` with `vo.reyes.*` lines in the B7-03 contact-radio shape; the mission's
+   `say(…, &"reyes")` plays those ids.
+5. RT preplan point and room labels wait for the VO round after G1.
+**D-141 addendum (OF-C0 QCs, 2026-10-17, LEAD):** QC-g the teller counter gets a solid bandit-screen base (1.35 m proposed; **1.50 m adopted**, C hide_los: oblique observers saw a crouched player over 1.35 m) in front
+of the 1.05 m ledge (a crouched player's top detection point is 1.05 m), glazing above; QC-h civilian budget ≤ 22;
+QC-i no new "door" assault kind: XL/HH doors breach via D-122 NAV_LAYER_BREACH, Breach_3/4 stay police-entry points;
+QC-j C's call in OF-C2.
+
+## D-142: clear glass is see-through for detection (QC-k, 2026-10-17, LEAD)
+PD2: guards, civilians and cameras see the crew through clear windows and glass doors. Today `VISION_MASK` (1|2|8) treats
+Window glass (world_static) as opaque. Ruling: **PD2-faithful**: vision rays ignore colliders in group `see_through`
+(A: the Window prefab's GlassBody + the group check in the LOS sample; bullets and movement unchanged). C tags clear
+glazing only; frosted, tinted-opaque and mirrored glass stays opaque, as authored. Sequenced after PO-14/PO-15. Because it
+changes sightlines on every shipped heist with windows (GH storefront, SL tower, GN, ND, DB offices), C audits glazing per
+heist (clear vs opaque list in the heist doc), A re-runs the stealth e2e routes, and P re-walks each stealth heist's
+main route windowed before the round that enables it reaches trunk; any route that dies on new sightlines gets a C cover
+fix or that pane made frosted, not a revert. The OF checks assume see-through.
+
+## D-143: Afterhours groundwork rulings (QB-AH1..5, 2026-10-17, LEAD)
+1. **Payout:** `base_payout` **$40k** (D-120 shape: full clear ≈ $126k at Routine, bag share 63 %, required-only ≈ $64k;
+   table 40k/80k/104k/168k/288k/368k). Afterhours `stealth_bonus_mult` 1.15 (size M, S11.1).
+2. **D-140 lever: PAGERS** (crowded club; more guards would crowd it): exactly 4 guards at every difficulty (door + rope +
+   2 rovers from the rover pool, no guard `difficulty_add`), `pager_max_by_difficulty` [4, 3, 3, 2, 2, 1].
+3. `escape_options` = [van] only (D-075 ruling 9: no walk-out).
+4. Mode label stays "Stealth or loud"; the loadout's civilian-start notice (B5-05) carries the civilian start.
+5. `asset.intel_safe_code` / `asset.intel_product` are AH-only: assets gain a per-heist allow-list (`heists: []`, empty =
+   every heist), B's library field, so no other heist's def needs a `disable`.
+
+## D-144: one new heist at a time (2026-10-17, LEAD; product owner)
+PO: "ensure they're fully finished before moving on to new ones." Ostrander Federal is the only heist in build until it
+passes its D-115-style done check (G2 final, e2e stealth + loud, P windowed G2 pass, strings/VO, cast). Rolling Thunder
+and Afterhours groundwork already pushed (hidden behind the readiness gate; D-141/D-143 rulings) is parked as is: no
+further next-heist work in any env until OF is done. Idle capacity goes to OF, PO items and shipped-heist polish.

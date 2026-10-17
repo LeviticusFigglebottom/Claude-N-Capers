@@ -187,7 +187,7 @@ func nav_path(to: Vector3) -> PackedVector3Array:
 
 ## ENV C (DB-7 ChamberBSouth): D-073 doors are baked CLOSED; an open one is crossed by its NavLink over a ~1.2 m
 ## off-mesh gap, where map_get_path snaps the start to either gap edge and the corner flips. Inside an open door's
-## doorway (|local z| < THROUGH_DOOR_M, within its width) with the target on the far side: walk straight along the
+## doorway (|local z| < THROUGH_DOOR_M, within its width) with the target beyond THROUGH_PAST_M on the far side: walk straight along the
 ## door normal to THROUGH_PAST_M past the plane (inside the opening). Else null.
 func _through_link(target: Vector3) -> Variant:
 	for n: Node in crew.get_tree().get_nodes_in_group(Door.GROUP):
@@ -202,8 +202,9 @@ func _through_link(target: Vector3) -> Variant:
 		if absf(me.x) > half:
 			continue
 		var tz: float = (inv * target).z
-		if absf(tz) < 0.05 or (signf(tz) == signf(me.z) and absf(tz) <= absf(me.z)):
-			continue  # the target is on this side (or in the doorway itself)
+		if absf(tz) <= THROUGH_PAST_M or (signf(tz) == signf(me.z) and absf(tz) <= absf(me.z)):
+			continue  # the target is on this side, or about in the door's plane (OF-X1 ND RecordsDoor: a corridor
+			# target 0.1 m off the plane of the door across the hall pinned the pilot between the two corners)
 		var x: float = clampf(me.x, -half + LANE_HALF_M + 0.1, half - LANE_HALF_M - 0.1)
 		return door.global_transform * Vector3(x, 0.0, signf(tz) * THROUGH_PAST_M)
 	return null

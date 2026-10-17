@@ -185,10 +185,25 @@ func _sl_server_door() -> bool:
 func _sl_cage() -> bool:
 	if f.objective(&"cage") == DONE:
 		return true
+	var kp: Keypad = _sl_cage_keypad()
+	if kp != null:  # D-138.4: the code goes in on the CageGate's CageKeypad
+		if not f.check(kp.interactable.availability(f.crew) == InteractableComponent.BLOCK_NONE,
+				"the cage keypad takes the code"):
+			return false
+		return await f.take(kp, _done(&"cage"), _tw().keypad_s, "open the cage with the code")
+	# legacy: pre-D-138 maps, remove after C b4ad9153 is on trunk (the CageLock stand-in safe)
 	var cage: Safe = f.tagged(&"cage") as Safe
 	if not f.check(cage != null and cage.method_for(f.crew) == &"code", "the cage offers the code"):
 		return false
 	return await f.take(cage, _done(&"cage"), _tw().keypad_s, "open the cage with the code")
+
+
+## D-138.4: the CageKeypad among the cage locks (null on a pre-D-138 map).
+func _sl_cage_keypad() -> Keypad:
+	for n: Node in f.all_tagged(&"cage"):
+		if n is Keypad:
+			return n as Keypad
+	return null
 
 
 func _sl_hack() -> bool:
