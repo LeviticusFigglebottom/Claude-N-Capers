@@ -13,7 +13,8 @@ const PENDING: Array[String] = ["npc_cleaner_sl_b", "npc_cleaner_sl_c", "npc_nor
 	"dock_worker_c",  # D 45894565 (merged by the LEAD with A's map)
 	# D-130 cast pools (D a04f3536, p5_cast v6), merged by the LEAD with A's map:
 	"gallery_guard_c", "gallery_guard_d", "gallery_guard_e", "gallery_guard_f", "gallery_guard_g", "gallery_guard_h",
-	"gallery_guard_i", "gallery_patron_h", "gallery_patron_i", "gallery_patron_j", "npc_northgate_guard_g",
+	"gallery_guard_i", "gallery_guard_j", "gallery_guard_k", "gallery_guard_l",  # D 6e3ee21b (p5_cast v11)
+	"gallery_patron_h", "gallery_patron_i", "gallery_patron_j", "npc_northgate_guard_g",
 	"npc_northgate_guard_h", "npc_northgate_guard_i", "npc_cleaner_sl_d", "security_officer_e", "security_officer_f",
 	"npc_bank_cleaner_b", "gallery_waiter_b", "gallery_attendant_c",  # + D 48a7cc3a (p5_cast v7)
 	"npc_km_assistant", "npc_km_associate",  # SL late_staff (D, next p5_cast)
@@ -116,7 +117,7 @@ func test_d115_tag_map_mirrors_cast() -> void:
 			if not first.has(pool):
 				first[pool] = lst
 			assert_eq(lst, first[pool], "%s pool %s: %s lists the pool's ids" % [heist, pool, tag])
-	assert_eq((gn[&"guard_hall"] as Array).size(), 9, "D-130: 9 GN guard looks")
+	assert_eq((gn[&"guard_hall"] as Array).size(), 12, "D-140: 12 GN guard looks (p5_cast v11)")
 	for heist: Variant in tw.heist_tag_characters:
 		var m: Dictionary = tw.heist_tag_characters[heist]
 		for tag: Variant in m:
