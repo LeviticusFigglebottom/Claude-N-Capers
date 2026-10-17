@@ -24,6 +24,8 @@ const THROUGH_DOOR_M: float = 0.8  # < THROUGH_PAST_M, or the crossing never end
 const THROUGH_PAST_M: float = 0.9
 ## _door_on_line: a closed door within this (m) of the crew's plane is opened before stepping across it.
 const LINE_DOOR_M: float = 1.0
+## _through_link: how far along the nav path (m) a crossing of the doorway counts as "the route leaves through it".
+const THROUGH_LOOKAHEAD_M: float = 4.0
 ## goto: standing at the end of a nav path that stops this far (m, flat) short of the target = unreachable (OF-X2).
 const UNREACHABLE_M: float = 2.0
 ## Loud: a visible enemy within this range is fought before / during a hold (S9.1: damage cancels holds) (m).
@@ -189,7 +191,7 @@ func nav_path(to: Vector3) -> PackedVector3Array:
 ## off-mesh gap, where map_get_path snaps the start to either gap edge and the corner flips. Inside an open door's
 ## doorway (|local z| < THROUGH_DOOR_M, within its width) with the target beyond THROUGH_PAST_M on the far side: walk straight along the
 ## door normal to THROUGH_PAST_M past the plane (inside the opening). Else null.
-func _through_link(target: Vector3) -> Variant:
+func _through_link(target: Vector3, path: PackedVector3Array = PackedVector3Array()) -> Variant:
 	for n: Node in crew.get_tree().get_nodes_in_group(Door.GROUP):
 		var door: Door = n as Door
 		if door == null or not door.is_open:
@@ -202,12 +204,31 @@ func _through_link(target: Vector3) -> Variant:
 		if absf(me.x) > half:
 			continue
 		var tz: float = (inv * target).z
+		var via: float = _path_crosses(door, path)
+		if via != 0.0:
+			tz = via * (THROUGH_PAST_M + 1.0)  # OF-X1 ND XferDoor: the path leaves through this door to a target behind us
 		if absf(tz) <= THROUGH_PAST_M or (signf(tz) == signf(me.z) and absf(tz) <= absf(me.z)):
 			continue  # the target is on this side, or about in the door's plane (OF-X1 ND RecordsDoor: a corridor
 			# target 0.1 m off the plane of the door across the hall pinned the pilot between the two corners)
 		var x: float = clampf(me.x, -half + LANE_HALF_M + 0.1, half - LANE_HALF_M - 0.1)
 		return door.global_transform * Vector3(x, 0.0, signf(tz) * THROUGH_PAST_M)
 	return null
+
+
+## The side (+1 / -1, the door's local z) the nav `path` crosses `door`'s doorway to within THROUGH_LOOKAHEAD_M of its
+## start, else 0 (no crossing, or no path).
+func _path_crosses(door: Door, path: PackedVector3Array) -> float:
+	var left: float = THROUGH_LOOKAHEAD_M
+	var up: Vector3 = Vector3.UP * 0.5
+	for i: int in range(1, path.size()):
+		var a: Vector3 = path[i - 1]
+		var b: Vector3 = path[i]
+		if door.doorway_crossing(a + up, b + up) != Vector3.INF:
+			return signf((door.global_transform.affine_inverse() * b).z)
+		left -= a.distance_to(b)
+		if left <= 0.0:
+			break
+	return 0.0
 
 
 ## DB-7 (ChamberASpine): the door whose plane is within LINE_DOOR_M of the crew (same floor) and which the step to
@@ -307,7 +328,7 @@ func goto(target: Vector3, arrive_m: float = 0.8, timeout_s: float = 60.0, sprin
 			hist_pos = crew.global_position
 			hist_t = 0.0
 			continue
-		var through: Variant = _through_link(target)
+		var through: Variant = _through_link(target, path)
 		if through != null:
 			corner = through as Vector3
 		var door: Door = door_ahead(corner, path) if doors else null
