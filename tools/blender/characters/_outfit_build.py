@@ -47,6 +47,7 @@ class Kit:
         self.soft = Mesh()
         self.gear = Mesh()
         self.head = Mesh()
+        self.slung = Mesh()   # a long gun slung on the back: its own `Slung` mesh so ENV A can hide it when seated
         self.layers: list[Mesh] = []
         self.seats: dict[str, Vector] = {}
         self.notes: dict[str, str] = {}
@@ -67,6 +68,10 @@ class Kit:
 
     def add_head(self, m: Mesh) -> Mesh:
         self.head.extend(m)
+        return m
+
+    def add_slung(self, m: Mesh) -> Mesh:
+        self.slung.extend(m)
         return m
 
 
@@ -182,6 +187,9 @@ def build_character(ctx, recipe: Callable[[Kit], None]) -> None:
     if kit.head.f:
         o.make_object(ctx, fit, arm, "Headwear", kit.head, sharp_deg=40.0, hard=True)
         tris["Headwear"] = kit.head.tris()
+    if kit.slung.f:
+        o.make_object(ctx, fit, arm, "Slung", kit.slung, sharp_deg=32.0, hard=True)
+        tris["Slung"] = kit.slung.tris()
     bp = {k: (sorted(v) if isinstance(v, frozenset) else v) for k, v in bparams.items() if k != "hide"}
     ctx.source_extra["body_params"] = json.dumps(bp, sort_keys=True)
     ctx.source_extra["shape_keys"] = "none (baked at body_params; do not set blend_shapes/*)"
