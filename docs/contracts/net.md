@@ -1,4 +1,4 @@
-# Contract: networking (v1.2)
+# Contract: networking (v1.3)
 
 API: `game/core/net.gd`. Architecture: architecture.md §3.
 
@@ -78,3 +78,12 @@ two keys, written by `NpcRagdoll.net_state(st)` on the server and applied by `Np
 * While the ragdoll owns the pose, `NetEntityCodec.apply_xform` ignores the NPC's replicated root transform: the root
   comes from `rp`. Gameplay stays server-side (corpse stimulus, bag-body interaction and corpse hitbox follow the server's
   re-anchored root).
+
+## v1.3: replicated NPC one-shot presentation clips (A 07faa63e)
+* Cue `HeistNetSync._rpc_npc_oneshot(net_id: int, clip: StringName, start_s: float, speed: float)`: reliable,
+  authority → clients, sent via `relay_npc_oneshot` under the same live-session check as the fx relays. The client plays
+  the clip from `start_s` at `speed` until it ends (a missing clip plays nothing); no turn/snap cuts it. Carries
+  `door_kick_<fam>` / `shield_bang` at breach start (re-sent if the host re-seeks a late kick) and `panic_start`.
+* NPC state key `"ah"`: the brain's anim hint when it is in `AnimDriver.NET_HINTS` (today only `cuff`, a held loop), else
+  `""`; reliable diffs, so late joiners get it.
+* Still host-only presentation (acceptable, cosmetic): bulwark `shield_bang` outside a breach, `kick_charge`, `heal_ally`.
