@@ -10,7 +10,8 @@
 ## Bench places --n characters (ids cycled) at seeded spots between --near and --far metres in front of a camera
 ## (eye 1.65 m, FOV 75), each looping `walk` from a seeded offset in place (--layer: plus hold_rifle_walk on a second
 ## AnimationPlayer, as AnimDriver's upper-body layer), and prints "[BENCH]" with the mean / p95 frame time (wall),
-## Performance process time, draw calls, primitives and visible objects. --lod=off forces LOD0 (no CrowdLod).
+## Performance process time, draw calls, primitives, visible objects and the texture / video memory in use
+## (MB, end of run). --lod=off forces LOD0 (no CrowdLod).
 extends Node
 
 const CrowdLod: GDScript = preload("res://world/characters/_tools/crowd_lod.gd")
@@ -193,6 +194,9 @@ func _bench() -> void:
 		mean += t
 	mean /= float(times.size())
 	var f: float = float(_frames)
-	print("[BENCH] n=%d lod=%s layer=%s near=%.0f far=%.0f frame_ms mean=%.2f p95=%.2f process_ms=%.2f draws=%.0f prims=%.0f objects=%.0f"
+	var mb: float = 1024.0 * 1024.0
+	print(("[BENCH] n=%d lod=%s layer=%s near=%.0f far=%.0f frame_ms mean=%.2f p95=%.2f process_ms=%.2f draws=%.0f prims=%.0f"
+		+ " objects=%.0f tex_mem_mb=%.1f video_mem_mb=%.1f")
 		% [_n, "on" if _lod else "off", _layer, _near, _far, mean, sorted[int(0.95 * (sorted.size() - 1))], proc / f,
-		draws / f, prims / f, objs / f])
+		draws / f, prims / f, objs / f, Performance.get_monitor(Performance.RENDER_TEXTURE_MEM_USED) / mb,
+		Performance.get_monitor(Performance.RENDER_VIDEO_MEM_USED) / mb])

@@ -2,8 +2,12 @@
 
 [ext_resource type="AnimationLibrary" path="res://world/characters/anim_humanoid.res" id="1_anim"]
 [ext_resource type="PackedScene" path="res://assets/characters/char_patrol_officer_frd/char_patrol_officer_frd.glb" id="1_glb"]
-[ext_resource type="Script" path="res://world/characters/_tools/crowd_lod_proxy.gd" id="3_2jfxu"]
 [ext_resource type="ArrayMesh" path="res://world/characters/patrol_officer_frd/patrol_officer_frd_lod.res" id="3_lod"]
+[ext_resource type="ArrayMesh" path="res://world/characters/patrol_officer_frd/patrol_officer_frd_Body.res" id="4_Body"]
+[ext_resource type="ArrayMesh" path="res://world/characters/patrol_officer_frd/patrol_officer_frd_Gear.res" id="4_Gear"]
+[ext_resource type="ArrayMesh" path="res://world/characters/patrol_officer_frd/patrol_officer_frd_Headwear.res" id="4_Headwear"]
+[ext_resource type="ArrayMesh" path="res://world/characters/patrol_officer_frd/patrol_officer_frd_Outfit.res" id="4_Outfit"]
+[ext_resource type="Script" path="res://world/characters/_tools/crowd_lod_proxy.gd" id="7_omdgr"]
 
 [sub_resource type="Skin" id="skin_lod"]
 resource_name = "Skin"
@@ -215,10 +219,14 @@ height = 0.4834
 [node name="Body" parent="Skeleton3D" index="0" unique_id=943085900]
 visibility_range_end = 25.0
 visibility_range_end_margin = 1.0
+mesh = ExtResource("4_Body")
+metadata/source_materials = Array[String](["res://world/materials/char_skin_3_beard.tres", "res://world/materials/char_lip_mid.tres", "res://world/materials/char_eye.tres", "res://world/materials/char_eye_iris.tres", "res://world/materials/char_lash.tres", "res://world/materials/char_hair_dark.tres"])
 
 [node name="Gear" parent="Skeleton3D" index="1" unique_id=943254589]
 visibility_range_end = 25.0
 visibility_range_end_margin = 1.0
+mesh = ExtResource("4_Gear")
+metadata/source_materials = Array[String](["res://world/materials/char_frd_olive.tres", "res://world/materials/char_frd_yellow.tres", "res://world/materials/char_leather_black.tres", "res://world/materials/char_led_red.tres", "res://world/materials/char_metal_silver.tres", "res://world/materials/leather_dark.tres", "res://world/materials/polymer_black.tres", "res://world/materials/rubber_black.tres"])
 
 [node name="Hair" parent="Skeleton3D" index="2" unique_id=943286434]
 visibility_range_end = 25.0
@@ -227,10 +235,14 @@ visibility_range_end_margin = 1.0
 [node name="Headwear" parent="Skeleton3D" index="3" unique_id=848569279]
 visibility_range_end = 25.0
 visibility_range_end_margin = 1.0
+mesh = ExtResource("4_Headwear")
+metadata/source_materials = Array[String](["res://world/materials/char_frd_olive.tres", "res://world/materials/char_frd_yellow.tres", "res://world/materials/char_leather_black.tres", "res://world/materials/char_metal_silver.tres", "res://world/materials/char_visor_gloss.tres"])
 
 [node name="Outfit" parent="Skeleton3D" index="4" unique_id=1039793785]
 visibility_range_end = 25.0
 visibility_range_end_margin = 1.0
+mesh = ExtResource("4_Outfit")
+metadata/source_materials = Array[String](["res://world/materials/char_cable_black.tres", "res://world/materials/char_chino_khaki.tres", "res://world/materials/char_frd_olive.tres", "res://world/materials/char_frd_yellow.tres", "res://world/materials/char_leather_black.tres", "res://world/materials/char_shoe_black.tres", "res://world/materials/leather_dark.tres", "res://world/materials/rubber_black.tres"])
 
 [node name="Back" type="BoneAttachment3D" parent="Skeleton3D" index="5" unique_id=943070607]
 transform = Transform3D(1, 1.5543122e-15, 1.1057274e-07, 4.4193738e-09, 0.999201, -0.039968044, -1.1048439e-07, 0.039968044, 0.999201, 1.2347653e-15, 1.221826, 0.0150842825)
@@ -278,7 +290,7 @@ visibility_range_begin_margin = 1.0
 mesh = ExtResource("3_lod")
 skin = SubResource("skin_lod")
 skeleton = NodePath("..")
-script = ExtResource("3_2jfxu")
+script = ExtResource("7_omdgr")
 
 [node name="Ragdoll" type="PhysicalBoneSimulator3D" parent="Skeleton3D" index="11" unique_id=882186435]
 active = false

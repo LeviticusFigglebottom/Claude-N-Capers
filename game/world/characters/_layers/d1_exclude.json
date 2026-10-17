@@ -1,0 +1,4 @@
+{
+	"_doc": "D-132 D1 fallback: character ids listed in ids keep their glb meshes and materials (no surface merge). Edit, then run build_char_layers.gd, godot --import and assemble_characters.gd (see world/characters/_tools/char_layers.gd).",
+	"ids": []
+}

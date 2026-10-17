@@ -3,7 +3,10 @@
 [ext_resource type="AnimationLibrary" path="res://world/characters/anim_humanoid.res" id="1_anim"]
 [ext_resource type="PackedScene" path="res://assets/characters/char_gallery_curator/char_gallery_curator.glb" id="1_glb"]
 [ext_resource type="ArrayMesh" path="res://world/characters/gallery_curator/gallery_curator_lod.res" id="3_lod"]
-[ext_resource type="Script" path="res://world/characters/_tools/crowd_lod_proxy.gd" id="3_or8yx"]
+[ext_resource type="ArrayMesh" path="res://world/characters/gallery_curator/gallery_curator_Body.res" id="4_Body"]
+[ext_resource type="ArrayMesh" path="res://world/characters/gallery_curator/gallery_curator_Gear.res" id="4_Gear"]
+[ext_resource type="ArrayMesh" path="res://world/characters/gallery_curator/gallery_curator_Outfit.res" id="4_Outfit"]
+[ext_resource type="Script" path="res://world/characters/_tools/crowd_lod_proxy.gd" id="6_axgab"]
 
 [sub_resource type="Skin" id="skin_lod"]
 resource_name = "Skin"
@@ -215,10 +218,14 @@ height = 0.4834
 [node name="Body" parent="Skeleton3D" index="0" unique_id=208892726]
 visibility_range_end = 15.0
 visibility_range_end_margin = 1.0
+mesh = ExtResource("4_Body")
+metadata/source_materials = Array[String](["res://world/materials/char_skin_5.tres", "res://world/materials/char_lip_rose.tres", "res://world/materials/char_eye.tres", "res://world/materials/char_eye_iris.tres", "res://world/materials/char_lash.tres", "res://world/materials/char_hair_dark.tres"])
 
 [node name="Gear" parent="Skeleton3D" index="1" unique_id=209061415]
 visibility_range_end = 15.0
 visibility_range_end_margin = 1.0
+mesh = ExtResource("4_Gear")
+metadata/source_materials = Array[String](["res://world/materials/brass.tres", "res://world/materials/char_button_dark.tres", "res://world/materials/char_medic_white.tres", "res://world/materials/chrome.tres"])
 
 [node name="Hair" parent="Skeleton3D" index="2" unique_id=209093260]
 visibility_range_end = 15.0
@@ -231,6 +238,8 @@ visibility_range_end_margin = 1.0
 [node name="Outfit" parent="Skeleton3D" index="4" unique_id=367344355]
 visibility_range_end = 15.0
 visibility_range_end_margin = 1.0
+mesh = ExtResource("4_Outfit")
+metadata/source_materials = Array[String](["res://world/materials/char_gallery_bone.tres", "res://world/materials/char_knit_graphite.tres", "res://world/materials/char_satin_black.tres", "res://world/materials/char_shoe_black.tres", "res://world/materials/char_tie_black.tres", "res://world/materials/leather_dark.tres", "res://world/materials/rubber_black.tres"])
 
 [node name="Back" type="BoneAttachment3D" parent="Skeleton3D" index="5" unique_id=208877433]
 transform = Transform3D(1, 1.5543122e-15, 1.1057274e-07, 4.4193738e-09, 0.999201, -0.039968044, -1.1048439e-07, 0.039968044, 0.999201, 1.2347653e-15, 1.221826, 0.0150842825)
@@ -278,7 +287,7 @@ visibility_range_begin_margin = 1.0
 mesh = ExtResource("3_lod")
 skin = SubResource("skin_lod")
 skeleton = NodePath("..")
-script = ExtResource("3_or8yx")
+script = ExtResource("6_axgab")
 
 [node name="Ragdoll" type="PhysicalBoneSimulator3D" parent="Skeleton3D" index="11" unique_id=166191725]
 active = false
