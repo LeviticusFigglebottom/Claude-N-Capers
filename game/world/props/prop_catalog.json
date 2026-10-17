@@ -2979,6 +2979,11 @@
   "place": "seat",
   "prefab": "",
   "scene": "res://world/props/office/prop_chair_office.tscn",
+  "seat": [
+   0.0,
+   0.45,
+   -0.12
+  ],
   "seat_side": "front",
   "standoff": 0.0,
   "support": false,
@@ -3016,6 +3021,11 @@
   "place": "seat",
   "prefab": "",
   "scene": "res://world/props/office/prop_chair_task.tscn",
+  "seat": [
+   0.0,
+   0.47,
+   -0.12
+  ],
   "seat_side": "front",
   "standoff": 0.0,
   "support": false,

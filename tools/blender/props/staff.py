@@ -33,10 +33,13 @@ VARIANTS = {
     # offices + security
     "prop_desk_office": {"fn": "desk_office", "cat": {"kind": "desk", "place": "wall", "support": True, "clear": 1.0, "group": "office"}},
     "prop_desk_exec": {"fn": "desk_exec", "cat": {"kind": "desk", "place": "floor", "support": True, "clear": 1.0, "group": "office"}},
-    "prop_chair_office": {"fn": "chair_office", "cat": {"kind": "chair", "place": "seat", "hosts": ["desk"], "group": "office"}},
+    # D-130 seat_fwd: the wrapper's `Seat` (the seated NPC root) 0.12 m toward the chair front (-Z), so a desk_work torso
+    # (back to z ~ +0.33 behind the root) clears the backrest (z +0.24..0.30); 0.10 still clips (ENV D check_seated_clip)
+    "prop_chair_office": {"fn": "chair_office", "cat": {"kind": "chair", "place": "seat", "hosts": ["desk"], "group": "office",
+                                                        "seat_fwd": 0.12}},
     # NPC seat (D-063: office NPC anims sit at 0.47 m, desk 0.74 m): no collision, the seated NPC owns the space
     "prop_chair_task": {"fn": "chair_office", "seat": 0.47, "nocol": True, "cat": {"kind": "chair", "place": "seat", "hosts": ["desk"], "pin_only": True,
-                                                                                  "group": "office"}},
+                                                                                  "group": "office", "seat_fwd": 0.12}},
     "prop_desk_bank": {"fn": "desk_exec", "h": 0.74, "cat": {"kind": "desk", "place": "floor", "support": True, "clear": 1.0, "group": "office",
                                                              "pin_only": True}},
     "prop_chair_visitor": {"fn": "chair_visitor", "cat": {"kind": "chair", "place": "seat", "hosts": ["desk", "table"], "seat_side": "back", "group": "office"}},
