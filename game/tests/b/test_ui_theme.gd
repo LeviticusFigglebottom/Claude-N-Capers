@@ -200,6 +200,33 @@ func test_objective_mission_data_and_disabled_step() -> void:
 	assert_false(l.text.contains("{"), l.text)
 
 
+## P DB real-input pass: a side task (data `side: true`, DB [cartel]) added first never hides the current main step;
+## it shows only when no main step is live.
+func test_side_task_yields_to_main_step() -> void:
+	await _spawn_hud()
+	var cartel: Dictionary = {"id": &"cartel", "text_key": &"objective.dockside_burn.cartel",
+			"args": {"optional": true, "side": true}, "state": Enums.ObjectiveState.ACTIVE}
+	var burn: Dictionary = {"id": &"burn", "text_key": &"objective.dockside_burn.burn", "args": {},
+			"state": Enums.ObjectiveState.ACTIVE}
+	_model.objectives = [cartel, burn]
+	await wait_frames(1)
+	var l: Label = _hud.objectives.list_box.get_child(0) as Label
+	assert_eq(l.text, UiText.t(&"ui.hud.objective_active", {"text": UiText.t(&"objective.dockside_burn.burn")}),
+			"the main step shows over the side task")
+	var done: Dictionary = burn.duplicate()
+	done["state"] = Enums.ObjectiveState.COMPLETED
+	_model.objectives = [cartel, done]
+	await wait_frames(1)
+	l = _hud.objectives.list_box.get_child(0) as Label
+	assert_true(l.text.contains(UiText.t(&"objective.dockside_burn.cartel")), "only the side task left: it shows")
+	# An optional step without `side` (casing, GN alternatives) keeps its place.
+	_model.objectives = [{"id": &"casing", "text_key": &"objective.dockside_burn.cartel", "args": {"optional": true},
+			"state": Enums.ObjectiveState.ACTIVE}, burn]
+	await wait_frames(1)
+	l = _hud.objectives.list_box.get_child(0) as Label
+	assert_true(l.text.contains(UiText.t(&"objective.dockside_burn.cartel")), "optional is not side")
+
+
 ## Lead lane 5 (ui_hud v1.8): objective markers project, clamp off-screen ones to the edge, and hide
 ## while casing unless the objective is a casing one.
 func test_objective_markers() -> void:
