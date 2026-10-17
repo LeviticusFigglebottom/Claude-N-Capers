@@ -222,8 +222,9 @@ static func freshness_note(heist_id: StringName, p: PlayerProfile) -> String:
 
 
 ## D-130: "Titan cameras" from the heist's effective camera_titan_min_difficulty, and "N pagers" when its def's
-## per-difficulty pager cap is below StealthTweak's (D-140: the usual 4 goes unsaid), not on a loud-only heist; joined,
-## "" when neither applies.
+## per-difficulty pager cap is below StealthTweak's (D-140: the usual 4 goes unsaid), or, on a heist with no pager row
+## (a D-140 GUARDS map), "More guards: N" (the minimum over seeds) when the difficulty fields more than Routine; not on a
+## loud-only heist; joined, "" when none applies.
 static func stealth_note(heist_id: StringName, difficulty: int, mode: int) -> String:
 	var parts: PackedStringArray = PackedStringArray()
 	if mode != Enums.HeistMode.LOUD_ONLY:
@@ -232,6 +233,11 @@ static func stealth_note(heist_id: StringName, difficulty: int, mode: int) -> St
 		var cap: int = BriefingIntel.pager_cap(heist_id, difficulty)
 		if cap >= 0 and cap < Tweak.stealth().pager_max_answers:
 			parts.append(UiText.t(&"ui.heist_select.pager_one" if cap == 1 else &"ui.heist_select.pagers", {"n": cap}))
+		elif cap < 0 and difficulty > Enums.Difficulty.ROUTINE:
+			# D-140 GUARDS maps (no pager row, cap 4): the guaranteed guard count when this difficulty adds guards.
+			var n: int = BriefingIntel.guard_range(heist_id, difficulty).x
+			if n > BriefingIntel.guard_range(heist_id, Enums.Difficulty.ROUTINE).x:
+				parts.append(UiText.t(&"ui.heist_select.more_guards", {"n": n}))
 	return UiText.t(&"ui.heist_select.stealth_note_sep").join(parts)
 
 

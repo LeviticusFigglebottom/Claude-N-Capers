@@ -37,6 +37,9 @@ func _run() -> void:
 		flow.open_station(&"planning")
 		flow.heist_select.select_heist_id(id)
 		await _shot("heist_select_%s" % id)
+	flow.heist_select.select_heist_id(ROTATED)
+	flow.heist_select.select_difficulty(Enums.Difficulty.BRUTAL)
+	await _shot("heist_select_%s_brutal" % ROTATED)  # D-140: the GUARDS map's "More guards: N"
 	flow.queue_free()
 	await get_tree().process_frame
 	var screen: PaydayScreen = (load("res://content/ui/results/payday.tscn") as PackedScene).instantiate() as PaydayScreen

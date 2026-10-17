@@ -30,11 +30,9 @@ func test_card_note_follows_the_def() -> void:
 	assert_eq(_note(&"glasshouse", Enums.Difficulty.LETHAL), "Titan cameras" + sep + "2 pagers", "GH Lethal")
 	assert_eq(_note(&"glasshouse", Enums.Difficulty.CATACLYSM), "Titan cameras" + sep + "1 pager", "singular")
 	var tw_min: int = Tweak.stealth().camera_titan_min_difficulty
-	assert_eq(_note(&"night_deposit", tw_min - 1), "", "ND below the tweak's Titan tier: nothing to say")
-	var nd_cap: int = BriefingIntel.pager_cap(&"night_deposit", tw_min)
-	var nd_said: bool = nd_cap >= 0 and nd_cap < Tweak.stealth().pager_max_answers
-	var nd_want: String = "Titan cameras" + (sep + ("1 pager" if nd_cap == 1 else "%d pagers" % nd_cap) if nd_said else "")
-	assert_eq(_note(&"night_deposit", tw_min), nd_want, "ND: the tweak's Titan tier, pagers from its def (D-140)")
+	# ND's pager / guard part is covered by the D-140 tests (it changes when C's ND row lands); Titan only here.
+	assert_false(_note(&"night_deposit", tw_min - 1).contains("Titan"), "ND below the tweak's Titan tier")
+	assert_true(_note(&"night_deposit", tw_min).begins_with("Titan cameras"), "ND: Titan from the tweak's tier")
 	assert_eq(_note(&"dockside_burn", Enums.Difficulty.CATACLYSM), "", "loud-only: no stealth note")
 
 
@@ -109,3 +107,31 @@ func test_d140_pager_line_on_pagers_maps() -> void:
 			assert_false(_note(heist, d).contains("pager"), "%s d%d: no pager line" % [heist, d])
 	if not missing.is_empty():
 		skip("D-140 rows not landed yet: %s" % ", ".join(missing))
+
+
+## D-140: on the GUARDS maps (GN / OF: no pager row) the card says "More guards: N" (N = the minimum carriers over
+## seeds) wherever the difficulty fields more than Routine, and nothing where it does not; never on a PAGERS map.
+func test_d140_guard_line_on_guards_maps() -> void:
+	var probed: PackedStringArray = PackedStringArray()
+	for heist: StringName in D140_GUARDS_MAPS:
+		var def: HeistDef = HeistRegistry.get_def(heist)
+		if def == null or BriefingIntel.guard_range(heist, Enums.Difficulty.ROUTINE).x < 0:
+			continue
+		var base: int = BriefingIntel.guard_range(heist, Enums.Difficulty.ROUTINE).x
+		var mins: Array[int] = []
+		for d: int in range(Enums.Difficulty.CATACLYSM + 1):
+			var n: int = BriefingIntel.guard_range(heist, d).x
+			mins.append(n)
+			var line: String = UiText.t(&"ui.heist_select.more_guards", {"n": n})
+			if d > Enums.Difficulty.ROUTINE and n > base:
+				assert_true(_note(heist, d).contains(line), "%s d%d card: %s" % [heist, d, _note(heist, d)])
+			else:
+				assert_false(_note(heist, d).contains("More guards"), "%s d%d: no added guards, no line" % [heist, d])
+		probed.append("%s %s" % [heist, mins])
+	for heist: StringName in [&"glasshouse", &"night_deposit", &"shadow_ledger"]:
+		for d: int in range(Enums.Difficulty.CATACLYSM + 1):
+			var note: String = _note(heist, d)
+			if not HeistRegistry.get_def(heist).pager_max_by_difficulty.is_empty():
+				assert_false(note.contains("More guards"), "%s d%d: a PAGERS map says pagers, not guards" % [heist, d])
+	assert_true(UiText.t(&"ui.heist_select.more_guards", {"n": 5}) == "More guards: 5")
+	print("D140 guard minimums: ", ", ".join(probed))

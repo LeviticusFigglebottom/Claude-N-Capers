@@ -584,6 +584,7 @@ ui.heist_select.difficulty_locked_progress,"{name} is locked: win any heist on {
 ui.heist_select.titan_cameras,Titan cameras
 ui.heist_select.pagers,{n} pagers
 ui.heist_select.pager_one,1 pager
+ui.heist_select.more_guards,More guards: {n}
 ui.heist_select.stealth_note_sep,"  ·  "
 ui.loadout.none,None
 ui.loadout.stock,Stock
