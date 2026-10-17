@@ -116,3 +116,67 @@ func test_nd_hall_basement_rover_share_one_pool() -> void:
 	for i: int in pool + 1:
 		npcs.append(_spawn(&"guard", i, {"tags": [tags[i % tags.size()]]}))
 	_check(npcs, pool, "ND guards")
+
+
+## OF-A6: Ostrander Federal's six guard posts deal one pool of Halden faces (the operator is npc_bank_guard alone).
+func test_of_guard_posts_share_one_pool() -> void:
+	await _launch(&"ostrander_federal")
+	var m: Dictionary = NpcVisuals.tweak().heist_tag_characters[&"ostrander_federal"]
+	var tags: Array[StringName] = [&"guard_lobby", &"guard_vault", &"guard_rover_hall", &"guard_rover_gallery",
+		&"guard_rover_basement", &"guard_rover_dock"]
+	for t: StringName in tags:
+		assert_eq(NpcVisuals.tweak().heist_tag_pools[&"ostrander_federal"][t], &"of_guards", "%s in of_guards" % t)
+	var pool: int = _delivered(m[&"guard_lobby"])
+	if pool < 2:
+		skip("fewer than 2 security_officer looks delivered")
+		return
+	var npcs: Array[NpcBase] = []
+	for i: int in tags.size():
+		npcs.append(_spawn(&"guard", i, {"tags": [tags[i]]}))
+	_check(npcs, pool, "OF guards")
+
+
+## RT-D1: the three convoy trucks deal one Vaultline pool, the site posts one Halden pool, the street / bus / diner
+## one civilian pool.
+func test_rt_pools() -> void:
+	await _launch(&"rolling_thunder")
+	var tw: NpcVisualTweak = NpcVisuals.tweak()
+	var pools: Dictionary = tw.heist_tag_pools[&"rolling_thunder"]
+	for t: StringName in [&"convoy_t1", &"convoy_t2", &"convoy_t3"]:
+		assert_eq(pools[t], &"rt_convoy", "%s in rt_convoy" % t)
+	for t: StringName in [&"guard_site_gate", &"guard_site_frame", &"guard_site_cabins"]:
+		assert_eq(pools[t], &"rt_site_guards", "%s in rt_site_guards" % t)
+	for t: StringName in [&"civ_street", &"civ_bus", &"civ_diner"]:
+		assert_eq(pools[t], &"rt_civilians", "%s in rt_civilians" % t)
+	var m: Dictionary = tw.heist_tag_characters[&"rolling_thunder"]
+	var pool: int = _delivered(m[&"convoy_t1"])
+	if pool < 2:
+		skip("fewer than 2 armored_car_crew looks delivered")
+		return
+	var npcs: Array[NpcBase] = []
+	var tags: Array[StringName] = [&"convoy_t1", &"convoy_t2", &"convoy_t3"]
+	for i: int in pool:
+		npcs.append(_spawn(&"guard", i, {"tags": [tags[i % tags.size()]]}))
+	_check(npcs, pool, "RT convoy")
+
+
+## OF-A6 / D-3 lesson (GH's civ_manager): the shared tag_characters must not dress an OF spawn the heist map covers,
+## even when the spawn also carries the shared tag (civ_manager, civ_customer, security_operator).
+func test_of_heist_map_beats_the_shared_map() -> void:
+	await _launch(&"ostrander_federal")
+	var cases: Array = [
+		[&"civilian", [&"civ_manager", &"civ_manager_mgr_floor"], "bank_manager"],
+		[&"civilian", [&"civ_manager_mgr_vault", &"civ_manager"], "bank_manager"],
+		[&"guard", [&"security_operator"], "npc_bank_guard"],
+	]
+	for i: int in cases.size():
+		var c: Array = cases[i]
+		var npc: NpcBase = _spawn(c[0], i, {"tags": c[1]})
+		var path: String = npc.visual_scene.resource_path if npc.visual_scene != null else "capsule"
+		assert_eq(path, NpcVisuals.scene_path(c[2]), "%s -> %s (not the shared map)" % [c[1], c[2]])
+	var shared: Array = NpcVisuals.tweak().tag_characters[&"civ_customer"]
+	var of_ids: Array = NpcVisuals.tweak().heist_tag_characters[&"ostrander_federal"][&"civ_customer"]
+	var cust: NpcBase = _spawn(&"civilian", 5, {"tags": [&"civ_customer"]})
+	var cid: StringName = StringName(cust.visual_scene.resource_path.get_file().get_basename())
+	assert_true(of_ids.has(cid), "OF civ_customer deals from the OF pool (%s)" % cid)
+	assert_true(shared.size() < of_ids.size(), "the OF pool is the bigger one (12 vs the shared 2)")
