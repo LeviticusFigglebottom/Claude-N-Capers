@@ -2138,8 +2138,9 @@ def clips(sk: Skeleton, table: dict) -> dict[str, Clip]:
         elif name == "shield_bang":
             hits = tuple(sorted(int(v) for e, v in ev.items() if e.startswith("bang")))
             out[name] = Clip(name, N, loop, _shield_bang(sk, N, hits), speed, None, ev, reach_fix=False)
-        elif name in ("turn_l", "turn_r"):
-            out[name] = Clip(name, N, loop, _turn(sk, N, 1.0 if name == "turn_l" else -1.0), speed, None, ev,
+        elif name in ("turn_l", "turn_r", "turn_l_45", "turn_r_45"):
+            out[name] = Clip(name, N, loop, _turn(sk, N, 1.0 if name.startswith("turn_l") else -1.0,
+                                                  45.0 if name.endswith("_45") else 90.0), speed, None, ev,
                              reach_fix=False)
         else:
             maker = {"reload_pistol": _reload_pistol, "reload_rifle": _reload_rifle,
