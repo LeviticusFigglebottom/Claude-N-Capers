@@ -60,6 +60,11 @@ and reports a gap list; the LEAD folds the gaps in here as rows (id, heist, owne
 | PO-7 | all (seen on DB) | C (A) | PO report: NPC muzzle flash freezes in the air after the NPC dies/moves | FIXED (C e22dfbd8: a first tick > FLASH_S before a drawn frame left the pooled set up forever; HOLD_S rule for flash + sparks; regression test). Linked: A b8cdd674 found the multi-second first-fight hitch = lazy VFX pool growth stalling the renderer → VfxDirector.prewarm() at load (C applies A's patch) |
 | PO-14 | SL, DB (all) | A + C | PO report: SL server cage opened by sawing a stand-in safe (empty, invisible saw) that opened the gate with it; DB CountCage same pattern; safes without a DrillPoint run an invisible device | FIXED round 243 (gate keypad + padlock, real DB cage, devices visible + audit test). Follow-ups: device mount offsets (A b8fb4687), padlock-export regen (C), P windowed check |
 | PO-15 | ND, GN, SL, OF | C + B + A (P) | PO: stealth heists must not be beatable by killing every guard (except GH / Routine); Routine 4 pagers, ≤ 4 guards; one lever per map | FIXED round 243 (ND/SL PAGERS, GN GUARDS, test_d140_pager_margin live; OF in G1). P windowed Tense/Lethal pending |
+| PO-16 | all | P (A) | PO: ladders climbable by look/move, no forced animation | open: D-145.1 |
+| PO-17 | all (loud) | A (B, P) | PO: loud too hard on Routine/Tense | open: D-145.2 (Routine ≈ PD2 Normal, Tense ≈ Hard) |
+| PO-18 | all (loud) | A (D) | PO: police have body armor too early | open: D-145.3 (armor from Hazardous) |
+| PO-19 | all | B + A | PO: bots need regen + per-slot buyable weapon/armor loadout | open: D-145.4 |
+| PO-20 | all | P | PO: run too wobbly, gun bob odd | open: D-145.5 |
 
 ## D-115 assessment at the D-135 close (2026-10-17 11:45, LEAD)
 All five envs reported QUEUE CLEAR (A 9a7df142, B da559160, C e8ec593d, D 6316e628, P 8774a733), merged in rounds 240a/240b.
