@@ -41,9 +41,9 @@ static var _cached: AnimTweak = null
 @export var turn_45_clip_deg: float = 45.0
 ## Yaw change (degrees) from which turn_l / turn_r (90) play; below it (down to turn_threshold_deg) turn_*_45.
 @export var turn_90_min_deg: float = 67.5
-## Turn clip speed_scale = clip deg / yaw change, clamped to this range (TurnInPlace).
-@export var turn_speed_min: float = 0.75
-@export var turn_speed_max: float = 1.5
+## Lead ruling: a same-way residual up to this (degrees) after a turn clip eases in over the blend-out (blend_s)
+## instead of chaining another clip (67.5 - 45: the most the 45 clip leaves). TurnInPlace.
+@export var turn_residual_max_deg: float = 22.5
 ## Below turn_threshold_deg no clip plays: the rig snaps to the body over this many seconds.
 @export var turn_snap_s: float = 0.15
 ## D-116 door_kick_<fam> `impact` (s; SOURCE.txt first): the clip is scaled so it lands on npc_door_breach_s.
