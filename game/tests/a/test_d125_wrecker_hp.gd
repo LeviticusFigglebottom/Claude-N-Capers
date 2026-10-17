@@ -21,11 +21,12 @@ func test_ratio_to_the_heavy() -> void:
 	var h: EnemyDef = load("res://systems/ai/data/enemies/tac_heavy.tres") as EnemyDef
 	var last: int = w.health.size() - 1
 	assert_near(w.health[last] / w.health[0], 5.0, 0.001, "x5 Routine -> Cataclysm")
-	assert_near(w.health[0] / h.health[0], 12.5, 0.01, "12.5x the Heavy on Routine")
-	assert_near(w.health[last] / h.health[last], 15.625, 0.01, "15.6x the Heavy on Cataclysm")
+	# D-127: the Heavy got +25 % HP (200..800), so the ratio reads 10 -> 12.5 (it was 12.5 -> 15.6 under D-125 alone).
+	assert_near(w.health[0] / h.health[0], 10.0, 0.01, "10x the Heavy on Routine")
+	assert_near(w.health[last] / h.health[last], 12.5, 0.01, "12.5x the Heavy on Cataclysm")
 	for i: int in w.health.size():
 		var r: float = w.health[i] / h.health[i]
-		assert_true(r >= 12.0 and r <= 16.0, "Wrecker:Heavy ratio stays 12-16 (Difficulty %d: %.2f)" % [i, r])
+		assert_true(r >= 9.5 and r <= 13.0, "Wrecker:Heavy ratio stays 9.5-13 (Difficulty %d: %.2f)" % [i, r])
 
 
 func test_corsair_head_route_budget() -> void:

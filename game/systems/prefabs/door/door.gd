@@ -561,6 +561,15 @@ func _setup_nav_link() -> void:
 	_update_nav_link()
 
 
+## Server (QC-57, mission scripts): NPCs whose spawn tags include `tag` may open this door from now on (GN: the
+## Vaultline couriers through the LD art door). Idempotent; the NavLink follows.
+func authorise_npc_tag(tag: StringName) -> void:
+	if tag == &"" or npc_authorized_tags.has(tag):
+		return
+	npc_authorized_tags.append(tag)
+	_update_nav_link()
+
+
 ## The link is enabled while NPCs can pass: open, unlocked, or keycard-authorised for some post.
 func _update_nav_link() -> void:
 	if _nav_link == null:

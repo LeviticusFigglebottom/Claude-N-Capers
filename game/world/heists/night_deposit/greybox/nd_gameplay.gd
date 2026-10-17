@@ -251,7 +251,7 @@ func _build_vault(gp: Node3D) -> void:
 	var door: Node3D = n("Gameplay/Doors/VaultDoor")
 	if door != null:
 		# Drill on the antechamber side: -Z into the lock (south), on the wheel's face; UsePoint north.
-		prefab(door, "drill_point", "VaultDrill", Vector3(0.6, 1.0, -0.52), 180.0,
+		prefab(door, "drill_point", "VaultDrill", Vector3(0.6, 1.0, -0.035), 180.0,  # PO: the lance touches the leaf
 			{"device": "enum:THERMAL", "target": NodePath(".."), "loud_only": true, "objective_tag": &"vault_drill"},
 			Vector3(14.6, L.BASE, 9.0))
 	prefab(v, "keypad", "TimeLockPanel", Vector3(18.9, L.BASE + 1.2, 9.1), 90.0,

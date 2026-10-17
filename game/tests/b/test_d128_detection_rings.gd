@@ -96,3 +96,48 @@ func test_investigating_shows_question_at_zero() -> void:
 	_model.detection = []
 	await wait_frames(1)
 	assert_eq(_hud.chevrons.rings.size(), 0)
+
+
+func test_no_rings_once_loud() -> void:
+	_model.heist_phase = Enums.HeistPhase.STEALTH
+	_model.detection = [{"observer_net_id": 1, "world_pos": Vector3(0, -2.0, -8), "value": 0.6,
+			"kind": Enums.ObserverKind.GUARD}]
+	await wait_frames(2)
+	assert_eq(_hud.chevrons.rings.size(), 1)
+	_model.heist_phase = Enums.HeistPhase.LOUD
+	await wait_frames(2)
+	assert_eq(_hud.chevrons.rings.size(), 0, "PD2: no detection indicator once loud")
+
+
+
+func test_no_arc_stacked_on_its_own_ring() -> void:
+	# Live GH/SL check (r229): a guard straight ahead at mid range put its ring right on the crosshair arc. An observer
+	# whose ring lands on the arc band gets no arc (its ring marks it); every other one keeps its arc.
+	var tw: HudTweak = HudTweak.load_default()
+	var rows: Array[Dictionary] = []
+	for i: int in range(24):
+		rows.append({"observer_net_id": 20 + i, "world_pos": Vector3(0, -3.0 + 0.2 * i, -5), "value": 0.5,
+				"kind": Enums.ObserverKind.GUARD})
+	_model.detection = rows
+	await wait_frames(2)
+	var centre: Vector2 = _hud.chevrons.size * 0.5
+	var skipped: int = 0
+	var kept: int = 0
+	for r: Dictionary in _hud.chevrons.rings:
+		if not bool(r["on_screen"]):
+			assert_true(bool(r["arc"]), "off screen: the arc shows the way")
+			continue
+		# Geometric, from the drawn sizes: the ring's backing disc and the arc's backing stroke must not touch.
+		var ring_outer: float = tw.ring_radius_px + tw.ring_width_px * 0.5 + 2.0
+		var arc_half: float = (tw.arc_width_px + 4.0) * 0.5
+		var gap: float = absf((r["ring_pos"] as Vector2).distance_to(centre) - tw.chevron_radius_px)
+		var on_band: bool = gap < _hud.chevrons.arc_clearance()
+		assert_true(_hud.chevrons.arc_clearance() >= ring_outer + arc_half, "the clearance covers both strokes")
+		if bool(r["arc"]):
+			assert_true(gap >= ring_outer + arc_half, "a drawn arc never touches its ring (gap %.1f)" % gap)
+		assert_eq(bool(r["arc"]), not on_band, "arc only when the ring is off the band: %s" % r["ring_pos"])
+		if on_band:
+			skipped += 1
+		else:
+			kept += 1
+	assert_true(skipped >= 1 and kept >= 1, "the sweep crosses the band (%d skipped, %d kept)" % [skipped, kept])

@@ -322,28 +322,39 @@ def _mask_on(sk: Skeleton, solver: Solver, N: int) -> Keys:
 
 
 def _throw_grenade(sk: Skeleton, solver: Solver, N: int, release: int) -> Keys:
-    """Overhand with the LEFT arm (the weapon stays low in the right hand, H.low_carry): wound up behind the left
-    shoulder, released forward-high at ``release``, follow-through across the body."""
+    """Overhand lob with the LEFT arm (the weapon stays low in the right hand, H.low_carry). The right foot steps
+    forward. Wind-up: the trunk turned away, the elbow up and the hand cocked behind the head. Release at ``release``:
+    the trunk rotated into the throw, the arm forward and high, the hand ahead of and above the head line. Then the
+    follow-through comes down across the body to the right thigh."""
     k = sk.scale
 
-    def left(pose: Pose, p, along, shape: str) -> None:
-        H.hand_on(sk, pose, "L", v3(p[0] * k, p[1] * k, p[2] * k), H.unit(v3(*along)), v3(0.9, 0.0, 0.3),
-                  pole=v3(-0.8, -0.4, -0.4), along_share=0.6)
+    def left(pose: Pose, p, along, palm, pole, shape: str) -> None:
+        H.hand_on(sk, pose, "L", v3(p[0] * k, p[1] * k, p[2] * k), H.unit(v3(*along)), H.unit(v3(*palm)),
+                  pole=v3(*pole), along_share=0.6)
         pose.hands["L"] = hand_shape(shape, 0.9)
         H.low_carry(sk, pose)
+
+    def step(pose: Pose) -> None:
+        H.stand(sk, pose, spread=0.05, stagger_l=-0.08, stagger_r=0.12, yaw_l=24, yaw_r=8)
     start = H._stand_key(sk)                                            # noqa: SLF001
-    left(start, (-0.16, 0.18, 1.12), (0.1, 0.5, 0.85), "fist")
+    left(start, (-0.16, 0.18, 1.12), (0.1, 0.5, 0.85), (0.9, 0.0, 0.3), (-0.8, -0.4, -0.4), "fist")
     wind = H._stand_key(sk)                                             # noqa: SLF001
-    H.stand(sk, wind, spread=0.05, stagger_l=-0.10, stagger_r=0.12, yaw_l=24, yaw_r=10)
-    A.spine(wind, lean=-6, twist=26, chest_lean=-4, chest_twist=18, neck=(-4, 0, -14), head=(-6, 0, -18), hips=(0, 0, 10))
-    left(wind, (-0.24, -0.20, 1.62), (0.0, -0.4, 0.9), "fist")
+    step(wind)
+    wind.hip = wind.hip + v3(0.0, -0.03 * k, -0.02 * k)
+    A.spine(wind, lean=-8, twist=28, chest_lean=-4, chest_twist=20, neck=(-4, 0, -16), head=(-6, 0, -20),
+            hips=(0, 0, 12))
+    left(wind, (-0.36, -0.34, 1.58), (0.0, -0.5, 0.85), (0.2, 0.9, 0.3), (-0.9, -0.4, 0.2), "fist")
     rel = H._stand_key(sk)                                              # noqa: SLF001
-    rel.hip = rel.hip + v3(0.0, 0.07 * k, -0.02 * k)
-    A.spine(rel, lean=10, twist=-10, chest_lean=6, chest_twist=-8, neck=(-6, 0, 6), head=(-8, 0, 8), hips=(0, 0, -8))
-    left(rel, (-0.10, 0.48, 1.62), (0.0, 0.9, 0.4), "relaxed")
+    step(rel)
+    rel.hip = rel.hip + v3(0.0, 0.08 * k, -0.03 * k)
+    A.spine(rel, lean=14, twist=-24, chest_lean=6, chest_twist=-18, neck=(-8, 0, 12), head=(-8, 0, 14), hips=(0, 0, -10))
+    left(rel, (-0.06, 0.50, 1.76), (0.0, 0.9, 0.35), (0.2, 0.9, -0.4), (-0.8, -0.1, -0.4), "relaxed")
     follow = H._stand_key(sk)                                           # noqa: SLF001
-    A.spine(follow, lean=14, twist=-14, chest_lean=6, chest_twist=-8, head=(4, 0, 6))
-    left(follow, (0.08, 0.36, 1.06), (0.3, 0.6, -0.75), "relaxed")
+    step(follow)
+    follow.hip = follow.hip + v3(0.0, 0.09 * k, -0.05 * k)
+    A.spine(follow, lean=22, twist=-28, chest_lean=8, chest_twist=-16, neck=(-4, 0, 14), head=(2, 0, 14),
+            hips=(0, 0, -12))
+    left(follow, (0.10, 0.40, 1.02), (0.3, 0.6, -0.75), (0.9, 0.0, 0.3), (-0.8, -0.4, -0.4), "relaxed")
     end = H._stand_key(sk)                                              # noqa: SLF001
     H.low_carry(sk, end)
     return Keys(solver, [(0, start, "inout"), (release - 5, wind, "inout"), (release, rel, "in"),

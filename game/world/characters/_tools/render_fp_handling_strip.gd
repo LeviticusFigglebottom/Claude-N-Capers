@@ -4,7 +4,7 @@
 ##   xvfb-run -a -s "-screen 0 640x360x24" /opt/godot/godot --rendering-driver opengl3 --audio-driver Dummy \
 ##     --fixed-fps 60 --resolution 640x360 --path game res://world/characters/_tools/render_fp_handling_strip.tscn \
 ##     -- --out=/abs/dir [--weapons=weapon.kestrel_p9,...] [--heist=glasshouse] [--step=6] [--reload_s=2.6]
-##     [--actions=melee,melee_charge,throw]: instead of reload / draw, rows of a quick melee (tap), a charged melee
+##     [--actions=idle,melee,melee_charge,throw]: idle = 0.5 s of the hip hold; a quick melee (tap), a charged melee
 ##     (held 1 s, released) and a throw (held 0.4 s, released) with --melee (melee.folding_knife) and --throwable
 ##     (throwable.frag) in the loadout
 ## Owner: ENV D.
@@ -106,6 +106,8 @@ func _action_rows(inp: PInputDriver, wname: String) -> void:
 	var rows: Array[Array] = []
 	for act: String in _actions:
 		match act:
+			"idle":   # the hip hold as drawn (thumb / grip review)
+				rows.append(await _frames(wname, act, 0.5))
 			"melee":
 				await inp.tap(&"melee")
 				rows.append(await _frames(wname, act, 1.0))

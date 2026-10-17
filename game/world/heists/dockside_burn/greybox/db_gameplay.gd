@@ -291,7 +291,7 @@ func _build_strongroom(_gp: Node3D) -> void:
 	var door: Node3D = n("Gameplay/Doors/StrongroomDoor")
 	if door == null:
 		return
-	prefab(door, "drill_point", "StrongroomDrill", Vector3(26.36, 1.0, 28.6), 90.0,
+	prefab(door, "drill_point", "StrongroomDrill", Vector3(26.035, 1.0, 28.6), 90.0,  # PO: the lance touches the leaf
 		{"device": "enum:THERMAL", "duration_s": 240.0, "target": NodePath(".."), "loud_only": true,
 			"objective_tag": &"strongroom_drill", "device_scene": _catalog_scene(THERMAL_DEVICE),
 			"visual_scene": load(VIS_EMPTY)}, Vector3(27.2, 0.0, 28.6))

@@ -119,6 +119,9 @@ var _input_grace: float = 0.0
 var _counter: Tween = null
 var _xp_tween: Tween = null  # XP bar animation (null = idle / done)
 var _count_tick_ms: int = 0
+## The hero total label and its final amount (the count-up always lands here: finish, skip or stage change).
+var _count_label: Label = null
+var _count_amount: int = 0
 
 
 func _sync_cursor() -> void:
@@ -224,6 +227,8 @@ func has_card_pick() -> bool:
 func show_cards() -> void:
 	if card_roll.is_empty() or _cards_root == null:
 		return
+	if _counter != null and _counter.is_valid() and _counter.is_running():
+		_land_total()  # the summary leaves mid count-up: it comes back with the real total
 	_set_stage(true)
 	for v: PaydayCardView in card_views:
 		_cards_row.remove_child(v)
@@ -550,7 +555,10 @@ func _render() -> void:
 		UiText.t(&"ui.results.pagers_answered", {"count": int(result.get("pagers_answered", 0))}),
 		UiText.t(UiText.difficulty_key(int(result.get("difficulty", 0)))),
 	]
+	if not has_pagers(StringName(result.get("heist_id", &""))):
+		summary.remove_at(2)  # D-115 B-DB: no "Pagers answered: 0" on a heist without pagers
 	var chips: Label = UiBuild.caption()
+	chips.name = "SummaryChips"
 	chips.text = "   ·   ".join(summary)
 	_content.add_child(chips)
 	# D-111: three columns, nothing under the fold at 720p: cash | experience | crew + awards.
@@ -589,6 +597,13 @@ func _summary_key(success: bool) -> StringName:
 	if int(payout.get("civilian_penalty", 0)) > 0 or _civilians_killed() > 0:
 		return &"ui.results.stealth_messy"
 	return &"ui.results.stealth"
+
+
+## D-115 B-DB: false for a heist whose HeistDef is LOUD_ONLY (Dockside Burn: the Co-op's gunmen carry no pagers, the
+## police none either), so its payday shows no pager chip. Unknown ids keep the chip.
+static func has_pagers(heist_id: StringName) -> bool:
+	var def: HeistDef = HeistRegistry.get_def(heist_id) if heist_id != &"" else null
+	return def == null or def.mode != Enums.HeistMode.LOUD_ONLY
 
 
 func _civilians_killed() -> int:
@@ -696,6 +711,8 @@ func _build_hero(success: bool) -> HBoxContainer:
 ## D-090: cue.payday_tick ticks along the count-up (every COUNT_TICK_MS at most) and cue.payday_total
 ## lands with the final number (at once when there is no count-up).
 func _count_up(l: Label, amount: int) -> void:
+	_count_label = l
+	_count_amount = amount
 	if amount <= 0 or not is_inside_tree():
 		return
 	if not UiTokens.motion_ok() or DisplayServer.get_name() == "headless":
@@ -717,6 +734,7 @@ func _count_step(v: float, l: Label) -> void:
 
 
 func _total_landed() -> void:
+	_land_total()
 	total_landed_count += 1
 	UiSfx.play(UiSfx.PAYDAY_TOTAL)
 
@@ -728,8 +746,18 @@ func skip_count() -> bool:
 		finish_xp()
 	if _counter != null and _counter.is_valid() and _counter.is_running():
 		_counter.custom_step(COUNT_S)
+		_land_total()
 		return true
 	return xp_running
+
+
+## LEAD r229 (A's GN windowed run: hero $78,969 vs cash total $78,980): the hero number ends on exactly the cash total
+## (the sum of the shown lines), whether the count-up finished, was skipped or was cut short.
+func _land_total() -> void:
+	if _counter != null and _counter.is_valid():
+		_counter.kill()
+	if _count_label != null and is_instance_valid(_count_label):
+		_count_label.text = UiText.money(_count_amount)
 
 
 func _build_cash() -> VBoxContainer:

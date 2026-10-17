@@ -4,28 +4,68 @@ class_name StealthTweak
 extends Resource
 
 @export_group("Detection (S2)")
-## Observer presets by kind (S2.2): near/far (m), fov_deg (full angle), min_time (s to fill at
-## point-blank, dead centre, DR 35).
+## D-128: PAYDAY 2's detection model (pd2_fidelity S2). Sources: PD2's decompiled Lua (community mirror
+## steam-test1/Payday-2-LuaJIT-Complete, lib/): tweak_data/charactertweakdata.lua presets.detection,
+## units/enemies/cop/logics/coplogicbase.lua _upd_attention_obj_detection, units/props/securitycamera.lua,
+## units/editor/securitycameraelement.lua, tweak_data/attentiontweakdata.lua _init_player,
+## units/beings/player/playerbase.lua, managers/blackmarketmanager.lua, tweak_data/weapontweakdata.lua.
+## Observer presets by kind. NPCs (in stealth PD2 uses the `ntl` preset): far = dis_max (m), fov_deg =
+## 2 x angle_max (deg; the half angle is angle_max), delay_min / delay_max (s, the `delay` pair), attention =
+## which player attention class the observer reads (&"combatant": guards, police, gangsters, cameras;
+## &"non_combatant": civilians). Cameras: far = detection_range, fov_deg = the full cone, delay pair =
+## the ElementSecurityCamera editor defaults (PD2 sets them per camera; SecurityCamera.detection_overrides()
+## supplies fov_deg / far). gadget_time: D-118 gadget base fill time (s, ◇; PD2 ignores flashlights/lasers).
 @export var observer_presets: Dictionary = {
-	&"guard": {"near": 2.0, "far": 30.0, "fov_deg": 120.0, "min_time": 1.0},
-	&"civilian": {"near": 2.0, "far": 24.0, "fov_deg": 140.0, "min_time": 1.4},
-	&"camera": {"near": 2.0, "far": 20.0, "fov_deg": 60.0, "min_time": 2.0},
-	&"police": {"near": 2.0, "far": 40.0, "fov_deg": 140.0, "min_time": 0.6},
+	&"guard": {"far": 40.0, "fov_deg": 120.0, "delay_min": 0.2, "delay_max": 2.0, "attention": &"combatant",
+		"gadget_time": 1.0},
+	&"civilian": {"far": 20.0, "fov_deg": 120.0, "delay_min": 0.2, "delay_max": 3.0, "attention": &"non_combatant",
+		"gadget_time": 1.4},
+	&"camera": {"far": 15.0, "fov_deg": 60.0, "delay_min": 2.0, "delay_max": 3.0, "attention": &"combatant",
+		"gadget_time": 2.0},
+	&"police": {"far": 40.0, "fov_deg": 120.0, "delay_min": 0.2, "delay_max": 2.0, "attention": &"combatant",
+		"gadget_time": 0.6},
 }
-## S2.3: DR -> concealment time multiplier (PD2 table, interpolated). x = DR, y = mult.
+## D-128 PD2 masked-player attention settings (attentiontweakdata pl_mask_on_foe_<class>_whisper_mode_<stance>),
+## keyed "<class>_<stance>": max_range (m, caps the preset far; < 0 = no cap), notice_delay_mul (scales
+## delay_min), uncover_range (m: an NPC notices instantly inside it while within uncover_angle_deg of its
+## facing; cameras have no uncover). Crouching is PD2's own crouch effect (S2.5).
+@export var attention_settings: Dictionary = {
+	&"combatant_stand": {"max_range": 20.0, "notice_delay_mul": 2.0, "uncover_range": 2.0},
+	&"combatant_crouch": {"max_range": 12.0, "notice_delay_mul": 2.0, "uncover_range": 2.0},
+	&"non_combatant_stand": {"max_range": -1.0, "notice_delay_mul": 1.5, "uncover_range": 5.5},
+	&"non_combatant_crouch": {"max_range": 15.0, "notice_delay_mul": 3.0, "uncover_range": 2.0},
+}
+## D-128 PD2 NPC view cone: the half angle is 180 deg (all round) within npc_all_round_m and narrows linearly
+## to fov_deg / 2 over the next npc_angle_narrow_m (coplogicbase _angle_and_dis_chk: 150 cm, 700 cm).
+@export var npc_all_round_m: float = 1.5
+@export var npc_angle_narrow_m: float = 7.0
+## D-128 PD2 uncover: inside the attention uncover_range and under this angle off the NPC's facing, instant.
+@export var uncover_angle_deg: float = 55.0
+## D-128 PD2 delay lerp: delay = lerp(delay_min x notice_delay_mul x conceal_mult, delay_max,
+## dis_weight x d / range + angle_weight x min(angle / angle_ref, 1)), range = min(far, max_range) x
+## sqrt(1 / conceal_mult). NPC angle_ref = fov_deg / 2; camera angle_ref = fov_deg (securitycamera.lua
+## divides by the full cone).
+@export var npc_dis_weight: float = 0.75
+@export var npc_angle_weight: float = 0.25
+@export var camera_dis_weight: float = 0.85
+@export var camera_angle_weight: float = 0.15
+## D-128 PD2 drain while not noticeable (no sight, out of view or range): NPCs lose npc_decay_per_s progress
+## per second (coplogicbase: dt x -0.125); cameras lose 1 / delay_max per second (securitycamera:
+## -dt / det_delay[2]). Progress below 0 clears the meter.
+@export var npc_decay_per_s: float = 0.125
+## S2.3: DR -> concealment multiplier (PD2 tweak_data.weapon.stats.concealment through the suspicion offset,
+## interpolated). x = DR, y = mult. PD2: delay_min x mult, detection range x sqrt(1 / mult).
 @export var dr_table: PackedVector2Array = PackedVector2Array([
 	Vector2(3, 1.55), Vector2(7, 1.475), Vector2(10, 1.425), Vector2(16, 1.325), Vector2(20, 1.25),
 	Vector2(26, 1.15), Vector2(35, 1.0), Vector2(43, 0.85), Vector2(52, 0.7), Vector2(63, 0.5), Vector2(75, 0.3),
 ])
 ## DR used when a crew member has no resolved loadout.
 @export var default_detection_risk: int = 35
-## S2.1 ◇ decay per second without LOS.
+## S4.1 ◇ stimulus meters (bodies, bags...) decay per second out of view; crew meters use the PD2 drain.
 @export var decay_per_s: float = 0.25
-## S2.2 factors.
+## D-118 ◇ gadget-only distance falloff floor and near distance (m); body detection has no floor (D-128).
 @export var dist_factor_min: float = 0.1
-@export var angle_factor_edge: float = 0.45
-## S2.5 ◇ crouch multiplier (not applied to cameras).
-@export var crouch_rate_mult: float = 0.75
+@export var gadget_near_m: float = 2.0
 ## S1.1 ◇ casing: fill only in RESTRICTED or within this distance of a guard, at this rate.
 @export var casing_too_close_m: float = 3.0
 @export var casing_rate_mult: float = 0.35

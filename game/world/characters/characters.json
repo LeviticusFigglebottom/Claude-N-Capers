@@ -129,6 +129,42 @@
 			"test": false
 		},
 		{
+			"asset": "char_cartel_gunman_g",
+			"id": "cartel_gunman_g",
+			"scene": "res://world/characters/cartel_gunman_g/cartel_gunman_g.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_cartel_gunman_h",
+			"id": "cartel_gunman_h",
+			"scene": "res://world/characters/cartel_gunman_h/cartel_gunman_h.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_cartel_gunman_i",
+			"id": "cartel_gunman_i",
+			"scene": "res://world/characters/cartel_gunman_i/cartel_gunman_i.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_cartel_gunman_j",
+			"id": "cartel_gunman_j",
+			"scene": "res://world/characters/cartel_gunman_j/cartel_gunman_j.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_cartel_gunman_k",
+			"id": "cartel_gunman_k",
+			"scene": "res://world/characters/cartel_gunman_k/cartel_gunman_k.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_cartel_gunman_l",
+			"id": "cartel_gunman_l",
+			"scene": "res://world/characters/cartel_gunman_l/cartel_gunman_l.tscn",
+			"test": false
+		},
+		{
 			"asset": "char_civilian_clerk",
 			"id": "civilian_clerk",
 			"scene": "res://world/characters/civilian_clerk/civilian_clerk.tscn",
@@ -342,6 +378,12 @@
 			"asset": "char_dock_worker_b",
 			"id": "dock_worker_b",
 			"scene": "res://world/characters/dock_worker_b/dock_worker_b.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_dock_worker_c",
+			"id": "dock_worker_c",
+			"scene": "res://world/characters/dock_worker_c/dock_worker_c.tscn",
 			"test": false
 		},
 		{

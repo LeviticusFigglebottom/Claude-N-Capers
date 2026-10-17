@@ -7,7 +7,7 @@
 script = ExtResource("1")
 bag_model = ExtResource("2_bag")
 id = &"loot.painting_study"
-display_name = "Calloway's Study"
+display_name = "A Study"
 weight = 0
 value = 2800
 conceals = false

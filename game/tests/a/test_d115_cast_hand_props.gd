@@ -9,7 +9,8 @@ const CAST_PATH: String = "res://world/characters/p5_cast.json"
 ## Cast entries ahead of ENV D's delivery on this branch (D-SL-2 second cleaner).
 ## Ids listed ahead of ENV D's delivery (the deal skips them until their scenes exist; LEAD DB/SL cast audit).
 const PENDING: Array[String] = ["npc_cleaner_sl_b", "npc_cleaner_sl_c", "npc_northgate_guard_c", "npc_northgate_guard_d",
-	"npc_northgate_guard_e", "npc_northgate_guard_f", "security_officer_c", "security_officer_d"]
+	"npc_northgate_guard_e", "npc_northgate_guard_f", "security_officer_c", "security_officer_d",
+	"dock_worker_c"]  # D 45894565 (merged by the LEAD with A's map)
 
 var _nodes: Array[Node] = []
 

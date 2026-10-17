@@ -84,7 +84,12 @@ func test_pistol_smg_and_rifle_shapes() -> void:
 	assert_true(lancet.recoil_kick_deg < _w(&"weapon.mastiff_45").base.recoil_kick_deg, "low-recoil .45")
 	var bastion: WeaponStats = _w(&"weapon.bastion_br").base
 	assert_true(bastion.damage > _w(&"weapon.drover_762").base.damage and bastion.mag_size == 20, "battle rifle")
-	assert_true(bastion.damage < _w(&"weapon.falchion_dmr").base.damage, "the DMR still hits harder")
+	# D-124 addendum P11: the battle rifle hits 135 at 340 rpm (2-headshot Heavy after D-127); the DMR is the precise
+	# AR (D-124 P3), not the hardest hitter.
+	var dmr: WeaponDef = _w(&"weapon.falchion_dmr")
+	assert_true(StatCalculator.display(dmr.base).get("accuracy", 0) > StatCalculator.display(bastion).get("accuracy", 0),
+			"the DMR is the more accurate")
+	assert_true(bastion.fire_rate_rpm < 400.0, "the battle rifle pays for its hit in cadence")
 	var lark: WeaponDef = _w(&"weapon.lark_carbine")
 	assert_true(lark.fire_modes.has(&"burst3"), "carbine has a three-round burst")
 	assert_true(lark.base.concealment > _w(&"weapon.corsair_ar").base.concealment, "carbine hides better")

@@ -5,6 +5,8 @@
 ##   spawn_bag(loot_id, xform, moved = true, weight_override = -1) -> LootBag   (loot_spawned [R])
 ##   carry(bag, crew) -> bool                 -> crew picks the bag up (loot_picked [R])
 ##   drop_bag(crew, thrown) -> LootBag        -> drop in front / throw (loot_dropped [R])
+##   npc_carry(bag, npc) -> bool              -> QC-57: an NPC carries the bag (GN Vaultline courier)
+##   npc_drop(npc) -> LootBag                 -> QC-57: the NPC puts it down in front of him
 ##   bags() -> Array[LootBag]                 -> bags of this heist (carried or not)
 ##   loot_info(loot_id) -> {weight, value, known}  (static; ContentDB, else LootTweak fallback)
 ##   bag_body(crew, npc) -> LootBag           -> S6.2 completion logic (body_bagged [R])
@@ -12,7 +14,8 @@
 ## tick handler. A bag resting inside a SECURE_LOOT MapZone for LootTweak.secure_rest_s is secured
 ## (loot_secured [R]) and freed. Body bags inside a BODY_HIDE zone (body_container respects its
 ## `capacity`) are hidden from stealth (S6.3). A carrier who goes down / is cuffed / taken into
-## custody drops the bag. Every dead NPC gets a `BagBodyInteractable` (kind &"bag_body").
+## custody drops the bag. QC-57: an NPC carrier drops it when he dies, is intimidated / dominated / tied, or
+## fights (NPC_DROP_STATES). Every dead NPC gets a `BagBodyInteractable` (kind &"bag_body").
 class_name LootManager
 extends Node
 
@@ -21,6 +24,13 @@ const BAG_BODY_NODE: StringName = &"BagBodyInteractable"
 ## Crew states that make the carrier drop the bag.
 const DROP_STATES: Array[int] = [
 	Enums.CrewState.DOWNED, Enums.CrewState.CLOAKER_DOWNED, Enums.CrewState.CUFFED, Enums.CrewState.CUSTODY,
+]
+
+## QC-57: NPC alert states that make an NPC carrier put the bag down (killed, intimidated / dominated / tied, or
+## fighting: a courier who goes to COMBAT needs his hands, and the canvas stays where the crew can take it, B3).
+const NPC_DROP_STATES: Array[int] = [
+	Enums.AlertState.PANICKED, Enums.AlertState.INTIMIDATED, Enums.AlertState.TIED, Enums.AlertState.SURRENDERED,
+	Enums.AlertState.DOMINATED, Enums.AlertState.CONVERTED, Enums.AlertState.COMBAT, Enums.AlertState.DEAD,
 ]
 
 static var _loot_cache: Dictionary = {}
@@ -138,6 +148,52 @@ func drop_bag(crew: CrewController, thrown: bool) -> LootBag:
 	if thrown:
 		_cue(&"cue.bag_throw", pos, bag.net_id)
 	return bag
+
+
+## Server (QC-57): `npc` picks up `bag` (one at a time). He drops it on NPC_DROP_STATES or death (npc_drop).
+func npc_carry(bag: LootBag, npc: NpcBase) -> bool:
+	if not Net.is_authority() or bag == null or npc == null or not npc.alive or bag.secured or bag.is_carried():
+		return false
+	if npc_bag(npc) != null or NPC_DROP_STATES.has(int(npc.alert_state)):
+		return false
+	bag.attach_npc(npc)
+	if not npc.alert_state_changed.is_connected(_on_npc_state_changed):
+		npc.alert_state_changed.connect(_on_npc_state_changed.bind(npc))
+	if not npc.died.is_connected(_on_npc_carrier_died):
+		npc.died.connect(_on_npc_carrier_died.bind(npc))
+	_cue(&"cue.bag_pickup", bag.global_position, bag.net_id)
+	return true
+
+
+## Server (QC-57): `npc` puts his bag down in front of him (on the floor where he stands). Returns the bag or null.
+func npc_drop(npc: NpcBase) -> LootBag:
+	var bag: LootBag = npc_bag(npc)
+	if not Net.is_authority() or bag == null:
+		return null
+	var fwd: Vector3 = npc.look_forward()
+	fwd.y = 0.0
+	fwd = fwd.normalized() if fwd.length() > 0.001 else -npc.global_transform.basis.z
+	bag.release(npc.global_position + fwd * _tw.drop_forward_m + Vector3.UP * _tw.drop_height_m, Vector3.ZERO, false)
+	return bag
+
+
+## QC-57: the bag `npc` carries, or null.
+func npc_bag(npc: NpcBase) -> LootBag:
+	if npc == null:
+		return null
+	for b: LootBag in bags():
+		if b.npc_carrier == npc:
+			return b
+	return null
+
+
+func _on_npc_state_changed(_old_state: int, new_state: int, npc: NpcBase) -> void:
+	if NPC_DROP_STATES.has(new_state):
+		npc_drop(npc)
+
+
+func _on_npc_carrier_died(_info: Dictionary, _killer_net_id: int, npc: NpcBase) -> void:
+	npc_drop(npc)
 
 
 ## Bags in this heist.

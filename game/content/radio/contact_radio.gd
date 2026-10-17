@@ -16,6 +16,8 @@
 ## C's voice player, plus RadioTweak.squelch_cue (local audio_cue_requested) when set.
 ## No doubling with mission lines: a voice_line_requested from a comms speaker that is not ours (mission say(), abort,
 ## last pager) drops the waiting fact and keeps the radio quiet for max(mission_suppress_s, that line's subtitle time).
+## A fact of RadioTweak.defer_events with a line written for this heist is not dropped: it waits out the quiet and
+## is spoken after the mission line (D-117 §6: every written line is heard).
 class_name ContactRadio
 extends Node
 
@@ -130,7 +132,11 @@ func advance(dt: float) -> void:
 	now_s += dt
 	if pending.is_empty():
 		return
-	if now_s > float(pending["at"]) + tweak.max_wait_s or is_suppressed():
+	if is_suppressed():
+		if not bool(pending["defer"]):
+			pending = {}
+		return
+	if now_s > float(pending["at"]) + tweak.max_wait_s:
 		pending = {}
 		return
 	if now_s < float(pending["due"]) or now_s < _on_air_until:
@@ -143,15 +149,32 @@ func advance(dt: float) -> void:
 ## A fact for radio `event` (ctx: objective / loot_id ...). False when it is dropped at once (heist over, suppressed,
 ## once-per-heist spent, event cooldown, or a waiting fact of higher priority).
 func request(event: StringName, ctx: Dictionary = {}) -> bool:
-	if _ended or speaker == &"" or is_suppressed():
+	if _ended or speaker == &"":
+		return false
+	var defer: bool = _deferrable(event, ctx)
+	if is_suppressed() and not defer:
 		return false
 	if _spoken_once.has(event) or now_s < float(_event_last.get(event, -INF)) + tweak.cooldown_of(event):
 		return false
 	var prio: int = tweak.priority_of(event)
 	if not pending.is_empty() and int(pending["priority"]) >= prio:
 		return false
-	pending = {"event": event, "ctx": ctx, "priority": prio, "at": now_s, "due": now_s + tweak.settle_s}
+	pending = {"event": event, "ctx": ctx, "priority": prio, "at": now_s, "due": now_s + tweak.settle_s,
+		"defer": defer}
+	if is_suppressed():
+		_hold_pending()
 	return true
+
+
+## True when a fact of `event` waits out a mission line: a defer event with a line written for this heist.
+func _deferrable(event: StringName, ctx: Dictionary) -> bool:
+	return tweak.defer_events.has(event) and not picker.heist_lines(event, speaker, heist_id, ctx).is_empty()
+
+
+## The waiting (deferrable) fact is due settle_s after the quiet ends; its max_wait_s counts from there.
+func _hold_pending() -> void:
+	pending["at"] = _suppressed_until
+	pending["due"] = _suppressed_until + tweak.settle_s
 
 
 func is_suppressed() -> bool:
@@ -230,11 +253,14 @@ func _on_audio_cue_requested(cue_id: StringName, _position: Vector3, _source_net
 func _on_voice_line_requested(p_speaker: StringName, line_id: StringName, ctx: Dictionary) -> void:
 	if StringName(ctx.get("source", &"")) == SOURCE or not tweak.comms_speakers.has(p_speaker):
 		return
-	pending = {}
 	var line: Dictionary = table.line(line_id) if table != null else {}
 	var key: StringName = StringName(line.get("text_key", StringName("voice.%s" % line_id)))
 	var hold: float = maxf(tweak.mission_suppress_s, tweak.display_s(StringTable.text(key, ctx)))
 	_suppressed_until = maxf(_suppressed_until, now_s + hold)
+	if not pending.is_empty() and bool(pending["defer"]):
+		_hold_pending()
+	else:
+		pending = {}
 
 
 func _connect(sig: Signal, cb: Callable) -> void:
