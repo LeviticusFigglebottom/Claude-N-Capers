@@ -141,8 +141,8 @@ func _ready() -> void:
 
 
 ## ND loud FrameProf: the first spawn of each unit type loaded its NPC scene and character on the main thread
-## (3-10 s frames on llvmpipe). Server, at director start: queue a background load of every scene the spawn
-## tables can use, so spawning only instantiates. Returns how many paths were queued.
+## (3-10 s frames on llvmpipe). Server, at director start: load every scene the spawn tables can use (in parallel on
+## worker threads, collected before returning), so spawning only instantiates. Returns how many paths were queued.
 func _prewarm() -> int:
 	var groups: Array[SpawnGroupDef] = []
 	if tweak.first_responder_group != null:
@@ -175,7 +175,12 @@ func _prewarm() -> int:
 		if WarmLoader.request(p):  # GN-8: collected as they finish; spawning never load()s beside them
 			queued += 1
 			_warm_paths.append(p)
-	Log.info(&"director", "prewarm: %d of %d scenes queued" % [queued, paths.size()])
+	# GN-8 / P ND-2 hang (main thread parked on a condvar right after "prewarm queued", CASING): heist-start spawns
+	# load characters on the main thread while the workers load the same sub-resources. Wait for the workers here,
+	# at heist start (parallel loads, one blocking step), so no background load ever runs beside gameplay loads.
+	var t0: int = Time.get_ticks_msec()
+	WarmLoader.collect_all()
+	Log.info(&"director", "prewarm: %d of %d scenes loaded in %d ms" % [queued, paths.size(), Time.get_ticks_msec() - t0])
 	return queued
 
 

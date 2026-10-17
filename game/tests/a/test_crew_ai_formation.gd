@@ -169,3 +169,56 @@ func test_bot_warps_past_a_door_it_cannot_open() -> void:
 	Engine.time_scale = 1.0
 	assert_true(warped, "the bot reached the leader past the locked door (at %s)" % bot.global_position)
 	assert_true(door.locked and not door.is_open, "the door stayed locked (no bot lockpicking)")
+
+
+## P DB pass (CREW_STACK, two bots 0.06 m apart): a cover point within cover_taken_m of another bot's cover point is
+## taken, even before that bot arrives.
+func test_bots_never_pick_cover_points_on_the_same_spot() -> void:
+	await _launch()
+	var bots: Array[CrewController] = _bots()
+	var leader: CrewController = _rt.crew_controller(0) as CrewController
+	var near_pts: Array[Marker3D] = []
+	for i: int in 2:
+		var m: Marker3D = Marker3D.new()
+		m.add_to_group(G.COVER_POINT)
+		_rt.map.add_child(m)
+		m.global_position = Vector3(2.0 + 0.3 * i, 0.05, -2.0)
+		near_pts.append(m)
+	_rt.teleport_crew(0, Transform3D(Basis.IDENTITY, Vector3(0, 0.05, -4)))  # within cover_search_radius_m
+	await wait_physics_frames(2)
+	var b0: CrewAiBrain = CrewAiBrain.of(bots[0])
+	var b1: CrewAiBrain = CrewAiBrain.of(bots[1])
+	assert_true(b1._cover_ok(near_pts[1], leader), "setup: a usable cover point")
+	b0.cover_point = near_pts[0]
+	assert_false(b1._cover_ok(near_pts[0], leader), "the same point is taken")
+	assert_false(b1._cover_ok(near_pts[1], leader), "a point 0.3 m from another bot's cover point is taken too")
+	b0.cover_point = null
+	assert_true(b1._cover_ok(near_pts[1], leader), "free once the other bot leaves it")
+
+
+## P DB pass (CREW_STACK, AI inside the player): out of the leader's sight but close (< follow_min_m / 2) a bot walks
+## to its own formation slot, not onto the leader's spot (farther away it walks to the leader: test_po5_crew_ai_leash).
+func test_out_of_sight_bot_follows_to_its_slot_not_the_leader() -> void:
+	await _launch()
+	var bots: Array[CrewController] = _bots()
+	var leader: CrewController = _rt.crew_controller(0) as CrewController
+	_rt.stealth.raise_alarm(&"test", 0)
+	await wait_physics_frames(2)
+	var wall: StaticBody3D = StaticBody3D.new()
+	var col: CollisionShape3D = CollisionShape3D.new()
+	var box: BoxShape3D = BoxShape3D.new()
+	box.size = Vector3(8, 4, 0.4)
+	col.shape = box
+	wall.add_child(col)
+	_rt.map.add_child(wall)
+	wall.global_position = Vector3(0, 2, -4.4)
+	box.size = Vector3(8, 4, 0.2)
+	_rt.teleport_crew(0, Transform3D(Basis.IDENTITY, Vector3(0, 0.05, -5)))
+	_rt.teleport_crew(bots[0].slot, Transform3D(Basis.IDENTITY, Vector3(0, 0.05, -3.9)))  # 1.1 m, round a door frame
+	await wait_physics_frames(3)
+	var b0: CrewAiBrain = CrewAiBrain.of(bots[0])
+	assert_false(b0._has_los(bots[0].eye_position(), leader.eye_position()), "setup: the wall hides the leader")
+	var goal: Vector3 = b0._follow_goal()
+	assert_true(goal.is_finite(), "following")
+	var flat: float = Vector2(goal.x - leader.global_position.x, goal.z - leader.global_position.z).length()
+	assert_near(flat, b0.tweak.follow_min_m, 0.05, "goal = its formation slot follow_min_m out, not the leader's spot")

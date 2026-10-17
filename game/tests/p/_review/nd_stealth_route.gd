@@ -9,7 +9,11 @@
 ## -> under the static lasers -> time-lock code -> the time lock runs out -> vault loot bagged and carried back out
 ## the same way to the lot van's secure zone -> escape. Stops at the first failed step ("[NDR] FAIL ...").
 ##   xvfb-run -a -s "-screen 0 1280x720x24" /opt/godot/godot --path game --resolution 960x540 --audio-driver Dummy \
-##     res://tests/p/_review/nd_stealth_route.tscn -- --out=/abs/dir [--seed=21] [--bags=2] [--obs-out=DIR]
+##     res://tests/p/_review/nd_stealth_route.tscn -- --out=/abs/dir [--seed=21] [--bags=2] [--obs-out=DIR] [--render]
+## Fast mode (default; --render turns it off): the render loop is off and the HUD canvas layers are hidden between
+## screenshots (as A's po5_flow set_fast; presentation only, input and gameplay untouched: under llvmpipe the route
+## ran ~80 wall-s per game-s rendered). Stated shortcut: the time-lock wait (standing still at the panel) runs at
+## Engine.time_scale TIME_LOCK_SCALE, as X4StealthFlow's long waits.
 ## Owner: ENV P.
 extends Node
 
@@ -18,6 +22,7 @@ const MASK_AT: Vector3 = Vector3(18.5, -4.0, 3.0)
 const GATE_AT: Vector3 = Vector3(14.0, -4.0, 6.9)
 const C6_AT: Vector3 = Vector3(9.1, -1.4, 8.8)
 const LASER_GAP_X: float = 9.575
+const TIME_LOCK_SCALE: float = 4.0
 
 var rt: HeistRuntime = null
 var pilot: Po5Pilot = null
@@ -27,6 +32,7 @@ var _bags: int = 2
 var _shot: int = 0
 var _alarm: StringName = &""
 var _t0_ms: int = 0
+var _fast: bool = true
 
 
 func _ready() -> void:
@@ -37,6 +43,7 @@ func _ready() -> void:
 			"out": runner_out = v
 			"seed": _seed = v.to_int()
 			"bags": _bags = v.to_int()
+			"render": _fast = false
 			"obs-out":
 				var n: Node = Node.new()
 				n.name = "POObserver"
@@ -54,9 +61,22 @@ func note(msg: String) -> void:
 
 
 func shot(label: String) -> void:
+	if _fast:
+		_set_fast(false)
+		await RenderingServer.frame_post_draw
 	await RenderingServer.frame_post_draw
 	_shot += 1
 	get_viewport().get_texture().get_image().save_png("%s/%02d_%s.png" % [runner_out, _shot, label])
+	if _fast:
+		_set_fast(true)
+
+
+## Render loop off + HUD canvas layers hidden (A's po5_flow set_fast / _hud_redraw_widgets): presentation only.
+func _set_fast(on: bool) -> void:
+	RenderingServer.render_loop_enabled = not on
+	for n: Node in get_tree().root.get_children():
+		if n is CanvasLayer:
+			(n as CanvasLayer).visible = not on
 
 
 func wait_s(s: float) -> void:
@@ -77,6 +97,7 @@ func _fail(step: String) -> void:
 	note("FAIL %s (alarm %s)" % [step, _alarm])
 	await shot("fail_" + step.replace(" ", "_"))
 	print("[NDR] RESULT FAIL at %s" % step)
+	RenderingServer.render_loop_enabled = true
 	get_tree().quit(1)
 
 
@@ -132,6 +153,9 @@ func _run() -> void:
 	await pilot.calibrate()
 	note("spawn %s" % Po5Pilot._v(c.global_position))
 	await shot("spawn_lot")
+	if _fast:
+		note("fast mode: render loop off between shots")
+		_set_fast(true)
 	for step: Callable in [_to_b3, _gate_guard, _records, _vault_gate, _antechamber, _time_lock, _loot, _escape]:
 		if _alarm != &"":
 			await _fail("alarm before %s" % step.get_method())
@@ -208,30 +232,84 @@ func _gate_guard() -> bool:
 		return true
 	var hits: Array[int] = [0, 0]
 	var c: CrewController = pilot.crew
+	# Enter B5 only while he is away from PlantDoor with his back turned (D-128: PD2 uncover is instant within 2 m;
+	# a run walked through the door into him and he was ALARMED in 3 s). Crouched from here to the knife.
+	var plant: Door = _door("PlantDoor")
+	if plant != null:
+		var at_door: Vector3 = plant.global_position
+		var clear: Callable = func() -> bool:
+			return not g.is_alive() or (pilot.flat_dist(g.global_position, at_door) > 3.0 and _back_turned_to(g, at_door))
+		var ok: bool = await wait_until(clear, 60.0)
+		note("B5 entry: guard %.1f m from PlantDoor, back turned %s (waited ok %s)" % [
+			pilot.flat_dist(g.global_position, at_door), _back_turned_to(g, at_door), ok])
+	# Walk, don't crouch: crouched he outpaced the pilot down the corridor (ND run 2026-10-17, 3.5-4.8 m behind
+	# for 3 s) and turned back into a pilot standing in his view (meter 0 -> 1 in ~1 s at 3.4 m, D-128).
+	var hide_at: Vector3 = MASK_AT
+	if plant != null:
+		var into_b3: Vector3 = MASK_AT - plant.global_position
+		into_b3.y = 0.0
+		hide_at = plant.global_position + into_b3.normalized() * 1.5
+		hide_at.y = MASK_AT.y
 	c.melee.hit_landed.connect(func(_t: Object) -> void: hits[0] += 1)
 	c.melee.swung.connect(func(_ch: bool) -> void: hits[1] += 1)
 	# He patrols the B5 corridor: only close in while his back is to us (a re-close walked in front of him once and
 	# he was ALARMED before the knife landed; S3.6 one-shots only CALM / CURIOUS guards).
-	for _k: int in 6:
-		if not g.is_alive() or g.alert_state > Enums.AlertState.CURIOUS:
-			break
-		if not await _wait_back_turned(g, 40.0):
-			note("gate guard never turned his back (alert %d)" % g.alert_state)
-			break
-		var back: Vector3 = g.global_position + g.global_basis.z.normalized() * 0.8
-		await pilot.goto(Vector3(back.x, g.global_position.y, back.z), 0.4, 6.0)
-		if pilot.flat_dist(g.global_position, c.global_position) > 1.2 or not _back_turned(g):
+	# Track him with short legs re-aimed behind him every ~0.5 s (a single goto to a point computed once walked
+	# through his moving body, ND run 2026-10-17 t=50) and swing as soon as he is in reach with his back turned.
+	var swings: int = 0
+	var t_end: float = rt.heist_time_s + 60.0
+	var sd: StealthDirector = HeistRuntime.get_service(G.SVC_STEALTH) as StealthDirector
+	var next_trace: float = 0.0
+	while g.is_alive() and g.alert_state <= Enums.AlertState.CURIOUS and swings < 4 and rt.heist_time_s < t_end:
+		var d: float = pilot.flat_dist(g.global_position, c.global_position)
+		if rt.heist_time_s >= next_trace:
+			next_trace = rt.heist_time_s + 0.5
+			note("knife trace: me %s guard %s dist %.2f back %s alert %d meter %.2f crouch %s" % [
+				Po5Pilot._v(c.global_position), Po5Pilot._v(g.global_position), d, _back_turned(g), g.alert_state,
+				sd.detection_value(g, c.slot) if sd != null else -1.0, c.crouched])
+		if not _back_turned(g):
+			# He faces this way: back behind PlantDoor (out of his line of sight) until he turns again.
+			if pilot.flat_dist(c.global_position, hide_at) > 0.5:
+				await pilot.goto(hide_at, 0.4, 0.6)
+			else:
+				await wait_s(0.2)
 			continue
-		await pilot.face(g.global_position + Vector3(0, 1.1, 0), 0.05, 0.5)
+		if d > 1.5:
+			# Straight B5 corridor: steer at him every tick with W held (sprint beyond 2.5 m; S2.5: movement has no
+			# detection term). 0.5 s goto legs stopped and started and fell behind his patrol walk (1.1 vs 1.6 m/s).
+			var from: Vector3 = c.global_position
+			pilot.inp.press(&"move_forward")
+			for _f: int in 15:
+				if not g.is_alive() or not _back_turned(g):
+					break
+				var dd: float = pilot.flat_dist(g.global_position, c.global_position)
+				if dd <= 1.4:
+					break
+				if dd > 2.5:
+					pilot.inp.press(&"sprint")
+				else:
+					pilot.inp.release(&"sprint")
+				pilot.steer_at(g.global_position + Vector3(0, 1.1, 0))
+				await get_tree().physics_frame
+			pilot.inp.release(&"sprint")
+			pilot.inp.release(&"move_forward")
+			if pilot.flat_dist(from, c.global_position) < 0.1 and _back_turned(g):
+				# Pinned (the PlantDoor jamb on the straight line from B3): one navmesh leg toward his back.
+				var back: Vector3 = g.global_position + g.global_basis.z.normalized() * 0.9
+				await pilot.goto(Vector3(back.x, g.global_position.y, back.z), 1.2, 1.5)
+			continue
+		await pilot.face(g.global_position + Vector3(0, 1.1, 0), 0.05, 0.3)
 		var alert_before: int = g.alert_state
 		await pilot.inp.tap(&"melee")  # a quick swing: S3.6 kills an unaware guard on any hit; a charge let him walk on
+		swings += 1
 		await wait_s(0.6)
 		note("swing: me %s guard %s fwd %s dist %.2f, swings %d, hits %d, health %.2f alive %s alert %d -> %d" % [
 			Po5Pilot._v(c.global_position), Po5Pilot._v(g.global_position), Po5Pilot._v(-g.global_basis.z),
 			pilot.flat_dist(g.global_position, c.global_position), hits[1], hits[0], g.health, g.is_alive(),
 			alert_before, g.alert_state])
 	if g.is_alive():
-		note("gate guard not knifed (alert %d)" % g.alert_state)
+		note("gate guard not knifed (alert %d, meter %.2f, dist %.2f)" % [g.alert_state,
+			sd.detection_value(g, c.slot) if sd != null else -1.0, pilot.flat_dist(g.global_position, c.global_position)])
 		return false
 	await shot("gate_guard_knifed")
 	for _k: int in 60:
@@ -257,7 +335,12 @@ func _gate_guard() -> bool:
 
 ## True when the guard faces away from the pilot (his forward and the pilot are > ~110 deg apart).
 func _back_turned(g: NpcBase) -> bool:
-	var to_me: Vector3 = pilot.crew.global_position - g.global_position
+	return _back_turned_to(g, pilot.crew.global_position)
+
+
+## True when the guard faces away from `p` (his forward and `p` are > ~110 deg apart).
+func _back_turned_to(g: NpcBase, p: Vector3) -> bool:
+	var to_me: Vector3 = p - g.global_position
 	to_me.y = 0.0
 	var fwd: Vector3 = -g.global_basis.z
 	fwd.y = 0.0
@@ -364,9 +447,13 @@ func _time_lock() -> bool:
 		return false
 	var vault: Door = _tagged(&"vault_door") as Door
 	var t: float = 0.0
+	Engine.time_scale = TIME_LOCK_SCALE  # stated shortcut: standing still through the time lock
+	note("time lock running: waiting at x%.0f" % TIME_LOCK_SCALE)
+	var t0: float = rt.heist_time_s
 	while vault != null and not vault.is_open and t < 120.0 and _alarm == &"":
 		await pilot.hold_position(2.0)
-		t += 2.0
+		t = rt.heist_time_s - t0
+	Engine.time_scale = 1.0
 	note("vault open %s after %.0f s" % [vault != null and vault.is_open, t])
 	await shot("vault_open")
 	return vault != null and vault.is_open

@@ -204,15 +204,20 @@ func refresh() -> void:
 		_active.add_theme_font_size_override(&"font_size", UiTokens.FONT_LEAD)
 		_active.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		_active.custom_minimum_size = Vector2(380, 0)
-	for o: Dictionary in prop(&"objectives", []) as Array:
+	var rows: Array = prop(&"objectives", []) as Array
+	var main_live: bool = _has_live_main_step(rows)
+	for o: Dictionary in rows:
 		if int(o.get("state", Enums.ObjectiveState.ACTIVE)) != Enums.ObjectiveState.ACTIVE:
 			continue
 		if StringName(o.get("id", &"")) == shown_id:
 			still_active = true
 		if new_id != &"":
 			continue
-		if bool((o.get("args", {}) as Dictionary).get("disabled", false)):
+		var args: Dictionary = o.get("args", {}) as Dictionary
+		if bool(args.get("disabled", false)):
 			continue  # PO-5.6: e.g. the keycard step in a lockdown; the next live step shows instead
+		if main_live and bool(args.get("side", false)):
+			continue  # P DB pass: a side task running alongside (DB [cartel]) never hides the current main step
 		var t: String = UiText.t(&"ui.hud.objective_active", {"text": objective_text(o, secured_count)})
 		if _active.text != t:
 			_active.text = t
@@ -230,6 +235,16 @@ func refresh() -> void:
 	_device_last()
 	_shown_text = (list_box.get_child(0) as Label).text if list_box.get_child_count() > 0 else ""
 	visible = list_box.get_child_count() > 0 or flashing
+
+
+## True when some ACTIVE, live (not disabled) step is not a side task (data `side: true`, set by the mission).
+static func _has_live_main_step(rows: Array) -> bool:
+	for o: Dictionary in rows:
+		var args: Dictionary = o.get("args", {}) as Dictionary
+		if int(o.get("state", Enums.ObjectiveState.ACTIVE)) == Enums.ObjectiveState.ACTIVE \
+				and not bool(args.get("disabled", false)) and not bool(args.get("side", false)):
+			return true
+	return false
 
 
 static func _state_key(st: int) -> StringName:

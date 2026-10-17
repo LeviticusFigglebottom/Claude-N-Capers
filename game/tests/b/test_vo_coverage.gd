@@ -15,7 +15,8 @@ const HEISTS: Array[StringName] = [
 const UNSAID_A: Array[StringName] = []  # every A line is said: the D-117 bark director, env/a-core dd20d1f0 (round 226)
 
 ## B reserve: a contact's generic radio lines that no current heist reaches (each fact has an always-ready heist
-## line, or no heist with that contact has the fact: only Night Deposit fails an objective). Kept on purpose for
+## line, or no heist with that contact has the fact: Night Deposit, and Dockside Burn's [cartel] since A 4b4fef68,
+## fail an objective). Kept on purpose for
 ## RadioTweak.speaker_overrides and new heists (content/docs/radio.md "Coverage"). The generic escape lines are
 ## reached again since QB-1 (LEAD 2026-10-16) deleted the heist escape lines a mission escape line always covered.
 const UNSAID_B_RESERVE: Array[StringName] = [

@@ -130,3 +130,29 @@ func test_gn8_server_keypad_in_stealth_leaves_server_door_hidden() -> void:
 		return
 	_take(kp[0])
 	assert_eq(m.objective_state(&"server_door"), Enums.ObjectiveState.HIDDEN, "a loud-only step stays hidden")
+
+
+## ENV C (P's DB pass): ShutterTreasury / ShutterArtDoor sit on TreasuryDoor / ArtDoorEG. At lockdown the door under a
+## barred shutter is BARRED and closed too (no layer-1 or breach link through a shut shutter); the loud hack lifts both.
+func test_gn8_lockdown_bars_the_door_under_each_shutter() -> void:
+	var m: HeistMission = await _launch()
+	var shutters: Array[Node] = m.find_tagged(&"shutter")
+	var pairs: Array = []
+	for s: Node in shutters:
+		for d: Door in m.call(&"_doors_under", s):
+			pairs.append([s, d])
+	assert_true(pairs.size() >= 2, "face-mounted shutters found on doors (%d)" % pairs.size())
+	m.call(&"_go_loud")
+	await wait_physics_frames(2)
+	for p: Array in pairs:
+		var d: Door = p[1]
+		assert_eq(d.lock, Door.Lock.BARRED, "%s under %s: BARRED" % [d.name, (p[0] as Node).name])
+		assert_false(d.is_open, "%s closed" % d.name)
+		if d._nav_link != null:
+			assert_false(d._nav_link.enabled, "%s: no nav link through the shutter" % d.name)
+	m.call(&"_lift_lockdown")
+	await wait_physics_frames(2)
+	for p: Array in pairs:
+		var d: Door = p[1]
+		assert_false(d.locked, "%s unlocked when the shutters lift" % d.name)
+		assert_true(d.is_open, "%s open" % d.name)

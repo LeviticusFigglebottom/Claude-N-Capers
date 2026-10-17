@@ -103,3 +103,33 @@ func test_sl_secure_seeds_drives_zero() -> void:
 			data = o.get("data", {})
 	assert_eq(int(data.get("drives_secured", -1)), 0, "drives_secured 0 at start")
 	assert_eq(bool(data.get("laptop_secured", true)), false, "laptop_secured false at start")
+
+
+## P DB pass: an NPC opening an entry door is not the breach; a player (by_net_id 0) is.
+func test_db_breach_ignores_npc_opened_doors() -> void:
+	var m: HeistMission = await _launch(&"dockside_burn")
+	var npc: NpcBase = _rt.npcs(&"civilian")[0] as NpcBase if not _rt.npcs(&"civilian").is_empty() else null
+	var npc_id: int = npc.net_id if npc != null else 987654
+	m.call(&"_on_entry_door", true, npc_id)
+	assert_eq(m.objective_state(&"breach"), Enums.ObjectiveState.ACTIVE, "an NPC opening a door: no breach")
+	m.call(&"_on_entry_door", true, 0)
+	assert_eq(m.objective_state(&"breach"), Enums.ObjectiveState.COMPLETED, "a player opening it: breach")
+
+
+## P DB pass: the variant's entry door starts open; walking through it completes [breach].
+func test_db_breach_on_walking_through_the_open_variant_door() -> void:
+	var m: HeistMission = await _launch(&"dockside_burn")
+	var doors: Dictionary = m.get(&"ENTRY_DOORS")
+	var door: Node3D = null
+	for sid: Variant in doors:
+		if bool(m.call(&"_slot_active", &"warehouse_entry", sid)):
+			door = m.get_node_or_null(NodePath("../Gameplay/Doors/" + String(doors[sid]))) as Node3D
+	assert_true(door != null, "seed rolls an open entry door")
+	if door == null:
+		return
+	assert_eq(m.objective_state(&"breach"), Enums.ObjectiveState.ACTIVE, "not breached at the spawn")
+	var snap: Vector3 = NavigationServer3D.map_get_closest_point(_rt.map.get_world_3d().navigation_map, door.global_position)
+	_rt.teleport_crew(0, Transform3D(Basis.IDENTITY, snap + Vector3(0, 0.05, 0)))
+	var ok: bool = await wait_until(func() -> bool:
+		return m.objective_state(&"breach") == Enums.ObjectiveState.COMPLETED, 3.0)
+	assert_true(ok, "walking through %s completes [breach]" % door.name)

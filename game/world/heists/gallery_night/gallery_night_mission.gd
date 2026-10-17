@@ -128,6 +128,8 @@ const TAG_LANTERN_MOVED: StringName = &"canvas_lantern_moved"
 ## The couriers' spawn tag, and the doors on their LD -> slot -> AS walk the map does not authorise them on yet (the
 ## KEYCARD LD art door; TR and the AS vault door list them already): authorised when they walk in.
 const COURIER_SPAWN_TAG: StringName = &"guard_vaultline"
+## A Door this close (flat) to a shutter is the door it is face-mounted on (ENV C: same position / yaw).
+const SHUTTER_DOOR_M: float = 0.6
 const INSPECTOR_SPAWN_TAG: StringName = &"guard_inspection"
 ## B3 (LEAD: the doc wins): the inspectors' two Halberd escorts, at GUARD SpawnPoints tagged this (ENV C markers at
 ## LD). They walk with the inspectors and can radio the empty slot too; no markers = no escorts (logged once).
@@ -201,9 +203,9 @@ func _on_mission_start() -> void:
 	_add(&"centrepiece", Enums.ObjectiveState.ACTIVE, [TAG_LANTERN])
 	_add(&"canvases", Enums.ObjectiveState.ACTIVE, LIST_TAGS.duplicate())
 	_add(&"secure", Enums.ObjectiveState.ACTIVE, [secure_tag], {"count": 0, "total": 2})
-	_add(&"extras", Enums.ObjectiveState.ACTIVE, [TAG_LOCKERS, TAG_SAFE], {"optional": true})
-	_add(&"lockers", Enums.ObjectiveState.ACTIVE, [TAG_LOCKERS], {"optional": true})
-	_add(&"curator_safe", Enums.ObjectiveState.ACTIVE, [TAG_SAFE], {"optional": true})
+	_add(&"extras", Enums.ObjectiveState.ACTIVE, [TAG_LOCKERS, TAG_SAFE], {"optional": true, "side": true})
+	_add(&"lockers", Enums.ObjectiveState.ACTIVE, [TAG_LOCKERS], {"optional": true, "side": true})
+	_add(&"curator_safe", Enums.ObjectiveState.ACTIVE, [TAG_SAFE], {"optional": true, "side": true})
 	_add(&"lockdown", Enums.ObjectiveState.HIDDEN, [TAG_SHUTTER])
 	_add(&"server_door", Enums.ObjectiveState.HIDDEN, [TAG_SERVER_DOOR])
 	_add(&"vault_drill", Enums.ObjectiveState.HIDDEN, [TAG_VAULT_DRILL])
@@ -930,9 +932,14 @@ func _lift_lockdown() -> void:
 
 ## Shutters and doors: a Door (or any prefab with Door's relock / unlock / set_open, ENV C's shutter and grate
 ## prefabs) is BARRED and closed; Markers (G1 stand-ins) are skipped.
+## ENV C (P's DB pass): GN's ShutterTreasury / ShutterArtDoor are face-mounted on TreasuryDoor / ArtDoorEG, so a
+## barred shutter left the door under it linking the doorway (NPCs and the pilot pathed into a shut shutter). A Door
+## sharing a shutter's spot is barred with it and lifted with it.
 func _bar(n: Node) -> void:
 	if n.has_method(&"relock"):
 		n.call(&"relock", Door.Lock.BARRED, true)
+		for d: Door in _doors_under(n):
+			d.relock(Door.Lock.BARRED)
 
 
 func _lift(n: Node) -> void:
@@ -940,6 +947,27 @@ func _lift(n: Node) -> void:
 		n.call(&"unlock")
 	if n.has_method(&"set_open"):
 		n.call(&"set_open", true)
+	if n.has_method(&"relock"):
+		for d: Door in _doors_under(n):
+			d.unlock()
+			d.set_open(true)
+
+
+## Doors (other than `shutter` itself) within SHUTTER_DOOR_M flat and 1 m vertically of a shutter prefab.
+func _doors_under(shutter: Node) -> Array[Door]:
+	var out: Array[Door] = []
+	var s3: Node3D = shutter as Node3D
+	if s3 == null or not s3.is_inside_tree():
+		return out
+	for n: Node in get_tree().get_nodes_in_group(Door.GROUP):
+		var d: Door = n as Door
+		if d == null or d == shutter or not _runtime.is_ancestor_of(d):
+			continue
+		var a: Vector3 = d.global_position
+		var b: Vector3 = s3.global_position
+		if absf(a.y - b.y) <= 1.0 and Vector2(a.x - b.x, a.z - b.z).length() <= SHUTTER_DOOR_M:
+			out.append(d)
+	return out
 
 
 ## Doors tagged `tag` in this map, else the ones at `paths` (relative to the map root).

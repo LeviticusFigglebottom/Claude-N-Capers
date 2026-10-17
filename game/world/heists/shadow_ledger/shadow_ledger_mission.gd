@@ -94,11 +94,11 @@ func _on_mission_start() -> void:
 		{"laptop": 1, "drives": MIN_DRIVES, "optional_more": true, "marker_tags": [TAG_LOOT_SECURE],
 			"laptop_secured": false, "drives_secured": 0})  # B-SL audit: the HUD shows (0/2) from the start
 	add_objective(&"study_safe", &"objective.shadow_ledger.study_safe", Enums.ObjectiveState.ACTIVE,
-		{"optional": true, "marker_tags": [TAG_STUDY_SAFE]})
+		{"optional": true, "side": true, "marker_tags": [TAG_STUDY_SAFE]})
 	add_objective(&"paintings", &"objective.shadow_ledger.paintings", Enums.ObjectiveState.ACTIVE,
-		{"optional": true, "marker_tags": [TAG_PAINTINGS]})
+		{"optional": true, "side": true, "marker_tags": [TAG_PAINTINGS]})
 	add_objective(&"archive_safe", &"objective.shadow_ledger.archive_safe", Enums.ObjectiveState.ACTIVE,
-		{"optional": true, "marker_tags": [TAG_ARCHIVE_SAFE]})
+		{"optional": true, "side": true, "marker_tags": [TAG_ARCHIVE_SAFE]})
 	add_objective(&"escape", &"objective.shadow_ledger.escape", Enums.ObjectiveState.HIDDEN,
 		{"marker_tags": [_escape_tag()]})
 	on_event(&"interaction_completed", _on_interaction_completed)

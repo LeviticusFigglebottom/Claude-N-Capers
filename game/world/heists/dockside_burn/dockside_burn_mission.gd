@@ -63,6 +63,8 @@ const PRODUCT_SEEN_DY_M: float = 2.0
 const PRODUCT_POLL_S: float = 0.5
 const PRODUCT_LOS_MASK: int = 1  # world_static
 const VO_PAYDAY: StringName = &"vo.reyes.dockside_burn_payday"
+## A crew member this close (flat) to the variant's open entry door is going through it: [breach].
+const BREACH_DOOR_M: float = 1.5
 ## D-115 (DB-13): Mercer's Longshot line by the SNIPER_PERCH tag of the perch the Longshot holds (doc §Loud: S1 the
 ## Pier 10 crane, S2 the Bellweather roof; S3 / S4 have no line).
 const SNIPER_LINES: Dictionary = {
@@ -98,7 +100,7 @@ func _on_mission_start() -> void:
 	say(&"vo.mercer.dockside_burn_intro")
 	say(&"vo.reyes.dockside_burn_contact_intro", {}, &"reyes")
 	# [cartel] covers the whole yard (thin out the gunmen): no marker, like casing.
-	add_objective(&"cartel", &"objective.dockside_burn.cartel", Enums.ObjectiveState.ACTIVE, {"optional": true})
+	add_objective(&"cartel", &"objective.dockside_burn.cartel", Enums.ObjectiveState.ACTIVE, {"optional": true, "side": true})
 	add_objective(&"breach", &"objective.dockside_burn.breach", Enums.ObjectiveState.ACTIVE, {"marker_tags": _entry_tags()})
 	add_objective(&"product", &"objective.dockside_burn.product", Enums.ObjectiveState.ACTIVE,
 		{"location": variant(&"product_location"), "marker_tags": [TAG_PRODUCT]})
@@ -115,7 +117,7 @@ func _on_mission_start() -> void:
 		Enums.ObjectiveState.ACTIVE if countroom else Enums.ObjectiveState.HIDDEN,
 		{"alternative": &"containers", "marker_tags": [TAG_COUNT_CAGE, TAG_CASH]})
 	add_objective(&"containers", &"objective.dockside_burn.containers", Enums.ObjectiveState.ACTIVE,
-		{"optional": true, "alternative": &"count_cage" if countroom else &"strongroom",
+		{"optional": true, "side": true, "alternative": &"count_cage" if countroom else &"strongroom",
 			"marker_tags": _container_tags(CONTAINER_KEYS)})
 	add_objective(&"secure", &"objective.dockside_burn.secure", Enums.ObjectiveState.ACTIVE,
 		{"bags": MIN_BAGS, "count": 0, "total": MIN_BAGS, "optional_more": true, "marker_tags": [TAG_LOOT_SECURE]})
@@ -142,6 +144,7 @@ func _on_mission_start() -> void:
 	_schedule_police()
 	_schedule_rare_events()
 	start_timer(&"product_watch", PRODUCT_POLL_S, _poll_product)
+	start_timer(&"entry_watch", PRODUCT_POLL_S, _poll_open_entries)
 
 
 # --- Setup ------------------------------------------------------------------------------------
@@ -247,9 +250,43 @@ func _watch_entry_doors() -> void:
 				d.connect(&"open_changed", _on_entry_door)
 
 
-func _on_entry_door(open: bool, _by_net_id: int) -> void:
-	if open:
+## P DB pass (run2 seed 1792194538: [breach] completed at t=132 with no crew input): an NPC opening an entry door
+## (a worker, a cop) is not the crew getting in; `by_net_id` is the NPC / AI opener, 0 for a player.
+func _on_entry_door(open: bool, by_net_id: int) -> void:
+	if open and (by_net_id == 0 or _is_crew(by_net_id)):
 		_breach()
+
+
+func _is_crew(net_id: int) -> bool:
+	var rt: HeistRuntime = HeistRuntime.of(self)
+	if rt == null:
+		return false
+	for c: CrewController in rt.crew_members():
+		if c.net_id == net_id:
+			return true
+	return false
+
+
+## P DB pass: the variant's entry door starts open, so no open_changed comes: walking through it is the breach. Polls
+## the open entry doors for a crew member within BREACH_DOOR_M (flat, same floor) until [breach] completes.
+func _poll_open_entries() -> void:
+	if objective_state(&"breach") != Enums.ObjectiveState.ACTIVE:
+		return
+	var rt: HeistRuntime = HeistRuntime.of(self)
+	if rt != null:
+		for sid: StringName in ENTRY_DOORS:
+			if not _slot_active(&"warehouse_entry", sid):
+				continue
+			var d: Node3D = get_node_or_null(NodePath(String(DOORS) + "/" + String(ENTRY_DOORS[sid]))) as Node3D
+			if d == null:
+				continue
+			for c: CrewController in rt.crew_members():
+				var p: Vector3 = c.global_position
+				if absf(p.y - d.global_position.y) <= PRODUCT_SEEN_DY_M \
+						and Vector2(p.x - d.global_position.x, p.z - d.global_position.z).length() <= BREACH_DOOR_M:
+					_breach()
+					return
+	start_timer(&"entry_watch", PRODUCT_POLL_S, _poll_open_entries)
 
 
 ## Cartel phase, then the police (D-064 Q1, QC-35): police_delay_s holds the assault director for the

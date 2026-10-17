@@ -52,12 +52,9 @@ var _remote_rows: Array[Dictionary] = []
 
 func _ready() -> void:
 	_tw = Tweak.stealth()
-	max_answers = _tw.pager_max_answers
 	_runtime = HeistRuntime.of(self)
+	max_answers = cap_for(_runtime)
 	if _runtime != null:
-		var v: Variant = _runtime.variants.get(MAX_ANSWERS_SCALAR)
-		if v is int or v is float:
-			max_answers = int(v)
 		_runtime.phase_changed.connect(_on_phase_changed)
 	EventBus.npc_killed.connect(_on_npc_killed)
 	EventBus.npc_alert_state_changed.connect(_on_alert_state_changed)
@@ -143,6 +140,30 @@ func pager_state(pager_id: int) -> int:
 
 
 ## Test hook: set the team-wide answered count.
+## S5.3 / D-130 team pager cap of a run: a rolled `pager_max_answers` variant scalar, else the heist's
+## HeistDef.pager_max_by_difficulty[difficulty] (S heists: Golden Hour 4/4/3/3/2/1), else StealthTweak.pager_max_answers.
+static func cap_for(rt: HeistRuntime) -> int:
+	var tw: StealthTweak = Tweak.stealth()
+	if rt == null:
+		return tw.pager_max_answers
+	var v: Variant = rt.variants.get(MAX_ANSWERS_SCALAR)
+	if v is int or v is float:
+		return int(v)
+	var def: HeistDef = rt.map.heist_def if rt.map != null else null
+	if def != null and not def.pager_max_by_difficulty.is_empty():
+		return def.pager_max_by_difficulty[clampi(rt.difficulty, 0, def.pager_max_by_difficulty.size() - 1)]
+	return tw.pager_max_answers
+
+
+## LocalHudModel reads these names (pagers_max / pagers_answered).
+func pagers_max() -> int:
+	return max_answers
+
+
+func pagers_answered() -> int:
+	return answered_total
+
+
 func set_answered_total(n: int) -> void:
 	answered_total = n
 
