@@ -606,6 +606,12 @@ func _build_site(geo: Node3D) -> void:
 	launch.position = L.LAUNCH[1] + Vector3(0.0, 0.0, 0.01)  # G2: the hull clear of the pontoon's face (zfight)
 	launch.basis = yaw_basis(float(L.LAUNCH[2]))
 	add(blocks, launch)
+	# DB-1: the Pier 10 crane and the trawler over their hidden colliders (L.LANDMARKS, modelled in map coordinates).
+	for lm: Array in L.LANDMARKS:
+		var vis: Node3D = _catalog_scene(String(lm[1])).instantiate() as Node3D
+		vis.name = String(lm[0])
+		vis.position = lm[2]
+		add(blocks, vis)
 	_container_footprints(blocks)
 	var fences: Node3D = add(site, node3d("Closures")) as Node3D
 	for f: Array in L.FENCES:
@@ -774,12 +780,13 @@ func _build_lighting(lighting: Node3D) -> void:
 			_ceiling_light(fx, String(c[0]), c[1], c[2], float(c[3]), float(c[4]))
 	for w: Array in L.WALL_LIGHTS:
 		_wall_light(fx, String(w[0]), w[1], float(w[2]), w[3], float(w[4]), float(w[5]), w[6])
-	# Landmark 2: the Pier 10 crane's orange hazard beacons on the portal beams.
+	# Landmark 2: the Pier 10 crane's orange hazard beacons on the portal beams (DB-1: the catalog beacon fixture).
 	for i: int in range(2):
-		var p: Vector3 = Vector3(77.0, 22.0, -8.0 if i == 0 else 8.0)
-		var bcn: MeshInstance3D = mesh_box(fx, "CraneBeacon%d" % i, p - Vector3(0.2, 0.0, 0.2), p + Vector3(0.2, 0.4, 0.2), "beacon")
-		bcn.set_meta(&"fixture", true)
-		bcn.set_meta(&"kind", "light_fixture")
+		var p: Vector3 = L.CRANE_BEACONS[i]
+		var bcn: Node3D = _catalog_scene("prop_beacon_hazard").instantiate() as Node3D
+		bcn.name = "CraneBeacon%d" % i
+		bcn.position = p
+		add(fx, bcn)
 		var bl: OmniLight3D = OmniLight3D.new()
 		bl.name = "CraneBeaconLight%d" % i
 		bl.position = p + Vector3(0.0, 0.7, 0.0)

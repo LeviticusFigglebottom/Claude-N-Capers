@@ -281,6 +281,14 @@ const LIFT: Dictionary = {
 ## SAW_TARGET, D-057 / QC-37), shutter (fire shutter of a product room), entry (police ENTRY tag).
 ## D-111: the moored launch visual (catalog veh_boat_launch, pivot = keel bottom, deck 1.0 m above): [asset, pivot, yaw].
 const LAUNCH: Array = ["veh_boat_launch", Vector3(23.5, -2.6, 55.5), 0.0]
+## DB-1: the landmark visuals over their hidden BLOCKS colliders (tools/blender/props/dockside_landmarks.py, modelled
+## in map coordinates around these pivots): [node, asset, pivot]. The beacons sit on the crane's portal beams under
+## the CraneBeaconLight omnis (+0.7).
+const LANDMARKS: Array = [
+	["Pier10Crane", "veh_gantry_crane", Vector3(77.0, 0.0, 0.0)],
+	["Trawler", "veh_trawler_dockside", Vector3(71.5, -3.4, 50.8)],
+]
+const CRANE_BEACONS: Array[Vector3] = [Vector3(77.0, 22.0, -8.0), Vector3(77.0, 22.0, 8.0)]
 const DOORS: Array = [
 	# Office block, ground.
 	["O1Front", "single_t40", Vector3(6.0, 0.0, 0.0), 0.0, "LOCKPICK", "INWARD", "door_office", {}],
@@ -417,22 +425,29 @@ const BLOCKS: Array = [
 	["StacksNorth", [88.0, 0.0, -34.0, 100.0, 10.4, -18.0], "container"],
 	["StacksSouth", [88.0, 0.0, -10.0, 100.0, 10.4, 44.0], "container"],
 	["StacksBack", [100.0, -0.3, -34.0, 120.0, 10.4, 44.0], "container"],
-	["CraneLegNW", [73.5, 0.0, -8.5, 74.5, 22.0, -7.5], "crane"],
-	["CraneLegNE", [79.5, 0.0, -8.5, 80.5, 22.0, -7.5], "crane"],
-	["CraneLegSW", [73.5, 0.0, 7.5, 74.5, 22.0, 8.5], "crane"],
-	["CraneLegSE", [79.5, 0.0, 7.5, 80.5, 22.0, 8.5], "crane"],
-	["CranePortalN", [73.5, 20.0, -8.5, 80.5, 22.0, -7.5], "crane"],
-	["CranePortalS", [73.5, 20.0, 7.5, 80.5, 22.0, 8.5], "crane"],
-	["CraneGirderW", [73.5, 21.0, -8.5, 74.5, 22.0, 8.5], "crane"],
-	["CraneGirderE", [79.5, 21.0, -8.5, 80.5, 22.0, 8.5], "crane"],
-	["CraneCab", [76.5, 22.0, -2.0, 81.0, 22.2, 2.0], "crane"],
-	["CraneCabRoof", [76.5, 24.6, -2.0, 81.0, 24.8, 2.0], "crane"],
-	["CraneCabBack", [80.8, 22.2, -2.0, 81.0, 24.6, 2.0], "crane"],
-	["CraneBoom", [56.0, 25.6, -1.0, 110.0, 26.6, 1.0], "crane"],
-	# Harbour: the moored trawler east of the landing stage (S4 wheelhouse), the far shore.
-	["TrawlerHull", [63.0, -3.4, 48.6, 80.0, 0.5, 53.0], "vehicle"],
-	["TrawlerWheelhouse", [68.0, 0.5, 49.6, 72.0, 4.0, 52.0], "vehicle"],
-	["TrawlerMast", [74.8, 0.5, 50.6, 75.2, 9.0, 51.0], "trim"],
+	# DB-1: the crane's colliders, drawn by the catalog veh_gantry_crane (LANDMARKS); the bogies under the legs (x +-0.5,
+	# z +-1.5 round each leg, 1.65 m up to the travel drives) are colliders of their own.
+	["CraneLegNW", [73.5, 0.0, -8.5, 74.5, 22.0, -7.5], "none"],
+	["CraneLegNE", [79.5, 0.0, -8.5, 80.5, 22.0, -7.5], "none"],
+	["CraneLegSW", [73.5, 0.0, 7.5, 74.5, 22.0, 8.5], "none"],
+	["CraneLegSE", [79.5, 0.0, 7.5, 80.5, 22.0, 8.5], "none"],
+	["CraneBogieNW", [73.5, 0.0, -9.5, 74.5, 1.65, -6.5], "none"],
+	["CraneBogieNE", [79.5, 0.0, -9.5, 80.5, 1.65, -6.5], "none"],
+	["CraneBogieSW", [73.5, 0.0, 6.5, 74.5, 1.65, 9.5], "none"],
+	["CraneBogieSE", [79.5, 0.0, 6.5, 80.5, 1.65, 9.5], "none"],
+	["CranePortalN", [73.5, 20.0, -8.5, 80.5, 22.0, -7.5], "none"],
+	["CranePortalS", [73.5, 20.0, 7.5, 80.5, 22.0, 8.5], "none"],
+	["CraneGirderW", [73.5, 21.0, -8.5, 74.5, 22.0, 8.5], "none"],
+	["CraneGirderE", [79.5, 21.0, -8.5, 80.5, 22.0, 8.5], "none"],
+	["CraneCab", [76.5, 22.0, -2.0, 81.0, 22.2, 2.0], "none"],
+	["CraneCabRoof", [76.5, 24.6, -2.0, 81.0, 24.8, 2.0], "none"],
+	["CraneCabBack", [80.8, 22.2, -2.0, 81.0, 24.6, 2.0], "none"],
+	["CraneBoom", [56.0, 25.6, -1.0, 110.0, 26.6, 1.0], "none"],
+	# Harbour: the moored trawler east of the landing stage (S4 wheelhouse; DB-1: drawn by the catalog
+	# veh_trawler_dockside, LANDMARKS), the far shore.
+	["TrawlerHull", [63.0, -3.4, 48.6, 80.0, 0.5, 53.0], "none"],
+	["TrawlerWheelhouse", [68.0, 0.5, 49.6, 72.0, 4.0, 52.0], "none"],
+	["TrawlerMast", [74.8, 0.5, 50.6, 75.2, 9.0, 51.0], "none"],
 	["FarShore", [-200.0, WATER_Y, 400.0, 250.0, 8.0, 410.0], "facade_c"],
 	# The Co-op launch (escape E3) moored along the pontoon: walkable deck at -1.6. D-111: the catalog `veh_boat_launch`
 	# (LAUNCH, 9 x 3 m, deck 1.0 m over its keel, its quay side on the pontoon edge z 54) is the visual; these are its
@@ -1044,5 +1059,6 @@ const REVIEW_CAMERAS: Array = [
 	["QuayShed", Vector3(19.0, 1.8, 35.2), Vector3(14.0, 1.2, 40.0), 75.0, "QS quay net store (H3): the pontoon window"],
 	["LandingStage", Vector3(57.0, 1.7, 39.0), Vector3(60.0, -1.8, 47.0), 75.0, "X4 quay steps down to the landing stage, P4 shed"],
 	["RoofPerch", Vector3(10.0, 8.85, 6.2), Vector3(10.0, 7.0, -50.0), 70.0, "X5 office roof (player perch) toward the viaduct"],
-	["SniperCrane", Vector3(79.0, 23.8, -2.6), Vector3(40.0, 0.0, -12.0), 70.0, "S1 crane cab: the Longshot's view over the yard and apron"],
+	# DB-1: just west of the cab's open front (inside it the roof blocks the sky ray of the cameras check)
+	["SniperCrane", Vector3(76.05, 23.8, -1.3), Vector3(40.0, 0.0, -12.0), 70.0, "S1 crane cab: the Longshot's view over the yard and apron"],
 ]
