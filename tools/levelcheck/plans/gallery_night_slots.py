@@ -384,7 +384,7 @@ B_SNAPSHOT = {
         ["escape", [1, 1], None, {}, {}],
         ["xl_crate", [0, 0], None, {}, {}],
         ["admin_pa", [0, 0], None, {}, {}],
-        ["gala_extra", [0, 0], [0, 0, 0, 1, 1, 2], {}, {}],  # D-130 (C adds it to the live table)
+        ["gala_extra", [0, 0], [0, 1, 1, 2, 2, 2], {}, {}],  # D-130 (C adds it to the live table)
     ],
     "slots": {
         "centrepiece": [["cp_landing", 0.4], ["cp_treasury", 0.35], ["cp_store", 0.25]],

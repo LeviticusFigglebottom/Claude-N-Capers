@@ -59,15 +59,15 @@ Cross-env requests are QC-51..QC-59.
 - **Difficulty notes:**
   - Routine/Tense: 1–2 guards (hall post + 0–1 rover; `rover_none` 20%) + operator (60%), 3–5 patrons, `sensors_treasury`
     most likely (`sensor_net` 50%; `sensors_upper` 35%, and `sensors_all` 15%, so all 17 frames can be wired even at Routine).
-  - Hazardous/Brutal: 3 guards on Hazardous, exactly 4 on Brutal (`difficulty_add`, `rover_none` 0), 5–9 patrons (E 7.1, D-130), sweeping/timed lasers favoured, `sensors_all`
+  - Hazardous/Brutal: 3 guards on Hazardous, exactly 4 on Brutal (`difficulty_add`, `rover_none` 0), 5–9 patrons (E 7.0, D-130), sweeping/timed lasers favoured, `sensors_all`
     40% (`sensors_upper` 40%, `sensors_treasury` 20%), `insurance_inspection` and `vaultline_early` events enabled. **From Brutal the guard
     count plus the operator can exceed the 4-pager cap**: some guards must be ghosted. Intended.
   - Lethal/Cataclysm: 5 guards, Titan cameras (S8.1), `argus_upgrade` enabled.
   - **D-130 (population by difficulty):** every tier adds civilians, up to +35 % (expected count, gala) at Cataclysm:
-    the `gala_extra` staff (one from Brutal, both at Cataclysm) plus the
+    the `gala_extra` staff (a cloakroom attendant from Tense, the Drawings Cabinet attendant too from Brutal) plus the
     `patrons` / `stragglers` per-difficulty rows. Guards keep the lead-ruling curve above (it already passes D-130's
     +50 % from Hazardous). D-130 addendum (LEAD): no tier falls below the tier under it or its pre-D-130 count (Hazardous
-    keeps E 7 patrons). Table: §roster, Totals per difficulty.
+    keeps the pre-D-130 E 7.0 patrons; B's rules hold: no Tense patrons row, Hazardous = Brutal). Table: §roster, Totals per difficulty.
   - **Solo:** AI teammates wait at the van in stealth (D-014). In loud they carry canvases on
     `carry_bag` orders (LIGHT: no speed penalty worth managing).
 
@@ -521,8 +521,8 @@ Support-space check (level_standards §2.2):
 | Waitstaff (`gallery_waitstaff`) | 1–2 | until last call + 120 s | `civ_waitstaff` | `walk_text` / `browse` (bar) | `staff`, `staff_bar` |
 | Conservator (`gallery_attendant_b`, QC-58) | 0–1 | `conservator` = `cons_late` | `civ_conservator` | `teller` (standing at the 0.9 m BenchCS, PO6-06) | `staff`, `staff_cs` |
 | Admin PA (cast `gallery_admin`, QC-58c, ENV D 50265303) | 0–1 | rare `late_paperwork` | `civ_admin` | `desk_work` (on her DeskAO chair's `Seat`, PO6-06) | `staff`, `staff_admin` |
-| Cloakroom attendant (`gallery_waitstaff`, D-130) | 0–1 | `gala_extra` (Brutal+); leaves with the waitstaff | `civ_waitstaff` | `teller` (behind the CK counter's west half, 1.05 m off the till) | — |
-| Drawings attendant (`gallery_attendant`, D-130) | 0–1 | `gala_extra` (Cataclysm, or the Brutal+ pick); stays after last call | `civ_attendant` | `curator_inspect` (at the DC south vitrine) | — |
+| Cloakroom attendant (`gallery_waitstaff`, D-130) | 0–1 | `gala_extra` (Tense+); leaves with the waitstaff | `civ_waitstaff` | `teller` (behind the CK counter's west half, 1.05 m off the till) | — |
+| Drawings attendant (`gallery_attendant`, D-130) | 0–1 | `gala_extra` (Brutal+, or the Tense pick); stays after last call | `civ_attendant` | `curator_inspect` (at the DC south vitrine) | — |
 | Patrons (`gallery_patron`) | 3–12 | `patrons` scalar; `stragglers` after last call | `civ_patron` (GH ×4, WG ×2, EG ×2, EB ×2, court ×2) | `browse` / `sit` / `smoke` (court) | `civilian`, `civilian_court` |
 
 **Totals per difficulty** (guards from `guard_post` picks with `difficulty_add`; civilians at load, before last
@@ -532,11 +532,11 @@ call: curator, 2 attendants, 2 waitstaff, conservator 0–1, `gala_extra`, the f
 | Difficulty | Guards (hall + rovers/smoker) | Operator | Pagers to clear every guard | Civilians before last call (E, %) | `gala_extra` | Notes |
 |---|---|---|---|---|---|---|
 | Routine | 1 + 0–1 = **1–2** (1.8) | 60% | 1–3 | 8–14 (10.1) | 0 | |
-| Tense | 1 + 0–1 = **1–2** (1.8) | 60% | 1–3 | 8–16 (11.1, +10 %) | 0 | Same guard_post pick as Routine (GN-B1 Q2: the Variable table rules). |
-| Hazardous | 1 + 2 = **3** | 65% | 3–4 | 10–16 (12.6, +24 %) | 0 | |
-| Brutal | 1 + 3 = **4** | 75% | 4–5 | 11–17 (13.6, +34 %) | 1 | Exceeds the cap with the operator. |
-| Lethal | 1 + 4 = **5** | 75% | 5–6 | 11–19 (13.7, +35 %) | 1 | Ghost 1–2 guards; Titan cameras. |
-| Cataclysm | 1 + 4 = **5** | 75% | 5–6 | 12–21 (14.7, +45 %) | 2 | As Lethal. |
+| Tense | 1 + 0–1 = **1–2** (1.8) | 60% | 1–3 | 9–15 (11.2, +10 %) | 1 | Same guard_post pick as Routine (GN-B1 Q2: the Variable table rules). |
+| Hazardous | 1 + 2 = **3** | 65% | 3–4 | 11–17 (13.5, +33 %) | 1 | |
+| Brutal | 1 + 3 = **4** | 75% | 4–5 | 12–18 (14.5, +43 %) | 2 | Exceeds the cap with the operator. |
+| Lethal | 1 + 4 = **5** | 75% | 5–6 | 12–21 (14.7, +45 %) | 2 | Ghost 1–2 guards; Titan cameras. |
+| Cataclysm | 1 + 4 = **5** | 75% | 5–6 | 12–21 (15.0, +48 %) | 2 | As Lethal. |
 
 After last call the guests and waitstaff (with the cloakroom attendant) leave; the curator, the attendants (with the
 DC attendant), the conservator and `stragglers` stay (E 4.3 Routine to 5.85 Cataclysm, +36 %).
@@ -836,8 +836,8 @@ Hazardous (`sensor_net`, `laser_pattern`, `patrons`, `escape_eta_s`).
 | variable | options (slot ids) | weights | gameplay effect (the decision it changes) |
 |---|---|---|---|
 | `last_call_s` (scalar) | 480, 600, 720 | uniform | **How long the gala lasts:** the casing window and how long the ground rooms stay public (dangerous to work masked, safe to walk unmasked). |
-| `patrons` (scalar) | 3, 5, 7, 9 | `values` 3/5/7/9/12; Routine 0.4/0.4/0.2/0/0 (E 4.6); D-130: Tense 0.2/0.4/0.3/0.1/0 (E 5.6), Hazardous / Brutal 0/0.25/0.45/0.3/0 (E 7.1, never below the pre-D-130 7.0), Lethal / Cataclysm 0/0.3/0.35/0.3/0.05 (E 7.25; the D-115 roll of 12 stays) | **How many eyes before last call** (and hostages in loud). |
-| `gala_extra` (`civilian_cluster`, D-130) | `gx_cloakroom` (CK counter), `gx_drawings` (DC attendant) | 1, 1; pick 0, `difficulty_add` [0, 0, 0, 1, 1, 2] | **More staff eyes on the public ground floor** as the difficulty rises: the cloakroom watches VE/CK, the DC attendant the drawings and the WG door. |
+| `patrons` (scalar) | 3, 5, 7, 9 | `values` 3/5/7/9/12; Routine 0.4/0.4/0.2/0/0 (E 4.6); Tense = Routine; D-130: Hazardous / Brutal 0/0.3/0.4/0.3/0 (E 7.0, the pre-D-130 rows), Lethal 0/0.3/0.35/0.3/0.05 (E 7.25), Cataclysm 0/0.3/0.3/0.3/0.1 (E 7.5; the D-115 roll of 12 stays) | **How many eyes before last call** (and hostages in loud). |
+| `gala_extra` (`civilian_cluster`, D-130) | `gx_cloakroom` (CK counter), `gx_drawings` (DC attendant) | 1, 1; pick 0, `difficulty_add` [0, 1, 1, 2, 2, 2] | **More staff eyes on the public ground floor** as the difficulty rises: the cloakroom watches VE/CK, the DC attendant the drawings and the WG door. |
 | `stragglers` (scalar) | 0, 1, 2 | 0.4, 0.4, 0.2; D-130: Hazardous 0.35/0.45/0.2, Brutal 0.3/0.45/0.25, Lethal 0.2/0.45/0.35, Cataclysm 0.1/0.45/0.45 | **Whether the ground floor is empty after last call** or still has a guest who can phone. |
 | `centrepiece` (`loot_spot`) | `cp_landing` (GH), `cp_treasury` (TR), `cp_store` (AS) | 0.4, 0.35, 0.25 | **The required canvas's barrier:** public view + laser curtain, keycard + lasers + always-live camera, or keycard into the basement vault. Decides the floor you work and the escape you want. |
 | `canvas_orchard` (`loot_spot`) | `orchard_calloway` (UG1), `orchard_benefactors` (EB), `orchard_quarantine` (QR crate) | 1, 1, 0.7 | Upstairs behind the rover and the lockdown shutter, on the public ground floor, or in the basement. |

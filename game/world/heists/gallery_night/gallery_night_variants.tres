@@ -141,7 +141,7 @@ rules = Array[Dictionary]([{
 "group": &"admin_pa",
 "pick": Vector2i(0, 0)
 }, {
-"difficulty_add": Array[int]([0, 0, 0, 1, 1, 2]),
+"difficulty_add": Array[int]([0, 1, 1, 2, 2, 2]),
 "group": &"gala_extra",
 "pick": Vector2i(0, 0)
 }])
@@ -225,11 +225,10 @@ scalars = Array[Dictionary]([{
 "values": [3, 5, 7, 9, 12],
 "weights": PackedFloat32Array(0.4, 0.4, 0.2, 0, 0),
 "weights_by_difficulty": {
-1: PackedFloat32Array(0.2, 0.4, 0.3, 0.1, 0),
-2: PackedFloat32Array(0, 0.25, 0.45, 0.3, 0),
-3: PackedFloat32Array(0, 0.25, 0.45, 0.3, 0),
+2: PackedFloat32Array(0, 0.3, 0.4, 0.3, 0),
+3: PackedFloat32Array(0, 0.3, 0.4, 0.3, 0),
 4: PackedFloat32Array(0, 0.3, 0.35, 0.3, 0.05),
-5: PackedFloat32Array(0, 0.3, 0.35, 0.3, 0.05)
+5: PackedFloat32Array(0, 0.3, 0.3, 0.3, 0.1)
 }
 }, {
 "id": &"stragglers",
