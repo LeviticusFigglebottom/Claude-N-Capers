@@ -51,12 +51,12 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## floating: Nothing floats
 
-- 840 props checked
+- 885 props checked
 
 
 ## clipping: Nothing clips
 
-- 840 props, 57 doors checked
+- 885 props, 57 doors checked
 
 
 ## orientation: Flush and oriented
@@ -172,16 +172,16 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## slopes: No walkable slope < 50° outside the play mesh
 
-- 153 x 105 columns (0.25 m), 79081 surface samples, 0 collider(s) with reachable walkable surfaces outside play
+- 153 x 105 columns (0.25 m), 79116 surface samples, 0 collider(s) with reachable walkable surfaces outside play
 
 
 ## navmesh: Navmesh
 
-- navmesh: 1813 polygons, cell 0.10/0.10 m
+- navmesh: 1833 polygons, cell 0.10/0.10 m
 - 233 markers checked
 | room | walkable samples | covered | coverage |
 |---|---|---|---|
-| `Rooms/RoomS1` | 83 | 83 | 100% |
+| `Rooms/RoomS1` | 74 | 74 | 100% |
 | `Rooms/RoomS3` | 8 | 8 | 100% |
 | `Rooms/RoomS2` | 19 | 19 | 100% |
 | `Rooms/RoomSA` | 7 | 7 | 100% |
@@ -194,7 +194,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `Rooms/RoomK5` | 64 | 64 | 100% |
 | `Rooms/RoomK6` | 46 | 46 | 100% |
 | `Rooms/RoomK7` | 46 | 46 | 100% |
-| `Rooms/RoomK8` | 181 | 181 | 100% |
+| `Rooms/RoomK8` | 176 | 176 | 100% |
 | `Rooms/RoomK9` | 20 | 20 | 100% |
 | `Rooms/RoomK10` | 18 | 18 | 100% |
 | `Rooms/RoomK11` | 12 | 12 | 100% |
@@ -202,7 +202,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `Rooms/RoomK13` | 30 | 30 | 100% |
 | `Rooms/RoomK14` | 15 | 15 | 100% |
 | `Rooms/RoomK15` | 23 | 23 | 100% |
-| `Rooms/RoomK16` | 119 | 119 | 100% |
+| `Rooms/RoomK16` | 104 | 104 | 100% |
 | `Rooms/RoomK17` | 27 | 27 | 100% |
 | `Rooms/RoomK18` | 51 | 51 | 100% |
 | `Rooms/RoomK19` | 42 | 42 | 100% |
@@ -273,17 +273,17 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## materials: Materials and texel density
 
-- 3415 surfaces checked
+- 3583 surfaces checked
 
 
 ## zfight: Z-fighting
 
-- 362054 triangles checked
+- 381470 triangles checked
 
 
 ## lights: Lighting is deliberate
 
-- 307 lights, 257 fixture meshes
+- 307 lights, 259 fixture meshes
 
 
 ## viewmodel_lit: Interior key lights light the viewmodel (D-095)
@@ -295,7 +295,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 | room | kit | props | m² | per m² |
 |---|---|---|---|---|
-| `Rooms/RoomS1` | service_lobby | 10 | 30.0 | 0.33 |
+| `Rooms/RoomS1` | service_lobby | 18 | 30.0 | 0.60 |
 | `Rooms/RoomS3` | corridor_service | 3 | 6.0 | 0.50 |
 | `Rooms/RoomS2` | refuse_room | 12 | 18.0 | 0.67 |
 | `Rooms/RoomK1` | office_partner | 25 | 42.0 | 0.60 |
@@ -305,7 +305,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `Rooms/RoomK5` | office_partner | 28 | 42.0 | 0.67 |
 | `Rooms/RoomK6` | corridor_office | 11 | 18.0 | 0.61 |
 | `Rooms/RoomK7` | corridor_office | 8 | 18.0 | 0.44 |
-| `Rooms/RoomK8` | office_open_law | 54 | 94.5 | 0.57 |
+| `Rooms/RoomK8` | office_open_law | 77 | 94.5 | 0.81 |
 | `Rooms/RoomK9` | corridor_office | 7 | 13.5 | 0.52 |
 | `Rooms/RoomK10` | corridor_service | 8 | 13.5 | 0.59 |
 | `Rooms/RoomK11` | server_room_sl | 18 | 27.5 | 0.65 |
@@ -313,7 +313,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `Rooms/RoomK13` | security_office_sl | 19 | 18.0 | 1.06 |
 | `Rooms/RoomK14` | electrical_sl | 6 | 10.0 | 0.60 |
 | `Rooms/RoomK15` | copy_room | 9 | 14.0 | 0.64 |
-| `Rooms/RoomK16` | corridor_office | 20 | 54.0 | 0.37 |
+| `Rooms/RoomK16` | corridor_spine_sl | 33 | 54.0 | 0.61 |
 | `Rooms/RoomK17` | archive_records | 10 | 36.0 | 0.28 |
 | `Rooms/RoomK18` | break_room_office | 24 | 36.0 | 0.67 |
 | `Rooms/RoomK19` | library_law | 15 | 36.0 | 0.42 |
@@ -346,16 +346,12 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `Rooms/RoomR1` | plant_riser | 3 | 6.8 | 0.44 |
 | `Rooms/RoomR3` | plant_room_roof | 17 | 81.0 | 0.21 |
 | `Rooms/RoomX1` | exterior_terrace | 16 | 216.0 | 0.07 |
-| `Rooms/RoomX2` | exterior_roof_tower | 24 | 540.0 | 0.04 |
+| `Rooms/RoomX2` | exterior_roof_tower | 25 | 540.0 | 0.05 |
 
 
 ## variety: Layout variety
 
 - kit `conference_room`: 1 room(s), 1 distinct layout(s)
-- kit `exterior_roof_tower`: 1 room(s), 1 distinct layout(s)
-- kit `exterior_terrace`: 1 room(s), 1 distinct layout(s)
-- kit `plant_room_roof`: 1 room(s), 1 distinct layout(s)
-- kit `plant_riser`: 1 room(s), 1 distinct layout(s)
 - kit `linen_janitor`: 1 room(s), 1 distinct layout(s)
 - kit `corridor_glazed`: 1 room(s), 1 distinct layout(s)
 - kit `boardroom`: 1 room(s), 1 distinct layout(s)
@@ -374,56 +370,61 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 - kit `library_law`: 1 room(s), 1 distinct layout(s)
 - kit `break_room_office`: 2 room(s), 2 distinct layout(s)
 - kit `archive_records`: 1 room(s), 1 distinct layout(s)
+- kit `corridor_spine_sl`: 1 room(s), 1 distinct layout(s)
 - kit `copy_room`: 1 room(s), 1 distinct layout(s)
 - kit `electrical_sl`: 2 room(s), 2 distinct layout(s)
 - kit `security_office_sl`: 1 room(s), 1 distinct layout(s)
 - kit `office_it`: 1 room(s), 1 distinct layout(s)
 - kit `server_room_sl`: 1 room(s), 1 distinct layout(s)
 - kit `office_open_law`: 1 room(s), 1 distinct layout(s)
-- kit `corridor_office`: 5 room(s), 5 distinct layout(s)
+- kit `corridor_office`: 4 room(s), 4 distinct layout(s)
 - kit `office_small`: 5 room(s), 5 distinct layout(s)
 - kit `reception_exec`: 1 room(s), 1 distinct layout(s)
 - kit `office_partner`: 2 room(s), 2 distinct layout(s)
 - kit `refuse_room`: 1 room(s), 1 distinct layout(s)
 - kit `corridor_service`: 3 room(s), 3 distinct layout(s)
 - kit `service_lobby`: 1 room(s), 1 distinct layout(s)
+- kit `exterior_roof_tower`: 1 room(s), 1 distinct layout(s)
+- kit `exterior_terrace`: 1 room(s), 1 distinct layout(s)
+- kit `plant_room_roof`: 1 room(s), 1 distinct layout(s)
+- kit `plant_riser`: 1 room(s), 1 distinct layout(s)
 
 
 ## bounds: No void / back faces
 
 - 43 navmesh sample(s) skipped: not reachable from a player spawn (police-only)
-- 295 eye samples, 23895 rays, sky yes, 0 void ray(s)
+- 299 eye samples, 24219 rays, sky yes, 0 void ray(s)
 
 
 ## perf: Per-shot performance budget
 
 | camera | draw calls | triangles | shadow lights |
 |---|---|---|---|
-| `TopDownSite` | 1505 | 312928 | 5 |
-| `TopDownTower` | 1503 | 313968 | 5 |
-| `ExtNorthCrown` | 1473 | 307214 | 5 |
-| `ExtWestArden` | 1765 | 373934 | 5 |
-| `ExtTerraceSE` | 2290 | 516202 | 5 |
-| `ReceptionFromLifts` | 267 | 47008 | 3 |
-| `GalleryWalkway` | 1621 | 339014 | 3 |
-| `ArtHallLasers` | 474 | 107874 | 1 |
-| `StudySafe` | 1474 | 335484 | 1 |
-| `ServerCage` | 634 | 142162 | 1 |
-| `SecurityRoom` | 795 | 187128 | 1 |
-| `SouthSpine` | 2178 | 468370 | 4 |
-| `TerraceWest` | 2097 | 434556 | 4 |
-| `RoofPlantBlock` | 2217 | 461784 | 5 |
-| `Helipad` | 1788 | 407310 | 3 |
-| `StairACore` | 1038 | 178856 | 5 |
-| `ServiceLobby` | 1564 | 296370 | 4 |
-| `KesslerOffice` | 155 | 35472 | 1 |
-| `OpenOffice` | 655 | 133310 | 2 |
-| `BreakRoom` | 756 | 198992 | 0 |
-| `LawLibrary` | 323 | 79198 | 1 |
-| `Lounge` | 413 | 76362 | 2 |
-| `GuestSuite` | 351 | 68024 | 2 |
-| `Dining` | 654 | 140254 | 2 |
-| `Boardroom` | 782 | 162838 | 1 |
+| `TopDownSite` | 1528 | 322610 | 5 |
+| `TopDownTower` | 1541 | 325982 | 5 |
+| `ExtNorthCrown` | 1500 | 317702 | 5 |
+| `ExtWestArden` | 1806 | 388152 | 5 |
+| `ExtTerraceSE` | 2367 | 533936 | 5 |
+| `ReceptionFromLifts` | 274 | 56000 | 3 |
+| `GalleryWalkway` | 1696 | 356928 | 3 |
+| `ArtHallLasers` | 483 | 117354 | 1 |
+| `StudySafe` | 1523 | 349044 | 1 |
+| `ServerCage` | 650 | 153818 | 1 |
+| `SecurityRoom` | 831 | 200774 | 1 |
+| `SouthSpine` | 2297 | 493274 | 4 |
+| `TerraceWest` | 2160 | 451682 | 4 |
+| `RoofPlantBlock` | 2294 | 478814 | 5 |
+| `Helipad` | 1861 | 424606 | 3 |
+| `StairACore` | 1103 | 200570 | 5 |
+| `ServiceLobby` | 1652 | 321232 | 4 |
+| `KesslerOffice` | 162 | 44464 | 1 |
+| `OpenOffice` | 732 | 156536 | 2 |
+| `BreakRoom` | 789 | 210074 | 0 |
+| `LawLibrary` | 344 | 89546 | 1 |
+| `Lounge` | 436 | 88718 | 2 |
+| `GuestSuite` | 365 | 79492 | 2 |
+| `Dining` | 736 | 160126 | 2 |
+| `Boardroom` | 791 | 172306 | 1 |
 
 
 ## door_frame_gap: Doors and windows fill their wall openings (no gaps, no clipping)
@@ -444,7 +445,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## furniture_logic: Furniture arranged plausibly
 
-- classified: counter 6, chair 58, desk 15, table 7, low_table 1, wall_unit 40, lounge_seat 4, desk_chair 1, monitor 10
+- classified: counter 6, chair 58, desk 15, table 7, low_table 1, wall_unit 41, lounge_seat 4, desk_chair 1, monitor 12
 - 63 seats, 29 tables/desks/counters, 57 doors checked
 
 - WARN `Variants/Group_gondola/Slot_gon_north_l42/CradleDeck` @ (33.00, 7.85, -0.20): door_clear: in the clear zone of door `Gameplay/Doors/StudyFacadeDoor` (1.0 / 1.0 m each side, leaf width 0.90 m) by 0.74 m (gameplay prefab / variant content: review)

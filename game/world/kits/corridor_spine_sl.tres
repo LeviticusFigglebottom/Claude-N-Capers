@@ -1,0 +1,33 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"corridor_spine_sl"
+purpose = &"corridor"
+required_items = Array[StringName]([&"fire_extinguisher", &"light_fixture", &"picture", &"door_sign"])
+optional_items = {
+&"bulletin_board": 0.5,
+&"outlet": 0.6,
+&"picture": 2,
+&"switch": 1,
+&"thermostat": 0.4
+}
+clutter_groups = {}
+min_density = 0.05
+max_density = 1.2
+min_props = 12
+lone_ok_kinds = Array[StringName]([&"bench", &"cart"])
+seed_salt = 311
+counts = {
+&"door_sign": Vector2i(1, 13),
+&"picture": Vector2i(4, 6)
+}
+assets = {
+&"door_sign": PackedStringArray("prop_door_sign"),
+&"light_fixture": PackedStringArray("prop_ceiling_panel_neutral"),
+&"picture": PackedStringArray("prop_notice_frame", "prop_wall_art_a", "prop_notice_frame", "prop_wall_art_b")
+}
+ceiling = {"prop_ceiling_panel_neutral": 3}
+notes = "K16 south spine (C2, 36 m): room signs beside its doors (anchors from sl_dress), framed notices and art; the floor stays clear but for a bench by K8 and a parked mail trolley by K13 (direct props, against the wall, off the patrol line and the door clear zones). SL-1 polish."
