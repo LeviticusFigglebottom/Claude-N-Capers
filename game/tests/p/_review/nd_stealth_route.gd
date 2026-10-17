@@ -277,6 +277,7 @@ func _gate_guard() -> bool:
 		if d > 1.5:
 			# Straight B5 corridor: steer at him every tick with W held (sprint beyond 2.5 m; S2.5: movement has no
 			# detection term). 0.5 s goto legs stopped and started and fell behind his patrol walk (1.1 vs 1.6 m/s).
+			var from: Vector3 = c.global_position
 			pilot.inp.press(&"move_forward")
 			for _f: int in 15:
 				if not g.is_alive() or not _back_turned(g):
@@ -292,6 +293,10 @@ func _gate_guard() -> bool:
 				await get_tree().physics_frame
 			pilot.inp.release(&"sprint")
 			pilot.inp.release(&"move_forward")
+			if pilot.flat_dist(from, c.global_position) < 0.1 and _back_turned(g):
+				# Pinned (the PlantDoor jamb on the straight line from B3): one navmesh leg toward his back.
+				var back: Vector3 = g.global_position + g.global_basis.z.normalized() * 0.9
+				await pilot.goto(Vector3(back.x, g.global_position.y, back.z), 1.2, 1.5)
 			continue
 		await pilot.face(g.global_position + Vector3(0, 1.1, 0), 0.05, 0.3)
 		var alert_before: int = g.alert_state
