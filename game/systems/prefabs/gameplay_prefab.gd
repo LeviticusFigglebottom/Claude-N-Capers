@@ -11,8 +11,20 @@
 ## else the visual's own `Collision` StaticBody3D (visual_slots.md; the prefab's box is then disabled),
 ## else the merged AABB of the visual's meshes in this prefab's space, kept on the room side of the
 ## pivot (`_collision_pivot`: floor y >= 0, wall z <= 0, ceiling y <= 0).
+## OF-A2 (QC-61) runtime enable: `set_enabled(on)` (server) switches a pre-placed prefab on / off.
+## Disabled = hidden (`visible` false), no collision and no physics processing (the root's process_mode
+## becomes DISABLED, so every CollisionObject3D under it leaves the physics space through its default
+## disable_mode REMOVE, Area3Ds included), no interaction (every InteractableComponent it owns reports
+## BLOCK_DISABLED) and every NavigationLink3D under it off (restored on enable; heist navigation iterates
+## synchronously, D-121, so the change is visible to path queries after the physics frame that made it).
+## `enabled_at_start` false = placed disabled. `prefab_enabled` replicates (NetEntityCodec key "pe", in the
+## bring-up snapshot too, so late joiners see it). Subclasses react in `_on_enabled_changed`.
+## LaserGrid keeps its own D-103 meaning (set_enabled switches the beams; the grid stays visible).
 class_name GameplayPrefab
 extends Node3D
+
+## OF-A2: the prefab was switched on / off (every peer, after the change is applied).
+signal enabled_changed(on: bool)
 
 ## Pivot rule of the visual (visual_slots.md) used to clip and place the fitted collision box.
 enum CollisionPivot { FLOOR, WALL, CEILING }
@@ -28,11 +40,16 @@ const LAYER_TRIGGERS: int = 1 << 9
 const COLLISION_MIN_EXTENT_M: float = 0.05
 ## Name of the optional collision body inside a visual scene (visual_slots.md).
 const VISUAL_COLLISION_NODE: String = "Collision"
+## OF-A2: meta on a NavigationLink3D holding its `enabled` from before the prefab was disabled.
+const META_LINK_WAS_ENABLED: StringName = &"prefab_link_was_enabled"
 
 ## Art scene (visual_slots.md). Null = placeholder.
 @export var visual_scene: PackedScene
 ## Lets mission scripts find this prefab (HeistRuntime.find_by_tag).
 @export var objective_tag: StringName = &""
+## OF-A2 (QC-61): false = the prefab is placed disabled (hidden, no collision / interaction / nav links)
+## until the mission calls set_enabled(true).
+@export var enabled_at_start: bool = true
 
 var net_id: int = 0
 ## The instanced art or placeholder under `Visual`.
@@ -40,6 +57,18 @@ var visual_instance: Node3D = null
 var using_placeholder: bool = false
 ## The visual's own `Collision` StaticBody3D when it supplies one (the prefab's box is then off).
 var visual_collision: StaticBody3D = null
+## OF-A2: switched on (replicated, NetEntityCodec "pe"). Assigning it applies the state on any peer; gameplay
+## code calls set_enabled (server only).
+var prefab_enabled: bool = true:
+	set(v):
+		if prefab_enabled == v:
+			return
+		prefab_enabled = v
+		if _enable_ready:
+			_apply_enabled_state()
+
+var _enable_ready: bool = false
+var _process_mode_before: ProcessMode = PROCESS_MODE_INHERIT
 
 @onready var visual_root: Node3D = get_node_or_null(^"Visual") as Node3D
 @onready var use_point: Marker3D = get_node_or_null(^"UsePoint") as Marker3D
@@ -56,6 +85,10 @@ func _ready() -> void:
 		return
 	_apply_common_interaction()
 	_prefab_ready()
+	prefab_enabled = _start_enabled()
+	_enable_ready = true
+	if not prefab_enabled:
+		_apply_enabled_state()
 
 
 # --- Virtual hooks -----------------------------------------------------------------
@@ -88,6 +121,51 @@ func _collision_pivot() -> CollisionPivot:
 ## Visual node whose meshes define the collision box ("" = the whole visual).
 func _collision_source_node() -> String:
 	return ""
+
+
+## OF-A2: enabled state at ready (default `enabled_at_start`).
+func _start_enabled() -> bool:
+	return enabled_at_start
+
+
+## OF-A2: after the base applied an enable / disable (visibility, collision, interaction, nav links).
+func _on_enabled_changed(_on: bool) -> void:
+	pass
+
+
+# --- Runtime enable (OF-A2, QC-61) ------------------------------------------------------
+
+## Server (mission): switch the prefab on / off (see the header). Replicated.
+func set_enabled(on: bool) -> void:
+	if not Net.is_authority():
+		return
+	prefab_enabled = on
+
+
+func is_enabled() -> bool:
+	return prefab_enabled
+
+
+func _apply_enabled_state() -> void:
+	var on: bool = prefab_enabled
+	visible = on
+	if on:
+		process_mode = _process_mode_before
+	elif process_mode != PROCESS_MODE_DISABLED:
+		_process_mode_before = process_mode
+		process_mode = PROCESS_MODE_DISABLED
+	for n: Node in find_children("*", "NavigationLink3D", true, false):
+		var link: NavigationLink3D = n as NavigationLink3D
+		if on:
+			link.enabled = bool(link.get_meta(META_LINK_WAS_ENABLED, true))
+			if link.has_meta(META_LINK_WAS_ENABLED):
+				link.remove_meta(META_LINK_WAS_ENABLED)
+		elif not link.has_meta(META_LINK_WAS_ENABLED):
+			link.set_meta(META_LINK_WAS_ENABLED, link.enabled)
+			link.enabled = false
+	_on_enabled_changed(on)
+	Log.info(LOG_CHANNEL, "%s %s" % [name, "enabled" if on else "disabled"])
+	enabled_changed.emit(on)
 
 
 # --- Helpers -----------------------------------------------------------------------
