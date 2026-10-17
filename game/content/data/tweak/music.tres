@@ -65,7 +65,4 @@ unlock = &"unlock.music.last_call"
 [resource]
 script = ExtResource("1_cat")
 table_path = "res://world/audio/music/tracks.tres"
-pending = {
-&"ostrander_federal": &"night_deposit"
-}
 tracks = Array[ExtResource("2_trk")]([SubResource("trk_glasshouse"), SubResource("trk_dockside_burn"), SubResource("trk_night_deposit"), SubResource("trk_shadow_ledger"), SubResource("trk_gallery_night"), SubResource("trk_vault_hymn"), SubResource("trk_long_con"), SubResource("trk_last_call")])

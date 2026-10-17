@@ -52,12 +52,15 @@ func test_every_heist_has_its_set() -> void:
 		var row: Dictionary = per.get(heist, {"n": 0, "speed": false, "top": false}) as Dictionary
 		row["n"] = int(row["n"]) + 1
 		row["speed"] = bool(row["speed"]) or c.has("max_time_s")
-		row["top"] = bool(row["top"]) or int(c.get("difficulty_min", 0)) == Enums.Difficulty.CATACLYSM
+		if int(c.get("difficulty_min", 0)) == Enums.Difficulty.CATACLYSM:
+			row["top"] = true
+			assert_false(c.has("stealth") or c.has("loud"), "%s: Cataclysm clears accept any mode (LEAD r244)" % a.id)
 		per[heist] = row
 	for h: StringName in HEISTS:
 		assert_true(per.has(h), "%s has achievements" % h)
 		var row: Dictionary = per.get(h, {"n": 0, "speed": false, "top": false}) as Dictionary
-		assert_true(int(row["n"]) >= 4 and int(row["n"]) <= 6, "%s: 4-6 achievements (%d)" % [h, int(row["n"])])
+		# LEAD r244 parity: 6-8 per heist (dead air on every stealth heist, a loud route where both modes exist).
+		assert_true(int(row["n"]) >= 6 and int(row["n"]) <= 8, "%s: 6-8 achievements (%d)" % [h, int(row["n"])])
 		assert_true(bool(row["speed"]), "%s has a speed run" % h)
 		assert_true(bool(row["top"]), "%s has a Cataclysm clear" % h)
 	var parts: Array[StringName] = []
@@ -254,11 +257,32 @@ func _cases() -> Dictionary:
 			_run(_res(gh, false), _facts([], {}), "loud"),
 		],
 	}
-	out[&"achievement.gh_cataclysm"] = {
-		"pass": _run(_res(gh, true, {"difficulty": Enums.Difficulty.CATACLYSM}), {}, "stealth cataclysm"),
+	out[&"achievement.gh_cataclysm"] = _top_case(gh, false)  # any mode (LEAD r244)
+	out[&"achievement.gh_nobody_called"] = _dead_air_case(gh)
+	out[&"achievement.gh_smash_and_grab"] = {
+		"pass": _run(_res(gh, false), _facts([], {&"safe": [DONE, false, &"drill"], &"safe_loot": DONE}), "drilled"),
 		"miss": [
-			_run(_res(gh, false, {"difficulty": Enums.Difficulty.CATACLYSM}), {}, "loud"),
-			_run(_res(gh, true, {"difficulty": Enums.Difficulty.LETHAL}), {}, "lethal"),
+			_run(_res(gh, true), _facts([], {&"safe": DONE, &"safe_loot": DONE}), "stealth"),
+			_run(_res(gh, false), _facts([], {&"safe": DONE, &"safe_loot": ACTIVE}), "safe not emptied"),
+		],
+	}
+	out[&"achievement.nd_off_the_hook"] = _dead_air_case(&"night_deposit")
+	out[&"achievement.nd_hard_withdrawal"] = {
+		"pass": _run(_res(&"night_deposit", false), _facts([], {&"vault_drill": DONE}), "drilled"),
+		"miss": [
+			_run(_res(&"night_deposit", false), _facts([], {&"vault_drill": ACTIVE}), "not drilled"),
+			_run(_res(&"night_deposit", true), _facts([], {&"vault_drill": DONE}), "stealth"),
+		],
+	}
+	out[&"achievement.gn_do_not_disturb"] = _dead_air_case(&"gallery_night")
+	var custody: Dictionary = _row(10, 0, 1)
+	custody["in_custody"] = true
+	out[&"achievement.db_all_hands"] = {
+		"pass": _run(_res(&"dockside_burn", false, {"difficulty": Enums.Difficulty.BRUTAL}), {}, "brutal, all out"),
+		"miss": [
+			_run(_res(&"dockside_burn", false, {"difficulty": Enums.Difficulty.BRUTAL, "crew": [_row(5, 0, 0), custody]}), {},
+					"one in custody"),
+			_run(_res(&"dockside_burn", false, {"difficulty": Enums.Difficulty.HAZARDOUS}), {}, "hazardous"),
 		],
 	}
 	# --- Nightfall Depository
@@ -394,9 +418,7 @@ func _cases() -> Dictionary:
 			_run(_res(of, true), _facts([], {&"lid": DONE, &"hoist": DONE}), "stealth"),
 		],
 	}
-	var of_top: Dictionary = _top_case(of, true)
-	(of_top["miss"] as Array).append(_run(_res(of, false, {"difficulty": Enums.Difficulty.CATACLYSM}), {}, "loud"))
-	out[&"achievement.of_cataclysm"] = of_top
+	out[&"achievement.of_cataclysm"] = _top_case(of, false)  # any mode (LEAD r244)
 	return out
 
 
@@ -415,6 +437,15 @@ func _speed_case(heist: StringName, fast: float, slow: float, stealth: bool = tr
 	return {
 		"pass": _run(_res(heist, stealth, {"time_s": fast}), {}, "fast"),
 		"miss": [_run(_res(heist, stealth, {"time_s": slow}), {}, "slow")],
+	}
+
+
+## Dead air (LEAD r244 parity): a stealth clear with no pager answered.
+func _dead_air_case(heist: StringName) -> Dictionary:
+	return {
+		"pass": _run(_res(heist, true, {"pagers_answered": 0}), {}, "no pagers"),
+		"miss": [_run(_res(heist, true, {"pagers_answered": 1}), {}, "one pager"),
+			_run(_res(heist, false, {"pagers_answered": 0}), {}, "loud")],
 	}
 
 

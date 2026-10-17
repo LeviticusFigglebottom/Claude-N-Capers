@@ -83,7 +83,7 @@ static func make_def() -> HeistDef:
 			&"asset.escape_position": {"point_categories": [&"escape"], "force_variants": {}},
 			&"asset.propped_door": {"point_ids": [&"pp_fire_exit", &"pp_dock_door"], "exclusive_group": &"side_door",
 				"max_count": 1, "force_variants": {}},
-			&"asset.inside_keycard": {"point_ids": [&"pp_vault_ops"], "cost": 3000, "favors": 3, "force_variants": {}},
+			&"asset.inside_keycard": {"point_ids": [&"pp_vault_ops"], "cost": 2500, "favors": 2, "force_variants": {}},  # LEAD r244
 			&"asset.thermal_drill_drop": {"point_ids": [&"pp_drill_terrace", &"pp_drill_dock"], "force_variants": {}},
 			&"asset.fire_escape_ladder": {"point_ids": [&"pp_fire_escape"], "force_variants": {}},
 			&"asset.intel_code_pc": {"reveals": [&"code_pc"]},

@@ -108,3 +108,29 @@ func test_d115_walk_text_activity_walks_texting() -> void:
 	if d != null and d.player != null and d.player.has_animation("%s/walk_text" % AnimDriver.LIBRARY) \
 			and d.horizontal_speed() > 0.3:
 		assert_eq(d.clip, &"walk_text", "the walk_text clip plays while walking")
+
+
+## QC-67 (ENV D cower_offsets.json): a look with a back bag stands its listed offset forward of the cower point along the
+## point's facing (-Z), so the bag clears the wall; looks not listed stay on the point.
+func test_qc67_cower_offset_steps_the_root_off_the_wall() -> void:
+	await _launch()
+	_rt.teleport_crew(0, Transform3D(Basis.IDENTITY, Vector3(-4, 0.05, -2)))
+	var pp: PatrolPoint = PatrolPoint.new()
+	pp.tags = [&"cower"]
+	_rt.map.add_child(pp)
+	pp.global_transform = Transform3D(Basis(Vector3.UP, PI * 0.5), Vector3(4, 0.05, -2))
+	var civ: NpcBase = _rt.spawn_npc(&"civilian", Transform3D(Basis.IDENTITY, Vector3(0, 0.05, -2)), {"idle_activity": &"browse"})
+	await wait_physics_frames(2)
+	civ.visual_scene = PackedScene.new()
+	civ.visual_scene.resource_path = NpcVisuals.scene_path("qc67_backpack_look")  # only the path is read
+	assert_eq(NpcVisuals.character_id(civ), "qc67_backpack_look", "the character id is the look's scene name")
+	NpcVisuals._cower_offsets = {"qc67_backpack_look": 0.15}
+	_rt.stealth.raise_alarm(&"test", 0)
+	var b: CivilianBrain = _brain(civ)
+	assert_true(await wait_until(func() -> bool: return b.mode == CivilianBrain.Mode.COWER, 8.0), "ran and cowered")
+	NpcVisuals._cower_offsets = null
+	assert_eq(b.anim_hint, &"cower_stand", "standing cower at the point")
+	var out: Vector3 = -pp.global_transform.basis.z
+	var want: Vector3 = pp.global_position + out * 0.15
+	assert_true(Vector2(civ.global_position.x - want.x, civ.global_position.z - want.z).length() < 0.02,
+		"0.15 m forward of the point (%s, want %s)" % [civ.global_position, want])

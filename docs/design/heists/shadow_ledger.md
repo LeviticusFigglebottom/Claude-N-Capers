@@ -585,6 +585,22 @@ never needs more than 2 ECM windows; see the hardest roll):
 Server door → Stair B (for `esc_service`) is camera-free in every layout: C3 looks N and the stair
 door is 5.75 m S of it.
 
+### Glazing (D-142)
+Clear glass is see-through for stealth vision (D-142). Its collider joins the `see_through` group and still
+blocks movement and bullets. Frosted, tinted, mirrored and privacy glass stays opaque.
+- **Clear (62 colliders):**
+  - L41 curtain wall (26 panes, above the 0.9 m spandrel): K1, K2, K4, K5, K8, K12, K15, K17–K24, the K6 /
+    K7 / K16 corridors and one core span.
+  - L42 curtain wall (22 panes): M1, M3, M4, M5, M14, one core span, and the terrace front (M8 dining ×4 and
+    the M15 glazed corridor ×6 onto X1).
+  - Interior glazing: the K11 / K12 vision panel and the M1 lounge's glass wall over the reception void.
+  - Glass balustrades (glass teal, a light architectural tint, see-through): the feature stair ×6, the M2
+    gallery void edge ×3 and the X1 terrace ×3.
+- **Opaque:** the partner, conference and boardroom fronts are frosted (built solid, with no glass collider),
+  as are the fritted spandrel band and the solid facade bays. The backlit teal bar glass in M1 has no collider.
+- **Not map-built:** the reception glass doors, the terrace sliders and the glass-leaf doors are Door prefabs
+  (ENV A, not tagged). The stair-door vision panels belong to the door kit.
+
 ## Stealth routes
 All five approaches start on the roof (default spawn, SW corner under the insertion line) except
 the service level, which is a spawn choice.

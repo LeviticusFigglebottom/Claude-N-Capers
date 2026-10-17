@@ -13,7 +13,7 @@
 ##   hide_cameras   true: security cameras whose Lens is in a `hide_from` room observe too (cone + range_m, any
 ##                  layout; no minimum distance: cameras have no uncover).
 ## Vision rays follow StealthDirector (VISION_MASK: world static/dynamic, vision blockers) against active colliders;
-## glazing (meta `see_through`, kind window/glass/glazing) is transparent. FAIL when any detection point of any
+## glazing (group or meta `see_through`, kind window/glass/glazing) is transparent. FAIL when any detection point of any
 ## sample is seen by any observer; the message gives the counts and the first observer.
 class_name LcCheckHideLos
 extends LcCheck

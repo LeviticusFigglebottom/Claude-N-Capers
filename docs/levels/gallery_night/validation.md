@@ -23,6 +23,9 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | lasers | PASS | 0 | 0 |
 | camera_spine | PASS | 0 | 0 |
 | camera_screen | PASS | 0 | 0 |
+| bag_line | skipped | 0 | 0 |
+| hide_los | skipped | 0 | 0 |
+| teller_worktop | skipped | 0 | 0 |
 | materials | PASS | 0 | 0 |
 | zfight | PASS | 0 | 0 |
 | lights | PASS | 0 | 0 |

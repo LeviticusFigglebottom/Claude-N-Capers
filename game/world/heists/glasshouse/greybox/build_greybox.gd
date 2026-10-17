@@ -533,6 +533,7 @@ func _stair_rails(core: Node3D, rise: float, tread: float, z_land: float, n: int
 			_add(posts.get_child(posts.get_child_count() - 1), pm)
 	var lw: Node3D = _box(rails, "LandingWellGuard", Vector3(float(ux[1]), rise * n, z_land),
 		Vector3(float(rx[0]), rise * n + h, z_land + 0.03), "")
+	lw.add_to_group(&"see_through", true)  # D-142: a clear glass balustrade
 	var gm: MeshInstance3D = MeshInstance3D.new()
 	gm.name = "Mesh"
 	gm.mesh = _art.local_box_mesh([[Vector3(float(rx[0]) - float(ux[1]), h - 0.04, 0.03), Vector3(0.0, -0.02, 0.0), "glass_clear"],
@@ -622,7 +623,9 @@ func _build_static_windows(bld: Node3D) -> void:
 		var piece: String = String(w[1])
 		var pos: Vector3 = w[2]
 		var yaw: float = float(w[3])
-		_glass_blocker(gl, String(w[0]), piece, pos, yaw)
+		var blocker: StaticBody3D = _glass_blocker(gl, String(w[0]), piece, pos, yaw)
+		if not String(w[0]) in L.FROSTED_WINDOWS:
+			blocker.add_to_group(&"see_through", true)  # D-142: clear glazing; stealth vision sees through it
 		if bool(w[4]):
 			continue
 		# Static glazing uses the catalog window visual (frame + glass, read from both sides).
@@ -638,7 +641,7 @@ func _build_static_windows(bld: Node3D) -> void:
 		true)
 
 
-func _glass_blocker(parent: Node3D, nm: String, piece: String, pos: Vector3, yaw: float) -> void:
+func _glass_blocker(parent: Node3D, nm: String, piece: String, pos: Vector3, yaw: float) -> StaticBody3D:
 	var w: float = 3.0 if piece.contains("w300") else 1.0
 	var h: float = 2.4 if piece.contains("h240") else 1.2
 	var body: StaticBody3D = StaticBody3D.new()
@@ -653,6 +656,7 @@ func _glass_blocker(parent: Node3D, nm: String, piece: String, pos: Vector3, yaw
 	col.shape = _box_shape(Vector3(w, h, 0.04))
 	col.position = Vector3(0.0, h * 0.5, 0.0)
 	_add(body, col)
+	return body
 
 
 # --- Site -------------------------------------------------------------------------------------
@@ -725,37 +729,7 @@ func _build_props(props: Node3D) -> void:
 	var g: Node3D = _add(props, _node3d("MapBuilt")) as Node3D
 	for p: Array in L.PROPS:
 		_prop_box(g, String(p[0]), p[1], p[2], float(p[3]), String(p[4]), bool(p[5]), String(p[6]))
-	_chandelier_plinth(g)
-
-
-## Landmark 1: the circular chandelier display (2.4 m round glass case): its catalog visual on a
-## collision drum; the ring chandelier above is a dressing anchor (layout ANCHORS).
-func _chandelier_plinth(parent: Node3D) -> void:
-	var ch: Dictionary = L.CHANDELIER
-	var pos: Vector3 = ch["pos"]
-	var r: float = float(ch["radius"])
-	var h: float = float(ch["height"])
-	var body: StaticBody3D = StaticBody3D.new()
-	body.name = "ChandelierDisplay"
-	body.collision_layer = 1
-	body.collision_mask = 0
-	body.position = pos
-	body.set_meta(&"kind", "display_plinth")
-	_add(parent, body)
-	var col: CollisionShape3D = CollisionShape3D.new()
-	col.name = "Collision"
-	var cyl: CylinderShape3D = CylinderShape3D.new()
-	cyl.radius = r
-	cyl.height = h
-	col.shape = cyl
-	col.position = Vector3(0.0, h * 0.5, 0.0)
-	_add(body, col)
-	var ps: PackedScene = _dress.scene("prop_display_case_round")
-	if ps != null:
-		var vis: Node3D = ps.instantiate() as Node3D
-		vis.name = "Display"
-		_add(body, vis)
-	_obstruct_circle(pos, r, h)
+	_dress.chandelier_display(g)  # landmark 1 (gh_dress.gd)
 
 
 # --- Lighting ---------------------------------------------------------------------------------
