@@ -19,6 +19,9 @@ const NEAR_DY_M: float = 1.5
 const DOOR_LOOKAHEAD_M: float = 1.8
 ## _pass_leaf: half width of a clear lane through a doorway (crew capsule radius 0.35, less a little) (m).
 const LANE_HALF_M: float = 0.3
+## _through_link: inside this (m) of an open door's plane the pilot walks straight across, ending this far past it.
+const THROUGH_DOOR_M: float = 0.8
+const THROUGH_PAST_M: float = 0.9
 ## Loud: a visible enemy within this range is fought before / during a hold (S9.1: damage cancels holds) (m).
 const HOLD_THREAT_M: float = 20.0
 ## Longest clearing fight before holding anyway (s).
@@ -178,6 +181,30 @@ func nav_path(to: Vector3) -> PackedVector3Array:
 	return NavigationServer3D.map_get_path(map, crew.global_position, to, true, NAV_LAYERS_CREW)
 
 
+## ENV C (DB-7 ChamberBSouth): D-073 doors are baked CLOSED; an open one is crossed by its NavLink over a ~1.2 m
+## off-mesh gap, where map_get_path snaps the start to either gap edge and the corner flips. Inside an open door's
+## doorway (|local z| < THROUGH_DOOR_M, within its width) with the target on the far side: walk straight along the
+## door normal to THROUGH_PAST_M past the plane (inside the opening). Else null.
+func _through_link(target: Vector3) -> Variant:
+	for n: Node in crew.get_tree().get_nodes_in_group(Door.GROUP):
+		var door: Door = n as Door
+		if door == null or not door.is_open:
+			continue
+		var inv: Transform3D = door.global_transform.affine_inverse()
+		var me: Vector3 = inv * crew.global_position
+		if absf(me.z) >= THROUGH_DOOR_M or absf(me.y) > NEAR_DY_M:
+			continue
+		var half: float = door.effective_width() * 0.5
+		if absf(me.x) > half:
+			continue
+		var tz: float = (inv * target).z
+		if absf(tz) < 0.05 or (signf(tz) == signf(me.z) and absf(tz) <= absf(me.z)):
+			continue  # the target is on this side (or in the doorway itself)
+		var x: float = clampf(me.x, -half + LANE_HALF_M + 0.1, half - LANE_HALF_M - 0.1)
+		return door.global_transform * Vector3(x, 0.0, signf(tz) * THROUGH_PAST_M)
+	return null
+
+
 ## Within `r` horizontally AND on the same floor (|dy| <= NEAR_DY_M).
 func near(a: Vector3, b: Vector3, r: float) -> bool:
 	return flat_dist(a, b) <= r and absf(a.y - b.y) <= NEAR_DY_M
@@ -235,6 +262,9 @@ func goto(target: Vector3, arrive_m: float = 0.8, timeout_s: float = 60.0, sprin
 			if flat_dist(p, crew.global_position) > 0.45:
 				corner = p
 				break
+		var through: Variant = _through_link(target)
+		if through != null:
+			corner = through as Vector3
 		var door: Door = door_ahead(corner, path) if doors else null
 		if door != null and _door_blocked(door):
 			inp.release(&"move_forward")

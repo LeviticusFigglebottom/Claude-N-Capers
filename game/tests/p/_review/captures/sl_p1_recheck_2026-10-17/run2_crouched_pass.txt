@@ -1,0 +1,154 @@
+[SLR 19.1s t=0.0] seed 13 variants camera=[&"cam_c"] security_room_staffed=[&"sec_empty"] server_room=[&"srv_locked"] keycard=[&"kc_cleaner", &"kc_it"] code_note=[&"code_security_log"] laptop=[&"lap_kessler"] guard_post=[&"rover_l42"] guard_extra=[] cleaners=[&"cleaners_2"] late_partner=[&"moor_gone"] escape=[&"esc_service"] laser_pattern=[&"lz_sweep"]
+[SLR 50.9s t=2.1] pilot: calibrated 0.001600 rad/px yaw, 0.001600 rad/px pitch (settings formula said (0.0016, 0.0016))
+[SLR 50.9s t=2.1] spawn (26.2, 0.0, 9.0) masked false
+[SLR 125.1s t=2.6] STEP _casing begin
+[SLR 125.5s t=3.5] goto casing_0 (25.0, 0.0, 8.5): reached (at (25.4, 0.0, 8.7))
+[SLR 128.1s t=6.0] goto casing_1 (29.0, 0.0, 8.5): reached (at (28.5, 0.0, 8.5))
+[SLR 130.3s t=8.3] goto casing_2 (29.0, 0.0, 11.6): reached (at (29.2, 0.0, 11.1))
+[SLR 133.3s t=11.2] goto casing_3 (25.0, 0.0, 11.6): reached (at (25.5, 0.0, 11.5))
+[SLR 189.0s t=13.0] goto casing_4 (24.8, 0.0, 13.5): reached (at (24.9, 0.0, 13.1))
+[SLR 190.2s t=14.3] pilot: use RefuseDoor (open_door) -> OK in 0.0 s
+[SLR 192.8s t=16.8] goto casing_5 (27.7, 0.0, 14.5): reached (at (27.2, 0.0, 14.5))
+[SLR 201.9s t=19.7] goto casing_6 (24.8, 0.0, 15.6): reached (at (24.9, 0.0, 15.2))
+[SLR 203.9s t=21.8] goto casing_7 (22.5, 0.0, 15.8): reached (at (23.1, 0.0, 15.8))
+[SLR 209.0s t=26.8] pilot: t=5 at (22.6, 1.8, 12.2) corner (23.0, 2.1, 12.3) yaw_err -0.00 fwd=true path=8 mouse_mode=2 state=0 look=(-1.89,0.00) pin_yaw=-1.88872443863511 bot=false
+[SLR 212.0s t=29.9] pilot: STUCK at (22.6, 1.8, 12.2) heading to (23.0, 2.1, 12.3); rays: h0.05:/root/PO5Driver/HeistRuntime/ShadowLedger/Geometry/Building/Stairs/StairB/Flight1E/Ramp@(23.1, 1.9, 12.3), slide:/root/PO5Driver/HeistRuntime/ShadowLedger/Geometry/Building/Stairs/StairB/Flight1E/Ramp@(22.6, 1.9, 12.3) n=(-0.2, 0.8, -0.5), slide:/root/PO5Driver/HeistRuntime/ShadowLedger/Geometry/Building/Stairs/StairB/Flight1E/Ramp@(22.6, 1.9, 12.3) n=(-0.2, 0.8, -0.5), vel=(0.0, 0.0, 0.0) floor=true state=0
+[SLR 252.7s t=30.4] pilot: detour left 0.7 m to (23.1, 2.0, 11.6) (attempt 1)
+[SLR 254.4s t=32.6] pilot: t=10 at (23.1, 2.9, 13.9) corner (23.1, 2.7, 13.3) yaw_err -2.35 fwd=false path=6 mouse_mode=2 state=0 look=(-3.96,0.00) pin_yaw=-4.1472580448899 bot=false
+[SLR 256.0s t=34.2] goto casing_8 (22.5, 3.6, 15.8): reached (at (22.8, 3.6, 15.4))
+[SLR 308.0s t=39.7] pilot: t=5 at (22.8, 5.8, 11.6) corner (22.3, 6.0, 11.6) yaw_err -1.37 fwd=false path=9 mouse_mode=2 state=0 look=(-9.65,0.00) pin_yaw=-9.83907808126969 bot=false
+[SLR 345.9s t=43.8] goto casing_9 (22.5, 8.0, 15.8): reached (at (22.8, 8.0, 15.4))
+[SLR 383.7s t=49.3] pilot: t=5 at (21.9, 5.5, 12.5) corner (22.0, 3.9, 15.2) yaw_err -0.00 fwd=true path=7 mouse_mode=2 state=0 look=(-9.39,0.00) pin_yaw=-9.38726154141477 bot=false
+[SLR 386.1s t=51.7] goto casing_10 (22.5, 3.6, 15.8): reached (at (22.2, 3.6, 15.4))
+[SLR 386.1s t=51.7] STEP _casing reached
+[SLR 386.1s t=51.7] STEP _mask begin
+[SLR 387.1s t=52.7] objective casing -> 2
+[SLR 387.9s t=53.5] masked true
+[SLR 387.9s t=53.5] STEP _mask reached
+[SLR 387.9s t=53.5] STEP _enter_l41 begin
+[SLR 424.5s t=62.6] pilot: use StairBL41 (open_door) -> OK in 8.0 s
+[SLR 424.8s t=63.0] StairBL41 open true (lock 1)
+[SLR 459.0s t=63.5] STEP _enter_l41 reached
+[SLR 459.0s t=63.5] STEP _keycard begin
+[SLR 459.0s t=63.5] keycard: Slot_kc_it at (33.4, 4.3, 9.0)
+[SLR 463.5s t=68.5] pilot: t=5 at (24.8, 3.6, 11.2) corner (24.8, 3.8, 10.8) yaw_err -0.00 fwd=true path=17 mouse_mode=2 state=0 look=(6.19,0.00) pin_yaw=6.18467797098856 bot=false
+[SLR 466.7s t=71.7] DETECT start: CameraC3 (kind 2) at 4.1 m, pilot (25.0, 3.6, 7.4) crouched false
+[SLR 468.5s t=73.5] pilot: t=10 at (26.8, 3.6, 7.0) corner (33.3, 3.8, 7.2) yaw_err 0.96 fwd=false path=10 mouse_mode=2 state=0 look=(10.01,0.00) pin_yaw=10.2050723123612 bot=false
+[SLR 475.0s t=80.0] pilot: use ITDoor (open_door) -> OK in 0.0 s
+[SLR 476.1s t=81.0] pilot: t=15 at (33.7, 3.6, 7.0) corner (33.7, 3.8, 7.8) yaw_err -0.96 fwd=false path=8 mouse_mode=2 state=0 look=(16.62,0.00) pin_yaw=16.4309463132886 bot=false
+[SLR 479.4s t=84.4] objective keycard -> 2
+[SLR 502.8s t=85.0] STEP _keycard reached
+[SLR 502.8s t=85.0] STEP _laptop begin
+[SLR 502.8s t=85.0] laptop at (4.3, 3.6, 2.2) ([&"lap_kessler"])
+[SLR 507.3s t=90.0] pilot: t=5 at (30.8, 3.6, 7.0) corner (31.4, 3.8, 7.0) yaw_err 2.94 fwd=false path=14 mouse_mode=2 state=0 look=(20.62,0.00) pin_yaw=20.8131049225776 bot=false
+[SLR 512.3s t=95.0] pilot: t=10 at (26.0, 3.6, 7.0) corner (25.3, 3.8, 7.1) yaw_err 0.00 fwd=true path=14 mouse_mode=2 state=0 look=(20.49,0.00) pin_yaw=20.4898805418707 bot=false
+[SLR 512.9s t=95.5] subdue: shouting Npc_civilian (mode 1, 2.3 m, meter 0.00)
+[SLR 512.9s t=95.6] DETECT start: Npc_civilian (kind 1) at 2.2 m, pilot (25.5, 3.6, 7.0) crouched true
+[SLR 513.0s t=95.7] ALERT Npc_civilian 0 -> 5 (dist 2.1)
+[SLR 514.0s t=96.7] subdue: tying Npc_civilian ()
+[SLR 554.7s t=100.6] ALERT Npc_civilian 5 -> 6 (dist 0.4)
+[SLR 554.7s t=100.7] pilot: use Npc_civilian (cable_tie) -> OK in 2.0 s
+[SLR 554.7s t=100.7] subdue: Npc_civilian mode 7
+[SLR 598.0s t=105.6] pilot: t=15 at (24.8, 3.6, 13.3) corner (24.8, 3.8, 12.7) yaw_err -2.37 fwd=false path=3 mouse_mode=2 state=0 look=(27.49,0.00) pin_yaw=27.3005210984447 bot=false
+[SLR 599.7s t=107.3] goto west wing 0 (24.8, 3.6, 15.0): reached (at (24.8, 3.6, 14.5))
+[SLR 604.7s t=112.3] pilot: t=5 at (22.1, 3.6, 17.1) corner (21.1, 3.8, 17.2) yaw_err -0.00 fwd=true path=5 mouse_mode=2 state=0 look=(26.75,0.00) pin_yaw=26.7543285681932 bot=false
+[SLR 606.0s t=113.6] goto west wing 1 (20.0, 3.6, 17.2): reached (at (20.5, 3.6, 17.2))
+[SLR 611.0s t=118.6] pilot: t=5 at (16.2, 3.6, 17.2) corner (15.6, 3.8, 17.2) yaw_err -0.00 fwd=true path=7 mouse_mode=2 state=0 look=(26.70,0.00) pin_yaw=26.698129366112 bot=false
+[SLR 615.4s t=123.0] goto west wing 2 (11.2, 3.6, 17.2): reached (at (11.8, 3.6, 17.2))
+[SLR 620.4s t=128.0] pilot: t=5 at (11.3, 3.6, 12.2) corner (11.3, 3.8, 10.7) yaw_err -0.00 fwd=true path=4 mouse_mode=2 state=0 look=(25.17,0.00) pin_yaw=25.1664051707157 bot=false
+[SLR 621.9s t=129.6] goto west wing 3 (11.2, 3.6, 10.0): reached (at (11.3, 3.6, 10.5))
+[SLR 627.0s t=134.6] pilot: t=5 at (9.7, 3.6, 6.9) corner (9.0, 3.8, 6.8) yaw_err 0.00 fwd=true path=2 mouse_mode=2 state=0 look=(20.25,0.00) pin_yaw=20.2480459417093 bot=false
+[SLR 627.1s t=134.7] goto west wing 4 (9.0, 3.6, 6.8): reached (at (9.5, 3.6, 6.8))
+[SLR 631.4s t=139.1] pilot: use K1Door (open_door) -> OK in 0.0 s
+[SLR 634.6s t=142.3] pilot: t=5 at (4.9, 3.6, 4.3) corner (4.6, 3.8, 2.7) yaw_err 0.06 fwd=true path=6 mouse_mode=2 state=0 look=(25.28,0.00) pin_yaw=25.3430731691296 bot=false
+[SLR 638.2s t=145.8] objective laptop -> 2
+[SLR 638.2s t=145.9] pilot: use Laptop (bag_loot) -> OK in 1.0 s
+[SLR 664.1s t=151.4] pilot: t=5 at (5.6, 3.6, 6.0) corner (5.9, 3.8, 6.4) yaw_err 0.03 fwd=true path=4 mouse_mode=2 state=0 look=(22.61,0.00) pin_yaw=22.6338280915334 bot=false
+[SLR 667.2s t=154.5] goto back to Stair B 0 (9.0, 3.6, 6.8): reached (at (8.5, 3.6, 6.7))
+[SLR 672.2s t=159.5] goto back to Stair B 1 (11.2, 3.6, 10.0): reached (at (11.2, 3.6, 9.5))
+[SLR 677.2s t=164.6] pilot: t=5 at (11.2, 3.6, 13.8) corner (11.2, 3.8, 16.1) yaw_err -0.00 fwd=true path=9 mouse_mode=2 state=0 look=(9.43,0.00) pin_yaw=9.43005346466452 bot=false
+[SLR 680.4s t=167.7] goto back to Stair B 2 (11.2, 3.6, 17.2): reached (at (11.2, 3.6, 16.7))
+[SLR 719.9s t=172.7] pilot: t=5 at (16.3, 3.6, 17.1) corner (17.6, 3.8, 17.2) yaw_err -0.00 fwd=true path=9 mouse_mode=2 state=0 look=(17.25,0.00) pin_yaw=17.2522523600965 bot=false
+[SLR 722.8s t=175.9] goto back to Stair B 3 (20.0, 3.6, 17.2): reached (at (19.5, 3.6, 17.2))
+[SLR 727.9s t=180.9] pilot: t=5 at (24.0, 3.6, 17.0) corner (24.5, 3.8, 16.4) yaw_err 0.40 fwd=true path=9 mouse_mode=2 state=0 look=(-1.14,0.00) pin_yaw=-0.94444187182307 bot=false
+[SLR 729.4s t=182.4] goto back to Stair B 4 (24.8, 3.6, 15.0): reached (at (24.7, 3.6, 15.6))
+[SLR 730.8s t=183.9] goto back to Stair B 5 (22.5, 3.6, 15.8): reached (at (23.1, 3.6, 15.8))
+[SLR 730.8s t=183.9] laptop bagged: carrying to (22.5, 0.0, 9.0)
+[SLR 754.6s t=188.9] pilot: t=5 at (22.0, 1.0, 13.9) corner (22.0, 1.5, 13.3) yaw_err 2.89 fwd=false path=15 mouse_mode=2 state=0 look=(3.36,0.00) pin_yaw=3.55641497126999 bot=false
+[SLR 778.4s t=193.9] pilot: t=10 at (24.5, 0.0, 13.7) corner (24.5, 0.2, 13.2) yaw_err -0.40 fwd=true path=11 mouse_mode=2 state=0 look=(6.69,0.00) pin_yaw=6.49329988956379 bot=false
+[SLR 783.3s t=198.8] secure try 0: throw from (22.7, 0.0, 10.0) at (22.5, 0.0, 9.0) (stand (22.6, 0.2, 10.0))
+[SLR 784.5s t=200.0] objective secure -> 1
+[SLR 784.5s t=200.0] laptop secured true (at (22.7, 0.0, 10.0))
+[SLR 800.0s t=200.5] STEP _laptop reached
+[SLR 800.0s t=200.5] STEP _cage_code begin
+[SLR 800.0s t=200.5] cage code at (26.3, 4.5, 16.1)
+[SLR 804.5s t=205.5] pilot: t=5 at (24.5, 0.0, 13.7) corner (24.5, 0.2, 15.4) yaw_err -0.00 fwd=true path=22 mouse_mode=2 state=0 look=(3.13,0.00) pin_yaw=3.13202738093605 bot=false
+[SLR 809.5s t=210.5] pilot: t=10 at (21.9, 0.7, 14.3) corner (22.0, 1.8, 12.9) yaw_err 0.19 fwd=true path=18 mouse_mode=2 state=0 look=(-0.22,0.00) pin_yaw=-0.02666658624003 bot=false
+[SLR 814.5s t=215.5] pilot: t=15 at (23.3, 3.2, 14.4) corner (23.5, 3.8, 15.4) yaw_err -2.88 fwd=false path=12 mouse_mode=2 state=0 look=(-0.05,0.00) pin_yaw=-0.24527900131579 bot=false
+[SLR 817.7s t=218.7] pilot: use SecurityDoor (open_door) -> OK in 0.0 s
+[SLR 820.4s t=221.4] objective cage_code -> 2
+[SLR 820.5s t=221.5] pilot: use CodeNote (read_note) -> OK in 1.0 s
+[SLR 820.5s t=221.5] STEP _cage_code reached
+[SLR 820.5s t=221.5] STEP _server_door begin
+[SLR 855.8s t=226.5] pilot: t=5 at (24.8, 3.6, 10.1) corner (24.8, 3.8, 10.7) yaw_err -1.57 fwd=false path=3 mouse_mode=2 state=0 look=(-1.49,0.00) pin_yaw=-1.68190517153926 bot=false
+[SLR 857.5s t=228.3] objective server_door -> 2
+[SLR 857.6s t=228.4] pilot: use ServerReader (keycard) -> OK in 1.0 s
+[SLR 918.5s t=228.9] STEP _server_door reached
+[SLR 918.5s t=228.9] STEP _cage begin
+[SLR 923.3s t=234.1] objective cage -> 1
+[SLR 923.3s t=234.1] objective cage -> 2
+[SLR 923.3s t=234.1] objective hack -> 1
+[SLR 923.3s t=234.2] pilot: use CageLock (enter_code) -> OK in 2.0 s
+[SLR 958.2s t=234.7] STEP _cage reached
+[SLR 958.2s t=234.7] STEP _hack begin
+[SLR 961.9s t=238.8] pilot: use HackTerminal (start_hack) -> OK in 2.0 s
+[SLR 1014.0s t=255.0] hack interrupted (#1): restart
+[SLR 1016.1s t=257.2] pilot: use HackTerminal (start_hack) -> OK in 2.0 s
+[SLR 1029.1s t=270.2] hack interrupted (#2): restart
+[SLR 1031.3s t=272.3] pilot: use HackTerminal (start_hack) -> OK in 2.0 s
+[SLR 1064.1s t=288.2] objective hack -> 2
+[SLR 1064.1s t=288.2] objective drives -> 1
+[SLR 1064.2s t=288.3] hack state 3 after 134 s, 2 restarts
+[SLR 1064.2s t=288.3] STEP _hack reached
+[SLR 1064.2s t=288.3] STEP _drives begin
+[SLR 1066.5s t=290.5] pilot: use Drives1 (bag_loot) -> OK in 1.0 s
+[SLR 1066.5s t=290.5] drive 0 bagged: carrying to (22.5, 0.0, 9.0)
+[SLR 1123.7s t=295.5] pilot: t=5 at (25.8, 3.6, 10.1) corner (26.1, 3.8, 10.5) yaw_err 1.90 fwd=false path=33 mouse_mode=2 state=0 look=(-10.61,0.00) pin_yaw=-10.4184003333175 bot=false
+[SLR 1128.7s t=300.5] pilot: t=10 at (24.6, 3.6, 14.8) corner (24.5, 3.8, 15.4) yaw_err 0.00 fwd=true path=25 mouse_mode=2 state=0 look=(-9.53,0.00) pin_yaw=-9.53342521152445 bot=false
+[SLR 1133.7s t=305.5] pilot: t=15 at (22.6, 1.8, 12.1) corner (22.0, 2.0, 12.3) yaw_err 0.15 fwd=true path=16 mouse_mode=2 state=0 look=(-4.61,0.00) pin_yaw=-4.46636487584692 bot=false
+[SLR 1138.7s t=310.5] pilot: t=20 at (24.0, 0.0, 15.7) corner (23.4, 0.2, 15.7) yaw_err 2.29 fwd=false path=11 mouse_mode=2 state=0 look=(-0.63,0.00) pin_yaw=-0.43577338921386 bot=false
+[SLR 1143.7s t=315.5] pilot: t=25 at (24.5, 0.0, 11.1) corner (24.5, 0.2, 11.6) yaw_err -2.95 fwd=false path=6 mouse_mode=2 state=0 look=(-12.76,0.00) pin_yaw=-12.9499620297174 bot=false
+[SLR 1145.8s t=317.6] secure try 0: throw from (24.2, 0.0, 9.4) at (22.5, 0.0, 9.0) (stand (24.1, 0.2, 9.3))
+[SLR 1146.8s t=318.6] objective secure -> 1
+[SLR 1146.8s t=318.6] drive 0 secured true (at (24.2, 0.0, 9.4))
+[SLR 1167.3s t=324.1] pilot: t=5 at (24.5, 0.0, 15.3) corner (24.5, 0.2, 14.7) yaw_err -1.04 fwd=false path=37 mouse_mode=2 state=0 look=(-24.11,0.00) pin_yaw=-24.2998981523524 bot=false
+[SLR 1172.2s t=329.1] pilot: t=10 at (22.0, 1.2, 13.6) corner (22.0, 1.8, 13.0) yaw_err 0.57 fwd=true path=33 mouse_mode=2 state=0 look=(-25.75,0.00) pin_yaw=-25.5564577573568 bot=false
+[SLR 1177.2s t=334.1] pilot: t=15 at (23.3, 3.4, 14.6) corner (23.5, 3.8, 15.4) yaw_err -2.96 fwd=false path=26 mouse_mode=2 state=0 look=(-18.78,0.00) pin_yaw=-18.9709620115718 bot=false
+[SLR 1216.2s t=339.1] pilot: t=20 at (25.0, 3.6, 11.4) corner (24.9, 3.8, 12.0) yaw_err 1.58 fwd=false path=18 mouse_mode=2 state=0 look=(-17.43,0.00) pin_yaw=-17.2422251791759 bot=false
+[SLR 1221.3s t=344.1] pilot: t=25 at (28.3, 3.6, 11.2) corner (28.6, 3.8, 10.7) yaw_err -0.03 fwd=true path=9 mouse_mode=2 state=0 look=(-19.31,0.00) pin_yaw=-19.3314233300662 bot=false
+[SLR 1223.6s t=346.4] objective drives -> 2
+[SLR 1223.7s t=346.5] pilot: use Drives2 (bag_loot) -> OK in 1.0 s
+[SLR 1223.7s t=346.5] drive 1 bagged: carrying to (22.5, 0.0, 9.0)
+[SLR 1228.7s t=351.5] pilot: t=5 at (25.3, 3.6, 10.1) corner (25.8, 3.8, 10.2) yaw_err 1.27 fwd=false path=31 mouse_mode=2 state=0 look=(-28.00,0.00) pin_yaw=-27.8030400818789 bot=false
+[SLR 1233.6s t=356.5] pilot: t=10 at (24.5, 3.6, 15.2) corner (24.3, 3.8, 15.6) yaw_err -0.00 fwd=true path=25 mouse_mode=2 state=0 look=(-28.67,0.00) pin_yaw=-28.6761097153467 bot=false
+[SLR 1238.6s t=361.5] pilot: t=15 at (22.0, 1.8, 12.4) corner (22.0, 1.7, 13.0) yaw_err -1.90 fwd=false path=15 mouse_mode=2 state=0 look=(-26.35,0.00) pin_yaw=-26.5445280882086 bot=false
+[SLR 1243.6s t=366.5] pilot: t=20 at (24.5, 0.0, 15.1) corner (24.3, 0.2, 15.6) yaw_err 2.11 fwd=false path=10 mouse_mode=2 state=0 look=(-24.56,0.00) pin_yaw=-24.3642475187116 bot=false
+[SLR 1248.7s t=371.5] pilot: t=25 at (24.5, 0.0, 10.0) corner (24.1, 0.2, 9.3) yaw_err 0.02 fwd=true path=6 mouse_mode=2 state=0 look=(-24.65,0.00) pin_yaw=-24.6299051657152 bot=false
+[SLR 1249.3s t=372.1] secure try 0: throw from (24.2, 0.0, 9.4) at (22.5, 0.0, 9.0) (stand (24.1, 0.2, 9.3))
+[SLR 1250.2s t=373.0] objective secure -> 1
+[SLR 1250.2s t=373.0] objective secure -> 2
+[SLR 1250.2s t=373.0] objective escape -> 1
+[SLR 1250.3s t=373.0] drive 1 secured true (at (24.2, 0.0, 9.4))
+[SLR 1250.3s t=373.1] objective escape -> 2
+[SLR 1250.3s t=373.1] HEIST ENDED { "heist_id": &"shadow_ledger", "success": true, "stealth": true, "time_s": 1244.899, "difficulty": 0, "contract_pay": 70000, "loot": [{ "loot_id": &"loot.ledger_laptop", "value": 5000 }, { "loot_id": &"loot.ledger_drives", "value": 7500 }, { "loot_id": &"loot.ledger_drives", "value": 7500 }], "small_loot": 0, "crew": [{ "slot": 0, "is_ai": false, "name": "Player", "kills": 0, "specials_killed": 0, "downs": 0, "civilians_killed": 0, "shots": 0, "hits": 0, "headshots": 0, "in_custody": false, "escaped": true }, { "slot": 1, "is_ai": true, "name": "AI 1", "kills": 0, "specials_killed": 0, "downs": 0, "civilians_killed": 0, "shots": 0, "hits": 0, "headshots": 0, "in_custody": false, "escaped": true }, { "slot": 2, "is_ai": true, "name": "AI 2", "kills": 0, "specials_killed": 0, "downs": 0, "civilians_killed": 0, "shots": 0, "hits": 0, "headshots": 0, "in_custody": false, "escaped": true }, { "slot": 3, "is_ai": true, "name": "AI 3", "kills": 0, "specials_killed": 0, "downs": 0, "civilians_killed": 0, "shots": 0, "hits": 0, "headshots": 0, "in_custody": false, "escaped": true }], "pagers_answered": 0, "seed": 13, "variants": { &"late_partner": [&"moor_gone"], &"laptop": [&"lap_kessler"], &"server_room": [&"srv_locked"], &"keycard": [&"kc_cleaner", &"kc_it"], &"code_note": [&"code_security_log"], &"guard_post": [&"rover_l42"], &"guard_extra": [], &"security_room_staffed": [&"sec_empty"], &"camera": [&"cam_c"], &"laser_pattern": [&"lz_sweep"], &"vent_open": [&"vent_sealed"], &"gondola": [&"gon_north_l42"], &"escape": [&"esc_service"], &"cleaners": [&"cleaners_2"], &"kessler": [&"kessler_out"], &"time_lock_s": 90.0, "rare": [&"ledger_printout"] }, "fail_reason": &"", "loot_available": 9 }
+[SLR 1273.0s t=373.1] STEP _drives reached
+[SLR 1273.0s t=373.1] STEP _escape begin
+[SLR 1273.0s t=373.1] heist already ended with success (the pilot stood in the escape zone)
+[SLR 1273.0s t=373.1] STEP _escape reached
+[SLR 1273.0s t=373.1] SUMMARY steps: _casing=ok, _mask=ok, _enter_l41=ok, _keycard=ok, _laptop=ok, _cage_code=ok, _server_door=ok, _cage=ok, _hack=ok, _drives=ok, _escape=ok
+[SLR 1273.0s t=373.1] SUMMARY alarm:  at t=-1.0
+[SLR 1273.0s t=373.1] SUMMARY detector CameraC3 kind 2 first t=71.7 max 0.14
+[SLR 1273.0s t=373.1] SUMMARY detector Npc_civilian kind 1 first t=95.6 max 0.11
+[SLR 1273.0s t=373.1] SUMMARY careful waits 1, STUCK rows 1
+[SLR 1273.0s t=373.1] SUMMARY STUCK at (22.6, 1.8, 12.2) toward (23.0, 2.1, 12.3): ["h0.05:/root/PO5Driver/HeistRuntime/ShadowLedger/Geometry/Building/Stairs/StairB/Flight1E/Ramp@(23.1, 1.9, 12.3)", "slide:/root/PO5Driver/HeistRuntime/ShadowLedger/Geometry/Building/Stairs/StairB/Flight1E/Ramp@(22.6, 1.9, 12.3) n=(-0.2, 0.8, -0.5)", "slide:/root/PO5Driver/HeistRuntime/ShadowLedger/Geometry/Building/Stairs/StairB/Flight1E/Ramp@(22.6, 1.9, 12.3) n=(-0.2, 0.8, -0.5)", "vel=(0.0, 0.0, 0.0) floor=true state=0"]
+[SLR] RESULT PASS
