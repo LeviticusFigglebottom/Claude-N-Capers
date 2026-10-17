@@ -104,16 +104,20 @@ const LOCK_POLL_S: float = 0.5
 ## A crew member counts as inside the vault gate when on its vault side within this height of the gate.
 const GATE_SIDE_DY_M: float = 2.0
 const SPECIAL_LONGSHOT: StringName = &"longshot"
-## OF-A4 (D-136.4) civilian routes the mission expects C to place: route_id -> the spawn tag of the civilians it binds
+## OF-A4 (D-136.4) civilian routes the mission expects C to place: route_id -> the spawn tags of the civilians it binds
 ## (CivilianRoute binds by its own bind_tags / patrol_graph; the mission binds any still-unbound match as a fallback).
+## The officers' coffee runs are per desk (C fcc83280: CoffeeOfficerAO1 / OF / VO; `civ_officer` is the pre-fcc83280
+## tag); teller_rotation is one route per side_door slot (only the rolled slot's is in the map, found by id).
 ## Away windows (CivilianRouteStop): `mgr_away` on the manager's isolated stops (BM door shut, CF/PR, the LK WC),
 ## `teller_away` on the rotating teller's BR / WC stops, `officer_away` on the coffee runs.
 const ROUTES: Dictionary = {
-	&"mgr_floor": &"civ_manager_mgr_floor",
-	&"mgr_gallery": &"civ_manager_mgr_gallery",
-	&"mgr_vault": &"civ_manager_mgr_vault",
-	&"teller_rotation": &"civ_teller_rotating",
-	&"officer_coffee": &"civ_officer",
+	&"mgr_floor": [&"civ_manager_mgr_floor"],
+	&"mgr_gallery": [&"civ_manager_mgr_gallery"],
+	&"mgr_vault": [&"civ_manager_mgr_vault"],
+	&"teller_rotation": [&"civ_teller_rotating"],
+	&"officer_coffee": [&"civ_officer_ao1", &"civ_officer"],
+	&"officer_coffee_of": [&"civ_officer_of"],
+	&"officer_coffee_vo": [&"civ_officer_vo"],
 }
 const SPEAKER_ACCOUNTANT: StringName = &"accountant"
 
@@ -346,7 +350,9 @@ func _wire_routes() -> int:
 		found += 1
 		for n: Node in _runtime.npcs(&"civilian"):
 			var npc: NpcBase = n as NpcBase
-			if npc != null and _has_spawn_tag(npc, [ROUTES[route_id]] as Array[StringName]) \
+			var tags: Array[StringName] = []
+			tags.assign(ROUTES[route_id])
+			if npc != null and _has_spawn_tag(npc, tags) \
 					and CivilianRoute.for_civilian(_runtime, npc) == null:
 				route.bind(npc)
 	return found
