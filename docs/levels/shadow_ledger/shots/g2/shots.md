@@ -33,3 +33,21 @@ backlit glass was toned down (`emit_teal`).
 | 25 | TopDownTower | Top-down tower: roof, helipad, plant block, BMU, terrace below the south edge | [top_down_tower.jpg](top_down_tower.jpg) | 66 |
 
 ![contact sheet](contact_sheet.jpg)
+
+## SL-1 polish (the LEAD's review of the contact sheet above)
+
+Re-shot with the same tool and settings (`world/tools/review_shots.tscn`, opengl3, warmup 2, 1920x1080, one render
+process at a time) after the polish pass; the originals above are kept for comparison. Before / after pairs:
+`contact_sheet_polish.jpg`.
+
+| camera | what changed | file | KB |
+|---|---|---|---|
+| SouthSpine | K16 kit `corridor_spine_sl`: framed notices and art, a room sign beside every door (handle side), a bench by K8, the mail trolley by K13 (far end) | [south_spine_polish.jpg](south_spine_polish.jpg) | 121 |
+| ServiceLobby | S1: post-room bin rack, cleaner's cart, mail trolley by the S3 opening, a notice and the lift sign on the lift wall (the E3 escape zone and the spawns stay clear) | [service_lobby_polish.jpg](service_lobby_polish.jpg) | 189 |
+| OpenOffice | K8: teal spine screens on the pods, desk clutter, the whiteboard, a second printer and more cabinets | [open_office_polish.jpg](open_office_polish.jpg) | 188 |
+| StairACore | the terrazzo strip at slab depth on the far wall is gone (the core wall's well face runs through the slab) | [stair_a_core_polish.jpg](stair_a_core_polish.jpg) | 124 |
+| Helipad | painted H and touchdown circle (north of the E1 net), green edge lights, the windsock on the plant block | [helipad_polish.jpg](helipad_polish.jpg) | 108 |
+| ExtWestArden | the generated skyline: varied towers, setbacks, roof plant, masts and warning lights, warm / cool lit floors | [ext_west_arden_polish.jpg](ext_west_arden_polish.jpg) | 124 |
+| ExtNorthCrown | Arden / Vantage lit floors rolled per floor (dark, full, partly lit) instead of the regular grid | [ext_north_crown_polish.jpg](ext_north_crown_polish.jpg) | 99 |
+
+![contact sheet polish](contact_sheet_polish.jpg)

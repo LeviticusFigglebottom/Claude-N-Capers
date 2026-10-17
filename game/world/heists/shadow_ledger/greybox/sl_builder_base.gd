@@ -42,6 +42,7 @@ const EMISSIVE_MATS: Dictionary = {
 	"fixture": Color(1.0, 0.95, 0.88), "led_white": Color(0.85, 0.92, 1.0), "heli_green": Color(0.2, 1.0, 0.35),
 	"beacon_red": Color(1.0, 0.1, 0.05), "city_lights": Color(1.0, 0.75, 0.45), "monitor": Color(0.55, 0.75, 1.0),
 	"logo_teal": Color(0.36, 0.75, 0.78), "rack_led": Color(0.6, 0.8, 1.0),
+	"city_lights_cool": Color(0.72, 0.84, 1.0),  # SL-1 polish: the skyline's cool-lit office floors
 }
 
 var map_root: HeistMap = null
@@ -135,7 +136,7 @@ func _emissive_mat(id: String) -> StandardMaterial3D:
 	m.emission_enabled = true
 	m.emission = EMISSIVE_MATS[id]
 	# Distant lit windows stay dim (bright bands read as floating bars through the fog).
-	m.emission_energy_multiplier = 0.35 if id == "city_lights" else 3.0
+	m.emission_energy_multiplier = 0.35 if id.begins_with("city_lights") else 3.0
 	return m
 
 

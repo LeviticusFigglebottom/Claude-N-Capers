@@ -11,10 +11,10 @@ subtree = &"juggernaut"
 tier = 2
 cost_basic = 2
 cost_aced = 4
-desc_basic = "Taking damage no longer interrupts your interactions."
+desc_basic = "Your armor starts regenerating 15% sooner."
 desc_aced = "Take 50% less damage while interacting."
 grants_basic = {
-&"interaction.no_interrupt_on_damage": true
+&"defense.armor_regen_delay_mult": 0.85
 }
 grants_aced = {
 &"defense.interact_damage_taken_mult": 0.5
