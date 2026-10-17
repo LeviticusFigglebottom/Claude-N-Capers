@@ -35,7 +35,7 @@ and reports a gap list; the LEAD folds the gaps in here as rows (id, heist, owne
 | GN-2 | GN | C | 5 patron spawns vs 12 in doc (7/9 rolls capped) | done (round 219) |
 | GN-3 | GN | C | 2 BODY_HIDE spots vs 8 | done (round 219) |
 | GN-4 | GN | C | 6 COVER points vs ~50 | done (round 219) |
-| GN-8 | GN | A | e2e stealth + loud; QC-57 Vaultline courier; 17 unsaid mission lines (D-117 §6) | mostly done (A 31fcaab4, 291ce51d: B3 inspectors + empty-slot alarm, WarmLoader for the seed-99 threaded-load race, extras/keycard/vault_drill/server_door logic). seed-99: race fixed (291ce51d, aab638dc); LOUD → ESCAPE transition green headless (test_gn8_seed99_escape, A 6d5d617e); windowed seed 99 reached t=673 with no crash (pilot lost the fight before ESCAPE). P's ND CASING hang: same fix, P to confirm. OPEN; 2 Halberd escorts need C markers; GN loud pilot harness (A lane) |
+| GN-8 | GN | A | e2e stealth + loud; QC-57 Vaultline courier; 17 unsaid mission lines (D-117 §6) | LOUD E2E WIN windowed at ×1.0 (A b17c37ec: seed 1792002290, Routine, ENDED t=519, 2 paintings, payday, hub; 0 STUCK, confirms C's GrandStair fix; first windowed LOUD → ESCAPE on the race-fix tree with no crash). Stealth e2e: X-4 headless + P's GN-P1. OPEN: stale 'hack interrupted' objective during escape_wait; payday time shows wall-clock; seed 99 itself still loses before ESCAPE (transition covered headless) |
 | GN-10 | GN | D, P | cast polish; §7 traversal tests | done (round 222, pending tests); GN look map after D lands |
 | B-1 | all | B | D-117 names/briefing/unlocks; GH/SL/GN content gaps | DONE r216 |
 | D-1 | GH | D | design manager Greta Vossberg (female) vs male civilian_manager; civilian_sales_b + clerk look | done (round 220) |
