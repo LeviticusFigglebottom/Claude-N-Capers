@@ -68,6 +68,8 @@ var _tour: bool = false
 ## mechanism checks (PO-14 cage by code / saw) when a seed's guard rolls block the real-input route; detection is off,
 ## movement and interactions stay real input.
 var _hidden: bool = false
+## --skip=a,b: step methods to leave out (e.g. --skip=_casing,_laptop,_hack,_drives,_escape for the PO-14 cage check).
+var _skip: PackedStringArray = PackedStringArray()
 var _scan: Vector2i = Vector2i.ZERO
 var _shot: int = 0
 var _alarm: StringName = &""
@@ -89,6 +91,7 @@ func _ready() -> void:
 			"seed": _seed = v.to_int()
 			"tour": _tour = true
 			"hidden": _hidden = true
+			"skip": _skip = v.split(",")
 			"scan":
 				var ab: PackedStringArray = v.split("-")
 				_scan = Vector2i(ab[0].to_int(), ab[1].to_int() if ab.size() > 1 else ab[0].to_int())
@@ -255,6 +258,7 @@ func _run() -> void:
 		return
 	var steps: Array[Callable] = [_casing, _mask, _enter_l41, _keycard, _laptop, _cage_code, _server_door, _cage,
 		_hack, _drives, _escape]
+	steps = steps.filter(func(st: Callable) -> bool: return not _skip.has(st.get_method()))
 	for step: Callable in steps:
 		if _alarm != &"":
 			await _fail("alarm before %s" % step.get_method())
