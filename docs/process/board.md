@@ -237,6 +237,7 @@ Previous team (session_01XAPqm… lead + its envs) was in another account and is
   - Info for A (PP-C-1 walk rows, not failures): night_deposit STUCK-DOOR at AtmInnerDoor (23.4,0,17.6), AlarmSecurity (21.7,0,18.0), SallyPersonnelDoor (13.2,0,1.5).
 
 ## Rules in force
+- D-135 (PO, 08:40): no new scope; every env closes its queue and reports QUEUE CLEAR, then Ostrander Federal kicks off for all envs together.
 - D-088: targeted checks only before env pushes; the full gate runs at the lead per merge round, in the background.
 
 ## Open questions (id → answer)
