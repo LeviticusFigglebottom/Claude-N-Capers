@@ -40,8 +40,8 @@
 ##                                                0 = n/a
 ##     "xp_total": int,                           sum of xp_lines (>= 0)
 ##     "stealth_bonus_consumed": bool,            success and banked_stealth_mult > 1 (bank spent)
-##     "stealth_bonus_banked": float }            tweak.stealth_xp_bonus_mult on a successful stealth
-##                                                heist (banked for the NEXT payday), else 1.0
+##     "stealth_bonus_banked": float }            stealth_bonus_for(heist) on a successful stealth heist
+##                                                (banked for the NEXT payday), else 1.0
 ##
 ## Rounding: every money/XP line is rounded on its own with roundi() (half away from zero), then
 ## lines are summed as integers. stash = roundi(gross x stash_fraction); spending absorbs the rest,
@@ -86,8 +86,20 @@ static func compute(result: Dictionary, difficulty_def: DifficultyDef = null, tw
 	_compute_cash(out, result, diff, tw, success, crew, crew_slot)
 	_compute_xp(out, result, diff, tw, success, is_pro, crew, crew_slot, banked_stealth_mult,
 			{"xp_mult": xp_mult, "notoriety": notoriety_bonus})
-	out["stealth_bonus_banked"] = tw.stealth_xp_bonus_mult if success and stealth else 1.0
+	out["stealth_bonus_banked"] = stealth_bonus_for(StringName(result.get("heist_id", &"")), tw) if success and stealth \
+			else 1.0
 	return out
+
+
+## S11.1: the stealth bonus a stealth win of `heist_id` banks, "5-25 % scaled by heist size": the heist's
+## HeistDef.stealth_bonus_mult when set (> 1.0; per-size values in the generator rows), else
+## tweak.stealth_xp_bonus_mult (an unknown heist / no def).
+static func stealth_bonus_for(heist_id: StringName, tweak: PayoutTweak = null) -> float:
+	var tw: PayoutTweak = tweak if tweak != null else _load_tweak()
+	var def: HeistDef = HeistRegistry.get_def(heist_id) if heist_id != &"" else null
+	if def != null and def.stealth_bonus_mult > 1.0:
+		return def.stealth_bonus_mult
+	return tw.stealth_xp_bonus_mult
 
 
 static func _compute_cash(out: Dictionary, result: Dictionary, diff: DifficultyDef, tw: PayoutTweak,

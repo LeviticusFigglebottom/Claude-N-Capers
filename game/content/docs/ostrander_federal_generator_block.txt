@@ -55,6 +55,7 @@ static func make_def() -> HeistDef:
 	d.mode = Enums.HeistMode.STEALTH_OR_LOUD
 	d.map_scene = SCENE_PATH
 	d.base_payout = 80000  # D-137 (D-120 shape; the doc's $160k superseded)
+	d.stealth_bonus_mult = 1.25  # S11.1 by heist size (proposed to the lead): S 1.10 / M 1.15 / L 1.25
 	d.loot = [&"loot.cash_bricks", &"loot.gold", &"loot.bearer_bonds", &"loot.server_drives",
 		&"loot.small_valuables"] as Array[StringName]  # small_valuables: deposit boxes / drawers, def-less (as ND, SL)
 	# Objective ids = the design doc's Objectives `[tag]`s (stealth, then loud), doc §HeistDef order.

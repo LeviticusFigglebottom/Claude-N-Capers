@@ -36,7 +36,8 @@ extends Resource
 @export var crew_alive_xp_counts_ai: bool = true
 ## ◇ Stealth bonus banked by a successful stealth heist and applied (multiplicatively, last in C6
 ## order) to the XP of the NEXT successful payday (pd2_fidelity S11.1, D-022 QB-13). S11.1: +5..25%
-## scaled by heist size. P1 keeps one value (1.2 = +20%); TODO(P4): scale it by heist size.
+## scaled by heist size: PayoutCalculator.stealth_bonus_for uses the heist's HeistDef.stealth_bonus_mult (per size);
+## this value is the fallback for a heist without one.
 @export var stealth_xp_bonus_mult: float = 1.2
 ## D-139 heist freshness (HeistFreshness): the per-player memory of the last `freshness_memory` runs that reached
 ## payday; a heist in it n times pays x(1 - repeat_step x n), floored at repeat_floor; a completed heist out of it
