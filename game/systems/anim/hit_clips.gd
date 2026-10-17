@@ -61,6 +61,8 @@ func react_clip(dir: Vector3) -> StringName:
 ## PO6-18 / D-114 §7: a kneeling / cuffed / crouched / prone / downed body dies from that pose: its pose death,
 ## or (rig without it) the pose itself, frozen where it is. &"" = a standing body.
 func pose_death_clip(tw: AnimTweak) -> StringName:
+	if _d._alive_clip == CivPanic.PANIC_START:
+		return _d.civ_panic.death_clip()  # D-116: death_crouch from ~f10, before that the normal deaths
 	if not tw.death_by_pose.has(_d._alive_clip):
 		return &""
 	var posed: StringName = tw.death_by_pose[_d._alive_clip]
