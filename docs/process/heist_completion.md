@@ -9,7 +9,7 @@ and reports a gap list; the LEAD folds the gaps in here as rows (id, heist, owne
 | Nightfall Depository | night_deposit | final art | gate 2 (`auto_loud`, attempt 24 on an empty box); assault events rows |
 | Gallery Night | gallery_night | G1 greybox + full mission logic | G2 art (GN-C2); e2e stealth + loud (GN-A1); cast polish (GN-D1); P windowed pass (GN-P1); B briefing/strings (GN-B1, GN-U5 objective list) |
 | Dockside Burn | dockside_burn | greybox + material pass | D-111 props/doors/loot (wip/c-sldb-props); G2 art; mission audit vs design doc; e2e flows; cast tags; strings; P pass |
-| Shadow Ledger | shadow_ledger | greybox + material pass | same as Dockside Burn |
+| Shadow Ledger | shadow_ledger | final art (G2, round 234) | same as Dockside Burn |
 
 ## Gap rows
 | id | heist | owner | gap | status |
@@ -22,7 +22,7 @@ and reports a gap list; the LEAD folds the gaps in here as rows (id, heist, owne
 | GH-1 | GH | A, P | PO6-17 logic merge; P real-input pass | in progress |
 | ND-1 | ND | A | gate 2 (auto_loud, attempt 24, empty box) | open |
 | ND-2 | ND | P | windowed real-input pass | stealth route clean to the vault loot (P 2af62b43, seed 21: grate, ladder, mask, knife, pager, keycard + code, C6, lasers, time lock, bag 1 out); OPEN: bag carry out (next: the doc's cash-lift route); A's prewarm fix: no load hang in ~17 launches |
-| SL-1 | SL | C | G2 art pass (GI, probes, occluders, dressing, review shots) | open |
+| SL-1 | SL | C | G2 art pass (GI, probes, occluders, dressing, review shots) | done: G2 FINAL (C 708a9cd1; validate final PASS, worst 2293 draws / 2500). Polish notes (LEAD review): bare south_spine / service_lobby / open_office, uniform skyline, helipad |
 | SL-2 | SL | C | D-111 props/doors/loot | done (items 1-4 earlier; item 5 C a0f6099d: E1 net, E2 tarp + zipline anchor/cable, E3 lift blankets, laser emitter columns) |
 | SL-3 | SL | C | VictorKessler `sit` 4.1 m from a seat; camera station seat visual; ITContractor = phone (doc change APPROVED) | done (C a0f6099d) |
 | SL-6 | SL | A | mission audit + stealth e2e | done (A 47d08435 + camera_warning poll, test_sl6_*) |
@@ -56,4 +56,4 @@ and reports a gap list; the LEAD folds the gaps in here as rows (id, heist, owne
 | X-7 | GN, SL, ND | C, A | D-130: guards/civilians scale with difficulty (≈ +50 % / +35 % at Cataclysm; C rows + spawns, A runtime + count test) | open |
 | X-8 | all | A, P | D-130: cameras detect ~20 % faster (A tweak + test, P feel check) | open |
 | DB-P1 | DB | P (C, B, A) | first real-input pass: OOM at t=216 (product/cartel/breach/burn done, 0 STUCK). C: ChamberANorth shutter on the strongroom nav path, breach watcher misses an open entry door; B: "Thin out the gunmen" during the burn; A: no reroute, CREW_STACK ×20 | in progress |
-| SL-P1 | SL | P (C) | first real-input pass | WON in stealth (P e6b9dcf6, seed 13, t=418, 0 snags on the casing walk). C: Stair B half-landing headroom 1.8 m with a bag, lift-car secure zone narrower than the car, K7/K10 corner (low); B: preplan `{asset, point}` loses its point |
+| SL-P1 | SL | P (C) | first real-input pass | PASS: won in stealth (e6b9dcf6) and RE-WALK PASS on G2 art + C's fixes (P c02d044f, seed 13, t=373: every bag secured first throw, no corner snag, headroom fine). Last STUCK row (Stair B landing ramp edge) fixed by C f170f6ee, P confirms on trunk |

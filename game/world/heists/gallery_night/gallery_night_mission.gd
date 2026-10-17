@@ -48,6 +48,10 @@ const HACK_LOUD_S: float = 120.0
 const HACK_LOUD_INTERRUPTIONS: Vector2i = Vector2i(2, 3)
 ## Stealth card steps skipped by the lockdown (B's GN audit): the loud hack / vault drill replace them.
 const LOCKDOWN_SKIPPED: Array[StringName] = [&"keycard", &"treasury", &"art_store"]
+## LEAD (GN win frames, 10_auto_367): access steps still open when the escape is called are moot (the loot is
+## secured): skipped, so a stale "Hack the Argus server / HACK INTERRUPTED" is never the current step at the escape.
+const ESCAPE_SKIPPED: Array[StringName] = [&"keycard", &"server_code", &"server_door", &"hack", &"treasury",
+	&"art_store", &"vault_drill"]
 const LAST_CALL_WARNING_S: float = 60.0
 const GUESTS_GONE_S: float = 60.0
 ## find_canvases: radius of the "walk within 4 m" check around each active list slot (doc §Objectives 2).
@@ -829,6 +833,10 @@ func _on_canvas_secured(_bag_net_id: int, loot_id: StringName, _value: int) -> v
 func _call_escape() -> void:
 	if _escape_open:
 		return
+	for id: StringName in ESCAPE_SKIPPED:
+		if objective_state(id) == Enums.ObjectiveState.ACTIVE:
+			update_objective_data(id, {"disabled": true, "reason": &"escape", "skipped": true})
+			complete(id)
 	if not went_loud:
 		_open_escape()
 		return

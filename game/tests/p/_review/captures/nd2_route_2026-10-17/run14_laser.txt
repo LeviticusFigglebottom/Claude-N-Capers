@@ -1,0 +1,43 @@
+[NDR 23.4s t=0.0] variants { &"guard_post": [&"rover_ground"], &"camera": [&"cam_c"], &"security_room_staffed": [&"sec_empty"], &"night_manager": [&"mgr_in"], &"code_note": [&"code_records_ledger"], &"keycard": [&"kc_records"], &"server_room": [&"srv_ground"], &"vent_open": [&"vent_open"], &"laser_pattern": [&"laser_static"], &"cleaner": [&"cleaner_ground"], &"escape": [&"esc_van_lot"], &"extra_loot": [&"mgr_safe_full"], &"armored_car": [], &"time_lock_s": 60.0, &"depository_bags": 3, &"deposit_boxes": 6, "rare": [] }
+[NDR 198.0s t=3.1] pilot: calibrated 0.001600 rad/px yaw, 0.001600 rad/px pitch (settings formula said (0.0016, 0.0016))
+[NDR 198.0s t=3.1] spawn (1.5, 0.0, -9.0)
+[NDR 212.7s t=3.2] fast mode: render loop off between shots
+[NDR 217.6s t=8.2] pilot: t=5 at (6.6, 0.0, -6.8) corner (11.1, 0.2, -4.3) yaw_err 0.00 fwd=true path=12 mouse_mode=2 state=0 look=(-2.08,0.00) pin_yaw=-2.07791632512388 bot=false
+[NDR 222.6s t=13.2] pilot: t=10 at (11.5, 0.0, -4.0) corner (14.0, 0.2, -2.7) yaw_err -1.15 fwd=false path=8 mouse_mode=2 state=0 look=(-0.92,0.00) pin_yaw=-1.11210703022814 bot=false
+[NDR 229.6s t=20.2] pilot: use AreawayGrate (open_door) -> OK in 3.0 s
+[NDR 250.7s t=23.4] ladder AreawayLadder: down true in 1.6 s
+[NDR 250.9s t=23.7] pilot: use AreawayDoor (open_door) -> OK in 0.0 s
+[NDR 254.6s t=27.3] objective casing -> 2
+[NDR 254.9s t=27.6] masked in B3 (masked true)
+[NDR 315.7s t=48.0] pilot: use PlantDoor (open_door) -> OK in 0.0 s
+[NDR 316.1s t=48.3] PlantDoor open true (guard at (12.9, -4.0, 6.8))
+[NDR 326.9s t=59.1] in the corridor at (18.3, -4.0, 6.6), guard (14.3, -4.0, 7.7)
+[NDR 332.2s t=64.4] go: guard (14.1, -4.0, 7.6) leaving west, me (18.3, -4.0, 6.6)
+[NDR 332.2s t=64.4] knife trace: me (18.3, -4.0, 6.6) guard (14.1, -4.0, 7.6) dist 4.35 alert 0 meter 0.00
+[NDR 332.7s t=64.9] knife trace: me (16.2, -4.0, 7.0) guard (13.4, -4.0, 7.3) dist 2.85 alert 0 meter 0.00
+[NDR 333.7s t=65.7] swing: me (13.4, -4.0, 7.1) guard (11.6, -3.8, 7.0) fwd (-1.0, -0.0, -0.1) dist 1.85, swings 1, hits 1, health 0.00 alive false alert 0 -> 11
+[NDR 363.7s t=68.2] answering the pager
+[NDR 394.2s t=84.4] pilot: t=5 at (6.9, -4.0, 7.0) corner (4.8, -3.8, 7.1) yaw_err 0.00 fwd=true path=18 mouse_mode=2 state=0 look=(-4.70,0.00) pin_yaw=-4.69565318928951 bot=false
+[NDR 397.1s t=87.2] pilot: use RecordsDoor (open_door) -> OK in 0.0 s
+[NDR 401.1s t=91.2] pilot: t=10 at (4.4, -4.0, 10.1) corner (4.4, -3.8, 10.7) yaw_err 2.09 fwd=false path=13 mouse_mode=2 state=0 look=(-5.24,0.00) pin_yaw=-5.05017989232445 bot=false
+[NDR 406.1s t=96.2] pilot: t=15 at (2.0, -4.0, 14.5) corner (2.6, -3.8, 14.4) yaw_err 1.96 fwd=false path=3 mouse_mode=2 state=0 look=(-3.26,0.00) pin_yaw=-3.06512498708915 bot=false
+[NDR 407.2s t=97.4] objective keycard -> 2
+[NDR 409.8s t=100.0] objective code -> 2
+[NDR 409.9s t=100.1] pilot: use CodeNote (read_note) -> OK in 1.0 s
+[NDR 443.7s t=105.2] pilot: t=5 at (4.3, -4.0, 11.4) corner (4.3, -3.8, 12.0) yaw_err 2.73 fwd=false path=17 mouse_mode=2 state=0 look=(-5.86,0.00) pin_yaw=-5.67261466244534 bot=false
+[NDR 448.6s t=110.2] pilot: t=10 at (5.0, -4.0, 7.1) corner (7.7, -3.8, 7.1) yaw_err -0.00 fwd=true path=10 mouse_mode=2 state=0 look=(-7.86,0.00) pin_yaw=-7.86045673714696 bot=false
+[NDR 453.6s t=115.2] pilot: t=15 at (10.8, -4.0, 7.0) corner (12.8, -3.8, 7.1) yaw_err 0.77 fwd=false path=4 mouse_mode=2 state=0 look=(-14.93,0.00) pin_yaw=-14.7364164283165 bot=false
+[NDR 457.3s t=118.9] objective vault_gate -> 2
+[NDR 457.4s t=118.9] objective time_lock -> 1
+[NDR 457.4s t=119.0] pilot: use VaultGate (open_door) -> OK in 1.0 s
+[NDR 457.7s t=119.3] vault gate open true
+[INFO][prefab][p1] AntechamberLasers tripped by slot 0
+[INFO][stealth][p1] ALARM: laser (source 77)
+[NDR 472.3s t=120.7] objective server -> 1
+[NDR 472.3s t=120.7] objective time_lock -> 1
+[NDR 472.3s t=120.7] objective vault_drill -> 1
+[NDR 472.3s t=120.7] ALARM laser
+[NDR 490.3s t=120.8] C6 shot from (14.0, -4.0, 8.3) at (9.3, -1.4, 8.8) (4.8 m): ray hits /root/NdStealthRoute/HeistRuntime/NightDeposit/Variants/Group_camera/Slot_cam_c/CameraC6/Collision
+[NDR 513.2s t=121.3] camera C6 down
+[NDR 513.2s t=121.3] FAIL alarm before _time_lock (alarm laser)
+[NDR] RESULT FAIL at alarm before _time_lock

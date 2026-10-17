@@ -1182,3 +1182,7 @@ folded into D1 (Godot casts shadows per node, not per surface). D1 becomes share
 wrap) + one ShaderMaterial per merged node instead of a flat atlas (189 uniform ORM materials, tiled UVs up to 3.75),
 crowd + unit characters only; checks: Compatibility lighting/shadows/fog/viewmodel_lit parity, outline + bleed next_pass,
 ragdoll/HandProps, VRAM, 2/10/30 m lineups; per-character fallback switch.
+**D-128 feel check, Golden Hour (P 6e3c49d3, 2026-10-17):** guard at 4.3-4.9 m fills in 1.13 s (formula 1.17-1.24 s);
+civilians within 5.5 m uncover instantly; camera C4 at 4.95 m (D-130 presets) 3.89 s (3.85-4.07), decay 1.23 s (1.17); a
+careful crouched route keeps every meter at 0.00. All within ~5 % of A's formula; verdict: feels like PD2. Pending: GH
+Lethal (Titan, cap 2), 10 m camera fills, the SL leg.
