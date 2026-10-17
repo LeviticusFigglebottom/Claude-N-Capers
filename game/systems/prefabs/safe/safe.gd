@@ -23,6 +23,9 @@
 ## (Glasshouse SafeDrill), the safe's own drill/saw method places THAT device (its runner, visual and
 ## duration): one interact on either the safe or the drill spot places one visible drill. Before, the
 ## safe ran a second, invisible runner of its own (place cue, no drill) and the spot then took another.
+## D-138.3: a safe running its OWN runner (no such drill_point) shows the device art too (DeviceVisual: the catalog
+## drill / saw by runner kind, or `device_scene`) at the visual's `DrillPoint` marker (else the safe root) while the
+## device is RUNNING / JAMMED, removed when idle / done (DrillPoint's behaviour).
 ## QC-37 (gameplay_prefabs G.SAW_TARGET): with &"saw" in `methods` the handheld saw also cuts the lock:
 ## `saw_cut(s)` adds up to InteractionTweak.hand_saw_safe_s[size], then the lock is beaten (beaten_by &"saw").
 ## A2-08 KEYCARD: with &"keycard" in `methods` the safe is opened by a keycard_reader (the safe's
@@ -89,6 +92,8 @@ const METHOD_UI: Dictionary = {
 ## Collision box size (m), placed on the pivot; ZERO = fit to the visual (or use the visual's own
 ## `Collision`), see GameplayPrefab "Collision fitting".
 @export var collision_size_override: Vector3 = Vector3.ZERO
+## D-138.3: the device shown while the safe's own drill / saw runs (null = DeviceVisual.scene_for(runner kind)).
+@export var device_scene: PackedScene
 @export_group("Interaction")
 ## -1 = InteractionTweak.drill_place_s (placing the drill on `DrillPoint`).
 @export var interaction_time_s: float = -1.0
@@ -107,6 +112,11 @@ var timer_left: float = -1.0
 var beaten_by: StringName = &""
 ## QC-37: handheld saw progress on the lock (0..1, replicated).
 var saw_progress: float = 0.0
+## D-138.3: the placed device visual of the safe's own runner while RUNNING / JAMMED (null otherwise; a shared
+## drill_point shows its own).
+var device_node: Node3D:
+	get:
+		return _visual.node
 
 var _place_time: float = 0.0
 ## net_id of the crew member who armed the C4 (blast attacker), 0 = none.
@@ -115,6 +125,7 @@ var _c4_by_net_id: int = 0
 var _session_method: StringName = &""
 ## PO6-01: the child drill_point whose runner this safe shares (null = the safe owns `runner`).
 var _device_point: DrillPoint = null
+var _visual: DeviceVisual = DeviceVisual.new()
 
 
 func _placeholder_scene() -> PackedScene:
@@ -144,6 +155,7 @@ func _prefab_ready() -> void:
 		runner = DeviceRunner.new(self, &"drill" if methods.has(&"drill") else &"saw")
 		runner.finished.connect(open_by_device)
 		runner.state_changed.connect(_on_shared_device_state)
+		runner.state_changed.connect(_on_own_device_state)
 	var first: StringName = &""
 	for m: StringName in METHOD_ORDER:
 		if methods.has(m):
@@ -264,6 +276,17 @@ func _physics_process(delta: float) -> void:
 func _exit_tree() -> void:
 	if runner != null and _device_point == null:
 		runner.shutdown()
+
+
+func _process(delta: float) -> void:
+	if runner != null and _device_point == null:
+		_visual.tick(delta, runner.state == DeviceRunner.State.RUNNING)
+
+
+## D-138.3: the own runner's device art at the lock (the visual's `DrillPoint` marker, -Z into the lock).
+func _on_own_device_state(s: int) -> void:
+	var mount: Node = visual_node("DrillPoint")
+	_visual.update(s, runner.kind, mount if mount != null else self, device_scene)
 
 
 # --- Method selection --------------------------------------------------------------

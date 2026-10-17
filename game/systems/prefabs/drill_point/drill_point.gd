@@ -278,15 +278,7 @@ static func set_device_fx(device: Node, on: bool) -> void:
 
 
 func _device_scene() -> PackedScene:
-	if device_scene != null:
-		return device_scene
-	var own: String = DEFAULT_SAW if device == Device.SAW else (DEFAULT_THERMAL if device == Device.THERMAL else "")
-	if own != "" and ResourceLoader.exists(G.PROPS_DIR + own):
-		return load(G.PROPS_DIR + own) as PackedScene
-	if device == Device.SAW:
-		return null  # never a drill on a saw point
-	var path: String = G.PROPS_DIR + DEFAULT_DEVICE
-	return load(path) as PackedScene if ResourceLoader.exists(path) else null
+	return DeviceVisual.scene_for(device_kind(), device_scene)  # never a drill on a saw point
 
 
 ## A small emissive red mark above the device while jammed (procedural: no art asset).
