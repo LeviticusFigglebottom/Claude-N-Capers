@@ -1,0 +1,55 @@
+[NDR 22.6s t=0.0] variants { &"guard_post": [&"rover_ground"], &"camera": [&"cam_c"], &"security_room_staffed": [&"sec_empty"], &"night_manager": [&"mgr_in"], &"code_note": [&"code_records_ledger"], &"keycard": [&"kc_records"], &"server_room": [&"srv_ground"], &"vent_open": [&"vent_open"], &"laser_pattern": [&"laser_static"], &"cleaner": [&"cleaner_ground"], &"escape": [&"esc_van_lot"], &"extra_loot": [&"mgr_safe_full"], &"armored_car": [], &"time_lock_s": 60.0, &"depository_bags": 3, &"deposit_boxes": 6, "rare": [] }
+[NDR 202.6s t=3.1] pilot: calibrated 0.001600 rad/px yaw, 0.001600 rad/px pitch (settings formula said (0.0016, 0.0016))
+[NDR 202.6s t=3.1] spawn (1.5, 0.0, -9.0)
+[NDR 217.1s t=3.2] fast mode: render loop off between shots
+[NDR 222.0s t=8.2] pilot: t=5 at (6.6, 0.0, -6.8) corner (11.1, 0.2, -4.3) yaw_err 0.00 fwd=true path=12 mouse_mode=2 state=0 look=(-2.08,0.00) pin_yaw=-2.07791632512388 bot=false
+[NDR 227.0s t=13.2] pilot: t=10 at (11.5, 0.0, -4.0) corner (14.0, 0.2, -2.7) yaw_err -1.15 fwd=false path=8 mouse_mode=2 state=0 look=(-0.92,0.00) pin_yaw=-1.11210703022814 bot=false
+[NDR 234.0s t=20.2] pilot: use AreawayGrate (open_door) -> OK in 3.0 s
+[NDR 255.3s t=23.4] ladder AreawayLadder: down true in 1.6 s
+[NDR 255.6s t=23.7] pilot: use AreawayDoor (open_door) -> OK in 0.0 s
+[NDR 259.2s t=27.3] objective casing -> 2
+[NDR 259.6s t=27.6] masked in B3 (masked true)
+[NDR 321.6s t=48.0] pilot: use PlantDoor (open_door) -> OK in 0.0 s
+[NDR 322.0s t=48.3] PlantDoor open true (guard at (12.9, -4.0, 6.8))
+[NDR 332.8s t=59.1] in the corridor at (18.3, -4.0, 6.6), guard (14.3, -4.0, 7.7)
+[NDR 338.1s t=64.4] go: guard (14.1, -4.0, 7.6) leaving west, me (18.3, -4.0, 6.6)
+[NDR 338.1s t=64.4] knife trace: me (18.3, -4.0, 6.6) guard (14.1, -4.0, 7.6) dist 4.35 alert 0 meter 0.00
+[NDR 338.6s t=64.9] knife trace: me (16.2, -4.0, 7.0) guard (13.4, -4.0, 7.3) dist 2.85 alert 0 meter 0.00
+[NDR 339.5s t=65.7] swing: me (13.4, -4.0, 7.1) guard (11.6, -3.8, 7.0) fwd (-1.0, -0.0, -0.1) dist 1.85, swings 1, hits 1, health 0.00 alive false alert 0 -> 11
+[NDR 370.1s t=68.2] answering the pager
+[NDR 400.6s t=84.4] pilot: t=5 at (6.9, -4.0, 7.0) corner (4.8, -3.8, 7.1) yaw_err 0.00 fwd=true path=18 mouse_mode=2 state=0 look=(-4.70,0.00) pin_yaw=-4.69565318928951 bot=false
+[NDR 403.4s t=87.2] pilot: use RecordsDoor (open_door) -> OK in 0.0 s
+[NDR 407.4s t=91.2] pilot: t=10 at (4.4, -4.0, 10.1) corner (4.4, -3.8, 10.7) yaw_err 2.09 fwd=false path=13 mouse_mode=2 state=0 look=(-5.24,0.00) pin_yaw=-5.05017989232445 bot=false
+[NDR 412.4s t=96.2] pilot: t=15 at (2.0, -4.0, 14.5) corner (2.6, -3.8, 14.4) yaw_err 1.96 fwd=false path=3 mouse_mode=2 state=0 look=(-3.26,0.00) pin_yaw=-3.06512498708915 bot=false
+[NDR 413.5s t=97.4] objective keycard -> 2
+[NDR 416.2s t=100.0] objective code -> 2
+[NDR 416.2s t=100.1] pilot: use CodeNote (read_note) -> OK in 1.0 s
+[NDR 450.1s t=105.2] pilot: t=5 at (4.3, -4.0, 11.4) corner (4.3, -3.8, 12.0) yaw_err 2.73 fwd=false path=17 mouse_mode=2 state=0 look=(-5.86,0.00) pin_yaw=-5.67261466244534 bot=false
+[NDR 455.0s t=110.2] pilot: t=10 at (5.0, -4.0, 7.1) corner (7.7, -3.8, 7.1) yaw_err -0.00 fwd=true path=10 mouse_mode=2 state=0 look=(-7.86,0.00) pin_yaw=-7.86045673714696 bot=false
+[NDR 460.0s t=115.2] pilot: t=15 at (10.8, -4.0, 7.0) corner (12.8, -3.8, 7.1) yaw_err 0.77 fwd=false path=4 mouse_mode=2 state=0 look=(-14.93,0.00) pin_yaw=-14.7364164283165 bot=false
+[NDR 463.8s t=118.9] objective vault_gate -> 2
+[NDR 463.8s t=118.9] objective time_lock -> 1
+[NDR 463.8s t=119.0] pilot: use VaultGate (open_door) -> OK in 1.0 s
+[NDR 464.1s t=119.3] vault gate open true
+[NDR 479.3s t=120.7] C6 shot from (13.9, -4.0, 6.7) at (9.3, -1.4, 8.8) (5.2 m): ray hits /root/NdStealthRoute/HeistRuntime/NightDeposit/Geometry/Building/InteriorWalls/B_Z7_5_06
+[NDR 502.1s t=121.1] C6 shot from (13.9, -4.0, 6.7) at (9.3, -1.4, 8.8) (5.2 m): ray hits /root/NdStealthRoute/HeistRuntime/NightDeposit/Geometry/Building/InteriorWalls/B_Z7_5_06
+[NDR 522.5s t=121.6] C6 shot from (13.9, -4.0, 6.7) at (9.3, -1.4, 8.8) (5.2 m): ray hits /root/NdStealthRoute/HeistRuntime/NightDeposit/Geometry/Building/InteriorWalls/B_Z7_5_06
+[NDR 543.9s t=122.1] C6 shot from (13.9, -4.0, 6.7) at (9.3, -1.4, 8.8) (5.2 m): ray hits /root/NdStealthRoute/HeistRuntime/NightDeposit/Geometry/Building/InteriorWalls/B_Z7_5_06
+[NDR 566.5s t=122.6] C6 shot from (13.9, -4.0, 6.7) at (9.3, -1.4, 8.8) (5.2 m): ray hits /root/NdStealthRoute/HeistRuntime/NightDeposit/Geometry/Building/InteriorWalls/B_Z7_5_06
+[NDR 589.5s t=123.1] C6 shot from (13.9, -4.0, 6.7) at (9.3, -1.4, 8.8) (5.2 m): ray hits /root/NdStealthRoute/HeistRuntime/NightDeposit/Geometry/Building/InteriorWalls/B_Z7_5_06
+[NDR 612.3s t=123.5] camera C6 still up
+[NDR 630.8s t=133.7] pilot: t=5 at (15.6, -4.0, 9.0) corner (15.0, -3.8, 9.0) yaw_err -2.72 fwd=false path=4 mouse_mode=2 state=0 look=(-2.00,0.00) pin_yaw=-2.19503682420159 bot=false
+[INFO][stealth][p1] camera alert: alarm in 7.0 s
+[NDR 634.9s t=137.8] objective time_lock -> 2
+[NDR 634.9s t=137.8] objective time_lock_wait -> 0
+[NDR 634.9s t=137.8] objective time_lock_wait -> 1
+[NDR 634.9s t=137.9] pilot: use TimeLockPanel (enter_code) -> OK in 2.0 s
+[NDR 634.9s t=137.9] time lock running: waiting at x4
+[INFO][stealth][p1] ALARM: camera (source 71)
+[NDR 649.5s t=142.4] objective time_lock_wait -> 3
+[NDR 649.5s t=142.4] objective server -> 1
+[NDR 649.6s t=142.4] objective vault_drill -> 1
+[NDR 649.6s t=142.4] ALARM camera
+[NDR 650.1s t=144.8] vault open false after 7 s
+[NDR 664.9s t=145.0] FAIL _time_lock (alarm camera)
+[NDR] RESULT FAIL at _time_lock
