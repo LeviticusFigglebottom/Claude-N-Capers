@@ -74,3 +74,6 @@ sight-mod deltas; make_delta() needs no change (defaults contribute nothing).
 * `camera_titan_min_difficulty: int = -1`: cameras are Titan (indestructible) from this `Enums.Difficulty`; -1 =
   `StealthTweak.camera_titan_min_difficulty`. A camera's own `titan` export still wins. Producer C, consumers A
   (`SecurityCamera.is_titan()`), B (card).
+**v1.3 precedence (LEAD, round 231):** the run's pager cap is (1) a rolled `pager_max_answers` variant scalar, else (2)
+`HeistDef.pager_max_by_difficulty[difficulty]`, else (3) `StealthTweak.pager_max_answers` (A's `PagerSystem.cap_for`).
+Every reader (B's BriefingIntel, the HUD) uses the same order.
