@@ -124,6 +124,12 @@ extends Resource
 @export var burn_place_s: float = 3.0
 ## D-068: a thermite bag lying this close to the burn point (m) is used as well as a carried one.
 @export var burn_bag_radius_m: float = 2.5
+## QC-60: a required tool bag (drill_point.requires_loot, the thermal drill parts) lying this close (m) is used as
+## well as a carried one, as for the thermite bag.
+@export var drill_bag_radius_m: float = 2.5
+## QC-60 / §3b.9: a HeistMission.spawn_loot(respawn = true) bag this far (m) below its marker is lost off the map
+## and put back at the marker.
+@export var loot_lost_below_m: float = 20.0
 @export var burn_duration_s: float = 30.0
 @export var burn_warning_s: float = 5.0
 ## Fire volume damage to crew inside (DamageType.FIRE, ignores armour, L3.4), per second, ticked.

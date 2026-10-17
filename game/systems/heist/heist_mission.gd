@@ -15,6 +15,9 @@ signal objectives_changed()
 const SPEAKER_MERCER: StringName = &"mercer"
 ## D-115 (DB-3): CartelBrain.woken_by of a cartel gunman spawned by spawn_guards.
 const REINFORCEMENT_WAKE: StringName = &"reinforcement"
+## QC-60 / §3b.9: spawn_loot(respawn = true) bags are checked this often (s) for having fallen off the map.
+const LOOT_WATCH_TIMER: StringName = &"_loot_respawn_watch"
+const LOOT_WATCH_S: float = 1.0
 
 ## Read-only runtime facts for mission scripts.
 var phase: int:
@@ -70,6 +73,8 @@ var _loot_reqs: Dictionary[StringName, int] = {}
 var _items_seen: Dictionary[StringName, int] = {}
 var _bags_secured: int = 0
 var _loot_value: int = 0
+## QC-60: spawn_loot(respawn = true) bags: bag instance id -> [LootBag, marker Node3D].
+var _respawn_bags: Dictionary[int, Array] = {}
 
 
 # --- Virtual hooks -----------------------------------------------------------------
@@ -275,6 +280,101 @@ func find_tagged(tag: StringName) -> Array[Node]:
 
 func variant(group_or_scalar: StringName) -> Variant:
 	return _runtime.variants.get(group_or_scalar) if _runtime != null else null
+
+
+## QC-60 (OF drill parts, timed loot): spawn `count` bags of `loot_id` (LootManager.spawn_bag, loot_spawned [R]) at
+## the map's Node3D markers tagged `tag`: nodes whose `objective_tag` (property, as find_tagged, or a Marker3D's
+## metadata `objective_tag`) is `tag`, in tree order, cycling (0.4 m up per reuse) when count > markers. Server.
+## `respawn` (§3b.9: no soft lock): a bag destroyed / freed without being secured or consumed by a device
+## (LootManager.META_CONSUMED) comes back at its marker, and a loose bag that fell InteractionTweak
+## loot_lost_below_m below its marker (off the map) is put back there. Returns the bags ([] with no marker, logged).
+func spawn_loot(loot_id: StringName, tag: StringName, count: int = 1, respawn: bool = false) -> Array:
+	var out: Array = []
+	var loot: LootManager = _runtime.service(G.SVC_LOOT) as LootManager if _runtime != null else null
+	if loot == null or count <= 0 or not Net.is_authority():
+		return out
+	var markers: Array[Node3D] = loot_markers(tag)
+	if markers.is_empty():
+		Log.error(&"mission", "spawn_loot: no marker tagged '%s'" % tag)
+		return out
+	for i: int in range(count):
+		var m: Node3D = markers[i % markers.size()]
+		var bag: LootBag = _spawn_loot_at(loot, loot_id, m, i / markers.size())
+		if bag == null:
+			continue
+		out.append(bag)
+		if respawn:
+			_watch_respawn(bag, m)
+	return out
+
+
+## QC-60: Node3D markers tagged `tag` for spawn_loot (bags excluded), in tree order.
+func loot_markers(tag: StringName) -> Array[Node3D]:
+	var out: Array[Node3D] = []
+	if _runtime == null or tag == &"":
+		return out
+	for n: Node in find_tagged(tag):
+		if n is Node3D and not n is LootBag:
+			out.append(n as Node3D)
+	if _runtime.map != null:
+		for n: Node in _runtime.map.find_children("*", "Node3D", true, false):
+			if n.has_meta(&"objective_tag") and StringName(n.get_meta(&"objective_tag")) == tag and not out.has(n):
+				out.append(n as Node3D)
+	return out
+
+
+func _spawn_loot_at(loot: LootManager, loot_id: StringName, marker: Node3D, layer: int) -> LootBag:
+	var xf: Transform3D = marker.global_transform
+	xf.basis = xf.basis.orthonormalized()
+	xf.origin += Vector3.UP * (0.4 * float(layer))
+	return loot.spawn_bag(loot_id, xf)
+
+
+func _watch_respawn(bag: LootBag, marker: Node3D) -> void:
+	_respawn_bags[bag.get_instance_id()] = [bag, marker]
+	bag.tree_exiting.connect(_on_watched_bag_exit.bind(bag.get_instance_id(), bag.loot_id, marker), CONNECT_ONE_SHOT)
+	if timer_left(LOOT_WATCH_TIMER) <= 0.0:
+		start_timer(LOOT_WATCH_TIMER, LOOT_WATCH_S, _loot_watch_tick)
+
+
+func _on_watched_bag_exit(id: int, loot_id: StringName, marker: Node3D) -> void:
+	var entry: Array = _respawn_bags.get(id, [])
+	_respawn_bags.erase(id)
+	if entry.is_empty():
+		return
+	var bag: LootBag = entry[0] as LootBag
+	if bag != null and is_instance_valid(bag) and (bag.secured or bag.has_meta(LootManager.META_CONSUMED)):
+		return
+	_respawn_loot.call_deferred(loot_id, marker)
+
+
+func _respawn_loot(loot_id: StringName, marker: Node3D) -> void:
+	if _runtime == null or not is_instance_valid(_runtime) or not _runtime.is_inside_tree() \
+			or _runtime.is_queued_for_deletion() or _runtime.phase == Enums.HeistPhase.ENDED:
+		return
+	if marker == null or not is_instance_valid(marker) or not marker.is_inside_tree():
+		return
+	var loot: LootManager = _runtime.service(G.SVC_LOOT) as LootManager
+	var bag: LootBag = _spawn_loot_at(loot, loot_id, marker, 0) if loot != null else null
+	if bag != null:
+		Log.info(&"mission", "spawn_loot: %s respawned at %s" % [loot_id, marker.name])
+		_watch_respawn(bag, marker)
+
+
+func _loot_watch_tick() -> void:
+	var below: float = Tweak.interaction().loot_lost_below_m
+	for id: int in _respawn_bags.keys():
+		var bag: LootBag = _respawn_bags[id][0] as LootBag
+		var marker: Node3D = _respawn_bags[id][1] as Node3D
+		if bag == null or not is_instance_valid(bag) or marker == null or not is_instance_valid(marker):
+			continue
+		if bag.is_carried() or bag.secured or not bag.is_inside_tree():
+			continue
+		if bag.global_position.y < marker.global_position.y - below:
+			bag.release(marker.global_position + Vector3.UP * 0.3, Vector3.ZERO, false)
+			Log.info(&"mission", "spawn_loot: %s fell off the map, back at %s" % [bag.loot_id, marker.name])
+	if not _respawn_bags.is_empty():
+		start_timer(LOOT_WATCH_TIMER, LOOT_WATCH_S, _loot_watch_tick)
 
 
 ## D-103 §6 / QC-51: give the MapZone at `zone_path` (relative to the map root) the kind `kind` (MapZone.Kind)
