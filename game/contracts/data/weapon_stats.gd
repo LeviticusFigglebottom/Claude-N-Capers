@@ -98,6 +98,7 @@ func plus(d: WeaponStats) -> WeaponStats:
 	r.equip_time_s += d.equip_time_s
 	if d.suppressed:
 		r.noise_radius_m = minf(r.noise_radius_m, d.noise_radius_m)
+	r.gadgets = r.gadgets.duplicate()  # duplicate() is shallow: never append into the source's array (B cd505cad)
 	for g: StringName in d.gadgets:
 		if not r.gadgets.has(g):
 			r.gadgets.append(g)
