@@ -131,6 +131,11 @@ func _burn() -> bool:
 	var budget: float = drill.effective_duration() * 2.0 + 60.0
 	var t0: float = f.rt.heist_time_s
 	while not bool(_m().get(&"burned_through")) and f.rt.heist_time_s - t0 < budget:
+		# Between jams the bot crouches at the drill: the TW counter (1.05 m, doc H1) is its cover from the hall; standing,
+		# wave 2's sustain (heli drops + the turret van, ~330-400 s) could down it after the AI teammates (seed 1 wipe).
+		var hold: CrewIntent = f._still()
+		hold.crouch = true
+		f.rt.set_bot_intent(0, hold)
 		await f.fast_until(func() -> bool:
 			return bool(_m().get(&"burned_through")) or drill.device_state() == DeviceRunner.State.JAMMED, budget)
 		if drill.device_state() == DeviceRunner.State.JAMMED:
