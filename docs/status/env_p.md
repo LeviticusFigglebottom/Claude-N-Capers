@@ -2,6 +2,32 @@
 
 Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min; this file says where to resume.
 
+## 2026-10-17: D-135 close-out: ND-2 stealth route, SL-P1 PASS, D-128/D-130 feel check, DB-P1 (carried)
+- ND-2 (nd_stealth_route, seed 21, Routine, trunk r236-r239): the stealth route runs clean to the vault and through one
+  lift trip. Fast mode (render loop + HUD canvases off between shots) took the run from ~80 to ~3 wall-s per game-s.
+  The route: lot -> grate -> ladder -> B3 mask; gate guard knifed on his walk west, out of C6's view through the
+  gate bars (folding knife loadout; the earlier "30 of 50" hits were the gun bash, A); pager; body bagged into the janitor
+  closet (BODY_HIDE); keycard + code via RecordsDoor; vault gate; C6 shot from inside the gate; laser bypass gap;
+  60 s time lock (x4 stated shortcut); bags: B1 hatch throw into the cash lift, send to G1, ladder out, sally door
+  (lockpick), C4 shot, unload, van. A pilot hook shouts down and ties a civilian who starts noticing (the L-ground cleaner
+  walks B5 at t~505 and pressed the alarm button in 3 runs). Trip 1 secured 2 bags in run 20. The last runs ended at
+  the B1 approach (navmesh route through LockerRoomDoor pins the pilot at (12, -4, 5.1)); now corridor waypoints.
+  No full 4-bag win yet -> carried. Logs: tests/p/_review/captures/nd2_route_2026-10-17/run*.txt.
+- D-128 reality on ND: <= 2 m uncover is instant (PlantDoor), 3-4 m in view fills in ~1 s; C6 sees B5 through the
+  vault-gate bars at x 14.4-17; crouched cameras lose you beyond ~9.7 m (DR 4).
+- SL-P1 (sl_pass seed 13): PASS in stealth on the G2 map (round 232, t=373); every bag secured on the first throw (C's
+  full lift-car zone). Stair B half-landing ramp row fixed by C (confirmed on r237). New on r237: doorway stalls (SL
+  SecurityDoor, ND LockerRoomDoor / InspectionWestDoor) and "blocked by StairBGate" with a path that never crosses it:
+  C probed the maps clean -> A's pilot door rule (45706c9e). captures/sl_p1_recheck_2026-10-17, sl_p1_confirm_2026-10-17.
+- D-128/D-130 feel check (GH, d128_feel.tscn): fill times within ~2-5 % of A's PD2 formula at DR 4 (guard 4-5 m 1.13 s,
+  C4 5 m 3.89 s both difficulties, decay 1.17-1.23 s); civilians uncover at once; careful crouched route clean on
+  Routine and Lethal; Lethal: pagers_max 2, titan C4 survives 6 rounds; Routine C3 breaks. SL camera: C4 11.8 m standing
+  3.1 s, crouched never. No deviations for A or B. captures/d128_feel_2026-10-17/d128_feel_results.txt.
+- DB-P1 (db_pass seed 1792194538, r236): snag tour 28 legs: all OK except the mezzanine count-room doorway (16.5, 3.6,
+  5.1; the pilot door rule) and two 30 s leg timeouts on 35 m+ legs (harness); loud to t~427: breach t=74 (A's fix),
+  cartel t=120; then the thermite bag re-pickup read "disabled" and the run was stopped for the D-135 cutoff -> carried.
+- Tools: AnimCoverage FROZEN needs two identical comparisons in a row (A 2b97d701); flash_check.tscn (PO-7).
+
 ## 2026-10-16 (evening): pistol hip levelled, D-126 secondary shotgun, ND stealth route
 - PO pistol hold: `set_hip_rot_deg` pistol / revolver (14, 3, -4) -> (-2.5, -8.5, -3.5), akimbo (-1, -1, -4). The hip
   bore now matches each gun's ADS pitch (within 0.2 deg) with a 2.8 deg inward yaw; before it was 14.5 left and
