@@ -16,7 +16,7 @@ var rt: HeistRuntime = null
 var pilot: Po5Pilot = null
 var runner_out: String = ""
 var _seed: int = 1792194538
-var _secs: float = 25.0
+var _secs: float = 60.0
 var _shown: Dictionary = {}  # MuzzleFlash -> game seconds shown
 var _stuck: Dictionary = {}
 var _flashes: int = 0
@@ -69,6 +69,16 @@ func _physics_process(delta: float) -> void:
 					Engine.get_frames_drawn()])
 
 
+func _nearest_enemy_anywhere(from: Vector3) -> NpcBase:
+	var best: NpcBase = null
+	for n: Node in get_tree().get_nodes_in_group(G.ENEMY):
+		var npc: NpcBase = n as NpcBase
+		if npc != null and npc.is_alive() and (best == null or npc.global_position.distance_to(from)
+				< best.global_position.distance_to(from)):
+			best = npc
+	return best
+
+
 func _run() -> void:
 	rt = await HeistLauncher.launch(&"dockside_burn", _seed, Enums.Difficulty.ROUTINE, self, {"crew_ai": true})
 	if rt == null:
@@ -89,9 +99,14 @@ func _run() -> void:
 		if rt.heist_time_s >= next_shot:
 			next_shot = rt.heist_time_s + SHOT_S
 			await shot("t%03d" % int(rt.heist_time_s))
-		var foe: NpcBase = pilot.nearest_enemy(40.0)
+		# Toward the nearest live enemy anywhere (the first 10 s look stayed in the yard: no NPC fired), fight in range.
+		var foe: NpcBase = pilot.nearest_enemy(25.0)
 		if foe != null:
 			await pilot.engage(foe, 2.0)
+			continue
+		var far: NpcBase = _nearest_enemy_anywhere(c.global_position)
+		if far != null:
+			await pilot.goto(far.global_position, 8.0, 6.0)
 		else:
 			await pilot.goto(YARD[i % YARD.size()], 1.0, 4.0)
 			if pilot.flat_dist(c.global_position, YARD[i % YARD.size()]) < 1.5:
