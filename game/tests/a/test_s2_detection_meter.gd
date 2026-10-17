@@ -164,6 +164,9 @@ func test_s2_2_modifier_and_difficulty_scale_rate() -> void:
 	Modifiers.set_source(0, &"test", {&"stealth.detection_rate_mult": 0.5})
 	assert_near(_st.fill_rate(g, c), base * 0.5, 0.001, "Modifiers stealth.detection_rate_mult")
 	Modifiers.clear_source(0, &"test")
+	# A copy: the DifficultyDef is the cached shared resource, and mutating it leaked x2 into later tests
+	# (test_s3_8_cameras' crouch delay read exactly half in the round-229 gate).
+	_rt.difficulty_def = _rt.difficulty_def.duplicate() as DifficultyDef
 	_rt.difficulty_def.detection_speed_mult = 2.0
 	assert_near(_st.fill_rate(g, c), base * 2.0, 0.001, "difficulty detection_speed_mult")
 
