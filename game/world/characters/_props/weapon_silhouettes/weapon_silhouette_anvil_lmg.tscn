@@ -1,0 +1,10 @@
+[gd_scene format=3]
+
+[ext_resource type="ArrayMesh" path="res://world/characters/_props/weapon_silhouettes/weapon_silhouette_anvil_lmg_mesh.res" id="1_ffuf4"]
+
+[node name="WeaponSilhouette" type="MeshInstance3D" unique_id=624741919]
+cast_shadow = 0
+visibility_range_begin = 25.0
+mesh = ExtResource("1_ffuf4")
+metadata/model = "anvil_lmg"
+metadata/tris = 204
