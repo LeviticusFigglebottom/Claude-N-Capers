@@ -140,7 +140,7 @@ const POOLS: Array = [
 	["gallery_night", ["gallery_waitstaff", "civ_waitstaff"], 3, 1],
 	["gallery_night", ["gallery_attendant", "civ_attendant"], 3, 1],
 	["ostrander_federal", ["guard_lobby", "guard_vault", "guard_rover_hall", "guard_rover_gallery",
-		"guard_rover_basement", "guard_rover_dock"], 10, 3],
+		"guard_rover_basement", "guard_rover_dock", "guard_extra_hall", "guard_extra_basement"], 10, 3],
 	["ostrander_federal", ["bank_teller", "civ_teller"], 5, 2],
 	["ostrander_federal", ["bank_officer", "civ_officer"], 4, 1],
 	["ostrander_federal", ["civ_customer", "civ_plaza", "civ_client"], 12, 4],
@@ -207,7 +207,8 @@ const OF: String = "ostrander_federal"
 ## ostrander_federal.md roster spawn tags (civ_manager_<route> expanded over manager_route mgr_floor / mgr_gallery /
 ## mgr_vault; the CAMERA_OPERATOR spawn is security_operator).
 const OF_TAGS: Array[String] = ["guard_lobby", "guard_vault", "guard_rover_hall", "guard_rover_gallery",
-	"guard_rover_basement", "guard_rover_dock", "security_operator", "civ_teller", "civ_manager_mgr_floor",
+	"guard_rover_basement", "guard_rover_dock", "guard_extra_hall", "guard_extra_basement", "security_operator",
+	"civ_teller", "civ_manager_mgr_floor",
 	"civ_manager_mgr_gallery", "civ_manager_mgr_vault", "civ_customer", "civ_plaza", "civ_client", "civ_officer", "civ_vip",
 	"guard_vip", "guard_vaultline"]
 const GN_OPERATOR_TAG: String = "guard_operator"
