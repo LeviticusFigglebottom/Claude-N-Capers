@@ -3,8 +3,9 @@
 ## civilians that HeistRuntime would spawn at load: GUARD / CIVILIAN SpawnPoints outside any slot plus those inside
 ## the active slots (no `scripted` rare-event spawns; the camera operator is not counted). GN keeps the first `patrons`
 ## civ_patron spawns (the mission's thin_civilians) and counts the gala, before last call.
-## Pins: every tier adds civilians (expected count), the Cataclysm / Routine ratios D-130 asks for (+35 % civilians
-## on both; +50 % guards on ND; GN's guards keep their steeper lead-ruling curve, 1-2 / 1-2 / 3 / 4 / 5 / 5), and
+## Pins: every tier adds civilians (expected count), never below the tier below or the pre-D-130 count (addendum),
+## the Cataclysm / Routine ratios D-130 asks for (>= +35 % civilians, a floor, on both; +50 % guards on ND; GN's
+## guards keep their steeper lead-ruling curve, 1-2 / 1-2 / 3 / 4 / 5 / 5), and
 ## that each map's spawn pool covers the largest roll.
 ## Design: docs/design/heists/night_deposit.md, gallery_night.md (§roster "Totals per difficulty").
 extends TestCase
@@ -16,6 +17,13 @@ const MAPS: Dictionary = {
 const RUNS: int = 1500
 const SCRIPTED: StringName = &"scripted"
 const PATRON_TAG: StringName = &"civ_patron"
+
+## Expected counts per tier before D-130 (ROUTINE..CATACLYSM; same seeds, the a5b797f8 variant tables): D-130 counts
+## never fall below them (LEAD, D-130 addendum).
+const PRE_D130: Dictionary = {
+	&"night_deposit": {"g": [2.71, 2.71, 2.71, 3.50, 3.50, 3.50], "c": [1.20, 1.20, 1.20, 1.19, 1.19, 1.19]},
+	&"gallery_night": {"g": [1.82, 1.82, 3.00, 4.00, 5.00, 5.00], "c": [10.13, 10.13, 12.54, 12.51, 13.44, 13.44]},
+}
 
 var _maps: Dictionary = {}
 ## heist -> difficulty -> {"g": [min, max, sum], "c": [min, max, sum]}
@@ -107,10 +115,22 @@ func test_every_tier_adds_civilians() -> void:
 				"%s: civilians grow at difficulty %d (%.2f -> %.2f)" % [id, d, _mean(id, d - 1, "c"), _mean(id, d, "c")])
 
 
+## D-130 addendum (LEAD): every tier >= the previous tier and >= its pre-D-130 value, guards and civilians.
+func test_never_below_previous_tier_or_pre_d130() -> void:
+	for id: StringName in _stats:
+		for k: String in ["g", "c"]:
+			for d: int in range(Enums.Difficulty.CATACLYSM + 1):
+				var m: float = _mean(id, d, k)
+				var old: float = float((PRE_D130[id][k] as Array)[d])
+				assert_true(m >= old - 0.005, "%s %s at %d: %.2f >= pre-D-130 %.2f" % [id, k, d, m, old])
+				if d > 0:
+					assert_true(m >= _mean(id, d - 1, k) - 0.005, "%s %s at %d: %.2f >= tier below" % [id, k, d, m])
+
+
 func test_cataclysm_ratios() -> void:
 	for id: StringName in _stats:
 		var r: float = _mean(id, Enums.Difficulty.CATACLYSM, "c") / _mean(id, Enums.Difficulty.ROUTINE, "c")
-		assert_near(r, 1.35, 0.06, "%s: Cataclysm civilians ~ +35 %% (x%.2f)" % [id, r])
+		assert_true(r >= 1.33 and r <= 1.5, "%s: Cataclysm civilians >= ~+35 %% (a floor, D-130 addendum; x%.2f)" % [id, r])
 	var nd: StringName = &"night_deposit"
 	var rg: float = _mean(nd, Enums.Difficulty.CATACLYSM, "g") / _mean(nd, Enums.Difficulty.ROUTINE, "g")
 	assert_near(rg, 1.5, 0.06, "ND: Cataclysm guards ~ +50 %% (x%.2f)" % rg)
