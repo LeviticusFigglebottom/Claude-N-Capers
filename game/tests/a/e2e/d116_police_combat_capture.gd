@@ -6,6 +6,8 @@
 extends Node
 
 const CAPTURE_S: float = 0.1
+## A rifle-armed police unit (D's review shots use tac_light with its rifle).
+const TAC_LIGHT: String = "res://systems/ai/data/enemies/tac_light.tres"
 
 var _out: String = ""
 var _frame: int = 0
@@ -28,7 +30,8 @@ func _run() -> void:
 	var rt: HeistRuntime = await HeistLauncher.launch(&"unit_map", 7, Enums.Difficulty.ROUTINE, self,
 		{"map_packed": ATestMaps.basic(0, 0), "crew_ai": false})
 	rt.teleport_crew(0, Transform3D(Basis.IDENTITY, Vector3(0, 0.05, 40)))
-	var cop: NpcBase = rt.spawn_npc(&"police", Transform3D(Basis(Vector3.UP, PI * 0.5), Vector3(0, 0.05, 0)), {})
+	var cop: NpcBase = rt.spawn_npc(&"police", Transform3D(Basis(Vector3.UP, PI * 0.5), Vector3(0, 0.05, 0)),
+		{"enemy_def": load(TAC_LIGHT) as EnemyDef})
 	var brain: Node = cop.get_node("Brain")
 	brain.set_physics_process(false)
 	for n: String in ["Motor", "Gunner"]:
