@@ -29,7 +29,7 @@ const BASE_TRI_BUDGET: int = 8000
 ## Masks whose front-most point is a centred beak/snout/nose/teeth/canister below the eye line.
 const CENTRED_FRONT: Array[String] = [
 	"heron", "visage", "vulpine", "owl", "skull", "theatre", "gasmask", "demon",
-	"ram", "stag", "cat", "moth", "doll", "sunburst", "geo", "robot", "jester",
+	"ram", "stag", "cat", "moth", "doll", "sunburst", "geo", "robot", "jester", "keystone", "bust",
 ]
 ## The respirator pushes well forward of the face (its filter canister); the boar's snout disc too.
 const PROTRUDING_FRONT: Dictionary[String, float] = {"gasmask": -0.09, "boar": -0.08}

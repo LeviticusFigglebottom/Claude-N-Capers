@@ -29,7 +29,7 @@ PARAMS = {
     "coverage": "full",
     "brow": 1.6,
     "cheek": 1.3,
-    "nose": 1.7,
+    "nose": 2.0,
     "jaw": 1.0,
     "eye_shape": "almond",
     "eye_width": 0.032,
@@ -158,7 +158,7 @@ def _spiral(cx: float, cv: float, r0: float, turns: float, sense: int, start: fl
 
 
 def _curl(kit: mask.MaskKit, cx: float, cv: float, r0: float, sense: int, start: float,
-          turns: float = 1.25, w: float = 0.0034, hi: float = 0.0040) -> None:
+          turns: float = 1.25, w: float = 0.0034, hi: float = 0.0056) -> None:
     pts = _spiral(cx, cv, r0, turns, sense, start)
     loop = mask.strip(pts, w, w * 0.45)
     kit.plate(mask.oriented(loop, True), hi=hi, lo=-0.0020, chamfer=0.0008, edge_res=0.0034, res=0.03)
@@ -208,9 +208,9 @@ def _foliage(kit: mask.MaskKit) -> None:
         leaves += [((0.006 * s, 0.032), (0.036 * s, top - 0.002), 0.021, -0.10 * s, 3),
                    ((0.010 * s, 0.031), (0.060 * s, 0.072), 0.018, -0.18 * s, 3)]
     for root, tip, w, bend, lobes in leaves:
-        kit.plate(mask.oriented(_acanthus(root, tip, w, bend, lobes), True), hi=0.0036, lo=-0.0020,
+        kit.plate(mask.oriented(_acanthus(root, tip, w, bend, lobes), True), hi=0.0050, lo=-0.0020,
                   chamfer=0.0009, edge_res=0.0030, res=0.03)
-    _leaf_ridge(kit, (0.0, 0.029), (0.0, top), 0.0, 0.0036)
+    _leaf_ridge(kit, (0.0, 0.029), (0.0, top), 0.0, 0.0050)
     for s in (1, -1):
         _curl(kit, s * 0.073, 0.057, 0.0125, s, math.pi * (1.0 if s > 0 else 0.0) + s * 0.6, turns=1.35, w=0.0046)
         for k, cv in enumerate((0.032, 0.014, -0.004, -0.022, -0.040)):
@@ -223,7 +223,7 @@ def _foliage(kit: mask.MaskKit) -> None:
 def _brows(kit: mask.MaskKit) -> None:
     """Heavy frowning brows: low and thick over the nose, rising to the temples."""
     for loop in mask.mirrored(mask.leaf((0.008, 0.016), (0.060, 0.028), 0.011, bend=-0.06, fullness=0.5)):
-        kit.plate(mask.oriented(loop, True), hi=0.0034, chamfer=0.0011, edge_res=0.0035)
+        kit.plate(mask.oriented(loop, True), hi=0.0048, chamfer=0.0013, edge_res=0.0035)
 
 
 def _lids(kit: mask.MaskKit) -> None:

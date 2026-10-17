@@ -18,8 +18,8 @@ const CREW: Array[String] = ["crew_rook", "crew_sable", "crew_dutch"]
 ## Review tints (colour, roughness, metallic) per base; anything else is a neutral light grey.
 const TINTS: Dictionary = {
 	"vault_dial": [Color(0.46, 0.48, 0.50), 0.38, 0.85],
-	"keystone": [Color(0.78, 0.71, 0.58), 0.85, 0.0],
-	"bust": [Color(0.90, 0.89, 0.86), 0.45, 0.0],
+	"keystone": [Color(0.60, 0.53, 0.42), 0.85, 0.0],
+	"bust": [Color(0.40, 0.39, 0.37), 0.55, 0.0],
 }
 
 var _errors: int = 0

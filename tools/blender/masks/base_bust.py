@@ -24,11 +24,11 @@ PARAMS = {
     "top": 0.094,
     "bottom": -0.116,
     "side_arc": 0.098,
-    "jaw_taper": 0.34,
+    "jaw_taper": 0.22,
     "brow": 1.6,
     "cheek": 1.0,
     "nose": 1.8,
-    "jaw": 1.1,
+    "jaw": 1.8,
     "eye_shape": "almond",
     "eye_width": 0.031,
     "eye_height": 0.0120,
@@ -104,7 +104,7 @@ def _sculpt(u: float, v: float) -> float:
     # full lower lip and the dimple under it, a rounded chin
     f += 0.0015 * _g(au, 0.014) * _g(v + 0.078, 0.004)
     f -= 0.0018 * _g(au, 0.012) * _g(v + 0.086, 0.004)
-    f += 0.0030 * _g(au, 0.020) * _g(v + 0.100, 0.012)
+    f -= 0.0010 * _g(au, 0.020) * _g(v + 0.100, 0.012)
     # philtrum
     f -= 0.0008 * _g(au, 0.0025) * _smooth(-0.050, -0.056, v) * _smooth(-0.066, -0.062, v)
     # the hair cap sits on a slightly raised skull line
