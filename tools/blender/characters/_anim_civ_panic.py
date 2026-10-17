@@ -28,7 +28,7 @@ import numpy as np
 
 import _anim as A
 from _anim import FPS, TAU, Clip, Keys, Pose, Skeleton, Solver, add_rot, arm_fk, hand_on, hand_shape, plant, rxd, \
-    ryd, rzd, spine, stand, v3
+    rzd, spine, stand, v3
 from _anim_surrender import _breath, _cyc, _tremble
 
 #: variant groups: the original first (A picks a member per NPC, see SOURCE `civ_panic_variants`)
@@ -120,13 +120,14 @@ def cower_c(sk: Skeleton, f: int, N: int) -> Pose:
 # flee variants (the flee gait, another upper body)
 # =============================================================================================
 def _flee_upper_b(sk: Skeleton, pose: Pose, ph: float, f: int) -> None:
-    """Hunched: shoulders up, forearms tucked against the chest (small pumps), head down."""
-    add_rot(pose, "spine", rxd(-9.0))
-    add_rot(pose, "chest", rxd(-13.0))
+    """Hunched: shoulders up and forward, the arms tucked in tight, the forearms clutched across the belly (small
+    pumps), head down. (``flee`` holds its forearms up by the head.)"""
+    add_rot(pose, "spine", rxd(-10.0))
+    add_rot(pose, "chest", rxd(-14.0))
     for sfx, sgn in (("R", 1.0), ("L", -1.0)):
-        sw = sgn * 10.0 * math.cos(TAU * ph)
-        arm_fk(sk, pose, sfx, add=40.0, swing=38.0 + sw, flex=138.0 + 5.0 * math.sin(TAU * ph), twist=38.0,
-               clav_up=16.0, clav_fwd=10.0, wrist_flex=20.0)
+        sw = sgn * 8.0 * math.cos(TAU * ph)
+        arm_fk(sk, pose, sfx, add=44.0, swing=12.0 + sw, flex=96.0 + 4.0 * math.sin(TAU * ph), twist=58.0,
+               clav_up=14.0, clav_fwd=12.0, wrist_flex=10.0)
         pose.hands[sfx] = hand_shape("loose_fist", 1.0)
     add_rot(pose, "neck", rxd(-16.0))
     add_rot(pose, "head", rxd(-14.0))
