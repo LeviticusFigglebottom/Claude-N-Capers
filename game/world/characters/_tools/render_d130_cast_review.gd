@@ -30,6 +30,7 @@ const OUT_DIRS: Dictionary = {
 	"of_vip": "res://assets/characters/_review/of_d1_cast/",
 	"rt_vaultline": "res://assets/characters/_review/rt_d1_cast/",
 	"d145_police": "res://assets/characters/_review/d145_police/",
+	"d145_specials": "res://assets/characters/_review/d145_police/",
 }
 ## pool -> true: also render the seated/standing pair sheet (first id seated, second standing guard)
 const PAIRS: Dictionary = {"of_vip": true}
@@ -94,6 +95,10 @@ const POOLS: Dictionary = {
 	# D-145.3 (PO-18): Routine/Tense police without body armour (duty) next to the armoured base looks and the FRD agent.
 	"d145_police": [
 		"char_patrol_officer", "char_patrol_officer_duty", "char_tac_light", "char_tac_light_duty", "char_frd_agent",
+	],
+	# D-145.3: the Routine/Tense specials without body armour next to their armoured looks, and the Longshot (chest rig).
+	"d145_specials": [
+		"char_stinger", "char_stinger_duty", "char_bulwark", "char_bulwark_duty", "char_longshot",
 	],
 	# RT-D1: the Vaultline crew faces and the route marshal next to the police and Halden uniforms.
 	"rt_vaultline": [

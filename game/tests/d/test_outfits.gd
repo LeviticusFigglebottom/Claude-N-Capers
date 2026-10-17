@@ -1,7 +1,8 @@
 ## D1-02: outfit characters (tools/blender/characters/char_*.py). Run after `godot --import`.
 ## OF-D1: the Ostrander Federal officers c-d and customers c-j are checked here too.
 ## D-145.3 (PO-18): the Routine/Tense police duty looks show no body armour: no stab vest / plate carrier standing off
-## the chest (the front of the torso sits clearly closer than on the armoured base look) and no ballistic helmet.
+## the chest (the front of the torso sits clearly closer than on the armoured base look) and no ballistic helmet
+## (Patrol, TAC Light, Stinger; the Bulwark keeps its riot helmet and shield).
 ## Each character glb has the shared 52-bone rig_humanoid Skeleton3D (top-level, D-067b), only skinned meshes
 ## (Body, Hair, Outfit, Gear, Headwear) with no blend shapes (bodies are baked), every surface
 ## mapped to a library material res://world/materials/*.tres, and a plausible standing height.
@@ -38,6 +39,8 @@ const CHARACTERS: Array[String] = [
 	"char_tac_light",
 	"char_patrol_officer_duty",
 	"char_tac_light_duty",
+	"char_stinger_duty",
+	"char_bulwark_duty",
 	"char_crew_body",
 	"char_crew_body_b",
 ]
@@ -47,9 +50,14 @@ const MAX_HEIGHT: float = 2.0
 const TRI_BUDGET: int = 35000
 const ALLOWED_MESHES: Array[String] = ["Body", "Hair", "Outfit", "Gear", "Headwear"]
 ## D-145.3: duty look -> its armoured base look; the duty chest must sit at least ARMOUR_GAP closer (m)
-const DUTY_LOOKS: Dictionary = {"char_patrol_officer_duty": "char_patrol_officer", "char_tac_light_duty": "char_tac_light"}
+const DUTY_LOOKS: Dictionary = {
+	"char_patrol_officer_duty": "char_patrol_officer", "char_tac_light_duty": "char_tac_light",
+	"char_stinger_duty": "char_stinger", "char_bulwark_duty": "char_bulwark",
+}
 const ARMOUR_GAP: float = 0.02
 const HELMET_MAT: String = "char_tac_helmet"
+## duty looks that keep a helmet by design (the Bulwark's riot helmet + visor is its silhouette with the shield)
+const DUTY_KEEPS_HELMET: Array[String] = ["char_bulwark_duty"]
 
 
 func _glb(id: String) -> String:
@@ -165,7 +173,8 @@ func test_height_and_facing_are_plausible() -> void:
 
 
 ## D-145.3: in the rest pose, the furthest-forward clothing/gear vertex across the chest (1.10-1.40 m up, within
-## 0.15 m of the centre line) of each duty look sits >= ARMOUR_GAP behind its armoured base look's; no helmet material.
+## 0.15 m of the centre line) of each duty look sits >= ARMOUR_GAP behind its armoured base look's; no helmet material
+## (except DUTY_KEEPS_HELMET).
 func test_duty_police_show_no_body_armour() -> void:
 	for duty: String in DUTY_LOOKS:
 		var d_front: float = _chest_front(duty)
@@ -173,6 +182,8 @@ func test_duty_police_show_no_body_armour() -> void:
 		assert_true(d_front > 0.0 and a_front > 0.0, "%s: chest measured" % duty)
 		assert_true(d_front <= a_front - ARMOUR_GAP,
 				"%s: chest %.3f m forward vs %.3f m on %s (no vest / carrier)" % [duty, d_front, a_front, DUTY_LOOKS[duty]])
+		if DUTY_KEEPS_HELMET.has(duty):
+			continue
 		var root: Node3D = _load(duty)
 		if root == null:
 			continue

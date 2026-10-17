@@ -165,6 +165,12 @@
 			"test": false
 		},
 		{
+			"asset": "char_bulwark_duty",
+			"id": "bulwark_duty",
+			"scene": "res://world/characters/bulwark_duty/bulwark_duty.tscn",
+			"test": false
+		},
+		{
 			"asset": "char_bulwark_frd",
 			"id": "bulwark_frd",
 			"scene": "res://world/characters/bulwark_frd/bulwark_frd.tscn",
@@ -1037,6 +1043,12 @@
 			"test": false
 		},
 		{
+			"asset": "char_stinger_duty",
+			"id": "stinger_duty",
+			"scene": "res://world/characters/stinger_duty/stinger_duty.tscn",
+			"test": false
+		},
+		{
 			"asset": "char_stinger_frd",
 			"id": "stinger_frd",
 			"scene": "res://world/characters/stinger_frd/stinger_frd.tscn",
@@ -1167,6 +1179,11 @@
 			"asset": "char_bulwark_aegis_shield",
 			"id": "bulwark_aegis_shield",
 			"scene": "res://world/characters/bulwark_aegis/bulwark_aegis_shield.tscn"
+		},
+		{
+			"asset": "char_bulwark_duty_shield",
+			"id": "bulwark_duty_shield",
+			"scene": "res://world/characters/bulwark_duty/bulwark_duty_shield.tscn"
 		},
 		{
 			"asset": "char_bulwark_frd_shield",

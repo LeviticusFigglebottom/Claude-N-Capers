@@ -1,0 +1,5 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/characters/char_bulwark_duty_shield/char_bulwark_duty_shield.glb" id="1_glb"]
+
+[node name="Root" instance=ExtResource("1_glb")]

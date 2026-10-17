@@ -36,6 +36,8 @@ the special gear of ``_special_gear``. Silhouette at 30 m is the design driver
   pack (its top shows above the shoulders); the mark is an ORIGINAL design (``_special_gear.emblem``:
   a red disc carrying a white plus with round-capped arms in a thin white ring), deliberately not
   the protected Red Cross emblem (red cross on white) nor the Star of Life.
+* Duty looks (D-145.3, PO-18): ``char_stinger_duty`` / ``char_bulwark_duty`` (+ ``char_bulwark_duty_shield``) carry no
+  body armour for Routine and Tense (see DUTY_VARIANTS).
 * ``char_brandt`` (Captain Winters analogue): heavy steel-blue armour under a knee-length command
   coat (open front), pauldrons over the coat, a crested helmet (blue crest fin front-to-back).
 
@@ -54,6 +56,7 @@ import _faction as faction
 import _gear_kit as gk
 import _outfit as o
 import _outfit_garments as g
+import _p5 as p5
 import _special_gear as sg
 import char_police as police
 from _outfit import Hull, Mesh, Vector, lerp, smoothstep
@@ -103,7 +106,16 @@ FACTION_SHIELDS = {
                                  "letters": "char_zero_bone", "glass": "char_lens", "metal": "polymer_black",
                                  "word": "ZERO"},
 }
-VARIANTS = {**BASE_VARIANTS, **FACTION_SHIELDS,
+#: D-145.3 (PO-18): the specials that spawn on Routine/Tense without body armour (ENV A: EnemyDef visual_variant
+#: ``duty`` there): Stinger on the TAC duty base (no carrier, soft cap) with its capacitor pack, cables and blue
+#: patches; Bulwark without the heavy carrier / plates / pauldrons, keeping its riot helmet (visor down) and its
+#: shield (``char_bulwark_duty_shield`` = the base shield, found beside the duty scene as ``<cid>_shield``)
+DUTY_VARIANTS = {
+    "char_stinger_duty": {**BASE_VARIANTS["char_stinger"], "armored": False, "back_mark": False},
+    "char_bulwark_duty": {**BASE_VARIANTS["char_bulwark"], "armored": False},
+    "char_bulwark_duty_shield": dict(BASE_VARIANTS["char_bulwark_shield"]),
+}
+VARIANTS = {**BASE_VARIANTS, **FACTION_SHIELDS, **DUTY_VARIANTS,
             **{f"{aid}_{fac}": {**BASE_VARIANTS[aid], "faction": fac} for aid in FACTION_ROLES for fac in FACTIONS}}
 
 TAC = "char_tac_charcoal"
@@ -285,10 +297,33 @@ def tac_heavy(kit) -> None:
     kit.notes["hat"] = "heavy helmet, visor up (Headwear)"
 
 
+def duty_body(kit) -> None:
+    """D-145.3 Bulwark duty body: the TAC uniform with knee pads, gloves and belt kit (magazine pouches, radio,
+    holster), POLICE across the back; no carrier, plates or pauldrons."""
+    fit, k = kit.fit, kit.k
+    base = police._base_uniform(kit, TAC, TAC, "band", boots=True)
+    belt = base["belt"]
+    kit.add_gear(gk.knee_pads(fit, kit.hull()))
+    kit.add_soft(g.gloves(fit, "char_tac_glove", base=0.0035, cuff_len=0.07, cuff_off=0.007))
+    gear = Mesh()
+    gear.extend(gk.buckle(belt, "polymer_black", w=0.055, h=0.045))
+    for a_deg in (-28.0, -48.0, -68.0):
+        gear.extend(gk.pouch(belt, math.radians(a_deg), 0.05, 0.085, 0.032, TAC_GEAR, snap="polymer_black"))
+    gear.extend(gk.radio(belt, math.radians(-100.0)))
+    gear.extend(gk.pouch(belt, math.radians(-140.0), 0.08, 0.07, 0.035, TAC_GEAR, snap="polymer_black"))
+    gear.extend(gk.holster(belt, math.radians(100.0)))
+    kit.add_gear(gear)
+    p5.stamp_back(kit, "POLICE", 1.27, 0.075, "char_hivis")
+    kit.seats["Hip"] = belt.point(math.radians(-140.0), dz=0.0, out=0.05 * k)
+
+
 def bulwark(kit) -> None:
     armor = kit.opts.get("armor", ARMOR)
     accent = kit.opts.get("accent", "polymer_black")
-    heavy(kit, armor, accent, kit.opts.get("carrier", TAC_GEAR))
+    if kit.opts.get("armored", True):
+        heavy(kit, armor, accent, kit.opts.get("carrier", TAC_GEAR))
+    else:
+        duty_body(kit)
     helm, hh = big_helmet(kit, armor, gap=0.044, cup_r=0.046)
     del helm
     visor(kit, hh, down=True, frame=accent)
@@ -443,13 +478,16 @@ def stinger(kit) -> None:
         r = sg.limb_radius(hull, el.lerp(wr, 0.5), wr - el) + 0.010 * k
         sg.helix(cables, a, b, r, 6.0, 0.0045 * k, BLUE, steps=96)
     kit.add_soft(cables)
-    # blue shoulder patches and helmet band
+    # blue shoulder patches and (armoured: on the helmet) band
     for sx in (-1.0, 1.0):
         sh = _shoulder(kit, sx)
         el = Vector(fit.J["elbow.R" if sx > 0 else "elbow.L"])
         p = sh.lerp(el, 0.32)
         kit.add_gear(sg.plate(kit, p, Vector((sx, 0.0, 0.2)), 0.07, 0.07, [(1.0, 0.004, BLUE)], up=(sh - el), r=0.012,
                               anchor=p))
+    if not kit.opts.get("armored", True):
+        kit.notes["hat"] = "soft charcoal duty cap (Headwear), no helmet (D-145.3); pack, cables and patches keep the blue"
+        return
     hh = Hull(fit, [kit.head], body_regions=set())
     c = fit.head_centre()
     eye = fit.eye_centre()

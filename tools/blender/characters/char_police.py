@@ -385,7 +385,8 @@ def tac(kit: Kit) -> None:
             gear.extend(gk.pouch(belt, math.radians(a_deg), 0.05, 0.085, 0.032, TAC_GEAR, snap="polymer_black"))
         gear.extend(gk.radio(belt, math.radians(-100.0)))
         # without the carrier the dark shirt alone reads as a civilian: POLICE across the back in the hi-vis yellow
-        p5.stamp_back(kit, "POLICE", 1.27, 0.075, HIVIS)
+        if kit.opts.get("back_mark", True):  # the Stinger's pack covers the back
+            p5.stamp_back(kit, "POLICE", 1.27, 0.075, HIVIS)
     # duty belt: buckle, pouches, drop-leg holster on the right thigh
     gear.extend(gk.buckle(belt, "polymer_black", w=0.055, h=0.045))
     gear.extend(gk.pouch(belt, math.radians(-140.0), 0.08, 0.07, 0.035, TAC_GEAR, snap="polymer_black"))
