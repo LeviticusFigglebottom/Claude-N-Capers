@@ -622,8 +622,11 @@ blocks movement and bullets. Frosted, tinted, mirrored and privacy glass stays o
   - Roof: the oculus glass (the P5 rappel entry).
 - **Opaque:** the SC security room window N (privacy; `FROSTED_PANE_ROOMS` in build_greybox.gd). The AO
   window is the PO6-17 breach infill. The laylights are ceilings, and the lantern glazing is roof visual only.
-- **Not map-built:** the EB windows ×5 and the SL loggia windows ×4 are Window prefabs, see-through through
-  their GlassBody (ENV A). The EB windows have closed blinds (Room list), so they should not be (open question).
+- **Not map-built:** the EB windows ×5 and the SL loggia windows ×4 are Window prefabs. The loggia windows are
+  see-through through their GlassBody (ENV A). The EB windows have closed blinds (Room list), so the generator sets
+  their `see_through = false` (opaque for vision; ENV A's D-142 Window property).
+  The Sculpture Court French doors (`CourtDoors`, both `court_doors` slots) are a glass-leaf Door (`leaf_surface`
+  glass) and read clear: they stay see-through (D-142 call: French doors onto a lit public court).
   The Treasury vitrines are DisplayCase prefabs, and the DC / EB decor vitrines are catalog dressing.
   Neither is tagged.
 

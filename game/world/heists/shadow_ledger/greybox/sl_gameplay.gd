@@ -392,16 +392,17 @@ func _build_misc(gp: Node3D) -> void:
 	for b: Array in [["RefuseBinA", 26.6], ["RefuseBinB", 28.5]]:
 		prefab(misc, "body_container", String(b[0]), Vector3(float(b[1]), L.F40, 15.89), 0.0,
 			{"capacity": 1, "visual_scene": _catalog_scene("prop_dumpster_d094")}, null, {"kind": "bin"})
-	# Archive safe (K17, MEDIUM, saw only): the partners' cash float.
-	var arch: Node3D = prefab(misc, "safe", "ArchiveSafe", Vector3(1.2, L.F41, 23.44), 0.0,
+	# Archive safe (K17, MEDIUM, saw only): the partners' cash float. D-142 / PO-14: 0.5 m east of the SW corner pier
+	# (x <= 0.05) so the thermal-drill / saw rig's 1 m tail clears it (it clipped 127 mm); 1.2 m+ clear all round.
+	var arch: Node3D = prefab(misc, "safe", "ArchiveSafe", Vector3(1.7, L.F41, 23.44), 0.0,
 		{"size": "enum:MEDIUM", "methods": [&"saw"] as Array[StringName], "objective_tag": &"archive_safe"},
 		null, {"kind": "safe"})
 	# PO6-05: the cash at the safe's LootAnchor (safe-local (0, 0.14, 0)), taken from the UsePoint; D-111: the float
 	# is bagged (prop_loot_bag_medium fits the MEDIUM body, the cash-bag stack does not).
 	if arch != null:
-		prefab(arch, "loot_spawn", "ArchiveCash", Vector3(1.2, L.F41 + 0.14, 23.44), 0.0,
+		prefab(arch, "loot_spawn", "ArchiveCash", Vector3(1.7, L.F41 + 0.14, 23.44), 0.0,
 			{"loot_id": &"loot.cash", "count": 1, "objective_tag": &"archive_loot",
-				"visual_scene": _catalog_scene("prop_loot_bag_medium")}, Vector3(2.4, L.F41, 22.2))
+				"visual_scene": _catalog_scene("prop_loot_bag_medium")}, Vector3(2.9, L.F41, 22.2))
 	# Art hall paintings (east of the lasers), cut from the frame: hung on the M3 south wall face (z 7.4).
 	for i: int in range(2):
 		var x: float = 27.3 + 1.0 * float(i)

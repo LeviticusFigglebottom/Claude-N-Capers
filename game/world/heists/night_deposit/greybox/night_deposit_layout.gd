@@ -172,6 +172,10 @@ const RAILINGS: Array = [
 	["RailQuayE", [11.1, 0.0, 33.9, 40.0, 1.0, 33.96]],
 ]
 
+## D-142: the bandit glass stands on a solid 0.10 m brass deal-tray rail on the counter top (1.05 -> 1.15 m; opaque
+## for stealth vision); the glass above it is clear (`see_through`).
+const BANDIT_RAIL_Y: float = 1.05
+const BANDIT_RAIL_TOP: float = 1.15
 ## Static glazing: [name, axis, fixed, a0, a1, y0, y1]. Glass blocker (collision) + pane + frame.
 ## The ATM vestibule's street glazing is the green-glass jewel (doc landmark 3).
 const GLAZING: Array = [
@@ -182,7 +186,7 @@ const GLAZING: Array = [
 	["G11Front", "z", 21.0, 11.15, 11.85, 0.9, 2.4],
 	["G12FrontA", "z", 21.0, 12.25, 13.35, 0.9, 2.4],
 	["G12FrontB", "z", 21.0, 14.65, 15.8, 0.9, 2.4],
-	["BanditGlass", "x", 10.0, 2.0, 19.0, 1.05, 2.25],
+	["BanditGlass", "x", 10.0, 2.0, 19.0, BANDIT_RAIL_TOP, 2.25],
 	["HallTransom1", "x", 20.0, 1.0, 4.0, 3.4, 4.5],
 	["HallTransom2", "x", 20.0, 4.5, 7.5, 3.4, 4.5],
 	["HallTransom3", "x", 20.0, 13.5, 16.5, 3.4, 4.5],
