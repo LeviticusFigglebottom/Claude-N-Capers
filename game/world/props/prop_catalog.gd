@@ -67,3 +67,10 @@ static func top(asset_id: StringName) -> float:
 	var e: Dictionary = entry(asset_id)
 	var t: float = float(e.get("top", 0.0))
 	return t if t > 0.0 else aabb(asset_id).end.y
+
+
+## D-130: the prop-local position of the wrapper's `Seat` when the generator moved it (catalog `seat`, cat
+## `seat_fwd`: prop_chair_office / prop_chair_task, 0.12 m toward the front), else `fallback`.
+static func seat(asset_id: StringName, fallback: Vector3) -> Vector3:
+	var s: Array = entry(asset_id).get("seat", [])
+	return Vector3(float(s[0]), float(s[1]), float(s[2])) if s.size() == 3 else fallback

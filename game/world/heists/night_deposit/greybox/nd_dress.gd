@@ -8,6 +8,7 @@ extends RefCounted
 
 const VIEWMODEL_LIT_LAYER: int = 1 << 20  # viewmodel_lit (visual_slots v1.2, D-095) = CrewView.VIEWMODEL_LIT_LAYER
 const L: GDScript = preload("res://world/heists/night_deposit/greybox/night_deposit_layout.gd")
+const SEATS: GDScript = preload("res://world/heists/shared/npc_seat_spawns.gd")  # D-130 seated spawns
 const D: GDScript = preload("res://world/heists/night_deposit/greybox/night_deposit_dressing.gd")
 const AM: GDScript = preload("res://world/heists/shared/assault_markers.gd")
 ## PO6-17 breach openings: the dressing keeps this clear on both faces (and under a ceiling hatch).
@@ -99,6 +100,8 @@ func dress(props_root: Node3D) -> void:
 		n.owner = _root
 	_shadow_fixtures()
 	_light_pendants()
+	for line: String in SEATS.snap(_root):  # D-130: seated spawns onto their chairs' Seats (no furniture moves)
+		report.append("seat " + line)
 
 
 ## Site dressing (boats, containers, the vista van) under Geometry: visuals over collision blocks.

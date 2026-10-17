@@ -25075,7 +25075,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.425, 0)
 shape = SubResource("sl_1059")
 
 [node name="Seat" type="Marker3D" parent="Props/L41/KesslerChair" unique_id=102506]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -0.12)
 
 [node name="Visual" parent="Props/L41/KesslerChair" unique_id=102507 instance=ExtResource("130_sl")]
 metadata/kind = &"chair"
@@ -25087,7 +25087,7 @@ visibility_range_fade_mode = 1
 mesh = SubResource("sl_1064")
 
 [node name="Seat" parent="Props/L41/KesslerChair/Visual/Model" index="1" unique_id=102509]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -0.12)
 
 [node name="Collision" parent="Props/L41/KesslerChair/Visual/Model" index="2" unique_id=102510]
 collision_layer = 0
@@ -25110,7 +25110,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.425, 0)
 shape = SubResource("sl_1059")
 
 [node name="Seat" type="Marker3D" parent="Props/L41/MoorChair" unique_id=102514]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -0.12)
 
 [node name="Visual" parent="Props/L41/MoorChair" unique_id=102515 instance=ExtResource("130_sl")]
 metadata/kind = &"chair"
@@ -25122,7 +25122,7 @@ visibility_range_fade_mode = 1
 mesh = SubResource("sl_1064")
 
 [node name="Seat" parent="Props/L41/MoorChair/Visual/Model" index="1" unique_id=102517]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -0.12)
 
 [node name="Collision" parent="Props/L41/MoorChair/Visual/Model" index="2" unique_id=102518]
 collision_layer = 0
@@ -25145,7 +25145,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.425, 0)
 shape = SubResource("sl_1059")
 
 [node name="Seat" type="Marker3D" parent="Props/L41/ConfChairW1" unique_id=102522]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -0.12)
 
 [node name="Visual" parent="Props/L41/ConfChairW1" unique_id=102523 instance=ExtResource("130_sl")]
 metadata/kind = &"chair"
@@ -25157,7 +25157,7 @@ visibility_range_fade_mode = 1
 mesh = SubResource("sl_1064")
 
 [node name="Seat" parent="Props/L41/ConfChairW1/Visual/Model" index="1" unique_id=102525]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -0.12)
 
 [node name="Collision" parent="Props/L41/ConfChairW1/Visual/Model" index="2" unique_id=102526]
 collision_layer = 0
@@ -25180,7 +25180,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.425, 0)
 shape = SubResource("sl_1059")
 
 [node name="Seat" type="Marker3D" parent="Props/L41/ConfChairW2" unique_id=102530]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -0.12)
 
 [node name="Visual" parent="Props/L41/ConfChairW2" unique_id=102531 instance=ExtResource("130_sl")]
 metadata/kind = &"chair"
@@ -25192,7 +25192,7 @@ visibility_range_fade_mode = 1
 mesh = SubResource("sl_1064")
 
 [node name="Seat" parent="Props/L41/ConfChairW2/Visual/Model" index="1" unique_id=102533]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -0.12)
 
 [node name="Collision" parent="Props/L41/ConfChairW2/Visual/Model" index="2" unique_id=102534]
 collision_layer = 0
@@ -25215,7 +25215,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.425, 0)
 shape = SubResource("sl_1059")
 
 [node name="Seat" type="Marker3D" parent="Props/L41/ConfChairW3" unique_id=102538]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -0.12)
 
 [node name="Visual" parent="Props/L41/ConfChairW3" unique_id=102539 instance=ExtResource("130_sl")]
 metadata/kind = &"chair"
@@ -25227,7 +25227,7 @@ visibility_range_fade_mode = 1
 mesh = SubResource("sl_1064")
 
 [node name="Seat" parent="Props/L41/ConfChairW3/Visual/Model" index="1" unique_id=102541]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -0.12)
 
 [node name="Collision" parent="Props/L41/ConfChairW3/Visual/Model" index="2" unique_id=102542]
 collision_layer = 0
@@ -25250,7 +25250,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.425, 0)
 shape = SubResource("sl_1059")
 
 [node name="Seat" type="Marker3D" parent="Props/L41/ConfChairE1" unique_id=102546]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -0.12)
 
 [node name="Visual" parent="Props/L41/ConfChairE1" unique_id=102547 instance=ExtResource("130_sl")]
 metadata/kind = &"chair"
@@ -25262,7 +25262,7 @@ visibility_range_fade_mode = 1
 mesh = SubResource("sl_1064")
 
 [node name="Seat" parent="Props/L41/ConfChairE1/Visual/Model" index="1" unique_id=102549]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -0.12)
 
 [node name="Collision" parent="Props/L41/ConfChairE1/Visual/Model" index="2" unique_id=102550]
 collision_layer = 0
@@ -25285,7 +25285,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.425, 0)
 shape = SubResource("sl_1059")
 
 [node name="Seat" type="Marker3D" parent="Props/L41/ConfChairE2" unique_id=102554]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -0.12)
 
 [node name="Visual" parent="Props/L41/ConfChairE2" unique_id=102555 instance=ExtResource("130_sl")]
 metadata/kind = &"chair"
@@ -25297,7 +25297,7 @@ visibility_range_fade_mode = 1
 mesh = SubResource("sl_1064")
 
 [node name="Seat" parent="Props/L41/ConfChairE2/Visual/Model" index="1" unique_id=102557]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -0.12)
 
 [node name="Collision" parent="Props/L41/ConfChairE2/Visual/Model" index="2" unique_id=102558]
 collision_layer = 0
@@ -25320,7 +25320,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.425, 0)
 shape = SubResource("sl_1059")
 
 [node name="Seat" type="Marker3D" parent="Props/L41/ConfChairE3" unique_id=102562]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -0.12)
 
 [node name="Visual" parent="Props/L41/ConfChairE3" unique_id=102563 instance=ExtResource("130_sl")]
 metadata/kind = &"chair"
@@ -25332,7 +25332,7 @@ visibility_range_fade_mode = 1
 mesh = SubResource("sl_1064")
 
 [node name="Seat" parent="Props/L41/ConfChairE3/Visual/Model" index="1" unique_id=102565]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -0.12)
 
 [node name="Collision" parent="Props/L41/ConfChairE3/Visual/Model" index="2" unique_id=102566]
 collision_layer = 0
@@ -25707,7 +25707,7 @@ shape = SubResource("sl_1059")
 disabled = true
 
 [node name="Seat" type="Marker3D" parent="Props/L41/AssistantChairA" unique_id=102650]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -0.12)
 
 [node name="Visual" parent="Props/L41/AssistantChairA" unique_id=102651 instance=ExtResource("130_sl")]
 metadata/kind = &"chair"
@@ -25719,7 +25719,7 @@ visibility_range_fade_mode = 1
 mesh = SubResource("sl_1064")
 
 [node name="Seat" parent="Props/L41/AssistantChairA/Visual/Model" index="1" unique_id=102653]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -0.12)
 
 [node name="Collision" parent="Props/L41/AssistantChairA/Visual/Model" index="2" unique_id=102654]
 collision_layer = 0
@@ -25742,7 +25742,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.425, 0)
 shape = SubResource("sl_1059")
 
 [node name="Seat" type="Marker3D" parent="Props/L41/AssistantChairB" unique_id=102658]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -0.12)
 
 [node name="Visual" parent="Props/L41/AssistantChairB" unique_id=102659 instance=ExtResource("130_sl")]
 metadata/kind = &"chair"
@@ -25754,7 +25754,7 @@ visibility_range_fade_mode = 1
 mesh = SubResource("sl_1064")
 
 [node name="Seat" parent="Props/L41/AssistantChairB/Visual/Model" index="1" unique_id=102661]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -0.12)
 
 [node name="Collision" parent="Props/L41/AssistantChairB/Visual/Model" index="2" unique_id=102662]
 collision_layer = 0
@@ -25777,7 +25777,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.425, 0)
 shape = SubResource("sl_1059")
 
 [node name="Seat" type="Marker3D" parent="Props/L41/PodAChairN1" unique_id=102666]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -0.12)
 
 [node name="Visual" parent="Props/L41/PodAChairN1" unique_id=102667 instance=ExtResource("130_sl")]
 metadata/kind = &"chair"
@@ -25789,7 +25789,7 @@ visibility_range_fade_mode = 1
 mesh = SubResource("sl_1064")
 
 [node name="Seat" parent="Props/L41/PodAChairN1/Visual/Model" index="1" unique_id=102669]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -0.12)
 
 [node name="Collision" parent="Props/L41/PodAChairN1/Visual/Model" index="2" unique_id=102670]
 collision_layer = 0
@@ -25812,7 +25812,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.425, 0)
 shape = SubResource("sl_1059")
 
 [node name="Seat" type="Marker3D" parent="Props/L41/PodAChairN2" unique_id=102674]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -0.12)
 
 [node name="Visual" parent="Props/L41/PodAChairN2" unique_id=102675 instance=ExtResource("130_sl")]
 metadata/kind = &"chair"
@@ -25824,7 +25824,7 @@ visibility_range_fade_mode = 1
 mesh = SubResource("sl_1064")
 
 [node name="Seat" parent="Props/L41/PodAChairN2/Visual/Model" index="1" unique_id=102677]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -0.12)
 
 [node name="Collision" parent="Props/L41/PodAChairN2/Visual/Model" index="2" unique_id=102678]
 collision_layer = 0
@@ -25849,7 +25849,7 @@ shape = SubResource("sl_1059")
 disabled = true
 
 [node name="Seat" type="Marker3D" parent="Props/L41/PodAChairS1" unique_id=102682]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -0.12)
 
 [node name="Visual" parent="Props/L41/PodAChairS1" unique_id=102683 instance=ExtResource("130_sl")]
 metadata/kind = &"chair"
@@ -25861,7 +25861,7 @@ visibility_range_fade_mode = 1
 mesh = SubResource("sl_1064")
 
 [node name="Seat" parent="Props/L41/PodAChairS1/Visual/Model" index="1" unique_id=102685]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -0.12)
 
 [node name="Collision" parent="Props/L41/PodAChairS1/Visual/Model" index="2" unique_id=102686]
 collision_layer = 0
@@ -25884,7 +25884,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.425, 0)
 shape = SubResource("sl_1059")
 
 [node name="Seat" type="Marker3D" parent="Props/L41/PodAChairS2" unique_id=102690]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -0.12)
 
 [node name="Visual" parent="Props/L41/PodAChairS2" unique_id=102691 instance=ExtResource("130_sl")]
 metadata/kind = &"chair"
@@ -25896,7 +25896,7 @@ visibility_range_fade_mode = 1
 mesh = SubResource("sl_1064")
 
 [node name="Seat" parent="Props/L41/PodAChairS2/Visual/Model" index="1" unique_id=102693]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -0.12)
 
 [node name="Collision" parent="Props/L41/PodAChairS2/Visual/Model" index="2" unique_id=102694]
 collision_layer = 0
@@ -25919,7 +25919,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.425, 0)
 shape = SubResource("sl_1059")
 
 [node name="Seat" type="Marker3D" parent="Props/L41/PodBChairN1" unique_id=102698]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -0.12)
 
 [node name="Visual" parent="Props/L41/PodBChairN1" unique_id=102699 instance=ExtResource("130_sl")]
 metadata/kind = &"chair"
@@ -25931,7 +25931,7 @@ visibility_range_fade_mode = 1
 mesh = SubResource("sl_1064")
 
 [node name="Seat" parent="Props/L41/PodBChairN1/Visual/Model" index="1" unique_id=102701]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -0.12)
 
 [node name="Collision" parent="Props/L41/PodBChairN1/Visual/Model" index="2" unique_id=102702]
 collision_layer = 0
@@ -25954,7 +25954,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.425, 0)
 shape = SubResource("sl_1059")
 
 [node name="Seat" type="Marker3D" parent="Props/L41/PodBChairN2" unique_id=102706]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -0.12)
 
 [node name="Visual" parent="Props/L41/PodBChairN2" unique_id=102707 instance=ExtResource("130_sl")]
 metadata/kind = &"chair"
@@ -25966,7 +25966,7 @@ visibility_range_fade_mode = 1
 mesh = SubResource("sl_1064")
 
 [node name="Seat" parent="Props/L41/PodBChairN2/Visual/Model" index="1" unique_id=102709]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -0.12)
 
 [node name="Collision" parent="Props/L41/PodBChairN2/Visual/Model" index="2" unique_id=102710]
 collision_layer = 0
@@ -25989,7 +25989,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.425, 0)
 shape = SubResource("sl_1059")
 
 [node name="Seat" type="Marker3D" parent="Props/L41/PodBChairS1" unique_id=102714]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -0.12)
 
 [node name="Visual" parent="Props/L41/PodBChairS1" unique_id=102715 instance=ExtResource("130_sl")]
 metadata/kind = &"chair"
@@ -26001,7 +26001,7 @@ visibility_range_fade_mode = 1
 mesh = SubResource("sl_1064")
 
 [node name="Seat" parent="Props/L41/PodBChairS1/Visual/Model" index="1" unique_id=102717]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -0.12)
 
 [node name="Collision" parent="Props/L41/PodBChairS1/Visual/Model" index="2" unique_id=102718]
 collision_layer = 0
@@ -26024,7 +26024,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.425, 0)
 shape = SubResource("sl_1059")
 
 [node name="Seat" type="Marker3D" parent="Props/L41/PodBChairS2" unique_id=102722]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -0.12)
 
 [node name="Visual" parent="Props/L41/PodBChairS2" unique_id=102723 instance=ExtResource("130_sl")]
 metadata/kind = &"chair"
@@ -26036,7 +26036,7 @@ visibility_range_fade_mode = 1
 mesh = SubResource("sl_1064")
 
 [node name="Seat" parent="Props/L41/PodBChairS2/Visual/Model" index="1" unique_id=102725]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -0.12)
 
 [node name="Collision" parent="Props/L41/PodBChairS2/Visual/Model" index="2" unique_id=102726]
 collision_layer = 0
@@ -26059,7 +26059,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.425, 0)
 shape = SubResource("sl_1059")
 
 [node name="Seat" type="Marker3D" parent="Props/L41/PodCChairN1" unique_id=102730]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -0.12)
 
 [node name="Visual" parent="Props/L41/PodCChairN1" unique_id=102731 instance=ExtResource("130_sl")]
 metadata/kind = &"chair"
@@ -26071,7 +26071,7 @@ visibility_range_fade_mode = 1
 mesh = SubResource("sl_1064")
 
 [node name="Seat" parent="Props/L41/PodCChairN1/Visual/Model" index="1" unique_id=102733]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -0.12)
 
 [node name="Collision" parent="Props/L41/PodCChairN1/Visual/Model" index="2" unique_id=102734]
 collision_layer = 0
@@ -26094,7 +26094,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.425, 0)
 shape = SubResource("sl_1059")
 
 [node name="Seat" type="Marker3D" parent="Props/L41/PodCChairN2" unique_id=102738]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -0.12)
 
 [node name="Visual" parent="Props/L41/PodCChairN2" unique_id=102739 instance=ExtResource("130_sl")]
 metadata/kind = &"chair"
@@ -26106,7 +26106,7 @@ visibility_range_fade_mode = 1
 mesh = SubResource("sl_1064")
 
 [node name="Seat" parent="Props/L41/PodCChairN2/Visual/Model" index="1" unique_id=102741]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -0.12)
 
 [node name="Collision" parent="Props/L41/PodCChairN2/Visual/Model" index="2" unique_id=102742]
 collision_layer = 0
@@ -26129,7 +26129,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.425, 0)
 shape = SubResource("sl_1059")
 
 [node name="Seat" type="Marker3D" parent="Props/L41/PodCChairS1" unique_id=102746]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -0.12)
 
 [node name="Visual" parent="Props/L41/PodCChairS1" unique_id=102747 instance=ExtResource("130_sl")]
 metadata/kind = &"chair"
@@ -26141,7 +26141,7 @@ visibility_range_fade_mode = 1
 mesh = SubResource("sl_1064")
 
 [node name="Seat" parent="Props/L41/PodCChairS1/Visual/Model" index="1" unique_id=102749]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -0.12)
 
 [node name="Collision" parent="Props/L41/PodCChairS1/Visual/Model" index="2" unique_id=102750]
 collision_layer = 0
@@ -26164,7 +26164,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.425, 0)
 shape = SubResource("sl_1059")
 
 [node name="Seat" type="Marker3D" parent="Props/L41/PodCChairS2" unique_id=102754]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -0.12)
 
 [node name="Visual" parent="Props/L41/PodCChairS2" unique_id=102755 instance=ExtResource("130_sl")]
 metadata/kind = &"chair"
@@ -26176,7 +26176,7 @@ visibility_range_fade_mode = 1
 mesh = SubResource("sl_1064")
 
 [node name="Seat" parent="Props/L41/PodCChairS2/Visual/Model" index="1" unique_id=102757]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -0.12)
 
 [node name="Collision" parent="Props/L41/PodCChairS2/Visual/Model" index="2" unique_id=102758]
 collision_layer = 0
@@ -26199,7 +26199,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.425, 0)
 shape = SubResource("sl_1059")
 
 [node name="Seat" type="Marker3D" parent="Props/L41/ITChairA" unique_id=102762]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -0.12)
 
 [node name="Visual" parent="Props/L41/ITChairA" unique_id=102763 instance=ExtResource("130_sl")]
 metadata/kind = &"chair"
@@ -26211,7 +26211,7 @@ visibility_range_fade_mode = 1
 mesh = SubResource("sl_1064")
 
 [node name="Seat" parent="Props/L41/ITChairA/Visual/Model" index="1" unique_id=102765]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -0.12)
 
 [node name="Collision" parent="Props/L41/ITChairA/Visual/Model" index="2" unique_id=102766]
 collision_layer = 0
@@ -26234,7 +26234,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.425, 0)
 shape = SubResource("sl_1059")
 
 [node name="Seat" type="Marker3D" parent="Props/L41/ITChairB" unique_id=102770]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -0.12)
 
 [node name="Visual" parent="Props/L41/ITChairB" unique_id=102771 instance=ExtResource("130_sl")]
 metadata/kind = &"chair"
@@ -26246,7 +26246,7 @@ visibility_range_fade_mode = 1
 mesh = SubResource("sl_1064")
 
 [node name="Seat" parent="Props/L41/ITChairB/Visual/Model" index="1" unique_id=102773]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -0.12)
 
 [node name="Collision" parent="Props/L41/ITChairB/Visual/Model" index="2" unique_id=102774]
 collision_layer = 0
@@ -26269,7 +26269,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.425, 0)
 shape = SubResource("sl_1059")
 
 [node name="Seat" type="Marker3D" parent="Props/L41/K20Chair" unique_id=102778]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -0.12)
 
 [node name="Visual" parent="Props/L41/K20Chair" unique_id=102779 instance=ExtResource("130_sl")]
 metadata/kind = &"chair"
@@ -26281,7 +26281,7 @@ visibility_range_fade_mode = 1
 mesh = SubResource("sl_1064")
 
 [node name="Seat" parent="Props/L41/K20Chair/Visual/Model" index="1" unique_id=102781]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -0.12)
 
 [node name="Collision" parent="Props/L41/K20Chair/Visual/Model" index="2" unique_id=102782]
 collision_layer = 0
@@ -26304,7 +26304,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.425, 0)
 shape = SubResource("sl_1059")
 
 [node name="Seat" type="Marker3D" parent="Props/L41/K21Chair" unique_id=102786]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -0.12)
 
 [node name="Visual" parent="Props/L41/K21Chair" unique_id=102787 instance=ExtResource("130_sl")]
 metadata/kind = &"chair"
@@ -26316,7 +26316,7 @@ visibility_range_fade_mode = 1
 mesh = SubResource("sl_1064")
 
 [node name="Seat" parent="Props/L41/K21Chair/Visual/Model" index="1" unique_id=102789]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -0.12)
 
 [node name="Collision" parent="Props/L41/K21Chair/Visual/Model" index="2" unique_id=102790]
 collision_layer = 0
@@ -26339,7 +26339,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.425, 0)
 shape = SubResource("sl_1059")
 
 [node name="Seat" type="Marker3D" parent="Props/L41/K22Chair" unique_id=102794]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -0.12)
 
 [node name="Visual" parent="Props/L41/K22Chair" unique_id=102795 instance=ExtResource("130_sl")]
 metadata/kind = &"chair"
@@ -26351,7 +26351,7 @@ visibility_range_fade_mode = 1
 mesh = SubResource("sl_1064")
 
 [node name="Seat" parent="Props/L41/K22Chair/Visual/Model" index="1" unique_id=102797]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -0.12)
 
 [node name="Collision" parent="Props/L41/K22Chair/Visual/Model" index="2" unique_id=102798]
 collision_layer = 0
@@ -26374,7 +26374,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.425, 0)
 shape = SubResource("sl_1059")
 
 [node name="Seat" type="Marker3D" parent="Props/L41/K23Chair" unique_id=102802]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -0.12)
 
 [node name="Visual" parent="Props/L41/K23Chair" unique_id=102803 instance=ExtResource("130_sl")]
 metadata/kind = &"chair"
@@ -26386,7 +26386,7 @@ visibility_range_fade_mode = 1
 mesh = SubResource("sl_1064")
 
 [node name="Seat" parent="Props/L41/K23Chair/Visual/Model" index="1" unique_id=102805]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -0.12)
 
 [node name="Collision" parent="Props/L41/K23Chair/Visual/Model" index="2" unique_id=102806]
 collision_layer = 0
@@ -27422,7 +27422,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.425, 0)
 shape = SubResource("sl_1059")
 
 [node name="Seat" type="Marker3D" parent="Props/L42/StudyChair" unique_id=103025]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -0.12)
 
 [node name="Visual" parent="Props/L42/StudyChair" unique_id=103026 instance=ExtResource("130_sl")]
 metadata/kind = &"chair"
@@ -27434,7 +27434,7 @@ visibility_range_fade_mode = 1
 mesh = SubResource("sl_1064")
 
 [node name="Seat" parent="Props/L42/StudyChair/Visual/Model" index="1" unique_id=103028]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -0.12)
 
 [node name="Collision" parent="Props/L42/StudyChair/Visual/Model" index="2" unique_id=103029]
 collision_layer = 0
@@ -27667,7 +27667,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.425, 0)
 shape = SubResource("sl_1059")
 
 [node name="Seat" type="Marker3D" parent="Props/L42/BoardChairW1" unique_id=103081]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -0.12)
 
 [node name="Visual" parent="Props/L42/BoardChairW1" unique_id=103082 instance=ExtResource("130_sl")]
 metadata/kind = &"chair"
@@ -27679,7 +27679,7 @@ visibility_range_fade_mode = 1
 mesh = SubResource("sl_1064")
 
 [node name="Seat" parent="Props/L42/BoardChairW1/Visual/Model" index="1" unique_id=103084]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -0.12)
 
 [node name="Collision" parent="Props/L42/BoardChairW1/Visual/Model" index="2" unique_id=103085]
 collision_layer = 0
@@ -27702,7 +27702,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.425, 0)
 shape = SubResource("sl_1059")
 
 [node name="Seat" type="Marker3D" parent="Props/L42/BoardChairW2" unique_id=103089]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -0.12)
 
 [node name="Visual" parent="Props/L42/BoardChairW2" unique_id=103090 instance=ExtResource("130_sl")]
 metadata/kind = &"chair"
@@ -27714,7 +27714,7 @@ visibility_range_fade_mode = 1
 mesh = SubResource("sl_1064")
 
 [node name="Seat" parent="Props/L42/BoardChairW2/Visual/Model" index="1" unique_id=103092]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -0.12)
 
 [node name="Collision" parent="Props/L42/BoardChairW2/Visual/Model" index="2" unique_id=103093]
 collision_layer = 0
@@ -27737,7 +27737,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.425, 0)
 shape = SubResource("sl_1059")
 
 [node name="Seat" type="Marker3D" parent="Props/L42/BoardChairW3" unique_id=103097]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -0.12)
 
 [node name="Visual" parent="Props/L42/BoardChairW3" unique_id=103098 instance=ExtResource("130_sl")]
 metadata/kind = &"chair"
@@ -27749,7 +27749,7 @@ visibility_range_fade_mode = 1
 mesh = SubResource("sl_1064")
 
 [node name="Seat" parent="Props/L42/BoardChairW3/Visual/Model" index="1" unique_id=103100]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -0.12)
 
 [node name="Collision" parent="Props/L42/BoardChairW3/Visual/Model" index="2" unique_id=103101]
 collision_layer = 0
@@ -27772,7 +27772,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.425, 0)
 shape = SubResource("sl_1059")
 
 [node name="Seat" type="Marker3D" parent="Props/L42/BoardChairW4" unique_id=103105]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -0.12)
 
 [node name="Visual" parent="Props/L42/BoardChairW4" unique_id=103106 instance=ExtResource("130_sl")]
 metadata/kind = &"chair"
@@ -27784,7 +27784,7 @@ visibility_range_fade_mode = 1
 mesh = SubResource("sl_1064")
 
 [node name="Seat" parent="Props/L42/BoardChairW4/Visual/Model" index="1" unique_id=103108]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -0.12)
 
 [node name="Collision" parent="Props/L42/BoardChairW4/Visual/Model" index="2" unique_id=103109]
 collision_layer = 0
@@ -27807,7 +27807,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.425, 0)
 shape = SubResource("sl_1059")
 
 [node name="Seat" type="Marker3D" parent="Props/L42/BoardChairE1" unique_id=103113]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -0.12)
 
 [node name="Visual" parent="Props/L42/BoardChairE1" unique_id=103114 instance=ExtResource("130_sl")]
 metadata/kind = &"chair"
@@ -27819,7 +27819,7 @@ visibility_range_fade_mode = 1
 mesh = SubResource("sl_1064")
 
 [node name="Seat" parent="Props/L42/BoardChairE1/Visual/Model" index="1" unique_id=103116]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -0.12)
 
 [node name="Collision" parent="Props/L42/BoardChairE1/Visual/Model" index="2" unique_id=103117]
 collision_layer = 0
@@ -27842,7 +27842,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.425, 0)
 shape = SubResource("sl_1059")
 
 [node name="Seat" type="Marker3D" parent="Props/L42/BoardChairE2" unique_id=103121]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -0.12)
 
 [node name="Visual" parent="Props/L42/BoardChairE2" unique_id=103122 instance=ExtResource("130_sl")]
 metadata/kind = &"chair"
@@ -27854,7 +27854,7 @@ visibility_range_fade_mode = 1
 mesh = SubResource("sl_1064")
 
 [node name="Seat" parent="Props/L42/BoardChairE2/Visual/Model" index="1" unique_id=103124]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -0.12)
 
 [node name="Collision" parent="Props/L42/BoardChairE2/Visual/Model" index="2" unique_id=103125]
 collision_layer = 0
@@ -27877,7 +27877,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.425, 0)
 shape = SubResource("sl_1059")
 
 [node name="Seat" type="Marker3D" parent="Props/L42/BoardChairE3" unique_id=103129]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -0.12)
 
 [node name="Visual" parent="Props/L42/BoardChairE3" unique_id=103130 instance=ExtResource("130_sl")]
 metadata/kind = &"chair"
@@ -27889,7 +27889,7 @@ visibility_range_fade_mode = 1
 mesh = SubResource("sl_1064")
 
 [node name="Seat" parent="Props/L42/BoardChairE3/Visual/Model" index="1" unique_id=103132]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -0.12)
 
 [node name="Collision" parent="Props/L42/BoardChairE3/Visual/Model" index="2" unique_id=103133]
 collision_layer = 0
@@ -27912,7 +27912,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.425, 0)
 shape = SubResource("sl_1059")
 
 [node name="Seat" type="Marker3D" parent="Props/L42/BoardChairE4" unique_id=103137]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -0.12)
 
 [node name="Visual" parent="Props/L42/BoardChairE4" unique_id=103138 instance=ExtResource("130_sl")]
 metadata/kind = &"chair"
@@ -27924,7 +27924,7 @@ visibility_range_fade_mode = 1
 mesh = SubResource("sl_1064")
 
 [node name="Seat" parent="Props/L42/BoardChairE4/Visual/Model" index="1" unique_id=103140]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -0.12)
 
 [node name="Collision" parent="Props/L42/BoardChairE4/Visual/Model" index="2" unique_id=103141]
 collision_layer = 0
@@ -27947,7 +27947,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.425, 0)
 shape = SubResource("sl_1059")
 
 [node name="Seat" type="Marker3D" parent="Props/L42/BoardChairHead" unique_id=103145]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -0.12)
 
 [node name="Visual" parent="Props/L42/BoardChairHead" unique_id=103146 instance=ExtResource("130_sl")]
 metadata/kind = &"chair"
@@ -27959,7 +27959,7 @@ visibility_range_fade_mode = 1
 mesh = SubResource("sl_1064")
 
 [node name="Seat" parent="Props/L42/BoardChairHead/Visual/Model" index="1" unique_id=103148]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -0.12)
 
 [node name="Collision" parent="Props/L42/BoardChairHead/Visual/Model" index="2" unique_id=103149]
 collision_layer = 0
@@ -37502,7 +37502,7 @@ tags = Array[StringName]([&"guard_reception"])
 patrol_graph = NodePath("../../Patrols/Tower")
 
 [node name="CameraOperatorSeat" type="Marker3D" parent="Spawns" unique_id=104656]
-transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 28.65, 3.6, 14.5)
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 28.77, 3.6, 14.5)
 script = ExtResource("260_sl")
 kind = 5
 tags = Array[StringName]([&"security_operator"])
@@ -39304,7 +39304,7 @@ slot_group = &"late_staff"
 slot_id = &"ls_assistant"
 
 [node name="AssistantLate" type="Marker3D" parent="Variants/Group_late_staff/Slot_ls_assistant" unique_id=104895]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 25.6, 3.6, 1.2)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 25.6, 3.6, 1.32)
 script = ExtResource("260_sl")
 kind = 2
 tags = Array[StringName]([&"civ_assistant", &"civ_staff"])
@@ -39316,7 +39316,7 @@ slot_group = &"late_staff"
 slot_id = &"ls_associate"
 
 [node name="AssociateLate" type="Marker3D" parent="Variants/Group_late_staff/Slot_ls_associate" unique_id=104897]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.4, 3.6, 11.25)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.4, 3.6, 11.13)
 script = ExtResource("260_sl")
 kind = 2
 tags = Array[StringName]([&"civ_associate", &"civ_staff"])

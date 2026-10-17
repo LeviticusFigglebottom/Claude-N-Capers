@@ -30,7 +30,8 @@ VARIANTS = {
     # GN-8: walk-through rope (its imported collider off in the wrapper, _scenes.py `walk_through`)
     "prop_stanchion_velvet": {"fn": "stanchion", "cat": {
         "kind": "stanchion", "place": "floor", "group": "gallery",
-        "walk_through": "GN-8: the velvet rope is walk-through (next_heist 7.9 'or none'; GN dressing NO_COLLIDE); the GN navmesh runs under it"}},
+        "walk_through": "GN-8: the velvet rope is walk-through (next_heist 7.9 'or none'; GN dressing NO_COLLIDE);"
+                        " the GN navmesh runs under it"}},
     "prop_music_stand": {"fn": "music_stand", "cat": {"kind": "music_stand", "place": "floor", "group": "gallery"}},
     "prop_lectern": {"fn": "lectern", "cat": {"kind": "lectern", "place": "floor", "clear": 0.6, "group": "gallery"}},
     "prop_coat_rail": {"fn": "coat_rail", "cat": {"kind": "coat_rail", "place": "wall", "clear": 0.6, "group": "gallery"}},
