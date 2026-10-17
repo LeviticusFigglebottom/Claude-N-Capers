@@ -134,6 +134,38 @@ static func brain_staggered(body: Node) -> bool:
 	return b != null and b.has_method(&"is_staggered") and bool(b.call(&"is_staggered"))
 
 
+## D-116 door breach: while this NPC breaches its motor's waiting_door (Door.breach_elapsed_s), door_kick_<fam> plays
+## as a one-shot at speed impact / npc_door_breach_s from the breach's own elapsed time, so `impact` lands on the door
+## opening (re-asserted every tick: a turn one-shot cannot cut it). A raised shield plays shield_bang ending on the
+## open instead; a rig without the clip stands as before. Host only (the breach timer is host data).
+func update_door_kick(npc: NpcBase) -> void:
+	var motor: NpcMotor = npc.get_node_or_null(^"Motor") as NpcMotor if npc != null and npc.alive else null
+	var door: Door = motor.waiting_door if motor != null else null
+	var el: float = door.breach_elapsed_s(npc) if door != null and is_instance_valid(door) else -1.0
+	if el < 0.0:
+		return
+	var breach_s: float = maxf(Tweak.interaction().npc_door_breach_s, 0.05)
+	var c: StringName = StringName("door_kick_" + fam(false))
+	var shield: bool = _d.shield_up() and _d._has_clip(&"shield_bang")
+	if shield:
+		c = &"shield_bang"
+	elif not _d._has_clip(c):
+		return
+	var length: float = _d.player.get_animation("%s/%s" % [AnimDriver.LIBRARY, c]).length
+	var s: float = AnimTweak.clip_event_s(c, &"impact", AnimTweak.data().door_kick_impact_s) / breach_s
+	var pos: float = el * s
+	if shield:  # the bang ends on the open
+		s = 1.0
+		pos = el - (breach_s - length)
+	if pos < 0.0 or pos >= length:
+		return
+	if _d._oneshot != c or _d._oneshot_left <= 0.0:
+		_d.play_oneshot(c, (length - pos) / s, false, s, pos)
+	elif _d.clip == c and absf(_d.player.current_animation_position - pos) > 0.05 \
+			and String(_d.player.current_animation).ends_with(String(c)):
+		_d.player.seek(pos, true)  # shown late (the unit stepped to its stand first): back on the breach's time
+
+
 ## DB-4: `sit` -> sit_chair_armed for a cartel gunman or an armed guard when the rig has it; else &"".
 func armed_seat_clip(npc: NpcBase) -> StringName:
 	if npc == null or not _d._has_clip(&"sit_chair_armed"):

@@ -266,6 +266,7 @@ var _oneshot_left: float = 0.0
 var _oneshot_speed: float = 1.0
 var _oneshot_dur: float = 0.0
 var _oneshot_while_moving: bool = false
+var _oneshot_start: float = 0.0
 var _restart: bool = false
 var _turning_left: float = 0.0
 var _aim_hold_left: float = 0.0
@@ -466,6 +467,7 @@ func tick(delta: float) -> void:
 		if ONESHOT_HINTS.has(hint) and not (once != hint and _oneshot == once and _oneshot_left > 0.0):
 			play_oneshot(once, -1.0, true)
 	_update_turn(delta, tw)
+	combat.update_door_kick(_npc)  # D-116: the loud breach of a locked door (door_kick_<fam>)
 	var want: StringName = choose_clip()
 	if _npc != null and _npc.alive:
 		_seated = SEATED_CLIPS.has(want)
@@ -549,8 +551,10 @@ func weapon_shown(c: StringName) -> bool:
 
 
 ## Play `p_clip` once for `duration` seconds (-1 = the clip's length / speed). `while_moving` lets it
-## override locomotion (throw_bag, melee); otherwise it shows only while standing (fire, reload, turn).
-func play_oneshot(p_clip: StringName, duration: float = -1.0, while_moving: bool = false, speed: float = 1.0) -> void:
+## override locomotion (throw_bag, melee); otherwise it shows only while standing (fire, reload, turn). `start`: the
+## clip time it starts from (D-116 door_kick joining its breach late).
+func play_oneshot(p_clip: StringName, duration: float = -1.0, while_moving: bool = false, speed: float = 1.0,
+		start: float = 0.0) -> void:
 	if player == null:
 		return
 	var full: String = _resolve(p_clip)
@@ -563,6 +567,7 @@ func play_oneshot(p_clip: StringName, duration: float = -1.0, while_moving: bool
 	_oneshot_dur = duration
 	_oneshot_speed = speed
 	_oneshot_while_moving = while_moving
+	_oneshot_start = start
 	_restart = true
 
 
@@ -1014,7 +1019,7 @@ func _apply(want: StringName, speed: float, tw: AnimTweak) -> void:
 		player.play(full, blend)
 		last_blend_s = blend
 		if restart:
-			player.seek(0.0, true)
+			player.seek(_oneshot_start, true)
 		elif not chained and not loop_resume.resume(want, full):  # D-115: a loop cut by a one-shot resumes its phase
 			_seek_loop_offset(want, full)
 		clip = want

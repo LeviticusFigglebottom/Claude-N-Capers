@@ -39,6 +39,7 @@ turn_90_min_deg = 67.5
 turn_speed_min = 0.75
 turn_speed_max = 1.5
 turn_snap_s = 0.15
+door_kick_impact_s = 2.5
 move_threshold_mps = 0.2
 walk_run_split_mps = 2.55
 run_sprint_split_mps = 4.6
@@ -60,6 +61,8 @@ teleport_speed_mps = 15.0
 shield_clips = {
 &"aim_pistol": &"shield_idle",
 &"aim_rifle": &"shield_idle",
+&"door_kick_pistol": &"shield_bang",
+&"door_kick_rifle": &"shield_bang",
 &"fire_pistol": &"shield_idle",
 &"fire_rifle": &"shield_idle",
 &"idle": &"shield_idle",

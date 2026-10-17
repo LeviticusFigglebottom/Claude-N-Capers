@@ -46,6 +46,8 @@ static var _cached: AnimTweak = null
 @export var turn_speed_max: float = 1.5
 ## Below turn_threshold_deg no clip plays: the rig snaps to the body over this many seconds.
 @export var turn_snap_s: float = 0.15
+## D-116 door_kick_<fam> `impact` (s; SOURCE.txt first): the clip is scaled so it lands on npc_door_breach_s.
+@export var door_kick_impact_s: float = 2.5
 
 @export_group("Selection")
 ## Horizontal speed (m/s) under which a body counts as standing.
@@ -115,7 +117,7 @@ static var _cached: AnimTweak = null
 	&"idle": &"shield_idle", &"idle_alert": &"shield_idle", &"aim_pistol": &"shield_idle",
 	&"aim_rifle": &"shield_idle", &"fire_pistol": &"shield_idle", &"fire_rifle": &"shield_idle",
 	&"turn_l": &"shield_idle", &"turn_r": &"shield_idle", &"turn_l_45": &"shield_idle", &"turn_r_45": &"shield_idle",
-	&"investigate_look": &"shield_idle",
+	&"investigate_look": &"shield_idle", &"door_kick_rifle": &"shield_bang", &"door_kick_pistol": &"shield_bang",
 	&"walk": &"shield_walk", &"strafe_l": &"shield_walk", &"strafe_r": &"shield_walk",
 	&"walk_back": &"shield_walk",
 }
