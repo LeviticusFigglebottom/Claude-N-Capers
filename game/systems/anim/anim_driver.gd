@@ -6,9 +6,10 @@
 ## Each frame it picks one clip, by priority:
 ##   death_front/back (from the last hit direction vs facing) > crew state (downed, tased, kneel_cuffed) /
 ##   stun (tased) > pose hints (tied, cower, hands_up, surrender, lie_down, kneel_cuffed) > special actions
-##   (kick_charge, shield_bang, heal_ally) > crew actions (mask_on, throw_grenade; CrewActionAnim) > one-shots (turn,
-##   fire, reload, throw_bag, melee, kick_hit,
-##   hit_head / hit_chest / hit_shoulder_* / hit_leg_* by zone, else hit_react*) > interact_* / pager_answer >
+##   (kick_charge, shield_bang, heal_ally) > crew actions (mask_on, throw_grenade; CrewActionAnim) >
+##   (crew) interact_* / pager_answer (D-115: an interaction beats every one-shot; a hit is an upper-body flinch) >
+##   one-shots (turn, fire, reload, throw_bag, melee, kick_hit,
+##   hit_head / hit_chest / hit_shoulder_* / hit_leg_* by zone, else hit_react*) >
 ##   locomotion by velocity (walk, run, sprint, crouch_walk, strafe,
 ##   walk_back, flee, carry_bag_walk, the unit's EnemyDef.params.anim_walk_clip = shield_walk / dozer_walk at
 ##   walking speed; speed_scale = v / clip speed) > aim_* >
@@ -151,7 +152,8 @@ const FLINCH_LAYER_NODE: String = "FlinchLayer"
 ## Starts / stops only for straight-ahead motion (|dir . forward| at least this).
 const START_STOP_DOT: float = 0.7
 ## One-shot hints that are not held as an idle once played (the hint may linger in the brain).
-const ONCE_ONLY_HINTS: Array[StringName] = [&"kick_hit", &"hit_react"]
+## D-115: melee too (a lingering melee hint held the finished non-looping clip: the player stopped under the driver).
+const ONCE_ONLY_HINTS: Array[StringName] = [&"kick_hit", &"hit_react", &"melee"]
 ## Clip -> substitute when the library lacks it (then idle).
 const FALLBACK_CLIPS: Dictionary = {
 	&"aim_pistol": &"idle_alert", &"aim_rifle": &"idle_alert", &"interact_low": &"interact_mid",
@@ -216,6 +218,8 @@ var hits: HitClips = null
 var held_visuals: HeldVisuals = null
 ## D-132 animation LOD (AnimLod): which frames an NPC ticks / samples vs the local camera.
 var lod: AnimLod = null
+## D-115: a loop cut by a one-shot resumes its running phase (LoopResume).
+var loop_resume: LoopResume = null
 ## WeaponDef.weapon_class of the held weapon (-1 without a WeaponDef): the D-116 class reloads.
 var weapon_class: int = -1
 ## Lead ruling (b): the upper-body hit-zone flinch layer (every animated body); see AnimLayers.play_flinch.
@@ -345,6 +349,7 @@ func _init() -> void:
 	hits = HitClips.new(self)
 	held_visuals = HeldVisuals.new(self)
 	lod = AnimLod.new(self)
+	loop_resume = LoopResume.new(self)
 
 
 func _ready() -> void:
@@ -441,6 +446,7 @@ func tick(delta: float) -> void:
 	if _npc != null and NpcRagdoll.owns_pose(_npc):
 		return  # PO6-19: the ragdoll owns the pose (paused player, baked skeleton, rig yaw kept)
 	delta = maxf(delta, 0.0001)
+	loop_resume.clock += delta
 	var tw: AnimTweak = AnimTweak.data()
 	_update_velocity(delta, tw)
 	_oneshot_left = maxf(_oneshot_left - delta, 0.0)
@@ -684,7 +690,7 @@ func _variants_of(fam: StringName) -> Array:
 	return out
 
 
-## Below the poses: one-shot > interaction > locomotion > aim > hint idle > idle.
+## Below the poses: interaction (crew) > one-shot > locomotion > aim > hint idle > idle.
 func _active_clip(hint_clip: StringName) -> StringName:
 	var tw: AnimTweak = AnimTweak.data()
 	var speed: float = horizontal_speed()
@@ -694,10 +700,10 @@ func _active_clip(hint_clip: StringName) -> StringName:
 	var cover: StringName = combat.cover_clip(_npc) if _npc != null and not moving and aiming else &""
 	# D-116: on a cover post the cover loop plays on through the shots and turns (they would restart it).
 	var cover_hold: bool = cover != &"" and (String(_oneshot).begins_with("fire_") or String(_oneshot).begins_with("turn_"))
-	if _oneshot_left > 0.0 and (not moving or _oneshot_while_moving) and not cover_hold:
+	if _interact_kind != &"" and _crew != null:
+		out = _interact_clip(tw)  # D-115: an interaction (revive, bag, drill...) beats a turn / hit / fire one-shot
+	elif _oneshot_left > 0.0 and (not moving or _oneshot_while_moving) and not cover_hold:
 		out = _oneshot
-	elif _interact_kind != &"" and _crew != null:
-		out = _interact_clip(tw)
 	elif moving:
 		out = _locomotion_clip(speed, tw)
 	elif aiming:
@@ -1024,11 +1030,12 @@ func _apply(want: StringName, speed: float, tw: AnimTweak) -> void:
 		elif HIT_ZONE_CLIPS.has(clip):
 			blend = tw.hit_zone_blend_out_s
 		var chained: bool = HOLD_END.get(clip, &"") == want
+		loop_resume.leaving(clip, want)
 		player.play(full, blend)
 		last_blend_s = blend
 		if restart:
 			player.seek(0.0, true)
-		elif not chained:
+		elif not chained and not loop_resume.resume(want, full):  # D-115: a loop cut by a one-shot resumes its phase
 			_seek_loop_offset(want, full)
 		clip = want
 		_restart = false
@@ -1111,9 +1118,12 @@ func _on_damage_applied(victim_net_id: int, _attacker: int, info: Dictionary) ->
 	# D-116: an explosion staggers a non-shield NPC in place (stagger_<fam>), else the flinches
 	var stagger: StringName = combat.stagger_clip() if combat.explosion_staggers(_npc, info) else &""
 	var zone_clip: StringName = hit_zone_clip(info) if stagger == &"" else &""
-	if zone_clip != &"" and horizontal_speed() > AnimTweak.data().move_threshold_mps and layers.play_flinch(zone_clip):
-		return  # lead ruling (b): moving, the legs keep their locomotion
-	play_oneshot(stagger if stagger != &"" else (zone_clip if zone_clip != &"" else hit_react_clip(_hit_dir)), -1.0, true)
+	if _crew != null and _interact_kind != &"":
+		# D-115: interacting, the body keeps its interact clip (upper-body flinch only, when the rig has it)
+		layers.play_flinch(zone_clip if zone_clip != &"" else hit_react_clip(_hit_dir))
+	elif zone_clip == &"" or horizontal_speed() <= AnimTweak.data().move_threshold_mps \
+			or not layers.play_flinch(zone_clip):  # lead ruling (b): moving, the legs keep their locomotion
+		play_oneshot(stagger if stagger != &"" else (zone_clip if zone_clip != &"" else hit_react_clip(_hit_dir)), -1.0, true)
 
 
 ## characters.md v1.18 / D-123: the hit-zone flinch for damage `info`, &"" for the directional set (HitClips.zone_clip).
