@@ -3,6 +3,17 @@
 Owner: ENV D. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-17 (final, 11:07 UTC): D-135 closed: dress drape + seated re-check; QUEUE CLEAR (6316e628)
+- **Long-dress / skirt knee clipping** fixed for all 12 looks (9 dresses, 3 skirts). Method: STRIDE_DRAPE weighting
+  (each panel on its thigh, then the shin past the knee) plus knee slack 1.8 cm; the dress/skirt cloths are
+  double-sided. Checker `_tools/check_skirt_drape.gd` + test_skirt_drape. Legs through the skirt, worst frame:
+  56-145 before, ≤ 12 after (0 in cower/sit). Review `_review/d116_dress_drape/`.
+- **Seated re-check** on C's chair Seat (z −0.12, a13f5735): the backrest clip is gone (body on all 5 sampled NPCs,
+  outfit on 4; dock_worker's hi-vis vest grazes 2.4 cm, and DB workers don't use these chairs).
+- **Civilian panic** wired by A (61b70043); the GN coverage shows cower/b/c and flee/b/c in use, and panic_start plays.
+  `_tools/render_crowd_scatter.tscn`, `_review/d116_crowd_scatter/`.
+- Open: D1 parked for the PO GPU run. Nothing else carried.
+
 ## 2026-10-17 (end): QUEUE CLEAR for the Ostrander Federal start (PO directive 08:40)
 Done since the last entry (all on env/d-art, head at this commit):
 - **D-132 D1** (per-node material merge) is PARKED on origin/wip/d-d1-merge (2dbd1772; LEAD ruling, D-132 addendum 2).
