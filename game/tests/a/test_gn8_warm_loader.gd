@@ -97,6 +97,10 @@ func test_gn8_director_prewarm_then_immediate_spawn() -> void:
 	WarmLoader.release()
 	var queued: int = dir._prewarm()
 	var paths: PackedStringArray = dir._warm_paths.duplicate()
+	# P ND-2 hang: no background load may outlive the heist-start prewarm (it raced the start spawns' loads).
+	assert_eq(WarmLoader.pending_count(), 0, "prewarm returns with its %d loads collected" % queued)
+	for p: String in paths:
+		assert_true(WarmLoader.is_held(p) or ResourceLoader.has_cached(p), "warm: %s" % p)
 	var npc: NpcBase = _rt.spawn_npc(&"police", Transform3D(Basis(), Vector3(0, 0, 3)))
 	assert_true(npc != null, "spawned")
 	assert_eq(WarmLoader.pending_count(), 0, "the spawn collected the %d prewarm loads first" % queued)

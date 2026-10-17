@@ -25,8 +25,12 @@ clip_speeds = {
 reload_done_s = {
 &"akimbo": 1.5333,
 &"downed_reload": 1.1333,
+&"lmg": 3.5333,
 &"pistol": 1.1333,
-&"rifle": 1.9333
+&"rifle": 1.9333,
+&"shotgun": 2.4667,
+&"smg": 1.4667,
+&"sniper": 2.2
 }
 turn_clip_deg = 90.0
 turn_time_s = 0.8

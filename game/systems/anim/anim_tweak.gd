@@ -13,6 +13,8 @@ const SOURCE_FPS: float = 30.0
 const RELOAD_CLIPS: Dictionary = {
 	&"pistol": &"reload_pistol", &"rifle": &"reload_rifle", &"akimbo": &"reload_akimbo",
 	&"downed_reload": &"downed_reload",
+	# D-116 police_combat class reloads (CombatClips.RELOAD_BY_CLASS).
+	&"smg": &"reload_smg", &"shotgun": &"reload_shotgun", &"lmg": &"reload_lmg", &"sniper": &"reload_sniper",
 }
 
 static var _cached: AnimTweak = null
@@ -26,9 +28,11 @@ static var _cached: AnimTweak = null
 }
 ## Seconds from clip start to the reload `done` event (SOURCE.txt: pistol done@34, rifle done@58, 30 fps).
 ## The reload clip is sped up/slowed so `done` lands when the gameplay reload finishes.
-## v1.21: reload_akimbo done@46, downed_reload done@34.
+## v1.21: reload_akimbo done@46, downed_reload done@34. D-116 police_combat: reload_smg done@44, reload_shotgun done@74,
+## reload_lmg done@106, reload_sniper done@66.
 @export var reload_done_s: Dictionary = {
 	&"pistol": 1.1333, &"rifle": 1.9333, &"akimbo": 1.5333, &"downed_reload": 1.1333,
+	&"smg": 1.4667, &"shotgun": 2.4667, &"lmg": 3.5333, &"sniper": 2.2,
 }
 ## Turn-in-place clip: the root yaws this many degrees over `turn_time_s`.
 @export var turn_clip_deg: float = 90.0
@@ -78,6 +82,18 @@ static var _cached: AnimTweak = null
 @export var aim_hold_s: float = 1.5
 ## Position-delta speeds above this (m/s) are teleports, not motion.
 @export var teleport_speed_mps: float = 15.0
+
+@export_group("Cover poses (D-116 police_combat, CombatClips)")
+## ◇ On the brain's cover post when the body stands within this flat distance of it (m; PoliceTweak.arrive_m 0.8).
+@export var cover_post_m: float = 0.9
+## ◇ Re-classify the post (low / corner side) this often while on it (s).
+@export var cover_probe_interval_s: float = 0.5
+## ◇ Probe heights above the feet at 1.78 m (m, x motion_scale): below a counter / table top, and at the chest.
+@export var cover_probe_low_m: float = 0.6
+@export var cover_probe_high_m: float = 1.4
+## ◇ Probe lengths (m): the low-cover ray ahead, and the corner rays to each side / front diagonal.
+@export var cover_probe_front_m: float = 1.2
+@export var cover_probe_side_m: float = 0.9
 
 @export_group("Shield carry")
 ## While the body carries a raised BulwarkShield (guard up, not dropped), these clips play the shield set

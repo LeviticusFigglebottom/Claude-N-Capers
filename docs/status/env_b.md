@@ -3,6 +3,52 @@
 Owner: ENV B. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-17 01:30 UTC: new lead session (session_01HwYKRgCdkLfJCt4ZM6rfTk): D-115 strings audits, D-128 rings, r229 fixes
+Resumed on origin 0ddba6f8 (the old container's unpushed work is lost; nothing was missing on origin).
+
+### Reconstructed since the 10-14 HANDOFF (old session, all on origin)
+- D-115 strings audits, first pass: GN cc5e386b, DB/SL 5e19fb4a, GH/ND 0f2528fc; new-player flow 40681c25, ebff80f4.
+- D-128 rings fe4af657; D-126 secondaries 2a8b1ee2, 15b054ce; D-120 failed heist pays nothing 8c50d7f5; D-124 balance
+  b4099ae3, 578540db, dab95877, weapon_balance.md 6db2698f; payday 648c7fae, 57a96f53; HUD crowding cb2dbb7f, 7071fae4,
+  91aa94e5, b5c38672; scoped ADS e3d30dcb, cbe3a4f4; reach/pad passes 6792cf1a, ac21c141, 5ff659ca; options tips reset
+  127dfea5; r229 real-input fixes 8fd6fdff, a4bdb47e, 0ddba6f8.
+
+### Done (this session)
+- 7f86b156 B-GN/B-DB/B-SL strings audit, second pass. ContactRadio: a heist's own objective radio line waits out a
+  mission say() in the same frame instead of being dropped (12 Reyes / ~11 Accountant lines were never heard;
+  RadioTweak.defer_events, test_radio_defer). 19 strings (GN "A Study", inspectors/Vaultline interim, guests_gone; DB
+  containers hint/tip, burn_done, breach, required_secured; SL study_safe, casing, crew_masked_1, Accountant brief 3,
+  painting desc). SL failed payday recaptured ($0; the -$2,000 was stale).
+- 5d117a2e QB-1 (LEAD): 9 heist escape radio lines a mission escape line always covers deleted (SL keeps its heli-arrival
+  line); GN briefing step strings ui.briefing.step.gallery_night.access / .cut; vo_coverage.md regenerated.
+- d8ac958e, e7576c21 r229: briefing tests follow the approved def lists (cap from the def; dotted ui.briefing.step.*
+  keys are strings, not objectives) in test_gn_strings_audit, test_heist_text_audit, test_gn_drafts.
+  1f757337 test_range hotfix folded in.
+- 98c39e44, 293a8e17 D-128 readability from the live GH/SL check: ring 34 px / stroke 8 on a darker disc, outlined fill,
+  crosshair arcs at r150; an observer whose ring sits on the arc band gets no arc (LEAD-approved addendum; clearance
+  counts both strokes). Tool: tests/b/render/detection_live_capture.gd (real heist, real guard, real meter; ahead /
+  side / camera). Live 720p: SL ring fills ? -> red ! (detected ~1.3 game s at 3.5 m), GH ~2.9 s with two observers.
+- 224f5ee1, a7ee6ea1 r229 blocker: pre-planning tab row wraps (4-floor DB row pushed Confirm off a 1920 canvas since
+  8fd6fdff); buttons named; test_every_heist_fits_the_screen.
+
+### In progress
+- D-128 live re-check at 1080p + camera frames (SL 720p camera, GH 1080p camera): renders queued after a container restart.
+- Item 3: real-input UI runs, 5 heists x 720p/1080p (real_input_run_capture.gd now takes a heist id). Contact sheets to
+  the LEAD.
+
+### Blocked
+- A (game/world/heists is A's): GN extras count only store studies; keycard / vault_drill / server_door stay ACTIVE in
+  loud; inspectors/Vaultline doc behaviour. DB: product_found lines at burn start, containers_hint repeats, [cartel] with
+  0 gunmen, [product] trigger, Reyes payday line timing. SL: drives_secured seed, generic casing bark doubles the intro,
+  small_valuables not in the def. C: briefing_objectives lists (approved), GN/DB/SL doc values (D-120), SL `lift`.
+- test_vo_coverage LEAD hotfix (reyes objective_failed out of the reserve) waits for A 4b4fef68 on trunk.
+
+### Questions for lead
+- none open (QB-1 ruled).
+
+### Ready for integration
+- yes (293a8e17 + a7ee6ea1); targeted checks only (D-088), full check_all is the LEAD's.
+
 ## HANDOFF 2026-10-14
 
 **Branch head:** `env/b-content` ec36e060: "[D-111] throwables: ENV C's models on all six ThrowableDefs". The working tree is clean, there are no stashes and no wip branches.
@@ -288,326 +334,3 @@ Session: Claude Code cloud (env/b-content). Lead: session_014E3p2DmSYTneJjytGwKK
 - First full check_all here failed one ENV A test once (test_b4_18_special_weapons:test_parts_animator_drives_named_parts); it passed 2/2 on rerun in isolation. Looks flaky.
 ### Ready for integration
 - see the CHECK_ALL line in the commit/report
-
-## 2026-10-11 UTC (6): HANDOFF (session shut down, project moving accounts)
-### Done
-- B7 accepted by the lead at e443d998, the last validated push. This entry is docs only.
-### In progress (not started in code, no local work lost)
-- The lead's answers to the B7 questions, all still to implement:
-  1. **`profile` station:** add `st_profile` to data/ui/hub_stations.tres (`target = &"career"`, `icon_kind = &"profile"`).
-     - MenuFlow: `TARGET_CAREER` in TARGETS, mapped to `_open_career()`.
-     - HubStationIcon: a `_profile` glyph.
-     - strings: `ui.hub.station.profile`, `.desc`, `ui.prompt.station.profile`.
-     - test_hub: add `&"profile"` to STATION_IDS.
-     - Spec: hub_map.md v1.1 (trunk 930e6013). C places it with A's `hub_station` prefab.
-  2. **ProfileValidator:** drop unknown finish ids in `weapon_finishes`, the same pruning as for unknown masks.
-     - Replaces the TODO(B7-04) in profile_validator.gd `_career`; use `WeaponFinishes.is_known`.
-  3. **Payday card drops:** exclude achievement-reward mask parts. They stay achievement-only, as in PD2.
-- Trunk 930e6013 is not merged into env/b-content yet. Merge it first.
-### Next
-- **P5 contract data** (gallery_night, ostrander_federal, rolling_thunder, afterhours) from ENV C's G0 docs, which are APPROVED on trunk (e8df4b7, round 30).
-  - Start from test_p5_catalogue.gd; objective strings are still deliberately absent.
-### Notes
-- Run suites under `timeout`. A script parse error hangs the runner; detect it by the log's age, not the CPU load.
-- After check_all, run `git checkout -- docs/levels`.
-### Ready for integration
-- yes (e443d998)
-
-## 2026-10-11 UTC (5): B6 follow-ups, D-074/D-075, B7-01..B7-04
-### Done
-- B7-03 contact radio: `ContactRadio`, `RadioLinePicker` (GameRng `radio` stream), `RadioTweak`, `SubtitleOverlay`.
-  - The heist contact speaks objective / alarm / assault / escape / loot facts (one voice per heist, lead).
-  - Guard and crew subtitles sit behind `accessibility/subtitles_all_speakers` (default off).
-  - Mercer's old generic alarm / assault / loot / escape lines are retired.
-- B7-01 career + save v7: `PlayerProfile.career` and `weapon_finishes`; `Career.record` on the payday path; career screen; v7 golden fixtures.
-- B7-02 achievements: 41 achievements; reward masks via `MaskPartDef.unlock`.
-  - clean_lines, headhunter and trigger_discipline stay locked until shots/hits/headshots reach HeistResult.
-- B7-04 weapon finishes: 12 finishes (`finish.<name>` ↔ `unlock.finish.<name>`), `FinishApplier`, workshop picker, `Loadout.weapon_finishes` (D-074).
-  - The persistence test now saves and loads the real v7 field.
-- D-075: Ostrander Federal rename, Afterhours contact = Accountant, `loot.painting_study`.
-- Drop-in: `DropInFlow.apply_live_policy` applies a host's Options change mid-heist.
-- `check_all.sh --env b` @ 541a21dc (trunk 2eb3b2e merged): PASS (1673 tests, 0 failed, 5 skipped).
-### In progress
-- —
-### Blocked
-- P5 contract data waits for ENV C's G0 docs to be marked APPROVED.
-### Notes
-- A test runner whose script fails to parse hangs instead of failing. Run suites under `timeout` and watch the log's age, not the CPU load.
-### Questions for lead
-- Placement of a `profile` hub station (C/A).
-- Should ProfileValidator drop unknown finish ids?
-- Should achievement reward parts be excluded from payday cards?
-### Ready for integration
-- yes
-
-## 2026-10-11 UTC (4): B5-01..B5-05 pull-forwards
-### Done
-- B5-01 options (merge f3340b8).
-  - `GameSettings` saves to user://settings.cfg and has key/pad rebinding with conflict detection, plus audio, video and accessibility settings.
-  - Five colour-blind HUD palettes, tested for contrast under simulated colour blindness (Machado).
-  - In a heist, `pause` opens options as an overlay.
-  - Hooks for A and C are in content/docs/options.md and were routed by the lead.
-- B5-02 Notoriety (merge 2d84679).
-  - Ranks I–XXV need level 100 and spending cash ◇; +2%/rank XP, capped at +30%.
-  - Skill builds are held after a rank-up and re-bought as levels return. Cosmetic and music unlocks.
-  - Save v6 adds notoriety fields and `music_choice`.
-- B5-03 music (merge e16c4ff).
-  - `MusicCatalog` reads C's table, or a stub list until it lands.
-  - Picker in pre-planning and the lobby; the `options["music_track"]` launch option.
-  - A jukebox station; Play is disabled until C's `MusicDirector.preview` exists.
-- B5-04 Dockside Burn (merge ac2d797): loot, 5 pre-planning assets, 10 objectives, 31 VO lines, a Reyes contract ($95k placeholder), and a HeistDef proposal for C.
-- B5-05 civilian UI (f417e8f, strings in 5368092).
-  - The HUD follows ui_hud v1.6 `player_mode`: a Civilian badge, gear widgets hidden, teammate mode shown.
-  - The loadout screen shows a civilian-start notice.
-- `check_all.sh --env b` @ e16c4ff: PASS (1384 tests, 0 failed, 5 skipped).
-### In progress
-- —
-### Blocked
-- Thermite → `LootDef.is_tool` waits for D-068 on origin.
-### Notes
-- check_all rewrites docs/levels/*/validation.md. Run `git checkout -- docs/levels` after every run.
-- A "Unexpected NUL character" warning prints at Godot startup in test runs. Nothing fails; source not found yet.
-### Questions for lead
-- See the B5-03 report: lobby summary `music` field, scrolling hub station list, placeholder track names.
-### Ready for integration
-- yes
-
-## 2026-10-11 UTC (3): D-057 params, D-058, armor bag gating, ChargingHandle
-### Done
-- D-057 (ed9f77e, b1123d0): special-weapon `params` with A's numbers. Bow `charge`, Shrike `lever`, and arrow/bolt armor pierce. Both Furnace nozzles carry full flame blocks.
-- D-058 (ed9f77e, d6ba8e4): Harrow/Brute use `anim_set` `shotgun_box`. Their chargers are now `ChargingHandle` nodes; the models are rebuilt, the build is deterministic, and there's a test.
-- Armor bag (c6253b4): `deployable.armor_bag` plus `DeployableGate`. The loadout picker shows it locked until perk card 6 (Go Bag) grants `deploy.armor_bag`.
-- `ui.escape.heli/line/lift` strings.
-- 541d542: restored trunk's night_deposit validation.md, which check_all regenerated and b1123d0 picked up by mistake.
-- `check_all.sh --env b` @ c6253b4: tests 1246 / 0 failed / 5 skipped, gdlint and validate_level PASS; only ownership failed (that report). Ownership is OK at 541d542.
-### In progress
-- —
-### Blocked
-- —
-### Notes
-- Closed by lead/A: TeamModifiers reads the D-056 fields, the modifier_keys text is fixed, and A's armor bag prompt switches on its next push.
-- check_all rewrites docs/levels/*/validation.md. Never `git add -A` after a check run.
-### Questions for lead
-- Queue is under 2 h. Ready for P5/P6 pull-forwards.
-### Ready for integration
-- yes
-
-## 2026-10-11 UTC (2): round 7 (D-056), D-052 lobby, A3-08 range, QB-50a
-### Done
-- D-056 (round-7 merge): MenuFlow no longer calls ModifierPush (A pushes on the server).
-  - Every granted key is in test_perk_wiring HOOKED; perk_decks.md coverage is all ✅, with field names checked against modifiers_params.md.
-  - `team.damage_reduction_hostage` is now `{absorb_per_hostage, max_hostages}`: Foreman card 9 is 5/4 ◇, Zip & Tie aced is 5/8.
-  - Added `ui.prompt.use_armor_bag`.
-- D-052: LobbySession uses `Net.connection_failed` (new reason `unreachable`) and `Net.host_lost`, and `Net.join` carries the profile name. Loopback tests added.
-- A3-08: the range reads `NpcHitRules.armor_of` only. Removed `_armor_of_mirror`, the stand-in health/headshot arrays and `shield_stopgap`.
-- QB-50a: `portrait_texture` set on vance (odile, provisional), reyes (hollis) and accountant.
-- data README: Plowman reload numbers per D-045 (3.4 / 4.2 s).
-- `check_all.sh --env b`: PASS (1238 tests, 0 failed, 5 skipped).
-### In progress
-- —
-### Blocked
-- Batch-3 special mechanics wait on ENV A; anim sets wait on D.
-### Notes
-- ENV A's TeamModifiers.hostage_reduced still reads `{per, max}` with value-based shape detection. Until A switches to the D-056 fields, the hostage absorption from our data does nothing.
-- Proposed: a `deployable.armor_bag` DeployableDef plus loadout-picker gating on `deploy.armor_bag`. A's fallback def covers it for now.
-### Questions for lead
-- —
-### Ready for integration
-- yes; `check_all.sh --env b` result: PASS
-
-## 2026-10-11 UTC: B4-14, B4-16..B4-20, D-050/D-053/D-055 follow-ups
-### Done
-- B4-14 QB-L2 (afacf75): `ModifierPush.push(loadouts)` sets the per-slot `loadout` source and the TEAM sources at launch (solo and co-op host). D-050: Warden akimbo flag.
-- B4-16 (9ca14ff): save v5 with unlocks, achievements and pro_job_locks; ProfileSchema type sanitizing; ProfileValidator pruning; golden migration fixtures v0..v4 plus a damaged v5; save_format.md.
-- B4-17 (a713639): Workshop 3D orbit view with picker, turntable, slot focus, live deltas and DR preview, equip/buy.
-- B4-19 (e6ba2a7): StaminaBar on ui_hud v1.4 plus MockHudModel demo steps.
-- B4-20 (495cafb): achievements stub (8 defs), hooked on the payday apply path; the cataclysm_clear unlock; achievements screen.
-- B4-18 (merge 91f947d): armory batch 3 with 19 weapons (36 total), 89 mods, models on the pipeline, previews, strings and tests.
-- B4-12/B4-04 (8ac82cd, acd8fea): `fire_cue_suppressed` only on weapons with a SUPPRESSOR slot; test_armory enforces it.
-### In progress
-- Round-7 follow-ups once A's server-side push is on trunk: drop the MenuFlow ModifierPush calls, hooked keys and coverage, `ui.prompt.use_armor_bag`, D-056.
-### Blocked
-- Batch-3 special mechanics (bow/crossbow, launcher, flamethrower, saw, minigun, lever) wait on ENV A's answers. Anim sets wait on D.
-### Notes
-- The batch-3 tests tolerate missing anim sets.
-### Questions for lead
-- —
-### Ready for integration
-- yes; `check_all.sh --env b` @ 91f947d: PASS (1202 tests, 0 failed, 6 skipped)
-
-## 2026-10-10 20:20 UTC — D-043..D-047 follow-ups, B4-07 hub + GSR theme
-### Done
-- D-045 (35b3bcc): shell-fed reload times are derived by LoadoutResolver after mods (Plowman 0.4/0.4333/0.4/1.2 → 3.4/4.2 s); no raw reload deltas on shell-fed mods; test_armory uses the same formula.
-- D-043 (8079505): strings and vo.crew.ack_* lines for every CrewOrders.ORDERS entry, with a test.
-- D-044 (dfe064d): Rampart FeedCover hinged at the rear, opening 78° about local X; SightRail rides on it.
-- D-043 QA-25 (88059db): `Loadout.mask_descriptor` is filled by `LoadoutResolver.resolve(loadout, profile)`.
-- HUD v1.2 (25ba839): CustodyPanel. The range reads ammo via `LocalHudModel.track(crew)`.
-- D-046 final (beddea7, e9e5e5b): category `spawn`; merge() takes `{favors, disable, assets}` only; favors come from the HeistDef; `resolve_ids` returns {} when nothing is accepted; `asset.inside_keycard` and `asset.propped_door` (force_variant, limited to their points); 9 Glasshouse point strings.
-- B4-07 (67e3e1d, merged in fdbea9d): safehouse hub.
-  - Stations board, planning, armory, masks and range; `MenuFlow.open_station(id)` for ENV C's 3D hub.
-  - Board → briefing → pre-planning → loadout with is_pro threaded into the launch options and the payday XP.
-  - GSR theme: warm darks, brass PrimaryButton, chamfers, cyan focus.
-  - Per-heist accents via `UiAccent`; WCAG contrast test.
-- `check_all.sh --env b` @ fdbea9d: PASS (849 tests, 0 failed, 4 skipped).
-### In progress
-- —
-### Blocked
-- —
-### Notes
-- After the D-047 trunk merge, take the lead's versions of test_masks.test_placeholder_visual (it currently logs a SCRIPT ERROR at :163 with D's real meshes) and test_preplan_screen; review the new lift/hack strings.
-### Questions for lead
-- Open from the earlier entry: QB-PC1/2 (payday cards), QB-BRD2/3 (board co-op, broker prices), QB-52..55 (small loot, intel_laptop scope, Night Deposit points, placeholder heists in the menus).
-### Ready for integration
-- yes; `check_all.sh --env b` result: PASS
-
-## 2026-10-10 19:40 UTC — B4-05, B4-06, B4-08, B4-09, B4-10, QB-50b; B4-07 in progress
-### Done
-- B4-08 (49d6cc7, 7df8a7a, 539c53d), D-038/D-039 follow-ups:
-  - Glasshouse objective ids come from the G0 `[tag]`s; the guessed keys are removed and the rule is in the README.
-  - QA-14 strings added, plus keys A's code already used but we lacked. A test scans systems/world/core for prompt, blocked and voice keys and fails on any missing one.
-  - `ui.prompt.blocked.*` renamed to `ui.blocked.*`.
-  - QA-16: the deprecated key is rejected by validation and a data-scan test.
-  - PreplanResult v1 exactly per preplanning.md: drops[].kind, spawn_tag, escape_tag, reveals, force_variants, cash_spent; `resolve_ids()`; points from `<Map>/Preplan` instanced off-tree; split payment for voted assets; votes via `Net.lobby_send`.
-- B4-05 payday card pick (f7e51d6):
-  - Three cards (cash, XP, weapon mod, mask part), deterministic from (run seed, slot), with tiers per difficulty. The `progression.card_drop_quality_add` shift applies.
-  - Never offers an owned item. 30 s auto-pick; successful heists only.
-- B4-06 the Board + broker (d9f8377):
-  - City map drawn in code; 8 staggered rotating contracts (600 s), deterministic from the time bucket.
-  - Lethal and Cataclysm need level 80; pro jobs 20% from Tense up.
-  - Broker costs $12k–$360k ◇ + 5% of the payout.
-- B4-09 Night Deposit (5d44618):
-  - `loot.cash_bricks` (MEDIUM, $1,600 ◇).
-  - 12 objective strings from the doc's tags, plus Accountant briefing lines and Mercer's closing line.
-- B4-10 Shadow Ledger (6ab8a80):
-  - Loot `ledger_laptop` (LIGHT), `ledger_drives`, `ledger_books` and `painting` (MEDIUM), values ◇.
-  - Assets `intel_laptop`, `gondola_left_hung` and `riser_panel` per the doc.
-  - 13 objective strings, plus briefing lines.
-- QB-50b (1af10b6, 3ec98cb): mask base mesh paths use the pipeline layout; the placeholder UV now has u=0 at +X (matching D's meshes); the mask preview starts at a 35° 3/4 view.
-- `check_all.sh --env b`:
-  - B4-08 and B4-10 each passed the full check on their own commits (725 tests, 0 failed).
-  - The merged HEAD with trunk, after B4-10, is being re-run now.
-### In progress
-- B4-07: safehouse hub UI layer (stations + `MenuFlow.open_station(id)` for ENV C's 3D hub), Board wired into the flow with is_pro, and the GSR theme / per-heist accent pass.
-### Blocked
-- —
-### Questions for lead
-- QB-PC1: should an unpicked payday card survive a quit? That needs a save v5 `pending_card`; today quitting forfeits it.
-- QB-PC2: boosts and skins are omitted from the card table until those systems exist. OK?
-- QB-BRD1: the Board replaces heist select as the job source (B4-07 wires it; heist select stays at the planning table for now). Who enforces the pro-job "no restart" on failure: MenuFlow or A?
-- QB-BRD2: in co-op, should clients see the host's board (seed + bucket via lobby) or their own?
-- QB-BRD3: broker prices and level gates are placeholders and need a balance pass.
-- QB-52: Night Deposit and Shadow Ledger small loot: add a `loot.small_valuables` def, or just a cash amount via HeistResult `small_loot`? What values?
-- QB-53: `asset.intel_laptop` shows on every heist, since generic assets aren't filtered. Should heists without a `laptop` variant `disable` it (ENV C), or should it be a heist-only asset?
-- QB-54: Night Deposit's preplan points (`pp_insider_code`, `pp_insider_keycard`, `pp_vent`) have no library asset. Should ENV C define them in HeistDef.preplanning, or should B add library assets?
-- QB-55: placeholder heists (Night Deposit, Shadow Ledger) show in the menus but fail to launch until their map and def exist. Keep them visible, or hide them until G1?
-- For ENV C: Glasshouse `HeistDef.preplanning` still uses the old shape (ignored with one warning), and its map has no `<Map>/Preplan` node yet.
-- For ENV A: PreplanAssets still reads `options["preplanning"]` with the old shape. The contract's DifficultyDef asset-cost multiplier doesn't exist, so it lives in `PreplanTweak.cost_mult` for now.
-### Ready for integration
-- yes after the HEAD re-run passes (see the next message to the lead)
-
-## 2026-10-10 18:40 UTC — range on A's runtime, HUD adapter removed, D-034 follow-ups, B2-01/02/03
-### Done
-- Range on ENV A's crew and weapon runtime (6b7c1af).
-  - `CrewController.spawn_for_range` + `set_loadout` on every swap. The WeaponVisual viewmodel is on the crew camera.
-  - Last-shot readouts come from our targets' `damage_applied`, filtered to the crew's net id. Ammo is read from the crew's weapons.
-  - Panel/aim mode pauses `PlayerInput.enabled`. The test camera and debug gun are FALLBACK ONLY.
-  - A headless test drives a real CrewIntent shot and checks exactly one `damage_applied` for 35 damage.
-- HUD binds LocalHudModel directly; HudModelAdapter deleted (dd1f97e). A new MarkedTargets widget was added. Tested against a real HeistRuntime on a test map (vitals, ammo, Stinger warning, masked).
-- D-034 follow-ups (d1dae61).
-  - `defense.post_revive_buff` LIST entries are granted per skill.
-  - Plowman shell-by-shell reload: start 0.4, per round 0.5, end 0.4 ◇. Its full reload times are now derived from those.
-  - Pellet display exponent 1 (Plowman shows 160).
-  - `data/tweak/perk_points.tres` (500 XP per point).
-- B2-02 briefing screen (38fd559).
-  - ContactDef for vance, reyes, accountant and mercer, with drawn placeholder portrait silhouettes.
-  - Shows objectives, loot at difficulty, contract pay and escape options.
-  - "Play Briefing" emits local `voice_line_requested` with subtitles; 8 original Glasshouse briefing lines.
-- B2-01 pre-planning (b149a9a).
-  - 10 generic assets (drops, insider info, cable ties, body bags, alternate entry, voted van position). Cost ×1…×13 by difficulty, 10 favors.
-  - PreplanPlan validation and `apply()` hand-off dict; PlanVote with host tie-break.
-  - A blueprint drawn in code on a placeholder Glasshouse plan (shown with a banner until real map data exists). Doc: `content/docs/preplanning.md`.
-- B2-03 mask customization (c110a03).
-  - 5 bases, 9 materials (library refs), 10 colour pairs, 8 patterns. Custom masks go in 6 slots; owned parts are tracked.
-  - `MaskComposer`/`MaskCatalog.resolve/descriptor/from_descriptor` for ENV A. Save format v4.
-  - Mask screen with an orbit preview and an original pattern shader. Doc: `content/docs/masks.md`.
-- Tests use a per-process SaveService root (8eeb53c). Parallel runs in several checkouts shared `user://test_profiles` and flaked.
-- `check_all.sh --env b` @ 8eeb53c: PASS (551 tests, 0 failed, 8 skipped).
-### In progress
-- Wiring the flow heist select → briefing → pre-planning → loadout → launch, the Masks button, and the loadout mask-picker fix for custom masks.
-### Blocked
-- —
-### Questions for lead
-- For ENV A:
-  - QB-46: Please document a way to pause and resume a crew member's input (the range sets `PlayerInput.enabled`), e.g. `CrewController.set_input_paused(bool)`.
-  - QB-47: Who makes the crew camera current, and who attaches `CrewController.weapon_visual`? The range does both itself; heists need an owner.
-  - QB-48: Could LocalHudModel track a crew member without a HeistRuntime (a `tracked_crew` node)?
-  - QB-49: There is no gamepad look on `PlayerInput`.
-- QB-PP1: PREPLAN_POINT node contract.
-  - Proposal: a Marker3D in `G.PREPLAN_POINT`, named by point id, with metadata category/label/floor/params (spawn_tag, variant_group, variant_slot).
-  - Who bakes the menu blueprint resource: ENV C via HeistRegistry, or B under `data/preplanning/blueprints/`?
-- QB-PP2: should HeistLauncher take `options["preplan"] = PreplanPlan.apply()`? The shape is in `content/docs/preplanning.md`; applying it is A2-07.
-- QB-PP3: who pays for a voted plan? The stub charges the host.
-- QB-PP4: co-op plan votes need a lobby message relay in the Net API, e.g. `Net.lobby_send(kind, data)` plus a `lobby_message` signal. Until then: solo/host only.
-- QB-PP5: should the `HeistDef.preplanning` merge format (favors, disable, `asset.<id>` overrides) be recorded in heist_def.gd and data_schemas.md? A Glasshouse sketch for ENV C is in the doc.
-- QB-50 (art): contact portraits for ENV D/C go in `content/data/contacts/<name>.tres` `portrait_scene`/`portrait_texture`. The mask base meshes are `assets/masks/mask_base_<heron|visage|vulpine|bruiser|owl>.glb` (face-centre pivot, −Z, front-projected UV0), plus optional pattern textures. See `content/docs/masks.md`.
-- QB-51: ENV A should rely on content classes `MaskCatalog.resolve/from_descriptor` + `MaskComposer.instantiate` to attach masks. Record this in characters.md?
-### Ready for integration
-- yes (everything up to 8eeb53c); `check_all.sh --env b` result: PASS
-
-### 2026-10-12 19:05 ET
-- PQ-B-26 Board half done (9ebf482a): pad-only Board -> Take -> briefing -> B back. Briefing no longer logs `unknown loot id 'loot.small_valuables'` (skips ids without a LootDef via ContentDB.has). Notoriety reward pick with pad still open.
-- PQ-B-1 trial (scratch worktree, discarded, nothing committed): test_pp_input helpers (_accept/_press/_key) switched to PInputDriver from origin/env/p-play plus P's player_input.gd; test_assume_captured=true in before_each, release_all() in after_each. Result: 13 tests, 0 failed, 1 skipped, same as now. Ready to switch for real once round 34 is on trunk.
-- Contrast: OFFICIAL now, switched to Env D's flags (the earlier .tscn route is retired).
-- PQ-B-26 DONE (9ebf482a Board, e0cc1db8 Notoriety rank-up + reward pick with pad only).
-
-### 2026-10-12 19:20 ET contrast (Env D flags)
-- Command (clone root, not --headless, one render at a time):
-  `flock /workspace/cnc-team/render.lock xvfb-run -a -s "-screen 0 1280x720x24" /opt/godot/godot --audio-driver Dummy --path game --script res://tests/b/render/hud_contrast_capture.gd -- hud|menus`
-  SubViewport own_world_3d + UPDATE_ALWAYS, 8 frames + frame_post_draw. PNGs: ~/.local/share/godot/app_userdata/CAPERWORKS/contrast_<shot>.png.
-  Gotcha: a --script SceneTree is compiled before autoloads exist (Identifier not found: EventBus / Log), so the launcher loads render/contrast_worker.gd at runtime.
-- HUD over dark / mid / bright / white backdrops: PASS, 0 failures. Floating text holds up on white with outline 8 + shadow, so no backing panel was added.
-- Fix: the status lines ("Unmasked: casing", "Carrying: ...", hostages, warnings) also float over the world, and they were the weakest text by eye in the captures. They now use float_text too, and the test covers them.
-- Tool fix: labels clipped by a ScrollContainer (hub's The Record card, loadout's Mask row below the fold) were false FAILs (ratio 1.0 / 2.1). The check now cuts to the visible rect.
-- Pad walk (76238ea5): options, all tabs, pad keybind capture (the A that opens the capture is not captured), B drops unapplied edits. No player trip found.
-
-### 2026-10-12 19:15 ET pad-only + 720p walks (in-heist pause, payday, quit / reload)
-- test_pp_pad_walks: payday with the pad (Continue -> cards -> d-pad to card 2 -> A -> Continue, all on screen at 720p) and hub -> main menu -> hub with the pad (the saved profile reloads, B backs out). Both pass, no bug found.
-- In-heist pause: Start opens Options over the HUD and B closes it (already covered by PQ-B-20).
-- PLAYER TRIP (needs a lead ruling, not fixed because of the D-082 freeze): the in-heist pause (Options) has NO way to leave or abandon a heist. The strings `ui.menu.leave_heist` ("Leave Heist") and `ui.menu.quit_confirm` have shipped since B1-07, and MenuFlow._leave_heist() exists, but no button calls them. A solo player who wants out must finish or fail the heist (or kill the game). Proposed: a Leave Heist button with confirm in the in-heist Options footer, wired to _leave_heist (about 30 min + test). Is this a fix or new content under D-082? -> RULED a fix; DONE in B-PP-41 (see below).
-- B-PP-41 Leave Heist (lead ruling, allowed D-082 fix): the in-heist Options footer gains Leave Heist (existing `ui.menu.leave_heist`). It opens a confirm (`ui.menu.quit_confirm`, Confirm / Cancel, focus starts on Cancel, the d-pad stays in the dialog, B / Esc cancels). Confirm -> the existing MenuFlow._leave_heist() -> hub (or main menu if the safehouse was not entered). The menu-side Options is unchanged.
-  Test test_pp_live_hud_720p::test_live_heist_leave_with_pad (live glasshouse, pad only: Start, Leave, B cancel, Leave, Confirm -> hub, runtime gone, input pause released). Also green: test_options_screen 8, test_options_bindings 10, test_options_apply 3, test_pp_screens_720p 4, test_pp_pad_walks 3. gdlint clean. Trunk 64f10747 already merged, so no merge needed.
-- PQ-B-1 / PQ-B-19 still wait for round 34 on trunk (claude/dreamy-hamilton-pc7vck). PQ-B-25 waits for the A / P fields.
-
-### 2026-10-12 19:55 ET trunk db22c24c merged (round 34)
-- Merged origin/claude/dreamy-hamilton-pc7vck db22c24c into env/b-content (03087809), clean, no other env's files touched. Green: test_pp_pad_walks 3, test_pp_live_hud_720p 4, test_pp_screens_720p 4, test_options_screen 8, test_options_bindings 10, test_options_apply 3, test_options_settings 11, test_options_palettes 6, test_pp_input 13 (0 skipped: the payday LB/RB actions are on trunk now, so the shoulder-button test runs for real). gdlint: fixed one ordering error in test_pp_screens_720p.
-- BLOCKED, still: PQ-B-1 / PQ-B-19 / PQ-B-25. Trunk db22c24c does NOT contain P's work. There is no game/tests/p/p_input_driver.gd and no PlayerInput.test_assume_captured. A's LocalHudModel domination fields and P's CrewController.casing_blocked signal are not on trunk either. db22c24c is the lead/d078-docs merge (D-078..D-085, audio_cues v1.4, payday LB/RB). P's env/p-play and A's env/a-core still need to land.
-
-### 2026-10-12 20:15 ET PQ-B-1 / 19 / 25 handoff patch (not on env/b-content)
-- Scratch: env/b-content c3a62c96 + origin/env/p-play + origin/env/a-core (clean merges, worktree deleted after).
-- Patch: handoff/pq_b_1_19.patch (untracked, B test files only, `git apply --check` clean on env/b-content).
-  - PQ-B-1: 7 test_pp_* files switch their _pad / _key / _press / _accept helpers to PInputDriver. test_assume_captured is set in before_each, release_all() runs in after_each.
-  - PQ-B-19 / PQ-B-25: new test_pp_live_prompts.gd, a live glasshouse run with real input. Sprint while casing shows "Mask up to sprint". A guard in its window in front of the crew shows the domination prompt with the shout key, and it hides afterwards. Mask up (hold G), aim with the real mouse, and holding interact starts a lockpick, with the HUD showing the key and progress.
-  - Scratch results: gamepad_flow 4, heist_ui 8, input 13, live_hud_720p 4, lobby_720p 3, menu_walk 1, pad_walks 3, live_prompts 3 (2 runs): all 0 failed. gdlint clean.
-  - Test-writing note: setting crew.look_pitch directly gets overwritten by PlayerInput. Aim with PInputDriver.look() instead.
-  - Apply with `git apply handoff/pq_b_1_19.patch` once P + A are on trunk.
-- Lead playability_pass.md B rows (PP-B-1..3) are all already fixed (PQ-B-2..4). No unblocked B row is left.
-
-### 2026-10-12 20:25 ET lead D-082 queue (fixes only)
-playability_pass.md is lead-owned (tools/ci/owners.json gives B game/content/**, game/tests/b/**, docs/status/env_b.md). Proposed PP-B rows are recorded here for the lead to copy:
-| PP-B-4 | B | Full loop real input (hub -> heist -> payday -> hub), pad-only and mouse + keyboard |
-| PP-B-5 | B | Weapon stats shown in the UI vs gameplay values |
-| PP-B-6 | B | Save / quit / reload after a completed and a failed heist |
-| PP-B-7 | B | HUD readability under loud play at 720p (software render) |
-| PP-B-8 | B | Pad players see keyboard keys in HUD prompts (found in PP-B-4) |
-
-- PP-B-4 DONE: test_pp_full_loop.gd covers main menu -> Safehouse -> Planning -> Night Deposit -> briefing -> pre-planning -> loadout -> Launch (real night_deposit run) -> end (setup) -> payday Continue -> card -> Continue -> hub with focus. Pad-only and keys + mouse clicks both pass (2/0). No dead end or wrong focus found. The co-op lobby legs stay covered by test_pp_lobby_720p.
-- PP-B-8 FIX: the HUD prompts (interact, shout/dominate, casing hint) always showed keyboard keys ("Hold F"). InteractionPanel.action_key_text now names the pad button (A/B/X/Y/LB/RB/LT/RT...) after a pad input and switches back on a key or mouse input. The HUD redraws on a switch. Test: test_pp_heist_ui::test_prompts_follow_last_device.
-- PP-B-5 DONE, no mismatch: test_pp_weapon_stats checks every weapon, stock and with each of its mods, comparing StatCalculator.display (loadout / workshop panels) with ENV A's CrewWeapons (mag_size, mag + reserve, the 60/rpm shot interval, reload_time_s / reload_empty_time_s, damage_at x pellets). All match. Note for the lead (design, not a bug): the panels show weapon stats without skill modifiers (weapon.mag_extra, ammo_total_mult, reload_speed_mult, damage_mult), which only apply in play. PD2's inventory shows skill-boosted values. Ruling needed if the panels should include skills.
-- PP-B-6 DONE, no bug: test_pp_save_reload, for both a completed and a failed glasshouse run. The profile starts with cash, XP and a modded secondary. The payday is keyboard-driven, then back to the hub. Quit (MenuFlow freed) and start again: cash, stash, XP, level, owned weapons / mods / masks, unlocks, notoriety and career match the disk save, and the profile loadout and the armory loadout screen equal the saved loadout. Completed pays and gives XP. Failed pays nothing.
-
-| PP-B-9 | B | LeftHandIK on the fore-end for every two-handed weapon (P: brute_12 support hand floats at hip fire) |
-- PP-B-9 (lead quick item): test_pp_left_hand_ik checks every two-handed weapon model (not pistol class, not the pistol / akimbo / bow anim sets). The LeftHandIK must be inside (2 cm) a non-barrel mesh, 0.06..0.46 m ahead of GripMount and >= 0.08 m behind the Muzzle. All 29 pass and no model was moved.
-  brute_12: LeftHandIK (-0.026, 0.046, -0.330) is on the Shroud (the fore-end, z -0.25..-0.42), 0.330 m ahead of the grip and 0.126 m behind the muzzle. No mod carries its own LeftHandIK, so WeaponVisual.get_marker returns this one. I could NOT reproduce P's 0.52 m in the model: the extra ~0.19 m is probably on P's side (FpViewmodelTweak wrist offset, hip pose or weapon scale). P should check with the numbers below.
-  Per weapon, m ahead of the grip / m behind the muzzle: anvil_lmg 0.300/0.453, bastion_br 0.330/0.271, brute_12 0.330/0.126, condor_50 0.450/0.566, corsair_ar 0.330/0.282, cyclone_rotary 0.090/0.455, drover_762 0.300/0.347, falchion_dmr 0.360/0.399, ferret_9 0.120/0.086, furnace_ft 0.380/0.161, gale_mg 0.300/0.301, harrow_12 0.240/0.231, heron_308 0.400/0.451, hornet_9 0.160/0.093, hush_9 0.215/0.189, lancet_45 0.176/0.095, lark_carbine 0.235/0.126, mastiff_45 0.104/0.209, mule_12 0.290/0.151, osprey_762 0.330/0.371, plowman_12 0.390/0.346, rampart_lmg 0.360/0.346, reaper_db 0.200/0.481, rotor_saw 0.205/0.367, shrike_44 0.250/0.311, tern_556 0.098/0.335, thumper_40 0.170/0.161, vise_crossbow 0.250/0.206, wasp_pdw 0.145/0.111
-- PP-B-7 DONE: test_pp_hud_720p::test_loud_hud_readable_720p_scale_{1,max} (4/0). Ammo, bleedout timer, bag and hostage labels are shown, on screen, >= 14 px at 720p and not overlapping, at hud_scale 1.0 and 1.5. Software render (`-- loud`, render.lock, Env D flags): PASS, 0 contrast failures on dark / mid / bright / white.
-  Gaps for a lead ruling (new HUD content, not fixed under D-082): (1) the HUD has NO reload indicator, and LocalHudModel exposes no reload state (would need an A field, e.g. `reloading`). (2) There is no throw-bag key hint while carrying a bag, only "Carrying: <loot>". PD2 shows the throw key.
