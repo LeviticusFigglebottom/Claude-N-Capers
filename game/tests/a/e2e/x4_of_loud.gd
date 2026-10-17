@@ -228,7 +228,7 @@ func _hoist_trip(cash: LootSpawn, zone: Area3D, n_load: int) -> int:
 	for bag: LootBag in hoist.bags_in_car():
 		if not await _pick_up(bag, "take %s off the hoist" % bag.name, true):
 			return 0
-		if not await f._secure_carried(zone):
+		if not await _still_carrying("secure %s" % bag.name) or not await f._secure_carried(zone):
 			return 0
 		done += 1
 	return done if f.check(done == n_load, "%d bags came up the hoist (%d sent)" % [done, n_load]) else 0
@@ -243,7 +243,9 @@ func _load_hoist(cash: LootSpawn, n_load: int) -> bool:
 	for _i: int in range(n_load):
 		if not f.check(cash.remaining > 0, "vault cash left to bag"):
 			return false
-		if not await f._bag_from(cash) or not await _into_hoist():
+		if not await _up("bag VaultCash") or not await f._bag_from(cash):
+			return false
+		if not await _still_carrying("into the hoist") or not await _into_hoist():
 			return false
 	return true
 
@@ -253,7 +255,7 @@ func _call_hoist(i: int) -> bool:
 	await f.wait_until(func() -> bool: return not hoist.is_moving(), 15.0)
 	if _car_at(i):
 		return true
-	if not await f.go_to(hoist, hoist.landing_transform(i).origin):
+	if not await _up("call the hoist to landing %d" % i) or not await f.go_to(hoist, hoist.landing_transform(i).origin):
 		return false
 	if not await f.use(hoist, func() -> bool: return hoist.is_moving(), _tw().bag_lift_send_s + X4StealthFlow.MARGIN_S,
 			"call the hoist to landing %d" % i):
@@ -295,7 +297,7 @@ func _into_hoist() -> bool:
 
 
 func _send_hoist() -> bool:
-	if not await f.go_to(hoist, hoist.landing_transform(0).origin):
+	if not await _up("send the hoist up") or not await f.go_to(hoist, hoist.landing_transform(0).origin):
 		return false
 	if not await f.use(hoist, func() -> bool: return hoist.is_moving(), _tw().bag_lift_send_s + X4StealthFlow.MARGIN_S,
 			"send the hoist up (%d bags)" % hoist.bags_in_car().size()):
@@ -372,6 +374,21 @@ func _up(what: String, drop: bool = true) -> bool:
 		if not f.check(not f.crew.is_carrying_bag(), "%s: hands free" % what):
 			return false
 	return true
+
+
+## The bot still carries the bag it just took; downed / cuffed meanwhile (the bag falls, LootManager), it waits for the
+## revive (_up) and picks the dropped bag up again.
+func _still_carrying(what: String) -> bool:
+	if f.crew.is_carrying_bag() and int(f.crew.crew_state) == Enums.CrewState.NORMAL:
+		return true
+	if not await _up(what, false):
+		return false
+	if f.crew.is_carrying_bag():
+		return true
+	var loose: LootBag = _nearest_loose_bag(f.crew.global_position)
+	if not f.check(loose != null, "%s: the bag the bot dropped when it went down" % what):
+		return false
+	return await _pick_up(loose, "%s: pick the dropped bag up again" % what)
 
 
 ## A stand on solid hall floor beside the standing hoist car, within reach of `bag`: candidates on rings around the
