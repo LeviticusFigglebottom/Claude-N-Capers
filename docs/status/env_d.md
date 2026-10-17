@@ -3,6 +3,30 @@
 Owner: ENV D. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-17 (end): QUEUE CLEAR for the Ostrander Federal start (PO directive 08:40)
+Done since the last entry (all on env/d-art, head at this commit):
+- **D-132 D1** (per-node material merge) is PARKED on origin/wip/d-d1-merge (2dbd1772; LEAD ruling, D-132 addendum 2).
+  Every acceptance item has evidence, but on llvmpipe it saves GN -32 % / loud -12 % draws for +29-45 MB VRAM and
+  +~194 MB of meshes. It waits on the PO's real-GPU run: `_tools/README_bench.md` (bench_crowd --preset=both, D1 off
+  on env/d-art vs on on the wip branch).
+- **SL late_staff** looks npc_km_assistant / npc_km_associate (p5_cast v8; A mirrored). The seated check found that
+  C's prop_chair_office / prop_chair_task put every desk_work NPC's back through the backrest; C is adding a
+  `Seat` 0.12 m forward on both chair props in all heists. Tool: `_tools/check_seated_clip.gd`.
+- **3P loud motion coverage**: `_tools/loud_anim_coverage.tscn`, a headless HeistLauncher run with P's AnimCoverage.
+  DB + GN at 300 s: no clip defects, no slides. A has the driver flags (melee mismatch, frozen loops, revive with no clip).
+- **turn_l_45 / turn_r_45** (467f0dfb) and **door_kick_<fam>** (ed9a3b5f, impact@75 = npc_door_breach_s): v1.28.
+  A wires the driver side.
+- **Civilian panic variety** (1aa5eb8f): cower_b/c, flee_b/flee_c, panic_start (idle f0 → cower f0) and
+  variants.cower / variants.flee; test_civ_panic. A wires the variant groups; the LEAD writes the v1.29 line.
+- `bench_crowd --preset=gn34|loud50|both` + VRAM; `_tools/README_bench.md`.
+Open, waiting on others (not D work):
+- Seated re-check with check_seated_clip on one NPC per heist, after C's chair Seat lands.
+- GN crowd-scatter before/after capture, after A wires the civilian panic groups.
+- D1: the PO's GPU run.
+Seen, not started (no new scope): long-dress skirts (gallery_patron_d and probably the other dress looks) open up
+with the leg showing through when the knees bend in stride / crouch / cower. The seated-drape method (v1.24) could
+be extended to it. Raise it again when scope opens.
+
 ## 2026-10-17 (later): D-130 cast pools, crowd-LOD fix, DB-4 verified, D-130 perf audit, D-132 D2
 - **D-130 pools** (a04f3536, 48a7cc3a; p5_cast v7). GN guards 9 (it already twinned at 5); SL Northgate 9; ND Halden 6;
   SL cleaners 4; ND cleaners 2; GN patrons 12; GN waitstaff 3 and attendants 3 (C's gala_extra). Mirrored by A
