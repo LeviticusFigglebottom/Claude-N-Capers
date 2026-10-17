@@ -24,3 +24,11 @@ func test_hud_reads_the_subtitle_box() -> void:
 	assert_true(sub.is_in_group(SubtitleOverlay.GROUP), "the overlay joins its group")
 	sub.queue_free()
 	await wait_frames(1)
+
+
+func test_dot_labels_do_not_stack() -> void:
+	# Real-input GH Tab shot: far markers close together stacked their distance labels; a dot whose label would sit
+	# on another's draws only the dot.
+	var taken: Array[Rect2] = [Rect2(Vector2(1200, 420), Vector2(55, 22))]
+	assert_true(ObjectiveMarkers.label_overlaps(Rect2(Vector2(1205, 430), Vector2(55, 22)), taken), "stacked")
+	assert_false(ObjectiveMarkers.label_overlaps(Rect2(Vector2(1200, 460), Vector2(55, 22)), taken), "clear below")
