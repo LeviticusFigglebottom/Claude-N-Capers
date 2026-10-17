@@ -23,6 +23,8 @@ const LASER_BEAMS: Dictionary = {
 ## to the east face of the roof's E2AnchorFrame, ANCHOR_Y over the roof, the line leaving east over the parapet.
 ## The zipline's Interactable (the bag's start) hangs BAG_DROP below the sheave, so bags ride under the cable; the
 ## drawn cable (Zipline cable_start / cable_end) runs from the sheave to the far end raised by the same drop.
+## D-138: the gate padlock visual (as DB's roller doors).
+const PADLOCK_VISUAL: String = "res://assets/props/prop_padlock_brass/prop_padlock_brass.glb"
 const ZIPLINE_ANCHOR: String = "prop_zipline_anchor"
 const ANCHOR_FRAME: String = "E2AnchorFrame"
 const ANCHOR_Y: float = 1.75
@@ -56,7 +58,7 @@ const PREFAB_VISUALS: Dictionary = {
 	"safe": "prop_safe_large", "keycard_pickup": "prop_keycard_bank", "keycard_reader": "prop_keycard_reader",
 	"code_note": "prop_papers", "alarm_button": "prop_alarm_button", "phone": "prop_phone_desk",
 	"body_container": "prop_dumpster", "camera_station": "prop_camera_station_bank",
-	"security_camera": "prop_security_camera_wall", "hack_terminal": "prop_server_rack_terminal",
+	"security_camera": "prop_security_camera_wall", "hack_terminal": "prop_server_rack_terminal", "keypad": "prop_keypad",
 }
 ## D-111 doors: the layout's greybox kit piece (arch_door_<kind>_t<20|40>) maps to the catalog door of the same kind
 ## and wall thickness (tools/blender/props/doors.py) in the room's finish: glass (leaf_surface glass), steel (back of
@@ -284,11 +286,10 @@ static func door_visual(d: Array) -> String:
 	return "prop_door_%s_%s_%s" % [piece.get_slice("_", 0), fin, t]
 
 
-## K11 server room: the keycard reader on K10 (opens the server door), the cage lock (safe LARGE,
-## code or saw, code group `cage`; the mission opens the cage gate when it opens), the ledger rack's
-## hack terminal and the three drive sleds inside the cage. The doc makes those the safe's children;
-## a prefab's children belong to its prop (one OBB across the cage fence), so they are siblings and
-## the mission gates them (hack after the cage, drives after the hack; G1 report).
+## K11 server room: the keycard reader on K10 (opens the server door), the cage gate's two locks (D-138 / PO-14: a
+## `keypad` on the gate post, code group `cage`, and a brass `padlock` on the leaf for the placed saw, 90 s; either one
+## opens the CageGate itself, no stand-in safe), the ledger rack's hack terminal and the three drive sleds inside.
+## The terminal and sleds are siblings, and the mission gates them (hack after the cage, drives after the hack; G1 report).
 func _build_server(gp: Node3D) -> void:
 	var srv: Node3D = add(gp, node3d("Server")) as Node3D
 	var door: Node3D = n("Gameplay/Doors/ServerDoor")
@@ -296,11 +297,11 @@ func _build_server(gp: Node3D) -> void:
 		{"objective_tag": &"server_reader"}, Vector3(24.75, L.F41, 9.2), {"mount": "wall", "kind": "keycard_reader"})
 	if reader != null and door != null:
 		reader.set(&"targets", [reader.get_path_to(door)] as Array[NodePath])
-	var cage: Node3D = prefab(srv, "safe", "CageLock", Vector3(27.55, L.F41, 10.9), 180.0,
-		{"size": "enum:LARGE", "methods": [&"code", &"saw"] as Array[StringName], "code_group": CAGE_GROUP,
-			"objective_tag": &"cage", "saw_duration_s": 90.0}, null, {"kind": "safe"})  # D-115 SL-1: 90 s placed saw
-	if cage == null:
+	var gate: Node3D = n("Gameplay/Doors/CageGate")
+	if gate == null:
+		errors.append("CageGate missing: no cage locks")
 		return
+	_cage_locks(gate)
 	# The ledger rack's drive-bay release (hack_terminal, a 0.6 x 2.0 x 1.0 rack, front south), back to the
 	# cage's north panel and clear of the CageGate's 1 m door zone (PO-9).
 	prefab(srv, "hack_terminal", "HackTerminal", Vector3(28.75, L.F41, 8.95), 180.0,
@@ -309,6 +310,23 @@ func _build_server(gp: Node3D) -> void:
 		var x: float = [27.4, 29.45, 30.1][i]
 		prefab(srv, "loot_spawn", "Drives%d" % (i + 1), Vector3(x, L.F41, 9.75), 180.0,
 			{"loot_id": &"loot.ledger_drives", "count": 1, "objective_tag": &"drives"}, Vector3(x, L.F41, 10.1))
+
+
+## D-138: the CageGate's locks on its hall face (gate yaw 180, so local -Z is the hall): the keypad on the post beyond
+## the leaf's hinge-free edge (1.2 m), the brass padlock on the leaf's latch side (1.1 m); both target the gate.
+func _cage_locks(gate: Node3D) -> void:
+	var xf: Transform3D = global_xform(gate)
+	var yaw: float = float(L.DOORS.filter(func(d: Array) -> bool: return String(d[0]) == "CageGate")[0][3]) + 180.0
+	var pad: Vector3 = xf * Vector3(0.38, 1.1, -0.07)
+	var key: Vector3 = xf * Vector3(-0.62, 1.2, -0.07)
+	var use_pad: Vector3 = xf * Vector3(0.38, 0.0, -0.9)
+	var use_key: Vector3 = xf * Vector3(-0.62, 0.0, -0.9)
+	var to_gate: Array[NodePath] = [NodePath("..")]
+	prefab(gate, "keypad", "CageKeypad", key, yaw, {"code_group": CAGE_GROUP, "targets": to_gate,
+		"objective_tag": &"cage"}, use_key, {"mount": "wall", "kind": "keypad"})
+	prefab(gate, "padlock", "CagePadlock", pad, yaw, {"targets": to_gate.duplicate(), "place_saw": true,
+		"saw_duration_s": 90.0, "objective_tag": &"cage", "visual_scene": load(PADLOCK_VISUAL)}, use_pad,
+		{"mount": "door", "kind": "padlock"})  # D-115 SL-1: the doc's 90 s placed saw
 
 
 ## M4 study: the time-locked safe (MEDIUM, keycard via its reader; time_lock_s set by the mission)
