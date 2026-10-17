@@ -4,16 +4,32 @@
 ##   bench:  [xvfb-run -a -s "-screen 0 1280x720x24"] /opt/godot/godot [--headless] [--rendering-driver opengl3]
 ##             --audio-driver Dummy --path game res://world/characters/_tools/bench_crowd.tscn -- --ids=a,b,c --n=30
 ##             [--near=4] [--far=45] [--lod=off] [--frames=300] [--seed=1] [--layer]
+##   presets (D-132, the real-GPU check; README_bench.md): `-- --preset=both` runs gn34 then loud50 (each with --layer)
+##             and prints one "[BENCH] preset=..." line per case; `--preset=gn34` / `--preset=loud50` run one.
 ## Stats prints one "[CHAR]" line per id: mesh surfaces (= draw calls at LOD0/LOD1, shadow casters double that), distinct
 ## materials, vertices and triangles at LOD0, the first automatic LOD (LOD1, Godot picks it by screen size) and LOD2
 ## (Skeleton3D/CrowdLod, one surface), the LOD2 switch distance, bones and ragdoll bodies.
 ## Bench places --n characters (ids cycled) at seeded spots between --near and --far metres in front of a camera
 ## (eye 1.65 m, FOV 75), each looping `walk` from a seeded offset in place (--layer: plus hold_rifle_walk on a second
 ## AnimationPlayer, as AnimDriver's upper-body layer), and prints "[BENCH]" with the mean / p95 frame time (wall),
-## Performance process time, draw calls, primitives and visible objects. --lod=off forces LOD0 (no CrowdLod).
+## Performance process time, draw calls, primitives, visible objects and the texture / video memory in use
+## (MB, end of run). --lod=off forces LOD0 (no CrowdLod).
 extends Node
 
 const CrowdLod: GDScript = preload("res://world/characters/_tools/crowd_lod.gd")
+## D-130 audit cases (d130_perf_audit.md §1): Gallery Night stealth at Cataclysm (30 NPCs + 4 crew), and a loud
+## Cataclysm fight (police / specials, a few civilians, crew).
+const PRESETS: Dictionary = {
+	"gn34": {"n": 34, "ids": ["gallery_guard", "gallery_patron", "gallery_guard_b", "gallery_patron_b", "gallery_guard_c",
+		"gallery_patron_c", "gallery_waiter", "gallery_patron_d", "gallery_guard_d", "gallery_patron_e", "gallery_attendant",
+		"gallery_patron_f", "gallery_guard_e", "gallery_patron_g", "gallery_conservator", "gallery_patron_h", "gallery_guard_f",
+		"gallery_patron_i", "gallery_curator", "gallery_patron_j", "gallery_guard_g", "npc_penthouse_guest_a", "gallery_guard_h",
+		"npc_penthouse_guest_b", "gallery_guard_i", "gallery_admin", "armored_car_crew", "gallery_attendant_b",
+		"armored_car_crew_b", "npc_penthouse_staff", "crew_rook", "crew_sable", "crew_rook", "crew_sable"]},
+	"loud50": {"n": 50, "ids": ["tac_light", "tac_heavy", "patrol_officer", "frd_agent", "tac_light_frd", "tac_heavy_frd",
+		"bulwark", "wrecker", "corpsman", "phantom", "stinger", "longshot", "gallery_patron", "gallery_patron_b", "crew_rook",
+		"crew_sable"]},
+}
 
 var _ids: PackedStringArray = []
 var _n: int = 30
@@ -24,6 +40,9 @@ var _frames: int = 300
 var _seed: int = 1
 var _layer: bool = false
 var _stats: bool = false
+## --preset=gn34|loud50|both: the audit cases, one [BENCH] line each ("" = the plain arguments)
+var _preset: String = ""
+var _label: String = ""
 ## --switch=m: every CrowdLod switch moved to m (the retune under test; 0 = as assembled)
 var _switch: float = 0.0
 ## --small_shadows=off: surfaces under CrowdLod.MIN_SURFACE_TRIS cast no shadow (eyes, lashes, badges)
@@ -44,6 +63,7 @@ func _ready() -> void:
 			"seed": _seed = int(v)
 			"layer": _layer = true
 			"stats": _stats = true
+			"preset": _preset = v
 			"switch": _switch = float(v)
 			"small_shadows": _small_shadows = v != "off"
 	if _stats:
@@ -53,7 +73,18 @@ func _ready() -> void:
 		return
 	Engine.max_fps = 0   # measure the cost, not the cap
 	DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_DISABLED)
-	await _bench()
+	if _preset.is_empty():
+		await _bench()
+	else:
+		for name: String in (["gn34", "loud50"] if _preset == "both" else [_preset]):
+			var p: Dictionary = PRESETS[name]
+			_ids = PackedStringArray(p["ids"])
+			_n = int(p["n"])
+			_layer = true
+			_label = "preset=%s " % name
+			await _bench()
+			for c: Node in get_children():
+				c.free()
 	get_tree().quit(0)
 
 
@@ -193,6 +224,9 @@ func _bench() -> void:
 		mean += t
 	mean /= float(times.size())
 	var f: float = float(_frames)
-	print("[BENCH] n=%d lod=%s layer=%s near=%.0f far=%.0f frame_ms mean=%.2f p95=%.2f process_ms=%.2f draws=%.0f prims=%.0f objects=%.0f"
+	var mb: float = 1024.0 * 1024.0
+	print(("[BENCH] " + _label + "n=%d lod=%s layer=%s near=%.0f far=%.0f frame_ms mean=%.2f p95=%.2f process_ms=%.2f draws=%.0f prims=%.0f"
+		+ " objects=%.0f tex_mem_mb=%.1f video_mem_mb=%.1f")
 		% [_n, "on" if _lod else "off", _layer, _near, _far, mean, sorted[int(0.95 * (sorted.size() - 1))], proc / f,
-		draws / f, prims / f, objs / f])
+		draws / f, prims / f, objs / f, Performance.get_monitor(Performance.RENDER_TEXTURE_MEM_USED) / mb,
+		Performance.get_monitor(Performance.RENDER_VIDEO_MEM_USED) / mb])
