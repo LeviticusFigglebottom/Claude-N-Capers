@@ -29,7 +29,10 @@ const PLANT_THROUGH: Vector3 = Vector3(18.3, -4.0, 6.9)
 ## C6 (9.1, -1.4, 8.8, facing +x) sees the B5 corridor through the vault gate bars for x ~14.4-17, his post
 ## (14.3, 7.7) included: a body or a pager answer there is on camera (ND run 2026-10-17 t=81: camera alarm at the
 ## kill). Knife him on his walk west, before he turns at x 9.8, so he drops out of C6's sight.
-const KNIFE_WEST_OF_X: float = 13.8
+const KNIFE_WEST_OF_X: float = 14.1
+## His post and the east end of his B5 patrol (seed 21).
+const GUARD_POST_X: float = 14.3
+const PATROL_EAST_X: float = 17.9
 
 var rt: HeistRuntime = null
 var pilot: Po5Pilot = null
@@ -242,27 +245,47 @@ func _gate_guard() -> bool:
 	c.melee.hit_landed.connect(func(_t: Object) -> void: hits[0] += 1)
 	c.melee.swung.connect(func(_ch: bool) -> void: hits[1] += 1)
 	var sd: StealthDirector = HeistRuntime.get_service(G.SVC_STEALTH) as StealthDirector
-	# His loop (seed 21, ND runs 2026-10-17): idle ~6 s at his post (14.3, 7.7) facing west, walk west to x 9.8, turn,
-	# walk east to x 17.9 (by PlantDoor), turn, walk west back to the post. D-128: within 2 m he uncovers at once, a
-	# pilot in his view at 3-4 m fills in ~1 s, and a knife hit after that does 30 of his 50 (no S3.6 one-shot).
-	# So: hide in B3 off the doorway's sight line and go the moment he leaves his post westward: a sprinted navmesh
-	# leg through PlantDoor into the corridor, then steer at his back (W held) and swing before he turns at x 9.8.
+	# His loop (seed 21, ND runs 2026-10-17): idle ~6 s at his post (14.3, 7.7) facing the vault gate (+z), walk west
+	# to x 9.8, turn, walk east to x 17.9 (by PlantDoor), turn, walk west back to the post. D-128: within 2 m he
+	# uncovers at once, a pilot in his view at 3-4 m fills in ~1 s, and a knife hit after that does 30 of his 50 (no
+	# S3.6 one-shot). C6 sees his post through the gate bars (KNIFE_WEST_OF_X), and a navmesh leg through the closed
+	# PlantDoor took 2.6 s (he reached his turn first and radioed). So: open PlantDoor while he is far west, hide in B3
+	# while he comes east, step just inside the corridor as he walks back to the post (behind him: outside his cone
+	# while he faces the gate), and sprint at his back the moment he leaves the post westward (5.75 vs ~1.6 m/s).
+	var plant: Door = _door("PlantDoor")
 	for _k: int in 4:
 		if not g.is_alive() or g.alert_state > Enums.AlertState.CURIOUS:
 			break
+		if plant != null and not plant.is_open:
+			if not await wait_until(func() -> bool: return g.global_position.x < 12.0 and _back_turned_to(g, PLANT_THROUGH),
+					60.0):
+				note("gate guard never went far west (at %s)" % Po5Pilot._v(g.global_position))
+				break
+			await pilot.use(_comp(plant), 10.0, func() -> bool: return plant.is_open)
+			note("PlantDoor open %s (guard at %s)" % [plant.is_open, Po5Pilot._v(g.global_position)])
 		if pilot.flat_dist(c.global_position, B3_HIDE_AT) > 0.4:
 			await pilot.goto(B3_HIDE_AT, 0.3, 10.0)
 		var x_prev: Array[float] = [g.global_position.x]
-		var go: Callable = func() -> bool:
+		var back_to_post: Callable = func() -> bool:
 			var west: bool = g.global_position.x < x_prev[0] - 0.005
 			x_prev[0] = g.global_position.x
-			return not g.is_alive() or (west and g.global_position.x < KNIFE_WEST_OF_X
-				and g.global_position.x > KNIFE_WEST_OF_X - 1.0 and _back_turned_to(g, PLANT_THROUGH))
-		if not await wait_until(go, 60.0):
-			note("gate guard never left his post westward (at %s)" % Po5Pilot._v(g.global_position))
+			return not g.is_alive() or (west and g.global_position.x > GUARD_POST_X + 0.3
+				and g.global_position.x < PATROL_EAST_X - 1.0 and _back_turned_to(g, PLANT_THROUGH))
+		if not await wait_until(back_to_post, 60.0):
+			note("gate guard never walked back to his post (at %s)" % Po5Pilot._v(g.global_position))
 			break
-		note("go: guard %s heading west, me %s" % [Po5Pilot._v(g.global_position), Po5Pilot._v(c.global_position)])
-		await pilot.goto(PLANT_THROUGH, 0.6, 3.0, true)
+		await pilot.goto(PLANT_THROUGH, 0.4, 3.0)
+		note("in the corridor at %s, guard %s" % [Po5Pilot._v(c.global_position), Po5Pilot._v(g.global_position)])
+		x_prev[0] = g.global_position.x
+		var leaves: Callable = func() -> bool:
+			var west: bool = g.global_position.x < x_prev[0] - 0.005
+			x_prev[0] = g.global_position.x
+			return not g.is_alive() or not _back_turned(g) or (west and g.global_position.x < KNIFE_WEST_OF_X)
+		await wait_until(leaves, 15.0)
+		if not _back_turned(g):
+			note("he faced the corridor before leaving the post (at %s); back to B3" % Po5Pilot._v(g.global_position))
+			continue
+		note("go: guard %s leaving west, me %s" % [Po5Pilot._v(g.global_position), Po5Pilot._v(c.global_position)])
 		if await _chase_and_knife(g, sd, hits):
 			break
 	if g.is_alive():
