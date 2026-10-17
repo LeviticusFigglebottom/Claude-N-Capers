@@ -343,7 +343,7 @@ func _ready() -> void:
 	_listen(EventBus.npc_killed, _on_npc_killed)
 	_listen(EventBus.captain_arrived, _on_captain_arrived)
 	_listen(EventBus.captain_retreated, _on_captain_retreated)
-	_assign(&"pagers_max", Tweak.stealth().pager_max_answers)
+	_assign(&"pagers_max", PagerSystem.cap_for(HeistRuntime.of(self)))  # D-130: the heist's cap by difficulty
 	_flush()
 
 

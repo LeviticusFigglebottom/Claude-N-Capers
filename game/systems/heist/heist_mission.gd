@@ -108,10 +108,11 @@ func add_objective(objective_id: StringName, text_key: StringName,
 		state: Enums.ObjectiveState = Enums.ObjectiveState.ACTIVE, data: Dictionary = {}) -> void:
 	# GN-8 (B's GN audit): re-adding an id (a relabel: GN hack_loud, casing_last_call) keeps its place in the order.
 	var order: int = int(_objectives[objective_id]["order"]) if _objectives.has(objective_id) else _objectives.size()
+	var prev: int = int(_objectives[objective_id]["state"]) if _objectives.has(objective_id) else -1
 	_objectives[objective_id] = {
 		"id": objective_id, "text_key": text_key, "state": state, "data": data, "order": order,
 	}
-	_publish(objective_id)
+	_publish(objective_id, prev != int(state))
 
 
 func activate(objective_id: StringName) -> void:
@@ -144,7 +145,7 @@ func objectives() -> Array[Dictionary]:
 func update_objective_data(objective_id: StringName, data: Dictionary) -> void:
 	if _objectives.has(objective_id):
 		(_objectives[objective_id]["data"] as Dictionary).merge(data, true)
-		_publish(objective_id)
+		_publish(objective_id, false)
 
 
 ## Auto-complete `objective_id` once the crew picked up `count` of `item_id` (item_picked_up).
@@ -524,13 +525,16 @@ func _set_state(objective_id: StringName, s: Enums.ObjectiveState) -> void:
 	if int(_objectives[objective_id]["state"]) == s:
 		return
 	_objectives[objective_id]["state"] = s
-	_publish(objective_id)
+	_publish(objective_id, true)
 
 
-func _publish(objective_id: StringName) -> void:
+## `state_changed` (in the published data): false for a data-only update (counts, markers), so observers that log
+## state transitions skip it (P's DB pass: `cartel -> ACTIVE` on every gunmen_down update).
+func _publish(objective_id: StringName, state_changed: bool = true) -> void:
 	var o: Dictionary = _objectives[objective_id]
 	var data: Dictionary = (o["data"] as Dictionary).duplicate(true)
 	data["text_key"] = o["text_key"]
+	data["state_changed"] = state_changed
 	EventBus.objective_updated.emit(objective_id, int(o["state"]), data)
 	Net.replicate_event(&"objective_updated", [objective_id, int(o["state"]), data])
 	objectives_changed.emit()
