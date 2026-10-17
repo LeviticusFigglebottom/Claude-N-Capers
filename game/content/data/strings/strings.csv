@@ -3512,6 +3512,8 @@ ui.preplan.floor.mezzanine,Mezzanine
 ui.preplan.floor.level_40,Level 40 (service)
 ui.preplan.floor.level_41,Level 41
 ui.preplan.floor.level_42,Level 42
+ui.preplan.floor.gallery,Gallery level
+ui.preplan.floor.executive,Executive level
 ui.preplan.bp.glasshouse.g1,Receiving
 ui.preplan.bp.glasshouse.g2,Workshop
 ui.preplan.bp.glasshouse.g3,WC
@@ -3726,3 +3728,62 @@ ui.freshness.badge,{pct} %
 ui.freshness.reason_repeat,Played {n}× in your last {memory} heists
 ui.freshness.reason_rotation,Not played in {since} heists
 ui.heist_select.freshness,Freshness {pct}
+ui.preplan.bp.ostrander_federal.lk,Staff lockers
+ui.preplan.bp.ostrander_federal.gl,Cash lift
+ui.preplan.bp.ostrander_federal.cq,Cart queue
+ui.preplan.bp.ostrander_federal.sa,Stair A
+ui.preplan.bp.ostrander_federal.cp,Count room
+ui.preplan.bp.ostrander_federal.pl,Plant room
+ui.preplan.bp.ostrander_federal.cm,Comms room
+ui.preplan.bp.ostrander_federal.ss,Supplies
+ui.preplan.bp.ostrander_federal.sb,Stair B
+ui.preplan.bp.ostrander_federal.bb,Basement corridor
+ui.preplan.bp.ostrander_federal.rc,Records
+ui.preplan.bp.ostrander_federal.vc,Vault concourse
+ui.preplan.bp.ostrander_federal.vt,Vault
+ui.preplan.bp.ostrander_federal.sd,Safe-deposit hall
+ui.preplan.bp.ostrander_federal.ld,Loading dock
+ui.preplan.bp.ostrander_federal.e1,Electrical
+ui.preplan.bp.ostrander_federal.sr,Security room
+ui.preplan.bp.ostrander_federal.gr,Guard lockers
+ui.preplan.bp.ostrander_federal.wm,Men's room
+ui.preplan.bp.ostrander_federal.ww,Women's room
+ui.preplan.bp.ostrander_federal.j1,Janitor
+ui.preplan.bp.ostrander_federal.mo,Mail room
+ui.preplan.bp.ostrander_federal.bc,Back corridor
+ui.preplan.bp.ostrander_federal.lo,Loans
+ui.preplan.bp.ostrander_federal.tw,Teller workroom
+ui.preplan.bp.ostrander_federal.pc,Private clients
+ui.preplan.bp.ostrander_federal.cn1,Consultation 1
+ui.preplan.bp.ostrander_federal.cn2,Consultation 2
+ui.preplan.bp.ostrander_federal.av,ATM vestibule
+ui.preplan.bp.ostrander_federal.bh,Banking hall
+ui.preplan.bp.ostrander_federal.ve,Vestibule
+ui.preplan.bp.ostrander_federal.bm,Manager's office
+ui.preplan.bp.ostrander_federal.pw,Customer restrooms
+ui.preplan.bp.ostrander_federal.na,New accounts
+ui.preplan.bp.ostrander_federal.br,Break room
+ui.preplan.bp.ostrander_federal.e2,Riser
+ui.preplan.bp.ostrander_federal.e3,Riser
+ui.preplan.bp.ostrander_federal.it,IT office
+ui.preplan.bp.ostrander_federal.sv,Server room
+ui.preplan.bp.ostrander_federal.j2,Janitor
+ui.preplan.bp.ostrander_federal.ar,Archive
+ui.preplan.bp.ostrander_federal.uc,Gallery corridor
+ui.preplan.bp.ostrander_federal.ao1,Officer 1
+ui.preplan.bp.ostrander_federal.ao2,Officer 2
+ui.preplan.bp.ostrander_federal.ao3,Officer 3
+ui.preplan.bp.ostrander_federal.wl,West loggia
+ui.preplan.bp.ostrander_federal.el,East loggia
+ui.preplan.bp.ostrander_federal.of,Operations
+ui.preplan.bp.ostrander_federal.cf,Conference
+ui.preplan.bp.ostrander_federal.co,Compliance
+ui.preplan.bp.ostrander_federal.ga,Officers' gallery
+ui.preplan.bp.ostrander_federal.vo,Vault operations
+ui.preplan.bp.ostrander_federal.tr,Treasury
+ui.preplan.bp.ostrander_federal.tt,Training room
+ui.preplan.bp.ostrander_federal.bd,Boardroom
+ui.preplan.bp.ostrander_federal.ea,Executive assistant
+ui.preplan.bp.ostrander_federal.pr,President's office
+ui.preplan.bp.ostrander_federal.pn,Pantry
+ui.preplan.bp.ostrander_federal.hh,Stair head house
