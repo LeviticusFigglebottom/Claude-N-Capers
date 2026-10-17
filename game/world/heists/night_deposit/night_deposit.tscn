@@ -17008,7 +17008,7 @@ mesh = SubResource("nd_229")
 
 [node name="Glazing" type="Node3D" parent="Geometry/Building" unique_id=100778]
 
-[node name="G11East" type="StaticBody3D" parent="Geometry/Building/Glazing" unique_id=100779]
+[node name="G11East" type="StaticBody3D" parent="Geometry/Building/Glazing" unique_id=100779 groups=["see_through"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 26, 1.5, 10)
 collision_mask = 0
 metadata/surface = &"glass"
@@ -17016,7 +17016,7 @@ metadata/surface = &"glass"
 [node name="Collision" type="CollisionShape3D" parent="Geometry/Building/Glazing/G11East" unique_id=100780]
 shape = SubResource("nd_230")
 
-[node name="G12East" type="StaticBody3D" parent="Geometry/Building/Glazing" unique_id=100781]
+[node name="G12East" type="StaticBody3D" parent="Geometry/Building/Glazing" unique_id=100781 groups=["see_through"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 26, 1.5, 14)
 collision_mask = 0
 metadata/surface = &"glass"
@@ -17024,7 +17024,7 @@ metadata/surface = &"glass"
 [node name="Collision" type="CollisionShape3D" parent="Geometry/Building/Glazing/G12East" unique_id=100782]
 shape = SubResource("nd_230")
 
-[node name="AtmSouthA" type="StaticBody3D" parent="Geometry/Building/Glazing" unique_id=100783]
+[node name="AtmSouthA" type="StaticBody3D" parent="Geometry/Building/Glazing" unique_id=100783 groups=["see_through"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22.5, 1.5, 20)
 collision_mask = 0
 metadata/surface = &"glass"
@@ -17032,7 +17032,7 @@ metadata/surface = &"glass"
 [node name="Collision" type="CollisionShape3D" parent="Geometry/Building/Glazing/AtmSouthA" unique_id=100784]
 shape = SubResource("nd_231")
 
-[node name="AtmSouthB" type="StaticBody3D" parent="Geometry/Building/Glazing" unique_id=100785]
+[node name="AtmSouthB" type="StaticBody3D" parent="Geometry/Building/Glazing" unique_id=100785 groups=["see_through"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25.3, 1.5, 20)
 collision_mask = 0
 metadata/surface = &"glass"
@@ -17040,7 +17040,7 @@ metadata/surface = &"glass"
 [node name="Collision" type="CollisionShape3D" parent="Geometry/Building/Glazing/AtmSouthB" unique_id=100786]
 shape = SubResource("nd_232")
 
-[node name="G11Front" type="StaticBody3D" parent="Geometry/Building/Glazing" unique_id=100787]
+[node name="G11Front" type="StaticBody3D" parent="Geometry/Building/Glazing" unique_id=100787 groups=["see_through"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21, 1.6500001, 11.5)
 collision_mask = 0
 metadata/surface = &"glass"
@@ -17048,7 +17048,7 @@ metadata/surface = &"glass"
 [node name="Collision" type="CollisionShape3D" parent="Geometry/Building/Glazing/G11Front" unique_id=100788]
 shape = SubResource("nd_233")
 
-[node name="G12FrontA" type="StaticBody3D" parent="Geometry/Building/Glazing" unique_id=100789]
+[node name="G12FrontA" type="StaticBody3D" parent="Geometry/Building/Glazing" unique_id=100789 groups=["see_through"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21, 1.6500001, 12.8)
 collision_mask = 0
 metadata/surface = &"glass"
@@ -17056,7 +17056,7 @@ metadata/surface = &"glass"
 [node name="Collision" type="CollisionShape3D" parent="Geometry/Building/Glazing/G12FrontA" unique_id=100790]
 shape = SubResource("nd_234")
 
-[node name="G12FrontB" type="StaticBody3D" parent="Geometry/Building/Glazing" unique_id=100791]
+[node name="G12FrontB" type="StaticBody3D" parent="Geometry/Building/Glazing" unique_id=100791 groups=["see_through"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21, 1.6500001, 15.225)
 collision_mask = 0
 metadata/surface = &"glass"
@@ -17064,7 +17064,7 @@ metadata/surface = &"glass"
 [node name="Collision" type="CollisionShape3D" parent="Geometry/Building/Glazing/G12FrontB" unique_id=100792]
 shape = SubResource("nd_235")
 
-[node name="BanditGlass" type="StaticBody3D" parent="Geometry/Building/Glazing" unique_id=100793]
+[node name="BanditGlass" type="StaticBody3D" parent="Geometry/Building/Glazing" unique_id=100793 groups=["see_through"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.5, 1.65, 10)
 collision_mask = 0
 metadata/surface = &"glass"
@@ -17072,7 +17072,7 @@ metadata/surface = &"glass"
 [node name="Collision" type="CollisionShape3D" parent="Geometry/Building/Glazing/BanditGlass" unique_id=100794]
 shape = SubResource("nd_236")
 
-[node name="HallTransom1" type="StaticBody3D" parent="Geometry/Building/Glazing" unique_id=100795]
+[node name="HallTransom1" type="StaticBody3D" parent="Geometry/Building/Glazing" unique_id=100795 groups=["see_through"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.5, 3.95, 20)
 collision_mask = 0
 metadata/surface = &"glass"
@@ -17080,7 +17080,7 @@ metadata/surface = &"glass"
 [node name="Collision" type="CollisionShape3D" parent="Geometry/Building/Glazing/HallTransom1" unique_id=100796]
 shape = SubResource("nd_237")
 
-[node name="HallTransom2" type="StaticBody3D" parent="Geometry/Building/Glazing" unique_id=100797]
+[node name="HallTransom2" type="StaticBody3D" parent="Geometry/Building/Glazing" unique_id=100797 groups=["see_through"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 3.95, 20)
 collision_mask = 0
 metadata/surface = &"glass"
@@ -17088,7 +17088,7 @@ metadata/surface = &"glass"
 [node name="Collision" type="CollisionShape3D" parent="Geometry/Building/Glazing/HallTransom2" unique_id=100798]
 shape = SubResource("nd_237")
 
-[node name="HallTransom3" type="StaticBody3D" parent="Geometry/Building/Glazing" unique_id=100799]
+[node name="HallTransom3" type="StaticBody3D" parent="Geometry/Building/Glazing" unique_id=100799 groups=["see_through"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 3.95, 20)
 collision_mask = 0
 metadata/surface = &"glass"
@@ -17096,7 +17096,7 @@ metadata/surface = &"glass"
 [node name="Collision" type="CollisionShape3D" parent="Geometry/Building/Glazing/HallTransom3" unique_id=100800]
 shape = SubResource("nd_237")
 
-[node name="HallTransom4" type="StaticBody3D" parent="Geometry/Building/Glazing" unique_id=100801]
+[node name="HallTransom4" type="StaticBody3D" parent="Geometry/Building/Glazing" unique_id=100801 groups=["see_through"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18.5, 3.95, 20)
 collision_mask = 0
 metadata/surface = &"glass"
@@ -17104,7 +17104,7 @@ metadata/surface = &"glass"
 [node name="Collision" type="CollisionShape3D" parent="Geometry/Building/Glazing/HallTransom4" unique_id=100802]
 shape = SubResource("nd_237")
 
-[node name="HallBay1Blocker" type="StaticBody3D" parent="Geometry/Building/Glazing" unique_id=100803]
+[node name="HallBay1Blocker" type="StaticBody3D" parent="Geometry/Building/Glazing" unique_id=100803 groups=["see_through"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.5, 2.2, 20)
 collision_mask = 0
 metadata/surface = &"glass"
@@ -17112,7 +17112,7 @@ metadata/surface = &"glass"
 [node name="Collision" type="CollisionShape3D" parent="Geometry/Building/Glazing/HallBay1Blocker" unique_id=100804]
 shape = SubResource("nd_238")
 
-[node name="HallBay2Blocker" type="StaticBody3D" parent="Geometry/Building/Glazing" unique_id=100805]
+[node name="HallBay2Blocker" type="StaticBody3D" parent="Geometry/Building/Glazing" unique_id=100805 groups=["see_through"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 2.2, 20)
 collision_mask = 0
 metadata/surface = &"glass"
@@ -17120,7 +17120,7 @@ metadata/surface = &"glass"
 [node name="Collision" type="CollisionShape3D" parent="Geometry/Building/Glazing/HallBay2Blocker" unique_id=100806]
 shape = SubResource("nd_238")
 
-[node name="HallBay3Blocker" type="StaticBody3D" parent="Geometry/Building/Glazing" unique_id=100807]
+[node name="HallBay3Blocker" type="StaticBody3D" parent="Geometry/Building/Glazing" unique_id=100807 groups=["see_through"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 2.2, 20)
 collision_mask = 0
 metadata/surface = &"glass"
@@ -17128,7 +17128,7 @@ metadata/surface = &"glass"
 [node name="Collision" type="CollisionShape3D" parent="Geometry/Building/Glazing/HallBay3Blocker" unique_id=100808]
 shape = SubResource("nd_238")
 
-[node name="HallBay4Blocker" type="StaticBody3D" parent="Geometry/Building/Glazing" unique_id=100809]
+[node name="HallBay4Blocker" type="StaticBody3D" parent="Geometry/Building/Glazing" unique_id=100809 groups=["see_through"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18.5, 2.2, 20)
 collision_mask = 0
 metadata/surface = &"glass"
@@ -17793,7 +17793,7 @@ metadata/surface = &"metal"
 [node name="Collision" type="CollisionShape3D" parent="Geometry/Site/Blocks/RoofAHU" unique_id=100978]
 shape = SubResource("nd_304")
 
-[node name="HallSkylight" type="StaticBody3D" parent="Geometry/Site/Blocks" unique_id=100979]
+[node name="HallSkylight" type="StaticBody3D" parent="Geometry/Site/Blocks" unique_id=100979 groups=["see_through"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.5, 6.7, 15)
 collision_mask = 0
 metadata/surface = &"glass"

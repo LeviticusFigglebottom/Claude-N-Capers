@@ -408,6 +408,24 @@ killed: the rover (wherever he rolled) and the roundsman / operator are the natu
   - C7: lot pole → parking lot.
   - C8: B11 → count room.
 
+### Glazing (D-142)
+Clear glass is see-through for stealth vision (D-142). Its collider joins the `see_through` group and still
+blocks movement and bullets. Frosted, tinted, mirrored and privacy glass stays opaque.
+- **Clear (17 colliders):**
+  - G9 banking hall: the hall bays ×4 to Harbor St (full-opening blockers next to the Window prefabs'
+    GlassBody), the transoms ×4 and the skylight on the hall roof.
+  - G8 / G9: the bandit glass over the teller counter (1.05–2.25 m).
+  - G11 loan office and G12 manager: the glass fronts to the hall (G11 ×1, G12 ×2) and the windows E to
+    Wharf Lane (×1 each).
+  - G13 ATM vestibule: the green street glazing ×2. It is tinted, but it is the designed casing view, so it
+    counts as clear.
+- **Opaque:** none of the map-built glass. G3 security room has no windows.
+- **Not map-built:** the ATM inner glass door and the vestibule's inner glass doors are Door prefabs (ENV A,
+  not tagged).
+- **Open (D-142):** the Sightlines claim that crouched players behind the counter are hidden from the hall
+  guard predates see-through bandit glass. The crouched 1.05 m sample point sits at the glass sill, so the
+  claim needs re-checking (see the D-142 report).
+
 ## Stealth routes
 1. **Lot / sally port (staff entrance):** case the lot (PUBLIC; the alley gate is closed). Deal with
    the exterior rover (avoid or pager), then lockpick or keycard the G1 personnel door (C4 covers it:
