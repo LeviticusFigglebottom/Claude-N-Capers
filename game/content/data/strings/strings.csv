@@ -3519,6 +3519,77 @@ voice.vo.accountant.briefing_ostrander_federal_2,"Lionel Ashgrove, the day manag
 voice.vo.accountant.briefing_ostrander_federal_3,"Bring me the consolidation: cash, gold or bonds. Do it quietly, and Monday's Vaultline run leaves with a vault full of nothing."
 voice.vo.mercer.briefing_ostrander_federal_1,"It's a working bank on a Friday afternoon. Walk in as customers, masks in your pockets, and read the place before anyone moves."
 voice.vo.mercer.briefing_ostrander_federal_2,"If it goes loud, the vault seals and the time lock dies. I'll get you a thermal drill, and you go through the floor instead."
+voice.vo.accountant.ostrander_federal_contact_intro,Every dirty dollar in this city passes through Ostrander Federal. This weekend it all sits in one room.
+voice.vo.accountant.ostrander_federal_payday,Monday's Vaultline run will collect a remarkably clean vault. Your share has been reconciled.
+voice.vo.mercer.ostrander_federal_intro,"Ostrander Federal, open for business. Masks in your pockets. Read the hall, the counter and the manager."
+voice.vo.mercer.ostrander_federal_case_manager,"That's Ashgrove, the day manager. Learn his rounds. The vault card's on him unless he's left it somewhere."
+voice.vo.mercer.ostrander_federal_case_gallery,Most of the officers sit up on the gallery. One of their computers holds the vault code.
+voice.vo.mercer.ostrander_federal_case_operator,Camera operator's in the security room off the back corridor. Take him and the cameras are blind.
+voice.vo.mercer.ostrander_federal_keycard,That's the vault keycard. The gate's in the basement.
+voice.vo.mercer.ostrander_federal_code_hint,Ashgrove's planner names the officer with the code. That's the computer you want.
+voice.vo.mercer.ostrander_federal_pc_found,That's the computer with the code. Forty-five seconds on the hack. Expect it to stall once.
+voice.vo.mercer.ostrander_federal_hack_interrupt,Hack's stalled. Get back on that terminal.
+voice.vo.mercer.ostrander_federal_code,That's the vault code. It goes in at the time-lock console by the vault door.
+voice.vo.mercer.ostrander_federal_server_hack,"Rack hack's running. Ninety seconds, two stalls, and it starts the time lock when it's done."
+voice.vo.mercer.ostrander_federal_vault_gate,"Gate's open. Laser grid across the concourse, then the time-lock console by the door."
+voice.vo.mercer.ostrander_federal_lasers_off,Grid's off. Walk the concourse.
+voice.vo.mercer.ostrander_federal_time_lock_started,Time lock's running: {seconds} seconds. The vault guard still walks the concourse. Stay out of it.
+voice.vo.mercer.ostrander_federal_time_lock_60,Sixty seconds on the lock.
+voice.vo.mercer.ostrander_federal_time_lock_open,Vault's open. Cash cage first.
+voice.vo.mercer.ostrander_federal_last_pager,That's {answered} on the pagers. They won't buy another one.
+voice.vo.mercer.ostrander_federal_camera_warning,"Camera's getting curious. Get out of its eye line, now."
+voice.vo.mercer.ostrander_federal_vip_client,Client in the deposit hall with a Halden bodyguard. One more guard downstairs.
+voice.vo.mercer.ostrander_federal_armored_car,Vaultline van's early at the dock. Two armed crew heading for the vault.
+voice.vo.mercer.ostrander_federal_lockdown,Lockdown. The time lock's dead and the door's sealed. We go through the floor.
+voice.vo.mercer.ostrander_federal_lockdown_vault_open,"Alarm, but the vault's already open. Forget the drill. Bag it and hold."
+voice.vo.mercer.ostrander_federal_drill_inbound_terrace,Bird's inbound with the rig: {seconds} seconds. It drops on the hall-roof terrace.
+voice.vo.mercer.ostrander_federal_drill_inbound_dock,Second van's coming with the rig: {seconds} seconds. It backs up to the dock.
+voice.vo.mercer.ostrander_federal_drill_delivered_terrace,"Drill's down on the terrace. Two heavy bags, and both go on the slab."
+voice.vo.mercer.ostrander_federal_drill_delivered_dock,"Drill's at the dock. Two heavy bags, and both go on the slab."
+voice.vo.mercer.ostrander_federal_drill_prepositioned,Drill bags are where the insider left them. Get both onto the slab.
+voice.vo.mercer.ostrander_federal_drill_started,Drill's burning. Six minutes. Hold the teller line.
+voice.vo.mercer.ostrander_federal_drill_jam,Drill's jammed. Somebody get on it.
+voice.vo.mercer.ostrander_federal_burn_through,"You're through. Ladder's down and the hoist is in. Bags go up the hoist, not the ladder."
+voice.vo.mercer.ostrander_federal_hoist,Hoist takes two bags at a time. Load it and send it up.
+voice.vo.mercer.ostrander_federal_gold_cage,"Bullion cage is open. Gold's heavy: no sprinting, short throws."
+voice.vo.mercer.ostrander_federal_required_secured,That's what the Accountant wanted. Anything more is a bonus.
+voice.vo.mercer.ostrander_federal_sniper_assay,Sniper on the Assay Office roof. He can see the plaza and into the hall windows.
+voice.vo.mercer.ostrander_federal_sniper_garage,Shooter on the parking deck. He's got Ledger Lane and the Tannery bay.
+voice.vo.mercer.ostrander_federal_sniper_tower,Someone's in a Corvino window up high. He's watching the terrace.
+voice.vo.mercer.ostrander_federal_van_eta,Van's {seconds} seconds out. Hold the door.
+voice.vo.mercer.ostrander_federal_heli_eta,Chopper's {seconds} seconds out. Hold the terrace.
+voice.vo.mercer.ostrander_federal_escape,"Ride's here. Bags in, then you."
+voice.vo.accountant.ostrander_federal_radio_casing,"Your survey is complete. A bank in business hours: everyone is busy, and nobody is looking."
+voice.vo.accountant.ostrander_federal_radio_keycard,The vault keycard. Mr Ashgrove will notice eventually. Eventually is acceptable.
+voice.vo.accountant.ostrander_federal_radio_code_hint,The planner names the officer. Bankers write everything down.
+voice.vo.accountant.ostrander_federal_radio_code_pc,"The vault code, straight off an officer's computer. Of course it was."
+voice.vo.accountant.ostrander_federal_radio_server,The rack has started the time lock for you. Machines are so agreeable.
+voice.vo.accountant.ostrander_federal_radio_vault_gate,The vault gate is open. The time lock is next.
+voice.vo.accountant.ostrander_federal_radio_lasers,The grid is off. One less thing to bill for.
+voice.vo.accountant.ostrander_federal_radio_time_lock_new,"Now the time lock: the code at the console, or the vault-control rack."
+voice.vo.accountant.ostrander_federal_radio_time_lock,"The time lock is running. I bill by the hour, and so, it seems, does the lock."
+voice.vo.accountant.ostrander_federal_radio_time_lock_wait_new,Hold the basement until the lock releases. The vault guard still walks his rounds.
+voice.vo.accountant.ostrander_federal_radio_time_lock_wait,The time lock has released. The consolidation is yours.
+voice.vo.accountant.ostrander_federal_radio_vault_loot_new,"The cash cage. Every branch's surplus, strapped and stacked."
+voice.vo.accountant.ostrander_federal_radio_vault_loot,The cash cage is empty. A thorough audit.
+voice.vo.accountant.ostrander_federal_radio_gold_cage,"The bullion cage. The bank's own gold. Heavy, and worth every step."
+voice.vo.accountant.ostrander_federal_radio_secure,My account is settled. Anything more is yours.
+voice.vo.accountant.ostrander_federal_radio_deposit_boxes,Private boxes. Their owners will be reluctant to list what was in them.
+voice.vo.accountant.ostrander_federal_radio_bond_safe,"Bearer bonds. Payable to whoever holds them, which is now you."
+voice.vo.accountant.ostrander_federal_radio_president_safe,The president's safe. He will be explaining it to the board on Monday.
+voice.vo.accountant.ostrander_federal_radio_server_drives,The server drives. Someone will pay a great deal to know what is on them.
+voice.vo.accountant.ostrander_federal_radio_drill_delivery_new,A thermal drill is on its way. Be there when it arrives.
+voice.vo.accountant.ostrander_federal_radio_drill_delivery,You have both halves of the drill. Take them to the slab.
+voice.vo.accountant.ostrander_federal_radio_vault_drill_new,Set the drill on the marked slab. The floor is thinner than the door.
+voice.vo.accountant.ostrander_federal_radio_vault_breach,You are in the vault. The bags go up the hoist.
+voice.vo.accountant.ostrander_federal_radio_escape_wait_new,Your ride is coming. Hold your ground and keep the bags close.
+voice.vo.accountant.ostrander_federal_radio_escape_wait,"Your ride has arrived. Leave now, while it is still on schedule."
+voice.vo.accountant.ostrander_federal_radio_escape_new,Your exit is open. Bring what you can carry.
+voice.vo.accountant.ostrander_federal_radio_loot,Secured. Ostrander Federal's books no longer balance.
+voice.vo.accountant.ostrander_federal_radio_loot_cash_bricks,"Strapped cash, three branches' worth in every bag."
+voice.vo.accountant.ostrander_federal_radio_loot_gold,Gold. It never needs laundering.
+voice.vo.accountant.ostrander_federal_radio_loot_bearer_bonds,Bearer bonds. The most honest paper in the building.
+voice.vo.accountant.ostrander_federal_radio_loot_server_drives,"A server drive. Records are worth more than money, to the right buyer."
 voice.vo.mercer.gallery_night_intro,"Gala's in its last hour. Walk the rooms, get close to the paintings, find the list. Last call's coming and the hall empties after it."
 voice.vo.mercer.gallery_night_canvas_found_lantern,That's The Lantern Bearer. The one the buyer asked for by name.
 voice.vo.mercer.gallery_night_canvas_found_orchard,The Salt Orchard. That's on the list.
