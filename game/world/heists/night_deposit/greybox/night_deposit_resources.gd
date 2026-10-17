@@ -7,6 +7,17 @@ const OUT_DIR: String = "res://world/heists/night_deposit/"
 const SCENE_PATH: String = OUT_DIR + "night_deposit.tscn"
 const DEF_PATH: String = OUT_DIR + "night_deposit_def.tres"
 const VARIANTS_PATH: String = OUT_DIR + "night_deposit_variants.tres"
+## D-130 (population by difficulty, doc §Civilian and guard roster): ROVER_ADD / ROVER_NONE give expected guards
+## (2 fixed posts + rovers) 2.7 / 2.9 / 3.2 / 3.5 / 3.82 / 4.05 = Routine +0 / 7 / 19 / 30 / 41 / 50 %;
+## CLEANER_ADD / CLEANER_NONE give expected civilians (night manager 0.5 + cleaners) 1.2 / 1.28 / 1.38 / 1.45 /
+## 1.54 / 1.62 = +0 / 7 / 15 / 21 / 28 / 35 %, the second cleaner (the other floor's slot) from Lethal.
+## Indexed by Enums.Difficulty; game/tests/c/test_d130_population.gd pins the counts.
+const ROVER_ADD: Array[int] = [0, 0, 1, 1, 1, 2]
+## rover_none weight by difficulty (Routine 9/7 is the slot's own weight; Brutal 1 = the doc's 1-2 rovers at 50/50).
+const ROVER_NONE: Array[float] = [9.0 / 7.0, 1.0 / 3.0, 3.0, 1.0, 0.25, 3.0]
+const CLEANER_ADD: Array[int] = [0, 0, 0, 0, 1, 1]
+## cleaner_none weight by difficulty (Routine 0.3 is the slot's own weight).
+const CLEANER_NONE: Array[float] = [0.3, 0.2, 0.1, 0.04, 2.0, 0.9]
 
 
 # --- Resources --------------------------------------------------------------------------------
@@ -63,18 +74,17 @@ static func make_def() -> HeistDef:
 
 ## Variable table (doc §Variable table, §Rare events). Per-difficulty weights (A2-08 / A3-10) apply
 ## from Brutal up (keys are exact difficulties, so Brutal / Lethal / Cataclysm are listed one by one;
-## Routine to Hazardous keep the Routine weights). guard_post: the doc's weighted rover count goes
-## through the empty `rover_none` slot (see nd_gameplay.gd); Brutal+ picks 2 with it at weight 1.
+## Routine to Hazardous keep the Routine weights), except the D-130 population rows (ROVER_* / CLEANER_*).
+## guard_post: the doc's weighted rover count goes through the empty `rover_none` slot (see nd_gameplay.gd).
 static func make_variants() -> HeistVariantTable:
 	var t: HeistVariantTable = null
 	if ResourceLoader.exists(VARIANTS_PATH):
 		t = load(VARIANTS_PATH) as HeistVariantTable
 	if t == null:
 		t = HeistVariantTable.new()
-	var brutal_plus: Array[int] = [0, 0, 0, 1, 1, 1]
 	t.rules = [
-		{"group": &"guard_post", "pick": Vector2i(1, 1), "difficulty_add": brutal_plus,
-			"weights_by_difficulty": _brutal_plus({&"rover_none": 1.0})},
+		{"group": &"guard_post", "pick": Vector2i(1, 1), "difficulty_add": ROVER_ADD,
+			"weights_by_difficulty": _from_tense(&"rover_none", ROVER_NONE)},
 		{"group": &"camera", "pick": Vector2i(1, 1)},
 		{"group": &"security_room_staffed", "pick": Vector2i(1, 1),
 			"weights_by_difficulty": _brutal_plus({&"sec_staffed": 0.75, &"sec_empty": 0.25})},
@@ -87,7 +97,8 @@ static func make_variants() -> HeistVariantTable:
 		{"group": &"vent_open", "pick": Vector2i(1, 1)},
 		{"group": &"laser_pattern", "pick": Vector2i(1, 1),
 			"weights_by_difficulty": _brutal_plus({&"laser_static": 0.2, &"laser_sweep": 0.4, &"laser_timed": 0.4})},
-		{"group": &"cleaner", "pick": Vector2i(1, 1)},
+		{"group": &"cleaner", "pick": Vector2i(1, 1), "difficulty_add": CLEANER_ADD,
+			"weights_by_difficulty": _from_tense(&"cleaner_none", CLEANER_NONE)},
 		{"group": &"escape", "pick": Vector2i(1, 1)},
 		{"group": &"extra_loot", "pick": Vector2i(1, 1)},
 		# Never rolled: only the armored_car_early force_active pins the bay (last, so the other groups
@@ -109,6 +120,14 @@ static func make_variants() -> HeistVariantTable:
 		{"id": &"deposit_boxes", "values": [4, 6, 8], "weights": PackedFloat32Array([1.0, 1.0, 1.0])},
 	]
 	return t
+
+
+## D-130: {Tense..Cataclysm: {slot: weights[d]}} (Routine keeps the slot's own weight).
+static func _from_tense(slot: StringName, weights: Array[float]) -> Dictionary:
+	var out: Dictionary = {}
+	for d: int in range(Enums.Difficulty.TENSE, Enums.Difficulty.CATACLYSM + 1):
+		out[d] = {slot: weights[d]}
+	return out
 
 
 ## {Brutal: v, Lethal: v, Cataclysm: v} (weights_by_difficulty keys are exact difficulties).

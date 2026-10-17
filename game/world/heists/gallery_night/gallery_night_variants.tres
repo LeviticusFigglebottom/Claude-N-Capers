@@ -140,6 +140,10 @@ rules = Array[Dictionary]([{
 }, {
 "group": &"admin_pa",
 "pick": Vector2i(0, 0)
+}, {
+"difficulty_add": Array[int]([0, 1, 1, 2, 2, 2]),
+"group": &"gala_extra",
+"pick": Vector2i(0, 0)
 }])
 rare_events = Array[Dictionary]([{
 "chance": 0.05,
@@ -223,13 +227,19 @@ scalars = Array[Dictionary]([{
 "weights_by_difficulty": {
 2: PackedFloat32Array(0, 0.3, 0.4, 0.3, 0),
 3: PackedFloat32Array(0, 0.3, 0.4, 0.3, 0),
-4: PackedFloat32Array(0, 0.2, 0.35, 0.3, 0.15),
-5: PackedFloat32Array(0, 0.2, 0.35, 0.3, 0.15)
+4: PackedFloat32Array(0, 0.3, 0.35, 0.3, 0.05),
+5: PackedFloat32Array(0, 0.3, 0.3, 0.3, 0.1)
 }
 }, {
 "id": &"stragglers",
 "values": [0, 1, 2],
-"weights": PackedFloat32Array(0.4, 0.4, 0.2)
+"weights": PackedFloat32Array(0.4, 0.4, 0.2),
+"weights_by_difficulty": {
+2: PackedFloat32Array(0.35, 0.45, 0.2),
+3: PackedFloat32Array(0.3, 0.45, 0.25),
+4: PackedFloat32Array(0.2, 0.45, 0.35),
+5: PackedFloat32Array(0.1, 0.45, 0.45)
+}
 }, {
 "id": &"store_paintings",
 "values": [4, 6, 8],

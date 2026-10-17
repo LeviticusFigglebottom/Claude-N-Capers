@@ -134,6 +134,16 @@ const D115_CAST: Dictionary = {
 	"char_gallery_waiter": {
 		"Outfit": ["char_gallery_wine", "char_shirt_white", "char_tux_black"], "Gear": ["brass", "char_tie_black"],
 	},
+	# D-130 gala_extra: the cloakroom waitstaff (short wine jacket, no apron) and the drawings-cabinet attendant
+	# (grey knit cardigan, cotton gloves, staff lanyard).
+	"char_gallery_waiter_b": {
+		"Outfit": ["char_gallery_wine", "char_shirt_white", "char_trousers_black"], "Gear": ["brass", "char_tie_black"],
+		"Headwear": ["char_hair_brown", "brass"],
+	},
+	"char_gallery_attendant_c": {
+		"Outfit": ["char_knit_grey", "char_shirt_white", "char_glove_white", "char_trousers_black"],
+		"Gear": ["char_medic_white", "char_gallery_wine", "brass"],
+	},
 	"char_gallery_conservator": {
 		"Outfit": ["char_shirt_blue", "char_knit_grey", "char_work_charcoal", "char_glove_white", "char_chino_khaki"],
 		"Gear": ["char_medic_white"], "Headwear": ["char_metal_silver", "polymer_black"],
@@ -214,7 +224,7 @@ func test_index_lists_every_npc() -> void:
 ## hat or beanie, Vossberg's plum suit and gold, the clerk's lanyard card); the packer has no hard hat.
 ## D-SL-2: the second Shadow Ledger cleaner wears exactly npc_cleaner_sl's uniform but is another person.
 ## GN-D1 polish: the new Gallery Night looks (patrons c-g, waiter, conservator); test_p5_cast checks their roles.
-## D-130: patrons h-j, the fourth SL cleaner (same uniform as cleaner_sl) and the second ND cleaner.
+## D-130: patrons h-j, the fourth SL cleaner (same uniform as cleaner_sl) and the second ND cleaner; GN gala_extra: waiter_b, attendant_c.
 func _check_d115_cast() -> void:
 	for id: String in D115_CAST:
 		assert_true(_index.has(id), "%s in characters.json" % id)

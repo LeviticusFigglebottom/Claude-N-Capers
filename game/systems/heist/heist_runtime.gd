@@ -182,6 +182,7 @@ func start(p_heist_id: StringName, map_scene: PackedScene, p_seed: int, p_diffic
 	RappelLinks.build(map)  # QC-41: one-way rappel links from RAPPEL points
 	_spawn_npcs()
 	_spawn_crew()
+	_apply_dev_options()
 	preplan.spawn_drops(map, dynamic_root)  # C3: drop assets at their PREPLAN_POINTs
 	_connect_events()
 	mission = map.get_node_or_null("Mission") as HeistMission
@@ -513,6 +514,17 @@ static func spawn_info(sp: SpawnPoint) -> Dictionary:
 		"patrol_graph": sp.get_node_or_null(sp.patrol_graph) if not sp.patrol_graph.is_empty() else null,
 		"spawn_point": sp,
 	}
+
+
+## D-133 harness-only dev option (HeistLauncher.dev_options; never menus / saves): crew_damage_taken_mult on every
+## crew slot as a Modifiers source, logged so the evidence names it.
+func _apply_dev_options() -> void:
+	if not options.has("crew_damage_taken_mult"):
+		return
+	var m: float = float(options["crew_damage_taken_mult"])
+	Log.info(&"heist", "DEV OPTION crew_damage_taken_mult = %.2f (D-133 harness-only)" % m)
+	for slot: int in _crew:
+		Modifiers.set_source(slot, &"dev.crew_damage_taken", {&"defense.damage_taken_mult": m})
 
 
 func _spawn_crew() -> void:

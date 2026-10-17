@@ -213,19 +213,19 @@ height = 0.4888
 [node name="GalleryPatronI" unique_id=831482819 instance=ExtResource("1_glb")]
 
 [node name="Body" parent="Skeleton3D" index="0" unique_id=464660590]
-visibility_range_end = 20.0
+visibility_range_end = 15.0
 visibility_range_end_margin = 1.0
 
 [node name="Gear" parent="Skeleton3D" index="1" unique_id=464829279]
-visibility_range_end = 20.0
+visibility_range_end = 15.0
 visibility_range_end_margin = 1.0
 
 [node name="Hair" parent="Skeleton3D" index="2" unique_id=464861124]
-visibility_range_end = 20.0
+visibility_range_end = 15.0
 visibility_range_end_margin = 1.0
 
 [node name="Outfit" parent="Skeleton3D" index="3" unique_id=799415835]
-visibility_range_end = 20.0
+visibility_range_end = 15.0
 visibility_range_end_margin = 1.0
 
 [node name="Back" type="BoneAttachment3D" parent="Skeleton3D" index="4" unique_id=464645297]
@@ -269,7 +269,7 @@ bone_idx = 1
 transform = Transform3D(1, 0, 0, 0, 0.99875, 0.049939997, 0, -0.049939997, 0.99875, 0.1907, 0.051599998, 0.0356)
 
 [node name="CrowdLod" type="MeshInstance3D" parent="Skeleton3D" index="9" unique_id=757585886 groups=["crowd_lod"]]
-visibility_range_begin = 20.0
+visibility_range_begin = 15.0
 visibility_range_begin_margin = 1.0
 mesh = ExtResource("3_lod")
 skin = SubResource("skin_lod")

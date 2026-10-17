@@ -70,6 +70,14 @@ back spike) on wine enamel; staff wear it as a small round pin, security as a br
 * ``char_gallery_waiter``: the second waitstaff (1-2 spawn): a young man in a white shirt, black bow
   tie, Halberd-wine waistcoat with gold buttons, long black bistro apron, Halberd pin and name tag
   (beside ``npc_penthouse_staff``, the waitress in the graphite waistcoat).
+* D-130 (``gala_extra``: cloakroom waitstaff and a drawings-cabinet attendant), a third look for each pool:
+
+  * ``char_gallery_waiter_b``: the cloakroom waitstaff: a woman in her 50s, light skin, brown hair in a
+    chignon: a short Halberd-wine waiter's jacket with gold buttons over a white shirt, black bow tie, black
+    trousers, no apron (cloakroom, not the floor), Halberd pin, brass name tag, gold earrings.
+  * ``char_gallery_attendant_c``: the drawings-cabinet attendant: a man about 50, deep skin, bald, beard
+    shadow: a grey knit cardigan over a white band-collar shirt, black trousers, white cotton gloves
+    for handling works on paper, the gallery staff lanyard (wine, gold) and the Halberd pin.
 * ``char_gallery_conservator``: the paintings conservator (QC-58, rare ``cons_late``) in his own
   look instead of the attendant's (GN-D-c): an older man, grey side parting, beard: pale-blue shirt,
   grey knit sweater vest, a long charcoal canvas work apron, khaki trousers, white art-handling
@@ -148,6 +156,11 @@ VARIANTS = {
                               "hair_color": "grey", "lip": "char_lip_rose", "look": "patron_j"},
     "char_gallery_waiter": {"height": 1.77, "build": 0.35, "gender": 0.0, "age": 0.15, "skin": 4, "beard_shadow": 0.1,
                             "hair": "side_part", "hair_color": "brown", "look": "waiter"},
+    # D-130 gala_extra: third waitstaff (cloakroom) and third attendant (drawings cabinet)
+    "char_gallery_waiter_b": {"height": 1.68, "build": 0.5, "gender": 1.0, "age": 0.55, "skin": 2, "hair": "side_part",
+                              "hair_color": "brown", "lip": "char_lip_rose", "look": "waiter_b"},
+    "char_gallery_attendant_c": {"height": 1.78, "build": 0.6, "gender": 0.0, "age": 0.55, "skin": 6,
+                                 "beard_shadow": 0.6, "hair": "bald", "hair_color": "dark", "look": "attendant_c"},
     "char_gallery_conservator": {"height": 1.75, "build": 0.45, "gender": 0.0, "age": 0.7, "skin": 2,
                                  "beard_shadow": 0.7, "hair": "side_part", "hair_color": "grey", "look": "conservator"},
 }
@@ -468,6 +481,45 @@ def waiter(kit: Kit) -> None:
                          "black bistro apron, Halberd pin, brass name tag")
 
 
+def waiter_b(kit: Kit) -> None:
+    """D-130 cloakroom waitstaff (woman): short wine waiter's jacket, white shirt, black bow tie, no apron."""
+    fit, k = kit.fit, kit.k
+    _hips_z, belt_z, tuck = _z(kit)
+    sh = n.shoes(kit)
+    n.shirt(kit, "char_shirt_white", tuck, point_len=0.048)
+    n.trousers(kit, "char_trousers_black", sh, belt_z + 0.022 * k, hem_r=0.056)
+    n.bow_tie(kit, "char_tie_black", half_w=0.044)
+    n0 = len(kit.soft.f)
+    jk, _info = n.jacket(kit, WINE, 0.88 * k, 1.06 * k, button_mat="brass", lapel_w=0.045, neck_w=0.075,
+                         flare=0.05, chest_welt=False)
+    n.cull_under(kit, n0, jk, "faces_hidden_by_jacket")
+    hull = kit.hull()
+    kit.add_gear(p5.halberd_pin(hull, Vector((-0.09 * k, 0.3, 1.32 * k)), k))
+    kit.add_gear(gk.name_tag(hull, Vector((0.092 * k, 0.3, 1.30 * k)), k=k, mat="brass"))
+    kit.add_head(cg.chignon(fit, "char_hair_brown"))
+    kit.add_head(cg.earrings(fit, "brass"))
+    kit.notes["look"] = ("Cloakroom waitstaff (woman, 50s): short Halberd-wine waiter's jacket with gold buttons, "
+                         "white shirt, black bow tie, black trousers, Halberd pin, brass name tag, brown chignon")
+
+
+def attendant_c(kit: Kit) -> None:
+    """D-130 drawings-cabinet attendant (man): grey knit cardigan, band-collar shirt, cotton gloves, lanyard."""
+    fit, k = kit.fit, kit.k
+    _hips_z, belt_z, tuck = _z(kit)
+    sh = n.shoes(kit)
+    n.shirt(kit, "char_shirt_white", tuck, collar="band")
+    n.trousers(kit, "char_trousers_black", sh, belt_z + 0.022 * k)
+    n0 = len(kit.soft.f)
+    jk, _info = n.jacket(kit, "char_knit_grey", 0.80 * k, 1.04 * k, button_mat="char_button_dark",
+                         lapel_w=0.03, neck_w=0.085, flare=0.05, chest_welt=False)
+    n.cull_under(kit, n0, jk, "faces_hidden_by_jacket")
+    kit.add_soft(g.gloves(fit, GLOVE, cuff_len=0.05, base=0.0025, cuff_off=0.005))
+    n.lanyard(kit, WINE, "char_medic_white", card_z=1.17, band_mat="brass")
+    kit.add_gear(p5.halberd_pin(kit.hull(), Vector((-0.095 * k, 0.3, 1.33 * k)), k))
+    kit.notes["look"] = ("Drawings-cabinet attendant (man, about 50): grey knit cardigan over a white band-collar "
+                         "shirt, black trousers, white cotton gloves for works on paper, staff lanyard, Halberd pin")
+
+
 def conservator(kit: Kit) -> None:
     """Paintings conservator (QC-58, GN-D-c): work wear in the conservation studio after hours."""
     fit, k = kit.fit, kit.k
@@ -487,7 +539,8 @@ def conservator(kit: Kit) -> None:
 _looks = {"admin": admin, "curator": curator, "attendant": attendant, "attendant_b": attendant_b, "guard": guard,
           "patron": patron, "patron_b": patron_b, "patron_c": patron_c, "patron_d": patron_d, "patron_e": patron_e,
           "patron_f": patron_f, "patron_g": patron_g, "patron_h": patron_h, "patron_i": patron_i,
-          "patron_j": patron_j, "waiter": waiter, "conservator": conservator}
+          "patron_j": patron_j, "waiter": waiter, "waiter_b": waiter_b, "attendant_c": attendant_c,
+          "conservator": conservator}
 
 
 def recipe(kit: Kit) -> None:
