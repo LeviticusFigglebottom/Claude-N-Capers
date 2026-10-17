@@ -7,6 +7,7 @@ extends Node
 
 signal session_changed(slot: int)
 
+
 ## slot -> { "comp": InteractableComponent, "progress": float, "duration": float,
 ##           "start_pos": Vector3, "aimed": bool }
 var _sessions: Dictionary[int, Dictionary] = {}
@@ -215,10 +216,15 @@ func cancel(slot: int) -> void:
 	session_changed.emit(slot)
 
 
-## Damage interrupt (S9.1) unless `interaction.no_interrupt_on_damage`.
-func interrupt_on_damage(slot: int) -> void:
-	if Modifiers.flag(slot, &"interaction.no_interrupt_on_damage"):
-		return
+## D-134 addendum (S9.1 amended, PD2 playerdamage.lua damage_bullet never interrupts; interupt_interact only on a
+## state change): taking damage cancels NO held interaction, for any kind, humans and bots. Kept as the hook CrewHealth
+## calls; it does nothing (the old "no interrupt on damage" skill modifier is retired with it).
+func interrupt_on_damage(_slot: int) -> void:
+	pass
+
+
+## A stun / flash (PO6-17b) interrupts any hold interaction, a revive included (D-134 ◇: PD2 has no such rule).
+func interrupt_on_stun(slot: int) -> void:
 	cancel(slot)
 
 
