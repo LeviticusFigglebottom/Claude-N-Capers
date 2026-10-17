@@ -8,6 +8,7 @@ extends RefCounted
 
 const VIEWMODEL_LIT_LAYER: int = 1 << 20  # viewmodel_lit (visual_slots v1.2, D-095) = CrewView.VIEWMODEL_LIT_LAYER
 const L: GDScript = preload("res://world/heists/glasshouse/greybox/glasshouse_layout.gd")
+const SEATS: GDScript = preload("res://world/heists/shared/npc_seat_spawns.gd")  # D-130 seated spawns
 const CATALOG_PATH: String = "res://world/props/prop_catalog.json"
 const KITS_DIR: String = "res://world/kits/"
 ## Half size of the keep-out kept around every floor marker (spawn, patrol, use point...).
@@ -95,6 +96,8 @@ func dress(props_root: Node3D) -> void:
 		n.owner = _root
 		_finish_node(n, String(d[1]), "row", "", xf)
 	_shadow_fixtures()
+	for line: String in SEATS.snap(_root):  # D-130: seated spawns onto their chairs' Seats (no furniture moves)
+		report.append("seat " + line)
 
 
 func _folder(parent: Node3D, nm: String) -> Node3D:

@@ -707,6 +707,40 @@
   "weight": 1.0,
   "z": 0.0
  },
+ "prop_beacon_hazard": {
+  "aabb": [
+   -0.25,
+   0.0,
+   -0.25,
+   0.5,
+   0.8031,
+   0.5
+  ],
+  "clear": 0.0,
+  "fixture": true,
+  "glb": "res://assets/props/prop_beacon_hazard/prop_beacon_hazard.glb",
+  "group": "exterior",
+  "has_light": false,
+  "hosts": [],
+  "keepout": [],
+  "kind": "light_fixture",
+  "mount": "",
+  "nodes": [
+   "Beacon"
+  ],
+  "pin_only": true,
+  "place": "none",
+  "prefab": "",
+  "scene": "res://world/props/exterior/prop_beacon_hazard.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": false,
+  "surface": "metal",
+  "top": 0.0,
+  "visibility_range_end": 0.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
  "prop_bed_queen": {
   "aabb": [
    -0.895,
@@ -2979,6 +3013,11 @@
   "place": "seat",
   "prefab": "",
   "scene": "res://world/props/office/prop_chair_office.tscn",
+  "seat": [
+   0.0,
+   0.45,
+   -0.12
+  ],
   "seat_side": "front",
   "standoff": 0.0,
   "support": false,
@@ -3016,6 +3055,11 @@
   "place": "seat",
   "prefab": "",
   "scene": "res://world/props/office/prop_chair_task.tscn",
+  "seat": [
+   0.0,
+   0.47,
+   -0.12
+  ],
   "seat_side": "front",
   "standoff": 0.0,
   "support": false,
@@ -15866,6 +15910,40 @@
   "weight": 1.0,
   "z": 0.0
  },
+ "veh_gantry_crane": {
+  "aabb": [
+   -20.99,
+   0.0,
+   -11.5,
+   53.98,
+   33.59,
+   23.0
+  ],
+  "clear": 0.0,
+  "fixture": false,
+  "glb": "res://assets/props/veh_gantry_crane/veh_gantry_crane.glb",
+  "group": "dockside",
+  "has_light": false,
+  "hosts": [],
+  "keepout": [],
+  "kind": "crane",
+  "mount": "",
+  "nodes": [
+   "Crane"
+  ],
+  "pin_only": true,
+  "place": "none",
+  "prefab": "",
+  "scene": "res://world/props/dockside/veh_gantry_crane.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": false,
+  "surface": "metal",
+  "top": 0.0,
+  "visibility_range_end": 0.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
  "veh_heli_escape": {
   "aabb": [
    -1.1476,
@@ -16033,6 +16111,40 @@
   "place": "floor",
   "prefab": "",
   "scene": "res://world/props/exterior/veh_trawler.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": false,
+  "surface": "metal",
+  "top": 0.0,
+  "visibility_range_end": 0.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
+ "veh_trawler_dockside": {
+  "aabb": [
+   -8.494,
+   0.0,
+   -4.0804,
+   16.988,
+   12.51,
+   8.1608
+  ],
+  "clear": 0.0,
+  "fixture": false,
+  "glb": "res://assets/props/veh_trawler_dockside/veh_trawler_dockside.glb",
+  "group": "dockside",
+  "has_light": false,
+  "hosts": [],
+  "keepout": [],
+  "kind": "boat",
+  "mount": "",
+  "nodes": [
+   "Trawler"
+  ],
+  "pin_only": true,
+  "place": "none",
+  "prefab": "",
+  "scene": "res://world/props/dockside/veh_trawler_dockside.tscn",
   "seat_side": "front",
   "standoff": 0.0,
   "support": false,

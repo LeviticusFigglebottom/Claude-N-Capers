@@ -22,7 +22,7 @@ const NAV_FINGERPRINT: Dictionary = {
 	# AssistantChairA, K8 PodAChairS1 no longer obstruct); SL-1 polish: the K16 bench / mail trolley, the S1 post room
 	# and the denser K8 / S1 kits obstruct their footprints
 	"shadow_ledger": [1811, 1833, "eb6583dee03540fcbbf07cb7168f3251fa7daff972b9e118fd9e637af4cd04f2"],
-	"dockside_burn": [2211, 2258, "eba34e479cfc9b5759685a5da6c9694c34c61ac330122af6a9b596c1688f3f4c"],  # re-pinned: shutters baked shut
+	"dockside_burn": [2245, 2276, "677d48f8a950a07270e001cdccb952ca1a9fde9e1cb1208030ca8ae51b84782e"],  # re-pinned: DB-1 crane bogie colliders
 }
 const SKINS: String = "Geometry/Building/Skins"
 const OFFSET_MIN: float = 0.003

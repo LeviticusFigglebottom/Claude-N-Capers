@@ -569,7 +569,8 @@ func chair(parent: Node3D, nm: String, base: Vector3, yaw: float, npc_seat: bool
 		add(body, col)
 	var m: Marker3D = Marker3D.new()
 	m.name = "Seat"
-	m.position = Vector3(0.0, 0.45, 0.0)
+	# D-130: the catalog chair's Seat (office / task chairs sit 0.12 m forward), else the box seat
+	m.position = PropCatalog.seat(StringName(String(DD.CHAIR_ART.get(nm, ""))), Vector3(0.0, 0.45, 0.0))
 	add(body, m)
 	if DD.CHAIR_ART.has(nm):  # G2 (DB-C2): the catalog chair over the unchanged 0.45 m collider / seat
 		body.set_meta(&"art_asset", String(DD.CHAIR_ART[nm]))

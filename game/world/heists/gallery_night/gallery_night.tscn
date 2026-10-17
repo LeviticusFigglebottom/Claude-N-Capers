@@ -35786,7 +35786,7 @@ slot_id = &"curator_office"
 metadata/room = "CO"
 
 [node name="Curator" type="Marker3D" parent="Variants/Group_curator_route/Slot_curator_office" unique_id=103855]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0, -2.7)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0, -2.5800002)
 script = ExtResource("167_gn")
 kind = 2
 tags = Array[StringName]([&"civ_curator"])
@@ -36080,7 +36080,7 @@ slot_id = &"pa_late"
 metadata/room = "AO"
 
 [node name="AdminPA" type="Marker3D" parent="Variants/Group_admin_pa/Slot_pa_late" unique_id=103889]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -1, 0, -0.70000005)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -1, 0, -0.5799999)
 script = ExtResource("167_gn")
 kind = 2
 tags = Array[StringName]([&"civ_admin"])

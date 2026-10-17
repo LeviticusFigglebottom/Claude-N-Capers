@@ -1,4 +1,4 @@
-# Contract: characters (v1.29)
+# Contract: characters (v1.30)
 
 Producer: ENV C (generated humanoids + animations). Consumer: ENV A (NPC/crew prefabs).
 Until delivered, ENV A uses capsule placeholders with the same node names.
@@ -367,3 +367,9 @@ the breach start, facing the door (no timing change).
 the clip's root rate; a same-direction residual ≤ `turn_residual_max_deg` (22.5) eases in over `blend_s` (0.2 s smoothstep),
 an overshoot eases back, above 22.5° a second clip plays. `panic_start` plays once per civilian right before its first
 `cower*` (not at the instant of first panic: that would need a ~0.8 s stand before fleeing, against S3.1 timing).
+
+## v1.30: dress/skirt drape (D 6316e628, D-135)
+The 9 dress/skirt cloth materials render both faces (`cull_mode = CULL_DISABLED`). Skirt panels are stride-weighted: each panel
+follows its own thigh, then 90 % shin past the knee, with a 0.8 cm centre band and 1.8 cm knee slack. `_tools/check_skirt_drape.gd`
+measures the legs through the cloth per pose (budget ≤ 12 vertices, inner thigh only; 0 in cower/sit); `test_skirt_drape` pins it.
+Additive; no API change.

@@ -1,0 +1,8 @@
+asset: prop_beacon_hazard
+script: tools/blender/props/dockside_landmarks.py
+params: {"cat": {"fixture": true, "group": "exterior", "kind": "light_fixture", "pin_only": true, "place": "none"}, "fn": "beacon_hazard"}
+seed: 1658135039  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_beacon_hazard
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 24000
