@@ -35,7 +35,7 @@ var _cat: Dictionary = {}
 var _scenes: Dictionary = {}
 var _markers: Array[Vector3] = []
 var _boxes: Array[AABB] = []
-## Door prefabs and door-like openings: [world position, yaw (deg), leaf width].
+## Door prefabs and door-like openings: [world position, yaw (deg), leaf width, handle position (or the position)].
 var _doors: Array[Array] = []
 ## Map-built props with a catalog visual: [node, asset, world transform of the visual].
 var _mapbuilt: Array[Array] = []
@@ -131,6 +131,9 @@ func _dress_room(room: KitRoom, world_box: AABB, id: String, kit_id: String, pro
 			continue
 		room.add_anchor(_anchor_on_collider(mb[0], String(mb[1]), wx), StringName(String(mb[1])))
 		virtual.append(mb[0])
+	_desk_screens(room, virtual)
+	if D.DOOR_SIGN_ROOMS.has(id):
+		_door_signs(room, world_box)
 	var seed: int = int(D.KIT_SEEDS.get(id, 9000))
 	var res: Dictionary = KitPlacer.place(room, kit, seed, not D.NO_CEILING_GRID.has(id))
 	var all: Array = res["placements"]
@@ -169,6 +172,61 @@ func _dress_room(room: KitRoom, world_box: AABB, id: String, kit_id: String, pro
 		"" if warnings.is_empty() else ", warnings: " + "; ".join(warnings)])
 	if not missing.is_empty():
 		report.append("ERROR %s: required kinds not placed: %s" % [id, ",".join(missing)])
+
+
+## SL-1 polish: the bench pods' spine screens (DESK_SCREENS: host asset -> screen asset), anchors on the host's work top
+## (the layout collider's top, as the kit's "on" items) along its spine; the kit's monitors and clutter keep clear.
+func _desk_screens(room: KitRoom, virtual: Array[Node3D]) -> void:
+	for body: Node3D in virtual:
+		var asset: String = String(body.get_meta(&"art_asset", ""))
+		if not D.DESK_SCREENS.has(asset):
+			continue
+		var vis: Node3D = body.get_node_or_null("Visual") as Node3D
+		if vis == null:
+			continue
+		var ax: Transform3D = _anchor_on_collider(body, asset, _gx(vis))
+		var top: float = float((_cat[asset] as Dictionary).get("top", 0.0))
+		room.add_anchor(Transform3D(ax.basis, ax.origin + Vector3.UP * top), StringName(String(D.DESK_SCREENS[asset])))
+
+
+## SL-1 polish: a room sign (DOOR_SIGN_ASSET) on the room's side of each door on its edge, on the handle side, its
+## centre DOOR_SIGN_Z up and DOOR_SIGN_OFFSET from the door's centre line, 2 mm off the wall face. KitPlacer anchors:
+## the kit's own wall items keep clear of them. A sign that would touch a gameplay prefab is left out.
+func _door_signs(room: KitRoom, world_box: AABB) -> void:
+	var y: float = world_box.position.y
+	var lv: String = _level_of(y)
+	var c: Vector3 = world_box.get_center()
+	var rect: Rect2 = Rect2(world_box.position.x - 0.3, world_box.position.z - 0.3, world_box.size.x + 0.6,
+		world_box.size.z + 0.6)
+	var bb: AABB = aabb(D.DOOR_SIGN_ASSET)
+	for d: Array in _doors:
+		var pos: Vector3 = d[0]
+		var along_x: bool = absf(sin(deg_to_rad(float(d[1])))) < 0.5
+		if absf(pos.y - y) > 0.3 or not _on_rect_edge(rect, pos, along_x):
+			continue
+		var hv: Vector3 = (d[3] as Vector3) - pos
+		var hs: float = signf(hv.x if along_x else hv.z)
+		hs = 1.0 if hs == 0.0 else hs
+		var u: float = (pos.x if along_x else pos.z) + hs * (float(d[2]) * 0.5 + D.DOOR_SIGN_OFFSET)
+		var fixed: float = pos.z if along_x else pos.x
+		var side: float = signf((c.z if along_x else c.x) - fixed)
+		var t: float = 0.0
+		for sg: Array in edge_walls(lv, "x" if along_x else "z", fixed, u - 0.15, u + 0.15):
+			t = maxf(t, float(sg[2]))
+		if t <= 0.0:
+			continue
+		var face: float = fixed + side * (t * 0.5 + 0.002)
+		var p: Vector3 = Vector3(u, y + D.DOOR_SIGN_Z, face) if along_x else Vector3(face, y + D.DOOR_SIGN_Z, u)
+		var yaw: float = (180.0 if side > 0.0 else 0.0) if along_x else (-90.0 if side > 0.0 else 90.0)
+		var xf: Transform3D = Transform3D(Basis(Vector3.UP, deg_to_rad(yaw)), p)
+		var box: AABB = xf * bb
+		var clash: bool = false
+		for b2: AABB in _boxes:
+			if b2.intersects(box):
+				clash = true
+				break
+		if not clash:
+			room.add_anchor(xf, StringName(D.DOOR_SIGN_ASSET))
 
 
 ## A map-built support's anchor for KitPlacer: its visual, raised to the layout collider's top where the catalog
@@ -688,7 +746,9 @@ func _collect_node(n: Node) -> void:
 	if path.contains("/door/"):
 		var yaw: float = rad_to_deg(xf2.basis.get_euler().y)
 		var wd: float = float(pf.get(&"width_m")) if "width_m" in pf else 0.0
-		_doors.append([xf2.origin, yaw, wd if wd > 0.0 else 0.9])  # width_m 0: the kit single leaf
+		var handle: Node3D = pf.get_node_or_null("Interactable") as Node3D
+		_doors.append([xf2.origin, yaw, wd if wd > 0.0 else 0.9,  # width_m 0: the kit single leaf
+			_gx(handle).origin if handle != null else xf2.origin])
 		return
 	if path.contains("/window/"):
 		return

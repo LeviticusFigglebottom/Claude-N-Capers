@@ -180,7 +180,19 @@ const KEEP_OUT: Dictionary = {
 		[2.3, F41, 18.1, 5.9, F41 + 2.4, 19.25], [4.9, F41, 18.6, 5.9, F41 + 2.4, 23.8], [0.2, F41, 21.55, 5.9, F41 + 2.4, 23.8]],
 	"K19": [[12.1, F41, 21.0, 17.9, F41 + 2.4, 22.1]],
 	"M8": [[0.2, F42, 13.1, 10.4, F42 + 2.6, 13.6]],
+	# K16 (SL-1 polish): the bench by K8 and the mail trolley by K13 (DIRECT_PROPS) keep the kit's wall items off them
+	"K16": [[6.2, F41, 16.5, 7.8, F41 + 2.4, 17.15], [26.35, F41, 16.5, 27.45, F41 + 2.4, 17.15]],
+	# S1 (SL-1 polish): the post room's mail trolley by the S3 opening (DIRECT_PROPS)
+	"S1": [[25.5, 0.0, 11.9, 26.5, 2.4, 12.5]],
 }
+## Rooms whose doors get a room sign beside them (sl_dress._door_signs, SL-1 polish): the asset, its centre height
+## and its offset from the door's centre line past the leaf's half width (clear of the frame, on the handle side).
+const DOOR_SIGN_ROOMS: Array[String] = ["K16"]
+const DOOR_SIGN_ASSET: String = "prop_door_sign"
+const DOOR_SIGN_Z: float = 1.5
+const DOOR_SIGN_OFFSET: float = 0.32
+## Desk-mounted screens on the map-built desks (sl_dress._desk_screens): host catalog asset -> screen asset.
+const DESK_SCREENS: Dictionary = {"prop_workstation_pod": "prop_pod_screen"}
 ## Rooms whose kit ceiling grid is off (none).
 const NO_CEILING_GRID: Array[String] = []
 ## Map-built ceiling lights (layout / build_greybox) kept: rooms without a kit (the stairs, the head house) and the
@@ -212,6 +224,18 @@ const DIRECT_PROPS: Array = [
 	["TerraceBollard3", "prop_bollard_led", Vector3(16.0, F42, 23.4), 0.0, {}],
 	["TerraceBollard4", "prop_bollard_led", Vector3(24.0, F42, 23.4), 0.0, {}],
 	["TerraceBollard5", "prop_bollard_led", Vector3(31.6, F42, 23.4), 0.0, {}],
+	# SL-1 polish. K16 spine: a bench against the K8 wall and the internal-mail trolley parked by K13, against the north
+	# wall (face z 16.6), between the patrol points and clear of the door zones (the 1.3 m spine keeps >= 0.85 m)
+	["SpineBench", "prop_bench_corridor", Vector3(7.0, F41, 16.85), 180.0, {}],
+	["SpineMailTrolley", "prop_mail_trolley", Vector3(26.9, F41, 16.83), 180.0, {}],
+	# S1 service lobby: the post room's mail trolley against the south wall beside the S3 opening (outside the E3 escape
+	# zone, z <= 11.4, and the spawns), a notice and the service lift's sign on the lift wall (x 24.15, wall mounts)
+	["LobbyMailTrolley", "prop_mail_trolley", Vector3(26.0, 0.0, 12.19), 0.0, {}],
+	["LobbyNoticeLift", "prop_notice_frame", Vector3(24.15, 1.5, 11.0), -90.0, {}],
+	["LobbySignLift", "prop_door_sign", Vector3(24.15, 1.5, 10.25), -90.0, {}],
+	# roof: the helipad windsock, clamped to the plant block's north face (z 7.35) by its NE corner, the sock streaming
+	# north at 4 m, seen from the pad and its approach (clear of the C10 pole round the corner and the plant lamp)
+	["HelipadWindsock", "prop_windsock", Vector3(23.4, FRF + 2.206, 7.35), 0.0, {}],
 ]
 
 ## Kit fixture light tweaks per room id: asset -> Light3D properties. Offices and corridors run their 4000 K panels at

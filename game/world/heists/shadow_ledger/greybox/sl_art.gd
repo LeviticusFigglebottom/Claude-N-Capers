@@ -10,16 +10,18 @@ const L: GDScript = preload("res://world/heists/shadow_ledger/greybox/shadow_led
 const LUT_PATH: String = "res://assets/luts/lut_shadow_ledger.png"
 ## Lit window grids on the neighbours' facades the glazing looks at (dim emissive, flush on the facade, merged per
 ## facade): [name, axis of the facade face, fixed (the face), from, to, y0, y1, outward sign]. Rows of 1 m windows
-## every 3.6 m (a storey), 2 m wide with 1.2 m piers; a deterministic third stay dark.
+## every 3.6 m (a storey), 2 m wide with 1.2 m piers; floors dark, full or partly lit (fixed seed). The south / south-west / east
+## skyline towers and their windows are sl_skyline.gd's (SL-1 polish).
 const WINDOW_GRIDS: Array = [
 	["ArdenEast", "z", -20.2, -28.0, 38.0, -40.0, 32.0, 1.0],
 	["VantageWest", "z", 66.2, -6.0, 30.0, -60.0, -2.0, -1.0],
-	["SkylineSWNorth", "x", 64.0, -58.0, -22.0, -70.0, -32.0, -1.0],
-	["SkylineSNorth", "x", 70.0, -8.0, 20.0, -60.0, -10.0, -1.0],
-	["SkylineSENorth", "x", 66.0, 32.0, 58.0, -80.0, -42.0, -1.0],
-	["SkylineFarSENorth", "x", 64.0, 72.0, 108.0, -60.0, -22.0, -1.0],
-	["SkylineNEWest", "z", 120.0, -38.0, 28.0, -70.0, -27.0, -1.0],
 ]
+
+## RoofDressing pieces merged per prefix (merge_city): the crown fins and the helipad edge lights (housing, green lens).
+const ROOF_MERGE: Array[String] = ["CrownFinN", "CrownFinS", "PadLightBase", "PadLightLens"]
+
+## Seed of the facades' lit-window rolls (city_windows; plus the facade name's hash).
+const WINDOW_SEED: int = 7_1704
 
 ## Rooms without a reflection probe: the exteriors, shafts, the stairs and the matte back-of-house rooms (corridors,
 ## storage, electrical, plant): nothing glossy there, and every probe is six scene renders on its first frame.
@@ -122,23 +124,25 @@ func city_windows(site: Node3D, root: Node) -> int:
 		var along_x: bool = String(g[1]) == "x"
 		var face: float = float(g[2]) + float(g[7]) * 0.01
 		var nrm: Vector3 = (Vector3.BACK if along_x else Vector3.RIGHT) * float(g[7])
-		var row: int = 0
+		# SL-1 polish: a local generator with a fixed seed per facade (never the global one): each floor is dark, fully
+		# lit or partly lit at the facade's occupancy (the old hash lit a regular two-in-three grid)
+		var rng: RandomNumberGenerator = RandomNumberGenerator.new()
+		rng.seed = WINDOW_SEED + String(g[0]).hash()
+		var occupancy: float = rng.randf_range(0.25, 0.55)
 		var y: float = float(g[5])
 		var quads: int = 0
 		while y + 0.9 <= float(g[6]):
-			var col: int = 0
+			var roll: float = rng.randf()
+			var p: float = 0.0 if roll < 0.28 else (1.0 if roll < 0.4 else occupancy)
 			var a: float = float(g[3])
 			while a + 1.8 <= float(g[4]):
-				var hsh: int = ((row * 7919 + col * 104729 + int(face * 10.0)) % 101 + 101) % 101
-				if hsh % 3 != 0:
+				if rng.randf() < p:
 					var lo: Vector3 = Vector3(a, y, face) if along_x else Vector3(face, y, a)
 					var hi: Vector3 = Vector3(a + 1.8, y + 0.9, face) if along_x else Vector3(face, y + 0.9, a + 1.8)
 					_quad(st, lo, hi, nrm, along_x)
 					quads += 1
 				a += 3.2
-				col += 1
 			y += 3.6
-			row += 1
 		if quads == 0:
 			continue
 		st.set_material(mat)
@@ -212,8 +216,9 @@ func merge_railings(root: Node) -> int:
 	return saved
 
 
-## The lit window boxes of one band (Geometry/Site/CityLights/<band>_NN) and the crown fins (RoofDressing/CrownFin<N|S>NN)
-## become one mesh each (one draw per band instead of one per window). Visual only; the fins keep their fixture meta.
+## The lit window boxes of one band (Geometry/Site/CityLights/<band>_NN), the crown fins (RoofDressing/CrownFin<N|S>NN)
+## and the helipad's edge lights / markings (RoofDressing/<ROOF_MERGE prefix>NN) become one mesh each (one draw per
+## band instead of one per piece). Visual only; the fins and lights keep their fixture meta.
 func merge_city(root: Node) -> int:
 	var saved: int = 0
 	for grp: Array in [["Geometry/Site/CityLights", "_"], ["Geometry/Site/RoofDressing", "CrownFin"]]:
@@ -230,10 +235,13 @@ func merge_city(root: Node) -> int:
 			var band: String
 			if String(grp[1]) == "_":
 				band = nm.get_slice("_", 0)
-			elif nm.begins_with("CrownFin"):
-				band = nm.substr(0, 9)  # CrownFinN / CrownFinS
 			else:
-				continue
+				for pf: String in ROOF_MERGE:
+					if nm.begins_with(pf):
+						band = pf
+						break
+				if band == "":
+					continue
 			if not bands.has(band):
 				bands[band] = []
 				order.append(band)
@@ -253,7 +261,7 @@ func merge_city(root: Node) -> int:
 				fixture = fixture or mi2.has_meta(&"fixture")
 			st.set_material(mat)
 			var merged: MeshInstance3D = MeshInstance3D.new()
-			merged.name = band + ("s" if band.begins_with("CrownFin") else "Windows")
+			merged.name = band + ("s" if String(grp[1]) != "_" else "Windows")
 			merged.mesh = st.commit()
 			merged.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 			if fixture:
