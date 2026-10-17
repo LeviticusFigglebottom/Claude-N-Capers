@@ -392,10 +392,18 @@ func _hide_body() -> bool:
 	if ic == null:
 		note("no bag_body interactable on the gate guard")
 		return false
-	if not await pilot.use(ic, 20.0, func() -> bool: return pilot.crew.is_carrying_bag()):
-		note("gate guard not bagged")
-		return false
+	var at: Vector3 = _gate_npc.global_position
+	await pilot.use(ic, 20.0, func() -> bool: return not is_instance_valid(ic) or not ic.enabled)
 	var bag: LootBag = pilot.crew.carried_bag as LootBag
+	if bag == null:  # bagging leaves the body bag on the floor (PD2): pick it up
+		for n: Node in get_tree().get_nodes_in_group(G.LOOT_BAG):
+			var lb: LootBag = n as LootBag
+			if lb != null and lb.is_body_bag() and lb.global_position.distance_to(at) < 3.0:
+				bag = lb
+		if bag == null or not await pilot.use(_comp(bag), 20.0, func() -> bool: return pilot.crew.is_carrying_bag()):
+			note("gate guard not bagged / body bag not picked up (bag %s)" % bag)
+			return false
+	note("carrying the gate guard's body bag to the janitor closet")
 	if not await pilot.goto(CLOSET_IN, 0.3, 40.0):
 		note("janitor closet not reached (at %s)" % Po5Pilot._v(pilot.crew.global_position))
 		return false
