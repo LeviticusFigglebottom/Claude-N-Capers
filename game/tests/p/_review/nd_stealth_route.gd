@@ -232,6 +232,17 @@ func _gate_guard() -> bool:
 		return true
 	var hits: Array[int] = [0, 0]
 	var c: CrewController = pilot.crew
+	# Enter B5 only while he is away from PlantDoor with his back turned (D-128: PD2 uncover is instant within 2 m;
+	# a run walked through the door into him and he was ALARMED in 3 s). Crouched from here to the knife.
+	var plant: Door = _door("PlantDoor")
+	if plant != null:
+		var at_door: Vector3 = plant.global_position
+		var clear: Callable = func() -> bool:
+			return not g.is_alive() or (pilot.flat_dist(g.global_position, at_door) > 3.0 and _back_turned_to(g, at_door))
+		var ok: bool = await wait_until(clear, 60.0)
+		note("B5 entry: guard %.1f m from PlantDoor, back turned %s (waited ok %s)" % [
+			pilot.flat_dist(g.global_position, at_door), _back_turned_to(g, at_door), ok])
+	pilot.inp.press(&"crouch")
 	c.melee.hit_landed.connect(func(_t: Object) -> void: hits[0] += 1)
 	c.melee.swung.connect(func(_ch: bool) -> void: hits[1] += 1)
 	# He patrols the B5 corridor: only close in while his back is to us (a re-close walked in front of him once and
@@ -254,6 +265,7 @@ func _gate_guard() -> bool:
 			Po5Pilot._v(c.global_position), Po5Pilot._v(g.global_position), Po5Pilot._v(-g.global_basis.z),
 			pilot.flat_dist(g.global_position, c.global_position), hits[1], hits[0], g.health, g.is_alive(),
 			alert_before, g.alert_state])
+	pilot.inp.release(&"crouch")
 	if g.is_alive():
 		note("gate guard not knifed (alert %d)" % g.alert_state)
 		return false
@@ -281,7 +293,12 @@ func _gate_guard() -> bool:
 
 ## True when the guard faces away from the pilot (his forward and the pilot are > ~110 deg apart).
 func _back_turned(g: NpcBase) -> bool:
-	var to_me: Vector3 = pilot.crew.global_position - g.global_position
+	return _back_turned_to(g, pilot.crew.global_position)
+
+
+## True when the guard faces away from `p` (his forward and `p` are > ~110 deg apart).
+func _back_turned_to(g: NpcBase, p: Vector3) -> bool:
+	var to_me: Vector3 = p - g.global_position
 	to_me.y = 0.0
 	var fwd: Vector3 = -g.global_basis.z
 	fwd.y = 0.0
