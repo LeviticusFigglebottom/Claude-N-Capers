@@ -56,7 +56,10 @@ func _default_interaction_time() -> float:
 
 
 func _prefab_ready() -> void:
-	_route_hits(get_node_or_null(^"GlassBody"))
+	var glass_body: Node = get_node_or_null(^"GlassBody")
+	_route_hits(glass_body)
+	if glass_body != null:
+		glass_body.add_to_group(StealthDirector.GROUP_SEE_THROUGH)  # D-142: guards see through intact glass
 	_fit_glass_body()
 	var sash: Node3D = visual_node("Sash") as Node3D
 	if sash != null:
