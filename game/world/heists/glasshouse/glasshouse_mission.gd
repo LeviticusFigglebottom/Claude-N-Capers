@@ -72,11 +72,11 @@ func _on_mission_start() -> void:
 	# D-117 optional extras: more than the minimum bags, the salon's two cases, the sales-floor cases.
 	_tag_display_cases()
 	add_objective(&"extra_bags", &"objective.glasshouse.extra_bags", Enums.ObjectiveState.ACTIVE,
-		{"optional": true, "marker_tags": [TAG_LOOT_SECURE]})  # D-089: bags count at the van
+		{"optional": true, "side": true, "marker_tags": [TAG_LOOT_SECURE]})  # D-089: bags count at the van
 	add_objective(&"salon", &"objective.glasshouse.salon", Enums.ObjectiveState.ACTIVE,
-		{"optional": true, "marker_tags": [TAG_SALON_CASE]})
+		{"optional": true, "side": true, "marker_tags": [TAG_SALON_CASE]})
 	add_objective(&"display_cases", &"objective.glasshouse.display_cases", Enums.ObjectiveState.ACTIVE,
-		{"optional": true, "marker_tags": [TAG_DISPLAY_CASE]})
+		{"optional": true, "side": true, "marker_tags": [TAG_DISPLAY_CASE]})
 	on_event(&"interaction_completed", _on_interaction_completed)
 	on_event(&"device_finished", _on_device_finished)
 	on_event(&"device_jammed", _on_device_jammed)

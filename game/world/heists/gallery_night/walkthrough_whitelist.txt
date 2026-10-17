@@ -1137,3 +1137,9 @@ PlayerRoof4 Gameplay/Doors/ShutterTreasury
 PlayerRoof4 Gameplay/Doors/ShutterTreasury/UsePoint
 PlayerRoof4 Gameplay/Lifts/ArtLift
 PlayerRoof4 Gameplay/Lifts/ArtLift/UsePoint
+#
+# D-073 lockdown shutters (2026-10-17, P's DB-P1 finding): the three shutter doorways are baked closed and their
+# NavLink bridges them while rolled up, so walks through the 3 m Calloway arch funnel through its centre (+~1 m on
+# routes already near 3x: 65.7 / 64.8 m and 71.4 / 70.8 m).
+PlayerMews1 Gameplay/Loot/StudyUG1b/UsePoint
+PlayerRoof4 Gameplay/Windows/LoggiaWindow2/UsePoint

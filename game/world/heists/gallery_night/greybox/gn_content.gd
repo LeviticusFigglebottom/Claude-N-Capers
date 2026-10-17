@@ -362,6 +362,10 @@ func _build_shutters(parent: Node3D) -> void:
 					var pl: Array = door_place(d)
 					pos = pl[0] as Vector3
 					yaw = float(pl[1])
+		# D-073: baked closed like the BARRED doorways (the shutter's NavLink bridges it while rolled up); open in the bake
+		# a barred shutter kept a navmesh path through it.
+		var w: float = float(sh[5]) + 0.3
+		obstruct(Transform3D(yaw_basis(yaw), pos), AABB(Vector3(-w * 0.5, -0.2, -0.3), Vector3(w, 2.6, 0.6)))
 		cprefab(parent, "door", String(sh[0]), pos, yaw, String(sh[4]),
 			{"lock": "enum:NONE", "swing": "enum:INWARD", "starts_open": true, "width_m": float(sh[5]),
 				"leaf_surface": &"metal", "objective_tag": &"shutter", "shutter": true}, null, {"kind": String(sh[6]), "swing_side": "back"})
