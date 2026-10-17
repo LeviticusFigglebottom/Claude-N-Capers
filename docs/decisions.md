@@ -1177,3 +1177,8 @@ itself has no errors. D-115 item 3 is a **flow** gate (objectives, transitions, 
 `crew_damage_taken_mult` (ENV A; default 1.0, only settable through the e2e launcher's options, never from menus or
 saves, logged in the run header) to **0.25**, on Routine, with assault events ON. Full immunity and turning assault events
 off are not allowed. The evidence names the option. A mission run that passes this way closes D-115 item 3 for that heist.
+**D-132 addendum (D 87e7bf4b):** D2 landed (LOD2 at 15 m crowd / 25 m units: GN 1011 → 738 draws, loud 2860 → 2524). D3 is
+folded into D1 (Godot casts shadows per node, not per surface). D1 becomes shared Texture2DArray tiers (256²/512², repeat
+wrap) + one ShaderMaterial per merged node instead of a flat atlas (189 uniform ORM materials, tiled UVs up to 3.75),
+crowd + unit characters only; checks: Compatibility lighting/shadows/fog/viewmodel_lit parity, outline + bleed next_pass,
+ragdoll/HandProps, VRAM, 2/10/30 m lineups; per-character fallback switch.
