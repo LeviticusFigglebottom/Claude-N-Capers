@@ -75,6 +75,17 @@ func set_caps(spray_cap: int, decal_cap: int, pool_cap: int) -> void:
 	pools.set_cap(pool_cap)
 
 
+## Build every spray up to the cap and both decal pools (with every blood texture) now, hidden. Idempotent.
+func prewarm() -> void:
+	while _sprays.size() < _spray_cap:
+		_take_spray()
+	_cursor = -1
+	var splat_kinds: Array[StringName] = VfxTextures.BLOOD_KINDS.duplicate()
+	splat_kinds.erase(&"blood_pool")
+	splats.prewarm(splat_kinds)
+	pools.prewarm([&"blood_pool"] as Array[StringName])
+
+
 func spray_count() -> int:
 	return _sprays.size()
 

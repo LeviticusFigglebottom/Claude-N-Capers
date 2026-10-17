@@ -118,6 +118,26 @@ func place_basis(kind: StringName, pos: Vector3, b: Basis, size: Vector2, hold_s
 	return node
 
 
+## Create every slot up to the cap now (hidden) and generate each of `kinds`' textures (quad materials), set on a
+## hidden slot each so a Decal atlas takes them in now: placing never builds a node or a texture mid-fight. Idempotent.
+func prewarm(kinds: Array[StringName]) -> void:
+	while _slots.size() < _cap:
+		_add_slot()
+	var j: int = 0
+	for kind: StringName in kinds:
+		var tex: Texture2D = _texture(kind)
+		if tex == null or _slots.is_empty():
+			continue
+		var node: Node3D = _slots[j % _slots.size()]
+		j += 1
+		if _age[_slots.find(node)] >= 0.0:
+			continue  # live decal: leave it
+		if use_decal_nodes:
+			(node as Decal).texture_albedo = tex
+		else:
+			(node as MeshInstance3D).material_override = _material(kind, tex)
+
+
 ## Freeze a growing decal at its current size (pool stops bleeding).
 func stop_growing(node: Node3D) -> void:
 	var i: int = _slots.find(node)
@@ -221,25 +241,29 @@ func _take_slot() -> int:
 		if _age[i] < 0.0:
 			return i
 	if _slots.size() < _cap:
-		_slots.append(_new_node())
-		_age.append(-1.0)
-		_hold.append(0.0)
-		_fade.append(VfxSettings.DECAL_FADE_S)
-		_alpha.append(0.0)
-		_peak.append(1.0)
-		_grow_from.append(1.0)
-		_grow_s.append(0.0)
-		_grow_t.append(0.0)
-		_grow_k.append(1.0)
-		_size.append(Vector2.ONE)
-		_serial.append(0)
-		_base.append(Transform3D.IDENTITY)
-		return _slots.size() - 1
+		return _add_slot()
 	var oldest: int = 0
 	for i: int in range(1, _slots.size()):
 		if _age[i] > _age[oldest]:
 			oldest = i
 	return oldest
+
+
+func _add_slot() -> int:
+	_slots.append(_new_node())
+	_age.append(-1.0)
+	_hold.append(0.0)
+	_fade.append(VfxSettings.DECAL_FADE_S)
+	_alpha.append(0.0)
+	_peak.append(1.0)
+	_grow_from.append(1.0)
+	_grow_s.append(0.0)
+	_grow_t.append(0.0)
+	_grow_k.append(1.0)
+	_size.append(Vector2.ONE)
+	_serial.append(0)
+	_base.append(Transform3D.IDENTITY)
+	return _slots.size() - 1
 
 
 func _new_node() -> Node3D:

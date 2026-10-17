@@ -20,8 +20,10 @@ const DOOR_LOOKAHEAD_M: float = 1.8
 ## _pass_leaf: half width of a clear lane through a doorway (crew capsule radius 0.35, less a little) (m).
 const LANE_HALF_M: float = 0.3
 ## _through_link: inside this (m) of an open door's plane the pilot walks straight across, ending this far past it.
-const THROUGH_DOOR_M: float = 1.0
+const THROUGH_DOOR_M: float = 0.8  # < THROUGH_PAST_M, or the crossing never ends (DB-7 q4 ANEast)
 const THROUGH_PAST_M: float = 0.9
+## _door_on_line: a closed door within this (m) of the crew's plane is opened before stepping across it.
+const LINE_DOOR_M: float = 1.0
 ## Loud: a visible enemy within this range is fought before / during a hold (S9.1: damage cancels holds) (m).
 const HOLD_THREAT_M: float = 20.0
 ## Longest clearing fight before holding anyway (s).
@@ -205,19 +207,23 @@ func _through_link(target: Vector3) -> Variant:
 	return null
 
 
-## DB-7 (ChamberASpine): the door whose plane is within THROUGH_DOOR_M of the crew (inside its width, same floor) with
-## `target` beyond it, open or not; door_ahead misses D-073 doors (the path ends at the NavLink end). Else null.
-func _door_on_line(target: Vector3) -> Door:
+## DB-7 (ChamberASpine): the door whose plane is within LINE_DOOR_M of the crew (same floor) and which the step to
+## the next path `corner` crosses inside its width; door_ahead misses D-073 doors (the path ends at the NavLink end).
+## The corner, not the heist target: a door the crew merely stands beside is not on its way (DB-7 q3 DockRoller).
+func _door_on_line(corner: Vector3) -> Door:
 	for n: Node in crew.get_tree().get_nodes_in_group(Door.GROUP):
 		var door: Door = n as Door
 		if door == null:
 			continue
 		var inv: Transform3D = door.global_transform.affine_inverse()
 		var me: Vector3 = inv * crew.global_position
-		if absf(me.z) >= THROUGH_DOOR_M or absf(me.y) > NEAR_DY_M or absf(me.x) > door.effective_width() * 0.5:
+		if absf(me.z) >= LINE_DOOR_M or absf(me.y) > NEAR_DY_M:
 			continue
-		var tz: float = (inv * target).z
-		if absf(tz) >= 0.05 and not (signf(tz) == signf(me.z) and absf(tz) <= absf(me.z)):
+		var to: Vector3 = inv * corner
+		if absf(to.z) < 0.05 or signf(to.z) == signf(me.z):
+			continue  # the step does not cross the plane
+		var x: float = lerpf(me.x, to.x, absf(me.z) / (absf(me.z) + absf(to.z)))
+		if absf(x) <= door.effective_width() * 0.5:
 			return door
 	return null
 
@@ -279,7 +285,7 @@ func goto(target: Vector3, arrive_m: float = 0.8, timeout_s: float = 60.0, sprin
 			if flat_dist(p, crew.global_position) > 0.45:
 				corner = p
 				break
-		var line_door: Door = _door_on_line(target) if doors else null
+		var line_door: Door = _door_on_line(corner) if doors else null
 		if line_door != null and not line_door.is_open:
 			inp.release(&"move_forward")
 			if _door_blocked(line_door):

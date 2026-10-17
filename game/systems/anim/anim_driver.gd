@@ -6,9 +6,10 @@
 ## Each frame it picks one clip, by priority:
 ##   death_front/back (from the last hit direction vs facing) > crew state (downed, tased, kneel_cuffed) /
 ##   stun (tased) > pose hints (tied, cower, hands_up, surrender, lie_down, kneel_cuffed) > special actions
-##   (kick_charge, shield_bang, heal_ally) > crew actions (mask_on, throw_grenade; CrewActionAnim) > one-shots (turn,
-##   fire, reload, throw_bag, melee, kick_hit,
-##   hit_head / hit_chest / hit_shoulder_* / hit_leg_* by zone, else hit_react*) > interact_* / pager_answer >
+##   (kick_charge, shield_bang, heal_ally) > crew actions (mask_on, throw_grenade; CrewActionAnim) >
+##   (crew) interact_* / pager_answer (D-115: an interaction beats every one-shot; a hit is an upper-body flinch) >
+##   one-shots (turn, fire, reload, throw_bag, melee, kick_hit,
+##   hit_head / hit_chest / hit_shoulder_* / hit_leg_* by zone, else hit_react*) >
 ##   locomotion by velocity (walk, run, sprint, crouch_walk, strafe,
 ##   walk_back, flee, carry_bag_walk, the unit's EnemyDef.params.anim_walk_clip = shield_walk / dozer_walk at
 ##   walking speed; speed_scale = v / clip speed) > aim_* >
@@ -21,8 +22,10 @@
 ## shield_idle*, walk family -> shield_walk*), so the left hand stays on the grip and the shield Visual
 ## follows HandL/Socket. Guard down (stagger: hit_react), dropped, dead or a rig without the clip: the normal
 ## clips play.
-## Turn in place: a standing body whose yaw moved more than AnimTweak.turn_threshold_deg plays turn_l/r while
-## the rig root yaws toward the body at 90 deg / 0.8 s (the rig is counter-rotated; the body itself is untouched).
+## Turn in place (TurnInPlace): a standing body whose yaw moved more than AnimTweak.turn_threshold_deg (20) plays
+## turn_l_45 / turn_r_45 (below 67.5 deg) or turn_l / turn_r at speed_scale 1 while the rig root yaws at the clip's
+## own rate (the rig is counter-rotated; the body itself is untouched); the residual eases in over the blend-out;
+## smaller changes snap over turn_snap_s.
 ## Third-person weapon: WeaponVisual (ENV B, by class name) of WeaponDef.model at `HandR/Socket` (crew: the
 ## equipped weapon, NPC: EnemyDef.weapon when it has a WeaponDef with a model; otherwise none).
 ## D-116 police combat (CombatClips): aim on the move, class / moving reloads, cover poses, stagger, DB-4 sit_chair_armed;
@@ -81,13 +84,17 @@ const VARIANT_GROUPS: Dictionary = {
 	&"surrender": [&"surrender", &"surrender_b", &"surrender_c"],
 	&"surrender_idle": [&"surrender_idle", &"surrender_idle_b", &"surrender_idle_c"],
 	&"kneel_cuffed": [&"kneel_cuffed", &"kneel_cuffed_b", &"kneel_cuffed_c"],
+	# D-116 civ_panic_variants (same index: cower_b <-> flee_b <-> hands_up_b ...).
+	&"cower": [&"cower", &"cower_b", &"cower_c"],
+	&"flee": [&"flee", &"flee_b", &"flee_c"],
 }
 ## Variant loops that start at a per-body random offset (SOURCE surrender_variants: the periods differ, so they never
 ## re-sync). surrender_idle* reached from its surrender* one-shot starts on frame 0 instead (the chain frame).
-const OFFSET_LOOP_GROUPS: Array[StringName] = [&"hands_up", &"kneel_cuffed", &"surrender_idle"]
+## D-116: cower too (flee keeps the gait phase).
+const OFFSET_LOOP_GROUPS: Array[StringName] = [&"hands_up", &"kneel_cuffed", &"surrender_idle", &"cower"]
 const POSE_CLIPS: Array[StringName] = [
 	&"tied", &"kneel_cuffed", &"lie_down", &"cower", &"hands_up", &"surrender", &"downed", &"tased",
-	&"cower_stand", &"cower_seated", &"surrender_idle",
+	&"cower_stand", &"cower_seated", &"surrender_idle", &"cower_b", &"cower_c", &"panic_start",
 	&"hands_up_b", &"hands_up_c", &"surrender_b", &"surrender_c", &"surrender_idle_b", &"surrender_idle_c",
 	&"kneel_cuffed_b", &"kneel_cuffed_c",
 	# v1.21 crew states (the weapon follows weapon_shown(), not this list, for the downed set).
@@ -97,6 +104,10 @@ const POSE_CLIPS: Array[StringName] = [
 ## Special actions held while the hint lasts: they win over one-shots, locomotion and aim (the brain
 ## stands the body still for them).
 const ACTION_CLIPS: Array[StringName] = [&"kick_charge", &"shield_bang", &"heal_ally"]
+## D-116: held brain hints the host replicates to clients (NetEntityCodec NPC state "ah", stored in META_NET_HINT):
+## the police / guard cuff (interact_low). Every other hint stays host-only (clients use the alert-state fallbacks).
+const NET_HINTS: Array[StringName] = [&"cuff"]
+const META_NET_HINT: StringName = &"net_anim_hint"
 ## Hints played once when the hint changes to them.
 const ONESHOT_HINTS: Array[StringName] = [&"melee", &"kick_hit", &"hit_react"]
 ## characters.md v1.11: clips that mean "seated at a desk / chair" for the seated deaths.
@@ -151,7 +162,8 @@ const FLINCH_LAYER_NODE: String = "FlinchLayer"
 ## Starts / stops only for straight-ahead motion (|dir . forward| at least this).
 const START_STOP_DOT: float = 0.7
 ## One-shot hints that are not held as an idle once played (the hint may linger in the brain).
-const ONCE_ONLY_HINTS: Array[StringName] = [&"kick_hit", &"hit_react"]
+## D-115: melee too (a lingering melee hint held the finished non-looping clip: the player stopped under the driver).
+const ONCE_ONLY_HINTS: Array[StringName] = [&"kick_hit", &"hit_react", &"melee"]
 ## Clip -> substitute when the library lacks it (then idle).
 const FALLBACK_CLIPS: Dictionary = {
 	&"aim_pistol": &"idle_alert", &"aim_rifle": &"idle_alert", &"interact_low": &"interact_mid",
@@ -163,7 +175,8 @@ const FALLBACK_CLIPS: Dictionary = {
 	&"shield_bang": &"idle_alert", &"heal_ally": &"interact_mid",
 	&"desk_work": &"desk_type", &"phone_seated": &"phone_call", &"sit_chair_watch": &"sit_chair", &"mop": &"browse",
 	&"sit_bed_read": &"sit_chair", &"sit_chair_read": &"sit_bed_read", &"mug_idle": &"idle", &"mug_carry_walk": &"walk", &"idle_thug": &"idle",
-	&"rappel": &"climb_ladder", &"climb_ladder": &"idle",
+	&"cower_b": &"cower", &"cower_c": &"cower", &"panic_start": &"cower", &"flee_b": &"run", &"flee_c": &"run",
+	&"rappel": &"climb_ladder", &"climb_ladder": &"idle", &"turn_l_45": &"turn_l", &"turn_r_45": &"turn_r",
 	# D-111: drill / crawl / gala and club ambient clips (characters.md v1.9-v1.10).
 	&"drill_place": &"interact_mid", &"downed_crawl": &"downed", &"bartender_wipe": &"browse",
 	&"bartender_pour": &"browse", &"bouncer_idle": &"idle", &"teller_count": &"desk_type", &"dance_a": &"idle",
@@ -216,6 +229,16 @@ var hits: HitClips = null
 var held_visuals: HeldVisuals = null
 ## D-132 animation LOD (AnimLod): which frames an NPC ticks / samples vs the local camera.
 var lod: AnimLod = null
+## D-115: a loop cut by a one-shot resumes its running phase (LoopResume).
+var loop_resume: LoopResume = null
+## D-116: turn in place (TurnInPlace).
+var turn: TurnInPlace = null
+## D-116: a civilian's panic_start before its first cower* (CivPanic).
+var civ_panic: CivPanic = null
+## D-116 npc_oneshot (NetOneshot): client, seconds left of a one-shot the host sent (no turn clip starts meanwhile);
+## the last one sent (host) / applied (client) as [clip, start_s, speed] (tests).
+var net_oneshot_left: float = 0.0
+var last_net_oneshot: Array = []
 ## WeaponDef.weapon_class of the held weapon (-1 without a WeaponDef): the D-116 class reloads.
 var weapon_class: int = -1
 ## Lead ruling (b): the upper-body hit-zone flinch layer (every animated body); see AnimLayers.play_flinch.
@@ -259,6 +282,7 @@ var _oneshot_left: float = 0.0
 var _oneshot_speed: float = 1.0
 var _oneshot_dur: float = 0.0
 var _oneshot_while_moving: bool = false
+var _oneshot_start: float = 0.0
 var _restart: bool = false
 var _turning_left: float = 0.0
 var _aim_hold_left: float = 0.0
@@ -345,6 +369,9 @@ func _init() -> void:
 	hits = HitClips.new(self)
 	held_visuals = HeldVisuals.new(self)
 	lod = AnimLod.new(self)
+	loop_resume = LoopResume.new(self)
+	turn = TurnInPlace.new(self)
+	civ_panic = CivPanic.new(self)
 
 
 func _ready() -> void:
@@ -441,12 +468,13 @@ func tick(delta: float) -> void:
 	if _npc != null and NpcRagdoll.owns_pose(_npc):
 		return  # PO6-19: the ragdoll owns the pose (paused player, baked skeleton, rig yaw kept)
 	delta = maxf(delta, 0.0001)
+	loop_resume.step(delta)
 	var tw: AnimTweak = AnimTweak.data()
 	_update_velocity(delta, tw)
 	_oneshot_left = maxf(_oneshot_left - delta, 0.0)
+	net_oneshot_left = maxf(net_oneshot_left - delta, 0.0)
 	_update_start_stop(tw)
 	_aim_hold_left = maxf(_aim_hold_left - delta, 0.0)
-	_turning_left = maxf(_turning_left - delta, 0.0)
 	_update_crew_state_clips(delta)
 	if crew_action != null:
 		crew_action.update(delta)
@@ -457,7 +485,8 @@ func tick(delta: float) -> void:
 		if ONESHOT_HINTS.has(hint) and not (once != hint and _oneshot == once and _oneshot_left > 0.0):
 			play_oneshot(once, -1.0, true)
 	_update_turn(delta, tw)
-	var want: StringName = choose_clip()
+	combat.update_door_kick(_npc)  # D-116: the loud breach of a locked door (door_kick_<fam>)
+	var want: StringName = civ_panic.apply(choose_clip(), delta)
 	if _npc != null and _npc.alive:
 		_seated = SEATED_CLIPS.has(want)
 		_alive_clip = want
@@ -540,8 +569,10 @@ func weapon_shown(c: StringName) -> bool:
 
 
 ## Play `p_clip` once for `duration` seconds (-1 = the clip's length / speed). `while_moving` lets it
-## override locomotion (throw_bag, melee); otherwise it shows only while standing (fire, reload, turn).
-func play_oneshot(p_clip: StringName, duration: float = -1.0, while_moving: bool = false, speed: float = 1.0) -> void:
+## override locomotion (throw_bag, melee); otherwise it shows only while standing (fire, reload, turn). `start`: the
+## clip time it starts from (D-116 door_kick joining its breach late).
+func play_oneshot(p_clip: StringName, duration: float = -1.0, while_moving: bool = false, speed: float = 1.0,
+		start: float = 0.0) -> void:
 	if player == null:
 		return
 	var full: String = _resolve(p_clip)
@@ -554,6 +585,7 @@ func play_oneshot(p_clip: StringName, duration: float = -1.0, while_moving: bool
 	_oneshot_dur = duration
 	_oneshot_speed = speed
 	_oneshot_while_moving = while_moving
+	_oneshot_start = start
 	_restart = true
 
 
@@ -684,7 +716,7 @@ func _variants_of(fam: StringName) -> Array:
 	return out
 
 
-## Below the poses: one-shot > interaction > locomotion > aim > hint idle > idle.
+## Below the poses: interaction (crew) > one-shot > locomotion > aim > hint idle > idle.
 func _active_clip(hint_clip: StringName) -> StringName:
 	var tw: AnimTweak = AnimTweak.data()
 	var speed: float = horizontal_speed()
@@ -694,10 +726,10 @@ func _active_clip(hint_clip: StringName) -> StringName:
 	var cover: StringName = combat.cover_clip(_npc) if _npc != null and not moving and aiming else &""
 	# D-116: on a cover post the cover loop plays on through the shots and turns (they would restart it).
 	var cover_hold: bool = cover != &"" and (String(_oneshot).begins_with("fire_") or String(_oneshot).begins_with("turn_"))
-	if _oneshot_left > 0.0 and (not moving or _oneshot_while_moving) and not cover_hold:
+	if _interact_kind != &"" and _crew != null:
+		out = _interact_clip(tw)  # D-115: an interaction (revive, bag, drill...) beats a turn / hit / fire one-shot
+	elif _oneshot_left > 0.0 and (not moving or _oneshot_while_moving) and not cover_hold:
 		out = _oneshot
-	elif _interact_kind != &"" and _crew != null:
-		out = _interact_clip(tw)
 	elif moving:
 		out = _locomotion_clip(speed, tw)
 	elif aiming:
@@ -805,7 +837,7 @@ func _special_locomotion(speed: float, tw: AnimTweak) -> StringName:
 		out = &"walk_text"  # D-103: walking while texting (characters.md v1.9, 1.2 m/s)
 	elif _npc != null and _npc.role == &"civilian" and (
 			_npc.alert_state == Enums.AlertState.PANICKED or _hint() == &"run" or _hint() == &"flee"):
-		out = &"flee"
+		out = pose_variant(&"flee")  # D-116 flee_b / flee_c (the same gait)
 	elif _npc != null:
 		out = _unit_walk_clip(speed, tw)
 	return out
@@ -891,10 +923,14 @@ func _aiming() -> bool:
 	return gunner != null and gunner.engaging
 
 
-## The brain's anim_hint (a non-empty `Surrender` component hint wins), host only.
+## The brain's anim_hint (a non-empty `Surrender` component hint wins) on the host; on a client only the NET_HINTS
+## the host replicates (NetEntityCodec NPC state "ah" -> META_NET_HINT).
 func _hint() -> StringName:
-	if _npc == null or not Net.is_authority():
+	if _npc == null:
 		return &""
+	if not Net.is_authority():
+		var nh: Variant = _npc.get_meta(META_NET_HINT, &"")
+		return nh if nh is StringName else &""
 	var s: Node = _body.get_node_or_null(^"Surrender")
 	if s != null:
 		var sh: Variant = s.get(&"anim_hint")
@@ -976,32 +1012,9 @@ func _update_velocity(delta: float, tw: AnimTweak) -> void:
 		_vel = Vector3.ZERO
 
 
+## Turn in place (TurnInPlace: turn_*_45 / turn_l / turn_r at speed 1, the rig yaw at the clip's own rate).
 func _update_turn(delta: float, tw: AnimTweak) -> void:
-	var body_yaw: float = _body.global_rotation.y if _body.is_inside_tree() else _body.rotation.y
-	if clip == &"":
-		# First frame: the spawner places the body after add_child (bind() saw yaw 0): no spawn spin.
-		_visual_yaw = body_yaw
-		_prev_body_yaw = body_yaw
-	var standing: bool = horizontal_speed() <= tw.move_threshold_mps
-	var held: bool = (_npc != null and not _npc.alive) or _interact_kind != &""
-	var now: StringName = choose_clip() if standing and not held else &""
-	if held:
-		pass
-	elif not standing or POSE_CLIPS.has(now) or ACTION_CLIPS.has(now):
-		_visual_yaw = body_yaw
-		_turning_left = 0.0
-	else:
-		var diff: float = wrapf(body_yaw - _visual_yaw, -PI, PI)
-		var step: float = deg_to_rad(tw.turn_clip_deg) / maxf(tw.turn_time_s, 0.01) * delta
-		var body_turned: bool = absf(wrapf(body_yaw - _prev_body_yaw, -PI, PI)) > 0.0005
-		if _turning_left <= 0.0 and absf(diff) > deg_to_rad(tw.turn_threshold_deg):
-			_turning_left = tw.turn_time_s
-			play_oneshot(&"turn_l" if diff > 0.0 else &"turn_r", tw.turn_time_s)
-		if _turning_left > 0.0 or not body_turned:
-			_visual_yaw += clampf(diff, -step, step)
-	_prev_body_yaw = body_yaw
-	if rig != null:
-		rig.rotation.y = _rig_base_yaw + wrapf(_visual_yaw - body_yaw, -PI, PI)
+	turn.update(delta, tw)
 
 
 func _apply(want: StringName, speed: float, tw: AnimTweak) -> void:
@@ -1019,16 +1032,19 @@ func _apply(want: StringName, speed: float, tw: AnimTweak) -> void:
 			blend = 0.0  # surrender* -> surrender_idle* (v1.18); downed_arrested / crew_cuffed_enter -> crew_cuffed (v1.21)
 		elif clip == &"downed_getup":
 			blend = tw.getup_blend_s  # v1.21: from hold_pistol f0 into the current weapon's hold
+		elif CivPanic.blend(clip, want) >= 0.0:
+			blend = CivPanic.blend(clip, want)  # D-116 panic_start in 0.1 s; out: cower 0, cower_b / _c, flee*
 		elif want == _oneshot:
 			blend = tw.hit_zone_blend_in_s if HIT_ZONE_CLIPS.has(want) else tw.oneshot_blend_s
 		elif HIT_ZONE_CLIPS.has(clip):
 			blend = tw.hit_zone_blend_out_s
-		var chained: bool = HOLD_END.get(clip, &"") == want
+		var chained: bool = HOLD_END.get(clip, &"") == want or CivPanic.chained(clip, want)
+		loop_resume.leaving(clip, want)
 		player.play(full, blend)
 		last_blend_s = blend
 		if restart:
-			player.seek(0.0, true)
-		elif not chained:
+			player.seek(_oneshot_start, true)
+		elif not chained and not loop_resume.resume(want, full):  # D-115: a loop cut by a one-shot resumes its phase
 			_seek_loop_offset(want, full)
 		clip = want
 		_restart = false
@@ -1111,9 +1127,12 @@ func _on_damage_applied(victim_net_id: int, _attacker: int, info: Dictionary) ->
 	# D-116: an explosion staggers a non-shield NPC in place (stagger_<fam>), else the flinches
 	var stagger: StringName = combat.stagger_clip() if combat.explosion_staggers(_npc, info) else &""
 	var zone_clip: StringName = hit_zone_clip(info) if stagger == &"" else &""
-	if zone_clip != &"" and horizontal_speed() > AnimTweak.data().move_threshold_mps and layers.play_flinch(zone_clip):
-		return  # lead ruling (b): moving, the legs keep their locomotion
-	play_oneshot(stagger if stagger != &"" else (zone_clip if zone_clip != &"" else hit_react_clip(_hit_dir)), -1.0, true)
+	if _crew != null and _interact_kind != &"":
+		# D-115: interacting, the body keeps its interact clip (upper-body flinch only, when the rig has it)
+		layers.play_flinch(zone_clip if zone_clip != &"" else hit_react_clip(_hit_dir))
+	elif zone_clip == &"" or horizontal_speed() <= AnimTweak.data().move_threshold_mps \
+			or not layers.play_flinch(zone_clip):  # lead ruling (b): moving, the legs keep their locomotion
+		play_oneshot(stagger if stagger != &"" else (zone_clip if zone_clip != &"" else hit_react_clip(_hit_dir)), -1.0, true)
 
 
 ## characters.md v1.18 / D-123: the hit-zone flinch for damage `info`, &"" for the directional set (HitClips.zone_clip).

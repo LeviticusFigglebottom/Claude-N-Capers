@@ -158,6 +158,9 @@ extends Resource
 ## (not BARRED / VAULT) on their path: they hold this long (kick / shotgun the lock ◇), then the door
 ## is unlocked and open for good.
 @export var npc_door_breach_s: float = 2.5
+## D-116: the breaching unit stands square to the door this far from the door plane (m): door_kick_<fam>'s door face
+## is 0.60 m ahead of the root.
+@export var npc_door_breach_stand_m: float = 0.6
 ## Half length of the door's NavigationLink3D through the doorway (m, each side of the leaf).
 @export var door_nav_link_half_m: float = 0.6
 

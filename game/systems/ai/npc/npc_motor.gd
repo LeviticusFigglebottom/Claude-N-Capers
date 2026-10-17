@@ -258,8 +258,10 @@ func _physics_step(delta: float) -> void:
 			var d: Vector3 = next - _body.global_position
 			d.y = 0.0
 			if _door_hold(delta):
-				if _door_point != Vector3.INF:
+				horiz = _breach_stand(delta)
+				if horiz == Vector3.INF and _door_point != Vector3.INF:
 					_turn_toward(_door_point - _body.global_position, delta)
+				horiz = Vector3.ZERO if horiz == Vector3.INF else horiz
 			elif d.length() > 0.001:
 				horiz = _separate(d.normalized()) * speed
 				_turn_toward(d, delta)
@@ -666,6 +668,21 @@ func _door_hold(delta: float) -> bool:
 	face(face_at - _body.global_position)
 	door_blocked.emit(door)
 	return true
+
+
+## D-116: while this NPC breaches its waiting_door, step to the door's breach stand and face the door normal
+## (door_kick_<fam> plays square to the door); the horizontal velocity, or Vector3.INF when not breaching.
+func _breach_stand(delta: float) -> Vector3:
+	var door: Door = waiting_door
+	if door == null or not is_instance_valid(door) or door.breach_elapsed_s(_body) < 0.0:
+		return Vector3.INF
+	var at: Array = door.breach_stand(_body.global_position)
+	_turn_toward(at[1] as Vector3, delta)
+	var d: Vector3 = (at[0] as Vector3) - _body.global_position
+	d.y = 0.0
+	if d.length() <= 0.03:
+		return Vector3.ZERO
+	return d.normalized() * minf(maxf(speed, 1.0), d.length() / maxf(delta, 0.001))
 
 
 ## The NPC position followed by the rest of its path (nav path, or the straight line to target).

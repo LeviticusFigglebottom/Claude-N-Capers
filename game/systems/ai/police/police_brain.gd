@@ -452,7 +452,7 @@ func _tick_cuff(t: Node3D) -> bool:
 		_motor.stop()
 		_motor.face_point(tc.global_position)
 		mode = &"cuff"
-		anim_hint = &"melee"
+		anim_hint = &"cuff"  # D-115: kneel and cuff (interact_low), as GuardBrain; `melee` held a finished one-shot
 		# D-108: the arrest takes police_cuff_time_s of uninterrupted hold (a skipped frame, i.e. stunned /
 		# diving / retargeting, a new target or a hit on this cop restarts it).
 		var frame: int = Engine.get_physics_frames()

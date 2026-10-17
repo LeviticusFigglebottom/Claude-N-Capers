@@ -52,8 +52,9 @@ and reports a gap list; the LEAD folds the gaps in here as rows (id, heist, owne
 | B-SL | SL | B (A for logic) | D-115 strings audit vs design doc (as B-GN) | open |
 | ND-3 | ND | C | secure van at (9, 0, 30): last ~15 m of carry route has no cover (P ND-2: 7 downs in 25 s vs 4-7 enemies); add cover props | open |
 
-| X-6 | GH | A, C, B | D-130: GH pager cap by difficulty [4,4,3,3,2,1] + Titan cameras from Hazardous (C values, A runtime, B card) | open |
-| X-7 | GN, SL, ND | C, A | D-130: guards/civilians scale with difficulty (≈ +50 % / +35 % at Cataclysm; C rows + spawns, A runtime + count test) | open |
-| X-8 | all | A, P | D-130: cameras detect ~20 % faster (A tweak + test, P feel check) | open |
+| X-6 | GH | A, C, B | D-130: GH pager cap by difficulty [4,4,3,3,2,1] + Titan cameras from Hazardous (C values, A runtime, B card) | done: P windowed (155cccfd): Routine cap 4 / C3 breaks; Lethal cap 2 / Titan C4 survives 6 rounds |
+| X-7 | GN, SL, ND | C, A | D-130: guards/civilians scale with difficulty (≈ +50 % / +35 % at Cataclysm; C rows + spawns, A runtime + count test) | done (C a5f115c1/71d55467/b7cfb928, A pins, D cast pools) |
+| X-8 | all | A, P | D-130: cameras detect ~20 % faster (A tweak + test, P feel check) | done: C4 ~5 m 3.89 s (formula 3.85-4.07), SL C4 11.8 m 3.1 s; feels like PD2 |
 | DB-P1 | DB | P (C, B, A) | first real-input pass: OOM at t=216 (product/cartel/breach/burn done, 0 STUCK). C: ChamberANorth shutter on the strongroom nav path, breach watcher misses an open entry door; B: "Thin out the gunmen" during the burn; A: no reroute, CREW_STACK ×20 | in progress |
 | SL-P1 | SL | P (C) | first real-input pass | PASS: won in stealth (e6b9dcf6) and RE-WALK PASS on G2 art + C's fixes (P c02d044f, seed 13, t=373: every bag secured first throw, no corner snag, headroom fine). Last STUCK row (Stair B landing ramp edge) fixed by C f170f6ee, P confirms on trunk |
+| PO-7 | all (seen on DB) | C (A) | PO report: NPC muzzle flash freezes in the air after the NPC dies/moves | FIXED (C e22dfbd8: a first tick > FLASH_S before a drawn frame left the pooled set up forever; HOLD_S rule for flash + sparks; regression test). Linked: A b8cdd674 found the multi-second first-fight hitch = lazy VFX pool growth stalling the renderer → VfxDirector.prewarm() at load (C applies A's patch) |

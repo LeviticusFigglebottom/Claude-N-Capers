@@ -126,6 +126,8 @@ func shot_damage() -> float:
 	return CombatTweak.data().npc_fallback_damage
 
 
+## FrameProf: `npc_gunner` is the whole tick; `.los`, `.fired`, `.fx` and `.hit` split the costly calls inside it,
+## so a windowed HITCH line names the call that held a render-side stall (llvmpipe GPU sync, not gunner logic).
 func _physics_process(delta: float) -> void:
 	var fp: int = FrameProf.begin()
 	_physics_step(delta)
@@ -249,7 +251,10 @@ func _can_engage(c: CrewController) -> bool:
 	var aim: Vector3 = _aim_point(c)
 	if _npc.eye_position().distance_to(aim) > target_range_for(c):
 		return false
-	return CombatSystem.has_npc_los(_npc, _npc.eye_position(), aim, [_npc, c])  # A3-06: shields
+	var fp: int = FrameProf.begin()
+	var los: bool = CombatSystem.has_npc_los(_npc, _npc.eye_position(), aim, [_npc, c])  # A3-06: shields
+	FrameProf.end(&"npc_gunner.los", fp)
+	return los
 
 
 ## S2.7: loud targeting range from the target's detection risk, lerp(min, max, (DR - 3) / 72) (80 m at DR 3,
@@ -274,17 +279,23 @@ func _fire(c: CrewController) -> void:
 	var aim: Vector3 = _aim_point(c)
 	var dist: float = from.distance_to(aim)
 	var weapon_id: StringName = _npc.enemy_def.weapon if _npc.enemy_def != null else &""
+	var fp: int = FrameProf.begin()
 	EventBus.weapon_fired.emit(_npc.net_id, weapon_id, false, from)
+	FrameProf.end(&"npc_gunner.fired", fp)  # every listener: CuePlayer, AnimDrivers, director, guards
 	var rt: HeistRuntime = HeistRuntime.of(_npc)
 	if rt != null:
 		rt.make_noise(from, Tweak.stealth().gunshot_npc_radius_m, &"gunshot", _npc.net_id)
 	var chance: float = tw.npc_hit_chance(dist, _npc.difficulty) * NpcSuppression.hit_chance_mult(_npc)  # A3-06 (L3.5)
 	var hit: bool = GameRng.stream(&"npc_fire").randf() < chance
+	fp = FrameProf.begin()
 	ShotFx.npc_shot(_npc, from, aim, hit, c)  # PO-8: shot_fx here + relayed (impact_fx.md)
+	FrameProf.end(&"npc_gunner.fx", fp)  # VfxDirector (muzzle, tracer, shells, impacts, decals)
 	if hit:
 		var info: Dictionary = Damage.info(shot_damage(), Enums.DamageType.BULLET,
 			Enums.HitZone.BODY, weapon_id, aim, (aim - from).normalized(), _npc.net_id)
+		fp = FrameProf.begin()
 		c.take_hit(info, _npc.net_id)
+		FrameProf.end(&"npc_gunner.hit", fp)  # CrewHealth, damage_applied listeners, BloodFx
 	shot.emit(c, hit)
 	_use_round(weapon_id)
 
