@@ -488,7 +488,8 @@ func spawn_npc(role: StringName, xform: Transform3D, info: Dictionary = {}) -> N
 	if path == "":
 		Log.error(&"heist", "no NPC scene for role %s" % role)
 		return null
-	var npc: NpcBase = (load(path) as PackedScene).instantiate() as NpcBase
+	# GN-8: through WarmLoader, so this main-thread load never runs beside the director's prewarm loads.
+	var npc: NpcBase = (WarmLoader.get_or_load(path) as PackedScene).instantiate() as NpcBase
 	if info.get("enemy_def") is EnemyDef:  # A1-09: per-EnemyDef spawns (director)
 		npc.enemy_def = info["enemy_def"] as EnemyDef
 	npc.setup_npc(difficulty, info)
