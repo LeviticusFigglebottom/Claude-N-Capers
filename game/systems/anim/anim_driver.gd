@@ -65,8 +65,13 @@ const HINT_CLIPS: Dictionary = {
 	&"dance_c": &"dance_c",
 	# Brain / patrol-point aliases.
 	&"phone": &"phone_call", &"call": &"phone_call", &"sit": &"sit_chair",
-	&"queue": &"idle", &"lean": &"lean_wall", &"check_door": &"investigate_look", &"down": &"lie_down",
+	&"queue": &"queue_idle", &"lean": &"lean_wall", &"check_door": &"investigate_look", &"down": &"lie_down",
 	&"cuff": &"interact_low", &"look": &"investigate_look", &"desk": &"desk_work",
+	# OF-D1 (SOURCE bank_animdriver): a customer at a queue / counter / check_desk mark; queue_idle is a variant group.
+	&"queue_idle": &"queue_idle", &"counter": &"counter_customer", &"counter_customer": &"counter_customer",
+	&"check_desk": &"check_desk_write", &"check_desk_write": &"check_desk_write",
+	# OF-A6 (S3.1): a panicked civilian pressing an alarm_button (CivilianBrain CALLING at REASON_BUTTON).
+	&"press_alarm": &"interact_mid",
 }
 ## Clips that win over locomotion (the body holds a pose).
 ## One-shot poses that must stay held when they end (P coverage: a surrendered cop froze with a stopped player):
@@ -87,11 +92,13 @@ const VARIANT_GROUPS: Dictionary = {
 	# D-116 civ_panic_variants (same index: cower_b <-> flee_b <-> hands_up_b ...).
 	&"cower": [&"cower", &"cower_b", &"cower_c"],
 	&"flee": [&"flee", &"flee_b", &"flee_c"],
+	# OF-D1 SOURCE queue_variants (same index: queue_idle_b <-> cower_b <-> hands_up_b ...).
+	&"queue_idle": [&"queue_idle", &"queue_idle_b", &"queue_idle_c"],
 }
 ## Variant loops that start at a per-body random offset (SOURCE surrender_variants: the periods differ, so they never
 ## re-sync). surrender_idle* reached from its surrender* one-shot starts on frame 0 instead (the chain frame).
-## D-116: cower too (flee keeps the gait phase).
-const OFFSET_LOOP_GROUPS: Array[StringName] = [&"hands_up", &"kneel_cuffed", &"surrender_idle", &"cower"]
+## D-116: cower too (flee keeps the gait phase). OF-D1: queue_idle (a queue never syncs).
+const OFFSET_LOOP_GROUPS: Array[StringName] = [&"hands_up", &"kneel_cuffed", &"surrender_idle", &"cower", &"queue_idle"]
 const POSE_CLIPS: Array[StringName] = [
 	&"tied", &"kneel_cuffed", &"lie_down", &"cower", &"hands_up", &"surrender", &"downed", &"tased",
 	&"cower_stand", &"cower_seated", &"surrender_idle", &"cower_b", &"cower_c", &"panic_start",
@@ -191,6 +198,9 @@ const FALLBACK_CLIPS: Dictionary = {
 	&"rappel_hang": &"climb_ladder", &"rappel_descend": &"climb_ladder", &"rappel_land": &"idle_alert",
 	&"heli_door_idle": &"aim_rifle", &"heli_door_aim": &"aim_rifle", &"van_exit": &"walk",
 	&"breach_place": &"interact_mid", &"breach_standback": &"crouch_idle",
+	# OF-D1 bank customer clips: before them a queue stood in idle; the counter / check-desk loops stand at a ledge.
+	&"queue_idle": &"idle", &"queue_idle_b": &"queue_idle", &"queue_idle_c": &"queue_idle",
+	&"counter_customer": &"desk_type", &"check_desk_write": &"desk_type",
 }
 ## PO6-17: an NPC meta (StringName clip) that wins over every NPC state / brain hint while set (host). The
 ## assault-event runner sets it for scripted moments: rope descent, landing, heli door, van exit, breach charge.
@@ -735,7 +745,7 @@ func _active_clip(hint_clip: StringName) -> StringName:
 	elif aiming:
 		out = cover if cover != &"" else aim_clip()
 	elif hint_clip != &"" and hint_clip != &"idle" and not ONCE_ONLY_HINTS.has(hint_clip):
-		out = hint_clip
+		out = pose_variant(hint_clip)  # OF-D1: an ambient variant group (queue_idle*) plays this body's member
 	return out
 
 

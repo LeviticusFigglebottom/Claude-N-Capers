@@ -43,9 +43,11 @@ const WANDER_ACTIVITIES: Array[StringName] = [&"", &"idle", &"browse", &"phone",
 ## D-103 (characters.md v1.9) adds inspect (curator_inspect at a hung work), text (walks texting: walk_text);
 ## D-111 the bar / club / bank loops: bartender, bartender_pour, bouncer, dance (dance_a/b/c), teller.
 ## D-115 cast roster activities: look (investigate_look), desk (desk_work), curator_inspect, walk_text, smoke.
+## OF-A6 (OF-D1 clips): counter (counter_customer at a teller window), check_desk (check_desk_write); queue plays
+## queue_idle* (AnimDriver).
 const KNOWN_ACTIVITIES: Array[StringName] = [&"browse", &"phone", &"desk_work", &"queue", &"sit", &"mug", &"mop",
 	&"phone_seated", &"inspect", &"text", &"bartender", &"bartender_pour", &"bouncer", &"dance", &"teller",
-	&"look", &"desk", &"curator_inspect", &"walk_text", &"smoke"]
+	&"look", &"desk", &"curator_inspect", &"walk_text", &"smoke", &"counter", &"check_desk"]
 ## Seated activities: a panicked civilian still in its seat cowers there (cower_seated) instead of running.
 const SEATED_ACTIVITIES: Array[StringName] = [&"sit", &"phone_seated"]
 ## Within this of its seat (m) a seated civilian counts as still seated.
@@ -390,7 +392,8 @@ func _tick_run(delta: float) -> void:
 			_motor.stop()
 			_motor.face_point(node.global_position)
 		mode = Mode.CALLING
-		anim_hint = &"call"
+		# OF-A6 (S3.1): pressing an alarm button is a hand on the button (interact_mid), a phone is a call.
+		anim_hint = &"press_alarm" if call_target.get("reason", &"") == CivilianTargets.REASON_BUTTON else &"call"
 		call_progress = 0.0
 
 
