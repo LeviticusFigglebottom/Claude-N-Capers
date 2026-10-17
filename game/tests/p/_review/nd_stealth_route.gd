@@ -260,8 +260,17 @@ func _gate_guard() -> bool:
 	var t_end: float = rt.heist_time_s + 60.0
 	var sd: StealthDirector = HeistRuntime.get_service(G.SVC_STEALTH) as StealthDirector
 	var next_trace: float = 0.0
+	var g_last: Vector3 = g.global_position
+	var g_still_s: float = 0.0
 	while g.is_alive() and g.alert_state <= Enums.AlertState.CURIOUS and swings < 4 and rt.heist_time_s < t_end:
 		var d: float = pilot.flat_dist(g.global_position, c.global_position)
+		# He idles at his gate post (back to B5) for ~6 s per patrol loop, then walks west and turns at the corridor
+		# end: a chase on the move ended with him turning into the knife (ALARMED by D-128 uncover, hit for 30).
+		if pilot.flat_dist(g.global_position, g_last) < 0.02:
+			g_still_s += 1.0 / Engine.physics_ticks_per_second
+		else:
+			g_still_s = 0.0
+		g_last = g.global_position
 		if rt.heist_time_s >= next_trace:
 			next_trace = rt.heist_time_s + 0.5
 			note("knife trace: me %s guard %s dist %.2f back %s alert %d meter %.2f crouch %s" % [
@@ -274,6 +283,9 @@ func _gate_guard() -> bool:
 			else:
 				await wait_s(0.2)
 			continue
+		if d > 1.5 and g_still_s < 0.5:
+			await get_tree().physics_frame  # wait (out of his view) until he stops at the post
+			continue
 		if d > 1.5:
 			# Straight B5 corridor: steer at him every tick with W held (sprint beyond 2.5 m; S2.5: movement has no
 			# detection term). 0.5 s goto legs stopped and started and fell behind his patrol walk (1.1 vs 1.6 m/s).
@@ -283,7 +295,7 @@ func _gate_guard() -> bool:
 				if not g.is_alive() or not _back_turned(g):
 					break
 				var dd: float = pilot.flat_dist(g.global_position, c.global_position)
-				if dd <= 1.4:
+				if dd <= 1.2:
 					break
 				if dd > 2.5:
 					pilot.inp.press(&"sprint")
@@ -299,6 +311,8 @@ func _gate_guard() -> bool:
 				await pilot.goto(Vector3(back.x, g.global_position.y, back.z), 1.2, 1.5)
 			continue
 		await pilot.face(g.global_position + Vector3(0, 1.1, 0), 0.05, 0.3)
+		if not _back_turned(g) or pilot.flat_dist(g.global_position, c.global_position) > 1.7:
+			continue  # he turned or stepped away while the view came round: no swing into his face
 		var alert_before: int = g.alert_state
 		await pilot.inp.tap(&"melee")  # a quick swing: S3.6 kills an unaware guard on any hit; a charge let him walk on
 		swings += 1
