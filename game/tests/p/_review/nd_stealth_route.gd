@@ -21,8 +21,9 @@ const GRATE_AT: Vector3 = Vector3(16.95, 0.0, -1.4)
 const MASK_AT: Vector3 = Vector3(18.5, -4.0, 3.0)
 const GATE_AT: Vector3 = Vector3(14.0, -4.0, 6.9)
 const C6_AT: Vector3 = Vector3(9.1, -1.4, 8.8)
-## Just inside the vault gate (antechamber side), where C6 can be shot.
-const GATE_IN: Vector3 = Vector3(14.0, -4.0, 8.4)
+## Just inside the vault gate (antechamber side), where C6 can be shot; short of the laser_static plane at z 8.5
+## (capsule r 0.35: z 8.3 tripped it, ND run 2026-10-17 t=120.7).
+const GATE_IN: Vector3 = Vector3(14.0, -4.0, 7.95)
 const LASER_GAP_X: float = 9.575
 const TIME_LOCK_SCALE: float = 4.0
 ## B3 side of PlantDoor (18.5, -4, 6.0), off the doorway's sight line; the corridor point just through the door.
@@ -430,7 +431,7 @@ func _antechamber() -> bool:
 	if cam != null:
 		await pilot.inp.tap(&"slot_secondary")
 		# Through the open vault gate first: from the corridor the antechamber wall (B_Z7_5_06) is in the way.
-		var spots: Array[Vector3] = [GATE_IN, GATE_IN + Vector3(-0.8, 0, 0.4), GATE_IN + Vector3(0.6, 0, 0.6)]
+		var spots: Array[Vector3] = [GATE_IN, GATE_IN + Vector3(-0.6, 0, 0), GATE_IN + Vector3(0.6, 0, 0)]
 		var k_spot: int = 0
 		await pilot.goto(spots[0], 0.3, 6.0)
 		for _k: int in 8:
