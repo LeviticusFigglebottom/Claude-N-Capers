@@ -172,6 +172,9 @@ const FIXED_SPAWNS: Array = [
 	# Rare-event timed spawns (QC-25 hook, HeistRuntime.SCRIPTED_SPAWN_TAG): not spawned at load; at LD.
 	["InspectorA", "GUARD", Vector3(40.5, 0.0, 6.0), 180.0, ["scripted", "guard_inspection"], "", "Halberd"],
 	["InspectorB", "GUARD", Vector3(42.0, 0.0, 6.0), 180.0, ["scripted", "guard_inspection"], "", "Halberd"],
+	# Doc §Rare events (insurance_inspection): the two inspectors come with 2 Halberd escorts (extra guards, pagers).
+	["InspectorEscortA", "GUARD", Vector3(39.0, 0.0, 6.0), 180.0, ["scripted", "guard_inspection_escort"], "", "Halberd"],
+	["InspectorEscortB", "GUARD", Vector3(43.0, 0.0, 7.5), 180.0, ["scripted", "guard_inspection_escort"], "", "Halberd"],
 	["VaultlineA", "GUARD", Vector3(40.5, 0.0, 9.5), 180.0, ["scripted", "guard_vaultline"], "", "Halberd"],
 	["VaultlineB", "GUARD", Vector3(42.0, 0.0, 9.5), 180.0, ["scripted", "guard_vaultline"], "", "Halberd"],
 ]
