@@ -21,6 +21,8 @@ const GRATE_AT: Vector3 = Vector3(16.95, 0.0, -1.4)
 const MASK_AT: Vector3 = Vector3(18.5, -4.0, 3.0)
 const GATE_AT: Vector3 = Vector3(14.0, -4.0, 6.9)
 const C6_AT: Vector3 = Vector3(9.1, -1.4, 8.8)
+## Just inside the vault gate (antechamber side), where C6 can be shot.
+const GATE_IN: Vector3 = Vector3(14.0, -4.0, 8.4)
 const LASER_GAP_X: float = 9.575
 const TIME_LOCK_SCALE: float = 4.0
 ## B3 side of PlantDoor (18.5, -4, 6.0), off the doorway's sight line; the corridor point just through the door.
@@ -427,8 +429,11 @@ func _antechamber() -> bool:
 			cam = n3
 	if cam != null:
 		await pilot.inp.tap(&"slot_secondary")
-		await wait_s(1.0)
-		for _k: int in 6:
+		# Through the open vault gate first: from the corridor the antechamber wall (B_Z7_5_06) is in the way.
+		var spots: Array[Vector3] = [GATE_IN, GATE_IN + Vector3(-0.8, 0, 0.4), GATE_IN + Vector3(0.6, 0, 0.6)]
+		var k_spot: int = 0
+		await pilot.goto(spots[0], 0.3, 6.0)
+		for _k: int in 8:
 			if _cam_down(cam):
 				break
 			var aim_at: Vector3 = _cam_aim_point(cam)
@@ -438,8 +443,13 @@ func _antechamber() -> bool:
 				c.eye_position() + c.aim_direction() * 30.0)
 			q.exclude = [c.get_rid()]
 			var hit: Dictionary = c.get_world_3d().direct_space_state.intersect_ray(q)
+			var on_cam: bool = not hit.is_empty() and (hit["collider"] == cam or cam.is_ancestor_of(hit["collider"]))
 			note("C6 shot from %s at %s (%.1f m): ray hits %s" % [Po5Pilot._v(c.global_position), Po5Pilot._v(aim_at),
 				c.eye_position().distance_to(aim_at), (hit["collider"] as Node).get_path() if not hit.is_empty() else ^"-"])
+			if not on_cam and k_spot + 1 < spots.size():
+				k_spot += 1
+				await pilot.goto(spots[k_spot], 0.3, 4.0)
+				continue
 			await pilot.inp.tap(&"fire")
 			await wait_s(0.4)
 		note("camera C6 %s" % ("down" if _cam_down(cam) else "still up"))
