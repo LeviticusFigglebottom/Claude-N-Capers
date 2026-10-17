@@ -1,4 +1,4 @@
-# Contract: networking (v1.3)
+# Contract: networking (v1.4)
 
 API: `game/core/net.gd`. Architecture: architecture.md §3.
 
@@ -87,3 +87,6 @@ two keys, written by `NpcRagdoll.net_state(st)` on the server and applied by `Np
 * NPC state key `"ah"`: the brain's anim hint when it is in `AnimDriver.NET_HINTS` (today only `cuff`, a held loop), else
   `""`; reliable diffs, so late joiners get it.
 * Still host-only presentation (acceptable, cosmetic): bulwark `shield_bang` outside a breach, `kick_charge`, `heal_ally`.
+
+## v1.4 (OF-A2): generic prefab enable key
+NetEntityCodec key `pe` (bool) on every GameplayPrefab: its enabled state (sent in snapshots for late joiners).

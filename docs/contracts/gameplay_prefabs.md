@@ -1,4 +1,4 @@
-# Contract: gameplay prefabs (v1.1)
+# Contract: gameplay prefabs (v1.5)
 
 Producer: **ENV A** (`game/systems/prefabs/<name>/<name>.tscn`). Consumer: **ENV C** places them in
 maps and assigns `visual_scene`. All prefabs are networked (server-authoritative), have a `net_id`,
@@ -80,3 +80,21 @@ New prefab requests from ENV C go to the lead as a status-file question.
 | `gear_pickup` prefab | kind `&"pick_up_gear"`, prompt `ui.prompt.pick_up_gear`; emits `item_picked_up(&"item.gear", slot)`; not consumed (every crew member uses it). Switches that player civilian → casing. |
 | common export `civilian_allowed: bool` | Default false; true on `gear_pickup`. While a player is in civilian mode, interactions without it are blocked with `ui.blocked.civilian`. |
 | civilian rules | Undetectable (detection ×0); cannot mask up or fire until gear is picked up; laser grids still trip; an alarm masks everyone and ends civilian mode. |
+
+## v1.5 (OF-A1..A3, A a0ce305b; Ostrander Federal)
+- **Enable state (every GameplayPrefab):** `enabled_at_start: bool = true`; server `set_enabled(on)` (replicated, late
+  joiners), `is_enabled()`, signal `enabled_changed(on)`. Disabled = hidden, physics off, interactions `BLOCK_DISABLED`,
+  nav links off. Pre-placed prefabs that appear mid-heist (OF's rope ladder, hoist, lid) are placed with
+  `enabled_at_start = false`.
+- **Ladder:** `usable` (present but not climbable) is distinct from enabled (present at all). **BagLift:** disabled =
+  panels blocked; a disable mid-trip finishes the trip.
+- **DrillPoint:** `requires_loot: StringName` + `requires_count: int = 1` (tool bags delivered before the device can be
+  placed); replicated `delivered`; signal `delivered_changed(delivered, required)`; server `add_delivered(n)`.
+- **HackTerminal:** `reveals_code_group` (also a variant param): finishing the hack reveals that code group.
+- **CodeNote:** `reveals_variant_group` (reading it reveals a variant group at runtime, e.g. the planner `[code_hint]`).
+- **Padlock (D-138, pending A):** `allow_lockpick`, `place_saw_stealth`, `place_drill` + `drill_duration_s`, `place_c4`.
+- **CivilianRoute (OF-A4, A 405a3169):** a Node3D with ordered `CivilianRouteStop` children (PatrolPoint + `away_window`);
+  mode LOOP / PING_PONG / ONCE; dwell from `pause_range` (GameRng `civilian_routes`), stop clip from `pause_anim`;
+  cross-floor on the normal navmesh (ladder-only stops skipped); binding by the spawn's `patrol_graph`, `bind_tags` or
+  `route.bind(npc)`. Panic/intimidation preempt it. Unreachable stops are skipped and logged once. Mission API:
+  `away_changed` / `stop_reached`, `is_away`, static `any_away(rt, window)`, `find`, `for_civilian`.

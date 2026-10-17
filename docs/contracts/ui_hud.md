@@ -1,4 +1,4 @@
-# Contract: HUD data (v1.18)
+# Contract: HUD data (v1.19)
 
 ENV A exposes in-heist state. ENV B owns every UI scene, HUD included (one UI style, one owner).
 
@@ -178,3 +178,12 @@ ACTIVE step with `side: true` gives way to any live main step (it still lists in
 `optional` (casing and alternative steps carry that). Producer A (`add_objective` data in `*_mission.gd`: DB `cartel`;
 GH `extra_bags` / `salon` / `display_cases`; any other bonus step), consumer B (caption). A also emits an objective's
 state only on change (P saw `cartel -> ACTIVE` re-emitted on every data update).
+
+## v1.19 (D-139 heist freshness, B 1622ac1f)
+- Payday cash grid: line id `freshness` between `crew_alive` and `civilian_penalty`, caption "Heist freshness {pct}"
+  (`ui.results.freshness`); the XP list has the same caption (`ui.results.xp.freshness`). Both hide at 0.
+  A dim `FreshnessReason` label sits under the cash total.
+- HeistSelect: `FreshnessNote` label under the contract pay, hidden at 0 %; static `freshness_note(heist_id, profile)`.
+- Strings: `ui.freshness.badge` "{pct} %", `ui.freshness.reason_repeat` "Played {n}× in your last {memory} heists",
+  `ui.freshness.reason_rotation` "Not played in {since} heists", `ui.heist_select.freshness`.
+- D-140: the card's "N pagers" note shows only where the def cap is below StealthTweak's 4.

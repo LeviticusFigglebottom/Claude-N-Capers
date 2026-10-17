@@ -1,5 +1,5 @@
 {
-	"version": 8,
+	"version": 9,
 	"profile_name": "Old Timer",
 	"cash": 5000,
 	"stash": 0,
@@ -31,6 +31,7 @@
 	"music_choice": "",
 	"career": {"totals": {}, "heists": {}, "difficulties": {}, "bags": {}, "weapons": {}},
 	"weapon_finishes": {},
+	"freshness": {"recent": [], "runs": 0, "last_run": {}, "completed": []},
 	"stats": {},
 	"settings": {}
 }

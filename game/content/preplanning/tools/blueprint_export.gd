@@ -31,6 +31,10 @@ const FLOOR_KEYS: Dictionary = {
 		&"ui.preplan.floor.level_42", &"ui.preplan.floor.roof"],
 	&"dockside_burn": [&"ui.preplan.floor.landing", &"ui.preplan.floor.ground",
 		&"ui.preplan.floor.mezzanine", &"ui.preplan.floor.roof"],
+	# OF-B1 pre-staged for C's G1 (ostrander_federal_floors_ascii.py): Basement -4.0, Ground 0.0, Gallery 5.0,
+	# Executive 8.6 (+ the hall-roof terrace), Roof 12.2. Room names: ui.preplan.bp.ostrander_federal.<id> (doc room list).
+	&"ostrander_federal": [&"ui.preplan.floor.basement", &"ui.preplan.floor.ground",
+		&"ui.preplan.floor.gallery", &"ui.preplan.floor.executive", &"ui.preplan.floor.roof"],
 }
 ## Ground slab name fragments (lowercase) -> shape kind; first match wins. Unmatched slabs are streets.
 const GROUND_KINDS: Array = [
