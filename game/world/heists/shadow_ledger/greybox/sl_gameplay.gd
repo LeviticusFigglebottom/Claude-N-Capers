@@ -42,9 +42,10 @@ const KESSLER_SEAT: Vector3 = Vector3(3.0, L.F42, 12.3)
 ## npc_seat adds one over its cushion centre, 0.09 m in front of the pivot.
 const KESSLER_CHAIR: String = "prop_armchair"
 const ARMCHAIR_SEAT: Vector3 = Vector3(0.0, 0.45, -0.09)
-## D-130 `late_staff` work spots (doc §roster): [slot, spawn name, seat centre = spawn, yaw (faces the desk), tags]. The
-## seats are the layout chairs L.NPC_SEAT_CHAIRS (K4 AssistantChairA at desk A, K8 PodAChairS1 at pod A), built as
-## D-063 NPC seats; there with or without their worker (as OperatorChair), who does `desk_work` on the `Seat`.
+## D-130 `late_staff` work spots (doc §roster): [slot, spawn name, chair pivot, yaw (faces the desk), tags]. The seats
+## are the layout chairs L.NPC_SEAT_CHAIRS (K4 AssistantChairA at desk A, K8 PodAChairS1 at pod A), built as D-063 NPC
+## seats; there with or without their worker (as OperatorChair), who does `desk_work` on the `Seat` (the spawn moved
+## onto it after the dressing, NpcSeatSpawns: prop_chair_office art, 0.12 m in front of the pivot).
 const LATE_STAFF: Array = [
 	["ls_assistant", "AssistantLate", Vector3(25.6, L.F41, 1.2), 180.0, ["civ_assistant", "civ_staff"]],
 	["ls_associate", "AssociateLate", Vector3(2.4, L.F41, 11.25), 0.0, ["civ_associate", "civ_staff"]],
@@ -341,10 +342,12 @@ func _build_misc(gp: Node3D) -> void:
 		{}, null, {"kind": "camera_station"})
 	if station != null:
 		station.set(&"operator_spawn", station.get_path_to(map_root.get_node("Spawns/CameraOperatorSeat")))
-	# SL-3: the operator's task chair on his spawn, facing the monitor wall (as ND / GH OperatorChair); there with or
-	# without `sec_staffed` (a security room keeps its chair), no collider (D-063 NPC seat).
+	# SL-3: the operator's task chair on his layout spot, facing the monitor wall (as ND / GH OperatorChair); there with
+	# or without `sec_staffed` (a security room keeps its chair), no collider (D-063 NPC seat). D-130: the chair's pivot
+	# on the spot, the spawn then on its Seat (NpcSeatSpawns, after the dressing).
 	var op: Node3D = map_root.get_node("Spawns/CameraOperatorSeat") as Node3D
-	npc_seat(misc, "OperatorChair", global_xform(op).origin, roundf(rad_to_deg(op.basis.get_euler().y)), OPERATOR_CHAIR)
+	npc_seat(misc, "OperatorChair", global_xform(op).origin, roundf(rad_to_deg(op.basis.get_euler().y)), OPERATOR_CHAIR,
+		Vector3(0.0, 0.45, 0.0), true)
 	# Alarm buttons: under the reception ledge, the security console, the guest-suite bedside.
 	prefab(misc, "alarm_button", "AlarmReception", Vector3(17.6, L.F41 + 0.8, 4.795), 0.0, {},
 		Vector3(17.6, L.F41, 4.2), {"mount": "wall", "kind": "alarm_button"})
@@ -785,9 +788,10 @@ func _bag_line(e2: Node3D) -> void:
 ## collider and no nav obstruction, so the spawn on it stays on the navmesh and the seated NPC owns the spot. The seat
 ## centre (its `Seat` marker, xz) is `base`, the NPC's spawn. `asset` = a catalog seat (SL-3: the prop's own `Seat`,
 ## else one added at `seat` prop-local, the pivot then set back so that seat lands on `base`); "" = the greybox
-## chair. Kessler's lives in his slot (absent when he is); the operator's in Gameplay/Misc.
+## chair. Kessler's lives in his slot (absent when he is); the operator's in Gameplay/Misc. D-130: `pivot` = `base` is
+## the chair's pivot instead (the chair stays on its layout spot; NpcSeatSpawns then moves the spawn onto its Seat).
 func npc_seat(parent: Node3D, nm: String, base: Vector3, yaw: float, asset: String = "",
-		seat: Vector3 = Vector3(0.0, 0.45, 0.0)) -> void:
+		seat: Vector3 = Vector3(0.0, 0.45, 0.0), pivot: bool = false) -> void:
 	var ps: PackedScene = _catalog_scene(asset) if asset != "" else null
 	var body: Node3D = ps.instantiate() as Node3D if ps != null else Node3D.new()
 	body.name = nm
@@ -800,7 +804,7 @@ func npc_seat(parent: Node3D, nm: String, base: Vector3, yaw: float, asset: Stri
 		while p != body and p is Node3D:
 			local = (p as Node3D).transform * local
 			p = p.get_parent()
-	body.position = base - body.basis * Vector3(local.x, 0.0, local.z)
+	body.position = base if pivot else base - body.basis * Vector3(local.x, 0.0, local.z)
 	if ps == null:
 		body.set_meta(&"kind", "armchair")
 	add(parent, body)
