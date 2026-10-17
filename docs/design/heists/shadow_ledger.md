@@ -778,8 +778,8 @@ Crew assets with no point: `asset.intel_cameras` (reveals `camera`), `asset.inte
 ## HeistDef (proposed data, `shadow_ledger_def.tres`)
 `id shadow_ledger`, display "Shadow Ledger", contact `contact.accountant`, mode STEALTH_ONLY,
 base_payout **$70,000** (D-120), loot `[loot.ledger_laptop,
-loot.ledger_drives, loot.ledger_books, loot.painting, loot.cash]` (B to confirm ids),
-escape_options `[heli, zipline, service_lift]`, music_track `shadow_ledger`.
+loot.ledger_drives, loot.ledger_books, loot.painting, loot.cash, loot.small_valuables]` (small_valuables: the 7 def-less
+pieces on the map, D-120), escape_options `[heli, zipline, lift]`, music_track `shadow_ledger`.
 
 **Walkthrough whitelist** (level_standards §6): the vertical pairs L40 spawn ↔ roof targets and
 K11 ↔ roof exceed 3× the straight-line distance because Stair A is the only way to the roof. That is

@@ -28,12 +28,13 @@ static func make_def() -> HeistDef:
 	d.base_payout = 70000  # D-120
 	d.stealth_bonus_mult = 1.15
 	d.loot = [&"loot.ledger_laptop", &"loot.ledger_drives", &"loot.ledger_books", &"loot.painting",
-		&"loot.cash"] as Array[StringName]
+		&"loot.cash", &"loot.small_valuables"] as Array[StringName]  # small_valuables: the 7 def-less pieces (D-120)
 	# Objective ids = the design doc's Objectives `[tag]`s (D-039 rule: ENV B reads them there).
 	d.objectives = [&"casing", &"laptop", &"keycard", &"server_door", &"cage_code", &"cage", &"hack",
 		&"drives", &"secure", &"study_safe", &"paintings", &"archive_safe", &"escape"] as Array[StringName]
 	# D-109 (ENV B): briefing subset, loud line and optional objectives shown on the briefing screen.
-	d.briefing_objectives = [&"casing", &"laptop", &"keycard", &"cage", &"hack", &"drives", &"secure", &"escape"]
+	# B's strings audit (LEAD-approved, 2026-10-16): 6 rows (D-117 §5).
+	d.briefing_objectives = [&"laptop", &"keycard", &"cage", &"hack", &"secure", &"escape"]
 	d.briefing_optional = [&"study_safe", &"paintings", &"archive_safe"]
 	# Pre-planning (contracts/preplanning.md, D-046 final): {"favors", "disable", "assets": {asset_id:
 	# overrides}}. Doc §Pre-planning: favors 6, no loud drops. Location assets are limited to this map's

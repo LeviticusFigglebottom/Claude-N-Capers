@@ -848,7 +848,7 @@ its straight line is pontoon → K1 (≈ 102 m for a 75 m straight line, 1.4×).
 
 ## HeistDef (proposed data, `dockside_burn_def.tres`)
 `id dockside_burn`, display "Dockside Burn", contact `contact.reyes`, mode LOUD_ONLY, base_payout
-**$24,000** (D-120; loot values below are placeholders ENV B balances in P6),
+**$24,000** (D-120; bag values are B's D-120 data: cash_bricks $8,000, weapon_crate $8,500, contraband $7,000),
 loot `[loot.cash_bricks, loot.weapon_crate, loot.contraband]` (the new ids are B to confirm; `loot.thermite` is a
 tool bag, not payout loot), escape_options `[van, boat]`, music_track `dockside_burn`, objectives
 `[cartel, breach, product, burn, strongroom, count_cage, containers, secure, escape_wait, escape]`,
@@ -875,8 +875,8 @@ preplanning as above. Map `game/world/heists/dockside_burn/dockside_burn.tscn`;
   kind `&"thermite"`), then enables a child **fire volume**: fire damage per L3.4 (ignores armor,
   DoT ◇ 20/s inside), a nav obstacle, and AI avoidance. Fallback for G1: a `drill_point` THERMAL
   with `duration_s` 30 and no bag (so the greybox mission works) until it exists.
-- **QC-39 (ENV B loot/strings):** `loot.weapon_crate` (HEAVY, PD2 weapons-bag value shape ◇ 2,000),
-  `loot.contraband` (MEDIUM, ◇ 1,400), `loot.thermite` (HEAVY, value 0, excluded from payout and
+- **QC-39 (ENV B loot/strings):** `loot.weapon_crate` (HEAVY, $8,500 per D-120),
+  `loot.contraband` (MEDIUM, $7,000 per D-120), `loot.thermite` (HEAVY, value 0, excluded from payout and
   from the `[secure]` count), plus objective strings for the `[tag]`s above and the VO text.
 - **QC-40 (ENV B assets):** `asset.sniper_position`, `asset.thermite_drop`, `asset.gangway_raised`,
   `asset.intel_containers` and `asset.lift_power` (shapes above). `asset.thermite_drop` needs a
@@ -903,7 +903,7 @@ preplanning as above. Map `game/world/heists/dockside_burn/dockside_burn.tscn`;
 6. **Fire:** damages players (fire ignores armour) as damage over time inside the fire volume.
    Telegraph: a warning cue, then the shutters drop after a 5 s countdown. The shutters are the main
    level change.
-7. **Payout:** $95k base and the loot values are placeholders; ENV B balances them in P6.
+7. **Payout:** superseded by D-120: base $24,000; bag values in B's loot data (see §HeistDef).
 8. **Perches:** the two always-on perches (S1, S2) are enough.
 - **QC-42:** yes: police never spawn inside the building, only via ENTRY TacticalPoints (breach,
   rappel, doors). Building ENTRY points carry the tag `breach_only`.
