@@ -110,10 +110,10 @@ const INT_WALLS: Array = [
 	["M_X9", "z", 9.0, 0.2, 5.9, MEZZ, MEZZ_CEIL, INT_T, "wall", []],
 	# D-138 / PO-14: the M1 count-room cash cage (it was a stand-in LARGE safe), 2.4 m mesh in the NW corner, z 0.4-3.4 so
 	# both cash pallets fit. The gate (DOORS CountCageGate) is cut into its south face; N / S butt between the W / E posts.
-	["CountCageN", "x", 0.4, 9.23, 10.47, MEZZ, MEZZ + 2.4, 0.06, "fence", []],
-	["CountCageS", "x", 3.4, 9.23, 10.47, MEZZ, MEZZ + 2.4, 0.06, "fence", []],
-	["CountCageW", "z", 9.2, 0.37, 3.43, MEZZ, MEZZ + 2.4, 0.06, "fence", []],
-	["CountCageE", "z", 10.5, 0.37, 3.43, MEZZ, MEZZ + 2.4, 0.06, "fence", []],
+	["CountCageN", "x", 0.45, 9.25, 10.45, MEZZ, MEZZ + 2.4, 0.1, "fence", []],
+	["CountCageS", "x", 3.4, 9.25, 10.45, MEZZ, MEZZ + 2.4, 0.1, "fence", []],
+	["CountCageW", "z", 9.2, 0.4, 3.45, MEZZ, MEZZ + 2.4, 0.1, "fence", []],
+	["CountCageE", "z", 10.5, 0.4, 3.45, MEZZ, MEZZ + 2.4, 0.1, "fence", []],
 	["M_X15S", "z", 15.0, 3.1, 5.9, MEZZ, MEZZ_CEIL, INT_T, "wall", []],
 	["M_Z6", "x", 6.0, 3.15, 17.85, MEZZ, MEZZ_CEIL, INT_T, "wall", []],
 	# West wing (walls up to the wing roof slab, 5.5).
@@ -339,7 +339,8 @@ const DOORS: Array = [
 	["StairMezz", "service_t20", Vector3(1.5, MEZZ, 6.0), 180.0, "NONE", "INWARD", "", {"service": true}],
 	# D-138: the count-room cage gate. BARRED (no hand opening, not police-breachable, D-073 baked closed); only the
 	# cash_countroom slot's padlock (drill / C4) opens it.
-	["CountCageGate", "single_t20", Vector3(9.8, MEZZ, 3.4), 180.0, "BARRED", "OUTWARD", "count_cage_gate", {}],
+	["CountCageGate", "single_t20", Vector3(9.8, MEZZ, 3.4), 180.0, "BARRED", "OUTWARD", "count_cage_gate",
+		{"swing_side": "front"}],  # opens into M1, not into the cage
 	["M2Corridor", "single_t20", Vector3(6.0, MEZZ, 6.0), 180.0, "NONE", "INWARD", "", {}],
 	["M1Corridor", "single_t20", Vector3(12.0, MEZZ, 6.0), 180.0, "NONE", "INWARD", "", {}],
 	["M3Corridor", "single_t20", Vector3(16.5, MEZZ, 6.0), 180.0, "NONE", "INWARD", "", {}],

@@ -238,6 +238,8 @@ func _build_doors(gp: Node3D) -> void:
 		var metas: Dictionary = {"kind": "industrial_door" if dtype in ["slide", "roller"] else "door", "swing_side": "back"}
 		if bool(extra.get("service", false)):
 			metas["service"] = true
+		if extra.has("swing_side"):
+			metas["swing_side"] = String(extra["swing_side"])
 		if bool(extra.get("public", false)):
 			props["casing_allowed"] = true  # public-facing: openable unmasked while casing (PD2); none at the closed yard
 		if bool(extra.get("fire_exit", false)):
@@ -343,7 +345,7 @@ func _build_misc(gp: Node3D) -> void:
 	# Desk / counter small loot (O1, O2, M1).
 	for s: Array in [["DeskCashO1", Vector3(6.8, 0.9, 3.2), Vector3(6.8, 0.0, 2.4)],
 			["DeskCashO2", Vector3(13.0, 0.75, 0.9), Vector3(13.2, 0.0, 1.8)],
-			["DeskCashM1", Vector3(10.8, L.MEZZ + 0.9, 2.6), Vector3(10.2, L.MEZZ, 3.5)]]:
+			["DeskCashM1", Vector3(10.8, L.MEZZ + 0.9, 2.6), Vector3(11.0, L.MEZZ, 3.6)]]:  # D-138: east of the cage gate
 		prefab(misc, "small_loot", String(s[0]), s[1], 0.0, {"loot_id": &"loot.cash", "value": 750}, s[2])
 	# Thermite bags, one per player spawn (QC-38; D-115 DB-4): ENV A enables only the bag matching the run's spawn
 	# (tags thermite_gate / thermite_lane / thermite_pontoon); ENV A's burn_point consumes it.
@@ -444,18 +446,19 @@ func _variants_cash(variants: Node3D) -> void:
 
 
 ## D-138: the brass padlock on the count-cage gate's room face (the doc's 120 s drill / C4: ENV A's padlock options),
-## its target the gate; it lives in the cash_countroom slot, so the strongroom variant's cage stays shut and plain.
-func _count_cage_padlock(slot: Node3D) -> void:
+## its target the gate. It hangs on the gate in every variant (a door mount); the mission disables it unless the cash
+## rolled into the count room (cash_location = cash_countroom), so the strongroom variant's cage stays shut.
+func _count_cage_padlock(_slot: Node3D) -> void:
 	var gate: Node3D = n("Gameplay/Doors/CountCageGate")
 	if gate == null:
 		errors.append("CountCageGate missing")
 		return
 	var xf: Transform3D = global_xform(gate)
-	var pl: Node3D = prefab(slot, "padlock", "CountCagePadlock", xf * Vector3(0.38, 1.1, -0.07), 0.0,
+	var pl: Node3D = prefab(gate, "padlock", "CountCagePadlock", xf * Vector3(0.38, 1.1, -0.07), 0.0,
 		{"objective_tag": &"count_cage", "visual_scene": load(PADLOCK_VISUAL)},  # methods: A's D-138.2 options (drill / C4)
-		xf * Vector3(0.38, 0.0, -0.9), {"mount": "wall", "kind": "padlock", "drill_duration_s": 120.0})
+		xf * Vector3(0.38, 0.0, -0.9), {"mount": "door", "kind": "padlock", "drill_duration_s": 120.0})
 	if pl != null:
-		pl.set(&"targets", [pl.get_path_to(gate)] as Array[NodePath])
+		pl.set(&"targets", [NodePath("..")] as Array[NodePath])
 
 
 ## Weapons containers (doc `weapons_containers`, pick 2): the slot marks the Co-op's brass padlock on

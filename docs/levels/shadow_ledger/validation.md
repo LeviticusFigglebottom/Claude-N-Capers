@@ -51,12 +51,12 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## floating: Nothing floats
 
-- 885 props checked
+- 884 props checked
 
 
 ## clipping: Nothing clips
 
-- 885 props, 57 doors checked
+- 884 props, 57 doors checked
 
 
 ## orientation: Flush and oriented
@@ -172,13 +172,13 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## slopes: No walkable slope < 50° outside the play mesh
 
-- 153 x 105 columns (0.25 m), 79116 surface samples, 0 collider(s) with reachable walkable surfaces outside play
+- 153 x 105 columns (0.25 m), 79107 surface samples, 0 collider(s) with reachable walkable surfaces outside play
 
 
 ## navmesh: Navmesh
 
-- navmesh: 1833 polygons, cell 0.10/0.10 m
-- 233 markers checked
+- navmesh: 1835 polygons, cell 0.10/0.10 m
+- 234 markers checked
 | room | walkable samples | covered | coverage |
 |---|---|---|---|
 | `Rooms/RoomS1` | 74 | 74 | 100% |
@@ -197,7 +197,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `Rooms/RoomK8` | 176 | 176 | 100% |
 | `Rooms/RoomK9` | 20 | 20 | 100% |
 | `Rooms/RoomK10` | 18 | 18 | 100% |
-| `Rooms/RoomK11` | 12 | 12 | 100% |
+| `Rooms/RoomK11` | 16 | 16 | 100% |
 | `Rooms/RoomK12` | 26 | 26 | 100% |
 | `Rooms/RoomK13` | 30 | 30 | 100% |
 | `Rooms/RoomK14` | 15 | 15 | 100% |
@@ -248,12 +248,12 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## reachability: Reachability (per variant)
 
-- 50 variant configuration(s), 125455 spawn->target path queries
+- 50 variant configuration(s), 126555 spawn->target path queries
 
 
 ## walkthrough: Walkthrough bot
 
-- 1419 / 1419 spawn->target walks ok
+- 1441 / 1441 spawn->target walks ok
 
 
 ## patrols: Patrol graphs
@@ -273,12 +273,12 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## materials: Materials and texel density
 
-- 3583 surfaces checked
+- 3582 surfaces checked
 
 
 ## zfight: Z-fighting
 
-- 381148 triangles checked
+- 379992 triangles checked
 
 
 ## lights: Lighting is deliberate
@@ -308,7 +308,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `Rooms/RoomK8` | office_open_law | 77 | 94.5 | 0.81 |
 | `Rooms/RoomK9` | corridor_office | 7 | 13.5 | 0.52 |
 | `Rooms/RoomK10` | corridor_service | 8 | 13.5 | 0.59 |
-| `Rooms/RoomK11` | server_room_sl | 18 | 27.5 | 0.65 |
+| `Rooms/RoomK11` | server_room_sl | 17 | 27.5 | 0.62 |
 | `Rooms/RoomK12` | office_it | 22 | 25.0 | 0.88 |
 | `Rooms/RoomK13` | security_office_sl | 19 | 18.0 | 1.06 |
 | `Rooms/RoomK14` | electrical_sl | 6 | 10.0 | 0.60 |
@@ -400,21 +400,21 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 | camera | draw calls | triangles | shadow lights |
 |---|---|---|---|
-| `TopDownSite` | 1528 | 322610 | 5 |
-| `TopDownTower` | 1541 | 325982 | 5 |
-| `ExtNorthCrown` | 1500 | 317702 | 5 |
-| `ExtWestArden` | 1806 | 387132 | 5 |
-| `ExtTerraceSE` | 2367 | 533936 | 5 |
+| `TopDownSite` | 1527 | 319682 | 5 |
+| `TopDownTower` | 1540 | 323054 | 5 |
+| `ExtNorthCrown` | 1499 | 314774 | 5 |
+| `ExtWestArden` | 1805 | 384204 | 5 |
+| `ExtTerraceSE` | 2366 | 531008 | 5 |
 | `ReceptionFromLifts` | 274 | 56000 | 3 |
-| `GalleryWalkway` | 1696 | 356928 | 3 |
+| `GalleryWalkway` | 1695 | 354000 | 3 |
 | `ArtHallLasers` | 483 | 117354 | 1 |
-| `StudySafe` | 1523 | 349044 | 1 |
-| `ServerCage` | 650 | 153818 | 1 |
-| `SecurityRoom` | 831 | 200774 | 1 |
-| `SouthSpine` | 2297 | 493274 | 4 |
-| `TerraceWest` | 2160 | 451682 | 4 |
-| `RoofPlantBlock` | 2294 | 478814 | 5 |
-| `Helipad` | 1861 | 424606 | 3 |
+| `StudySafe` | 1522 | 346116 | 1 |
+| `ServerCage` | 649 | 150890 | 1 |
+| `SecurityRoom` | 830 | 197846 | 1 |
+| `SouthSpine` | 2296 | 490346 | 4 |
+| `TerraceWest` | 2159 | 448754 | 4 |
+| `RoofPlantBlock` | 2293 | 475886 | 5 |
+| `Helipad` | 1860 | 421678 | 3 |
 | `StairACore` | 1103 | 199550 | 5 |
 | `ServiceLobby` | 1652 | 320212 | 4 |
 | `KesslerOffice` | 162 | 44464 | 1 |
