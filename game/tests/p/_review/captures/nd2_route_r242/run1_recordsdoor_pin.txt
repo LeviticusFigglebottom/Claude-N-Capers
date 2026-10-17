@@ -1,0 +1,175 @@
+[NDR 33.7s t=0.0] variants { &"guard_post": [&"rover_ground"], &"camera": [&"cam_c"], &"security_room_staffed": [&"sec_empty"], &"night_manager": [&"mgr_in"], &"code_note": [&"code_records_ledger"], &"keycard": [&"kc_records"], &"server_room": [&"srv_ground"], &"vent_open": [&"vent_open"], &"laser_pattern": [&"laser_static"], &"cleaner": [&"cleaner_ground"], &"escape": [&"esc_van_lot"], &"extra_loot": [&"mgr_safe_full"], &"armored_car": [], &"time_lock_s": 60.0, &"depository_bags": 3, &"deposit_boxes": 6, "rare": [] }
+[NDR 228.2s t=3.1] pilot: calibrated 0.001600 rad/px yaw, 0.001600 rad/px pitch (settings formula said (0.0016, 0.0016))
+[NDR 228.2s t=3.1] spawn (1.5, 0.0, -9.0)
+[NDR 244.2s t=3.2] fast mode: render loop off between shots
+[NDR 249.1s t=8.2] pilot: t=5 at (6.6, 0.0, -6.8) corner (11.1, 0.2, -4.3) yaw_err 0.00 fwd=true path=12 mouse_mode=2 state=0 look=(-2.08,0.00) pin_yaw=-2.07791632512388 bot=false
+[NDR 254.1s t=13.2] pilot: t=10 at (11.5, 0.0, -4.0) corner (14.0, 0.2, -2.7) yaw_err -1.15 fwd=false path=8 mouse_mode=2 state=0 look=(-0.92,0.00) pin_yaw=-1.11210703022814 bot=false
+[NDR 261.1s t=20.2] pilot: use AreawayGrate (open_door) -> OK in 3.0 s
+[NDR 283.9s t=23.4] ladder AreawayLadder: down true in 1.6 s
+[NDR 284.2s t=23.7] pilot: use AreawayDoor (open_door) -> OK in 0.0 s
+[NDR 287.4s t=26.8] objective casing -> 2
+[NDR 287.7s t=27.1] masked in B3 (masked true)
+[NDR 353.1s t=47.3] pilot: use PlantDoor (open_door) -> OK in 0.0 s
+[NDR 353.5s t=47.7] PlantDoor open true (guard at (11.9, -4.0, 6.8))
+[NDR 364.1s t=58.3] DETECT CameraC6 kind 2 meter 0.07 at (9.1, -1.4, 8.8), pilot (18.4, -4.0, 6.4) crouched false
+[NDR 364.2s t=58.4] in the corridor at (18.4, -4.0, 6.6), guard (14.8, -4.0, 7.1)
+[NDR 364.4s t=58.5] DETECT Npc_guard2 kind 0 meter 0.20 at (14.6, -4.0, 7.4), pilot (18.4, -4.0, 6.7) crouched false
+[NDR 370.3s t=64.4] go: guard (14.1, -4.0, 7.6) leaving west, me (18.4, -4.0, 6.7)
+[NDR 370.3s t=64.4] knife trace: me (18.4, -4.0, 6.7) guard (14.1, -4.0, 7.6) dist 4.45 alert 0 meter 0.00
+[NDR 370.8s t=64.9] knife trace: me (16.4, -4.0, 7.0) guard (13.4, -4.0, 7.3) dist 3.02 alert 0 meter 0.00
+[NDR 371.3s t=65.4] knife trace: me (14.3, -4.0, 7.1) guard (12.7, -4.0, 7.1) dist 1.59 alert 0 meter 0.13
+[NDR 371.4s t=65.5] DETECT Npc_guard2 kind 0 meter 0.22 at (12.6, -4.0, 7.1), pilot (14.0, -4.0, 7.1) crouched false
+[NDR 371.6s t=65.8] swing: me (13.1, -4.0, 7.1) guard (11.4, -3.8, 7.0) fwd (-1.0, -0.0, -0.1) dist 1.75, swings 1, hits 1, health 0.00 alive false alert 0 -> 11
+[NDR 394.8s t=68.4] answering the pager
+[NDR 432.7s t=84.6] pilot: use Bag_body_bag (pick_bag) -> OK in 1.0 s
+[NDR 432.7s t=84.6] carrying the gate guard's body bag to the janitor closet
+[NDR 437.6s t=89.5] pilot: use JanitorDoor (open_door) -> OK in 0.0 s
+[NDR 440.6s t=92.5] body bag at (7.5, -3.1, 4.3) hidden true
+[NDR 471.3s t=103.1] pilot: t=5 at (7.7, -4.0, 6.7) corner (6.7, -3.8, 6.7) yaw_err -0.00 fwd=true path=6 mouse_mode=2 state=0 look=(-4.73,0.00) pin_yaw=-4.73867242896304 bot=false
+[NDR 474.1s t=105.9] pilot: use RecordsDoor (open_door) -> OK in 0.0 s
+[NDR 480.1s t=111.8] pilot: t=5 at (4.4, -4.0, 13.3) corner (4.3, -3.8, 13.7) yaw_err -0.01 fwd=true path=5 mouse_mode=2 state=0 look=(-3.28,0.00) pin_yaw=-3.29022036952156 bot=false
+[NDR 483.1s t=114.9] objective keycard -> 2
+[NDR 485.8s t=117.5] objective code -> 2
+[NDR 485.8s t=117.6] pilot: use CodeNote (read_note) -> OK in 1.0 s
+[NDR 496.8s t=122.7] pilot: t=5 at (4.3, -4.0, 11.4) corner (4.3, -3.8, 12.0) yaw_err 2.92 fwd=false path=17 mouse_mode=2 state=0 look=(-6.06,0.00) pin_yaw=-5.86504471055596 bot=false
+[NDR 501.8s t=127.7] pilot: t=10 at (4.8, -4.0, 7.0) corner (7.7, -3.8, 7.1) yaw_err -0.00 fwd=true path=10 mouse_mode=2 state=0 look=(-7.86,0.00) pin_yaw=-7.86073896421513 bot=false
+[NDR 506.8s t=132.7] pilot: t=15 at (10.9, -4.0, 7.0) corner (12.8, -3.8, 7.1) yaw_err 1.92 fwd=false path=4 mouse_mode=2 state=0 look=(-9.80,0.00) pin_yaw=-9.60605173476725 bot=false
+[NDR 510.5s t=136.4] objective vault_gate -> 2
+[NDR 510.5s t=136.4] objective time_lock -> 1
+[NDR 510.5s t=136.5] pilot: use VaultGate (open_door) -> OK in 1.0 s
+[NDR 510.9s t=136.8] vault gate open true
+[NDR 527.3s t=137.5] C6 shot from (13.9, -4.0, 7.9) at (9.3, -1.4, 8.8) (4.8 m): ray hits /root/NdStealthRoute/HeistRuntime/NightDeposit/Variants/Group_camera/Slot_cam_c/CameraC6/Collision
+[NDR 553.7s t=138.0] camera C6 down
+[NDR 597.7s t=147.6] pilot: t=5 at (15.6, -4.0, 9.0) corner (15.0, -3.8, 9.0) yaw_err -2.72 fwd=false path=4 mouse_mode=2 state=0 look=(-2.00,0.00) pin_yaw=-2.19476432067713 bot=false
+[NDR 601.9s t=151.7] objective time_lock -> 2
+[NDR 601.9s t=151.7] objective time_lock_wait -> 0
+[NDR 601.9s t=151.7] objective time_lock_wait -> 1
+[NDR 601.9s t=151.8] pilot: use TimeLockPanel (enter_code) -> OK in 2.0 s
+[NDR 601.9s t=151.8] time lock running: waiting at x4
+[NDR 601.9s t=151.9] pilot: reload in a lull (weapon.kestrel_p9 16/17, reserve 137)
+[NDR 642.4s t=211.7] objective time_lock_wait -> 2
+[NDR 642.4s t=211.7] objective vault_loot -> 1
+[NDR 642.8s t=213.3] vault open true after 61 s
+[NDR 660.9s t=218.5] pilot: t=5 at (12.0, -4.0, 9.0) corner (12.6, -3.8, 9.0) yaw_err -1.65 fwd=false path=4 mouse_mode=2 state=0 look=(0.03,0.00) pin_yaw=-0.16335751404804 bot=false
+[NDR 664.4s t=222.0] lift: landing 0 -> 1; panel 1 at (5.5, -2.5, 1.8); landings ["(6.2, 0.1, 1.8)", "(6.2, -4.0, 1.8)"]
+[NDR 669.5s t=227.0] pilot: t=5 at (11.7, -4.0, 6.6) corner (12.3, -3.8, 6.5) yaw_err -1.58 fwd=false path=9 mouse_mode=2 state=0 look=(0.05,0.00) pin_yaw=-0.1462624232121 bot=false
+[NDR 677.0s t=234.5] pilot: use XferDoor (open_door) -> OK in 0.0 s
+[NDR 682.3s t=239.9] pilot: use CashLift (call_lift) -> OK in 1.0 s
+[NDR 690.3s t=247.8] lift at landing 1 (0 bags in the car: []; car floor (6.2, -4.0, 1.8))
+[NDR 695.3s t=252.8] pilot: t=5 at (3.6, -4.0, 7.8) corner (3.7, -3.8, 7.3) yaw_err 2.02 fwd=false path=9 mouse_mode=2 state=0 look=(-14.81,0.00) pin_yaw=-14.6145445373444 bot=false
+[NDR 717.0s t=257.8] pilot: t=10 at (3.6, -4.0, 7.7) corner (3.9, -3.8, 7.1) yaw_err 1.78 fwd=false path=9 mouse_mode=2 state=0 look=(-14.81,0.00) pin_yaw=-14.6132702149811 bot=false
+[NDR 719.1s t=259.9] pilot: STUCK at (3.6, -4.0, 7.6) heading to (3.9, -3.8, 7.1); rays: slide:/root/NdStealthRoute/HeistRuntime/NightDeposit/Gameplay/Doors/RecordsDoor/Visual/PropDoorSingleIvoryT20/Model/Frame/Collision@(4.0, -2.5, 7.6) n=(-1.0, 0.0, 0.2), vel=(-0.4, 0.0, -1.8) floor=true state=0
+[NDR 737.9s t=260.1] pilot: detour left 0.7 m to (3.6, -3.8, 6.4) (attempt 1)
+[NDR 740.8s t=263.2] pilot: t=15 at (3.6, -4.0, 7.5) corner (3.5, -4.0, 8.4) yaw_err -1.31 fwd=false path=10 mouse_mode=2 state=0 look=(-8.16,0.00) pin_yaw=-8.35489073150202 bot=false
+[NDR 781.6s t=268.2] pilot: t=20 at (3.6, -4.0, 7.5) corner (3.5, -4.0, 8.4) yaw_err -1.33 fwd=false path=9 mouse_mode=2 state=0 look=(-8.15,0.00) pin_yaw=-8.34623782548115 bot=false
+[NDR 785.8s t=272.4] pilot: STUCK at (3.6, -4.0, 7.7) heading to (3.9, -3.8, 7.1); rays: slide:/root/NdStealthRoute/HeistRuntime/NightDeposit/Gameplay/Doors/RecordsDoor/Visual/PropDoorSingleIvoryT20/Model/Frame/Collision@(4.0, -3.0, 7.6) n=(-1.0, 0.0, 0.3), vel=(-0.5, 0.0, -1.5) floor=true state=0
+[NDR 802.3s t=272.5] pilot: detour left 0.7 m to (3.5, -3.8, 6.5) (attempt 2)
+[NDR 803.1s t=273.5] pilot: t=25 at (3.6, -4.0, 7.7) corner (3.7, -3.8, 7.3) yaw_err 0.01 fwd=true path=9 mouse_mode=2 state=0 look=(-0.32,0.00) pin_yaw=-0.31159429835352 bot=false
+[NDR 808.1s t=278.5] pilot: t=30 at (3.6, -4.0, 7.7) corner (3.9, -3.8, 7.1) yaw_err -0.00 fwd=true path=10 mouse_mode=2 state=0 look=(-0.45,0.00) pin_yaw=-0.45057776338617 bot=false
+[NDR 835.6s t=283.5] pilot: t=35 at (3.6, -4.0, 7.7) corner (3.9, -3.8, 7.1) yaw_err -0.13 fwd=true path=9 mouse_mode=2 state=0 look=(-0.32,0.00) pin_yaw=-0.44949672354815 bot=false
+[NDR 836.9s t=284.8] pilot: STUCK at (3.6, -4.0, 7.7) heading to (3.9, -3.8, 7.1); rays: slide:/root/NdStealthRoute/HeistRuntime/NightDeposit/Gameplay/Doors/RecordsDoor/Visual/PropDoorSingleIvoryT20/Model/Frame/Collision@(4.0, -2.5, 7.6) n=(-1.0, 0.0, 0.3), vel=(-0.4, 0.0, -1.3) floor=true state=0
+[NDR 855.1s t=284.9] pilot: detour right 1.2 m to (4.6, -3.8, 8.3) (attempt 3)
+[NDR 860.4s t=290.3] pilot: t=40 at (3.6, -4.0, 7.7) corner (3.7, -3.8, 7.3) yaw_err 1.42 fwd=false path=10 mouse_mode=2 state=0 look=(-1.66,0.00) pin_yaw=-1.47156045814009 bot=false
+[NDR 862.7s t=292.7] pilot: STUCK at (3.6, -4.0, 7.6) heading to (3.5, -4.0, 8.4); rays: vel=(-0.0, 0.0, 1.5) floor=true state=0
+[NDR 865.8s t=295.7] pilot: t=45 at (3.6, -4.0, 7.7) corner (3.7, -3.8, 7.3) yaw_err 0.65 fwd=false path=10 mouse_mode=2 state=0 look=(-0.90,0.00) pin_yaw=-0.7049282704942 bot=false
+[NDR 867.1s t=297.1] pilot: STUCK at (3.6, -4.0, 7.6) heading to (3.9, -3.8, 7.1); rays: slide:/root/NdStealthRoute/HeistRuntime/NightDeposit/Gameplay/Doors/RecordsDoor/Visual/PropDoorSingleIvoryT20/Model/Frame/Collision@(3.9, -3.0, 7.6) n=(-1.0, -0.0, 0.2), vel=(-0.4, 0.0, -1.9) floor=true state=0
+[NDR 867.1s t=297.1] pilot: detour right 1.2 m to (4.8, -3.8, 8.3) (attempt 5)
+[NDR 872.1s t=302.1] pilot: t=50 at (3.6, -4.0, 7.5) corner (3.5, -4.0, 8.4) yaw_err -1.51 fwd=false path=9 mouse_mode=2 state=0 look=(-1.69,0.00) pin_yaw=-1.87799171072802 bot=false
+[NDR 877.1s t=307.1] pilot: t=55 at (3.6, -4.0, 7.5) corner (3.5, -4.0, 8.4) yaw_err -1.90 fwd=false path=10 mouse_mode=2 state=0 look=(-1.30,0.00) pin_yaw=-1.48786542965936 bot=false
+[NDR 878.6s t=308.5] pilot: STUCK at (3.6, -4.0, 7.6) heading to (3.5, -4.0, 8.4); rays: vel=(-0.1, 0.0, 2.5) floor=true state=0
+[NDR 878.6s t=308.5] pilot: detour left 1.2 m to (4.8, -3.8, 8.3) (attempt 6)
+[NDR 884.1s t=314.1] pilot: t=60 at (3.6, -4.0, 7.5) corner (3.5, -4.0, 8.4) yaw_err -0.36 fwd=true path=10 mouse_mode=2 state=0 look=(-9.12,0.00) pin_yaw=-9.3124004594687 bot=false
+[NDR 886.2s t=316.1] pilot: STUCK at (3.6, -4.0, 7.7) heading to (3.5, -4.0, 8.4); rays: vel=(-0.1, 0.0, 2.5) floor=true state=0
+[NDR 886.2s t=316.1] pilot: detour right 0.7 m to (2.9, -3.8, 8.0) (attempt 1)
+[NDR 889.9s t=319.9] pilot: t=5 at (3.6, -4.0, 7.6) corner (3.5, -4.0, 8.4) yaw_err -2.64 fwd=false path=12 mouse_mode=2 state=0 look=(-13.13,0.00) pin_yaw=-13.3197580602104 bot=false
+[NDR 911.8s t=324.9] pilot: t=10 at (3.6, -4.0, 7.8) corner (3.7, -3.8, 7.3) yaw_err 2.78 fwd=false path=11 mouse_mode=2 state=0 look=(-15.57,0.00) pin_yaw=-15.3821913616815 bot=false
+[NDR 916.8s t=329.9] pilot: t=15 at (3.6, -4.0, 7.8) corner (3.7, -3.8, 7.3) yaw_err 2.64 fwd=false path=12 mouse_mode=2 state=0 look=(-15.40,0.00) pin_yaw=-15.2110089380843 bot=false
+[NDR 917.9s t=331.0] pilot: STUCK at (3.6, -4.0, 7.7) heading to (3.5, -4.0, 8.4); rays: vel=(0.0, 0.0, 1.5) floor=true state=0
+[NDR 917.9s t=331.0] pilot: detour left 0.7 m to (4.2, -3.8, 8.2) (attempt 2)
+[NDR 923.0s t=336.1] pilot: t=20 at (3.6, -4.0, 7.6) corner (3.5, -4.0, 8.4) yaw_err -1.83 fwd=false path=13 mouse_mode=2 state=0 look=(-20.23,0.00) pin_yaw=-20.4180900152536 bot=false
+[NDR 923.1s t=336.2] pilot: STUCK at (3.6, -4.0, 7.7) heading to (3.5, -4.0, 8.4); rays: vel=(0.0, 0.0, 1.5) floor=true state=0
+[NDR 923.1s t=336.2] pilot: detour right 1.2 m to (2.7, -3.8, 8.0) (attempt 3)
+[NDR 928.0s t=341.1] pilot: STUCK at (3.6, -4.0, 7.7) heading to (3.5, -4.0, 8.4); rays: vel=(0.0, 0.0, 2.0) floor=true state=0
+[NDR 928.0s t=341.1] pilot: detour left 1.2 m to (4.8, -3.8, 8.3) (attempt 4)
+[NDR 930.2s t=343.3] pilot: t=25 at (3.7, -4.0, 7.9) corner (4.0, -3.8, 8.3) yaw_err -2.35 fwd=false path=13 mouse_mode=2 state=0 look=(-31.59,0.00) pin_yaw=-31.7838777934125 bot=false
+[NDR 935.3s t=348.3] pilot: t=30 at (3.6, -4.0, 7.8) corner (3.7, -3.8, 7.3) yaw_err 0.35 fwd=true path=14 mouse_mode=2 state=0 look=(-31.95,0.00) pin_yaw=-31.756017061129 bot=false
+[NDR 937.5s t=350.6] pilot: STUCK at (3.6, -4.0, 7.7) heading to (3.5, -4.0, 8.4); rays: vel=(0.1, 0.0, 1.5) floor=true state=0
+[NDR 937.5s t=350.6] pilot: detour right 1.2 m to (2.7, -3.8, 8.0) (attempt 5)
+[NDR 957.8s t=354.4] pilot: t=35 at (3.6, -4.0, 7.8) corner (3.7, -3.8, 7.3) yaw_err 0.16 fwd=true path=13 mouse_mode=2 state=0 look=(-38.04,0.00) pin_yaw=-37.882820433519 bot=false
+[NDR 961.1s t=357.7] pilot: STUCK at (3.6, -4.0, 7.7) heading to (3.5, -4.0, 8.4); rays: vel=(0.2, 0.0, 1.0) floor=true state=0
+[NDR 961.1s t=357.7] pilot: detour left 1.2 m to (4.8, -3.8, 8.3) (attempt 6)
+[NDR 964.2s t=360.8] pilot: t=40 at (3.6, -4.0, 7.6) corner (3.5, -4.0, 8.4) yaw_err -0.47 fwd=true path=11 mouse_mode=2 state=0 look=(-46.71,0.00) pin_yaw=-46.901442634346 bot=false
+[NDR 966.5s t=363.2] pilot: STUCK at (3.6, -4.0, 7.7) heading to (3.7, -3.8, 7.3); rays: slide:/root/NdStealthRoute/HeistRuntime/NightDeposit/Gameplay/Doors/RecordsDoor/Visual/PropDoorSingleIvoryT20/Model/Frame/Collision@(4.0, -2.5, 7.6) n=(-0.9, -0.0, 0.4), vel=(0.5, 0.0, -2.4) floor=true state=0
+[NDR 966.5s t=363.2] pilot: detour left 1.2 m to (2.5, -3.8, 7.1) (attempt 7)
+[NDR 970.5s t=367.2] pilot: t=45 at (3.6, -4.0, 7.6) corner (3.5, -4.0, 8.4) yaw_err -1.09 fwd=false path=11 mouse_mode=2 state=0 look=(-52.37,0.00) pin_yaw=-52.5623123226873 bot=false
+[NDR 971.9s t=368.6] pilot: STUCK at (3.6, -4.0, 7.6) heading to (3.5, -4.0, 8.4); rays: vel=(0.1, 0.0, 1.5) floor=true state=0
+[NDR 971.9s t=368.6] pilot: detour left 1.2 m to (4.8, -3.8, 8.3) (attempt 8)
+[NDR 977.0s t=373.6] pilot: t=50 at (3.6, -4.0, 7.6) corner (3.5, -4.0, 8.4) yaw_err -0.16 fwd=true path=11 mouse_mode=2 state=0 look=(-59.59,0.00) pin_yaw=-59.7540691046637 bot=false
+[NDR 981.4s t=378.1] pilot: STUCK at (3.6, -4.0, 7.6) heading to (3.5, -4.0, 8.4); rays: vel=(0.2, 0.0, 1.0) floor=true state=0
+[NDR 981.4s t=378.1] pilot: detour left 1.2 m to (4.8, -3.8, 8.3) (attempt 9)
+[NDR 983.4s t=380.1] pilot: t=55 at (4.1, -4.0, 8.3) corner (3.7, -3.8, 7.8) yaw_err 0.47 fwd=true path=13 mouse_mode=2 state=0 look=(-62.66,0.00) pin_yaw=-62.4680033822846 bot=false
+[NDR 988.4s t=385.1] pilot: t=60 at (3.6, -4.0, 7.7) corner (3.5, -4.0, 8.4) yaw_err -0.00 fwd=true path=14 mouse_mode=2 state=0 look=(-66.04,0.00) pin_yaw=-66.0480774793727 bot=false
+[NDR 993.5s t=390.1] pilot: t=5 at (3.6, -4.0, 8.0) corner (3.7, -3.8, 7.3) yaw_err -2.74 fwd=false path=13 mouse_mode=2 state=0 look=(-91.63,0.00) pin_yaw=-91.8262315604556 bot=false
+[NDR 996.5s t=393.2] pilot: STUCK at (3.6, -4.0, 8.0) heading to (3.7, -3.8, 7.3); rays: vel=(0.1, 0.0, -1.5) floor=true state=0
+[NDR 998.8s t=395.5] pilot: t=10 at (3.6, -4.0, 7.7) corner (3.5, -4.0, 8.4) yaw_err -1.96 fwd=false path=14 mouse_mode=2 state=0 look=(-114.39,0.00) pin_yaw=-114.577555606684 bot=false
+[NDR 1019.4s t=399.6] pilot: STUCK at (3.6, -4.0, 8.0) heading to (3.7, -3.8, 7.3); rays: vel=(0.2, 0.0, -2.0) floor=true state=0
+[NDR 1020.6s t=400.9] pilot: t=15 at (3.6, -4.0, 7.8) corner (3.5, -4.0, 8.4) yaw_err -1.01 fwd=false path=14 mouse_mode=2 state=0 look=(-134.20,0.00) pin_yaw=-134.391427167244 bot=false
+[NDR 1021.8s t=402.0] pilot: STUCK at (3.6, -4.0, 8.1) heading to (3.7, -3.8, 7.3); rays: vel=(-0.0, 0.0, -1.0) floor=true state=0
+[NDR 1021.8s t=402.0] pilot: detour right 1.2 m to (4.8, -3.8, 8.3) (attempt 3)
+[NDR 1027.2s t=407.4] pilot: t=20 at (3.6, -4.0, 7.9) corner (3.7, -3.8, 7.3) yaw_err 0.00 fwd=true path=14 mouse_mode=2 state=0 look=(-144.64,0.00) pin_yaw=-144.638715161786 bot=false
+[NDR 1031.4s t=411.6] pilot: STUCK at (3.6, -4.0, 7.9) heading to (3.7, -3.8, 7.3); rays: vel=(0.4, 0.0, -3.0) floor=true state=0
+[NDR 1031.4s t=411.6] pilot: detour left 1.2 m to (2.5, -3.8, 7.1) (attempt 4)
+[NDR 1076.7s t=413.8] pilot: t=25 at (3.4, -4.0, 7.7) corner (3.5, -4.0, 8.4) yaw_err -0.00 fwd=true path=18 mouse_mode=2 state=0 look=(-109.91,0.00) pin_yaw=-109.908841550449 bot=false
+[NDR 1081.6s t=418.8] pilot: t=30 at (3.6, -4.0, 7.8) corner (3.5, -4.0, 8.4) yaw_err -0.00 fwd=true path=12 mouse_mode=2 state=0 look=(-116.38,0.00) pin_yaw=-116.38028498842 bot=false
+[NDR 1086.6s t=423.8] pilot: t=35 at (3.6, -4.0, 8.1) corner (3.7, -3.8, 7.3) yaw_err -2.55 fwd=false path=14 mouse_mode=2 state=0 look=(-160.94,0.00) pin_yaw=-161.13305090529 bot=false
+[NDR 1087.9s t=425.1] pilot: STUCK at (3.6, -4.0, 7.8) heading to (3.5, -4.0, 8.4); rays: vel=(-0.1, 0.0, 1.5) floor=true state=0
+[NDR 1087.9s t=425.1] pilot: detour right 1.2 m to (2.7, -3.8, 8.0) (attempt 5)
+[NDR 1092.4s t=429.6] pilot: t=40 at (3.6, -4.0, 7.7) corner (3.5, -4.0, 8.4) yaw_err -2.74 fwd=false path=14 mouse_mode=2 state=0 look=(-189.02,0.00) pin_yaw=-189.215395372969 bot=false
+[NDR 1094.7s t=431.9] pilot: STUCK at (3.6, -4.0, 7.8) heading to (3.5, -4.0, 8.4); rays: vel=(0.0, 0.0, 1.0) floor=true state=0
+[NDR 1094.7s t=431.9] pilot: detour left 1.2 m to (4.8, -3.8, 8.3) (attempt 6)
+[NDR 1119.1s t=436.7] pilot: t=45 at (3.6, -4.0, 8.1) corner (3.7, -3.8, 7.3) yaw_err 0.63 fwd=false path=14 mouse_mode=2 state=0 look=(-220.68,0.00) pin_yaw=-220.492805115832 bot=false
+[NDR 1124.1s t=441.7] pilot: t=50 at (3.6, -4.0, 8.0) corner (3.7, -3.8, 7.3) yaw_err -0.06 fwd=true path=12 mouse_mode=2 state=0 look=(-238.84,0.00) pin_yaw=-238.894322420715 bot=false
+[NDR 1124.5s t=442.1] pilot: STUCK at (3.6, -4.0, 7.9) heading to (3.5, -4.0, 8.4); rays: vel=(-0.3, 0.0, 2.5) floor=true state=0
+[NDR 1124.5s t=442.1] pilot: detour right 1.2 m to (2.7, -3.8, 8.1) (attempt 7)
+[NDR 1129.9s t=447.5] pilot: t=55 at (3.6, -4.0, 7.7) corner (3.5, -4.0, 8.4) yaw_err 0.44 fwd=true path=14 mouse_mode=2 state=0 look=(-229.92,0.00) pin_yaw=-229.727787952823 bot=false
+[NDR 1131.3s t=448.9] pilot: STUCK at (3.6, -4.0, 7.8) heading to (3.5, -4.0, 8.4); rays: vel=(-0.3, 0.0, 1.5) floor=true state=0
+[NDR 1131.3s t=448.9] pilot: detour left 1.2 m to (4.8, -3.8, 8.3) (attempt 8)
+[NDR 1137.0s t=454.5] pilot: t=60 at (3.6, -4.0, 7.7) corner (3.5, -4.0, 8.4) yaw_err -1.79 fwd=false path=14 mouse_mode=2 state=0 look=(-189.98,0.00) pin_yaw=-190.169768543765 bot=false
+[NDR 1142.0s t=459.6] pilot: t=5 at (3.6, -4.0, 8.1) corner (3.5, -4.0, 8.4) yaw_err -1.76 fwd=false path=18 mouse_mode=2 state=0 look=(-233.97,0.00) pin_yaw=-234.163787190392 bot=false
+[NDR 1167.0s t=464.6] pilot: t=10 at (3.6, -4.0, 8.1) corner (3.5, -4.0, 8.4) yaw_err -0.80 fwd=false path=17 mouse_mode=2 state=0 look=(-278.91,0.00) pin_yaw=-279.100397019003 bot=false
+[NDR 1167.1s t=464.6] pilot: STUCK at (3.6, -4.0, 8.2) heading to (3.5, -4.0, 8.4); rays: vel=(-0.1, 0.0, 1.5) floor=true state=0
+[NDR 1167.1s t=464.6] pilot: detour right 0.7 m to (2.8, -3.8, 8.4) (attempt 1)
+[NDR 1172.3s t=469.9] pilot: t=15 at (3.5, -4.0, 8.5) corner (3.6, -3.8, 7.8) yaw_err 0.24 fwd=true path=17 mouse_mode=2 state=0 look=(-251.70,0.00) pin_yaw=-251.505918445135 bot=false
+[NDR 1173.5s t=471.0] pilot: STUCK at (3.6, -4.0, 8.2) heading to (3.5, -4.0, 8.4); rays: vel=(-0.3, 0.0, 1.5) floor=true state=0
+[NDR 1173.5s t=471.0] pilot: detour left 0.7 m to (4.2, -3.8, 8.5) (attempt 2)
+[NDR 1177.7s t=475.3] pilot: t=20 at (3.5, -4.0, 8.5) corner (3.6, -3.8, 7.8) yaw_err -1.11 fwd=false path=17 mouse_mode=2 state=0 look=(-269.20,0.00) pin_yaw=-269.395657356985 bot=false
+[NDR 1177.9s t=475.5] pilot: STUCK at (3.6, -4.0, 8.3) heading to (3.6, -3.8, 7.8); rays: vel=(0.6, 0.0, -3.4) floor=true state=0
+[NDR 1177.9s t=475.5] pilot: detour right 1.2 m to (4.8, -3.8, 8.3) (attempt 3)
+[NDR 1184.3s t=481.9] pilot: t=25 at (3.5, -4.0, 8.4) corner (3.6, -3.8, 7.8) yaw_err -0.00 fwd=true path=18 mouse_mode=2 state=0 look=(-295.45,0.00) pin_yaw=-295.452781070966 bot=false
+[NDR 1189.3s t=486.9] pilot: t=30 at (3.5, -4.0, 8.5) corner (3.6, -3.8, 7.8) yaw_err -1.39 fwd=false path=18 mouse_mode=2 state=0 look=(-338.04,0.00) pin_yaw=-338.227415819431 bot=false
+[NDR 1194.3s t=491.9] pilot: t=35 at (3.5, -4.0, 8.4) corner (3.6, -3.8, 7.8) yaw_err -2.92 fwd=false path=17 mouse_mode=2 state=0 look=(-380.48,0.00) pin_yaw=-380.674458940175 bot=false
+[NDR 1199.3s t=496.9] pilot: t=40 at (3.6, -4.0, 8.1) corner (3.5, -4.0, 8.4) yaw_err -0.23 fwd=true path=17 mouse_mode=2 state=0 look=(-424.00,0.00) pin_yaw=-424.194988616026 bot=false
+[NDR 1204.3s t=501.9] pilot: t=45 at (3.6, -4.0, 8.1) corner (3.5, -4.0, 8.4) yaw_err -1.76 fwd=false path=16 mouse_mode=2 state=0 look=(-466.45,0.00) pin_yaw=-466.645514280052 bot=false
+[NDR 1227.8s t=506.9] pilot: t=50 at (3.6, -4.0, 8.3) corner (3.6, -3.8, 7.8) yaw_err -0.00 fwd=true path=17 mouse_mode=2 state=0 look=(-509.09,0.00) pin_yaw=-509.094004372583 bot=false
+[NDR 1232.8s t=511.9] pilot: t=55 at (3.5, -4.0, 8.5) corner (3.6, -3.8, 7.8) yaw_err -0.62 fwd=false path=17 mouse_mode=2 state=0 look=(-552.44,0.00) pin_yaw=-552.628824196389 bot=false
+[NDR 1237.8s t=516.9] pilot: t=60 at (3.5, -4.0, 8.5) corner (3.6, -3.8, 7.8) yaw_err -2.16 fwd=false path=18 mouse_mode=2 state=0 look=(-594.88,0.00) pin_yaw=-595.074557848955 bot=false
+[NDR 1242.9s t=521.9] pilot: t=5 at (3.6, -4.0, 8.3) corner (3.5, -4.0, 8.4) yaw_err -0.01 fwd=true path=30 mouse_mode=2 state=0 look=(-637.88,0.00) pin_yaw=-637.890859714691 bot=false
+[NDR 1247.9s t=526.9] pilot: t=10 at (3.6, -4.0, 8.1) corner (3.5, -4.0, 8.4) yaw_err -1.00 fwd=false path=30 mouse_mode=2 state=0 look=(-680.84,0.00) pin_yaw=-681.035326355235 bot=false
+[NDR 1274.7s t=531.9] pilot: t=15 at (3.6, -4.0, 8.1) corner (3.5, -4.0, 8.4) yaw_err -2.53 fwd=false path=29 mouse_mode=2 state=0 look=(-723.29,0.00) pin_yaw=-723.483905435551 bot=false
+[NDR 1279.7s t=536.9] pilot: t=20 at (3.5, -4.0, 8.4) corner (3.6, -3.8, 7.8) yaw_err -0.00 fwd=true path=30 mouse_mode=2 state=0 look=(-766.69,0.00) pin_yaw=-766.69378080453 bot=false
+[NDR 1284.7s t=541.9] pilot: t=25 at (3.5, -4.0, 8.5) corner (3.6, -3.8, 7.8) yaw_err -1.20 fwd=false path=30 mouse_mode=2 state=0 look=(-809.47,0.00) pin_yaw=-809.66317030387 bot=false
+[NDR 1289.7s t=546.9] pilot: t=30 at (3.5, -4.0, 8.5) corner (3.6, -3.8, 7.8) yaw_err -2.73 fwd=false path=30 mouse_mode=2 state=0 look=(-851.92,0.00) pin_yaw=-852.108869569911 bot=false
+[NDR 1294.7s t=551.9] pilot: t=35 at (3.6, -4.0, 8.1) corner (3.5, -4.0, 8.4) yaw_err -0.04 fwd=true path=31 mouse_mode=2 state=0 look=(-895.44,0.00) pin_yaw=-895.478618908743 bot=false
+[NDR 1316.1s t=556.9] pilot: t=40 at (3.6, -4.0, 8.1) corner (3.5, -4.0, 8.4) yaw_err -1.57 fwd=false path=31 mouse_mode=2 state=0 look=(-937.88,0.00) pin_yaw=-938.071305823058 bot=false
+[NDR 1318.4s t=559.3] pilot: STUCK at (3.6, -4.0, 8.2) heading to (3.5, -4.0, 8.4); rays: vel=(-0.1, 0.0, 1.5) floor=true state=0
+[NDR 1318.4s t=559.3] pilot: detour right 0.7 m to (2.8, -3.8, 8.4) (attempt 1)
+[NDR 1321.5s t=562.3] pilot: t=45 at (3.5, -4.0, 8.5) corner (3.6, -3.8, 7.8) yaw_err 1.37 fwd=false path=31 mouse_mode=2 state=0 look=(-950.26,0.00) pin_yaw=-950.06981155487 bot=false
+[NDR 1326.5s t=567.3] pilot: t=50 at (3.5, -4.0, 8.5) corner (3.6, -3.8, 7.8) yaw_err 1.00 fwd=false path=29 mouse_mode=2 state=0 look=(-905.91,0.00) pin_yaw=-905.720876358461 bot=false
+[NDR 1331.5s t=572.3] pilot: t=55 at (3.5, -4.0, 8.5) corner (3.6, -3.8, 7.8) yaw_err 2.53 fwd=false path=29 mouse_mode=2 state=0 look=(-863.47,0.00) pin_yaw=-863.277410426305 bot=false
+[NDR 1336.5s t=577.3] pilot: t=60 at (3.6, -4.0, 8.1) corner (3.5, -4.0, 8.4) yaw_err 0.01 fwd=true path=29 mouse_mode=2 state=0 look=(-820.10,0.00) pin_yaw=-820.094493380934 bot=false
+[NDR 1336.5s t=577.3] pilot: could not reach /root/NdStealthRoute/HeistRuntime/NightDeposit/Gameplay/Vault/CageCash/Interactable (bag_loot)
+[NDR 1336.5s t=577.3] pilot: bag_loot out of reach after the walk: not pressing
+[NDR 1336.5s t=577.3] bag 0 not taken (loot left true)
+[NDR 1336.5s t=577.3] trip 0 failed at _load_trip
+[NDR 1336.5s t=577.3] FAIL _loot (alarm )
+[NDR] RESULT FAIL at _loot

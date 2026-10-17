@@ -106,6 +106,30 @@ heists = {
 "params": {},
 "weight": 1.5
 }]
+},
+&"ostrander_federal": {
+"events": [{
+"cooldown_s": 150.0,
+"kind": &"turret_van",
+"max_per_heist": 2,
+"min_wave": 1,
+"params": {},
+"weight": 1.0
+}, {
+"cooldown_s": 90.0,
+"kind": &"heli",
+"max_per_heist": 2,
+"min_wave": 1,
+"params": {},
+"weight": 1.2
+}, {
+"cooldown_s": 45.0,
+"kind": &"breach",
+"max_per_heist": 4,
+"min_wave": 1,
+"params": {},
+"weight": 1.5
+}]
 }
 }
 kind_defaults = {

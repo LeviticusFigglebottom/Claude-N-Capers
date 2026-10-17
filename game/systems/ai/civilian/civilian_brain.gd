@@ -525,8 +525,14 @@ func _cower() -> void:
 	elif _cower_point != null and is_instance_valid(_cower_point) \
 			and _flat_dist(_npc.global_position, _cower_point.global_position) <= COWER_POINT_M:
 		anim_hint = &"cower_stand"  # characters.md v1.9: back to the wall, facing out (the point's -Z)
+		var out: Vector3 = -_cower_point.global_transform.basis.z
+		out.y = 0.0
 		if _motor != null:
-			_motor.face(-_cower_point.global_transform.basis.z)
+			_motor.face(out)
+		var step: float = NpcVisuals.cower_offset(_npc)  # QC-67: a back bag would sink into the wall
+		if step > 0.0 and out.length() > 0.01:
+			var at: Vector3 = _cower_point.global_position + out.normalized() * step
+			_npc.global_position = Vector3(at.x, _npc.global_position.y, at.z)  # from the point: never accumulates
 
 
 ## Still in the seat it spawned in (a seated activity, not moved off it).

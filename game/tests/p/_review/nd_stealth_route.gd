@@ -732,6 +732,10 @@ func _gap_out() -> bool:
 ## Up to two vault bags thrown into the car at B1 (in through the laser gap for each).
 func _load_trip(lift: BagLift, trip: int) -> bool:
 	for b: int in mini(2, _bags - 2 * trip):
+		# Out of B1 on a diagonal away from RecordsDoor, which faces XferDoor 1.5 m across B5 (the pilot pinned in it for
+		# 300 s on round 242, A's doorway rule).
+		if pilot.crew.global_position.x < 5.5 and pilot.crew.global_position.z < 6.0:
+			await pilot.goto(Vector3(5.5, GATE_AT.y, 6.6), 0.4, 20.0)
 		# Along the grid's south side well clear of the beams (z 8.5): the navmesh path in through the vault gate cut
 		# the corner at z 8.0 and tripped them (ND run 2026-10-17 t=448).
 		for wp: Vector3 in [Vector3(14.0, GATE_AT.y, 7.6), Vector3(10.6, GATE_AT.y, 7.7),
@@ -857,6 +861,12 @@ func _surface() -> bool:
 	var bottom: Vector3 = lad.bottom_position()
 	var away: Vector3 = Vector3(bottom.x - lad.global_position.x, 0.0, bottom.z - lad.global_position.z)
 	away = away.normalized() if away.length() > 0.01 else Vector3.FORWARD
+	# Out of B1 on the same diagonal as the bag legs, then east along B5 to PlantDoor (from the hatch the pilot
+	# flipped between two corners inside XferDoor for 90 s, r242 + a-core 2c283ef8).
+	if pilot.crew.global_position.x < 5.5 and pilot.crew.global_position.z < 6.0:
+		await pilot.goto(Vector3(5.5, GATE_AT.y, 6.6), 0.4, 20.0)
+	for wp: Vector3 in [Vector3(13.5, GATE_AT.y, B5_MID_Z), PLANT_THROUGH]:
+		await pilot.goto(wp, 0.4, 40.0, false, true)
 	if not await pilot.goto(bottom + away * 0.5, 0.4, 90.0):
 		note("ladder bottom not reached (at %s)" % Po5Pilot._v(pilot.crew.global_position))
 		return false

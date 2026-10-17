@@ -23,6 +23,9 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | lasers | PASS | 0 | 0 |
 | camera_spine | skipped | 0 | 0 |
 | camera_screen | skipped | 0 | 0 |
+| bag_line | skipped | 0 | 0 |
+| hide_los | skipped | 0 | 0 |
+| teller_worktop | skipped | 0 | 0 |
 | materials | PASS | 0 | 0 |
 | zfight | PASS | 0 | 0 |
 | lights | PASS | 0 | 0 |
@@ -95,7 +98,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## slopes: No walkable slope < 50° outside the play mesh
 
-- 409 x 233 columns (0.25 m), 32063 surface samples, 0 collider(s) with reachable walkable surfaces outside play
+- 409 x 233 columns (0.25 m), 32135 surface samples, 0 collider(s) with reachable walkable surfaces outside play
 
 
 ## navmesh: Navmesh
@@ -273,6 +276,6 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## furniture_logic: Furniture arranged plausibly
 
-- classified: counter 2, chair 5, desk 9, table 3, low_table 1, wall_unit 19, lounge_seat 1, stool 1, visitor_chair 2, desk_chair 5, monitor 4
+- classified: counter 2, chair 5, desk 9, table 3, low_table 1, wall_unit 19, lounge_seat 1, visitor_chair 2, desk_chair 5, stool 1, monitor 4
 - 14 seats, 15 tables/desks/counters, 23 doors checked
 

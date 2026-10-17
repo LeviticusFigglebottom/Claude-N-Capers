@@ -81,13 +81,14 @@ const HALBERD_EDGES: Array = [
 	["PL1", "PL2"], ["BB1", "LK1"], ["BB2", "LK1"], ["BB1", "FR1"], ["BB2", "FR1"], ["QR1", "BB3"], ["QR1", "BBVault"],
 	["QR1", "BB4"],
 ]
+## The Mews points carry `guard` (the route tag a guard walks, as Court / Rounds) and the beat tag `guard_mews`.
 const MEWS: Dictionary = {
-	"MewsDoor": [Vector3(42.5, 0.0, -1.5), Vector2(20, 40), "smoke", ["guard_mews"], 180.0],
-	"MewsBins": [Vector3(29.7, 0.0, -2.4), Vector2.ZERO, "idle", ["guard_mews"], null],
-	"MewsLadder": [Vector3(11.5, 0.0, -2.0), Vector2(4, 8), "look", ["guard_mews"], 180.0],
-	"MewsVan": [Vector3(36.5, 0.0, -6.8), Vector2.ZERO, "idle", ["guard_mews"], null],
-	"MewsMouth": [Vector3(47.0, 0.0, -4.0), Vector2(20, 40), "smoke", ["guard_mews"], 90.0],
-	"MewsLD": [Vector3(41.0, 0.0, 3.0), Vector2(6, 10), "look", ["guard_mews"], 0.0],
+	"MewsDoor": [Vector3(42.5, 0.0, -1.5), Vector2(20, 40), "smoke", ["guard", "guard_mews"], 180.0],
+	"MewsBins": [Vector3(29.7, 0.0, -2.4), Vector2.ZERO, "idle", ["guard", "guard_mews"], null],
+	"MewsLadder": [Vector3(11.5, 0.0, -2.0), Vector2(4, 8), "look", ["guard", "guard_mews"], 180.0],
+	"MewsVan": [Vector3(36.5, 0.0, -6.8), Vector2.ZERO, "idle", ["guard", "guard_mews"], null],
+	"MewsMouth": [Vector3(47.0, 0.0, -4.0), Vector2(20, 40), "smoke", ["guard", "guard_mews"], 90.0],
+	"MewsLD": [Vector3(41.0, 0.0, 3.0), Vector2(6, 10), "look", ["guard", "guard_mews"], 0.0],
 }
 const MEWS_EDGES: Array = [
 	["MewsDoor", "MewsBins"], ["MewsBins", "MewsLadder"], ["MewsLadder", "MewsVan"], ["MewsVan", "MewsMouth"],

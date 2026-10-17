@@ -112,9 +112,12 @@ static func meta_strings(n: Node, key: StringName) -> PackedStringArray:
 	return out
 
 
-## True when a collider is see-through for the vision check (meta see_through, or a glazing kind on it or a parent).
+## True when a collider is see-through for the vision check: in the `see_through` group (D-142, the runtime rule:
+## StealthDirector passes such a collider), or meta see_through / a glazing kind on it or a parent.
 static func see_through(obj: Object, map: Node) -> bool:
 	var cur: Node = obj as Node
+	if cur != null and cur.is_in_group(&"see_through"):
+		return true
 	while cur != null and cur != map:
 		if LcUtil.meta_b(cur, &"see_through") or LcUtil.meta_s(cur, &"kind") in SEE_THROUGH_KINDS:
 			return true
