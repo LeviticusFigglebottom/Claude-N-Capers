@@ -1211,3 +1211,8 @@ reviver going down, tased, stunned/flashed, moving out of range, or releasing). 
 until ENV A source-checks PD2 (playerstandard / interaction ext: does damage cancel a held interaction?); A reports the
 finding with a citation and I amend S9.1 then. Test: a bot and a human revive complete under continuous fire; a tase
 still cancels.
+**D-134 addendum (LEAD source check, 2026-10-17):** steam-test1/Payday-2-LuaJIT-Complete `lib/units/beings/player/playerdamage.lua`
+`damage_bullet` (l.1290-1466) never interrupts an interaction; `interupt_interact` is called only when the active unit can
+no longer be interacted with (swansong path, l.2191) and by `PlayerStandard:exit` (l.309: a state change such as downed,
+tased, arrested). So in PD2 **damage cancels no held interaction**, not only revives. S9.1 amended: damage never cancels
+any hold interaction (humans and bots); the flash/stun cancel stays as ◇. ENV A removes the damage interrupt for all holds.
