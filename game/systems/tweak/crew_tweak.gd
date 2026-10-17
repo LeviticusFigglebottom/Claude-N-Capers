@@ -47,12 +47,15 @@ extends Resource
 ## PO-4 (PD2 use_headbob, default on; Options controls.head_bob, Reduce Motion forces it off): subtle camera-only
 ## head bob of the local human while walking on the ground. One cycle (two steps) per head_bob_stride_m travelled;
 ## vertical at twice the lateral frequency; amplitudes at head_bob_ref_mps, scaled by speed, x sprint mult, x ADS mult.
+## PO-20 (D-145, "the run is wobbly"): calmer: smaller amplitudes, a sprint cycle of head_bob_sprint_stride_m (longer
+## sprint strides: ~2.3 cycles/s at full sprint, was 3.75) and the sprint no bigger than the walk.
 @export var head_bob_stride_m: float = 1.6
+@export var head_bob_sprint_stride_m: float = 2.6
 @export var head_bob_ref_mps: float = 3.5
-@export var head_bob_vertical_m: float = 0.006
-@export var head_bob_lateral_m: float = 0.004
-@export var head_bob_roll_deg: float = 0.25
-@export var head_bob_sprint_mult: float = 1.6
+@export var head_bob_vertical_m: float = 0.004
+@export var head_bob_lateral_m: float = 0.003
+@export var head_bob_roll_deg: float = 0.15
+@export var head_bob_sprint_mult: float = 0.9
 @export var head_bob_ads_mult: float = 0.15
 @export var head_bob_rate: float = 6.0
 ## PO-4 (PD2 melee hit shaker): camera-only punch when the local human's melee hit lands: pitch down / roll kick

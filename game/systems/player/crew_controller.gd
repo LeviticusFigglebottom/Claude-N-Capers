@@ -677,7 +677,8 @@ func _apply_head_bob(delta: float, tw: CrewTweak) -> void:
 		_head.position.x = 0.0
 		_head.rotation.z = 0.0
 		return
-	_bob_phase = fmod(_bob_phase + speed * delta / maxf(tw.head_bob_stride_m, 0.01) * TAU, TAU)
+	var stride: float = tw.head_bob_sprint_stride_m if sprinting else tw.head_bob_stride_m
+	_bob_phase = fmod(_bob_phase + speed * delta / maxf(stride, 0.01) * TAU, TAU)
 	_head.position.x = sin(_bob_phase) * tw.head_bob_lateral_m * _bob_w
 	_head.position.y += sin(_bob_phase * 2.0) * tw.head_bob_vertical_m * _bob_w
 	_head.rotation.z = sin(_bob_phase) * deg_to_rad(tw.head_bob_roll_deg) * _bob_w
