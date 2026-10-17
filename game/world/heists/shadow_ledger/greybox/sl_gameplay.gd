@@ -723,9 +723,11 @@ func _variants_escape(variants: Node3D) -> void:
 			"visual_scene": load(ESCAPE_LINE_VISUAL)})
 	var e3: VariantSlot = _slot(esc, "escape", "esc_service", 0.25, {"label": "E3"})
 	# The car itself is the drop (freight blankets spread on its floor mark it); ESCAPE covers the car floor.
+	# SL-P1: SECURE covers the whole 2.7 m car floor (walls at x 21.15 / z 7.65 / 10.35, the opening x 23.85), 5 mm
+	# inside each wall: a bag thrown against a car wall rests with its centre a half bag inside, so it counts.
 	prefab(e3, "secure_zone", "LiftSecureE3", Vector3(22.5, L.F40, 9.0), 0.0,
 		{"objective_tag": &"loot_secure", "vehicle_collision": false,
-			"zone_size_m": Vector3(2.4, 2.4, 2.4), "visual_scene": _catalog_scene(SECURE_LIFT_VISUAL)},
+			"zone_size_m": Vector3(2.69, 2.4, 2.69), "visual_scene": _catalog_scene(SECURE_LIFT_VISUAL)},
 		null, {"kind": "drop_blanket", "inside": "LiftEscapeE3"}, false)  # levelcheck: inside the car's fit-out
 	prefab(e3, "escape_zone", "LiftEscapeE3", Vector3(22.5, L.F40, 9.0), 0.0,
 		{"objective_tag": &"escape_service", "escape_type": &"lift", "zone_size_m": Vector3(8.8, 2.4, 4.8),

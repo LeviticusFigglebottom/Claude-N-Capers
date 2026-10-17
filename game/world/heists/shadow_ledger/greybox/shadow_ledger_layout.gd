@@ -254,6 +254,8 @@ const STAIR_WEST: Vector2 = Vector2(0.2, 1.4)
 const STAIR_WELL: Vector2 = Vector2(1.4, 1.6)
 const STAIR_EAST: Vector2 = Vector2(1.6, 2.8)
 const STAIR_CLEAR: Vector2 = Vector2(0.15, 2.85)
+## SL-P1 (ENV P real-input pass): clear headroom over every stair / landing walk line (a bag carrier's head).
+const STAIR_HEADROOM: float = 2.1
 ## Handrails (level_standards §2 MUST 1.0-1.1 m): bar centre above the riser-to-riser nosing line
 ## (top 1.05 m), offset from the wall / divider / balustrade face.
 const HANDRAIL_H: float = 1.025

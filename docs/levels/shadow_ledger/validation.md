@@ -167,12 +167,12 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## slopes: No walkable slope < 50° outside the play mesh
 
-- 153 x 105 columns (0.25 m), 78439 surface samples, 0 collider(s) with reachable walkable surfaces outside play
+- 153 x 105 columns (0.25 m), 78504 surface samples, 0 collider(s) with reachable walkable surfaces outside play
 
 
 ## navmesh: Navmesh
 
-- navmesh: 1642 polygons, cell 0.10/0.10 m
+- navmesh: 1643 polygons, cell 0.10/0.10 m
 - 231 markers checked
 | room | walkable samples | covered | coverage |
 |---|---|---|---|

@@ -352,6 +352,30 @@ func test_sl3_seated_npcs() -> void:
 	assert_true(it != null and it.idle_activity == &"phone", "IT contractor on the phone (standing)")
 
 
+## SL-P1 (ENV P real-input pass): ENV P's unsecured lift throws now land in the car's SECURE zone, which stays
+## inside the 2.7 m car; the 4.4 m storey's divider keeps 2.1 m over the half landing below it in both cores.
+func test_sl_p1_real_input_fixes() -> void:
+	if _map == null:
+		fail("map missing")
+		return
+	var sz: SecureZone = _map.get_node_or_null("Variants/Group_escape/Slot_esc_service/LiftSecureE3") as SecureZone
+	assert_true(sz != null, "E3 lift secure zone")
+	if sz != null:
+		var c: Vector3 = _world(sz).origin
+		var half: Vector3 = sz.zone_size_m * 0.5
+		for p: Vector3 in [Vector3(21.3, 0.0, 8.6), Vector3(22.0, 0.0, 10.2), Vector3(22.1, 0.0, 7.8), Vector3(21.2, 0.0, 10.3)]:
+			assert_true(absf(p.x - c.x) <= half.x and absf(p.z - c.z) <= half.z, "throw at %s is inside the zone" % p)
+		assert_true(c.x - half.x >= 21.15 and c.z - half.z >= 7.65 and c.z + half.z <= 10.35 and c.x + half.x <= 23.85,
+			"zone stays inside the car")
+	for core: String in ["StairA", "StairB"]:
+		var head: Node3D = _map.get_node_or_null("Geometry/Building/Stairs/%s/Divider2Head" % core) as Node3D
+		assert_true(head != null, "%s: divider head piece over the L40-L41 half landing" % core)
+		if head != null:
+			var cs: CollisionShape3D = head.get_node_or_null("Collision") as CollisionShape3D
+			var bottom: float = _world(head).origin.y + (cs.position.y - (cs.shape as BoxShape3D).size.y * 0.5 if cs != null else 0.0)
+			assert_true(bottom >= 1.8 + 2.1 - 0.001, "%s: %.2f m headroom over the +1.8 landing" % [core, bottom - 1.8])
+
+
 ## World transform of a map node (the map is not in the tree here).
 func _world(n: Node3D) -> Transform3D:
 	var xf: Transform3D = n.transform
