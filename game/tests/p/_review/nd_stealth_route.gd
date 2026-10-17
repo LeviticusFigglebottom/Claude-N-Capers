@@ -26,6 +26,8 @@ const C6_AT: Vector3 = Vector3(9.1, -1.4, 8.8)
 const B1_HATCH_STAND: Vector3 = Vector3(4.6, -4.0, 1.8)
 const SALLY_IN: Vector3 = Vector3(5.0, 0.0, 1.8)
 const C4_AT: Vector3 = Vector3(3.5, 2.6, 5.9)
+## Inside the janitor closet (BODY_HIDE x 7.15-8.35, z 3.65-5.85; JanitorDoor at (7.75, -4, 6.0) off B5).
+const CLOSET_IN: Vector3 = Vector3(7.75, -4.0, 4.9)
 ## Just inside the vault gate (antechamber side), where C6 can be shot; short of the laser_static plane at z 8.5
 ## (capsule r 0.35: z 8.3 tripped it, ND run 2026-10-17 t=120.7).
 const GATE_IN: Vector3 = Vector3(14.0, -4.0, 7.95)
@@ -52,6 +54,7 @@ var _alarm: StringName = &""
 var _t0_ms: int = 0
 var _fast: bool = true
 var _lift_probe: bool = false
+var _gate_npc: NpcBase = null
 
 
 func _ready() -> void:
@@ -199,7 +202,7 @@ func _run() -> void:
 	if _fast:
 		note("fast mode: render loop off between shots")
 		_set_fast(true)
-	for step: Callable in [_to_b3, _gate_guard, _records, _vault_gate, _antechamber, _time_lock, _loot, _escape]:
+	for step: Callable in [_to_b3, _gate_guard, _hide_body, _records, _vault_gate, _antechamber, _time_lock, _loot, _escape]:
 		if _alarm != &"":
 			await _fail("alarm before %s" % step.get_method())
 			return
@@ -305,6 +308,7 @@ func _gate_guard() -> bool:
 	if g == null:
 		note("no guard at the gate (moved / rover); carrying on")
 		return true
+	_gate_npc = g
 	var hits: Array[int] = [0, 0]
 	var c: CrewController = pilot.crew
 	c.melee.hit_landed.connect(func(_t: Object) -> void: hits[0] += 1)
@@ -377,6 +381,37 @@ func _gate_guard() -> bool:
 		await wait_s(0.25)
 	note("no pager came")
 	return true
+
+
+## Bag the gate guard and drop him in the janitor closet (BODY_HIDE, off B5's west end): the cleaner comes down
+## B5 around t 505 and panicked at the body, then pressed the alarm button (ND runs 2026-10-17, t=509 / 518).
+func _hide_body() -> bool:
+	if _gate_npc == null or not is_instance_valid(_gate_npc) or _gate_npc.is_alive():
+		return true
+	var ic: InteractableComponent = _comp(_gate_npc, &"bag_body")
+	if ic == null:
+		note("no bag_body interactable on the gate guard")
+		return false
+	if not await pilot.use(ic, 20.0, func() -> bool: return pilot.crew.is_carrying_bag()):
+		note("gate guard not bagged")
+		return false
+	var bag: LootBag = pilot.crew.carried_bag() if pilot.crew.has_method(&"carried_bag") else null
+	if not await pilot.goto(CLOSET_IN, 0.3, 40.0):
+		note("janitor closet not reached (at %s)" % Po5Pilot._v(pilot.crew.global_position))
+		return false
+	await pilot.face(CLOSET_IN + Vector3(0, 0, -0.8), 0.03, 1.0)
+	await pilot.inp.tap(&"drop_bag")
+	await wait_s(1.5)
+	if bag == null:
+		for n: Node in get_tree().get_nodes_in_group(G.LOOT_BAG):
+			var lb: LootBag = n as LootBag
+			if lb != null and lb.is_body_bag() and (bag == null or lb.global_position.distance_to(CLOSET_IN)
+					< bag.global_position.distance_to(CLOSET_IN)):
+				bag = lb
+	var hidden: bool = bag != null and bag.hidden_from_stealth
+	note("body bag at %s hidden %s" % [Po5Pilot._v(bag.global_position) if bag != null else "-", hidden])
+	await shot("body_hidden")
+	return hidden
 
 
 ## Steer at the guard's back with W held and swing on the move once he is in reach (stopping to face him first let
