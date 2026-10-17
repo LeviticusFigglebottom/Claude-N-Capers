@@ -131,7 +131,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## navmesh: Navmesh
 
-- navmesh: 2339 polygons, cell 0.10/0.10 m
+- navmesh: 2258 polygons, cell 0.10/0.10 m
 - 204 markers checked
 | room | walkable samples | covered | coverage |
 |---|---|---|---|
@@ -168,7 +168,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## barred_doors: BARRED doorways are closed in the navmesh
 
-- 12 BARRED door(s) checked
+- 21 BARRED door(s) checked
 
 
 ## reachability: Reachability (per variant)
@@ -246,8 +246,8 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## variety: Layout variety
 
-- kit `break_room`: 1 room(s), 1 distinct layout(s)
 - kit `locker_room`: 1 room(s), 1 distinct layout(s)
+- kit `break_room`: 1 room(s), 1 distinct layout(s)
 - kit `exterior_roof`: 1 room(s), 1 distinct layout(s)
 - kit `exterior_quay`: 1 room(s), 1 distinct layout(s)
 - kit `exterior_apron`: 1 room(s), 1 distinct layout(s)
@@ -276,7 +276,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 ## bounds: No void / back faces
 
 - 366 navmesh sample(s) skipped: not reachable from a player spawn (police-only)
-- 282 eye samples, 22842 rays, sky yes, 0 void ray(s)
+- 271 eye samples, 21951 rays, sky yes, 0 void ray(s)
 
 
 ## perf: Per-shot performance budget
