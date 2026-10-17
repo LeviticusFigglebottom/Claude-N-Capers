@@ -275,7 +275,8 @@ func _card_grid(parent: Container, columns: int = 2) -> GridContainer:
 ## PO-4: the picker's focused item previews its stat changes against what is equipped (weapon and mod
 ## slots; other slots show the concealment / Detection Risk change). -1 = picker closed, no preview.
 func _on_previewed(index: int, o: ItemSlot) -> void:
-	if index < 0 or o.is_item_disabled(index):
+	# LEAD r229 reach pass: a locked item previews too (PD2 shows a locked weapon's stats); it still can't be picked.
+	if index < 0:
 		_preview = {}
 	else:
 		_preview = {"slot": o, "index": index}
@@ -381,6 +382,7 @@ func refresh() -> void:
 		modded = AmmoStats.apply(pv.resolved_secondary, ContentDB.weapon(pl.secondary), pl.secondary_mods)
 		detection_risk_label.text = UiText.t(&"ui.common.percent", {"value": pv.detection_risk})
 		concealment_label.text = UiText.t(&"ui.loadout.concealment_total", {"value": pv.concealment_total})
+		_refresh_progression_summary(pl)  # LEAD r229: the stat panel names the previewed weapon, not the equipped one
 	if stock == null or modded == null:
 		for k: Variant in _stat_value_labels:
 			(_stat_value_labels[k] as Label).text = "-"
@@ -486,6 +488,7 @@ func _on_heister_changed(_index: int) -> void:
 
 func _show_heister(id: StringName) -> void:
 	heister_swatch.color = Heisters.accent(id)
+	heister_swatch.visible = id != &""  # LEAD r229 run: "Any Free Heister" has no accent; a bare grey strip read as a scrollbar
 	var tex: Texture2D = Heisters.portrait(id)
 	heister_portrait.texture = tex
 	heister_portrait.visible = tex != null

@@ -164,12 +164,12 @@ func test_screen_shows_the_section_last_and_keeps_the_nav_on_screen() -> void:
 
 ## Follow-up 1: bad rare events that change the security, by name only, from their min_difficulty.
 func test_surprises_listed_by_name() -> void:
-	# Lead examples that must be listed, and bad events that only touch civilians / the escape, never listed.
+	# Lead examples that must be listed, and bad events that only touch a device in play / the escape, never listed.
+	# LEAD r229: an event that forces an extra civilian (a witness stealth must handle) is a surprise too.
 	var must: Dictionary = {&"night_deposit": [&"armored_car_early"], &"dockside_burn": [&"cartel_reinforcements"],
-		&"gallery_night": [&"insurance_inspection", &"vaultline_early", &"argus_upgrade"],
-		&"shadow_ledger": [&"timelock_extended"]}
-	var never: Dictionary = {&"glasshouse": [&"nervous_manager", &"drill_relock"], &"night_deposit": [&"fog_lifts"],
-		&"shadow_ledger": [&"kessler_sleepover"], &"gallery_night": [&"late_paperwork"]}
+		&"gallery_night": [&"insurance_inspection", &"vaultline_early", &"argus_upgrade", &"late_paperwork"],
+		&"shadow_ledger": [&"timelock_extended", &"kessler_sleepover"], &"glasshouse": [&"nervous_manager"]}
+	var never: Dictionary = {&"glasshouse": [&"drill_relock"], &"night_deposit": [&"fog_lifts"]}
 	for id: StringName in HEISTS:
 		var d: BriefingIntelData = BriefingIntel.data_for(id)
 		var table: HeistVariantTable = load(d.variants_path) as HeistVariantTable

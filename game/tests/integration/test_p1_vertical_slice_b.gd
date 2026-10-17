@@ -302,10 +302,12 @@ func test_03_sprint_jump_behind_guard_no_noise() -> void:
 	var max_det: float = 0.0
 	var cycle: int = -1
 	while frames < 120:
-		if floori(frames / 30.0) != cycle:  # every 0.5 s: back to 1 m straight behind, facing away
+		if floori(frames / 30.0) != cycle:  # every 0.5 s: back to 2.5 m straight behind, facing away
 			cycle = floori(frames / 30.0)
 			var back: Vector3 = -guard.look_forward()
-			var p: Variant = BotUtil.nav_point_near(guard, guard.global_position + back * 1.0, 0.35)
+			# LEAD (D-128): PD2 NPCs see all round inside npc_all_round_m (1.5 m), so stand outside it.
+			var behind_m: float = Tweak.stealth().npc_all_round_m + 1.0
+			var p: Variant = BotUtil.nav_point_near(guard, guard.global_position + back * behind_m, 0.35)
 			if p == null:
 				break
 			var stand: Vector3 = p

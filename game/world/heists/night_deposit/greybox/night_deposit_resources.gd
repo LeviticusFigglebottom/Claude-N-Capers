@@ -28,8 +28,9 @@ static func make_def() -> HeistDef:
 	d.stealth_bonus_mult = 1.15
 	d.loot = [&"loot.cash", &"loot.cash_bricks", &"loot.small_valuables"] as Array[StringName]
 	# Objective ids = the design doc's Objectives `[tag]`s (D-039 rule: ENV B reads them there).
+	# The loud vault_drill is the other way into the vault, so it sits before vault_loot (doc: drill -> bag -> depository).
 	d.objectives = [&"casing", &"keycard", &"code", &"server", &"vault_gate", &"time_lock",
-		&"time_lock_wait", &"vault_loot", &"depository", &"vault_drill", &"secure", &"escape"] \
+		&"time_lock_wait", &"vault_drill", &"vault_loot", &"depository", &"secure", &"escape"] \
 		as Array[StringName]
 	# D-109 (ENV B): briefing subset, loud line and optional objectives shown on the briefing screen.
 	d.briefing_objectives = [&"casing", &"keycard", &"code", &"server", &"vault_gate", &"time_lock", &"vault_loot", &"secure", &"escape"]

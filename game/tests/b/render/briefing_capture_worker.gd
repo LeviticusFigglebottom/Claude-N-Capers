@@ -35,6 +35,21 @@ func _run() -> void:
 	for h: StringName in heists:
 		flow.call(&"_on_heist_chosen", h, Enums.Difficulty.HAZARDOUS)
 		await _shot("briefing_" + String(h))
+		# LEAD r229: the intel column scrolled to "Known security" (possible surprises at its end).
+		var sec: Control = get_tree().root.find_child("KnownSecurity", true, false) as Control
+		if sec != null and sec.visible:
+			var sc: Node = sec.get_parent()
+			while sc != null and not sc is ScrollContainer:
+				sc = sc.get_parent()
+			if sc != null:
+				(sc as ScrollContainer).ensure_control_visible(sec)
+				await get_tree().process_frame
+				(sc as ScrollContainer).scroll_vertical = int((sc as ScrollContainer).get_v_scroll_bar().max_value)
+			await _shot("security_" + String(h))
+		# LEAD r229 real-input run: the pre-planning that follows (blueprint labels clear of the markers).
+		if flow.briefing_screen != null and flow.briefing_screen.continue_button != null:
+			flow.briefing_screen.continue_button.pressed.emit()
+			await _shot("preplanning_" + String(h), 30)
 	SaveService.delete_profile(SLOT)
 	print("BRIEF done")
 	get_tree().quit(0)

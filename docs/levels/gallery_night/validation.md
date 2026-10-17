@@ -53,8 +53,8 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 - 898 props checked
 
-- WARN `Gameplay/Devices/ServerDoorDrill` @ (25.00, 6.40, 6.15): prop has no geometry or collision; skipped
-- WARN `Gameplay/Devices/VaultDrill` @ (21.50, -3.20, 7.75): prop has no geometry or collision; skipped
+- WARN `Gameplay/Devices/ServerDoorDrill` @ (25.00, 6.40, 6.03): prop has no geometry or collision; skipped
+- WARN `Gameplay/Devices/VaultDrill` @ (21.50, -3.20, 7.97): prop has no geometry or collision; skipped
 - WARN `Variants/Group_escape/Slot_esc_mews/EscapeMews` @ (39.00, 0.00, -1.40): prop has no geometry or collision; skipped
 - WARN `Variants/Group_escape/Slot_esc_parade/EscapeParade` @ (21.00, 0.00, 37.60): prop has no geometry or collision; skipped
 
@@ -154,7 +154,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 ## navmesh: Navmesh
 
 - navmesh: 2561 polygons, cell 0.10/0.10 m
-- 277 markers checked
+- 279 markers checked
 | room | walkable samples | covered | coverage |
 |---|---|---|---|
 | `Rooms/RoomSS` | 12 | 12 | 100% |
@@ -214,7 +214,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## reachability: Reachability (per variant)
 
-- 50 variant configuration(s), 174588 spawn->target path queries
+- 50 variant configuration(s), 175788 spawn->target path queries
 
 
 ## walkthrough: Walkthrough bot
@@ -224,7 +224,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## patrols: Patrol graphs
 
-- graph `halberd`: 49 points, 8 guard(s)
+- graph `halberd`: 49 points, 10 guard(s)
 - graph `mews`: 6 points, 1 guard(s)
 - graph `gala`: 17 points, 0 guard(s)
 - graph `staff`: 17 points, 0 guard(s)
@@ -328,8 +328,8 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## variety: Layout variety
 
-- kit `locker_room`: 1 room(s), 1 distinct layout(s)
 - kit `server_room`: 1 room(s), 1 distinct layout(s)
+- kit `locker_room`: 1 room(s), 1 distinct layout(s)
 - kit `break_room`: 1 room(s), 1 distinct layout(s)
 - kit `art_store`: 1 room(s), 1 distinct layout(s)
 - kit `exterior_court`: 1 room(s), 1 distinct layout(s)
