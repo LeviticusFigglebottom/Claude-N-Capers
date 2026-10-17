@@ -2,3 +2,66 @@ Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
 Vulkan 1.4.318 - Forward+ - Using Device #0: Unknown - llvmpipe (LLVM 20.1.2, 256 bits)
 
 [OFP 0.0s t=-1.0] === dock ===
+[INFO][rng][p1] run seed 1002
+[INFO][preplan][p1] assets []
+[INFO][variants][p1] seed 1002 resolved { &"manager_route": [&"mgr_gallery"], &"keycard": [&"kc_security"], &"code_pc": [&"pc_ops"], &"officers": [&"off_1"], &"server_room": [&"srv_gallery"], &"guard_post": [&"rover_basement", &"rover_dock"], &"security_room_staffed": [&"sec_empty"], &"camera": [&"cam_c"], &"laser_pattern": [&"lz_timed"], &"customers": [&"cust_4"], &"side_door": [&"door_dock_open"], &"fire_escape": [&"fe_down"], &"escape": [&"esc_van_dock"], &"drill_delivery": [&"drop_terrace"], &"president_safe": [&"ps_empty"], &"vip": [&"vip_out"], &"guard_extra": [], &"civ_extra": [], &"time_lock_s": 150.0, &"drill_eta_s": 60.0, &"escape_eta_s": 120.0, &"cash_bags": 10, &"gold_bags": 4, &"deposit_boxes": 9, "rare": [] }
+[INFO][heist][p1] vfx prewarm: 695 ms
+[INFO][heist][p1] phase LOADING -> CASING
+[OFP 8.1s t=-1.0] objective casing -> 1
+[OFP 8.1s t=-1.0] objective keycard -> 1
+[OFP 8.1s t=-1.0] objective code_pc -> 1
+[OFP 8.1s t=-1.0] objective vault_gate -> 1
+[OFP 8.1s t=-1.0] objective time_lock -> 1
+[OFP 8.1s t=-1.0] objective vault_loot -> 1
+[OFP 8.1s t=-1.0] objective secure -> 1
+[OFP 8.1s t=-1.0] objective escape -> 1
+[INFO][director][p1] prewarm: 18 of 18 scenes loaded in 1726 ms
+[INFO][prefab][p1] CameraStation: security room unstaffed
+[OFP 24.4s t=0.0] launched ostrander_federal seed 1002 diff 0 variants { &"manager_route": [&"mgr_gallery"], &"keycard": [&"kc_security"], &"code_pc": [&"pc_ops"], &"officers": [&"off_1"], &"server_room": [&"srv_gallery"], &"guard_post": [&"rover_basement", &"rover_dock"], &"security_room_staffed": [&"sec_empty"], &"camera": [&"cam_c"], &"laser_pattern": [&"lz_timed"], &"customers": [&"cust_4"], &"side_door": [&"door_dock_open"], &"fire_escape": [&"fe_down"], &"escape": [&"esc_van_dock"], &"drill_delivery": [&"drop_terrace"], &"president_safe": [&"ps_empty"], &"vip": [&"vip_out"], &"guard_extra": [], &"civ_extra": [], &"time_lock_s": 150.0, &"drill_eta_s": 60.0, &"escape_eta_s": 120.0, &"cash_bags": 10, &"gold_bags": 4, &"deposit_boxes": 9, "rare": [] }
+[INFO][prefab][p1] CameraC1 disabled
+[INFO][prefab][p1] CameraC2 disabled
+[INFO][prefab][p1] CameraC3 disabled
+[INFO][prefab][p1] CameraC7 disabled
+[INFO][prefab][p1] CameraC9 disabled
+[INFO][prefab][p1] CameraC11 disabled
+[INFO][prefab][p1] CameraC13 disabled
+[INFO][prefab][p1] CameraC15 disabled
+[OFP 41.7s t=2.0] SHORTCUT traversal: NPCs despawned, crew stealth_hidden, 8 cameras disabled (GameplayPrefab.set_enabled)
+[OFP 46.0s t=3.1] pilot: calibrated 0.001600 rad/px yaw, 0.001600 rad/px pitch (settings formula said (0.0016, 0.0016))
+[OFP 46.0s t=3.1] spawn (21.0, 0.0, -6.0)
+[INFO][heist][p1] phase CASING -> STEALTH
+[INFO][crew][p1] slot 0 masked (forced=false)
+[OFP 49.2s t=4.8] masked true
+[OFP 51.6s t=7.2] SHORTCUT bag loot.cash_bricks (weight 1) spawned by LootManager.spawn_bag at (24.1, 0.5, -3.9)
+[OFP 54.7s t=10.4] pilot: use Bag_cash_bricks (pick_bag) -> OK in 1.0 s
+[OFP 59.8s t=15.4] pilot: t=5 at (20.4, 0.0, -3.3) corner (20.0, 0.2, -3.2) yaw_err 0.00 fwd=true path=7 mouse_mode=2 state=0 look=(14.32,0.00) pin_yaw=14.3160036440458 bot=false
+[OFP 64.7s t=20.4] pilot: t=10 at (16.0, 0.0, -2.5) corner (8.8, 0.2, -1.3) yaw_err -1.21 fwd=false path=4 mouse_mode=2 state=0 look=(-15.91,0.00) pin_yaw=-16.098901612706 bot=false
+[OFP 69.7s t=25.4] pilot: t=15 at (11.3, 0.0, -1.8) corner (8.8, 0.2, -1.3) yaw_err -3.13 fwd=false path=4 mouse_mode=2 state=0 look=(-32.84,0.00) pin_yaw=-33.0288592574288 bot=false
+[OFP 73.0s t=28.7] pilot: use DockPersonnelDoor (open_door) -> OK in 0.0 s
+[OFP 77.7s t=33.3] DOCK loot.cash_bricks: lane -> LD in 23.0 s, sill crossing 2.47 m/s, STUCK rows 0
+[OFP 83.5s t=39.2] secured loot.cash_bricks (bag 218)
+ERROR: Lambda capture at index 1 was freed. Passed "null" instead.
+   at: call (modules/gdscript/gdscript_lambda_callable.cpp:242)
+   GDScript backtrace (most recent call first):
+       [0] wait_until (res://tests/p/_review/of_g1_pass.gd:286)
+[OFP 83.5s t=39.2] THROW LD -> E1 loot.cash_bricks stand 0 (7.9, 0.0, -0.4): 0.9 m from the zone, 0.5 m from the door weight 1 pitch -> rests (6.5, -0.0, -2.6) (2.6 m from the stand, 1.3 s) on - secured true: OK in E1
+WARNING: Sub-surface scattering is not supported in viewports with a transparent background. Disabling SSS in transparent viewport.
+     at: _render_scene (servers/rendering/renderer_rd/forward_clustered/render_forward_clustered.cpp:1963)
+[OFP 92.6s t=44.3] pilot: t=5 at (13.6, 0.0, -2.0) corner (13.0, 0.2, -1.9) yaw_err 2.54 fwd=false path=9 mouse_mode=2 state=0 look=(-51.07,0.00) pin_yaw=-50.8810598413111 bot=false
+[OFP 97.6s t=49.3] pilot: t=10 at (19.1, 0.0, -3.1) corner (19.8, 0.2, -3.2) yaw_err 0.01 fwd=true path=9 mouse_mode=2 state=0 look=(-51.64,0.00) pin_yaw=-51.636267765949 bot=false
+[OFP 100.9s t=52.6] SHORTCUT bag loot.gold (weight 2) spawned by LootManager.spawn_bag at (24.1, 0.5, -4.0)
+[OFP 104.1s t=55.8] pilot: use Bag_gold (pick_bag) -> OK in 1.0 s
+[OFP 109.1s t=60.8] pilot: t=5 at (20.2, 0.0, -3.2) corner (8.8, 0.2, -1.3) yaw_err 0.01 fwd=true path=7 mouse_mode=2 state=0 look=(-54.83,0.00) pin_yaw=-54.8145949588798 bot=false
+[OFP 114.1s t=65.8] pilot: t=10 at (15.5, 0.0, -2.4) corner (8.8, 0.2, -1.3) yaw_err -0.58 fwd=true path=4 mouse_mode=2 state=0 look=(-54.24,0.00) pin_yaw=-54.4294805911632 bot=false
+[OFP 119.1s t=70.8] pilot: t=15 at (10.6, 0.0, -1.6) corner (8.8, 0.2, -1.3) yaw_err -2.50 fwd=false path=4 mouse_mode=2 state=0 look=(-52.32,0.00) pin_yaw=-52.5074981779617 bot=false
+[OFP 126.9s t=78.6] DOCK loot.gold: lane -> LD in 22.8 s, sill crossing 1.72 m/s, STUCK rows 0
+[OFP 133.6s t=85.3] secured loot.gold (bag 219)
+ERROR: Lambda capture at index 1 was freed. Passed "null" instead.
+   at: call (modules/gdscript/gdscript_lambda_callable.cpp:242)
+   GDScript backtrace (most recent call first):
+       [0] wait_until (res://tests/p/_review/of_g1_pass.gd:286)
+[OFP 133.6s t=85.3] THROW LD -> E1 loot.gold stand 0 (7.9, 0.0, -0.4): 0.9 m from the zone, 0.4 m from the door weight 2 pitch -> rests (6.6, -0.0, -2.2) (2.3 m from the stand, 1.3 s) on - secured true: OK in E1
+[OFP] RESULT PASS dock
+[OFP] RESULT PASS (dock PASS)
+WARNING: 128 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)

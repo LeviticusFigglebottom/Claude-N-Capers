@@ -1,0 +1,56 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+[INFO][rng][p1] run seed 1002
+[INFO][variants][p1] seed 1002 resolved { &"manager_route": [&"mgr_gallery"], &"keycard": [&"kc_security"], &"code_pc": [&"pc_ao2"], &"officers": [&"off_2"], &"server_room": [&"srv_basement"], &"guard_post": [&"rover_basement", &"rover_dock"], &"security_room_staffed": [&"sec_empty"], &"camera": [&"cam_c"], &"laser_pattern": [&"lz_static"], &"customers": [&"cust_4"], &"side_door": [&"door_none"], &"fire_escape": [&"fe_up"], &"escape": [&"esc_heli_terrace"], &"drill_delivery": [&"drop_dock"], &"president_safe": [&"ps_bonds"], &"vip": [&"vip_out"], &"guard_extra": [], &"civ_extra": [], &"time_lock_s": 270.0, &"drill_eta_s": 90.0, &"escape_eta_s": 90.0, &"cash_bags": 6, &"gold_bags": 4, &"deposit_boxes": 9, "rare": [] }
+WARNING: [WARN][prefab][p1] PresidentSafe: content PresidentValuables3 sits outside the safe body; moved to LootAnchor
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] _write (res://core/log.gd:43)
+         [1] warn (res://core/log.gd:21)
+         [2] _stow_contents (res://systems/prefabs/safe/safe.gd:527)
+         [3] _prefab_ready (res://systems/prefabs/safe/safe.gd:161)
+         [4] _ready (res://systems/prefabs/gameplay_prefab.gd:87)
+         [5] start (res://systems/heist/heist_runtime.gd:167)
+         [6] launch (res://systems/heist/heist_launcher.gd:105)
+         [7] _load_map (res://systems/heist/heist_launcher.gd:169)
+WARNING: [WARN][prefab][p1] PresidentSafe: content PresidentValuables2 sits outside the safe body; moved to LootAnchor
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] _write (res://core/log.gd:43)
+         [1] warn (res://core/log.gd:21)
+         [2] _stow_contents (res://systems/prefabs/safe/safe.gd:527)
+         [3] _prefab_ready (res://systems/prefabs/safe/safe.gd:161)
+         [4] _ready (res://systems/prefabs/gameplay_prefab.gd:87)
+         [5] start (res://systems/heist/heist_runtime.gd:167)
+         [6] launch (res://systems/heist/heist_launcher.gd:105)
+         [7] _load_map (res://systems/heist/heist_launcher.gd:169)
+WARNING: [WARN][prefab][p1] PresidentSafe: content PresidentValuables1 sits outside the safe body; moved to LootAnchor
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] _write (res://core/log.gd:43)
+         [1] warn (res://core/log.gd:21)
+         [2] _stow_contents (res://systems/prefabs/safe/safe.gd:527)
+         [3] _prefab_ready (res://systems/prefabs/safe/safe.gd:161)
+         [4] _ready (res://systems/prefabs/gameplay_prefab.gd:87)
+         [5] start (res://systems/heist/heist_runtime.gd:167)
+         [6] launch (res://systems/heist/heist_launcher.gd:105)
+         [7] _load_map (res://systems/heist/heist_launcher.gd:169)
+WARNING: [WARN][prefab][p1] PresidentSafe: content PresidentBonds sits outside the safe body; moved to LootAnchor
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] _write (res://core/log.gd:43)
+         [1] warn (res://core/log.gd:21)
+         [2] _stow_contents (res://systems/prefabs/safe/safe.gd:527)
+         [3] _prefab_ready (res://systems/prefabs/safe/safe.gd:161)
+         [4] _ready (res://systems/prefabs/gameplay_prefab.gd:87)
+         [5] start (res://systems/heist/heist_runtime.gd:167)
+         [6] launch (res://systems/heist/heist_launcher.gd:105)
+         [7] _load_map (res://systems/heist/heist_launcher.gd:169)
+[INFO][heist][p1] phase LOADING -> CASING
+[INFO][director][p1] prewarm: 18 of 18 scenes loaded in 192 ms
+[INFO][prefab][p1] CameraStation: security room unstaffed
+[PO3] ostrander_federal: bounds [P: (-44.0, -4.3, -50.0), S: (138.0, 44.3, 140.0)], 5060 samples reached (5060 queued), 34762 walkable edges, rejected { "blocked": 5425, "gap": 207, "tall": 4, "ladder_grab": 82 }, 6.5s
+[PO3] trial edges by tier: t1 1960, t2 0, t3 32350 -> running 20000
+[PO3] trials 0/20000, 7s
+[PO3] trials 500/20000, 14s
+[PO3] trials 1000/20000, 21s
