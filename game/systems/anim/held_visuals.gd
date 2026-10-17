@@ -7,14 +7,20 @@ extends RefCounted
 
 ## Same hysteresis as the body's CrowdLod switch (CrowdLod.MARGIN_M).
 const WEAPON_RANGE_MARGIN_M: float = 1.0
+const SILHOUETTES_PATH: String = G.CHARACTERS_DIR + "_props/weapon_silhouettes/weapon_silhouettes.json"
+const SILHOUETTE_NODE: String = "WeaponSilhouette"
 
 static var _weapon_defs: Dictionary = {}
+## weapon_silhouettes.json `silhouettes` (NPC weapon id -> scene path), loaded once; {} without the file.
+static var _silhouettes: Variant = null
 
 var _d: AnimDriver = null
 ## v1.20: the LootBag the carried-bag visual shows.
 var _shown_bag: Node = null
 ## The NPC held weapon's geometry (OF perf: range-culled at the body's CrowdLod switch, shadows by AnimLod band).
 var _weapon_gis: Array[GeometryInstance3D] = []
+## The far silhouette beside the NPC's WeaponVisual (null when none).
+var _silhouette: Node3D = null
 
 
 func _init(driver: AnimDriver) -> void:
@@ -23,12 +29,13 @@ func _init(driver: AnimDriver) -> void:
 
 ## Rebuild the third-person weapon at `HandR/Socket` (crew: equipped weapon; NPC: EnemyDef.weapon).
 func refresh_weapon() -> void:
-	for n: Node3D in [_d.weapon_visual, _d.weapon_offhand]:
+	for n: Node3D in [_d.weapon_visual, _d.weapon_offhand, _silhouette]:
 		if n != null and is_instance_valid(n):
 			n.get_parent().remove_child(n)
 			n.queue_free()
 	_d.weapon_visual = null
 	_d.weapon_offhand = null
+	_silhouette = null
 	var crew: CrewController = _d._crew
 	var npc: NpcBase = _d._npc
 	var def: WeaponDef = null
@@ -58,6 +65,7 @@ func refresh_weapon() -> void:
 	_place_offhand(wv)
 	if npc != null:
 		_crowd_cull(rig, wv)
+		_add_silhouette(socket, npc.enemy_def.weapon if npc.enemy_def != null else &"")
 
 
 ## OF cast perf audit (D ca74efe3): an NPC's held weapon (~14 meshes) stops drawing where its body switches to the
@@ -78,6 +86,34 @@ func _crowd_cull(rig: Node3D, wv: WeaponVisual) -> void:
 			gi.visibility_range_end_margin = WEAPON_RANGE_MARGIN_M
 			gi.visibility_range_fade_mode = GeometryInstance3D.VISIBILITY_RANGE_FADE_DISABLED
 	set_weapon_shadows(_d.lod == null or _d.lod.band == AnimLod.Band.FULL)
+
+
+## ENV D far weapon silhouettes (weapon_silhouettes.json, D 9216f31f): past the switch the full weapon is culled and
+## a one-draw, shadowless side profile in the same weapon frame takes over (the scene carries its own
+## visibility_range_begin). A sibling of the WeaponVisual under HandR/Socket, freed with it on refresh.
+func _add_silhouette(socket: Node3D, weapon_id: StringName) -> void:
+	if _silhouettes == null:
+		_silhouettes = {}
+		if FileAccess.file_exists(SILHOUETTES_PATH):
+			var data: Variant = JSON.parse_string(FileAccess.get_file_as_string(SILHOUETTES_PATH))
+			if data is Dictionary:
+				_silhouettes = (data as Dictionary).get("silhouettes", {})
+	var path: String = String((_silhouettes as Dictionary).get(String(weapon_id), ""))
+	if path == "" or not ResourceLoader.exists(path):
+		return
+	var inst: Node3D = (load(path) as PackedScene).instantiate() as Node3D
+	if inst == null:
+		return
+	inst.name = SILHOUETTE_NODE
+	socket.add_child(inst)
+	inst.transform = Transform3D.IDENTITY
+	_silhouette = inst
+
+
+## The far silhouette follows the held weapon's visibility (holstered / surrendering: neither shows).
+func show_silhouette(on: bool) -> void:
+	if _silhouette != null and is_instance_valid(_silhouette):
+		_silhouette.visible = on
 
 
 ## AnimLod: shadows on the NPC's held weapon only while its body animates in the FULL band.

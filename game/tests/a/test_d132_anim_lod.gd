@@ -492,3 +492,30 @@ func test_npc_weapon_range_and_shadows_follow_the_body() -> void:
 	_view(d, 5.0)
 	f = _until_tick(d, f)
 	assert_eq(gun.cast_shadow, GeometryInstance3D.SHADOW_CASTING_SETTING_ON, "back near: shadows on again")
+
+
+## ENV D far weapon silhouettes (D 9216f31f): the NPC weapon id's silhouette sits beside the WeaponVisual under
+## HandR/Socket (identity: the same weapon frame), follows the weapon's visibility and is freed on refresh.
+func test_npc_weapon_silhouette_beside_the_weapon() -> void:
+	var npc: NpcBase = _npc(4141)
+	var d: AnimDriver = _drv(npc)
+	var scene: PackedScene = PackedScene.new()
+	var root: Node3D = Node3D.new()
+	scene.pack(root)
+	root.free()
+	assert_eq(ResourceSaver.save(scene, "user://test_d132_silhouette.tscn"), OK, "temp silhouette scene")
+	HeldVisuals._silhouettes = {"npc_rifle": "user://test_d132_silhouette.tscn"}
+	var socket: Node3D = Node3D.new()
+	d.rig.add_child(socket)
+	d.held_visuals._add_silhouette(socket, &"npc_rifle")
+	var sil: Node3D = socket.get_node_or_null(NodePath(HeldVisuals.SILHOUETTE_NODE)) as Node3D
+	assert_true(sil != null, "the silhouette is under the hand socket")
+	assert_true(sil != null and sil.transform.is_equal_approx(Transform3D.IDENTITY), "in the weapon frame")
+	d.held_visuals.show_silhouette(false)
+	assert_false(sil.visible, "hidden with the weapon")
+	d.held_visuals._add_silhouette(socket, &"npc_unknown")
+	assert_eq(socket.get_child_count(), 1, "no silhouette for an unmapped weapon id")
+	d.held_visuals.refresh_weapon()
+	await wait_frames(1)
+	assert_false(is_instance_valid(sil), "freed on refresh")
+	HeldVisuals._silhouettes = null
