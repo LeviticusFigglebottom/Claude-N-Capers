@@ -1,4 +1,4 @@
-# Contract: modifiers (v1.0)
+# Contract: modifiers (v1.1)
 
 Skills, perk cards, pre-planning assets, difficulty and mutators affect gameplay **only** through
 modifier keys. This is how PD2's `upgrade_value` system works, and it keeps ENV B (data) and ENV A
@@ -24,3 +24,7 @@ modifier keys. This is how PD2's `upgrade_value` system works, and it keeps ENV 
   on TEAM, which naturally deduplicates.
 * New keys: request via your status file. Only the lead adds keys.
 * CI: `game/tests/b/test_modifier_grants.gd` (ENV B, P2) asserts that every grant in content data is a known key.
+
+## v1.1: `interaction.no_interrupt_on_damage` retired (D-134)
+PD2 never cancels a held interaction on damage (D-134 source check), so the flag has no effect and is removed from
+`ModifierKeys.KEYS` and the P4 coverage ratchet. B's Hold the Line basic now grants `defense.armor_regen_delay_mult 0.85`.
