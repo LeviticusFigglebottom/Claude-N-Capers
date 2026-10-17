@@ -33,17 +33,22 @@ const NPCS: Array[String] = [
 	"char_npc_northgate_guard_d",
 	"char_npc_northgate_guard_e",
 	"char_npc_northgate_guard_f",
+	"char_npc_northgate_guard_g",
+	"char_npc_northgate_guard_h",
+	"char_npc_northgate_guard_i",
 	"char_npc_helena_moor",
 ]
 const GUARD: String = "char_npc_bank_guard"
 ## Every NPC whose pager is answered at Hip/Socket (the radio on the belt).
 const RADIO_GUARDS: Array[String] = [
 	"char_npc_bank_guard", "char_npc_northgate_guard", "char_npc_northgate_guard_b", "char_npc_northgate_guard_c",
-	"char_npc_northgate_guard_d", "char_npc_northgate_guard_e", "char_npc_northgate_guard_f",
+	"char_npc_northgate_guard_d", "char_npc_northgate_guard_e", "char_npc_northgate_guard_f", "char_npc_northgate_guard_g",
+	"char_npc_northgate_guard_h", "char_npc_northgate_guard_i",
 ]
 const NORTHGATE: Array[String] = [
 	"char_npc_northgate_guard", "char_npc_northgate_guard_b", "char_npc_northgate_guard_c", "char_npc_northgate_guard_d",
-	"char_npc_northgate_guard_e", "char_npc_northgate_guard_f",
+	"char_npc_northgate_guard_e", "char_npc_northgate_guard_f", "char_npc_northgate_guard_g", "char_npc_northgate_guard_h",
+	"char_npc_northgate_guard_i",
 ]
 const TARGETS: Array[String] = ["char_npc_kessler", "char_npc_kessler_coat"]
 ## Kessler's recognisability accent: the ice coat (coat look) and the ice-silk robe (default look).

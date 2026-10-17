@@ -677,6 +677,24 @@
 			"test": false
 		},
 		{
+			"asset": "char_npc_northgate_guard_g",
+			"id": "npc_northgate_guard_g",
+			"scene": "res://world/characters/npc_northgate_guard_g/npc_northgate_guard_g.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_npc_northgate_guard_h",
+			"id": "npc_northgate_guard_h",
+			"scene": "res://world/characters/npc_northgate_guard_h/npc_northgate_guard_h.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_npc_northgate_guard_i",
+			"id": "npc_northgate_guard_i",
+			"scene": "res://world/characters/npc_northgate_guard_i/npc_northgate_guard_i.tscn",
+			"test": false
+		},
+		{
 			"asset": "char_npc_penthouse_guest_a",
 			"id": "npc_penthouse_guest_a",
 			"scene": "res://world/characters/npc_penthouse_guest_a/npc_penthouse_guest_a.tscn",
