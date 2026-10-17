@@ -20,7 +20,7 @@ Textures are generated with ENV C's ``tools/texgen`` library (used read-only: no
 ``materials.base.Ctx/Maps/finalize`` which enforces the style-guide albedo rules (linear luminance
 0.04-0.85, saturation <= 0.75, never near the interactable accent) and the ``godot`` writers).
 The generators here are ENV D's: one per material *kind* (cloth, knit, leather, skin, hair, eye,
-metal, plastic, gloss; the achievement mask surfaces stone, bronze, canvas, rust live in
+metal, plastic, gloss; the achievement mask surfaces stone, bronze, canvas, rust, velvet, crinkle, gilt live in
 ``_mask_surfaces.py``), coloured from the palette, so the glb placeholder colours and the game
 materials come from the same numbers. Deterministic (seed = crc32(id), texgen's PNG writer).
 Adding a material = adding an id to ``_outfit_palette`` (or ``_body``) and re-running this.

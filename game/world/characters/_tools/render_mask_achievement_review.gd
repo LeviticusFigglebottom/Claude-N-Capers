@@ -1,6 +1,7 @@
 ## D-ACH: windowed review of the achievement mask materials (char_mask_limestone / bronze / oil_canvas /
-## container_rust) and pattern textures (tex_mask_pattern_guilloche / vault_bolts / acanthus), each ON A MASK as the
-## game composes it: MaskComposer.instantiate() on a MaskDef with an ENV D base glb, a colour pair from
+## container_rust / velvet_case / night_safe / gilt_leaf) and pattern textures (tex_mask_pattern_guilloche /
+## vault_bolts / acanthus / facets / time_lock_dial / stencil), each ON A MASK as the game composes it:
+## MaskComposer.instantiate() on a MaskDef with an ENV D base glb, a colour pair from
 ## content/data/masks/parts/colors.tres, a review MaskMaterialDef wrapping the library .tres and a review
 ## MaskPatternDef with the texture_path. The review parts are added to MaskCatalog's in-memory cache only (nothing is
 ## saved; the part data is ENV B's). Owner: ENV D.
@@ -27,8 +28,11 @@ const MATERIALS: Array = [
 	[&"char_mask_bronze", 1.0, 0.45, 0.8, 1.5, &"mask_colors.verdigris_crown", true],
 	[&"char_mask_oil_canvas", 0.0, 0.62, 0.9, 1.5, &"mask_colors.harbor_fog", true],
 	[&"char_mask_container_rust", 0.0, 0.8, 0.9, 1.5, &"mask_colors.ember_soot", false],
+	[&"char_mask_velvet_case", 0.0, 0.9, 0.8, 1.5, &"mask_colors.velvet_vault", false],
+	[&"char_mask_night_safe", 0.0, 0.5, 0.9, 1.5, &"mask_colors.black_crown", false],
+	[&"char_mask_gilt_leaf", 1.0, 0.45, 0.8, 1.5, &"mask_colors.crown_ember", false],
 ]
-const PATTERNS: Array[String] = ["guilloche", "vault_bolts", "acanthus"]
+const PATTERNS: Array[String] = ["guilloche", "vault_bolts", "acanthus", "facets", "time_lock_dial", "stencil"]
 const TILE: Vector2i = Vector2i(360, 400)
 
 var _vp: SubViewport

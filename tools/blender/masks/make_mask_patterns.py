@@ -222,16 +222,216 @@ def acanthus(n: int) -> np.ndarray:
     return np.clip(m, 0.0, 1.0)
 
 
+# ------------------------------------------------------------------------------------------------
+# polygon motifs (facets, dial hands, stencil glyphs): rasterised with Pillow at 2x the working
+# resolution and box-filtered down (with render()'s 2x: 4x4 samples per texel)
+# ------------------------------------------------------------------------------------------------
+class Canvas:
+    """Pillow drawing in physical mask units (x m from the UV centre line, y m down from the top)."""
+
+    def __init__(self, n: int, k: int = 2) -> None:
+        from PIL import Image, ImageDraw
+
+        self.n, self.k = n, k
+        self.img = Image.new("L", (n * k, n * k), 0)
+        self.draw = ImageDraw.Draw(self.img)
+
+    def _p(self, x: float, y: float) -> tuple[float, float]:
+        return ((x / W + 0.5) * self.n * self.k, y / H * self.n * self.k)
+
+    def poly(self, pts, value: int = 255) -> None:
+        self.draw.polygon([self._p(x, y) for x, y in pts], fill=value)
+
+    def rect(self, x0: float, y0: float, x1: float, y1: float, value: int = 255) -> None:
+        self.poly([(x0, y0), (x1, y0), (x1, y1), (x0, y1)], value)
+
+    def seg(self, a, b, width: float, value: int = 255) -> None:
+        """A straight stroke of ``width`` m from a to b (as a quad, square ends)."""
+        (ax, ay), (bx, by) = a, b
+        dx, dy = bx - ax, by - ay
+        ln = max(np.hypot(dx, dy), 1e-9)
+        ox, oy = -dy / ln * 0.5 * width, dx / ln * 0.5 * width
+        self.poly([(ax + ox, ay + oy), (bx + ox, by + oy), (bx - ox, by - oy), (ax - ox, ay - oy)], value)
+
+    def array(self) -> np.ndarray:
+        a = np.asarray(self.img, dtype=np.float64) / 255.0
+        n, k = self.n, self.k
+        return a.reshape(n, k, n, k).mean(axis=(1, 3))
+
+
+def facets(n: int) -> np.ndarray:
+    """Brilliant-cut crown seen from above, centred on the nose bridge: octagonal table, 8 star facets,
+    8 kite (bezel) facets, 16 upper-girdle halves, the girdle ring; facets alternate A / B and every
+    facet edge is a B line, so the cut reads at a distance."""
+    cx, cy = 0.0, 0.42 * H
+    rg = 0.104                                     # girdle radius: the crown spans the whole face
+    rt, rs = 0.50 * rg, 0.76 * rg                  # table corner radius, star tip radius
+
+    def pt(r: float, deg: float) -> tuple[float, float]:
+        a = np.deg2rad(deg - 90.0)
+        return (cx + r * np.cos(a), cy + r * np.sin(a))
+
+    cv = Canvas(n)
+    cv.poly([pt(rg * 1.6, 22.5 * i) for i in range(16)], 0)
+    table = [pt(rt, 45 * i + 22.5) for i in range(8)]
+    edges = []
+    for i in range(8):
+        t0, t1 = table[i - 1], table[i]               # table edge centred on angle 45 i
+        star = pt(rs, 45 * i)
+        cv.poly([t0, t1, star], 255)                  # star facet: B
+        kite = [table[i], pt(rs, 45 * i), pt(rg, 45 * i + 22.5), pt(rs, 45 * (i + 1))]
+        cv.poly(kite, 0)                              # kite: A
+        # upper girdle halves either side of the star tip, alternating
+        g0, g1, g2 = pt(rg, 45 * i - 22.5), pt(rg, 45 * i), pt(rg, 45 * i + 22.5)
+        cv.poly([star, g0, g1], 255 if i % 2 == 0 else 0)
+        cv.poly([star, g1, g2], 0 if i % 2 == 0 else 255)
+        edges += [(t0, t1), (t0, star), (t1, star), (star, g0), (star, g1), (star, g2),
+                  (table[i], pt(rs, 45 * i)), (pt(rs, 45 * i), g2)]
+    for a, b in edges:
+        cv.seg(a, b, 1.8e-3)
+    m = cv.array()
+    x, y, px = grid(n)
+    r = np.hypot(x - cx, y - cy)
+    m = np.maximum(m, line(r - rg, 2.6e-3, px))                       # girdle
+    m = np.where(r > rg + 1.3e-3, 0.0, m)                                # outside the girdle: A
+    return np.clip(m, 0.0, 1.0)
+
+
+def time_lock_dial(n: int) -> np.ndarray:
+    """Time-lock movement dial round the face centre: a knurled bezel, a solid chapter ring with
+    hour windows cut into it, 60 minute ticks, bold hour batons (double at 12), two tapered hands
+    (ten past ten) and a centre boss."""
+    cx, cy = 0.0, 0.47 * H
+    x, y, px = grid(n)
+    dx, dy = x - cx, y - cy
+    r = np.hypot(dx, dy)
+    a = np.arctan2(dx, -dy)                         # clockwise from 12 o'clock
+    m = np.zeros_like(r)
+    # knurled outer bezel (sawtooth edge) out to the face edge
+    knurl = 0.090 + 0.0022 * np.abs(np.mod(a / (2 * np.pi) * 90, 1.0) - 0.5)
+    m = np.maximum(m, cover(knurl - r, px))
+    m = np.where(r > 0.084, m, 0.0)
+    # chapter ring band with 12 hour windows (A) cut into it
+    ring = cover(np.abs(r - 0.0735) - 0.0065, px)
+    seg_h = 2 * np.pi / 12
+    ah = np.mod(a + 0.5 * seg_h, seg_h) - 0.5 * seg_h
+    win = cover(np.maximum(np.abs(r * np.sin(ah)) - 0.0028, np.abs(r - 0.0735) - 0.0035), px)
+    m = np.maximum(m, ring * (1.0 - win))
+    # minute ticks inside the ring
+    seg_m = 2 * np.pi / 60
+    am = np.mod(a + 0.5 * seg_m, seg_m) - 0.5 * seg_m
+    tick = cover(np.maximum(np.abs(r * np.sin(am)) - 0.0008, np.abs(r - 0.0625) - 0.0025), px)
+    m = np.maximum(m, tick)
+    # hour batons
+    bat = cover(np.maximum(np.abs(r * np.sin(ah)) - 0.0024, np.abs(r - 0.0555) - 0.0055), px)
+    m = np.maximum(m, bat)
+    cv = Canvas(n)
+    for deg in (-1.6, 1.6):                          # doubled baton at 12
+        ang = np.deg2rad(deg)
+        cv.seg((cx + 0.050 * np.sin(ang), cy - 0.050 * np.cos(ang)),
+               (cx + 0.061 * np.sin(ang), cy - 0.061 * np.cos(ang)), 3.2e-3)
+
+    def hand(deg: float, length: float, w: float, tail: float) -> None:
+        ang = np.deg2rad(deg)
+        ux, uy = np.sin(ang), -np.cos(ang)
+        vx, vy = -uy, ux
+        cv.poly([(cx - ux * tail + vx * w * 0.6, cy - uy * tail + vy * w * 0.6),
+                 (cx + ux * length * 0.75 + vx * w, cy + uy * length * 0.75 + vy * w),
+                 (cx + ux * length, cy + uy * length),
+                 (cx + ux * length * 0.75 - vx * w, cy + uy * length * 0.75 - vy * w),
+                 (cx - ux * tail - vx * w * 0.6, cy - uy * tail - vy * w * 0.6)])
+
+    hand(305.0, 0.040, 0.0042, 0.010)              # hour hand at ten
+    hand(60.0, 0.056, 0.0032, 0.013)               # minute hand at two
+    m = np.maximum(m, cv.array())
+    m = np.maximum(m, cover(r - 0.0075, px))
+    m = np.minimum(m, 1.0 - cover(r - 0.0025, px))  # arbor hole (A)
+    return np.clip(m, 0.0, 1.0)
+
+
+#: Original blocky stencil glyphs on a 3 x 5 unit cell: filled rectangles / polygons, then the
+#: stencil bridges cut back out (A). Units: x 0..3, y 0..5 (down).
+_GLYPHS: dict[str, tuple[list, list]] = {
+    "C": ([("r", 0, 0, 3, 1), ("r", 0, 0, 1, 5), ("r", 0, 4, 3, 5)],
+          [("r", 1.0, 0, 1.3, 1), ("r", 1.0, 4, 1.3, 5)]),
+    "X": ([("p", (0, 0), (1.1, 0), (3, 5), (1.9, 5)), ("p", (1.9, 0), (3, 0), (1.1, 5), (0, 5))],
+          [("r", 0, 2.35, 1.5, 2.65)]),
+    "4": ([("r", 0, 0, 1, 3), ("r", 0, 2, 3, 3), ("r", 2, 0, 3, 5)],
+          [("r", 1.0, 2, 1.3, 3)]),
+    "0": ([("r", 0, 0, 3, 1), ("r", 0, 0, 1, 5), ("r", 2, 0, 3, 5), ("r", 0, 4, 3, 5)],
+          [("r", 1.35, 0, 1.65, 1), ("r", 1.35, 4, 1.65, 5)]),
+    "7": ([("r", 0, 0, 3, 1), ("p", (2, 1), (3, 1), (1.7, 5), (0.7, 5))],
+          [("r", 1.85, 0, 2.15, 1)]),
+    "3": ([("r", 0, 0, 3, 1), ("r", 0.6, 2, 3, 3), ("r", 0, 4, 3, 5), ("r", 2, 0, 3, 5)],
+          [("r", 1.75, 0, 2.05, 1), ("r", 1.75, 2, 2.05, 3), ("r", 1.75, 4, 2.05, 5)]),
+    "1": ([("r", 1, 0, 2, 4.0), ("p", (0.1, 0.5), (1, 0), (1, 1.2), (0.1, 1.5)), ("r", 0, 4.3, 3, 5)],
+          []),
+}
+STENCIL_TEXT = "CX40 7731"                         # original, no real owner code or company mark
+
+
+def stencil(n: int) -> np.ndarray:
+    """Shipping-container stencil: a painted brow panel (B) with the blocky stencil code knocked out
+    (A) between two thin rules, and a hazard-stripe chin band."""
+    cv = Canvas(n)
+    unit = 0.118 / 33.0                            # glyph unit (m): the code spans ~12 cm of brow
+    y0 = 0.205 * H                                  # brow panel (ends just above the brow line)
+    y1 = y0 + 5.0 * unit + 0.010
+    cv.rect(-W, y0, W, y1)
+    cv.rect(-W, y0 - 0.0062, W, y0 - 0.0040)        # rules above / below the panel
+    cv.rect(-W, y1 + 0.0040, W, y1 + 0.0062)
+    adv, space = 4.0 * unit, 2.0 * unit
+    width = sum(space if ch == " " else adv for ch in STENCIL_TEXT) - unit
+    gx, gy = -0.5 * width, y0 + 0.005
+
+    def shape(item, ox: float, value: int) -> None:
+        if item[0] == "r":
+            _k, a0, b0, a1, b1 = item
+            cv.rect(ox + a0 * unit, gy + b0 * unit, ox + a1 * unit, gy + b1 * unit, value)
+        else:
+            cv.poly([(ox + px_ * unit, gy + py_ * unit) for px_, py_ in item[1:]], value)
+
+    for ch in STENCIL_TEXT:
+        if ch == " ":
+            gx += space
+            continue
+        fills, cuts = _GLYPHS[ch]
+        for it in fills:
+            shape(it, gx, 0)                        # knocked out of the panel: A
+        for it in cuts:
+            shape(it, gx, 255)                      # stencil bridges: panel colour B
+        gx += adv
+    # hazard chin band: 45 degree stripes between two rules
+    c0, c1 = 0.80 * H, 1.02 * H
+    cv.rect(-W, c0 - 0.0062, W, c0 - 0.0040)
+    period = 0.022
+    k = -12
+    while k * period < W + (c1 - c0) + period:
+        xa = -W + k * period
+        cv.poly([(xa, c1), (xa + 0.5 * period, c1), (xa + 0.5 * period + (c1 - c0), c0), (xa + (c1 - c0), c0)])
+        k += 1
+    return cv.array()
+
+
 PATTERNS = {
     "guilloche": (guilloche, "banknote guilloche rosette: two 12-lobed interlaced ring families round "
                              "the nose bridge (UV 0.5, 0.42), a 36-wave lathe-work band between two rings, "
                              "a looping crown ring, fine wave ground outside"),
-    "vault_bolts": (vault_bolts, "vault door: rim band at the face edge, 16 radial bolt bars, inner rim ring, "
-                                 "a circle of 32 rivets, a central hub disk with a groove ring and a "
-                                 "three-spoke handle wheel"),
-    "acanthus": (acanthus, "gilded picture-frame border (~15 % of the width) round the face perimeter: outer "
-                           "fillet, bead line, running acanthus scroll (stem, volutes, lobed leaves); centre "
-                           "field 0 = colour A"),
+    "vault_bolts": (vault_bolts, "vault door: frame at the face edge, 14 locking bolts thrown across the gap into "
+                                 "it, the door's edge ring and an inner ring, a circle of 28 rivets, a central "
+                                 "hub disk with a groove ring and a three-spoke handle wheel"),
+    "acanthus": (acanthus, "gilded picture-frame border (~15 % of the width) round a face-shaped perimeter: "
+                           "outer fillet, bead line, running acanthus scroll (stem, volutes, lobed leaves); "
+                           "centre field 0 = colour A"),
+    "facets": (facets, "brilliant-cut crown from above centred on the nose bridge (UV 0.5, 0.42): octagonal "
+                       "table, 8 star, 8 kite and 16 upper-girdle facets alternating A/B, B facet edges, "
+                       "girdle ring"),
+    "time_lock_dial": (time_lock_dial, "time-lock dial round the face centre: knurled bezel, chapter ring with "
+                                       "hour windows, 60 minute ticks, hour batons (double at 12), hour and "
+                                       "minute hands at ten past ten, centre boss"),
+    "stencil": (stencil, f"container stencil: brow panel (B) with the original blocky stencil code "
+                         f"'{STENCIL_TEXT}' knocked out (A, with stencil bridges) between rules; 45 degree "
+                         "hazard-stripe chin band"),
 }
 
 

@@ -20,7 +20,7 @@ Shared-library ids (ENV C, ``game/world/materials/<id>.tres``) are used where on
 from __future__ import annotations
 
 #: kind -> (subsurface for skin, rim etc. used by make_materials.py)
-KINDS = ("skin", "eye", "hair", "cloth", "leather", "metal", "plastic", "gloss", "stone", "bronze", "canvas", "rust")
+KINDS = ("skin", "eye", "hair", "cloth", "leather", "metal", "plastic", "gloss", "stone", "bronze", "canvas", "rust", "velvet", "crinkle", "gilt")
 
 #: id -> (sRGB hex, roughness, metallic, kind). ``char_skin_*``, ``char_lip_<family>``, ``char_hair_*``, ``char_eye*`` are
 #: filled in from ``_body`` constants by ``all_char_materials()`` so they always match the body.
@@ -36,6 +36,9 @@ OUTFIT: dict[str, tuple[str, float, float, str]] = {
     "char_mask_bronze": ("#A27A46", 0.40, 1.0, "bronze"),        # statuary bronze, green-brown patina
     "char_mask_oil_canvas": ("#D6CEBB", 0.62, 0.0, "canvas"),    # primed canvas weave + impasto strokes
     "char_mask_container_rust": ("#9A4232", 0.78, 0.0, "rust"),  # painted container steel, rust, chips
+    "char_mask_velvet_case": ("#77737A", 0.92, 0.0, "velvet"),     # display-case velvet, neutral mid grain
+    "char_mask_night_safe": ("#4A4B50", 0.50, 0.0, "crinkle"),     # black crinkle safe paint, satin
+    "char_mask_gilt_leaf": ("#C9A34A", 0.30, 1.0, "gilt"),         # worn gold leaf over red bole
     # crew (heist suits)
     "char_suit_dark": ("#2A2C31", 0.78, 0.0, "cloth"),
     "char_suit_navy": ("#232B3B", 0.78, 0.0, "cloth"),

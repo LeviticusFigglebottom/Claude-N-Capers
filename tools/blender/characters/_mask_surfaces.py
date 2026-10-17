@@ -1,4 +1,5 @@
-"""Mask surface material kinds (D-ACH): stone, bronze, canvas, rust. Used by ``make_materials.py``.
+"""Mask surface material kinds (D-ACH): stone, bronze, canvas, rust, velvet,
+crinkle, gilt. Used by ``make_materials.py``.
 
 Grain for the achievement-reward ``MaskMaterialDef``s (``content/docs/masks.md``): the mask shader
 (``content/masks/mask_surface.gdshader``) keeps only the albedo *luminance* (divided by
@@ -17,7 +18,7 @@ from texgen import noise as nz
 from texgen import ops
 from texgen.materials.base import Ctx, Maps
 
-MASK_KINDS = ("stone", "bronze", "canvas", "rust")
+MASK_KINDS = ("stone", "bronze", "canvas", "rust", "velvet", "crinkle", "gilt")
 
 
 def _wrap(d: np.ndarray) -> np.ndarray:
@@ -216,4 +217,74 @@ def rust(ctx: Ctx, base: np.ndarray, r: float, met: float) -> Maps:
                 ao_radii_m=(2 * px, 8 * px), ao_depth_m=1.5 * px, ao_strength=0.6)
 
 
-GENERATORS = {"stone": stone, "bronze": bronze, "canvas": canvas, "rust": rust}
+def velvet(ctx: Ctx, base: np.ndarray, r: float, met: float) -> Maps:
+    """Jeweller's display-case velvet: dense fine pile (per-fibre speckle), broad crushed-pile patches
+    where the nap lies another way (lighter / darker sheen bands, smooth flowing shapes), short tufts;
+    very matte. Neutral mid grey: the colour comes from the pair."""
+    u, v, px = ctx.u, ctx.v, ctx.pixel_m
+    wu, wv = nz.warp(u, v, 0.10, 2, ctx.s("w"), octaves=4)
+    nap = nz.fbm(wu, wv, 3, ctx.s("nap"), octaves=4, gain=0.5)            # pile direction field
+    sheen = np.sin(2 * np.pi * (1.5 * nap + 0.5 * nz.fbm(wu, wv, 5, ctx.s("sh"), octaves=3)))
+    crush = ops.blur(ops.smoothstep(-0.7, 0.9, sheen), 5.0)
+    fibre = nz.value(u, v, 256, ctx.s("fibre")) * 0.6 + 0.4 * nz.value(u, v, 128, ctx.s("fibre2"))
+    tuft = nz.fbm(u, v, 40, ctx.s("tuft"), octaves=2)
+    lum = 0.30 * (crush - 0.5) + 0.12 * fibre + 0.10 * tuft
+    alb = ops.vary(base, lum, 1.0)
+    h = px * (0.9 * fibre + 0.5 * tuft + 0.6 * crush)
+    rough = np.clip(r - 0.10 * crush + 0.04 * fibre, 0.0, 1.0)
+    return Maps(alb, rough, np.full(ctx.shape, met), h, normal_strength=0.6,
+                ao_radii_m=(1 * px, 3 * px), ao_depth_m=1.0 * px, ao_strength=0.5)
+
+
+def crinkle(ctx: Ctx, base: np.ndarray, r: float, met: float) -> Maps:
+    """Black crinkle (wrinkle-finish) safe paint: a dense network of fine meandering ridges (the skin
+    of the paint shrinking as it cures), slightly glossier ridge tops, satin overall, plus faint
+    handling scuffs."""
+    u, v, px = ctx.u, ctx.v, ctx.pixel_m
+    wu, wv = nz.warp(u, v, 0.012, 24, ctx.s("w"), octaves=3)
+    rid = nz.ridged(wu, wv, 40, ctx.s("ridge"), octaves=3, sharpness=2.5)
+    rid2 = nz.ridged(wv, wu, 64, ctx.s("ridge2"), octaves=2, sharpness=2.0)
+    wr = 0.65 * rid + 0.35 * rid2
+    scuff_f = nz.value(u, v, (3, 48), ctx.s("scuff"))
+    scuff = ops.smoothstep(0.55, 0.85, scuff_f) * ops.smoothstep(0.5, 0.8, ops.remap01(nz.fbm(u, v, 3, ctx.s("sp"), octaves=3)))
+    tone = nz.fbm(u, v, 3, ctx.s("tone"), octaves=3)
+    lum = 0.35 * (wr - 0.5) + 0.10 * tone + 0.15 * scuff
+    alb = ops.vary(base, lum, 1.0)
+    h = px * (2.2 * wr - 0.4 * scuff * wr)
+    rough = np.clip(r - 0.12 * (wr - 0.5) + 0.04 * tone - 0.08 * scuff, 0.0, 1.0)
+    return Maps(alb, rough, np.full(ctx.shape, met), h, normal_strength=1.0,
+                ao_radii_m=(1 * px, 3 * px), ao_depth_m=1.0 * px, ao_strength=0.6)
+
+
+def gilt(ctx: Ctx, base: np.ndarray, r: float, met: float) -> Maps:
+    """Worn water gilding: square gold-leaf sheets laid in slightly skewed rows (each sheet its own
+    tone and a raised overlap seam), burnished; the leaf rubbed through to the red bole on high
+    points and along seams, with fine craquelure in the bole. Bole is rough and non-metal."""
+    u, v, px = ctx.u, ctx.v, ctx.pixel_m
+    n = 3                                                 # leaf sheets per tile (~3.7 cm on the mask)
+    jit = 0.015 * nz.value(u, v, (1, n), ctx.s("rowj"))
+    ix, iy, fx, fy = ops.tile_grid(u + jit, v, n, n, row_offset=0.37)
+    cell = nz.cell_random(ix, iy, n, n, ctx.s("leaf"), channels=2)
+    edge = np.minimum(np.minimum(fx, 1.0 - fx), np.minimum(fy, 1.0 - fy)) * (ctx.size / n)  # texels to seam
+    seam = 1.0 - ops.smoothstep(0.5, 2.5, edge)
+    lap = (ops.smoothstep(0.0, 0.02, fx) * (1.0 - ops.smoothstep(0.02, 0.05, fx))      # overlap ridge on the
+           + ops.smoothstep(0.0, 0.02, fy) * (1.0 - ops.smoothstep(0.02, 0.05, fy)))    # leading edges only
+    relief = nz.fbm(u, v, 3, ctx.s("relief"), octaves=5)
+    wearf = ops.remap01(nz.fbm(u, v, 6, ctx.s("wear"), octaves=6, gain=0.6))
+    rub = ops.smoothstep(0.70, 0.78, wearf + 0.10 * relief + 0.25 * seam * ops.remap01(nz.fbm(u, v, 20, ctx.s("sw"), octaves=2)))
+    burnish = nz.value(u, v, (2, 60), ctx.s("burnish")) * 0.5 + 0.5 * nz.fbm(u, v, 12, ctx.s("bt"), octaves=2)
+    gold = ops.vary(base, 0.35 * (cell[..., 0] - 0.5) + 0.12 * burnish + 0.15 * relief, 0.35)
+    gold = gold * (1.0 - 0.10 * seam)[..., None]
+    _f1, f2, _rid, _a, _b = nz.worley(u, v, 30, ctx.s("craq"), jitter=1.0)
+    craq = 1.0 - ops.smoothstep(0.03, 0.08, f2 - _f1)
+    bole = ops.vary(ops.hex_to_linear("#7A3424"), nz.fbm(u, v, 10, ctx.s("bole"), octaves=3) - 0.4 * craq, 0.25)
+    alb = ops.lerp(gold, bole, rub[..., None])
+    h = px * (1.2 * relief + 0.8 * lap - 0.6 * seam - 0.9 * rub - 0.4 * rub * craq)
+    rough = np.clip(r + 0.06 * burnish + 0.08 * seam + 0.45 * rub, 0.0, 1.0)
+    metal = np.clip(met * (1.0 - rub), 0.0, 1.0)
+    return Maps(alb, rough, metal, h, normal_strength=1.0,
+                ao_radii_m=(1 * px, 4 * px), ao_depth_m=1.0 * px, ao_strength=0.5)
+
+
+GENERATORS = {"stone": stone, "bronze": bronze, "canvas": canvas, "rust": rust,
+              "velvet": velvet, "crinkle": crinkle, "gilt": gilt}

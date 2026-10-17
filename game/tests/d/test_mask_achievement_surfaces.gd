@@ -1,13 +1,14 @@
 ## D-ACH: the achievement mask surfaces ENV D supplies for ENV B's MaskMaterialDef / MaskPatternDef
-## (content/docs/masks.md): four library materials (tools/blender/characters/make_materials.py, kinds in
-## _mask_surfaces.py) and three pattern textures (tools/blender/masks/make_mask_patterns.py) whose red channel is the
+## (content/docs/masks.md): seven library materials (tools/blender/characters/make_materials.py, kinds in
+## _mask_surfaces.py) and six pattern textures (tools/blender/masks/make_mask_patterns.py) whose red channel is the
 ## pattern mask over mask UV0. Run after `godot --import`.
 extends TestCase
 
 const MATERIALS: Array[String] = [
 	"char_mask_limestone", "char_mask_bronze", "char_mask_oil_canvas", "char_mask_container_rust",
+	"char_mask_velvet_case", "char_mask_night_safe", "char_mask_gilt_leaf",
 ]
-const PATTERNS: Array[String] = ["guilloche", "vault_bolts", "acanthus"]
+const PATTERNS: Array[String] = ["guilloche", "vault_bolts", "acanthus", "facets", "time_lock_dial", "stencil"]
 const PATTERN_DIR: String = "res://assets/masks/patterns/"
 const PATTERN_SIZE: int = 1024
 ## Each colour of the pair must cover at least this share of the texture.
