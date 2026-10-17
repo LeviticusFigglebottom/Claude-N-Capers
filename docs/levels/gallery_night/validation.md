@@ -153,7 +153,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## navmesh: Navmesh
 
-- navmesh: 2561 polygons, cell 0.10/0.10 m
+- navmesh: 2544 polygons, cell 0.10/0.10 m
 - 279 markers checked
 | room | walkable samples | covered | coverage |
 |---|---|---|---|
@@ -208,7 +208,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## barred_doors: BARRED doorways are closed in the navmesh
 
-- 0 BARRED door(s) checked
+- 3 BARRED door(s) checked
 - variant-slot BARRED doors not checked (one bake for every variant): `Variants/Group_areaway/Slot_grate_padlocked/AreawayGrate`
 
 
@@ -368,7 +368,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 ## bounds: No void / back faces
 
 - 119 navmesh sample(s) skipped: not reachable from a player spawn (police-only)
-- 272 eye samples, 22032 rays, sky yes, 0 void ray(s)
+- 270 eye samples, 21870 rays, sky yes, 0 void ray(s)
 
 
 ## perf: Per-shot performance budget

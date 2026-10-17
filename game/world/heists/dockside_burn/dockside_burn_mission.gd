@@ -100,7 +100,7 @@ func _on_mission_start() -> void:
 	say(&"vo.mercer.dockside_burn_intro")
 	say(&"vo.reyes.dockside_burn_contact_intro", {}, &"reyes")
 	# [cartel] covers the whole yard (thin out the gunmen): no marker, like casing.
-	add_objective(&"cartel", &"objective.dockside_burn.cartel", Enums.ObjectiveState.ACTIVE, {"optional": true})
+	add_objective(&"cartel", &"objective.dockside_burn.cartel", Enums.ObjectiveState.ACTIVE, {"optional": true, "side": true})
 	add_objective(&"breach", &"objective.dockside_burn.breach", Enums.ObjectiveState.ACTIVE, {"marker_tags": _entry_tags()})
 	add_objective(&"product", &"objective.dockside_burn.product", Enums.ObjectiveState.ACTIVE,
 		{"location": variant(&"product_location"), "marker_tags": [TAG_PRODUCT]})
@@ -117,7 +117,7 @@ func _on_mission_start() -> void:
 		Enums.ObjectiveState.ACTIVE if countroom else Enums.ObjectiveState.HIDDEN,
 		{"alternative": &"containers", "marker_tags": [TAG_COUNT_CAGE, TAG_CASH]})
 	add_objective(&"containers", &"objective.dockside_burn.containers", Enums.ObjectiveState.ACTIVE,
-		{"optional": true, "alternative": &"count_cage" if countroom else &"strongroom",
+		{"optional": true, "side": true, "alternative": &"count_cage" if countroom else &"strongroom",
 			"marker_tags": _container_tags(CONTAINER_KEYS)})
 	add_objective(&"secure", &"objective.dockside_burn.secure", Enums.ObjectiveState.ACTIVE,
 		{"bags": MIN_BAGS, "count": 0, "total": MIN_BAGS, "optional_more": true, "marker_tags": [TAG_LOOT_SECURE]})

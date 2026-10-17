@@ -86,7 +86,7 @@ func _on_mission_start() -> void:
 	add_objective(&"vault_loot", &"objective.night_deposit.vault_loot", Enums.ObjectiveState.HIDDEN,
 		{"marker_tags": [TAG_VAULT_LOOT]})
 	add_objective(&"depository", &"objective.night_deposit.depository", Enums.ObjectiveState.ACTIVE,
-		{"optional": true, "marker_tags": [TAG_DEPOSITORY]})
+		{"optional": true, "side": true, "marker_tags": [TAG_DEPOSITORY]})
 	add_objective(&"secure", &"objective.night_deposit.secure", Enums.ObjectiveState.ACTIVE,
 		{"bags": MIN_BAGS, "count": 0, "total": MIN_BAGS, "optional_more": true, "marker_tags": [TAG_LOOT_SECURE]})
 	require_loot(&"secure", MIN_BAGS)

@@ -481,7 +481,9 @@ func _follow_goal() -> Vector3:
 	var seen: bool = _has_los(_crew.eye_position(), leader.eye_position())
 	if not seen:
 		_following = true
-		return leader.global_position
+		# P DB pass (CREW_STACK: AI inside the player at the burn): close by (a door frame flickering the LOS) the bot
+		# takes its own formation slot, never the leader's own spot; farther away it still walks to the leader.
+		return _formation_slot(leader) if d < tweak.follow_min_m * 0.5 else leader.global_position
 	var loud: bool = _rt.went_loud
 	var stop_m: float = tweak.follow_stop_loud_m if loud else tweak.follow_stop_m
 	var max_m: float = tweak.follow_max_loud_m if loud else tweak.follow_max_m
@@ -926,7 +928,9 @@ func _cover_ok(p: Node3D, leader: CrewController) -> bool:
 		if _flat_dist(c.global_position, p.global_position) < tweak.cover_taken_m:
 			return false
 		var b: CrewAiBrain = CrewAiBrain.of(c)
-		if b != null and b.cover_point == p:
+		# P DB pass (CREW_STACK: two bots 0.06 m apart): another bot's cover point this close is the same spot.
+		if b != null and b.cover_point != null and is_instance_valid(b.cover_point) \
+				and (b.cover_point == p or _flat_dist(b.cover_point.global_position, p.global_position) < tweak.cover_taken_m):
 			return false
 	return true
 

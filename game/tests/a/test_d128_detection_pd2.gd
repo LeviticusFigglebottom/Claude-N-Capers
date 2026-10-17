@@ -36,19 +36,19 @@ const TABLE: Array = [
 	[&"civilian", 75, 1.0, 0.0, false, 0.0], [&"civilian", 75, 1.0, 58.0, false, 0.853],
 	[&"civilian", 75, 10.0, 0.0, false, 0.688], [&"civilian", 75, 10.0, 58.0, false, 1.391],
 	[&"civilian", 75, 20.0, 0.0, false, 1.285], [&"civilian", 75, 20.0, 58.0, false, 1.989],
-	[&"camera", 3, 1.0, 0.0, false, 5.974], [&"camera", 3, 1.0, 29.0, false, 5.742],
-	[&"camera", 3, 10.0, 0.0, false, 3.942], [&"camera", 3, 10.0, 29.0, false, 3.710],
+	[&"camera", 3, 1.0, 0.0, false, 4.779], [&"camera", 3, 1.0, 29.0, false, 4.594],
+	[&"camera", 3, 10.0, 0.0, false, 3.154], [&"camera", 3, 10.0, 29.0, false, 2.968],
 	[&"camera", 3, 20.0, 0.0, false, -1.0], [&"camera", 3, 20.0, 29.0, false, -1.0],
-	[&"camera", 35, 1.0, 0.0, false, 3.943], [&"camera", 35, 1.0, 29.0, false, 3.871],
-	[&"camera", 35, 10.0, 0.0, false, 3.433], [&"camera", 35, 10.0, 29.0, false, 3.361],
+	[&"camera", 35, 1.0, 0.0, false, 3.154], [&"camera", 35, 1.0, 29.0, false, 3.097],
+	[&"camera", 35, 10.0, 0.0, false, 2.746], [&"camera", 35, 10.0, 29.0, false, 2.689],
 	[&"camera", 35, 20.0, 0.0, false, -1.0], [&"camera", 35, 20.0, 29.0, false, -1.0],
-	[&"camera", 75, 1.0, 0.0, false, 1.256], [&"camera", 75, 1.0, 29.0, false, 1.386],
-	[&"camera", 75, 10.0, 0.0, false, 1.759], [&"camera", 75, 10.0, 29.0, false, 1.889],
-	[&"camera", 75, 20.0, 0.0, false, 2.317], [&"camera", 75, 20.0, 29.0, false, 2.448],
+	[&"camera", 75, 1.0, 0.0, false, 1.005], [&"camera", 75, 1.0, 29.0, false, 1.109],
+	[&"camera", 75, 10.0, 0.0, false, 1.407], [&"camera", 75, 10.0, 29.0, false, 1.511],
+	[&"camera", 75, 20.0, 0.0, false, 1.854], [&"camera", 75, 20.0, 29.0, false, 1.958],
 	# S2.5 PD2 crouch (attention whisper_mode_crouch: shorter range; civilians also a x3 delay_min).
 	[&"guard", 35, 10.0, 0.0, true, 1.400], [&"guard", 35, 13.0, 0.0, true, -1.0],
 	[&"civilian", 35, 10.0, 0.0, true, 1.800], [&"civilian", 35, 3.0, 0.0, true, 0.960],
-	[&"camera", 35, 10.0, 0.0, true, 3.292], [&"camera", 35, 13.0, 0.0, true, -1.0],
+	[&"camera", 35, 10.0, 0.0, true, 2.634], [&"camera", 35, 13.0, 0.0, true, -1.0],
 ]
 const TOL_S: float = 0.01
 
@@ -101,7 +101,9 @@ func test_d128_presets_are_pd2_values() -> void:
 	assert_near(float(p[&"guard"]["far"]), 40.0, 0.001, "ntl dis_max 4000 cm")
 	assert_near(float(p[&"guard"]["fov_deg"]), 120.0, 0.001, "ntl angle_max 60 (half angle)")
 	assert_near(float(p[&"civilian"]["delay_max"]), 3.0, 0.001, "civilian ntl delay {0.2, 3}")
-	assert_near(float(p[&"camera"]["delay_min"]), 2.0, 0.001, "camera editor default delay {2, 3}")
+	# D-130 (PO): cameras ~20 % faster than PD2's editor default delay {2, 3} (◇).
+	assert_near(float(p[&"camera"]["delay_min"]), 1.6, 0.001, "camera delay_min 1.6 (D-130)")
+	assert_near(float(p[&"camera"]["delay_max"]), 2.4, 0.001, "camera delay_max 2.4 (D-130)")
 	assert_near(_st.detection_risk_mult(3), 1.55, 0.0001, "DR 3 = concealment[29] 1.55")
 	assert_near(_st.detection_risk_mult(75), 0.3, 0.0001, "DR 75 = concealment[1] 0.3")
 
@@ -200,4 +202,4 @@ func test_d128_camera_drains_one_over_delay_max() -> void:
 	var v0: float = _st.detection_value(cam, 0)
 	await wait_seconds(0.6)
 	var v1: float = _st.detection_value(cam, 0)
-	assert_near(v0 - v1, 0.6 / 3.0 * 0.65, 0.04, "camera drain 1 / delay_max per s x (1 - 0.35)")
+	assert_near(v0 - v1, 0.6 / 2.4 * 0.65, 0.04, "camera drain 1 / delay_max per s x (1 - 0.35)")
