@@ -15,6 +15,9 @@ const SOURCE_BRIEFING: StringName = &"briefing"
 const SPEAKER_KEY: StringName = &"ui.subtitle.speaker"
 
 ## Settings followed (null = GameSettings.current(); tests set their own before _ready).
+## Group the overlay joins so the HUD can keep objective markers clear of its box (Hud._subtitle_rect).
+const GROUP: StringName = &"subtitle_overlay"
+
 var settings: GameSettings = null
 var tweak: RadioTweak = null
 var table: VoiceLineTable = null
@@ -28,6 +31,7 @@ var _contacts: Dictionary = {}
 
 
 func _ready() -> void:
+	add_to_group(GROUP)
 	if tweak == null:
 		tweak = RadioTweak.load_default()
 	if table == null:

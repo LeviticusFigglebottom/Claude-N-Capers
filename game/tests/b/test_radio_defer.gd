@@ -3,7 +3,11 @@
 extends TestCase
 
 
+var _saved_seed: int = 0
+
+
 func before_each() -> void:
+	_saved_seed = GameRng.run_seed
 	GameRng.begin_run(1234)
 
 
@@ -11,6 +15,7 @@ func after_each() -> void:
 	for c: Node in get_children():
 		if c is ContactRadio:
 			c.queue_free()
+	GameRng.begin_run(_saved_seed)  # r230: the seed leaked into test_range's crew shot (spread) and made it miss
 	await wait_frames(1)
 
 
