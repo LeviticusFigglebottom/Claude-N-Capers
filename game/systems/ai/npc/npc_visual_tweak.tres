@@ -73,6 +73,8 @@ heist_tag_characters = {
 &"security_operator": [&"npc_bank_guard"]
 },
 &"ostrander_federal": {
+&"guard_extra_basement": [&"security_officer", &"security_officer_b", &"security_officer_c", &"security_officer_d", &"security_officer_e", &"security_officer_f", &"security_officer_g", &"security_officer_h", &"security_officer_i", &"security_officer_j"],
+&"guard_extra_hall": [&"security_officer", &"security_officer_b", &"security_officer_c", &"security_officer_d", &"security_officer_e", &"security_officer_f", &"security_officer_g", &"security_officer_h", &"security_officer_i", &"security_officer_j"],
 &"civ_client": [&"bank_customer", &"bank_customer_b", &"bank_customer_c", &"bank_customer_d", &"bank_customer_e", &"bank_customer_f", &"bank_customer_g", &"bank_customer_h", &"bank_customer_i", &"bank_customer_j", &"civilian_customer_a", &"civilian_customer_b"],
 &"civ_customer": [&"bank_customer", &"bank_customer_b", &"bank_customer_c", &"bank_customer_d", &"bank_customer_e", &"bank_customer_f", &"bank_customer_g", &"bank_customer_h", &"bank_customer_i", &"bank_customer_j", &"civilian_customer_a", &"civilian_customer_b"],
 &"civ_manager_mgr_floor": [&"bank_manager"],
@@ -146,6 +148,8 @@ heist_tag_pools = {
 &"guard_rover": &"nd_guards"
 },
 &"ostrander_federal": {
+&"guard_extra_basement": &"of_guards",
+&"guard_extra_hall": &"of_guards",
 &"civ_client": &"of_customers",
 &"civ_customer": &"of_customers",
 &"civ_plaza": &"of_customers",
