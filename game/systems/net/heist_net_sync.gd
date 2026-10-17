@@ -55,6 +55,8 @@ const SVC_CAPTAIN: String = "captain"
 const SVC_ZONES: String = "zones"
 ## PO6-08: PagerSystem HUD rows (window frozen while answering) for clients.
 const SVC_PAGERS: String = "pagers"
+## QC-63: variant groups revealed at runtime (PreplanAssets.runtime_reveals).
+const SVC_REVEALS: String = "reveals"
 ## C11 Net.lobby_message kinds, both {"token": int}: host -> clients / client -> host.
 const KIND_CLOSED: StringName = &"heist_closed"
 const KIND_LEFT: StringName = &"heist_left"
@@ -345,6 +347,8 @@ func services_state() -> Dictionary:
 	var pagers: PagerSystem = _runtime.service(G.SVC_PAGERS) as PagerSystem
 	if pagers != null:
 		out[SVC_PAGERS] = pagers.net_state()
+	if not _runtime.preplan.runtime_reveals.is_empty():
+		out[SVC_REVEALS] = _runtime.preplan.reveals_net_state()
 	return out
 
 
@@ -515,6 +519,8 @@ func apply_services(svc: Dictionary) -> void:
 	var pagers: PagerSystem = _runtime.service(G.SVC_PAGERS) as PagerSystem
 	if svc.has(SVC_PAGERS) and pagers != null:
 		pagers.apply_net_state(svc[SVC_PAGERS] as Dictionary)
+	if svc.has(SVC_REVEALS):
+		_runtime.preplan.apply_reveals_net_state(svc[SVC_REVEALS] as Array)
 	if svc.has(SVC_RUNTIME):
 		var r: Dictionary = svc[SVC_RUNTIME] as Dictionary
 		phase_replicated.emit(int(r.get("phase", _runtime.phase)), bool(r.get("loud", _runtime.went_loud)))

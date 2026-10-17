@@ -107,6 +107,12 @@ func _on_guard_dominated(_npc: Node, _crew_slot: int) -> void:
 	pass
 
 
+## QC-63: variant group `group` was revealed during the run (reveal_variant_group, a code_note's
+## `reveals_variant_group`): e.g. put marker_tags on the revealed `code_pc` slot's objective.
+func _on_variant_revealed(_group: StringName) -> void:
+	pass
+
+
 # --- Objectives ------------------------------------------------------------------------
 
 func add_objective(objective_id: StringName, text_key: StringName,
@@ -280,6 +286,19 @@ func find_tagged(tag: StringName) -> Array[Node]:
 
 func variant(group_or_scalar: StringName) -> Variant:
 	return _runtime.variants.get(group_or_scalar) if _runtime != null else null
+
+
+## QC-63 (server): reveal variant group `group` to the crew now, the same effect as a pre-planning asset's `reveals`
+## (PreplanAssets.reveal_group; replicated). Calls `_on_variant_revealed(group)`. True the first time.
+func reveal_variant_group(group: StringName) -> bool:
+	if _runtime == null or not Net.is_authority():
+		return false
+	return _runtime.preplan.reveal_group(group)
+
+
+## QC-63: true when `group` is known to the crew (bought intel or revealed during the run).
+func is_variant_revealed(group: StringName) -> bool:
+	return _runtime != null and _runtime.preplan.reveals().has(group)
 
 
 ## QC-60 (OF drill parts, timed loot): spawn `count` bags of `loot_id` (LootManager.spawn_bag, loot_spawned [R]) at
@@ -581,9 +600,12 @@ func _bind(rt: HeistRuntime) -> void:
 	_internal(&"loot_secured", _on_loot_secured)
 	_internal(&"civilian_intimidated", func(id: int, slot: int) -> void: _on_civilian_dominated(Ids.lookup(id), slot))
 	_internal(&"guard_dominated", func(id: int, slot: int) -> void: _on_guard_dominated(Ids.lookup(id), slot))
+	rt.preplan.group_revealed.connect(_on_variant_revealed)
 
 
 func _unbind() -> void:
+	if _runtime != null and _runtime.preplan.group_revealed.is_connected(_on_variant_revealed):
+		_runtime.preplan.group_revealed.disconnect(_on_variant_revealed)
 	for c: Array in _connections:
 		if EventBus.is_connected(c[0], c[1]):
 			EventBus.disconnect(c[0], c[1])
