@@ -1,6 +1,7 @@
 # Ostrander Federal VO draft (OF-B1, ENV B), CSV rows in a .txt so Godot does not import it as a translation. NOT loaded by StringTable: D-117 §6 (every written line is said or
 # deleted) and test_vo_coverage forbid voice strings without a VoiceLineTable line that something says. When OF-A6 (the
 # mission script) lands, B moves each line the mission says into strings.csv + content/data/voice/lines.tres (mission
+# Briefing lines (accountant 1-3, mercer 1-2) MOVED to strings.csv + data/voice/lines.tres (round 244, OF G1).
 # lines: event mission; radio lines: event radio.objective_done / _new / loot_secured with heist + objective; briefing
 # lines: event briefing). Ids = the key without the "voice." prefix (e.g. vo.mercer.ostrander_federal_intro).
 # Notes for A (mission): drill_inbound/_delivered split _terrace / _dock (+ drill_prepositioned with the drill-drop asset);
@@ -8,11 +9,6 @@
 # only one radio done line should fire; _new radio lines assume time_lock, time_lock_wait, vault_loot, drill_delivery,
 # vault_drill, escape_wait and escape start HIDDEN. No abort line (D-136 §3b.9: no stealth-only fail).
 key,text
-voice.vo.accountant.briefing_ostrander_federal_1,Every branch in the region sends its surplus to Ostrander Federal's main vault for the weekend. On Friday it all sits in one room.
-voice.vo.accountant.briefing_ostrander_federal_2,"Lionel Ashgrove, the day manager, usually carries the vault card, and one of his officers keeps the code. The time lock does the rest, slowly."
-voice.vo.accountant.briefing_ostrander_federal_3,"Bring me the consolidation: cash, gold or bonds. Do it quietly, and Monday's Vaultline run leaves with a vault full of nothing."
-voice.vo.mercer.briefing_ostrander_federal_1,"It's a working bank on a Friday afternoon. Walk in as customers, masks in your pockets, and read the place before anyone moves."
-voice.vo.mercer.briefing_ostrander_federal_2,"If it goes loud, the vault seals and the time lock dies. I'll get you a thermal drill, and you go through the floor instead."
 voice.vo.accountant.ostrander_federal_contact_intro,Every dirty dollar in this city passes through Ostrander Federal. This weekend it all sits in one room.
 voice.vo.accountant.ostrander_federal_payday,Monday's Vaultline run will collect a remarkably clean vault. Your share has been reconciled.
 voice.vo.mercer.ostrander_federal_intro,"Ostrander Federal, open for business. Masks in your pockets. Read the hall, the counter and the manager."

@@ -9,3 +9,8 @@ extends Resource
 @export var table_path: String = ""
 ## Fallback list, used only while `table_path` does not exist (any order; the catalog sorts by id).
 @export var tracks: Array[MusicStubTrack] = []
+## OF G1 (round 244): track id -> fallback track id for a heist whose HeistDef.music_track has no stems in ENV C's table
+## yet (they land with that heist's G2). A pending id counts as registered (MusicCatalog.has) but is never pickable;
+## MusicDirector keeps the map's fallback track meanwhile. Remove the entry when C's table lists the id (test_music
+## fails while a pending id is also in the table).
+@export var pending: Dictionary = {}

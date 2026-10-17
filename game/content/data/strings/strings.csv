@@ -3397,7 +3397,7 @@ achievement.of_no_harm_done.name,No Harm Done
 achievement.of_no_harm_done.desc,Complete Ostrander Federal in stealth without anyone being killed.
 achievement.of_bank_holiday.name,Bank Holiday
 achievement.of_bank_holiday.desc,Complete Ostrander Federal in under 20 minutes.
-achievement.of_clearing_house.name,Clearing House
+achievement.of_clearing_house.name,Nothing Left Behind
 achievement.of_clearing_house.desc,Complete Ostrander Federal with every bag in the building secured.
 achievement.of_burn_and_hoist.name,Burn and Hoist
 achievement.of_burn_and_hoist.desc,Complete Ostrander Federal loud by burning through the vault roof and hoisting the loot out.
@@ -3514,6 +3514,11 @@ voice.vo.vance.gallery_night_centrepiece,"The Lantern Bearer. Hold it like you'd
 voice.vo.vance.gallery_night_payday,"The Lantern Bearer is on its way to a man who will never show it to anyone. Sad, really. Your share is less sad."
 voice.vo.mercer.briefing_gallery_night_1,I'll be on comms. You arrive as guests at the gala. Masks stay in your pockets until the guests are gone or nobody's looking.
 voice.vo.mercer.briefing_gallery_night_2,"Argus runs the cameras, the frame sensors and the Treasury lasers. If it goes loud, steel shutters come down. The server upstairs lifts them."
+voice.vo.accountant.briefing_ostrander_federal_1,Every branch in the region sends its surplus to Ostrander Federal's main vault for the weekend. On Friday it all sits in one room.
+voice.vo.accountant.briefing_ostrander_federal_2,"Lionel Ashgrove, the day manager, usually carries the vault card, and one of his officers keeps the code. The time lock does the rest, slowly."
+voice.vo.accountant.briefing_ostrander_federal_3,"Bring me the consolidation: cash, gold or bonds. Do it quietly, and Monday's Vaultline run leaves with a vault full of nothing."
+voice.vo.mercer.briefing_ostrander_federal_1,"It's a working bank on a Friday afternoon. Walk in as customers, masks in your pockets, and read the place before anyone moves."
+voice.vo.mercer.briefing_ostrander_federal_2,"If it goes loud, the vault seals and the time lock dies. I'll get you a thermal drill, and you go through the floor instead."
 voice.vo.mercer.gallery_night_intro,"Gala's in its last hour. Walk the rooms, get close to the paintings, find the list. Last call's coming and the hall empties after it."
 voice.vo.mercer.gallery_night_canvas_found_lantern,That's The Lantern Bearer. The one the buyer asked for by name.
 voice.vo.mercer.gallery_night_canvas_found_orchard,The Salt Orchard. That's on the list.
