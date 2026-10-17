@@ -109,15 +109,25 @@ func test_briefing_text_and_list() -> void:
 	assert_false(loud.to_lower().begins_with("if it goes loud"), "ui.briefing.if_loud already says it")
 	var b: Dictionary = BriefingModel.build(HEIST, Enums.Difficulty.ROUTINE)
 	var rows: Array = b["objectives"] as Array
-	assert_eq(rows.size(), 6, "D-117 §5: 5 lead steps + the final one")
+	# D-117 §5 from the def itself (its list moves with C's generator; LEAD-approved list: casing, find_canvases,
+	# the access and cut steps, secure, escape): up to 6 rows, the final step always shown with its own number.
+	var def: HeistDef = load(DEF_PATH) as HeistDef
+	var n: int = def.briefing_objectives.size()
+	assert_eq(rows.size(), mini(n, 6), "D-117 §5: at most 5 lead steps + the final one")
+	assert_eq(int(b["objectives_more"]), maxi(n - 6, 0), "+N more steps on the night only when steps are cut")
+	assert_eq(StringName((rows[rows.size() - 1] as Dictionary)["id"]), def.briefing_objectives[n - 1],
+			"the final step is the def's last")
+	assert_eq(int((rows[rows.size() - 1] as Dictionary)["index"]), n, "the final step keeps its number")
+	if n <= 6:
+		var shown: Array[StringName] = []
+		for r: Dictionary in rows:
+			shown.append(StringName(r["id"]))
+		assert_true(shown.has(&"secure"), "the win step (secure) is on the briefing: %s" % [shown])
 	# LEAD ruling on the second audit: the def lists [casing, find_canvases, access step, cut step, secure, escape].
 	var steps: Array[Dictionary] = BriefingModel.objective_lines(HEIST, [&"ui.briefing.step.gallery_night.access",
 			&"ui.briefing.step.gallery_night.cut"])
 	assert_eq(String(steps[0]["text"]), "As needed: a keycard, the Argus code and the frame-sensor hack", "GN access")
 	assert_eq(String(steps[1]["text"]), "Cut The Lantern Bearer and one more listed canvas", "GN cut step (D-075)")
-	assert_eq(int(b["objectives_more"]), 2, "+2 more steps on the night")
-	assert_eq(StringName((rows[5] as Dictionary)["id"]), &"escape", "the final step is the escape")
-	assert_eq(int((rows[5] as Dictionary)["index"]), 8, "the final step keeps its number")
 	for r: Dictionary in rows + (b["optional"] as Array):
 		assert_false(String(r["text"]).contains("{"), "briefing row has no raw args: %s" % r["text"])
 	assert_eq(String(b["loud_text"]), loud, "the loud line shows")

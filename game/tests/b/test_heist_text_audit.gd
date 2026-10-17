@@ -49,7 +49,8 @@ func test_heist_defs_resolve_to_doc_text() -> void:
 			keys.append(String(def.briefing_loud_key))
 		for ids: Array in [def.objectives, def.briefing_objectives, def.briefing_optional]:
 			for oid: StringName in ids:
-				keys.append("objective.%s.%s" % [h, oid])
+				# A dotted entry (ui.briefing.step.<heist>.<step>) is a strings key as-is (BriefingModel.objective_lines).
+				keys.append(String(oid) if String(oid).contains(".") else "objective.%s.%s" % [h, oid])
 		for eid: StringName in def.escape_options:
 			keys.append("ui.briefing.escape.%s" % eid)
 		for lid: StringName in def.loot:
