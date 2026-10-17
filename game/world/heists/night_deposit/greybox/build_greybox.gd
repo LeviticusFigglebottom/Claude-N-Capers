@@ -468,6 +468,11 @@ func _build_glazing(bld: Node3D) -> void:
 		var bars: Array = [[a0, a1, y1 - fw, y1], [a0, a1, y0, y0 + fw], [a0, a0 + fw, y0 + fw, y1 - fw],
 			[a1 - fw, a1, y0 + fw, y1 - fw]]
 		if nm == "BanditGlass":
+			# D-142: the solid brass deal-tray rail under the glass (its own opaque body, on the counter's marble top)
+			var rmn: Vector3 = Vector3(a0, L.BANDIT_RAIL_Y, f - fd * 0.5)
+			var rmx: Vector3 = Vector3(a1, y0, f + fd * 0.5)
+			box(gl, "BanditRail", rmn, rmx, "")
+			art.vis_box(vis_group, rmn, rmx, "brass")
 			bars = [[a0, a1, y1 - fw, y1], [a0, a0 + fw, y0, y1 - fw], [a1 - fw, a1, y0, y1 - fw]]
 			for k: int in range(1, 6):
 				var xm: float = a0 + (a1 - a0) * float(k) / 6.0

@@ -180,7 +180,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## navmesh: Navmesh
 
-- navmesh: 1835 polygons, cell 0.10/0.10 m
+- navmesh: 1836 polygons, cell 0.10/0.10 m
 - 234 markers checked
 | room | walkable samples | covered | coverage |
 |---|---|---|---|
@@ -276,12 +276,12 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## materials: Materials and texel density
 
-- 3582 surfaces checked
+- 3585 surfaces checked
 
 
 ## zfight: Z-fighting
 
-- 379992 triangles checked
+- 380028 triangles checked
 
 
 ## lights: Lighting is deliberate
@@ -403,23 +403,23 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 | camera | draw calls | triangles | shadow lights |
 |---|---|---|---|
-| `TopDownSite` | 1527 | 319682 | 5 |
-| `TopDownTower` | 1540 | 323054 | 5 |
-| `ExtNorthCrown` | 1499 | 314774 | 5 |
-| `ExtWestArden` | 1805 | 384204 | 5 |
-| `ExtTerraceSE` | 2366 | 531008 | 5 |
-| `ReceptionFromLifts` | 274 | 56000 | 3 |
-| `GalleryWalkway` | 1695 | 354000 | 3 |
+| `TopDownSite` | 1530 | 319718 | 5 |
+| `TopDownTower` | 1543 | 323090 | 5 |
+| `ExtNorthCrown` | 1502 | 314810 | 5 |
+| `ExtWestArden` | 1808 | 384240 | 5 |
+| `ExtTerraceSE` | 2369 | 531044 | 5 |
+| `ReceptionFromLifts` | 277 | 56036 | 3 |
+| `GalleryWalkway` | 1698 | 354036 | 3 |
 | `ArtHallLasers` | 483 | 117354 | 1 |
 | `StudySafe` | 1522 | 346116 | 1 |
 | `ServerCage` | 649 | 150890 | 1 |
 | `SecurityRoom` | 830 | 197846 | 1 |
-| `SouthSpine` | 2296 | 490346 | 4 |
-| `TerraceWest` | 2159 | 448754 | 4 |
-| `RoofPlantBlock` | 2293 | 475886 | 5 |
+| `SouthSpine` | 2299 | 490382 | 4 |
+| `TerraceWest` | 2162 | 448790 | 4 |
+| `RoofPlantBlock` | 2296 | 475922 | 5 |
 | `Helipad` | 1860 | 421678 | 3 |
-| `StairACore` | 1103 | 199550 | 5 |
-| `ServiceLobby` | 1652 | 320212 | 4 |
+| `StairACore` | 1106 | 199586 | 5 |
+| `ServiceLobby` | 1655 | 320248 | 4 |
 | `KesslerOffice` | 162 | 44464 | 1 |
 | `OpenOffice` | 732 | 155516 | 2 |
 | `BreakRoom` | 789 | 210074 | 0 |

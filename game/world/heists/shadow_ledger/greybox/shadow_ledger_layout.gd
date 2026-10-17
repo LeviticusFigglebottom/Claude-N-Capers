@@ -71,9 +71,11 @@ const WALL_OPEN: Array = [
 	["L41", "x", 7.5, 10.5, 12.0], ["L41", "x", 7.5, 24.0, 25.5], ["L41", "x", 16.5, 10.5, 12.0], ["L41", "x", 16.5, 24.0, 25.5],
 	["L42", "z", 12.0, 4.0, 7.5], ["L42", "x", 7.5, 10.5, 12.0], ["L42", "x", 16.5, 10.5, 12.0], ["L42", "x", 16.5, 24.0, 25.5],
 ]
-## Interior glazing: [level, axis, fixed, from, to, sill (rel), head (rel)]: the K11/K12 vision panel
-## and the lounge's glass wall over the reception void.
-const WALL_GLASS: Array = [["L41", "z", 31.0, 9.0, 11.0, 0.9, 2.1], ["L42", "z", 12.0, 0.0, 4.0, 0.0, 3.0]]
+## Interior glazing: [level, axis, fixed, from, to, sill (rel), head (rel), frosted]: the K11/K12 vision panel
+## and the lounge's glass wall over the reception void. D-142: a frosted pane is opaque for stealth vision (not
+## `see_through`, the shared texgen `glass_frosted` finish); the K11/K12 panel is frosted so K12 never sees the 45 s
+## ledger hack in K11 (ghost line step 5). The lounge wall is clear.
+const WALL_GLASS: Array = [["L41", "z", 31.0, 9.0, 11.0, 0.9, 2.1, true], ["L42", "z", 12.0, 0.0, 4.0, 0.0, 3.0, false]]
 ## Door leaves on solid walls (visual only, no gap): locked fire doors to the sealed vacant floor
 ## (no prefab, no interaction) and the closed, locked-out lift landing doors. [name, box].
 const DOOR_PANELS: Array = [
@@ -288,15 +290,17 @@ const PARAPETS: Array = [
 	["ParapetN", "x", 0.0, -0.2, 36.2], ["ParapetS", "x", 18.0, -0.2, 36.2],
 	["ParapetW", "z", 0.0, 0.2, 17.8], ["ParapetE", "z", 36.0, 0.2, 17.8],
 ]
-## Terrace glass balustrade (1.1 m, L42 level): [name, box].
+## Terrace glass balustrade (1.1 m, L42 level): [name, box(, solid upstand height)]. D-142: the M2 void edge stands
+## on a 0.45 m stone-clad upstand (opaque for stealth vision); the glass above it stays clear (`see_through`).
+const VOID_UPSTAND: float = 0.45
 const BALUSTRADES: Array = [
 	["BalustradeS", [-0.2, F42, 23.97, 36.2, F42 + 1.1, 24.03]],
 	["BalustradeW", [-0.03, F42, 18.2, 0.03, F42 + 1.1, 23.97]],
 	["BalustradeE", [35.97, F42, 18.2, 36.03, F42 + 1.1, 23.97]],
 	# Gallery void edge (L42) and the feature-stair arrival.
-	["VoidRailS", [12.1, F42, 4.0, 20.56, F42 + 1.1, 4.06]],
-	["VoidRailE", [20.5, F42, 2.0, 20.56, F42 + 1.1, 4.0]],
-	["VoidRailNE", [20.5, F42, 0.2, 20.56, F42 + 1.1, 0.6]],
+	["VoidRailS", [12.1, F42, 4.0, 20.56, F42 + 1.1, 4.06], VOID_UPSTAND],
+	["VoidRailE", [20.5, F42, 2.0, 20.56, F42 + 1.1, 4.0], VOID_UPSTAND],
+	["VoidRailNE", [20.5, F42, 0.2, 20.56, F42 + 1.1, 0.6], VOID_UPSTAND],
 ]
 
 # --- Gameplay placements (used by sl_gameplay.gd) ----------------------------------------------
