@@ -154,22 +154,24 @@ check.213: throw_bag_armed: 30f 1.00s speed=0.0 reach_err=0.0mm step=28.7deg
 check.214: throw_grenade: 24f 0.80s speed=0.0 reach_err=0.0mm step=77.3deg
 check.215: tied: 90f 3.00s loop speed=0.0 reach_err=0.0mm step=0.9deg
 check.216: turn_l: 24f 0.80s speed=0.0 reach_err=0.0mm step=12.3deg
-check.217: turn_r: 24f 0.80s speed=0.0 reach_err=0.0mm step=12.3deg
-check.218: van_exit: 36f 1.20s speed=0.0 reach_err=0.0mm step=20.3deg lowest_skin=-0.0mm end_err=0.00mm
-check.219: walk: 30f 1.00s loop speed=1.6 reach_err=0.0mm step=19.5deg slide=0.038mm/f
+check.217: turn_l_45: 12f 0.40s speed=0.0 reach_err=0.0mm step=18.5deg
+check.218: turn_r: 24f 0.80s speed=0.0 reach_err=0.0mm step=12.3deg
+check.219: turn_r_45: 12f 0.40s speed=0.0 reach_err=0.0mm step=18.5deg
 check.22: cover_peek_l_pistol: 150f 5.00s loop speed=0.0 reach_err=0.0mm step=11.7deg
-check.220: walk_b: 30f 1.00s loop speed=1.6 reach_err=0.0mm step=18.3deg slide=0.000mm/f
-check.221: walk_back: 30f 1.00s loop speed=1.3 reach_err=0.0mm step=13.8deg slide=0.018mm/f
-check.222: walk_bl: 30f 1.00s loop speed=1.6 reach_err=0.0mm step=19.6deg slide=0.000mm/f
-check.223: walk_br: 30f 1.00s loop speed=1.6 reach_err=0.0mm step=19.6deg slide=0.000mm/f
-check.224: walk_fl: 30f 1.00s loop speed=1.6 reach_err=0.0mm step=17.4deg slide=0.000mm/f
-check.225: walk_fr: 30f 1.00s loop speed=1.6 reach_err=0.0mm step=17.4deg slide=0.000mm/f
-check.226: walk_l: 30f 1.00s loop speed=1.6 reach_err=0.0mm step=19.4deg slide=0.000mm/f
-check.227: walk_r: 30f 1.00s loop speed=1.6 reach_err=0.0mm step=19.4deg slide=0.000mm/f
-check.228: walk_start: 18f 0.60s speed=1.6 reach_err=0.0mm step=19.8deg slide=0.038mm/f idle0_err=0.00mm handoff_err=0.00mm
-check.229: walk_stop: 18f 0.60s speed=1.6 reach_err=0.0mm step=15.2deg slide=0.036mm/f handoff_err=0.00mm idle0_err=0.00mm
+check.220: van_exit: 36f 1.20s speed=0.0 reach_err=0.0mm step=20.3deg lowest_skin=-0.0mm end_err=0.00mm
+check.221: walk: 30f 1.00s loop speed=1.6 reach_err=0.0mm step=19.5deg slide=0.038mm/f
+check.222: walk_b: 30f 1.00s loop speed=1.6 reach_err=0.0mm step=18.3deg slide=0.000mm/f
+check.223: walk_back: 30f 1.00s loop speed=1.3 reach_err=0.0mm step=13.8deg slide=0.018mm/f
+check.224: walk_bl: 30f 1.00s loop speed=1.6 reach_err=0.0mm step=19.6deg slide=0.000mm/f
+check.225: walk_br: 30f 1.00s loop speed=1.6 reach_err=0.0mm step=19.6deg slide=0.000mm/f
+check.226: walk_fl: 30f 1.00s loop speed=1.6 reach_err=0.0mm step=17.4deg slide=0.000mm/f
+check.227: walk_fr: 30f 1.00s loop speed=1.6 reach_err=0.0mm step=17.4deg slide=0.000mm/f
+check.228: walk_l: 30f 1.00s loop speed=1.6 reach_err=0.0mm step=19.4deg slide=0.000mm/f
+check.229: walk_r: 30f 1.00s loop speed=1.6 reach_err=0.0mm step=19.4deg slide=0.000mm/f
 check.23: cover_peek_l_rifle: 150f 5.00s loop speed=0.0 reach_err=0.0mm step=7.5deg
-check.230: walk_text: 36f 1.20s loop speed=1.2 reach_err=0.0mm step=14.7deg slide=0.022mm/f
+check.230: walk_start: 18f 0.60s speed=1.6 reach_err=0.0mm step=19.8deg slide=0.038mm/f idle0_err=0.00mm handoff_err=0.00mm
+check.231: walk_stop: 18f 0.60s speed=1.6 reach_err=0.0mm step=15.2deg slide=0.036mm/f handoff_err=0.00mm idle0_err=0.00mm
+check.232: walk_text: 36f 1.20s loop speed=1.2 reach_err=0.0mm step=14.7deg slide=0.022mm/f
 check.24: cover_peek_r_pistol: 150f 5.00s loop speed=0.0 reach_err=0.0mm step=10.6deg
 check.25: cover_peek_r_rifle: 150f 5.00s loop speed=0.0 reach_err=0.0mm step=6.0deg
 check.26: cower: 60f 2.00s loop speed=0.0 reach_err=0.0mm step=1.9deg
@@ -464,7 +466,9 @@ clip.throw_bag_armed: 30f loop=False speed_mps=0.0 events=release@15
 clip.throw_grenade: 24f loop=False speed_mps=0.0 events=done@24,release@11
 clip.tied: 90f loop=True speed_mps=0.0
 clip.turn_l: 24f loop=False speed_mps=0.0 root_turn_deg=90.0
+clip.turn_l_45: 12f loop=False speed_mps=0.0 root_turn_deg=45.0
 clip.turn_r: 24f loop=False speed_mps=0.0 root_turn_deg=-90.0
+clip.turn_r_45: 12f loop=False speed_mps=0.0 root_turn_deg=-45.0
 clip.van_exit: 36f loop=False speed_mps=0.0 events=step_l@28,step_r@16 root_motion=curve.van_exit
 clip.walk: 30f loop=True speed_mps=1.6
 clip.walk_b: 30f loop=True speed_mps=1.6 dir_deg=180 dir_godot=(0.000,0,1.000) foot_down=R@0.00,L@0.50
@@ -478,7 +482,7 @@ clip.walk_r: 30f loop=True speed_mps=1.6 dir_deg=90 dir_godot=(1.000,0,-0.000) f
 clip.walk_start: 18f loop=False speed_mps=1.6 events=step_r@15 handoff_frame=3
 clip.walk_stop: 18f loop=False speed_mps=1.6 events=step_l@14 handoff_frame=0
 clip.walk_text: 36f loop=True speed_mps=1.2
-clips: 231
+clips: 233
 cower_seated_seat: cower_seated: the npc_seat chair (seat top 0.47 m, root on the floor under the seat centre), no desk; hips joint 0.54 m above the root, feet flat 0.34 m ahead (balls on the floor, heels just up), the trunk curled forward over the knees, forearms over the head
 cower_stand_space: cower_stand: free-standing, in place; the rearmost skin is 0.19 m behind the root, so a wall face at Godot z = +0.21 (or further back) clears it: back it up to a wall there. Flinches at flinch_1@39, flinch_2@108
 crew_actions: D-116 round 228, as teammates see them. mask_on (30 f, mask_on@18): from idle f0, both hands bring the mask up to the face and press it on (show the mask at Head/Socket at mask_on), pull the strap back, end on idle_alert f0. Play it while the mask-up hold runs, scaled to Tweak.crew().mask_up_time_s (1.0 s = the clip's length), so crew_masked lands at its end. throw_grenade (24 f, release@11, done@24, the FP throwable_throw timing): an overhand with the LEFT arm, the weapon kept low in the right hand. Hide the held grenade and spawn the projectile at release (HandL/Socket)
