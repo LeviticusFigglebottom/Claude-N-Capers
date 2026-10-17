@@ -60,6 +60,9 @@ const NEW: Array[String] = [
 	"char_club_patron_b",
 	"char_club_patron_c",
 	"char_club_patron_d",
+	# D-130 Shadow Ledger late_staff (civ_assistant, civ_associate)
+	"char_npc_km_assistant",
+	"char_npc_km_associate",
 ]
 ## heist -> roles the index must carry (D3-01 brief; D-075 renamed meridian_federal and added
 ## bank_officer).
@@ -87,7 +90,7 @@ const EXTRA_ROLES: Dictionary = {
 	# night_deposit.md §Rare events `armored_car_early`: 2 extra guards (night_deposit_mission.gd tag).
 	"night_deposit": ["guard_armored_car"],
 }
-## The roster spawn tags at D-115 (used only when docs/ is not in the checkout).
+## The roster spawn tags at D-115 (used only when docs/ is not in the checkout); D-130 adds SL's late_staff tags.
 const ROSTER_FALLBACK: Dictionary = {
 	"glasshouse": ["civ_staff_counter", "civ_staff_floor", "civ_staff_workshop", "civ_staff_admin", "civ_staff_manager",
 		"civ_customer"],
@@ -95,7 +98,8 @@ const ROSTER_FALLBACK: Dictionary = {
 	"dockside_burn": ["cartel_gate", "cartel_yard_w", "cartel_yard_e", "cartel_hall", "cartel_platform", "cartel_dock",
 		"cartel_quay", "cartel_reinf", "civ_worker", "police"],
 	"shadow_ledger": ["guard_reception", "guard_rover_l41", "guard_rover_l42", "guard_stair", "guard_roof",
-		"security_operator", "civ_cleaner_l41", "civ_cleaner_l42", "civ_it", "civ_partner", "civ_kessler"],
+		"security_operator", "civ_cleaner_l41", "civ_cleaner_l42", "civ_it", "civ_partner", "civ_kessler",
+		"civ_assistant", "civ_associate"],
 	"gallery_night": ["guard_hall", "guard_rover_ground", "guard_rover_upper", "guard_rover_basement", "guard_mews",
 		"security_operator", "guard_inspection", "guard_vaultline", "civ_curator", "civ_attendant", "civ_waitstaff",
 		"civ_conservator", "civ_admin", "civ_patron"],

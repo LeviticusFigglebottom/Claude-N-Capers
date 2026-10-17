@@ -148,7 +148,7 @@ const EXTERIOR_ROOMS: Array = [
 
 ## Guards and staff that may open locked doors (A2-01 npc_authorized_tags).
 const STAFF_TAGS: Array = ["guard_reception", "guard_rover_l41", "guard_rover_l42", "guard_stair", "guard_roof",
-	"civ_cleaner_l41", "civ_cleaner_l42", "civ_it", "civ_partner", "civ_kessler"]
+	"civ_cleaner_l41", "civ_cleaner_l42", "civ_it", "civ_partner", "civ_kessler", "civ_assistant", "civ_associate"]
 ## Doors: [name, kit piece, origin (bottom-centre on the wall line), yaw, lock, swing, objective_tag, extra].
 ## Yaw 0 = front (-Z, UsePoint) faces north, 180 south, 90 west, -90 east. INWARD swings to the back.
 ## The wall hole is cut from this list (1.0 m single, 2.0 m double; head 2.2) unless extra.no_wall.
@@ -572,6 +572,9 @@ const CHAIRS: Array = [
 	["K22Chair", Vector3(25.5, F41, 22.0), 180.0, "K22Desk"],
 	["K23Chair", Vector3(28.5, F41, 22.0), 180.0, "K23Desk"],
 ]
+## D-130 late-staff work spots (sl_gameplay LATE_STAFF): these layout chairs are D-063 NPC seats (no collider, no
+## navmesh obstruction; same art, `Seat` and place), so the seated worker's spawn on them stays on the navmesh.
+const NPC_SEAT_CHAIRS: Array[String] = ["AssistantChairA", "PodAChairS1"]
 ## Logo wall ("K&M", glass teal, landmark 2) on K3's east wall: visual box.
 const LOGO_WALL: Array = [23.87, F41 + 1.2, 2.6, 23.9, F41 + 2.6, 4.6]
 

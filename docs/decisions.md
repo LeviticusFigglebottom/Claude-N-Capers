@@ -1186,3 +1186,17 @@ ragdoll/HandProps, VRAM, 2/10/30 m lineups; per-character fallback switch.
 civilians within 5.5 m uncover instantly; camera C4 at 4.95 m (D-130 presets) 3.89 s (3.85-4.07), decay 1.23 s (1.17); a
 careful crouched route keeps every meter at 0.00. All within ~5 % of A's formula; verdict: feels like PD2. Pending: GH
 Lethal (Titan, cap 2), 10 m camera fills, the SL leg.
+**D-130 addendum (C b7cfb928, SL):** SL civilians end at +75 % at Cataclysm (pre-D-130 SL already ran +45 % from Brutal and
+no tier may fall; SL's test cap is 1.9x, GN/ND keep 1.5x). SL guards stay flat at 5 for Lethal/Cataclysm (QC-e), as GN.
+New SL civilian group late_staff (one seated late worker, chance 0/25/25/33/44/67 % by tier).
+**D-132 addendum 2 (D1 parked, 2026-10-17):** D1 is done and verified on `wip/d-d1-merge` 78098c11 (fallback list, lighting
+diff 0.003, outline/ragdoll/hand props OK, lineups identical at close/30 m) but measured GN 738 → 499 draws (-32 %), loud
+-12 %, with llvmpipe frame time only -2 % (829 → 814 ms), for +29-45 MB VRAM and ~194 MB of committed merged meshes.
+Ruling: **park D1** (keep the branch, do not merge) until a real-GPU measurement shows draw calls bind; D2 and A's
+animation LOD stay. Real-GPU probe: ask the product owner to run the bench (`world/characters/_tools/bench_crowd.tscn`)
+on their machine, D1 on/off; land D1 (option A, or B if it binds hard) only on that evidence.
+**D-132 addendum 3 (A e6ee87d9, animation LOD):** AnimLod bands FULL < 15 m on screen / NEAR 15-30 m every 2nd frame, IK off /
+FAR > 30 m or off screen every 4th frame, layer off / PAUSED off screen > 30 m; staggered by net_id; skipped time advanced
+on the due frame. Bench 34 NPCs: 2.69 → 1.49 ms/frame (-45 %), event parity within one cadence step. Rulings: (a) TIED is
+LOD'd (steady pose), surrender transitions exempt; (b) "aimed at" = within 2 m of a crew aim ray; (c) "on screen" =
+frustum check without occlusion; (d) a paused body catches up its clip events on resume (fine under D-121).

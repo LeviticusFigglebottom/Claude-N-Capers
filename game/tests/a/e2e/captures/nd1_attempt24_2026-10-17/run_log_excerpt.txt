@@ -1,0 +1,340 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+Vulkan 1.4.318 - Forward+ - Using Device #0: Unknown - llvmpipe (LLVM 20.1.2, 256 bits)
+ALSA lib confmisc.c:855:(parse_card) cannot find card '0'
+ALSA lib conf.c:5208:(_snd_config_evaluate) function snd_func_card_inum returned error: No such file or directory
+ALSA lib confmisc.c:422:(snd_func_concat) error evaluating strings
+ALSA lib conf.c:5208:(_snd_config_evaluate) function snd_func_concat returned error: No such file or directory
+ALSA lib confmisc.c:1342:(snd_func_refer) error evaluating name
+ALSA lib conf.c:5208:(_snd_config_evaluate) function snd_func_refer returned error: No such file or directory
+ALSA lib conf.c:5731:(snd_config_expand) Evaluate error: No such file or directory
+ALSA lib pcm.c:2721:(snd_pcm_open_noupdate) Unknown PCM default
+ERROR: Condition "status < 0" is true. Returning: ERR_CANT_OPEN
+   at: init_output_device (drivers/alsa/audio_driver_alsa.cpp:97)
+WARNING: All audio drivers failed, falling back to the dummy driver.
+     at: initialize (servers/audio/audio_server.cpp:258)
+
+[INFO][boot][p1] CAPERWORKS boot, args={ "po5-flow": "auto_loud", "po5-out": "/tmp/claude-0/-home-user-Claude-N-Capers/ffd7fe7e-ab64-5ca1-b599-c3532188a6c6/scratchpad/nd1_1002", "po5-budget": "7000", "po5-heist": "Nightfall Depository", "po5-difficulty": "Routine", "po5-seed": "1002" }
+[PO5 9.1s] shot /tmp/claude-0/-home-user-Claude-N-Capers/ffd7fe7e-ab64-5ca1-b599-c3532188a6c6/scratchpad/nd1_1002/01_main_menu.png
+[INFO][ui][p1] safehouse scene unavailable (res://world/hub/safehouse/safehouse.tscn); 2D hub
+[PO5 10.0s] click 'SAFEHOUSE' at (162.0, 266.75)
+[PO5 10.5s] click '' at (358.25, 160.75)
+[PO5 11.6s] shot /tmp/claude-0/-home-user-Claude-N-Capers/ffd7fe7e-ab64-5ca1-b599-c3532188a6c6/scratchpad/nd1_1002/02_planning_table.png
+[PO5 11.6s] click 'Nightfall Depository' at (142.0, 259.5)
+[PO5 12.6s] click 'ROUTINE' at (313.5, 250.0)
+[PO5 16.5s] click 'Briefing' at (848.0, 494.5)
+[PO5 16.6s] shot /tmp/claude-0/-home-user-Claude-N-Capers/ffd7fe7e-ab64-5ca1-b599-c3532188a6c6/scratchpad/nd1_1002/03_briefing.png
+[PO5 16.7s] click 'Continue' at (856.0, 502.5)
+[PO5 17.7s] shot /tmp/claude-0/-home-user-Claude-N-Capers/ffd7fe7e-ab64-5ca1-b599-c3532188a6c6/scratchpad/nd1_1002/04_continue.png
+[PO5 17.9s] click 'Confirm plan' at (856.0, 500.25)
+[PO5 18.7s] shot /tmp/claude-0/-home-user-Claude-N-Capers/ffd7fe7e-ab64-5ca1-b599-c3532188a6c6/scratchpad/nd1_1002/05_confirm_plan.png
+[PO5 18.9s] click 'Start Heist' at (848.0, 494.5)
+[INFO][rng][p1] run seed 1002
+[INFO][preplan][p1] assets []
+[INFO][variants][p1] seed 1002 resolved { &"guard_post": [&"rover_none"], &"camera": [&"cam_c"], &"security_room_staffed": [&"sec_staffed"], &"night_manager": [&"mgr_in"], &"code_note": [&"code_on_manager"], &"keycard": [&"kc_manager_desk"], &"server_room": [&"srv_basement"], &"vent_open": [&"vent_locked"], &"laser_pattern": [&"laser_timed"], &"cleaner": [&"cleaner_none"], &"escape": [&"esc_boat_quay"], &"extra_loot": [&"mgr_safe_empty"], &"armored_car": [], &"time_lock_s": 90.0, &"depository_bags": 5, &"deposit_boxes": 4, "rare": [] }
+[INFO][heist][p1] phase LOADING -> CASING
+[INFO][director][p1] prewarm: 18 of 18 scenes loaded in 999 ms
+[PO5 57.8s] in heist night_deposit seed 1002 diff 0 phase 1 crew at (-2.0, -0.2, 24.5)
+[PO5 74.5s] shot /tmp/claude-0/-home-user-Claude-N-Capers/ffd7fe7e-ab64-5ca1-b599-c3532188a6c6/scratchpad/nd1_1002/06_heist_start.png
+[PO5 75.3s] mouse captured by the game (MouseCapture)
+[PO5 75.4s] pilot: calibrated 0.001600 rad/px yaw, 0.001600 rad/px pitch (settings formula said (0.0016, 0.0016))
+[INFO][heist][p1] phase CASING -> STEALTH
+[PO5 76.4s] EVENT objective casing -> 2 t=3
+[INFO][crew][p1] slot 0 masked (forced=false)
+[INFO][crew][p1] slot 1 masked (forced=false)
+[INFO][crew][p1] slot 2 masked (forced=false)
+[INFO][crew][p1] slot 3 masked (forced=false)
+[INFO][stealth][p1] ALARM: guard_radio (source 81)
+[INFO][heist][p1] alarm (guard_radio): going loud
+[INFO][heist][p1] phase STEALTH -> LOUD
+[INFO][director][p1] assault phase CONTROL (wave 1, 20 s)
+[PO5 124.7s] EVENT objective code -> 1 t=6
+[PO5 124.7s] EVENT objective server -> 1 t=6
+[PO5 124.7s] EVENT objective vault_drill -> 1 t=6
+[INFO][director][p1] assault events: 3 rows for night_deposit (tweak)
+[PO5 132.4s] loud: phase=3 went_loud=true
+[PO5 153.5s] shot /tmp/claude-0/-home-user-Claude-N-Capers/ffd7fe7e-ab64-5ca1-b599-c3532188a6c6/scratchpad/nd1_1002/07_auto_6.png
+[PO5 209.7s] pilot: t=5 at (3.5, -0.1, 22.5) corner (4.2, 0.2, 22.2) yaw_err 0.00 fwd=true path=37 mouse_mode=2 state=0 look=(-1.20,0.00) pin_yaw=-1.20301275668707 bot=false
+[PO5 699.3s] pilot: use MainEntrance (open_door) -> OK in 4.0 s
+[INFO][director][p1] assault phase ANTICIPATION (wave 1, 30 s)
+[PO5 737.2s] pilot: t=10 at (10.5, -0.3, 20.7) corner (10.4, 0.2, 21.3) yaw_err 0.45 fwd=true path=27 mouse_mode=2 state=0 look=(-3.83,-0.00) pin_yaw=-3.63539803320371 bot=false
+[PO5 895.8s] pilot: t=15 at (12.7, 0.0, 17.1) corner (15.4, 0.2, 16.0) yaw_err -0.00 fwd=true path=19 mouse_mode=2 state=0 look=(-7.49,0.00) pin_yaw=-7.48940563592025 bot=false
+[INFO][prefab][p1] CameraStation: camera operator neutralised by 85: all cameras off
+[PO5 908.2s] pilot: reload in a lull (weapon.corsair_ar 8/30, reserve 127)
+[PO5 911.1s] pilot: t=20 at (18.2, 0.0, 14.9) corner (20.0, 0.2, 14.3) yaw_err 0.96 fwd=false path=9 mouse_mode=2 state=0 look=(-8.46,0.00) pin_yaw=-8.26786108478101 bot=false
+[PO5 916.3s] EVENT objective keycard -> 2 t=42
+[PO5 930.1s] pilot: t=5 at (20.3, 0.0, 11.5) corner (20.6, 0.2, 10.9) yaw_err -0.00 fwd=true path=38 mouse_mode=2 state=0 look=(-19.36,0.00) pin_yaw=-19.3608896860473 bot=false
+[PO5 979.7s] pilot: t=10 at (23.2, 0.0, 7.1) corner (16.0, 0.2, 6.8) yaw_err 0.00 fwd=true path=26 mouse_mode=2 state=0 look=(-17.32,0.00) pin_yaw=-17.3187445769667 bot=false
+[INFO][director][p1] assault phase BUILD (wave 1, 35 s)
+[PO5 997.7s] pilot: t=15 at (17.1, 0.0, 6.8) corner (16.1, 0.2, 6.8) yaw_err 1.93 fwd=false path=25 mouse_mode=2 state=0 look=(-19.25,0.00) pin_yaw=-19.0561216388609 bot=false
+[PO5 1004.4s] pilot: t=20 at (11.1, 0.0, 6.6) corner (11.6, 0.2, 6.6) yaw_err -3.10 fwd=false path=19 mouse_mode=2 state=0 look=(-17.33,0.00) pin_yaw=-17.5192555789558 bot=false
+[PO5 1072.7s] pilot: t=25 at (7.9, -0.5, 3.7) corner (8.0, -1.7, 1.3) yaw_err -0.00 fwd=true path=12 mouse_mode=2 state=0 look=(-18.87,0.00) pin_yaw=-18.874441953581 bot=false
+[PO5 1118.2s] pilot: t=30 at (9.4, -3.8, 4.2) corner (9.5, -3.8, 5.1) yaw_err -0.00 fwd=true path=8 mouse_mode=2 state=0 look=(-21.95,0.00) pin_yaw=-21.9482549113565 bot=false
+[PO5 1124.7s] EVENT objective vault_gate -> 2 t=79
+[PO5 1124.9s] pilot: use VaultGate (open_door) -> OK in 1.0 s
+[PO5 1150.7s] pilot: use VaultDrill (place_drill) -> OK in 3.0 s
+[PO5 1150.7s] pilot: reload in a lull (weapon.corsair_ar 28/30, reserve 105)
+[INFO][director][p1] assault phase SUSTAIN (wave 1, 52 s)
+[PO5 1203.1s] pilot: reload in a lull (weapon.corsair_ar 29/30, reserve 103)
+[PO5 1229.7s] pilot: t=5 at (18.8, -4.3, 7.1) corner (19.3, -3.8, 7.1) yaw_err -0.00 fwd=true path=28 mouse_mode=2 state=0 look=(-26.72,0.00) pin_yaw=-26.7212000287419 bot=false
+[PO5 1386.9s] pilot: use CountRoomDoor (open_door) -> OK in 8.0 s
+[PO5 1389.8s] pilot: t=10 at (24.1, -4.0, 9.3) corner (23.9, -3.8, 8.7) yaw_err 0.82 fwd=false path=17 mouse_mode=2 state=0 look=(-25.70,0.00) pin_yaw=-25.5052670924396 bot=false
+[PO5 1404.4s] pilot: use DepositoryDoor (open_door) -> OK in 8.0 s
+[PO5 1406.8s] pilot: t=15 at (23.1, -4.0, 15.5) corner (22.7, -3.8, 16.4) yaw_err -0.00 fwd=true path=4 mouse_mode=2 state=0 look=(-28.62,0.00) pin_yaw=-28.6188651939864 bot=false
+[PO5 1414.9s] pilot: use DepositorySafe (place_drill) -> OK in 3.0 s
+[PO5 1420.5s] shot /tmp/claude-0/-home-user-Claude-N-Capers/ffd7fe7e-ab64-5ca1-b599-c3532188a6c6/scratchpad/nd1_1002/08_auto_134.png
+[PO5 1420.5s] pilot: reload in a lull (weapon.corsair_ar 26/30, reserve 102)
+[PO5 1425.4s] EVENT crew 2 state 0 -> 1 at (23.7, -4.0, 13.7) (t=136)
+[INFO][combat][p1] slot 2 downed (1/3)
+[PO5 1425.7s] revive slot 2 at 136 s (3.1 m)
+[PO5 1425.7s] revive slot 2 at 136 s (3.1 m)
+[PO5 1456.7s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 1457.1s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 1457.5s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 1457.9s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 1458.3s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 1458.7s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 1459.1s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 1459.3s] EVENT crew 2 state 1 -> 0 at (23.7, -4.0, 13.7) (t=142)
+[PO5 1459.4s] pilot: use Crew2 (revive) -> OK in 2.5 s
+[PO5 1460.2s] pilot: aimed <none>, wanted /root/HeistRuntime/Dynamic/Crew2/ReviveInteractable (dist 1.21, angle 0.0 deg, avail 'ui.blocked.disabled', LOS ray hit - at -)
+[PO5 1460.3s] pilot: use Crew2 (revive) -> OK in 0.0 s
+[PO5 1462.5s] pilot: reload in a lull (weapon.corsair_ar 28/30, reserve 98)
+[INFO][director][p1] assault phase FADE (wave 1, 15 s)
+[PO5 1490.2s] pilot: t=5 at (23.9, -4.0, 9.0) corner (23.7, -3.8, 8.5) yaw_err 0.00 fwd=true path=19 mouse_mode=2 state=0 look=(-24.78,0.00) pin_yaw=-24.7762450944792 bot=false
+[INFO][director][p1] assault phase CONTROL (wave 2, 40 s)
+[PO5 1495.2s] pilot: t=10 at (19.4, -4.0, 7.0) corner (14.9, -3.8, 7.1) yaw_err 0.58 fwd=true path=12 mouse_mode=2 state=0 look=(-24.13,0.00) pin_yaw=-23.9389569160776 bot=false
+[PO5 1535.6s] pilot: reload in a lull (weapon.corsair_ar 28/30, reserve 100)
+[PO5 1592.3s] pilot: reload in a lull (weapon.corsair_ar 29/30, reserve 98)
+[PO5 1617.6s] waiting at vault_drill for 60 s (nothing usable within 2.5 m)
+[PO5 1624.6s] marker depository@21,-4,17: usable again, back to it
+[PO5 1629.8s] pilot: t=5 at (22.2, -4.0, 7.0) corner (21.5, -3.8, 7.0) yaw_err -1.56 fwd=false path=22 mouse_mode=2 state=0 look=(-34.56,0.00) pin_yaw=-34.7553243319019 bot=false
+[PO5 1634.8s] pilot: t=10 at (24.4, -4.0, 11.3) corner (24.3, -3.8, 11.8) yaw_err 0.74 fwd=false path=12 mouse_mode=2 state=0 look=(-35.40,0.00) pin_yaw=-35.2039318472274 bot=false
+[INFO][director][p1] assault phase ANTICIPATION (wave 2, 30 s)
+[PO5 1647.7s] pilot: use DepositorySafe (fix_drill) -> OK in 2.0 s
+[PO5 1652.9s] pilot: reload in a lull (weapon.corsair_ar 29/30, reserve 97)
+[PO5 1677.5s] pilot: t=5 at (24.3, -4.0, 11.8) corner (24.3, -3.8, 10.2) yaw_err 0.01 fwd=true path=25 mouse_mode=2 state=0 look=(-44.00,0.00) pin_yaw=-43.9835020781653 bot=false
+[PO5 1682.6s] pilot: t=10 at (23.0, -4.0, 7.0) corner (20.6, -3.8, 7.1) yaw_err -0.96 fwd=false path=15 mouse_mode=2 state=0 look=(-41.44,0.00) pin_yaw=-41.6329314291693 bot=false
+[PO5 1687.7s] pilot: t=15 at (17.0, -4.0, 7.1) corner (14.9, -3.8, 7.1) yaw_err -3.12 fwd=false path=9 mouse_mode=2 state=0 look=(-39.27,0.00) pin_yaw=-39.4611503320526 bot=false
+[PO5 1714.1s] shot /tmp/claude-0/-home-user-Claude-N-Capers/ffd7fe7e-ab64-5ca1-b599-c3532188a6c6/scratchpad/nd1_1002/09_auto_225.png
+[INFO][director][p1] assault phase BUILD (wave 2, 35 s)
+[PO5 1808.6s] waiting at vault_drill for 120 s (nothing usable within 2.5 m)
+[PO5 1848.1s] pilot: reload in a lull (weapon.corsair_ar 28/30, reserve 102)
+[PO5 1926.9s] EVENT crew 1 state 0 -> 1 at (12.9, -4.0, 7.0) (t=243)
+[INFO][combat][p1] slot 1 downed (1/3)
+[PO5 2001.3s] revive slot 1 at 244 s (3.1 m)
+[PO5 2001.3s] revive slot 1 at 244 s (3.1 m)
+[PO5 2018.0s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 2018.4s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 2018.9s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 2019.3s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 2019.7s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 2020.7s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 2021.2s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 2021.5s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 2021.5s] EVENT crew 1 state 1 -> 0 at (12.9, -4.0, 7.0) (t=249)
+[PO5 2021.7s] pilot: use Crew1 (revive) -> OK in 2.7 s
+[PO5 2021.7s] pilot: aimed <none>, wanted /root/HeistRuntime/Dynamic/Crew1/ReviveInteractable (dist 1.19, angle 0.0 deg, avail 'ui.blocked.disabled', LOS ray hit - at -)
+[PO5 2021.8s] pilot: use Crew1 (revive) -> OK in 0.0 s
+[PO5 2021.8s] pilot: reload in a lull (weapon.corsair_ar 23/30, reserve 100)
+[PO5 2118.7s] pilot: reload in a lull (weapon.corsair_ar 25/30, reserve 93)
+[PO5 2135.3s] marker vault_drill@15,-3,10: usable again, back to it
+[PO5 2158.2s] pilot: use VaultDrill (place_drill) -> OK in 2.0 s
+[PO5 2158.6s] pilot: reload in a lull (weapon.corsair_ar 29/30, reserve 88)
+[INFO][director][p1] assault phase SUSTAIN (wave 2, 156 s)
+[PO5 2181.0s] pilot: reload in a lull (weapon.corsair_ar 29/30, reserve 87)
+[PO5 2211.5s] pilot: reload in a lull (weapon.corsair_ar 29/30, reserve 86)
+[PO5 2273.6s] pilot: reload in a lull (weapon.corsair_ar 27/30, reserve 85)
+[PO5 2306.0s] EVENT objective depository -> 2 t=272
+[PO5 2332.3s] pilot: reload in a lull (weapon.corsair_ar 29/30, reserve 82)
+[PO5 2402.0s] pilot: reload in a lull (weapon.corsair_ar 29/30, reserve 81)
+[PO5 2414.2s] waiting at vault_drill for 60 s (nothing usable within 2.5 m)
+[PO5 2426.0s] pilot: reload in a lull (weapon.corsair_ar 29/30, reserve 80)
+[PO5 2474.5s] pilot: reload in a lull (weapon.corsair_ar 29/30, reserve 79)
+[PO5 2499.4s] pilot: reload in a lull (weapon.corsair_ar 29/30, reserve 78)
+[PO5 2524.5s] pilot: reload in a lull (weapon.corsair_ar 28/30, reserve 77)
+[PO5 2586.9s] pilot: reload in a lull (weapon.corsair_ar 27/30, reserve 75)
+[PO5 2644.0s] pilot: reload in a lull (weapon.corsair_ar 25/30, reserve 75)
+[PO5 2655.5s] waiting at vault_drill for 120 s (nothing usable within 2.5 m)
+[PO5 2673.0s] pilot: reload in a lull (weapon.corsair_ar 29/30, reserve 70)
+[PO5 2751.2s] shot /tmp/claude-0/-home-user-Claude-N-Capers/ffd7fe7e-ab64-5ca1-b599-c3532188a6c6/scratchpad/nd1_1002/10_auto_316.png
+[PO5 2766.7s] pilot: reload in a lull (weapon.corsair_ar 27/30, reserve 69)
+[PO5 2810.9s] pilot: reload in a lull (weapon.corsair_ar 28/30, reserve 66)
+[PO5 2826.2s] waiting at vault_drill for 180 s (nothing usable within 2.5 m)
+[PO5 2854.9s] pilot: reload in a lull (weapon.corsair_ar 29/30, reserve 64)
+[PO5 2885.5s] pilot: reload in a lull (weapon.corsair_ar 28/30, reserve 64)
+[PO5 2917.0s] pilot: reload in a lull (weapon.corsair_ar 29/30, reserve 62)
+[PO5 2966.1s] pilot: reload in a lull (weapon.corsair_ar 29/30, reserve 61)
+[PO5 2973.1s] waiting at vault_drill for 240 s (nothing usable within 2.5 m)
+[PO5 3000.8s] pilot: reload in a lull (weapon.corsair_ar 29/30, reserve 60)
+[PO5 3032.3s] pilot: reload in a lull (weapon.corsair_ar 29/30, reserve 59)
+[PO5 3145.8s] pilot: reload in a lull (weapon.corsair_ar 25/30, reserve 58)
+[PO5 3195.4s] pilot: reload in a lull (weapon.corsair_ar 29/30, reserve 53)
+[PO5 3259.0s] pilot: reload in a lull (weapon.corsair_ar 29/30, reserve 52)
+[PO5 3263.9s] waiting at vault_drill for 300 s (nothing usable within 2.5 m)
+[INFO][director][p1] assault event breach at (7.75, 3.0, 8.6) (Breach_2)
+[PO5 3343.4s] pilot: reload in a lull (weapon.corsair_ar 28/30, reserve 51)
+[PO5 3447.1s] pilot: reload in a lull (weapon.corsair_ar 28/30, reserve 49)
+[PO5 3567.1s] pilot: reload in a lull (weapon.corsair_ar 26/30, reserve 47)
+[PO5 3674.4s] pilot: reload in a lull (weapon.corsair_ar 28/30, reserve 43)
+[PO5 3775.9s] waiting at vault_drill for 360 s (nothing usable within 2.5 m)
+[PO5 3822.8s] pilot: reload in a lull (weapon.corsair_ar 26/30, reserve 41)
+[PO5 3856.4s] EVENT crew 1 state 0 -> 1 at (13.3, -4.0, 6.7) (t=394)
+[INFO][combat][p1] slot 1 downed (2/3)
+[PO5 3856.6s] revive slot 1 at 394 s (2.5 m)
+[PO5 3856.6s] revive slot 1 at 394 s (2.5 m)
+[PO5 3919.8s] pilot: use Crew1 (revive) -> OK in 0.0 s
+[PO5 3953.3s] revive slot 1 at 398 s (0.3 m)
+[PO5 3953.7s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 3954.1s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 3954.5s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 3955.0s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 3955.6s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 3956.0s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 3956.3s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 3956.4s] EVENT crew 1 state 1 -> 0 at (13.3, -4.0, 6.7) (t=401)
+[PO5 3956.5s] pilot: use Crew1 (revive) -> OK in 2.4 s
+[PO5 3956.5s] pilot: use Crew1 (revive) -> OK in 0.0 s
+[PO5 3956.6s] pilot: reload in a lull (weapon.corsair_ar 27/30, reserve 123)
+[PO5 4017.6s] pilot: reload in a lull (weapon.corsair_ar 27/30, reserve 123)
+[PO5 4068.3s] shot /tmp/claude-0/-home-user-Claude-N-Capers/ffd7fe7e-ab64-5ca1-b599-c3532188a6c6/scratchpad/nd1_1002/11_auto_407.png
+[PO5 4118.2s] waiting at vault_drill for 420 s (nothing usable within 2.5 m)
+[PO5 4118.2s] pilot: reload in a lull (weapon.corsair_ar 28/30, reserve 121)
+[PO5 4169.1s] pilot: reload in a lull (weapon.corsair_ar 28/30, reserve 119)
+[INFO][director][p1] assault phase FADE (wave 2, 15 s)
+[PO5 4355.8s] waiting at vault_drill for 480 s (nothing usable within 2.5 m)
+[INFO][director][p1] assault phase CONTROL (wave 3, 40 s)
+[PO5 4399.3s] pilot: reload in a lull (weapon.corsair_ar 28/30, reserve 117)
+[PO5 4402.3s] EVENT objective vault_drill -> 2 t=449
+[PO5 4402.3s] EVENT objective vault_loot -> 1 t=449
+[PO5 4479.8s] pilot: t=5 at (13.9, -4.0, 13.0) corner (13.8, -3.8, 12.5) yaw_err -3.11 fwd=false path=9 mouse_mode=2 state=0 look=(-47.06,0.00) pin_yaw=-47.2567625806756 bot=false
+[PO5 4492.2s] pilot: use CageCash (bag_loot) -> OK in 1.0 s
+[PO5 4492.5s] carry: enemy in sight, bag down to clear the way (t=456)
+[PO5 4503.3s] pilot: aimed <none>, wanted /root/HeistRuntime/Dynamic/Bag_cash/Interactable (dist 1.16, angle 0.0 deg, avail '', LOS ray hit - at -)
+[PO5 4503.7s] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.16, angle 0.0 deg)
+[PO5 4504.1s] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.16, angle 0.0 deg)
+[PO5 4504.5s] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.16, angle 0.0 deg)
+[PO5 4511.2s] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.16, angle 0.0 deg)
+[PO5 4518.6s] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.16, angle 0.0 deg)
+[PO5 4519.0s] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.16, angle 0.0 deg)
+[PO5 4519.4s] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.16, angle 0.0 deg)
+[PO5 4519.8s] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.16, angle 0.0 deg)
+[PO5 4520.2s] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.16, angle 0.0 deg)
+[PO5 4520.6s] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.16, angle 0.0 deg)
+[PO5 4521.0s] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.16, angle 0.0 deg)
+[PO5 4521.8s] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.16, angle 0.0 deg)
+[PO5 4522.1s] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.16, angle 0.0 deg)
+[PO5 4522.5s] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.16, angle 0.0 deg)
+[PO5 4522.9s] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.16, angle 0.0 deg)
+[PO5 4528.1s] pilot: use pick_bag hold dropped, cleared threats before re-pressing
+[PO5 4540.3s] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.16, angle 0.0 deg)
+[PO5 4554.3s] pilot: use pick_bag hold dropped, cleared threats before re-pressing
+[PO5 4566.6s] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.16, angle 0.0 deg)
+[PO5 4599.9s] pilot: use pick_bag hold dropped, cleared threats before re-pressing
+[PO5 4613.8s] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.16, angle 0.0 deg)
+[PO5 4614.1s] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.16, angle 0.0 deg)
+[PO5 4614.5s] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.16, angle 0.0 deg)
+[PO5 4614.9s] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.16, angle 0.0 deg)
+[PO5 4615.3s] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.16, angle 0.0 deg)
+[PO5 4616.4s] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.16, angle 0.0 deg)
+[PO5 4616.7s] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.16, angle 0.0 deg)
+[PO5 4617.3s] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.16, angle 0.0 deg)
+[PO5 4617.9s] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.16, angle 0.0 deg)
+[PO5 4618.2s] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.16, angle 0.0 deg)
+[PO5 4618.6s] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.16, angle 0.0 deg)
+[PO5 4619.0s] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.16, angle 0.0 deg)
+[PO5 4619.4s] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.16, angle 0.0 deg)
+[PO5 4619.8s] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.16, angle 0.0 deg)
+[PO5 4620.2s] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.16, angle 0.0 deg)
+[PO5 4620.6s] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.16, angle 0.0 deg)
+[PO5 4621.0s] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.16, angle 0.0 deg)
+[PO5 4621.4s] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.16, angle 0.0 deg)
+[PO5 4621.8s] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.16, angle 0.0 deg)
+[INFO][director][p1] assault phase ANTICIPATION (wave 3, 30 s)
+[PO5 4622.2s] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.16, angle 0.0 deg)
+[PO5 4622.6s] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.16, angle 0.0 deg)
+[PO5 4623.0s] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.16, angle 0.0 deg)
+[PO5 4623.4s] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.16, angle 0.0 deg)
+[PO5 4623.8s] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.16, angle 0.0 deg)
+[PO5 4624.2s] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.16, angle 0.0 deg)
+[PO5 4624.6s] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.16, angle 0.0 deg)
+[PO5 4625.0s] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.16, angle 0.0 deg)
+[PO5 4625.4s] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.16, angle 0.0 deg)
+[PO5 4625.4s] pilot: use Bag_cash (pick_bag) -> FAILED in 15.0 s
+[PO5 4625.4s] FINDING slot 3 carries loot.cash: leading it to the secure zone
+[PO5 4646.6s] pilot: t=5 at (13.7, -4.0, 9.8) corner (13.5, -3.8, 8.4) yaw_err 0.02 fwd=true path=76 mouse_mode=2 state=0 look=(-50.17,0.00) pin_yaw=-50.1508102035246 bot=false
+[PO5 4651.6s] pilot: t=10 at (10.5, -4.0, 6.6) corner (9.8, -3.8, 6.5) yaw_err -1.21 fwd=false path=66 mouse_mode=2 state=0 look=(-47.67,0.00) pin_yaw=-47.8593120967367 bot=false
+[PO5 4651.7s] pilot: goto (7.0, -0.8, 36.9) FAILED at (10.5, -4.0, 6.6) after 10.0 s
+[PO5 4666.8s] pilot: t=5 at (9.4, -2.3, 2.0) corner (9.1, -1.8, 1.3) yaw_err -0.00 fwd=true path=61 mouse_mode=2 state=0 look=(-49.90,0.00) pin_yaw=-49.8967452825259 bot=false
+[PO5 4689.4s] pilot: t=10 at (7.5, -0.0, 4.1) corner (7.5, 0.2, 6.3) yaw_err -0.00 fwd=true path=56 mouse_mode=2 state=0 look=(-47.12,0.00) pin_yaw=-47.1228887067359 bot=false
+[PO5 4689.4s] pilot: goto (7.0, -0.8, 36.9) FAILED at (7.5, -0.0, 4.1) after 10.0 s
+[PO5 4722.6s] shot /tmp/claude-0/-home-user-Claude-N-Capers/ffd7fe7e-ab64-5ca1-b599-c3532188a6c6/scratchpad/nd1_1002/12_auto_497.png
+[PO5 4768.8s] pilot: t=5 at (4.6, 0.0, 6.8) corner (2.4, 0.2, 7.1) yaw_err -0.00 fwd=true path=52 mouse_mode=2 state=0 look=(-48.56,0.00) pin_yaw=-48.5621264832321 bot=false
+[INFO][director][p1] assault phase BUILD (wave 3, 35 s)
+[PO5 4794.7s] pilot: t=10 at (1.1, 0.0, 10.0) corner (1.4, 0.2, 10.5) yaw_err -0.30 fwd=true path=40 mouse_mode=2 state=0 look=(-46.27,0.00) pin_yaw=-46.4656515470874 bot=false
+[PO5 4794.7s] pilot: goto (7.0, -0.8, 36.9) FAILED at (1.1, 0.0, 10.0) after 10.0 s
+[PO5 4905.6s] EVENT crew 1 state 0 -> 1 at (3.4, 0.0, 12.3) (t=511)
+[INFO][combat][p1] slot 1 downed (3/3)
+[PO5 5029.7s] revive slot 1 at 513 s (2.2 m)
+[PO5 5046.0s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 5046.4s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 5046.8s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 5047.2s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 5047.7s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 5115.1s] EVENT crew 1 state 1 -> 0 at (3.4, -0.3, 12.3) (t=519)
+[PO5 5224.1s] pilot: use revive hold dropped, cleared threats before re-pressing
+[PO5 5234.3s] pilot: use revive re-press skipped: aimed <none> (dist 1.20, angle 0.0 deg)
+[PO5 5234.3s] pilot: use Crew1 (revive) -> OK in 2.0 s
+[PO5 5234.7s] pilot: reload in a lull (weapon.corsair_ar 5/30, reserve 123)
+[PO5 5235.6s] pilot: t=5 at (4.9, -0.3, 12.3) corner (5.5, 0.2, 12.6) yaw_err -0.01 fwd=true path=35 mouse_mode=2 state=0 look=(-52.19,0.00) pin_yaw=-52.2086134882078 bot=false
+[PO5 5240.6s] pilot: t=10 at (8.9, -0.3, 16.7) corner (9.7, 0.2, 17.6) yaw_err 1.92 fwd=false path=28 mouse_mode=2 state=0 look=(-54.64,0.00) pin_yaw=-54.448447256956 bot=false
+[PO5 5240.6s] pilot: goto (7.0, -0.8, 36.9) FAILED at (8.9, -0.3, 16.7) after 10.0 s
+[PO5 5241.3s] EVENT crew 2 state 0 -> 1 at (7.5, 0.0, 10.7) (t=528)
+[INFO][combat][p1] slot 2 downed (2/3)
+[PO5 5303.1s] revive slot 2 at 529 s (6.6 m)
+[PO5 5320.1s] pilot: t=5 at (7.9, 0.0, 12.1) corner (7.7, 0.2, 11.4) yaw_err -0.00 fwd=true path=7 mouse_mode=2 state=0 look=(-56.30,0.00) pin_yaw=-56.3020433129312 bot=false
+[PO5 5358.7s] EVENT crew 2 state 1 -> 0 at (7.5, -0.3, 10.7) (t=535)
+[PO5 5477.5s] EVENT crew 0 state 0 -> 1 at (7.6, -0.3, 11.1) (t=536)
+[INFO][combat][p1] slot 0 downed (1/3)
+[PO5 5522.4s] pilot: use Crew2 (revive) -> OK in 0.0 s
+[PO5 5522.4s] pilot: goto aborted, crew state 1 (fight from the floor)
+[PO5 5522.4s] pilot: goto (7.0, -0.8, 36.9) FAILED at (7.6, 0.0, 11.1) after 0.6 s
+[INFO][director][p1] assault phase SUSTAIN (wave 3, 208 s)
+[PO5 5784.9s] pilot: mag empty (0/136), reloading
+[INFO][director][p1] assault event breach at (14.9, 5.5, 15.75) (Breach_1)
+[PO5 6065.0s] EVENT crew 0 state 1 -> 0 at (7.6, 0.0, 11.1) (t=551)
+[PO5 6121.0s] EVENT crew 3 state 0 -> 1 at (5.0, 0.0, 13.7) (t=556)
+[INFO][combat][p1] slot 3 downed (1/3)
+[PO5 6132.0s] EVENT crew 2 state 0 -> 1 at (15.6, 0.0, 14.4) (t=556)
+[INFO][combat][p1] slot 2 downed (3/3)
+[PO5 6164.7s] pilot: mag empty (0/119), reloading
+[PO5 6326.8s] revive slot 3 at 560 s (5.1 m)
+[PO5 6342.5s] EVENT crew 2 state 1 -> 0 at (15.7, 0.0, 14.2) (t=564)
+[PO5 6361.4s] pilot: use Crew3 (revive) -> OK in 0.0 s
+[PO5 6447.4s] revive slot 3 at 566 s (0.3 m)
+[PO5 6458.2s] pilot: use Crew3 (revive) -> OK in 0.7 s
+[PO5 6471.3s] pilot: mag empty (0/109), reloading
+[PO5 6747.5s] pilot: mag empty (0/92), reloading
+[PO5 6759.4s] EVENT crew 2 state 0 -> 5 at (8.4, 0.0, 10.9) (t=572)
+[INFO][combat][p1] slot 2 in custody
+[PO5 6759.7s] EVENT crew 1 state 0 -> 5 at (6.0, 0.0, 13.8) (t=573)
+[INFO][combat][p1] slot 1 in custody
+[PO5 6761.4s] EVENT crew 0 state 0 -> 1 at (5.3, 0.0, 13.9) (t=574)
+[INFO][combat][p1] slot 0 downed (2/3)
+[PO5 6772.6s] pilot: goto aborted, crew state 1 (fight from the floor)
+[PO5 6772.6s] pilot: goto (7.0, -0.8, 36.9) FAILED at (5.3, 0.0, 13.9) after 4.7 s
+[PO5 6896.9s] EVENT crew 0 state 1 -> 5 at (5.3, 0.0, 13.9) (t=576)
+[INFO][combat][p1] slot 0 in custody
+[PO5 6928.8s] FAIL player in custody at 577 s
+[PO5 6964.1s] shot /tmp/claude-0/-home-user-Claude-N-Capers/ffd7fe7e-ab64-5ca1-b599-c3532188a6c6/scratchpad/nd1_1002/13_end.png
+[PO5 6964.1s] RESULT FAIL (code 1) flow=auto_loud heist=Nightfall Depository seed=1002
+WARNING: 1 RID of type "CanvasItem" was leaked.
+   at: _free_rids (servers/rendering/renderer_canvas_cull.cpp:2733)
+WARNING: 32 RIDs of type "Texture" were leaked.
+   at: finalize (servers/rendering/rendering_device.cpp:8900)
+WARNING: 323 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)
+ERROR: 6 resources still in use at exit (run with --verbose for details).
+   at: clear (core/io/resource.cpp:822)
+ERROR: 25 RID allocations of type 'N10RendererRD14TextureStorage7TextureE' were leaked at exit.
+ERROR: 26 RID allocations of type 'PN18TextServerAdvanced22ShapedTextDataAdvancedE' were leaked at exit.
+ERROR: 4 RID allocations of type 'PN18TextServerAdvanced12FontAdvancedE' were leaked at exit.
