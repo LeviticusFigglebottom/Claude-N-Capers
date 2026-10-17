@@ -19,6 +19,27 @@ customers are ordinary civilians in daylight colours.
   white shirt, navy chinos, brown shoes, a watch.
 * ``char_bank_customer_b``: a parent on an errand: an olive nylon bomber zipped over a cream crew
   knit, jeans, white trainers and a navy daypack on both shoulders.
+* OF-D1 (D-130: +35 % civilians at Cataclysm, so the faces don't repeat). Officers, the same grey worsted family:
+  ``char_bank_officer_c``: a man about 60, light skin, grey hair: grey two-piece suit, white shirt, burgundy tie, the
+  bank lanyard, keyhole lapel badge, brass name tag, watch.
+  ``char_bank_officer_d``: a woman in her 30s, deep skin, dark hair in a bun: grey waistcoat and trousers over a white
+  shirt (no jacket), the bank lanyard, low heels, watch, black glasses.
+  Customers and plaza pedestrians, a weekday-afternoon city-bank crowd:
+  ``char_bank_customer_c``: office worker, a woman in her 40s: navy knee pencil skirt, white blouse, open mustard
+  cardigan, black low heels, blue office lanyard, gold watch.
+  ``char_bank_customer_d``: bike courier, a young man: black nylon bomber over a graphite knit, charcoal work trousers,
+  grey trainers, orange cap and a big orange messenger bag.
+  ``char_bank_customer_e``: retiree, a woman in her late 70s: long heather wool coat over a navy knit, cream scarf, grey
+  slacks, brown shoes, grey hair in a bun, silver glasses.
+  ``char_bank_customer_f``: office worker, a tall man about 45: belted double-breasted stone trench coat (knee) over a
+  pale blue shirt, navy suit trousers, brown shoes, black glasses.
+  ``char_bank_customer_g``: student, a young woman: cream hoodie (hood down), jeans, white trainers, black over-ear
+  headphones on, olive messenger bag.
+  ``char_bank_customer_h``: tradesperson, a heavy-set man about 55, bald with stubble: tan canvas chore jacket over a
+  grey crew knit, navy work trousers, brown work boots, watch.
+  ``char_bank_customer_i``: parent, a man in his 30s, blond: maroon crew knit, khaki chinos, grey trainers, watch.
+  ``char_bank_customer_j``: a woman in her 60s, deep skin, short grey hair: brown suit jacket over a cream roll-neck,
+  black trousers, low heels, silver drop earrings, black glasses.
 * Reused (listed in ``world/characters/p5_cast.json``, not rebuilt): tellers ``npc_bank_teller`` /
   ``_b`` (D-063), customers ``civilian_customer_a`` (camel coat) / ``_b`` (the elderly customer: grey
   hair, gilet), guards ``security_officer`` / ``_b`` (Halden Security day shift, peaked cap) and
@@ -28,12 +49,13 @@ Meshes: ``Body`` (covered skin removed), ``Hair``, ``Outfit``, ``Gear``, ``Headw
 No blend shapes (baked at the params below).
 """
 
+import _contact_gear as cg
 import _crew_heisters as crew
 import _gear_kit as gk
 import _npc as n
 import _outfit_garments as g
 import _p5 as p5
-from _outfit import Vector
+from _outfit import Hull, Mesh, Vector
 from _outfit_build import Kit, build_character
 
 TRI_BUDGET = 35000
@@ -50,6 +72,27 @@ VARIANTS = {
                            "beard_shadow": 0.6, "hair": "short", "hair_color": "brown", "look": "business"},
     "char_bank_customer_b": {"height": 1.68, "build": 0.45, "gender": 1.0, "age": 0.35, "skin": 5,
                              "hair": "side_part", "hair_color": "brown", "look": "parent"},
+    # OF-D1: officers c-d, customers c-j
+    "char_bank_officer_c": {"height": 1.77, "build": 0.7, "gender": 0.0, "age": 0.72, "skin": 2,
+                            "beard_shadow": 0.3, "hair": "short", "hair_color": "grey", "look": "officer_c"},
+    "char_bank_officer_d": {"height": 1.70, "build": 0.35, "gender": 1.0, "age": 0.3, "skin": 6,
+                            "hair": "side_part", "hair_color": "dark", "look": "officer_d"},
+    "char_bank_customer_c": {"height": 1.69, "build": 0.5, "gender": 1.0, "age": 0.45, "skin": 4,
+                             "hair": "bob", "hair_color": "brown", "look": "office_skirt"},
+    "char_bank_customer_d": {"height": 1.76, "build": 0.3, "gender": 0.0, "age": 0.12, "skin": 6,
+                             "beard_shadow": 0.2, "hair": "buzz", "hair_color": "dark", "look": "courier"},
+    "char_bank_customer_e": {"height": 1.68, "build": 0.6, "gender": 1.0, "age": 0.92, "skin": 2,
+                             "hair": "side_part", "hair_color": "grey", "look": "retiree"},
+    "char_bank_customer_f": {"height": 1.85, "build": 0.5, "gender": 0.0, "age": 0.5, "skin": 1,
+                             "beard_shadow": 0.3, "hair": "side_part", "hair_color": "brown", "look": "trench"},
+    "char_bank_customer_g": {"height": 1.69, "build": 0.3, "gender": 1.0, "age": 0.08, "skin": 5,
+                             "hair": "bob", "hair_color": "dark", "look": "student"},
+    "char_bank_customer_h": {"height": 1.79, "build": 0.85, "gender": 0.0, "age": 0.62, "skin": 3,
+                             "beard_shadow": 0.8, "hair": "bald", "hair_color": "grey", "look": "trades"},
+    "char_bank_customer_i": {"height": 1.75, "build": 0.55, "gender": 0.0, "age": 0.32, "skin": 2,
+                             "beard_shadow": 0.5, "hair": "short", "hair_color": "blond", "look": "parent_knit"},
+    "char_bank_customer_j": {"height": 1.72, "build": 0.45, "gender": 1.0, "age": 0.66, "skin": 5,
+                             "hair": "short", "hair_color": "grey", "look": "rollneck"},
 }
 
 NAVY = "char_suit_navy"
@@ -160,7 +203,190 @@ def parent(kit: Kit) -> None:
                          "daypack on both shoulders")
 
 
-_looks = {"manager": manager, "officer": officer, "officer_b": officer_b, "business": business, "parent": parent}
+# ---------------------------------------------------------------------------------------------
+# OF-D1: officers c-d (the grey worsted family) and customers c-j (a weekday-afternoon crowd)
+# ---------------------------------------------------------------------------------------------
+def _trainers(kit: Kit, mat: str = "char_sneaker_grey") -> Mesh:
+    sh = g.shoes(kit.fit, mat, "char_button_pale", top_z=0.085, base=0.007, toe=0.016)
+    kit.add_soft(sh)
+    return sh
+
+
+def officer_c(kit: Kit) -> None:
+    k = kit.k
+    _hips_z, belt_z, tuck = _z(kit)
+    sh = n.shoes(kit)
+    n.shirt(kit, "char_shirt_white", tuck, point_len=0.056)
+    n.trousers(kit, GREY, sh, belt_z + 0.022 * k)
+    n.tie(kit, "char_tie_burgundy", belt_z + 0.03 * k, width=0.074)
+    n0 = len(kit.soft.f)
+    jk, _info = n.jacket(kit, GREY, 0.80 * k, 1.04 * k, button_mat="char_button_dark", lapel_w=0.056, neck_w=0.08,
+                         flare=0.07)
+    n.cull_under(kit, n0, jk, "faces_hidden_by_jacket")
+    hull = kit.hull()
+    kit.add_gear(gk.name_tag(hull, Vector((0.10 * k, 0.2, 1.33 * k)), k=k))
+    kit.add_gear(n.bank_badge(hull, Vector((-0.10 * k, 0.2, 1.345 * k)), Vector((0, 1, 0.1)), 0.022, 0.026, k,
+                              rim="brass", fill=SLATE, glyph="brass", depth=0.003))
+    n.lanyard(kit, RED, "char_medic_white", card_z=1.15, band_mat=SLATE)
+    n.watch(kit, "L", strap="char_leather_black", case="brass")
+    kit.notes["look"] = ("Bank officer (OF-D1): a man about 60, grey hair; grey worsted two-piece suit, white shirt, "
+                         "burgundy tie, the bank's red lanyard + ID badge, keyhole lapel badge, brass name tag, watch")
+
+
+def officer_d(kit: Kit) -> None:
+    k = kit.k
+    hips_z, belt_z, tuck = _z(kit)
+    sh = n.shoes(kit, heel=True)
+    n.shirt(kit, "char_shirt_white", tuck, point_len=0.05, spread=0.38)
+    n.trousers(kit, GREY, sh, belt_z + 0.022 * k, hem_r=0.056)
+    n0 = len(kit.soft.f)
+    vest = n.waistcoat(kit, GREY, hips_z - 0.01 * k, 1.12 * k, point=0.045, neck_w=0.07, buttons=4)
+    n.cull_under(kit, n0, vest, "faces_hidden_by_waistcoat")
+    n.lanyard(kit, RED, "char_medic_white", card_z=1.17, band_mat=SLATE)
+    n.watch(kit, "L", strap="char_leather_black", case="chrome")
+    kit.add_head(cg.chignon(kit.fit, "char_hair_dark", size=0.85))
+    kit.add_head(gk.glasses(kit.fit, "char_button_dark"))
+    kit.notes["look"] = ("Bank officer (OF-D1): a woman in her 30s, dark hair in a bun; grey worsted waistcoat and "
+                         "trousers over a white shirt (no jacket), the bank's red lanyard + ID badge, low heels, "
+                         "watch, black glasses")
+
+
+def office_skirt(kit: Kit) -> None:
+    k = kit.k
+    _hips_z, _belt_z, tuck = _z(kit)
+    waist_z = kit.fit.ring_centre("waist").z
+    n.shoes(kit, heel=True)
+    n.shirt(kit, "char_shirt_white", tuck, point_len=0.05, spread=0.36)
+    n.skirt(kit, "char_skirt_navy", waist_z + 0.01 * k, 0.48 * k, flare=0.04)
+    n0 = len(kit.soft.f)
+    jk, _info = n.jacket(kit, "char_knit_mustard", 0.80 * k, 1.03 * k, button_mat="char_button_dark", lapel_w=0.03,
+                         neck_w=0.09, flare=0.09, chest_welt=False, base=0.013)
+    n.cull_under(kit, n0, jk, "faces_hidden_by_jacket")
+    n.lanyard(kit, "char_lanyard", "char_medic_white", card_z=1.18)
+    n.watch(kit, "L", strap="brass", case="brass")
+    kit.notes["look"] = ("Office worker customer (OF-D1): navy knee pencil skirt, white blouse, open mustard cardigan, "
+                         "black low heels, blue office lanyard + card, gold watch")
+
+
+def courier(kit: Kit) -> None:
+    fit, k = kit.fit, kit.k
+    hips_z, belt_z, _tuck = _z(kit)
+    sh = _trainers(kit)
+    kit.add_soft(g.knit_top(fit, kit.hull(), "char_knit_graphite", hips_z - 0.02 * k, neck="crew", base=0.006))
+    n.trousers(kit, "char_work_charcoal", sh, belt_z + 0.022 * k, hem_r=0.060)
+    n0 = len(kit.soft.f)
+    jk = crew.bomber(kit, "char_nylon_black", "char_knit_graphite", "char_nylon_black", hips_z - 0.01 * k, 1.30 * k,
+                     neck_w=0.06)
+    n.cull_under(kit, n0, jk, "faces_hidden_by_bomber")
+    n.messenger_bag(kit, "char_hivis_orange", "char_nylon_black", a_deg=-120.0, z=0.98, w=0.18, h=0.14, d=0.09)
+    cap, _ring = p5.ball_cap(fit, "char_hivis_orange", peak_mat="char_hivis_orange", button_mat="char_nylon_black")
+    kit.add_head(cap)
+    kit.notes["look"] = ("Bike courier (OF-D1): black nylon bomber over a graphite knit, charcoal work trousers, grey "
+                         "trainers, orange cap, big orange messenger bag on a black strap")
+
+
+def retiree(kit: Kit) -> None:
+    fit, k = kit.fit, kit.k
+    hips_z = fit.ring_centre("hips").z
+    shoes = g.shoes(fit, "char_shoe_brown", "rubber_black", top_z=0.09, base=0.006)
+    kit.add_soft(shoes)
+    kit.add_soft(g.knit_top(fit, kit.hull(), "char_knit_navy", hips_z + 0.02 * k, neck="crew", base=0.006))
+    n.trousers(kit, "char_slacks_grey", shoes, hips_z + 0.05 * k, hem_r=0.056)
+    crew.scarf(kit, "char_knit_cream", 1.06 * k)
+    n0 = len(kit.soft.f)
+    jk, _info = g.jacket(fit, kit.hull(), "char_coat_heather", 0.47 * k, 1.05 * k, neck_w=0.075, base=0.016,
+                         flare=0.11, open_below=0.05, lapel_w=0.06, sleeve=1.97, keep_shape=0.4)
+    kit.add_soft(jk)
+    jh = Hull(fit, [jk])
+    gear = Mesh()
+    for z in (1.05, 0.93, 0.81):
+        gear.extend(gk.button(jh, Vector((0.012 * k, 0.3, z * k - 0.012 * k)), "char_button_dark", r=0.011, k=k,
+                              thick=0.004))
+    kit.add_gear(gear)
+    n.cull_under(kit, n0, jk, "faces_hidden_by_coat")
+    kit.add_head(cg.chignon(fit, "char_hair_grey", size=0.8))
+    kit.add_head(gk.glasses(fit, "char_metal_silver"))
+    kit.notes["look"] = ("Retiree customer (OF-D1): long heather wool coat (below the knee) over a navy knit, cream "
+                         "scarf, grey slacks, brown shoes, grey hair in a bun, silver glasses")
+
+
+def trench(kit: Kit) -> None:
+    fit, k = kit.fit, kit.k
+    _hips_z, belt_z, tuck = _z(kit)
+    sh = n.shoes(kit, mat="char_shoe_brown")
+    n.shirt(kit, "char_shirt_blue", tuck, point_len=0.056, spread=0.34)
+    tr = n.trousers(kit, NAVY, sh, belt_z + 0.022 * k)
+    n.belt(kit, tr, belt_z, mat="leather_dark", buckle="chrome")
+    n0 = len(kit.soft.f)
+    coat, _info = n.jacket(kit, "char_coat_stone", 0.50 * k, 1.00 * k, neck_w=0.095, lapel_w=0.075, flare=0.12,
+                           base=0.015, open_below=0.06, sleeve=1.93, double=True)
+    n.cull_under(kit, n0, coat, "faces_hidden_by_coat")
+    waist = fit.ring_centre("waist").z
+    cb = gk.Belt(fit, Hull(fit, [coat], body_regions=set()), waist, height=0.04, thick=0.004, drop=0.0)
+    kit.add_soft(cb.mesh("char_coat_stone"))
+    kit.add_head(gk.glasses(fit, "char_button_dark"))
+    kit.notes["look"] = ("Office worker customer (OF-D1): belted double-breasted stone trench coat to the knee over a "
+                         "pale blue shirt, navy suit trousers, brown shoes and belt, black glasses")
+
+
+def student(kit: Kit) -> None:
+    k = kit.k
+    hips_z, belt_z, _tuck = _z(kit)
+    sh = _trainers(kit, "char_sneaker_white")
+    n.trousers(kit, "char_denim", sh, belt_z + 0.022 * k, hem_r=0.060)
+    n.hoodie(kit, "char_hoodie_cream", hips_z - 0.06 * k, string_mat="char_knit_graphite")
+    n.messenger_bag(kit, "char_nylon_olive", "char_nylon_olive", a_deg=-120.0, z=0.97)
+    p5.headphones_on(kit, "polymer_black", "rubber_black")
+    kit.notes["look"] = ("Student customer (OF-D1): cream hoodie (hood down), jeans, white trainers, black over-ear "
+                         "headphones on, olive messenger bag")
+
+
+def trades(kit: Kit) -> None:
+    fit, k = kit.fit, kit.k
+    hips_z, belt_z, _tuck = _z(kit)
+    sh = g.shoes(fit, "char_shoe_brown", "rubber_black", top_z=0.15, base=0.006, boot=True)
+    kit.add_soft(sh)
+    kit.add_soft(g.knit_top(fit, kit.hull(), "char_knit_grey", hips_z - 0.02 * k, neck="crew", base=0.006))
+    n.trousers(kit, "char_work_navy", sh, belt_z + 0.022 * k, hem_r=0.064)
+    n0 = len(kit.soft.f)
+    jk, _info = n.jacket(kit, "char_canvas_tan", 0.80 * k, 1.12 * k, button_mat="char_button_dark", lapel_w=0.035,
+                         neck_w=0.075, flare=0.07, chest_welt=False, base=0.014)
+    n.cull_under(kit, n0, jk, "faces_hidden_by_jacket")
+    n.watch(kit, "L", strap="char_nylon_black", case="chrome")
+    kit.notes["look"] = ("Tradesperson customer (OF-D1): tan canvas chore jacket over a grey crew knit, navy work "
+                         "trousers, brown work boots, watch")
+
+
+def parent_knit(kit: Kit) -> None:
+    fit, k = kit.fit, kit.k
+    hips_z, belt_z, _tuck = _z(kit)
+    sh = _trainers(kit)
+    kit.add_soft(g.knit_top(fit, kit.hull(), "char_fleece_maroon", hips_z - 0.02 * k, neck="crew", base=0.007))
+    n.trousers(kit, "char_chino_khaki", sh, belt_z + 0.022 * k, hem_r=0.060)
+    n.watch(kit, "L", strap="char_nylon_black", case="chrome")
+    kit.notes["look"] = "Parent customer (OF-D1): maroon crew knit, khaki chinos, grey trainers, watch"
+
+
+def rollneck(kit: Kit) -> None:
+    fit, k = kit.fit, kit.k
+    hips_z, belt_z, _tuck = _z(kit)
+    sh = n.shoes(kit, heel=True)
+    kit.add_soft(g.knit_top(fit, kit.hull(), "char_knit_cream", hips_z + 0.02 * k, neck="roll", base=0.006))
+    n.trousers(kit, "char_trousers_black", sh, belt_z + 0.022 * k, hem_r=0.054)
+    n0 = len(kit.soft.f)
+    jk, _info = n.jacket(kit, "char_suit_brown", 0.79 * k, 1.04 * k, button_mat="char_button_dark", lapel_w=0.05,
+                         neck_w=0.10, flare=0.07)
+    n.cull_under(kit, n0, jk, "faces_hidden_by_jacket")
+    kit.add_head(cg.earrings(fit, "chrome", drop=True))
+    kit.add_head(gk.glasses(fit, "char_button_dark"))
+    kit.notes["look"] = ("Customer (OF-D1): a woman in her 60s, short grey hair; brown suit jacket over a cream "
+                         "roll-neck, black trousers, low heels, silver drop earrings, black glasses")
+
+
+_looks = {"manager": manager, "officer": officer, "officer_b": officer_b, "business": business, "parent": parent,
+          "officer_c": officer_c, "officer_d": officer_d, "office_skirt": office_skirt, "courier": courier,
+          "retiree": retiree, "trench": trench, "student": student, "trades": trades, "parent_knit": parent_knit,
+          "rollneck": rollneck}
 
 
 def recipe(kit: Kit) -> None:

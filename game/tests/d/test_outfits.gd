@@ -1,4 +1,5 @@
 ## D1-02: outfit characters (tools/blender/characters/char_*.py). Run after `godot --import`.
+## OF-D1: the Ostrander Federal officers c-d and customers c-j are checked here too.
 ## Each character glb has the shared 52-bone rig_humanoid Skeleton3D (top-level, D-067b), only skinned meshes
 ## (Body, Hair, Outfit, Gear, Headwear) with no blend shapes (bodies are baked), every surface
 ## mapped to a library material res://world/materials/*.tres, and a plausible standing height.
@@ -13,6 +14,16 @@ const CHARACTERS: Array[String] = [
 	"char_security_officer_f",
 	"char_civilian_customer_a",
 	"char_civilian_customer_b",
+	"char_bank_officer_c",
+	"char_bank_officer_d",
+	"char_bank_customer_c",
+	"char_bank_customer_d",
+	"char_bank_customer_e",
+	"char_bank_customer_f",
+	"char_bank_customer_g",
+	"char_bank_customer_h",
+	"char_bank_customer_i",
+	"char_bank_customer_j",
 	"char_civilian_sales",
 	"char_civilian_jeweler",
 	"char_civilian_manager",

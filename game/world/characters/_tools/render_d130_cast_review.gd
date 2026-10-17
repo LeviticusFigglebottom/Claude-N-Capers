@@ -5,7 +5,9 @@
 ##     --rendering-driver opengl3 --path game --script res://world/characters/_tools/render_d130_cast_review.gd \
 ##     -- --pool=gn_guards
 ##
-## Pools: gn_guards, sl_guards, nd_guards, civilians, gn_waitstaff, gn_attendants, sl_late_staff.
+## Pools: gn_guards, sl_guards, nd_guards, civilians, gn_waitstaff, gn_attendants, sl_late_staff; OF-D1 (Ostrander
+## Federal by day): of_tellers, of_officers, of_customers, and of_skirts (the skirt looks in walk / run / cower, front
+## and side: <pool>_clips.png, no lineup). The of_ pools write to res://assets/characters/_review/of_d1_cast/.
 ## Writes to res://assets/characters/_review/d130_cast/:
 ##   <pool>_sheet.png           per character: full body front (idle), three-quarter back mid-walk, head close-up
 ##   <pool>_lineup_30m.png      all of them side by side seen from 30 m (natural LOD switching, telephoto framing)
@@ -15,6 +17,9 @@ extends SceneTree
 const Spec: GDScript = preload("res://world/characters/_tools/character_spec.gd")
 const CrowdLod: GDScript = preload("res://world/characters/_tools/crowd_lod.gd")
 const OUT_DIR: String = "res://assets/characters/_review/d130_cast/"
+const OF_OUT_DIR: String = "res://assets/characters/_review/of_d1_cast/"
+## of_skirts: clip -> sample time (s), a peak knee bend each (test_skirt_drape FRAMES)
+const CLIP_POSES: Array = [["walk", 0.38], ["run", 0.26], ["cower", 1.5]]
 const POOLS: Dictionary = {
 	"gn_guards": [
 		"char_gallery_guard", "char_gallery_guard_b", "char_gallery_guard_c", "char_gallery_guard_d",
@@ -45,6 +50,18 @@ const POOLS: Dictionary = {
 		"char_npc_km_assistant", "char_npc_km_associate", "char_npc_helena_moor", "char_npc_kessler",
 		"char_npc_it_contractor",
 	],
+	# OF-D1: Ostrander Federal's day pools (3 tellers + 1 rotating, 1-3 officers, 4-8 hall + 2 plaza customers, x1.35)
+	"of_tellers": [
+		"char_npc_bank_teller", "char_npc_bank_teller_b", "char_npc_bank_teller_c", "char_npc_bank_teller_d",
+		"char_npc_bank_teller_e",
+	],
+	"of_officers": ["char_bank_officer", "char_bank_officer_b", "char_bank_officer_c", "char_bank_officer_d"],
+	"of_customers": [
+		"char_bank_customer", "char_bank_customer_b", "char_civilian_customer_a", "char_civilian_customer_b",
+		"char_bank_customer_c", "char_bank_customer_d", "char_bank_customer_e", "char_bank_customer_f",
+		"char_bank_customer_g", "char_bank_customer_h", "char_bank_customer_i", "char_bank_customer_j",
+	],
+	"of_skirts": ["char_npc_bank_teller", "char_npc_bank_teller_d", "char_bank_officer", "char_bank_customer_c"],
 }
 const COLS: int = 9
 const TILE: Vector2i = Vector2i(200, 340)
@@ -56,6 +73,7 @@ const LINEUP_DIST: float = 30.0
 const LINEUP_MIN_HALF_H: float = 1.25
 
 var _pool: String = "gn_guards"
+var _out: String = OUT_DIR
 var _chars: Array[String] = []
 var _vp: SubViewport
 var _cam: Camera3D
@@ -85,10 +103,15 @@ func _run() -> void:
 		else:
 			_errors += 1
 			push_error("render_d130_cast_review: no scene for %s" % id)
-	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(OUT_DIR))
+	if _pool.begins_with("of_"):
+		_out = OF_OUT_DIR
+	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(_out))
 	_stage()
-	await _sheet()
-	await _lineup()
+	if _pool == "of_skirts":
+		await _clips_sheet()
+	else:
+		await _sheet()
+		await _lineup()
 	quit(1 if _errors > 0 else 0)
 
 
@@ -124,6 +147,32 @@ func _sheet() -> void:
 		body.queue_free()
 		await process_frame
 	_save(sheet, _pool + "_sheet.png")
+
+
+## One row per character: each CLIP_POSES clip at its knee-bend time, seen from the front and from the side.
+func _clips_sheet() -> void:
+	var cols: int = CLIP_POSES.size() * 2
+	var sheet: Image = Image.create(TILE.x * cols, TILE.y * _chars.size(), false, Image.FORMAT_RGBA8)
+	sheet.fill(Color(0.2, 0.2, 0.2))
+	_vp.size = TILE
+	for c: int in range(_chars.size()):
+		var body: Node3D = (load(Spec.scene_path(_chars[c])) as PackedScene).instantiate() as Node3D
+		CrowdLod.force_level(body, false)
+		_vp.add_child(body)
+		var player: AnimationPlayer = body.get_node("AnimationPlayer") as AnimationPlayer
+		for i: int in range(CLIP_POSES.size()):
+			var clip: String = String(CLIP_POSES[i][0])
+			_pose(player, "humanoid/" + clip, float(CLIP_POSES[i][1]), _chars[c])
+			_label.text = "%s %s" % [_short(_chars[c]), clip]
+			_label.visible = true
+			var front: Image = await _grab(_view(Vector3(0.0, 0.9, -3.4), Vector3(0.0, 0.75, 0.0)))
+			sheet.blit_rect(front, Rect2i(Vector2i.ZERO, TILE), Vector2i(TILE.x * i * 2, TILE.y * c))
+			_label.visible = false
+			var side: Image = await _grab(_view(Vector3(3.4, 0.9, 0.0), Vector3(0.0, 0.75, 0.0)))
+			sheet.blit_rect(side, Rect2i(Vector2i.ZERO, TILE), Vector2i(TILE.x * (i * 2 + 1), TILE.y * c))
+		body.queue_free()
+		await process_frame
+	_save(sheet, _pool + "_clips.png")
 
 
 ## Everyone in a row (front towards -Z, the camera) seen from LINEUP_DIST metres: the meshes keep their visibility
@@ -166,12 +215,12 @@ func _short(id: String) -> String:
 
 
 func _save(img: Image, file: String) -> void:
-	var err: Error = img.save_png(OUT_DIR + file)
+	var err: Error = img.save_png(_out + file)
 	if err != OK:
 		_errors += 1
 		push_error("render_d130_cast_review: could not save %s (%s)" % [file, error_string(err)])
 	else:
-		print("render_d130_cast_review: wrote %s%s" % [OUT_DIR, file])
+		print("render_d130_cast_review: wrote %s%s" % [_out, file])
 
 
 func _pose(player: AnimationPlayer, clip: String, t: float, who: String) -> void:

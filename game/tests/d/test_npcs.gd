@@ -15,6 +15,9 @@ const Spec: GDScript = preload("res://world/characters/_tools/character_spec.gd"
 const NPCS: Array[String] = [
 	"char_npc_bank_teller",
 	"char_npc_bank_teller_b",
+	"char_npc_bank_teller_c",
+	"char_npc_bank_teller_d",
+	"char_npc_bank_teller_e",
 	"char_npc_bank_night_manager",
 	"char_npc_bank_cleaner",
 	"char_npc_bank_cleaner_b",
@@ -150,6 +153,34 @@ const D115_CAST: Dictionary = {
 		"Outfit": ["char_shirt_blue", "char_knit_grey", "char_work_charcoal", "char_glove_white", "char_chino_khaki"],
 		"Gear": ["char_medic_white"], "Headwear": ["char_metal_silver", "polymer_black"],
 	},
+}
+## OF-D1 bank day pools (test_of_bank_civilians).
+const OF_TELLERS: Array[String] = [
+	"char_npc_bank_teller", "char_npc_bank_teller_b", "char_npc_bank_teller_c", "char_npc_bank_teller_d",
+	"char_npc_bank_teller_e",
+]
+const OF_OFFICERS: Array[String] = [
+	"char_bank_officer", "char_bank_officer_b", "char_bank_officer_c", "char_bank_officer_d",
+]
+const OF_CUSTOMERS: Array[String] = [
+	"char_bank_customer", "char_bank_customer_b", "char_civilian_customer_a", "char_civilian_customer_b",
+	"char_bank_customer_c", "char_bank_customer_d", "char_bank_customer_e", "char_bank_customer_f",
+	"char_bank_customer_g", "char_bank_customer_h", "char_bank_customer_i", "char_bank_customer_j",
+]
+const OF_LOOK: Dictionary = {
+	"char_npc_bank_teller_c": {"Outfit": ["char_knit_slate", "char_bank_red"]},
+	"char_npc_bank_teller_d": {"Outfit": ["char_bank_slate", "char_bank_red"], "Headwear": ["char_hair_brown"]},
+	"char_npc_bank_teller_e": {"Outfit": ["char_bank_slate", "char_bank_red"], "Gear": ["brass"]},
+	"char_bank_officer_c": {"Outfit": ["char_shirt_white", "char_tie_burgundy"], "Gear": ["char_medic_white", "brass"]},
+	"char_bank_officer_d": {"Outfit": ["char_shirt_white"], "Headwear": ["char_hair_dark", "char_button_dark"]},
+	"char_bank_customer_c": {"Outfit": ["char_skirt_navy", "char_knit_mustard", "char_shirt_white"]},
+	"char_bank_customer_d": {"Outfit": ["char_nylon_black", "char_work_charcoal"], "Headwear": ["char_hivis_orange"]},
+	"char_bank_customer_e": {"Outfit": ["char_coat_heather", "char_knit_cream"], "Headwear": ["char_hair_grey"]},
+	"char_bank_customer_f": {"Outfit": ["char_coat_stone", "char_shirt_blue", "char_suit_navy"]},
+	"char_bank_customer_g": {"Outfit": ["char_hoodie_cream", "char_denim"], "Headwear": ["polymer_black"]},
+	"char_bank_customer_h": {"Outfit": ["char_canvas_tan", "char_knit_grey", "char_work_navy"]},
+	"char_bank_customer_i": {"Outfit": ["char_fleece_maroon", "char_chino_khaki"]},
+	"char_bank_customer_j": {"Outfit": ["char_suit_brown", "char_knit_cream"], "Headwear": ["chrome"]},
 }
 ## D-115 hand props (world/characters/_props, tools/blender/characters/make_hand_prop_scenes.py): the index, the
 ## largest extent a prop may have (m; the mop is 1.4 m long), and the smoke check (cigarette length, drag frames).
@@ -534,6 +565,38 @@ func test_km_late_staff_looks() -> void:
 		assert_false(_all_materials(by_mesh).has("char_silk_ivory"), "%s: not Moor's ivory blouse" % pair[0])
 		assert_false(_all_materials(by_mesh).has("char_lanyard"), "%s: not the contractor's visitor lanyard" % pair[0])
 	assert_ne(asst.get("Body", []), assoc.get("Body", []), "assistant and associate: different skins")
+
+
+## OF-D1 (Ostrander Federal by day, D-130: +35 % civilians at Cataclysm): the bank's day pools. Every teller wears the
+## bank uniform (cream, bank red, dark slate), every officer the grey worsted with the bank lanyard; each new look wears
+## its look-defining material; and no two looks in a pool are twins (skin, hair, headwear and outfit all equal).
+func test_of_bank_civilians() -> void:
+	var sigs: Dictionary = {}
+	for pool: Array in [OF_TELLERS, OF_OFFICERS, OF_CUSTOMERS]:
+		for id: Variant in pool:
+			assert_true(_index.has(String(id)), "%s in characters.json" % id)
+			var by_mesh: Dictionary = _materials(String(id))
+			var parts: Array[String] = []
+			for mesh: String in ["Body", "Hair", "Headwear", "Outfit"]:
+				var mats: Array = (by_mesh.get(mesh, []) as Array).duplicate()
+				mats.sort()
+				parts.append("%s=%s" % [mesh, ",".join(PackedStringArray(mats))])
+			sigs[String(id)] = "|".join(PackedStringArray(parts))
+			var want: Dictionary = OF_LOOK.get(String(id), {})
+			for mesh: String in want:
+				for m: String in want[mesh]:
+					assert_has(by_mesh.get(mesh, []) as Array, m, "%s: %s wears %s" % [id, mesh, m])
+			var all: Array[String] = _all_materials(by_mesh)
+			if pool == OF_TELLERS:
+				for m: String in ["char_bank_cream", "char_bank_red", "char_bank_slate_dark"]:
+					assert_has(all, m, "%s: teller uniform %s" % [id, m])
+			elif pool == OF_OFFICERS:
+				assert_has(all, "char_suit_grey", "%s: the officers' grey worsted" % id)
+				assert_has(all, "char_bank_red", "%s: the bank lanyard" % id)
+		for i: int in range(pool.size()):
+			for j: int in range(i + 1, pool.size()):
+				assert_ne(sigs.get(String(pool[i]), ""), sigs.get(String(pool[j]), ""),
+						"%s and %s: not twins" % [pool[i], pool[j]])
 
 
 ## Players must find Kessler in a crowd: in both looks the tallest NPC and the only one wearing the

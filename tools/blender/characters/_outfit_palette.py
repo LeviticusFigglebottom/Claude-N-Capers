@@ -193,6 +193,12 @@ OUTFIT: dict[str, tuple[str, float, float, str]] = {
     "char_glove_work": ("#7D776A", 0.80, 0.0, "cloth"),  # D-115 dockside: grey work gloves
     "char_satin_sapphire": ("#2D3F70", 0.38, 0.0, "cloth"),  # GN-D1 gallery: patron_e's sapphire satin dress
     "char_satin_amethyst": ("#4E3164", 0.38, 0.0, "cloth"),  # GN-D1 gallery: patron_g's amethyst satin dress
+    # OF-D1 Ostrander Federal bank civilians (char_p5_bank.py)
+    "char_skirt_navy": ("#2E3446", 0.80, 0.0, "cloth"),  # OF-D1: customer_c's navy pencil skirt
+    "char_knit_mustard": ("#9C7A34", 0.95, 0.0, "cloth"),  # OF-D1: customer_c's mustard cardigan
+    "char_coat_heather": ("#6B5E66", 0.92, 0.0, "cloth"),  # OF-D1: the retiree's heather wool coat
+    "char_coat_stone": ("#A49C88", 0.88, 0.0, "cloth"),  # OF-D1: the office man's stone trench coat
+    "char_canvas_tan": ("#8A7352", 0.86, 0.0, "cloth"),  # OF-D1: the tradesperson's canvas chore jacket
     # D-115 hand props (char_hand_props.py)
     "char_prop_paper": ("#DCDAD2", 0.85, 0.0, "plastic"),  # cigarette paper, book pages, cash strap, bottle label
     "char_prop_filter": ("#C08A52", 0.80, 0.0, "plastic"),  # cigarette cork filter
