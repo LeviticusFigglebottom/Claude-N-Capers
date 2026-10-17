@@ -1,0 +1,21 @@
+asset: char_armored_car_marshal
+script: tools/blender/characters/char_p5_convoy.py
+params: {"age": 0.66, "beard_shadow": 0.8, "build": 0.7, "gender": 0.0, "hair": "short", "hair_color": "grey", "height": 1.81, "look": "marshal", "skin": 3}
+seed: 2617693601  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category characters --asset char_armored_car_marshal
+edit policy: generated file, never edit by hand; change the script and rebuild
+attach_Back: bone chest, local [0.0000, 0.0917, 0.1307] (model [0.0000, 1.3219, 0.1495], Godot axes, rest pose)
+attach_Head: bone head, local [0.0000, 0.0824, -0.0902] (model [0.0000, 1.6941, -0.0780], Godot axes, rest pose)
+attach_Hip: bone hips, local [0.2350, 0.0647, 0.0412] (model [0.2350, 1.0336, 0.0444], Godot axes, rest pose)
+body_faces_culled: 4114
+body_params: {"age": 0.66, "beard_shadow": 0.8, "build": 0.7, "gender": 0.0, "hair": "short", "hair_color": "grey", "hair_peak": 0.0, "height": 1.81, "lip": "auto", "skin": 3}
+bones: 52
+faces_hidden_by_vest: 1341
+hip_note: Hip seat = the radio on the duty belt (right hip); the pager rides there
+look: Vaultline route marshal: the crew uniform (sand shirt, brown trousers, crew cap, duty belt, speaker-mic) with an amber hi-vis vest instead of the ballistic vest, the amber patch on its chest and VAULTLINE in brown across its back
+meshes: Body,Gear,Hair,Headwear,Outfit
+shape_keys: none (baked at body_params; do not set blend_shapes/*)
+tri_budget: 35000
+tris: 31806
+tris_by_mesh: {"Body": 10516, "Gear": 2036, "Hair": 1728, "Headwear": 832, "Outfit": 16694}

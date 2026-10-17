@@ -24,6 +24,12 @@
 ## X-5: a CALM IDLE civilian with an authored activity (KNOWN_ACTIVITIES: teller, desk_work, phone...) standing
 ##   within MARK_HOLD_M of its spawn mark holds it (NpcMotor.hold_check): no separation drift, no push out of the
 ##   counter / bench / chair the mark sits against.
+## OF-A4 (D-136 §3b.4) CivilianRoute: a civilian bound to a route (its SpawnPoint patrol_graph is the route, a spawn tag
+##   in the route's bind_tags, or CivilianRoute.bind) walks its stops in order instead of wandering at random: Mode
+##   WANDER on the way (normal navmesh paths, any floor), Mode IDLE dwelling at a stop (pause_range s, stream
+##   &"civilian_routes", pause_anim hint, held on the stop like an X-5 mark). An unreachable stop or a walk that stalls
+##   twice is skipped (logged once). Panic, intimidation, LOUD, death and leave_map preempt it through the usual modes
+##   and close its away window; it only carries on if the civilian is ever CALM IDLE again (no calm-down exists today).
 ## A3-04 (L2.10): a tied civilian can be traded for a crew member in custody (CustodySystem ->
 ## release_as_hostage, then the node is freed).
 class_name CivilianBrain
@@ -37,11 +43,14 @@ const WANDER_ACTIVITIES: Array[StringName] = [&"", &"idle", &"browse", &"phone",
 ## D-103 (characters.md v1.9) adds inspect (curator_inspect at a hung work), text (walks texting: walk_text);
 ## D-111 the bar / club / bank loops: bartender, bartender_pour, bouncer, dance (dance_a/b/c), teller.
 ## D-115 cast roster activities: look (investigate_look), desk (desk_work), curator_inspect, walk_text, smoke.
+## OF-A6 (OF-D1 clips): counter (counter_customer at a teller window), check_desk (check_desk_write); queue plays
+## queue_idle* (AnimDriver). RT-A1 (Rolling Thunder diner): sit_eat (a booth seat), cook (cook_stove).
 const KNOWN_ACTIVITIES: Array[StringName] = [&"browse", &"phone", &"desk_work", &"queue", &"sit", &"mug", &"mop",
 	&"phone_seated", &"inspect", &"text", &"bartender", &"bartender_pour", &"bouncer", &"dance", &"teller",
-	&"look", &"desk", &"curator_inspect", &"walk_text", &"smoke"]
+	&"look", &"desk", &"curator_inspect", &"walk_text", &"smoke", &"counter", &"check_desk",
+	&"sit_eat", &"cook"]
 ## Seated activities: a panicked civilian still in its seat cowers there (cower_seated) instead of running.
-const SEATED_ACTIVITIES: Array[StringName] = [&"sit", &"phone_seated"]
+const SEATED_ACTIVITIES: Array[StringName] = [&"sit", &"phone_seated", &"sit_eat"]
 ## Within this of its seat (m) a seated civilian counts as still seated.
 const SEAT_M: float = 0.4
 ## Within this of its claimed cower point (m) a cowering civilian plays cower_stand, back to the wall.
@@ -100,6 +109,17 @@ var _returning: bool = false
 ## PO6-06: the spawn seat check ran (_stand_if_unseated).
 var _seat_checked: bool = false
 var _cower_point: PatrolPoint = null
+## OF-A4: the CivilianRoute followed (null = random wander), the current stop index / walk direction, the dwell left
+## at the stop, walking toward it, the open away window, the stops already logged as skipped, the ONCE route done.
+var _route: CivilianRoute = null
+var _route_index: int = 0
+var _route_dir: int = 1
+var _route_dwell: float = 0.0
+var _route_walking: bool = false
+var _route_checked: bool = false
+var _route_window: StringName = &""
+var _route_logged: Dictionary = {}
+var _route_done: bool = false
 
 
 func _ready() -> void:
@@ -177,6 +197,7 @@ func on_shouted(crew: Node) -> bool:
 
 func _intimidate(slot: int) -> void:
 	var tw: StealthTweak = Tweak.stealth()
+	_route_interrupt()
 	call_progress = 0.0
 	call_target = {}
 	if _motor != null:
@@ -276,6 +297,7 @@ func _panic(threat: Vector3) -> void:
 	if mode != Mode.IDLE and mode != Mode.WANDER:
 		return
 	threat_position = threat
+	_route_interrupt()
 	_npc.set_alert_state(Enums.AlertState.PANICKED)
 	if not fled_reported:
 		fled_reported = true
@@ -371,7 +393,8 @@ func _tick_run(delta: float) -> void:
 			_motor.stop()
 			_motor.face_point(node.global_position)
 		mode = Mode.CALLING
-		anim_hint = &"call"
+		# OF-A6 (S3.1): pressing an alarm button is a hand on the button (interact_mid), a phone is a call.
+		anim_hint = &"press_alarm" if call_target.get("reason", &"") == CivilianTargets.REASON_BUTTON else &"call"
 		call_progress = 0.0
 
 
@@ -536,6 +559,10 @@ func on_mark() -> bool:
 	if _mark_pos == Vector3.INF:
 		_mark_pos = _npc.global_position
 		_mark_dir = -_npc.global_transform.basis.z
+	if _route != null:  # OF-A4: held on the route stop it dwells at
+		var stop: PatrolPoint = _route.stop_at(_route_index) if is_instance_valid(_route) else null
+		return mode == Mode.IDLE and not _route_walking and stop != null and _npc.alert_state == Enums.AlertState.CALM \
+			and _flat_dist(_npc.global_position, stop.global_position) <= MARK_HOLD_M
 	if mode != Mode.IDLE or _npc.alert_state != Enums.AlertState.CALM or not KNOWN_ACTIVITIES.has(_idle_activity):
 		return false
 	var d: float = _flat_dist(_npc.global_position, _mark_pos)
@@ -544,7 +571,7 @@ func on_mark() -> bool:
 
 ## X-5: the activity keeps this civilian on its spawn mark for good (not a wander activity): a teller, a clerk.
 func mark_bound() -> bool:
-	return KNOWN_ACTIVITIES.has(_idle_activity) and not WANDER_ACTIVITIES.has(_idle_activity)
+	return _route == null and KNOWN_ACTIVITIES.has(_idle_activity) and not WANDER_ACTIVITIES.has(_idle_activity)
 
 
 ## X-5 (StealthTweak.civilian_mark_*): a mark-bound CALM IDLE civilian pushed off its mark (a crew yield, a drift
@@ -703,13 +730,24 @@ func _physics_step(delta: float) -> void:
 		_stand_if_unseated()  # PO6-06: once, at the spawn transform (applied after _ready), when first idle
 	if _seat_pos == Vector3.INF and mode == Mode.IDLE and SEATED_ACTIVITIES.has(_idle_activity):
 		_seat_pos = _npc.global_position  # the spawn transform is applied after _ready
+	if not _route_checked and mode == Mode.IDLE:
+		_route_checked = true
+		var r: CivilianRoute = CivilianRoute.for_civilian(_runtime, _npc)  # OF-A4: bound at its spawn transform
+		if r != null:
+			set_route(r)
 	_update_body_block()
 	match mode:
 		Mode.IDLE:
-			_tick_mark(delta)
-			_tick_idle(delta)
+			if _route != null:
+				_tick_route(delta)
+			else:
+				_tick_mark(delta)
+				_tick_idle(delta)
 		Mode.WANDER:
-			_tick_wander(delta)
+			if _route != null and _route_walking:
+				_tick_route_walk(delta)
+			else:
+				_tick_wander(delta)
 		Mode.RUN_TO_CALL:
 			_tick_run(delta)
 		Mode.CALLING:
@@ -729,6 +767,9 @@ func _physics_step(delta: float) -> void:
 
 func _on_died(_info: Dictionary, _killer_net_id: int) -> void:
 	var was_hostage: bool = _npc.is_in_group(G.HOSTAGE)
+	_route_interrupt()
+	if _route != null and is_instance_valid(_route):
+		_route.register_civilian(_npc, false)
 	if _targets != null:
 		_targets.release_cower(_npc)
 	mode = Mode.DEAD
@@ -751,6 +792,181 @@ func _on_died(_info: Dictionary, _killer_net_id: int) -> void:
 			_targets.recount_hostages()
 
 
+# --- Civilian routes (OF-A4, D-136 §3b.4) ------------------------------------------------------
+
+## Server: follow `route` (only while CALM and idle / wandering); null unbinds (random wander again). True when set.
+func set_route(route: CivilianRoute) -> bool:
+	if not Net.is_authority() or _npc == null or not _npc.alive:
+		return false
+	if route != null and (not (mode == Mode.IDLE or mode == Mode.WANDER) or _npc.alert_state != Enums.AlertState.CALM):
+		return false
+	_route_checked = true
+	if route == _route:
+		return true
+	if _route != null and is_instance_valid(_route):
+		_route.register_civilian(_npc, false)
+	_route = route
+	_route_window = &""
+	_route_logged.clear()
+	_route_done = false
+	_route_walking = false
+	call_target = {}
+	if mode == Mode.WANDER:
+		if _motor != null:
+			_motor.stop()
+		mode = Mode.IDLE
+		_set_idle_hint()
+	if route == null:
+		return true
+	if _motor != null:
+		_motor.mark_anchor = Vector3.INF
+	if route.stop_count() == 0:
+		Log.warn(&"ai", "%s: civilian route %s has no stops" % [_npc.name, route.id()])
+		_route = null
+		return false
+	route.register_civilian(_npc, true)
+	_route_dir = 1
+	_route_depart(clampi(route.start_index, 0, route.stop_count() - 1))
+	return true
+
+
+## The CivilianRoute this civilian follows (null = none).
+func current_route() -> CivilianRoute:
+	return _route if _route != null and is_instance_valid(_route) else null
+
+
+## The route stop it is walking to or dwelling at (-1 without a route).
+func route_stop_index() -> int:
+	return _route_index if current_route() != null else -1
+
+
+## Dwelling at a stop: count the dwell down (paused while the route is inactive), then set off for the next stop.
+func _tick_route(delta: float) -> void:
+	if not is_instance_valid(_route):
+		_route = null
+		return
+	if _route_done or not _route.active:
+		return
+	_route_dwell -= delta
+	if _route_dwell > 0.0:
+		return
+	_route_advance()
+
+
+func _route_advance() -> void:
+	var nx: Vector2i = _route.next_step(_route_index, _route_dir)
+	if nx.x < 0:
+		_route_done = true  # ONCE: stays at the last stop
+		return
+	_route_dir = nx.y
+	_route_depart(nx.x)
+
+
+## Walk to stop `index`; a stop the navmesh cannot reach is skipped for the next (§3b.4 fallback, logged once). With
+## no reachable stop at all it stays idle and tries again after a wander interval.
+func _route_depart(index: int) -> void:
+	var n: int = _route.stop_count()
+	for _i: int in range(n):
+		var stop: PatrolPoint = _route.stop_at(index)
+		if stop != null and _route_reachable(stop.global_position):
+			_route_index = index
+			var w: StringName = _route.window_of(index)
+			if w != &"" and w != _route_window:
+				_route_set_window(w)  # leaving for an away stop opens its window
+			mode = Mode.WANDER
+			anim_hint = &"mug_walk" if _idle_activity == &"mug" \
+				else (&"walk_text" if _idle_activity == &"text" or _idle_activity == &"walk_text" else &"walk")
+			_route_walking = true
+			_reset_walk_stall()
+			if _motor != null:
+				_motor.go_to(stop.global_position, Tweak.stealth().civilian_walk_speed)
+			return
+		_route_skip(index)
+		var nx: Vector2i = _route.next_step(index, _route_dir)
+		if nx.x < 0:
+			break
+		index = nx.x
+		_route_dir = nx.y
+	_route_walking = false
+	mode = Mode.IDLE
+	_set_idle_hint()
+	_route_dwell = _roll_wander_delay()
+
+
+## Walking to the current stop: arrive (dwell, hint, window), or give a stalled / blocked walk up for the next stop.
+func _tick_route_walk(delta: float) -> void:
+	if not is_instance_valid(_route):
+		_route = null
+		mode = Mode.IDLE
+		return
+	var stop: PatrolPoint = _route.stop_at(_route_index)
+	if stop == null or _motor == null:
+		_route_give_up()
+		return
+	if not _motor.arrived:
+		if _tick_walk_stall(delta, Tweak.stealth().civilian_walk_speed):
+			_route_give_up()
+		return
+	var p: Vector3 = stop.global_position
+	if _flat_distance(p) > Tweak.stealth().civilian_route_reach_m or absf(p.y - _npc.global_position.y) > _motor.arrive_dy:
+		_route_give_up()  # stopped short: a locked door, an unreachable height
+		return
+	_route_walking = false
+	mode = Mode.IDLE
+	if stop.face_marker_forward:
+		_motor.face(-stop.global_transform.basis.z)
+	anim_hint = _seated_or_standing(stop.pause_anim) if stop.pause_anim != &"idle" \
+		else _seated_or_standing(_idle_activity if KNOWN_ACTIVITIES.has(_idle_activity) else &"idle")
+	var w: StringName = _route.window_of(_route_index)
+	if w != _route_window:
+		_route_set_window(w)  # back at a post: the window closes
+	_route_dwell = _route.roll_dwell(_route_index)
+	_route.stop_reached.emit(_npc, _route_index)
+
+
+func _route_give_up() -> void:
+	_route_skip(_route_index)
+	if _motor != null:
+		_motor.stop()
+	_route_walking = false
+	mode = Mode.IDLE
+	_set_idle_hint()
+	_route_advance()
+
+
+func _route_skip(index: int) -> void:
+	if not _route_logged.has(index):
+		_route_logged[index] = true
+		Log.warn(&"ai", "%s: civilian route %s stop %d unreachable, skipped (D-136 §3b.4)" % [_npc.name, _route.id(), index])
+	_route.stop_skipped.emit(_npc, index)
+
+
+## The navmesh path toward `pos` ends within civilian_route_reach_m of it (no navmesh: the same floor).
+func _route_reachable(pos: Vector3) -> bool:
+	var tw: StealthTweak = Tweak.stealth()
+	var from: Vector3 = _npc.global_position
+	if _flat_distance(pos) <= tw.civilian_route_reach_m and absf(pos.y - from.y) <= tw.civilian_wander_floor_dy_m:
+		return true
+	if _targets != null and _targets.has_navigation():
+		var path: PackedVector3Array = NavigationServer3D.map_get_path(_npc.get_world_3d().navigation_map, from, pos, true)
+		return not path.is_empty() and path[path.size() - 1].distance_to(pos) <= tw.civilian_route_reach_m
+	return absf(pos.y - from.y) <= tw.civilian_wander_floor_dy_m
+
+
+func _route_set_window(w: StringName) -> void:
+	_route_window = w
+	if _route != null and is_instance_valid(_route):
+		_route.set_away(_npc, w)
+
+
+## Preempted (panic, intimidation, death, leave_map): stop walking the route and close the away window.
+func _route_interrupt() -> void:
+	if _route == null:
+		return
+	_route_walking = false
+	_route_set_window(&"")
+
+
 # --- Leaving the map (D-103 §6 / QC-51) ---------------------------------------------------------
 
 ## Server (mission order, Gallery Night last call): a calm civilian walks to `exit_pos` and despawns there (no
@@ -761,6 +977,7 @@ func leave_map(exit_pos: Vector3) -> bool:
 		return false
 	if not (mode == Mode.IDLE or mode == Mode.WANDER) or _npc.alert_state != Enums.AlertState.CALM:
 		return false
+	_route_interrupt()
 	mode = Mode.LEAVE
 	anim_hint = &"walk"
 	_leave_target = exit_pos

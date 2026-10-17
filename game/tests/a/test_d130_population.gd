@@ -2,16 +2,13 @@
 ## (difficulty_add on guard AND civilian groups, every extra its own VariantSlot spawn). The runtime spawns every spawn
 ## point of an active slot, uncapped (director caps gate police / specials only). Ranges per seed from ENV C
 ## (env/c-worlds a5f115c1; c/test_d130_population pins the expected-value curve). Skipped until C's rows are on the map.
+## D-140 (PO-15, revised) re-pins guards to every pager carrier at load (role guard: posts, rovers, the roundsman and the
+## camera operator when staffed): GN (GUARDS lever) 4 on Routine, 7 on Cataclysm; ND and SL (PAGERS lever) 4 fixed.
 extends TestCase
 
 const SEEDS: Array[int] = [11, 21, 1792002290]
 ## heist -> {tag set, Routine [min, max], Cataclysm [min, max]} per counted kind.
-const ND_GUARD_TAGS: Array[StringName] = [&"guard_hall", &"guard_basement", &"guard_rover"]
 const ND_CIV_TAGS: Array[StringName] = [&"civ_manager", &"civ_cleaner"]
-const GN_GUARD_TAGS: Array[StringName] = [&"guard_hall", &"guard_rover_ground", &"guard_rover_upper",
-	&"guard_rover_basement", &"guard_mews"]
-const SL_GUARD_TAGS: Array[StringName] = [&"guard_reception", &"guard_rover_l41", &"guard_rover_l42", &"guard_stair",
-	&"guard_roof"]
 
 var _rt: HeistRuntime = null
 
@@ -27,21 +24,21 @@ func test_d130_night_deposit_population() -> void:
 	if not _has_rule(&"night_deposit", &"cleaner"):
 		skip("pending ENV C's D-130 ND rows (cleaner difficulty_add)")
 		return
-	await _check(&"night_deposit", ND_GUARD_TAGS, [2, 3], [4, 5], ND_CIV_TAGS, [0, 2], [1, 3])
+	await _check(&"night_deposit", [], [4, 4], [4, 4], ND_CIV_TAGS, [0, 2], [1, 3])
 
 
 func test_d130_gallery_night_population() -> void:
 	if not _has_rule(&"gallery_night", &"gala_extra"):
 		skip("pending ENV C's D-130 GN rows (gala_extra)")
 		return
-	await _check(&"gallery_night", GN_GUARD_TAGS, [1, 2], [5, 5], [], [8, 14], [12, 21])  # C 71d55467
+	await _check(&"gallery_night", [], [4, 4], [7, 7], [], [8, 14], [12, 21])  # C 71d55467; D-140
 
 
 func test_d130_shadow_ledger_population() -> void:
 	if not _has_rule(&"shadow_ledger", &"late_staff"):
 		skip("pending ENV C's D-130 SL rows (late_staff)")
 		return
-	await _check(&"shadow_ledger", SL_GUARD_TAGS, [2, 2], [5, 5], [], [1, 5], [2, 7])  # C b7cfb928
+	await _check(&"shadow_ledger", [], [4, 4], [4, 4], [], [1, 5], [2, 7])  # C b7cfb928; D-140
 
 
 func _check(heist: StringName, guard_tags: Array[StringName], g_r: Array, g_c: Array, civ_tags: Array[StringName],
@@ -56,7 +53,7 @@ func _check(heist: StringName, guard_tags: Array[StringName], g_r: Array, g_c: A
 			var cw: Array = c_r if diff == Enums.Difficulty.ROUTINE else c_c
 			var label: String = "%s seed %d %s" % [heist, sd, "Routine" if diff == Enums.Difficulty.ROUTINE else "Cataclysm"]
 			print("[d130] %s: %d guards, %d civilians" % [label, g, c])
-			assert_true(g >= int(gw[0]) and g <= int(gw[1]), "%s: %d guards in %s" % [label, g, gw])
+			assert_true(g >= int(gw[0]) and g <= int(gw[1]), "%s: %d guards in %s (D-140)" % [label, g, gw])
 			assert_true(c >= int(cw[0]) and c <= int(cw[1]), "%s: %d civilians in %s" % [label, c, cw])
 			_rt.teardown()
 			_rt = null

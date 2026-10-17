@@ -595,6 +595,8 @@ func slot_content(vs: VariantSlot, group: String, slot_id: String, row: Array) -
 		"security_room_staffed":
 			if slot_id == "sec_staffed":
 				vs.params = {"operator_spawn": "Spawns/CameraOperatorSeat", "station": "Gameplay/Devices/CameraStation"}
+			else:  # D-140: sec_empty = the console officer on his upper-floor rounds (gn_npc SLOT_NPCS)
+				return npc_slot(vs, group, slot_id, at, yaw)
 		"xl_crate":
 			if slot_id == "xl_loan":   # late_loan: the loan crate's 2 extra studies (B README extra_studies)
 				for i: int in range(2):

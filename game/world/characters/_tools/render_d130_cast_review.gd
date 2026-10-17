@@ -5,21 +5,40 @@
 ##     --rendering-driver opengl3 --path game --script res://world/characters/_tools/render_d130_cast_review.gd \
 ##     -- --pool=gn_guards
 ##
-## Pools: gn_guards, sl_guards, nd_guards, civilians, gn_waitstaff, gn_attendants, sl_late_staff.
-## Writes to res://assets/characters/_review/d130_cast/:
+## Pools: gn_guards, sl_guards, nd_guards, civilians, gn_waitstaff, gn_attendants, sl_late_staff; OF-D1 (Ostrander
+## Federal by day, written to _review/of_d1_cast/): of_tellers, of_officers, of_customers, of_skirts (the
+## skirt looks in walk / run / cower, front and side: <pool>_clips.png, no lineup), of_guards (Halden a-j +
+## npc_bank_guard + the bodyguard), of_vip; RT-D1 (written to _review/rt_d1_cast/): rt_vaultline (crew a-f, the route
+## marshal, and the patrol officer and Halden officer he must not read as).
+## Writes to res://assets/characters/_review/d130_cast/ (or the pool's OUT_DIRS / of_ directory):
 ##   <pool>_sheet.png           per character: full body front (idle), three-quarter back mid-walk, head close-up
 ##   <pool>_lineup_30m.png      all of them side by side seen from 30 m (natural LOD switching, telephoto framing)
 ##   <pool>_silhouette_30m.png  the same view with every surface flat black (the 30 m silhouette read)
+##   <pool>_pair.png            PAIRS pools only: the first character standing and seated (sit_chair, desk_work) on the
+##                              npc office chair at its Seat (0.12 m forward of the pivot), the second standing by
 extends SceneTree
 
 const Spec: GDScript = preload("res://world/characters/_tools/character_spec.gd")
 const CrowdLod: GDScript = preload("res://world/characters/_tools/crowd_lod.gd")
 const OUT_DIR: String = "res://assets/characters/_review/d130_cast/"
+const OF_OUT_DIR: String = "res://assets/characters/_review/of_d1_cast/"
+## of_skirts: clip -> sample time (s), a peak knee bend each (test_skirt_drape FRAMES)
+const CLIP_POSES: Array = [["walk", 0.38], ["run", 0.26], ["cower", 1.5]]
+const OUT_DIRS: Dictionary = {
+	"of_guards": "res://assets/characters/_review/of_d1_cast/",
+	"of_vip": "res://assets/characters/_review/of_d1_cast/",
+	"rt_vaultline": "res://assets/characters/_review/rt_d1_cast/",
+}
+## pool -> true: also render the seated/standing pair sheet (first id seated, second standing guard)
+const PAIRS: Dictionary = {"of_vip": true}
+const CHAIR: String = "res://world/props/office/prop_chair_office.tscn"
+const SEAT_FWD: float = 0.12
+const PAIR_TILE: Vector2i = Vector2i(420, 560)
 const POOLS: Dictionary = {
 	"gn_guards": [
 		"char_gallery_guard", "char_gallery_guard_b", "char_gallery_guard_c", "char_gallery_guard_d",
 		"char_gallery_guard_e", "char_gallery_guard_f", "char_gallery_guard_g", "char_gallery_guard_h",
-		"char_gallery_guard_i",
+		"char_gallery_guard_i", "char_gallery_guard_j", "char_gallery_guard_k", "char_gallery_guard_l",
 	],
 	"sl_guards": [
 		"char_npc_northgate_guard", "char_npc_northgate_guard_b", "char_npc_northgate_guard_c",
@@ -45,6 +64,37 @@ const POOLS: Dictionary = {
 		"char_npc_km_assistant", "char_npc_km_associate", "char_npc_helena_moor", "char_npc_kessler",
 		"char_npc_it_contractor",
 	],
+	# OF-D1: Ostrander Federal's day pools (3 tellers + 1 rotating, 1-3 officers, 4-8 hall + 2 plaza customers, x1.35)
+	"of_tellers": [
+		"char_npc_bank_teller", "char_npc_bank_teller_b", "char_npc_bank_teller_c", "char_npc_bank_teller_d",
+		"char_npc_bank_teller_e",
+	],
+	"of_officers": ["char_bank_officer", "char_bank_officer_b", "char_bank_officer_c", "char_bank_officer_d"],
+	"of_customers": [
+		"char_bank_customer", "char_bank_customer_b", "char_civilian_customer_a", "char_civilian_customer_b",
+		"char_bank_customer_c", "char_bank_customer_d", "char_bank_customer_e", "char_bank_customer_f",
+		"char_bank_customer_g", "char_bank_customer_h", "char_bank_customer_i", "char_bank_customer_j",
+	],
+	"of_skirts": ["char_npc_bank_teller", "char_npc_bank_teller_d", "char_bank_officer", "char_bank_customer_c"],
+	# OF-D1: the Ostrander Federal Halden day shift (no twins among a-j and the bare-headed npc_bank_guard), with the
+	# plainclothes bodyguard last (a distinct silhouette).
+	"of_guards": [
+		"char_security_officer", "char_security_officer_b", "char_security_officer_c", "char_security_officer_d",
+		"char_security_officer_e", "char_security_officer_f", "char_security_officer_g", "char_security_officer_h",
+		"char_security_officer_i", "char_security_officer_j", "char_npc_bank_guard", "char_security_bodyguard",
+	],
+	# OF-D1 vip_client: the VIP next to the bank customers, officers and manager he must not resemble, and his bodyguard.
+	"of_vip": [
+		"char_bank_vip_client", "char_security_bodyguard", "char_bank_customer", "char_bank_customer_b",
+		"char_civilian_customer_a", "char_civilian_customer_b", "char_bank_officer", "char_bank_officer_b",
+		"char_bank_manager",
+	],
+	# RT-D1: the Vaultline crew faces and the route marshal next to the police and Halden uniforms.
+	"rt_vaultline": [
+		"char_armored_car_crew", "char_armored_car_crew_b", "char_armored_car_crew_c", "char_armored_car_crew_d",
+		"char_armored_car_crew_e", "char_armored_car_crew_f", "char_armored_car_marshal", "char_patrol_officer",
+		"char_security_officer",
+	],
 }
 const COLS: int = 9
 const TILE: Vector2i = Vector2i(200, 340)
@@ -56,6 +106,7 @@ const LINEUP_DIST: float = 30.0
 const LINEUP_MIN_HALF_H: float = 1.25
 
 var _pool: String = "gn_guards"
+var _out: String = OUT_DIR
 var _chars: Array[String] = []
 var _vp: SubViewport
 var _cam: Camera3D
@@ -85,11 +136,61 @@ func _run() -> void:
 		else:
 			_errors += 1
 			push_error("render_d130_cast_review: no scene for %s" % id)
-	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(OUT_DIR))
+	_out = String(OUT_DIRS.get(_pool, OF_OUT_DIR if _pool.begins_with("of_") else OUT_DIR))
+	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(_out))
 	_stage()
-	await _sheet()
-	await _lineup()
+	if _pool == "of_skirts":
+		await _clips_sheet()
+	else:
+		await _sheet()
+		await _lineup()
+		if PAIRS.has(_pool) and _chars.size() >= 2:
+			await _pair()
 	quit(1 if _errors > 0 else 0)
+
+
+## The first character standing (front, three-quarter back) and seated on the npc office chair at its Seat (sit_chair
+## front three-quarter, side, back; desk_work side), the second standing guard beside him in every tile.
+func _pair() -> void:
+	var cols: int = 3
+	var sheet: Image = Image.create(PAIR_TILE.x * cols, PAIR_TILE.y * 2, false, Image.FORMAT_RGBA8)
+	sheet.fill(Color(0.2, 0.2, 0.2))
+	var who: Node3D = (load(Spec.scene_path(_chars[0])) as PackedScene).instantiate() as Node3D
+	var guard: Node3D = (load(Spec.scene_path(_chars[1])) as PackedScene).instantiate() as Node3D
+	CrowdLod.force_level(who, false)
+	CrowdLod.force_level(guard, false)
+	_vp.add_child(who)
+	_vp.add_child(guard)
+	guard.position = Vector3(0.85, 0.0, 0.35)   # at the client's right shoulder (+X), a step behind
+	var p_who: AnimationPlayer = who.get_node("AnimationPlayer") as AnimationPlayer
+	var p_guard: AnimationPlayer = guard.get_node("AnimationPlayer") as AnimationPlayer
+	_pose(p_guard, "humanoid/idle", 0.0, _chars[1])
+	_label.visible = false
+	_vp.size = PAIR_TILE
+	var c: Vector3 = Vector3(0.4, 0.85, 0.1)
+	# standing
+	_pose(p_who, "humanoid/idle", 0.0, _chars[0])
+	var shots: Array[Image] = []
+	shots.append(await _grab(_view(c + Vector3(0.6, 0.35, -3.6), c)))
+	shots.append(await _grab(_view(c + Vector3(2.6, 0.5, 2.6), c)))
+	# seated on the chair (Seat 0.12 m forward of the pivot: the chair sits SEAT_FWD behind the rig)
+	var chair: Node3D = (load(CHAIR) as PackedScene).instantiate() as Node3D
+	_vp.add_child(chair)
+	chair.position = Vector3(0.0, 0.0, SEAT_FWD)
+	_pose(p_who, "humanoid/sit_chair", 1.0, _chars[0])
+	shots.append(await _grab(_view(c + Vector3(-1.4, 0.3, -3.0), c + Vector3(-0.2, -0.2, 0.0))))
+	shots.append(await _grab(_view(Vector3(-2.6, 0.75, 0.05), Vector3(0.0, 0.65, 0.05))))
+	shots.append(await _grab(_view(Vector3(-1.2, 1.2, 2.4), Vector3(0.0, 0.6, 0.0))))
+	_pose(p_who, "humanoid/desk_work", 9.5, _chars[0])
+	shots.append(await _grab(_view(Vector3(-2.6, 0.75, 0.05), Vector3(0.0, 0.65, 0.05))))
+	for i: int in range(shots.size()):
+		sheet.blit_rect(shots[i], Rect2i(Vector2i.ZERO, PAIR_TILE),
+				Vector2i(PAIR_TILE.x * (i % cols), PAIR_TILE.y * (i / cols)))
+	chair.queue_free()
+	who.queue_free()
+	guard.queue_free()
+	await process_frame
+	_save(sheet, _pool + "_pair.png")
 
 
 func _sheet() -> void:
@@ -124,6 +225,34 @@ func _sheet() -> void:
 		body.queue_free()
 		await process_frame
 	_save(sheet, _pool + "_sheet.png")
+
+
+## One row per character: each CLIP_POSES clip at its knee-bend time, seen from the front and from the side.
+func _clips_sheet() -> void:
+	var cols: int = CLIP_POSES.size() * 2
+	var sheet: Image = Image.create(TILE.x * cols, TILE.y * _chars.size(), false, Image.FORMAT_RGBA8)
+	sheet.fill(Color(0.2, 0.2, 0.2))
+	_vp.size = TILE
+	_label.position = Vector3(0.0, 1.95, 0.0)  # in frame for the lower camera
+	_label.pixel_size = 0.0018
+	for c: int in range(_chars.size()):
+		var body: Node3D = (load(Spec.scene_path(_chars[c])) as PackedScene).instantiate() as Node3D
+		CrowdLod.force_level(body, false)
+		_vp.add_child(body)
+		var player: AnimationPlayer = body.get_node("AnimationPlayer") as AnimationPlayer
+		for i: int in range(CLIP_POSES.size()):
+			var clip: String = String(CLIP_POSES[i][0])
+			_pose(player, "humanoid/" + clip, float(CLIP_POSES[i][1]), _chars[c])
+			_label.text = "%s %s" % [_short(_chars[c]), clip]
+			_label.visible = true
+			var front: Image = await _grab(_view(Vector3(0.0, 0.9, -3.4), Vector3(0.0, 0.75, 0.0)))
+			sheet.blit_rect(front, Rect2i(Vector2i.ZERO, TILE), Vector2i(TILE.x * i * 2, TILE.y * c))
+			_label.visible = false
+			var side: Image = await _grab(_view(Vector3(3.4, 0.9, 0.0), Vector3(0.0, 0.75, 0.0)))
+			sheet.blit_rect(side, Rect2i(Vector2i.ZERO, TILE), Vector2i(TILE.x * (i * 2 + 1), TILE.y * c))
+		body.queue_free()
+		await process_frame
+	_save(sheet, _pool + "_clips.png")
 
 
 ## Everyone in a row (front towards -Z, the camera) seen from LINEUP_DIST metres: the meshes keep their visibility
@@ -166,12 +295,12 @@ func _short(id: String) -> String:
 
 
 func _save(img: Image, file: String) -> void:
-	var err: Error = img.save_png(OUT_DIR + file)
+	var err: Error = img.save_png(_out + file)
 	if err != OK:
 		_errors += 1
 		push_error("render_d130_cast_review: could not save %s (%s)" % [file, error_string(err)])
 	else:
-		print("render_d130_cast_review: wrote %s%s" % [OUT_DIR, file])
+		print("render_d130_cast_review: wrote %s%s" % [_out, file])
 
 
 func _pose(player: AnimationPlayer, clip: String, t: float, who: String) -> void:

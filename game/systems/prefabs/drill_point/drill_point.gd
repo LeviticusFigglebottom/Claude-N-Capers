@@ -7,8 +7,16 @@
 ## up to effective_duration() x InteractionTweak.hand_saw_drill_point_mult, then opens `target`.
 ## The drill art is a separate device visual with a `Bit` node (visual_slots.md); the placeholder
 ## only marks the spot. -Z points into the lock.
+## QC-60 (OF thermal drill): with `requires_loot` set, the device must first be delivered here as `requires_count`
+## tool bags (e.g. loot.thermal_drill_part, HEAVY, is_tool), like burn_point's thermite: each "place" interaction
+## with a carried bag (or one lying within InteractionTweak.drill_bag_radius_m) consumes it and counts it in
+## `delivered` (replicated); the one that completes the count also places and starts the device. Without a bag the
+## prompt shows BLOCK_ITEM (burn_point's hint). `delivered_changed(delivered, requires_count)` (local, server).
 class_name DrillPoint
 extends GameplayPrefab
+
+## QC-60: a required tool bag was delivered (server; `delivered` of `required`).
+signal delivered_changed(delivered: int, required: int)
 
 enum Device { DRILL, THERMAL, SAW }
 
@@ -30,6 +38,10 @@ const PLACEHOLDER: PackedScene = preload("res://systems/prefabs/drill_point/dril
 ## PO-12: the device shown at this spot while it runs (needs a `Bit` node, spun while RUNNING). null = the
 ## catalog device per kind (DEFAULT_DEVICE / DEFAULT_THERMAL / DEFAULT_SAW under G.PROPS_DIR; thermal falls back to the drill).
 @export var device_scene: PackedScene
+## QC-60: tool loot the device is delivered as (&"" = none: the crew's own drill). Consumed at this spot.
+@export var requires_loot: StringName = &""
+## QC-60: how many `requires_loot` bags must be delivered before the device runs.
+@export var requires_count: int = 1
 @export_group("Interaction")
 ## -1 = InteractionTweak.drill_place_s.
 @export var interaction_time_s: float = -1.0
@@ -42,6 +54,8 @@ const PLACEHOLDER: PackedScene = preload("res://systems/prefabs/drill_point/dril
 var runner: DeviceRunner = null
 ## QC-37: handheld saw progress (0..1, replicated).
 var saw_progress: float = 0.0
+## QC-60: `requires_loot` bags delivered so far (replicated).
+var delivered: int = 0
 
 ## PO-12: the placed device visual (null while idle / done), its spinning `Bit` and the jam indicator.
 var device_node: Node3D = null
@@ -133,8 +147,28 @@ func _exit_tree() -> void:
 		runner.shutdown()
 
 
+## QC-60: true while `requires_loot` bags are still owed (the next place interaction needs one).
+func needs_delivery() -> bool:
+	return requires_loot != &"" and delivered < requires_count
+
+
+## QC-60: the `requires_loot` bag `crew` would deliver (carried, else a loose one within drill_bag_radius_m), or null.
+func part_for(crew: Node) -> LootBag:
+	return LootManager.tool_bag_for(crew, requires_loot, global_position, Tweak.interaction().drill_bag_radius_m)
+
+
+## Server (QC-60): count one delivered part without a bag (mission fallback / tests). Places nothing.
+func add_delivered(n: int = 1) -> void:
+	if not Net.is_authority() or n <= 0:
+		return
+	delivered = mini(delivered + n, maxi(requires_count, 0))
+	delivered_changed.emit(delivered, requires_count)
+
+
 ## P PO-pass #2: never the reasonless "Can't do that right now" (ui.blocked.state) while the device runs / is done.
-func _availability(_crew: Node) -> StringName:
+func _availability(crew: Node) -> StringName:
+	if runner != null and runner.state == DeviceRunner.State.IDLE and needs_delivery() and part_for(crew) == null:
+		return InteractableComponent.BLOCK_ITEM
 	if runner == null or runner.state == DeviceRunner.State.IDLE or runner.state == DeviceRunner.State.JAMMED:
 		return InteractableComponent.BLOCK_NONE
 	return BLOCK_RUNNING if runner.state == DeviceRunner.State.RUNNING else BLOCK_DONE
@@ -146,6 +180,14 @@ func _on_completed(crew: Node) -> void:
 	var slot: int = int(crew.get(&"slot")) if crew != null else -1
 	match runner.state:
 		DeviceRunner.State.IDLE:
+			if needs_delivery():
+				var bag: LootBag = part_for(crew)
+				if bag == null:
+					return
+				LootManager.consume_bag(bag)
+				add_delivered(1)
+				if needs_delivery():
+					return
 			runner.place(slot, effective_duration())
 		DeviceRunner.State.JAMMED:
 			runner.fix(slot)
@@ -236,15 +278,7 @@ static func set_device_fx(device: Node, on: bool) -> void:
 
 
 func _device_scene() -> PackedScene:
-	if device_scene != null:
-		return device_scene
-	var own: String = DEFAULT_SAW if device == Device.SAW else (DEFAULT_THERMAL if device == Device.THERMAL else "")
-	if own != "" and ResourceLoader.exists(G.PROPS_DIR + own):
-		return load(G.PROPS_DIR + own) as PackedScene
-	if device == Device.SAW:
-		return null  # never a drill on a saw point
-	var path: String = G.PROPS_DIR + DEFAULT_DEVICE
-	return load(path) as PackedScene if ResourceLoader.exists(path) else null
+	return DeviceVisual.scene_for(device_kind(), device_scene)  # never a drill on a saw point
 
 
 ## A small emissive red mark above the device while jammed (procedural: no art asset).

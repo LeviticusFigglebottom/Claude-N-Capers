@@ -21,6 +21,36 @@
 			"test": false
 		},
 		{
+			"asset": "char_armored_car_crew_c",
+			"id": "armored_car_crew_c",
+			"scene": "res://world/characters/armored_car_crew_c/armored_car_crew_c.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_armored_car_crew_d",
+			"id": "armored_car_crew_d",
+			"scene": "res://world/characters/armored_car_crew_d/armored_car_crew_d.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_armored_car_crew_e",
+			"id": "armored_car_crew_e",
+			"scene": "res://world/characters/armored_car_crew_e/armored_car_crew_e.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_armored_car_crew_f",
+			"id": "armored_car_crew_f",
+			"scene": "res://world/characters/armored_car_crew_f/armored_car_crew_f.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_armored_car_marshal",
+			"id": "armored_car_marshal",
+			"scene": "res://world/characters/armored_car_marshal/armored_car_marshal.tscn",
+			"test": false
+		},
+		{
 			"asset": "char_bank_customer",
 			"id": "bank_customer",
 			"scene": "res://world/characters/bank_customer/bank_customer.tscn",
@@ -30,6 +60,54 @@
 			"asset": "char_bank_customer_b",
 			"id": "bank_customer_b",
 			"scene": "res://world/characters/bank_customer_b/bank_customer_b.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_bank_customer_c",
+			"id": "bank_customer_c",
+			"scene": "res://world/characters/bank_customer_c/bank_customer_c.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_bank_customer_d",
+			"id": "bank_customer_d",
+			"scene": "res://world/characters/bank_customer_d/bank_customer_d.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_bank_customer_e",
+			"id": "bank_customer_e",
+			"scene": "res://world/characters/bank_customer_e/bank_customer_e.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_bank_customer_f",
+			"id": "bank_customer_f",
+			"scene": "res://world/characters/bank_customer_f/bank_customer_f.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_bank_customer_g",
+			"id": "bank_customer_g",
+			"scene": "res://world/characters/bank_customer_g/bank_customer_g.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_bank_customer_h",
+			"id": "bank_customer_h",
+			"scene": "res://world/characters/bank_customer_h/bank_customer_h.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_bank_customer_i",
+			"id": "bank_customer_i",
+			"scene": "res://world/characters/bank_customer_i/bank_customer_i.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_bank_customer_j",
+			"id": "bank_customer_j",
+			"scene": "res://world/characters/bank_customer_j/bank_customer_j.tscn",
 			"test": false
 		},
 		{
@@ -48,6 +126,24 @@
 			"asset": "char_bank_officer_b",
 			"id": "bank_officer_b",
 			"scene": "res://world/characters/bank_officer_b/bank_officer_b.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_bank_officer_c",
+			"id": "bank_officer_c",
+			"scene": "res://world/characters/bank_officer_c/bank_officer_c.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_bank_officer_d",
+			"id": "bank_officer_d",
+			"scene": "res://world/characters/bank_officer_d/bank_officer_d.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_bank_vip_client",
+			"id": "bank_vip_client",
+			"scene": "res://world/characters/bank_vip_client/bank_vip_client.tscn",
 			"test": false
 		},
 		{
@@ -497,6 +593,24 @@
 			"test": false
 		},
 		{
+			"asset": "char_gallery_guard_j",
+			"id": "gallery_guard_j",
+			"scene": "res://world/characters/gallery_guard_j/gallery_guard_j.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_gallery_guard_k",
+			"id": "gallery_guard_k",
+			"scene": "res://world/characters/gallery_guard_k/gallery_guard_k.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_gallery_guard_l",
+			"id": "gallery_guard_l",
+			"scene": "res://world/characters/gallery_guard_l/gallery_guard_l.tscn",
+			"test": false
+		},
+		{
 			"asset": "char_gallery_patron",
 			"id": "gallery_patron",
 			"scene": "res://world/characters/gallery_patron/gallery_patron.tscn",
@@ -632,6 +746,24 @@
 			"asset": "char_npc_bank_teller_b",
 			"id": "npc_bank_teller_b",
 			"scene": "res://world/characters/npc_bank_teller_b/npc_bank_teller_b.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_npc_bank_teller_c",
+			"id": "npc_bank_teller_c",
+			"scene": "res://world/characters/npc_bank_teller_c/npc_bank_teller_c.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_npc_bank_teller_d",
+			"id": "npc_bank_teller_d",
+			"scene": "res://world/characters/npc_bank_teller_d/npc_bank_teller_d.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_npc_bank_teller_e",
+			"id": "npc_bank_teller_e",
+			"scene": "res://world/characters/npc_bank_teller_e/npc_bank_teller_e.tscn",
 			"test": false
 		},
 		{
@@ -827,6 +959,12 @@
 			"variant_of": "phantom"
 		},
 		{
+			"asset": "char_security_bodyguard",
+			"id": "security_bodyguard",
+			"scene": "res://world/characters/security_bodyguard/security_bodyguard.tscn",
+			"test": false
+		},
+		{
 			"asset": "char_security_officer",
 			"id": "security_officer",
 			"scene": "res://world/characters/security_officer/security_officer.tscn",
@@ -860,6 +998,30 @@
 			"asset": "char_security_officer_f",
 			"id": "security_officer_f",
 			"scene": "res://world/characters/security_officer_f/security_officer_f.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_security_officer_g",
+			"id": "security_officer_g",
+			"scene": "res://world/characters/security_officer_g/security_officer_g.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_security_officer_h",
+			"id": "security_officer_h",
+			"scene": "res://world/characters/security_officer_h/security_officer_h.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_security_officer_i",
+			"id": "security_officer_i",
+			"scene": "res://world/characters/security_officer_i/security_officer_i.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_security_officer_j",
+			"id": "security_officer_j",
+			"scene": "res://world/characters/security_officer_j/security_officer_j.tscn",
 			"test": false
 		},
 		{

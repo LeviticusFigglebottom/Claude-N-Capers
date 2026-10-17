@@ -1,4 +1,4 @@
-# Contract: data schemas (v1.3)
+# Contract: data schemas (v1.4)
 
 Schemas are in `game/contracts/data/*.gd` (lead). Data instances are `.tres` files owned by the env
 listed. All data ids follow `groups.md`. The code headers are authoritative for field lists.
@@ -77,3 +77,23 @@ sight-mod deltas; make_delta() needs no change (defaults contribute nothing).
 **v1.3 precedence (LEAD, round 231):** the run's pager cap is (1) a rolled `pager_max_answers` variant scalar, else (2)
 `HeistDef.pager_max_by_difficulty[difficulty]`, else (3) `StealthTweak.pager_max_answers` (A's `PagerSystem.cap_for`).
 Every reader (B's BriefingIntel, the HUD) uses the same order.
+
+## v1.4 (D-139 heist freshness, B 1622ac1f)
+- **PlayerProfile v9:** new field `freshness`:
+  `{"recent": [heist_id String, oldest first, ≤ PayoutTweak.freshness_memory], "runs": int ≥ 0, "last_run": {heist_id: int ≥ 0}, "completed": [heist_id]}`.
+  ProfileSchema kind FRESHNESS: a bad list is emptied, a bad counter dropped (each with a warning).
+  Migration 8 → 9: empty memory; every `career.heists` id with `won > 0` enters `completed` with `last_run = 0` (the rotation
+  bonus ramps from the migration, it does not grant +10 % at once); an existing `freshness` key is kept.
+  `SaveService.CURRENT_VERSION = 9`; golden fixture v8 added.
+- **PayoutTweak:** `freshness_memory: int = 10`, `repeat_step = 0.10`, `repeat_floor = 0.10`, `rotation_step = 0.01`,
+  `rotation_cap = 0.10`.
+- **PayoutCalculator.compute():** 9th arg `freshness: float = 1.0`. Output adds `freshness` (the mult) and
+  `freshness_money` (signed int). `gross = round(subtotal × crew_alive_mult) + freshness_money`; the civilian penalty comes
+  after, unscaled; stash/spending from that gross. `xp_lines` has **8** entries; the 8th, `ui.results.xp.freshness`, is
+  `round(running × (mult − 1))`, the last multiplicative step, applied on failure too (`XP_FRESHNESS`).
+- **HeistFreshness** (`content/progression/heist_freshness.gd`): evaluated per player from their own profile before
+  compute, recorded after the payday is applied.
+- **S11.1 (B b6d96a85):** payout `stealth_bonus_banked` is the heist's `HeistDef.stealth_bonus_mult` when > 1.0 (S 1.10,
+  M 1.15, L 1.25), else `PayoutTweak.stealth_xp_bonus_mult` (1.2; no def / loud-only).
+- **OF-A6 (A c017fd51):** `AssaultEventsTweak.heists.ostrander_federal` rows (turret van ×2, police heli ×2, breach ×4).
+  D-136.10: Ostrander `[secure]` counts `loot.cash_bricks`, `loot.gold`, `loot.bearer_bonds` only (6 bags, 4 on Routine).

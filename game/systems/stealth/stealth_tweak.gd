@@ -217,6 +217,10 @@ extends Resource
 ## another point later; call: the next-cheapest call point or guard, else flees).
 @export var civilian_walk_stall_s: float = 2.5
 @export var civilian_walk_stall_m: float = 0.3
+## OF-A4 ◇ (D-136 §3b.4) CivilianRoute: a stop counts as reachable when the navmesh path toward it ends within this
+## of it (no navmesh: same floor, civilian_wander_floor_dy_m), and a routed civilian that stops farther than this from
+## its stop (a locked door) gives it up; either way it goes on to the next stop (logged once).
+@export var civilian_route_reach_m: float = 1.0
 ## PO6-06 ◇ S7.5: a civilian whose idle activity is a seated loop (keys) sits only on a seat (the clips put the
 ## root under the seat centre, characters.md npc_seat): a seating prop's `Seat` marker within
 ## civilian_seat_radius_m (horizontal) of its root, on its floor (CivilianTargets.seat_near). With no seat it
@@ -224,7 +228,7 @@ extends Resource
 ## X-5: the seated aliases too (`desk` = the desk_work clip, D-115; desk_type / sit_chair / sit_chair_watch are seated
 ## rig clips, anim_humanoid.py). The standing desk clip is teller_count (`teller`), standing hands-on-counter.
 @export var civilian_unseated_activity: Dictionary = {&"desk_work": &"teller", &"phone_seated": &"phone", &"sit": &"queue",
-	&"desk": &"teller", &"desk_type": &"teller", &"sit_chair": &"queue", &"sit_chair_watch": &"idle"}
+	&"desk": &"teller", &"desk_type": &"teller", &"sit_chair": &"queue", &"sit_chair_watch": &"idle", &"sit_eat": &"idle"}
 @export var civilian_seat_radius_m: float = 0.45
 ## X-5 ◇ (PD2: staff hold their post): a CALM IDLE civilian whose activity keeps it on its spawn mark (not a wander
 ## activity: a teller, a desk clerk, a seated customer) that is off the mark (a crew yield, a drift while alerted)
