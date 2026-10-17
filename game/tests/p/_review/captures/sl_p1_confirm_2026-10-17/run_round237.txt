@@ -1,0 +1,73 @@
+[SLR 29.4s t=0.0] seed 13 variants camera=[&"cam_c"] security_room_staffed=[&"sec_empty"] server_room=[&"srv_locked"] keycard=[&"kc_cleaner", &"kc_it"] code_note=[&"code_security_log"] laptop=[&"lap_kessler"] guard_post=[&"rover_l42"] guard_extra=[] cleaners=[&"cleaners_2"] late_partner=[&"moor_gone"] escape=[&"esc_service"] laser_pattern=[&"lz_sweep"]
+[SLR 83.9s t=2.1] pilot: calibrated 0.001600 rad/px yaw, 0.001600 rad/px pitch (settings formula said (0.0016, 0.0016))
+[SLR 83.9s t=2.1] spawn (26.2, 0.0, 9.0) masked false
+[SLR 174.2s t=2.6] STEP _casing begin
+[SLR 174.6s t=3.5] goto casing_0 (25.0, 0.0, 8.5): reached (at (25.4, 0.0, 8.7))
+[SLR 177.1s t=6.1] goto casing_1 (29.0, 0.0, 8.5): reached (at (28.5, 0.0, 8.5))
+[SLR 179.4s t=8.3] goto casing_2 (29.0, 0.0, 11.6): reached (at (29.1, 0.0, 11.1))
+[SLR 182.4s t=11.3] goto casing_3 (25.0, 0.0, 11.6): reached (at (25.5, 0.0, 11.5))
+[SLR 243.6s t=13.1] goto casing_4 (24.8, 0.0, 13.5): reached (at (24.9, 0.0, 13.0))
+[SLR 245.0s t=14.4] pilot: use RefuseDoor (open_door) -> OK in 0.0 s
+[SLR 246.9s t=16.4] goto casing_5 (27.7, 0.0, 14.5): reached (at (27.2, 0.0, 14.5))
+[SLR 257.5s t=19.1] goto casing_6 (24.8, 0.0, 15.6): reached (at (24.7, 0.0, 15.2))
+[SLR 258.2s t=19.9] goto casing_7 (22.5, 0.0, 15.8): reached (at (22.9, 0.0, 15.7))
+[SLR 258.2s t=19.9] pilot: goto blocked by StairBGate (ui.blocked.casing); giving up this leg
+[SLR 258.2s t=19.9] goto casing_8 (22.5, 3.6, 15.8): NOT reached (at (22.9, 0.0, 15.7))
+[SLR 367.0s t=21.4] pilot: goto blocked by StairBGate (ui.blocked.casing); giving up this leg
+[SLR 367.1s t=21.4] goto casing_9 (22.5, 8.0, 15.8): NOT reached (at (22.9, 0.0, 15.7))
+[SLR 466.8s t=23.4] pilot: goto blocked by StairBGate (ui.blocked.casing); giving up this leg
+[SLR 466.8s t=23.4] goto casing_10 (22.5, 3.6, 15.8): NOT reached (at (22.9, 0.0, 15.7))
+[SLR 518.0s t=24.4] STEP _casing reached
+[SLR 518.0s t=24.4] STEP _mask begin
+[SLR 518.0s t=24.4] pilot: goto blocked by StairBGate (ui.blocked.casing); giving up this leg
+[SLR 518.1s t=24.4] goto mask spot (22.5, 3.6, 15.8): NOT reached (at (22.9, 0.0, 15.7))
+[SLR 518.6s t=25.4] objective casing -> 2
+[SLR 519.4s t=26.2] masked true
+[SLR 519.4s t=26.2] STEP _mask reached
+[SLR 519.4s t=26.2] STEP _enter_l41 begin
+[SLR 519.4s t=26.2] pilot: goto blocked by StairBGate (ui.blocked.state); giving up this leg
+[SLR 524.5s t=31.3] pilot: t=5 at (22.6, 1.8, 11.9) corner (23.0, 2.0, 12.1) yaw_err -0.04 fwd=true path=11 mouse_mode=2 state=0 look=(-20.83,0.00) pin_yaw=-20.8707868031779 bot=false
+[SLR 580.2s t=42.5] pilot: use StairBL41 (open_door) -> OK in 8.0 s
+[SLR 580.5s t=42.8] StairBL41 open true (lock 1)
+[SLR 620.0s t=43.3] STEP _enter_l41 reached
+[SLR 620.0s t=43.3] STEP _keycard begin
+[SLR 620.0s t=43.3] keycard: Slot_kc_it at (33.4, 4.3, 9.0)
+[SLR 623.0s t=46.8] pilot: use SecurityDoor (open_door) -> OK in 0.0 s
+[SLR 626.1s t=49.9] pilot: t=5 at (26.6, 3.6, 14.5) corner (26.1, 3.8, 14.5) yaw_err -2.35 fwd=false path=20 mouse_mode=2 state=0 look=(-27.47,0.00) pin_yaw=-27.6635384672481 bot=false
+[SLR 627.3s t=51.1] pilot: STUCK at (26.3, 3.6, 14.5) heading to (26.4, 3.6, 14.5); rays: vel=(1.5, 0.0, -0.1) floor=true state=0
+[SLR 666.7s t=51.7] pilot: detour right 0.7 m to (27.7, 3.8, 13.8) (attempt 1)
+[SLR 670.3s t=55.8] pilot: t=10 at (26.3, 3.6, 14.5) corner (26.4, 3.6, 14.5) yaw_err -2.95 fwd=false path=21 mouse_mode=2 state=0 look=(-55.17,0.00) pin_yaw=-55.3618714354088 bot=false
+[SLR 670.6s t=56.1] pilot: STUCK at (26.4, 3.6, 14.5) heading to (26.4, 3.6, 14.5); rays: vel=(3.0, 0.0, -0.0) floor=true state=0
+[SLR 712.9s t=56.6] pilot: detour left 0.7 m to (27.9, 3.8, 15.2) (attempt 2)
+[SLR 717.5s t=61.7] pilot: t=15 at (26.6, 3.6, 14.5) corner (26.1, 3.8, 14.5) yaw_err -1.01 fwd=false path=21 mouse_mode=2 state=0 look=(-91.65,0.00) pin_yaw=-91.8393898316863 bot=false
+[SLR 722.4s t=66.7] pilot: t=20 at (26.6, 3.6, 14.5) corner (26.1, 3.8, 14.5) yaw_err -2.58 fwd=false path=20 mouse_mode=2 state=0 look=(-127.81,0.00) pin_yaw=-128.002505572993 bot=false
+[SLR 727.5s t=71.7] pilot: t=25 at (26.3, 3.6, 14.5) corner (26.4, 3.6, 14.5) yaw_err -0.00 fwd=true path=20 mouse_mode=2 state=0 look=(-171.22,0.00) pin_yaw=-171.216804009877 bot=false
+[SLR 732.5s t=76.7] pilot: t=30 at (26.2, 3.6, 14.5) corner (26.4, 3.6, 14.5) yaw_err -1.22 fwd=false path=20 mouse_mode=2 state=0 look=(-213.98,0.00) pin_yaw=-214.16950470001 bot=false
+[SLR 737.5s t=81.7] pilot: t=35 at (26.2, 3.6, 14.5) corner (26.4, 3.6, 14.5) yaw_err -2.76 fwd=false path=21 mouse_mode=2 state=0 look=(-256.42,0.00) pin_yaw=-256.615812935241 bot=false
+[SLR 742.5s t=86.7] pilot: t=40 at (26.6, 3.6, 14.5) corner (26.1, 3.8, 14.5) yaw_err -0.07 fwd=true path=21 mouse_mode=2 state=0 look=(-299.95,0.00) pin_yaw=-300.01898501032 bot=false
+[SLR 747.1s t=91.3] subdue: shouting Npc_civilian (mode 1, 1.9 m, meter 0.00)
+[SLR 747.1s t=91.3] DETECT start: Npc_civilian (kind 1) at 1.9 m, pilot (26.2, 3.6, 14.5) crouched false
+[SLR 747.3s t=91.5] DETECT Npc_civilian meter 0.26 (0.2 s after first sight)
+[SLR 747.3s t=91.5] ALERT Npc_civilian 0 -> 5 (dist 1.8)
+[SLR 748.3s t=92.5] subdue: tying Npc_civilian ()
+[SLR 751.3s t=95.5] ALERT Npc_civilian 5 -> 6 (dist 0.3)
+[SLR 751.4s t=95.6] pilot: use Npc_civilian (cable_tie) -> OK in 2.0 s
+[SLR 751.4s t=95.6] subdue: Npc_civilian mode 7
+[SLR 798.3s t=96.5] pilot: t=45 at (25.2, 3.6, 14.7) corner (26.4, 3.6, 14.6) yaw_err -0.02 fwd=true path=17 mouse_mode=2 state=0 look=(-334.44,0.00) pin_yaw=-334.462214127096 bot=false
+[SLR 852.2s t=101.5] pilot: t=50 at (26.4, 3.6, 14.5) corner (26.4, 3.6, 14.5) yaw_err 0.00 fwd=true path=21 mouse_mode=2 state=0 look=(-369.14,0.00) pin_yaw=-369.137146142515 bot=false
+[SLR 852.8s t=102.2] pilot: STUCK at (26.5, 3.6, 14.5) heading to (24.9, 3.8, 14.5); rays: vel=(-1.0, 0.0, 0.1) floor=true state=0
+[SLR 917.2s t=102.7] pilot: detour right 1.2 m to (25.1, 3.8, 15.7) (attempt 3)
+[SLR 921.9s t=107.8] pilot: t=55 at (26.6, 3.6, 14.5) corner (26.1, 3.8, 14.5) yaw_err -1.42 fwd=false path=20 mouse_mode=2 state=0 look=(-386.57,0.00) pin_yaw=-386.765105577149 bot=false
+[SLR 926.9s t=112.8] pilot: t=60 at (26.5, 3.6, 14.5) corner (26.4, 3.6, 14.5) yaw_err -2.95 fwd=false path=20 mouse_mode=2 state=0 look=(-429.02,0.00) pin_yaw=-429.211384292015 bot=false
+[SLR 927.0s t=112.9] pilot: could not reach /root/PO5Driver/HeistRuntime/ShadowLedger/Variants/Group_keycard/Slot_kc_it/Keycard/Interactable (pickup_item)
+[SLR 927.0s t=112.9] pilot: pickup_item out of reach after the walk: not pressing
+[SLR 954.3s t=113.4] STEP _keycard NOT reached
+[SLR 954.3s t=113.4] FAIL _keycard (alarm )
+[SLR 995.2s t=114.4] SUMMARY steps: _casing=ok, _mask=ok, _enter_l41=ok, _keycard=FAIL
+[SLR 995.2s t=114.4] SUMMARY alarm:  at t=-1.0
+[SLR 995.2s t=114.4] SUMMARY detector Npc_civilian kind 1 first t=91.3 max 0.26
+[SLR 995.2s t=114.4] SUMMARY careful waits 1, STUCK rows 3
+[SLR 995.2s t=114.4] SUMMARY STUCK at (26.3, 3.6, 14.5) toward (26.4, 3.6, 14.5): ["vel=(1.5, 0.0, -0.1) floor=true state=0"]
+[SLR 995.2s t=114.4] SUMMARY STUCK at (26.4, 3.6, 14.5) toward (26.4, 3.6, 14.5): ["vel=(3.0, 0.0, -0.0) floor=true state=0"]
+[SLR 995.2s t=114.4] SUMMARY STUCK at (26.5, 3.6, 14.5) toward (24.9, 3.8, 14.5): ["vel=(-1.0, 0.0, 0.1) floor=true state=0"]
+[SLR] RESULT FAIL at _keycard
