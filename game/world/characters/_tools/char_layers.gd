@@ -153,8 +153,9 @@ static func surface_material(mi: MeshInstance3D, si: int) -> Material:
 
 
 ## The look materials of a character mesh node: the original (pre-merge) materials when the node was merged
-## (meta source_materials), else the materials of its surfaces. Tests read materials through this.
-static func look_materials(mi: MeshInstance3D) -> Array[Material]:
+## (meta source_materials), else the materials of its surfaces (`active`: as drawn, i.e. material_override first;
+## else the mesh's own surface materials). Tests read materials through this.
+static func look_materials(mi: MeshInstance3D, active: bool = true) -> Array[Material]:
 	var out: Array[Material] = []
 	if mi.has_meta(META_SOURCE):
 		for p: Variant in mi.get_meta(META_SOURCE):
@@ -163,7 +164,32 @@ static func look_materials(mi: MeshInstance3D) -> Array[Material]:
 	if mi.mesh == null:
 		return out
 	for si: int in range(mi.mesh.get_surface_count()):
-		out.append(surface_material(mi, si))
+		out.append(surface_material(mi, si) if active else mi.mesh.surface_get_material(si))
+	return out
+
+
+## Mesh-space vertices drawn with the material at `mat_path`: its own surfaces, plus on a merged node the vertices
+## of the layered surface whose UV2 layer is that material's (layers.json).
+static func material_vertices(mi: MeshInstance3D, mat_path: String) -> PackedVector3Array:
+	var out: PackedVector3Array = PackedVector3Array()
+	if mi.mesh == null:
+		return out
+	var entry: Dictionary = {}
+	if mi.has_meta(META_SOURCE):
+		entry = (read_index().get("materials", {}) as Dictionary).get(mat_path, {})
+	for si: int in range(mi.mesh.get_surface_count()):
+		var m: Material = surface_material(mi, si)
+		if m == null:
+			continue
+		var arr: Array = mi.mesh.surface_get_arrays(si)
+		var verts: PackedVector3Array = arr[Mesh.ARRAY_VERTEX]
+		if m.resource_path == mat_path:
+			out.append_array(verts)
+		elif not entry.is_empty() and m.resource_path == material_path(int(entry["tier"])):
+			var uv2: PackedVector2Array = arr[Mesh.ARRAY_TEX_UV2]
+			for k: int in range(verts.size()):
+				if roundi(uv2[k].x) == int(entry["layer"]):
+					out.append(verts[k])
 	return out
 
 
@@ -268,6 +294,9 @@ static func _add_merged(mi: MeshInstance3D, mesh: ArrayMesh, surfs: Array, sis: 
 		shapes.append([PackedVector3Array(), PackedVector3Array(), PackedFloat32Array()])
 	var offsets: PackedInt32Array = PackedInt32Array()
 	var flags: int = 0
+	for si_v: Variant in sis:
+		flags |= mesh.surface_get_format(int(si_v)) & Mesh.ARRAY_FLAG_USE_8_BONE_WEIGHTS
+	var per_vertex: int = 8 if flags != 0 else 4
 	var all_th: Array[float] = []
 	for si_v: Variant in sis:
 		var si: int = si_v
@@ -276,7 +305,6 @@ static func _add_merged(mi: MeshInstance3D, mesh: ArrayMesh, surfs: Array, sis: 
 		var arr: Array = mesh.surface_get_arrays(si)
 		var n: int = (arr[Mesh.ARRAY_VERTEX] as PackedVector3Array).size()
 		offsets.append(verts.size())
-		flags |= mesh.surface_get_format(si) & Mesh.ARRAY_FLAG_USE_8_BONE_WEIGHTS
 		verts.append_array(arr[Mesh.ARRAY_VERTEX])
 		normals.append_array(arr[Mesh.ARRAY_NORMAL])
 		tangents.append_array(arr[Mesh.ARRAY_TANGENT])
@@ -286,8 +314,7 @@ static func _add_merged(mi: MeshInstance3D, mesh: ArrayMesh, surfs: Array, sis: 
 		u2.fill(uv2)
 		uv2s.append_array(u2)
 		if arr[Mesh.ARRAY_BONES] != null:
-			bones.append_array(arr[Mesh.ARRAY_BONES])
-			weights.append_array(arr[Mesh.ARRAY_WEIGHTS])
+			_append_skin(bones, weights, arr[Mesh.ARRAY_BONES], arr[Mesh.ARRAY_WEIGHTS], n, per_vertex)
 		for k: int in lod_indices(surfs[si], -1):
 			indices.append(k + offsets[offsets.size() - 1])
 		var bs: Array = mesh.surface_get_blend_shape_arrays(si)
@@ -325,6 +352,21 @@ static func _add_merged(mi: MeshInstance3D, mesh: ArrayMesh, surfs: Array, sis: 
 	out.surface_set_name(s, "layers_%d" % tier)
 
 
+## Appends one surface's bone indices / weights at `per_vertex` influences (a 4-influence surface merged with an
+## 8-influence one is padded with zero weights).
+static func _append_skin(bones: PackedInt32Array, weights: PackedFloat32Array, src_bones: PackedInt32Array,
+		src_weights: PackedFloat32Array, n: int, per_vertex: int) -> void:
+	var have: int = src_bones.size() / maxi(n, 1)
+	if have == per_vertex:
+		bones.append_array(src_bones)
+		weights.append_array(src_weights)
+		return
+	for v: int in range(n):
+		for k: int in range(per_vertex):
+			bones.append(src_bones[v * have + k] if k < have else 0)
+			weights.append(src_weights[v * have + k] if k < have else 0.0)
+
+
 ## {threshold: indices}: at each kept threshold every source surface contributes the LOD it would show there.
 static func _merged_lods(surfs: Array, sis: Array, offsets: PackedInt32Array, all_th: Array[float]) -> Dictionary:
 	all_th.sort()
@@ -332,6 +374,11 @@ static func _merged_lods(surfs: Array, sis: Array, offsets: PackedInt32Array, al
 	for t: float in all_th:
 		if kept.is_empty() or t >= kept[kept.size() - 1] * LOD_STEP:
 			kept.append(t)
+	# the coarsest source threshold always stays, so every source still reaches its last LOD
+	if not all_th.is_empty() and kept[kept.size() - 1] < all_th[all_th.size() - 1]:
+		if kept.size() > 1 and all_th[all_th.size() - 1] < kept[kept.size() - 1] * LOD_STEP:
+			kept.remove_at(kept.size() - 1)
+		kept.append(all_th[all_th.size() - 1])
 	var lods: Dictionary = {}
 	for t: float in kept:
 		var idx: PackedInt32Array = PackedInt32Array()

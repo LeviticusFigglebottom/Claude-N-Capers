@@ -3,10 +3,10 @@
 [ext_resource type="AnimationLibrary" path="res://world/characters/anim_humanoid.res" id="1_anim"]
 [ext_resource type="PackedScene" path="res://assets/characters/char_bank_officer/char_bank_officer.glb" id="1_glb"]
 [ext_resource type="ArrayMesh" path="res://world/characters/bank_officer/bank_officer_lod.res" id="3_lod"]
+[ext_resource type="Script" path="res://world/characters/_tools/crowd_lod_proxy.gd" id="3_proxy"]
 [ext_resource type="ArrayMesh" path="res://world/characters/bank_officer/bank_officer_Body.res" id="4_Body"]
 [ext_resource type="ArrayMesh" path="res://world/characters/bank_officer/bank_officer_Gear.res" id="4_Gear"]
 [ext_resource type="ArrayMesh" path="res://world/characters/bank_officer/bank_officer_Outfit.res" id="4_Outfit"]
-[ext_resource type="Script" path="res://world/characters/_tools/crowd_lod_proxy.gd" id="6_lbbgv"]
 
 [sub_resource type="Skin" id="skin_lod"]
 resource_name = "Skin"
@@ -283,7 +283,7 @@ visibility_range_begin_margin = 1.0
 mesh = ExtResource("3_lod")
 skin = SubResource("skin_lod")
 skeleton = NodePath("..")
-script = ExtResource("6_lbbgv")
+script = ExtResource("3_proxy")
 
 [node name="Ragdoll" type="PhysicalBoneSimulator3D" parent="Skeleton3D" index="10" unique_id=651834049]
 active = false

@@ -2,8 +2,12 @@
 
 [ext_resource type="AnimationLibrary" path="res://world/characters/anim_humanoid.res" id="1_anim"]
 [ext_resource type="PackedScene" path="res://assets/characters/char_security_officer_f/char_security_officer_f.glb" id="1_glb"]
-[ext_resource type="Script" path="res://world/characters/_tools/crowd_lod_proxy.gd" id="3_78d65"]
 [ext_resource type="ArrayMesh" path="res://world/characters/security_officer_f/security_officer_f_lod.res" id="3_lod"]
+[ext_resource type="Script" path="res://world/characters/_tools/crowd_lod_proxy.gd" id="3_proxy"]
+[ext_resource type="ArrayMesh" path="res://world/characters/security_officer_f/security_officer_f_Body.res" id="4_Body"]
+[ext_resource type="ArrayMesh" path="res://world/characters/security_officer_f/security_officer_f_Gear.res" id="4_Gear"]
+[ext_resource type="ArrayMesh" path="res://world/characters/security_officer_f/security_officer_f_Headwear.res" id="4_Headwear"]
+[ext_resource type="ArrayMesh" path="res://world/characters/security_officer_f/security_officer_f_Outfit.res" id="4_Outfit"]
 
 [sub_resource type="Skin" id="skin_lod"]
 resource_name = "Skin"
@@ -215,10 +219,14 @@ height = 0.5023
 [node name="Body" parent="Skeleton3D" index="0" unique_id=684398508]
 visibility_range_end = 25.0
 visibility_range_end_margin = 1.0
+mesh = ExtResource("4_Body")
+metadata/source_materials = Array[String](["res://world/materials/char_skin_4_beard.tres", "res://world/materials/char_lip_mid.tres", "res://world/materials/char_eye.tres", "res://world/materials/char_eye_iris.tres", "res://world/materials/char_lash.tres", "res://world/materials/char_hair_dark.tres"])
 
 [node name="Gear" parent="Skeleton3D" index="1" unique_id=684567197]
 visibility_range_end = 25.0
 visibility_range_end_margin = 1.0
+mesh = ExtResource("4_Gear")
+metadata/source_materials = Array[String](["res://world/materials/brass.tres", "res://world/materials/char_button_pale.tres", "res://world/materials/char_leather_black.tres", "res://world/materials/char_led_red.tres", "res://world/materials/char_sec_burgundy.tres", "res://world/materials/char_sec_charcoal.tres", "res://world/materials/leather_dark.tres", "res://world/materials/polymer_black.tres", "res://world/materials/rubber_black.tres"])
 
 [node name="Hair" parent="Skeleton3D" index="2" unique_id=684599042]
 visibility_range_end = 25.0
@@ -227,10 +235,14 @@ visibility_range_end_margin = 1.0
 [node name="Headwear" parent="Skeleton3D" index="3" unique_id=35721759]
 visibility_range_end = 25.0
 visibility_range_end_margin = 1.0
+mesh = ExtResource("4_Headwear")
+metadata/source_materials = Array[String](["res://world/materials/brass.tres", "res://world/materials/char_hair_dark.tres", "res://world/materials/char_sec_burgundy.tres", "res://world/materials/char_sec_charcoal.tres", "res://world/materials/char_shirt_white.tres", "res://world/materials/char_visor_gloss.tres"])
 
 [node name="Outfit" parent="Skeleton3D" index="4" unique_id=649581785]
 visibility_range_end = 25.0
 visibility_range_end_margin = 1.0
+mesh = ExtResource("4_Outfit")
+metadata/source_materials = Array[String](["res://world/materials/brass.tres", "res://world/materials/char_cable_black.tres", "res://world/materials/char_leather_black.tres", "res://world/materials/char_sec_burgundy.tres", "res://world/materials/char_sec_charcoal.tres", "res://world/materials/char_sec_shirt.tres", "res://world/materials/char_sec_trousers.tres", "res://world/materials/char_shoe_black.tres", "res://world/materials/leather_dark.tres", "res://world/materials/rubber_black.tres"])
 
 [node name="Back" type="BoneAttachment3D" parent="Skeleton3D" index="5" unique_id=684383215]
 transform = Transform3D(1, -4.440892e-16, 2.9802308e-08, 1.1911401e-09, 0.99920094, -0.03996805, -2.977849e-08, 0.039968047, 0.999201, -7.922766e-16, 1.2696067, 0.015674157)
@@ -278,7 +290,7 @@ visibility_range_begin_margin = 1.0
 mesh = ExtResource("3_lod")
 skin = SubResource("skin_lod")
 skeleton = NodePath("..")
-script = ExtResource("3_78d65")
+script = ExtResource("3_proxy")
 
 [node name="Ragdoll" type="PhysicalBoneSimulator3D" parent="Skeleton3D" index="11" unique_id=890092323]
 active = false

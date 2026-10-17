@@ -3,9 +3,9 @@
 [ext_resource type="AnimationLibrary" path="res://world/characters/anim_humanoid.res" id="1_anim"]
 [ext_resource type="PackedScene" path="res://assets/characters/char_npc_cleaner_sl_c/char_npc_cleaner_sl_c.glb" id="1_glb"]
 [ext_resource type="ArrayMesh" path="res://world/characters/npc_cleaner_sl_c/npc_cleaner_sl_c_lod.res" id="3_lod"]
+[ext_resource type="Script" path="res://world/characters/_tools/crowd_lod_proxy.gd" id="3_proxy"]
 [ext_resource type="ArrayMesh" path="res://world/characters/npc_cleaner_sl_c/npc_cleaner_sl_c_Body.res" id="4_Body"]
 [ext_resource type="ArrayMesh" path="res://world/characters/npc_cleaner_sl_c/npc_cleaner_sl_c_Outfit.res" id="4_Outfit"]
-[ext_resource type="Script" path="res://world/characters/_tools/crowd_lod_proxy.gd" id="5_jt1mo"]
 
 [sub_resource type="Skin" id="skin_lod"]
 resource_name = "Skin"
@@ -284,7 +284,7 @@ visibility_range_begin_margin = 1.0
 mesh = ExtResource("3_lod")
 skin = SubResource("skin_lod")
 skeleton = NodePath("..")
-script = ExtResource("5_jt1mo")
+script = ExtResource("3_proxy")
 
 [node name="Ragdoll" type="PhysicalBoneSimulator3D" parent="Skeleton3D" index="11" unique_id=860678691]
 active = false
