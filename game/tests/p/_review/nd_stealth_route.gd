@@ -649,6 +649,15 @@ func _loot() -> bool:
 	return true
 
 
+## B5 -> XferDoor (3.5, -4, 6.0) -> B1, the direct way: the navmesh route went through LockerRoomDoor (12, -4, 6.0)
+## into B2 and the pilot pinned just inside it at (12.0, -4, 5.1) for 90 s (ND runs 2026-10-17 t=90 / t=234).
+func _to_b1() -> void:
+	if pilot.crew.global_position.x < 5.5 and pilot.crew.global_position.z < 6.0:
+		return  # already in B1
+	await pilot.goto(Vector3(4.2, GATE_AT.y, B5_MID_Z), 0.4, 60.0, false, false)
+	await pilot.goto(Vector3(3.5, GATE_AT.y, 5.2), 0.4, 20.0)
+
+
 func _gap_out() -> bool:
 	for wp: Vector3 in [Vector3(LASER_GAP_X, GATE_AT.y, 9.15), Vector3(LASER_GAP_X, GATE_AT.y, 7.9)]:
 		if not await pilot.goto(wp, 0.12, 60.0):
@@ -714,6 +723,8 @@ func _lift_to(lift: BagLift, to: int) -> bool:
 	# Walk to the panel's floor ourselves: Po5Pilot's _use_stand put B1's panel stand on G1 above it (the walk went up
 	# the stair through the ground floor into an alarm button, ND run 2026-10-17 t=224).
 	var stand: Vector3 = B1_HATCH_STAND if here == 1 else SALLY_IN
+	if here == 1:
+		await _to_b1()
 	await pilot.goto(stand, 0.3, 60.0)
 	if not await pilot.use(panel, 30.0, func() -> bool: return lift.is_moving(), false):
 		note("lift panel %d not used (at %s)" % [here, Po5Pilot._v(pilot.crew.global_position)])
@@ -744,6 +755,7 @@ func _vault_bag_into_lift(lift: BagLift, i: int) -> bool:
 		await pilot.goto(wp, 0.12, 20.0)
 	var before: int = lift.bags_in_car().size()
 	for attempt: int in 2:
+		await _to_b1()
 		if not await pilot.goto(B1_HATCH_STAND, 0.2, 60.0):
 			note("B1 hatch stand not reached (at %s)" % Po5Pilot._v(pilot.crew.global_position))
 			break
