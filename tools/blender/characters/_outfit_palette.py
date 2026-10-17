@@ -20,7 +20,7 @@ Shared-library ids (ENV C, ``game/world/materials/<id>.tres``) are used where on
 from __future__ import annotations
 
 #: kind -> (subsurface for skin, rim etc. used by make_materials.py)
-KINDS = ("skin", "eye", "hair", "cloth", "leather", "metal", "plastic", "gloss")
+KINDS = ("skin", "eye", "hair", "cloth", "leather", "metal", "plastic", "gloss", "stone", "bronze", "canvas", "rust")
 
 #: id -> (sRGB hex, roughness, metallic, kind). ``char_skin_*``, ``char_lip_<family>``, ``char_hair_*``, ``char_eye*`` are
 #: filled in from ``_body`` constants by ``all_char_materials()`` so they always match the body.
@@ -30,6 +30,12 @@ OUTFIT: dict[str, tuple[str, float, float, str]] = {
     "char_mask_lacquer_dark": ("#1F2026", 0.40, 0.0, "gloss"),
     "char_mask_inner": ("#2A2724", 0.85, 0.0, "cloth"),
     "char_mask_base": ("#B4B1AB", 0.45, 0.0, "plastic"),   # mask_base_* (mask shader overrides it)
+    # D-ACH achievement-reward mask materials (MaskMaterialDef grain, content/docs/masks.md): 512 px,
+    # features sized for a mask face (uv_tile ~1.5: one texture tile ~ 12 cm of mask)
+    "char_mask_limestone": ("#CDC4B0", 0.80, 0.0, "stone"),      # honed limestone, shell fragments
+    "char_mask_bronze": ("#A27A46", 0.40, 1.0, "bronze"),        # statuary bronze, green-brown patina
+    "char_mask_oil_canvas": ("#D6CEBB", 0.62, 0.0, "canvas"),    # primed canvas weave + impasto strokes
+    "char_mask_container_rust": ("#9A4232", 0.78, 0.0, "rust"),  # painted container steel, rust, chips
     # crew (heist suits)
     "char_suit_dark": ("#2A2C31", 0.78, 0.0, "cloth"),
     "char_suit_navy": ("#232B3B", 0.78, 0.0, "cloth"),
