@@ -4,13 +4,12 @@
 extends TestCase
 
 const GH_PAGERS: Array[int] = [4, 4, 3, 3, 2, 1]
-## D-140 (PO-15) pager caps for the bank-type stealth heists (C's generator rows; OF from B's values block).
+## D-140 (PO-15, revised): the PAGERS maps' caps (C's generator rows). GN and OF are GUARDS maps: no table, cap 4.
 const D140_PAGERS: Dictionary = {
-	&"night_deposit": [4, 4, 3, 3, 2, 2],
-	&"gallery_night": [4, 4, 4, 3, 3, 2],
-	&"shadow_ledger": [4, 4, 4, 3, 3, 2],
-	&"ostrander_federal": [4, 4, 4, 3, 3, 2],
+	&"night_deposit": [4, 3, 3, 2, 2, 1],
+	&"shadow_ledger": [4, 3, 3, 2, 2, 1],
 }
+const D140_GUARDS_MAPS: Array[StringName] = [&"gallery_night", &"ostrander_federal"]
 
 
 func test_gh_def_carries_the_d130_row() -> void:
@@ -25,14 +24,16 @@ func _note(heist: StringName, d: int) -> String:
 
 func test_card_note_follows_the_def() -> void:
 	var sep: String = UiText.t(&"ui.heist_select.stealth_note_sep")
-	assert_eq(_note(&"glasshouse", Enums.Difficulty.ROUTINE), "4 pagers", "GH Routine: no Titan, 4 pagers")
+	assert_eq(_note(&"glasshouse", Enums.Difficulty.ROUTINE), "", "GH Routine: no Titan, 4 pagers unsaid (D-140)")
+	assert_eq(_note(&"glasshouse", Enums.Difficulty.TENSE), "", "GH Tense: cap 4, unsaid")
 	assert_eq(_note(&"glasshouse", Enums.Difficulty.HAZARDOUS), "Titan cameras" + sep + "3 pagers", "GH Hazardous")
 	assert_eq(_note(&"glasshouse", Enums.Difficulty.LETHAL), "Titan cameras" + sep + "2 pagers", "GH Lethal")
 	assert_eq(_note(&"glasshouse", Enums.Difficulty.CATACLYSM), "Titan cameras" + sep + "1 pager", "singular")
 	var tw_min: int = Tweak.stealth().camera_titan_min_difficulty
 	assert_eq(_note(&"night_deposit", tw_min - 1), "", "ND below the tweak's Titan tier: nothing to say")
 	var nd_cap: int = BriefingIntel.pager_cap(&"night_deposit", tw_min)
-	var nd_want: String = "Titan cameras" + ("" if nd_cap < 0 else sep + "%d pagers" % nd_cap)
+	var nd_said: bool = nd_cap >= 0 and nd_cap < Tweak.stealth().pager_max_answers
+	var nd_want: String = "Titan cameras" + (sep + ("1 pager" if nd_cap == 1 else "%d pagers" % nd_cap) if nd_said else "")
 	assert_eq(_note(&"night_deposit", tw_min), nd_want, "ND: the tweak's Titan tier, pagers from its def (D-140)")
 	assert_eq(_note(&"dockside_burn", Enums.Difficulty.CATACLYSM), "", "loud-only: no stealth note")
 
@@ -60,7 +61,9 @@ func test_heist_select_shows_the_note() -> void:
 	await wait_frames(2)
 	assert_true(hs.select_heist_id(&"glasshouse"))
 	hs.select_difficulty(Enums.Difficulty.ROUTINE)
-	assert_true(hs.stealth_label.visible and hs.stealth_label.text == "4 pagers", hs.stealth_label.text)
+	assert_false(hs.stealth_label.visible, "GH Routine: nothing below the usual (%s)" % hs.stealth_label.text)
+	hs.select_difficulty(Enums.Difficulty.BRUTAL)
+	assert_true(hs.stealth_label.visible and hs.stealth_label.text.ends_with("3 pagers"), hs.stealth_label.text)
 	hs.select_difficulty(Enums.Difficulty.TENSE)
 	var pressed: Array[int] = []
 	for i: int in range(hs.difficulty_buttons.size()):
@@ -73,9 +76,10 @@ func test_heist_select_shows_the_note() -> void:
 	await wait_frames(1)
 
 
-## D-140: the card and the briefing intel say "N pagers" for ND / GN / SL / OF at every difficulty, from the def's row.
-## Skips a heist whose def (or row) has not landed yet (C's generator rows; OF after G1).
-func test_d140_bank_heists_show_pagers() -> void:
+## D-140: the card says "N pagers" on the PAGERS maps (ND / SL) where the def's row is below 4 (Tense up); the briefing
+## intel's pager count follows the row everywhere; the GUARDS maps (GN / OF) keep the cap 4 and the card says nothing.
+## Skips a map whose row has not landed (C).
+func test_d140_pager_line_on_pagers_maps() -> void:
 	var missing: PackedStringArray = PackedStringArray()
 	for heist: StringName in D140_PAGERS:
 		var def: HeistDef = HeistRegistry.get_def(heist)
@@ -87,11 +91,21 @@ func test_d140_bank_heists_show_pagers() -> void:
 		for d: int in range(want.size()):
 			var n: int = int(want[d])
 			var line: String = UiText.t(&"ui.heist_select.pager_one" if n == 1 else &"ui.heist_select.pagers", {"n": n})
-			assert_true(_note(heist, d).contains(line), "%s d%d card: %s" % [heist, d, _note(heist, d)])
+			if n < 4:
+				assert_true(_note(heist, d).contains(line), "%s d%d card: %s" % [heist, d, _note(heist, d)])
+			else:
+				assert_false(_note(heist, d).contains("pager"), "%s d%d card: cap 4 unsaid" % [heist, d])
 			var pager_text: String = ""
 			for l: Dictionary in BriefingIntel.lines(heist, d, int(def.mode)):
 				if StringName(l.get("id", &"")) == &"pagers":
 					pager_text = String(l.get("text", ""))
 			assert_true(pager_text.contains(str(n)), "%s d%d intel: %s" % [heist, d, pager_text])
+	for heist: StringName in D140_GUARDS_MAPS:
+		var def: HeistDef = HeistRegistry.get_def(heist)
+		if def == null:
+			continue
+		assert_true(def.pager_max_by_difficulty.is_empty(), "%s: GUARDS map, no pager table" % heist)
+		for d: int in range(Enums.Difficulty.CATACLYSM + 1):
+			assert_false(_note(heist, d).contains("pager"), "%s d%d: no pager line" % [heist, d])
 	if not missing.is_empty():
 		skip("D-140 rows not landed yet: %s" % ", ".join(missing))

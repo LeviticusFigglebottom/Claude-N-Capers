@@ -12,18 +12,19 @@
 ## * Scalars the MISSION reads (no NPCs): time_lock_s, drill_eta_s, escape_eta_s, cash_bags, gold_bags, deposit_boxes.
 ## * Rare-event effect keys are proposals for A's mission (OF-A6): time_lock_s (set), extra_bonds, timed_spawn_s,
 ##   perch_s3 + heli_eta_add_s. vip_client uses force_active (resolver-native).
-## * D-140 (PO-15) guards, superseding D-130's guard %: 2 fixed + guard_post rovers (3/3/4/4/4/4 of the 4 rover slots)
-##   + guard_extra (0/0/0/0/1/2 of gx_hall / gx_basement, gx_none weight 0 so every pick is a real post)
-##           = exactly 5 / 5 / 6 / 6 / 7 / 8 on every seed (the D-140 minimums; a staffed security room's operator and
-##           the vip bodyguard are on top). Pager cap 4 / 4 / 4 / 3 / 3 / 2 -> margin 1 / 1 / 2 / 3 / 4 / 6.
+## * D-140 (PO-15, revised 12:25) OF is a GUARDS map: the pager cap stays 4 (StealthTweak; no pager_max_by_difficulty),
+##   guards rise from Tense. Guards = 2 fixed + guard_post rovers (2/3/4/4/4/4 of the 4 rover slots) + guard_extra
+##   (0/0/0/0/1/2 of gx_hall / gx_basement, gx_none weight 0 so every pick is a real post) = 4 / 5 / 6 / 6 / 7 / 8 on
+##   every seed. Routine is exactly 4: security_room_staffed forces sec_empty there (no operator). From Tense the
+##   operator (sec_staffed 0.6 / Brutal+ 0.75) and the vip bodyguard come on top of the minimum.
 ## * D-130 civilians (L heist, D-137 kickoff: same shape as GN/SL, % targets are floors):
 ##   civilians = 4 tellers + 1 manager + 2 plaza + customers (5.6/6.0/6.4/6.8/6.8/6.8) + officers (1.8/2.0/2.0/2.2/2.2/2.2)
 ##           + civ_extra (0/0.4/1.0/1.4/2.4/3.4) = 14.4 / 15.4 / 16.4 / 17.4 / 18.4 / 19.4 (+0 / 7 / 14 / 21 / 28 / 35 %),
 ##           max 8 + 3 + 4 + 7 = 22 < the 30 cap. GX_NONE / CX_NONE are the empty slots' weights against the real slots
 ##           (weight 1 each), solved for those expectations (sequential draws without replacement). Pin the counts in
 ##           a test like game/tests/c/test_d130_population.gd.
-##   pager_max_by_difficulty [4, 4, 4, 3, 3, 2] (D-140); camera_titan_min_difficulty -1 (Lethal): D-130 §3 is the
-##   S-heist (GH) rule.
+##   No pager_max_by_difficulty (empty = StealthTweak 4; D-140 GUARDS lever) and camera_titan_min_difficulty -1
+##   (Lethal): D-130 §2/§3 are the S-heist (GH) rules.
 
 const OUT_DIR: String = "res://world/heists/ostrander_federal/"
 const SCENE_PATH: String = OUT_DIR + "ostrander_federal.tscn"
@@ -33,8 +34,6 @@ const VARIANTS_PATH: String = OUT_DIR + "ostrander_federal_variants.tres"
 ## D-130: extra civilians (cx_*) from Tense; see the header.
 const GUARD_EXTRA_ADD: Array[int] = [0, 0, 0, 0, 1, 2]
 const GX_NONE: Array[float] = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-## D-140 pager cap per difficulty (Routine .. Cataclysm).
-const PAGER_MAX: Array[int] = [4, 4, 4, 3, 3, 2]
 const CIV_EXTRA_ADD: Array[int] = [0, 1, 1, 2, 3, 4]
 const CX_NONE: Array[float] = [6.0, 6.0, 0.0, 2.0, 1.0, 0.51]
 
@@ -97,7 +96,6 @@ static func make_def() -> HeistDef:
 	}
 	d.escape_options = [&"van", &"heli"] as Array[StringName]
 	d.music_track = &"ostrander_federal"
-	d.pager_max_by_difficulty = PAGER_MAX.duplicate()  # D-140
 	return d
 
 
@@ -109,9 +107,10 @@ static func make_variants() -> HeistVariantTable:
 		t = load(VARIANTS_PATH) as HeistVariantTable
 	if t == null:
 		t = HeistVariantTable.new()
-	# guard_post: 3 / 3 / 4 / 4 / 4 / 4 rovers (D-140; 4 rover slots).
-	var rovers: Array[int] = [2, 2, 3, 3, 3, 3]
+	# guard_post: 2 / 3 / 4 / 4 / 4 / 4 rovers (D-140 GUARDS; 4 rover slots).
+	var rovers: Array[int] = [1, 2, 3, 3, 3, 3]
 	var staffed: Dictionary = _from(Enums.Difficulty.BRUTAL, {&"sec_staffed": 0.75, &"sec_empty": 0.25})
+	staffed[Enums.Difficulty.ROUTINE] = {&"sec_staffed": 0.0, &"sec_empty": 1.0}  # D-140: Routine guards <= 4
 	var lasers: Dictionary = _from(Enums.Difficulty.BRUTAL, {&"lz_static": 0.2, &"lz_sweep": 0.4, &"lz_timed": 0.4})
 	# D-130: customers 5.6 / 6.0 / 6.4 / 6.8 (Brutal+), officers 1.8 / 2.0 / 2.0 / 2.2 (Brutal+).
 	var customers: Dictionary = _from(Enums.Difficulty.BRUTAL, {&"cust_4": 0.1, &"cust_6": 0.4, &"cust_8": 0.5})

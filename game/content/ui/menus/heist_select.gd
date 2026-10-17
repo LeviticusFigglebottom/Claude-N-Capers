@@ -221,15 +221,16 @@ static func freshness_note(heist_id: StringName, p: PlayerProfile) -> String:
 			+ HeistFreshness.reason_text(ev)
 
 
-## D-130: "Titan cameras" from the heist's effective camera_titan_min_difficulty, and "N pagers" when its def sets a
-## per-difficulty pager cap (not on a loud-only heist), joined; "" when neither applies.
+## D-130: "Titan cameras" from the heist's effective camera_titan_min_difficulty, and "N pagers" when its def's
+## per-difficulty pager cap is below StealthTweak's (D-140: the usual 4 goes unsaid), not on a loud-only heist; joined,
+## "" when neither applies.
 static func stealth_note(heist_id: StringName, difficulty: int, mode: int) -> String:
 	var parts: PackedStringArray = PackedStringArray()
 	if mode != Enums.HeistMode.LOUD_ONLY:
 		if difficulty >= BriefingIntel.titan_min_difficulty(heist_id):
 			parts.append(UiText.t(&"ui.heist_select.titan_cameras"))
 		var cap: int = BriefingIntel.pager_cap(heist_id, difficulty)
-		if cap >= 0:
+		if cap >= 0 and cap < Tweak.stealth().pager_max_answers:
 			parts.append(UiText.t(&"ui.heist_select.pager_one" if cap == 1 else &"ui.heist_select.pagers", {"n": cap}))
 	return UiText.t(&"ui.heist_select.stealth_note_sep").join(parts)
 
