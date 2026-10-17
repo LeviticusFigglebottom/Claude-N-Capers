@@ -150,8 +150,13 @@ func _objective(id: StringName) -> int:
 
 func _run() -> void:
 	_t0_ms = Time.get_ticks_msec()
+	# A player brings a melee weapon: without a "loadouts" option every swing was the gun bash (30 of a Routine
+	# guard's 50; ENV A 2026-10-17). Folding knife: 50 quick, reach 1.8 m.
+	var lo: Loadout = CrewWeapons.build_loadout(null).duplicate()
+	lo.melee = &"melee.folding_knife"
 	rt = await HeistLauncher.launch(&"night_deposit", _seed, Enums.Difficulty.ROUTINE, self, {
-		"crew_ai": false, "preplanning": {&"asset.alternate_entry": &"pp_spawn_lot", &"asset.vent_access": &"pp_vent"}})
+		"crew_ai": false, "loadouts": {0: lo},
+		"preplanning": {&"asset.alternate_entry": &"pp_spawn_lot", &"asset.vent_access": &"pp_vent"}})
 	if rt == null:
 		print("[NDR] RESULT FAIL no runtime")
 		get_tree().quit(1)
