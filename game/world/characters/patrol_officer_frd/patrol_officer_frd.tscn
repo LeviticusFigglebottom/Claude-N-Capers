@@ -213,23 +213,23 @@ height = 0.4834
 [node name="PatrolOfficerFrd" unique_id=848973857 instance=ExtResource("1_glb")]
 
 [node name="Body" parent="Skeleton3D" index="0" unique_id=943085900]
-visibility_range_end = 35.0
+visibility_range_end = 25.0
 visibility_range_end_margin = 1.0
 
 [node name="Gear" parent="Skeleton3D" index="1" unique_id=943254589]
-visibility_range_end = 35.0
+visibility_range_end = 25.0
 visibility_range_end_margin = 1.0
 
 [node name="Hair" parent="Skeleton3D" index="2" unique_id=943286434]
-visibility_range_end = 35.0
+visibility_range_end = 25.0
 visibility_range_end_margin = 1.0
 
 [node name="Headwear" parent="Skeleton3D" index="3" unique_id=848569279]
-visibility_range_end = 35.0
+visibility_range_end = 25.0
 visibility_range_end_margin = 1.0
 
 [node name="Outfit" parent="Skeleton3D" index="4" unique_id=1039793785]
-visibility_range_end = 35.0
+visibility_range_end = 25.0
 visibility_range_end_margin = 1.0
 
 [node name="Back" type="BoneAttachment3D" parent="Skeleton3D" index="5" unique_id=943070607]
@@ -273,7 +273,7 @@ bone_idx = 1
 transform = Transform3D(1, 0, 0, 0, 0.99875, 0.049939997, 0, -0.049939997, 0.99875, -0.2208, 0.0652, 0.060599998)
 
 [node name="CrowdLod" type="MeshInstance3D" parent="Skeleton3D" index="10" unique_id=536168380 groups=["crowd_lod"]]
-visibility_range_begin = 35.0
+visibility_range_begin = 25.0
 visibility_range_begin_margin = 1.0
 mesh = ExtResource("3_lod")
 skin = SubResource("skin_lod")

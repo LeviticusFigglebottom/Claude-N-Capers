@@ -600,7 +600,8 @@ def _gun_gear(k: float, wood: str, metal: str, poly: str) -> o.Gear:
 def slung_gun(kit: Kit, loop: StrapLoop, centre_z: float, wood: str, metal: str, poly: str = "polymer_black",
               stand_off: float = 0.026, tilt_deg: float = 21.0, centre_x: float = 0.04) -> dict:
     """The slung long gun on the back, lying along the strap's back segment, muzzle up behind the
-    strap's shoulder (rigid ``Gear`` on the chest, not a hull layer). Returns placement info."""
+    strap's shoulder (rigid ``Slung`` mesh on the chest, not a hull layer; ENV A hides it while seated). Returns
+    placement info."""
     fit, k = kit.fit, kit.k
     back = loop.back
     hi, lo = back[0], back[-1]
@@ -623,7 +624,7 @@ def slung_gun(kit: Kit, loop: StrapLoop, centre_z: float, wood: str, metal: str,
                   (x_ax.z, y_ax.z, n.z, origin.z), (0, 0, 0, 1)))
     anchor = Vector((0.0, loc.y, 1.30 * k))
     gm = _gun_gear(k, wood, metal, poly).to_mesh(mtx, anchor=anchor)
-    kit.add_gear(gm, layer=False)
+    kit.add_slung(gm)
     muzzle = origin + x_ax * (0.47 * k)
     butt = origin - x_ax * (0.52 * k)
     return {"muzzle": muzzle, "butt": butt, "angle_from_vertical_deg": math.degrees(math.acos(clamp(x_ax.z, -1, 1)))}

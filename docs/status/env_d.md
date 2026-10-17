@@ -3,6 +3,24 @@
 Owner: ENV D. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-17 (later): D-130 cast pools, crowd-LOD fix, DB-4 verified, D-130 perf audit, D-132 D2
+- **D-130 pools** (a04f3536, 48a7cc3a; p5_cast v7). GN guards 9 (it already twinned at 5); SL Northgate 9; ND Halden 6;
+  SL cleaners 4; ND cleaners 2; GN patrons 12; GN waitstaff 3 and attendants 3 (C's gala_extra). Mirrored by A
+  (b6d115f9 + the gala pair pending). Review `_review/d130_cast/`.
+- **Crowd LOD shirt bleed** (1b375cb9): CrowdLod drops/tucks LOD2 vertices covered by another surface (4 cm along the
+  normal, same facing), so shirts no longer show through jackets at range. All LODs regenerated.
+  `_review/lod_review_shirt_*`.
+- **DB-4** verified in-game (278dc464, `_review/db4_sit/`). C note: the PF ForemanChair is too close to its desk.
+- **Slung gun** (7dc91bd0): cartel slung looks carry `Skeleton3D/Slung`, which A hides while seated (6193917d). v1.27 (LEAD).
+- **Perf audit** (`_review/d130_perf_audit.md`, now docs/art + D-132), tool `_tools/bench_crowd.tscn`. Draw calls
+  dominate. D2 (87e7bf4b): LOD2 from 15 m crowd / 25 m units → GN 34 draws 1011 → 738, loud 50 2860 → 2524. D3 is
+  folded into D1. A owns the animation LOD.
+- **D1 in progress** (lane wip/d-d1-merge): Texture2DArray layers + one shader per tier, per-node surface merge.
+  Acceptance: 2/10/30 m lineups unchanged.
+- Stealth coverage re-run on trunk: clean (54a5c893).
+- Gotchas: the test runner hangs on a test-file parse error (LEAD is fixing it); `assert_not_null` doesn't exist.
+  `PackedInt32Array` in a Dictionary is a value: write it back after append.
+
 ## 2026-10-17: new LEAD session (session_01HwYKRgCdkLfJCt4ZM6rfTk); police combat verified, DB cast to 12, thumb probe
 Resumed on origin tip 0e4e2a0f (trunk already merged). Done since the GN-D1 entry, from `git log` (old team, 10-16):
 - D-116 organic 3P pass: crew states, mask_on / throw_grenade (lob), carried bag at Back/Socket, FP knife / melee /

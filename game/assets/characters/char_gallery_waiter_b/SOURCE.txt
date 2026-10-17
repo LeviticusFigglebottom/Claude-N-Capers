@@ -1,0 +1,20 @@
+asset: char_gallery_waiter_b
+script: tools/blender/characters/char_p5_gallery.py
+params: {"age": 0.55, "build": 0.5, "gender": 1.0, "hair": "side_part", "hair_color": "brown", "height": 1.68, "lip": "char_lip_rose", "look": "waiter_b", "skin": 2}
+seed: 3327154239  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category characters --asset char_gallery_waiter_b
+edit policy: generated file, never edit by hand; change the script and rebuild
+attach_Back: bone chest, local [0.0000, 0.0843, 0.1002] (model [0.0000, 1.2270, 0.1176], Godot axes, rest pose)
+attach_Head: bone head, local [0.0000, 0.0764, -0.0837] (model [0.0000, 1.5724, -0.0724], Godot axes, rest pose)
+attach_Hip: bone hips, local [0.1769, 0.0483, 0.0409] (model [0.1769, 0.9476, 0.0432], Godot axes, rest pose)
+body_faces_culled: 4874
+body_params: {"age": 0.55, "beard_shadow": 0.0, "build": 0.5, "gender": 1.0, "hair": "side_part", "hair_color": "brown", "hair_peak": 0.0, "height": 1.68, "lip": "char_lip_rose", "skin": 2}
+bones: 52
+faces_hidden_by_jacket: 2757
+look: Cloakroom waitstaff (woman, 50s): short Halberd-wine waiter's jacket with gold buttons, white shirt, black bow tie, black trousers, Halberd pin, brass name tag, brown chignon
+meshes: Body,Gear,Hair,Headwear,Outfit
+shape_keys: none (baked at body_params; do not set blend_shapes/*)
+tri_budget: 35000
+tris: 27586
+tris_by_mesh: {"Body": 8996, "Gear": 632, "Hair": 1856, "Headwear": 1584, "Outfit": 14518}
