@@ -104,6 +104,10 @@ const POSE_CLIPS: Array[StringName] = [
 ## Special actions held while the hint lasts: they win over one-shots, locomotion and aim (the brain
 ## stands the body still for them).
 const ACTION_CLIPS: Array[StringName] = [&"kick_charge", &"shield_bang", &"heal_ally"]
+## D-116: held brain hints the host replicates to clients (NetEntityCodec NPC state "ah", stored in META_NET_HINT):
+## the police / guard cuff (interact_low). Every other hint stays host-only (clients use the alert-state fallbacks).
+const NET_HINTS: Array[StringName] = [&"cuff"]
+const META_NET_HINT: StringName = &"net_anim_hint"
 ## Hints played once when the hint changes to them.
 const ONESHOT_HINTS: Array[StringName] = [&"melee", &"kick_hit", &"hit_react"]
 ## characters.md v1.11: clips that mean "seated at a desk / chair" for the seated deaths.
@@ -231,6 +235,10 @@ var loop_resume: LoopResume = null
 var turn: TurnInPlace = null
 ## D-116: a civilian's panic_start before its first cower* (CivPanic).
 var civ_panic: CivPanic = null
+## D-116 npc_oneshot (NetOneshot): client, seconds left of a one-shot the host sent (no turn clip starts meanwhile);
+## the last one sent (host) / applied (client) as [clip, start_s, speed] (tests).
+var net_oneshot_left: float = 0.0
+var last_net_oneshot: Array = []
 ## WeaponDef.weapon_class of the held weapon (-1 without a WeaponDef): the D-116 class reloads.
 var weapon_class: int = -1
 ## Lead ruling (b): the upper-body hit-zone flinch layer (every animated body); see AnimLayers.play_flinch.
@@ -464,6 +472,7 @@ func tick(delta: float) -> void:
 	var tw: AnimTweak = AnimTweak.data()
 	_update_velocity(delta, tw)
 	_oneshot_left = maxf(_oneshot_left - delta, 0.0)
+	net_oneshot_left = maxf(net_oneshot_left - delta, 0.0)
 	_update_start_stop(tw)
 	_aim_hold_left = maxf(_aim_hold_left - delta, 0.0)
 	_update_crew_state_clips(delta)
@@ -914,10 +923,14 @@ func _aiming() -> bool:
 	return gunner != null and gunner.engaging
 
 
-## The brain's anim_hint (a non-empty `Surrender` component hint wins), host only.
+## The brain's anim_hint (a non-empty `Surrender` component hint wins) on the host; on a client only the NET_HINTS
+## the host replicates (NetEntityCodec NPC state "ah" -> META_NET_HINT).
 func _hint() -> StringName:
-	if _npc == null or not Net.is_authority():
+	if _npc == null:
 		return &""
+	if not Net.is_authority():
+		var nh: Variant = _npc.get_meta(META_NET_HINT, &"")
+		return nh if nh is StringName else &""
 	var s: Node = _body.get_node_or_null(^"Surrender")
 	if s != null:
 		var sh: Variant = s.get(&"anim_hint")

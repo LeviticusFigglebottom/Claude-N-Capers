@@ -110,6 +110,8 @@ func _step(body_yaw: float, delta: float, tw: AnimTweak) -> void:
 		# Right after a clip: its overshoot eases back; a same-way residual up to turn_residual_max_deg eases in.
 		limit = _overshoot + 0.001 if diff * _dir < 0.0 else maxf(limit, deg_to_rad(tw.turn_residual_max_deg))
 		limit = maxf(limit, deg_to_rad(tw.turn_threshold_deg))
+	if left <= 0.0 and _d.net_oneshot_left > 0.0:
+		return  # a client's npc_oneshot (NetOneshot) is not cut by a turn: the rig holds until it ends
 	if left <= 0.0 and absf(diff) > limit:
 		start(diff, tw)
 	if left > 0.0:

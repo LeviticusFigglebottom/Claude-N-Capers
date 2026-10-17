@@ -200,6 +200,10 @@ static func state_of(node: Node) -> Dictionary:
 		var gb: GuardBrain = npc.get_node_or_null(^"Brain") as GuardBrain
 		if gb != null:
 			st["dom"] = gb.dominate_window_left > 0.0  # PP-A-1: the S5.8 window, for the client HUD cue
+		var brain: Node = npc.get_node_or_null(^"Brain")
+		var hint: Variant = brain.get(&"anim_hint") if brain != null else null
+		if hint is StringName:
+			st["ah"] = hint if AnimDriver.NET_HINTS.has(hint) else &""  # D-116: the cuff (interact_low) on clients
 		var ca: Array = CorpseAnchor.net_value(npc)
 		if not ca.is_empty():
 			st["ca"] = ca  # D-121: the corpse's gameplay anchor + push direction (root, bag interaction, hitbox)
@@ -346,6 +350,8 @@ static func _apply_npc_state(npc: NpcBase, d: Dictionary) -> void:
 		var rd: NpcRagdoll = NpcRagdoll.of(npc)
 		if rd != null:
 			rd.apply_net_state(d)
+	if d.has("ah") and not Net.is_authority():
+		npc.set_meta(AnimDriver.META_NET_HINT, StringName(d["ah"]))
 	if d.has("dom"):
 		var gb: GuardBrain = npc.get_node_or_null(^"Brain") as GuardBrain
 		if gb != null and not Net.is_authority():

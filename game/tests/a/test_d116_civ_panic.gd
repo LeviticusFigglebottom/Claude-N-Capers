@@ -95,6 +95,7 @@ func test_panic_start_then_cower_chain() -> void:
 		d.tick(DT)
 		assert_eq(d.clip, &"panic_start", "first panic: panic_start")
 		assert_near(d.last_blend_s, 0.1, 0.001, "0.1 s in from the ambient clip")
+		assert_eq(d.last_net_oneshot, [&"panic_start", 0.0, 1.0], "npc_oneshot panic_start sent to the clients")
 		var t: float = DT
 		while d.clip == &"panic_start" and t < 2.0:
 			d.tick(DT)
@@ -119,6 +120,7 @@ func test_running_civilian_skips_panic_start() -> void:
 	npc.velocity = Vector3(0, 0, -4.0)
 	d.tick(DT)
 	assert_eq(d.clip, &"flee_b", "a first flee* skips panic_start")
+	assert_true(d.last_net_oneshot.is_empty(), "no npc_oneshot without a panic_start")
 	assert_near(d.player.speed_scale, 1.0, 0.001, "flee_b runs at flee's 4.0 m/s")
 	npc.velocity = Vector3.ZERO
 	_hint(npc, &"cower")

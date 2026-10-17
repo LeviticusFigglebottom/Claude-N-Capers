@@ -4,7 +4,8 @@
 ## once when a civilian first panics, before its first cower* (a civilian whose first panic clip is a flee* is
 ## already running: no panic_start). Crossfades: ~0.1 s in from the ambient clip, then cower with no crossfade (the
 ## exact chain), cower_b 0.2 s, cower_c 0.3 s, flee* 0.2 s. A rig without panic_start goes straight to cower* as
-## before. Driven from the clip the driver picks, so clients (alert-state cower) play it too.
+## before. The host picks it from the clip the driver chooses and sends it (NetOneshot, npc_oneshot); a client plays
+## it only on that cue (start_net), never from its own alert-state cower guess.
 class_name CivPanic
 extends RefCounted
 
@@ -53,10 +54,24 @@ func apply(want: StringName, delta: float) -> StringName:
 	if done or fam == &"":
 		return want
 	done = true
-	if fam != &"cower" or not _d._has_clip(PANIC_START):
-		return want
-	left = _d.player.get_animation("%s/%s" % [AnimDriver.LIBRARY, PANIC_START]).length
+	if fam != &"cower" or not _d._has_clip(PANIC_START) or not Net.is_authority():
+		return want  # a client plays panic_start only on the host's npc_oneshot (start_net)
+	left = _length()
+	NetOneshot.relay(_d, PANIC_START, 0.0, 1.0)
 	return PANIC_START
+
+
+## Client: the host's npc_oneshot panic_start (started `start_s` s into the clip on the host): play it now, once.
+func start_net(start_s: float) -> void:
+	var npc: NpcBase = _d._npc
+	if npc == null or npc.role != &"civilian" or not npc.alive or not _d._has_clip(PANIC_START):
+		return
+	done = true
+	left = maxf(_length() - maxf(start_s, 0.0), 0.0)
+
+
+func _length() -> float:
+	return _d.player.get_animation("%s/%s" % [AnimDriver.LIBRARY, PANIC_START]).length
 
 
 ## The crossfade (s) from clip `from` to `to` for the panic chain, or -1 (the driver's usual blend).
