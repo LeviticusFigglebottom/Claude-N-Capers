@@ -24,6 +24,8 @@ const THROUGH_DOOR_M: float = 0.8  # < THROUGH_PAST_M, or the crossing never end
 const THROUGH_PAST_M: float = 0.9
 ## _door_on_line: a closed door within this (m) of the crew's plane is opened before stepping across it.
 const LINE_DOOR_M: float = 1.0
+## goto: standing at the end of a nav path that stops this far (m, flat) short of the target = unreachable (OF-X2).
+const UNREACHABLE_M: float = 2.0
 ## Loud: a visible enemy within this range is fought before / during a hold (S9.1: damage cancels holds) (m).
 const HOLD_THREAT_M: float = 20.0
 ## Longest clearing fight before holding anyway (s).
@@ -262,6 +264,13 @@ func goto(target: Vector3, arrive_m: float = 0.8, timeout_s: float = 60.0, sprin
 			repath_t = 0.5
 			if path.is_empty():
 				d.note("pilot: NO NAV PATH from %s to %s" % [_v(crew.global_position), _v(target)])
+				break
+			var nav_end: Vector3 = path[path.size() - 1]
+			if flat_dist(nav_end, target) > UNREACHABLE_M and near(crew.global_position, nav_end, 0.6):
+				# OF-X2 (DB-7 q6): the target is behind barred doors (the path ends short of it). Walking at the raw
+				# target from the path's end only pushes into the wall.
+				d.note("pilot: %s unreachable: the nav path ends at %s, %.1f m short" % [_v(target), _v(nav_end),
+					flat_dist(nav_end, target)])
 				break
 		if combat and t - _last_engage >= 2.5:
 			var foe: NpcBase = nearest_enemy(10.0)

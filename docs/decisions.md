@@ -1268,3 +1268,60 @@ Ruling (PD2: cage/server doors take a saw or a keypad on the gate itself; no sta
 4. **Map (C):** SL and DB generators swap the stand-in safes for the gate keypad + padlock on the existing CageGate /
    cage gate; regenerate, validate final. Mission scripts (A) read the gate locks instead of the safe.
 5. Ostrander's padlocked bullion cage and the cash cage use the same pattern from G1.
+
+## D-139: heist freshness: repeat penalty + rotation bonus (2026-10-17, LEAD; product owner)
+PO: "discourage playing the same heist over and over: less XP/money if it's been played multiple times in a short
+period (rolling last 10 heists, -10% each time that heist appears), and an incentive to play heists not touched in a
+while like PAYDAY does it: +1% XP/money, up to 10%, for each other heist played after it, if it has been completed at
+least once and is not in the rolling memory." PD2's job heat moves XP only; ours moves XP **and** money (PO). Owner: B.
+1. **Memory (per player profile, never crew-wide):** the heist ids of that player's last 10 runs that reached the payday
+   screen (success or failure; a menu abort or disconnect is not a run). Plus a run counter and, per heist, the counter
+   value of its last run and whether it was ever completed successfully. Pushed after the payday is computed.
+2. **Repeat penalty:** n = times heist H is in the memory at the start of this run (this run not counted).
+   n ≥ 1 → freshness = 1 − 0.10 × n, floored at **0.10** (LEAD default so a farmed heist still pays; PO may change it).
+3. **Rotation bonus:** n = 0 and H completed at least once → k = runs played since H **left** the memory
+   (runs since H's last run − 10, ≥ 0); freshness = 1 + 0.01 × min(k, 10). (A heist absent from a 10-run memory has always
+   had ≥ 10 runs since, so the ramp starts when it drops out: +1 % per further run, full +10 % at 20 runs since.)
+   Never completed → 1.0 (no bonus for a heist you haven't beaten yet).
+4. **Applies to:** money: `gross` (contract + loot + small loot, after the crew-alive mult; the civilian penalty is taken
+   after, unscaled) → total/stash/spending follow. XP: a multiplicative `freshness` step after the C6 lines (`xp_lines`
+   gains an 8th key `freshness`, the delta; `xp_total` includes it). Failed heists: XP scaled too (money is 0 anyway).
+   Each player's own freshness applies to their own payday.
+5. **UI:** the payday shows a "Heist freshness ±N %" line (money and XP) with a one-line reason ("played 3× in your last
+   10 heists" / "not played in 17 heists"). The heist list / contract card shows the current ±% badge before launch.
+6. **Data:** tweak values in payout.tres (`freshness_memory`=10, `repeat_step`=0.10, `repeat_floor`=0.10,
+   `rotation_step`=0.01, `rotation_cap`=0.10); profile schema +1 (migration: empty memory, completion flags seeded from
+   career stats). Tests: the formula table (n = 0..10, k = 0..12, never completed), migration, payday line, two players
+   with different memories in one crew.
+
+## D-140: stealth heists can't be beaten by killing every guard (PO-15, 2026-10-17, LEAD; product owner; REVISED 12:25)
+PO: "no stealth heist should be completable just by killing each guard except the jewelry heist or on the easiest
+difficulty." PO clarification (12:25): "pagers should always be 4 on Routine, and there should always be no more than 4
+guards on Routine (some maps should have 4), but further difficulties should EITHER add more guards OR lower the amount
+of pagers, not both, the lead's call per map (if more guards would overcrowd a map, lower the pager cap)."
+**Rule.** "Guards" = pager-carrying NPCs present at load (guards, the camera operator, escorts; not rare-event or timed
+spawns); counts are the **minimum over seeds** unless stated as fixed.
+(a) **Routine:** pager cap **4**, guards **≤ 4**.
+(b) **Tense and up: one lever per map.** Either **GUARDS** (the cap stays 4; guards rise above 4 from Tense) or **PAGERS**
+    (the guard count stays at its Routine number on every difficulty; the cap drops below it from Tense). Never both.
+(c) From Tense up, guards > pager cap on every seed. A rolled `pager_max_answers` variant scalar may lower the cap, never
+    raise it above the table (and never on a GUARDS map).
+**Per-heist tables** (Routine, Tense, Hazardous, Brutal, Lethal, Cataclysm):
+
+| Heist | Lever | Guards | Pager cap | Why |
+|---|---|---|---|---|
+| Ostrander Federal (L) | GUARDS | 4 / 5 / 6 / 6 / 7 / 8 (min) | 4 at every difficulty | big open bank, five levels: room for more patrols |
+| Gallery Night (M) | GUARDS | 4 / 5 / 5 / 6 / 6 / 7 (min) | 4 at every difficulty | wide gallery floors and the mews: extras fit |
+| Night Deposit (M, compact) | PAGERS | 4 fixed | 4 / 3 / 3 / 2 / 2 / 1 | 26 × 20 m, one storey + basement: more guards would crowd it |
+| Shadow Ledger (M, tower) | PAGERS | 4 fixed | 4 / 3 / 3 / 2 / 2 / 1 | narrow tower corridors and stair cores: slower, denser play |
+| Golden Hour (S, jewelry) | exempt (D-130) | as today | 4 / 4 / 3 / 3 / 2 / 1 | the PO's exception |
+
+For the GUARDS maps these minimums replace D-130 §1's guard percentages; on the PAGERS maps guards no longer scale with
+difficulty (D-130 §1 guards superseded). Civilians keep D-130 scaling everywhere. Every guard is a real spawn with its own
+route or post, never a doubled-up post.
+**Owners.** C: GN/ND/SL generator rows (GN Routine baseline 4 + `difficulty_add` to the table; ND/SL exactly 4 guards on
+every seed and difficulty, guard `difficulty_add` removed, `pager_max_by_difficulty` set; GN `pager_max_by_difficulty`
+empty = 4), regen, validate final. B: the OF values block per QB-2 (GUARDS: 4/5/6/6/7/8, no pager table) and the briefing
+/difficulty card "N pagers" line where the cap is below 4. A: PagerSystem scalar-lowers-only; re-pin test_d130_population;
+a test asserts (a)-(c) on 3 seeds for ND/GN/SL (OF once G1 lands); the stealth e2e tests still win. P: one windowed stealth
+run each on Tense and Lethal for ND/GN/SL afterwards.
