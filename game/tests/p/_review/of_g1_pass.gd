@@ -66,6 +66,8 @@ const OF_LASER_LEAD_M: float = 2.0  # start 2 m before the plane, end 2 m past i
 ## Ground notes: BC (back corridor) z 7-9; SA door (14, 7) on every floor (stair core x 13-16); SB door (46, 7).
 const OF_SA_DOOR_X: float = 14.0
 const OF_CORRIDOR_Z: float = 8.2
+## Stair A floor landing inside the core (door (14.5, FFL, 7) in C's G1; flights split by a divider from z ~5.9 north).
+const OF_SA_CORE: Vector3 = Vector3(14.5, 0.0, 6.4)
 const OF_SR_DOOR: Vector3 = Vector3(19.0, 0.0, 7.0)
 ## Gallery notes: GA (z 18-20, FFL 5.0) is a throw spot to the hall floor (FFL 0.0) over the 1.1 m guard (solid base to
 ## 1.0 m, guard line z ~20); hall floor x 8-40, z 20-36. §7.3.
@@ -110,8 +112,12 @@ const GHOST_FORCE: Dictionary = {&"camera": [&"cam_a"], &"security_room_staffed"
 	&"guard_post": [&"rover_hall", &"rover_gallery", &"rover_basement", &"rover_dock"],
 	&"keycard": [&"kc_on_manager"], &"manager_route": [&"mgr_vault"], &"code_pc": [&"pc_exec"],
 	&"server_room": [&"srv_gallery"], &"laser_pattern": [&"lz_sweep"], &"side_door": [&"door_none"],
-	&"fire_escape": [&"fe_up"], &"escape": [&"esc_van_dock"]}
-const GHOST_SCALARS: Dictionary = {&"customers": 8, &"officers": 3, &"time_lock_s": 270}
+	&"fire_escape": [&"fe_up"], &"escape": [&"esc_van_dock"],
+	# C's G1 table makes these slot groups (Slot_cust_8, Slot_off_3, Slot_vip_in), not scalars.
+	&"customers": [&"cust_8"], &"officers": [&"off_3"], &"vip": [&"vip_in"]}
+## Scalars in C's table (scalars: time_lock_s, drill_eta_s, escape_eta_s, cash_bags, gold_bags, deposit_boxes).
+## guard_extra / civ_extra (D-130 Cataclysm extras) are left to the roll: the doc's ghost line predates D-130.
+const GHOST_SCALARS: Dictionary = {&"time_lock_s": 270}
 const GHOST_RARE: StringName = &"vip_client"
 ## Ghost line waypoints (design doc steps 1-7; Ledger Lane z -10..0, dumpsters x 26-30 z -6 behind the C6 pole (20, -6),
 ## rover_dock's smoke pause at the Tannery corner (~48, -5); LK (locker room, x 0-10 z 0-7, door (5, -4, 7)); EA (pc_exec,
@@ -138,16 +144,18 @@ const EXPECT: Dictionary = {
 	"drop_ladder": {"type": "Ladder", "tag": &"fire_escape", "near": OF_DROP_LADDER_AT, "max": 12.0},
 	"caged_ladder": {"type": "Ladder", "tag": &"", "near": OF_CAGED_LADDER_AT, "max": 6.0},
 	"hh_door": {"type": "Door", "tag": &"head_house", "near": OF_HH_DOOR, "max": 2.5},
-	"rope_ladder": {"type": "Ladder", "tag": &"", "near": Vector3(24.0, -2.0, 14.0), "max": 4.0},
-	"hoist": {"type": "BagLift", "tag": &"hoist", "near": Vector3(24.0, -4.0, 14.0), "max": 6.0},
+	# Pre-placed disabled (hidden) until the burn-through (QC-61): looked up hidden too.
+	"rope_ladder": {"type": "Ladder", "tag": &"", "near": Vector3(24.0, -2.0, 14.0), "max": 4.0, "hidden_ok": true},
+	"hoist": {"type": "BagLift", "tag": &"hoist", "near": Vector3(24.0, -4.0, 14.0), "max": 6.0, "hidden_ok": true},
 	"lid": {"type": "Node3D", "tag": &"lid", "near": OF_HOLE_AT, "max": 3.0},
 	"vault_drill": {"type": "Node3D", "tag": &"vault_drill", "near": OF_HOLE_AT, "max": 3.0},
 	"ld_door": {"type": "Door", "tag": &"dock_door", "near": OF_LD_DOOR, "max": 2.0},
 	"fire_exit": {"type": "Door", "tag": &"fire_exit", "near": OF_FIRE_EXIT, "max": 2.0},
 	"cash_lift": {"type": "BagLift", "tag": &"cash_lift", "near": GHOST_CQ_AT, "max": 8.0},
 	"e1_secure": {"type": "SecureZone", "tag": &"", "near": OF_E1_AT, "max": 6.0},
-	"e2_secure": {"type": "SecureZone", "tag": &"", "near": OF_E2_AT, "max": 6.0},
-	"e3_secure": {"type": "SecureZone", "tag": &"", "near": Vector3(36.0, 8.6, 27.0), "max": 6.0},
+	# C's G1 (ad972c5e): SecureTannery (50.4, 0, 14.3), SecureTerrace (42.5, 8.6, 26.0): 6.5 m off the doc's points.
+	"e2_secure": {"type": "SecureZone", "tag": &"", "near": OF_E2_AT, "max": 8.0},
+	"e3_secure": {"type": "SecureZone", "tag": &"", "near": Vector3(36.0, 8.6, 27.0), "max": 8.0},
 	"e1_escape": {"type": "EscapeZone", "tag": &"", "near": OF_E1_AT, "max": 6.0},
 	"e2_escape": {"type": "EscapeZone", "tag": &"", "near": OF_E2_AT, "max": 6.0},
 	"e3_escape": {"type": "EscapeZone", "tag": &"", "near": Vector3(36.0, 8.6, 27.0), "max": 6.0},
@@ -200,6 +208,7 @@ var _results: PackedStringArray = PackedStringArray()
 var _climbing: bool = false
 var _resolve: bool = false
 var _resolve_launch: bool = false
+var _line: String = ""
 var _stray: Ladder = null
 
 
@@ -219,6 +228,7 @@ func _ready() -> void:
 			"bags": _bags = v.to_int()
 			"resolve": _resolve = true
 			"launch": _resolve_launch = true
+			"line": _line = v
 	if runner_out == "":
 		runner_out = OS.get_user_data_dir() + "/of_g1_pass"
 	DirAccess.make_dir_recursive_absolute(runner_out)
@@ -245,6 +255,8 @@ func note(msg: String) -> void:
 
 
 func shot(label: String) -> void:
+	if DisplayServer.get_name() == "headless":
+		return  # no frames are drawn headless (frame_post_draw never comes): --resolve runs there
 	if _fast:
 		_set_fast(false)
 		await RenderingServer.frame_post_draw
@@ -451,7 +463,7 @@ func _resolve_one(root: Node, id: String) -> Dictionary:
 	for n: Node in root.find_children("*", "", true, false):
 		if not _is_type(n, String(e["type"])):
 			continue
-		if n.is_inside_tree() and not (n as Node3D).is_visible_in_tree():
+		if n.is_inside_tree() and not (n as Node3D).is_visible_in_tree() and not bool(e.get("hidden_ok", false)):
 			continue
 		var t: Variant = n.get(&"objective_tag")
 		var tagged: bool = tag != &"" and t != null and StringName(t) == tag
@@ -1318,7 +1330,24 @@ func _test_dry_ladder() -> bool:
 # --- G1 tests (Ostrander Federal) -----------------------------------------------------------------------------------
 
 ## Lane spawn (dock door open) -> LD -> BC -> SA: the way in every traversal test uses.
+## Floor changes go through stair A's core: its landing on this floor, its landing on the target floor (stair door
+## at (14.5, FFL, 7) on every floor in C's G1), then the corridor. A corridor-to-corridor walk has its target on the
+## crew's side of the open stair door, so Po5Pilot never crosses the door link and the path corner flips in the
+## doorway (G1 run 2026-10-17: 250 s pinned in StairDoorSAG).
 func _of_to_floor(ffl_i: int, x: float = OF_SA_DOOR_X) -> bool:
+	var cur: int = 0
+	for i: int in OF_FFL.size():
+		if absf(pilot.crew.global_position.y - OF_FFL[i]) < absf(pilot.crew.global_position.y - OF_FFL[cur]):
+			cur = i
+	if cur != ffl_i:
+		# Out to this floor's corridor first: Po5Pilot crosses an open door only toward a target beyond its plane (a
+		# room-to-core walk from SR has both behind the same wall and flipped in SecurityDoor, G1 run 2).
+		if cur != 4 and not await _go(_of(Vector3(OF_SA_DOOR_X, OF_FFL[cur], OF_CORRIDOR_Z)), 0.6, 240.0):
+			return false
+		if not await _go(_of(Vector3(OF_SA_CORE.x, OF_FFL[cur], OF_SA_CORE.z)), 0.4, 240.0):
+			return false
+		if not await _go(_of(Vector3(OF_SA_CORE.x, OF_FFL[ffl_i], OF_SA_CORE.z)), 0.5, 240.0):
+			return false
 	return await _go(_of(Vector3(x, OF_FFL[ffl_i], OF_CORRIDOR_Z)), 0.6, 240.0)
 
 
@@ -1958,6 +1987,8 @@ func _run_resolve() -> int:
 					Po5Pilot._v(on), on.distance_to(q), Po5Pilot._v(q)])
 				if not ok:
 					missing.append("point:" + id)
+			if _line != "":
+				await _probe_line()
 			for id: String in EXPECT:
 				var r2: Dictionary = _resolve_one(rt, id)
 				print("[OFP] RESOLVE live  %-13s %s" % [id, ("%s %s %s" % [(r2["node"] as Node).name, r2["how"],
@@ -1967,3 +1998,48 @@ func _run_resolve() -> int:
 	print("[OFP] RESULT RESOLVE %s missing/fallback: %s" % ["PASS" if missing.is_empty() else "GAPS",
 		", ".join(missing) if not missing.is_empty() else "none"])
 	return 0
+
+
+## --resolve --launch --line=ax,ay,az,bx,by,bz: every door opened, then the crew's standing capsule swept along the line
+## (0.1 m steps, 0.36 m up so a step does not count): logs each step where it overlaps world geometry, and what.
+func _probe_line() -> void:
+	var f: PackedFloat64Array = PackedFloat64Array()
+	for t: String in _line.split(","):
+		f.append(t.to_float())
+	if f.size() != 6:
+		print("[OFP] RESOLVE line: need 6 numbers")
+		return
+	for n: Node in get_tree().get_nodes_in_group(Door.GROUP):
+		var d: Door = n as Door
+		if d != null and d.global_position.distance_to(Vector3(f[0], f[1], f[2])) < 4.0:
+			d.unlock()  # diagnostic only (as po3_snag_probe): open the doors on the line
+			d.set_open(true)
+	await wait_s(1.5)
+	for n: Node in get_tree().get_nodes_in_group(Door.GROUP):
+		var d: Door = n as Door
+		if d != null and d.global_position.distance_to(Vector3(f[0], f[1], f[2])) < 4.0:
+			print("[OFP] RESOLVE line door %s open %s lock %s width %.2f at %s" % [d.name, d.is_open, d.get(&"lock"),
+				d.effective_width(), Po5Pilot._v(d.global_position)])
+	var a: Vector3 = _of(Vector3(f[0], f[1], f[2]))
+	var b: Vector3 = _of(Vector3(f[3], f[4], f[5]))
+	var tw: CrewTweak = Tweak.crew()
+	var cap: CapsuleShape3D = CapsuleShape3D.new()
+	cap.radius = tw.capsule_radius
+	cap.height = tw.height_standing - 0.4
+	var q: PhysicsShapeQueryParameters3D = PhysicsShapeQueryParameters3D.new()
+	q.shape = cap
+	q.collision_mask = CrewController.COLLISION_MASK_WORLD
+	q.exclude = [pilot.crew.get_rid()]
+	var space: PhysicsDirectSpaceState3D = pilot.crew.get_world_3d().direct_space_state
+	var steps: int = maxi(int(a.distance_to(b) / 0.1), 1)
+	for i: int in steps + 1:
+		var p: Vector3 = a.lerp(b, float(i) / float(steps))
+		q.transform = Transform3D(Basis.IDENTITY, p + Vector3.UP * (0.36 + cap.height * 0.5))
+		var hits: Array[Dictionary] = space.intersect_shape(q, 8)
+		var names: PackedStringArray = PackedStringArray()
+		for h: Dictionary in hits:
+			var c: Node = h["collider"] as Node
+			names.append(String(rt.get_path_to(c)) if c != null and rt.is_ancestor_of(c) else str(c))
+		var on: Vector3 = pilot.stand_point(p)
+		print("[OFP] RESOLVE line %s nav %.2f off: %s" % [Po5Pilot._v(p), pilot.flat_dist(on, p),
+			"clear" if names.is_empty() else "BLOCKED by " + ", ".join(names)])
