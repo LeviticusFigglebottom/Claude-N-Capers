@@ -1125,6 +1125,7 @@ func _laser_test(grid: LaserGrid, lead: float, require_of: bool) -> bool:
 	if _laser_trips > 0 or grid.tripped:
 		return await _fail("laser tripped before the test")
 	var rep: Dictionary = _laser_report(grid)
+	await pilot.face(_gfloor(grid, 0.0, 0.0) + Vector3.UP * 1.0, 0.05, 1.5)  # look at the grid for the shot
 	await shot("laser_%s" % grid.pattern)
 	var tw: CrewTweak = Tweak.crew()
 	var half: float = grid.size_m.x * 0.5
@@ -1532,25 +1533,35 @@ func _test_hole() -> bool:
 	if rope == null or hoist == null:
 		return await _fail("no rope ladder (%s) / hoist (%s) at the hole" % [rope, hoist])
 	_enable_hole(rope, hoist)
-	var tw_stand: Vector3 = pilot.stand_point(_of(OF_HOLE_AT) + Vector3(-1.4, 0.0, 0.0))
-	if not await _go(tw_stand, 0.4, 240.0):
+	# The hole's centre: C's LidMarker (24, 0, 14.6) when present, else the doc's (24, 14).
+	var lid: Node3D = _x("lid")
+	var hole: Vector3 = Vector3(lid.global_position.x, OF_FFL[1], lid.global_position.z) if lid != null else _of(OF_HOLE_AT)
+	# A player throws a bag down the hole from its edge, looking straight down (G is always a throw: release 0.7 m
+	# ahead, the elevation clamps at throw_min_elev_deg): stand 1.0 m from the centre (0.6 m radius + capsule).
+	var tw_stand: Vector3 = pilot.stand_point(hole + Vector3(-1.0, 0.0, 0.0))
+	if not await _go(pilot.stand_point(hole + Vector3(-2.0, 0.0, 0.0)), 0.4, 240.0):
 		return await _fail("to TW by the hole")
 	if await _get_bag(LOOT_MEDIUM) == null:
 		return await _fail("bag")
-	var r: Dictionary = await _throw(_of(OF_HOLE_AT), -60.0)
+	await _walk_straight(tw_stand, 5.0, false, 0.12)
+	var r: Dictionary = await _throw(hole, -89.0)
 	var p: Vector3 = r.get("rest", Vector3.ZERO)
 	var in_vt: bool = absf(p.y - OF_FFL[0]) < 0.6 and _in_rect(p, OF_VT_RECT)
 	_throw_note("down the hole", r, "OK in VT" if in_vt else "FAIL not in VT")
 	await shot("hole_throw")
+	# Not fatal yet: the ladder and the hoist are still checked (a bag from the vault floor stands in).
 	if not in_vt:
-		return await _fail("bag thrown down the hole did not land in VT")
+		note("FINDING a bag thrown down the hole from its edge rests at %s, not in VT" % Po5Pilot._v(p))
 	if not await _climb(rope, false):
 		return await _fail("rope ladder down")
 	await shot("vault_floor")
-	var thrown: LootBag = _bag_near(p, 1.5)
-	if thrown == null or not await pilot.use(_comp(thrown), 30.0, func() -> bool: return pilot.crew.is_carrying_bag()):
-		return await _fail("pick up the thrown bag in VT")
-	var bottom: int = _lift_nearest_landing(hoist, _of(Vector3(OF_HOLE_AT.x, OF_FFL[0], OF_HOLE_AT.z)))
+	var thrown: LootBag = _bag_near(p, 1.5) if in_vt else null
+	if thrown != null:
+		if not await pilot.use(_comp(thrown), 30.0, func() -> bool: return pilot.crew.is_carrying_bag()):
+			return await _fail("pick up the thrown bag in VT")
+	elif await _get_bag(LOOT_MEDIUM) == null:
+		return await _fail("bag in VT")
+	var bottom: int = _lift_nearest_landing(hoist, Vector3(hole.x, OF_FFL[0], hole.z))
 	var top: int = 1 - bottom if hoist.landing_count() == 2 else 0
 	var car_stand: Vector3 = pilot.stand_point(hoist.landing_transform(bottom).origin + Vector3(0.0, 0.0, 1.2))
 	if not await _lift_to(hoist, bottom, car_stand):
@@ -1566,6 +1577,8 @@ func _test_hole() -> bool:
 		return await _fail("bag out of the hoist in TW")
 	note("HOIST cycle OK: the bag rode up and was taken out in TW")
 	await shot("hoist_done")
+	if not in_vt:
+		return await _fail("bag thrown down the hole did not land in VT (rope ladder + hoist cycle OK)")
 	return true
 
 
@@ -1576,8 +1589,18 @@ func _enable_hole(rope: Ladder, hoist: BagLift) -> void:
 			n.call(&"set_enabled", true)
 	if not rope.usable:
 		rope.usable = true
-	note("SHORTCUT hole: rope ladder usable %s, hoist %s (burn-through objective vault_breach state %d)" % [rope.usable,
-		hoist.name, _objective(&"vault_breach")])
+	# The burn-through drops the lid (C's G1: Geometry/Building/Lid/Lid StaticBody3D, meta burn_lid; mesh LidPanel).
+	var lids: int = 0
+	for n: Node in rt.find_children("*", "", true, false):
+		if (n is CollisionObject3D and n.has_meta(&"burn_lid")) or String(n.name) == "LidPanel":
+			(n as Node3D).visible = false
+			for cs: Node in n.find_children("*", "CollisionShape3D", true, false):
+				(cs as CollisionShape3D).set_deferred(&"disabled", true)
+			if n is CollisionObject3D:
+				(n as CollisionObject3D).set_deferred(&"collision_layer", 0)
+			lids += 1
+	note("SHORTCUT hole (no burn-through in the G1 mission): rope ladder usable %s, hoist %s enabled, lid nodes "
+		% [rope.usable, hoist.name] + "dropped %d (vault_breach objective state %d)" % [lids, _objective(&"vault_breach")])
 
 
 func _bag_near(p: Vector3, r: float) -> LootBag:
