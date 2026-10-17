@@ -64,7 +64,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## orientation: Flush and oriented
 
-- WARN `Props/K12/Monitor_1` @ (33.03, 4.35, 9.12): monitor without a `faces` link (should face its chair/seating)
+- WARN `Props/K12/Monitor_1` @ (32.23, 4.35, 9.12): monitor without a `faces` link (should face its chair/seating)
 - WARN `Props/K12/Monitor_2` @ (32.74, 4.35, 11.40): monitor without a `faces` link (should face its chair/seating)
 
 ## scale: Human scale
@@ -175,12 +175,12 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## slopes: No walkable slope < 50° outside the play mesh
 
-- 153 x 105 columns (0.25 m), 79107 surface samples, 0 collider(s) with reachable walkable surfaces outside play
+- 153 x 105 columns (0.25 m), 79109 surface samples, 0 collider(s) with reachable walkable surfaces outside play
 
 
 ## navmesh: Navmesh
 
-- navmesh: 1836 polygons, cell 0.10/0.10 m
+- navmesh: 1835 polygons, cell 0.10/0.10 m
 - 234 markers checked
 | room | walkable samples | covered | coverage |
 |---|---|---|---|
@@ -201,7 +201,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `Rooms/RoomK9` | 20 | 20 | 100% |
 | `Rooms/RoomK10` | 18 | 18 | 100% |
 | `Rooms/RoomK11` | 16 | 16 | 100% |
-| `Rooms/RoomK12` | 26 | 26 | 100% |
+| `Rooms/RoomK12` | 29 | 29 | 100% |
 | `Rooms/RoomK13` | 30 | 30 | 100% |
 | `Rooms/RoomK14` | 15 | 15 | 100% |
 | `Rooms/RoomK15` | 23 | 23 | 100% |
@@ -412,7 +412,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `GalleryWalkway` | 1698 | 354036 | 3 |
 | `ArtHallLasers` | 483 | 117354 | 1 |
 | `StudySafe` | 1522 | 346116 | 1 |
-| `ServerCage` | 649 | 150890 | 1 |
+| `ServerCage` | 648 | 150870 | 1 |
 | `SecurityRoom` | 830 | 197846 | 1 |
 | `SouthSpine` | 2299 | 490382 | 4 |
 | `TerraceWest` | 2162 | 448790 | 4 |

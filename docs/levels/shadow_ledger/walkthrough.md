@@ -111,7 +111,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/RoofSpawn1` | `Gameplay/Misc/PhoneReception/UsePoint` | use_point | 20.0 | 31.0 | 1.55 | ok |
 | `Spawns/RoofSpawn1` | `Gameplay/Misc/PhoneAssistant/UsePoint` | use_point | 27.7 | 43.0 | 1.55 | ok |
 | `Spawns/RoofSpawn1` | `Gameplay/Misc/PhoneMoor/UsePoint` | use_point | 33.1 | 46.9 | 1.42 | ok |
-| `Spawns/RoofSpawn1` | `Gameplay/Misc/PhoneIT/UsePoint` | use_point | 31.6 | 52.3 | 1.65 | ok |
+| `Spawns/RoofSpawn1` | `Gameplay/Misc/PhoneIT/UsePoint` | use_point | 31.6 | 52.2 | 1.65 | ok |
 | `Spawns/RoofSpawn1` | `Gameplay/Misc/PhoneSecurity/UsePoint` | use_point | 26.2 | 48.1 | 1.84 | ok |
 | `Spawns/RoofSpawn1` | `Gameplay/Misc/PhoneBreakRoom/UsePoint` | use_point | 12.4 | 38.5 | 3.11 | detour (whitelisted) |
 | `Spawns/RoofSpawn1` | `Gameplay/Misc/PhoneGuestSuite/UsePoint` | use_point | 5.0 | 35.4 | 7.14 | detour (whitelisted) |
@@ -242,7 +242,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/RoofSpawn2` | `Gameplay/Misc/PhoneReception/UsePoint` | use_point | 19.1 | 30.0 | 1.57 | ok |
 | `Spawns/RoofSpawn2` | `Gameplay/Misc/PhoneAssistant/UsePoint` | use_point | 26.7 | 42.0 | 1.57 | ok |
 | `Spawns/RoofSpawn2` | `Gameplay/Misc/PhoneMoor/UsePoint` | use_point | 32.0 | 45.9 | 1.43 | ok |
-| `Spawns/RoofSpawn2` | `Gameplay/Misc/PhoneIT/UsePoint` | use_point | 30.4 | 51.3 | 1.68 | ok |
+| `Spawns/RoofSpawn2` | `Gameplay/Misc/PhoneIT/UsePoint` | use_point | 30.4 | 51.2 | 1.68 | ok |
 | `Spawns/RoofSpawn2` | `Gameplay/Misc/PhoneSecurity/UsePoint` | use_point | 25.0 | 47.1 | 1.88 | ok |
 | `Spawns/RoofSpawn2` | `Gameplay/Misc/PhoneBreakRoom/UsePoint` | use_point | 11.9 | 37.5 | 3.16 | detour (whitelisted) |
 | `Spawns/RoofSpawn2` | `Gameplay/Misc/PhoneGuestSuite/UsePoint` | use_point | 5.3 | 34.4 | 6.46 | detour (whitelisted) |
@@ -373,7 +373,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/RoofSpawn3` | `Gameplay/Misc/PhoneReception/UsePoint` | use_point | 18.3 | 29.1 | 1.59 | ok |
 | `Spawns/RoofSpawn3` | `Gameplay/Misc/PhoneAssistant/UsePoint` | use_point | 25.7 | 41.0 | 1.60 | ok |
 | `Spawns/RoofSpawn3` | `Gameplay/Misc/PhoneMoor/UsePoint` | use_point | 30.9 | 44.9 | 1.45 | ok |
-| `Spawns/RoofSpawn3` | `Gameplay/Misc/PhoneIT/UsePoint` | use_point | 29.3 | 50.4 | 1.72 | ok |
+| `Spawns/RoofSpawn3` | `Gameplay/Misc/PhoneIT/UsePoint` | use_point | 29.3 | 50.3 | 1.72 | ok |
 | `Spawns/RoofSpawn3` | `Gameplay/Misc/PhoneSecurity/UsePoint` | use_point | 23.9 | 46.2 | 1.93 | ok |
 | `Spawns/RoofSpawn3` | `Gameplay/Misc/PhoneBreakRoom/UsePoint` | use_point | 11.5 | 36.6 | 3.18 | detour (whitelisted) |
 | `Spawns/RoofSpawn3` | `Gameplay/Misc/PhoneGuestSuite/UsePoint` | use_point | 5.9 | 32.6 | 5.50 | detour (whitelisted) |
@@ -504,7 +504,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/RoofSpawn4` | `Gameplay/Misc/PhoneReception/UsePoint` | use_point | 17.5 | 28.2 | 1.61 | ok |
 | `Spawns/RoofSpawn4` | `Gameplay/Misc/PhoneAssistant/UsePoint` | use_point | 24.7 | 40.1 | 1.62 | ok |
 | `Spawns/RoofSpawn4` | `Gameplay/Misc/PhoneMoor/UsePoint` | use_point | 29.9 | 44.1 | 1.47 | ok |
-| `Spawns/RoofSpawn4` | `Gameplay/Misc/PhoneIT/UsePoint` | use_point | 28.2 | 49.5 | 1.76 | ok |
+| `Spawns/RoofSpawn4` | `Gameplay/Misc/PhoneIT/UsePoint` | use_point | 28.2 | 49.4 | 1.75 | ok |
 | `Spawns/RoofSpawn4` | `Gameplay/Misc/PhoneSecurity/UsePoint` | use_point | 22.8 | 45.3 | 1.99 | ok |
 | `Spawns/RoofSpawn4` | `Gameplay/Misc/PhoneBreakRoom/UsePoint` | use_point | 11.2 | 35.7 | 3.18 | detour (whitelisted) |
 | `Spawns/RoofSpawn4` | `Gameplay/Misc/PhoneGuestSuite/UsePoint` | use_point | 6.7 | 31.0 | 4.63 | detour (whitelisted) |
@@ -635,7 +635,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/ServiceSpawn1` | `Gameplay/Misc/PhoneReception/UsePoint` | use_point | 10.9 | 35.8 | 3.28 | detour (whitelisted) |
 | `Spawns/ServiceSpawn1` | `Gameplay/Misc/PhoneAssistant/UsePoint` | use_point | 7.2 | 32.5 | 4.49 | detour (whitelisted) |
 | `Spawns/ServiceSpawn1` | `Gameplay/Misc/PhoneMoor/UsePoint` | use_point | 9.0 | 36.3 | 4.04 | detour (whitelisted) |
-| `Spawns/ServiceSpawn1` | `Gameplay/Misc/PhoneIT/UsePoint` | use_point | 7.9 | 41.7 | 5.27 | detour (whitelisted) |
+| `Spawns/ServiceSpawn1` | `Gameplay/Misc/PhoneIT/UsePoint` | use_point | 7.9 | 41.6 | 5.25 | detour (whitelisted) |
 | `Spawns/ServiceSpawn1` | `Gameplay/Misc/PhoneSecurity/UsePoint` | use_point | 7.4 | 22.1 | 2.97 | ok |
 | `Spawns/ServiceSpawn1` | `Gameplay/Misc/PhoneBreakRoom/UsePoint` | use_point | 23.3 | 40.9 | 1.76 | ok |
 | `Spawns/ServiceSpawn1` | `Gameplay/Misc/PhoneGuestSuite/UsePoint` | use_point | 26.4 | 59.1 | 2.24 | ok |
@@ -766,7 +766,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/ServiceSpawn2` | `Gameplay/Misc/PhoneReception/UsePoint` | use_point | 11.9 | 36.4 | 3.05 | detour (whitelisted) |
 | `Spawns/ServiceSpawn2` | `Gameplay/Misc/PhoneAssistant/UsePoint` | use_point | 7.4 | 33.1 | 4.45 | detour (whitelisted) |
 | `Spawns/ServiceSpawn2` | `Gameplay/Misc/PhoneMoor/UsePoint` | use_point | 8.3 | 36.9 | 4.45 | detour (whitelisted) |
-| `Spawns/ServiceSpawn2` | `Gameplay/Misc/PhoneIT/UsePoint` | use_point | 7.0 | 42.2 | 6.05 | detour (whitelisted) |
+| `Spawns/ServiceSpawn2` | `Gameplay/Misc/PhoneIT/UsePoint` | use_point | 7.0 | 42.2 | 6.04 | detour (whitelisted) |
 | `Spawns/ServiceSpawn2` | `Gameplay/Misc/PhoneSecurity/UsePoint` | use_point | 7.4 | 22.7 | 3.07 | detour (whitelisted) |
 | `Spawns/ServiceSpawn2` | `Gameplay/Misc/PhoneBreakRoom/UsePoint` | use_point | 24.2 | 41.5 | 1.71 | ok |
 | `Spawns/ServiceSpawn2` | `Gameplay/Misc/PhoneGuestSuite/UsePoint` | use_point | 27.6 | 59.7 | 2.17 | ok |
@@ -897,7 +897,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/ServiceSpawn3` | `Gameplay/Misc/PhoneReception/UsePoint` | use_point | 11.6 | 34.6 | 2.99 | ok |
 | `Spawns/ServiceSpawn3` | `Gameplay/Misc/PhoneAssistant/UsePoint` | use_point | 8.5 | 31.3 | 3.69 | detour (whitelisted) |
 | `Spawns/ServiceSpawn3` | `Gameplay/Misc/PhoneMoor/UsePoint` | use_point | 10.0 | 35.0 | 3.51 | detour (whitelisted) |
-| `Spawns/ServiceSpawn3` | `Gameplay/Misc/PhoneIT/UsePoint` | use_point | 7.5 | 40.4 | 5.38 | detour (whitelisted) |
+| `Spawns/ServiceSpawn3` | `Gameplay/Misc/PhoneIT/UsePoint` | use_point | 7.5 | 40.3 | 5.37 | detour (whitelisted) |
 | `Spawns/ServiceSpawn3` | `Gameplay/Misc/PhoneSecurity/UsePoint` | use_point | 6.3 | 20.8 | 3.33 | detour (whitelisted) |
 | `Spawns/ServiceSpawn3` | `Gameplay/Misc/PhoneBreakRoom/UsePoint` | use_point | 22.5 | 39.7 | 1.76 | ok |
 | `Spawns/ServiceSpawn3` | `Gameplay/Misc/PhoneGuestSuite/UsePoint` | use_point | 26.3 | 57.9 | 2.20 | ok |
@@ -1028,7 +1028,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/ServiceSpawn4` | `Gameplay/Misc/PhoneReception/UsePoint` | use_point | 12.6 | 35.4 | 2.82 | ok |
 | `Spawns/ServiceSpawn4` | `Gameplay/Misc/PhoneAssistant/UsePoint` | use_point | 8.6 | 32.1 | 3.71 | detour (whitelisted) |
 | `Spawns/ServiceSpawn4` | `Gameplay/Misc/PhoneMoor/UsePoint` | use_point | 9.3 | 35.9 | 3.84 | detour (whitelisted) |
-| `Spawns/ServiceSpawn4` | `Gameplay/Misc/PhoneIT/UsePoint` | use_point | 6.5 | 41.3 | 6.34 | detour (whitelisted) |
+| `Spawns/ServiceSpawn4` | `Gameplay/Misc/PhoneIT/UsePoint` | use_point | 6.5 | 41.2 | 6.32 | detour (whitelisted) |
 | `Spawns/ServiceSpawn4` | `Gameplay/Misc/PhoneSecurity/UsePoint` | use_point | 6.2 | 21.7 | 3.49 | detour (whitelisted) |
 | `Spawns/ServiceSpawn4` | `Gameplay/Misc/PhoneBreakRoom/UsePoint` | use_point | 23.5 | 40.5 | 1.73 | ok |
 | `Spawns/ServiceSpawn4` | `Gameplay/Misc/PhoneGuestSuite/UsePoint` | use_point | 27.4 | 58.7 | 2.14 | ok |
@@ -1159,7 +1159,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/OobRoof1` | `Gameplay/Misc/PhoneReception/UsePoint` | use_point | 18.9 | 30.0 | 1.59 | ok |
 | `Spawns/OobRoof1` | `Gameplay/Misc/PhoneAssistant/UsePoint` | use_point | 26.8 | 42.0 | 1.57 | ok |
 | `Spawns/OobRoof1` | `Gameplay/Misc/PhoneMoor/UsePoint` | use_point | 32.3 | 45.9 | 1.42 | ok |
-| `Spawns/OobRoof1` | `Gameplay/Misc/PhoneIT/UsePoint` | use_point | 31.5 | 51.3 | 1.63 | ok |
+| `Spawns/OobRoof1` | `Gameplay/Misc/PhoneIT/UsePoint` | use_point | 31.5 | 51.2 | 1.63 | ok |
 | `Spawns/OobRoof1` | `Gameplay/Misc/PhoneSecurity/UsePoint` | use_point | 26.3 | 47.1 | 1.79 | ok |
 | `Spawns/OobRoof1` | `Gameplay/Misc/PhoneBreakRoom/UsePoint` | use_point | 13.8 | 37.5 | 2.71 | ok |
 | `Spawns/OobRoof1` | `Gameplay/Misc/PhoneGuestSuite/UsePoint` | use_point | 3.9 | 34.4 | 8.86 | detour (whitelisted) |
@@ -1290,7 +1290,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/OobRoof2` | `Gameplay/Misc/PhoneReception/UsePoint` | use_point | 18.0 | 28.9 | 1.61 | ok |
 | `Spawns/OobRoof2` | `Gameplay/Misc/PhoneAssistant/UsePoint` | use_point | 25.7 | 40.9 | 1.59 | ok |
 | `Spawns/OobRoof2` | `Gameplay/Misc/PhoneMoor/UsePoint` | use_point | 31.2 | 44.8 | 1.43 | ok |
-| `Spawns/OobRoof2` | `Gameplay/Misc/PhoneIT/UsePoint` | use_point | 30.3 | 50.2 | 1.66 | ok |
+| `Spawns/OobRoof2` | `Gameplay/Misc/PhoneIT/UsePoint` | use_point | 30.3 | 50.1 | 1.65 | ok |
 | `Spawns/OobRoof2` | `Gameplay/Misc/PhoneSecurity/UsePoint` | use_point | 25.1 | 46.0 | 1.83 | ok |
 | `Spawns/OobRoof2` | `Gameplay/Misc/PhoneBreakRoom/UsePoint` | use_point | 13.4 | 36.4 | 2.72 | ok |
 | `Spawns/OobRoof2` | `Gameplay/Misc/PhoneGuestSuite/UsePoint` | use_point | 4.3 | 33.3 | 7.66 | detour (whitelisted) |
@@ -1421,7 +1421,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/OobRoof3` | `Gameplay/Misc/PhoneReception/UsePoint` | use_point | 17.1 | 27.8 | 1.63 | ok |
 | `Spawns/OobRoof3` | `Gameplay/Misc/PhoneAssistant/UsePoint` | use_point | 24.7 | 39.8 | 1.61 | ok |
 | `Spawns/OobRoof3` | `Gameplay/Misc/PhoneMoor/UsePoint` | use_point | 30.1 | 43.7 | 1.45 | ok |
-| `Spawns/OobRoof3` | `Gameplay/Misc/PhoneIT/UsePoint` | use_point | 29.1 | 49.1 | 1.69 | ok |
+| `Spawns/OobRoof3` | `Gameplay/Misc/PhoneIT/UsePoint` | use_point | 29.1 | 49.0 | 1.68 | ok |
 | `Spawns/OobRoof3` | `Gameplay/Misc/PhoneSecurity/UsePoint` | use_point | 24.0 | 44.9 | 1.87 | ok |
 | `Spawns/OobRoof3` | `Gameplay/Misc/PhoneBreakRoom/UsePoint` | use_point | 13.0 | 35.3 | 2.71 | ok |
 | `Spawns/OobRoof3` | `Gameplay/Misc/PhoneGuestSuite/UsePoint` | use_point | 5.1 | 32.2 | 6.36 | detour (whitelisted) |
