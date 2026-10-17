@@ -206,6 +206,7 @@ var _secured_ids: Dictionary[int, bool] = {}
 var _peaks: Dictionary[int, Dictionary] = {}
 var _results: PackedStringArray = PackedStringArray()
 var _climbing: bool = false
+var _grid_floor: Dictionary[LaserGrid, float] = {}
 var _resolve: bool = false
 var _resolve_launch: bool = false
 var _line: String = ""
@@ -904,13 +905,33 @@ func _bag_into_car(lift: BagLift, stand: Vector3) -> bool:
 # --- Laser grids (heist-agnostic) -----------------------------------------------------------------------------------
 
 ## Lowest beam face above the grid's floor pivot (static / timed_off: horizontal beams); 0 for sweeping (full height).
-static func _lowest_face(grid: LaserGrid) -> float:
+func _lowest_face(grid: LaserGrid) -> float:
 	if grid.pattern == LaserGrid.PATTERN_SWEEPING or grid.beam_total() == 0:
 		return 0.0
 	var lo: float = INF
 	for i: int in grid.beam_total():
 		lo = minf(lo, grid.beam_offset(i))
-	return lo - Tweak.interaction().laser_beam_thickness_m * 0.5
+	return lo + _floor_off(grid) - Tweak.interaction().laser_beam_thickness_m * 0.5
+
+
+## Height of the grid's pivot above the floor under it (0 for a floor-standing grid; C's G1 lz_static grid hangs at
+## +1.0 m so a crouched crew passes under it). Ray down from the pivot, cached per grid.
+func _floor_off(grid: LaserGrid) -> float:
+	if _grid_floor.has(grid):
+		return _grid_floor[grid]
+	var from: Vector3 = grid.global_position + Vector3.UP * 0.05
+	var q: PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.create(from, from + Vector3.DOWN * 6.0, 1 | 2)
+	if pilot != null:
+		q.exclude = [pilot.crew.get_rid()]
+	var hit: Dictionary = grid.get_world_3d().direct_space_state.intersect_ray(q)
+	var off: float = maxf(grid.global_position.y - (hit["position"] as Vector3).y, 0.0) if not hit.is_empty() else 0.0
+	_grid_floor[grid] = off
+	return off
+
+
+## World point on the floor under the grid at local (lx, lz).
+func _gfloor(grid: LaserGrid, lx: float, lz: float) -> Vector3:
+	return grid.global_transform * Vector3(lx, -_floor_off(grid), lz)
 
 
 ## Clear width beside the grid on each side (-x, +x local) up to the first wall (rays at 3 heights), m.
@@ -922,7 +943,7 @@ func _gaps(grid: LaserGrid) -> Vector2:
 		var side: float = -1.0 if k == 0 else 1.0
 		var best: float = 3.0
 		for h: float in [0.3, 0.9, 1.5]:
-			var from: Vector3 = grid.global_position + ax * side * (grid.size_m.x * 0.5 + 0.01) + Vector3.UP * h
+			var from: Vector3 = grid.global_position + ax * side * (grid.size_m.x * 0.5 + 0.01) + Vector3.UP * (h - _floor_off(grid))
 			var q: PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.create(from, from + ax * side * 3.0, 1 | 2)
 			q.exclude = [pilot.crew.get_rid()]
 			var hit: Dictionary = space.intersect_ray(q)
@@ -933,7 +954,7 @@ func _gaps(grid: LaserGrid) -> Vector2:
 
 
 ## Whether the beams leave the local-x lane [lo, hi] clear at grid time `t` (crouched: under horizontal beams).
-static func _lane_clear(grid: LaserGrid, t: float, lo: float, hi: float, crouch: bool) -> bool:
+func _lane_clear(grid: LaserGrid, t: float, lo: float, hi: float, crouch: bool) -> bool:
 	if not grid.active or grid.tripped or grid.beam_total() == 0:
 		return true
 	var th: float = Tweak.interaction().laser_beam_thickness_m * 0.5
@@ -956,7 +977,7 @@ static func _lane_clear(grid: LaserGrid, t: float, lo: float, hi: float, crouch:
 
 
 ## Longest clear window (s) for a capsule lane centred at local x `lx` over two cycles (static: INF or 0).
-static func _longest_window(grid: LaserGrid, lx: float, crouch: bool) -> float:
+func _longest_window(grid: LaserGrid, lx: float, crouch: bool) -> float:
 	var r: float = Tweak.crew().capsule_radius + 0.05
 	if grid.pattern == LaserGrid.PATTERN_STATIC:
 		return INF if _lane_clear(grid, 0.0, lx - r, lx + r, crouch) else 0.0
@@ -980,20 +1001,29 @@ func _laser_report(grid: LaserGrid) -> Dictionary:
 	var v_med: float = tw.walk_speed * tw.bag_speed_mult[Enums.LootWeight.MEDIUM]
 	var need: float = 4.0 / v_med
 	var half: float = grid.size_m.x * 0.5
-	var lanes: Array[float] = [-half + 0.45, 0.0, half - 0.45]
+	# Every 0.1 m lane the capsule fits in (walls at the gaps' far side), outermost first.
+	var lanes: Array[float] = []
+	var lane_r: float = tw.capsule_radius + 0.05
+	var lx0: float = -(half + g.x) + lane_r
+	while lx0 <= half + g.y - lane_r + 0.001:
+		lanes.append(lx0)
+		lx0 += 0.1
 	var wins: PackedStringArray = PackedStringArray()
 	var best_win: float = 0.0
 	var best_lane: float = 0.0
 	for lx: float in lanes:
 		var w: float = _longest_window(grid, lx, false)
-		wins.append("x%+.2f: %.2f s" % [lx, w])
+		if absf(lx - lanes[0]) < 0.01 or absf(lx - lanes[lanes.size() - 1]) < 0.01 or absf(lx) < 0.05:
+			wins.append("x%+.2f: %.2f s" % [lx, w])
 		if w > best_win:
 			best_win = w
 			best_lane = lx
+	wins.append("best x%+.2f: %.2f s" % [best_lane, best_win])
 	var rep: Dictionary = {"gap_lo": g.x, "gap_hi": g.y, "face": face, "need_s": need, "best_window": best_win,
 		"best_lane": best_lane}
-	note("LASER %s pattern %s size %s at %s: gaps beside it %.2f / %.2f m; lowest beam face %.3f m (crouch %.2f);"
-		% [grid.name, grid.pattern, grid.size_m, Po5Pilot._v(grid.global_position), g.x, g.y, face,
+	note(("LASER %s pattern %s size %s at %s: gaps beside it %.2f / %.2f m; lowest beam face %.3f m above the floor"
+		+ " (pivot +%.2f m; crouch %.2f);")
+		% [grid.name, grid.pattern, grid.size_m, Po5Pilot._v(grid.global_position), g.x, g.y, face, _floor_off(grid),
 		tw.height_crouched] + " period %.1f off %.1f; standing windows %s; a MEDIUM bag (%.2f m/s) needs %.2f s for 4 m"
 		% [grid.period_s, grid.off_s, ", ".join(wins), v_med, need])
 	return rep
@@ -1025,8 +1055,8 @@ func _path_safe(to: Vector3) -> bool:
 ## line across the plane.
 func _lane_ok(grid: LaserGrid, lx: float, lead: float) -> bool:
 	var xf: Transform3D = grid.global_transform
-	var a: Vector3 = xf * Vector3(lx, 0.0, -lead)
-	var b: Vector3 = xf * Vector3(lx, 0.0, lead)
+	var a: Vector3 = _gfloor(grid, lx, -lead)
+	var b: Vector3 = _gfloor(grid, lx, lead)
 	for q: Vector3 in [a, b]:
 		var on: Vector3 = pilot.stand_point(q)
 		if pilot.flat_dist(on, q) > 0.2 or absf(on.y - q.y) > 0.4:
@@ -1043,8 +1073,8 @@ func _laser_cross(grid: LaserGrid, lx: float, crouch: bool, lead: float) -> bool
 	var xf: Transform3D = grid.global_transform
 	var side: float = signf((xf.affine_inverse() * pilot.crew.global_position).z)
 	side = side if side != 0.0 else -1.0
-	var start: Vector3 = pilot.stand_point(xf * Vector3(lx, 0.0, side * lead))
-	var end: Vector3 = pilot.stand_point(xf * Vector3(lx, 0.0, -side * lead))
+	var start: Vector3 = pilot.stand_point(_gfloor(grid, lx, side * lead))
+	var end: Vector3 = pilot.stand_point(_gfloor(grid, lx, -side * lead))
 	var lane_err: float = absf((xf.affine_inverse() * start).x - lx) + absf((xf.affine_inverse() * end).x - lx)
 	if lane_err > 0.25:
 		note("laser lane x%+.2f: navmesh ends off the lane (%s -> %s)" % [lx, Po5Pilot._v(start), Po5Pilot._v(end)])
@@ -1055,9 +1085,10 @@ func _laser_cross(grid: LaserGrid, lx: float, crouch: bool, lead: float) -> bool
 	var mult: float = tw.bag_speed_mult[int(bag.weight)] if bag != null else 1.0
 	var v: float = (tw.crouch_speed if crouch else tw.walk_speed) * mult
 	var d0: float = absf((xf.affine_inverse() * pilot.crew.global_position).z)
-	var band: float = tw.capsule_radius + maxf(grid.size_m.z * 0.5, 0.02) + 0.08
+	# Tight margins: C's G1 lz_sweep (3 beams / 8 s over 3.3 m) leaves 0.58 s at best per lane.
+	var band: float = tw.capsule_radius + maxf(grid.size_m.z * 0.5, 0.02) + 0.03
 	var t_in: float = maxf(d0 - band, 0.0) / v
-	var t_out: float = (d0 + band) / v + 0.3  # + the time to get up to speed / crouch settle
+	var t_out: float = (d0 + band) / v + 0.12  # + the time to get up to speed
 	var r: float = tw.capsule_radius + 0.05
 	if crouch:
 		pilot.inp.press(&"crouch")
@@ -1105,7 +1136,7 @@ func _laser_test(grid: LaserGrid, lead: float, require_of: bool) -> bool:
 		var lx: float = side * (half + gw * 0.5)
 		var ok_lane: bool = gw >= tw.capsule_radius * 2.0 + 0.05 and _lane_ok(grid, lx, lead)
 		var near_side: float = signf((grid.global_transform.affine_inverse() * pilot.crew.global_position).z)
-		var start_pt: Vector3 = pilot.stand_point(grid.global_transform * Vector3(lx, 0.0,
+		var start_pt: Vector3 = pilot.stand_point(_gfloor(grid, lx,
 			(near_side if near_side != 0.0 else -1.0) * lead))
 		var safe: bool = ok_lane and _path_safe(start_pt)
 		note("laser gap %s: %.2f m, lane %s%s" % ["-x" if side < 0.0 else "+x", gw, "walkable" if ok_lane
@@ -1132,9 +1163,13 @@ func _laser_test(grid: LaserGrid, lead: float, require_of: bool) -> bool:
 			note("crouch-under not possible on this grid (lowest face %.3f m): gap only" % face)
 	else:
 		if float(rep["best_window"]) < float(rep["need_s"]):
-			note("FINDING longest %s window %.2f s < %.2f s for 4 m with a MEDIUM bag (§7.1)" % [grid.pattern,
-				float(rep["best_window"]), float(rep["need_s"])])
-			if require_of:
+			# The plane itself takes (capsule + beam depth) / speed to cross; below that no timing gets through.
+			var plane_s: float = (tw.capsule_radius * 2.0 + grid.size_m.z + 0.06) / (tw.walk_speed
+				* tw.bag_speed_mult[Enums.LootWeight.MEDIUM]) + 0.12
+			note("FINDING longest %s window %.2f s < %.2f s for 4 m with a MEDIUM bag (§7.1); crossing the plane alone"
+				% [grid.pattern, float(rep["best_window"]), float(rep["need_s"])] + " needs %.2f s: trying a real crossing"
+				% plane_s)
+			if require_of and float(rep["best_window"]) < plane_s:
 				return await _fail("laser window")
 		lanes.append({"x": float(rep["best_lane"]), "crouch": false, "what": "timed window"})
 		if gap >= tw.capsule_radius * 2.0 + 0.05:
