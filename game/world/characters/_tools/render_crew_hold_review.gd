@@ -14,6 +14,8 @@
 ##     [--props=book,...]: that hand prop (world/characters/_props/hand_<prop>.tscn, at its own socket) on every bot
 ##     [--chair=res://...tscn] [--chair_off=x,y,z]: a chair under every bot (its origin at the rig's, turned with it,
 ##     offset in the rig's space), for the seated clips
+##     [--origin=x,y,z] [--yaw=deg]: stand the view there (floor point, facing yaw; 0 = -Z) instead of the crew spawn
+##     (e.g. a dark corner of the map, D-132 lit / dark review)
 ## Owner: ENV D.
 extends Node
 
@@ -52,6 +54,9 @@ var _chair: String = ""
 var _chair_off: Vector3 = Vector3.ZERO
 ## --close_h=<m>: the close-up camera's height and look-at height (seated bodies: ~0.7)
 var _close_h: float = 1.12
+## --origin=x,y,z / --yaw=deg: the view's floor point and facing instead of the crew spawn's
+var _origin: Variant = null
+var _yaw: float = 0.0
 ## --debug_surfaces: every mesh surface of the rigs in its own flat colour (the legend is printed): find a stray piece
 var _debug_surfaces: bool = false
 ## --grid=N [--grid_view=full|close]: the sheet is a grid of one view per pose, N per row (motion strips: list one clip at
@@ -79,6 +84,10 @@ func _ready() -> void:
 			"chair_off":
 				var c: PackedStringArray = v.split(",")
 				_chair_off = Vector3(float(c[0]), float(c[1]), float(c[2]))
+			"origin":
+				var oc: PackedStringArray = v.split(",")
+				_origin = Vector3(float(oc[0]), float(oc[1]), float(oc[2]))
+			"yaw": _yaw = float(v)
 			"after": _poses = AFTER_POSES
 			"poses":   # --poses=interact_low:0.6,drill_place:0.8 (any clips, the same for every bot)
 				_poses = []
@@ -103,6 +112,9 @@ func _ready() -> void:
 	crew.visible = false   # the review camera stands where the player is
 	var o: Vector3 = crew.global_position
 	var fwd: Vector3 = -crew.global_basis.z
+	if _origin != null:
+		o = _origin as Vector3
+		fwd = Vector3.FORWARD.rotated(Vector3.UP, deg_to_rad(_yaw))
 	fwd.y = 0.0
 	fwd = fwd.normalized()
 	var side: Vector3 = fwd.cross(Vector3.UP).normalized()
