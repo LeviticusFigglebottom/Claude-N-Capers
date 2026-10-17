@@ -23,6 +23,8 @@ VARIANTS = {
     "prop_window_w100_h120_sash": {"w": 1.0, "h": 1.2, "style": "sash", "cat": {"prefab": "window", "kind": "window"}},
     "prop_window_w100_h60_barred": {"w": 1.0, "h": 0.6, "style": "barred", "cat": {"prefab": "window", "kind": "window"}},
     "prop_window_w100_h60_frosted": {"w": 1.0, "h": 0.6, "style": "frosted", "cat": {"prefab": "window", "kind": "window"}},
+    # D-142: the Glasshouse U3 staff WC's 1.0 x 1.2 frosted window (static glazing, opaque for stealth vision)
+    "prop_window_w100_h120_frosted": {"w": 1.0, "h": 1.2, "style": "frosted", "cat": {"prefab": "window", "kind": "window"}},
     "prop_window_w120_h210": {"w": 1.2, "h": 2.1, "style": "door", "cat": {"prefab": "window", "kind": "window"}},
     "prop_window_w120_h210_sash": {"w": 1.2, "h": 2.1, "style": "door_sash", "cat": {"prefab": "window", "kind": "window"}},
 }

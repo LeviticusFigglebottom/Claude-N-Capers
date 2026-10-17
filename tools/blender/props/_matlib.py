@@ -198,9 +198,11 @@ EMISSIVE: dict[str, dict] = {
     "emit_laser": {"color": "#3A0806", "emission": "#FF0E06", "energy": 1.4},
 }
 
-# Transparent variants of glass_clear (library albedo with alpha x colour).
+# Transparent variants of the library glass (library albedo with alpha x colour). D-142: glass_frosted is the texgen
+# `glass_frosted` library material untinted (its own tint #E4E8E6, alpha ~0.82), the one frosted look the maps' privacy
+# panes share.
 GLASS: dict[str, dict] = {
-    "glass_frosted": {"source": "glass_clear", "color": "#E4E8E6", "alpha": 0.82},
+    "glass_frosted": {"source": "glass_frosted", "color": "#FFFFFF", "alpha": 1.0},
     "glass_tinted": {"source": "glass_clear", "color": "#3A4044", "alpha": 0.9},
     "glass_teal": {"source": "glass_clear", "color": "#5D8C8F", "alpha": 0.6},
 }

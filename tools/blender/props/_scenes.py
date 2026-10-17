@@ -30,7 +30,13 @@ backed to a wall | ``corner`` | ``floor`` free-standing | ``center`` | ``on`` on
 ``seat_fwd`` (m, D-130: the glb's `Seat` marker moved that far toward the chair's front, Godot -Z, in the wrapper;
 the seated NPC root goes on it, so a desk_work torso clears the backrest; catalog ``seat`` = its prop-local position),
 ``walk_through`` (reason text: every imported collider of the wrapper gets layer / mask 0 and that
-``metadata/walk_through``, e.g. GN-8's velvet rope the Gallery Night navmesh runs under).
+``metadata/walk_through``, e.g. GN-8's velvet rope the Gallery Night navmesh runs under),
+``see_through`` (D-142: true = every imported collider is clear glass; list = those collider node names, e.g.
+``["GlassCollision"]``. Those bodies join the persistent ``see_through`` group in the wrapper, so stealth vision
+passes them wherever the prop is instanced (KitPlacer, map anchors); they still block movement and bullets. The
+catalog entry carries ``see_through`` (the names) for map code that builds its own collider for the prop. Only for a
+collider that covers clear glass alone: one that also covers opaque parts (a felt back, a plinth, an ad panel) is
+split in the asset first or left unflagged.)
 """
 
 from __future__ import annotations
@@ -356,9 +362,13 @@ def entry(spec: meta.AssetSpec) -> tuple[dict, str]:
                 lines += ["", f'[node name="{leaf}" parent="{parent}"]',
                           f"metadata/texel_target = {_f(cat['texel_target'])}"]
     walk = str(cat.get("walk_through", ""))
+    glass = _see_through_colliders(aid, cat.get("see_through", False), info["collisions"])
+    if glass:
+        e["see_through"] = glass
     for cp in info["collisions"]:
         parent, _, leaf = ("Model/" + cp).rpartition("/")
-        lines += ["", f'[node name="{leaf}" parent="{parent}"]']
+        groups = ' groups=["see_through"]' if cp in glass else ""
+        lines += ["", f'[node name="{leaf}" parent="{parent}"{groups}]']
         if walk:
             lines += ["collision_layer = 0", "collision_mask = 0"]
         lines.append(f'metadata/surface = &"{e["surface"]}"')
@@ -385,6 +395,20 @@ def entry(spec: meta.AssetSpec) -> tuple[dict, str]:
     if vis > 0.0 or info["collisions"] or leaf_script or hidden or seat_path or "texel_target" in cat:
         lines += ["", '[editable path="Model"]']
     return e, "\n".join(lines) + "\n"
+
+
+def _see_through_colliders(aid: str, flag, collisions: list[str]) -> list[str]:
+    """Collider paths (glb-relative) a cat ``see_through`` flag selects: all for true, the named ones for a list."""
+    if flag is True:
+        if not collisions:
+            raise SystemExit(f"_scenes.py: {aid}: see_through needs an imported collider")
+        return list(collisions)
+    if not flag:
+        return []
+    out = [c for c in collisions if c.rpartition("/")[2] in set(flag)]
+    if len(out) != len(set(flag)):
+        raise SystemExit(f"_scenes.py: {aid}: see_through names {flag} not all among the colliders {collisions}")
+    return out
 
 
 def write_text(path: pathlib.Path, text: str) -> bool:

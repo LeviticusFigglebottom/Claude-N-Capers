@@ -15315,6 +15315,41 @@
   "weight": 1.0,
   "z": 0.0
  },
+ "prop_window_w100_h120_frosted": {
+  "aabb": [
+   -0.54,
+   0.0,
+   -0.23,
+   1.08,
+   1.2,
+   0.48
+  ],
+  "clear": 0.0,
+  "fixture": false,
+  "glb": "res://assets/props/prop_window_w100_h120_frosted/prop_window_w100_h120_frosted.glb",
+  "group": "window",
+  "has_light": false,
+  "hosts": [],
+  "keepout": [],
+  "kind": "window",
+  "mount": "",
+  "nodes": [
+   "Frame",
+   "Glass",
+   "Sash"
+  ],
+  "place": "none",
+  "prefab": "window",
+  "scene": "res://world/props/window/prop_window_w100_h120_frosted.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": false,
+  "surface": "glass",
+  "top": 0.0,
+  "visibility_range_end": 0.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
  "prop_window_w100_h120_sash": {
   "aabb": [
    -0.54,
