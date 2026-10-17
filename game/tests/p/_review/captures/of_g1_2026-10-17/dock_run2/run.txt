@@ -1,0 +1,120 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+Vulkan 1.4.318 - Forward+ - Using Device #0: Unknown - llvmpipe (LLVM 20.1.2, 256 bits)
+
+[OFP 0.0s t=-1.0] === dock ===
+[INFO][rng][p1] run seed 1002
+[INFO][preplan][p1] assets []
+[INFO][variants][p1] seed 1002 resolved { &"manager_route": [&"mgr_gallery"], &"keycard": [&"kc_security"], &"code_pc": [&"pc_ops"], &"officers": [&"off_1"], &"server_room": [&"srv_gallery"], &"guard_post": [&"rover_basement", &"rover_dock"], &"security_room_staffed": [&"sec_empty"], &"camera": [&"cam_c"], &"laser_pattern": [&"lz_timed"], &"customers": [&"cust_4"], &"side_door": [&"door_dock_open"], &"fire_escape": [&"fe_down"], &"escape": [&"esc_van_dock"], &"drill_delivery": [&"drop_terrace"], &"president_safe": [&"ps_empty"], &"vip": [&"vip_out"], &"guard_extra": [], &"civ_extra": [], &"time_lock_s": 150.0, &"drill_eta_s": 60.0, &"escape_eta_s": 120.0, &"cash_bags": 10, &"gold_bags": 4, &"deposit_boxes": 9, "rare": [] }
+[INFO][heist][p1] vfx prewarm: 624 ms
+[INFO][heist][p1] phase LOADING -> CASING
+[OFP 7.8s t=-1.0] objective casing -> 1
+[OFP 7.8s t=-1.0] objective keycard -> 1
+[OFP 7.8s t=-1.0] objective code_pc -> 1
+[OFP 7.8s t=-1.0] objective vault_gate -> 1
+[OFP 7.8s t=-1.0] objective time_lock -> 1
+[OFP 7.8s t=-1.0] objective vault_loot -> 1
+[OFP 7.8s t=-1.0] objective secure -> 1
+[OFP 7.8s t=-1.0] objective escape -> 1
+[INFO][director][p1] prewarm: 18 of 18 scenes loaded in 1051 ms
+[INFO][prefab][p1] CameraStation: security room unstaffed
+[OFP 23.7s t=0.0] launched ostrander_federal seed 1002 diff 0 variants { &"manager_route": [&"mgr_gallery"], &"keycard": [&"kc_security"], &"code_pc": [&"pc_ops"], &"officers": [&"off_1"], &"server_room": [&"srv_gallery"], &"guard_post": [&"rover_basement", &"rover_dock"], &"security_room_staffed": [&"sec_empty"], &"camera": [&"cam_c"], &"laser_pattern": [&"lz_timed"], &"customers": [&"cust_4"], &"side_door": [&"door_dock_open"], &"fire_escape": [&"fe_down"], &"escape": [&"esc_van_dock"], &"drill_delivery": [&"drop_terrace"], &"president_safe": [&"ps_empty"], &"vip": [&"vip_out"], &"guard_extra": [], &"civ_extra": [], &"time_lock_s": 150.0, &"drill_eta_s": 60.0, &"escape_eta_s": 120.0, &"cash_bags": 10, &"gold_bags": 4, &"deposit_boxes": 9, "rare": [] }
+[INFO][prefab][p1] CameraC1 disabled
+[INFO][prefab][p1] CameraC2 disabled
+[INFO][prefab][p1] CameraC3 disabled
+[INFO][prefab][p1] CameraC7 disabled
+[INFO][prefab][p1] CameraC9 disabled
+[INFO][prefab][p1] CameraC11 disabled
+[INFO][prefab][p1] CameraC13 disabled
+[INFO][prefab][p1] CameraC15 disabled
+[OFP 39.6s t=2.0] SHORTCUT traversal: NPCs despawned, crew stealth_hidden, 8 cameras disabled (GameplayPrefab.set_enabled)
+[OFP 44.1s t=3.1] pilot: calibrated 0.001600 rad/px yaw, 0.001600 rad/px pitch (settings formula said (0.0016, 0.0016))
+[OFP 44.1s t=3.1] spawn (21.0, 0.0, -6.0)
+[INFO][heist][p1] phase CASING -> STEALTH
+[INFO][crew][p1] slot 0 masked (forced=false)
+[OFP 47.1s t=4.8] masked true
+[OFP 47.4s t=5.0] SHORTCUT bag loot.cash_bricks (weight 1) spawned by LootManager.spawn_bag at (19.9, 0.5, -4.9)
+[OFP 49.5s t=7.2] pilot: use Bag_cash_bricks (pick_bag) -> OK in 1.0 s
+[OFP 54.5s t=12.2] pilot: t=5 at (16.5, 0.0, -3.8) corner (8.5, 0.2, -1.4) yaw_err -0.00 fwd=true path=4 mouse_mode=2 state=0 look=(-16.98,0.00) pin_yaw=-16.9809357402337 bot=false
+[OFP 59.5s t=17.2] pilot: t=10 at (12.2, 0.0, -2.5) corner (8.5, 0.2, -1.4) yaw_err -1.21 fwd=false path=4 mouse_mode=2 state=0 look=(-47.19,0.00) pin_yaw=-47.38260869449 bot=false
+[OFP 63.7s t=21.5] pilot: use DockPersonnelDoor (open_door) -> OK in 0.0 s
+[OFP 68.4s t=26.1] DOCK loot.cash_bricks: lane -> LD in 18.9 s, sill crossing 2.46 m/s, STUCK rows 0
+[OFP 73.7s t=31.4] secured loot.cash_bricks (bag 218)
+ERROR: Lambda capture at index 1 was freed. Passed "null" instead.
+   at: call (modules/gdscript/gdscript_lambda_callable.cpp:242)
+   GDScript backtrace (most recent call first):
+       [0] wait_until (res://tests/p/_review/of_g1_pass.gd:286)
+[OFP 73.7s t=31.4] THROW LD -> E1 loot.cash_bricks stand 0 (7.9, 0.0, -0.4): 0.9 m from the zone, 0.4 m from the door weight 1 pitch -> rests (6.5, -0.0, -2.6) (2.6 m from the stand, 1.3 s) on - secured true: OK in E1
+WARNING: Sub-surface scattering is not supported in viewports with a transparent background. Disabling SSS in transparent viewport.
+     at: _render_scene (servers/rendering/renderer_rd/forward_clustered/render_forward_clustered.cpp:1963)
+[OFP 83.1s t=36.6] pilot: t=5 at (13.4, 0.0, -2.8) corner (12.8, 0.2, -2.6) yaw_err 2.73 fwd=false path=3 mouse_mode=2 state=0 look=(-57.41,0.00) pin_yaw=-57.2188828613798 bot=false
+[OFP 88.1s t=41.6] pilot: t=10 at (18.7, 0.0, -4.6) corner (19.6, 0.2, -4.9) yaw_err 0.01 fwd=true path=3 mouse_mode=2 state=0 look=(-57.80,0.00) pin_yaw=-57.7933756167477 bot=false
+[OFP 88.3s t=41.7] SHORTCUT bag loot.gold (weight 2) spawned by LootManager.spawn_bag at (20.1, 0.5, -5.0)
+[OFP 90.3s t=43.8] pilot: aimed <none>, wanted /root/OfG1Pass/HeistRuntime/Dynamic/Bag_gold/Interactable (dist 1.77, angle 0.0 deg, avail '', LOS ray hit /root/OfG1Pass/HeistRuntime/OstranderFederal/Props/MapBuilt/CameraPoleC6 at (19.9, 1.2, -5.8))
+[OFP 90.7s t=44.2] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.77, angle 0.0 deg)
+[OFP 91.1s t=44.6] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.77, angle 0.0 deg)
+[OFP 91.5s t=45.0] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.77, angle 0.0 deg)
+[OFP 91.9s t=45.4] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.77, angle 0.0 deg)
+[OFP 92.3s t=45.8] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.77, angle 0.0 deg)
+[OFP 92.7s t=46.2] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.77, angle 0.0 deg)
+[OFP 93.1s t=46.6] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.77, angle 0.0 deg)
+[OFP 93.5s t=47.0] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.77, angle 0.0 deg)
+[OFP 93.9s t=47.4] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.77, angle 0.0 deg)
+[OFP 94.3s t=47.8] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.77, angle 0.0 deg)
+[OFP 94.7s t=48.2] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.77, angle 0.0 deg)
+[OFP 95.1s t=48.6] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.77, angle 0.0 deg)
+[OFP 95.5s t=49.0] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.77, angle 0.0 deg)
+[OFP 95.9s t=49.4] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.77, angle 0.0 deg)
+[OFP 96.3s t=49.8] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.77, angle 0.0 deg)
+[OFP 96.7s t=50.2] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.77, angle 0.0 deg)
+[OFP 97.1s t=50.6] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.77, angle 0.0 deg)
+[OFP 97.5s t=51.0] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.77, angle 0.0 deg)
+[OFP 97.9s t=51.4] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.77, angle 0.0 deg)
+[OFP 98.3s t=51.8] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.77, angle 0.0 deg)
+[OFP 98.7s t=52.2] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.77, angle 0.0 deg)
+[OFP 99.1s t=52.6] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.77, angle 0.0 deg)
+[OFP 99.5s t=53.0] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.77, angle 0.0 deg)
+[OFP 99.9s t=53.4] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.77, angle 0.0 deg)
+[OFP 100.3s t=53.8] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.77, angle 0.0 deg)
+[OFP 100.7s t=54.2] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.77, angle 0.0 deg)
+[OFP 101.1s t=54.6] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.77, angle 0.0 deg)
+[OFP 101.5s t=55.0] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.77, angle 0.0 deg)
+[OFP 101.9s t=55.4] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.77, angle 0.0 deg)
+[OFP 102.3s t=55.8] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.77, angle 0.0 deg)
+[OFP 102.7s t=56.2] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.77, angle 0.0 deg)
+[OFP 103.1s t=56.6] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.77, angle 0.0 deg)
+[OFP 103.5s t=57.0] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.77, angle 0.0 deg)
+[OFP 103.9s t=57.4] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.77, angle 0.0 deg)
+[OFP 104.3s t=57.8] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.77, angle 0.0 deg)
+[OFP 104.7s t=58.2] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.77, angle 0.0 deg)
+[OFP 105.1s t=58.6] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.77, angle 0.0 deg)
+[OFP 105.5s t=59.0] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.77, angle 0.0 deg)
+[OFP 105.9s t=59.4] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.77, angle 0.0 deg)
+[OFP 106.3s t=59.8] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.77, angle 0.0 deg)
+[OFP 106.7s t=60.2] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.77, angle 0.0 deg)
+[OFP 107.1s t=60.6] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.77, angle 0.0 deg)
+[OFP 107.5s t=61.0] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.77, angle 0.0 deg)
+[OFP 107.9s t=61.4] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.77, angle 0.0 deg)
+[OFP 108.3s t=61.8] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.77, angle 0.0 deg)
+[OFP 108.7s t=62.2] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.77, angle 0.0 deg)
+[OFP 109.1s t=62.6] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.77, angle 0.0 deg)
+[OFP 109.5s t=63.0] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.77, angle 0.0 deg)
+[OFP 109.9s t=63.4] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.77, angle 0.0 deg)
+[OFP 110.3s t=63.8] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.77, angle 0.0 deg)
+[OFP 110.7s t=64.2] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.77, angle 0.0 deg)
+[OFP 111.1s t=64.6] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.77, angle 0.0 deg)
+[OFP 111.5s t=65.0] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.77, angle 0.0 deg)
+[OFP 111.9s t=65.4] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.77, angle 0.0 deg)
+[OFP 112.3s t=65.8] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.77, angle 0.0 deg)
+[OFP 112.7s t=66.2] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.77, angle 0.0 deg)
+[OFP 113.1s t=66.6] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.77, angle 0.0 deg)
+[OFP 113.5s t=67.0] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.77, angle 0.0 deg)
+[OFP 113.9s t=67.4] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.77, angle 0.0 deg)
+[OFP 114.3s t=67.8] pilot: use pick_bag re-press skipped: aimed <none> (dist 1.77, angle 0.0 deg)
+[OFP 114.4s t=67.8] pilot: use Bag_gold (pick_bag) -> FAILED in 20.0 s
+[OFP 114.4s t=67.8] spawned bag not picked up (bag at (20.1, -0.0, -5.0))
+[OFP 114.4s t=67.8] FAIL dock/bag (alarm )
+[OFP] FAIL dock/bag
+[OFP] RESULT FAIL dock
+[OFP] RESULT FAIL (dock FAIL)
+WARNING: 136 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)

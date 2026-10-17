@@ -1,0 +1,171 @@
+PO-3 snag probe: ostrander_federal  (step 0.35 m, slope 45 deg, r 0.35 m, walk 3.5 m/s)
+samples 5060, walkable edges 34762, trials 20000 { 1: 1960, 3: 18040 }, outcomes { "ok": 20000 }, rejected edges { "blocked": 5425, "gap": 207, "tall": 4, "ladder_grab": 82, "start_not_clean": 452 }
+stance walk, approach run, 8 headings; trials by largest single step on the edge: { "0.01-0.05 m": "206/206 ok", "0.05-0.10 m": "30/30 ok", "0.10-0.20 m": "11/11 ok", "0.20-0.36 m": "11/11 ok" }
+times { "launch_s": 2.169, "flood_s": 4.281, "trials_s": 288.128 }, sim ticks 222704
+23 low blockers (collider top 0.32-0.75 m above the floor, stops a walkable-looking path):
+    OstranderFederal/Geometry/Site/Grade/GradeApron  top 0.75 m (visual top 0.75) x114 at (17.37, -0.75, 38.17) [StaticBody3D, BoxShape3D (48.20, 1.50, 1.80), layer 1 (world_static)]
+    OstranderFederal/Props/MapBuilt/WorkstationsOF1  top 0.75 m (visual top 0.75) x36 at (16.17, 5.00, 11.37) [StaticBody3D, BoxShape3D (3.20, 0.75, 1.60), layer 1 (world_static)]
+    OstranderFederal/Props/MapBuilt/WorkstationsOF2  top 0.75 m (visual top 0.75) x34 at (22.17, 5.00, 12.57) [StaticBody3D, BoxShape3D (3.20, 0.75, 1.60), layer 1 (world_static)]
+    OstranderFederal/Props/MapBuilt/PlazaBench1  top 0.45 m (visual top 0.45) x18 at (8.97, -0.75, 44.77) [StaticBody3D, BoxShape3D (1.80, 0.45, 0.50), layer 1 (world_static)]
+    OstranderFederal/Props/MapBuilt/PlazaBench2  top 0.45 m (visual top 0.45) x18 at (40.97, -0.75, 44.77) [StaticBody3D, BoxShape3D (1.80, 0.45, 0.50), layer 1 (world_static)]
+    OstranderFederal/Props/MapBuilt/HallBenchSE  top 0.45 m (visual top 0.45) x18 at (31.04, 0.00, 31.04) [StaticBody3D, BoxShape3D (1.80, 0.45, 0.50), layer 1 (world_static)]
+    OstranderFederal/Props/MapBuilt/HallBenchSW  top 0.45 m (visual top 0.45) x18 at (16.97, 0.00, 30.77) [StaticBody3D, BoxShape3D (1.80, 0.45, 0.50), layer 1 (world_static)]
+    OstranderFederal/Props/MapBuilt/DeskOF  top 0.75 m (visual top 0.75) x16 at (11.37, 5.00, 11.77) [StaticBody3D, BoxShape3D (0.70, 0.75, 1.40), layer 1 (world_static)]
+    OstranderFederal/Props/MapBuilt/BenchLK  top 0.45 m (visual top 0.45) x16 at (4.37, -4.00, 4.77) [StaticBody3D, BoxShape3D (1.60, 0.45, 0.40), layer 1 (world_static)]
+    OstranderFederal/Props/MapBuilt/DeskAO1  top 0.75 m (visual top 0.75) x14 at (1.90, 5.00, 11.90) [StaticBody3D, BoxShape3D (0.70, 0.75, 1.40), layer 1 (world_static)]
+    OstranderFederal/Props/MapBuilt/AttendantDesk  top 0.75 m (visual top 0.75) x12 at (37.97, -4.00, 10.37) [StaticBody3D, BoxShape3D (1.60, 0.75, 0.70), layer 1 (world_static)]
+    OstranderFederal/Props/MapBuilt/CoffeeTablePC  top 0.45 m (visual top 0.45) x12 at (44.37, 0.00, 13.57) [StaticBody3D, BoxShape3D (0.80, 0.45, 0.80), layer 1 (world_static)]
+    OstranderFederal/Geometry/Site/TanneryRamp  top 0.75 m (visual top 0.75) x11 at (47.90, -0.75, 39.84) [StaticBody3D, ConvexPolygonShape3D, layer 1 (world_static)]
+    OstranderFederal/Props/MapBuilt/BenchLD  top 0.45 m (visual top 0.45) x8 at (6.17, 0.00, 8.17) [StaticBody3D, BoxShape3D (1.60, 0.45, 0.40), layer 1 (world_static)]
+    OstranderFederal/Geometry/Site/PlazaSteps/Ramp  top 0.75 m (visual top 0.15) x8 at (17.97, -0.75, 39.37) [StaticBody3D, ConvexPolygonShape3D, layer 1 (world_static)]
+    OstranderFederal/Props/MapBuilt/ConferenceTable  top 0.75 m (visual top 0.75) x8 at (31.57, 5.00, 13.37) [StaticBody3D, BoxShape3D (3.00, 0.75, 1.20), layer 1 (world_static)]
+    OstranderFederal/Props/MapBuilt/HallBenchE2  top 0.45 m (visual top 0.45) x8 at (39.30, 0.00, 26.44) [StaticBody3D, BoxShape3D (0.50, 0.45, 1.80), layer 1 (world_static)]
+    OstranderFederal/Props/MapBuilt/HallBenchE1  top 0.45 m (visual top 0.45) x8 at (39.30, 0.00, 21.44) [StaticBody3D, BoxShape3D (0.50, 0.45, 1.80), layer 1 (world_static)]
+    OstranderFederal/Props/MapBuilt/HallBenchW1  top 0.45 m (visual top 0.45) x7 at (8.70, 0.00, 22.04) [StaticBody3D, BoxShape3D (0.50, 0.45, 1.80), layer 1 (world_static)]
+    OstranderFederal/Props/MapBuilt/HallBenchW2  top 0.45 m (visual top 0.45) x7 at (8.70, 0.00, 28.04) [StaticBody3D, BoxShape3D (0.50, 0.45, 1.80), layer 1 (world_static)]
+    OstranderFederal/Geometry/Site/Grade/GradeApronSteps  top 0.75 m (visual top 0.75) x6 at (17.77, -0.75, 38.97) [StaticBody3D, BoxShape3D (12.00, 1.50, 0.80), layer 1 (world_static)]
+    OstranderFederal/Props/MapBuilt/ViewingBench  top 0.45 m (visual top 0.45) x6 at (25.37, -4.00, 9.57) [StaticBody3D, BoxShape3D (1.60, 0.45, 0.45), layer 1 (world_static)]
+    OstranderFederal/Geometry/Building/Walls/FloorB/BZ0480_0_00  top 0.68 m (visual top 0.68) x1 at (47.50, -0.68, 4.50) [StaticBody3D, BoxShape3D (0.40, 4.00, 25.00), layer 1 (world_static)]
+coverage map: x -44..94 (1 char = 1.0 m), z -50..90 top to bottom
+  |                                                                                            oooooooooooooo
+  |                                                                                            oooooooooooooo
+  |                                                                                            oooooooooooooo
+  |                                                                                            oooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo##############oooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo##############oooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo##############oooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo##############oooooooooooooooooo
+  |oooooooooooooooooooooooooooo##############################################################################oooooooooooooooooo
+  |oooooooooooooooooooooooooooo##############################################################################oooooooooooooooooo
+  |oooooooooooooooooooooooooooo##############################################################################oooooooooooooooooo
+  |oooooooooooooooooooooooooooo####################################SS#SS#####################################oooooooooooooooooo
+  |oooooooooooooooooooooooooooo#############################S######o#########################################oooooooooooooooooo
+  |oooooooooooooooooooooooooooo##############################################################################oooooooooooooooooo
+  |oooooooooooooooooooooooooooo##############################################################################oooooooooooooooooo
+  |oooooooooooooooooooooooooooo##############################################################################oooooooooooooooooo
+  |oooooooooooooooooooooooooooo##########################################oooo################################oooooooooooooooooo
+  |oooooooooooooooooooooooooooo#########################################ooooo################################oooooooooooooooooo
+  |                        oooooooooooooooooooooooo###oooooooooooSoooooooooooooooooooooooooooooo#############oooooooooooooooooo
+  |                        ooooooooooooooooooooo############o##o##o###ooooooooooooooooooooooo##o#############oooooooooooooooooo
+  |                        ooooooooooooooooooooo#########o##o##o######ooooooooooooooooooooooo##o#############oooooooooooooooooo
+  |                        ooooooooooooooooooooo#S###S###o#ooo#o######oooooooooooooooooooooooo#o#############oooooooooooooooooo
+  |                        ooooooooooooooooooooo#########o##oo#o######oooooooooooooooooooooooo#o#############oooooooooooooooooo
+  |                        ooooooooooooooooooooo#########o##oo#o#####ooooooooooooooooooooooooo#o#############oooooooooooooooooo
+  |                        ooooooooooooooooooooo#########o##o##o######ooooooooooooooooooooooo##o#############oooooooooooooooooo
+  |                        oooooooooooooooooooooo########oo#o#ooooooooooooSoooooooo#ooooooooo#oo#############oooooooooooooooooo
+  |                        ooooooooooooooooooooo###############################################o#############oooooooooooooooooo
+  |                        oooooooooooooooooooooooooo#ooooooo#o##oooooooooooooooo#ooooooo#o#oooo#############oooooooooooooooooo
+  |                        ooooooooooooooooooooo########################S######################o#############oooooooooooooooooo
+  |                        oooooooooooooooooooooS#####o##S#####################################o#############oooooooooooooooooo
+  |                        ooooooooooooooooooooo#o####o################################o#######o#############oooooooooooooooooo
+  |                        ooooooooooooooooooooo#o####o#######################S################o#############oooooooooooooooooo
+  |                        ooooooooooooooooooooo######o########################################o#############oooooooooooooooooo
+  |                        ooooooooooooooooooooo######o######S#S#############S#S###############o#############oooooooooooooooooo
+  |                        ooooooooooooooooooooo######o######S###############S###o############oo#############oooooooooooooooooo
+  |                        ooooooooooooooooooooo######o#o#o##o#######o##o###oooooooooooo######oo#############oooooooooooooooooo
+  |                        ooooooooooooooooooooo#oooo#o########################################o#############oooooooooooooooooo
+  |                        ooooooooooooooooooooo#oooo#o#######################################oo#######S#####oooooooooooooooooo
+  |                        ooooooooooooooooooooo#oooo#o###S###o#############o#################oo#######S#####oooooooooooooooooo
+  |                        ooooooooooooooooooooo#oooo#o###o##o##############oooooo############oo#############oooooooooooooooooo
+  |                        ooooooooooooooooooooo#oooo#o################################ooooo###o#######S#####oooooooooooooooooo
+  |                        ooooooooooooooooooooo###############################################o#######S#####oooooooooooooooooo
+  |                        ooooooooooooooooooooo###############################################o#####ooo#####oooooooooooooooooo
+  |                        ooooooooooooooooooooooooooooo####oo###Soo#######oo###oo####oooooooooo#####ooo#####oooooooooooooooooo
+  |                        ooooooooooooooooooooooooooooo##############################oooooooooo#####ooo#####oooooooooooooooooo
+  |                        ooooooooooooooooooooooooooooo###############################ooooooooo#####ooo#####oooooooooooooooooo
+  |                        ooooooooooooooooooooooooooooo###############################ooooooooo#####ooo#####oooooooooooooooooo
+  |                        ooooooooooooooooooooooooooooo##############S################ooooooooo#############oooooooooooooooooo
+  |                        ooooooooooooooooooooo#######o###############################ooooooooo#############oooooooooooooooooo
+  |                        ooooooooooooooooooooo#######o######oo##############oo#######ooooooooo#############oooooooooooooooooo
+  |                        ooooooooooooooooooooo#######o###########oo####ooo###########ooooooooo#############oooooooooooooooooo
+  |                        ooooooooooooooooooooo#######o###########o#######o###########ooooooooo#############oooooooooooooooooo
+  |                        ooooooooooooooooooooo#######o###########o#######o###########ooooooooo#############oooooooooooooooooo
+  |                        ooooooooooooooooooooo#######o###########o#######o###########ooooooooo#############oooooooooooooooooo
+  |                            ################ooo##ooooooooooooooooo##o#oooooooooooooooooooooo##############oooooooooooooooooo
+  |                            ##############################################################################oooooooooooooooooo
+  |                            ##################################################################################
+  |                            ##################################################################################
+  |                            ###################oo######oo######################oo######oo#####################
+  |                            #######oo##########oo######oo######################oo######oo#####################
+  |                            #######oo##########################################oo#############################oooooooooooooooooooooooooooo
+  |                            #########################S##########S#SS#S#########oo######S######################oooooooooooooooooooooooooooo
+  |                            ##################################################################################oooooooooooooooooooooooooooo
+  |                            #######################oo##############################oo#########################oooooooooooooooooooooooooooo
+  |                            ##################################################################################oooooooooooooooooooooooooooo
+  |                            ##################################################################################oooooooooooooooooooooooooooo
+  |oooooooooooooooooooooooooooo##################################################################################oooooooooooooooooooooooooooo
+  |oooooooooooooooooooooooooooo########ooooo#####################################################################oooooooooooooooooooooooooooo
+  |oooooooooooooooooooooooooooo########ooooo#####################################################################oooooooooooooooooooooooooooo
+  |oooooooooooooooooooooooooooo########ooooo#####################################################################oooooooooooooooooooooooooooo
+  |oooooooooooooooooooooooooooo##################################################################################oooooooooooooooooooooooooooo
+  |oooooooooooooooooooooooooooo##################################################################################oooooooooooooooooooooooooooo
+  |oooooooooooooooooooooooooooo##################################################################################oooooooooooooooooooooooooooo
+  |oooooooooooooooooooooooooooo##################################################################################oooooooooooooooooooooooooooo
+  |oooooooooooooooooooooooooooo##################################################################################oooooooooooooooooooooooooooo
+  |oooooooooooooooooooooooooooo##################################################################################oooooooooooooooooooooooooooo
+  |oooooooooooooooooooooooooooo##################################################################ooooo###########oooooooooooooooooooooooooooo
+  |oooooooooooooooooooooooooooo##################################################################ooooo###########oooooooooooooooooooooooooooo
+  |oooooooooooooooooooooooooooo##################################################################################oooooooooooooooooooooooooooo
+  |oooooooooooooooooooooooooooo##################################################################################oooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |
+0 snag clusters (0 snag trials):

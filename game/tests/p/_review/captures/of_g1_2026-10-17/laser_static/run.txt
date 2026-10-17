@@ -1,0 +1,56 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+Vulkan 1.4.318 - Forward+ - Using Device #0: Unknown - llvmpipe (LLVM 20.1.2, 256 bits)
+
+[OFP 0.0s t=-1.0] === laser ===
+[INFO][rng][p1] run seed 1002
+[INFO][preplan][p1] assets []
+[INFO][variants][p1] seed 1002 resolved { &"manager_route": [&"mgr_gallery"], &"keycard": [&"kc_security"], &"code_pc": [&"pc_ops"], &"officers": [&"off_1"], &"server_room": [&"srv_gallery"], &"guard_post": [&"rover_basement", &"rover_dock"], &"security_room_staffed": [&"sec_empty"], &"camera": [&"cam_c"], &"laser_pattern": [&"lz_static"], &"customers": [&"cust_6"], &"side_door": [&"door_dock_open"], &"fire_escape": [&"fe_down"], &"escape": [&"esc_heli_terrace"], &"drill_delivery": [&"drop_terrace"], &"president_safe": [&"ps_empty"], &"vip": [&"vip_out"], &"guard_extra": [], &"civ_extra": [], &"time_lock_s": 150.0, &"drill_eta_s": 60.0, &"escape_eta_s": 120.0, &"cash_bags": 10, &"gold_bags": 4, &"deposit_boxes": 9, "rare": [] }
+[INFO][heist][p1] vfx prewarm: 580 ms
+[INFO][heist][p1] phase LOADING -> CASING
+[OFP 6.7s t=-1.0] objective casing -> 1
+[OFP 6.7s t=-1.0] objective keycard -> 1
+[OFP 6.7s t=-1.0] objective code_pc -> 1
+[OFP 6.7s t=-1.0] objective vault_gate -> 1
+[OFP 6.7s t=-1.0] objective time_lock -> 1
+[OFP 6.7s t=-1.0] objective vault_loot -> 1
+[OFP 6.7s t=-1.0] objective secure -> 1
+[OFP 6.7s t=-1.0] objective escape -> 1
+[INFO][director][p1] prewarm: 18 of 18 scenes loaded in 1117 ms
+[INFO][prefab][p1] CameraStation: security room unstaffed
+[OFP 23.3s t=0.0] launched ostrander_federal seed 1002 diff 0 variants { &"manager_route": [&"mgr_gallery"], &"keycard": [&"kc_security"], &"code_pc": [&"pc_ops"], &"officers": [&"off_1"], &"server_room": [&"srv_gallery"], &"guard_post": [&"rover_basement", &"rover_dock"], &"security_room_staffed": [&"sec_empty"], &"camera": [&"cam_c"], &"laser_pattern": [&"lz_static"], &"customers": [&"cust_6"], &"side_door": [&"door_dock_open"], &"fire_escape": [&"fe_down"], &"escape": [&"esc_heli_terrace"], &"drill_delivery": [&"drop_terrace"], &"president_safe": [&"ps_empty"], &"vip": [&"vip_out"], &"guard_extra": [], &"civ_extra": [], &"time_lock_s": 150.0, &"drill_eta_s": 60.0, &"escape_eta_s": 120.0, &"cash_bags": 10, &"gold_bags": 4, &"deposit_boxes": 9, "rare": [] }
+[OFP 40.3s t=2.0] SHORTCUT traversal: NPCs despawned, crew stealth_hidden
+[OFP 45.2s t=3.1] pilot: calibrated 0.001600 rad/px yaw, 0.001600 rad/px pitch (settings formula said (0.0016, 0.0016))
+[OFP 45.2s t=3.1] spawn (21.0, 0.0, -6.0)
+[INFO][heist][p1] phase CASING -> STEALTH
+[INFO][crew][p1] slot 0 masked (forced=false)
+[OFP 48.1s t=4.8] masked true
+[OFP 53.1s t=9.8] pilot: t=5 at (16.5, 0.0, -3.9) corner (9.7, 0.2, -1.3) yaw_err 0.00 fwd=true path=25 mouse_mode=2 state=0 look=(1.94,0.00) pin_yaw=1.93904023981304 bot=false
+[OFP 58.1s t=14.8] pilot: t=10 at (11.2, 0.0, -1.9) corner (9.7, 0.2, -1.3) yaw_err 1.21 fwd=false path=25 mouse_mode=2 state=0 look=(0.73,0.00) pin_yaw=0.9254421876758 bot=false
+[OFP 60.7s t=17.4] pilot: use DockPersonnelDoor (open_door) -> OK in 0.0 s
+[OFP 64.1s t=20.8] pilot: t=15 at (8.7, 0.0, 3.3) corner (9.6, 0.2, 7.6) yaw_err -3.13 fwd=false path=20 mouse_mode=2 state=0 look=(0.20,0.00) pin_yaw=0.01080860821821 bot=false
+[OFP 69.0s t=25.7] pilot: use DockCorridorDoor (open_door) -> OK in 0.0 s
+[OFP 71.8s t=28.4] pilot: t=20 at (12.5, 0.0, 8.0) corner (12.9, 0.2, 8.0) yaw_err 0.00 fwd=true path=12 mouse_mode=2 state=0 look=(4.83,0.00) pin_yaw=4.82850183932169 bot=false
+[OFP 77.2s t=33.9] pilot: use SecurityDoor (open_door) -> OK in 0.0 s
+[OFP 78.3s t=35.0] pilot: t=25 at (19.0, 0.0, 6.0) corner (18.9, 0.2, 6.5) yaw_err -1.99 fwd=false path=6 mouse_mode=2 state=0 look=(5.08,0.00) pin_yaw=4.89204033227725 bot=false
+[OFP 86.1s t=42.7] pilot: t=5 at (16.0, 0.0, 8.0) corner (16.6, 0.2, 8.0) yaw_err 2.34 fwd=false path=4 mouse_mode=2 state=0 look=(2.42,0.00) pin_yaw=2.6134515756712 bot=false
+[OFP 88.0s t=44.6] pilot: use StairDoorSAG (open_door) -> OK in 0.0 s
+[OFP 93.8s t=50.5] pilot: t=5 at (14.0, -2.1, 3.0) corner (14.1, -1.8, 2.4) yaw_err 1.41 fwd=false path=9 mouse_mode=2 state=0 look=(4.58,0.00) pin_yaw=4.77103924089897 bot=false
+[OFP 96.7s t=53.4] pilot: use StairDoorSAB (open_door) -> OK in 0.0 s
+[OFP 101.1s t=57.8] pilot: use VaultGate (open_door) -> OK in 1.0 s
+[OFP 103.3s t=59.9] SHORTCUT bag loot.cash_bricks (weight 1) spawned by LootManager.spawn_bag at (19.0, -3.5, 11.3)
+[OFP 106.4s t=63.1] pilot: use Bag_cash_bricks (pick_bag) -> OK in 1.0 s
+[OFP 106.5s t=63.1] LASER VaultLasers pattern static size (2.15, 1.8, 0.1) at (21.0, -3.0, 10.3): gaps beside it 1.29 / 0.14 m; lowest beam face 1.285 m above the floor (pivot +1.00 m; crouch 1.20); period 4.0 off 1.5; standing windows x-1.97: inf s, x+0.03: 0.00 s, x+0.73: 0.00 s, best x-1.97: inf s; a MEDIUM bag (2.62 m/s) needs 1.52 s for 4 m
+WARNING: Sub-surface scattering is not supported in viewports with a transparent background. Disabling SSS in transparent viewport.
+     at: _render_scene (servers/rendering/renderer_rd/forward_clustered/render_forward_clustered.cpp:1963)
+[OFP 112.3s t=63.5] laser gap -x: 1.29 m, lane walkable, reachable without crossing
+[OFP 112.3s t=63.5] laser gap +x: 0.14 m, lane NOT walkable
+[OFP 112.3s t=63.5] laser: bypass gap lane x-1.72, over and back
+[OFP 116.5s t=67.8] LASER CROSS lane x-1.72 crouched with bag w1: waited 0.0 s, across at 1.67 m/s (expected 1.69), tripped false, at (22.9, -4.0, 12.0)
+[OFP 123.6s t=71.0] LASER CROSS lane x-1.72 crouched with bag w1: waited 0.0 s, across at 1.67 m/s (expected 1.69), tripped false, at (19.1, -4.0, 12.0)
+[OFP 128.5s t=71.2] laser: crouch-under lane x+0.00, over and back
+[OFP 133.0s t=75.8] LASER CROSS lane x+0.00 crouched with bag w1: waited 0.0 s, across at 1.67 m/s (expected 1.69), tripped false, at (22.9, -4.0, 10.3)
+[OFP 139.8s t=79.0] LASER CROSS lane x+0.00 crouched with bag w1: waited 0.0 s, across at 1.67 m/s (expected 1.69), tripped false, at (19.1, -4.0, 10.3)
+[OFP] RESULT PASS laser
+[OFP] RESULT PASS (laser PASS)
+WARNING: 130 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)
