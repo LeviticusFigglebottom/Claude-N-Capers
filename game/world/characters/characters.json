@@ -449,6 +449,48 @@
 			"test": false
 		},
 		{
+			"asset": "char_gallery_guard_c",
+			"id": "gallery_guard_c",
+			"scene": "res://world/characters/gallery_guard_c/gallery_guard_c.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_gallery_guard_d",
+			"id": "gallery_guard_d",
+			"scene": "res://world/characters/gallery_guard_d/gallery_guard_d.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_gallery_guard_e",
+			"id": "gallery_guard_e",
+			"scene": "res://world/characters/gallery_guard_e/gallery_guard_e.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_gallery_guard_f",
+			"id": "gallery_guard_f",
+			"scene": "res://world/characters/gallery_guard_f/gallery_guard_f.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_gallery_guard_g",
+			"id": "gallery_guard_g",
+			"scene": "res://world/characters/gallery_guard_g/gallery_guard_g.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_gallery_guard_h",
+			"id": "gallery_guard_h",
+			"scene": "res://world/characters/gallery_guard_h/gallery_guard_h.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_gallery_guard_i",
+			"id": "gallery_guard_i",
+			"scene": "res://world/characters/gallery_guard_i/gallery_guard_i.tscn",
+			"test": false
+		},
+		{
 			"asset": "char_gallery_patron",
 			"id": "gallery_patron",
 			"scene": "res://world/characters/gallery_patron/gallery_patron.tscn",
@@ -488,6 +530,24 @@
 			"asset": "char_gallery_patron_g",
 			"id": "gallery_patron_g",
 			"scene": "res://world/characters/gallery_patron_g/gallery_patron_g.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_gallery_patron_h",
+			"id": "gallery_patron_h",
+			"scene": "res://world/characters/gallery_patron_h/gallery_patron_h.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_gallery_patron_i",
+			"id": "gallery_patron_i",
+			"scene": "res://world/characters/gallery_patron_i/gallery_patron_i.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_gallery_patron_j",
+			"id": "gallery_patron_j",
+			"scene": "res://world/characters/gallery_patron_j/gallery_patron_j.tscn",
 			"test": false
 		},
 		{
@@ -533,6 +593,12 @@
 			"test": false
 		},
 		{
+			"asset": "char_npc_bank_cleaner_b",
+			"id": "npc_bank_cleaner_b",
+			"scene": "res://world/characters/npc_bank_cleaner_b/npc_bank_cleaner_b.tscn",
+			"test": false
+		},
+		{
 			"asset": "char_npc_bank_guard",
 			"id": "npc_bank_guard",
 			"scene": "res://world/characters/npc_bank_guard/npc_bank_guard.tscn",
@@ -572,6 +638,12 @@
 			"asset": "char_npc_cleaner_sl_c",
 			"id": "npc_cleaner_sl_c",
 			"scene": "res://world/characters/npc_cleaner_sl_c/npc_cleaner_sl_c.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_npc_cleaner_sl_d",
+			"id": "npc_cleaner_sl_d",
+			"scene": "res://world/characters/npc_cleaner_sl_d/npc_cleaner_sl_d.tscn",
 			"test": false
 		},
 		{
@@ -632,6 +704,24 @@
 			"asset": "char_npc_northgate_guard_f",
 			"id": "npc_northgate_guard_f",
 			"scene": "res://world/characters/npc_northgate_guard_f/npc_northgate_guard_f.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_npc_northgate_guard_g",
+			"id": "npc_northgate_guard_g",
+			"scene": "res://world/characters/npc_northgate_guard_g/npc_northgate_guard_g.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_npc_northgate_guard_h",
+			"id": "npc_northgate_guard_h",
+			"scene": "res://world/characters/npc_northgate_guard_h/npc_northgate_guard_h.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_npc_northgate_guard_i",
+			"id": "npc_northgate_guard_i",
+			"scene": "res://world/characters/npc_northgate_guard_i/npc_northgate_guard_i.tscn",
 			"test": false
 		},
 		{
@@ -734,6 +824,18 @@
 			"asset": "char_security_officer_d",
 			"id": "security_officer_d",
 			"scene": "res://world/characters/security_officer_d/security_officer_d.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_security_officer_e",
+			"id": "security_officer_e",
+			"scene": "res://world/characters/security_officer_e/security_officer_e.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_security_officer_f",
+			"id": "security_officer_f",
+			"scene": "res://world/characters/security_officer_f/security_officer_f.tscn",
 			"test": false
 		},
 		{

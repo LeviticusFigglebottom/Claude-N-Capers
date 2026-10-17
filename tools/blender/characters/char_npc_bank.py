@@ -12,7 +12,9 @@ Glasshouse civilians (camel, navy, black):
   dark slate skirt, brass name badge and keyhole lapel badge. She is the ``code_on_manager`` carrier.
 * ``char_npc_bank_cleaner``: night cleaner (contractor), grey long-sleeve top under a blue-grey
   tabard with a cream binding and a big front pocket, dark work trousers, yellow rubber gloves.
-  The cart is a prop (not part of this asset).
+  The cart is a prop (not part of this asset). ``char_npc_bank_cleaner_b`` (D-130, ``civ_cleaner`` at Cataclysm:
+  a second cleaner, never a twin): same contractor uniform; a woman about 50, mid skin, brown hair pinned up in a
+  bun.
 * ``char_npc_bank_guard``: the contracted **Halden Security** night-shift guard (D-063; it also
   serves as the seated camera operator). Halden livery as on ``char_security_officer`` (pale
   steel-blue ``#8E9DAE`` shirt, charcoal tie and trousers, gold braid, burgundy shield patch with a
@@ -26,6 +28,7 @@ Meshes: ``Body`` (covered skin removed), ``Hair``, ``Outfit``, ``Gear``, ``Headw
 No blend shapes (baked at the params below).
 """
 
+import _contact_gear as cg
 import _gear_kit as gk
 import _npc as n
 import _outfit as o
@@ -44,6 +47,8 @@ VARIANTS = {
                                     "hair_color": "grey", "look": "manager"},
     "char_npc_bank_cleaner": {"height": 1.74, "build": 0.65, "gender": 0.0, "age": 0.45, "skin": 6, "beard_shadow": 0.8,
                               "hair": "buzz", "hair_color": "dark", "look": "cleaner"},
+    "char_npc_bank_cleaner_b": {"height": 1.70, "build": 0.6, "gender": 1.0, "age": 0.5, "skin": 3,
+                                "hair": "side_part", "hair_color": "brown", "look": "cleaner_b"},
     "char_npc_bank_guard": {"height": 1.82, "build": 0.6, "gender": 0.0, "age": 0.5, "skin": 4, "beard_shadow": 0.5,
                             "hair": "short", "hair_color": "dark", "look": "guard"},
 }
@@ -111,6 +116,14 @@ def cleaner(kit: Kit) -> None:
                      "char_bank_cream")
 
 
+def cleaner_b(kit: Kit) -> None:
+    """D-130: the second night cleaner, same contractor uniform, another person (woman, brown bun)."""
+    cleaner(kit)
+    kit.add_head(cg.chignon(kit.fit, "char_hair_brown", size=0.85))
+    kit.notes["look"] = ("Night cleaner, second face (D-130): same blue-grey tabard uniform; a woman about 50, mid "
+                         "skin, brown hair pinned up in a bun")
+
+
 def guard(kit: Kit) -> None:
     """Halden Security night-shift guard (D-063): the officer's shirt, tie, trousers and duty belt
     under a charcoal V-neck sweater vest with epaulettes, bare-headed."""
@@ -138,7 +151,8 @@ def guard(kit: Kit) -> None:
                          "burgundy chest badge, duty belt (radio = Hip), bare-headed")
 
 
-_looks = {"teller": teller, "teller_b": teller_b, "manager": manager, "cleaner": cleaner, "guard": guard}
+_looks = {"teller": teller, "teller_b": teller_b, "manager": manager, "cleaner": cleaner, "cleaner_b": cleaner_b,
+          "guard": guard}
 
 
 def recipe(kit: Kit) -> None:
