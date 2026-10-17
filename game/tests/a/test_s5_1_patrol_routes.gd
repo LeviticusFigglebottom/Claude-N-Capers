@@ -135,3 +135,20 @@ func test_s5_1_linear_graph_ping_pongs() -> void:
 	var civ_only: Dictionary = PatrolRouteGenerator.build(g, Vector3.ZERO, rng, 4, 4, &"civilian")
 	assert_eq((civ_only["points"] as Array).size(), 0, "respects tags")
 	g.free()
+
+
+## P OF-A6 ghost run (OF Lane points tagged only `guard_dock`): a guard whose spawn names its patrol graph patrols it
+## even without route_tag points; a guard that only finds the graph by proximity still needs route_tag points.
+func test_s5_1_named_graph_without_route_tag_still_patrols() -> void:
+	await _launch(42, ATestMaps.with_patrol_grid(0, 0, 3, 3, 3.0, true, Vector2(0.5, 1.5)))
+	var graph: PatrolGraph = _rt.map.get_node(^"Patrols/Graph") as PatrolGraph
+	for p: PatrolPoint in graph.points():
+		p.tags = [&"guard_dock"] as Array[StringName]
+	var named: NpcBase = _rt.spawn_npc(&"guard", Transform3D(Basis.IDENTITY, Vector3(5, 0.05, -5)), {"patrol_graph": graph})
+	var near: NpcBase = _rt.spawn_npc(&"guard", Transform3D(Basis.IDENTITY, Vector3(6, 0.05, -5)), {})
+	await wait_physics_frames(3)
+	var b: GuardBrain = named.get_node(^"Brain") as GuardBrain
+	assert_true(b.route.size() >= 2, "named graph: a route (%d points)" % b.route.size())
+	assert_eq(b.patrol_graph, graph)
+	assert_eq((near.get_node(^"Brain") as GuardBrain).route.size(), 0, "proximity: no route_tag points, holds post")
+	_teardown()
