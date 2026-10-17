@@ -76,7 +76,7 @@ func test_gn_inspectors_spawn_and_head_for_the_slot() -> void:
 	if not await _launch():
 		return
 	await _spawn_inspectors()
-	assert_eq(_inspectors().size(), 2, "two inspectors walk in")
+	assert_eq(_tagged(&"guard_inspection"), 2, "two inspectors walk in")
 	assert_eq(_state(), &"to_slot", "they head for the centrepiece slot")
 	for c: Variant in _inspectors():
 		var b: GuardBrain = (c as NpcBase).get_node(^"Brain") as GuardBrain
@@ -170,7 +170,7 @@ func test_gn_inspectors_bring_two_escorts_when_the_markers_exist() -> void:
 	if not await _launch():
 		return
 	var spawns: Node = _rt.map.get_node(^"Spawns")
-	for i: int in 2:
+	for i: int in 2 if _escort_markers().is_empty() else 0:  # C 2133b0aa ships InspectorEscortA/B
 		var sp: SpawnPoint = SpawnPoint.new()
 		sp.name = "TestEscort%d" % i
 		sp.kind = SpawnPoint.Kind.GUARD
@@ -179,6 +179,7 @@ func test_gn_inspectors_bring_two_escorts_when_the_markers_exist() -> void:
 		sp.global_position = Vector3(40.5 + 1.5 * i, 0.0, 4.5)
 	await _spawn_inspectors()
 	assert_eq(_inspectors().size(), 4, "two inspectors + two escorts walk in")
+	assert_eq(_tagged(&"guard_inspection"), 2, "two inspectors")
 	assert_eq(_state(), &"to_slot", "all head for the slot")
 	var escorts: int = 0
 	for c: Variant in _inspectors():
@@ -193,5 +194,26 @@ func test_gn_inspectors_bring_two_escorts_when_the_markers_exist() -> void:
 func test_gn_inspectors_without_escort_markers_walk_alone() -> void:
 	if not await _launch():
 		return
+	for sp: SpawnPoint in _escort_markers():  # a map without C's escort markers
+		sp.remove_from_group(G.GUARD_SPAWN)
 	await _spawn_inspectors()
 	assert_eq(_inspectors().size(), 2, "no escort markers: the two inspectors only")
+	assert_eq(_tagged(&"guard_inspection_escort"), 0, "no escorts")
+
+
+func _escort_markers() -> Array[SpawnPoint]:
+	var out: Array[SpawnPoint] = []
+	for n: Node in _rt.map.get_slots(G.GUARD_SPAWN):
+		var sp: SpawnPoint = n as SpawnPoint
+		if sp != null and sp.tags.has(&"guard_inspection_escort"):
+			out.append(sp)
+	return out
+
+
+## Walk-in NPCs (inspectors + escorts) spawned at markers tagged `tag`.
+func _tagged(tag: StringName) -> int:
+	var n: int = 0
+	for c: Variant in _inspectors():
+		if ((c as NpcBase).spawn_info.get("tags", []) as Array).has(tag):
+			n += 1
+	return n
