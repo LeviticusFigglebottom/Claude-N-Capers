@@ -88,7 +88,8 @@ func test_lmg_and_sniper_shapes() -> void:
 	assert_true(anvil.concealment < 10, "LMG hides badly")
 	var condor: WeaponStats = _w(&"weapon.condor_50").base
 	var heron: WeaponStats = _w(&"weapon.heron_308").base
-	assert_true(condor.damage > 2.0 * heron.damage and condor.fire_rate_rpm < heron.fire_rate_rpm, ".50 vs .308")
+	# D-124 addendum P13: the .308 hits 270 (one-shot Heavy head after D-127); the .50 stays about 2x and slower.
+	assert_true(condor.damage > 1.8 * heron.damage and condor.fire_rate_rpm < heron.fire_rate_rpm, ".50 vs .308")
 	assert_true(condor.armor_pierce >= 1.0 and condor.shield_pierce and condor.wall_pierce, ".50 pierces")
 	assert_true(condor.falloff_min_mult > 1.0, ".50 gains damage with range")
 	var stock: WeaponStats = LoadoutResolver.resolve_weapon(&"weapon.condor_50", [] as Array[StringName])

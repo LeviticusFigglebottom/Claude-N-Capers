@@ -17,6 +17,7 @@ const GRATE_AT: Vector3 = Vector3(16.95, 0.0, -1.4)
 const MASK_AT: Vector3 = Vector3(18.5, -4.0, 3.0)
 const GATE_AT: Vector3 = Vector3(14.0, -4.0, 6.9)
 const C6_AT: Vector3 = Vector3(9.1, -1.4, 8.8)
+const LASER_GAP_X: float = 9.575
 
 var rt: HeistRuntime = null
 var pilot: Po5Pilot = null
@@ -61,6 +62,15 @@ func shot(label: String) -> void:
 func wait_s(s: float) -> void:
 	for _i: int in int(s * Engine.physics_ticks_per_second):
 		await get_tree().physics_frame
+
+
+## Physics-frame wait for `cond` (game time, llvmpipe-safe). Returns whether it became true.
+func wait_until(cond: Callable, timeout_s: float) -> bool:
+	for _i: int in int(timeout_s * Engine.physics_ticks_per_second):
+		if cond.call():
+			return true
+		await get_tree().physics_frame
+	return bool(cond.call())
 
 
 func _fail(step: String) -> void:
@@ -196,27 +206,30 @@ func _gate_guard() -> bool:
 	if g == null:
 		note("no guard at the gate (moved / rover); carrying on")
 		return true
-	var back: Vector3 = g.global_position + g.global_basis.z.normalized() * 0.8
-	if not await pilot.goto(Vector3(back.x, g.global_position.y, back.z), 0.5, 40.0):
-		note("could not get behind the gate guard")
-		return false
 	var hits: Array[int] = [0, 0]
 	var c: CrewController = pilot.crew
 	c.melee.hit_landed.connect(func(_t: Object) -> void: hits[0] += 1)
 	c.melee.swung.connect(func(_ch: bool) -> void: hits[1] += 1)
-	for _k: int in 4:
-		if not g.is_alive():
+	# He patrols the B5 corridor: only close in while his back is to us (a re-close walked in front of him once and
+	# he was ALARMED before the knife landed; S3.6 one-shots only CALM / CURIOUS guards).
+	for _k: int in 6:
+		if not g.is_alive() or g.alert_state > Enums.AlertState.CURIOUS:
 			break
-		if pilot.flat_dist(g.global_position, c.global_position) > 1.1:  # he walked on: close in behind him again
-			var b2: Vector3 = g.global_position + g.global_basis.z.normalized() * 0.8
-			await pilot.goto(Vector3(b2.x, g.global_position.y, b2.z), 0.4, 10.0)
-		await pilot.face(g.global_position + Vector3(0, 1.1, 0), 0.03, 1.0)
-		await pilot.inp.hold(&"melee", 1.05)
+		if not await _wait_back_turned(g, 40.0):
+			note("gate guard never turned his back (alert %d)" % g.alert_state)
+			break
+		var back: Vector3 = g.global_position + g.global_basis.z.normalized() * 0.8
+		await pilot.goto(Vector3(back.x, g.global_position.y, back.z), 0.4, 6.0)
+		if pilot.flat_dist(g.global_position, c.global_position) > 1.2 or not _back_turned(g):
+			continue
+		await pilot.face(g.global_position + Vector3(0, 1.1, 0), 0.05, 0.5)
+		var alert_before: int = g.alert_state
+		await pilot.inp.tap(&"melee")  # a quick swing: S3.6 kills an unaware guard on any hit; a charge let him walk on
 		await wait_s(0.6)
-		note("swing: me %s guard %s fwd %s dist %.2f, swings %d, hits %d, health %.2f alive %s alert %d" % [
+		note("swing: me %s guard %s fwd %s dist %.2f, swings %d, hits %d, health %.2f alive %s alert %d -> %d" % [
 			Po5Pilot._v(c.global_position), Po5Pilot._v(g.global_position), Po5Pilot._v(-g.global_basis.z),
 			pilot.flat_dist(g.global_position, c.global_position), hits[1], hits[0], g.health, g.is_alive(),
-			g.alert_state])
+			alert_before, g.alert_state])
 	if g.is_alive():
 		note("gate guard not knifed (alert %d)" % g.alert_state)
 		return false
@@ -225,12 +238,35 @@ func _gate_guard() -> bool:
 		var pc: InteractableComponent = _comp(g, &"answer_pager")
 		if pc != null and pc.enabled:
 			note("answering the pager")
-			return await pilot.use(pc, 20.0, func() -> bool: return not pc.enabled)
+			var answered: Callable = func() -> bool: return not pc.enabled
+			if await pilot.use(pc, 20.0, answered) or answered.call():
+				return true
+			# The body fell inside the vault gate: answer through the bars from the corridor side, nearest the body.
+			var b: Vector3 = pc.global_position
+			await pilot.goto(Vector3(clampf(b.x, GATE_AT.x - 1.0, GATE_AT.x + 1.0), GATE_AT.y, GATE_AT.z - 0.3), 0.4,
+				10.0)
+			note("answering through the gate from %s (pager at %s, %.2f m)" % [Po5Pilot._v(c.global_position),
+				Po5Pilot._v(b), c.eye_position().distance_to(b)])
+			return await pilot.use(pc, 20.0, answered, false) or answered.call()
 		if _alarm != &"":
 			return false
 		await wait_s(0.25)
 	note("no pager came")
 	return true
+
+
+## True when the guard faces away from the pilot (his forward and the pilot are > ~110 deg apart).
+func _back_turned(g: NpcBase) -> bool:
+	var to_me: Vector3 = pilot.crew.global_position - g.global_position
+	to_me.y = 0.0
+	var fwd: Vector3 = -g.global_basis.z
+	fwd.y = 0.0
+	return to_me.length() < 0.05 or fwd.normalized().dot(to_me.normalized()) < -0.35
+
+
+## Stand still until the guard's back is turned, or `timeout` game-seconds.
+func _wait_back_turned(g: NpcBase, timeout: float) -> bool:
+	return await wait_until(func() -> bool: return not g.is_alive() or _back_turned(g), timeout)
 
 
 ## B6 via RecordsDoor: the keycard and the time-lock code.
@@ -275,24 +311,55 @@ func _antechamber() -> bool:
 		await pilot.inp.tap(&"slot_secondary")
 		await wait_s(1.0)
 		for _k: int in 6:
-			if not is_instance_valid(cam) or not cam.is_visible_in_tree():
+			if _cam_down(cam):
 				break
-			await pilot.face(cam.global_position, 0.01, 1.0)
+			var aim_at: Vector3 = _cam_aim_point(cam)
+			await pilot.face(aim_at, 0.01, 1.0)
+			var c: CrewController = pilot.crew
+			var q: PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.create(c.eye_position(),
+				c.eye_position() + c.aim_direction() * 30.0)
+			q.exclude = [c.get_rid()]
+			var hit: Dictionary = c.get_world_3d().direct_space_state.intersect_ray(q)
+			note("C6 shot from %s at %s (%.1f m): ray hits %s" % [Po5Pilot._v(c.global_position), Po5Pilot._v(aim_at),
+				c.eye_position().distance_to(aim_at), (hit["collider"] as Node).get_path() if not hit.is_empty() else ^"-"])
 			await pilot.inp.tap(&"fire")
 			await wait_s(0.4)
-		note("camera C6 %s" % ("down" if not is_instance_valid(cam) or not cam.is_visible_in_tree() else "still up"))
+		note("camera C6 %s" % ("down" if _cam_down(cam) else "still up"))
 	else:
 		note("no C6 camera found near %s" % Po5Pilot._v(C6_AT))
 	return true
+
+
+## Where to shoot a camera: its collision box sits on the room side of the mount pivot (QA-26), so aim at the
+## shape's centre (the pivot is on the wall / ceiling plane: shots there hit the mount surface).
+static func _cam_aim_point(cam: Node3D) -> Vector3:
+	for n: Node in cam.find_children("*", "CollisionShape3D", true, false):
+		return (n as Node3D).global_position
+	var head: Node3D = cam.find_child("Head", true, false) as Node3D
+	return head.global_position if head != null else cam.global_position - cam.global_basis.z * 0.2
+
+
+## A shot camera keeps its mesh: SecurityCamera.destroyed (S8.1) is the state.
+static func _cam_down(cam: Node3D) -> bool:
+	return not is_instance_valid(cam) or bool(cam.get(&"destroyed")) or not cam.is_visible_in_tree()
 
 
 func _time_lock() -> bool:
 	var panel: Node3D = _tagged(&"time_lock")
 	if panel == null:
 		return false
-	pilot.inp.press(&"crouch")  # static lasers: under them
-	var ok: bool = await pilot.use(_comp(panel), 40.0, func() -> bool: return _objective(&"time_lock") == 2)
-	pilot.inp.release(&"crouch")
+	# laser_static (nd_gameplay._variants_lasers): the grid spans x 10.05-18.9 at z 8.5 in front of the panel; the
+	# bypass gap is x 9.1-10.05 by the west wall (capsule r 0.35: centre x 9.45-9.7). Through the gap, then east
+	# behind the plane (the navmesh ignores beams: walking straight at the panel tripped it, ND run 4 t=97.7).
+	for wp: Vector3 in [Vector3(LASER_GAP_X, GATE_AT.y, 7.9), Vector3(LASER_GAP_X, GATE_AT.y, 9.15)]:
+		if not await pilot.goto(wp, 0.12, 20.0):
+			note("laser gap: could not reach %s (at %s)" % [Po5Pilot._v(wp), Po5Pilot._v(pilot.crew.global_position)])
+			return false
+	var stand: Vector3 = Vector3(panel.global_position.x - 0.9, GATE_AT.y, clampf(panel.global_position.z, 9.0, 9.8))
+	if not await pilot.goto(stand, 0.25, 30.0):
+		note("TL: could not reach the stand point %s (at %s)" % [Po5Pilot._v(stand),
+			Po5Pilot._v(pilot.crew.global_position)])
+	var ok: bool = await pilot.use(_comp(panel), 40.0, func() -> bool: return _objective(&"time_lock") == 2, false)
 	if not ok:
 		return false
 	var vault: Door = _tagged(&"vault_door") as Door

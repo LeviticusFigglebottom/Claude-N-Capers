@@ -175,7 +175,11 @@ func test_briefing_subset() -> void:
 	var all: Array = Array(_def.objectives)
 	assert_true(_def.briefing_objectives.size() >= 5 and _def.briefing_objectives.size() < all.size())
 	for id: StringName in _def.briefing_objectives + _def.briefing_optional:
-		assert_has(all, id, "%s is a def objective" % id)
+		if String(id).contains("."):  # a briefing-only step (ui.briefing.step.<heist>.<step>), a strings key as-is
+			assert_true(String(id).begins_with("ui.briefing.step.%s." % HEIST) and StringTable.has(id),
+					"%s is a GN briefing step string" % id)
+		else:
+			assert_has(all, id, "%s is a def objective" % id)
 	assert_eq(_def.briefing_objectives[_def.briefing_objectives.size() - 1], &"escape")
 	assert_true(StringTable.has(_def.briefing_loud_key), "loud line string")
 	var m: Dictionary = BriefingModel.build(HEIST, Enums.Difficulty.HAZARDOUS, _def)
@@ -224,9 +228,13 @@ func test_every_objective_has_briefing_and_hud_text() -> void:
 			ids.append(id)
 	var lines: Array[Dictionary] = BriefingModel.objective_lines(HEIST, ids)
 	for i: int in range(ids.size()):
-		var key: StringName = StringName("objective.%s.%s" % [HEIST, ids[i]])
+		var step: bool = String(ids[i]).contains(".")  # briefing-only step key: no HUD objective behind it
+		var key: StringName = ids[i] if step else StringName("objective.%s.%s" % [HEIST, ids[i]])
 		assert_true(StringTable.has(key), "%s has a string" % key)
 		var brief: String = String(lines[i]["text"])
-		assert_false(brief.contains("{") or brief.begins_with("objective."), "briefing line for %s: %s" % [ids[i], brief])
+		assert_false(brief.contains("{") or brief.begins_with("objective.") or brief.begins_with("ui."),
+				"briefing line for %s: %s" % [ids[i], brief])
+		if step:
+			continue
 		var hud: String = ObjectivesPanel.objective_text({"id": ids[i], "text_key": key, "args": {}})
 		assert_false(hud.contains("{") or hud.begins_with("objective.") or hud == "", "HUD label for %s: %s" % [ids[i], hud])

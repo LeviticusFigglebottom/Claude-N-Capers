@@ -32,7 +32,7 @@
 ##       in_custody(slot) -> bool, negotiation_left(slot) -> float, auto_release_left(slot) -> float,
 ##       highlighted_hostage() -> Node with net_id
 ##   HeistRuntime.get_service(G.SVC_STEALTH):
-##       detection_entries(crew_slot) -> Array of {observer_net_id, world_pos, value, kind} (server)
+##       detection_entries(crew_slot) -> Array of {observer_net_id, world_pos, value, kind, state} (server)
 ##       marked_targets(crew_slot) -> Array of net ids or {net_id, world_pos, kind}
 ##       camera_countdown() -> float (seconds left, < 0 = none)
 ## Any member may be a property or a method. Missing members fall back to defaults from
@@ -541,7 +541,9 @@ func _poll_detection(slot: int) -> void:
 	if st != null and st.has_method(&"detection_entries") and Net.is_authority():
 		var rows: Array[Dictionary] = []
 		for v: Variant in st.call(&"detection_entries", slot):
-			if v is Dictionary and float((v as Dictionary).get("value", 0.0)) > 0.0:
+			# ui_hud v1.17: value-0 rows of CURIOUS / INVESTIGATING observers carry their "?" state.
+			if v is Dictionary and (float((v as Dictionary).get("value", 0.0)) > 0.0
+					or StringName((v as Dictionary).get("state", &"")) != &""):
 				rows.append(_detection_row(v as Dictionary))
 		rows.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return int(a["observer_net_id"]) < int(b["observer_net_id"]))
 		_assign(&"detection", rows)
@@ -561,6 +563,37 @@ func _poll_marks_and_timers(slot: int) -> void:
 	_assign(&"marked_targets", marks)
 	var cam: float = float(_read(st, &"camera_countdown", -1.0))
 	_assign(&"camera_alarm_s", cam if cam >= 0.0 else -1.0)
+
+
+## GN-8 (B's GN audit): the HUD's current step is the first ACTIVE row, so an ACTIVE optional / as-needed step
+## (`args.optional`: GN keycard, code, hack) listed before a required one (the centrepiece) took the slot. Every
+## ACTIVE optional row moves to just after the last ACTIVE required row; everything else keeps the mission order.
+## With no required step active the order is unchanged (the optional steps are then the current ones).
+static func required_first(rows: Array[Dictionary]) -> Array[Dictionary]:
+	var last_req: int = -1
+	for i: int in range(rows.size()):
+		if _row_active(rows[i]) and not _row_optional(rows[i]):
+			last_req = i
+	if last_req < 0:
+		return rows
+	var out: Array[Dictionary] = []
+	var moved: Array[Dictionary] = []
+	for i: int in range(rows.size()):
+		if i < last_req and _row_active(rows[i]) and _row_optional(rows[i]):
+			moved.append(rows[i])
+			continue
+		out.append(rows[i])
+		if i == last_req:
+			out.append_array(moved)
+	return out
+
+
+static func _row_active(row: Dictionary) -> bool:
+	return int(row.get("state", -1)) == Enums.ObjectiveState.ACTIVE
+
+
+static func _row_optional(row: Dictionary) -> bool:
+	return bool((row.get("args", {}) as Dictionary).get("optional", false))
 
 
 func _poll_objectives() -> void:
@@ -586,7 +619,7 @@ func _poll_objectives() -> void:
 			"args": (o.get("args", {}) as Dictionary).duplicate(true), "state": int(o["state"]),
 			"device_net_id": int(_objective_device.get(StringName(o["id"]), -1)),
 		})
-	_assign(&"objectives", list)
+	_assign(&"objectives", required_first(list))
 	_poll_markers(src)
 
 
@@ -985,10 +1018,14 @@ static func _detection_row(e: Dictionary) -> Dictionary:
 	var obs: Node3D = Ids.lookup(oid) as Node3D
 	if obs != null and obs.is_inside_tree():
 		pos = obs.global_position
-	return {
+	var row: Dictionary = {
 		"observer_net_id": oid, "world_pos": pos as Vector3,
 		"value": clampf(float(e.get("value", 0.0)), 0.0, 1.0), "kind": int(e.get("kind", 0)),
 	}
+	var state: StringName = StringName(e.get("state", &""))
+	if state != &"":
+		row["state"] = state  # ui_hud v1.17 (D-128): &"curious" / &"investigating"; absent = meter only
+	return row
 
 
 static func _mark_row(v: Variant) -> Dictionary:

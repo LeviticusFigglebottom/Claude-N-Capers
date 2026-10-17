@@ -1,5 +1,8 @@
 # CAPERWORKS handoff: start here (written 2026-10-14 by the outgoing LEAD)
 
+> **2026-10-16 (D-129):** a new LEAD took over at round 229 with a fresh env team. §1 state and §2 session ids below are
+> from round 200; live state is `docs/process/board.md` (sessions, rounds) and `docs/process/heist_completion.md` (gaps).
+
 This folder is the single entry point for a **new Claude session** taking over the project, as LEAD or as a
 fresh env session. Read it top to bottom, then the files it points to. Everything durable is in `docs/` on
 trunk. If something here contradicts `docs/decisions.md`, the decision log wins.

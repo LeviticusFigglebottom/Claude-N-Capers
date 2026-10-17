@@ -22,8 +22,12 @@ func _run() -> void:
 	s.setup(PlayerProfile.new_default())
 	add_child(s)
 	await get_tree().process_frame
-	s.weapon_option.open_picker()
+	var picker: ItemPicker = s.weapon_option.open_picker()
 	await _shot("01_loadout_secondary_picker_fresh")
+	for t: Button in picker.tiles:  # LEAD r229 reach pass: a locked tile takes pad focus and previews its stats
+		if t.disabled and String(t.find_child("Lock", true, false).text).contains("10"):
+			t.grab_focus()
+	await _shot("03_picker_locked_tile_focused")
 	s.queue_free()
 	await get_tree().process_frame
 	var p: PlayerProfile = PlayerProfile.new_default()

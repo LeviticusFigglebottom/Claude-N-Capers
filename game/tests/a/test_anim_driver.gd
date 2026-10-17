@@ -219,7 +219,9 @@ func test_seated_deaths() -> void:
 		npc.last_damage = {"direction": c[1], "type": c[2]}
 		npc.die({"direction": c[1]})
 		_drv(npc).tick(0.016)
-		assert_eq(_drv(npc).clip, c[3], "%s, hit %s, type %d" % [c[0], c[1], c[2]])
+		# v1.10 death variety: a standing death may be either variant when D's library has death_back_b.
+		var ok: Array = [c[3], &"death_back_b"] if c[3] == &"death_back" else [c[3]]
+		assert_true(_drv(npc).clip in ok, "%s, hit %s, type %d: %s (want %s)" % [c[0], c[1], c[2], _drv(npc).clip, ok])
 	var old: NpcBase = _npc(&"civilian")
 	var lib: AnimationLibrary = _drv(old).player.get_animation_library(AnimDriver.LIBRARY)
 	lib.remove_animation(&"death_seated_fall")

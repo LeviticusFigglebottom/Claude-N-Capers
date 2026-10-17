@@ -8,9 +8,14 @@ var node: Node3D = null
 ## Enums.ObserverKind
 var kind: int = Enums.ObserverKind.GUARD
 ## Preset values resolved from StealthTweak.observer_presets (S2.2).
-var near: float = 2.0
-var far: float = 30.0
+## D-128 PD2: far = dis_max / camera range (m); half_fov_rad = angle_max (NPC) or half the cone (camera).
+var far: float = 40.0
 var half_fov_rad: float = deg_to_rad(60.0)
+## D-128 PD2 `delay` pair (s) and the attention class (&"combatant" / &"non_combatant").
+var delay_min: float = 0.2
+var delay_max: float = 2.0
+var attention: StringName = &"combatant"
+## D-118 ◇ gadget base rate (1 / preset gadget_time).
 var base_rate: float = 1.0
 ## Physics time of the last staggered update (dt is integrated from it).
 var last_time: float = 0.0
@@ -31,10 +36,12 @@ var noticed: Dictionary[int, bool] = {}
 func setup(p_node: Node3D, p_kind: int, preset: Dictionary) -> void:
 	node = p_node
 	kind = p_kind
-	near = float(preset.get("near", 2.0))
-	far = float(preset.get("far", 30.0))
+	far = float(preset.get("far", 40.0))
 	half_fov_rad = deg_to_rad(float(preset.get("fov_deg", 120.0)) * 0.5)
-	base_rate = 1.0 / maxf(float(preset.get("min_time", 1.0)), 0.001)
+	delay_min = float(preset.get("delay_min", 0.2))
+	delay_max = float(preset.get("delay_max", 2.0))
+	attention = StringName(preset.get("attention", &"combatant"))
+	base_rate = 1.0 / maxf(float(preset.get("gadget_time", 1.0)), 0.001)
 
 
 func is_camera() -> bool:

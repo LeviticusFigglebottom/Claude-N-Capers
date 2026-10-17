@@ -107,8 +107,11 @@ func test_every_heist_objective_has_a_radio_line() -> void:
 			for ev: StringName in [&"radio.objective_done", &"radio.objective_new"]:
 				n += p.heist_lines(ev, sp, heist, {"objective": StringName(tag)}).size()
 			assert_true(n >= 1, "%s objective [%s] has a radio line" % [heist, tag])
-		for ev: StringName in [&"radio.escape_available", &"radio.escape", &"radio.loot_secured"]:
-			assert_true(p.heist_lines(ev, sp, heist, {}).size() >= 1, "%s has a heist %s line" % [heist, ev])
+		# QB-1 (LEAD 2026-10-16): no heist escape_available / escape line where a mission escape line always covers
+		# it (the generic lines are the fallback); a loot line is still the heist's own.
+		assert_true(p.heist_lines(&"radio.loot_secured", sp, heist, {}).size() >= 1, "%s has a heist loot line" % heist)
+		assert_eq(p.heist_lines(&"radio.escape_available", sp, heist, {}).size(), 0,
+				"%s: no heist escape_available line (always under the mission's escape line)" % heist)
 
 
 ## Every radio line is well formed and every vo.* id the radio data or B code uses has its voice.<id> text.

@@ -122,10 +122,7 @@ func step() -> void:
 		if p.crew.is_carrying_bag():
 			await _secure_bag()
 		return
-	var esc: EscapeZone = p.active_escape()
-	if esc != null and id == &"escape":
-		await p.goto(p.stand_point(esc.global_position), 1.0, 60.0)
-		await p.hold_position(3.0, func() -> bool: return _ended)
+	if await _to_the_ride(id, pos):
 		return
 	var zone: SecureZone = p.secure_zone()
 	if zone != null and zone.global_position.distance_to(pos) < 3.0:
@@ -155,6 +152,21 @@ func step() -> void:
 	await p.hold_position(3.0)
 
 
+## The escape marker: stand in the open escape zone. GN-8: `escape_wait` (required loot in, the ride is coming): walk to
+## the escape and hold there, fighting from it, instead of the optional extras. True when it acted.
+func _to_the_ride(id: StringName, pos: Vector3) -> bool:
+	var esc: EscapeZone = p.active_escape()
+	if esc != null and id == &"escape":
+		await p.goto(p.stand_point(esc.global_position), 1.0, 60.0)
+	elif id == &"escape_wait":
+		if not p.near(p.crew.global_position, pos, 4.0):
+			await p.goto(_marker_stand(pos), 2.5, 30.0)
+	else:
+		return false
+	await p.hold_position(3.0, func() -> bool: return _ended)
+	return true
+
+
 ## An open escape goes first (the ride only comes once the required objectives are done; GN probe 7 looped on the
 ## optional extras / lockers behind the art store vault door instead). Otherwise prefer objectives that are not the
 ## generic secure/escape when something else is still active. Walk-near (area)
@@ -162,7 +174,10 @@ func step() -> void:
 ## flow moves on to what it can act on (GN probe: stuck at a found, already cut canvas).
 func _pick(markers: Array[Dictionary]) -> Dictionary:
 	for me: Dictionary in markers:  # GN probe 7: the ride is here (required loot secured): leave, skip the extras
-		if StringName(me["id"]) == &"escape" or (StringName(me["id"]) == &"secure" and _loose_bag() != null):
+		# GN-8 (windowed seed 4242): the ride is on its way (escape_wait): wait and defend at the escape too; the
+		# pilot went for the optional basement lockers and was downed and cuffed in Stair SS as the van arrived.
+		if StringName(me["id"]) in [&"escape", &"escape_wait"] \
+				or (StringName(me["id"]) == &"secure" and _loose_bag() != null):
 			return me  # probe 8: a dropped bag (put down to clear the way) is carried in before anything optional
 	for m0: Dictionary in markers:  # GN probe 4: the loud hack lifts every shutter (Calloway), so it goes first
 		if StringName(m0["id"]) in FIRST_OBJECTIVES and not _marker_blocked.has(_marker_key(m0)):

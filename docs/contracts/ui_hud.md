@@ -1,4 +1,4 @@
-# Contract: HUD data (v1.17)
+# Contract: HUD data (v1.18)
 
 ENV A exposes in-heist state. ENV B owns every UI scene, HUD included (one UI style, one owner).
 
@@ -171,3 +171,10 @@ guard checking a noise. Rows without `state` behave as v1.16. ENV B draws PD2's 
 each observer (2.15 m above `world_pos`, cameras 0.35 m) filling clockwise from 12 o'clock with "?" inside, turning into
 a red "!" when detected, plus one crosshair arc per observer in its direction; colours white → orange (≥ 0.5) → red.
 Off-screen observers get only the arc. It replaces the v1.x chevrons.
+
+## v1.18: side objectives (B f3b6781f, P's DB-P1)
+Objective data may carry `side: bool` (default false). The HUD objective caption shows the first ACTIVE main step; an
+ACTIVE step with `side: true` gives way to any live main step (it still lists in the objectives panel). Not the same as
+`optional` (casing and alternative steps carry that). Producer A (`add_objective` data in `*_mission.gd`: DB `cartel`;
+GH `extra_bags` / `salon` / `display_cases`; any other bonus step), consumer B (caption). A also emits an objective's
+state only on change (P saw `cartel -> ACTIVE` re-emitted on every data update).

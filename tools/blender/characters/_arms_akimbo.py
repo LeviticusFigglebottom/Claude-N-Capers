@@ -23,6 +23,7 @@ shows it at ``mag_in_l``).
 
 from __future__ import annotations
 
+import dataclasses
 import math
 
 import numpy as np
@@ -69,6 +70,9 @@ class Side:
     def __init__(self, sk: Skeleton, s: FPSet) -> None:
         self.sk, self.s = sk, s
         self.grip = grip_hand(sk, pole=s.pole_r)
+        # D-116 (PO 2026-10-16): the thumb along the frame's left side, not standing off it (_arms_sets.AKIMBO_THUMB)
+        self.grip = self.grip.with_shape(dataclasses.replace(hand_shape("trigger"), thumb=tuple(s.grip_thumb[:3]),
+                                                             thumb_opp=s.grip_thumb[3]))
         # placeholder left hand of a one-gun timeline (never solved; the mirror replaces it)
         self.idle_l = hand_at(sk, "L", "c", (-0.20, 0.03, -0.60), (0.15, 0.35, -0.92), (0.95, 0.0, 0.25),
                               (-0.5, -0.6, -0.4), "relaxed")

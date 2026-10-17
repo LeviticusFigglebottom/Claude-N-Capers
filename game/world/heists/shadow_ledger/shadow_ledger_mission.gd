@@ -1,4 +1,4 @@
-## Shadow Ledger (Kessler & Moor penthouse) mission flow. Owner: ENV C (C2).
+## Shadow Ledger (Kessler & Moor penthouse) mission flow. Owner: ENV A (mission scripts, owners.json; ENV C built the first flow, C2).
 ## Design: docs/design/heists/shadow_ledger.md §Objectives / §Rare events / §Escape (D-042).
 ## Contract heist_map.md §6: uses only the HeistMission API, EventBus, Services and nodes of this map
 ## (prefabs found by objective_tag).
@@ -77,17 +77,22 @@ func _on_mission_start() -> void:
 	add_objective(&"casing", &"objective.shadow_ledger.casing", Enums.ObjectiveState.ACTIVE, {"optional": true})
 	add_objective(&"laptop", &"objective.shadow_ledger.laptop", Enums.ObjectiveState.ACTIVE,
 		{"location": variant(&"laptop"), "marker_tags": [TAG_LAPTOP]})
-	add_objective(&"keycard", &"objective.shadow_ledger.keycard", Enums.ObjectiveState.ACTIVE, {"marker_tags": [TAG_KEYCARD]})
+	# srv_contractor: the server door is propped, no keycard needed. B-SL audit: both steps are born COMPLETED (their
+	# first sighting, which ContactRadio keeps silent), so the Accountant's keycard / server-room lines never fire.
+	var contractor: bool = _slot_active(&"server_room", &"srv_contractor")
+	var done: Enums.ObjectiveState = Enums.ObjectiveState.COMPLETED if contractor else Enums.ObjectiveState.ACTIVE
+	add_objective(&"keycard", &"objective.shadow_ledger.keycard", done,
+		{"marker_tags": [TAG_KEYCARD], "skipped": true} if contractor else {"marker_tags": [TAG_KEYCARD]})
 	require_items(&"keycard", ITEM_KEYCARD)
-	add_objective(&"server_door", &"objective.shadow_ledger.server_door", Enums.ObjectiveState.ACTIVE,
-		{"marker_tags": [TAG_SERVER_READER]})
+	add_objective(&"server_door", &"objective.shadow_ledger.server_door", done, {"marker_tags": [TAG_SERVER_READER]})
 	add_objective(&"cage_code", &"objective.shadow_ledger.cage_code", Enums.ObjectiveState.ACTIVE,
 		{"optional": true, "alternative": &"saw", "marker_tags": [TAG_CAGE_CODE]})
 	add_objective(&"cage", &"objective.shadow_ledger.cage", Enums.ObjectiveState.ACTIVE, {"marker_tags": [TAG_CAGE]})
 	add_objective(&"hack", &"objective.shadow_ledger.hack", Enums.ObjectiveState.HIDDEN, {"marker_tags": [TAG_HACK]})
 	add_objective(&"drives", &"objective.shadow_ledger.drives", Enums.ObjectiveState.HIDDEN, {"marker_tags": [TAG_DRIVES]})
 	add_objective(&"secure", &"objective.shadow_ledger.secure", Enums.ObjectiveState.ACTIVE,
-		{"laptop": 1, "drives": MIN_DRIVES, "optional_more": true, "marker_tags": [TAG_LOOT_SECURE]})
+		{"laptop": 1, "drives": MIN_DRIVES, "optional_more": true, "marker_tags": [TAG_LOOT_SECURE],
+			"laptop_secured": false, "drives_secured": 0})  # B-SL audit: the HUD shows (0/2) from the start
 	add_objective(&"study_safe", &"objective.shadow_ledger.study_safe", Enums.ObjectiveState.ACTIVE,
 		{"optional": true, "marker_tags": [TAG_STUDY_SAFE]})
 	add_objective(&"paintings", &"objective.shadow_ledger.paintings", Enums.ObjectiveState.ACTIVE,
@@ -152,9 +157,6 @@ func _setup_variants() -> void:
 		for door: Node in find_tagged(TAG_SERVER_DOOR):
 			door.call(&"unlock")
 			door.call(&"set_open", true)
-		update_objective_data(&"keycard", {"skipped": true})
-		complete(&"keycard")
-		complete(&"server_door")
 		if _rare(RARE_CAGE_OPEN):
 			update_objective_data(&"cage", {"left_open": true})
 			_open_cage(&"left_open")

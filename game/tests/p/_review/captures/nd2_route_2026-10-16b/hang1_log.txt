@@ -1,0 +1,11 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+Vulkan 1.4.318 - Forward+ - Using Device #0: Unknown - llvmpipe (LLVM 20.1.2, 256 bits)
+
+[INFO][rng][p1] run seed 21
+[INFO][preplan][p1] assets [&"asset.alternate_entry", &"asset.vent_access"]
+[INFO][variants][p1] seed 21 resolved { &"guard_post": [&"rover_ground"], &"camera": [&"cam_c"], &"security_room_staffed": [&"sec_empty"], &"night_manager": [&"mgr_in"], &"code_note": [&"code_records_ledger"], &"keycard": [&"kc_records"], &"server_room": [&"srv_ground"], &"vent_open": [&"vent_open"], &"laser_pattern": [&"laser_static"], &"cleaner": [&"cleaner_ground"], &"escape": [&"esc_van_lot"], &"extra_loot": [&"mgr_safe_full"], &"armored_car": [], &"time_lock_s": 60.0, &"depository_bags": 3, &"deposit_boxes": 6, "rare": [] }
+[INFO][heist][p1] phase LOADING -> CASING
+[INFO][director][p1] prewarm: 18 of 18 scenes queued
+[INFO][prefab][p1] CameraStation: security room unstaffed
+Terminated
+xvfb-run: error: problem while cleaning up temporary directory

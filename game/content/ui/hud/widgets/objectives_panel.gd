@@ -9,6 +9,8 @@ extends HudWidget
 const FLASH_S: float = 2.4
 ## Seconds the finished step stays struck through before the next one slides in.
 const STRIKE_S: float = 1.0
+## A mid-grey scene behind the HUD (the PO's greybox interiors at their brightest): the heist caption must read on it.
+const WORLD_BG: Color = Color(0.42, 0.40, 0.37)
 
 ## objective_text()'s cleanup patterns for unfilled "{arg}" placeholders (compiled on first use).
 static var _unfilled_group: RegEx = null
@@ -138,9 +140,13 @@ func _apply_accent() -> void:
 	panel.add_theme_stylebox_override(&"panel", edge)
 	if accent.a <= 0.0:
 		return
-	var sb: StyleBoxFlat = panel.get_theme_stylebox(&"panel") as StyleBoxFlat
-	var back: Color = UiAccent.over(sb.bg_color, UiAccent.app_bg()) if sb != null else UiAccent.app_bg()
-	header_label.add_theme_color_override(&"font_color", UiAccent.readable(accent, back, UiAccent.table().min_text_contrast))
+	header_label.add_theme_color_override(&"font_color", caption_color(accent))
+
+
+## LEAD r229 (ND crowding shot): the frameless HUD panel is mostly see-through, so the caption is lifted until it reads
+## over a mid-grey scene (WORLD_BG), the worst case behind it, not over the panel's own near-black tint.
+static func caption_color(heist_accent: Color) -> Color:
+	return UiAccent.readable(heist_accent, WORLD_BG, UiAccent.table().min_text_contrast)
 
 
 ## PO-4 motion (style.md §8): "OBJECTIVE COMPLETE" in OK green over the finished step, struck through,

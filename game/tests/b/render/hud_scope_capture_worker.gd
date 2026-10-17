@@ -21,10 +21,13 @@ func _run() -> void:
 	await _shot(false, 3.5)
 	await _shot(true, 1.6)
 	await _shot(true, 3.5)
+	InteractionPanel.pad_active = true  # LEAD r229 reach pass: the docked prompt names the pad button
+	await _shot(true, 1.6, "_pad")
+	InteractionPanel.pad_active = false
 	get_tree().quit()
 
 
-func _shot(scoped: bool, dist: float) -> void:
+func _shot(scoped: bool, dist: float, tag: String = "") -> void:
 	var w: Node3D = Node3D.new()
 	add_child(w)
 	var env: WorldEnvironment = WorldEnvironment.new()
@@ -70,7 +73,7 @@ func _shot(scoped: bool, dist: float) -> void:
 	model.devices = [{"net_id": id, "kind": &"drill", "world_pos": drill.position, "progress": 0.4,
 			"time_left_s": 71.0, "state": &"jammed", "fix_prompt_key": &"ui.prompt.fix_drill"}]
 	if dist < 2.0:
-		model.interaction = {"text_key": &"ui.prompt.fix_drill", "args": {"key": "F"}, "progress": 0.0,
+		model.interaction = {"text_key": &"ui.prompt.fix_drill", "args": {}, "progress": 0.0,
 				"blocked_reason": &""}
 	var mask: Control = null
 	if scoped:
@@ -84,8 +87,8 @@ func _shot(scoped: bool, dist: float) -> void:
 		await get_tree().process_frame
 	await RenderingServer.frame_post_draw
 	var img: Image = get_viewport().get_texture().get_image()
-	var path: String = "%s/scope_%s_%s_%dx%d.png" % [_out, "scoped" if scoped else "hip", ("%.1fm" % dist).replace(".", "m")
-			.trim_suffix("m"), img.get_width(), img.get_height()]
+	var path: String = "%s/scope_%s_%s%s_%dx%d.png" % [_out, "scoped" if scoped else "hip", ("%.1fm" % dist).replace(".",
+			"m").trim_suffix("m"), tag, img.get_width(), img.get_height()]
 	img.save_png(path)
 	print("SCOPE SHOT ", path, " docked=", hud._docked.size(), " plated=", hud.interaction.plated)
 	hud.queue_free()
