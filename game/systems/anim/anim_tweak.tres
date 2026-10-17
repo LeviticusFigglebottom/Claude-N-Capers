@@ -14,6 +14,8 @@ clip_speeds = {
 &"crouch_walk": 1.5,
 &"dozer_walk": 1.6,
 &"flee": 4.0,
+&"flee_b": 4.0,
+&"flee_c": 4.0,
 &"run": 3.5,
 &"shield_walk": 1.6,
 &"sprint": 5.75,
@@ -34,6 +36,12 @@ reload_done_s = {
 }
 turn_clip_deg = 90.0
 turn_time_s = 0.8
+turn_45_clip_deg = 45.0
+turn_90_min_deg = 67.5
+turn_speed_min = 0.75
+turn_speed_max = 1.5
+turn_snap_s = 0.15
+door_kick_impact_s = 2.5
 move_threshold_mps = 0.2
 walk_run_split_mps = 2.55
 run_sprint_split_mps = 4.6
@@ -42,7 +50,7 @@ walk_back_dot = -0.5
 strafe_max_mps = 2.2
 speed_scale_min = 0.4
 speed_scale_max = 2.0
-turn_threshold_deg = 60.0
+turn_threshold_deg = 20.0
 interact_low_max_m = 0.7
 interact_high_min_m = 1.5
 death_front_dot = 0.0
@@ -55,6 +63,8 @@ teleport_speed_mps = 15.0
 shield_clips = {
 &"aim_pistol": &"shield_idle",
 &"aim_rifle": &"shield_idle",
+&"door_kick_pistol": &"shield_bang",
+&"door_kick_rifle": &"shield_bang",
 &"fire_pistol": &"shield_idle",
 &"fire_rifle": &"shield_idle",
 &"idle": &"shield_idle",
@@ -64,6 +74,8 @@ shield_clips = {
 &"strafe_r": &"shield_walk",
 &"turn_l": &"shield_idle",
 &"turn_r": &"shield_idle",
+&"turn_l_45": &"shield_idle",
+&"turn_r_45": &"shield_idle",
 &"walk": &"shield_walk",
 &"walk_back": &"shield_walk"
 }
