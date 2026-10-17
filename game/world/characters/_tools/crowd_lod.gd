@@ -47,6 +47,15 @@ const WELD_M: float = 0.001
 const FINAL_RATIO: float = 0.15
 ## Albedo mean: a GRID x GRID sample of the albedo PNG.
 const GRID: int = 32
+## Layered garments (a shirt under a jacket): a LOD2 vertex is hidden when a segment this long along its normal
+## (rest pose) hits a triangle of ANOTHER surface that faces the same way (normal dot >= COVER_DOT). A triangle with
+## all three vertices hidden is dropped, so the simplified outer shell no longer lets the layer under it through.
+## Covered vertices that stay (their triangle straddles the outer layer's edge) are tucked this far inward.
+const COVER_M: float = 0.04
+const COVER_DOT: float = 0.3
+const COVER_TUCK_M: float = 0.02
+## Spatial hash cell for the cover test (m).
+const COVER_CELL_M: float = 0.04
 
 
 ## LOD2 switch distance for an asset (0.0 = no LOD2). `source` = CharacterSpec.read_source(SOURCE.txt).
@@ -202,10 +211,13 @@ static func build_mesh(meshes: Array[MeshInstance3D]) -> ArrayMesh:
 	var indices: PackedInt32Array = PackedInt32Array()
 	var cache: Dictionary = {}
 	var weld: Dictionary = {}
+	var cover: Dictionary = _cover_grid(meshes)
+	var surf_id: int = -1
 	for mi: MeshInstance3D in meshes:
 		var mesh: ArrayMesh = mi.mesh as ArrayMesh
 		var surfs: Array = mesh.get("_surfaces")
 		for si: int in range(mesh.get_surface_count()):
+			surf_id += 1
 			var surface: Dictionary = surfs[si]
 			if int(surface.get("index_count", 0)) / 3 < MIN_SURFACE_TRIS:
 				continue
@@ -223,7 +235,8 @@ static func build_mesh(meshes: Array[MeshInstance3D]) -> ArrayMesh:
 			var per: int = sb.size() / maxi(sv.size(), 1)
 			var remap: Dictionary = {}
 			var tri: PackedInt32Array = PackedInt32Array([0, 0, 0])
-			var lod_idx: PackedInt32Array = surface_lod_indices(surface)
+			var hidden: Dictionary = {}
+			var lod_idx: PackedInt32Array = _drop_covered(surface_lod_indices(surface), sv, sn, surf_id, cover, hidden)
 			for k: int in range(lod_idx.size()):
 				var vi: int = lod_idx[k]
 				if not remap.has(vi):
@@ -238,7 +251,8 @@ static func build_mesh(meshes: Array[MeshInstance3D]) -> ArrayMesh:
 					else:
 						remap[vi] = verts.size()
 						weld[key] = verts.size()
-						verts.append(sv[vi])
+						var tuck: Vector3 = sn[vi].normalized() * COVER_TUCK_M if hidden.get(vi, false) else Vector3.ZERO
+						verts.append(sv[vi] - tuck)
 						normals.append(Vector3.ZERO)
 						colors.append(col)
 						bones.append_array(nb)
@@ -274,6 +288,95 @@ static func build_mesh(meshes: Array[MeshInstance3D]) -> ArrayMesh:
 				best = cand
 		arrays = _compact(arrays, best)
 	return _finish(arrays)
+
+
+## Rest-pose triangles of every surface of `meshes`, hashed by COVER_CELL_M cell:
+## {"tris": PackedVector3Array (3 per tri), "normal": PackedVector3Array, "surf": PackedInt32Array, "cells": {Vector3i: PackedInt32Array}}.
+## Surface ids count every surface of every mesh in order (as build_mesh does).
+static func _cover_grid(meshes: Array[MeshInstance3D]) -> Dictionary:
+	var tris: PackedVector3Array = PackedVector3Array()
+	var tri_n: PackedVector3Array = PackedVector3Array()
+	var tri_s: PackedInt32Array = PackedInt32Array()
+	var cells: Dictionary = {}
+	var surf_id: int = -1
+	for mi: MeshInstance3D in meshes:
+		var mesh: ArrayMesh = mi.mesh as ArrayMesh
+		for si: int in range(mesh.get_surface_count()):
+			surf_id += 1
+			if int((mesh.get("_surfaces")[si] as Dictionary).get("index_count", 0)) / 3 < MIN_SURFACE_TRIS:
+				continue   # not in LOD2 itself (eyes, badges, glasses), so it covers nothing there
+			var arr: Array = mesh.surface_get_arrays(si)
+			var sv: PackedVector3Array = arr[Mesh.ARRAY_VERTEX]
+			var idx: PackedInt32Array = arr[Mesh.ARRAY_INDEX] if arr[Mesh.ARRAY_INDEX] != null else PackedInt32Array()
+			for k: int in range(0, idx.size() - 2, 3):
+				var a: Vector3 = sv[idx[k]]
+				var b: Vector3 = sv[idx[k + 1]]
+				var c: Vector3 = sv[idx[k + 2]]
+				var n: Vector3 = (c - a).cross(b - a)   # Godot front faces wind clockwise: the outward normal
+				if n.length_squared() < 1e-14:
+					continue
+				var t: int = tri_s.size()
+				tris.append_array([a, b, c])
+				tri_n.append(n.normalized())
+				tri_s.append(surf_id)
+				var lo: Vector3i = _cell(Vector3(minf(a.x, minf(b.x, c.x)), minf(a.y, minf(b.y, c.y)), minf(a.z, minf(b.z, c.z))))
+				var hi: Vector3i = _cell(Vector3(maxf(a.x, maxf(b.x, c.x)), maxf(a.y, maxf(b.y, c.y)), maxf(a.z, maxf(b.z, c.z))))
+				for x: int in range(lo.x, hi.x + 1):
+					for y: int in range(lo.y, hi.y + 1):
+						for z: int in range(lo.z, hi.z + 1):
+							var key: Vector3i = Vector3i(x, y, z)
+							var list: PackedInt32Array = cells.get(key, PackedInt32Array())
+							list.append(t)
+							cells[key] = list   # packed arrays are values: write the grown copy back
+	return {"tris": tris, "normal": tri_n, "surf": tri_s, "cells": cells}
+
+
+static func _cell(p: Vector3) -> Vector3i:
+	return Vector3i(floori(p.x / COVER_CELL_M), floori(p.y / COVER_CELL_M), floori(p.z / COVER_CELL_M))
+
+
+## `idx` without the triangles whose three vertices are all covered by another surface (see COVER_M); `hidden`
+## gets vertex id -> covered for every vertex looked at.
+static func _drop_covered(idx: PackedInt32Array, sv: PackedVector3Array, sn: PackedVector3Array, surf_id: int,
+		cover: Dictionary, hidden: Dictionary) -> PackedInt32Array:
+	var out: PackedInt32Array = PackedInt32Array()
+	for k: int in range(0, idx.size() - 2, 3):
+		var all_hidden: bool = true
+		for j: int in range(3):
+			var vi: int = idx[k + j]
+			if not hidden.has(vi):
+				hidden[vi] = vi < sn.size() and _covered(sv[vi], sn[vi], surf_id, cover)
+			if not hidden[vi]:
+				all_hidden = false
+		if not all_hidden:
+			out.append_array([idx[k], idx[k + 1], idx[k + 2]])
+	return out
+
+
+static func _covered(p: Vector3, n: Vector3, surf_id: int, cover: Dictionary) -> bool:
+	if n.length_squared() < 1e-12:
+		return false
+	n = n.normalized()
+	var from: Vector3 = p + n * 0.0005
+	var to: Vector3 = p + n * COVER_M
+	var lo: Vector3i = _cell(from.min(to))
+	var hi: Vector3i = _cell(from.max(to))
+	var tris: PackedVector3Array = cover["tris"]
+	var tri_n: PackedVector3Array = cover["normal"]
+	var tri_s: PackedInt32Array = cover["surf"]
+	var cells: Dictionary = cover["cells"]
+	for x: int in range(lo.x, hi.x + 1):
+		for y: int in range(lo.y, hi.y + 1):
+			for z: int in range(lo.z, hi.z + 1):
+				var key: Vector3i = Vector3i(x, y, z)
+				if not cells.has(key):
+					continue
+				for t: int in cells[key]:
+					if tri_s[t] == surf_id or tri_n[t].dot(n) < COVER_DOT:
+						continue
+					if Geometry3D.segment_intersects_triangle(from, to, tris[t * 3], tris[t * 3 + 1], tris[t * 3 + 2]) != null:
+						return true
+	return false
 
 
 ## Arrays with only the vertices `idx` references (first-use order), re-indexed.

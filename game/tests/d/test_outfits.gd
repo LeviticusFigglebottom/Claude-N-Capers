@@ -9,6 +9,8 @@ const CHARACTERS: Array[String] = [
 	"char_security_officer_b",
 	"char_security_officer_c",
 	"char_security_officer_d",
+	"char_security_officer_e",
+	"char_security_officer_f",
 	"char_civilian_customer_a",
 	"char_civilian_customer_b",
 	"char_civilian_sales",
