@@ -4,7 +4,7 @@ Original models; no third-party assets. Blender +Y = Godot -Z, +Z up.
 * ``prop_laser_emitter_column``: a 2.7 m floor-to-near-ceiling emitter column, 0.15 (X) x 0.12 m, the shape of
   Shadow Ledger's art-hall `LaserEmitters` collision (the map's StaticBody owns the collider; this visual has
   none). Black anodised extrusion on a brushed-steel plinth, a smoked-glass lens window down its +X face with
-  the red emitter heads behind it, a top cap with a status LED and a key switch on the -Y side. Pivot on the
+  the red emitter heads (emit_laser, as the beams) behind it, a top cap with a status LED and a key switch on the -Y side. Pivot on the
   floor at the footprint centre; the lens face looks along +X (turn the far column 180 degrees).
 * ``prop_laser_beams_*`` (`laser_grid` visual, visual_slots.md v1.1): `Beam0..n-1` red emissive rods that the
   LaserGrid moves and shows / hides. Horizontal sets (static / timed_off) are rods along X of `len`, authored
@@ -42,7 +42,7 @@ def _column(k: Kit, p: dict) -> None:
     trim.bx((x0 + 0.002, -0.026, 0.27), (x0 + 0.005, 0.026, h - 0.22), "glass_tinted")
     z = 0.32
     while z < h - 0.24:
-        trim.cyl(0.011, 0.004, (x0 + 0.004, 0.0, z), "emit_led_red", axis="X", segs=10)
+        trim.cyl(0.011, 0.004, (x0 + 0.004, 0.0, z), "emit_laser", axis="X", segs=10)
         z += 0.1
     # plinth bolts, top status LED, key switch and a service label on the -Y side
     for sx in (-1, 1):
@@ -61,10 +61,10 @@ def _beams(k: Kit, p: dict) -> None:
     for i in range(n):
         if p["vertical"]:
             beam = k.obj("Beam%d" % i, location=(0.0, 0.0, ln / 2))
-            beam.part(bevel=0.0).rod((0.0, 0.0, -ln / 2), (0.0, 0.0, ln / 2), BEAM_R, "emit_led_red", segs=6)
+            beam.part(bevel=0.0).rod((0.0, 0.0, -ln / 2), (0.0, 0.0, ln / 2), BEAM_R, "emit_laser", segs=6)
         else:
             beam = k.obj("Beam%d" % i, location=(0.0, 0.0, BEAM_R))
-            beam.part(bevel=0.0).rod((-ln / 2, 0.0, 0.0), (ln / 2, 0.0, 0.0), BEAM_R, "emit_led_red", segs=6)
+            beam.part(bevel=0.0).rod((-ln / 2, 0.0, 0.0), (ln / 2, 0.0, 0.0), BEAM_R, "emit_laser", segs=6)
         beam.build()
 
 
