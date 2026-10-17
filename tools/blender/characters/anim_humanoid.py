@@ -18,6 +18,7 @@ Locomotion clips plant the stance foot exactly: at ``speed`` m/s (for 1.78 m; mu
 
 import _anim as anim
 import _anim_assault as assault
+import _anim_bank as bank
 import _anim_civ_panic as civ
 import _anim_crew3p as crew3p
 import _anim_d304 as d304
@@ -272,6 +273,14 @@ CLIPS = {
     "crew_cuffed_free": {"frames": 24, "loop": False, "speed": 0.0, "priority": 2, "events": {"free": 8}},
     "mask_on": {"frames": 30, "loop": False, "speed": 0.0, "priority": 2, "events": {"mask_on": 18}},
     "throw_grenade": {"frames": 24, "loop": False, "speed": 0.0, "priority": 2, "events": {"release": 11, "done": 24}},
+    # OF-D1 bank customers (priority 9, _anim_bank; Ostrander Federal): a queue at the rails (the group
+    # `variants.queue_idle`, own periods so a line never syncs), a teller window, a check desk. In place, speed 0; ledge /
+    # desk heights, the contact frames and the marks in SOURCE `queue_variants`, `contact.<clip>`, `*_placement`.
+    "queue_idle": {"frames": 150, "loop": True, "speed": 0.0, "priority": 9, "events": {"watch": 100}},
+    "queue_idle_b": {"frames": 126, "loop": True, "speed": 0.0, "priority": 9, "events": {"look_up": 80}},
+    "queue_idle_c": {"frames": 138, "loop": True, "speed": 0.0, "priority": 9, "events": {"sigh": 34, "look_back": 84}},
+    "counter_customer": {"frames": 180, "loop": True, "speed": 0.0, "priority": 9, "events": {"slip_push": 48, "nod": 146}},
+    "check_desk_write": {"frames": 150, "loop": True, "speed": 0.0, "priority": 9, "events": {"look_up": 98}},
 }
 # D-116 frame-locked weapon holds on the move (_anim_loco_holds, SOURCE `locomotion_holds`): hold_<kind>_<gait>, the
 # base clip's frames / loop / events
@@ -310,7 +319,7 @@ def build(ctx) -> None:
     for name in sorted(CLIPS):
         baked = anim.bake(solver, clips[name])
         if (name in KEEP or name in d304.KEEP or name in assault.KEEP or name in hitzones.KEEP
-                or name in surr.KEEP or name in civ.KEEP or name in holds.KEEP or name in crew3p.KEEP):
+                or name in surr.KEEP or name in civ.KEEP or name in holds.KEEP or name in crew3p.KEEP or name in bank.KEEP):
             keep[name] = baked
         anim.write_action(arm, baked, export_name(name))
         c = baked.checks
@@ -332,6 +341,8 @@ def build(ctx) -> None:
             row += surr.check_row(name, baked, keep)
         if name in civ.NAMES:
             row += civ.check_row(name, baked, keep)
+        if name in bank.NAMES:
+            row += bank.check_row(sk, CLIPS, name, baked)
         report.append(row)
         print(f"[anim] {row}")
     for pb in arm.pose.bones:
@@ -369,6 +380,8 @@ def build(ctx) -> None:
         ctx.source_extra[key] = text
     for key, text in civ.source_notes(CLIPS, keep).items():
         ctx.source_extra[key] = text
+    for key, text in bank.source_notes(sk, CLIPS, keep).items():
+        ctx.source_extra[key] = text
     for key, text in loco.source_notes().items():
         ctx.source_extra[key] = text
     for key, text in police.source_notes().items():
@@ -389,6 +402,7 @@ def build(ctx) -> None:
         if "bpm" in row:
             extra += f" bpm={row['bpm']} beats={row['beats']} beat_frames={row['frames'] // row['beats']}"
         extra += d304.row_extra(row) + assault.row_extra(row) + surr.row_extra(name) + civ.row_extra(name)
+        extra += bank.row_extra(name)
         ctx.source_extra[f"clip.{name}"] = extra
     for i, row in enumerate(report):
         ctx.source_extra[f"check.{i:02d}"] = row
