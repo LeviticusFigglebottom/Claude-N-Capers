@@ -25823,7 +25823,7 @@ tags = Array[StringName]([&"guard_basement"])
 patrol_graph = NodePath("../../Patrols/Bank")
 
 [node name="CameraOperatorSeat" type="Marker3D" parent="Spawns" unique_id=102884]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 11.3, 0, 2.5)
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 11.18, 0, 2.5)
 script = ExtResource("170_nd")
 kind = 5
 tags = Array[StringName]([&"security_operator"])
@@ -27398,7 +27398,7 @@ slot_id = &"mgr_in"
 weight = 0.5
 
 [node name="NightManager" type="Marker3D" parent="Variants/Group_night_manager/Slot_mgr_in" unique_id=103082]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 24.55, 0, 13.95)
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 24.429998, 0, 13.95)
 script = ExtResource("170_nd")
 kind = 2
 tags = Array[StringName]([&"civ_manager", &"civ_staff"])

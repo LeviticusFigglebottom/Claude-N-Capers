@@ -26,7 +26,11 @@ backed to a wall | ``corner`` | ``floor`` free-standing | ``center`` | ``on`` on
 ``leaf_script`` (a LEAF_SCRIPTS key: a visual-only script set on the glb's ``Leaf`` node, GN-C2 shutters),
 ``leaf2`` (true: the same script on ``Leaf2`` too, D-111 Dockside Burn twin rollers / sliders),
 ``hidden`` (top-level glb node names the wrapper hides, e.g. a breach point's ``Blown`` state, PO6-17),
-``fx`` {tip, glow} (device contact FX: a `Sparks` FX_SCRIPT node + a hidden `Glow` light at the tip).
+``fx`` {tip, glow} (device contact FX: a `Sparks` FX_SCRIPT node + a hidden `Glow` light at the tip),
+``seat_fwd`` (m, D-130: the glb's `Seat` marker moved that far toward the chair's front, Godot -Z, in the wrapper;
+the seated NPC root goes on it, so a desk_work torso clears the backrest; catalog ``seat`` = its prop-local position),
+``walk_through`` (reason text: every imported collider of the wrapper gets layer / mask 0 and that
+``metadata/walk_through``, e.g. GN-8's velvet rope the Gallery Night navmesh runs under).
 """
 
 from __future__ import annotations
@@ -115,6 +119,7 @@ def glb_info(glb: pathlib.Path) -> dict:
     mesh_paths: list[str] = []
 
     collisions: list[str] = []
+    seats: dict[str, list[float]] = {}
     areas: dict[str, float] = {}
     blob = data[20 + length + 8:]
 
@@ -158,6 +163,8 @@ def glb_info(glb: pathlib.Path) -> dict:
         if "mesh" in node:
             mesh_paths.append(f"{path}/{name}" if path else name)
         m = _mat_mul(parent, _node_matrix(node))
+        if name == "Seat":
+            seats[f"{path}/{name}" if path else name] = [m[0][3], m[1][3], m[2][3]]
         if "mesh" in node:
             for prim in doc["meshes"][node["mesh"]]["primitives"]:
                 add_area(prim, m)
@@ -183,7 +190,7 @@ def glb_info(glb: pathlib.Path) -> dict:
             votes[sid] = votes.get(sid, 0.0) + area
     surface = max(sorted(votes), key=lambda k: votes[k]) if votes else ""
     return {"aabb": [round(v, 4) for v in lo] + [round(hi[i] - lo[i], 4) for i in range(3)], "nodes": sorted(names),
-            "meshes": mesh_paths, "collisions": collisions, "surface": surface}
+            "meshes": mesh_paths, "collisions": collisions, "surface": surface, "seats": seats}
 
 
 def visibility_end(e: dict) -> float:
@@ -300,6 +307,13 @@ def entry(spec: meta.AssetSpec) -> tuple[dict, str]:
         # only used where a kit pins it (or a map anchors it): unpinned kit picks of its kind (and
         # their RNG draws) stay exactly as they were before it existed
         e["pin_only"] = True
+    seat_fwd = float(cat.get("seat_fwd", 0.0))
+    seat_path = ""
+    if seat_fwd != 0.0:
+        if len(info["seats"]) != 1:
+            raise SystemExit(f"_scenes.py: {aid}: seat_fwd needs exactly one `Seat` node in the glb")
+        seat_path, sp = next(iter(info["seats"].items()))
+        e["seat"] = [round(sp[0], 4), round(sp[1], 4), round(sp[2] - seat_fwd, 4)]
     leaf_script = LEAF_SCRIPTS[cat["leaf_script"]] if "leaf_script" in cat else ""
     fx = cat.get("fx")
     steps = 2 + (1 if leaf_script else 0) + (1 if fx else 0)
@@ -341,9 +355,20 @@ def entry(spec: meta.AssetSpec) -> tuple[dict, str]:
             if leaf == cat.get("texel_mesh", leaf):
                 lines += ["", f'[node name="{leaf}" parent="{parent}"]',
                           f"metadata/texel_target = {_f(cat['texel_target'])}"]
+    walk = str(cat.get("walk_through", ""))
     for cp in info["collisions"]:
         parent, _, leaf = ("Model/" + cp).rpartition("/")
-        lines += ["", f'[node name="{leaf}" parent="{parent}"]', f'metadata/surface = &"{e["surface"]}"']
+        lines += ["", f'[node name="{leaf}" parent="{parent}"]']
+        if walk:
+            lines += ["collision_layer = 0", "collision_mask = 0"]
+        lines.append(f'metadata/surface = &"{e["surface"]}"')
+        if walk:
+            lines.append(f"metadata/walk_through = {json.dumps(walk)}")
+    if seat_path:
+        parent, _, leaf = ("Model/" + seat_path).rpartition("/")
+        st = e["seat"]
+        lines += ["", f'[node name="{leaf}" parent="{parent}"]',
+                  f"transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, {_f(st[0])}, {_f(st[1])}, {_f(st[2])})"]
     if leaf_script:
         lines += ["", '[node name="Leaf" parent="Model"]', 'script = ExtResource("2_leaf")']
         if cat.get("leaf2"):
@@ -357,7 +382,7 @@ def entry(spec: meta.AssetSpec) -> tuple[dict, str]:
         lines += [""] + _light_node(cat["light"])
     if fx:
         lines += [""] + _fx_nodes(fx)
-    if vis > 0.0 or info["collisions"] or leaf_script or hidden or "texel_target" in cat:
+    if vis > 0.0 or info["collisions"] or leaf_script or hidden or seat_path or "texel_target" in cat:
         lines += ["", '[editable path="Model"]']
     return e, "\n".join(lines) + "\n"
 
