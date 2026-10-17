@@ -18,6 +18,13 @@
 [ext_resource type="Material" path="res://world/materials/carbon_fibre.tres" id="16_b502w"]
 [ext_resource type="Material" path="res://world/materials/alu_anodized_black.tres" id="17_b502a"]
 [ext_resource type="Material" path="res://world/materials/char_mask_gold.tres" id="18_b502g"]
+[ext_resource type="Material" path="res://world/materials/char_mask_limestone.tres" id="d4m_limestone"]
+[ext_resource type="Material" path="res://world/materials/char_mask_bronze.tres" id="d4m_bronze"]
+[ext_resource type="Material" path="res://world/materials/char_mask_oil_canvas.tres" id="d4m_oil_canvas"]
+[ext_resource type="Material" path="res://world/materials/char_mask_container_rust.tres" id="d4m_container_rust"]
+[ext_resource type="Material" path="res://world/materials/char_mask_velvet_case.tres" id="d4m_velvet_case"]
+[ext_resource type="Material" path="res://world/materials/char_mask_night_safe.tres" id="d4m_night_safe"]
+[ext_resource type="Material" path="res://world/materials/char_mask_gilt_leaf.tres" id="d4m_gilt_leaf"]
 
 [sub_resource type="Resource" id="Resource_jkanb"]
 script = ExtResource("3_ktq15")
@@ -178,6 +185,90 @@ detail_mean = 0.494
 id = &"mask_material.crown_gold"
 display_name = "Crown Gold"
 
+[sub_resource type="Resource" id="Resource_d4_limestone"]
+script = ExtResource("3_ktq15")
+material_id = &"char_mask_limestone"
+library_material = ExtResource("d4m_limestone")
+metallic = 0.0
+roughness = 0.8
+detail_strength = 0.8
+detail_mean = 0.557
+uv_tile = 1.5
+id = &"mask_material.limestone"
+display_name = "Limestone"
+
+[sub_resource type="Resource" id="Resource_d4_bronze"]
+script = ExtResource("3_ktq15")
+material_id = &"char_mask_bronze"
+library_material = ExtResource("d4m_bronze")
+metallic = 1.0
+roughness = 0.45
+detail_strength = 0.8
+detail_mean = 0.164
+uv_tile = 1.5
+id = &"mask_material.bronze"
+display_name = "Statuary Bronze"
+
+[sub_resource type="Resource" id="Resource_d4_oil_canvas"]
+script = ExtResource("3_ktq15")
+material_id = &"char_mask_oil_canvas"
+library_material = ExtResource("d4m_oil_canvas")
+metallic = 0.0
+roughness = 0.62
+detail_strength = 0.9
+detail_mean = 0.631
+uv_tile = 1.5
+id = &"mask_material.oil_canvas"
+display_name = "Oil on Canvas"
+
+[sub_resource type="Resource" id="Resource_d4_container_rust"]
+script = ExtResource("3_ktq15")
+material_id = &"char_mask_container_rust"
+library_material = ExtResource("d4m_container_rust")
+metallic = 0.0
+roughness = 0.8
+detail_strength = 0.9
+detail_mean = 0.119
+uv_tile = 1.5
+id = &"mask_material.container_rust"
+display_name = "Container Rust"
+
+[sub_resource type="Resource" id="Resource_d4_velvet_case"]
+script = ExtResource("3_ktq15")
+material_id = &"char_mask_velvet_case"
+library_material = ExtResource("d4m_velvet_case")
+metallic = 0.0
+roughness = 0.9
+detail_strength = 0.8
+detail_mean = 0.176
+uv_tile = 1.5
+id = &"mask_material.velvet_case"
+display_name = "Jeweller's Velvet"
+
+[sub_resource type="Resource" id="Resource_d4_night_safe"]
+script = ExtResource("3_ktq15")
+material_id = &"char_mask_night_safe"
+library_material = ExtResource("d4m_night_safe")
+metallic = 0.0
+roughness = 0.5
+detail_strength = 0.9
+detail_mean = 0.072
+uv_tile = 1.5
+id = &"mask_material.night_safe"
+display_name = "Night Safe"
+
+[sub_resource type="Resource" id="Resource_d4_gilt_leaf"]
+script = ExtResource("3_ktq15")
+material_id = &"char_mask_gilt_leaf"
+library_material = ExtResource("d4m_gilt_leaf")
+metallic = 1.0
+roughness = 0.45
+detail_strength = 0.8
+detail_mean = 0.376
+uv_tile = 1.5
+id = &"mask_material.gilt_leaf"
+display_name = "Gilt Leaf"
+
 [resource]
 script = ExtResource("12_coas7")
-entries = Array[ExtResource("1_3q0c8")]([SubResource("Resource_jkanb"), SubResource("Resource_sv32n"), SubResource("Resource_llemd"), SubResource("Resource_7mia0"), SubResource("Resource_drm5c"), SubResource("Resource_ebhiw"), SubResource("Resource_eveee"), SubResource("Resource_ht48o"), SubResource("Resource_2vtjv"), SubResource("Resource_b415_porcelain"), SubResource("Resource_b415_ink_lacquer"), SubResource("Resource_b415_stipple"), SubResource("Resource_b502_weave"), SubResource("Resource_b502_anodized"), SubResource("Resource_b502_crown_gold")])
+entries = Array[ExtResource("1_3q0c8")]([SubResource("Resource_jkanb"), SubResource("Resource_sv32n"), SubResource("Resource_llemd"), SubResource("Resource_7mia0"), SubResource("Resource_drm5c"), SubResource("Resource_ebhiw"), SubResource("Resource_eveee"), SubResource("Resource_ht48o"), SubResource("Resource_2vtjv"), SubResource("Resource_b415_porcelain"), SubResource("Resource_b415_ink_lacquer"), SubResource("Resource_b415_stipple"), SubResource("Resource_b502_weave"), SubResource("Resource_b502_anodized"), SubResource("Resource_b502_crown_gold"), SubResource("Resource_d4_limestone"), SubResource("Resource_d4_bronze"), SubResource("Resource_d4_oil_canvas"), SubResource("Resource_d4_container_rust"), SubResource("Resource_d4_velvet_case"), SubResource("Resource_d4_night_safe"), SubResource("Resource_d4_gilt_leaf")])

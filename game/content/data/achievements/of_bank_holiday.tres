@@ -11,6 +11,6 @@ condition = {"event": &"heist_completed", "heist": &"ostrander_federal", "max_ti
 unlock = &""
 order = 762
 category = &"ostrander_federal"
-rewards = Array[StringName]([])
+rewards = Array[StringName]([&"mask_pattern.guilloche"])
 unlocks = Array[StringName]([])
 requires_facts = Array[StringName]([])
