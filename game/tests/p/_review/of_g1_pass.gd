@@ -124,10 +124,48 @@ const GHOST_E3_WAIT: Vector3 = Vector3(11.5, 8.6, 4.0)
 const GHOST_RC_WAIT: Vector3 = Vector3(1.0, -4.0, 16.0)
 const GHOST_CQ_AT: Vector3 = Vector3(11.5, -4.0, 4.0)
 const GHOST_LD_STAGE: Vector3 = Vector3(8.0, 0.0, 1.6)
+## Runtime lookups (_x): prefab class + objective_tag (ENV C's G1 tags, wip/c-of-g1 f49df211) near a design-doc point;
+## the tag wins when present, else the nearest node of the class within `max` m. --resolve prints this table's
+## resolution against the map scene (FOUND by tag / FOUND near / FALLBACK far / MISSING).
+const EXPECT: Dictionary = {
+	"laser_grid": {"type": "LaserGrid", "tag": &"laser_grid", "near": OF_LASER_AT, "max": 8.0},
+	"vault_gate": {"type": "Door", "tag": &"vault_gate", "near": Vector3(17.0, -4.0, 9.0), "max": 4.0},
+	"keycard": {"type": "Node3D", "tag": &"keycard", "near": Vector3(22.0, 0.0, 3.0), "max": 60.0},
+	"time_lock": {"type": "Node3D", "tag": &"time_lock", "near": Vector3(33.0, -4.0, 12.0), "max": 6.0},
+	"vault_door": {"type": "Door", "tag": &"vault_door", "near": Vector3(30.0, -4.0, 13.0), "max": 4.0},
+	"vault_loot": {"type": "LootSpawn", "tag": &"vault_loot", "near": Vector3(24.0, -4.0, 18.5), "max": 8.0},
+	"code_pc": {"type": "Node3D", "tag": &"code_pc", "near": Vector3(19.0, 8.6, 3.0), "max": 6.0},
+	"drop_ladder": {"type": "Ladder", "tag": &"fire_escape", "near": OF_DROP_LADDER_AT, "max": 12.0},
+	"caged_ladder": {"type": "Ladder", "tag": &"", "near": OF_CAGED_LADDER_AT, "max": 6.0},
+	"hh_door": {"type": "Door", "tag": &"head_house", "near": OF_HH_DOOR, "max": 2.5},
+	"rope_ladder": {"type": "Ladder", "tag": &"", "near": Vector3(24.0, -2.0, 14.0), "max": 4.0},
+	"hoist": {"type": "BagLift", "tag": &"hoist", "near": Vector3(24.0, -4.0, 14.0), "max": 6.0},
+	"lid": {"type": "Node3D", "tag": &"lid", "near": OF_HOLE_AT, "max": 3.0},
+	"vault_drill": {"type": "Node3D", "tag": &"vault_drill", "near": OF_HOLE_AT, "max": 3.0},
+	"ld_door": {"type": "Door", "tag": &"dock_door", "near": OF_LD_DOOR, "max": 2.0},
+	"fire_exit": {"type": "Door", "tag": &"fire_exit", "near": OF_FIRE_EXIT, "max": 2.0},
+	"cash_lift": {"type": "BagLift", "tag": &"cash_lift", "near": GHOST_CQ_AT, "max": 8.0},
+	"e1_secure": {"type": "SecureZone", "tag": &"", "near": OF_E1_AT, "max": 6.0},
+	"e2_secure": {"type": "SecureZone", "tag": &"", "near": OF_E2_AT, "max": 6.0},
+	"e3_secure": {"type": "SecureZone", "tag": &"", "near": Vector3(36.0, 8.6, 27.0), "max": 6.0},
+	"e1_escape": {"type": "EscapeZone", "tag": &"", "near": OF_E1_AT, "max": 6.0},
+	"e2_escape": {"type": "EscapeZone", "tag": &"", "near": OF_E2_AT, "max": 6.0},
+	"e3_escape": {"type": "EscapeZone", "tag": &"", "near": Vector3(36.0, 8.6, 27.0), "max": 6.0},
+}
+## Design-doc points the tests walk to / stand on (checked against the navmesh by --resolve --launch).
+const EXPECT_POINTS: Dictionary = {
+	"vc_west": OF_VC_WEST, "ga_stand": OF_GA_STAND, "terrace_e_stand": OF_TERRACE_E_STAND, "fe_roof": OF_FE_ROOF,
+	"lane_start": OF_LANE_START, "ld_in": OF_LD_IN, "bc_east": OF_BC_EAST, "sa_b": Vector3(14.0, -4.0, 8.2),
+	"sa_g": Vector3(14.0, 0.0, 8.2), "sa_gallery": Vector3(14.0, 5.0, 8.2), "sa_exec": Vector3(14.0, 8.6, 8.2),
+	"ghost_mask": GHOST_MASK_AT, "ghost_lk": GHOST_LK_WAIT, "ghost_e3": GHOST_E3_WAIT, "ghost_rc": GHOST_RC_WAIT,
+	"ghost_cq": GHOST_CQ_AT, "ghost_ld_stage": GHOST_LD_STAGE,
+}
+const EXPECT_SPAWN_TAGS: Array[StringName] = [&"preplan_spawn_lane", &"preplan_spawn_tannery"]
 
 # --- Dry-run anchors on existing heists (night_deposit seed 21 from nd_stealth_route.gd; glasshouse) ----------------
 const ND_SEED: int = 21
 const ND_GRATE_AT: Vector3 = Vector3(16.95, 0.0, -1.4)
+const ND_MASK_AT: Vector3 = Vector3(18.5, -4.0, 3.0)  # B3, below the areaway
 const ND_GATE_AT: Vector3 = Vector3(14.0, -4.0, 6.9)
 const ND_GATE_IN: Vector3 = Vector3(14.0, -4.0, 7.95)
 const ND_LASER_AT: Vector3 = Vector3(14.0, -4.0, 8.5)
@@ -159,6 +197,10 @@ var _secured_ids: Dictionary[int, bool] = {}
 ## observer net id -> {name, kind, max, t, at, pilot}
 var _peaks: Dictionary[int, Dictionary] = {}
 var _results: PackedStringArray = PackedStringArray()
+var _climbing: bool = false
+var _resolve: bool = false
+var _resolve_launch: bool = false
+var _stray: Ladder = null
 
 
 func _ready() -> void:
@@ -175,6 +217,8 @@ func _ready() -> void:
 			"npcs": _keep_npcs = true
 			"render": _fast = false
 			"bags": _bags = v.to_int()
+			"resolve": _resolve = true
+			"launch": _resolve_launch = true
 	if runner_out == "":
 		runner_out = OS.get_user_data_dir() + "/of_g1_pass"
 	DirAccess.make_dir_recursive_absolute(runner_out)
@@ -243,6 +287,10 @@ func _fail(step: String) -> bool:
 
 func _run() -> void:
 	_t0_ms = Time.get_ticks_msec()
+	if _resolve:
+		var code: int = await _run_resolve()
+		get_tree().quit(code)
+		return
 	var tests: Array[String] = []
 	if _test == "all":
 		tests.assign(["laser", "throws", "ladder"] if _dry else ["laser", "throws", "fire_escape", "hole", "dock",
@@ -299,6 +347,10 @@ func _launch(heist: StringName, seed: int, diff: Enums.Difficulty, opts: Diction
 	pilot.quiet = true
 	pilot.shout_blockers = false
 	pilot.arrive_dy = 0.8
+	if traversal:
+		pilot.hook_need = _stray_need
+		pilot.hook = _stray_back
+		_watch_ladders.call_deferred()
 	await pilot.calibrate()
 	note("spawn %s" % Po5Pilot._v(c.global_position))
 	if not traversal:
@@ -361,6 +413,74 @@ func _nearest(type: String, at: Vector3, max_m: float = 1e9) -> Node3D:
 	return best
 
 
+## Whether `n`'s script (or a base script) is the global class `type` ("Node3D": any Node3D).
+static func _is_type(n: Node, type: String) -> bool:
+	if not (n is Node3D):
+		return false
+	if type == "Node3D":
+		return true
+	var sc: Script = n.get_script() as Script
+	while sc != null:
+		if sc.get_global_name() == type:
+			return true
+		sc = sc.get_base_script()
+	return false
+
+
+## World position, also for a node not in the tree (composed local transforms).
+static func _gpos(n: Node3D) -> Vector3:
+	if n.is_inside_tree():
+		return n.global_position
+	var xf: Transform3D = n.transform
+	var p: Node = n.get_parent()
+	while p != null:
+		if p is Node3D:
+			xf = (p as Node3D).transform * xf
+		p = p.get_parent()
+	return xf.origin
+
+
+## {node, how: "tag" | "near" | "far" | "", dist, count} for EXPECT[id] under `root` (in-tree runs skip hidden nodes).
+func _resolve_one(root: Node, id: String) -> Dictionary:
+	var e: Dictionary = EXPECT[id]
+	var at: Vector3 = _of(e["near"] as Vector3)
+	var tag: StringName = e["tag"]
+	var by_tag: Node3D = null
+	var by_pos: Node3D = null
+	var n_type: int = 0
+	for n: Node in root.find_children("*", "", true, false):
+		if not _is_type(n, String(e["type"])):
+			continue
+		if n.is_inside_tree() and not (n as Node3D).is_visible_in_tree():
+			continue
+		var t: Variant = n.get(&"objective_tag")
+		var tagged: bool = tag != &"" and t != null and StringName(t) == tag
+		if String(e["type"]) == "Node3D" and not tagged:
+			continue
+		n_type += 1
+		var d: float = _gpos(n as Node3D).distance_to(at)
+		if tagged and (by_tag == null or d < _gpos(by_tag).distance_to(at)):
+			by_tag = n as Node3D
+		if by_pos == null or d < _gpos(by_pos).distance_to(at):
+			by_pos = n as Node3D
+	if by_tag != null:
+		return {"node": by_tag, "how": "tag", "dist": _gpos(by_tag).distance_to(at), "count": n_type}
+	if by_pos != null:
+		var d2: float = _gpos(by_pos).distance_to(at)
+		return {"node": by_pos, "how": "near" if d2 <= float(e["max"]) else "far", "dist": d2, "count": n_type}
+	return {"node": null, "how": "", "dist": INF, "count": 0}
+
+
+## The live node for EXPECT[id] (tag first, else nearest of its class within max); null when none.
+func _x(id: String) -> Node3D:
+	var r: Dictionary = _resolve_one(rt, id)
+	if r["node"] == null or r["how"] == "far":
+		note("lookup %s: %s" % [id, "MISSING" if r["node"] == null else "only %s at %.1f m (> %.1f m)" % [
+			(r["node"] as Node).name, float(r["dist"]), float((EXPECT[id] as Dictionary)["max"])]])
+		return null
+	return r["node"] as Node3D
+
+
 func _door_near(at: Vector3, max_m: float = 2.0) -> Door:
 	var best: Door = null
 	for n: Node in get_tree().get_nodes_in_group(Door.GROUP):
@@ -392,7 +512,8 @@ func _crew_v() -> float:
 	return Vector2(v.x, v.z).length()
 
 
-## Walk the navmesh; with `crouch` the crouch key is held the whole way.
+## Walk the navmesh; with `crouch` the crouch key is held the whole way. A ladder grabbed by accident on the way
+## (walking past its grab point facing it) is climbed straight back by the pilot hook (_stray_need / _stray_back).
 func _go(at: Vector3, arrive: float = 0.5, timeout: float = 90.0, crouch: bool = false) -> bool:
 	if crouch:
 		pilot.inp.press(&"crouch")
@@ -489,9 +610,38 @@ func _open_spot(p: Vector3, r: float) -> Vector3:
 		var q: PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.create(p + Vector3.UP * 1.0,
 			on + Vector3.UP * 0.6, 1 | 2)
 		q.exclude = [pilot.crew.get_rid()]
-		if space.intersect_ray(q).is_empty():
+		if space.intersect_ray(q).is_empty() and not _crosses_laser(p, on) and not _near_laser(on, 1.7):
 			return on
 	return p
+
+
+## Whether `p` is within `m` of an active laser grid's plane (where a pick-up stand could end up across it).
+func _near_laser(p: Vector3, m: float) -> bool:
+	for n: Node in rt.find_children("*", "LaserGrid", true, false):
+		var g: LaserGrid = n as LaserGrid
+		if g == null or not g.active or not g.is_visible_in_tree():
+			continue
+		var l: Vector3 = g.global_transform.affine_inverse() * p
+		if absf(l.y) < 3.0 and absf(l.z) < m and absf(l.x) < g.size_m.x * 0.5 + m:
+			return true
+	return false
+
+
+## Whether the step a -> b crosses an active laser grid's plane within its width (+0.5 m).
+func _crosses_laser(a: Vector3, b: Vector3) -> bool:
+	for n: Node in rt.find_children("*", "LaserGrid", true, false):
+		var g: LaserGrid = n as LaserGrid
+		if g == null or not g.active or not g.is_visible_in_tree():
+			continue
+		var inv: Transform3D = g.global_transform.affine_inverse()
+		var la: Vector3 = inv * a
+		var lb: Vector3 = inv * b
+		if absf(la.y) > 3.0 or signf(la.z) == signf(lb.z):
+			continue
+		var x: float = lerpf(la.x, lb.x, absf(la.z) / maxf(absf(la.z) + absf(lb.z), 0.001))
+		if absf(x) <= g.size_m.x * 0.5 + 0.5:
+			return true
+	return false
 
 
 ## A throw stand `dist` m from `target` (with `zone`: from the zone box's edge on that heading) in the open: on the
@@ -592,7 +742,9 @@ func _secure_zone_near(at: Vector3) -> SecureZone:
 
 # --- Ladders and lifts ----------------------------------------------------------------------------------------------
 
-## Climb `lad` by real input: walk to the grab point (Bottom going up, Top going down), face the ladder, hold W.
+## Climb `lad` by real input like a player: walk to 1.5 m short of the grab point (Bottom going up, Top going down),
+## then hold W toward the ladder until the climb takes the crew (Ladder: forward while facing it within the grab
+## radius), keep W held to the other end.
 func _climb(lad: Ladder, up: bool) -> bool:
 	if lad == null:
 		return false
@@ -603,25 +755,75 @@ func _climb(lad: Ladder, up: bool) -> bool:
 	var end_y: float = lad.top_position().y if up else lad.bottom_position().y
 	var away: Vector3 = Vector3(grab.x - lad.global_position.x, 0.0, grab.z - lad.global_position.z)
 	away = away.normalized() if away.length() > 0.01 else (Vector3.FORWARD if up else Vector3.BACK)
-	if not await _go(grab + away * 0.3, 0.25, 90.0):
-		note("ladder %s grab point not reached (%s)" % [lad.name, Po5Pilot._v(grab)])
+	var approach: Vector3 = pilot.stand_point(grab + away * 1.5)
+	if not await _go(approach, 0.4, 120.0):
+		note("ladder %s approach not reached (%s)" % [lad.name, Po5Pilot._v(approach)])
 		return false
-	await pilot.face(Vector3(lad.global_position.x, grab.y + (1.5 if up else 0.2), lad.global_position.z), 0.05, 1.5)
+	var look_at: Vector3 = Vector3(lad.global_position.x, grab.y + (1.5 if up else 0.2), lad.global_position.z)
+	await pilot.face(look_at, 0.05, 1.5)
+	_climbing = true
 	pilot.inp.press(&"move_forward")
 	var t: float = 0.0
 	var started: bool = false
-	while t < lad.climb_time() + 8.0:
-		await wait_s(0.1)
-		t += 0.1
-		started = started or lad.is_climbing(pilot.crew.slot)
-		if started and not lad.is_climbing(pilot.crew.slot) and absf(pilot.crew.global_position.y - end_y) < 0.4:
+	while t < lad.climb_time() + 10.0:
+		await pilot.tick()
+		t += pilot.dt()
+		if lad.is_climbing(pilot.crew.slot):
+			started = true
+		elif started:
 			break
+		else:
+			var to: Vector3 = Vector3(grab.x, 0.0, grab.z) - Vector3(pilot.crew.global_position.x, 0.0,
+				pilot.crew.global_position.z)
+			if to.length() > 0.2:
+				pilot.steer(atan2(-to.x, -to.z), 0.0)
+			else:
+				pilot.steer_at(look_at)
+	var ok: bool = started and absf(pilot.crew.global_position.y - end_y) < 0.4
+	if ok:
+		# Step off with W still held: the ladder re-arms only once forward / interact is let go (Ladder._latch), and a
+		# walk that starts at the grab point facing the ladder takes it straight back (ND dry run: back up the areaway
+		# ladder on the first step toward AreawayDoor). Turn away and walk 1.5 m off before letting go.
+		var end_m: Vector3 = lad.top_position() if up else lad.bottom_position()
+		var off: Vector3 = Vector3(end_m.x - lad.global_position.x, 0.0, end_m.z - lad.global_position.z)
+		off = off.normalized() if off.length() > 0.01 else -away
+		var off_pt: Vector3 = pilot.stand_point(end_m + off * 1.5)
+		var s_t: float = 0.0
+		while s_t < 3.0 and pilot.flat_dist(pilot.crew.global_position, off_pt) > 0.3:
+			var to2: Vector3 = off_pt - pilot.crew.global_position
+			pilot.steer(atan2(-to2.x, -to2.z), 0.0)
+			await pilot.tick()
+			s_t += pilot.dt()
 	pilot.inp.release(&"move_forward")
-	await wait_s(0.3)
-	var ok: bool = absf(pilot.crew.global_position.y - end_y) < 0.4
+	await wait_s(0.2)
+	_climbing = false
 	note("LADDER %s %s: %s in %.1f s (climb %.1f s, height %.1f m; at %s)" % [lad.name, "up" if up else "down",
 		"OK" if ok else "NOT DONE", t, lad.climb_time(), lad.height_m, Po5Pilot._v(pilot.crew.global_position)])
 	return ok
+
+
+## Every tick: a ladder climb this harness did not start (_climbing false) is a stray grab.
+func _watch_ladders() -> void:
+	var my_rt: HeistRuntime = rt
+	while is_inside_tree() and rt == my_rt and is_instance_valid(rt) and pilot != null:
+		if not _climbing and _stray == null and pilot.crew.has_meta(Ladder.META_CLIMBING):
+			_stray = pilot.crew.get_meta(Ladder.META_CLIMBING) as Ladder
+			note("FINDING a walk took %s by accident at %s" % [_stray.name, Po5Pilot._v(pilot.crew.global_position)])
+		await pilot.tick()
+
+
+func _stray_need() -> bool:
+	return _stray != null and is_instance_valid(_stray) and not _stray.is_climbing(pilot.crew.slot)
+
+
+## Pilot hook: climb a stray ladder straight back, then the interrupted walk re-paths.
+func _stray_back() -> bool:
+	var lad: Ladder = _stray
+	var went_up: bool = pilot.crew.global_position.y > lad.global_position.y + lad.height_m * 0.5
+	var ok: bool = await _climb(lad, not went_up)
+	note("stray ladder %s climbed back %s" % [lad.name, ok])
+	_stray = null
+	return true
 
 
 ## The panel of `lift` at landing `i` (landing 0 = the prefab's own Interactable).
@@ -785,6 +987,44 @@ func _laser_report(grid: LaserGrid) -> Dictionary:
 	return rep
 
 
+## Whether the navmesh walk from the crew to `to` keeps the capsule off every active laser plane.
+func _path_safe(to: Vector3) -> bool:
+	var path: PackedVector3Array = pilot.nav_path(to)
+	if path.is_empty():
+		return false
+	var r: float = Tweak.crew().capsule_radius + 0.12
+	for n: Node in rt.find_children("*", "LaserGrid", true, false):
+		var g: LaserGrid = n as LaserGrid
+		if g == null or not g.active or g.tripped or not g.is_visible_in_tree():
+			continue
+		var inv: Transform3D = g.global_transform.affine_inverse()
+		var prev: Vector3 = inv * pilot.crew.global_position
+		for p: Vector3 in path:
+			var l: Vector3 = inv * p
+			for k: int in 5:  # samples along the leg
+				var m: Vector3 = prev.lerp(l, float(k + 1) / 5.0)
+				if absf(m.y) < 2.5 and absf(m.z) < r + g.size_m.z * 0.5 and absf(m.x) < g.size_m.x * 0.5 + r:
+					return false
+			prev = l
+	return true
+
+
+## Whether a crossing lane at local x `lx` has navmesh on both sides (within 0.2 m of the lane) and a clear knee-high
+## line across the plane.
+func _lane_ok(grid: LaserGrid, lx: float, lead: float) -> bool:
+	var xf: Transform3D = grid.global_transform
+	var a: Vector3 = xf * Vector3(lx, 0.0, -lead)
+	var b: Vector3 = xf * Vector3(lx, 0.0, lead)
+	for q: Vector3 in [a, b]:
+		var on: Vector3 = pilot.stand_point(q)
+		if pilot.flat_dist(on, q) > 0.2 or absf(on.y - q.y) > 0.4:
+			return false
+	var rq: PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.create(a + Vector3.UP * 0.5, b + Vector3.UP * 0.5,
+		1 | 2)
+	rq.exclude = [pilot.crew.get_rid()]
+	return grid.get_world_3d().direct_space_state.intersect_ray(rq).is_empty()
+
+
 ## One real crossing of `grid` along local-x lane `lx` (crouched or not), `lead` m each side of the plane, timed on
 ## the beams it can see (the window prediction mirrors LaserGrid's pattern maths). True when across with no trip.
 func _laser_cross(grid: LaserGrid, lx: float, crouch: bool, lead: float) -> bool:
@@ -839,12 +1079,30 @@ func _laser_cross(grid: LaserGrid, lx: float, crouch: bool, lead: float) -> bool
 ## The §7.1 laser checks on `grid` with the carried bag: read-out, then real crossings over and back (gap lane for a
 ## static grid with a gap, else crouch-under, else the timing lane). `require_of` asserts the OF numbers.
 func _laser_test(grid: LaserGrid, lead: float, require_of: bool) -> bool:
+	if _laser_trips > 0 or grid.tripped:
+		return await _fail("laser tripped before the test")
 	var rep: Dictionary = _laser_report(grid)
 	await shot("laser_%s" % grid.pattern)
 	var tw: CrewTweak = Tweak.crew()
 	var half: float = grid.size_m.x * 0.5
-	var gap: float = maxf(float(rep["gap_lo"]), float(rep["gap_hi"]))
-	var gap_side: float = -1.0 if float(rep["gap_lo"]) >= float(rep["gap_hi"]) else 1.0
+	# A gap counts only where a lane through it is walkable on both sides with a clear line across the plane.
+	var gap: float = 0.0
+	var gap_side: float = -1.0
+	for side: float in [-1.0, 1.0]:
+		var gw: float = float(rep["gap_lo"]) if side < 0.0 else float(rep["gap_hi"])
+		var lx: float = side * (half + gw * 0.5)
+		var ok_lane: bool = gw >= tw.capsule_radius * 2.0 + 0.05 and _lane_ok(grid, lx, lead)
+		var near_side: float = signf((grid.global_transform.affine_inverse() * pilot.crew.global_position).z)
+		var start_pt: Vector3 = pilot.stand_point(grid.global_transform * Vector3(lx, 0.0,
+			(near_side if near_side != 0.0 else -1.0) * lead))
+		var safe: bool = ok_lane and _path_safe(start_pt)
+		note("laser gap %s: %.2f m, lane %s%s" % ["-x" if side < 0.0 else "+x", gw, "walkable" if ok_lane
+			else "NOT walkable", "" if not ok_lane else (", reachable without crossing" if safe
+			else ", NOT reachable on this side without crossing")])
+		ok_lane = safe
+		if ok_lane and gw > gap:
+			gap = gw
+			gap_side = side
 	var lanes: Array[Dictionary] = []
 	if grid.pattern == LaserGrid.PATTERN_STATIC:
 		if require_of and gap < OF_LASER_GAP_MIN_M:
@@ -931,6 +1189,7 @@ func _test_dry_laser() -> bool:
 		return await _fail("mask")
 	if not await _nd_down_areaway():
 		return await _fail("areaway ladder down")
+	await _go(ND_MASK_AT, 0.8, 40.0)
 	if not await _go(ND_PLANT_THROUGH, 0.5, 60.0):
 		return await _fail("to B5")
 	var kc: Node3D = _tagged(&"keycard")
@@ -947,10 +1206,11 @@ func _test_dry_laser() -> bool:
 	await _go(Vector3(12.0, ND_GATE_AT.y, ND_B5_MID_Z), 0.4, 40.0)
 	if not gate.is_open and not await pilot.use(_comp(gate), 30.0, func() -> bool: return gate.is_open):
 		return await _fail("vault gate")
-	if not await _go(ND_GATE_IN, 0.3, 30.0):
-		return await _fail("antechamber")
+	await _go(Vector3(11.5, ND_GATE_AT.y, ND_B5_MID_Z), 0.4, 20.0)
 	if await _get_bag(LOOT_MEDIUM) == null:
 		return await _fail("bag")
+	if not await _go(ND_GATE_IN, 0.3, 30.0):
+		return await _fail("antechamber")
 	var grid: LaserGrid = _nearest("LaserGrid", ND_LASER_AT, 6.0) as LaserGrid
 	if grid == null:
 		return await _fail("no laser grid")
@@ -1028,7 +1288,7 @@ func _test_dry_ladder() -> bool:
 		return await _fail("no cash lift")
 	var b1: int = _lift_nearest_landing(lift, ND_B1_HATCH_STAND)
 	var top: int = 1 - b1 if lift.landing_count() == 2 else 0
-	for wp: Vector3 in [ND_PLANT_THROUGH, Vector3(10.0, ND_GATE_AT.y, ND_B5_MID_Z),
+	for wp: Vector3 in [ND_MASK_AT, ND_PLANT_THROUGH, Vector3(10.0, ND_GATE_AT.y, ND_B5_MID_Z),
 			Vector3(7.0, ND_GATE_AT.y, ND_B5_MID_Z), Vector3(4.2, ND_GATE_AT.y, ND_B5_MID_Z),
 			Vector3(3.5, ND_GATE_AT.y, 5.2)]:
 		await pilot.goto(wp, 0.4, 40.0, false, false)
@@ -1047,7 +1307,7 @@ func _test_dry_ladder() -> bool:
 		return await _fail("bag rode up")
 	# Back up the areaway ladder (empty-handed: S10.1b).
 	for wp: Vector3 in [Vector3(4.2, ND_GATE_AT.y, ND_B5_MID_Z), Vector3(10.0, ND_GATE_AT.y, ND_B5_MID_Z),
-			ND_PLANT_THROUGH]:
+			ND_PLANT_THROUGH, ND_MASK_AT]:
 		await pilot.goto(wp, 0.4, 40.0, false, false)
 	if not await _climb(_nearest("Ladder", ND_GRATE_AT) as Ladder, true):
 		return await _fail("ladder up")
@@ -1068,14 +1328,14 @@ func _test_laser() -> bool:
 		return false
 	if not await _mask():
 		return await _fail("mask")
-	var kic: InteractableComponent = _comp(_tagged(&"keycard"))
+	var kic: InteractableComponent = _comp(_x("keycard"))
 	if kic == null:
 		return await _fail("no keycard (objective_tag keycard)")
 	if not await pilot.use(kic, 240.0, func() -> bool: return not kic.enabled or _objective(&"keycard") == 2):
 		return await _fail("keycard")
 	if not await _of_to_floor(0):
 		return await _fail("SA down to the basement")
-	var gate: Door = _tagged(&"vault_gate") as Door
+	var gate: Door = _x("vault_gate") as Door
 	if gate == null:
 		return await _fail("no vault gate (objective_tag vault_gate)")
 	if not gate.is_open and not await pilot.use(_comp(gate), 60.0, func() -> bool: return gate.is_open):
@@ -1084,7 +1344,7 @@ func _test_laser() -> bool:
 		return await _fail("VC")
 	if await _get_bag(LOOT_MEDIUM) == null:
 		return await _fail("bag")
-	var grid: LaserGrid = _nearest("LaserGrid", _of(OF_LASER_AT), 8.0) as LaserGrid
+	var grid: LaserGrid = _x("laser_grid") as LaserGrid
 	if grid == null:
 		return await _fail("no LaserGrid near %s" % Po5Pilot._v(_of(OF_LASER_AT)))
 	return await _laser_test(grid, OF_LASER_LEAD_M, true)
@@ -1125,7 +1385,7 @@ func _test_throws() -> bool:
 	await shot("ga_throws")
 	if not await _of_to_floor(3):
 		return await _fail("SA up to the Executive level")
-	var e2: SecureZone = _secure_zone_near(_of(OF_E2_AT))
+	var e2: SecureZone = _x("e2_secure") as SecureZone
 	for loot: StringName in [LOOT_MEDIUM, LOOT_HEAVY]:
 		for pitch: float in THROW_PITCHES:
 			if not await _go(_of(OF_TERRACE_E_STAND), 0.3, 180.0):
@@ -1163,7 +1423,7 @@ func _test_fire_escape() -> bool:
 		return false
 	if not await _mask():
 		return await _fail("mask")
-	var drop: Ladder = _nearest("Ladder", _of(OF_DROP_LADDER_AT), 12.0) as Ladder
+	var drop: Ladder = _x("drop_ladder") as Ladder
 	if drop == null:
 		return await _fail("no drop ladder near %s" % Po5Pilot._v(_of(OF_DROP_LADDER_AT)))
 	if not await _climb(drop, true):
@@ -1173,7 +1433,7 @@ func _test_fire_escape() -> bool:
 		return await _fail("fire-escape stair to the roof fe")
 	note("roof fe reached; stuck rows so far %d" % pilot.stuck_spots.size())
 	await shot("fe_roof")
-	var caged: Ladder = _nearest("Ladder", _of(OF_CAGED_LADDER_AT), 6.0) as Ladder
+	var caged: Ladder = _x("caged_ladder") as Ladder
 	if caged == null:
 		return await _fail("no caged ladder near %s" % Po5Pilot._v(_of(OF_CAGED_LADDER_AT)))
 	if not await _climb(caged, false):
@@ -1181,7 +1441,7 @@ func _test_fire_escape() -> bool:
 	await shot("terrace_caged_bottom")
 	if not await _climb(caged, true):
 		return await _fail("caged ladder up")
-	var hh: Door = _door_near(_of(OF_HH_DOOR), 2.5)
+	var hh: Door = _x("hh_door") as Door
 	if hh == null:
 		return await _fail("no HH door near %s" % Po5Pilot._v(_of(OF_HH_DOOR)))
 	if not hh.is_open and not await pilot.use(_comp(hh), 120.0, func() -> bool: return hh.is_open):
@@ -1203,8 +1463,8 @@ func _test_hole() -> bool:
 		return false
 	if not await _mask():
 		return await _fail("mask")
-	var rope: Ladder = _nearest("Ladder", _of(OF_HOLE_AT), 4.0) as Ladder
-	var hoist: BagLift = _nearest("BagLift", _of(OF_HOLE_AT), 6.0) as BagLift
+	var rope: Ladder = _x("rope_ladder") as Ladder
+	var hoist: BagLift = _x("hoist") as BagLift
 	if rope == null or hoist == null:
 		return await _fail("no rope ladder (%s) / hoist (%s) at the hole" % [rope, hoist])
 	_enable_hole(rope, hoist)
@@ -1274,10 +1534,10 @@ func _test_dock() -> bool:
 		return false
 	if not await _mask():
 		return await _fail("mask")
-	var e1: SecureZone = _secure_zone_near(_of(OF_E1_AT))
+	var e1: SecureZone = _x("e1_secure") as SecureZone
 	if e1 == null:
 		return await _fail("no secure zone near E1 %s" % Po5Pilot._v(_of(OF_E1_AT)))
-	var door: Door = _door_near(_of(OF_LD_DOOR), 2.0)
+	var door: Door = _x("ld_door") as Door
 	if door == null:
 		return await _fail("no LD personnel door near %s" % Po5Pilot._v(_of(OF_LD_DOOR)))
 	# The lane is north (-z) of the dock: "out" is the door side with the smaller z.
@@ -1331,8 +1591,8 @@ func _test_fire_exit() -> bool:
 		return false
 	if not await _mask():
 		return await _fail("mask")
-	var e2: SecureZone = _secure_zone_near(_of(OF_E2_AT))
-	var door: Door = _door_near(_of(OF_FIRE_EXIT), 2.0)
+	var e2: SecureZone = _x("e2_secure") as SecureZone
+	var door: Door = _x("fire_exit") as Door
 	if e2 == null or door == null:
 		return await _fail("no E2 zone (%s) / fire exit door (%s)" % [e2, door])
 	if not await _go(_of(OF_BC_EAST), 0.5, 120.0):
@@ -1474,7 +1734,7 @@ func _g2_dock() -> bool:
 		return false
 	if not await _deploy_ecm():
 		return false
-	var door: Door = _door_near(_of(OF_LD_DOOR), 2.0)
+	var door: Door = _x("ld_door") as Door
 	if door == null or (not door.is_open and not await pilot.use(_comp(door), 30.0, func() -> bool: return door.is_open)):
 		return false
 	return await _of_to_floor(0)
@@ -1501,7 +1761,7 @@ func _g3_keycard() -> bool:
 	var tie: InteractableComponent = _comp(mgr, &"cable_tie")
 	if tie == null or not await pilot.use(tie, 20.0, func() -> bool: return b.mode == CivilianBrain.Mode.TIED, true):
 		return false
-	var kic: InteractableComponent = _comp(_tagged(&"keycard"))
+	var kic: InteractableComponent = _comp(_x("keycard"))
 	if kic == null:
 		return false
 	var kc_done: Callable = func() -> bool: return _objective(&"keycard") == 2 or not kic.enabled
@@ -1515,7 +1775,7 @@ func _g3_keycard() -> bool:
 func _g4_code() -> bool:
 	if not await _of_to_floor(3):
 		return false
-	var pc: Node3D = _tagged(&"code_pc")
+	var pc: Node3D = _x("code_pc")
 	if pc == null:
 		return false
 	for _k: int in 4:
@@ -1536,19 +1796,19 @@ func _g5_vault() -> bool:
 	var gate: Door = _tagged(&"vault_gate") as Door
 	if gate == null or (not gate.is_open and not await pilot.use(_comp(gate), 30.0, func() -> bool: return gate.is_open)):
 		return false
-	var grid: LaserGrid = _nearest("LaserGrid", _of(OF_LASER_AT), 8.0) as LaserGrid
+	var grid: LaserGrid = _x("laser_grid") as LaserGrid
 	if grid != null:
 		var rep: Dictionary = _laser_report(grid)
 		if not await _laser_cross(grid, float(rep["best_lane"]), false, OF_LASER_LEAD_M):
 			return false
-	var tl: Node3D = _tagged(&"time_lock")
+	var tl: Node3D = _x("time_lock")
 	if tl == null or not await pilot.use(_comp(tl), 40.0, func() -> bool: return _objective(&"time_lock") == 2, true):
 		return false
 	if grid != null and not await _laser_cross(grid, float(_laser_report(grid)["best_lane"]), false, OF_LASER_LEAD_M):
 		return false
 	if not await _go(_of(GHOST_RC_WAIT), 0.5, 90.0):
 		return false
-	var vault: Door = _tagged(&"vault_door") as Door
+	var vault: Door = _x("vault_door") as Door
 	Engine.time_scale = TIME_LOCK_SCALE
 	note("SHORTCUT time lock wait in RC at x%.0f" % TIME_LOCK_SCALE)
 	var open_or_alarm: Callable = func() -> bool:
@@ -1561,8 +1821,8 @@ func _g5_vault() -> bool:
 ## 6. Bags (cash, MEDIUM: no sprint, D-102) one at a time VT -> the sweep -> the gate -> CQ -> the cash lift (2 per
 ## cycle) -> LD, staged by the personnel door. Logs each trip's time and carry speed.
 func _g6_bags() -> bool:
-	var lift: BagLift = _nearest("BagLift", _of(GHOST_CQ_AT), 8.0) as BagLift
-	var grid: LaserGrid = _nearest("LaserGrid", _of(OF_LASER_AT), 8.0) as LaserGrid
+	var lift: BagLift = _x("cash_lift") as BagLift
+	var grid: LaserGrid = _x("laser_grid") as LaserGrid
 	if lift == null:
 		return false
 	var low: int = _lift_nearest_landing(lift, _of(GHOST_CQ_AT))
@@ -1577,9 +1837,11 @@ func _g6_bags() -> bool:
 		for _b: int in mini(2, _bags - staged):
 			var t0: float = rt.heist_time_s
 			var src: LootSpawn = null
-			for sp: Node in rt.find_by_tag(&"vault_loot"):
+			# The cash cage's loot spawns (C's G1 tags them cash_cage / vault_loot): any live cash spawn in VT.
+			for sp: Node in rt.find_children("*", "LootSpawn", true, false):
 				var ls: LootSpawn = sp as LootSpawn
-				if ls != null and ls.loot_id == LOOT_MEDIUM and ls.remaining > 0:
+				if ls != null and ls.is_visible_in_tree() and ls.loot_id == LOOT_MEDIUM and ls.remaining > 0 \
+						and _in_rect(ls.global_position, OF_VT_RECT) and absf(ls.global_position.y - OF_FFL[0]) < 2.0:
 					src = ls
 			if src == null or not await pilot.use(_comp(src), 90.0, func() -> bool: return pilot.crew.is_carrying_bag()):
 				return false
@@ -1619,7 +1881,7 @@ func _g6_bags() -> bool:
 
 ## 7. In LD, ECM #2: throw the staged bags from the personnel door into the E1 van zone; walk out.
 func _g7_throw() -> bool:
-	var e1: SecureZone = _secure_zone_near(_of(OF_E1_AT))
+	var e1: SecureZone = _x("e1_secure") as SecureZone
 	if e1 == null or not await _deploy_ecm():
 		return false
 	var secured: int = 0
@@ -1637,3 +1899,71 @@ func _g7_throw() -> bool:
 	if ez != null:
 		await _go(ez.global_position, 1.0, 60.0)
 	return secured >= _bags
+
+
+# --- Resolve (OF-P1: the names / tags / points the G1 tests expect, against C's map) -------------------------------
+
+## --resolve [--map=...] [--launch]: loads the Ostrander map scene (no launch: every variant slot is still there) and
+## prints one "[OFP] RESOLVE" row per EXPECT id: FOUND tag / FOUND near / FALLBACK far / MISSING, plus the spawn tags
+## and every node of the classes the tests use. --launch also launches it (seed --seed, Routine; variants resolved)
+## and checks each EXPECT_POINTS point against the navmesh. Headless-safe.
+func _run_resolve() -> int:
+	var path: String = _map if _map != "" else HeistLauncher.map_path(OF_HEIST, {})
+	if path == "" or not ResourceLoader.exists(path):
+		print("[OFP] RESOLVE FAIL no map scene at '%s'" % path)
+		return 1
+	var root: Node = (load(path) as PackedScene).instantiate()
+	print("[OFP] RESOLVE map %s (scene only: all variant slots present)" % path)
+	var missing: PackedStringArray = PackedStringArray()
+	for id: String in EXPECT:
+		var r: Dictionary = _resolve_one(root, id)
+		var e: Dictionary = EXPECT[id]
+		var n: Node3D = r["node"] as Node3D
+		var what: String = "MISSING"
+		match String(r["how"]):
+			"tag": what = "FOUND tag %s" % e["tag"]
+			"near": what = "FOUND near" + (" (tag %s NOT set)" % e["tag"] if e["tag"] != &"" else "")
+			"far": what = "FALLBACK far (> %.1f m)" % float(e["max"])
+		if String(r["how"]) in ["", "far"] or (String(r["how"]) == "near" and e["tag"] != &""):
+			missing.append(id)
+		print("[OFP] RESOLVE %-13s %-10s %-34s %s %s (%.1f m from doc %s; %d candidates)" % [id, e["type"], what,
+			root.get_path_to(n) if n != null else ^"-", Po5Pilot._v(_gpos(n)) if n != null else "-", float(r["dist"]),
+			Po5Pilot._v(_of(e["near"] as Vector3)), int(r["count"])])
+	for tag: StringName in EXPECT_SPAWN_TAGS:
+		var pts: PackedStringArray = PackedStringArray()
+		for n: Node in root.find_children("*", "", true, false):
+			var tags: Variant = n.get(&"tags")
+			if n is Node3D and tags is Array and (tags as Array).has(tag):
+				pts.append(Po5Pilot._v(_gpos(n as Node3D)))
+		print("[OFP] RESOLVE spawn %-22s %s" % [tag, ("FOUND x%d %s" % [pts.size(), pts[0]]) if not pts.is_empty()
+			else "MISSING"])
+		if pts.is_empty():
+			missing.append(String(tag))
+	for type: String in ["LaserGrid", "Ladder", "BagLift", "SecureZone", "EscapeZone"]:
+		var rows: PackedStringArray = PackedStringArray()
+		for n: Node in root.find_children("*", "", true, false):
+			if _is_type(n, type):
+				var t: Variant = n.get(&"objective_tag")
+				rows.append("%s %s%s" % [n.name, Po5Pilot._v(_gpos(n as Node3D)), (" [%s]" % t)
+					if t != null and StringName(t) != &"" else ""])
+		print("[OFP] RESOLVE all %s (%d): %s" % [type, rows.size(), "; ".join(rows)])
+	root.free()
+	if _resolve_launch:
+		if await _launch(OF_HEIST, _of_seed(), Enums.Difficulty.ROUTINE, _of_opts({}, OF_SPAWN_LANE), true):
+			for id: String in EXPECT_POINTS:
+				var q: Vector3 = _of(EXPECT_POINTS[id] as Vector3)
+				var on: Vector3 = pilot.stand_point(q)
+				var ok: bool = pilot.flat_dist(on, q) <= 0.5 and absf(on.y - q.y) <= 0.5
+				print("[OFP] RESOLVE point %-15s %s navmesh %s (%.2f m off doc %s)" % [id, "OK" if ok else "OFF",
+					Po5Pilot._v(on), on.distance_to(q), Po5Pilot._v(q)])
+				if not ok:
+					missing.append("point:" + id)
+			for id: String in EXPECT:
+				var r2: Dictionary = _resolve_one(rt, id)
+				print("[OFP] RESOLVE live  %-13s %s" % [id, ("%s %s %s" % [(r2["node"] as Node).name, r2["how"],
+					Po5Pilot._v(_gpos(r2["node"] as Node3D))]) if r2["node"] != null else "MISSING (inactive slot)"])
+		else:
+			missing.append("launch")
+	print("[OFP] RESULT RESOLVE %s missing/fallback: %s" % ["PASS" if missing.is_empty() else "GAPS",
+		", ".join(missing) if not missing.is_empty() else "none"])
+	return 0
