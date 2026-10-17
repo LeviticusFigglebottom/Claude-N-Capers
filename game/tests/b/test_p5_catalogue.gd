@@ -35,14 +35,14 @@ const STUBS: Dictionary = {
 	&"gallery_night": [&"contact.vance", &"uptown", 57000],
 	&"ostrander_federal": [&"contact.accountant", &"financial", 80000],  # D-137 (D-120 shape)
 	&"rolling_thunder": [&"contact.reyes", &"southfield", 30000],  # D-141
-	&"afterhours": [&"contact.accountant", &"midtown", 75000],  # D-075
+	&"afterhours": [&"contact.accountant", &"midtown", 40000],  # D-075; D-143 payout
 }
 ## Contract pay by difficulty (Routine..Cataclysm) for each placeholder payout, as the docs print it.
 const PAY_TABLES: Dictionary = {
 	&"gallery_night": [57000, 114000, 148200, 239400, 410400, 524400],
 	&"ostrander_federal": [80000, 160000, 208000, 336000, 576000, 736000],
 	&"rolling_thunder": [30000, 60000, 78000, 126000, 216000, 276000],  # D-141
-	&"afterhours": [75000, 150000, 195000, 315000, 540000, 690000],
+	&"afterhours": [40000, 80000, 104000, 168000, 288000, 368000],  # D-143
 }
 const BODY_TEXT: float = 4.5
 const RESERVED_CYAN: Color = Color(0.3098, 0.8196, 0.9098, 1)

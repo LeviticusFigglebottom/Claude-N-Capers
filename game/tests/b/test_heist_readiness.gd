@@ -98,3 +98,24 @@ func test_afterhours_staged() -> void:
 		assert_true(def != null and not def.point_ids.is_empty(), a + ": point-limited (Afterhours only)")
 		assert_true(UiText.has(StringName("item.asset.%s.name" % a)), a + " name")
 	assert_true(UiText.has(&"music.afterhours.name"))
+
+
+## D-143 per-heist asset allow-list: Afterhours' intel assets (code_note / product_location) are not offered on the
+## shipped heists that also have those variant groups; an empty list still means every heist.
+func test_asset_allow_list() -> void:
+	PreplanBoard.clear_cache()
+	for a: StringName in [&"asset.intel_safe_code", &"asset.intel_product"]:
+		var def: PreplanAssetDef = PreplanBoard.generic_assets().get(a) as PreplanAssetDef
+		assert_true(def != null, "%s in the library" % a)
+		assert_eq(def.heists, [&"afterhours"] as Array[StringName])
+		assert_true(def.offered_on(&"afterhours"))
+		assert_false(def.offered_on(&"glasshouse"))
+		assert_true(UiText.has(StringName("item.%s.name" % a)))
+	for heist: StringName in [&"glasshouse", &"gallery_night", &"night_deposit", &"shadow_ledger", &"dockside_burn"]:
+		var b: PreplanBoard = PreplanBoard.build(heist, Enums.Difficulty.ROUTINE)
+		assert_false(b.asset_ids().has(&"asset.intel_safe_code"), "%s: AH-only intel hidden" % heist)
+		assert_false(b.asset_ids().has(&"asset.intel_product"), "%s: AH-only intel hidden" % heist)
+	var gh: PreplanBoard = PreplanBoard.build(&"glasshouse", Enums.Difficulty.ROUTINE)
+	assert_true(gh.asset_ids().has(&"asset.intel_cameras"), "an empty allow-list is offered everywhere")
+	var ah: PreplanBoard = PreplanBoard.build(&"afterhours", Enums.Difficulty.ROUTINE)
+	assert_true(ah.asset_ids().has(&"asset.intel_safe_code"), "offered on Afterhours")

@@ -15,19 +15,19 @@ Hidden from the menus, the Board and the broker until its def, its map **and** i
 | Accent | velvet magenta `#F76BD3` ◇ (raw WCAG AA for text: 4.9:1 or better on our panels) | `data/ui/heist_accents.tres` |
 | Heist list | `solo_ai_teammates` 3 | `data/ui/heist_list.tres` |
 | Strings | `heist.afterhours.name` / `.subtitle` / `.brief` | `data/strings/strings.csv` |
-| Base payout (`HeistDef.base_payout`, unscaled) | **$75,000 placeholder**; **$40,000 proposed** (D-120 shape, QB-AH1) ◇ | this doc (the def carries it) |
+| Base payout (`HeistDef.base_payout`, unscaled) | **$40,000** (D-143; D-120 shape) ◇ | this doc (the def carries it) |
 
 ## Contact: The Accountant (D-075)
 The G0 ruling gives Afterhours to the Accountant (Reyes keeps Rolling Thunder): the Velvet's back office
 keeps the books and the count room for its owners, which is the Accountant's trade (banks, books, data).
 
 ## Payout ◇
-PD2's Nightclub is one of the cheaper contracts, with the loot carrying the value. Ours is the lowest of
-the M heists: $75,000.
+PD2's Nightclub is one of the cheaper contracts, with the loot carrying the value. D-143: $40,000 (the $75,000
+placeholder predated D-120; see the audit).
 
 | Routine | Tense | Hazardous | Brutal | Lethal | Cataclysm |
 |---|---|---|---|---|---|
-| $75,000 | $150,000 | $195,000 | $315,000 | $540,000 | $690,000 |
+| $40,000 | $80,000 | $104,000 | $168,000 | $288,000 | $368,000 |
 
 ## Loot (proposed for ENV C)
 | id | Weight | Base | Role |
@@ -78,10 +78,11 @@ Answered by the G0 doc (D-075); what remains open is in the audit below.
 * **Not yet (waits on A's mission / C's G1):** VO (`vo.accountant.*`, Mercer, the new `dj` speaker), preplan point labels
   `ui.preplan.point.afterhours.*`, blueprint room labels, the `ClubSound` / crowd cue ids.
 
-### Open questions (QB-AH, to the lead)
-1. **QB-AH1** base_payout $40,000 (proposed) or keep $75,000?
-2. **QB-AH2** D-140 lever: PAGERS (4 guards fixed, cap 4/3/3/2/2/1; proposed) or GUARDS (needs a 5th rover post)?
-3. **QB-AH3** `escape_options`: `[van]` per D-075 ruling 9 (the G0 def still lists `walk`)?
-4. **QB-AH4** A "civilian start" mode label on the Board / heist select / briefing, or the loadout notice only?
-5. **QB-AH5** `asset.intel_safe_code` / `asset.intel_product`: library-wide (they would also show on GH/GN/ND/SL and DB,
-   a new intel option there) or Afterhours-only (needs a per-heist asset allow-list, or C's def `disable` on the others)?
+### QB-AH rulings (D-143, LEAD)
+1. base_payout **$40,000**; `stealth_bonus_mult` 1.15 (pinned in `test_p5_catalogue`).
+2. **PAGERS map:** exactly 4 guards, `pager_max_by_difficulty` [4, 3, 3, 2, 2, 1]. Values for C:
+   `game/content/docs/afterhours_values_block.txt`.
+3. `escape_options` **[van]** only.
+4. No mode label: the loadout's civilian-start notice only.
+5. `asset.intel_safe_code` / `asset.intel_product` are **Afterhours-only** through the new per-heist allow-list
+   (`PreplanAssetDef.heists`, empty = every heist; `test_heist_readiness.test_asset_allow_list`).

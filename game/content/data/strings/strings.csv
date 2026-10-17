@@ -2780,6 +2780,10 @@ item.asset.gear_drop.name,Insider: gear drop
 item.asset.gear_drop.desc,"You choose where the insider leaves the crew's gear: the WC duct, the cloakroom or the reserved booth."
 item.asset.count_window.name,Insider: count room window
 item.asset.count_window.desc,The count room window is left unlatched: a quiet way onto the roof and a throw into the alley.
+item.asset.intel_safe_code.name,Insider: safe combination
+item.asset.intel_safe_code.desc,You know where tonight's safe combination is written down.
+item.asset.intel_product.name,Insider: product stash
+item.asset.intel_product.desc,You know where the Co-op's product is kept tonight.
 music.afterhours.name,Velvet Rope
 ui.jukebox.no_stems,{name} has no recording yet.
 ui.options.controls.scoreboard_mode,Scoreboard
