@@ -111,6 +111,12 @@
 			"test": false
 		},
 		{
+			"asset": "char_bank_vip_client",
+			"id": "bank_vip_client",
+			"scene": "res://world/characters/bank_vip_client/bank_vip_client.tscn",
+			"test": false
+		},
+		{
 			"asset": "char_brandt",
 			"id": "brandt",
 			"scene": "res://world/characters/brandt/brandt.tscn",
@@ -905,6 +911,12 @@
 			"variant_of": "phantom"
 		},
 		{
+			"asset": "char_security_bodyguard",
+			"id": "security_bodyguard",
+			"scene": "res://world/characters/security_bodyguard/security_bodyguard.tscn",
+			"test": false
+		},
+		{
 			"asset": "char_security_officer",
 			"id": "security_officer",
 			"scene": "res://world/characters/security_officer/security_officer.tscn",
@@ -938,6 +950,30 @@
 			"asset": "char_security_officer_f",
 			"id": "security_officer_f",
 			"scene": "res://world/characters/security_officer_f/security_officer_f.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_security_officer_g",
+			"id": "security_officer_g",
+			"scene": "res://world/characters/security_officer_g/security_officer_g.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_security_officer_h",
+			"id": "security_officer_h",
+			"scene": "res://world/characters/security_officer_h/security_officer_h.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_security_officer_i",
+			"id": "security_officer_i",
+			"scene": "res://world/characters/security_officer_i/security_officer_i.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_security_officer_j",
+			"id": "security_officer_j",
+			"scene": "res://world/characters/security_officer_j/security_officer_j.tscn",
 			"test": false
 		},
 		{

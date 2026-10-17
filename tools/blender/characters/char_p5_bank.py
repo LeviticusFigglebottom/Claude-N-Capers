@@ -40,6 +40,10 @@ customers are ordinary civilians in daylight colours.
   ``char_bank_customer_i``: parent, a man in his 30s, blond: maroon crew knit, khaki chinos, grey trainers, watch.
   ``char_bank_customer_j``: a woman in her 60s, deep skin, short grey hair: brown suit jacket over a cream roll-neck,
   black trousers, low heels, silver drop earrings, black glasses.
+* ``char_bank_vip_client`` (OF-D1, rare ``vip_client``, ``civ_vip``, seated in the SD hall): a high-value private
+  client, an older man (about 70, light skin, silver side-parted hair): a single-breasted camel overcoat to below the
+  knee (open, no belt: the seated drape) over a charcoal-grey suit (waistcoat), white shirt and burgundy tie, a sapphire
+  silk scarf hanging open, dark brown leather gloves, brown oxfords and a gold watch on the left wrist.
 * Reused (listed in ``world/characters/p5_cast.json``, not rebuilt): tellers ``npc_bank_teller`` /
   ``_b`` (D-063), customers ``civilian_customer_a`` (camel coat) / ``_b`` (the elderly customer: grey
   hair, gilet), guards ``security_officer`` / ``_b`` (Halden Security day shift, peaked cap) and
@@ -93,6 +97,9 @@ VARIANTS = {
                              "beard_shadow": 0.5, "hair": "short", "hair_color": "blond", "look": "parent_knit"},
     "char_bank_customer_j": {"height": 1.72, "build": 0.45, "gender": 1.0, "age": 0.66, "skin": 5,
                              "hair": "short", "hair_color": "grey", "look": "rollneck"},
+    # OF-D1 rare vip_client (civ_vip, sit in the SD hall)
+    "char_bank_vip_client": {"height": 1.80, "build": 0.55, "gender": 0.0, "age": 0.8, "skin": 2, "beard_shadow": 0.25,
+                             "hair": "side_part", "hair_color": "grey", "look": "vip"},
 }
 
 NAVY = "char_suit_navy"
@@ -383,10 +390,52 @@ def rollneck(kit: Kit) -> None:
                          "roll-neck, black trousers, low heels, silver drop earrings, black glasses")
 
 
+def _drop_faces(m, start: int, pred) -> None:
+    """Remove the faces from index ``start`` on whose centroid matches ``pred`` (unused vertices stay)."""
+    keep = [i for i in range(len(m.f)) if i < start or not pred(sum((m.v[j] for j in m.f[i]), Vector()) / len(m.f[i]))]
+    m.f = [m.f[i] for i in keep]
+    m.m = [m.m[i] for i in keep]
+
+
+def vip(kit: Kit) -> None:
+    fit, k = kit.fit, kit.k
+    hips_z, belt_z, tuck = _z(kit)
+    sh = n.shoes(kit, mat="char_shoe_brown")
+    n.shirt(kit, "char_shirt_white", tuck, point_len=0.054)
+    n.trousers(kit, GREY, sh, belt_z + 0.022 * k)
+    n.tie(kit, "char_tie_burgundy", belt_z + 0.03 * k, width=0.072)
+    n.watch(kit, "L", strap="leather_dark", case="brass")
+    kit.add_soft(g.gloves(fit, "leather_dark", cuff_len=0.05))
+    # the suit's waistcoat, not its jacket, under the overcoat, and without its back panel (hidden by the coat): every
+    # layer behind the chest pushed the coat's back through the chair back seated (check_seated_clip desk_work, Seat
+    # 0.12)
+    n0 = len(kit.soft.f)
+    vest = n.waistcoat(kit, GREY, hips_z - 0.01 * k, 1.13 * k, point=0.05, neck_w=0.07, buttons=5,
+                       button_mat="char_button_dark")
+    added = len(kit.soft.f) - n0
+    n.cull_under(kit, n0, vest, "faces_hidden_by_waistcoat")
+    cy = fit.ring_centre("chest").y
+
+    def back(c: Vector) -> bool:
+        return c.y < cy - 0.03 * k
+
+    _drop_faces(kit.soft, len(kit.soft.f) - added, back)
+    g.delete_faces(vest, back)   # the hull the coat is lofted over
+    crew.scarf(kit, "char_satin_sapphire", 1.00 * k)   # not ivory: it vanished on the white shirt
+    n0 = len(kit.soft.f)
+    # flare / base kept modest: the coat's back skirt must clear the chair back seated (check_seated_clip, Seat 0.12)
+    coat, _info = n.jacket(kit, "char_coat_camel", 0.46 * k, 0.99 * k, neck_w=0.100, lapel_w=0.074, flare=0.06,
+                           base=0.010, open_below=0.06, sleeve=1.93, buttons=False, chest_welt=False)
+    n.cull_under(kit, n0, coat, "faces_hidden_by_coat")
+    kit.notes["look"] = ("VIP private client (OF-D1 civ_vip): open camel overcoat below the knee over a charcoal-grey "
+                         "suit waistcoat and trousers, white shirt, burgundy tie, sapphire silk scarf, dark brown leather "
+                         "gloves, brown oxfords, gold watch (left); about 70, silver side-parted hair")
+
+
 _looks = {"manager": manager, "officer": officer, "officer_b": officer_b, "business": business, "parent": parent,
           "officer_c": officer_c, "officer_d": officer_d, "office_skirt": office_skirt, "courier": courier,
           "retiree": retiree, "trench": trench, "student": student, "trades": trades, "parent_knit": parent_knit,
-          "rollneck": rollneck}
+          "rollneck": rollneck, "vip": vip}
 
 
 def recipe(kit: Kit) -> None:
