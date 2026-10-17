@@ -701,10 +701,10 @@ static func _rappellers_down(ev: AssaultEventRunner, drop: Vector3) -> int:
 	return n
 
 
-## D-115 X-3: every loud heist has assault-event rows (turret van, heli, breach); SL is stealth-only (N/A).
+## D-115 X-3: every loud heist has assault-event rows (turret van, heli, breach; OF per D-136.6); SL is stealth-only (N/A).
 func test_po6_17_rows_for_every_loud_heist() -> void:
 	var tw: AssaultEventsTweak = load("res://systems/director/assault_events_tweak.tres") as AssaultEventsTweak
-	for h: StringName in [&"glasshouse", &"dockside_burn", &"night_deposit", &"gallery_night"]:
+	for h: StringName in [&"glasshouse", &"dockside_burn", &"night_deposit", &"gallery_night", &"ostrander_federal"]:
 		assert_true(tw.heists.has(h), "%s has rows" % h)
 		var kinds: Array = []
 		for r: Dictionary in (tw.heists.get(h, {}) as Dictionary).get("events", []):

@@ -7,7 +7,8 @@ render_mode cull_disabled;
 uniform vec4 color_a : source_color = vec4(1.0);
 uniform vec4 color_b : source_color = vec4(0.0, 0.0, 0.0, 1.0);
 // MaskPatternDef.Procedural: 0 solid, 1 split, 2 brow band, 3 stripes, 4 chevron, 5 dots, 6 sash,
-// 7 diamonds, 8 scales, 9 circuit, 10 prowl, 11 halftone, 12 crackle, 13 starburst (B4-15).
+// 7 diamonds, 8 scales, 9 circuit, 10 prowl, 11 halftone, 12 crackle, 13 starburst (B4-15), 14 guilloche,
+// 15 vault bolts, 16 acanthus border, 17 facets, 18 time-lock dial, 19 stencil band (achievement parts, round 244).
 uniform int pattern = 0;
 uniform float pattern_scale = 4.0;
 uniform bool use_pattern_tex = false;
@@ -127,6 +128,69 @@ float starburst(vec2 uv, float s, float w) {
 	return ray * edge_w(len - 0.09, w);
 }
 
+// Guilloche: banknote rosette, concentric rings rippled by a petal wave around the face centre.
+float guilloche(vec2 uv, float s, float w) {
+	vec2 d = uv - vec2(0.5, 0.45);
+	float len = length(d);
+	float a = atan(d.y, d.x);
+	float t = len * s * 2.0 + 0.35 * sin(a * 12.0);
+	return 1.0 - edge_w(abs(fract(t) - 0.5) - 0.16, w * s * 2.0);
+}
+
+// Vault bolts: a ring of round bolt heads at the rim of a vault door plate, plus a small hub.
+float vault_bolts(vec2 uv, float s, float w) {
+	vec2 d = uv - vec2(0.5, 0.45);
+	float len = length(d);
+	float a = atan(d.y, d.x);
+	float n = max(floor(s), 6.0) * 2.0;
+	float cell = 6.28318 / n;
+	float ac = (floor(a / cell) + 0.5) * cell;
+	vec2 bolt = vec2(cos(ac), sin(ac)) * 0.33;
+	float b = 1.0 - edge_w(length(d - bolt) - 0.045, w);
+	float hub = 1.0 - edge_w(len - 0.07, w);
+	return max(b, hub);
+}
+
+// Acanthus border: a scalloped band round the face edge (frame border), the centre left plain.
+float acanthus(vec2 uv, float w) {
+	vec2 c = uv - 0.5;
+	float r = max(abs(c.x) * 1.1, abs(c.y));
+	float wave = 0.025 * sin((atan(c.y, c.x)) * 18.0);
+	return 1.0 - edge_w(0.38 + wave - r, w);
+}
+
+// Facets: a cut-gem triangle grid (three line families), color_b = the facet edges.
+float facets(vec2 uv, float s, float w) {
+	vec2 g = uv * s;
+	float l1 = abs(fract(g.y) - 0.5);
+	float l2 = abs(fract(g.x * 0.866 + g.y * 0.5) - 0.5);
+	float l3 = abs(fract(g.x * 0.866 - g.y * 0.5) - 0.5);
+	float m = min(l1, min(l2, l3));
+	return 1.0 - edge_w(0.06 - (0.5 - m), w * s);
+}
+
+// Time-lock dial: a ring band with tick marks round the face centre.
+float time_lock_dial(vec2 uv, float s, float w) {
+	vec2 d = uv - vec2(0.5, 0.45);
+	float len = length(d);
+	float a = atan(d.y, d.x);
+	float ring = 1.0 - edge_w(abs(len - 0.3) - 0.025, w);
+	float ticks = max(floor(s), 6.0) * 4.0;
+	float tick = edge_w(sin(a * ticks) * len - 0.012, w) * (1.0 - edge_w(abs(len - 0.36) - 0.03, w));
+	return max(ring, tick);
+}
+
+// Stencil band: a forehead band of blocky stencil marks (container numbering), gaps like stencil bridges.
+float stencil(vec2 uv, float s, float w) {
+	float band = edge_w(uv.y - 0.12, w) * (1.0 - edge_w(uv.y - 0.27, w));
+	vec2 g = vec2(uv.x * s * 1.5, (uv.y - 0.12) / 0.15 * 3.0);
+	vec2 c = floor(g);
+	float on = step(0.45, hash21(c + vec2(3.1, 7.7)));
+	vec2 f = fract(g);
+	float block = edge_w(f.x - 0.12, w * s) * (1.0 - edge_w(f.x - 0.82, w * s));
+	return band * on * block;
+}
+
 float pattern_mask(vec2 uv) {
 	float s = pattern_scale;
 	// AA half width in uv units, taken here in uniform control flow (see edge_w).
@@ -159,6 +223,18 @@ float pattern_mask(vec2 uv) {
 		return crackle(uv, s, aa * s);
 	} else if (pattern == 13) {
 		return starburst(uv, s, aa);
+	} else if (pattern == 14) {
+		return guilloche(uv, s, aa);
+	} else if (pattern == 15) {
+		return vault_bolts(uv, s, aa);
+	} else if (pattern == 16) {
+		return acanthus(uv, aa);
+	} else if (pattern == 17) {
+		return facets(uv, s, aa);
+	} else if (pattern == 18) {
+		return time_lock_dial(uv, s, aa);
+	} else if (pattern == 19) {
+		return stencil(uv, s, aa);
 	}
 	return 0.0;
 }
@@ -173,7 +249,9 @@ void fragment() {
 	ALBEDO = clamp(base * grain, vec3(0.0), vec3(1.0));
 	vec3 orm = texture(detail_orm, tuv).rgb;
 	ROUGHNESS = clamp(roughness_value * mix(1.0, orm.g * 1.4, detail_strength), 0.03, 1.0);
-	METALLIC = metallic_value;
+	// D (round 244): on metal the colour pair drowned in reflections at 2 m; the pattern's color_b areas
+	// lose half the metal so the pattern stays readable (no effect on non-metal materials).
+	METALLIC = metallic_value * mix(1.0, 0.5, m * step(0.5, metallic_value));
 	AO = mix(1.0, orm.r, detail_strength);
 	if (has_normal) {
 		NORMAL_MAP = texture(detail_normal, tuv).rgb;
