@@ -218,6 +218,9 @@ KITS.update(BANK_KITS)
 from _kits_dockside import DOCKSIDE_KITS  # noqa: E402  (Dockside Burn kits, DB-C2)
 
 KITS.update(DOCKSIDE_KITS)
+from _kits_shadow import SHADOW_KITS  # noqa: E402  (Shadow Ledger kits, SL-1)
+
+KITS.update(SHADOW_KITS)
 
 
 def _sn(s: str) -> str:

@@ -1,0 +1,8 @@
+asset: prop_bollard_led
+script: tools/blender/props/calder.py
+params: {"cat": {"fixture": true, "group": "calder", "kind": "bollard_light", "light": {"color": "#E6EEFF", "energy": 0.6, "pos": [0.0, 0.75, 0.0], "range": 3.5, "type": "omni"}, "pin_only": true, "place": "floor"}, "fn": "bollard"}
+seed: 561875730  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_bollard_led
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 16000

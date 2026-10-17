@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"plant_room_roof"
+purpose = &"plant"
+required_items = Array[StringName]([&"ahu", &"chiller", &"tank", &"lift_motor", &"breaker_panel", &"fire_extinguisher", &"light_fixture"])
+optional_items = {
+&"gas_cylinders": 0.5
+}
+clutter_groups = {}
+min_density = 0.06
+max_density = 0.8
+min_props = 8
+lone_ok_kinds = Array[StringName]([&"ahu", &"chiller", &"tank", &"lift_motor", &"gas_cylinders"])
+seed_salt = 319
+counts = {}
+assets = {
+&"light_fixture": PackedStringArray("prop_fluorescent")
+}
+ceiling = {"prop_fluorescent": 3}
+notes = "R3: AHU (body hide behind it), chiller, water tank and the lift machines are map-built."

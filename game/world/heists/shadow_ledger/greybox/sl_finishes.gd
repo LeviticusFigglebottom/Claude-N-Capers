@@ -159,7 +159,7 @@ const ROOM_FLOOR: Dictionary = {
 	"K12": "vinyl_floor", "K13": "vinyl_floor", "K14": "concrete", "K15": "vinyl_floor", "K16": "carpet_graphite",
 	"K17": "carpet_graphite", "K18": "vinyl_floor", "K19": "carpet_graphite", "K20": "carpet_graphite",
 	"K21": "carpet_graphite", "K22": "carpet_graphite", "K23": "carpet_graphite", "K24": "carpet_graphite",
-	"M1": "terrazzo", "M2": "terrazzo", "M3": "terrazzo", "M4": "terrazzo", "M5": "wood_veneer_walnut",
+	"M1": "carpet_graphite", "M2": "terrazzo", "M3": "terrazzo", "M4": "terrazzo", "M5": "wood_veneer_walnut",
 	"M6": "marble_cream", "M7": "wood_veneer_walnut", "M8": "wood_veneer_walnut", "M9": "wood_veneer_walnut",
 	"M10": "vinyl_floor", "M11": "vinyl_floor", "M12": "concrete", "M13": "stone_graphite",
 	"M14": "wood_veneer_walnut", "M15": "paving",

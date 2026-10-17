@@ -65,14 +65,14 @@ def _cargo_net(k: Kit, p: dict) -> None:
     for sx in (-1, 1):
         for sy in (-1, 1):
             cx, cy = sx * (h - 0.02), sy * (h - 0.02)
-            hard.torus(0.045, 0.011, (cx, cy, 0.05), "steel_bare", segs=12, rsegs=4, axis="Z")
+            hard.torus(0.045, 0.011, (cx, cy, 0.05), "steel", segs=12, rsegs=4, axis="Z")
             # the leg lies over the net in two straight runs with a slight sag point
             mx, my = cx * 0.45 + ring[0] * 0.55, cy * 0.45 + ring[1] * 0.55
-            legs.rod((cx - sx * 0.04, cy - sy * 0.04, 0.052), (mx, my, 0.05), 0.022, "safety_orange", segs=4, square=True)
-            legs.rod((mx, my, 0.05), (ring[0] + sx * 0.05, ring[1] + sy * 0.05, 0.058), 0.022, "safety_orange",
+            legs.rod((cx - sx * 0.04, cy - sy * 0.04, 0.052), (mx, my, 0.05), 0.022, "paint_hazard_orange", segs=4, square=True)
+            legs.rod((mx, my, 0.05), (ring[0] + sx * 0.05, ring[1] + sy * 0.05, 0.058), 0.022, "paint_hazard_orange",
                      segs=4, square=True)
     # master ring and a swivel hook lying beside it
-    hard.torus(0.1, 0.018, ring, "steel_bare", segs=20, rsegs=6, axis="Z")
+    hard.torus(0.1, 0.018, ring, "steel", segs=20, rsegs=6, axis="Z")
     hard.cbox((ring[0] + 0.19, ring[1], 0.055), (0.12, 0.05, 0.03), "metal_yellow")
     hard.torus(0.05, 0.013, (ring[0] + 0.3, ring[1], 0.05), "steel", segs=14, rsegs=5, axis="Z", arc=1.6 * math.pi)
     # two coiled ratchet straps at the edge of the net
@@ -109,7 +109,7 @@ def _line_tarp(k: Kit, p: dict) -> None:
         y0 = -0.32
         loop = [(x - 0.08, y0, t + 0.012), (x - 0.06, y0 + 0.5, t + 0.012), (x + 0.06, y0 + 0.5, t + 0.012),
                 (x + 0.08, y0, t + 0.012)]
-        gear.tube(loop, 0.012, "safety_orange", segs=4, closed=True)
+        gear.tube(loop, 0.012, "paint_hazard_orange", segs=4, closed=True)
         gear.torus(0.035, 0.007, (x, y0 - 0.05, t + 0.008), "steel", segs=12, rsegs=4, axis="Z",
                    arc=1.75 * math.pi)
         gear.cbox((x, y0 - 0.088, t + 0.008), (0.018, 0.02, 0.012), "metal_dark")

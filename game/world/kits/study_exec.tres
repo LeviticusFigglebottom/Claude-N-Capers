@@ -1,0 +1,38 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"study_exec"
+purpose = &"office"
+required_items = Array[StringName]([&"desk", &"chair", &"bookshelf", &"armchair", &"floor_lamp", &"rug", &"picture", &"light_fixture"])
+optional_items = {
+&"picture": 1,
+&"plant": 1.5,
+&"side_table": 1
+}
+clutter_groups = {
+&"desk": {
+"anchors": Array[StringName]([&"desk"]),
+"count": Vector2i(1, 2),
+"items": {&"desk_lamp": 1.5, &"notebook": 1.5, &"papers": 2, &"pen_cup": 1},
+"radius": 0.6
+}
+}
+min_density = 0.15
+max_density = 1
+min_props = 10
+lone_ok_kinds = Array[StringName]([&"plant", &"floor_lamp", &"armchair", &"side_table"])
+seed_salt = 324
+counts = {}
+assets = {
+&"bin": PackedStringArray("prop_bin_office"),
+&"fire_extinguisher": PackedStringArray("prop_fire_extinguisher"),
+&"light_fixture": PackedStringArray("prop_downlight"),
+&"picture": PackedStringArray("prop_wall_art_a", "prop_wall_art_c", "prop_wall_art_b"),
+&"plant": PackedStringArray("prop_plant_tall"),
+&"rug": PackedStringArray("prop_rug_rect")
+}
+ceiling = {"prop_downlight": 2.4}
+notes = "M4 Kessler's study: desk, chair, bookcase and the club chair are map-built; the time-locked safe and its reader, the facade access door and the laptop spot stay clear."

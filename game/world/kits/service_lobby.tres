@@ -1,0 +1,30 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"service_lobby"
+purpose = &"lobby"
+required_items = Array[StringName]([&"cart", &"lectern", &"bulletin_board", &"fire_extinguisher", &"light_fixture"])
+optional_items = {
+&"bin": 0.8,
+&"picture": 1,
+&"switch": 0.6
+}
+clutter_groups = {}
+min_density = 0.15
+max_density = 0.8
+min_props = 6
+lone_ok_kinds = Array[StringName]([&"cart", &"lectern"])
+seed_salt = 301
+counts = {}
+assets = {
+&"bin": PackedStringArray("prop_bin_office"),
+&"cart": PackedStringArray("prop_freight_dolly"),
+&"lectern": PackedStringArray("prop_lectern_signin"),
+&"light_fixture": PackedStringArray("prop_ceiling_panel_cool"),
+&"picture": PackedStringArray("prop_notice_frame")
+}
+ceiling = {"prop_ceiling_panel_cool": 2.6}
+notes = "S1 service lift lobby (PUBLIC): the freight dolly and the contractor sign-in lectern are map-built; the lift car opening and the sealed fire door stay clear. 5000 K panels."

@@ -497,7 +497,7 @@ def _zipline_anchor(k: Kit, p: dict) -> None:
     for sx in (-1, 1):
         for sz in (-1, 1):
             trim.cyl(0.016, 0.012, (sx * 0.11, 0.022, sz * 0.16), "steel", axis="Y", segs=6)
-            trim.cyl(0.007, 0.024, (sx * 0.11, 0.028, sz * 0.16), "steel_bare", axis="Y", segs=8)
+            trim.cyl(0.007, 0.024, (sx * 0.11, 0.028, sz * 0.16), "steel", axis="Y", segs=8)
     # stand-off arm with gussets
     hard.bx((-0.04, 0.016, -0.04), (0.04, 0.2, 0.04), "metal_dark")
     for sx in (-1, 1):
@@ -512,16 +512,16 @@ def _zipline_anchor(k: Kit, p: dict) -> None:
     for y, z in ((cy - 0.06, cz + 0.07), (cy + 0.06, cz + 0.07), (cy + 0.07, cz - 0.05)):
         trim.cyl(0.008, 0.1, (0.0, y, z), "steel", axis="X", segs=8)
     # sheave with a groove (two flanges and a hub), axle bolt
-    trim.cyl(0.055, 0.008, (-0.014, cy, cz), "steel_bare", axis="X", segs=24)
-    trim.cyl(0.055, 0.008, (0.014, cy, cz), "steel_bare", axis="X", segs=24)
-    trim.cyl(0.04, 0.022, (0.0, cy, cz), "steel_bare", axis="X", segs=24)
+    trim.cyl(0.055, 0.008, (-0.014, cy, cz), "steel", axis="X", segs=24)
+    trim.cyl(0.055, 0.008, (0.014, cy, cz), "steel", axis="X", segs=24)
+    trim.cyl(0.04, 0.022, (0.0, cy, cz), "steel", axis="X", segs=24)
     trim.cyl(0.014, 0.1, (0.0, cy, cz), "chrome", axis="X", segs=10)
     # cable over the sheave top and away (+Y, slightly down), a ferrule on the stub end, rubber stop
     top = cz + 0.042
     trim.tube([(0.0, cy - 0.04, top - 0.012), (0.0, cy, top), (0.0, cy + 0.06, top - 0.004),
                (0.0, cy + 0.45, top - 0.05)], 0.005, "steel", segs=6)
     trim.cyl(0.016, 0.03, (0.0, cy + 0.12, top - 0.012), "rubber", axis="Y", segs=10)
-    trim.rod((0.0, cy + 0.42, top - 0.047), (0.0, cy + 0.47, top - 0.052), 0.008, "steel_bare", segs=8)
+    trim.rod((0.0, cy + 0.42, top - 0.047), (0.0, cy + 0.47, top - 0.052), 0.008, "steel", segs=8)
     body.build()
     k.empty("Line", (0.0, cy, top))
 

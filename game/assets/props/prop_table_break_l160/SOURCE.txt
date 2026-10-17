@@ -1,0 +1,8 @@
+asset: prop_table_break_l160
+script: tools/blender/props/calder.py
+params: {"cat": {"group": "calder", "kind": "table", "pin_only": true, "place": "center", "support": true}, "d": 1.0, "fn": "table", "h": 0.75, "style": "break", "w": 1.6}
+seed: 3465914756  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_table_break_l160
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 16000

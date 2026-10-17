@@ -1,0 +1,32 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"gallery_mezzanine"
+purpose = &"lobby"
+required_items = Array[StringName]([&"sculpture", &"picture", &"light_fixture"])
+optional_items = {
+&"bench": 1,
+&"picture": 1.5,
+&"plant": 1
+}
+clutter_groups = {}
+min_density = 0.06
+max_density = 0.5
+min_props = 6
+lone_ok_kinds = Array[StringName]([&"sculpture", &"bench", &"plant"])
+seed_salt = 322
+counts = {}
+assets = {
+&"bench": PackedStringArray("prop_bench_corridor"),
+&"bin": PackedStringArray("prop_bin_office"),
+&"fire_extinguisher": PackedStringArray("prop_fire_extinguisher"),
+&"light_fixture": PackedStringArray("prop_downlight"),
+&"picture": PackedStringArray("prop_wall_art_a", "prop_wall_art_c", "prop_wall_art_b"),
+&"plant": PackedStringArray("prop_plant_tall"),
+&"rug": PackedStringArray("prop_rug_rect")
+}
+ceiling = {"prop_downlight": 2.6}
+notes = "M2 gallery / mezzanine: the sculpture plinths are map-built; the walkway along the void, the feature-stair arrival, the lift doors and the art-hall doors stay clear."
