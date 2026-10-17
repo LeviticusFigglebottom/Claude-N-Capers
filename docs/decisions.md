@@ -1293,3 +1293,31 @@ least once and is not in the rolling memory." PD2's job heat moves XP only; ours
    `rotation_step`=0.01, `rotation_cap`=0.10); profile schema +1 (migration: empty memory, completion flags seeded from
    career stats). Tests: the formula table (n = 0..10, k = 0..12, never completed), migration, payday line, two players
    with different memories in one crew.
+
+## D-140: stealth heists can't be beaten by killing every guard (PO-15, 2026-10-17, LEAD; product owner)
+PO: "make this new heist have 5 guards/pagers by default, and ensure the gallery/ledger/other bank stealthable heist have
+at least 5, or adhere to the reduced pager count starting from the second difficulty (4 at the first). No stealth heist
+should be completable just by killing each guard except the jewelry heist or on the easiest difficulty. More guards or
+fewer max pagers beyond the easiest is the lead's call, per heist."
+**Rule.** "Guards" = pager-carrying NPCs present at load (guards, the camera operator, escorts; not rare-event or timed
+spawns), the **minimum over seeds**. For Night Deposit, Gallery Night, Shadow Ledger and Ostrander Federal:
+(a) at least **5 guards at every difficulty**; (b) pager cap **4 on Routine**; (c) from **Tense up, guards > pager cap**
+on every seed, so kill-and-answer-everyone always runs out of pagers. Golden Hour (the jewelry store) is exempt and keeps
+D-130 (4/4/3/3/2/1). A rolled `pager_max_answers` variant scalar may lower the cap, never raise it above the table.
+**Per-heist tables** (index Routine, Tense, Hazardous, Brutal, Lethal, Cataclysm; minimum guards / pager cap):
+
+| Heist | Guards (min) | Pager cap | Margin (guards − cap) | Why |
+|---|---|---|---|---|
+| Ostrander Federal (L) | 5 / 5 / 6 / 6 / 7 / 8 | 4 / 4 / 4 / 3 / 3 / 2 | 1 / 1 / 2 / 3 / 4 / 6 | big open bank: mostly more guards, PD2's 4 pagers until Brutal |
+| Night Deposit (M, compact) | 5 / 5 / 5 / 6 / 6 / 7 | 4 / 4 / 3 / 3 / 2 / 2 | 1 / 1 / 2 / 3 / 4 / 5 | 26 × 20 m: lean on pagers, not crowding |
+| Gallery Night (M) | 5 / 5 / 6 / 6 / 7 / 8 | 4 / 4 / 4 / 3 / 3 / 2 | 1 / 1 / 2 / 3 / 4 / 6 | as OF |
+| Shadow Ledger (M) | 5 / 5 / 6 / 6 / 7 / 8 | 4 / 4 / 4 / 3 / 3 / 2 | 1 / 1 / 2 / 3 / 4 / 6 | as OF |
+
+These guard minimums supersede D-130 §1's guard percentages for these four heists (civilians unchanged; each extra is
+still a real spawn with its own route or post, never a doubled-up post).
+**Owners.** C: ND/GN/SL generator rows (Routine baseline raised to 5 with new posts/routes; `difficulty_add` to the table;
+`pager_max_by_difficulty`), regen, validate final. B: the OF values block per QB-2 (replaces B's 3 / 3.4 / … guards) and the
+briefing/difficulty card "N pagers" line for all four. A: PagerSystem honours the scalar-lowers-only rule; re-pin
+test_d130_population to these minimums; a new test asserts guards ≥ 5 everywhere, cap 4 on Routine and guards > cap
+from Tense on 3 seeds for ND/GN/SL (OF once G1 lands); check the stealth e2e tests still win. P: one windowed stealth run
+each on Tense and Lethal for ND/GN/SL afterwards (HUD pager count, extra guards' routes sensible).
