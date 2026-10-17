@@ -1339,3 +1339,13 @@ run each on Tense and Lethal for ND/GN/SL afterwards.
 of the 1.05 m ledge (a crouched player's top detection point is 1.05 m), glazing above; QC-h civilian budget ≤ 22;
 QC-i no new "door" assault kind: XL/HH doors breach via D-122 NAV_LAYER_BREACH, Breach_3/4 stay police-entry points;
 QC-j C's call in OF-C2.
+
+## D-142: clear glass is see-through for detection (QC-k, 2026-10-17, LEAD)
+PD2: guards, civilians and cameras see the crew through clear windows and glass doors. Today `VISION_MASK` (1|2|8) treats
+Window glass (world_static) as opaque. Ruling: **PD2-faithful**: vision rays ignore colliders in group `see_through`
+(A: the Window prefab's GlassBody + the group check in the LOS sample; bullets and movement unchanged). C tags clear
+glazing only; frosted, tinted-opaque and mirrored glass stays opaque, as authored. Sequenced after PO-14/PO-15. Because it
+changes sightlines on every shipped heist with windows (GH storefront, SL tower, GN, ND, DB offices), C audits glazing per
+heist (clear vs opaque list in the heist doc), A re-runs the stealth e2e routes, and P re-walks each stealth heist's
+main route windowed before the round that enables it reaches trunk; any route that dies on new sightlines gets a C cover
+fix or that pane made frosted, not a revert. The OF checks assume see-through.
