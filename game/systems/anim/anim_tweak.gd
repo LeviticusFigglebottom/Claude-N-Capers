@@ -171,6 +171,22 @@ static var _cached: AnimTweak = null
 ## Influence blend rate (1/s) in and out of the lift clips.
 @export var hard_hat_lift_rate: float = 6.0
 
+@export_group("Animation LOD (D-132, AnimLod)")
+## Off: every NPC AnimDriver updates every frame at any distance (pre-D-132).
+@export var anim_lod_enabled: bool = true
+## Distance from the local camera (m): full rate below near; near..far on screen every `anim_lod_near_cadence`
+## frames (left-hand IK off); beyond far or off screen every `anim_lod_far_cadence` frames (hold layer off); off
+## screen and beyond far: paused (time banked, caught up when it is due again).
+@export var anim_lod_near_m: float = 15.0
+@export var anim_lod_far_m: float = 30.0
+@export var anim_lod_near_cadence: int = 2
+@export var anim_lod_far_cadence: int = 4
+## On-screen test: a sphere of this radius (m) around the body at anim_lod_center_y_m against the camera frustum.
+@export var anim_lod_radius_m: float = 1.2
+@export var anim_lod_center_y_m: float = 0.9
+## Never LOD an NPC within this distance (m) of a crew member's aim ray (the player / a teammate aiming at it).
+@export var anim_lod_aim_radius_m: float = 2.0
+
 
 ## Seconds from the start of third-person clip `clip_id` to `event`, read from the rig's SOURCE.txt (so a D
 ## retime needs no tweak change); `fallback` (the hand-copied tweak value) while the clip or event is missing.
