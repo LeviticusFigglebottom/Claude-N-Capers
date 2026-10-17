@@ -5,7 +5,7 @@
 ## - SLIDE: moving > 0.5 m/s for > 0.5 s while the clip is not a locomotion clip (idle / aim / none);
 ## - NO_CLIP: an interaction by a crew member whose body shows no interact / action clip within 0.6 s
 ##   (lockpick, bag, cuff, revive, drill place...);
-## - FROZEN: the driver says a clip plays but the body's skeleton pose did not change for a second (tracks not
+## - FROZEN: the driver says a clip plays but the body's skeleton pose did not change over three 1 s samples (tracks not
 ##   bound to the rig, a paused player, speed 0: on screen the NPC stands still); PLAYER_MISMATCH: the
 ##   AnimationPlayer is not playing the driver's clip (or speed_scale 0);
 ## - FP: every first-person viewmodel clip (FpViewmodel.clip) of the local player.
@@ -32,6 +32,7 @@ var _known: Dictionary = {}
 var _pending_interact: Array[Dictionary] = []
 var _flush_t: float = 0.0
 var _frozen: Dictionary = {}
+var _still: Dictionary = {}  # body instance id -> identical comparisons in a row
 var _mismatch: Dictionary = {}
 var _moving: Dictionary = {}
 var _sig: Dictionary = {}
@@ -174,11 +175,15 @@ func _check_pose(body: Node3D) -> void:
 	_sig[id] = sig
 	if prev == INF:
 		return
-	if absf(sig - prev) < 1e-5:
+	# Two identical comparisons in a row (3 samples): a loop whose period divides the 1 s sampling (cower at exactly
+	# 1 s, ~0.5 s pistol fire) lands on the same phase once and read as FROZEN (ENV A 2b97d701).
+	var still: int = int(_still.get(id, 0)) + 1 if absf(sig - prev) < 1e-5 else 0
+	_still[id] = still
+	if still >= 2:
 		if not _frozen.has(key):
-			print("[ANIM] FROZEN %s %s: clip '%s' but the skeleton did not move for 1 s" % [cls, body.name, drv.clip])
+			print("[ANIM] FROZEN %s %s: clip '%s' but the skeleton did not move for 2 s" % [cls, body.name, drv.clip])
 		_frozen[key] = int(_frozen.get(key, 0)) + 1
-	else:
+	elif still == 0:
 		_moving[key] = int(_moving.get(key, 0)) + 1
 
 
