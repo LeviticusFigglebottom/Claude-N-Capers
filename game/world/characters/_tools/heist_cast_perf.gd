@@ -35,6 +35,9 @@ const VIEWS: Dictionary = {
 	],
 }
 ## NOTE: the view coordinates come from each heist's greybox layout (room bounds); re-check them when a map moves.
+## --detail proposal check: the render layer the cast moves to (2 = bit value 2)
+const CAST_LAYER: int = 2
+const CAST_LAYER_BIT: int = 1 << (CAST_LAYER - 1)
 const FORCE: Dictionary = {"ostrander_federal": {"vip": ["vip_in"]}}
 var _heist: String = "ostrander_federal"
 var _seed: int = 1037
@@ -159,6 +162,28 @@ func _detail_report(view: String, npcs: Array[Node], cam: Camera3D, shown: Array
 	for li: Light3D in lit:
 		li.shadow_enabled = true
 	print("[CASTPERF] view=%s shadowed lights %s; all shadows off: draws %d -> %d" % [view, kinds, shown[0], no_shadow[0]])
+	# proposal check: the cast on its own render layer (CAST_LAYER), excluded from the positional lights' shadow casters
+	# (the sun keeps casting them): moving bodies no longer re-render those lights' shadow maps
+	var saved_layers: Dictionary = {}
+	for n: Node in npcs:
+		for g: Node in n.find_children("*", "GeometryInstance3D", true, false):
+			var gi: GeometryInstance3D = g as GeometryInstance3D
+			saved_layers[gi] = gi.layers
+			gi.layers = CAST_LAYER_BIT
+	var saved_masks: Dictionary = {}
+	for li: Light3D in lit:
+		if not (li is DirectionalLight3D):
+			saved_masks[li] = li.shadow_caster_mask
+			li.shadow_caster_mask = li.shadow_caster_mask & ~CAST_LAYER_BIT
+	for _i: int in 10:
+		await get_tree().process_frame
+	var split: Array = _info()
+	for gi: GeometryInstance3D in saved_layers:
+		gi.layers = saved_layers[gi]
+	for li: Light3D in saved_masks:
+		li.shadow_caster_mask = saved_masks[li]
+	print("[CASTPERF] view=%s cast on render layer %d, excluded from %d positional lights' shadow casters: draws %d -> %d"
+			% [view, CAST_LAYER, saved_masks.size(), shown[0], split[0]])
 	var rows: Array = []
 	for n: Node in npcs:
 		var nb: NpcBase = n as NpcBase
