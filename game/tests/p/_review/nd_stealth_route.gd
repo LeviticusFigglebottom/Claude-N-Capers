@@ -571,7 +571,10 @@ func _gap_out() -> bool:
 ## Up to two vault bags thrown into the car at B1 (in through the laser gap for each).
 func _load_trip(lift: BagLift, trip: int) -> bool:
 	for b: int in mini(2, _bags - 2 * trip):
-		for wp: Vector3 in [Vector3(LASER_GAP_X, GATE_AT.y, 7.9), Vector3(LASER_GAP_X, GATE_AT.y, 9.15)]:
+		# Along the grid's south side well clear of the beams (z 8.5): the navmesh path in through the vault gate cut
+		# the corner at z 8.0 and tripped them (ND run 2026-10-17 t=448).
+		for wp: Vector3 in [Vector3(14.0, GATE_AT.y, 7.6), Vector3(10.6, GATE_AT.y, 7.7),
+				Vector3(LASER_GAP_X, GATE_AT.y, 7.9), Vector3(LASER_GAP_X, GATE_AT.y, 9.15)]:
 			await pilot.goto(wp, 0.12, 60.0)
 		if not await _vault_bag_into_lift(lift, 2 * trip + b):
 			return false
