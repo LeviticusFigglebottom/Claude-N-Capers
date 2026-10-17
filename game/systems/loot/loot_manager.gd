@@ -10,6 +10,8 @@
 ##   bags() -> Array[LootBag]                 -> bags of this heist (carried or not)
 ##   loot_info(loot_id) -> {weight, value, known}  (static; ContentDB, else LootTweak fallback)
 ##   bag_body(crew, npc) -> LootBag           -> S6.2 completion logic (body_bagged [R])
+##   tool_bag_for(crew, loot_id, origin, radius_m) -> LootBag  -> QC-60: carried, else nearest loose bag (static)
+##   consume_bag(bag)                         -> QC-60: a device uses the bag up (META_CONSUMED, freed; static)
 ## Server only. Drop/throw come from CrewIntent.drop_bag / throw_bag rising edges through a crew
 ## tick handler. A bag resting inside a SECURE_LOOT MapZone for LootTweak.secure_rest_s is secured
 ## (loot_secured [R]) and freed. Body bags inside a BODY_HIDE zone (body_container respects its
@@ -22,6 +24,8 @@ extends Node
 const BAG_SCENE_PATH: String = "res://systems/loot/loot_bag.tscn"
 const BAG_BODY_NODE: StringName = &"BagBodyInteractable"
 ## Crew states that make the carrier drop the bag.
+## QC-60: meta set on a bag a device used up (burn_point / drill_point), so a respawn watch does not replace it.
+const META_CONSUMED: StringName = &"consumed"
 const DROP_STATES: Array[int] = [
 	Enums.CrewState.DOWNED, Enums.CrewState.CLOAKER_DOWNED, Enums.CrewState.CUFFED, Enums.CrewState.CUSTODY,
 ]
@@ -82,6 +86,40 @@ static func loot_info(loot_id: StringName) -> Dictionary:
 static func is_tool_loot(loot_id: StringName) -> bool:
 	var d: LootDef = loot_info(loot_id).get("def") as LootDef
 	return d != null and d.is_tool
+
+
+## QC-60 / D-068: the `loot_id` bag `crew` would deliver at `origin`: the one it carries, else the nearest loose one
+## (not carried, not secured) within `radius_m`. Null when none.
+static func tool_bag_for(crew: Node, loot_id: StringName, origin: Vector3, radius_m: float) -> LootBag:
+	if loot_id == &"" or crew == null or not crew.is_inside_tree():
+		return null
+	var carried: LootBag = crew.get(&"carried_bag") as LootBag
+	if carried != null and is_instance_valid(carried) and carried.loot_id == loot_id:
+		return carried
+	var best: LootBag = null
+	var best_d: float = radius_m
+	for n: Node in crew.get_tree().get_nodes_in_group(G.LOOT_BAG):
+		var b: LootBag = n as LootBag
+		if b == null or b.loot_id != loot_id or b.is_carried() or b.secured or b.is_queued_for_deletion():
+			continue
+		var d: float = b.global_position.distance_to(origin)
+		if d <= best_d:
+			best = b
+			best_d = d
+	return best
+
+
+## Server (QC-60): a device used `bag` up (thermite, drill parts): off its carrier, marked META_CONSUMED, freed.
+static func consume_bag(bag: LootBag) -> void:
+	if bag == null or not is_instance_valid(bag):
+		return
+	var c: CrewController = bag.carrier
+	if c != null and is_instance_valid(c) and c.carried_bag == bag:
+		c.set_carried_bag(null)
+	bag.set_meta(META_CONSUMED, true)
+	if bag.get_parent() != null:
+		bag.get_parent().remove_child(bag)
+	bag.queue_free()
 
 
 # --- Bags ---------------------------------------------------------------------------------------

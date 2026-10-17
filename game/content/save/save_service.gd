@@ -21,7 +21,7 @@
 class_name SaveService
 extends RefCounted
 
-const CURRENT_VERSION: int = 8
+const CURRENT_VERSION: int = 9
 const DEFAULT_ROOT_DIR: String = "user://profiles"
 ## v8: the starter primary granted to (and, into an empty primary slot, equipped on) older profiles.
 const STARTER_PRIMARY: String = "weapon.corsair_ar"
@@ -131,6 +131,8 @@ static func migrate(data: Dictionary) -> Dictionary:
 				d = _migrate_6_to_7(d)
 			7:
 				d = _migrate_7_to_8(d)
+			8:
+				d = _migrate_8_to_9(d)
 			_:
 				Log.error(&"save", "no migration from version %d" % v)
 				return d
@@ -252,6 +254,25 @@ static func _migrate_7_to_8(d: Dictionary) -> Dictionary:
 		if String(l.get("primary", "")) == "":
 			l["primary"] = STARTER_PRIMARY
 			l["primary_mods"] = []
+	return d
+
+
+## v8 -> v9 (D-139 heist freshness): an empty run memory; every heist the career shows a win for is marked completed,
+## with its last run at 0, so its rotation bonus ramps up from here (no instant +10 %).
+static func _migrate_8_to_9(d: Dictionary) -> Dictionary:
+	if d.get("freshness") is Dictionary:
+		return d
+	var f: Dictionary = {"recent": [], "runs": 0, "last_run": {}, "completed": []}
+	var heists: Variant = (d.get("career", {}) as Dictionary).get("heists", {}) if d.get("career") is Dictionary else {}
+	if heists is Dictionary:
+		var ids: Array = (heists as Dictionary).keys()
+		ids.sort()
+		for id: Variant in ids:
+			var row: Variant = (heists as Dictionary)[id]
+			if row is Dictionary and int((row as Dictionary).get(Career.WON, 0)) > 0:
+				(f["completed"] as Array).append(String(id))
+				(f["last_run"] as Dictionary)[String(id)] = 0
+	d["freshness"] = f
 	return d
 
 

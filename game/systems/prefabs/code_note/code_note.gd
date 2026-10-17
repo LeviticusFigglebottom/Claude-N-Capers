@@ -2,13 +2,18 @@
 ## Owner: ENV A. Reading it (kind &"read_note", read_note_s) reveals `code_group`'s code to the
 ## whole crew (CodeRegistry.reveal) and emits item_picked_up(&"item.code_note", slot) [R]. The note
 ## stays readable. `code_text()` is the 4-digit code for the prompt / HUD (CodeRegistry.known_codes()).
-## Variant slots may instance it with params {"code_group": &"..."} (configure_variant).
+## Variant slots may instance it with params {"code_group": &"...", "reveals_variant_group": &"..."} (configure_variant).
+## QC-63 (OF's manager planner `[code_hint]`): `reveals_variant_group` also reveals a variant group on read (PreplanAssets
+## .reveal_group, the same effect as an intel asset's `reveals`; HeistMission._on_variant_revealed). A note may carry
+## only that (no `code_group`).
 class_name CodeNote
 extends GameplayPrefab
 
 const PLACEHOLDER: PackedScene = preload("res://systems/prefabs/code_note/code_note_placeholder.tscn")
 
 @export var code_group: StringName = &""
+## QC-63: variant group revealed when read (&"" = none), e.g. &"code_pc".
+@export var reveals_variant_group: StringName = &""
 @export_group("Interaction")
 ## -1 = InteractionTweak.read_note_s.
 @export var interaction_time_s: float = -1.0
@@ -37,6 +42,8 @@ func _prefab_ready() -> void:
 func configure_variant(params: Dictionary) -> void:
 	if params.has("code_group"):
 		code_group = StringName(params["code_group"])
+	if params.has("reveals_variant_group"):
+		reveals_variant_group = StringName(params["reveals_variant_group"])
 
 
 ## The code written on this note ("" without a heist or group).
@@ -51,9 +58,13 @@ func _on_completed(crew: Node) -> void:
 	if not Net.is_authority():
 		return
 	var slot: int = int(crew.get(&"slot")) if crew != null else -1
+	var rt: HeistRuntime = HeistRuntime.of(self)
+	if reveals_variant_group != &"" and rt != null:
+		rt.preplan.reveal_group(reveals_variant_group)
 	var reg: CodeRegistry = CodeRegistry.of(self)
-	if reg == null or code_group == &"":
-		Log.warn(LOG_CHANNEL, "%s: code note without a code_group / heist" % name)
+	if code_group != &"" and reg != null:
+		reg.reveal(code_group, slot)
+	elif reveals_variant_group == &"" or rt == null:
+		Log.warn(LOG_CHANNEL, "%s: code note without a code_group / reveals_variant_group / heist" % name)
 		return
-	reg.reveal(code_group, slot)
 	_emit_fact(&"item_picked_up", [CodeRegistry.NOTE_ITEM, slot])

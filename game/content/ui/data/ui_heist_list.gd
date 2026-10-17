@@ -6,6 +6,8 @@ extends Resource
 
 ## heist id (StringName) -> per-heist UI data, every key optional:
 ##   "solo_ai_teammates": int            overrides the default below for "Play solo"
+##   "requires": Array[String]           res:// paths that must exist before the menus offer the heist (readiness gate,
+##                                       on top of HeistCatalog's def + map; e.g. the mission script a new heist waits on)
 ## Display text is always strings.csv `heist.<id>.name` / `.subtitle` / `.brief`.
 @export var heists: Dictionary = {}
 ## Difficulties selectable in this build (Enums.Difficulty values); others show as locked (C4: P1 = 2).
@@ -21,3 +23,12 @@ extends Resource
 func solo_ai_for(heist_id: StringName) -> int:
 	var d: Dictionary = heists.get(heist_id, {}) as Dictionary
 	return int(d.get("solo_ai_teammates", solo_ai_teammates))
+
+
+## Readiness gate paths for `heist_id` ("requires"; empty = def + map are enough).
+func requires_for(heist_id: StringName) -> PackedStringArray:
+	var d: Dictionary = heists.get(heist_id, {}) as Dictionary
+	var out: PackedStringArray = PackedStringArray()
+	for p: Variant in d.get("requires", []) as Array:
+		out.append(String(p))
+	return out

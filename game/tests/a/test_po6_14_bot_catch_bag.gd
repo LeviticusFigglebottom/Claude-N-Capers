@@ -60,9 +60,9 @@ func _hold_at(spots: Dictionary) -> void:
 
 
 ## The human picks up a fresh bag and throws (or drops) it along `yaw` through the CrewIntent path.
-func _human_throws(yaw: float, thrown: bool = true) -> LootBag:
+func _human_throws(yaw: float, thrown: bool = true, loot_id: StringName = &"loot.jewelry") -> LootBag:
 	var human: CrewController = _crew(0)
-	var bag: LootBag = _loot().spawn_bag(&"loot.jewelry", Transform3D(Basis.IDENTITY, human.global_position))
+	var bag: LootBag = _loot().spawn_bag(loot_id, Transform3D(Basis.IDENTITY, human.global_position))
 	await wait_physics_frames(1)
 	assert_true(_loot().carry(bag, human), "the human carries the bag")
 	var face: CrewIntent = CrewIntent.new()
@@ -108,6 +108,22 @@ func test_po6_14_bot_fetches_thrown_bag_landing_nearby() -> void:
 	var ok: bool = await wait_until(func() -> bool: return bag.is_carried(), 6.0)
 	assert_true(ok, "the bot picked up the bag that landed next to it")
 	assert_eq(bag.carrier, _crew(1), "the nearby bot carries it")
+
+
+## OF-X2 (DB thermite read "disabled"): a thrown tool bag (D-068: thermite, drill parts; never secured) is not caught or
+## fetched; it stays where the human put it for the human to use.
+func test_of_x2_bot_leaves_thrown_tool_bag() -> void:
+	await _launch_unit()
+	Engine.time_scale = TIME_SCALE
+	_rt.stealth.raise_alarm(&"test")
+	await wait_physics_frames(3)
+	var h: Vector3 = _crew(0).global_position
+	await _hold_at({1: h + Vector3(0.0, 0.0, -3.0), 2: h + Vector3(-2.2, 0.0, -4.0), 3: Vector3(8.0, 0.05, -6.0)})
+	var bag: LootBag = await _human_throws(0.0, true, &"loot.thermite")
+	assert_true(bag.in_flight, "the tool bag was thrown at slot 1")
+	await wait_seconds(4.0)
+	assert_false(bag.is_carried(), "no bot caught or fetched the thermite")
+	assert_true(bag.interactable != null and bag.interactable.enabled, "the human can pick it up again")
 
 
 func test_po6_14_dropped_bag_not_taken() -> void:
