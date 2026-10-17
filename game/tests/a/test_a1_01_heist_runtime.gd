@@ -119,12 +119,14 @@ func test_end_heist_result_shape() -> void:
 	var got: Array[Dictionary] = []
 	var cb: Callable = func(r: Dictionary) -> void: got.append(r)
 	EventBus.heist_ended.connect(cb)
+	rt.heist_time_s = 519.0  # LEAD (GN win frames): payday showed 30:49 wall time for an 8:39 heist
 	rt.end_heist(true)
 	EventBus.heist_ended.disconnect(cb)
 	assert_eq(got.size(), 1)
 	for k: String in ["heist_id", "success", "stealth", "time_s", "difficulty", "contract_pay", "loot",
 			"small_loot", "crew", "pagers_answered", "seed", "variants"]:
 		assert_has(got[0], k)
+	assert_near(float(got[0]["time_s"]), 519.0, 0.5, "time_s is the heist clock, not wall time")
 	assert_eq(rt.phase, Enums.HeistPhase.ENDED)
 	rt.teardown()
 

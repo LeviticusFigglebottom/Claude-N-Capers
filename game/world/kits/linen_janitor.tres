@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"linen_janitor"
+purpose = &"storage"
+required_items = Array[StringName]([&"shelving", &"cleaning_cart", &"light_fixture"])
+optional_items = {
+&"mop_bucket": 1
+}
+clutter_groups = {}
+min_density = 0.5
+max_density = 4
+min_props = 3
+lone_ok_kinds = Array[StringName]([])
+seed_salt = 318
+counts = {}
+assets = {
+&"light_fixture": PackedStringArray("prop_fluorescent")
+}
+ceiling = {"prop_fluorescent": 2}
+notes = "J (L42) linen: the linen shelving and the cleaner's cart (kc_cleaner) are map-built."

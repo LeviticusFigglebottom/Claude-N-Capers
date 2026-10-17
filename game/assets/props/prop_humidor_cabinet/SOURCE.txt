@@ -1,0 +1,8 @@
+asset: prop_humidor_cabinet
+script: tools/blender/props/calder.py
+params: {"cat": {"group": "calder", "kind": "cabinet", "pin_only": true, "place": "wall", "support": true}, "d": 0.5, "fn": "cabinet", "h": 1.0, "style": "humidor", "w": 0.6}
+seed: 2746398754  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_humidor_cabinet
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 16000

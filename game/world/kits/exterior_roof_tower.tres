@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"exterior_roof_tower"
+purpose = &"exterior"
+required_items = Array[StringName]([&"ahu", &"hvac", &"bmu", &"anchor_frame"])
+optional_items = {}
+clutter_groups = {}
+min_density = 0.008
+max_density = 0.3
+min_props = 6
+lone_ok_kinds = Array[StringName]([&"ahu", &"hvac", &"bmu", &"garage", &"anchor_frame", &"wall_lamp"])
+seed_salt = 334
+counts = {}
+assets = {}
+ceiling = {}
+notes = "X2 roof: the BMU and its cradle garage, the two line anchors and the roof plant (condensers, a packaged AHU) are placed by the map (no kit pass); the helipad, the parapets and the BMU rail stay clear."

@@ -1,0 +1,36 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"break_room_office"
+purpose = &"break_room"
+required_items = Array[StringName]([&"fridge", &"kitchen_counter", &"microwave", &"coffee_machine", &"table", &"chair", &"bulletin_board", &"light_fixture"])
+optional_items = {
+&"bin": 1,
+&"plant": 0.5,
+&"wall_cabinet": 1.5,
+&"water_cooler": 1
+}
+clutter_groups = {
+&"counter": {
+"anchors": Array[StringName]([&"kitchen_counter"]),
+"count": Vector2i(1, 3),
+"items": {&"bottles": 1.5, &"glassware": 1, &"kettle": 0.8, &"mug": 3},
+"radius": 0.5
+}
+}
+min_density = 0.3
+max_density = 1.8
+min_props = 12
+lone_ok_kinds = Array[StringName]([&"plant", &"water_cooler"])
+seed_salt = 313
+counts = {}
+assets = {
+&"bin": PackedStringArray("prop_bin_kitchen"),
+&"light_fixture": PackedStringArray("prop_ceiling_panel_neutral"),
+&"plant": PackedStringArray("prop_plant_tall")
+}
+ceiling = {"prop_ceiling_panel_neutral": 2.3}
+notes = "K18 break room / M11 pantry: counter with sink, fridge, table and chairs are map-built; microwave, coffee, kettle on the counter, wall cabinets, the bulletin board. 3500 K."

@@ -1,0 +1,8 @@
+asset: prop_bmu_machine
+script: tools/blender/props/calder.py
+params: {"cat": {"group": "calder", "kind": "bmu", "pin_only": true, "place": "none"}, "fn": "bmu"}
+seed: 565171812  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_bmu_machine
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 16000

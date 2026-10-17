@@ -1,0 +1,8 @@
+asset: prop_credenza_w200_d40
+script: tools/blender/props/calder.py
+params: {"cat": {"group": "calder", "kind": "credenza", "pin_only": true, "place": "wall", "support": true}, "d": 0.4, "fn": "cabinet", "h": 0.8, "style": "walnut", "w": 2.0}
+seed: 2063526114  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_credenza_w200_d40
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 16000

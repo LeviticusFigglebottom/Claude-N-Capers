@@ -1,0 +1,8 @@
+asset: prop_sofa_w220
+script: tools/blender/props/calder.py
+params: {"cat": {"group": "calder", "kind": "sofa", "pin_only": true, "place": "wall"}, "d": 0.9, "fn": "sofa", "w": 2.2}
+seed: 1178665529  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_sofa_w220
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 16000

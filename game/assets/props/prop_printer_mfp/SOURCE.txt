@@ -1,0 +1,8 @@
+asset: prop_printer_mfp
+script: tools/blender/props/calder.py
+params: {"cat": {"group": "calder", "kind": "printer", "pin_only": true, "place": "wall"}, "d": 0.5, "fn": "printer", "h": 1.0, "w": 0.6}
+seed: 4188385427  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_printer_mfp
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 16000

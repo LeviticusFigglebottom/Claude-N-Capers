@@ -1,0 +1,26 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/props/prop_bollard_led/prop_bollard_led.glb" id="1_model"]
+
+[node name="PropBollardLed" type="Node3D" groups=["fixture"]]
+metadata/kind = &"bollard_light"
+metadata/fixture = true
+
+[node name="Model" parent="." instance=ExtResource("1_model")]
+
+[node name="Bollard" parent="Model"]
+visibility_range_end = 60
+visibility_range_end_margin = 6
+visibility_range_fade_mode = 1
+
+[node name="Light" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, 0)
+omni_range = 3.5
+omni_attenuation = 1.2
+layers = 1048577
+light_color = Color(0.902, 0.9333, 1, 1)
+light_energy = 0.6
+light_size = 0.05
+shadow_enabled = false
+
+[editable path="Model"]

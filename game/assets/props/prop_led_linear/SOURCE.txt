@@ -1,0 +1,8 @@
+asset: prop_led_linear
+script: tools/blender/props/calder.py
+params: {"cat": {"fixture": true, "group": "calder", "kind": "light_fixture", "light": {"angle": 80, "color": "#E6EEFF", "energy": 1.1, "pos": [0.0, -0.05, 0.0], "range": 4.5, "type": "spot"}, "pin_only": true, "place": "ceiling"}, "fn": "led_linear"}
+seed: 3691907012  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_led_linear
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 16000

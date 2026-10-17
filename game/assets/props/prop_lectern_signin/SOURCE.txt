@@ -1,0 +1,8 @@
+asset: prop_lectern_signin
+script: tools/blender/props/calder.py
+params: {"cat": {"group": "calder", "kind": "lectern", "pin_only": true, "place": "wall", "support": true}, "d": 0.4, "fn": "lectern", "h": 1.1, "w": 0.5}
+seed: 1624727549  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_lectern_signin
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 16000

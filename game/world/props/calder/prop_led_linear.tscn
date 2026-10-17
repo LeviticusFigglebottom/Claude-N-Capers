@@ -1,0 +1,28 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/props/prop_led_linear/prop_led_linear.glb" id="1_model"]
+
+[node name="PropLedLinear" type="Node3D" groups=["fixture"]]
+metadata/kind = &"light_fixture"
+metadata/mount = &"ceiling"
+metadata/fixture = true
+
+[node name="Model" parent="." instance=ExtResource("1_model")]
+
+[node name="Linear" parent="Model"]
+visibility_range_end = 60
+visibility_range_end_margin = 6
+visibility_range_fade_mode = 1
+
+[node name="Light" type="SpotLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, -0.05, 0)
+spot_range = 4.5
+spot_angle = 80
+spot_angle_attenuation = 0.6
+layers = 1048577
+light_color = Color(0.902, 0.9333, 1, 1)
+light_energy = 1.1
+light_size = 0.05
+shadow_enabled = false
+
+[editable path="Model"]

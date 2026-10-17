@@ -25,6 +25,11 @@ const PREFAB_CLASSES: Dictionary = {
 }
 ## PO-13 surface pass: greybox class / room purpose -> library finish (sl_finishes.gd).
 const F: GDScript = preload("res://world/heists/shadow_ledger/greybox/sl_finishes.gd")
+## G2 dressing / art data (SL-1): catalog visuals of the map-built props and chairs.
+const DD: GDScript = preload("res://world/heists/shadow_ledger/greybox/shadow_ledger_dressing.gd")
+## Near-range (30 m) wrappers for the interior visuals (sl_dress.near_scene_path: the draw-call budget of the exterior
+## views, as the kit props).
+const DRS: GDScript = preload("res://world/heists/shadow_ledger/greybox/sl_dress.gd")
 ## Visual tile edge (m) for the big horizontal boxes (slabs, roofs, ceilings, grade): the Compatibility renderer
 ## lights a mesh instance with at most 8 omni / spot lights (rendering/limits/opengl/max_lights_per_object), so one
 ## floor-wide box overlapped by every room light keeps 8 arbitrary ones and whole rooms render black (Gallery Night
@@ -171,19 +176,21 @@ func box_shape(size: Vector3) -> BoxShape3D:
 	return _box_shape_cache[key]
 
 
-## Box mesh of `size` without the faces flagged open: [-x, +x, -z, +z] (seamless wall tiles). An open side
-## reaches 1 mm into its neighbour tile (same material: coplanar overlap is not a zfight) so no ray slips
-## through the seam. Cached.
+## Box mesh of `size` without the faces flagged open: [-x, +x, -z, +z(, -y, +y)] (seamless wall tiles; G2: capless
+## wall pieces). An open side reaches 1 mm into its neighbour tile (same material: coplanar overlap is not a zfight)
+## so no ray slips through the seam; an open cap simply has no face (it stands on / under a slab). Cached.
 func _tile_mesh(size: Vector3, mat_id: String, open: Array) -> Mesh:
 	var key: String = "tile|%s|%.3f|%.3f|%.3f|%s" % [mat_id, size.x, size.y, size.z, str(open)]
 	if _box_mesh_cache.has(key):
 		return _box_mesh_cache[key]
 	var lo: Vector3 = -size * 0.5
 	var hi: Vector3 = size * 0.5
-	lo.x -= 0.001 if bool(open[0]) else 0.0
-	hi.x += 0.001 if bool(open[1]) else 0.0
-	lo.z -= 0.001 if bool(open[2]) else 0.0
-	hi.z += 0.001 if bool(open[3]) else 0.0
+	# a seam side (true / 1) reaches 1 mm into its neighbour tile; a hidden side (2, G2 caps) does not (its top face
+	# would overlap the next box's, which may carry another finish: zfight)
+	lo.x -= 0.001 if int(open[0]) == 1 else 0.0
+	hi.x += 0.001 if int(open[1]) == 1 else 0.0
+	lo.z -= 0.001 if int(open[2]) == 1 else 0.0
+	hi.z += 0.001 if int(open[3]) == 1 else 0.0
 	var mid: Vector3 = (lo + hi) * 0.5
 	var h: Vector3 = (hi - lo) * 0.5
 	# [normal, u, v] with u x v = -normal (Godot front faces wind clockwise).
@@ -193,7 +200,7 @@ func _tile_mesh(size: Vector3, mat_id: String, open: Array) -> Mesh:
 	var st: SurfaceTool = SurfaceTool.new()
 	st.begin(Mesh.PRIMITIVE_TRIANGLES)
 	for fi: int in range(faces.size()):
-		if fi < 4 and bool(open[fi]):
+		if fi < open.size() and bool(open[fi]):
 			continue
 		var n: Vector3 = faces[fi][0]
 		var u: Vector3 = faces[fi][1]
@@ -221,7 +228,7 @@ func _tile_mesh(size: Vector3, mat_id: String, open: Array) -> Mesh:
 ## seamless: the tiles leave out their faces on the internal seams (walls: a seam face on a crossing wall's face
 ## line would be a coplanar pair).
 func box(parent: Node3D, nm: String, mn: Vector3, mx: Vector3, mat_id: String, collide: bool = true,
-		tile: float = 0.0, seamless: bool = false) -> Node3D:
+		tile: float = 0.0, seamless: bool = false, caps: int = 0) -> Node3D:
 	var size: Vector3 = mx - mn
 	if size.x <= 0.001 or size.y <= 0.001 or size.z <= 0.001:
 		return null
@@ -251,7 +258,14 @@ func box(parent: Node3D, nm: String, mn: Vector3, mx: Vector3, mat_id: String, c
 		for iz: int in range(nz):
 			var mi: MeshInstance3D = MeshInstance3D.new()
 			mi.name = "Mesh" if nx * nz == 1 else "Mesh%02d_%02d" % [ix, iz]
-			if seamless and nx * nz > 1:
+			if caps != 0:  # G2: hidden faces left out (zfight): bottom 1, top 2, -x 4, +x 8, -z 16, +z 32 (+ 64)
+				var sm: bool = seamless and nx * nz > 1
+				var sv: int = 2 if caps & 64 != 0 else 1  # 64: seams without the 1 mm reach (slabs: tiles cover the collider)
+				mi.mesh = _tile_mesh(ts, key, [sv if sm and ix > 0 else (2 if ix == 0 and caps & 4 != 0 else 0),
+					sv if sm and ix < nx - 1 else (2 if ix == nx - 1 and caps & 8 != 0 else 0),
+					sv if sm and iz > 0 else (2 if iz == 0 and caps & 16 != 0 else 0),
+					sv if sm and iz < nz - 1 else (2 if iz == nz - 1 and caps & 32 != 0 else 0), caps & 1 != 0, caps & 2 != 0])
+			elif seamless and nx * nz > 1:
 				mi.mesh = _tile_mesh(ts, key, [ix > 0, ix < nx - 1, iz > 0, iz < nz - 1])
 			else:
 				mi.mesh = box_mesh(ts, key)
@@ -297,7 +311,7 @@ func slab_skins(parent: Node3D, sources: Array, rooms: Array, prefix: String) ->
 			if cs == null or not (cs.shape is BoxShape3D) or meshes.is_empty() or not xf.basis.is_equal_approx(Basis.IDENTITY):
 				continue
 			var sz: Vector3 = (cs.shape as BoxShape3D).size
-			var mat: Material = ((meshes[0] as MeshInstance3D).mesh as BoxMesh).material
+			var mat: Material = (meshes[0] as MeshInstance3D).mesh.surface_get_material(0)  # box or flat (ceilings) mesh
 			boxes.append([xf * AABB(cs.position - sz * 0.5, sz), String(mat.resource_name).trim_prefix(prefix)])
 	var per_room: Dictionary = {}  # room id -> {finish key -> [[x0, z0, x1, z1, y, up], ...]} (insertion order)
 	for r: Array in rooms:
@@ -408,8 +422,21 @@ func wall(parent: Node3D, nm: String, axis: String, fixed: float, a0: float, a1:
 			else:
 				mn = Vector3(fixed - thick * 0.5, s.x, p)
 				mx = Vector3(fixed + thick * 0.5, s.y, q)
-			box(parent, "%s_%02d" % [nm, part], mn, mx, mat_id, true, wall_tile, true)
+			# G2: a piece's bottom / top on a storey line (the wall base, its top, a floor level) stands on / under a slab
+			# and draws no cap there (its caps were coplanar with the slab's and the crossing walls' faces: zfight)
+			var caps: int = (1 if _on_level(s.x, yr) else 0) | (2 if _on_level(s.y, yr) else 0)
+			box(parent, "%s_%02d" % [nm, part], mn, mx, mat_id, true, wall_tile, true, caps)
 			part += 1
+
+
+## True when height `y` is a wall run's base / top or a floor level (a slab face, not an opening's sill or head).
+static func _on_level(y: float, yr: Vector2) -> bool:
+	if absf(y - yr.x) < 0.0005 or absf(y - yr.y) < 0.0005:
+		return true
+	for fh: float in L.FLOOR_HEIGHTS:
+		if absf(y - fh) < 0.0005:
+			return true
+	return false
 
 
 func kit_scene(piece: String) -> PackedScene:
@@ -483,14 +510,46 @@ func prop_box(parent: Node3D, nm: String, base: Vector3, size: Vector3, yaw: flo
 	col.shape = box_shape(size)
 	col.position = Vector3(0.0, size.y * 0.5, 0.0)
 	add(body, col)
+	obstruct(body.transform, AABB(Vector3(-size.x * 0.5, 0.0, -size.z * 0.5), size))
+	var art: Array = DD.PROP_ART.get(nm, [])
+	if not art.is_empty():  # G2 (SL-1): the catalog visual over the unchanged collider
+		body.set_meta(&"art_asset", String(art[0]))
+		if String(art[2]) != "":
+			body.set_meta(&"kind", String(art[2]))
+		_art_visual(body, "Visual", String(art[0]), float(art[1]), Vector3.ZERO, not (String(parent.name) in ["Terrace", "Roof"]))
+		return body
 	var mi: MeshInstance3D = MeshInstance3D.new()
 	mi.name = "Mesh"
 	mi.mesh = box_mesh(size, finish(parent, mat_id, nm, base - Vector3(size.x, 0.0, size.z) * 0.5,
 		base + Vector3(size.x, size.y * 2.0, size.z) * 0.5, kind))
 	mi.position = col.position
 	add(body, mi)
-	obstruct(body.transform, AABB(Vector3(-size.x * 0.5, 0.0, -size.z * 0.5), size))
 	return body
+
+
+## G2 (SL-1): a catalog prop's wrapper scene as the visual child `nm` of a map-built body (yaw / offset in the body's
+## frame). Any collision the model ships with is switched off: the body's layout collider stays the gameplay shape.
+func _art_visual(body: Node3D, nm: String, asset: String, yaw: float, offset: Vector3, near: bool = false) -> Node3D:
+	var ps: PackedScene = _catalog_scene(asset)
+	if ps == null:
+		return null
+	if near:
+		ps = load(DRS.near_scene_path(asset, ps.resource_path)) as PackedScene
+	var vis: Node3D = ps.instantiate() as Node3D
+	vis.name = nm
+	vis.transform = Transform3D(yaw_basis(yaw), offset)
+	add(body, vis)  # inside the body's prop (levelcheck: the body is the prop root and carries the metas)
+	var shapes: Array[Node] = vis.find_children("*", "CollisionShape3D", true, false)
+	if not shapes.is_empty():
+		map_root.set_editable_instance(vis, true)
+		for m: Node in vis.find_children("*", "", true, false):
+			if m.scene_file_path != "":
+				map_root.set_editable_instance(m, true)
+		for c: Node in vis.find_children("*", "CollisionObject3D", true, false):
+			(c as CollisionObject3D).collision_layer = 0
+		for s: Node in shapes:
+			(s as CollisionShape3D).disabled = true
+	return vis
 
 
 func chair(parent: Node3D, nm: String, base: Vector3, yaw: float) -> void:
@@ -508,12 +567,16 @@ func chair(parent: Node3D, nm: String, base: Vector3, yaw: float) -> void:
 	col.shape = box_shape(size)
 	col.position = Vector3(0.0, size.y * 0.5, 0.0)
 	add(body, col)
-	mesh_box(body, "SeatMesh", Vector3(-0.225, 0.0, -0.225), Vector3(0.225, 0.45, 0.225), "chair")
-	mesh_box(body, "BackMesh", Vector3(-0.225, 0.45, 0.165), Vector3(0.225, 0.85, 0.225), "chair")
 	var m: Marker3D = Marker3D.new()
 	m.name = "Seat"
 	m.position = Vector3(0.0, 0.45, 0.0)
 	add(body, m)
+	if DD.CHAIR_ART.has(nm):  # G2 (SL-1): the catalog chair over the unchanged 0.45 m collider / seat
+		body.set_meta(&"art_asset", String(DD.CHAIR_ART[nm]))
+		_art_visual(body, "Visual", String(DD.CHAIR_ART[nm]), 0.0, Vector3.ZERO, true)
+	else:
+		mesh_box(body, "SeatMesh", Vector3(-0.225, 0.0, -0.225), Vector3(0.225, 0.45, 0.225), "chair")
+		mesh_box(body, "BackMesh", Vector3(-0.225, 0.45, 0.165), Vector3(0.225, 0.85, 0.225), "chair")
 	obstruct(body.transform, AABB(Vector3(-0.225, 0.0, -0.225), size))
 
 

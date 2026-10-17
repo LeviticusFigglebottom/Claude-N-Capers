@@ -1,0 +1,43 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"library_law"
+purpose = &"office"
+required_items = Array[StringName]([&"bookshelf", &"picture", &"light_fixture"])
+optional_items = {
+&"chair": 2,
+&"picture": 0.5,
+&"plant": 1,
+&"table": 3
+}
+clutter_groups = {
+&"table": {
+"anchors": Array[StringName]([&"table"]),
+"count": Vector2i(1, 3),
+"items": {&"glassware": 1, &"mug": 1, &"notebook": 1.5, &"papers": 2},
+"radius": 0.5
+}
+}
+min_density = 0.2
+max_density = 1.2
+min_props = 6
+lone_ok_kinds = Array[StringName]([&"bookshelf", &"plant", &"table"])
+seed_salt = 314
+counts = {
+&"chair": Vector2i(2, 2)
+}
+assets = {
+&"bin": PackedStringArray("prop_bin_office"),
+&"chair": PackedStringArray("prop_chair_consult"),
+&"fire_extinguisher": PackedStringArray("prop_fire_extinguisher"),
+&"light_fixture": PackedStringArray("prop_downlight"),
+&"picture": PackedStringArray("prop_wall_art_a", "prop_wall_art_c", "prop_wall_art_b"),
+&"plant": PackedStringArray("prop_plant_tall"),
+&"rug": PackedStringArray("prop_rug_rect"),
+&"table": PackedStringArray("prop_consult_table")
+}
+ceiling = {"prop_downlight": 2.2}
+notes = "K19 law library: two map-built double-sided stacks; a reading table with chairs north of them."

@@ -229,6 +229,18 @@ PRESET = {
             "pivot": 0.42,
             "saturation": 0.95,
         },
+        # Shadow Ledger (shadow_ledger.md §Audio/lighting): cool, desaturated, teal mids, neutral whites (the
+        # highlights pulled back to neutral so the 6500 K coves and the crown fins stay white).
+        "shadow_ledger": {
+            "slope": (0.985, 1.0, 1.015),
+            "offset": (-0.004, 0.0, 0.002),
+            "power": (1.02, 1.0, 1.0),
+            "shadow_tint": (-0.016, 0.006, 0.012),
+            "highlight_tint": (0.004, 0.0, -0.004),
+            "contrast": 1.06,
+            "pivot": 0.44,
+            "saturation": 0.88,
+        },
     },
     # Godot Environment resources (godot.py).
     "environments": {

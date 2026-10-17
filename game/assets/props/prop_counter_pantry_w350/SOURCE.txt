@@ -1,0 +1,8 @@
+asset: prop_counter_pantry_w350
+script: tools/blender/props/calder.py
+params: {"cat": {"group": "calder", "keepout": [[-1.27, -0.2, -0.72, 0.28], [0.72, -0.25, 1.37, 0.25]], "kind": "kitchen_counter", "pin_only": true, "place": "wall", "support": true, "top": 0.9}, "d": 0.55, "fn": "counter", "h": 0.9, "style": "pantry", "w": 3.5}
+seed: 1978281485  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_counter_pantry_w350
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 16000
