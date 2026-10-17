@@ -73,7 +73,9 @@ DOUBLE_SIDED = {"char_silk_ice", "char_coat_ice", "char_crew_rook_coat", "char_c
                 "char_dress_black", "char_satin_wine", "char_satin_sapphire", "char_satin_amethyst", "char_satin_gold",
                 "char_satin_teal", "char_silk_graphite", "char_bank_slate_dark", "char_suit_grey",
                 # OF-D1: the navy pencil skirt; the long wool coats (below the knee)
-                "char_skirt_navy", "char_coat_heather", "char_coat_stone"}
+                "char_skirt_navy", "char_coat_heather", "char_coat_stone",
+                # RT-D1: the waitress's dress; the commuter's long mac
+                "char_diner_rose", "char_mac_cherry"}
 
 
 def srgb_bytes(h: str) -> tuple[int, int, int]:
