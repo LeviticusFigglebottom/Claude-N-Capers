@@ -603,6 +603,13 @@ func relay_explosion_fx(pos: Vector3, radius: float, kind: StringName) -> void:
 		_send(&"_rpc_explosion_fx", [pos, radius, kind])
 
 
+## Server (D-116, net.md npc_oneshot): NPC `net_id` started presentation one-shot `clip` at clip time `start_s` (s)
+## with speed_scale `speed` (NetOneshot: door breach door_kick_<fam> / shield_bang, civilian panic_start).
+func relay_npc_oneshot(net_id: int, clip: StringName, start_s: float, speed: float) -> void:
+	if _can_relay_fx():
+		_send(&"_rpc_npc_oneshot", [net_id, clip, start_s, speed])
+
+
 @rpc("authority", "call_remote", "reliable")
 func _rpc_crew_shot(crew_net_id: int, origin: Vector3, dir: Vector3, spread_deg: float, pellet_seed: int,
 		weapon_slot: int) -> void:
@@ -625,3 +632,12 @@ func _rpc_explosion_fx(pos: Vector3, radius: float, kind: StringName) -> void:
 	if Net.is_authority():
 		return
 	EventBus.explosion_fx.emit(pos, radius, kind)
+
+
+@rpc("authority", "call_remote", "reliable")
+func _rpc_npc_oneshot(net_id: int, clip: StringName, start_s: float, speed: float) -> void:
+	if Net.is_authority():
+		return
+	var d: AnimDriver = AnimDriver.of(Ids.lookup(net_id))
+	if d != null:
+		NetOneshot.apply(d, clip, start_s, speed)

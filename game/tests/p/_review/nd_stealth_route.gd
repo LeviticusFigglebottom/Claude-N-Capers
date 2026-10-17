@@ -197,6 +197,10 @@ func _run() -> void:
 	pilot = Po5Pilot.new(self, c)
 	pilot.quiet = true
 	pilot.shout_blockers = false
+	# Civilians (the L-ground cleaner comes down B5 around t 505 and saw the bag carry at 5 m, ND runs 2026-10-17):
+	# the moment one starts noticing the pilot, drop what is carried, shout her down and cable-tie her (PD2).
+	pilot.hook_need = _civ_threat
+	pilot.hook = _subdue_threat
 	await pilot.calibrate()
 	note("spawn %s" % Po5Pilot._v(c.global_position))
 	_watch_detection.call_deferred()
@@ -247,6 +251,70 @@ func _observer_name(net_id: int) -> String:
 		if (n is NpcBase or n.has_method(&"take_hit")) and NetIds.of(n) == net_id:
 			return String(n.name)
 	return str(net_id)
+
+
+## A civilian within 15 m who has started noticing the pilot (meter > 0.02, or no longer calm) and is not down /
+## tied / dead / leaving.
+func _civ_threat() -> bool:
+	return pilot.crew.masked and _alarm == &"" and _threat_civ() != null
+
+
+func _threat_civ() -> NpcBase:
+	for n: Node in rt.npcs(&"civilian"):
+		var civ: NpcBase = n as NpcBase
+		var b: CivilianBrain = civ.get_node_or_null(^"Brain") as CivilianBrain if civ != null else null
+		if b == null or not civ.is_alive() or b.mode in [CivilianBrain.Mode.DOWN, CivilianBrain.Mode.TIED,
+				CivilianBrain.Mode.DEAD, CivilianBrain.Mode.LEAVE]:
+			continue
+		if civ.global_position.distance_to(pilot.crew.global_position) > 15.0:
+			continue
+		if rt.detection_value(civ, pilot.crew.slot) > 0.02 or civ.alert_state != Enums.AlertState.CALM:
+			return civ
+	return null
+
+
+## The hook: put down any carried bag, shout the civilian down, cable-tie her, pick the bag back up.
+func _subdue_threat() -> bool:
+	var civ: NpcBase = _threat_civ()
+	if civ == null:
+		return false
+	var b: CivilianBrain = civ.get_node_or_null(^"Brain") as CivilianBrain
+	pilot.inp.release(&"move_forward")
+	pilot.inp.release(&"sprint")
+	var bag_at: Vector3 = Vector3.INF
+	if pilot.crew.is_carrying_bag():
+		bag_at = pilot.crew.global_position
+		await pilot.face(pilot.crew.global_position - pilot.crew.global_basis.z + Vector3(0, -1.0, 0), 0.05, 0.5)
+		await pilot.inp.tap(&"drop_bag")
+	for k: int in 5:
+		if b.mode == CivilianBrain.Mode.DOWN or b.mode == CivilianBrain.Mode.TIED:
+			break
+		note("subdue: shouting %s (mode %d, %.1f m, meter %.2f, alert %d)" % [civ.name, b.mode,
+			civ.global_position.distance_to(pilot.crew.global_position), rt.detection_value(civ, pilot.crew.slot),
+			civ.alert_state])
+		await pilot.face(civ.global_position + Vector3(0, 1.3, 0), 0.05, 0.6)
+		await pilot.inp.tap(&"shout")
+		await wait_s(0.8)
+		if b.mode != CivilianBrain.Mode.DOWN and k >= 1:
+			await pilot.goto(civ.global_position, 3.0, 3.0, false, false)
+	if b.mode == CivilianBrain.Mode.DOWN:
+		for comp: Node in civ.find_children("*", "InteractableComponent", true, false):
+			var ic: InteractableComponent = comp as InteractableComponent
+			if ic.kind == &"cable_tie" and ic.enabled:
+				await pilot.use(ic, 20.0, func() -> bool: return b.mode == CivilianBrain.Mode.TIED)
+				break
+	note("subdue: %s mode %d (alarm %s)" % [civ.name, b.mode, _alarm])
+	await shot("subdued_%s" % civ.name)
+	if bag_at != Vector3.INF:
+		var bag: LootBag = null
+		for n: Node in get_tree().get_nodes_in_group(G.LOOT_BAG):
+			var lb: LootBag = n as LootBag
+			if lb != null and not lb.is_body_bag() and (bag == null or lb.global_position.distance_to(bag_at)
+					< bag.global_position.distance_to(bag_at)):
+				bag = lb
+		if bag != null:
+			await pilot.use(_comp(bag), 20.0, func() -> bool: return pilot.crew.is_carrying_bag())
+	return true
 
 
 ## Lot -> AreawayGrate (vent_open: casing-allowed) -> ladder -> AreawayDoor -> B3, mask.
@@ -649,6 +717,15 @@ func _loot() -> bool:
 	return true
 
 
+## B5 -> XferDoor (3.5, -4, 6.0) -> B1, the direct way: the navmesh route went through LockerRoomDoor (12, -4, 6.0)
+## into B2 and the pilot pinned just inside it at (12.0, -4, 5.1) for 90 s (ND runs 2026-10-17 t=90 / t=234).
+func _to_b1() -> void:
+	if pilot.crew.global_position.x < 5.5 and pilot.crew.global_position.z < 6.0:
+		return  # already in B1
+	await pilot.goto(Vector3(4.2, GATE_AT.y, B5_MID_Z), 0.4, 60.0, false, false)
+	await pilot.goto(Vector3(3.5, GATE_AT.y, 5.2), 0.4, 20.0)
+
+
 func _gap_out() -> bool:
 	for wp: Vector3 in [Vector3(LASER_GAP_X, GATE_AT.y, 9.15), Vector3(LASER_GAP_X, GATE_AT.y, 7.9)]:
 		if not await pilot.goto(wp, 0.12, 60.0):
@@ -714,6 +791,8 @@ func _lift_to(lift: BagLift, to: int) -> bool:
 	# Walk to the panel's floor ourselves: Po5Pilot's _use_stand put B1's panel stand on G1 above it (the walk went up
 	# the stair through the ground floor into an alarm button, ND run 2026-10-17 t=224).
 	var stand: Vector3 = B1_HATCH_STAND if here == 1 else SALLY_IN
+	if here == 1:
+		await _to_b1()
 	await pilot.goto(stand, 0.3, 60.0)
 	if not await pilot.use(panel, 30.0, func() -> bool: return lift.is_moving(), false):
 		note("lift panel %d not used (at %s)" % [here, Po5Pilot._v(pilot.crew.global_position)])
@@ -744,6 +823,7 @@ func _vault_bag_into_lift(lift: BagLift, i: int) -> bool:
 		await pilot.goto(wp, 0.12, 20.0)
 	var before: int = lift.bags_in_car().size()
 	for attempt: int in 2:
+		await _to_b1()
 		if not await pilot.goto(B1_HATCH_STAND, 0.2, 60.0):
 			note("B1 hatch stand not reached (at %s)" % Po5Pilot._v(pilot.crew.global_position))
 			break

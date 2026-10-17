@@ -23,6 +23,9 @@ var _log: PackedStringArray = PackedStringArray()
 var _worst_frame_ms: float = 0.0
 var _last_frame_us: int = 0
 var _was_rendering: bool = true
+## Engine.get_frames_drawn() at the last _process: a HITCH line says how many frames were drawn in it (fast mode
+## should draw none; a drawn frame means the stall is llvmpipe rendering, not game code).
+var _last_drawn: int = 0
 var _budget_s: float = 0.0
 
 
@@ -131,16 +134,19 @@ func enter_heist() -> bool:
 func _process(_delta: float) -> void:
 	var now: int = Time.get_ticks_usec()
 	var rendering: bool = RenderingServer.render_loop_enabled
+	var drawn: int = Engine.get_frames_drawn()
 	if _last_frame_us != 0:
 		var frame_ms: float = (now - _last_frame_us) / 1000.0
 		_worst_frame_ms = maxf(_worst_frame_ms, frame_ms)
 		# Rendered frames (llvmpipe screenshots, menus) are slow by design: only fast-mode frames count.
 		if frame_ms > HITCH_MS and not rendering and not _was_rendering and rt != null and is_instance_valid(rt):
-			note("HITCH frame=%.0fms t=%.1f nodes=%d enemies=%d top: %s" % [frame_ms, rt.heist_time_s,
-				Performance.get_monitor(Performance.OBJECT_NODE_COUNT), _alive_in(G.ENEMY), FrameProf.top(10)])
+			note("HITCH frame=%.0fms t=%.1f drawn=%d nodes=%d enemies=%d top: %s" % [frame_ms, rt.heist_time_s,
+				drawn - _last_drawn, Performance.get_monitor(Performance.OBJECT_NODE_COUNT), _alive_in(G.ENEMY),
+				FrameProf.top(10)])
 	FrameProf.reset_frame()
 	_was_rendering = rendering
 	_last_frame_us = now
+	_last_drawn = drawn
 
 
 ## Every 10 s of game time: frame cost, crew states/positions, enemy count.

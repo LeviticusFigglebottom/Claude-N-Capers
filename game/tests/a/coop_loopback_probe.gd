@@ -126,8 +126,15 @@ func snapshot(args: Dictionary = {}) -> Dictionary:
 	var present: Dictionary = {}
 	for id: Variant in args.get("probe_ids", []):
 		present[int(id)] = Ids.lookup(int(id)) != null
+	var anim: Dictionary = {}
+	for id: Variant in args.get("anim_ids", []):  # D-116 npc_oneshot: what this peer's AnimDriver got / shows
+		var d: AnimDriver = AnimDriver.of(Ids.lookup(int(id)))
+		if d != null:
+			anim[int(id)] = {"net": d.last_net_oneshot.duplicate(), "clip": d.clip, "oneshot": d._oneshot,
+				"hint": d._hint(), "panic_left": d.civ_panic.left if d.civ_panic != null else 0.0}
 	var codes: CodeRegistry = rt.service(CodeRegistry.SERVICE) as CodeRegistry
 	return {
+		"anim": anim,
 		"has_rt": true, "replica": rt.is_replica, "seed": rt.run_seed, "variants": rt.variants,
 		"music_track": StringName(rt.launch_options.get("music_track", &"")),
 		"phase": int(rt.phase), "went_loud": rt.went_loud, "local_slot": Net.local_slot(),

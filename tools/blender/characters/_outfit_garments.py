@@ -611,6 +611,51 @@ SEATED_SHIN = 0.8
 #: on its own leg seated; a wider band left both edges half on each thigh, a strip from the waist to between the knees
 SEATED_CENTRE = 0.008
 
+#: D-116 stride drape (dresses and skirts to the knee or longer): ``skirt_weights`` arguments. Each side of the skirt
+#: lies on its own thigh from just below the crease (short ramps, near-full thigh share), so a striding or squatting
+#: thigh carries the cloth over it instead of piercing a panel that lags on the hips; past the knee the cloth moves to
+#: the shin (a bent knee leaves the calf inside, and a squat's shins keep a hem that falls instead of a disc level with
+#: the thighs); the centre band mixing both legs is narrow (each leg's panel splits at its own inner edge and the
+#: cloth between the legs stretches); the back keeps a little hips weight (seated, the back panel stays under the seat).
+STRIDE_DRAPE = {"thigh_max": 0.98, "centre_w": 0.008, "ramp": 0.45, "front_ramp": 0.3, "back_relax": 0.0,
+                "shin_max": 0.9, "knee_band": 0.07}
+#: the stride drape's knee slack (m, scaled by fit.k): the cloth over the front and sides of each knee (and on down to
+#: the hem) stands this much further out, so the knee cap, which the cloth's thigh-to-shin blend pulls in at deep
+#: bends, stays under it
+KNEE_SLACK = 0.018
+
+
+def stride_drape(fit: Fit, z_top: float, hem_z: float) -> Callable[[Vector, float], dict]:
+    """``skirt_weights`` for a dress or skirt down to ``hem_z`` (D-116 stride drape, see ``STRIDE_DRAPE``)."""
+    return o.skirt_weights(fit, z_top, hem_z, **STRIDE_DRAPE)
+
+
+def knee_slack(m: Mesh, rings: list[list[int]], fit: Fit, amount: float = KNEE_SLACK) -> None:
+    """Push the lofted skirt ``rings`` out round each knee and on down to the hem (``amount`` * k over the front and
+    outer side, half behind, easing to nothing 9 cm above the knee), away from that knee's axis, so a bent knee stays
+    under the cloth and the hem keeps its line."""
+    k = fit.k
+    for sx, sfx in ((1.0, "R"), (-1.0, "L")):
+        kn = Vector(fit.J[f"knee.{sfx}"])
+        for ring in rings[1:]:
+            for v in ring:
+                p = m.v[v]
+                if p.x * sx < 0.01 * k:
+                    continue
+                d = Vector((p.x - kn.x, p.y - kn.y, 0.0))
+                if d.length < 1e-6:
+                    continue
+                d.normalize()
+                # full over the front, half behind (the back of a bent knee bulges too); none on the inner side, where
+                # it would cross the cloth between the knees
+                front = (0.5 + 0.5 * smoothstep(-0.5, 0.3, d.y)) * smoothstep(-0.6, 0.0, d.x * sx)
+                # from 9 cm above the knee on down to the hem: a slack band that eased out again below the knee read
+                # as a bubble hem (the skirt widest at the knee, tucked in at the calves)
+                band = smoothstep(kn.z + 0.09 * k, kn.z + 0.01 * k, p.z)
+                s = amount * k * front * band
+                if s > 1e-5:
+                    m.v[v] = p + d * s
+
 
 def jacket(fit: Fit, hull: Hull, mat: str, hem_z: float, button_z: float, neck_w: float = 0.075, base: float = 0.011,
            sleeve: float = 1.95, flare: float = 0.08, open_below: float = 0.03, lapel_w: float = 0.055,
@@ -822,8 +867,11 @@ def dress(fit: Fit, mat: str, hem_z: float, sleeve: float = 0.42, scoop: float =
         if key in loops:
             o.straighten_loop(m, loops[key], iters=3)
     rows = max(3, int((z0 - hem_z) / (0.035 * k)))
-    o.loft_down(m, bottom, lambda th: hem_z, Hull(fit), rows, clearance=0.012 * k, flare=flare, centre=hips,
-                weights=o.skirt_weights(fit, z0, hem_z), keep_shape=0.3)
+    # D-116 stride drape: the skirt rides each thigh, past the knee each shin, with slack over the knees (walk, run,
+    # flee, crouch and cower tore it open on the old hips-to-thigh blend: knees and shins through the cloth)
+    rings = o.loft_down(m, bottom, lambda th: hem_z, Hull(fit), rows, clearance=0.012 * k, flare=flare, centre=hips,
+                        weights=stride_drape(fit, z0, hem_z), keep_shape=0.3)
+    knee_slack(m, rings, fit)
     o.hem_all(m, thick=0.003 * k, depth=0.012 * k)
     return m
 
