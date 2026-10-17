@@ -116,7 +116,10 @@ func _launch() -> bool:
 		await _teardown()
 	_runs += 1
 	_alarm = &""
-	rt = await HeistLauncher.launch(heist, _seed, difficulty as Enums.Difficulty, self, {"crew_ai": false, "ai_teammates": 0})
+	var opts: Dictionary = {"crew_ai": false, "ai_teammates": 0}
+	if heist == &"shadow_ledger":  # sl_pass's dev preplan: start in the PUBLIC L40 service lobby
+		opts["preplanning"] = [&"asset.alternate_entry@pp_spawn_service", &"asset.escape_position@pp_escape_service"]
+	rt = await HeistLauncher.launch(heist, _seed, difficulty as Enums.Difficulty, self, opts)
 	if rt == null:
 		note("FAIL no runtime")
 		return false
@@ -411,6 +414,11 @@ func _sample(smp: Dictionary) -> bool:
 		return false
 	var crouch: bool = smp["crouch"]
 	var p: Dictionary = _pick_point(o, smp["d"], smp["ang"], crouch)
+	for _r: int in 6:  # a panning camera: try again as the cone swings
+		if not p.is_empty():
+			break
+		await wait_s(1.0)
+		p = _pick_point(o, smp["d"], smp["ang"], crouch)
 	if p.is_empty():
 		note("SAMPLE %s: SKIP no reachable point with sight at %.1f m / %.0f deg" % [id, smp["d"], smp["ang"]])
 		_rows.append("%s|%s|%s|SKIP unreachable" % [heist, id, _kind_name(o)])
@@ -614,6 +622,21 @@ func _leg_safe(feet: Vector3) -> String:
 	return ""
 
 
+## Opens (lockpicks, masked) the named Door with real input, like sl_pass.
+func _open_door(door_name: String) -> void:
+	var d: Door = rt.find_child(door_name, true, false) as Door
+	if d == null:
+		note("careful: no door %s" % door_name)
+		return
+	var comp: InteractableComponent = null
+	for n: Node in d.find_children("*", "InteractableComponent", true, false):
+		comp = n as InteractableComponent
+		break
+	if not d.is_open and comp != null:
+		await pilot.use(comp, 30.0, func() -> bool: return d.is_open)
+	note("careful: door %s open %s" % [door_name, d.is_open])
+
+
 ## D-130: shoot `cam` with the secondary (suppressed pistol) from where the crew is, crouched. Titan cameras
 ## (Lethal on Golden Hour) do not break.
 func _shoot_camera(cam: Node3D) -> void:
@@ -659,7 +682,11 @@ func _careful() -> void:
 	if not await _launch():
 		return
 	var pts: Array[Vector3] = []
+	var doors: Dictionary = {}  # index in pts -> door name to open (lockpick) before walking to that point
 	for s: String in route_arg.split(";", false):
+		if s.begins_with("door:"):
+			doors[pts.size()] = s.substr(5)
+			continue
 		var f: PackedStringArray = s.split(",")
 		if f.size() == 3:
 			pts.append(Vector3(f[0].to_float(), f[1].to_float(), f[2].to_float()))
@@ -703,6 +730,8 @@ func _careful() -> void:
 			who = _leg_safe(pts[i])
 		if waited > 0.0:
 			note("careful: waited %.1f s before leg %d (%s)" % [waited, i, who if who != "" else "clear"])
+		if doors.has(i):
+			await _open_door(String(doors[i]))
 		var got: bool = await pilot.goto(pts[i], 0.5, 120.0)
 		var mm: Array = _max_meter()
 		note("careful: leg %d -> %s reached %s, max meter now %.2f (%s) alarm %s" % [i, Po5Pilot._v(pts[i]), got, mm[0],

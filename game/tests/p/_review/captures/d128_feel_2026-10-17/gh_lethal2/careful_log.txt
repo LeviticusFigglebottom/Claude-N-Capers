@@ -1,0 +1,34 @@
+[D128 218.4s t=2.53] pilot: calibrated 0.001600 rad/px yaw, 0.001600 rad/px pitch (settings formula said (0.0016, 0.0016))
+[D128 218.4s t=2.53] run 1: difficulty 4 pagers_max 2
+[D128 218.4s t=2.53] run 1: glasshouse seed 1002 phase 1 crew (3.0, 0.0, 14.4) masked false mode casing DR 4
+[D128 269.1s t=3.07] shot glasshouse_01_hud_pagers_lethal.png
+[D128 523.6s t=8.07] pilot: t=5 at (8.7, 0.0, 13.0) corner (9.4, 0.2, 12.8) yaw_err 0.00 fwd=true path=46 mouse_mode=2 state=0 look=(-1.31,0.00) pin_yaw=-1.31218309126416 bot=false
+[D128 632.4s t=10.67] pilot: use MainEntrance (open_door) -> OK in 0.0 s
+[D128 919.6s t=15.58] pilot: t=10 at (7.8, 0.0, 10.9) corner (6.6, 0.2, 10.5) yaw_err -0.00 fwd=true path=35 mouse_mode=2 state=0 look=(-5.02,0.00) pin_yaw=-5.02493866650912 bot=false
+[D128 1009.2s t=17.05] pilot: STUCK at (7.6, 0.0, 10.9) heading to (6.6, 0.2, 10.5); rays: h0.05:/root/D128Feel/HeistRuntime/Dynamic/Npc_civilian9@(7.2, 0.1, 10.7), h0.20:/root/D128Feel/HeistRuntime/Dynamic/Npc_civilian9@(7.3, 0.2, 10.7), h0.40:/root/D128Feel/HeistRuntime/Dynamic/Npc_civilian9@(7.3, 0.4, 10.8), h1.00:/root/D128Feel/HeistRuntime/Dynamic/Npc_civilian9@(7.3, 1.0, 10.8), slide:/root/D128Feel/HeistRuntime/Dynamic/Npc_civilian9@(7.3, 0.9, 10.8) n=(1.0, 0.0, 0.2), vel=(0.0, 0.0, 0.0) floor=true state=0
+[D128 1018.1s t=17.07] shot glasshouse_02_stuck_1.png
+[D128 1018.1s t=17.07] pilot: civilian Npc_civilian9 (mode 0) blocks the way: back off and let them pass
+[D128 1422.0s t=24.03] pilot: use StaffDoor (open_door) -> OK in 0.0 s
+[D128 1472.1s t=24.95] pilot: t=15 at (1.7, 0.0, 6.5) corner (1.7, 0.2, 5.8) yaw_err 2.22 fwd=false path=20 mouse_mode=2 state=0 look=(-8.50,0.00) pin_yaw=-8.31069451887743 bot=false
+[D128 1609.8s t=27.43] pilot: use ReceivingDoor (open_door) -> OK in 0.0 s
+[D128 1791.6s t=31.48] pilot: t=20 at (3.3, 0.0, 1.5) corner (3.4, 0.2, 1.0) yaw_err 2.00 fwd=false path=8 mouse_mode=2 state=0 look=(-8.45,0.00) pin_yaw=-8.2593757221839 bot=false
+[D128 2000.1s t=36.50] pilot: t=25 at (-0.8, 0.0, -1.4) corner (-0.2, 0.2, -1.2) yaw_err 1.00 fwd=false path=2 mouse_mode=2 state=0 look=(-9.10,0.00) pin_yaw=-8.91182518263668 bot=false
+[D128 2105.3s t=40.50] careful: at mask spot (-5.6, 0.0, -2.4), max meter 0.00
+[D128 2139.2s t=41.82] careful: masked true
+[D128 2143.3s t=41.87] shot glasshouse_03_careful_masked.png
+[D128 2146.9s t=42.00] shot glasshouse_04_careful_end.png
+[D128 2146.9s t=42.00] careful: RESULT CLEAN (alarm )
+[D128 2146.9s t=42.00] SAMPLE CameraC4:8:25:stand:strafe (camera CameraC4): walk to (0.6, 0.2, -5.6) (planned d 6.9 ang 25 zones [1] path 6.9) masked true
+[D128 2146.9s t=42.00]   sneak approach (crouched range 9.7 m, point 6.9 m)
+[D128 2326.0s t=47.00] pilot: t=5 at (-1.0, 0.0, -4.8) corner (-1.4, 0.2, -4.6) yaw_err -1.41 fwd=false path=3 mouse_mode=2 state=0 look=(-9.11,0.00) pin_yaw=-9.30560109652288 bot=false
+[D128 2405.4s t=49.23]   arrived true at (0.4, 0.0, -5.5) d 6.98 ang 30.3 crouched true meter 0.00 (max any 0.00) alarm 
+[D128 2405.4s t=49.23]   stood up (sneak approach) at d 6.98 ang 30.3
+[D128 3146.8s t=61.35]   RESULT CameraC4:8:25:stand:strafe: first 0.10 full -1.00 -> fill -1.00 s (live-rate integral -1.00, formula at start geom inf) geom start d 6.98/30.3 first 6.98/29.6 full 0.00/0.0 end 7.06/62.0 crouched false DR 4
+[D128 3146.8s t=61.35]     HUD first: meter 0.07 hud 0.07 ring ? 0.07 on+arc | mid:  | full: 
+[D128 3206.0s t=62.50] shoot: CameraC4 titan true at 7.3 m, secondary <null>
+[D128 3455.8s t=66.02] shoot: CameraC4 after 6 shots: destroyed false (titan true) alarm 
+[D128 3465.9s t=66.13] shot glasshouse_05_shoot_CameraC4_intact.png
+[D128 3465.9s t=66.13] DONE runs=1
+[D128ROW] glasshouse|careful|CLEAN|alarm 
+[D128ROW] glasshouse|CameraC4:8:25:stand:strafe|camera|CameraC4|d 7.0|ang 30|stand|DR 4|fill -|live -|formula never|decay - (exp -)|
+[D128ROW] glasshouse|shoot|CameraC4|diff 4|destroyed false|titan true
