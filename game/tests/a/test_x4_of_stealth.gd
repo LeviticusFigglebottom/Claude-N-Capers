@@ -32,6 +32,15 @@ func test_x4_of_stealth_seed_18_rack_line_heli() -> void:
 	await run_stealth(HEIST, 18, RACK_LINE)
 
 
+func test_x4_of_stealth_seed_3_manager_card_vault_basement() -> void:
+	if _pending():
+		return
+	await run_stealth(HEIST, 3, RACK_LINE)
+	if flow != null:
+		assert_true(bool(flow.facts.get(&"curator_tied", false)), "Ashgrove tied for his keycard (kc_on_manager)")
+		assert_true(bool(flow.facts.get(&"carrier_caught_away", false)), "caught alone in his away window (mgr_vault)")
+
+
 func test_x4_of_stealth_seed_35_manager_card_gallery() -> void:
 	if _pending():
 		return

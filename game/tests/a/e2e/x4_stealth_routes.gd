@@ -325,6 +325,7 @@ func _gn_curator_card(card: KeycardPickup) -> bool:
 	if route == null:
 		route = f.rt.mission.variant(&"manager_route")  # OF: Ashgrove carries kc_on_manager
 	f.note("the only keycard is on the curator (%s, %s): intimidate + tie her" % [npc.name, route])
+	await _catch_alone(npc)
 	if not await f.go_to(npc) or not await _shout_down(brain):
 		return false
 	f.note("card released once she is down: %s" % card.released)
@@ -335,6 +336,35 @@ func _gn_curator_card(card: KeycardPickup) -> bool:
 	if not f.check(await f.wait_until(func() -> bool: return card.released, 2.0), "the curator's card shows on her"):
 		return false
 	return await f.take(card, _has_card(), _tw().carried_item_s, "take the curator's keycard")
+
+
+## OF-A4: a carrier on a CivilianRoute with an away window (OF's manager: mgr_away at the BM office with the door shut,
+## CF / PR upstairs, the LK WC on mgr_vault) is caught alone: wait (fast) until his window is open AND he stands at the
+## away stop (CivilianBrain opens the window when he LEAVES for that stop, so open alone can still be mid-walk past a
+## camera), then go. A route without a window, or one he does not reach within one lap, goes as it is (noted).
+func _catch_alone(npc: NpcBase) -> void:
+	var route: CivilianRoute = CivilianRoute.for_civilian(f.rt, npc)
+	if route == null:
+		return
+	var away_stops: Array[Vector3] = []
+	var bound_s: float = 30.0
+	for i: int in range(route.stop_count()):
+		if route.window_of(i) != &"":
+			away_stops.append(route.stop_at(i).global_position)
+		bound_s += route.stop_at(i).pause_range.y + 30.0  # every dwell + a walk per stop: one lap
+	if away_stops.is_empty():
+		return
+	var at_away_stop: Callable = func() -> bool:
+		if not route.is_away() or not is_instance_valid(npc):
+			return false
+		for p: Vector3 in away_stops:
+			if npc.global_position.distance_to(p) < 1.5:
+				return true
+		return false
+	var away: bool = await f.fast_until(at_away_stop, bound_s)
+	f.facts[&"carrier_caught_away"] = away
+	f.note("%s on route %s: %s (%s)" % [npc.name, route.id(),
+		"at his %s stop" % route.away_window() if away else "never at an away stop", npc.global_position])
 
 
 ## Shout at the civilian `brain` (CrewIntent.shout held a few frames looking at her chest, then released; the
