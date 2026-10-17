@@ -35,7 +35,7 @@ and reports a gap list; the LEAD folds the gaps in here as rows (id, heist, owne
 | GN-2 | GN | C | 5 patron spawns vs 12 in doc (7/9 rolls capped) | done (round 219) |
 | GN-3 | GN | C | 2 BODY_HIDE spots vs 8 | done (round 219) |
 | GN-4 | GN | C | 6 COVER points vs ~50 | done (round 219) |
-| GN-8 | GN | A | e2e stealth + loud; QC-57 Vaultline courier; 17 unsaid mission lines (D-117 §6) | mostly done (A 31fcaab4, 291ce51d: B3 inspectors + empty-slot alarm, WarmLoader for the seed-99 threaded-load race, extras/keycard/vault_drill/server_door logic). OPEN: seed-99 crash fix unconfirmed (needs a quiet-box run to ESCAPE); 2 Halberd escorts need C markers; GN loud pilot harness (A lane) |
+| GN-8 | GN | A | e2e stealth + loud; QC-57 Vaultline courier; 17 unsaid mission lines (D-117 §6) | mostly done (A 31fcaab4, 291ce51d: B3 inspectors + empty-slot alarm, WarmLoader for the seed-99 threaded-load race, extras/keycard/vault_drill/server_door logic). OPEN: seed-99 crash + P's ND CASING hang: fixed by reasoning (WarmLoader 291ce51d, prewarm waits for its loads aab638dc), unconfirmed (needs quiet-box runs); 2 Halberd escorts need C markers; GN loud pilot harness (A lane) |
 | GN-10 | GN | D, P | cast polish; §7 traversal tests | done (round 222, pending tests); GN look map after D lands |
 | B-1 | all | B | D-117 names/briefing/unlocks; GH/SL/GN content gaps | DONE r216 |
 | D-1 | GH | D | design manager Greta Vossberg (female) vs male civilian_manager; civilian_sales_b + clerk look | done (round 220) |
@@ -52,3 +52,8 @@ and reports a gap list; the LEAD folds the gaps in here as rows (id, heist, owne
 | B-SL | SL | B (A for logic) | D-115 strings audit vs design doc (as B-GN) | open |
 | ND-3 | ND | C | secure van at (9, 0, 30): last ~15 m of carry route has no cover (P ND-2: 7 downs in 25 s vs 4-7 enemies); add cover props | open |
 
+| X-6 | GH | A, C, B | D-130: GH pager cap by difficulty [4,4,3,3,2,1] + Titan cameras from Hazardous (C values, A runtime, B card) | open |
+| X-7 | GN, SL, ND | C, A | D-130: guards/civilians scale with difficulty (≈ +50 % / +35 % at Cataclysm; C rows + spawns, A runtime + count test) | open |
+| X-8 | all | A, P | D-130: cameras detect ~20 % faster (A tweak + test, P feel check) | open |
+| DB-P1 | DB | P (C, B, A) | first real-input pass: OOM at t=216 (product/cartel/breach/burn done, 0 STUCK). C: ChamberANorth shutter on the strongroom nav path, breach watcher misses an open entry door; B: "Thin out the gunmen" during the burn; A: no reroute, CREW_STACK ×20 | in progress |
+| SL-P1 | SL | P (C) | first real-input pass | WON in stealth (P e6b9dcf6, seed 13, t=418, 0 snags on the casing walk). C: Stair B half-landing headroom 1.8 m with a bag, lift-car secure zone narrower than the car, K7/K10 corner (low); B: preplan `{asset, point}` loses its point |

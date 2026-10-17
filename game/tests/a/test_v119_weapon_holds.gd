@@ -129,7 +129,9 @@ func test_upper_body_layer_while_moving_off_while_aiming() -> void:
 	d._aim_hold_left = 5.0
 	_ticks(d, 2)
 	assert_false(String(d.hold_layer.clip).begins_with("hold_"), "aiming: no hold_* (%s)" % d.hold_layer.clip)
-	assert_eq(d.hold_layer.clip, &"aim_pistol", "aim_* keeps priority on the upper body while moving")
+	# D-116 (SOURCE police_combat): aim_pistol_run (the aim gait, frame-locked) when the rig has it
+	var aim_run: StringName = &"aim_pistol_run" if d._has_clip(&"aim_pistol_run") else &"aim_pistol"
+	assert_eq(d.hold_layer.clip, aim_run, "aim_* keeps priority on the upper body while moving")
 	crew.velocity = Vector3.ZERO
 	_ticks(d, 4)
 	assert_eq(d.clip, &"run_stop", "stopping: run_stop (a locomotion transition)")

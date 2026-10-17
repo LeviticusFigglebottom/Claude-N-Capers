@@ -9,7 +9,11 @@
 ## -> under the static lasers -> time-lock code -> the time lock runs out -> vault loot bagged and carried back out
 ## the same way to the lot van's secure zone -> escape. Stops at the first failed step ("[NDR] FAIL ...").
 ##   xvfb-run -a -s "-screen 0 1280x720x24" /opt/godot/godot --path game --resolution 960x540 --audio-driver Dummy \
-##     res://tests/p/_review/nd_stealth_route.tscn -- --out=/abs/dir [--seed=21] [--bags=2] [--obs-out=DIR]
+##     res://tests/p/_review/nd_stealth_route.tscn -- --out=/abs/dir [--seed=21] [--bags=2] [--obs-out=DIR] [--render]
+## Fast mode (default; --render turns it off): the render loop is off and the HUD canvas layers are hidden between
+## screenshots (as A's po5_flow set_fast; presentation only, input and gameplay untouched: under llvmpipe the route
+## ran ~80 wall-s per game-s rendered). Stated shortcut: the time-lock wait (standing still at the panel) runs at
+## Engine.time_scale TIME_LOCK_SCALE, as X4StealthFlow's long waits.
 ## Owner: ENV P.
 extends Node
 
@@ -18,6 +22,7 @@ const MASK_AT: Vector3 = Vector3(18.5, -4.0, 3.0)
 const GATE_AT: Vector3 = Vector3(14.0, -4.0, 6.9)
 const C6_AT: Vector3 = Vector3(9.1, -1.4, 8.8)
 const LASER_GAP_X: float = 9.575
+const TIME_LOCK_SCALE: float = 4.0
 
 var rt: HeistRuntime = null
 var pilot: Po5Pilot = null
@@ -27,6 +32,7 @@ var _bags: int = 2
 var _shot: int = 0
 var _alarm: StringName = &""
 var _t0_ms: int = 0
+var _fast: bool = true
 
 
 func _ready() -> void:
@@ -37,6 +43,7 @@ func _ready() -> void:
 			"out": runner_out = v
 			"seed": _seed = v.to_int()
 			"bags": _bags = v.to_int()
+			"render": _fast = false
 			"obs-out":
 				var n: Node = Node.new()
 				n.name = "POObserver"
@@ -54,9 +61,22 @@ func note(msg: String) -> void:
 
 
 func shot(label: String) -> void:
+	if _fast:
+		_set_fast(false)
+		await RenderingServer.frame_post_draw
 	await RenderingServer.frame_post_draw
 	_shot += 1
 	get_viewport().get_texture().get_image().save_png("%s/%02d_%s.png" % [runner_out, _shot, label])
+	if _fast:
+		_set_fast(true)
+
+
+## Render loop off + HUD canvas layers hidden (A's po5_flow set_fast / _hud_redraw_widgets): presentation only.
+func _set_fast(on: bool) -> void:
+	RenderingServer.render_loop_enabled = not on
+	for n: Node in get_tree().root.get_children():
+		if n is CanvasLayer:
+			(n as CanvasLayer).visible = not on
 
 
 func wait_s(s: float) -> void:
@@ -77,6 +97,7 @@ func _fail(step: String) -> void:
 	note("FAIL %s (alarm %s)" % [step, _alarm])
 	await shot("fail_" + step.replace(" ", "_"))
 	print("[NDR] RESULT FAIL at %s" % step)
+	RenderingServer.render_loop_enabled = true
 	get_tree().quit(1)
 
 
@@ -132,6 +153,9 @@ func _run() -> void:
 	await pilot.calibrate()
 	note("spawn %s" % Po5Pilot._v(c.global_position))
 	await shot("spawn_lot")
+	if _fast:
+		note("fast mode: render loop off between shots")
+		_set_fast(true)
 	for step: Callable in [_to_b3, _gate_guard, _records, _vault_gate, _antechamber, _time_lock, _loot, _escape]:
 		if _alarm != &"":
 			await _fail("alarm before %s" % step.get_method())
@@ -364,9 +388,13 @@ func _time_lock() -> bool:
 		return false
 	var vault: Door = _tagged(&"vault_door") as Door
 	var t: float = 0.0
+	Engine.time_scale = TIME_LOCK_SCALE  # stated shortcut: standing still through the time lock
+	note("time lock running: waiting at x%.0f" % TIME_LOCK_SCALE)
+	var t0: float = rt.heist_time_s
 	while vault != null and not vault.is_open and t < 120.0 and _alarm == &"":
 		await pilot.hold_position(2.0)
-		t += 2.0
+		t = rt.heist_time_s - t0
+	Engine.time_scale = 1.0
 	note("vault open %s after %.0f s" % [vault != null and vault.is_open, t])
 	await shot("vault_open")
 	return vault != null and vault.is_open
