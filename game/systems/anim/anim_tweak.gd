@@ -23,7 +23,7 @@ static var _cached: AnimTweak = null
 ## Root speed of each locomotion clip at 1.78 m (m/s). speed_scale = v / (clip speed x motion_scale).
 @export var clip_speeds: Dictionary = {
 	&"walk": 1.6, &"run": 3.5, &"sprint": 5.75, &"crouch_walk": 1.5, &"strafe_l": 1.2, &"strafe_r": 1.2,
-	&"walk_back": 1.3, &"flee": 4.0, &"carry_bag_walk": 2.4, &"shield_walk": 1.6, &"dozer_walk": 1.6,
+	&"walk_back": 1.3, &"flee": 4.0, &"flee_b": 4.0, &"flee_c": 4.0, &"carry_bag_walk": 2.4, &"shield_walk": 1.6, &"dozer_walk": 1.6,
 	&"mug_carry_walk": 1.3, &"walk_text": 1.2, &"run_l": 3.5, &"run_r": 3.5, &"run_b": 3.5,
 }
 ## Seconds from clip start to the reload `done` event (SOURCE.txt: pistol done@34, rifle done@58, 30 fps).
@@ -37,6 +37,17 @@ static var _cached: AnimTweak = null
 ## Turn-in-place clip: the root yaws this many degrees over `turn_time_s`.
 @export var turn_clip_deg: float = 90.0
 @export var turn_time_s: float = 0.8
+## D-116 turn_l_45 / turn_r_45 (ENV D, 12 f, root_turn 45 deg at turn_l's 112.5 deg/s): their own turn (TurnInPlace).
+@export var turn_45_clip_deg: float = 45.0
+## Yaw change (degrees) from which turn_l / turn_r (90) play; below it (down to turn_threshold_deg) turn_*_45.
+@export var turn_90_min_deg: float = 67.5
+## Turn clip speed_scale = clip deg / yaw change, clamped to this range (TurnInPlace).
+@export var turn_speed_min: float = 0.75
+@export var turn_speed_max: float = 1.5
+## Below turn_threshold_deg no clip plays: the rig snaps to the body over this many seconds.
+@export var turn_snap_s: float = 0.15
+## D-116 door_kick_<fam> `impact` (s; SOURCE.txt first): the clip is scaled so it lands on npc_door_breach_s.
+@export var door_kick_impact_s: float = 2.5
 
 @export_group("Selection")
 ## Horizontal speed (m/s) under which a body counts as standing.
@@ -52,8 +63,8 @@ static var _cached: AnimTweak = null
 ## speed_scale clamp for locomotion clips.
 @export var speed_scale_min: float = 0.4
 @export var speed_scale_max: float = 2.0
-## Idle yaw change (degrees) that plays turn_l / turn_r instead of sliding the feet.
-@export var turn_threshold_deg: float = 60.0
+## Idle yaw change (degrees) that plays a turn clip (turn_*_45 / turn_l / turn_r) instead of sliding the feet.
+@export var turn_threshold_deg: float = 20.0
 ## Interaction clip by the interactable's height above the feet (m): low below, high above.
 @export var interact_low_max_m: float = 0.7
 @export var interact_high_min_m: float = 1.5
@@ -66,7 +77,7 @@ static var _cached: AnimTweak = null
 ## frame instead (the body dies in place).
 @export var death_by_pose: Dictionary = {
 	&"kneel_cuffed": &"death_kneel_cuffed", &"tied": &"death_kneel_cuffed", &"surrender": &"death_kneel",
-	&"cower": &"death_crouch", &"crouch_idle": &"death_crouch", &"crouch_walk": &"death_crouch",
+	&"cower": &"death_crouch", &"cower_b": &"death_crouch", &"crouch_idle": &"death_crouch", &"crouch_walk": &"death_crouch",
 	&"lie_down": &"death_prone", &"downed": &"death_downed", &"downed_crawl": &"death_downed",
 	# characters.md v1.18 variants: every surrender* / surrender_idle* kneels (death_kneel starts on their chain
 	# frame), kneel_cuffed_b/_c share kneel_cuffed's frame 0 (death_kneel_cuffed).
@@ -105,7 +116,8 @@ static var _cached: AnimTweak = null
 @export var shield_clips: Dictionary = {
 	&"idle": &"shield_idle", &"idle_alert": &"shield_idle", &"aim_pistol": &"shield_idle",
 	&"aim_rifle": &"shield_idle", &"fire_pistol": &"shield_idle", &"fire_rifle": &"shield_idle",
-	&"turn_l": &"shield_idle", &"turn_r": &"shield_idle", &"investigate_look": &"shield_idle",
+	&"turn_l": &"shield_idle", &"turn_r": &"shield_idle", &"turn_l_45": &"shield_idle", &"turn_r_45": &"shield_idle",
+	&"investigate_look": &"shield_idle", &"door_kick_rifle": &"shield_bang", &"door_kick_pistol": &"shield_bang",
 	&"walk": &"shield_walk", &"strafe_l": &"shield_walk", &"strafe_r": &"shield_walk",
 	&"walk_back": &"shield_walk",
 }
@@ -161,9 +173,10 @@ static var _cached: AnimTweak = null
 
 @export_group("Hard-hat hand lift (D-115 R1)")
 ## Hands-on-head clips during which the hands are lifted over the hat shell.
+## LEAD: cower_c (D v1.29, hands over head) added in round 238 (A: fold in).
 @export var hard_hat_lift_clips: Array[StringName] = [&"surrender", &"surrender_b", &"surrender_c",
 	&"surrender_idle", &"surrender_idle_b", &"surrender_idle_c", &"hands_up", &"hands_up_b", &"hands_up_c",
-	&"cower", &"cower_seated", &"cower_stand", &"kneel_cuffed", &"kneel_cuffed_b", &"kneel_cuffed_c"]
+	&"cower", &"cower_b", &"cower_c", &"cower_seated", &"cower_stand", &"kneel_cuffed", &"kneel_cuffed_b", &"kneel_cuffed_c"]
 ## Lift (m) of a hand resting on the head: the shell stands ~2.4 cm off the skull (ENV D audit R1).
 @export var hard_hat_hand_lift_m: float = 0.03
 ## A hand within this distance (m) of the head bone counts as resting on it.

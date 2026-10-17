@@ -1,0 +1,6 @@
+[D128 475.2s t=2.53] pilot: calibrated 0.001600 rad/px yaw, 0.001600 rad/px pitch (settings formula said (0.0016, 0.0016))
+[D128 475.2s t=2.53] run 1: difficulty 0 pagers_max 4
+[D128 475.2s t=2.53] run 1: shadow_ledger seed 13 phase 1 crew (26.2, 0.0, 9.0) masked false mode casing DR 4
+[D128 578.5s t=3.07] shot shadow_ledger_01_hud_pagers_routine.png
+[D128 1264.9s t=8.07] pilot: t=5 at (24.7, 0.0, 14.5) corner (24.5, 0.2, 15.4) yaw_err 0.00 fwd=true path=16 mouse_mode=2 state=0 look=(2.97,0.00) pin_yaw=2.97169829256018 bot=false
+[D128 2041.2s t=13.05] pilot: t=10 at (22.0, 0.8, 14.2) corner (22.0, 1.8, 12.9) yaw_err 1.21 fwd=false path=12 mouse_mode=2 state=0 look=(-1.24,0.00) pin_yaw=-1.04965414297476 bot=false
