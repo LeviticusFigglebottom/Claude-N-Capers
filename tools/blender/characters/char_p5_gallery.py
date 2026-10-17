@@ -34,6 +34,10 @@ back spike) on wine enamel; staff wear it as a small round pin, security as a br
   * ``char_gallery_guard_g``: tall lean young man, light skin, short blond hair; shirtsleeve order.
   * ``char_gallery_guard_h``: woman, 30s, mid skin, dark bob; shirtsleeve order.
   * ``char_gallery_guard_i``: man, 40s, deep skin, side-parted dark hair, heavy stubble; blazer.
+  * GN Cataclysm inspection (up to 11 guards on screen): three more faces so the pool (12) has no twins.
+  * ``char_gallery_guard_j``: woman, early 60s, mid-deep skin, short grey hair; blazer.
+  * ``char_gallery_guard_k``: man, 30s, light skin, side-parted brown hair, light stubble; blazer.
+  * ``char_gallery_guard_l``: woman, late 20s, fair skin, blond bob; shirtsleeve order.
 * ``char_gallery_patron``: gala guest (woman): a sleeveless wine satin midi cocktail dress, gold
   belt, gold earrings, heels, dark bob.
 * ``char_gallery_patron_b``: gala guest (man, older): a midnight-blue velvet dinner jacket with
@@ -131,6 +135,12 @@ VARIANTS = {
                              "hair_color": "dark", "look": "guard", "jacket": False},
     "char_gallery_guard_i": {"height": 1.83, "build": 0.7, "gender": 0.0, "age": 0.45, "skin": 6, "beard_shadow": 0.85,
                              "hair": "side_part", "hair_color": "dark", "look": "guard"},
+    "char_gallery_guard_j": {"height": 1.68, "build": 0.6, "gender": 1.0, "age": 0.62, "skin": 5, "hair": "short",
+                             "hair_color": "grey", "look": "guard"},
+    "char_gallery_guard_k": {"height": 1.79, "build": 0.55, "gender": 0.0, "age": 0.35, "skin": 2, "beard_shadow": 0.3,
+                             "hair": "side_part", "hair_color": "brown", "look": "guard"},
+    "char_gallery_guard_l": {"height": 1.71, "build": 0.4, "gender": 1.0, "age": 0.28, "skin": 1, "hair": "bob",
+                             "hair_color": "blond", "look": "guard", "jacket": False},
     "char_gallery_patron": {"height": 1.70, "build": 0.35, "gender": 1.0, "age": 0.45, "skin": 4, "hair": "bob",
                             "hair_color": "dark", "lip": "char_lip_rose", "look": "patron"},
     "char_gallery_patron_b": {"height": 1.79, "build": 0.55, "gender": 0.0, "age": 0.7, "skin": 2,

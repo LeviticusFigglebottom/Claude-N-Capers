@@ -43,6 +43,21 @@ func category_of(point_id: StringName) -> StringName:
 	return StringName(point(point_id).get("category", &""))
 
 
+## The floor the crew starts on: the default spawn point's (a spawn point with no spawn_tag), else the first spawn
+## point's, else 0 (the briefing shows this floor).
+func entry_floor() -> int:
+	var first: int = -1
+	for p: Dictionary in points:
+		if StringName(p.get("category", &"")) != &"spawn":
+			continue
+		var fl: int = int(p.get("floor", 0))
+		if String((p.get("params", {}) as Dictionary).get("spawn_tag", "")) == "":
+			return clampi(fl, 0, floor_count() - 1)
+		if first < 0:
+			first = fl
+	return clampi(maxi(first, 0), 0, floor_count() - 1)
+
+
 func floor_count() -> int:
 	return maxi(floor_names.size(), 1)
 

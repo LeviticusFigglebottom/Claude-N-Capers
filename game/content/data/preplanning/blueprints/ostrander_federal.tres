@@ -1,0 +1,634 @@
+[gd_resource type="Resource" script_class="PreplanBlueprint" format=3]
+
+[ext_resource type="Script" path="res://content/preplanning/preplan_blueprint.gd" id="1_8hlso"]
+
+[resource]
+script = ExtResource("1_8hlso")
+heist_id = &"ostrander_federal"
+bounds = Rect2(-6, -12, 70, 62)
+floor_names = Array[StringName]([&"ui.preplan.floor.basement", &"ui.preplan.floor.ground", &"ui.preplan.floor.gallery", &"ui.preplan.floor.executive", &"ui.preplan.floor.roof"])
+shapes = Array[Dictionary]([{
+"floor": -1,
+"kind": &"sidewalk",
+"label": &"ui.preplan.bp.ostrander_federal.x1",
+"rect": Rect2(-6, 36, 70, 14)
+}, {
+"floor": -1,
+"kind": &"alley",
+"label": &"ui.preplan.bp.ostrander_federal.x2",
+"rect": Rect2(-6, -10, 54, 10)
+}, {
+"floor": -1,
+"kind": &"street",
+"label": &"ui.preplan.bp.ostrander_federal.x3",
+"rect": Rect2(48, -12, 14, 48)
+}, {
+"floor": 0,
+"kind": &"building",
+"label": &"",
+"rect": Rect2(0, 0, 48, 25)
+}, {
+"floor": 0,
+"kind": &"room",
+"label": &"ui.preplan.bp.ostrander_federal.vt",
+"rect": Rect2(14, 13, 20, 12)
+}, {
+"floor": 0,
+"kind": &"room",
+"label": &"ui.preplan.bp.ostrander_federal.rc",
+"rect": Rect2(0, 9, 14, 16)
+}, {
+"floor": 0,
+"kind": &"room",
+"label": &"ui.preplan.bp.ostrander_federal.sd",
+"rect": Rect2(34, 9, 14, 16)
+}, {
+"floor": 0,
+"kind": &"room",
+"label": &"ui.preplan.bp.ostrander_federal.bb",
+"rect": Rect2(0, 7, 48, 2)
+}, {
+"floor": 0,
+"kind": &"room",
+"label": &"ui.preplan.bp.ostrander_federal.vc",
+"rect": Rect2(14, 9, 20, 4)
+}, {
+"floor": 0,
+"kind": &"room",
+"label": &"ui.preplan.bp.ostrander_federal.lk",
+"rect": Rect2(0, 0, 10, 7)
+}, {
+"floor": 0,
+"kind": &"room",
+"label": &"ui.preplan.bp.ostrander_federal.cp",
+"rect": Rect2(16, 0, 10, 7)
+}, {
+"floor": 0,
+"kind": &"room",
+"label": &"ui.preplan.bp.ostrander_federal.pl",
+"rect": Rect2(26, 0, 9, 7)
+}, {
+"floor": 0,
+"kind": &"room",
+"label": &"ui.preplan.bp.ostrander_federal.cm",
+"rect": Rect2(35, 0, 5, 7)
+}, {
+"floor": 0,
+"kind": &"room",
+"label": &"ui.preplan.bp.ostrander_federal.ss",
+"rect": Rect2(40, 0, 5, 7)
+}, {
+"floor": 0,
+"kind": &"room",
+"label": &"ui.preplan.bp.ostrander_federal.sa",
+"rect": Rect2(13, 0, 3, 7)
+}, {
+"floor": 0,
+"kind": &"room",
+"label": &"ui.preplan.bp.ostrander_federal.sb",
+"rect": Rect2(45, 0, 3, 7)
+}, {
+"floor": 0,
+"kind": &"room",
+"label": &"ui.preplan.bp.ostrander_federal.cq",
+"rect": Rect2(10, 3, 3, 4)
+}, {
+"floor": 0,
+"kind": &"room",
+"label": &"ui.preplan.bp.ostrander_federal.gl",
+"rect": Rect2(10, 0, 3, 3)
+}, {
+"floor": 1,
+"kind": &"building",
+"label": &"",
+"rect": Rect2(0, 0, 48, 36)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"",
+"rect": Rect2(8, 17, 32, 15)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"",
+"rect": Rect2(8, 32, 12, 4)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"",
+"rect": Rect2(28, 32, 12, 4)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"ui.preplan.bp.ostrander_federal.bh",
+"rect": Rect2(8, 20, 32, 16)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"ui.preplan.bp.ostrander_federal.tw",
+"rect": Rect2(8, 9, 32, 8)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"ui.preplan.bp.ostrander_federal.ld",
+"rect": Rect2(0, 0, 10, 9)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"ui.preplan.bp.ostrander_federal.lo",
+"rect": Rect2(0, 9, 8, 10)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"ui.preplan.bp.ostrander_federal.pc",
+"rect": Rect2(40, 9, 8, 10)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"ui.preplan.bp.ostrander_federal.bc",
+"rect": Rect2(10, 7, 38, 2)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"ui.preplan.bp.ostrander_federal.bm",
+"rect": Rect2(40, 19, 8, 8)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"ui.preplan.bp.ostrander_federal.av",
+"rect": Rect2(0, 29, 8, 7)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"ui.preplan.bp.ostrander_federal.sr",
+"rect": Rect2(16, 0, 7, 7)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"ui.preplan.bp.ostrander_federal.mo",
+"rect": Rect2(38, 0, 7, 7)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"ui.preplan.bp.ostrander_federal.gr",
+"rect": Rect2(23, 0, 6, 7)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"ui.preplan.bp.ostrander_federal.na",
+"rect": Rect2(40, 31, 8, 5)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"ui.preplan.bp.ostrander_federal.cn2",
+"rect": Rect2(0, 24, 8, 5)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"ui.preplan.bp.ostrander_federal.cn1",
+"rect": Rect2(0, 19, 8, 5)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"ui.preplan.bp.ostrander_federal.ve",
+"rect": Rect2(20, 32, 8, 4)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"ui.preplan.bp.ostrander_federal.pw",
+"rect": Rect2(40, 27, 8, 4)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"ui.preplan.bp.ostrander_federal.j1",
+"rect": Rect2(35, 0, 3, 7)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"ui.preplan.bp.ostrander_federal.ww",
+"rect": Rect2(32, 0, 3, 7)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"ui.preplan.bp.ostrander_federal.wm",
+"rect": Rect2(29, 0, 3, 7)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"ui.preplan.bp.ostrander_federal.sb",
+"rect": Rect2(45, 0, 3, 7)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"ui.preplan.bp.ostrander_federal.sa",
+"rect": Rect2(13, 0, 3, 7)
+}, {
+"floor": 1,
+"kind": &"room",
+"label": &"ui.preplan.bp.ostrander_federal.e1",
+"rect": Rect2(10, 3, 3, 4)
+}, {
+"floor": 2,
+"kind": &"building",
+"label": &"",
+"rect": Rect2(0, 0, 48, 36)
+}, {
+"floor": 2,
+"kind": &"room",
+"label": &"",
+"rect": Rect2(8, 17, 32, 15)
+}, {
+"floor": 2,
+"kind": &"room",
+"label": &"",
+"rect": Rect2(8, 32, 12, 4)
+}, {
+"floor": 2,
+"kind": &"room",
+"label": &"",
+"rect": Rect2(28, 32, 12, 4)
+}, {
+"floor": 2,
+"kind": &"room",
+"label": &"ui.preplan.bp.ostrander_federal.bh",
+"rect": Rect2(8, 20, 32, 16)
+}, {
+"floor": 2,
+"kind": &"room",
+"label": &"ui.preplan.bp.ostrander_federal.of",
+"rect": Rect2(8, 9, 20, 8)
+}, {
+"floor": 2,
+"kind": &"room",
+"label": &"ui.preplan.bp.ostrander_federal.ga",
+"rect": Rect2(8, 17, 32, 3)
+}, {
+"floor": 2,
+"kind": &"room",
+"label": &"ui.preplan.bp.ostrander_federal.uc",
+"rect": Rect2(0, 7, 48, 2)
+}, {
+"floor": 2,
+"kind": &"room",
+"label": &"ui.preplan.bp.ostrander_federal.br",
+"rect": Rect2(0, 0, 10, 7)
+}, {
+"floor": 2,
+"kind": &"room",
+"label": &"ui.preplan.bp.ostrander_federal.tt",
+"rect": Rect2(42, 27, 6, 9)
+}, {
+"floor": 2,
+"kind": &"room",
+"label": &"ui.preplan.bp.ostrander_federal.tr",
+"rect": Rect2(42, 18, 6, 9)
+}, {
+"floor": 2,
+"kind": &"room",
+"label": &"ui.preplan.bp.ostrander_federal.vo",
+"rect": Rect2(42, 9, 6, 9)
+}, {
+"floor": 2,
+"kind": &"room",
+"label": &"ui.preplan.bp.ostrander_federal.el",
+"rect": Rect2(40, 9, 2, 27)
+}, {
+"floor": 2,
+"kind": &"room",
+"label": &"ui.preplan.bp.ostrander_federal.wl",
+"rect": Rect2(6, 9, 2, 27)
+}, {
+"floor": 2,
+"kind": &"room",
+"label": &"ui.preplan.bp.ostrander_federal.ao3",
+"rect": Rect2(0, 27, 6, 9)
+}, {
+"floor": 2,
+"kind": &"room",
+"label": &"ui.preplan.bp.ostrander_federal.ao2",
+"rect": Rect2(0, 18, 6, 9)
+}, {
+"floor": 2,
+"kind": &"room",
+"label": &"ui.preplan.bp.ostrander_federal.ao1",
+"rect": Rect2(0, 9, 6, 9)
+}, {
+"floor": 2,
+"kind": &"room",
+"label": &"ui.preplan.bp.ostrander_federal.ar",
+"rect": Rect2(38, 0, 7, 7)
+}, {
+"floor": 2,
+"kind": &"room",
+"label": &"ui.preplan.bp.ostrander_federal.it",
+"rect": Rect2(16, 0, 7, 7)
+}, {
+"floor": 2,
+"kind": &"room",
+"label": &"ui.preplan.bp.ostrander_federal.cf",
+"rect": Rect2(28, 9, 6, 8)
+}, {
+"floor": 2,
+"kind": &"room",
+"label": &"ui.preplan.bp.ostrander_federal.co",
+"rect": Rect2(34, 9, 6, 8)
+}, {
+"floor": 2,
+"kind": &"room",
+"label": &"ui.preplan.bp.ostrander_federal.sv",
+"rect": Rect2(23, 0, 6, 7)
+}, {
+"floor": 2,
+"kind": &"room",
+"label": &"ui.preplan.bp.ostrander_federal.j2",
+"rect": Rect2(35, 0, 3, 7)
+}, {
+"floor": 2,
+"kind": &"room",
+"label": &"ui.preplan.bp.ostrander_federal.ww2",
+"rect": Rect2(32, 0, 3, 7)
+}, {
+"floor": 2,
+"kind": &"room",
+"label": &"ui.preplan.bp.ostrander_federal.wm2",
+"rect": Rect2(29, 0, 3, 7)
+}, {
+"floor": 2,
+"kind": &"room",
+"label": &"ui.preplan.bp.ostrander_federal.e2",
+"rect": Rect2(10, 0, 3, 7)
+}, {
+"floor": 2,
+"kind": &"room",
+"label": &"ui.preplan.bp.ostrander_federal.sb",
+"rect": Rect2(45, 0, 3, 7)
+}, {
+"floor": 2,
+"kind": &"room",
+"label": &"ui.preplan.bp.ostrander_federal.sa",
+"rect": Rect2(13, 0, 3, 7)
+}, {
+"floor": 3,
+"kind": &"building",
+"label": &"",
+"rect": Rect2(0, 0, 48, 36)
+}, {
+"floor": 3,
+"kind": &"sidewalk",
+"label": &"ui.preplan.bp.ostrander_federal.x4",
+"rect": Rect2(0, 17, 48, 19)
+}, {
+"floor": 3,
+"kind": &"room",
+"label": &"ui.preplan.bp.ostrander_federal.xl",
+"rect": Rect2(0, 9, 16, 8)
+}, {
+"floor": 3,
+"kind": &"room",
+"label": &"ui.preplan.bp.ostrander_federal.xc",
+"rect": Rect2(0, 7, 48, 2)
+}, {
+"floor": 3,
+"kind": &"room",
+"label": &"ui.preplan.bp.ostrander_federal.lg",
+"rect": Rect2(16, 9, 12, 8)
+}, {
+"floor": 3,
+"kind": &"room",
+"label": &"ui.preplan.bp.ostrander_federal.ct",
+"rect": Rect2(28, 9, 12, 8)
+}, {
+"floor": 3,
+"kind": &"room",
+"label": &"ui.preplan.bp.ostrander_federal.pr",
+"rect": Rect2(23, 0, 12, 7)
+}, {
+"floor": 3,
+"kind": &"room",
+"label": &"ui.preplan.bp.ostrander_federal.bd",
+"rect": Rect2(0, 0, 10, 7)
+}, {
+"floor": 3,
+"kind": &"room",
+"label": &"ui.preplan.bp.ostrander_federal.ra",
+"rect": Rect2(40, 9, 8, 8)
+}, {
+"floor": 3,
+"kind": &"room",
+"label": &"ui.preplan.bp.ostrander_federal.ea",
+"rect": Rect2(16, 0, 7, 7)
+}, {
+"floor": 3,
+"kind": &"room",
+"label": &"ui.preplan.bp.ostrander_federal.pn",
+"rect": Rect2(35, 0, 7, 7)
+}, {
+"floor": 3,
+"kind": &"room",
+"label": &"ui.preplan.bp.ostrander_federal.sa",
+"rect": Rect2(13, 0, 3, 7)
+}, {
+"floor": 3,
+"kind": &"room",
+"label": &"ui.preplan.bp.ostrander_federal.sb",
+"rect": Rect2(45, 0, 3, 7)
+}, {
+"floor": 3,
+"kind": &"room",
+"label": &"ui.preplan.bp.ostrander_federal.e3",
+"rect": Rect2(10, 0, 3, 7)
+}, {
+"floor": 3,
+"kind": &"room",
+"label": &"ui.preplan.bp.ostrander_federal.xw",
+"rect": Rect2(42, 0, 3, 7)
+}, {
+"floor": 4,
+"kind": &"building",
+"label": &"",
+"rect": Rect2(0, 0, 48, 17)
+}, {
+"floor": 4,
+"kind": &"sidewalk",
+"label": &"ui.preplan.bp.ostrander_federal.x5",
+"rect": Rect2(0, 0, 13, 17)
+}, {
+"floor": 4,
+"kind": &"sidewalk",
+"label": &"",
+"rect": Rect2(13, 7, 3, 10)
+}, {
+"floor": 4,
+"kind": &"sidewalk",
+"label": &"",
+"rect": Rect2(16, 0, 32, 2)
+}, {
+"floor": 4,
+"kind": &"sidewalk",
+"label": &"",
+"rect": Rect2(16, 2, 4, 15)
+}, {
+"floor": 4,
+"kind": &"sidewalk",
+"label": &"",
+"rect": Rect2(20, 10, 14, 7)
+}, {
+"floor": 4,
+"kind": &"sidewalk",
+"label": &"",
+"rect": Rect2(34, 2, 14, 15)
+}, {
+"floor": 4,
+"kind": &"room",
+"label": &"ui.preplan.bp.ostrander_federal.rp",
+"rect": Rect2(20, 2, 14, 8)
+}, {
+"floor": 4,
+"kind": &"room",
+"label": &"ui.preplan.bp.ostrander_federal.hh",
+"rect": Rect2(13, 0, 3, 7)
+}])
+points = Array[Dictionary]([{
+"category": &"spawn",
+"floor": 1,
+"id": &"pp_spawn_plaza",
+"label": &"ui.preplan.point.ostrander_federal.pp_spawn_plaza",
+"params": {},
+"pos": Vector2(24, 44)
+}, {
+"category": &"spawn",
+"floor": 1,
+"id": &"pp_spawn_lane",
+"label": &"ui.preplan.point.ostrander_federal.pp_spawn_lane",
+"params": {
+"spawn_tag": &"preplan_spawn_lane"
+},
+"pos": Vector2(23, -6)
+}, {
+"category": &"spawn",
+"floor": 1,
+"id": &"pp_spawn_tannery",
+"label": &"ui.preplan.point.ostrander_federal.pp_spawn_tannery",
+"params": {
+"spawn_tag": &"preplan_spawn_tannery"
+},
+"pos": Vector2(57, 22)
+}, {
+"category": &"drop_zone",
+"floor": 1,
+"id": &"pp_drop_lane",
+"label": &"ui.preplan.point.ostrander_federal.pp_drop_lane",
+"params": {},
+"pos": Vector2(32, -3)
+}, {
+"category": &"drop_zone",
+"floor": 1,
+"id": &"pp_drop_restroom",
+"label": &"ui.preplan.point.ostrander_federal.pp_drop_restroom",
+"params": {},
+"pos": Vector2(44, 29.6)
+}, {
+"category": &"drop_zone",
+"floor": 0,
+"id": &"pp_drop_lockers",
+"label": &"ui.preplan.point.ostrander_federal.pp_drop_lockers",
+"params": {},
+"pos": Vector2(5, 4.5)
+}, {
+"category": &"drop_zone",
+"floor": 3,
+"id": &"pp_drop_terrace",
+"label": &"ui.preplan.point.ostrander_federal.pp_drop_terrace",
+"params": {},
+"pos": Vector2(6, 30)
+}, {
+"category": &"escape",
+"floor": 1,
+"id": &"pp_escape_dock",
+"label": &"ui.preplan.point.ostrander_federal.pp_escape_dock",
+"params": {
+"variant_group": &"escape",
+"variant_slot": &"esc_van_dock"
+},
+"pos": Vector2(5, -4.3)
+}, {
+"category": &"escape",
+"floor": 1,
+"id": &"pp_escape_tannery",
+"label": &"ui.preplan.point.ostrander_federal.pp_escape_tannery",
+"params": {
+"variant_group": &"escape",
+"variant_slot": &"esc_van_tannery"
+},
+"pos": Vector2(50.4, 14.3)
+}, {
+"category": &"escape",
+"floor": 3,
+"id": &"pp_escape_heli",
+"label": &"ui.preplan.point.ostrander_federal.pp_escape_heli",
+"params": {
+"variant_group": &"escape",
+"variant_slot": &"esc_heli_terrace"
+},
+"pos": Vector2(36, 27)
+}, {
+"category": &"drop_zone",
+"floor": 3,
+"id": &"pp_drill_terrace",
+"label": &"ui.preplan.point.ostrander_federal.pp_drill_terrace",
+"params": {
+"variant_group": &"drill_delivery",
+"variant_slot": &"drop_terrace"
+},
+"pos": Vector2(20, 33)
+}, {
+"category": &"drop_zone",
+"floor": 1,
+"id": &"pp_drill_dock",
+"label": &"ui.preplan.point.ostrander_federal.pp_drill_dock",
+"params": {
+"variant_group": &"drill_delivery",
+"variant_slot": &"drop_dock"
+},
+"pos": Vector2(14, -4)
+}, {
+"category": &"insider",
+"floor": 1,
+"id": &"pp_fire_exit",
+"label": &"ui.preplan.point.ostrander_federal.pp_fire_exit",
+"params": {
+"variant_group": &"side_door",
+"variant_slot": &"door_fire_propped"
+},
+"pos": Vector2(46.5, 8)
+}, {
+"category": &"insider",
+"floor": 1,
+"id": &"pp_dock_door",
+"label": &"ui.preplan.point.ostrander_federal.pp_dock_door",
+"params": {
+"variant_group": &"side_door",
+"variant_slot": &"door_dock_open"
+},
+"pos": Vector2(8, -1.2)
+}, {
+"category": &"insider",
+"floor": 2,
+"id": &"pp_vault_ops",
+"label": &"ui.preplan.point.ostrander_federal.pp_vault_ops",
+"params": {
+"variant_group": &"keycard",
+"variant_slot": &"kc_vault_ops"
+},
+"pos": Vector2(45, 11)
+}, {
+"category": &"insider",
+"floor": 1,
+"id": &"pp_fire_escape",
+"label": &"ui.preplan.point.ostrander_federal.pp_fire_escape",
+"params": {
+"variant_group": &"fire_escape",
+"variant_slot": &"fe_down"
+},
+"pos": Vector2(0.6, -3.4)
+}])

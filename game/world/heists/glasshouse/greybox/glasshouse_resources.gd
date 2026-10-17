@@ -28,7 +28,7 @@ static func make_def() -> HeistDef:
 	# D-130 (S heist): fewer pagers by difficulty (ROUTINE..CATACLYSM) and Titan cameras from Hazardous.
 	d.pager_max_by_difficulty = [4, 4, 3, 3, 2, 1] as Array[int]
 	d.camera_titan_min_difficulty = Enums.Difficulty.HAZARDOUS
-	d.stealth_bonus_mult = 1.15
+	d.stealth_bonus_mult = 1.10  # S11.1: the stealth bonus scales by heist size (S heist)
 	# B GH audit: only jewelry comes as bags; the register / manager cash is small loot (briefing lists bags).
 	d.loot = [&"loot.jewelry"] as Array[StringName]
 	d.objectives = [&"casing", &"keycard", &"code", &"workshop_door", &"safe", &"safe_loot", &"secure", &"escape"] \

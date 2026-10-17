@@ -1,4 +1,4 @@
-# Contract: networking (v1.4)
+# Contract: networking (v1.5)
 
 API: `game/core/net.gd`. Architecture: architecture.md §3.
 
@@ -90,3 +90,6 @@ two keys, written by `NpcRagdoll.net_state(st)` on the server and applied by `Np
 
 ## v1.4 (OF-A2): generic prefab enable key
 NetEntityCodec key `pe` (bool) on every GameplayPrefab: its enabled state (sent in snapshots for late joiners).
+
+## v1.5 (OF-A6): generic prop `height_m`
+NetEntityCodec carries `height_m` (float) on Ladder (and any prop exposing it) so late joiners get the runtime length.

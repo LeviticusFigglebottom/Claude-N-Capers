@@ -69,3 +69,4 @@ preplanning = {
 }
 escape_options = Array[StringName]([&"heli", &"zipline", &"lift"])
 music_track = &"shadow_ledger"
+pager_max_by_difficulty = Array[int]([4, 3, 3, 2, 2, 1])

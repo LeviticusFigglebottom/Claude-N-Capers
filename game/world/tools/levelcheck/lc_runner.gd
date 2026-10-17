@@ -12,6 +12,7 @@ static func all_checks() -> Array[LcCheck]:
 		LcCheckReachability.new(),
 		LcCheckWalkthrough.new(),
 		LcCheckPatrols.new(), LcCheckLasers.new(), LcCheckCameraSpine.new(), LcCheckCameraScreen.new(),
+		LcCheckBagLine.new(), LcCheckHideLos.new(), LcCheckTellerWorktop.new(),
 		LcCheckMaterials.new(), LcCheckZfight.new(), LcCheckLights.new(), LcCheckViewmodelLit.new(),
 		LcCheckDensity.new(), LcCheckVariety.new(), LcCheckBounds.new(), LcCheckPerf.new(),
 		LcCheckDoorFrameGap.new(), LcCheckFrameProud.new(), LcCheckSeamGaps.new(),

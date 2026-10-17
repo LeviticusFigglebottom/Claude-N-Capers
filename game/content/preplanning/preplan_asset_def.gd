@@ -57,6 +57,14 @@ const EFFECTS: Array[StringName] = [&"", &"force_variant"]
 ## the chosen point's `variant_group`/`variant_slot` (needs a point, force_variants left empty or set).
 ## &"" = the effect follows from the fields above.
 @export var effect: StringName = &""
+## D-143 per-heist allow-list (ours, not in the contract): the heist ids whose boards offer this LIBRARY asset; empty =
+## every heist. A heist that lists the asset in its own HeistDef.preplanning.assets gets it regardless.
+@export var heists: Array[StringName] = []
+
+
+## D-143: whether the library offers this asset on `heist_id` (the allow-list; empty = everywhere).
+func offered_on(heist_id: StringName) -> bool:
+	return heists.is_empty() or heists.has(heist_id)
 
 
 func is_located() -> bool:

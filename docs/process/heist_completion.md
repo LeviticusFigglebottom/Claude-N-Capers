@@ -58,8 +58,8 @@ and reports a gap list; the LEAD folds the gaps in here as rows (id, heist, owne
 | DB-P1 | DB | P (C, B, A) | first real-input pass: OOM at t=216 (product/cartel/breach/burn done, 0 STUCK). C: ChamberANorth shutter on the strongroom nav path, breach watcher misses an open entry door; B: "Thin out the gunmen" during the burn; A: no reroute, CREW_STACK ×20 | done for D-135: snag tour done (1 STUCK = pilot door rule); loud flow to t≈427, then thermite bag re-pickup read "disabled". Carry OF-X2 |
 | SL-P1 | SL | P (C) | first real-input pass | PASS: won in stealth (e6b9dcf6) and RE-WALK PASS on G2 art + C's fixes (P c02d044f, seed 13, t=373: every bag secured first throw, no corner snag, headroom fine). Last STUCK row (Stair B landing ramp edge) fixed by C f170f6ee, P confirms on trunk |
 | PO-7 | all (seen on DB) | C (A) | PO report: NPC muzzle flash freezes in the air after the NPC dies/moves | FIXED (C e22dfbd8: a first tick > FLASH_S before a drawn frame left the pooled set up forever; HOLD_S rule for flash + sparks; regression test). Linked: A b8cdd674 found the multi-second first-fight hitch = lazy VFX pool growth stalling the renderer → VfxDirector.prewarm() at load (C applies A's patch) |
-| PO-14 | SL, DB (all) | A + C | PO report: SL server cage opened by sawing a stand-in safe (empty, invisible saw) that opened the gate with it; DB CountCage same pattern; safes without a DrillPoint run an invisible device | open: D-138 (gate keypad + padlock, placed-saw in stealth, every device visible + test; SL/DB regen) |
-| PO-15 | ND, GN, SL, OF | C + B + A (P) | PO: stealth heists must not be beatable by killing every guard (except GH / Routine); Routine 4 pagers, ≤ 4 guards; one lever per map | open: D-140 revised (GUARDS: OF, GN; PAGERS: ND, SL) |
+| PO-14 | SL, DB (all) | A + C | PO report: SL server cage opened by sawing a stand-in safe (empty, invisible saw) that opened the gate with it; DB CountCage same pattern; safes without a DrillPoint run an invisible device | FIXED round 243 (gate keypad + padlock, real DB cage, devices visible + audit test). Follow-ups: device mount offsets (A b8fb4687), padlock-export regen (C), P windowed check |
+| PO-15 | ND, GN, SL, OF | C + B + A (P) | PO: stealth heists must not be beatable by killing every guard (except GH / Routine); Routine 4 pagers, ≤ 4 guards; one lever per map | FIXED round 243 (ND/SL PAGERS, GN GUARDS, test_d140_pager_margin live; OF in G1). P windowed Tense/Lethal pending |
 
 ## D-115 assessment at the D-135 close (2026-10-17 11:45, LEAD)
 All five envs reported QUEUE CLEAR (A 9a7df142, B da559160, C e8ec593d, D 6316e628, P 8774a733), merged in rounds 240a/240b.
@@ -73,6 +73,6 @@ as low priority and does not hold the start:
   Check whether a nav link survives through the shut door (game bug: AI could path through) or it's the pilot. **Highest of the carries.**
 - **OF-X3 (C):** drill review renders (DB strongroom, ND vault, GN vault, GN server door) with a lighter capture scene; db_finishes.gd
   unused crane/trawler rows.
-- **OF-X4 (P):** a longer windowed PO-7 look with NPCs firing (flash_check.tscn saw no shots in 10 s; the regression test covers it).
+- **OF-X4 (P): CLOSED** (P c7c4414d live look 0 stuck + C headless regression). Was: a longer windowed PO-7 look with NPCs firing (flash_check.tscn saw no shots in 10 s; the regression test covers it).
 - Parked: D-132 D1 (PO real-GPU bench, README_bench.md).
 **Verdict: the D-115 gate is met for Ostrander Federal (D-136). Kickoff sent 2026-10-17.**

@@ -1,0 +1,20 @@
+asset: char_bank_customer_d
+script: tools/blender/characters/char_p5_bank.py
+params: {"age": 0.12, "beard_shadow": 0.2, "build": 0.3, "gender": 0.0, "hair": "buzz", "hair_color": "dark", "height": 1.76, "look": "courier", "skin": 6}
+seed: 2690877851  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category characters --asset char_bank_customer_d
+edit policy: generated file, never edit by hand; change the script and rebuild
+attach_Back: bone chest, local [0.0000, 0.0887, 0.1147] (model [0.0000, 1.2854, 0.1330], Godot axes, rest pose)
+attach_Head: bone head, local [0.0000, 0.0801, -0.0877] (model [0.0000, 1.6473, -0.0758], Godot axes, rest pose)
+attach_Hip: bone hips, local [0.1919, 0.0504, 0.0386] (model [0.1919, 0.9927, 0.0411], Godot axes, rest pose)
+body_faces_culled: 4831
+body_params: {"age": 0.12, "beard_shadow": 0.2, "build": 0.3, "gender": 0.0, "hair": "buzz", "hair_color": "dark", "hair_peak": 0.0, "height": 1.76, "lip": "auto", "skin": 6}
+bones: 52
+faces_hidden_by_bomber: 2515
+look: Bike courier (OF-D1): black nylon bomber over a graphite knit, charcoal work trousers, grey trainers, orange cap, big orange messenger bag on a black strap
+meshes: Body,Gear,Hair,Headwear,Outfit
+shape_keys: none (baked at body_params; do not set blend_shapes/*)
+tri_budget: 35000
+tris: 27748
+tris_by_mesh: {"Body": 9082, "Gear": 378, "Hair": 1200, "Headwear": 672, "Outfit": 16416}

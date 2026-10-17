@@ -74,6 +74,9 @@ const DEFAULT_PATH: String = "res://content/data/ui/hud_tweak.tres"
 ## r224 GN 1080p capture: the Tab sheet's objectives column shows at most this many lines (the sheet ran off the
 ## screen with 16 objectives); past it, the finished ones fold into one "N done" line and a "+N more" line closes.
 @export var scoreboard_objectives_max: int = 8
+## D-142 (clear glass is see-through for detection, PD2): the stealth card's glass row and the briefing's "Clear glass"
+## line on heists with heist_list.tres "glazing". OFF until D-142 is on trunk (the lead says when).
+@export var d142_glass_tips: bool = false
 
 
 static func load_default() -> HudTweak:

@@ -62,7 +62,8 @@
     "clips": [
       "phone_call",
       "phone_seated",
-      "walk_text"
+      "walk_text",
+      "queue_idle_b"
     ],
     "scene": "res://world/characters/_props/hand_phone.tscn",
     "socket": "HandR"

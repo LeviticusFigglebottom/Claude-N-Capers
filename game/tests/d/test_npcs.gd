@@ -7,6 +7,8 @@
 ## stands out (tallest, the only ones in the ice accent), and the IT contractor's lanyard and bag. D-115 hand props
 ## (world/characters/_props): each scene loads, is hand-sized and sits at its SOURCE.txt grip; on the cleaner playing
 ## smoke with hand_cigarette under HandR/Socket the cigarette is between the fingers and at the lips at each drag.
+## OF-D1 (Ostrander Federal): the ten Halden uniformed faces and the Halden bodyguard (radio at Hip, livery / pin), and
+## the VIP client's look (distinct from every bank customer, officer and the manager).
 ## Regenerate with tools/blender/characters/assemble.sh.
 extends TestCase
 
@@ -15,6 +17,9 @@ const Spec: GDScript = preload("res://world/characters/_tools/character_spec.gd"
 const NPCS: Array[String] = [
 	"char_npc_bank_teller",
 	"char_npc_bank_teller_b",
+	"char_npc_bank_teller_c",
+	"char_npc_bank_teller_d",
+	"char_npc_bank_teller_e",
 	"char_npc_bank_night_manager",
 	"char_npc_bank_cleaner",
 	"char_npc_bank_cleaner_b",
@@ -41,13 +46,32 @@ const NPCS: Array[String] = [
 	"char_npc_helena_moor",
 	"char_npc_km_assistant",
 	"char_npc_km_associate",
+	"char_security_bodyguard",
+	"char_bank_vip_client",
 ]
 const GUARD: String = "char_npc_bank_guard"
+## OF-D1 (Ostrander Federal day shift, D-130-sized): the ten Halden uniformed faces (char_security.py) and the Halden
+## close-protection officer who escorts the vip_client.
+const HALDEN_OFFICERS: Array[String] = [
+	"char_security_officer", "char_security_officer_b", "char_security_officer_c", "char_security_officer_d",
+	"char_security_officer_e", "char_security_officer_f", "char_security_officer_g", "char_security_officer_h",
+	"char_security_officer_i", "char_security_officer_j",
+]
+const BODYGUARD: String = "char_security_bodyguard"
+const VIP: String = "char_bank_vip_client"
+## The Ostrander Federal customers, staff and officers the VIP client must not resemble.
+const VIP_OTHERS: Array[String] = [
+	"char_bank_customer", "char_bank_customer_b", "char_civilian_customer_a", "char_civilian_customer_b",
+	"char_bank_officer", "char_bank_officer_b", "char_bank_manager",
+]
 ## Every NPC whose pager is answered at Hip/Socket (the radio on the belt).
 const RADIO_GUARDS: Array[String] = [
 	"char_npc_bank_guard", "char_npc_northgate_guard", "char_npc_northgate_guard_b", "char_npc_northgate_guard_c",
 	"char_npc_northgate_guard_d", "char_npc_northgate_guard_e", "char_npc_northgate_guard_f", "char_npc_northgate_guard_g",
 	"char_npc_northgate_guard_h", "char_npc_northgate_guard_i",
+	"char_security_officer", "char_security_officer_b", "char_security_officer_c", "char_security_officer_d",
+	"char_security_officer_e", "char_security_officer_f", "char_security_officer_g", "char_security_officer_h",
+	"char_security_officer_i", "char_security_officer_j", "char_security_bodyguard",
 ]
 const NORTHGATE: Array[String] = [
 	"char_npc_northgate_guard", "char_npc_northgate_guard_b", "char_npc_northgate_guard_c", "char_npc_northgate_guard_d",
@@ -150,6 +174,42 @@ const D115_CAST: Dictionary = {
 		"Outfit": ["char_shirt_blue", "char_knit_grey", "char_work_charcoal", "char_glove_white", "char_chino_khaki"],
 		"Gear": ["char_medic_white"], "Headwear": ["char_metal_silver", "polymer_black"],
 	},
+	# OF-D1 vip_client: the private client (camel overcoat, grey suit, sapphire silk scarf, leather gloves, gold watch)
+	"char_bank_vip_client": {
+		"Outfit": [
+			"char_coat_camel", "char_suit_grey", "char_shirt_white", "char_tie_burgundy", "char_satin_sapphire",
+			"leather_dark",
+		],
+		"Gear": ["brass"],
+	},
+}
+## OF-D1 bank day pools (test_of_bank_civilians).
+const OF_TELLERS: Array[String] = [
+	"char_npc_bank_teller", "char_npc_bank_teller_b", "char_npc_bank_teller_c", "char_npc_bank_teller_d",
+	"char_npc_bank_teller_e",
+]
+const OF_OFFICERS: Array[String] = [
+	"char_bank_officer", "char_bank_officer_b", "char_bank_officer_c", "char_bank_officer_d",
+]
+const OF_CUSTOMERS: Array[String] = [
+	"char_bank_customer", "char_bank_customer_b", "char_civilian_customer_a", "char_civilian_customer_b",
+	"char_bank_customer_c", "char_bank_customer_d", "char_bank_customer_e", "char_bank_customer_f",
+	"char_bank_customer_g", "char_bank_customer_h", "char_bank_customer_i", "char_bank_customer_j",
+]
+const OF_LOOK: Dictionary = {
+	"char_npc_bank_teller_c": {"Outfit": ["char_knit_slate", "char_bank_red"]},
+	"char_npc_bank_teller_d": {"Outfit": ["char_bank_slate", "char_bank_red"], "Headwear": ["char_hair_brown"]},
+	"char_npc_bank_teller_e": {"Outfit": ["char_bank_slate", "char_bank_red"], "Gear": ["brass"]},
+	"char_bank_officer_c": {"Outfit": ["char_shirt_white", "char_tie_burgundy"], "Gear": ["char_medic_white", "brass"]},
+	"char_bank_officer_d": {"Outfit": ["char_shirt_white"], "Headwear": ["char_hair_dark", "char_button_dark"]},
+	"char_bank_customer_c": {"Outfit": ["char_skirt_navy", "char_knit_mustard", "char_shirt_white"]},
+	"char_bank_customer_d": {"Outfit": ["char_nylon_black", "char_work_charcoal"], "Headwear": ["char_hivis_orange"]},
+	"char_bank_customer_e": {"Outfit": ["char_coat_heather", "char_knit_cream"], "Headwear": ["char_hair_grey"]},
+	"char_bank_customer_f": {"Outfit": ["char_coat_stone", "char_shirt_blue", "char_suit_navy"]},
+	"char_bank_customer_g": {"Outfit": ["char_hoodie_cream", "char_denim"], "Headwear": ["polymer_black"]},
+	"char_bank_customer_h": {"Outfit": ["char_canvas_tan", "char_knit_grey", "char_work_navy"]},
+	"char_bank_customer_i": {"Outfit": ["char_fleece_maroon", "char_chino_khaki"]},
+	"char_bank_customer_j": {"Outfit": ["char_suit_brown", "char_knit_cream"], "Headwear": ["chrome"]},
 }
 ## D-115 hand props (world/characters/_props, tools/blender/characters/make_hand_prop_scenes.py): the index, the
 ## largest extent a prop may have (m; the mop is 1.4 m long), and the smoke check (cigarette length, drag frames).
@@ -499,6 +559,47 @@ func test_northgate_is_not_halden() -> void:
 		assert_has(by_mesh.get("Gear", []) as Array, "char_ng_enamel", "%s: Northgate lapel pin" % id)
 
 
+## OF-D1: every uniformed Halden face (a-j) wears the full livery and no bank livery.
+func test_halden_officers_wear_the_livery() -> void:
+	for id: String in HALDEN_OFFICERS:
+		var by_mesh: Dictionary = _materials(id)
+		var mats: Array[String] = _all_materials(by_mesh)
+		for need: String in HALDEN:
+			assert_has(mats, need, "%s wears Halden %s" % [id, need])
+		for m: String in mats:
+			assert_false(m.begins_with("char_bank_"), "%s: no bank livery (%s)" % [id, m])
+		assert_true(by_mesh.has("Headwear"), "%s: peaked cap (Headwear)" % id)
+
+
+## OF-D1 guard_vip: the Halden bodyguard is plainclothes (dark suit, white shirt, no uniform shirt, no cap) but carries
+## the Halden pin (gold rim, burgundy enamel), the earpiece cable and the belt radio (test above).
+func test_bodyguard_is_halden_close_protection() -> void:
+	var by_mesh: Dictionary = _materials(BODYGUARD)
+	var outfit: Array = by_mesh.get("Outfit", []) as Array
+	var gear: Array = by_mesh.get("Gear", []) as Array
+	assert_has(outfit, "char_tux_black", "bodyguard: near-black suit")
+	assert_has(outfit, "char_shirt_white", "bodyguard: white shirt")
+	assert_false(_all_materials(by_mesh).has("char_sec_shirt"), "bodyguard: not the uniform shirt")
+	assert_false(by_mesh.has("Headwear"), "bodyguard: no cap")
+	assert_has(gear, "brass", "bodyguard: Halden pin rim")
+	assert_has(gear, "char_sec_burgundy", "bodyguard: Halden pin enamel")
+	assert_has(gear, "char_cable_black", "bodyguard: earpiece cable")
+	for id: String in NORTHGATE:
+		assert_ne(_materials(id).get("Outfit", []), outfit, "bodyguard: not the Northgate suit (%s)" % id)
+
+
+## OF-D1 civ_vip: the VIP client is nobody else in the bank: no other customer, officer or manager wears the camel coat
+## with the sapphire silk scarf, or wears his outfit.
+func test_vip_client_is_distinct() -> void:
+	var vip: Dictionary = _materials(VIP)
+	assert_false(vip.has("Headwear"), "VIP: no glasses or hat (the manager wears silver glasses)")
+	for id: String in VIP_OTHERS:
+		var other: Dictionary = _materials(id)
+		var mats: Array[String] = _all_materials(other)
+		assert_false(mats.has("char_coat_camel") and mats.has("char_satin_sapphire"), "%s: not the VIP's coat + scarf" % id)
+		assert_ne(other.get("Outfit", []), vip.get("Outfit", []), "%s: not the VIP's outfit" % id)
+
+
 func test_it_contractor_has_lanyard_and_bag() -> void:
 	var by_mesh: Dictionary = _materials("char_npc_it_contractor")
 	var gear: Array = by_mesh.get("Gear", []) as Array
@@ -534,6 +635,38 @@ func test_km_late_staff_looks() -> void:
 		assert_false(_all_materials(by_mesh).has("char_silk_ivory"), "%s: not Moor's ivory blouse" % pair[0])
 		assert_false(_all_materials(by_mesh).has("char_lanyard"), "%s: not the contractor's visitor lanyard" % pair[0])
 	assert_ne(asst.get("Body", []), assoc.get("Body", []), "assistant and associate: different skins")
+
+
+## OF-D1 (Ostrander Federal by day, D-130: +35 % civilians at Cataclysm): the bank's day pools. Every teller wears the
+## bank uniform (cream, bank red, dark slate), every officer the grey worsted with the bank lanyard; each new look wears
+## its look-defining material; and no two looks in a pool are twins (skin, hair, headwear and outfit all equal).
+func test_of_bank_civilians() -> void:
+	var sigs: Dictionary = {}
+	for pool: Array in [OF_TELLERS, OF_OFFICERS, OF_CUSTOMERS]:
+		for id: Variant in pool:
+			assert_true(_index.has(String(id)), "%s in characters.json" % id)
+			var by_mesh: Dictionary = _materials(String(id))
+			var parts: Array[String] = []
+			for mesh: String in ["Body", "Hair", "Headwear", "Outfit"]:
+				var mats: Array = (by_mesh.get(mesh, []) as Array).duplicate()
+				mats.sort()
+				parts.append("%s=%s" % [mesh, ",".join(PackedStringArray(mats))])
+			sigs[String(id)] = "|".join(PackedStringArray(parts))
+			var want: Dictionary = OF_LOOK.get(String(id), {})
+			for mesh: String in want:
+				for m: String in want[mesh]:
+					assert_has(by_mesh.get(mesh, []) as Array, m, "%s: %s wears %s" % [id, mesh, m])
+			var all: Array[String] = _all_materials(by_mesh)
+			if pool == OF_TELLERS:
+				for m: String in ["char_bank_cream", "char_bank_red", "char_bank_slate_dark"]:
+					assert_has(all, m, "%s: teller uniform %s" % [id, m])
+			elif pool == OF_OFFICERS:
+				assert_has(all, "char_suit_grey", "%s: the officers' grey worsted" % id)
+				assert_has(all, "char_bank_red", "%s: the bank lanyard" % id)
+		for i: int in range(pool.size()):
+			for j: int in range(i + 1, pool.size()):
+				assert_ne(sigs.get(String(pool[i]), ""), sigs.get(String(pool[j]), ""),
+						"%s and %s: not twins" % [pool[i], pool[j]])
 
 
 ## Players must find Kessler in a crowd: in both looks the tallest NPC and the only one wearing the

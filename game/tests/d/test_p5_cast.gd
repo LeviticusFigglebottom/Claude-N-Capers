@@ -30,6 +30,9 @@ const NEW: Array[String] = [
 	"char_gallery_guard_g",
 	"char_gallery_guard_h",
 	"char_gallery_guard_i",
+	"char_gallery_guard_j",
+	"char_gallery_guard_k",
+	"char_gallery_guard_l",
 	"char_gallery_patron",
 	"char_gallery_patron_b",
 	"char_gallery_admin",
@@ -51,6 +54,11 @@ const NEW: Array[String] = [
 	"char_bank_customer_b",
 	"char_armored_car_crew",
 	"char_armored_car_crew_b",
+	"char_armored_car_crew_c",
+	"char_armored_car_crew_d",
+	"char_armored_car_crew_e",
+	"char_armored_car_crew_f",
+	"char_armored_car_marshal",
 	"char_club_bouncer",
 	"char_club_bouncer_b",
 	"char_club_bartender",
@@ -110,9 +118,13 @@ const ROSTER_FALLBACK: Dictionary = {
 ## its roles, has at least that many distinct looks, and no two looks share a face (gender, skin, hair, hair colour
 ## and an age bucket from SOURCE.txt params), so two NPCs drawn from the pool are never twins. D-115 DB cast: the cartel
 ## pool has 12 looks (up to 12 posted gunmen at Cataclysm), civ_worker the three yard hands dock_worker a-c. D-130
-## (Cataclysm: about +50 % guards, +35 % civilians on GN, SL and ND): GN guards 9 looks (at least 3 women), SL
-## Northgate guards 9, ND Halden guards 6; civilians: SL cleaners 4, ND cleaners 2, GN patrons 12; GN gala_extra
-## (cloakroom waitstaff + drawings-cabinet attendant): GN waitstaff 3, GN attendants 3.
+## (Cataclysm: about +50 % guards, +35 % civilians on GN, SL and ND): GN guards 9 looks, 12 since the Cataclysm
+## inspection fields 11 (at least 4 women), SL Northgate guards 9, ND Halden guards 6; civilians: SL cleaners 4,
+## ND cleaners 2, GN patrons 12; GN gala_extra
+## (cloakroom waitstaff + drawings-cabinet attendant): GN waitstaff 3, GN attendants 3. OF-D1 (an L heist, up to 6 guards,
+## 4 tellers, 3 officers and 13 customers): OF Halden guards 10 (at least 3 women), tellers 5, officers 4, customers 12.
+## D-140 twins audit: Glasshouse guards 10 (one Halden pool on every post + the operator), customers 12.
+## RT-D1 (three trucks x driver + custodian): Vaultline crew 6 (at least 2 women), site guards 10, street civilians 12.
 const POOLS: Array = [
 	["dockside_burn", ["cartel_gate", "cartel_yard_w", "cartel_yard_e", "cartel_hall", "cartel_platform", "cartel_dock",
 		"cartel_quay", "cartel_reinf"], 12, 1],
@@ -122,11 +134,22 @@ const POOLS: Array = [
 	["dockside_burn", ["civ_worker"], 3, 1],
 	["night_deposit", ["guard_hall", "guard_basement", "guard_rover"], 6, 1],
 	["gallery_night", ["gallery_guard", "gallery_inspector", "guard_hall", "guard_rover_ground", "guard_rover_upper",
-		"guard_rover_basement", "guard_mews", "guard_operator", "guard_inspection"], 9, 3],
+		"guard_rover_basement", "guard_mews", "guard_operator", "guard_inspection"], 12, 4],
 	["night_deposit", ["civ_cleaner"], 2, 1],
 	["gallery_night", ["gallery_patron", "civ_patron"], 12, 3],
 	["gallery_night", ["gallery_waitstaff", "civ_waitstaff"], 3, 1],
 	["gallery_night", ["gallery_attendant", "civ_attendant"], 3, 1],
+	["ostrander_federal", ["guard_lobby", "guard_vault", "guard_rover_hall", "guard_rover_gallery",
+		"guard_rover_basement", "guard_rover_dock", "guard_extra_hall", "guard_extra_basement"], 10, 3],
+	["ostrander_federal", ["bank_teller", "civ_teller"], 5, 2],
+	["ostrander_federal", ["bank_officer", "civ_officer"], 4, 1],
+	["ostrander_federal", ["civ_customer", "civ_plaza", "civ_client"], 12, 4],
+	["glasshouse", ["guard_post_floor", "guard_rover_boh", "guard_rover_upper", "guard_alley_smoker",
+		"security_operator"], 10, 3],
+	["glasshouse", ["civ_customer"], 12, 4],
+	["rolling_thunder", ["convoy_t1", "convoy_t2", "convoy_t3"], 6, 2],
+	["rolling_thunder", ["site_guard", "guard_site_gate", "guard_site_frame", "guard_site_cabins"], 10, 3],
+	["rolling_thunder", ["street_civilian", "civ_street", "civ_bus", "civ_diner"], 12, 4],
 ]
 ## Northgate Executive Protection's own shirt; no other firm's livery (Halden char_sec_, bank, police).
 const NORTHGATE_SHIRT: String = "char_ng_shirt"
@@ -140,12 +163,21 @@ const MIN_COUNT: Dictionary = {
 const RADIO: Array[String] = [
 	"char_gallery_guard", "char_gallery_guard_b", "char_gallery_guard_c", "char_gallery_guard_d", "char_gallery_guard_e",
 	"char_gallery_guard_f", "char_gallery_guard_g", "char_gallery_guard_h", "char_gallery_guard_i",
+	"char_gallery_guard_j", "char_gallery_guard_k", "char_gallery_guard_l",
 	"char_armored_car_crew", "char_armored_car_crew_b", "char_club_bouncer", "char_club_bouncer_b",
+	"char_armored_car_crew_c", "char_armored_car_crew_d", "char_armored_car_crew_e", "char_armored_car_crew_f",
+	"char_armored_car_marshal",
 ]
-## Halberd Gallery Security (D-130: nine faces a-i).
+## Halberd Gallery Security (D-130: nine faces a-i; twelve, a-l, for the Cataclysm inspection).
 const GN_GUARDS: Array[String] = [
 	"char_gallery_guard", "char_gallery_guard_b", "char_gallery_guard_c", "char_gallery_guard_d", "char_gallery_guard_e",
 	"char_gallery_guard_f", "char_gallery_guard_g", "char_gallery_guard_h", "char_gallery_guard_i",
+	"char_gallery_guard_j", "char_gallery_guard_k", "char_gallery_guard_l",
+]
+## Vaultline Armored Transport (RT-D1: six crew faces a-f and the route marshal).
+const VAULTLINE: Array[String] = [
+	"char_armored_car_crew", "char_armored_car_crew_b", "char_armored_car_crew_c", "char_armored_car_crew_d",
+	"char_armored_car_crew_e", "char_armored_car_crew_f", "char_armored_car_marshal",
 ]
 ## Roles whose bodies carry a pager (p5_cast.json pager_roles; club_bouncer per QC-70).
 const PAGER_ROLES: Array[String] = ["gallery_guard", "bank_guard", "armored_car_crew", "club_bouncer"]
@@ -171,6 +203,14 @@ const GALA_KIT: Array[String] = ["char_tux_black", "char_satin_black", "char_vel
 ## NpcVisualTweak.heist_tag_characters.gallery_night. Its roster (gallery_night.md spawn data) names the
 ## camera operator CAMERA_OPERATOR; the greybox spawn (gn_content.gd) tags it guard_operator.
 const GN: String = "gallery_night"
+const OF: String = "ostrander_federal"
+## ostrander_federal.md roster spawn tags (civ_manager_<route> expanded over manager_route mgr_floor / mgr_gallery /
+## mgr_vault; the CAMERA_OPERATOR spawn is security_operator).
+const OF_TAGS: Array[String] = ["guard_lobby", "guard_vault", "guard_rover_hall", "guard_rover_gallery",
+	"guard_rover_basement", "guard_rover_dock", "guard_extra_hall", "guard_extra_basement", "security_operator",
+	"civ_teller", "civ_manager_mgr_floor",
+	"civ_manager_mgr_gallery", "civ_manager_mgr_vault", "civ_customer", "civ_plaza", "civ_client", "civ_officer", "civ_vip",
+	"guard_vip", "guard_vaultline"]
 const GN_OPERATOR_TAG: String = "guard_operator"
 ## Up to nine patrons are live at once (gallery_night.md: `patrons` 3-9), twelve at Cataclysm (D-130: about +35 %
 ## civilians), so twelve looks keep the crowd free of twins; at least this many of each gender.
@@ -492,7 +532,7 @@ func test_radio_hip_sockets() -> void:
 ## TAC or the bank livery; each wears its own mark.
 func test_company_liveries() -> void:
 	var ids: Array[String] = GN_GUARDS.duplicate()
-	ids.append_array(["char_armored_car_crew", "char_armored_car_crew_b"])
+	ids.append_array(VAULTLINE)
 	for id: String in ids:
 		var mats: Array[String] = _materials(id)
 		for m: String in mats:
@@ -578,6 +618,36 @@ func test_gallery_tag_map() -> void:
 		assert_false(staff.has(String(cid)), "%s: patron %s is not also staff/security" % [GN, cid])
 	for cid: Variant in tags.get("civ_conservator", []) as Array:
 		assert_false((tags.get("civ_attendant", []) as Array).has(cid), "%s: conservator %s is not an attendant" % [GN, cid])
+
+
+## OF-D1: tag_map.ostrander_federal carries every roster spawn tag (ostrander_federal.md, "Staff, civilian and guard
+## roster"), each id is cast in an ostrander_federal role and has a scene, and the rare vip_client pair has its own looks.
+func test_of_tag_map() -> void:
+	var tags: Dictionary = ((_cast.get("tag_map", {}) as Dictionary).get(OF, {}) as Dictionary)
+	assert_false(tags.is_empty(), "p5_cast.json has tag_map.%s" % OF)
+	var cast_ids: Array[String] = []
+	var roles: Dictionary = (_cast.get("heists", {}) as Dictionary).get(OF, {}) as Dictionary
+	for role: String in roles:
+		for cid: Variant in roles[role]:
+			cast_ids.append(String(cid))
+	var by_id: Dictionary = {}
+	for asset: String in _index:
+		by_id[String((_index[asset] as Dictionary)["id"])] = _index[asset]
+	for tag: String in OF_TAGS:
+		assert_true(tags.has(tag), "%s roster tag %s is in tag_map" % [OF, tag])
+	for tag: String in tags:
+		var ids: Array = tags[tag] as Array
+		assert_true(ids.size() >= 1, "%s/%s: >= 1 id" % [OF, tag])
+		for cid: Variant in ids:
+			var id: String = String(cid)
+			assert_has(cast_ids, id, "%s/%s: %s is cast in a %s role" % [OF, tag, id, OF])
+			assert_true(by_id.has(id) and ResourceLoader.exists(String((by_id.get(id, {}) as Dictionary).get("scene", ""))),
+					"%s/%s: %s scene exists" % [OF, tag, id])
+	assert_eq(tags.get("guard_vip", []), ["security_bodyguard"], "%s/guard_vip: the Halden bodyguard" % OF)
+	assert_eq(tags.get("civ_vip", []), ["bank_vip_client"], "%s/civ_vip: the VIP client" % OF)
+	for tag: String in ["civ_customer", "civ_plaza", "civ_client", "guard_lobby"]:
+		for cid: String in ["security_bodyguard", "bank_vip_client"]:
+			assert_false((tags.get(tag, []) as Array).has(cid), "%s/%s: %s only appears for vip_client" % [OF, tag, cid])
 
 
 ## GN-D1: up to nine live patrons get nine distinct evening-wear looks, both genders (SOURCE.txt params).

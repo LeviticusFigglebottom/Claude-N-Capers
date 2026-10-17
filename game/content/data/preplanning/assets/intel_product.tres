@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="PreplanAssetDef" format=3]
+
+[ext_resource type="Script" path="res://content/preplanning/preplan_asset_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"asset.intel_product"
+category = &"intel"
+cost = 1200
+favors = 1
+reveals = Array[StringName]([&"product_location"])
+tags = Array[StringName]([&"stealth"])
+heists = Array[StringName]([&"afterhours"])
