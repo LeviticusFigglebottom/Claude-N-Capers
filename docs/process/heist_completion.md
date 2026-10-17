@@ -52,3 +52,7 @@ and reports a gap list; the LEAD folds the gaps in here as rows (id, heist, owne
 | B-SL | SL | B (A for logic) | D-115 strings audit vs design doc (as B-GN) | open |
 | ND-3 | ND | C | secure van at (9, 0, 30): last ~15 m of carry route has no cover (P ND-2: 7 downs in 25 s vs 4-7 enemies); add cover props | open |
 
+| X-6 | GH | A, C, B | D-130: GH pager cap by difficulty [4,4,3,3,2,1] + Titan cameras from Hazardous (C values, A runtime, B card) | open |
+| X-7 | GN, SL, ND | C, A | D-130: guards/civilians scale with difficulty (≈ +50 % / +35 % at Cataclysm; C rows + spawns, A runtime + count test) | open |
+| X-8 | all | A, P | D-130: cameras detect ~20 % faster (A tweak + test, P feel check) | open |
+| DB-P1 | DB | P (C, B, A) | first real-input pass: OOM at t=216 (product/cartel/breach/burn done, 0 STUCK). C: ChamberANorth shutter on the strongroom nav path, breach watcher misses an open entry door; B: "Thin out the gunmen" during the burn; A: no reroute, CREW_STACK ×20 | in progress |
