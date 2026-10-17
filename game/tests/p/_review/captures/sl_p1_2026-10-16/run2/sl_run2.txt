@@ -1,0 +1,82 @@
+[OBS t=0.0] HEIST runtime up (shadow_ledger)
+[SLR 41.3s t=0.0] seed 13 variants camera=[&"cam_c"] security_room_staffed=[&"sec_empty"] server_room=[&"srv_locked"] keycard=[&"kc_cleaner", &"kc_it"] code_note=[&"code_security_log"] laptop=[&"lap_kessler"] guard_post=[&"rover_l42"] guard_extra=[] cleaners=[&"cleaners_2"] late_partner=[&"moor_gone"] escape=[&"esc_service"] laser_pattern=[&"lz_sweep"]
+[OBS t=1.0] FRAME obs_001_t0001.png
+[SLR 118.4s t=2.1] pilot: calibrated 0.001600 rad/px yaw, 0.001600 rad/px pitch (settings formula said (0.0016, 0.0016))
+[SLR 118.4s t=2.1] spawn (26.2, 0.0, 9.0) masked false
+[SLR 195.3s t=2.6] STEP _casing begin
+[SLR 195.7s t=3.5] goto casing_0 (25.0, 0.0, 8.5): reached (at (25.4, 0.0, 8.7))
+[OBS t=5.3] CREW_STACK AI 1 inside the player (0.58 m) at (27.8, 0.0, 8.6)
+[SLR 198.3s t=6.0] goto casing_1 (29.0, 0.0, 8.5): reached (at (28.5, 0.0, 8.5))
+[SLR 200.5s t=8.3] goto casing_2 (29.0, 0.0, 11.6): reached (at (29.2, 0.0, 11.1))
+[OBS t=10.3] CREW AI spacing 1.3 m, to player 1.8 m, exposed 0% (57 samples, enemy 11 m)
+[SLR 203.5s t=11.2] goto casing_3 (25.0, 0.0, 11.6): reached (at (25.5, 0.0, 11.5))
+[SLR 290.5s t=13.0] goto casing_4 (24.8, 0.0, 13.5): reached (at (24.9, 0.0, 13.0))
+[OBS t=14.2] PROMPT ui.prompt.interact on RefuseDoor/Interactable
+[SLR 291.8s t=14.3] pilot: use RefuseDoor (open_door) -> OK in 0.0 s
+[SLR 294.4s t=16.9] goto casing_5 (27.7, 0.0, 14.5): reached (at (27.2, 0.0, 14.5))
+[SLR 306.5s t=19.8] goto casing_6 (24.8, 0.0, 15.6): reached (at (24.9, 0.0, 15.1))
+[OBS t=20.5] CREW AI spacing 1.3 m, to player 4.4 m, exposed 0% (57 samples, enemy 10 m)
+[SLR 308.6s t=21.9] goto casing_7 (22.5, 0.0, 15.8): reached (at (23.0, 0.0, 15.8))
+[SLR 313.6s t=26.9] pilot: t=5 at (22.2, 1.8, 11.9) corner (22.8, 2.0, 11.6) yaw_err -0.38 fwd=true path=10 mouse_mode=2 state=0 look=(-13.27,0.00) pin_yaw=-13.4661009830597 bot=false
+[OBS t=30.5] CREW AI spacing 1.3 m, to player 6.3 m, exposed 0% (60 samples, enemy 9 m)
+[SLR 318.2s t=31.5] goto casing_8 (22.5, 3.6, 15.8): reached (at (22.8, 3.6, 15.4))
+[SLR 393.2s t=37.0] pilot: t=5 at (22.3, 5.8, 11.6) corner (23.0, 6.1, 11.8) yaw_err -0.02 fwd=true path=10 mouse_mode=2 state=0 look=(-14.40,0.00) pin_yaw=-14.428304982197 bot=false
+[OBS t=40.8] CREW AI spacing 1.3 m, to player 8.2 m, exposed 0% (57 samples, enemy 8 m)
+[SLR 487.6s t=41.1] goto casing_9 (22.5, 8.0, 15.8): reached (at (22.8, 8.0, 15.5))
+[SLR 544.3s t=46.6] pilot: t=5 at (22.0, 5.7, 12.1) corner (22.2, 6.0, 11.6) yaw_err 1.34 fwd=false path=9 mouse_mode=2 state=0 look=(-14.35,0.00) pin_yaw=-14.1566193854014 bot=false
+[SLR 547.1s t=49.4] goto casing_10 (22.5, 3.6, 15.8): reached (at (22.2, 3.6, 15.4))
+[SLR 547.1s t=49.4] STEP _casing reached
+[SLR 547.1s t=49.4] STEP _mask begin
+[SLR 548.1s t=50.5] objective casing -> 2
+[OBS t=51.2] CREW AI spacing 1.3 m, to player 8.4 m, exposed 0% (60 samples, enemy 10 m)
+[SLR 548.9s t=51.3] masked true
+[SLR 548.9s t=51.3] STEP _mask reached
+[SLR 548.9s t=51.3] STEP _enter_l41 begin
+[SLR 558.2s t=60.5] pilot: use StairBL41 (open_door) -> OK in 8.0 s
+[SLR 558.5s t=60.8] StairBL41 open true (lock 1)
+[OBS t=61.3] CREW AI spacing 1.3 m, to player 8.0 m, exposed 0% (60 samples, enemy 12 m)
+[SLR 615.5s t=61.3] STEP _enter_l41 reached
+[SLR 615.5s t=61.3] STEP _keycard begin
+[SLR 615.5s t=61.3] keycard: Slot_kc_it at (33.4, 4.3, 9.0)
+[SLR 620.1s t=66.3] pilot: t=5 at (24.8, 3.6, 11.0) corner (24.9, 3.8, 9.5) yaw_err -0.00 fwd=true path=14 mouse_mode=2 state=0 look=(-18.94,0.00) pin_yaw=-18.9380155618637 bot=false
+[SLR 625.0s t=71.3] pilot: t=10 at (27.0, 3.6, 7.0) corner (33.3, 3.8, 7.2) yaw_err 0.58 fwd=true path=10 mouse_mode=2 state=0 look=(-21.02,0.00) pin_yaw=-20.8275307095537 bot=false
+[OBS t=71.4] CREW AI spacing 1.3 m, to player 5.2 m, exposed 0% (60 samples, enemy 6 m)
+[SLR 630.8s t=77.1] pilot: use ITDoor (open_door) -> OK in 0.0 s
+[SLR 632.8s t=78.5] pilot: t=15 at (33.6, 3.6, 7.7) corner (33.8, 3.8, 8.2) yaw_err -0.71 fwd=false path=8 mouse_mode=2 state=0 look=(-20.82,0.00) pin_yaw=-21.0135866205746 bot=false
+[SLR 635.4s t=81.4] objective keycard -> 2
+[OBS t=82.0] CREW AI spacing 1.3 m, to player 7.0 m, exposed 0% (60 samples, enemy 8 m)
+[SLR 669.6s t=82.0] STEP _keycard reached
+[SLR 669.6s t=82.0] STEP _laptop begin
+[SLR 669.6s t=82.0] laptop at (4.3, 3.6, 2.2) ([&"lap_kessler"])
+[SLR 674.1s t=87.0] pilot: t=5 at (30.1, 3.6, 7.1) corner (30.6, 3.8, 7.0) yaw_err 2.94 fwd=false path=13 mouse_mode=2 state=0 look=(-23.36,0.00) pin_yaw=-23.1676930523172 bot=false
+[SLR 678.1s t=91.1] careful: Npc_civilian faces the pilot at 7.9 m (alert 0): back off to (25.7, 3.6, 7.0) and wait
+[SLR 678.1s t=91.1] DETECT start: CameraC3 (kind 2) at 4.4 m, pilot (25.4, 3.6, 7.1) crouched false
+[SLR 678.2s t=91.1] DETECT start: Npc_civilian (kind 1) at 7.8 m, pilot (25.4, 3.6, 7.1) crouched true
+[SLR 679.0s t=91.9] DETECT Npc_civilian meter 0.25 (0.8 s after first sight)
+[OBS t=92.0] CREW AI spacing 1.3 m, to player 6.0 m, exposed 0% (60 samples, enemy 5 m)
+[SLR 679.6s t=92.5] DETECT CameraC3 meter 0.26 (1.4 s after first sight)
+[SLR 680.0s t=92.9] DETECT Npc_civilian meter 0.51 (1.8 s after first sight)
+[SLR 680.9s t=93.8] DETECT Npc_civilian meter 0.76 (2.7 s after first sight)
+[SLR 681.8s t=94.7] DETECT Npc_civilian meter 1.00 (3.6 s after first sight)
+[SLR 681.8s t=94.7] ALERT Npc_civilian 0 -> 4 (dist 3.1)
+[SLR 683.0s t=96.0] careful: clear (waited, watcher now <null>)
+[SLR 684.0s t=96.9] pilot: t=10 at (25.2, 3.6, 7.2) corner (25.0, 3.8, 9.3) yaw_err 0.00 fwd=true path=9 mouse_mode=2 state=0 look=(-22.09,0.00) pin_yaw=-22.0858784977099 bot=false
+[SLR 685.0s t=98.0] pilot: STUCK at (25.2, 3.6, 7.2) heading to (25.0, 3.8, 9.3); rays: slide:/root/PO5Driver/HeistRuntime/ShadowLedger/Geometry/Building/InteriorWalls/L41/X0750_2_00@(25.5, 4.0, 7.4) n=(-0.8, 0.0, -0.6), slide:/root/PO5Driver/HeistRuntime/ShadowLedger/Geometry/Building/InteriorWalls/L41/Z2550_0_00@(25.4, 4.0, 7.5) n=(-0.6, 0.0, -0.8), vel=(0.0, 0.0, 0.0) floor=true state=0
+[SLR 786.4s t=98.5] pilot: detour right 0.7 m to (24.5, 3.8, 7.4) (attempt 1)
+[INFO][stealth][p1] ALARM: civilian_call (source 113)
+[SLR 844.0s t=99.8] ALERT Npc_guard 0 -> 10 (dist 8.0)
+[SLR 844.0s t=99.8] ALERT Npc_guard2 0 -> 10 (dist 4.7)
+[SLR 844.0s t=99.8] ALERT Npc_civilian2 0 -> 4 (dist 20.3)
+[SLR 844.0s t=99.8] ALARM civilian_call source /root/PO5Driver/HeistRuntime/Dynamic/Npc_civilian (pilot at (24.7, 3.6, 8.6))
+[OBS t=102.1] CREW AI spacing 1.3 m, to player 4.9 m, exposed 0% (54 samples, enemy 4 m)
+[SLR 939.0s t=102.7] pilot: t=15 at (24.7, 3.6, 11.9) corner (24.7, 3.8, 12.3) yaw_err -0.01 fwd=true path=6 mouse_mode=2 state=0 look=(-22.00,0.00) pin_yaw=-22.0099016586755 bot=false
+[SLR 1080.0s t=104.8] HEIST ENDED { "heist_id": &"shadow_ledger", "success": false, "stealth": false, "time_s": 1072.273, "difficulty": 0, "contract_pay": 70000, "loot": [], "small_loot": 0, "crew": [{ "slot": 0, "is_ai": false, "name": "Player", "kills": 0, "specials_killed": 0, "downs": 0, "civilians_killed": 0, "shots": 0, "hits": 0, "headshots": 0, "in_custody": false, "escaped": false }, { "slot": 1, "is_ai": true, "name": "AI 1", "kills": 0, "specials_killed": 0, "downs": 0, "civilians_killed": 0, "shots": 0, "hits": 0, "headshots": 0, "in_custody": false, "escaped": false }, { "slot": 2, "is_ai": true, "name": "AI 2", "kills": 0, "specials_killed": 0, "downs": 0, "civilians_killed": 0, "shots": 0, "hits": 0, "headshots": 0, "in_custody": false, "escaped": false }, { "slot": 3, "is_ai": true, "name": "AI 3", "kills": 0, "specials_killed": 0, "downs": 0, "civilians_killed": 0, "shots": 0, "hits": 0, "headshots": 0, "in_custody": false, "escaped": false }], "pagers_answered": 0, "seed": 13, "variants": { &"late_partner": [&"moor_gone"], &"laptop": [&"lap_kessler"], &"server_room": [&"srv_locked"], &"keycard": [&"kc_cleaner", &"kc_it"], &"code_note": [&"code_security_log"], &"guard_post": [&"rover_l42"], &"guard_extra": [], &"security_room_staffed": [&"sec_empty"], &"camera": [&"cam_c"], &"laser_pattern": [&"lz_sweep"], &"vent_open": [&"vent_sealed"], &"gondola": [&"gon_north_l42"], &"escape": [&"esc_service"], &"cleaners": [&"cleaners_2"], &"kessler": [&"kessler_out"], &"time_lock_s": 90.0, "rare": [&"ledger_printout"] }, "fail_reason": &"stealth_only_alarm", "loot_available": 9 }
+[SLR 1080.0s t=104.8] FAIL heist ended after the alarm (alarm civilian_call)
+[SLR 1080.0s t=104.8] goto west wing 0 (24.8, 3.6, 15.0): reached (at (24.8, 3.6, 14.5))
+[SLR 1134.9s t=104.8] SUMMARY steps: _casing=ok, _mask=ok, _enter_l41=ok, _keycard=ok
+[SLR 1134.9s t=104.8] SUMMARY alarm: civilian_call at t=99.8
+[SLR 1134.9s t=104.8] SUMMARY detector CameraC3 kind 2 first t=91.1 max 0.41
+[SLR 1134.9s t=104.8] SUMMARY detector Npc_civilian kind 1 first t=91.1 max 1.00
+[SLR 1134.9s t=104.8] SUMMARY careful waits 1, STUCK rows 1
+[SLR 1134.9s t=104.8] SUMMARY STUCK at (25.2, 3.6, 7.2) toward (25.0, 3.8, 9.3): ["slide:/root/PO5Driver/HeistRuntime/ShadowLedger/Geometry/Building/InteriorWalls/L41/X0750_2_00@(25.5, 4.0, 7.4) n=(-0.8, 0.0, -0.6)", "slide:/root/PO5Driver/HeistRuntime/ShadowLedger/Geometry/Building/InteriorWalls/L41/Z2550_0_00@(25.4, 4.0, 7.5) n=(-0.6, 0.0, -0.8)", "vel=(0.0, 0.0, 0.0) floor=true state=0"]
+[SLR] RESULT FAIL at heist ended after the alarm
