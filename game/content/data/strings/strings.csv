@@ -1554,6 +1554,12 @@ item.mask_pattern.prowl.name,Prowl
 item.mask_pattern.halftone.name,Halftone
 item.mask_pattern.crackle.name,Crackle
 item.mask_pattern.starburst.name,Starburst
+item.mask_pattern.guilloche.name,Guilloche
+item.mask_pattern.vault_bolts.name,Vault Bolts
+item.mask_pattern.acanthus.name,Acanthus
+item.mask_pattern.facets.name,Facets
+item.mask_pattern.time_lock_dial.name,Time Lock
+item.mask_pattern.stencil.name,Stencil
 objective.glasshouse.casing,Case the store
 objective.glasshouse.keycard,Find the manager's keycard
 objective.glasshouse.code,Or find the safe code
@@ -2568,6 +2574,13 @@ item.mask_colors.heat_shimmer.name,Heat Shimmer
 item.mask_material.weave.name,Carbon Weave
 item.mask_material.anodized.name,Night Anodized
 item.mask_material.crown_gold.name,Crown Gold
+item.mask_material.limestone.name,Limestone
+item.mask_material.bronze.name,Statuary Bronze
+item.mask_material.oil_canvas.name,Oil on Canvas
+item.mask_material.container_rust.name,Container Rust
+item.mask_material.velvet_case.name,Jeweller's Velvet
+item.mask_material.night_safe.name,Night Safe
+item.mask_material.gilt_leaf.name,Gilt Leaf
 item.mask.ledger_regent.name,Ledger Regent
 item.mask.ledger_regent.desc,"A gilded theatre face over a black crown. Worn by crews who have retired the top of the ladder ten times."
 item.mask.last_word.name,The Last Word
@@ -3344,9 +3357,9 @@ achievement.gh_window_shopping.desc,Complete Golden Hour in stealth without brea
 achievement.gh_cataclysm.name,Diamond Standard
 achievement.gh_cataclysm.desc,Complete Golden Hour on Cataclysm. Unlocks the Horned Fury mask base.
 achievement.gh_nobody_called.name,Nobody Called In
-achievement.gh_nobody_called.desc,Complete Golden Hour in stealth without answering a single pager.
+achievement.gh_nobody_called.desc,"Complete Golden Hour in stealth without answering a single pager. Unlocks the Jeweller's Velvet material."
 achievement.gh_smash_and_grab.name,Smash and Grab
-achievement.gh_smash_and_grab.desc,Complete Golden Hour loud: drill the workshop safe and take what is in it.
+achievement.gh_smash_and_grab.desc,"Complete Golden Hour loud: drill the workshop safe and take what is in it. Unlocks the Facets pattern."
 achievement.nd_quiet_deposit.name,Quiet Deposit
 achievement.nd_quiet_deposit.desc,Complete Nightfall Depository in stealth without anyone being killed. Unlocks the Stripes pattern.
 achievement.nd_bankers_hours.name,Banker's Hours
@@ -3358,9 +3371,9 @@ achievement.nd_clockwork.desc,Complete Nightfall Depository after starting the t
 achievement.nd_cataclysm.name,Foreclosure
 achievement.nd_cataclysm.desc,Complete Nightfall Depository on Cataclysm. Unlocks the Night Owl mask base.
 achievement.nd_off_the_hook.name,Off the Hook
-achievement.nd_off_the_hook.desc,Complete Nightfall Depository in stealth without answering a single pager.
+achievement.nd_off_the_hook.desc,"Complete Nightfall Depository in stealth without answering a single pager. Unlocks the Time Lock pattern."
 achievement.nd_hard_withdrawal.name,Hard Withdrawal
-achievement.nd_hard_withdrawal.desc,Complete Nightfall Depository loud by drilling the sealed vault.
+achievement.nd_hard_withdrawal.desc,"Complete Nightfall Depository loud by drilling the sealed vault. Unlocks the Night Safe material."
 achievement.sl_silent_audit.name,Silent Audit
 achievement.sl_silent_audit.desc,Complete Shadow Ledger without anyone being killed. Unlocks the Scales pattern.
 achievement.sl_express_elevator.name,Express Elevator
@@ -3380,25 +3393,25 @@ achievement.db_before_sunrise.desc,Complete Dockside Burn in under 14 minutes. U
 achievement.db_strip_the_pier.name,Strip the Pier
 achievement.db_strip_the_pier.desc,"Complete Dockside Burn with at least 4 bags each of cash, weapon crates and product secured, and no bag left behind. Unlocks the Bruiser mask base."
 achievement.db_buyers_discount.name,Buyer's Discount
-achievement.db_buyers_discount.desc,Complete Dockside Burn with at least 4 bags of the product secured before the rest goes up in smoke.
+achievement.db_buyers_discount.desc,"Complete Dockside Burn with at least 4 bags of the product secured before the rest goes up in smoke. Unlocks the Container Rust material."
 achievement.db_cataclysm.name,Scorched Earth
 achievement.db_cataclysm.desc,Complete Dockside Burn on Cataclysm. Unlocks the Shark mask base.
 achievement.db_all_hands.name,All Hands on Deck
-achievement.db_all_hands.desc,Complete Dockside Burn on Brutal or higher with nobody in custody.
+achievement.db_all_hands.desc,"Complete Dockside Burn on Brutal or higher with nobody in custody. Unlocks the Stencil pattern."
 achievement.gn_gala_manners.name,Gala Manners
 achievement.gn_gala_manners.desc,Complete Gallery Night in stealth without anyone being killed. Unlocks the Gallery Bust mask base.
 achievement.gn_quick_viewing.name,Quick Viewing
-achievement.gn_quick_viewing.desc,Complete Gallery Night in under 9 minutes.
+achievement.gn_quick_viewing.desc,"Complete Gallery Night in under 9 minutes. Unlocks the Acanthus pattern."
 achievement.gn_full_collection.name,Full Collection
 achievement.gn_full_collection.desc,"Complete Gallery Night with all four listed canvases and at least one study secured, and no canvas left behind. Unlocks the Alley Cat mask base."
 achievement.gn_pulled_the_plug.name,Pulled the Plug
 achievement.gn_pulled_the_plug.desc,Complete Gallery Night loud with the Argus server hacked and the art-store vault never drilled. Unlocks the Tusker mask base.
 achievement.gn_last_call.name,Gone Before Last Call
-achievement.gn_last_call.desc,Complete Gallery Night in stealth before the gala's last call.
+achievement.gn_last_call.desc,"Complete Gallery Night in stealth before the gala's last call. Unlocks the Oil on Canvas material."
 achievement.gn_cataclysm.name,Closing Night
 achievement.gn_cataclysm.desc,Complete Gallery Night on Cataclysm. Unlocks the Welder mask base.
 achievement.gn_do_not_disturb.name,Do Not Disturb
-achievement.gn_do_not_disturb.desc,Complete Gallery Night in stealth without answering a single pager.
+achievement.gn_do_not_disturb.desc,"Complete Gallery Night in stealth without answering a single pager. Unlocks the Gilt Leaf material."
 ui.achievements.category.career,Career
 ui.achievements.category.heists,Heists
 ui.achievements.category.glasshouse,Golden Hour
@@ -3407,15 +3420,15 @@ ui.achievements.category.shadow_ledger,Shadow Ledger
 ui.achievements.category.dockside_burn,Dockside Burn
 ui.achievements.category.gallery_night,Gallery Night
 achievement.of_quiet_weekend.name,Quiet Weekend
-achievement.of_quiet_weekend.desc,Complete Ostrander Federal in stealth without answering a single pager.
+achievement.of_quiet_weekend.desc,"Complete Ostrander Federal in stealth without answering a single pager. Unlocks the Vault Bolts pattern."
 achievement.of_no_harm_done.name,No Harm Done
-achievement.of_no_harm_done.desc,Complete Ostrander Federal in stealth without anyone being killed.
+achievement.of_no_harm_done.desc,"Complete Ostrander Federal in stealth without anyone being killed. Unlocks the Limestone material."
 achievement.of_bank_holiday.name,Bank Holiday
-achievement.of_bank_holiday.desc,Complete Ostrander Federal in under 20 minutes.
+achievement.of_bank_holiday.desc,"Complete Ostrander Federal in under 20 minutes. Unlocks the Guilloche pattern."
 achievement.of_clearing_house.name,Nothing Left Behind
 achievement.of_clearing_house.desc,Complete Ostrander Federal with every bag in the building secured. Unlocks the Keystone mask base.
 achievement.of_burn_and_hoist.name,Burn and Hoist
-achievement.of_burn_and_hoist.desc,Complete Ostrander Federal loud by burning through the vault roof and hoisting the loot out.
+achievement.of_burn_and_hoist.desc,"Complete Ostrander Federal loud by burning through the vault roof and hoisting the loot out. Unlocks the Statuary Bronze material."
 achievement.of_cataclysm.name,Monday Never Comes
 achievement.of_cataclysm.desc,Complete Ostrander Federal on Cataclysm. Unlocks the Combination mask base.
 ui.achievements.category.ostrander_federal,Ostrander Federal

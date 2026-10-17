@@ -11,6 +11,6 @@ condition = {"event": &"heist_completed", "heist": &"gallery_night", "stealth": 
 unlock = &""
 order = 756
 category = &"gallery_night"
-rewards = Array[StringName]([])
+rewards = Array[StringName]([&"mask_material.gilt_leaf"])
 unlocks = Array[StringName]([])
 requires_facts = Array[StringName]([])
