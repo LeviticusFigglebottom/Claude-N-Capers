@@ -23,6 +23,9 @@ const CLIPS: Dictionary = {
 	"cover_low_pistol": [150, true, "", [], []],
 	"stagger_rifle": [36, false, "impact@2", ["aim_rifle", 0.0], ["aim_rifle", 0.0]],
 	"stagger_pistol": [36, false, "impact@2", ["aim_pistol", 0.0], ["aim_pistol", 0.0]],
+	# door.gd breach: impact@75 = 2.5 s = InteractionTweak.npc_door_breach_s
+	"door_kick_rifle": [84, false, "impact@75,test@22", ["aim_rifle", 0.0], ["aim_rifle", 0.0]],
+	"door_kick_pistol": [84, false, "impact@75,test@22", ["aim_pistol", 0.0], ["aim_pistol", 0.0]],
 }
 ## aim on the move: layer gait -> base clip
 const AIM_FAMILIES: Array[String] = ["rifle", "pistol", "akimbo"]

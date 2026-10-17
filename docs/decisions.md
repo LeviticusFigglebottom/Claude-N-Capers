@@ -1182,3 +1182,53 @@ folded into D1 (Godot casts shadows per node, not per surface). D1 becomes share
 wrap) + one ShaderMaterial per merged node instead of a flat atlas (189 uniform ORM materials, tiled UVs up to 3.75),
 crowd + unit characters only; checks: Compatibility lighting/shadows/fog/viewmodel_lit parity, outline + bleed next_pass,
 ragdoll/HandProps, VRAM, 2/10/30 m lineups; per-character fallback switch.
+**D-128 feel check, Golden Hour (P 6e3c49d3, 2026-10-17):** guard at 4.3-4.9 m fills in 1.13 s (formula 1.17-1.24 s);
+civilians within 5.5 m uncover instantly; camera C4 at 4.95 m (D-130 presets) 3.89 s (3.85-4.07), decay 1.23 s (1.17); a
+careful crouched route keeps every meter at 0.00. All within ~5 % of A's formula; verdict: feels like PD2. Pending: GH
+Lethal (Titan, cap 2), 10 m camera fills, the SL leg.
+**D-130 addendum (C b7cfb928, SL):** SL civilians end at +75 % at Cataclysm (pre-D-130 SL already ran +45 % from Brutal and
+no tier may fall; SL's test cap is 1.9x, GN/ND keep 1.5x). SL guards stay flat at 5 for Lethal/Cataclysm (QC-e), as GN.
+New SL civilian group late_staff (one seated late worker, chance 0/25/25/33/44/67 % by tier).
+**D-132 addendum 2 (D1 parked, 2026-10-17):** D1 is done and verified on `wip/d-d1-merge` 78098c11 (fallback list, lighting
+diff 0.003, outline/ragdoll/hand props OK, lineups identical at close/30 m) but measured GN 738 → 499 draws (-32 %), loud
+-12 %, with llvmpipe frame time only -2 % (829 → 814 ms), for +29-45 MB VRAM and ~194 MB of committed merged meshes.
+Ruling: **park D1** (keep the branch, do not merge) until a real-GPU measurement shows draw calls bind; D2 and A's
+animation LOD stay. Real-GPU probe: ask the product owner to run the bench (`world/characters/_tools/bench_crowd.tscn`)
+on their machine, D1 on/off; land D1 (option A, or B if it binds hard) only on that evidence.
+**D-132 addendum 3 (A e6ee87d9, animation LOD):** AnimLod bands FULL < 15 m on screen / NEAR 15-30 m every 2nd frame, IK off /
+FAR > 30 m or off screen every 4th frame, layer off / PAUSED off screen > 30 m; staggered by net_id; skipped time advanced
+on the due frame. Bench 34 NPCs: 2.69 → 1.49 ms/frame (-45 %), event parity within one cadence step. Rulings: (a) TIED is
+LOD'd (steady pose), surrender transitions exempt; (b) "aimed at" = within 2 m of a crew aim ray; (c) "on screen" =
+frustum check without occlusion; (d) a paused body catches up its clip events on resume (fine under D-121).
+
+## D-134: taking damage does not cancel a revive (2026-10-17, LEAD; from ENV A's ND-1 analysis)
+ND-1 (×1.0 and ×0.25) both end in custody at t≈577: the pilot goes down carrying a bag, two AI bots stand inside revive
+range, but every hit restarts their 6 s revive (`InteractionSystem.interrupt_on_damage`, pd2_fidelity S9.1), so nobody is
+revived before bleed-out. PD2: being shot does not cancel a revive (only going down, a tase, a stun/flash or letting go
+does), which is why reviving under fire is the bots' and players' core job.
+Ruling: **(b)**: a revive in progress is never interrupted by damage, for humans and AI bots alike (interrupted by: the
+reviver going down, tased, stunned/flashed, moving out of range, or releasing). For **other** hold interactions S9.1 stays
+until ENV A source-checks PD2 (playerstandard / interaction ext: does damage cancel a held interaction?); A reports the
+finding with a citation and I amend S9.1 then. Test: a bot and a human revive complete under continuous fire; a tase
+still cancels.
+**D-134 addendum (LEAD source check, 2026-10-17):** steam-test1/Payday-2-LuaJIT-Complete `lib/units/beings/player/playerdamage.lua`
+`damage_bullet` (l.1290-1466) never interrupts an interaction; `interupt_interact` is called only when the active unit can
+no longer be interacted with (swansong path, l.2191) and by `PlayerStandard:exit` (l.309: a state change such as downed,
+tased, arrested). So in PD2 **damage cancels no held interaction**, not only revives. S9.1 amended: damage never cancels
+any hold interaction (humans and bots); the flash/stun cancel stays as ◇. ENV A removes the damage interrupt for all holds.
+
+## D-135: close the queue, then start Ostrander Federal together (2026-10-17, LEAD; product owner)
+PO: "finish all currently queued work and instruct each environment to do so together." No new scope enters any env's
+queue from now on; each env closes its open `heist_completion.md` rows and in-flight lanes and reports QUEUE CLEAR (last
+sha + anything that cannot close, with the reason). When all five have reported and the LEAD has merged and gated the
+final round, the D-115 gate is assessed and Ostrander Federal (`docs/process/next_heist_ostrander.md`, finalised by the
+LEAD meanwhile) starts for all envs at once with one kickoff dispatch. Parked items that do not block: D-132 D1 (waits on
+the PO's real-GPU bench run).
+
+## D-136: Ostrander Federal build rulings (2026-10-17, LEAD)
+The OF-L1 build plan (`docs/process/next_heist_ostrander.md`) is approved. Its §3b rulings 1-11 are adopted as written:
+vault on the ND pattern (no new Safe API); manager keycard = QC-52 carrier_tag at 1 s; D-120 re-price by B; a general
+`CivilianRoute` system (A) for timed cross-floor civilian routines; the SD customer escort descoped; assault events
+(turret van, heli rappel, breach points) added; D-122 breach layer on every loud-breachable shell door (not the vault);
+D-102/D-104 doc fixes by C; no stealth-only fail and no soft lock; loud escape on `[secure]` + `escape_eta_s`; D-128
+"hidden" claims verified with A's LOS sampling. Build starts for all envs together after D-135 (all queues clear).

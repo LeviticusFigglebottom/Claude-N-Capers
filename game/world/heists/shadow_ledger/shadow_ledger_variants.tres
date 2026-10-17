@@ -112,6 +112,27 @@ rules = Array[Dictionary]([{
 }, {
 "group": &"kessler",
 "pick": Vector2i(1, 1)
+}, {
+"difficulty_add": Array[int]([0, 1, 1, 1, 1, 1]),
+"group": &"late_staff",
+"pick": Vector2i(0, 0),
+"weights_by_difficulty": {
+1: {
+&"ls_none": 6.0
+},
+2: {
+&"ls_none": 6.0
+},
+3: {
+&"ls_none": 4.0
+},
+4: {
+&"ls_none": 2.5
+},
+5: {
+&"ls_none": 1.0
+}
+}
 }])
 rare_events = Array[Dictionary]([{
 "chance": 0.06,

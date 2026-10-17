@@ -29,7 +29,8 @@ from _anim import FPS, TAU, Clip, Keys, Pose, Skeleton, Solver, hand_shape, rxd,
 RELOADS = ("reload_smg", "reload_shotgun", "reload_lmg", "reload_sniper")
 COVER = tuple(f"cover_{side}_{fam}" for side in ("peek_l", "peek_r", "low") for fam in ("rifle", "pistol"))
 STAGGER = ("stagger_rifle", "stagger_pistol")
-NAMES = RELOADS + COVER + STAGGER
+DOOR_KICK = ("door_kick_rifle", "door_kick_pistol")
+NAMES = RELOADS + COVER + STAGGER + DOOR_KICK
 #: contract rows (anim_humanoid.CLIPS)
 ROWS = {
     "reload_smg": {"frames": 54, "loop": False, "speed": 0.0, "priority": 2,
@@ -42,7 +43,12 @@ ROWS = {
                       "events": {"mag_out": 12, "mag_in": 42, "bolt": 56, "done": 66}},
     **{name: {"frames": 150, "loop": True, "speed": 0.0, "priority": 2} for name in COVER},
     **{name: {"frames": 36, "loop": False, "speed": 0.0, "priority": 2, "events": {"impact": 2}} for name in STAGGER},
+    # a loud police breach of a locked door (door.gd npc_open: InteractionTweak.npc_door_breach_s = 2.5 s = impact@75)
+    **{name: {"frames": 84, "loop": False, "speed": 0.0, "priority": 2, "events": {"test": 22, "impact": 75}}
+       for name in DOOR_KICK},
 }
+#: door kick: the door face this far ahead of the root (m at 1.78 m), the sole's contact height on it
+DOOR = {"face": 0.60, "contact_z": 0.72}
 #: shotgun: the frames each shell goes in (the first is the `shell` event), one every 12 f
 SHELLS = (14, 26, 38, 50)
 #: class reference markers (Blender weapon space, m)
@@ -396,6 +402,52 @@ def stagger(sk: Skeleton, solver: Solver, fam: str, N: int) -> Keys:
 
 
 # =============================================================================================
+# door kick
+# =============================================================================================
+def door_kick(sk: Skeleton, solver: Solver, fam: str, N: int) -> Keys:
+    """A loud police breach of a locked door: square to the door, weapon at the low ready, a testing push kick
+    (`test`, the door shudders) and the breaking kick (`impact`: the door bursts open), sole-first beside the
+    lock at DOOR["contact_z"] on a door face DOOR["face"] ahead; recovers onto aim_<fam> frame 0, in place."""
+    k = sk.scale
+    rifle = fam == "rifle"
+    face = DOOR["face"] * k
+
+    def body(lean: float, hip_y: float, hip_z: float, knee: float, ext: float, plant_r: bool, head: float) -> Pose:
+        """knee: 0 = foot down .. 1 = chambered; ext: 0 = chambered .. 1 = sole on the door."""
+        p = Pose()
+        H.aim_body(sk, p, rifle)
+        p.hip = v3(0.0, hip_y * k, hip_z * k)
+        A.plant(sk, p, "L", (0.0, -0.02 * k, 0.0), yaw=8.0)
+        if plant_r:
+            A.plant(sk, p, "R", (0.03 * k, -0.10 * k, 0.0), yaw=14.0)
+        else:
+            hz = sk.head["thigh.R"][2] + hip_z * k
+            chamber = v3(0.10 * k, 0.24 * k, hz - 0.40 * k)
+            down = v3(0.10 * k, -0.06 * k, 0.09 * k)
+            contact = v3(0.09 * k, face - 0.07 * k, DOOR["contact_z"] * k)
+            ank = A.lerp(A.lerp(down, chamber, knee), contact, ext)
+            p.legs["R"] = A.LegIK(ankle=ank, foot=rxd(-20.0 * knee + 95.0 * ext), toe=A.rad(-8.0 * ext),
+                                  pole=v3(0.1, 1.0 - 0.3 * ext, 0.6 + 0.5 * ext))
+        A.spine(p, lean=lean, twist=-8 if rifle else -2, chest_lean=0.6 * lean, chest_twist=-6 if rifle else 0,
+                neck=(-0.5 * lean + head, 0, 2), head=(-0.4 * lean + head, 0, 2), hips=(0.4 * lean, 0, -4))
+        _low_ready(sk, p, fam)
+        return p
+    return Keys(solver, [
+        (0, H.gun_pose(sk, rifle, 0.0, sway=0.0), "inout"),
+        (10, body(4.0, -0.02, -0.03, 0.0, 0.0, True, 6.0), "inout"),        # square up, weight onto the left foot
+        (17, body(-6.0, -0.04, -0.01, 1.0, 0.0, False, 4.0), "out"),        # chamber
+        (22, body(-12.0, 0.02, -0.02, 1.0, 0.85, False, 2.0), "snap"),      # test@22: a short push on the door
+        (28, body(-6.0, -0.03, -0.01, 0.9, 0.0, False, 4.0), "inout"),      # re-chamber
+        (36, body(2.0, -0.02, -0.02, 0.0, 0.0, True, 6.0), "inout"),        # foot down, reset
+        (50, body(6.0, -0.05, -0.05, 0.0, 0.0, True, 8.0), "inout"),        # load up: lower, lean in
+        (64, body(-10.0, -0.07, -0.02, 1.0, 0.0, False, 4.0), "out"),       # deep chamber
+        (75, body(-18.0, 0.04, -0.03, 1.0, 1.0, False, 0.0), "snap"),       # impact@75: full extension, hip driven in
+        (80, body(-6.0, 0.0, -0.02, 0.7, 0.0, False, 3.0), "inout"),        # re-chamber off the swinging door
+        (N, H.gun_pose(sk, rifle, 0.0, sway=0.0), "settle"),                # foot down on aim_<fam> frame 0
+    ])
+
+
+# =============================================================================================
 # registry hooks
 # =============================================================================================
 def clips(sk: Skeleton, solver: Solver, table: dict) -> dict[str, Clip]:
@@ -410,6 +462,9 @@ def clips(sk: Skeleton, solver: Solver, table: dict) -> dict[str, Clip]:
             out[name] = Clip(name, N, False, makers[name](sk, solver, N), 0.0, None, ev, reach_fix=False)
         elif name in COVER:
             out[name] = _peek_clip(sk, solver, name, N)
+        elif name in DOOR_KICK:
+            out[name] = Clip(name, N, False, door_kick(sk, solver, name.split("_")[2], N), 0.0, None, ev,
+                             reach_fix=False)
         else:
             out[name] = Clip(name, N, False, stagger(sk, solver, name.split("_")[1], N), 0.0, None, ev,
                              reach_fix=False)
@@ -429,4 +484,9 @@ def source_notes() -> dict:
         "cover_low_<fam> crouches behind low cover and rises to aim over it on the same timing; fam = rifle / "
         "pistol by aim family. stagger_<fam> (36 f, impact@2): a stagger-strength hit, thrown back with the "
         "weapon knocked up, a stumble step back and the catch, ending on aim_<fam> frame 0 in place (the feet end "
-        "where they started; no root motion)")}
+        "where they started; no root motion). door_kick_<fam> (84 f, test@22, impact@75 = 2.5 s = InteractionTweak."
+        "npc_door_breach_s): a loud police breach of a locked door; play it when Door.npc_open starts a breach, with "
+        "the cop standing square to the door, the door face 0.60 m ahead of the root; `impact` is the moment the door "
+        "bursts open (door.gd opens it after npc_door_breach_s, so the two coincide when the clip starts with the "
+        "breach), `test` a first push (a door shudder / thud cue is optional); starts and ends on aim_<fam> frame 0, "
+        "in place")}

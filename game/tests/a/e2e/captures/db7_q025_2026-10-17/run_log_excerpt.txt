@@ -1,0 +1,313 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+Vulkan 1.4.318 - Forward+ - Using Device #0: Unknown - llvmpipe (LLVM 20.1.2, 256 bits)
+ALSA lib confmisc.c:855:(parse_card) cannot find card '0'
+ALSA lib conf.c:5208:(_snd_config_evaluate) function snd_func_card_inum returned error: No such file or directory
+ALSA lib confmisc.c:422:(snd_func_concat) error evaluating strings
+ALSA lib conf.c:5208:(_snd_config_evaluate) function snd_func_concat returned error: No such file or directory
+ALSA lib confmisc.c:1342:(snd_func_refer) error evaluating name
+ALSA lib conf.c:5208:(_snd_config_evaluate) function snd_func_refer returned error: No such file or directory
+ALSA lib conf.c:5731:(snd_config_expand) Evaluate error: No such file or directory
+ALSA lib pcm.c:2721:(snd_pcm_open_noupdate) Unknown PCM default
+ERROR: Condition "status < 0" is true. Returning: ERR_CANT_OPEN
+   at: init_output_device (drivers/alsa/audio_driver_alsa.cpp:97)
+WARNING: All audio drivers failed, falling back to the dummy driver.
+     at: initialize (servers/audio/audio_server.cpp:258)
+
+[INFO][boot][p1] CAPERWORKS boot, args={ "po5-flow": "auto_loud", "po5-out": "/tmp/claude-0/-home-user-Claude-N-Capers/ffd7fe7e-ab64-5ca1-b599-c3532188a6c6/scratchpad/db7_q", "po5-budget": "7000", "po5-heist": "Dockside Burn", "po5-difficulty": "Routine", "po5-seed": "1003", "po5-crew-dmg": "0.25" }
+[PO5 8.4s] shot /tmp/claude-0/-home-user-Claude-N-Capers/ffd7fe7e-ab64-5ca1-b599-c3532188a6c6/scratchpad/db7_q/01_main_menu.png
+[INFO][ui][p1] safehouse scene unavailable (res://world/hub/safehouse/safehouse.tscn); 2D hub
+[PO5 9.1s] click 'SAFEHOUSE' at (162.0, 266.75)
+[PO5 9.7s] click '' at (356.75, 160.75)
+[PO5 10.8s] shot /tmp/claude-0/-home-user-Claude-N-Capers/ffd7fe7e-ab64-5ca1-b599-c3532188a6c6/scratchpad/db7_q/02_planning_table.png
+[PO5 10.8s] click 'Dockside Burn' at (142.0, 130.5)
+[PO5 11.8s] click 'ROUTINE' at (313.5, 250.0)
+[PO5 14.4s] click 'Briefing' at (848.0, 494.5)
+[PO5 14.4s] shot /tmp/claude-0/-home-user-Claude-N-Capers/ffd7fe7e-ab64-5ca1-b599-c3532188a6c6/scratchpad/db7_q/03_briefing.png
+[PO5 14.6s] click 'Continue' at (856.0, 502.5)
+[PO5 15.5s] shot /tmp/claude-0/-home-user-Claude-N-Capers/ffd7fe7e-ab64-5ca1-b599-c3532188a6c6/scratchpad/db7_q/04_continue.png
+[PO5 15.7s] click 'Confirm plan' at (856.0, 500.25)
+[PO5 16.5s] shot /tmp/claude-0/-home-user-Claude-N-Capers/ffd7fe7e-ab64-5ca1-b599-c3532188a6c6/scratchpad/db7_q/05_confirm_plan.png
+[PO5 16.7s] click 'Start Heist' at (848.0, 494.5)
+[INFO][rng][p1] run seed 1003
+[INFO][preplan][p1] assets []
+[INFO][variants][p1] seed 1003 resolved { &"guard_post": [&"post_dock", &"post_quay", &"post_yard_e"], &"cash_location": [&"cash_strongroom"], &"weapons_containers": [&"k4", &"k6"], &"product_location": [&"prod_chamber_b"], &"warehouse_entry": [&"door_quay"], &"east_gangway": [&"gangway_up"], &"goods_lift": [&"lift_powered"], &"player_perch": [&"perch_none"], &"escape": [&"esc_boat"], &"night_shift": [&"shift_3"], &"perch_viaduct": [], &"perch_trawler": [], &"police_delay_s": 120.0, &"cash_bags": 4, &"product_bags": 4, &"escape_eta_s": 120.0, &"extra_container_pick": 0, "rare": [] }
+[INFO][heist][p1] DEV OPTION crew_damage_taken_mult = 0.25 (D-133 harness-only)
+[INFO][crew][p1] slot 0 masked (forced=true)
+[INFO][crew][p1] slot 1 masked (forced=true)
+[INFO][crew][p1] slot 2 masked (forced=true)
+[INFO][crew][p1] slot 3 masked (forced=true)
+[INFO][heist][p1] phase LOADING -> LOUD
+[INFO][director][p1] prewarm: 18 of 18 scenes loaded in 699 ms
+[PO5 72.2s] in heist dockside_burn seed 1003 diff 0 phase 3 crew at (31.5, 0.0, -38.5)
+[PO5 72.2s] DEV OPTION crew_damage_taken_mult=0.25 (D-133 harness-only; assault events on)
+[PO5 137.1s] shot /tmp/claude-0/-home-user-Claude-N-Capers/ffd7fe7e-ab64-5ca1-b599-c3532188a6c6/scratchpad/db7_q/06_heist_start.png
+[PO5 154.2s] mouse captured by the game (MouseCapture)
+[PO5 155.0s] pilot: calibrated 0.001600 rad/px yaw, 0.001600 rad/px pitch (settings formula said (0.0016, 0.0016))
+[PO5 269.5s] loud: phase=3 went_loud=true
+[PO5 287.8s] shot /tmp/claude-0/-home-user-Claude-N-Capers/ffd7fe7e-ab64-5ca1-b599-c3532188a6c6/scratchpad/db7_q/07_auto_7.png
+[PO5 426.6s] EVENT objective cartel -> 1 t=9
+[PO5 502.4s] pilot: t=5 at (35.8, 0.0, -34.3) corner (35.4, 0.2, -34.7) yaw_err 2.72 fwd=false path=48 mouse_mode=2 state=0 look=(-8.17,0.00) pin_yaw=-7.97332100981677 bot=false
+[PO5 508.9s] pilot: t=10 at (39.0, 0.0, -30.1) corner (40.3, 0.2, -24.6) yaw_err 0.77 fwd=false path=37 mouse_mode=2 state=0 look=(-9.97,0.00) pin_yaw=-9.78247695647971 bot=false
+[PO5 534.1s] pilot: t=15 at (40.4, -0.3, -24.2) corner (40.5, 0.2, -23.5) yaw_err 2.70 fwd=false path=35 mouse_mode=2 state=0 look=(-11.90,0.00) pin_yaw=-11.7117669274851 bot=false
+[PO5 649.7s] pilot: t=20 at (41.7, 0.0, -18.2) corner (41.6, 0.2, -18.8) yaw_err -2.34 fwd=false path=31 mouse_mode=2 state=0 look=(-9.98,0.00) pin_yaw=-10.1749367121122 bot=false
+[PO5 777.3s] pilot: t=25 at (43.0, -0.3, -12.6) corner (44.2, 0.2, -7.2) yaw_err -0.00 fwd=true path=27 mouse_mode=2 state=0 look=(-9.21,0.00) pin_yaw=-9.20665068977925 bot=false
+[PO5 783.4s] pilot: t=30 at (44.3, -0.3, -6.8) corner (44.7, 0.2, -5.0) yaw_err -1.16 fwd=false path=26 mouse_mode=2 state=0 look=(-8.05,0.00) pin_yaw=-8.23787881552218 bot=false
+[PO5 789.9s] pilot: t=35 at (46.7, 0.0, -1.6) corner (46.2, 0.2, -1.9) yaw_err 3.10 fwd=false path=22 mouse_mode=2 state=0 look=(-8.42,0.00) pin_yaw=-8.22631982026743 bot=false
+[PO5 795.6s] pilot: t=40 at (48.7, 0.0, 3.1) corner (48.9, 0.2, 6.0) yaw_err -0.20 fwd=true path=20 mouse_mode=2 state=0 look=(-9.17,0.00) pin_yaw=-9.3642355745944 bot=false
+[PO5 800.9s] pilot: t=45 at (49.1, 0.0, 9.2) corner (49.5, 0.2, 15.8) yaw_err -2.11 fwd=false path=18 mouse_mode=2 state=0 look=(-7.26,0.00) pin_yaw=-7.4472959691013 bot=false
+[PO5 805.9s] pilot: t=50 at (49.4, 0.0, 15.3) corner (49.4, 0.2, 14.7) yaw_err 1.77 fwd=false path=18 mouse_mode=2 state=0 look=(-8.01,0.00) pin_yaw=-7.81647166471904 bot=false
+[PO5 810.8s] pilot: t=55 at (49.7, 0.0, 21.1) corner (49.8, 0.2, 22.0) yaw_err 0.00 fwd=true path=12 mouse_mode=2 state=0 look=(-9.36,0.00) pin_yaw=-9.35706918117304 bot=false
+[PO5 1049.3s] EVENT objective cartel -> 1 t=77
+[PO5 1049.3s] EVENT objective breach -> 2 t=77
+[PO5 1049.5s] pilot: use ANEast (open_door) -> OK in 8.0 s
+[PO5 1049.8s] pilot: t=60 at (48.7, 0.0, 28.3) corner (48.1, 0.2, 28.2) yaw_err -0.00 fwd=true path=10 mouse_mode=2 state=0 look=(-11.08,0.00) pin_yaw=-11.0842935142029 bot=false
+[PO5 1049.8s] pilot: goto (46.0, 0.2, 32.0) FAILED at (48.6, 0.0, 28.3) after 60.0 s
+[PO5 1049.8s] FINDING objective breach: marker at (46.0, 0.0, 32.0) not reachable
+[PO5 1049.9s] pilot: reload in a lull (weapon.corsair_ar 27/30, reserve 120)
+[PO5 1080.3s] EVENT objective cartel -> 1 t=80
+[PO5 1161.0s] EVENT objective cartel -> 1 t=83
+[PO5 1161.7s] pilot: t=5 at (43.3, 0.0, 25.8) corner (43.8, 0.2, 26.1) yaw_err 1.39 fwd=false path=11 mouse_mode=2 state=0 look=(-16.06,0.00) pin_yaw=-15.8670167790325 bot=false
+[PO5 1162.8s] EVENT objective product -> 2 t=85
+[PO5 1162.8s] EVENT objective burn -> 1 t=85
+[PO5 1164.5s] pilot: use ChamberBSouth (open_door) -> OK in 0.0 s
+[PO5 1168.2s] pilot: t=10 at (41.2, 0.0, 23.3) corner (41.1, 0.2, 22.4) yaw_err 0.00 fwd=true path=6 mouse_mode=2 state=0 look=(0.03,0.00) pin_yaw=0.03323262828863 bot=false
+[PO5 1172.1s] pilot: use Product1 (bag_loot) -> OK in 1.0 s
+[PO5 1176.0s] pilot: goto (22.5, -1.4, 55.6) FAILED at (41.2, 0.0, 23.9) after 4.0 s
+[PO5 1180.1s] pilot: goto (22.5, -1.4, 55.6) FAILED at (41.2, 0.0, 23.9) after 4.0 s
+[PO5 1184.1s] pilot: goto (22.5, -1.4, 55.6) FAILED at (41.2, 0.0, 23.9) after 4.0 s
+[PO5 1188.2s] pilot: goto (22.5, -1.4, 55.6) FAILED at (41.2, 0.0, 23.9) after 4.0 s
+[PO5 1192.2s] pilot: goto (22.5, -1.4, 55.6) FAILED at (41.2, 0.0, 23.9) after 4.0 s
+[PO5 1196.3s] pilot: goto (22.5, -1.4, 55.6) FAILED at (41.2, 0.0, 23.9) after 4.0 s
+[INFO][director][p1] assault phase CONTROL (wave 1, 20 s)
+[PO5 1198.1s] EVENT objective cartel -> 1 t=120
+[PO5 1198.1s] EVENT objective cartel -> 2 t=120
+[INFO][director][p1] assault events: 3 rows for dockside_burn (tweak)
+[PO5 1200.3s] pilot: goto (22.5, -1.4, 55.6) FAILED at (41.2, -0.3, 24.0) after 4.0 s
+[PO5 1204.4s] pilot: goto (22.5, -1.4, 55.6) FAILED at (41.2, -0.3, 24.0) after 4.0 s
+[PO5 1204.6s] carry: enemy in sight, bag down to clear the way (t=127)
+[PO5 1236.6s] shot /tmp/claude-0/-home-user-Claude-N-Capers/ffd7fe7e-ab64-5ca1-b599-c3532188a6c6/scratchpad/db7_q/08_auto_127.png
+[PO5 1236.6s] burn: fetching the thermite bag /root/HeistRuntime/DocksideBurn/Gameplay/Misc/ThermiteBag/Interactable (63 m)
+[PO5 1355.5s] pilot: t=5 at (44.2, 0.0, 26.2) corner (44.7, 0.2, 26.5) yaw_err -0.00 fwd=true path=58 mouse_mode=2 state=0 look=(236.64,-0.00) pin_yaw=236.639004460878 bot=false
+[PO5 1412.7s] pilot: t=10 at (48.7, 0.0, 26.9) corner (48.6, 0.2, 27.5) yaw_err -2.15 fwd=false path=50 mouse_mode=2 state=0 look=(231.24,0.00) pin_yaw=231.052530607732 bot=false
+[INFO][director][p1] assault phase ANTICIPATION (wave 1, 30 s)
+[PO5 1417.8s] pilot: t=15 at (49.8, 0.0, 21.2) corner (49.8, 0.2, 21.7) yaw_err -3.13 fwd=false path=44 mouse_mode=2 state=0 look=(226.25,0.00) pin_yaw=226.055820539361 bot=false
+[PO5 1423.1s] pilot: t=20 at (49.5, 0.0, 16.0) corner (49.5, 0.2, 16.6) yaw_err -2.56 fwd=false path=42 mouse_mode=2 state=0 look=(219.39,0.00) pin_yaw=219.196762890809 bot=false
+[PO5 1455.7s] pilot: t=25 at (49.2, 0.0, 10.5) corner (48.9, 0.2, 6.0) yaw_err -0.00 fwd=true path=38 mouse_mode=2 state=0 look=(219.96,0.00) pin_yaw=219.962547672716 bot=false
+[PO5 1461.6s] pilot: t=30 at (48.9, 0.0, 4.9) corner (48.6, 0.2, -0.3) yaw_err -1.01 fwd=false path=36 mouse_mode=2 state=0 look=(220.97,0.00) pin_yaw=220.782255517588 bot=false
+[PO5 1466.6s] pilot: t=35 at (48.0, 0.0, -0.8) corner (46.0, 0.2, -2.0) yaw_err -2.95 fwd=false path=34 mouse_mode=2 state=0 look=(217.58,0.00) pin_yaw=217.390632521004 bot=false
+[PO5 1531.3s] pilot: t=40 at (44.9, 0.0, -5.4) corner (45.0, 0.2, -4.8) yaw_err -1.57 fwd=false path=31 mouse_mode=2 state=0 look=(212.18,0.00) pin_yaw=211.987061184045 bot=false
+[INFO][director][p1] assault phase BUILD (wave 1, 35 s)
+[PO5 1536.4s] pilot: t=45 at (44.3, -0.3, -11.2) corner (43.8, 0.2, -16.5) yaw_err -0.00 fwd=true path=29 mouse_mode=2 state=0 look=(213.73,0.00) pin_yaw=213.728765675252 bot=false
+[PO5 1541.4s] pilot: t=50 at (43.7, -0.3, -16.6) corner (43.5, 0.2, -19.1) yaw_err -0.39 fwd=true path=26 mouse_mode=2 state=0 look=(214.12,0.00) pin_yaw=213.926857970982 bot=false
+[PO5 1546.6s] pilot: t=55 at (43.2, 0.0, -22.1) corner (43.1, 0.2, -22.6) yaw_err 0.00 fwd=true path=24 mouse_mode=2 state=0 look=(213.75,0.00) pin_yaw=213.749171364245 bot=false
+[PO5 1749.7s] pilot: t=60 at (41.2, -0.3, -27.6) corner (38.6, 0.2, -31.9) yaw_err -0.00 fwd=true path=15 mouse_mode=2 state=0 look=(201.60,0.00) pin_yaw=201.603170532569 bot=false
+[PO5 1749.7s] pilot: goto (30.2, 0.2, -38.9) FAILED at (41.1, -0.3, -27.7) after 60.0 s
+[PO5 1749.7s] pilot: could not reach /root/HeistRuntime/DocksideBurn/Gameplay/Misc/ThermiteBag/Interactable (bag_loot)
+[PO5 1749.7s] pilot: bag_loot out of reach after the walk: not pressing
+[PO5 1749.8s] burn: fetching the thermite bag /root/HeistRuntime/DocksideBurn/Gameplay/Misc/ThermiteBag/Interactable (15 m)
+[PO5 1836.2s] pilot: t=5 at (38.1, -0.3, -32.3) corner (37.8, 0.2, -32.6) yaw_err 0.00 fwd=true path=14 mouse_mode=2 state=0 look=(195.65,0.00) pin_yaw=195.646670084755 bot=false
+[PO5 1891.8s] pilot: t=10 at (33.8, 0.0, -36.0) corner (30.2, 0.2, -38.9) yaw_err -1.20 fwd=false path=2 mouse_mode=2 state=0 look=(196.86,0.00) pin_yaw=196.668165579107 bot=false
+[INFO][director][p1] assault phase SUSTAIN (wave 1, 52 s)
+[PO5 2032.8s] pilot: use ThermiteBag (bag_loot) -> OK in 1.0 s
+[PO5 2032.8s] burn: carrying the thermite to (41.0, 1.5, 13.6)
+[PO5 2032.8s] pilot: reload in a lull (weapon.corsair_ar 12/30, reserve 117)
+[PO5 2037.7s] pilot: t=5 at (32.4, 0.0, -34.2) corner (32.0, 0.2, -34.4) yaw_err -3.13 fwd=false path=57 mouse_mode=2 state=0 look=(199.13,0.00) pin_yaw=198.942868876173 bot=false
+[INFO][director][p1] assault event heli at (36.0, 11.0, -9.0) (HeliDrop_2)
+[PO5 2083.7s] pilot: t=10 at (36.9, 0.0, -32.6) corner (37.7, 0.2, -32.3) yaw_err -0.00 fwd=true path=54 mouse_mode=2 state=0 look=(199.13,0.00) pin_yaw=199.133682432436 bot=false
+[PO5 2120.6s] pilot: t=15 at (39.1, -0.3, -28.9) corner (40.1, 0.2, -24.5) yaw_err -0.00 fwd=true path=49 mouse_mode=2 state=0 look=(198.15,0.00) pin_yaw=198.149557410707 bot=false
+[PO5 2165.5s] pilot: t=20 at (40.1, -0.3, -24.3) corner (40.3, 0.2, -23.5) yaw_err -0.00 fwd=true path=49 mouse_mode=2 state=0 look=(198.16,0.00) pin_yaw=198.161145638228 bot=false
+[PO5 2231.3s] pilot: t=25 at (41.1, 0.0, -19.7) corner (41.4, 0.2, -18.7) yaw_err 0.58 fwd=true path=43 mouse_mode=2 state=0 look=(197.58,0.00) pin_yaw=197.768730531466 bot=false
+[PO5 2358.3s] pilot: t=30 at (42.3, -0.3, -14.9) corner (44.1, 0.2, -7.4) yaw_err 2.50 fwd=false path=39 mouse_mode=2 state=0 look=(195.66,0.00) pin_yaw=195.851510076933 bot=false
+[PO5 2501.5s] pilot: t=35 at (43.4, -0.3, -10.1) corner (43.3, 0.2, -10.6) yaw_err -1.80 fwd=false path=39 mouse_mode=2 state=0 look=(196.82,0.00) pin_yaw=196.624518995803 bot=false
+[PO5 2506.8s] pilot: t=40 at (44.5, -0.3, -5.3) corner (45.2, 0.2, -2.6) yaw_err 0.00 fwd=true path=38 mouse_mode=2 state=0 look=(198.17,0.00) pin_yaw=198.168507960731 bot=false
+[PO5 2511.8s] pilot: t=45 at (46.7, 0.0, -1.6) corner (48.4, 0.2, -0.5) yaw_err 0.19 fwd=true path=34 mouse_mode=2 state=0 look=(198.73,0.00) pin_yaw=198.921615621509 bot=false
+[PO5 2550.3s] EVENT crew 1 state 0 -> 1 at (45.2, 0.0, -2.6) (t=252)
+[INFO][combat][p1] slot 1 downed (1/3)
+[PO5 2550.3s] revive slot 1 at 252 s (3.2 m)
+[PO5 2553.2s] pilot: use Crew1 (revive) -> OK in 0.0 s
+[PO5 2565.1s] revive slot 1 at 255 s (0.4 m)
+[PO5 2565.6s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 2566.1s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 2566.4s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 2566.8s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 2567.2s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[INFO][director][p1] assault phase FADE (wave 1, 15 s)
+[PO5 2582.2s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 2582.6s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 2583.0s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 2583.4s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 2583.8s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 2584.1s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 2590.4s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 2590.7s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 2591.1s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 2591.5s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 2601.6s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 2601.9s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 2602.3s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 2602.7s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 2603.1s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 2603.5s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 2603.9s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 2604.3s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 2604.9s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 2605.1s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 2605.5s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 2605.9s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 2606.3s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 2606.7s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 2607.1s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 2607.6s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 2607.9s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 2608.3s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 2608.7s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 2609.1s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 2609.5s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 2609.9s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 2610.3s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 2610.7s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 2611.1s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 2611.5s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 2611.9s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[INFO][director][p1] assault phase CONTROL (wave 2, 40 s)
+[PO5 2612.3s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 2612.7s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 2617.8s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 2618.2s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 2618.5s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 2619.0s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 2619.4s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 2619.8s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 2620.2s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 2620.6s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 2620.9s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 2621.4s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 2621.9s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 2626.8s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 2627.2s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 2627.6s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 2628.0s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 2628.4s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 2628.5s] pilot: use Crew1 (revive) -> FAILED in 20.0 s
+[PO5 2628.5s] revive slot 1 at 279 s (0.4 m)
+[PO5 2628.9s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 2629.3s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 2629.7s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 2630.1s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 2630.5s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 2630.9s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 2631.0s] EVENT crew 1 state 1 -> 5 at (45.2, 0.0, -2.5) (t=282)
+[INFO][combat][p1] slot 1 in custody
+[PO5 2631.0s] pilot: use Crew1 (revive) -> OK in 2.1 s
+[PO5 2634.8s] pilot: t=50 at (48.5, 0.0, -0.4) corner (48.9, 0.2, 6.0) yaw_err -0.00 fwd=true path=34 mouse_mode=2 state=0 look=(204.28,0.00) pin_yaw=204.28022563336 bot=false
+[PO5 2711.5s] pilot: t=55 at (48.9, 0.0, 2.0) corner (48.8, 0.2, 1.5) yaw_err -2.55 fwd=false path=32 mouse_mode=2 state=0 look=(203.67,0.00) pin_yaw=203.480364488889 bot=false
+[PO5 2757.6s] pilot: t=60 at (49.1, 0.0, 6.8) corner (49.5, 0.2, 15.8) yaw_err -0.00 fwd=true path=30 mouse_mode=2 state=0 look=(204.25,0.00) pin_yaw=204.249344944867 bot=false
+[PO5 2757.6s] pilot: goto (41.0, 0.2, 14.9) FAILED at (49.1, 0.0, 6.9) after 60.0 s
+[PO5 2757.6s] pilot: could not reach /root/HeistRuntime/DocksideBurn/Variants/Group_product_location/Slot_prod_chamber_b/BurnPoint/Interactable (place_thermite)
+[PO5 2757.6s] pilot: place_thermite out of reach after the walk: not pressing
+[PO5 2814.8s] shot /tmp/claude-0/-home-user-Claude-N-Capers/ffd7fe7e-ab64-5ca1-b599-c3532188a6c6/scratchpad/db7_q/09_auto_295.png
+[PO5 2814.8s] burn: carrying the thermite to (41.0, 1.5, 13.6)
+[PO5 2855.3s] pilot: t=5 at (49.3, 0.0, 11.7) corner (49.5, 0.2, 15.8) yaw_err 0.00 fwd=true path=30 mouse_mode=2 state=0 look=(204.25,0.00) pin_yaw=204.25168443007 bot=false
+[PO5 2892.8s] pilot: t=10 at (49.5, -0.3, 16.4) corner (49.6, 0.2, 17.5) yaw_err 0.39 fwd=true path=27 mouse_mode=2 state=0 look=(203.86,0.00) pin_yaw=204.052813985181 bot=false
+[PO5 2897.8s] pilot: t=15 at (49.8, -0.3, 21.4) corner (49.8, 0.2, 22.0) yaw_err 2.30 fwd=false path=24 mouse_mode=2 state=0 look=(201.94,0.00) pin_yaw=202.132733021506 bot=false
+[INFO][director][p1] assault phase ANTICIPATION (wave 2, 30 s)
+[PO5 2902.8s] pilot: t=20 at (48.9, 0.0, 26.3) corner (49.1, 0.2, 25.8) yaw_err -2.93 fwd=false path=22 mouse_mode=2 state=0 look=(203.75,0.00) pin_yaw=203.557957160389 bot=false
+[PO5 2907.8s] pilot: t=25 at (45.4, 0.0, 27.0) corner (45.0, 0.2, 26.8) yaw_err -0.00 fwd=true path=16 mouse_mode=2 state=0 look=(202.10,0.00) pin_yaw=202.098483943046 bot=false
+[PO5 2941.2s] pilot: t=30 at (41.5, 0.0, 24.5) corner (41.2, 0.2, 23.4) yaw_err -0.00 fwd=true path=9 mouse_mode=2 state=0 look=(201.30,0.00) pin_yaw=201.296350692464 bot=false
+[PO5 2943.5s] pilot: STUCK at (41.2, 0.0, 24.1) heading to (41.3, 0.2, 24.6); rays: vel=(-0.1, 0.0, 1.0) floor=true state=0
+[PO5 2995.7s] shot /tmp/claude-0/-home-user-Claude-N-Capers/ffd7fe7e-ab64-5ca1-b599-c3532188a6c6/scratchpad/db7_q/10_stuck_1.png
+[PO5 2995.7s] pilot: detour right 0.7 m to (40.6, 0.2, 24.7) (attempt 1)
+[PO5 3020.5s] pilot: t=35 at (41.2, 0.0, 24.1) corner (41.2, 0.2, 24.6) yaw_err -1.74 fwd=false path=9 mouse_mode=2 state=0 look=(199.68,0.00) pin_yaw=199.483488906815 bot=false
+[PO5 3023.7s] pilot: STUCK at (41.2, 0.0, 24.1) heading to (41.2, 0.2, 24.6); rays: vel=(0.1, 0.0, 1.5) floor=true state=0
+[PO5 3073.2s] shot /tmp/claude-0/-home-user-Claude-N-Capers/ffd7fe7e-ab64-5ca1-b599-c3532188a6c6/scratchpad/db7_q/11_stuck_2.png
+[PO5 3073.2s] pilot: detour left 0.7 m to (41.9, 0.2, 24.7) (attempt 2)
+[PO5 3093.1s] pilot: t=40 at (41.3, 0.0, 24.1) corner (41.2, 0.2, 24.6) yaw_err 1.62 fwd=false path=9 mouse_mode=2 state=0 look=(208.65,0.00) pin_yaw=208.841777391783 bot=false
+[PO5 3132.0s] pilot: t=45 at (41.2, 0.0, 24.1) corner (41.2, 0.2, 24.6) yaw_err -0.80 fwd=false path=9 mouse_mode=2 state=0 look=(198.76,0.00) pin_yaw=198.564870942872 bot=false
+[INFO][director][p1] assault phase BUILD (wave 2, 35 s)
+[PO5 3175.5s] pilot: STUCK at (41.2, -0.3, 24.2) heading to (41.2, 0.2, 24.6); rays: h1.00:/root/HeistRuntime/Dynamic/Crew3@(41.2, 0.7, 24.8), vel=(0.1, 0.0, 1.7) floor=true state=0
+[PO5 3230.2s] shot /tmp/claude-0/-home-user-Claude-N-Capers/ffd7fe7e-ab64-5ca1-b599-c3532188a6c6/scratchpad/db7_q/12_stuck_3.png
+[PO5 3230.2s] pilot: detour right 1.2 m to (40.0, 0.2, 24.7) (attempt 3)
+[PO5 3408.0s] pilot: t=50 at (41.2, -0.3, 24.2) corner (41.2, 0.2, 23.4) yaw_err 2.50 fwd=false path=9 mouse_mode=2 state=0 look=(211.10,0.00) pin_yaw=211.29698381653 bot=false
+[PO5 3410.4s] pilot: STUCK at (41.2, -0.3, 24.1) heading to (41.2, 0.2, 24.6); rays: vel=(0.1, 0.0, 1.0) floor=true state=0
+[PO5 3410.4s] pilot: detour left 1.2 m to (42.4, 0.2, 24.5) (attempt 4)
+[PO5 3447.6s] pilot: t=55 at (41.3, -0.3, 24.1) corner (41.3, 0.2, 24.6) yaw_err 1.65 fwd=false path=9 mouse_mode=2 state=0 look=(202.68,0.00) pin_yaw=202.868506459374 bot=false
+[PO5 3452.6s] pilot: t=60 at (41.2, -0.3, 24.1) corner (41.2, 0.2, 24.6) yaw_err -1.77 fwd=false path=9 mouse_mode=2 state=0 look=(168.30,0.00) pin_yaw=168.109484509507 bot=false
+[PO5 3452.7s] pilot: goto (41.0, 0.2, 14.9) FAILED at (41.2, -0.3, 24.1) after 60.0 s
+[PO5 3452.7s] pilot: could not reach /root/HeistRuntime/DocksideBurn/Variants/Group_product_location/Slot_prod_chamber_b/BurnPoint/Interactable (place_thermite)
+[PO5 3452.7s] pilot: place_thermite out of reach after the walk: not pressing
+[PO5 3452.7s] burn: carrying the thermite to (41.0, 1.5, 13.6)
+[PO5 3454.6s] pilot: STUCK at (41.2, -0.3, 24.1) heading to (41.2, 0.2, 24.6); rays: vel=(0.0, 0.0, 0.0) floor=true state=0
+[PO5 3454.6s] pilot: detour right 0.7 m to (40.5, 0.2, 24.6) (attempt 1)
+[PO5 3457.0s] EVENT crew 2 state 0 -> 1 at (43.8, 0.0, 27.1) (t=363)
+[INFO][combat][p1] slot 2 downed (1/3)
+[PO5 3809.6s] revive slot 2 at 366 s (2.9 m)
+[PO5 3827.6s] pilot: reload in a lull (weapon.corsair_ar 12/30, reserve 107)
+[PO5 3920.2s] pilot: use Crew2 (revive) -> OK in 0.0 s
+[PO5 3968.8s] revive slot 2 at 370 s (0.6 m)
+[PO5 4119.4s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 4119.8s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 4120.2s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 4120.6s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 4120.9s] pilot: use Crew2 (revive) -> OK in 1.5 s
+[PO5 4176.7s] revive slot 2 at 374 s (0.4 m)
+[PO5 4194.7s] pilot: use Crew2 (revive) -> OK in 0.3 s
+[PO5 4209.8s] EVENT crew 2 state 1 -> 0 at (43.2, 0.0, 26.3) (t=374)
+[PO5 4298.3s] pilot: t=5 at (42.1, -0.3, 25.4) corner (41.4, 0.2, 24.8) yaw_err -2.11 fwd=false path=10 mouse_mode=2 state=0 look=(153.76,-0.00) pin_yaw=153.564602006996 bot=false
+[INFO][director][p1] assault phase SUSTAIN (wave 2, 156 s)
+[PO5 4346.1s] pilot: t=10 at (41.2, 0.0, 24.2) corner (41.2, 0.2, 23.4) yaw_err -1.41 fwd=false path=9 mouse_mode=2 state=0 look=(152.21,0.00) pin_yaw=152.01888215471 bot=false
+[PO5 4393.3s] pilot: t=15 at (41.2, 0.0, 24.2) corner (41.2, 0.2, 23.4) yaw_err 2.18 fwd=false path=9 mouse_mode=2 state=0 look=(148.62,0.00) pin_yaw=148.808233658249 bot=false
+[PO5 4395.1s] EVENT crew 2 state 0 -> 1 at (43.3, 0.0, 26.3) (t=388)
+[INFO][combat][p1] slot 2 downed (2/3)
+[PO5 4717.6s] revive slot 2 at 390 s (2.6 m)
+[PO5 4717.6s] pilot: reload in a lull (weapon.corsair_ar 2/30, reserve 89)
+[PO5 4848.9s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 4849.0s] pilot: use Crew2 (revive) -> OK in 0.3 s
+[PO5 4906.2s] revive slot 2 at 394 s (0.5 m)
+[PO5 4925.1s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 4925.5s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 4925.9s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 4926.0s] EVENT crew 2 state 1 -> 0 at (43.3, 0.0, 26.3) (t=396)
+[PO5 4926.2s] pilot: use Crew2 (revive) -> OK in 1.1 s
+[PO5 4930.1s] pilot: t=20 at (41.3, -0.3, 24.1) corner (41.2, 0.2, 23.4) yaw_err -0.00 fwd=true path=9 mouse_mode=2 state=0 look=(138.37,0.00) pin_yaw=138.371308489054 bot=false
+[PO5 4961.9s] EVENT crew 1 state 5 -> 0 at (45.2, -0.3, -1.8) (t=401)
+[INFO][combat][p1] slot 1 released from custody (hostage 0)
+[PO5 5012.7s] pilot: t=25 at (41.2, 0.0, 24.1) corner (41.2, 0.2, 24.6) yaw_err 2.78 fwd=false path=9 mouse_mode=2 state=0 look=(163.75,0.00) pin_yaw=163.944289438534 bot=false
+[PO5 5015.0s] pilot: STUCK at (41.2, 0.0, 24.1) heading to (41.2, 0.2, 23.4); rays: vel=(-0.0, 0.0, -1.7) floor=true state=0
+[PO5 5018.5s] pilot: t=30 at (41.2, 0.0, 24.2) corner (41.2, 0.2, 23.4) yaw_err -0.07 fwd=true path=9 mouse_mode=2 state=0 look=(169.71,0.00) pin_yaw=169.644982289558 bot=false
+[PO5 5023.6s] EVENT crew 3 state 0 -> 1 at (42.9, 0.0, 27.1) (t=414)
+[INFO][combat][p1] slot 3 downed (1/3)
+[PO5 5352.6s] revive slot 3 at 417 s (3.4 m)
+[PO5 5372.1s] pilot: reload in a lull (weapon.corsair_ar 11/30, reserve 61)
+[PO5 5477.7s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 5478.1s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 5478.1s] pilot: use Crew3 (revive) -> OK in 0.7 s
+[PO5 5525.8s] revive slot 3 at 422 s (0.4 m)
+[PO5 5537.9s] EVENT crew 3 state 1 -> 0 at (42.9, 0.0, 27.1) (t=422)
+[PO5 5538.3s] pilot: aimed <none>, wanted /root/HeistRuntime/Dynamic/Crew3/ReviveInteractable (dist 1.23, angle 0.0 deg, avail 'ui.blocked.disabled', LOS ray hit - at -)
+[PO5 5538.3s] pilot: use Crew3 (revive) -> OK in 0.0 s
+[PO5 5538.3s] pilot: t=35 at (42.7, 0.0, 26.7) corner (41.3, 0.2, 24.8) yaw_err -2.56 fwd=false path=12 mouse_mode=2 state=0 look=(122.54,-1.00) pin_yaw=122.363981485557 bot=false
+[PO5 5543.2s] pilot: t=40 at (41.2, -0.3, 24.2) corner (41.2, 0.2, 23.4) yaw_err -1.13 fwd=false path=9 mouse_mode=2 state=0 look=(120.54,0.00) pin_yaw=120.348815923172 bot=false
+[PO5 5548.2s] pilot: t=45 at (41.2, -0.3, 24.2) corner (41.2, 0.2, 23.4) yaw_err -1.79 fwd=false path=9 mouse_mode=2 state=0 look=(140.03,0.00) pin_yaw=139.834578963718 bot=false
+[PO5 5550.2s] EVENT crew 3 state 0 -> 1 at (43.0, 0.0, 26.9) (t=434)
+[INFO][combat][p1] slot 3 downed (2/3)
+[PO5 5664.3s] revive slot 3 at 435 s (3.2 m)
+[INFO][director][p1] assault event heli at (44.5, 20.0, 13.5) (HeliDrop_1)
+[PO5 6123.2s] pilot: use revive hold dropped (hit or blocked), re-pressing
+[PO5 6123.6s] EVENT crew 3 state 1 -> 0 at (43.0, 0.0, 26.9) (t=441)
+[PO5 6125.1s] pilot: use Crew3 (revive) -> OK in 0.6 s
+[PO5 6129.3s] pilot: t=50 at (41.3, 0.0, 24.1) corner (41.4, 0.2, 24.6) yaw_err 1.03 fwd=false path=9 mouse_mode=2 state=0 look=(115.36,0.00) pin_yaw=115.54969509503 bot=false
+[PO5 6135.2s] pilot: t=55 at (41.2, 0.0, 24.1) corner (41.2, 0.2, 24.6) yaw_err -0.61 fwd=false path=9 mouse_mode=2 state=0 look=(129.44,0.00) pin_yaw=129.252522203006 bot=false
+[PO5 6135.2s] pilot: STUCK at (41.2, 0.0, 24.1) heading to (41.2, 0.2, 24.6); rays: vel=(0.1, 0.0, 0.5) floor=true state=0
+[PO5 6135.2s] pilot: detour right 1.2 m to (40.0, 0.2, 24.6) (attempt 3)
+[PO5 6140.9s] EVENT crew 3 state 0 -> 1 at (43.1, 0.3, 26.8) (t=454)
+[INFO][combat][p1] slot 3 downed (3/3)
+[PO5 6457.2s] pilot: mag empty (0/47), reloading
+[PO5 7011.0s] FAIL budget 7000 s exceeded
+[PO5 7072.9s] shot /tmp/claude-0/-home-user-Claude-N-Capers/ffd7fe7e-ab64-5ca1-b599-c3532188a6c6/scratchpad/db7_q/13_budget_exceeded.png
+[PO5 7072.9s] RESULT FAIL (code 2) flow=auto_loud heist=Dockside Burn seed=1003
+WARNING: 7 RIDs of type "Texture" were leaked.
+   at: finalize (servers/rendering/rendering_device.cpp:8900)
+WARNING: 224 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)
+ERROR: 5 resources still in use at exit (run with --verbose for details).
+   at: clear (core/io/resource.cpp:822)

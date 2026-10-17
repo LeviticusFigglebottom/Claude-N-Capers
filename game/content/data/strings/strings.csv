@@ -988,7 +988,7 @@ skill.juggernaut.thick_skin.name,Thick Skin
 skill.juggernaut.thick_skin.basic,Your armor regenerates 15% faster.
 skill.juggernaut.thick_skin.aced,Flashbangs blind you for 75% less time.
 skill.juggernaut.hold_the_line.name,Hold the Line
-skill.juggernaut.hold_the_line.basic,Taking damage no longer interrupts your interactions.
+skill.juggernaut.hold_the_line.basic,Your armor starts regenerating 15% sooner.
 skill.juggernaut.hold_the_line.aced,Take 50% less damage while interacting.
 skill.juggernaut.hauler.name,Hauler
 skill.juggernaut.hauler.basic,Throw bags 50% further.

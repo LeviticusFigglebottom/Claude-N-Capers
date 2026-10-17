@@ -20,7 +20,6 @@ const UNHOOKED: Dictionary = {
 	&"defense.bullseye": "A",
 	&"defense.dodge_per_concealment": "A",
 	&"defense.flashbang_duration_mult": "A",
-	&"defense.interact_damage_taken_mult": "A",
 	&"defense.outnumbered": "A",
 	&"defense.post_revive_buff": "A",
 	&"defense.reviving_damage_taken_mult": "A",
@@ -77,7 +76,6 @@ const UNTESTED: Dictionary = {
 	&"defense.revived_health_mult": "A",  # systems/combat/crew_health.gd
 	&"deploy.deploy_speed_mult": "A",  # systems/deployables/deployable_system.gd, ...
 	&"deploy.second_deployable": "A",  # systems/deployables/deployable_system.gd
-	&"interaction.no_interrupt_on_damage": "A",  # systems/interaction/interaction_system.gd
 	&"loot.can_sprint_with_heavy": "A",  # systems/player/crew_controller.gd
 	&"loot.carry_speed_penalty_mult": "A",  # systems/player/crew_controller.gd
 	&"movement.crouch_speed_mult": "A",  # systems/player/crew_controller.gd

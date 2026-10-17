@@ -73,6 +73,8 @@ heist_tag_characters = {
 &"security_operator": [&"npc_bank_guard"]
 },
 &"shadow_ledger": {
+&"civ_assistant": [&"npc_km_assistant"],
+&"civ_associate": [&"npc_km_associate"],
 &"civ_cleaner_l41": [&"npc_cleaner_sl", &"npc_cleaner_sl_b", &"npc_cleaner_sl_c", &"npc_cleaner_sl_d"],
 &"civ_cleaner_l42": [&"npc_cleaner_sl", &"npc_cleaner_sl_b", &"npc_cleaner_sl_c", &"npc_cleaner_sl_d"],
 &"civ_it": [&"npc_it_contractor"],

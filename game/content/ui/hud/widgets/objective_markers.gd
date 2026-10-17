@@ -174,6 +174,7 @@ func _layout(entries: Array) -> void:
 func _draw() -> void:
 	var fs: int = UiTokens.FONT_SMALL
 	var shield: Rect2 = get_global_transform_with_canvas().affine_inverse() * avoid if avoid.has_area() else Rect2()
+	var dot_labels: Array[Rect2] = []  # GH real-input Tab shot: far dots stacked "21 m / 15 m / 13 m"
 	for d: Dictionary in drawn:
 		# Lead (flow capture): a marker over the Tab sheet hid its text; markers inside the sheet are not drawn there.
 		if shield.has_area() and shield.grow(SIZE * 1.6).has_point(d["pos"] as Vector2):
@@ -184,7 +185,10 @@ func _draw() -> void:
 		if not cur:
 			draw_circle(c, SIZE * 0.45, Color(UiTokens.INK_0, 0.9))
 			draw_circle(c, SIZE * 0.35, Color(UiTokens.PAPER_DIM, 0.8))
-			_text(c + Vector2(0, SIZE + fs - 2), _distance_text(float(d["distance_m"])), fs, UiTokens.PAPER_DIM)
+			var lr: Rect2 = Rect2(c + Vector2(-SIZE * 2.5, SIZE - 2), Vector2(SIZE * 5.0, fs + 2))
+			if not label_overlaps(lr, dot_labels):  # a dot whose distance would sit on another's keeps only the dot
+				dot_labels.append(lr)
+				_text(c + Vector2(0, SIZE + fs - 2), _distance_text(float(d["distance_m"])), fs, UiTokens.PAPER_DIM)
 			continue
 		var r: float = SIZE * 1.6
 		var grow: float = 1.0 + 0.35 * sin(clampf(_pulse / PULSE_S, 0.0, 1.0) * PI)  # pulse on a new step
@@ -195,6 +199,13 @@ func _draw() -> void:
 		_text(c + Vector2(0, r * grow + fs + 2), dist, fs, UiTokens.PAPER)
 		if not bool(d["clamped"]):
 			_text(c + Vector2(0, -r * grow - 8), String(d["label"]), fs, UiTokens.PAPER)
+
+
+static func label_overlaps(r: Rect2, taken: Array[Rect2]) -> bool:
+	for t: Rect2 in taken:
+		if t.intersects(r):
+			return true
+	return false
 
 
 ## "12 m" for a distance, formatted once per whole metre.

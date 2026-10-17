@@ -18,8 +18,10 @@ const MAPS: Dictionary = {
 ## Navmesh fingerprints of the bakes committed before the skins (PO-13 surface passes):
 ## [vertex count, polygon count, sha256 of the vertices + polygons].
 const NAV_FINGERPRINT: Dictionary = {
-	# re-pinned: SL-P1 corridor corner caps + the stair dividers' head clearance; SL-1 G2 dressing (floor props)
-	"shadow_ledger": [1802, 1825, "23d158eafc9a28d0d5bd2fa91c5d835b71c29d3e4ce25cd5c7bb2e668a2e4f58"],
+	# re-pinned: SL-P1 stair divider foot stubs + ramp run-ons (P re-walk); D-130 late-staff NPC seats (K4
+	# AssistantChairA, K8 PodAChairS1 no longer obstruct); SL-1 polish: the K16 bench / mail trolley, the S1 post room
+	# and the denser K8 / S1 kits obstruct their footprints
+	"shadow_ledger": [1811, 1833, "eb6583dee03540fcbbf07cb7168f3251fa7daff972b9e118fd9e637af4cd04f2"],
 	"dockside_burn": [2245, 2276, "677d48f8a950a07270e001cdccb952ca1a9fde9e1cb1208030ca8ae51b84782e"],  # re-pinned: DB-1 crane bogie colliders
 }
 const SKINS: String = "Geometry/Building/Skins"

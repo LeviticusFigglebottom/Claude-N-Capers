@@ -11,10 +11,13 @@
 ## their contract class names, so this file holds no path into another environment's folder.
 extends "res://world/heists/shadow_ledger/greybox/sl_gameplay.gd"
 
+## How far a flight's ramp collider runs flat onto the floor at its top (no seam with the landing).
+const RAMP_TONGUE: float = 0.3
 const VIEWMODEL_LIT_LAYER: int = 1 << 20  # viewmodel_lit (visual_slots v1.2, D-095) = CrewView.VIEWMODEL_LIT_LAYER
 ## G2 art pass (SL-1): environment / fixtures / city / probes / occluders, and the KitPlacer dressing pass.
 const DA: GDScript = preload("res://world/heists/shadow_ledger/greybox/sl_art.gd")
 const DR: GDScript = preload("res://world/heists/shadow_ledger/greybox/sl_dress.gd")
+const SK: GDScript = preload("res://world/heists/shadow_ledger/greybox/sl_skyline.gd")
 ## Storey tops for the curtain wall (next FFL).
 const STOREY_TOP: Dictionary = {"L41": 8.0, "L42": 11.6}
 const ROOM_LIGHT: Dictionary = {
@@ -23,6 +26,14 @@ const ROOM_LIGHT: Dictionary = {
 	"server": [Color(0.85, 0.92, 1.0), 0.8, 6.0], "art": [Color(1.0, 0.8, 0.6), 0.5, 6.0],
 }
 const EXEC_ROOMS: Array[String] = ["K3", "M1", "M2", "M4", "K1", "K5", "M5", "M8", "M14"]
+## Helipad (SL-1 polish): the painted H's centre (x, z) and the edge-light rows [axis, fixed, positions along it]:
+## 0.25 m outside the deck (x 25-35, z 3-13), clear of the roof patrol's lines PadWest - PadNorth / PadSouth and
+## PadNorth - PadSouth (x 30) across it.
+const HELIPAD_H_CENTRE: Vector2 = Vector2(30.4, 5.9)
+const HELIPAD_EDGE_LIGHTS: Array = [
+	["x", 2.75, [25.0, 27.0, 31.0, 33.0, 35.0]], ["x", 13.25, [25.0, 27.0, 31.5, 33.25, 35.0]],
+	["z", 24.75, [5.0, 6.5, 9.5, 11.0]], ["z", 35.25, [5.0, 7.0, 9.0, 11.0]],
+]
 const BOH_ROOMS: Array[String] = ["K10", "K14", "J41", "J42", "M10", "M11", "M12", "M13", "S1", "S2", "S3", "R1", "R3",
 	"WCW41", "WCM41", "WCW42", "WCM42", "M6"]
 
@@ -512,11 +523,13 @@ func _build_slabs(parent: Node3D) -> void:
 	# G2: 4 mm inside the curtain wall's outer face (the slab ends were coplanar with the facade skin: zfight); the
 	# strip stands under the facade wall, so the walkable floor and the bake are unchanged.
 	var plate: Array = [-0.196, -0.196, 36.196, 24.196]
-	_slab(parent, "SlabL41", plate, core_holes, L.TOP40, L.F41, "floor")
+	var lined: Array = _stair_lined_edges()
+	_slab(parent, "SlabL41", plate, core_holes, L.TOP40, L.F41, "floor", lined)
 	var void_hole: Array = [12.1, 0.2, 20.5, 4.0]
 	var riser: Array = L.RISER["inner"]
-	_slab(parent, "SlabL42", plate, core_holes + [void_hole, riser], L.TOP41, L.F42, "floor")
-	_slab(parent, "SlabRoof", [-0.196, -0.196, 36.196, 18.196], sa + [L.RISER["hatch"]], L.TOP42, L.FRF, "roof")
+	_slab(parent, "SlabL42", plate, core_holes + [void_hole, riser], L.TOP41, L.F42, "floor", lined)
+	_slab(parent, "SlabRoof", [-0.196, -0.196, 36.196, 18.196], sa + [L.RISER["hatch"]], L.TOP42, L.FRF, "roof", lined)
+	_stair_linings(parent, lined)
 	box(parent, "PlantBlockRoof", Vector3(11.85, L.TOPRF, 7.35), Vector3(24.15, L.PLANT_ROOF, 16.65), "roof", true, SLAB_TILE)
 	# Riser grating at L42 (open over the lower ladder).
 	_slab(parent, "RiserGrating", riser, [L.RISER["lower_hole"]], L.F42 - 0.05, L.F42, "fence")
@@ -525,7 +538,8 @@ func _build_slabs(parent: Node3D) -> void:
 ## G2: a slab rect draws only the side faces on a hole's edge (the void, the stair wells, the riser): the others meet
 ## the next rect or stand inside the walls, where they were coplanar with the wall faces (zfight). A rect wholly inside
 ## the curtain wall's band (the strip north of the void) draws nothing. Visual only: the colliders are unchanged.
-func _slab(parent: Node3D, nm: String, outer: Array, holes: Array, y0: float, y1: float, mat: String) -> void:
+func _slab(parent: Node3D, nm: String, outer: Array, holes: Array, y0: float, y1: float, mat: String,
+		lined: Array = []) -> void:
 	var rects: Array = _rects_minus(outer, holes)
 	var plate: bool = float(outer[2]) - float(outer[0]) > 10.0  # a floor plate (its edge band is the curtain wall)
 	var hidden: Array[Node3D] = []
@@ -541,7 +555,8 @@ func _slab(parent: Node3D, nm: String, outer: Array, holes: Array, y0: float, y1
 			or absf(x1 - float(outer[2])) < 0.001)))
 		var caps: int = 0
 		for side: Array in [[4, "x", x0, z0, z1], [8, "x", x1, z0, z1], [16, "z", z0, x0, x1], [32, "z", z1, x0, x1]]:
-			if not _on_hole_edge(holes, String(side[1]), float(side[2]), float(side[3]), float(side[4])):
+			if not _on_hole_edge(holes, String(side[1]), float(side[2]), float(side[3]), float(side[4])) \
+					or _on_hole_edge(lined, String(side[1]), float(side[2]), float(side[3]), float(side[4])):
 				caps |= int(side[0])
 		var body: Node3D = box(parent, "%s_%02d" % [nm, i], Vector3(x0, y0, z0), Vector3(x1, y1, z1), "" if in_band else mat, true,
 			SLAB_TILE, true, caps | 64)  # seamless tiles: no tile faces inside the slab (zfight with the walls' ends)
@@ -552,6 +567,54 @@ func _slab(parent: Node3D, nm: String, outer: Array, holes: Array, y0: float, y1
 	for hb: Node3D in hidden:  # PO-8: the collider-only strips take the slab's bullet surface
 		if shown != null:
 			SurfaceTags.tag(hb as CollisionObject3D, SurfaceTags.from_meshes(shown as CollisionObject3D))
+
+
+## SL-1 polish: the stair-well edges of the slab holes that lie on a core wall's inner face (the N end and both sides;
+## the S edge is the floor landing over the flight). As holes for _on_hole_edge: [x0, z0, x1, z1] of a zero-width
+## strip on that face.
+static func _stair_lined_edges() -> Array:
+	var out: Array = []
+	for cid: String in L.STAIR_CORES:
+		var x0: float = float(L.STAIR_CORES[cid]["x0"])
+		var xa: float = x0 + L.STAIR_CLEAR.x
+		var xb: float = x0 + L.STAIR_CLEAR.y
+		out.append([xa, L.STAIR_Z_N, xa, L.STAIR_Z_START])
+		out.append([xb, L.STAIR_Z_N, xb, L.STAIR_Z_START])
+		out.append([xa, L.STAIR_Z_N, xb, L.STAIR_Z_N])
+	return out
+
+
+## SL-1 polish: the core walls stop at each slab's underside and start again at the next floor, so the slab's hole edge
+## showed its floor finish (terrazzo, carpet) as a strip on the stair-well walls at slab depth. The slab leaves those
+## edges out (_slab `lined`) and the core wall's well face runs on through the slab depth: one face per lined edge and
+## slab, the wall's finish, visual only (the slab collider is unchanged).
+func _stair_linings(parent: Node3D, lined: Array) -> void:
+	var bands: Array = [[L.TOP40, L.F41, ["SA", "SB"]], [L.TOP41, L.F42, ["SA", "SB"]], [L.TOP42, L.FRF, ["SA"]]]
+	var i: int = 0
+	for band: Array in bands:
+		for e: Array in lined:
+			var cid: String = "SA" if float(e[0]) < float(L.STAIR_CORES["SB"]["x0"]) else "SB"
+			if not (band[2] as Array).has(cid):
+				continue
+			var y0: float = float(band[0])
+			var y1: float = float(band[1])
+			var mn: Vector3
+			var mx: Vector3
+			var caps: int = 1 | 2
+			if absf(float(e[1]) - float(e[3])) < 0.001:  # the N edge: the well face looks +z
+				mn = Vector3(float(e[0]), y0, float(e[1]) - L.CORE_T)
+				mx = Vector3(float(e[2]), y1, float(e[1]))
+				caps |= 4 | 8 | 16
+			elif float(e[0]) - float(L.STAIR_CORES[cid]["x0"]) < 1.5:  # the W side: the well face looks +x
+				mn = Vector3(float(e[0]) - L.CORE_T, y0, float(e[1]))
+				mx = Vector3(float(e[0]), y1, float(e[3]))
+				caps |= 4 | 16 | 32
+			else:  # the E side: the well face looks -x
+				mn = Vector3(float(e[0]), y0, float(e[1]))
+				mx = Vector3(float(e[0]) + L.CORE_T, y1, float(e[3]))
+				caps |= 8 | 16 | 32
+			box(parent, "StairLining%s_%02d" % [cid, i], mn, mx, "wall", false, 0.0, false, caps)
+			i += 1
 
 
 ## True when the rect side (axis "x": the side at x = `at` spanning z a0..a1; "z": at z = `at` spanning x) runs along a
@@ -688,7 +751,10 @@ func _flight(parent: Node3D, nm: String, origin: Vector3, yaw: float, w: float, 
 		mesh_box(f, "Step%02d" % k, Vector3(-w * 0.5, lo, float(k - 1) * t), Vector3(w * 0.5, top, float(k) * t + SEAM), "stair")
 	var ramp_t: float = 0.3
 	var end_z: float = float(nr - 1) * t
-	_ramp(f, -w * 0.5, w * 0.5, [[Vector2(-t, 0.0), Vector2(end_z, float(nr) * r), Vector2(end_z, float(nr) * r - ramp_t),
+	# The ramp runs RAMP_TONGUE flat onto the floor at its top: no edge-to-edge seam with the landing (GN grand stair).
+	var h: float = float(nr) * r
+	var tip: float = end_z + RAMP_TONGUE
+	_ramp(f, -w * 0.5, w * 0.5, [[Vector2(-t, 0.0), Vector2(end_z, h), Vector2(tip, h), Vector2(tip, h - ramp_t),
 		Vector2(-t, -ramp_t)]])
 	return f
 
@@ -755,6 +821,12 @@ func _build_core(parent: Node3D, cid: String, core: Dictionary) -> void:
 			box(c, "Divider%sHead" % tag, Vector3(x0 + L.STAIR_WELL.x, prev_yh + L.STAIR_HEADROOM, zh),
 				Vector3(x0 + L.STAIR_WELL.y, ytop_d, zd), "wall")
 		box(c, "Divider%s" % tag, Vector3(x0 + L.STAIR_WELL.x, y0, zd), Vector3(x0 + L.STAIR_WELL.y, ytop_d, L.STAIR_Z_START), "wall")
+		if i >= 0:
+			# P's SL re-walk (Stair B, +1.8): the divider ended at zh, so the up-flight's ramp side stood up to a riser proud
+			# where the capsule turns round it. A stub on the landing runs the divider to the ramp's foot (zh - t), 3 mm
+			# into the divider / its head.
+			box(c, "Divider%sFoot" % tag, Vector3(x0 + L.STAIR_WELL.x, yh, zh - t), Vector3(x0 + L.STAIR_WELL.y, ytop_d, zh + 0.003),
+				"wall")
 		prev_zh = zh
 		prev_yh = yh
 	var ytop: float = float(levels[levels.size() - 1])
@@ -1006,6 +1078,7 @@ func _build_site(geo: Node3D) -> void:
 		var strip: MeshInstance3D = mesh_box(roof, String(s[0]), Vector3(float(s[1]), L.FRF + 0.02, float(s[2])),
 			Vector3(float(s[3]), L.FRF + 0.05, float(s[4])), "heli_green")
 		strip.set_meta(&"fixture", true)
+	_helipad_dressing(roof)
 	# BMU rail along the N and W parapets (2 cm strip, visual).
 	mesh_box(roof, "BMURailN", Vector3(0.4, L.FRF, 0.45), Vector3(34.8, L.FRF + 0.02, 0.55), "steel")
 	mesh_box(roof, "BMURailW", Vector3(0.45, L.FRF, 0.55), Vector3(0.55, L.FRF + 0.02, 6.0), "steel")
@@ -1025,6 +1098,51 @@ func _build_site(geo: Node3D) -> void:
 		bm.set_meta(&"fixture", true)
 
 
+## SL-1 polish (the LEAD's G2 review: the pad read empty): the painted H and the yellow touchdown circle (flat paint
+## quads 4 mm over the deck, north of the E1 net so its secure zone and markers stay clear) and the green edge lights
+## round the deck (low housings with emissive lenses, no Light3D: they cost nothing against the light budget; merged per
+## part by sl_art.merge_city), spaced off the roof patrol's lines across the pad. The windsock is a direct prop
+## (shadow_ledger_dressing.DIRECT_PROPS).
+func _helipad_dressing(roof: Node3D) -> void:
+	var y: float = L.FRF + 0.024
+	var c: Vector2 = HELIPAD_H_CENTRE
+	var white: SurfaceTool = SurfaceTool.new()
+	white.begin(Mesh.PRIMITIVE_TRIANGLES)
+	for q: Array in [[-1.5, -0.75, 1.5, -0.35], [-1.5, 0.35, 1.5, 0.75], [-0.2, -0.35, 0.2, 0.35]]:
+		_skin_quad(white, [c.x + float(q[0]), c.y + float(q[1]), c.x + float(q[2]), c.y + float(q[3]), y, true])
+	var yellow: SurfaceTool = SurfaceTool.new()
+	yellow.begin(Mesh.PRIMITIVE_TRIANGLES)
+	var segs: int = 48
+	for i: int in range(segs):
+		var a0: float = TAU * float(i) / float(segs)
+		var a1: float = TAU * float(i + 1) / float(segs)
+		var pts: Array[Vector3] = []
+		for pr: Array in [[a0, 1.8], [a0, 1.95], [a1, 1.95], [a1, 1.8]]:
+			pts.append(Vector3(c.x + cos(float(pr[0])) * float(pr[1]), y, c.y + sin(float(pr[0])) * float(pr[1])))
+		for k: int in [0, 1, 2, 0, 2, 3]:  # clockwise seen from above
+			yellow.set_normal(Vector3.UP)
+			yellow.set_uv(Vector2(pts[k].x, pts[k].z))
+			yellow.add_vertex(pts[k])
+	for pair: Array in [["HelipadMarkH", white, "pad_paint_white"], ["HelipadMarkCircle", yellow, "pad_paint_yellow"]]:
+		var st: SurfaceTool = pair[1]
+		st.generate_tangents()
+		st.set_material(lib_mat(String(pair[2])))
+		var mi: MeshInstance3D = MeshInstance3D.new()
+		mi.name = String(pair[0])
+		mi.mesh = st.commit()
+		mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		add(roof, mi)
+	var k2: int = 0
+	for row: Array in HELIPAD_EDGE_LIGHTS:
+		for v: float in row[2]:
+			var p: Vector3 = Vector3(v, L.FRF, float(row[1])) if String(row[0]) == "x" else Vector3(float(row[1]), L.FRF, v)
+			mesh_box(roof, "PadLightBase%02d" % k2, p + Vector3(-0.1, 0.0, -0.1), p + Vector3(0.1, 0.06, 0.1), "tower_dark")
+			var lens: MeshInstance3D = mesh_box(roof, "PadLightLens%02d" % k2, p + Vector3(-0.06, 0.04, -0.06),
+				p + Vector3(0.06, 0.11, 0.06), "heli_green")
+			lens.set_meta(&"fixture", true)
+			k2 += 1
+
+
 # --- Props ------------------------------------------------------------------------------------
 
 func _build_props(props: Node3D) -> void:
@@ -1037,7 +1155,7 @@ func _build_props(props: Node3D) -> void:
 	for c: Array in L.CHAIRS:
 		var cp: Vector3 = c[1]
 		var parent: Node3D = by_level[_prop_level(cp)]
-		chair(parent, String(c[0]), cp, float(c[2]))
+		chair(parent, String(c[0]), cp, float(c[2]), L.NPC_SEAT_CHAIRS.has(String(c[0])))
 		var ch: Node3D = parent.get_node(String(c[0])) as Node3D
 		ch.set_meta(&"faces", ch.get_path_to(parent.get_node(String(c[3]))))
 
@@ -1139,6 +1257,8 @@ func _build_dressing() -> void:
 func _build_art() -> void:
 	var art: RefCounted = DA.new(self)
 	var win: int = art.call(&"city_windows", n("Geometry/Site"), map_root)
+	var sky: Array = SK.new(self).call(&"skyline", n("Geometry/Site"), map_root)
+	printerr("art: skyline %d towers, %d lit windows, %d warning lights" % [sky[0], sky[1], sky[2]])
 	var merged: int = art.call(&"merge_railings", map_root) + int(art.call(&"merge_city", map_root))
 	var probes: int = art.call(&"reflection_probes", add(n("Lighting"), node3d("ReflectionProbes")) as Node3D, map_root)
 	var occ: int = art.call(&"occluders", add(n("Geometry"), node3d("Occluders")) as Node3D, map_root)

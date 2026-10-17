@@ -53,6 +53,12 @@ Status: APPROVED (lead, 2026-10-10) (D-042)
   Lethal/Cataclysm run 5 guards; **from Hazardous up the guard count can exceed the pager cap**, so
   ghosting some guards is required. That is intended. Lethal+ cameras are Titan (indestructible,
   S8.1): ECM or the operator only.
+  - **D-130 (population by difficulty):** every tier adds civilians (expected count, +11 % Tense to +75 %
+    Cataclysm): from Tense one of the firm's staff may be working late (`late_staff`: the executive
+    assistant at her K4 desk or an associate in the K8 open office, seated at work), more likely each tier.
+    Guards keep their rows: they already pass D-130's floors (+25 % Tense, +150 % from Lethal). Stealth-only
+    means every extra guard and the operator press on the **4-pager cap**: from Hazardous a full clear needs
+    more answers than the cap (PD2 pressure, accepted by D-130's addendum). Table: §roster, Totals per difficulty.
 
 ## Site
 - **Building:** Calder Tower, 42 storeys. The play space is the top: **L40** (service level, only
@@ -416,7 +422,7 @@ reception, lounge, gallery, study, dining and the terrace corridor have feature 
 | K13 | security_room | 4.5 × 4 | 2.7 | `security_office_sl` (SL-1: the operator's place stays clear) | **`camera_station` with its monitor wall against the solid east wall** (K14 partition); the operator faces **east**, so the door (west) is directly behind him. Key cabinet on the north wall behind him (`kc_security`), logbook on the SW counter (`code_security_log`), lockers, coffee, phone, `alarm_button` on the console. Door unlocked (closed; the operator's coffee runs). No windows. |
 | K14 | electrical | 2.5 × 4 | 2.7 | `electrical_sl` (SL-1) | Switchboard, telecom rack. Door S. |
 | K15 | storage (copy and mail) | 3.5 × 4 | 3.0 | `copy_room` | Copier, paper stock, shredder, mail sorter. Windows E. |
-| K16 | corridor (C2, south spine) | 36 × 1.5 | 2.7 | `corridor_office` | Full-width spine with end windows. C4 (east end). The L41 rover's main loop. |
+| K16 | corridor (C2, south spine) | 36 × 1.5 | 2.7 | `corridor_spine_sl` (SL-1 polish; was `corridor_office`) | Full-width spine with end windows. C4 (east end). The L41 rover's main loop. |
 | K17 | storage (records archive) | 6 × 6 | 3.0 | `archive_records` (SL-1: the shared `storage_archive` is a stock room) | Compact shelving, file boxes, the **document safe** (`safe` MEDIUM, `methods [saw]`, 1 bag `loot.cash`: the partners' cash float). Windows W and S. |
 | K18 | break_room | 6 × 6 | 3.0 | `break_room_office` (SL-1: no lockers) | Fridge, counter with sink, microwave, coffee machine, table with 6 chairs, bulletin board, phone. Windows S. |
 | K19 | office (law library) | 6 × 6 | 3.0 | `library_law` | Book stacks, reading table, lamps. |
@@ -497,17 +503,27 @@ stair cores** for > 2 floors ✓; fire exits = both stairs; the longest travel t
 | Cleaner (L42) | 0–1 | `cleaners` ≥ 2 | `civ_cleaner_l42` | `browse` (cleaning) | `staff`, `staff_clean_l42` |
 | IT contractor | 0–1 | `server_room` = `srv_contractor` | `civ_it` | `phone` (standing at the racks; no seat in K11, PO6-06) | `staff`, `staff_it` |
 | Helena Moor | 0–1 | `late_partner` = `moor_late` | `civ_partner` | `phone` | `staff`, `staff_partner` |
+| Executive assistant (D-130) | 0–1 | `late_staff` = `ls_assistant` (Tense+) | `civ_assistant` | `desk_work` (seated at K4 desk A on `AssistantChairA`, a D-063 NPC seat at (25.6, 1.2), back to the window; the K4 phone is beside her) | — (stays at her desk) |
+| Associate (D-130) | 0–1 | `late_staff` = `ls_associate` (Tense+) | `civ_associate` | `desk_work` (seated at K8 pod A on `PodAChairS1`, a D-063 NPC seat at (2.4, 11.25), in C11's room) | — (stays at the pod) |
 | Victor Kessler | 0–1 | rare `kessler_sleepover` | `civ_kessler` | `sit` (reading in the bedside armchair, the catalog `prop_armchair`: on its `Seat` at (3.0, 12.3), back to the M5 south wall, PO6-06 / D-063 npc seat, SL-3) | — (stays in M5) |
 
-**Totals per difficulty** (guard counts from `guard_post`/`guard_extra` picks, `difficulty_add`):
+**Totals per difficulty** (guards = reception + `guard_post` rovers + `guard_extra`, without the operator; civilians at
+load = cleaners + contractor + Moor + `late_staff` + Kessler on `kessler_sleepover`; "E" = the expected count over
+1500 seeded rolls, % against Routine, pre-D-130 E in brackets; D-130, pinned by `game/tests/c/test_d130_population.gd`):
 
-| Difficulty | Guards (recep. + rovers + extras) | Operator | Pagers to clear everyone | Civilians (cleaners + contractor + Moor) | Notes |
-|---|---|---|---|---|---|
-| Routine | 1 + 1 + 0 = **2** | 60% | 2–3 | 1–2 + 0–1 + 0–1 = **1–4** | Everything can be killed and answered. |
-| Tense | 1 + 1 + 0–1 = **2–3** | 60% | 2–4 | 1–4 | At the cap at worst. |
-| Hazardous | 1 + 2 + 0–1 = **3–4** | 60% | 3–5 | 1–5 | Can exceed the cap. |
-| Brutal | 1 + 2 + 1 = **4** | 60% | 4–5 | 2–5 | Exceeds the cap when the operator is in. |
-| Lethal / Cataclysm | 1 + 2 + 2 = **5** | 60% | 5–6 | 2–5 | 1–2 guards must be ghosted; Titan cameras. |
+| Difficulty | Guards (recep. + rovers + extras) (E, %) | Operator | Pagers to clear everyone | Civilians (E, %) [pre-D-130] | `late_staff` | Notes |
+|---|---|---|---|---|---|---|
+| Routine | 1 + 1 + 0 = **2** (2.0) | 60% | 2–3 | 1–5 (2.26) [2.26] | 0 | Everything can be killed and answered. |
+| Tense | 1 + 1 + 0–1 = **2–3** (2.51, +25 %) | 60% | 2–4 | 1–6 (2.50, +11 %) [2.27] | 0–1 (25 %) | At the cap at worst. |
+| Hazardous | 1 + 2 + 0–1 = **3–4** (3.47, +73 %) | 60% | 3–5 | 1–6 (3.04, +34 %) [2.78] | 0–1 (25 %) | Can exceed the cap. |
+| Brutal | 1 + 2 + 1 = **4** (4.0, +100 %) | 60% | 4–5 | 2–6 (3.63, +60 %) [3.29] | 0–1 (33 %) | Exceeds the cap when the operator is in. |
+| Lethal | 1 + 2 + 2 = **5** (5.0, +150 %) | 60% | 5–6 | 2–7 (3.74, +65 %) [3.29] | 0–1 (44 %) | 1–2 guards must be ghosted; Titan cameras. |
+| Cataclysm | 1 + 2 + 2 = **5** (5.0, +150 %) | 60% | 5–6 | 2–7 (3.96, +75 %) [3.29] | 0–1 (67 %) | As Lethal. |
+
+The guard rows are the pre-D-130 ones (they already meet every D-130 floor); the civilian percentages run above
+D-130's targets because the pre-D-130 cleaner rows were already +45 % from Brutal and no tier may fall below it.
+The late worker is seated and stays put (no wander), so the cost is a fixed pair of eyes on K4 (C5's corridor side,
+Moor's neighbour) or the K8 pods, plus a phone call if spooked.
 
 `kessler_sleepover` adds 1 civilian. Cable ties: 2 per player. Solo (AI wait at the van, D-014)
 means **avoiding** civilians, not tying them all.
@@ -706,6 +722,7 @@ Each variable changes a decision. Rules resolve in this order (heist_map.md §5)
 | `gondola` (heist group) | `gon_west_l41`, `gon_north_l42`, `gon_stowed` | 0.3, 0.3, 0.4 | **A camera-free entry straight into a target room:** Kessler's office (keycard/laptop slots), or the study behind the lasers. |
 | `escape` | `esc_heli` (E1 pad), `esc_line` (E2 E parapet), `esc_service` (E3 L40) | 0.4, 0.35, 0.25 | **The whole loot path:** 2 storeys up through Stair A (heli/line) or 1 storey down Stair B (service), which makes the gallery throw and the service spawn valuable. |
 | `cleaners` (scalar) | 1, 2, 3 | Routine 0.5/0.5/0; Hazardous 0.2/0.6/0.2; Brutal+ 0/0.5/0.5 | **How many routes a civilian with a cart crosses:** a cleaner on L42 puts a civilian on M1/M2/M15, and the cart can hold `kc_cleaner`. |
+| `late_staff` (`civilian_cluster`, D-130) | `ls_assistant` (K4 desk A), `ls_associate` (K8 pod A), `ls_none` (empty) | 1, 1; pick 0, `difficulty_add` [0, 1, 1, 1, 1, 1]; `ls_none` 6 / 6 / 4 / 2.5 / 1 (Tense..Cataclysm), so one late worker 25 / 25 / 33 / 44 / 67 % | **A seated civilian next to a target route:** the assistant watches K4's door on the Moor / laptop / code-planner side of K7; the associate the K8 pods on the cleaner's loop and the archive approach. Cable tie or time it. |
 | `time_lock_s` (scalar) | 90, 120 | Routine 0.7/0.3; Brutal+ 0.3/0.7 | **How long to hold the study:** shorter than one L42 rover loop (90) or longer (120), which decides whether to start it at all. |
 
 ## Rare events
@@ -786,6 +803,19 @@ Crew assets with no point: `asset.intel_cameras` (reveals `camera`), `asset.inte
   or exterior rooms), 125 occluders (slabs, solid walls); for the draw-call budget (2500 per review camera, worst
   ExtTerraceSE 2293 with every variant slot on) near-range (30 m) interior props, merged railing, city-light and
   opaque curtain-wall meshes (one per material per storey).
+- **SL-1 polish (the LEAD's G2 contact-sheet review):** K16 gets its own kit (`corridor_spine_sl`: framed notices and art,
+  a room sign beside each of its doors on the handle side) plus a bench against the K8 wall (x 7) and the internal-mail
+  trolley parked against the K13 wall (x 26.9): both against the north wall between the patrol points and outside every
+  door's clear zone, leaving >= 0.85 m of the 1.3 m spine; the trolley is one more crouch spot on the 36 m sightline
+  (the door recesses stay the main cover). S1 adds the post room (mail trolley, bin rack), a parked cleaner's cart,
+  flattened boxes and notices around the PUBLIC spawns. K8: fabric spine screens on the three pods (visual only, as the
+  monitors), a working day's desk clutter, a second printer (doc: 2 printers), a whiteboard, more cabinets. The south /
+  south-west / east skyline is generated (`sl_skyline.gd`, fixed seed): 29 towers of varied footprint and height, setback
+  crowns, roof plant, antenna masts, warm or cool lit floors (dark, full or partly lit per floor), 17 aircraft warning
+  lights (emissive, no Light3D); ~8 merged meshes. Helipad: a painted H and a yellow touchdown circle north of the E1 net,
+  18 green edge lights round the deck (emissive, no Light3D, off the roof patrol's lines), a windsock on the plant block's
+  east face. Stair cores: the core walls' well faces run on through each slab's depth (the slab's hole edge showed its
+  floor finish as a strip, e.g. terrazzo at Stair A L41). Worst review camera ExtTerraceSE 2360 draw calls (< 2500).
 
 ## HeistDef (proposed data, `shadow_ledger_def.tres`)
 `id shadow_ledger`, display "Shadow Ledger", contact `contact.accountant`, mode STEALTH_ONLY,

@@ -1,7 +1,7 @@
 # Prop art inventory: GH / ND / DB / SL (ENV C helper, read-only survey, 2026-10-14)
 
 Branch surveyed: env/c-worlds @ 587f9977. Stages: GH = final, ND = final, DB = greybox, SL = greybox.
-Update 2026-10-17 (SL-1): SL G2 art pass done (item 12); see below.
+Update 2026-10-17 (SL-1): SL G2 art pass done (item 12); see below. SL-1 polish (LEAD G2 review): 6 more Calder props.
 Method: parsed each heist .tscn for prefab instances and their `visual_scene` override (DEFAULT means the A placeholder
 is shown), read the prefab scripts and placeholders, the LootDef/DeployableDef/ThrowableDef data, and the glb material
 slots (glb JSON) against the library (`game/world/materials`, `game/world/props/materials`).
@@ -142,6 +142,11 @@ Abbreviations: Hook = how C can supply the art without touching A files. SC = sc
     (`sl_dress.gd`). `prop_loot_laptop` / `prop_loot_ledger_drives` moved off alu_black (it read 1022 px/m on the
     materials check). Open on SL: the laser emitters, the zipline anchor and the secure net / cart visuals (SL-2/SL-3
     lane), Kessler's and the camera operator's npc seats.
+    **SL-1 polish (LEAD's G2 contact-sheet review).** 6 more Calder props (pin_only): `prop_door_sign` (room sign beside
+    the K16 doors, `sl_dress._door_signs`), `prop_mail_trolley` and `prop_mail_bins` (S1 post room, K16), `prop_whiteboard`
+    (K8), `prop_pod_screen` (the bench pods' spine screens, `sl_dress._desk_screens`), `prop_windsock` (helipad, on the plant
+    block's east face). New kit `corridor_spine_sl` (K16; the shared `corridor_office` stays as it was); `service_lobby`
+    and `office_open_law` denser (mail, cleaning cart, boxes; a second printer, whiteboard, pod clutter).
 13. **ND G3 backlog (brief item 7).** Low. There is no exterior "Harbor Savings & Loan" sign
     (`prop_sign_vossberg` shows the pattern: add `prop_sign_harbor_savings` with pr_emit_warm letters, brass, pr_metal_dark),
     a vault-cage cash-brick dressing pallet beyond the loot_spawn's `prop_cash_pallet`, and teller desk personal touches
