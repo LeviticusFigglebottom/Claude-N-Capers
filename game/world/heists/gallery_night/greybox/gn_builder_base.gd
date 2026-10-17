@@ -35,6 +35,8 @@ const SLAB_TILE: float = 6.0
 const SEAM: float = 0.02
 ## Visual steps stop this far inside the flight's sides (the collision ramp keeps the full width).
 const STEP_INSET: float = 0.005
+## How far a flight's ramp collider runs flat onto the floor at its top (no seam with the landing).
+const RAMP_TONGUE: float = 0.3
 ## G2 art pass (GN-C2): library materials per surface class and room finish, merged world-UV visuals.
 const A: GDScript = preload("res://world/heists/gallery_night/greybox/gn_art.gd")
 const AS: GDScript = preload("res://world/heists/gallery_night/greybox/gn_art_site.gd")
@@ -241,12 +243,16 @@ func flight(parent: Node3D, nm: String, origin: Vector3, yaw: float, w: float, n
 		add(f, steps)
 	var ramp_t: float = 0.3
 	var end_z: float = float(nr - 1) * t
+	# The ramp runs RAMP_TONGUE flat onto the upper floor: ending edge-to-edge on the landing left a zero-width seam the
+	# 0.35 m capsule caught on (GN grand stair half landing; A's pilot, ~30 s twice a run).
+	var h: float = float(nr) * r
+	var tip: float = end_z + RAMP_TONGUE
 	if solid_y == null:
-		ramp(f, -w * 0.5, w * 0.5, [[Vector2(-t, 0.0), Vector2(end_z, float(nr) * r), Vector2(end_z, float(nr) * r - ramp_t),
+		ramp(f, -w * 0.5, w * 0.5, [[Vector2(-t, 0.0), Vector2(end_z, h), Vector2(tip, h), Vector2(tip, h - ramp_t),
 			Vector2(-t, -ramp_t)]])
 	else:
 		var lo2: float = minf(float(solid_y) - origin.y, -ramp_t)
-		ramp(f, -w * 0.5, w * 0.5, [[Vector2(-t, 0.0), Vector2(end_z, float(nr) * r), Vector2(end_z, lo2), Vector2(-t, lo2)]])
+		ramp(f, -w * 0.5, w * 0.5, [[Vector2(-t, 0.0), Vector2(end_z, h), Vector2(tip, h), Vector2(tip, lo2), Vector2(-t, lo2)]])
 	SurfaceTags.tag(f.get_node("Ramp"), surf)  # PO-8: the steps' material (they are merged art visuals)
 	return f
 
