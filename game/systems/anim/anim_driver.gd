@@ -23,8 +23,9 @@
 ## follows HandL/Socket. Guard down (stagger: hit_react), dropped, dead or a rig without the clip: the normal
 ## clips play.
 ## Turn in place (TurnInPlace): a standing body whose yaw moved more than AnimTweak.turn_threshold_deg (20) plays
-## turn_l_45 / turn_r_45 (below 67.5 deg) or turn_l / turn_r while the rig root yaws toward the body at the clip's
-## rate (the rig is counter-rotated; the body itself is untouched); smaller changes snap over turn_snap_s.
+## turn_l_45 / turn_r_45 (below 67.5 deg) or turn_l / turn_r at speed_scale 1 while the rig root yaws at the clip's
+## own rate (the rig is counter-rotated; the body itself is untouched); the residual eases in over the blend-out;
+## smaller changes snap over turn_snap_s.
 ## Third-person weapon: WeaponVisual (ENV B, by class name) of WeaponDef.model at `HandR/Socket` (crew: the
 ## equipped weapon, NPC: EnemyDef.weapon when it has a WeaponDef with a model; otherwise none).
 ## D-116 police combat (CombatClips): aim on the move, class / moving reloads, cover poses, stagger, DB-4 sit_chair_armed;
@@ -998,7 +999,7 @@ func _update_velocity(delta: float, tw: AnimTweak) -> void:
 		_vel = Vector3.ZERO
 
 
-## Turn in place (TurnInPlace: turn_*_45 / turn_l / turn_r, the rig yaw matched to the clip).
+## Turn in place (TurnInPlace: turn_*_45 / turn_l / turn_r at speed 1, the rig yaw at the clip's own rate).
 func _update_turn(delta: float, tw: AnimTweak) -> void:
 	turn.update(delta, tw)
 
