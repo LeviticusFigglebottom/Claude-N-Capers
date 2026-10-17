@@ -33,6 +33,9 @@ var jams_fixed: int = 0
 var hoist_trips: int = 0
 var drill: DrillPoint = null
 var hoist: BagLift = null
+## Hoist take-offs where a real player at the bot's stand would (not) aim the bag (_note_player_aim).
+var player_aim_checks: int = 0
+var player_aim_misses: int = 0
 
 
 func _init(flow: X4StealthFlow) -> void:
@@ -113,7 +116,7 @@ func _drill_parts() -> bool:
 		if not await _pick_up(bag, "pick up drill part %d" % (i + 1)):
 			return false
 		var placed: int = drill.delivered
-		if not await f.go_to(drill):
+		if not await _up("place drill part %d" % (i + 1), false) or not await f.go_to(drill):
 			return false
 		var done: Callable = func() -> bool: return drill.delivered > placed or drill.device_state() != DeviceRunner.State.IDLE
 		if not await f.use(drill, done, _tw().drill_place_s + 1.0 + X4StealthFlow.MARGIN_S, "place drill part %d" % (i + 1)):
@@ -128,15 +131,22 @@ func _burn() -> bool:
 	var budget: float = drill.effective_duration() * 2.0 + 60.0
 	var t0: float = f.rt.heist_time_s
 	while not bool(_m().get(&"burned_through")) and f.rt.heist_time_s - t0 < budget:
+		# Between jams the bot crouches at the drill: the TW counter (1.05 m, doc H1) is its cover from the hall; standing,
+		# wave 2's sustain (heli drops + the turret van, ~330-400 s) could down it after the AI teammates (seed 1 wipe).
+		var hold: CrewIntent = f._still()
+		hold.crouch = true
+		f.rt.set_bot_intent(0, hold)
 		await f.fast_until(func() -> bool:
 			return bool(_m().get(&"burned_through")) or drill.device_state() == DeviceRunner.State.JAMMED, budget)
 		if drill.device_state() == DeviceRunner.State.JAMMED:
 			jams_fixed += 1
-			if not await f.go_to(drill) or not await f.use(drill, func() -> bool:
+			var fix: Callable = func() -> bool:
+				return await f.go_to(drill) and await f.use(drill, func() -> bool:
 					return drill.device_state() != DeviceRunner.State.JAMMED,
-					_tw().drill_fix_s + X4StealthFlow.MARGIN_S, "fix the drill (jam #%d)" % jams_fixed):
+					_tw().drill_fix_s + X4StealthFlow.MARGIN_S, "fix the drill (jam #%d)" % jams_fixed)
+			if not await _act("fix the drill (jam #%d)" % jams_fixed, true, fix):
 				return false
-		if not f.check(custody == 0, "the bot is not in custody"):
+		if not await _up("hold the teller line through the burn", false):
 			return false
 	if not f.check(bool(_m().get(&"burned_through")), "the burn-through (%d jams fixed)" % jams_fixed):
 		return false
@@ -154,6 +164,8 @@ func _down_the_hole() -> bool:
 
 ## Teleport to the vault floor at the hoist (the rope ladder's foot, stated shortcut).
 func _vault_floor() -> bool:
+	if not await _up("down to the vault floor"):
+		return false
 	return await f.go_to(hoist, hoist.landing_transform(0).origin)
 
 
@@ -182,7 +194,7 @@ func _cage() -> bool:
 			var what: String = "fix the padlock saw" if jammed else "work the cash cage padlock"
 			var moved: Callable = func() -> bool:
 				return padlock.opened or (padlock.runner != null and padlock.runner.state == DeviceRunner.State.RUNNING)
-			if not await f.take(padlock, moved, _tw().lockpick_door_s, what):
+			if not await _act(what, true, func() -> bool: return await f.take(padlock, moved, _tw().lockpick_door_s, what)):
 				return false
 		await f.fast_until(func() -> bool:
 			return padlock.opened or (padlock.runner != null and padlock.runner.state != DeviceRunner.State.RUNNING),
@@ -214,9 +226,10 @@ func _hoist_trip(cash: LootSpawn, zone: Area3D, n_load: int) -> int:
 		return 0
 	var done: int = 0
 	for bag: LootBag in hoist.bags_in_car():
-		if not await _pick_up(bag, "take %s off the hoist" % bag.name):
+		if not await _pick_up(bag, "take %s off the hoist" % bag.name, true):
 			return 0
-		if not await f._secure_carried(zone):
+		if not await _act("secure %s" % bag.name, false, func() -> bool:
+				return await _still_carrying("secure the bag") and await f._secure_carried(zone)):
 			return 0
 		done += 1
 	return done if f.check(done == n_load, "%d bags came up the hoist (%d sent)" % [done, n_load]) else 0
@@ -231,7 +244,10 @@ func _load_hoist(cash: LootSpawn, n_load: int) -> bool:
 	for _i: int in range(n_load):
 		if not f.check(cash.remaining > 0, "vault cash left to bag"):
 			return false
-		if not await f._bag_from(cash) or not await _into_hoist():
+		if not await _act("bag VaultCash", true, func() -> bool: return await f._bag_from(cash)):
+			return false
+		if not await _act("into the hoist", false, func() -> bool:
+				return await _still_carrying("into the hoist") and await _into_hoist()):
 			return false
 	return true
 
@@ -241,10 +257,11 @@ func _call_hoist(i: int) -> bool:
 	await f.wait_until(func() -> bool: return not hoist.is_moving(), 15.0)
 	if _car_at(i):
 		return true
-	if not await f.go_to(hoist, hoist.landing_transform(i).origin):
-		return false
-	if not await f.use(hoist, func() -> bool: return hoist.is_moving(), _tw().bag_lift_send_s + X4StealthFlow.MARGIN_S,
-			"call the hoist to landing %d" % i):
+	var call_car: Callable = func() -> bool:
+		return await f.go_to(hoist, hoist.landing_transform(i).origin) and await f.use(hoist,
+			func() -> bool: return hoist.is_moving(), _tw().bag_lift_send_s + X4StealthFlow.MARGIN_S,
+			"call the hoist to landing %d" % i)
+	if not await _act("call the hoist to landing %d" % i, true, call_car):
 		return false
 	return f.check(await f.fast_until(func() -> bool: return not hoist.is_moving() and _car_at(i), hoist.travel_s + 5.0),
 		"the hoist car at landing %d" % i)
@@ -283,10 +300,11 @@ func _into_hoist() -> bool:
 
 
 func _send_hoist() -> bool:
-	if not await f.go_to(hoist, hoist.landing_transform(0).origin):
-		return false
-	if not await f.use(hoist, func() -> bool: return hoist.is_moving(), _tw().bag_lift_send_s + X4StealthFlow.MARGIN_S,
-			"send the hoist up (%d bags)" % hoist.bags_in_car().size()):
+	var send_car: Callable = func() -> bool:
+		return await f.go_to(hoist, hoist.landing_transform(0).origin) and await f.use(hoist,
+			func() -> bool: return hoist.is_moving(), _tw().bag_lift_send_s + X4StealthFlow.MARGIN_S,
+			"send the hoist up (%d bags)" % hoist.bags_in_car().size())
+	if not await _act("send the hoist up", true, send_car):
 		return false
 	hoist_trips += 1
 	# Up the rope ladder while the car travels (stated shortcut: a teleport to the teller line beside the hole).
@@ -298,11 +316,23 @@ func _send_hoist() -> bool:
 
 ## Walk up to `bag` and pick it up (interact held on it, released between tries); up to 3 tries from a fresh stand spot
 ## (in the fight a shove, a tase or a teammate in the way can cost a try). One check, on the last try.
-func _pick_up(bag: LootBag, what: String) -> bool:
+## Off the hoist (`from_car`), the stand is the hall floor beside the car (_hoist_stand), never a navmesh snap at the bag:
+## the car sits in the burnt hole, its front open to the void over the rope ladder, so a snap at the bag can put the bot on
+## the car's lip over the void (or on navmesh baked over the old plug), where it slides off mid-hold and the hold is
+## cancelled by the move (S9.1 cancel_move_m) -- the round-245 seed 1 miss.
+func _pick_up(bag: LootBag, what: String, from_car: bool = false) -> bool:
 	for attempt: int in range(3):
 		if not is_instance_valid(bag) or bag.is_carried():
 			break
-		if not await f.go_to(bag):
+		if not await _up(what):
+			return false
+		if from_car:
+			var stand: Variant = _hoist_stand(bag, attempt)
+			if not f.check(stand != null, "a solid hall-floor stand beside the hoist car for %s" % bag.name):
+				return false
+			await f._move_to(stand as Vector3, bag.global_position)
+			await _note_player_aim(bag, what)
+		elif not await f.go_to(bag):
 			return false
 		var t: float = 0.0
 		while t < _tw().bag_loot_s + X4StealthFlow.MARGIN_S and not f.crew.is_carrying_bag():
@@ -320,6 +350,130 @@ func _pick_up(bag: LootBag, what: String) -> bool:
 		f.note("%s: try %d missed (crew at %s, bag at %s, state %d, blocked '%s')" % [what, attempt + 1,
 			f.crew.global_position, bag.global_position, int(f.crew.crew_state), f.rt.interaction.blocked_reason(0)])
 	return f.check(f.crew.is_carrying_bag(), what)
+
+
+## Before an interaction: a downed / tased / cuffed bot waits (fast) for its AI teammates' revive or the state to wear
+## off (an interaction is refused with ui.blocked.state otherwise, InteractableComponent._crew_block); custody fails
+## clearly (the whole crew went down). `drop`: hands free too (a carried bag also refuses with ui.blocked.state: put down
+## where it stands; the flow picks bags up again where it needs them).
+func _up(what: String, drop: bool = true) -> bool:
+	var st: int = int(f.crew.crew_state)
+	if st != Enums.CrewState.NORMAL and st != Enums.CrewState.CUSTODY:
+		f.note("%s: the bot is down (state %d), waiting for a revive" % [what, st])
+		await f.fast_until(func() -> bool:
+			var s2: int = int(f.crew.crew_state)
+			return s2 == Enums.CrewState.NORMAL or s2 == Enums.CrewState.CUSTODY, 180.0)
+		f.note("%s: the bot is back up (state %d)" % [what, int(f.crew.crew_state)])
+	if not f.check(int(f.crew.crew_state) == Enums.CrewState.NORMAL,
+			"the bot is up for '%s' (state %d; the crew wiped: custody %d)" % [what, int(f.crew.crew_state), custody]):
+		return false
+	if drop and f.crew.is_carrying_bag():
+		f.note("%s: the bot carries a bag, puts it down first" % what)
+		var d: CrewIntent = f._still()
+		d.drop_bag = true
+		f.rt.set_bot_intent(0, d)
+		await f._physics_frames(X4StealthFlow.RISE_FRAMES)
+		f.rt.set_bot_intent(0, f._still())
+		await f._physics_frames(X4StealthFlow.RISE_FRAMES)
+		if not f.check(not f.crew.is_carrying_bag(), "%s: hands free" % what):
+			return false
+	return true
+
+
+## One flow action (`action` returns its success) with the up-check first (_up, `drop` as there). When it fails because
+## the bot went down / was tased / cuffed during it (a fight beat, not a flow error), its failure lines are withdrawn,
+## the bot waits for its revive and the action runs again (up to 3 times); any other failure stands.
+func _act(what: String, drop: bool, action: Callable) -> bool:
+	for attempt: int in range(3):
+		if not await _up(what, drop):
+			return false
+		var n_fail: int = f.failures.size()
+		var downs_before: int = downs
+		if await action.call():
+			return true
+		var hit: bool = downs > downs_before or int(f.crew.crew_state) != Enums.CrewState.NORMAL
+		if not hit or attempt == 2:
+			return false
+		f.failures.resize(n_fail)
+		f.note("%s: interrupted by a down (state %d), again after the revive (try %d)" % [what, int(f.crew.crew_state),
+			attempt + 2])
+	return false
+
+
+## The bot still carries the bag it just took; downed / cuffed meanwhile (the bag falls, LootManager), it waits for the
+## revive (_up) and picks the dropped bag up again.
+func _still_carrying(what: String) -> bool:
+	if f.crew.is_carrying_bag() and int(f.crew.crew_state) == Enums.CrewState.NORMAL:
+		return true
+	if not await _up(what, false):
+		return false
+	if f.crew.is_carrying_bag():
+		return true
+	var loose: LootBag = _nearest_loose_bag(f.crew.global_position)
+	if not f.check(loose != null, "%s: the bag the bot dropped when it went down" % what):
+		return false
+	return await _pick_up(loose, "%s: pick the dropped bag up again" % what)
+
+
+## A stand on solid hall floor beside the standing hoist car, within reach of `bag`: candidates on rings around the
+## car, outside its footprint by the crew radius, on the navmesh, with floor at the landing height under the stand and
+## around it (no part of the capsule over the hole or the car). Nearest to the bag first; `skip` drops that many of
+## the best (a retry stands somewhere else).
+func _hoist_stand(bag: LootBag, skip: int) -> Variant:
+	var car: Transform3D = hoist.car_transform()
+	var half: Vector3 = hoist.car_size_m * 0.5
+	var cands: Array[Vector3] = []
+	for r: float in [0.45, 0.65, 0.85]:
+		for deg: int in range(0, 360, 15):
+			var dir: Vector3 = Vector3.FORWARD.rotated(Vector3.UP, deg_to_rad(float(deg)))
+			# a point r beyond the car's box edge along dir (local space)
+			var t: float = minf(half.x / maxf(absf(dir.x), 0.001), half.z / maxf(absf(dir.z), 0.001))
+			var want: Variant = BotUtil.nav_point_near(hoist, car * (dir * (t + r)), 0.15)
+			if want == null:
+				continue
+			var p: Vector3 = want as Vector3
+			var lp: Vector3 = car.affine_inverse() * p
+			if absf(lp.x) < half.x + 0.35 and absf(lp.z) < half.z + 0.35:
+				continue
+			if p.distance_to(bag.global_position) > _tw().explicit_reach_m - 0.6 or not _solid_floor(p, car.origin.y):
+				continue
+			cands.append(p)
+	var at: Vector3 = bag.global_position
+	cands.sort_custom(func(a: Vector3, b: Vector3) -> bool: return a.distance_to(at) < b.distance_to(at))
+	return cands[mini(skip * 3, cands.size() - 1)] if not cands.is_empty() else null
+
+
+## Floor at `y` (+-0.15) under `p` and 0.35 m around it, not the hoist's own car slab.
+func _solid_floor(p: Vector3, y: float) -> bool:
+	var space: PhysicsDirectSpaceState3D = f.crew.get_world_3d().direct_space_state
+	var excl: Array[RID] = [f.crew.get_rid()]
+	var car_body: CollisionObject3D = hoist.get_node_or_null(^"CarBody") as CollisionObject3D
+	if car_body != null:
+		excl.append(car_body.get_rid())
+	for o: Vector3 in [Vector3.ZERO, Vector3(0.35, 0, 0), Vector3(-0.35, 0, 0), Vector3(0, 0, 0.35), Vector3(0, 0, -0.35)]:
+		var q: PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.create(p + o + Vector3.UP * 0.5,
+			p + o + Vector3.DOWN * 0.6, 1)
+		q.exclude = excl
+		var hit: Dictionary = space.intersect_ray(q)
+		if hit.is_empty() or absf((hit["position"] as Vector3).y - y) > 0.15:
+			return false
+	return true
+
+
+## A real player standing here would aim the bag (no interact_target_net_id: the aim ray + LOS, crew_intent.md); a
+## miss is noted (the bot's explicit target skips the LOS check, so it would hide a car wall that blocks players).
+func _note_player_aim(bag: LootBag, what: String) -> void:
+	var look: Vector3 = bag.interactable.global_position if bag.interactable != null else bag.global_position
+	f.rt.teleport_crew(0, BotUtil.facing(f.crew.global_position, look))
+	var i: CrewIntent = BotUtil.look_at_intent(f.crew.eye_position(), look)
+	f.rt.set_bot_intent(0, i)
+	await f._physics_frames(2)
+	var aimed: InteractableComponent = f.rt.interaction.aimed_component(f.crew)
+	player_aim_checks += 1
+	if aimed == null or aimed.owner_node() != bag:
+		player_aim_misses += 1
+		f.note("%s: a player at %s would NOT aim the bag (aimed %s)" % [what, f.crew.global_position,
+			aimed.owner_node().name if aimed != null else "nothing"])
 
 
 func _nearest_loose_bag(at: Vector3) -> LootBag:

@@ -13,6 +13,9 @@ extends "res://tests/a/x4_stealth_case.gd"
 const HEIST: StringName = &"ostrander_federal"
 const MAP_PATH: String = "res://world/heists/ostrander_federal/ostrander_federal.tscn"
 const PENDING: String = "pending C G1: no ostrander_federal map on this branch (OF-C1)"
+## Seed 3 needs C's manager routes (fcc83280: Patrols/Routes/ManagerVaultRoute, its LK WC away stop).
+const ROUTE_MGR_VAULT: String = "route_id = &\"mgr_vault\""
+const PENDING_ROUTES: String = "pending C fcc83280: no mgr_vault CivilianRoute in the map"
 const PC_LINE: Array[StringName] = [&"keycard", &"code_pc", &"vault_gate", &"time_lock", &"time_lock_wait", &"secure",
 	&"escape"]
 const RACK_LINE: Array[StringName] = [&"keycard", &"vault_gate", &"lasers", &"server", &"time_lock_wait", &"secure",
@@ -30,6 +33,18 @@ func test_x4_of_stealth_seed_18_rack_line_heli() -> void:
 	if _pending():
 		return
 	await run_stealth(HEIST, 18, RACK_LINE)
+
+
+func test_x4_of_stealth_seed_3_manager_card_vault_basement() -> void:
+	if _pending():
+		return
+	if not FileAccess.get_file_as_string(MAP_PATH).contains(ROUTE_MGR_VAULT):
+		skip(PENDING_ROUTES)
+		return
+	await run_stealth(HEIST, 3, RACK_LINE)
+	if flow != null:
+		assert_true(bool(flow.facts.get(&"curator_tied", false)), "Ashgrove tied for his keycard (kc_on_manager)")
+		assert_true(bool(flow.facts.get(&"carrier_caught_away", false)), "caught alone in his away window (mgr_vault)")
 
 
 func test_x4_of_stealth_seed_35_manager_card_gallery() -> void:

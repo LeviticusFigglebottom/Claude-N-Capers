@@ -44,9 +44,10 @@ func _run(seed_value: int) -> void:
 	var loud: X4OfLoud = X4OfLoud.new(flow)
 	var ok: bool = await loud.play()
 	var wall_s: float = float(Time.get_ticks_msec() - t0) / 1000.0
-	flow.note("loud route %s in %.1f s wall, %.1f s heist; objectives %s; secured %s; jams fixed %d; hoist trips %d; downs %d" % [
+	flow.note(("loud route %s in %.1f s wall, %.1f s heist; objectives %s; secured %s; jams fixed %d; hoist trips %d; "
+		+ "downs %d; player-aim misses %d/%d") % [
 		"done" if ok else "FAILED", wall_s, flow.rt.heist_time_s, flow.completed, flow.secured_loot, loud.jams_fixed,
-		loud.hoist_trips, loud.downs])
+		loud.hoist_trips, loud.downs, loud.player_aim_misses, loud.player_aim_checks])
 	_report()
 	assert_true(ok, "OF loud route completed (seed %d)" % seed_value)
 	assert_true(flow.rt.went_loud, "went loud")
