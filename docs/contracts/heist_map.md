@@ -1,4 +1,4 @@
-# Contract: heist map (v1.2)
+# Contract: heist map (v1.3)
 
 Producer: **ENV C** (maps). Consumer: **ENV A** (`HeistRuntime`, AI, stealth, director). ENV B reads
 `HeistDef` for job board / briefing / pre-planning UI.
@@ -105,3 +105,12 @@ Player capsule 1.8 m tall, crouched 1.2 m, radius 0.35 m. Eye height 1.65 m stan
 ## 8. Validation (blocking)
 
 `tools/levelcheck/validate_all.sh` (ENV C) must pass for every heist; see `docs/design/level_standards.md` §7.
+
+## v1.3 (OF-A1/A2/A3/A5, A a0ce305b)
+§6 mission scripting adds: `HeistMission.spawn_loot(loot_id, tag, count = 1, respawn = false)` at markers carrying
+`objective_tag` (property or Marker3D meta; respawn: a destroyed or lost-off-map bag returns at the marker, D-136.9);
+`reveal_variant_group(group)`, `is_variant_revealed(group)`, override `_on_variant_revealed(group)`.
+Rappel: a RAPPEL TacticalPoint tagged `rappel_disabled` + a tag of your own builds disabled;
+`RappelLinks.set_enabled(map, tag, on)` turns it on. Chained island rappels are allowed (police chain 16 → 12.2 → 8.6 m):
+each RAPPEL point within ~0.3 m of its island's navmesh edge, its ray landing on the next island's navmesh.
+Police spawns may stand on navmesh islands (no reachability rule).
