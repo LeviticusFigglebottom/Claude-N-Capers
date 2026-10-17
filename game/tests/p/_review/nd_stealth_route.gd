@@ -647,9 +647,15 @@ func _vault_bag_into_lift(lift: BagLift, i: int) -> bool:
 		if not await pilot.goto(B1_HATCH_STAND, 0.2, 60.0):
 			note("B1 hatch stand not reached (at %s)" % Po5Pilot._v(pilot.crew.global_position))
 			break
-		# Release is 1.3 m up, the hatch head 1.25 m: look down at the car floor so the launch clamps to -20 deg.
+		# Up against the hatch: the throw releases 0.7 m ahead (drop_forward_m), already in the car. From 1 m back the
+		# bag (0.3 m tall, released 1.3 m up) hit the 1.25 m hatch head and bounced out (ND run 2026-10-17 t=284).
 		var car: Vector3 = lift.car_transform().origin
-		await pilot.face(Vector3(car.x, car.y, car.z), 0.02, 1.5)
+		await pilot.face(Vector3(car.x, car.y + 0.6, car.z), 0.02, 1.5)
+		pilot.inp.press(&"move_forward")
+		await wait_s(0.4)
+		pilot.inp.release(&"move_forward")
+		await pilot.face(Vector3(car.x, car.y + 0.4, car.z), 0.02, 1.0)
+		note("hatch throw %d from %s" % [attempt, Po5Pilot._v(pilot.crew.global_position)])
 		await pilot.inp.tap(&"drop_bag")
 		await wait_s(1.5)
 		if lift.bags_in_car().size() > before:
