@@ -1232,3 +1232,7 @@ vault on the ND pattern (no new Safe API); manager keycard = QC-52 carrier_tag a
 (turret van, heli rappel, breach points) added; D-122 breach layer on every loud-breachable shell door (not the vault);
 D-102/D-104 doc fixes by C; no stealth-only fail and no soft lock; loud escape on `[secure]` + `escape_eta_s`; D-128
 "hidden" claims verified with A's LOS sampling. Build starts for all envs together after D-135 (all queues clear).
+**D-132/v1.28 rulings (A 2b97d701, 2026-10-17):** turn-in-place plays at speed_scale 1 (45 vs 90 by |yaw diff|), the
+rig follows the clip's root rate and the ≤ 22.5° residual eases in during the blend-out (planted feet over exact yaw).
+NPC one-shot presentation clips (door_kick, panic_start, cuff) must replicate: A adds a one-shot cue (net.md line by the
+LEAD at merge). AnimCoverage flags FROZEN only on two consecutive identical samples (P).
