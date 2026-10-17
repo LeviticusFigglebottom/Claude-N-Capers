@@ -593,6 +593,24 @@
 			"test": false
 		},
 		{
+			"asset": "char_gallery_guard_j",
+			"id": "gallery_guard_j",
+			"scene": "res://world/characters/gallery_guard_j/gallery_guard_j.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_gallery_guard_k",
+			"id": "gallery_guard_k",
+			"scene": "res://world/characters/gallery_guard_k/gallery_guard_k.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_gallery_guard_l",
+			"id": "gallery_guard_l",
+			"scene": "res://world/characters/gallery_guard_l/gallery_guard_l.tscn",
+			"test": false
+		},
+		{
 			"asset": "char_gallery_patron",
 			"id": "gallery_patron",
 			"scene": "res://world/characters/gallery_patron/gallery_patron.tscn",

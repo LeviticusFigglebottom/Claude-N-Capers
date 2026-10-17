@@ -38,7 +38,7 @@ const POOLS: Dictionary = {
 	"gn_guards": [
 		"char_gallery_guard", "char_gallery_guard_b", "char_gallery_guard_c", "char_gallery_guard_d",
 		"char_gallery_guard_e", "char_gallery_guard_f", "char_gallery_guard_g", "char_gallery_guard_h",
-		"char_gallery_guard_i",
+		"char_gallery_guard_i", "char_gallery_guard_j", "char_gallery_guard_k", "char_gallery_guard_l",
 	],
 	"sl_guards": [
 		"char_npc_northgate_guard", "char_npc_northgate_guard_b", "char_npc_northgate_guard_c",

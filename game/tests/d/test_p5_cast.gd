@@ -30,6 +30,9 @@ const NEW: Array[String] = [
 	"char_gallery_guard_g",
 	"char_gallery_guard_h",
 	"char_gallery_guard_i",
+	"char_gallery_guard_j",
+	"char_gallery_guard_k",
+	"char_gallery_guard_l",
 	"char_gallery_patron",
 	"char_gallery_patron_b",
 	"char_gallery_admin",
@@ -115,8 +118,9 @@ const ROSTER_FALLBACK: Dictionary = {
 ## its roles, has at least that many distinct looks, and no two looks share a face (gender, skin, hair, hair colour
 ## and an age bucket from SOURCE.txt params), so two NPCs drawn from the pool are never twins. D-115 DB cast: the cartel
 ## pool has 12 looks (up to 12 posted gunmen at Cataclysm), civ_worker the three yard hands dock_worker a-c. D-130
-## (Cataclysm: about +50 % guards, +35 % civilians on GN, SL and ND): GN guards 9 looks (at least 3 women), SL
-## Northgate guards 9, ND Halden guards 6; civilians: SL cleaners 4, ND cleaners 2, GN patrons 12; GN gala_extra
+## (Cataclysm: about +50 % guards, +35 % civilians on GN, SL and ND): GN guards 9 looks, 12 since the Cataclysm
+## inspection fields 11 (at least 4 women), SL Northgate guards 9, ND Halden guards 6; civilians: SL cleaners 4,
+## ND cleaners 2, GN patrons 12; GN gala_extra
 ## (cloakroom waitstaff + drawings-cabinet attendant): GN waitstaff 3, GN attendants 3. OF-D1 (an L heist, up to 6 guards,
 ## 4 tellers, 3 officers and 13 customers): OF Halden guards 10 (at least 3 women), tellers 5, officers 4, customers 12.
 ## RT-D1 (three trucks x driver + custodian): Vaultline crew 6 (at least 2 women), site guards 10, street civilians 12.
@@ -129,7 +133,7 @@ const POOLS: Array = [
 	["dockside_burn", ["civ_worker"], 3, 1],
 	["night_deposit", ["guard_hall", "guard_basement", "guard_rover"], 6, 1],
 	["gallery_night", ["gallery_guard", "gallery_inspector", "guard_hall", "guard_rover_ground", "guard_rover_upper",
-		"guard_rover_basement", "guard_mews", "guard_operator", "guard_inspection"], 9, 3],
+		"guard_rover_basement", "guard_mews", "guard_operator", "guard_inspection"], 12, 4],
 	["night_deposit", ["civ_cleaner"], 2, 1],
 	["gallery_night", ["gallery_patron", "civ_patron"], 12, 3],
 	["gallery_night", ["gallery_waitstaff", "civ_waitstaff"], 3, 1],
@@ -155,14 +159,16 @@ const MIN_COUNT: Dictionary = {
 const RADIO: Array[String] = [
 	"char_gallery_guard", "char_gallery_guard_b", "char_gallery_guard_c", "char_gallery_guard_d", "char_gallery_guard_e",
 	"char_gallery_guard_f", "char_gallery_guard_g", "char_gallery_guard_h", "char_gallery_guard_i",
+	"char_gallery_guard_j", "char_gallery_guard_k", "char_gallery_guard_l",
 	"char_armored_car_crew", "char_armored_car_crew_b", "char_club_bouncer", "char_club_bouncer_b",
 	"char_armored_car_crew_c", "char_armored_car_crew_d", "char_armored_car_crew_e", "char_armored_car_crew_f",
 	"char_armored_car_marshal",
 ]
-## Halberd Gallery Security (D-130: nine faces a-i).
+## Halberd Gallery Security (D-130: nine faces a-i; twelve, a-l, for the Cataclysm inspection).
 const GN_GUARDS: Array[String] = [
 	"char_gallery_guard", "char_gallery_guard_b", "char_gallery_guard_c", "char_gallery_guard_d", "char_gallery_guard_e",
 	"char_gallery_guard_f", "char_gallery_guard_g", "char_gallery_guard_h", "char_gallery_guard_i",
+	"char_gallery_guard_j", "char_gallery_guard_k", "char_gallery_guard_l",
 ]
 ## Vaultline Armored Transport (RT-D1: six crew faces a-f and the route marshal).
 const VAULTLINE: Array[String] = [
