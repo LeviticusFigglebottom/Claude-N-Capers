@@ -24,7 +24,7 @@ const SLUNG: Array[String] = [
 const TRI_BUDGET: int = 35000
 const MIN_HEIGHT: float = 1.6
 const MAX_HEIGHT: float = 2.0
-const ALLOWED_MESHES: Array[String] = ["Body", "Hair", "Outfit", "Gear", "Headwear"]
+const ALLOWED_MESHES: Array[String] = ["Body", "Hair", "Outfit", "Gear", "Headwear", "Slung"]
 const MAT_DIR: String = "res://world/materials/"
 ## Uniform / insignia material families the Co-op's armed civilians must never wear.
 const FORBIDDEN_PREFIXES: Array[String] = [
@@ -179,7 +179,12 @@ func test_sling_and_slung_gun() -> void:
 		assert_has(ids, SLING, "%s: sling strap" % id)
 		if ids.has(SLUNG_GUN):
 			with_gun.append(id)
-			var gear: MeshInstance3D = root.get_node_or_null("Skeleton3D/Gear") as MeshInstance3D
+			# v1.27: the slung gun is its own mesh, Skeleton3D/Slung (ENV A hides it while a sit_* clip plays)
+			var gear: MeshInstance3D = root.get_node_or_null("Skeleton3D/Slung") as MeshInstance3D
+			assert_not_null(gear, "%s: Skeleton3D/Slung" % id)
+			if gear == null:
+				root.queue_free()
+				continue
 			var top: float = -INF
 			var back_z: float = -INF
 			for s: int in range(gear.mesh.get_surface_count()):
