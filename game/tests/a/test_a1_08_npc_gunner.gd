@@ -137,3 +137,38 @@ func test_d111_police_reload_when_the_magazine_is_empty() -> void:
 	assert_eq(gun.rounds_left, gun.mag_size() - (shots.size() - during), "a full magazine")
 	EventBus.audio_cue_requested.disconnect(on_cue)
 	Modifiers.clear_all()
+
+
+## PERF (windowed npc_gunner HITCH hunt): with FrameProf on, a shot books its costly calls under npc_gunner.* sub-keys
+## (inside the npc_gunner tick), so a stall names the call that held it; with FrameProf off nothing is booked.
+func test_perf_gunner_frame_prof_sub_scopes() -> void:
+	var c: CrewController = _crew()
+	_rt.teleport_crew(0, Transform3D(Basis.IDENTITY, Vector3(0, 0.05, 0)))
+	var p: NpcBase = _rt.spawn_npc(&"police", Transform3D(Basis.IDENTITY, Vector3(0, 0.05, -6)))
+	await wait_physics_frames(2)
+	var gun: NpcGunner = p.get_node("Gunner") as NpcGunner
+	var shots: Array[bool] = []
+	var cb: Callable = func(_t: Node, hit: bool) -> void: shots.append(hit)
+	gun.shot.connect(cb)
+	var was: bool = FrameProf.enabled
+	FrameProf.totals.clear()
+	FrameProf.enabled = true
+	gun.fire_at(c)
+	var fired: bool = await wait_until(func() -> bool: return shots.size() >= 3 and shots.has(true), 8.0)
+	FrameProf.enabled = was
+	gun.hold_fire()
+	var t: Dictionary = FrameProf.totals.duplicate()
+	FrameProf.totals.clear()
+	FrameProf.reset_frame()
+	assert_true(fired, "police fired and hit (%s)" % [shots])
+	for k: StringName in [&"npc_gunner", &"npc_gunner.los", &"npc_gunner.fired", &"npc_gunner.fx", &"npc_gunner.hit"]:
+		assert_true(t.has(k), "FrameProf booked %s (%s)" % [k, t.keys()])
+	var parts: int = int(t.get(&"npc_gunner.los", 0)) + int(t.get(&"npc_gunner.fired", 0)) \
+		+ int(t.get(&"npc_gunner.fx", 0)) + int(t.get(&"npc_gunner.hit", 0))
+	assert_true(parts <= int(t.get(&"npc_gunner", 0)), "sub-scopes nest inside npc_gunner (%d <= %d us)" % [
+		parts, int(t.get(&"npc_gunner", 0))])
+	var before: int = shots.size()
+	gun.fire_at(c)
+	await wait_until(func() -> bool: return shots.size() > before, 4.0)
+	gun.hold_fire()
+	assert_true(FrameProf.totals.is_empty(), "FrameProf off: nothing booked")
