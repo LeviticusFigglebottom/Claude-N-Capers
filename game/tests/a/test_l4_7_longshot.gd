@@ -75,7 +75,7 @@ func test_l4_7_def_and_perch_only_spawn() -> void:
 	assert_eq(def.id, &"enemy.longshot")
 	assert_true(def.is_special, "special")
 	assert_eq(def.damage.size(), 6, "damage per difficulty")
-	assert_near(def.damage[Enums.Difficulty.ROUTINE], 100.0, 0.001, "100 on the lowest difficulty")
+	assert_near(def.damage[Enums.Difficulty.ROUTINE], 60.0, 0.001, "60 on the lowest difficulty (PO-17, was 100)")
 	assert_near(def.damage[Enums.Difficulty.CATACLYSM], 240.0, 0.001, "240 on the top difficulty")
 	await _launch(Enums.Difficulty.LETHAL, false)
 	assert_true(SpecialSpawner.spawn_special(_rt, &"longshot").is_empty(), "no SNIPER_PERCH: nothing spawns")
