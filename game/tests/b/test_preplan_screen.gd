@@ -168,3 +168,24 @@ func test_close_points_do_not_stack_markers() -> void:
 			assert_false(a.get_rect().intersects(b.get_rect()), "markers %d and %d overlap" % [j, i])
 	s.queue_free()
 	await wait_frames(1)
+
+
+func test_every_heist_fits_the_screen() -> void:
+	# r229 menu walk: the floor-tab row (crew tab, divider, MAP caption, one tab per floor, hint) made a 4-floor heist's
+	# screen wider than the 1920 canvas, so Confirm sat off screen. Every heist's screen fits the viewport.
+	var vis: Rect2 = get_viewport().get_visible_rect()
+	for id: StringName in HeistCatalog.ids():
+		var p: PlayerProfile = PlayerProfile.new()
+		p.cash = 50000
+		var s: PreplanningScreen = (load(SCENE) as PackedScene).instantiate() as PreplanningScreen
+		s.save_on_confirm = false
+		s.setup(id, Enums.Difficulty.ROUTINE, p)
+		add_child(s)
+		await wait_frames(3)
+		for c: Control in [s.confirm_button, s.crew_button, s.blueprint_view] as Array[Control]:
+			assert_true(vis.encloses(c.get_global_rect()), "%s: %s on screen (%s in %s)" % [id, c.name,
+					c.get_global_rect(), vis])
+		for fb: Button in s.floor_buttons:
+			assert_true(vis.encloses(fb.get_global_rect()), "%s: floor tab %s on screen" % [id, fb.text])
+		s.queue_free()
+		await wait_frames(1)
