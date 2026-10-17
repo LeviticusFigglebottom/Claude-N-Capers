@@ -1,0 +1,71 @@
+[OBS t=0.0] HEIST runtime up (shadow_ledger)
+[SLR 42.8s t=0.0] seed 13 variants camera=[&"cam_c"] security_room_staffed=[&"sec_empty"] server_room=[&"srv_locked"] keycard=[&"kc_cleaner", &"kc_it"] code_note=[&"code_security_log"] laptop=[&"lap_kessler"] guard_post=[&"rover_l42"] guard_extra=[] cleaners=[&"cleaners_2"] late_partner=[&"moor_gone"] escape=[&"esc_service"] laser_pattern=[&"lz_sweep"]
+[OBS t=1.0] FRAME obs_001_t0001.png
+[SLR 124.2s t=2.1] pilot: calibrated 0.001600 rad/px yaw, 0.001600 rad/px pitch (settings formula said (0.0016, 0.0016))
+[SLR 124.2s t=2.1] spawn (26.2, 0.0, 9.0) masked false
+[SLR 199.9s t=2.6] STEP _casing begin
+[SLR 200.3s t=3.5] goto casing_0 (25.0, 0.0, 8.5): reached (at (25.4, 0.0, 8.7))
+[OBS t=5.2] CREW_STACK AI 1 inside the player (0.43 m) at (27.3, 0.0, 8.6)
+[SLR 203.0s t=6.1] goto casing_1 (29.0, 0.0, 8.5): reached (at (28.5, 0.0, 8.5))
+[SLR 205.1s t=8.3] goto casing_2 (29.0, 0.0, 11.6): reached (at (29.2, 0.0, 11.1))
+[OBS t=10.2] CREW AI spacing 1.3 m, to player 1.8 m, exposed 0% (54 samples, enemy 11 m)
+[SLR 208.1s t=11.3] goto casing_3 (25.0, 0.0, 11.6): reached (at (25.5, 0.0, 11.5))
+[SLR 297.5s t=13.1] goto casing_4 (24.8, 0.0, 13.5): reached (at (24.9, 0.0, 13.0))
+[OBS t=14.3] PROMPT ui.prompt.interact on RefuseDoor/Interactable
+[SLR 298.8s t=14.4] pilot: use RefuseDoor (open_door) -> OK in 0.0 s
+[SLR 301.4s t=17.0] goto casing_5 (27.7, 0.0, 14.5): reached (at (27.2, 0.0, 14.5))
+[SLR 334.8s t=19.9] goto casing_6 (24.8, 0.0, 15.6): reached (at (24.9, 0.0, 15.1))
+[OBS t=20.5] CREW AI spacing 1.3 m, to player 4.2 m, exposed 0% (57 samples, enemy 10 m)
+[SLR 336.9s t=22.0] goto casing_7 (22.5, 0.0, 15.8): reached (at (23.0, 0.0, 15.8))
+[SLR 341.9s t=27.0] pilot: t=5 at (22.2, 1.8, 11.9) corner (22.8, 2.0, 11.6) yaw_err -0.38 fwd=true path=10 mouse_mode=2 state=0 look=(-13.27,0.00) pin_yaw=-13.4661009830597 bot=false
+[OBS t=30.5] CREW AI spacing 1.3 m, to player 6.3 m, exposed 0% (60 samples, enemy 9 m)
+[SLR 346.4s t=31.5] goto casing_8 (22.5, 3.6, 15.8): reached (at (22.8, 3.6, 15.4))
+[SLR 419.6s t=37.1] pilot: t=5 at (22.3, 5.8, 11.6) corner (23.0, 6.1, 11.8) yaw_err -0.02 fwd=true path=10 mouse_mode=2 state=0 look=(-14.40,0.00) pin_yaw=-14.428304982197 bot=false
+[OBS t=40.7] CREW AI spacing 1.3 m, to player 8.1 m, exposed 0% (57 samples, enemy 8 m)
+[SLR 484.5s t=41.2] goto casing_9 (22.5, 8.0, 15.8): reached (at (22.8, 8.0, 15.5))
+[SLR 540.2s t=46.8] pilot: t=5 at (22.0, 5.7, 12.1) corner (22.2, 6.0, 11.6) yaw_err 1.34 fwd=false path=9 mouse_mode=2 state=0 look=(-14.35,0.00) pin_yaw=-14.1566193854014 bot=false
+[SLR 543.1s t=49.7] goto casing_10 (22.5, 3.6, 15.8): reached (at (22.2, 3.6, 15.4))
+[SLR 543.1s t=49.7] STEP _casing reached
+[SLR 543.1s t=49.7] STEP _mask begin
+[SLR 544.1s t=50.7] objective casing -> 2
+[OBS t=51.0] CREW AI spacing 1.3 m, to player 8.5 m, exposed 0% (60 samples, enemy 10 m)
+[SLR 544.9s t=51.5] masked true
+[SLR 544.9s t=51.5] STEP _mask reached
+[SLR 544.9s t=51.5] STEP _enter_l41 begin
+[SLR 554.1s t=60.7] pilot: use StairBL41 (open_door) -> OK in 8.0 s
+[OBS t=61.0] CREW AI spacing 1.3 m, to player 8.0 m, exposed 0% (60 samples, enemy 12 m)
+[SLR 554.4s t=61.1] StairBL41 open true (lock 1)
+[SLR 616.0s t=61.6] STEP _enter_l41 reached
+[SLR 616.0s t=61.6] STEP _keycard begin
+[SLR 616.0s t=61.6] keycard: Slot_kc_it at (33.4, 4.3, 9.0)
+[SLR 620.5s t=66.6] pilot: t=5 at (24.8, 3.6, 11.0) corner (24.9, 3.8, 9.5) yaw_err -0.00 fwd=true path=14 mouse_mode=2 state=0 look=(-18.94,0.00) pin_yaw=-18.9380155618637 bot=false
+[OBS t=71.2] CREW AI spacing 1.3 m, to player 5.4 m, exposed 0% (60 samples, enemy 6 m)
+[SLR 625.5s t=71.6] pilot: t=10 at (27.0, 3.6, 7.0) corner (33.3, 3.8, 7.2) yaw_err 0.58 fwd=true path=10 mouse_mode=2 state=0 look=(-21.02,0.00) pin_yaw=-20.8275307095537 bot=false
+[SLR 631.3s t=77.3] pilot: use ITDoor (open_door) -> OK in 0.0 s
+[SLR 632.7s t=78.7] pilot: t=15 at (33.6, 3.6, 7.7) corner (33.8, 3.8, 8.2) yaw_err -0.71 fwd=false path=8 mouse_mode=2 state=0 look=(-20.82,0.00) pin_yaw=-21.0135866205746 bot=false
+[OBS t=81.2] CREW AI spacing 1.3 m, to player 6.9 m, exposed 0% (60 samples, enemy 8 m)
+[SLR 635.6s t=81.7] objective keycard -> 2
+[SLR 671.2s t=82.2] STEP _keycard reached
+[SLR 671.2s t=82.2] STEP _laptop begin
+[SLR 671.3s t=82.2] laptop at (4.3, 3.6, 2.2) ([&"lap_kessler"])
+[SLR 675.8s t=87.2] pilot: t=5 at (30.1, 3.6, 7.0) corner (30.6, 3.8, 7.0) yaw_err 2.92 fwd=false path=36 mouse_mode=2 state=0 look=(-23.39,0.00) pin_yaw=-23.195959135388 bot=false
+[SLR 679.9s t=91.4] DETECT start: CameraC3 (kind 2) at 4.4 m, pilot (25.3, 3.6, 7.0) crouched false
+[OBS t=91.4] CREW AI spacing 1.3 m, to player 6.2 m, exposed 0% (57 samples, enemy 5 m)
+[SLR 680.0s t=91.4] DETECT start: Npc_civilian (kind 1) at 7.4 m, pilot (25.2, 3.6, 7.0) crouched false
+[SLR 680.7s t=91.9] pilot: use ReceptionGlassE (open_door) -> OK in 0.0 s
+[SLR 680.7s t=92.0] DETECT Npc_civilian meter 0.27 (0.6 s after first sight)
+[SLR 680.8s t=92.2] careful: Npc_guard faces the pilot at 8.0 m (alert 0): back off to (25.1, 3.6, 7.1) and wait
+[SLR 681.5s t=92.9] DETECT Npc_civilian meter 0.53 (1.5 s after first sight)
+[SLR 682.3s t=93.7] DETECT Npc_civilian meter 0.76 (2.3 s after first sight)
+[SLR 683.1s t=94.5] DETECT Npc_civilian meter 1.00 (3.1 s after first sight)
+[SLR 683.1s t=94.5] ALERT Npc_civilian 0 -> 4 (dist 3.3)
+[SLR 685.2s t=96.7] DETECT CameraC3 meter 0.26 (5.3 s after first sight)
+[SLR 687.0s t=98.5] DETECT CameraC3 meter 0.51 (7.1 s after first sight)
+[SLR 748.7s t=99.4] DETECT start: Npc_guard (kind 0) at 8.0 m, pilot (25.0, 3.6, 7.1) crouched true
+[INFO][stealth][p1] ALARM: civilian_call (source 113)
+[SLR 748.8s t=99.5] ALERT Npc_guard 0 -> 10 (dist 7.8)
+[SLR 748.8s t=99.5] ALERT Npc_guard2 0 -> 10 (dist 5.7)
+[SLR 748.8s t=99.5] ALERT Npc_civilian2 0 -> 4 (dist 20.5)
+[SLR 748.8s t=99.5] ALARM civilian_call source /root/PO5Driver/HeistRuntime/Dynamic/Npc_civilian (pilot at (25.0, 3.6, 7.1))
+[SLR 814.9s t=100.5] careful: clear (waited, watcher now Npc_guard:<CharacterBody3D#893789418116>)
+[OBS t=101.6] CREW AI spacing 1.3 m, to player 5.3 m, exposed 0% (54 samples, enemy 7 m)

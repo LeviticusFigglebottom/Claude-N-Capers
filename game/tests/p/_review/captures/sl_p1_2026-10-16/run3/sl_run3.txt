@@ -1,0 +1,112 @@
+[OBS t=0.0] HEIST runtime up (shadow_ledger)
+[SLR 36.0s t=0.0] seed 13 variants camera=[&"cam_c"] security_room_staffed=[&"sec_empty"] server_room=[&"srv_locked"] keycard=[&"kc_cleaner", &"kc_it"] code_note=[&"code_security_log"] laptop=[&"lap_kessler"] guard_post=[&"rover_l42"] guard_extra=[] cleaners=[&"cleaners_2"] late_partner=[&"moor_gone"] escape=[&"esc_service"] laser_pattern=[&"lz_sweep"]
+[OBS t=1.0] FRAME obs_001_t0001.png
+[SLR 118.0s t=2.2] pilot: calibrated 0.001600 rad/px yaw, 0.001600 rad/px pitch (settings formula said (0.0016, 0.0016))
+[SLR 118.0s t=2.2] spawn (26.2, 0.0, 9.0) masked false
+[SLR 204.2s t=2.7] STEP _casing begin
+[SLR 204.7s t=3.6] goto casing_0 (25.0, 0.0, 8.5): reached (at (25.4, 0.0, 8.7))
+[OBS t=5.3] CREW_STACK AI 1 inside the player (0.43 m) at (27.3, 0.0, 8.6)
+[SLR 207.2s t=6.1] goto casing_1 (29.0, 0.0, 8.5): reached (at (28.5, 0.0, 8.5))
+[SLR 209.5s t=8.4] goto casing_2 (29.0, 0.0, 11.6): reached (at (29.2, 0.0, 11.1))
+[OBS t=10.3] CREW AI spacing 1.3 m, to player 1.7 m, exposed 0% (60 samples, enemy 11 m)
+[SLR 212.4s t=11.3] goto casing_3 (25.0, 0.0, 11.6): reached (at (25.5, 0.0, 11.5))
+[SLR 305.4s t=13.1] goto casing_4 (24.8, 0.0, 13.5): reached (at (24.9, 0.0, 13.0))
+[OBS t=14.3] PROMPT ui.prompt.interact on RefuseDoor/Interactable
+[SLR 306.7s t=14.4] pilot: use RefuseDoor (open_door) -> OK in 0.0 s
+[SLR 309.3s t=17.0] goto casing_5 (27.7, 0.0, 14.5): reached (at (27.2, 0.0, 14.5))
+[SLR 322.3s t=19.9] goto casing_6 (24.8, 0.0, 15.6): reached (at (24.9, 0.0, 15.1))
+[OBS t=20.5] CREW AI spacing 1.3 m, to player 4.2 m, exposed 0% (60 samples, enemy 10 m)
+[SLR 324.4s t=22.0] goto casing_7 (22.5, 0.0, 15.8): reached (at (23.0, 0.0, 15.8))
+[SLR 329.4s t=27.0] pilot: t=5 at (22.2, 1.8, 11.9) corner (22.8, 2.0, 11.6) yaw_err -0.38 fwd=true path=10 mouse_mode=2 state=0 look=(-13.27,0.00) pin_yaw=-13.4661009830597 bot=false
+[OBS t=30.5] CREW AI spacing 1.3 m, to player 6.3 m, exposed 0% (60 samples, enemy 9 m)
+[SLR 334.0s t=31.6] goto casing_8 (22.5, 3.6, 15.8): reached (at (22.8, 3.6, 15.4))
+[SLR 406.0s t=37.1] pilot: t=5 at (22.3, 5.8, 11.6) corner (23.0, 6.1, 11.8) yaw_err -0.02 fwd=true path=10 mouse_mode=2 state=0 look=(-14.40,0.00) pin_yaw=-14.428304982197 bot=false
+[OBS t=40.7] CREW AI spacing 1.3 m, to player 8.1 m, exposed 0% (60 samples, enemy 8 m)
+[SLR 462.7s t=41.2] goto casing_9 (22.5, 8.0, 15.8): reached (at (22.8, 8.0, 15.5))
+[SLR 517.2s t=46.7] pilot: t=5 at (22.0, 5.7, 12.1) corner (22.2, 6.0, 11.6) yaw_err 1.34 fwd=false path=9 mouse_mode=2 state=0 look=(-14.35,0.00) pin_yaw=-14.1566193854014 bot=false
+[SLR 520.0s t=49.5] goto casing_10 (22.5, 3.6, 15.8): reached (at (22.2, 3.6, 15.4))
+[SLR 520.0s t=49.5] STEP _casing reached
+[SLR 520.0s t=49.5] STEP _mask begin
+[SLR 521.0s t=50.6] objective casing -> 2
+[OBS t=50.9] CREW AI spacing 1.3 m, to player 8.4 m, exposed 0% (57 samples, enemy 10 m)
+[SLR 521.8s t=51.4] masked true
+[SLR 521.8s t=51.4] STEP _mask reached
+[SLR 521.8s t=51.4] STEP _enter_l41 begin
+[SLR 531.1s t=60.6] pilot: use StairBL41 (open_door) -> OK in 8.0 s
+[SLR 531.4s t=60.9] StairBL41 open true (lock 1)
+[OBS t=61.4] CREW AI spacing 1.3 m, to player 8.0 m, exposed 0% (60 samples, enemy 12 m)
+[SLR 587.9s t=61.4] STEP _enter_l41 reached
+[SLR 587.9s t=61.4] STEP _keycard begin
+[SLR 587.9s t=61.4] keycard: Slot_kc_it at (33.4, 4.3, 9.0)
+[SLR 592.4s t=66.4] pilot: t=5 at (24.8, 3.6, 11.0) corner (24.9, 3.8, 9.5) yaw_err -0.00 fwd=true path=14 mouse_mode=2 state=0 look=(-18.94,0.00) pin_yaw=-18.9380155618637 bot=false
+[SLR 597.4s t=71.4] pilot: t=10 at (27.0, 3.6, 7.0) corner (33.3, 3.8, 7.2) yaw_err 0.58 fwd=true path=10 mouse_mode=2 state=0 look=(-21.02,0.00) pin_yaw=-20.8275307095537 bot=false
+[OBS t=71.7] CREW AI spacing 1.3 m, to player 5.2 m, exposed 0% (60 samples, enemy 6 m)
+[SLR 603.1s t=77.2] pilot: use ITDoor (open_door) -> OK in 0.0 s
+[SLR 604.5s t=78.6] pilot: t=15 at (33.6, 3.6, 7.7) corner (33.8, 3.8, 8.2) yaw_err -0.71 fwd=false path=8 mouse_mode=2 state=0 look=(-20.82,0.00) pin_yaw=-21.0135866205746 bot=false
+[SLR 607.5s t=81.5] objective keycard -> 2
+[OBS t=82.1] CREW AI spacing 1.3 m, to player 7.1 m, exposed 0% (60 samples, enemy 8 m)
+[SLR 639.8s t=82.1] STEP _keycard reached
+[SLR 639.8s t=82.1] STEP _laptop begin
+[SLR 639.9s t=82.1] laptop at (4.3, 3.6, 2.2) ([&"lap_kessler"])
+[SLR 644.4s t=87.1] pilot: t=5 at (30.1, 3.6, 7.1) corner (30.6, 3.8, 7.0) yaw_err 2.94 fwd=false path=13 mouse_mode=2 state=0 look=(-23.36,0.00) pin_yaw=-23.1676930523172 bot=false
+[SLR 648.4s t=91.2] subdue: shouting Npc_civilian (mode 1, 7.7 m, meter 0.00)
+[SLR 648.5s t=91.2] DETECT start: CameraC3 (kind 2) at 4.4 m, pilot (25.4, 3.6, 7.1) crouched false
+[SLR 648.5s t=91.2] DETECT start: Npc_civilian (kind 1) at 7.6 m, pilot (25.4, 3.6, 7.1) crouched false
+[SLR 648.6s t=91.3] ALERT Npc_civilian 0 -> 5 (dist 7.5)
+[SLR 649.6s t=92.3] subdue: tying Npc_civilian ()
+[OBS t=92.3] CREW AI spacing 1.3 m, to player 6.0 m, exposed 0% (60 samples, enemy 5 m)
+[SLR 649.8s t=92.5] DETECT CameraC3 meter 0.25 (1.3 s after first sight)
+[SLR 654.6s t=97.3] pilot: t=5 at (24.7, 3.6, 13.0) corner (24.7, 3.8, 12.4) yaw_err -2.91 fwd=false path=4 mouse_mode=2 state=0 look=(-22.27,0.00) pin_yaw=-22.4614898348736 bot=false
+[OBS t=98.5] PROMPT ui.prompt.tie_civilian on Npc_civilian/TieInteractable
+[SLR 717.6s t=100.5] ALERT Npc_civilian 5 -> 6 (dist 0.3)
+[SLR 717.6s t=100.6] pilot: use Npc_civilian (cable_tie) -> OK in 2.0 s
+[SLR 717.6s t=100.6] subdue: Npc_civilian mode 7
+[SLR 784.3s t=101.3] goto west wing 0 (24.8, 3.6, 15.0): reached (at (24.6, 3.6, 14.6))
+[OBS t=102.7] CREW AI spacing 1.3 m, to player 5.5 m, exposed 0% (57 samples, enemy 10 m)
+[SLR 786.0s t=103.3] DETECT start: CameraC4 (kind 2) at 11.8 m, pilot (24.5, 3.6, 16.7) crouched false
+[SLR 788.9s t=106.3] pilot: t=5 at (21.3, 3.6, 17.2) corner (20.7, 3.8, 17.2) yaw_err 0.00 fwd=true path=5 mouse_mode=2 state=0 look=(-23.48,0.00) pin_yaw=-23.4814994728013 bot=false
+[SLR 789.3s t=106.6] goto west wing 1 (20.0, 3.6, 17.2): reached (at (20.4, 3.6, 17.2))
+[SLR 794.3s t=111.6] pilot: t=5 at (15.1, 3.6, 17.2) corner (14.2, 3.8, 17.2) yaw_err -0.00 fwd=true path=5 mouse_mode=2 state=0 look=(-29.85,0.00) pin_yaw=-29.8534389884744 bot=false
+[OBS t=112.8] CREW AI spacing 1.3 m, to player 11.6 m, exposed 0% (60 samples, enemy 11 m)
+[SLR 796.8s t=114.1] goto west wing 2 (11.2, 3.6, 17.2): reached (at (11.7, 3.6, 17.2))
+[SLR 877.7s t=119.1] pilot: t=5 at (11.3, 3.6, 11.4) corner (11.3, 3.8, 10.7) yaw_err 0.00 fwd=true path=4 mouse_mode=2 state=0 look=(-31.36,0.00) pin_yaw=-31.3588287074026 bot=false
+[SLR 878.2s t=119.6] goto west wing 3 (11.2, 3.6, 10.0): reached (at (11.3, 3.6, 10.6))
+[OBS t=121.0] FRAME obs_002_t0121.png
+[OBS t=123.0] CREW AI spacing 1.3 m, to player 16.6 m, exposed 0% (54 samples, enemy 8 m)
+[SLR 973.4s t=123.9] goto west wing 4 (9.0, 3.6, 6.8): reached (at (9.5, 3.6, 6.9))
+[SLR 977.8s t=128.2] pilot: use K1Door (open_door) -> OK in 0.0 s
+[SLR 981.0s t=131.5] pilot: t=5 at (4.9, 3.6, 4.2) corner (4.6, 3.8, 2.7) yaw_err 0.00 fwd=true path=6 mouse_mode=2 state=0 look=(-37.49,0.00) pin_yaw=-37.4867436819632 bot=false
+[OBS t=133.1] CREW AI spacing 1.3 m, to player 21.5 m, exposed 0% (60 samples, enemy 13 m)
+[SLR 984.5s t=135.0] objective laptop -> 2
+[SLR 984.6s t=135.0] pilot: use Laptop (bag_loot) -> OK in 1.0 s
+[SLR 1019.6s t=140.6] pilot: t=5 at (6.3, 3.6, 6.5) corner (5.7, 3.8, 6.4) yaw_err 2.66 fwd=false path=3 mouse_mode=2 state=0 look=(-32.70,0.00) pin_yaw=-32.508790590583 bot=false
+[SLR 1021.6s t=142.6] goto back to Stair B 0 (9.0, 3.6, 6.8): reached (at (8.6, 3.6, 6.7))
+[OBS t=143.1] CREW AI spacing 1.3 m, to player 22.3 m, exposed 0% (57 samples, enemy 9 m)
+[SLR 1025.6s t=146.6] goto back to Stair B 1 (11.2, 3.6, 10.0): reached (at (11.2, 3.6, 9.5))
+[SLR 1030.6s t=151.6] pilot: t=5 at (11.2, 3.6, 14.7) corner (11.2, 3.8, 16.1) yaw_err 0.00 fwd=true path=8 mouse_mode=2 state=0 look=(-40.82,0.00) pin_yaw=-40.8233853227512 bot=false
+[SLR 1032.3s t=153.0] goto back to Stair B 2 (11.2, 3.6, 17.2): reached (at (11.3, 3.6, 16.8))
+[OBS t=153.2] CREW AI spacing 1.3 m, to player 16.7 m, exposed 0% (60 samples, enemy 14 m)
+[SLR 1037.1s t=158.1] pilot: t=5 at (16.8, 3.6, 17.2) corner (17.6, 3.8, 17.2) yaw_err 0.00 fwd=true path=6 mouse_mode=2 state=0 look=(-39.29,0.00) pin_yaw=-39.2882863513014 bot=false
+[SLR 1039.2s t=160.2] goto back to Stair B 3 (20.0, 3.6, 17.2): reached (at (19.5, 3.6, 17.2))
+[OBS t=163.3] CREW AI spacing 1.3 m, to player 12.7 m, exposed 0% (60 samples, enemy 13 m)
+[SLR 1043.8s t=164.8] DETECT CameraC4 meter 0.26 (61.5 s after first sight)
+[SLR 1044.2s t=165.2] pilot: t=5 at (24.5, 3.6, 16.3) corner (24.6, 3.8, 15.9) yaw_err 0.00 fwd=true path=5 mouse_mode=2 state=0 look=(-31.59,0.00) pin_yaw=-31.5859780507026 bot=false
+[SLR 1044.7s t=165.7] goto back to Stair B 4 (24.8, 3.6, 15.0): reached (at (24.7, 3.6, 15.4))
+[SLR 1046.1s t=167.1] goto back to Stair B 5 (22.5, 3.6, 15.8): reached (at (23.0, 3.6, 15.8))
+[SLR 1046.1s t=167.1] laptop bagged: carrying to (22.5, 0.0, 9.0)
+[SLR 1051.1s t=172.1] pilot: t=5 at (21.9, 1.3, 13.3) corner (22.0, 0.3, 15.2) yaw_err -0.00 fwd=true path=15 mouse_mode=2 state=0 look=(-28.23,0.00) pin_yaw=-28.2315442211993 bot=false
+[OBS t=173.3] CREW AI spacing 1.3 m, to player 6.9 m, exposed 0% (57 samples, enemy 12 m)
+[SLR 1116.7s t=177.1] pilot: t=10 at (24.5, 0.0, 14.1) corner (24.5, 0.2, 13.3) yaw_err 0.38 fwd=true path=11 mouse_mode=2 state=0 look=(-25.52,0.00) pin_yaw=-25.3253995546556 bot=false
+[OBS t=179.6] PROMPT ui.prompt.pick_bag on Bag_ledger_laptop/Interactable
+[OBS t=183.5] CREW AI spacing 1.3 m, to player 4.2 m, exposed 0% (60 samples, enemy 10 m)
+[SLR 1127.3s t=187.7] pilot: thrown bag not secured within 8 s (zone at (22.5, 0.0, 9.0), crew at (24.5, 0.0, 11.0))
+[SLR 1127.3s t=187.7] laptop secured false (at (24.5, 0.0, 11.0))
+[SLR 1177.4s t=188.2] STEP _laptop NOT reached
+[SLR 1177.4s t=188.2] FAIL _laptop (alarm )
+[SLR 1230.5s t=189.2] SUMMARY steps: _casing=ok, _mask=ok, _enter_l41=ok, _keycard=ok, _laptop=FAIL
+[SLR 1230.5s t=189.2] SUMMARY alarm:  at t=-1.0
+[SLR 1230.5s t=189.2] SUMMARY detector CameraC3 kind 2 first t=91.2 max 0.26
+[SLR 1230.5s t=189.2] SUMMARY detector Npc_civilian kind 1 first t=91.2 max 0.07
+[SLR 1230.5s t=189.2] SUMMARY detector CameraC4 kind 2 first t=103.3 max 0.28
+[SLR 1230.5s t=189.2] SUMMARY careful waits 1, STUCK rows 0
+[SLR] RESULT FAIL at _laptop

@@ -278,7 +278,16 @@ func is_titan() -> bool:
 	if titan:
 		return true
 	var rt: HeistRuntime = HeistRuntime.of(self)
-	return rt != null and rt.difficulty >= Tweak.stealth().camera_titan_min_difficulty
+	return rt != null and rt.difficulty >= titan_min_difficulty(rt)
+
+
+## D-130: the Enums.Difficulty from which a run's cameras are Titan: the heist's HeistDef.camera_titan_min_difficulty
+## when >= 0 (Golden Hour: HAZARDOUS), else StealthTweak.camera_titan_min_difficulty (LETHAL).
+static func titan_min_difficulty(rt: HeistRuntime) -> int:
+	var def: HeistDef = rt.map.heist_def if rt != null and rt.map != null else null
+	if def != null and def.camera_titan_min_difficulty >= 0:
+		return def.camera_titan_min_difficulty
+	return Tweak.stealth().camera_titan_min_difficulty
 
 
 func take_hit(info: Dictionary, attacker_net_id: int = 0) -> Dictionary:

@@ -253,7 +253,8 @@ func apply() -> Dictionary:
 
 
 ## Dev path (ENV A's `options["preplanning"]`, contract preplanning.md): a PreplanResult from asset
-## ids without UI, through the same rules. An id may name its point as "asset.<id>@<point id>";
+## ids without UI, through the same rules. An id may name its point as "asset.<id>@<point id>" (or be given as
+## {asset, point});
 ## otherwise a located asset takes the first free allowed point in blueprint order. Slot 0 buys
 ## everything and votes alone; nothing is charged (cash_spent is empty). Rejected ids are logged.
 ## When no id is accepted (none given, all unknown or refused) the result is {} = no plan, so ENV A's
@@ -263,7 +264,7 @@ static func resolve_ids(heist_id: StringName, ids: Array, difficulty: int = Enum
 	var b: PreplanBoard = PreplanBoard.build(heist_id, difficulty, def)
 	var p: PreplanPlan = PreplanPlan.new(b, 0, [0] as Array[int])
 	for raw: Variant in ids:
-		var o: Dictionary = PlanVote.parse_option(StringName(String(raw)))
+		var o: Dictionary = _option_of(raw)
 		var id: StringName = StringName(o["asset"])
 		var pid: StringName = StringName(o["point"])
 		var a: PreplanAssetDef = b.asset(id)
@@ -277,6 +278,15 @@ static func resolve_ids(heist_id: StringName, ids: Array, difficulty: int = Enum
 	var res: Dictionary = p.apply()
 	res["cash_spent"] = {}
 	return res
+
+
+## One resolve_ids entry as {asset, point}: the string "asset.<id>[@<point>]" or a Dictionary {asset, point?} (P SL-P1:
+## the Dictionary form lost its point).
+static func _option_of(raw: Variant) -> Dictionary:
+	if raw is Dictionary:
+		var d: Dictionary = raw as Dictionary
+		return {"asset": StringName(d.get("asset", &"")), "point": StringName(d.get("point", &""))}
+	return PlanVote.parse_option(StringName(String(raw)))
 
 
 ## First point (blueprint order) where `asset_id` may be added for slot 0 now, or &"".
