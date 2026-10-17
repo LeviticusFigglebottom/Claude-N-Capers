@@ -273,7 +273,7 @@ func _threat_civ() -> NpcBase:
 	return null
 
 
-## The hook: put down any carried bag, shout the civilian down, cable-tie her, pick the bag back up.
+## The hook: shout the civilian down and cable-tie her (a carried bag stays on the back).
 func _subdue_threat() -> bool:
 	var civ: NpcBase = _threat_civ()
 	if civ == null:
@@ -281,11 +281,8 @@ func _subdue_threat() -> bool:
 	var b: CivilianBrain = civ.get_node_or_null(^"Brain") as CivilianBrain
 	pilot.inp.release(&"move_forward")
 	pilot.inp.release(&"sprint")
-	var bag_at: Vector3 = Vector3.INF
-	if pilot.crew.is_carrying_bag():
-		bag_at = pilot.crew.global_position
-		await pilot.face(pilot.crew.global_position - pilot.crew.global_basis.z + Vector3(0, -1.0, 0), 0.05, 0.5)
-		await pilot.inp.tap(&"drop_bag")
+	# Keep a carried bag: G is a throw (no plain drop; even looking down it lands ~3.6 m away), and one throw landed
+	# in the open janitor closet (ND run 2026-10-17 t=518). Shouting works with a bag on the back.
 	for k: int in 5:
 		if b.mode == CivilianBrain.Mode.DOWN or b.mode == CivilianBrain.Mode.TIED:
 			break
@@ -301,19 +298,10 @@ func _subdue_threat() -> bool:
 		for comp: Node in civ.find_children("*", "InteractableComponent", true, false):
 			var ic: InteractableComponent = comp as InteractableComponent
 			if ic.kind == &"cable_tie" and ic.enabled:
-				await pilot.use(ic, 20.0, func() -> bool: return b.mode == CivilianBrain.Mode.TIED)
+				await pilot.use(ic, 20.0, func() -> bool: return b.mode == CivilianBrain.Mode.TIED, true)
 				break
 	note("subdue: %s mode %d (alarm %s)" % [civ.name, b.mode, _alarm])
 	await shot("subdued_%s" % civ.name)
-	if bag_at != Vector3.INF:
-		var bag: LootBag = null
-		for n: Node in get_tree().get_nodes_in_group(G.LOOT_BAG):
-			var lb: LootBag = n as LootBag
-			if lb != null and not lb.is_body_bag() and (bag == null or lb.global_position.distance_to(bag_at)
-					< bag.global_position.distance_to(bag_at)):
-				bag = lb
-		if bag != null:
-			await pilot.use(_comp(bag), 20.0, func() -> bool: return pilot.crew.is_carrying_bag())
 	return true
 
 
