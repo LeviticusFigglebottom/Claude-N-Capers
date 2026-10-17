@@ -62,6 +62,12 @@ func test_of_lockdown_cancels_the_time_lock_and_seals_the_vault() -> void:
 		if n is Door:
 			assert_true((n as Door).locked and not (n as Door).is_open, "%s shut and locked" % n.name)
 	assert_eq(_state(&"drill_delivery"), ACTIVE, "[drill_delivery] next")
+	var first: StringName = &""
+	for o: Dictionary in m.objectives():  # ENV B (LEAD r245 1): the HUD shows the first ACTIVE non-side step
+		if int(o["state"]) == ACTIVE and not bool((o["data"] as Dictionary).get("side", false)):
+			first = o["id"]
+			break
+	assert_eq(first, &"drill_delivery", "the HUD objective line reads the drill delivery, not [secure]")
 	assert_eq(_state(&"keycard"), DONE, "the card step is moot (skipped)")
 	assert_eq(_count(&"vo.mercer.ostrander_federal_lockdown"), 1, "lockdown line")
 	assert_eq(_count(&"vo.mercer.ostrander_federal_drill_inbound_dock"), 1, "drill_inbound line for the dock")

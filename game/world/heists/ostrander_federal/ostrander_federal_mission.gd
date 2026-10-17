@@ -235,14 +235,15 @@ func _add_objectives() -> void:
 	_add(&"time_lock_wait", Enums.ObjectiveState.HIDDEN, [TAG_TIME_LOCK_WAIT])
 	_add(&"vault_loot", Enums.ObjectiveState.HIDDEN, [TAG_VAULT_LOOT])
 	_add(&"gold_cage", Enums.ObjectiveState.HIDDEN, [TAG_GOLD_CAGE], {"optional": true})
+	# ENV B (LEAD r245 1): the loud drill steps sit above `secure` so the HUD's first ACTIVE step reads the drill.
+	_add(&"drill_delivery", Enums.ObjectiveState.HIDDEN, [TAG_DRILL_DELIVERY], {"count": 0, "total": DRILL_PARTS})
+	_add(&"vault_drill", Enums.ObjectiveState.HIDDEN, [TAG_VAULT_DRILL])
+	_add(&"vault_breach", Enums.ObjectiveState.HIDDEN, [TAG_VAULT_BREACH])
 	_add(&"secure", Enums.ObjectiveState.ACTIVE, [TAG_SECURE], {"count": 0, "total": required_bags(), "optional_more": true})
 	_add(&"deposit_boxes", Enums.ObjectiveState.ACTIVE, [TAG_DEPOSIT_BOXES], {"optional": true, "side": true})
 	_add(&"bond_safe", Enums.ObjectiveState.ACTIVE, [TAG_BOND_SAFE], {"optional": true, "side": true})
 	_add(&"president_safe", Enums.ObjectiveState.ACTIVE, [TAG_PRESIDENT_SAFE], {"optional": true, "side": true})
 	_add(&"server_drives", Enums.ObjectiveState.ACTIVE, [TAG_SERVER_DRIVES], {"optional": true, "side": true})
-	_add(&"drill_delivery", Enums.ObjectiveState.HIDDEN, [TAG_DRILL_DELIVERY], {"count": 0, "total": DRILL_PARTS})
-	_add(&"vault_drill", Enums.ObjectiveState.HIDDEN, [TAG_VAULT_DRILL])
-	_add(&"vault_breach", Enums.ObjectiveState.HIDDEN, [TAG_VAULT_BREACH])
 	_add(&"escape_wait", Enums.ObjectiveState.HIDDEN, [TAG_ESCAPE_WAIT])
 	_add(&"escape", Enums.ObjectiveState.HIDDEN, [TAG_ESCAPE])
 
