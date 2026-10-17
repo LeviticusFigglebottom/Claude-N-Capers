@@ -293,6 +293,32 @@ static func with_corridor(width: float = 2.4, length: float = 16.0) -> PackedSce
 	return _bake_nav(root, geo)
 
 
+## OF-A4: basic() plus a second floor and a baked navmesh (`Navigation`, project nav defaults D-025): an upper
+## platform (top y = 2.5, x in [6, 10], z in [-6, 0]) reached by a 22.6 deg ramp rising along +X from x = 0 to x = 6
+## (z in [-4, -2]), and an unconnected island platform (top y = 2.5, x in [-10, -6], z in [-10, -6]) with no way up.
+static func with_two_floors() -> PackedScene:
+	var root: HeistMap = basic(0, 0).instantiate() as HeistMap
+	var geo: Node3D = root.get_node("Geometry")
+	var ang: float = atan2(2.5, 6.0)
+	var normal: Vector3 = Vector3(-sin(ang), cos(ang), 0.0)
+	var specs: Array[Array] = [
+		["Upper", Vector3(8.0, 2.35, -3.0), Vector3(4.0, 0.3, 6.0), 0.0],
+		["Island", Vector3(-8.0, 2.35, -8.0), Vector3(4.0, 0.3, 4.0), 0.0],
+		["Ramp", Vector3(3.0, 1.25, -3.0) - normal * 0.1, Vector3(6.8, 0.2, 2.0), ang]]
+	for spec: Array in specs:
+		var b: StaticBody3D = StaticBody3D.new()
+		b.name = String(spec[0])
+		var cs: CollisionShape3D = CollisionShape3D.new()
+		var box: BoxShape3D = BoxShape3D.new()
+		box.size = spec[2]
+		cs.shape = box
+		b.add_child(cs)
+		b.position = spec[1]
+		b.rotation = Vector3(0.0, 0.0, float(spec[3]))
+		geo.add_child(b)
+	return _bake_nav(root, geo)
+
+
 ## Bakes a navmesh over `geo` (project nav defaults D-025) into a `Navigation` region of `root`, packs and frees root.
 static func _bake_nav(root: HeistMap, geo: Node3D) -> PackedScene:
 	var nav: NavigationRegion3D = NavigationRegion3D.new()
