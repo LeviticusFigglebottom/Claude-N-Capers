@@ -280,9 +280,9 @@ func _gate_guard() -> bool:
 		var leaves: Callable = func() -> bool:
 			var west: bool = g.global_position.x < x_prev[0] - 0.005
 			x_prev[0] = g.global_position.x
-			return not g.is_alive() or not _back_turned(g) or (west and g.global_position.x < KNIFE_WEST_OF_X)
+			return not g.is_alive() or _faces_me(g) or (west and g.global_position.x < KNIFE_WEST_OF_X)
 		await wait_until(leaves, 15.0)
-		if not _back_turned(g):
+		if _faces_me(g):
 			note("he faced the corridor before leaving the post (at %s); back to B3" % Po5Pilot._v(g.global_position))
 			continue
 		note("go: guard %s leaving west, me %s" % [Po5Pilot._v(g.global_position), Po5Pilot._v(c.global_position)])
@@ -348,6 +348,16 @@ func _chase_and_knife(g: NpcBase, sd: StealthDirector, hits: Array[int]) -> bool
 		pilot.flat_dist(g.global_position, c.global_position), hits[1], hits[0], g.health, g.is_alive(),
 		alert_before, g.alert_state])
 	return not g.is_alive()
+
+
+## True when the pilot is within ~70 deg of the guard's forward (inside his view cone at 3-5 m, S2.2: +-60 deg from
+## 8.5 m, wider closer). At his post he faces the vault gate, ~105 deg from the pilot inside the corridor door.
+func _faces_me(g: NpcBase) -> bool:
+	var to_me: Vector3 = pilot.crew.global_position - g.global_position
+	to_me.y = 0.0
+	var fwd: Vector3 = -g.global_basis.z
+	fwd.y = 0.0
+	return to_me.length() < 0.05 or fwd.normalized().dot(to_me.normalized()) > 0.34
 
 
 ## True when the guard faces away from the pilot (his forward and the pilot are > ~110 deg apart).
