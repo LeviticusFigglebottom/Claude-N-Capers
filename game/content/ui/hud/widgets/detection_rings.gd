@@ -2,7 +2,9 @@
 ## * Over each observer in model.detection (guards, civilians, police, cameras): a ring that fills clockwise from the top
 ##   with the meter, "?" inside while it fills and a red "!" at detected (value >= HudTweak.detection_red_at). Off-screen
 ##   or behind the camera: no ring (the crosshair arc shows the direction).
-## * Around the crosshair: one arc per observer, centred on the observer's direction, filling the same way.
+## * Around the crosshair: one arc per observer, centred on the observer's direction, filling the same way. Live GH/SL
+##   check (r229): an observer whose own ring lands on the arc band (straight ahead at mid range) gets no arc, so the
+##   two never stack; its ring marks the spot.
 ## * Colours: HudTweak.detection_blue (white by default; the "filling" colour) below detection_orange_from, then orange,
 ##   then red; the accessibility palettes override all three.
 ## * No indicator while heist_phase is LOUD (PD2: detection ends with the alarm).
@@ -57,6 +59,8 @@ func refresh() -> void:
 			if Rect2(Vector2.ZERO, size).grow(-r).has_point(p):
 				row["on_screen"] = true
 				row["ring_pos"] = p
+				if absf(p.distance_to(size * 0.5) - tweak.chevron_radius_px) < r + tweak.arc_width_px:
+					row["arc"] = false
 		rings.append(row)
 	set_process(not rings.is_empty())
 	queue_redraw()
@@ -93,16 +97,20 @@ func _draw() -> void:
 			_ring(c["ring_pos"] as Vector2, value, col, String(c["glyph"]), font)
 
 
-## The world ring: a dark disc, a dim track, the fill clockwise from 12 o'clock, the glyph in the middle.
+## The world ring: a dark disc, a dim track, the fill clockwise from 12 o'clock on a dark under-stroke (it reads on a
+## lit wall or a lamp behind the observer), the glyph in the middle.
 func _ring(at: Vector2, value: float, col: Color, glyph: String, font: Font) -> void:
 	var r: float = tweak.ring_radius_px
 	var w: float = tweak.ring_width_px
-	draw_circle(at, r + w * 0.5, Color(0, 0, 0, 0.55))
-	draw_arc(at, r, 0.0, TAU, 48, Color(col, 0.25), w, true)
+	draw_circle(at, r + w * 0.5 + 2.0, Color(0, 0, 0, 0.62))
+	draw_arc(at, r, 0.0, TAU, 48, Color(col, 0.35), w, true)
 	if value >= 1.0:
 		draw_arc(at, r, 0.0, TAU, 48, col, w, true)
 	elif value > 0.0:
-		draw_arc(at, r, -PI * 0.5, -PI * 0.5 + TAU * value, maxi(4, int(48 * value)), col, w, true)
+		var to: float = -PI * 0.5 + TAU * value
+		var segs: int = maxi(4, int(48 * value))
+		draw_arc(at, r, -PI * 0.5, to, segs, Color(0, 0, 0, 0.7), w + 3.0, true)
+		draw_arc(at, r, -PI * 0.5, to, segs, col, w, true)
 	var fs: int = int(r * 1.3)
 	var gw: Vector2 = font.get_string_size(glyph, HORIZONTAL_ALIGNMENT_LEFT, -1, fs)
 	var base: Vector2 = at + Vector2(-gw.x * 0.5, fs * 0.36)
@@ -117,6 +125,6 @@ func _crosshair_arc(angle: float, value: float, col: Color) -> void:
 	var half: float = deg_to_rad(tweak.arc_span_deg) * 0.5
 	var mid: float = angle - PI * 0.5  # screen_angle 0 = up; draw_arc 0 = +x
 	var w: float = tweak.arc_width_px
-	draw_arc(centre, r, mid - half, mid + half, 24, Color(0, 0, 0, 0.45), w + 3.0, true)
-	draw_arc(centre, r, mid - half, mid + half, 24, Color(col, 0.3), w, true)
+	draw_arc(centre, r, mid - half, mid + half, 24, Color(0, 0, 0, 0.6), w + 4.0, true)
+	draw_arc(centre, r, mid - half, mid + half, 24, Color(col, 0.38), w, true)
 	draw_arc(centre, r, mid - half, mid - half + 2.0 * half * value, maxi(3, int(24 * value)), col, w, true)

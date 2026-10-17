@@ -1,17 +1,18 @@
 ## Worker for real_input_run_capture.gd (loaded at runtime so autoloads exist when it compiles).
 extends Node
 
-const HEIST: StringName = &"glasshouse"
 const MAX_STEPS: int = 60
 
 var _out: String = ""
+var _heist: StringName = &"glasshouse"
 var _n: int = 0
 var _flow: MenuFlow = null
 
 
 func _ready() -> void:
 	var args: PackedStringArray = OS.get_cmdline_user_args()
-	_out = args[0] if args.size() > 0 else OS.get_user_data_dir() + "/real_input_run"
+	_heist = StringName(args[1]) if args.size() > 1 else &"glasshouse"
+	_out = (args[0] if args.size() > 0 else OS.get_user_data_dir() + "/real_input_run").path_join(String(_heist))
 	DirAccess.make_dir_recursive_absolute(_out)
 	_run.call_deferred()
 
@@ -95,8 +96,8 @@ func _run() -> void:
 	await _shot("hub")
 	await _press(_flow.hub.station_button(&"planning"), "Planning")
 	var hs: HeistSelect = _flow.heist_select
-	var idx: int = HeistCatalog.ids().find(HEIST)
-	await _nav_to(hs.heist_buttons[idx], "Golden Hour")
+	var idx: int = HeistCatalog.ids().find(_heist)
+	await _nav_to(hs.heist_buttons[idx], String(_heist))
 	await _key(KEY_ENTER)
 	await _shot("heist_select")
 	await _press(hs.next_button, "Next")

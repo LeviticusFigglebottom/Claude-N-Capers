@@ -235,11 +235,10 @@ func test_take_hit_is_the_single_hit_path() -> void:
 	assert_eq(int(seen[0]["victim"]), t.net_id)
 	assert_eq(int(seen[0]["attacker"]), 7)
 	assert_near(float((seen[0]["info"] as Dictionary)["amount"]), 30.0, 0.001)
-	var after: float = t.max_health - 30.0  # LEAD: from the model, not 80 (D-127 raised target HP)
-	assert_near(t.health, after, 0.001, "applied once, not again through the event")
+	assert_near(t.health, t.max_health - 30.0, 0.001, "applied once, not again through the event")
 	assert_false(bool(res["killed"]))
 	EventBus.damage_applied.emit(t.net_id, 1, _info(30.0))
-	assert_near(t.health, after, 0.001, "targets never act on damage_applied")
+	assert_near(t.health, t.max_health - 30.0, 0.001, "targets never act on damage_applied")
 	t.queue_free()
 
 
