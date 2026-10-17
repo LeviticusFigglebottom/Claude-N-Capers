@@ -5,8 +5,8 @@ major version and comes with a `docs/decisions.md` entry and a migration note to
 
 | Contract | Version | Producer → Consumer | Code |
 |---|---|---|---|
-| [heist_map.md](heist_map.md) | 1.0 | C → A (and B for UI) | `game/contracts/map/*`, `HeistDef`, `HeistVariantTable` |
-| [gameplay_prefabs.md](gameplay_prefabs.md) | 1.0 | A → C (C places A's prefabs in maps) | `game/systems/prefabs/**` |
+| [heist_map.md](heist_map.md) | 1.3 | C → A (and B for UI) | `game/contracts/map/*`, `HeistDef`, `HeistVariantTable` |
+| [gameplay_prefabs.md](gameplay_prefabs.md) | 1.5 | A → C (C places A's prefabs in maps) | `game/systems/prefabs/**` |
 | [visual_slots.md](visual_slots.md) | 1.5 | C/B → A (art that plugs into prefabs) | — |
 | [characters.md](characters.md) | 1.30 | C → A (rigs, animation names) | — |
 | [events.md](events.md) | 1.8 | all ↔ all | `game/core/event_bus.gd` |
@@ -14,11 +14,11 @@ major version and comes with a `docs/decisions.md` entry and a migration note to
 | [data_schemas.md](data_schemas.md) | 1.3 | B (data) → A (runtime) | `game/contracts/data/*` |
 | [crew_intent.md](crew_intent.md) | 1.1 | A, LEAD tests | `game/contracts/crew_intent.gd` |
 | [audio_cues.md](audio_cues.md) | 1.8 | C (sounds) ← A/B (triggers) | `game/world/audio/cues.tres` (C) |
-| [preplanning.md](preplanning.md) | 1.0 | B (resolve, UI) / C (points, overrides) → A (apply) | — |
+| [preplanning.md](preplanning.md) | 1.2 | B (resolve, UI) / C (points, overrides) → A (apply) | — |
 | [damage.md](damage.md) | 1.3 | A ↔ B (hits, targets) | `game/contracts/damage.gd` |
 | [ui_hud.md](ui_hud.md) | 1.18 | A (state) → B (HUD widgets) | — |
 | [groups.md](groups.md) | 1.1 | all | `game/contracts/ids.gd` (`G`) |
-| [net.md](net.md) | 1.3 | LEAD → A, B | `game/core/net.gd` |
+| [net.md](net.md) | 1.4 | LEAD → A, B | `game/core/net.gd` |
 | [hub_map.md](hub_map.md) | 1.1 | C/A → B (safehouse hub) | `SafehouseMap`, `hub_station` |
 | [impact_fx.md](impact_fx.md) | 1.1 | C (VFX, surfaces) ← A (shot events, doors), P (FP weapon), B (option) | `game/world/vfx/` |
 | [input_focus.md](input_focus.md) | 1.2 | P → B, A (mouse capture, input focus) | `game/systems/player/mouse_capture.gd` |
