@@ -90,8 +90,8 @@ exterior 0.4 m, interior 0.2 m, **vault walls 0.6 m reinforced** (`%`). Origin i
 is east and +z is south (the parking lot is at the top, Harbor St at the bottom). Rulers are in metres.
 
 Legend: `#` exterior wall, `|`/`-` interior wall, `%` vault wall, `D` door, `R` roller door
-(sally port, 3.0 m), `W` window, `=` teller counter (1.05 m transaction ledge, a 0.10 m brass
-deal-tray rail and 1.1 m bandit glass above), `r` 1.05 m railing over the stair shaft, `v ^` U-stair (v = flight going down from
+(sally port, 3.0 m), `W` window, `=` teller counter (1.05 m transaction ledge, a solid brass
+deal-tray upstand to 1.50 m and 0.75 m bandit glass above), `r` 1.05 m railing over the stair shaft, `v ^` U-stair (v = flight going down from
 ground, ^ = return flight arriving in the basement), `G` guard post, `K` keycard candidate slot,
 `L` loot, `S` safe, `TL` time-lock panel, `:::laser:::` laser grid, `H^` areaway ladder hatch,
 `SRV` server rack, `#mon` camera station console against a solid wall, `o` operator seat (faces
@@ -414,22 +414,20 @@ blocks movement and bullets. Frosted, tinted, mirrored and privacy glass stays o
 - **Clear (17 colliders):**
   - G9 banking hall: the hall bays ×4 to Harbor St (full-opening blockers next to the Window prefabs'
     GlassBody), the transoms ×4 and the skylight on the hall roof.
-  - G8 / G9: the bandit glass over the teller counter (1.15–2.25 m).
+  - G8 / G9: the bandit glass over the teller counter (1.50–2.25 m).
   - G11 loan office and G12 manager: the glass fronts to the hall (G11 ×1, G12 ×2) and the windows E to
     Wharf Lane (×1 each).
   - G13 ATM vestibule: the green street glazing ×2. It is tinted, but it is the designed casing view, so it
     counts as clear.
 - **Opaque:** none of the map-built glass. G3 security room has no windows. Under the bandit glass, the counter
-  carries a solid 0.10 m brass deal-tray rail (`BanditRail`, 1.05–1.15 m, opaque for vision).
+  carries a solid brass deal-tray upstand (`BanditRail`, 1.05–1.50 m, opaque for vision; LEAD, as OF's QC-g counter).
 - **Not map-built:** the ATM inner glass door and the vestibule's inner glass doors are Door prefabs (ENV A,
   not tagged).
-- **Open (D-142):** the Sightlines claim that crouched players behind the counter are hidden from the hall
-  guard does not hold with the rail. It is not sampled (no `hide_spot`; adding one would fail `hide_los`). The
-  hall guard stands at his post (the `GuardHall` spawn at (8, 13), idle, eye 1.62 m, 3 m from the glass). A crouched player
-  behind the counter (feet z <= 8.95, detection points 1.0 and 1.05 m) is seen over the 1.15 m rail: the
-  sightline crosses the rail line at about 1.20 m, or about 1.29 m from the back of the workroom. The rail hides a
-  crouched player only from observers more than about 5 m from the glass. Holding the claim at the post
-  needs a solid line of about 1.30 m (or a seated guard, eye about 1.2 m). That is the lead's call.
+- **Hidden behind the counter (D-142, LEAD):** crouched players behind the teller counter are hidden from the G9
+  hall, as in PD2 banks. The solid upstand under the bandit glass runs to 1.50 m (the 0.10 m rail first built
+  left them visible from the hall post: the sightline crossed the rail line at about 1.20 m). Pinned by levelcheck
+  `hide_los` on `Gameplay/Lines/HideCounter` (feet line z 8.8, x 2.5–18.5, crouched points 1.0 / 1.05 m, every
+  G9 observer 2–20 m away).
 
 ## Stealth routes
 1. **Lot / sally port (staff entrance):** case the lot (PUBLIC; the alley gate is closed). Deal with

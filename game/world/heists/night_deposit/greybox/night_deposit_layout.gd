@@ -172,10 +172,12 @@ const RAILINGS: Array = [
 	["RailQuayE", [11.1, 0.0, 33.9, 40.0, 1.0, 33.96]],
 ]
 
-## D-142: the bandit glass stands on a solid 0.10 m brass deal-tray rail on the counter top (1.05 -> 1.15 m; opaque
-## for stealth vision); the glass above it is clear (`see_through`).
+## D-142: the bandit glass stands on a solid brass deal-tray upstand on the counter top (1.05 -> 1.50 m, as OF's QC-g counter; opaque for
+## stealth vision, LEAD: crouching behind the counter hides from the hall, as in PD2 banks); the glass above is clear.
 const BANDIT_RAIL_Y: float = 1.05
-const BANDIT_RAIL_TOP: float = 1.15
+const BANDIT_RAIL_TOP: float = 1.50
+## levelcheck hide_los line (D-128): crouched behind the counter, hidden from the G9 hall.
+const HIDE_COUNTER: Array = [Vector3(2.5, 0.0, 8.8), Vector3(18.5, 0.0, 8.8)]
 ## Static glazing: [name, axis, fixed, a0, a1, y0, y1]. Glass blocker (collision) + pane + frame.
 ## The ATM vestibule's street glazing is the green-glass jewel (doc landmark 3).
 const GLAZING: Array = [
