@@ -451,7 +451,7 @@ func tick(delta: float) -> void:
 	if _npc != null and NpcRagdoll.owns_pose(_npc):
 		return  # PO6-19: the ragdoll owns the pose (paused player, baked skeleton, rig yaw kept)
 	delta = maxf(delta, 0.0001)
-	loop_resume.clock += delta
+	loop_resume.step(delta)
 	var tw: AnimTweak = AnimTweak.data()
 	_update_velocity(delta, tw)
 	_oneshot_left = maxf(_oneshot_left - delta, 0.0)
