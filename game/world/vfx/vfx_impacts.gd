@@ -43,6 +43,24 @@ func set_caps(per_surface: int, total: int) -> void:
 	_total = 0
 
 
+## Build sets now (hidden), round-robin over every surface (and the gore-Off flesh dust) up to both caps, so fire()
+## never builds or steals one mid-fight. Idempotent.
+func prewarm() -> void:
+	var surfaces: Array[StringName] = ImpactFx.SURFACES.duplicate()
+	surfaces.append(ImpactFx.FLESH_DUST)
+	var grew: bool = true
+	while grew and _total < _total_cap:
+		grew = false
+		for s: StringName in surfaces:
+			var list: Array = _sets.get(s, [])
+			if _total >= _total_cap or list.size() >= _per_surface_cap:
+				continue
+			list.append(_build_set(s))
+			_sets[s] = list
+			_total += 1
+			grew = true
+
+
 ## Hide sets whose burst has finished (idle emitters cost no draw calls).
 func advance(delta: float) -> void:
 	for s: Node3D in _left.keys():
