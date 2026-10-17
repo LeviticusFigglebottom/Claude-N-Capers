@@ -263,8 +263,8 @@ static func door_visual(d: Array) -> String:
 		return String(CUSTOM_VISUAL[dtype])
 	var fin: String = "ivory" if String(d[0]) in DOOR_IVORY else "steel"
 	var t: String = piece.get_slice("_", 1)
-	if String(d[6]) == "police_gate":
-		t = "t10"  # the 0.1 m yard / lane fences
+	if String(d[6]) in ["police_gate", "count_cage_gate"]:
+		t = "t10"  # the 0.1 m yard / lane fences, the count-room cage mesh
 	elif String(d[0]) in DOOR_T30:
 		t = "t30"
 	return "prop_door_%s_%s_%s" % [dtype, fin, t]
@@ -425,7 +425,8 @@ func _variants_cartel(variants: Node3D) -> void:
 			sp.set_meta(&"enemy_id", &"enemy.cartel_gunman")
 
 
-## Cash: the strongroom pallets (thermal drill on the vault door) or the count-room cage (drill / C4).
+## Cash: the strongroom pallets (thermal drill on the vault door) or the count-room cage (drill / C4 on the gate's
+## padlock, D-138: no stand-in safe; the cage and its BARRED gate are always built, only the padlock is in the slot).
 ## The mission splits `cash_bags` over the two stacks of the active location.
 func _variants_cash(variants: Node3D) -> void:
 	var g: Node3D = _group(variants, "cash_location")
@@ -434,15 +435,27 @@ func _variants_cash(variants: Node3D) -> void:
 		prefab(sr, "loot_spawn", String(c[0]), c[1], 90.0, {"loot_id": &"loot.cash_bricks", "count": 2,
 			"objective_tag": &"cash_bricks"})
 	var cr: VariantSlot = _slot(g, "cash_location", "cash_countroom", 0.4, {"holdout": "H1"})
-	prefab(cr, "safe", "CountCage", Vector3(9.5, L.MEZZ, 4.4), -90.0,
-		{"size": "enum:LARGE", "methods": [&"drill", &"c4"] as Array[StringName], "objective_tag": &"count_cage",
-			"drill_duration_s": 120.0},  # D-115 DB-5: the doc's 120 s cage drill (size stays LARGE)
-		Vector3(10.4, L.MEZZ, 4.4), {"kind": "safe"})
+	_count_cage_padlock(cr)
 	for c2: Array in [["CageCashA", Vector3(9.65, L.MEZZ, 2.4)], ["CageCashB", Vector3(9.65, L.MEZZ, 1.2)]]:
 		prefab(cr, "loot_spawn", String(c2[0]), c2[1], 90.0, {"loot_id": &"loot.cash_bricks", "count": 2,
-			"objective_tag": &"cash_bricks"}, Vector3(10.4, L.MEZZ, minf((c2[1] as Vector3).z, 2.1)))  # use inside the cage, not past M_X9
+			"objective_tag": &"cash_bricks"}, Vector3(10.05, L.MEZZ, (c2[1] as Vector3).z))  # use inside the cage (fence x 10.5)
 	# The empty strongroom: fish blocks on the floor.
 	prop_box(cr, "FishBlocks", Vector3(21.0, 0.0, 28.6), Vector3(2.0, 1.2, 2.0), 0.0, "fish_blocks", false, "panel")
+
+
+## D-138: the brass padlock on the count-cage gate's room face (the doc's 120 s drill / C4: ENV A's padlock options),
+## its target the gate; it lives in the cash_countroom slot, so the strongroom variant's cage stays shut and plain.
+func _count_cage_padlock(slot: Node3D) -> void:
+	var gate: Node3D = n("Gameplay/Doors/CountCageGate")
+	if gate == null:
+		errors.append("CountCageGate missing")
+		return
+	var xf: Transform3D = global_xform(gate)
+	var pl: Node3D = prefab(slot, "padlock", "CountCagePadlock", xf * Vector3(0.38, 1.1, -0.07), 0.0,
+		{"objective_tag": &"count_cage", "visual_scene": load(PADLOCK_VISUAL)},  # methods: A's D-138.2 options (drill / C4)
+		xf * Vector3(0.38, 0.0, -0.9), {"mount": "door", "kind": "padlock", "drill_duration_s": 120.0})
+	if pl != null:
+		pl.set(&"targets", [pl.get_path_to(gate)] as Array[NodePath])
 
 
 ## Weapons containers (doc `weapons_containers`, pick 2): the slot marks the Co-op's brass padlock on

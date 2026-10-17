@@ -58,8 +58,6 @@
 * Gameplay/Misc/PhonePantry/UsePoint
 * Gameplay/Misc/PhoneReception/UsePoint
 * Gameplay/Misc/PhoneSecurity/UsePoint
-* Gameplay/Server/CageLock
-* Gameplay/Server/CageLock/UsePoint
 * Gameplay/Server/Drives1
 * Gameplay/Server/Drives1/UsePoint
 * Gameplay/Server/Drives1/Visual/LootSpawnPlaceholder

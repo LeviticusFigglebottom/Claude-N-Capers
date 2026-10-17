@@ -20,7 +20,7 @@ const PREFAB_CLASSES: Dictionary = {
 	"keycard_pickup": "KeycardPickup", "loot_spawn": "LootSpawn", "small_loot": "SmallLoot",
 	"alarm_button": "AlarmButton", "phone": "Phone", "secure_zone": "SecureZone", "escape_zone": "EscapeZone",
 	"body_container": "BodyContainer", "ladder": "Ladder", "camera_station": "CameraStation",
-	"security_camera": "SecurityCamera", "code_note": "CodeNote", "keypad": "Keypad", "laser_grid": "LaserGrid",
+	"security_camera": "SecurityCamera", "code_note": "CodeNote", "keypad": "Keypad", "laser_grid": "LaserGrid", "padlock": "Padlock",
 	"bag_lift": "BagLift", "hack_terminal": "HackTerminal", "zipline": "Zipline", "keycard_reader": "KeycardReader",
 }
 ## PO-13 surface pass: greybox class / room purpose -> library finish (sl_finishes.gd).

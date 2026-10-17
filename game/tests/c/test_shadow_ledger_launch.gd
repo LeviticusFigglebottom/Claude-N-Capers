@@ -98,7 +98,7 @@ func test_launch_brutal_seed_1001() -> void:
 
 
 func _check_cage_and_hack(map: HeistMap, mission: HeistMission) -> void:
-	var cage: Safe = map.get_node_or_null("Gameplay/Server/CageLock") as Safe
+	var cage: Padlock = map.get_node_or_null("Gameplay/Doors/CageGate/CagePadlock") as Padlock  # D-138: the gate padlock
 	var ht: HackTerminal = map.get_node_or_null("Gameplay/Server/HackTerminal") as HackTerminal
 	var drives: Node = map.get_node_or_null("Gameplay/Server/Drives1")
 	assert_true(cage != null and ht != null and drives != null, "cage lock, hack terminal and drive sleds are live")
@@ -106,9 +106,8 @@ func _check_cage_and_hack(map: HeistMap, mission: HeistMission) -> void:
 		return
 	assert_false(_enabled(ht), "hack terminal locked until the cage opens")
 	assert_false(_enabled(drives), "drive sleds locked until the hack")
-	# In play the saw's DrillPoint swings the lock (open_by_device) and then reports device_finished;
-	# SL-6 counts the cage open only on a real lock swing.
-	cage.open_by_device()
+	# In play the placed saw opens the padlock (which opens the CageGate) and then reports device_finished.
+	cage.open_lock()
 	EventBus.device_finished.emit(int(cage.get(&"net_id")))
 	await wait_physics_frames(2)
 	assert_eq(mission.objective_state(&"cage"), Enums.ObjectiveState.COMPLETED, "cage objective")
