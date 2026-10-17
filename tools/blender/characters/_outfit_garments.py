@@ -619,9 +619,10 @@ SEATED_CENTRE = 0.008
 #: cloth between the legs stretches); the back keeps a little hips weight (seated, the back panel stays under the seat).
 STRIDE_DRAPE = {"thigh_max": 0.98, "centre_w": 0.008, "ramp": 0.45, "front_ramp": 0.3, "back_relax": 0.0,
                 "shin_max": 0.9, "knee_band": 0.07}
-#: the stride drape's knee slack (m, scaled by fit.k): the cloth over the front and sides of each knee stands this much
-#: further out, so the knee cap, which the cloth's thigh-to-shin blend pulls in at deep bends, stays under it
-KNEE_SLACK = 0.022
+#: the stride drape's knee slack (m, scaled by fit.k): the cloth over the front and sides of each knee (and on down to
+#: the hem) stands this much further out, so the knee cap, which the cloth's thigh-to-shin blend pulls in at deep
+#: bends, stays under it
+KNEE_SLACK = 0.018
 
 
 def stride_drape(fit: Fit, z_top: float, hem_z: float) -> Callable[[Vector, float], dict]:
@@ -630,8 +631,9 @@ def stride_drape(fit: Fit, z_top: float, hem_z: float) -> Callable[[Vector, floa
 
 
 def knee_slack(m: Mesh, rings: list[list[int]], fit: Fit, amount: float = KNEE_SLACK) -> None:
-    """Push the lofted skirt ``rings`` out round each knee (``amount`` * k over the front and outer side, half behind,
-    easing to nothing 9 cm above and 12 cm below), away from that knee's axis, so a bent knee stays under the cloth."""
+    """Push the lofted skirt ``rings`` out round each knee and on down to the hem (``amount`` * k over the front and
+    outer side, half behind, easing to nothing 9 cm above the knee), away from that knee's axis, so a bent knee stays
+    under the cloth and the hem keeps its line."""
     k = fit.k
     for sx, sfx in ((1.0, "R"), (-1.0, "L")):
         kn = Vector(fit.J[f"knee.{sfx}"])
@@ -647,8 +649,9 @@ def knee_slack(m: Mesh, rings: list[list[int]], fit: Fit, amount: float = KNEE_S
                 # full over the front, half behind (the back of a bent knee bulges too); none on the inner side, where
                 # it would cross the cloth between the knees
                 front = (0.5 + 0.5 * smoothstep(-0.5, 0.3, d.y)) * smoothstep(-0.6, 0.0, d.x * sx)
-                band = (smoothstep(kn.z + 0.09 * k, kn.z + 0.01 * k, p.z)
-                        * smoothstep(kn.z - 0.12 * k, kn.z - 0.03 * k, p.z))
+                # from 9 cm above the knee on down to the hem: a slack band that eased out again below the knee read
+                # as a bubble hem (the skirt widest at the knee, tucked in at the calves)
+                band = smoothstep(kn.z + 0.09 * k, kn.z + 0.01 * k, p.z)
                 s = amount * k * front * band
                 if s > 1e-5:
                     m.v[v] = p + d * s
