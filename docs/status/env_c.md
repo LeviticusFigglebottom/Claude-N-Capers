@@ -4,6 +4,38 @@ Owner: ENV C. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 
+## 2026-10-17 (lead session_01HwYKRgCdkLfJCt4ZM6rfTk; rounds 229-233)
+
+**Head:** `708a9cd1` on `env/c-worlds` (trunk round 233 merged).
+
+**Done this session:**
+- **SL-1 Shadow Ledger G2 FINAL** (stage final, validate final PASS): 66 props, 33 kits, LUT (dd8c374d); sl_dress /
+  sl_art / shadow_ledger_dressing (2a185d86, be898e5b); 25 review shots + contact sheet `docs/levels/shadow_ledger/shots/g2/`
+  (3daac2e1); SL-2 props on 512 px/m finishes for the texel check (a88e8639). Worst perf ExtTerraceSE 2293 draw calls.
+- **SL-2** (D-111 item 5): secure net / tarp / lift blankets, laser emitter columns + beams, E2 zipline anchor (c6485f34, eea3fa56).
+- **SL-3**: OperatorChair, Kessler in a catalog armchair, 0.000 m from his Seat (85cc96cc). **DB-6**: QC-25/36/39 comments
+  (ccc43999); PF ForemanChair 0.25 m back (e11af5cf).
+- **SL-P1** (P): stair headroom ≥ 2.1 m, LiftSecureE3 = car floor, flush corridor corners (a360b761).
+- **DB-P1** (P): fire / lockdown shutters baked closed in the navmesh; barred_doors covers them; nav-sync wait (1642f044, 46519312).
+- **GN-8**: inspection escorts (7e38ba8f, b9074fdd); grand-stair ramp seam + balustrade nav margin (e7729f5b).
+- **D-117** briefing lists GN / DB / SL + SL loot.small_valuables + doc values (c7df5370, 3303462a).
+- **D-130**: GH pager / Titan row (d9f59be0); GN + ND population by difficulty, monotonic and never below the
+  pre-D-130 counts (55302e10, 41112dc6, 71d55467; c/test_d130_population).
+
+**In progress:** D-130 SL population (worktree lane).
+
+**Queued next:** DB-1 follow-ups (chamber variety, trawler / crane art); drill VFX / drill_capture review set (80eeb5a8);
+D-113 flash "after" set re-render + impact sheet; Forward+ decal check.
+
+**Cross-env:** D: cast pools for the D-130 maxima (ND security_officer _e, bank cleaner _b, GN waitstaff / attendant 3rd
+looks, +3 GN patrons); D-132 merged NPC materials must not use `decals_disabled`. A: re-run the GN pilot on the stair
+fix; pin the D-130 counts. B: gala_extra in the test_gn_drafts SLOTS stand-in.
+
+**Gotchas (new):** levelcheck `barred_doors` now covers `shutter` / `fire_shutter` doors (they must be baked closed).
+1 m-tile weapon finishes (steel_bare, paint_safety_orange, alu_anodized_black) fail the final texel check on small world
+props; use brushed steel / paint_hazard_orange / metal_graphite. GN variants .tres is hand data (not generator output);
+SL / DB / GH / ND defs + variants are re-saved from the generator rows.
+
 ## 2026-10-16 (new lead session_01HwYKRgCdkLfJCt4ZM6rfTk; resumed @ 80eeb5a8)
 
 **Head:** `80eeb5a8` + this entry on `env/c-worlds` (trunk merge up to date). Round 229 includes fe9397a5.
