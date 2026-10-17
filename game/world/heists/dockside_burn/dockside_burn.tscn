@@ -19091,7 +19091,7 @@ mesh = SubResource("db_698")
 
 [node name="Glazing" type="Node3D" parent="Geometry/Building" unique_id=102009]
 
-[node name="O1WindowW" type="StaticBody3D" parent="Geometry/Building/Glazing" unique_id=102010]
+[node name="O1WindowW" type="StaticBody3D" parent="Geometry/Building/Glazing" unique_id=102010 groups=["see_through"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.2, 1.5, 0)
 collision_mask = 0
 metadata/surface = &"glass"
@@ -19106,7 +19106,7 @@ mesh = SubResource("db_701")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.579, 0)
 mesh = SubResource("db_702")
 
-[node name="O1WindowE" type="StaticBody3D" parent="Geometry/Building/Glazing" unique_id=102014]
+[node name="O1WindowE" type="StaticBody3D" parent="Geometry/Building/Glazing" unique_id=102014 groups=["see_through"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.7999997, 1.5, 0)
 collision_mask = 0
 metadata/surface = &"glass"
@@ -19151,7 +19151,7 @@ mesh = SubResource("db_701")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.579, 0)
 mesh = SubResource("db_702")
 
-[node name="M2WindowW" type="StaticBody3D" parent="Geometry/Building/Glazing" unique_id=102026]
+[node name="M2WindowW" type="StaticBody3D" parent="Geometry/Building/Glazing" unique_id=102026 groups=["see_through"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.2, 5.1, 0)
 collision_mask = 0
 metadata/surface = &"glass"
@@ -19166,7 +19166,7 @@ mesh = SubResource("db_701")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.579, 0)
 mesh = SubResource("db_702")
 
-[node name="M2WindowE" type="StaticBody3D" parent="Geometry/Building/Glazing" unique_id=102030]
+[node name="M2WindowE" type="StaticBody3D" parent="Geometry/Building/Glazing" unique_id=102030 groups=["see_through"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.7999997, 5.1, 0)
 collision_mask = 0
 metadata/surface = &"glass"
@@ -19181,7 +19181,7 @@ mesh = SubResource("db_701")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.579, 0)
 mesh = SubResource("db_702")
 
-[node name="M1WindowW" type="StaticBody3D" parent="Geometry/Building/Glazing" unique_id=102034]
+[node name="M1WindowW" type="StaticBody3D" parent="Geometry/Building/Glazing" unique_id=102034 groups=["see_through"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.5, 5.1, 0)
 collision_mask = 0
 metadata/surface = &"glass"
@@ -19196,7 +19196,7 @@ mesh = SubResource("db_701")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.579, 0)
 mesh = SubResource("db_702")
 
-[node name="HallClerestory" type="StaticBody3D" parent="Geometry/Building/Glazing" unique_id=102038]
+[node name="HallClerestory" type="StaticBody3D" parent="Geometry/Building/Glazing" unique_id=102038 groups=["see_through"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 33, 5.15, 0)
 collision_mask = 0
 metadata/surface = &"glass"
@@ -19211,7 +19211,7 @@ mesh = SubResource("db_704")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.329, 0)
 mesh = SubResource("db_705")
 
-[node name="GatehouseWindow" type="StaticBody3D" parent="Geometry/Building/Glazing" unique_id=102042]
+[node name="GatehouseWindow" type="StaticBody3D" parent="Geometry/Building/Glazing" unique_id=102042 groups=["see_through"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30, 1.5, -30)
 collision_mask = 0
 metadata/surface = &"glass"
@@ -19226,7 +19226,7 @@ mesh = SubResource("db_707")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.579, 0)
 mesh = SubResource("db_708")
 
-[node name="NetStoreWindow" type="StaticBody3D" parent="Geometry/Building/Glazing" unique_id=102046]
+[node name="NetStoreWindow" type="StaticBody3D" parent="Geometry/Building/Glazing" unique_id=102046 groups=["see_through"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16, 1.5, 40)
 collision_mask = 0
 metadata/surface = &"glass"
@@ -22961,7 +22961,7 @@ shape = SubResource("db_895")
 layers = 5
 mesh = SubResource("db_896")
 
-[node name="SkylightC1" type="StaticBody3D" parent="Geometry/Site/Blocks" unique_id=102855]
+[node name="SkylightC1" type="StaticBody3D" parent="Geometry/Site/Blocks" unique_id=102855 groups=["see_through"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25, 9.2, 17)
 collision_mask = 0
 metadata/surface = &"glass"
@@ -22973,7 +22973,7 @@ shape = SubResource("db_897")
 layers = 5
 mesh = SubResource("db_898")
 
-[node name="SkylightSP" type="StaticBody3D" parent="Geometry/Site/Blocks" unique_id=102858]
+[node name="SkylightSP" type="StaticBody3D" parent="Geometry/Site/Blocks" unique_id=102858 groups=["see_through"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 33.5, 9.2, 17)
 collision_mask = 0
 metadata/surface = &"glass"
@@ -22985,7 +22985,7 @@ shape = SubResource("db_899")
 layers = 5
 mesh = SubResource("db_900")
 
-[node name="SkylightC2" type="StaticBody3D" parent="Geometry/Site/Blocks" unique_id=102861]
+[node name="SkylightC2" type="StaticBody3D" parent="Geometry/Site/Blocks" unique_id=102861 groups=["see_through"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 41, 9.2, 17)
 collision_mask = 0
 metadata/surface = &"glass"

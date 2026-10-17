@@ -17424,7 +17424,7 @@ shape = SubResource("gn_208")
 
 [node name="Glass" type="Node3D" parent="Geometry/Building/Walls" unique_id=100688]
 
-[node name="Pane33_BR" type="StaticBody3D" parent="Geometry/Building/Walls/Glass" unique_id=100689]
+[node name="Pane33_BR" type="StaticBody3D" parent="Geometry/Building/Walls/Glass" unique_id=100689 groups=["see_through"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 1.6500001, 0)
 collision_mask = 0
 metadata/surface = &"glass"
@@ -17440,7 +17440,7 @@ metadata/surface = &"glass"
 [node name="Collision" type="CollisionShape3D" parent="Geometry/Building/Walls/Glass/Pane34_SC" unique_id=100692]
 shape = SubResource("gn_209")
 
-[node name="Pane35_RG" type="StaticBody3D" parent="Geometry/Building/Walls/Glass" unique_id=100693]
+[node name="Pane35_RG" type="StaticBody3D" parent="Geometry/Building/Walls/Glass" unique_id=100693 groups=["see_through"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21, 1.6500001, 0)
 collision_mask = 0
 metadata/surface = &"glass"
@@ -17448,7 +17448,7 @@ metadata/surface = &"glass"
 [node name="Collision" type="CollisionShape3D" parent="Geometry/Building/Walls/Glass/Pane35_RG" unique_id=100694]
 shape = SubResource("gn_209")
 
-[node name="Pane36_CK" type="StaticBody3D" parent="Geometry/Building/Walls/Glass" unique_id=100695]
+[node name="Pane36_CK" type="StaticBody3D" parent="Geometry/Building/Walls/Glass" unique_id=100695 groups=["see_through"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13, 1.9499999, 30)
 collision_mask = 0
 metadata/surface = &"glass"
@@ -17456,7 +17456,7 @@ metadata/surface = &"glass"
 [node name="Collision" type="CollisionShape3D" parent="Geometry/Building/Walls/Glass/Pane36_CK" unique_id=100696]
 shape = SubResource("gn_210")
 
-[node name="Pane37_CK" type="StaticBody3D" parent="Geometry/Building/Walls/Glass" unique_id=100697]
+[node name="Pane37_CK" type="StaticBody3D" parent="Geometry/Building/Walls/Glass" unique_id=100697 groups=["see_through"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16, 1.9499999, 30)
 collision_mask = 0
 metadata/surface = &"glass"
@@ -17464,7 +17464,7 @@ metadata/surface = &"glass"
 [node name="Collision" type="CollisionShape3D" parent="Geometry/Building/Walls/Glass/Pane37_CK" unique_id=100698]
 shape = SubResource("gn_210")
 
-[node name="Pane38_GS" type="StaticBody3D" parent="Geometry/Building/Walls/Glass" unique_id=100699]
+[node name="Pane38_GS" type="StaticBody3D" parent="Geometry/Building/Walls/Glass" unique_id=100699 groups=["see_through"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 28, 1.9499999, 30)
 collision_mask = 0
 metadata/surface = &"glass"
@@ -17472,7 +17472,7 @@ metadata/surface = &"glass"
 [node name="Collision" type="CollisionShape3D" parent="Geometry/Building/Walls/Glass/Pane38_GS" unique_id=100700]
 shape = SubResource("gn_210")
 
-[node name="Pane39_GS" type="StaticBody3D" parent="Geometry/Building/Walls/Glass" unique_id=100701]
+[node name="Pane39_GS" type="StaticBody3D" parent="Geometry/Building/Walls/Glass" unique_id=100701 groups=["see_through"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 31, 1.9499999, 30)
 collision_mask = 0
 metadata/surface = &"glass"
@@ -17480,7 +17480,7 @@ metadata/surface = &"glass"
 [node name="Collision" type="CollisionShape3D" parent="Geometry/Building/Walls/Glass/Pane39_GS" unique_id=100702]
 shape = SubResource("gn_210")
 
-[node name="Pane64_CO" type="StaticBody3D" parent="Geometry/Building/Walls/Glass" unique_id=100703]
+[node name="Pane64_CO" type="StaticBody3D" parent="Geometry/Building/Walls/Glass" unique_id=100703 groups=["see_through"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 7.05, 0)
 collision_mask = 0
 metadata/surface = &"glass"
@@ -17488,7 +17488,7 @@ metadata/surface = &"glass"
 [node name="Collision" type="CollisionShape3D" parent="Geometry/Building/Walls/Glass/Pane64_CO" unique_id=100704]
 shape = SubResource("gn_209")
 
-[node name="Pane66_FS" type="StaticBody3D" parent="Geometry/Building/Walls/Glass" unique_id=100705]
+[node name="Pane66_FS" type="StaticBody3D" parent="Geometry/Building/Walls/Glass" unique_id=100705 groups=["see_through"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21, 7.05, 0)
 collision_mask = 0
 metadata/surface = &"glass"
@@ -17496,7 +17496,7 @@ metadata/surface = &"glass"
 [node name="Collision" type="CollisionShape3D" parent="Geometry/Building/Walls/Glass/Pane66_FS" unique_id=100706]
 shape = SubResource("gn_209")
 
-[node name="Pane67_CS" type="StaticBody3D" parent="Geometry/Building/Walls/Glass" unique_id=100707]
+[node name="Pane67_CS" type="StaticBody3D" parent="Geometry/Building/Walls/Glass" unique_id=100707 groups=["see_through"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 44, 7.55, 2)
 collision_mask = 0
 metadata/surface = &"glass"
@@ -17504,7 +17504,7 @@ metadata/surface = &"glass"
 [node name="Collision" type="CollisionShape3D" parent="Geometry/Building/Walls/Glass/Pane67_CS" unique_id=100708]
 shape = SubResource("gn_211")
 
-[node name="Pane68_CS" type="StaticBody3D" parent="Geometry/Building/Walls/Glass" unique_id=100709]
+[node name="Pane68_CS" type="StaticBody3D" parent="Geometry/Building/Walls/Glass" unique_id=100709 groups=["see_through"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 44, 7.55, 4)
 collision_mask = 0
 metadata/surface = &"glass"
@@ -17512,7 +17512,7 @@ metadata/surface = &"glass"
 [node name="Collision" type="CollisionShape3D" parent="Geometry/Building/Walls/Glass/Pane68_CS" unique_id=100710]
 shape = SubResource("gn_211")
 
-[node name="Pane69_CS" type="StaticBody3D" parent="Geometry/Building/Walls/Glass" unique_id=100711]
+[node name="Pane69_CS" type="StaticBody3D" parent="Geometry/Building/Walls/Glass" unique_id=100711 groups=["see_through"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 44, 7.55, 6)
 collision_mask = 0
 metadata/surface = &"glass"
@@ -17520,7 +17520,7 @@ metadata/surface = &"glass"
 [node name="Collision" type="CollisionShape3D" parent="Geometry/Building/Walls/Glass/Pane69_CS" unique_id=100712]
 shape = SubResource("gn_211")
 
-[node name="Pane70_CS" type="StaticBody3D" parent="Geometry/Building/Walls/Glass" unique_id=100713]
+[node name="Pane70_CS" type="StaticBody3D" parent="Geometry/Building/Walls/Glass" unique_id=100713 groups=["see_through"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 44, 7.55, 8)
 collision_mask = 0
 metadata/surface = &"glass"
@@ -17528,7 +17528,7 @@ metadata/surface = &"glass"
 [node name="Collision" type="CollisionShape3D" parent="Geometry/Building/Walls/Glass/Pane70_CS" unique_id=100714]
 shape = SubResource("gn_211")
 
-[node name="Pane71_CS" type="StaticBody3D" parent="Geometry/Building/Walls/Glass" unique_id=100715]
+[node name="Pane71_CS" type="StaticBody3D" parent="Geometry/Building/Walls/Glass" unique_id=100715 groups=["see_through"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 44, 7.55, 10)
 collision_mask = 0
 metadata/surface = &"glass"
@@ -17756,7 +17756,7 @@ metadata/surface = &"plaster"
 [node name="Collision" type="CollisionShape3D" parent="Geometry/Building/Slabs/Oculus/LiningE" unique_id=100772]
 shape = SubResource("gn_230")
 
-[node name="Glass" type="StaticBody3D" parent="Geometry/Building/Slabs/Oculus" unique_id=100773]
+[node name="Glass" type="StaticBody3D" parent="Geometry/Building/Slabs/Oculus" unique_id=100773 groups=["see_through"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22, 10.98, 17)
 collision_mask = 0
 metadata/surface = &"glass"
@@ -32306,13 +32306,13 @@ links = Array[NodePath]([NodePath("../MewsBins"), NodePath("../MewsMouth"), Node
 pause_range = Vector2(20, 40)
 face_marker_forward = true
 pause_anim = &"smoke"
-tags = Array[StringName]([&"guard_mews"])
+tags = Array[StringName]([&"guard", &"guard_mews"])
 
 [node name="MewsBins" type="Marker3D" parent="Patrols/Mews" unique_id=103490]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 29.7, 0, -2.4)
 script = ExtResource("169_gn")
 links = Array[NodePath]([NodePath("../MewsDoor"), NodePath("../MewsLadder"), NodePath("../MewsLD")])
-tags = Array[StringName]([&"guard_mews"])
+tags = Array[StringName]([&"guard", &"guard_mews"])
 
 [node name="MewsLadder" type="Marker3D" parent="Patrols/Mews" unique_id=103491]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 11.5, 0, -2)
@@ -32321,13 +32321,13 @@ links = Array[NodePath]([NodePath("../MewsBins"), NodePath("../MewsVan")])
 pause_range = Vector2(4, 8)
 face_marker_forward = true
 pause_anim = &"look"
-tags = Array[StringName]([&"guard_mews"])
+tags = Array[StringName]([&"guard", &"guard_mews"])
 
 [node name="MewsVan" type="Marker3D" parent="Patrols/Mews" unique_id=103492]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 36.5, 0, -6.8)
 script = ExtResource("169_gn")
 links = Array[NodePath]([NodePath("../MewsLadder"), NodePath("../MewsMouth"), NodePath("../MewsDoor")])
-tags = Array[StringName]([&"guard_mews"])
+tags = Array[StringName]([&"guard", &"guard_mews"])
 
 [node name="MewsMouth" type="Marker3D" parent="Patrols/Mews" unique_id=103493]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 47, 0, -4)
@@ -32336,7 +32336,7 @@ links = Array[NodePath]([NodePath("../MewsVan"), NodePath("../MewsDoor")])
 pause_range = Vector2(20, 40)
 face_marker_forward = true
 pause_anim = &"smoke"
-tags = Array[StringName]([&"guard_mews"])
+tags = Array[StringName]([&"guard", &"guard_mews"])
 
 [node name="MewsLD" type="Marker3D" parent="Patrols/Mews" unique_id=103494]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 41, 0, 3)
@@ -32345,7 +32345,7 @@ links = Array[NodePath]([NodePath("../MewsDoor"), NodePath("../MewsBins")])
 pause_range = Vector2(6, 10)
 face_marker_forward = true
 pause_anim = &"look"
-tags = Array[StringName]([&"guard_mews"])
+tags = Array[StringName]([&"guard", &"guard_mews"])
 
 [node name="Court" type="Node3D" parent="Patrols" unique_id=103495]
 script = ExtResource("168_gn")
@@ -34846,9 +34846,9 @@ transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, -2.2
 script = ExtResource("257_gn")
 size_m = Vector3(11.2, 2.4, 0.1)
 beam_count = 5
-enabled_at_start = false
 visual_scene = ExtResource("258_gn")
 objective_tag = &"landing_curtain"
+enabled_at_start = false
 metadata/kind = "laser_grid"
 
 [node name="Slot_cp_treasury" type="Node3D" parent="Variants/Group_centrepiece" unique_id=103754]
