@@ -1247,7 +1247,7 @@ preplanning = {
         &"asset.doctor_bag_drop": {"point_ids": ["pp_drop_lane", "pp_drop_lockers", "pp_drop_terrace"]},
         &"asset.propped_door": {"point_ids": ["pp_fire_exit", "pp_dock_door"],
                                 "exclusive_group": &"side_door", "max_count": 1},
-        &"asset.inside_keycard": {"point_ids": ["pp_vault_ops"], "cost": 3000, "favors": 3},   # ◇
+        &"asset.inside_keycard": {"point_ids": ["pp_vault_ops"], "cost": 2500, "favors": 2},   # ◇
         # new heist assets (QC-66)
         &"asset.thermal_drill_drop": {"effect": &"force_variant", "drop": &"loot.thermal_drill_part",
                                       "params": {"count": 2},

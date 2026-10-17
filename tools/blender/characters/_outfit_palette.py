@@ -20,7 +20,7 @@ Shared-library ids (ENV C, ``game/world/materials/<id>.tres``) are used where on
 from __future__ import annotations
 
 #: kind -> (subsurface for skin, rim etc. used by make_materials.py)
-KINDS = ("skin", "eye", "hair", "cloth", "leather", "metal", "plastic", "gloss")
+KINDS = ("skin", "eye", "hair", "cloth", "leather", "metal", "plastic", "gloss", "stone", "bronze", "canvas", "rust", "velvet", "crinkle", "gilt")
 
 #: id -> (sRGB hex, roughness, metallic, kind). ``char_skin_*``, ``char_lip_<family>``, ``char_hair_*``, ``char_eye*`` are
 #: filled in from ``_body`` constants by ``all_char_materials()`` so they always match the body.
@@ -30,6 +30,15 @@ OUTFIT: dict[str, tuple[str, float, float, str]] = {
     "char_mask_lacquer_dark": ("#1F2026", 0.40, 0.0, "gloss"),
     "char_mask_inner": ("#2A2724", 0.85, 0.0, "cloth"),
     "char_mask_base": ("#B4B1AB", 0.45, 0.0, "plastic"),   # mask_base_* (mask shader overrides it)
+    # D-ACH achievement-reward mask materials (MaskMaterialDef grain, content/docs/masks.md): 512 px,
+    # features sized for a mask face (uv_tile ~1.5: one texture tile ~ 12 cm of mask)
+    "char_mask_limestone": ("#CDC4B0", 0.80, 0.0, "stone"),      # honed limestone, shell fragments
+    "char_mask_bronze": ("#A27A46", 0.40, 1.0, "bronze"),        # statuary bronze, green-brown patina
+    "char_mask_oil_canvas": ("#D6CEBB", 0.62, 0.0, "canvas"),    # primed canvas weave + impasto strokes
+    "char_mask_container_rust": ("#9A4232", 0.78, 0.0, "rust"),  # painted container steel, rust, chips
+    "char_mask_velvet_case": ("#77737A", 0.92, 0.0, "velvet"),     # display-case velvet, neutral mid grain
+    "char_mask_night_safe": ("#4A4B50", 0.50, 0.0, "crinkle"),     # black crinkle safe paint, satin
+    "char_mask_gilt_leaf": ("#C9A34A", 0.30, 1.0, "gilt"),         # worn gold leaf over red bole
     # crew (heist suits)
     "char_suit_dark": ("#2A2C31", 0.78, 0.0, "cloth"),
     "char_suit_navy": ("#232B3B", 0.78, 0.0, "cloth"),
@@ -193,6 +202,13 @@ OUTFIT: dict[str, tuple[str, float, float, str]] = {
     "char_glove_work": ("#7D776A", 0.80, 0.0, "cloth"),  # D-115 dockside: grey work gloves
     "char_satin_sapphire": ("#2D3F70", 0.38, 0.0, "cloth"),  # GN-D1 gallery: patron_e's sapphire satin dress
     "char_satin_amethyst": ("#4E3164", 0.38, 0.0, "cloth"),  # GN-D1 gallery: patron_g's amethyst satin dress
+    # OF-D1 Ostrander Federal bank civilians (char_p5_bank.py)
+    "char_skirt_navy": ("#2E3446", 0.80, 0.0, "cloth"),  # OF-D1: customer_c's navy pencil skirt
+    "char_knit_mustard": ("#9C7A34", 0.95, 0.0, "cloth"),  # OF-D1: customer_c's mustard cardigan
+    "char_coat_heather": ("#6B5E66", 0.92, 0.0, "cloth"),  # OF-D1: the retiree's heather wool coat
+    "char_coat_stone": ("#A49C88", 0.88, 0.0, "cloth"),  # OF-D1: the office man's stone trench coat
+    "char_canvas_tan": ("#8A7352", 0.86, 0.0, "cloth"),  # OF-D1: the tradesperson's canvas chore jacket
+    "char_vl_hivis": ("#E0963E", 0.62, 0.0, "cloth"),  # RT-D1: Vaultline route marshal's amber hi-vis vest
     # D-115 hand props (char_hand_props.py)
     "char_prop_paper": ("#DCDAD2", 0.85, 0.0, "plastic"),  # cigarette paper, book pages, cash strap, bottle label
     "char_prop_filter": ("#C08A52", 0.80, 0.0, "plastic"),  # cigarette cork filter

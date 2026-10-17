@@ -1,4 +1,4 @@
-# Contract: heist map (v1.3)
+# Contract: heist map (v1.4)
 
 Producer: **ENV C** (maps). Consumer: **ENV A** (`HeistRuntime`, AI, stealth, director). ENV B reads
 `HeistDef` for job board / briefing / pre-planning UI.
@@ -114,3 +114,9 @@ Rappel: a RAPPEL TacticalPoint tagged `rappel_disabled` + a tag of your own buil
 `RappelLinks.set_enabled(map, tag, on)` turns it on. Chained island rappels are allowed (police chain 16 → 12.2 → 8.6 m):
 each RAPPEL point within ~0.3 m of its island's navmesh edge, its ray landing on the next island's navmesh.
 Police spawns may stand on navmesh islands (no reachability rule).
+
+## v1.4 (OF-A6, A c017fd51)
+`Ladder.height_m` is settable at runtime (re-fits its nav link; replicated). A map may stow a ladder short and carry the
+runtime length in node meta (`burn_height_m` on OF's RopeLadder); the mission sets it and enables the ladder.
+D-121 burn-through: holes cut at runtime are baked as nav holes from the start (nav obstacle carve under the lid);
+the runtime route through is ladder / hoist / rappel links only, never a navmesh rebake.

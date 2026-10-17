@@ -395,7 +395,7 @@ func _fill_card(c: Dictionary) -> void:
 	UiAccent.accent_panel(card_panel, UiAccent.for_heist(heist_id))
 	heist_label.text = UiText.t(StringName("heist.%s.name" % heist_id))
 	subtitle_label.text = "%s  |  %s" % [UiText.t(StringName("heist.%s.subtitle" % heist_id)),
-			UiText.t(_mode_key(int(c["mode"])))]
+			UiText.t(HeistCatalog.mode_key(heist_id, int(c["mode"])))]
 	contact_label.text = UiText.t(&"ui.board.contact", {"name": UiText.t(contact.display_name_key) if contact != null else "?"})
 	role_label.text = UiText.t(contact.role_key) if contact != null else ""
 	difficulty_label.text = UiText.t(UiText.difficulty_key(int(c["difficulty"])))
@@ -460,12 +460,3 @@ func _on_tick() -> void:
 		refresh_board()
 	map_view.update_times(now())
 	_update_time_label()
-
-
-static func _mode_key(mode: int) -> StringName:
-	match mode:
-		Enums.HeistMode.STEALTH_ONLY:
-			return &"ui.heist_select.modes_stealth_only"
-		Enums.HeistMode.LOUD_ONLY:
-			return &"ui.heist_select.modes_loud_only"
-	return &"ui.heist_select.modes_stealth_loud"

@@ -1,0 +1,67 @@
+## Afterhours: HeistDef + HeistVariantTable VALUES for ENV C's generator (D-137 QB-2: B owns the values; C owns the
+## generator, the slots, posts and routes). Paste the def block into afterhours_resources.gd make_def(); apply the rule
+## rows below to make_variants() (the rest of the variable table stays as docs/design/heists/afterhours.md drafts it).
+## Sources: docs/design/heists/afterhours.md (§Variable table, §Escape, §Pre-planning, §HeistDef), D-075, D-120, D-141,
+## D-143 (QB-AH rulings). ENV B, round 242.
+##
+## D-143 (rulings on QB-AH):
+## * base_payout $40,000 (D-120 shape: Routine full clear ~$126k, bag share ~63 %, required-only run ~$64k).
+## * stealth_bonus_mult 1.15 (size M, D-141).
+## * PAGERS map (D-140 lever): EXACTLY 4 guards (pager carriers present at load) on every seed and difficulty:
+##   the 2 fixed posts (post_door, post_rope) + guard_post pick 2 of the 4 rover slots (rover_floor, rover_boh,
+##   rover_upper, alley_smoker), NO difficulty_add. The camera operator (security_room_staffed) is on top of the 4 from
+##   Tense; on Routine force sec_empty so Routine stays at 4 (D-140 (a): Routine guards <= 4).
+##   pager_max_by_difficulty [4, 3, 3, 2, 2, 1]: guards (4) > cap from Tense on every seed (D-140 (c)).
+##   The rare vip_party `guard_extra` (a second rope bouncer) stays a rare-event extra on top.
+## * escape_options [van] only (D-075 ruling 9: no walk-out).
+## * Civilians keep D-130 scaling (crowd 12-20 + dance_clusters 4-6, as drafted).
+## * Mode label: none (the loadout's civilian-start notice, B5-05).
+##
+## Loot: no new ids. D-120 values live in the LootDefs: loot.cash_bricks MEDIUM $8,000 (safe, required 3),
+## loot.parcels LIGHT $7,500 (product), loot.cash LIGHT $6,500 (count room). Small loot (prefab values, D-068):
+## bar / box-office tills $600 x4, G26 drop safe $900 x3, bottle-service cash $800, U9 desk drawer $1,200, tip jar $300.
+
+static func make_def() -> HeistDef:
+	var d: HeistDef = null
+	if ResourceLoader.exists(DEF_PATH):
+		d = load(DEF_PATH) as HeistDef
+	if d == null:
+		d = HeistDef.new()
+	d.id = &"afterhours"
+	d.display_name = "Afterhours"
+	d.contact = &"contact.accountant"  # D-075 ruling 6
+	# D-117 §4: strings-table keys (ENV B), never literals.
+	d.briefing = "heist.afterhours.briefing"
+	d.mode = Enums.HeistMode.STEALTH_OR_LOUD
+	d.start_mode = &"civilian"  # D-065
+	d.map_scene = SCENE_PATH
+	d.base_payout = 40000  # D-143
+	d.stealth_bonus_mult = 1.15  # S11.1 by heist size (D-141: M)
+	d.pager_max_by_difficulty = [4, 3, 3, 2, 2, 1] as Array[int]  # D-143 PAGERS map (D-140)
+	d.loot = [&"loot.cash_bricks", &"loot.parcels", &"loot.cash", &"loot.small_valuables"] as Array[StringName]
+	d.objectives = [&"casing", &"gear", &"keycard", &"office", &"safe_code", &"safe", &"safe_loot", &"secure",
+		&"product", &"count_room", &"escape_wait", &"escape"] as Array[StringName]
+	d.escape_options = [&"van"] as Array[StringName]  # D-143 (no walk-out)
+	d.music_track = &"afterhours"  # music.afterhours.name "Velvet Rope" (ENV B string)
+	d.preplanning = {
+		"favors": 5,
+		"assets": {
+			&"asset.body_bag_case_drop": {"point_ids": [&"pp_drop_alley", &"pp_drop_tolley"]},
+			&"asset.ammo_bag_drop": {"point_ids": [&"pp_drop_alley", &"pp_drop_roof", &"pp_drop_tolley"]},
+			&"asset.doctor_bag_drop": {"point_ids": [&"pp_drop_alley", &"pp_drop_roof", &"pp_drop_tolley"]},
+			&"asset.inside_keycard": {"point_ids": [&"pp_insider_keycard"]},  # forces kc_staff_room
+			&"asset.propped_door": {"point_ids": [&"pp_back_door"]},  # forces rear_propped
+			# asset.gear_drop, asset.count_window (point-limited) and asset.intel_safe_code / asset.intel_product
+			# (library, allow-listed to afterhours, D-143) come from the library: no entry needed here.
+		},
+	}
+	return d
+
+
+## make_variants(): the D-143 rows (replace the drafted guard_post / security_room_staffed rules).
+##	var staffed: Dictionary = _from(Enums.Difficulty.HAZARDOUS, {&"sec_staffed": 0.75, &"sec_empty": 0.25})
+##	staffed[Enums.Difficulty.ROUTINE] = {&"sec_staffed": 0.0, &"sec_empty": 1.0}  # D-140 (a): Routine guards <= 4
+##	staffed[Enums.Difficulty.TENSE] = {&"sec_staffed": 0.6, &"sec_empty": 0.4}
+##	{"group": &"guard_post", "pick": Vector2i(2, 2)},  # D-143: exactly 2 rovers, no difficulty_add
+##	{"group": &"security_room_staffed", "pick": Vector2i(1, 1), "weights_by_difficulty": staffed},
+## Slot weights: guard_post rover_floor / rover_boh / rover_upper / alley_smoker 1 each (as drafted).

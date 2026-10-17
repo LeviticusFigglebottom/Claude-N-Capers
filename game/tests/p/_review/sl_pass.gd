@@ -64,6 +64,10 @@ var pilot: Po5Pilot = null
 var runner_out: String = ""
 var _seed: int = 1
 var _tour: bool = false
+## --hidden: CrewController.stealth_hidden (the D-014 hidden-crew flag A's X-4 flows use): a STATED shortcut for
+## mechanism checks (PO-14 cage by code / saw) when a seed's guard rolls block the real-input route; detection is off,
+## movement and interactions stay real input.
+var _hidden: bool = false
 var _scan: Vector2i = Vector2i.ZERO
 var _shot: int = 0
 var _alarm: StringName = &""
@@ -84,6 +88,7 @@ func _ready() -> void:
 			"out": runner_out = v
 			"seed": _seed = v.to_int()
 			"tour": _tour = true
+			"hidden": _hidden = true
 			"scan":
 				var ab: PackedStringArray = v.split("-")
 				_scan = Vector2i(ab[0].to_int(), ab[1].to_int() if ab.size() > 1 else ab[0].to_int())
@@ -235,6 +240,9 @@ func _run() -> void:
 	var c: CrewController = rt.crew_controller(Net.local_slot()) as CrewController
 	await wait_s(2.0)
 	pilot = Po5Pilot.new(self, c)
+	if _hidden:
+		c.stealth_hidden = true
+		note("STATED SHORTCUT: crew stealth_hidden (mechanism check, detection off)")
 	pilot.quiet = true
 	pilot.shout_blockers = false
 	pilot.no_blind_press = true

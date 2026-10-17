@@ -5,7 +5,7 @@
 [node name="HandPhone" type="Node3D"]
 metadata/prop = "phone"
 metadata/socket = "HandR"
-metadata/clips = PackedStringArray("phone_call", "phone_seated", "walk_text")
+metadata/clips = PackedStringArray("phone_call", "phone_seated", "walk_text", "queue_idle_b")
 
 [node name="Model" parent="." instance=ExtResource("1_glb")]
 transform = Transform3D(0, 0, -1, 0.9978, 0.0663, 0, 0.0663, -0.9978, 0, 0.0115, -0.0083, 0.0048)
