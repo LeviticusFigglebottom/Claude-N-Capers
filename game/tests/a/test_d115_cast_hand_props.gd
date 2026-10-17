@@ -15,7 +15,7 @@ const PENDING: Array[String] = ["npc_cleaner_sl_b", "npc_cleaner_sl_c", "npc_nor
 	"gallery_guard_c", "gallery_guard_d", "gallery_guard_e", "gallery_guard_f", "gallery_guard_g", "gallery_guard_h",
 	"gallery_guard_i", "gallery_patron_h", "gallery_patron_i", "gallery_patron_j", "npc_northgate_guard_g",
 	"npc_northgate_guard_h", "npc_northgate_guard_i", "npc_cleaner_sl_d", "security_officer_e", "security_officer_f",
-	"npc_bank_cleaner_b"]
+	"npc_bank_cleaner_b", "gallery_waiter_b", "gallery_attendant_c"]  # + D 48a7cc3a (p5_cast v7)
 
 var _nodes: Array[Node] = []
 

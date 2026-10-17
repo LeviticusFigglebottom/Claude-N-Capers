@@ -29,11 +29,11 @@ tag_characters = {
 heist_tag_characters = {
 &"gallery_night": {
 &"civ_admin": [&"gallery_admin"],
-&"civ_attendant": [&"gallery_attendant", &"gallery_attendant_b"],
+&"civ_attendant": [&"gallery_attendant", &"gallery_attendant_b", &"gallery_attendant_c"],
 &"civ_conservator": [&"gallery_conservator"],
 &"civ_curator": [&"gallery_curator"],
 &"civ_patron": [&"gallery_patron", &"gallery_patron_b", &"gallery_patron_c", &"gallery_patron_d", &"gallery_patron_e", &"gallery_patron_f", &"gallery_patron_g", &"gallery_patron_h", &"gallery_patron_i", &"gallery_patron_j", &"npc_penthouse_guest_a", &"npc_penthouse_guest_b"],
-&"civ_waitstaff": [&"npc_penthouse_staff", &"gallery_waiter"],
+&"civ_waitstaff": [&"npc_penthouse_staff", &"gallery_waiter", &"gallery_waiter_b"],
 &"guard_hall": [&"gallery_guard", &"gallery_guard_b", &"gallery_guard_c", &"gallery_guard_d", &"gallery_guard_e", &"gallery_guard_f", &"gallery_guard_g", &"gallery_guard_h", &"gallery_guard_i"],
 &"guard_inspection": [&"gallery_guard", &"gallery_guard_b", &"gallery_guard_c", &"gallery_guard_d", &"gallery_guard_e", &"gallery_guard_f", &"gallery_guard_g", &"gallery_guard_h", &"gallery_guard_i"],
 &"guard_inspection_escort": [&"gallery_guard", &"gallery_guard_b", &"gallery_guard_c", &"gallery_guard_d", &"gallery_guard_e", &"gallery_guard_f", &"gallery_guard_g", &"gallery_guard_h", &"gallery_guard_i"],

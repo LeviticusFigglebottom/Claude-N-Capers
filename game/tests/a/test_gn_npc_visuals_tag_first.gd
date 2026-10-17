@@ -6,7 +6,8 @@ extends TestCase
 ## Characters ENV D has announced but not shipped yet (NpcVisuals falls through to the next rule meanwhile).
 ## D-130 cast pools (D a04f3536), merged by the LEAD with A's map.
 const PENDING_CHARACTERS: Array[String] = ["gallery_guard_c", "gallery_guard_d", "gallery_guard_e", "gallery_guard_f",
-	"gallery_guard_g", "gallery_guard_h", "gallery_guard_i", "gallery_patron_h", "gallery_patron_i", "gallery_patron_j"]
+	"gallery_guard_g", "gallery_guard_h", "gallery_guard_i", "gallery_patron_h", "gallery_patron_i", "gallery_patron_j",
+	"gallery_waiter_b", "gallery_attendant_c"]  # + D 48a7cc3a (p5_cast v7)
 const GUARD_DEF: String = "res://systems/ai/data/enemies/security_officer.tres"
 
 var _rt: HeistRuntime = null
