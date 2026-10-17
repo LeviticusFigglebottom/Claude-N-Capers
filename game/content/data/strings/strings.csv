@@ -579,6 +579,10 @@ ui.stub.launcher_missing,The heist launcher is not in this build yet. You can pr
 ui.stub.sample_payday,Preview payday (sample)
 ui.heist_select.difficulty_locked,{name} (locked)
 ui.heist_select.difficulty_locked_progress,"{name} is locked: win any heist on {prev} first."
+ui.heist_select.titan_cameras,Titan cameras
+ui.heist_select.pagers,{n} pagers
+ui.heist_select.pager_one,1 pager
+ui.heist_select.stealth_note_sep,"  ·  "
 ui.loadout.none,None
 ui.loadout.stock,Stock
 ui.mod_type.barrel,Barrel

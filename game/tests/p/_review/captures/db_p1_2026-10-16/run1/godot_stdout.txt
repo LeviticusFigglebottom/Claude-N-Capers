@@ -1,0 +1,196 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+Vulkan 1.4.318 - Forward+ - Using Device #0: Unknown - llvmpipe (LLVM 20.1.2, 256 bits)
+
+[INFO][boot][p1] CAPERWORKS boot, args={ "po5-out": "/home/user/Claude-N-Capers/.claude/worktrees/agent-a07f13bffa506336b/game/tests/p/_review/captures/db_p1_2026-10-16/run1", "po5-budget": "5400", "obs-out": "/home/user/Claude-N-Capers/.claude/worktrees/agent-a07f13bffa506336b/game/tests/p/_review/captures/db_p1_2026-10-16/run1" }
+[PO5 14.0s] shot /home/user/Claude-N-Capers/.claude/worktrees/agent-a07f13bffa506336b/game/tests/p/_review/captures/db_p1_2026-10-16/run1/01_main_menu.png
+[INFO][ui][p1] safehouse scene unavailable (res://world/hub/safehouse/safehouse.tscn); 2D hub
+[PO5 14.6s] click 'SAFEHOUSE' at (162.0, 247.25)
+[PO5 15.3s] click '' at (358.25, 160.75)
+[PO5 16.3s] shot /home/user/Claude-N-Capers/.claude/worktrees/agent-a07f13bffa506336b/game/tests/p/_review/captures/db_p1_2026-10-16/run1/02_planning_table.png
+[PO5 16.4s] click 'Dockside Burn' at (142.0, 130.5)
+[PO5 17.4s] click 'ROUTINE' at (313.5, 250.0)
+[PO5 21.1s] click 'Briefing' at (848.0, 494.5)
+[PO5 21.2s] shot /home/user/Claude-N-Capers/.claude/worktrees/agent-a07f13bffa506336b/game/tests/p/_review/captures/db_p1_2026-10-16/run1/03_briefing.png
+[PO5 21.3s] click 'Continue' at (856.0, 502.5)
+[PO5 22.3s] shot /home/user/Claude-N-Capers/.claude/worktrees/agent-a07f13bffa506336b/game/tests/p/_review/captures/db_p1_2026-10-16/run1/04_continue.png
+[PO5 23.2s] click 'Confirm plan' at (856.0, 500.25)
+[PO5 23.4s] shot /home/user/Claude-N-Capers/.claude/worktrees/agent-a07f13bffa506336b/game/tests/p/_review/captures/db_p1_2026-10-16/run1/05_confirm_plan.png
+[PO5 23.6s] click 'Start Heist' at (848.0, 494.5)
+[INFO][rng][p1] run seed 1792192452
+[INFO][preplan][p1] assets []
+[INFO][variants][p1] seed 1792192452 resolved { &"guard_post": [&"post_dock", &"post_quay", &"post_yard_e"], &"cash_location": [&"cash_strongroom"], &"weapons_containers": [&"k3", &"k6"], &"product_location": [&"prod_chamber_a"], &"warehouse_entry": [&"door_quay"], &"east_gangway": [&"gangway_down"], &"goods_lift": [&"lift_powered"], &"player_perch": [&"perch_stack"], &"escape": [&"esc_van_lane"], &"night_shift": [&"shift_1"], &"perch_viaduct": [&"viaduct_on"], &"perch_trawler": [], &"police_delay_s": 120.0, &"cash_bags": 6, &"product_bags": 8, &"escape_eta_s": 90.0, &"extra_container_pick": 2, "rare": [&"fog_lifts"] }
+[INFO][crew][p1] slot 0 masked (forced=true)
+[INFO][crew][p1] slot 1 masked (forced=true)
+[INFO][crew][p1] slot 2 masked (forced=true)
+[INFO][crew][p1] slot 3 masked (forced=true)
+[INFO][heist][p1] phase LOADING -> LOUD
+[INFO][director][p1] prewarm: 18 of 18 scenes queued
+[OBS t=0.0] HEIST runtime up (dockside_burn)
+[OBS t=0.3] FRAME obs_001_t0000.png
+[PO5 150.6s] in heist dockside_burn seed 1792192452 diff 0 phase 3 crew at (31.5, 0.0, -38.5)
+[PO5 171.6s] shot /home/user/Claude-N-Capers/.claude/worktrees/agent-a07f13bffa506336b/game/tests/p/_review/captures/db_p1_2026-10-16/run1/06_heist_start.png
+[PO5 172.5s] mouse captured by the game (MouseCapture)
+[PO5 172.5s] pilot: calibrated 0.001600 rad/px yaw, 0.001600 rad/px pitch (settings formula said (0.0016, 0.0016))
+[PO5 172.5s] DB variants: { &"guard_post": [&"post_dock", &"post_quay", &"post_yard_e"], &"cash_location": [&"cash_strongroom"], &"weapons_containers": [&"k3", &"k6"], &"product_location": [&"prod_chamber_a"], &"warehouse_entry": [&"door_quay"], &"east_gangway": [&"gangway_down"], &"goods_lift": [&"lift_powered"], &"player_perch": [&"perch_stack"], &"escape": [&"esc_van_lane"], &"night_shift": [&"shift_1"], &"perch_viaduct": [&"viaduct_on"], &"perch_trawler": [], &"police_delay_s": 120.0, &"cash_bags": 6, &"product_bags": 8, &"escape_eta_s": 90.0, &"extra_container_pick": 2, "rare": [&"fog_lifts"] }
+[PO5 172.5s] DB map origin (0.0, 0.0, 0.0) (snag tour uses layout coordinates)
+[PO5 172.5s] SNAG LEG start t=2 (28 points, 30 s per leg)
+[PO5 193.5s] shot /home/user/Claude-N-Capers/.claude/worktrees/agent-a07f13bffa506336b/game/tests/p/_review/captures/db_p1_2026-10-16/run1/07_snag_start.png
+[PO5 203.0s] HITCH frame=9527ms t=2.6 nodes=8812 enemies=6 top: crew_ai_brain=3.3ms(24) npc_motor=2.9ms(56) anim_driver=0.8ms(10) custody_system=0.4ms(8) npc_gunner=0.2ms(48) stealth_director=0.2ms(8) civilian_brain=0.1ms(8) heist_runtime=0.0ms(8) assault_director=0.0ms(8) hud_model=0.0ms(1)
+[OBS t=4.3] FRAME obs_002_t0004.png
+[OBS t=5.6] CREW_STACK AI 1 and 2 0.43 m apart at (33.2, 0.0, -37.4)
+[PO5 253.2s] HITCH frame=4982ms t=6.2 nodes=8808 enemies=6 top: crew_ai_brain=5.4ms(24) npc_motor=3.7ms(56) anim_driver=0.6ms(10) custody_system=0.2ms(8) npc_gunner=0.2ms(48) stealth_director=0.1ms(8) civilian_brain=0.0ms(8) heist_runtime=0.0ms(8) assault_director=0.0ms(8) heist_net_sync=0.0ms(8)
+[PO5 254.3s] pilot: t=5 at (29.5, 0.0, -33.5) corner (25.9, 0.2, -32.9) yaw_err 0.00 fwd=true path=16 mouse_mode=2 state=0 look=(-10.82,0.00) pin_yaw=-10.819297050158 bot=false
+[OBS t=8.3] CREW_STACK AI 2 and 3 0.45 m apart at (30.7, 0.0, -34.3)
+[OBS t=8.3] FRAME obs_003_t0008.png
+[OBS t=10.3] CREW AI spacing 1.5 m, to player 3.5 m, exposed 76% (60 samples, enemy 20 m)
+[PO5 316.2s] TEL worst_frame=53239ms t=12 phase=3 phys=9.2ms proc=17136.1ms nodes=8808 enemies=6 civs=1 crew=[0:0@(23.9, 0.0, -32.5) 1:0@(26.9, 0.0, -32.1) 2:0@(29.1, 0.0, -33.0) 3:0@(30.3, 0.0, -34.1) nearest_enemy=22.3m within15=0 input_enabled=true captured=true paused_by={  }]
+[OBS t=12.3] FRAME obs_004_t0012.png
+[PO5 326.0s] pilot: t=10 at (23.9, 0.0, -32.5) corner (23.4, 0.2, -32.3) yaw_err -0.51 fwd=true path=13 mouse_mode=2 state=0 look=(-10.07,0.00) pin_yaw=-10.2646067614581 bot=false
+[OBS t=16.3] FRAME obs_005_t0016.png
+[PO5 354.7s] HITCH frame=8197ms t=16.7 nodes=8808 enemies=6 top: crew_ai_brain=4.7ms(24) npc_motor=2.4ms(56) anim_driver=0.7ms(10) custody_system=0.2ms(8) npc_gunner=0.1ms(48) stealth_director=0.1ms(8) civilian_brain=0.0ms(8) heist_runtime=0.0ms(8) assault_director=0.0ms(8) heist_net_sync=0.0ms(8)
+[PO5 355.3s] pilot: t=15 at (19.0, 0.0, -28.9) corner (17.6, 0.2, -27.8) yaw_err 2.69 fwd=false path=9 mouse_mode=2 state=0 look=(-13.04,0.00) pin_yaw=-12.8505216707447 bot=false
+[OBS t=20.3] FRAME obs_006_t0020.png
+[OBS t=20.5] CREW AI spacing 2.0 m, to player 4.7 m, exposed 21% (60 samples, enemy 28 m)
+[PO5 400.8s] TEL worst_frame=28508ms t=22 phase=3 phys=5.9ms proc=6.6ms nodes=8808 enemies=6 civs=1 crew=[0:0@(14.4, 0.0, -25.4) 1:0@(19.8, 0.0, -26.2) 2:0@(18.0, 0.0, -27.7) 3:0@(23.4, 0.0, -33.2) nearest_enemy=29.7m within15=0 input_enabled=true captured=true paused_by={  }]
+[PO5 400.9s] pilot: t=20 at (14.1, 0.0, -25.2) corner (14.6, 0.2, -25.6) yaw_err -2.33 fwd=false path=8 mouse_mode=2 state=0 look=(-11.16,0.00) pin_yaw=-11.3486170520512 bot=false
+[OBS t=24.3] FRAME obs_007_t0024.png
+[PO5 428.3s] SNAG yard_west_alley          OK    24.6 s from (31.5, 0.0, -38.5) to (8.0, 0.2, -23.8) (snap 0.2 m, nav path yes, stuck x0)
+[OBS t=28.3] FRAME obs_008_t0028.png
+[PO5 449.1s] pilot: t=5 at (3.6, 0.0, -24.0) corner (2.6, 0.2, -24.0) yaw_err 0.00 fwd=true path=8 mouse_mode=2 state=0 look=(-10.98,0.00) pin_yaw=-10.9832858087932 bot=false
+[PO5 455.1s] TEL worst_frame=10273ms t=32 phase=3 phys=7.0ms proc=6.4ms nodes=8808 enemies=6 civs=1 crew=[0:0@(3.1, 0.0, -24.0) 1:0@(5.2, 0.0, -22.4) 2:0@(6.7, 0.0, -23.8) 3:0@(6.0, 0.0, -25.2) nearest_enemy=40.9m within15=0 input_enabled=true captured=true paused_by={  }]
+[OBS t=32.4] FRAME obs_009_t0032.png
+[OBS t=36.4] FRAME obs_010_t0036.png
+[PO5 483.1s] pilot: t=10 at (-2.1, 0.0, -24.0) corner (-4.0, 0.2, -24.0) yaw_err 1.20 fwd=false path=2 mouse_mode=2 state=0 look=(-12.20,0.00) pin_yaw=-12.0032945808664 bot=false
+[PO5 483.6s] SNAG lane_north               OK    10.5 s from (8.9, 0.0, -24.0) to (-4.0, 0.2, -24.0) (snap 0.2 m, nav path yes, stuck x0)
+[OBS t=40.4] FRAME obs_011_t0040.png
+[PO5 518.0s] TEL worst_frame=11743ms t=42 phase=3 phys=4.0ms proc=3.7ms nodes=8808 enemies=6 civs=1 crew=[0:0@(-2.6, 0.0, -18.5) 1:0@(1.3, 0.0, -21.4) 2:0@(-1.0, 0.0, -22.1) 3:0@(-3.5, 0.0, -22.8) nearest_enemy=46.8m within15=0 input_enabled=true captured=true paused_by={  }]
+[PO5 518.3s] pilot: t=5 at (-2.5, 0.0, -18.1) corner (-2.5, 0.2, -17.3) yaw_err -0.00 fwd=true path=18 mouse_mode=2 state=0 look=(-9.34,0.00) pin_yaw=-9.33823157262239 bot=false
+[OBS t=44.4] FRAME obs_012_t0044.png
+[PO5 549.3s] pilot: t=10 at (-2.0, 0.0, -12.4) corner (-1.7, 0.2, -10.0) yaw_err -0.77 fwd=false path=13 mouse_mode=2 state=0 look=(-8.55,0.00) pin_yaw=-8.74182015850536 bot=false
+[OBS t=48.4] FRAME obs_013_t0048.png
+[PO5 584.4s] TEL worst_frame=12878ms t=52 phase=3 phys=5.6ms proc=7.5ms nodes=8808 enemies=6 civs=1 crew=[0:0@(-1.4, 0.0, -6.6) 1:0@(0.7, 0.0, -11.3) 2:0@(-1.8, 0.0, -11.4) 3:0@(-4.1, 0.0, -9.1) nearest_enemy=44.7m within15=0 input_enabled=true captured=true paused_by={  }]
+[OBS t=52.4] FRAME obs_014_t0052.png
+[PO5 618.3s] pilot: t=15 at (-1.3, 0.0, -6.3) corner (-1.2, 0.2, -4.4) yaw_err -2.69 fwd=false path=8 mouse_mode=2 state=0 look=(-6.63,0.00) pin_yaw=-6.82140640294827 bot=false
+[PO5 636.3s] SNAG fire_stair_foot          OK    18.8 s from (-3.1, 0.0, -24.0) to (-0.8, 0.2, -1.0) (snap 0.2 m, nav path yes, stuck x0)
+[OBS t=56.5] FRAME obs_015_t0056.png
+[OBS t=60.5] FRAME obs_016_t0060.png
+[OBS t=61.2] CREW_STACK AI 1 inside the player (0.31 m) at (-0.8, 1.8, 2.5)
+[PO5 716.2s] pilot: t=5 at (-0.8, 1.8, 2.8) corner (-0.8, 2.1, 3.5) yaw_err 0.00 fwd=true path=6 mouse_mode=2 state=0 look=(-15.70,0.00) pin_yaw=-15.7010680061242 bot=false
+[PO5 717.2s] TEL worst_frame=20476ms t=62 phase=3 phys=5.9ms proc=7.9ms nodes=8808 enemies=6 civs=1 crew=[0:0@(-0.9, 2.2, 3.7) 1:0@(-0.7, 3.2, 5.3) 2:0@(-0.8, 0.0, -1.8) 3:0@(-1.4, 0.0, -0.9) nearest_enemy=37.4m within15=0 input_enabled=true captured=true paused_by={  }]
+[PO5 717.7s] SNAG fire_stair_top           OK     6.4 s from (-0.9, 0.0, -1.9) to (-0.8, 3.6, 5.6) (snap 0.0 m, nav path yes, stuck x0)
+[OBS t=64.5] FRAME obs_017_t0064.png
+[OBS t=66.2] CREW_STACK AI 2 and 3 0.06 m apart at (-1.6, 0.0, -0.9)
+[PO5 744.0s] pilot: t=5 at (-1.3, 0.0, -0.9) corner (-1.0, 0.3, -0.5) yaw_err 1.35 fwd=false path=14 mouse_mode=2 state=0 look=(-9.99,0.00) pin_yaw=-9.79894936468488 bot=false
+[OBS t=68.5] FRAME obs_018_t0068.png
+[PO5 789.7s] TEL worst_frame=18734ms t=72 phase=3 phys=5.4ms proc=6.1ms nodes=8808 enemies=6 civs=1 crew=[0:0@(-2.6, 0.0, 3.5) 1:0@(-1.3, 0.0, -0.9) 2:0@(-3.2, 0.0, -0.9) 3:0@(-2.9, 0.0, 0.8) nearest_enemy=38.9m within15=0 input_enabled=true captured=true paused_by={  }]
+[OBS t=72.5] FRAME obs_019_t0072.png
+[PO5 822.9s] pilot: t=10 at (-2.8, 0.0, 4.5) corner (-3.1, 0.2, 5.4) yaw_err -0.00 fwd=true path=6 mouse_mode=2 state=0 look=(-9.64,0.00) pin_yaw=-9.64202518191749 bot=false
+[OBS t=76.5] FRAME obs_020_t0076.png
+[PO5 846.4s] SNAG lane_mid                 OK    14.1 s from (-0.8, 2.9, 4.7) to (-4.0, 0.2, 10.0) (snap 0.2 m, nav path yes, stuck x0)
+[OBS t=80.6] FRAME obs_021_t0080.png
+[PO5 872.0s] pilot: t=5 at (-3.9, 0.0, 14.4) corner (-3.9, 0.2, 15.2) yaw_err 0.00 fwd=true path=17 mouse_mode=2 state=0 look=(-3.14,0.00) pin_yaw=-3.13529162321654 bot=false
+[PO5 872.3s] TEL worst_frame=14350ms t=82 phase=3 phys=7.8ms proc=9.0ms nodes=8808 enemies=6 civs=1 crew=[0:0@(-3.9, 0.0, 15.2) 1:0@(-1.4, 0.0, 10.8) 2:0@(-3.7, 0.0, 11.2) 3:0@(-6.1, 0.0, 10.3) nearest_enemy=32.6m within15=0 input_enabled=true captured=true paused_by={  }]
+[OBS t=84.6] FRAME obs_022_t0084.png
+[OBS t=86.3] CREW AI spacing 3.8 m, to player 6.1 m, exposed 50% (12 samples, enemy 30 m)
+[PO5 901.2s] pilot: t=10 at (-3.9, 0.0, 20.1) corner (-3.9, 0.2, 20.8) yaw_err 1.22 fwd=false path=12 mouse_mode=2 state=0 look=(-4.36,0.00) pin_yaw=-4.16844663538657 bot=false
+[OBS t=88.6] FRAME obs_023_t0088.png
+[PO5 922.2s] pilot: t=15 at (-4.0, 0.0, 26.1) corner (-4.0, 0.2, 26.8) yaw_err 3.13 fwd=false path=8 mouse_mode=2 state=0 look=(-6.28,0.00) pin_yaw=-6.08732448528033 bot=false
+[PO5 922.5s] TEL worst_frame=11732ms t=92 phase=3 phys=6.8ms proc=12.0ms nodes=8808 enemies=6 civs=1 crew=[0:0@(-4.0, 0.0, 26.2) 1:0@(-1.8, 0.0, 22.8) 2:0@(-4.4, 0.0, 22.8) 3:0@(-7.3, 0.0, 21.8) nearest_enemy=27.0m within15=0 input_enabled=true captured=true paused_by={  }]
+[OBS t=92.6] FRAME obs_024_t0092.png
+[OBS t=96.3] CREW AI spacing 2.8 m, to player 4.2 m, exposed 0% (60 samples, enemy 26 m)
+[OBS t=96.6] FRAME obs_025_t0096.png
+[PO5 953.4s] pilot: t=20 at (-4.0, 0.0, 32.0) corner (-4.0, 0.2, 31.4) yaw_err -1.58 fwd=false path=4 mouse_mode=2 state=0 look=(-4.69,0.00) pin_yaw=-4.87844914864698 bot=false
+[PO5 954.3s] SNAG lane_south               OK    20.9 s from (-3.8, 0.0, 9.1) to (-4.0, 0.2, 34.0) (snap 0.2 m, nav path yes, stuck x0)
+[OBS t=100.6] FRAME obs_026_t0100.png
+[PO5 968.3s] TEL worst_frame=8384ms t=102 phase=3 phys=4.4ms proc=8.5ms nodes=8808 enemies=6 civs=1 crew=[0:0@(-1.1, 0.0, 37.1) 1:0@(-0.9, 0.0, 32.0) 2:0@(-3.1, 0.0, 32.9) 3:0@(-4.6, 0.0, 35.7) nearest_enemy=22.3m within15=0 input_enabled=true captured=true paused_by={  }]
+[PO5 968.9s] pilot: t=5 at (-1.0, 0.0, 37.2) corner (0.9, 0.2, 39.9) yaw_err 0.00 fwd=true path=3 mouse_mode=2 state=0 look=(3.77,0.00) pin_yaw=3.77116186531632 bot=false
+[OBS t=104.7] FRAME obs_027_t0104.png
+[PO5 981.7s] SNAG quay_west                OK     7.1 s from (-4.0, 0.0, 33.1) to (1.0, 0.2, 40.0) (snap 0.2 m, nav path yes, stuck x0)
+[OBS t=106.3] CREW AI spacing 2.7 m, to player 4.4 m, exposed 0% (60 samples, enemy 19 m)
+[OBS t=108.7] FRAME obs_028_t0108.png
+[PO5 1016.3s] pilot: t=5 at (6.0, 0.0, 38.3) corner (6.6, 0.2, 38.2) yaw_err -0.00 fwd=true path=26 mouse_mode=2 state=0 look=(4.88,0.00) pin_yaw=4.87697094953612 bot=false
+[PO5 1018.5s] TEL worst_frame=16003ms t=112 phase=3 phys=7.0ms proc=7.2ms nodes=8808 enemies=6 civs=1 crew=[0:0@(8.7, 0.0, 37.8) 1:0@(6.1, 0.0, 35.5) 2:0@(4.8, 0.0, 38.1) 3:0@(6.1, 0.0, 40.5) nearest_enemy=12.6m within15=1 input_enabled=true captured=true paused_by={  }]
+[OBS t=112.7] FRAME obs_029_t0112.png
+[OBS t=114.7] PROMPT ui.prompt.interact on NetStoreWest/Interactable
+[PO5 1055.6s] pilot: use NetStoreWest (open_door) -> OK in 0.0 s
+[OBS t=116.4] CREW AI spacing 2.7 m, to player 4.4 m, exposed 0% (60 samples, enemy 8 m)
+[PO5 1069.2s] pilot: t=10 at (12.7, 0.0, 36.9) corner (12.2, 0.2, 36.9) yaw_err -0.00 fwd=true path=19 mouse_mode=2 state=0 look=(-4.71,0.00) pin_yaw=-4.71334841106298 bot=false
+[OBS t=116.7] FRAME obs_030_t0116.png
+[OBS t=119.4] CREW_STACK AI 1 and 2 0.37 m apart at (11.6, 0.0, 36.8)
+[INFO][director][p1] assault phase CONTROL (wave 1, 20 s)
+[PO5 1077.6s] TL t=  120 objective cartel -> ACTIVE
+[PO5 1077.6s] TL t=  120 objective cartel -> COMPLETED
+[INFO][director][p1] assault events: 3 rows for dockside_burn (tweak)
+[OBS t=120.7] FRAME obs_031_t0120.png
+[PO5 1119.1s] pilot: t=15 at (18.4, 0.0, 37.0) corner (17.8, 0.2, 37.0) yaw_err 1.97 fwd=false path=7 mouse_mode=2 state=0 look=(-6.71,0.00) pin_yaw=-6.51964801974398 bot=false
+[PO5 1119.6s] TEL worst_frame=17260ms t=122 phase=3 phys=7.5ms proc=6.8ms nodes=9018 enemies=8 civs=1 crew=[0:0@(18.5, 0.0, 37.1) 1:0@(15.0, 0.0, 35.6) 2:0@(13.7, 0.0, 36.8) 3:0@(14.8, 0.0, 38.7) nearest_enemy=2.9m within15=2 input_enabled=true captured=true paused_by={  }]
+[PO5 1127.8s] pilot: use NetStoreEast (open_door) -> OK in 0.0 s
+[PO5 1127.8s] HITCH frame=7759ms t=122.7 nodes=9018 enemies=8 top: crew_ai_brain=4.5ms(24) npc_motor=4.4ms(72) anim_driver=0.8ms(12) police_brain=0.3ms(16) door=0.3ms(7) custody_system=0.3ms(8) assault_director=0.3ms(8) npc_gunner=0.2ms(64) stealth_director=0.1ms(8) civilian_brain=0.0ms(8)
+[PO5 1136.9s] HITCH frame=8808ms t=123.2 nodes=9071 enemies=7 top: anim_driver=0.8ms(12) npc_motor=0.5ms(9) crew_ai_brain=0.4ms(3) npc_gunner=0.1ms(8) police_brain=0.1ms(2) door=0.0ms(1) custody_system=0.0ms(1) assault_director=0.0ms(1) hud_model=0.0ms(1) stealth_director=0.0ms(1)
+[PO5 1139.8s] HITCH frame=2901ms t=123.3 nodes=9067 enemies=7 top: npc_motor=6.4ms(64) crew_ai_brain=6.0ms(24) anim_driver=4.5ms(12) npc_gunner=1.0ms(64) police_brain=0.6ms(16) door=0.5ms(8) custody_system=0.4ms(8) assault_director=0.4ms(8) stealth_director=0.1ms(8) heist_runtime=0.1ms(8)
+[PO5 1180.2s] HITCH frame=40417ms t=123.4 nodes=9067 enemies=7 top: crew_ai_brain=4.7ms(24) npc_motor=4.2ms(64) hud_model=1.9ms(1) anim_driver=1.9ms(12) npc_gunner=0.7ms(64) door=0.4ms(8) police_brain=0.3ms(16) assault_director=0.2ms(8) custody_system=0.2ms(8) stealth_director=0.1ms(8)
+[PO5 1192.8s] HITCH frame=12143ms t=124.0 nodes=9128 enemies=7 top: npc_gunner=6.5ms(64) crew_ai_brain=4.9ms(24) npc_motor=4.3ms(64) anim_driver=0.9ms(12) hud_model=0.7ms(1) police_brain=0.4ms(16) assault_director=0.2ms(8) custody_system=0.2ms(8) stealth_director=0.1ms(8) civilian_brain=0.0ms(8)
+[PO5 1196.7s] HITCH frame=3885ms t=124.0 nodes=9158 enemies=7 top: npc_gunner=3834.2ms(32) anim_driver=5.9ms(12) crew_ai_brain=4.3ms(12) npc_motor=2.8ms(32) hud_model=0.9ms(1) police_brain=0.2ms(8) custody_system=0.1ms(4) assault_director=0.1ms(4) stealth_director=0.0ms(4) civilian_brain=0.0ms(4)
+[PO5 1206.0s] HITCH frame=9219ms t=124.2 nodes=9158 enemies=7 top: npc_motor=4.7ms(64) crew_ai_brain=3.9ms(24) anim_driver=1.3ms(12) npc_gunner=0.9ms(64) police_brain=0.3ms(16) assault_director=0.3ms(8) custody_system=0.2ms(8) stealth_director=0.1ms(8) civilian_brain=0.0ms(8) heist_runtime=0.0ms(8)
+[PO5 1217.6s] HITCH frame=11608ms t=124.3 nodes=9158 enemies=7 top: npc_motor=4.0ms(64) crew_ai_brain=3.2ms(24) anim_driver=1.3ms(12) hud_model=0.9ms(1) npc_gunner=0.9ms(64) police_brain=0.4ms(16) custody_system=0.3ms(8) assault_director=0.2ms(8) stealth_director=0.1ms(8) civilian_brain=0.0ms(8)
+[PO5 1217.6s] SNAG quay_net_store           OK    19.5 s from (0.5, 0.0, 39.3) to (21.2, 0.2, 37.0) (snap 0.2 m, nav path yes, stuck x0)
+[OBS t=124.7] FRAME obs_032_t0124.png
+[PO5 1251.9s] HITCH frame=11949ms t=125.0 nodes=9248 enemies=7 top: crew_ai_brain=8.4ms(24) npc_motor=4.9ms(64) anim_driver=1.0ms(12) npc_gunner=0.9ms(64) hud_model=0.9ms(1) police_brain=0.3ms(16) assault_director=0.3ms(8) custody_system=0.2ms(8) stealth_director=0.1ms(8) civilian_brain=0.1ms(8)
+[PO5 1263.4s] HITCH frame=11535ms t=125.1 nodes=9248 enemies=7 top: crew_ai_brain=6.7ms(24) npc_motor=4.2ms(64) anim_driver=1.4ms(12) hud_model=1.1ms(1) npc_gunner=0.8ms(64) police_brain=0.4ms(16) assault_director=0.2ms(8) custody_system=0.2ms(8) civilian_brain=0.1ms(8) stealth_director=0.1ms(8)
+[PO5 1269.1s] HITCH frame=5576ms t=125.5 nodes=9277 enemies=7 top: crew_ai_brain=5.7ms(24) npc_motor=3.9ms(64) anim_driver=0.8ms(12) npc_gunner=0.7ms(64) police_brain=0.3ms(16) assault_director=0.2ms(8) custody_system=0.2ms(8) stealth_director=0.1ms(8) civilian_brain=0.0ms(8) heist_runtime=0.0ms(8)
+[PO5 1276.8s] HITCH frame=7645ms t=125.7 nodes=9335 enemies=7 top: crew_ai_brain=6.5ms(24) npc_gunner=4.5ms(64) npc_motor=4.2ms(64) anim_driver=1.0ms(12) police_brain=0.3ms(16) assault_director=0.2ms(8) custody_system=0.2ms(8) stealth_director=0.1ms(8) civilian_brain=0.0ms(8) heist_runtime=0.0ms(8)
+[PO5 1281.9s] HITCH frame=5031ms t=125.9 nodes=9369 enemies=7 top: crew_ai_brain=5.0ms(24) npc_motor=4.7ms(64) anim_driver=1.1ms(12) npc_gunner=0.7ms(64) police_brain=0.3ms(16) custody_system=0.2ms(8) assault_director=0.2ms(8) stealth_director=0.1ms(8) civilian_brain=0.1ms(8) heist_runtime=0.0ms(8)
+[PO5 1308.9s] HITCH frame=26994ms t=126.1 nodes=9399 enemies=7 top: crew_ai_brain=5.7ms(24) npc_motor=5.7ms(64) npc_gunner=1.0ms(64) anim_driver=1.0ms(12) police_brain=0.5ms(16) assault_director=0.3ms(8) custody_system=0.3ms(8) stealth_director=0.1ms(8) civilian_brain=0.0ms(8) hud_model=0.0ms(1)
+[PO5 1316.2s] HITCH frame=7253ms t=126.2 nodes=9425 enemies=7 top: npc_gunner=7211.4ms(40) crew_ai_brain=3.4ms(15) npc_motor=2.8ms(40) anim_driver=1.2ms(12) hud_model=1.0ms(1) police_brain=0.2ms(10) custody_system=0.1ms(5) assault_director=0.1ms(5) stealth_director=0.0ms(5) civilian_brain=0.0ms(5)
+[OBS t=126.3] CREW_STACK AI 2 and 3 0.11 m apart at (19.8, -0.3, 37.1)
+[PO5 1319.3s] HITCH frame=3145ms t=126.3 nodes=9498 enemies=6 top: npc_gunner=37.7ms(64) crew_ai_brain=5.8ms(24) npc_motor=4.1ms(62) anim_driver=0.9ms(12) police_brain=0.3ms(14) assault_director=0.3ms(8) custody_system=0.2ms(8) stealth_director=0.1ms(8) civilian_brain=0.0ms(8) heist_runtime=0.0ms(8)
+[PO5 1322.2s] HITCH frame=2833ms t=126.4 nodes=9528 enemies=6 top: npc_gunner=4.6ms(64) crew_ai_brain=4.4ms(24) npc_motor=3.4ms(56) anim_driver=1.2ms(12) hud_model=1.1ms(1) police_brain=0.3ms(8) custody_system=0.2ms(8) assault_director=0.2ms(8) stealth_director=0.1ms(8) civilian_brain=0.0ms(8)
+[PO5 1326.5s] HITCH frame=4334ms t=126.6 nodes=9661 enemies=7 top: assault_director=8.2ms(8) crew_ai_brain=5.9ms(24) npc_motor=4.5ms(58) anim_driver=1.2ms(12) npc_gunner=0.9ms(66) hud_model=0.8ms(1) police_brain=0.4ms(10) custody_system=0.3ms(8) civilian_brain=0.1ms(8) stealth_director=0.1ms(8)
+[PO5 1329.2s] HITCH frame=2749ms t=126.7 nodes=9661 enemies=7 top: crew_ai_brain=4.4ms(24) npc_motor=4.1ms(64) anim_driver=1.4ms(13) hud_model=0.9ms(1) npc_gunner=0.9ms(72) police_brain=0.4ms(16) custody_system=0.2ms(8) assault_director=0.2ms(8) stealth_director=0.1ms(8) civilian_brain=0.0ms(8)
+[OBS t=126.8] CREW AI spacing 1.6 m, to player 3.4 m, exposed 6% (60 samples, enemy 11 m)
+[PO5 1331.9s] HITCH frame=2643ms t=126.8 nodes=9662 enemies=7 top: npc_motor=4.5ms(64) crew_ai_brain=4.3ms(24) anim_driver=1.2ms(13) hud_model=0.9ms(1) npc_gunner=0.8ms(72) police_brain=0.3ms(16) assault_director=0.3ms(8) custody_system=0.2ms(8) stealth_director=0.1ms(8) civilian_brain=0.0ms(8)
+[PO5 1337.9s] HITCH frame=5623ms t=127.4 nodes=9772 enemies=8 top: npc_motor=4.9ms(72) crew_ai_brain=3.6ms(24) npc_gunner=0.9ms(80) anim_driver=0.8ms(14) police_brain=0.5ms(24) custody_system=0.2ms(8) assault_director=0.2ms(8) stealth_director=0.1ms(8) civilian_brain=0.0ms(8) heist_runtime=0.0ms(8)
+[PO5 1343.1s] HITCH frame=5076ms t=127.7 nodes=9782 enemies=8 top: npc_motor=5.0ms(72) crew_ai_brain=4.2ms(24) anim_driver=3.3ms(14) npc_gunner=0.8ms(80) police_brain=0.4ms(24) assault_director=0.2ms(8) custody_system=0.2ms(8) stealth_director=0.1ms(8) civilian_brain=0.0ms(8) heist_runtime=0.0ms(8)
+[PO5 1349.6s] HITCH frame=6379ms t=127.9 nodes=9802 enemies=7 top: npc_motor=5.2ms(70) crew_ai_brain=4.6ms(24) npc_gunner=3.3ms(80) anim_driver=1.2ms(14) police_brain=0.5ms(22) custody_system=0.2ms(8) assault_director=0.2ms(8) stealth_director=0.1ms(8) civilian_brain=0.0ms(8) heist_runtime=0.0ms(8)
+[PO5 1371.8s] HITCH frame=22220ms t=128.1 nodes=9802 enemies=7 top: npc_motor=5.0ms(64) crew_ai_brain=4.3ms(24) anim_driver=1.2ms(14) npc_gunner=0.6ms(80) assault_director=0.4ms(8) police_brain=0.3ms(16) custody_system=0.3ms(8) stealth_director=0.1ms(8) civilian_brain=0.0ms(8) heist_runtime=0.0ms(8)
+[OBS t=128.7] FRAME obs_033_t0128.png
+[PO5 1392.5s] HITCH frame=12742ms t=129.1 nodes=9808 enemies=7 top: npc_motor=4.9ms(64) crew_ai_brain=3.4ms(24) npc_gunner=1.0ms(80) anim_driver=0.9ms(14) police_brain=0.3ms(16) custody_system=0.2ms(8) assault_director=0.2ms(8) stealth_director=0.1ms(8) civilian_brain=0.0ms(8) heist_runtime=0.0ms(8)
+[PO5 1403.6s] HITCH frame=10985ms t=129.3 nodes=9813 enemies=7 top: npc_motor=4.5ms(64) crew_ai_brain=3.2ms(24) npc_gunner=1.0ms(80) anim_driver=0.7ms(14) police_brain=0.4ms(16) custody_system=0.2ms(8) assault_director=0.2ms(8) stealth_director=0.1ms(8) civilian_brain=0.0ms(8) heist_runtime=0.0ms(8)
+[PO5 1408.0s] pilot: t=5 at (23.4, -0.3, 41.7) corner (24.0, 0.2, 42.6) yaw_err 0.00 fwd=true path=2 mouse_mode=2 state=0 look=(-2.55,0.00) pin_yaw=-2.54818397680335 bot=false
+[PO5 1408.0s] SNAG pontoon_ramp_top         OK     5.1 s from (20.3, 0.0, 37.1) to (24.0, 0.2, 42.6) (snap 0.2 m, nav path yes, stuck x0)
+[PO5 1408.0s] HITCH frame=4353ms t=129.5 nodes=9817 enemies=7 top: npc_motor=4.2ms(64) crew_ai_brain=3.5ms(24) npc_gunner=1.0ms(80) anim_driver=0.8ms(14) police_brain=0.4ms(16) assault_director=0.2ms(8) custody_system=0.2ms(8) stealth_director=0.1ms(8) civilian_brain=0.0ms(8) heist_runtime=0.0ms(8)
+[PO5 1412.5s] HITCH frame=3575ms t=130.6 nodes=9827 enemies=6 top: npc_motor=4.4ms(56) crew_ai_brain=4.0ms(24) npc_gunner=0.9ms(80) anim_driver=0.7ms(14) police_brain=0.4ms(16) assault_director=0.2ms(8) custody_system=0.2ms(8) stealth_director=0.1ms(8) civilian_brain=0.1ms(8) heist_runtime=0.0ms(8)
+[PO5 1416.7s] HITCH frame=3472ms t=131.5 nodes=9836 enemies=6 top: crew_ai_brain=4.6ms(24) npc_motor=4.3ms(56) npc_gunner=1.0ms(80) anim_driver=0.9ms(14) police_brain=0.4ms(16) custody_system=0.3ms(8) assault_director=0.3ms(8) stealth_director=0.1ms(8) civilian_brain=0.1ms(8) heist_runtime=0.0ms(8)
+[PO5 1421.6s] HITCH frame=4606ms t=132.0 nodes=9843 enemies=6 top: npc_motor=3.5ms(56) crew_ai_brain=3.3ms(24) npc_gunner=3.1ms(80) anim_driver=0.7ms(14) police_brain=0.4ms(16) assault_director=0.2ms(8) custody_system=0.2ms(8) stealth_director=0.1ms(8) civilian_brain=0.0ms(8) heist_runtime=0.0ms(8)
+[PO5 1431.5s] TEL worst_frame=40417ms t=132 phase=3 phys=10.3ms proc=4572.6ms nodes=9843 enemies=6 civs=1 crew=[0:0@(23.6, -0.5, 44.7) 1:0@(25.6, -0.3, 41.7) 2:0@(22.3, -0.3, 40.2) 3:0@(20.6, 0.0, 39.5) nearest_enemy=16.9m within15=0 input_enabled=true captured=true paused_by={  }]
+[PO5 1431.5s] HITCH frame=9888ms t=132.2 nodes=9843 enemies=6 top: crew_ai_brain=4.5ms(24) npc_motor=3.9ms(56) anim_driver=1.0ms(14) npc_gunner=0.9ms(80) police_brain=0.4ms(16) custody_system=0.3ms(8) assault_director=0.2ms(8) civilian_brain=0.1ms(8) stealth_director=0.1ms(8) heist_runtime=0.0ms(8)
+[OBS t=132.7] FRAME obs_034_t0132.png
+[PO5 1462.9s] HITCH frame=9459ms t=133.1 nodes=9862 enemies=5 top: crew_ai_brain=4.8ms(24) npc_motor=4.2ms(48) npc_gunner=0.8ms(80) anim_driver=0.7ms(14) police_brain=0.4ms(16) custody_system=0.4ms(8) assault_director=0.2ms(8) stealth_director=0.1ms(8) civilian_brain=0.1ms(8) heist_runtime=0.0ms(8)
+[PO5 1467.8s] HITCH frame=4707ms t=133.5 nodes=9866 enemies=5 top: crew_ai_brain=4.1ms(24) npc_motor=3.2ms(48) anim_driver=0.8ms(14) npc_gunner=0.6ms(80) police_brain=0.4ms(16) custody_system=0.2ms(8) assault_director=0.2ms(8) stealth_director=0.1ms(8) civilian_brain=0.0ms(8) heist_runtime=0.0ms(8)
+[PO5 1468.8s] pilot: t=5 at (23.8, -1.1, 47.6) corner (23.9, -1.4, 49.4) yaw_err 0.00 fwd=true path=6 mouse_mode=2 state=0 look=(-3.09,0.00) pin_yaw=-3.08654780369377 bot=false
+[OBS t=136.8] FRAME obs_035_t0136.png
+[PO5 1476.2s] SNAG pontoon                  OK     7.3 s from (23.5, -0.3, 41.9) to (24.0, -1.6, 51.5) (snap 0.2 m, nav path yes, stuck x0)
+[OBS t=136.9] CREW AI spacing 1.9 m, to player 4.0 m, exposed 47% (57 samples, enemy 11 m)
+[PO5 1508.9s] HITCH frame=31930ms t=137.8 nodes=9880 enemies=5 top: crew_ai_brain=5.4ms(24) npc_motor=4.4ms(48) npc_gunner=2.5ms(80) anim_driver=0.9ms(14) police_brain=0.4ms(16) custody_system=0.4ms(8) assault_director=0.2ms(8) stealth_director=0.1ms(8) civilian_brain=0.0ms(8) heist_runtime=0.0ms(8)
+[PO5 1512.6s] HITCH frame=3666ms t=138.0 nodes=9880 enemies=5 top: crew_ai_brain=4.9ms(24) npc_motor=3.5ms(48) anim_driver=0.9ms(14) npc_gunner=0.7ms(80) police_brain=0.3ms(16) custody_system=0.2ms(8) assault_director=0.2ms(8) stealth_director=0.1ms(8) civilian_brain=0.0ms(8) heist_runtime=0.0ms(8)
+[PO5 1515.3s] HITCH frame=1477ms t=139.2 nodes=9887 enemies=4 top: hud_model=5.4ms(1) crew_ai_brain=4.6ms(24) npc_motor=3.4ms(40) anim_driver=1.0ms(14) npc_gunner=0.6ms(80) police_brain=0.6ms(8) assault_director=0.3ms(8) custody_system=0.2ms(8) stealth_director=0.1ms(8) civilian_brain=0.1ms(8)
+[PO5 1526.4s] HITCH frame=11089ms t=139.3 nodes=9887 enemies=4 top: crew_ai_brain=4.1ms(24) npc_motor=2.8ms(40) anim_driver=1.0ms(14) hud_model=0.9ms(1) npc_gunner=0.6ms(80) police_brain=0.2ms(8) custody_system=0.2ms(8) assault_director=0.2ms(8) stealth_director=0.1ms(8) civilian_brain=0.0ms(8)
+[INFO][director][p1] assault phase ANTICIPATION (wave 1, 30 s)
+[OBS t=140.8] FRAME obs_036_t0140.png
+[PO5 1648.0s] pilot: t=5 at (24.6, -0.3, 44.9) corner (24.5, -0.3, 45.5) yaw_err 1.79 fwd=false path=22 mouse_mode=2 state=0 look=(7.54,0.00) pin_yaw=7.73494088172467 bot=false
+[PO5 1648.3s] TEL worst_frame=53894ms t=142 phase=3 phys=8.6ms proc=11.8ms nodes=9898 enemies=3 civs=1 crew=[0:0@(24.6, -0.3, 45.0) 1:0@(21.4, 0.0, 40.2) 2:0@(23.8, 0.0, 43.2) 3:0@(21.6, 0.0, 43.6) nearest_enemy=18.8m within15=0 input_enabled=true captured=true paused_by={  }]
+[OBS t=143.1] CREW_STACK AI 2 and 3 0.48 m apart at (23.7, -0.3, 43.2)
+[OBS t=144.8] FRAME obs_037_t0144.png
+[PO5 1731.4s] pilot: t=10 at (28.8, 0.0, 42.9) corner (29.8, 0.2, 42.7) yaw_err -0.00 fwd=true path=13 mouse_mode=2 state=0 look=(11.18,0.00) pin_yaw=11.1815628445695 bot=false
+[OBS t=147.3] CREW AI spacing 2.1 m, to player 3.4 m, exposed 13% (60 samples, enemy 16 m)
+[OBS t=148.8] FRAME obs_038_t0148.png
+[PO5 1792.1s] pilot: t=15 at (34.2, 0.0, 41.8) corner (34.9, 0.2, 41.6) yaw_err -0.78 fwd=false path=9 mouse_mode=2 state=0 look=(11.98,0.00) pin_yaw=11.7863829416749 bot=false
+[PO5 1792.4s] TEL worst_frame=32053ms t=152 phase=3 phys=12.0ms proc=7.6ms nodes=9886 enemies=3 civs=1 crew=[0:0@(34.8, 0.0, 41.6) 1:0@(35.9, 0.0, 36.9) 2:0@(29.5, 0.0, 41.7) 3:0@(30.9, 0.0, 43.5) nearest_enemy=16.3m within15=0 input_enabled=true captured=true paused_by={  }]
+[OBS t=152.8] FRAME obs_039_t0152.png
+[PO5 1837.7s] SNAG quay_mid                 OK    19.3 s from (24.0, -1.8, 50.6) to (40.0, 0.2, 40.6) (snap 0.2 m, nav path yes, stuck x0)
+[OBS t=156.8] FRAME obs_040_t0156.png
+[OBS t=157.4] CREW AI spacing 3.3 m, to player 4.3 m, exposed 0% (60 samples, enemy 19 m)
+[OBS t=160.8] FRAME obs_041_t0160.png
+[PO5 2013.0s] pilot: t=5 at (44.4, -0.3, 40.3) corner (47.6, 0.2, 40.1) yaw_err -0.00 fwd=true path=10 mouse_mode=2 state=0 look=(4.78,0.00) pin_yaw=4.7847669008481 bot=false
+[PO5 2014.1s] TEL worst_frame=44395ms t=162 phase=3 phys=10.5ms proc=21.8ms nodes=9870 enemies=3 civs=1 crew=[0:0@(45.7, 0.0, 40.2) 1:0@(40.3, 0.0, 36.8) 2:0@(42.1, 0.0, 39.9) 3:0@(42.6, 0.0, 42.5) nearest_enemy=21.9m within15=0 input_enabled=true captured=true paused_by={  }]
+Terminated
