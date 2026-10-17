@@ -31,14 +31,21 @@ rules = Array[Dictionary]([{
 }
 }
 }, {
-"difficulty_add": Array[int]([0, 0, 1, 1, 1, 1]),
 "group": &"guard_post",
-"pick": Vector2i(1, 1)
+"pick": Vector2i(2, 2)
 }, {
-"difficulty_add": Array[int]([0, 1, 1, 1, 2, 2]),
 "group": &"guard_extra",
-"pick": Vector2i(0, 0),
+"pick": Vector2i(1, 1),
 "weights_by_difficulty": {
+0: {
+&"extra_none": 0.0
+},
+1: {
+&"extra_none": 0.0
+},
+2: {
+&"extra_none": 0.0
+},
 3: {
 &"extra_none": 0.0
 },

@@ -35,6 +35,8 @@ static func make_def() -> HeistDef:
 	d.map_scene = SCENE_PATH
 	d.base_payout = 70000  # D-120
 	d.stealth_bonus_mult = 1.15
+	# D-140 (PO-15, revised; SL = PAGERS lever): 4 guards always; the pager cap falls from Tense (Routine..Cataclysm).
+	d.pager_max_by_difficulty = [4, 3, 3, 2, 2, 1] as Array[int]
 	d.loot = [&"loot.ledger_laptop", &"loot.ledger_drives", &"loot.ledger_books", &"loot.painting",
 		&"loot.cash", &"loot.small_valuables"] as Array[StringName]  # small_valuables: the 7 def-less pieces (D-120)
 	# Objective ids = the design doc's Objectives `[tag]`s (D-039 rule: ENV B reads them there).
@@ -83,8 +85,6 @@ static func make_variants() -> HeistVariantTable:
 		t = load(VARIANTS_PATH) as HeistVariantTable
 	if t == null:
 		t = HeistVariantTable.new()
-	var hazardous_plus: Array[int] = [0, 0, 1, 1, 1, 1]
-	var extras: Array[int] = [0, 1, 1, 1, 2, 2]
 	var cleaners: Dictionary = _from(Enums.Difficulty.BRUTAL, {&"cleaners_1": 0.0, &"cleaners_2": 0.5, &"cleaners_3": 0.5})
 	cleaners[Enums.Difficulty.HAZARDOUS] = {&"cleaners_1": 0.2, &"cleaners_2": 0.6, &"cleaners_3": 0.2}
 	t.rules = [
@@ -96,9 +96,11 @@ static func make_variants() -> HeistVariantTable:
 		{"group": &"keycard", "pick": Vector2i(2, 2)},
 		{"group": &"code_note", "pick": Vector2i(1, 1),
 			"slot_requires": {&"code_contractor": {&"server_room": [&"srv_contractor"]}}},
-		{"group": &"guard_post", "pick": Vector2i(1, 1), "difficulty_add": hazardous_plus},
-		{"group": &"guard_extra", "pick": Vector2i(0, 0), "difficulty_add": extras,
-			"weights_by_difficulty": _from(Enums.Difficulty.BRUTAL, {&"extra_none": 0.0})},
+		# D-140 (PO-15, revised; SL = PAGERS lever): exactly 4 guards on every seed and difficulty: the reception guard,
+		# both rovers and one watch post (stair or roof; extra_none never). The pager cap does the scaling (make_def).
+		{"group": &"guard_post", "pick": Vector2i(2, 2)},
+		{"group": &"guard_extra", "pick": Vector2i(1, 1),
+			"weights_by_difficulty": _from(Enums.Difficulty.ROUTINE, {&"extra_none": 0.0})},
 		{"group": &"security_room_staffed", "pick": Vector2i(1, 1)},
 		{"group": &"camera", "pick": Vector2i(1, 1)},
 		{"group": &"laser_pattern", "pick": Vector2i(1, 1),

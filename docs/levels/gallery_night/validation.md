@@ -155,7 +155,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 ## navmesh: Navmesh
 
 - navmesh: 2542 polygons, cell 0.10/0.10 m
-- 281 markers checked
+- 291 markers checked
 | room | walkable samples | covered | coverage |
 |---|---|---|---|
 | `Rooms/RoomSS` | 12 | 12 | 100% |
@@ -215,7 +215,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## reachability: Reachability (per variant)
 
-- 52 variant configuration(s), 183444 spawn->target path queries
+- 52 variant configuration(s), 189060 spawn->target path queries
 
 
 ## walkthrough: Walkthrough bot
@@ -227,9 +227,11 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 - graph `halberd`: 49 points, 10 guard(s)
 - graph `mews`: 6 points, 1 guard(s)
+- graph `court`: 4 points, 1 guard(s)
+- graph `rounds`: 4 points, 1 guard(s)
 - graph `gala`: 17 points, 0 guard(s)
 - graph `staff`: 17 points, 0 guard(s)
-- 4 patrol graph(s)
+- 6 patrol graph(s)
 
 
 ## lasers: Laser grid bypass gaps
@@ -387,7 +389,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `rc_founders` | 1062 | 243400 | 3 |
 | `rc_drawings` | 1198 | 309230 | 3 |
 | `rc_harbour` | 1889 | 477866 | 6 |
-| `rc_benefactors` | 2046 | 522208 | 6 |
+| `rc_benefactors` | 2045 | 522196 | 6 |
 | `rc_cloakroom` | 1361 | 325888 | 3 |
 | `rc_back_corridor` | 2374 | 581168 | 6 |
 | `rc_security` | 1020 | 246306 | 2 |
