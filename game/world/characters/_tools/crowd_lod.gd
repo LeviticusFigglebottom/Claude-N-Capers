@@ -11,8 +11,8 @@
 ##   A crowd of 30 club patrons goes from ~12 draws each to 1.
 ##
 ## Which characters get LOD2 and from where (lod_class): crowd NPCs (civilians, heist staff, P5 casts)
-## switch at CROWD_SWITCH_M; armed units (security, police, cartel, faction swat) at UNIT_SWITCH_M (past
-## the 30 m silhouette rule; the merged mesh keeps the silhouette and colours). No LOD2 (full meshes
+## switch at CROWD_SWITCH_M; armed units (security, police, cartel, faction swat) at UNIT_SWITCH_M (the merged
+## mesh keeps the silhouette and colours, so the 30 m silhouette rule holds on LOD2). No LOD2 (full meshes
 ## always, LOD1 only): the crew heisters (player bodies), contacts, and any character with
 ## gameplay-toggled meshes or a material_override (Wrecker plates/visor, Phantom goggles), so ENV A's
 ## node lookups and telegraphs never land on a proxy.
@@ -26,8 +26,10 @@ const MATERIAL_PATH: String = "res://world/materials/char_crowd_lod.tres"
 const TARGET_RATIO: float = 0.10
 ## Surfaces this small (eyes, iris, lashes, teeth, badges) are dropped from LOD2: sub-pixel past 20 m.
 const MIN_SURFACE_TRIS: int = 150
-const CROWD_SWITCH_M: float = 20.0
-const UNIT_SWITCH_M: float = 35.0
+## D-132 (D-130 perf audit, D2): 20 -> 15 m for crowd NPCs and 35 -> 25 m for armed units (draws -27 % / -10 % in the
+## bench); LOD2 holds up at those distances since the covered-layer fix (1b375cb9).
+const CROWD_SWITCH_M: float = 15.0
+const UNIT_SWITCH_M: float = 25.0
 const MARGIN_M: float = 1.0
 ## D-084: every CrowdLod proxy is in this group (persistent, set by the assembler) so the switch can follow zoom.
 const GROUP: StringName = &"crowd_lod"
