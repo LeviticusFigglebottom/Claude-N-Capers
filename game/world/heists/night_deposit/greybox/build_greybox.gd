@@ -887,6 +887,7 @@ func _build_patrols(patrols: Node3D) -> void:
 	_patrol_graph(patrols, "Bank", &"bank", L.PATROL_POINTS_BANK, L.PATROL_EDGES_BANK)
 	_patrol_graph(patrols, "Exterior", &"exterior", L.PATROL_POINTS_EXTERIOR, L.PATROL_EDGES_EXTERIOR)
 	_patrol_graph(patrols, "ArmoredCar", &"armored_car", L.PATROL_POINTS_ARMORED, L.PATROL_EDGES_ARMORED)
+	_patrol_graph(patrols, "Rounds", &"rounds", L.PATROL_POINTS_ROUNDS, L.PATROL_EDGES_ROUNDS)
 
 
 func _patrol_graph(parent: Node3D, nm: String, graph_id: StringName, points: Dictionary, edges: Array) -> void:

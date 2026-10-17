@@ -3,6 +3,43 @@ Status: APPROVED (lead, 2026-10-11) (D-075). The lead's answers to the G0 open q
 Renamed from `meridian_federal` / "Meridian Federal" (D-075: "Meridian" is used by real banks). The
 brass **meridian line** in the hall floor keeps its name: it is a feature, not the bank's name.
 
+## D-136 build notes (OF-C0, ENV C, 2026-10-17)
+The G0 design stands (D-075). These are the build-plan fixes from `docs/process/next_heist_ostrander.md` §3 (audit) and
+§3b (D-136), with B's data (D-137). Each line names what changed and why.
+1. **SD escort descoped (§3b.5):** the SD attendant and 0-1 customer spawn in SD; the manager walks SB alone on
+   `mgr_vault`. Changed: Basement notes (SD), Room list (SB), Circulation, the roster (+ SD attendant, SD customer),
+   the totals table. PD2 has no escorted customer flows.
+2. **Assault events (§3b.6, D-114 §5, PO6-17 / X-3):** new subsection *Assault events* under Loud: 2 turret vans on
+   Halloran Avenue, a police heli orbit over the terrace with rappel drops, 4 breach points (2 hall arched bays,
+   the XL terrace doors, the HH roof door), with marker names and positions in the GH/DB/ND/GN format.
+3. **D-122 breach layer (§3b.7):** new table *Loud-breachable shell doors* (Police entry points): dock roller and
+   personnel doors, the fire exit, HH, the XL doors and the bronze/VE doors at lockdown are on `NAV_LAYER_BREACH`;
+   the BARRED vault gate and the vault door are not breachable.
+4. **D-102 bag carry (§3b.8):** cash and drives MEDIUM (×0.75, no sprint, 4 m throw), gold and drill parts HEAVY
+   (×0.5, no sprint, 2 m), bonds LIGHT (sprint, 4 m). Changed: ghost line step 6, Loot path, throw spots.
+5. **D-104 laser gap (§3b.8):** `lz_static` bypass gap ≥ **1.0 m** (was 0.8 m); a crouch-under grid's lowest beam
+   has its lower face ≥ 1.215 m. Changed: Stealth routes (Lasers).
+6. **Copings and glazing ≥ 50° (§3b.8, D-104 slope rule):** parapet copings and the lantern glazing ≥ 50° (45° is
+   walkable for our 45° player); the lantern curb gets a sloped top. Changed: Play-space closure, the legend.
+7. **Ghost line re-derived (§3b.8, D-102 + D-128):** new subsection *Ghost line timing* with the arithmetic. Result:
+   the vault → CQ leg is ≈ 23 s per bag (the old "~25 s" assumed sprinting with cash), the whole bag phase ≈ 230 s,
+   and two steps no longer fit as written (bags staged in LD; the E1 throw distance), flagged there with the fix.
+8. **Carried keycard 1 s (§3b.2):** the take is `carried_item_s` 1.0 s (was "2 s"); QC-62 = QC-52 `carrier_tag`.
+9. **No stealth-only fail; one escape rule (§3b.9/10):** fail = custody/abort only; the drill parts respawn at the
+   drop; the hoist stays usable. The loud escape opens on `[secure]` + `escape_eta_s`. Changed: Mission script
+   notes, Escape.
+10. **D-128 "hidden" claims (§3b.11):** the counter and GA claims are validator-checked by LOS sample (`hide_los`,
+    `teller_worktop`, OF-C3). The counter claim **fails as drawn** (a 1.05 m solid front never hides the 1.05 m
+    crouched detection point from a standing observer), so the solid bandit-screen base rises to **1.50 m** (QC-g as amended by the LEAD, OF-C1). The GA
+    solid base (1.0 m) holds. Changed: the legend, Ground notes, Sightlines.
+11. **Loot follows data (§3b.3, D-117 §3, D-137):** values from `game/content/data/loot/*.tres` and B's OF-B1 data;
+    `base_payout` **$80,000** (D-137, was $160,000). Changed: Loot table, HeistDef.
+12. **Vaultline crew by SA (§3 audit):** NPCs cannot ride `bag_lift`; `armored_car_early` walks LD → BC → SA → BB.
+13. **Vault on the ND pattern (§3b.1):** the lockdown cancels the mission's `time_lock` timer (no `Safe` API).
+    Changed: Mission script notes, the QC-64 request.
+14. **Validator configuration (OF-C3):** new subsection *Levelcheck configuration* under Budgets: the metas and kinds
+    the greybox sets for `lasers`, `teller_worktop`, `hide_los` and `bag_line`.
+
 ## Fiction
 - **Who:** **Ostrander Federal**, the city's clearing bank, at its 1928 main branch on **Ostrander
   Plaza** in the financial district (Board district `financial`). It is a three-storey limestone
@@ -135,8 +172,8 @@ brass **meridian line** in the hall floor keeps its name: it is a feature, not t
 | Tannery Street, north (z −14) | The parking structure's **exit barrier** and a ticket booth across the street mouth. The **P4** spawn is on the ramp behind it at (55, −45). Vista: Tannery continues north to a T-junction facade. |
 | Tannery Street, east (x 62) | The Belmont Arms facade (no openings below +4.0: the lobby is round the corner, off-map). Its awnings and lit windows are dressing. |
 | Corvino Building (x 0 and west) | A solid party wall. The fire escape (rear, in Ledger Lane) reaches the bank's main roof only (+12.2; `fire_escape` variable). Above +12.2, Corvino's wall continues to its setback at +16.0 (the P5 island, police-only, joined to our roofs by one-way rappel links, QC-68). |
-| Main roof (+12.2) and hall-roof terrace (+8.6) | 1.1 m solid parapets with the **45° sloped coping** (Shadow Ledger rule; nobody stands on it). Toward Tannery Street the terrace parapet has a 1.1 m guard (a bag throw spot to E2, see Loot path). An `OUT_OF_BOUNDS` curtain sits 0.5 m beyond every parapet (D-040). |
-| Lantern skylight | A raised 0.6 m curb with sloped glazing above it. It cannot be walked on (slope > 40°). It is the police rappel ENTRY into the hall, glass, breakable. |
+| Main roof (+12.2) and hall-roof terrace (+8.6) | 1.1 m solid parapets with a **coping sloped ≥ 50°** (D-104 slope rule: 45° is walkable for our 45° player, so Shadow Ledger's 45° coping is not enough; nobody stands on it). Toward Tannery Street the terrace parapet has a 1.1 m guard (a bag throw spot to E2, see Loot path). An `OUT_OF_BOUNDS` curtain sits 0.5 m beyond every parapet (D-040). |
+| Lantern skylight | A raised 0.6 m curb with a **sloped curb top (≥ 50°)** and glazing **sloped ≥ 50°** above it (D-104: no walkable slope < 50° outside the play mesh; a flat 0.6 m curb is jumpable, apex 1.08 m). It cannot be walked on. It is the police rappel ENTRY into the hall, glass, breakable. |
 | Up | Broken cloud, low SW sun. Every visible roof has a parapet and plant. |
 | Far | Financial-district towers on every side at 80–300 m (LOD facades with lit floors). Nothing reachable sees the void. |
 
@@ -195,8 +232,8 @@ door, and the stair arithmetic below (as for Night Deposit, Shadow Ledger and Do
 Legend: `#` exterior wall, `|`/`-` interior wall, `+` junction, `D` door (single 0.9 m; doubles
 `DD` 1.8 m), `DDDD` the bronze doors / the vestibule inner doors (2 × 1.8 m), `R` roller door
 (3.6 × 4.0 m), `W` window or interior glazing, `^ v` U-stair (up-flight, return flight), `=v` the
-top floor of a stair (void over the arriving flight), `=` teller counter (customer ledge 1.05 m,
-teller work top 1.00 m, 1.2 m bandit glass), `g` teller gate, `t` teller station, `T` **the lid**
+top floor of a stair (void over the arriving flight), `=` teller counter (customer ledge 1.05 m in front of a
+**solid bandit-screen base to 1.50 m**, D-136 §3b.11, QC-g amended; bandit glass above it; teller work top 1.00 m), `g` teller gate, `t` teller station, `T` **the lid**
 (thermal-drill point over the vault), `m` the brass meridian line, `G` guard post / pause point,
 `c` the manager's desk, `Mo` the camera-station monitor wall, `$$` ATMs, `n` the night
 depository slot, `k` code-PC candidate (`code_pc`), `K` keycard reader (vault gate), `GGG` the vault
@@ -204,7 +241,7 @@ gate (2.0 m steel grille), `:` laser grid, `TL` time-lock console, `VVV` the vau
 2.4 m), `b` safe-deposit box wall (`deposit_box`), `S` safe, `P` padlock (bullion cage), `x` the
 hole under the lid, `SRV` server rack (`server_room` slot), `r` 1.1 m guard (gallery), `.` void,
 `*` lantern skylight, `H` heli cargo net (E3), `h` caged ladder (roof → terrace), `p` parapet
-(1.1 m, 45° coping), `fe` the fire-escape arrival, `rp` the police rappel landing.
+(1.1 m, coping ≥ 50°, D-104), `fe` the fire-escape arrival, `rp` the police rappel landing.
 
 **Vertical data** (`HeistMap.floor_heights = [-4.0, 0.0, 5.0, 8.6, 12.2]`, `floor_names =
 ["Basement", "Ground", "Gallery", "Executive", "Roof"]`, D-054; ascending and containing 0.0, D-040):
@@ -297,8 +334,8 @@ Basement notes:
   G.SAW_TARGET). `x` marks the hole under the lid (loud).
 - **SD, the safe-deposit hall** (14 × 16 m): three rows of customer boxes (`deposit_box` × 24
   candidates, 8 active; see Loot), viewing booths along the east wall, the attendant's desk. Door to
-  BB only. Customers come down SB with an attendant (in the `mgr_vault` roll the manager is that
-  attendant).
+  BB only. **D-136 §3b.5:** the SD attendant and 0-1 customer spawn in SD at the start (no escorted customer
+  flow down SB). In the `mgr_vault` roll the manager walks SB alone and stops at the attendant's desk.
 - **CQ** is the cart queue in front of the **cash lift GL** (`bag_lift`, Basement ↔ Ground, 2 bags,
   8 s). It lands in the loading dock LD.
 
@@ -346,10 +383,23 @@ Basement notes:
 
 Ground notes:
 - The **teller line** runs the full width of TW at z 17: 12 windows (6 staffed stations `t`, the
-  rest closed with brass grilles), a **customer ledge 1.05 m** with 1.2 m bandit glass, and a **teller
-  work top 1.00 m whose near edge is 0.28 m in front of the teller's stand point** (characters.md
-  v1.9 `teller_count` placement, lead note). The work top is a standing counter, so my `scale` check
-  gains a `teller_worktop` kind (0.95–1.05 m) next to the 1.05–1.1 m transaction ledge. The teller
+  rest closed with brass grilles), a **customer ledge 1.05 m** projecting in front of a **solid bandit-screen
+  base to 1.50 m** with bandit glass above it, and a **teller work top 1.00 m whose near edge is 0.28 m in front
+  of the teller's stand point** (characters.md v1.9 `teller_count` placement, lead note). The work top is a
+  standing counter: levelcheck kind `teller_worktop` (0.95–1.05 m top, 0.45–0.9 m deep, a ≥ 0.9 m clear stand
+  zone on the teller side, the solid front checked against the crouch-hide claim; OF-C3). **Why 1.50 m (D-136
+  §3b.11, D-128):** a crouched player's detection points are 1.0 and 1.05 m above the feet (StealthTweak
+  `los_heights` 1.6 / 1.0 clamped to the crouched eye 1.05). A ray from a standing observer's eye (1.62 m) down to
+  the 1.05 m point stays above 1.05 m all the way, so a 1.05 m solid front never hides it. With the crew centre
+  d ≈ 0.95 m behind the front (0.6 m work top + 0.35 m capsule radius) and the observer ≥ 2.0 m from the crew
+  (inside 2 m PD2 uncovers a crouched player anyway, S2.2), the front must reach 1.05 + (1.62 − 1.05) × 0.95 / 2.0
+  = **1.32 m** for an observer straight out from the counter. **QC-g amended (LEAD, OF-C1 build):** `hide_los`
+  also samples observers along the counter face (z ≈ 17.75, the ledge's front plus the NPC radius) at the 2.0 m
+  flat uncover radius but only ~1.5 m out from the crew, whose sight line to the 1.05 m point crosses the screen
+  face at ≈ 1.44 m; the solid base is therefore **1.50 m**, bandit glass 1.50–2.40 m. QC-67 (ENV D probe): the screen
+  stands 0.82 m behind the customers' marks (z 16.83–16.93; the 0.52 m ledge runs to the hall face at z 17.45), so the `counter_customer`
+  forearms clear it; the work tops are 0.48 m deep. The 1.05 m
+  ledge stays as the customers' writing ledge. The teller
   gate `g` (x 24) is LOCKPICK and NPC-authorised.
 - **The lid** `T` at (24, 14): a 2.4 × 2.4 m brass-bordered marble panel in the TW floor marking
   the vault roof slab below (the tellers' name for it). In loud the drill is assembled here.
@@ -513,7 +563,7 @@ BM, NA) have clear glass from 0.9 m.
 | PL | plant | 9 × 7 | 3.2 | `plant_room` | Boilers, AHU, vault ventilation. **Areaway grate** to Ledger Lane: the Phantom's vent (nav layer `vent`, FLANK). BODY_HIDE (1). |
 | CM | server_room (comms) | 5 × 7 | 3.2 (override) | `server_room` | Telecom frame, alarm panel. `srv_basement`: the vault-control rack `SRV` + the laser controller. |
 | SS | storage (supplies) | 5 × 7 | 3.2 (override) | `storage_supplies` | Coin bags, deposit slips, shredder. |
-| SB | stair (B) | 3 × 7 | open | — | Basement → Ground → Gallery → Executive (top). Customers' route to SD with an attendant. |
+| SB | stair (B) | 3 × 7 | open | — | Basement → Ground → Gallery → Executive (top). The manager's route to SD on `mgr_vault` (alone, D-136 §3b.5). |
 | BB | corridor (basement) | 48 × 2 | 3.2 (override) | `corridor_service` | Basement spine; the vault gate is in its south wall. Dead ends at LK (W) and SB (E) have reasons (lockers, stair). |
 | RC | storage (records) | 14 × 16 | 3.2 (override) | `storage_archive` | Compact shelving (cover: aisles 1.0 m), archive boxes. The wait room for the time lock. |
 | VC | vault (concourse) | 20 × 4 | 3.2 | `vault_antechamber` | Laser grid, TL console, vault gate, vault door, viewing bench. |
@@ -589,7 +639,8 @@ Support-space check (level_standards §2.2):
   LO, NA, BM.
 - **Staff:** Ledger Lane → the dock personnel door (badge, NPC-authorised) → BC → everything. TW
   ↔ BC by the two staff doors. Officers use SA/SB to the gallery and executive levels. The manager
-  and the SD attendant take customers down SB to the safe-deposit hall.
+  walks SB alone to the basement on `mgr_vault`; the SD attendant and her customer start in SD (no escort,
+  D-136 §3b.5).
 - **Guards** (one `bank` PatrolGraph across all floors, linked through SA/SB stair points, plus a
   `lane` graph outside; ≥ 3 loops per post, heist_map §4):
   - **`post_lobby` (fixed, BH by the vestibule, facing N):** (a) VE ↔ hall circuit (meridian
@@ -613,7 +664,10 @@ Support-space check (level_standards §2.2):
     `door_fire_propped` a teller smokes outside the east fire exit instead (40–70 s windows).
   - **The manager** (`manager_route`): `mgr_floor` BM desk ↔ hall (greets customers) ↔ TW
     (supervises) ↔ PC lounge; `mgr_gallery` VO ↔ CF meetings ↔ OF ↔ PR (Executive); `mgr_vault`
-    SD (attendant, with a customer) ↔ CP ↔ LK (WC, 40–70 s) ↔ SB.
+    SB (alone) → BB → SD (the attendant's desk) ↔ CP ↔ LK (WC, 40–70 s) → SB. Timed, cross-floor stops use A's
+    `CivilianRoute` (D-136 §3b.4; fallback: one-floor routes + the GN errand pattern).
+  - **SD attendant** (always, 1): at the SD desk (`desk_work`), with 0-1 SD customer at a viewing booth (`sit`).
+    Both spawn in SD and stay there (D-136 §3b.5).
   - **Customers** (`customers` scalar): queue rails → counter → check desks → benches → PW → VE.
     Plaza pedestrians (2, `walk_text`) loop the plaza and Tannery corner. Clients in PC (0–2,
     `cower_seated` on alarm). **Cower points** (`cower_stand`) stand 0.21 m in front of a wall or
@@ -637,6 +691,8 @@ Support-space check (level_standards §2.2):
 | Teller | `bank_teller` → `npc_bank_teller`, `npc_bank_teller_b` | 3 (+1 rotating) | always | `civ_teller` | `teller_count` | `staff`, `staff_teller` |
 | Day manager (Lionel Ashgrove), keycard carrier | `bank_manager` → `bank_manager` | 1 | always; route by `manager_route` | `civ_manager_<route>` | `phone` / `desk_work` | `staff`, `staff_manager_<route>` |
 | Customer | `bank_customer` → `bank_customer`, `bank_customer_b` (parent with a backpack), `civilian_customer_a`, `civilian_customer_b` (elderly) | 4–8 hall + 2 plaza | `customers` scalar | `civ_customer`, `civ_plaza` | `browse`, `walk_text` | `civilian` |
+| SD attendant | `bank_officer` → `bank_officer_b` | 1 | always (D-136 §3b.5: spawns in SD) | `civ_sd_attendant` | `desk_work` | — (stays in SD) |
+| SD customer | `bank_customer` → `bank_customer`, `civilian_customer_b` | 0–1 | part of `customers`: 1 at 6 and 8 | `civ_sd_customer` | `sit` (viewing booth) | — (stays in SD) |
 | Private client | `bank_customer` | 0–2 | `pc_clients` (part of `customers`: 1 at 6, 2 at 8) | `civ_client` | `sit` | — (stays in PC) |
 | Account officer | **new role `bank_officer`** (QC-67; the lead asks ENV D for it, D-075; until then `npc_bank_teller_b`) | 1–3 | `officers` scalar | `civ_officer` | `desk_work` | `staff`, `staff_gallery` |
 | VIP client + bodyguard | `bank_customer` + `bank_guard` (`security_officer_b`) | 0 / 1 + 1 | rare `vip_client` | `civ_vip`, `guard_vip` | `sit` | — (SD) |
@@ -652,11 +708,17 @@ shared, so ENV D needs no new uniform. Vaultline Armored Transport appears only 
 
 | Difficulty | Guards (fixed + rovers) | Operator | Pagers to clear everyone | Civilians (tellers + manager + customers + officers) | Notes |
 |---|---|---|---|---|---|
-| Routine | 2 + 1 = **3** | 60% | 3–4 | 4 + 1 + 6 + 1 = **12** (customers 4–8 → 10–14) | Everything can be killed and answered. |
-| Tense | 2 + 1 = **3** | 60% | 3–4 | 11–16 | |
-| Hazardous | 2 + 2 = **4** | 60% | 4–5 | 11–17 | Exceeds the cap with the operator. |
-| Brutal | 2 + 3 = **5** | 75% | 5–6 | 12–18 | 1–2 guards must be ghosted. |
-| Lethal / Cataclysm | 2 + 4 = **6** | 75% | 6–7 | 12–18 | 2–3 ghosted; Titan cameras. |
+| Routine | 2 + 1 = **3** | 60% | 3–4 | 4 + 1 + 1 + 6 + 1 = **13** (customers 4–8 → 11–15) | Everything can be killed and answered. |
+| Tense | 2 + 1 = **3** | 60% | 3–4 | 12–17 | |
+| Hazardous | 2 + 2 = **4** | 60% | 4–5 | 12–18 | Exceeds the cap with the operator. |
+| Brutal | 2 + 3 = **5** | 75% | 5–6 | 13–19 | 1–2 guards must be ghosted. |
+| Lethal / Cataclysm | 2 + 4 = **6** | 75% | 6–7 | 13–19 | 2–3 ghosted; Titan cameras. |
+
+The civilian column counts tellers + manager + **SD attendant** (D-136 §3b.5) + customers (with the PC clients and the
+SD customer) + officers; the 2 plaza pedestrians come on top. **D-130 / D-137 (B's OF-B1 generator block):** expected
+guards per tier 3 / 3.4 / 4.2 / 5.2 / 6.3 / 6.6 and civilians 14.4 → 19.4 (Routine → Cataclysm), from real spawn
+points; no `pager_max_by_difficulty` or Titan override for OF (Titan from LETHAL, the tweak default). The rows above
+are the design-doc baseline picks; B's block is the data.
 
 Cable ties: 2 per player (+2 with `asset.extra_cable_ties`). With 11–18 civilians, **tying the hall
 is not a plan**. The hall is cased unmasked and worked around, never subdued. Civilians ≤ 18 + 2 rare
@@ -668,14 +730,23 @@ is not a plan**. The hall is cased unmasked and worked around, never subdued. Ci
   (8, 18) are 53° off his axis, inside his 120° FOV, but unmasked crew walking into PC raise only
   the slow trespass fill (S1.1). Masked, those doors are used while he is on loop (a)'s window leg
   (facing S) or on loop (c).
-- **Behind the counter:** the bandit glass is see-through. A crouched player behind the 1.05 m
-  ledge is hidden from the hall (as Night Deposit). Tellers face the hall, so a masked player in TW
-  behind them is unseen until a teller turns (rotation) or the hall guard walks loop (b).
+- **Behind the counter:** the bandit glass is see-through. A crouched player behind the counter is
+  hidden from the hall by the **1.50 m solid bandit-screen base** (not by the 1.05 m ledge: D-128's crouched
+  detection point at 1.05 m clears a 1.05 m front from every standing observer; see Ground notes), for observers
+  ≥ 2 m from the player (closer, PD2 uncovers a crouched player anyway). Tellers face the hall, so a masked player
+  in TW behind them is unseen until a teller turns (rotation) or the hall guard walks loop (b). **Verified by LOS
+  sample, not by eye (D-136 §3b.11):** levelcheck `teller_worktop` (solid front height) and `hide_los` (the
+  detection points from the BH floor grid); adjust the base if they fail.
 - **The gallery and loggias:** a masked player on GA/WL/EL is visible from the hall floor (the
   guard, customers). The gallery guard is 1.1 m high with a **solid bronze base to 1.0 m** and a
   0.1 m glass cap, so a crouched player (1.2 m capsule, eyes below the base top seen from 5 m
-  below) crossing GA is hidden from the hall floor. The validator's LOS sample checks it (**D-075:
-  the solid base is approved**). The loggias are glazed full height: crossing them is timing, not crouching.
+  below) crossing GA is hidden from the hall floor (**D-075: the solid base is approved**). **D-128 check:**
+  the crouched detection points are +6.0 and +6.05 (1.0 / 1.05 m over the GA floor) against the base top at +6.0.
+  From a hall-floor eye (+1.62) the ray rises 4.43 m over the horizontal distance D, so at the base plane (≥ 0.40 m
+  in front of the crew: capsule r 0.35 + half the base) it is ≥ 4.43 × 0.40 / D below the point; the 1.05 m point
+  is hidden while that is ≥ 0.05 m, i.e. D ≤ 35 m, beyond the crouched max_range (12 m guards, 15 m civilians).
+  Observers under the gallery are blocked by the GA slab. **The claim holds;** levelcheck `hide_los` samples it
+  on the real geometry (D-136 §3b.11). The loggias are glazed full height: crossing them is timing, not crouching.
 - **BC** (38 m straight): a guard in it sees end to end. Cover comes from 10 door recesses and the
   SA/SB landings. `rover_hall` loop (c) walks its full length.
 - **SR:** the operator faces N at the monitors. The door, the key cabinet (E wall, south end) and
@@ -751,7 +822,8 @@ code (the right PC, 45 s) **or** the server hack (90 s) + the vault gate + the g
 (150–270 s) + 6 bags out.
 
 **Taking the keycard from the manager** (`kc_on_manager`, QC-62): he is a civilian. Shout him down
-(he raises his hands), **tie him** (1 cable tie) and take the card (2 s), or kill him (a civilian
+(he raises his hands), **tie him** (1 cable tie) and take the card (1 s, `carried_item_s`; QC-62 = QC-52
+`carrier_tag`, D-136 §3b.2), or kill him (a civilian
 kill penalty; his body is a corpse stimulus). His routes put him alone at predictable points: the BM
 office with the door shut (`mgr_floor`, but the glass front faces the hall), CF/PR (`mgr_gallery`),
 the LK WC (`mgr_vault`). Reading `[code_hint]` on his desk planner names the officer whose PC holds
@@ -764,8 +836,10 @@ gate (S4.2). Players must not be in VC when he comes. RC and LK are the waiting 
 door".
 
 **Lasers** (VC, across the concourse at x 21): `lz_static` has a discoverable **bypass gap** at the
-south wall, ≥ 0.8 m clear width, passable crouched (QC-24, validator-asserted); `lz_sweep` is a
-timing window; `lz_timed` drops for 6 s every 20 s. The **laser controller** (with the vault-control
+south wall, **≥ 1.0 m clear width** (D-104 §7.1; was 0.8 m), passable crouched (QC-24, validator-asserted); a grid
+built as crouch-under has its lowest beam's lower face ≥ 1.215 m; `lz_sweep` is a timing window; `lz_timed` drops
+for 6 s every 20 s. Every window is long enough to cross 4 m with a MEDIUM bag (×0.75: 4 m / 2.63 m/s = 1.5 s;
+`lz_timed`'s 6 s is 4×). The **laser controller** (with the vault-control
 rack, in SV or CM) switches the grid off: `hack_terminal` 20 s, `[lasers]`. ECM does not affect
 lasers (S9.10).
 
@@ -783,8 +857,8 @@ one ECM (2 charges), 2 cable ties, **no kills, no pagers**:
    dumpsters (behind C6). **ECM #1:** lockpick the dock personnel door (8 s) → LD (no C5 in `cam_a`)
    → BC west end (C4 is off in `cam_a`) → SA down. About 16 s.
 3. Basement, BB west (C13 at the east end does not reach x < 28). Wait in LK. When the manager
-   takes his WC break, shout him down and **tie him** (tie 1), take the keycard and leave him in a
-   cubicle. No guard loop enters LK.
+   (alone on SB, D-136 §3b.5) takes his WC break, shout him down and **tie him** (tie 1), take the keycard (1 s)
+   and leave him in a cubicle. No guard loop enters LK.
 4. SA up to the Executive level. C11 does not reach EA (x 19). Start the `pc_exec` hack (45 s, 1
    interruption), and wait in E3 while `rover_gallery` passes on loop (c). Re-interact, read the
    code.
@@ -792,14 +866,52 @@ one ECM (2 charges), 2 cable ties, **no kills, no pagers**:
    keycard at the gate (`K`), cross the sweep in its gap, enter the code at TL (5 s). Back out and
    wait **270 s in RC** (the shelving aisles are blind from BB; `rover_basement` loop (a) walks the
    centre aisle, so stand in an end aisle).
-6. The vault opens. Carry **6 cash bags** (MEDIUM, sprint allowed), one at a time: VT → VC (the
-   sweep gap; never leave a bag in VC) → the gate → BB 3 m → CQ → the **cash lift** (2 per cycle)
-   → LD. That is 6 trips of ~25 s, timed against loop (a). No camera covers the line.
-7. In LD, **ECM #2:** throw the 6 staged bags from the personnel door into the E1 van's zone (4 m,
-   about 15 s). Walk out. The escape opens on 6 secured.
+6. The vault opens. Carry **6 cash bags** (MEDIUM: ×0.75, **no sprint**, D-102), one at a time, each in a window
+   when the vault guard is off VC (loops (b)/(c)): VT → VC (the sweep; never leave a bag in VC) → the gate → BB →
+   **CQ**, staged in CQ with its door shut (a bag is a guard stimulus within 18 m LOS, S4.1). About 23 s a trip
+   (timing below). No camera covers the line.
+7. When `rover_hall` is on loop (a) or (c) (not (b), the LD dock check), run the **cash lift** 3 times (2 bags a
+   cycle) and stage the bags by the personnel door; then **ECM #2:** throw the 6 bags from the personnel door into
+   the E1 van's zone (4 m MEDIUM throw, about 15 s of the 20 s jam). Walk out. The escape opens on 6 secured.
 Total: 2 ECM charges, 1 cable tie, 0 kills, 0 pagers. The other layouts drop C6 (`cam_b/c`), so
 this is the worst case. The officers, tellers and 8 customers are never crossed: the dock line
 avoids the ground floor.
+
+#### Ghost line timing (re-derived, D-136 §3b.8: D-102 speeds, D-128 detection)
+Inputs (data, not estimates): walk 3.5 m/s, crouch 2.25 m/s, sprint 5.75 m/s (CrewTweak); MEDIUM ×0.75 = **2.63 m/s,
+no sprint**; throw 4 m; ECM jam 20 s per charge (S8.4); `bag_lift` 8 s a trip, send/call hold 1 s, 2 bags; lockpick
+8 s; carried card 1 s. D-128 (pd2_fidelity S2.2): a guard fills on a standing masked player in 1.00 s at 10 m (centre)
+and never beyond the 20 m standing / 12 m crouched max_range; within 2 m (crouched) or the 5.5 m civilian uncover he is
+instant. Distances are path lengths on the floor plans (1 char = 1 m; wall centre lines).
+
+| Step | Path (plan coordinates) | Length | Time |
+|---|---|---|---|
+| 2 | personnel door lockpick (8 s), then (8, 0) → LD → BC door (10, 8) → SA door (14, 7), walking | 13 m | 8 + 3.7 = **11.7 s** of ECM #1's 20 s (C6 sees the door; the rest is C5/C4-free in `cam_a`) ✓ |
+| 6 | cage gate (25, 15.5) → vault door (30, 13) | 6 m | |
+| 6 | vault door → along the VC south side (z 12.4) → laser plane x 21 → gate (17, 9) | 14.5 m | |
+| 6 | gate → BB (17, 8) → (12, 8) → CQ door (12, 7) → by the lift (11.5, 4.5) | 9.5 m | |
+| 6 | **one trip:** 30 m loaded at 2.63 m/s + 30 m back walking at 3.5 m/s + 2 sweep crossings (mean wait ≈ 1 s each at `period_s` 4 s) + pick/drop ≈ 1 s | 60 m | 11.4 + 8.6 + 2 + 1 = **23 s** (19.6 s sprinting back; 25 s with worst sweep waits) |
+| 6 | 6 trips | | **≈ 140 s** to CQ (the old 6 × 25 s = 150 s also covered the lift to LD, assuming sprinting with cash: the loaded carry is now 5.75 / 2.63 = 2.2× slower) |
+| 6 | exposure per trip inside the vault guard's VC view (VT exit 6 m + VC 14.5 m loaded, back unloaded) | 20.5 m ×2 | 7.8 + 5.9 = **13.7 s** — at 10 m he fills in 1 s, so every trip needs him off VC (loops (b)/(c)); a loop (a) return means waiting in VT off the door axis |
+| 7 | one lift cycle: load 2 (2 × 2 s) + send (1 s) + walk CQ → BB → SA up (11 m flights + landings) → BC → LD (30 m, 8.6 s; the car takes 8 s) + unload 2 by the door (4 s) + call (1 s) + walk back (8.6 s) | | **≈ 27 s**; 3 cycles, the last without the walk back: **≈ 72 s** |
+| 7 | throw 6 bags from the personnel door into the E1 zone | 6 × 2.5 s | **≈ 15 s** of ECM #2's 20 s ✓ |
+| | **bag phase total** (vault open → 6 secured) | | **≈ 230 s** (old doc ≈ 165 s) |
+
+**Where it no longer fits as written (flags for OF-C1 / OF-A6 / OF-P1):**
+1. **Staged bags in LD (old step 7):** the six bags would lie in LD for the whole lift phase (≈ 60–75 s), and LD is on
+   `rover_hall` loop (b) (the dock check); a bag is a stimulus within 18 m (S4.1). Fixed above: stage in CQ behind a
+   shut door and run the 3 lift cycles + the throw (≈ 90 s) in one `rover_hall` (a)/(c) window. If his loops are
+   shorter than ≈ 90 s away from LD, the line needs his loop read twice (stage 2 + 2 + 2 by the door, throwing each
+   pair costs an ECM window in `cam_a`, and there is only one charge left): **P to time `rover_hall` in OF-P1**.
+2. **The E1 throw distance:** from the personnel-door threshold (8, 0) to the van at the roller door (5, −3) is
+   4.2 m, more than the 4 m MEDIUM throw. **The E1 SECURE_LOOT zone's near edge must be ≤ 3.5 m from the threshold**
+   (OF-C1 places the van so; levelcheck `bag_line` covers cameras, not throw reach: P verifies the throw). HEAVY gold
+   (2 m) cannot be thrown to E1 from inside: it is walked out into C6's cone (ECM or `cam_b/c`).
+3. **The vault phase is window-bound, not loop-bound:** 6 × 23 s = 140 s with ≈ 14 s of each trip in the vault
+   guard's view means ≈ 6 separate (b)/(c) windows; the solo waits in VT off the door axis between them. Still a
+   ghost (no kills, no pagers) but ≈ 3–5 min longer than the old estimate; inside Size L's 25–40 min.
+4. Step 5's 270 s RC wait relies on "the end aisle is blind from BB and the centre aisle": marked as a `hide_spot`
+   for levelcheck `hide_los` (OF-C3), not trusted by eye.
 
 ## Loud
 **Phase outline.** Alarm → LOCKDOWN (the vault reseals, a running time lock aborts, QC-64) → CONTROL
@@ -872,6 +984,47 @@ never spawn inside the building (QC-42, D-064): every ENTRY point on the shell c
 | SHIELD_ANCHOR | the plaza steps (24, 40); the hall at the meridian line (24, 24); the lane at the dock (5, −4); the Tannery bay (54, 8); the terrace west end (4, 24) | — | Bulwark/Aegis formations |
 | COVER | ~70 points: plaza planters, benches, the kiosk, cars, hall check desks, benches, the queue rails (soft), the counter front, pillars under the gallery, TW desks, BC door recesses, LD carts, terrace planters, the lantern curb | — | all |
 
+**Loud-breachable shell doors (D-122, D-136 §3b.7).** Each locked shell door police may come through is a `door` whose
+breach NavLink is on `Door.NAV_LAYER_BREACH` (layer 2, police and specials only; crew, bots, civilians and the pilot
+query layer 1 and treat it as blocked while it is shut and locked). Each carries its shell ENTRY `TacticalPoint`
+(`breach_only`).
+
+| Door | Where (x, z, y) | Lock in stealth | Breach layer |
+|---|---|---|---|
+| Dock roller door (`industrial_door`, 3.6 m) | (3–6.6, 0, 0) | closed (opens for Vaultline) | yes |
+| Dock personnel door | (8, 0, 0) | LOCKPICK (NONE with `door_dock_open`) | yes |
+| BC east fire exit (`push_bar`) | (48, 8, 0) | push bar, opens from inside (propped with `door_fire_propped`) | yes |
+| HH roof door | (14, 7, 12.2) | LOCKPICK from the roof, push bar inside | yes |
+| XL terrace doors (2 pairs, glass) | (5–7 and 10–12, 17, 8.6) | LOCKPICK from the terrace | yes |
+| Bronze outer doors (VE S) and the VE inner doors | (22–26, 36, 0) and (22–26, 32, 0) | open in business hours; **the mission shuts and locks them at the lockdown** | yes, from the lockdown |
+| AV street door and AV hall door | (4, 36, 0), (8, 32, 0) | open (24 h vestibule); never locked | — (open doorways) |
+| **Vault gate** (`GGG`, KEYCARD, BARRED at the lockdown) | (16–18, 9, −4) | KEYCARD | **no** (BARRED, D-073; interior) |
+| **Vault door** (`VVV`, VAULT) | (29–31, 13, −4) | VAULT + time lock | **no**: the only loud way in is the floor (the lid) |
+
+### Assault events (D-114 §5, D-136 §3b.6; PO6-17 / X-3 pattern)
+ENV C supplies the markers (contract `docs/levels/_art/po6_17/README.md`: Marker3Ds under `AssaultEvents`, group
+`assault_events`, built by `world/heists/shared/assault_markers.gd` from an `of_assault.gd` table, never hand-edited);
+ENV A wires the HeistDef rows (`GameRng.stream(&"assault_events")`, the X-3 pattern). World coordinates: x east,
+z south, y up, the bank's NW corner at the origin (the floor plans' frame).
+
+| Marker (Marker3D) | Position (x, y, z) | Orientation / metadata | Notes |
+|---|---|---|---|
+| `TurretVan_1` | (16.0, 0.0, 51.0) | yaw 90: +Z (van forward) = east | Halloran Ave eastbound lane opposite the west hall bays (van x 13.1–18.9); clear of the plaza steps (z ≤ 40) and the P1 closure (x −16) |
+| `TurretVan_2` | (34.0, 0.0, 58.0) | yaw −90: +Z = west | Halloran Ave westbound lane opposite the east bays (x 31.1–36.9); clear of P2 (x 66) and the Assay Office balustrade (z 62) |
+| `HeliOrbit_1` | (28.0, 30.0, 24.0) | `radius` 22.0 | over the terrace and the lantern; the orbit stays at x 6–50 (rotor 4.5 m clear of the Corvino party wall x 0), z 2–46 (clear of the parking deck z ≤ −10 and the Assay Office z ≥ 64); +30 is 18 m over the main roof |
+| `HeliDrop_1` | (8.0, 8.6, 32.0) | | **terrace rappel** (+8.6), the SW corner: 5 m west of the lantern curb (x 13), 12 m from the drill crate (20, 33), 28 m from the E3 net (33–39, 24–30), clear of the planters; the terrace is on the crew navmesh, so the cops land on it from the heli's ropes (rappel count 0: no new nav link) |
+| `HeliDrop_2` | (30.0, 12.2, 14.0) | | **main roof** (+12.2) south of the roof plant room; reaches the terrace by the caged ladder (46, 17) and the building by the HH door (`Breach_4`) |
+| `HeliDrop_3` | (36.0, 0.0, 44.0) | | the plaza east of the steps (ground), clear of the kiosk and the benches |
+| `Breach_1` | (11.75, 0.0, 35.8) | yaw 0 (−Z = north into BH); `kind` "window", `size` (1.0, 2.1), `room` "BH" | the west outer arched bay (x 10–13.5): its lower centre panel over the 1.0 m sill; cops from the plaza. Scene: a ground-floor `prop_breach_window` variant with a 1.0 m sill (the base scene's sill is 0.9 m; OF-C2 adds `prop_breach_window_s100` if needed) |
+| `Breach_2` | (35.25, 0.0, 35.8) | as `Breach_1`; `room` "BH" | the east outer arched bay (x 33.5–37). The two inner bays stay plain breakable-glass ENTRYs |
+| `Breach_3` | (6.0, 8.6, 16.8) | yaw 0 (−Z = north into XL); `kind` "door", `size` (1.8, 2.1), `room` "XL"; meta `door` = the XL west door pair | the XL terrace doors (x 5–7): the event blows the locked pair open (no infill scene: the door is the infill; A plays the charge FX on the leaves and sets it open). **New breach kind "door"** (open question for the lead / A) |
+| `Breach_4` | (14.0, 12.2, 6.85) | yaw 0 (−Z = north into HH); `kind` "door", `size` (1.0, 2.1), `room` "HH"; meta `door` = the HH door | the HH roof door (core wall face z 7 − 0.15); pairs with `HeliDrop_2` |
+
+The lantern stays the existing RAPPEL ENTRY (8.6 m into the hall; QC-41 / QC-68); P5's one-way links are unchanged.
+No ceiling breach (the hall already has the lantern). The turret vans and drops keep clear of the escape vehicles
+(E1 (5, −3), E2 (52, 8)) and the police spawn closures; OF-C1 re-checks every position against the generated geometry
+(the PO6-17 README rows are the format).
+
 ### Specials and where they come from
 - **Phantom** (L4.3): via the **areaway grate** into PL (basement, behind H2, next to SA), and via
   Ledger Lane. `cue.phantom_hum` carries through BB.
@@ -915,7 +1068,10 @@ rare event. **Player perches:** the main roof (S2, S3) and GA (the lantern rappe
 - **Loud (drill run):** the vault floor → **hoist** (2 bags, 6 s) → TW → BC → the active escape. The
   hoist cannot be bypassed: the rope ladder is crew-only (S10.1b).
 - **Throw spots:** GA → the hall floor (5.0 m); the terrace east parapet → the Tannery bay (E2);
-  the LD personnel door → the E1 van.
+  the LD personnel door → the E1 van. **Bag weights (D-102):** cash and drives MEDIUM (×0.75, no sprint, 4 m
+  throw), gold and the drill parts HEAVY (×0.5, no sprint, 2 m throw), bonds LIGHT (×1.0, sprint, 4 m). So a HEAVY
+  throw from the terrace parapet must clear the ≥ 50° coping with its 2 m (§7.4), and the E1 zone sits ≤ 3.5 m from
+  the personnel-door threshold (ghost line flag 2).
 - **Optional:** the bullion cage (padlock; gold is HEAVY: ×0.5 speed, no sprint, D-102), the bond safe,
   the vault boxes and the SD hall boxes (saw: noise 15 m, next to the vault post), the president's
   safe (Executive, drill/saw), the server drives (SV, 2 bags, MEDIUM), the teller drawers (`small_loot`
@@ -929,14 +1085,19 @@ rare event. **Player perches:** the main roof (S2, S3) and GA (the lantern rappe
 
 | Loot id | Weight | Base value (B) | Where | Count | Status |
 |---|---|---|---|---|---|
-| `loot.cash_bricks` | MEDIUM | $1,600 | vault cash cage | `cash_bags` 6 / 8 / 10 | existing |
-| `loot.gold` | HEAVY | $2,800 | vault bullion cage (padlock) | `gold_bags` 2 / 3 / 4 | existing (B6-01) |
-| `loot.bearer_bonds` | LIGHT | $1,400 | vault bond safe (1); president's safe (1, `ps_bonds`); +2 with `bond_delivery` | 1–4 | existing (B6-01) |
-| `loot.server_drives` | MEDIUM | $1,800 | SV racks | 2 | existing (B6-01); optional |
-| `deposit_box` prefab (`loot_id` `loot.small_valuables`) | — (small loot) | ◇ $800–2,400 each (B's band) | vault walls (`deposit_boxes` 6 / 9 / 12 of 20 candidates); SD hall (8 of 24) | 14–20 | value per prefab; `loot.small_valuables` def is B's call (stub) |
-| `small_loot` | — | $500 (teller drawers), $800 (CP straps) | TW × 6, CP × 4 | 10 | prefab values |
-| `loot.thermal_drill_part` | HEAVY, **is_tool** | 0 | drill delivery (loud) | 2 | **new (QC-65)** |
-| `loot.body_bag` | HEAVY | 0 | — | — | existing |
+| `loot.cash_bricks` | MEDIUM | $8,000 | vault cash cage | `cash_bags` 6 / 8 / 10 | data (`cash_bricks.tres`) |
+| `loot.gold` | HEAVY | $14,000 | vault bullion cage (padlock) | `gold_bags` 2 / 3 / 4 | data (`gold.tres`) |
+| `loot.bearer_bonds` | LIGHT | $7,000 | vault bond safe (1); president's safe (1, `ps_bonds`); +2 with `bond_delivery` | 1–4 | data (`bearer_bonds.tres`) |
+| `loot.server_drives` | MEDIUM | $7,500 | SV racks | 2 | data (`server_drives.tres`); optional |
+| `deposit_box` prefab (`loot_id` `loot.small_valuables`) | — (small loot) | $1,200–2,000 each (B, D-137) | vault walls (`deposit_boxes` 6 / 9 / 12 of 20 candidates); SD hall (8 of 24) | 14–20 | value per prefab; **no `loot.small_valuables` def** (a def-less id, as ND/SL) |
+| `small_loot` | — | $500 (teller drawers), $800 (CP straps) | TW × 6, CP × 4 | 10 | prefab values (B, D-137) |
+| `loot.thermal_drill_part` | HEAVY, **is_tool** | $0 | drill delivery (loud) | 2 | B's OF-B1 (on `env/b-content`, QC-65); not on trunk yet |
+| `loot.body_bag` | HEAVY | $0 | — | — | data (`body_bag.tres`) |
+
+Values are ENV B's data (D-117 §3: the doc follows the data; D-120 ×4–5 bag values). A full clear of bags is
+10 cash + 4 gold + 4 bonds + 2 drives = $80,000 + $56,000 + $28,000 + $15,000 = **$179,000** before the difficulty
+multiplier, plus ≈ $30–45k of boxes, drawers and straps; against `base_payout` $80,000 the bags are ≈ 60 % of a full
+clear, inside D-120's 39–81 % band.
 
 ## Objectives
 **Stealth** (objective_tag in brackets; ENV B reads these, D-039):
@@ -971,9 +1132,10 @@ rare event. **Player perches:** the main roof (S2, S3) and GA (the lantern rappe
 
 **Mission script notes** (`ostrander_federal_mission.gd` on `HeistMission`):
 - Find prefabs by objective_tag.
-- **Lockdown:** `alarm_raised` → abort the vault's time lock if it is running (QC-64), disable
-  TL and the vault-control `hack_terminal` (`pause(&"lockdown")`), close the vault gate
-  (BARRED). After that, schedule the drill delivery: a timed loot spawn of 2 ×
+- **Lockdown (Night Deposit pattern, D-136 §3b.1):** the time lock is a mission timer (`start_timer(&"time_lock")`), so
+  `alarm_raised` → `cancel_timer(&"time_lock")` and fail `[time_lock_wait]` if it is running, disable TL and the
+  vault-control `hack_terminal` (`Interactable.enabled`, `pause(&"lockdown")`), `KeycardReader.set_disabled(true)`,
+  the vault gate `relock(Lock.BARRED)`, and shut and lock the bronze/VE doors (D-122 breach layer). After that, schedule the drill delivery: a timed loot spawn of 2 ×
   `loot.thermal_drill_part` at the active `drill_delivery` marker after `drill_eta_s` (QC-60), with
   `cue.escape_arrive_heli` or `_van` and a Mercer line. With `asset.thermal_drill_drop` the bags are
   already at the point.
@@ -981,9 +1143,14 @@ rare event. **Player perches:** the main roof (S2, S3) and GA (the lantern rappe
   hole's ladder, the hoist (`bag_lift`) and its nav links (QC-61), complete `[vault_breach]`.
 - **Code PC:** the active `code_pc` slot holds the `hack_terminal` (`reveals_code_group &"vault"`).
   The other four PCs are props (no interaction; their screens are dark).
-- **Escape:** stealth: E1/E2 are present from the start, and the ESCAPE zone activates on 6 secured.
-  E3: the heli is called on 6 secured and lands 45 s later. Loud: the van leaves at the alarm and
-  returns `escape_eta_s` after `[secure]`; the heli likewise (+30 s with `tower_sniper`).
+- **Escape (one rule, D-136 §3b.10):** stealth: E1/E2 are present from the start, and the ESCAPE zone activates on
+  6 secured (4 on Routine). E3: the heli is called on 6 secured and lands 45 s later. **Loud: the escape opens on
+  `[secure]` + `escape_eta_s`** (the van leaves at the alarm and returns `escape_eta_s` after `[secure]`; the heli
+  likewise, +30 s with `tower_sniper`). Not Night Deposit's assault-fade rule.
+- **No stealth-only fail, no soft lock (D-136 §3b.9, D-103 §3b.3, D-093):** the heist fails only on custody or an
+  abort. An alarm moves to the loud line; it never fails the run. The drill parts respawn at the active drop if
+  destroyed or lost off-map, and the hoist stays usable (never disabled by a bag left in the car or a downed crew).
+- **Assault events:** the X-3 rows on the `AssaultEvents` markers above (A wires them, OF-A6).
 - **Rare events:** `armored_car_early` (QC-25 timed NPC spawn at 15:00 elapsed at the dock);
   `vip_client` (spawn at start); `bond_delivery` (+2 bond bags in the vault).
 - **Mercer lines:** intro, casing tips (manager, gallery, operator), keycard taken, code hint, PC
@@ -1027,7 +1194,7 @@ weights use A2-08 / A3-10 (QC-18).
 | `time_lock_glitch` | good | 4% | The lock is in its maintenance window: `time_lock_s` = 30. |
 | `bond_delivery` | good | 5% | Vaultline delivered the quarter's bonds early: +2 `loot.bearer_bonds` in the vault. |
 | `vip_client` | bad | 6% | A high-value client and a Halden bodyguard visit the SD hall for the whole run: +1 guard (pager) and +1 civilian in the basement. |
-| `armored_car_early` | bad | 8% (`min_difficulty` Brutal) | At 15:00 elapsed a Vaultline van reaches the dock with 2 armed crew (pagers) who go LD → lift → CQ → BB → the vault gate (QC-25 timed spawn). Stealth must finish or deal with them. |
+| `armored_car_early` | bad | 8% (`min_difficulty` Brutal) | At 15:00 elapsed a Vaultline van reaches the dock with 2 armed crew (pagers) who go LD → BC → **SA** down → BB → the vault gate (QC-25 timed spawn; NPCs cannot ride `bag_lift`, so not by the cash lift; GN errand pattern). Stealth must finish or deal with them. |
 | `tower_sniper` | bad | 6% (`min_difficulty` Hazardous) | Loud: perch S3 in the Corvino window is enabled; the heli ETA is +30 s. |
 
 ## Escape
@@ -1040,6 +1207,8 @@ weights use A2-08 / A3-10 (QC-18).
   `escape_eta_s` (loud, +30 s with `tower_sniper`). SECURE_LOOT is the cargo net from the start;
   ESCAPE on the net area. Last holdout H4.
 - **Walk-out:** none (bags in the plaza would be seen).
+- **Rule (D-136 §3b.10):** stealth opens the escape on 6 secured (4 on Routine); loud opens it on `[secure]` +
+  `escape_eta_s`, whatever the assault phase.
 
 ## Pre-planning (preplanning.md contract, D-046 shape)
 `Preplan` points (category; `floor` is the index into `floor_heights`: 0 Basement, 1 Ground,
@@ -1143,7 +1312,7 @@ with a count (`params.count`; preplanning.md v1.1 allows `params`). Blueprint:
   (HVAC, fluorescents, distant phones), `amb_vault` (low ventilation, the time-lock clockwork tick
   while it runs), `amb_city_afternoon` (traffic, buses, pigeons on the plaza, wet tyres).
   `cue.alarm_bell` per-heist variant: a deep two-tone bank bell.
-- **Music:** `ostrander_federal` (new track, ENV C stems): `stealth` 72 BPM (low strings and a
+- **Music:** `ostrander_federal` (new track "Clearing House", ENV C stems): `stealth` 72 BPM (low strings and a
   clockwork tick that tightens during the time lock), `control`, `anticipation` riser, `assault`
   148 BPM (driving percussion with a brass motif), `fade`, `win`/`lose` stingers (audio_cues.md
   music stems). It joins `MusicTrackTable` with `default_for_heists [ostrander_federal]`.
@@ -1224,9 +1393,24 @@ plaza, the gallery and the vestibule.
 | Triangles per view | ≤ 3M (provisional, QC-10) | The coffered ceiling is a single trim-sheet mesh with 2 LODs. The far towers are LOD facades. |
 | Shadowed lights in any shot | ≤ 8 | The sun (1) + 4 hall pendants + 1 per room elsewhere. The counter lamps, sconces and battens are unshadowed. |
 | Texture memory | ≤ 1.5 GB | The shared library (limestone, marble, terrazzo, bronze, brass, plaster, carpet, wood veneer) covers ~85%. New: limestone ashlar, the coffer trim sheet, the meridian line inlay. |
-| NPCs alive | stealth: guards ≤ 8 (6 + 2 rare), civilians ≤ 20 (≤ 30 cap); loud: police ≤ `DifficultyDef.max_active_enemies`, civilians ≤ 20 | The civilians cower in place in loud: they are the hostage pool. |
+| NPCs alive | stealth: guards ≤ 8 (6 + 2 rare), civilians ≤ 22 (19 + 2 plaza + 1 VIP; ≤ 30 cap); loud: police ≤ `DifficultyDef.max_active_enemies`, civilians ≤ 22 | The civilians cower in place in loud: they are the hostage pool. D-136 §3b.5 adds the SD attendant (+1). |
 | Exterior traffic | ≤ 12 parked cars (MultiMesh), no moving traffic in play (a distant animated ribbon only) | |
 | **Density (kits)** | hall: 0.03–0.06 props/m² (clustered at the counter, the check desks, the benches and the pillars; the meridian line kept clear); TW: station clutter per kit; offices per kit minimums; SD: booths + rows; VT: cages + pallets (≥ 60% of the vault floor clear for the hoist and bag routes) | Same-kit rooms (AO1–3, CN1/2, LG/CT) must differ in layout hash (`variety`). |
+
+**Levelcheck configuration (OF-C3; the map lane sets these at G1).** All opt-in, so other maps are unaffected:
+- `lasers`: HeistMap metas `laser_min_gap_m = 1.0` and `laser_crouch_face_m = 1.215` (D-104 §7.1; the defaults stay
+  0.8 / 1.22 for the other maps). The VC grid's bypass gap is measured at the walls and to any neighbouring grid
+  (between emitters).
+- `teller_worktop`: the 12 counter work tops are props with meta `kind = "teller_worktop"` (teller side = local −Z,
+  the customer side +Z) and meta `hide_behind = true` (the crouch-hide claim); the bandit glass has meta
+  `see_through = true` (or kind `window`/`glass`).
+- `hide_los`: Marker3D / Path3D nodes with meta `hide_spot = true` and `hide_from` (room ids): the TW strip behind
+  the counter (`hide_from = ["BH"]`), the GA crossing line (`hide_from = ["BH"]`) and the RC end aisle
+  (`hide_from = ["BB", "RC"]`, step 5), all `hide_posture = "crouch"`.
+- `bag_line`: Path3D / Marker3D chains with meta `bag_line`: `vault_sa_cq` (VT → VC → gate → BB → SA and CQ),
+  `vault_e2` (BB east → SB → BC east → fire exit), `vault_e3` (SA → XC west → XL → the facade-hugging terrace path →
+  the net), each camera-free in `cam_a/b/c` (`camera_layout_group` = `camera`); the E1 line (LD → van) carries
+  `bag_line_layouts = ["cam_b", "cam_c"]` (`cam_a` needs the ECM window by design).
 
 **Walkthrough whitelist** (level_standards §6): the pairs **plaza spawn ↔ the president's safe / `pc_exec`** and **the vault ↔ the
 heli net** exceed 3× their straight-line distance (SA is the only way up; a 3-storey climb over a
@@ -1234,7 +1418,8 @@ heli net** exceed 3× their straight-line distance (SA is the only way up; a 3-s
 
 ## HeistDef (proposed data, `ostrander_federal_def.tres`)
 `id ostrander_federal`, display "Ostrander Federal", contact `contact.accountant`, mode
-STEALTH_OR_LOUD, base_payout **$160,000** (ENV B's placeholder, P6 balance), loot
+STEALTH_OR_LOUD, base_payout **$80,000** (ENV B, D-137 on the D-120 shape; above SL's $70k as the bigger L job; was
+$160,000), loot
 `[loot.cash_bricks, loot.gold, loot.bearer_bonds, loot.server_drives]` (`loot.thermal_drill_part`
 is a tool; deposit-box valuables are prefab small loot), escape_options `[van, heli]`, music_track
 `ostrander_federal`, objectives `[casing, keycard, code_hint, code_pc, server, vault_gate, lasers,
@@ -1255,13 +1440,15 @@ above. Map `game/world/heists/ostrander_federal/ostrander_federal.tscn`; `floor_
   hole (QC-41 shape).
 - **QC-62 (ENV A):** **NPC-carried keycard.** A civilian SpawnPoint export `carried_item:
   StringName` (`item.keycard`). A restrained (tied or intimidated) or dead carrier offers `take_item`
-  (2 s). On death the item stays on the body. No pickpocketing (PD2 has none).
+  (1 s, `carried_item_s`). On death the item stays on the body. No pickpocketing (PD2 has none). **Closed by
+  D-136 §3b.2:** QC-62 = QC-52 (`KeycardPickup.carrier_tag = civ_manager_*`).
 - **QC-63 (ENV A):** `hack_terminal.reveals_code_group: StringName`: finishing reveals that code
   group exactly as reading a `code_note` does. Plus an intel note that reveals a **variant group**
   on read (the manager's planner → `code_pc`), the same effect as an asset `reveals`.
 - **QC-64 (ENV A):** **vault lockdown API.** `Safe.abort_time_lock()` (a running time lock stops and
   the door stays shut; `device_finished` never fires) and a way for the mission to reseal and BAR a
-  VAULT door. If Night Deposit's G1 already does this in its mission, please confirm the API.
+  VAULT door. If Night Deposit's G1 already does this in its mission, please confirm the API. **Closed by D-136
+  §3b.1:** no Safe API; the Night Deposit mission-timer pattern (Mission script notes).
 - **QC-65 (ENV B loot/strings):** `loot.thermal_drill_part` (HEAVY, `is_tool`, value 0). Please
   confirm `loot.cash_bricks` / `loot.gold` / `loot.bearer_bonds` / `loot.server_drives` for this
   heist and the deposit-box value band ($800–2,400) with or without a `loot.small_valuables` def.

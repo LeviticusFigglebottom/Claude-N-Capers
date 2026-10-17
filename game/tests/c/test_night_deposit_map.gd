@@ -8,12 +8,12 @@ const REQUIRED: Dictionary = {
 	"Zones": "Node3D", "Rooms": "Node3D", "Spawns": "Node3D", "Patrols": "Node3D", "Tactical": "Node3D",
 	"Gameplay": "Node3D", "Variants": "Node3D", "Mission": "Node", "Preplan": "Node3D", "ReviewCameras": "Node3D",
 }
-## Design doc variable table (+ the `rover_none` helper slot for the weighted rover count) -> slot ids.
+## Design doc variable table -> slot ids (D-140 removed the `rover_none` helper slot).
 const GROUPS: Dictionary = {
 	"keycard": ["kc_manager_desk", "kc_teller_drawer", "kc_break_locker", "kc_security", "kc_records"],
 	"code_note": ["code_manager_planner", "code_break_board", "code_records_ledger", "code_on_manager"],
 	"server_room": ["srv_basement", "srv_ground"],
-	"guard_post": ["rover_ground", "rover_basement", "rover_exterior", "rover_none"],
+	"guard_post": ["rover_ground", "rover_basement", "rover_exterior"],
 	"camera": ["cam_a", "cam_b", "cam_c"],
 	"security_room_staffed": ["sec_staffed", "sec_empty"],
 	"vent_open": ["vent_open", "vent_locked"],
@@ -236,22 +236,16 @@ func test_rule_constraints_hold() -> void:
 		assert_eq((v.get(&"keycard", []) as Array).size(), 1, "exactly one keycard")
 		assert_eq((v.get(&"escape", []) as Array).size(), 1, "exactly one escape")
 		assert_eq((v.get(&"laser_pattern", []) as Array).size(), 1, "one laser pattern")
-		assert_eq((v.get(&"guard_post", []) as Array).size(), 1, "Routine: one guard_post pick")
-		assert_true(_rovers(v) <= 1, "Routine: 0-1 rover")
+		assert_eq(_rovers(v), 1, "Routine: exactly one rover (D-140)")
 		assert_false((v.get(&"rare", []) as Array).has(&"armored_car_early"), "armored_car_early is Brutal+ only")
 		assert_has([60.0, 90.0, 120.0], float(v.get(&"time_lock_s", 0.0)), "time_lock_s rolled")
 	GameRng.begin_run(9001)
 	var vb: Dictionary = VariantResolver.resolve(_map.variant_table, slots, Enums.Difficulty.BRUTAL)
-	var n_b: int = _rovers(vb)
-	assert_true(n_b >= 1 and n_b <= 2, "Brutal: 1-2 rovers")
+	assert_eq(_rovers(vb), 1, "Brutal: exactly one rover (D-140)")
 
 
 func _rovers(v: Dictionary) -> int:
-	var n: int = 0
-	for sid: Variant in (v.get(&"guard_post", []) as Array):
-		if StringName(sid) != &"rover_none":
-			n += 1
-	return n
+	return (v.get(&"guard_post", []) as Array).size()
 
 
 ## Doc per-difficulty weights (Routine vs Brutal) take effect: frequencies over 1000 seeds.
@@ -292,10 +286,9 @@ func test_difficulty_weights() -> void:
 	assert_near(f.call(br["staffed"]), 0.75, 0.05, "Brutal security room staffed ~ 0.75")
 	assert_near(f.call(ro["static"]), 0.5, 0.05, "Routine static lasers ~ 0.5")
 	assert_near(f.call(br["static"]), 0.2, 0.05, "Brutal static lasers ~ 0.2")
-	assert_near(f.call(ro["no_rover"]), 0.3, 0.05, "Routine: no rover ~ 0.3 (doc 0.3 / 0.7)")
-	assert_eq(int(ro["two_rovers"]), 0, "Routine never has 2 rovers")
-	assert_eq(int(br["no_rover"]), 0, "Brutal always has a rover")
-	assert_near(f.call(br["two_rovers"]), 0.5, 0.06, "Brutal: 2 rovers ~ 0.5")
+	# D-140 (PAGERS lever): exactly one rover at every difficulty.
+	for st: Dictionary in [ro, br]:
+		assert_eq(int(st["no_rover"]) + int(st["two_rovers"]), 0, "exactly one rover (D-140)")
 	assert_eq(int(ro["armored"]), 0, "armored_car_early gated to Brutal+ (min_difficulty)")
 	assert_near(f.call(br["armored"]), 0.08, 0.03, "Brutal armored_car_early ~ 8%")
 	# code_on_manager: 0.5 (mgr_in) x 1.5 / 4.5 = 1/6.

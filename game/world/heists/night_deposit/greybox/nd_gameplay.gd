@@ -402,10 +402,7 @@ func _variants_guards(variants: Node3D) -> void:
 	var rx: VariantSlot = _slot(g, "guard_post", "rover_exterior", 1.0)
 	spawn(rx, "GuardRoverExterior", "GUARD", Vector3(7.5, 0.0, -2.2), 0.0, ["guard_rover", "guard_rover_exterior"], "",
 		"Exterior")
-	# Empty helper slot: the doc's weighted rover COUNT (Routine 0 / 1 rover at 0.3 / 0.7) as a slot
-	# weight, since `pick` counts roll uniformly: 9/7 against three rovers of 1 = P(no rover) 0.3.
-	# Brutal+ (pick 2, weight 1 via weights_by_difficulty) = 1 or 2 rovers at 0.5 / 0.5.
-	_slot(g, "guard_post", "rover_none", 9.0 / 7.0)
+	# D-140 (PAGERS lever): exactly one rover on every seed and difficulty (pick 1, no empty slot, no difficulty_add).
 
 
 ## Cameras (doc C1-C8 in three sets), the staffed security room, and the two civilians.
@@ -418,7 +415,10 @@ func _variants_security(variants: Node3D) -> void:
 	var sr: Node3D = _group(variants, "security_room_staffed")
 	_slot(sr, "security_room_staffed", "sec_staffed", 0.6,
 		{"operator_spawn": "Spawns/CameraOperatorSeat", "station": "Gameplay/Misc/CameraStation"})
-	_slot(sr, "security_room_staffed", "sec_empty", 0.4)
+	var se: VariantSlot = _slot(sr, "security_room_staffed", "sec_empty", 0.4)
+	# D-140: an unstaffed room means the console officer is on his rounds (own graph `Rounds`), so the room always
+	# holds one pager: 2 posts + 1 rover + the operator or the roundsman = 4 guards on every seed.
+	spawn(se, "GuardRounds", "GUARD", Vector3(12.8, 0.0, 2.0), 90.0, ["guard_rover", "guard_rounds"], "", "Rounds")
 	var nm: Node3D = _group(variants, "night_manager")
 	var mi: VariantSlot = _slot(nm, "night_manager", "mgr_in", 0.5)
 	# D-063: seated at the desk (prop_chair_task NPC seat, 0.47 m; desk 0.74 m)
