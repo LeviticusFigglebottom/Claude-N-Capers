@@ -189,6 +189,14 @@ static func loadout_from_dict(d: Dictionary) -> Loadout:
 
 ## Server: replicated discrete state of `node` ({} = nothing to mirror).
 static func state_of(node: Node) -> Dictionary:
+	var out: Dictionary = _state_of(node)
+	var gp: GameplayPrefab = node as GameplayPrefab
+	if gp != null:
+		out["pe"] = gp.prefab_enabled  # OF-A2 (QC-61): runtime enable of every map prefab
+	return out
+
+
+static func _state_of(node: Node) -> Dictionary:
 	if node.has_method(&"_net_state"):
 		return node.call(&"_net_state") as Dictionary
 	var crew: CrewController = node as CrewController
@@ -253,6 +261,11 @@ static func _crew_state(crew: CrewController) -> Dictionary:
 
 ## Client: apply a (partial) state dictionary from the server.
 static func apply_state(node: Node, d: Dictionary) -> void:
+	var gp: GameplayPrefab = node as GameplayPrefab
+	if gp != null and d.has("pe"):
+		gp.prefab_enabled = bool(d["pe"])  # OF-A2: before the prefab's own state
+		d = d.duplicate()
+		d.erase("pe")
 	if node.has_method(&"_apply_net_state"):
 		node.call(&"_apply_net_state", d)
 		return
