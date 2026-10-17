@@ -78,7 +78,7 @@ def _doc_note() -> str:
 # out (swing OUTWARD), tag (objective_tag), slot (built by that slot instead), bake_closed (D-073 / D-122), kind_meta.
 DOORS: List[list] = [
     # --- Basement ---
-    ["LockerDoor", "B", "x", 7, 4.5, "NONE", "S", {}],
+    ["LockerDoor", "B", "x", 7, 4.4, "NONE", "S", {}],
     ["CashLiftDoorB", "B", "x", 3, 10.5, "NONE", "N", {"visual": "prop_door_double_liftgate_t20", "leaf": "metal",
                                                         "w": 1.8}],
     ["CartQueueDoor", "B", "x", 7, 11.4, "NONE", "S", {}],

@@ -154,7 +154,7 @@ NO_DOOR_OK: Dict[Tuple[str, str], str] = {}
 # vault door, R roller door, W window, g the teller gate (in the counter), h ladder top / fire-escape crossing.
 OPEN: List[Tuple[str, str, float, float, float, float, str]] = [
     # --- Basement ---
-    ("B", "D", 4.5, 7, 5.5, 7, "LK"),
+    ("B", "D", 4.4, 7, 5.6, 7, "LK (service: a >= 1.0 m route door)"),
     ("B", "D", 10.5, 3, 12.5, 3, "GL cash-lift landing door S (CQ), 1.8 m leaves"),
     ("B", "D", 11.4, 7, 12.6, 7, "CQ (service: carts)"),
     ("B", "D", 13.9, 7, 15.1, 7, "SA stair door (floor landing, vision panel)"),

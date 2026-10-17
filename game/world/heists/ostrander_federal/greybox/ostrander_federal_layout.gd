@@ -121,7 +121,7 @@ const PUBLIC_ROOMS: Array[String] = ["BH", "VE", "AV", "PW", "X1", "X2", "X3"]
 const WALLS: Array = [
 	["B", "x", 0.0, 0.0, 48.0, 0.4, -4.0, 0.0, "wall_ext", []],
 	["B", "x", 3.0, 10.0, 13.0, 0.2, -4.0, -0.8, "wall", [[10.5, 12.5, -4.0, -1.8]]],
-	["B", "x", 7.0, 0.0, 13.0, 0.2, -4.0, -0.8, "wall", [[4.5, 5.5, -4.0, -1.8], [11.4, 12.6, -4.0, -1.8]]],
+	["B", "x", 7.0, 0.0, 13.0, 0.2, -4.0, -0.8, "wall", [[4.4, 5.6, -4.0, -1.8], [11.4, 12.6, -4.0, -1.8]]],
 	["B", "x", 7.0, 13.0, 16.0, 0.3, -4.0, 0.0, "wall", [[13.9, 15.1, -4.0, -1.8]]],
 	[
 		"B", "x", 7.0, 16.0, 45.0, 0.2, -4.0, -0.8, "wall",
@@ -845,7 +845,7 @@ const CAMERA_SPINE_ROOMS: Array[String] = ["BC", "BB"]
 ## Doors (lock table): [name, floor, origin (bottom-centre of the opening on the wall line), yaw (front -Z = UsePoint side),
 ## kind, lock ("" = per side_door slot), visual, width_m, extra].
 const DOORS: Array = [
-	["LockerDoor", "B", [5.0, -4.0, 7.0], 180.0, "single", "NONE", "prop_door_single_ivory_t20", 0.9, {}],
+	["LockerDoor", "B", [5.0, -4.0, 7.0], 180.0, "service", "NONE", "prop_door_service_ivory_t20", 1.1, {}],
 	[
 		"CashLiftDoorB", "B", [11.5, -4.0, 3.0], 0.0, "double", "NONE", "prop_door_double_liftgate_t20", 1.8,
 		{"visual": "prop_door_double_liftgate_t20", "leaf": "metal", "w": 1.8},
