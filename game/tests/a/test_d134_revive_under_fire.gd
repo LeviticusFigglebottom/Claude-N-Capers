@@ -1,6 +1,7 @@
 ## D-134 (LEAD, from ND-1: two bots inside revive range never finished a revive under fire): a revive in progress is
 ## never interrupted by damage, for a human reviver and a bot alike; a stun / flash (and going down, a tase, leaving
-## range, releasing) still cancels it. Other hold interactions keep S9.1 (damage cancels).
+## range, releasing) still cancels it. D-134 addendum (S9.1 amended from PD2's playerdamage.lua): damage cancels no hold
+## interaction of any kind.
 extends TestCase
 
 var _rt: HeistRuntime = null
@@ -71,7 +72,7 @@ func test_d134_flash_still_cancels_a_revive() -> void:
 	_rt.clear_bot_intent(1)
 
 
-func test_d134_damage_still_cancels_other_interactions() -> void:
+func test_d134_damage_cancels_no_interaction() -> void:
 	await _launch()
 	var me: CrewController = _rt.crew_controller(0) as CrewController
 	var comp: InteractableComponent = InteractableComponent.new()
@@ -79,5 +80,6 @@ func test_d134_damage_still_cancels_other_interactions() -> void:
 	_rt.interaction._sessions[0] = {"comp": comp, "crew": me, "progress": 0.3, "duration": 5.0,
 		"start_pos": me.global_position, "aimed": true, "owner_id": 0}
 	_rt.interaction.interrupt_on_damage(0)
-	assert_true(_rt.interaction.session(0).is_empty(), "S9.1: damage cancels a non-revive hold")
+	assert_false(_rt.interaction.session(0).is_empty(), "D-134 addendum (PD2): damage cancels no hold interaction")
+	_rt.interaction._sessions.erase(0)
 	comp.free()
