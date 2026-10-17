@@ -25,6 +25,8 @@
 ## the rig root yaws toward the body at 90 deg / 0.8 s (the rig is counter-rotated; the body itself is untouched).
 ## Third-person weapon: WeaponVisual (ENV B, by class name) of WeaponDef.model at `HandR/Socket` (crew: the
 ## equipped weapon, NPC: EnemyDef.weapon when it has a WeaponDef with a model; otherwise none).
+## D-116 police combat (CombatClips): aim on the move, class / moving reloads, cover poses, stagger, DB-4 sit_chair_armed;
+## each falls back to the older clip when the rig lacks it.
 ## Clients: velocity comes from position deltas and alert state / crew state are replicated; brain hints and
 ## interaction heights are host data (clients fall back to alert-state poses).
 class_name AnimDriver
@@ -41,6 +43,7 @@ const HINT_CLIPS: Dictionary = {
 	&"smoke": &"smoke", &"cower": &"cower", &"hands_up": &"hands_up", &"tied": &"tied",
 	&"kneel_cuffed": &"kneel_cuffed", &"lie_down": &"lie_down", &"surrender": &"surrender",
 	&"browse": &"browse", &"desk_type": &"desk_type", &"sit_chair": &"sit_chair", &"lean_wall": &"lean_wall",
+	&"sit_chair_armed": &"sit_chair_armed",
 	&"melee": &"melee", &"flee": &"flee", &"aim_pistol": &"aim_pistol", &"aim_rifle": &"aim_rifle",
 	&"tased": &"tased", &"downed": &"downed", &"hit_react": &"hit_react",
 	# Specials (characters.md v1.4): Phantom windup / kick, Bulwark bang, Corpsman heal.
@@ -202,8 +205,13 @@ var clip: StringName = &""
 var hand_props: PackedStringArray = PackedStringArray()
 ## D-115 (ENV D audit R1): the hard-hat hand lift of this rig (null when it wears no hard hat).
 var hat_lift: HardHatHandLift = null
-## characters.md v1.19: the crew body's upper-body layer (hold_* over locomotion, aim_* while aiming); null for NPCs.
+## characters.md v1.19: the upper-body layer over locomotion (crew hold_*; aim_* while aiming; D-116 aim_<fam>_<gait>
+## and a moving reload, NPCs too).
 var hold_layer: UpperBodyLayer = null
+## D-116 police combat clip choices (CombatClips).
+var combat: CombatClips = null
+## WeaponDef.weapon_class of the held weapon (-1 without a WeaponDef): the D-116 class reloads.
+var weapon_class: int = -1
 ## Lead ruling (b): the upper-body hit-zone flinch layer (every animated body); see _play_flinch_layer.
 var flinch_layer: UpperBodyLayer = null
 ## Lead ruling (c): the third-person left hand on the weapon's LeftHandIK (rifle-family holds); null without a rig.
@@ -246,6 +254,7 @@ var _vel: Vector3 = Vector3.ZERO
 var _oneshot: StringName = &""
 var _oneshot_left: float = 0.0
 var _oneshot_speed: float = 1.0
+var _oneshot_dur: float = 0.0
 var _oneshot_while_moving: bool = false
 var _restart: bool = false
 var _turning_left: float = 0.0
@@ -356,6 +365,7 @@ func _exit_tree() -> void:
 ## (Re)find the visual's AnimationPlayer and the weapon; returns true when active.
 func bind() -> bool:
 	_body = get_parent() as Node3D
+	combat = combat if combat != null else CombatClips.new(self)
 	_npc = _body as NpcBase
 	_crew = _body as CrewController
 	player = find_player(_body)
@@ -373,9 +383,8 @@ func bind() -> bool:
 		_crew.weapons.equipped_changed.connect(_on_equipped)
 		_crew.weapons.reload_started.connect(_on_reload_started)
 	refresh_weapon()
-	hold_layer = null
-	if _crew != null:  # v1.19 weapon holds; first among the modifiers (the hat lift fixes up after it)
-		hold_layer = UpperBodyLayer.ensure(rig.get_node_or_null(^"Skeleton3D") as Skeleton3D)
+	# v1.19 weapon holds (D-116: NPCs too); first among the modifiers (the hat lift fixes up after it)
+	hold_layer = UpperBodyLayer.ensure(rig.get_node_or_null(^"Skeleton3D") as Skeleton3D)
 	var skel: Skeleton3D = rig.get_node_or_null(^"Skeleton3D") as Skeleton3D
 	flinch_layer = UpperBodyLayer.ensure(skel, FLINCH_LAYER_NODE, 1)
 	if _crew != null:
@@ -423,8 +432,9 @@ func tick(delta: float) -> void:
 	var hint: StringName = _hint()
 	if hint != _last_hint:
 		_last_hint = hint
-		if ONESHOT_HINTS.has(hint):
-			play_oneshot(hint, -1.0, true)
+		var once: StringName = combat.hint_oneshot(hint)  # D-116: hit_react while staggered (L4.5) = stagger_<fam>
+		if ONESHOT_HINTS.has(hint) and not (once != hint and _oneshot == once and _oneshot_left > 0.0):
+			play_oneshot(once, -1.0, true)
 	_update_turn(delta, tw)
 	var want: StringName = choose_clip()
 	if _npc != null and _npc.alive:
@@ -520,6 +530,7 @@ func play_oneshot(p_clip: StringName, duration: float = -1.0, while_moving: bool
 		duration = player.get_animation(full).length / maxf(speed, 0.01)
 	_oneshot = p_clip
 	_oneshot_left = duration
+	_oneshot_dur = duration
 	_oneshot_speed = speed
 	_oneshot_while_moving = while_moving
 	_restart = true
@@ -658,14 +669,18 @@ func _active_clip(hint_clip: StringName) -> StringName:
 	var speed: float = horizontal_speed()
 	var moving: bool = speed > tw.move_threshold_mps
 	var out: StringName = _idle_clip()
-	if _oneshot_left > 0.0 and (not moving or _oneshot_while_moving):
+	var aiming: bool = _aiming()
+	var cover: StringName = combat.cover_clip(_npc) if _npc != null and not moving and aiming else &""
+	# D-116: on a cover post the cover loop plays on through the shots and turns (they would restart it).
+	var cover_hold: bool = cover != &"" and (String(_oneshot).begins_with("fire_") or String(_oneshot).begins_with("turn_"))
+	if _oneshot_left > 0.0 and (not moving or _oneshot_while_moving) and not cover_hold:
 		out = _oneshot
 	elif _interact_kind != &"" and _crew != null:
 		out = _interact_clip(tw)
 	elif moving:
 		out = _locomotion_clip(speed, tw)
-	elif _aiming():
-		out = aim_clip()
+	elif aiming:
+		out = cover if cover != &"" else aim_clip()
 	elif hint_clip != &"" and hint_clip != &"idle" and not ONCE_ONLY_HINTS.has(hint_clip):
 		out = hint_clip
 	return out
@@ -697,6 +712,7 @@ func refresh_weapon() -> void:
 		# NPC weapon ids (weapon.npc_*) have no model of their own: ENV B's mapping to an armory model (PO6-16 review).
 		def = NpcWeaponModels.weapon_def(_npc.enemy_def.weapon)
 	weapon_kind = _kind_for(def)
+	weapon_class = def.weapon_class if def != null else -1
 	_holds_weapon = def != null
 	var socket: Node3D = rig.get_node_or_null(^"Skeleton3D/HandR/Socket") as Node3D if rig != null else null
 	if def == null or def.model == null or socket == null:
@@ -925,22 +941,30 @@ func _update_hold_layer(delta: float, tw: AnimTweak) -> void:
 		return
 	var want: StringName = &""
 	var plain: StringName = &""
+	var aim_move: StringName = &""  # D-116: aim_<fam>_<gait>, phase-locked to the base gait
+	var moving_reload: bool = _oneshot_left > 0.0 and String(_oneshot).begins_with("reload_")
 	if _layered_locomotion(clip):
-		if _aiming():
-			want = aim_clip()
-			if _held_weapon_clip(&"hold_") == &"" or not player.has_animation("%s/%s" % [LIBRARY, want]):
+		if moving_reload:
+			want = _oneshot  # D-116: a reload while moving rides the layer at its own time
+		elif _aiming():
+			aim_move = combat.aim_move_clip(clip)
+			want = aim_move if aim_move != &"" else aim_clip()
+			if (_crew != null and _held_weapon_clip(&"hold_") == &"") or (_crew == null and aim_move == &"") \
+					or not player.has_animation("%s/%s" % [LIBRARY, want]):
 				want = &""
-		else:
+		elif _crew != null:
 			plain = _held_weapon_clip(&"hold_")
 			want = HoldGait.clip_for(plain, clip, player, LIBRARY)  # v1.25: hold_<kind>_<gait> when D has it
-	var gait_locked: bool = want != &"" and want != plain
+	var gait_locked: bool = want != &"" and want != plain and not moving_reload
 	if want != &"" and want != hold_layer.clip:
 		var a: Animation = player.get_animation("%s/%s" % [LIBRARY, want])
 		var start: float = 0.0 if gait_locked else _loop_offset(&"weapon_hold") * a.length
 		hold_layer.set_clip(want, a, start if String(want).begins_with("hold_") else 0.0)
 	hold_layer.advance(delta)
-	if gait_locked and player.is_playing():
-		hold_layer.time = player.current_animation_position  # v1.25: frame-locked to the base gait, every tick
+	if want == _oneshot and moving_reload:
+		hold_layer.time = (_oneshot_dur - _oneshot_left) * _oneshot_speed
+	elif gait_locked and player.is_playing():  # v1.25: frame-locked to the base gait, every tick
+		hold_layer.time = CombatClips.gait_time(player, want, aim_move != &"")
 	var target: float = 1.0 if want != &"" else 0.0
 	hold_layer.influence = move_toward(hold_layer.influence, target, delta / maxf(tw.hold_layer_blend_s, 0.001))
 	hold_layer.active = hold_layer.influence > 0.0
@@ -956,7 +980,8 @@ func _update_left_hand_ik(delta: float, tw: AnimTweak) -> void:
 	var wv: WeaponVisual = weapon_visual as WeaponVisual
 	var marker: Node3D = wv.get_marker(&"LeftHandIK") if wv != null and is_instance_valid(wv) else null
 	var two_hands: bool = String(clip).begins_with("idle_alert_") or clip == &"aim_rifle" or clip == &"fire_rifle" \
-		or (hold_layer != null and hold_layer.active and _layered_locomotion(clip))
+		or (hold_layer != null and hold_layer.active and _layered_locomotion(clip) \
+			and not String(hold_layer.clip).begins_with("reload_"))
 	two_hands = two_hands and (crew_action == null or crew_action.action == &"")  # v1.23: not during an action
 	var want: bool = marker != null and aim_family() == &"rifle" and weapon_visual.visible and two_hands \
 		and not (flinch_layer != null and flinch_layer.active)
@@ -1015,8 +1040,10 @@ func _ambient_hint(h: StringName) -> StringName:
 	var tags: Array = _npc.spawn_info.get("tags", []) as Array
 	if h == &"browse" and tags.any(func(t: Variant) -> bool: return String(t).begins_with("civ_cleaner")):
 		return &"mop"
-	if h == &"sit" and tags.has(&"civ_kessler"):
-		return &"sit_chair_read"  # LEAD (D's SL audit): his Seat is an armchair (falls back to sit_bed_read)
+	if h == &"sit" and (tags.has(&"civ_kessler") or combat.armed_seat_clip(_npc) != &""):
+		# LEAD (D's SL audit): Kessler's Seat is an armchair (falls back to sit_bed_read); DB-4 (characters.md v1.24):
+		# a cartel gunman / armed guard sits armed, the long gun across the lap
+		return &"sit_chair_read" if tags.has(&"civ_kessler") else &"sit_chair_armed"
 	if h == &"phone" and String(_npc.spawn_info.get("idle_activity", "")) == "sit":
 		return &"phone_seated"
 	if (h == &"" or h == &"idle") and _npc.role == CartelBrain.ROLE and _npc.alert_state == Enums.AlertState.CALM:
@@ -1290,10 +1317,12 @@ func _on_damage_applied(victim_net_id: int, _attacker: int, info: Dictionary) ->
 	if now - _last_hit_react_t < AnimTweak.data().hit_react_min_gap_s:
 		return
 	_last_hit_react_t = now
-	var zone_clip: StringName = hit_zone_clip(info)
+	# D-116: an explosion staggers a non-shield NPC in place (stagger_<fam>), else the flinches
+	var stagger: StringName = combat.stagger_clip() if combat.explosion_staggers(_npc, info) else &""
+	var zone_clip: StringName = hit_zone_clip(info) if stagger == &"" else &""
 	if zone_clip != &"" and horizontal_speed() > AnimTweak.data().move_threshold_mps and _play_flinch_layer(zone_clip):
 		return  # lead ruling (b): moving, the legs keep their locomotion
-	play_oneshot(zone_clip if zone_clip != &"" else hit_react_clip(_hit_dir), -1.0, true)
+	play_oneshot(stagger if stagger != &"" else (zone_clip if zone_clip != &"" else hit_react_clip(_hit_dir)), -1.0, true)
 
 
 ## Lead ruling (b) / SOURCE hit_zones: a hit-zone flinch on a moving body plays on the upper body only (spine and up,
@@ -1413,8 +1442,9 @@ func _on_audio_cue(cue_id: StringName, _pos: Vector3, source_net_id: int) -> voi
 		# D-111: an NPC reload (the crew's own come from CrewWeapons.reload_started)
 		var g: NpcGunner = _npc.get_node_or_null(^"Gunner") as NpcGunner
 		var dur: float = g.reload_time() if g != null else CombatTweak.data().npc_reload_s
-		var clip_id: StringName = &"reload_pistol" if cue_id == NpcGunner.CUE_RELOAD_PISTOL else &"reload_rifle"
-		var done_s: float = AnimTweak.data().reload_done(&"pistol" if clip_id == &"reload_pistol" else &"rifle")
+		var clip_id: StringName = combat.reload_clip(&"reload_pistol" if cue_id == NpcGunner.CUE_RELOAD_PISTOL \
+			else &"reload_rifle")  # D-116: the class reloads
+		var done_s: float = AnimTweak.data().reload_done(StringName(String(clip_id).trim_prefix("reload_")))
 		play_oneshot(clip_id, dur, false, done_s / maxf(dur, 0.05))
 	elif crew_action != null and cue_id == CrewThrowables.CUE_PIN:
 		crew_action.play_throw()  # v1.23 throw_grenade
@@ -1424,8 +1454,8 @@ func _on_reload_started(_ws: int, duration: float) -> void:
 	if player == null:
 		return
 	var tw: AnimTweak = AnimTweak.data()
-	var c: StringName = &"reload_rifle" if aim_family() == &"rifle" else &"reload_pistol"
-	var key: StringName = aim_family()
+	var c: StringName = combat.reload_clip(&"reload_rifle" if aim_family() == &"rifle" else &"reload_pistol")  # D-116
+	var key: StringName = StringName(String(c).trim_prefix("reload_"))
 	if _crew != null and _crew.crew_state == Enums.CrewState.DOWNED and _has_clip(&"downed_reload"):
 		c = &"downed_reload"  # v1.21
 		key = c
