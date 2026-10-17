@@ -1168,3 +1168,12 @@ Real-GPU numbers are still unmeasured (open risk, handoff §4.14); these counter
 maps); on tiny bases the maxima may rise more than the % (ND guards max 3 → 5). Counts never fall with difficulty and
 never fall below a tier's pre-D-130 value (QC-b). D-130 §1's +50 % / +35 % are floors, not caps: GN's existing guard
 curve (1.8 → 5, ruling 2) stays (QC-a). ND Hazardous+ rolls can exceed the 4-pager cap; accepted (PD2 has the same pressure).
+
+## D-133: loud e2e gates may use a harness-only damage option (2026-10-17, LEAD; from ENV A's DB-7 / GN runs)
+The windowed `auto_loud` pilot reaches every loud objective (DB: breach, product, burn, cartel, thermite carry; GN: hack,
+vault drill) but loses the fight before the end-game, so no loud heist can show a full windowed win, while the mission flow
+itself has no errors. D-115 item 3 is a **flow** gate (objectives, transitions, escape, payday), not a difficulty check
+(difficulty feel is P's real-input pass, item 4). Ruling: an e2e gate run may set a harness-only dev option
+`crew_damage_taken_mult` (ENV A; default 1.0, only settable through the e2e launcher's options, never from menus or
+saves, logged in the run header) to **0.25**, on Routine, with assault events ON. Full immunity and turning assault events
+off are not allowed. The evidence names the option. A mission run that passes this way closes D-115 item 3 for that heist.
