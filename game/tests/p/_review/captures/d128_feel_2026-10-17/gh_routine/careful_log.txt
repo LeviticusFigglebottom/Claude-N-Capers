@@ -1,0 +1,58 @@
+[D128 181.7s t=2.53] pilot: calibrated 0.001600 rad/px yaw, 0.001600 rad/px pitch (settings formula said (0.0016, 0.0016))
+[D128 181.7s t=2.53] run 1: difficulty 0 pagers_max 4
+[D128 181.7s t=2.53] run 1: glasshouse seed 1002 phase 1 crew (3.0, 0.0, 14.4) masked false mode casing DR 4
+[D128 225.3s t=3.07] shot glasshouse_01_hud_pagers_routine.png
+[D128 225.3s t=3.07] SAMPLE CameraC4:5:22:stand:strafe (camera CameraC4): walk to (4.5, 0.2, -5.2) (planned d 5.0 ang 22 zones [1] path 32.6) masked false
+[D128 467.1s t=8.07] pilot: t=5 at (8.7, 0.0, 13.0) corner (9.4, 0.2, 12.8) yaw_err 0.00 fwd=true path=50 mouse_mode=2 state=0 look=(-1.31,0.00) pin_yaw=-1.31218309126416 bot=false
+[D128 628.3s t=10.67] pilot: use MainEntrance (open_door) -> OK in 0.0 s
+[D128 914.8s t=15.58] pilot: t=10 at (7.7, 0.0, 10.7) corner (6.6, 0.2, 10.5) yaw_err -0.00 fwd=true path=39 mouse_mode=2 state=0 look=(-4.90,0.00) pin_yaw=-4.90343285701238 bot=false
+[D128 1174.6s t=20.58] pilot: t=15 at (4.0, 0.0, 9.2) corner (2.8, 0.2, 8.4) yaw_err 0.05 fwd=true path=32 mouse_mode=2 state=0 look=(-5.32,0.00) pin_yaw=-5.27217476614169 bot=false
+[D128 1316.9s t=23.50] pilot: use StaffDoor (open_door) -> OK in 0.0 s
+[D128 1438.2s t=26.25] pilot: use ReceivingDoor (open_door) -> OK in 0.0 s
+[D128 1523.2s t=28.08] pilot: t=20 at (3.5, 0.0, 3.8) corner (3.4, 0.2, 4.4) yaw_err -0.00 fwd=true path=17 mouse_mode=2 state=0 look=(-3.23,0.00) pin_yaw=-3.23456168656412 bot=false
+[D128 1731.6s t=33.10] pilot: t=25 at (4.0, 0.0, -1.8) corner (3.9, 0.2, -1.2) yaw_err 1.40 fwd=false path=3 mouse_mode=2 state=0 look=(-4.70,0.00) pin_yaw=-4.5124155867743 bot=false
+[D128 1870.6s t=36.70]   arrived true at (4.5, 0.0, -5.1) d 4.95 ang 28.7 crouched false meter 0.00 (max any 0.00) alarm 
+[D128 2221.5s t=41.33] shot glasshouse_02_camera_CameraC4_5m_stand_mid.png
+[D128 2317.6s t=42.62]     fill extrapolated from 1.90 s to shown 0.51: 3.89 s
+[D128 2317.6s t=42.62]   RESULT CameraC4:5:22:stand:strafe: first 1.50 full -1.00 -> fill 3.89 s (live-rate integral -1.00, formula at start geom 3.85) geom start d 4.95/28.7 first 4.95/29.4 full 0.00/0.0 end 5.03/31.6 crouched false DR 4
+[D128 2317.6s t=42.62]     HUD first: meter 0.06 hud -1.00 ring - | mid: meter 0.56 hud 0.51 ring ? 0.51 on+arc | full: 
+[D128 2317.6s t=42.62]     DECAY exit at 3.40 (shown 0.51) out-of-range at 3.67 -> 0 at 4.90: 1.23 s (PD2 expect 1.17 s)
+[D128 2505.5s t=47.83] pilot: t=5 at (0.3, 0.0, -4.0) corner (-3.1, 0.2, -3.1) yaw_err 0.00 fwd=true path=3 mouse_mode=2 state=0 look=(-4.47,0.00) pin_yaw=-4.47377270578727 bot=false
+[D128 2638.8s t=52.82] pilot: t=10 at (-4.4, 0.0, -2.8) corner (-5.8, 0.2, -2.5) yaw_err 0.19 fwd=true path=2 mouse_mode=2 state=0 look=(-4.67,0.00) pin_yaw=-4.47980451207695 bot=false
+[D128 2661.6s t=53.93] careful: at mask spot (-5.6, 0.0, -2.6), max meter 0.00
+[D128 2687.3s t=55.25] careful: masked true
+[D128 2689.8s t=55.33] shot glasshouse_03_careful_masked.png
+[D128 2895.0s t=59.83] careful: leg 1 -> (-1.0, 0.0, -0.7) reached true, max meter now 0.00 (-) alarm 
+[D128 3105.6s t=63.98] careful: leg 2 -> (2.8, 0.0, -0.6) reached true, max meter now 0.00 (-) alarm 
+[D128 3215.9s t=66.20] careful: leg 3 -> (3.5, 0.0, 1.2) reached true, max meter now 0.00 (-) alarm 
+[D128 3311.8s t=68.20] careful: leg 4 -> (3.2, 0.0, 3.0) reached true, max meter now 0.00 (-) alarm 
+[D128 3473.6s t=71.48] careful: leg 5 -> (2.0, 0.0, 5.2) reached true, max meter now 0.00 (-) alarm 
+[D128 3478.6s t=71.60] shot glasshouse_04_careful_end.png
+[D128 3478.6s t=71.60] careful: camera CameraC3 closest 14.1 m (ang 15) peak meter 0.00
+[D128 3478.6s t=71.60] careful: camera CameraC4 closest 2.6 m (ang 87) peak meter 0.00
+[D128 3478.6s t=71.60] careful: camera CameraC6 closest 6.1 m (ang 72) peak meter 0.00
+[D128 3478.6s t=71.60] careful: guard Npc_guard closest 8.1 m (ang 105) peak meter 0.00
+[D128 3478.6s t=71.60] careful: guard Npc_guard2 closest 11.8 m (ang 111) peak meter 0.00
+[D128 3478.6s t=71.60] careful: civilian Npc_civilian closest 2.1 m (ang 166) peak meter 0.00
+[D128 3478.6s t=71.60] careful: civilian Npc_civilian2 closest 6.4 m (ang 60) peak meter 0.00
+[D128 3478.6s t=71.60] careful: civilian Npc_civilian3 closest 5.1 m (ang 86) peak meter 0.00
+[D128 3478.6s t=71.60] careful: civilian Npc_civilian4 closest 5.9 m (ang 164) peak meter 0.00
+[D128 3478.6s t=71.60] careful: civilian Npc_civilian5 closest 7.3 m (ang 132) peak meter 0.00
+[D128 3478.6s t=71.60] careful: civilian Npc_civilian6 closest 9.7 m (ang 151) peak meter 0.00
+[D128 3478.6s t=71.60] careful: civilian Npc_civilian7 closest 4.6 m (ang 169) peak meter 0.00
+[D128 3478.6s t=71.60] careful: civilian Npc_civilian8 closest 3.1 m (ang 98) peak meter 0.00
+[D128 3478.6s t=71.60] careful: RESULT CLEAN (alarm )
+[D128 3478.6s t=71.60] SAMPLE CameraC3:10:15:stand:decay: SKIP no reachable point with sight at 10.0 m / 15 deg
+[D128 3511.4s t=72.63] shoot: CameraC3 titan false at 15.5 m, secondary <null>
+[D128 3738.3s t=76.38] shoot: CameraC3 after 6 shots: destroyed true (titan false) alarm 
+[D128 3744.6s t=76.40] shot glasshouse_05_shoot_CameraC3_broken.png
+[D128 3744.6s t=76.40] SAMPLE @civilian:5:0:crouch (civilian Npc_civilian): walk to (3.6, 0.2, 11.6) (planned d 4.7 ang 0 zones [1] path 7.2) masked true
+[D128 4076.4s t=81.40] pilot: t=5 at (2.4, 0.0, 9.4) corner (2.3, 0.2, 8.9) yaw_err 3.12 fwd=false path=8 mouse_mode=2 state=0 look=(-2.83,0.00) pin_yaw=-2.64055309440016 bot=false
+[D128 4128.0s t=82.25] ALARM civilian_call
+[D128 4272.5s t=84.47]   arrived true at (3.4, 0.0, 11.4) d 10.25 ang 176.6 crouched true meter 0.00 (max any 0.00) alarm civilian_call
+[D128 4272.5s t=84.47] DONE runs=1
+[D128ROW] glasshouse|CameraC4:5:22:stand:strafe|camera|CameraC4|d 4.9|ang 29|stand|DR 4|fill 3.89|live -|formula 3.85|decay 1.23 (exp 1.17)|meter 0.56 hud 0.51 ring ? 0.51 on+arc
+[D128ROW] glasshouse|careful|CLEAN|alarm 
+[D128ROW] glasshouse|CameraC3:10:15:stand:decay|camera|SKIP unreachable
+[D128ROW] glasshouse|shoot|CameraC3|diff 0|destroyed true|titan false
+[D128ROW] glasshouse|@civilian:5:0:crouch|civilian|ABORT detected on approach (civilian_call)
