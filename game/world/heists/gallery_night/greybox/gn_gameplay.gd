@@ -16,11 +16,11 @@ extends "res://world/heists/gallery_night/greybox/gn_builder_base.gd"
 const CODE_GROUP: StringName = &"argus"
 ## Spawn tags a locked door's `npc_authorized_tags` lists (Door._staff_authorised matches SpawnPoint tags; G1 step 2d):
 ## "@guards" in a DOORS `npc` list expands to every Halberd guard post, "@staff" to every staff civilian (B2: the
-## curator, attendants, waitstaff, conservator, PA; patrons carry none of these). The rare-event inspectors and
+## curator, attendants, waitstaff, conservator, PA; patrons carry none of these). The rare-event inspectors (+ escorts) and
 ## Vaultline couriers walk to the centrepiece slot, so they also pass the TR door (cp_treasury); the LD personnel door
 ## (push_bar) lets the dock smoker and the waitstaff (Circulation: they leave by it at last call + 120 s) out.
 const GUARD_TAGS: Array = ["guard_hall", "guard_rover_ground", "guard_rover_upper", "guard_rover_basement",
-	"guard_inspection", "guard_vaultline"]
+	"guard_inspection", "guard_inspection_escort", "guard_vaultline"]
 const STAFF_TAGS: Array = ["civ_curator", "civ_attendant", "civ_waitstaff", "civ_conservator", "civ_admin"]
 ## B2: boundary doors into BOH are LOCKPICK 8 s.
 const LOCKPICK_S: float = 8.0
@@ -89,7 +89,8 @@ const DOORS: Array = [
 	["StudioGalleryDoor", "U", "x", 12.0, 35.5, "single", "LOCKPICK", "S",
 		{"npc": ["@guards", "civ_conservator", "civ_curator"]}],
 	["AttendantDoorN", "U", "x", 24.0, 32.5, "service", "NONE", "N", {}],
-	["TreasuryDoor", "U", "x", 24.0, 38.5, "service", "KEYCARD", "N", {"npc": ["guard_inspection", "guard_vaultline"]}],
+	["TreasuryDoor", "U", "x", 24.0, 38.5, "service", "KEYCARD", "N",
+		{"npc": ["guard_inspection", "guard_inspection_escort", "guard_vaultline"]}],
 	["AttendantDoorW", "U", "z", 32.0, 27.5, "service", "NONE", "W", {}],
 	["HeadHouseDoor", "R", "z", 3.0, 6.5, "service", "LOCKPICK", "W", {"push_bar": true, "leaf": "metal"}],
 ]

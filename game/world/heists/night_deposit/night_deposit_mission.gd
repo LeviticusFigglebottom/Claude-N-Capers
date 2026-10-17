@@ -1,4 +1,4 @@
-## Night Deposit (Harbor Savings & Loan) mission flow. Owner: ENV C (C2).
+## Night Deposit (Harbor Savings & Loan) mission flow. Owner: ENV A (mission scripts, owners.json; ENV C built the first flow, C2).
 ## Design: docs/design/heists/night_deposit.md §Objectives / §Rare events / §Escape (D-040).
 ## Contract heist_map.md §6: uses only the HeistMission API, EventBus, Services and nodes of this map
 ## (prefabs found by objective_tag).

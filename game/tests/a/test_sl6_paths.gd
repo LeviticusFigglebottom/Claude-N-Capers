@@ -51,6 +51,21 @@ func test_sl6_srv_locked_needs_a_keycard_and_the_reader() -> void:
 	assert_eq(m.objective_state(&"server_door"), DONE, "[server_door] done at the reader")
 
 
+## B-SL audit: on the contractor variant [keycard] / [server_door] are born COMPLETED (never published ACTIVE first),
+## so ContactRadio's first sighting is silent and the Accountant's keycard / server-room lines never fire.
+func test_sl6_srv_contractor_steps_complete_silently() -> void:
+	var seen: Dictionary = {}
+	var cb: Callable = func(oid: StringName, state: int, _d: Dictionary) -> void:
+		if not seen.has(oid):
+			seen[oid] = state
+	EventBus.objective_updated.connect(cb)
+	var m: HeistMission = await _launch({&"server_room": [&"srv_contractor"], &"code_note": [&"code_contractor"]})
+	EventBus.objective_updated.disconnect(cb)
+	for oid: StringName in [&"keycard", &"server_door"]:
+		assert_eq(int(seen.get(oid, -1)), DONE, "[%s] first published COMPLETED, never ACTIVE" % oid)
+		assert_eq(m.objective_state(oid), DONE, "[%s] done" % oid)
+
+
 func test_sl6_srv_contractor_skips_keycard_and_props_the_door() -> void:
 	var m: HeistMission = await _launch({&"server_room": [&"srv_contractor"], &"code_note": [&"code_contractor"]})
 	assert_eq(m.objective_state(&"keycard"), DONE, "[keycard] skipped")

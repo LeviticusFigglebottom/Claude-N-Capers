@@ -81,7 +81,8 @@ func test_kind_per_weapon_class() -> void:
 		crew.velocity = Vector3(0, 0, -1.6)
 		for _i: int in 8:
 			d.tick(0.05)
-		assert_eq(d.hold_layer.clip, StringName("hold_" + k), "%s: hold_%s over the walk" % [k, k])
+		assert_eq(d.hold_layer.clip, HoldGait.clip_for(StringName("hold_" + k), d.clip, d.player, AnimDriver.LIBRARY),
+			"%s: hold_%s (gait-locked, v1.25) over the walk" % [k, k])
 		crew.velocity = Vector3.ZERO
 		for _i: int in 20:
 			d.tick(0.05)

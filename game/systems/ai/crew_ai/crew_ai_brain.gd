@@ -27,6 +27,10 @@
 ##   zone within secure_seek_radius_m) / revive (this AI takes that downed crew member before the
 ##   automatic assignment); drop_bag (one-shot). The ordering human becomes the leader. Each
 ##   accepted order requests `vo.crew.ack_<order>` (voice_line_requested [R]).
+## - PO6-15 give way (PD2 bots step aside): a human walking into an idle / holding / following bot (waiting at the van
+##   too; never one reviving, fetching or securing a bag) makes it sidestep off the human's line toward the side
+##   with free navmesh, stand there give_way_hold_s after the path is clear, then resume (`_give_way_wish`). A
+##   moving leader's formation slot ahead of it in a narrow passage is mirrored behind it (`_clear_ahead`).
 ## Movement: NavigationServer3D path on the crew's world navigation map, straight-line fallback.
 ## All numbers: CrewAiTweak (crew_ai_tweak.tres).
 class_name CrewAiBrain
@@ -38,6 +42,7 @@ enum Mode { INACTIVE, STEALTH_WAIT, IDLE, REVIVE, COVER, FOLLOW, HOLD, FETCH_BAG
 const SIGHT_HIPS_M: float = 0.9
 const NODE_NAME: String = "CrewAiBrain"
 const RNG_STREAM: StringName = &"crew_ai"
+const GIVE_WAY_RNG_STREAM: StringName = &"crew_ai_give_way"
 const TWEAK_PATH: String = "res://systems/ai/crew_ai/crew_ai_tweak.tres"
 const WORLD_MASK: int = (1 << 0) | (1 << 1)
 const HOSTILE_ROLES: Array[StringName] = [&"police", &"special", &"guard", &"cartel"]
@@ -66,6 +71,11 @@ var hold_point: Vector3 = Vector3.ZERO
 var stealth_engaged: bool = false
 ## Slot of the human who gave the last order (the leader), -1 = nearest human.
 var leader_slot: int = -1
+## PO6-15 give way: time left standing aside (s; > 0 while giving way), the side (+1 / -1 along the human's
+## right-hand perpendicular, 0 = none) and the sidestep target.
+var give_way_left: float = 0.0
+var give_way_side: int = 0
+var give_way_target: Vector3 = Vector3.INF
 
 var _crew: CrewController = null
 var _rt: HeistRuntime = null
@@ -101,6 +111,8 @@ var _secure_look: Vector3 = Vector3.INF
 var _pending: Array[Dictionary] = []
 ## Per human slot: the last routed order key (rising-edge, idempotent across repeated ticks).
 var _order_keys: Dictionary[int, String] = {}
+## The human this bot is giving way to.
+var _give_way_from: CrewController = null
 
 
 func _ready() -> void:
@@ -266,7 +278,8 @@ func _physics_step(delta: float) -> void:
 			mode = Mode.STEALTH_WAIT
 			_crew.stealth_hidden = true
 			var wi: CrewIntent = _idle_intent()
-			_move_intent(wi, _personal_space_dir())
+			var gw: Vector3 = _give_way_wish(delta, true)
+			_move_intent(wi, gw if give_way_left > 0.0 else _personal_space_dir())
 			var wl: CrewController = _pick_leader()
 			if wl != null and wl.masked and not _crew.masked:
 				_crew.set_masked()  # still hidden (stealth_hidden); masked so it can crouch with the leader
@@ -306,6 +319,7 @@ func _think(delta: float) -> CrewIntent:
 		mode = Mode.IDLE
 		target_enemy = null
 		_interact_ticks = 0
+		_give_way_reset()
 		return _idle_intent()
 	var i: CrewIntent = CrewIntent.new()
 	_in_cover = false
@@ -322,6 +336,7 @@ func _think(delta: float) -> CrewIntent:
 	if revive_target != null:
 		mode = Mode.REVIVE
 		cover_point = null
+		_give_way_reset()  # PO6-15: never leaves a revive
 		var d: float = _flat_dist(_crew.global_position, revive_target.global_position)
 		if d > tweak.revive_range_m:
 			wish = _steer(revive_target.global_position, delta)
@@ -337,7 +352,12 @@ func _think(delta: float) -> CrewIntent:
 			goal = _hold_goal() if stance == &"hold" else _follow_goal()
 		elif _secure_look != Vector3.INF:
 			look_point = _secure_look
-		if goal != Vector3.INF:
+		var gw: Vector3 = _give_way_wish(delta, _may_give_way())
+		if give_way_left > 0.0:
+			wish = gw  # PO6-15: stand aside first, then resume the goal
+			_in_cover = false
+			_stuck_s = 0.0
+		elif goal != Vector3.INF:
 			goal_dist = _flat_dist(_crew.global_position, goal)
 			wish = _steer(goal, delta)
 			if _trailing(wish):
@@ -350,7 +370,7 @@ func _think(delta: float) -> CrewIntent:
 			task = &"" if task == &"carry_bag" else task
 	if not mobile:
 		wish = Vector3.ZERO
-	elif wish.length() <= 0.01 and not interacting:
+	elif wish.length() <= 0.01 and not interacting and give_way_left <= 0.0:
 		wish = _personal_space_dir()  # idle: step out of a human's way
 	if look_point == Vector3.INF and target_enemy != null and not interacting:
 		look_point = _aim_point(target_enemy)
@@ -494,8 +514,136 @@ func _formation_slot(leader: CrewController) -> Vector3:
 	var rank: int = maxi(ais.find(_crew.slot), 0)
 	var centre: float = float(ais.size() - 1) * 0.5
 	var angle: float = deg_to_rad(tweak.follow_spread_deg) * (float(rank) - centre)
-	var dir: Vector3 = base.normalized().rotated(Vector3.UP, angle)
+	var dir: Vector3 = _clear_ahead(leader, base.normalized().rotated(Vector3.UP, angle))
 	return leader.global_position + dir * tweak.follow_min_m
+
+
+## PO6-15: a slot within formation_ahead_cone_deg of a moving leader's heading, in a passage narrower than
+## formation_narrow_width_m across that heading, is mirrored behind the leader (bots do not wait in a corridor
+## the leader is walking down); else `dir` unchanged.
+func _clear_ahead(leader: CrewController, dir: Vector3) -> Vector3:
+	var lv: Vector3 = Vector3(leader.velocity.x, 0.0, leader.velocity.z)
+	if lv.length() < tweak.give_way_min_speed:
+		return dir
+	var fwd: Vector3 = lv.normalized()
+	if dir.dot(fwd) < cos(deg_to_rad(tweak.formation_ahead_cone_deg)):
+		return dir
+	var slot: Vector3 = leader.global_position + dir * tweak.follow_min_m
+	var perp: Vector3 = Vector3(-fwd.z, 0.0, fwd.x)
+	var half: float = tweak.formation_narrow_width_m * 0.5
+	if _free_lateral(slot, perp, half) + _free_lateral(slot, -perp, half) >= tweak.formation_narrow_width_m - 0.01:
+		return dir
+	return dir - fwd * (2.0 * dir.dot(fwd))
+
+
+## PO6-15: may this bot give way now? Idle, following, holding or in cover (not reviving, fetching / securing a bag).
+func _may_give_way() -> bool:
+	return mode == Mode.FOLLOW or mode == Mode.HOLD or mode == Mode.IDLE or mode == Mode.COVER
+
+
+## PO6-15 (PD2 bots step aside): world move direction (unit or ZERO) off the path of a human walking into this bot.
+## A threat (`_give_way_threat`) (re)plans the sidestep (keeping the side once chosen) and restarts give_way_hold_s;
+## without one the timer runs down, then the bot resumes. `allowed` false cancels.
+func _give_way_wish(delta: float, allowed: bool) -> Vector3:
+	if not allowed:
+		_give_way_reset()
+		return Vector3.ZERO
+	var human: CrewController = _give_way_threat()
+	if human != null:
+		var keep: int = give_way_side if give_way_left > 0.0 and human == _give_way_from else 0
+		_plan_give_way(human, keep)
+		give_way_left = tweak.give_way_hold_s
+	else:
+		give_way_left = maxf(give_way_left - delta, 0.0)
+		if give_way_left <= 0.0:
+			_give_way_reset()
+			return Vector3.ZERO
+	var to: Vector3 = give_way_target - _crew.global_position
+	to.y = 0.0
+	return to.normalized() if to.length() > 0.05 else Vector3.ZERO
+
+
+func _give_way_reset() -> void:
+	give_way_left = 0.0
+	give_way_side = 0
+	give_way_target = Vector3.INF
+	_give_way_from = null
+
+
+## The nearest human (NORMAL / SWAN_SONG, same floor) moving faster than give_way_min_speed with this bot ahead on
+## its line: within max(give_way_radius_m, speed x give_way_lookahead_s) and give_way_path_half_width_m of the
+## line. Null when none.
+func _give_way_threat() -> CrewController:
+	var best: CrewController = null
+	var best_d: float = INF
+	for c: CrewController in _rt.crew_members():
+		if c == _crew or c.is_ai or (c.crew_state != Enums.CrewState.NORMAL and c.crew_state != Enums.CrewState.SWAN_SONG):
+			continue
+		var v: Vector3 = Vector3(c.velocity.x, 0.0, c.velocity.z)
+		var speed: float = v.length()
+		var r: Vector3 = _crew.global_position - c.global_position
+		if speed < tweak.give_way_min_speed or absf(r.y) >= 1.0:
+			continue
+		r.y = 0.0
+		var fwd: Vector3 = v / speed
+		var along: float = r.dot(fwd)
+		var reach: float = maxf(tweak.give_way_radius_m, speed * tweak.give_way_lookahead_s)
+		if along <= 0.0 or r.length() > reach or (r - fwd * along).length() >= tweak.give_way_path_half_width_m:
+			continue
+		if r.length() < best_d:
+			best = c
+			best_d = r.length()
+	return best
+
+
+## Sidestep target: give_way_lateral_m off `human`'s line (at this bot's projection on it), clipped to the free
+## navmesh / wall room on side `keep` (0 = choose: more free room, the side the bot already stands on preferred
+## by give_way_keep_side_bias_m, an exact tie on GameRng GIVE_WAY_RNG_STREAM).
+func _plan_give_way(human: CrewController, keep: int) -> void:
+	var fwd: Vector3 = Vector3(human.velocity.x, 0.0, human.velocity.z).normalized()
+	var perp: Vector3 = Vector3(-fwd.z, 0.0, fwd.x)
+	var r: Vector3 = _crew.global_position - human.global_position
+	r.y = 0.0
+	var line_pt: Vector3 = human.global_position + fwd * r.dot(fwd)
+	line_pt.y = _crew.global_position.y
+	var want: float = tweak.give_way_lateral_m
+	var side: int = keep
+	var free: float = 0.0
+	if side == 0:
+		var off: float = r.dot(perp)
+		var free_r: float = _free_lateral(line_pt, perp, want)
+		var free_l: float = _free_lateral(line_pt, -perp, want)
+		var score_r: float = free_r + (tweak.give_way_keep_side_bias_m if off > 0.05 else 0.0)
+		var score_l: float = free_l + (tweak.give_way_keep_side_bias_m if off < -0.05 else 0.0)
+		if absf(score_r - score_l) < 0.05:
+			side = 1 if GameRng.stream(GIVE_WAY_RNG_STREAM).randi_range(0, 1) == 0 else -1
+		else:
+			side = 1 if score_r > score_l else -1
+		free = free_r if side > 0 else free_l
+	else:
+		free = _free_lateral(line_pt, perp * float(side), want)
+	give_way_side = side
+	give_way_target = line_pt + perp * float(side) * free
+	_give_way_from = human
+
+
+## Free room (m, 0..want) from `from` along horizontal unit `dir` for the crew capsule: the navmesh (closest point
+## to from + dir * want, same floor) and a hip-height wall ray less the capsule radius, whichever is less.
+func _free_lateral(from: Vector3, dir: Vector3, want: float) -> float:
+	var free: float = want
+	var nav: RID = _crew.get_world_3d().navigation_map
+	if nav.is_valid() and NavigationServer3D.map_get_iteration_id(nav) > 0 \
+			and not NavigationServer3D.map_get_regions(nav).is_empty():
+		var p: Vector3 = NavigationServer3D.map_get_closest_point(nav, from + dir * want)
+		free = 0.0 if absf(p.y - from.y) > 1.0 else clampf((p - from).dot(dir), 0.0, want)
+	var cap: float = Tweak.crew().capsule_radius
+	var hip: Vector3 = from + Vector3.UP * SIGHT_HIPS_M
+	var q: PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.create(hip, hip + dir * (want + cap), WORLD_MASK)
+	q.exclude = [_crew.get_rid()]
+	var hit: Dictionary = _crew.get_world_3d().direct_space_state.intersect_ray(q)
+	if not hit.is_empty():
+		free = minf(free, maxf(hip.distance_to(hit["position"]) - cap, 0.0))
+	return free
 
 
 ## Away from every human crew member within personal_radius_m (horizontal, same floor), or ZERO.

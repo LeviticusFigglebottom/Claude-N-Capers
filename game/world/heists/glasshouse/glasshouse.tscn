@@ -23624,6 +23624,7 @@ slot_id = &"cam_c1"
 [node name="CameraC1" type="Node3D" parent="Variants/Group_camera/Slot_cam_c1" unique_id=102640 instance=ExtResource("211_gh")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 12.5, 3, 6.1)
 script = ExtResource("212_gh")
+range_m = 20.0
 pan_deg = 40.0
 visual_scene = ExtResource("213_gh")
 objective_tag = &"security_camera"
@@ -23639,6 +23640,7 @@ slot_id = &"cam_c2"
 [node name="CameraC2" type="Node3D" parent="Variants/Group_camera/Slot_cam_c2" unique_id=102642 instance=ExtResource("211_gh")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.6, 3, 11.8)
 script = ExtResource("212_gh")
+range_m = 20.0
 pan_deg = 40.0
 visual_scene = ExtResource("213_gh")
 objective_tag = &"security_camera"
@@ -23654,6 +23656,7 @@ slot_id = &"cam_c3"
 [node name="CameraC3" type="Node3D" parent="Variants/Group_camera/Slot_cam_c3" unique_id=102644 instance=ExtResource("211_gh")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 17.8, 2.6, 5.25)
 script = ExtResource("212_gh")
+range_m = 20.0
 pan_deg = 40.0
 visual_scene = ExtResource("213_gh")
 objective_tag = &"security_camera"
@@ -23669,6 +23672,7 @@ slot_id = &"cam_c4"
 [node name="CameraC4" type="Node3D" parent="Variants/Group_camera/Slot_cam_c4" unique_id=102646 instance=ExtResource("211_gh")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 3, -0.2)
 script = ExtResource("212_gh")
+range_m = 20.0
 pan_deg = 40.0
 visual_scene = ExtResource("213_gh")
 objective_tag = &"security_camera"
@@ -23684,6 +23688,7 @@ slot_id = &"cam_c5"
 [node name="CameraC5" type="Node3D" parent="Variants/Group_camera/Slot_cam_c5" unique_id=102648 instance=ExtResource("211_gh")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.5, 2.6, 4.4)
 script = ExtResource("212_gh")
+range_m = 20.0
 pan_deg = 40.0
 visual_scene = ExtResource("213_gh")
 objective_tag = &"security_camera"
@@ -23699,6 +23704,7 @@ slot_id = &"cam_c6"
 [node name="CameraC6" type="Node3D" parent="Variants/Group_camera/Slot_cam_c6" unique_id=102650 instance=ExtResource("211_gh")]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 0.2, 6.8, 5.25)
 script = ExtResource("212_gh")
+range_m = 20.0
 pan_deg = 40.0
 visual_scene = ExtResource("213_gh")
 objective_tag = &"security_camera"

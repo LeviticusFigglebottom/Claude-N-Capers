@@ -1,4 +1,4 @@
-## Glasshouse (Vossberg Jewelers) mission flow. Owner: ENV C (C1-03).
+## Glasshouse (Vossberg Jewelers) mission flow. Owner: ENV A (mission scripts, owners.json; ENV C built the first flow, C1-03).
 ## Design: docs/design/heists/glasshouse.md §Objectives / §Escape. Contract: heist_map.md §6: uses
 ## only the HeistMission API, EventBus and nodes of this map (found by objective_tag).
 ##
@@ -201,21 +201,20 @@ func _go_loud() -> void:
 	if _lockdown:
 		return
 	_lockdown = true
-	say(&"vo.mercer.glasshouse_lockdown")
+	if not _safe_open:
+		say(&"vo.mercer.glasshouse_lockdown")  # B-GH audit: not about an already-open safe
 	for r: Node in find_tagged(TAG_SAFE_READER):
 		var it: Node = r.get_node_or_null(^"Interactable")
 		if it != null:
 			it.set(&"enabled", false)
 	if not _safe_open:
-		update_objective_data(&"safe", {"methods": [&"drill"], "lockdown": true})
+		# B-GH audit RULING: a known code still opens the safe loud (as a keycard on a loud door); only the reader dies.
+		update_objective_data(&"safe", {"methods": [&"drill", &"code"], "lockdown": true})
 		if objective_state(&"keycard") == Enums.ObjectiveState.ACTIVE:
 			# Board finding: the loud transition must move the objective on. The reader is dead, so the
 			# keycard step is skipped (the drill is the way now); "skipped" as for safe_left_open.
 			update_objective_data(&"keycard", {"disabled": true, "reason": &"lockdown", "skipped": true})
 			complete(&"keycard")
-		if objective_state(&"code") == Enums.ObjectiveState.ACTIVE:
-			update_objective_data(&"code", {"disabled": true, "reason": &"lockdown", "skipped": true})
-			complete(&"code")
 	for g: Node in find_tagged(TAG_POLICE_GATE):
 		g.call(&"unlock")
 		g.call(&"set_open", true)

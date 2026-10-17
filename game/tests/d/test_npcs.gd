@@ -81,6 +81,10 @@ const D115_CAST: Dictionary = {
 	"char_dock_worker_b": {
 		"Outfit": ["char_hivis", "char_reflect_silver", "char_work_charcoal"], "Headwear": ["char_hardhat_blue"],
 	},
+	"char_dock_worker_c": {   # D-115 DB cast: the third civ_worker face (beanie, maroon fleece, denim)
+		"Outfit": ["char_hivis_orange", "char_reflect_silver", "char_fleece_maroon", "char_denim"],
+		"Headwear": ["char_knit_navy"],
+	},
 	"char_npc_cleaner_sl_b": {
 		"Outfit": [
 			"char_cleaner_teal", "char_waistcoat_graphite", "char_knit_graphite", "char_trousers_black",

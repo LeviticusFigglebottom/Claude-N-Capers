@@ -4,6 +4,28 @@ Owner: ENV C. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 
+## 2026-10-16 (new lead session_01HwYKRgCdkLfJCt4ZM6rfTk; resumed @ 80eeb5a8)
+
+**Head:** `80eeb5a8` + this entry on `env/c-worlds` (trunk merge up to date). Round 229 includes fe9397a5.
+
+**Reconstructed from git since the 2026-10-15 entry (all on env/c-worlds, most on trunk):**
+- D-111 items 1-4 landed (9fbc1930 interactables, 1be2c23d SL/DB doors incl. twin roller / cold-store slider /
+  strongroom, e8da2cba DB launch / burn barrels / thermal drill, 262e4b3e loot props). `wip/c-sldb-props` is superseded.
+- DB-C2: Dockside Burn G2 FINAL (47eff58e, 204c2c7a, 3d44dc97, 40274739); chambers A/B told apart (ead0eb41).
+- GN-C2: Gallery Night G2 FINAL (378b1ddc, 355970f9, 4fce657a); bronze doors in loud (99b1dc3e).
+- PO6-06: SL Kessler on a real armchair (8921dbcc); ITContractor on a call (8b5e73c4).
+- D-115/D-117/D-120: briefings, objective markers, payouts, ND objective order (fe9397a5), DB lift breaker, drill
+  markers on leaf faces + thermal tip Sparks/Glow (bd5f09dc), drill sparks streaks (052545d7), drill_capture
+  --back/--up framing (80eeb5a8). ND-3 cover on the boat carry route (0e30b908).
+- D-119: PO6-10 gun finish reverted (85356a69).
+
+**In progress (worktree lanes):**
+- SL-1: Shadow Ledger G2 art pass (dressing, fixtures, GI/env/LUT, probes, occluders, perf, shots + contact sheet).
+- SL-2 remainder (D-111 item 5: secure net/cart/drop art, laser emitters, zipline anchors), SL-3 camera-operator
+  seat, DB-6 stale QC-36/39 comments.
+
+**Queued next:** drill VFX / drill_capture review set; DB-1 follow-ups (chamber variety, trawler/crane art).
+
 ## 2026-10-15 (new session, D-114 PO list)
 
 **Head:** `c4567cb6` on `env/c-worlds` (trunk merged). Lead merged 5afeae90 (r205) and e9e3b96e (r206).

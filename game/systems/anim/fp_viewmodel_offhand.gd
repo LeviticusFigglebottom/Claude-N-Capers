@@ -16,6 +16,7 @@ var _gun: Node3D = null
 var _owner: WeaponVisual = null
 var _next_left: bool = false
 var _mag: Node3D = null
+var _base: Transform3D = Transform3D.IDENTITY
 
 
 ## Called by FpViewmodel._set_weapon for every equipped visual.
@@ -45,6 +46,7 @@ func setup(skeleton: Skeleton3D, wv: WeaponVisual, set_id: StringName) -> void:
 	_mag = off.find_child("Magwell", true, false) as Node3D
 	off.reparent(sock, false)
 	off.transform = wv.transform * main.transform  # weapon bone -> model, now on the left socket
+	_base = off.transform
 
 
 ## Puts a moved offhand gun back under its WeaponVisual (frees it when the visual is gone).
@@ -65,6 +67,41 @@ func restore() -> void:
 	_owner = null
 	_mag = null
 	shot_left = false
+
+
+## PO 2026-10-16: aimed, the akimbo ADS clip turns hand.L so the left gun showed its side (~90 deg off). The left
+## gun turns from the hand's pose toward the right gun's orientation (upright, sights forward) by `w` (ads_weight);
+## its grip stays in the hand. Skeleton space, on this frame's pose (FpViewmodel.AdsAlign, the last modifier).
+func align(skeleton: Skeleton3D, weapon_bone: int, weapon_attach: Node3D, w: float) -> void:
+	var off: Node3D = gun()
+	if off == null or skeleton == null or weapon_bone < 0 or weapon_attach == null or _owner == null \
+			or not is_instance_valid(_owner):
+		return
+	if w <= 0.0:
+		off.transform = _base
+		return
+	var main: Node3D = _owner.get(&"model") as Node3D
+	var hb: int = skeleton.find_bone(FpLeftHandIk.END_BONE)
+	if main == null or hb < 0 or not main.is_inside_tree() or not weapon_attach.is_inside_tree():
+		return
+	var hand: Transform3D = skeleton.get_bone_global_pose(hb) * FpViewmodelTweak.data().akimbo_offhand_grip
+	var main_rel: Transform3D = weapon_attach.global_transform.affine_inverse() * main.global_transform  # rigid
+	var target: Quaternion = (skeleton.get_bone_global_pose(weapon_bone) * main_rel).basis.get_rotation_quaternion()
+	var cur: Basis = hand.basis * _base.basis
+	var q: Quaternion = cur.get_rotation_quaternion().slerp(target, clampf(w, 0.0, 1.0))
+	off.transform = Transform3D(hand.basis.inverse() * Basis(q).scaled(cur.get_scale()), _base.origin)
+
+
+## The left gun's `marker` (AimPoint ...) in skeleton space on this frame's pose (the gun rides hand.L, not the weapon
+## bone), or null when no left gun rides the hand. Akimbo ADS centres between the two sights (FpViewmodel._late_align).
+func marker_in_skeleton(skeleton: Skeleton3D, wv: WeaponVisual, name: StringName) -> Variant:
+	var off: Node3D = gun()
+	var hb: int = skeleton.find_bone(FpLeftHandIk.END_BONE) if skeleton != null else -1
+	var m: Node3D = wv.get_offhand_marker(name) if off != null and wv != null and is_instance_valid(wv) else null
+	if m == null or hb < 0 or not m.is_inside_tree():
+		return null
+	var rel: Vector3 = off.global_transform.affine_inverse() * m.global_position  # rigid within the gun
+	return skeleton.get_bone_global_pose(hb) * FpViewmodelTweak.data().akimbo_offhand_grip * off.transform * rel
 
 
 ## A shot: picks the gun (alternating while the left one rides hand.L; always the right one otherwise).

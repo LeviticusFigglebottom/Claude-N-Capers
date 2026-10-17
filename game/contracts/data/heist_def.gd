@@ -29,3 +29,7 @@ extends Resource
 ## {kind: StringName (&"turret_van" | &"heli" | &"breach"), weight: float, min_wave: int, cooldown_s: float,
 ##  max_per_heist: int, params: Dictionary}. Non-empty = overrides AssaultEventsTweak.heists[id]; empty = the tweak's rows.
 @export var assault_events: Array[Dictionary] = []
+## D-130 (data_schemas.md v1.3): pagers the crew may answer, indexed by Enums.Difficulty; empty = StealthTweak.pager_max_answers.
+@export var pager_max_by_difficulty: Array[int] = []
+## D-130 (data_schemas.md v1.3): cameras are Titan from this Enums.Difficulty; -1 = StealthTweak.camera_titan_min_difficulty.
+@export var camera_titan_min_difficulty: int = -1

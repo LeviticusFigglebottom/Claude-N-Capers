@@ -210,7 +210,7 @@ func _pump() -> void:
 	if not _active:
 		return
 	for i: int in range(queue.size() - 1, -1, -1):
-		if now_s > float(queue[i]["expires"]):
+		if now_s > float(queue[i]["expires"]) or (queue[i]["key"] == KEY_CASING and _casing_line_moot()):
 			queue.remove_at(i)
 	if is_busy():
 		return
@@ -328,8 +328,18 @@ func _slot_of_net_id(net_id: int) -> int:
 # --- Facts -----------------------------------------------------------------------------------
 
 func _on_heist_phase_changed(_old: int, new_phase: int) -> void:
-	if new_phase == Enums.HeistPhase.CASING:
+	if new_phase == Enums.HeistPhase.CASING and not _casing_line_moot():
 		request(CH_MERCER, &"heist_start_casing")
+
+
+## B-SL audit: the generic casing line ("look like you belong") is moot once the heist said its own intro, or once
+## the crew left casing (masked / loud).
+func _casing_line_moot() -> bool:
+	if _runtime == null:
+		return true
+	if _runtime.mission != null and _runtime.mission.own_intro_line:
+		return true
+	return _runtime.phase != Enums.HeistPhase.CASING and _runtime.phase != Enums.HeistPhase.LOADING
 
 
 func _on_crew_masked(_slot: int) -> void:

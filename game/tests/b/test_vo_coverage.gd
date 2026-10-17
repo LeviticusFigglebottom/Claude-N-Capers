@@ -23,7 +23,7 @@ const UNSAID_B_RESERVE: Array[StringName] = [
 	&"vo.vance.radio_objective_failed_1", &"vo.vance.radio_objective_failed_2", &"vo.vance.radio_objective_failed_3",
 	&"vo.reyes.radio_objective_done_1", &"vo.reyes.radio_objective_done_2", &"vo.reyes.radio_objective_done_3",
 	&"vo.reyes.radio_objective_new_1", &"vo.reyes.radio_objective_new_2", &"vo.reyes.radio_objective_new_3",
-	&"vo.reyes.radio_objective_failed_1", &"vo.reyes.radio_objective_failed_2", &"vo.reyes.radio_objective_failed_3",
+	# LEAD: reyes radio_objective_failed_1..3 are reached since A 4b4fef68 ([cartel] fails at the police call).
 	&"vo.accountant.radio_objective_done_1", &"vo.accountant.radio_objective_done_2", &"vo.accountant.radio_objective_done_3",
 	&"vo.accountant.radio_objective_new_1", &"vo.accountant.radio_objective_new_2", &"vo.accountant.radio_objective_new_3",
 	&"vo.mercer.radio_objective_failed_1", &"vo.mercer.radio_objective_failed_2", &"vo.mercer.radio_objective_failed_3",

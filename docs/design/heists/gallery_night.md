@@ -1036,11 +1036,11 @@ vault_drill, escape_wait, escape]`, `start_mode` `&"casing"`, preplanning as abo
 
 | id | weight | value (base) | where | count | status |
 |---|---|---|---|---|---|
-| `loot.painting_lantern_bearer` | LIGHT | $2,000 | `centrepiece` slot | 1 (required) | exists (B6-01) |
-| `loot.painting_salt_orchard` | LIGHT | $1,700 | `canvas_orchard` slot | 1 | exists |
-| `loot.painting_widow_in_blue` | LIGHT | $1,500 | `canvas_widow` slot | 1 | exists |
-| `loot.painting_tidewater_saint` | LIGHT | $1,300 | `canvas_saint` slot | 1 | exists |
-| `loot.painting_study` | LIGHT | ◇ $700 | 1–2 per gallery (≈ 12) + `store_paintings` (4–8) + `late_loan` (2) | 16–22 | **new**, approved (D-075; ENV B, QC-57) |
+| `loot.painting_lantern_bearer` | LIGHT | $8,000 | `centrepiece` slot | 1 (required) | exists (B6-01) |
+| `loot.painting_salt_orchard` | LIGHT | $6,800 | `canvas_orchard` slot | 1 | exists |
+| `loot.painting_widow_in_blue` | LIGHT | $6,000 | `canvas_widow` slot | 1 | exists |
+| `loot.painting_tidewater_saint` | LIGHT | $5,200 | `canvas_saint` slot | 1 | exists |
+| `loot.painting_study` | LIGHT | $2,800 (D-120) | 1–2 per gallery (≈ 12) + `store_paintings` (4–8) + `late_loan` (2) | 16–22 | **new**, approved (D-075; ENV B, QC-57) |
 | small loot (`loot.small_valuables`, no def) | — | ◇ $600–2,400 per item | lockers (4–8 × 1), CO safe (3), TR vitrines (2), CK cash box (1), GS till (1) | 11–15 | prefab values (ENV C) |
 
 Not used: Shadow Ledger's framed `loot.painting` (same weight, but this heist's generic canvases are

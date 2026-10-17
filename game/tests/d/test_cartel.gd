@@ -4,7 +4,8 @@
 ## HandR/HandL/Head/Back/Hip BoneAttachment3D markers with a Socket), that every surface resolves to
 ## a library material, the triangle budget, plausible heights, that they wear no insignia / uniform
 ## materials (police, TAC, security, faction or livery ids), that every one wears the sling and that
-## the slung long gun on the back marks the gunmen who carry it (D-116: 3 of the 6 looks). Regenerate with
+## the slung long gun on the back marks the gunmen who carry it (D-116: 3 of the 6 looks; D-115 DB cast: 6 of the 12).
+## D-115 DB cast (GN-D1 standard): up to 12 gunmen posted at Cataclysm draw from 12 looks a-l. Regenerate with
 ## tools/blender/characters/assemble.sh.
 extends TestCase
 
@@ -12,10 +13,14 @@ const Spec: GDScript = preload("res://world/characters/_tools/character_spec.gd"
 
 const GUNMEN: Array[String] = [
 	"char_cartel_gunman", "char_cartel_gunman_b", "char_cartel_gunman_c", "char_cartel_gunman_d", "char_cartel_gunman_e",
-	"char_cartel_gunman_f",
+	"char_cartel_gunman_f", "char_cartel_gunman_g", "char_cartel_gunman_h", "char_cartel_gunman_i", "char_cartel_gunman_j",
+	"char_cartel_gunman_k", "char_cartel_gunman_l",
 ]
 ## the looks with a slung long gun on the back (the others' long gun is the held one)
-const SLUNG: Array[String] = ["char_cartel_gunman", "char_cartel_gunman_c", "char_cartel_gunman_e"]
+const SLUNG: Array[String] = [
+	"char_cartel_gunman", "char_cartel_gunman_c", "char_cartel_gunman_e", "char_cartel_gunman_g", "char_cartel_gunman_i",
+	"char_cartel_gunman_k",
+]
 const TRI_BUDGET: int = 35000
 const MIN_HEIGHT: float = 1.6
 const MAX_HEIGHT: float = 2.0
