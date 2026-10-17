@@ -9,6 +9,11 @@
 ## Required line: laptop + keycard (server door, unless srv_contractor) + cage code or saw + the 45 s
 ## hack + secure the laptop and 2 of 3 drive bags -> escape (heli 45 s approach, line, service lift).
 ## Optional: the study safe (keycard + time lock), the paintings, the archive safe, small loot.
+## D-138.4 (no stand-in safes): the cage is beaten ON the CageGate (tag cage_gate): its `CageKeypad` (Keypad,
+## code_group cage, tag cage) or its `CagePadlock` (Padlock, placed saw 90 s also in stealth, no lockpick, tag
+## cage). Either one opening the gate (or the gate opening at all) completes [cage] with open_method &"code"
+## (keypad) / &"saw" (padlock: placed or handheld saw). The lock is read generically (Keypad `used`, else
+## `opened` + `beaten_by`), so a pre-D-138 map's CageLock safe [code, saw] still works until the map is regenerated.
 extends HeistMission
 
 const MIN_DRIVES: int = 2
@@ -108,6 +113,7 @@ func _on_mission_start() -> void:
 	on_event(&"item_picked_up", _on_item_picked_up)
 	on_event(&"loot_secured", _on_bag_secured)
 	_setup_variants()
+	_watch_cage_locks()
 	_poll_cameras()
 	_watch_lasers()
 	_poll_locks()
@@ -169,8 +175,8 @@ func _on_interaction_completed(interactable_net_id: int, _crew_slot: int, _kind:
 		if objective_state(&"server_door") == Enums.ObjectiveState.ACTIVE:
 			complete(&"server_door")
 	elif _is_tagged(interactable_net_id, TAG_CAGE):
-		# SL-6: the code opens the lock at once; placing / fixing the saw (place_saw, fix_drill) only starts the 90 s
-		# cut, which reports device_finished. The cage counts as open only when its lock really swung.
+		# SL-6: the code opens the gate at once; placing / fixing the saw (place_saw, fix_drill) only starts the 90 s
+		# cut, which reports device_finished. The cage counts as open only when a lock is really beaten.
 		_sync_cage()
 	elif _is_tagged(interactable_net_id, TAG_LAPTOP):
 		if objective_state(&"laptop") == Enums.ObjectiveState.ACTIVE:
@@ -219,18 +225,40 @@ func _on_device_jammed(device_net_id: int) -> void:
 		_vo(&"vo.mercer.shadow_ledger_hack_interrupted")
 
 
-## SL-6: the cage lock (Safe, methods [code, saw]) swung open, however it was beaten: open the cage for the mission.
+## D-138.4: a cage lock is beaten (keypad code entered, padlock off) or the gate is open: open the cage.
 func _sync_cage() -> void:
 	if _cage_open:
 		return
 	for c: Node in find_tagged(TAG_CAGE):
-		if bool(c.get(&"opened")):
-			_open_cage(_open_method(c))
+		var how: StringName = cage_lock_method(c)
+		if how != &"":
+			_open_cage(how)
+			return
+	for g: Node in find_tagged(TAG_CAGE_GATE):
+		if bool(g.get(&"is_open")):
+			_open_cage(&"saw")  # opened past both locks (forced by a test / tool): the gate's PD2 route is the saw
 			return
 
 
-## The cage lock's `beaten_by` as the [cage] open_method: &"code", else &"saw" (a placed saw reports &"device").
-static func _open_method(lock: Node) -> StringName:
+## D-138.4: a padlock opens after its device_finished fact (DeviceRunner emits the fact, then `finished`): its
+## server signal lock_opened syncs the cage at once (the LOCK_POLL_S poll is the fallback).
+func _watch_cage_locks() -> void:
+	for c: Node in find_tagged(TAG_CAGE):
+		if c.has_signal(&"lock_opened") and not c.is_connected(&"lock_opened", _on_cage_lock_opened):
+			c.connect(&"lock_opened", _on_cage_lock_opened)
+
+
+func _on_cage_lock_opened(_method: StringName) -> void:
+	_sync_cage()
+
+
+## D-138.4: the [cage] open_method a cage lock reports: &"code" (Keypad used, or a lock beaten by the code),
+## &"saw" (Padlock / lock beaten any other way: placed or handheld saw), &"" while it holds.
+static func cage_lock_method(lock: Node) -> StringName:
+	if lock is Keypad:
+		return &"code" if (lock as Keypad).used else &""
+	if not bool(lock.get(&"opened")):
+		return &""
 	var how: Variant = lock.get(&"beaten_by")
 	return &"code" if how != null and StringName(how) == &"code" else &"saw"
 
@@ -264,10 +292,19 @@ func _open_cage(method: StringName) -> void:
 	for g: Node in find_tagged(TAG_CAGE_GATE):
 		g.call(&"unlock")
 		g.call(&"set_open", true)
-	# left_open: the lock itself stops offering the code / saw (nothing is left to beat).
+	# The other lock (and both when left open) stops offering the code / saw: nothing is left to beat. A placed saw
+	# still running on the padlock is stopped by its own abort when it is opened here.
 	for c: Node in find_tagged(TAG_CAGE):
-		if not bool(c.get(&"opened")) and c.has_method(&"swing_open"):
-			c.call(&"swing_open")
+		if c is Keypad:
+			_set_enabled(c, false)
+		elif not bool(c.get(&"opened")):
+			if c.has_method(&"swing_open"):
+				c.call(&"swing_open")  # pre-D-138 CageLock safe
+			else:
+				_set_enabled(c, false)
+				var r: Variant = c.get(&"runner")
+				if r is DeviceRunner:
+					(r as DeviceRunner).abort()
 	# PO6-04: the code note is moot once the cage is open another way (saw, left open).
 	if objective_state(&"cage_code") == Enums.ObjectiveState.ACTIVE:
 		update_objective_data(&"cage_code", {"skipped": true})

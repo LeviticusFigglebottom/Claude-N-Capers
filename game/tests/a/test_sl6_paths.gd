@@ -78,9 +78,41 @@ func test_sl6_srv_contractor_skips_keycard_and_props_the_door() -> void:
 
 
 # --- [cage]: code, saw, handheld saw, cage_left_open --------------------------------------------------------
+# D-138.4: on C's map the cage is beaten on the CageGate (CageKeypad: code, CagePadlock: placed / handheld saw).
 
+## legacy: pre-D-138 maps, remove after C b4ad9153 is on trunk (the CageLock stand-in safe).
 func _cage() -> Safe:
 	return _one(&"cage") as Safe
+
+
+## The lock the code is entered on (CageKeypad; legacy: the CageLock safe).
+func _code_lock() -> GameplayPrefab:
+	return _cage_keypad() if _cage_new_layout() else _cage()
+
+
+## The lock the saw cuts (CagePadlock; legacy: the CageLock safe).
+func _saw_lock() -> GameplayPrefab:
+	return _cage_padlock() if _cage_new_layout() else _cage()
+
+
+## The code was entered on the code lock (Keypad / Safe._on_completed for enter_code), then the fact.
+func _enter_cage_code() -> void:
+	var lock: GameplayPrefab = _code_lock()
+	if lock is Keypad:
+		lock.call(&"_on_completed", _rt.crew_controller(0))
+	else:
+		lock.call(&"_lock_beaten", &"code")  # legacy: pre-D-138 maps, remove after C b4ad9153 is on trunk
+	EventBus.interaction_completed.emit(lock.net_id, 0, &"enter_code")
+
+
+## The placed saw's DeviceRunner finished on the saw lock, then device_finished.
+func _finish_cage_saw() -> void:
+	var lock: GameplayPrefab = _saw_lock()
+	if lock is Padlock:
+		(lock as Padlock).open_lock(true, &"saw")
+	else:
+		(lock as Safe).open_by_device()  # legacy: pre-D-138 maps, remove after C b4ad9153 is on trunk
+	EventBus.device_finished.emit(lock.net_id)
 
 
 func _assert_cage_open(m: HeistMission, method: StringName) -> void:
@@ -88,7 +120,16 @@ func _assert_cage_open(m: HeistMission, method: StringName) -> void:
 	assert_eq(StringName(_data(&"cage").get("open_method", &"")), method, "open_method %s" % method)
 	var gate: Node = _one(&"cage_gate")
 	assert_true(gate != null and bool(gate.get(&"is_open")), "the cage gate swung open")
-	assert_true(_cage().opened, "the cage lock is open")
+	if _cage_new_layout():
+		var kp: Keypad = _cage_keypad()
+		var pl: Padlock = _cage_padlock()
+		assert_eq(kp.used, method == &"code", "the keypad was used only for the code (%s)" % method)
+		assert_eq(pl.opened, method == &"saw", "the padlock is off only for the saw (%s)" % method)
+		assert_false(_enabled(kp) or _enabled(pl), "neither lock offers anything once the cage is open")
+		assert_eq(_rt.find_by_tag(&"cage").filter(func(n: Node) -> bool: return n is Safe).size(), 0,
+			"no stand-in safe")
+	else:
+		assert_true(_cage().opened, "the cage lock is open")  # legacy: pre-D-138 maps, remove after C b4ad9153
 	var hack: Node = _one(&"hack")
 	assert_true(hack != null and _enabled(hack), "the hack terminal is live")
 	assert_eq(m.objective_state(&"hack"), ACTIVE, "[hack] shown")
@@ -97,8 +138,11 @@ func _assert_cage_open(m: HeistMission, method: StringName) -> void:
 
 func test_sl6_cage_by_code() -> void:
 	var m: HeistMission = await _launch({&"server_room": [&"srv_locked"]})
-	var cage: Safe = _cage()
-	assert_eq(cage.methods, [&"code", &"saw"] as Array[StringName], "cage methods [code, saw]")
+	if _cage_new_layout():
+		assert_eq(_cage_keypad().code_group, &"cage", "the CageKeypad takes the cage code")
+		assert_true(_cage_padlock().place_saw, "the CagePadlock takes the saw")
+	else:
+		assert_eq(_cage().methods, [&"code", &"saw"] as Array[StringName], "cage methods [code, saw]")  # legacy
 	assert_true(bool(_data(&"cage_code").get("optional", false)), "[cage_code] optional")
 	assert_eq(StringName(_data(&"cage_code").get("alternative", &"")), &"saw", "its alternative is the saw")
 	assert_false(_enabled(_one(&"hack")), "the hack waits for the cage")
@@ -106,25 +150,24 @@ func test_sl6_cage_by_code() -> void:
 	EventBus.item_picked_up.emit(&"item.code_note", 0)
 	assert_eq(m.objective_state(&"cage_code"), DONE, "[cage_code] done on reading the note")
 	assert_eq(_count(&"vo.mercer.shadow_ledger_code_found"), 1, "code line")
-	cage.call(&"_lock_beaten", &"code")  # Safe._on_completed for kind enter_code
-	EventBus.interaction_completed.emit(cage.net_id, 0, &"enter_code")
+	_enter_cage_code()
 	_assert_cage_open(m, &"code")
 	assert_false(bool(_data(&"cage_code").get("skipped", false)), "the code was used, not skipped")
 
 
 func test_sl6_cage_by_saw_waits_for_the_cut() -> void:
 	var m: HeistMission = await _launch({&"server_room": [&"srv_locked"]})
-	var cage: Safe = _cage()
-	assert_near(cage.saw_duration(), 90.0, 0.01, "the cage saw runs 90 s")
+	var lock: GameplayPrefab = _saw_lock()
+	var saw_s: float = (lock as Padlock).effective_saw_duration() if lock is Padlock else (lock as Safe).saw_duration()
+	assert_near(saw_s, 90.0, 0.01, "the cage saw runs 90 s")
 	# Placing and fixing the saw only (re)start the cut: the cage is still shut (was: opened on place_saw).
-	EventBus.interaction_completed.emit(cage.net_id, 0, &"place_saw")
-	EventBus.interaction_completed.emit(cage.net_id, 0, &"fix_drill")
+	EventBus.interaction_completed.emit(lock.net_id, 0, &"place_saw")
+	EventBus.interaction_completed.emit(lock.net_id, 0, &"fix_drill")
 	await wait_physics_frames(2)
 	assert_eq(m.objective_state(&"cage"), ACTIVE, "placing / fixing the saw does not open the cage")
 	assert_false(_enabled(_one(&"hack")), "hack still locked")
 	_lines.clear()
-	cage.open_by_device()  # the saw's DeviceRunner finished
-	EventBus.device_finished.emit(cage.net_id)
+	_finish_cage_saw()
 	_assert_cage_open(m, &"saw")
 	assert_eq(m.objective_state(&"cage_code"), DONE, "the code note is moot")
 	assert_true(bool(_data(&"cage_code").get("skipped", false)), "[cage_code] skipped")
@@ -132,10 +175,10 @@ func test_sl6_cage_by_saw_waits_for_the_cut() -> void:
 
 func test_sl6_cage_by_handheld_saw() -> void:
 	var m: HeistMission = await _launch({&"server_room": [&"srv_locked"]})
-	var cage: Safe = _cage()
-	assert_true(cage.is_in_group(G.SAW_TARGET), "the cage lock is a saw target")
+	var lock: GameplayPrefab = _saw_lock()
+	assert_true(lock.is_in_group(G.SAW_TARGET), "the cage lock is a saw target")
 	_lines.clear()
-	cage.saw_cut(1000.0, 0)  # QC-37: no interaction or device fact
+	lock.call(&"saw_cut", 1000.0, 0)  # QC-37: no interaction or device fact
 	var ok: bool = await wait_until(func() -> bool: return m.objective_state(&"cage") == DONE, 2.0)
 	assert_true(ok, "the mission notices the cut lock")
 	_assert_cage_open(m, &"saw")
@@ -145,7 +188,7 @@ func test_sl6_cage_left_open_rare() -> void:
 	var m: HeistMission = await _launch({&"server_room": [&"srv_contractor"]}, _table_with_rare([&"cage_left_open"]))
 	assert_true(_rare_on(&"cage_left_open"), "cage_left_open rolled (requires srv_contractor)")
 	_assert_cage_open(m, &"left_open")
-	assert_false(_enabled(_cage()), "the lock offers no code / saw")
+	assert_false(_enabled(_code_lock()) or _enabled(_saw_lock()), "the locks offer no code / saw")
 	assert_true(bool(_data(&"cage").get("left_open", false)), "[cage] data left_open")
 	assert_eq(m.objective_state(&"cage_code"), DONE, "[cage_code] skipped")
 
@@ -185,8 +228,7 @@ func test_sl6_hack_start_interrupt_done_releases_drives() -> void:
 
 
 func _open_cage_now(m: HeistMission) -> void:
-	_cage().open_by_device()
-	EventBus.device_finished.emit(_cage().net_id)
+	_finish_cage_saw()
 	assert_eq(m.objective_state(&"cage"), DONE, "cage open")
 
 

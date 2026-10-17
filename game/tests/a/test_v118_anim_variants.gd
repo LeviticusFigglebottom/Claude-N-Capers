@@ -206,8 +206,9 @@ func test_death_from_variant_pose_is_posed() -> void:
 func test_hard_hat_lift_on_the_variants() -> void:
 	var tw: AnimTweak = AnimTweak.data()
 	for group: StringName in AnimDriver.VARIANT_GROUPS:
-		if group == &"flee" or group == &"cower":
-			continue  # D-116 civ panic: flee* runs; cower_c holds the hands by the face (cower / cower_b below)
+		if group == &"flee" or group == &"cower" or group == &"queue_idle":
+			continue  # D-116 civ panic: flee* runs; cower_c holds the hands by the face (cower / cower_b below);
+			# OF-A6 queue_idle* is an ambient idle (hands at the waist / phone / arms crossed), not a hands-up pose
 		for v: Variant in AnimDriver.VARIANT_GROUPS[group]:
 			assert_true(tw.hard_hat_lift_clips.has(v), "%s is a hard-hat lift clip" % v)
 	assert_true(tw.hard_hat_lift_clips.has(&"cower") and tw.hard_hat_lift_clips.has(&"cower_b"),
