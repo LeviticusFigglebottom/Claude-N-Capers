@@ -661,6 +661,21 @@ ui.key.mouse_right,RMB
 ui.key.mouse_middle,MMB
 ui.key.tab,Tab
 ui.key.start,Start
+ui.key.pad.a,A
+ui.key.pad.b,B
+ui.key.pad.x,X
+ui.key.pad.y,Y
+ui.key.pad.lb,LB
+ui.key.pad.rb,RB
+ui.key.pad.ls,LS
+ui.key.pad.rs,RS
+ui.key.pad.lt,LT
+ui.key.pad.rt,RT
+ui.key.pad.back,Back
+ui.key.pad.dpad_up,D-pad Up
+ui.key.pad.dpad_down,D-pad Down
+ui.key.pad.dpad_left,D-pad Left
+ui.key.pad.dpad_right,D-pad Right
 ui.range.dummy.light,Light Tactical Dummy
 ui.range.zone.body,Body
 ui.range.zone.head,Head

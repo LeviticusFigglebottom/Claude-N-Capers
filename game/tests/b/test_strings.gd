@@ -222,3 +222,10 @@ func test_every_row_has_one_text() -> void:
 			continue
 		assert_eq(row.size(), 2, "row %s has %d fields" % [row[0], row.size()])
 	f.close()
+
+
+## Lead r242 string scan: the pad button names on key caps come from the strings table.
+func test_pad_button_names_are_keys() -> void:
+	for b: Variant in InteractionPanel.PAD_BUTTON_NAMES:
+		var key: StringName = InteractionPanel.PAD_BUTTON_NAMES[b] as StringName
+		assert_true(UiText.has(key), "pad name key %s" % key)

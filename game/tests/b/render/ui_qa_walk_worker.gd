@@ -3,18 +3,37 @@ extends Node
 
 const SLOT: int = 0
 const MAX_STEPS: int = 40
+const PAD_FOR_KEY: Dictionary = {
+	KEY_DOWN: JOY_BUTTON_DPAD_DOWN, KEY_UP: JOY_BUTTON_DPAD_UP, KEY_LEFT: JOY_BUTTON_DPAD_LEFT,
+	KEY_RIGHT: JOY_BUTTON_DPAD_RIGHT, KEY_ENTER: JOY_BUTTON_A, KEY_ESCAPE: JOY_BUTTON_B,
+}
 
 var _out: String = ""
 var _heists: Array[StringName] = []
 var _flow: MenuFlow = null
 var _issues: int = 0
+## "pad" among the args: d-pad / A instead of arrows / Enter, and every screen is checked for keyboard key caps.
+var _pad: bool = false
+## Keyboard key names of actions that also have a pad binding (a pad player must not see these as key caps).
+var _key_names: Dictionary = {}
 
 
 func _ready() -> void:
 	var args: PackedStringArray = OS.get_cmdline_user_args()
 	_out = args[0] if args.size() > 0 else OS.get_user_data_dir() + "/ui_qa"
 	for i: int in range(1, args.size()):
-		_heists.append(StringName(args[i]))
+		if args[i] == "pad":
+			_pad = true
+		else:
+			_heists.append(StringName(args[i]))
+	for action: StringName in InputMap.get_actions():
+		var has_pad: bool = false
+		for ev: InputEvent in InputMap.action_get_events(action):
+			has_pad = has_pad or ev is InputEventJoypadButton
+		for ev: InputEvent in InputMap.action_get_events(action):
+			var k: InputEventKey = ev as InputEventKey
+			if has_pad and k != null:
+				_key_names[OS.get_keycode_string(k.physical_keycode if k.physical_keycode != KEY_NONE else k.keycode)] = true
 	DirAccess.make_dir_recursive_absolute(_out)
 	_run.call_deferred()
 
@@ -35,11 +54,14 @@ func _run() -> void:
 	SaveService.save_profile(p, SLOT)
 	_flow = (load("res://content/ui/menus/menu_flow.tscn") as PackedScene).instantiate() as MenuFlow
 	get_tree().root.add_child(_flow)
+	if _pad:
+		await _button(JOY_BUTTON_DPAD_DOWN)  # the pad player's first press, before any screen is shown
 	for heist: StringName in _heists:
 		await _walk(heist)
 	_flow.queue_free()
 	for heist: StringName in _heists:
 		await _payday(heist, p)
+	await _career(p)
 	SaveService.delete_profile(SLOT)
 	print("QA DONE %d" % _issues)
 	get_tree().quit(0)
@@ -92,6 +114,19 @@ func _payday(heist: StringName, p: PlayerProfile) -> void:
 	await _frames(2)
 
 
+func _career(p: PlayerProfile) -> void:
+	var screen: CareerScreen = (load("res://content/ui/career/career_screen.tscn") as PackedScene).instantiate() as CareerScreen
+	get_tree().root.add_child(screen)
+	screen.setup(p)
+	await _frames(4)
+	(screen.focus_chain[0] as Control).grab_focus()
+	if not screen.recent_rows.is_empty():
+		await _nav_to(screen.recent_rows.values()[0] as Control, "career Recent heists row")
+	await _shot(&"career", "recent", screen)
+	screen.queue_free()
+	await _frames(2)
+
+
 # --- Input ---------------------------------------------------------------------------------------
 
 func _frames(n: int) -> void:
@@ -100,6 +135,9 @@ func _frames(n: int) -> void:
 
 
 func _key(code: Key) -> void:
+	if _pad:
+		await _button(PAD_FOR_KEY.get(code, JOY_BUTTON_A) as JoyButton)
+		return
 	var e: InputEventKey = InputEventKey.new()
 	e.keycode = code
 	e.physical_keycode = code
@@ -107,6 +145,18 @@ func _key(code: Key) -> void:
 	Input.parse_input_event(e)
 	await _frames(2)
 	var u: InputEventKey = e.duplicate() as InputEventKey
+	u.pressed = false
+	Input.parse_input_event(u)
+	await _frames(2)
+
+
+func _button(b: JoyButton) -> void:
+	var e: InputEventJoypadButton = InputEventJoypadButton.new()
+	e.button_index = b
+	e.pressed = true
+	Input.parse_input_event(e)
+	await _frames(2)
+	var u: InputEventJoypadButton = e.duplicate() as InputEventJoypadButton
 	u.pressed = false
 	Input.parse_input_event(u)
 	await _frames(2)
@@ -137,9 +187,11 @@ func _nav_to(target: Control, label: String) -> bool:
 
 func _shot(heist: StringName, step: String, screen: Control) -> void:
 	await _frames(12)
+	if _pad and not InteractionPanel.pad_active:
+		_issue("%s/%s" % [heist, step], "pad input did not switch the glyphs to the pad")
 	await RenderingServer.frame_post_draw
 	var img: Image = get_viewport().get_texture().get_image()
-	var path: String = "%s/%s_%s_%dx%d.png" % [_out, heist, step, img.get_width(), img.get_height()]
+	var path: String = "%s/%s_%s%s_%dx%d.png" % [_out, heist, step, "_pad" if _pad else "", img.get_width(), img.get_height()]
 	img.save_png(path)
 	print("QA SHOT ", path)
 	if screen != null and is_instance_valid(screen) and screen.is_visible_in_tree():
@@ -163,6 +215,8 @@ func _scan(tag: String, root: Control) -> void:
 			_issue(tag, "clipped '%s' needs %.0f px, has %.0f" % [l.text.left(48), need, r.size.x])
 		if r.end.x > view.end.x + 1.0 or r.end.y > view.end.y + 1.0:
 			_issue(tag, "off-screen '%s' %s" % [l.text.left(48), r])
+		if _pad and _key_names.has(l.text.strip_edges()):
+			_issue(tag, "keyboard key cap '%s' shown to a pad player" % l.text)
 	for a: int in range(labels.size()):
 		for b: int in range(a + 1, labels.size()):
 			var ra: Rect2 = labels[a].get_global_rect().grow(-1.0)
