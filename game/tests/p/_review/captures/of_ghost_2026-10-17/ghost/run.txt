@@ -1,0 +1,169 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+Vulkan 1.4.318 - Forward+ - Using Device #0: Unknown - llvmpipe (LLVM 20.1.2, 256 bits)
+
+[OFP 0.0s t=-1.0] === ghost ===
+[INFO][rng][p1] run seed 1002
+[INFO][preplan][p1] assets []
+[INFO][variants][p1] seed 1002 resolved { &"manager_route": [&"mgr_vault"], &"keycard": [&"kc_on_manager"], &"code_pc": [&"pc_exec"], &"officers": [&"off_3"], &"server_room": [&"srv_gallery"], &"guard_post": [&"rover_basement", &"rover_dock", &"rover_gallery", &"rover_hall"], &"security_room_staffed": [&"sec_staffed"], &"camera": [&"cam_a"], &"laser_pattern": [&"lz_sweep"], &"customers": [&"cust_8"], &"side_door": [&"door_none"], &"fire_escape": [&"fe_up"], &"escape": [&"esc_van_dock"], &"drill_delivery": [&"drop_terrace"], &"president_safe": [&"ps_empty"], &"vip": [&"vip_in"], &"guard_extra": [&"gx_basement", &"gx_hall"], &"civ_extra": [&"cx_hall_1", &"cx_hall_2", &"cx_none", &"cx_sd"], &"time_lock_s": 270.0, &"drill_eta_s": 45.0, &"escape_eta_s": 90.0, &"cash_bags": 10, &"gold_bags": 4, &"deposit_boxes": 6, "rare": [&"vip_client"] }
+[INFO][heist][p1] vfx prewarm: 609 ms
+[INFO][heist][p1] phase LOADING -> CASING
+[OFP 14.5s t=-1.0] objective casing -> 1
+[OFP 14.5s t=-1.0] objective keycard -> 1
+[OFP 14.5s t=-1.0] objective code_hint -> 1
+[OFP 14.5s t=-1.0] objective code_pc -> 1
+[OFP 14.5s t=-1.0] objective server -> 1
+[OFP 14.5s t=-1.0] objective vault_gate -> 1
+[OFP 14.5s t=-1.0] objective lasers -> 1
+[OFP 14.5s t=-1.0] objective time_lock -> 0
+[OFP 14.5s t=-1.0] objective time_lock_wait -> 0
+[OFP 14.5s t=-1.0] objective vault_loot -> 0
+[OFP 14.5s t=-1.0] objective gold_cage -> 0
+[OFP 14.5s t=-1.0] objective secure -> 1
+[OFP 14.5s t=-1.0] objective deposit_boxes -> 1
+[OFP 14.5s t=-1.0] objective bond_safe -> 1
+[OFP 14.5s t=-1.0] objective president_safe -> 1
+[OFP 14.5s t=-1.0] objective server_drives -> 1
+[OFP 14.5s t=-1.0] objective drill_delivery -> 0
+[OFP 14.5s t=-1.0] objective vault_drill -> 0
+[OFP 14.5s t=-1.0] objective vault_breach -> 0
+[OFP 14.5s t=-1.0] objective escape_wait -> 0
+[OFP 14.5s t=-1.0] objective escape -> 0
+[INFO][prefab][p1] Hoist disabled
+[INFO][prefab][p1] RopeLadder disabled
+[INFO][prefab][p1] VaultBoxN07 disabled
+[INFO][prefab][p1] VaultBoxN08 disabled
+[INFO][prefab][p1] VaultBoxN09 disabled
+[INFO][prefab][p1] VaultBoxN10 disabled
+[INFO][prefab][p1] VaultBoxN11 disabled
+[INFO][prefab][p1] VaultBoxS01 disabled
+[INFO][prefab][p1] VaultBoxS02 disabled
+[INFO][prefab][p1] VaultBoxS03 disabled
+[INFO][prefab][p1] VaultBoxS04 disabled
+[INFO][prefab][p1] VaultBoxS05 disabled
+[INFO][prefab][p1] VaultBoxS06 disabled
+[INFO][prefab][p1] VaultBoxS07 disabled
+[INFO][prefab][p1] VaultBoxS08 disabled
+[INFO][prefab][p1] VaultBoxS09 disabled
+[INFO][prefab][p1] HallBox09 disabled
+[INFO][prefab][p1] HallBox10 disabled
+[INFO][prefab][p1] HallBox11 disabled
+[INFO][prefab][p1] HallBox12 disabled
+[INFO][prefab][p1] HallBox13 disabled
+[INFO][prefab][p1] HallBox14 disabled
+[INFO][prefab][p1] HallBox15 disabled
+[INFO][prefab][p1] HallBox16 disabled
+[INFO][prefab][p1] HallBox17 disabled
+[INFO][prefab][p1] HallBox18 disabled
+[INFO][prefab][p1] HallBox19 disabled
+[INFO][prefab][p1] HallBox20 disabled
+[INFO][prefab][p1] HallBox21 disabled
+[INFO][prefab][p1] HallBox22 disabled
+[INFO][prefab][p1] HallBox23 disabled
+[INFO][prefab][p1] HallBox24 disabled
+[INFO][mission][p1] civilian route 'mgr_floor' not placed: [&"civ_manager_mgr_floor"] wander (D-136.4 fallback)
+[INFO][mission][p1] civilian route 'mgr_gallery' not placed: [&"civ_manager_mgr_gallery"] wander (D-136.4 fallback)
+[INFO][mission][p1] civilian route 'mgr_vault' not placed: [&"civ_manager_mgr_vault"] wander (D-136.4 fallback)
+[INFO][mission][p1] civilian route 'teller_rotation' not placed: [&"civ_teller_rotating"] wander (D-136.4 fallback)
+[INFO][mission][p1] civilian route 'officer_coffee' not placed: [&"civ_officer_ao1", &"civ_officer"] wander (D-136.4 fallback)
+[INFO][mission][p1] civilian route 'officer_coffee_of' not placed: [&"civ_officer_of"] wander (D-136.4 fallback)
+[INFO][mission][p1] civilian route 'officer_coffee_vo' not placed: [&"civ_officer_vo"] wander (D-136.4 fallback)
+[INFO][director][p1] prewarm: 19 of 19 scenes loaded in 1031 ms
+[INFO][prefab][p1] Keycard carried by Npc_civilian7
+[OFP 38.1s t=0.0] launched ostrander_federal seed 1002 diff 5 variants { &"manager_route": [&"mgr_vault"], &"keycard": [&"kc_on_manager"], &"code_pc": [&"pc_exec"], &"officers": [&"off_3"], &"server_room": [&"srv_gallery"], &"guard_post": [&"rover_basement", &"rover_dock", &"rover_gallery", &"rover_hall"], &"security_room_staffed": [&"sec_staffed"], &"camera": [&"cam_a"], &"laser_pattern": [&"lz_sweep"], &"customers": [&"cust_8"], &"side_door": [&"door_none"], &"fire_escape": [&"fe_up"], &"escape": [&"esc_van_dock"], &"drill_delivery": [&"drop_terrace"], &"president_safe": [&"ps_empty"], &"vip": [&"vip_in"], &"guard_extra": [&"gx_basement", &"gx_hall"], &"civ_extra": [&"cx_hall_1", &"cx_hall_2", &"cx_none", &"cx_sd"], &"time_lock_s": 270.0, &"drill_eta_s": 45.0, &"escape_eta_s": 90.0, &"cash_bags": 10, &"gold_bags": 4, &"deposit_boxes": 6, "rare": [&"vip_client"] }
+[OFP 85.9s t=3.1] pilot: calibrated 0.001600 rad/px yaw, 0.001600 rad/px pitch (settings formula said (0.0016, 0.0016))
+[OFP 85.9s t=3.1] spawn (21.8, -0.8, 44.0)
+[OFP 95.4s t=8.2] pilot: t=5 at (27.5, -0.7, 42.5) corner (27.0, -0.6, 42.3) yaw_err 3.09 fwd=false path=11 mouse_mode=2 state=0 look=(-1.83,0.00) pin_yaw=-1.63550013012718 bot=false
+[OFP 100.4s t=13.2] pilot: t=10 at (32.9, -0.7, 43.9) corner (34.5, -0.6, 44.3) yaw_err 0.39 fwd=true path=11 mouse_mode=2 state=0 look=(-2.22,0.00) pin_yaw=-2.0283487854831 bot=false
+[OFP 105.4s t=18.2] pilot: t=15 at (38.8, -0.7, 45.4) corner (40.0, -0.6, 45.5) yaw_err -2.29 fwd=false path=8 mouse_mode=2 state=0 look=(0.66,0.00) pin_yaw=0.46460970819317 bot=false
+[OFP 115.3s t=28.1] pilot: t=5 at (48.9, -0.6, 41.1) corner (49.3, -0.2, 40.3) yaw_err 0.00 fwd=true path=9 mouse_mode=2 state=0 look=(-0.49,0.00) pin_yaw=-0.49330767169886 bot=false
+[OFP 120.3s t=33.1] pilot: t=10 at (51.7, 0.0, 36.1) corner (52.0, 0.2, 35.6) yaw_err 0.77 fwd=false path=4 mouse_mode=2 state=0 look=(-1.28,0.00) pin_yaw=-1.08581367196166 bot=false
+[OFP 129.7s t=42.5] pilot: t=5 at (56.9, 0.0, 26.7) corner (56.8, 0.2, 24.2) yaw_err 0.00 fwd=true path=13 mouse_mode=2 state=0 look=(0.02,0.00) pin_yaw=0.01566907200322 bot=false
+[OFP 134.7s t=47.5] pilot: t=10 at (56.6, 0.0, 21.1) corner (56.1, 0.2, 16.3) yaw_err -1.20 fwd=false path=8 mouse_mode=2 state=0 look=(1.30,0.00) pin_yaw=1.10861381857831 bot=false
+[OFP 139.7s t=52.5] pilot: t=15 at (56.0, 0.0, 15.2) corner (55.7, 0.2, 12.4) yaw_err -3.14 fwd=false path=7 mouse_mode=2 state=0 look=(3.23,0.00) pin_yaw=3.0400798117771 bot=false
+[OFP 144.7s t=57.5] pilot: t=20 at (55.4, 0.0, 9.2) corner (55.5, 0.2, 9.8) yaw_err 1.58 fwd=false path=3 mouse_mode=2 state=0 look=(1.64,0.00) pin_yaw=1.83012429033988 bot=false
+[OFP 152.4s t=65.2] pilot: t=5 at (53.8, 0.0, 1.2) corner (53.6, 0.2, 0.5) yaw_err -0.00 fwd=true path=5 mouse_mode=2 state=0 look=(0.23,0.00) pin_yaw=0.2334475202515 bot=false
+[OFP 157.4s t=70.2] pilot: t=10 at (52.4, 0.0, -4.3) corner (52.0, 0.2, -6.0) yaw_err -1.20 fwd=false path=2 mouse_mode=2 state=0 look=(1.45,0.00) pin_yaw=1.25669400571496 bot=false
+[OFP 162.6s t=75.4] pilot: t=5 at (46.7, 0.0, -5.2) corner (39.4, 0.2, -5.8) yaw_err -0.00 fwd=true path=7 mouse_mode=2 state=0 look=(1.48,0.00) pin_yaw=1.48263053248957 bot=false
+[OFP 167.6s t=80.4] pilot: t=10 at (41.0, 0.0, -5.7) corner (39.4, 0.2, -5.8) yaw_err -1.21 fwd=false path=7 mouse_mode=2 state=0 look=(2.69,0.00) pin_yaw=2.49814532751043 bot=false
+[OFP 172.6s t=85.4] pilot: t=15 at (35.1, 0.0, -6.2) corner (29.8, 0.2, -6.6) yaw_err -3.12 fwd=false path=6 mouse_mode=2 state=0 look=(4.60,0.00) pin_yaw=4.41242813805729 bot=false
+[OFP 177.7s t=90.4] pilot: t=20 at (29.1, 0.0, -6.7) corner (29.7, 0.2, -6.6) yaw_err 1.58 fwd=false path=5 mouse_mode=2 state=0 look=(3.02,0.00) pin_yaw=3.21419031742698 bot=false
+[OFP 178.2s t=91.0] GHOST step _g1_lane done at t=91.0 (+87.8 s)
+[OFP 178.2s t=91.0] GHOST lane guards: Npc_guard6 (14.0, 0.0, -5.0)
+[OFP 198.2s t=111.0] GHOST lane guards: Npc_guard6 (14.0, 0.0, -5.0)
+[OFP 218.2s t=131.0] GHOST lane guards: Npc_guard6 (14.0, 0.0, -5.0)
+[OFP 238.2s t=151.0] GHOST lane guards: Npc_guard6 (14.0, 0.0, -5.0)
+[OFP 258.2s t=171.0] GHOST lane guards: Npc_guard6 (14.0, 0.0, -5.0)
+[OFP 278.2s t=191.0] GHOST lane guards: Npc_guard6 (14.0, 0.0, -5.0)
+[OFP 298.2s t=211.0] GHOST lane guards: Npc_guard6 (14.0, 0.0, -5.0)
+[OFP 318.2s t=231.0] GHOST lane guards: Npc_guard6 (14.0, 0.0, -5.0)
+[OFP 338.2s t=251.0] GHOST lane guards: Npc_guard6 (14.0, 0.0, -5.0)
+[OFP 358.2s t=271.0] GHOST lane guards: Npc_guard6 (14.0, 0.0, -5.0)
+[OFP 378.2s t=291.0] GHOST lane guards: Npc_guard6 (14.0, 0.0, -5.0)
+[OFP 398.2s t=311.0] GHOST lane guards: Npc_guard6 (14.0, 0.0, -5.0)
+[OFP 418.2s t=331.0] GHOST lane guards: Npc_guard6 (14.0, 0.0, -5.0)
+[OFP 438.2s t=351.0] GHOST lane guards: Npc_guard6 (14.0, 0.0, -5.0)
+[OFP 458.3s t=371.0] GHOST lane guards: Npc_guard6 (14.0, 0.0, -5.0)
+[OFP 478.3s t=391.0] GHOST lane guards: Npc_guard6 (14.0, 0.0, -5.0)
+[OFP 498.3s t=411.0] GHOST lane guards: Npc_guard6 (14.0, 0.0, -5.0)
+[OFP 518.3s t=431.0] GHOST lane guards: Npc_guard6 (14.0, 0.0, -5.0)
+[OFP 538.3s t=451.0] GHOST lane guards: Npc_guard6 (14.0, 0.0, -5.0)
+[OFP 558.4s t=471.0] GHOST lane guards: Npc_guard6 (14.0, 0.0, -5.0)
+[OFP 578.4s t=491.0] GHOST lane guards: Npc_guard6 (14.0, 0.0, -5.0)
+[OFP 598.4s t=511.0] GHOST lane guards: Npc_guard6 (14.0, 0.0, -5.0)
+[OFP 618.4s t=531.0] GHOST lane guards: Npc_guard6 (14.0, 0.0, -5.0)
+[OFP 638.4s t=551.0] GHOST lane guards: Npc_guard6 (14.0, 0.0, -5.0)
+[OFP 658.4s t=571.0] GHOST lane guards: Npc_guard6 (14.0, 0.0, -5.0)
+[OFP 678.4s t=591.0] GHOST lane guards: Npc_guard6 (14.0, 0.0, -5.0)
+[OFP 698.4s t=611.0] GHOST lane guards: Npc_guard6 (14.0, 0.0, -5.0)
+[OFP 718.4s t=631.0] GHOST lane guards: Npc_guard6 (14.0, 0.0, -5.0)
+[OFP 738.4s t=651.0] GHOST lane guards: Npc_guard6 (14.0, 0.0, -5.0)
+[OFP 758.4s t=671.0] GHOST lane guards: Npc_guard6 (14.0, 0.0, -5.0)
+[OFP 778.4s t=691.0] GHOST lane NOT clear (going anyway) after 600 s
+[INFO][heist][p1] phase CASING -> STEALTH
+[OFP 779.4s t=692.0] objective casing -> 2
+[INFO][crew][p1] slot 0 masked (forced=false)
+[OFP 780.0s t=692.6] masked true
+[INFO][ecm][p1] ECM 233 jamming for 20.0 s
+[INFO][deployables][p1] slot 0 placed deployable.ecm (1 left)
+[OFP 782.7s t=695.3] ECM on
+[OFP 787.7s t=700.3] pilot: t=5 at (23.9, 0.0, -5.3) corner (23.4, 0.2, -5.1) yaw_err 0.00 fwd=true path=12 mouse_mode=2 state=0 look=(8.16,0.00) pin_yaw=8.15817049011821 bot=false
+[OFP 792.7s t=705.3] pilot: t=10 at (18.5, 0.0, -3.7) corner (10.2, 0.2, -1.2) yaw_err 1.20 fwd=false path=4 mouse_mode=2 state=0 look=(6.94,0.00) pin_yaw=7.13112812586041 bot=false
+[OFP 794.2s t=706.8] DETECT Npc_guard6 kind 0 meter 0.12 at (14.0, 0.0, -5.0), pilot (16.6, 0.0, -3.1) crouched false
+[OFP 794.7s t=707.3] DETECT Npc_guard6 kind 0 meter 0.54 at (14.0, 0.0, -5.0), pilot (16.2, 0.0, -3.0) crouched false
+[OFP 795.4s t=708.0] DETECT Npc_guard6 kind 0 meter 1.00 at (14.0, 0.0, -5.0), pilot (15.0, 0.0, -2.6) crouched false
+[INFO][stealth][p1] ALARM: guard_radio (source 205)
+[OFP 796.4s t=709.0] ALARM guard_radio by Npc_guard6 (pilot at (13.8, 0.0, -2.3))
+[INFO][heist][p1] alarm (guard_radio): going loud
+[INFO][heist][p1] phase STEALTH -> LOUD
+[INFO][director][p1] assault phase CONTROL (wave 1, 20 s)
+[INFO][prefab][p1] VaultControlRack: hack paused (lockdown)
+[OFP 796.4s t=709.0] objective keycard -> 1
+[OFP 796.4s t=709.0] objective keycard -> 2
+[OFP 796.4s t=709.0] objective code_hint -> 1
+[OFP 796.4s t=709.0] objective code_hint -> 2
+[OFP 796.4s t=709.0] objective code_pc -> 1
+[OFP 796.4s t=709.0] objective code_pc -> 2
+[OFP 796.4s t=709.0] objective server -> 1
+[OFP 796.4s t=709.0] objective server -> 2
+[OFP 796.4s t=709.0] objective vault_gate -> 1
+[OFP 796.5s t=709.0] objective vault_gate -> 2
+[OFP 796.5s t=709.0] objective lasers -> 1
+[OFP 796.5s t=709.0] objective lasers -> 2
+[OFP 796.5s t=709.0] objective drill_delivery -> 1
+[OFP 796.5s t=709.0] objective drill_delivery -> 1
+[INFO][director][p1] assault events: 3 rows for ostrander_federal (tweak)
+[OFP 797.7s t=710.3] pilot: t=15 at (12.8, 0.0, -2.0) corner (10.2, 0.2, -1.2) yaw_err 3.12 fwd=false path=4 mouse_mode=2 state=0 look=(5.02,0.00) pin_yaw=5.21025974207441 bot=false
+WARNING: Sub-surface scattering is not supported in viewports with a transparent background. Disabling SSS in transparent viewport.
+     at: _render_scene (servers/rendering/renderer_rd/forward_clustered/render_forward_clustered.cpp:1963)
+[INFO][ecm][p1] ECM 233 ended
+[INFO][combat][p1] slot 0 downed (1/3)
+[OFP 807.8s t=715.3] pilot: use DockPersonnelDoor (lockpick) -> FAILED in 1.0 s
+[OFP 809.2s t=715.6] FAIL ghost/_g2_dock (alarm guard_radio)
+[OFP] FAIL ghost/_g2_dock
+[OFP 817.4s t=715.9] FILLS per observer (peak D-128 meter on the pilot): 1 observers
+[OFP 817.4s t=715.9]   FILL Npc_guard6                   kind 0 peak 1.00 at t=708.0 (observer (14.0, 0.0, -5.0), pilot (15.0, 0.0, -2.6) crouched false)
+[OFP 817.4s t=715.9] GHOST total 712.7 s game time (stopped); alarm guard_radio; ECM left 1
+[OFP] RESULT FAIL ghost
+[OFP] RESULT FAIL (ghost FAIL)
+WARNING: 112 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)
