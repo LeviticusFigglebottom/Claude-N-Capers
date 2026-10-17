@@ -1,0 +1,58 @@
+[D128 199.4s t=2.53] pilot: calibrated 0.001600 rad/px yaw, 0.001600 rad/px pitch (settings formula said (0.0016, 0.0016))
+[D128 199.4s t=2.53] run 1: difficulty 4 pagers_max 2
+[D128 199.4s t=2.53] run 1: glasshouse seed 1002 phase 1 crew (3.0, 0.0, 14.4) masked false mode casing DR 4
+[D128 242.0s t=3.07] shot glasshouse_01_hud_pagers_lethal.png
+[D128 242.0s t=3.07] SAMPLE CameraC4:5:22:stand:strafe (camera CameraC4): walk to (4.5, 0.2, -5.2) (planned d 5.0 ang 22 zones [1] path 32.6) masked false
+[D128 469.1s t=8.07] pilot: t=5 at (8.7, 0.0, 13.0) corner (9.4, 0.2, 12.8) yaw_err 0.00 fwd=true path=50 mouse_mode=2 state=0 look=(-1.31,0.00) pin_yaw=-1.31218309126416 bot=false
+[D128 600.5s t=10.67] pilot: use MainEntrance (open_door) -> OK in 0.0 s
+[D128 868.1s t=15.58] pilot: t=10 at (7.8, 0.0, 10.9) corner (6.6, 0.2, 10.5) yaw_err -0.00 fwd=true path=39 mouse_mode=2 state=0 look=(-5.02,0.00) pin_yaw=-5.02493866650912 bot=false
+[D128 958.1s t=17.05] pilot: STUCK at (7.6, 0.0, 10.9) heading to (6.6, 0.2, 10.5); rays: h0.05:/root/D128Feel/HeistRuntime/Dynamic/Npc_civilian9@(7.2, 0.1, 10.7), h0.20:/root/D128Feel/HeistRuntime/Dynamic/Npc_civilian9@(7.3, 0.2, 10.7), h0.40:/root/D128Feel/HeistRuntime/Dynamic/Npc_civilian9@(7.3, 0.4, 10.8), h1.00:/root/D128Feel/HeistRuntime/Dynamic/Npc_civilian9@(7.3, 1.0, 10.8), slide:/root/D128Feel/HeistRuntime/Dynamic/Npc_civilian9@(7.3, 0.9, 10.8) n=(1.0, 0.0, 0.2), vel=(0.0, 0.0, 0.0) floor=true state=0
+[D128 964.9s t=17.07] shot glasshouse_02_stuck_1.png
+[D128 964.9s t=17.07] pilot: civilian Npc_civilian9 (mode 0) blocks the way: back off and let them pass
+[D128 1358.5s t=24.03] pilot: use StaffDoor (open_door) -> OK in 0.0 s
+[D128 1404.1s t=24.95] pilot: t=15 at (1.7, 0.0, 6.5) corner (1.7, 0.2, 5.8) yaw_err 2.22 fwd=false path=24 mouse_mode=2 state=0 look=(-8.50,0.00) pin_yaw=-8.31069451887743 bot=false
+[D128 1546.6s t=27.43] pilot: use ReceivingDoor (open_door) -> OK in 0.0 s
+[D128 1738.5s t=31.48] pilot: t=20 at (3.7, 0.0, 1.7) corner (3.8, 0.2, 0.4) yaw_err -2.18 fwd=false path=10 mouse_mode=2 state=0 look=(-10.47,0.00) pin_yaw=-10.6650023157999 bot=false
+[D128 1944.9s t=36.50] pilot: t=25 at (4.3, 0.0, -4.0) corner (4.2, 0.2, -3.4) yaw_err -0.42 fwd=true path=2 mouse_mode=2 state=0 look=(-9.14,0.00) pin_yaw=-9.32795861686463 bot=false
+[D128 2019.2s t=37.88]   arrived true at (4.5, 0.0, -5.1) d 4.96 ang 35.2 crouched false meter 0.00 (max any 0.00) alarm 
+[D128 2292.2s t=41.47] shot glasshouse_03_camera_CameraC4_5m_stand_mid.png
+[D128 2363.3s t=42.63]     fill extrapolated from 1.90 s to shown 0.51: 3.89 s
+[D128 2363.3s t=42.63]   RESULT CameraC4:5:22:stand:strafe: first 0.33 full -1.00 -> fill 3.89 s (live-rate integral -1.00, formula at start geom inf) geom start d 4.96/35.2 first 4.95/29.2 full 0.00/0.0 end 5.09/33.2 crouched false DR 4
+[D128 2363.3s t=42.63]     HUD first: meter 0.06 hud -1.00 ring - | mid: meter 0.56 hud 0.56 ring ? 0.56 on+arc | full: 
+[D128 2363.3s t=42.63]     DECAY exit at 2.23 (shown 0.51) out-of-range at 2.57 -> 0 at 3.73: 1.17 s (PD2 expect 1.17 s)
+[D128 2539.6s t=47.85] pilot: t=5 at (0.5, 0.0, -4.0) corner (-3.1, 0.2, -3.1) yaw_err 0.00 fwd=true path=3 mouse_mode=2 state=0 look=(-10.76,0.00) pin_yaw=-10.758488766689 bot=false
+[D128 2661.9s t=52.83] pilot: t=10 at (-4.2, 0.0, -2.9) corner (-5.8, 0.2, -2.5) yaw_err 0.19 fwd=true path=2 mouse_mode=2 state=0 look=(-10.96,0.00) pin_yaw=-10.7642584306595 bot=false
+[D128 2695.1s t=54.05] careful: at mask spot (-5.6, 0.0, -2.6), max meter 0.00
+[D128 2723.2s t=55.37] careful: masked true
+[D128 2724.9s t=55.47] shot glasshouse_04_careful_masked.png
+[D128 2944.6s t=59.97] careful: leg 1 -> (-1.0, 0.0, -0.7) reached true, max meter now 0.00 (-) alarm 
+[D128 3157.6s t=64.07] careful: leg 2 -> (2.8, 0.0, -0.6) reached true, max meter now 0.00 (-) alarm 
+[D128 3298.5s t=66.28] careful: leg 3 -> (3.5, 0.0, 1.2) reached true, max meter now 0.00 (-) alarm 
+[D128 3399.6s t=68.28] careful: leg 4 -> (3.2, 0.0, 3.0) reached true, max meter now 0.65 (Npc_guard2) alarm 
+[D128 3726.8s t=74.12] careful: waited 17.5 s before leg 5 (clear)
+[D128 3892.7s t=77.33] careful: leg 5 -> (2.0, 0.0, 5.2) reached true, max meter now 0.81 (Npc_guard2) alarm 
+[D128 3898.5s t=77.47] shot glasshouse_05_careful_end.png
+[D128 3898.5s t=77.47] careful: camera CameraC1 closest 9.5 m (ang 98) peak meter 0.00
+[D128 3898.5s t=77.47] careful: camera CameraC2 closest 6.9 m (ang 16) peak meter 0.00
+[D128 3898.5s t=77.47] careful: camera CameraC4 closest 2.6 m (ang 86) peak meter 0.00
+[D128 3898.5s t=77.47] careful: camera CameraC6 closest 6.1 m (ang 73) peak meter 0.00
+[D128 3898.5s t=77.47] careful: guard Npc_guard closest 9.2 m (ang 111) peak meter 0.00
+[D128 3898.5s t=77.47] careful: guard Npc_guard2 closest 2.8 m (ang 89) peak meter 0.81
+[D128 3898.5s t=77.47] careful: guard Npc_guard3 closest 6.7 m (ang 99) peak meter 0.00
+[D128 3898.5s t=77.47] careful: civilian Npc_civilian closest 2.1 m (ang 166) peak meter 0.00
+[D128 3898.5s t=77.47] careful: civilian Npc_civilian2 closest 9.7 m (ang 151) peak meter 0.00
+[D128 3898.5s t=77.47] careful: civilian Npc_civilian3 closest 5.1 m (ang 86) peak meter 0.00
+[D128 3898.5s t=77.47] careful: civilian Npc_civilian4 closest 5.8 m (ang 164) peak meter 0.00
+[D128 3898.5s t=77.47] careful: civilian Npc_civilian5 closest 7.7 m (ang 55) peak meter 0.00
+[D128 3898.5s t=77.47] careful: civilian Npc_civilian6 closest 3.5 m (ang 17) peak meter 0.00
+[D128 3898.5s t=77.47] careful: civilian Npc_civilian7 closest 8.5 m (ang 61) peak meter 0.00
+[D128 3898.5s t=77.47] careful: civilian Npc_civilian8 closest 6.9 m (ang 153) peak meter 0.00
+[D128 3898.5s t=77.47] careful: civilian Npc_civilian9 closest 4.6 m (ang 158) peak meter 0.00
+[D128 3898.5s t=77.47] careful: guard Npc_guard4 closest 6.0 m (ang 6) peak meter 0.00
+[D128 3898.5s t=77.47] careful: RESULT CLEAN (alarm )
+[D128 3898.5s t=77.47] SAMPLE CameraC3:10:20:stand:decay: SKIP observer not found
+[D128 3898.5s t=77.47] shoot: no camera
+[D128 3898.5s t=77.47] DONE runs=1
+[D128ROW] glasshouse|CameraC4:5:22:stand:strafe|camera|CameraC4|d 5.0|ang 35|stand|DR 4|fill 3.89|live -|formula never|decay 1.17 (exp 1.17)|meter 0.56 hud 0.56 ring ? 0.56 on+arc
+[D128ROW] glasshouse|careful|CLEAN|alarm 
+[D128ROW] glasshouse|CameraC3:10:20:stand:decay|SKIP no observer
