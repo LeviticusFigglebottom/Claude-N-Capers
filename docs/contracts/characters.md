@@ -362,3 +362,8 @@ the breach start, facing the door (no timing change).
 `cower_b` (52 f) / `cower_c` (46 f) alongside `cower` (60 f), so the loops never re-sync; `flee_b` / `flee_c` (20 f, speed
 4.0, legs identical to `flee`); `panic_start` (24 f, flinch@2, idle f0 → cower f0). SOURCE groups `variants.cower` /
 `variants.flee`; ENV A deals a variant per body like the surrender variants (hash of net_id, replicated).
+
+**v1.29 runtime notes (A 1ab7edd1 / a7bf3a9d):** turn-in-place plays at speed 1 (45 vs 90 by |yaw diff|); the rig turns at
+the clip's root rate; a same-direction residual ≤ `turn_residual_max_deg` (22.5) eases in over `blend_s` (0.2 s smoothstep),
+an overshoot eases back, above 22.5° a second clip plays. `panic_start` plays once per civilian right before its first
+`cower*` (not at the instant of first panic: that would need a ~0.8 s stand before fleeing, against S3.1 timing).

@@ -2104,6 +2104,9 @@ def clips(sk: Skeleton, table: dict) -> dict[str, Clip]:
     import _anim_surrender as surr  # noqa: PLC0415 - D-116 surrender variants; imports this module
 
     extra.update(surr.clips(sk, solver, table))
+    import _anim_civ_panic as civ  # noqa: PLC0415 - D-116 civilian panic variants; imports this module
+
+    extra.update(civ.clips(sk, solver, table))
     import _anim_holds as holds  # noqa: PLC0415 - D-116 third-person weapon holds; imports this module
 
     extra.update(holds.clips(sk, solver, table))
