@@ -422,6 +422,10 @@ func _hide_body() -> bool:
 	var hidden: bool = bag != null and bag.hidden_from_stealth
 	note("body bag at %s hidden %s" % [Po5Pilot._v(bag.global_position) if bag != null else "-", hidden])
 	await shot("body_hidden")
+	# Back to the gate side of B5, where the records leg always started (from the closet the navmesh route went by
+	# InspectionWestDoor and the pilot looped at (8.0, -4, 8.4) for 90 s, ND run 2026-10-17 t=99).
+	await pilot.goto(Vector3(CLOSET_IN.x, GATE_AT.y, 6.9), 0.4, 20.0)
+	await pilot.goto(Vector3(13.5, GATE_AT.y, 6.9), 0.4, 30.0)
 	return hidden
 
 
