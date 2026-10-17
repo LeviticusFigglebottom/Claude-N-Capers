@@ -1195,3 +1195,8 @@ diff 0.003, outline/ragdoll/hand props OK, lineups identical at close/30 m) but 
 Ruling: **park D1** (keep the branch, do not merge) until a real-GPU measurement shows draw calls bind; D2 and A's
 animation LOD stay. Real-GPU probe: ask the product owner to run the bench (`world/characters/_tools/bench_crowd.tscn`)
 on their machine, D1 on/off; land D1 (option A, or B if it binds hard) only on that evidence.
+**D-132 addendum 3 (A e6ee87d9, animation LOD):** AnimLod bands FULL < 15 m on screen / NEAR 15-30 m every 2nd frame, IK off /
+FAR > 30 m or off screen every 4th frame, layer off / PAUSED off screen > 30 m; staggered by net_id; skipped time advanced
+on the due frame. Bench 34 NPCs: 2.69 → 1.49 ms/frame (-45 %), event parity within one cadence step. Rulings: (a) TIED is
+LOD'd (steady pose), surrender transitions exempt; (b) "aimed at" = within 2 m of a crew aim ray; (c) "on screen" =
+frustum check without occlusion; (d) a paused body catches up its clip events on resume (fine under D-121).
