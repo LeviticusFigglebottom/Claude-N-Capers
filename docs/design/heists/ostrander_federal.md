@@ -396,7 +396,9 @@ Ground notes:
   = **1.32 m** for an observer straight out from the counter. **QC-g amended (LEAD, OF-C1 build):** `hide_los`
   also samples observers along the counter face (z ≈ 17.75, the ledge's front plus the NPC radius) at the 2.0 m
   flat uncover radius but only ~1.5 m out from the crew, whose sight line to the 1.05 m point crosses the screen
-  face (z 17.25) at ≈ 1.44 m; the solid base is therefore **1.50 m**, bandit glass 1.50–2.40 m. The 1.05 m
+  face at ≈ 1.44 m; the solid base is therefore **1.50 m**, bandit glass 1.50–2.40 m. QC-67 (ENV D probe): the screen
+  stands 0.82 m behind the customers' marks (z 16.83–16.93; the 0.52 m ledge runs to the hall face at z 17.45), so the `counter_customer`
+  forearms clear it; the work tops are 0.48 m deep. The 1.05 m
   ledge stays as the customers' writing ledge. The teller
   gate `g` (x 24) is LOCKPICK and NPC-authorised.
 - **The lid** `T` at (24, 14): a 2.4 × 2.4 m brass-bordered marble panel in the TW floor marking
