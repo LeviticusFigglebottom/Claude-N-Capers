@@ -95,6 +95,9 @@ static var gore: StringName = GORE_FULL:
 static var force_cpu_particles: Variant = null
 ## Tests/tools: force Decal nodes (true) or projected quads (false); null = auto (quads on Compatibility).
 static var force_decal_nodes: Variant = null
+## Tests: >= 0 replaces Engine.get_frames_drawn() in frame_drawn_since / frames_drawn and lifts the headless shortcut, so
+## a headless test can hold a frame undrawn (the hitch case). -1 = off.
+static var test_frames: int = -1
 
 static var _revision: int = 0
 
@@ -147,6 +150,7 @@ static func reset() -> void:
 	gore = GORE_FULL
 	force_cpu_particles = null
 	force_decal_nodes = null
+	test_frames = -1
 
 
 ## A cap scaled by quality, never below `min_value`.
@@ -190,6 +194,16 @@ static func use_decal_nodes() -> bool:
 
 
 ## True once at least one frame has been drawn since `drawn_at` (Engine.get_frames_drawn()), so a short flash
-## survives a hitch longer than its life (< 20 fps). Headless never draws, so it never waits there.
+## survives a hitch longer than its life (< 20 fps). Headless never draws, so it never waits there; nor with the render
+## loop off (harness fast mode): nothing is drawn until it is back on, so every flash fired meanwhile stayed up and the
+## next screenshot showed them frozen in the air where the shooters had been (ENV A, PO "frozen muzzle flashes").
 static func frame_drawn_since(drawn_at: int) -> bool:
-	return drawn_at < 0 or is_headless() or Engine.get_frames_drawn() > drawn_at
+	if test_frames >= 0:
+		return drawn_at < 0 or test_frames > drawn_at
+	return drawn_at < 0 or is_headless() or not RenderingServer.render_loop_enabled \
+		or Engine.get_frames_drawn() > drawn_at
+
+
+## Frames drawn so far (Engine.get_frames_drawn(), or `test_frames` when a test sets it).
+static func frames_drawn() -> int:
+	return test_frames if test_frames >= 0 else Engine.get_frames_drawn()

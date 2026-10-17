@@ -21,6 +21,8 @@ extends Node3D
 
 ## PO6-13 / D-114 §8: toned down from D-113 (0.05 s, size x1): about half the size, 3 -> 2 frames at 60 fps.
 const FLASH_S: float = 0.034
+## Remaining time a flash / spark keeps while no frame has drawn it yet (hitch-proof, as vfx_lights).
+const HOLD_S: float = 0.0001
 ## Global size factor on every class shape (keeps the proportions; FP and TP alike).
 const SIZE_K: float = 0.6
 ## Classes that carry a muzzle brake / compensator by default (ENV B brake meshes on long guns).
@@ -142,7 +144,7 @@ func flash(size: float = 1.0, suppressed: bool = false, weapon_class: StringName
 		_shape(SHAPES[last_shape], size, last_variant, rng)
 		_ports(size, last_variant, rng)
 		_left = FLASH_S
-		_drawn_at = Engine.get_frames_drawn()
+		_drawn_at = VfxSettings.frames_drawn()
 	_smoke.scale = Vector3.ONE * (0.6 if suppressed else 1.0)
 	_smoke.visible = true
 	ImpactFx.restart_emitter(_smoke)
@@ -199,8 +201,13 @@ func tick(delta: float) -> void:
 	if _left <= 0.0:
 		return
 	_left -= delta
-	if _left <= 0.0 and VfxSettings.frame_drawn_since(_drawn_at):
-		hide_flash()
+	if _left <= 0.0:
+		if VfxSettings.frame_drawn_since(_drawn_at):
+			hide_flash()
+		else:
+			# Not drawn yet (a frame longer than FLASH_S, a hitch): stay up until one frame shows it. Leaving _left <= 0
+			# here returned early on every later tick, so the flash froze in the air (PO, Dockside Burn).
+			_left = HOLD_S
 
 
 func hide_flash() -> void:
@@ -329,9 +336,11 @@ func _tick_sparks(delta: float) -> void:
 			continue
 		_spark_left[i] -= delta
 		var sp: MeshInstance3D = _sparks.get_child(i) as MeshInstance3D
-		if _spark_left[i] <= 0.0 and VfxSettings.frame_drawn_since(_drawn_at):
-			sp.visible = false
-			continue
+		if _spark_left[i] <= 0.0:
+			if VfxSettings.frame_drawn_since(_drawn_at):
+				sp.visible = false
+				continue
+			_spark_left[i] = HOLD_S  # not drawn yet: hold, as the flash (else it stuck visible)
 		any = true
 		_spark_vel[i] = _spark_vel[i] * maxf(1.0 - 6.0 * delta, 0.0) + Vector3(0.0, -2.0 * delta, 0.0)
 		sp.position += _spark_vel[i] * delta

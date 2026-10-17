@@ -73,6 +73,8 @@ var lights: VfxLights
 var shells: ShellFx
 var explosions: ExplosionFx
 var blood: VfxBlood
+## True once prewarm() ran: apply_settings (a quality change drops the pools) builds them again.
+var prewarmed: bool = false
 
 var _rev: int = -1
 var _tick: int = 0
@@ -177,6 +179,25 @@ func apply_settings() -> void:
 		VfxSettings.scaled_cap(VfxSettings.BLOOD_POOL_CAP, 4))
 	if not VfxSettings.blood_enabled():
 		blood.clear()  # gore switched Off: no blood stays on screen
+	if prewarmed:
+		prewarm()
+
+
+## Build every effect pool to its cap now, hidden, with every procedural texture and decal kind, so no shot creates a
+## node, mesh, particle system or texture mid-fight. Windowed (Vulkan on llvmpipe) a new GPU resource waits for the
+## frames in flight: the multi-second HITCHes booked to the shooter (npc_gunner.fx / .hit). HeistRuntime calls it once
+## at heist load. Idempotent.
+func prewarm() -> void:
+	prewarmed = true
+	impacts.prewarm()
+	var kinds: Array[StringName] = [&"scorch"]
+	for s: StringName in ImpactFx.SURFACES:
+		if ImpactFx.has_decal(s):
+			kinds.append(s)
+	decals.prewarm(kinds)
+	muzzles.prewarm()
+	lights.prewarm()
+	blood.prewarm()
 
 
 ## Step every effect by `delta` seconds (called from _process when auto_advance).

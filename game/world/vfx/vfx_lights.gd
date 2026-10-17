@@ -67,22 +67,7 @@ func flash(pos: Vector3, color: Color, energy: float, light_range: float, durati
 		if _lights.size() >= _cap:
 			skipped += 1
 			return false
-		var l: OmniLight3D = OmniLight3D.new()
-		l.name = "Flash%d" % _lights.size()
-		l.shadow_enabled = false
-		l.layers = LAYERS
-		l.omni_attenuation = 1.6
-		l.visible = false
-		add_child(l)
-		_lights.append(l)
-		_left.append(0.0)
-		_dur.append(0.0)
-		_energy.append(0.0)
-		_drawn_at.append(-1)
-		_falloff.append(1.0)
-		_c0.append(Color.WHITE)
-		_c1.append(Color.WHITE)
-		i = _lights.size() - 1
+		i = _add_light()
 	var light: OmniLight3D = _lights[i]
 	if light.is_inside_tree():
 		light.global_position = pos
@@ -96,12 +81,37 @@ func flash(pos: Vector3, color: Color, energy: float, light_range: float, durati
 	_left[i] = duration
 	_dur[i] = duration
 	_energy[i] = e
-	_drawn_at[i] = Engine.get_frames_drawn()
+	_drawn_at[i] = VfxSettings.frames_drawn()
 	_falloff[i] = maxf(falloff, 0.1)
 	_c0[i] = color
 	_c1[i] = color_end if color_end.a > 0.0 else color
 	started += 1
 	return true
+
+
+## Create every light up to the cap now (hidden), so flash() never adds one mid-fight. Idempotent.
+func prewarm() -> void:
+	while _lights.size() < _cap:
+		_add_light()
+
+
+func _add_light() -> int:
+	var l: OmniLight3D = OmniLight3D.new()
+	l.name = "Flash%d" % _lights.size()
+	l.shadow_enabled = false
+	l.layers = LAYERS
+	l.omni_attenuation = 1.6
+	l.visible = false
+	add_child(l)
+	_lights.append(l)
+	_left.append(0.0)
+	_dur.append(0.0)
+	_energy.append(0.0)
+	_drawn_at.append(-1)
+	_falloff.append(1.0)
+	_c0.append(Color.WHITE)
+	_c1.append(Color.WHITE)
+	return _lights.size() - 1
 
 
 func advance(delta: float) -> void:
