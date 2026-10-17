@@ -946,13 +946,15 @@ func burn_through() -> void:
 ## The lid: prefabs tagged `lid` are switched off (replicated); C's G1 lid slab (meta burn_lid) is hidden and loses its
 ## collision (server-side only: ask C for a replicated prefab).
 func _drop_lid() -> void:
+	var lids: Array[Node] = []
 	for n: Node in find_tagged(TAG_LID):
 		if n is GameplayPrefab:
 			(n as GameplayPrefab).set_enabled(false)
+			lids.append(n)
 	if _runtime == null or _runtime.map == null:
 		return
 	for n: Node in _runtime.map.find_children("*", "", true, false):
-		if not n.has_meta(META_BURN_LID):
+		if not n.has_meta(META_BURN_LID) or lids.has(n):  # a prefab lid (C fcc83280, meta kept) is off above, replicated
 			continue
 		if n is Node3D:
 			(n as Node3D).visible = false
