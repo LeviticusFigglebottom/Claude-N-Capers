@@ -465,3 +465,30 @@ func test_paused_resume_catches_up() -> void:
 	assert_true(diff <= 2 * DT + 0.001, "caught up to the full-rate pose (off by %.4f s)" % diff)
 	assert_eq(ld.clip, rd.clip)
 
+
+
+## OF cast perf audit (D ca74efe3): an NPC's held weapon stops drawing at its body's CrowdLod switch (the body meshes'
+## visibility_range_end) and casts shadows only in the FULL band.
+func test_npc_weapon_range_and_shadows_follow_the_body() -> void:
+	var npc: NpcBase = _npc(4140)
+	var d: AnimDriver = _drv(npc)
+	var body: MeshInstance3D = MeshInstance3D.new()
+	body.visibility_range_end = 25.0
+	d.rig.add_child(body)
+	var wv: WeaponVisual = WeaponVisual.new()
+	var gun: MeshInstance3D = MeshInstance3D.new()
+	wv.add_child(gun)
+	d.rig.add_child(wv)
+	d.held_visuals._crowd_cull(d.rig, wv)
+	assert_eq(gun.visibility_range_end, 25.0, "the weapon culls at the body's switch distance")
+	_view(d, 5.0)
+	var f: int = _until_tick(d, 0)
+	assert_eq(d.lod.band, AnimLod.Band.FULL)
+	assert_eq(gun.cast_shadow, GeometryInstance3D.SHADOW_CASTING_SETTING_ON, "near: weapon shadows on")
+	_view(d, 25.0)
+	f = _until_tick(d, f)
+	assert_eq(d.lod.band, AnimLod.Band.NEAR)
+	assert_eq(gun.cast_shadow, GeometryInstance3D.SHADOW_CASTING_SETTING_OFF, "past the near tier: no weapon shadows")
+	_view(d, 5.0)
+	f = _until_tick(d, f)
+	assert_eq(gun.cast_shadow, GeometryInstance3D.SHADOW_CASTING_SETTING_ON, "back near: shadows on again")

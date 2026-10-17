@@ -5,11 +5,16 @@
 class_name HeldVisuals
 extends RefCounted
 
+## Same hysteresis as the body's CrowdLod switch (CrowdLod.MARGIN_M).
+const WEAPON_RANGE_MARGIN_M: float = 1.0
+
 static var _weapon_defs: Dictionary = {}
 
 var _d: AnimDriver = null
 ## v1.20: the LootBag the carried-bag visual shows.
 var _shown_bag: Node = null
+## The NPC held weapon's geometry (OF perf: range-culled at the body's CrowdLod switch, shadows by AnimLod band).
+var _weapon_gis: Array[GeometryInstance3D] = []
 
 
 func _init(driver: AnimDriver) -> void:
@@ -51,6 +56,46 @@ func refresh_weapon() -> void:
 	wv.setup(def, LoadoutResolver.applied_mods(def, mod_ids))
 	_d.weapon_visual = wv
 	_place_offhand(wv)
+	if npc != null:
+		_crowd_cull(rig, wv)
+
+
+## OF cast perf audit (D ca74efe3): an NPC's held weapon (~14 meshes) stops drawing where its body switches to the
+## CrowdLod mesh (the body meshes' visibility_range_end: 25 m units, 15 m civilians), and casts shadows only in the
+## FULL AnimLod band (set_weapon_shadows). Crew bodies keep theirs (the local player's view).
+func _crowd_cull(rig: Node3D, wv: WeaponVisual) -> void:
+	var switch_m: float = 0.0
+	for n: Node in rig.find_children("*", "MeshInstance3D", true, false):
+		var mi: MeshInstance3D = n as MeshInstance3D
+		if not wv.is_ancestor_of(mi) and mi.visibility_range_end > switch_m:
+			switch_m = mi.visibility_range_end
+	_weapon_gis = _geometry(wv)
+	if _d.weapon_offhand != null:
+		_weapon_gis.append_array(_geometry(_d.weapon_offhand))
+	for gi: GeometryInstance3D in _weapon_gis:
+		if switch_m > 0.0:
+			gi.visibility_range_end = switch_m
+			gi.visibility_range_end_margin = WEAPON_RANGE_MARGIN_M
+			gi.visibility_range_fade_mode = GeometryInstance3D.VISIBILITY_RANGE_FADE_DISABLED
+	set_weapon_shadows(_d.lod == null or _d.lod.band == AnimLod.Band.FULL)
+
+
+## AnimLod: shadows on the NPC's held weapon only while its body animates in the FULL band.
+func set_weapon_shadows(on: bool) -> void:
+	var mode: GeometryInstance3D.ShadowCastingSetting = GeometryInstance3D.SHADOW_CASTING_SETTING_ON if on \
+		else GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	for gi: GeometryInstance3D in _weapon_gis:
+		if is_instance_valid(gi):
+			gi.cast_shadow = mode
+
+
+static func _geometry(root: Node) -> Array[GeometryInstance3D]:
+	var out: Array[GeometryInstance3D] = []
+	for n: Node in root.find_children("*", "GeometryInstance3D", true, false):
+		out.append(n as GeometryInstance3D)
+	if root is GeometryInstance3D:
+		out.append(root as GeometryInstance3D)
+	return out
 
 
 ## v1.20 akimbo: WeaponVisual builds the pair as the gun plus `offhand` beside it (the first-person rest pose); in
