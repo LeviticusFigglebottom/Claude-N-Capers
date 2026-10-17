@@ -18,7 +18,7 @@ and reports a gap list; the LEAD folds the gaps in here as rows (id, heist, owne
 | X-2 | all but GH | C (+B rows) | ambience cues: 9 doc ambiences, SL/DB/GN have no Audio node, ND reuses GH beds | done (round 221) |
 | X-3 | ND, DB, GN | C markers, A rows/logic | assault events (D-114 §5); SL N/A (stealth-only) | done: markers (C, earlier) + rows 07c1adf9 + test_x3 8293bb60 (round 223) |
 | X-4 | ND, SL, GN | A | stealth e2e flows (only GH has one) | done: test_x4_nd/sl/gn_stealth (A ec76d360, round 223); GN curator-keycard variant test_x4_gn_curator_keycard (A 5138fdb1, round 224) |
-| X-5 | all | A | nav agent_radius 0.30 vs NPC capsule 0.35; tellers pushed off marks; GN StaffCO/CS/AO desk_work without seats; GH WorkshopDoor UsePoint police motor snag (7.8, z 5) | done: nav doorway test, mark-return for tellers, GN seats (A 61900a46/2727f197, round 223); x5 GH police flake under bisect |
+| X-5 | all | A | nav agent_radius 0.30 vs NPC capsule 0.35; tellers pushed off marks; GN StaffCO/CS/AO desk_work without seats; GH WorkshopDoor UsePoint police motor snag (7.8, z 5) | done: nav doorway test, mark-return for tellers, GN seats (A 61900a46/2727f197, round 223); x5 GH police flake not reproducing (A, 3/3 green under load; reopen if seen) |
 | GH-1 | GH | A, P | PO6-17 logic merge; P real-input pass | in progress |
 | ND-1 | ND | A | gate 2 (auto_loud, attempt 24, empty box) | open |
 | ND-2 | ND | P | windowed real-input pass | open |
@@ -46,7 +46,7 @@ and reports a gap list; the LEAD folds the gaps in here as rows (id, heist, owne
 | D-6 | all | D | cast file for GH/ND/SL/DB + test: every design role has a character | done (round 220) |
 | D-7 | GH (PO6-17) | C | heli cabin roof +0.1 m + SniperKneel marker | done (round 220) |
 | A-DB | DB | A / C | A audit (full table: docs/status/env_a.md on env/a-core 4aca399f): DB-1 no assault events (C markers, A rows); DB-2 contraband counts toward the 4 required bags (A); DB-3 cartel reinforcements spawn as plain guards (A); DB-4 thermite bag ignores chosen spawn (C+A); DB-5 count-cage drill 180 s vs doc 120 s (C); DB-6 briefing lines in-mission (A VO lane); DB-7 no music (C); DB-8 padlocks: placed saw 30/45 s per doc (LEAD ruling: doc wins, DB is loud-only); minors 8-19 in A's table | open |
-| A-SL | SL | A / C / B | SL-1 cage saw 180 s vs doc 90 s (A+C); SL-2 camera_warning VO (A); SL-3 literal briefing (C, D-117 §4); SL-4 no music (C); SL-5 drives objective completes at 3 but 2 required (A); SL-6 cage_left_open `requires` at effects level ignored by resolver (B/C); SL-7 E3 zone (C); SL-8 doc lift vs service_lift (C doc); SL-9 lasers line late (A); SL-10 assault events N/A (ruled); SL-11 ambience/LUT (C) | open |
+| A-SL | SL | A / C / B | SL-1..SL-11 (A's 10-15 audit) | done: A confirmed SL-1 3f64d707, SL-2 camera_warning poll, SL-5 MIN_DRIVES=2, SL-6 47d08435, SL-9 lasers poll; SL-4/SL-11 music/ambience done (X-1/X-2); SL-3 literal briefing string → C; SL-7/SL-8 C |
 | B-GN | GN | B (A for logic) | D-115 strings audit vs design doc: briefing, objective lines in order (GN-U5), loot names/values, contact lines, payday (GN-B1) | open |
 | B-DB | DB | B (A for logic) | D-115 strings audit vs design doc (as B-GN) | open |
 | B-SL | SL | B (A for logic) | D-115 strings audit vs design doc (as B-GN) | open |
