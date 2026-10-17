@@ -71,7 +71,9 @@ DOUBLE_SIDED = {"char_silk_ice", "char_coat_ice", "char_crew_rook_coat", "char_c
                 # on a stride or squat, and a squat or a seat shows the skirt's inside past the hem: single-sided, both
                 # read as holes (a hem ring floating round the knees)
                 "char_dress_black", "char_satin_wine", "char_satin_sapphire", "char_satin_amethyst", "char_satin_gold",
-                "char_satin_teal", "char_silk_graphite", "char_bank_slate_dark", "char_suit_grey"}
+                "char_satin_teal", "char_silk_graphite", "char_bank_slate_dark", "char_suit_grey",
+                # OF-D1: the navy pencil skirt; the long wool coats (below the knee)
+                "char_skirt_navy", "char_coat_heather", "char_coat_stone"}
 
 
 def srgb_bytes(h: str) -> tuple[int, int, int]:

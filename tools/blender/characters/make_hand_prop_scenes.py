@@ -25,7 +25,7 @@ OUT = REPO / "game/world/characters/_props"
 
 #: prop -> the ambient clips (characters.md / SOURCE.txt) that hold it; the socket comes from the grip line.
 HAND_PROPS = {
-    "phone": ["phone_call", "phone_seated", "walk_text"],
+    "phone": ["phone_call", "phone_seated", "walk_text", "queue_idle_b"],
     "cigarette": ["smoke"],
     "mug": ["mug_idle", "mug_carry_walk"],
     "mop": ["mop"],
