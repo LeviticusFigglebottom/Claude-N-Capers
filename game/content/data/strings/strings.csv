@@ -2580,6 +2580,16 @@ item.asset.sniper_position.name,Sniper position
 item.asset.sniper_position.desc,"A counter-sniper spot is ready for you, with an ammo bag waiting: the roof door left unlocked, or a ladder up the double-stacked container."
 item.asset.thermite_drop.name,Thermite drop
 item.asset.thermite_drop.desc,The thermite bag is left here instead of at your start: a shorter carry to the burn.
+item.asset.thermal_drill_drop.name,Thermal drill drop
+item.asset.thermal_drill_drop.desc,"The two drill bags are left at this spot before you go in, so nobody waits for a delivery once it goes loud."
+item.asset.intel_code_pc.name,Insider: code PC
+item.asset.intel_code_pc.desc,An insider tells you which officer keeps the vault code on their PC tonight.
+item.asset.manager_schedule.name,Insider: manager's schedule
+item.asset.manager_schedule.desc,You know where the manager walks tonight and where the vault keycard is.
+item.asset.fire_escape_ladder.name,Fire escape ladder
+item.asset.fire_escape_ladder.desc,The Corvino fire escape's drop ladder is left down: a way up to the roof from the street.
+item.loot.thermal_drill_part.name,Thermal Drill Part
+item.loot.thermal_drill_part.desc,"Half of the thermal drill. Heavy, worth nothing at payday, and the drill needs both halves on the floor."
 item.asset.gangway_raised.name,Raised gangway
 item.asset.gangway_raised.desc,A harbour hand swings the Pier 10 gangway away before you arrive. The police lose their way in from the east.
 item.asset.intel_containers.name,Insider: weapons containers
