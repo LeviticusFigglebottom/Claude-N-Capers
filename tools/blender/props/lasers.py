@@ -31,7 +31,7 @@ def _column(k: Kit, p: dict) -> None:
     h, hw, hd = p["h"], p["w"] / 2, p["d"] / 2
     o = k.obj("Column")
     body = o.part(bevel=0.01, segments=2)
-    body.bx((-hw + 0.004, -hd + 0.004, 0.07), (hw - 0.004, hd - 0.004, h - 0.06), "alu_black")
+    body.bx((-hw + 0.004, -hd + 0.004, 0.07), (hw - 0.004, hd - 0.004, h - 0.06), "metal_graphite")
     base = o.part(bevel=0.006, segments=1)
     base.bx((-hw, -hd, 0.0), (hw, hd, 0.07), "steel")
     base.bx((-hw, -hd, h - 0.06), (hw, hd, h), "steel")
@@ -47,7 +47,7 @@ def _column(k: Kit, p: dict) -> None:
     # plinth bolts, top status LED, key switch and a service label on the -Y side
     for sx in (-1, 1):
         for sy in (-1, 1):
-            trim.cyl(0.008, 0.006, (sx * (hw - 0.02), sy * (hd - 0.02), 0.073), "steel_bare", segs=6)
+            trim.cyl(0.008, 0.006, (sx * (hw - 0.02), sy * (hd - 0.02), 0.073), "steel", segs=6)
     trim.cyl(0.009, 0.004, (0.0, 0.0, h + 0.002), "emit_led_green", segs=10)
     ky = -hd + 0.004
     trim.bx((-0.035, ky - 0.004, 1.05), (0.035, ky, 1.17), "steel")
