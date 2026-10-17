@@ -326,6 +326,32 @@ func test_sl2_catalog_art() -> void:
 	vis.free()
 
 
+## SL-3: Victor Kessler and the camera operator spawn on their seats' `Seat` markers (catalog armchair / task chair);
+## the IT contractor stands on a call (no seat in K11).
+func test_sl3_seated_npcs() -> void:
+	if _map == null:
+		fail("map missing")
+		return
+	for p: Array in [["Variants/Group_kessler/Slot_kessler_in/VictorKessler", "Variants/Group_kessler/Slot_kessler_in/KesslerArmchair"],
+			["Spawns/CameraOperatorSeat", "Gameplay/Misc/OperatorChair"]]:
+		var sp: SpawnPoint = _map.get_node_or_null(String(p[0])) as SpawnPoint
+		var chair: Node3D = _map.get_node_or_null(String(p[1])) as Node3D
+		assert_true(sp != null and chair != null, "%s and its seat" % p[0])
+		if sp == null or chair == null:
+			continue
+		var seat: Node3D = chair.find_child("Seat", true, false) as Node3D
+		assert_true(seat != null, "%s has a Seat marker" % p[1])
+		if seat == null:
+			continue
+		var s: Vector3 = _world(seat).origin
+		var o: Vector3 = _world(sp).origin
+		assert_true(Vector2(s.x - o.x, s.z - o.z).length() < 0.05, "%s on its seat (%.3f m)" % [p[0], Vector2(s.x - o.x, s.z - o.z).length()])
+		assert_true(s.y - o.y > 0.4 and s.y - o.y < 0.5, "%s seat %.2f m up" % [p[1], s.y - o.y])
+		assert_true(chair.scene_file_path.begins_with("res://world/props/"), "%s is catalog art" % p[1])
+	var it: SpawnPoint = _map.get_node_or_null("Variants/Group_server_room/Slot_srv_contractor/ITContractor") as SpawnPoint
+	assert_true(it != null and it.idle_activity == &"phone", "IT contractor on the phone (standing)")
+
+
 ## World transform of a map node (the map is not in the tree here).
 func _world(n: Node3D) -> Transform3D:
 	var xf: Transform3D = n.transform

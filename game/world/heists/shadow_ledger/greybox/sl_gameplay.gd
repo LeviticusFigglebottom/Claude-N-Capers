@@ -29,13 +29,19 @@ const ANCHOR_Y: float = 1.75
 const ANCHOR_LINE: Vector3 = Vector3(0.0, 0.042, -0.27)  # the anchor's `Line` marker, anchor-local (equipment.py)
 const BAG_DROP: float = 0.34
 const ANCHOR_LINE_PATH: NodePath = ^"Visual/PropZiplineAnchor/Model/Line"
+## SL-3: the camera operator's NPC seat (D-063 task chair, seat 0.47 m) on the CameraOperatorSeat spawn.
+const OPERATOR_CHAIR: String = "prop_chair_task"
 ## PO-13 escape_zone visuals (tools/blender/props/escape.py): the landed heli, the crew's clip-on rig at the
 ## E2 anchor, the service-lift car fit-out.
 const ESCAPE_HELI_VISUAL: String = "res://world/props/escape_zone/veh_heli_escape.tscn"
 const ESCAPE_LINE_VISUAL: String = "res://world/props/escape_zone/prop_escape_zipline_rig.tscn"
 const ESCAPE_LIFT_VISUAL: String = "res://world/props/escape_zone/prop_escape_lift_fitout.tscn"
-## Victor Kessler's seat in M5 (kessler_in): the npc_seat chair's bottom-centre = his spawn.
+## Victor Kessler's seat in M5 (kessler_in): the npc_seat armchair's seat centre = his spawn.
 const KESSLER_SEAT: Vector3 = Vector3(3.0, L.F42, 12.3)
+## The catalog armchair (sales.py: cushion 0.42-0.50 m between the back and the front edge) has no `Seat` marker:
+## npc_seat adds one over its cushion centre, 0.09 m in front of the pivot.
+const KESSLER_CHAIR: String = "prop_armchair"
+const ARMCHAIR_SEAT: Vector3 = Vector3(0.0, 0.45, -0.09)
 ## D-111 prop art pass: catalog visual (tools/blender/props) per prefab type, as on Night Deposit
 ## (nd_gameplay.PREFAB_VISUALS). Doors, ladders, lasers, loot and escapes choose theirs where they are built.
 const PREFAB_VISUALS: Dictionary = {
@@ -328,6 +334,10 @@ func _build_misc(gp: Node3D) -> void:
 		{}, null, {"kind": "camera_station"})
 	if station != null:
 		station.set(&"operator_spawn", station.get_path_to(map_root.get_node("Spawns/CameraOperatorSeat")))
+	# SL-3: the operator's task chair on his spawn, facing the monitor wall (as ND / GH OperatorChair); there with or
+	# without `sec_staffed` (a security room keeps its chair), no collider (D-063 NPC seat).
+	var op: Node3D = map_root.get_node("Spawns/CameraOperatorSeat") as Node3D
+	npc_seat(misc, "OperatorChair", global_xform(op).origin, roundf(rad_to_deg(op.basis.get_euler().y)), OPERATOR_CHAIR)
 	# Alarm buttons: under the reception ledge, the security console, the guest-suite bedside.
 	prefab(misc, "alarm_button", "AlarmReception", Vector3(17.6, L.F41 + 0.8, 4.795), 0.0, {},
 		Vector3(17.6, L.F41, 4.2), {"mount": "wall", "kind": "alarm_button"})
@@ -450,7 +460,7 @@ func _variants_people(variants: Node3D) -> void:
 	# PO6-06: reading in the M5 armchair at the bedside (back to the south wall, facing the bed's foot), on its `Seat`;
 	# the alarm button and the bedside phone are ~2 m west, the suite door's clear zone 3 m east.
 	spawn(ki, "VictorKessler", "CIVILIAN", KESSLER_SEAT, 0.0, ["civ_kessler", "civ_staff"], "sit", "")
-	npc_seat(ki, "KesslerArmchair", KESSLER_SEAT, 0.0)
+	npc_seat(ki, "KesslerArmchair", KESSLER_SEAT, 0.0, KESSLER_CHAIR, ARMCHAIR_SEAT)
 	_slot(kg, "kessler", "kessler_out", 1.0)
 
 
@@ -754,19 +764,34 @@ func _bag_line(e2: Node3D) -> void:
 	zl.set(&"cable_end", zl.get_path_to(cable_end))
 
 
-## PO6-06 / D-063: a seat an NPC spawns seated in (as DB's `npc_seat` chairs and GH / GN's prop_chair_task): the
-## greybox chair with its `Seat` 0.45 m up, but no collider and no nav obstruction, so the spawn on it stays on the
-## navmesh and the seated NPC owns the spot. Lives in the NPC's slot (absent when the NPC is).
-func npc_seat(parent: Node3D, nm: String, base: Vector3, yaw: float) -> void:
-	var body: Node3D = Node3D.new()
+## PO6-06 / D-063: a seat an NPC spawns seated in (as DB's `npc_seat` chairs and GH / GN's prop_chair_task), with no
+## collider and no nav obstruction, so the spawn on it stays on the navmesh and the seated NPC owns the spot. The seat
+## centre (its `Seat` marker, xz) is `base`, the NPC's spawn. `asset` = a catalog seat (SL-3: the prop's own `Seat`,
+## else one added at `seat` prop-local, the pivot then set back so that seat lands on `base`); "" = the greybox
+## chair. Kessler's lives in his slot (absent when he is); the operator's in Gameplay/Misc.
+func npc_seat(parent: Node3D, nm: String, base: Vector3, yaw: float, asset: String = "",
+		seat: Vector3 = Vector3(0.0, 0.45, 0.0)) -> void:
+	var ps: PackedScene = _catalog_scene(asset) if asset != "" else null
+	var body: Node3D = ps.instantiate() as Node3D if ps != null else Node3D.new()
 	body.name = nm
-	body.position = base
 	body.basis = yaw_basis(yaw)
-	body.set_meta(&"kind", "armchair")
+	var own: Node3D = body.find_child("Seat", true, false) as Node3D
+	var local: Vector3 = seat
+	if own != null:
+		local = own.transform.origin
+		var p: Node = own.get_parent()
+		while p != body and p is Node3D:
+			local = (p as Node3D).transform * local
+			p = p.get_parent()
+	body.position = base - body.basis * Vector3(local.x, 0.0, local.z)
+	if ps == null:
+		body.set_meta(&"kind", "armchair")
 	add(parent, body)
-	mesh_box(body, "SeatMesh", Vector3(-0.225, 0.0, -0.225), Vector3(0.225, 0.45, 0.225), "chair")
-	mesh_box(body, "BackMesh", Vector3(-0.225, 0.45, 0.165), Vector3(0.225, 0.85, 0.225), "chair")
-	var m: Marker3D = Marker3D.new()
-	m.name = "Seat"
-	m.position = Vector3(0.0, 0.45, 0.0)
-	add(body, m)
+	if ps == null:
+		mesh_box(body, "SeatMesh", Vector3(-0.225, 0.0, -0.225), Vector3(0.225, 0.45, 0.225), "chair")
+		mesh_box(body, "BackMesh", Vector3(-0.225, 0.45, 0.165), Vector3(0.225, 0.85, 0.225), "chair")
+	if own == null:
+		var m: Marker3D = Marker3D.new()
+		m.name = "Seat"
+		m.position = seat
+		add(body, m)
