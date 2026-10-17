@@ -26,7 +26,7 @@ const P1: Array[String] = [
 ]
 ## Priority 2 clips delivered by D1-03.
 const P2: Array[String] = [
-	"idle_alert", "sprint", "strafe_l", "strafe_r", "walk_back", "turn_l", "turn_r", "surrender",
+	"idle_alert", "sprint", "strafe_l", "strafe_r", "walk_back", "turn_l", "turn_r", "turn_l_45", "turn_r_45", "surrender",
 	"kneel_cuffed", "melee", "investigate_look", "smoke", "lean_wall", "sit_chair", "desk_type",
 	"browse", "drill_place", "climb_ladder", "tased",
 ]
