@@ -861,6 +861,12 @@ func _surface() -> bool:
 	var bottom: Vector3 = lad.bottom_position()
 	var away: Vector3 = Vector3(bottom.x - lad.global_position.x, 0.0, bottom.z - lad.global_position.z)
 	away = away.normalized() if away.length() > 0.01 else Vector3.FORWARD
+	# Out of B1 on the same diagonal as the bag legs, then east along B5 to PlantDoor (from the hatch the pilot
+	# flipped between two corners inside XferDoor for 90 s, r242 + a-core 2c283ef8).
+	if pilot.crew.global_position.x < 5.5 and pilot.crew.global_position.z < 6.0:
+		await pilot.goto(Vector3(5.5, GATE_AT.y, 6.6), 0.4, 20.0)
+	for wp: Vector3 in [Vector3(13.5, GATE_AT.y, B5_MID_Z), PLANT_THROUGH]:
+		await pilot.goto(wp, 0.4, 40.0, false, true)
 	if not await pilot.goto(bottom + away * 0.5, 0.4, 90.0):
 		note("ladder bottom not reached (at %s)" % Po5Pilot._v(pilot.crew.global_position))
 		return false
