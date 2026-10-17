@@ -179,6 +179,9 @@ EMISSIVE: dict[str, dict] = {
     "emit_police_blue": {"color": "#0E1A3A", "emission": "#2F5BFF", "energy": 2.0},
     # Gallery Night gala uplights (the doc's lilac #B79CF2, emissive only)
     "emit_lilac": {"color": "#4A3A66", "emission": "#B79CF2", "energy": 3.0},
+    # SL-2 laser beams: a deep red at a low energy, so thin beams stay red under the filmic tonemap (emit_led_red
+    # at 3.0 blooms to orange-white on a 14 mm rod)
+    "emit_laser": {"color": "#3A0806", "emission": "#FF0E06", "energy": 1.4},
 }
 
 # Transparent variants of glass_clear (library albedo with alpha x colour).
