@@ -73,6 +73,6 @@ as low priority and does not hold the start:
   Check whether a nav link survives through the shut door (game bug: AI could path through) or it's the pilot. **Highest of the carries.**
 - **OF-X3 (C):** drill review renders (DB strongroom, ND vault, GN vault, GN server door) with a lighter capture scene; db_finishes.gd
   unused crane/trawler rows.
-- **OF-X4 (P):** a longer windowed PO-7 look with NPCs firing (flash_check.tscn saw no shots in 10 s; the regression test covers it).
+- **OF-X4 (P): CLOSED** (P c7c4414d live look 0 stuck + C headless regression). Was: a longer windowed PO-7 look with NPCs firing (flash_check.tscn saw no shots in 10 s; the regression test covers it).
 - Parked: D-132 D1 (PO real-GPU bench, README_bench.md).
 **Verdict: the D-115 gate is met for Ostrander Federal (D-136). Kickoff sent 2026-10-17.**
