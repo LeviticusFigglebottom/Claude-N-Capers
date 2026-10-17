@@ -26,7 +26,7 @@ func _ready() -> void:
 	var lines: Array[String] = []
 	for path: String in files:
 		var script: GDScript = load(path) as GDScript
-		if script == null:
+		if script == null or not script.can_instantiate():  # a parse error loads but can't instantiate (D: hung the run)
 			lines.append("LOAD FAIL %s" % path)
 			failed += 1
 			continue
