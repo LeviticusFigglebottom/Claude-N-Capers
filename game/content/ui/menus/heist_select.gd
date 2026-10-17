@@ -11,6 +11,8 @@ var difficulty_buttons: Array[Button] = []
 ## D-130 line under the difficulty row ("Titan cameras  ·  3 pagers"); hidden when the heist has neither.
 var stealth_label: Label
 var payout_label: Label
+## D-139: the local player's heist freshness for the selected heist ("Freshness -20 %  ·  Played 2× in ..."); hidden at 0.
+var freshness_label: Label
 var brief_label: Label
 var mode_label: Label
 ## PO-4: the selected heist's name as the detail title.
@@ -78,6 +80,9 @@ func build_ui() -> void:
 	payout_label = UiBuild.label(&"", UiBuild.MONEY)
 	payout_label.add_theme_font_size_override(&"font_size", UiTokens.FONT_H1)
 	detail.add_child(payout_label)
+	freshness_label = UiBuild.label(&"", UiBuild.DIM)
+	freshness_label.name = "FreshnessNote"
+	detail.add_child(freshness_label)
 	var nav: HBoxContainer = UiBuild.hbox(16)
 	root.add_child(nav)
 	back_button = UiBuild.ghost(UiBuild.button(&"ui.menu.back"))
@@ -188,6 +193,12 @@ func preview_amount() -> int:
 	return HeistCatalog.contract_preview(int(_entries[selected_heist]["base_payout"]), selected_difficulty)
 
 
+## Re-reads the preview for the current selection (pay, stealth note, D-139 freshness note of
+## HeistCatalog.progress_profile).
+func refresh_preview() -> void:
+	_update_preview()
+
+
 func _update_preview() -> void:
 	if payout_label == null:
 		return
@@ -195,18 +206,38 @@ func _update_preview() -> void:
 	if stealth_label != null and selected_heist < _entries.size():
 		stealth_label.text = stealth_note(selected_heist_id(), selected_difficulty, int(_entries[selected_heist]["mode"]))
 		stealth_label.visible = stealth_label.text != ""
+	if freshness_label != null and selected_heist < _entries.size():
+		freshness_label.text = freshness_note(selected_heist_id(), HeistCatalog.progress_profile)
+		freshness_label.visible = freshness_label.text != ""
 
 
-## D-130: "Titan cameras" from the heist's effective camera_titan_min_difficulty, and "N pagers" when its def sets a
-## per-difficulty pager cap (not on a loud-only heist), joined; "" when neither applies.
+## D-139: "Freshness +5 %  ·  Not played in 17 heists" for `p` on `heist_id` (HeistFreshness), "" at 0 % or no profile.
+static func freshness_note(heist_id: StringName, p: PlayerProfile) -> String:
+	var ev: Dictionary = HeistFreshness.evaluate(p, heist_id)
+	var badge: String = HeistFreshness.badge_text(float(ev["mult"]))
+	if badge == "":
+		return ""
+	return UiText.t(&"ui.heist_select.freshness", {"pct": badge}) + UiText.t(&"ui.heist_select.stealth_note_sep") \
+			+ HeistFreshness.reason_text(ev)
+
+
+## D-130: "Titan cameras" from the heist's effective camera_titan_min_difficulty, and "N pagers" when its def's
+## per-difficulty pager cap is below StealthTweak's (D-140: the usual 4 goes unsaid), or, on a heist with no pager row
+## (a D-140 GUARDS map), "More guards: N" (the minimum over seeds) when the difficulty fields more than Routine; not on a
+## loud-only heist; joined, "" when none applies.
 static func stealth_note(heist_id: StringName, difficulty: int, mode: int) -> String:
 	var parts: PackedStringArray = PackedStringArray()
 	if mode != Enums.HeistMode.LOUD_ONLY:
 		if difficulty >= BriefingIntel.titan_min_difficulty(heist_id):
 			parts.append(UiText.t(&"ui.heist_select.titan_cameras"))
 		var cap: int = BriefingIntel.pager_cap(heist_id, difficulty)
-		if cap >= 0:
+		if cap >= 0 and cap < Tweak.stealth().pager_max_answers:
 			parts.append(UiText.t(&"ui.heist_select.pager_one" if cap == 1 else &"ui.heist_select.pagers", {"n": cap}))
+		elif cap < 0 and difficulty > Enums.Difficulty.ROUTINE:
+			# D-140 GUARDS maps (no pager row, cap 4): the guaranteed guard count when this difficulty adds guards.
+			var n: int = BriefingIntel.guard_range(heist_id, difficulty).x
+			if n > BriefingIntel.guard_range(heist_id, Enums.Difficulty.ROUTINE).x:
+				parts.append(UiText.t(&"ui.heist_select.more_guards", {"n": n}))
 	return UiText.t(&"ui.heist_select.stealth_note_sep").join(parts)
 
 

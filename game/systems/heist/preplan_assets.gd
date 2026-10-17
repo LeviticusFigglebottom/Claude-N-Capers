@@ -15,8 +15,14 @@
 ##   { "version": 1, "modifier_sources": {asset_id: {key: value}}, "drops": [{asset, kind, point, params}],
 ##     "spawn_tag": StringName, "escape_tag": StringName, "force_variants": {group: [slot_ids]},
 ##     "reveals": [group], "cash_spent": {slot: int}, "plan": Dictionary }
+## QC-63 (OF-A3): `reveal_group(group)` (server, runtime) adds a variant group to `reveals()` mid-run (an intel note:
+## OF's manager planner -> `code_pc`), the same effect as an asset's `reveals`; kept apart from `result` (not a bought
+## asset, `is_active()` unchanged) and mirrored to clients by HeistNetSync (service "reveals").
 class_name PreplanAssets
 extends RefCounted
+
+## QC-63: a variant group was revealed at runtime (server, and on clients when the mirror adds it).
+signal group_revealed(group: StringName)
 
 const OPTION_KEY: String = "preplan"
 const DEV_OPTION_KEY: String = "preplanning"
@@ -39,6 +45,8 @@ static var _drop_factories: Dictionary = {}
 var result: Dictionary = {}
 ## Nodes spawned for drops: point id -> Node3D (one asset per point, PD2).
 var drops: Dictionary = {}
+## QC-63: variant groups revealed during the run (intel notes), in reveal order.
+var runtime_reveals: Array[StringName] = []
 
 
 ## Register how a drop kind is spawned (scene path String or Callable(asset_id, drop) -> Node3D).
@@ -54,6 +62,7 @@ static func unregister_drop(kind: StringName) -> void:
 func setup(options: Dictionary, def: HeistDef, p_heist_id: StringName = &"", p_difficulty: int = 0) -> void:
 	result = {}
 	drops.clear()
+	runtime_reveals.clear()
 	var raw: Variant = options.get(OPTION_KEY, null)
 	if raw is Dictionary and not (raw as Dictionary).is_empty():
 		result = normalize(raw as Dictionary)
@@ -243,12 +252,38 @@ func escape_tag() -> StringName:
 	return StringName(result.get("escape_tag", &""))
 
 
-## Variant groups revealed to the crew (insider info).
+## Variant groups revealed to the crew (insider info): the plan's, then the runtime reveals (QC-63).
 func reveals() -> Array[StringName]:
 	var out: Array[StringName] = []
 	for g: Variant in result.get("reveals", []):
 		out.append(StringName(g))
+	for g: StringName in runtime_reveals:
+		if not out.has(g):
+			out.append(g)
 	return out
+
+
+## QC-63: reveal variant group `group` now (intel note read). True the first time (signal group_revealed).
+func reveal_group(group: StringName) -> bool:
+	if group == &"" or reveals().has(group):
+		return false
+	runtime_reveals.append(group)
+	group_revealed.emit(group)
+	return true
+
+
+## QC-63 (HeistNetSync): the runtime reveals as Strings.
+func reveals_net_state() -> Array:
+	var out: Array = []
+	for g: StringName in runtime_reveals:
+		out.append(String(g))
+	return out
+
+
+## QC-63 (client): adopt the server's runtime reveals (adds only; emits group_revealed for each new one).
+func apply_reveals_net_state(groups: Array) -> void:
+	for g: Variant in groups:
+		reveal_group(StringName(g))
 
 
 ## Insider info: { group: resolved value } for every revealed group.

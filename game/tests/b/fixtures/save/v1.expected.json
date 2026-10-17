@@ -1,5 +1,5 @@
 {
-	"version": 8,
+	"version": 9,
 	"profile_name": "Crew",
 	"cash": 42000,
 	"stash": 310000,
@@ -33,6 +33,7 @@
 	"music_choice": "",
 	"career": {"totals": {}, "heists": {}, "difficulties": {}, "bags": {}, "weapons": {}},
 	"weapon_finishes": {},
+	"freshness": {"recent": [], "runs": 0, "last_run": {}, "completed": []},
 	"stats": {"heists_completed": 6, "heists_failed": 1},
 	"settings": {"fov": 85}
 }

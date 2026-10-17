@@ -40,7 +40,12 @@ func test_d130_pager_cap_by_difficulty() -> void:
 		assert_eq(PagerSystem.cap_for(_rt), want[diff], "difficulty %d: %d pagers" % [diff, want[diff]])
 	_rt.variants[PagerSystem.MAX_ANSWERS_SCALAR] = 2
 	_rt.difficulty = Enums.Difficulty.ROUTINE
-	assert_eq(PagerSystem.cap_for(_rt), 2, "a rolled pager_max_answers scalar wins")
+	assert_eq(PagerSystem.cap_for(_rt), 2, "a rolled pager_max_answers scalar lowers the cap")
+	_rt.variants[PagerSystem.MAX_ANSWERS_SCALAR] = 6
+	assert_eq(PagerSystem.cap_for(_rt), 4, "D-140: a rolled scalar never raises the cap above the table")
+	_rt.difficulty = Enums.Difficulty.CATACLYSM
+	assert_eq(PagerSystem.cap_for(_rt), 1, "D-140: nor on Cataclysm (table 1)")
+	_rt.difficulty = Enums.Difficulty.ROUTINE
 	_rt.variants.erase(PagerSystem.MAX_ANSWERS_SCALAR)
 	var ps: PagerSystem = _rt.service(G.SVC_PAGERS) as PagerSystem
 	ps.max_answers = PagerSystem.cap_for(_rt)
