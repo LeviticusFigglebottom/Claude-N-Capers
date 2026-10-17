@@ -216,7 +216,15 @@ func _run() -> void:
 func _watch_detection() -> void:
 	var sd: StealthDirector = HeistRuntime.get_service(G.SVC_STEALTH) as StealthDirector
 	var seen: Dictionary = {}
+	var alert: Dictionary = {}
 	while sd != null and is_inside_tree() and _alarm == &"":
+		for role: StringName in [&"guard", &"civilian"]:
+			for n: Node in rt.npcs(role):
+				var npc: NpcBase = n as NpcBase
+				if npc != null and int(alert.get(npc, 0)) != npc.alert_state:
+					note("ALERT %s %d -> %d at %s (pilot %s)" % [npc.name, int(alert.get(npc, 0)), npc.alert_state,
+						Po5Pilot._v(npc.global_position), Po5Pilot._v(pilot.crew.global_position)])
+					alert[npc] = npc.alert_state
 		for e: Dictionary in sd.detection_entries(pilot.crew.slot):
 			var v: float = float(e["value"])
 			var id: int = int(e["observer_net_id"])
