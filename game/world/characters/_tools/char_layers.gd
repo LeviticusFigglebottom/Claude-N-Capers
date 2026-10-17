@@ -2,13 +2,13 @@
 ## Used by build_char_layers.gd (texture arrays), assemble_characters.gd (merged meshes) and game/tests/d.
 ##
 ## Every "plain" character material (ORMMaterial3D: albedo + ORM + normal maps of one square size, nothing else set
-## beyond the per-material specular and skin SSS; see ineligible_reason) becomes one layer of a shared texture array
-## per size tier (TIERS): world/characters/_layers/char_layers_<tier>_<map>.png, imported as CompressedTexture2DArray.
-## One ShaderMaterial per tier (char_layered_<tier>.tres, shader char_layered.gdshader) reads the layer from UV2.x
-## and the specular / SSS strength from UV2.y (encode_uv2), so all the plain surfaces of one mesh node that share a
-## tier collapse into one surface (one draw, one shadow draw). Anything else (other sizes, double-sided, emissive,
-## overrides) keeps its own surface and material. The nodes themselves (Body, Outfit, Gear, Headwear, Hair, Slung)
-## stay, so node lookups, material_overlay (pager outline) and layers are unchanged.
+## beyond metallic_specular, which ORMMaterial3D does not apply, and skin SSS; see ineligible_reason) becomes one layer
+## of a shared texture array per size tier (TIERS): world/characters/_layers/char_layers_<tier>_<map>.png, imported as
+## CompressedTexture2DArray. One ShaderMaterial per tier (char_layered_<tier>.tres, shader char_layered.gdshader) reads
+## the layer from UV2.x and the SSS strength from UV2.y (encode_uv2), so all the plain surfaces of one mesh node that
+## share a tier collapse into one surface (one draw, one shadow draw). Anything else (other sizes, double-sided,
+## emissive, overrides) keeps its own surface and material. The nodes themselves (Body, Outfit, Gear, Headwear, Hair,
+## Slung) stay, so node lookups, material_overlay (pager outline) and layers are unchanged.
 ##
 ## Which characters: the ones with a CrowdLod (CrowdLod.switch_m > 0: crowd NPCs and armed units), minus the ids in
 ## d1_exclude.json (the per-character fallback: list an id there, re-run build_char_layers + assemble, and that
@@ -193,11 +193,11 @@ static func material_vertices(mi: MeshInstance3D, mat_path: String) -> PackedVec
 	return out
 
 
-## UV2 of a merged vertex: x = layer, y = round(specular * 1000) + 0.25 + 0.5 * sss strength (the fraction stays
-## within [0.25, 0.75], so interpolation noise never crosses an integer).
+## UV2 of a merged vertex: x = layer, y = 0.25 + 0.5 * sss strength (stays within [0.25, 0.75]; metallic_specular is
+## not encoded: ORMMaterial3D renders every value as the default 0.5, and so does the shader).
 static func encode_uv2(layer: int, mat: ORMMaterial3D) -> Vector2:
 	var sss: float = clampf(mat.subsurf_scatter_strength, 0.0, 1.0) if mat.subsurf_scatter_enabled else 0.0
-	return Vector2(float(layer), roundf(mat.metallic_specular * 1000.0) + 0.25 + 0.5 * sss)
+	return Vector2(float(layer), 0.25 + 0.5 * sss)
 
 
 ## Index buffer of one source surface LOD (lod < 0 = the full surface), as vertex ids.

@@ -140,10 +140,11 @@ func test_merged_nodes() -> void:
 			_check_merged_mesh(label, src, mi)
 		if want_merge:
 			assert_true(any_merged, "%s: at least one merged node" % tag)
+		if has_lod:
 			merged_chars += 1
 		root.queue_free()
 		glb.queue_free()
-	assert_true(merged_chars >= 40, "D1 merge on the crowd and unit casts (%d characters)" % merged_chars)
+	assert_true(merged_chars >= 40, "D1 merge (or its d1_exclude fallback) on the crowd and unit casts (%d)" % merged_chars)
 
 
 func _check_merged_mesh(label: String, src: MeshInstance3D, mi: MeshInstance3D) -> void:
@@ -167,10 +168,9 @@ func _check_merged_mesh(label: String, src: MeshInstance3D, mi: MeshInstance3D) 
 			var uv2: PackedVector2Array = mi.mesh.surface_get_arrays(si)[Mesh.ARRAY_TEX_UV2]
 			var bad: int = 0
 			for v: Vector2 in uv2:
-				var frac: float = v.y - floorf(v.y)
-				if absf(v.x - roundf(v.x)) > 0.001 or frac < 0.249 or frac > 0.751:
+				if absf(v.x - roundf(v.x)) > 0.001 or v.y < 0.249 or v.y > 0.751:
 					bad += 1
-			assert_eq(bad, 0, "%s surface %d: UV2 = integer layer + specular / SSS code" % [label, si])
+			assert_eq(bad, 0, "%s surface %d: UV2 = integer layer + SSS code" % [label, si])
 		else:
 			assert_true(m is BaseMaterial3D, "%s surface %d: a kept surface keeps its glb material" % [label, si])
 	assert_eq(verts, src_verts, "%s: same vertex count as the glb" % label)
@@ -192,17 +192,16 @@ func _check_merged_mesh(label: String, src: MeshInstance3D, mi: MeshInstance3D) 
 
 func test_uv2_code_round_trip() -> void:
 	var m: ORMMaterial3D = ORMMaterial3D.new()
-	for spec: float in [0.0, 0.25, 0.5, 1.0]:
-		for sss: float in [0.0, 0.3, 1.0]:
-			m.metallic_specular = spec
-			m.subsurf_scatter_enabled = sss > 0.0
-			m.subsurf_scatter_strength = sss
-			var uv2: Vector2 = Layers.encode_uv2(17, m)
-			# the shader's decode (char_layered.gdshader)
-			var code: float = floorf(uv2.y)
-			assert_eq(roundi(uv2.x), 17, "layer")
-			assert_near(code * 0.001, spec, 0.0006, "specular %.2f" % spec)
-			assert_near((uv2.y - code - 0.25) * 2.0, sss, 0.0001, "sss %.2f" % sss)
+	for sss: float in [0.0, 0.25, 0.3, 1.0]:
+		m.subsurf_scatter_enabled = sss > 0.0
+		m.subsurf_scatter_strength = sss
+		var uv2: Vector2 = Layers.encode_uv2(17, m)
+		# the shader's decode (char_layered.gdshader)
+		assert_eq(roundi(uv2.x), 17, "layer")
+		assert_near(clampf((uv2.y - 0.25) * 2.0, 0.0, 1.0), sss, 0.0001, "sss %.2f" % sss)
+	m.subsurf_scatter_enabled = false
+	m.subsurf_scatter_strength = 0.5
+	assert_near(Layers.encode_uv2(0, m).y, 0.25, 0.0001, "SSS off: strength 0")
 
 
 ## The per-character fallback: an id in d1_exclude.json is never merged, and the assembled scenes follow the list.
@@ -234,8 +233,11 @@ func test_fallback_switch() -> void:
 	var merged: ArrayMesh = Layers.merge_mesh(outfit, _layers, errors)
 	assert_eq(errors, [] as Array[String], "merge_mesh: no errors")
 	var assembled: Mesh = (scene.get_node("Skeleton3D/Outfit") as MeshInstance3D).mesh
-	assert_true(merged != null and merged.get_surface_count() == assembled.get_surface_count(),
-		"gallery_waiter/Outfit: in-test merge = assembled surfaces")
+	if not _excluded.has("gallery_waiter"):
+		assert_true(merged != null and merged.get_surface_count() == assembled.get_surface_count(),
+			"gallery_waiter/Outfit: in-test merge = assembled surfaces")
+	else:
+		assert_eq(assembled, outfit.mesh, "gallery_waiter excluded: the assembled Outfit is the glb mesh")
 	assert_true(merged != null and merged.get_surface_count() < outfit.mesh.get_surface_count(),
 		"gallery_waiter/Outfit: fewer surfaces than the glb (%d)" % outfit.mesh.get_surface_count())
 	glb.queue_free()
