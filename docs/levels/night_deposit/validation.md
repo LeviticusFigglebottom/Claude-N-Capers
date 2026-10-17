@@ -23,6 +23,9 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | lasers | PASS | 0 | 0 |
 | camera_spine | skipped | 0 | 0 |
 | camera_screen | skipped | 0 | 0 |
+| bag_line | skipped | 0 | 0 |
+| hide_los | skipped | 0 | 0 |
+| teller_worktop | skipped | 0 | 0 |
 | materials | PASS | 0 | 0 |
 | zfight | PASS | 0 | 0 |
 | lights | PASS | 0 | 0 |
@@ -341,6 +344,6 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## furniture_logic: Furniture arranged plausibly
 
-- classified: counter 7, chair 4, desk 7, table 6, wall_unit 25, stool 4, visitor_chair 4, desk_chair 7, monitor 3
+- classified: counter 7, chair 4, desk 7, table 6, wall_unit 25, visitor_chair 4, desk_chair 7, stool 4, monitor 3
 - 19 seats, 20 tables/desks/counters, 36 doors checked
 

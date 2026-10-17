@@ -20,6 +20,8 @@ static var _cache: Dictionary[String, PackedScene] = {}
 ## Round-robin deal state: "<runtime iid>|<tag>" -> next count. Reset when a new run starts dealing.
 static var _deal: Dictionary[String, int] = {}
 static var _deal_run: int = 0
+## ENV D cower_offsets.json `offsets` (character id -> m), loaded once; {} when the file is absent.
+static var _cower_offsets: Variant = null
 
 
 static func tweak() -> NpcVisualTweak:
@@ -146,3 +148,23 @@ static func _load(path: String) -> PackedScene:
 	var ps: PackedScene = WarmLoader.get_or_load(path) as PackedScene if ResourceLoader.exists(path) else null
 	_cache[path] = ps
 	return ps
+
+
+## The character id an NPC wears (its visual scene's file name, characters.md layout), "" for a capsule.
+static func character_id(npc: NpcBase) -> String:
+	if npc == null or npc.visual_scene == null:
+		return ""
+	return npc.visual_scene.resource_path.get_file().get_basename()
+
+
+## QC-67 (ENV D cower_offsets.json): how far (m) a look's root stands forward of a cower point so its back bag clears the
+## wall (cower_stand wants the wall 0.21 m behind the root); 0 for looks not listed or without the file.
+static func cower_offset(npc: NpcBase) -> float:
+	if _cower_offsets == null:
+		_cower_offsets = {}
+		var path: String = CHAR_DIR + "cower_offsets.json"
+		if FileAccess.file_exists(path):
+			var data: Variant = JSON.parse_string(FileAccess.get_file_as_string(path))
+			if data is Dictionary:
+				_cower_offsets = (data as Dictionary).get("offsets", {})
+	return float((_cower_offsets as Dictionary).get(character_id(npc), 0.0))

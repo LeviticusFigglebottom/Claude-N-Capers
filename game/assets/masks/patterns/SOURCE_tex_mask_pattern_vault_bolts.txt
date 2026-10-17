@@ -1,0 +1,10 @@
+asset: tex_mask_pattern_vault_bolts
+generator: python3 tools/blender/masks/make_mask_patterns.py --only vault_bolts
+motif: vault door: frame at the face edge, 14 locking bolts thrown across the gap into it, the door's edge ring and an inner ring, a circle of 28 rivets, a central hub disk with a groove ring and a three-spoke handle wheel
+size_px: 1024 x 1024 (supersampled 2x, box filtered); grey PNG, RED channel = pattern mask
+mapping: once over mask UV0 (x 0..1 viewer's left..right, y 0..1 forehead..chin, front-planar); drawn in physical units over 0.17 x 0.235 m
+values: 0 = MaskDef colour A, 1 = colour B (mask_surface.gdshader)
+share_b (red >= 0.5): 0.479
+import: lossless, mipmaps (filter_linear_mipmap)
+deterministic: no randomness; PNG via tools/texgen io (ENV C, read-only)
+edit policy: generated, never edit by hand

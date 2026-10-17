@@ -90,6 +90,9 @@ func test_every_runner_class_shows_its_device() -> void:
 			assert_true(dn != null and dn.is_visible_in_tree(), "%s: the device is shown while running" % label)
 			assert_true(dn != null and not dn.find_children("*", "MeshInstance3D", true, false).is_empty(),
 				"%s: the device has meshes" % label)
+			if p is Padlock and dn != null:  # PO-14 review (D cb022207): blade / bit stand off the door leaf
+				var want: float = Padlock.SAW_OUT_M if c[2] == &"saw" else Padlock.DRILL_OUT_M
+				assert_true(absf(dn.position.z - want) < 0.001, "%s: device %.2f m out of the lock" % [label, want])
 			r.abort()
 			await wait_physics_frames(1)
 			assert_true(p.get(&"device_node") == null, "%s: removed when done" % label)

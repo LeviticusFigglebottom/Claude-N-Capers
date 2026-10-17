@@ -16,3 +16,13 @@ func test_pending_tracks() -> void:
 		assert_eq(MusicCatalog.playable_id(tid), fb)
 		assert_true(UiText.has(MusicCatalog.display_key(tid)), "%s has a name" % tid)
 	assert_eq(MusicCatalog.playable_id(&"glasshouse"), &"glasshouse")
+
+
+## A track for a staged (hidden) heist is in the catalogue but not pickable until the heist is offered (OF's stems land
+## before OF-A6 unhides it).
+func test_staged_heist_track_not_pickable() -> void:
+	for t: Dictionary in MusicCatalog.tracks():
+		for h: StringName in t["default_for_heists"] as Array[StringName]:
+			if HeistCatalog.heist_list().heists.has(h) and not HeistCatalog.ids().has(h):
+				assert_true(MusicCatalog.has(t["id"]))
+				assert_false(MusicCatalog.available(null).has(t["id"]), "%s waits for %s" % [t["id"], h])

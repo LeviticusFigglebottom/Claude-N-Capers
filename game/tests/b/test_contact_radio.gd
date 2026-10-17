@@ -5,7 +5,7 @@ extends TestCase
 
 const HEISTS: Dictionary = {
 	&"glasshouse": &"vance", &"night_deposit": &"accountant", &"shadow_ledger": &"accountant",
-	&"dockside_burn": &"reyes", &"gallery_night": &"vance",
+	&"dockside_burn": &"reyes", &"gallery_night": &"vance", &"ostrander_federal": &"accountant",
 }
 ## Heists whose radio lines exist before their HeistDef is registered (`contact_for` cannot resolve them yet).
 ## Move each into HEISTS when its def lands (Gallery Night did with C's G1, trunk 55ce4d2a).
