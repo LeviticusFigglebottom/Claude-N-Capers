@@ -3156,6 +3156,15 @@ ui.career.offshore_spent,Offshore spent
 ui.career.xp_earned,XP earned
 ui.career.card_cash,Payday card cash
 ui.career.card_xp,Payday card XP
+ui.career.recent,Recent heists
+ui.career.recent_note,"Heist freshness: your last {memory} jobs that reached payday, oldest first. A heist you keep repeating pays less; one you have not played in a while pays a little more."
+ui.career.recent_empty,No jobs on the record yet.
+ui.career.recent_entry,{n}. {heist}
+ui.career.rcol.heist,Heist
+ui.career.rcol.freshness,Freshness
+ui.career.rcol.in_memory,Times in recent
+ui.career.rcol.since,Jobs since played
+ui.career.since_never,Never
 ui.career.bags,Bags secured
 ui.career.small_loot,Small loot
 ui.career.favourite_weapon,Favourite weapon
