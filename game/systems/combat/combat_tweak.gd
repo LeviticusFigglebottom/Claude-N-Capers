@@ -16,6 +16,9 @@ static var _cached: CombatTweak = null
 @export var default_secondary: StringName = &"weapon.kestrel_p9"
 @export var default_secondary_mods: Array[StringName] = [&"mod.p9_suppressor"]
 @export var default_armor: StringName = &"armor.tailored_suit"
+## LEAD ruling 2026-10-20 (D-145.4, B's bot-gear probe): an AI teammate whose loadout has no primary (the default
+## loadout, or a bot slot with nothing equipped) carries this starter rifle, unmodded; the pistol stays its secondary.
+@export var bot_default_primary: StringName = &"weapon.corsair_ar"
 
 @export_group("Hitscan")
 @export var hitscan_max_range_m: float = 200.0

@@ -16,7 +16,13 @@ const MAP_PIECES: Array = [
 	["prop_of_lantern", Vector3(22.0, 8.6, 26.0)],
 	["prop_of_teller_line", Vector3(24.0, 0.0, 17.0)],
 	["prop_of_vault_portal", Vector3(30.0, -4.0, 12.7)],
+	["prop_of_meridian_line", Vector3(24.0, -0.012, 24.7)],
 ]
+## The meridian line (OF-C2 lane A; doc Site landmark 2, Audio/lighting: the oculus throws the sun's disc onto it): the
+## greybox strip it replaces, and the disc: a narrow warm spot from the oculus' gilt fillet (its fixture) onto month X.
+const MERIDIAN_BOX: String = "Geometry/Building/Visual/Meridian"
+const DISC_FROM: Vector3 = Vector3(21.0, 7.95, 29.62)
+const DISC_TO: Vector3 = Vector3(24.0, 0.0, 28.9)
 ## G1 greybox boxes the art pieces replace (their meshes are hidden; collision untouched).
 const HIDE_MESHES: Array[String] = [
 	"Geometry/Building/Counter/ScreenBaseW", "Geometry/Building/Counter/CustomerLedgeW",
@@ -65,9 +71,10 @@ func build() -> void:
 			continue
 		gm.material_override = glass
 	_worktops(root)
+	_meridian(root, lm)
 	var clock: Node3D = _piece(lm, "HallClock", "prop_clock_harbor", Transform3D(Basis(Vector3.UP, PI), CLOCK_POS))
 	clock.set_meta(&"kind", "clock")
-	report.append("landmarks: sunburst, portal, lantern, teller line (+ 12 work tops, 6 grilles), vault portal")
+	report.append("landmarks: sunburst, portal, lantern, teller line (+ 12 work tops, 6 grilles), vault portal, meridian line + sun disc")
 
 
 func _piece(parent: Node3D, nm: String, asset: String, xf: Transform3D) -> Node3D:
@@ -80,6 +87,45 @@ func _piece(parent: Node3D, nm: String, asset: String, xf: Transform3D) -> Node3
 	inst.transform = xf
 	b.call(&"add", parent, inst)
 	return inst
+
+
+## The meridian line: the greybox strip goes (the inlay sits flush in the floor's band, lane A's finish leaves it
+## open), and the sun disc: a SpotLight3D (no shadows, 3 deg half angle ~ a 1 m disc) on an `Oculus` fixture node (a
+## gilt cap on the oculus fillet, group fixture) aimed at month X (October).
+func _meridian(root: HeistMap, lm: Node3D) -> void:
+	var mi: MeshInstance3D = root.get_node_or_null(MERIDIAN_BOX) as MeshInstance3D
+	if mi == null:
+		report.append("ERROR landmarks: no greybox meridian strip")
+	else:
+		mi.visible = false
+	var oc: Node3D = b.call(&"node3d", "Oculus", DISC_FROM) as Node3D
+	oc.add_to_group(&"fixture", true)
+	oc.set_meta(&"fixture", true)
+	b.call(&"add", lm, oc)
+	var cap: MeshInstance3D = MeshInstance3D.new()
+	cap.name = "Cap"
+	var bm: BoxMesh = BoxMesh.new()
+	bm.size = Vector3(0.24, 0.04, 0.24)
+	cap.mesh = bm
+	var gilt: BaseMaterial3D = (load("res://world/props/materials/pr_of_gilt.tres") as BaseMaterial3D).duplicate()
+	gilt.resource_name = "of_oculus_gilt"
+	gilt.uv1_triplanar = true
+	gilt.uv1_world_triplanar = true
+	gilt.uv1_scale = Vector3.ONE * 0.5
+	cap.material_override = gilt
+	b.call(&"add", oc, cap)
+	var sp: SpotLight3D = SpotLight3D.new()
+	sp.name = "SunDisc"
+	sp.position = Vector3(0.0, -0.05, 0.0)
+	b.call(&"add", oc, sp)
+	sp.basis = Basis.looking_at((DISC_TO - DISC_FROM).normalized(), Vector3.UP)
+	sp.spot_range = DISC_FROM.distance_to(DISC_TO) + 1.0
+	sp.spot_angle = 3.2
+	sp.spot_angle_attenuation = 0.15
+	sp.light_color = Color(1.0, 0.9, 0.72)
+	sp.light_energy = 14.0
+	sp.layers = 1 | (1 << 20)
+	sp.shadow_enabled = false
 
 
 ## The 12 teller work tops (Props/MapBuilt/TellerWorktopNN, kind teller_worktop): drawn by prop_of_teller_line (one

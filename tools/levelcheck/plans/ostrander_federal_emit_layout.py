@@ -198,8 +198,10 @@ def emit() -> tuple:
                "walkable, 4 vent): the street islands' one-way links, P5's rappels, the lantern rappel, the areaway vent.")
     brs = [[nm, "window", "prop_breach_window", [float(bx), FFL["G"], round(bz - 0.2, 3)], 0.0, list(S.BREACH_SIZE),
             rid, 0.0] for nm, bx, bz, rid in S.BREACH_WINDOWS]
+    brs += [[nm, "door", "", list(pos), float(yaw), list(size), rid, 0.0, door]
+            for nm, pos, yaw, size, rid, door in S.BREACH_DOORS]
     s += const("ASSAULT_BREACHES", brs, doc="PO6-17 breaches (assault_markers.gd rows): [name, kind, scene id, room-side "
-               "face pos, yaw, size, room, depth].")
+               "face pos, yaw, size, room, depth(, door: the map path of the Door a \"door\" breach blows open)].")
     s += const("OOB", S.OOB, doc="OUT_OF_BOUNDS curtains (D-040): [name, [x0, y0, z0, x1, y1, z1]].")
     slots = []
     for g, sid, w, f, rid, x, z, y, yaw, note in S.SLOTS:

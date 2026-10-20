@@ -56,14 +56,20 @@ ROPE_STOWED_M = 3.2           # the rope ladder rolled up to the lid's underside
 # car. TW (FFL 0): 1.5 m guard screens on the hole's W / E / S edges (the north edge stays open for the ladder top and
 # the hole_rappel point): a bag thrown across the hole from an edge hits the far screen flush with the edge and falls in.
 HOIST_RIG = [
-    ["ShaftBackstop", [23.36, -4.0, 14.92], [24.64, -1.6, 14.97]],
+    ["ShaftBackstop", [23.36, -4.0, 14.92], [24.65, -1.6, 14.97]],
     ["ShaftW", [23.36, -4.0, 14.97], [23.41, -1.6, 15.75]],
-    ["ShaftE", [24.59, -4.0, 14.97], [24.64, -1.6, 15.75]],
-    ["ShaftSill", [23.36, -4.0, 15.75], [24.64, -3.4, 15.8]],
+    ["ShaftE", [24.6, -4.0, 14.97], [24.65, -1.6, 15.75]],
+    ["ShaftSill", [23.36, -4.0, 15.75], [24.65, -3.4, 15.8]],
     ["HoleGuardW", [23.35, 0.0, 13.5], [23.4, 1.5, 15.75]],
     ["HoleGuardE", [24.6, 0.0, 13.5], [24.65, 1.5, 15.75]],
     ["HoleGuardS", [23.4, 0.0, 15.7], [24.6, 1.5, 15.75]],
 ]
+# The hoist's call / send panel (OF-C1, ENV P burn run 7df78180): a 0.04 x 0.12 m riser standing against ShaftE's east
+# face (floor to 1.2 m, the panel at 1.1 m: [min, max, panel y]), square in front of the UsePoint (x 25.1, z HOIST_Z), as
+# the bag_lift's external `Panel` (the Interactable moves onto it; bag_lift copies it to the TW landing, + 4 m: against
+# HoleGuardE's east face, so ShaftE's east face is HoleGuardE's, x 24.65). The placeholder visual's own panel sat 0.66 m
+# north of the UsePoint in mid-air (the default 1.2 m car's offset).
+HOIST_PANEL = [[24.65, -4.0, round(HOIST_Z - 0.06, 3)], [24.69, -2.8, round(HOIST_Z + 0.06, 3)], -2.9]
 # Teller counter (z 17 line; §7.2, D-128 / D-136 §3b.11 and OF-C0): 12 work tops (props, kind teller_worktop, top 1.00,
 # z 16.35-16.83, 0.48 deep, teller side north = local -Z), a SOLID bandit-screen base to 1.50 m (z 16.83-16.93; QC-g
 # amended by the LEAD: the original 1.35 m is teller_worktop's perpendicular formula, but hide_los samples observers
@@ -479,7 +485,7 @@ ALWAYS: Dict[str, List[list]] = {
                                                             "loud_only": True, "objective_tag": "hoist",
                                                             "enabled_at_start": False,
                                                             "@landings": [["HoistLandingTW", [0.0, 4.0, 0.0]]],
-                                                            "@rig": HOIST_RIG},
+                                                            "@rig": HOIST_RIG, "@panel": HOIST_PANEL},
           [25.1, 0.0, HOIST_Z], {"starts_disabled": True, "hidden": True}, ""),
     ],
     "Gameplay/Ladders": [

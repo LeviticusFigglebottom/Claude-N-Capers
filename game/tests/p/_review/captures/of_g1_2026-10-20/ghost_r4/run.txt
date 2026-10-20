@@ -1,0 +1,164 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+Vulkan 1.4.318 - Forward+ - Using Device #0: Unknown - llvmpipe (LLVM 20.1.2, 256 bits)
+
+[OFP 0.0s t=-1.0] === ghost ===
+[INFO][rng][p1] run seed 1002
+[INFO][preplan][p1] assets []
+[INFO][variants][p1] seed 1002 resolved { &"manager_route": [&"mgr_vault"], &"keycard": [&"kc_on_manager"], &"code_pc": [&"pc_exec"], &"officers": [&"off_3"], &"server_room": [&"srv_gallery"], &"guard_post": [&"rover_basement", &"rover_dock", &"rover_gallery", &"rover_hall"], &"security_room_staffed": [&"sec_staffed"], &"camera": [&"cam_a"], &"laser_pattern": [&"lz_sweep"], &"customers": [&"cust_8"], &"side_door": [&"door_none"], &"fire_escape": [&"fe_up"], &"escape": [&"esc_van_dock"], &"drill_delivery": [&"drop_terrace"], &"president_safe": [&"ps_empty"], &"vip": [&"vip_in"], &"guard_extra": [&"gx_basement", &"gx_hall"], &"civ_extra": [&"cx_hall_1", &"cx_hall_2", &"cx_pc"], &"time_lock_s": 270.0, &"drill_eta_s": 90.0, &"escape_eta_s": 90.0, &"cash_bags": 6, &"gold_bags": 4, &"deposit_boxes": 12, "rare": [&"vip_client"] }
+[INFO][heist][p1] vfx prewarm: 728 ms
+ERROR: Instance count must be 0 to change the transform format.
+ERROR: Instance count must be 0 to change the transform format.
+ERROR: Instance count must be 0 to change the transform format.
+ERROR: Instance count must be 0 to change the transform format.
+ERROR: Instance count must be 0 to change the transform format.
+ERROR: Instance count must be 0 to change the transform format.
+[INFO][prefab][p1] Hoist disabled
+[INFO][prefab][p1] RopeLadder disabled
+[INFO][heist][p1] phase LOADING -> CASING
+[OFP 10.0s t=-1.0] objective casing -> 1
+[OFP 10.0s t=-1.0] objective keycard -> 1
+[OFP 10.0s t=-1.0] objective code_hint -> 1
+[OFP 10.0s t=-1.0] objective code_pc -> 1
+[OFP 10.0s t=-1.0] objective server -> 1
+[OFP 10.0s t=-1.0] objective vault_gate -> 1
+[OFP 10.0s t=-1.0] objective lasers -> 1
+[OFP 10.0s t=-1.0] objective time_lock -> 0
+[OFP 10.0s t=-1.0] objective time_lock_wait -> 0
+[OFP 10.0s t=-1.0] objective vault_loot -> 0
+[OFP 10.0s t=-1.0] objective gold_cage -> 0
+[OFP 10.0s t=-1.0] objective secure -> 1
+[OFP 10.0s t=-1.0] objective deposit_boxes -> 1
+[OFP 10.0s t=-1.0] objective bond_safe -> 1
+[OFP 10.0s t=-1.0] objective president_safe -> 1
+[OFP 10.0s t=-1.0] objective server_drives -> 1
+[OFP 10.0s t=-1.0] objective drill_delivery -> 0
+[OFP 10.0s t=-1.0] objective vault_drill -> 0
+[OFP 10.0s t=-1.0] objective vault_breach -> 0
+[OFP 10.0s t=-1.0] objective escape_wait -> 0
+[OFP 10.0s t=-1.0] objective escape -> 0
+[INFO][prefab][p1] VaultBoxS02 disabled
+[INFO][prefab][p1] VaultBoxS03 disabled
+[INFO][prefab][p1] VaultBoxS04 disabled
+[INFO][prefab][p1] VaultBoxS05 disabled
+[INFO][prefab][p1] VaultBoxS06 disabled
+[INFO][prefab][p1] VaultBoxS07 disabled
+[INFO][prefab][p1] VaultBoxS08 disabled
+[INFO][prefab][p1] VaultBoxS09 disabled
+[INFO][prefab][p1] HallBox09 disabled
+[INFO][prefab][p1] HallBox10 disabled
+[INFO][prefab][p1] HallBox11 disabled
+[INFO][prefab][p1] HallBox12 disabled
+[INFO][prefab][p1] HallBox13 disabled
+[INFO][prefab][p1] HallBox14 disabled
+[INFO][prefab][p1] HallBox15 disabled
+[INFO][prefab][p1] HallBox16 disabled
+[INFO][prefab][p1] HallBox17 disabled
+[INFO][prefab][p1] HallBox18 disabled
+[INFO][prefab][p1] HallBox19 disabled
+[INFO][prefab][p1] HallBox20 disabled
+[INFO][prefab][p1] HallBox21 disabled
+[INFO][prefab][p1] HallBox22 disabled
+[INFO][prefab][p1] HallBox23 disabled
+[INFO][prefab][p1] HallBox24 disabled
+[INFO][director][p1] prewarm: 19 of 19 scenes loaded in 740 ms
+[INFO][prefab][p1] Keycard carried by Npc_civilian8
+[OFP 22.7s t=0.0] launched ostrander_federal seed 1002 diff 5 variants { &"manager_route": [&"mgr_vault"], &"keycard": [&"kc_on_manager"], &"code_pc": [&"pc_exec"], &"officers": [&"off_3"], &"server_room": [&"srv_gallery"], &"guard_post": [&"rover_basement", &"rover_dock", &"rover_gallery", &"rover_hall"], &"security_room_staffed": [&"sec_staffed"], &"camera": [&"cam_a"], &"laser_pattern": [&"lz_sweep"], &"customers": [&"cust_8"], &"side_door": [&"door_none"], &"fire_escape": [&"fe_up"], &"escape": [&"esc_van_dock"], &"drill_delivery": [&"drop_terrace"], &"president_safe": [&"ps_empty"], &"vip": [&"vip_in"], &"guard_extra": [&"gx_basement", &"gx_hall"], &"civ_extra": [&"cx_hall_1", &"cx_hall_2", &"cx_pc"], &"time_lock_s": 270.0, &"drill_eta_s": 90.0, &"escape_eta_s": 90.0, &"cash_bags": 6, &"gold_bags": 4, &"deposit_boxes": 12, "rare": [&"vip_client"] }
+[OFP 89.4s t=3.1] pilot: calibrated 0.001600 rad/px yaw, 0.001600 rad/px pitch (settings formula said (0.0016, 0.0016))
+[OFP 89.4s t=3.1] spawn (21.8, -0.8, 44.0)
+[OFP 101.5s t=8.2] pilot: t=5 at (27.5, -0.7, 42.5) corner (27.0, -0.6, 42.3) yaw_err 3.09 fwd=false path=11 mouse_mode=2 state=0 look=(-1.83,0.00) pin_yaw=-1.63550013012718 bot=false
+[OFP 106.4s t=13.2] pilot: t=10 at (32.9, -0.7, 43.9) corner (34.5, -0.6, 44.3) yaw_err 0.39 fwd=true path=11 mouse_mode=2 state=0 look=(-2.22,0.00) pin_yaw=-2.0283487854831 bot=false
+[OFP 111.5s t=18.2] pilot: t=15 at (38.8, -0.7, 45.4) corner (40.0, -0.6, 45.5) yaw_err -2.29 fwd=false path=8 mouse_mode=2 state=0 look=(0.66,0.00) pin_yaw=0.46460970819317 bot=false
+[OFP 121.4s t=28.1] pilot: t=5 at (48.9, -0.6, 41.1) corner (49.3, -0.2, 40.3) yaw_err 0.00 fwd=true path=7 mouse_mode=2 state=0 look=(-0.49,0.00) pin_yaw=-0.49359066707257 bot=false
+[OFP 126.4s t=33.1] pilot: t=10 at (51.7, 0.0, 36.1) corner (55.0, 0.2, 30.0) yaw_err 0.77 fwd=false path=2 mouse_mode=2 state=0 look=(-1.26,0.00) pin_yaw=-1.07282924318861 bot=false
+[OFP 135.8s t=42.5] pilot: t=5 at (56.9, 0.0, 26.5) corner (56.8, 0.2, 24.0) yaw_err 0.00 fwd=true path=12 mouse_mode=2 state=0 look=(0.02,0.00) pin_yaw=0.01912314873334 bot=false
+[OFP 140.9s t=47.5] pilot: t=10 at (56.6, 0.0, 20.9) corner (56.1, 0.2, 16.3) yaw_err -1.20 fwd=false path=8 mouse_mode=2 state=0 look=(1.30,0.00) pin_yaw=1.10903405132558 bot=false
+[OFP 145.9s t=52.5] pilot: t=15 at (56.0, 0.0, 14.9) corner (55.7, 0.2, 12.4) yaw_err -3.13 fwd=false path=7 mouse_mode=2 state=0 look=(3.23,0.00) pin_yaw=3.0337598654296 bot=false
+[OFP 151.0s t=57.5] pilot: t=20 at (55.4, 0.0, 9.0) corner (55.4, 0.2, 9.6) yaw_err 1.58 fwd=false path=4 mouse_mode=2 state=0 look=(1.63,0.00) pin_yaw=1.82647011493827 bot=false
+[OFP 158.7s t=65.2] pilot: t=5 at (53.8, 0.0, 1.2) corner (53.6, 0.2, 0.5) yaw_err 0.00 fwd=true path=7 mouse_mode=2 state=0 look=(6.54,0.00) pin_yaw=6.54508982846892 bot=false
+[OFP 163.6s t=70.1] pilot: t=10 at (52.4, 0.0, -4.3) corner (52.0, 0.2, -6.0) yaw_err 1.21 fwd=false path=2 mouse_mode=2 state=0 look=(5.33,0.00) pin_yaw=5.52224207684776 bot=false
+[OFP 168.9s t=75.4] pilot: t=5 at (46.7, 0.0, -5.2) corner (42.7, 0.2, -5.5) yaw_err -0.00 fwd=true path=13 mouse_mode=2 state=0 look=(7.77,0.00) pin_yaw=7.76597729945934 bot=false
+[OFP 173.9s t=80.4] pilot: t=10 at (41.0, 0.0, -5.7) corner (38.8, 0.2, -5.9) yaw_err -1.21 fwd=false path=12 mouse_mode=2 state=0 look=(8.97,0.00) pin_yaw=8.78140151581465 bot=false
+[OFP 178.9s t=85.4] pilot: t=15 at (35.1, 0.0, -6.2) corner (33.5, 0.2, -6.3) yaw_err -3.13 fwd=false path=8 mouse_mode=2 state=0 look=(10.89,0.00) pin_yaw=10.7007293948045 bot=false
+[OFP 183.9s t=90.4] pilot: t=20 at (29.1, 0.0, -6.7) corner (29.7, 0.2, -6.6) yaw_err 1.58 fwd=false path=5 mouse_mode=2 state=0 look=(9.30,0.00) pin_yaw=9.49681791836338 bot=false
+[OFP 184.6s t=90.9] GHOST step _g1_lane done at t=90.9 (+87.7 s)
+[OFP 184.6s t=90.9] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (10.6, 0.0, -3.4) walk
+[OFP 194.5s t=100.9] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (9.3, 0.0, -7.0) walk
+[OFP 204.5s t=110.9] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (-6.5, 0.0, -5.9) walk
+WARNING: [WARN][ai][p1] Npc_civilian11: civilian route officer_coffee_vo stop 1 unreachable, skipped (D-136 §3b.4)
+[OFP 220.6s t=120.9] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (-12.6, 0.0, -5.0) investigate_look
+WARNING: [WARN][ai][p1] Npc_civilian9: civilian route officer_coffee stop 1 unreachable, skipped (D-136 §3b.4)
+[OFP 230.5s t=130.9] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (1.9, 0.0, -2.1) walk
+[OFP 245.8s t=141.0] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (16.6, 0.0, -5.9) walk
+[OFP 255.9s t=151.0] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (2.9, 0.0, -7.1) walk
+[OFP 265.8s t=161.0] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (-12.6, 0.0, -5.0) walk_stop
+[OFP 275.8s t=171.0] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (-12.6, 0.0, -5.0) investigate_look
+[OFP 285.9s t=181.0] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (1.7, 0.0, -2.2) walk
+[OFP 295.8s t=191.0] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (16.5, 0.0, -5.9) walk
+[OFP 305.9s t=201.0] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (3.1, 0.0, -7.1) walk
+[OFP 315.9s t=211.0] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (-12.6, 0.0, -5.0) walk_stop
+[OFP 325.9s t=221.0] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (-8.0, 0.0, -4.8) walk
+[OFP 336.0s t=231.0] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (7.1, 0.0, -1.7) walk
+[OFP 345.9s t=241.0] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (13.3, 0.0, -6.7) walk
+[OFP 355.9s t=251.0] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (-2.6, 0.0, -6.4) walk
+[OFP 371.4s t=261.0] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (-12.6, 0.0, -5.0) investigate_look
+[OFP 381.3s t=271.0] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (-8.8, 0.0, -4.8) walk
+[OFP 391.4s t=281.0] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (6.4, 0.0, -1.4) walk
+[OFP 401.4s t=291.0] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (14.0, 0.0, -6.6) walk
+[OFP 416.8s t=301.0] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (-1.9, 0.0, -6.5) walk
+[OFP 426.8s t=311.0] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (-12.6, 0.0, -5.0) investigate_look
+[OFP 436.8s t=321.0] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (-5.3, 0.0, -4.6) walk
+[OFP 446.8s t=331.0] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (9.4, 0.0, -2.9) walk
+[OFP 456.8s t=341.0] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (10.6, 0.0, -6.9) walk
+[OFP 466.8s t=351.0] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (-5.3, 0.0, -6.0) walk
+[OFP 476.8s t=361.0] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (-12.6, 0.0, -5.0) investigate_look
+[OFP 486.8s t=370.9] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (-2.1, 0.0, -3.9) walk
+[OFP 496.8s t=380.9] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (12.6, 0.0, -4.3) walk
+[OFP 506.8s t=390.9] GHOST no smoke cue at (48.0, 0.0, -5.0) in 300 s: falling back to the lane-distance rule
+[OFP 506.8s t=390.9] GHOST lane guards: Npc_guard6 (7.2, 0.0, -7.1)
+[OFP 518.8s t=402.9] GHOST lane clear after 12 s
+[INFO][heist][p1] phase CASING -> STEALTH
+[OFP 519.8s t=404.0] objective casing -> 2
+[INFO][crew][p1] slot 0 masked (forced=false)
+[OFP 520.5s t=404.6] masked true
+[INFO][ecm][p1] ECM 237 jamming for 20.0 s
+[INFO][deployables][p1] slot 0 placed deployable.ecm (1 left)
+[OFP 523.1s t=407.3] ECM on
+[OFP 528.2s t=412.3] pilot: t=5 at (23.9, 0.0, -5.3) corner (23.4, 0.2, -5.1) yaw_err 0.00 fwd=true path=12 mouse_mode=2 state=0 look=(14.44,0.00) pin_yaw=14.4430707937718 bot=false
+[OFP 533.1s t=417.3] pilot: t=10 at (18.4, 0.0, -3.7) corner (10.2, 0.2, -1.2) yaw_err 1.20 fwd=false path=4 mouse_mode=2 state=0 look=(13.22,0.00) pin_yaw=13.415122974453 bot=false
+[OFP 537.4s t=421.5] DETECT Npc_guard6 kind 0 meter 0.19 at (3.9, 0.0, -1.3), pilot (13.8, 0.0, -2.3) crouched false
+[OFP 538.0s t=422.0] DETECT Npc_guard6 kind 0 meter 0.58 at (4.7, 0.0, -1.3), pilot (12.7, 0.0, -1.9) crouched false
+[OFP 538.2s t=422.3] pilot: t=15 at (12.7, 0.0, -2.0) corner (10.2, 0.2, -1.2) yaw_err 3.12 fwd=false path=4 mouse_mode=2 state=0 look=(11.30,0.00) pin_yaw=11.4942288583843 bot=false
+[OFP 538.5s t=422.5] DETECT Npc_guard6 kind 0 meter 1.00 at (5.4, -0.0, -1.3), pilot (12.7, 0.0, -2.0) crouched false
+[INFO][stealth][p1] ALARM: guard_radio (source 208)
+[OFP 539.7s t=423.8] ALARM guard_radio by Npc_guard6 (pilot at (11.1, 0.0, -1.5))
+[INFO][heist][p1] alarm (guard_radio): going loud
+[INFO][heist][p1] phase STEALTH -> LOUD
+[INFO][director][p1] assault phase CONTROL (wave 1, 20 s)
+[INFO][prefab][p1] VaultControlRack: hack paused (lockdown)
+[OFP 539.9s t=423.8] objective keycard -> 1
+[OFP 539.9s t=423.8] objective keycard -> 2
+[OFP 539.9s t=423.8] objective code_hint -> 1
+[OFP 539.9s t=423.8] objective code_hint -> 2
+[OFP 539.9s t=423.8] objective code_pc -> 1
+[OFP 539.9s t=423.8] objective code_pc -> 2
+[OFP 539.9s t=423.8] objective server -> 1
+[OFP 539.9s t=423.8] objective server -> 2
+[OFP 539.9s t=423.8] objective vault_gate -> 1
+[OFP 539.9s t=423.8] objective vault_gate -> 2
+[OFP 539.9s t=423.8] objective lasers -> 1
+[OFP 539.9s t=423.8] objective lasers -> 2
+[OFP 540.0s t=423.8] objective drill_delivery -> 1
+[OFP 540.1s t=423.8] objective drill_delivery -> 1
+[INFO][director][p1] assault events: 3 rows for ostrander_federal (tweak)
+WARNING: Sub-surface scattering is not supported in viewports with a transparent background. Disabling SSS in transparent viewport.
+[INFO][ecm][p1] ECM 237 ended
+[INFO][combat][p1] slot 0 downed (1/3)
+[OFP 567.7s t=429.2] pilot: use DockPersonnelDoor (lockpick) -> FAILED in 3.0 s
+[OFP 568.1s t=429.6] FAIL ghost/_g2_dock (alarm guard_radio)
+[OFP] FAIL ghost/_g2_dock
+[OFP 581.0s t=429.7] FILLS per observer (peak D-128 meter on the pilot): 1 observers
+[OFP 581.0s t=429.7]   FILL Npc_guard6                   kind 0 peak 1.00 at t=422.5 (observer (5.4, -0.0, -1.3), pilot (12.7, 0.0, -2.0) crouched false)
+[OFP 581.0s t=429.7] GHOST total 426.5 s game time (stopped); alarm guard_radio; ECM left 1
+[OFP] RESULT FAIL ghost
+[OFP] RESULT FAIL (ghost FAIL)
+WARNING: 433 ObjectDB instances were leaked at exit (run with `--verbose` for details).

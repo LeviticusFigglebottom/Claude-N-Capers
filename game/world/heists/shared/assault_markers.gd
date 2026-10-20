@@ -8,7 +8,9 @@
 ##   rappels [name, roof start, ground end];
 ##   breaches [name, kind, scene id, pos (room-side face; ceiling: centre of the underside), yaw_deg (-Z into the
 ##   room; ceiling: turn of +Y about the vertical, 0 = +Y north), size (w, h), room, depth (ceiling underside to
-##   roof top; 0 for walls / windows)].
+##   roof top; 0 for walls / windows)(, door)]. Kind "door" (OF Breach_3/4): no scene (empty id), no obstruction (the
+##   door already stands in its opening); `door` = the Door's path from `root`, saved as meta `door` (NodePath from the
+##   marker; ENV A plays the charge on its leaves and opens it).
 extends RefCounted
 
 const SCENE_DIR: String = "res://world/props/assault_event/"
@@ -148,6 +150,13 @@ static func build(root: Node3D, vans: Array, orbits: Array, drops: Array, rappel
 		m.set_meta(&"kind", kind)
 		m.set_meta(&"size", size)
 		m.set_meta(&"room", String(b[6]))
+		if kind == "door":
+			var door: Node = root.get_node_or_null(NodePath(String(b[8]))) if b.size() > 8 else null
+			if door == null:
+				errors.append("%s: door breach without its door (%s)" % [String(b[0]), b[8] if b.size() > 8 else "-"])
+			else:
+				m.set_meta(&"door", m.get_path_to(door))
+			continue
 		var ps: PackedScene = load(SCENE_DIR + String(b[2]) + ".tscn") as PackedScene
 		if ps == null:
 			errors.append("assault event scene %s missing" % String(b[2]))

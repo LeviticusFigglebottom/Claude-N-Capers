@@ -1,6 +1,6 @@
 ## PO6-17 marker lookup (ENV C contract, docs/levels/_art/po6_17/README.md §5): Marker3Ds under the map's
 ## `AssaultEvents` node (group `assault_events`): TurretVan_<n> (+Z = van forward), HeliOrbit_<n> (meta radius),
-## HeliDrop_<n>, Breach_<n> (meta kind wall|window|ceiling, size Vector2, -Z into the room). Owner: ENV A.
+## HeliDrop_<n>, Breach_<n> (meta kind wall|window|ceiling|door (+ meta door NodePath), size Vector2, -Z into the room). Owner: ENV A.
 ## Maps without them use fallbacks so events still fire (AssaultEventRunner): police spawns for the van and the
 ## heli drop, the map's mesh bounds for the orbit, ENTRY points as fx-only breaches.
 class_name AssaultEventMarkerScan

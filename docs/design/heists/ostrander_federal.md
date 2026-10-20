@@ -1207,12 +1207,15 @@ The mission finds these by `objective_tag` / route id; the node paths are for ar
   of the hole. **The hoist rig** `Gameplay/Lifts/Hoist/Rig` (map-built static boxes under the hoist, so they appear with
   it at the burn and are absent before it; world_dynamic, layer 2: crew and bags collide, interaction / vision rays
   pass, so the car's bags stay pick-up-able over a screen): `ShaftBackstop` (z 14.92–14.97), `ShaftW` / `ShaftE`
-  (x 23.36–23.41 / 24.59–24.64) to 2.4 m above the vault floor, `ShaftSill` (0.6 m, z 15.75–15.8: the open, loading
+  (x 23.36–23.41 / 24.60–24.65) to 2.4 m above the vault floor, `ShaftSill` (0.6 m, z 15.75–15.8: the open, loading
   side faces south), and the TW guard screens `HoleGuardW` / `HoleGuardE` / `HoleGuardS` (1.5 m, flush with the hole's
   W / E / S edges; the N edge open). Each rig box is a permanent nav obstruction too (the hole carve's pattern), so on the
   TW the nav edge is ≈ 0.35 m back from the W / E / S edges. Art lanes: the car visual must fit 1.0 × 0.75 m inside the
   shaft (the A placeholder is 1.24 m) and the rig's names stay. Levelcheck treats each rig box as its own prop (meta
-  `lc_subprop`).
+  `lc_subprop`). **The hoist panel** (OF-C1, ENV P burn run 7df78180): the bag_lift's external `Panel`, a 0.04 × 0.12 m
+  riser standing against ShaftE's east face (x 24.65–24.69, floor to 1.2 m, z 15.265–15.385; world_dynamic like the
+  rig), its origin and the Interactable at 1.1 m, square in front of the `UsePoint` (25.1, −4, 15.325, facing west);
+  bag_lift copies riser and panel to the TW landing (+4 m, against HoleGuardE's east face, flush with ShaftE's). Regression: `game/tests/c/test_of_hoist_panel.gd`.
 - **Tags for tools and tests:** `CagedLadder` has `objective_tag = caged_ladder`; `RopeLadder` `rope_ladder`;
   `FireEscapeDropLadder` `fire_escape`. The escape zones keep the tags the mission binds (`secure` / `escape` /
   `escape_wait`; one escape slot is resolved per run, so tag + class is unique in a run); `SecureDock` / `EscapeDock`,
@@ -1483,7 +1486,7 @@ plaza, the gallery and the vestibule.
 |---|---|---|
 | Draw calls per view | ≤ 2,500 | The worst views are `rc_hall_from_gallery`, `rc_hall_entrance` and `rc_ext_plaza`. The coffers, teller grilles, queue posts, benches, deposit boxes (44 in SD/VT) and the facade's window bays are **MultiMeshInstance3D** per kit item. |
 | Triangles per view | ≤ 3M (provisional, QC-10) | The coffered ceiling is a single trim-sheet mesh with 2 LODs. The far towers are LOD facades. |
-| Shadowed lights in any shot | ≤ 8 | The sun (1) + 4 hall pendants + 1 per room elsewhere. The counter lamps, sconces and battens are unshadowed. |
+| Shadowed lights in any shot | ≤ 8 | The sun (1) + **1** hall pendant (LEAD r246: the other 3 pendants use the same bronze fixture, unshadowed) + 1 per room elsewhere. The check counts shadowed lights in the frustum (what Compatibility pays), and the 6 shadowed room fixtures behind the hall walls (SR, VT, PR, OF, LD, BB) are in every hall view: sun 1 + 6 + 1 pendant = 8. The counter lamps, sconces, battens and the 2 warm hall pools are unshadowed. |
 | Texture memory | ≤ 1.5 GB | The shared library (limestone, marble, terrazzo, bronze, brass, plaster, carpet, wood veneer) covers ~85%. New: limestone ashlar, the coffer trim sheet, the meridian line inlay. |
 | NPCs alive | stealth: guards ≤ 8 (6 + 2 rare), civilians ≤ 22 (19 + 2 plaza + 1 VIP; ≤ 30 cap); loud: police ≤ `DifficultyDef.max_active_enemies`, civilians ≤ 22 | The civilians cower in place in loud: they are the hostage pool. D-136 §3b.5 adds the SD attendant (+1). |
 | Exterior traffic | ≤ 12 parked cars (MultiMesh), no moving traffic in play (a distant animated ribbon only) | |

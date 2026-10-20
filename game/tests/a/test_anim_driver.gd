@@ -381,10 +381,35 @@ func test_drill_place_and_downed_crawl() -> void:
 	assert_eq(d.clip, &"downed_crawl", "downed and moved: crawl")
 
 
+## QC-67: every spawn activity a heist layout names has an AnimDriver hint key (an unknown hint falls back to idle,
+## e.g. the 4 OF tellers' "teller_count").
+func test_every_layout_spawn_activity_has_a_hint_clip() -> void:
+	var rx: RegEx = RegEx.create_from_string(
+		"\\[\"spawn\",\\s*\"[^\"]+\",\\s*\"[A-Z_]+\",\\s*\\[[^\\]]*\\],\\s*[-0-9.]+,\\s*\\[[^\\]]*\\],\\s*\"([a-z0-9_]+)\"")
+	var missing: Array[String] = []
+	var seen: int = 0
+	for path: String in _layout_scripts("res://world/heists"):
+		for m: RegExMatch in rx.search_all(FileAccess.get_file_as_string(path)):
+			seen += 1
+			if not AnimDriver.HINT_CLIPS.has(StringName(m.get_string(1))):
+				missing.append("%s: %s" % [path.get_file(), m.get_string(1)])
+	assert_true(seen > 0, "found layout spawn rows")
+	assert_eq(missing, [] as Array[String], "spawn activities without a HINT_CLIPS key")
+
+
+static func _layout_scripts(dir: String) -> Array[String]:
+	var out: Array[String] = []
+	for sub: String in DirAccess.get_directories_at(dir):
+		out.append_array(_layout_scripts(dir.path_join(sub)))
+	for f: String in DirAccess.get_files_at(dir):
+		if f.ends_with(".gd"):
+			out.append(dir.path_join(f))
+	return out
+
 ## D-111 ambient loops: bartender / bouncer / teller activities and `dance` (a / b / c, stable per NPC name).
 func test_bar_club_bank_ambient_clips() -> void:
 	var cases: Array = [[&"bartender", &"bartender_wipe"], [&"bartender_pour", &"bartender_pour"],
-		[&"bouncer", &"bouncer_idle"], [&"teller", &"teller_count"]]
+		[&"bouncer", &"bouncer_idle"], [&"teller", &"teller_count"], [&"teller_count", &"teller_count"]]
 	for c: Array in cases:
 		var npc: NpcBase = _npc(&"civilian")
 		npc.get_node("Brain").set(&"anim_hint", c[0])

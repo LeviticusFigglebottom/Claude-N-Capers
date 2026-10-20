@@ -1,0 +1,368 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+Vulkan 1.4.318 - Forward+ - Using Device #0: Unknown - llvmpipe (LLVM 20.1.2, 256 bits)
+
+[OFP 0.0s t=-1.0] === burn ===
+[INFO][rng][p1] run seed 1002
+[INFO][preplan][p1] assets []
+[INFO][variants][p1] seed 1002 resolved { &"manager_route": [&"mgr_gallery"], &"keycard": [&"kc_security"], &"code_pc": [&"pc_ops"], &"officers": [&"off_1"], &"server_room": [&"srv_gallery"], &"guard_post": [&"rover_basement", &"rover_dock"], &"security_room_staffed": [&"sec_empty"], &"camera": [&"cam_c"], &"laser_pattern": [&"lz_timed"], &"customers": [&"cust_4"], &"side_door": [&"door_dock_open"], &"fire_escape": [&"fe_down"], &"escape": [&"esc_van_tannery"], &"drill_delivery": [&"drop_dock"], &"president_safe": [&"ps_empty"], &"vip": [&"vip_out"], &"guard_extra": [], &"civ_extra": [], &"time_lock_s": 150.0, &"drill_eta_s": 60.0, &"escape_eta_s": 120.0, &"cash_bags": 10, &"gold_bags": 4, &"deposit_boxes": 9, "rare": [] }
+[INFO][heist][p1] vfx prewarm: 733 ms
+ERROR: Instance count must be 0 to change the transform format.
+ERROR: Instance count must be 0 to change the transform format.
+ERROR: Instance count must be 0 to change the transform format.
+ERROR: Instance count must be 0 to change the transform format.
+ERROR: Instance count must be 0 to change the transform format.
+ERROR: Instance count must be 0 to change the transform format.
+[INFO][prefab][p1] Hoist disabled
+[INFO][prefab][p1] RopeLadder disabled
+[INFO][heist][p1] phase LOADING -> CASING
+[OFP 7.6s t=-1.0] objective casing -> 1
+[OFP 7.6s t=-1.0] objective keycard -> 1
+[OFP 7.6s t=-1.0] objective code_hint -> 1
+[OFP 7.6s t=-1.0] objective code_pc -> 1
+[OFP 7.6s t=-1.0] objective server -> 1
+[OFP 7.6s t=-1.0] objective vault_gate -> 1
+[OFP 7.6s t=-1.0] objective lasers -> 1
+[OFP 7.6s t=-1.0] objective time_lock -> 0
+[OFP 7.6s t=-1.0] objective time_lock_wait -> 0
+[OFP 7.6s t=-1.0] objective vault_loot -> 0
+[OFP 7.6s t=-1.0] objective gold_cage -> 0
+[OFP 7.6s t=-1.0] objective secure -> 1
+[OFP 7.6s t=-1.0] objective deposit_boxes -> 1
+[OFP 7.6s t=-1.0] objective bond_safe -> 1
+[OFP 7.6s t=-1.0] objective president_safe -> 1
+[OFP 7.6s t=-1.0] objective server_drives -> 1
+[OFP 7.6s t=-1.0] objective drill_delivery -> 0
+[OFP 7.6s t=-1.0] objective vault_drill -> 0
+[OFP 7.6s t=-1.0] objective vault_breach -> 0
+[OFP 7.6s t=-1.0] objective escape_wait -> 0
+[OFP 7.6s t=-1.0] objective escape -> 0
+[INFO][prefab][p1] VaultBoxN10 disabled
+[INFO][prefab][p1] VaultBoxN11 disabled
+[INFO][prefab][p1] VaultBoxS01 disabled
+[INFO][prefab][p1] VaultBoxS02 disabled
+[INFO][prefab][p1] VaultBoxS03 disabled
+[INFO][prefab][p1] VaultBoxS04 disabled
+[INFO][prefab][p1] VaultBoxS05 disabled
+[INFO][prefab][p1] VaultBoxS06 disabled
+[INFO][prefab][p1] VaultBoxS07 disabled
+[INFO][prefab][p1] VaultBoxS08 disabled
+[INFO][prefab][p1] VaultBoxS09 disabled
+[INFO][prefab][p1] HallBox09 disabled
+[INFO][prefab][p1] HallBox10 disabled
+[INFO][prefab][p1] HallBox11 disabled
+[INFO][prefab][p1] HallBox12 disabled
+[INFO][prefab][p1] HallBox13 disabled
+[INFO][prefab][p1] HallBox14 disabled
+[INFO][prefab][p1] HallBox15 disabled
+[INFO][prefab][p1] HallBox16 disabled
+[INFO][prefab][p1] HallBox17 disabled
+[INFO][prefab][p1] HallBox18 disabled
+[INFO][prefab][p1] HallBox19 disabled
+[INFO][prefab][p1] HallBox20 disabled
+[INFO][prefab][p1] HallBox21 disabled
+[INFO][prefab][p1] HallBox22 disabled
+[INFO][prefab][p1] HallBox23 disabled
+[INFO][prefab][p1] HallBox24 disabled
+[INFO][director][p1] no EnemyDef for enemy.wrecker_g on this difficulty (missing, or armored below 2): skipped
+[INFO][director][p1] no EnemyDef for enemy.wrecker_b on this difficulty (missing, or armored below 2): skipped
+[INFO][director][p1] no EnemyDef for enemy.wrecker_s on this difficulty (missing, or armored below 2): skipped
+[INFO][director][p1] no EnemyDef for enemy.wrecker_m on this difficulty (missing, or armored below 2): skipped
+[INFO][director][p1] prewarm: 19 of 19 scenes loaded in 874 ms
+[INFO][prefab][p1] CameraStation: security room unstaffed
+[OFP 21.6s t=0.0] launched ostrander_federal seed 1002 diff 0 variants { &"manager_route": [&"mgr_gallery"], &"keycard": [&"kc_security"], &"code_pc": [&"pc_ops"], &"officers": [&"off_1"], &"server_room": [&"srv_gallery"], &"guard_post": [&"rover_basement", &"rover_dock"], &"security_room_staffed": [&"sec_empty"], &"camera": [&"cam_c"], &"laser_pattern": [&"lz_timed"], &"customers": [&"cust_4"], &"side_door": [&"door_dock_open"], &"fire_escape": [&"fe_down"], &"escape": [&"esc_van_tannery"], &"drill_delivery": [&"drop_dock"], &"president_safe": [&"ps_empty"], &"vip": [&"vip_out"], &"guard_extra": [], &"civ_extra": [], &"time_lock_s": 150.0, &"drill_eta_s": 60.0, &"escape_eta_s": 120.0, &"cash_bags": 10, &"gold_bags": 4, &"deposit_boxes": 9, "rare": [] }
+[INFO][prefab][p1] CameraC1 disabled
+[INFO][prefab][p1] CameraC2 disabled
+[INFO][prefab][p1] CameraC3 disabled
+[INFO][prefab][p1] CameraC7 disabled
+[INFO][prefab][p1] CameraC9 disabled
+[INFO][prefab][p1] CameraC11 disabled
+[INFO][prefab][p1] CameraC13 disabled
+[INFO][prefab][p1] CameraC15 disabled
+[OFP 58.8s t=2.0] SHORTCUT traversal: NPCs despawned, crew stealth_hidden, 8 cameras disabled (GameplayPrefab.set_enabled)
+[OFP 66.5s t=3.1] pilot: calibrated 0.001600 rad/px yaw, 0.001600 rad/px pitch (settings formula said (0.0016, 0.0016))
+[OFP 66.5s t=3.1] spawn (21.0, 0.0, -6.0)
+[OFP 71.3s t=3.2] BURN before: rope ladder usable false height 3.20 (top (24.0, -0.8, 13.1) bottom (24.0, -4.0, 13.9)); hoist visible false
+[INFO][heist][p1] phase CASING -> STEALTH
+[OFP 72.2s t=4.2] objective casing -> 2
+[INFO][crew][p1] slot 0 masked (forced=false)
+[OFP 72.8s t=4.8] masked true
+[INFO][stealth][p1] ALARM: ofp_burn (source 0)
+[OFP 72.8s t=4.8] ALARM ofp_burn by 0 (pilot at (21.0, 0.0, -6.0))
+[INFO][heist][p1] alarm (ofp_burn): going loud
+[INFO][heist][p1] phase STEALTH -> LOUD
+[INFO][director][p1] assault phase CONTROL (wave 1, 20 s)
+[INFO][prefab][p1] VaultControlRack: hack paused (lockdown)
+[OFP 73.0s t=4.8] objective keycard -> 1
+[OFP 73.0s t=4.8] objective keycard -> 2
+[OFP 73.0s t=4.8] objective code_hint -> 1
+[OFP 73.0s t=4.8] objective code_hint -> 2
+[OFP 73.0s t=4.8] objective code_pc -> 1
+[OFP 73.0s t=4.8] objective code_pc -> 2
+[OFP 73.0s t=4.8] objective server -> 1
+[OFP 73.0s t=4.8] objective server -> 2
+[OFP 73.0s t=4.8] objective vault_gate -> 1
+[OFP 73.0s t=4.8] objective vault_gate -> 2
+[OFP 73.0s t=4.8] objective lasers -> 1
+[OFP 73.0s t=4.8] objective lasers -> 2
+[OFP 73.1s t=4.8] objective drill_delivery -> 1
+[OFP 73.2s t=4.8] objective drill_delivery -> 1
+[OFP 73.2s t=4.8] SHORTCUT alarm raised through the StealthDirector
+[OFP 73.2s t=4.8] BURN lockdown PASS; drill_delivery [&"drop_dock"] eta 60.0
+[INFO][director][p1] assault events: 3 rows for ostrander_federal (tweak)
+WARNING: Sub-surface scattering is not supported in viewports with a transparent background. Disabling SSS in transparent viewport.
+[INFO][director][p1] assault phase ANTICIPATION (wave 1, 30 s)
+[INFO][director][p1] assault phase BUILD (wave 1, 35 s)
+[OFP 160.4s t=64.8] objective vault_drill -> 1
+[OFP 160.5s t=64.8] BURN parts PASS at (14.0, 0.0, -4.0)
+[OFP 180.5s t=69.8] pilot: t=5 at (16.4, 0.0, -4.3) corner (15.1, 0.2, -4.0) yaw_err -0.00 fwd=true path=2 mouse_mode=2 state=0 look=(-4.47,0.00) pin_yaw=-4.46769352818228 bot=false
+[OFP 184.3s t=71.4] objective drill_delivery -> 1
+[OFP 184.8s t=71.4] pilot: use Bag_thermal_drill_part (pick_bag) -> OK in 1.0 s
+[OFP 216.5s t=76.4] pilot: t=5 at (11.0, 0.0, -2.0) corner (9.4, 0.2, -1.3) yaw_err -0.00 fwd=true path=32 mouse_mode=2 state=0 look=(-4.27,0.00) pin_yaw=-4.27486860061618 bot=false
+[OFP 219.5s t=79.2] pilot: use DockPersonnelDoor (open_door) -> OK in 0.0 s
+[OFP 247.2s t=82.3] pilot: t=10 at (8.5, 0.0, 2.2) corner (8.5, 0.2, 2.6) yaw_err -0.00 fwd=true path=28 mouse_mode=2 state=0 look=(-2.95,0.00) pin_yaw=-2.94962086128362 bot=false
+[OFP 271.4s t=88.9] pilot: use DockCorridorDoor (open_door) -> OK in 0.0 s
+[INFO][director][p1] assault phase SUSTAIN (wave 1, 40 s)
+[OFP 272.3s t=89.9] pilot: t=15 at (10.4, 0.0, 8.2) corner (10.9, 0.0, 8.1) yaw_err -0.00 fwd=true path=24 mouse_mode=2 state=0 look=(-1.52,0.00) pin_yaw=-1.52003131667152 bot=false
+[INFO][director][p1] force pool spent (26 units): FADE
+[INFO][director][p1] assault phase FADE (wave 1, 15 s)
+ERROR: Condition "!is_inside_tree()" is true. Returning: Transform3D()
+ERROR: Condition "!is_inside_tree()" is true. Returning: Transform3D()
+ERROR: Condition "!is_inside_tree()" is true. Returning: Transform3D()
+ERROR: Condition "!is_inside_tree()" is true. Returning: Transform3D()
+[OFP 330.2s t=102.3] pilot: use StaffDoorTWW (open_door) -> OK in 8.0 s
+[OFP 333.3s t=105.6] pilot: t=20 at (15.8, 0.0, 10.4) corner (16.5, 0.2, 10.6) yaw_err 0.00 fwd=true path=14 mouse_mode=2 state=0 look=(-1.89,0.00) pin_yaw=-1.88574649990915 bot=false
+[OFP 338.4s t=110.6] pilot: t=25 at (20.4, 0.0, 11.8) corner (21.3, 0.2, 12.1) yaw_err -0.58 fwd=true path=9 mouse_mode=2 state=0 look=(-1.29,0.00) pin_yaw=-1.48596881219419 bot=false
+[OFP 343.3s t=115.6] pilot: t=30 at (24.9, 0.0, 13.7) corner (25.6, 0.2, 14.6) yaw_err -2.50 fwd=false path=2 mouse_mode=2 state=0 look=(0.01,0.00) pin_yaw=-0.18127784771059 bot=false
+[INFO][director][p1] assault phase CONTROL (wave 2, 40 s)
+[OFP 347.5s t=119.5] pilot: use LidDrill (place_drill) -> OK in 3.0 s
+[OFP 347.5s t=119.5] BURN part 0 PASS: drop -> lid in 54.7 s (HEAVY), delivered 1
+[OFP 369.5s t=124.5] pilot: t=5 at (20.4, 0.0, 11.7) corner (19.2, 0.2, 11.2) yaw_err 0.00 fwd=true path=25 mouse_mode=2 state=0 look=(-5.06,0.00) pin_yaw=-5.05912988188357 bot=false
+[OFP 374.4s t=129.5] pilot: t=10 at (15.3, 0.0, 9.9) corner (14.5, 0.2, 9.5) yaw_err -1.22 fwd=false path=20 mouse_mode=2 state=0 look=(-3.92,0.00) pin_yaw=-4.11519550884987 bot=false
+[OFP 379.4s t=134.5] pilot: t=15 at (8.9, 0.0, 7.3) corner (8.4, 0.2, 3.6) yaw_err -3.07 fwd=false path=9 mouse_mode=2 state=0 look=(-3.07,0.00) pin_yaw=-3.26051166559773 bot=false
+[OFP 384.5s t=139.5] pilot: t=20 at (8.1, 0.0, 1.3) corner (8.2, 0.2, 1.9) yaw_err 1.58 fwd=false path=6 mouse_mode=2 state=0 look=(-4.60,0.00) pin_yaw=-4.40889981696091 bot=false
+[OFP 399.1s t=144.6] pilot: t=25 at (12.1, 0.0, -2.7) corner (15.1, 0.2, -4.0) yaw_err 0.00 fwd=true path=2 mouse_mode=2 state=0 look=(-7.45,0.00) pin_yaw=-7.44659471292107 bot=false
+[OFP 402.6s t=148.1] objective drill_delivery -> 1
+[OFP 402.7s t=148.1] objective drill_delivery -> 2
+[OFP 403.0s t=148.1] pilot: use Bag_thermal_drill_part2 (pick_bag) -> OK in 1.0 s
+[OFP 407.9s t=153.2] pilot: t=5 at (10.5, 0.0, -1.8) corner (9.4, 0.2, -1.3) yaw_err -0.00 fwd=true path=32 mouse_mode=2 state=0 look=(-4.27,0.00) pin_yaw=-4.26784975413466 bot=false
+[INFO][director][p1] assault phase ANTICIPATION (wave 2, 30 s)
+[OFP 412.9s t=158.1] pilot: t=10 at (8.4, 0.0, 2.1) corner (8.6, 0.2, 2.6) yaw_err -0.96 fwd=false path=28 mouse_mode=2 state=0 look=(-1.97,0.00) pin_yaw=-2.16499852677225 bot=false
+[OFP 417.9s t=163.1] pilot: t=15 at (9.4, 0.0, 6.9) corner (9.6, 0.2, 7.6) yaw_err 2.88 fwd=false path=25 mouse_mode=2 state=0 look=(-5.80,0.00) pin_yaw=-5.61094076775771 bot=false
+[OFP 422.9s t=168.1] pilot: t=20 at (13.8, 0.0, 9.1) corner (13.9, 0.0, 9.9) yaw_err -0.00 fwd=true path=18 mouse_mode=2 state=0 look=(-3.09,0.00) pin_yaw=-3.09101617160923 bot=false
+[OFP 427.9s t=173.2] pilot: t=25 at (17.8, 0.0, 11.1) corner (19.4, 0.2, 11.6) yaw_err -0.00 fwd=true path=11 mouse_mode=2 state=0 look=(-1.88,0.00) pin_yaw=-1.87532933420153 bot=false
+[OFP 432.9s t=178.2] pilot: t=30 at (22.5, 0.0, 12.5) corner (23.2, 0.2, 12.7) yaw_err -1.54 fwd=false path=8 mouse_mode=2 state=0 look=(-0.33,0.00) pin_yaw=-0.51789007443586 bot=false
+[OFP 440.1s t=185.0] pilot: use LidDrill (place_drill) -> OK in 3.0 s
+[OFP 440.1s t=185.0] BURN part 1 PASS: drop -> lid in 65.4 s (HEAVY), delivered 2
+[OFP 455.6s t=185.2] SHORTCUT burn wait at x4 beside the drill
+[INFO][director][p1] assault phase BUILD (wave 2, 35 s)
+[INFO][director][p1] assault phase SUSTAIN (wave 2, 120 s)
+[INFO][director][p1] force pool spent (29 units): FADE
+[INFO][director][p1] assault phase FADE (wave 2, 15 s)
+[INFO][director][p1] assault phase CONTROL (wave 3, 40 s)
+[INFO][director][p1] assault phase ANTICIPATION (wave 3, 30 s)
+[INFO][director][p1] assault phase BUILD (wave 3, 35 s)
+[INFO][director][p1] assault phase SUSTAIN (wave 3, 160 s)
+[INFO][director][p1] force pool spent (33 units): FADE
+[INFO][director][p1] assault phase FADE (wave 3, 15 s)
+[OFP 764.4s t=359.3] pilot: use LidDrill (place_drill) -> OK in 2.0 s
+[OFP 764.4s t=359.3] BURN jam 1 fixed true
+[INFO][director][p1] assault phase CONTROL (wave 4, 40 s)
+[INFO][director][p1] assault phase ANTICIPATION (wave 4, 30 s)
+[INFO][director][p1] assault phase BUILD (wave 4, 35 s)
+[INFO][director][p1] assault phase SUSTAIN (wave 4, 160 s)
+[INFO][director][p1] force pool spent (33 units): FADE
+[INFO][director][p1] assault phase FADE (wave 4, 15 s)
+[INFO][director][p1] assault phase CONTROL (wave 5, 40 s)
+[INFO][prefab][p1] Lid disabled
+[INFO][prefab][p1] Hoist enabled
+[INFO][prefab][p1] RopeLadder enabled
+[OFP 1052.1s t=549.7] objective vault_drill -> 2
+[OFP 1052.1s t=549.7] objective vault_breach -> 2
+[OFP 1052.1s t=549.7] objective vault_loot -> 1
+[OFP 1052.2s t=549.7] objective gold_cage -> 1
+[INFO][director][p1] assault phase ANTICIPATION (wave 5, 30 s)
+[OFP 1058.3s t=552.2] BURN burn-through PASS after 367 s (1 jams); rope ladder usable true height_m 4.00, top (24.0, 0.0, 13.1) bottom (24.0, -4.0, 13.9) (span 4.00 m): 4.0 m OK; hoist enabled true
+[OFP 1079.0s t=559.9] LADDER RopeLadder down: OK in 1.8 s (climb 2.4 s, height 4.0 m; at (24.0, -4.0, 14.6))
+[OFP 1079.0s t=559.9] BURN ladder down PASS at (24.0, -4.0, 14.6)
+[OFP 1079.0s t=559.9] SHORTCUT bag loot.cash_bricks (weight 1) spawned by LootManager.spawn_bag at (25.0, -3.5, 14.6)
+[OFP 1082.7s t=563.3] pilot: use Bag_cash_bricks (pick_bag) -> OK in 1.0 s
+[OFP 1087.2s t=567.8] bag in the car of Hoist (1)
+[OFP 1087.2s t=567.8] BURN bag into the hoist car PASS (car at (24.0, -4.0, 15.3))
+[INFO][prefab][p1] Hoist: lift 0 -> 1 with 1 bag(s) (slot 0)
+[OFP 1091.3s t=570.5] pilot: use Hoist (call_lift) -> OK in 1.0 s
+[OFP 1097.2s t=576.5] LIFT Hoist at landing 1 (1 bags in the car)
+[OFP 1097.2s t=576.5] BURN hoist ride PASS: car at landing 1 with 1 bag(s)
+[OFP 1101.3s t=580.5] pilot: STUCK at (25.0, -4.0, 15.4) heading to (24.0, -3.8, 15.4); rays: h0.05:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.9, 15.4), h0.20:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.8, 15.4), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.6, 15.4), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.0, 15.4), slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.6, 15.4) n=(1.0, 0.0, 0.0), vel=(0.0, 0.0, 0.0) floor=true state=0
+[OFP 1109.1s t=580.7] pilot: detour right 0.7 m to (24.7, -3.8, 14.6) (attempt 1)
+[INFO][director][p1] assault phase BUILD (wave 5, 35 s)
+[OFP 1110.4s t=582.0] pilot: t=5 at (25.0, -4.0, 15.2) corner (24.0, -3.8, 15.4) yaw_err -0.00 fwd=true path=5 mouse_mode=2 state=0 look=(1.77,0.00) pin_yaw=1.76634727372208 bot=false
+ERROR: It's not expect to not find the most reachable polygons
+ERROR: It's not expect to not find the most reachable polygons
+ERROR: It's not expect to not find the most reachable polygons
+ERROR: It's not expect to not find the most reachable polygons
+[OFP 1131.2s t=585.1] pilot: STUCK at (25.0, -4.0, 15.2) heading to (24.0, -3.8, 15.4); rays: h0.05:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.9, 15.3), h0.20:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.8, 15.3), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.6, 15.3), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.0, 15.3), slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.6, 15.2) n=(1.0, 0.0, -0.0), vel=(0.0, 0.0, 0.0) floor=true state=0
+[OFP 1139.8s t=585.2] pilot: detour left 0.7 m to (24.8, -3.8, 15.9) (attempt 2)
+ERROR: It's not expect to not find the most reachable polygons
+ERROR: It's not expect to not find the most reachable polygons
+ERROR: It's not expect to not find the most reachable polygons
+ERROR: It's not expect to not find the most reachable polygons
+[OFP 1150.7s t=587.5] pilot: t=10 at (25.0, -4.0, 15.4) corner (24.0, -3.8, 15.4) yaw_err -0.00 fwd=true path=5 mouse_mode=2 state=0 look=(1.59,0.00) pin_yaw=1.58769637486318 bot=false
+[OFP 1160.7s t=589.6] pilot: STUCK at (25.0, -4.0, 15.4) heading to (24.0, -3.8, 15.4); rays: h0.05:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.9, 15.4), h0.20:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.8, 15.4), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.6, 15.4), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.0, 15.4), slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.6, 15.4) n=(1.0, 0.0, 0.0), vel=(0.0, 0.0, 0.0) floor=true state=0
+[OFP 1168.9s t=589.7] pilot: detour right 1.2 m to (24.7, -3.8, 14.2) (attempt 3)
+ERROR: It's not expect to not find the most reachable polygons
+ERROR: It's not expect to not find the most reachable polygons
+ERROR: It's not expect to not find the most reachable polygons
+ERROR: It's not expect to not find the most reachable polygons
+ERROR: It's not expect to not find the most reachable polygons
+[OFP 1184.1s t=593.5] pilot: t=15 at (25.0, -4.0, 15.4) corner (24.0, -3.8, 15.4) yaw_err -0.00 fwd=true path=5 mouse_mode=2 state=0 look=(1.56,0.00) pin_yaw=1.56469656138131 bot=false
+[OFP 1185.3s t=594.6] pilot: STUCK at (25.0, -4.0, 15.4) heading to (24.0, -3.8, 15.4); rays: h0.05:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.9, 15.4), h0.20:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.8, 15.4), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.6, 15.4), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.0, 15.4), slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.6, 15.4) n=(1.0, 0.0, 0.0), vel=(0.0, 0.0, 0.0) floor=true state=0
+[OFP 1185.3s t=594.6] pilot: detour left 1.2 m to (24.7, -3.8, 16.6) (attempt 4)
+ERROR: It's not expect to not find the most reachable polygons
+ERROR: It's not expect to not find the most reachable polygons
+ERROR: It's not expect to not find the most reachable polygons
+ERROR: It's not expect to not find the most reachable polygons
+ERROR: It's not expect to not find the most reachable polygons
+[OFP 1210.4s t=599.4] pilot: t=20 at (25.0, -4.0, 15.4) corner (24.0, -3.8, 15.4) yaw_err -0.00 fwd=true path=5 mouse_mode=2 state=0 look=(1.60,0.00) pin_yaw=1.59508015759263 bot=false
+[OFP 1210.6s t=599.6] pilot: STUCK at (25.0, -4.0, 15.4) heading to (24.0, -3.8, 15.4); rays: h0.05:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.9, 15.4), h0.20:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.8, 15.4), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.6, 15.4), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.0, 15.4), slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.6, 15.4) n=(1.0, 0.0, -0.0), vel=(0.0, 0.0, 0.0) floor=true state=0
+[OFP 1210.6s t=599.6] pilot: detour right 1.2 m to (24.7, -3.8, 14.2) (attempt 5)
+ERROR: It's not expect to not find the most reachable polygons
+ERROR: It's not expect to not find the most reachable polygons
+ERROR: It's not expect to not find the most reachable polygons
+[OFP 1234.4s t=604.5] pilot: STUCK at (25.0, -4.0, 15.4) heading to (24.0, -3.8, 15.4); rays: h0.05:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.9, 15.4), h0.20:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.8, 15.4), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.6, 15.4), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.0, 15.4), slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.6, 15.4) n=(1.0, 0.0, -0.0), vel=(0.0, 0.0, 0.0) floor=true state=0
+[OFP 1234.4s t=604.5] pilot: detour left 1.2 m to (24.7, -3.8, 16.6) (attempt 6)
+ERROR: It's not expect to not find the most reachable polygons
+ERROR: It's not expect to not find the most reachable polygons
+ERROR: It's not expect to not find the most reachable polygons
+ERROR: It's not expect to not find the most reachable polygons
+[OFP 1243.6s t=606.3] pilot: t=25 at (25.0, -4.0, 15.5) corner (25.0, -3.8, 15.9) yaw_err 1.63 fwd=false path=6 mouse_mode=2 state=0 look=(1.45,0.00) pin_yaw=1.64342544212911 bot=false
+ERROR: It's not expect to not find the most reachable polygons
+ERROR: It's not expect to not find the most reachable polygons
+ERROR: It's not expect to not find the most reachable polygons
+ERROR: It's not expect to not find the most reachable polygons
+[OFP 1254.9s t=609.5] pilot: STUCK at (25.0, -4.0, 15.4) heading to (24.0, -3.8, 15.4); rays: h0.05:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.9, 15.4), h0.20:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.8, 15.4), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.6, 15.4), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.0, 15.4), slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.6, 15.4) n=(1.0, 0.0, -0.0), vel=(0.0, 0.0, 0.0) floor=true state=0
+[OFP 1254.9s t=609.5] pilot: detour right 1.2 m to (24.7, -3.8, 14.2) (attempt 7)
+ERROR: It's not expect to not find the most reachable polygons
+[OFP 1264.7s t=612.2] pilot: t=30 at (25.0, -4.0, 15.4) corner (24.0, -3.8, 15.4) yaw_err 0.00 fwd=true path=5 mouse_mode=2 state=0 look=(1.57,0.00) pin_yaw=1.5660312425133 bot=false
+ERROR: It's not expect to not find the most reachable polygons
+ERROR: It's not expect to not find the most reachable polygons
+ERROR: It's not expect to not find the most reachable polygons
+ERROR: It's not expect to not find the most reachable polygons
+[OFP 1275.2s t=614.4] pilot: STUCK at (25.0, -4.0, 15.4) heading to (24.0, -3.8, 15.4); rays: h0.05:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.9, 15.4), h0.20:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.8, 15.4), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.6, 15.4), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.0, 15.4), slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.6, 15.4) n=(1.0, 0.0, -0.0), vel=(0.0, 0.0, 0.0) floor=true state=0
+[OFP 1275.2s t=614.4] pilot: detour left 1.2 m to (24.7, -3.8, 16.6) (attempt 8)
+[INFO][director][p1] assault phase SUSTAIN (wave 5, 160 s)
+ERROR: It's not expect to not find the most reachable polygons
+ERROR: It's not expect to not find the most reachable polygons
+ERROR: It's not expect to not find the most reachable polygons
+[OFP 1294.3s t=618.1] pilot: t=35 at (25.0, -4.0, 15.4) corner (24.0, -3.8, 15.4) yaw_err -0.00 fwd=true path=5 mouse_mode=2 state=0 look=(1.60,0.00) pin_yaw=1.59545571278056 bot=false
+ERROR: It's not expect to not find the most reachable polygons
+ERROR: It's not expect to not find the most reachable polygons
+[INFO][director][p1] assault event breach at (36.2, 0.0, 35.8) (Breach_2)
+ERROR: Condition "!is_inside_tree()" is true. Returning: Transform3D()
+ERROR: Condition "!is_inside_tree()" is true. Returning: Transform3D()
+ERROR: Condition "!is_inside_tree()" is true. Returning: Transform3D()
+[OFP 1311.1s t=619.4] pilot: STUCK at (25.0, -4.0, 15.4) heading to (24.0, -3.8, 15.4); rays: h0.05:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.9, 15.4), h0.20:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.8, 15.4), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.6, 15.4), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.0, 15.4), slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.6, 15.4) n=(1.0, 0.0, -0.0), vel=(0.0, 0.0, 0.0) floor=true state=0
+[OFP 1311.1s t=619.4] pilot: detour right 1.2 m to (24.7, -3.8, 14.2) (attempt 9)
+ERROR: Condition "!is_inside_tree()" is true. Returning: Transform3D()
+ERROR: Condition "!is_inside_tree()" is true. Returning: Transform3D()
+ERROR: Condition "!is_inside_tree()" is true. Returning: Transform3D()
+ERROR: It's not expect to not find the most reachable polygons
+ERROR: It's not expect to not find the most reachable polygons
+ERROR: It's not expect to not find the most reachable polygons
+ERROR: It's not expect to not find the most reachable polygons
+[INFO][director][p1] force pool spent (33 units): FADE
+[INFO][director][p1] assault phase FADE (wave 5, 15 s)
+[OFP 1348.9s t=624.0] pilot: t=40 at (25.0, -4.0, 15.4) corner (24.0, -3.8, 15.4) yaw_err 0.00 fwd=true path=5 mouse_mode=2 state=0 look=(1.56,0.00) pin_yaw=1.56268479978814 bot=false
+[OFP 1349.2s t=624.3] pilot: STUCK at (25.0, -4.0, 15.4) heading to (24.0, -3.8, 15.4); rays: h0.05:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.9, 15.4), h0.20:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.8, 15.4), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.6, 15.4), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.0, 15.4), slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.6, 15.4) n=(1.0, 0.0, 0.0), vel=(0.0, 0.0, 0.0) floor=true state=0
+[OFP 1349.2s t=624.3] pilot: detour left 1.2 m to (24.7, -3.8, 16.6) (attempt 10)
+[OFP 1354.2s t=629.3] pilot: STUCK at (25.0, -4.0, 15.4) heading to (24.0, -3.8, 15.4); rays: h0.05:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.9, 15.4), h0.20:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.8, 15.4), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.6, 15.4), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.0, 15.4), slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.6, 15.4) n=(1.0, 0.0, -0.0), vel=(0.0, 0.0, 0.0) floor=true state=0
+[OFP 1354.2s t=629.3] pilot: detour right 1.2 m to (24.7, -3.8, 14.2) (attempt 11)
+[OFP 1355.7s t=630.8] pilot: t=45 at (25.0, -4.0, 14.9) corner (24.7, -3.8, 15.3) yaw_err -0.04 fwd=true path=8 mouse_mode=2 state=0 look=(2.55,0.00) pin_yaw=2.50971051172734 bot=false
+[OFP 1359.1s t=634.2] pilot: STUCK at (25.0, -4.0, 15.4) heading to (24.0, -3.8, 15.4); rays: h0.05:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.9, 15.4), h0.20:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.8, 15.4), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.6, 15.4), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.0, 15.4), slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.6, 15.4) n=(1.0, 0.0, -0.0), vel=(0.0, 0.0, 0.0) floor=true state=0
+[OFP 1359.1s t=634.2] pilot: detour left 1.2 m to (24.7, -3.8, 16.6) (attempt 12)
+[OFP 1361.6s t=636.8] pilot: t=50 at (25.0, -4.0, 15.4) corner (24.0, -3.8, 15.4) yaw_err 0.01 fwd=true path=5 mouse_mode=2 state=0 look=(1.58,0.00) pin_yaw=1.5908531990243 bot=false
+[INFO][director][p1] assault phase CONTROL (wave 6, 40 s)
+[OFP 1364.0s t=639.2] pilot: STUCK at (25.0, -4.0, 15.4) heading to (24.0, -3.8, 15.4); rays: h0.05:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.9, 15.4), h0.20:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.8, 15.4), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.6, 15.4), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.0, 15.4), slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.6, 15.4) n=(1.0, 0.0, -0.0), vel=(0.0, 0.0, 0.0) floor=true state=0
+[OFP 1364.0s t=639.2] pilot: detour right 1.2 m to (24.7, -3.8, 14.2) (attempt 13)
+ERROR: It's not expect to not find the most reachable polygons
+ERROR: It's not expect to not find the most reachable polygons
+ERROR: It's not expect to not find the most reachable polygons
+ERROR: It's not expect to not find the most reachable polygons
+[OFP 1384.0s t=642.7] pilot: t=55 at (25.0, -4.0, 15.4) corner (24.0, -3.8, 15.4) yaw_err -0.00 fwd=true path=5 mouse_mode=2 state=0 look=(1.56,0.00) pin_yaw=1.56268378052106 bot=false
+[OFP 1385.4s t=644.1] pilot: STUCK at (25.0, -4.0, 15.4) heading to (24.0, -3.8, 15.4); rays: h0.05:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.9, 15.4), h0.20:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.8, 15.4), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.6, 15.4), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.0, 15.4), slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.6, 15.4) n=(1.0, 0.0, 0.0), vel=(0.0, 0.0, 0.0) floor=true state=0
+[OFP 1385.4s t=644.1] pilot: detour left 1.2 m to (24.7, -3.8, 16.6) (attempt 14)
+[OFP 1389.9s t=648.6] pilot: t=60 at (25.0, -4.0, 15.4) corner (24.0, -3.8, 15.4) yaw_err 0.00 fwd=true path=5 mouse_mode=2 state=0 look=(1.59,0.00) pin_yaw=1.59172158777425 bot=false
+[OFP 1390.4s t=649.1] pilot: STUCK at (25.0, -4.0, 15.4) heading to (24.0, -3.8, 15.4); rays: h0.05:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.9, 15.4), h0.20:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.8, 15.4), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.6, 15.4), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.0, 15.4), slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.6, 15.4) n=(1.0, 0.0, 0.0), vel=(0.0, 0.0, 0.0) floor=true state=0
+[OFP 1390.4s t=649.1] pilot: detour right 1.2 m to (24.7, -3.8, 14.2) (attempt 15)
+[OFP 1395.3s t=654.0] pilot: STUCK at (25.0, -4.0, 15.4) heading to (24.0, -3.8, 15.4); rays: h0.05:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.9, 15.4), h0.20:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.8, 15.4), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.6, 15.4), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.0, 15.4), slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.6, 15.4) n=(1.0, 0.0, -0.0), vel=(0.0, 0.0, 0.0) floor=true state=0
+[OFP 1395.3s t=654.0] pilot: detour left 1.2 m to (24.7, -3.8, 16.6) (attempt 16)
+[OFP 1396.7s t=655.4] pilot: t=65 at (24.9, -4.0, 16.0) corner (24.7, -3.8, 16.4) yaw_err 2.64 fwd=false path=7 mouse_mode=2 state=0 look=(0.12,0.00) pin_yaw=0.31139839999002 bot=false
+[OFP 1400.3s t=659.0] pilot: STUCK at (25.0, -4.0, 15.4) heading to (24.0, -3.8, 15.4); rays: h0.05:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.9, 15.4), h0.20:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.8, 15.4), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.6, 15.4), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.0, 15.4), slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.6, 15.4) n=(1.0, 0.0, 0.0), vel=(0.0, 0.0, 0.0) floor=true state=0
+[OFP 1400.3s t=659.0] pilot: detour right 1.2 m to (24.7, -3.8, 14.2) (attempt 17)
+ERROR: It's not expect to not find the most reachable polygons
+ERROR: It's not expect to not find the most reachable polygons
+ERROR: It's not expect to not find the most reachable polygons
+[OFP 1418.5s t=661.3] pilot: t=70 at (25.0, -4.0, 15.3) corner (24.0, -3.8, 15.4) yaw_err -0.02 fwd=true path=4 mouse_mode=2 state=0 look=(1.76,0.00) pin_yaw=1.73912485770767 bot=false
+[OFP 1421.0s t=663.9] pilot: STUCK at (25.0, -4.0, 15.4) heading to (24.0, -3.8, 15.4); rays: h0.05:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.9, 15.4), h0.20:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.8, 15.4), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.6, 15.4), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.0, 15.4), slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.6, 15.4) n=(1.0, 0.0, -0.0), vel=(0.0, 0.0, 0.0) floor=true state=0
+[OFP 1421.0s t=663.9] pilot: detour left 1.2 m to (24.7, -3.8, 16.6) (attempt 18)
+[OFP 1424.4s t=667.3] pilot: t=75 at (25.0, -4.0, 15.4) corner (24.0, -3.8, 15.4) yaw_err 0.00 fwd=true path=5 mouse_mode=2 state=0 look=(1.59,0.00) pin_yaw=1.59172549398851 bot=false
+[OFP 1426.0s t=668.9] pilot: STUCK at (25.0, -4.0, 15.4) heading to (24.0, -3.8, 15.4); rays: h0.05:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.9, 15.4), h0.20:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.8, 15.4), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.6, 15.4), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.0, 15.4), slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.6, 15.4) n=(1.0, 0.0, -0.0), vel=(0.0, 0.0, 0.0) floor=true state=0
+[OFP 1426.0s t=668.9] pilot: detour right 1.2 m to (24.7, -3.8, 14.2) (attempt 19)
+[OFP 1430.4s t=673.2] pilot: t=80 at (25.0, -4.0, 15.4) corner (24.0, -3.8, 15.4) yaw_err -0.00 fwd=true path=5 mouse_mode=2 state=0 look=(1.57,0.00) pin_yaw=1.56604467008207 bot=false
+[OFP 1430.9s t=673.8] pilot: STUCK at (25.0, -4.0, 15.4) heading to (24.0, -3.8, 15.4); rays: h0.05:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.9, 15.4), h0.20:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.8, 15.4), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.6, 15.4), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.0, 15.4), slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.6, 15.4) n=(1.0, 0.0, 0.0), vel=(0.0, 0.0, 0.0) floor=true state=0
+[OFP 1430.9s t=673.8] pilot: detour left 1.2 m to (24.7, -3.8, 16.6) (attempt 20)
+[INFO][director][p1] assault phase ANTICIPATION (wave 6, 30 s)
+[OFP 1435.9s t=678.8] pilot: STUCK at (25.0, -4.0, 15.4) heading to (24.0, -3.8, 15.4); rays: h0.05:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.9, 15.4), h0.20:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.8, 15.4), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.6, 15.4), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.0, 15.4), slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.6, 15.4) n=(1.0, 0.0, 0.0), vel=(0.0, 0.0, 0.0) floor=true state=0
+[OFP 1435.9s t=678.8] pilot: detour right 1.2 m to (24.7, -3.8, 14.2) (attempt 21)
+[OFP 1437.1s t=680.0] pilot: t=85 at (24.7, -4.0, 14.4) corner (24.9, -3.8, 14.8) yaw_err 0.01 fwd=true path=4 mouse_mode=2 state=0 look=(3.51,0.00) pin_yaw=3.51745082128388 bot=false
+[OFP 1440.8s t=683.7] pilot: STUCK at (25.0, -4.0, 15.4) heading to (24.0, -3.8, 15.4); rays: h0.05:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.9, 15.4), h0.20:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.8, 15.4), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.6, 15.4), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.0, 15.4), slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.6, 15.4) n=(1.0, 0.0, -0.0), vel=(0.0, 0.0, 0.0) floor=true state=0
+[OFP 1440.8s t=683.7] pilot: detour left 1.2 m to (24.7, -3.8, 16.6) (attempt 22)
+[OFP 1443.1s t=685.9] pilot: t=90 at (25.0, -4.0, 15.8) corner (24.7, -3.8, 15.4) yaw_err 0.03 fwd=true path=5 mouse_mode=2 state=0 look=(0.61,0.00) pin_yaw=0.63510583974482 bot=false
+[OFP 1445.9s t=688.7] pilot: STUCK at (25.0, -4.0, 15.4) heading to (24.0, -3.8, 15.4); rays: h0.05:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.9, 15.4), h0.20:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.8, 15.4), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.6, 15.4), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.0, 15.4), slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.6, 15.4) n=(1.0, 0.0, 0.0), vel=(0.0, 0.0, 0.0) floor=true state=0
+[OFP 1445.9s t=688.7] pilot: detour right 1.2 m to (24.7, -3.8, 14.2) (attempt 23)
+[OFP 1449.0s t=691.8] pilot: t=95 at (25.0, -4.0, 15.4) corner (24.0, -3.8, 15.4) yaw_err -0.00 fwd=true path=5 mouse_mode=2 state=0 look=(1.57,0.00) pin_yaw=1.56604566057274 bot=false
+[OFP 1450.7s t=693.6] pilot: STUCK at (25.0, -4.0, 15.4) heading to (24.0, -3.8, 15.4); rays: h0.05:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.9, 15.4), h0.20:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.8, 15.4), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.6, 15.4), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.0, 15.4), slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.6, 15.4) n=(1.0, 0.0, -0.0), vel=(0.0, 0.0, 0.0) floor=true state=0
+[OFP 1450.7s t=693.6] pilot: detour left 1.2 m to (24.7, -3.8, 16.6) (attempt 24)
+[OFP 1454.9s t=697.8] pilot: t=100 at (25.0, -4.0, 15.4) corner (24.0, -3.8, 15.4) yaw_err -0.00 fwd=true path=5 mouse_mode=2 state=0 look=(1.60,0.00) pin_yaw=1.59547041534449 bot=false
+[OFP 1455.7s t=698.6] pilot: STUCK at (25.0, -4.0, 15.4) heading to (24.0, -3.8, 15.4); rays: h0.05:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.9, 15.4), h0.20:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.8, 15.4), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.6, 15.4), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.0, 15.4), slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.6, 15.4) n=(1.0, 0.0, 0.0), vel=(0.0, 0.0, 0.0) floor=true state=0
+[OFP 1455.7s t=698.6] pilot: detour right 1.2 m to (24.7, -3.8, 14.2) (attempt 25)
+[OFP 1460.6s t=703.5] pilot: STUCK at (25.0, -4.0, 15.4) heading to (24.0, -3.8, 15.4); rays: h0.05:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.9, 15.4), h0.20:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.8, 15.4), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.6, 15.4), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.0, 15.4), slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.6, 15.4) n=(1.0, 0.0, -0.0), vel=(0.0, 0.0, 0.0) floor=true state=0
+[OFP 1460.6s t=703.5] pilot: detour left 1.2 m to (24.7, -3.8, 16.6) (attempt 26)
+[OFP 1461.7s t=704.6] pilot: t=105 at (24.7, -4.0, 16.5) corner (24.9, -3.8, 15.6) yaw_err -1.42 fwd=false path=7 mouse_mode=2 state=0 look=(1.23,0.00) pin_yaw=1.03479906975178 bot=false
+[INFO][director][p1] assault phase BUILD (wave 6, 35 s)
+ERROR: It's not expect to not find the most reachable polygons
+ERROR: It's not expect to not find the most reachable polygons
+ERROR: It's not expect to not find the most reachable polygons
+ERROR: It's not expect to not find the most reachable polygons
+[OFP 1474.5s t=708.5] pilot: STUCK at (25.0, -4.0, 15.4) heading to (24.0, -3.8, 15.4); rays: h0.05:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.9, 15.4), h0.20:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.8, 15.4), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.6, 15.4), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.0, 15.4), slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.6, 15.4) n=(1.0, 0.0, 0.0), vel=(0.0, 0.0, 0.0) floor=true state=0
+[OFP 1474.5s t=708.5] pilot: detour right 1.2 m to (24.7, -3.8, 14.2) (attempt 27)
+[OFP 1484.8s t=710.5] pilot: t=110 at (25.0, -4.0, 15.1) corner (24.0, -3.8, 15.4) yaw_err 0.65 fwd=false path=4 mouse_mode=2 state=0 look=(1.20,0.00) pin_yaw=1.38701403304355 bot=false
+ERROR: It's not expect to not find the most reachable polygons
+ERROR: It's not expect to not find the most reachable polygons
+ERROR: It's not expect to not find the most reachable polygons
+ERROR: It's not expect to not find the most reachable polygons
+ERROR: It's not expect to not find the most reachable polygons
+ERROR: It's not expect to not find the most reachable polygons
+ERROR: It's not expect to not find the most reachable polygons
+[OFP 1504.8s t=713.4] pilot: STUCK at (25.0, -4.0, 15.4) heading to (24.0, -3.8, 15.4); rays: h0.05:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.9, 15.4), h0.20:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.8, 15.4), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.6, 15.4), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.0, 15.4), slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.6, 15.4) n=(1.0, 0.0, -0.0), vel=(0.0, 0.0, 0.0) floor=true state=0
+[OFP 1504.8s t=713.4] pilot: detour left 1.2 m to (24.7, -3.8, 16.6) (attempt 28)
+ERROR: It's not expect to not find the most reachable polygons
+ERROR: It's not expect to not find the most reachable polygons
+ERROR: It's not expect to not find the most reachable polygons
+ERROR: It's not expect to not find the most reachable polygons
+[OFP 1525.8s t=716.4] pilot: t=115 at (25.0, -4.0, 15.4) corner (24.0, -3.8, 15.4) yaw_err -0.00 fwd=true path=5 mouse_mode=2 state=0 look=(1.60,0.00) pin_yaw=1.59547041599932 bot=false
+[OFP 1535.8s t=718.4] pilot: STUCK at (25.0, -4.0, 15.4) heading to (24.0, -3.8, 15.4); rays: h0.05:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.9, 15.4), h0.20:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.8, 15.4), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.6, 15.4), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.0, 15.4), slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Rig/ShaftE@(24.6, -3.6, 15.4) n=(1.0, 0.0, 0.0), vel=(0.0, 0.0, 0.0) floor=true state=0
+[OFP 1535.8s t=718.4] pilot: detour right 1.2 m to (24.7, -3.8, 14.2) (attempt 29)
+ERROR: It's not expect to not find the most reachable polygons
+ERROR: It's not expect to not find the most reachable polygons
+ERROR: It's not expect to not find the most reachable polygons
+ERROR: It's not expect to not find the most reachable polygons
+ERROR: It's not expect to not find the most reachable polygons
+ERROR: It's not expect to not find the most reachable polygons
+[OFP 1553.2s t=722.3] pilot: t=120 at (25.0, -4.0, 15.4) corner (24.0, -3.8, 15.4) yaw_err -0.00 fwd=true path=5 mouse_mode=2 state=0 look=(1.56,0.00) pin_yaw=1.56268761757007 bot=false
+[OFP 1553.3s t=722.4] could not reach (24.0, -3.8, 15.4) (at (25.0, -4.0, 15.4))
+[OFP 1553.3s t=722.4] ladder RopeLadder approach not reached ((24.0, -3.8, 15.4))
+[OFP 1553.3s t=722.4] FAIL burn/rope ladder up (alarm ofp_burn)
+[OFP] FAIL burn/rope ladder up
+[OFP] RESULT FAIL burn
+[OFP] RESULT FAIL (burn FAIL)
+WARNING: 458 ObjectDB instances were leaked at exit (run with `--verbose` for details).

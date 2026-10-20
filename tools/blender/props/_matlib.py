@@ -167,6 +167,11 @@ TINTED: dict[str, dict] = {
     "of_ultramarine": {"source": "fabric_upholstery", "color": "#2F3F6B", "roughness": 1.0},
     "of_leather_ultramarine": {"source": "leather_dark", "color": "#2F3F6B", "roughness": 0.8},
     "of_box_steel": {"source": "metal_painted", "color": "#A9ACAD", "roughness": 0.45, "metallic": 1.0},
+    # OF-C2 lane A (the banking hall, the vestibule, the plaza): the hall's ultramarine marble bands and the coffer
+    # ground, the plaza's granite (steps, plinth, kerbs)
+    "of_marble_blue": {"source": "marble_cream", "color": "#3A4A70", "roughness": 0.7},
+    "of_plaster_ultramarine": {"source": "plaster_painted", "color": "#2F3F6B", "roughness": 1.0},
+    "of_granite": {"source": "marble_cream", "color": "#8E8B86", "roughness": 1.1},
 }
 
 # Painted canvases (GN-C2): key -> albedo PNG from tools/texgen/paintings.py. The prop material is a plain
