@@ -58317,12 +58317,13 @@ metadata/swing_side = "back"
 metadata/service = true
 
 [node name="LoggiaDoorW" type="Node3D" parent="Gameplay/Doors" unique_id=107050 instance=ExtResource("405_of")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 5, 9)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 7, 5, 9)
 script = ExtResource("406_of")
 width_m = 0.9
 visual_scene = ExtResource("410_of")
 metadata/kind = "door"
 metadata/swing_side = "back"
+metadata/fire_exit = true
 
 [node name="OperationsDoor" type="Node3D" parent="Gameplay/Doors" unique_id=107051 instance=ExtResource("405_of")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 5, 9)
@@ -58349,12 +58350,13 @@ metadata/kind = "door"
 metadata/swing_side = "back"
 
 [node name="LoggiaDoorE" type="Node3D" parent="Gameplay/Doors" unique_id=107054 instance=ExtResource("405_of")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 41, 5, 9)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 41, 5, 9)
 script = ExtResource("406_of")
 width_m = 0.9
 visual_scene = ExtResource("410_of")
 metadata/kind = "door"
 metadata/swing_side = "back"
+metadata/fire_exit = true
 
 [node name="OfficerDoor1" type="Node3D" parent="Gameplay/Doors" unique_id=107055 instance=ExtResource("405_of")]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 6, 5, 13)

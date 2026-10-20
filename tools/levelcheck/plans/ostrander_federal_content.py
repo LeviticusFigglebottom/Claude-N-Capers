@@ -109,6 +109,7 @@ def _doc_note() -> str:
 # [name, floor, axis, fixed, a0 (the plan opening's start), lock, front, extra]. The kind (single 1.0 / service 1.2 /
 # double 2.0 kit opening) follows the plan opening's width; a 4.2 m opening is two doubles (extra "c": centres).
 # extra: visual (catalog id), leaf (leaf_surface), npc (npc_authorized_tags: "@guards", "@staff"), push_bar, starts_open,
+# fire_door (meta fire_exit without a push bar: a two-way cross-corridor smoke door),
 # out (swing OUTWARD), tag (objective_tag), slot (built by that slot instead), bake_closed (D-073 / D-122), kind_meta.
 DOORS: List[list] = [
     # --- Basement ---
@@ -188,11 +189,13 @@ DOORS: List[list] = [
     ["JanitorDoorM", "M", "x", 7, 35.5, "NONE", "S", {}],
     ["ArchiveDoor", "M", "x", 7, 40.5, "NONE", "S", {}],
     ["StairDoorSBM", "M", "x", 7, 45.9, "NONE", "S", {"leaf": "metal"}],
-    ["LoggiaDoorW", "M", "x", 9, 6.5, "NONE", "N", {}],
+    # the loggias' cross-corridor smoke doors (UC | WL / EL: a corridor both sides; the loggias are open to the hall
+    # void): fire doors (meta fire_exit, no push bar: two-way), swinging north with the egress to the stairs (OF-C2)
+    ["LoggiaDoorW", "M", "x", 9, 6.5, "NONE", "S", {"fire_door": True}],
     ["OperationsDoor", "M", "x", 9, 11.5, "NONE", "N", {}],
     ["ConferenceDoor", "M", "x", 9, 30.5, "NONE", "N", {}],
     ["ComplianceDoor", "M", "x", 9, 36.5, "NONE", "N", {}],
-    ["LoggiaDoorE", "M", "x", 9, 40.5, "NONE", "N", {}],
+    ["LoggiaDoorE", "M", "x", 9, 40.5, "NONE", "S", {"fire_door": True}],
     ["OfficerDoor1", "M", "z", 6, 12.5, "NONE", "E", {}],
     ["OfficerDoor2", "M", "z", 6, 21.5, "NONE", "E", {}],
     ["OfficerDoor3", "M", "z", 6, 30.5, "NONE", "E", {}],

@@ -387,8 +387,8 @@ func door(parent: Node3D, d: Array, nm: String, lock: String, extra: Dictionary)
 	if extra.has("tag"):
 		props["objective_tag"] = String(extra["tag"])
 	var metas: Dictionary = {"kind": String(extra.get("kind_meta", "door")), "swing_side": "back"}
-	if bool(extra.get("push_bar", false)):
-		metas["fire_exit"] = true
+	if bool(extra.get("push_bar", false)) or bool(extra.get("fire_door", false)):
+		metas["fire_exit"] = true   # (fire_door: a two-way cross-corridor smoke door, no push bar)
 	if kind == "service":
 		metas["service"] = true
 	var it: Array = ["prefab", "door", nm, d[2], float(d[3]), props, null, metas, String(d[6])]
