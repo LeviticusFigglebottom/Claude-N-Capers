@@ -10545,10 +10545,10 @@
  "prop_of_box_bank_w1880": {
   "aabb": [
    -9.48,
-   0.004,
+   0.0,
    -0.04,
    18.96,
-   2.076,
+   2.08,
    0.039
   ],
   "clear": 0.0,
@@ -10579,10 +10579,10 @@
  "prop_of_box_bank_w320": {
   "aabb": [
    -1.68,
-   0.004,
+   0.0,
    -0.04,
    3.36,
-   2.076,
+   2.08,
    0.039
   ],
   "clear": 0.0,
@@ -10613,10 +10613,10 @@
  "prop_of_box_bank_w780": {
   "aabb": [
    -3.98,
-   0.004,
+   0.0,
    -0.04,
    7.96,
-   2.076,
+   2.08,
    0.039
   ],
   "clear": 0.0,
@@ -10661,7 +10661,7 @@
   "hosts": [],
   "keepout": [],
   "kind": "box_door",
-  "mount": "",
+  "mount": "wall",
   "nodes": [
    "Door"
   ],
@@ -10695,7 +10695,7 @@
   "hosts": [],
   "keepout": [],
   "kind": "box_door",
-  "mount": "",
+  "mount": "wall",
   "nodes": [
    "Door"
   ],
@@ -10729,7 +10729,7 @@
   "hosts": [],
   "keepout": [],
   "kind": "box_door",
-  "mount": "",
+  "mount": "wall",
   "nodes": [
    "Door"
   ],
@@ -11292,10 +11292,10 @@
  "prop_of_lantern": {
   "aabb": [
    -8.06,
-   0.004,
+   0.0,
    -4.06,
    16.12,
-   6.421,
+   6.425,
    8.12
   ],
   "clear": 0.0,
@@ -11532,7 +11532,7 @@
   "aabb": [
    -5.75,
    2.82,
-   -0.215,
+   -0.211,
    11.5,
    4.845,
    0.211
@@ -11545,7 +11545,7 @@
   "hosts": [],
   "keepout": [],
   "kind": "landmark",
-  "mount": "",
+  "mount": "wall",
   "nodes": [
    "Frieze",
    "Sunburst"
@@ -11563,14 +11563,82 @@
   "weight": 1.0,
   "z": 0.0
  },
+ "prop_of_teller_bay": {
+  "aabb": [
+   -1.2333,
+   0.0,
+   -0.673,
+   2.4667,
+   4.2,
+   1.223
+  ],
+  "clear": 0.0,
+  "fixture": false,
+  "glb": "res://assets/props/prop_of_teller_bay/prop_of_teller_bay.glb",
+  "group": "ostrander",
+  "has_light": false,
+  "hosts": [],
+  "keepout": [],
+  "kind": "landmark",
+  "mount": "",
+  "nodes": [
+   "Counter"
+  ],
+  "pin_only": true,
+  "place": "none",
+  "prefab": "",
+  "scene": "res://world/props/ostrander/prop_of_teller_bay.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": false,
+  "surface": "wood",
+  "top": 0.0,
+  "visibility_range_end": 0.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
+ "prop_of_teller_bay_closed": {
+  "aabb": [
+   -1.2333,
+   0.0,
+   -0.673,
+   2.4667,
+   4.2,
+   1.223
+  ],
+  "clear": 0.0,
+  "fixture": false,
+  "glb": "res://assets/props/prop_of_teller_bay_closed/prop_of_teller_bay_closed.glb",
+  "group": "ostrander",
+  "has_light": false,
+  "hosts": [],
+  "keepout": [],
+  "kind": "landmark",
+  "mount": "",
+  "nodes": [
+   "Counter"
+  ],
+  "pin_only": true,
+  "place": "none",
+  "prefab": "",
+  "scene": "res://world/props/ostrander/prop_of_teller_bay_closed.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": false,
+  "surface": "wood",
+  "top": 0.0,
+  "visibility_range_end": 0.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
  "prop_of_teller_line": {
   "aabb": [
-   -15.9,
+   -13.5233,
    -0.0028,
-   -0.673,
-   31.8,
+   -0.1752,
+   27.0467,
    4.2028,
-   1.223
+   0.7252
   ],
   "clear": 0.0,
   "fixture": false,
@@ -11591,7 +11659,7 @@
   "seat_side": "front",
   "standoff": 0.0,
   "support": false,
-  "surface": "wood",
+  "surface": "metal",
   "top": 0.0,
   "visibility_range_end": 0.0,
   "weight": 1.0,
