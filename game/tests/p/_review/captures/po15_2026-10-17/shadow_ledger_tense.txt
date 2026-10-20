@@ -1,0 +1,6 @@
+[PO15 t=0.5] variants { &"late_partner": [&"moor_late"], &"laptop": [&"lap_moor"], &"server_room": [&"srv_locked"], &"keycard": [&"kc_guest", &"kc_kessler"], &"code_note": [&"code_security_log"], &"guard_post": [&"rover_l41", &"rover_l42"], &"security_room_staffed": [&"sec_staffed"], &"guard_extra": [&"extra_none"], &"camera": [&"cam_b"], &"laser_pattern": [&"lz_timed"], &"vent_open": [&"vent_l41"], &"gondola": [&"gon_north_l42"], &"escape": [&"esc_line"], &"cleaners": [&"cleaners_1"], &"kessler": [&"kessler_out"], &"late_staff": [&"ls_none"], &"time_lock_s": 90.0, "rare": [] }
+[PO15 t=0.5] guard Npc_guard at (18.0, 3.6, 3.6)
+[PO15 t=0.5] guard Npc_guard2 at (15.0, 3.6, 17.25)
+[PO15 t=0.5] guard Npc_guard3 at (22.0, 8.0, 5.5)
+[PO15 t=0.5] guard Npc_guard4 at (28.77, 3.6, 14.5)
+[PO15] ROW shadow_ledger|1|21|guards 4|cap 3|hud_cap 3|expect guards 4 cap 3|doubled 0|PASS

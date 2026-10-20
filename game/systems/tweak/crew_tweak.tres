@@ -7,6 +7,8 @@
 [ext_resource type="PackedScene" uid="uid://clae5evgj8n2u" path="res://world/characters/crew_wren/crew_wren.tscn" id="b_wren"]
 [ext_resource type="PackedScene" uid="uid://bd2i7b7moeewq" path="res://world/characters/crew_marten/crew_marten.tscn" id="b_marten"]
 [ext_resource type="PackedScene" uid="uid://dr8u3ah4xlfde" path="res://world/characters/crew_jay/crew_jay.tscn" id="b_jay"]
+[ext_resource type="PackedScene" uid="uid://dk3u20kahif2a" path="res://world/characters/crew_body/crew_body.tscn" id="b_suit_charcoal"]
+[ext_resource type="PackedScene" uid="uid://c7wx2ct12uq5q" path="res://world/characters/crew_body_b/crew_body_b.tscn" id="b_suit_navy"]
 
 [resource]
 script = ExtResource("1")
@@ -16,5 +18,7 @@ body_scenes = Dictionary[StringName, PackedScene]({
 &"dutch": ExtResource("b_dutch"),
 &"wren": ExtResource("b_wren"),
 &"marten": ExtResource("b_marten"),
-&"jay": ExtResource("b_jay")
+&"jay": ExtResource("b_jay"),
+&"suit_charcoal": ExtResource("b_suit_charcoal"),
+&"suit_navy": ExtResource("b_suit_navy")
 })
