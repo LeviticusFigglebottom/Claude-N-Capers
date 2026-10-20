@@ -42,6 +42,9 @@ static var _cached: CustodyTweak = null
 ## D-108: the cop's arrest hold at police_cuff_range_m (s ◇); the player firing or the cop being hurt / stunned
 ## interrupts it (restarts from zero).
 @export var police_cuff_time_s: float = 1.5
+## D-145 (P's GH Tense run: cuffed 3 s after the down): police cuff a downed player only from this difficulty
+## (Enums.Difficulty) up. Below it the bleed-out timer alone decides custody, as for bots (D-082) ◇.
+@export var police_cuff_min_difficulty: int = Enums.Difficulty.HAZARDOUS
 
 @export_group("Cop surrender (L5.1)")
 ## false: any crew member's shout can make low-tier cops surrender (PD2 base game); true: only with

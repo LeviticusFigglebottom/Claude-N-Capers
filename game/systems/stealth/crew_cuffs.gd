@@ -55,11 +55,15 @@ static func can_cuff(crew: CrewController) -> bool:
 	return c == null or c.cooldown_left <= 0.0
 
 
-## L2.12: police may cuff `crew` now (DOWNED and not shooting, L2.5). Never AI crew (Lead, D-082 / PD2:
+## L2.12: police may cuff `crew` now (DOWNED and not shooting, L2.5; from police_cuff_min_difficulty up,
+## D-145). Never AI crew (Lead, D-082 / PD2:
 ## a downed bot bleeds out into custody, it is never arrested); human players keep the cuffing.
 static func can_police_cuff(crew: CrewController) -> bool:
 	if crew == null or crew.is_ai or crew.crew_state != Enums.CrewState.DOWNED:
 		return false
+	var rt: HeistRuntime = HeistRuntime.of(crew)
+	if rt != null and rt.difficulty < CustodyTweak.data().police_cuff_min_difficulty:
+		return false  # D-145: on Routine / Tense a downed player bleeds out; police never cuff
 	if crew.weapons != null and crew.weapons.is_shooting():
 		return false
 	return down_quiet_s(crew) >= CustodyTweak.data().police_cuff_grace_s  # D-108

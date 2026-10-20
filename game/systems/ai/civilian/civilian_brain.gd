@@ -44,11 +44,12 @@ const WANDER_ACTIVITIES: Array[StringName] = [&"", &"idle", &"browse", &"phone",
 ## D-111 the bar / club / bank loops: bartender, bartender_pour, bouncer, dance (dance_a/b/c), teller.
 ## D-115 cast roster activities: look (investigate_look), desk (desk_work), curator_inspect, walk_text, smoke.
 ## OF-A6 (OF-D1 clips): counter (counter_customer at a teller window), check_desk (check_desk_write); queue plays
-## queue_idle* (AnimDriver). RT-A1 (Rolling Thunder diner): sit_eat (a booth seat), cook (cook_stove).
+## queue_idle* (AnimDriver). RT-A1 (Rolling Thunder diner): sit_eat (a booth seat), cook (cook_stove). QC-67: OF
+## spawns name the clips themselves (teller_count, queue_idle).
 const KNOWN_ACTIVITIES: Array[StringName] = [&"browse", &"phone", &"desk_work", &"queue", &"sit", &"mug", &"mop",
 	&"phone_seated", &"inspect", &"text", &"bartender", &"bartender_pour", &"bouncer", &"dance", &"teller",
 	&"look", &"desk", &"curator_inspect", &"walk_text", &"smoke", &"counter", &"check_desk",
-	&"sit_eat", &"cook"]
+	&"sit_eat", &"cook", &"teller_count", &"queue_idle"]
 ## Seated activities: a panicked civilian still in its seat cowers there (cower_seated) instead of running.
 const SEATED_ACTIVITIES: Array[StringName] = [&"sit", &"phone_seated", &"sit_eat"]
 ## Within this of its seat (m) a seated civilian counts as still seated.
