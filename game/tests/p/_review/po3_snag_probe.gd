@@ -124,6 +124,15 @@ func _launch(heist: StringName, packed: PackedScene) -> bool:
 		print("[PO3] RESULT FAIL launch %s" % heist)
 		return false
 	_rt.isolate_npc(null)
+	# Stated shortcut: alarm devices off. A bot walking a laser sends the heist loud and the director parks assault
+	# props (OF 2026-10-20: AssaultEvent_turret_van on Halloran Avenue, 62 of 134 "snags"); this probe tests geometry.
+	var quiet: int = 0
+	for cls: String in ["LaserGrid", "SecurityCamera"]:
+		for n: Node in _rt.find_children("*", cls, true, false):
+			if n.has_method(&"set_enabled"):
+				n.call(&"set_enabled", false)
+				quiet += 1
+	print("[PO3] SHORTCUT %d lasers / cameras disabled (no alarm, no assault props)" % quiet)
 	if not _args.has("closed_doors"):  # a player opens doors: open (and unlock) all so the sweep reaches inside
 		for n: Node in _rt.find_children("*", "Door", true, false):
 			(n as Door).unlock()
