@@ -2102,7 +2102,7 @@ func _g2_dock() -> bool:
 	# wait until every guard in Ledger Lane is > LANE_CLEAR_M from the dock door, logging where they walk.
 	var door_at: Vector3 = _of(OF_LD_DOOR)
 	var waited: float = 0.0
-	var clear: bool = false
+	var clear: bool = await _smoke_cue(300.0)
 	while waited < 600.0 and not clear:
 		clear = true
 		var where: PackedStringArray = PackedStringArray()
@@ -2128,6 +2128,39 @@ func _g2_dock() -> bool:
 	if door == null or (not door.is_open and not await pilot.use(_comp(door), 30.0, func() -> bool: return door.is_open)):
 		return false
 	return await _of_to_floor(0)
+
+
+## The design doc's own cue (A 0319ed36 makes rover_dock walk his lane loop): a Ledger Lane guard at the Tannery corner
+## smoke spot (GHOST_SMOKE_AT, within 5 m) playing `smoke*` or standing still there for 1 s. Logs the lane guards
+## every 10 s (where his loop goes). False after `max_s` (the caller falls back to the lane-distance rule).
+func _smoke_cue(max_s: float) -> bool:
+	var at: Vector3 = _of(GHOST_SMOKE_AT)
+	var still: Dictionary = {}
+	var last: Dictionary = {}
+	var t: float = 0.0
+	while t < max_s:
+		var where: PackedStringArray = PackedStringArray()
+		for n: Node in rt.npcs(&"guard"):
+			var g: NpcBase = n as NpcBase
+			if g == null or not g.is_alive() or g.global_position.z > 0.5 or absf(g.global_position.y) > 1.5:
+				continue
+			var id: int = g.get_instance_id()
+			var moved: float = g.global_position.distance_to(last.get(id, g.global_position))
+			last[id] = g.global_position
+			still[id] = float(still.get(id, 0.0)) + 0.5 if moved < 0.1 else 0.0
+			var drv: AnimDriver = AnimDriver.of(g)
+			var clip: String = String(drv.clip) if drv != null else ""
+			where.append("%s %s %s" % [g.name, Po5Pilot._v(g.global_position), clip])
+			if pilot.flat_dist(g.global_position, at) < 5.0 and (clip.begins_with("smoke") or float(still[id]) >= 1.0):
+				note("GHOST smoke cue: %s at %s clip '%s' (still %.1f s) after %.0f s" % [g.name,
+					Po5Pilot._v(g.global_position), clip, float(still[id]), t])
+				return true
+		if int(t * 2.0) % 20 == 0:
+			note("GHOST lane guards (waiting for the smoke cue): %s" % (", ".join(where) if not where.is_empty() else "none"))
+		await wait_s(0.5)
+		t += 0.5
+	note("GHOST no smoke cue at %s in %.0f s: falling back to the lane-distance rule" % [Po5Pilot._v(at), max_s])
+	return false
 
 
 ## 3. Wait in LK for the manager's WC break; shout him down, tie him (tie 1), take the keycard.
