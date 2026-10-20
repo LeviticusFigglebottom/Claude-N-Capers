@@ -10461,6 +10461,7 @@
   "nodes": [
    "Bonds"
   ],
+  "pin_only": true,
   "place": "on",
   "prefab": "",
   "scene": "res://world/props/ostrander/prop_of_bond_boxes.tscn",
@@ -10834,6 +10835,7 @@
   "nodes": [
    "Cart"
   ],
+  "pin_only": true,
   "place": "wall",
   "prefab": "",
   "scene": "res://world/props/ostrander/prop_of_bullion_cart.tscn",
@@ -10867,6 +10869,7 @@
   "nodes": [
    "Scale"
   ],
+  "pin_only": true,
   "place": "on",
   "prefab": "",
   "scene": "res://world/props/ostrander/prop_of_bullion_scale.tscn",
@@ -10900,6 +10903,7 @@
   "nodes": [
    "Shelving"
   ],
+  "pin_only": true,
   "place": "wall",
   "prefab": "",
   "scene": "res://world/props/ostrander/prop_of_cage_shelving.tscn",
@@ -10933,6 +10937,7 @@
   "nodes": [
    "CashSkid"
   ],
+  "pin_only": true,
   "place": "wall",
   "prefab": "",
   "scene": "res://world/props/ostrander/prop_of_cash_skid.tscn",
@@ -11135,6 +11140,7 @@
   "nodes": [
    "Gold"
   ],
+  "pin_only": true,
   "place": "on",
   "prefab": "",
   "scene": "res://world/props/ostrander/prop_of_gold_bars.tscn",
@@ -11168,6 +11174,7 @@
   "nodes": [
    "GoldSkid"
   ],
+  "pin_only": true,
   "place": "wall",
   "prefab": "",
   "scene": "res://world/props/ostrander/prop_of_gold_skid.tscn",
@@ -11236,6 +11243,7 @@
   "nodes": [
    "Board"
   ],
+  "pin_only": true,
   "place": "wall_mount",
   "prefab": "",
   "scene": "res://world/props/ostrander/prop_of_notice_board.tscn",
@@ -11269,6 +11277,7 @@
   "nodes": [
    "Bins"
   ],
+  "pin_only": true,
   "place": "wall",
   "prefab": "",
   "scene": "res://world/props/ostrander/prop_of_strap_bins.tscn",
@@ -11405,6 +11414,7 @@
   "nodes": [
    "Sign"
   ],
+  "pin_only": true,
   "place": "wall_mount",
   "prefab": "",
   "scene": "res://world/props/ostrander/prop_of_vault_sign_bonds.tscn",
@@ -11438,6 +11448,7 @@
   "nodes": [
    "Sign"
   ],
+  "pin_only": true,
   "place": "wall_mount",
   "prefab": "",
   "scene": "res://world/props/ostrander/prop_of_vault_sign_bullion.tscn",
@@ -11471,6 +11482,7 @@
   "nodes": [
    "Sign"
   ],
+  "pin_only": true,
   "place": "wall_mount",
   "prefab": "",
   "scene": "res://world/props/ostrander/prop_of_vault_sign_cash.tscn",
@@ -11504,6 +11516,7 @@
   "nodes": [
    "Sign"
   ],
+  "pin_only": true,
   "place": "wall_mount",
   "prefab": "",
   "scene": "res://world/props/ostrander/prop_of_vault_sign_staff.tscn",
