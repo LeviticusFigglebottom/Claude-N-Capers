@@ -1,0 +1,135 @@
+[OFP 0.0s t=-1.0] === ghost ===
+[OFP 42.1s t=-1.0] objective casing -> 1
+[OFP 42.1s t=-1.0] objective keycard -> 1
+[OFP 42.1s t=-1.0] objective code_hint -> 1
+[OFP 42.1s t=-1.0] objective code_pc -> 1
+[OFP 42.1s t=-1.0] objective server -> 1
+[OFP 42.1s t=-1.0] objective vault_gate -> 1
+[OFP 42.1s t=-1.0] objective lasers -> 1
+[OFP 42.1s t=-1.0] objective time_lock -> 0
+[OFP 42.1s t=-1.0] objective time_lock_wait -> 0
+[OFP 42.1s t=-1.0] objective vault_loot -> 0
+[OFP 42.1s t=-1.0] objective gold_cage -> 0
+[OFP 42.1s t=-1.0] objective drill_delivery -> 0
+[OFP 42.1s t=-1.0] objective vault_drill -> 0
+[OFP 42.1s t=-1.0] objective vault_breach -> 0
+[OFP 42.1s t=-1.0] objective secure -> 1
+[OFP 42.1s t=-1.0] objective deposit_boxes -> 1
+[OFP 42.1s t=-1.0] objective bond_safe -> 1
+[OFP 42.1s t=-1.0] objective president_safe -> 1
+[OFP 42.1s t=-1.0] objective server_drives -> 1
+[OFP 42.1s t=-1.0] objective escape_wait -> 0
+[OFP 42.1s t=-1.0] objective escape -> 0
+[OFP 70.0s t=0.0] launched ostrander_federal seed 1002 diff 5 variants { &"manager_route": [&"mgr_vault"], &"keycard": [&"kc_on_manager"], &"code_pc": [&"pc_exec"], &"officers": [&"off_3"], &"server_room": [&"srv_gallery"], &"guard_post": [&"rover_basement", &"rover_dock", &"rover_gallery", &"rover_hall"], &"security_room_staffed": [&"sec_staffed"], &"camera": [&"cam_a"], &"laser_pattern": [&"lz_sweep"], &"customers": [&"cust_8"], &"side_door": [&"door_none"], &"fire_escape": [&"fe_up"], &"escape": [&"esc_van_dock"], &"drill_delivery": [&"drop_terrace"], &"president_safe": [&"ps_empty"], &"vip": [&"vip_in"], &"guard_extra": [&"gx_basement", &"gx_hall"], &"civ_extra": [&"cx_hall_1", &"cx_hall_2", &"cx_pc"], &"time_lock_s": 270.0, &"drill_eta_s": 90.0, &"escape_eta_s": 90.0, &"cash_bags": 6, &"gold_bags": 4, &"deposit_boxes": 12, "rare": [&"vip_client"] }
+[OFP 263.2s t=3.1] pilot: calibrated 0.001600 rad/px yaw, 0.001600 rad/px pitch (settings formula said (0.0016, 0.0016))
+[OFP 263.2s t=3.1] spawn (21.8, -0.8, 44.0)
+[OFP 286.7s t=8.2] pilot: t=5 at (37.9, -0.7, 40.1) corner (42.4, -0.6, 42.3) yaw_err -0.00 fwd=true path=11 mouse_mode=2 state=0 look=(-2.02,0.00) pin_yaw=-2.01588615652872 bot=false
+[OFP 298.9s t=20.3] pilot: t=5 at (56.0, 0.0, 14.9) corner (55.7, 0.2, 12.4) yaw_err -0.00 fwd=true path=7 mouse_mode=2 state=0 look=(0.10,0.00) pin_yaw=0.09794857307133 bot=false
+[OFP 309.6s t=31.1] pilot: t=5 at (35.3, 0.0, -6.2) corner (33.5, 0.2, -6.3) yaw_err 0.00 fwd=true path=9 mouse_mode=2 state=0 look=(1.48,0.00) pin_yaw=1.4847393100863 bot=false
+[OFP 311.5s t=32.9] GHOST step _g1_lane done at t=32.9 (+29.7 s)
+[OFP 311.5s t=32.9] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (-5.2, 0.0, -4.6) walk
+[OFP 321.5s t=42.9] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (9.6, 0.0, -2.8) walk
+[OFP 331.5s t=52.9] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (25.6, 0.0, -3.0) walk
+[OFP 341.5s t=62.9] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (41.5, 0.0, -4.5) walk
+[OFP 345.0s t=66.4] GHOST smoke cue: Npc_guard6 at (45.6, 0.0, -5.0) clip 'smoke' (still 0.5 s) after 34 s
+[OFP 345.0s t=66.4] GHOST lane clear after 0 s
+[OFP 346.0s t=67.4] objective casing -> 2
+[OFP 346.6s t=68.0] masked true
+[OFP 349.3s t=70.7] ECM on
+[OFP 354.4s t=75.8] pilot: t=5 at (12.2, 0.0, -1.8) corner (10.2, 0.2, -1.2) yaw_err 0.00 fwd=true path=4 mouse_mode=2 state=0 look=(1.86,0.00) pin_yaw=1.85835092105117 bot=false
+[OFP 364.0s t=85.1] pilot: use DockPersonnelDoor (open_door) -> OK in 8.0 s
+[OFP 391.1s t=89.9] pilot: use StairDoorSAG (open_door) -> OK in 0.0 s
+[OFP 395.6s t=94.1] pilot: use StairDoorSAB (open_door) -> OK in 0.0 s
+[OFP 396.4s t=95.0] GHOST step _g2_dock done at t=95.0 (+62.1 s)
+[OFP 400.3s t=98.8] DETECT Npc_civilian8 kind 1 meter 0.10 at (7.1, -4.0, 2.6), pilot (3.6, -4.0, 5.3) crouched false
+[OFP 405.5s t=103.8] pilot: use Npc_civilian8 (cable_tie) -> OK in 2.0 s
+[OFP 407.2s t=105.5] objective keycard -> 2
+[OFP 412.1s t=105.8] GHOST step _g3_keycard done at t=105.8 (+10.8 s)
+[OFP 412.1s t=105.8] GHOST waiting for the stair core: Npc_guard3 (15.4, 0.0, 8.0)
+[OFP 422.1s t=115.8] GHOST waiting for the stair core: Npc_guard3 (19.2, 0.0, 11.9) moving, Npc_guard6 (16.3, 0.0, -3.1) moving
+[OFP 429.5s t=123.3] GHOST stair core clear after 18 s
+[OFP 454.4s t=133.5] pilot: t=5 at (14.0, 1.3, 3.9) corner (14.0, 2.5, 2.3) yaw_err -0.00 fwd=true path=23 mouse_mode=2 state=0 look=(6.26,0.00) pin_yaw=6.26009526779944 bot=false
+[OFP 457.4s t=136.6] DETECT Npc_civilian10 kind 1 meter 0.26 at (15.4, 5.0, 8.3), pilot (14.3, 5.0, 6.4) crouched false
+[OFP 457.9s t=137.1] DETECT Npc_civilian10 kind 1 meter 0.59 at (14.7, 5.0, 8.3), pilot (14.0, 5.6, 4.9) crouched false
+[OFP 459.4s t=138.5] pilot: t=10 at (15.0, 7.7, 4.0) corner (15.0, 8.8, 5.7) yaw_err -0.00 fwd=true path=7 mouse_mode=2 state=0 look=(-3.17,0.00) pin_yaw=-3.16819404360012 bot=false
+[OFP 460.8s t=139.7] pilot: use StairDoorSAE (open_door) -> OK in 0.0 s
+[OFP 463.5s t=142.3] pilot: use AssistantDoor (open_door) -> OK in 0.0 s
+[OFP 467.6s t=146.1] pilot: use CodePC (start_hack) -> OK in 2.0 s
+[OFP 471.5s t=150.1] pilot: STUCK at (18.8, 8.6, 6.1) heading to (18.8, 8.8, 6.6); rays: vel=(-0.3, 0.0, 1.4) floor=true state=0
+[OFP 489.3s t=150.3] pilot: detour left 0.7 m to (19.5, 8.8, 6.7) (attempt 1)
+[OFP 490.5s t=151.6] pilot: t=5 at (19.0, 8.6, 6.1) corner (19.0, 8.6, 6.1) yaw_err -0.00 fwd=true path=15 mouse_mode=2 state=0 look=(12.57,0.00) pin_yaw=12.5663710721155 bot=false
+[OFP 493.5s t=154.6] pilot: STUCK at (18.8, 8.6, 6.1) heading to (18.8, 8.8, 6.6); rays: vel=(-0.2, 0.0, 1.5) floor=true state=0
+[OFP 510.0s t=154.8] pilot: detour left 0.7 m to (19.4, 8.8, 6.8) (attempt 2)
+[OFP 512.1s t=157.0] pilot: t=10 at (18.9, 8.6, 6.0) corner (18.9, 8.8, 6.6) yaw_err 0.79 fwd=false path=15 mouse_mode=2 state=0 look=(33.72,0.00) pin_yaw=33.9119262429767 bot=false
+[OFP 512.4s t=157.3] DETECT Npc_guard4 kind 0 meter 0.31 at (18.6, 8.6, 7.7), pilot (18.9, 8.6, 6.4) crouched false
+[OFP 512.9s t=157.8] DETECT Npc_guard4 kind 0 meter 0.76 at (19.4, 8.6, 7.7), pilot (18.8, 8.6, 6.3) crouched false
+[OFP 513.4s t=158.3] DETECT Npc_guard4 kind 0 meter 1.00 at (19.8, 8.6, 7.8), pilot (18.9, 8.6, 6.1) crouched false
+[OFP 514.1s t=159.1] pilot: STUCK at (18.9, 8.6, 6.0) heading to (18.8, 8.8, 6.6); rays: vel=(0.0, 0.0, 0.0) floor=true state=0
+[OFP 528.9s t=159.2] pilot: detour right 1.2 m to (17.7, 8.8, 6.6) (attempt 3)
+[OFP 532.0s t=162.5] pilot: t=15 at (18.8, 8.6, 6.1) corner (18.8, 8.8, 7.0) yaw_err -3.08 fwd=false path=15 mouse_mode=2 state=0 look=(37.60,0.00) pin_yaw=37.4032993724059 bot=false
+[OFP 535.2s t=165.6] pilot: STUCK at (18.8, 8.6, 6.2) heading to (18.9, 8.6, 6.1); rays: vel=(0.0, 0.0, -0.0) floor=true state=4
+[OFP 535.2s t=165.6] pilot: detour left 1.2 m to (17.7, 8.8, 5.8) (attempt 4)
+[INFO][stealth][p1] ALARM: guard_radio (source 206)
+[OFP 536.1s t=166.5] ALARM guard_radio by Npc_guard4 (pilot at (18.8, 8.6, 6.2))
+[OFP 536.3s t=166.5] objective code_hint -> 1
+[OFP 536.3s t=166.5] objective code_hint -> 2
+[OFP 536.3s t=166.5] objective code_pc -> 1
+[OFP 536.3s t=166.5] objective code_pc -> 2
+[OFP 536.3s t=166.5] objective server -> 1
+[OFP 536.3s t=166.5] objective server -> 2
+[OFP 536.3s t=166.5] objective vault_gate -> 1
+[OFP 536.3s t=166.5] objective vault_gate -> 2
+[OFP 536.3s t=166.5] objective lasers -> 1
+[OFP 536.3s t=166.5] objective lasers -> 2
+[OFP 536.4s t=166.5] objective drill_delivery -> 1
+[OFP 536.5s t=166.5] objective drill_delivery -> 1
+[OFP 546.3s t=167.6] pilot: STUCK at (18.8, 8.6, 6.2) heading to (18.9, 8.6, 6.1); rays: vel=(0.0, 0.0, -0.0) floor=true state=4
+[OFP 547.8s t=169.1] pilot: detour right 1.2 m to (20.1, 8.8, 6.1) (attempt 4)
+[OFP 549.8s t=171.1] pilot: STUCK at (18.8, 8.6, 6.2) heading to (18.9, 8.6, 6.1); rays: vel=(0.0, 0.0, -0.0) floor=true state=4
+[OFP 553.4s t=174.7] pilot: t=20 at (18.8, 8.6, 6.2) corner (18.9, 8.6, 6.1) yaw_err 0.00 fwd=true path=15 mouse_mode=2 state=4 look=(18.73,0.00) pin_yaw=18.727333148704 bot=false
+[OFP 553.6s t=174.9] pilot: STUCK at (18.8, 8.6, 6.2) heading to (18.9, 8.6, 6.1); rays: vel=(0.0, 0.0, -0.0) floor=true state=4
+[OFP 553.6s t=174.9] pilot: detour right 1.2 m to (20.1, 8.8, 6.1) (attempt 5)
+[OFP 555.6s t=176.9] pilot: STUCK at (18.8, 8.6, 6.2) heading to (18.9, 8.6, 6.1); rays: vel=(0.0, 0.0, -0.0) floor=true state=4
+[OFP 557.1s t=178.3] pilot: detour left 1.2 m to (17.7, 8.8, 5.8) (attempt 5)
+[OFP 559.1s t=180.3] pilot: STUCK at (18.8, 8.6, 6.2) heading to (18.9, 8.6, 6.1); rays: vel=(0.0, 0.0, -0.0) floor=true state=4
+[OFP 562.8s t=184.2] pilot: STUCK at (18.8, 8.6, 6.2) heading to (18.9, 8.6, 6.1); rays: vel=(0.0, 0.0, -0.0) floor=true state=4
+[OFP 562.8s t=184.2] pilot: detour left 1.2 m to (17.7, 8.8, 5.8) (attempt 6)
+[OFP 564.8s t=186.2] pilot: STUCK at (18.8, 8.6, 6.2) heading to (18.9, 8.6, 6.1); rays: vel=(0.0, 0.0, -0.0) floor=true state=4
+[OFP 566.4s t=187.6] pilot: detour right 1.2 m to (20.1, 8.8, 6.1) (attempt 6)
+[OFP 568.3s t=189.6] pilot: STUCK at (18.8, 8.6, 6.2) heading to (18.9, 8.6, 6.1); rays: vel=(0.0, 0.0, -0.0) floor=true state=4
+[OFP 572.1s t=193.4] pilot: STUCK at (18.8, 8.6, 6.2) heading to (18.9, 8.6, 6.1); rays: vel=(0.0, 0.0, -0.0) floor=true state=4
+[OFP 572.1s t=193.4] pilot: detour right 1.2 m to (20.1, 8.8, 6.1) (attempt 7)
+[OFP 574.1s t=195.4] pilot: STUCK at (18.8, 8.6, 6.2) heading to (18.9, 8.6, 6.1); rays: vel=(0.0, 0.0, -0.0) floor=true state=4
+[OFP 575.6s t=196.9] pilot: detour left 1.2 m to (17.7, 8.8, 5.8) (attempt 7)
+[OFP 577.5s t=198.9] pilot: STUCK at (18.8, 8.6, 6.2) heading to (18.9, 8.6, 6.1); rays: vel=(0.0, 0.0, -0.0) floor=true state=4
+[OFP 580.2s t=201.5] pilot: t=25 at (18.8, 8.6, 6.2) corner (18.9, 8.6, 6.1) yaw_err 0.00 fwd=true path=15 mouse_mode=2 state=4 look=(18.73,0.00) pin_yaw=18.727333148704 bot=false
+[OFP 581.4s t=202.7] pilot: STUCK at (18.8, 8.6, 6.2) heading to (18.9, 8.6, 6.1); rays: vel=(0.0, 0.0, -0.0) floor=true state=4
+[OFP 581.4s t=202.7] pilot: detour left 1.2 m to (17.7, 8.8, 5.8) (attempt 8)
+[OFP 583.4s t=204.7] pilot: STUCK at (18.8, 8.6, 6.2) heading to (18.9, 8.6, 6.1); rays: vel=(0.0, 0.0, -0.0) floor=true state=4
+[OFP 584.8s t=206.1] pilot: detour right 1.2 m to (20.1, 8.8, 6.1) (attempt 8)
+[OFP 586.8s t=208.1] pilot: STUCK at (18.8, 8.6, 6.2) heading to (18.9, 8.6, 6.1); rays: vel=(0.0, 0.0, -0.0) floor=true state=4
+[OFP 590.7s t=212.0] pilot: STUCK at (18.8, 8.6, 6.2) heading to (18.9, 8.6, 6.1); rays: vel=(0.0, 0.0, -0.0) floor=true state=4
+[OFP 590.7s t=212.0] pilot: detour right 1.2 m to (20.1, 8.8, 6.1) (attempt 9)
+[OFP 592.8s t=214.0] pilot: STUCK at (18.8, 8.6, 6.2) heading to (18.9, 8.6, 6.1); rays: vel=(0.0, 0.0, -0.0) floor=true state=4
+[OFP 594.1s t=215.4] pilot: detour left 1.2 m to (17.7, 8.8, 5.8) (attempt 9)
+[OFP 596.1s t=217.4] pilot: STUCK at (18.8, 8.6, 6.2) heading to (18.9, 8.6, 6.1); rays: vel=(0.0, 0.0, -0.0) floor=true state=4
+[OFP 599.7s t=221.0] pilot: t=30 at (18.8, 8.6, 6.2) corner (18.9, 8.6, 6.1) yaw_err 0.00 fwd=true path=15 mouse_mode=2 state=4 look=(18.73,0.00) pin_yaw=18.727333148704 bot=false
+[OFP 600.0s t=221.2] pilot: STUCK at (18.8, 8.6, 6.2) heading to (18.9, 8.6, 6.1); rays: vel=(0.0, 0.0, -0.0) floor=true state=4
+[OFP 600.0s t=221.2] pilot: detour left 1.2 m to (17.7, 8.8, 5.8) (attempt 10)
+[OFP 602.0s t=223.2] pilot: STUCK at (18.8, 8.6, 6.2) heading to (18.9, 8.6, 6.1); rays: vel=(0.0, 0.0, -0.0) floor=true state=4
+[OFP 603.3s t=224.7] pilot: detour right 1.2 m to (20.1, 8.8, 6.0) (attempt 10)
+[OFP 628.6s t=230.0] pilot: t=35 at (18.8, 8.6, 6.4) corner (18.9, 8.6, 6.1) yaw_err 0.77 fwd=false path=15 mouse_mode=2 state=0 look=(30.54,0.00) pin_yaw=30.7321640564069 bot=false
+[OFP 632.1s t=233.3] pilot: STUCK at (18.8, 8.6, 6.2) heading to (18.8, 8.8, 7.0); rays: vel=(-0.1, 0.0, 3.5) floor=true state=0
+[OFP 632.1s t=233.3] pilot: detour right 1.2 m to (17.6, 8.8, 6.5) (attempt 11)
+[OFP 634.2s t=235.4] pilot: t=40 at (18.9, 8.6, 6.1) corner (18.8, 8.8, 6.6) yaw_err -1.35 fwd=false path=15 mouse_mode=2 state=0 look=(60.98,0.00) pin_yaw=60.7871550087539 bot=false
+[OFP 634.2s t=235.4] could not reach (11.5, 8.6, 4.0) (at (18.9, 8.6, 6.1))
+[OFP 634.2s t=235.4] GHOST step _g4_code done at t=235.4 (+129.6 s)
+[OFP 634.2s t=235.4] FAIL ghost/alarm before _g5_vault (alarm guard_radio)
+[OFP] FAIL ghost/alarm before _g5_vault
+[OFP 647.0s t=235.6] FILLS per observer (peak D-128 meter on the pilot): 3 observers
+[OFP 647.0s t=235.6]   FILL Npc_civilian8                kind 1 peak 0.39 at t=99.3 (observer (7.1, -4.0, 2.6), pilot (2.8, -4.0, 4.3) crouched false)
+[OFP 647.0s t=235.6]   FILL Npc_civilian10               kind 1 peak 0.94 at t=137.8 (observer (13.8, 5.0, 8.3), pilot (14.1, 6.8, 2.7) crouched false)
+[OFP 647.0s t=235.6]   FILL Npc_guard4                   kind 0 peak 1.00 at t=158.3 (observer (19.8, 8.6, 7.8), pilot (18.9, 8.6, 6.1) crouched false)
+[OFP 647.0s t=235.6] GHOST total 232.4 s game time (stopped); alarm guard_radio; ECM left 1
+[OFP] RESULT FAIL ghost
+[OFP] RESULT FAIL (ghost FAIL)

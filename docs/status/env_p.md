@@ -21,6 +21,12 @@ Capture names are Windows-safe since c6c096dd (PCaptureName); trunk's of_g1_pass
    `%G% --path game --resolution 1280x720 res://tests/p/_review/of_g1_pass.tscn -- --test=<t> --seed=1002 --out=%CD%\gpu\renders\p\of_g2_<t> > gpu\renders\p\of_g2_<t>.txt 2>&1`
    with `<t>` = laser, throws, fire_escape, hole, dock, fire_exit, burn. Run laser three times, adding
    `--pattern=lz_static`, `--pattern=lz_sweep` and `--pattern=lz_timed`. If G2 needs harness changes, P pushes them first and names the commit.
+- **Ghost line on r250 + c-worlds 18239f73 + P** (windowed, seed 1002): steps 1-3 PASS again (lane 29.7 s, dock 62.1 s, keycard 10.8 s).
+  Step 4: the stair-core wait worked (clear after 18 s) and CodePC started at t=146. Leaving the assistant office, the pilot was STUCK for
+  about 15 s at (18.8, 8.6, 6.1), walking into a low wood panel toward the nav corner (18.8, 8.8, 6.6). Velocity was 1.4 m/s with no displacement and
+  no probe-ray hits. Npc_guard4 (gallery hub loop) walked up and filled 1.00 at 1.9 m (alarm guard_radio t=166). This looks like a navmesh/collision
+  mismatch at gallery level, so it is C's. Sent to C; evidence in captures/of_g1_2026-10-20/ghost_250. A headless ghost run can't work
+  (mouse capture needs a window): the pilot never moves.
 - **OF full real-menu run PASS** (lead queue item 6), windowed via `run_po5.sh of_stealth 1002`, Routine, on r248 + c-worlds + A + P. It clicked main menu → SAFEHOUSE →
   planning table → Ostrander Federal/ROUTINE → briefing → pre-planning → loadout → Start Heist → stealth heist → payday
   ($112,303, clean, 7:35) → back in hub; 14 shots in captures/of_menu_2026-10-20. The flow sets crew.stealth_hidden (a detection
