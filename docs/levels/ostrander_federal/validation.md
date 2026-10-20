@@ -387,8 +387,8 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 - 87 seats, 68 tables/desks/counters, 94 doors checked
 
 - WARN `Gameplay/Devices/LidDrill` @ (24.00, 1.00, 14.60): door_clear: in the clear zone of door `Gameplay/Devices/Lid` (1.0 / 1.0 m each side, leaf width 2.40 m) by 1.01 m (gameplay prefab / variant content: review)
-- WARN `Gameplay/Lifts/CashLift` @ (11.50, -3.95, 1.55): door_clear: in the clear zone of door `Gameplay/Doors/CashLiftDoorB` (1.0 / 1.0 m each side, leaf width 1.82 m) by 0.21 m (gameplay prefab / variant content: review)
-- WARN `Gameplay/Lifts/CashLift` @ (11.50, -3.95, 1.55): use_point: stands in the user's spot of `Gameplay/Doors/CashLiftDoorB` (UsePoint @ (11.50, -4.00, 2.30)) by 0.11 m (gameplay prefab / variant content: review)
+- WARN `Gameplay/Lifts/CashLift` @ (11.50, -4.00, 1.55): door_clear: in the clear zone of door `Gameplay/Doors/CashLiftDoorB` (1.0 / 1.0 m each side, leaf width 1.82 m) by 0.79 m (gameplay prefab / variant content: review)
+- WARN `Gameplay/Lifts/CashLift` @ (11.50, -4.00, 1.55): use_point: stands in the user's spot of `Gameplay/Doors/CashLiftDoorB` (UsePoint @ (11.50, -4.00, 2.30)) by 0.69 m (gameplay prefab / variant content: review)
 - WARN `Gameplay/Lifts/Hoist/LandingPanelVisual1` @ (24.67, 1.10, 15.33): door_clear: in the clear zone of door `Gameplay/Devices/Lid` (1.0 / 1.0 m each side, leaf width 2.40 m) by 0.33 m (gameplay prefab / variant content: review)
 - WARN `Gameplay/Lifts/Hoist/Rig/HoleGuardE` @ (24.62, 0.75, 14.62): door_clear: in the clear zone of door `Gameplay/Devices/Lid` (1.0 / 1.0 m each side, leaf width 2.40 m) by 0.60 m (gameplay prefab / variant content: review)
 - WARN `Gameplay/Lifts/Hoist/Rig/HoleGuardW` @ (23.38, 0.75, 14.62): door_clear: in the clear zone of door `Gameplay/Devices/Lid` (1.0 / 1.0 m each side, leaf width 2.40 m) by 0.60 m (gameplay prefab / variant content: review)
