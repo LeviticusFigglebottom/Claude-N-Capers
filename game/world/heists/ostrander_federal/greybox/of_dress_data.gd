@@ -167,11 +167,10 @@ const LIGHT_TWEAKS: Dictionary = {
 	"BD": _EXEC, "EA": _EXEC, "PR": _EXEC, "PN": _EXEC, "XC": _EXEC, "XL": _EXEC, "LG": _EXEC, "CT": _EXEC,
 	"RA": _EXEC, "XW": _EXEC,
 }
-## Shadow-casting fixtures (one per room in the key review rooms; <= 8 shadowed lights in any view: the sun + these).
-const SHADOW_FIXTURES: Array = [
-	["SR", Vector3(19.5, FG + 3.0, 3.5)], ["VT", Vector3(24.0, FB + 3.2, 19.0)], ["PR", Vector3(29.0, FE + 3.0, 3.5)],
-	["OF", Vector3(18.0, FM + 3.0, 13.0)], ["LD", Vector3(5.0, FG + 4.2, 4.5)], ["BB", Vector3(24.0, FB + 3.2, 8.0)],
-]
+## Shadow-casting fixtures: [room, target]. None since D-146: each re-drew ~300-430 casters in every hall view (the
+## rooms sit behind the hall walls and the renderer does not occlude lights) for a shadow that reads only in its room,
+## where the dressing casts no shadow either (RenderBudgetPolicy). Were SR, VT, PR, OF, LD, BB.
+const SHADOW_FIXTURES: Array = []
 ## Rooms whose kit ceiling grid is off (none).
 const NO_CEILING_GRID: Array[String] = []
 ## Rooms without fill lights (shafts and the open stairs light from their wall lamps); warm and dim fill rooms.
