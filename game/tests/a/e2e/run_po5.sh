@@ -5,7 +5,7 @@
 #          objective markers), smoke (menus -> heist start), dump (map inventory).
 #   seed: run seed (menus are still clicked; HeistLauncher.next_seed_override); "-" = the menu's time seed.
 #   budget_s: wall-clock budget, default 5400 (llvmpipe: a loud Glasshouse takes ~45-90 min wall).
-# Exit code 0 = PASS. Screenshots (NN_<step>.png), run.log and po5_log.txt land in out_dir.
+# HEADLESS=1 runs it without a window (see below). Exit code 0 = PASS. Screenshots (NN_<step>.png), run.log and po5_log.txt land in out_dir.
 set -uo pipefail
 ROOT="$(cd "$(dirname "$0")/../../../.." && pwd)"
 GODOT="${GODOT:-/opt/godot/godot}"
@@ -21,8 +21,15 @@ ARGS=(--po5-flow="$FLOW" --po5-out="$OUT" --po5-budget="$BUDGET" --po5-heist="$H
 # D-133: CREW_DMG=0.25 runs the loud flow gate with the harness-only crew_damage_taken_mult (named in run.log).
 [[ -n "${CREW_DMG:-}" ]] && ARGS+=(--po5-crew-dmg="$CREW_DMG")
 "$GODOT" --headless --path "$ROOT/game" --import >/dev/null 2>&1 || true
-timeout $((BUDGET + 300)) xvfb-run -a -s "-screen 0 1280x720x24" "$GODOT" --path "$ROOT/game" --resolution 960x540 \
-	res://tests/a/e2e/po5_runner.tscn -- "${ARGS[@]}" > "$OUT/run.log" 2>&1
+# HEADLESS=1: the same real-menu flow without rendering (no xvfb, no screenshots; po5_flow.shot skips): LEAD D-145
+# pre-checks, where llvmpipe frames under box load blew the wall budgets. Windowed stays the evidence for visuals.
+if [[ "${HEADLESS:-}" == "1" ]]; then
+	timeout $((BUDGET + 300)) "$GODOT" --headless --path "$ROOT/game" res://tests/a/e2e/po5_runner.tscn -- "${ARGS[@]}" \
+		> "$OUT/run.log" 2>&1
+else
+	timeout $((BUDGET + 300)) xvfb-run -a -s "-screen 0 1280x720x24" "$GODOT" --path "$ROOT/game" --resolution 960x540 \
+		res://tests/a/e2e/po5_runner.tscn -- "${ARGS[@]}" > "$OUT/run.log" 2>&1
+fi
 RC=$?
 grep -E "^\[PO5.*(RESULT|FAIL|FINDING|EVENT heist_ended|back in the hub)" "$OUT/run.log" | tail -20
 echo "screenshots + log: $OUT  (exit $RC)"
