@@ -6,7 +6,7 @@
 ## OF forces its vip_client slot. Writes user://cast_perf_<heist>_<view>.png. Owner: ENV D.
 ##   xvfb-run -a -s "-screen 0 1280x720x24" /opt/godot/godot --audio-driver Dummy --rendering-driver opengl3 \
 ##     --resolution 1280x720 --path game res://world/characters/_tools/heist_cast_perf.tscn -- \
-##     --heist=ostrander_federal [--seed=1037] [--loud] [--seconds=90] [--detail] [--view=<name>] [--shadows-only]
+##     --heist=ostrander_federal [--seed=1037] [--loud] [--seconds=90] [--detail] [--view=<name>[,<name>...]] [--shadows-only]
 ## --detail adds per view: draws with every light's shadow off, the shadow proposals (cast shadows off / off beyond
 ## FAR_SHADOW_M, the sun at 2 splits / half distance), and each on-screen NPC's own draws (top 8).
 extends Node
@@ -17,6 +17,10 @@ const VIEWS: Dictionary = {
 		["hall_south_eye", Vector3(24.0, 1.7, 35.5), Vector3(24.0, 1.2, 17.0)],
 		["hall_south_high", Vector3(24.0, 4.2, 35.8), Vector3(24.0, 0.8, 18.0)],
 		["hall_west_diag", Vector3(9.0, 1.7, 34.5), Vector3(36.0, 1.0, 18.0)],
+		# C's review cameras (ostrander_federal_layout_content.gd), for the D-146 levelcheck reconciliation
+		["rc_hall_entrance", Vector3(24.0, 1.7, 35.0), Vector3(24.0, 3.0, 18.0)],
+		["rc_hall_counter", Vector3(38.5, 1.7, 18.6), Vector3(9.0, 1.2, 18.0)],
+		["rc_hall_from_gallery", Vector3(24.0, 6.6, 19.0), Vector3(24.0, 1.0, 32.0)],
 	],
 	"gallery_night": [
 		["gala_south_eye", Vector3(22.0, 1.7, 25.5), Vector3(22.0, 1.2, 9.0)],
@@ -87,7 +91,7 @@ func _ready() -> void:
 	add_child(cam)
 	cam.current = true
 	for v: Array in VIEWS.get(_heist, []):
-		if _view != "" and String(v[0]) != _view:
+		if _view != "" and not _view.split(",").has(String(v[0])):
 			continue
 		cam.look_at_from_position(v[1], v[2], Vector3.UP)
 		for _i: int in 20:
@@ -294,6 +298,19 @@ func _shadow_breakdown(view: String, npcs: Array[Node], shown: Array) -> void:
 	for li: Light3D in pos:
 		li.shadow_enabled = true
 	print("[CASTPERF] view=%s sun shadows off -> %d; positional shadows off -> %d" % [view, no_sun, no_pos])
+	var every: Array[Light3D] = pos.duplicate()
+	for sun: DirectionalLight3D in suns:
+		every.append(sun)
+	for li: Light3D in every:
+		li.shadow_enabled = false
+	var main_all: int = await _draws()
+	_set_cast_visible(npcs, false)
+	var main_map: int = await _draws()
+	_set_cast_visible(npcs, true)
+	for li: Light3D in every:
+		li.shadow_enabled = true
+	print("[CASTPERF] view=%s main pass (all shadows off): %d draws = map %d + cast %d" % [view, main_all, main_map,
+			main_all - main_map])
 	for sun: DirectionalLight3D in suns:
 		var mode: DirectionalLight3D.ShadowMode = sun.directional_shadow_mode
 		var dist: float = sun.directional_shadow_max_distance
