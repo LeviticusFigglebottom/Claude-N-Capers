@@ -144,7 +144,8 @@ func step() -> void:
 		return
 	# Nothing to do at the marker right now (a device running, a timer): go there and defend.
 	if not p.near(p.crew.global_position, pos, 4.0):
-		if not await p.goto(_marker_stand(pos), 2.5, 60.0):
+		# C (DB seed 2): an objective that ended during the walk (burn done -> its shutters barred) is no finding.
+		if not await p.goto(_marker_stand(pos), 2.5, 60.0) and _marked(id):
 			_note_once(id, "objective %s: marker at %s not reachable" % [id, Po5Pilot._v(pos)])
 			if p.last_blocked_door != null:
 				_marker_blocked[_marker_key(m)] = p.last_blocked_door  # GN probe 6: behind the BARRED shutter -> yield at once
@@ -671,6 +672,14 @@ func _note_once(key: StringName, msg: String) -> void:
 		return
 	_stalls[key] = 0.0
 	f.note("FINDING " + msg)
+
+
+## True while objective `id` still has a HUD marker (it is still to do).
+func _marked(id: StringName) -> bool:
+	for m: Dictionary in rt.hud_model.objective_markers:
+		if StringName(m["id"]) == id:
+			return true
+	return false
 
 
 func _objective_ids() -> Array:
