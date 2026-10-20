@@ -4,18 +4,23 @@ it replaces, of_landmarks.gd / of_art_rooms.gd), so each is modelled to the coll
 
 Landmarks (map-coordinate pieces use the dockside_landmarks `_Map` frame: blender (x, y, z) = (map x - px,
 -(map z - pz), map y - py), placed at the pivot with yaw 0; facade pieces are wall props, back at y 0, placed yaw 180):
-* `prop_of_sunburst` (facade, pivot (24, 0, 36.2), yaw 180): the 4 m gilded sunburst disc over the bronze doors and
-  the limestone frieze below it with the bank's name cut in (dark bronze inlay).
+* `prop_of_sunburst` (facade wall prop, mount wall, pivot (24, 0, 36.204): 4 mm off the facade, yaw 180): the 4 m gilded
+  sunburst disc over the bronze doors and the limestone frieze below it with the bank's name cut in (dark bronze
+  inlay).
 * `prop_of_bronze_portal` (same pivot): the bronze surround of the two bronze doors: jambs, a transom grille and a
   cornice, clear of the door prefabs' own frames (x 21.83-26.18, up to 2.27).
 * `prop_of_lantern` (map pivot (22, 8.6, 26)): bronze glazing bars over the G1 lantern hull (glass, group
   see_through: untouched), hips, ridge, eaves, purlins, ridge finials, the curb's limestone skin and bronze flashing.
-* `prop_of_teller_line` (map pivot (24, 0, 17)): the banking counter over the G1 boxes: the 1.05 m customer ledge
-  (walnut panels, marble top), the 1.50 m solid screen base, the bandit-glass mullions and rails (12 windows), the
-  bronze gate piers and header, the limestone bulkhead with a bronze band and cornice. Every G1 dimension is kept.
-  The 12 teller work tops (over the `teller_worktop` boxes, 2.46 x 1.00 x 0.48: walnut cabinets, cash drawers on
-  the teller side) and the brass grilles of the 6 closed windows are part of the same mesh (one object per material:
-  the counter is seen from the whole hall).
+* The banking counter over the G1 boxes, in per-bay modules (style guide §5 prop budget; the map draws each module
+  as one MultiMesh, so a module costs one draw call per material for all its bays, of_landmarks.gd):
+  * `prop_of_teller_bay` / `prop_of_teller_bay_closed` (one of the 12 windows, 2.467 m, pivot (bay centre x, 0, 17)):
+    the 1.05 m customer ledge (walnut panel, marble top), the 1.50 m solid screen base, the bandit-glass rails and a
+    half mullion at each end (two bays meet in a full one), the limestone bulkhead with its bronze band and cornice,
+    the teller work top (over the `teller_worktop` box, 2.46 x 1.00 x 0.48: walnut cabinet, cash drawers on the
+    teller side); `_closed` adds the brass grille of a closed window.
+  * `prop_of_teller_line` (map pivot (24, 0, 17)): the frame: the bronze gate piers and header, the bulkhead over the
+    gate and the limestone pilasters on the bulkhead at the 10 inner bay lines.
+  Every G1 dimension is kept.
 * `prop_of_vault_portal` (map pivot (30, -4, 12.7)): the bronze architrave round the round vault door on the VC face,
   clear of the door visual's lip ring and studs (r <= 1.27 about (30, -2.85)).
 Rooms (wall / floor props, bottom-centre pivot, front +Y):
@@ -34,27 +39,36 @@ import math
 import _pb
 from _pb import Kit, knob, legs4, lettering
 
-TRI_BUDGET = 60000
+TRI_BUDGET = 8000   # style guide §5 props (the counter is per-bay modules, the frame piece separate)
 _G = "ostrander"
 VARIANTS = {
     "prop_of_sunburst": {"fn": "sunburst", "cat": {"kind": "landmark", "place": "none", "group": _G, "pin_only": True,
-                                                   "surface": "metal"}},
+                                                   "mount": "wall", "surface": "metal"}},
     "prop_of_bronze_portal": {"fn": "bronze_portal", "cat": {"kind": "landmark", "place": "none", "group": _G,
                                                              "pin_only": True, "surface": "metal"}},
     "prop_of_lantern": {"fn": "lantern", "cat": {"kind": "landmark", "place": "none", "group": _G, "pin_only": True,
                                                  "surface": "metal"}},
     "prop_of_teller_line": {"fn": "teller_line", "cat": {"kind": "landmark", "place": "none", "group": _G,
-                                                         "pin_only": True, "surface": "wood"}},
+                                                         "pin_only": True, "surface": "metal"}},
+    "prop_of_teller_bay": {"fn": "teller_bay", "closed": False,
+                           "cat": {"kind": "landmark", "place": "none", "group": _G, "pin_only": True,
+                                   "surface": "wood"}},
+    "prop_of_teller_bay_closed": {"fn": "teller_bay", "closed": True,
+                                  "cat": {"kind": "landmark", "place": "none", "group": _G, "pin_only": True,
+                                          "surface": "wood"}},
     "prop_of_vault_portal": {"fn": "vault_portal", "cat": {"kind": "landmark", "place": "none", "group": _G,
                                                            "pin_only": True, "surface": "metal"}},
     "prop_of_box_unit_w950": {"fn": "box_unit", "cat": {"kind": "deposit_boxes", "place": "none", "group": _G,
                                                         "pin_only": True, "surface": "metal"}},
-    "prop_of_box_door_s": {"fn": "box_door", "w": 0.2, "h": 0.15, "cat": {"kind": "box_door", "place": "none",
-                                                                          "group": _G, "pin_only": True}},
-    "prop_of_box_door_m": {"fn": "box_door", "w": 0.2, "h": 0.225, "cat": {"kind": "box_door", "place": "none",
-                                                                           "group": _G, "pin_only": True}},
-    "prop_of_box_door_l": {"fn": "box_door", "w": 0.4, "h": 0.225, "cat": {"kind": "box_door", "place": "none",
-                                                                           "group": _G, "pin_only": True}},
+    "prop_of_box_door_s": {"fn": "box_door", "w": 0.2, "h": 0.15,
+                           "cat": {"kind": "box_door", "place": "none", "group": _G, "pin_only": True,
+                                   "mount": "wall"}},
+    "prop_of_box_door_m": {"fn": "box_door", "w": 0.2, "h": 0.225,
+                           "cat": {"kind": "box_door", "place": "none", "group": _G, "pin_only": True,
+                                   "mount": "wall"}},
+    "prop_of_box_door_l": {"fn": "box_door", "w": 0.4, "h": 0.225,
+                           "cat": {"kind": "box_door", "place": "none", "group": _G, "pin_only": True,
+                                   "mount": "wall"}},
     "prop_of_box_bank_w320": {"fn": "box_bank", "w": 3.2, "cat": {"kind": "deposit_boxes", "place": "none",
                                                                   "group": _G, "pin_only": True, "surface": "metal"}},
     "prop_of_box_bank_w780": {"fn": "box_bank", "w": 7.8, "cat": {"kind": "deposit_boxes", "place": "none",
@@ -113,17 +127,22 @@ class _Map:
 
 SUN_C = 5.7      # sunburst centre height (m above the plaza floor at the doors)
 SUN_R = 1.95
+SUN_GAP = 0.004  # the disc and the frieze stand 4 mm off the facade: the map places the pivot there (of_landmarks.gd)
 
 
 def _sunburst(k: Kit, p: dict) -> None:
-    """Wall prop (back y 0, front +Y = the plaza): the gilded disc, 32 rays in relief, the boss; the frieze."""
+    """Wall prop (back y 0, front +Y = the plaza): the gilded disc, 32 rays in relief, the boss; the frieze. The pivot
+    is the back face (placed SUN_GAP in front of the facade); the depths below are measured from the facade."""
+    def y(v: float) -> float:
+        return v - SUN_GAP
+
     o = k.obj("Sunburst")
     plate = o.part(bevel=0.004)
     gilt = o.part(bevel=0.003)
     rim = o.part(bevel=0.0)
-    plate.cyl(SUN_R, 0.05, (0.0, 0.004 + 0.025, SUN_C), "of_bronze_dark", axis="Y", segs=64)
-    rim.torus(SUN_R - 0.03, 0.045, (0.0, 0.06, SUN_C), "of_gilt", segs=64, rsegs=8, axis="Y")
-    rim.torus(0.8, 0.03, (0.0, 0.1, SUN_C), "of_gilt", segs=48, rsegs=6, axis="Y")
+    plate.cyl(SUN_R, 0.05, (0.0, y(0.004 + 0.025), SUN_C), "of_bronze_dark", axis="Y", segs=48)
+    rim.torus(SUN_R - 0.03, 0.045, (0.0, y(0.06), SUN_C), "of_gilt", segs=48, rsegs=6, axis="Y")
+    rim.torus(0.8, 0.03, (0.0, y(0.1), SUN_C), "of_gilt", segs=40, rsegs=5, axis="Y")
     n = 32
     for i in range(n):
         a = 2 * math.pi * (i + 0.5) / n
@@ -134,24 +153,25 @@ def _sunburst(k: Kit, p: dict) -> None:
         tx, tz = -sa, ca
         pts = [(r0 * ca + tx * hw0, SUN_C + r0 * sa + tz * hw0), (r1 * ca, SUN_C + r1 * sa),
                (r0 * ca - tx * hw0, SUN_C + r0 * sa - tz * hw0)]
-        gilt.profile_y(pts, 0.054, 0.085 if i % 2 == 0 else 0.075, "of_gilt")
+        gilt.profile_y(pts, y(0.054), y(0.085 if i % 2 == 0 else 0.075), "of_gilt")
     # the boss: stepped discs, gilt face, a bronze ring of studs
-    gilt.cyl(0.74, 0.07, (0.0, 0.09, SUN_C), "of_gilt", axis="Y", segs=48)
-    gilt.cyl(0.56, 0.05, (0.0, 0.15, SUN_C), "of_bronze", axis="Y", segs=48)
-    gilt.cyl(0.36, 0.04, (0.0, 0.195, SUN_C), "of_gilt", axis="Y", segs=40)
+    gilt.cyl(0.74, 0.07, (0.0, y(0.09), SUN_C), "of_gilt", axis="Y", segs=40)
+    gilt.cyl(0.56, 0.05, (0.0, y(0.15), SUN_C), "of_bronze", axis="Y", segs=40)
+    gilt.cyl(0.36, 0.04, (0.0, y(0.195), SUN_C), "of_gilt", axis="Y", segs=32)
     for i in range(16):
         a = 2 * math.pi * i / 16
-        gilt.cyl(0.035, 0.03, (math.cos(a) * 0.65, 0.14, SUN_C + math.sin(a) * 0.65), "of_bronze", axis="Y", segs=10)
+        gilt.cyl(0.035, 0.03, (math.cos(a) * 0.65, y(0.14), SUN_C + math.sin(a) * 0.65), "of_bronze", axis="Y",
+                 segs=8)
     o.build()
     # the frieze: a limestone band with mouldings, the name cut in (dark bronze inlay, read from the plaza)
     f = k.obj("Frieze")
     st = f.part(bevel=0.006)
     ink = f.part(bevel=0.0)
-    st.bx((-5.6, 0.004, 2.86), (5.6, 0.1, 3.56), "of_limestone")
-    st.bx((-5.75, 0.004, 3.56), (5.75, 0.16, 3.68), "of_limestone")
-    st.bx((-5.65, 0.004, 2.82), (5.65, 0.12, 2.86), "of_limestone")
-    lettering(ink, "OSTRANDER FEDERAL", 0.38, 0.0, 0.1, 3.02, "of_bronze_dark", stroke=0.05, depth=0.008, inlay=True,
-              spacing=0.3)
+    st.bx((-5.6, y(0.004), 2.86), (5.6, y(0.1), 3.56), "of_limestone")
+    st.bx((-5.75, y(0.004), 3.56), (5.75, y(0.16), 3.68), "of_limestone")
+    st.bx((-5.65, y(0.004), 2.82), (5.65, y(0.12), 2.86), "of_limestone")
+    lettering(ink, "OSTRANDER FEDERAL", 0.38, 0.0, y(0.1), 3.02, "of_bronze_dark", stroke=0.05, depth=0.008,
+              inlay=True, spacing=0.3)
     f.build()
 
 
@@ -246,12 +266,13 @@ def _lantern(k: Kit, p: dict) -> None:
         _lant.sphere(fin, 0.045, (x, L_Y1 + 0.78, 26.0), "of_gilt", segs=10)
         _lant.rod(fin, (x, L_Y1 + 0.06, 26.0), (x, L_Y1 + 0.12, 26.0), 0.08, "of_bronze_dark", segs=12)
     o.build()
-    # curb skin: limestone 5-25 mm outside the 0.3 m curb, a bronze flashing cap over its outer edge
+    # curb skin: limestone 5-25 mm outside the 0.3 m curb (standing on the roof slab at the pivot), a bronze flashing
+    # cap over its outer edge
     c = k.obj("Curb")
     st = c.part(bevel=0.004)
     fl = c.part(bevel=0.002)
     t0, t1 = 0.005, 0.025
-    y0, y1 = 8.6 + 0.004, 9.12
+    y0, y1 = 8.6, 9.12
     _lant.box(st, (L_X0 - t1, y0, L_Z0 - t1), (L_X1 + t1, y1, L_Z0 - t0), "of_limestone")
     _lant.box(st, (L_X0 - t1, y0, L_Z1 + t0), (L_X1 + t1, y1, L_Z1 + t1), "of_limestone")
     _lant.box(st, (L_X0 - t1, y0, L_Z0 - t0), (L_X0 - t0, y1, L_Z1 + t0), "of_limestone")
@@ -271,7 +292,8 @@ RUNS = ((8.1, 22.9), (25.1, 39.9))
 Z_SCR0, Z_SCR1, Z_LEDGE, Z_BULK = 16.83, 16.93, 17.45, 17.5
 Z_GL0, Z_GL1 = 16.86, 16.9
 BAYS = 6
-## Closed windows (0-11, west to east): brass grilles; staffed: the bays of the stations x 13 / 15 / 17, 31 / 33 / 35.
+# Closed windows (0-11, west to east): brass grilles (prop_of_teller_bay_closed; of_landmarks.gd TELLER_CLOSED);
+# staffed: the bays of the stations x 13 / 15 / 17, 31 / 33 / 35.
 CLOSED_WINDOWS = (0, 4, 5, 6, 7, 11)
 
 
@@ -280,42 +302,66 @@ def _bays(run: tuple[float, float]) -> list[float]:
     return [run[0] + i * w for i in range(BAYS + 1)]
 
 
-def _teller_line(k: Kit, p: dict) -> None:
-    """The banking counter over its G1 boxes (ScreenBase / CustomerLedge / BanditGlass W, E, the gate piers, header
-    and the bulkhead), dimension for dimension: ledge 1.05 (front z 17.45), screen base 1.50 (z 16.83-16.93), bandit
-    glass 1.50-2.40 (the G1 glass stays), bulkhead 2.40-4.20 to z 17.5."""
+BAY_W = (RUNS[0][1] - RUNS[0][0]) / BAYS
+BAY_REF = RUNS[0][0] + BAY_W / 2   # the bay modules are modelled about the first bay's centre (placed per bay)
+
+
+def _teller_bay(k: Kit, p: dict) -> None:
+    """One counter bay over the G1 boxes (ScreenBase / CustomerLedge / BanditGlass / Bulkhead / TellerWorktop),
+    dimension for dimension: ledge 1.05 (front z 17.45), screen base 1.50 (z 16.83-16.93), bandit glass 1.50-2.40 (the
+    G1 glass stays), bulkhead 2.40-4.20 to z 17.5. The mullions and the ledge's bronze strips are halves at both ends:
+    two bays side by side make the full bar, the run ends keep the half (as the one-piece counter clipped them)."""
+    m = _Map((BAY_REF, 0.0, 17.0))
     o = k.obj("Counter")
     wd = o.part(bevel=0.003)
     st = o.part(bevel=0.004)
     br = o.part(bevel=0.0015)
     ls = o.part(bevel=0.006)
-    for run in RUNS:
-        a, b = run
-        xs = _bays(run)
-        # customer ledge: walnut carcass inside the collider, stone plinth, marble top (the full collider top)
-        _tl.box(wd, (a, 0.12, Z_SCR1), (b, 1.0, Z_LEDGE - 0.02), "walnut")
-        _tl.box(st, (a, 0.0, Z_SCR1), (b, 0.12, Z_LEDGE - 0.012), "stone_dark")
-        _tl.box(st, (a, 1.0, Z_SCR1), (b, 1.05, Z_LEDGE), "marble")
-        _tl.box(br, (a, 0.12, Z_LEDGE - 0.02), (b, 0.145, Z_LEDGE - 0.002), "of_bronze")
-        _tl.box(br, (a, 0.965, Z_LEDGE - 0.02), (b, 0.99, Z_LEDGE - 0.002), "of_bronze")
-        for i in range(BAYS):
-            x0, x1 = xs[i] + 0.06, xs[i + 1] - 0.06
-            # raised fielded panel per bay: stiles / rails flush with the face, the field 8 mm back
-            _tl.box(wd, (x0, 0.17, Z_LEDGE - 0.02), (x1, 0.94, Z_LEDGE - 0.004), "walnut")
-            _tl.box(wd, (x0 + 0.1, 0.25, Z_LEDGE - 0.004), (x1 - 0.1, 0.86, Z_LEDGE - 0.0), "walnut")
-        for x in xs:
-            lo, hi = max(a, x - 0.02), min(b, x + 0.02)
-            _tl.box(br, (lo, 0.145, Z_LEDGE - 0.02), (hi, 0.965, Z_LEDGE - 0.001), "of_bronze")
-        # screen base above the ledge and the work tops (y 1.00-1.50): walnut, a bronze cap rail
-        _tl.box(wd, (a, 1.0, Z_SCR0), (b, 1.47, Z_SCR1), "walnut")
-        _tl.box(br, (a, 1.47, Z_SCR0), (b, 1.5, Z_SCR1), "of_bronze")
-        _tl.box(br, (a, 1.05, Z_SCR1), (b, 1.075, Z_SCR1 + 0.006), "of_bronze")
-        # bandit glass: mullions at the 7 bay lines, a bottom and a top rail (the glass is the G1 box)
-        for x in xs:
-            lo, hi = max(a, x - 0.03), min(b, x + 0.03)
-            _tl.box(br, (lo, 1.5, Z_SCR0 + 0.012), (hi, 2.4, Z_SCR1 - 0.012), "of_bronze")
-        _tl.box(br, (a, 1.5, Z_SCR0 + 0.006), (b, 1.535, Z_SCR1 - 0.006), "of_bronze")
-        _tl.box(br, (a, 2.365, Z_SCR0 + 0.006), (b, 2.4, Z_SCR1 - 0.006), "of_bronze")
+    a, b = BAY_REF - BAY_W / 2, BAY_REF + BAY_W / 2
+    # customer ledge: walnut carcass inside the collider, stone plinth, marble top (the full collider top)
+    m.box(wd, (a, 0.12, Z_SCR1), (b, 1.0, Z_LEDGE - 0.02), "walnut")
+    m.box(st, (a, 0.0, Z_SCR1), (b, 0.12, Z_LEDGE - 0.012), "stone_dark")
+    m.box(st, (a, 1.0, Z_SCR1), (b, 1.05, Z_LEDGE), "marble")
+    m.box(br, (a, 0.12, Z_LEDGE - 0.02), (b, 0.145, Z_LEDGE - 0.002), "of_bronze")
+    m.box(br, (a, 0.965, Z_LEDGE - 0.02), (b, 0.99, Z_LEDGE - 0.002), "of_bronze")
+    # raised fielded panel: stiles / rails flush with the face, the field 8 mm back
+    x0, x1 = a + 0.06, b - 0.06
+    m.box(wd, (x0, 0.17, Z_LEDGE - 0.02), (x1, 0.94, Z_LEDGE - 0.004), "walnut")
+    m.box(wd, (x0 + 0.1, 0.25, Z_LEDGE - 0.004), (x1 - 0.1, 0.86, Z_LEDGE - 0.0), "walnut")
+    for lo, hi in ((a, a + 0.02), (b - 0.02, b)):
+        m.box(br, (lo, 0.145, Z_LEDGE - 0.02), (hi, 0.965, Z_LEDGE - 0.001), "of_bronze")
+    # screen base above the ledge and the work tops (y 1.00-1.50): walnut, a bronze cap rail
+    m.box(wd, (a, 1.0, Z_SCR0), (b, 1.47, Z_SCR1), "walnut")
+    m.box(br, (a, 1.47, Z_SCR0), (b, 1.5, Z_SCR1), "of_bronze")
+    m.box(br, (a, 1.05, Z_SCR1), (b, 1.075, Z_SCR1 + 0.006), "of_bronze")
+    # bandit glass: half mullions at both bay lines, a bottom and a top rail (the glass is the G1 box)
+    for lo, hi in ((a, a + 0.03), (b - 0.03, b)):
+        m.box(br, (lo, 1.5, Z_SCR0 + 0.012), (hi, 2.4, Z_SCR1 - 0.012), "of_bronze")
+    m.box(br, (a, 1.5, Z_SCR0 + 0.006), (b, 1.535, Z_SCR1 - 0.006), "of_bronze")
+    m.box(br, (a, 2.365, Z_SCR0 + 0.006), (b, 2.4, Z_SCR1 - 0.006), "of_bronze")
+    # bulkhead: limestone, a bronze band at its foot and a cornice at the TW ceiling line
+    _bulkhead(m, ls, br, a, b)
+    # the teller work top (G1 box TellerWorktopNN: the bay centre, z 16.59) and a closed window's grille
+    _worktop_geom(wd, br, (0.0, -(16.59 - 17.0), 0.0))
+    if p.get("closed", False):
+        _grille_geom(m, br, BAY_REF)
+    o.build()
+
+
+def _bulkhead(m: _Map, ls, br, a: float, b: float) -> None:
+    """The limestone bulkhead (2.40-4.20, z 16.83-17.5) from map x a to b: a bronze band at its foot, the cornice."""
+    m.box(ls, (a, 2.4, Z_SCR0), (b, 4.2, Z_BULK), "of_limestone")
+    m.box(br, (a, 2.4, Z_BULK), (b, 2.47, Z_BULK + 0.006), "of_bronze")
+    m.box(ls, (a, 4.08, Z_BULK), (b, 4.2, Z_BULK + 0.05), "of_limestone")
+    m.box(br, (a, 4.0, Z_BULK), (b, 4.03, Z_BULK + 0.02), "of_bronze")
+
+
+def _teller_line(k: Kit, p: dict) -> None:
+    """The counter's frame over its G1 boxes (the gate piers, header and the bulkhead over the gate), and the bulkhead
+    pilasters at the inner bay lines (they cover the joints of the bay modules' bulkheads)."""
+    o = k.obj("Counter")
+    br = o.part(bevel=0.0015)
+    ls = o.part(bevel=0.006)
     # gate piers and header: bronze cladding with flutes
     for x0, x1 in ((22.9, 23.4), (24.6, 25.1)):
         _tl.box(br, (x0, 0.0, Z_SCR0), (x1, 2.4, 17.03), "of_bronze_dark")
@@ -324,44 +370,28 @@ def _teller_line(k: Kit, p: dict) -> None:
             _tl.box(br, (fx - 0.025, 0.25, 17.03), (fx + 0.025, 2.15, 17.036), "of_bronze")
         _tl.box(br, (x0 - 0.01, 0.0, Z_SCR0), (x1 + 0.01, 0.2, 17.045), "of_bronze")
     _tl.box(br, (23.4, 2.2, Z_SCR0), (24.6, 2.4, 17.03), "of_bronze")
-    # bulkhead: limestone, a bronze band at its foot and a cornice at the TW ceiling line
-    _tl.box(ls, (8.1, 2.4, Z_SCR0), (39.9, 4.2, Z_BULK), "of_limestone")
-    _tl.box(br, (8.1, 2.4, Z_BULK), (39.9, 2.47, Z_BULK + 0.006), "of_bronze")
-    _tl.box(ls, (8.1, 4.08, Z_BULK), (39.9, 4.2, Z_BULK + 0.05), "of_limestone")
-    _tl.box(br, (8.1, 4.0, Z_BULK), (39.9, 4.03, Z_BULK + 0.02), "of_bronze")
+    _bulkhead(_tl, ls, br, RUNS[0][1], RUNS[1][0])
     for run in RUNS:
         for x in _bays(run)[1:-1]:
             _tl.box(ls, (x - 0.09, 2.47, Z_BULK), (x + 0.09, 4.0, Z_BULK + 0.025), "of_limestone")
-    # the 12 teller work tops (G1 boxes TellerWorktop01-12: centre x, z 16.59) and the 6 closed windows' grilles,
-    # one mesh with the counter (perf: the counter is seen from the whole hall)
-    idx = 0
-    for run in RUNS:
-        xs = _bays(run)
-        for i in range(BAYS):
-            cx = (xs[i] + xs[i + 1]) / 2
-            _worktop_geom(wd, br, (cx - 24.0, -(16.59 - 17.0) + 0.0, 0.0))
-            if idx in CLOSED_WINDOWS:
-                _grille_geom(br, cx - 24.0)
-            idx += 1
     o.build()
 
 
-def _grille_geom(g, ox: float) -> None:
+def _grille_geom(m: _Map, g, cx: float) -> None:
     """Brass grille closing one window (2.47 m bay less the mullions), on the hall face of the bandit glass
-    (z 16.903-16.93), 1.535-2.365 m, centred on map x = 24 + ox (counter frame: pivot (24, 0, 17))."""
+    (z 16.903-16.93), 1.535-2.365 m, centred on map x = cx (in the map frame `m`)."""
     hw = 1.2
     z0, z1 = 16.903, 16.926
     y0, y1 = 1.535, 2.365
-    cx = 24.0 + ox
     x = -hw + 0.04
     while x <= hw - 0.0399:
-        _tl.box(g, (cx + x - 0.007, y0, z0), (cx + x + 0.007, y1, z1), "brass")
+        m.box(g, (cx + x - 0.007, y0, z0), (cx + x + 0.007, y1, z1), "brass")
         x += 0.08
     for y in (y0, y0 + 0.28, y1 - 0.28, y1 - 0.025):
-        _tl.box(g, (cx - hw, y, z0), (cx + hw, y + 0.025, z1 + 0.004), "brass")
+        m.box(g, (cx - hw, y, z0), (cx + hw, y + 0.025, z1 + 0.004), "brass")
     x = -hw + 0.12
     while x <= hw - 0.1199:
-        g.torus(0.06, 0.008, _tl.v(cx + x, (y0 + y1) / 2, z1 + 0.002), "brass", segs=16, rsegs=4, axis="Y")
+        g.torus(0.06, 0.008, m.v(cx + x, (y0 + y1) / 2, z1 + 0.002), "brass", segs=16, rsegs=4, axis="Y")
         x += 0.16
 
 
@@ -452,14 +482,14 @@ def _box_unit(k: Kit, p: dict) -> None:
 
 def _box_bank(k: Kit, p: dict) -> None:
     """VT wall bank frame (wall prop, back y 0 on the vault wall, bottom centre): the dark backing seen in the door
-    gaps (1-4 mm off the wall; the tiles span 0..+17 mm), a stone plinth, steel end pilasters, a brass band at
-    1.9-2.0 and a bronze cornice."""
+    gaps (1-4 mm off the wall; the tiles span 0..+17 mm), a stone plinth on the floor, steel end pilasters, a brass band
+    at 1.9-2.0 and a bronze cornice."""
     w = float(p["w"])
     o = k.obj("Bank")
     a = o.part(bevel=0.0)
     s = o.part(bevel=0.003)
     a.bx((-w / 2, 0.001, 0.1), (w / 2, 0.004, 1.9), "metal_dark")
-    s.bx((-w / 2 - 0.06, 0.001, 0.004), (w / 2 + 0.06, 0.03, 0.1), "stone_dark")
+    s.bx((-w / 2 - 0.06, 0.001, 0.0), (w / 2 + 0.06, 0.03, 0.1), "stone_dark")
     for sx in (-1.0, 1.0):
         x0, x1 = sorted((sx * w / 2, sx * (w / 2 + 0.06)))
         s.bx((x0, 0.001, 0.1), (x1, 0.024, 1.9), "of_box_steel")
@@ -546,6 +576,7 @@ def _booth_counter(k: Kit, p: dict) -> None:
         x1 = x0 + (w - 0.12) / 9 - 0.04
         wd.bx((x0, y1 - E, 0.16), (x1, y1 + 0.004, h - 0.1), "walnut")
     o.build()
+    k.collision([((-w / 2, y0, 0.0), (w / 2, y1, h))])
 
 
 def _booth_partition(k: Kit, p: dict) -> None:
@@ -581,6 +612,7 @@ def _pedestal_desk(k: Kit, w: float, d: float, h: float) -> None:
             knob(tr, (x0 + x1) / 2, y1 - E, (z0 + z1) / 2)
     wd.bx((-w / 2 + pw, y0 + 0.03, 0.18), (w / 2 - pw, y0 + 0.05, h - 0.035), "walnut")
     o.build()
+    k.collision([((-w / 2, y0, 0.0), (w / 2, y1, h))])
 
 
 def _attendant_desk(k: Kit, p: dict) -> None:
@@ -604,6 +636,7 @@ def _coffee_table(k: Kit, p: dict) -> None:
     legs4(wd, w - 0.02, w - 0.02, h - 0.07, 0.04, 0.05, "walnut")
     wd.bx((-w / 2 + 0.06, -w / 2 + 0.06, 0.1), (w / 2 - 0.06, w / 2 - 0.06, 0.125), "walnut")
     o.build()
+    k.collision([((-w / 2, -w / 2, 0.0), (w / 2, w / 2, h))])
 
 
 def _coffee_service(k: Kit, p: dict) -> None:
@@ -623,6 +656,7 @@ def _coffee_service(k: Kit, p: dict) -> None:
         wd.bx((x0, y1 - 0.02, 0.11), (x1, y1 - E, h - 0.06), "walnut")
         knob(tr, x1 - 0.05, y1 - E, h - 0.2)
     o.build()
+    k.collision([((-w / 2, y0, 0.0), (w / 2, y1, h))])
 
 
 def build(ctx) -> None:

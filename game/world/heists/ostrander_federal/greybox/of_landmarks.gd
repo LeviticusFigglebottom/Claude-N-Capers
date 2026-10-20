@@ -1,7 +1,8 @@
 ## Ostrander Federal G2 landmarks (OF-C2 lane B, ENV C): the bronze sunburst and the frieze over the bronze doors, the
 ## bronze portal round the doors, the lantern skylight's bronze glazing bars and curb skin, the banking counter (the 12
 ## windows: the 1.05 m ledge, the 1.50 m screen base, bandit glass, the brass grilles of the 6 closed windows, the gate
-## piers, the bulkhead, the 12 teller work tops: one mesh, prop_of_teller_line) and the bronze portal round the vault door. Design:
+## piers, the bulkhead, the 12 teller work tops: per-bay modules prop_of_teller_bay[_closed] drawn as two MultiMeshes, and the
+## frame prop_of_teller_line) and the bronze portal round the vault door. Design:
 ## docs/design/heists/ostrander_federal.md (Site: exterior landmarks 1-3; Ground notes; Audio/lighting palette).
 ## Visual only: every G1 collider stays as built (the lantern glazing keeps its hull, group `see_through` (D-142) and
 ## meta; the counter keeps every G1 dimension, QC-67 / OF-C3). A piece that replaces a greybox box hides the box's mesh
@@ -11,6 +12,8 @@ extends RefCounted
 
 ## Facade pieces: wall props on the plaza face of the south wall (z 36.2) centred on the bronze doors, facing +Z.
 const FACADE_PIVOT: Vector3 = Vector3(24.0, 0.0, 36.2)
+## The sunburst + frieze stand 4 mm off the facade (ostrander_landmarks.py SUN_GAP): their back face is the pivot.
+const SUN_PIVOT: Vector3 = FACADE_PIVOT + Vector3(0.0, 0.0, 0.004)
 ## Map-coordinate pieces: [asset, pivot] (modelled around the pivot in map axes, placed with yaw 0).
 const MAP_PIECES: Array = [
 	["prop_of_lantern", Vector3(22.0, 8.6, 26.0)],
@@ -35,6 +38,14 @@ const GLASS_BODIES: Array[String] = [
 	"Geometry/Building/Lantern/Glazing", "Geometry/Building/Counter/BanditGlassW",
 	"Geometry/Building/Counter/BanditGlassE",
 ]
+## The counter's 12 bays (windows 0-11 west to east, ostrander_landmarks.py RUNS / BAYS / CLOSED_WINDOWS): the bay
+## modules are modelled about their bay centre at z 17 and drawn as one MultiMesh per module (one draw call per
+## material for all its bays, as the one-piece counter was); the closed windows carry the brass grille.
+const TELLER_RUNS: Array = [[8.1, 22.9], [25.1, 39.9]]
+const TELLER_BAYS: int = 6
+const TELLER_Z: float = 17.0
+const TELLER_CLOSED: Array[int] = [0, 4, 5, 6, 7, 11]
+const MMT: GDScript = preload("res://world/props/multimesh_tiles.gd")
 ## The hall clock over the teller gate, on the bulkhead's hall face (z 17.5).
 const CLOCK_POS: Vector3 = Vector3(24.0, 3.3, 17.5)
 
@@ -49,7 +60,7 @@ func _init(builder: Object) -> void:
 func build() -> void:
 	var root: HeistMap = b.get(&"map_root")
 	var lm: Node3D = b.call(&"add", b.call(&"n", "Geometry"), b.call(&"node3d", "Landmarks")) as Node3D
-	var facade: Node3D = _piece(lm, "Sunburst", "prop_of_sunburst", Transform3D(Basis(Vector3.UP, PI), FACADE_PIVOT))
+	var facade: Node3D = _piece(lm, "Sunburst", "prop_of_sunburst", Transform3D(Basis(Vector3.UP, PI), SUN_PIVOT))
 	facade.set_meta(&"landmark", "sunburst")
 	_piece(lm, "BronzePortal", "prop_of_bronze_portal", Transform3D(Basis(Vector3.UP, PI), FACADE_PIVOT)) \
 		.set_meta(&"landmark", "bronze_doors")
@@ -70,6 +81,7 @@ func build() -> void:
 			report.append("ERROR landmarks: no glass mesh %s" % gp)
 			continue
 		gm.material_override = glass
+	_teller_bays(lm)
 	_worktops(root)
 	_meridian(root, lm)
 	var clock: Node3D = _piece(lm, "HallClock", "prop_clock_harbor", Transform3D(Basis(Vector3.UP, PI), CLOCK_POS))
@@ -128,8 +140,58 @@ func _meridian(root: HeistMap, lm: Node3D) -> void:
 	sp.shadow_enabled = false
 
 
-## The 12 teller work tops (Props/MapBuilt/TellerWorktopNN, kind teller_worktop): drawn by prop_of_teller_line (one
-## mesh with the counter); the greybox mesh is hidden; the box, its metas (hide_behind, kind) and collider stay.
+## The counter bays: `TellerBays` (open windows) and `TellerBaysClosed` (grilles), MultiMeshInstance3D baked via
+## multimesh_tiles.gd (the headless generator keeps no MultiMesh buffer), visual only, no visibility range (the counter is
+## seen from the whole hall).
+func _teller_bays(lm: Node3D) -> void:
+	var open: PackedFloat32Array = PackedFloat32Array()
+	var closed: PackedFloat32Array = PackedFloat32Array()
+	var idx: int = 0
+	for run: Array in TELLER_RUNS:
+		var w: float = (float(run[1]) - float(run[0])) / float(TELLER_BAYS)
+		for i: int in range(TELLER_BAYS):
+			var cx: float = float(run[0]) + (float(i) + 0.5) * w
+			var row: PackedFloat32Array = PackedFloat32Array([cx, 0.0, TELLER_Z, 0.0])
+			if idx in TELLER_CLOSED:
+				closed.append_array(row)
+			else:
+				open.append_array(row)
+			idx += 1
+	for spec: Array in [["TellerBays", "prop_of_teller_bay", open], ["TellerBaysClosed", "prop_of_teller_bay_closed", closed]]:
+		var ps: PackedScene = b.call(&"catalog_scene", String(spec[1])) as PackedScene
+		if ps == null:
+			report.append("ERROR landmarks: no scene for %s" % spec[1])
+			continue
+		var inst: Node = ps.instantiate()
+		var mesh: Mesh = null
+		for c: Node in inst.find_children("*", "MeshInstance3D", true, false):
+			mesh = (c as MeshInstance3D).mesh
+			break
+		inst.free()
+		if mesh == null:
+			report.append("ERROR landmarks: %s has no mesh" % spec[1])
+			continue
+		var buf: PackedFloat32Array = spec[2]
+		var mm: MultiMesh = MultiMesh.new()
+		mm.transform_format = MultiMesh.TRANSFORM_3D
+		mm.mesh = mesh
+		var box: AABB = mesh.get_aabb()
+		var bounds: AABB = AABB()
+		for k: int in range(buf.size() / 4):
+			var o: AABB = Transform3D(Basis.IDENTITY, Vector3(buf[k * 4], buf[k * 4 + 1], buf[k * 4 + 2])) * box
+			bounds = o if k == 0 else bounds.merge(o)
+		var mmi: MultiMeshInstance3D = MultiMeshInstance3D.new()
+		mmi.set_script(MMT)
+		mmi.name = String(spec[0])
+		mmi.multimesh = mm
+		mmi.set(&"instances", buf)
+		mmi.custom_aabb = bounds
+		mmi.set_meta(&"kind", "teller_bays")
+		b.call(&"add", lm, mmi)
+
+
+## The 12 teller work tops (Props/MapBuilt/TellerWorktopNN, kind teller_worktop): drawn by the bay modules (one mesh
+## with each bay); the greybox mesh is hidden; the box, its metas (hide_behind, kind) and collider stay.
 func _worktops(root: HeistMap) -> void:
 	for i: int in range(1, 13):
 		var mi: MeshInstance3D = root.get_node_or_null("Props/MapBuilt/TellerWorktop%02d/Mesh" % i) as MeshInstance3D

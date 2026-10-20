@@ -13,4 +13,7 @@ visibility_range_end = 60
 visibility_range_end_margin = 6
 visibility_range_fade_mode = 1
 
+[node name="Collision" parent="Model"]
+metadata/surface = &"tile"
+
 [editable path="Model"]

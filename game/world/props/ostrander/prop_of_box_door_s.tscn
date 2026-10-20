@@ -4,6 +4,7 @@
 
 [node name="PropOfBoxDoorS" type="Node3D"]
 metadata/kind = &"box_door"
+metadata/mount = &"wall"
 
 [node name="Model" parent="." instance=ExtResource("1_model")]
 

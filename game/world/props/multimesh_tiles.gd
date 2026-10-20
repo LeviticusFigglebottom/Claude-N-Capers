@@ -32,6 +32,9 @@ func fill() -> void:
 		buf[j + 8] = -s
 		buf[j + 10] = c
 		buf[j + 11] = instances[i * 4 + 2]
-	multimesh.transform_format = MultiMesh.TRANSFORM_3D
+	# The format is only writable at instance_count 0 (a scene-loaded or re-entered MultiMesh keeps its count).
+	if multimesh.transform_format != MultiMesh.TRANSFORM_3D:
+		multimesh.instance_count = 0
+		multimesh.transform_format = MultiMesh.TRANSFORM_3D
 	multimesh.instance_count = n
 	multimesh.buffer = buf
