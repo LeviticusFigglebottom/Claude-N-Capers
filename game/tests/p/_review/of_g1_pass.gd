@@ -789,7 +789,19 @@ func _climb(lad: Ladder, up: bool) -> bool:
 	var end_y: float = lad.top_position().y if up else lad.bottom_position().y
 	var away: Vector3 = Vector3(grab.x - lad.global_position.x, 0.0, grab.z - lad.global_position.z)
 	away = away.normalized() if away.length() > 0.01 else (Vector3.FORWARD if up else Vector3.BACK)
+	# The side the ladder faces first, then the other three: the OF rope ladder's foot faces the hoist shaft (C
+	# f385a22c), so its facing-side stand point is inside the walled shaft once the car has gone up.
+	var side: Vector3 = Vector3(-away.z, 0.0, away.x)
 	var approach: Vector3 = pilot.stand_point(grab + away * 1.5)
+	for d: Vector3 in [away, -away, side, -side]:
+		var pt: Vector3 = pilot.stand_point(grab + d * 1.5)
+		var path: PackedVector3Array = pilot.nav_path(pt)
+		if not path.is_empty() and pilot.flat_dist(path[path.size() - 1], pt) < 0.3 and _path_clear(path):
+			if d != away:
+				note("ladder %s: approach from the %s side (the facing side has no path)" % [lad.name,
+					"back" if d == -away else "flank"])
+			approach = pt
+			break
 	if not await _go(approach, 0.4, 120.0):
 		note("ladder %s approach not reached (%s)" % [lad.name, Po5Pilot._v(approach)])
 		return false
@@ -868,6 +880,18 @@ func _watch_ladders() -> void:
 			note("FINDING a walk attached to %s (free climb) at %s" % [_stray.name,
 				Po5Pilot._v(pilot.crew.global_position)])
 		await pilot.tick()
+
+
+## Every leg of `path` is free at knee height (the navmesh can run through colliders C added after the bake).
+func _path_clear(path: PackedVector3Array) -> bool:
+	var space: PhysicsDirectSpaceState3D = pilot.crew.get_world_3d().direct_space_state
+	for k: int in range(1, path.size()):
+		var q: PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.create(path[k - 1] + Vector3(0, 0.3, 0),
+			path[k] + Vector3(0, 0.3, 0))
+		q.exclude = [pilot.crew.get_rid()]
+		if not space.intersect_ray(q).is_empty():
+			return false
+	return true
 
 
 ## The crew is on `lad`: the prefab's climb (bots, legacy) or the human's free climb (D-145).
