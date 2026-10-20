@@ -37,7 +37,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | door_frame_gap | PASS | 0 | 0 |
 | frame_proud | PASS | 0 | 0 |
 | seam_gaps | PASS | 0 | 0 |
-| furniture_logic | PASS | 0 | 5 |
+| furniture_logic | PASS | 0 | 6 |
 
 ## contract_nodes: Contract nodes
 
@@ -54,14 +54,14 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## floating: Nothing floats
 
-- 1875 props checked
+- 1927 props checked
 
 - WARN `Variants/Group_escape/Slot_esc_van_dock/EscapeDock` @ (10.50, 0.00, -3.00): prop has no geometry or collision; skipped
 - WARN `Variants/Group_escape/Slot_esc_van_tannery/EscapeTannery` @ (51.00, 0.00, 6.50): prop has no geometry or collision; skipped
 
 ## clipping: Nothing clips
 
-- 1876 props, 94 doors checked
+- 1928 props, 94 doors checked
 
 - WARN `Gameplay/Devices/Lid` @ (24.00, 0.00, 14.60): door has no Leaf node; swing arc not checked
 
@@ -202,12 +202,12 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## slopes: No walkable slope < 50° outside the play mesh
 
-- 561 x 569 columns (0.25 m), 307200 surface samples, 0 collider(s) with reachable walkable surfaces outside play
+- 561 x 569 columns (0.25 m), 307633 surface samples, 0 collider(s) with reachable walkable surfaces outside play
 
 
 ## navmesh: Navmesh
 
-- navmesh: 3772 polygons, cell 0.10/0.10 m
+- navmesh: 4007 polygons, cell 0.10/0.10 m
 - 433 markers checked
 | room | walkable samples | covered | coverage |
 |---|---|---|---|
@@ -223,7 +223,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `Rooms/RoomBB` | 285 | 285 | 100% |
 | `Rooms/RoomRC` | 206 | 206 | 100% |
 | `Rooms/RoomVC` | 227 | 227 | 100% |
-| `Rooms/RoomVT` | 579 | 576 | 99% |
+| `Rooms/RoomVT` | 579 | 573 | 99% |
 | `Rooms/RoomSD` | 510 | 510 | 100% |
 | `Rooms/RoomLD` | 276 | 274 | 99% |
 | `Rooms/RoomE1` | 17 | 17 | 100% |
@@ -235,13 +235,13 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `Rooms/RoomMO` | 114 | 114 | 100% |
 | `Rooms/RoomBC` | 225 | 225 | 100% |
 | `Rooms/RoomLO` | 214 | 214 | 100% |
-| `Rooms/RoomTW` | 720 | 708 | 98% |
+| `Rooms/RoomTW` | 720 | 705 | 98% |
 | `Rooms/RoomPC` | 212 | 212 | 100% |
 | `Rooms/RoomCN1` | 102 | 102 | 100% |
 | `Rooms/RoomCN2` | 93 | 93 | 100% |
 | `Rooms/RoomAV` | 173 | 173 | 100% |
-| `Rooms/RoomBH` | 412 | 412 | 100% |
-| `Rooms/RoomVE` | 105 | 105 | 100% |
+| `Rooms/RoomBH` | 404 | 404 | 100% |
+| `Rooms/RoomVE` | 93 | 91 | 98% |
 | `Rooms/RoomBM` | 148 | 148 | 100% |
 | `Rooms/RoomPW` | 86 | 86 | 100% |
 | `Rooms/RoomNA` | 98 | 98 | 100% |
@@ -281,7 +281,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `Rooms/RoomX5` | 734 | 734 | 100% |
 | `Rooms/RoomHH` | 6 | 6 | 100% |
 | `Rooms/RoomRP` | 341 | 341 | 100% |
-| `Rooms/RoomX1` | 786 | 786 | 100% |
+| `Rooms/RoomX1` | 764 | 764 | 100% |
 | `Rooms/RoomX2` | 775 | 775 | 100% |
 | `Rooms/RoomX3` | 777 | 777 | 100% |
 
@@ -337,9 +337,9 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## hide_los: Hidden spots are hidden by LOS sample (D-128)
 
-- `Gameplay/Lines/HideCounterW`: crouched, 27 sample(s), 570 observer point(s) in BH, points 1.00, 1.05 m: hidden
-- `Gameplay/Lines/HideCounterE`: crouched, 27 sample(s), 570 observer point(s) in BH, points 1.00, 1.05 m: hidden
-- `Gameplay/Lines/HideGallery`: crouched, 61 sample(s), 570 observer point(s) in BH, points 1.00, 1.05 m: hidden
+- `Gameplay/Lines/HideCounterW`: crouched, 27 sample(s), 569 observer point(s) in BH, points 1.00, 1.05 m: hidden
+- `Gameplay/Lines/HideCounterE`: crouched, 27 sample(s), 569 observer point(s) in BH, points 1.00, 1.05 m: hidden
+- `Gameplay/Lines/HideGallery`: crouched, 61 sample(s), 569 observer point(s) in BH, points 1.00, 1.05 m: hidden
 - `Gameplay/Lines/HideRecordsAisle`: crouched, 23 sample(s), 96 observer point(s) in BB, points 1.00, 1.05 m: hidden
 
 
@@ -362,7 +362,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## viewmodel_lit: Interior key lights light the viewmodel (D-095)
 
-- 635 interior key light(s) in 66 room(s); 0 lack `viewmodel_lit`
+- 649 interior key light(s) in 67 room(s); 0 lack `viewmodel_lit`
 
 
 ## door_frame_gap: Doors and windows fill their wall openings (no gaps, no clipping)
@@ -389,5 +389,6 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 - WARN `Gameplay/Devices/LidDrill` @ (24.00, 1.00, 14.60): door_clear: in the clear zone of door `Gameplay/Devices/Lid` (1.0 / 1.0 m each side, leaf width 2.40 m) by 1.01 m (gameplay prefab / variant content: review)
 - WARN `Gameplay/Lifts/CashLift` @ (11.50, -3.95, 1.55): door_clear: in the clear zone of door `Gameplay/Doors/CashLiftDoorB` (1.0 / 1.0 m each side, leaf width 1.82 m) by 0.21 m (gameplay prefab / variant content: review)
 - WARN `Gameplay/Lifts/CashLift` @ (11.50, -3.95, 1.55): use_point: stands in the user's spot of `Gameplay/Doors/CashLiftDoorB` (UsePoint @ (11.50, -4.00, 2.30)) by 0.11 m (gameplay prefab / variant content: review)
+- WARN `Gameplay/Lifts/Hoist/LandingPanelVisual1` @ (24.67, 1.10, 15.33): door_clear: in the clear zone of door `Gameplay/Devices/Lid` (1.0 / 1.0 m each side, leaf width 2.40 m) by 0.33 m (gameplay prefab / variant content: review)
 - WARN `Gameplay/Lifts/Hoist/Rig/HoleGuardE` @ (24.62, 0.75, 14.62): door_clear: in the clear zone of door `Gameplay/Devices/Lid` (1.0 / 1.0 m each side, leaf width 2.40 m) by 0.60 m (gameplay prefab / variant content: review)
 - WARN `Gameplay/Lifts/Hoist/Rig/HoleGuardW` @ (23.38, 0.75, 14.62): door_clear: in the clear zone of door `Gameplay/Devices/Lid` (1.0 / 1.0 m each side, leaf width 2.40 m) by 0.60 m (gameplay prefab / variant content: review)
