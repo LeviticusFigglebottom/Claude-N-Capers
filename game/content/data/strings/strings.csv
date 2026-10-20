@@ -3688,7 +3688,8 @@ ui.hud.device.thermite,THERMITE
 ui.hud.device.escape,ESCAPE
 ui.hud.device.wait,WAIT
 ui.crew.default_weapon,Standard issue
-ui.crew.default_armor,Standard vest
+ui.crew.default_armor,Standard armor
+ui.crew.default_named,Standard: {name}
 ui.crew.no_mask,No mask
 ui.crew.any_heister,Any free heister
 ui.crew.outfit.suit_charcoal,"Classic Suit, Charcoal"
