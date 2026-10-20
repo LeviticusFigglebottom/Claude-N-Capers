@@ -3,6 +3,40 @@
 Owner: ENV A. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-20 23:50 UTC: OF co-op parity, hub loops, DB / OF pilot fixes, D-145 Tense vs PD2 Hard (env/a-core 441b6870)
+### Done (pushed)
+- OF hub loops for rover_hall (BCMid) and rover_gallery (UCMid, loop (c) SA up -> XC -> PR -> XL -> SB down) (b7052ebd).
+- OF co-op parity test, host + client process, every milestone (dbe53781). It caught a client bug: BagLift cars did not move on
+  clients; they now mirror landing / destination / trip_t (9a0bf994).
+- D-145 Tense vs PD2 Hard, LEAD go on (a)-(e) (4a6780f4):
+  - PD2 hit grace: 0.45 s, bots 0.35 s, Routine / Tense only.
+  - TAC Light / Stinger damage 8 at Tense; TAC Light 80 hp, Patrol / Security Officer 40 hp.
+  - A tase downs after 10 s.
+  - Bots regen 25 %/s after 3 s.
+  - P measured GH Tense 2/3 WIN on it, median 1 down.
+- Bots revive over an obstacle: they revive from up to 2.3 m once stalled for 1 s (e640362d; P's GH Tense 4501).
+- PO-5 pilot / flow (harness):
+  - Pilot fights from the floor only from Hazardous (86fada32).
+  - Doorway crossing side and hysteresis (98e55725; B's DB cage and gatehouse stalls). DB Routine seed 2 PASS.
+  - No false "not reachable" when the objective ended mid-walk (7b91a005).
+  - Fetches the tool bags a DrillPoint is owed (bcafd612; OF drill parts).
+  - Climbs ladders with P's free climb (8aea4ae3).
+  - Cataclysm / Lethal opened in memory for runs (2daa35d6, 441b6870).
+  - Logs bot revive state while the pilot is down (a039c380).
+- Trunk r249 merged (6f9c90a1); r250 merged in 4a6780f4.
+### In progress
+- OF real-bot hard runs (headless auto_loud, x1.0, solo + 3 bots):
+  - Haz 5 FAIL three times: drill parts (fixed), the hole ladder (fixed), then custody at 603 s.
+  - Haz 1 FAIL: custody at 287 s.
+  - Cata 5/6 queued after GH Tense 4501 (revive fix).
+- LEAD ask after these: the hit grace on Hazardous+, one headless run each, for the extension decision.
+### Needs
+- LEAD: the L2.2 row and D-145 text for the hit grace (values above).
+- LEAD: this session cannot message the lead session ("trusted device"); reports go through P.
+### Gotchas
+- Never reorder local commits (`git reset`) while a run reads the working tree. Use a worktree (scratchpad wt_d145).
+- A queue script waiting on an "END x" log line must use a run name never used before (old lines match).
+
 ## 2026-10-20 18:45 UTC: resume (session_015kTjrZsUFn7gLqNVwAXdkh); OF-A6 phase 2, hub loops, D-145 / D-142 (env/a-core fc48df26)
 ### Done (pushed)
 - Resume: env/a-core fast-forwarded, wip/a-of-a6 merged, trunk r245 (e219930b) merged (a75c0f12).
@@ -288,16 +322,3 @@ runs: none (GN probe 3 stopped, ND attempt 24 not started).
 - L2.12 should read: "Police arrest a downed heister who is not shooting: after 2 s down without firing, a cop at
   arm's length holds a 1.5 s arrest; firing from the floor or hurting / stunning the cop interrupts it (◇ timings)."
 - S1.1 (PO-11): while unmasked a shout only marks (stealth.casing_can_mark); it never intimidates civilians.
-
-## 2026-10-14 05:00 UTC — PO-12 drills visible, C11, director retreat, ND/stealth gates in progress
-### Done (pushed; last 0f1bf19c)
-- PO-12: DrillPoint shows the catalog drill (G.PROPS_DIR + drill/prop_drill_device.tscn) while placed; Bit spins,
-  red jam mark, removed when done; per-point `device_scene` override.
-- C11: two co-op heists on one kept session (teardown notices, heist token, replication member set, Net.clear_ai).
-- PO-5: FADE retreat to unseen points; PO-B-C7 client objectives; QC-61 walkable windows + sash_travel_m;
-  Glasshouse drill_relock min difficulty; loud flows shoot while downed.
-### Needs (for the board / ENV D)
-- SAW device prop: saw DrillPoints have no default device visual yet (only the drill exists); ENV D to model
-  `prop_saw_device` with a spinning `Bit`/blade node, then DrillPoint uses it for Device.SAW.
-### In progress
-- ND loud attempt 8 (windowed); gh_stealth iteration (helper); PO-10 NPC separation + PO-11 casing civilians (helpers).
