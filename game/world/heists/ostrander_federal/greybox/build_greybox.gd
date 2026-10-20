@@ -85,6 +85,8 @@ func _build() -> void:
 		print("seat: " + line)
 	_build_environment(n("Lighting"))
 	preload("res://world/heists/ostrander_federal/greybox/of_art_rooms.gd").new(self).call(&"build")  # OF-C2 lane B
+	preload("res://world/heists/ostrander_federal/greybox/of_dress_d.gd").new(self).call(&"build")  # OF-C2 vault / ops D
+	preload("res://world/heists/ostrander_federal/greybox/of_finish.gd").new(self).call(&"build")  # OF-C2 surfaces D
 	var polys: int = await _bake(nav)
 	if polys <= 0:
 		_fail("navmesh bake produced no polygons")
