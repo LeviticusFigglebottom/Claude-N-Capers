@@ -1,0 +1,6 @@
+import errors: 0
+Tense seed=4501 rc=1 downs=3 custody=1 win_lines=0 | [PO5 1099.8s] RESULT FAIL (code 1) flow=auto_loud heist=Golden Hour seed=4501
+Tense seed=4502 rc=1 downs=2 custody=1 win_lines=0 | [PO5 266.7s] RESULT FAIL (code 1) flow=auto_loud heist=Golden Hour seed=4502
+Tense seed=4503 rc=1 downs=2 custody=1 win_lines=0 | [PO5 301.8s] RESULT FAIL (code 1) flow=auto_loud heist=Golden Hour seed=4503
+
+[exited with code 0]
