@@ -21,7 +21,7 @@
 class_name SaveService
 extends RefCounted
 
-const CURRENT_VERSION: int = 9
+const CURRENT_VERSION: int = 10
 const DEFAULT_ROOT_DIR: String = "user://profiles"
 ## v8: the starter primary granted to (and, into an empty primary slot, equipped on) older profiles.
 const STARTER_PRIMARY: String = "weapon.corsair_ar"
@@ -133,6 +133,8 @@ static func migrate(data: Dictionary) -> Dictionary:
 				d = _migrate_7_to_8(d)
 			8:
 				d = _migrate_8_to_9(d)
+			9:
+				d = _migrate_9_to_10(d)
 			_:
 				Log.error(&"save", "no migration from version %d" % v)
 				return d
@@ -273,6 +275,14 @@ static func _migrate_8_to_9(d: Dictionary) -> Dictionary:
 				(f["completed"] as Array).append(String(id))
 				(f["last_run"] as Dictionary)[String(id)] = 0
 	d["freshness"] = f
+	return d
+
+
+## v10 (D-145.4 / PO-19): the crew bots' loadouts, every bot slot empty (the bots' defaults). A save that already
+## has `crew_loadouts` keeps it.
+static func _migrate_9_to_10(d: Dictionary) -> Dictionary:
+	if not d.get("crew_loadouts") is Array:
+		d["crew_loadouts"] = ProfileSchema.empty_crew_loadouts()
 	return d
 
 

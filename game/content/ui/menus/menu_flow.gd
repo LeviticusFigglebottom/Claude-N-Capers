@@ -50,6 +50,7 @@ const HUB_SCENE: PackedScene = preload("res://content/ui/hub/hub_menu.tscn")
 const BOARD_SCENE: PackedScene = preload("res://content/ui/board/board_screen.tscn")
 const LOBBY_SCENE: PackedScene = preload("res://content/ui/lobby/lobby_screen.tscn")
 const ACHIEVEMENTS_SCENE: PackedScene = preload("res://content/ui/achievements/achievements_screen.tscn")
+const CREW_SCENE: PackedScene = preload("res://content/ui/crew/crew_screen.tscn")
 const OPTIONS_SCENE: PackedScene = preload("res://content/ui/menus/options_screen.tscn")
 const NOTORIETY_SCENE: PackedScene = preload("res://content/ui/notoriety/notoriety_screen.tscn")
 const JUKEBOX_SCENE: PackedScene = preload("res://content/ui/jukebox/jukebox_screen.tscn")
@@ -167,6 +168,7 @@ func _ready() -> void:
 	safehouse.pause_menu.station_requested.connect(open_station)
 	safehouse.pause_menu.options_requested.connect(options_menu.open)
 	safehouse.pause_menu.achievements_requested.connect(_open_achievements)
+	safehouse.pause_menu.crew_requested.connect(_open_crew)
 	safehouse.pause_menu.main_menu_requested.connect(_on_hub_back)
 	heist_select = _add(SELECT_SCENE) as HeistSelect
 	stub_screen = _add(STUB_SCENE) as StubScreen
@@ -175,6 +177,7 @@ func _ready() -> void:
 	hub.continue_requested.connect(_quick_play)
 	hub.station_requested.connect(open_station)
 	hub.achievements_requested.connect(_open_achievements)
+	hub.crew_requested.connect(_open_crew)
 	hub.options_requested.connect(options_menu.open)
 	hub.notoriety_requested.connect(_open_notoriety)
 	hub.career_requested.connect(_open_career)
@@ -288,6 +291,19 @@ func _open_board() -> void:
 func _open_achievements() -> void:
 	var screen: AchievementsScreen = ACHIEVEMENTS_SCENE.instantiate() as AchievementsScreen
 	screen.setup(SaveService.load_profile(profile_slot))
+	screen.visible = false
+	add_child(screen)
+	screen.back_requested.connect(func() -> void:
+		_free_screen(screen)
+		show_hub())
+	show_screen(screen)
+
+
+## PO-19 Bot Crew screen from the hub's profile panel / the safehouse pause menu; it saves every change itself.
+## Back frees it and returns to the hub.
+func _open_crew() -> void:
+	var screen: CrewScreen = CREW_SCENE.instantiate() as CrewScreen
+	screen.setup(_menu_profile(), profile_slot)
 	screen.visible = false
 	add_child(screen)
 	screen.back_requested.connect(func() -> void:
@@ -619,7 +635,7 @@ func launch_options_for(loadout: Loadout) -> Dictionary:
 	var resolved: Loadout = LoadoutResolver.resolve(loadout)
 	WeaponFinishes.stamp(resolved, _menu_profile())  # B7-04: Loadout.weapon_finishes
 	return build_launch_options(ai, Net.local_slot(), resolved, preplan, is_pro,
-			MusicCatalog.resolve_choice(_menu_profile()))
+			MusicCatalog.resolve_choice(_menu_profile()), _menu_profile())
 
 
 ## Direct launch (D-024): `args` from LaunchArgs.parse(). Skips the menus and launches `heist_id`
@@ -668,8 +684,9 @@ func launch(heist_id: StringName, difficulty: int, loadout: Loadout, run_seed: i
 	var profile: PlayerProfile = SaveService.load_profile()
 	WeaponFinishes.stamp(resolved, _menu_profile())  # B7-04: Loadout.weapon_finishes (teammates / A's WeaponVisuals)
 	Net.start_solo(profile.profile_name, ai)
+	CrewLoadouts.source = profile  # PO-19: A's runtime reads the bots' loadouts through CrewLoadouts.for_slot
 	var options: Dictionary = build_launch_options(ai, Net.local_slot(), resolved, plan, pro,
-			MusicCatalog.resolve_choice(profile))
+			MusicCatalog.resolve_choice(profile), profile)
 	visible = false
 	_spawn_in_heist_ui()
 	_hand_heisters(options)
@@ -707,14 +724,18 @@ func _show_loading(heist_id: StringName, difficulty: int) -> CanvasLayer:
 ## D-073: `resolved.heister` is set to the player's pick (no preference = the first heister in roster order)
 ## and the AI teammates get the remaining heisters as loadouts of their own (Heisters.solo / ai_loadouts:
 ## ENV A's default AI loadout + `heister`), so every launched slot has a distinct heister.
+## PO-19: `crew` = the player's profile: the bots carry its crew loadouts (CrewLoadouts; outfit picks first, then
+## each AI slot's primary / armor / mask); null keeps A's default bots.
 static func build_launch_options(ai_teammates: int, local_slot: int, resolved: Loadout,
-		plan: Dictionary = {}, pro: bool = false, music: StringName = &"") -> Dictionary:
+		plan: Dictionary = {}, pro: bool = false, music: StringName = &"", crew: PlayerProfile = null) -> Dictionary:
 	var loadouts: Dictionary = {local_slot: resolved}
 	if resolved != null:
-		var heisters: Dictionary = Heisters.solo(resolved.heister, local_slot, ai_teammates)
+		var ai_slots: Array[int] = Heisters.solo_ai_slots(local_slot, ai_teammates)
+		var heisters: Dictionary = Heisters.solo(resolved.heister, local_slot, ai_teammates,
+				CrewLoadouts.outfit_picks(crew, ai_slots))
 		resolved.heister = StringName(heisters[local_slot])
 		heisters.erase(local_slot)
-		loadouts.merge(Heisters.ai_loadouts(heisters))
+		loadouts.merge(Heisters.ai_loadouts(heisters, crew))
 	var options: Dictionary = {"ai_teammates": ai_teammates, "loadouts": loadouts, "music_track": music}
 	if not plan.is_empty():
 		options["preplan"] = plan
@@ -1126,8 +1147,9 @@ func launch_coop(info: Dictionary) -> void:
 	_heist_id = info["heist"]
 	_difficulty = int(info["difficulty"])
 	is_pro = bool(info["is_pro"])
+	CrewLoadouts.source = _menu_profile()  # PO-19: the host's crew loadouts arm the bots
 	var options: Dictionary = build_coop_launch_options(lobby.state.launch_loadouts(), preplan, is_pro,
-			MusicCatalog.resolve_choice(_menu_profile()), Heisters.ai_loadouts(lobby.state.ai_heisters()))
+			MusicCatalog.resolve_choice(_menu_profile()), Heisters.ai_loadouts(lobby.state.ai_heisters(), _menu_profile()))
 	DropInFlow.apply_host_policy(get_tree(), lobby.state.dropin_policy)  # B6-04: A's service decides drop-ins
 	visible = false
 	_spawn_in_heist_ui()

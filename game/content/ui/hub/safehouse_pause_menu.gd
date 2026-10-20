@@ -2,13 +2,15 @@
 ## (SafehouseHost.open_pause); the walker stays paused behind it. Resume (and Esc / gamepad B) ->
 ## back_requested (MenuFlow.show_hub resumes walking); Quick Stations jump straight to any station's
 ## screen (station_requested(id) -> MenuFlow.open_station; its Back returns to walking on the spot);
-## Options, Achievements and Main Menu (leaves the safehouse) as on the 2D hub's profile panel.
+## Options, Achievements, Bot Crew (PO-19) and Main Menu (leaves the safehouse) as on the 2D hub's profile panel.
 class_name SafehousePauseMenu
 extends UiScreen
 
 signal station_requested(station_id: StringName)
 signal options_requested()
 signal achievements_requested()
+## PO-19: the Bot Crew screen.
+signal crew_requested()
 signal main_menu_requested()
 
 ## Quick station list (MenuFlow passes its HubStationList; default: data/ui/hub_stations.tres).
@@ -16,6 +18,7 @@ var stations: HubStationList = null
 var resume_button: Button
 var options_button: Button
 var achievements_button: Button
+var crew_button: Button
 var main_menu_button: Button
 ## Station id -> its quick-station Button.
 var station_buttons: Dictionary = {}
@@ -51,9 +54,11 @@ func build_ui() -> void:
 	options_button.pressed.connect(options_requested.emit)
 	achievements_button = UiBuild.button(&"ui.hub.achievements")
 	achievements_button.pressed.connect(achievements_requested.emit)
+	crew_button = UiBuild.button(&"ui.hub.crew")
+	crew_button.pressed.connect(crew_requested.emit)
 	main_menu_button = UiBuild.button(&"ui.hub.main_menu")
 	main_menu_button.pressed.connect(main_menu_requested.emit)
-	for b: Button in [options_button, achievements_button, main_menu_button]:
+	for b: Button in [options_button, achievements_button, crew_button, main_menu_button]:
 		v.add_child(b)
 		focus_chain.append(b)
 	var center: CenterContainer = CenterContainer.new()

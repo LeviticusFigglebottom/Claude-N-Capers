@@ -1,5 +1,5 @@
 {
-	"version": 9,
+	"version": 10,
 	"profile_name": "Crew",
 	"cash": 0,
 	"stash": 0,
@@ -40,6 +40,7 @@
 	"career": {"totals": {}, "heists": {}, "difficulties": {}, "bags": {}, "weapons": {}},
 	"freshness": {"recent": [], "runs": 0, "last_run": {}, "completed": []},
 	"weapon_finishes": {},
+	"crew_loadouts": [{"weapon": "", "mods": [], "armor": "", "mask": "", "outfit": ""}, {"weapon": "", "mods": [], "armor": "", "mask": "", "outfit": ""}, {"weapon": "", "mods": [], "armor": "", "mask": "", "outfit": ""}],
 	"stats": {
 		"heists_completed": 0,
 		"heists_failed": 0

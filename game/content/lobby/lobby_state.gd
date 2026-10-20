@@ -351,7 +351,14 @@ func heister_assignment() -> Dictionary:
 	for slot: int in range(MAX_CREW):
 		if not order.has(slot) and not is_human(slot):
 			fill.append(slot)
-	return Heisters.assign(order, picks, fill)
+	# PO-19: the bots wear the host's crew outfits (bot slot i = the i-th fill seat), heisters still one per crew.
+	var crew_l: Array = _host_crew()
+	var fill_picks: Dictionary = {}
+	for i: int in range(mini(fill.size(), crew_l.size())):
+		var o: String = String((crew_l[i] as Dictionary).get("outfit", ""))
+		if o != "":
+			fill_picks[fill[i]] = StringName(o)
+	return Heisters.assign(order, picks, fill, fill_picks)
 
 
 ## The heister `slot` launches as (&"" for a human without a summary yet).
@@ -380,6 +387,23 @@ func ai_heisters() -> Dictionary:
 	return out
 
 
+## PO-19: the host's crew bot loadouts from its summary (CrewLoadouts.summary entries; [] before it arrives).
+func _host_crew() -> Array:
+	return (summaries.get(host_slot, {}) as Dictionary).get("crew", []) as Array
+
+
+## PO-19: the crew bot entry an AI / empty seat carries (its index among the non-human seats; {} for a human).
+func _bot_entry(slot: int) -> Dictionary:
+	if is_human(slot):
+		return {}
+	var i: int = 0
+	for s: int in range(slot):
+		if not is_human(s):
+			i += 1
+	var crew_l: Array = _host_crew()
+	return (crew_l[i] as Dictionary).duplicate(true) if i < crew_l.size() else {}
+
+
 ## One row per crew slot 0..MAX_CREW-1 for the lobby screen (ids, not text; see item_names()).
 func slot_view(slot: int) -> Dictionary:
 	var c: Dictionary = crew.get(slot, {}) as Dictionary
@@ -393,6 +417,7 @@ func slot_view(slot: int) -> Dictionary:
 		"heister_pick": StringName(String((s.get("loadout", {}) as Dictionary).get("heister", ""))),
 		"loadout": (s.get("loadout", {}) as Dictionary).duplicate(true),
 		"legal": is_legal(slot), "errors": (errors.get(slot, []) as Array).duplicate(),
+		"bot": _bot_entry(slot),
 	}
 	return view
 
@@ -410,7 +435,7 @@ static func summary_from(loadout: Loadout, profile: PlayerProfile) -> Dictionary
 	var ld: Dictionary = loadout_to_dict(l)
 	ld["weapon_finishes"] = WeaponFinishes.sanitize_map(WeaponFinishes.for_loadout(profile, loadout))  # B7-04
 	return {"name": profile.profile_name, "level": profile.level, "notoriety": profile.notoriety,
-			"music": String(MusicCatalog.resolve_choice(profile)), "loadout": ld}
+			"music": String(MusicCatalog.resolve_choice(profile)), "loadout": ld, "crew": CrewLoadouts.summary(profile)}
 
 
 ## JSON-safe loadout input (no resolved numbers; every peer resolves with LoadoutResolver).
@@ -501,7 +526,28 @@ static func sanitize_summary(data: Dictionary) -> Dictionary:
 	var music: Variant = data.get("music", "")
 	return {"name": String(data["name"]).strip_edges().left(max_len), "level": int(data["level"]),
 			"notoriety": int(rank), "music": String(music).left(ProfileSchema.SHORT_ID_MAX_LENGTH) if music is String else "",
-			"loadout": out}
+			"loadout": out, "crew": _sanitize_crew(data.get("crew", []))}
+
+
+## PO-19: a summary's crew bot entries, cosmetic for the other peers (the host validated them against its profile):
+## at most CrewLoadouts.SLOTS dicts of short id strings (+ a mods list); anything malformed is dropped.
+static func _sanitize_crew(v: Variant) -> Array:
+	var out: Array = []
+	if not v is Array:
+		return out
+	for e: Variant in v as Array:
+		if out.size() >= CrewLoadouts.SLOTS or not e is Dictionary:
+			break
+		var d: Dictionary = e as Dictionary
+		var clean: Dictionary = {"mods": []}
+		for f: String in ["weapon", "armor", "mask", "outfit"]:
+			var x: Variant = d.get(f, "")
+			clean[f] = String(x).left(ProfileSchema.SHORT_ID_MAX_LENGTH) if x is String else ""
+		for m: Variant in d.get("mods", []) as Array if d.get("mods") is Array else []:
+			if m is String:
+				(clean["mods"] as Array).append(String(m).left(ProfileSchema.SHORT_ID_MAX_LENGTH))
+		out.append(clean)
+	return out
 
 
 ## Legality problems of a sanitized summary ([] = legal), for logs and the slot's "illegal" flag:
