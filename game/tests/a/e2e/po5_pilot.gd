@@ -794,6 +794,14 @@ func open_door(door: Door) -> bool:
 	return ok
 
 
+## D-145 (P's GH Tense 4502): fight from the floor only where police can cuff a downed player who is not shooting
+## (L2.12, from police_cuff_min_difficulty up). Below that, shots from the floor only make the pilot a target (L2.5)
+## and the bleed-out pool drains in seconds; a player lies still and waits for the revive.
+func shoots_from_floor() -> bool:
+	var rt: HeistRuntime = HeistRuntime.of(crew)
+	return rt == null or rt.difficulty >= CustodyTweak.data().police_cuff_min_difficulty
+
+
 ## Nearest live enemy within `range_m` the crew can see (an eye ray to its head, chest or hips hits it first:
 ## a cop behind bars or a counter still shows some of its body, like it does to a player).
 func nearest_enemy(range_m: float) -> NpcBase:
