@@ -56,6 +56,14 @@ VARIANTS = {
     "prop_of_teller_bay_closed": {"fn": "teller_bay", "closed": True,
                                   "cat": {"kind": "landmark", "place": "none", "group": _G, "pin_only": True,
                                           "surface": "wood"}},
+    # OF-C2: the two run-end windows (0 and 11, closed) against the TW side walls: the customer ledge stops END_GAP
+    # short of the wall face at the run end (the side-wall doors' architraves lie in that plane: no coplanar faces).
+    "prop_of_teller_bay_closed_endw": {"fn": "teller_bay", "closed": True, "end": -1,
+                                       "cat": {"kind": "landmark", "place": "none", "group": _G, "pin_only": True,
+                                               "surface": "wood"}},
+    "prop_of_teller_bay_closed_ende": {"fn": "teller_bay", "closed": True, "end": 1,
+                                       "cat": {"kind": "landmark", "place": "none", "group": _G, "pin_only": True,
+                                               "surface": "wood"}},
     "prop_of_vault_portal": {"fn": "vault_portal", "cat": {"kind": "landmark", "place": "none", "group": _G,
                                                            "pin_only": True, "surface": "metal"}},
     "prop_of_box_unit_w950": {"fn": "box_unit", "cat": {"kind": "deposit_boxes", "place": "none", "group": _G,
@@ -303,6 +311,7 @@ def _bays(run: tuple[float, float]) -> list[float]:
 
 
 BAY_W = (RUNS[0][1] - RUNS[0][0]) / BAYS
+END_GAP = 0.028   # OF-C2: a run-end ledge short of the side wall (clear of a t20 frame's 24 mm plinth blocks)
 BAY_REF = RUNS[0][0] + BAY_W / 2   # the bay modules are modelled about the first bay's centre (placed per bay)
 
 
@@ -318,17 +327,20 @@ def _teller_bay(k: Kit, p: dict) -> None:
     br = o.part(bevel=0.0015)
     ls = o.part(bevel=0.006)
     a, b = BAY_REF - BAY_W / 2, BAY_REF + BAY_W / 2
+    # the ledge's ends: a run-end module's outer end END_GAP short of the side wall
+    la = a + END_GAP if p.get("end", 0) < 0 else a
+    lb = b - END_GAP if p.get("end", 0) > 0 else b
     # customer ledge: walnut carcass inside the collider, stone plinth, marble top (the full collider top)
-    m.box(wd, (a, 0.12, Z_SCR1), (b, 1.0, Z_LEDGE - 0.02), "walnut")
-    m.box(st, (a, 0.0, Z_SCR1), (b, 0.12, Z_LEDGE - 0.012), "stone_dark")
-    m.box(st, (a, 1.0, Z_SCR1), (b, 1.05, Z_LEDGE), "marble")
-    m.box(br, (a, 0.12, Z_LEDGE - 0.02), (b, 0.145, Z_LEDGE - 0.002), "of_bronze")
-    m.box(br, (a, 0.965, Z_LEDGE - 0.02), (b, 0.99, Z_LEDGE - 0.002), "of_bronze")
+    m.box(wd, (la, 0.12, Z_SCR1), (lb, 1.0, Z_LEDGE - 0.02), "walnut")
+    m.box(st, (la, 0.0, Z_SCR1), (lb, 0.12, Z_LEDGE - 0.012), "stone_dark")
+    m.box(st, (la, 1.0, Z_SCR1), (lb, 1.05, Z_LEDGE), "marble")
+    m.box(br, (la, 0.12, Z_LEDGE - 0.02), (lb, 0.145, Z_LEDGE - 0.002), "of_bronze")
+    m.box(br, (la, 0.965, Z_LEDGE - 0.02), (lb, 0.99, Z_LEDGE - 0.002), "of_bronze")
     # raised fielded panel: stiles / rails flush with the face, the field 8 mm back
     x0, x1 = a + 0.06, b - 0.06
     m.box(wd, (x0, 0.17, Z_LEDGE - 0.02), (x1, 0.94, Z_LEDGE - 0.004), "walnut")
     m.box(wd, (x0 + 0.1, 0.25, Z_LEDGE - 0.004), (x1 - 0.1, 0.86, Z_LEDGE - 0.0), "walnut")
-    for lo, hi in ((a, a + 0.02), (b - 0.02, b)):
+    for lo, hi in ((la, la + 0.02), (lb - 0.02, lb)):
         m.box(br, (lo, 0.145, Z_LEDGE - 0.02), (hi, 0.965, Z_LEDGE - 0.001), "of_bronze")
     # screen base above the ledge and the work tops (y 1.00-1.50): walnut, a bronze cap rail
     m.box(wd, (a, 1.0, Z_SCR0), (b, 1.47, Z_SCR1), "walnut")
@@ -482,13 +494,14 @@ def _box_unit(k: Kit, p: dict) -> None:
 
 def _box_bank(k: Kit, p: dict) -> None:
     """VT wall bank frame (wall prop, back y 0 on the vault wall, bottom centre): the dark backing seen in the door
-    gaps (1-4 mm off the wall; the tiles span 0..+17 mm), a stone plinth on the floor, steel end pilasters, a brass band
-    at 1.9-2.0 and a bronze cornice."""
+    gaps (6-8 mm off the wall, inside the 0..+17 mm tiles: OF-C2, its back face clear of the tiles' and the deposit
+    drawers' backs on the wall, which z-fought it 1 mm off), a stone plinth on the floor, steel end pilasters, a brass
+    band at 1.9-2.0 and a bronze cornice."""
     w = float(p["w"])
     o = k.obj("Bank")
     a = o.part(bevel=0.0)
     s = o.part(bevel=0.003)
-    a.bx((-w / 2, 0.001, 0.1), (w / 2, 0.004, 1.9), "metal_dark")
+    a.bx((-w / 2, 0.006, 0.1), (w / 2, 0.008, 1.9), "metal_dark")
     s.bx((-w / 2 - 0.06, 0.001, 0.0), (w / 2 + 0.06, 0.03, 0.1), "stone_dark")
     for sx in (-1.0, 1.0):
         x0, x1 = sorted((sx * w / 2, sx * (w / 2 + 0.06)))

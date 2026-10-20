@@ -457,7 +457,8 @@ const SITE_BOXES: Array = [
 	["Grade", "GradeLane", [-16.0, -1.5, -10.0], [48.2, 0.0, -0.2], "paving"],
 	["Grade", "GradeTannery", [48.2, -1.5, -14.0], [62.0, 0.0, 38.0], "asphalt"],
 	["Grade", "GradeApron", [0.0, -1.5, 36.2], [48.2, 0.0, 38.0], "paving"],
-	["Grade", "GradePlazaW", [-16.0, -1.5, 36.0], [18.0, -0.75, 48.0], "paving"],
+	["Grade", "GradePlazaW", [-16.0, -1.5, 36.0], [0.0, -0.75, 48.0], "paving"],
+	["Grade", "GradePlazaWS", [0.0, -1.5, 38.0], [18.0, -0.75, 48.0], "paving"],
 	["Grade", "GradePlazaSteps", [18.0, -1.5, 40.0], [30.0, -0.75, 48.0], "paving"],
 	["Grade", "GradePlazaE", [30.0, -1.5, 38.0], [48.0, -0.75, 48.0], "paving"],
 	["Grade", "GradeTanneryMouth", [48.0, -1.5, 42.0], [66.0, -0.75, 48.0], "asphalt"],
@@ -704,7 +705,7 @@ const HANDRAILS: Array = [
 ## Visual-only boxes (no collision): [name, min, max, class].
 const VISUALS: Array = [
 	["Meridian", [23.95, 0.002, 17.5], [24.05, 0.006, 31.9], "trim"],
-	["AreawayGrate", [29.4, 0.002, -1.6], [30.6, 0.006, -0.4], "trim"],
+	["AreawayGrate", [29.97, 0.002, -1.6], [30.63, 0.006, -0.4], "trim"],
 ]
 ## Always-present nav links: [name, from, to, bidirectional, navigation_layers] (1 walkable, 4 vent): the street islands'
 ## one-way links, P5's rappels, the lantern rappel, the areaway vent.

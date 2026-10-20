@@ -49,6 +49,11 @@ static func render_pieces(ctx: LcContext) -> Array[Dictionary]:
 			var mats2: Array = []
 			for s2: int in range(mm.mesh.get_surface_count()):
 				mats2.append(mmi.material_override if mmi.material_override != null else mm.mesh.surface_get_material(s2))
+			var baked: Array[Transform3D] = baked_instances(mmi)
+			if not baked.is_empty():
+				for bxf: Transform3D in baked:
+					out.append({"node": mmi, "mesh": mm.mesh, "xf": mmi.global_transform * bxf, "materials": mats2})
+				continue
 			for i: int in range(mm.visible_instance_count if mm.visible_instance_count >= 0 else mm.instance_count):
 				out.append({"node": mmi, "mesh": mm.mesh, "xf": mmi.global_transform * mm.get_instance_transform(i),
 					"materials": mats2})
@@ -62,6 +67,20 @@ static func render_pieces(ctx: LcContext) -> Array[Dictionary]:
 					mats3.append(csg.material_override if csg.material_override != null else m.surface_get_material(s3))
 				out.append({"node": csg, "mesh": m, "xf": csg.global_transform * (meshes[0] as Transform3D),
 					"materials": mats3})
+	return out
+
+
+## OF-C2: the instance transforms of a baked tile MultiMesh (res://world/props/multimesh_tiles.gd: 4 floats per
+## instance in `instances`, origin + yaw). Headless, the dummy renderer keeps no MultiMesh buffer, so
+## get_instance_transform() reads identity and every tile would sit on the map origin. [] for any other node.
+static func baked_instances(mmi: MultiMeshInstance3D) -> Array[Transform3D]:
+	var out: Array[Transform3D] = []
+	var raw: Variant = mmi.get(&"instances")
+	if not raw is PackedFloat32Array:
+		return out
+	var inst: PackedFloat32Array = raw
+	for i: int in range(inst.size() / 4):
+		out.append(Transform3D(Basis(Vector3.UP, inst[i * 4 + 3]), Vector3(inst[i * 4], inst[i * 4 + 1], inst[i * 4 + 2])))
 	return out
 
 

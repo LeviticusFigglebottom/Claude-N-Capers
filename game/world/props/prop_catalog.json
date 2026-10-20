@@ -11912,6 +11912,74 @@
   "weight": 1.0,
   "z": 0.0
  },
+ "prop_of_teller_bay_closed_ende": {
+  "aabb": [
+   -1.2333,
+   0.0,
+   -0.673,
+   2.4667,
+   4.2,
+   1.223
+  ],
+  "clear": 0.0,
+  "fixture": false,
+  "glb": "res://assets/props/prop_of_teller_bay_closed_ende/prop_of_teller_bay_closed_ende.glb",
+  "group": "ostrander",
+  "has_light": false,
+  "hosts": [],
+  "keepout": [],
+  "kind": "landmark",
+  "mount": "",
+  "nodes": [
+   "Counter"
+  ],
+  "pin_only": true,
+  "place": "none",
+  "prefab": "",
+  "scene": "res://world/props/ostrander/prop_of_teller_bay_closed_ende.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": false,
+  "surface": "wood",
+  "top": 0.0,
+  "visibility_range_end": 0.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
+ "prop_of_teller_bay_closed_endw": {
+  "aabb": [
+   -1.2333,
+   0.0,
+   -0.673,
+   2.4667,
+   4.2,
+   1.223
+  ],
+  "clear": 0.0,
+  "fixture": false,
+  "glb": "res://assets/props/prop_of_teller_bay_closed_endw/prop_of_teller_bay_closed_endw.glb",
+  "group": "ostrander",
+  "has_light": false,
+  "hosts": [],
+  "keepout": [],
+  "kind": "landmark",
+  "mount": "",
+  "nodes": [
+   "Counter"
+  ],
+  "pin_only": true,
+  "place": "none",
+  "prefab": "",
+  "scene": "res://world/props/ostrander/prop_of_teller_bay_closed_endw.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": false,
+  "surface": "wood",
+  "top": 0.0,
+  "visibility_range_end": 0.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
  "prop_of_teller_line": {
   "aabb": [
    -13.5233,
