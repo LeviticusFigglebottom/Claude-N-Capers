@@ -1647,7 +1647,7 @@ func _test_hole() -> bool:
 	var hoist: BagLift = _x("hoist") as BagLift
 	if rope == null or hoist == null:
 		return await _fail("no rope ladder (%s) / hoist (%s) at the hole" % [rope, hoist])
-	_enable_hole(rope, hoist)
+	await _enable_hole(rope, hoist)
 	# The hole's centre: C's LidMarker (24, 0, 14.6) when present, else the doc's (24, 14).
 	var lid: Node3D = _x("lid")
 	var hole: Vector3 = Vector3(lid.global_position.x, OF_FFL[1], lid.global_position.z) if lid != null else _of(OF_HOLE_AT)
@@ -1846,6 +1846,14 @@ func _drill_parts() -> Array[LootBag]:
 
 ## SHORTCUT (G1 has no mission): the hole's ladder and hoist on, unless the mission's burn-through did it.
 func _enable_hole(rope: Ladder, hoist: BagLift) -> void:
+	# OF-A6 has the mission's own burn-through (lid + plug dropped, rope ladder to burn_height_m, hoist on, rappel):
+	# use it, so the hole test sees exactly the post-burn map (C's f385a22c Plug was not in the hand-made shortcut).
+	if rt.mission != null and rt.mission.has_method(&"burn_through"):
+		rt.mission.call(&"burn_through")
+		await wait_s(0.5)
+		note("SHORTCUT hole via the mission's burn_through(): rope ladder usable %s height %.2f, hoist %s enabled" % [
+			rope.usable, rope.height_m, hoist.name])
+		return
 	for n: Node3D in [rope, hoist]:
 		if n.has_method(&"set_enabled"):
 			n.call(&"set_enabled", true)
