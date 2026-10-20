@@ -33,7 +33,12 @@ const SPAWN_TAGS: Array[StringName] = [&"civ_manager_mgr_floor", &"civ_manager_m
 ## ENV D clip names (env/d-art b2527e4d) used as idle_activity / the cower pause anim.
 const CLIPS: Array[StringName] = [&"teller_count", &"counter_customer", &"queue_idle", &"check_desk_write"]
 const ASSAULT: Array[String] = ["TurretVan_1", "TurretVan_2", "HeliOrbit_1", "HeliDrop_1", "HeliDrop_2", "HeliDrop_3",
-	"Breach_1", "Breach_2"]
+	"Breach_1", "Breach_2", "Breach_3", "Breach_4"]
+## PO6-17 door breaches (LEAD ruling; doc "Assault events"): [name, pos, size, room, door name].
+const DOOR_BREACHES: Array = [
+	["Breach_3", Vector3(6.0, 8.6, 16.8), Vector2(1.8, 2.1), "XL", "TerraceDoorsW"],
+	["Breach_4", Vector3(14.0, 12.2, 6.85), Vector2(1.0, 2.1), "HH", "HeadHouseDoor"],
+]
 
 var _map: HeistMap = null
 
@@ -393,7 +398,8 @@ func test_spawn_tags_and_idles() -> void:
 	assert_eq(cower, 5, "5 cower_stand points")
 
 
-## PO6-17 markers (QC-i: Breach_1/2 are window breaches, no door kind); every greybox glass body is see_through.
+## PO6-17 markers (QC-i: Breach_1/2 are window breaches; Breach_3/4 door breaches, LEAD ruling); every greybox glass body
+## is see_through.
 func test_assault_markers_and_glass() -> void:
 	if _map == null:
 		fail("map missing")
@@ -408,6 +414,31 @@ func test_assault_markers_and_glass() -> void:
 			glass += 1
 			assert_true(n.is_in_group(&"see_through"), "%s in group see_through (D-142)" % n.name)
 	assert_true(glass >= 10, "glazing bodies tagged (%d)" % glass)
+
+
+## PO6-17 door breaches Breach_3 (XL west terrace doors) / Breach_4 (HH roof door): markers with kind "door", size,
+## room, yaw 0 (-Z north into the room), no Visual infill, and meta `door` resolving (from the marker) to the Door.
+func test_door_breach_markers() -> void:
+	if _map == null:
+		fail("map missing")
+		return
+	for row: Array in DOOR_BREACHES:
+		var nm: String = String(row[0])
+		var m: Marker3D = _map.get_node_or_null("AssaultEvents/" + nm) as Marker3D
+		assert_true(m != null, "AssaultEvents/%s" % nm)
+		if m == null:
+			continue
+		var xf: Transform3D = _xform(m)
+		assert_true(xf.origin.distance_to(row[1] as Vector3) < 0.001, "%s at %s (%s)" % [nm, row[1], xf.origin])
+		assert_true((-xf.basis.z).distance_to(Vector3.FORWARD) < 0.001, "%s yaw 0: -Z north into %s" % [nm, row[3]])
+		assert_eq(String(m.get_meta(&"kind", "")), "door", "%s kind door" % nm)
+		assert_eq(m.get_meta(&"size", Vector2.ZERO), row[2], "%s size" % nm)
+		assert_eq(String(m.get_meta(&"room", "")), String(row[3]), "%s room" % nm)
+		assert_true(m.get_node_or_null(^"Visual") == null, "%s: no infill scene" % nm)
+		var path: Variant = m.get_meta(&"door", null)
+		assert_true(path is NodePath, "%s meta door is a NodePath (%s)" % [nm, path])
+		var door: Door = m.get_node_or_null(path as NodePath) as Door if path is NodePath else null
+		assert_true(door != null and door.name == StringName(String(row[4])), "%s door -> %s (%s)" % [nm, row[4], door])
 
 
 # --- helpers --------------------------------------------------------------------------------------------
