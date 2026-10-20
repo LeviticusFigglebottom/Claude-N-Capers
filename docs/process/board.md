@@ -6,12 +6,16 @@ Read it at the start of every work session.
 ## Sessions
 | Role | Session id | Branch | Focus now |
 |---|---|---|---|
-| LEAD | session_01HwYKRgCdkLfJCt4ZM6rfTk | claude/dreamy-hamilton-pc7vck | D-129 handover: round 229 gate, D-115 heist completion |
-| ENV A | session_01EoHohP5E4RVEPzabfnFk8y | env/a-core | GN-8 crash + inspectors alarm, pilot fixes, npc weapon ids, knife vs HP, DB-4/6/7, SL-6, ND-1 |
-| ENV B | session_013vBwDAbwJ82mZAvDEWJYrr | env/b-content | B-GN/B-DB/B-SL strings audits, D-128 ring check, real-input UI runs (5 heists) |
-| ENV C | session_01T5Xwi8DdzfABwGjjW46Axr | env/c-worlds | SL-1 G2 art, SL-2/DB-2 D-111 props (port wip/c-sldb-props), SL-3, DB-6, drill VFX |
-| ENV D | session_01HpyNo9Bn1kCg4ddXt4xZyA | env/d-art | police combat movement (v1.26), DB-4 seated clips, SL/DB cast polish, FP pistol thumb |
-| ENV P | session_012CbsHeKpNoVbWCSzTZiLMb | env/p-play | ND-2 stealth route, D-128 feel check GH/SL, SL + DB real-input passes, GH-1, GN-P1 loud |
+| LEAD | session_014E3p2DmSYTneJjytGwKKfc | claude/dreamy-hamilton-pc7vck | 2026-10-20 resume: round 245, Ostrander Federal to done (D-144), D-145 |
+| ENV A | session_015kTjrZsUFn7gLqNVwAXdkh | env/a-core | OF-A6 phase 2 (stealth + loud e2e, 3 seeds), mission audit, D-145 A items |
+| ENV B | session_0159qCTRV9CsDQs465nGSW28 | env/b-content | OF-B1 (strings/VO/briefing/preplan, un-hide gate), OF menus real input, D-145 B items |
+| ENV C | session_013uMHd1Npqkx1reY1pJMaye | env/c-worlds | OF-C2 G2 to final, §7 fixes (hoist/rope ladder), validate final |
+| ENV D | session_01EZDt9WkE187YkB8ANEbuhb | env/d-art | OF-D1 QC-67 placements, cast perf, D-145.3 duty looks |
+| ENV P | session_01FYVVhNtxKAoQmyfnZ9rb3t | env/p-play | OF-P1 §7 windowed pass (G1 then G2), ghost line, D-145 acceptance runs |
+
+2026-10-20: the D-129 team (LEAD session_01HwYKRg… + its envs) was in another account and is unreachable; it stopped
+~20:40 UTC 2026-10-17 after round 244 with OF work unmerged on the env branches (merged in round 245). The 10-14 team
+(this account) was resumed.
 
 Previous team (session_01XAPqm… lead + its envs) was in another account and is unreachable; it stopped ~16:30 UTC
 2026-10-16 with round 229 merged on `claude/epic-fermi-k5fa09` but not gated.
