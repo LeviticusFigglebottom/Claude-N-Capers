@@ -648,6 +648,7 @@ const ALWAYS: Dictionary = {
 				"car_size_m": [1.0, 1.0, 0.75],
 				"loud_only": true,
 				"objective_tag": "hoist",
+				"phase_block_key": "ui.blocked.after_breach",
 				"enabled_at_start": false,
 				"@landings": [["HoistLandingTW", [0.0, 4.0, 0.0]]],
 				"@rig": [
