@@ -33,6 +33,7 @@ var difficulty: int = Enums.Difficulty.ROUTINE
 var pre_arg: String = ""
 var shoot_arg: String = ""
 var post_arg: String = ""
+var _nomask: bool = false  # --nomask (D-142): careful walk unmasked (glass LOS survey)
 var _seed: int = 1002
 var _shots_left: int = 6
 var _shot: int = 0
@@ -59,6 +60,7 @@ func _ready() -> void:
 			"pre": pre_arg = v
 			"shoot": shoot_arg = v
 			"post": post_arg = v
+			"nomask": _nomask = true
 	if runner_out == "":
 		runner_out = OS.get_user_data_dir() + "/d128_feel"
 	DirAccess.make_dir_recursive_absolute(runner_out)
@@ -704,8 +706,9 @@ func _careful() -> void:
 		pilot.inp.press(&"crouch")
 	await pilot.goto(pts[0], 0.5, 90.0)
 	note("careful: at mask spot %s, max meter %.2f" % [Po5Pilot._v(c.global_position), _max_meter()[0]])
-	pilot.inp.press(&"crouch")
-	await pilot.inp.hold(&"mask_up", Tweak.crew().mask_up_time_s + 0.3)
+	if not _nomask:
+		pilot.inp.press(&"crouch")
+		await pilot.inp.hold(&"mask_up", Tweak.crew().mask_up_time_s + 0.3)
 	note("careful: masked %s" % c.masked)
 	await shot("careful_masked")
 	var peak: Dictionary = {}

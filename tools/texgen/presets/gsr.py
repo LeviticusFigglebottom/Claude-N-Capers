@@ -262,6 +262,19 @@ PRESET = {
             "pivot": 0.44,
             "saturation": 0.88,
         },
+        # Ostrander Federal (ostrander_federal.md §Audio/lighting, OF-C2): Friday afternoon daylight, the brightest heist:
+        # warm, slightly golden highlights (the SW sun on the limestone and the bronze), neutral-cool shadows, clean
+        # neutral mids, soft contrast and a small lift so no black is crushed.
+        "ostrander_federal": {
+            "slope": (1.015, 1.0, 0.98),
+            "offset": (0.008, 0.008, 0.01),
+            "power": (1.0, 1.0, 1.0),
+            "shadow_tint": (-0.004, 0.0, 0.008),
+            "highlight_tint": (0.02, 0.012, -0.014),
+            "contrast": 0.97,
+            "pivot": 0.45,
+            "saturation": 1.02,
+        },
     },
     # Godot Environment resources (godot.py).
     "environments": {

@@ -178,6 +178,8 @@ var _bob_phase: float = 0.0
 ## Linear ADS progress behind the eased ads_weight.
 var _ads_lin: float = 0.0
 var _bob_weight: float = 0.0
+## PO-20: 0..1 eased sprint weight (sprint sway and pose).
+var _sprint_w: float = 0.0
 ## PO-4: hip/bob/step offset (_update_offset) and the ADS alignment (AdsAlign, late) that make up `position`.
 var _base_offset: Vector3 = Vector3.ZERO
 ## PO-4: eased per-set framing offset (FpViewmodelTweak.set_hip_offset / set_ads_offset_z).
@@ -1134,17 +1136,28 @@ func _update_offset(delta: float, tw: FpViewmodelTweak) -> void:
 	if sprint and tw.bob_follow_steps:
 		target = minf(target, 1.0) * tw.bob_sprint_mult
 	_bob_weight = move_toward(_bob_weight, target, tw.bob_rate * delta)
-	_bob_phase = fmod(_bob_phase + delta * TAU * tw.bob_frequency_hz * maxf(target, 0.5), TAU * 2.0)
-	var phase: float = _bob_phase
+	_bob_phase = fmod(_bob_phase + delta * TAU * tw.bob_frequency_hz * maxf(target, 0.5), TAU)
 	if tw.bob_follow_steps and _crew != null and is_instance_valid(_crew) and _crew.bob_weight > 0.0:
-		phase = _crew.bob_phase  # D-116: the camera's footstep phase (own clock when Options head bob is off)
+		# D-116: the camera's footstep phase (own clock when Options head bob is off); PO-20: eased onto it, no jump.
+		var lag: float = wrapf(_crew.bob_phase - _bob_phase, -PI, PI)
+		_bob_phase = fmod(_bob_phase + lag * clampf(tw.bob_phase_rate * delta, 0.0, 1.0) + TAU, TAU)
+	var phase: float = _bob_phase
+	_sprint_w = move_toward(_sprint_w, 1.0 if sprint else 0.0, tw.sprint_pose_rate * delta)
 	var amp: float = _bob_weight * lerpf(1.0, tw.ads_bob_mult, ads_weight)
-	var off: Vector3 = Vector3(sin(phase) * tw.bob_amplitude.x, sin(phase * 2.0) * tw.bob_amplitude.y, 0.0) * amp
+	# PO-20: the walk figure-8 crossfades into the gentler sprint sway.
+	var ax: Vector2 = tw.bob_amplitude.lerp(tw.sprint_sway_amplitude, _sprint_w)
+	var off: Vector3 = Vector3(sin(phase) * ax.x, sin(phase * 2.0) * ax.y, 0.0) * amp
 	off.y += step_lag(tw)
 	var land: float = _crew.land_dip if _crew != null and is_instance_valid(_crew) else 0.0
 	off.y += land * tw.land_vm_mult * lerpf(1.0, tw.ads_bob_mult, ads_weight)  # D-116: arms dip deeper on landing
-	_bob_rot = Vector3(sin(phase * 2.0) * tw.bob_pitch_deg * amp + land * tw.land_vm_pitch_deg_per_m, 0.0,
-		sin(phase) * tw.bob_roll_deg * amp)
+	var pitch_deg: float = lerpf(tw.bob_pitch_deg, tw.sprint_sway_pitch_deg, _sprint_w)
+	var roll_deg: float = lerpf(tw.bob_roll_deg, tw.sprint_sway_roll_deg, _sprint_w)
+	_bob_rot = Vector3(sin(phase * 2.0) * pitch_deg * amp + land * tw.land_vm_pitch_deg_per_m, 0.0,
+		sin(phase) * roll_deg * amp)
+	# PO-20: the steady sprint pose on top of the sprint clip (not while aimed).
+	var pose_w: float = _sprint_w * (1.0 - ads_weight)
+	off += tw.sprint_pose_offset * pose_w
+	_bob_rot += tw.sprint_pose_rot_deg * pose_w
 	# PO-4: the offset of the set actually playing (a melee / throw / deploy item set rides the gun's arms but has its
 	# own framing), eased so switching sets does not jump.
 	var set_now: StringName = _playing_set()

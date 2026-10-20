@@ -47,12 +47,15 @@ extends Resource
 ## PO-4 (PD2 use_headbob, default on; Options controls.head_bob, Reduce Motion forces it off): subtle camera-only
 ## head bob of the local human while walking on the ground. One cycle (two steps) per head_bob_stride_m travelled;
 ## vertical at twice the lateral frequency; amplitudes at head_bob_ref_mps, scaled by speed, x sprint mult, x ADS mult.
+## PO-20 (D-145, "the run is wobbly"): calmer: smaller amplitudes, a sprint cycle of head_bob_sprint_stride_m (longer
+## sprint strides: ~2.3 cycles/s at full sprint, was 3.75) and the sprint no bigger than the walk.
 @export var head_bob_stride_m: float = 1.6
+@export var head_bob_sprint_stride_m: float = 2.6
 @export var head_bob_ref_mps: float = 3.5
-@export var head_bob_vertical_m: float = 0.006
-@export var head_bob_lateral_m: float = 0.004
-@export var head_bob_roll_deg: float = 0.25
-@export var head_bob_sprint_mult: float = 1.6
+@export var head_bob_vertical_m: float = 0.004
+@export var head_bob_lateral_m: float = 0.003
+@export var head_bob_roll_deg: float = 0.15
+@export var head_bob_sprint_mult: float = 0.9
 @export var head_bob_ads_mult: float = 0.15
 @export var head_bob_rate: float = 6.0
 ## PO-4 (PD2 melee hit shaker): camera-only punch when the local human's melee hit lands: pitch down / roll kick
@@ -99,6 +102,26 @@ extends Resource
 @export var land_dip_gain: float = 0.012
 @export var land_dip_max_m: float = 0.09
 @export var land_dip_hz: float = 3.0
+
+@export_group("Ladders (PO-16 / D-145: PD2 free climbing)")
+## Human crew climb ladders by walking into them (PD2 PlayerMovement ladder state): no forced animation, full look.
+## Bots keep the Ladder prefab's own climb.
+@export var ladder_free_climb: bool = true
+## Attach when the crew is this close (horizontal) to the ladder's climb line, facing it.
+@export var ladder_attach_radius_m: float = 0.55
+## Facing cone toward the ladder (deg) for an attach by walking into it.
+@export var ladder_attach_cone_deg: float = 70.0
+## Climb speed along the ladder (m/s); PD2 climbs at a walk-like pace.
+@export var ladder_climb_speed_mps: float = 2.4
+## Look pitch below this (deg, negative = down) reverses W/S: look down + forward climbs down (PD2).
+@export var ladder_down_pitch_deg: float = -20.0
+## Jump lets go: pushed off the ladder (m/s, away from the wall) with this upward speed.
+@export var ladder_jump_off_mps: float = 2.5
+@export var ladder_jump_off_up_mps: float = 1.5
+## Step-off onto the top landing: horizontal speed toward the Top marker once above its height.
+@export var ladder_step_off_mps: float = 2.4
+## Pull back onto the climb line while attached (1/s).
+@export var ladder_snap_rate: float = 8.0
 
 @export_group("Stamina (QB-60, PD2 movement_state.stamina)")
 ## Pool before movement.stamina_mult x team.stamina_mult x ArmorDef.stamina_mult.

@@ -11,6 +11,8 @@ const TOUCH: float = 0.35
 ## The finish of a sliver of one of our boxes that shows in their rooms (a wall end at the gallery corner): by class.
 const THEIRS_KEY: Dictionary = {"wall": "ashlar", "wall_ext": "facade", "floor": "terrazzo", "roof": "roof_membrane",
 	"ceiling": "plaster_ivory", "stair": "terrazzo", "trim": "metal_dark"}
+## Hidden boxes (redrawn by the hall lane or a landmark) of these groups get no skins (the landmark art is the face).
+const NO_SKIN_GROUPS: Array[String] = ["Counter", "Pillars", "GalleryGuard", "Glazing", "Lantern", "Cages"]
 ## Skins on another lane's boxes stand this far proud (zfight PLANE_EPS is 2 mm).
 const SKIN: float = 0.004
 ## A box is the hall lane's when at least this share of its exposed area looks into their rooms.

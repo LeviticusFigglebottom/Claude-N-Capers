@@ -207,3 +207,25 @@ func test_fix_line_yields_to_the_interaction_prompt() -> void:
 	await wait_frames(2)
 	assert_ne(String(_drawn(_id)["fix_text"]), "", "back once the prompt goes")
 	EventBus.device_finished.emit(_id)
+
+
+## LEAD r245 (OF HUD pass): a step the mission times without a device (objective data `seconds`: the OF / ND time
+## lock, DB's escape ETA) counts down on the objective line, named by the step; a device still wins.
+func test_device_less_wait_counts_down_on_the_objective_line() -> void:
+	_model.objectives = [{"id": &"time_lock_wait", "text_key": &"objective.ostrander_federal.time_lock_wait",
+			"state": Enums.ObjectiveState.ACTIVE, "args": {"seconds": 210.0, "method": &"code"}}]
+	await wait_frames(3)
+	var line: Label = _hud.objectives.device_label
+	assert_true(line != null and line.is_inside_tree(), "the wait shows a timer line")
+	assert_true(line.text.begins_with("TIME LOCK 03:"), line.text if line else "")
+	_hud.device_timers._process(70.0)  # 70 s of game time
+	assert_eq(line.text, "TIME LOCK 02:20", "counts down in game time")
+	var esc: Dictionary = {"id": &"escape_wait", "state": Enums.ObjectiveState.ACTIVE, "args": {"seconds": 90}}
+	assert_eq(_hud.device_timers.objective_line(esc), "ESCAPE 01:30", "a new step restarts the count")
+	var other: Dictionary = {"id": &"hold", "state": Enums.ObjectiveState.ACTIVE, "args": {"seconds": 5.0}}
+	assert_eq(_hud.device_timers.objective_line(other), "WAIT 00:05")
+	assert_eq(_hud.device_timers.objective_line({"id": &"secure", "args": {}}), "", "no seconds, no timer")
+	_model.objectives = [{"id": &"vault", "text_key": &"objective.test.drill_vault", "state": Enums.ObjectiveState.ACTIVE,
+			"args": {}}]
+	await wait_frames(3)
+	assert_false(line.is_inside_tree(), "the line goes with the wait")

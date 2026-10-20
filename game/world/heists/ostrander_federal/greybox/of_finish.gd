@@ -66,7 +66,7 @@ func build() -> void:
 	for bx: Array in boxes:
 		_add_solid(bx[1], (bx[0] as Node).get_instance_id())
 	for bx2: Array in boxes:
-		_box(bx2[0], bx2[1], String(bx2[2]), bool(bx2[3]))
+		_box(bx2[0], bx2[1], String(bx2[2]), bool(bx2[3]), bool(bx2[4]))
 	for mi: MeshInstance3D in others:
 		_override(mi)
 	_mapbuilt()
@@ -230,16 +230,18 @@ func _collect(n: Node, boxes: Array[Array], others: Array[MeshInstance3D]) -> vo
 		if c.name in [&"Landmarks", &"BoxBanks", &"FinishD"]:
 			continue
 		var mi: MeshInstance3D = c as MeshInstance3D
-		if mi != null and mi.visible:
+		if mi != null:
 			var cls: String = _grey_class(mi)
 			if cls != "":
 				var xf: Transform3D = b.call(&"global_xform", mi)
 				var site: bool = _under(mi, "Site")
-				if mi.mesh is BoxMesh and xf.basis.is_equal_approx(Basis.IDENTITY) and mi.get_parent() is StaticBody3D \
-						and not _under(mi, "FireEscape"):
+				var boxy: bool = mi.mesh is BoxMesh and xf.basis.is_equal_approx(Basis.IDENTITY) \
+					and mi.get_parent() is StaticBody3D and not _under(mi, "FireEscape")
+				if boxy:
 					var sz: Vector3 = (mi.mesh as BoxMesh).size
-					boxes.append([mi, AABB(xf.origin - sz * 0.5, sz), cls, site])
-				else:
+					# a hidden box was redrawn by the hall lane (of_dress_a.gd, Geometry/FinishA) or a landmark: skins only
+					boxes.append([mi, AABB(xf.origin - sz * 0.5, sz), cls, site, not mi.visible])
+				elif mi.visible:
 					others.append(mi)
 		_collect(c, boxes, others)
 
@@ -314,6 +316,15 @@ func _collect_obstacles() -> void:
 				var w: float = float(d.get(&"width_m")) * 0.5 + D.DOOR_CASING
 				var dx: Transform3D = b.call(&"global_xform", d)
 				_add_obstacle(dx * AABB(Vector3(-w, 0.0, -0.16), Vector3(w * 2.0, 2.35, 0.32)))
+	# other prefabs (cameras, keypads, readers, phones) build their visuals at runtime too: a 0.5 m box at the origin
+	for top2: String in ["Gameplay", "Variants"]:
+		var t2: Node = root.get_node_or_null(top2)
+		if t2 == null:
+			continue
+		for pf: Node in t2.find_children("*", "Node3D", true, false):
+			if "visual_scene" in pf and not ("width_m" in pf):
+				var po: Vector3 = (b.call(&"global_xform", pf) as Transform3D).origin
+				_add_obstacle(AABB(po - Vector3.ONE * 0.25, Vector3.ONE * 0.5))
 	var lm: Node = root.get_node_or_null("Geometry/Landmarks")
 	if lm != null:
 		for c3: Node in lm.find_children("*", "GeometryInstance3D", true, false):
@@ -350,9 +361,11 @@ func _blocked(a: AABB) -> bool:
 # --- Boxes -> faces ------------------------------------------------------------------------------
 
 ## One box: its face pieces ([corners, n, key, room, group]); hall-lane boxes keep their mesh and get skins only.
-func _box(mi: MeshInstance3D, a: AABB, cls: String, site: bool) -> void:
+func _box(mi: MeshInstance3D, a: AABB, cls: String, site: bool, claimed: bool) -> void:
 	var body: Node = mi.get_parent()
 	var self_id: int = mi.get_instance_id()
+	if claimed and (cls == "glass" or String(body.get_parent().name) in D.NO_SKIN_GROUPS):
+		return
 	if cls == "glass":
 		if not _faces_theirs(a, self_id):
 			mi.material_override = _glass
@@ -378,7 +391,7 @@ func _box(mi: MeshInstance3D, a: AABB, cls: String, site: bool) -> void:
 			pieces.append(pc)
 	# the hall lane's box when a real part of it shows in BH / VE / X1 (a sliver, a wall top flush with their floor, a
 	# ceiling plane's edge behind the glass front: ours, that part left to the coplanar face it meets)
-	if their_area >= D.THEIRS_SHARE * all_area and their_area > 0.0:
+	if claimed or (their_area >= D.THEIRS_SHARE * all_area and their_area > 0.0):
 		_counts["mixed"] += 1
 		for pc2: Array in pieces:
 			var rid: String = String(pc2[3])
@@ -719,7 +732,8 @@ func _override(mi: MeshInstance3D) -> void:
 	var a: AABB = xf * mi.get_aabb()
 	var c: Vector3 = a.get_center()
 	var rid: String = room_at(c)
-	if _theirs(rid) or _theirs(room_at(Vector3(c.x, a.position.y + 0.05, c.z))):
+	var site_hull: bool = _under(mi, "Site") and mi.get_parent() is StaticBody3D   # the Tannery ramp: left grey otherwise
+	if not site_hull and (_theirs(rid) or _theirs(room_at(Vector3(c.x, a.position.y + 0.05, c.z)))):
 		return
 	if cls == "glass":
 		mi.material_override = _glass
@@ -730,7 +744,7 @@ func _override(mi: MeshInstance3D) -> void:
 		key = String((D.ROOMS[rid] as Array)[0]) if D.ROOMS.has(rid) else "terrazzo"
 	elif cls == "wall_ext" or (cls == "trim" and String(mi.get_parent().name).begins_with("Coping")):
 		key = "facade"
-	elif cls == "floor" and _under(mi, "Grade"):
+	elif cls == "floor" and (_under(mi, "Grade") or site_hull):
 		key = "asphalt"
 	mi.material_override = _triplanar(key)
 	_retag(mi.get_parent(), key)

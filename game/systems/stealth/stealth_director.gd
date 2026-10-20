@@ -34,6 +34,9 @@ signal camera_countdown_started(camera_net_id: int, seconds: float)
 
 ## Physics layers that block vision: world_static(1), world_dynamic(2), vision_blockers(8).
 const VISION_MASK: int = (1 << 0) | (1 << 1) | (1 << 7)
+## D-142: colliders in this group (glass) do not block vision rays; at most this many panes along one ray.
+const GROUP_SEE_THROUGH: StringName = &"see_through"
+const SEE_THROUGH_MAX: int = 4
 ## MapZone layer "triggers" (10).
 const TRIGGER_MASK: int = 1 << 9
 ## D-128 fill rate (progress per second) reported for PD2's instant uncover.
@@ -272,8 +275,25 @@ func in_zone(pos: Vector3, kind: int) -> bool:
 func has_los(from: Vector3, to: Vector3, exclude: Array[RID] = []) -> bool:
 	var space: PhysicsDirectSpaceState3D = get_viewport().world_3d.direct_space_state
 	var q: PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.create(from, to, VISION_MASK)
-	q.exclude = exclude
-	return space.intersect_ray(q).is_empty()
+	q.exclude = exclude.duplicate()
+	return vision_clear(space, q)
+
+
+## D-142 (PD2: guards see through glass): a vision ray passes colliders in GROUP_SEE_THROUGH (the Window GlassBody,
+## clear glazing). Casts `q`, excluding each see-through hit and casting again (at most SEE_THROUGH_MAX panes); true when
+## nothing else blocks. Adds to q.exclude. Bullets and movement are unchanged (CombatSystem rays do not use this).
+static func vision_clear(space: PhysicsDirectSpaceState3D, q: PhysicsRayQueryParameters3D) -> bool:
+	for i: int in SEE_THROUGH_MAX + 1:
+		var hit: Dictionary = space.intersect_ray(q)
+		if hit.is_empty():
+			return true
+		var body: Node = hit.get("collider") as Node
+		if body == null or not body.is_in_group(GROUP_SEE_THROUGH):
+			return false
+		var ex: Array[RID] = q.exclude
+		ex.append(hit["rid"])
+		q.exclude = ex
+	return false
 
 
 # --- Tick -----------------------------------------------------------------------------------
@@ -837,7 +857,7 @@ func _ray_clear(from: Vector3, to: Vector3, a: Node, b: Node) -> bool:
 	_ray_q.from = from
 	_ray_q.to = to
 	_ray_q.exclude = _exclude
-	return get_viewport().world_3d.direct_space_state.intersect_ray(_ray_q).is_empty()
+	return vision_clear(get_viewport().world_3d.direct_space_state, _ray_q)
 
 
 # --- Noise (S4.3) -------------------------------------------------------------------------

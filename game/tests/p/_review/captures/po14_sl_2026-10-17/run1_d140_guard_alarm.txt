@@ -1,0 +1,53 @@
+[SLR 25.7s t=0.0] seed 13 variants camera=[&"cam_c"] security_room_staffed=[&"sec_staffed"] server_room=[&"srv_locked"] keycard=[&"kc_cleaner", &"kc_it"] code_note=[&"code_security_log"] laptop=[&"lap_kessler"] guard_post=[&"rover_l41", &"rover_l42"] guard_extra=[&"extra_none"] cleaners=[&"cleaners_1"] late_partner=[&"moor_gone"] escape=[&"esc_service"] laser_pattern=[&"lz_static"]
+[SLR 66.9s t=2.4] pilot: calibrated 0.001600 rad/px yaw, 0.001600 rad/px pitch (settings formula said (0.0016, 0.0016))
+[SLR 66.9s t=2.4] spawn (26.2, 0.0, 9.0) masked false
+[SLR 153.9s t=2.9] STEP _casing begin
+[SLR 154.4s t=3.8] goto casing_0 (25.0, 0.0, 8.5): reached (at (25.4, 0.0, 8.7))
+[SLR 156.8s t=6.3] goto casing_1 (29.0, 0.0, 8.5): reached (at (28.5, 0.0, 8.5))
+[SLR 159.1s t=8.6] goto casing_2 (29.0, 0.0, 11.6): reached (at (29.1, 0.0, 11.1))
+[SLR 162.0s t=11.5] goto casing_3 (25.0, 0.0, 11.6): reached (at (25.5, 0.0, 11.5))
+[SLR 224.7s t=13.3] goto casing_4 (24.8, 0.0, 13.5): reached (at (24.9, 0.0, 13.0))
+[SLR 226.0s t=14.6] pilot: use RefuseDoor (open_door) -> OK in 0.0 s
+[SLR 228.1s t=16.7] goto casing_5 (27.7, 0.0, 14.5): reached (at (27.3, 0.0, 14.5))
+[SLR 244.5s t=19.5] goto casing_6 (24.8, 0.0, 15.6): reached (at (24.7, 0.0, 15.2))
+[SLR 245.2s t=20.2] goto casing_7 (22.5, 0.0, 15.8): reached (at (23.0, 0.0, 15.7))
+[SLR 278.4s t=25.2] pilot: t=5 at (22.4, 1.8, 11.9) corner (23.0, 2.0, 12.1) yaw_err -0.31 fwd=true path=8 mouse_mode=2 state=0 look=(-7.87,0.00) pin_yaw=-8.06639375447412 bot=false
+[SLR 301.4s t=27.6] DETECT start: Npc_guard2 (kind 0) at 2.3 m, pilot (23.1, 3.0, 14.0) crouched false
+[SLR 301.5s t=28.2] DETECT Npc_guard2 meter 0.26 (0.6 s after first sight)
+[SLR 302.1s t=28.8] goto casing_8 (22.5, 3.6, 15.8): reached (at (22.9, 3.6, 15.4))
+[SLR 325.0s t=29.0] DETECT Npc_guard2 meter 0.53 (1.4 s after first sight)
+[SLR 346.4s t=29.7] DETECT Npc_guard2 meter 0.77 (2.1 s after first sight)
+[SLR 350.8s t=34.3] pilot: t=5 at (22.1, 5.8, 11.5) corner (22.8, 6.0, 11.3) yaw_err -0.09 fwd=true path=10 mouse_mode=2 state=0 look=(-13.75,0.00) pin_yaw=-13.8319337389985 bot=false
+[SLR 355.3s t=38.8] goto casing_9 (22.5, 8.0, 15.8): reached (at (22.8, 8.0, 15.4))
+[SLR 398.1s t=44.3] pilot: t=5 at (22.0, 5.8, 11.9) corner (22.0, 3.9, 15.2) yaw_err 0.01 fwd=true path=7 mouse_mode=2 state=0 look=(-15.70,0.00) pin_yaw=-15.6990057276198 bot=false
+[SLR 456.9s t=47.3] goto casing_10 (22.5, 3.6, 15.8): reached (at (22.2, 3.6, 15.4))
+[SLR 456.9s t=47.3] STEP _casing reached
+[SLR 456.9s t=47.3] STEP _mask begin
+[SLR 457.9s t=48.3] objective casing -> 2
+[SLR 458.7s t=49.1] masked true
+[SLR 458.7s t=49.1] STEP _mask reached
+[SLR 458.7s t=49.1] STEP _enter_l41 begin
+[SLR 466.7s t=57.0] careful: Npc_guard3 faces the pilot at 1.9 m (alert 0): back off to (23.1, 3.6, 15.9) and wait
+[SLR 466.7s t=57.1] DETECT start: Npc_guard3 (kind 0) at 1.8 m, pilot (23.1, 3.6, 15.9) crouched true
+[SLR 466.8s t=57.2] DETECT Npc_guard3 meter 1.00 (0.1 s after first sight)
+[SLR 466.8s t=57.2] ALERT Npc_guard3 0 -> 3 (dist 1.6)
+[SLR 469.8s t=60.2] DETECT Npc_guard2 meter 1.00 (32.6 s after first sight)
+[SLR 469.8s t=60.2] ALERT Npc_guard2 0 -> 3 (dist 1.4)
+[INFO][stealth][p1] ALARM: guard_radio (source 113)
+[SLR 600.7s t=65.6] ALERT Npc_guard 0 -> 10 (dist 13.3)
+[SLR 600.7s t=65.6] ALERT Npc_guard2 3 -> 10 (dist 1.4)
+[SLR 600.7s t=65.6] ALERT Npc_guard3 3 -> 10 (dist 1.2)
+[SLR 600.7s t=65.6] ALERT Npc_civilian 0 -> 4 (dist 16.0)
+[SLR 600.7s t=65.6] ALERT Npc_guard4 0 -> 10 (dist 5.8)
+[SLR 600.7s t=65.6] ALARM guard_radio source /root/PO5Driver/HeistRuntime/Dynamic/Npc_guard3 (pilot at (23.1, 3.6, 15.9))
+[SLR 650.5s t=66.6] careful: clear (waited, watcher now Npc_guard4:<CharacterBody3D#2002411082749>)
+[SLR 650.7s t=66.7] pilot: use StairBL41 (lockpick) -> OK in 6.9 s
+[SLR 651.0s t=67.0] StairBL41 open true (lock 1)
+[SLR 697.2s t=67.5] STEP _enter_l41 reached
+[SLR 697.2s t=67.5] FAIL alarm before _keycard (alarm guard_radio)
+[SLR 736.8s t=68.5] SUMMARY steps: _casing=ok, _mask=ok, _enter_l41=ok
+[SLR 736.8s t=68.5] SUMMARY alarm: guard_radio at t=65.6
+[SLR 736.8s t=68.5] SUMMARY detector Npc_guard2 kind 0 first t=27.6 max 1.00
+[SLR 736.8s t=68.5] SUMMARY detector Npc_guard3 kind 0 first t=57.1 max 1.00
+[SLR 736.8s t=68.5] SUMMARY careful waits 1, STUCK rows 0
+[SLR] RESULT FAIL at alarm before _keycard
