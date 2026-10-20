@@ -554,6 +554,25 @@ func _wire_achievements() -> void:
 		achievements_panel.focus_neighbor_bottom = back
 
 
+## r246 OF capture: three long descriptions wrap under the fold at 720p and 1080p on one line too, so once
+## the summary is laid out the panel also takes focus whenever the summary scrolls (d-pad up reaches it).
+func _focus_achievements_if_clipped() -> void:
+	if not is_inside_tree():
+		return
+	var panel: PanelContainer = achievements_panel
+	await get_tree().process_frame
+	await get_tree().process_frame
+	if panel != achievements_panel or not is_instance_valid(panel) or not panel.visible:
+		return
+	if panel.focus_mode != Control.FOCUS_NONE:
+		return
+	var bar: VScrollBar = _summary.get_v_scroll_bar()
+	if bar.max_value - bar.page <= 1.0:
+		return
+	UiBuild.focus_panel(panel)
+	_wire_achievements()
+
+
 func _render() -> void:
 	for c: Node in _content.get_children():
 		_content.remove_child(c)
@@ -592,6 +611,7 @@ func _render() -> void:
 	achievements_panel = _build_achievements()
 	_content.add_child(achievements_panel)
 	_wire_achievements()
+	_focus_achievements_if_clipped()
 	retry_button.visible = offer_retry()
 	_wire_retry()
 	focus_default()

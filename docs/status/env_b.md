@@ -3,6 +3,28 @@
 Owner: ENV B. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-20: resumed for D-144 / D-145 (lead session_014E3p2DmSYTneJjytGwKKfc)
+Resumed on env/b-content 29d30a2d (ff from origin; trunk rounds 204-244 ran in another account).
+
+### Verified (no new content needed)
+- OF-B1 already on this branch: e42c0f3b (OF un-hidden in heist_list, VO allowlists shrunk), 68e3e000 (r245 QA: HUD
+  time-lock countdown, achievement fix, briefing intel). D-145 B items: 29d30a2d PO-19 Bot Crew loadouts (save v10),
+  1f4d0594 PO-17 Routine/Tense corpsman/wrecker limit 0.
+- Targeted tests green: heist_readiness 9, briefing_intel 14, p5_catalogue 7, crew_loadouts 8, crew_screen 3,
+  save_golden 17, heist_text_audit 5, achievement 43, achievements_in_play 8, payday 55, strings 67, content_data 17;
+  A's test_l4_11_special_caps 4, test_po5_director_caps 5.
+- RED, not B's: test_vo_coverage (vo.mercer.ostrander_federal_captain_arrived, vo.accountant.radio_objective_new_1/2)
+  until A's f326ad00 (origin/wip/a-of-a6) merges in the same round as e42c0f3b.
+- Real-input OF run (real_input_run_capture.gd ostrander_federal) at 720p/1080p: exit 0, 15 shots, 0 RUN NOTEs.
+  Bot Crew (crew_capture.gd) at 720p/1080p: 0 QA issues. Evidence: game/content/ui/_review/r246_of_real_input,
+  r246_bot_crew.
+
+### Fixed
+- Payday: three OF achievements (one grid line) wrap under the fold at 720p and 1080p and the panel was not
+  focusable, so pad/keyboard could not see the last line. The panel now also takes focus once the laid-out summary
+  scrolls (payday.gd _focus_achievements_if_clipped). Windowed: tests/b/render/payday_fold_capture.gd, both sizes
+  "focused=AchievementsUnlocked"; evidence game/content/ui/_review/r246_payday_fold.
+
 ## 2026-10-17 01:30 UTC: new lead session (session_01HwYKRgCdkLfJCt4ZM6rfTk): D-115 strings audits, D-128 rings, r229 fixes
 Resumed on origin 0ddba6f8 (the old container's unpushed work is lost; nothing was missing on origin).
 
