@@ -22,6 +22,8 @@ extends SpecialBrain
 
 ## Arc origin ahead of the HandR/Socket grip (m): about the taser muzzle.
 const ARC_MUZZLE_M: float = 0.3
+## D-145: crew meta, heist time (s) until which no Stinger may tase them again.
+const IMMUNE_META: StringName = &"stinger_immune_until"
 
 ## Why the last tase ended: &"killed", &"stunned", &"los", &"range", &"helpless", &"counter",
 ## &"backfire", &"freed" (revived by a teammate), &"aborted" (windup broken).
@@ -68,6 +70,20 @@ func _on_stunned_tick(_delta: float) -> void:
 
 # --- Pursuit ---------------------------------------------------------------------------------------
 
+## D-145: the re-tase cooldown on this heist's difficulty (stinger_tase_cooldown_by_difficulty, else the flat value).
+func _cooldown_s() -> float:
+	return _by_difficulty(tweak.stinger_tase_cooldown_by_difficulty, tweak.stinger_tase_cooldown_s)
+
+
+## D-145: `c` was tased recently enough that no Stinger may tase them again yet.
+func _immune(c: CrewController) -> bool:
+	return _runtime != null and c.has_meta(IMMUNE_META) and _runtime.heist_time_s < float(c.get_meta(IMMUNE_META))
+
+
+func _by_difficulty(values: PackedFloat32Array, fallback: float) -> float:
+	var d: int = _runtime.difficulty if _runtime != null else -1
+	return values[d] if d >= 0 and d < values.size() else fallback
+
 func _unclaimed(c: CrewController) -> bool:
 	if not c.has_meta(CLAIM_META):
 		return true
@@ -101,7 +117,8 @@ func _tick_pursue(delta: float) -> void:
 		return
 	_target_visible = can_see(t)
 	var d: float = flat_dist_to(t)
-	if tase_cooldown_left <= 0.0 and _target_visible and d <= tweak.stinger_tase_range_m and _unclaimed(t):
+	if tase_cooldown_left <= 0.0 and _target_visible and d <= tweak.stinger_tase_range_m and _unclaimed(t) \
+			and not _immune(t):
 		_begin_windup(t)
 		return
 	if not _target_visible or d > tweak.stinger_tase_range_m * tweak.stinger_hold_frac:
@@ -214,11 +231,15 @@ func _end_tase(reason: StringName, free_victim: bool) -> void:
 			v.health.end_tase()
 	_release_claim()
 	_tase_slot = -1
+	if v != null and is_instance_valid(v) and _runtime != null:
+		var immune: float = _by_difficulty(tweak.stinger_victim_immune_s_by_difficulty, 0.0)
+		if immune > 0.0:
+			v.set_meta(IMMUNE_META, _runtime.heist_time_s + immune)  # D-145: no Stinger re-tases them for a while
 	if victim_slot >= 0:
 		EventBus.crew_tase_ended.emit(victim_slot)
 		Net.replicate_event(&"crew_tase_ended", [victim_slot])
 	tase_victim = null
-	tase_cooldown_left = tweak.stinger_tase_cooldown_s
+	tase_cooldown_left = _cooldown_s()
 	if _arc_beam != null:
 		_arc_beam.visible = false
 	mode = &"approach"
@@ -227,7 +248,7 @@ func _end_tase(reason: StringName, free_victim: bool) -> void:
 
 func _knockback(reason: StringName) -> void:
 	last_break_reason = reason
-	tase_cooldown_left = tweak.stinger_tase_cooldown_s
+	tase_cooldown_left = _cooldown_s()
 	mode = &"approach"
 	anim_hint = &"hit_react"
 	_npc.stun(tweak.stinger_knockback_s)

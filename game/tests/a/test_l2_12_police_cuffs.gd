@@ -1,6 +1,7 @@
 ## A3-04 / L2.12: police walk up to a downed crew member who is not shooting and cuff them at 1 m
 ## (CUFFED, bleedout paused); they free themselves after 60 s (◇) or a teammate uncuffs them, and are
-## downed again.
+## downed again. D-145: police cuff downed players only from CustodyTweak.police_cuff_min_difficulty (Hazardous) up,
+## so these run on Hazardous; on Routine / Tense the bleed-out timer alone decides custody.
 extends TestCase
 
 var _rt: HeistRuntime = null
@@ -12,7 +13,14 @@ func before_each() -> void:
 	_events.clear()
 	EventBus.crew_cuffed.connect(_on_cuffed)
 	EventBus.crew_uncuffed.connect(_on_uncuffed)
-	_rt = await HeistLauncher.launch(&"unit_map", 1212, Enums.Difficulty.ROUTINE, self,
+	await _launch(Enums.Difficulty.HAZARDOUS)
+
+
+func _launch(difficulty: int) -> void:
+	if _rt != null and is_instance_valid(_rt):
+		_rt.teardown()
+		await wait_frames(2)
+	_rt = await HeistLauncher.launch(&"unit_map", 1212, difficulty, self,
 		{"map_packed": ATestMaps.basic(0, 0), "ai_teammates": 1, "crew_ai": false})
 	await wait_physics_frames(1)
 
@@ -56,6 +64,20 @@ func test_l2_12_tweak_values() -> void:
 	var tw: CustodyTweak = CustodyTweak.data()
 	assert_near(tw.police_cuff_range_m, 1.0, 0.001, "1 m")
 	assert_near(tw.police_cuff_self_free_s, 60.0, 0.001, "60 s self-free")
+
+
+## D-145 (P's GH Tense run: cuffed 3 s after the down): on Routine and Tense police never cuff a downed player.
+func test_d145_no_police_cuffs_on_routine_and_tense() -> void:
+	assert_eq(CustodyTweak.data().police_cuff_min_difficulty, Enums.Difficulty.HAZARDOUS, "cuffs from Hazardous up")
+	for d: int in [Enums.Difficulty.ROUTINE, Enums.Difficulty.TENSE]:
+		await _launch(d)
+		_events.clear()
+		await _setup()
+		var c: CrewController = _crew(0)
+		await wait_seconds(6.0)
+		assert_eq(c.crew_state, Enums.CrewState.DOWNED, "difficulty %d: still downed, bleeding out (not cuffed)" % d)
+		assert_false(CrewCuffs.can_police_cuff(c), "difficulty %d: never cuffable" % d)
+		assert_true(_events.is_empty(), "difficulty %d: no crew_cuffed (%s)" % [d, _events])
 
 
 func test_l2_12_police_cuff_downed_player() -> void:

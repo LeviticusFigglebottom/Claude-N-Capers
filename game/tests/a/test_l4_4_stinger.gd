@@ -27,8 +27,8 @@ func after_each() -> void:
 	await wait_frames(1)
 
 
-func _launch(mates: int = 1) -> void:
-	_rt = await HeistLauncher.launch(&"unit_map", 4404, Enums.Difficulty.LETHAL, self,
+func _launch(mates: int = 1, difficulty: int = Enums.Difficulty.LETHAL) -> void:
+	_rt = await HeistLauncher.launch(&"unit_map", 4404, difficulty, self,
 		{"map_packed": ATestMaps.basic(0, 0), "ai_teammates": mates, "crew_ai": false, "skip_casing": true})
 	_listen(EventBus.special_spawned, &"special")
 	_listen(EventBus.audio_cue_requested, &"cue")
@@ -270,3 +270,27 @@ func test_l4_4_shockproof_counter() -> void:
 	assert_true(freed, "interact within the window shocks back")
 	assert_eq(b.last_break_reason, &"counter")
 	assert_true(p.is_stunned(), "Stinger knocked back")
+
+
+## D-145 (P's GH Tense run: tased 3x in ~10 s): on Tense a Stinger waits stinger_tase_cooldown_by_difficulty[TENSE]
+## (8 s) after a tase, and the victim is immune to every Stinger for stinger_victim_immune_s_by_difficulty[TENSE] (6 s);
+## Lethal keeps the 4 s cooldown and no immunity.
+func test_d145_tense_cooldown_and_victim_immunity() -> void:
+	var tw: SpecialTweak = load("res://systems/ai/specials/special_tweak.tres") as SpecialTweak
+	assert_eq(Array(tw.stinger_tase_cooldown_by_difficulty), [12.0, 8.0, 4.0, 4.0, 4.0, 4.0], "cooldown per difficulty")
+	assert_eq(Array(tw.stinger_victim_immune_s_by_difficulty), [10.0, 6.0, 0.0, 0.0, 0.0, 0.0], "immunity per difficulty")
+	await _launch(1, Enums.Difficulty.TENSE)
+	var c: CrewController = _crew(0)
+	var b: StingerBrain = _brain(_spawn_one())
+	assert_true(await wait_until(func() -> bool: return _tased(c), 5.0), "tased")
+	b._end_tase(&"test", true)
+	assert_eq(c.crew_state, Enums.CrewState.NORMAL, "freed")
+	assert_near(b.tase_cooldown_left, 8.0, 0.01, "Tense cooldown 8 s")
+	assert_true(b._immune(c), "the victim is immune right after")
+	var other: StingerBrain = _brain(_spawn_one(Vector3(2, 0, -8)))
+	var before: int = _count(&"tased", c.slot)
+	await wait_seconds(4.5)
+	assert_eq(_count(&"tased", c.slot), before, "no Stinger re-tases the victim inside the immunity window")
+	assert_true(other.tase_victim == null or other.tase_victim != c, "the second Stinger leaves the victim alone")
+	await wait_seconds(2.0)
+	assert_false(b._immune(c), "immunity over after 6 s")
