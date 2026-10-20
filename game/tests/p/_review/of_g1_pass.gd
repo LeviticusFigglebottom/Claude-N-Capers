@@ -1534,17 +1534,25 @@ func _wait_core_clear(from_y: float, to_y: float) -> void:
 	var y_lo: float = minf(from_y, to_y) - 1.0
 	var y_hi: float = maxf(from_y, to_y) + 2.0
 	var core: Vector3 = _of(OF_SA_CORE)
+	var last: Dictionary = {}
 	var t: float = 0.0
 	while t < 180.0:
 		var near: PackedStringArray = PackedStringArray()
 		for n: Node in rt.npcs(&"guard"):
 			var g: NpcBase = n as NpcBase
-			if g != null and g.is_alive() and g.global_position.y > y_lo and g.global_position.y < y_hi \
-					and absf(g.global_position.y - from_y) > 0.6 and pilot.flat_dist(g.global_position, core) < 8.0 \
-					and _sees_core(g, core):
-				near.append("%s %s" % [g.name, Po5Pilot._v(g.global_position)])
-		if near.is_empty():
-			if t > 0.0:
+			if g == null or not g.is_alive() or g.global_position.y <= y_lo or g.global_position.y >= y_hi \
+					or absf(g.global_position.y - from_y) <= 0.6:
+				continue
+			# A walking guard reaches the flights during a multi-floor climb (~14 s, r248b: rover_gallery onto SA from
+			# the Gallery floor): moving within 15 m counts; a standing post only within 8 m with LOS to the core.
+			var id: int = g.get_instance_id()
+			var moving: bool = last.has(id) and g.global_position.distance_to(last[id]) > 0.15
+			last[id] = g.global_position
+			var d: float = pilot.flat_dist(g.global_position, core)
+			if (moving and d < 15.0) or (d < 8.0 and _sees_core(g, core)):
+				near.append("%s %s%s" % [g.name, Po5Pilot._v(g.global_position), " moving" if moving else ""])
+		if near.is_empty() and t >= 1.0:  # two samples: a guard's movement is known
+			if t > 1.0:
 				note("GHOST stair core clear after %.0f s" % t)
 			return
 		if int(t * 2.0) % 20 == 0:
