@@ -38,8 +38,10 @@ Capture names are Windows-safe since c6c096dd (PCaptureName); trunk's of_g1_pass
 - Relay from A, 23:55 UTC: OF real-bot hard runs (headless auto_loud through the real menus, crew damage ×1.0, solo + 3 bots, a-core head).
   Haz 0/3: seed 5 custody at 603 s (after drill, burn-through and the vault in/out); seed 1 custody at 287 s. Cata 0/2: seeds 5 and 6 downed at
   t≈18-20 s (auto_loud goes loud at t=6 from spawn), custody 1-2 s later. A's reading: OF loud at ×1.0 is not winnable on Haz+ with this
-  pilot + bots; the LEAD decides intent (PD2 DS) vs a tuning ask. P asked A to confirm the 1-2 s Cata custody is bleedout drain under
-  fire and not the old cuff/tase→custody path. A is running the hit-grace-on-Haz+ comparison (GH 4501, Haz/Brutal/Lethal/Cata, grace on vs off).
+  pilot + bots; the LEAD decides intent (PD2 DS) vs a tuning ask. A confirmed the 1-2 s Cata custody is bleedout drain: state 1→5
+  direct (no CUFFED 4, no tase). The harness pilot fires from the floor on Haz+, which makes it a legal target (L2.5), and ~12 police at Cata
+  damage empty the 100-point pool in ~1 s. A human holding fire would be cuffed (revivable) instead. A offers ~15 min: pilot holds fire
+  with 4+ enemies in range, for a fairer Cata read. LEAD's call. A is running the hit-grace-on-Haz+ comparison (GH 4501, Haz/Brutal/Lethal/Cata, grace on vs off).
 - Relay from A, 23:52 UTC: GH Tense 4501 on env/a-core 441b6870 (headless auto_loud, solo + 3 bots) PASS. The pilot went down once and a bot revived them.
   Bot downs 0/0/2, 3 bot revives. So all 3 GH Tense seeds now have a win on A's current head (with P's 4502/4503 on 4a6780f4).
 - Relay from A, 23:45 UTC: env/a-core is at 441b6870. e640362d (GAME, bots): a bot in REVIVE that stops closing in for 1 s now
