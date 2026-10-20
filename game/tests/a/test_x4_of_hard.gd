@@ -1,13 +1,18 @@
 ## OF-A6 robustness probe (LEAD 2026-10-20): the Ostrander Federal loud line on Hazardous and Cataclysm (2 seeds each)
 ## and the stealth ghost line on Cataclysm, so the higher difficulties do not hide a soft lock (drill jams, the hoist
 ## under heavy assaults, the escape ETA). Same flows and stated harness shortcuts as test_x4_of_loud.gd /
-## test_x4_of_stealth.gd (loud: D-133 crew_damage_taken_mult 0.25, the bot does not shoot back; 3 AI teammates).
+## test_x4_of_stealth.gd, 3 AI teammates. Loud uses the harness-only crew_damage_taken_mult 0.0 (CREW_DMG): the
+## scripted bot never shoots back, so at x0.25 the crew is simply wiped at the teller line on Hazardous+ (a balance
+## outcome, measured by the po5 auto_loud runs instead); at 0.0 the full police load still plays (spawns, shields,
+## tasers, cuffs) while the probe checks only the mission mechanics: jams, burn, hoist, [secure], the escape ETA.
 ## OPT-IN (each loud run is several minutes headless): runs only with CNC_OF_HARD=1, else SKIP.
 ##   CNC_OF_HARD=1 tools/ci/run_tests.sh a test_x4_of_hard
 extends TestCase
 
 const HEIST: StringName = &"ostrander_federal"
 const MAP_PATH: String = "res://world/heists/ostrander_federal/ostrander_federal.tscn"
+## Loud probe crew damage (see the header).
+const CREW_DMG: float = 0.0
 const LOUD_ORDER: Array[StringName] = [&"drill_delivery", &"vault_drill", &"vault_breach", &"secure", &"escape_wait",
 	&"escape"]
 const PC_LINE: Array[StringName] = [&"keycard", &"code_pc", &"vault_gate", &"time_lock", &"time_lock_wait", &"secure",
@@ -80,7 +85,7 @@ func _loud(seed_value: int, difficulty: int) -> void:
 	var t0: int = Time.get_ticks_msec()
 	flow = X4StealthFlow.new(self)
 	flow.difficulty = difficulty
-	if not await X4OfLoud.launch(flow, HEIST, seed_value):
+	if not await X4OfLoud.launch(flow, HEIST, seed_value, CREW_DMG):
 		_report()
 		return
 	var loud: X4OfLoud = X4OfLoud.new(flow)
