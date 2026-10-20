@@ -26,6 +26,9 @@ const GLASS_MIN_DEPTH_M: float = 0.05
 ## How far the sash slides up when opened (m); -1 = InteractionTweak.window_sash_open_m. Tall door-windows
 ## (e.g. the Glasshouse fire-escape one) set their own travel.
 @export var sash_travel_m: float = -1.0
+## D-142: the intact glass is see-through for stealth vision (GlassBody in StealthDirector.GROUP_SEE_THROUGH). False =
+## opaque for vision (closed blinds, frosted / privacy glass); movement and bullets are the same either way.
+@export var see_through: bool = true
 @export_group("Interaction")
 ## -1 = InteractionTweak.window_open_s.
 @export var interaction_time_s: float = -1.0
@@ -56,7 +59,10 @@ func _default_interaction_time() -> float:
 
 
 func _prefab_ready() -> void:
-	_route_hits(get_node_or_null(^"GlassBody"))
+	var glass_body: Node = get_node_or_null(^"GlassBody")
+	_route_hits(glass_body)
+	if glass_body != null and see_through:
+		glass_body.add_to_group(StealthDirector.GROUP_SEE_THROUGH)  # D-142: guards see through intact glass
 	_fit_glass_body()
 	var sash: Node3D = visual_node("Sash") as Node3D
 	if sash != null:
