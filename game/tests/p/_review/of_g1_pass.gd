@@ -218,6 +218,7 @@ var _resolve: bool = false
 var _resolve_launch: bool = false
 var _line: String = ""
 var _stray: Ladder = null
+var _free_attached: bool = false
 
 
 func _ready() -> void:
@@ -850,9 +851,29 @@ func _watch_ladders() -> void:
 	var my_rt: HeistRuntime = rt
 	while is_inside_tree() and rt == my_rt and is_instance_valid(rt) and pilot != null:
 		if not _climbing and _stray == null and pilot.crew.has_meta(Ladder.META_CLIMBING):
-			_stray = pilot.crew.get_meta(Ladder.META_CLIMBING) as Ladder
-			note("FINDING a walk took %s by accident at %s" % [_stray.name, Po5Pilot._v(pilot.crew.global_position)])
+			var held: Variant = pilot.crew.get_meta(Ladder.META_CLIMBING)
+			if held is Ladder:
+				_stray = held as Ladder
+				note("FINDING a walk took %s by accident at %s" % [_stray.name, Po5Pilot._v(pilot.crew.global_position)])
+			elif not _free_attached:
+				# D-145 free climbing marks the crew itself while it hangs on a ladder volume it walked into.
+				_free_attached = true
+				note("FINDING a walk attached to a ladder (free climb) at %s near %s" % [
+					Po5Pilot._v(pilot.crew.global_position), _nearest_ladder_name()])
+		elif _free_attached and not pilot.crew.has_meta(Ladder.META_CLIMBING):
+			_free_attached = false
 		await pilot.tick()
+
+
+func _nearest_ladder_name() -> String:
+	var best: String = "-"
+	var best_d: float = INF
+	for n: Node in rt.map.find_children("*", "Ladder", true, false):
+		var d: float = (n as Node3D).global_position.distance_to(pilot.crew.global_position)
+		if d < best_d:
+			best_d = d
+			best = "%s (%.1f m)" % [n.name, d]
+	return best
 
 
 func _stray_need() -> bool:
