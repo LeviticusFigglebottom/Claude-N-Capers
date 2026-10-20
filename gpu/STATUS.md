@@ -1,4 +1,4 @@
-﻿# GPU box status (aaron-82, native Windows)
+# GPU box status (aaron-82, native Windows)
 
 Machine: Windows 10 Home 19045, AMD Radeon RX 9070 XT (driver 32.0.31019.2002), Godot 4.7.2.stable.official.ed1daf0bf win64.
 Checkout: `C:\Users\Aaron\caperworks-gpu`, depth-1 trunk clone, cone sparse-index excluding
@@ -14,3 +14,21 @@ Checkout: `C:\Users\Aaron\caperworks-gpu`, depth-1 trunk clone, cone sparse-inde
 - Output: `docs/levels/ostrander_federal/g2/gpu_forward_plus/` (35 JPEGs, contact_sheet.jpg, shots.md)
 - Notes: no ERRORs. Warnings: `PresidentSafe: content PresidentValuables1/2/3 sits outside the safe body; moved to LootAnchor`
   (systems/prefabs/safe/safe.gd:550), plus `7 RIDs of type "Texture" were leaked` at shutdown.
+
+## GPU-2: real-GPU cast draw counts for D-146
+- Trunk: e960048e. Command (from repo root): `godot\Godot_v4.7.2-stable_win64_console.exe --audio-driver Dummy --resolution 1920x1080 --path game res://world/characters/_tools/heist_cast_perf.tscn -- <args>`
+- All three runs were windowed, Forward+ / Vulkan on the RX 9070 XT, with no ERRORs.
+
+| run | args | exit | wall |
+|---|---|---|---|
+| ostrander_federal | `--heist=ostrander_federal --seed=1037 --detail` | 0 | 55 s |
+| ostrander_federal_loud | `... --detail --loud` | 0 | 131 s |
+| glasshouse | `--heist=glasshouse --seed=1037 --detail` | 0 | 14 s |
+
+- Console output is in `gpu/perf/<run>.txt`, with PowerShell's stderr wrapper lines removed.
+- **No frame times**: heist_cast_perf prints draws/prims/objects per view but no frame timing, so none could be recorded.
+- **glasshouse captured no views**: `VIEWS` in heist_cast_perf.gd has no `glasshouse` entry. The run only printed
+  the summary line (npcs=11: guard 4, civilian 7) and wrote no PNGs. Add glasshouse views and I'll rerun it.
+- **PNGs are from the loud run**: the quiet and loud runs write the same `cast_perf_ostrander_federal_<view>.png` names
+  in user://, so the loud run overwrote the quiet one's PNGs. That leaves 6 PNGs (hall_south_eye/high, hall_west_diag, rc_hall_entrance/counter/from_gallery).
+- Shutdown warnings in every run: `7 RIDs of type "Texture" were leaked` and 298-492 `ObjectDB instances were leaked at exit`.

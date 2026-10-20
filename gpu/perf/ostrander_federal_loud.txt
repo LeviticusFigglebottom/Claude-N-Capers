@@ -1,0 +1,110 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+Vulkan 1.4.349 - Forward+ - Using Device #0: AMD - AMD Radeon RX 9070 XT
+[INFO][rng][p1] run seed 1037
+[INFO][preplan][p1] assets []
+[INFO][variants][p1] seed 1037 resolved { &"manager_route": [&"mgr_gallery"], &"keycard": [&"kc_on_manager"], &"code_pc": [&"pc_ops"], &"officers": [&"off_1"], &"server_room": [&"srv_basement"], &"guard_post": [&"rover_basement", &"rover_dock", &"rover_gallery", &"rover_hall"], &"security_room_staffed": [&"sec_staffed"], &"camera": [&"cam_a"], &"laser_pattern": [&"lz_timed"], &"customers": [&"cust_6"], &"side_door": [&"door_fire_propped"], &"fire_escape": [&"fe_down"], &"escape": [&"esc_van_dock"], &"drill_delivery": [&"drop_dock"], &"president_safe": [&"ps_empty"], &"vip": [&"vip_in"], &"guard_extra": [&"gx_basement", &"gx_hall"], &"civ_extra": [&"cx_hall_2", &"cx_pc", &"cx_sd"], &"time_lock_s": 210.0, &"drill_eta_s": 90.0, &"escape_eta_s": 120.0, &"cash_bags": 8, &"gold_bags": 3, &"deposit_boxes": 6, "rare": [&"time_lock_glitch"] }
+[INFO][heist][p1] vfx prewarm: 522 ms
+[INFO][prefab][p1] Hoist disabled
+[INFO][prefab][p1] RopeLadder disabled
+[INFO][heist][p1] phase LOADING -> CASING
+[INFO][prefab][p1] VaultBoxN07 disabled
+[INFO][prefab][p1] VaultBoxN08 disabled
+[INFO][prefab][p1] VaultBoxN09 disabled
+[INFO][prefab][p1] VaultBoxN10 disabled
+[INFO][prefab][p1] VaultBoxN11 disabled
+[INFO][prefab][p1] VaultBoxS01 disabled
+[INFO][prefab][p1] VaultBoxS02 disabled
+[INFO][prefab][p1] VaultBoxS03 disabled
+[INFO][prefab][p1] VaultBoxS04 disabled
+[INFO][prefab][p1] VaultBoxS05 disabled
+[INFO][prefab][p1] VaultBoxS06 disabled
+[INFO][prefab][p1] VaultBoxS07 disabled
+[INFO][prefab][p1] VaultBoxS08 disabled
+[INFO][prefab][p1] VaultBoxS09 disabled
+[INFO][prefab][p1] HallBox09 disabled
+[INFO][prefab][p1] HallBox10 disabled
+[INFO][prefab][p1] HallBox11 disabled
+[INFO][prefab][p1] HallBox12 disabled
+[INFO][prefab][p1] HallBox13 disabled
+[INFO][prefab][p1] HallBox14 disabled
+[INFO][prefab][p1] HallBox15 disabled
+[INFO][prefab][p1] HallBox16 disabled
+[INFO][prefab][p1] HallBox17 disabled
+[INFO][prefab][p1] HallBox18 disabled
+[INFO][prefab][p1] HallBox19 disabled
+[INFO][prefab][p1] HallBox20 disabled
+[INFO][prefab][p1] HallBox21 disabled
+[INFO][prefab][p1] HallBox22 disabled
+[INFO][prefab][p1] HallBox23 disabled
+[INFO][prefab][p1] HallBox24 disabled
+[INFO][director][p1] prewarm: 19 of 19 scenes loaded in 94 ms
+[INFO][prefab][p1] Keycard carried by Npc_civilian8
+[INFO][stealth][p1] ALARM: d_cast_perf (source 0)
+[INFO][heist][p1] alarm (d_cast_perf): going loud
+[INFO][crew][p1] slot 0 masked (forced=true)
+[INFO][heist][p1] phase CASING -> LOUD
+[INFO][director][p1] assault phase CONTROL (wave 1, 20 s)
+[INFO][prefab][p1] VaultControlRack: hack paused (lockdown)
+[INFO][director][p1] assault events: 3 rows for ostrander_federal (tweak)
+WARNING: Sub-surface scattering is not supported in viewports with a 
+transparent background. Disabling SSS in transparent viewport.
+   at: _render_scene (servers/rendering/renderer_rd/forward_clustered/render_forward_clustered.cpp:1963)
+[INFO][combat][p1] slot 0 downed (1/3)
+[INFO][director][p1] assault phase ANTICIPATION (wave 1, 30 s)
+[INFO][combat][p1] slot 0 in custody
+[INFO][combat][p1] all humans in custody, no release path: heist failed
+[INFO][heist][p1] phase LOUD -> ENDED
+[CASTPERF] heist=ostrander_federal seed=1037 loud=true npcs=33 by_role={ "guard": 10, "civilian": 19, "police": 4 }
+[CASTPERF] view=hall_south_eye attached never-LOD geometry: 14 nodes, 1008 tris; hiding it: draws 2196 -> 2196, prims 945224 -> 944792
+[CASTPERF] view=hall_south_eye never-LOD nodes by name: WeaponSilhouette x14
+[CASTPERF] view=hall_south_eye shadowed lights { "OmniLight3D": 1, "DirectionalLight3D": 1 }; all shadows off: draws 2196 -> 722
+[CASTPERF] view=hall_south_eye cast shadows off: draws 2196 -> 1500; off beyond 15 m only: -> 2112
+[CASTPERF] view=hall_south_eye sun Sun mode=1 max_distance=30 m: 2 splits -> 2189 draws; max_distance 15 m -> 1718 draws
+[CASTPERF] view=hall_south_eye cast on render layer 2, excluded from 1 positional lights' shadow casters: draws 2196 -> 2080
+[CASTPERF] view=hall_south_eye per-NPC draws (top 8 of 20 on screen): security_officer_e 63 @18m, security_officer_f 32 @24m, bank_customer_g 21 @15m, bank_customer_j 2 @28m, bank_customer_i 2 @29m, bank_customer_h 2 @29m, bank_customer_f 2 @28m, bank_customer_e 2 @18m
+[CASTPERF] view=hall_south_eye draws=2196 (map 1455, cast 741) prims=945224 (cast 496540) objects=2533 (cast 823) tiers={ "full": 3, "proxy": 17, "offscreen": 13 } anim_bands={ "NEAR": 9, "FAR": 18, "PAUSED": 5, "FULL": 1 }
+[CASTPERF] view=hall_south_high attached never-LOD geometry: 14 nodes, 1008 tris; hiding it: draws 2018 -> 2018, prims 853902 -> 853902
+[CASTPERF] view=hall_south_high never-LOD nodes by name: WeaponSilhouette x14
+[CASTPERF] view=hall_south_high shadowed lights { "OmniLight3D": 1, "DirectionalLight3D": 1 }; all shadows off: draws 2018 -> 539
+[CASTPERF] view=hall_south_high cast shadows off: draws 2018 -> 1329; off beyond 15 m only: -> 1927
+[CASTPERF] view=hall_south_high sun Sun mode=1 max_distance=30 m: 2 splits -> 2024 draws; max_distance 15 m -> 1561 draws
+[CASTPERF] view=hall_south_high cast on render layer 2, excluded from 1 positional lights' shadow casters: draws 2018 -> 1909
+[CASTPERF] view=hall_south_high per-NPC draws (top 8 of 20 on screen): security_officer_e 63 @19m, security_officer_f 32 @25m, bank_customer_g 19 @15m, bank_customer_j 2 @29m, bank_customer_i 2 @30m, bank_customer_h 2 @29m, bank_customer_f 2 @29m, bank_customer_e 2 @19m
+[CASTPERF] view=hall_south_high draws=2018 (map 1288, cast 730) prims=853902 (cast 451232) objects=2328 (cast 805) tiers={ "full": 2, "proxy": 18, "offscreen": 13 } anim_bands={ "NEAR": 10, "FAR": 18, "PAUSED": 5 }
+[CASTPERF] view=hall_west_diag attached never-LOD geometry: 14 nodes, 1008 tris; hiding it: draws 2258 -> 2258, prims 885378 -> 885378
+[CASTPERF] view=hall_west_diag never-LOD nodes by name: WeaponSilhouette x14
+[CASTPERF] view=hall_west_diag shadowed lights { "OmniLight3D": 1, "DirectionalLight3D": 1 }; all shadows off: draws 2258 -> 817
+[CASTPERF] view=hall_west_diag cast shadows off: draws 2258 -> 1616; off beyond 15 m only: -> 1634
+[CASTPERF] view=hall_west_diag sun Sun mode=1 max_distance=30 m: 2 splits -> 2258 draws; max_distance 15 m -> 1787 draws
+[CASTPERF] view=hall_west_diag cast on render layer 2, excluded from 1 positional lights' shadow casters: draws 2258 -> 2149
+[CASTPERF] view=hall_west_diag per-NPC draws (top 8 of 26 on screen): security_officer_b 93 @20m, security_officer_h 80 @20m, security_officer_i 69 @20m, security_officer_g 64 @22m, security_officer 62 @21m, security_officer_j 56 @21m, security_bodyguard 38 @21m, bank_customer_g 21 @16m
+[CASTPERF] view=hall_west_diag draws=2258 (map 1449, cast 809) prims=885378 (cast 394978) objects=2592 (cast 887) tiers={ "full": 7, "proxy": 19, "offscreen": 7 } anim_bands={ "NEAR": 15, "FAR": 14, "PAUSED": 4 }
+[CASTPERF] view=rc_hall_entrance attached never-LOD geometry: 14 nodes, 1008 tris; hiding it: draws 2201 -> 2189, prims 929236 -> 926882
+[CASTPERF] view=rc_hall_entrance never-LOD nodes by name: WeaponSilhouette x14
+[CASTPERF] view=rc_hall_entrance shadowed lights { "OmniLight3D": 1, "DirectionalLight3D": 1 }; all shadows off: draws 2201 -> 769
+[CASTPERF] view=rc_hall_entrance cast shadows off: draws 2201 -> 1525; off beyond 15 m only: -> 2111
+[CASTPERF] view=rc_hall_entrance sun Sun mode=1 max_distance=30 m: 2 splits -> 2195 draws; max_distance 15 m -> 1594 draws
+[CASTPERF] view=rc_hall_entrance cast on render layer 2, excluded from 1 positional lights' shadow casters: draws 2201 -> 2086
+[CASTPERF] view=rc_hall_entrance per-NPC draws (top 8 of 20 on screen): security_officer_e 63 @18m, security_officer_f 32 @23m, bank_customer_g 21 @14m, npc_bank_teller_c 8 @31m, civilian_customer_a 2 @41m, bank_customer_j 2 @28m, bank_customer_i 2 @29m, bank_customer_h 2 @28m
+[CASTPERF] view=rc_hall_entrance draws=2201 (map 1481, cast 720) prims=929236 (cast 465472) objects=2541 (cast 797) tiers={ "full": 3, "proxy": 17, "offscreen": 13 } anim_bands={ "NEAR": 10, "FAR": 17, "PAUSED": 5, "FULL": 1 }
+[CASTPERF] view=rc_hall_counter attached never-LOD geometry: 14 nodes, 1008 tris; hiding it: draws 2010 -> 2015, prims 878089 -> 879603
+[CASTPERF] view=rc_hall_counter never-LOD nodes by name: WeaponSilhouette x14
+[CASTPERF] view=rc_hall_counter shadowed lights { "OmniLight3D": 1, "DirectionalLight3D": 1 }; all shadows off: draws 2010 -> 691
+[CASTPERF] view=rc_hall_counter cast shadows off: draws 2010 -> 1458; off beyond 15 m only: -> 1563
+[CASTPERF] view=rc_hall_counter sun Sun mode=1 max_distance=30 m: 2 splits -> 2016 draws; max_distance 15 m -> 1806 draws
+[CASTPERF] view=rc_hall_counter cast on render layer 2, excluded from 1 positional lights' shadow casters: draws 2010 -> 1901
+[CASTPERF] view=rc_hall_counter per-NPC draws (top 8 of 17 on screen): security_officer_e 96 @5m, npc_bank_teller_b 52 @3m, security_officer_f 32 @19m, bank_customer_e 28 @14m, bank_customer_g 21 @20m, patrol_officer 7 @69m, bank_customer_b 2 @46m, bank_customer_d 2 @27m
+[CASTPERF] view=rc_hall_counter draws=2010 (map 1382, cast 628) prims=878089 (cast 439799) objects=2306 (cast 708) tiers={ "full": 4, "proxy": 13, "offscreen": 16 } anim_bands={ "FULL": 3, "NEAR": 7, "FAR": 23 }
+[CASTPERF] view=rc_hall_from_gallery attached never-LOD geometry: 14 nodes, 1008 tris; hiding it: draws 1539 -> 1539, prims 659566 -> 662536
+[CASTPERF] view=rc_hall_from_gallery never-LOD nodes by name: WeaponSilhouette x14
+[CASTPERF] view=rc_hall_from_gallery shadowed lights { "OmniLight3D": 1, "DirectionalLight3D": 1 }; all shadows off: draws 1539 -> 487
+[CASTPERF] view=rc_hall_from_gallery cast shadows off: draws 1539 -> 916; off beyond 15 m only: -> 1230
+[CASTPERF] view=rc_hall_from_gallery sun Sun mode=1 max_distance=30 m: 2 splits -> 1539 draws; max_distance 15 m -> 1462 draws
+[CASTPERF] view=rc_hall_from_gallery cast on render layer 2, excluded from 1 positional lights' shadow casters: draws 1539 -> 1436
+[CASTPERF] view=rc_hall_from_gallery per-NPC draws (top 8 of 13 on screen): security_officer_i 79 @20m, security_officer_b 79 @20m, security_officer_h 68 @20m, security_officer_j 47 @21m, security_officer_g 32 @22m, security_officer 31 @21m, security_bodyguard 19 @22m, bank_customer_b 7 @35m
+[CASTPERF] view=rc_hall_from_gallery draws=1539 (map 858, cast 681) prims=659566 (cast 290980) objects=1822 (cast 765) tiers={ "full": 7, "proxy": 6, "offscreen": 20 } anim_bands={ "FAR": 22, "NEAR": 7, "FULL": 1, "PAUSED": 3 }
+WARNING: 7 RIDs of type "Texture" were leaked.
+   at: finalize (servers/rendering/rendering_device.cpp:8900)
+WARNING: 492 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)
+EXIT=0 SECS=131
