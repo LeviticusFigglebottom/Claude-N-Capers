@@ -78,8 +78,10 @@ static var _cached: CombatTweak = null
 @export var npc_hit_chance_curve: PackedVector2Array = PackedVector2Array([
 	Vector2(0.0, 0.9), Vector2(5.0, 0.8), Vector2(15.0, 0.6), Vector2(30.0, 0.35), Vector2(60.0, 0.1),
 ])
-## Hit-chance multiplier by Enums.Difficulty (◇).
-@export var npc_hit_chance_mult: PackedFloat32Array = PackedFloat32Array([1.0, 1.0, 1.05, 1.1, 1.15, 1.2])
+## Hit-chance multiplier by Enums.Difficulty (◇). PO-17 (D-145 §2): the curve is PD2's good/expert presets' shape
+## (Very Hard / Overkill); PD2 Normal and Hard use the weaker "normal" preset, so Routine x0.65 and Tense x0.8
+## (were 1.0 / 1.0); Hazardous+ unchanged.
+@export var npc_hit_chance_mult: PackedFloat32Array = PackedFloat32Array([0.65, 0.8, 1.05, 1.1, 1.15, 1.2])
 ## Damage per shot when an NPC has no EnemyDef damage table.
 @export var npc_fallback_damage: float = 10.0
 

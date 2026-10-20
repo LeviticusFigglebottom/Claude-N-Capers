@@ -1001,6 +1001,8 @@ func _use_stand(comp: InteractableComponent) -> Vector3:
 	var up: Node3D = null
 	if owner_n != null and not (owner_n is Door):
 		up = owner_n.get_node_or_null(^"UsePoint") as Node3D
+	elif owner_n != null:
+		up = _mounted_lock_use_point(owner_n)  # D-138 (DB CountCageGate): stand where the gate's padlock / keypad is used
 	if up != null:
 		return stand_point(up.global_position)
 	var target: Vector3 = comp.global_position
@@ -1017,6 +1019,17 @@ func _use_stand(comp: InteractableComponent) -> Vector3:
 			if flat_dist(cand, target) <= 1.6 and (not bag or flat_dist(cand, target) >= 0.9) and _clear_to(cand, target):
 				return cand
 	return near
+
+
+## The UsePoint of a lock prefab (Padlock / Keypad) mounted on `door` (a direct child), else null: a barred cage gate is
+## beaten at its lock, so that is where to stand (P: the DB count-cage stall; the navmesh reaches the UsePoint).
+static func _mounted_lock_use_point(door: Node) -> Node3D:
+	for c: Node in door.get_children():
+		if c is Padlock or c is Keypad:
+			var up: Node3D = c.get_node_or_null(^"UsePoint") as Node3D
+			if up != null:
+				return up
+	return null
 
 
 func _clear_to(stand: Vector3, target: Vector3) -> bool:

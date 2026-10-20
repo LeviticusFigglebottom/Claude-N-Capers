@@ -199,8 +199,13 @@ func _build_route() -> void:
 		graph = PatrolRouteGenerator.nearest_graph(graphs, _post_pos, tweak.route_tag, tweak.nearest_graph_max_m)
 	if graph == null:
 		return
+	var tag: StringName = tweak.route_tag
+	# P OF-A6 ghost run: a spawn that names its graph patrols it even when its points carry only a local tag (OF Lane:
+	# `guard_dock`, no `guard`), instead of silently holding the post.
+	if _npc.spawn_info.get("patrol_graph") == graph and PatrolRouteGenerator.tagged_points(graph, tag).is_empty():
+		tag = &""
 	var res: Dictionary = PatrolRouteGenerator.build(graph, _post_pos, GameRng.stream(RNG_STREAM),
-		tweak.route_min_points, tweak.route_max_points, tweak.route_tag, tweak.route_attempts)
+		tweak.route_min_points, tweak.route_max_points, tag, tweak.route_attempts)
 	var pts: Array[PatrolPoint] = res["points"]
 	if pts.size() < 2:
 		if pts.size() == 1:  # A single reachable point: treat it as the post.

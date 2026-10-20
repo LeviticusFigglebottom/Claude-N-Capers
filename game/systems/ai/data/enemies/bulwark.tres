@@ -9,12 +9,12 @@ display_name = "Bulwark"
 is_special = true
 health = PackedFloat32Array(80, 80, 120, 160, 240, 320)
 headshot_mult = PackedFloat32Array(3, 3, 3, 3, 3, 3)
-damage = PackedFloat32Array(10, 10, 15, 20, 30, 40)
+damage = PackedFloat32Array(7, 8.5, 15, 20, 30, 40)
 move_speed = 3.2
 weapon = &"weapon.npc_smg"
 detection_preset = &"police"
 params = {
-"_note": "L4.5 Bulwark (PD2 Shield). Frontal ballistic shield (systems/ai/specials/bulwark_shield.tscn). health/damage per Difficulty (ROUTINE..CATACLYSM) PD2-shaped design values (◇). Behaviour numbers: systems/ai/specials/heavy_special_tweak.tres.",
+"_note": "L4.5 Bulwark (PD2 Shield). Frontal ballistic shield (systems/ai/specials/bulwark_shield.tscn). health/damage per Difficulty (ROUTINE..CATACLYSM) PD2-shaped design values (◇). Behaviour numbers: systems/ai/specials/heavy_special_tweak.tres. PO-17 (D-145 §2): Routine/Tense damage lowered toward PD2 Normal/Hard (◇).",
 "advance_speed": 1.8,
 "anim_walk_clip": "shield_walk",
 "aim_delay_s": 0.7,

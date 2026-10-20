@@ -71,6 +71,13 @@ control_special_groups = Array[ExtResource("6")]([ExtResource("19"), ExtResource
 control_special_interval_s = 20.0
 control_special_chance = 0.3
 assault_special_share = PackedFloat32Array(0.35, 0.45, 0.55)
+force_pool_difficulty_mult = PackedFloat32Array(0.6, 0.8, 1, 1, 1, 1)
+refill_interval_difficulty_mult = PackedFloat32Array(2, 1.5, 1, 1, 1, 1)
+special_share_difficulty_mult = PackedFloat32Array(0.5, 0.75, 1, 1, 1, 1)
+armored_min_difficulty = 2
+armored_substitutes = Dictionary[StringName, StringName]({
+&"enemy.tac_heavy": &"enemy.tac_light"
+})
 faction_by_difficulty = Array[StringName]([&"faction.tac", &"faction.tac", &"faction.frd", &"faction.frd", &"faction.sentinel", &"faction.zero"])
 shared_limit_prefixes = Array[StringName]([&"enemy.wrecker"])
 special_limit_default = -1

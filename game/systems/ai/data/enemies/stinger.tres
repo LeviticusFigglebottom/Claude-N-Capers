@@ -9,12 +9,12 @@ display_name = "Stinger"
 is_special = true
 health = PackedFloat32Array(240, 240, 320, 480, 600, 720)
 headshot_mult = PackedFloat32Array(3, 3, 3, 3, 2.5, 2)
-damage = PackedFloat32Array(15, 15, 22.5, 30, 45, 60)
+damage = PackedFloat32Array(10, 12.5, 22.5, 30, 45, 60)
 move_speed = 3.8
 weapon = &"weapon.npc_rifle"
 detection_preset = &"police"
 params = {
-"_note": "L4.4 Stinger (PD2 Taser). damage = rifle shots when not tasing. health/damage per Difficulty PD2-shaped design values (◇). Deploys in pairs (group_size). Behaviour numbers: systems/ai/specials/special_tweak.tres.",
+"_note": "L4.4 Stinger (PD2 Taser). damage = rifle shots when not tasing. health/damage per Difficulty PD2-shaped design values (◇). Deploys in pairs (group_size). Behaviour numbers: systems/ai/specials/special_tweak.tres. PO-17 (D-145 §2): Routine/Tense damage lowered toward PD2 Normal/Hard (◇).",
 "aim_delay_s": 0.8,
 "armor_body_mult": 1.0,
 "explosive_mult": 1.0,
