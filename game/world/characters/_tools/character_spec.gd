@@ -37,6 +37,8 @@ const PROP_SCENES: Dictionary = {
 	"char_bulwark_frd_shield": "res://world/characters/bulwark_frd/bulwark_frd_shield.tscn",
 	"char_bulwark_sentinel_shield": "res://world/characters/bulwark_sentinel/bulwark_sentinel_shield.tscn",
 	"char_bulwark_zero_shield": "res://world/characters/bulwark_zero/bulwark_zero_shield.tscn",
+	# D-145.3 Routine/Tense Bulwark (no carrier): the base shield, beside its scene as <cid>_shield
+	"char_bulwark_duty_shield": "res://world/characters/bulwark_duty/bulwark_duty_shield.tscn",
 }
 ## D2-01 faction reskins: SOURCE.txt `variant_of` (base character / prop id) and `visual_variant`
 ## (EnemyDef.params.visual_variant: frd | sentinel | zero) are copied into the characters.json entry as
