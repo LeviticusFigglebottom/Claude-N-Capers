@@ -218,6 +218,8 @@ var _resolve: bool = false
 var _resolve_launch: bool = false
 var _line: String = ""
 var _stray: Ladder = null
+## True while the ghost line runs (it waits for clear stairs; traversal tests have no NPCs).
+var _ghost_mode: bool = false
 
 
 func _ready() -> void:
@@ -794,7 +796,10 @@ func _climb(lad: Ladder, up: bool) -> bool:
 	var side: Vector3 = Vector3(-away.z, 0.0, away.x)
 	var approach: Vector3 = pilot.stand_point(grab + away * 1.5)
 	for d: Vector3 in [away, -away, side, -side]:
-		var pt: Vector3 = pilot.stand_point(grab + d * 1.5)
+		var want: Vector3 = grab + d * 1.5
+		var pt: Vector3 = pilot.stand_point(want)
+		if pilot.flat_dist(pt, want) > 0.5:  # snapped off a non-walkable spot (r246: the shaft is off the navmesh)
+			continue
 		var path: PackedVector3Array = pilot.nav_path(pt)
 		if not path.is_empty() and pilot.flat_dist(path[path.size() - 1], pt) < 0.3 and _path_clear(path):
 			if d != away:
@@ -1511,11 +1516,36 @@ func _of_to_floor(ffl_i: int, x: float = OF_SA_DOOR_X) -> bool:
 		# room-to-core walk from SR has both behind the same wall and flipped in SecurityDoor, G1 run 2).
 		if cur != 4 and not await _go(_of(Vector3(OF_SA_DOOR_X, OF_FFL[cur], OF_CORRIDOR_Z)), 0.6, 240.0):
 			return false
+		if _ghost_mode:
+			await _wait_core_clear(minf(OF_FFL[cur], OF_FFL[ffl_i]) - 1.0, maxf(OF_FFL[cur], OF_FFL[ffl_i]) + 2.0)
 		if not await _go(_of(Vector3(OF_SA_CORE.x, OF_FFL[cur], OF_SA_CORE.z)), 0.4, 240.0):
 			return false
 		if not await _go(_of(Vector3(OF_SA_CORE.x, OF_FFL[ffl_i], OF_SA_CORE.z)), 0.5, 240.0):
 			return false
 	return await _go(_of(Vector3(x, OF_FFL[ffl_i], OF_CORRIDOR_Z)), 0.6, 240.0)
+
+
+## Ghost line: a player peeks into the stair core before using it (r246 run: Npc_guard4 on SA at 0.9 m). Wait until no
+## living guard is within 8 m of the SA core between `y_lo` and `y_hi`; logs the wait (max 180 s, then goes anyway).
+func _wait_core_clear(y_lo: float, y_hi: float) -> void:
+	var core: Vector3 = _of(OF_SA_CORE)
+	var t: float = 0.0
+	while t < 180.0:
+		var near: PackedStringArray = PackedStringArray()
+		for n: Node in rt.npcs(&"guard"):
+			var g: NpcBase = n as NpcBase
+			if g != null and g.is_alive() and g.global_position.y > y_lo and g.global_position.y < y_hi \
+					and pilot.flat_dist(g.global_position, core) < 8.0:
+				near.append("%s %s" % [g.name, Po5Pilot._v(g.global_position)])
+		if near.is_empty():
+			if t > 0.0:
+				note("GHOST stair core clear after %.0f s" % t)
+			return
+		if int(t * 2.0) % 20 == 0:
+			note("GHOST waiting for the stair core: %s" % ", ".join(near))
+		await wait_s(0.5)
+		t += 0.5
+	note("GHOST stair core NOT clear after 180 s (going anyway)")
 
 
 ## §7.1: keycard (kc_security in SR) -> SA down -> vault gate -> a MEDIUM bag -> the laser test (4 m crossings).
@@ -2108,6 +2138,7 @@ func _test_ghost() -> bool:
 	opts["loadouts"] = {0: _ghost_loadout()}
 	if not await _launch(OF_HEIST, _of_seed(), Enums.Difficulty.CATACLYSM, opts, false):
 		return false
+	_ghost_mode = true
 	var t_start: float = rt.heist_time_s
 	var t0: float = t_start
 	var ok: bool = true
