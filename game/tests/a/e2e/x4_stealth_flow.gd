@@ -44,6 +44,8 @@ var secured_loot: Array[StringName] = []
 var laser_waits: int = 0
 ## AI teammates launched with the bot (0: the stealth routes go solo; the OF loud flow takes the PD2 bots, L6.1).
 var ai_teammates: int = 0
+## The launch difficulty (the X-4 gates run Routine; test_x4_of_hard.gd probes the higher ones).
+var difficulty: int = Enums.Difficulty.ROUTINE
 ## Where note() lines go instead of print (the po5 driver's run.log on the real-menu flows).
 var sink: Callable = Callable()
 ## Route facts a test asserts on (e.g. the GN curator card branch: &"curator_card_*").
@@ -86,7 +88,7 @@ func launch(heist_id: StringName, seed_value: int, options: Dictionary = {}) -> 
 	Engine.time_scale = 1.0
 	var opts: Dictionary = options.duplicate()
 	opts["ai_teammates"] = ai_teammates
-	var launched: HeistRuntime = await HeistLauncher.launch(heist_id, seed_value, Enums.Difficulty.ROUTINE, host, opts)
+	var launched: HeistRuntime = await HeistLauncher.launch(heist_id, seed_value, difficulty, host, opts)
 	if not check(launched != null, "HeistLauncher.launch(%s, %d)" % [heist_id, seed_value]):
 		return false
 	return await attach(launched, seed_value)
