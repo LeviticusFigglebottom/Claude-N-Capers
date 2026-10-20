@@ -1,4 +1,4 @@
-# Contract: visual slots (v1.5)
+# Contract: visual slots (v1.6)
 
 How art scenes (ENV C props/characters, ENV B weapons) plug into ENV A gameplay prefabs.
 
@@ -81,3 +81,8 @@ so its outward axis points **down** and a GADGET mod hangs under the barrel. `La
 First person: ENV P (`FpViewmodelOffhand`) reparents the offhand gun under a hand.L BoneAttachment3D + OffhandSocket at
 `fp.offhand_grip`, and hides/shows the left magazine at `mag_out_l` / `mag_in_l`. Third person: ENV A attaches one pistol at
 HandR/Socket and one at HandL/Socket (characters.md v1.20). This replaces the v1.0 "ENV A reparents" wording for first person.
+
+## v1.6: render layer 5 `sun_shadow_skip` (D-146, ENV C)
+| 3D render layer (1-based) | Bit | Name | Set by | Meaning |
+|---|---|---|---|---|
+| 5 | `1 << 4` | `sun_shadow_skip` | ENV C `RenderBudgetPolicy` (world/lighting) | interior dressing, loot, devices and containers that the sun's `shadow_caster_mask` excludes (the sun's cascades don't re-draw them; positional lights still shadow them). No gameplay meaning; every camera's `cull_mask` must include it (levelcheck checks custom cameras). |

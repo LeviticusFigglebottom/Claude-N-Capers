@@ -1415,3 +1415,9 @@ Tense losses traced to takedown rules, not tuning. Amends **D-093** and pd2_fide
 3. Police cuff downed heisters only from Hazardous up; Routine/Tense custody comes from bleed-out alone (◇).
 4. Stinger re-tase cooldown 12 / 8 / 4 s (Routine / Tense / Hazardous+) and per-victim immunity 10 / 6 / 0 s (◇).
 5. A downed heister who shoots from the floor draws fire and can be shot out of bleed-out (PD2), unchanged.
+6. **Addendum (2026-10-20, real-GPU evidence):** the shipping renderer is Forward+ (D-001, architecture §1). The PO's
+   RX 9070 XT (GPU box, branch `gpu/renders`, GPU-2) measured the OF hall under a Cataclysm loud assault at
+   ~2,000–2,300 total submitted draws in Forward+ (map ~1,300–1,450, cast ~730), well inside 4,000. Therefore D-146 is
+   **judged on Forward+, measured on the GPU box**; levelcheck's Compatibility-based model stays as a conservative
+   early-warning (report-only from now) because Compatibility is the fallback renderer. A heist passes D-146 when its
+   worst views, Cataclysm cast, loud, measure ≤ 2,500 main / ≤ 4,000 total in Forward+ on the GPU box.

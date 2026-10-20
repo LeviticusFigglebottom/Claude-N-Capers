@@ -19,7 +19,10 @@
 ## - cast: the heist's peak (Cataclysm) NPC cast, CAST_ALLOWANCE, from D's heist_cast_perf.
 ## Fails: main > MAX_DRAW_CALLS, main + lit + shadow + cast > MAX_TOTAL_DRAWS, shadowed lights in view >
 ## MAX_SHADOW_LIGHTS, triangles > MAX_TRIANGLES, on a map whose root carries meta `perf_d146 = true` (D-146 addendum:
-## OF first, set by its generator); every other map gets the same lines as warnings (report-only until its D-144 slot).
+## no heist sets it since addendum 6); every other map gets the same lines as warnings (report-only). D-146 addendum 6:
+## the budgets are judged on Forward+, measured on the GPU box with the Cataclysm cast (heist_cast_perf / the GPU
+## frame is the cast gate); this Compatibility model, without occlusion and with every variant active, is the
+## conservative early warning.
 class_name LcCheckPerf
 extends LcCheck
 
@@ -83,7 +86,8 @@ func run(ctx: LcContext) -> void:
 	var enforced: bool = bool(ctx.map.get_meta(ENFORCE_META, false))
 	var flag: Callable = fail if enforced else warn
 	note("Budgets %s (map meta `%s`)." % ["ENFORCED (fail)" if enforced
-		else "REPORT-ONLY (warnings until its D-144 slot)", ENFORCE_META])
+		else "REPORT-ONLY (D-146 addendum 6: judged on Forward+ on the GPU box; this is the Compatibility early warning)",
+		ENFORCE_META])
 	note("Draws per view = main + lit (Compatibility light passes) + shadow passes + peak cast allowance (%d); " % cast
 			+ "budgets: main <= %d, total <= %d, shadowed lights <= %d (architecture §10, D-146)."
 			% [MAX_DRAW_CALLS, MAX_TOTAL_DRAWS, MAX_SHADOW_LIGHTS])
