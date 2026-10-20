@@ -51136,9 +51136,12 @@ light_color = Color(1, 0.7216, 0.4706, 1)
 light_energy = 2.6
 light_size = 0.05
 shadow_enabled = true
+distance_fade_enabled = true
+distance_fade_begin = 80.0
+distance_fade_shadow = 14.0
+distance_fade_length = 5.0
 omni_range = 12.0
 omni_attenuation = 1.2
-omni_shadow_mode = 0
 
 [node name="PendantS3" type="Node3D" parent="Props/DressA/BH" unique_id=105867 groups=["fixture"] instance=ExtResource("355_of")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30.855, 8, 30.84)
@@ -52391,6 +52394,7 @@ light_volumetric_fog_energy = 1.6
 light_angular_distance = 0.5
 shadow_enabled = true
 shadow_blur = 1.5
+shadow_caster_mask = 4294967279
 directional_shadow_mode = 1
 directional_shadow_max_distance = 30.0
 script = ExtResource("391_of")
@@ -52425,6 +52429,7 @@ door_roots = PackedStringArray("Gameplay/Doors")
 cast_keep_rooms = PackedStringArray("BH")
 range_keep_rooms = PackedStringArray("BH", "TW")
 range_cap = 24.0
+sun_skip_layer = 16
 open_purposes = PackedStringArray("exterior")
 
 [node name="FillA" type="Node3D" parent="Lighting" unique_id=106084]

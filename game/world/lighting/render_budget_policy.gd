@@ -6,6 +6,9 @@
 ##   shadowed lights would draw them; the shell, exterior doors and finishes keep casting: no light leaks in;
 ## - a door under `door_roots` (its direct children) with an interior room on both sides (probes 0.6 m along its local
 ##   z, 1.2 m up) casts no shadow when neither room is in `cast_keep_rooms` (an exterior door keeps casting: the sun);
+## - inside `cast_keep_rooms`, when `sun_skip_layer` is set, they move from render layer 1 to that layer, which the
+##   map's sun leaves out of its shadow_caster_mask: they keep the kept rooms' positional shadows, not the sun's
+##   (the roofed room's glazing lets in a few shafts; the shell, finishes and doors still shape them);
 ## - outside `range_keep_rooms` a visibility range above `range_cap` m is cut to it (margin 10 %): dressing seen from
 ##   another room is behind its walls (levelcheck counts it: no occlusion).
 ## Deterministic (tree order, no RNG); off in the editor. levelcheck `perf` sees the result (it runs after this).
@@ -19,11 +22,14 @@ extends Node
 @export var cast_keep_rooms: PackedStringArray = PackedStringArray()
 @export var range_keep_rooms: PackedStringArray = PackedStringArray()
 @export var range_cap: float = 0.0
+## Render layer bit for kept-room geometry the sun does not shadow (0: off).
+@export var sun_skip_layer: int = 0
 @export var open_purposes: PackedStringArray = PackedStringArray(["exterior"])
 
 var applied_cast: int = 0
 var applied_range: int = 0
 var applied_doors: int = 0
+var applied_layer: int = 0
 
 
 func _ready() -> void:
@@ -73,6 +79,9 @@ func apply() -> void:
 				if not (rid in cast_keep_rooms) and gi.cast_shadow != GeometryInstance3D.SHADOW_CASTING_SETTING_OFF:
 					gi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 					applied_cast += 1
+				elif rid in cast_keep_rooms and sun_skip_layer != 0 and (gi.layers & 1) != 0:
+					gi.layers = (gi.layers & ~1) | sun_skip_layer
+					applied_layer += 1
 				if range_cap > 0.0 and not (rid in range_keep_rooms) and gi.visibility_range_end > range_cap:
 					gi.visibility_range_end = range_cap
 					gi.visibility_range_end_margin = minf(gi.visibility_range_end_margin, range_cap * 0.1)
