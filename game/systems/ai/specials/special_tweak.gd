@@ -62,6 +62,12 @@ static var _cached: SpecialTweak = null
 @export var stinger_helpless_after_s: float = 6.0
 ## Cooldown between tases (s).
 @export var stinger_tase_cooldown_s: float = 4.0
+## D-145 (P's GH Tense run: tased 3x in ~10 s): per-difficulty cooldown (Enums.Difficulty index) replacing
+## stinger_tase_cooldown_s when set ◇.
+@export var stinger_tase_cooldown_by_difficulty: PackedFloat32Array = PackedFloat32Array()
+## D-145: after a tase on a crew member ends, no Stinger may tase that crew member again for this long (s, per
+## difficulty; 0 = none) ◇: several Stingers cannot chain one player.
+@export var stinger_victim_immune_s_by_difficulty: PackedFloat32Array = PackedFloat32Array()
 ## Involuntary fire while tased: spread multiplier and upward pull (deg).
 @export var stinger_spread_mult: float = 3.0
 @export var stinger_pitch_up_deg: float = 15.0

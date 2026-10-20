@@ -233,3 +233,24 @@ func test_phase_block_key_on_every_panel() -> void:
 	assert_true(panel1 != null and panel1._phase_block() == &"ui.blocked.after_breach", "the runtime landing-1 panel")
 	lift.interactable.phase_block_key = &""
 	assert_eq(lift.interactable._phase_block(), InteractableComponent.BLOCK_PHASE, "no key: the generic reason")
+
+
+## OF co-op parity (coop2: the Hoist car at the host's landing 1, the client's at 0): a client places the car from the
+## replicated landing / destination / trip_t (NetEntityCodec generic props), mid-trip included.
+func test_client_mirrors_the_replicated_car() -> void:
+	var lift: BagLift = _lift()
+	await wait_physics_frames(2)
+	var car: Node3D = lift.visual_node("Car") as Node3D
+	assert_true(car != null, "the lift has a Car")
+	if car == null:
+		return
+	var y0: float = car.global_position.y
+	NetEntityCodec.apply_state(lift, {"landing": 0, "destination": 1, "trip_t": 0.5})
+	lift.mirror_car()
+	assert_near(car.global_position.y, y0 + TOP_Y * 0.5, 0.05, "mid-trip: the car halfway up")
+	lift.mirror_car(lift.travel_s * 0.25)
+	assert_near(car.global_position.y, y0 + TOP_Y * 0.75, 0.05, "the trip runs on between snapshots")
+	NetEntityCodec.apply_state(lift, {"landing": 1, "destination": -1, "trip_t": 0.0})
+	lift.mirror_car()
+	assert_near(car.global_position.y, y0 + TOP_Y, 0.05, "arrived: the car at the top landing")
+	assert_eq(lift.panels[1].kind, &"send_lift", "the top panel sends from where the car stands")

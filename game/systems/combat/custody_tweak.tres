@@ -15,6 +15,7 @@ trade_interaction_s = 1.0
 police_cuff_range_m = 1.0
 police_cuff_approach_m = 15.0
 police_cuff_self_free_s = 60.0
+police_cuff_min_difficulty = 2
 surrender_requires_skill = false
 surrender_base_chance = 0.2
 surrender_hurt_chance = 0.5

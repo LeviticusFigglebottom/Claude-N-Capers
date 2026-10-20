@@ -1,0 +1,60 @@
+[PO5 16.5s] in heist glasshouse seed 4501 diff 1 phase 1 crew at (3.0, 0.0, 14.4)
+[PO5 89.0s] pilot: goto (3.6, 4.4, 8.2) FAILED at (12.3, 0.0, 5.0) after 60.0 s
+[PO5 155.4s] EVENT crew 0 state 0 -> 2 at (11.6, 4.2, 4.9) (t=140)
+[PO5 155.5s] pilot: goto (7.5, 0.2, 4.5) FAILED at (11.6, 4.2, 4.9) after 4.6 s
+[PO5 155.5s] pilot: goto (7.1, 0.2, 5.3) FAILED at (11.6, 4.2, 4.9) after 0.0 s
+[PO5 157.1s] EVENT crew 0 state 2 -> 0 at (10.6, 4.2, 5.0) (t=141)
+[PO5 160.9s] EVENT crew 0 state 0 -> 1 at (14.5, 4.2, 5.2) (t=145)
+[PO5 160.9s] pilot: goto (7.5, 0.2, 4.5) FAILED at (14.5, 4.2, 5.2) after 3.4 s
+[PO5 160.9s] pilot: goto (7.1, 0.2, 5.3) FAILED at (14.5, 4.2, 5.2) after 0.0 s
+[PO5 167.2s] EVENT crew 0 state 1 -> 0 at (14.5, 4.2, 5.2) (t=152)
+[PO5 189.9s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.5, 0.0, 3.5) after 4.0 s
+[PO5 193.9s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.9) after 4.0 s
+[PO5 198.0s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.5, 0.0, 3.5) after 4.0 s
+[PO5 202.0s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.8) after 4.0 s
+[PO5 206.1s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.6) after 4.0 s
+[PO5 210.1s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.8) after 4.0 s
+[PO5 214.2s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.6) after 4.0 s
+[PO5 218.2s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.8) after 4.0 s
+[PO5 222.3s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.6) after 4.0 s
+[PO5 226.3s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.8) after 4.0 s
+[PO5 230.4s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.6) after 4.0 s
+[PO5 234.4s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.9) after 4.0 s
+[PO5 238.5s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.6) after 4.0 s
+[PO5 242.5s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.6) after 4.0 s
+[PO5 246.6s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.6) after 4.0 s
+[PO5 250.9s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.6) after 4.0 s
+[PO5 255.0s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.9) after 4.0 s
+[PO5 259.0s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.5, 0.0, 3.5) after 4.0 s
+[PO5 263.1s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.9) after 4.0 s
+[PO5 267.1s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.5, 0.0, 3.5) after 4.0 s
+[PO5 271.5s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.5, 0.0, 3.5) after 4.0 s
+[PO5 275.5s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.9) after 4.0 s
+[PO5 279.9s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.5, 0.0, 3.5) after 4.0 s
+[PO5 283.9s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.8) after 4.0 s
+[PO5 288.0s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.6) after 4.0 s
+[PO5 292.0s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.8) after 4.0 s
+[PO5 296.1s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.6) after 4.0 s
+[PO5 300.1s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.8) after 4.0 s
+[PO5 304.2s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.6) after 4.0 s
+[PO5 308.2s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.8) after 4.0 s
+[PO5 311.8s] EVENT crew 1 state 0 -> 1 at (6.4, 0.0, 5.1) (t=296)
+[PO5 319.6s] EVENT crew 1 state 1 -> 0 at (6.4, -0.3, 5.1) (t=304)
+[PO5 320.1s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (5.2, 0.0, 5.0) after 4.0 s
+[PO5 324.2s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (5.0, -0.3, 5.5) after 4.0 s
+[PO5 335.7s] EVENT crew 0 state 0 -> 1 at (4.5, -0.3, 5.2) (t=320)
+[PO5 335.8s] pilot: use Bag_jewelry (pick_bag) -> FAILED in 4.7 s
+[PO5 342.0s] EVENT crew 0 state 1 -> 0 at (4.6, 0.0, 5.2) (t=326)
+[PO5 347.8s] EVENT crew 0 state 0 -> 2 at (0.3, 0.0, -2.1) (t=332)
+[PO5 347.8s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (0.2, 0.0, -2.1) after 3.1 s
+[PO5 352.5s] EVENT crew 1 state 0 -> 1 at (7.5, 0.0, -1.8) (t=337)
+[PO5 354.7s] EVENT crew 0 state 2 -> 0 at (0.8, 0.0, -1.8) (t=339)
+[PO5 358.8s] EVENT crew 0 state 0 -> 2 at (0.8, 0.0, -1.8) (t=343)
+[PO5 359.9s] EVENT crew 3 state 0 -> 1 at (6.6, 0.0, -2.4) (t=344)
+[PO5 363.6s] EVENT crew 2 state 0 -> 1 at (1.9, 0.0, -1.4) (t=348)
+[PO5 364.5s] EVENT crew 0 state 2 -> 1 at (0.8, 0.0, -1.8) (t=349)
+[PO5 382.5s] EVENT crew 1 state 1 -> 5 at (7.5, 0.0, -1.8) (t=367)
+[PO5 388.8s] EVENT crew 0 state 1 -> 5 at (0.8, 0.0, -1.8) (t=373)
+[PO5 388.9s] FAIL player in custody at 373 s
+[PO5 388.9s] STATS difficulty=1 police=87 peak_alive=11 specials={ &"enemy.bulwark": 11, &"enemy.stinger": 2, &"enemy.longshot": 2 } composition={ &"enemy.security_officer": 3, &"enemy.patrol_officer": 20, &"enemy.bulwark": 11, &"enemy.tac_light": 49, &"enemy.stinger": 2, &"enemy.longshot": 2 } | slot 0 [weapon.corsair_ar / armor.tailored_suit] downs 3 custody 1 revived 3 regained 0; slot 1 [weapon.corsair_ar / armor.tailored_suit] downs 2 custody 1 revived 1 regained 207; slot 2 [weapon.corsair_ar / armor.tailored_suit] downs 1 custody 0 revived 0 regained 88; slot 3 [weapon.corsair_ar / armor.tailored_suit] downs 1 custody 0 revived 0 regained 102
+[PO5 388.9s] RESULT FAIL (code 1) flow=auto_loud heist=Golden Hour seed=4501

@@ -218,8 +218,9 @@ var _resolve: bool = false
 var _resolve_launch: bool = false
 var _line: String = ""
 var _stray: Ladder = null
-## True while the ghost line runs (it waits for clear stairs; traversal tests have no NPCs).
-var _ghost_mode: bool = false
+## Ghost line from step 4 on (no ECM window running): floor changes wait for a clear stair core (traversal tests have
+## no NPCs; steps 2-3 go straight down under ECM #1 as the doc times them).
+var _ghost_stair_wait: bool = false
 
 
 func _ready() -> void:
@@ -1512,12 +1513,12 @@ func _of_to_floor(ffl_i: int, x: float = OF_SA_DOOR_X) -> bool:
 		if absf(pilot.crew.global_position.y - OF_FFL[i]) < absf(pilot.crew.global_position.y - OF_FFL[cur]):
 			cur = i
 	if cur != ffl_i:
+		if _ghost_stair_wait:  # from where the crew stands (a room): stepping out to wait gets it seen (r248: BB)
+			await _wait_core_clear(OF_FFL[cur], OF_FFL[ffl_i])
 		# Out to this floor's corridor first: Po5Pilot crosses an open door only toward a target beyond its plane (a
 		# room-to-core walk from SR has both behind the same wall and flipped in SecurityDoor, G1 run 2).
 		if cur != 4 and not await _go(_of(Vector3(OF_SA_DOOR_X, OF_FFL[cur], OF_CORRIDOR_Z)), 0.6, 240.0):
 			return false
-		if _ghost_mode:
-			await _wait_core_clear(minf(OF_FFL[cur], OF_FFL[ffl_i]) - 1.0, maxf(OF_FFL[cur], OF_FFL[ffl_i]) + 2.0)
 		if not await _go(_of(Vector3(OF_SA_CORE.x, OF_FFL[cur], OF_SA_CORE.z)), 0.4, 240.0):
 			return false
 		if not await _go(_of(Vector3(OF_SA_CORE.x, OF_FFL[ffl_i], OF_SA_CORE.z)), 0.5, 240.0):
@@ -1527,18 +1528,31 @@ func _of_to_floor(ffl_i: int, x: float = OF_SA_DOOR_X) -> bool:
 
 ## Ghost line: a player peeks into the stair core before using it (r246 run: Npc_guard4 on SA at 0.9 m). Wait until no
 ## living guard is within 8 m of the SA core between `y_lo` and `y_hi`; logs the wait (max 180 s, then goes anyway).
-func _wait_core_clear(y_lo: float, y_hi: float) -> void:
+func _wait_core_clear(from_y: float, to_y: float) -> void:
+	# Guards on the floor the crew stands on see it whether it waits or not: count those on the stair flights and
+	# on the destination floor only (r246c: waiting by the ground core for a basement rover got the crew seen).
+	var y_lo: float = minf(from_y, to_y) - 1.0
+	var y_hi: float = maxf(from_y, to_y) + 2.0
 	var core: Vector3 = _of(OF_SA_CORE)
+	var last: Dictionary = {}
 	var t: float = 0.0
 	while t < 180.0:
 		var near: PackedStringArray = PackedStringArray()
 		for n: Node in rt.npcs(&"guard"):
 			var g: NpcBase = n as NpcBase
-			if g != null and g.is_alive() and g.global_position.y > y_lo and g.global_position.y < y_hi \
-					and pilot.flat_dist(g.global_position, core) < 8.0:
-				near.append("%s %s" % [g.name, Po5Pilot._v(g.global_position)])
-		if near.is_empty():
-			if t > 0.0:
+			if g == null or not g.is_alive() or g.global_position.y <= y_lo or g.global_position.y >= y_hi \
+					or absf(g.global_position.y - from_y) <= 0.6:
+				continue
+			# A walking guard reaches the flights during a multi-floor climb (~14 s, r248b: rover_gallery onto SA from
+			# the Gallery floor): moving within 15 m counts; a standing post only within 8 m with LOS to the core.
+			var id: int = g.get_instance_id()
+			var moving: bool = last.has(id) and g.global_position.distance_to(last[id]) > 0.15
+			last[id] = g.global_position
+			var d: float = pilot.flat_dist(g.global_position, core)
+			if (moving and d < 15.0) or (d < 8.0 and _sees_core(g, core)):
+				near.append("%s %s%s" % [g.name, Po5Pilot._v(g.global_position), " moving" if moving else ""])
+		if near.is_empty() and t >= 1.0:  # two samples: a guard's movement is known
+			if t > 1.0:
 				note("GHOST stair core clear after %.0f s" % t)
 			return
 		if int(t * 2.0) % 20 == 0:
@@ -1546,6 +1560,16 @@ func _wait_core_clear(y_lo: float, y_hi: float) -> void:
 		await wait_s(0.5)
 		t += 0.5
 	note("GHOST stair core NOT clear after 180 s (going anyway)")
+
+
+## `g` has a line of sight (world layer 1) from his eyes to the stair core column at his own height: a guard behind
+## the core walls cannot see the flights (r248: Npc_guard10's ground-floor post 7 m off held the wait for 180 s).
+func _sees_core(g: NpcBase, core: Vector3) -> bool:
+	var eye: Vector3 = g.global_position + Vector3(0, 1.6, 0)
+	var to: Vector3 = Vector3(core.x, g.global_position.y + 1.2, core.z)
+	var q: PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.create(eye, to, 1)
+	q.exclude = [g.get_rid()] if g is CollisionObject3D else []
+	return g.get_world_3d().direct_space_state.intersect_ray(q).is_empty()
 
 
 ## §7.1: keycard (kc_security in SR) -> SA down -> vault gate -> a MEDIUM bag -> the laser test (4 m crossings).
@@ -2138,7 +2162,7 @@ func _test_ghost() -> bool:
 	opts["loadouts"] = {0: _ghost_loadout()}
 	if not await _launch(OF_HEIST, _of_seed(), Enums.Difficulty.CATACLYSM, opts, false):
 		return false
-	_ghost_mode = true
+	_ghost_stair_wait = false
 	var t_start: float = rt.heist_time_s
 	var t0: float = t_start
 	var ok: bool = true
@@ -2281,6 +2305,7 @@ func _g3_keycard() -> bool:
 
 ## 4. SA up to the Executive level; pc_exec hack (45 s, 1 interruption), waiting in E3; read the code.
 func _g4_code() -> bool:
+	_ghost_stair_wait = true
 	if not await _of_to_floor(3):
 		return false
 	var pc: Node3D = _x("code_pc")

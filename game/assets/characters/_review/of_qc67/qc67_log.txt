@@ -26,3 +26,10 @@ ENV D reading (2026-10-20, trunk 8ed5fa93, OF greybox, seed 1, Routine):
   CounterW/E vs CustomerLedge face z 17.45, WallW/E vs the hall walls x 8.1 / 39.9, Pillar vs Pillar19 face z 20.25.
   In game: CounterW bank_customer_b (back bag) 0.14 m forward = its cower_offsets.json entry; CounterE teller 0.40 m
   (teller arrives from behind the counter); no civilian reached WallW/E within 8 s on seed 1.
+
+--- r246 re-capture (trunk 181957dd, A's HINT_CLIPS alias fbbe47ed in) ---
+teller Npc_civilian tags [&"civ_teller"] look npc_bank_teller_b clip idle at (15.0, 0.000983, 16.04935) station 0.02 m facing -180
+teller Npc_civilian2 tags [&"civ_teller"] look npc_bank_teller_c clip idle at (17.0, 0.000983, 16.04935) station 0.02 m facing -180
+teller Npc_civilian3 tags [&"civ_teller"] look npc_bank_teller_d clip idle at (31.0, 0.000983, 16.04935) station 0.02 m facing -180
+teller Npc_civilian4 tags [&"civ_teller", &"civ_teller_rotating"] look npc_bank_teller_e clip teller_count at (33.0, 0.000983, 16.04935) station 0.02 m facing -180
+Reading: Teller4 (teller_rotation CivilianRoute, stop activity "teller") counts at the worktop (r246_tellers_e_staff_side.png). Tellers 1-3 still idle: CivilianBrain.KNOWN_ACTIVITIES lacks "teller_count" (and "queue_idle"), so the brain hint is "idle" before AnimDriver's alias (civilian_brain.gd:48 / :625). A fixes (LEAD); re-capture after.
