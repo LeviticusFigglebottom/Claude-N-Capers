@@ -144,6 +144,11 @@ static func _theirs(rid: String) -> bool:
 	return rid in D.THEIRS
 
 
+## X1-X5 (the exteriors; XL, XC, XW are executive rooms).
+static func _exterior(rid: String) -> bool:
+	return rid.length() == 2 and rid[0] == "X" and rid[1].is_valid_int()
+
+
 static func _mine(rid: String) -> bool:
 	return rid != "" and not (rid in D.THEIRS) and D.ROOMS.has(rid)
 
@@ -420,7 +425,7 @@ func _faces_theirs(a: AABB, self_id: int) -> bool:
 			var rid: String = String(pc[3])
 			if rid == "BH" or rid == "VE":
 				return true
-			if _mine(rid) and not rid.begins_with("X"):
+			if _mine(rid) and not _exterior(rid):
 				ours = true
 	return not ours
 
@@ -655,6 +660,8 @@ func _exposed(q: Array, n: Vector3, self_id: int) -> bool:
 func _emit_piece(q: Array, n: Vector3, key: String, rid: String, group: String) -> void:
 	if key == "" or key == "@theirs" or not _mats.has(key):
 		return
+	if group == "Shell" and maxf(maxf((q[0] as Vector3).y, (q[1] as Vector3).y), (q[2] as Vector3).y) <= 0.001:
+		key = "concrete"   # below grade, facing no room: one finish (no two fallbacks meet coplanar)
 	_tile(group, rid)
 	acc.call(&"quad", group, key, q[0], q[1], q[2], q[3], n)
 
@@ -664,7 +671,7 @@ func _tile(group: String, rid: String) -> void:
 		return
 	var r: Array = _room_rec[rid]
 	var area: float = (float(r[3]) - float(r[1])) * (float(r[4]) - float(r[2]))
-	if area >= D.TILE_AREA and not rid.begins_with("X"):
+	if area >= D.TILE_AREA and not _exterior(rid):
 		(acc.get(&"tile_groups") as Dictionary)[group] = D.TILE
 
 
