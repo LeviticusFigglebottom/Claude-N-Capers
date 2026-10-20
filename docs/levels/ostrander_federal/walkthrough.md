@@ -131,16 +131,16 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerPlaza1` | `Gameplay/Devices/PhoneSR/UsePoint` | use_point | 41.3 | 49.8 | 1.21 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Devices/PhoneSD/UsePoint` | use_point | 36.6 | 71.4 | 1.95 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Devices/PhoneBR/UsePoint` | use_point | 44.6 | 69.9 | 1.57 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Devices/PhoneVO/UsePoint` | use_point | 38.2 | 76.9 | 2.01 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Devices/PhoneVO/UsePoint` | use_point | 38.2 | 77.0 | 2.01 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Devices/PhoneEA/UsePoint` | use_point | 43.5 | 75.4 | 1.73 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultCash` | loot_spawn | 23.8 | 82.3 | 3.45 | detour (whitelisted) |
 | `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultCash/UsePoint` | use_point | 25.3 | 80.8 | 3.19 | detour (whitelisted) |
 | `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultGold` | loot_spawn | 27.2 | 81.2 | 2.98 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultGold/UsePoint` | use_point | 26.7 | 79.6 | 2.99 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/BondSafe` | objective | 24.4 | 88.6 | 3.63 | detour (whitelisted) |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/BondSafe/UsePoint` | use_point | 24.4 | 88.6 | 3.63 | detour (whitelisted) |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/BondSafe/VaultBonds` | loot_spawn | 24.4 | 88.6 | 3.63 | detour (whitelisted) |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/BondSafe/VaultBonds/UsePoint` | use_point | 24.4 | 88.6 | 3.63 | detour (whitelisted) |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/BondSafe` | objective | 24.4 | 88.2 | 3.61 | detour (whitelisted) |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/BondSafe/UsePoint` | use_point | 24.4 | 88.2 | 3.61 | detour (whitelisted) |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/BondSafe/VaultBonds` | loot_spawn | 24.4 | 88.2 | 3.61 | detour (whitelisted) |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/BondSafe/VaultBonds/UsePoint` | use_point | 24.4 | 88.2 | 3.61 | detour (whitelisted) |
 | `Spawns/PlayerPlaza1` | `Gameplay/Loot/ServerDrives` | loot_spawn | 40.6 | 69.9 | 1.72 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Loot/ServerDrives/UsePoint` | use_point | 39.4 | 68.6 | 1.74 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Loot/TellerDrawer1` | objective | 29.7 | 39.3 | 1.32 | ok |
@@ -185,8 +185,8 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxN10/UsePoint` | use_point | 30.4 | 75.5 | 2.49 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxN11` | objective | 30.5 | 74.7 | 2.45 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxN11/UsePoint` | use_point | 30.5 | 74.7 | 2.45 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxS01` | objective | 21.1 | 90.6 | 4.29 | detour (whitelisted) |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxS01/UsePoint` | use_point | 21.1 | 90.6 | 4.29 | detour (whitelisted) |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxS01` | objective | 21.1 | 90.8 | 4.30 | detour (whitelisted) |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxS01/UsePoint` | use_point | 21.1 | 90.8 | 4.30 | detour (whitelisted) |
 | `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxS02` | objective | 20.7 | 89.5 | 4.33 | detour (whitelisted) |
 | `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxS02/UsePoint` | use_point | 20.7 | 89.5 | 4.33 | detour (whitelisted) |
 | `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxS03` | objective | 20.4 | 87.9 | 4.31 | detour (whitelisted) |
@@ -201,8 +201,8 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxS07/UsePoint` | use_point | 21.3 | 82.5 | 3.88 | detour (whitelisted) |
 | `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxS08` | objective | 21.9 | 82.9 | 3.78 | detour (whitelisted) |
 | `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxS08/UsePoint` | use_point | 21.9 | 82.9 | 3.78 | detour (whitelisted) |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxS09` | objective | 22.8 | 84.2 | 3.70 | detour (whitelisted) |
-| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxS09/UsePoint` | use_point | 22.8 | 84.2 | 3.70 | detour (whitelisted) |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxS09` | objective | 22.8 | 84.5 | 3.71 | detour (whitelisted) |
+| `Spawns/PlayerPlaza1` | `Gameplay/Loot/VaultBoxS09/UsePoint` | use_point | 22.8 | 84.5 | 3.71 | detour (whitelisted) |
 | `Spawns/PlayerPlaza1` | `Gameplay/Loot/HallBox01` | objective | 34.1 | 74.1 | 2.17 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Loot/HallBox01/UsePoint` | use_point | 34.1 | 74.1 | 2.17 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Loot/HallBox02` | objective | 34.7 | 75.1 | 2.17 | ok |
@@ -402,16 +402,16 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerPlaza2` | `Gameplay/Devices/PhoneSR/UsePoint` | use_point | 41.5 | 49.7 | 1.20 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Devices/PhoneSD/UsePoint` | use_point | 36.1 | 71.3 | 1.98 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Devices/PhoneBR/UsePoint` | use_point | 45.3 | 69.8 | 1.54 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Devices/PhoneVO/UsePoint` | use_point | 37.2 | 76.9 | 2.06 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Devices/PhoneVO/UsePoint` | use_point | 37.2 | 76.9 | 2.07 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Devices/PhoneEA/UsePoint` | use_point | 43.5 | 75.3 | 1.73 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultCash` | loot_spawn | 23.7 | 82.2 | 3.46 | detour (whitelisted) |
 | `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultCash/UsePoint` | use_point | 25.2 | 80.7 | 3.20 | detour (whitelisted) |
 | `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultGold` | loot_spawn | 26.7 | 81.1 | 3.04 | detour (whitelisted) |
 | `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultGold/UsePoint` | use_point | 26.2 | 79.5 | 3.03 | detour (whitelisted) |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/BondSafe` | objective | 24.8 | 88.5 | 3.56 | detour (whitelisted) |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/BondSafe/UsePoint` | use_point | 24.8 | 88.5 | 3.56 | detour (whitelisted) |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/BondSafe/VaultBonds` | loot_spawn | 24.8 | 88.5 | 3.56 | detour (whitelisted) |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/BondSafe/VaultBonds/UsePoint` | use_point | 24.8 | 88.5 | 3.56 | detour (whitelisted) |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/BondSafe` | objective | 24.8 | 88.1 | 3.55 | detour (whitelisted) |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/BondSafe/UsePoint` | use_point | 24.8 | 88.1 | 3.55 | detour (whitelisted) |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/BondSafe/VaultBonds` | loot_spawn | 24.8 | 88.1 | 3.55 | detour (whitelisted) |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/BondSafe/VaultBonds/UsePoint` | use_point | 24.8 | 88.1 | 3.55 | detour (whitelisted) |
 | `Spawns/PlayerPlaza2` | `Gameplay/Loot/ServerDrives` | loot_spawn | 40.5 | 69.8 | 1.72 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Loot/ServerDrives/UsePoint` | use_point | 39.2 | 68.5 | 1.75 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Loot/TellerDrawer1` | objective | 30.2 | 39.3 | 1.30 | ok |
@@ -426,8 +426,8 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerPlaza2` | `Gameplay/Loot/TellerDrawer5/UsePoint` | use_point | 29.7 | 36.0 | 1.22 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Loot/TellerDrawer6` | objective | 30.3 | 38.0 | 1.25 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Loot/TellerDrawer6/UsePoint` | use_point | 30.3 | 38.0 | 1.25 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/CountStraps1` | objective | 39.8 | 63.6 | 1.60 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/CountStraps1/UsePoint` | use_point | 39.8 | 63.6 | 1.60 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/CountStraps1` | objective | 39.8 | 63.7 | 1.60 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/CountStraps1/UsePoint` | use_point | 39.8 | 63.7 | 1.60 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Loot/CountStraps2` | objective | 39.7 | 62.8 | 1.58 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Loot/CountStraps2/UsePoint` | use_point | 39.7 | 62.8 | 1.58 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Loot/CountStraps3` | objective | 39.5 | 63.1 | 1.60 | ok |
@@ -456,8 +456,8 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxN10/UsePoint` | use_point | 30.2 | 75.4 | 2.50 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxN11` | objective | 30.3 | 74.6 | 2.46 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxN11/UsePoint` | use_point | 30.3 | 74.6 | 2.46 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxS01` | objective | 21.6 | 90.5 | 4.20 | detour (whitelisted) |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxS01/UsePoint` | use_point | 21.6 | 90.5 | 4.20 | detour (whitelisted) |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxS01` | objective | 21.6 | 90.7 | 4.20 | detour (whitelisted) |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxS01/UsePoint` | use_point | 21.6 | 90.7 | 4.20 | detour (whitelisted) |
 | `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxS02` | objective | 21.0 | 89.4 | 4.26 | detour (whitelisted) |
 | `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxS02/UsePoint` | use_point | 21.0 | 89.4 | 4.26 | detour (whitelisted) |
 | `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxS03` | objective | 20.6 | 87.8 | 4.27 | detour (whitelisted) |
@@ -472,8 +472,8 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxS07/UsePoint` | use_point | 20.9 | 82.4 | 3.95 | detour (whitelisted) |
 | `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxS08` | objective | 21.4 | 82.8 | 3.87 | detour (whitelisted) |
 | `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxS08/UsePoint` | use_point | 21.4 | 82.8 | 3.87 | detour (whitelisted) |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxS09` | objective | 22.1 | 84.1 | 3.80 | detour (whitelisted) |
-| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxS09/UsePoint` | use_point | 22.1 | 84.1 | 3.80 | detour (whitelisted) |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxS09` | objective | 22.1 | 84.4 | 3.82 | detour (whitelisted) |
+| `Spawns/PlayerPlaza2` | `Gameplay/Loot/VaultBoxS09/UsePoint` | use_point | 22.1 | 84.4 | 3.82 | detour (whitelisted) |
 | `Spawns/PlayerPlaza2` | `Gameplay/Loot/HallBox01` | objective | 33.5 | 74.0 | 2.21 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Loot/HallBox01/UsePoint` | use_point | 33.5 | 74.0 | 2.21 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Loot/HallBox02` | objective | 34.0 | 75.1 | 2.21 | ok |
@@ -679,10 +679,10 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultCash/UsePoint` | use_point | 25.2 | 80.6 | 3.20 | detour (whitelisted) |
 | `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultGold` | loot_spawn | 26.2 | 81.0 | 3.09 | detour (whitelisted) |
 | `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultGold/UsePoint` | use_point | 25.8 | 79.4 | 3.07 | detour (whitelisted) |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/BondSafe` | objective | 25.3 | 88.4 | 3.49 | detour (whitelisted) |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/BondSafe/UsePoint` | use_point | 25.3 | 88.4 | 3.49 | detour (whitelisted) |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/BondSafe/VaultBonds` | loot_spawn | 25.3 | 88.4 | 3.49 | detour (whitelisted) |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/BondSafe/VaultBonds/UsePoint` | use_point | 25.3 | 88.4 | 3.49 | detour (whitelisted) |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/BondSafe` | objective | 25.3 | 88.0 | 3.48 | detour (whitelisted) |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/BondSafe/UsePoint` | use_point | 25.3 | 88.0 | 3.48 | detour (whitelisted) |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/BondSafe/VaultBonds` | loot_spawn | 25.3 | 88.0 | 3.48 | detour (whitelisted) |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/BondSafe/VaultBonds/UsePoint` | use_point | 25.3 | 88.0 | 3.48 | detour (whitelisted) |
 | `Spawns/PlayerPlaza3` | `Gameplay/Loot/ServerDrives` | loot_spawn | 40.4 | 69.7 | 1.72 | ok |
 | `Spawns/PlayerPlaza3` | `Gameplay/Loot/ServerDrives/UsePoint` | use_point | 39.1 | 68.4 | 1.75 | ok |
 | `Spawns/PlayerPlaza3` | `Gameplay/Loot/TellerDrawer1` | objective | 30.8 | 39.1 | 1.27 | ok |
@@ -727,8 +727,8 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxN10/UsePoint` | use_point | 30.1 | 75.3 | 2.50 | ok |
 | `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxN11` | objective | 30.1 | 74.5 | 2.47 | ok |
 | `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxN11/UsePoint` | use_point | 30.1 | 74.5 | 2.47 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxS01` | objective | 22.1 | 90.4 | 4.09 | detour (whitelisted) |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxS01/UsePoint` | use_point | 22.1 | 90.4 | 4.09 | detour (whitelisted) |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxS01` | objective | 22.1 | 90.6 | 4.09 | detour (whitelisted) |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxS01/UsePoint` | use_point | 22.1 | 90.6 | 4.09 | detour (whitelisted) |
 | `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxS02` | objective | 21.4 | 89.3 | 4.17 | detour (whitelisted) |
 | `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxS02/UsePoint` | use_point | 21.4 | 89.3 | 4.17 | detour (whitelisted) |
 | `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxS03` | objective | 20.9 | 87.7 | 4.21 | detour (whitelisted) |
@@ -743,8 +743,8 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxS07/UsePoint` | use_point | 20.6 | 82.3 | 4.00 | detour (whitelisted) |
 | `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxS08` | objective | 21.0 | 82.7 | 3.94 | detour (whitelisted) |
 | `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxS08/UsePoint` | use_point | 21.0 | 82.7 | 3.94 | detour (whitelisted) |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxS09` | objective | 21.6 | 84.0 | 3.89 | detour (whitelisted) |
-| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxS09/UsePoint` | use_point | 21.6 | 84.0 | 3.89 | detour (whitelisted) |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxS09` | objective | 21.6 | 84.3 | 3.91 | detour (whitelisted) |
+| `Spawns/PlayerPlaza3` | `Gameplay/Loot/VaultBoxS09/UsePoint` | use_point | 21.6 | 84.3 | 3.91 | detour (whitelisted) |
 | `Spawns/PlayerPlaza3` | `Gameplay/Loot/HallBox01` | objective | 33.0 | 73.0 | 2.21 | ok |
 | `Spawns/PlayerPlaza3` | `Gameplay/Loot/HallBox01/UsePoint` | use_point | 33.0 | 73.0 | 2.21 | ok |
 | `Spawns/PlayerPlaza3` | `Gameplay/Loot/HallBox02` | objective | 33.4 | 74.1 | 2.22 | ok |
@@ -950,10 +950,10 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultCash/UsePoint` | use_point | 25.3 | 80.7 | 3.19 | detour (whitelisted) |
 | `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultGold` | loot_spawn | 25.9 | 81.0 | 3.13 | detour (whitelisted) |
 | `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultGold/UsePoint` | use_point | 25.5 | 79.4 | 3.11 | detour (whitelisted) |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/BondSafe` | objective | 25.9 | 88.5 | 3.42 | detour (whitelisted) |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/BondSafe/UsePoint` | use_point | 25.9 | 88.5 | 3.42 | detour (whitelisted) |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/BondSafe/VaultBonds` | loot_spawn | 25.9 | 88.5 | 3.42 | detour (whitelisted) |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/BondSafe/VaultBonds/UsePoint` | use_point | 25.9 | 88.5 | 3.42 | detour (whitelisted) |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/BondSafe` | objective | 25.9 | 88.1 | 3.40 | detour (whitelisted) |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/BondSafe/UsePoint` | use_point | 25.9 | 88.1 | 3.40 | detour (whitelisted) |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/BondSafe/VaultBonds` | loot_spawn | 25.9 | 88.1 | 3.40 | detour (whitelisted) |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/BondSafe/VaultBonds/UsePoint` | use_point | 25.9 | 88.1 | 3.40 | detour (whitelisted) |
 | `Spawns/PlayerPlaza4` | `Gameplay/Loot/ServerDrives` | loot_spawn | 40.4 | 69.7 | 1.73 | ok |
 | `Spawns/PlayerPlaza4` | `Gameplay/Loot/ServerDrives/UsePoint` | use_point | 39.1 | 68.4 | 1.75 | ok |
 | `Spawns/PlayerPlaza4` | `Gameplay/Loot/TellerDrawer1` | objective | 31.4 | 39.2 | 1.25 | ok |
@@ -998,8 +998,8 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxN10/UsePoint` | use_point | 30.0 | 75.4 | 2.51 | ok |
 | `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxN11` | objective | 30.0 | 74.6 | 2.48 | ok |
 | `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxN11/UsePoint` | use_point | 30.0 | 74.6 | 2.48 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxS01` | objective | 22.8 | 90.5 | 3.98 | detour (whitelisted) |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxS01/UsePoint` | use_point | 22.8 | 90.5 | 3.98 | detour (whitelisted) |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxS01` | objective | 22.8 | 90.6 | 3.98 | detour (whitelisted) |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxS01/UsePoint` | use_point | 22.8 | 90.6 | 3.98 | detour (whitelisted) |
 | `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxS02` | objective | 21.9 | 89.4 | 4.08 | detour (whitelisted) |
 | `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxS02/UsePoint` | use_point | 21.9 | 89.4 | 4.08 | detour (whitelisted) |
 | `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxS03` | objective | 21.3 | 87.8 | 4.13 | detour (whitelisted) |
@@ -1012,10 +1012,10 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxS06/UsePoint` | use_point | 20.3 | 82.8 | 4.08 | detour (whitelisted) |
 | `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxS07` | objective | 20.4 | 82.4 | 4.04 | detour (whitelisted) |
 | `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxS07/UsePoint` | use_point | 20.4 | 82.4 | 4.04 | detour (whitelisted) |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxS08` | objective | 20.7 | 82.7 | 4.01 | detour (whitelisted) |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxS08/UsePoint` | use_point | 20.7 | 82.7 | 4.01 | detour (whitelisted) |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxS09` | objective | 21.1 | 84.0 | 3.98 | detour (whitelisted) |
-| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxS09/UsePoint` | use_point | 21.1 | 84.0 | 3.98 | detour (whitelisted) |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxS08` | objective | 20.7 | 82.8 | 4.01 | detour (whitelisted) |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxS08/UsePoint` | use_point | 20.7 | 82.8 | 4.01 | detour (whitelisted) |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxS09` | objective | 21.1 | 84.4 | 4.00 | detour (whitelisted) |
+| `Spawns/PlayerPlaza4` | `Gameplay/Loot/VaultBoxS09/UsePoint` | use_point | 21.1 | 84.4 | 4.00 | detour (whitelisted) |
 | `Spawns/PlayerPlaza4` | `Gameplay/Loot/HallBox01` | objective | 32.5 | 73.1 | 2.25 | ok |
 | `Spawns/PlayerPlaza4` | `Gameplay/Loot/HallBox01/UsePoint` | use_point | 32.5 | 73.1 | 2.25 | ok |
 | `Spawns/PlayerPlaza4` | `Gameplay/Loot/HallBox02` | objective | 32.9 | 74.2 | 2.25 | ok |
@@ -1215,16 +1215,16 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerLane1` | `Gameplay/Devices/PhoneSR/UsePoint` | use_point | 9.9 | 36.6 | 3.70 | detour (whitelisted) |
 | `Spawns/PlayerLane1` | `Gameplay/Devices/PhoneSD/UsePoint` | use_point | 21.5 | 39.6 | 1.84 | ok |
 | `Spawns/PlayerLane1` | `Gameplay/Devices/PhoneBR/UsePoint` | use_point | 23.5 | 55.4 | 2.36 | ok |
-| `Spawns/PlayerLane1` | `Gameplay/Devices/PhoneVO/UsePoint` | use_point | 34.5 | 68.5 | 1.98 | ok |
+| `Spawns/PlayerLane1` | `Gameplay/Devices/PhoneVO/UsePoint` | use_point | 34.5 | 68.5 | 1.99 | ok |
 | `Spawns/PlayerLane1` | `Gameplay/Devices/PhoneEA/UsePoint` | use_point | 11.5 | 60.9 | 5.31 | detour (whitelisted) |
 | `Spawns/PlayerLane1` | `Gameplay/Loot/VaultCash` | loot_spawn | 27.0 | 59.4 | 2.20 | ok |
 | `Spawns/PlayerLane1` | `Gameplay/Loot/VaultCash/UsePoint` | use_point | 25.5 | 57.9 | 2.27 | ok |
 | `Spawns/PlayerLane1` | `Gameplay/Loot/VaultGold` | loot_spawn | 27.6 | 58.2 | 2.11 | ok |
 | `Spawns/PlayerLane1` | `Gameplay/Loot/VaultGold/UsePoint` | use_point | 27.0 | 56.6 | 2.10 | ok |
-| `Spawns/PlayerLane1` | `Gameplay/Loot/BondSafe` | objective | 27.3 | 65.7 | 2.41 | ok |
-| `Spawns/PlayerLane1` | `Gameplay/Loot/BondSafe/UsePoint` | use_point | 27.3 | 65.7 | 2.41 | ok |
-| `Spawns/PlayerLane1` | `Gameplay/Loot/BondSafe/VaultBonds` | loot_spawn | 27.3 | 65.7 | 2.41 | ok |
-| `Spawns/PlayerLane1` | `Gameplay/Loot/BondSafe/VaultBonds/UsePoint` | use_point | 27.3 | 65.7 | 2.41 | ok |
+| `Spawns/PlayerLane1` | `Gameplay/Loot/BondSafe` | objective | 27.3 | 65.3 | 2.39 | ok |
+| `Spawns/PlayerLane1` | `Gameplay/Loot/BondSafe/UsePoint` | use_point | 27.3 | 65.3 | 2.39 | ok |
+| `Spawns/PlayerLane1` | `Gameplay/Loot/BondSafe/VaultBonds` | loot_spawn | 27.3 | 65.3 | 2.39 | ok |
+| `Spawns/PlayerLane1` | `Gameplay/Loot/BondSafe/VaultBonds/UsePoint` | use_point | 27.3 | 65.3 | 2.39 | ok |
 | `Spawns/PlayerLane1` | `Gameplay/Loot/ServerDrives` | loot_spawn | 12.2 | 55.4 | 4.52 | detour (whitelisted) |
 | `Spawns/PlayerLane1` | `Gameplay/Loot/ServerDrives/UsePoint` | use_point | 13.3 | 54.1 | 4.06 | detour (whitelisted) |
 | `Spawns/PlayerLane1` | `Gameplay/Loot/TellerDrawer1` | objective | 23.4 | 34.0 | 1.45 | ok |
@@ -1239,8 +1239,8 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerLane1` | `Gameplay/Loot/TellerDrawer5/UsePoint` | use_point | 24.6 | 46.9 | 1.91 | ok |
 | `Spawns/PlayerLane1` | `Gameplay/Loot/TellerDrawer6` | objective | 25.6 | 48.8 | 1.91 | ok |
 | `Spawns/PlayerLane1` | `Gameplay/Loot/TellerDrawer6/UsePoint` | use_point | 25.6 | 48.8 | 1.91 | ok |
-| `Spawns/PlayerLane1` | `Gameplay/Loot/CountStraps1` | objective | 11.6 | 33.0 | 2.84 | ok |
-| `Spawns/PlayerLane1` | `Gameplay/Loot/CountStraps1/UsePoint` | use_point | 11.6 | 33.0 | 2.84 | ok |
+| `Spawns/PlayerLane1` | `Gameplay/Loot/CountStraps1` | objective | 11.6 | 33.1 | 2.84 | ok |
+| `Spawns/PlayerLane1` | `Gameplay/Loot/CountStraps1/UsePoint` | use_point | 11.6 | 33.1 | 2.84 | ok |
 | `Spawns/PlayerLane1` | `Gameplay/Loot/CountStraps2` | objective | 11.4 | 32.1 | 2.82 | ok |
 | `Spawns/PlayerLane1` | `Gameplay/Loot/CountStraps2/UsePoint` | use_point | 11.4 | 32.1 | 2.82 | ok |
 | `Spawns/PlayerLane1` | `Gameplay/Loot/CountStraps3` | objective | 11.5 | 32.2 | 2.81 | ok |
@@ -1269,8 +1269,8 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerLane1` | `Gameplay/Loot/VaultBoxN10/UsePoint` | use_point | 21.2 | 52.6 | 2.48 | ok |
 | `Spawns/PlayerLane1` | `Gameplay/Loot/VaultBoxN11` | objective | 21.5 | 51.8 | 2.41 | ok |
 | `Spawns/PlayerLane1` | `Gameplay/Loot/VaultBoxN11/UsePoint` | use_point | 21.5 | 51.8 | 2.41 | ok |
-| `Spawns/PlayerLane1` | `Gameplay/Loot/VaultBoxS01` | objective | 30.6 | 67.6 | 2.21 | ok |
-| `Spawns/PlayerLane1` | `Gameplay/Loot/VaultBoxS01/UsePoint` | use_point | 30.6 | 67.6 | 2.21 | ok |
+| `Spawns/PlayerLane1` | `Gameplay/Loot/VaultBoxS01` | objective | 30.6 | 67.8 | 2.21 | ok |
+| `Spawns/PlayerLane1` | `Gameplay/Loot/VaultBoxS01/UsePoint` | use_point | 30.6 | 67.8 | 2.21 | ok |
 | `Spawns/PlayerLane1` | `Gameplay/Loot/VaultBoxS02` | objective | 30.4 | 66.5 | 2.19 | ok |
 | `Spawns/PlayerLane1` | `Gameplay/Loot/VaultBoxS02/UsePoint` | use_point | 30.4 | 66.5 | 2.19 | ok |
 | `Spawns/PlayerLane1` | `Gameplay/Loot/VaultBoxS03` | objective | 30.2 | 65.0 | 2.15 | ok |
@@ -1285,8 +1285,8 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerLane1` | `Gameplay/Loot/VaultBoxS07/UsePoint` | use_point | 31.0 | 59.6 | 1.92 | ok |
 | `Spawns/PlayerLane1` | `Gameplay/Loot/VaultBoxS08` | objective | 31.5 | 59.9 | 1.90 | ok |
 | `Spawns/PlayerLane1` | `Gameplay/Loot/VaultBoxS08/UsePoint` | use_point | 31.5 | 59.9 | 1.90 | ok |
-| `Spawns/PlayerLane1` | `Gameplay/Loot/VaultBoxS09` | objective | 32.2 | 61.2 | 1.90 | ok |
-| `Spawns/PlayerLane1` | `Gameplay/Loot/VaultBoxS09/UsePoint` | use_point | 32.2 | 61.2 | 1.90 | ok |
+| `Spawns/PlayerLane1` | `Gameplay/Loot/VaultBoxS09` | objective | 32.2 | 61.5 | 1.91 | ok |
+| `Spawns/PlayerLane1` | `Gameplay/Loot/VaultBoxS09/UsePoint` | use_point | 32.2 | 61.5 | 1.91 | ok |
 | `Spawns/PlayerLane1` | `Gameplay/Loot/HallBox01` | objective | 24.7 | 42.3 | 1.71 | ok |
 | `Spawns/PlayerLane1` | `Gameplay/Loot/HallBox01/UsePoint` | use_point | 24.7 | 42.3 | 1.71 | ok |
 | `Spawns/PlayerLane1` | `Gameplay/Loot/HallBox02` | objective | 25.4 | 43.3 | 1.71 | ok |
@@ -1492,10 +1492,10 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerLane2` | `Gameplay/Loot/VaultCash/UsePoint` | use_point | 25.4 | 56.5 | 2.23 | ok |
 | `Spawns/PlayerLane2` | `Gameplay/Loot/VaultGold` | loot_spawn | 27.0 | 56.9 | 2.10 | ok |
 | `Spawns/PlayerLane2` | `Gameplay/Loot/VaultGold/UsePoint` | use_point | 26.5 | 55.3 | 2.09 | ok |
-| `Spawns/PlayerLane2` | `Gameplay/Loot/BondSafe` | objective | 27.6 | 64.4 | 2.33 | ok |
-| `Spawns/PlayerLane2` | `Gameplay/Loot/BondSafe/UsePoint` | use_point | 27.6 | 64.4 | 2.33 | ok |
-| `Spawns/PlayerLane2` | `Gameplay/Loot/BondSafe/VaultBonds` | loot_spawn | 27.6 | 64.4 | 2.33 | ok |
-| `Spawns/PlayerLane2` | `Gameplay/Loot/BondSafe/VaultBonds/UsePoint` | use_point | 27.6 | 64.4 | 2.33 | ok |
+| `Spawns/PlayerLane2` | `Gameplay/Loot/BondSafe` | objective | 27.6 | 64.0 | 2.32 | ok |
+| `Spawns/PlayerLane2` | `Gameplay/Loot/BondSafe/UsePoint` | use_point | 27.6 | 64.0 | 2.32 | ok |
+| `Spawns/PlayerLane2` | `Gameplay/Loot/BondSafe/VaultBonds` | loot_spawn | 27.6 | 64.0 | 2.32 | ok |
+| `Spawns/PlayerLane2` | `Gameplay/Loot/BondSafe/VaultBonds/UsePoint` | use_point | 27.6 | 64.0 | 2.32 | ok |
 | `Spawns/PlayerLane2` | `Gameplay/Loot/ServerDrives` | loot_spawn | 11.7 | 57.0 | 4.87 | detour (whitelisted) |
 | `Spawns/PlayerLane2` | `Gameplay/Loot/ServerDrives/UsePoint` | use_point | 12.8 | 55.7 | 4.34 | detour (whitelisted) |
 | `Spawns/PlayerLane2` | `Gameplay/Loot/TellerDrawer1` | objective | 24.0 | 35.6 | 1.48 | ok |
@@ -1540,10 +1540,10 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerLane2` | `Gameplay/Loot/VaultBoxN10/UsePoint` | use_point | 20.9 | 51.2 | 2.45 | ok |
 | `Spawns/PlayerLane2` | `Gameplay/Loot/VaultBoxN11` | objective | 21.1 | 50.5 | 2.39 | ok |
 | `Spawns/PlayerLane2` | `Gameplay/Loot/VaultBoxN11/UsePoint` | use_point | 21.1 | 50.5 | 2.39 | ok |
-| `Spawns/PlayerLane2` | `Gameplay/Loot/VaultBoxS01` | objective | 30.9 | 66.3 | 2.15 | ok |
-| `Spawns/PlayerLane2` | `Gameplay/Loot/VaultBoxS01/UsePoint` | use_point | 30.9 | 66.3 | 2.15 | ok |
-| `Spawns/PlayerLane2` | `Gameplay/Loot/VaultBoxS02` | objective | 30.5 | 65.2 | 2.13 | ok |
-| `Spawns/PlayerLane2` | `Gameplay/Loot/VaultBoxS02/UsePoint` | use_point | 30.5 | 65.2 | 2.13 | ok |
+| `Spawns/PlayerLane2` | `Gameplay/Loot/VaultBoxS01` | objective | 30.9 | 66.5 | 2.15 | ok |
+| `Spawns/PlayerLane2` | `Gameplay/Loot/VaultBoxS01/UsePoint` | use_point | 30.9 | 66.5 | 2.15 | ok |
+| `Spawns/PlayerLane2` | `Gameplay/Loot/VaultBoxS02` | objective | 30.5 | 65.2 | 2.14 | ok |
+| `Spawns/PlayerLane2` | `Gameplay/Loot/VaultBoxS02/UsePoint` | use_point | 30.5 | 65.2 | 2.14 | ok |
 | `Spawns/PlayerLane2` | `Gameplay/Loot/VaultBoxS03` | objective | 30.3 | 63.7 | 2.10 | ok |
 | `Spawns/PlayerLane2` | `Gameplay/Loot/VaultBoxS03/UsePoint` | use_point | 30.3 | 63.7 | 2.10 | ok |
 | `Spawns/PlayerLane2` | `Gameplay/Loot/VaultBoxS04` | objective | 30.2 | 61.7 | 2.04 | ok |
@@ -1556,8 +1556,8 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerLane2` | `Gameplay/Loot/VaultBoxS07/UsePoint` | use_point | 30.7 | 58.3 | 1.90 | ok |
 | `Spawns/PlayerLane2` | `Gameplay/Loot/VaultBoxS08` | objective | 31.1 | 58.6 | 1.88 | ok |
 | `Spawns/PlayerLane2` | `Gameplay/Loot/VaultBoxS08/UsePoint` | use_point | 31.1 | 58.6 | 1.88 | ok |
-| `Spawns/PlayerLane2` | `Gameplay/Loot/VaultBoxS09` | objective | 31.7 | 59.9 | 1.89 | ok |
-| `Spawns/PlayerLane2` | `Gameplay/Loot/VaultBoxS09/UsePoint` | use_point | 31.7 | 59.9 | 1.89 | ok |
+| `Spawns/PlayerLane2` | `Gameplay/Loot/VaultBoxS09` | objective | 31.7 | 60.2 | 1.90 | ok |
+| `Spawns/PlayerLane2` | `Gameplay/Loot/VaultBoxS09/UsePoint` | use_point | 31.7 | 60.2 | 1.90 | ok |
 | `Spawns/PlayerLane2` | `Gameplay/Loot/HallBox01` | objective | 23.8 | 40.9 | 1.72 | ok |
 | `Spawns/PlayerLane2` | `Gameplay/Loot/HallBox01/UsePoint` | use_point | 23.8 | 40.9 | 1.72 | ok |
 | `Spawns/PlayerLane2` | `Gameplay/Loot/HallBox02` | objective | 24.5 | 42.0 | 1.72 | ok |
@@ -1757,16 +1757,16 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerLane3` | `Gameplay/Devices/PhoneSR/UsePoint` | use_point | 11.5 | 39.7 | 3.45 | detour (whitelisted) |
 | `Spawns/PlayerLane3` | `Gameplay/Devices/PhoneSD/UsePoint` | use_point | 19.7 | 37.0 | 1.88 | ok |
 | `Spawns/PlayerLane3` | `Gameplay/Devices/PhoneBR/UsePoint` | use_point | 26.1 | 58.5 | 2.25 | ok |
-| `Spawns/PlayerLane3` | `Gameplay/Devices/PhoneVO/UsePoint` | use_point | 32.3 | 65.5 | 2.03 | ok |
+| `Spawns/PlayerLane3` | `Gameplay/Devices/PhoneVO/UsePoint` | use_point | 32.3 | 65.6 | 2.03 | ok |
 | `Spawns/PlayerLane3` | `Gameplay/Devices/PhoneEA/UsePoint` | use_point | 11.6 | 64.0 | 5.54 | detour (whitelisted) |
 | `Spawns/PlayerLane3` | `Gameplay/Loot/VaultCash` | loot_spawn | 26.8 | 56.8 | 2.12 | ok |
 | `Spawns/PlayerLane3` | `Gameplay/Loot/VaultCash/UsePoint` | use_point | 25.3 | 55.3 | 2.18 | ok |
 | `Spawns/PlayerLane3` | `Gameplay/Loot/VaultGold` | loot_spawn | 26.6 | 55.6 | 2.10 | ok |
 | `Spawns/PlayerLane3` | `Gameplay/Loot/VaultGold/UsePoint` | use_point | 26.1 | 54.0 | 2.07 | ok |
-| `Spawns/PlayerLane3` | `Gameplay/Loot/BondSafe` | objective | 28.0 | 63.1 | 2.25 | ok |
-| `Spawns/PlayerLane3` | `Gameplay/Loot/BondSafe/UsePoint` | use_point | 28.0 | 63.1 | 2.25 | ok |
-| `Spawns/PlayerLane3` | `Gameplay/Loot/BondSafe/VaultBonds` | loot_spawn | 28.0 | 63.1 | 2.25 | ok |
-| `Spawns/PlayerLane3` | `Gameplay/Loot/BondSafe/VaultBonds/UsePoint` | use_point | 28.0 | 63.1 | 2.25 | ok |
+| `Spawns/PlayerLane3` | `Gameplay/Loot/BondSafe` | objective | 28.0 | 62.7 | 2.24 | ok |
+| `Spawns/PlayerLane3` | `Gameplay/Loot/BondSafe/UsePoint` | use_point | 28.0 | 62.7 | 2.24 | ok |
+| `Spawns/PlayerLane3` | `Gameplay/Loot/BondSafe/VaultBonds` | loot_spawn | 28.0 | 62.7 | 2.24 | ok |
+| `Spawns/PlayerLane3` | `Gameplay/Loot/BondSafe/VaultBonds/UsePoint` | use_point | 28.0 | 62.7 | 2.24 | ok |
 | `Spawns/PlayerLane3` | `Gameplay/Loot/ServerDrives` | loot_spawn | 11.4 | 58.5 | 5.15 | detour (whitelisted) |
 | `Spawns/PlayerLane3` | `Gameplay/Loot/ServerDrives/UsePoint` | use_point | 12.5 | 57.2 | 4.57 | detour (whitelisted) |
 | `Spawns/PlayerLane3` | `Gameplay/Loot/TellerDrawer1` | objective | 24.7 | 37.1 | 1.50 | ok |
@@ -1811,8 +1811,8 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerLane3` | `Gameplay/Loot/VaultBoxN10/UsePoint` | use_point | 20.7 | 50.0 | 2.42 | ok |
 | `Spawns/PlayerLane3` | `Gameplay/Loot/VaultBoxN11` | objective | 20.8 | 49.2 | 2.37 | ok |
 | `Spawns/PlayerLane3` | `Gameplay/Loot/VaultBoxN11/UsePoint` | use_point | 20.8 | 49.2 | 2.37 | ok |
-| `Spawns/PlayerLane3` | `Gameplay/Loot/VaultBoxS01` | objective | 31.3 | 65.1 | 2.08 | ok |
-| `Spawns/PlayerLane3` | `Gameplay/Loot/VaultBoxS01/UsePoint` | use_point | 31.3 | 65.1 | 2.08 | ok |
+| `Spawns/PlayerLane3` | `Gameplay/Loot/VaultBoxS01` | objective | 31.3 | 65.2 | 2.09 | ok |
+| `Spawns/PlayerLane3` | `Gameplay/Loot/VaultBoxS01/UsePoint` | use_point | 31.3 | 65.2 | 2.09 | ok |
 | `Spawns/PlayerLane3` | `Gameplay/Loot/VaultBoxS02` | objective | 30.8 | 64.0 | 2.08 | ok |
 | `Spawns/PlayerLane3` | `Gameplay/Loot/VaultBoxS02/UsePoint` | use_point | 30.8 | 64.0 | 2.08 | ok |
 | `Spawns/PlayerLane3` | `Gameplay/Loot/VaultBoxS03` | objective | 30.5 | 62.4 | 2.05 | ok |
@@ -1827,8 +1827,8 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerLane3` | `Gameplay/Loot/VaultBoxS07/UsePoint` | use_point | 30.5 | 57.0 | 1.87 | ok |
 | `Spawns/PlayerLane3` | `Gameplay/Loot/VaultBoxS08` | objective | 30.8 | 57.4 | 1.86 | ok |
 | `Spawns/PlayerLane3` | `Gameplay/Loot/VaultBoxS08/UsePoint` | use_point | 30.8 | 57.4 | 1.86 | ok |
-| `Spawns/PlayerLane3` | `Gameplay/Loot/VaultBoxS09` | objective | 31.3 | 58.6 | 1.88 | ok |
-| `Spawns/PlayerLane3` | `Gameplay/Loot/VaultBoxS09/UsePoint` | use_point | 31.3 | 58.6 | 1.88 | ok |
+| `Spawns/PlayerLane3` | `Gameplay/Loot/VaultBoxS09` | objective | 31.3 | 59.0 | 1.89 | ok |
+| `Spawns/PlayerLane3` | `Gameplay/Loot/VaultBoxS09/UsePoint` | use_point | 31.3 | 59.0 | 1.89 | ok |
 | `Spawns/PlayerLane3` | `Gameplay/Loot/HallBox01` | objective | 23.0 | 39.7 | 1.73 | ok |
 | `Spawns/PlayerLane3` | `Gameplay/Loot/HallBox01/UsePoint` | use_point | 23.0 | 39.7 | 1.73 | ok |
 | `Spawns/PlayerLane3` | `Gameplay/Loot/HallBox02` | objective | 23.6 | 40.8 | 1.73 | ok |
@@ -2034,10 +2034,10 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerLane4` | `Gameplay/Loot/VaultCash/UsePoint` | use_point | 25.4 | 54.1 | 2.13 | ok |
 | `Spawns/PlayerLane4` | `Gameplay/Loot/VaultGold` | loot_spawn | 26.1 | 54.5 | 2.08 | ok |
 | `Spawns/PlayerLane4` | `Gameplay/Loot/VaultGold/UsePoint` | use_point | 25.8 | 52.9 | 2.05 | ok |
-| `Spawns/PlayerLane4` | `Gameplay/Loot/BondSafe` | objective | 28.5 | 62.0 | 2.18 | ok |
-| `Spawns/PlayerLane4` | `Gameplay/Loot/BondSafe/UsePoint` | use_point | 28.5 | 62.0 | 2.18 | ok |
-| `Spawns/PlayerLane4` | `Gameplay/Loot/BondSafe/VaultBonds` | loot_spawn | 28.5 | 62.0 | 2.18 | ok |
-| `Spawns/PlayerLane4` | `Gameplay/Loot/BondSafe/VaultBonds/UsePoint` | use_point | 28.5 | 62.0 | 2.18 | ok |
+| `Spawns/PlayerLane4` | `Gameplay/Loot/BondSafe` | objective | 28.5 | 61.6 | 2.16 | ok |
+| `Spawns/PlayerLane4` | `Gameplay/Loot/BondSafe/UsePoint` | use_point | 28.5 | 61.6 | 2.16 | ok |
+| `Spawns/PlayerLane4` | `Gameplay/Loot/BondSafe/VaultBonds` | loot_spawn | 28.5 | 61.6 | 2.16 | ok |
+| `Spawns/PlayerLane4` | `Gameplay/Loot/BondSafe/VaultBonds/UsePoint` | use_point | 28.5 | 61.6 | 2.16 | ok |
 | `Spawns/PlayerLane4` | `Gameplay/Loot/ServerDrives` | loot_spawn | 11.2 | 59.6 | 5.33 | detour (whitelisted) |
 | `Spawns/PlayerLane4` | `Gameplay/Loot/ServerDrives/UsePoint` | use_point | 12.4 | 58.3 | 4.72 | detour (whitelisted) |
 | `Spawns/PlayerLane4` | `Gameplay/Loot/TellerDrawer1` | objective | 25.4 | 38.2 | 1.50 | ok |
@@ -2052,8 +2052,8 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerLane4` | `Gameplay/Loot/TellerDrawer5/UsePoint` | use_point | 22.9 | 51.1 | 2.23 | ok |
 | `Spawns/PlayerLane4` | `Gameplay/Loot/TellerDrawer6` | objective | 23.5 | 53.0 | 2.25 | ok |
 | `Spawns/PlayerLane4` | `Gameplay/Loot/TellerDrawer6/UsePoint` | use_point | 23.5 | 53.0 | 2.25 | ok |
-| `Spawns/PlayerLane4` | `Gameplay/Loot/CountStraps1` | objective | 13.4 | 29.3 | 2.18 | ok |
-| `Spawns/PlayerLane4` | `Gameplay/Loot/CountStraps1/UsePoint` | use_point | 13.4 | 29.3 | 2.18 | ok |
+| `Spawns/PlayerLane4` | `Gameplay/Loot/CountStraps1` | objective | 13.4 | 29.3 | 2.19 | ok |
+| `Spawns/PlayerLane4` | `Gameplay/Loot/CountStraps1/UsePoint` | use_point | 13.4 | 29.3 | 2.19 | ok |
 | `Spawns/PlayerLane4` | `Gameplay/Loot/CountStraps2` | objective | 12.7 | 28.4 | 2.23 | ok |
 | `Spawns/PlayerLane4` | `Gameplay/Loot/CountStraps2/UsePoint` | use_point | 12.7 | 28.4 | 2.23 | ok |
 | `Spawns/PlayerLane4` | `Gameplay/Loot/CountStraps3` | objective | 11.6 | 28.5 | 2.45 | ok |
@@ -2082,8 +2082,8 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerLane4` | `Gameplay/Loot/VaultBoxN10/UsePoint` | use_point | 20.6 | 48.8 | 2.38 | ok |
 | `Spawns/PlayerLane4` | `Gameplay/Loot/VaultBoxN11` | objective | 20.6 | 48.1 | 2.33 | ok |
 | `Spawns/PlayerLane4` | `Gameplay/Loot/VaultBoxN11/UsePoint` | use_point | 20.6 | 48.1 | 2.33 | ok |
-| `Spawns/PlayerLane4` | `Gameplay/Loot/VaultBoxS01` | objective | 31.7 | 63.9 | 2.02 | ok |
-| `Spawns/PlayerLane4` | `Gameplay/Loot/VaultBoxS01/UsePoint` | use_point | 31.7 | 63.9 | 2.02 | ok |
+| `Spawns/PlayerLane4` | `Gameplay/Loot/VaultBoxS01` | objective | 31.7 | 64.1 | 2.02 | ok |
+| `Spawns/PlayerLane4` | `Gameplay/Loot/VaultBoxS01/UsePoint` | use_point | 31.7 | 64.1 | 2.02 | ok |
 | `Spawns/PlayerLane4` | `Gameplay/Loot/VaultBoxS02` | objective | 31.1 | 62.8 | 2.02 | ok |
 | `Spawns/PlayerLane4` | `Gameplay/Loot/VaultBoxS02/UsePoint` | use_point | 31.1 | 62.8 | 2.02 | ok |
 | `Spawns/PlayerLane4` | `Gameplay/Loot/VaultBoxS03` | objective | 30.7 | 61.3 | 1.99 | ok |
@@ -2098,8 +2098,8 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerLane4` | `Gameplay/Loot/VaultBoxS07/UsePoint` | use_point | 30.3 | 55.9 | 1.84 | ok |
 | `Spawns/PlayerLane4` | `Gameplay/Loot/VaultBoxS08` | objective | 30.5 | 56.2 | 1.84 | ok |
 | `Spawns/PlayerLane4` | `Gameplay/Loot/VaultBoxS08/UsePoint` | use_point | 30.5 | 56.2 | 1.84 | ok |
-| `Spawns/PlayerLane4` | `Gameplay/Loot/VaultBoxS09` | objective | 30.9 | 57.5 | 1.86 | ok |
-| `Spawns/PlayerLane4` | `Gameplay/Loot/VaultBoxS09/UsePoint` | use_point | 30.9 | 57.5 | 1.86 | ok |
+| `Spawns/PlayerLane4` | `Gameplay/Loot/VaultBoxS09` | objective | 30.9 | 57.8 | 1.87 | ok |
+| `Spawns/PlayerLane4` | `Gameplay/Loot/VaultBoxS09/UsePoint` | use_point | 30.9 | 57.8 | 1.87 | ok |
 | `Spawns/PlayerLane4` | `Gameplay/Loot/HallBox01` | objective | 22.2 | 38.5 | 1.74 | ok |
 | `Spawns/PlayerLane4` | `Gameplay/Loot/HallBox01/UsePoint` | use_point | 22.2 | 38.5 | 1.74 | ok |
 | `Spawns/PlayerLane4` | `Gameplay/Loot/HallBox02` | objective | 22.8 | 39.6 | 1.74 | ok |
@@ -2305,10 +2305,10 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerTannery1` | `Gameplay/Loot/VaultCash/UsePoint` | use_point | 33.3 | 82.8 | 2.49 | ok |
 | `Spawns/PlayerTannery1` | `Gameplay/Loot/VaultGold` | loot_spawn | 25.3 | 83.1 | 3.28 | detour (whitelisted) |
 | `Spawns/PlayerTannery1` | `Gameplay/Loot/VaultGold/UsePoint` | use_point | 26.9 | 81.5 | 3.03 | detour (whitelisted) |
-| `Spawns/PlayerTannery1` | `Gameplay/Loot/BondSafe` | objective | 41.3 | 90.6 | 2.19 | ok |
-| `Spawns/PlayerTannery1` | `Gameplay/Loot/BondSafe/UsePoint` | use_point | 41.3 | 90.6 | 2.19 | ok |
-| `Spawns/PlayerTannery1` | `Gameplay/Loot/BondSafe/VaultBonds` | loot_spawn | 41.3 | 90.6 | 2.19 | ok |
-| `Spawns/PlayerTannery1` | `Gameplay/Loot/BondSafe/VaultBonds/UsePoint` | use_point | 41.3 | 90.6 | 2.19 | ok |
+| `Spawns/PlayerTannery1` | `Gameplay/Loot/BondSafe` | objective | 41.3 | 90.2 | 2.18 | ok |
+| `Spawns/PlayerTannery1` | `Gameplay/Loot/BondSafe/UsePoint` | use_point | 41.3 | 90.2 | 2.18 | ok |
+| `Spawns/PlayerTannery1` | `Gameplay/Loot/BondSafe/VaultBonds` | loot_spawn | 41.3 | 90.2 | 2.18 | ok |
+| `Spawns/PlayerTannery1` | `Gameplay/Loot/BondSafe/VaultBonds/UsePoint` | use_point | 41.3 | 90.2 | 2.18 | ok |
 | `Spawns/PlayerTannery1` | `Gameplay/Loot/ServerDrives` | loot_spawn | 35.2 | 54.5 | 1.55 | ok |
 | `Spawns/PlayerTannery1` | `Gameplay/Loot/ServerDrives/UsePoint` | use_point | 34.7 | 53.2 | 1.53 | ok |
 | `Spawns/PlayerTannery1` | `Gameplay/Loot/TellerDrawer1` | objective | 44.8 | 52.4 | 1.17 | ok |
@@ -2353,8 +2353,8 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerTannery1` | `Gameplay/Loot/VaultBoxN10/UsePoint` | use_point | 31.4 | 77.5 | 2.47 | ok |
 | `Spawns/PlayerTannery1` | `Gameplay/Loot/VaultBoxN11` | objective | 30.6 | 76.7 | 2.50 | ok |
 | `Spawns/PlayerTannery1` | `Gameplay/Loot/VaultBoxN11/UsePoint` | use_point | 30.6 | 76.7 | 2.50 | ok |
-| `Spawns/PlayerTannery1` | `Gameplay/Loot/VaultBoxS01` | objective | 41.4 | 92.5 | 2.24 | ok |
-| `Spawns/PlayerTannery1` | `Gameplay/Loot/VaultBoxS01/UsePoint` | use_point | 41.4 | 92.5 | 2.24 | ok |
+| `Spawns/PlayerTannery1` | `Gameplay/Loot/VaultBoxS01` | objective | 41.4 | 92.7 | 2.24 | ok |
+| `Spawns/PlayerTannery1` | `Gameplay/Loot/VaultBoxS01/UsePoint` | use_point | 41.4 | 92.7 | 2.24 | ok |
 | `Spawns/PlayerTannery1` | `Gameplay/Loot/VaultBoxS02` | objective | 39.4 | 91.4 | 2.32 | ok |
 | `Spawns/PlayerTannery1` | `Gameplay/Loot/VaultBoxS02/UsePoint` | use_point | 39.4 | 91.4 | 2.32 | ok |
 | `Spawns/PlayerTannery1` | `Gameplay/Loot/VaultBoxS03` | objective | 37.4 | 89.9 | 2.40 | ok |
@@ -2369,8 +2369,8 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerTannery1` | `Gameplay/Loot/VaultBoxS07/UsePoint` | use_point | 29.5 | 84.5 | 2.86 | ok |
 | `Spawns/PlayerTannery1` | `Gameplay/Loot/VaultBoxS08` | objective | 27.6 | 84.8 | 3.08 | detour (whitelisted) |
 | `Spawns/PlayerTannery1` | `Gameplay/Loot/VaultBoxS08/UsePoint` | use_point | 27.6 | 84.8 | 3.08 | detour (whitelisted) |
-| `Spawns/PlayerTannery1` | `Gameplay/Loot/VaultBoxS09` | objective | 25.6 | 86.1 | 3.36 | detour (whitelisted) |
-| `Spawns/PlayerTannery1` | `Gameplay/Loot/VaultBoxS09/UsePoint` | use_point | 25.6 | 86.1 | 3.36 | detour (whitelisted) |
+| `Spawns/PlayerTannery1` | `Gameplay/Loot/VaultBoxS09` | objective | 25.6 | 86.4 | 3.37 | detour (whitelisted) |
+| `Spawns/PlayerTannery1` | `Gameplay/Loot/VaultBoxS09/UsePoint` | use_point | 25.6 | 86.4 | 3.37 | detour (whitelisted) |
 | `Spawns/PlayerTannery1` | `Gameplay/Loot/HallBox01` | objective | 22.4 | 43.5 | 1.94 | ok |
 | `Spawns/PlayerTannery1` | `Gameplay/Loot/HallBox01/UsePoint` | use_point | 22.4 | 43.5 | 1.94 | ok |
 | `Spawns/PlayerTannery1` | `Gameplay/Loot/HallBox02` | objective | 21.3 | 44.6 | 2.09 | ok |
@@ -2570,16 +2570,16 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerTannery2` | `Gameplay/Devices/PhoneSR/UsePoint` | use_point | 44.2 | 50.6 | 1.15 | ok |
 | `Spawns/PlayerTannery2` | `Gameplay/Devices/PhoneSD/UsePoint` | use_point | 25.3 | 42.2 | 1.67 | ok |
 | `Spawns/PlayerTannery2` | `Gameplay/Devices/PhoneBR/UsePoint` | use_point | 58.7 | 78.7 | 1.34 | ok |
-| `Spawns/PlayerTannery2` | `Gameplay/Devices/PhoneVO/UsePoint` | use_point | 12.4 | 48.1 | 3.89 | detour (whitelisted) |
+| `Spawns/PlayerTannery2` | `Gameplay/Devices/PhoneVO/UsePoint` | use_point | 12.4 | 48.2 | 3.89 | detour (whitelisted) |
 | `Spawns/PlayerTannery2` | `Gameplay/Devices/PhoneEA/UsePoint` | use_point | 41.0 | 75.0 | 1.83 | ok |
 | `Spawns/PlayerTannery2` | `Gameplay/Loot/VaultCash` | loot_spawn | 33.3 | 85.6 | 2.57 | ok |
 | `Spawns/PlayerTannery2` | `Gameplay/Loot/VaultCash/UsePoint` | use_point | 33.3 | 84.1 | 2.52 | ok |
 | `Spawns/PlayerTannery2` | `Gameplay/Loot/VaultGold` | loot_spawn | 25.4 | 84.5 | 3.32 | detour (whitelisted) |
 | `Spawns/PlayerTannery2` | `Gameplay/Loot/VaultGold/UsePoint` | use_point | 27.0 | 82.9 | 3.07 | detour (whitelisted) |
-| `Spawns/PlayerTannery2` | `Gameplay/Loot/BondSafe` | objective | 41.3 | 91.9 | 2.23 | ok |
-| `Spawns/PlayerTannery2` | `Gameplay/Loot/BondSafe/UsePoint` | use_point | 41.3 | 91.9 | 2.23 | ok |
-| `Spawns/PlayerTannery2` | `Gameplay/Loot/BondSafe/VaultBonds` | loot_spawn | 41.3 | 91.9 | 2.23 | ok |
-| `Spawns/PlayerTannery2` | `Gameplay/Loot/BondSafe/VaultBonds/UsePoint` | use_point | 41.3 | 91.9 | 2.23 | ok |
+| `Spawns/PlayerTannery2` | `Gameplay/Loot/BondSafe` | objective | 41.3 | 91.5 | 2.22 | ok |
+| `Spawns/PlayerTannery2` | `Gameplay/Loot/BondSafe/UsePoint` | use_point | 41.3 | 91.5 | 2.22 | ok |
+| `Spawns/PlayerTannery2` | `Gameplay/Loot/BondSafe/VaultBonds` | loot_spawn | 41.3 | 91.5 | 2.22 | ok |
+| `Spawns/PlayerTannery2` | `Gameplay/Loot/BondSafe/VaultBonds/UsePoint` | use_point | 41.3 | 91.5 | 2.22 | ok |
 | `Spawns/PlayerTannery2` | `Gameplay/Loot/ServerDrives` | loot_spawn | 35.9 | 55.9 | 1.55 | ok |
 | `Spawns/PlayerTannery2` | `Gameplay/Loot/ServerDrives/UsePoint` | use_point | 35.3 | 54.6 | 1.54 | ok |
 | `Spawns/PlayerTannery2` | `Gameplay/Loot/TellerDrawer1` | objective | 45.0 | 53.7 | 1.19 | ok |
@@ -2624,8 +2624,8 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerTannery2` | `Gameplay/Loot/VaultBoxN10/UsePoint` | use_point | 31.7 | 78.8 | 2.48 | ok |
 | `Spawns/PlayerTannery2` | `Gameplay/Loot/VaultBoxN11` | objective | 31.0 | 78.0 | 2.52 | ok |
 | `Spawns/PlayerTannery2` | `Gameplay/Loot/VaultBoxN11/UsePoint` | use_point | 31.0 | 78.0 | 2.52 | ok |
-| `Spawns/PlayerTannery2` | `Gameplay/Loot/VaultBoxS01` | objective | 41.3 | 93.9 | 2.27 | ok |
-| `Spawns/PlayerTannery2` | `Gameplay/Loot/VaultBoxS01/UsePoint` | use_point | 41.3 | 93.9 | 2.27 | ok |
+| `Spawns/PlayerTannery2` | `Gameplay/Loot/VaultBoxS01` | objective | 41.3 | 94.1 | 2.28 | ok |
+| `Spawns/PlayerTannery2` | `Gameplay/Loot/VaultBoxS01/UsePoint` | use_point | 41.3 | 94.1 | 2.28 | ok |
 | `Spawns/PlayerTannery2` | `Gameplay/Loot/VaultBoxS02` | objective | 39.3 | 92.8 | 2.36 | ok |
 | `Spawns/PlayerTannery2` | `Gameplay/Loot/VaultBoxS02/UsePoint` | use_point | 39.3 | 92.8 | 2.36 | ok |
 | `Spawns/PlayerTannery2` | `Gameplay/Loot/VaultBoxS03` | objective | 37.3 | 91.2 | 2.45 | ok |
@@ -2640,8 +2640,8 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerTannery2` | `Gameplay/Loot/VaultBoxS07/UsePoint` | use_point | 29.4 | 85.8 | 2.92 | ok |
 | `Spawns/PlayerTannery2` | `Gameplay/Loot/VaultBoxS08` | objective | 27.4 | 86.2 | 3.14 | detour (whitelisted) |
 | `Spawns/PlayerTannery2` | `Gameplay/Loot/VaultBoxS08/UsePoint` | use_point | 27.4 | 86.2 | 3.14 | detour (whitelisted) |
-| `Spawns/PlayerTannery2` | `Gameplay/Loot/VaultBoxS09` | objective | 25.4 | 87.5 | 3.44 | detour (whitelisted) |
-| `Spawns/PlayerTannery2` | `Gameplay/Loot/VaultBoxS09/UsePoint` | use_point | 25.4 | 87.5 | 3.44 | detour (whitelisted) |
+| `Spawns/PlayerTannery2` | `Gameplay/Loot/VaultBoxS09` | objective | 25.4 | 87.8 | 3.45 | detour (whitelisted) |
+| `Spawns/PlayerTannery2` | `Gameplay/Loot/VaultBoxS09/UsePoint` | use_point | 25.4 | 87.8 | 3.45 | detour (whitelisted) |
 | `Spawns/PlayerTannery2` | `Gameplay/Loot/HallBox01` | objective | 23.0 | 44.9 | 1.96 | ok |
 | `Spawns/PlayerTannery2` | `Gameplay/Loot/HallBox01/UsePoint` | use_point | 23.0 | 44.9 | 1.96 | ok |
 | `Spawns/PlayerTannery2` | `Gameplay/Loot/HallBox02` | objective | 21.9 | 46.0 | 2.10 | ok |
@@ -2847,10 +2847,10 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerTannery3` | `Gameplay/Loot/VaultCash/UsePoint` | use_point | 33.5 | 85.5 | 2.55 | ok |
 | `Spawns/PlayerTannery3` | `Gameplay/Loot/VaultGold` | loot_spawn | 25.6 | 85.9 | 3.35 | detour (whitelisted) |
 | `Spawns/PlayerTannery3` | `Gameplay/Loot/VaultGold/UsePoint` | use_point | 27.2 | 84.3 | 3.10 | detour (whitelisted) |
-| `Spawns/PlayerTannery3` | `Gameplay/Loot/BondSafe` | objective | 41.4 | 93.3 | 2.26 | ok |
-| `Spawns/PlayerTannery3` | `Gameplay/Loot/BondSafe/UsePoint` | use_point | 41.4 | 93.3 | 2.26 | ok |
-| `Spawns/PlayerTannery3` | `Gameplay/Loot/BondSafe/VaultBonds` | loot_spawn | 41.4 | 93.3 | 2.26 | ok |
-| `Spawns/PlayerTannery3` | `Gameplay/Loot/BondSafe/VaultBonds/UsePoint` | use_point | 41.4 | 93.3 | 2.26 | ok |
+| `Spawns/PlayerTannery3` | `Gameplay/Loot/BondSafe` | objective | 41.4 | 92.9 | 2.25 | ok |
+| `Spawns/PlayerTannery3` | `Gameplay/Loot/BondSafe/UsePoint` | use_point | 41.4 | 92.9 | 2.25 | ok |
+| `Spawns/PlayerTannery3` | `Gameplay/Loot/BondSafe/VaultBonds` | loot_spawn | 41.4 | 92.9 | 2.25 | ok |
+| `Spawns/PlayerTannery3` | `Gameplay/Loot/BondSafe/VaultBonds/UsePoint` | use_point | 41.4 | 92.9 | 2.25 | ok |
 | `Spawns/PlayerTannery3` | `Gameplay/Loot/ServerDrives` | loot_spawn | 36.7 | 57.3 | 1.56 | ok |
 | `Spawns/PlayerTannery3` | `Gameplay/Loot/ServerDrives/UsePoint` | use_point | 36.0 | 56.0 | 1.55 | ok |
 | `Spawns/PlayerTannery3` | `Gameplay/Loot/TellerDrawer1` | objective | 45.2 | 55.1 | 1.22 | ok |
@@ -2895,8 +2895,8 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerTannery3` | `Gameplay/Loot/VaultBoxN10/UsePoint` | use_point | 32.1 | 80.2 | 2.50 | ok |
 | `Spawns/PlayerTannery3` | `Gameplay/Loot/VaultBoxN11` | objective | 31.3 | 79.4 | 2.53 | ok |
 | `Spawns/PlayerTannery3` | `Gameplay/Loot/VaultBoxN11/UsePoint` | use_point | 31.3 | 79.4 | 2.53 | ok |
-| `Spawns/PlayerTannery3` | `Gameplay/Loot/VaultBoxS01` | objective | 41.2 | 95.3 | 2.31 | ok |
-| `Spawns/PlayerTannery3` | `Gameplay/Loot/VaultBoxS01/UsePoint` | use_point | 41.2 | 95.3 | 2.31 | ok |
+| `Spawns/PlayerTannery3` | `Gameplay/Loot/VaultBoxS01` | objective | 41.2 | 95.5 | 2.32 | ok |
+| `Spawns/PlayerTannery3` | `Gameplay/Loot/VaultBoxS01/UsePoint` | use_point | 41.2 | 95.5 | 2.32 | ok |
 | `Spawns/PlayerTannery3` | `Gameplay/Loot/VaultBoxS02` | objective | 39.2 | 94.2 | 2.40 | ok |
 | `Spawns/PlayerTannery3` | `Gameplay/Loot/VaultBoxS02/UsePoint` | use_point | 39.2 | 94.2 | 2.40 | ok |
 | `Spawns/PlayerTannery3` | `Gameplay/Loot/VaultBoxS03` | objective | 37.2 | 92.6 | 2.49 | ok |
@@ -2911,8 +2911,8 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerTannery3` | `Gameplay/Loot/VaultBoxS07/UsePoint` | use_point | 29.3 | 87.2 | 2.98 | ok |
 | `Spawns/PlayerTannery3` | `Gameplay/Loot/VaultBoxS08` | objective | 27.3 | 87.6 | 3.21 | detour (whitelisted) |
 | `Spawns/PlayerTannery3` | `Gameplay/Loot/VaultBoxS08/UsePoint` | use_point | 27.3 | 87.6 | 3.21 | detour (whitelisted) |
-| `Spawns/PlayerTannery3` | `Gameplay/Loot/VaultBoxS09` | objective | 25.3 | 88.9 | 3.51 | detour (whitelisted) |
-| `Spawns/PlayerTannery3` | `Gameplay/Loot/VaultBoxS09/UsePoint` | use_point | 25.3 | 88.9 | 3.51 | detour (whitelisted) |
+| `Spawns/PlayerTannery3` | `Gameplay/Loot/VaultBoxS09` | objective | 25.3 | 89.2 | 3.52 | detour (whitelisted) |
+| `Spawns/PlayerTannery3` | `Gameplay/Loot/VaultBoxS09/UsePoint` | use_point | 25.3 | 89.2 | 3.52 | detour (whitelisted) |
 | `Spawns/PlayerTannery3` | `Gameplay/Loot/HallBox01` | objective | 23.5 | 46.3 | 1.97 | ok |
 | `Spawns/PlayerTannery3` | `Gameplay/Loot/HallBox01/UsePoint` | use_point | 23.5 | 46.3 | 1.97 | ok |
 | `Spawns/PlayerTannery3` | `Gameplay/Loot/HallBox02` | objective | 22.5 | 47.4 | 2.11 | ok |
@@ -3112,16 +3112,16 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerTannery4` | `Gameplay/Devices/PhoneSR/UsePoint` | use_point | 45.5 | 53.4 | 1.17 | ok |
 | `Spawns/PlayerTannery4` | `Gameplay/Devices/PhoneSD/UsePoint` | use_point | 26.8 | 45.0 | 1.68 | ok |
 | `Spawns/PlayerTannery4` | `Gameplay/Devices/PhoneBR/UsePoint` | use_point | 59.6 | 81.5 | 1.37 | ok |
-| `Spawns/PlayerTannery4` | `Gameplay/Devices/PhoneVO/UsePoint` | use_point | 14.0 | 50.9 | 3.64 | detour (whitelisted) |
+| `Spawns/PlayerTannery4` | `Gameplay/Devices/PhoneVO/UsePoint` | use_point | 14.0 | 51.0 | 3.65 | detour (whitelisted) |
 | `Spawns/PlayerTannery4` | `Gameplay/Devices/PhoneEA/UsePoint` | use_point | 42.6 | 77.8 | 1.83 | ok |
 | `Spawns/PlayerTannery4` | `Gameplay/Loot/VaultCash` | loot_spawn | 33.5 | 88.4 | 2.64 | ok |
 | `Spawns/PlayerTannery4` | `Gameplay/Loot/VaultCash/UsePoint` | use_point | 33.7 | 86.9 | 2.58 | ok |
 | `Spawns/PlayerTannery4` | `Gameplay/Loot/VaultGold` | loot_spawn | 25.9 | 87.3 | 3.37 | detour (whitelisted) |
 | `Spawns/PlayerTannery4` | `Gameplay/Loot/VaultGold/UsePoint` | use_point | 27.5 | 85.7 | 3.12 | detour (whitelisted) |
-| `Spawns/PlayerTannery4` | `Gameplay/Loot/BondSafe` | objective | 41.5 | 94.7 | 2.28 | ok |
-| `Spawns/PlayerTannery4` | `Gameplay/Loot/BondSafe/UsePoint` | use_point | 41.5 | 94.7 | 2.28 | ok |
-| `Spawns/PlayerTannery4` | `Gameplay/Loot/BondSafe/VaultBonds` | loot_spawn | 41.5 | 94.7 | 2.28 | ok |
-| `Spawns/PlayerTannery4` | `Gameplay/Loot/BondSafe/VaultBonds/UsePoint` | use_point | 41.5 | 94.7 | 2.28 | ok |
+| `Spawns/PlayerTannery4` | `Gameplay/Loot/BondSafe` | objective | 41.5 | 94.3 | 2.27 | ok |
+| `Spawns/PlayerTannery4` | `Gameplay/Loot/BondSafe/UsePoint` | use_point | 41.5 | 94.3 | 2.27 | ok |
+| `Spawns/PlayerTannery4` | `Gameplay/Loot/BondSafe/VaultBonds` | loot_spawn | 41.5 | 94.3 | 2.27 | ok |
+| `Spawns/PlayerTannery4` | `Gameplay/Loot/BondSafe/VaultBonds/UsePoint` | use_point | 41.5 | 94.3 | 2.27 | ok |
 | `Spawns/PlayerTannery4` | `Gameplay/Loot/ServerDrives` | loot_spawn | 37.5 | 58.7 | 1.56 | ok |
 | `Spawns/PlayerTannery4` | `Gameplay/Loot/ServerDrives/UsePoint` | use_point | 36.8 | 57.4 | 1.56 | ok |
 | `Spawns/PlayerTannery4` | `Gameplay/Loot/TellerDrawer1` | objective | 45.4 | 56.5 | 1.24 | ok |
@@ -3166,8 +3166,8 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerTannery4` | `Gameplay/Loot/VaultBoxN10/UsePoint` | use_point | 32.5 | 81.6 | 2.51 | ok |
 | `Spawns/PlayerTannery4` | `Gameplay/Loot/VaultBoxN11` | objective | 31.8 | 80.8 | 2.54 | ok |
 | `Spawns/PlayerTannery4` | `Gameplay/Loot/VaultBoxN11/UsePoint` | use_point | 31.8 | 80.8 | 2.54 | ok |
-| `Spawns/PlayerTannery4` | `Gameplay/Loot/VaultBoxS01` | objective | 41.2 | 96.7 | 2.35 | ok |
-| `Spawns/PlayerTannery4` | `Gameplay/Loot/VaultBoxS01/UsePoint` | use_point | 41.2 | 96.7 | 2.35 | ok |
+| `Spawns/PlayerTannery4` | `Gameplay/Loot/VaultBoxS01` | objective | 41.2 | 96.9 | 2.35 | ok |
+| `Spawns/PlayerTannery4` | `Gameplay/Loot/VaultBoxS01/UsePoint` | use_point | 41.2 | 96.9 | 2.35 | ok |
 | `Spawns/PlayerTannery4` | `Gameplay/Loot/VaultBoxS02` | objective | 39.2 | 95.6 | 2.44 | ok |
 | `Spawns/PlayerTannery4` | `Gameplay/Loot/VaultBoxS02/UsePoint` | use_point | 39.2 | 95.6 | 2.44 | ok |
 | `Spawns/PlayerTannery4` | `Gameplay/Loot/VaultBoxS03` | objective | 37.2 | 94.0 | 2.53 | ok |
@@ -3182,8 +3182,8 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerTannery4` | `Gameplay/Loot/VaultBoxS07/UsePoint` | use_point | 29.3 | 88.6 | 3.03 | detour (whitelisted) |
 | `Spawns/PlayerTannery4` | `Gameplay/Loot/VaultBoxS08` | objective | 27.3 | 89.0 | 3.26 | detour (whitelisted) |
 | `Spawns/PlayerTannery4` | `Gameplay/Loot/VaultBoxS08/UsePoint` | use_point | 27.3 | 89.0 | 3.26 | detour (whitelisted) |
-| `Spawns/PlayerTannery4` | `Gameplay/Loot/VaultBoxS09` | objective | 25.3 | 90.3 | 3.56 | detour (whitelisted) |
-| `Spawns/PlayerTannery4` | `Gameplay/Loot/VaultBoxS09/UsePoint` | use_point | 25.3 | 90.3 | 3.56 | detour (whitelisted) |
+| `Spawns/PlayerTannery4` | `Gameplay/Loot/VaultBoxS09` | objective | 25.3 | 90.6 | 3.58 | detour (whitelisted) |
+| `Spawns/PlayerTannery4` | `Gameplay/Loot/VaultBoxS09/UsePoint` | use_point | 25.3 | 90.6 | 3.58 | detour (whitelisted) |
 | `Spawns/PlayerTannery4` | `Gameplay/Loot/HallBox01` | objective | 24.2 | 47.7 | 1.97 | ok |
 | `Spawns/PlayerTannery4` | `Gameplay/Loot/HallBox01/UsePoint` | use_point | 24.2 | 47.7 | 1.97 | ok |
 | `Spawns/PlayerTannery4` | `Gameplay/Loot/HallBox02` | objective | 23.2 | 48.8 | 2.10 | ok |
