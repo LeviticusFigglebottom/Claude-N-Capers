@@ -86,6 +86,9 @@ var _last_engage: float = -1.0
 var _door_tries: Dictionary[Door, int] = {}
 ## Nesting of the short detour walks goto() makes when stuck (they do not detour again).
 var _detour_depth: int = 0
+## Ladders of the heist (found once) and a climb in progress (no ladder legs inside it).
+var _ladders: Array[Ladder] = []
+var _climbing: bool = false
 ## _through_link hysteresis: the door being crossed, for which target, to which side (its local z sign).
 var _through_door: Door = null
 var _through_target: Vector3 = Vector3.INF
@@ -188,7 +191,65 @@ func face(point: Vector3, tol: float = 0.03, timeout_s: float = 3.0) -> bool:
 
 func nav_path(to: Vector3) -> PackedVector3Array:
 	var map: RID = crew.get_world_3d().navigation_map
-	return NavigationServer3D.map_get_path(map, crew.global_position, to, true, NAV_LAYERS_CREW)
+	return NavigationServer3D.map_get_path(map, crew.global_position, to, true, NAV_LAYERS_CREW | Ladder.NAV_LAYER)
+
+
+## OF-A6 (Haz seed 5: 15 min at the burnt hole's edge): the climbable Ladder whose NavLink the leg to `corner` takes, as
+## [ladder, up], else []. The path reaches the ladder's far end while the crew stands at its near end.
+func _ladder_leg(corner: Vector3) -> Array:
+	if _climbing:
+		return []
+	if _ladders.is_empty():
+		var rt: HeistRuntime = HeistRuntime.of(crew)
+		if rt != null:
+			for n: Node in rt.find_children("*", "Ladder", true, false):
+				_ladders.append(n as Ladder)
+	var pos: Vector3 = crew.global_position
+	for l: Ladder in _ladders:
+		if not is_instance_valid(l) or not l.is_climbable():
+			continue
+		var bottom: Vector3 = l.bottom_position()
+		var top: Vector3 = l.top_position()
+		if flat_dist(pos, bottom) <= 1.5 and absf(pos.y - bottom.y) <= 1.0 and corner.y > pos.y + 1.0 \
+				and corner.distance_to(top) <= 1.6:
+			return [l, true]
+		if flat_dist(pos, top) <= 1.5 and absf(pos.y - top.y) <= 1.0 and corner.y < pos.y - 1.0 \
+				and corner.distance_to(bottom) <= 1.6:
+			return [l, false]
+	return []
+
+
+## Climb `l` like a player with ENV P's free climb (CrewLadderClimb): up = stand on the climb line facing the wall and
+## hold forward (level look); down = stand at the Top marker facing the climb side, look down past
+## ladder_down_pitch_deg and hold forward. True when the crew reached the other end.
+func climb_ladder(l: Ladder, up: bool) -> bool:
+	_climbing = true
+	var bottom: Vector3 = l.bottom_position()
+	var top: Vector3 = l.top_position()
+	var wall: Vector3 = l.face_normal()
+	d.note("pilot: ladder %s %s (%.1f m)" % [l.name, "up" if up else "down", top.y - bottom.y])
+	var ok: bool = false
+	if await goto(bottom if up else top - wall * 0.3, 0.3, 20.0, false, false):
+		var look: Vector3 = (bottom + wall + Vector3.UP * 1.6) if up else (bottom - wall * 0.6)
+		await face(look, 0.05, 2.0)
+		inp.press(&"move_forward")
+		var t: float = 0.0
+		var limit: float = (top.y - bottom.y) / maxf(Tweak.crew().ladder_climb_speed_mps, 0.5) + 6.0
+		while t < limit and crew.crew_state == Enums.CrewState.NORMAL:
+			var y: float = crew.global_position.y
+			if (up and y >= top.y - 0.15 and not crew.ladder.is_climbing()) \
+					or (not up and y <= bottom.y + 0.3 and not crew.ladder.is_climbing()):
+				ok = true
+				break
+			steer(atan2(-(look - crew.eye_position()).x, -(look - crew.eye_position()).z),
+				deg_to_rad(Tweak.crew().ladder_down_pitch_deg - 25.0) if not up else 0.0)
+			await tick()
+			t += dt()
+		inp.release(&"move_forward")
+	d.note("pilot: ladder %s %s -> %s at %s" % [l.name, "up" if up else "down", "OK" if ok else "FAILED",
+		_v(crew.global_position)])
+	_climbing = false
+	return ok
 
 
 ## ENV C (DB-7 ChamberBSouth): D-073 doors are baked CLOSED; an open one is crossed by its NavLink over a ~1.2 m
@@ -351,6 +412,14 @@ func goto(target: Vector3, arrive_m: float = 0.8, timeout_s: float = 60.0, sprin
 			top_up_t = t + TOP_UP_EVERY_S
 			await top_up()  # a player reloads on the move between fights (the tap takes 2 ticks; walking goes on)
 		var corner: Vector3 = next_corner(path, crew.global_position, target)
+		var leg: Array = _ladder_leg(corner)
+		if not leg.is_empty():
+			inp.release(&"move_forward")
+			await climb_ladder(leg[0] as Ladder, bool(leg[1]))
+			repath_t = 0.0
+			hist_pos = crew.global_position
+			hist_t = 0.0
+			continue
 		var line_door: Door = _door_on_line(corner) if doors else null
 		if line_door != null and not line_door.is_open:
 			inp.release(&"move_forward")
