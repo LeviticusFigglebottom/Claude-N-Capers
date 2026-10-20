@@ -24,7 +24,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | camera_spine | skipped | 0 | 0 |
 | camera_screen | skipped | 0 | 0 |
 | bag_line | skipped | 0 | 0 |
-| hide_los | skipped | 0 | 0 |
+| hide_los | PASS | 0 | 0 |
 | teller_worktop | skipped | 0 | 0 |
 | materials | PASS | 0 | 0 |
 | zfight | PASS | 0 | 0 |
@@ -202,14 +202,19 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 - 3 laser grid(s), 1 with an asserted bypass gap
 
 
+## hide_los: Hidden spots are hidden by LOS sample (D-128)
+
+- `Gameplay/Lines/HideCounter`: crouched, 33 sample(s), 197 observer point(s) in G9, points 1.00, 1.05 m: hidden
+
+
 ## materials: Materials and texel density
 
-- 2714 surfaces checked
+- 2722 surfaces checked
 
 
 ## zfight: Z-fighting
 
-- 422467 triangles checked
+- 422491 triangles checked
 
 
 ## lights: Lighting is deliberate
@@ -293,37 +298,37 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 | camera | draw calls | triangles | shadow lights |
 |---|---|---|---|
-| `TopDownSite` | 1384 | 364936 | 6 |
-| `TopDownBuilding` | 1986 | 715922 | 6 |
-| `ExtHarborFacade` | 2201 | 736670 | 6 |
-| `ExtAtmCorner` | 2326 | 771338 | 6 |
-| `ExtLotSallyPort` | 1613 | 513680 | 6 |
+| `TopDownSite` | 1392 | 364960 | 6 |
+| `TopDownBuilding` | 1994 | 715946 | 6 |
+| `ExtHarborFacade` | 2209 | 736694 | 6 |
+| `ExtAtmCorner` | 2334 | 771362 | 6 |
+| `ExtLotSallyPort` | 1621 | 513704 | 6 |
 | `ExtQuaySteps` | 105 | 38124 | 2 |
-| `ExtWharfLane` | 2109 | 686528 | 6 |
-| `HallFromVestibule` | 1700 | 507586 | 6 |
-| `CompassLandmark` | 2110 | 635436 | 6 |
-| `HallGuardPost` | 1412 | 392662 | 5 |
-| `TellerWorkroom` | 2031 | 592546 | 6 |
-| `StaffCorridor` | 1726 | 540660 | 6 |
-| `SecurityRoom` | 533 | 167310 | 3 |
-| `SallyPort` | 1067 | 320078 | 3 |
-| `StairCore` | 586 | 199338 | 3 |
-| `BasementCorridor` | 1898 | 575480 | 6 |
-| `Antechamber` | 1377 | 406248 | 5 |
-| `VaultInterior` | 509 | 181484 | 4 |
-| `CountDepository` | 919 | 297630 | 3 |
-| `RecordsRoom` | 570 | 221890 | 3 |
-| `PlantAreaway` | 423 | 149158 | 2 |
-| `ManagerOffice` | 705 | 213898 | 0 |
-| `AtmVestibule` | 2285 | 737110 | 6 |
-| `CranePerch` | 2321 | 770690 | 6 |
-| `BreakRoom` | 589 | 189358 | 3 |
-| `SuppliesStore` | 306 | 106988 | 1 |
-| `LoanOffice` | 492 | 147552 | 1 |
-| `CashTransfer` | 225 | 83914 | 1 |
-| `LockerRoom` | 442 | 150240 | 2 |
-| `ServerRoom` | 716 | 233504 | 3 |
-| `InspectionPassage` | 617 | 219580 | 3 |
+| `ExtWharfLane` | 2117 | 686552 | 6 |
+| `HallFromVestibule` | 1708 | 507610 | 6 |
+| `CompassLandmark` | 2118 | 635460 | 6 |
+| `HallGuardPost` | 1418 | 392682 | 5 |
+| `TellerWorkroom` | 2039 | 592570 | 6 |
+| `StaffCorridor` | 1734 | 540684 | 6 |
+| `SecurityRoom` | 533 | 167318 | 3 |
+| `SallyPort` | 1067 | 320086 | 3 |
+| `StairCore` | 586 | 199346 | 3 |
+| `BasementCorridor` | 1904 | 575500 | 6 |
+| `Antechamber` | 1381 | 406264 | 5 |
+| `VaultInterior` | 509 | 181492 | 4 |
+| `CountDepository` | 919 | 297638 | 3 |
+| `RecordsRoom` | 570 | 221898 | 3 |
+| `PlantAreaway` | 423 | 149166 | 2 |
+| `ManagerOffice` | 705 | 213906 | 0 |
+| `AtmVestibule` | 2293 | 737134 | 6 |
+| `CranePerch` | 2329 | 770714 | 6 |
+| `BreakRoom` | 589 | 189366 | 3 |
+| `SuppliesStore` | 306 | 106996 | 1 |
+| `LoanOffice` | 492 | 147560 | 1 |
+| `CashTransfer` | 225 | 83922 | 1 |
+| `LockerRoom` | 442 | 150248 | 2 |
+| `ServerRoom` | 716 | 233512 | 3 |
+| `InspectionPassage` | 617 | 219588 | 3 |
 
 
 ## door_frame_gap: Doors and windows fill their wall openings (no gaps, no clipping)

@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/props/prop_of_box_bank_w1880/prop_of_box_bank_w1880.glb" id="1_model"]
+
+[node name="PropOfBoxBankW1880" type="Node3D"]
+metadata/kind = &"deposit_boxes"
+
+[node name="Model" parent="." instance=ExtResource("1_model")]

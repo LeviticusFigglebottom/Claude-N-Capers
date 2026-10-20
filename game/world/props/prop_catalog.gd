@@ -69,6 +69,12 @@ static func top(asset_id: StringName) -> float:
 	return t if t > 0.0 else aabb(asset_id).end.y
 
 
+## D-142: true when the catalog marks colliders of the prop as clear glass (cat `see_through`); the wrapper already puts
+## them in the `see_through` group, so only map code that builds its own collider for the prop needs this.
+static func see_through(asset_id: StringName) -> bool:
+	return not (entry(asset_id).get("see_through", []) as Array).is_empty()
+
+
 ## D-130: the prop-local position of the wrapper's `Seat` when the generator moved it (catalog `seat`, cat
 ## `seat_fwd`: prop_chair_office / prop_chair_task, 0.12 m toward the front), else `fallback`.
 static func seat(asset_id: StringName, fallback: Vector3) -> Vector3:

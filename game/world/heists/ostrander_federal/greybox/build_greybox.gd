@@ -80,9 +80,11 @@ func _build() -> void:
 	bind_targets()
 	errors.append_array(AM.build(map_root, AE.TURRET_VANS, AE.HELI_ORBITS, AE.HELI_DROPS, [], _breaches(), obstructions))
 	build_nav_links(nav)
+	load("res://world/heists/ostrander_federal/greybox/of_dress.gd").new().call(&"run", self)  # OF-C2 lane C (G2)
 	for line: String in NS.snap(map_root):
 		print("seat: " + line)
 	_build_environment(n("Lighting"))
+	preload("res://world/heists/ostrander_federal/greybox/of_art_rooms.gd").new(self).call(&"build")  # OF-C2 lane B
 	var polys: int = await _bake(nav)
 	if polys <= 0:
 		_fail("navmesh bake produced no polygons")

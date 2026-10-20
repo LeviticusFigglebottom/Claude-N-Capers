@@ -12,6 +12,8 @@ const CONTAINERS: Array[StringName] = [&"Geometry", &"Props", &"Lighting", &"Gam
 ## Folders whose geometry-carrying content roots are props too (prefabs, fixtures, slot content).
 const CONTENT_FOLDERS: Array[StringName] = [&"Lighting", &"Gameplay", &"Variants"]
 const PROP_METAS: Array[StringName] = [&"kind", &"mount", &"support", &"prop", &"fixture"]
+## A node inside a prop root that the checks treat as a prop of its own (OF-P1: the hoist rig's bodies).
+const SUBPROP_META: StringName = &"lc_subprop"
 ## Kinds whose subtree is part of the building shell for ray classification.
 const SHELL_KINDS: Array[StringName] = [&"door", &"vault_door", &"industrial_door", &"window", &"stairs", &"hatch"]
 ## GN-C2: a lockdown shutter mounted on a wall face over an opening another door fills (door prefab, meta kind
@@ -149,6 +151,11 @@ func _scan(n: Node, mode: int) -> void:
 			continue
 		if c3 != null and _is_prop_root(c3, cm):
 			_add_prop(c3)
+			# OF-P1: a prefab's map-built parts (meta lc_subprop, e.g. OF's hoist rig under the bag_lift) are props of
+			# their own, so a rig spanning two floors does not merge into the prefab's box.
+			for sub: Node in c3.find_children("*", "Node3D", true, false):
+				if sub.has_meta(SUBPROP_META) and not LcUtil.lc_ignored(sub):
+					_add_prop(sub as Node3D)
 			continue
 		_scan(c, cm)
 
@@ -165,6 +172,16 @@ func _is_prop_root(n: Node3D, mode: int) -> bool:
 	if not content or mode == 1:
 		return content
 	return n is GeometryInstance3D or not n.find_children("*", "GeometryInstance3D", true, false).is_empty()
+
+
+## Whether `c` (a descendant of prop root `root`) is, or lies under, a sub-prop node below `root`.
+static func _in_subprop(c: Node, root: Node) -> bool:
+	var cur: Node = c
+	while cur != null and cur != root:
+		if cur.has_meta(SUBPROP_META):
+			return true
+		cur = cur.get_parent()
+	return false
 
 
 func _add_prop(n: Node3D) -> void:
@@ -184,6 +201,8 @@ func _add_prop(n: Node3D) -> void:
 	nodes.append_array(n.find_children("*", "", true, false))
 	for c: Node in nodes:
 		if LcUtil.lc_ignored(c):   # cable / FX-only meshes (meta lc_ignore): no prop extent, clipping or support
+			continue
+		if c != n and _in_subprop(c, n):   # a sub-prop (meta lc_subprop) is its own prop
 			continue
 		var box: Variant = LcVisual.geometry_local_aabb(c)
 		if box is AABB:

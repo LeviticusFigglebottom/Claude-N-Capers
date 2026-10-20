@@ -59,6 +59,25 @@ static func prepare(map: HeistMap, parent: Node) -> LcContext:
 	for i: int in range(4):
 		await ctx.tree().physics_frame
 		await ctx.tree().process_frame
+	# The map syncs asynchronously: a large navmesh on a loaded machine needs more than 4 frames (OF: 6-10). Wait
+	# (bounded) until the map answers with the region's own geometry: the closest point to its first vertex.
+	if nav != null and nav.navigation_mesh != null and nav.navigation_mesh.get_vertices().size() > 0:
+		var probe: Vector3 = nav.global_transform * nav.navigation_mesh.get_vertices()[0]
+		var waited: int = 0
+		while waited < 600 and NavigationServer3D.map_get_closest_point(world_map, probe).distance_to(probe) > 1.0:
+			await ctx.tree().physics_frame
+			await ctx.tree().process_frame
+			waited += 1
+		# then until no further sync is pending (links and door regions register over the next frames)
+		var last: int = NavigationServer3D.map_get_iteration_id(world_map)
+		var still: int = 0
+		while waited < 600 and still < 8:
+			await ctx.tree().physics_frame
+			await ctx.tree().process_frame
+			waited += 1
+			var it: int = NavigationServer3D.map_get_iteration_id(world_map)
+			still = still + 1 if it == last else 0
+			last = it
 	ctx.setup(map)
 	return ctx
 

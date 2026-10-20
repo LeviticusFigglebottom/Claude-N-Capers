@@ -119,9 +119,9 @@ rules = Array[Dictionary]([{
 &"cust_8": 0.5
 },
 5: {
-&"cust_4": 0.1,
-&"cust_6": 0.4,
-&"cust_8": 0.5
+&"cust_4": 0.05,
+&"cust_6": 0.15,
+&"cust_8": 0.8
 }
 }
 }, {
@@ -164,7 +164,7 @@ rules = Array[Dictionary]([{
 }
 }
 }, {
-"difficulty_add": Array[int]([0, 1, 1, 2, 3, 4]),
+"difficulty_add": Array[int]([0, 1, 1, 2, 3, 3]),
 "group": &"civ_extra",
 "pick": Vector2i(0, 0),
 "weights_by_difficulty": {
@@ -181,7 +181,7 @@ rules = Array[Dictionary]([{
 &"cx_none": 1.0
 },
 5: {
-&"cx_none": 0.51
+&"cx_none": 0.0
 }
 }
 }])

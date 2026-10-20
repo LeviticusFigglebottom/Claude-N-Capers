@@ -624,12 +624,13 @@ func _build_static_windows(bld: Node3D) -> void:
 		var pos: Vector3 = w[2]
 		var yaw: float = float(w[3])
 		var blocker: StaticBody3D = _glass_blocker(gl, String(w[0]), piece, pos, yaw)
-		if not String(w[0]) in L.FROSTED_WINDOWS:
+		var frosted: bool = String(w[0]) in L.FROSTED_WINDOWS
+		if not frosted:
 			blocker.add_to_group(&"see_through", true)  # D-142: clear glazing; stealth vision sees through it
 		if bool(w[4]):
 			continue
-		# Static glazing uses the catalog window visual (frame + glass, read from both sides).
-		var ps: PackedScene = _dress.scene(piece.replace("arch_", "prop_"))
+		# Static glazing uses the catalog window visual (frame + glass, read from both sides); frosted: its _frosted twin.
+		var ps: PackedScene = _dress.scene(piece.replace("arch_", "prop_") + ("_frosted" if frosted else ""))
 		if ps != null:
 			var vis: Node3D = ps.instantiate() as Node3D
 			vis.name = String(w[0]) + "Window"
@@ -1108,6 +1109,8 @@ func _build_gameplay(gp: Node3D) -> void:
 			metas["fire_exit"] = true
 		props["suspicious_when_open"] = bool(extra.get("suspicious_when_open", false))
 		props["casing_allowed"] = bool(extra.get("public", false))  # public door: opens unmasked while casing (PD2)
+		if extra.has("leaf_surface"):  # D-142: a glass leaf is see-through for stealth vision (ENV A Door)
+			props["leaf_surface"] = StringName(String(extra["leaf_surface"]))
 		if String(d[1]).contains("service"):
 			props["width_m"] = 1.1
 		_prefab(doors, "door", String(d[0]), d[2], float(d[3]), props, null, metas)

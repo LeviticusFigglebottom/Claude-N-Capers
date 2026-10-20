@@ -284,7 +284,7 @@ const WALLS: Array = [
 	["E", "z", 42.0, 0.0, 7.0, 0.2, 8.6, 11.6, "wall", []],
 	["E", "z", 45.0, 0.0, 7.0, 0.3, 8.6, 12.2, "wall", []],
 	["E", "z", 48.0, 0.0, 17.0, 0.4, 8.6, 12.2, "wall_ext", []],
-	["E", "z", 48.0, 17.0, 36.0, 0.4, 8.6, 9.7, "wall_ext", []],
+	["E", "z", 48.0, 17.0, 36.0, 0.4, 8.6, 9.1, "wall_ext", []],
 	["R", "x", 0.0, 0.0, 13.0, 0.4, 12.2, 13.3, "wall_ext", [[0.4, 1.4, 12.8, 13.7]]],
 	["R", "x", 0.0, 13.0, 16.0, 0.4, 12.2, 15.2, "wall_ext", []],
 	["R", "x", 0.0, 16.0, 48.0, 0.4, 12.2, 13.3, "wall_ext", []],
@@ -408,7 +408,6 @@ const SHELL_BOXES: Array = [
 	["Cages", "GoldCageW_Head", [28.95, -1.8, 18.0], [29.05, -1.4, 20.0], "trim"],
 	["Cages", "GoldCageN", [29.05, -4.0, 16.95], [33.7, -1.4, 17.05], "trim"],
 	["Cages", "GoldCageS", [29.05, -4.0, 20.95], [33.7, -1.4, 21.05], "trim"],
-	["Lid", "Lid", [23.4, -0.8, 13.5], [24.6, 0.0, 15.7], "floor"],
 	["Lantern", "CurbN", [14.0, 8.6, 22.0], [30.0, 9.2, 22.3], "wall_ext"],
 	["Lantern", "CurbS", [14.0, 8.6, 29.7], [30.0, 9.2, 30.0], "wall_ext"],
 	["Lantern", "CurbW", [14.0, 8.6, 22.3], [14.3, 9.2, 29.7], "wall_ext"],
@@ -487,7 +486,8 @@ const SITE_BOXES: Array = [
 ]
 ## Convex hulls (collision + mesh): [group, name, points, faces (point-index polygons, counter-clockwise seen from outside),
 ## class]: the lantern glazing, the fire-escape flights / rails, the Tannery St ramp, the parapet copings (a 0.3 m ridge
-## over the 0.2 m half wall: 56 deg >= 50, §7.5).
+## over the 0.2 m half wall: 56 deg >= 50, §7.5; the terrace east parapet's throw-spot coping falls 0.6 m outward from its
+## 1.1 m inner edge: 56 deg, §7.4).
 const HULLS: Array = [
 	[
 		"Lantern", "Glazing",
@@ -589,10 +589,10 @@ const HULLS: Array = [
 	[
 		"Coping", "CopingEZ0480_0170",
 		[
-			[47.8, 9.7, 17.0], [47.999, 10.0, 17.0], [48.001, 10.0, 17.0], [48.2, 9.7, 17.0], [47.8, 9.7, 36.0],
-			[47.999, 10.0, 36.0], [48.001, 10.0, 36.0], [48.2, 9.7, 36.0],
+			[47.8, 9.1, 17.0], [47.8, 9.7, 17.0], [47.8, 9.7, 17.0], [48.2, 9.1, 17.0], [47.8, 9.1, 36.0], [47.8, 9.7, 36.0],
+			[47.8, 9.7, 36.0], [48.2, 9.1, 36.0],
 		],
-		[[3, 0, 1, 2], [1, 0, 4, 5], [4, 0, 3, 7], [2, 1, 5, 6], [7, 3, 2, 6], [6, 5, 4, 7]], "wall_ext",
+		[[3, 0, 1], [5, 1, 0, 4], [4, 0, 3, 7], [3, 1, 5, 7], [5, 4, 7]], "wall_ext",
 	],
 	[
 		"Coping", "CopingRX0000_0000",
@@ -704,7 +704,6 @@ const HANDRAILS: Array = [
 ## Visual-only boxes (no collision): [name, min, max, class].
 const VISUALS: Array = [
 	["Meridian", [23.95, 0.002, 17.5], [24.05, 0.006, 31.9], "trim"],
-	["LidPanel", [22.8, 0.002, 13.4], [25.2, 0.006, 15.8], "trim"],
 	["AreawayGrate", [29.4, 0.002, -1.6], [30.6, 0.006, -0.4], "trim"],
 ]
 ## Always-present nav links: [name, from, to, bidirectional, navigation_layers] (1 walkable, 4 vent): the street islands'
@@ -761,7 +760,7 @@ const SLOTS: Array = [
 	["camera", "cam_b", 1.0, "G", "SR", 18.0, 0.0, 3.0, 0.0, "C2 C4 C5 C9 C10 C12 C15 C16"],
 	["camera", "cam_c", 1.0, "G", "SR", 18.0, 0.0, 3.0, 0.0, "C1 C2 C3 C7 C9 C11 C13 C15"],
 	["laser_pattern", "lz_static", 0.5, "B", "VC", 21.0, -4.0, 11.0, 90.0, "beams 1.30 / 1.90 / 2.50, 1.1 m bypass gap S"],
-	["laser_pattern", "lz_sweep", 0.2, "B", "VC", 21.0, -4.0, 11.0, 90.0, "3 vertical beams, 8 s sweep, full width"],
+	["laser_pattern", "lz_sweep", 0.2, "B", "VC", 21.0, -4.0, 11.0, 90.0, "2 vertical beams, 7 s sweep, full width"],
 	["laser_pattern", "lz_timed", 0.3, "B", "VC", 21.0, -4.0, 11.0, 90.0, "4 beams, off 6 s of 20 s, full width"],
 	["customers", "cust_4", 0.4, "G", "BH", 24.0, 0.0, 24.0, 0.0, "4 hall customers"],
 	["customers", "cust_6", 0.4, "G", "BH", 24.0, 0.0, 24.0, 0.0, "6 (5 hall + 1 PC client)"],
@@ -772,7 +771,7 @@ const SLOTS: Array = [
 	["fire_escape", "fe_down", 0.45, "G", "X2", 0.6, 0.0, -2.4, 180.0, "Corvino drop ladder lowered (3.0 m)"],
 	["fire_escape", "fe_up", 0.55, "G", "X2", 0.6, 0.0, -2.4, 180.0, "drop ladder up (no roof route)"],
 	["escape", "esc_van_dock", 0.45, "G", "X2", 5.0, 0.0, -4.32, 180.0, "E1 van at the roller door"],
-	["escape", "esc_van_tannery", 0.3, "G", "X3", 50.4, 0.0, 14.28, 180.0, "E2 van in the Tannery bay"],
+	["escape", "esc_van_tannery", 0.3, "G", "X3", 51.2, 0.0, 14.28, 180.0, "E2 van in the Tannery bay"],
 	["escape", "esc_heli_terrace", 0.25, "E", "X4", 36.0, 8.6, 27.0, 0.0, "E3 heli over the terrace net"],
 	["drill_delivery", "drop_terrace", 0.5, "E", "X4", 20.0, 8.6, 33.0, 0.0, "heli crate on the terrace"],
 	["drill_delivery", "drop_dock", 0.5, "G", "X2", 14.0, 0.0, -4.0, 0.0, "Mercer's second van at the dock"],
@@ -1099,3 +1098,95 @@ const ROUTE_DOORS: Array[String] = [
 	"DepositHallDoor",
 	"CartQueueDoor",
 ]
+## Civilian routes (OF-A4 CivilianRoute rows, see ostrander_federal_content.py): {parent path or slot id: rows}.
+const ROUTES: Dictionary = {
+	"Patrols/Routes": [
+		[
+			"route", "ManagerFloorRoute", "mgr_floor", "LOOP", ["civ_manager_mgr_floor"], 0,
+			[
+				["Desk", [45.4, 0.0, 25.6], [20.0, 40.0], "phone", "mgr_away", 90.0],
+				["Hall", [26.0, 0.0, 27.0], [10.0, 20.0], "idle", "", null],
+				["TellerLine", [28.0, 0.0, 13.0], [10.0, 20.0], "look", "", null],
+				["Lounge", [46.0, 0.0, 11.5], [10.0, 20.0], "idle", "", null],
+			],
+		],
+		[
+			"route", "ManagerGalleryRoute", "mgr_gallery", "LOOP", ["civ_manager_mgr_gallery"], 1,
+			[
+				["VaultOps", [45.5, 5.0, 15.5], [20.0, 40.0], "phone", "", null],
+				["Conference", [32.5, 5.0, 14.7], [30.0, 60.0], "phone", "mgr_away", null],
+				["OpenOffice", [20.0, 5.0, 14.5], [10.0, 20.0], "look", "", null],
+				["Partner", [30.0, 8.6, 4.5], [30.0, 60.0], "phone", "mgr_away", null],
+			],
+		],
+		[
+			"route", "ManagerVaultRoute", "mgr_vault", "LOOP", ["civ_manager_mgr_vault"], 0,
+			[
+				["Attendant", [37.0, -4.0, 11.3], [30.0, 60.0], "phone", "", 0.0],
+				["CountRoom", [21.0, -4.0, 5.0], [10.0, 20.0], "look", "", null],
+				["LockerWC", [7.25, -4.0, 2.2], [40.0, 70.0], "idle", "mgr_away", null],
+				["ServiceCorridor", [40.0, 0.0, 8.0], [10.0, 20.0], "idle", "", null],
+			],
+		],
+		[
+			"route", "CoffeeOfficerAO1", "officer_coffee", "LOOP", ["civ_officer_ao1"], 0,
+			[
+				["Desk", [4.0, 5.0, 15.5], [60.0, 120.0], "desk", "", null],
+				["Coffee", [7.5, 5.0, 5.5], [30.0, 60.0], "mug", "officer_away", null],
+			],
+		],
+		[
+			"route", "CoffeeOfficerOF", "officer_coffee_of", "LOOP", ["civ_officer_of"], 0,
+			[
+				["Desk", [14.0, 5.0, 15.0], [60.0, 120.0], "desk", "", null],
+				["WC", [33.5, 5.0, 3.5], [20.0, 40.0], "idle", "officer_away", null],
+			],
+		],
+		[
+			"route", "CoffeeOfficerVO", "officer_coffee_vo", "LOOP", ["civ_officer_vo"], 0,
+			[
+				["Desk", [45.5, 5.0, 14.5], [60.0, 120.0], "desk", "", null],
+				["WC", [33.5, 5.0, 3.5], [25.0, 55.0], "idle", "officer_away", null],
+			],
+		],
+	],
+	"door_fire_propped": [
+		[
+			"route", "TellerRotation", "teller_rotation", "LOOP", ["civ_teller_rotating"], 0,
+			[
+				["Station", [33.0, 0.0, 15.97], [60.0, 120.0], "teller_count", "", 180.0],
+				["Smoke", [50.5, 0.0, 6.0], [30.0, 50.0], "smoke", "teller_away", 90.0],
+			],
+		],
+	],
+	"door_dock_open": [
+		[
+			"route", "TellerRotation", "teller_rotation", "LOOP", ["civ_teller_rotating"], 0,
+			[
+				["Station", [33.0, 0.0, 15.97], [60.0, 120.0], "teller_count", "", 180.0],
+				["Coffee", [7.5, 5.0, 5.5], [8.0, 15.0], "mug", "teller_away", null],
+				["Station2", [33.0, 0.0, 15.97], [60.0, 120.0], "teller_count", "", 180.0],
+				["WC", [33.5, 0.0, 3.5], [25.0, 50.0], "idle", "teller_away", null],
+			],
+		],
+	],
+	"door_none": [
+		[
+			"route", "TellerRotation", "teller_rotation", "LOOP", ["civ_teller_rotating"], 0,
+			[
+				["Station", [33.0, 0.0, 15.97], [60.0, 120.0], "teller_count", "", 180.0],
+				["Coffee", [7.5, 5.0, 5.5], [8.0, 15.0], "mug", "teller_away", null],
+				["Station2", [33.0, 0.0, 15.97], [60.0, 120.0], "teller_count", "", 180.0],
+				["WC", [33.5, 0.0, 3.5], [25.0, 50.0], "idle", "teller_away", null],
+			],
+		],
+	],
+}
+## The lid (QC-61, OF-A6): a GameplayPrefab tagged `lid` at Gameplay/Devices/Lid holding the plug (Plug: the 1.2 x 2.2 m
+## hole's 0.8 m slab body) and the marble panel (Visual/LidPanel); the hole's footprint is a permanent navmesh hole
+## (projected obstruction), so nothing paths over it before or after the burn.
+const LID: Dictionary = {
+	"origin": [24.0, 0.0, 14.6],
+	"plug": [[23.4, -0.8, 13.5], [24.6, 0.0, 15.7], "floor"],
+	"panel": [[22.8, 0.002, 13.4], [25.2, 0.006, 15.8], "trim"],
+}

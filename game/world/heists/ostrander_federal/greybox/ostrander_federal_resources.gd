@@ -26,7 +26,9 @@ extends RefCounted
 ## * D-130 civilians (L heist, D-137 kickoff: same shape as GN/SL, % targets are floors):
 ##   civilians = 4 tellers + 1 manager + 2 plaza + customers (5.6/6.0/6.4/6.8/6.8/6.8) + officers (1.8/2.0/2.0/2.2/2.2/2.2)
 ##           + civ_extra (0/0.4/1.0/1.4/2.4/3.4) = 14.4 / 15.4 / 16.4 / 17.4 / 18.4 / 19.4 (+0 / 7 / 14 / 21 / 28 / 35 %),
-##           max 8 + 3 + 4 + 7 = 22 < the 30 cap. GX_NONE / CX_NONE are the empty slots' weights against the real slots
+##           max 8 + 3 + 4 + 7 = 22 < the 30 cap. OF-C1 (LEAD, D-136 §3b.5): + the SD attendant (1, always), and
+##           Cataclysm customers 7.5 + civ_extra exactly 3: 15.4 / 16.4 / 17.4 / 18.4 / 19.4 / 20.7, max 22 on every
+##           tier. GX_NONE / CX_NONE are the empty slots' weights against the real slots
 ##           (weight 1 each), solved for those expectations (sequential draws without replacement). Pin the counts in
 ##           a test like game/tests/c/test_d130_population.gd.
 ##   No pager_max_by_difficulty (empty = StealthTweak 4; D-140 GUARDS lever) and camera_titan_min_difficulty -1
@@ -40,8 +42,8 @@ const VARIANTS_PATH: String = OUT_DIR + "ostrander_federal_variants.tres"
 ## D-130: extra civilians (cx_*) from Tense; see the header.
 const GUARD_EXTRA_ADD: Array[int] = [0, 0, 0, 0, 1, 2]
 const GX_NONE: Array[float] = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-const CIV_EXTRA_ADD: Array[int] = [0, 1, 1, 2, 3, 4]
-const CX_NONE: Array[float] = [6.0, 6.0, 0.0, 2.0, 1.0, 0.51]
+const CIV_EXTRA_ADD: Array[int] = [0, 1, 1, 2, 3, 3]
+const CX_NONE: Array[float] = [6.0, 6.0, 0.0, 2.0, 1.0, 0.0]
 
 
 # --- Resources --------------------------------------------------------------------------------
@@ -123,6 +125,9 @@ static func make_variants() -> HeistVariantTable:
 	var customers: Dictionary = _from(Enums.Difficulty.BRUTAL, {&"cust_4": 0.1, &"cust_6": 0.4, &"cust_8": 0.5})
 	customers[Enums.Difficulty.TENSE] = {&"cust_4": 0.3, &"cust_6": 0.4, &"cust_8": 0.3}
 	customers[Enums.Difficulty.HAZARDOUS] = {&"cust_4": 0.2, &"cust_6": 0.4, &"cust_8": 0.4}
+	# OF-C1 (LEAD: the D-136 §3b.5 SD attendant, +1 on every tier): Cataclysm 7.5 customers with exactly 3 of the 4
+	# civ_extra slots, so its max stays 22 (QC-h) and its mean (20.7) stays >= 1.33 x Routine (15.4).
+	customers[Enums.Difficulty.CATACLYSM] = {&"cust_4": 0.05, &"cust_6": 0.15, &"cust_8": 0.8}
 	var officers: Dictionary = _from(Enums.Difficulty.BRUTAL, {&"off_1": 0.2, &"off_2": 0.4, &"off_3": 0.4})
 	officers[Enums.Difficulty.TENSE] = {&"off_1": 0.3, &"off_2": 0.4, &"off_3": 0.3}
 	officers[Enums.Difficulty.HAZARDOUS] = {&"off_1": 0.3, &"off_2": 0.4, &"off_3": 0.3}
