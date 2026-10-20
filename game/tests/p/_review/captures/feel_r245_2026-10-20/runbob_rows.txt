@@ -1,0 +1,5 @@
+[RUNBOB] ROW stand|60|head x 0.0 y 0.0 mm roll 0.00 deg|vm x 0.4 y 0.2 mm pitch 0.07 roll 0.01 deg|step head 0.00/0.00 mm 0.000 deg vm 0.02/0.01 mm 0.004/0.001 deg
+[RUNBOB] ROW walk|120|head x 6.0 y 8.0 mm roll 0.30 deg|vm x 13.2 y 8.1 mm pitch 1.42 roll 1.66 deg|step head 0.69/1.82 mm 0.034 deg vm 1.55/1.60 mm 0.233/0.183 deg
+[RUNBOB] ROW sprint_in|36|head x 5.7 y 7.2 mm roll 0.28 deg|vm x 9.7 y 44.1 mm pitch 3.77 roll 1.24 deg|step head 0.62/1.65 mm 0.031 deg vm 2.00/5.10 mm 0.465/0.133 deg
+[RUNBOB] ROW sprint|204|head x 5.4 y 7.2 mm roll 0.27 deg|vm x 9.7 y 5.1 mm pitch 1.04 roll 1.08 deg|step head 0.62/1.65 mm 0.031 deg vm 1.28/0.91 mm 0.121/0.117 deg
+[RUNBOB] ROW stop|60|head x 2.7 y 4.4 mm roll 0.14 deg|vm x 5.8 y 42.1 mm pitch 4.07 roll 0.57 deg|step head 0.89/1.45 mm 0.044 deg vm 2.49/3.81 mm 0.404/0.166 deg

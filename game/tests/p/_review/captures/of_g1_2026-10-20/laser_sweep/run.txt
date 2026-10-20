@@ -1,0 +1,54 @@
+[OFP 0.0s t=-1.0] === laser ===
+[OFP 7.0s t=-1.0] objective casing -> 1
+[OFP 7.0s t=-1.0] objective keycard -> 1
+[OFP 7.0s t=-1.0] objective code_hint -> 1
+[OFP 7.0s t=-1.0] objective code_pc -> 1
+[OFP 7.0s t=-1.0] objective server -> 1
+[OFP 7.0s t=-1.0] objective vault_gate -> 1
+[OFP 7.0s t=-1.0] objective lasers -> 1
+[OFP 7.0s t=-1.0] objective time_lock -> 0
+[OFP 7.0s t=-1.0] objective time_lock_wait -> 0
+[OFP 7.0s t=-1.0] objective vault_loot -> 0
+[OFP 7.0s t=-1.0] objective gold_cage -> 0
+[OFP 7.0s t=-1.0] objective secure -> 1
+[OFP 7.0s t=-1.0] objective deposit_boxes -> 1
+[OFP 7.0s t=-1.0] objective bond_safe -> 1
+[OFP 7.0s t=-1.0] objective president_safe -> 1
+[OFP 7.0s t=-1.0] objective server_drives -> 1
+[OFP 7.0s t=-1.0] objective drill_delivery -> 0
+[OFP 7.0s t=-1.0] objective vault_drill -> 0
+[OFP 7.0s t=-1.0] objective vault_breach -> 0
+[OFP 7.0s t=-1.0] objective escape_wait -> 0
+[OFP 7.0s t=-1.0] objective escape -> 0
+[OFP 19.2s t=0.0] launched ostrander_federal seed 1002 diff 0 variants { &"manager_route": [&"mgr_gallery"], &"keycard": [&"kc_security"], &"code_pc": [&"pc_ops"], &"officers": [&"off_1"], &"server_room": [&"srv_gallery"], &"guard_post": [&"rover_basement", &"rover_dock"], &"security_room_staffed": [&"sec_empty"], &"camera": [&"cam_c"], &"laser_pattern": [&"lz_sweep"], &"customers": [&"cust_6"], &"side_door": [&"door_dock_open"], &"fire_escape": [&"fe_down"], &"escape": [&"esc_heli_terrace"], &"drill_delivery": [&"drop_terrace"], &"president_safe": [&"ps_empty"], &"vip": [&"vip_out"], &"guard_extra": [], &"civ_extra": [], &"time_lock_s": 150.0, &"drill_eta_s": 60.0, &"escape_eta_s": 120.0, &"cash_bags": 10, &"gold_bags": 4, &"deposit_boxes": 9, "rare": [] }
+[OFP 55.8s t=2.0] SHORTCUT traversal: NPCs despawned, crew stealth_hidden, 8 cameras disabled (GameplayPrefab.set_enabled)
+[OFP 63.1s t=3.1] pilot: calibrated 0.001600 rad/px yaw, 0.001600 rad/px pitch (settings formula said (0.0016, 0.0016))
+[OFP 63.1s t=3.1] spawn (21.0, 0.0, -6.0)
+[OFP 68.7s t=4.2] objective casing -> 2
+[OFP 69.2s t=4.8] masked true
+[OFP 74.3s t=9.8] pilot: t=5 at (16.5, 0.0, -3.9) corner (9.7, 0.2, -1.3) yaw_err 0.00 fwd=true path=26 mouse_mode=2 state=0 look=(1.94,0.00) pin_yaw=1.93904023981304 bot=false
+[OFP 79.2s t=14.8] pilot: t=10 at (11.2, 0.0, -1.9) corner (9.7, 0.2, -1.3) yaw_err 1.21 fwd=false path=26 mouse_mode=2 state=0 look=(0.73,0.00) pin_yaw=0.9254421876758 bot=false
+[OFP 82.0s t=17.4] pilot: use DockPersonnelDoor (open_door) -> OK in 0.0 s
+[OFP 85.4s t=20.8] pilot: t=15 at (8.7, 0.0, 3.3) corner (9.6, 0.2, 7.6) yaw_err -3.12 fwd=false path=19 mouse_mode=2 state=0 look=(0.19,0.00) pin_yaw=-0.00034995884926 bot=false
+[OFP 90.6s t=25.7] pilot: use DockCorridorDoor (open_door) -> OK in 0.0 s
+[OFP 93.3s t=28.4] pilot: t=20 at (12.5, 0.0, 8.0) corner (12.9, 0.2, 8.0) yaw_err 0.00 fwd=true path=12 mouse_mode=2 state=0 look=(4.83,0.00) pin_yaw=4.82846494855766 bot=false
+[OFP 98.9s t=33.9] pilot: use SecurityDoor (open_door) -> OK in 0.0 s
+[OFP 99.9s t=35.0] pilot: t=25 at (19.0, 0.0, 6.0) corner (18.9, 0.2, 6.5) yaw_err -1.99 fwd=false path=5 mouse_mode=2 state=0 look=(5.08,0.00) pin_yaw=4.89188324422139 bot=false
+[OFP 102.6s t=37.7] objective keycard -> 2
+[OFP 107.8s t=42.7] pilot: t=5 at (16.1, 0.0, 8.0) corner (16.6, 0.2, 8.0) yaw_err 3.10 fwd=false path=4 mouse_mode=2 state=0 look=(1.65,0.00) pin_yaw=1.84461191279843 bot=false
+[OFP 109.9s t=44.6] pilot: use StairDoorSAG (open_door) -> OK in 0.0 s
+[OFP 115.6s t=50.4] pilot: t=5 at (14.2, -2.0, 2.4) corner (14.0, -2.1, 3.3) yaw_err 0.01 fwd=true path=10 mouse_mode=2 state=0 look=(2.87,0.00) pin_yaw=2.88006939526531 bot=false
+[OFP 119.4s t=54.0] pilot: use StairDoorSAB (open_door) -> OK in 0.0 s
+[OFP 123.8s t=58.4] objective vault_gate -> 2
+[OFP 123.8s t=58.4] objective time_lock -> 1
+[OFP 123.9s t=58.4] pilot: use VaultGate (open_door) -> OK in 1.0 s
+[OFP 126.0s t=60.6] SHORTCUT bag loot.cash_bricks (weight 1) spawned by LootManager.spawn_bag at (19.0, -3.5, 11.4)
+[OFP 129.4s t=63.8] pilot: use Bag_cash_bricks (pick_bag) -> OK in 1.0 s
+[OFP 129.4s t=63.8] LASER VaultLasers pattern sweeping size (3.3, 2.6, 0.1) at (21.0, -4.0, 10.9): gaps beside it 0.14 / 0.14 m; lowest beam face 0.000 m above the floor (pivot +0.00 m; crouch 1.20); period 7.0 off 1.5; standing windows x-1.39: 2.08 s, x+0.01: 2.58 s, x+1.31: 1.88 s, best x+0.01: 2.58 s; a MEDIUM bag (2.62 m/s) needs 1.52 s for 4 m
+[OFP 136.4s t=64.3] laser gap -x: 0.14 m, lane NOT walkable
+[OFP 136.4s t=64.3] laser gap +x: 0.14 m, lane NOT walkable
+[OFP 136.4s t=64.3] laser: timed window lane x+0.01, over and back
+[OFP 138.8s t=66.9] LASER CROSS lane x+0.01 standing with bag w1: waited 0.0 s, across at 2.56 m/s (expected 2.62), tripped false, at (23.0, -4.0, 10.9)
+[OFP 149.2s t=69.7] LASER CROSS lane x+0.01 standing with bag w1: waited 0.8 s, across at 2.56 m/s (expected 2.62), tripped false, at (19.0, -4.0, 10.9)
+[OFP] RESULT PASS laser
+[OFP] RESULT PASS (laser PASS)

@@ -1,0 +1,8 @@
+asset: prop_of_vault_sign_staff
+script: tools/blender/props/ostrander_vault.py
+params: {"cat": {"group": "ostrander", "kind": "sign", "place": "wall_mount", "surface": "metal"}, "fn": "vault_sign", "text": "AUTHORISED STAFF ONLY", "w": 1.5}
+seed: 1766698742  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_of_vault_sign_staff
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 8000

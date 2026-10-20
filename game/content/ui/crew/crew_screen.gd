@@ -134,7 +134,7 @@ func _rebuild_editor() -> void:
 	rows.clear()
 	var e: Dictionary = CrewLoadouts.validate(profile, CrewLoadouts.entry(profile, bot))
 	var w: ItemSlot = _row("weapon", &"ui.crew.row.weapon", &"armory")
-	LoadoutScreen._add_item(w, UiText.t(&"ui.crew.default_weapon"), &"")
+	LoadoutScreen._add_item(w, CrewLoadouts.default_weapon_name(), &"")
 	for id: StringName in CrewLoadouts.weapons(profile):
 		LoadoutScreen._add_item(w, UiText.t(UiText.item_key(id)), id)
 	_finish_row(w, e["weapon"])
@@ -153,7 +153,7 @@ func _rebuild_editor() -> void:
 				on = id
 		_finish_row(m, on)
 	var a: ItemSlot = _row("armor", &"ui.crew.row.armor", &"vest")
-	LoadoutScreen._add_item(a, UiText.t(&"ui.crew.default_armor"), &"")
+	LoadoutScreen._add_item(a, CrewLoadouts.default_armor_name(), &"")
 	for id: StringName in CrewLoadouts.armors(profile):
 		LoadoutScreen._add_item(a, UiText.t(UiText.item_key(id)), id)
 	_finish_row(a, e["armor"])

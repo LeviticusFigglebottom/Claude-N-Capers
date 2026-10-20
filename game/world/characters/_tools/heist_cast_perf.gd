@@ -123,8 +123,10 @@ func _ready() -> void:
 					if gi is MeshInstance3D and (gi as MeshInstance3D).mesh != null:
 						var mm: Mesh = (gi as MeshInstance3D).mesh
 						for si: int in mm.get_surface_count():
-							var ia: PackedInt32Array = mm.surface_get_arrays(si)[Mesh.ARRAY_INDEX]
-							extra_tris += ia.size() / 3 if ia.size() > 0 else (mm.surface_get_arrays(si)[Mesh.ARRAY_VERTEX] as PackedVector3Array).size() / 3
+							var arr: Array = mm.surface_get_arrays(si)
+							var ia: Variant = arr[Mesh.ARRAY_INDEX]   # null on a non-indexed surface
+							var nidx: int = (ia as PackedInt32Array).size() if ia != null else 0
+							extra_tris += nidx / 3 if nidx > 0 else (arr[Mesh.ARRAY_VERTEX] as PackedVector3Array).size() / 3
 		for gi: GeometryInstance3D in extras:
 			gi.visible = false
 		for _i: int in 10:

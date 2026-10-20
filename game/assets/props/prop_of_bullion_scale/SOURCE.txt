@@ -1,0 +1,8 @@
+asset: prop_of_bullion_scale
+script: tools/blender/props/ostrander_vault.py
+params: {"cat": {"group": "ostrander", "kind": "scale", "place": "on", "surface": "metal"}, "fn": "bullion_scale"}
+seed: 297165504  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_of_bullion_scale
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 8000

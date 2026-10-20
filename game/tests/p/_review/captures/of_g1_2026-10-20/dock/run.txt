@@ -1,0 +1,51 @@
+[OFP 0.0s t=-1.0] === dock ===
+[OFP 7.3s t=-1.0] objective casing -> 1
+[OFP 7.3s t=-1.0] objective keycard -> 1
+[OFP 7.3s t=-1.0] objective code_hint -> 1
+[OFP 7.3s t=-1.0] objective code_pc -> 1
+[OFP 7.3s t=-1.0] objective server -> 1
+[OFP 7.3s t=-1.0] objective vault_gate -> 1
+[OFP 7.3s t=-1.0] objective lasers -> 1
+[OFP 7.3s t=-1.0] objective time_lock -> 0
+[OFP 7.3s t=-1.0] objective time_lock_wait -> 0
+[OFP 7.3s t=-1.0] objective vault_loot -> 0
+[OFP 7.3s t=-1.0] objective gold_cage -> 0
+[OFP 7.3s t=-1.0] objective secure -> 1
+[OFP 7.3s t=-1.0] objective deposit_boxes -> 1
+[OFP 7.3s t=-1.0] objective bond_safe -> 1
+[OFP 7.3s t=-1.0] objective president_safe -> 1
+[OFP 7.3s t=-1.0] objective server_drives -> 1
+[OFP 7.3s t=-1.0] objective drill_delivery -> 0
+[OFP 7.3s t=-1.0] objective vault_drill -> 0
+[OFP 7.3s t=-1.0] objective vault_breach -> 0
+[OFP 7.3s t=-1.0] objective escape_wait -> 0
+[OFP 7.3s t=-1.0] objective escape -> 0
+[OFP 18.7s t=0.0] launched ostrander_federal seed 1002 diff 0 variants { &"manager_route": [&"mgr_gallery"], &"keycard": [&"kc_security"], &"code_pc": [&"pc_ops"], &"officers": [&"off_1"], &"server_room": [&"srv_gallery"], &"guard_post": [&"rover_basement", &"rover_dock"], &"security_room_staffed": [&"sec_empty"], &"camera": [&"cam_c"], &"laser_pattern": [&"lz_timed"], &"customers": [&"cust_4"], &"side_door": [&"door_dock_open"], &"fire_escape": [&"fe_down"], &"escape": [&"esc_van_dock"], &"drill_delivery": [&"drop_terrace"], &"president_safe": [&"ps_empty"], &"vip": [&"vip_out"], &"guard_extra": [], &"civ_extra": [], &"time_lock_s": 150.0, &"drill_eta_s": 60.0, &"escape_eta_s": 120.0, &"cash_bags": 10, &"gold_bags": 4, &"deposit_boxes": 9, "rare": [] }
+[OFP 55.0s t=2.0] SHORTCUT traversal: NPCs despawned, crew stealth_hidden, 8 cameras disabled (GameplayPrefab.set_enabled)
+[OFP 62.6s t=3.1] pilot: calibrated 0.001600 rad/px yaw, 0.001600 rad/px pitch (settings formula said (0.0016, 0.0016))
+[OFP 62.6s t=3.1] spawn (21.0, 0.0, -6.0)
+[OFP 68.4s t=4.2] objective casing -> 2
+[OFP 69.0s t=4.8] masked true
+[OFP 71.4s t=7.2] SHORTCUT bag loot.cash_bricks (weight 1) spawned by LootManager.spawn_bag at (24.1, 0.5, -3.9)
+[OFP 74.9s t=10.4] pilot: use Bag_cash_bricks (pick_bag) -> OK in 1.0 s
+[OFP 79.8s t=15.4] pilot: t=5 at (20.4, 0.0, -3.3) corner (20.0, 0.2, -3.2) yaw_err 0.00 fwd=true path=7 mouse_mode=2 state=0 look=(14.32,0.00) pin_yaw=14.3160036440458 bot=false
+[OFP 84.8s t=20.4] pilot: t=10 at (16.0, 0.0, -2.5) corner (8.8, 0.2, -1.3) yaw_err -1.21 fwd=false path=4 mouse_mode=2 state=0 look=(-15.91,0.00) pin_yaw=-16.098901612706 bot=false
+[OFP 89.8s t=25.4] pilot: t=15 at (11.3, 0.0, -1.8) corner (8.8, 0.2, -1.3) yaw_err -3.13 fwd=false path=4 mouse_mode=2 state=0 look=(-32.84,0.00) pin_yaw=-33.0288592574288 bot=false
+[OFP 93.4s t=28.7] pilot: use DockPersonnelDoor (open_door) -> OK in 0.0 s
+[OFP 98.0s t=33.3] DOCK loot.cash_bricks: lane -> LD in 23.0 s, sill crossing 2.47 m/s, STUCK rows 0
+[OFP 103.8s t=39.2] secured loot.cash_bricks (bag 222)
+[OFP 103.8s t=39.2] objective secure -> 1
+[OFP 103.8s t=39.2] THROW LD -> E1 loot.cash_bricks stand 0 (7.9, 0.0, -0.4): 0.9 m from the zone, 0.5 m from the door weight 1 pitch -> rests (6.5, -0.0, -2.6) (2.6 m from the stand, 1.3 s) on - secured true: OK in E1
+[OFP 112.6s t=44.3] pilot: t=5 at (13.6, 0.0, -2.0) corner (13.0, 0.2, -1.9) yaw_err 2.54 fwd=false path=9 mouse_mode=2 state=0 look=(-38.51,0.00) pin_yaw=-38.3147005245482 bot=false
+[OFP 117.6s t=49.3] pilot: t=10 at (19.1, 0.0, -3.1) corner (19.8, 0.2, -3.2) yaw_err 0.01 fwd=true path=9 mouse_mode=2 state=0 look=(-39.08,0.00) pin_yaw=-39.0699090471171 bot=false
+[OFP 120.9s t=52.6] SHORTCUT bag loot.gold (weight 2) spawned by LootManager.spawn_bag at (24.1, 0.5, -4.0)
+[OFP 124.4s t=55.8] pilot: use Bag_gold (pick_bag) -> OK in 1.0 s
+[OFP 129.2s t=60.8] pilot: t=5 at (20.2, 0.0, -3.2) corner (8.8, 0.2, -1.3) yaw_err 0.01 fwd=true path=7 mouse_mode=2 state=0 look=(-42.26,0.00) pin_yaw=-42.2482267504165 bot=false
+[OFP 134.2s t=65.8] pilot: t=10 at (15.5, 0.0, -2.4) corner (8.8, 0.2, -1.3) yaw_err -0.58 fwd=true path=4 mouse_mode=2 state=0 look=(-41.67,0.00) pin_yaw=-41.8631083145665 bot=false
+[OFP 139.3s t=70.8] pilot: t=15 at (10.6, 0.0, -1.6) corner (8.8, 0.2, -1.3) yaw_err -2.50 fwd=false path=4 mouse_mode=2 state=0 look=(-39.75,0.00) pin_yaw=-39.9411253355429 bot=false
+[OFP 147.1s t=78.6] DOCK loot.gold: lane -> LD in 22.8 s, sill crossing 1.72 m/s, STUCK rows 0
+[OFP 153.7s t=85.4] secured loot.gold (bag 223)
+[OFP 153.7s t=85.4] objective secure -> 1
+[OFP 153.8s t=85.4] THROW LD -> E1 loot.gold stand 0 (7.9, 0.0, -0.4): 0.9 m from the zone, 0.4 m from the door weight 2 pitch -> rests (6.6, -0.0, -2.2) (2.3 m from the stand, 1.3 s) on - secured true: OK in E1
+[OFP] RESULT PASS dock
+[OFP] RESULT PASS (dock PASS)
