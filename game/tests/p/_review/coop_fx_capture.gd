@@ -136,9 +136,9 @@ func _grab(kind: String) -> void:
 	_busy = true
 	await RenderingServer.frame_post_draw
 	_n[kind] = int(_n[kind]) + 1
-	get_viewport().get_texture().get_image().save_png("%s/host_%s_%02d.png" % [_out, kind, int(_n[kind])])
+	get_viewport().get_texture().get_image().save_png(PCaptureName.safe_path("%s/host_%s_%02d.png" % [_out, kind, int(_n[kind])]))
 	await RenderingServer.frame_post_draw  # the next frame too: a third-person flash may spawn a frame late
-	get_viewport().get_texture().get_image().save_png("%s/host_%s_%02d_next.png" % [_out, kind, int(_n[kind])])
+	get_viewport().get_texture().get_image().save_png(PCaptureName.safe_path("%s/host_%s_%02d_next.png" % [_out, kind, int(_n[kind])]))
 	_busy = false
 
 
@@ -158,7 +158,7 @@ func _sheet() -> void:
 			img.convert(Image.FORMAT_RGBA8)
 			img.resize(w, h, Image.INTERPOLATE_BILINEAR)
 			sheet.blit_rect(img, Rect2i(0, 0, w, h), Vector2i(k * w, r * h))
-	sheet.save_png("%s/fx_sheet.png" % _out)
+	sheet.save_png(PCaptureName.safe_path("%s/fx_sheet.png" % _out))
 
 
 func _finish(msg: String) -> void:

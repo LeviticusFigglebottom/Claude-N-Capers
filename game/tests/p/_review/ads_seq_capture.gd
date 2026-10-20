@@ -107,7 +107,7 @@ func _shot(c: CrewController, name: String, idx: int, label: String) -> Image:
 	await RenderingServer.frame_post_draw
 	var img: Image = get_viewport().get_texture().get_image()
 	RenderingServer.render_loop_enabled = false
-	img.save_png("%s/%s_%02d_%s.png" % [_out, name, idx, label])
+	img.save_png(PCaptureName.safe_path("%s/%s_%02d_%s.png" % [_out, name, idx, label]))
 	var cam: Camera3D = get_viewport().get_camera_3d()
 	var vm: FpViewmodel = FpViewmodel.of(cam) if cam != null else null
 	if vm != null and vm.weapon_attach != null and cam != null:
@@ -242,4 +242,4 @@ func _sheet(rows: Array[Array]) -> void:
 			img.convert(Image.FORMAT_RGBA8)
 			img.resize(w, h, Image.INTERPOLATE_BILINEAR)
 			sheet.blit_rect(img, Rect2i(0, 0, w, h), Vector2i(x * w, y * h))
-	sheet.save_png("%s/ads_seq_sheet.png" % _out)
+	sheet.save_png(PCaptureName.safe_path("%s/ads_seq_sheet.png" % _out))

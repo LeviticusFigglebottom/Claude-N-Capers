@@ -69,7 +69,7 @@ func _one(def: WeaponDef) -> void:
 		print("[ADS] %-22s %-12s total=%.3f lower=%.3f centre=%.3f" % [String(def.id).trim_prefix("weapon."),
 			vm.anim_set if vm != null else &"?", cov.x, cov.y, cov.z])
 		img.resize(320, 180)
-		img.save_png("%s/%s.png" % [_out, String(def.id).trim_prefix("weapon.")])
+		img.save_png(PCaptureName.safe_path("%s/%s.png" % [_out, String(def.id).trim_prefix("weapon.")]))
 	inp.release_all()
 	rt.teardown()
 	await get_tree().process_frame

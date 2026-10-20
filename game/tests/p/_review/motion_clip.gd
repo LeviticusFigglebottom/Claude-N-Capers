@@ -107,7 +107,7 @@ func _seg(wid: StringName, label: String, frames: int) -> void:
 
 func _rec() -> void:
 	await RenderingServer.frame_post_draw
-	get_viewport().get_texture().get_image().save_png("%s/f_%04d.png" % [_dir, _frame])
+	get_viewport().get_texture().get_image().save_png(PCaptureName.safe_path("%s/f_%04d.png" % [_dir, _frame]))
 	_frame += 1
 
 
