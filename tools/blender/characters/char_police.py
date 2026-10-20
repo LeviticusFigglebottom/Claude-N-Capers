@@ -73,7 +73,12 @@ AGENT_VARIANTS = {
 #: stab vest / plate carrier and (TAC) without the ballistic helmet; ENV A picks it there (EnemyDef visual_variant
 #: ``duty``), the armoured base looks from Hazardous
 DUTY_VARIANTS = {f"{aid}_duty": {**p, "armored": False} for aid, p in BASE_VARIANTS.items()}
-VARIANTS = {**BASE_VARIANTS, **AGENT_VARIANTS, **DUTY_VARIANTS,
+#: D-145.3 faction duty looks: ENV A's faction EnemyDefs (visual_variant frd / sentinel / zero) exist for the TAC Light
+#: only; ``char_tac_light_<faction>_duty`` = the duty look in the faction's colours and marks (no helmet decals, no
+#: Zero pauldrons or face mask)
+FACTION_DUTY_VARIANTS = {f"char_tac_light_{fac}_duty": {**BASE_VARIANTS["char_tac_light"], "armored": False,
+                                                        "faction": fac} for fac in FACTIONS}
+VARIANTS = {**BASE_VARIANTS, **AGENT_VARIANTS, **DUTY_VARIANTS, **FACTION_DUTY_VARIANTS,
             **{f"{aid}_{fac}": {**p, "faction": fac} for aid, p in BASE_VARIANTS.items() for fac in FACTIONS}}
 
 NAVY = "char_police_navy"
@@ -385,7 +390,8 @@ def tac(kit: Kit) -> None:
             gear.extend(gk.pouch(belt, math.radians(a_deg), 0.05, 0.085, 0.032, TAC_GEAR, snap="polymer_black"))
         gear.extend(gk.radio(belt, math.radians(-100.0)))
         # without the carrier the dark shirt alone reads as a civilian: POLICE across the back in the hi-vis yellow
-        if kit.opts.get("back_mark", True):  # the Stinger's pack covers the back
+        # (the Stinger's pack covers the back; a faction duty look carries its own back mark, _faction.dress)
+        if kit.opts.get("back_mark", True) and not kit.opts.get("faction"):
             p5.stamp_back(kit, "POLICE", 1.27, 0.075, HIVIS)
     # duty belt: buckle, pouches, drop-leg holster on the right thigh
     gear.extend(gk.buckle(belt, "polymer_black", w=0.055, h=0.045))

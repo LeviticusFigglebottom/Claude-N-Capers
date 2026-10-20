@@ -2,7 +2,8 @@
 ## OF-D1: the Ostrander Federal officers c-d and customers c-j are checked here too.
 ## D-145.3 (PO-18): the Routine/Tense police duty looks show no body armour: no stab vest / plate carrier standing off
 ## the chest (the front of the torso sits clearly closer than on the armoured base look) and no ballistic helmet
-## (Patrol, TAC Light, Stinger; the Bulwark keeps its riot helmet and shield).
+## (Patrol, TAC Light, Stinger; the Bulwark keeps its riot helmet and shield), and the faction TAC Light duty looks
+## (frd / sentinel / zero) against their armoured faction looks: no helmet, no Zero skull mask.
 ## Each character glb has the shared 52-bone rig_humanoid Skeleton3D (top-level, D-067b), only skinned meshes
 ## (Body, Hair, Outfit, Gear, Headwear) with no blend shapes (bodies are baked), every surface
 ## mapped to a library material res://world/materials/*.tres, and a plausible standing height.
@@ -41,6 +42,9 @@ const CHARACTERS: Array[String] = [
 	"char_tac_light_duty",
 	"char_stinger_duty",
 	"char_bulwark_duty",
+	"char_tac_light_frd_duty",
+	"char_tac_light_sentinel_duty",
+	"char_tac_light_zero_duty",
 	"char_crew_body",
 	"char_crew_body_b",
 ]
@@ -53,9 +57,17 @@ const ALLOWED_MESHES: Array[String] = ["Body", "Hair", "Outfit", "Gear", "Headwe
 const DUTY_LOOKS: Dictionary = {
 	"char_patrol_officer_duty": "char_patrol_officer", "char_tac_light_duty": "char_tac_light",
 	"char_stinger_duty": "char_stinger", "char_bulwark_duty": "char_bulwark",
+	# the faction TAC Lights (ENV A's frd / sentinel / zero EnemyDefs) against their armoured faction look
+	"char_tac_light_frd_duty": "char_tac_light_frd", "char_tac_light_sentinel_duty": "char_tac_light_sentinel",
+	"char_tac_light_zero_duty": "char_tac_light_zero",
 }
 const ARMOUR_GAP: float = 0.02
 const HELMET_MAT: String = "char_tac_helmet"
+## the faction looks' helmet materials (_faction.REMAP of char_tac_helmet) and the Zero skull face mask, on Headwear
+const FACTION_HELMET_MATS: Dictionary = {
+	"char_tac_light_frd_duty": ["char_frd_helmet"], "char_tac_light_sentinel_duty": ["char_sen_white"],
+	"char_tac_light_zero_duty": ["char_zero_armor", "char_zero_bone"],
+}
 ## duty looks that keep a helmet by design (the Bulwark's riot helmet + visor is its silhouette with the shield)
 const DUTY_KEEPS_HELMET: Array[String] = ["char_bulwark_duty"]
 
@@ -193,6 +205,9 @@ func test_duty_police_show_no_body_armour() -> void:
 				var mname: String = mat.resource_path.get_file().get_basename() if mat != null else ""
 				assert_false(mname == HELMET_MAT or mi.mesh.surface_get_name(si).contains(HELMET_MAT),
 						"%s: no ballistic helmet (%s)" % [duty, mi.name])
+				for fm: String in FACTION_HELMET_MATS.get(duty, []):   # (the insignia on Gear share these colours)
+					assert_false(String(mi.name) == "Headwear" and mname == fm,
+							"%s: no faction helmet / face mask %s on Headwear" % [duty, fm])
 		root.queue_free()
 
 

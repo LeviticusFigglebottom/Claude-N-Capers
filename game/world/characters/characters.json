@@ -1123,6 +1123,14 @@
 			"variant_of": "tac_light"
 		},
 		{
+			"asset": "char_tac_light_frd_duty",
+			"id": "tac_light_frd_duty",
+			"scene": "res://world/characters/tac_light_frd_duty/tac_light_frd_duty.tscn",
+			"test": false,
+			"variant": "frd_duty",
+			"variant_of": "tac_light"
+		},
+		{
 			"asset": "char_tac_light_sentinel",
 			"id": "tac_light_sentinel",
 			"scene": "res://world/characters/tac_light_sentinel/tac_light_sentinel.tscn",
@@ -1131,11 +1139,27 @@
 			"variant_of": "tac_light"
 		},
 		{
+			"asset": "char_tac_light_sentinel_duty",
+			"id": "tac_light_sentinel_duty",
+			"scene": "res://world/characters/tac_light_sentinel_duty/tac_light_sentinel_duty.tscn",
+			"test": false,
+			"variant": "sentinel_duty",
+			"variant_of": "tac_light"
+		},
+		{
 			"asset": "char_tac_light_zero",
 			"id": "tac_light_zero",
 			"scene": "res://world/characters/tac_light_zero/tac_light_zero.tscn",
 			"test": false,
 			"variant": "zero",
+			"variant_of": "tac_light"
+		},
+		{
+			"asset": "char_tac_light_zero_duty",
+			"id": "tac_light_zero_duty",
+			"scene": "res://world/characters/tac_light_zero_duty/tac_light_zero_duty.tscn",
+			"test": false,
+			"variant": "zero_duty",
 			"variant_of": "tac_light"
 		},
 		{
