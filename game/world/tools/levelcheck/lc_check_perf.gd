@@ -18,8 +18,8 @@
 ##   shadow is counted as re-rendered every frame (the moving cast dirties it; a static frame would reuse it).
 ## - cast: the heist's peak (Cataclysm) NPC cast, CAST_ALLOWANCE, from D's heist_cast_perf.
 ## Fails: main > MAX_DRAW_CALLS, main + lit + shadow + cast > MAX_TOTAL_DRAWS, shadowed lights in view >
-## MAX_SHADOW_LIGHTS, triangles > MAX_TRIANGLES, for the heists in ENFORCED; the others get the same lines as warnings
-## (report-only until their D-144 polish slot).
+## MAX_SHADOW_LIGHTS, triangles > MAX_TRIANGLES, on a map whose root carries meta `perf_d146 = true` (D-146 addendum:
+## OF first, set by its generator); every other map gets the same lines as warnings (report-only until its D-144 slot).
 class_name LcCheckPerf
 extends LcCheck
 
@@ -39,8 +39,8 @@ const FAR: float = 500.0
 ## change. Heists not listed get DEFAULT_CAST_ALLOWANCE.
 const CAST_ALLOWANCE: Dictionary = {}
 const DEFAULT_CAST_ALLOWANCE: int = 0
-## Heists whose budgets fail the check (D-146: OF first); every other heist is report-only (warnings).
-const ENFORCED: Array[String] = ["ostrander_federal"]
+## Map-root meta that opts a heist into enforced budgets (D-146 addendum); without it the check is report-only.
+const ENFORCE_META: StringName = &"perf_d146"
 ## Frustum quads by corner index (slice_corners order: layer * 4 + sx * 2 + sy; layer 0 near, 1 far).
 const FACES: Array = [[0, 1, 3, 2], [4, 5, 7, 6], [0, 1, 5, 4], [2, 3, 7, 6], [0, 2, 6, 4], [1, 3, 7, 5]]
 ## Godot's omni cube faces (renderer_scene_cull.cpp): view normal, up.
@@ -80,10 +80,10 @@ func run(ctx: LcContext) -> void:
 		if l.is_visible_in_tree() and l.shadow_enabled and ctx.is_active(l):
 			lights.append(prepare_light(l, pieces))
 	var cast: int = int(CAST_ALLOWANCE.get(ctx.heist_id, DEFAULT_CAST_ALLOWANCE))
-	var enforced: bool = ctx.heist_id in ENFORCED
+	var enforced: bool = bool(ctx.map.get_meta(ENFORCE_META, false))
 	var flag: Callable = fail if enforced else warn
-	note("Budgets %s for `%s`." % ["ENFORCED (fail)" if enforced else "REPORT-ONLY (warnings until its D-144 slot)",
-		ctx.heist_id])
+	note("Budgets %s (map meta `%s`)." % ["ENFORCED (fail)" if enforced
+		else "REPORT-ONLY (warnings until its D-144 slot)", ENFORCE_META])
 	note("Draws per view = main + lit (Compatibility light passes) + shadow passes + peak cast allowance (%d); " % cast
 			+ "budgets: main <= %d, total <= %d, shadowed lights <= %d (architecture §10, D-146)."
 			% [MAX_DRAW_CALLS, MAX_TOTAL_DRAWS, MAX_SHADOW_LIGHTS])

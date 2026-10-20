@@ -193,11 +193,12 @@ func _heavy(m: HeistMap) -> void:
 		mi.owner = m
 
 
-func _perf_for(heist_id: String) -> LcCheck:
+func _perf_for(enforce: bool) -> LcCheck:
 	var map: HeistMap = (load(LcTestBase.GOOD) as PackedScene).instantiate() as HeistMap
 	_heavy(map)
+	if enforce:
+		map.set_meta(LcCheckPerf.ENFORCE_META, true)
 	var ctx: LcContext = await LcRunner.prepare(map, self)
-	ctx.heist_id = heist_id
 	ctx.stage = "final"
 	var checks: Array[LcCheck] = await LcRunner.run(ctx, PackedStringArray(["perf"]))
 	remove_child(map)
@@ -207,8 +208,8 @@ func _perf_for(heist_id: String) -> LcCheck:
 
 
 func test_budgets_enforced_only_for_opted_in_heists() -> void:
-	var on: LcCheck = await _perf_for("ostrander_federal")
-	assert_true(on.fail_count() > 0, "OF: main > 2500 fails")
-	var off: LcCheck = await _perf_for("shadow_ledger")
-	assert_eq(off.fail_count(), 0, "a shipped heist is report-only")
+	var on: LcCheck = await _perf_for(true)
+	assert_true(on.fail_count() > 0, "perf_d146 map: main > 2500 fails")
+	var off: LcCheck = await _perf_for(false)
+	assert_eq(off.fail_count(), 0, "a map without perf_d146 is report-only")
 	assert_true(off.warn_count() > 0, "...but the overrun is reported")
