@@ -3,10 +3,12 @@
 ## cast's attached never-LOD geometry hidden (held weapons, hand props: no visibility_range_end), and with the cast
 ## hidden; plus per-NPC LOD tier (full mesh vs CrowdLod proxy, by the proxy's own switch distance) and AnimLod band.
 ## `--loud` raises the alarm after the spawns settle and waits `--seconds` (default 90) of game time for the police.
-## OF forces its vip_client slot. Writes user://cast_perf_<heist>_<view>.png. Owner: ENV D.
+## OF forces its vip_client slot. Writes user://cast_perf_<heist>_<view>[_loud].png. Per view it prints the frame time
+## (avg / max ms over --frames, default 120, and the GPU name). Owner: ENV D.
 ##   xvfb-run -a -s "-screen 0 1280x720x24" /opt/godot/godot --audio-driver Dummy --rendering-driver opengl3 \
 ##     --resolution 1280x720 --path game res://world/characters/_tools/heist_cast_perf.tscn -- \
-##     --heist=ostrander_federal [--seed=1037] [--loud] [--seconds=90] [--detail] [--view=<name>[,<name>...]] [--shadows-only]
+##     --heist=ostrander_federal [--seed=1037] [--loud] [--seconds=90] [--detail] [--view=<name>[,<name>...]] \
+##     [--shadows-only] [--frames=120]
 ## --detail adds per view: draws with every light's shadow off, the shadow proposals (cast shadows off / off beyond
 ## FAR_SHADOW_M, the sun at 2 splits / half distance), and each on-screen NPC's own draws (top 8).
 extends Node
@@ -34,6 +36,12 @@ const VIEWS: Dictionary = {
 		["hall_east_eye", Vector3(20.5, 1.7, 14.0), Vector3(0.5, 1.2, 14.0)],
 		["hall_diag", Vector3(20.5, 3.5, 17.8), Vector3(1.0, 0.8, 10.5)],
 	],
+	# GH review cameras (glasshouse greybox layout REVIEW_CAMERAS): the sales floor and the street the police use
+	"glasshouse": [
+		["sales_floor_entrance", Vector3(11.8, 1.65, 11.2), Vector3(3.0, 1.2, 7.0)],
+		["ext_harlow_corner", Vector3(27.0, 1.7, 31.0), Vector3(14.0, 3.5, 11.0)],
+		["ext_shopfront", Vector3(5.0, 1.7, 24.0), Vector3(6.0, 2.0, 11.0)],
+	],
 	"dockside_burn": [
 		["yard_north_high", Vector3(27.0, 4.0, -1.5), Vector3(27.0, 0.0, -30.0)],
 		["yard_west_eye", Vector3(-6.0, 1.7, -17.0), Vector3(60.0, 1.0, -17.0)],
@@ -53,6 +61,7 @@ var _seconds: float = 90.0
 var _detail: bool = false
 var _view: String = ""
 var _shadows_only: bool = false
+var _frames: int = 120
 
 
 func _ready() -> void:
@@ -66,6 +75,7 @@ func _ready() -> void:
 			"detail": _detail = true
 			"view": _view = kv[1]
 			"shadows-only": _shadows_only = true
+			"frames": _frames = int(kv[1])
 	var opts: Dictionary = {"ai_teammates": 0}
 	if FORCE.has(_heist):
 		opts["preplan"] = {"force_variants": FORCE[_heist]}
@@ -97,6 +107,7 @@ func _ready() -> void:
 		for _i: int in 20:
 			await get_tree().process_frame
 		var shown: Array = _info()
+		await _frame_times(String(v[0]))
 		if _shadows_only:
 			await _shadow_breakdown(String(v[0]), npcs, shown)
 			continue
@@ -167,7 +178,7 @@ func _ready() -> void:
 				% [v[0], shown[0], hidden[0], shown[0] - hidden[0], shown[1], shown[1] - hidden[1], shown[2],
 				shown[2] - hidden[2], tiers, bands])
 		var img: Image = get_viewport().get_texture().get_image()
-		img.save_png(ProjectSettings.globalize_path("user://cast_perf_%s_%s.png" % [_heist, v[0]]))
+		img.save_png(ProjectSettings.globalize_path("user://cast_perf_%s_%s%s.png" % [_heist, v[0], "_loud" if _loud else ""]))
 	get_tree().quit(0)
 
 
@@ -338,6 +349,22 @@ func _shadow_breakdown(view: String, npcs: Array[Node], shown: Array) -> void:
 	for li: Light3D in saved_masks:
 		li.shadow_caster_mask = saved_masks[li]
 	print("[CASTPERF] view=%s cast excluded from the %d positional lights' shadow casters -> %d" % [view, pos.size(), split])
+
+
+## Frame time at this view: wall-clock ms between consecutive frames over `_frames` frames (average and worst), so a
+## real GPU run reports ms next to the draw counts (on llvmpipe it is only relative).
+func _frame_times(view: String) -> void:
+	var last: int = Time.get_ticks_usec()
+	var total: int = 0
+	var worst: int = 0
+	for _i: int in _frames:
+		await get_tree().process_frame
+		var now: int = Time.get_ticks_usec()
+		total += now - last
+		worst = maxi(worst, now - last)
+		last = now
+	print("[CASTPERF] view=%s frame ms avg %.2f max %.2f over %d frames (%s)" % [view, total / 1000.0 / _frames,
+			worst / 1000.0, _frames, RenderingServer.get_video_adapter_name()])
 
 
 func _draws() -> int:
