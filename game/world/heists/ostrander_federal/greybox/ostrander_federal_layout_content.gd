@@ -629,7 +629,7 @@ const ALWAYS: Dictionary = {
 	],
 	"Gameplay/Lifts": [
 		[
-			"prefab", "bag_lift", "CashLift", [11.5, -3.95, 1.55], 180.0,
+			"prefab", "bag_lift", "CashLift", [11.5, -4.0, 1.55], 180.0,
 			{
 				"travel_s": 8.0,
 				"capacity": 2,
@@ -638,10 +638,10 @@ const ALWAYS: Dictionary = {
 				"objective_tag": "cash_lift",
 				"@landings": [["CashLiftLandingG", [0.0, 4.0, 0.0]]],
 			},
-			[11.5, -4.0, 2.2], {"walkable": true}, "",
+			[11.5, -4.0, 2.2], {"walkable": true}, "prop_cash_lift_car_w240",
 		],
 		[
-			"prefab", "bag_lift", "Hoist", [24.0, -3.95, 15.325], 0.0,
+			"prefab", "bag_lift", "Hoist", [24.0, -4.0, 15.325], 0.0,
 			{
 				"travel_s": 6.0,
 				"capacity": 2,
@@ -659,18 +659,19 @@ const ALWAYS: Dictionary = {
 				],
 				"@panel": [[24.65, -4.0, 15.265], [24.69, -2.8, 15.385], -2.9],
 			},
-			[25.1, -4.0, 15.325], {"starts_disabled": true, "hidden": true}, "",
+			[25.1, -4.0, 15.325], {"starts_disabled": true, "hidden": true}, "prop_hoist_cradle_w110",
 		],
 	],
 	"Gameplay/Ladders": [
 		[
 			"prefab", "ladder", "RopeLadder", [24.0, -4.0, 13.54], 180.0,
 			{"height_m": 3.2, "usable": false, "enabled_at_start": false, "objective_tag": "rope_ladder"}, null,
-			{"loud_only": true, "starts_disabled": true, "hidden": true, "burn_height_m": 4.0}, "",
+			{"loud_only": true, "starts_disabled": true, "hidden": true, "burn_height_m": 4.0, "never_with": ["Lid"]},
+			"prop_ladder_rope_h400",
 		],
 		[
 			"prefab", "ladder", "CagedLadder", [46.0, 8.6, 17.55], 180.0, {"height_m": 3.6, "objective_tag": "caged_ladder"}, null,
-			{}, "",
+			{}, "prop_ladder_steel_h360_g35_cage",
 		],
 	],
 	"Gameplay/Markers": [
@@ -941,7 +942,7 @@ const SLOT_ITEMS: Dictionary = {
 	"fe_down": [
 		[
 			"prefab", "ladder", "FireEscapeDropLadder", [0.6, 0.0, -2.75], 0.0, {"height_m": 3.0, "objective_tag": "fire_escape"},
-			null, {}, "",
+			null, {}, "prop_ladder_fire_escape_h300_g00",
 		],
 	],
 	"fe_up": [["marker", "FireEscapeLadderUp", [0.6, 3.0, -2.6], 0.0, "", "the drop ladder raised (no climb)"]],
@@ -1025,7 +1026,7 @@ const SLOT_ITEMS: Dictionary = {
 	],
 	"vip_out": [],
 	"vip_in": [
-		["spawn", "VIPClient", "CIVILIAN", [46.5, -4.0, 15.5], -90.0, ["civ_vip"], "browse", "", ""],
+		["spawn", "VIPClient", "CIVILIAN", [46.5, -4.0, 15.5], -90.0, ["civ_vip"], "sit", "", "prop_chair_consult"],
 		["spawn", "VIPBodyguard", "GUARD", [44.0, -4.0, 15.0], 90.0, ["guard_vip"], "look", "", ""],
 	],
 	"gx_hall": [["spawn", "GuardExtraHall", "GUARD", [16.0, 0.0, 27.0], 0.0, ["guard_extra_hall"], "", "BankGround", ""]],
@@ -1054,6 +1055,7 @@ const LASERS: Dictionary = {
 		"beams": 3,
 		"posts": [[9.1, 9.25], [11.4, 11.55]],
 		"metas": {"crouch_under": true, "bypass": true},
+		"visual": "prop_laser_beams_h215x3",
 	},
 	"lz_sweep": {
 		"pattern": "sweeping",
@@ -1064,6 +1066,7 @@ const LASERS: Dictionary = {
 		"period_s": 7.0,
 		"posts": [[9.1, 9.25], [12.55, 12.7]],
 		"metas": {"bypass": false},
+		"visual": "prop_laser_beams_v260x2",
 	},
 	"lz_timed": {
 		"pattern": "timed_off",
@@ -1075,6 +1078,7 @@ const LASERS: Dictionary = {
 		"off_s": 6.0,
 		"posts": [[9.1, 9.25], [12.55, 12.7]],
 		"metas": {"bypass": false},
+		"visual": "prop_laser_beams_h330x4",
 	},
 }
 const LASER_X: float = 21.0

@@ -4,6 +4,45 @@ Owner: ENV C. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 
+
+## 2026-10-20 (OF finish; resumed under lead session_014E3p2DmSYTneJjytGwKKfc)
+
+**Reply to the LEAD (send_message refused: "elevated_session_untrusted_device"), re: render split / handoffs / ETA:**
+- **Pushed b98c0735 for r251:**
+  - c426eb96: the OF pendant back to CUBE with a 14 m shadow fade, BH dressing on layer 5 `sun_shadow_skip`. Fixes r250's
+    dual-paraboloid pendant, which has no shadow in Compatibility. The cull_mask audit is clean.
+  - ecc4b405: OF zfight 52 -> 0 (incl. a levelcheck MultiMesh-at-origin fix).
+  - Ran: OF regen twice identical (navmesh 4175), validate OF greybox PASS, c ostrander 14/14, c test_of_ 5/5,
+    determinism 1/1, c test_validate 134/134, c test_render_budget_policy 1/1, gdlint, ownership, banned.
+- **(1) Render split:** `docs/levels/ostrander_federal/g2/RENDER_SPLIT.md`, with exact command lines for the 34 shots
+  (+ rc_vault_hole via of_burn_variant), g2/d and the D-146 perf captures (D's heist_cast_perf).
+  - The project has no `rendering_method`, so a GPU runs Forward+ (the shipped look); the env boxes force Compatibility.
+  - Env fallback groups: C 9 / D 8 / B 8 / A 8 cameras. Run after the final-switch sha.
+- **(2) Handoffs:** density/orientation stay with C. They're generator rows in files the cleanup lane is editing now,
+  so a D patch would conflict. What helps is a P windowed walk (stealth + loud) of the final build after the switch, plus
+  D's CrowdLod no-shadow and the cast-share confirmation.
+- **(3) ETA to "final switch done":** about 3-4 h wall time.
+  - cast allowance on D's CrowdLod tree: 1-1.5 h (D's tool at about 1 fps here);
+  - cleanup density + orientation: 1-2 h, in parallel;
+  - the switch: GI re-bake, regen, then validate final all variants (40-60 min).
+  - Risk: about 75 draws of headroom at rc_hall_entrance before the cast; one more cut (NPC shadow-off > 12 m) is 30-60 min.
+
+**Done today (all pushed):**
+- OF hoist panel + nav-through-shaft fix;
+- Breach_3/4; the Hoist phase_block_key;
+- lighting (env/LUT/sun curve/VoxelGI/probes/occluders);
+- lane A BH/VE/X1; surfaces + vault/ops + exterior;
+- skyline (bounds 0 voids);
+- the test_props fix; the multimesh_tiles error fix;
+- D-146 counter + gating + OF shadow cuts;
+- prefab art (materials 0); zfight 0;
+- the VIP seat; the GH D-146 perf pass (3x -> within budget, look checked).
+
+**In progress (worktree lanes):**
+- OF perf: the cast allowance;
+- OF cleanup: density, orientation;
+- DB D-145 pilot stalls: StairST Divider2, ChamberANorth.
+
 ## 2026-10-17 (lead session_01HwYKRgCdkLfJCt4ZM6rfTk; rounds 229-233)
 
 **Head:** `708a9cd1` on `env/c-worlds` (trunk round 233 merged).
