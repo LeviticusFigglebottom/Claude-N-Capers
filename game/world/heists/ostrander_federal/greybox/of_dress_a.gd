@@ -743,8 +743,10 @@ func _pendants(parent: Node3D) -> int:
 			continue
 		n += 1
 		if String(p[0]) in D.SHADOW_PENDANTS:
-			# D-146: dual paraboloid (2 shadow passes, not the cube's 6)
-			_light(inst, {"shadow_enabled": true, "omni_shadow_mode": OmniLight3D.SHADOW_DUAL_PARABOLOID})
+			# D-146: its shadow (6 cube passes; Compatibility has no dual paraboloid) fades out beyond 14-19 m, so
+			# only the hall's own views pay for it (the light itself stays)
+			_light(inst, {"shadow_enabled": true, "distance_fade_enabled": true, "distance_fade_begin": 80.0,
+				"distance_fade_shadow": 14.0, "distance_fade_length": 5.0})
 	return n
 
 
