@@ -200,3 +200,22 @@ func test_bag_falling_into_shaft_returns_to_landing() -> void:
 	assert_true(bag.global_position.z < LIFT_POS.z - 0.8, "in front of the car (z %.2f)" % bag.global_position.z)
 	assert_true(absf(bag.global_position.y) < 0.6, "at landing 0 (y %.2f)" % bag.global_position.y)
 	assert_true(bag.interactable.enabled and not bag.freeze, "pick-up-able again")
+
+
+## P's OF burn run (C's note): the PO-5 pilot stands at landing i's own spot for panel LandingPanel<i>, the lift's
+## UsePoint offset carried from landing 0 to landing i (not landing 0's UsePoint for every panel).
+func test_pilot_stand_per_landing_panel() -> void:
+	var lift: BagLift = await _lift()
+	var up: Marker3D = Marker3D.new()
+	up.name = "UsePoint"
+	lift.add_child(up)
+	up.global_position = LIFT_POS + Vector3(0.0, 0.0, 1.2)
+	await wait_physics_frames(2)
+	var panel1: InteractableComponent = lift.get_node_or_null("%s1" % BagLift.PANEL_PREFIX) as InteractableComponent
+	assert_true(panel1 != null, "landing 1 panel spawned")
+	if panel1 == null:
+		return
+	var at1: Vector3 = Po5Pilot._landing_use_point(lift, panel1, up.global_position)
+	assert_true(at1.distance_to(up.global_position + Vector3(0, TOP_Y, 0)) < 0.01, "panel 1 stand at the top (%s)" % at1)
+	var at0: Vector3 = Po5Pilot._landing_use_point(lift, lift.interactable, up.global_position)
+	assert_true(at0.distance_to(up.global_position) < 0.01, "landing 0's own panel keeps the UsePoint")

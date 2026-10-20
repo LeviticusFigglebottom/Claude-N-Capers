@@ -5,6 +5,7 @@
 [resource]
 script = ExtResource("1")
 default_primary = &""
+bot_default_primary = &"weapon.corsair_ar"
 default_secondary = &"weapon.kestrel_p9"
 default_secondary_mods = Array[StringName]([&"mod.p9_suppressor"])
 default_armor = &"armor.tailored_suit"

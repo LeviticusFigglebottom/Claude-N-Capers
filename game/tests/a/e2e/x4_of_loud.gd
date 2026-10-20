@@ -42,14 +42,15 @@ func _init(flow: X4StealthFlow) -> void:
 	f = flow
 
 
-## Launch `seed_value` on Routine with the D-133 dev option (cleared again right after the launch).
-static func launch(flow: X4StealthFlow, heist: StringName, seed_value: int) -> bool:
-	HeistLauncher.dev_options["crew_damage_taken_mult"] = CREW_DMG
+## Launch `seed_value` (on flow.difficulty, Routine by default) with the D-133 dev option (cleared again right after
+## the launch). `crew_dmg` 0.0 = the soft-lock probe on the high difficulties (test_x4_of_hard.gd): nobody goes down.
+static func launch(flow: X4StealthFlow, heist: StringName, seed_value: int, crew_dmg: float = CREW_DMG) -> bool:
+	HeistLauncher.dev_options["crew_damage_taken_mult"] = crew_dmg
 	flow.ai_teammates = AI_TEAMMATES
 	var ok: bool = await flow.launch(heist, seed_value)
 	HeistLauncher.dev_options.erase("crew_damage_taken_mult")
 	if ok:
-		flow.note("DEV OPTION crew_damage_taken_mult=%.2f (D-133 harness-only; assault events on)" % CREW_DMG)
+		flow.note("DEV OPTION crew_damage_taken_mult=%.2f (D-133 harness-only; assault events on)" % crew_dmg)
 	return ok
 
 

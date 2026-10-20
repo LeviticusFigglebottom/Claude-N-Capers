@@ -199,6 +199,8 @@ func _build_route() -> void:
 		graph = PatrolRouteGenerator.nearest_graph(graphs, _post_pos, tweak.route_tag, tweak.nearest_graph_max_m)
 	if graph == null:
 		return
+	if _build_hub_route(graph):
+		return
 	var tag: StringName = tweak.route_tag
 	# P OF-A6 ghost run: a spawn that names its graph patrols it even when its points carry only a local tag (OF Lane:
 	# `guard_dock`, no `guard`), instead of silently holding the post.
@@ -219,6 +221,42 @@ func _build_route() -> void:
 	for p: PatrolPoint in route_points:
 		route.append(p.global_position)
 
+
+## OF-A6 hub loops (GuardTweak.hub_loops by spawn tag): the doc's fixed (a)/(b)/(c) loops from a hub, in an order the
+## patrol stream shuffles once. False (the S5.1 random walk instead) when the spawn has no hub-loop tag or the named
+## points are missing from `graph`.
+func _build_hub_route(graph: PatrolGraph) -> bool:
+	var cfg: Dictionary = {}
+	for t: Variant in _npc.spawn_info.get("tags", []):
+		if tweak.hub_loops.has(StringName(t)):
+			cfg = tweak.hub_loops[StringName(t)]
+			break
+	if cfg.is_empty():
+		return false
+	var by_name: Dictionary = {}
+	for p: PatrolPoint in graph.points():
+		by_name[StringName(p.name)] = p
+	var hub: PatrolPoint = by_name.get(StringName(cfg.get("hub", &"")))
+	if hub == null:
+		hub = PatrolRouteGenerator.nearest_point(PatrolRouteGenerator.tagged_points(graph, &""), _post_pos)
+	var loops: Array = []
+	for names: Variant in cfg.get("loops", []):
+		var stops: Array = []
+		for n: Variant in names:
+			if not by_name.has(StringName(n)):
+				Log.warn(&"ai", "%s hub loops: no point %s in %s; random walk instead" % [_npc.name, n, graph.name])
+				return false
+			stops.append(by_name[StringName(n)])
+		loops.append(stops)
+	var order: Array[PatrolPoint] = PatrolRouteGenerator.hub_route(graph, hub, loops, GameRng.stream(RNG_STREAM))
+	if order.size() < 2:
+		return false
+	route_loops = true
+	patrol_graph = graph
+	route_points = order
+	for p: PatrolPoint in route_points:
+		route.append(p.global_position)
+	return true
 
 ## PO-10: the k-th guard of this heist to start patrolling `patrol_graph` waits k x patrol_stagger_s (+ jitter)
 ## before its first leg, so guards sharing a route are not in lockstep.

@@ -1,0 +1,203 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+Vulkan 1.4.318 - Forward+ - Using Device #0: Unknown - llvmpipe (LLVM 20.1.2, 256 bits)
+
+[OFP 0.0s t=-1.0] === burn ===
+[INFO][rng][p1] run seed 1002
+[INFO][preplan][p1] assets []
+[INFO][variants][p1] seed 1002 resolved { &"manager_route": [&"mgr_gallery"], &"keycard": [&"kc_security"], &"code_pc": [&"pc_ops"], &"officers": [&"off_1"], &"server_room": [&"srv_gallery"], &"guard_post": [&"rover_basement", &"rover_dock"], &"security_room_staffed": [&"sec_empty"], &"camera": [&"cam_c"], &"laser_pattern": [&"lz_timed"], &"customers": [&"cust_4"], &"side_door": [&"door_dock_open"], &"fire_escape": [&"fe_down"], &"escape": [&"esc_van_tannery"], &"drill_delivery": [&"drop_dock"], &"president_safe": [&"ps_empty"], &"vip": [&"vip_out"], &"guard_extra": [], &"civ_extra": [], &"time_lock_s": 150.0, &"drill_eta_s": 60.0, &"escape_eta_s": 120.0, &"cash_bags": 10, &"gold_bags": 4, &"deposit_boxes": 9, "rare": [] }
+[INFO][heist][p1] vfx prewarm: 717 ms
+ERROR: Instance count must be 0 to change the transform format.
+ERROR: Instance count must be 0 to change the transform format.
+ERROR: Instance count must be 0 to change the transform format.
+ERROR: Instance count must be 0 to change the transform format.
+ERROR: Instance count must be 0 to change the transform format.
+ERROR: Instance count must be 0 to change the transform format.
+[INFO][prefab][p1] Hoist disabled
+[INFO][prefab][p1] RopeLadder disabled
+[INFO][heist][p1] phase LOADING -> CASING
+[OFP 7.4s t=-1.0] objective casing -> 1
+[OFP 7.4s t=-1.0] objective keycard -> 1
+[OFP 7.4s t=-1.0] objective code_hint -> 1
+[OFP 7.4s t=-1.0] objective code_pc -> 1
+[OFP 7.4s t=-1.0] objective server -> 1
+[OFP 7.4s t=-1.0] objective vault_gate -> 1
+[OFP 7.4s t=-1.0] objective lasers -> 1
+[OFP 7.4s t=-1.0] objective time_lock -> 0
+[OFP 7.4s t=-1.0] objective time_lock_wait -> 0
+[OFP 7.4s t=-1.0] objective vault_loot -> 0
+[OFP 7.4s t=-1.0] objective gold_cage -> 0
+[OFP 7.4s t=-1.0] objective secure -> 1
+[OFP 7.4s t=-1.0] objective deposit_boxes -> 1
+[OFP 7.4s t=-1.0] objective bond_safe -> 1
+[OFP 7.4s t=-1.0] objective president_safe -> 1
+[OFP 7.4s t=-1.0] objective server_drives -> 1
+[OFP 7.4s t=-1.0] objective drill_delivery -> 0
+[OFP 7.4s t=-1.0] objective vault_drill -> 0
+[OFP 7.4s t=-1.0] objective vault_breach -> 0
+[OFP 7.4s t=-1.0] objective escape_wait -> 0
+[OFP 7.4s t=-1.0] objective escape -> 0
+[INFO][prefab][p1] VaultBoxN10 disabled
+[INFO][prefab][p1] VaultBoxN11 disabled
+[INFO][prefab][p1] VaultBoxS01 disabled
+[INFO][prefab][p1] VaultBoxS02 disabled
+[INFO][prefab][p1] VaultBoxS03 disabled
+[INFO][prefab][p1] VaultBoxS04 disabled
+[INFO][prefab][p1] VaultBoxS05 disabled
+[INFO][prefab][p1] VaultBoxS06 disabled
+[INFO][prefab][p1] VaultBoxS07 disabled
+[INFO][prefab][p1] VaultBoxS08 disabled
+[INFO][prefab][p1] VaultBoxS09 disabled
+[INFO][prefab][p1] HallBox09 disabled
+[INFO][prefab][p1] HallBox10 disabled
+[INFO][prefab][p1] HallBox11 disabled
+[INFO][prefab][p1] HallBox12 disabled
+[INFO][prefab][p1] HallBox13 disabled
+[INFO][prefab][p1] HallBox14 disabled
+[INFO][prefab][p1] HallBox15 disabled
+[INFO][prefab][p1] HallBox16 disabled
+[INFO][prefab][p1] HallBox17 disabled
+[INFO][prefab][p1] HallBox18 disabled
+[INFO][prefab][p1] HallBox19 disabled
+[INFO][prefab][p1] HallBox20 disabled
+[INFO][prefab][p1] HallBox21 disabled
+[INFO][prefab][p1] HallBox22 disabled
+[INFO][prefab][p1] HallBox23 disabled
+[INFO][prefab][p1] HallBox24 disabled
+[INFO][director][p1] no EnemyDef for enemy.wrecker_g on this difficulty (missing, or armored below 2): skipped
+[INFO][director][p1] no EnemyDef for enemy.wrecker_b on this difficulty (missing, or armored below 2): skipped
+[INFO][director][p1] no EnemyDef for enemy.wrecker_s on this difficulty (missing, or armored below 2): skipped
+[INFO][director][p1] no EnemyDef for enemy.wrecker_m on this difficulty (missing, or armored below 2): skipped
+[INFO][director][p1] prewarm: 19 of 19 scenes loaded in 782 ms
+[INFO][prefab][p1] CameraStation: security room unstaffed
+[OFP 20.2s t=0.0] launched ostrander_federal seed 1002 diff 0 variants { &"manager_route": [&"mgr_gallery"], &"keycard": [&"kc_security"], &"code_pc": [&"pc_ops"], &"officers": [&"off_1"], &"server_room": [&"srv_gallery"], &"guard_post": [&"rover_basement", &"rover_dock"], &"security_room_staffed": [&"sec_empty"], &"camera": [&"cam_c"], &"laser_pattern": [&"lz_timed"], &"customers": [&"cust_4"], &"side_door": [&"door_dock_open"], &"fire_escape": [&"fe_down"], &"escape": [&"esc_van_tannery"], &"drill_delivery": [&"drop_dock"], &"president_safe": [&"ps_empty"], &"vip": [&"vip_out"], &"guard_extra": [], &"civ_extra": [], &"time_lock_s": 150.0, &"drill_eta_s": 60.0, &"escape_eta_s": 120.0, &"cash_bags": 10, &"gold_bags": 4, &"deposit_boxes": 9, "rare": [] }
+[INFO][prefab][p1] CameraC1 disabled
+[INFO][prefab][p1] CameraC2 disabled
+[INFO][prefab][p1] CameraC3 disabled
+[INFO][prefab][p1] CameraC7 disabled
+[INFO][prefab][p1] CameraC9 disabled
+[INFO][prefab][p1] CameraC11 disabled
+[INFO][prefab][p1] CameraC13 disabled
+[INFO][prefab][p1] CameraC15 disabled
+[OFP 55.1s t=2.0] SHORTCUT traversal: NPCs despawned, crew stealth_hidden, 8 cameras disabled (GameplayPrefab.set_enabled)
+[OFP 61.8s t=3.1] pilot: calibrated 0.001600 rad/px yaw, 0.001600 rad/px pitch (settings formula said (0.0016, 0.0016))
+[OFP 61.8s t=3.1] spawn (21.0, 0.0, -6.0)
+[OFP 66.8s t=3.2] BURN before: rope ladder usable false height 3.20 (top (24.0, -0.8, 13.1) bottom (24.0, -4.0, 13.9)); hoist visible false
+[INFO][heist][p1] phase CASING -> STEALTH
+[OFP 67.7s t=4.2] objective casing -> 2
+[INFO][crew][p1] slot 0 masked (forced=false)
+[OFP 68.2s t=4.8] masked true
+[INFO][stealth][p1] ALARM: ofp_burn (source 0)
+[OFP 68.2s t=4.8] ALARM ofp_burn by 0 (pilot at (21.0, 0.0, -6.0))
+[INFO][heist][p1] alarm (ofp_burn): going loud
+[INFO][heist][p1] phase STEALTH -> LOUD
+[INFO][director][p1] assault phase CONTROL (wave 1, 20 s)
+[INFO][prefab][p1] VaultControlRack: hack paused (lockdown)
+[OFP 68.4s t=4.8] objective keycard -> 1
+[OFP 68.4s t=4.8] objective keycard -> 2
+[OFP 68.4s t=4.8] objective code_hint -> 1
+[OFP 68.4s t=4.8] objective code_hint -> 2
+[OFP 68.4s t=4.8] objective code_pc -> 1
+[OFP 68.4s t=4.8] objective code_pc -> 2
+[OFP 68.4s t=4.8] objective server -> 1
+[OFP 68.5s t=4.8] objective server -> 2
+[OFP 68.5s t=4.8] objective vault_gate -> 1
+[OFP 68.5s t=4.8] objective vault_gate -> 2
+[OFP 68.5s t=4.8] objective lasers -> 1
+[OFP 68.5s t=4.8] objective lasers -> 2
+[OFP 68.5s t=4.8] objective drill_delivery -> 1
+[OFP 68.6s t=4.8] objective drill_delivery -> 1
+[OFP 68.6s t=4.8] SHORTCUT alarm raised through the StealthDirector
+[OFP 68.6s t=4.8] BURN lockdown PASS; drill_delivery [&"drop_dock"] eta 60.0
+[INFO][director][p1] assault events: 3 rows for ostrander_federal (tweak)
+WARNING: Sub-surface scattering is not supported in viewports with a transparent background. Disabling SSS in transparent viewport.
+[INFO][director][p1] assault phase ANTICIPATION (wave 1, 30 s)
+[INFO][director][p1] assault phase BUILD (wave 1, 35 s)
+[OFP 155.9s t=64.8] objective vault_drill -> 1
+[OFP 155.9s t=64.8] BURN parts PASS at (14.0, 0.0, -4.0)
+[OFP 168.9s t=69.8] pilot: t=5 at (16.4, 0.0, -4.3) corner (15.1, 0.2, -4.0) yaw_err -0.00 fwd=true path=2 mouse_mode=2 state=0 look=(-4.47,0.00) pin_yaw=-4.46769352818228 bot=false
+[OFP 172.5s t=71.4] objective drill_delivery -> 1
+[OFP 172.9s t=71.4] pilot: use Bag_thermal_drill_part (pick_bag) -> OK in 1.0 s
+[OFP 200.8s t=76.4] pilot: t=5 at (11.0, 0.0, -2.0) corner (9.4, 0.2, -1.3) yaw_err -0.00 fwd=true path=32 mouse_mode=2 state=0 look=(-4.27,0.00) pin_yaw=-4.27486860061618 bot=false
+[OFP 203.8s t=79.2] pilot: use DockPersonnelDoor (open_door) -> OK in 0.0 s
+[OFP 227.6s t=82.3] pilot: t=10 at (8.5, 0.0, 2.2) corner (8.5, 0.2, 2.6) yaw_err -0.00 fwd=true path=28 mouse_mode=2 state=0 look=(-2.95,0.00) pin_yaw=-2.94962086128362 bot=false
+[OFP 257.1s t=88.9] pilot: use DockCorridorDoor (open_door) -> OK in 0.0 s
+[INFO][director][p1] assault phase SUSTAIN (wave 1, 40 s)
+[OFP 258.0s t=89.9] pilot: t=15 at (10.4, 0.0, 8.2) corner (10.9, 0.0, 8.1) yaw_err -0.00 fwd=true path=24 mouse_mode=2 state=0 look=(-1.52,0.00) pin_yaw=-1.52003131667152 bot=false
+[INFO][director][p1] force pool spent (26 units): FADE
+[INFO][director][p1] assault phase FADE (wave 1, 15 s)
+ERROR: Condition "!is_inside_tree()" is true. Returning: Transform3D()
+ERROR: Condition "!is_inside_tree()" is true. Returning: Transform3D()
+ERROR: Condition "!is_inside_tree()" is true. Returning: Transform3D()
+ERROR: Condition "!is_inside_tree()" is true. Returning: Transform3D()
+[OFP 314.3s t=102.3] pilot: use StaffDoorTWW (open_door) -> OK in 8.0 s
+[OFP 317.4s t=105.6] pilot: t=20 at (15.8, 0.0, 10.4) corner (16.5, 0.2, 10.6) yaw_err 0.00 fwd=true path=14 mouse_mode=2 state=0 look=(-1.89,0.00) pin_yaw=-1.88574649990915 bot=false
+[OFP 322.4s t=110.6] pilot: t=25 at (20.4, 0.0, 11.8) corner (21.3, 0.2, 12.1) yaw_err -0.58 fwd=true path=9 mouse_mode=2 state=0 look=(-1.29,0.00) pin_yaw=-1.48596881219419 bot=false
+[OFP 327.4s t=115.6] pilot: t=30 at (24.9, 0.0, 13.7) corner (25.6, 0.2, 14.6) yaw_err -2.50 fwd=false path=2 mouse_mode=2 state=0 look=(0.01,0.00) pin_yaw=-0.18127784771059 bot=false
+[INFO][director][p1] assault phase CONTROL (wave 2, 40 s)
+[OFP 331.5s t=119.5] pilot: use LidDrill (place_drill) -> OK in 3.0 s
+[OFP 331.5s t=119.5] BURN part 0 PASS: drop -> lid in 54.7 s (HEAVY), delivered 1
+[OFP 353.3s t=124.5] pilot: t=5 at (20.4, 0.0, 11.7) corner (19.2, 0.2, 11.2) yaw_err 0.00 fwd=true path=25 mouse_mode=2 state=0 look=(-5.06,0.00) pin_yaw=-5.05912988188357 bot=false
+[OFP 358.2s t=129.5] pilot: t=10 at (15.3, 0.0, 9.9) corner (14.5, 0.2, 9.5) yaw_err -1.22 fwd=false path=20 mouse_mode=2 state=0 look=(-3.92,0.00) pin_yaw=-4.11519550884987 bot=false
+[OFP 363.2s t=134.5] pilot: t=15 at (8.9, 0.0, 7.3) corner (8.4, 0.2, 3.6) yaw_err -3.07 fwd=false path=9 mouse_mode=2 state=0 look=(-3.07,0.00) pin_yaw=-3.26051166559773 bot=false
+[OFP 368.3s t=139.5] pilot: t=20 at (8.1, 0.0, 1.3) corner (8.2, 0.2, 1.9) yaw_err 1.58 fwd=false path=6 mouse_mode=2 state=0 look=(-4.60,0.00) pin_yaw=-4.40889981696091 bot=false
+[OFP 383.3s t=144.6] pilot: t=25 at (12.1, 0.0, -2.7) corner (15.1, 0.2, -4.0) yaw_err 0.00 fwd=true path=2 mouse_mode=2 state=0 look=(-7.45,0.00) pin_yaw=-7.44659471292107 bot=false
+[OFP 386.9s t=148.1] objective drill_delivery -> 1
+[OFP 386.9s t=148.1] objective drill_delivery -> 2
+[OFP 387.2s t=148.1] pilot: use Bag_thermal_drill_part2 (pick_bag) -> OK in 1.0 s
+[OFP 392.1s t=153.2] pilot: t=5 at (10.5, 0.0, -1.8) corner (9.4, 0.2, -1.3) yaw_err -0.00 fwd=true path=32 mouse_mode=2 state=0 look=(-4.27,0.00) pin_yaw=-4.26784975413466 bot=false
+[INFO][director][p1] assault phase ANTICIPATION (wave 2, 30 s)
+[OFP 397.1s t=158.1] pilot: t=10 at (8.4, 0.0, 2.1) corner (8.6, 0.2, 2.6) yaw_err -0.96 fwd=false path=28 mouse_mode=2 state=0 look=(-1.97,0.00) pin_yaw=-2.16499852677225 bot=false
+[OFP 402.1s t=163.1] pilot: t=15 at (9.4, 0.0, 6.9) corner (9.6, 0.2, 7.6) yaw_err 2.88 fwd=false path=25 mouse_mode=2 state=0 look=(-5.80,0.00) pin_yaw=-5.61094076775771 bot=false
+[OFP 407.1s t=168.1] pilot: t=20 at (13.8, 0.0, 9.1) corner (13.9, 0.0, 9.9) yaw_err -0.00 fwd=true path=18 mouse_mode=2 state=0 look=(-3.09,0.00) pin_yaw=-3.09101617160923 bot=false
+[OFP 412.1s t=173.2] pilot: t=25 at (17.8, 0.0, 11.1) corner (19.4, 0.2, 11.6) yaw_err -0.00 fwd=true path=11 mouse_mode=2 state=0 look=(-1.88,0.00) pin_yaw=-1.87532933420153 bot=false
+[OFP 417.1s t=178.2] pilot: t=30 at (22.5, 0.0, 12.5) corner (23.2, 0.2, 12.7) yaw_err -1.54 fwd=false path=8 mouse_mode=2 state=0 look=(-0.33,0.00) pin_yaw=-0.51789007443586 bot=false
+[OFP 424.3s t=185.0] pilot: use LidDrill (place_drill) -> OK in 3.0 s
+[OFP 424.3s t=185.0] BURN part 1 PASS: drop -> lid in 65.4 s (HEAVY), delivered 2
+[OFP 439.3s t=185.2] SHORTCUT burn wait at x4 beside the drill
+[INFO][director][p1] assault phase BUILD (wave 2, 35 s)
+[INFO][director][p1] assault phase SUSTAIN (wave 2, 120 s)
+[INFO][director][p1] force pool spent (29 units): FADE
+[INFO][director][p1] assault phase FADE (wave 2, 15 s)
+[INFO][director][p1] assault phase CONTROL (wave 3, 40 s)
+[INFO][director][p1] assault phase ANTICIPATION (wave 3, 30 s)
+[INFO][director][p1] assault phase BUILD (wave 3, 35 s)
+[INFO][director][p1] assault phase SUSTAIN (wave 3, 160 s)
+[INFO][director][p1] force pool spent (33 units): FADE
+[INFO][director][p1] assault phase FADE (wave 3, 15 s)
+[OFP 742.1s t=359.3] pilot: use LidDrill (place_drill) -> OK in 2.0 s
+[OFP 742.1s t=359.3] BURN jam 1 fixed true
+[INFO][director][p1] assault phase CONTROL (wave 4, 40 s)
+[INFO][director][p1] assault phase ANTICIPATION (wave 4, 30 s)
+[INFO][director][p1] assault phase BUILD (wave 4, 35 s)
+[INFO][director][p1] assault phase SUSTAIN (wave 4, 160 s)
+[INFO][director][p1] force pool spent (33 units): FADE
+[INFO][director][p1] assault phase FADE (wave 4, 15 s)
+[INFO][director][p1] assault phase CONTROL (wave 5, 40 s)
+[INFO][prefab][p1] Lid disabled
+[INFO][prefab][p1] Hoist enabled
+[INFO][prefab][p1] RopeLadder enabled
+[OFP 1023.4s t=549.7] objective vault_drill -> 2
+[OFP 1023.4s t=549.7] objective vault_breach -> 2
+[OFP 1023.4s t=549.7] objective vault_loot -> 1
+[OFP 1023.4s t=549.7] objective gold_cage -> 1
+[INFO][director][p1] assault phase ANTICIPATION (wave 5, 30 s)
+[OFP 1030.0s t=552.2] BURN burn-through PASS after 367 s (1 jams); rope ladder usable true height_m 4.00, top (24.0, 0.0, 13.1) bottom (24.0, -4.0, 13.9) (span 4.00 m): 4.0 m OK; hoist enabled true
+[OFP 1052.1s t=559.9] LADDER RopeLadder down: OK in 1.8 s (climb 2.4 s, height 4.0 m; at (24.0, -4.0, 14.6))
+[OFP 1052.1s t=559.9] BURN ladder down PASS at (24.0, -4.0, 14.6)
+[OFP 1052.2s t=559.9] SHORTCUT bag loot.cash_bricks (weight 1) spawned by LootManager.spawn_bag at (25.0, -3.5, 14.6)
+[OFP 1055.8s t=563.3] pilot: use Bag_cash_bricks (pick_bag) -> OK in 1.0 s
+[OFP 1060.3s t=567.8] bag in the car of Hoist (1)
+[OFP 1060.3s t=567.8] BURN bag into the hoist car PASS (car at (24.0, -4.0, 15.3))
+[INFO][prefab][p1] Hoist: lift 0 -> 1 with 1 bag(s) (slot 0)
+[OFP 1064.6s t=570.5] pilot: use Hoist (call_lift) -> OK in 1.0 s
+[OFP 1070.5s t=576.5] LIFT Hoist at landing 1 (1 bags in the car)
+[OFP 1070.5s t=576.5] BURN hoist ride PASS: car at landing 1 with 1 bag(s)
+[OFP 1070.5s t=576.5] ladder RopeLadder: approach from the flank side (the facing side has no path)
+[OFP 1074.9s t=580.9] LADDER RopeLadder up: OK in 2.4 s (climb 2.4 s, height 4.0 m; at (24.0, 0.0, 11.8))
+[OFP 1074.9s t=580.9] BURN ladder up PASS at (24.0, 0.0, 11.8)
+[INFO][director][p1] assault phase BUILD (wave 5, 35 s)
+[OFP 1094.2s t=584.9] pilot: use Bag_cash_bricks (pick_bag) -> OK in 1.0 s
+[OFP 1094.2s t=584.9] BURN take-out PASS at (25.0, 0.0, 14.7)
+[OFP] RESULT PASS burn
+[OFP] RESULT PASS (burn PASS)
+WARNING: 462 ObjectDB instances were leaked at exit (run with `--verbose` for details).

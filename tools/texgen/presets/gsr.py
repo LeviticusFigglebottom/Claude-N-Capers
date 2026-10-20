@@ -113,6 +113,22 @@ PRESET = {
             "paint": "#4B5157", "steel": "#B4B7BA", "rough": (0.4, 0.5), "steel_rough": 0.32,
             "chip": 0.5, "wear": 0.5, "grime": 0.35,
         },
+        # ---- OF-C2: Ostrander Federal G2 surfaces (bank: pristine) ----
+        "limestone_ashlar": {
+            # palette limestone #CBC3B0 (ostrander_federal.md Audio/lighting), neutral enough for the hall and VC
+            "stone": "#C6BEAB", "stone_light": "#D3CCBB", "stone_dark": "#B3AA96", "joint": "#8A8272",
+            "blocks_per_row": 2, "courses": 4, "joint_mm": 5, "chamfer_mm": 6, "bedding": 0.6,
+            "rough": (0.72, 0.84), "joint_rough": 0.92, "wear": 0.08, "grime": 0.15,
+        },
+        "wood_panel_oak": {
+            "base": "#7A5A3F", "late": "#5A412D", "light": "#8E6B4C", "bays": 4, "rows": 2, "stile_mm": 70,
+            "bevel_mm": 35, "rings": 34, "rough": (0.36, 0.46), "pore_rough": 0.56, "wear": 0.08, "grime": 0.12,
+        },
+        "steel_plate_riveted": {
+            # vault paint: a grey ultramarine (secondary #2F3F6B lifted to read under the 4000 K strips)
+            "paint": "#59627A", "seam": "#3E4352", "plates": 2, "seam_mm": 4, "rivet_inset_mm": 40,
+            "rivet_pitch_mm": 100, "rivet_mm": 16, "rough": (0.38, 0.5), "wear": 0.1, "grime": 0.15,
+        },
         # ---- First-person weapon materials (D-026; 1 m tiles at 1024 px/m) ----
         "polymer_black": {
             "base": "#45464A", "rough": (0.64, 0.76), "grain_cells_per_m": 300, "wear": 0.25,
@@ -245,6 +261,19 @@ PRESET = {
             "contrast": 1.06,
             "pivot": 0.44,
             "saturation": 0.88,
+        },
+        # Ostrander Federal (ostrander_federal.md §Audio/lighting, OF-C2): Friday afternoon daylight, the brightest heist:
+        # warm, slightly golden highlights (the SW sun on the limestone and the bronze), neutral-cool shadows, clean
+        # neutral mids, soft contrast and a small lift so no black is crushed.
+        "ostrander_federal": {
+            "slope": (1.015, 1.0, 0.98),
+            "offset": (0.008, 0.008, 0.01),
+            "power": (1.0, 1.0, 1.0),
+            "shadow_tint": (-0.004, 0.0, 0.008),
+            "highlight_tint": (0.02, 0.012, -0.014),
+            "contrast": 0.97,
+            "pivot": 0.45,
+            "saturation": 1.02,
         },
     },
     # Godot Environment resources (godot.py).

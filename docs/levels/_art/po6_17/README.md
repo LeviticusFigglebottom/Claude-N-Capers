@@ -63,7 +63,11 @@ Light police helicopter (navy + hi-vis, 4-blade main rotor 9 m disc), both cabin
 ## 4. Breach points
 
 `prop_breach_wall`, `prop_breach_window`, `prop_breach_ceiling` (`res://world/props/assault_event/<id>.tscn`).
-Common contract:
+**Kind "door"** (Ostrander Federal `Breach_3` / `Breach_4`, LEAD ruling): no scene and no `Visual` child; the marker
+(same frame: bottom-centre of the doorway on the room-side face, -Z into the room; meta `kind` "door", `size`, `room`)
+carries meta `door`, a NodePath from the marker to the map's `Door` it blows open (the door is the infill: ENV A plays
+the charge on its leaves and sets it open). No nav obstruction: the door already stands in its opening.
+Common contract (scene kinds):
 
 * **Frame: the `Breach_<n>` marker's.** Origin = the opening on the **room-side surface** (wall/window:
   bottom-centre of the opening; ceiling: centre of the opening on the ceiling underside). **-Z points
