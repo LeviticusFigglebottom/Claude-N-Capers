@@ -5,7 +5,8 @@
 ## Data-only: no scene is instanced (the map .tscn files are read as text).
 extends TestCase
 
-const HEISTS: Array[StringName] = [&"glasshouse", &"night_deposit", &"shadow_ledger", &"dockside_burn", &"gallery_night"]
+const HEISTS: Array[StringName] = [&"glasshouse", &"night_deposit", &"shadow_ledger", &"dockside_burn", &"gallery_night",
+	&"ostrander_federal"]
 const HEIST_DIR: String = "res://world/heists/%s"
 const DEF_PATH: String = "res://world/heists/%s/%s_def.tres"
 const BLUEPRINT_PATH: String = "res://content/data/preplanning/blueprints/%s.tres"
@@ -131,7 +132,7 @@ func test_carried_items_and_loot_ids_have_names() -> void:
 			var id: String = m.get_string(1)
 			if not id.begins_with("item.asset.") and not id.begins_with("item.loot."):
 				items[id] = f
-	assert_true(items.has("item.keycard") and items.has("item.code_note"), "carried items found: %s" % items.keys())
+	assert_true(items.has("item.keycard") and items.has("item.code_note"), "carried items found: %s" % [items.keys()])
 	for id: String in items:
 		_check(&"carried", String(UiText.item_key(StringName(id))), String(items[id]))
 	for h2: StringName in HEISTS:

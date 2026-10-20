@@ -214,11 +214,27 @@ static func names(e: Dictionary) -> Dictionary:
 	var m: StringName = StringName(e.get("mask", &""))
 	var o: StringName = StringName(e.get("outfit", &""))
 	return {
-		"weapon": UiText.t(UiText.item_key(w)) if w != &"" else UiText.t(&"ui.crew.default_weapon"),
-		"armor": UiText.t(UiText.item_key(a)) if a != &"" else UiText.t(&"ui.crew.default_armor"),
+		"weapon": UiText.t(UiText.item_key(w)) if w != &"" else default_weapon_name(),
+		"armor": UiText.t(UiText.item_key(a)) if a != &"" else default_armor_name(),
 		"mask": MaskCatalog.display_name(m) if m != &"" else UiText.t(&"ui.crew.no_mask"),
 		"outfit": outfit_name(o),
 	}
+
+
+## r246: the default's label names what an unequipped bot carries (A's CombatTweak.bot_default_primary /
+## default_armor, "Standard: Corsair AR"), not a generic "Standard issue"; the generic label when the tweak has none.
+static func default_weapon_name() -> String:
+	return _standard(CombatTweak.data().bot_default_primary, &"ui.crew.default_weapon")
+
+
+static func default_armor_name() -> String:
+	return _standard(CombatTweak.data().default_armor, &"ui.crew.default_armor")
+
+
+static func _standard(id: StringName, generic: StringName) -> String:
+	if id == &"":
+		return UiText.t(generic)
+	return UiText.t(&"ui.crew.default_named", {"name": UiText.t(UiText.item_key(id))})
 
 
 static func outfit_name(o: StringName) -> String:

@@ -196,7 +196,8 @@ func _build() -> void:
 	var board: ScoreboardOverlay = ScoreboardOverlay.new()
 	board.settings = settings
 	board.heisters = crew_heisters
-	scoreboard = _place(board, Control.PRESET_CENTER, Vector2(-620, -260), Vector2(1240, 520)) as ScoreboardOverlay  # x1.5 fits 1920
+	# r246: top at -350 so the sheet (rows grow it to ~710) ends above the vitals block (it clipped ARMOR / HEALTH values).
+	scoreboard = _place(board, Control.PRESET_CENTER, Vector2(-620, -350), Vector2(1240, 520)) as ScoreboardOverlay  # x1.5 fits 1920
 	toast_label = UiBuild.float_text(UiBuild.label(&"", UiBuild.HUD_BIG))
 	toast_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_place(toast_label, Control.PRESET_CENTER, Vector2(-500, -260), Vector2(1000, 60))
