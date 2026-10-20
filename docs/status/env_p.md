@@ -12,7 +12,8 @@ Capture names are Windows-safe since c6c096dd (PCaptureName); trunk's of_g1_pass
    It writes PNGs to that dir; the verdict is the `[OFP] RESULT` line and the `GHOST step ... done` lines in the run txt.
    On a FAIL, the window keeps running after RESULT. Close it once RESULT is printed.
 2. **D-145 GH Tense feel clip** (~5 min loud, solo + 3 bots). It needs A's env/a-core 4a6780f4 (Tense tuning) and
-   2daa35d6 (po5 harness) on trunk first; neither is on trunk at 59a2924b.
+   2daa35d6 (po5 harness) on trunk first; neither is on trunk at 59a2924b. Better: take env/a-core 441b6870, which adds
+   e640362d (the bot no-revive fix from Tense 4501) and 441b6870 (Cataclysm past the menu).
    `%G% --path game --resolution 1280x720 --fixed-fps 30 --write-movie %CD%\gpu\renders\p\gh_tense\clip.avi res://tests/a/e2e/po5_runner.tscn -- --po5-flow=auto_loud --po5-out=%CD%\gpu\renders\p\gh_tense --po5-budget=300 --po5-heist="Golden Hour" --po5-difficulty=Tense --po5-seed=4502 > gpu\renders\p\gh_tense_run.log 2>&1`
    (Create `gpu\renders\p\gh_tense` before the run, because the movie writer does not make dirs.) Seed 4502 was a WIN on 4a6780f4
    headless. For Routine, swap in `--po5-difficulty=Routine --po5-seed=4501` and a `gh_routine` dir. The .avi is MJPEG and large;
@@ -34,6 +35,11 @@ Capture names are Windows-safe since c6c096dd (PCaptureName); trunk's of_g1_pass
 - **D-145 GH Tense ×3** on r250 + c-worlds + A 4a6780f4, headless, solo + 3 bots: **2/3 WIN, downs 1/2/1 (median 1)**.
   The target is met (Routine was already 3/3 WIN, median 1). In 4501 the pilot bled out 30 s after one down with no bot revive (slot 1 tased),
   which is a bot revive-priority question for A. Table: captures/d145_gh_2026-10-20/table.txt + tense_4a6780f4/.
+- Relay from A, 23:45 UTC: env/a-core is at 441b6870. e640362d (GAME, bots): a bot in REVIVE that stops closing in for 1 s now
+  revives from up to 2.3 m. A body or prop had kept bots at 2.1-2.2 m vs revive_range 1.2 m in Tense 4501. The new test
+  test_l6_1_ai_revives_over_an_obstacle fails without the fix; test_l6_ 14/14 and d134/a3_05/give_way/p1_sandbox/d145_bot_regen are green.
+  8aea4ae3: the pilot climbs ladders like a player via P's free climb (OF Haz 5 had stood 15 min at the hole).
+  test_po5_special_visuals now launches on Hazardous. 441b6870: Cataclysm gets past the menu (the resource cache lost the in-memory unlock).
 - Relay from A (could not reach the lead): env/a-core is at 2daa35d6. auto_loud no longer reports "marker unreachable" when the objective
   ended mid-walk (7b91a005). auto_loud fetches the OF drill parts a DrillPoint is owed (bcafd612; Haz seed 5 had stalled
   1100 s). po5 opens build-locked Lethal/Cataclysm in memory (2daa35d6). OF hard so far: Haz 5 FAIL (drill stall),
