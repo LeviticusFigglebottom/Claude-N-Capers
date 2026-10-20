@@ -1,0 +1,9 @@
+generator: tools/texgen/build.py --only steel_plate_riveted --preset gsr
+module: tools/texgen/materials/steel_plate_riveted.py
+preset: tools/texgen/presets/gsr.py
+seed: 1027258038 (zlib.crc32('steel_plate_riveted'))
+size_px: 1024
+tile_m: 2.0 (1 UV unit = 2.0 m)
+texel_density_px_per_m: 512
+albedo: sRGB; orm: linear R=AO G=roughness B=metallic; normal: tangent space OpenGL (Y+)
+stats: {"albedo_lum_max_linear": 0.1833, "albedo_lum_mean_linear": 0.1221, "albedo_lum_min_linear": 0.04, "ao_mean": 0.993, "lum_floor_linear": 0.04, "metallic_mean": 0.0, "roughness_mean": 0.444}

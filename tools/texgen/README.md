@@ -66,6 +66,12 @@ writes them.
   `StandardMaterial3D` with an embedded `GradientTexture2D`, blue at mesh V = 1 (burner) to orange at
   V = 0 (tip); `emission_operator = multiply` so the gradient is not washed to white). Map the
   flame mesh's V from tip (0) to base (1).
+* **Ostrander Federal G2 surfaces (OF-C2):** three 1024 px / 2 m world finishes with built-in break-up, all on the
+  0.5 m grid: `limestone_ashlar` (running-bond blocks 1.0 x 0.5 m, chamfered recessed joints, per-block tone, fossil
+  specks; neutral, so the hall and the concourse can share it, tint a duplicate for warmer / greyer stone),
+  `wood_panel_oak` (raised-and-fielded panelling, 4 x 2 panels of 0.5 x 1.0 m, the grain along the rails and up the
+  stiles; maps use one panel row as a strip over a wainscot face) and `steel_plate_riveted` (ultramarine-grey vault
+  lining, 1 m plates, welded seams, a rivet row 40 mm in from each seam).
 * **Water (PO-13):** `water_harbour_night` (kind `water`) is not ORM PBR: a `ShaderMaterial` on
   `game/world/materials/shaders/water.gdshader` plus one 512 px lossless ripple texture over 8 m
   (`tex_water_harbour_night_ripple.png`: R/G tangent normal, B slick mask; `materials/water_harbour_night.py`).

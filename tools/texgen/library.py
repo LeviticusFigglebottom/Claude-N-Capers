@@ -41,6 +41,10 @@ LIBRARY: dict[str, dict] = {
     "tile_ceramic_white": {"size": 1024},
     "vinyl_floor": {"size": 1024},
     "metal_painted": {"size": 1024},
+    # OF-C2 (Ostrander Federal G2 surfaces): dressed stone, raised panelling, riveted vault lining.
+    "limestone_ashlar": {"size": 1024},
+    "wood_panel_oak": {"size": 1024},
+    "steel_plate_riveted": {"size": 1024},
     # First-person weapon materials (D-026): 1 UV unit = 1 m, 1024 px/m.
     "polymer_black": {"size": 1024, "tile_m": 1.0},
     "polymer_stipple": {"size": 1024, "tile_m": 1.0},
