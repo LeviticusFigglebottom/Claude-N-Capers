@@ -1,0 +1,42 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"banking_hall_grand"
+purpose = &"hall"
+required_items = Array[StringName]([&"check_desk", &"bench", &"queue_rail", &"light_fixture", &"plant", &"slip_tray", &"lectern", &"bin"])
+optional_items = {
+&"leaflet_rack": 0.5,
+&"pen_cup": 0.5
+}
+clutter_groups = {
+&"check_desks": {
+"anchors": Array[StringName]([&"check_desk"]),
+"count": Vector2i(1, 1),
+"items": {&"slip_tray": 1},
+"radius": 0.4
+}
+}
+min_density = 0.03
+max_density = 0.06
+min_props = 17
+lone_ok_kinds = Array[StringName]([&"check_desk", &"bench", &"queue_rail", &"plant", &"lectern", &"bin", &"security_camera"])
+seed_salt = 4201
+counts = {
+&"light_fixture": Vector2i(10, 10),
+&"plant": Vector2i(4, 4)
+}
+assets = {
+&"bench": PackedStringArray("prop_of_hall_bench"),
+&"bin": PackedStringArray("prop_bin_office"),
+&"check_desk": PackedStringArray("prop_of_check_desk"),
+&"lectern": PackedStringArray("prop_lectern"),
+&"light_fixture": PackedStringArray("prop_of_hall_pendant"),
+&"plant": PackedStringArray("prop_plant_tall"),
+&"queue_rail": PackedStringArray("prop_of_queue_rail_w900"),
+&"slip_tray": PackedStringArray("prop_deposit_slips")
+}
+ceiling = {}
+notes = "OF BH grand banking hall (OF-C2 lane A, of_dress_a.gd; ostrander_federal.md Room list, Budgets: 0.03-0.06 props/m², clustered at the counter, the check desks, the benches and the pillars, the meridian line kept clear). The G1 check desks, benches and queue rails carry exact-fit art; ten 3000 K bronze drum pendants hang from the coffered ceiling; slip trays on the desks, palms by the vestibule and in the window bays, the lobby guard's podium, bins at the desks. Placed from fixed tables (one room uses this kit). The shell finish (marble floor with ultramarine bands, marble dado and limestone walls, the coffered ceiling, the bronze window bays) and the meridian line are architecture, not props."

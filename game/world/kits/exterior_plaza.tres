@@ -1,0 +1,28 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"exterior_plaza"
+purpose = &"exterior"
+required_items = Array[StringName]([&"street_lamp", &"bench", &"planter", &"bollard", &"kiosk", &"car", &"bin_street", &"bus_shelter"])
+optional_items = {}
+clutter_groups = {}
+min_density = 0.003
+max_density = 0.05
+min_props = 12
+lone_ok_kinds = Array[StringName]([&"street_lamp", &"bench", &"planter", &"bollard", &"kiosk", &"car", &"bin_street", &"bus_shelter", &"breach_point", &"security_camera"])
+seed_salt = 4202
+counts = {}
+assets = {
+&"bench": PackedStringArray("prop_bench_stone"),
+&"bollard": PackedStringArray("prop_bollard_steel"),
+&"bus_shelter": PackedStringArray("prop_bus_shelter"),
+&"car": PackedStringArray("veh_car_sedan_silver", "veh_car_sedan_navy", "veh_car_sedan_wine"),
+&"kiosk": PackedStringArray("prop_of_news_kiosk"),
+&"planter": PackedStringArray("prop_planter_street"),
+&"street_lamp": PackedStringArray("prop_street_lamp")
+}
+ceiling = {}
+notes = "OF X1 Ostrander Plaza + Halloran Avenue (OF-C2 lane A, of_dress_a.gd): the G1 kiosk, planters, benches and parked cars carry art; street lamps on both kerbs (daytime: barely on), steel bollards in short groups off the plaza's central approach (the Wrecker's vehicle-wide route to VE stays open), street bins, a bus shelter on the far sidewalk, two more parked cars. Placed from fixed tables. The granite plaza paving, the steps, the limestone facade with its granite plinth and the bronze window bays are architecture."

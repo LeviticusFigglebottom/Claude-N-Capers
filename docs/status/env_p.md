@@ -2,6 +2,20 @@
 
 Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min; this file says where to resume.
 
+## 2026-10-20: OF-P1 resumed (D-144): burn/hoist PASS on C f385a22c + A 6f70122a
+- Tree: local trunk 8ed5fa93 + env/a-core + env/b-content + env/c-worlds + env/d-art + env/p-play (b12118ca, not
+  pushed; round 245 not on trunk yet). of_mission 15/15, p_ladder 5/5 headless.
+- of_g1_pass --test=burn, seed 1002: run 1 FAIL rope ladder down (harness: pre-D-145 ladder driving), run 2 FAIL rope
+  ladder up (harness: the facing-side approach is inside the hoist shaft once the car is up), run 3 **PASS**: lockdown,
+  parts at (14, 0, -4), both parts on the lid (54.7 / 65.4 s HEAVY), burn-through 367 s (1 jam), rope ladder 4.00 m
+  down 1.8 s, bag into the hoist car (24.0, -4.0, 15.3), hoist ride to landing 1, ladder up 2.4 s, take-out at
+  (25.0, 0.0, 14.7). Evidence: captures/of_g1_2026-10-20/burn_r3 (burn_r2 = the shaft stall).
+- Harness fixes (env/p-play 8b9822ea, 5d8c0091, 787a6a11, 94d24396): free-climb ladders (look up / down + W,
+  CrewLadderClimb on the ladder counts), stray watch reads the real attach state, approach side with a knee-clear nav
+  path, `_lift_to` landing from the stand (C's diagnosis). A fixes `_use_stand` per landing (8d486d5c, pending push).
+- Open to C: the nav path ran through Hoist/Rig/ShaftE at (24.6, -3.9, 15.4) (shaft walls not in the nav bake?).
+- Next: ghost line (running), the rest of §7 + PO-3, real-menu run, G2 pass, D-145 loud runs (12).
+
 ## 2026-10-17: D-135 close-out: ND-2 stealth route, SL-P1 PASS, D-128/D-130 feel check, DB-P1 (carried)
 - ND-2 (nd_stealth_route, seed 21, Routine, trunk r236-r239): the stealth route runs clean to the vault and through one
   lift trip. Fast mode (render loop + HUD canvases off between shots) took the run from ~80 to ~3 wall-s per game-s.
