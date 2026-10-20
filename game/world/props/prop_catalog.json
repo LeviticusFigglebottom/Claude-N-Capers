@@ -2714,6 +2714,42 @@
   "weight": 1.0,
   "z": 0.0
  },
+ "prop_cash_lift_car_w240": {
+  "aabb": [
+   -1.24,
+   0.0,
+   -1.24,
+   2.48,
+   2.6,
+   2.48
+  ],
+  "clear": 0.0,
+  "fixture": false,
+  "glb": "res://assets/props/prop_cash_lift_car_w240/prop_cash_lift_car_w240.glb",
+  "group": "bag_lift",
+  "has_light": false,
+  "hosts": [],
+  "keepout": [],
+  "kind": "lift_car",
+  "mount": "",
+  "nodes": [
+   "Car",
+   "DoorL",
+   "DoorR",
+   "Panel"
+  ],
+  "place": "none",
+  "prefab": "bag_lift",
+  "scene": "res://world/props/bag_lift/prop_cash_lift_car_w240.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": false,
+  "surface": "metal",
+  "top": 0.0,
+  "visibility_range_end": 0.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
  "prop_cash_pallet": {
   "aabb": [
    -0.6,
@@ -7652,6 +7688,41 @@
   "weight": 1.0,
   "z": 0.0
  },
+ "prop_hoist_cradle_w110": {
+  "aabb": [
+   -0.554,
+   0.0,
+   -0.354,
+   1.108,
+   1.865,
+   0.708
+  ],
+  "clear": 0.0,
+  "fixture": false,
+  "glb": "res://assets/props/prop_hoist_cradle_w110/prop_hoist_cradle_w110.glb",
+  "group": "bag_lift",
+  "has_light": false,
+  "hosts": [],
+  "keepout": [],
+  "kind": "lift_car",
+  "mount": "",
+  "nodes": [
+   "Car",
+   "DoorL",
+   "DoorR"
+  ],
+  "place": "none",
+  "prefab": "bag_lift",
+  "scene": "res://world/props/bag_lift/prop_hoist_cradle_w110.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": false,
+  "surface": "metal",
+  "top": 0.0,
+  "visibility_range_end": 0.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
  "prop_hose_reel": {
   "aabb": [
    -0.24,
@@ -8310,6 +8381,41 @@
   "weight": 1.0,
   "z": 0.0
  },
+ "prop_ladder_fire_escape_h300_g00": {
+  "aabb": [
+   -0.26,
+   0.0,
+   -0.0139,
+   0.52,
+   3.9119,
+   0.3428
+  ],
+  "clear": 0.0,
+  "fixture": false,
+  "glb": "res://assets/props/prop_ladder_fire_escape_h300_g00/prop_ladder_fire_escape_h300_g00.glb",
+  "group": "ladder",
+  "has_light": false,
+  "hosts": [],
+  "keepout": [],
+  "kind": "ladder",
+  "mount": "",
+  "nodes": [
+   "Bottom",
+   "Rails",
+   "Top"
+  ],
+  "place": "none",
+  "prefab": "ladder",
+  "scene": "res://world/props/ladder/prop_ladder_fire_escape_h300_g00.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": false,
+  "surface": "metal",
+  "top": 0.0,
+  "visibility_range_end": 0.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
  "prop_ladder_fire_escape_h420": {
   "aabb": [
    -0.27,
@@ -8336,6 +8442,41 @@
   "place": "none",
   "prefab": "ladder",
   "scene": "res://world/props/ladder/prop_ladder_fire_escape_h420.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": false,
+  "surface": "metal",
+  "top": 0.0,
+  "visibility_range_end": 0.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
+ "prop_ladder_rope_h400": {
+  "aabb": [
+   -0.25,
+   0.0,
+   -0.04,
+   0.5,
+   3.94,
+   0.08
+  ],
+  "clear": 0.0,
+  "fixture": false,
+  "glb": "res://assets/props/prop_ladder_rope_h400/prop_ladder_rope_h400.glb",
+  "group": "ladder",
+  "has_light": false,
+  "hosts": [],
+  "keepout": [],
+  "kind": "ladder",
+  "mount": "",
+  "nodes": [
+   "Bottom",
+   "Rails",
+   "Top"
+  ],
+  "place": "none",
+  "prefab": "ladder",
+  "scene": "res://world/props/ladder/prop_ladder_rope_h400.tscn",
   "seat_side": "front",
   "standoff": 0.0,
   "support": false,
@@ -8406,6 +8547,41 @@
   "place": "none",
   "prefab": "ladder",
   "scene": "res://world/props/ladder/prop_ladder_steel_h360_g25.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": false,
+  "surface": "metal",
+  "top": 0.0,
+  "visibility_range_end": 0.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
+ "prop_ladder_steel_h360_g35_cage": {
+  "aabb": [
+   -0.3669,
+   0.0,
+   -0.717,
+   0.7339,
+   4.6,
+   1.067
+  ],
+  "clear": 0.0,
+  "fixture": false,
+  "glb": "res://assets/props/prop_ladder_steel_h360_g35_cage/prop_ladder_steel_h360_g35_cage.glb",
+  "group": "ladder",
+  "has_light": false,
+  "hosts": [],
+  "keepout": [],
+  "kind": "ladder",
+  "mount": "",
+  "nodes": [
+   "Bottom",
+   "Rails",
+   "Top"
+  ],
+  "place": "none",
+  "prefab": "ladder",
+  "scene": "res://world/props/ladder/prop_ladder_steel_h360_g35_cage.tscn",
   "seat_side": "front",
   "standoff": 0.0,
   "support": false,
@@ -8625,6 +8801,77 @@
   "weight": 1.0,
   "z": 0.0
  },
+ "prop_laser_beams_h215x3": {
+  "aabb": [
+   -1.075,
+   -0.0,
+   -0.0061,
+   2.15,
+   0.014,
+   0.0121
+  ],
+  "clear": 0.0,
+  "fixture": false,
+  "glb": "res://assets/props/prop_laser_beams_h215x3/prop_laser_beams_h215x3.glb",
+  "group": "laser_grid",
+  "has_light": false,
+  "hosts": [],
+  "keepout": [],
+  "kind": "laser_beams",
+  "mount": "",
+  "nodes": [
+   "Beam0",
+   "Beam1",
+   "Beam2"
+  ],
+  "place": "none",
+  "prefab": "laser_grid",
+  "scene": "res://world/props/laser_grid/prop_laser_beams_h215x3.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": false,
+  "surface": "glass",
+  "top": 0.0,
+  "visibility_range_end": 0.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
+ "prop_laser_beams_h330x4": {
+  "aabb": [
+   -1.65,
+   -0.0,
+   -0.0061,
+   3.3,
+   0.014,
+   0.0121
+  ],
+  "clear": 0.0,
+  "fixture": false,
+  "glb": "res://assets/props/prop_laser_beams_h330x4/prop_laser_beams_h330x4.glb",
+  "group": "laser_grid",
+  "has_light": false,
+  "hosts": [],
+  "keepout": [],
+  "kind": "laser_beams",
+  "mount": "",
+  "nodes": [
+   "Beam0",
+   "Beam1",
+   "Beam2",
+   "Beam3"
+  ],
+  "place": "none",
+  "prefab": "laser_grid",
+  "scene": "res://world/props/laser_grid/prop_laser_beams_h330x4.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": false,
+  "surface": "glass",
+  "top": 0.0,
+  "visibility_range_end": 0.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
  "prop_laser_beams_h688x3": {
   "aabb": [
    -3.44,
@@ -8687,6 +8934,40 @@
   "place": "none",
   "prefab": "laser_grid",
   "scene": "res://world/props/laser_grid/prop_laser_beams_h688x4.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": false,
+  "surface": "glass",
+  "top": 0.0,
+  "visibility_range_end": 0.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
+ "prop_laser_beams_v260x2": {
+  "aabb": [
+   -0.0061,
+   0.0,
+   -0.007,
+   0.0121,
+   2.6,
+   0.014
+  ],
+  "clear": 0.0,
+  "fixture": false,
+  "glb": "res://assets/props/prop_laser_beams_v260x2/prop_laser_beams_v260x2.glb",
+  "group": "laser_grid",
+  "has_light": false,
+  "hosts": [],
+  "keepout": [],
+  "kind": "laser_beams",
+  "mount": "",
+  "nodes": [
+   "Beam0",
+   "Beam1"
+  ],
+  "place": "none",
+  "prefab": "laser_grid",
+  "scene": "res://world/props/laser_grid/prop_laser_beams_v260x2.tscn",
   "seat_side": "front",
   "standoff": 0.0,
   "support": false,
