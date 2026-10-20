@@ -24,6 +24,8 @@ const BAKE_DEPTH: float = 0.3
 ## (Not loot_spawn: its marker is a navmesh target, within 0.25 m of the bake.)
 const OBSTRUCT_KINDS: Array[String] = ["safe", "body_container", "secure_zone", "camera_station", "hack_terminal",
 	"bag_lift"]
+## Minimum width of a rig wall in the nav bake (see _nav_thick).
+const RIG_NAV_MIN: float = 0.2
 
 ## [node, property, names] bound once everything is built (targets, operator spawn).
 var _binds: Array[Array] = []
@@ -130,7 +132,20 @@ func _rig(host: Node3D, rows: Array) -> void:
 		if sb != null:
 			sb.collision_layer = 2
 			sb.set_meta(&"lc_subprop", true)   # levelcheck: each its own prop (not merged into the hoist's box)
-		obstruct(Transform3D.IDENTITY, AABB(mn, mx - mn))
+		obstruct(Transform3D.IDENTITY, _nav_thick(AABB(mn, mx - mn)))
+
+
+## A projected obstruction only marks the 0.1 m cells whose centre it covers, so a 5 cm shaft wall can fall between the
+## centres and leave a walkable seam (ENV P burn re-run 2: a path through ShaftE). Widen each thin horizontal axis,
+## centred on the wall, to RIG_NAV_MIN (two cells) for the bake only; the collider keeps its real size.
+static func _nav_thick(box: AABB) -> AABB:
+	var out: AABB = box
+	for ax: int in [0, 2]:
+		if out.size[ax] < RIG_NAV_MIN:
+			var c: float = out.position[ax] + out.size[ax] * 0.5
+			out.position[ax] = c - RIG_NAV_MIN * 0.5
+			out.size[ax] = RIG_NAV_MIN
+	return out
 
 
 ## bag_lift external call / send panel ([world min, world max, panel height], ostrander_federal_content.HOIST_PANEL):

@@ -81,6 +81,16 @@ func test_hoist_panel_usable_from_the_burn_route() -> void:
 		assert_true(not path.is_empty() and end.distance_to(use_at) <= REACH_M,
 			"navmesh path %s -> UsePoint %s (ends %s)" % [from, use_at, end])
 		print("  hoist panel: path %s -> UsePoint %s: %d points, ends %s" % [from, use_at, path.size(), end])
+	# 1b. ENV P burn re-run 2: no navmesh path cuts through the 5 cm ShaftE wall (x 24.60-24.65, z 14.97-15.75).
+	var thru: PackedVector3Array = NavigationServer3D.map_get_path(nav,
+		NavigationServer3D.map_get_closest_point(nav, Vector3(25.0, -4.0, 15.4)),
+		NavigationServer3D.map_get_closest_point(nav, Vector3(24.0, -4.0, 15.4)), true)
+	for i: int in range(thru.size() - 1):
+		var a: Vector3 = thru[i]
+		var b: Vector3 = thru[i + 1]
+		if (a.x - 24.625) * (b.x - 24.625) < 0.0:
+			var z: float = lerpf(a.z, b.z, (24.625 - a.x) / (b.x - a.x))
+			assert_false(z > 14.97 and z < 15.75, "nav path crosses ShaftE at z %.2f (%s)" % [z, thru])
 	# 2. From the UsePoint the panel is the aimed target: the LOS ray (mask 1) is not stopped by the rig.
 	_rt.teleport_crew(0, Transform3D(Basis.IDENTITY, use_at + Vector3.UP * 0.05))
 	await wait_physics_frames(3)
