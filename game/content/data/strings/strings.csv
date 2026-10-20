@@ -240,6 +240,7 @@ ui.blocked.no_deployable,You have none left
 ui.blocked.no_space,No room to place it here
 ui.blocked.push_bar_outside,Opens from the other side
 ui.blocked.lift_full,The lift is full
+ui.blocked.after_breach,Breach the floor first
 ui.results.title,Payday
 ui.results.title_heist,Payday: {heist}
 ui.results.success,Heist complete
