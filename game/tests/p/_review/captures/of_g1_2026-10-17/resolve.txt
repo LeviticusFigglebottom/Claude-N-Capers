@@ -1,0 +1,140 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+[OFP] RESOLVE map res://world/heists/ostrander_federal/ostrander_federal.tscn (scene only: all variant slots present)
+[OFP] RESOLVE laser_grid    LaserGrid  FOUND tag laser_grid               Variants/Group_laser_pattern/Slot_lz_sweep/LaserPost0/VaultLasers (21.0, -4.0, 10.9) (0.1 m from doc (21.0, -4.0, 11.0); 3 candidates)
+[OFP] RESOLVE vault_gate    Door       FOUND tag vault_gate               Gameplay/Doors/VaultGate (17.0, -4.0, 9.0) (0.0 m from doc (17.0, -4.0, 9.0); 93 candidates)
+[OFP] RESOLVE keycard       Node3D     FOUND tag keycard                  Variants/Group_keycard/Slot_kc_security/Keycard (22.6, 1.3, 5.6) (3.0 m from doc (22.0, 0.0, 3.0); 4 candidates)
+[OFP] RESOLVE time_lock     Node3D     FOUND tag time_lock                Gameplay/Devices/TimeLockConsole (33.9, -2.8, 11.6) (1.6 m from doc (33.0, -4.0, 12.0); 1 candidates)
+[OFP] RESOLVE vault_door    Door       FOUND tag vault_door               Gameplay/Doors/VaultDoor (30.0, -4.0, 13.0) (0.0 m from doc (30.0, -4.0, 13.0); 93 candidates)
+[OFP] RESOLVE vault_loot    LootSpawn  FOUND tag vault_loot               Gameplay/Loot/VaultCash (24.0, -4.0, 20.5) (2.0 m from doc (24.0, -4.0, 18.5); 4 candidates)
+[OFP] RESOLVE code_pc       Node3D     FOUND tag code_pc                  Variants/Group_code_pc/Slot_pc_exec/CodePC (20.5, 9.4, 3.2) (1.7 m from doc (19.0, 8.6, 3.0); 6 candidates)
+[OFP] RESOLVE drop_ladder   Ladder     FOUND tag fire_escape              Variants/Group_fire_escape/Slot_fe_down/FireEscapeDropLadder (0.6, 0.0, -2.8) (2.6 m from doc (-2.0, 0.0, -3.0); 3 candidates)
+[OFP] RESOLVE caged_ladder  Ladder     FOUND near                         Gameplay/Ladders/CagedLadder (46.0, 8.6, 17.5) (0.5 m from doc (46.0, 8.6, 17.0); 3 candidates)
+[OFP] RESOLVE hh_door       Door       FOUND tag head_house               Gameplay/Doors/HeadHouseDoor (14.5, 12.2, 7.0) (0.5 m from doc (14.0, 12.2, 7.0); 93 candidates)
+[OFP] RESOLVE rope_ladder   Ladder     FOUND near                         Gameplay/Ladders/RopeLadder (24.0, -4.0, 13.6) (2.0 m from doc (24.0, -2.0, 14.0); 3 candidates)
+[OFP] RESOLVE hoist         BagLift    FOUND tag hoist                    Gameplay/Lifts/Hoist (24.0, -4.0, 15.2) (1.2 m from doc (24.0, -4.0, 14.0); 2 candidates)
+[OFP] RESOLVE lid           Node3D     FOUND tag lid                      Gameplay/Markers/LidMarker (24.0, 0.0, 14.6) (0.6 m from doc (24.0, 0.0, 14.0); 1 candidates)
+[OFP] RESOLVE vault_drill   Node3D     FOUND tag vault_drill              Gameplay/Devices/LidDrill (24.0, 1.0, 14.6) (1.2 m from doc (24.0, 0.0, 14.0); 1 candidates)
+[OFP] RESOLVE ld_door       Door       FOUND tag dock_door                Variants/Group_side_door/Slot_door_fire_propped/DockPersonnelDoor (8.0, 0.0, 0.0) (0.0 m from doc (8.0, 0.0, 0.0); 93 candidates)
+[OFP] RESOLVE fire_exit     Door       FOUND tag fire_exit                Variants/Group_side_door/Slot_door_fire_propped/FireExitDoor (48.0, 0.0, 8.0) (0.0 m from doc (48.0, 0.0, 8.0); 93 candidates)
+[OFP] RESOLVE cash_lift     BagLift    FOUND tag cash_lift                Gameplay/Lifts/CashLift (11.5, -4.0, 1.5) (2.5 m from doc (11.5, -4.0, 4.0); 2 candidates)
+[OFP] RESOLVE e1_secure     SecureZone FOUND near                         Variants/Group_escape/Slot_esc_van_dock/SecureDock (5.0, 0.0, -4.3) (1.3 m from doc (5.0, 0.0, -3.0); 3 candidates)
+[OFP] RESOLVE e2_secure     SecureZone FALLBACK far (> 6.0 m)             Variants/Group_escape/Slot_esc_van_tannery/SecureTannery (50.4, 0.0, 14.3) (6.5 m from doc (52.0, 0.0, 8.0); 3 candidates)
+[OFP] RESOLVE e3_secure     SecureZone FALLBACK far (> 6.0 m)             Variants/Group_escape/Slot_esc_heli_terrace/SecureTerrace (42.5, 8.6, 26.0) (6.6 m from doc (36.0, 8.6, 27.0); 3 candidates)
+[OFP] RESOLVE e1_escape     EscapeZone FOUND near                         Variants/Group_escape/Slot_esc_van_dock/EscapeDock (10.5, 0.0, -3.0) (5.5 m from doc (5.0, 0.0, -3.0); 3 candidates)
+[OFP] RESOLVE e2_escape     EscapeZone FOUND near                         Variants/Group_escape/Slot_esc_van_tannery/EscapeTannery (51.0, 0.0, 6.5) (1.8 m from doc (52.0, 0.0, 8.0); 3 candidates)
+[OFP] RESOLVE e3_escape     EscapeZone FOUND near                         Variants/Group_escape/Slot_esc_heli_terrace/EscapeTerrace (35.5, 8.6, 27.0) (0.5 m from doc (36.0, 8.6, 27.0); 3 candidates)
+[OFP] RESOLVE spawn preplan_spawn_lane     FOUND x4 (21.0, 0.0, -6.0)
+[OFP] RESOLVE spawn preplan_spawn_tannery  FOUND x4 (57.0, 0.0, 20.0)
+[OFP] RESOLVE all LaserGrid (3): VaultLasers (21.0, -3.0, 10.3) [laser_grid]; VaultLasers (21.0, -4.0, 10.9) [laser_grid]; VaultLasers (21.0, -4.0, 10.9) [laser_grid]
+[OFP] RESOLVE all Ladder (3): RopeLadder (24.0, -4.0, 13.6); CagedLadder (46.0, 8.6, 17.5); FireEscapeDropLadder (0.6, 0.0, -2.8) [fire_escape]
+[OFP] RESOLVE all BagLift (2): CashLift (11.5, -4.0, 1.5) [cash_lift]; Hoist (24.0, -4.0, 15.2) [hoist]
+[OFP] RESOLVE all SecureZone (3): SecureDock (5.0, 0.0, -4.3) [secure]; SecureTannery (50.4, 0.0, 14.3) [secure]; SecureTerrace (42.5, 8.6, 26.0) [secure]
+[OFP] RESOLVE all EscapeZone (3): EscapeDock (10.5, 0.0, -3.0) [escape]; EscapeTannery (51.0, 0.0, 6.5) [escape]; EscapeTerrace (35.5, 8.6, 27.0) [escape]
+[INFO][rng][p1] run seed 1002
+[INFO][preplan][p1] assets []
+[INFO][variants][p1] seed 1002 resolved { &"manager_route": [&"mgr_gallery"], &"keycard": [&"kc_security"], &"code_pc": [&"pc_ops"], &"officers": [&"off_1"], &"server_room": [&"srv_gallery"], &"guard_post": [&"rover_basement", &"rover_dock"], &"security_room_staffed": [&"sec_empty"], &"camera": [&"cam_c"], &"laser_pattern": [&"lz_timed"], &"customers": [&"cust_4"], &"side_door": [&"door_dock_open"], &"fire_escape": [&"fe_down"], &"escape": [&"esc_van_tannery"], &"drill_delivery": [&"drop_terrace"], &"president_safe": [&"ps_bonds"], &"vip": [&"vip_out"], &"guard_extra": [], &"civ_extra": [], &"time_lock_s": 150.0, &"drill_eta_s": 60.0, &"escape_eta_s": 150.0, &"cash_bags": 8, &"gold_bags": 3, &"deposit_boxes": 6, "rare": [] }
+WARNING: [WARN][prefab][p1] PresidentSafe: content PresidentValuables3 sits outside the safe body; moved to LootAnchor
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] _write (res://core/log.gd:43)
+         [1] warn (res://core/log.gd:21)
+         [2] _stow_contents (res://systems/prefabs/safe/safe.gd:527)
+         [3] _prefab_ready (res://systems/prefabs/safe/safe.gd:161)
+         [4] _ready (res://systems/prefabs/gameplay_prefab.gd:87)
+         [5] start (res://systems/heist/heist_runtime.gd:167)
+         [6] launch (res://systems/heist/heist_launcher.gd:105)
+         [7] _load_map (res://systems/heist/heist_launcher.gd:169)
+WARNING: [WARN][prefab][p1] PresidentSafe: content PresidentValuables2 sits outside the safe body; moved to LootAnchor
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] _write (res://core/log.gd:43)
+         [1] warn (res://core/log.gd:21)
+         [2] _stow_contents (res://systems/prefabs/safe/safe.gd:527)
+         [3] _prefab_ready (res://systems/prefabs/safe/safe.gd:161)
+         [4] _ready (res://systems/prefabs/gameplay_prefab.gd:87)
+         [5] start (res://systems/heist/heist_runtime.gd:167)
+         [6] launch (res://systems/heist/heist_launcher.gd:105)
+         [7] _load_map (res://systems/heist/heist_launcher.gd:169)
+WARNING: [WARN][prefab][p1] PresidentSafe: content PresidentValuables1 sits outside the safe body; moved to LootAnchor
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] _write (res://core/log.gd:43)
+         [1] warn (res://core/log.gd:21)
+         [2] _stow_contents (res://systems/prefabs/safe/safe.gd:527)
+         [3] _prefab_ready (res://systems/prefabs/safe/safe.gd:161)
+         [4] _ready (res://systems/prefabs/gameplay_prefab.gd:87)
+         [5] start (res://systems/heist/heist_runtime.gd:167)
+         [6] launch (res://systems/heist/heist_launcher.gd:105)
+         [7] _load_map (res://systems/heist/heist_launcher.gd:169)
+WARNING: [WARN][prefab][p1] PresidentSafe: content PresidentBonds sits outside the safe body; moved to LootAnchor
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] _write (res://core/log.gd:43)
+         [1] warn (res://core/log.gd:21)
+         [2] _stow_contents (res://systems/prefabs/safe/safe.gd:527)
+         [3] _prefab_ready (res://systems/prefabs/safe/safe.gd:161)
+         [4] _ready (res://systems/prefabs/gameplay_prefab.gd:87)
+         [5] start (res://systems/heist/heist_runtime.gd:167)
+         [6] launch (res://systems/heist/heist_launcher.gd:105)
+         [7] _load_map (res://systems/heist/heist_launcher.gd:169)
+[INFO][heist][p1] phase LOADING -> CASING
+[OFP 2.1s t=-1.0] objective casing -> 1
+[OFP 2.1s t=-1.0] objective keycard -> 1
+[OFP 2.1s t=-1.0] objective code_pc -> 1
+[OFP 2.1s t=-1.0] objective vault_gate -> 1
+[OFP 2.1s t=-1.0] objective time_lock -> 1
+[OFP 2.1s t=-1.0] objective vault_loot -> 1
+[OFP 2.1s t=-1.0] objective secure -> 1
+[OFP 2.1s t=-1.0] objective escape -> 1
+[INFO][director][p1] prewarm: 18 of 18 scenes loaded in 169 ms
+[INFO][prefab][p1] CameraStation: security room unstaffed
+[OFP 2.5s t=0.0] launched ostrander_federal seed 1002 diff 0 variants { &"manager_route": [&"mgr_gallery"], &"keycard": [&"kc_security"], &"code_pc": [&"pc_ops"], &"officers": [&"off_1"], &"server_room": [&"srv_gallery"], &"guard_post": [&"rover_basement", &"rover_dock"], &"security_room_staffed": [&"sec_empty"], &"camera": [&"cam_c"], &"laser_pattern": [&"lz_timed"], &"customers": [&"cust_4"], &"side_door": [&"door_dock_open"], &"fire_escape": [&"fe_down"], &"escape": [&"esc_van_tannery"], &"drill_delivery": [&"drop_terrace"], &"president_safe": [&"ps_bonds"], &"vip": [&"vip_out"], &"guard_extra": [], &"civ_extra": [], &"time_lock_s": 150.0, &"drill_eta_s": 60.0, &"escape_eta_s": 150.0, &"cash_bags": 8, &"gold_bags": 3, &"deposit_boxes": 6, "rare": [] }
+[OFP 4.4s t=2.0] SHORTCUT traversal: NPCs despawned, crew stealth_hidden
+[OFP 4.6s t=2.2] FINDING calibrate: mouse X motion did not move the view
+[OFP 4.8s t=2.4] FINDING calibrate: mouse Y motion did not move the view
+[OFP 4.8s t=2.4] pilot: calibrated 0.001600 rad/px yaw, 0.001600 rad/px pitch (settings formula said (0.0016, 0.0016))
+[OFP 4.8s t=2.4] spawn (21.0, 0.0, -6.0)
+[OFP] RESOLVE point vc_west         OK navmesh (18.5, -3.8, 11.0) (0.20 m off doc (18.5, -4.0, 11.0))
+[OFP] RESOLVE point ga_stand        OK navmesh (24.0, 5.2, 19.2) (0.20 m off doc (24.0, 5.0, 19.2))
+[OFP] RESOLVE point terrace_e_stand OK navmesh (47.2, 8.8, 19.0) (0.20 m off doc (47.2, 8.6, 19.0))
+[OFP] RESOLVE point fe_roof         OK navmesh (2.0, 12.4, 2.5) (0.20 m off doc (2.0, 12.2, 2.5))
+[OFP] RESOLVE point lane_start      OK navmesh (20.0, 0.2, -5.0) (0.20 m off doc (20.0, 0.0, -5.0))
+[OFP] RESOLVE point ld_in           OK navmesh (5.0, 0.2, 4.0) (0.20 m off doc (5.0, 0.0, 4.0))
+[OFP] RESOLVE point bc_east         OK navmesh (45.5, 0.2, 8.3) (0.20 m off doc (45.5, 0.0, 8.3))
+[OFP] RESOLVE point sa_b            OK navmesh (14.0, -3.8, 8.2) (0.20 m off doc (14.0, -4.0, 8.2))
+[OFP] RESOLVE point sa_g            OK navmesh (14.0, 0.2, 8.2) (0.20 m off doc (14.0, 0.0, 8.2))
+[OFP] RESOLVE point sa_gallery      OK navmesh (14.0, 5.2, 8.2) (0.20 m off doc (14.0, 5.0, 8.2))
+[OFP] RESOLVE point sa_exec         OK navmesh (14.0, 8.8, 8.2) (0.20 m off doc (14.0, 8.6, 8.2))
+[OFP] RESOLVE point ghost_mask      OK navmesh (28.0, 0.2, -6.8) (0.20 m off doc (28.0, 0.0, -6.8))
+[OFP] RESOLVE point ghost_lk        OK navmesh (3.0, -3.8, 4.0) (0.20 m off doc (3.0, -4.0, 4.0))
+[OFP] RESOLVE point ghost_e3        OK navmesh (11.5, 8.8, 4.0) (0.20 m off doc (11.5, 8.6, 4.0))
+[OFP] RESOLVE point ghost_rc        OK navmesh (1.0, -3.8, 16.0) (0.20 m off doc (1.0, -4.0, 16.0))
+[OFP] RESOLVE point ghost_cq        OK navmesh (11.5, -3.8, 4.0) (0.20 m off doc (11.5, -4.0, 4.0))
+[OFP] RESOLVE point ghost_ld_stage  OK navmesh (8.0, 0.2, 1.6) (0.20 m off doc (8.0, 0.0, 1.6))
+[OFP] RESOLVE live  laser_grid    VaultLasers tag (21.0, -4.0, 10.9)
+[OFP] RESOLVE live  vault_gate    VaultGate tag (17.0, -4.0, 9.0)
+[OFP] RESOLVE live  keycard       Keycard tag (22.6, 1.3, 5.6)
+[OFP] RESOLVE live  time_lock     TimeLockConsole tag (33.9, -2.8, 11.6)
+[OFP] RESOLVE live  vault_door    VaultDoor tag (30.0, -4.0, 13.0)
+[OFP] RESOLVE live  vault_loot    VaultCash tag (24.0, -4.0, 20.5)
+[OFP] RESOLVE live  code_pc       CodePC tag (12.0, 5.8, 12.5)
+[OFP] RESOLVE live  drop_ladder   FireEscapeDropLadder tag (0.6, 0.0, -2.8)
+[OFP] RESOLVE live  caged_ladder  CagedLadder near (46.0, 8.6, 17.5)
+[OFP] RESOLVE live  hh_door       HeadHouseDoor tag (14.5, 12.2, 7.0)
+[OFP] RESOLVE live  rope_ladder   CagedLadder far (46.0, 8.6, 17.5)
+[OFP] RESOLVE live  hoist         CashLift far (11.5, -4.0, 1.5)
+[OFP] RESOLVE live  lid           LidMarker tag (24.0, 0.0, 14.6)
+[OFP] RESOLVE live  vault_drill   LidDrill tag (24.0, 1.0, 14.6)
+[OFP] RESOLVE live  ld_door       DockPersonnelDoor tag (8.0, 0.0, 0.0)
+[OFP] RESOLVE live  fire_exit     FireExitDoor tag (48.0, 0.0, 8.0)
+[OFP] RESOLVE live  cash_lift     CashLift tag (11.5, -4.0, 1.5)
+[OFP] RESOLVE live  e1_secure     SecureTannery far (50.4, 0.0, 14.3)
+[OFP] RESOLVE live  e2_secure     SecureTannery far (50.4, 0.0, 14.3)
+[OFP] RESOLVE live  e3_secure     SecureTannery far (50.4, 0.0, 14.3)
+[OFP] RESOLVE live  e1_escape     EscapeTannery far (51.0, 0.0, 6.5)
+[OFP] RESOLVE live  e2_escape     EscapeTannery near (51.0, 0.0, 6.5)
+[OFP] RESOLVE live  e3_escape     EscapeTannery far (51.0, 0.0, 6.5)
+[OFP] RESULT RESOLVE GAPS missing/fallback: e2_secure, e3_secure
+WARNING: 205 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)

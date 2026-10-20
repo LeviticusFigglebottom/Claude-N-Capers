@@ -72,6 +72,11 @@ PRESET = {
             "tint": "#E6EEEA", "dirt": "#8A877E", "alpha": 0.1, "dirt_alpha": 0.25,
             "rough": (0.03, 0.08), "dirt_rough": 0.5, "wear": 0.0, "grime": 0.5,
         },
+        "glass_frosted": {
+            # D-142: one shared frosted look (the maps' privacy panes; the props' pr_glass_frosted points at it)
+            "tint": "#E4E8E6", "shade": "#C9D0CF", "alpha": (0.78, 0.88), "wipe_clear": 0.06,
+            "rough": (0.55, 0.7), "wear": 0.0, "grime": 0.0,
+        },
         "rubber_black": {
             "base": "#3C3C3C", "rough": (0.84, 0.92), "wear": 0.25, "grime": 0.2, "relief_ref_mm": 0.2,
             "specular": 0.35, "lum_min": 0.02,

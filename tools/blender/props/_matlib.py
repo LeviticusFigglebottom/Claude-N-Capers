@@ -158,6 +158,15 @@ TINTED: dict[str, dict] = {
     "linen_white": {"source": "fabric_upholstery", "color": "#D8D4CB", "roughness": 1.0},
     "teak": {"source": "wood_veneer_walnut", "color": "#9A7A58", "roughness": 0.7},
     "felt_dark": {"source": "fabric_upholstery", "color": "#2F3A35", "roughness": 1.0},
+    # Ostrander Federal G2 landmarks / rooms (OF-C2 lane B, ostrander_federal.md palette: limestone #CBC3B0, deep
+    # ultramarine #2F3F6B, meridian bronze #B8873A; the sunburst is gilded). `of_` keys: one block per lane.
+    "of_bronze": {"source": "metal_painted", "color": "#B8873A", "roughness": 0.55, "metallic": 1.0},
+    "of_bronze_dark": {"source": "metal_painted", "color": "#6B4E2C", "roughness": 0.7, "metallic": 1.0},
+    "of_gilt": {"source": "metal_painted", "color": "#C9A55A", "roughness": 0.4, "metallic": 1.0},
+    "of_limestone": {"source": "marble_cream", "color": "#CBC3B0", "roughness": 1.3},
+    "of_ultramarine": {"source": "fabric_upholstery", "color": "#2F3F6B", "roughness": 1.0},
+    "of_leather_ultramarine": {"source": "leather_dark", "color": "#2F3F6B", "roughness": 0.8},
+    "of_box_steel": {"source": "metal_painted", "color": "#A9ACAD", "roughness": 0.45, "metallic": 1.0},
 }
 
 # Painted canvases (GN-C2): key -> albedo PNG from tools/texgen/paintings.py. The prop material is a plain
@@ -198,9 +207,11 @@ EMISSIVE: dict[str, dict] = {
     "emit_laser": {"color": "#3A0806", "emission": "#FF0E06", "energy": 1.4},
 }
 
-# Transparent variants of glass_clear (library albedo with alpha x colour).
+# Transparent variants of the library glass (library albedo with alpha x colour). D-142: glass_frosted is the texgen
+# `glass_frosted` library material untinted (its own tint #E4E8E6, alpha ~0.82), the one frosted look the maps' privacy
+# panes share.
 GLASS: dict[str, dict] = {
-    "glass_frosted": {"source": "glass_clear", "color": "#E4E8E6", "alpha": 0.82},
+    "glass_frosted": {"source": "glass_frosted", "color": "#FFFFFF", "alpha": 1.0},
     "glass_tinted": {"source": "glass_clear", "color": "#3A4044", "alpha": 0.9},
     "glass_teal": {"source": "glass_clear", "color": "#5D8C8F", "alpha": 0.6},
 }

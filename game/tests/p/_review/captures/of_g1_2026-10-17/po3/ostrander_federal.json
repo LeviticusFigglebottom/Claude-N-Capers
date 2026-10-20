@@ -1,0 +1,402 @@
+{
+ "approach": "run",
+ "bounds": {
+  "position": [
+   -44.0,
+   -4.3,
+   -50.0
+  ],
+  "size": [
+   138.0,
+   44.3,
+   140.0
+  ]
+ },
+ "capsule_radius": 0.35,
+ "clusters": [],
+ "dirs": 8,
+ "heist": "ostrander_federal",
+ "low_blockers": [
+  {
+   "at": [
+    17.37,
+    -0.75,
+    38.17
+   ],
+   "class": "StaticBody3D",
+   "count": 114,
+   "layer": "1 (world_static)",
+   "path": "OstranderFederal/Geometry/Site/Grade/GradeApron",
+   "shape": "BoxShape3D (48.20, 1.50, 1.80)",
+   "shape_node": "Collision",
+   "top_above_floor_m": 0.75,
+   "visible_mesh_top": 0.75
+  },
+  {
+   "at": [
+    16.17,
+    5.0,
+    11.37
+   ],
+   "class": "StaticBody3D",
+   "count": 36,
+   "layer": "1 (world_static)",
+   "path": "OstranderFederal/Props/MapBuilt/WorkstationsOF1",
+   "shape": "BoxShape3D (3.20, 0.75, 1.60)",
+   "shape_node": "Collision",
+   "top_above_floor_m": 0.75,
+   "visible_mesh_top": 0.75
+  },
+  {
+   "at": [
+    22.17,
+    5.0,
+    12.57
+   ],
+   "class": "StaticBody3D",
+   "count": 34,
+   "layer": "1 (world_static)",
+   "path": "OstranderFederal/Props/MapBuilt/WorkstationsOF2",
+   "shape": "BoxShape3D (3.20, 0.75, 1.60)",
+   "shape_node": "Collision",
+   "top_above_floor_m": 0.75,
+   "visible_mesh_top": 0.75
+  },
+  {
+   "at": [
+    8.97,
+    -0.75,
+    44.77
+   ],
+   "class": "StaticBody3D",
+   "count": 18,
+   "layer": "1 (world_static)",
+   "path": "OstranderFederal/Props/MapBuilt/PlazaBench1",
+   "shape": "BoxShape3D (1.80, 0.45, 0.50)",
+   "shape_node": "Collision",
+   "top_above_floor_m": 0.45,
+   "visible_mesh_top": 0.45
+  },
+  {
+   "at": [
+    40.97,
+    -0.75,
+    44.77
+   ],
+   "class": "StaticBody3D",
+   "count": 18,
+   "layer": "1 (world_static)",
+   "path": "OstranderFederal/Props/MapBuilt/PlazaBench2",
+   "shape": "BoxShape3D (1.80, 0.45, 0.50)",
+   "shape_node": "Collision",
+   "top_above_floor_m": 0.45,
+   "visible_mesh_top": 0.45
+  },
+  {
+   "at": [
+    31.037,
+    0.0,
+    31.037
+   ],
+   "class": "StaticBody3D",
+   "count": 18,
+   "layer": "1 (world_static)",
+   "path": "OstranderFederal/Props/MapBuilt/HallBenchSE",
+   "shape": "BoxShape3D (1.80, 0.45, 0.50)",
+   "shape_node": "Collision",
+   "top_above_floor_m": 0.45,
+   "visible_mesh_top": 0.45
+  },
+  {
+   "at": [
+    16.97,
+    0.0,
+    30.77
+   ],
+   "class": "StaticBody3D",
+   "count": 18,
+   "layer": "1 (world_static)",
+   "path": "OstranderFederal/Props/MapBuilt/HallBenchSW",
+   "shape": "BoxShape3D (1.80, 0.45, 0.50)",
+   "shape_node": "Collision",
+   "top_above_floor_m": 0.45,
+   "visible_mesh_top": 0.45
+  },
+  {
+   "at": [
+    11.37,
+    5.0,
+    11.77
+   ],
+   "class": "StaticBody3D",
+   "count": 16,
+   "layer": "1 (world_static)",
+   "path": "OstranderFederal/Props/MapBuilt/DeskOF",
+   "shape": "BoxShape3D (0.70, 0.75, 1.40)",
+   "shape_node": "Collision",
+   "top_above_floor_m": 0.75,
+   "visible_mesh_top": 0.75
+  },
+  {
+   "at": [
+    4.37,
+    -4.0,
+    4.77
+   ],
+   "class": "StaticBody3D",
+   "count": 16,
+   "layer": "1 (world_static)",
+   "path": "OstranderFederal/Props/MapBuilt/BenchLK",
+   "shape": "BoxShape3D (1.60, 0.45, 0.40)",
+   "shape_node": "Collision",
+   "top_above_floor_m": 0.45,
+   "visible_mesh_top": 0.45
+  },
+  {
+   "at": [
+    1.903,
+    5.0,
+    11.903
+   ],
+   "class": "StaticBody3D",
+   "count": 14,
+   "layer": "1 (world_static)",
+   "path": "OstranderFederal/Props/MapBuilt/DeskAO1",
+   "shape": "BoxShape3D (0.70, 0.75, 1.40)",
+   "shape_node": "Collision",
+   "top_above_floor_m": 0.75,
+   "visible_mesh_top": 0.75
+  },
+  {
+   "at": [
+    37.97,
+    -4.0,
+    10.37
+   ],
+   "class": "StaticBody3D",
+   "count": 12,
+   "layer": "1 (world_static)",
+   "path": "OstranderFederal/Props/MapBuilt/AttendantDesk",
+   "shape": "BoxShape3D (1.60, 0.75, 0.70)",
+   "shape_node": "Collision",
+   "top_above_floor_m": 0.75,
+   "visible_mesh_top": 0.75
+  },
+  {
+   "at": [
+    44.37,
+    0.0,
+    13.57
+   ],
+   "class": "StaticBody3D",
+   "count": 12,
+   "layer": "1 (world_static)",
+   "path": "OstranderFederal/Props/MapBuilt/CoffeeTablePC",
+   "shape": "BoxShape3D (0.80, 0.45, 0.80)",
+   "shape_node": "Collision",
+   "top_above_floor_m": 0.45,
+   "visible_mesh_top": 0.45
+  },
+  {
+   "at": [
+    47.903,
+    -0.75,
+    39.837
+   ],
+   "class": "StaticBody3D",
+   "count": 11,
+   "layer": "1 (world_static)",
+   "path": "OstranderFederal/Geometry/Site/TanneryRamp",
+   "shape": "ConvexPolygonShape3D",
+   "shape_node": "Collision",
+   "top_above_floor_m": 0.75,
+   "visible_mesh_top": 0.75
+  },
+  {
+   "at": [
+    6.17,
+    0.0,
+    8.17
+   ],
+   "class": "StaticBody3D",
+   "count": 8,
+   "layer": "1 (world_static)",
+   "path": "OstranderFederal/Props/MapBuilt/BenchLD",
+   "shape": "BoxShape3D (1.60, 0.45, 0.40)",
+   "shape_node": "Collision",
+   "top_above_floor_m": 0.45,
+   "visible_mesh_top": 0.45
+  },
+  {
+   "at": [
+    17.97,
+    -0.75,
+    39.37
+   ],
+   "class": "StaticBody3D",
+   "count": 8,
+   "layer": "1 (world_static)",
+   "path": "OstranderFederal/Geometry/Site/PlazaSteps/Ramp",
+   "shape": "ConvexPolygonShape3D",
+   "shape_node": "Prism0",
+   "top_above_floor_m": 0.75,
+   "visible_mesh_top": 0.15
+  },
+  {
+   "at": [
+    31.57,
+    5.0,
+    13.37
+   ],
+   "class": "StaticBody3D",
+   "count": 8,
+   "layer": "1 (world_static)",
+   "path": "OstranderFederal/Props/MapBuilt/ConferenceTable",
+   "shape": "BoxShape3D (3.00, 0.75, 1.20)",
+   "shape_node": "Collision",
+   "top_above_floor_m": 0.75,
+   "visible_mesh_top": 0.75
+  },
+  {
+   "at": [
+    39.303,
+    0.0,
+    26.437
+   ],
+   "class": "StaticBody3D",
+   "count": 8,
+   "layer": "1 (world_static)",
+   "path": "OstranderFederal/Props/MapBuilt/HallBenchE2",
+   "shape": "BoxShape3D (0.50, 0.45, 1.80)",
+   "shape_node": "Collision",
+   "top_above_floor_m": 0.45,
+   "visible_mesh_top": 0.45
+  },
+  {
+   "at": [
+    39.303,
+    0.0,
+    21.437
+   ],
+   "class": "StaticBody3D",
+   "count": 8,
+   "layer": "1 (world_static)",
+   "path": "OstranderFederal/Props/MapBuilt/HallBenchE1",
+   "shape": "BoxShape3D (0.50, 0.45, 1.80)",
+   "shape_node": "Collision",
+   "top_above_floor_m": 0.45,
+   "visible_mesh_top": 0.45
+  },
+  {
+   "at": [
+    8.703,
+    0.0,
+    22.037
+   ],
+   "class": "StaticBody3D",
+   "count": 7,
+   "layer": "1 (world_static)",
+   "path": "OstranderFederal/Props/MapBuilt/HallBenchW1",
+   "shape": "BoxShape3D (0.50, 0.45, 1.80)",
+   "shape_node": "Collision",
+   "top_above_floor_m": 0.45,
+   "visible_mesh_top": 0.45
+  },
+  {
+   "at": [
+    8.703,
+    0.0,
+    28.037
+   ],
+   "class": "StaticBody3D",
+   "count": 7,
+   "layer": "1 (world_static)",
+   "path": "OstranderFederal/Props/MapBuilt/HallBenchW2",
+   "shape": "BoxShape3D (0.50, 0.45, 1.80)",
+   "shape_node": "Collision",
+   "top_above_floor_m": 0.45,
+   "visible_mesh_top": 0.45
+  },
+  {
+   "at": [
+    17.77,
+    -0.75,
+    38.97
+   ],
+   "class": "StaticBody3D",
+   "count": 6,
+   "layer": "1 (world_static)",
+   "path": "OstranderFederal/Geometry/Site/Grade/GradeApronSteps",
+   "shape": "BoxShape3D (12.00, 1.50, 0.80)",
+   "shape_node": "Collision",
+   "top_above_floor_m": 0.75,
+   "visible_mesh_top": 0.75
+  },
+  {
+   "at": [
+    25.37,
+    -4.0,
+    9.57
+   ],
+   "class": "StaticBody3D",
+   "count": 6,
+   "layer": "1 (world_static)",
+   "path": "OstranderFederal/Props/MapBuilt/ViewingBench",
+   "shape": "BoxShape3D (1.60, 0.45, 0.45)",
+   "shape_node": "Collision",
+   "top_above_floor_m": 0.45,
+   "visible_mesh_top": 0.45
+  },
+  {
+   "at": [
+    47.503,
+    -0.678,
+    4.503
+   ],
+   "class": "StaticBody3D",
+   "count": 1,
+   "layer": "1 (world_static)",
+   "path": "OstranderFederal/Geometry/Building/Walls/FloorB/BZ0480_0_00",
+   "shape": "BoxShape3D (0.40, 4.00, 25.00)",
+   "shape_node": "Collision",
+   "top_above_floor_m": 0.6783,
+   "visible_mesh_top": 0.6783
+  }
+ ],
+ "max_slope_deg": 45.0,
+ "outcomes": {
+  "ok": 20000
+ },
+ "rejected": {
+  "blocked": 5425,
+  "gap": 207,
+  "ladder_grab": 82,
+  "start_not_clean": 452,
+  "tall": 4
+ },
+ "samples": 5060,
+ "seed": 1002,
+ "sim_ticks": 222704,
+ "snags": [],
+ "spacing_m": 1.0,
+ "stance": "walk",
+ "step_height_m": 0.35,
+ "times_s": {
+  "flood_s": 4.281,
+  "launch_s": 2.169,
+  "trials_s": 288.128
+ },
+ "trials": 20000,
+ "trials_by_max_step": {
+  "0.01-0.05 m": "206/206 ok",
+  "0.05-0.10 m": "30/30 ok",
+  "0.10-0.20 m": "11/11 ok",
+  "0.20-0.36 m": "11/11 ok"
+ },
+ "trials_by_tier": {
+  "1": 1960,
+  "3": 18040
+ },
+ "walk_speed": 3.5,
+ "walkable_edges": 34762
+}

@@ -129,12 +129,12 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## slopes: No walkable slope < 50° outside the play mesh
 
-- 1809 x 1969 columns (0.25 m), 609011 surface samples, 0 collider(s) with reachable walkable surfaces outside play
+- 1809 x 1969 columns (0.25 m), 609006 surface samples, 0 collider(s) with reachable walkable surfaces outside play
 
 
 ## navmesh: Navmesh
 
-- navmesh: 2269 polygons, cell 0.10/0.10 m
+- navmesh: 2270 polygons, cell 0.10/0.10 m
 - 205 markers checked
 | room | walkable samples | covered | coverage |
 |---|---|---|---|
@@ -155,7 +155,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `Rooms/RoomC2` | 357 | 357 | 100% |
 | `Rooms/RoomSR` | 143 | 143 | 100% |
 | `Rooms/RoomAN` | 442 | 440 | 100% |
-| `Rooms/RoomM1` | 55 | 55 | 100% |
+| `Rooms/RoomM1` | 57 | 57 | 100% |
 | `Rooms/RoomM2` | 58 | 58 | 100% |
 | `Rooms/RoomM3` | 13 | 13 | 100% |
 | `Rooms/RoomMC` | 105 | 105 | 100% |
@@ -296,17 +296,17 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `Gatehouse` | 916 | 136604 | 7 |
 | `HallPlatform` | 1033 | 143816 | 6 |
 | `HallFloor` | 1813 | 315340 | 8 |
-| `ChamberA` | 1747 | 305254 | 6 |
+| `ChamberA` | 1745 | 305122 | 6 |
 | `ChamberB` | 1214 | 193970 | 7 |
 | `Spine` | 710 | 124238 | 5 |
 | `Anteroom` | 1897 | 329898 | 7 |
 | `Strongroom` | 1322 | 208992 | 8 |
 | `Packing` | 1018 | 173374 | 5 |
-| `Plant` | 999 | 165576 | 2 |
+| `Plant` | 996 | 166368 | 2 |
 | `Workshop` | 1168 | 191266 | 5 |
 | `Reception` | 510 | 81604 | 2 |
-| `Dispatch` | 755 | 127666 | 2 |
-| `CountRoom` | 1086 | 188692 | 6 |
+| `Dispatch` | 760 | 129250 | 2 |
+| `CountRoom` | 908 | 146690 | 2 |
 | `BreakRoom` | 561 | 82130 | 2 |
 | `LockerRoom` | 756 | 112378 | 2 |
 | `QuayShed` | 133 | 19136 | 1 |

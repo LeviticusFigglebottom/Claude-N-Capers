@@ -1,5 +1,5 @@
 {
-	"version": 9,
+	"version": 10,
 	"profile_name": "Maskmaker",
 	"cash": 230000,
 	"stash": 1900000,
@@ -33,6 +33,7 @@
 	"career": {"totals": {}, "heists": {}, "difficulties": {}, "bags": {}, "weapons": {}},
 	"weapon_finishes": {},
 	"freshness": {"recent": [], "runs": 0, "last_run": {}, "completed": []},
+	"crew_loadouts": [{"weapon": "", "mods": [], "armor": "", "mask": "", "outfit": ""}, {"weapon": "", "mods": [], "armor": "", "mask": "", "outfit": ""}, {"weapon": "", "mods": [], "armor": "", "mask": "", "outfit": ""}],
 	"stats": {"heists_completed": 40, "heists_failed": 4},
 	"settings": {}
 }

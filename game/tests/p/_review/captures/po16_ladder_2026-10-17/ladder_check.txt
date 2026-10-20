@@ -1,0 +1,7 @@
+[LADDER t=1.3] pilot: calibrated 0.001600 rad/px yaw, 0.001600 rad/px pitch (settings formula said (0.0016, 0.0016))
+[LADDER] ROW walk_in_attach|PASS|y 1.20 free true prefab_climb false
+[LADDER] ROW full_look|PASS|y 1.24 -> 1.24
+[LADDER] ROW step_off_top|PASS|at (0.0, 3.000985, -5.479169) top (0.0, 3.0, -5.6)
+[LADDER] ROW climb_down|PASS|at (0.0, 0.000882, -6.4025)
+[LADDER] ROW jump_off|PASS|y 0.00
+[LADDER] RESULT PASS

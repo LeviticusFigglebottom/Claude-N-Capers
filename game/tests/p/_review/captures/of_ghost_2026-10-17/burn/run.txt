@@ -1,0 +1,493 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+Vulkan 1.4.318 - Forward+ - Using Device #0: Unknown - llvmpipe (LLVM 20.1.2, 256 bits)
+
+[OFP 0.0s t=-1.0] === burn ===
+[INFO][rng][p1] run seed 1002
+[INFO][preplan][p1] assets []
+[INFO][variants][p1] seed 1002 resolved { &"manager_route": [&"mgr_gallery"], &"keycard": [&"kc_security"], &"code_pc": [&"pc_ops"], &"officers": [&"off_1"], &"server_room": [&"srv_gallery"], &"guard_post": [&"rover_basement", &"rover_dock"], &"security_room_staffed": [&"sec_empty"], &"camera": [&"cam_c"], &"laser_pattern": [&"lz_timed"], &"customers": [&"cust_4"], &"side_door": [&"door_dock_open"], &"fire_escape": [&"fe_down"], &"escape": [&"esc_van_tannery"], &"drill_delivery": [&"drop_dock"], &"president_safe": [&"ps_empty"], &"vip": [&"vip_out"], &"guard_extra": [], &"civ_extra": [], &"time_lock_s": 150.0, &"drill_eta_s": 60.0, &"escape_eta_s": 120.0, &"cash_bags": 10, &"gold_bags": 4, &"deposit_boxes": 9, "rare": [] }
+[INFO][heist][p1] vfx prewarm: 630 ms
+[INFO][heist][p1] phase LOADING -> CASING
+[OFP 6.6s t=-1.0] objective casing -> 1
+[OFP 6.6s t=-1.0] objective keycard -> 1
+[OFP 6.6s t=-1.0] objective code_hint -> 1
+[OFP 6.6s t=-1.0] objective code_pc -> 1
+[OFP 6.6s t=-1.0] objective server -> 1
+[OFP 6.6s t=-1.0] objective vault_gate -> 1
+[OFP 6.6s t=-1.0] objective lasers -> 1
+[OFP 6.6s t=-1.0] objective time_lock -> 0
+[OFP 6.6s t=-1.0] objective time_lock_wait -> 0
+[OFP 6.6s t=-1.0] objective vault_loot -> 0
+[OFP 6.6s t=-1.0] objective gold_cage -> 0
+[OFP 6.6s t=-1.0] objective secure -> 1
+[OFP 6.6s t=-1.0] objective deposit_boxes -> 1
+[OFP 6.6s t=-1.0] objective bond_safe -> 1
+[OFP 6.6s t=-1.0] objective president_safe -> 1
+[OFP 6.6s t=-1.0] objective server_drives -> 1
+[OFP 6.6s t=-1.0] objective drill_delivery -> 0
+[OFP 6.6s t=-1.0] objective vault_drill -> 0
+[OFP 6.6s t=-1.0] objective vault_breach -> 0
+[OFP 6.6s t=-1.0] objective escape_wait -> 0
+[OFP 6.6s t=-1.0] objective escape -> 0
+[INFO][prefab][p1] Hoist disabled
+[INFO][prefab][p1] RopeLadder disabled
+[INFO][prefab][p1] VaultBoxN10 disabled
+[INFO][prefab][p1] VaultBoxN11 disabled
+[INFO][prefab][p1] VaultBoxS01 disabled
+[INFO][prefab][p1] VaultBoxS02 disabled
+[INFO][prefab][p1] VaultBoxS03 disabled
+[INFO][prefab][p1] VaultBoxS04 disabled
+[INFO][prefab][p1] VaultBoxS05 disabled
+[INFO][prefab][p1] VaultBoxS06 disabled
+[INFO][prefab][p1] VaultBoxS07 disabled
+[INFO][prefab][p1] VaultBoxS08 disabled
+[INFO][prefab][p1] VaultBoxS09 disabled
+[INFO][prefab][p1] HallBox09 disabled
+[INFO][prefab][p1] HallBox10 disabled
+[INFO][prefab][p1] HallBox11 disabled
+[INFO][prefab][p1] HallBox12 disabled
+[INFO][prefab][p1] HallBox13 disabled
+[INFO][prefab][p1] HallBox14 disabled
+[INFO][prefab][p1] HallBox15 disabled
+[INFO][prefab][p1] HallBox16 disabled
+[INFO][prefab][p1] HallBox17 disabled
+[INFO][prefab][p1] HallBox18 disabled
+[INFO][prefab][p1] HallBox19 disabled
+[INFO][prefab][p1] HallBox20 disabled
+[INFO][prefab][p1] HallBox21 disabled
+[INFO][prefab][p1] HallBox22 disabled
+[INFO][prefab][p1] HallBox23 disabled
+[INFO][prefab][p1] HallBox24 disabled
+[INFO][mission][p1] civilian route 'mgr_floor' not placed: [&"civ_manager_mgr_floor"] wander (D-136.4 fallback)
+[INFO][mission][p1] civilian route 'mgr_gallery' not placed: [&"civ_manager_mgr_gallery"] wander (D-136.4 fallback)
+[INFO][mission][p1] civilian route 'mgr_vault' not placed: [&"civ_manager_mgr_vault"] wander (D-136.4 fallback)
+[INFO][mission][p1] civilian route 'teller_rotation' not placed: [&"civ_teller_rotating"] wander (D-136.4 fallback)
+[INFO][mission][p1] civilian route 'officer_coffee' not placed: [&"civ_officer_ao1", &"civ_officer"] wander (D-136.4 fallback)
+[INFO][mission][p1] civilian route 'officer_coffee_of' not placed: [&"civ_officer_of"] wander (D-136.4 fallback)
+[INFO][mission][p1] civilian route 'officer_coffee_vo' not placed: [&"civ_officer_vo"] wander (D-136.4 fallback)
+[INFO][director][p1] prewarm: 18 of 18 scenes loaded in 884 ms
+[INFO][prefab][p1] CameraStation: security room unstaffed
+[OFP 21.1s t=0.0] launched ostrander_federal seed 1002 diff 0 variants { &"manager_route": [&"mgr_gallery"], &"keycard": [&"kc_security"], &"code_pc": [&"pc_ops"], &"officers": [&"off_1"], &"server_room": [&"srv_gallery"], &"guard_post": [&"rover_basement", &"rover_dock"], &"security_room_staffed": [&"sec_empty"], &"camera": [&"cam_c"], &"laser_pattern": [&"lz_timed"], &"customers": [&"cust_4"], &"side_door": [&"door_dock_open"], &"fire_escape": [&"fe_down"], &"escape": [&"esc_van_tannery"], &"drill_delivery": [&"drop_dock"], &"president_safe": [&"ps_empty"], &"vip": [&"vip_out"], &"guard_extra": [], &"civ_extra": [], &"time_lock_s": 150.0, &"drill_eta_s": 60.0, &"escape_eta_s": 120.0, &"cash_bags": 10, &"gold_bags": 4, &"deposit_boxes": 9, "rare": [] }
+[INFO][prefab][p1] CameraC1 disabled
+[INFO][prefab][p1] CameraC2 disabled
+[INFO][prefab][p1] CameraC3 disabled
+[INFO][prefab][p1] CameraC7 disabled
+[INFO][prefab][p1] CameraC9 disabled
+[INFO][prefab][p1] CameraC11 disabled
+[INFO][prefab][p1] CameraC13 disabled
+[INFO][prefab][p1] CameraC15 disabled
+[OFP 41.6s t=2.0] SHORTCUT traversal: NPCs despawned, crew stealth_hidden, 8 cameras disabled (GameplayPrefab.set_enabled)
+[OFP 45.7s t=3.1] pilot: calibrated 0.001600 rad/px yaw, 0.001600 rad/px pitch (settings formula said (0.0016, 0.0016))
+[OFP 45.7s t=3.1] spawn (21.0, 0.0, -6.0)
+[OFP 48.1s t=3.2] BURN before: rope ladder usable false height 3.20 (top (24.0, -0.8, 13.2) bottom (24.0, -4.0, 14.0)); hoist visible false
+[INFO][heist][p1] phase CASING -> STEALTH
+[OFP 49.0s t=4.2] objective casing -> 2
+[INFO][crew][p1] slot 0 masked (forced=false)
+[OFP 49.6s t=4.8] masked true
+[INFO][stealth][p1] ALARM: ofp_burn (source 0)
+[OFP 49.6s t=4.8] ALARM ofp_burn by 0 (pilot at (21.0, 0.0, -6.0))
+[INFO][heist][p1] alarm (ofp_burn): going loud
+[INFO][heist][p1] phase STEALTH -> LOUD
+[INFO][director][p1] assault phase CONTROL (wave 1, 20 s)
+[INFO][prefab][p1] VaultControlRack: hack paused (lockdown)
+[OFP 49.6s t=4.8] objective keycard -> 1
+[OFP 49.6s t=4.8] objective keycard -> 2
+[OFP 49.6s t=4.8] objective code_hint -> 1
+[OFP 49.6s t=4.8] objective code_hint -> 2
+[OFP 49.6s t=4.8] objective code_pc -> 1
+[OFP 49.6s t=4.8] objective code_pc -> 2
+[OFP 49.6s t=4.8] objective server -> 1
+[OFP 49.6s t=4.8] objective server -> 2
+[OFP 49.6s t=4.8] objective vault_gate -> 1
+[OFP 49.6s t=4.8] objective vault_gate -> 2
+[OFP 49.6s t=4.8] objective lasers -> 1
+[OFP 49.6s t=4.8] objective lasers -> 2
+[OFP 49.6s t=4.8] objective drill_delivery -> 1
+[OFP 49.6s t=4.8] objective drill_delivery -> 1
+[OFP 49.6s t=4.8] SHORTCUT alarm raised through the StealthDirector
+[OFP 49.6s t=4.8] BURN lockdown PASS; drill_delivery [&"drop_dock"] eta 60.0
+[INFO][director][p1] assault events: 3 rows for ostrander_federal (tweak)
+WARNING: Sub-surface scattering is not supported in viewports with a transparent background. Disabling SSS in transparent viewport.
+     at: _render_scene (servers/rendering/renderer_rd/forward_clustered/render_forward_clustered.cpp:1963)
+[INFO][director][p1] assault phase ANTICIPATION (wave 1, 30 s)
+[INFO][director][p1] assault phase BUILD (wave 1, 35 s)
+[OFP 120.1s t=64.8] objective vault_drill -> 1
+[OFP 120.2s t=64.8] BURN parts PASS at (14.0, 0.0, -4.0)
+[OFP 127.8s t=69.8] pilot: t=5 at (16.4, 0.0, -4.3) corner (15.1, 0.2, -4.0) yaw_err -0.00 fwd=true path=2 mouse_mode=2 state=0 look=(-4.47,0.00) pin_yaw=-4.46769352818228 bot=false
+[OFP 129.7s t=71.4] objective drill_delivery -> 1
+[OFP 129.8s t=71.4] pilot: use Bag_thermal_drill_part (pick_bag) -> OK in 1.0 s
+[OFP 144.2s t=76.4] pilot: t=5 at (11.0, 0.0, -2.0) corner (9.4, 0.2, -1.3) yaw_err -0.00 fwd=true path=25 mouse_mode=2 state=0 look=(-4.27,0.00) pin_yaw=-4.27486860061618 bot=false
+[OFP 158.1s t=79.2] pilot: use DockPersonnelDoor (open_door) -> OK in 0.0 s
+[OFP 164.2s t=82.3] pilot: t=10 at (8.4, 0.0, 2.2) corner (8.8, 0.2, 3.7) yaw_err -0.00 fwd=true path=21 mouse_mode=2 state=0 look=(-2.94,0.00) pin_yaw=-2.93674946470128 bot=false
+[OFP 185.7s t=88.9] pilot: use DockCorridorDoor (open_door) -> OK in 0.0 s
+[INFO][director][p1] assault phase SUSTAIN (wave 1, 40 s)
+[OFP 188.8s t=89.9] pilot: t=15 at (10.4, 0.0, 8.2) corner (10.9, 0.0, 8.1) yaw_err -0.00 fwd=true path=18 mouse_mode=2 state=0 look=(-1.52,0.00) pin_yaw=-1.52002381371858 bot=false
+[INFO][director][p1] force pool spent (43 units): FADE
+[INFO][director][p1] assault phase FADE (wave 1, 15 s)
+[OFP 227.6s t=102.3] pilot: use StaffDoorTWW (open_door) -> OK in 8.0 s
+[OFP 230.9s t=105.6] pilot: t=20 at (15.8, 0.0, 10.5) corner (19.5, 0.2, 12.1) yaw_err -0.00 fwd=true path=7 mouse_mode=2 state=0 look=(-1.96,0.00) pin_yaw=-1.96398306359333 bot=false
+[INFO][director][p1] assault phase CONTROL (wave 2, 40 s)
+[OFP 235.9s t=110.6] pilot: t=25 at (20.2, 0.0, 12.4) corner (22.2, 0.2, 13.2) yaw_err -0.58 fwd=true path=6 mouse_mode=2 state=0 look=(-1.38,0.00) pin_yaw=-1.57571988343989 bot=false
+[OFP 248.8s t=115.6] pilot: t=30 at (24.8, 0.0, 14.3) corner (25.6, 0.2, 14.6) yaw_err -2.50 fwd=false path=3 mouse_mode=2 state=0 look=(0.54,0.00) pin_yaw=0.34907095864764 bot=false
+[OFP 252.6s t=119.4] pilot: use LidDrill (place_drill) -> OK in 3.0 s
+[OFP 252.6s t=119.4] BURN part 0 PASS: drop -> lid in 54.6 s (HEAVY), delivered 1
+[OFP 257.6s t=124.4] pilot: t=5 at (20.5, 0.0, 12.3) corner (19.7, 0.2, 11.9) yaw_err -0.00 fwd=true path=21 mouse_mode=2 state=0 look=(-11.44,0.00) pin_yaw=-11.4374941042479 bot=false
+[OFP 262.6s t=129.4] pilot: t=10 at (15.4, 0.0, 9.9) corner (14.5, 0.2, 9.5) yaw_err -1.21 fwd=false path=20 mouse_mode=2 state=0 look=(-10.22,0.00) pin_yaw=-10.410389226774 bot=false
+[OFP 273.9s t=134.4] pilot: t=15 at (10.3, 0.0, 7.9) corner (9.1, 0.0, 7.9) yaw_err -3.14 fwd=false path=10 mouse_mode=2 state=0 look=(-14.14,0.00) pin_yaw=-14.3291664856297 bot=false
+[OFP 278.8s t=139.4] pilot: t=20 at (9.7, 0.0, 7.9) corner (10.9, 0.0, 7.9) yaw_err 0.00 fwd=true path=12 mouse_mode=2 state=0 look=(-45.55,0.00) pin_yaw=-45.5530950191242 bot=false
+[OFP 281.0s t=141.6] pilot: STUCK at (10.1, 0.0, 7.9) heading to (10.9, 0.0, 7.9); rays: vel=(3.5, 0.0, 0.0) floor=true state=0
+[OFP 287.1s t=141.7] pilot: detour right 0.7 m to (11.0, 0.2, 8.6) (attempt 1)
+[OFP 290.2s t=145.0] pilot: t=25 at (9.7, 0.0, 8.2) corner (10.9, 0.0, 8.1) yaw_err -0.45 fwd=true path=9 mouse_mode=2 state=0 look=(-76.52,0.00) pin_yaw=-76.7106507696953 bot=false
+[OFP 291.4s t=146.2] pilot: STUCK at (10.1, 0.0, 8.1) heading to (10.9, 0.0, 8.1); rays: vel=(3.5, 0.0, -0.0) floor=true state=0
+[OFP 297.7s t=146.3] pilot: detour left 0.7 m to (10.9, 0.2, 7.5) (attempt 2)
+[INFO][director][p1] assault phase ANTICIPATION (wave 2, 30 s)
+[OFP 301.7s t=150.5] pilot: t=30 at (9.5, 0.0, 7.9) corner (10.9, 0.0, 7.9) yaw_err -1.22 fwd=false path=12 mouse_mode=2 state=0 look=(-94.60,0.00) pin_yaw=-94.7889836603499 bot=false
+[OFP 302.0s t=150.7] pilot: STUCK at (9.9, 0.0, 7.9) heading to (10.9, 0.0, 7.9); rays: vel=(3.5, 0.0, -0.0) floor=true state=0
+[OFP 308.0s t=150.9] pilot: detour left 1.2 m to (10.7, 0.2, 6.6) (attempt 3)
+[OFP 315.3s t=158.3] pilot: STUCK at (9.8, 0.0, 7.9) heading to (9.1, 0.0, 7.9); rays: vel=(-3.5, 0.0, 0.0) floor=true state=0
+[OFP 315.3s t=158.3] pilot: detour right 1.2 m to (9.5, 0.2, 6.7) (attempt 4)
+[OFP 316.9s t=160.0] pilot: t=35 at (9.5, 0.0, 6.6) corner (8.8, 0.2, 3.7) yaw_err -0.64 fwd=false path=8 mouse_mode=2 state=0 look=(-99.65,0.00) pin_yaw=-99.8441017888617 bot=false
+[OFP 321.9s t=165.0] pilot: t=40 at (8.1, 0.0, -0.4) corner (8.1, 0.0, -0.9) yaw_err 0.00 fwd=true path=4 mouse_mode=2 state=0 look=(-100.53,0.00) pin_yaw=-100.530967421335 bot=false
+[OFP 326.9s t=170.0] pilot: t=45 at (13.3, 0.0, -3.2) corner (12.7, 0.2, -3.0) yaw_err 2.73 fwd=false path=2 mouse_mode=2 state=0 look=(-101.30,0.00) pin_yaw=-101.111925901932 bot=false
+[OFP 329.7s t=172.7] objective drill_delivery -> 1
+[OFP 329.7s t=172.7] objective drill_delivery -> 2
+[OFP 329.7s t=172.8] pilot: use Bag_thermal_drill_part2 (pick_bag) -> OK in 1.0 s
+[OFP 334.8s t=177.8] pilot: t=5 at (10.5, 0.0, -1.8) corner (9.4, 0.2, -1.3) yaw_err -0.00 fwd=true path=25 mouse_mode=2 state=0 look=(-98.51,0.00) pin_yaw=-98.5131743957536 bot=false
+[INFO][director][p1] assault phase BUILD (wave 2, 35 s)
+[OFP 352.4s t=182.8] pilot: t=10 at (8.4, 0.0, 2.1) corner (8.8, 0.2, 3.7) yaw_err -0.96 fwd=false path=21 mouse_mode=2 state=0 look=(-96.22,0.00) pin_yaw=-96.4126240579208 bot=false
+[OFP 374.0s t=187.8] pilot: t=15 at (9.4, 0.0, 6.9) corner (9.6, 0.2, 7.6) yaw_err 2.88 fwd=false path=19 mouse_mode=2 state=0 look=(-100.05,0.00) pin_yaw=-99.858051883326 bot=false
+[OFP 399.3s t=192.8] pilot: t=20 at (13.8, 0.0, 9.1) corner (13.9, 0.0, 9.9) yaw_err -0.00 fwd=true path=12 mouse_mode=2 state=0 look=(-97.34,0.00) pin_yaw=-97.3389412303659 bot=false
+[OFP 416.6s t=197.8] pilot: t=25 at (17.7, 0.0, 11.4) corner (19.5, 0.2, 12.1) yaw_err -0.00 fwd=true path=7 mouse_mode=2 state=0 look=(-96.21,0.00) pin_yaw=-96.2084703224027 bot=false
+[OFP 433.0s t=202.8] pilot: t=30 at (22.2, 0.0, 13.2) corner (22.7, 0.2, 13.4) yaw_err -1.35 fwd=false path=5 mouse_mode=2 state=0 look=(-94.85,0.00) pin_yaw=-95.0431734683152 bot=false
+[OFP 464.7s t=209.5] pilot: use LidDrill (place_drill) -> OK in 3.0 s
+[OFP 464.7s t=209.5] BURN part 1 PASS: drop -> lid in 90.1 s (HEAVY), delivered 2
+[OFP 471.6s t=209.7] SHORTCUT burn wait at x4 beside the drill
+[INFO][director][p1] force pool spent (50 units): FADE
+[INFO][director][p1] assault phase FADE (wave 2, 15 s)
+ERROR: Condition "!is_inside_tree()" is true. Returning: Transform3D()
+   at: get_global_transform (scene/3d/node_3d.cpp:649)
+ERROR: Condition "!is_inside_tree()" is true. Returning: Transform3D()
+   at: get_global_transform (scene/3d/node_3d.cpp:649)
+[INFO][director][p1] assault phase CONTROL (wave 3, 40 s)
+[INFO][director][p1] assault phase ANTICIPATION (wave 3, 30 s)
+[INFO][director][p1] assault phase BUILD (wave 3, 35 s)
+[INFO][director][p1] assault phase SUSTAIN (wave 3, 160 s)
+[INFO][director][p1] force pool spent (53 units): FADE
+[INFO][director][p1] assault phase FADE (wave 3, 15 s)
+ERROR: Condition "!is_inside_tree()" is true. Returning: Transform3D()
+   at: get_global_transform (scene/3d/node_3d.cpp:649)
+ERROR: Condition "!is_inside_tree()" is true. Returning: Transform3D()
+   at: get_global_transform (scene/3d/node_3d.cpp:649)
+ERROR: Condition "!is_inside_tree()" is true. Returning: Transform3D()
+   at: get_global_transform (scene/3d/node_3d.cpp:649)
+ERROR: Condition "!is_inside_tree()" is true. Returning: Transform3D()
+   at: get_global_transform (scene/3d/node_3d.cpp:649)
+ERROR: Condition "!is_inside_tree()" is true. Returning: Transform3D()
+   at: get_global_transform (scene/3d/node_3d.cpp:649)
+ERROR: Condition "!is_inside_tree()" is true. Returning: Transform3D()
+   at: get_global_transform (scene/3d/node_3d.cpp:649)
+[INFO][director][p1] assault phase CONTROL (wave 4, 40 s)
+[OFP 565.8s t=383.9] pilot: use LidDrill (place_drill) -> OK in 2.0 s
+[OFP 565.8s t=383.9] BURN jam 1 fixed true
+[INFO][director][p1] assault phase ANTICIPATION (wave 4, 30 s)
+[INFO][director][p1] assault phase BUILD (wave 4, 35 s)
+[INFO][director][p1] assault phase SUSTAIN (wave 4, 160 s)
+[INFO][director][p1] force pool spent (53 units): FADE
+[INFO][director][p1] assault phase FADE (wave 4, 15 s)
+[INFO][director][p1] assault phase CONTROL (wave 5, 40 s)
+[INFO][director][p1] assault phase ANTICIPATION (wave 5, 30 s)
+[INFO][prefab][p1] Hoist enabled
+[INFO][prefab][p1] RopeLadder enabled
+[OFP 688.4s t=574.2] objective vault_drill -> 2
+[OFP 688.4s t=574.2] objective vault_breach -> 2
+[OFP 688.4s t=574.2] objective vault_loot -> 1
+[OFP 688.5s t=574.2] objective gold_cage -> 1
+[INFO][director][p1] assault phase BUILD (wave 5, 35 s)
+[OFP 691.7s t=577.1] BURN burn-through PASS after 367 s (1 jams); rope ladder usable true height_m 4.00, top (24.0, 0.0, 13.2) bottom (24.0, -4.0, 14.0) (span 4.00 m): 4.0 m OK; hoist enabled true
+[OFP 716.5s t=583.1] LADDER RopeLadder down: OK in 2.6 s (climb 2.4 s, height 4.0 m; at (24.0, -3.9, 15.4))
+[OFP 716.5s t=583.1] BURN ladder down PASS at (24.0, -3.9, 15.4)
+[OFP 716.5s t=583.1] SHORTCUT bag loot.cash_bricks (weight 1) spawned by LootManager.spawn_bag at (24.0, -3.5, 16.4)
+[OFP 724.6s t=586.0] pilot: use Bag_cash_bricks (pick_bag) -> OK in 1.0 s
+[OFP 733.0s t=589.1] car throw 0 missed: bag at (23.9, -4.0, 13.5)
+[OFP 735.0s t=590.3] FINDING a walk took RopeLadder by accident at (24.6, -4.0, 14.3)
+[OFP 755.6s t=597.1] LADDER RopeLadder down: OK in 2.6 s (climb 2.4 s, height 4.0 m; at (24.0, -3.9, 15.4))
+[OFP 755.6s t=597.1] stray ladder RopeLadder climbed back true
+[OFP 759.0s t=597.9] FINDING a walk took RopeLadder by accident at (24.5, -4.0, 14.5)
+[OFP 763.1s t=598.6] pilot: t=5 at (24.0, -2.5, 14.0) corner (25.0, -3.8, 13.7) yaw_err 0.00 fwd=true path=2 mouse_mode=2 state=0 look=(-95.49,0.00) pin_yaw=-95.4919633184545 bot=false
+[OFP 782.2s t=604.7] LADDER RopeLadder down: OK in 2.6 s (climb 2.4 s, height 4.0 m; at (24.0, -3.9, 15.4))
+[OFP 782.2s t=604.7] stray ladder RopeLadder climbed back true
+[OFP 785.8s t=605.5] FINDING a walk took RopeLadder by accident at (24.5, -4.0, 14.5)
+[INFO][director][p1] force pool spent (55 units): FADE
+[INFO][director][p1] assault phase FADE (wave 5, 15 s)
+[OFP 808.3s t=612.3] LADDER RopeLadder down: OK in 2.6 s (climb 2.4 s, height 4.0 m; at (24.0, -3.9, 15.4))
+[OFP 808.3s t=612.3] stray ladder RopeLadder climbed back true
+[OFP 808.5s t=612.5] pilot: t=10 at (24.0, -3.9, 15.4) corner (24.2, -3.8, 15.0) yaw_err 0.90 fwd=false path=3 mouse_mode=2 state=0 look=(-95.66,0.00) pin_yaw=-95.4693726618207 bot=false
+[OFP 809.1s t=613.1] FINDING a walk took RopeLadder by accident at (24.5, -4.0, 14.5)
+[OFP 816.0s t=620.0] LADDER RopeLadder down: OK in 2.6 s (climb 2.4 s, height 4.0 m; at (24.0, -3.9, 15.4))
+[OFP 816.0s t=620.0] stray ladder RopeLadder climbed back true
+[OFP 816.8s t=620.8] FINDING a walk took RopeLadder by accident at (24.5, -4.0, 14.5)
+[OFP 818.0s t=622.0] pilot: t=15 at (24.0, -1.6, 14.0) corner (25.0, -3.8, 13.7) yaw_err 0.00 fwd=true path=2 mouse_mode=2 state=0 look=(-95.49,0.00) pin_yaw=-95.4919668049843 bot=false
+[INFO][director][p1] assault phase CONTROL (wave 6, 40 s)
+[OFP 824.8s t=627.6] LADDER RopeLadder down: OK in 2.6 s (climb 2.4 s, height 4.0 m; at (24.0, -3.9, 15.4))
+[OFP 824.8s t=627.6] stray ladder RopeLadder climbed back true
+[OFP 826.3s t=628.4] FINDING a walk took RopeLadder by accident at (24.5, -4.0, 14.5)
+[OFP 835.2s t=635.2] LADDER RopeLadder down: OK in 2.6 s (climb 2.4 s, height 4.0 m; at (24.0, -3.9, 15.4))
+[OFP 835.2s t=635.2] stray ladder RopeLadder climbed back true
+[OFP 835.8s t=635.9] pilot: t=20 at (24.3, -3.9, 14.9) corner (25.0, -3.8, 13.7) yaw_err -0.58 fwd=true path=2 mouse_mode=2 state=0 look=(-94.17,0.00) pin_yaw=-94.366820628391 bot=false
+[OFP 836.0s t=636.0] FINDING a walk took RopeLadder by accident at (24.5, -4.0, 14.5)
+[OFP 842.8s t=642.9] LADDER RopeLadder down: OK in 2.6 s (climb 2.4 s, height 4.0 m; at (24.0, -3.9, 15.4))
+[OFP 842.8s t=642.9] stray ladder RopeLadder climbed back true
+[OFP 843.6s t=643.7] FINDING a walk took RopeLadder by accident at (24.5, -4.0, 14.5)
+[OFP 845.3s t=645.3] pilot: t=25 at (24.0, -0.7, 14.0) corner (25.3, 0.2, 13.7) yaw_err -0.00 fwd=true path=3 mouse_mode=2 state=0 look=(-95.60,0.00) pin_yaw=-95.6021297222542 bot=false
+[OFP 853.4s t=650.5] LADDER RopeLadder down: OK in 2.6 s (climb 2.4 s, height 4.0 m; at (24.0, -3.9, 15.4))
+[OFP 853.4s t=650.5] stray ladder RopeLadder climbed back true
+[OFP 854.2s t=651.3] FINDING a walk took RopeLadder by accident at (24.5, -4.0, 14.5)
+[OFP 861.0s t=658.1] LADDER RopeLadder down: OK in 2.6 s (climb 2.4 s, height 4.0 m; at (24.0, -3.9, 15.4))
+[OFP 861.0s t=658.1] stray ladder RopeLadder climbed back true
+[OFP 861.8s t=658.9] FINDING a walk took RopeLadder by accident at (24.5, -4.0, 14.5)
+[OFP 862.1s t=659.2] pilot: t=30 at (24.0, -3.4, 14.0) corner (25.0, -3.8, 13.7) yaw_err 1.17 fwd=false path=2 mouse_mode=2 state=0 look=(-96.66,0.00) pin_yaw=-96.4656686749586 bot=false
+[OFP 868.6s t=665.8] LADDER RopeLadder down: OK in 2.6 s (climb 2.4 s, height 4.0 m; at (24.0, -3.9, 15.4))
+[OFP 868.6s t=665.8] stray ladder RopeLadder climbed back true
+[INFO][director][p1] assault phase ANTICIPATION (wave 6, 30 s)
+[OFP 869.4s t=666.6] FINDING a walk took RopeLadder by accident at (24.5, -4.0, 14.5)
+[OFP 871.5s t=668.7] pilot: t=35 at (24.0, 0.0, 13.8) corner (25.3, 0.2, 13.7) yaw_err -0.03 fwd=true path=3 mouse_mode=2 state=0 look=(-95.73,0.00) pin_yaw=-95.7539497240068 bot=false
+[OFP 876.3s t=673.4] LADDER RopeLadder down: OK in 2.6 s (climb 2.4 s, height 4.0 m; at (24.0, -3.9, 15.4))
+[OFP 876.3s t=673.4] stray ladder RopeLadder climbed back true
+[OFP 877.1s t=674.2] FINDING a walk took RopeLadder by accident at (24.5, -4.0, 14.5)
+[OFP 883.9s t=681.0] LADDER RopeLadder down: OK in 2.6 s (climb 2.4 s, height 4.0 m; at (24.0, -3.9, 15.4))
+[OFP 883.9s t=681.0] stray ladder RopeLadder climbed back true
+[OFP 884.7s t=681.8] FINDING a walk took RopeLadder by accident at (24.5, -4.0, 14.5)
+[OFP 885.5s t=682.6] pilot: t=40 at (24.0, -2.5, 14.0) corner (25.0, -3.8, 13.7) yaw_err -0.00 fwd=true path=2 mouse_mode=2 state=0 look=(-95.49,0.00) pin_yaw=-95.4919618644199 bot=false
+[OFP 891.5s t=688.7] LADDER RopeLadder down: OK in 2.6 s (climb 2.4 s, height 4.0 m; at (24.0, -3.9, 15.4))
+[OFP 891.5s t=688.7] stray ladder RopeLadder climbed back true
+[OFP 892.3s t=689.4] FINDING a walk took RopeLadder by accident at (24.5, -4.0, 14.5)
+[INFO][director][p1] assault phase BUILD (wave 6, 35 s)
+[OFP 899.2s t=696.3] LADDER RopeLadder down: OK in 2.6 s (climb 2.4 s, height 4.0 m; at (24.0, -3.9, 15.4))
+[OFP 899.2s t=696.3] stray ladder RopeLadder climbed back true
+[OFP 899.3s t=696.5] pilot: t=45 at (24.0, -3.9, 15.4) corner (24.2, -3.8, 15.0) yaw_err 0.90 fwd=false path=3 mouse_mode=2 state=0 look=(-95.66,0.00) pin_yaw=-95.4693712543667 bot=false
+[OFP 900.0s t=697.1] FINDING a walk took RopeLadder by accident at (24.5, -4.0, 14.5)
+[INFO][director][p1] assault event breach at (36.2, 0.0, 35.8) (Breach_2)
+[OFP 926.6s t=703.9] LADDER RopeLadder down: OK in 2.6 s (climb 2.4 s, height 4.0 m; at (24.0, -3.9, 15.4))
+[OFP 926.6s t=703.9] stray ladder RopeLadder climbed back true
+ERROR: Condition "!is_inside_tree()" is true. Returning: Transform3D()
+   at: get_global_transform (scene/3d/node_3d.cpp:649)
+ERROR: Condition "!is_inside_tree()" is true. Returning: Transform3D()
+   at: get_global_transform (scene/3d/node_3d.cpp:649)
+ERROR: Condition "!is_inside_tree()" is true. Returning: Transform3D()
+   at: get_global_transform (scene/3d/node_3d.cpp:649)
+[OFP 930.3s t=704.7] FINDING a walk took RopeLadder by accident at (24.5, -4.0, 14.5)
+[OFP 934.4s t=705.9] pilot: t=50 at (24.0, -1.6, 14.0) corner (25.0, -3.8, 13.7) yaw_err 0.00 fwd=true path=2 mouse_mode=2 state=0 look=(-95.49,0.00) pin_yaw=-95.4919666591959 bot=false
+[OFP 958.1s t=711.6] LADDER RopeLadder down: OK in 2.6 s (climb 2.4 s, height 4.0 m; at (24.0, -3.9, 15.4))
+[OFP 958.1s t=711.6] stray ladder RopeLadder climbed back true
+[OFP 959.6s t=712.3] FINDING a walk took RopeLadder by accident at (24.5, -4.0, 14.5)
+[OFP 985.4s t=719.2] LADDER RopeLadder down: OK in 2.6 s (climb 2.4 s, height 4.0 m; at (24.0, -3.9, 15.4))
+[OFP 985.4s t=719.2] stray ladder RopeLadder climbed back true
+[OFP 987.8s t=719.8] pilot: t=55 at (24.3, -3.9, 14.9) corner (25.0, -3.8, 13.7) yaw_err -0.58 fwd=true path=2 mouse_mode=2 state=0 look=(-94.17,0.00) pin_yaw=-94.3668166849893 bot=false
+[OFP 987.9s t=720.0] FINDING a walk took RopeLadder by accident at (24.5, -4.0, 14.5)
+[INFO][director][p1] force pool spent (55 units): FADE
+[INFO][director][p1] assault phase FADE (wave 6, 15 s)
+[OFP 1013.1s t=726.8] LADDER RopeLadder down: OK in 2.6 s (climb 2.4 s, height 4.0 m; at (24.0, -3.9, 15.4))
+[OFP 1013.1s t=726.8] stray ladder RopeLadder climbed back true
+[OFP 1013.9s t=727.6] FINDING a walk took RopeLadder by accident at (24.5, -4.0, 14.5)
+[OFP 1015.5s t=729.3] pilot: t=60 at (24.0, -0.7, 14.0) corner (25.3, 0.2, 13.7) yaw_err -0.00 fwd=true path=3 mouse_mode=2 state=0 look=(-95.60,0.00) pin_yaw=-95.6021305058384 bot=false
+[OFP 1015.6s t=729.3] pilot: could not reach /root/OfG1Pass/HeistRuntime/Dynamic/Bag_cash_bricks/Interactable (pick_bag)
+[OFP 1015.6s t=729.3] pilot: pick_bag out of reach after the walk: not pressing
+[OFP 1015.6s t=729.3] BURN bag into the hoist car FAIL (car at (24.0, -4.0, 15.2))
+[OFP 1016.6s t=730.3] SHORTCUT bag placed in the hoist car (1 in the car)
+[OFP 1024.2s t=734.5] pilot: STUCK at (24.0, -4.0, 13.7) heading to (24.0, 0.2, 11.7); rays: h0.05:/root/OfG1Pass/HeistRuntime/Dynamic/Bag_cash_bricks@(24.0, -3.9, 13.6), h0.20:/root/OfG1Pass/HeistRuntime/Dynamic/Bag_cash_bricks@(24.0, -3.8, 13.6), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.6, 13.3), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.0, 13.3), slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.6, 13.3) n=(-0.0, 0.0, 1.0), vel=(0.0, 0.0, 0.0) floor=true state=0
+[OFP 1024.2s t=734.5] pilot: detour right 0.7 m to (24.7, -3.8, 13.7) (attempt 1)
+[OFP 1025.5s t=735.8] pilot: t=5 at (24.0, -2.5, 14.0) corner (24.0, 0.2, 11.7) yaw_err -0.00 fwd=true path=2 mouse_mode=2 state=0 look=(-100.53,0.00) pin_yaw=-100.530963308032 bot=false
+[OFP 1028.5s t=738.8] pilot: STUCK at (24.0, -1.1, 14.0) heading to (24.0, 0.2, 11.7); rays: h0.05:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -1.1, 13.3), h0.20:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -0.9, 13.3), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(24.0, -0.7, 13.5), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(24.0, -0.1, 13.5), vel=(0.0, 0.0, 0.0) floor=false state=0
+[INFO][director][p1] assault phase CONTROL (wave 7, 40 s)
+[OFP 1032.9s t=741.1] pilot: t=10 at (24.0, -4.0, 13.7) corner (24.0, 0.2, 11.7) yaw_err 0.00 fwd=true path=2 mouse_mode=2 state=0 look=(-100.53,0.00) pin_yaw=-100.530964377103 bot=false
+[OFP 1032.9s t=741.2] pilot: STUCK at (24.0, -4.0, 13.7) heading to (24.0, 0.2, 11.7); rays: h0.05:/root/OfG1Pass/HeistRuntime/Dynamic/Bag_cash_bricks@(24.0, -3.9, 13.6), h0.20:/root/OfG1Pass/HeistRuntime/Dynamic/Bag_cash_bricks@(24.0, -3.8, 13.6), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.6, 13.3), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.0, 13.3), slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.6, 13.3) n=(-0.0, 0.0, 1.0), vel=(0.0, 0.0, 0.0) floor=true state=0
+[OFP 1032.9s t=741.2] pilot: detour right 1.2 m to (25.2, -3.8, 13.7) (attempt 3)
+[OFP 1040.7s t=746.1] pilot: STUCK at (24.0, -1.1, 14.0) heading to (24.0, 0.2, 11.7); rays: h0.05:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -1.1, 13.3), h0.20:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -0.9, 13.3), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(24.0, -0.7, 13.5), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(24.0, -0.1, 13.5), vel=(0.0, 0.0, 0.0) floor=false state=0
+[OFP 1041.9s t=747.4] pilot: t=15 at (24.0, -3.6, 14.0) corner (24.0, 0.2, 11.7) yaw_err -0.00 fwd=true path=2 mouse_mode=2 state=0 look=(-106.81,0.00) pin_yaw=-106.814148525664 bot=false
+[OFP 1043.1s t=748.5] pilot: STUCK at (24.0, -4.0, 13.7) heading to (24.0, 0.2, 11.7); rays: h0.05:/root/OfG1Pass/HeistRuntime/Dynamic/Bag_cash_bricks@(24.0, -3.9, 13.6), h0.20:/root/OfG1Pass/HeistRuntime/Dynamic/Bag_cash_bricks@(24.0, -3.8, 13.6), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.6, 13.3), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.0, 13.3), slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.6, 13.3) n=(-0.0, 0.0, 1.0), vel=(0.0, 0.0, 0.0) floor=true state=0
+[OFP 1043.1s t=748.5] pilot: detour right 1.2 m to (25.2, -3.8, 13.7) (attempt 5)
+[OFP 1047.8s t=753.3] pilot: t=20 at (24.0, -0.8, 14.0) corner (24.0, 0.2, 11.7) yaw_err 0.00 fwd=true path=3 mouse_mode=2 state=0 look=(-113.10,0.00) pin_yaw=-113.097332468227 bot=false
+[OFP 1048.0s t=753.4] pilot: STUCK at (24.0, -1.1, 14.0) heading to (24.0, 0.2, 11.7); rays: h0.05:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -1.1, 13.3), h0.20:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -0.9, 13.3), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(24.0, -0.7, 13.5), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(24.0, -0.1, 13.5), vel=(0.0, 0.0, 0.0) floor=false state=0
+[OFP 1050.4s t=755.8] pilot: STUCK at (24.0, -4.0, 13.7) heading to (24.0, 0.2, 11.7); rays: h0.05:/root/OfG1Pass/HeistRuntime/Dynamic/Bag_cash_bricks@(24.0, -3.9, 13.6), h0.20:/root/OfG1Pass/HeistRuntime/Dynamic/Bag_cash_bricks@(24.0, -3.8, 13.6), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.6, 13.3), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.0, 13.3), slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.6, 13.3) n=(0.0, 0.0, 1.0), vel=(0.0, 0.0, 0.0) floor=true state=0
+[OFP 1050.4s t=755.8] pilot: detour right 1.2 m to (25.2, -3.8, 13.7) (attempt 7)
+[OFP 1054.1s t=759.6] pilot: t=25 at (24.0, 0.0, 13.2) corner (24.0, 0.2, 13.7) yaw_err -3.14 fwd=false path=2 mouse_mode=2 state=0 look=(-113.10,0.00) pin_yaw=-113.289336872564 bot=false
+[OFP 1057.3s t=760.8] pilot: STUCK at (24.0, -1.1, 14.0) heading to (24.0, 0.2, 11.7); rays: h0.05:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -1.1, 13.3), h0.20:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -0.9, 13.3), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(24.0, -0.7, 13.5), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(24.0, -0.1, 13.5), vel=(0.0, 0.0, 0.0) floor=false state=0
+[OFP 1062.1s t=763.2] pilot: STUCK at (24.0, -4.0, 13.7) heading to (24.0, 0.2, 11.7); rays: h0.05:/root/OfG1Pass/HeistRuntime/Dynamic/Bag_cash_bricks@(24.0, -3.9, 13.6), h0.20:/root/OfG1Pass/HeistRuntime/Dynamic/Bag_cash_bricks@(24.0, -3.8, 13.6), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.6, 13.3), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.0, 13.3), slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.6, 13.3) n=(0.0, 0.0, 1.0), vel=(0.0, 0.0, 0.0) floor=true state=0
+[OFP 1062.1s t=763.2] pilot: detour right 1.2 m to (25.2, -3.8, 13.7) (attempt 9)
+[OFP 1064.7s t=765.8] pilot: t=30 at (24.0, -1.3, 14.0) corner (24.0, 0.2, 11.7) yaw_err 0.00 fwd=true path=3 mouse_mode=2 state=0 look=(-119.38,0.00) pin_yaw=-119.380523209307 bot=false
+[OFP 1067.0s t=768.1] pilot: STUCK at (24.0, -1.1, 14.0) heading to (24.0, 0.2, 11.7); rays: h0.05:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -1.1, 13.3), h0.20:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -0.9, 13.3), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(24.0, -0.7, 13.5), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(24.0, -0.1, 13.5), vel=(0.0, 0.0, 0.0) floor=false state=0
+[OFP 1069.4s t=770.5] pilot: STUCK at (24.0, -4.0, 13.7) heading to (24.0, 0.2, 11.7); rays: h0.05:/root/OfG1Pass/HeistRuntime/Dynamic/Bag_cash_bricks@(24.0, -3.9, 13.6), h0.20:/root/OfG1Pass/HeistRuntime/Dynamic/Bag_cash_bricks@(24.0, -3.8, 13.6), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.6, 13.3), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.0, 13.3), slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.6, 13.3) n=(-0.0, 0.0, 1.0), vel=(0.0, 0.0, 0.0) floor=true state=0
+[OFP 1069.4s t=770.5] pilot: detour right 1.2 m to (25.2, -3.8, 13.7) (attempt 11)
+[OFP 1071.0s t=772.1] pilot: t=35 at (24.0, -3.4, 14.0) corner (24.0, 0.2, 11.7) yaw_err 0.00 fwd=true path=2 mouse_mode=2 state=0 look=(-125.66,0.00) pin_yaw=-125.663708336833 bot=false
+[OFP 1074.3s t=775.4] pilot: STUCK at (24.0, -1.1, 14.0) heading to (24.0, 0.2, 11.7); rays: h0.05:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -1.1, 13.3), h0.20:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -0.9, 13.3), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(24.0, -0.7, 13.5), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(24.0, -0.1, 13.5), vel=(0.0, 0.0, 0.0) floor=false state=0
+[OFP 1076.4s t=777.5] pilot: t=40 at (24.0, -4.0, 13.7) corner (24.0, 0.2, 11.7) yaw_err -0.00 fwd=true path=2 mouse_mode=2 state=0 look=(-131.95,0.00) pin_yaw=-131.946886874917 bot=false
+[OFP 1076.7s t=777.8] pilot: STUCK at (24.0, -4.0, 13.7) heading to (24.0, 0.2, 11.7); rays: h0.05:/root/OfG1Pass/HeistRuntime/Dynamic/Bag_cash_bricks@(24.0, -3.9, 13.6), h0.20:/root/OfG1Pass/HeistRuntime/Dynamic/Bag_cash_bricks@(24.0, -3.8, 13.6), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.6, 13.3), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.0, 13.3), slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.6, 13.3) n=(-0.0, 0.0, 1.0), vel=(0.0, 0.0, 0.0) floor=true state=0
+[OFP 1076.7s t=777.8] pilot: detour right 1.2 m to (25.2, -3.8, 13.7) (attempt 13)
+[INFO][director][p1] assault phase ANTICIPATION (wave 7, 30 s)
+[OFP 1081.6s t=782.7] pilot: STUCK at (24.0, -1.1, 14.0) heading to (24.0, 0.2, 11.7); rays: h0.05:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -1.1, 13.3), h0.20:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -0.9, 13.3), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(24.0, -0.7, 13.5), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(24.0, -0.1, 13.5), vel=(0.0, 0.0, 0.0) floor=false state=0
+[OFP 1082.6s t=783.7] pilot: t=45 at (24.0, -3.2, 14.0) corner (24.0, 0.2, 11.7) yaw_err 0.00 fwd=true path=2 mouse_mode=2 state=0 look=(-138.23,0.00) pin_yaw=-138.230080338471 bot=false
+[OFP 1084.0s t=785.1] pilot: STUCK at (24.0, -4.0, 13.7) heading to (24.0, 0.2, 11.7); rays: h0.05:/root/OfG1Pass/HeistRuntime/Dynamic/Bag_cash_bricks@(24.0, -3.9, 13.6), h0.20:/root/OfG1Pass/HeistRuntime/Dynamic/Bag_cash_bricks@(24.0, -3.8, 13.6), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.6, 13.3), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.0, 13.3), slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.6, 13.3) n=(-0.0, 0.0, 1.0), vel=(0.0, 0.0, 0.0) floor=true state=0
+[OFP 1084.0s t=785.1] pilot: detour right 1.2 m to (25.2, -3.8, 13.7) (attempt 15)
+[OFP 1088.5s t=789.6] pilot: t=50 at (24.0, -0.3, 14.0) corner (24.0, 0.2, 11.7) yaw_err -0.00 fwd=true path=3 mouse_mode=2 state=0 look=(-144.51,0.00) pin_yaw=-144.513266816364 bot=false
+[OFP 1088.9s t=790.0] pilot: STUCK at (24.0, -1.1, 14.0) heading to (24.0, 0.2, 11.7); rays: h0.05:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -1.1, 13.3), h0.20:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -0.9, 13.3), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(24.0, -0.7, 13.5), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(24.0, -0.1, 13.5), vel=(0.0, 0.0, 0.0) floor=false state=0
+[OFP 1091.3s t=792.4] pilot: STUCK at (24.0, -4.0, 13.7) heading to (24.0, 0.2, 11.7); rays: h0.05:/root/OfG1Pass/HeistRuntime/Dynamic/Bag_cash_bricks@(24.0, -3.9, 13.6), h0.20:/root/OfG1Pass/HeistRuntime/Dynamic/Bag_cash_bricks@(24.0, -3.8, 13.6), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.6, 13.3), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.0, 13.3), slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.6, 13.3) n=(-0.0, 0.0, 1.0), vel=(0.0, 0.0, 0.0) floor=true state=0
+[OFP 1091.3s t=792.4] pilot: detour right 1.2 m to (25.2, -3.8, 13.7) (attempt 17)
+[OFP 1094.8s t=795.9] pilot: t=55 at (24.0, 0.0, 13.7) corner (24.0, 0.2, 11.7) yaw_err -0.00 fwd=true path=3 mouse_mode=2 state=0 look=(-144.51,0.00) pin_yaw=-144.513262568173 bot=false
+[OFP 1096.2s t=797.3] pilot: STUCK at (24.0, -1.1, 14.0) heading to (24.0, 0.2, 11.7); rays: h0.05:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -1.1, 13.3), h0.20:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -0.9, 13.3), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(24.0, -0.7, 13.5), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(24.0, -0.1, 13.5), vel=(0.0, 0.0, 0.0) floor=false state=0
+[OFP 1098.6s t=799.7] pilot: STUCK at (24.0, -4.0, 13.7) heading to (24.0, 0.2, 11.7); rays: h0.05:/root/OfG1Pass/HeistRuntime/Dynamic/Bag_cash_bricks@(24.0, -3.9, 13.6), h0.20:/root/OfG1Pass/HeistRuntime/Dynamic/Bag_cash_bricks@(24.0, -3.8, 13.6), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.6, 13.3), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.0, 13.3), slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.6, 13.3) n=(-0.0, 0.0, 1.0), vel=(0.0, 0.0, 0.0) floor=true state=0
+[OFP 1098.6s t=799.7] pilot: detour right 1.2 m to (25.2, -3.8, 13.7) (attempt 19)
+[OFP 1101.0s t=802.2] pilot: t=60 at (24.0, -1.8, 14.0) corner (24.0, 0.2, 11.7) yaw_err 0.00 fwd=true path=2 mouse_mode=2 state=0 look=(-150.80,0.00) pin_yaw=-150.796454473071 bot=false
+[OFP 1103.5s t=804.7] pilot: STUCK at (24.0, -1.1, 14.0) heading to (24.0, 0.2, 11.7); rays: h0.05:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -1.1, 13.3), h0.20:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -0.9, 13.3), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(24.0, -0.7, 13.5), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(24.0, -0.1, 13.5), vel=(0.0, 0.0, 0.0) floor=false state=0
+[OFP 1105.9s t=807.1] pilot: STUCK at (24.0, -4.0, 13.7) heading to (24.0, 0.2, 11.7); rays: h0.05:/root/OfG1Pass/HeistRuntime/Dynamic/Bag_cash_bricks@(24.0, -3.9, 13.6), h0.20:/root/OfG1Pass/HeistRuntime/Dynamic/Bag_cash_bricks@(24.0, -3.8, 13.6), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.6, 13.3), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.0, 13.3), slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.6, 13.3) n=(-0.0, 0.0, 1.0), vel=(0.0, 0.0, 0.0) floor=true state=0
+[OFP 1105.9s t=807.1] pilot: detour right 1.2 m to (25.2, -3.8, 13.7) (attempt 21)
+[OFP 1107.3s t=808.4] pilot: t=65 at (24.0, -3.9, 14.0) corner (25.1, -3.8, 13.7) yaw_err -3.06 fwd=false path=2 mouse_mode=2 state=0 look=(-155.29,0.00) pin_yaw=-155.481396390707 bot=false
+[INFO][director][p1] assault phase BUILD (wave 7, 35 s)
+[OFP 1116.0s t=812.0] pilot: STUCK at (24.0, -1.1, 14.0) heading to (24.0, 0.2, 11.7); rays: h0.05:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -1.1, 13.3), h0.20:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -0.9, 13.3), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(24.0, -0.7, 13.5), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(24.0, -0.1, 13.5), vel=(0.0, 0.0, 0.0) floor=false state=0
+[OFP 1123.2s t=813.8] pilot: t=70 at (24.0, -4.0, 13.7) corner (24.0, 0.2, 11.7) yaw_err 0.00 fwd=true path=2 mouse_mode=2 state=0 look=(-163.36,0.00) pin_yaw=-163.362817513407 bot=false
+[OFP 1125.1s t=814.4] pilot: STUCK at (24.0, -4.0, 13.7) heading to (24.0, 0.2, 11.7); rays: h0.05:/root/OfG1Pass/HeistRuntime/Dynamic/Bag_cash_bricks@(24.0, -3.9, 13.6), h0.20:/root/OfG1Pass/HeistRuntime/Dynamic/Bag_cash_bricks@(24.0, -3.8, 13.6), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.6, 13.3), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.0, 13.3), slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.6, 13.3) n=(-0.0, 0.0, 1.0), vel=(0.0, 0.0, 0.0) floor=true state=0
+[OFP 1125.1s t=814.4] pilot: detour right 1.2 m to (25.2, -3.8, 13.7) (attempt 23)
+[OFP 1146.1s t=819.3] pilot: STUCK at (24.0, -1.1, 14.0) heading to (24.0, 0.2, 11.7); rays: h0.05:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -1.1, 13.3), h0.20:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -0.9, 13.3), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(24.0, -0.7, 13.5), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(24.0, -0.1, 13.5), vel=(0.0, 0.0, 0.0) floor=false state=0
+[OFP 1149.1s t=820.1] pilot: t=75 at (24.0, -2.7, 14.0) corner (24.0, 0.2, 11.7) yaw_err -0.00 fwd=true path=2 mouse_mode=2 state=0 look=(-169.65,0.00) pin_yaw=-169.646001112524 bot=false
+[OFP 1156.9s t=821.7] pilot: STUCK at (24.0, -4.0, 13.7) heading to (24.0, 0.2, 11.7); rays: h0.05:/root/OfG1Pass/HeistRuntime/Dynamic/Bag_cash_bricks@(24.0, -3.9, 13.6), h0.20:/root/OfG1Pass/HeistRuntime/Dynamic/Bag_cash_bricks@(24.0, -3.8, 13.6), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.6, 13.3), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.0, 13.3), slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.6, 13.3) n=(0.0, 0.0, 1.0), vel=(0.0, 0.0, 0.0) floor=true state=0
+[OFP 1156.9s t=821.7] pilot: detour right 1.2 m to (25.2, -3.8, 13.7) (attempt 25)
+[OFP 1172.8s t=826.0] pilot: t=80 at (24.0, 0.0, 13.8) corner (24.0, 0.2, 13.2) yaw_err -0.07 fwd=true path=2 mouse_mode=2 state=0 look=(-175.86,0.00) pin_yaw=-175.929188236427 bot=false
+[OFP 1176.4s t=826.6] pilot: STUCK at (24.0, -1.1, 14.0) heading to (24.0, 0.2, 11.7); rays: h0.05:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -1.1, 13.3), h0.20:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -0.9, 13.3), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(24.0, -0.7, 13.5), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(24.0, -0.1, 13.5), vel=(0.0, 0.0, 0.0) floor=false state=0
+[OFP 1185.6s t=829.0] pilot: STUCK at (24.0, -4.0, 13.7) heading to (24.0, 0.2, 11.7); rays: h0.05:/root/OfG1Pass/HeistRuntime/Dynamic/Bag_cash_bricks@(24.0, -3.9, 13.6), h0.20:/root/OfG1Pass/HeistRuntime/Dynamic/Bag_cash_bricks@(24.0, -3.8, 13.6), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.6, 13.3), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.0, 13.3), slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.6, 13.3) n=(-0.0, 0.0, 1.0), vel=(0.0, 0.0, 0.0) floor=true state=0
+[OFP 1185.6s t=829.0] pilot: detour right 1.2 m to (25.2, -3.8, 13.7) (attempt 27)
+[OFP 1197.5s t=832.2] pilot: t=85 at (24.0, -0.2, 14.0) corner (24.0, 0.2, 11.7) yaw_err -0.00 fwd=true path=3 mouse_mode=2 state=0 look=(-175.93,0.00) pin_yaw=-175.929191150077 bot=false
+[OFP 1205.1s t=833.9] pilot: STUCK at (24.0, -1.1, 14.0) heading to (24.0, 0.2, 11.7); rays: h0.05:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -1.1, 13.3), h0.20:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -0.9, 13.3), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(24.0, -0.7, 13.5), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(24.0, -0.1, 13.5), vel=(0.0, 0.0, 0.0) floor=false state=0
+[OFP 1212.5s t=836.3] pilot: STUCK at (24.0, -4.0, 13.7) heading to (24.0, 0.2, 11.7); rays: h0.05:/root/OfG1Pass/HeistRuntime/Dynamic/Bag_cash_bricks@(24.0, -3.9, 13.6), h0.20:/root/OfG1Pass/HeistRuntime/Dynamic/Bag_cash_bricks@(24.0, -3.8, 13.6), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.6, 13.3), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.0, 13.3), slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.6, 13.3) n=(0.0, 0.0, 1.0), vel=(0.0, 0.0, 0.0) floor=true state=0
+[OFP 1212.5s t=836.3] pilot: detour right 1.2 m to (25.2, -3.8, 13.7) (attempt 29)
+[OFP 1219.0s t=838.5] pilot: t=90 at (24.0, -2.3, 14.0) corner (24.0, 0.2, 11.7) yaw_err -0.00 fwd=true path=2 mouse_mode=2 state=0 look=(-182.21,0.00) pin_yaw=-182.212374498769 bot=false
+[OFP 1225.2s t=841.2] pilot: STUCK at (24.0, -1.1, 14.0) heading to (24.0, 0.2, 11.7); rays: h0.05:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -1.1, 13.3), h0.20:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -0.9, 13.3), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(24.0, -0.7, 13.5), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(24.0, -0.1, 13.5), vel=(0.0, 0.0, 0.0) floor=false state=0
+[OFP 1235.7s t=843.6] pilot: STUCK at (24.0, -4.0, 13.7) heading to (24.0, 0.2, 11.7); rays: h0.05:/root/OfG1Pass/HeistRuntime/Dynamic/Bag_cash_bricks@(24.0, -3.9, 13.6), h0.20:/root/OfG1Pass/HeistRuntime/Dynamic/Bag_cash_bricks@(24.0, -3.8, 13.6), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.6, 13.3), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.0, 13.3), slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.6, 13.3) n=(-0.0, 0.0, 1.0), vel=(0.0, 0.0, 0.0) floor=true state=0
+[OFP 1235.7s t=843.6] pilot: detour right 1.2 m to (25.2, -3.8, 13.7) (attempt 31)
+[INFO][director][p1] assault phase SUSTAIN (wave 7, 160 s)
+[OFP 1239.0s t=844.8] pilot: t=95 at (25.1, -4.0, 13.7) corner (24.0, -3.8, 13.7) yaw_err 0.64 fwd=false path=2 mouse_mode=2 state=0 look=(-187.55,0.00) pin_yaw=-187.360018424581 bot=false
+[INFO][director][p1] force pool spent (56 units): FADE
+[INFO][director][p1] assault phase FADE (wave 7, 15 s)
+[OFP 1245.8s t=848.6] pilot: STUCK at (24.0, -1.1, 14.0) heading to (24.0, 0.2, 11.7); rays: h0.05:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -1.1, 13.3), h0.20:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -0.9, 13.3), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(24.0, -0.7, 13.5), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(24.0, -0.1, 13.5), vel=(0.0, 0.0, 0.0) floor=false state=0
+[OFP 1247.4s t=850.1] pilot: t=100 at (24.0, -4.0, 13.7) corner (24.0, 0.2, 11.7) yaw_err -0.00 fwd=true path=2 mouse_mode=2 state=0 look=(-194.78,0.00) pin_yaw=-194.778737436121 bot=false
+[OFP 1248.2s t=851.0] pilot: STUCK at (24.0, -4.0, 13.7) heading to (24.0, 0.2, 11.7); rays: h0.05:/root/OfG1Pass/HeistRuntime/Dynamic/Bag_cash_bricks@(24.0, -3.9, 13.6), h0.20:/root/OfG1Pass/HeistRuntime/Dynamic/Bag_cash_bricks@(24.0, -3.8, 13.6), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.6, 13.3), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.0, 13.3), slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.6, 13.3) n=(0.0, 0.0, 1.0), vel=(0.0, 0.0, 0.0) floor=true state=0
+[OFP 1248.2s t=851.0] pilot: detour right 1.2 m to (25.2, -3.8, 13.7) (attempt 33)
+[OFP 1253.1s t=855.9] pilot: STUCK at (24.0, -1.1, 14.0) heading to (24.0, 0.2, 11.7); rays: h0.05:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -1.1, 13.3), h0.20:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -0.9, 13.3), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(24.0, -0.7, 13.5), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(24.0, -0.1, 13.5), vel=(0.0, 0.0, 0.0) floor=false state=0
+[OFP 1253.6s t=856.4] pilot: t=105 at (24.0, -2.2, 14.0) corner (24.0, 0.2, 11.7) yaw_err -0.00 fwd=true path=2 mouse_mode=2 state=0 look=(-201.06,0.00) pin_yaw=-201.061925484952 bot=false
+[OFP 1255.5s t=858.3] pilot: STUCK at (24.0, -4.0, 13.7) heading to (24.0, 0.2, 11.7); rays: h0.05:/root/OfG1Pass/HeistRuntime/Dynamic/Bag_cash_bricks@(24.0, -3.9, 13.6), h0.20:/root/OfG1Pass/HeistRuntime/Dynamic/Bag_cash_bricks@(24.0, -3.8, 13.6), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.6, 13.3), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.0, 13.3), slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.6, 13.3) n=(-0.0, 0.0, 1.0), vel=(0.0, 0.0, 0.0) floor=true state=0
+[OFP 1255.5s t=858.3] pilot: detour right 1.2 m to (25.2, -3.8, 13.7) (attempt 35)
+[INFO][director][p1] assault phase CONTROL (wave 8, 40 s)
+[OFP 1261.8s t=862.3] pilot: t=110 at (24.0, 0.0, 13.3) corner (24.0, 0.2, 11.7) yaw_err -2.95 fwd=false path=2 mouse_mode=2 state=0 look=(-204.40,0.00) pin_yaw=-204.591627350128 bot=false
+[OFP 1263.4s t=863.2] pilot: STUCK at (24.0, -1.1, 14.0) heading to (24.0, 0.2, 11.7); rays: h0.05:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -1.1, 13.3), h0.20:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -0.9, 13.3), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(24.0, -0.7, 13.5), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(24.0, -0.1, 13.5), vel=(0.0, 0.0, 0.0) floor=false state=0
+[OFP 1265.8s t=865.6] pilot: STUCK at (24.0, -4.0, 13.7) heading to (24.0, 0.2, 11.7); rays: h0.05:/root/OfG1Pass/HeistRuntime/Dynamic/Bag_cash_bricks@(24.0, -3.9, 13.6), h0.20:/root/OfG1Pass/HeistRuntime/Dynamic/Bag_cash_bricks@(24.0, -3.8, 13.6), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.6, 13.3), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.0, 13.3), slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.6, 13.3) n=(0.0, 0.0, 1.0), vel=(0.0, 0.0, 0.0) floor=true state=0
+[OFP 1265.8s t=865.6] pilot: detour right 1.2 m to (25.2, -3.8, 13.7) (attempt 37)
+[OFP 1268.7s t=868.6] pilot: t=115 at (24.0, -0.7, 14.0) corner (24.0, 0.2, 11.7) yaw_err 0.00 fwd=true path=3 mouse_mode=2 state=0 look=(-207.35,0.00) pin_yaw=-207.34511737046 bot=false
+[OFP 1270.7s t=870.5] pilot: STUCK at (24.0, -1.1, 14.0) heading to (24.0, 0.2, 11.7); rays: h0.05:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -1.1, 13.3), h0.20:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -0.9, 13.3), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(24.0, -0.7, 13.5), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(24.0, -0.1, 13.5), vel=(0.0, 0.0, 0.0) floor=false state=0
+[OFP 1273.1s t=872.9] pilot: STUCK at (24.0, -4.0, 13.7) heading to (24.0, 0.2, 11.7); rays: h0.05:/root/OfG1Pass/HeistRuntime/Dynamic/Bag_cash_bricks@(24.0, -3.9, 13.6), h0.20:/root/OfG1Pass/HeistRuntime/Dynamic/Bag_cash_bricks@(24.0, -3.8, 13.6), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.6, 13.3), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.0, 13.3), slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.6, 13.3) n=(-0.0, 0.0, 1.0), vel=(0.0, 0.0, 0.0) floor=true state=0
+[OFP 1273.1s t=872.9] pilot: detour right 1.2 m to (25.2, -3.8, 13.7) (attempt 39)
+[OFP 1275.0s t=874.8] pilot: t=120 at (24.0, -2.8, 14.0) corner (24.0, 0.2, 11.7) yaw_err -0.00 fwd=true path=2 mouse_mode=2 state=0 look=(-213.63,0.00) pin_yaw=-213.628298824784 bot=false
+[OFP 1275.0s t=874.9] could not reach (24.0, 0.2, 11.7) (at (24.0, -2.8, 14.0))
+[OFP 1275.0s t=874.9] ladder RopeLadder approach not reached ((24.0, 0.2, 11.7))
+[OFP 1275.0s t=874.9] stray ladder RopeLadder climbed back false
+[OFP 1275.0s t=874.9] FINDING a walk took RopeLadder by accident at (24.0, -2.7, 14.0)
+[OFP 1281.2s t=881.0] LADDER RopeLadder down: OK in 2.6 s (climb 2.4 s, height 4.0 m; at (24.0, -3.9, 15.4))
+[OFP 1281.2s t=881.0] stray ladder RopeLadder climbed back true
+[OFP 1285.3s t=882.9] pilot: aimed <none>, wanted /root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/LandingPanel1 (dist 3.61, angle 0.0 deg, avail '', LOS ray hit /root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_04 at (24.9, -0.8, 15.0))
+[OFP 1285.7s t=883.3] pilot: use call_lift re-press skipped: aimed <none> (dist 3.61, angle 0.0 deg)
+[OFP 1286.1s t=883.7] pilot: use call_lift re-press skipped: aimed <none> (dist 3.61, angle 0.0 deg)
+[OFP 1286.6s t=884.1] pilot: use call_lift re-press skipped: aimed <none> (dist 3.61, angle 0.0 deg)
+[OFP 1286.9s t=884.5] pilot: use call_lift re-press skipped: aimed <none> (dist 3.61, angle 0.0 deg)
+[OFP 1287.3s t=884.9] pilot: use call_lift re-press skipped: aimed <none> (dist 3.61, angle 0.0 deg)
+[OFP 1287.7s t=885.3] pilot: use call_lift re-press skipped: aimed <none> (dist 3.61, angle 0.0 deg)
+[OFP 1288.1s t=885.7] pilot: use call_lift re-press skipped: aimed <none> (dist 3.61, angle 0.0 deg)
+[OFP 1288.5s t=886.1] pilot: use call_lift re-press skipped: aimed <none> (dist 3.61, angle 0.0 deg)
+[OFP 1288.9s t=886.5] pilot: use call_lift re-press skipped: aimed <none> (dist 3.61, angle 0.0 deg)
+[OFP 1289.3s t=886.9] pilot: use call_lift re-press skipped: aimed <none> (dist 3.61, angle 0.0 deg)
+[OFP 1289.7s t=887.3] pilot: use call_lift re-press skipped: aimed <none> (dist 3.61, angle 0.0 deg)
+[OFP 1290.1s t=887.7] pilot: use call_lift re-press skipped: aimed <none> (dist 3.61, angle 0.0 deg)
+[OFP 1290.5s t=888.1] pilot: use call_lift re-press skipped: aimed <none> (dist 3.61, angle 0.0 deg)
+[OFP 1290.9s t=888.5] pilot: use call_lift re-press skipped: aimed <none> (dist 3.61, angle 0.0 deg)
+[OFP 1291.3s t=888.9] pilot: use call_lift re-press skipped: aimed <none> (dist 3.61, angle 0.0 deg)
+[OFP 1291.7s t=889.3] pilot: use call_lift re-press skipped: aimed <none> (dist 3.61, angle 0.0 deg)
+[OFP 1292.1s t=889.7] pilot: use call_lift re-press skipped: aimed <none> (dist 3.61, angle 0.0 deg)
+[OFP 1292.5s t=890.1] pilot: use call_lift re-press skipped: aimed <none> (dist 3.61, angle 0.0 deg)
+[OFP 1292.9s t=890.5] pilot: use call_lift re-press skipped: aimed <none> (dist 3.61, angle 0.0 deg)
+[OFP 1293.3s t=890.9] pilot: use call_lift re-press skipped: aimed <none> (dist 3.61, angle 0.0 deg)
+[OFP 1293.7s t=891.3] pilot: use call_lift re-press skipped: aimed <none> (dist 3.61, angle 0.0 deg)
+[OFP 1294.1s t=891.7] pilot: use call_lift re-press skipped: aimed <none> (dist 3.61, angle 0.0 deg)
+[OFP 1294.5s t=892.1] pilot: use call_lift re-press skipped: aimed <none> (dist 3.61, angle 0.0 deg)
+[OFP 1294.9s t=892.5] pilot: use call_lift re-press skipped: aimed <none> (dist 3.61, angle 0.0 deg)
+[OFP 1295.3s t=892.9] pilot: use call_lift re-press skipped: aimed <none> (dist 3.61, angle 0.0 deg)
+[OFP 1295.7s t=893.3] pilot: use call_lift re-press skipped: aimed <none> (dist 3.61, angle 0.0 deg)
+[OFP 1296.1s t=893.7] pilot: use call_lift re-press skipped: aimed <none> (dist 3.61, angle 0.0 deg)
+[OFP 1296.5s t=894.1] pilot: use call_lift re-press skipped: aimed <none> (dist 3.61, angle 0.0 deg)
+[OFP 1296.9s t=894.5] pilot: use call_lift re-press skipped: aimed <none> (dist 3.61, angle 0.0 deg)
+[OFP 1297.3s t=894.9] pilot: use call_lift re-press skipped: aimed <none> (dist 3.61, angle 0.0 deg)
+[OFP 1297.7s t=895.3] pilot: use call_lift re-press skipped: aimed <none> (dist 3.61, angle 0.0 deg)
+[OFP 1298.1s t=895.7] pilot: use call_lift re-press skipped: aimed <none> (dist 3.61, angle 0.0 deg)
+[OFP 1298.5s t=896.1] pilot: use call_lift re-press skipped: aimed <none> (dist 3.61, angle 0.0 deg)
+[OFP 1298.9s t=896.5] pilot: use call_lift re-press skipped: aimed <none> (dist 3.61, angle 0.0 deg)
+[OFP 1299.3s t=896.9] pilot: use call_lift re-press skipped: aimed <none> (dist 3.61, angle 0.0 deg)
+[OFP 1299.7s t=897.3] pilot: use call_lift re-press skipped: aimed <none> (dist 3.61, angle 0.0 deg)
+[OFP 1300.1s t=897.7] pilot: use call_lift re-press skipped: aimed <none> (dist 3.61, angle 0.0 deg)
+[OFP 1300.5s t=898.1] pilot: use call_lift re-press skipped: aimed <none> (dist 3.61, angle 0.0 deg)
+[OFP 1300.9s t=898.5] pilot: use call_lift re-press skipped: aimed <none> (dist 3.61, angle 0.0 deg)
+[OFP 1301.3s t=898.9] pilot: use call_lift re-press skipped: aimed <none> (dist 3.61, angle 0.0 deg)
+[OFP 1301.7s t=899.3] pilot: use call_lift re-press skipped: aimed <none> (dist 3.61, angle 0.0 deg)
+[OFP 1302.1s t=899.7] pilot: use call_lift re-press skipped: aimed <none> (dist 3.61, angle 0.0 deg)
+[OFP 1302.5s t=900.1] pilot: use call_lift re-press skipped: aimed <none> (dist 3.61, angle 0.0 deg)
+[INFO][director][p1] assault phase ANTICIPATION (wave 8, 30 s)
+[OFP 1302.9s t=900.5] pilot: use call_lift re-press skipped: aimed <none> (dist 3.61, angle 0.0 deg)
+[OFP 1303.3s t=900.9] pilot: use call_lift re-press skipped: aimed <none> (dist 3.61, angle 0.0 deg)
+[OFP 1303.7s t=901.3] pilot: use call_lift re-press skipped: aimed <none> (dist 3.61, angle 0.0 deg)
+[OFP 1304.1s t=901.7] pilot: use call_lift re-press skipped: aimed <none> (dist 3.61, angle 0.0 deg)
+[OFP 1304.5s t=902.1] pilot: use call_lift re-press skipped: aimed <none> (dist 3.61, angle 0.0 deg)
+[OFP 1304.9s t=902.5] pilot: use call_lift re-press skipped: aimed <none> (dist 3.61, angle 0.0 deg)
+[OFP 1305.3s t=902.9] pilot: use call_lift re-press skipped: aimed <none> (dist 3.61, angle 0.0 deg)
+[OFP 1305.7s t=903.3] pilot: use call_lift re-press skipped: aimed <none> (dist 3.61, angle 0.0 deg)
+[OFP 1306.1s t=903.7] pilot: use call_lift re-press skipped: aimed <none> (dist 3.61, angle 0.0 deg)
+[OFP 1306.5s t=904.1] pilot: use call_lift re-press skipped: aimed <none> (dist 3.61, angle 0.0 deg)
+[OFP 1306.9s t=904.5] pilot: use call_lift re-press skipped: aimed <none> (dist 3.61, angle 0.0 deg)
+[OFP 1307.3s t=904.9] pilot: use call_lift re-press skipped: aimed <none> (dist 3.61, angle 0.0 deg)
+[OFP 1307.7s t=905.3] pilot: use call_lift re-press skipped: aimed <none> (dist 3.61, angle 0.0 deg)
+[OFP 1308.1s t=905.7] pilot: use call_lift re-press skipped: aimed <none> (dist 3.61, angle 0.0 deg)
+[OFP 1308.5s t=906.1] pilot: use call_lift re-press skipped: aimed <none> (dist 3.61, angle 0.0 deg)
+[OFP 1308.9s t=906.5] pilot: use call_lift re-press skipped: aimed <none> (dist 3.61, angle 0.0 deg)
+[OFP 1309.3s t=906.9] pilot: use call_lift re-press skipped: aimed <none> (dist 3.61, angle 0.0 deg)
+[OFP 1309.7s t=907.3] pilot: use call_lift re-press skipped: aimed <none> (dist 3.61, angle 0.0 deg)
+[OFP 1310.1s t=907.7] pilot: use call_lift re-press skipped: aimed <none> (dist 3.61, angle 0.0 deg)
+[OFP 1310.5s t=908.1] pilot: use call_lift re-press skipped: aimed <none> (dist 3.61, angle 0.0 deg)
+[OFP 1310.9s t=908.5] pilot: use call_lift re-press skipped: aimed <none> (dist 3.61, angle 0.0 deg)
+[OFP 1311.3s t=908.9] pilot: use call_lift re-press skipped: aimed <none> (dist 3.61, angle 0.0 deg)
+[OFP 1311.7s t=909.3] pilot: use call_lift re-press skipped: aimed <none> (dist 3.61, angle 0.0 deg)
+[OFP 1312.1s t=909.7] pilot: use call_lift re-press skipped: aimed <none> (dist 3.61, angle 0.0 deg)
+[OFP 1312.5s t=910.1] pilot: use call_lift re-press skipped: aimed <none> (dist 3.61, angle 0.0 deg)
+[OFP 1312.9s t=910.5] pilot: use call_lift re-press skipped: aimed <none> (dist 3.61, angle 0.0 deg)
+[OFP 1313.3s t=910.9] pilot: use call_lift re-press skipped: aimed <none> (dist 3.61, angle 0.0 deg)
+[OFP 1313.7s t=911.3] pilot: use call_lift re-press skipped: aimed <none> (dist 3.61, angle 0.0 deg)
+[OFP 1314.1s t=911.7] pilot: use call_lift re-press skipped: aimed <none> (dist 3.61, angle 0.0 deg)
+[OFP 1314.5s t=912.1] pilot: use call_lift re-press skipped: aimed <none> (dist 3.61, angle 0.0 deg)
+[OFP 1314.9s t=912.5] pilot: use call_lift re-press skipped: aimed <none> (dist 3.61, angle 0.0 deg)
+[OFP 1315.3s t=912.9] pilot: use call_lift re-press skipped: aimed <none> (dist 3.61, angle 0.0 deg)
+[OFP 1315.7s t=913.3] pilot: use call_lift re-press skipped: aimed <none> (dist 3.61, angle 0.0 deg)
+[OFP 1316.1s t=913.7] pilot: use call_lift re-press skipped: aimed <none> (dist 3.61, angle 0.0 deg)
+[OFP 1316.5s t=914.1] pilot: use call_lift re-press skipped: aimed <none> (dist 3.61, angle 0.0 deg)
+[OFP 1316.9s t=914.5] pilot: use call_lift re-press skipped: aimed <none> (dist 3.61, angle 0.0 deg)
+[OFP 1317.3s t=914.9] pilot: use call_lift re-press skipped: aimed <none> (dist 3.61, angle 0.0 deg)
+[OFP 1317.7s t=915.3] pilot: use call_lift re-press skipped: aimed <none> (dist 3.61, angle 0.0 deg)
+[OFP 1318.1s t=915.7] pilot: use call_lift re-press skipped: aimed <none> (dist 3.61, angle 0.0 deg)
+[OFP 1318.5s t=916.1] pilot: use call_lift re-press skipped: aimed <none> (dist 3.61, angle 0.0 deg)
+[OFP 1318.9s t=916.5] pilot: use call_lift re-press skipped: aimed <none> (dist 3.61, angle 0.0 deg)
+[OFP 1319.3s t=916.9] pilot: use call_lift re-press skipped: aimed <none> (dist 3.61, angle 0.0 deg)
+[OFP 1319.7s t=917.3] pilot: use call_lift re-press skipped: aimed <none> (dist 3.61, angle 0.0 deg)
+[OFP 1320.1s t=917.7] pilot: use call_lift re-press skipped: aimed <none> (dist 3.61, angle 0.0 deg)
+[OFP 1320.5s t=918.1] pilot: use call_lift re-press skipped: aimed <none> (dist 3.61, angle 0.0 deg)
+[OFP 1320.9s t=918.5] pilot: use call_lift re-press skipped: aimed <none> (dist 3.61, angle 0.0 deg)
+[OFP 1321.3s t=918.9] pilot: use call_lift re-press skipped: aimed <none> (dist 3.61, angle 0.0 deg)
+[OFP 1321.4s t=919.0] pilot: use Hoist (call_lift) -> FAILED in 30.0 s
+[OFP 1321.4s t=919.0] lift Hoist panel 1 not used (at (24.9, -4.0, 15.4))
+[OFP 1321.4s t=919.0] FAIL burn/hoist ride up (send from the vault floor) (alarm ofp_burn)
+[OFP] FAIL burn/hoist ride up (send from the vault floor)
+[OFP] RESULT FAIL burn
+[OFP] RESULT FAIL (burn FAIL)
+WARNING: 129 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)
+
+# (12891 repeated SCRIPT ERROR "Trying to cast a freed object" blocks from AssaultEventRunner._tick_guides removed)

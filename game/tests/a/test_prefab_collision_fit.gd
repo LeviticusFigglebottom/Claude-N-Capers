@@ -84,7 +84,12 @@ func _wide_case_visual(with_collision: bool = false) -> PackedScene:
 
 ## [centre, size] of the prefab's `Collision/Shape` box in prefab space.
 func _own_box(p: GameplayPrefab) -> Array[Vector3]:
-	var cs: CollisionShape3D = p.get_node(^"Collision/Shape") as CollisionShape3D
+	return _box_of(p, ^"Collision/Shape")
+
+
+## [centre, size] of the box shape at `path` under `p`, in prefab space.
+func _box_of(p: GameplayPrefab, path: NodePath) -> Array[Vector3]:
+	var cs: CollisionShape3D = p.get_node(path) as CollisionShape3D
 	var box: BoxShape3D = cs.shape as BoxShape3D
 	var c: Vector3 = p.xform_to_self(cs).origin
 	return [c, box.size if box != null else Vector3.ZERO]
@@ -109,8 +114,12 @@ func test_placeholders_keep_their_boxes() -> void:
 	var cam: SecurityCamera = ATestMaps.add_prefab(_rt, "security_camera", Vector3(0, 2.5, -9)) as SecurityCamera
 	await wait_physics_frames(1)
 	var b: Array[Vector3] = _own_box(dc)
-	_assert_vec(b[1], Vector3(1.0, 1.3, 0.6), "display case placeholder size")
-	_assert_vec(b[0], Vector3(0, 0.65, 0), "display case placeholder centre")
+	# D-142: the 1.0 x 1.3 x 0.6 box is split at the Glass (0.9-1.3 m): cabinet below, see-through GlassBody above.
+	_assert_vec(b[1], Vector3(1.0, 0.9, 0.6), "display case placeholder cabinet size")
+	_assert_vec(b[0], Vector3(0, 0.45, 0), "display case placeholder cabinet centre")
+	b = _box_of(dc, ^"GlassBody/Shape")
+	_assert_vec(b[1], Vector3(1.0, 0.4, 0.6), "display case placeholder glass size")
+	_assert_vec(b[0], Vector3(0, 1.1, 0), "display case placeholder glass centre")
 	b = _own_box(safe)
 	_assert_vec(b[1], Vector3(0.8, 1.2, 0.7), "safe: Body only (the swinging Door is not boxed)")
 	_assert_vec(b[0], Vector3(0, 0.6, 0), "safe centre")
@@ -127,8 +136,12 @@ func test_custom_visual_sizes_collision() -> void:
 	await wait_physics_frames(1)
 	assert_false(dc.using_placeholder)
 	var b: Array[Vector3] = _own_box(dc)
-	_assert_vec(b[1], Vector3(2.0, 0.9, 0.5), "2.0 x 0.9 x 0.5 case: collision matches the visual")
-	_assert_vec(b[0], Vector3(0, 0.45, 0), "bottom on the floor pivot (the foot below y = 0 is clipped)")
+	# D-142: 2.0 x 0.9 x 0.5 fitted to the visual, split at the Glass (0.6-0.9 m).
+	_assert_vec(b[1], Vector3(2.0, 0.6, 0.5), "2.0 x 0.6 x 0.5 cabinet: collision matches the visual's Body")
+	_assert_vec(b[0], Vector3(0, 0.3, 0), "bottom on the floor pivot (the foot below y = 0 is clipped)")
+	b = _box_of(dc, ^"GlassBody/Shape")
+	_assert_vec(b[1], Vector3(2.0, 0.3, 0.5), "the glass band above it")
+	_assert_vec(b[0], Vector3(0, 0.75, 0), "glass centre")
 	assert_eq(dc.collision_body(), dc.get_node(^"Collision"), "the prefab's own body is used")
 	assert_eq((dc.get_node(^"Collision") as CollisionObject3D).collision_layer, GameplayPrefab.LAYER_WORLD_STATIC)
 	# Physically there: a ray at 0.95 m from the case's +X end hits it (the old 1 m box ended at 0.5).
@@ -158,8 +171,14 @@ func test_override_size() -> void:
 	var dc: DisplayCase = _case(Vector3(0, 0, -6), _wide_case_visual(true), Vector3(1.5, 1.0, 0.8))
 	await wait_physics_frames(1)
 	var b: Array[Vector3] = _own_box(dc)
-	_assert_vec(b[1], Vector3(1.5, 1.0, 0.8), "override size")
-	_assert_vec(b[0], Vector3(0, 0.5, 0), "override placed on the floor pivot (bottom-centre)")
+	# Override 1.5 x 1.0 x 0.8 on the floor pivot, split (D-142) at the Glass (0.6-0.9 m): cabinet + cap opaque.
+	_assert_vec(b[1], Vector3(1.5, 0.6, 0.8), "override size: cabinet below the glass")
+	_assert_vec(b[0], Vector3(0, 0.3, 0), "override placed on the floor pivot (bottom-centre)")
+	b = _box_of(dc, ^"Collision/CapShape")
+	_assert_vec(b[1], Vector3(1.5, 0.1, 0.8), "override: the cap above the glass")
+	_assert_vec(b[0], Vector3(0, 0.95, 0), "cap centre")
+	b = _box_of(dc, ^"GlassBody/Shape")
+	_assert_vec(b[1], Vector3(1.5, 0.3, 0.5), "override: the glass band is the visual's Glass, inside the box")
 	assert_eq(dc.collision_body(), dc.get_node(^"Collision"), "override uses the prefab's box")
 	var vis: CollisionObject3D = dc.visual_node("Collision") as CollisionObject3D
 	assert_eq(vis.collision_layer, 0, "the visual's Collision is turned off by an override")

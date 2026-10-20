@@ -1,0 +1,105 @@
+[INFO][variants][p1] seed 1 resolved { &"guard_post": [&"post_dock", &"post_yard_e", &"post_yard_w"], &"cash_location": [&"cash_countroom"], &"weapons_containers": [&"k2", &"k5"], &"product_location": [&"prod_packing"], &"warehouse_entry": [&"door_office"], &"east_gangway": [&"gangway_down"], &"goods_lift": [&"lift_dead"], &"player_perch": [&"perch_stack"], &"escape": [&"esc_van_gate"], &"night_shift": [&"shift_1"], &"perch_viaduct": [], &"perch_trawler": [], &"police_delay_s": 60.0, &"cash_bags": 6, &"product_bags": 8, &"escape_eta_s": 150.0, &"extra_container_pick": 1, "rare": [] }
+[INFO][heist][p1] vfx prewarm: 532 ms
+[INFO][heist][p1] phase LOADING -> LOUD
+[PO14 t=0.0] cash_location cash_countroom
+[PO14 t=1.1] pilot: calibrated 0.001600 rad/px yaw, 0.001600 rad/px pitch (settings formula said (0.0016, 0.0016))
+[PO14 t=2.4] padlock at (9.42, 4.7, 3.47) kind lockpick enabled true; gate at (9.8, 3.6, 3.4) open false
+[PO14 t=7.4] pilot: t=5 at (30.1, 0.0, -33.6) corner (25.8, 0.2, -32.9) yaw_err -0.00 fwd=true path=54 mouse_mode=2 state=0 look=(-4.54,0.00) pin_yaw=-4.54012666824135 bot=false
+[PO14 t=12.4] pilot: t=10 at (24.6, 0.0, -32.6) corner (23.7, 0.2, -32.5) yaw_err -1.21 fwd=false path=50 mouse_mode=2 state=0 look=(-3.34,0.00) pin_yaw=-3.5280517176682 bot=false
+[PO14 t=18.1] pilot: t=15 at (22.0, 0.0, -27.7) corner (20.2, 0.2, -22.3) yaw_err 0.03 fwd=true path=46 mouse_mode=2 state=0 look=(2.78,-0.00) pin_yaw=2.81253375099258 bot=false
+[PO14 t=23.1] pilot: t=20 at (20.0, 0.0, -21.9) corner (20.2, 0.2, -22.5) yaw_err -2.15 fwd=false path=45 mouse_mode=2 state=0 look=(1.84,0.00) pin_yaw=1.64591306760244 bot=false
+[PO14 t=28.1] pilot: t=25 at (18.1, 0.0, -16.4) corner (17.9, 0.2, -15.8) yaw_err -0.00 fwd=true path=39 mouse_mode=2 state=0 look=(2.79,0.00) pin_yaw=2.79057282116387 bot=false
+[PO14 t=33.1] pilot: t=30 at (16.2, 0.0, -10.9) corner (15.3, 0.2, -8.1) yaw_err -0.96 fwd=false path=34 mouse_mode=2 state=0 look=(3.77,0.00) pin_yaw=3.58259481009859 bot=false
+[PO14 t=38.1] pilot: t=35 at (14.1, 0.0, -5.2) corner (14.5, 0.2, -5.7) yaw_err -0.86 fwd=false path=32 mouse_mode=2 state=0 look=(0.15,0.00) pin_yaw=-0.04261730865133 bot=false
+[PO14 t=43.1] pilot: t=40 at (8.4, 0.0, -3.4) corner (4.7, 0.2, -2.3) yaw_err -0.00 fwd=true path=30 mouse_mode=2 state=0 look=(1.88,0.00) pin_yaw=1.87585790718854 bot=false
+[PO14 t=48.1] pilot: t=45 at (2.9, 0.0, -1.7) corner (1.9, 0.2, -1.4) yaw_err -0.39 fwd=true path=28 mouse_mode=2 state=0 look=(2.27,0.00) pin_yaw=2.08138266449655 bot=false
+[PO14 t=53.1] pilot: t=50 at (-0.8, 1.4, 1.5) corner (-0.8, 2.0, 2.3) yaw_err -1.18 fwd=false path=27 mouse_mode=2 state=0 look=(4.35,0.00) pin_yaw=4.15313999515033 bot=false
+[PO14 t=66.4] pilot: use MCWest (open_door) -> OK in 8.0 s
+[PO14 t=67.7] pilot: t=55 at (1.0, 3.6, 6.9) corner (0.5, 3.8, 6.9) yaw_err 0.01 fwd=true path=16 mouse_mode=2 state=0 look=(1.59,0.00) pin_yaw=1.59207223032113 bot=false
+[PO14 t=72.7] pilot: t=60 at (6.4, 3.6, 6.7) corner (6.0, 3.6, 5.1) yaw_err 0.20 fwd=true path=10 mouse_mode=2 state=0 look=(-0.01,0.00) pin_yaw=0.18237106737192 bot=false
+[PO14 t=72.7] pilot: could not reach /root/Po14Db/HeistRuntime/DocksideBurn/Gameplay/Doors/CountCageGate/CountCagePadlock/Interactable (lockpick)
+[PO14 t=72.7] pilot: lockpick out of reach after the walk: not pressing
+[PO14 t=76.8] pilot: STUCK at (6.1, 3.6, 5.2) heading to (6.0, 3.6, 5.1); rays: vel=(-0.5, 0.0, -2.9) floor=true state=0
+[PO14 t=76.9] pilot: detour right 0.7 m to (5.3, 3.8, 5.1) (attempt 1)
+[PO14 t=78.3] pilot: t=5 at (6.1, 3.6, 5.4) corner (6.0, 3.6, 5.1) yaw_err 1.29 fwd=false path=14 mouse_mode=2 state=0 look=(-26.35,0.00) pin_yaw=-26.1571186387579 bot=false
+[PO14 t=83.3] pilot: t=10 at (6.1, 3.6, 5.4) corner (6.0, 3.6, 5.1) yaw_err -0.23 fwd=true path=14 mouse_mode=2 state=0 look=(-68.70,0.00) pin_yaw=-68.8893139489361 bot=false
+[PO14 t=83.4] pilot: STUCK at (6.1, 3.6, 5.2) heading to (6.0, 3.6, 5.1); rays: vel=(-0.5, 0.0, -2.9) floor=true state=0
+[PO14 t=83.5] pilot: detour left 0.7 m to (6.7, 3.8, 4.9) (attempt 2)
+[PO14 t=87.9] pilot: STUCK at (6.1, 3.6, 5.1) heading to (6.0, 3.6, 5.1); rays: vel=(-0.6, 0.0, -3.4) floor=true state=0
+[PO14 t=88.1] pilot: detour right 1.2 m to (4.8, 3.8, 5.1) (attempt 3)
+[PO14 t=89.8] pilot: t=15 at (5.6, 3.6, 5.6) corner (5.9, 3.6, 5.1) yaw_err 0.41 fwd=true path=14 mouse_mode=2 state=0 look=(-38.73,0.00) pin_yaw=-38.5420680533267 bot=false
+[PO14 t=92.9] pilot: STUCK at (6.1, 3.6, 5.1) heading to (6.1, 3.8, 5.6); rays: vel=(0.5, 0.0, 1.9) floor=true state=0
+[PO14 t=92.9] pilot: detour left 1.2 m to (7.3, 3.8, 5.2) (attempt 4)
+[PO14 t=95.7] pilot: t=20 at (6.0, 3.6, 5.0) corner (6.1, 3.8, 5.6) yaw_err 1.96 fwd=false path=14 mouse_mode=2 state=0 look=(-48.92,0.00) pin_yaw=-48.7262235797013 bot=false
+[PO14 t=100.7] pilot: t=25 at (6.0, 3.6, 5.0) corner (6.1, 3.8, 5.6) yaw_err 1.20 fwd=false path=14 mouse_mode=2 state=0 look=(-4.17,0.00) pin_yaw=-3.9777149463977 bot=false
+[PO14 t=105.7] pilot: t=30 at (6.0, 3.6, 5.0) corner (6.1, 3.8, 5.6) yaw_err 2.73 fwd=false path=14 mouse_mode=2 state=0 look=(38.27,0.00) pin_yaw=38.4658414451199 bot=false
+[PO14 t=110.7] pilot: t=35 at (6.1, 3.6, 5.4) corner (6.0, 3.6, 5.1) yaw_err 0.04 fwd=true path=14 mouse_mode=2 state=0 look=(81.79,0.00) pin_yaw=81.8275905323984 bot=false
+[PO14 t=115.7] pilot: t=40 at (6.1, 3.6, 5.4) corner (6.0, 3.6, 5.1) yaw_err 1.57 fwd=false path=14 mouse_mode=2 state=0 look=(124.23,0.00) pin_yaw=124.42661097253 bot=false
+[PO14 t=120.7] pilot: t=45 at (6.1, 3.6, 5.3) corner (6.0, 3.6, 5.1) yaw_err 3.06 fwd=false path=14 mouse_mode=2 state=0 look=(166.68,0.00) pin_yaw=166.872894119502 bot=false
+[PO14 t=125.7] pilot: t=50 at (6.0, 3.6, 5.0) corner (6.1, 3.8, 5.6) yaw_err 0.42 fwd=true path=14 mouse_mode=2 state=0 look=(210.23,0.00) pin_yaw=210.418313585892 bot=false
+[PO14 t=130.7] pilot: t=55 at (6.0, 3.6, 5.0) corner (6.1, 3.8, 5.6) yaw_err 1.97 fwd=false path=14 mouse_mode=2 state=0 look=(252.67,0.00) pin_yaw=252.864294016364 bot=false
+[PO14 t=135.7] pilot: t=60 at (6.1, 3.6, 5.2) corner (6.0, 3.6, 5.1) yaw_err 0.01 fwd=true path=14 mouse_mode=2 state=0 look=(295.48,0.00) pin_yaw=295.492485213859 bot=false
+[PO14 t=135.8] pilot: could not reach /root/Po14Db/HeistRuntime/DocksideBurn/Gameplay/Doors/CountCageGate/CountCagePadlock/Interactable (lockpick)
+[PO14 t=135.8] pilot: lockpick out of reach after the walk: not pressing
+[PO14 t=140.8] pilot: t=5 at (6.1, 3.6, 5.4) corner (6.0, 3.6, 5.1) yaw_err 0.23 fwd=true path=14 mouse_mode=2 state=0 look=(339.21,0.00) pin_yaw=339.398343555434 bot=false
+[PO14 t=145.8] pilot: t=10 at (6.1, 3.6, 5.4) corner (6.0, 3.6, 5.1) yaw_err -0.05 fwd=true path=14 mouse_mode=2 state=0 look=(358.37,0.00) pin_yaw=358.31563013074 bot=false
+[PO14 t=145.8] pilot: STUCK at (6.1, 3.6, 5.2) heading to (6.0, 3.6, 5.1); rays: vel=(-0.5, 0.0, -3.4) floor=true state=0
+[PO14 t=145.8] pilot: detour right 0.7 m to (6.7, 3.8, 4.8) (attempt 1)
+[PO14 t=151.1] pilot: t=15 at (6.5, 3.6, 5.2) corner (6.4, 3.8, 5.6) yaw_err 0.00 fwd=true path=16 mouse_mode=2 state=0 look=(379.76,0.00) pin_yaw=379.764586209255 bot=false
+[PO14 t=154.2] pilot: STUCK at (6.1, 3.6, 5.3) heading to (6.0, 3.6, 5.1); rays: vel=(-0.5, 0.0, -2.4) floor=true state=0
+[PO14 t=154.2] pilot: detour left 0.7 m to (5.3, 3.8, 5.1) (attempt 2)
+[PO14 t=156.4] pilot: t=20 at (6.0, 3.6, 5.1) corner (6.1, 3.8, 5.6) yaw_err -2.66 fwd=false path=14 mouse_mode=2 state=0 look=(376.70,0.00) pin_yaw=376.504174791874 bot=false
+[PO14 t=161.4] pilot: t=25 at (6.0, 3.6, 5.0) corner (6.1, 3.8, 5.6) yaw_err -0.40 fwd=true path=15 mouse_mode=2 state=0 look=(330.43,0.00) pin_yaw=330.239809368505 bot=false
+[PO14 t=164.7] pilot: STUCK at (6.1, 3.6, 5.3) heading to (6.0, 3.6, 5.1); rays: vel=(-0.6, 0.0, -2.4) floor=true state=0
+[PO14 t=164.7] pilot: detour right 1.2 m to (7.2, 3.8, 4.8) (attempt 3)
+[PO14 t=167.7] pilot: t=30 at (6.0, 3.6, 5.0) corner (6.1, 3.8, 5.6) yaw_err -1.71 fwd=false path=14 mouse_mode=2 state=0 look=(300.36,0.00) pin_yaw=300.171030826668 bot=false
+[PO14 t=172.7] pilot: t=35 at (6.0, 3.6, 5.1) corner (6.1, 3.8, 5.6) yaw_err 0.23 fwd=true path=14 mouse_mode=2 state=0 look=(342.36,0.00) pin_yaw=342.552012760662 bot=false
+[PO14 t=174.2] pilot: STUCK at (6.1, 3.6, 5.2) heading to (6.2, 3.8, 6.0); rays: vel=(0.5, 0.0, 2.9) floor=true state=0
+[PO14 t=174.2] pilot: detour left 1.2 m to (7.3, 3.8, 5.3) (attempt 4)
+[PO14 t=179.2] pilot: t=40 at (6.1, 3.6, 5.4) corner (6.0, 3.6, 5.1) yaw_err 2.49 fwd=false path=14 mouse_mode=2 state=0 look=(368.33,0.00) pin_yaw=368.521668250866 bot=false
+[PO14 t=185.2] pilot: t=45 at (6.1, 3.6, 5.4) corner (6.0, 3.6, 5.1) yaw_err 2.15 fwd=false path=14 mouse_mode=2 state=0 look=(374.98,0.00) pin_yaw=375.176676262449 bot=false
+[PO14 t=186.8] pilot: STUCK at (6.1, 3.6, 5.3) heading to (6.0, 3.6, 5.1); rays: vel=(-0.1, 0.0, -1.5) floor=true state=0
+[PO14 t=186.8] pilot: detour right 1.2 m to (7.2, 3.8, 4.8) (attempt 5)
+[PO14 t=191.0] pilot: t=50 at (6.0, 3.6, 5.0) corner (6.1, 3.8, 5.6) yaw_err 1.58 fwd=false path=14 mouse_mode=2 state=0 look=(403.85,0.00) pin_yaw=404.04606208463 bot=false
+[PO14 t=193.7] pilot: STUCK at (6.1, 3.6, 5.3) heading to (6.0, 3.6, 5.1); rays: vel=(-0.1, 0.0, -1.5) floor=true state=0
+[PO14 t=193.7] pilot: detour left 1.2 m to (4.9, 3.8, 5.2) (attempt 6)
+[PO14 t=196.8] pilot: t=55 at (6.1, 3.6, 5.4) corner (6.0, 3.6, 5.1) yaw_err -0.64 fwd=false path=14 mouse_mode=2 state=0 look=(434.34,0.00) pin_yaw=434.150984682989 bot=false
+[PO14 t=201.8] pilot: t=60 at (6.1, 3.6, 5.3) corner (6.0, 3.6, 5.1) yaw_err -0.02 fwd=true path=14 mouse_mode=2 state=0 look=(389.73,0.00) pin_yaw=389.706784544078 bot=false
+[PO14 t=201.9] pilot: could not reach /root/Po14Db/HeistRuntime/DocksideBurn/Gameplay/Doors/CountCageGate/CountCagePadlock/Interactable (lockpick)
+[PO14 t=201.9] pilot: lockpick out of reach after the walk: not pressing
+[PO14 t=203.9] pilot: STUCK at (6.1, 3.6, 5.2) heading to (6.0, 3.6, 5.1); rays: vel=(-0.4, 0.0, -2.9) floor=true state=0
+[PO14 t=203.9] pilot: detour right 0.7 m to (6.7, 3.8, 4.8) (attempt 1)
+[PO14 t=207.2] pilot: t=5 at (6.1, 3.6, 5.4) corner (6.0, 3.6, 5.1) yaw_err -2.72 fwd=false path=14 mouse_mode=2 state=0 look=(392.47,0.00) pin_yaw=392.278176129856 bot=false
+[PO14 t=208.2] pilot: STUCK at (6.1, 3.6, 5.2) heading to (6.0, 3.6, 5.1); rays: vel=(-0.5, 0.0, -2.9) floor=true state=0
+[PO14 t=208.2] pilot: detour left 0.7 m to (5.3, 3.8, 5.0) (attempt 2)
+[PO14 t=212.5] pilot: t=10 at (6.1, 3.6, 5.2) corner (6.0, 3.6, 5.1) yaw_err 0.01 fwd=true path=14 mouse_mode=2 state=0 look=(408.58,0.00) pin_yaw=408.585123991727 bot=false
+[PO14 t=217.5] pilot: t=15 at (6.1, 3.6, 5.4) corner (6.0, 3.6, 5.1) yaw_err 0.81 fwd=false path=14 mouse_mode=2 state=0 look=(451.73,0.00) pin_yaw=451.919726034759 bot=false
+[PO14 t=222.5] pilot: t=20 at (6.1, 3.6, 5.4) corner (6.0, 3.6, 5.1) yaw_err 2.34 fwd=false path=14 mouse_mode=2 state=0 look=(494.17,0.00) pin_yaw=494.365280615925 bot=false
+[PO14 t=227.5] pilot: t=25 at (6.0, 3.6, 5.1) corner (6.1, 3.8, 5.6) yaw_err 0.00 fwd=true path=14 mouse_mode=2 state=0 look=(537.39,0.00) pin_yaw=537.396848962528 bot=false
+[PO14 t=232.5] pilot: t=30 at (6.0, 3.6, 5.0) corner (6.1, 3.8, 5.6) yaw_err 1.01 fwd=false path=14 mouse_mode=2 state=0 look=(580.36,0.00) pin_yaw=580.547244527961 bot=false
+[PO14 t=237.5] pilot: t=35 at (6.0, 3.6, 5.0) corner (6.1, 3.8, 5.6) yaw_err 2.54 fwd=false path=14 mouse_mode=2 state=0 look=(622.80,0.00) pin_yaw=622.993220064325 bot=false
+[PO14 t=242.5] pilot: t=40 at (6.0, 3.6, 5.0) corner (6.1, 3.8, 5.6) yaw_err 2.15 fwd=false path=14 mouse_mode=2 state=0 look=(667.16,0.00) pin_yaw=667.355972497377 bot=false
+[PO14 t=244.9] pilot: STUCK at (6.1, 3.6, 5.2) heading to (6.1, 3.8, 5.6); rays: vel=(0.4, 0.0, 2.5) floor=true state=0
+[PO14 t=244.9] pilot: detour right 1.2 m to (4.9, 3.8, 5.6) (attempt 3)
+[PO14 t=248.4] pilot: t=45 at (6.1, 3.6, 5.4) corner (6.0, 3.6, 5.1) yaw_err -1.39 fwd=false path=14 mouse_mode=2 state=0 look=(692.72,0.00) pin_yaw=692.527946051212 bot=false
+[PO14 t=253.4] pilot: t=50 at (6.1, 3.6, 5.3) corner (6.0, 3.6, 5.1) yaw_err -2.91 fwd=false path=14 mouse_mode=2 state=0 look=(650.27,0.00) pin_yaw=650.08089464257 bot=false
+[PO14 t=258.4] pilot: t=55 at (6.0, 3.6, 5.0) corner (6.1, 3.8, 5.6) yaw_err -0.24 fwd=true path=14 mouse_mode=2 state=0 look=(606.73,0.00) pin_yaw=606.535733034429 bot=false
+[PO14 t=263.4] pilot: t=60 at (6.0, 3.6, 5.0) corner (6.1, 3.8, 5.6) yaw_err -1.77 fwd=false path=14 mouse_mode=2 state=0 look=(564.28,0.00) pin_yaw=564.089873944237 bot=false
+[PO14 t=263.4] pilot: could not reach /root/Po14Db/HeistRuntime/DocksideBurn/Gameplay/Doors/CountCageGate/CountCagePadlock/Interactable (lockpick)
+[PO14 t=263.4] pilot: lockpick out of reach after the walk: not pressing
+[PO14 t=263.4] placed false (kind , interactable now lockpick)
+[PO14 t=263.6] pilot: reload in a lull (weapon.kestrel_p9 9/17, reserve 140)
+[PO14 t=301.6] pilot: reload in a lull (weapon.kestrel_p9 11/17, reserve 132)
+[PO14 t=315.1] pilot: reload in a lull (weapon.kestrel_p9 13/17, reserve 126)
+[PO14 t=319.9] pilot: reload in a lull (weapon.kestrel_p9 16/17, reserve 122)
+[PO14 t=322.8] pilot: reload in a lull (weapon.kestrel_p9 16/17, reserve 121)
+[PO14 t=325.3] pilot: reload in a lull (weapon.kestrel_p9 14/17, reserve 120)
+[PO14 t=327.2] pilot: reload in a lull (weapon.kestrel_p9 15/17, reserve 117)
+[PO14 t=329.2] pilot: reload in a lull (weapon.kestrel_p9 15/17, reserve 115)
+[PO14 t=330.8] pilot: reload in a lull (weapon.kestrel_p9 13/17, reserve 115)
+[PO14 t=332.7] pilot: reload in a lull (weapon.kestrel_p9 15/17, reserve 111)
+[PO14 t=334.6] pilot: reload in a lull (weapon.kestrel_p9 15/17, reserve 109)
+[PO14 t=342.3] pilot: reload in a lull (weapon.kestrel_p9 13/17, reserve 107)
+[PO14 t=347.7] pilot: reload in a lull (weapon.kestrel_p9 10/17, reserve 103)
+[PO14 t=350.8] pilot: reload in a lull (weapon.kestrel_p9 14/17, reserve 96)
+[PO14] ROW dockside_burn|seed 1|placed |beaten_by |gate open false|FAIL

@@ -1,0 +1,14 @@
+{
+	"_doc": "NPC weapon id -> far silhouette scene (make_weapon_silhouettes.gd); shown from visibility_range_begin = UNIT_SWITCH_M, where ENV A culls the full weapon.",
+	"silhouettes": {
+		"weapon.npc_lmg": "res://world/characters/_props/weapon_silhouettes/weapon_silhouette_anvil_lmg.tscn",
+		"weapon.npc_minigun": "res://world/characters/_props/weapon_silhouettes/weapon_silhouette_cyclone_rotary.tscn",
+		"weapon.npc_pistol": "res://world/characters/_props/weapon_silhouettes/weapon_silhouette_warden_45.tscn",
+		"weapon.npc_rifle": "res://world/characters/_props/weapon_silhouettes/weapon_silhouette_corsair_ar.tscn",
+		"weapon.npc_shotgun": "res://world/characters/_props/weapon_silhouettes/weapon_silhouette_plowman_12.tscn",
+		"weapon.npc_shotgun_semi": "res://world/characters/_props/weapon_silhouettes/weapon_silhouette_brute_12.tscn",
+		"weapon.npc_smg": "res://world/characters/_props/weapon_silhouettes/weapon_silhouette_hornet_9.tscn",
+		"weapon.npc_sniper": "res://world/characters/_props/weapon_silhouettes/weapon_silhouette_heron_308.tscn"
+	},
+	"switch_m": 25.0
+}

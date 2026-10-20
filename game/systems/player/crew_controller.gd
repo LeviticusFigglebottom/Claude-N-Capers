@@ -82,6 +82,8 @@ var grounded: bool = false
 var intent: CrewIntent = CrewIntent.new()
 ## QB-60: sprint / jump stamina (CrewStamina), ticked by the movement simulation.
 var stamina: CrewStamina = CrewStamina.new()
+## PO-16 / D-145: PD2 free ladder climbing (human crew; bots keep the Ladder prefab's own climb).
+var ladder: CrewLadderClimb = CrewLadderClimb.new(self)
 
 ## QC-43: the hub crew's own InteractionSystem (no HeistRuntime in the safehouse).
 var hub_interaction: InteractionSystem = null
@@ -493,6 +495,13 @@ func _simulate(delta: float) -> void:
 			speed *= _carry_mult
 	if not mobile:
 		speed = 0.0
+	if _ladder_tick(i, delta, tw, mobile):
+		stamina.tick(false, delta)
+		_jump_latch = i.jump
+		move_and_slide()
+		grounded = false
+		_finish_tick(delta, tw)
+		return
 	var mv: Vector2 = i.move.limit_length(1.0)
 	var wish: Vector3 = Basis(Vector3.UP, look_yaw) * Vector3(mv.x, 0.0, -mv.y) * speed
 	var hv: Vector2 = Vector2(velocity.x, velocity.z)
@@ -524,6 +533,25 @@ func _simulate(delta: float) -> void:
 	_jump_latch = i.jump and (_jump_latch or jumped)
 	_move_grounded(delta, tw)
 	_edge_assist(wish, delta, tw)
+	_finish_tick(delta, tw)
+
+
+## PO-16: human crew climb freely (CrewLadderClimb); bots, scripted crew (a runtime bot intent: tests, cutscenes) and
+## free-climb-off keep the Ladder prefab's climb. The opt-out of that climb is held only on ticks the prefab could
+## start one (moving or interacting), so a scripted `Ladder.start_climb` on an idle human still works.
+## True when the ladder drove this tick's velocity.
+func _ladder_tick(i: CrewIntent, delta: float, tw: CrewTweak, mobile: bool) -> bool:
+	var free: bool = tw.ladder_free_climb and not is_ai and not (_runtime != null and _runtime.has_bot_intent(slot))
+	ladder.sync_opt_out(free and (ladder.is_climbing() or i.interact or i.move.length() > 0.05))
+	if not free or not mobile:
+		if ladder.is_climbing():
+			ladder.ladder = null
+		return false
+	return ladder.tick(i, delta, tw)
+
+
+## Step smoothing, landing dip, crouch camera and the head (eye height, bob, punch, carry tilt, FP states).
+func _finish_tick(delta: float, tw: CrewTweak) -> void:
 	_step_offset *= exp(-tw.step_smooth_rate * delta)
 	if absf(_step_offset) < 0.0005:
 		_step_offset = 0.0
@@ -649,7 +677,8 @@ func _apply_head_bob(delta: float, tw: CrewTweak) -> void:
 		_head.position.x = 0.0
 		_head.rotation.z = 0.0
 		return
-	_bob_phase = fmod(_bob_phase + speed * delta / maxf(tw.head_bob_stride_m, 0.01) * TAU, TAU)
+	var stride: float = tw.head_bob_sprint_stride_m if sprinting else tw.head_bob_stride_m
+	_bob_phase = fmod(_bob_phase + speed * delta / maxf(stride, 0.01) * TAU, TAU)
 	_head.position.x = sin(_bob_phase) * tw.head_bob_lateral_m * _bob_w
 	_head.position.y += sin(_bob_phase * 2.0) * tw.head_bob_vertical_m * _bob_w
 	_head.rotation.z = sin(_bob_phase) * deg_to_rad(tw.head_bob_roll_deg) * _bob_w

@@ -68,7 +68,7 @@ SLOTS: List[Tuple[str, str, float, str, str, float, float, float, float, str]] =
     ("camera", "cam_b", 1.0, "G", "SR", 18.0, 3.0, 0.0, 0.0, "C2 C4 C5 C9 C10 C12 C15 C16"),
     ("camera", "cam_c", 1.0, "G", "SR", 18.0, 3.0, 0.0, 0.0, "C1 C2 C3 C7 C9 C11 C13 C15"),
     ("laser_pattern", "lz_static", 0.5, "B", "VC", 21.0, 11.0, 0.0, 90.0, "beams 1.30 / 1.90 / 2.50, 1.1 m bypass gap S"),
-    ("laser_pattern", "lz_sweep", 0.2, "B", "VC", 21.0, 11.0, 0.0, 90.0, "3 vertical beams, 8 s sweep, full width"),
+    ("laser_pattern", "lz_sweep", 0.2, "B", "VC", 21.0, 11.0, 0.0, 90.0, "2 vertical beams, 7 s sweep, full width"),
     ("laser_pattern", "lz_timed", 0.3, "B", "VC", 21.0, 11.0, 0.0, 90.0, "4 beams, off 6 s of 20 s, full width"),
     ("customers", "cust_4", 0.4, "G", "BH", 24.0, 24.0, 0.0, 0.0, "4 hall customers"),
     ("customers", "cust_6", 0.4, "G", "BH", 24.0, 24.0, 0.0, 0.0, "6 (5 hall + 1 PC client)"),
@@ -79,7 +79,7 @@ SLOTS: List[Tuple[str, str, float, str, str, float, float, float, float, str]] =
     ("fire_escape", "fe_down", 0.45, "G", "X2", 0.6, -2.4, 0.0, 180.0, "Corvino drop ladder lowered (3.0 m)"),
     ("fire_escape", "fe_up", 0.55, "G", "X2", 0.6, -2.4, 0.0, 180.0, "drop ladder up (no roof route)"),
     ("escape", "esc_van_dock", 0.45, "G", "X2", 5.0, -4.32, 0.0, 180.0, "E1 van at the roller door"),
-    ("escape", "esc_van_tannery", 0.3, "G", "X3", 50.4, 14.28, 0.0, 180.0, "E2 van in the Tannery bay"),
+    ("escape", "esc_van_tannery", 0.3, "G", "X3", 51.2, 14.28, 0.0, 180.0, "E2 van in the Tannery bay"),
     ("escape", "esc_heli_terrace", 0.25, "E", "X4", 36.0, 27.0, 0.0, 0.0, "E3 heli over the terrace net"),
     ("drill_delivery", "drop_terrace", 0.5, "E", "X4", 20.0, 33.0, 0.0, 0.0, "heli crate on the terrace"),
     ("drill_delivery", "drop_dock", 0.5, "G", "X2", 14.0, -4.0, 0.0, 0.0, "Mercer's second van at the dock"),
@@ -161,10 +161,10 @@ HOLDOUTS = {"H1": ("G", 24.0, 13.0, "teller line"), "H2": ("B", 24.0, 10.0, "bas
 MIN_CREW_DISTANCE_M = 15.0
 # Escape / secure zones per escape slot: (slot, kind, floor, room, x, z) (the prefab rows are in the content module).
 ESCAPE_ZONES = [("esc_van_dock", "SECURE_LOOT", "G", "X2", 5.0, -4.32), ("esc_van_dock", "ESCAPE", "G", "X2", 10.5, -3.0),
-                ("esc_van_tannery", "SECURE_LOOT", "G", "X3", 50.4, 14.28),
+                ("esc_van_tannery", "SECURE_LOOT", "G", "X3", 51.2, 14.28),
                 ("esc_van_tannery", "ESCAPE", "G", "X3", 51.0, 6.5),
-                ("esc_heli_terrace", "SECURE_LOOT", "E", "X4", 36.0, 27.0),
-                ("esc_heli_terrace", "ESCAPE", "E", "X4", 36.0, 27.0)]
+                ("esc_heli_terrace", "SECURE_LOOT", "E", "X4", 42.5, 26.0),
+                ("esc_heli_terrace", "ESCAPE", "E", "X4", 35.5, 27.0)]
 # Preplan points (doc Pre-planning): (id, category, floor index, plan floor, room, x, z, params).
 PREPLAN = [
     ("pp_spawn_plaza", "spawn", 1, "G", "X1", 24.0, 44.0, {}),
@@ -175,7 +175,7 @@ PREPLAN = [
     ("pp_drop_lockers", "drop_zone", 0, "B", "LK", 5.0, 4.5, {}),
     ("pp_drop_terrace", "drop_zone", 3, "E", "X4", 6.0, 30.0, {}),
     ("pp_escape_dock", "escape", 1, "G", "X2", 5.0, -4.3, {"variant_group": "escape", "variant_slot": "esc_van_dock"}),
-    ("pp_escape_tannery", "escape", 1, "G", "X3", 50.4, 14.3,
+    ("pp_escape_tannery", "escape", 1, "G", "X3", 51.2, 14.3,
      {"variant_group": "escape", "variant_slot": "esc_van_tannery"}),
     ("pp_escape_heli", "escape", 3, "E", "X4", 36.0, 27.0,
      {"variant_group": "escape", "variant_slot": "esc_heli_terrace"}),

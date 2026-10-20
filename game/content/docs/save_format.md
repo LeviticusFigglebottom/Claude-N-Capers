@@ -73,6 +73,7 @@ that has the field. v0 is the pre-versioned dev save; its `money` became `cash` 
 | `career` | object | 5 empty sections | 7 | Lifetime career stats (B7-01, `Career`). See "career" below. |
 | `weapon_finishes` | object | `{}` | 7 | Weapon id → finish id (reserved for B7-04 weapon finishes). `""` or no entry = the default finish. Keys and values are strings of at most 64 characters; anything else is dropped with a warning. |
 | `freshness` | object | empty memory | 9 | Heist freshness (D-139, `HeistFreshness`): `recent` = the heist ids of the last `PayoutTweak.freshness_memory` runs that reached payday (oldest first), `runs` = runs counted, `last_run` = heist id → the `runs` value of its last run, `completed` = heist ids won at least once. Bad lists / counters are emptied or dropped with a warning. |
+| `crew_loadouts` | array | 3 empty entries | 10 | Crew bot loadouts (D-145.4 / PO-19, `CrewLoadouts`): exactly 3 entries, one per bot slot, each `{"weapon": id, "mods": [id], "armor": id, "mask": id, "outfit": id}`; `""` / `[]` = the bot's default (A's default weapon / armor, no mask, any free heister). Ids are checked when used (an unowned or retired id falls back to the default), not dropped on load. A non-object entry is emptied, extra entries are dropped and a short list is padded, with a warning. |
 | `stats` | object | `{}` | 0 | Counter name → int (`heists_completed`, `heists_failed`, ...). |
 | `settings` | object | `{}` | 0 | Any JSON values, stored as-is (numbers come back as float). |
 
@@ -129,6 +130,7 @@ that is not an int ≥ 0, a key over 64 characters, or a non-integer difficulty 
 | 6 → 7 | `career` = 5 empty sections (nothing was counted before v7), `weapon_finishes = {}`. Fixtures `v6` (migration) and `v7_damaged`. |
 | 7 → 8 | No new field (lead, round 64): `owned_weapons` gains the starter `weapon.corsair_ar` (SaveService.STARTER_PRIMARY; new profiles have owned it since round 38) when missing, and an EMPTY `loadout.primary` gets it equipped (with no mods); an equipped primary is kept. Fixtures `v7` and `v7_own_primary`. |
 | 8 → 9 | `freshness` (D-139): an empty memory (`runs = 0`); every `career.heists` id with `won > 0` goes into `completed` with `last_run = 0`, so its rotation bonus ramps from the migration on. A save that already has `freshness` keeps it. Fixture `v8`. |
+| 9 → 10 | `crew_loadouts` (D-145.4 / PO-19): 3 empty entries, so every bot keeps its default loadout. A save that already has `crew_loadouts` keeps it. Fixtures `v9`, `v10_crew_damaged`. |
 
 ### Adding a version
 1. Bump `SaveService.CURRENT_VERSION` and `PlayerProfile.version`.

@@ -331,12 +331,25 @@ static var _gen: int = 0
 @export var bob_frequency_hz: float = 1.0
 @export var bob_ref_speed_mps: float = 3.5
 ## D-116: the bob rides the camera's footstep phase (CrewController.bob_phase: one cycle = two steps) and weight, as a
-## figure-8 (x = sin, y = sin 2x) with roll / pitch, x bob_sprint_mult while sprinting (bigger running). false = the
+## figure-8 (x = sin, y = sin 2x) with roll / pitch, weight x bob_sprint_mult while sprinting. false = the
 ## old free-running bob_frequency_hz clock.
 @export var bob_follow_steps: bool = true
-@export var bob_sprint_mult: float = 1.6
+@export var bob_sprint_mult: float = 1.0
 @export var bob_roll_deg: float = 0.8
 @export var bob_pitch_deg: float = 0.5
+## PO-20: the arms' phase eases toward the camera's footstep phase at this rate (1/s) instead of jumping to it when the
+## camera bob starts / stops (the figure-8 snapped between the two clocks).
+@export var bob_phase_rate: float = 10.0
+## PO-20 (D-145, PD2 sprint): while sprinting the walk figure-8 crossfades (sprint_pose_rate) into a gentle sway on the
+## same footstep phase (x = side, y = vertical at twice the rate; m) with a little roll / pitch (deg), on top of the
+## sprint clip held steady: lifted / turned by sprint_pose_offset (m) / sprint_pose_rot_deg (x pitch up, y yaw left,
+## z roll) so the lowered, angled gun stays in view.
+@export var sprint_sway_amplitude: Vector2 = Vector2(0.005, 0.0025)
+@export var sprint_sway_roll_deg: float = 0.5
+@export var sprint_sway_pitch_deg: float = 0.25
+@export var sprint_pose_offset: Vector3 = Vector3(-0.01, 0.065, 0.0)
+@export var sprint_pose_rot_deg: Vector3 = Vector3(4.0, 0.0, 0.0)
+@export var sprint_pose_rate: float = 5.0
 ## D-116: landing dip of the arms on top of the camera's (CrewController.land_dip x this) and a pitch per m of dip
 ## (deg/m; the gun noses down as it lands).
 @export var land_vm_mult: float = 0.6

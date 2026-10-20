@@ -54,7 +54,7 @@ const LOADOUT_ID_FIELDS: Array[String] = [
 ]
 const LOADOUT_LIST_FIELDS: Array[String] = ["primary_mods", "secondary_mods"]
 
-var version: int = 9
+var version: int = 10
 var profile_name: String = ""
 var cash: int = 0
 var stash: int = 0
@@ -92,6 +92,9 @@ var career: Dictionary = Career.empty()
 var freshness: Dictionary = HeistFreshness.empty()
 ## Weapon id (StringName) -> finish id (StringName) (v7, B7-04); &"" = default finish.
 var weapon_finishes: Dictionary = {}
+## D-145.4 / PO-19 (save v10): the crew bots' loadouts, one {weapon, mods, armor, mask, outfit} per bot slot (CrewLoadouts;
+## StringName ids, &"" = the bot's default). Always ProfileSchema.CREW_SLOTS entries.
+var crew_loadouts: Array[Dictionary] = _crew_from([])
 var stats: Dictionary = {}
 var settings: Dictionary = {}
 
@@ -164,6 +167,7 @@ static func from_dict(d: Dictionary) -> PlayerProfile:
 	p.music_choice = StringName(String(d.get("music_choice", "")))
 	p.career = _career_from(d.get("career", {}))
 	p.freshness = _freshness_from(d.get("freshness", {}))
+	p.crew_loadouts = _crew_from(d.get("crew_loadouts", []))
 	p.weapon_finishes = {}
 	var wf: Variant = d.get("weapon_finishes", {})
 	if wf is Dictionary:
@@ -177,6 +181,26 @@ static func from_dict(d: Dictionary) -> PlayerProfile:
 	var se: Variant = d.get("settings", {})
 	p.settings = (se as Dictionary).duplicate(true) if se is Dictionary else {}
 	return p
+
+
+## PO-19: ProfileSchema.CREW_SLOTS entries with StringName ids (missing / malformed entries read as empty).
+static func _crew_from(v: Variant) -> Array[Dictionary]:
+	var src: Array = v as Array if v is Array else []
+	var out: Array[Dictionary] = []
+	for i: int in range(ProfileSchema.CREW_SLOTS):
+		var e: Dictionary = src[i] as Dictionary if i < src.size() and src[i] is Dictionary else {}
+		out.append({"weapon": StringName(String(e.get("weapon", ""))), "mods": _to_names(e.get("mods", [])),
+			"armor": StringName(String(e.get("armor", ""))), "mask": StringName(String(e.get("mask", ""))),
+			"outfit": StringName(String(e.get("outfit", "")))})
+	return out
+
+
+static func _crew_to(entries: Array[Dictionary]) -> Array:
+	var out: Array = []
+	for e: Dictionary in _crew_from(entries):
+		out.append({"weapon": String(e["weapon"]), "mods": _to_strings(e["mods"] as Array[StringName]),
+			"armor": String(e["armor"]), "mask": String(e["mask"]), "outfit": String(e["outfit"])})
+	return out
 
 
 ## D-139: the saved freshness dict with ids as Strings and counters as ints (JSON floats come back as float).
@@ -230,6 +254,7 @@ func to_dict() -> Dictionary:
 		"music_choice": String(music_choice),
 		"career": career.duplicate(true),
 		"freshness": freshness.duplicate(true),
+		"crew_loadouts": _crew_to(crew_loadouts),
 		"weapon_finishes": _finishes_to(weapon_finishes),
 		"stats": st,
 		"settings": settings.duplicate(true),

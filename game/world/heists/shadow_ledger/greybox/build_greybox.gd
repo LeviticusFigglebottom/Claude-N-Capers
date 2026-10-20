@@ -205,14 +205,15 @@ static func _level_of_ffl(ffl: float) -> String:
 	return ""
 
 
-## Glass blocker + pane (+ head frame bar) for a glazed hole in a wall line.
-func _glass(parent: Node3D, nm: String, axis: String, fixed: float, a0: float, a1: float, y0: float, y1: float) -> void:
+## Glass blocker + pane (+ head frame bar) for a glazed hole in a wall line; frosted (D-142): opaque, `glass_frosted`.
+func _glass(parent: Node3D, nm: String, axis: String, fixed: float, a0: float, a1: float, y0: float, y1: float,
+		frosted: bool = false) -> void:
 	var mn: Vector3 = Vector3(a0, y0, fixed - 0.02) if axis == "x" else Vector3(fixed - 0.02, y0, a0)
 	var mx: Vector3 = Vector3(a1, y1, fixed + 0.02) if axis == "x" else Vector3(fixed + 0.02, y1, a1)
-	var body: Node3D = box(parent, nm, mn, mx, "glass")
+	var body: Node3D = box(parent, nm, mn, mx, "glass_frosted" if frosted else "glass")
 	if body == null:
 		return
-	_see_through(body)
+	_see_through(body, not frosted)
 	var span: float = a1 - a0
 	# G2: the head bar stops 6 mm short of the reveals and rides 4 mm into the opening's head (zfight with the pane)
 	var fs: Vector3 = Vector3(span - 0.012, 0.05, 0.06) if axis == "x" else Vector3(0.06, 0.05, span - 0.012)
@@ -225,8 +226,8 @@ func _glass(parent: Node3D, nm: String, axis: String, fixed: float, a0: float, a
 
 ## D-142: a clear glass collider (curtain wall, vision panel, glass balustrade) joins `see_through`: it still blocks
 ## movement and bullets, stealth vision sees through it. Saved in the scene (persistent group).
-static func _see_through(body: Node3D) -> Node3D:
-	if body != null:
+static func _see_through(body: Node3D, on: bool = true) -> Node3D:
+	if body != null and on:
 		body.add_to_group(&"see_through", true)
 	return body
 
@@ -326,7 +327,7 @@ func _build_shell(geo: Node3D) -> void:
 	box(fills, "ServiceLiftShaft", Vector3(21.15, 2.6, 7.65), Vector3(23.85, L.FRF - 0.003, 10.35), "trim")
 	var rails: Node3D = add(bld, node3d("Railings")) as Node3D
 	for r: Array in L.BALUSTRADES:
-		railing(rails, String(r[0]), v3(r[1], 0), v3(r[1], 3), true)
+		railing(rails, String(r[0]), v3(r[1], 0), v3(r[1], 3), true, float(r[2]) if r.size() > 2 else 0.0)
 	_build_parapets(add(bld, node3d("Parapets")) as Node3D)
 	_build_cage(bld)
 	var panels: Node3D = add(bld, node3d("DoorPanels")) as Node3D
@@ -439,7 +440,7 @@ func _wall_line(parent: Node3D, lv: String, ffl: float, top: float, axis: String
 	for j: int in range(glass.size()):
 		var g2: Array = glass[j]
 		_glass(parent, "Glass%s%04d_%d" % [axis.to_upper(), int(round(fixed * 100.0)), j], axis, fixed,
-			float(g2[3]), float(g2[4]), ffl + float(g2[5]), ffl + float(g2[6]))
+			float(g2[3]), float(g2[4]), ffl + float(g2[5]), ffl + float(g2[6]), bool(g2[7]))
 
 
 ## Curtain wall (L41, L42): per room span, a solid spandrel below the sill, laminated glass to the
@@ -711,7 +712,8 @@ func _build_skins(bld: Node3D) -> void:
 
 
 ## Railing: full-panel collision (blocks players and the navmesh) + top rail, posts; optional glass.
-func railing(parent: Node3D, nm: String, mn: Vector3, mx: Vector3, glass: bool = false) -> void:
+## upstand > 0 (D-142): an opaque stone-clad body under the pane, inside the rail's footprint (nav unchanged).
+func railing(parent: Node3D, nm: String, mn: Vector3, mx: Vector3, glass: bool = false, upstand: float = 0.0) -> void:
 	var body: Node3D = box(parent, nm, mn, mx, "")
 	body.set_meta(&"kind", "railing")
 	RT.apply(body)  # ridged collider top: nobody stands on a rail (D-104 slopes)
@@ -729,8 +731,11 @@ func railing(parent: Node3D, nm: String, mn: Vector3, mx: Vector3, glass: bool =
 		# G2: the pane stops 3 cm inside its end posts and 3 mm inside the rail's faces (zfight with the posts and with
 		# the next railing's end)
 		var ia: Vector3 = Vector3(0.03, 0.0, 0.003) if along_x else Vector3(0.003, 0.0, 0.03)
-		mesh_box(body, "Pane", Vector3(-size.x * 0.5, -size.y * 0.5 + 0.05, -size.z * 0.5) + ia,
+		mesh_box(body, "Pane", Vector3(-size.x * 0.5, -size.y * 0.5 + (upstand + 0.003 if upstand > 0.0 else 0.05), -size.z * 0.5) + ia,
 			Vector3(size.x * 0.5, size.y * 0.5 - 0.053, size.z * 0.5) - ia, "teal_glass")
+		if upstand > 0.0:
+			mesh_box(box(parent, nm + "Upstand", mn, Vector3(mx.x, mn.y + upstand, mx.z), ""), "Mesh", Vector3(-size.x * 0.5,
+				-upstand * 0.5 + 0.003, -size.z * 0.5) + ia, Vector3(size.x * 0.5, upstand * 0.5, size.z * 0.5) - ia, "stone_graphite")
 	var posts: int = mini(maxi(2, int(ceil(length / 1.5)) + 1), 40)
 	for i: int in range(posts):
 		var off: float = -length * 0.5 + 0.025 + (length - 0.05) * float(i) / float(posts - 1)

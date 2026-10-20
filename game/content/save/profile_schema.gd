@@ -34,6 +34,14 @@ const CAREER: StringName = &"career"
 const SHORT_STRING_MAP: StringName = &"short_string_map"
 ## Heist freshness (v9, D-139): {"recent": [id], "runs": int >= 0, "last_run": {id: int >= 0}, "completed": [id]}.
 const FRESHNESS: StringName = &"freshness"
+## Crew bot loadouts (v10, D-145.4 / PO-19): exactly CREW_SLOTS entries {CREW_FIELDS} (CrewLoadouts).
+const CREW_LOADOUTS: StringName = &"crew_loadouts"
+const CREW_SLOTS: int = 3
+## Crew loadout entry fields -> [kind, default] ("" / [] = the bot's default).
+const CREW_FIELDS: Dictionary = {
+	"weapon": [SHORT_ID, ""], "mods": [ID_LIST, []], "armor": [SHORT_ID, ""], "mask": [SHORT_ID, ""],
+	"outfit": [SHORT_ID, ""],
+}
 ## Career sections whose values are counter maps (the others are counters directly).
 const CAREER_NESTED: Array[String] = ["heists", "difficulties"]
 ## Top-level field -> [kind, default, since-version]. Order = file order of the doc.
@@ -65,6 +73,7 @@ const FIELDS: Dictionary = {
 	"career": [CAREER, {"totals": {}, "heists": {}, "difficulties": {}, "bags": {}, "weapons": {}}, 7],
 	"weapon_finishes": [SHORT_STRING_MAP, {}, 7],
 	"freshness": [FRESHNESS, {"recent": [], "runs": 0, "last_run": {}, "completed": []}, 9],
+	"crew_loadouts": [CREW_LOADOUTS, [], 10],
 	"stats": [INT_MAP, {}, 0],
 	"settings": [ANY_MAP, {}, 0],
 }
@@ -85,6 +94,8 @@ static func sanitize(d: Dictionary) -> Dictionary:
 	for f: String in FIELDS:
 		var spec: Array = FIELDS[f]
 		out[f] = _field(f, d, StringName(spec[0]), spec[1])
+	if (out["crew_loadouts"] as Array).size() != CREW_SLOTS:  # a missing field: CREW_SLOTS empty entries
+		out["crew_loadouts"] = empty_crew_loadouts()
 	return out
 
 
@@ -151,6 +162,8 @@ static func _container(path: String, v: Variant, kind: StringName) -> Variant:
 				out = _skill_sets(path, v as Array)
 			CUSTOM_MASKS:
 				out = _custom_masks(path, v as Array)
+			CREW_LOADOUTS:
+				out = _crew_loadouts(path, v as Array)
 	return out
 
 
@@ -325,6 +338,30 @@ static func _custom_masks(path: String, a: Array) -> Array:
 			comp = {}
 		out.append(comp)
 	return out
+
+
+## Exactly CREW_SLOTS entries, each with every CREW_FIELDS field typed: a non-dict entry is emptied, extra entries
+## are dropped, missing ones added (all with a warning, except the padding of a short list).
+static func _crew_loadouts(path: String, a: Array) -> Array:
+	var out: Array = []
+	if a.size() > CREW_SLOTS:
+		_warn("%s: %d entries, keeping the first %d" % [path, a.size(), CREW_SLOTS])
+	for i: int in range(CREW_SLOTS):
+		var e: Variant = a[i] if i < a.size() else {}
+		if not e is Dictionary:
+			_warn("%s[%d]: expected a crew loadout; emptied" % [path, i])
+			e = {}
+		var entry: Dictionary = {}
+		for f: String in CREW_FIELDS:
+			var spec: Array = CREW_FIELDS[f]
+			entry[f] = _field("%s[%d]/%s" % [path, i, f], e as Dictionary, StringName(spec[0]), spec[1])
+		out.append(entry)
+	return out
+
+
+## A crew_loadouts value with CREW_SLOTS empty entries (the field default and the v9 -> v10 migration).
+static func empty_crew_loadouts() -> Array:
+	return _crew_loadouts("crew_loadouts", [])
 
 
 static func _achievements(path: String, m: Dictionary) -> Dictionary:

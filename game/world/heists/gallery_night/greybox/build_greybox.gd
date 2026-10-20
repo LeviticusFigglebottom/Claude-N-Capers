@@ -291,8 +291,9 @@ func _build_walls(parent: Node3D) -> void:
 		var mx: Vector3 = Vector3(float(o2[5]), float(o2[7]), fx + 0.02) if String(o2[2]) == "x" \
 			else Vector3(fx + 0.02, float(o2[7]), float(o2[5]))
 		var room: String = String(o2[8]).get_slice(" ", 0)
-		var pane: StaticBody3D = box(glass, "Pane%02d_%s" % [i, room], mn, mx, "glass")
-		if not room in FROSTED_PANE_ROOMS:
+		var frosted: bool = room in FROSTED_PANE_ROOMS
+		var pane: StaticBody3D = box(glass, "Pane%02d_%s" % [i, room], mn, mx, "glass_frosted" if frosted else "glass")
+		if not frosted:
 			pane.add_to_group(&"see_through", true)  # D-142: clear glazing; stealth vision sees through it
 
 

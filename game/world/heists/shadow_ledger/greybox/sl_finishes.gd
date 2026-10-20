@@ -39,6 +39,7 @@ const FINISHES: Dictionary = {
 	"alu_anodized_black": ["alu_anodized_black", null],
 	"glass_curtain": ["glass_clear", Color(0.78, 0.88, 0.9)],
 	"teal_glass": ["glass_clear", Color(0.55, 0.85, 0.86)],
+	"glass_frosted": ["glass_frosted", null],  # D-142: frosted / privacy glass (opaque for stealth vision)
 	"brushed_steel": ["brushed_steel", null],
 	"metal_painted": ["metal_painted", null],
 	"metal_matte": ["metal_matte", null],

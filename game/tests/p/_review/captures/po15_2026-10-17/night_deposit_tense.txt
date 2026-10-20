@@ -1,0 +1,7 @@
+[PO15 t=0.5] variants { &"guard_post": [&"rover_ground"], &"camera": [&"cam_c"], &"security_room_staffed": [&"sec_empty"], &"night_manager": [&"mgr_in"], &"code_note": [&"code_records_ledger"], &"keycard": [&"kc_records"], &"server_room": [&"srv_ground"], &"vent_open": [&"vent_locked"], &"laser_pattern": [&"laser_static"], &"cleaner": [&"cleaner_ground"], &"escape": [&"esc_van_lot"], &"extra_loot": [&"mgr_safe_empty"], &"armored_car": [], &"time_lock_s": 60.0, &"depository_bags": 4, &"deposit_boxes": 4, "rare": [] }
+[PO15 t=0.5] guard Npc_guard at (8.0, 0.0, 13.0)
+[PO15 t=0.5] guard Npc_guard2 at (14.0, -4.0, 6.9)
+[PO15 t=0.5] guard Npc_guard3 at (13.4, 0.0, 6.75)
+[PO15 t=0.5] guard Npc_guard4 at (12.89524, 0.0, 1.666671)
+[PO15 t=36.6] DOUBLED Npc_guard|Npc_guard3 within 1.0 m for 3.0 s at (8.348697, 0.000007, 12.86067)
+[PO15] ROW night_deposit|1|21|guards 4|cap 3|hud_cap 3|expect guards 4 cap 3|doubled 1|FAIL
