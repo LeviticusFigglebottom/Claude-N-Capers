@@ -1,0 +1,68 @@
+[OFP 0.0s t=-1.0] === fire_escape ===
+[OFP 7.2s t=-1.0] objective casing -> 1
+[OFP 7.2s t=-1.0] objective keycard -> 1
+[OFP 7.2s t=-1.0] objective code_hint -> 1
+[OFP 7.2s t=-1.0] objective code_pc -> 1
+[OFP 7.2s t=-1.0] objective server -> 1
+[OFP 7.2s t=-1.0] objective vault_gate -> 1
+[OFP 7.2s t=-1.0] objective lasers -> 1
+[OFP 7.2s t=-1.0] objective time_lock -> 0
+[OFP 7.2s t=-1.0] objective time_lock_wait -> 0
+[OFP 7.2s t=-1.0] objective vault_loot -> 0
+[OFP 7.2s t=-1.0] objective gold_cage -> 0
+[OFP 7.2s t=-1.0] objective secure -> 1
+[OFP 7.2s t=-1.0] objective deposit_boxes -> 1
+[OFP 7.2s t=-1.0] objective bond_safe -> 1
+[OFP 7.2s t=-1.0] objective president_safe -> 1
+[OFP 7.2s t=-1.0] objective server_drives -> 1
+[OFP 7.2s t=-1.0] objective drill_delivery -> 0
+[OFP 7.2s t=-1.0] objective vault_drill -> 0
+[OFP 7.2s t=-1.0] objective vault_breach -> 0
+[OFP 7.2s t=-1.0] objective escape_wait -> 0
+[OFP 7.2s t=-1.0] objective escape -> 0
+[OFP 19.4s t=0.0] launched ostrander_federal seed 1002 diff 0 variants { &"manager_route": [&"mgr_gallery"], &"keycard": [&"kc_security"], &"code_pc": [&"pc_ops"], &"officers": [&"off_1"], &"server_room": [&"srv_gallery"], &"guard_post": [&"rover_basement", &"rover_dock"], &"security_room_staffed": [&"sec_empty"], &"camera": [&"cam_c"], &"laser_pattern": [&"lz_timed"], &"customers": [&"cust_4"], &"side_door": [&"door_dock_open"], &"fire_escape": [&"fe_down"], &"escape": [&"esc_heli_terrace"], &"drill_delivery": [&"drop_terrace"], &"president_safe": [&"ps_empty"], &"vip": [&"vip_out"], &"guard_extra": [], &"civ_extra": [], &"time_lock_s": 150.0, &"drill_eta_s": 60.0, &"escape_eta_s": 120.0, &"cash_bags": 10, &"gold_bags": 4, &"deposit_boxes": 9, "rare": [] }
+[OFP 55.4s t=2.0] SHORTCUT traversal: NPCs despawned, crew stealth_hidden, 8 cameras disabled (GameplayPrefab.set_enabled)
+[OFP 62.7s t=3.1] pilot: calibrated 0.001600 rad/px yaw, 0.001600 rad/px pitch (settings formula said (0.0016, 0.0016))
+[OFP 62.7s t=3.1] spawn (21.0, 0.0, -6.0)
+[OFP 68.4s t=4.2] objective casing -> 2
+[OFP 69.0s t=4.8] masked true
+[OFP 74.1s t=9.8] pilot: t=5 at (15.9, 0.0, -6.5) corner (6.3, 0.2, -7.2) yaw_err -0.00 fwd=true path=8 mouse_mode=2 state=0 look=(-11.07,0.00) pin_yaw=-11.073393439161 bot=false
+[OFP 79.0s t=14.8] pilot: t=10 at (10.2, 0.0, -6.9) corner (6.3, 0.2, -7.2) yaw_err -1.20 fwd=false path=8 mouse_mode=2 state=0 look=(-9.87,0.00) pin_yaw=-10.0632537754063 bot=false
+[OFP 84.0s t=19.8] pilot: t=15 at (4.3, 0.0, -7.2) corner (3.7, 0.2, -7.2) yaw_err 3.13 fwd=false path=5 mouse_mode=2 state=0 look=(-14.13,0.00) pin_yaw=-13.9375480724557 bot=false
+[OFP 90.2s t=26.1] LADDER FireEscapeDropLadder up: OK in 2.0 s (climb 1.9 s, height 3.0 m; at (0.6, 3.0, -1.0))
+[OFP 106.5s t=31.2] pilot: t=5 at (-4.8, 5.3, -1.7) corner (-4.2, 5.0, -1.7) yaw_err 2.59 fwd=false path=27 mouse_mode=2 state=0 look=(-10.37,0.00) pin_yaw=-10.1799337130287 bot=false
+[OFP 111.5s t=36.2] pilot: t=10 at (-2.2, 7.1, -0.9) corner (-1.6, 7.6, -0.9) yaw_err -0.00 fwd=true path=22 mouse_mode=2 state=0 look=(-1.59,0.00) pin_yaw=-1.58534074639465 bot=false
+[OFP 116.5s t=41.2] pilot: t=15 at (-3.4, 9.1, -1.7) corner (-5.1, 10.1, -1.7) yaw_err 2.50 fwd=false path=17 mouse_mode=2 state=0 look=(-0.91,0.00) pin_yaw=-0.72051915343764 bot=false
+[OFP 121.5s t=46.2] pilot: t=20 at (-2.4, 11.6, -0.9) corner (-3.0, 11.4, -0.9) yaw_err 1.59 fwd=false path=13 mouse_mode=2 state=0 look=(12.54,0.00) pin_yaw=12.7328603496135 bot=false
+[OFP 126.5s t=51.2] pilot: t=25 at (1.5, 12.2, 1.4) corner (2.0, 12.4, 2.5) yaw_err 0.00 fwd=true path=4 mouse_mode=2 state=0 look=(16.17,0.00) pin_yaw=16.1711030193837 bot=false
+[OFP 127.3s t=52.0] roof fe reached; stuck rows so far 0
+[OFP 138.7s t=57.2] pilot: t=5 at (6.3, 12.2, 5.3) corner (7.0, 12.4, 5.8) yaw_err 0.00 fwd=true path=35 mouse_mode=2 state=0 look=(22.86,0.00) pin_yaw=22.8554410623983 bot=false
+[OFP 143.7s t=62.1] pilot: t=10 at (10.1, 12.2, 9.3) corner (10.4, 12.4, 9.8) yaw_err -0.98 fwd=false path=28 mouse_mode=2 state=0 look=(23.49,0.00) pin_yaw=23.2986966802127 bot=false
+[OFP 148.7s t=67.1] pilot: t=15 at (15.6, 12.2, 10.7) corner (18.9, 12.4, 11.2) yaw_err -3.12 fwd=false path=21 mouse_mode=2 state=0 look=(20.24,0.00) pin_yaw=20.0480370543519 bot=false
+[OFP 153.7s t=72.1] pilot: t=20 at (21.5, 12.2, 11.6) corner (20.9, 12.4, 11.5) yaw_err 1.57 fwd=false path=18 mouse_mode=2 state=0 look=(18.66,0.00) pin_yaw=18.8535848869651 bot=false
+[OFP 158.7s t=77.2] pilot: t=25 at (27.2, 12.2, 12.6) corner (29.6, 12.4, 12.9) yaw_err 0.00 fwd=true path=13 mouse_mode=2 state=0 look=(17.12,0.00) pin_yaw=17.1213602279022 bot=false
+[OFP 163.8s t=82.2] pilot: t=30 at (32.6, 12.2, 13.4) corner (34.0, 12.4, 13.7) yaw_err 0.39 fwd=true path=12 mouse_mode=2 state=0 look=(16.73,0.00) pin_yaw=16.9173142642176 bot=false
+[OFP 168.7s t=87.2] pilot: t=35 at (38.1, 12.2, 14.3) corner (39.5, 12.4, 14.6) yaw_err -0.00 fwd=true path=10 mouse_mode=2 state=0 look=(17.11,0.00) pin_yaw=17.1068755195156 bot=false
+[OFP 173.7s t=92.2] pilot: t=40 at (43.6, 12.2, 15.2) corner (44.2, 12.4, 15.3) yaw_err -0.64 fwd=false path=4 mouse_mode=2 state=0 look=(17.75,0.00) pin_yaw=17.5553770140323 bot=false
+[OFP 177.8s t=96.2] LADDER CagedLadder down: OK in 1.7 s (climb 2.2 s, height 3.6 m; at (46.0, 8.6, 19.3))
+[OFP 182.6s t=99.4] LADDER CagedLadder up: OK in 2.1 s (climb 2.2 s, height 3.6 m; at (46.0, 12.2, 15.8))
+[OFP 187.7s t=104.4] pilot: t=5 at (40.2, 12.2, 14.7) corner (39.5, 12.4, 14.5) yaw_err 0.00 fwd=true path=22 mouse_mode=2 state=0 look=(13.93,0.00) pin_yaw=13.9335939172488 bot=false
+[OFP 192.6s t=109.4] pilot: t=10 at (34.6, 12.2, 13.6) corner (34.0, 12.4, 13.5) yaw_err -0.78 fwd=false path=16 mouse_mode=2 state=0 look=(14.73,0.00) pin_yaw=14.5423647266907 bot=false
+[OFP 197.6s t=114.4] pilot: t=15 at (28.5, 12.2, 12.4) corner (26.3, 12.4, 12.0) yaw_err -2.69 fwd=false path=14 mouse_mode=2 state=0 look=(16.64,0.00) pin_yaw=16.4517502831477 bot=false
+[OFP 202.6s t=119.4] pilot: t=20 at (22.5, 12.2, 11.3) corner (23.1, 12.4, 11.4) yaw_err 2.34 fwd=false path=11 mouse_mode=2 state=0 look=(14.73,0.00) pin_yaw=14.919160638874 bot=false
+[OFP 207.6s t=124.4] pilot: t=25 at (17.2, 12.2, 9.1) corner (15.2, 12.4, 8.0) yaw_err -0.00 fwd=true path=5 mouse_mode=2 state=0 look=(13.62,0.00) pin_yaw=13.6233133851165 bot=false
+[OFP 219.0s t=135.6] pilot: use HeadHouseDoor (open_door) -> OK in 8.0 s
+[OFP 230.2s t=141.7] pilot: t=5 at (14.0, 10.2, 3.5) corner (14.0, 8.9, 5.7) yaw_err 0.00 fwd=true path=6 mouse_mode=2 state=0 look=(22.01,0.00) pin_yaw=22.0110546130345 bot=false
+[OFP 232.7s t=144.1] pilot: use StairDoorSAE (open_door) -> OK in 0.0 s
+[OFP 233.6s t=145.0] SA landing FFL 8.6 reached (stuck rows 0)
+[OFP 239.2s t=150.7] pilot: t=5 at (14.0, 6.6, 3.4) corner (14.0, 7.0, 2.8) yaw_err 2.25 fwd=false path=7 mouse_mode=2 state=0 look=(29.06,0.00) pin_yaw=29.2530722741976 bot=false
+[OFP 241.8s t=153.1] pilot: use StairDoorSAM (open_door) -> OK in 0.0 s
+[OFP 242.7s t=154.0] SA landing FFL 5.0 reached (stuck rows 0)
+[OFP 248.4s t=159.7] pilot: t=5 at (14.4, 2.5, 1.5) corner (14.0, 2.5, 2.2) yaw_err 0.36 fwd=true path=11 mouse_mode=2 state=0 look=(33.69,0.00) pin_yaw=33.8794840835071 bot=false
+[OFP 252.9s t=164.1] pilot: use StairDoorSAG (open_door) -> OK in 0.0 s
+[OFP 253.7s t=165.0] SA landing FFL 0.0 reached (stuck rows 0)
+[OFP 259.4s t=170.7] pilot: t=5 at (14.1, -2.0, 2.4) corner (14.0, -2.1, 3.3) yaw_err 0.02 fwd=true path=10 mouse_mode=2 state=0 look=(34.40,0.00) pin_yaw=34.4220129780988 bot=false
+[OFP 263.0s t=174.0] pilot: use StairDoorSAB (open_door) -> OK in 0.0 s
+[OFP 263.8s t=174.9] SA landing FFL -4.0 reached (stuck rows 0)
+[OFP] RESULT PASS fire_escape
+[OFP] RESULT PASS (fire_escape PASS)
