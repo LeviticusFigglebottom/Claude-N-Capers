@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"janitor_closet_of"
+purpose = &"janitor"
+required_items = Array[StringName]([&"mop_sink", &"light_fixture"])
+optional_items = {
+&"mop_bucket": 2,
+&"shelving": 3
+}
+clutter_groups = {}
+min_density = 0.5
+max_density = 4
+min_props = 3
+lone_ok_kinds = Array[StringName]([])
+seed_salt = 16
+seed_id = &"janitor_closet"
+counts = {}
+assets = {
+&"light_fixture": PackedStringArray("prop_fluorescent"),
+&"shelving": PackedStringArray("prop_shelving_cleaning")
+}
+ceiling = {"prop_fluorescent": 2}
+notes = "Ostrander Federal (janitor), from janitor_closet: G9 under the stair: mop sink, cleaning shelf, mop bucket. BODY_HIDE zone: keep 1 m² of floor free (pass it as a keep-out)."

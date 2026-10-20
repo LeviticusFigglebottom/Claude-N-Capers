@@ -1,0 +1,40 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"sally_port_of"
+purpose = &"warehouse"
+required_items = Array[StringName]([&"cash_cage", &"shelving", &"dolly", &"fire_extinguisher", &"pallet", &"light_fixture"])
+optional_items = {
+&"bin": 0.5,
+&"box": 1.5,
+&"crate": 0.6,
+&"switch": 0.6
+}
+clutter_groups = {
+&"floor": {
+"anchors": Array[StringName]([&"wall", &"corner"]),
+"count": Vector2i(1, 2),
+"items": {&"archive_box": 1, &"bin": 1, &"box": 3},
+"radius": 1
+}
+}
+min_density = 0.25
+max_density = 1.6
+min_props = 8
+lone_ok_kinds = Array[StringName]([])
+seed_salt = 41
+seed_id = &"sally_port"
+counts = {
+&"cash_cage": Vector2i(2, 2)
+}
+assets = {
+&"bin": PackedStringArray("prop_bin_kitchen"),
+&"light_fixture": PackedStringArray("prop_fluorescent"),
+&"pallet": PackedStringArray("prop_pallet"),
+&"shelving": PackedStringArray("prop_shelving_boxes")
+}
+ceiling = {"prop_fluorescent": 2.4}
+notes = "Ostrander Federal (warehouse), from sally_port: G1 armoured-car transfer room: cash trolleys, shelving, hand truck, the roller door bay kept clear (keep-out), the cash lift shaft in the NE corner (keep-out). 4000 K fluorescent."
