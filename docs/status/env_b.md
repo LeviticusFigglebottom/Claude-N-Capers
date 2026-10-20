@@ -3,6 +3,29 @@
 Owner: ENV B. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-20 late: D-145 DB cells and HUD label scrim (lead messages blocked: untrusted-device)
+send_message to the lead fails (elevated_session_untrusted_device), so this entry is the report.
+
+### D-145 Dockside Burn (env/a-core 98e55725 + trunk fe567f9f merged in a scratch worktree; HEADLESS auto_loud x1.0,
+solo + 3 bots, all slots corsair_ar / tailored_suit; downs = player / bot1 / bot2 / bot3)
+- Routine: 2/3 wins, player downs 3 / 1 / 1 (median 1 <= 2), no nav give-ups.
+  - s1 FAIL custody 610 s (combat: three downs in three places, last not revived). Downs 3/2/0/1. Police 131, peak 14.
+  - s2 PASS 1070 s. Downs 1/0/1/0. Police 116, peak 14.  s3 PASS 989 s. Downs 1/0/0/0. Police 125, peak 13.
+- Tense (pre-tuning, A softens it next): 0/3, player downs 3/3/3.
+  - s1 custody 341 s, downs 3/0/0/0, police 64 (stinger 1).  s3 custody 422 s, downs 3/3/1/2, police 67 (stinger 3).
+  - s2 custody 827 s, downs 3/2/3/1, police 133 (bulwark 20, stinger 6); FINDING burn marker unreachable again
+    (the ChamberANorth leg, with C / A).
+  - Re-run Tense x3 after A's next push.
+- Before A's fix (trunk 14838b53) all three Routine seeds failed on pilot nav stalls (StairMezz doorway loop,
+  GatehouseNorth shuttle): A fixed both in 98e55725.
+
+### HUD label scrim (LEAD r249 narrow b): 55afe82c, evidence aacfa93e (_review/r250_label_scrim)
+- UiBuild.label_scrim (45% black, radius 4) on world-marker labels and teammate names; objective block frameless.
+  45% not 35%: white over near-white stone is ~2.4:1 at 35%, ~3.4:1 at 45%.
+- contrast_worker fill_ratio >= 3:1 over mid / bright: a gate for scrimmed labels only. Frameless text measures
+  1.0-1.4:1 on a flat bright backdrop by construction (a global gate would scrim the whole HUD); it prints NOTEs.
+- hud contrast PASS; tests teammate, objective_marker, hud_palettes, pp_hud_720p, ui_theme.
+
 ## 2026-10-20: resumed for D-144 / D-145 (lead session_014E3p2DmSYTneJjytGwKKfc)
 Resumed on env/b-content 29d30a2d (ff from origin; trunk rounds 204-244 ran in another account).
 
