@@ -23,6 +23,11 @@ VARIANTS = {
     "prop_laser_beams_h688x3": {"fn": "beams", "len": 6.88, "n": 3, "vertical": False, "cat": _BEAMS},
     "prop_laser_beams_h688x4": {"fn": "beams", "len": 6.88, "n": 4, "vertical": False, "cat": _BEAMS},
     "prop_laser_beams_v260x3": {"fn": "beams", "len": 2.6, "n": 3, "vertical": True, "cat": _BEAMS},
+    # OF-C2 (Ostrander Federal VC concourse, ostrander_federal_content.LASERS): lz_static 2.15 m x 3 (the bypass gap
+    # at the south wall), lz_timed 3.3 m x 4, lz_sweep 2 vertical 2.6 m rods.
+    "prop_laser_beams_h215x3": {"fn": "beams", "len": 2.15, "n": 3, "vertical": False, "cat": _BEAMS},
+    "prop_laser_beams_h330x4": {"fn": "beams", "len": 3.3, "n": 4, "vertical": False, "cat": _BEAMS},
+    "prop_laser_beams_v260x2": {"fn": "beams", "len": 2.6, "n": 2, "vertical": True, "cat": _BEAMS},
 }
 BEAM_R = 0.007
 

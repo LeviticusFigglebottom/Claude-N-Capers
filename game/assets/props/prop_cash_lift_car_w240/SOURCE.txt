@@ -1,0 +1,8 @@
+asset: prop_cash_lift_car_w240
+script: tools/blender/props/gallery_large.py
+params: {"cat": {"kind": "lift_car", "prefab": "bag_lift", "surface": "metal"}, "fn": "lift_car", "hgt": 2.6, "ln": 2.4, "open": 1, "tread": [10, 10], "w": 2.4}
+seed: 3075128438  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_cash_lift_car_w240
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 12000

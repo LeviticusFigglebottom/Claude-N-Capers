@@ -1,0 +1,8 @@
+asset: prop_hoist_cradle_w110
+script: tools/blender/props/prefab_visuals.py
+params: {"cat": {"kind": "lift_car", "prefab": "bag_lift", "surface": "metal"}, "d": 0.7, "fn": "hoist_cradle", "h": 1.0, "w": 1.1}
+seed: 3408274323  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_hoist_cradle_w110
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 12000

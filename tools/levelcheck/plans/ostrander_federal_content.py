@@ -476,27 +476,29 @@ ALWAYS: Dict[str, List[list]] = {
           "prop_cash_stack") for i, x in enumerate([18.3, 19.7, 22.8, 24.2])
     ] + VAULT_BOXES + SD_BOXES,
     "Gameplay/Lifts": [
-        P("bag_lift", "CashLift", "B", [11.5, 0.05, 1.55], 180.0, {"travel_s": 8.0, "capacity": 2, "door_fold": True,
+        P("bag_lift", "CashLift", "B", [11.5, 0.0, 1.55], 180.0, {"travel_s": 8.0, "capacity": 2, "door_fold": True,
                                                                  "car_size_m": [2.2, 2.4, 2.2],
                                                                  "objective_tag": "cash_lift",
                                                                  "@landings": [["CashLiftLandingG", [0.0, 4.0, 0.0]]]},
-          [11.5, 0.0, 2.2], {"walkable": True}, ""),
-        P("bag_lift", "Hoist", "B", [24.0, 0.05, HOIST_Z], 0.0, {"travel_s": 6.0, "capacity": 2, "car_size_m": HOIST_CAR,
+          [11.5, 0.0, 2.2], {"walkable": True}, "prop_cash_lift_car_w240"),
+        P("bag_lift", "Hoist", "B", [24.0, 0.0, HOIST_Z], 0.0, {"travel_s": 6.0, "capacity": 2, "car_size_m": HOIST_CAR,
                                                             "loud_only": True, "objective_tag": "hoist",
                                                             "phase_block_key": "ui.blocked.after_breach",
                                                             "enabled_at_start": False,
                                                             "@landings": [["HoistLandingTW", [0.0, 4.0, 0.0]]],
                                                             "@rig": HOIST_RIG, "@panel": HOIST_PANEL},
-          [25.1, 0.0, HOIST_Z], {"starts_disabled": True, "hidden": True}, ""),
+          [25.1, 0.0, HOIST_Z], {"starts_disabled": True, "hidden": True}, "prop_hoist_cradle_w110"),
     ],
     "Gameplay/Ladders": [
         # rolled up under the lid until the burn (full length, its rails would sit in the lid plug): 3.2 m to the lid's
         # underside; OF-A2 sets height_m = burn_height_m (4.0, B -> G) when it enables the ladder at the burn (QC-61).
         P("ladder", "RopeLadder", "B", [24.0, 0.0, ROPE_Z], 180.0, {"height_m": ROPE_STOWED_M, "usable": False,
                                                               "enabled_at_start": False, "objective_tag": "rope_ladder"},
-          None, {"loud_only": True, "starts_disabled": True, "hidden": True, "burn_height_m": 4.0}, ""),
+          None, {"loud_only": True, "starts_disabled": True, "hidden": True, "burn_height_m": 4.0,
+                 "never_with": ["Lid"]},   # enabled by the burn that disables the lid (validate_level clipping)
+          "prop_ladder_rope_h400"),
         P("ladder", "CagedLadder", "E", [46.0, 0.0, 17.55], 180.0, {"height_m": 3.6, "objective_tag": "caged_ladder"},
-          None, {}, ""),
+          None, {}, "prop_ladder_steel_h360_g35_cage"),
     ],
     "Gameplay/Markers": [
         M("CasingHall", "G", [24.0, 0.0, 27.5], "casing", "casing objective marker: the hall at the meridian line"),
@@ -687,7 +689,7 @@ SLOT_CONTENT: Dict[str, List[list]] = {
                                     _client("ClientPC2", [45.25, 0.0, 14.0], 90.0)],
     "fe_down": [P("ladder", "FireEscapeDropLadder", "G", [0.6, 0.0, -2.75], 0.0, {"height_m": 3.0,
                                                                                  "objective_tag": "fire_escape"},
-                  None, {}, "")],
+                  None, {}, "prop_ladder_fire_escape_h300_g00")],
     "fe_up": [M("FireEscapeLadderUp", "G", [0.6, 3.0, -2.6], "", "the drop ladder raised (no climb)")],
     "esc_van_dock": _escape("Dock", [5.0, 0.0, -4.32], 180.0, [4.0, 3.0, 8.0], [10.5, 0.0, -3.0], [4.0, 3.0, 4.0], "G",
                             "veh_van_secure", "van", 0.0, "res://world/heists/shared/escape_van_marker.tscn", "E1"),
@@ -774,13 +776,15 @@ def sweep_window_s(lx: float, beams: int = SWEEP_BEAMS, period: float = SWEEP_PE
 LASERS = {
     "lz_static": {"pattern": "static", "z": [LASER_Z[0] + 0.15, LASER_GAP[0] - 0.15], "y": 1.0, "h": 1.8, "beams": 3,
                   "posts": [[LASER_Z[0], LASER_Z[0] + 0.15], [LASER_GAP[0] - 0.15, LASER_GAP[0]]],
-                  "metas": {"crouch_under": True, "bypass": True}},
+                  "metas": {"crouch_under": True, "bypass": True}, "visual": "prop_laser_beams_h215x3"},
     "lz_sweep": {"pattern": "sweeping", "z": [LASER_Z[0] + 0.15, LASER_Z[1] - 0.15], "y": 0.0, "h": 2.6,
                  "sweep_beams": SWEEP_BEAMS, "period_s": SWEEP_PERIOD_S,
-                 "posts": [[LASER_Z[0], LASER_Z[0] + 0.15], [LASER_Z[1] - 0.15, LASER_Z[1]]], "metas": {"bypass": False}},
+                 "posts": [[LASER_Z[0], LASER_Z[0] + 0.15], [LASER_Z[1] - 0.15, LASER_Z[1]]], "metas": {"bypass": False},
+                 "visual": "prop_laser_beams_v260x2"},
     "lz_timed": {"pattern": "timed_off", "z": [LASER_Z[0] + 0.15, LASER_Z[1] - 0.15], "y": 0.0, "h": 2.6, "beams": 4,
                  "period_s": 20.0, "off_s": 6.0,
-                 "posts": [[LASER_Z[0], LASER_Z[0] + 0.15], [LASER_Z[1] - 0.15, LASER_Z[1]]], "metas": {"bypass": False}},
+                 "posts": [[LASER_Z[0], LASER_Z[0] + 0.15], [LASER_Z[1] - 0.15, LASER_Z[1]]], "metas": {"bypass": False},
+                 "visual": "prop_laser_beams_h330x4"},
 }
 
 # --- patrol graphs -------------------------------------------------------------------------------------------

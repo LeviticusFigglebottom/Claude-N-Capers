@@ -1,0 +1,8 @@
+asset: prop_ladder_rope_h400
+script: tools/blender/props/prefab_visuals.py
+params: {"cat": {"kind": "ladder", "prefab": "ladder"}, "edge": 0.04, "fn": "ladder_rope", "h": 4.0}
+seed: 2633319214  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_ladder_rope_h400
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 12000

@@ -1,0 +1,8 @@
+asset: prop_ladder_steel_h360_g35_cage
+script: tools/blender/props/prefab_visuals.py
+params: {"cage": true, "cat": {"kind": "ladder", "prefab": "ladder"}, "fn": "ladder", "gap": 0.35, "goose": false, "h": 3.6}
+seed: 771378736  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_ladder_steel_h360_g35_cage
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 12000
