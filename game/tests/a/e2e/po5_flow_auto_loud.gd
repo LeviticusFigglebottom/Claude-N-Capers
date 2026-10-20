@@ -165,6 +165,8 @@ func _bag_work(markers: Array[Dictionary], id: StringName, pos: Vector3) -> bool
 		return true
 	if id == BURN_ID and await _fetch_thermite(pos):
 		return true
+	if await _fetch_owed_tool():
+		return true
 	if p.crew.is_carrying_bag() or await _escort_mate_bag():
 		if p.crew.is_carrying_bag():
 			await _secure_bag()
@@ -610,6 +612,14 @@ func _fetch_thermite(pos: Vector3) -> bool:
 ## Carrying the thermite (a tool, D-068): with the [burn] marker up, carry it to the burn point and hold F there
 ## (place_thermite consumes it); without one, put it down (it is no loot: never thrown into the van).
 func _deliver_tool(markers: Array[Dictionary]) -> void:
+	var dp: DrillPoint = _owing_drill((p.crew.carried_bag as LootBag).loot_id)
+	if dp != null:
+		f.note("carrying %s to %s" % [(p.crew.carried_bag as LootBag).loot_id, dp.name])
+		p.watch_point = Vector3.INF
+		var placed: int = dp.delivered
+		await p.use(dp.interactable, 30.0, func() -> bool: return dp.delivered > placed or not _carrying_tool())
+		_mark_if_unreached(dp.interactable)
+		return
 	for m: Dictionary in markers:
 		if StringName(m["id"]) != BURN_ID:
 			continue
@@ -623,6 +633,47 @@ func _deliver_tool(markers: Array[Dictionary]) -> void:
 	f.note("carrying a tool bag with no burn point marked: putting it down")
 	await p.inp.tap(&"drop_bag")
 	await p.inp.ticks(10)
+
+
+## The enabled DrillPoint still owed a `loot_id` bag (QC-60, OF's thermal drill parts), else null.
+func _owing_drill(loot_id: StringName) -> DrillPoint:
+	for n: Node in f.get_tree().get_nodes_in_group(G.INTERACTABLE):
+		var c: InteractableComponent = n as InteractableComponent
+		var dp: DrillPoint = c.owner_node() as DrillPoint if c != null else null
+		if dp != null and c.enabled and rt.is_ancestor_of(c) and dp.requires_loot == loot_id and dp.needs_delivery() \
+				and not _is_unreachable(c):
+			return dp
+	return null
+
+
+## OF-A6 (Haz seed 5 waited 1100 s at [drill_delivery]): a loose tool bag that an enabled DrillPoint is still owed
+## (the thermal drill parts) is fetched like the DB thermite; _deliver_tool then carries it to the drill. True when
+## it acted.
+func _fetch_owed_tool() -> bool:
+	if p.crew.is_carrying_bag():
+		return false
+	var best: InteractableComponent = null
+	var best_d: float = INF
+	for n: Node in f.get_tree().get_nodes_in_group(G.INTERACTABLE):
+		var c: InteractableComponent = n as InteractableComponent
+		if c == null or not c.enabled or not rt.is_ancestor_of(c) or c.kind != &"pick_bag" or not _is_tool_source(c):
+			continue
+		var bag: LootBag = c.owner_node() as LootBag
+		if bag == null or bag.is_carried() or _owing_drill(bag.loot_id) == null:
+			continue
+		if c.availability(p.crew) != &"" or _is_unreachable(c):
+			continue
+		var dd: float = c.global_position.distance_to(p.crew.global_position)
+		if dd < best_d:
+			best = c
+			best_d = dd
+	if best == null:
+		return false
+	f.note("fetching the tool bag %s for its drill (%.0f m)" % [best.get_path(), best_d])
+	p.watch_point = Vector3.INF
+	await p.use(best, 30.0, func() -> bool: return p.crew.is_carrying_bag())
+	_mark_if_unreached(best)
+	return true
 
 
 ## Body bags are not loot (S6.2): the loud pilot never picks them up.
