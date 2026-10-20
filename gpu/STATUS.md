@@ -32,3 +32,17 @@ Checkout: `C:\Users\Aaron\caperworks-gpu`, depth-1 trunk clone, cone sparse-inde
 - **PNGs are from the loud run**: the quiet and loud runs write the same `cast_perf_ostrander_federal_<view>.png` names
   in user://, so the loud run overwrote the quiet one's PNGs. That leaves 6 PNGs (hall_south_eye/high, hall_west_diag, rc_hall_entrance/counter/from_gallery).
 - Shutdown warnings in every run: `7 RIDs of type "Texture" were leaked` and 298-492 `ObjectDB instances were leaked at exit`.
+## GPU-3: Forward+ g2 review shots for the 5 shipped heists (regression baseline)
+- Trunk 59a2924b merged into gpu/renders (merge commit 28dfcd07).
+- Command per heist (from repo root): `godot\Godot_v4.7.2-stable_win64_console.exe --path game --resolution 1920x1080 res://world/tools/review_shots.tscn -- --heist=<id> --stage=g2 --out=<repo>\docs\levels\<id>\gpu_forward_plus --warmup=120`
+- Windowed, Forward+ / Vulkan on RX 9070 XT. No ERRORs or WARNINGs in any run apart from the usual `7 RIDs of type "Texture" were leaked` at shutdown.
+
+| heist | exit | wall | shots |
+|---|---|---|---|
+| glasshouse | 0 | 27 s | 24 |
+| night_deposit | 0 | 35 s | 31 |
+| gallery_night | 0 | 32 s | 27 |
+| dockside_burn | 0 | 31 s | 27 |
+| shadow_ledger | 0 | 28 s | 25 |
+
+- Output: `docs/levels/<id>/gpu_forward_plus/` (shots + contact_sheet.jpg + shots.md). I spot-checked the glasshouse and shadow_ledger contact sheets and they are fully lit with no black frames.
