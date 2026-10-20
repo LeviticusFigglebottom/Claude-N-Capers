@@ -112,7 +112,10 @@ func _build() -> void:
 static func _breaches() -> Array:
 	var out: Array = []
 	for b: Array in L.ASSAULT_BREACHES:
-		out.append([b[0], b[1], b[2], v3(b[3]), float(b[4]), Vector2(float(b[5][0]), float(b[5][1])), b[6], float(b[7])])
+		var row: Array = [b[0], b[1], b[2], v3(b[3]), float(b[4]), Vector2(float(b[5][0]), float(b[5][1])), b[6], float(b[7])]
+		if b.size() > 8:
+			row.append(b[8])
+		out.append(row)
 	return out
 
 

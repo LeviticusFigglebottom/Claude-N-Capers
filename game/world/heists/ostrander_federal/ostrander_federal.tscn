@@ -49895,9 +49895,23 @@ metadata/room = "BH"
 
 [node name="Visual" type="Node3D" parent="AssaultEvents/Breach_2" unique_id=107200 instance=ExtResource("375_of")]
 
-[node name="Audio" type="Node3D" parent="." unique_id=107201]
+[node name="Breach_3" type="Marker3D" parent="AssaultEvents" unique_id=107201]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 8.6, 16.8)
+metadata/kind = "door"
+metadata/size = Vector2(1.8, 2.1)
+metadata/room = "XL"
+metadata/door = NodePath("../../Gameplay/Doors/TerraceDoorsW")
 
-[node name="CuePlayer" type="Node" parent="Audio" unique_id=107202]
+[node name="Breach_4" type="Marker3D" parent="AssaultEvents" unique_id=107202]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 12.2, 6.85)
+metadata/kind = "door"
+metadata/size = Vector2(1, 2.1)
+metadata/room = "HH"
+metadata/door = NodePath("../../Gameplay/Doors/HeadHouseDoor")
+
+[node name="Audio" type="Node3D" parent="." unique_id=107203]
+
+[node name="CuePlayer" type="Node" parent="Audio" unique_id=107204]
 script = ExtResource("376_of")
 device_cues = Dictionary[StringName, PackedStringArray]({
 &"drill": PackedStringArray("cue.drill_loop", "cue.drill_jam", "cue.drill_done"),
@@ -49906,105 +49920,105 @@ device_cues = Dictionary[StringName, PackedStringArray]({
 &"thermal": PackedStringArray("cue.drill_loop", "cue.drill_jam", "cue.drill_done")
 })
 
-[node name="MusicDirector" type="Node" parent="Audio" unique_id=107203]
+[node name="MusicDirector" type="Node" parent="Audio" unique_id=107205]
 script = ExtResource("377_of")
 track_id = &"ostrander_federal"
 
-[node name="BedHall" type="Node3D" parent="Audio" unique_id=107204]
+[node name="BedHall" type="Node3D" parent="Audio" unique_id=107206]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24, 3, 26)
 script = ExtResource("378_of")
 cue_id = &"cue.amb_bank_hall_day"
 autoplay = true
 
-[node name="BedTellerWorkroom" type="Node3D" parent="Audio" unique_id=107205]
+[node name="BedTellerWorkroom" type="Node3D" parent="Audio" unique_id=107207]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24, 2, 12.5)
 script = ExtResource("378_of")
 cue_id = &"cue.amb_bank_hall_day"
 autoplay = true
 volume_offset_db = -5.0
 
-[node name="BedGallery" type="Node3D" parent="Audio" unique_id=107206]
+[node name="BedGallery" type="Node3D" parent="Audio" unique_id=107208]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24, 6.5, 18.5)
 script = ExtResource("378_of")
 cue_id = &"cue.amb_bank_hall_day"
 autoplay = true
 volume_offset_db = -4.0
 
-[node name="BedBOHGround" type="Node3D" parent="Audio" unique_id=107207]
+[node name="BedBOHGround" type="Node3D" parent="Audio" unique_id=107209]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 28, 1.5, 4)
 script = ExtResource("378_of")
 cue_id = &"cue.amb_bank_boh"
 autoplay = true
 
-[node name="BedBOHGallery" type="Node3D" parent="Audio" unique_id=107208]
+[node name="BedBOHGallery" type="Node3D" parent="Audio" unique_id=107210]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24, 6.5, 6)
 script = ExtResource("378_of")
 cue_id = &"cue.amb_bank_boh"
 autoplay = true
 volume_offset_db = -3.0
 
-[node name="BedBOHExecutive" type="Node3D" parent="Audio" unique_id=107209]
+[node name="BedBOHExecutive" type="Node3D" parent="Audio" unique_id=107211]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24, 10, 8)
 script = ExtResource("378_of")
 cue_id = &"cue.amb_bank_boh"
 autoplay = true
 volume_offset_db = -5.0
 
-[node name="BedBOHBasement" type="Node3D" parent="Audio" unique_id=107210]
+[node name="BedBOHBasement" type="Node3D" parent="Audio" unique_id=107212]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24, -2.5, 5)
 script = ExtResource("378_of")
 cue_id = &"cue.amb_bank_boh"
 autoplay = true
 volume_offset_db = -2.0
 
-[node name="BedVault" type="Node3D" parent="Audio" unique_id=107211]
+[node name="BedVault" type="Node3D" parent="Audio" unique_id=107213]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24, -2.5, 19)
 script = ExtResource("378_of")
 cue_id = &"cue.amb_vault"
 autoplay = true
 
-[node name="BedConcourse" type="Node3D" parent="Audio" unique_id=107212]
+[node name="BedConcourse" type="Node3D" parent="Audio" unique_id=107214]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24, -2.5, 11)
 script = ExtResource("378_of")
 cue_id = &"cue.amb_vault"
 autoplay = true
 volume_offset_db = -3.0
 
-[node name="BedDepositHall" type="Node3D" parent="Audio" unique_id=107213]
+[node name="BedDepositHall" type="Node3D" parent="Audio" unique_id=107215]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 41, -2.5, 17)
 script = ExtResource("378_of")
 cue_id = &"cue.amb_vault"
 autoplay = true
 volume_offset_db = -4.0
 
-[node name="BedPlaza" type="Node3D" parent="Audio" unique_id=107214]
+[node name="BedPlaza" type="Node3D" parent="Audio" unique_id=107216]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24, 1.5, 50)
 script = ExtResource("378_of")
 cue_id = &"cue.amb_city_afternoon"
 autoplay = true
 
-[node name="BedLane" type="Node3D" parent="Audio" unique_id=107215]
+[node name="BedLane" type="Node3D" parent="Audio" unique_id=107217]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16, 1.5, -5)
 script = ExtResource("378_of")
 cue_id = &"cue.amb_city_afternoon"
 autoplay = true
 volume_offset_db = -3.0
 
-[node name="BedTannery" type="Node3D" parent="Audio" unique_id=107216]
+[node name="BedTannery" type="Node3D" parent="Audio" unique_id=107218]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 55, 1.5, 10)
 script = ExtResource("378_of")
 cue_id = &"cue.amb_city_afternoon"
 autoplay = true
 volume_offset_db = -3.0
 
-[node name="BedTerrace" type="Node3D" parent="Audio" unique_id=107217]
+[node name="BedTerrace" type="Node3D" parent="Audio" unique_id=107219]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24, 10, 30)
 script = ExtResource("378_of")
 cue_id = &"cue.amb_city_afternoon"
 autoplay = true
 volume_offset_db = -4.0
 
-[node name="BedRoof" type="Node3D" parent="Audio" unique_id=107218]
+[node name="BedRoof" type="Node3D" parent="Audio" unique_id=107220]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30, 13.5, 12)
 script = ExtResource("378_of")
 cue_id = &"cue.amb_city_afternoon"
