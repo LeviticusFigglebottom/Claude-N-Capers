@@ -92,6 +92,8 @@ func place_prefab(parent: Node3D, it: Array) -> Node3D:
 			_landings(inst, props[k2])
 		elif key2 == "@rig":
 			_rig(inst, props[k2])
+		elif key2 == "@panel":
+			_lift_panel(inst, props[k2])
 		elif key2 == "@contents":
 			for c: Array in props[k2]:
 				_content(inst, c)
@@ -129,6 +131,44 @@ func _rig(host: Node3D, rows: Array) -> void:
 			sb.collision_layer = 2
 			sb.set_meta(&"lc_subprop", true)   # levelcheck: each its own prop (not merged into the hoist's box)
 		obstruct(Transform3D.IDENTITY, AABB(mn, mx - mn))
+
+
+## bag_lift external call / send panel ([world min, world max, panel height], ostrander_federal_content.HOIST_PANEL):
+## a `Panel` riser (a floor-standing strip against the shaft wall, its origin at the panel height) under the lift.
+## bag_lift moves its Interactable onto the origin, hides the visual's own panel and copies the riser to every other
+## landing; the Interactable is placed there in the scene too (the saved focus point matches the runtime one). A
+## world_dynamic body like the rig (out of physics with the disabled hoist; levelcheck: its own prop, lc_subprop).
+func _lift_panel(lift: Node3D, row: Array) -> void:
+	var inv: Transform3D = global_xform(lift).affine_inverse()
+	var mn: Vector3 = v3(row[0])
+	var mx: Vector3 = v3(row[1])
+	var at: Vector3 = Vector3((mn.x + mx.x) * 0.5, float(row[2]), (mn.z + mx.z) * 0.5)
+	var size: Vector3 = mx - mn
+	var sb: StaticBody3D = StaticBody3D.new()
+	sb.name = "Panel"
+	sb.collision_layer = 2
+	sb.collision_mask = 0
+	sb.position = inv * at
+	sb.set_meta(&"lc_subprop", true)
+	add(lift, sb)
+	var off: Vector3 = (mn + mx) * 0.5 - at
+	var col: CollisionShape3D = CollisionShape3D.new()
+	col.name = "Collision"
+	col.shape = _box_shape(size)
+	col.position = off
+	add(sb, col)
+	var mi: MeshInstance3D = MeshInstance3D.new()
+	mi.name = "Mesh"
+	mi.mesh = _box_mesh(size, "trim")
+	mi.position = off
+	add(sb, mi)
+	SurfaceTags.tag(sb, _surface("trim"))
+	var it: Node3D = lift.get_node_or_null("Interactable") as Node3D
+	if it == null:
+		errors.append("%s has no Interactable" % lift.name)
+		return
+	map_root.set_editable_instance(lift, true)
+	it.position = inv * at
 
 
 ## A prefab inside another (a safe's contents): [kind, name, local offset, props].
