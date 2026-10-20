@@ -1,0 +1,46 @@
+[OFP 0.0s t=-1.0] === hole ===
+[OFP 7.0s t=-1.0] objective casing -> 1
+[OFP 7.1s t=-1.0] objective keycard -> 1
+[OFP 7.1s t=-1.0] objective code_hint -> 1
+[OFP 7.1s t=-1.0] objective code_pc -> 1
+[OFP 7.1s t=-1.0] objective server -> 1
+[OFP 7.1s t=-1.0] objective vault_gate -> 1
+[OFP 7.1s t=-1.0] objective lasers -> 1
+[OFP 7.1s t=-1.0] objective time_lock -> 0
+[OFP 7.1s t=-1.0] objective time_lock_wait -> 0
+[OFP 7.1s t=-1.0] objective vault_loot -> 0
+[OFP 7.1s t=-1.0] objective gold_cage -> 0
+[OFP 7.1s t=-1.0] objective secure -> 1
+[OFP 7.1s t=-1.0] objective deposit_boxes -> 1
+[OFP 7.1s t=-1.0] objective bond_safe -> 1
+[OFP 7.1s t=-1.0] objective president_safe -> 1
+[OFP 7.1s t=-1.0] objective server_drives -> 1
+[OFP 7.1s t=-1.0] objective drill_delivery -> 0
+[OFP 7.1s t=-1.0] objective vault_drill -> 0
+[OFP 7.1s t=-1.0] objective vault_breach -> 0
+[OFP 7.1s t=-1.0] objective escape_wait -> 0
+[OFP 7.1s t=-1.0] objective escape -> 0
+[OFP 18.6s t=0.0] launched ostrander_federal seed 1002 diff 0 variants { &"manager_route": [&"mgr_gallery"], &"keycard": [&"kc_security"], &"code_pc": [&"pc_ops"], &"officers": [&"off_1"], &"server_room": [&"srv_gallery"], &"guard_post": [&"rover_basement", &"rover_dock"], &"security_room_staffed": [&"sec_empty"], &"camera": [&"cam_c"], &"laser_pattern": [&"lz_timed"], &"customers": [&"cust_4"], &"side_door": [&"door_dock_open"], &"fire_escape": [&"fe_down"], &"escape": [&"esc_van_tannery"], &"drill_delivery": [&"drop_terrace"], &"president_safe": [&"ps_bonds"], &"vip": [&"vip_out"], &"guard_extra": [], &"civ_extra": [], &"time_lock_s": 150.0, &"drill_eta_s": 60.0, &"escape_eta_s": 150.0, &"cash_bags": 8, &"gold_bags": 3, &"deposit_boxes": 6, "rare": [] }
+[OFP 45.8s t=2.0] SHORTCUT traversal: NPCs despawned, crew stealth_hidden, 8 cameras disabled (GameplayPrefab.set_enabled)
+[OFP 51.8s t=3.1] pilot: calibrated 0.001600 rad/px yaw, 0.001600 rad/px pitch (settings formula said (0.0016, 0.0016))
+[OFP 51.8s t=3.1] spawn (21.0, 0.0, -6.0)
+[OFP 55.5s t=4.2] objective casing -> 2
+[OFP 56.1s t=4.8] masked true
+[OFP 56.2s t=4.8] SHORTCUT hole (no burn-through in the G1 mission): rope ladder usable true, hoist Hoist enabled, lid nodes dropped 1 (vault_breach objective state -1)
+[OFP 61.2s t=9.8] pilot: t=5 at (16.5, 0.0, -3.9) corner (9.7, 0.2, -1.3) yaw_err 0.00 fwd=true path=27 mouse_mode=2 state=0 look=(1.94,0.00) pin_yaw=1.93904023981304 bot=false
+[OFP 66.1s t=14.8] pilot: t=10 at (11.2, 0.0, -1.9) corner (9.7, 0.2, -1.3) yaw_err 1.21 fwd=false path=27 mouse_mode=2 state=0 look=(0.73,0.00) pin_yaw=0.9254421876758 bot=false
+[OFP 68.9s t=17.4] pilot: use DockPersonnelDoor (open_door) -> OK in 0.0 s
+[OFP 72.3s t=20.8] pilot: t=15 at (8.7, 0.0, 3.3) corner (9.6, 0.2, 7.6) yaw_err -3.12 fwd=false path=20 mouse_mode=2 state=0 look=(0.19,0.00) pin_yaw=-0.00034995884926 bot=false
+[OFP 77.3s t=25.7] pilot: use DockCorridorDoor (open_door) -> OK in 0.0 s
+[OFP 90.4s t=38.6] pilot: use StaffDoorTWW (open_door) -> OK in 8.0 s
+[OFP 90.7s t=39.0] pilot: t=20 at (14.4, 0.0, 8.2) corner (14.1, 0.0, 9.9) yaw_err -0.18 fwd=true path=14 mouse_mode=2 state=0 look=(3.18,-0.51) pin_yaw=3.1146693105693 bot=false
+[OFP 95.7s t=44.0] pilot: t=25 at (18.7, 0.0, 12.6) corner (18.1, 0.2, 12.3) yaw_err 1.19 fwd=false path=3 mouse_mode=2 state=0 look=(6.09,0.00) pin_yaw=6.28553601914609 bot=false
+[OFP 98.9s t=47.0] SHORTCUT bag loot.cash_bricks (weight 1) spawned by LootManager.spawn_bag at (22.7, 0.5, 14.4)
+[OFP 102.2s t=50.1] pilot: use Bag_cash_bricks (pick_bag) -> OK in 1.0 s
+[OFP 105.1s t=53.2] THROW down the hole weight 1 pitch -> rests (24.4, -0.0, 14.8) (1.5 m from the stand, 0.9 s) on Plug secured false: FAIL not in VT
+[OFP 109.8s t=53.3] FINDING a bag thrown down the hole from its edge rests at (24.4, -0.0, 14.8), not in VT
+[OFP 124.6s t=68.2] LADDER RopeLadder down: NOT DONE in 12.0 s (climb 2.0 s, height 3.2 m; at (24.0, 0.0, 13.4))
+[OFP 124.6s t=68.2] FAIL hole/rope ladder down (alarm )
+[OFP] FAIL hole/rope ladder down
+[OFP] RESULT FAIL hole
+[OFP] RESULT FAIL (hole FAIL)
