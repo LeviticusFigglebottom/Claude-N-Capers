@@ -54,6 +54,7 @@ var p: Po5Pilot = null
 var rt: HeistRuntime = null
 var _ended: bool = false
 var _stalls: Dictionary[StringName, float] = {}
+var _bot_note_t: float = -INF
 ## GN probe 3 (handoff §A1): interactables the pilot failed to reach (instance id -> the closed door that stopped
 ## the walk, or null when the navmesh has no path), skipped for the run, or until that door is passable again (GN
 ## loud: the Calloway canvas behind the lockdown-BARRED shutter comes back once the hack lifts it).
@@ -746,10 +747,29 @@ func fail(msg: String) -> int:
 	return 1
 
 
+## P (GH Tense 4501: the pilot bled out with a bot 2 m away): while the pilot is down, each bot's mode, revive target,
+## distance and interaction session, so a missed revive shows why. About every 3 s.
+func _note_bot_revives() -> void:
+	if rt.heist_time_s - _bot_note_t < 3.0:
+		return
+	_bot_note_t = rt.heist_time_s
+	var parts: PackedStringArray = []
+	for c: CrewController in rt.crew_members():
+		var b: CrewAiBrain = CrewAiBrain.of(c) if c.is_ai else null
+		if b == null:
+			continue
+		var tgt: CrewController = b.revive_target
+		parts.append("%d:%s st%d tgt=%s %.1fm sess=%s" % [c.slot, CrewAiBrain.Mode.keys()[b.mode], c.crew_state,
+			tgt.slot if tgt != null else -1, c.global_position.distance_to(p.crew.global_position),
+			not rt.interaction.session(c.slot).is_empty() if rt.interaction != null else false])
+	f.note("bots while down: " + ", ".join(parts))
+
+
 ## While downed, keep shooting the nearest enemy in sight like a player (PD2 / L2.12: police only cuff a downed
 ## crew member who is NOT shooting), where police cuff at all (Po5Pilot.shoots_from_floor); otherwise, and in any
 ## other helpless state, just wait. About 1 s per call.
 func _act_while_down() -> void:
+	_note_bot_revives()
 	if p.crew.crew_state == Enums.CrewState.DOWNED and p.shoots_from_floor():
 		var foe: NpcBase = p.nearest_enemy(25.0)
 		if foe != null:
