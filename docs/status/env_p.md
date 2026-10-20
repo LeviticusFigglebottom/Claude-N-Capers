@@ -2,6 +2,32 @@
 
 Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min; this file says where to resume.
 
+## 2026-10-20 (late): GPU-box command lines for the LEAD (P still cannot send_message the lead)
+Run from the repo root in cmd.exe; `G=godot\Godot_v4.7.2-stable_win64_console.exe`. Every run is windowed (no
+`--headless`, no xvfb). `--out` / `--po5-out` take an absolute path; `%CD%` keeps it inside the repo so the box can
+commit `gpu\renders\p\...`. Without the flag, of_g1_pass writes to `user://of_g1_pass` and po5 to `user://po5`.
+Capture names are Windows-safe since c6c096dd (PCaptureName); trunk's of_g1_pass differs only by that wrap.
+1. **OF ghost line** (Cataclysm solo, seed 1002). It needs trunk ≥ r250 (A's hub loops b7052ebd), which trunk already has:
+   `%G% --path game --resolution 1280x720 res://tests/p/_review/of_g1_pass.tscn -- --test=ghost --seed=1002 --out=%CD%\gpu\renders\p\of_ghost > gpu\renders\p\of_ghost_run.txt 2>&1`
+   It writes PNGs to that dir; the verdict is the `[OFP] RESULT` line and the `GHOST step ... done` lines in the run txt.
+   On a FAIL, the window keeps running after RESULT. Close it once RESULT is printed.
+2. **D-145 GH Tense feel clip** (~5 min loud, solo + 3 bots). It needs A's env/a-core 4a6780f4 (Tense tuning) and
+   2daa35d6 (po5 harness) on trunk first; neither is on trunk at 59a2924b.
+   `%G% --path game --resolution 1280x720 --fixed-fps 30 --write-movie %CD%\gpu\renders\p\gh_tense\clip.avi res://tests/a/e2e/po5_runner.tscn -- --po5-flow=auto_loud --po5-out=%CD%\gpu\renders\p\gh_tense --po5-budget=300 --po5-heist="Golden Hour" --po5-difficulty=Tense --po5-seed=4502 > gpu\renders\p\gh_tense_run.log 2>&1`
+   (Create `gpu\renders\p\gh_tense` before the run, because the movie writer does not make dirs.) Seed 4502 was a WIN on 4a6780f4
+   headless. For Routine, swap in `--po5-difficulty=Routine --po5-seed=4501` and a `gh_routine` dir. The .avi is MJPEG and large;
+   transcode before committing, or commit only the PNG steps and log.
+3. **OF §7 G2 pass**: same harness, one run per test, after C says G2 is final:
+   `%G% --path game --resolution 1280x720 res://tests/p/_review/of_g1_pass.tscn -- --test=<t> --seed=1002 --out=%CD%\gpu\renders\p\of_g2_<t> > gpu\renders\p\of_g2_<t>.txt 2>&1`
+   with `<t>` = laser, throws, fire_escape, hole, dock, fire_exit, burn. Run laser three times, adding
+   `--pattern=lz_static`, `--pattern=lz_sweep` and `--pattern=lz_timed`. If G2 needs harness changes, P pushes them first and names the commit.
+- D-145 GH Tense ×3 on r250 + c-worlds + A 4a6780f4 (headless): 4502 WIN, 2 downs. 4501 custody at t=279 after 1 down:
+  the pilot bled out 30 s with no bot revive (slot 1 was being tased), so this is a legit loss and a bot revive question for A. 4503 running.
+- Relay from A (could not reach the lead): env/a-core is at 2daa35d6. auto_loud no longer reports "marker unreachable" when the objective
+  ended mid-walk (7b91a005). auto_loud fetches the OF drill parts a DrillPoint is owed (bcafd612; Haz seed 5 had stalled
+  1100 s). po5 opens build-locked Lethal/Cataclysm in memory (2daa35d6). OF hard so far: Haz 5 FAIL (drill stall),
+  Haz 1 FAIL (custody 287 s), Cata 5/6 did not start (menu lock); re-runs queued on A's side.
+
 ## 2026-10-20 (evening): OF §7 G1 complete, ghost steps 1-3, D-145 GH, lead unreachable
 - **Lead unreachable from P since ~22:50 UTC** (send_message: "needs proof of a trusted device"); A hit the same.
   Undelivered relay from A: D-145 Tense tuning on env/a-core 4a6780f4 (hit grace 0.45 s / bots 0.35 s on
