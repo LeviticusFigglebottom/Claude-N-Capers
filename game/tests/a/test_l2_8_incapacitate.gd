@@ -1,6 +1,6 @@
-## A3-04 / L2.8: Taser and Phantom takedowns (CrewHealth.incapacitate) don't use bleedout and don't
-## count as downs; the victim is helpless until a teammate revives them (D-093: or custody after the
-## bleedout time).
+## A3-04 / L2.8: Taser and Phantom takedowns (CrewHealth.incapacitate). D-145 (PD2; amends D-093): a tase is
+## helpless (no bleed-out, not a down) until revived, broken, or it runs out (then a down); a Phantom kick is a
+## counted down with bleed-out (CLOAKER_DOWNED). Nothing goes from a takedown straight to custody.
 extends TestCase
 
 var _rt: HeistRuntime = null
@@ -64,7 +64,7 @@ func test_l2_8_tased_no_down_no_bleedout_helpless() -> void:
 	assert_false(c.weapons.can_fire(), "helpless: cannot fire")
 	assert_eq(c.crew_state, Enums.CrewState.TASED, "stays tased (no timer)")
 	assert_near(h.health, hp, 0.001, "health untouched")
-	assert_false(h.incapacitate(Enums.CrewState.CLOAKER_DOWNED, 1), "no double takedown")
+	assert_false(h.incapacitate(Enums.CrewState.CLOAKER_DOWNED, 1), "no takedown while tased")
 
 
 func test_l2_8_revive_by_teammate() -> void:
@@ -84,7 +84,7 @@ func test_l2_8_revive_by_teammate() -> void:
 	_rt.clear_bot_intent(1)
 	assert_true(ok, "revived by the teammate")
 	assert_has(_events, [&"revived", 0, mate.slot], "crew_revived event")
-	assert_eq(c.health.downs_used, 0, "still no down used")
+	assert_eq(c.health.downs_used, 1, "D-145: the kick was a down (counted)")
 	assert_false(rev.enabled, "revive interactable off again")
 
 
@@ -108,15 +108,19 @@ func test_l2_8_rejects_other_states() -> void:
 	assert_eq(c.crew_state, Enums.CrewState.DOWNED)
 
 
-## D-093: a helpless member nobody revives within bleedout_time_s goes to custody, without a down.
-func test_d093_helpless_not_revived_goes_to_custody() -> void:
+## D-145 (PD2, LEAD; amends D-093): a Phantom kick is a normal revivable down: a down counted, the bleed-out timer
+## (custody only after it), the crew_cloaker_downed fact still fires.
+func test_d145_cloaker_kick_is_a_normal_down() -> void:
 	var c: CrewController = _crew(0)
 	var h: CrewHealth = c.health
 	assert_true(h.incapacitate(Enums.CrewState.CLOAKER_DOWNED, 7), "kicked down")
-	assert_near(h.helpless_left, Tweak.crew().bleedout_time_s, 0.01, "helpless timer = bleedout time")
-	h.helpless_left = 0.3  # shorten the 30 s wait
-	assert_true(await wait_until(func() -> bool: return c.crew_state == Enums.CrewState.CUSTODY, 2.0), "custody")
-	assert_eq(h.downs_used, 0, "no down counted")
+	assert_has(_events, [&"cloaker", 0, 7], "crew_cloaker_downed(slot, phantom)")
+	assert_eq(c.crew_state, Enums.CrewState.CLOAKER_DOWNED, "kicked flat (CLOAKER_DOWNED), a down")
+	assert_eq(h.downs_used, 1, "a down counted")
+	assert_true(h.bleedout_left > 0.0, "bleeding out")
+	h.bleedout_left = 0.2
+	assert_true(await wait_until(func() -> bool: return c.crew_state == Enums.CrewState.CUSTODY, 2.0),
+		"custody only after the bleed-out")
 
 
 ## D-145 (PD2: a tase that runs out downs the player): a TASED member whose helpless timer runs out goes DOWNED (a
