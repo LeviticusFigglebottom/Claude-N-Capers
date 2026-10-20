@@ -10,7 +10,8 @@
 ## skirt looks in walk / run / cower, front and side: <pool>_clips.png, no lineup), of_guards (Halden a-j +
 ## npc_bank_guard + the bodyguard), of_vip; RT-D1 (written to _review/rt_d1_cast/): rt_vaultline (crew a-f, the route
 ## marshal, and the patrol officer and Halden officer he must not read as); D-145.3: d145_police (written to
-## _review/d145_police/: the armoured police looks next to their Routine/Tense duty looks).
+## _review/d145_police/: the armoured police looks next to their Routine/Tense duty looks; d145_specials,
+## d145_factions the same for the specials and the faction TAC Lights).
 ## Writes to res://assets/characters/_review/d130_cast/ (or the pool's OUT_DIRS / of_ directory):
 ##   <pool>_sheet.png           per character: full body front (idle), three-quarter back mid-walk, head close-up
 ##   <pool>_lineup_30m.png      all of them side by side seen from 30 m (natural LOD switching, telephoto framing)
@@ -31,6 +32,7 @@ const OUT_DIRS: Dictionary = {
 	"rt_vaultline": "res://assets/characters/_review/rt_d1_cast/",
 	"d145_police": "res://assets/characters/_review/d145_police/",
 	"d145_specials": "res://assets/characters/_review/d145_police/",
+	"d145_factions": "res://assets/characters/_review/d145_police/",
 }
 ## pool -> true: also render the seated/standing pair sheet (first id seated, second standing guard)
 const PAIRS: Dictionary = {"of_vip": true}
@@ -99,6 +101,11 @@ const POOLS: Dictionary = {
 	# D-145.3: the Routine/Tense specials without body armour next to their armoured looks, and the Longshot (chest rig).
 	"d145_specials": [
 		"char_stinger", "char_stinger_duty", "char_bulwark", "char_bulwark_duty", "char_longshot",
+	],
+	# D-145.3: the faction TAC Lights (frd / sentinel / zero EnemyDefs) armoured next to their Routine/Tense duty looks.
+	"d145_factions": [
+		"char_tac_light_frd", "char_tac_light_frd_duty", "char_tac_light_sentinel", "char_tac_light_sentinel_duty",
+		"char_tac_light_zero", "char_tac_light_zero_duty", "char_tac_light_duty",
 	],
 	# RT-D1: the Vaultline crew faces and the route marshal next to the police and Halden uniforms.
 	"rt_vaultline": [
