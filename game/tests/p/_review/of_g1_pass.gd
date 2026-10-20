@@ -2168,13 +2168,17 @@ func _g2_dock() -> bool:
 	return await _of_to_floor(0)
 
 
-## The design doc's own cue (A 0319ed36 makes rover_dock walk his lane loop): a Ledger Lane guard at the Tannery corner
-## smoke spot (GHOST_SMOKE_AT, within 5 m) playing `smoke*` or standing still there for 1 s. Logs the lane guards
+## The design doc's own cue (A 160b8e07 hub loops: LaneCorner smoke 20-40 s): a Ledger Lane guard ARRIVING at the
+## Tannery corner smoke spot (GHOST_SMOKE_AT, within 5 m) and starting `smoke*` (or standing still there for 1 s). Logs the lane guards
 ## every 10 s (where his loop goes). False after `max_s` (the caller falls back to the lane-distance rule).
 func _smoke_cue(max_s: float) -> bool:
 	var at: Vector3 = _of(GHOST_SMOKE_AT)
 	var still: Dictionary = {}
 	var last: Dictionary = {}
+	# The doc says when he STARTS the pause: a guard already smoking on arrival may be near its end (ghost run 5:
+	# cue at once, back at the dock door 24 s later), so a guard must first be seen away from the corner / not
+	# smoking, then arrive and light up.
+	var armed: Dictionary = {}
 	var t: float = 0.0
 	while t < max_s:
 		var where: PackedStringArray = PackedStringArray()
@@ -2189,7 +2193,10 @@ func _smoke_cue(max_s: float) -> bool:
 			var drv: AnimDriver = AnimDriver.of(g)
 			var clip: String = String(drv.clip) if drv != null else ""
 			where.append("%s %s %s" % [g.name, Po5Pilot._v(g.global_position), clip])
-			if pilot.flat_dist(g.global_position, at) < 5.0 and (clip.begins_with("smoke") or float(still[id]) >= 1.0):
+			var at_corner: bool = pilot.flat_dist(g.global_position, at) < 5.0
+			if not at_corner or not clip.begins_with("smoke"):
+				armed[id] = true
+			if bool(armed.get(id, false)) and at_corner and (clip.begins_with("smoke") or float(still[id]) >= 1.0):
 				note("GHOST smoke cue: %s at %s clip '%s' (still %.1f s) after %.0f s" % [g.name,
 					Po5Pilot._v(g.global_position), clip, float(still[id]), t])
 				return true
