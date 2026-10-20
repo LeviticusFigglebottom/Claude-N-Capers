@@ -263,7 +263,7 @@ func test_03_stinger_tase_broken_by_kill() -> void:
 	var victim: CrewController = _crew(_slot_in_state(Enums.CrewState.TASED))
 	var killer: CrewController = _crew(1 - victim.slot)
 	assert_true(_has(&"crew_tased", victim.slot, st.net_id), "crew_tased(victim, stinger)")
-	assert_eq(victim.health.downs_used, 1, "D-145: the kick is a counted down")
+	assert_eq(victim.health.downs_used, 0, "L2.8: no down while tased (an expired tase downs, D-145)")
 	assert_true(victim.weapons.involuntary_fire, "involuntary fire while tased")
 	var p0: Vector3 = victim.global_position
 	var walk: CrewIntent = _still(victim.slot)
