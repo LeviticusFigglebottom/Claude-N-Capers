@@ -2,6 +2,11 @@
 extends Node
 
 const MIN_RATIO: float = 4.5
+## r249 (style.md): the text FILL against its local background (median luminance in the label rect) >= 3:1 over the
+## scene-like backdrops (FILL_BACKDROPS). A gate only for labels on the label scrim (UiBuild.scrim_label: its
+## "normal" stylebox): frameless text cannot pass it on a bright flat backdrop, so there it prints a NOTE.
+const MIN_FILL: float = 3.0
+const FILL_BACKDROPS: Array[String] = ["mid", "bright"]
 const HUD_PATH: String = "res://content/ui/hud/hud.tscn"
 const SIZE: Vector2i = Vector2i(1280, 720)
 const BACKDROPS: Dictionary = {"dark": Color(0.05, 0.05, 0.06), "mid": Color(0.45, 0.45, 0.45),
@@ -15,6 +20,23 @@ static func _lum(c: Color) -> float:
 	var f: Callable = func(v: float) -> float:
 		return v / 12.92 if v <= 0.03928 else pow((v + 0.055) / 1.055, 2.4)
 	return 0.2126 * float(f.call(c.r)) + 0.7152 * float(f.call(c.g)) + 0.0722 * float(f.call(c.b))
+
+
+## r249: brightest 3% (the fill of light text) against the median (the local background, or the scrim under it).
+static func fill_ratio(img: Image, r: Rect2i) -> float:
+	var ls: PackedFloat32Array = PackedFloat32Array()
+	r = r.intersection(Rect2i(Vector2i.ZERO, img.get_size()))
+	for y: int in range(r.position.y, r.end.y):
+		for x: int in range(r.position.x, r.end.x):
+			ls.append(_lum(img.get_pixel(x, y)))
+	if ls.size() < 10:
+		return 99.0
+	ls.sort()
+	var n: int = maxi(ls.size() / 33, 1)
+	var hi: float = 0.0
+	for i: int in range(n):
+		hi += ls[ls.size() - 1 - i]
+	return (hi / n + 0.05) / (ls[ls.size() / 2] + 0.05)
 
 
 static func label_ratio(img: Image, r: Rect2i) -> float:
@@ -93,10 +115,19 @@ func _shot(shot: String, under: Node) -> void:
 		var gr: Rect2 = _visible_rect(l)
 		if gr.size.x < 4.0 or gr.size.y < 4.0:
 			continue  # scrolled out of view / clipped
-		var ratio: float = label_ratio(img, Rect2i(Vector2i(gr.position), Vector2i(gr.size)))
+		var rect: Rect2i = Rect2i(Vector2i(gr.position), Vector2i(gr.size))
+		var ratio: float = label_ratio(img, rect)
 		if ratio < MIN_RATIO:
 			bad += 1
 			print("CONTRAST FAIL shot=%s %s '%s' ratio=%.2f" % [shot, l.get_path(), l.text.left(30), ratio])
+		if FILL_BACKDROPS.any(func(b: String) -> bool: return shot.ends_with("_" + b)):
+			var fill: float = fill_ratio(img, rect)
+			if fill < MIN_FILL:
+				var scrimmed: bool = l.has_theme_stylebox_override(&"normal")
+				if scrimmed:
+					bad += 1
+				print("CONTRAST FILL %s shot=%s '%s' fill=%.2f" % ["FAIL" if scrimmed else "NOTE", shot, l.text.left(30),
+						fill])
 	print("SHOT %s: %d failures" % [shot, bad])
 	_fails += bad
 
@@ -144,6 +175,8 @@ func _hud() -> void:
 	hud.toast(&"ui.hud.casing_blocked.sprint", {"key": "Shift"}, 30.0)
 	model.player_mode = &"casing"
 	model.mask_progress = 0.55  # PO-1 mask-up ring
+	model.crew = [{"slot": 1, "name": "Dutch", "armor_frac": 1.0, "health_frac": 0.8},
+			{"slot": 2, "name": "Sable", "armor_frac": 0.5, "health_frac": 1.0}]  # r249: teammate names (scrimmed)
 	for bg: String in BACKDROPS:
 		back.color = BACKDROPS[bg] as Color
 		await _shot("hud_" + bg, hud)
