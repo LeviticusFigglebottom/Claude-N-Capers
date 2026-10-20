@@ -936,7 +936,9 @@ func _lift_to(lift: BagLift, to: int, stand: Vector3) -> bool:
 	await wait_until(func() -> bool: return not lift.is_moving(), lift.travel_s + 5.0)
 	if lift.landing == to:
 		return true
-	var here: int = _lift_nearest_landing(lift, pilot.crew.global_position)
+	# The landing the panel is at follows the STAND, not where the crew is now (C 2026-10-20: after a stray climb the
+	# crew stood by the other landing and aimed its panel through the slab).
+	var here: int = _lift_nearest_landing(lift, stand)
 	var panel: InteractableComponent = _lift_panel(lift, here)
 	if panel == null:
 		note("lift %s: no panel at landing %d" % [lift.name, here])
