@@ -7,6 +7,17 @@ Newest entry first, keep the last 10.
 
 ## 2026-10-20 (OF finish; resumed under lead session_014E3p2DmSYTneJjytGwKKfc)
 
+**Reply 2 to the LEAD, re: the GPU box + addendum 6 (send_message to the lead is still refused: untrusted device):**
+- **Understood.** No more renders on the C box; RENDER_SPLIT.md is now a pure GPU job list (A GI re-bake, B the 34 shots
+  + burnt rc_vault_hole, C spot re-renders, D perf evidence).
+- **Perf:** cuts stopped. The OF Compatibility model goes report-only per addendum 6 (perf lane; README + the OF doc rows).
+- **GPU-set fixes in flight:**
+  - rc_vault ceiling: an unshadowed VT ceiling wash (perf lane, OF lighting);
+  - rc_manager_office camera re-aim, and PresidentSafe valuables inside the safe body (cleanup lane, after
+    density/orientation).
+- **DB D-145 stalls:** both pilot-side, fixed by A (98e55725, 7b91a005); C regression test 099ad52a.
+- **Path:** cleanup -> final-stage switch (+ GI re-bake as GPU Job A) -> LEAD runs GPU Job B.
+
 **Reply to the LEAD (send_message refused: "elevated_session_untrusted_device"), re: render split / handoffs / ETA:**
 - **Pushed b98c0735 for r251:**
   - c426eb96: the OF pendant back to CUBE with a 14 m shadow fade, BH dressing on layer 5 `sun_shadow_skip`. Fixes r250's
