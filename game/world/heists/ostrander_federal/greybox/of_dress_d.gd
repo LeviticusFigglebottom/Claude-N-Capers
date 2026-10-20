@@ -20,6 +20,8 @@ const NEAR_DIR: String = "res://world/heists/ostrander_federal/art/props_near_d/
 const VIS_ON: float = 12.0
 const VIS_WALL: float = 16.0
 const VIS_FLOOR: float = 22.0
+## Props under this size (and every "on" / wall-mount item) cast no shadow (the shadow budget).
+const SMALL_EXTENT: float = 0.5
 
 var b: Object
 var root: Node3D
@@ -161,7 +163,9 @@ func _place_free(parent: Node3D, row: Array) -> void:
 func _place(parent: Node3D, nm: String, asset: String, pos: Vector3, yaw: float, cat: Dictionary) -> void:
 	var place0: String = String(cat.get("place", "floor"))
 	var vis: float = VIS_ON if place0 == "on" else (VIS_WALL if place0 == "wall_mount" else VIS_FLOOR)
-	var ps: PackedScene = _near_scene(asset, vis)
+	var ext: Vector3 = _aabb(cat).size
+	var small: bool = place0 in ["on", "wall_mount"] or maxf(ext.x, maxf(ext.y, ext.z)) < SMALL_EXTENT
+	var ps: PackedScene = _near_scene(asset, vis, small)
 	if ps == null:
 		report.append("ERROR dress D %s: no scene for %s" % [nm, asset])
 		return
@@ -193,7 +197,7 @@ func _place(parent: Node3D, nm: String, asset: String, pos: Vector3, yaw: float,
 
 ## The catalog scene with every mesh drawing to `vis` at most: a generated wrapper scene in NEAR_DIR (the catalog
 ## scene instanced, its mesh nodes' visibility ranges overridden), written only when its text changes.
-func _near_scene(asset: String, vis: float) -> PackedScene:
+func _near_scene(asset: String, vis: float, small: bool) -> PackedScene:
 	if _near.has(asset):
 		return _near[asset]
 	var base: PackedScene = b.call(&"catalog_scene", asset) as PackedScene
@@ -205,10 +209,11 @@ func _near_scene(asset: String, vis: float) -> PackedScene:
 	var editable: PackedStringArray = []
 	for m: Node in inst.find_children("*", "GeometryInstance3D", true, false):
 		var gi: GeometryInstance3D = m as GeometryInstance3D
-		if gi.visibility_range_end > 0.0 and gi.visibility_range_end <= vis:
+		if gi.visibility_range_end > 0.0 and gi.visibility_range_end <= vis and not small:
 			continue
 		body.append('\n[node name="%s" parent="%s"]\nvisibility_range_end = %.1f\nvisibility_range_end_margin = %.1f\n'
-			% [m.name, String(inst.get_path_to(m.get_parent())), vis, vis * 0.1] + "visibility_range_fade_mode = 1\n")
+			% [m.name, String(inst.get_path_to(m.get_parent())), vis, vis * 0.1] + "visibility_range_fade_mode = 1\n"
+			+ ("cast_shadow = 0\n" if small else ""))
 		var a: Node = m.get_parent()
 		while a != inst:
 			if a.scene_file_path != "" and not editable.has(String(inst.get_path_to(a))):
@@ -409,7 +414,7 @@ func _hatch(parent: Node3D) -> void:
 	mi.name = "GateHatches"
 	mi.mesh = mesh
 	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-	b.call(&"add", parent, mi)
+	b.call(&"add", parent, mi)   # (the stencils: no shadow)
 
 
 ## The rectangle [x0, x1] x [z0, z1] clipped to the diagonal band a0 <= (x - x0) + (z - z0) <= a1 (convex polygon).

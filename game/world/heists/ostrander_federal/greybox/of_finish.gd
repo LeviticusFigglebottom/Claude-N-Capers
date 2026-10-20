@@ -66,9 +66,18 @@ func build() -> void:
 	for bx: Array in boxes:
 		_add_solid(bx[1], (bx[0] as Node).get_instance_id())
 	for bx2: Array in boxes:
-		_box(bx2[0], bx2[1], String(bx2[2]), bool(bx2[3]))
+		_box(bx2[0], bx2[1], String(bx2[2]), bool(bx2[3]), bool(bx2[4]))
+	var flights: Dictionary = {}
 	for mi: MeshInstance3D in others:
+		var par: Node = mi.get_parent()
+		if String(par.get_meta(&"kind", "")) == "stairs" and mi.mesh is BoxMesh and not _under(mi, "Site"):
+			if not flights.has(par):
+				flights[par] = []
+			(flights[par] as Array).append(mi)
+			continue
 		_override(mi)
+	for fl: Variant in flights:
+		_merge_steps(fl as Node3D, flights[fl])
 	_mapbuilt()
 	for lp: Array in [["Gameplay/Devices/Lid/Visual/LidPanel", "marble"], ["Gameplay/Devices/Lid/Plug/Mesh", "concrete"]]:
 		var lid: MeshInstance3D = root.get_node_or_null(String(lp[0])) as MeshInstance3D
@@ -78,6 +87,8 @@ func build() -> void:
 	_trims()
 	_ceilings()
 	_vault_trays()
+	_roof()
+	_neighbours()
 	_flush(b.call(&"add", geo, b.call(&"node3d", FOLDER)) as Node3D)
 	report.append("finishes D: %d boxes re-faced (%d hall-lane boxes skinned with %d skins), %d overrides, %d glass, "
 		% [_counts["boxes"], _counts["mixed"], _counts["skins"], _counts["overrides"], _counts["glass"]]
@@ -142,6 +153,11 @@ func _rec_at(p: Vector3) -> Array:
 
 static func _theirs(rid: String) -> bool:
 	return rid in D.THEIRS
+
+
+## X1-X5 (the exteriors; XL, XC, XW are executive rooms).
+static func _exterior(rid: String) -> bool:
+	return rid.length() == 2 and rid[0] == "X" and rid[1].is_valid_int()
 
 
 static func _mine(rid: String) -> bool:
@@ -225,16 +241,18 @@ func _collect(n: Node, boxes: Array[Array], others: Array[MeshInstance3D]) -> vo
 		if c.name in [&"Landmarks", &"BoxBanks", &"FinishD"]:
 			continue
 		var mi: MeshInstance3D = c as MeshInstance3D
-		if mi != null and mi.visible:
+		if mi != null:
 			var cls: String = _grey_class(mi)
 			if cls != "":
 				var xf: Transform3D = b.call(&"global_xform", mi)
 				var site: bool = _under(mi, "Site")
-				if mi.mesh is BoxMesh and xf.basis.is_equal_approx(Basis.IDENTITY) and mi.get_parent() is StaticBody3D \
-						and not _under(mi, "FireEscape"):
+				var boxy: bool = mi.mesh is BoxMesh and xf.basis.is_equal_approx(Basis.IDENTITY) \
+					and mi.get_parent() is StaticBody3D and not _under(mi, "FireEscape")
+				if boxy:
 					var sz: Vector3 = (mi.mesh as BoxMesh).size
-					boxes.append([mi, AABB(xf.origin - sz * 0.5, sz), cls, site])
-				else:
+					# a hidden box was redrawn by the hall lane (of_dress_a.gd, Geometry/FinishA) or a landmark: skins only
+					boxes.append([mi, AABB(xf.origin - sz * 0.5, sz), cls, site, not mi.visible])
+				elif mi.visible:
 					others.append(mi)
 		_collect(c, boxes, others)
 
@@ -309,6 +327,15 @@ func _collect_obstacles() -> void:
 				var w: float = float(d.get(&"width_m")) * 0.5 + D.DOOR_CASING
 				var dx: Transform3D = b.call(&"global_xform", d)
 				_add_obstacle(dx * AABB(Vector3(-w, 0.0, -0.16), Vector3(w * 2.0, 2.35, 0.32)))
+	# other prefabs (cameras, keypads, readers, phones) build their visuals at runtime too: a 0.5 m box at the origin
+	for top2: String in ["Gameplay", "Variants"]:
+		var t2: Node = root.get_node_or_null(top2)
+		if t2 == null:
+			continue
+		for pf: Node in t2.find_children("*", "Node3D", true, false):
+			if "visual_scene" in pf and not ("width_m" in pf):
+				var po: Vector3 = (b.call(&"global_xform", pf) as Transform3D).origin
+				_add_obstacle(AABB(po - Vector3.ONE * 0.25, Vector3.ONE * 0.5))
 	var lm: Node = root.get_node_or_null("Geometry/Landmarks")
 	if lm != null:
 		for c3: Node in lm.find_children("*", "GeometryInstance3D", true, false):
@@ -345,9 +372,11 @@ func _blocked(a: AABB) -> bool:
 # --- Boxes -> faces ------------------------------------------------------------------------------
 
 ## One box: its face pieces ([corners, n, key, room, group]); hall-lane boxes keep their mesh and get skins only.
-func _box(mi: MeshInstance3D, a: AABB, cls: String, site: bool) -> void:
+func _box(mi: MeshInstance3D, a: AABB, cls: String, site: bool, claimed: bool) -> void:
 	var body: Node = mi.get_parent()
 	var self_id: int = mi.get_instance_id()
+	if claimed and (cls == "glass" or String(body.get_parent().name) in D.NO_SKIN_GROUPS):
+		return
 	if cls == "glass":
 		if not _faces_theirs(a, self_id):
 			mi.material_override = _glass
@@ -373,7 +402,7 @@ func _box(mi: MeshInstance3D, a: AABB, cls: String, site: bool) -> void:
 			pieces.append(pc)
 	# the hall lane's box when a real part of it shows in BH / VE / X1 (a sliver, a wall top flush with their floor, a
 	# ceiling plane's edge behind the glass front: ours, that part left to the coplanar face it meets)
-	if their_area >= D.THEIRS_SHARE * all_area and their_area > 0.0:
+	if claimed or (their_area >= D.THEIRS_SHARE * all_area and their_area > 0.0):
 		_counts["mixed"] += 1
 		for pc2: Array in pieces:
 			var rid: String = String(pc2[3])
@@ -420,7 +449,7 @@ func _faces_theirs(a: AABB, self_id: int) -> bool:
 			var rid: String = String(pc[3])
 			if rid == "BH" or rid == "VE":
 				return true
-			if _mine(rid) and not rid.begins_with("X"):
+			if _mine(rid) and not _exterior(rid):
 				ours = true
 	return not ours
 
@@ -655,6 +684,8 @@ func _exposed(q: Array, n: Vector3, self_id: int) -> bool:
 func _emit_piece(q: Array, n: Vector3, key: String, rid: String, group: String) -> void:
 	if key == "" or key == "@theirs" or not _mats.has(key):
 		return
+	if group == "Shell" and maxf(maxf((q[0] as Vector3).y, (q[1] as Vector3).y), (q[2] as Vector3).y) <= 0.001:
+		key = "concrete"   # below grade, facing no room: one finish (no two fallbacks meet coplanar)
 	_tile(group, rid)
 	acc.call(&"quad", group, key, q[0], q[1], q[2], q[3], n)
 
@@ -664,7 +695,7 @@ func _tile(group: String, rid: String) -> void:
 		return
 	var r: Array = _room_rec[rid]
 	var area: float = (float(r[3]) - float(r[1])) * (float(r[4]) - float(r[2]))
-	if area >= D.TILE_AREA and not rid.begins_with("X"):
+	if area >= D.TILE_AREA and not _exterior(rid):
 		(acc.get(&"tile_groups") as Dictionary)[group] = D.TILE
 
 
@@ -712,7 +743,8 @@ func _override(mi: MeshInstance3D) -> void:
 	var a: AABB = xf * mi.get_aabb()
 	var c: Vector3 = a.get_center()
 	var rid: String = room_at(c)
-	if _theirs(rid) or _theirs(room_at(Vector3(c.x, a.position.y + 0.05, c.z))):
+	var site_hull: bool = _under(mi, "Site") and mi.get_parent() is StaticBody3D   # the Tannery ramp: left grey otherwise
+	if not site_hull and (_theirs(rid) or _theirs(room_at(Vector3(c.x, a.position.y + 0.05, c.z)))):
 		return
 	if cls == "glass":
 		mi.material_override = _glass
@@ -721,12 +753,51 @@ func _override(mi: MeshInstance3D) -> void:
 	var key: String = String(D.CLASS_KEY.get(cls, "metal"))
 	if cls == "stair":
 		key = String((D.ROOMS[rid] as Array)[0]) if D.ROOMS.has(rid) else "terrazzo"
-	elif cls == "wall_ext" or (cls == "trim" and String(mi.get_parent().name).begins_with("Coping")):
+	elif String(mi.get_parent().name).begins_with("Coping"):
+		key = "coping"
+	elif cls == "wall_ext":
 		key = "facade"
-	elif cls == "floor" and _under(mi, "Grade"):
+	elif cls == "floor" and (_under(mi, "Grade") or site_hull):
 		key = "asphalt"
 	mi.material_override = _triplanar(key)
 	_retag(mi.get_parent(), key)
+	_counts["overrides"] += 1
+
+
+## A flight's step boxes as one mesh (one draw instead of one per step), in its room's floor finish, world triplanar.
+func _merge_steps(flight: Node3D, steps: Array) -> void:
+	var st: SurfaceTool = SurfaceTool.new()
+	st.begin(Mesh.PRIMITIVE_TRIANGLES)
+	for v: Variant in steps:
+		var mi: MeshInstance3D = v
+		var sz: Vector3 = (mi.mesh as BoxMesh).size
+		var lo: Vector3 = mi.position - sz * 0.5
+		var hi: Vector3 = mi.position + sz * 0.5
+		for f: int in range(6):
+			var n: Vector3 = NORMALS[f]
+			var q: Array[Vector3] = M._face(lo, hi, f)
+			var pts: Array[Vector3] = q
+			if (q[1] - q[0]).cross(q[3] - q[0]).dot(n) < 0.0:
+				pts = [q[0], q[3], q[2], q[1]]
+			for idx: int in [0, 2, 1, 0, 3, 2]:
+				st.set_normal(n)
+				st.set_uv(M.world_uv(pts[idx], n))
+				st.add_vertex(pts[idx])
+	st.generate_tangents()
+	var mesh: ArrayMesh = st.commit()
+	mesh.resource_name = "of_steps_" + String(flight.name)
+	var c: Vector3 = (b.call(&"global_xform", flight) as Transform3D).origin
+	var rid: String = room_at(c + Vector3.UP * 0.5)
+	var key: String = String((D.ROOMS[rid] as Array)[0]) if D.ROOMS.has(rid) else "terrazzo"
+	mesh.surface_set_material(0, _triplanar(key))
+	for v2: Variant in steps:
+		var m2: MeshInstance3D = v2
+		flight.remove_child(m2)
+		m2.free()
+	var out: MeshInstance3D = MeshInstance3D.new()
+	out.name = "Steps"
+	out.mesh = mesh
+	b.call(&"add", flight, out)
 	_counts["overrides"] += 1
 
 
@@ -786,8 +857,200 @@ func _trims() -> void:
 					did = true
 			if st.has("pilasters") and h > 0.0:
 				_pilasters(group, run, ffl, h, st)
+			if st.has("courses"):
+				did = _courses(String(rid), run, st) or did
 			if did:
 				_counts["trims"] += 1
+
+
+## Exterior runs: limestone string courses at the floor lines, a plinth at grade, louvre screens on the roof plant.
+func _courses(rid: String, run: Array, st: Dictionary) -> bool:
+	var y0: float = float(run[5])
+	var y1: float = float(run[6])
+	var g: String = "R_" + rid
+	var did: bool = false
+	var cs: Array = st["courses"]
+	var ch: float = float(cs[1])
+	for yv: Variant in cs[3]:
+		var y: float = float(yv)
+		if y0 <= y - ch * 0.5 and y1 >= y + ch * 0.5:
+			_strip(g, run, y - ch * 0.5, y + ch * 0.5, float(cs[2]), String(cs[0]), false)
+			did = true
+		elif absf(y0 - y) < 0.01 and y1 >= y + ch:
+			_strip(g, run, y, y + ch, float(cs[2]), String(cs[0]), false)
+			did = true
+	if st.has("plinth") and y0 <= 0.05 and y1 >= 1.0:
+		var pl: Array = st["plinth"]
+		_strip(g, run, maxf(y0, -0.75), float(pl[1]), float(pl[2]), String(pl[0]), true)
+		did = true
+	if rid == "X5" and _on_rect_edge(run, D.LOUVRE_RECT):
+		var top: float = minf(y1, 12.2 + 2.7)
+		var y: float = 12.2 + 0.35
+		while y + 0.05 <= top:
+			_strip(g, run, y, y + 0.05, 0.06, "louvre", false)
+			y += D.LOUVRE_PITCH
+		did = true
+	return did
+
+
+## A wall run lying on an edge of the rect [x0, z0, x1, z1] (its plane within 0.4 m of the edge, inside its extent).
+static func _on_rect_edge(run: Array, r: Array) -> bool:
+	var plane: float = float(run[1])
+	var along_x: bool = bool(run[2])
+	var u0: float = float(run[3])
+	var u1: float = float(run[4])
+	if along_x:
+		return (absf(plane - float(r[1])) < 0.4 or absf(plane - float(r[3])) < 0.4) and u0 >= float(r[0]) - 0.4 \
+			and u1 <= float(r[2]) + 0.4
+	return (absf(plane - float(r[0])) < 0.4 or absf(plane - float(r[2])) < 0.4) and u0 >= float(r[1]) - 0.4 \
+		and u1 <= float(r[3]) + 0.4
+
+
+## Roof decks (X5 rects): lap seams across the membrane every SEAM_PITCH and a drain grate per rect, clear of the
+## plant, the head house and every prop.
+func _roof() -> void:
+	var y: float = float(L.FFL["R"])
+	for r: Array in L.ROOMS:
+		if String(r[1]) != "X5":
+			continue
+		var q: Array = r[3]
+		var x0: float = float(q[0]) + 0.5
+		var z0: float = float(q[1]) + 0.5
+		var x1: float = float(q[2]) - 0.5
+		var z1: float = float(q[3]) - 0.5
+		if x1 - x0 < 1.0 or z1 - z0 < 1.0:
+			continue
+		var x: float = ceilf(x0 / D.SEAM_PITCH) * D.SEAM_PITCH
+		while x <= x1:
+			var z: float = z0
+			while z < z1 - 0.01:
+				var ze: float = minf(z + 1.0, z1)
+				var lo: Vector3 = Vector3(x - 0.02, y, z)
+				var hi: Vector3 = Vector3(x + 0.02, y + 0.006, ze)
+				if not _blocked(AABB(lo, hi - lo).grow(0.03)):
+					_slab_box("R_X5", lo, hi, "roof_seam")
+				z = ze
+			x += D.SEAM_PITCH
+		var c: Vector3 = Vector3((x0 + x1) * 0.5, y, (z0 + z1) * 0.5)
+		var dl: Vector3 = c - Vector3(0.18, 0.0, 0.18)
+		var dh: Vector3 = c + Vector3(0.18, 0.008, 0.18)
+		if not _blocked(AABB(dl, dh - dl).grow(0.1)):
+			_slab_box("R_X5", dl, dh, "drain")
+
+
+## A flat box on a floor (no bottom face).
+func _slab_box(g: String, lo: Vector3, hi: Vector3, key: String) -> void:
+	for f: int in range(6):
+		if f == 2:
+			continue
+		var q: Array[Vector3] = M._face(lo, hi, f)
+		acc.call(&"quad", g, key, q[0], q[1], q[2], q[3], NORMALS[f])
+
+
+## The neighbours seen from the play space: the parking structure's decks (spandrels, dark open slots, columns,
+## painted bays on the roof deck) and the Corvino Building's storeys (limestone string courses, windows with sills
+## and lintels) on the faces toward the lane, the bank roof and the terrace.
+func _neighbours() -> void:
+	var cl: Node = root.get_node_or_null("Geometry/Site/Closures")
+	if cl == null:
+		return
+	for row: Array in D.NEIGHBOURS:
+		var body: Node3D = cl.get_node_or_null(String(row[0])) as Node3D
+		if body == null:
+			continue
+		var cs: CollisionShape3D = body.get_node_or_null("Collision") as CollisionShape3D
+		if cs == null or not (cs.shape is BoxShape3D):
+			continue
+		var sz: Vector3 = (cs.shape as BoxShape3D).size
+		var a: AABB = (b.call(&"global_xform", cs) as Transform3D) * AABB(-sz * 0.5, sz)
+		if String(row[1]) == "parking":
+			_parking(a)
+		else:
+			_corvino(a)
+
+
+func _parking(a: AABB) -> void:
+	var g: String = "N_Parking"
+	var zf: float = a.end.z   # the south face, on Ledger Lane
+	var y: float = a.position.y
+	while y + D.PARK_FLOOR <= a.end.y + 0.01:
+		var s0: float = y + float(D.PARK_SLOT[0])
+		var s1: float = y + float(D.PARK_SLOT[1])
+		_front_box(g, Vector3(a.position.x + 0.3, s0, zf), Vector3(a.end.x - 0.3, s1, zf + 0.004), "deck_dark")
+		for k: int in range(3):   # the edge barrier cables
+			var cy: float = s0 + 0.35 + 0.25 * float(k)
+			acc.call(&"box", g, Vector3(a.position.x + 0.3, cy, zf + 0.03), Vector3(a.end.x - 0.3, cy + 0.02, zf + 0.05), "steel")
+		y += D.PARK_FLOOR
+	var x: float = ceilf((a.position.x + 0.5) / D.PARK_COLUMN) * D.PARK_COLUMN
+	while x <= a.end.x - 0.5:
+		_front_box(g, Vector3(x - 0.3, a.position.y, zf), Vector3(x + 0.3, a.end.y, zf + 0.09), "deck_concrete")
+		x += D.PARK_COLUMN
+	_front_box(g, Vector3(a.position.x, a.end.y - 0.25, zf), Vector3(a.end.x, a.end.y, zf + 0.06), "deck_concrete")
+	# the roof deck: two rows of painted bays (2.5 m) and a yellow edge line
+	var ty: float = a.end.y + 0.003
+	for zr: Array in [[a.end.z - 6.0, a.end.z - 1.0], [a.end.z - 13.0, a.end.z - 8.0]]:
+		var bx: float = a.position.x + 1.0
+		while bx <= a.end.x - 1.0:
+			_floor_line(g, Vector3(bx - 0.05, ty, float(zr[0])), Vector3(bx + 0.05, ty, float(zr[1])), "line_white")
+			bx += 2.5
+	_floor_line(g, Vector3(a.position.x + 0.5, ty, a.end.z - 0.6), Vector3(a.end.x - 0.5, ty, a.end.z - 0.45), "line_white")
+
+
+func _corvino(a: AABB) -> void:
+	var g: String = "N_Corvino"
+	# faces toward the play space: north (the lane) and east (the bank roof / terrace), above the bank's roof line
+	for face: Array in [["z", a.position.z, -1.0], ["x", a.end.x, 1.0]]:
+		var along_x: bool = String(face[0]) == "z"
+		var plane: float = float(face[1])
+		var sgn: float = float(face[2])
+		var u0: float = a.position.x if along_x else a.position.z
+		var u1: float = a.end.x if along_x else a.end.z
+		var ystart: float = a.position.y if along_x else maxf(a.position.y, 12.2)
+		var y: float = a.position.y + D.CORVINO_STOREY
+		while y < a.end.y - 0.3:   # string courses
+			if y > ystart:
+				_proud_box(g, along_x, plane, sgn, u0, u1, y - 0.12, y + 0.12, 0.05, "ashlar_warm")
+			y += D.CORVINO_STOREY
+		var fy: float = a.position.y
+		while fy + D.CORVINO_STOREY <= a.end.y + 0.01:
+			var w0: float = fy + D.CORVINO_SILL
+			var w1: float = w0 + float(D.CORVINO_WINDOW[1])
+			if w0 >= ystart:
+				var u: float = u0 + D.CORVINO_BAY * 0.5
+				while u + float(D.CORVINO_WINDOW[0]) * 0.5 <= u1 - 0.3:
+					var hw: float = float(D.CORVINO_WINDOW[0]) * 0.5
+					_proud_box(g, along_x, plane, sgn, u - hw, u + hw, w0, w1, 0.004, "window_dark")
+					_proud_box(g, along_x, plane, sgn, u - hw - 0.08, u + hw + 0.08, w0 - 0.08, w0, 0.06, "ashlar_warm")
+					_proud_box(g, along_x, plane, sgn, u - hw - 0.05, u + hw + 0.05, w1, w1 + 0.14, 0.03, "ashlar_warm")
+					u += D.CORVINO_BAY
+			fy += D.CORVINO_STOREY
+
+
+## A box `depth` proud of a face plane (normal sgn along x or z) over [u0, u1] x [y0, y1].
+func _proud_box(g: String, along_x: bool, plane: float, sgn: float, u0: float, u1: float, y0: float, y1: float,
+		depth: float, key: String) -> void:
+	var p2: float = plane + sgn * depth
+	var lo: Vector3 = Vector3(u0, y0, minf(plane, p2)) if along_x else Vector3(minf(plane, p2), y0, u0)
+	var hi: Vector3 = Vector3(u1, y1, maxf(plane, p2)) if along_x else Vector3(maxf(plane, p2), y1, u1)
+	var back: int = (4 if sgn > 0.0 else 5) if along_x else (0 if sgn > 0.0 else 1)
+	for f: int in range(6):
+		if f == back:
+			continue
+		var q: Array[Vector3] = M._face(lo, hi, f)
+		acc.call(&"quad", g, key, q[0], q[1], q[2], q[3], NORMALS[f])
+
+
+## A box standing on a +Z face plane at lo.z: every face but the back (-Z) one.
+func _front_box(g: String, lo: Vector3, hi: Vector3, key: String) -> void:
+	for f: int in range(6):
+		if f == 4:
+			continue
+		var q: Array[Vector3] = M._face(lo, hi, f)
+		acc.call(&"quad", g, key, q[0], q[1], q[2], q[3], NORMALS[f])
+
+
+func _floor_line(g: String, lo: Vector3, hi: Vector3, key: String) -> void:
+	acc.call(&"quad", g, key, lo, Vector3(hi.x, lo.y, lo.z), hi, Vector3(lo.x, lo.y, hi.z), Vector3.UP)
 
 
 ## One trim strip (a box `depth` proud of the run's face from ya to yb): the front in the strip key, the top, the
@@ -1081,9 +1344,12 @@ func _flush(parent: Node3D) -> void:
 		mi.name = "Visual_" + String(g)
 		mi.mesh = mesh
 		mi.set_meta(&"finish_d", true)
-		if String(g).begins_with("D_"):   # trims, pilasters, beams, cage bars, trays: room-scale detail
-			mi.visibility_range_end = D.DETAIL_VIS
-			mi.visibility_range_end_margin = D.DETAIL_VIS * 0.1
+		var vr: float = D.DETAIL_VIS if String(g).begins_with("D_") else (D.NEIGHBOUR_VIS if String(g).begins_with("N_") else 0.0)
+		if vr > 0.0:   # D_: trims, pilasters, beams, cage bars, trays; N_: the neighbours' facade detail
+			mi.visibility_range_end = vr
+			mi.visibility_range_end_margin = vr * 0.1
 			mi.visibility_range_fade_mode = GeometryInstance3D.VISIBILITY_RANGE_FADE_SELF
+		if String(g).begins_with("D_"):
+			mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		b.call(&"add", parent, mi)
 	groups.clear()
