@@ -207,7 +207,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## navmesh: Navmesh
 
-- navmesh: 4015 polygons, cell 0.10/0.10 m
+- navmesh: 4007 polygons, cell 0.10/0.10 m
 - 433 markers checked
 | room | walkable samples | covered | coverage |
 |---|---|---|---|
@@ -223,7 +223,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `Rooms/RoomBB` | 285 | 285 | 100% |
 | `Rooms/RoomRC` | 206 | 206 | 100% |
 | `Rooms/RoomVC` | 227 | 227 | 100% |
-| `Rooms/RoomVT` | 579 | 576 | 99% |
+| `Rooms/RoomVT` | 579 | 573 | 99% |
 | `Rooms/RoomSD` | 510 | 510 | 100% |
 | `Rooms/RoomLD` | 276 | 274 | 99% |
 | `Rooms/RoomE1` | 17 | 17 | 100% |
@@ -235,7 +235,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `Rooms/RoomMO` | 114 | 114 | 100% |
 | `Rooms/RoomBC` | 225 | 225 | 100% |
 | `Rooms/RoomLO` | 214 | 214 | 100% |
-| `Rooms/RoomTW` | 720 | 708 | 98% |
+| `Rooms/RoomTW` | 720 | 705 | 98% |
 | `Rooms/RoomPC` | 212 | 212 | 100% |
 | `Rooms/RoomCN1` | 102 | 102 | 100% |
 | `Rooms/RoomCN2` | 93 | 93 | 100% |
