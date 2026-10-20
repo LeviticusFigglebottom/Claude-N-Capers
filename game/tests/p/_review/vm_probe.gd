@@ -138,7 +138,7 @@ func _ready() -> void:
 	var vp: SubViewport = CrewView.of(c).find_child("Viewmodel", true, false) as SubViewport
 	if vp != null:
 		var img: Image = vp.get_texture().get_image()
-		img.save_png("%s/vm_ads_subviewport.png" % _out)
+		img.save_png(PCaptureName.safe_path("%s/vm_ads_subviewport.png" % _out))
 		var mid: Color = img.get_pixel(img.get_width() / 2 + 60, img.get_height() * 3 / 4)
 		print("[VM] subviewport size=%s format=%d px=%s corner=%s" % [vp.size, img.get_format(), mid,
 			img.get_pixel(10, 10)])
@@ -185,5 +185,5 @@ func _dump(c: CrewController) -> void:
 
 func _shot(name: String) -> void:
 	await RenderingServer.frame_post_draw
-	get_viewport().get_texture().get_image().save_png("%s/%s.png" % [_out, name])
+	get_viewport().get_texture().get_image().save_png(PCaptureName.safe_path("%s/%s.png" % [_out, name]))
 	print("[VM] shot ", name)
