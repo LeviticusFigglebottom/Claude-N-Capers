@@ -28,6 +28,12 @@ const GI_BANDS: Array = [
 		VoxelGI.SUBDIV_128, false],
 ]
 
+## The hall's warm pool fills: [name, position, range]. Over the counter's centre (z 18.5) and the meridian line.
+const HALL_POOLS: Array = [
+	["PoolCounter", Vector3(24.0, 3.4, 19.5), 9.0],
+	["PoolMeridian", Vector3(24.0, 3.8, 27.0), 10.0],
+]
+
 ## Rooms (purposes) without a reflection probe: the exteriors, the open stairs and the lift shaft (no box to project
 ## into), the electrical and janitor closets (matte, 3 x 4-7 m).
 const PROBE_SKIP: Array[String] = ["exterior", "stair", "elevator", "electrical", "janitor"]
@@ -82,8 +88,10 @@ func environment(lighting: Node3D) -> void:
 	env.background_mode = Environment.BG_SKY
 	env.sky = sky
 	env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
-	env.ambient_light_color = Color(0.66, 0.68, 0.72)
-	env.ambient_light_energy = 0.5
+	# PO (hall flat-lit): a low, slightly cool ambient so the sun shafts and the warm pools carry the hall and its
+	# perimeter falls darker; the VoxelGI bounce (Forward+) lifts the shadow side
+	env.ambient_light_color = Color(0.6, 0.64, 0.7)
+	env.ambient_light_energy = 0.36
 	env.reflected_light_source = Environment.REFLECTION_SOURCE_SKY
 	env.tonemap_mode = Environment.TONE_MAPPER_AGX
 	env.tonemap_exposure = 1.15
@@ -98,6 +106,16 @@ func environment(lighting: Node3D) -> void:
 	env.fog_density = 0.0012
 	env.fog_sky_affect = 0.2
 	env.fog_aerial_perspective = 0.3
+	# sun shafts (Forward+): a thin volumetric haze the shadowed sun cuts into beams through the south windows and the
+	# lantern oculus; GI-lit so the hall's warm bounce tints it
+	env.volumetric_fog_enabled = true
+	env.volumetric_fog_density = 0.008
+	env.volumetric_fog_albedo = Color(0.95, 0.92, 0.86)
+	env.volumetric_fog_anisotropy = 0.55
+	env.volumetric_fog_length = 48.0
+	env.volumetric_fog_gi_inject = 0.6
+	env.volumetric_fog_ambient_inject = 0.0
+	env.volumetric_fog_sky_affect = 0.0
 	env.glow_enabled = true
 	env.glow_intensity = 0.3
 	env.glow_bloom = 0.03
@@ -115,8 +133,9 @@ func environment(lighting: Node3D) -> void:
 	sun.basis = Basis.looking_at(Vector3(0.587, -0.407, -0.7).normalized(), Vector3.UP)
 	sun.position = Vector3(24.0, 40.0, 18.0)
 	sun.light_color = Color(1.0, 0.9, 0.77)
-	sun.light_energy = 1.5
-	sun.set(&"base_energy", 1.5)
+	sun.light_energy = 2.0
+	sun.set(&"base_energy", 2.0)
+	sun.light_volumetric_fog_energy = 1.6
 	sun.set(&"depth", 0.55)
 	sun.light_angular_distance = 0.5
 	sun.shadow_enabled = true
@@ -126,6 +145,27 @@ func environment(lighting: Node3D) -> void:
 	lighting.add_child(sun)
 	sun.owner = root
 	counts["environment"] = 1
+	_hall_pools(lighting, root)
+
+
+## The hall's warm pools (PO: the hall read flat-lit): two warm 3000 K fill lights (level_standards §3.7 fill: energy
+## <= 0.3, no shadows, <= 2 per room) low over the counter's centre and the meridian line, so the middle of the hall
+## glows warm against its darker perimeter. The 4 shadowed bronze pendants are the hall dressing lane's.
+func _hall_pools(lighting: Node3D, root: Node) -> void:
+	var h: Node3D = _holder(lighting, "HallPools", root)
+	for r: Array in HALL_POOLS:
+		var light: OmniLight3D = OmniLight3D.new()
+		light.name = String(r[0])
+		light.position = r[1]
+		light.light_color = Color(1.0, 0.78, 0.55)
+		light.light_energy = 0.29  # the fill cap is 0.3 (float32: 0.3 itself reads as > 0.3)
+		light.omni_range = float(r[2])
+		light.omni_attenuation = 1.6
+		light.shadow_enabled = false
+		light.layers = 1 | VIEWMODEL_LIT_LAYER
+		light.set_meta(&"fill", true)
+		h.add_child(light)
+		light.owner = root
 
 
 # --- GI, probes, occluders -----------------------------------------------------------------------
