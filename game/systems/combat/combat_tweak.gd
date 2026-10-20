@@ -212,6 +212,14 @@ static var _cached: CombatTweak = null
 @export var shotgun_panic_range_m: float = 12.0
 @export var shotgun_panic_cone_deg: float = 40.0
 
+@export_group("Hit grace (D-145, PD2 _chk_dmg_too_soon)")
+## After a crew member takes (or dodges) a bullet hit, further hits of equal or lower damage do nothing for this
+## long (s), by difficulty Routine..Cataclysm (PD2 player 0.45 s on every hit; PD2 caps intake from a crowd this
+## way). 0 = off (D-145: Routine/Tense only for now; the LEAD decides Hazardous+).
+@export var hit_grace_s_by_difficulty: PackedFloat32Array = PackedFloat32Array([0.45, 0.45, 0.0, 0.0, 0.0, 0.0])
+## The same for AI bots (PD2 team AI 0.35 s).
+@export var bot_hit_grace_s_by_difficulty: PackedFloat32Array = PackedFloat32Array([0.35, 0.35, 0.0, 0.0, 0.0, 0.0])
+
 @export_group("Limb hitboxes (D-123)")
 ## Capsule radius of the upper-arm / thigh hitboxes on a rigged NPC (a little over ENV D's ragdoll capsules,
 ## 0.051 / 0.077 m, for clothing) ◇. Length = the bone's rest length to its child joint (fallback below).

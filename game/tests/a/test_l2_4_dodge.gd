@@ -30,6 +30,7 @@ func test_l2_4_dodge_add_one_dodges_every_ranged_hit() -> void:
 	var health: float = c.health.health
 	for k: int in range(20):
 		c.health.regen_delay_left = 0.0
+		c.health.grace_left = 0.0  # D-145: a dodge opens the hit grace (PD2); each hit here must reach the roll
 		var out: Dictionary = _hit(c, 15.0)
 		assert_true(bool(out.get("dodged", false)), "hit %d dodged" % k)
 		assert_near(float(out["amount"]), 0.0, 0.0001)
