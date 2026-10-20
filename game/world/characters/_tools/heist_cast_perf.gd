@@ -6,8 +6,9 @@
 ## OF forces its vip_client slot. Writes user://cast_perf_<heist>_<view>.png. Owner: ENV D.
 ##   xvfb-run -a -s "-screen 0 1280x720x24" /opt/godot/godot --audio-driver Dummy --rendering-driver opengl3 \
 ##     --resolution 1280x720 --path game res://world/characters/_tools/heist_cast_perf.tscn -- \
-##     --heist=ostrander_federal [--seed=1037] [--loud] [--seconds=90] [--detail]
-## --detail adds per view: draws with every light's shadow off, and each on-screen NPC's own draws (top 8).
+##     --heist=ostrander_federal [--seed=1037] [--loud] [--seconds=90] [--detail] [--view=<name>]
+## --detail adds per view: draws with every light's shadow off, the shadow proposals (cast shadows off / off beyond
+## FAR_SHADOW_M, the sun at 2 splits / half distance), and each on-screen NPC's own draws (top 8).
 extends Node
 
 ## heist -> [[view name, eye, look-at]]: the biggest live crowd in one view.
@@ -38,12 +39,15 @@ const VIEWS: Dictionary = {
 ## --detail proposal check: the render layer the cast moves to (2 = bit value 2)
 const CAST_LAYER: int = 2
 const CAST_LAYER_BIT: int = 1 << (CAST_LAYER - 1)
+## --detail shadow proposal: cast geometry beyond this distance (m) from the camera casts no shadow.
+const FAR_SHADOW_M: float = 15.0
 const FORCE: Dictionary = {"ostrander_federal": {"vip": ["vip_in"]}}
 var _heist: String = "ostrander_federal"
 var _seed: int = 1037
 var _loud: bool = false
 var _seconds: float = 90.0
 var _detail: bool = false
+var _view: String = ""
 
 
 func _ready() -> void:
@@ -55,6 +59,7 @@ func _ready() -> void:
 			"loud": _loud = true
 			"seconds": _seconds = float(kv[1])
 			"detail": _detail = true
+			"view": _view = kv[1]
 	var opts: Dictionary = {"ai_teammates": 0}
 	if FORCE.has(_heist):
 		opts["preplan"] = {"force_variants": FORCE[_heist]}
@@ -80,6 +85,8 @@ func _ready() -> void:
 	add_child(cam)
 	cam.current = true
 	for v: Array in VIEWS.get(_heist, []):
+		if _view != "" and String(v[0]) != _view:
+			continue
 		cam.look_at_from_position(v[1], v[2], Vector3.UP)
 		for _i: int in 20:
 			await get_tree().process_frame
@@ -127,6 +134,15 @@ func _ready() -> void:
 			gi.visible = true
 		print("[CASTPERF] view=%s attached never-LOD geometry: %d nodes, %d tris; hiding it: draws %d -> %d, prims %d -> %d"
 				% [v[0], extra_nodes, extra_tris, shown[0], no_extras[0], shown[1], no_extras[1]])
+		var by_name: Dictionary = {}
+		for gi: GeometryInstance3D in extras:
+			by_name[String(gi.name)] = int(by_name.get(String(gi.name), 0)) + 1
+		var names: Array = by_name.keys()
+		names.sort_custom(func(x: String, y: String) -> bool: return int(by_name[x]) > int(by_name[y]))
+		var top: PackedStringArray = []
+		for nm: String in names.slice(0, 10):
+			top.append("%s x%d" % [nm, by_name[nm]])
+		print("[CASTPERF] view=%s never-LOD nodes by name: %s" % [v[0], ", ".join(top)])
 		if _detail:
 			await _detail_report(String(v[0]), npcs, cam, shown)
 		_set_cast_visible(npcs, false)
@@ -162,6 +178,7 @@ func _detail_report(view: String, npcs: Array[Node], cam: Camera3D, shown: Array
 	for li: Light3D in lit:
 		li.shadow_enabled = true
 	print("[CASTPERF] view=%s shadowed lights %s; all shadows off: draws %d -> %d" % [view, kinds, shown[0], no_shadow[0]])
+	await _shadow_proposals(view, npcs, cam, lit, shown)
 	# proposal check: the cast on its own render layer (CAST_LAYER), excluded from the positional lights' shadow casters
 	# (the sun keeps casting them): moving bodies no longer re-render those lights' shadow maps
 	var saved_layers: Dictionary = {}
@@ -205,6 +222,48 @@ func _detail_report(view: String, npcs: Array[Node], cam: Camera3D, shown: Array
 	for r: Array in rows.slice(0, 8):
 		out.append("%s %d @%.0fm" % [r[1], r[0], r[2]])
 	print("[CASTPERF] view=%s per-NPC draws (top 8 of %d on screen): %s" % [view, rows.size(), ", ".join(out)])
+
+
+## Shadow proposals (LEAD 2026-10-20), each measured alone and restored: the cast casts no shadows; the cast casts
+## shadows only within FAR_SHADOW_M of the camera; the sun at 2 cascades; the sun at half its shadow distance.
+func _shadow_proposals(view: String, npcs: Array[Node], cam: Camera3D, lit: Array[Light3D], shown: Array) -> void:
+	var cast: Array[GeometryInstance3D] = []
+	for n: Node in npcs:
+		for g: Node in n.find_children("*", "GeometryInstance3D", true, false):
+			cast.append(g as GeometryInstance3D)
+	var saved: Dictionary = {}
+	for gi: GeometryInstance3D in cast:
+		saved[gi] = gi.cast_shadow
+		gi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	var off_all: int = await _draws()
+	for gi: GeometryInstance3D in cast:
+		var far: bool = cam.global_position.distance_to(gi.global_position) > FAR_SHADOW_M
+		gi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF if far else saved[gi]
+	var off_far: int = await _draws()
+	for gi: GeometryInstance3D in cast:
+		gi.cast_shadow = saved[gi]
+	print("[CASTPERF] view=%s cast shadows off: draws %d -> %d; off beyond %.0f m only: -> %d" % [view, shown[0], off_all,
+			FAR_SHADOW_M, off_far])
+	for li: Light3D in lit:
+		if not (li is DirectionalLight3D):
+			continue
+		var sun: DirectionalLight3D = li as DirectionalLight3D
+		var mode: DirectionalLight3D.ShadowMode = sun.directional_shadow_mode
+		var dist: float = sun.directional_shadow_max_distance
+		sun.directional_shadow_mode = DirectionalLight3D.SHADOW_PARALLEL_2_SPLITS
+		var two: int = await _draws()
+		sun.directional_shadow_mode = mode
+		sun.directional_shadow_max_distance = dist * 0.5
+		var half: int = await _draws()
+		sun.directional_shadow_max_distance = dist
+		print("[CASTPERF] view=%s sun %s mode=%d max_distance=%.0f m: 2 splits -> %d draws; max_distance %.0f m -> %d draws"
+				% [view, sun.name, mode, dist, two, dist * 0.5, half])
+
+
+func _draws() -> int:
+	for _i: int in 10:
+		await get_tree().process_frame
+	return int(_info()[0])
 
 
 func _info() -> Array:
