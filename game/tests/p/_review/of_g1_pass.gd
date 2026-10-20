@@ -946,6 +946,7 @@ func _lift_to(lift: BagLift, to: int, stand: Vector3) -> bool:
 	await _go(stand, 0.3, 60.0)
 	# Walk to the panel when the stand is out of reach of it (G1 hoist: panel 2.0 m from the car-side stand).
 	var walk_to: bool = pilot.crew.global_position.distance_to(panel.global_position) > 1.4
+	_diag_hold.call_deferred(panel, 8.0)
 	if not await pilot.use(panel, 30.0, func() -> bool: return lift.is_moving(), walk_to):
 		note("lift %s panel %d not used (at %s)" % [lift.name, here, Po5Pilot._v(pilot.crew.global_position)])
 		return false
@@ -954,6 +955,35 @@ func _lift_to(lift: BagLift, to: int, stand: Vector3) -> bool:
 	note("LIFT %s %s landing %d (%d bags in the car)" % [lift.name, "at" if ok else "NOT at", to,
 		lift.bags_in_car().size()])
 	return ok
+
+
+## Diagnostic (the r245 hoist "hold dropped" loop): 10 Hz for `max_s`, a line whenever the hold's state changes:
+## session alive, distance from its start (InteractionTweak.cancel_move_m), aim angle to the panel (cancel_look_deg),
+## the panel's availability and what the crosshair resolves to.
+func _diag_hold(comp: InteractableComponent, max_s: float) -> void:
+	var isys: InteractionSystem = rt.interaction
+	if isys == null or not is_instance_valid(comp):
+		return
+	var tw: InteractionTweak = Tweak.interaction()
+	var last: String = ""
+	var t: float = 0.0
+	while t < max_s and is_instance_valid(comp):
+		var c: CrewController = pilot.crew
+		var s: Dictionary = isys.session(c.slot)
+		var moved: float = c.global_position.distance_to(s.get("start_pos", c.global_position)) if not s.is_empty() \
+			else -1.0
+		var ang: float = rad_to_deg(c.aim_direction().angle_to(comp.global_position - c.eye_position()))
+		var am: InteractableComponent = isys.aimed_component(c)
+		var line: String = "session %s moved %.2f/%.2f aim %.0f/%.0f deg avail '%s' aimed %s blocked '%s'" % [
+			not s.is_empty(), moved, tw.cancel_move_m, ang, tw.cancel_look_deg, comp.availability(c),
+			am.name if am != null else "<none>", isys.blocked_reason(c.slot)]
+		var key: String = "%s|%s|%s|%s" % [not s.is_empty(), comp.availability(c), am, isys.blocked_reason(c.slot)]
+		if key != last:
+			last = key
+			note("DIAG hold t=%.1f %s eye %s panel %s" % [t, line, Po5Pilot._v(c.eye_position()),
+				Po5Pilot._v(comp.global_position)])
+		await wait_s(0.1)
+		t += 0.1
 
 
 ## Throw the carried bag into `lift`'s car from `stand`, up against it (the release point 0.7 m ahead is in the car).
