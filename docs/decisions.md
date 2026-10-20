@@ -1388,3 +1388,16 @@ wobbly and bobs the gun weirdly." Idle capacity, alongside Ostrander (D-144 unaf
    A: bot runtime.
 5. **Run bob (P):** calmer sprint/run: lower head-bob amplitude, smoother viewmodel bob (no sharp figure-8 snap), a
    steady PD2-like sprint pose (gun lowered and angled, gentle sway). P judges windowed at 60 fps, before/after clip.
+
+## D-146: draw-call budget counts shadow passes (2026-10-20, LEAD)
+D found the OF hall at 12,885 submitted draws (79 % shadow passes) while levelcheck `perf` reported 2,438: the check
+counted main-pass surfaces only. Ruling, amending architecture §10:
+1. **Main pass ≤ 2,500** draws per view (unchanged), and a new **total ≤ 4,000** submitted draws per view *including*
+   shadow passes (sun cascades, spot cones, omni ×6 faces), measured with the peak cast for the heist (Cataclysm).
+   **Shadowed lights ≤ 8 in view** is unchanged.
+2. levelcheck `perf` counts both numbers and is reconciled against D's `heist_cast_perf` on the same view (unit test).
+3. **OF must meet both to reach G2 final.** C measures the five shipped heists with the new check and reports. Overruns
+   there are queued as polish *after* OF is done (D-144), unless one is so far over that it plays badly; then the LEAD
+   pulls it forward.
+4. Levers, in order: a shadow only where it reads; no omni shadows; distance fade / shadow max distance on spots; sun
+   2 splits and a shorter max distance; `cast_shadow` off on small props, skyline and far NPCs; occluders.
