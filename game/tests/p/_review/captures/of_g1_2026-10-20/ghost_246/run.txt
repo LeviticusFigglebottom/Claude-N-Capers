@@ -1,0 +1,52 @@
+[OFP 0.0s t=-1.0] === ghost ===
+[OFP 12.1s t=-1.0] objective casing -> 1
+[OFP 12.1s t=-1.0] objective keycard -> 1
+[OFP 12.1s t=-1.0] objective code_hint -> 1
+[OFP 12.1s t=-1.0] objective code_pc -> 1
+[OFP 12.1s t=-1.0] objective server -> 1
+[OFP 12.1s t=-1.0] objective vault_gate -> 1
+[OFP 12.1s t=-1.0] objective lasers -> 1
+[OFP 12.1s t=-1.0] objective time_lock -> 0
+[OFP 12.1s t=-1.0] objective time_lock_wait -> 0
+[OFP 12.1s t=-1.0] objective vault_loot -> 0
+[OFP 12.1s t=-1.0] objective gold_cage -> 0
+[OFP 12.1s t=-1.0] objective drill_delivery -> 0
+[OFP 12.1s t=-1.0] objective vault_drill -> 0
+[OFP 12.1s t=-1.0] objective vault_breach -> 0
+[OFP 12.1s t=-1.0] objective secure -> 1
+[OFP 12.1s t=-1.0] objective deposit_boxes -> 1
+[OFP 12.1s t=-1.0] objective bond_safe -> 1
+[OFP 12.1s t=-1.0] objective president_safe -> 1
+[OFP 12.1s t=-1.0] objective server_drives -> 1
+[OFP 12.1s t=-1.0] objective escape_wait -> 0
+[OFP 12.1s t=-1.0] objective escape -> 0
+[OFP 32.1s t=0.0] launched ostrander_federal seed 1002 diff 5 variants { &"manager_route": [&"mgr_vault"], &"keycard": [&"kc_on_manager"], &"code_pc": [&"pc_exec"], &"officers": [&"off_3"], &"server_room": [&"srv_gallery"], &"guard_post": [&"rover_basement", &"rover_dock", &"rover_gallery", &"rover_hall"], &"security_room_staffed": [&"sec_staffed"], &"camera": [&"cam_a"], &"laser_pattern": [&"lz_sweep"], &"customers": [&"cust_8"], &"side_door": [&"door_none"], &"fire_escape": [&"fe_up"], &"escape": [&"esc_van_dock"], &"drill_delivery": [&"drop_terrace"], &"president_safe": [&"ps_empty"], &"vip": [&"vip_in"], &"guard_extra": [&"gx_basement", &"gx_hall"], &"civ_extra": [&"cx_hall_1", &"cx_hall_2", &"cx_pc"], &"time_lock_s": 270.0, &"drill_eta_s": 90.0, &"escape_eta_s": 90.0, &"cash_bags": 6, &"gold_bags": 4, &"deposit_boxes": 12, "rare": [&"vip_client"] }
+[OFP 291.4s t=3.1] pilot: calibrated 0.001600 rad/px yaw, 0.001600 rad/px pitch (settings formula said (0.0016, 0.0016))
+[OFP 291.4s t=3.1] spawn (21.8, -0.8, 44.0)
+[OFP 320.2s t=8.2] pilot: t=5 at (37.9, -0.7, 40.1) corner (42.4, -0.6, 42.3) yaw_err -0.00 fwd=true path=11 mouse_mode=2 state=0 look=(-2.02,0.00) pin_yaw=-2.01588615652872 bot=false
+[OFP 332.3s t=20.3] pilot: t=5 at (56.0, 0.0, 14.9) corner (55.7, 0.2, 12.4) yaw_err -0.00 fwd=true path=7 mouse_mode=2 state=0 look=(0.10,0.00) pin_yaw=0.09794857307133 bot=false
+[OFP 343.2s t=31.1] pilot: t=5 at (35.3, 0.0, -6.2) corner (33.5, 0.2, -6.3) yaw_err 0.00 fwd=true path=9 mouse_mode=2 state=0 look=(1.48,0.00) pin_yaw=1.4847393100863 bot=false
+[OFP 344.9s t=32.9] GHOST step _g1_lane done at t=32.9 (+29.7 s)
+[OFP 344.9s t=32.9] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (1.1, 0.0, -2.5) walk
+[OFP 355.0s t=42.9] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (16.4, 0.0, -2.9) walk
+[OFP 364.9s t=52.9] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (32.3, 0.0, -3.5) walk
+[OFP 373.9s t=61.9] GHOST smoke cue: Npc_guard6 at (45.6, 0.0, -5.0) clip 'smoke' (still 0.5 s) after 29 s
+[OFP 373.9s t=61.9] GHOST lane clear after 0 s
+[OFP 374.9s t=62.9] objective casing -> 2
+[OFP 375.6s t=63.5] masked true
+[OFP 378.3s t=66.2] ECM on
+[OFP 383.3s t=71.3] pilot: t=5 at (12.2, 0.0, -1.8) corner (10.2, 0.2, -1.2) yaw_err 0.00 fwd=true path=4 mouse_mode=2 state=0 look=(1.86,0.00) pin_yaw=1.85835092105117 bot=false
+[OFP 393.0s t=80.6] pilot: use DockPersonnelDoor (open_door) -> OK in 8.0 s
+[OFP 396.8s t=84.2] pilot: use DockCorridorDoor (open_door) -> OK in 0.0 s
+[OFP 399.1s t=86.3] pilot: use StairDoorSAG (open_door) -> OK in 0.0 s
+[OFP 403.4s t=90.5] pilot: use StairDoorSAB (open_door) -> OK in 0.0 s
+[OFP 404.3s t=91.4] GHOST step _g2_dock done at t=91.4 (+58.5 s)
+[OFP 408.1s t=95.3] DETECT Npc_civilian8 kind 1 meter 0.10 at (7.1, -4.0, 2.6), pilot (3.5, -4.0, 5.2) crouched false
+[OFP 408.5s t=95.7] manager never came to LK
+[OFP 408.5s t=95.7] FAIL ghost/_g3_keycard (alarm )
+[OFP] FAIL ghost/_g3_keycard
+[OFP 418.6s t=95.9] FILLS per observer (peak D-128 meter on the pilot): 1 observers
+[OFP 418.6s t=95.9]   FILL Npc_civilian8                kind 1 peak 0.39 at t=95.8 (observer (7.1, -4.0, 2.6), pilot (2.8, -4.0, 4.3) crouched false)
+[OFP 418.6s t=95.9] GHOST total 92.7 s game time (stopped); alarm ; ECM left 1
+[OFP] RESULT FAIL ghost
+[OFP] RESULT FAIL (ghost FAIL)
