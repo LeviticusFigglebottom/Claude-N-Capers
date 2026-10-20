@@ -383,6 +383,18 @@ func end_tase() -> bool:
 	return true
 
 
+## Server, D-145 (PD2: a tase that runs out downs the player): a TASED crew member goes DOWNED (a down counted,
+## bleed-out, revivable, can shoot from the floor). The Stinger calls it when its long tase ends (L4.4); the helpless
+## timer is the fallback. Returns false when not TASED.
+func tase_expired() -> bool:
+	if _crew == null or not Net.is_authority() or _crew.crew_state != Enums.CrewState.TASED:
+		return false
+	if _crew.weapons != null:
+		_crew.weapons.involuntary_fire = false
+	go_down()
+	return true
+
+
 ## Server: custody release (P3 hostage trade): back to NORMAL at full health, downs reset.
 func release_from_custody() -> void:
 	if _crew == null or not Net.is_authority() or _crew.crew_state != Enums.CrewState.CUSTODY:
@@ -413,11 +425,15 @@ func _tick_down_states(delta: float) -> bool:
 				go_to_custody()
 			return true
 		Enums.CrewState.TASED, Enums.CrewState.CLOAKER_DOWNED:
-			# D-093: not revived within the bleedout time -> custody, as if bled out, no down counted.
+			# D-093: a CLOAKER_DOWNED member not revived within the bleedout time -> custody, no down counted.
+			# D-145 (PD2): a tase that runs out ends in a DOWN (bleed-out decides custody), never straight to custody.
 			helpless_left -= delta
 			if helpless_left <= 0.0:
 				helpless_left = 0.0
-				go_to_custody()
+				if _crew.crew_state == Enums.CrewState.TASED:
+					tase_expired()
+				else:
+					go_to_custody()
 			return true
 		Enums.CrewState.CUSTODY:
 			return true

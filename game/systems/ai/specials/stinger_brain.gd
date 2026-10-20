@@ -11,7 +11,7 @@
 ##   D-049) when the Stinger dies, is stunned, loses LOS, or the victim leaves stinger_break_range_m;
 ## - every end of the beam (any reason, incl. helpless / freed) emits crew_tase_ended(slot) [R] once:
 ##   the end fact for the cue.stinger_arc loop and the HUD (a real revive still emits crew_revived);
-## - long tase: after stinger_helpless_after_s the beam ends and the victim STAYS TASED (helpless,
+## - long tase: after stinger_helpless_after_s the beam ends and the victim goes DOWNED (D-145, PD2; was: stayed TASED,
 ##   L2.8) until a teammate revives them; the Stinger then retargets;
 ## - defense.shockproof (PARAMS): `backfire_chance` -> the tase backfires (Stinger knocked back, no
 ##   tase); `can_interact_counter` + `counter_window` s -> the victim pressing interact within the window
@@ -214,7 +214,10 @@ func _tick_tase(delta: float) -> void:
 	elif flat_dist_to(v) > tweak.stinger_break_range_m:
 		_end_tase(&"range", true)
 	elif tase_time >= tweak.stinger_helpless_after_s:
-		_end_tase(&"helpless", false)  # L4.4 long tase: stays TASED (helpless) until revived
+		var victim: CrewController = tase_victim
+		_end_tase(&"helpless", false)
+		if victim != null and is_instance_valid(victim) and victim.health != null:
+			victim.health.tase_expired()  # D-145 (PD2): a tase that runs out downs the player; bleed-out decides custody
 
 
 ## End the beam. `free_victim`: the victim gets up (TASED -> NORMAL via CrewHealth.end_tase(), no
