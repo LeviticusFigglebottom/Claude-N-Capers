@@ -167,6 +167,10 @@ TINTED: dict[str, dict] = {
     "of_ultramarine": {"source": "fabric_upholstery", "color": "#2F3F6B", "roughness": 1.0},
     "of_leather_ultramarine": {"source": "leather_dark", "color": "#2F3F6B", "roughness": 0.8},
     "of_box_steel": {"source": "metal_painted", "color": "#A9ACAD", "roughness": 0.45, "metallic": 1.0},
+    # OF-C2 vault lane (ostrander_vault.py): fine gold, grey-blue bond boxes, the vault signs' ultramarine enamel.
+    "ofd_gold": {"source": "metal_painted", "color": "#D2A84A", "roughness": 0.35, "metallic": 1.0},
+    "ofd_bond_grey": {"source": "plaster_painted", "color": "#7D8794", "roughness": 1.0},
+    "ofd_enamel_ultra": {"source": "metal_painted", "color": "#34477A", "roughness": 0.5},
 }
 
 # Painted canvases (GN-C2): key -> albedo PNG from tools/texgen/paintings.py. The prop material is a plain

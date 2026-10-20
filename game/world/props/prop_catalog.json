@@ -10440,6 +10440,39 @@
   "weight": 1.0,
   "z": 0.0
  },
+ "prop_of_bond_boxes": {
+  "aabb": [
+   -0.19,
+   0.0,
+   -0.144,
+   0.39,
+   0.385,
+   0.284
+  ],
+  "clear": 0.0,
+  "fixture": false,
+  "glb": "res://assets/props/prop_of_bond_boxes/prop_of_bond_boxes.glb",
+  "group": "ostrander",
+  "has_light": false,
+  "hosts": [],
+  "keepout": [],
+  "kind": "box",
+  "mount": "",
+  "nodes": [
+   "Bonds"
+  ],
+  "place": "on",
+  "prefab": "",
+  "scene": "res://world/props/ostrander/prop_of_bond_boxes.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": false,
+  "surface": "wood",
+  "top": 0.0,
+  "visibility_range_end": 25.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
  "prop_of_booth_counter_w900": {
   "aabb": [
    -4.5,
@@ -10780,6 +10813,138 @@
   "weight": 1.0,
   "z": 0.0
  },
+ "prop_of_bullion_cart": {
+  "aabb": [
+   -0.536,
+   0.0,
+   -0.3,
+   1.036,
+   1.046,
+   0.6
+  ],
+  "clear": 0.0,
+  "fixture": false,
+  "glb": "res://assets/props/prop_of_bullion_cart/prop_of_bullion_cart.glb",
+  "group": "ostrander",
+  "has_light": false,
+  "hosts": [],
+  "keepout": [],
+  "kind": "cart",
+  "mount": "",
+  "nodes": [
+   "Cart"
+  ],
+  "place": "wall",
+  "prefab": "",
+  "scene": "res://world/props/ostrander/prop_of_bullion_cart.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": false,
+  "surface": "metal",
+  "top": 0.0,
+  "visibility_range_end": 60.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
+ "prop_of_bullion_scale": {
+  "aabb": [
+   -0.2,
+   0.0,
+   -0.22,
+   0.4,
+   0.14,
+   0.38
+  ],
+  "clear": 0.0,
+  "fixture": false,
+  "glb": "res://assets/props/prop_of_bullion_scale/prop_of_bullion_scale.glb",
+  "group": "ostrander",
+  "has_light": false,
+  "hosts": [],
+  "keepout": [],
+  "kind": "scale",
+  "mount": "",
+  "nodes": [
+   "Scale"
+  ],
+  "place": "on",
+  "prefab": "",
+  "scene": "res://world/props/ostrander/prop_of_bullion_scale.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": false,
+  "surface": "metal",
+  "top": 0.0,
+  "visibility_range_end": 25.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
+ "prop_of_cage_shelving": {
+  "aabb": [
+   -0.9,
+   0.0,
+   -0.5,
+   1.8,
+   2.0,
+   0.5
+  ],
+  "clear": 0.0,
+  "fixture": false,
+  "glb": "res://assets/props/prop_of_cage_shelving/prop_of_cage_shelving.glb",
+  "group": "ostrander",
+  "has_light": false,
+  "hosts": [],
+  "keepout": [],
+  "kind": "shelving",
+  "mount": "",
+  "nodes": [
+   "Shelving"
+  ],
+  "place": "wall",
+  "prefab": "",
+  "scene": "res://world/props/ostrander/prop_of_cage_shelving.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": false,
+  "surface": "metal",
+  "top": 0.0,
+  "visibility_range_end": 60.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
+ "prop_of_cash_skid": {
+  "aabb": [
+   -0.4,
+   0.0,
+   -0.3,
+   0.8,
+   0.59,
+   0.6
+  ],
+  "clear": 0.0,
+  "fixture": false,
+  "glb": "res://assets/props/prop_of_cash_skid/prop_of_cash_skid.glb",
+  "group": "ostrander",
+  "has_light": false,
+  "hosts": [],
+  "keepout": [],
+  "kind": "pallet",
+  "mount": "",
+  "nodes": [
+   "CashSkid"
+  ],
+  "place": "wall",
+  "prefab": "",
+  "scene": "res://world/props/ostrander/prop_of_cash_skid.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": false,
+  "surface": "wood",
+  "top": 0.0,
+  "visibility_range_end": 60.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
  "prop_of_coffee_service_w160": {
   "aabb": [
    -0.8,
@@ -10949,6 +11114,72 @@
   "weight": 1.0,
   "z": 0.0
  },
+ "prop_of_gold_bars": {
+  "aabb": [
+   -0.125,
+   0.0,
+   -0.125,
+   0.25,
+   0.183,
+   0.25
+  ],
+  "clear": 0.0,
+  "fixture": false,
+  "glb": "res://assets/props/prop_of_gold_bars/prop_of_gold_bars.glb",
+  "group": "ostrander",
+  "has_light": false,
+  "hosts": [],
+  "keepout": [],
+  "kind": "bullion",
+  "mount": "",
+  "nodes": [
+   "Gold"
+  ],
+  "place": "on",
+  "prefab": "",
+  "scene": "res://world/props/ostrander/prop_of_gold_bars.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": false,
+  "surface": "metal",
+  "top": 0.0,
+  "visibility_range_end": 25.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
+ "prop_of_gold_skid": {
+  "aabb": [
+   -0.4,
+   0.0,
+   -0.3,
+   0.8,
+   0.375,
+   0.6
+  ],
+  "clear": 0.0,
+  "fixture": false,
+  "glb": "res://assets/props/prop_of_gold_skid/prop_of_gold_skid.glb",
+  "group": "ostrander",
+  "has_light": false,
+  "hosts": [],
+  "keepout": [],
+  "kind": "bullion",
+  "mount": "",
+  "nodes": [
+   "GoldSkid"
+  ],
+  "place": "wall",
+  "prefab": "",
+  "scene": "res://world/props/ostrander/prop_of_gold_skid.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": false,
+  "surface": "metal",
+  "top": 0.0,
+  "visibility_range_end": 60.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
  "prop_of_lantern": {
   "aabb": [
    -8.06,
@@ -10981,6 +11212,72 @@
   "surface": "metal",
   "top": 0.0,
   "visibility_range_end": 0.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
+ "prop_of_notice_board": {
+  "aabb": [
+   -0.6,
+   -0.4,
+   -0.034,
+   1.2,
+   0.8,
+   0.034
+  ],
+  "clear": 0.0,
+  "fixture": false,
+  "glb": "res://assets/props/prop_of_notice_board/prop_of_notice_board.glb",
+  "group": "ostrander",
+  "has_light": false,
+  "hosts": [],
+  "keepout": [],
+  "kind": "bulletin_board",
+  "mount": "wall",
+  "nodes": [
+   "Board"
+  ],
+  "place": "wall_mount",
+  "prefab": "",
+  "scene": "res://world/props/ostrander/prop_of_notice_board.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": false,
+  "surface": "wood",
+  "top": 0.0,
+  "visibility_range_end": 60.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
+ "prop_of_strap_bins": {
+  "aabb": [
+   -0.604,
+   0.0,
+   -0.504,
+   1.208,
+   1.4,
+   0.508
+  ],
+  "clear": 0.0,
+  "fixture": false,
+  "glb": "res://assets/props/prop_of_strap_bins/prop_of_strap_bins.glb",
+  "group": "ostrander",
+  "has_light": false,
+  "hosts": [],
+  "keepout": [],
+  "kind": "shelving",
+  "mount": "",
+  "nodes": [
+   "Bins"
+  ],
+  "place": "wall",
+  "prefab": "",
+  "scene": "res://world/props/ostrander/prop_of_strap_bins.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": false,
+  "surface": "metal",
+  "top": 0.0,
+  "visibility_range_end": 60.0,
   "weight": 1.0,
   "z": 0.0
  },
@@ -11084,6 +11381,138 @@
   "surface": "metal",
   "top": 0.0,
   "visibility_range_end": 0.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
+ "prop_of_vault_sign_bonds": {
+  "aabb": [
+   -0.35,
+   -0.11,
+   -0.02,
+   0.7,
+   0.22,
+   0.02
+  ],
+  "clear": 0.0,
+  "fixture": false,
+  "glb": "res://assets/props/prop_of_vault_sign_bonds/prop_of_vault_sign_bonds.glb",
+  "group": "ostrander",
+  "has_light": false,
+  "hosts": [],
+  "keepout": [],
+  "kind": "sign",
+  "mount": "wall",
+  "nodes": [
+   "Sign"
+  ],
+  "place": "wall_mount",
+  "prefab": "",
+  "scene": "res://world/props/ostrander/prop_of_vault_sign_bonds.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": false,
+  "surface": "metal",
+  "top": 0.0,
+  "visibility_range_end": 60.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
+ "prop_of_vault_sign_bullion": {
+  "aabb": [
+   -0.45,
+   -0.11,
+   -0.02,
+   0.9,
+   0.22,
+   0.02
+  ],
+  "clear": 0.0,
+  "fixture": false,
+  "glb": "res://assets/props/prop_of_vault_sign_bullion/prop_of_vault_sign_bullion.glb",
+  "group": "ostrander",
+  "has_light": false,
+  "hosts": [],
+  "keepout": [],
+  "kind": "sign",
+  "mount": "wall",
+  "nodes": [
+   "Sign"
+  ],
+  "place": "wall_mount",
+  "prefab": "",
+  "scene": "res://world/props/ostrander/prop_of_vault_sign_bullion.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": false,
+  "surface": "metal",
+  "top": 0.0,
+  "visibility_range_end": 60.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
+ "prop_of_vault_sign_cash": {
+  "aabb": [
+   -0.5,
+   -0.11,
+   -0.02,
+   1.0,
+   0.22,
+   0.02
+  ],
+  "clear": 0.0,
+  "fixture": false,
+  "glb": "res://assets/props/prop_of_vault_sign_cash/prop_of_vault_sign_cash.glb",
+  "group": "ostrander",
+  "has_light": false,
+  "hosts": [],
+  "keepout": [],
+  "kind": "sign",
+  "mount": "wall",
+  "nodes": [
+   "Sign"
+  ],
+  "place": "wall_mount",
+  "prefab": "",
+  "scene": "res://world/props/ostrander/prop_of_vault_sign_cash.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": false,
+  "surface": "metal",
+  "top": 0.0,
+  "visibility_range_end": 60.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
+ "prop_of_vault_sign_staff": {
+  "aabb": [
+   -0.75,
+   -0.11,
+   -0.02,
+   1.5,
+   0.22,
+   0.02
+  ],
+  "clear": 0.0,
+  "fixture": false,
+  "glb": "res://assets/props/prop_of_vault_sign_staff/prop_of_vault_sign_staff.glb",
+  "group": "ostrander",
+  "has_light": false,
+  "hosts": [],
+  "keepout": [],
+  "kind": "sign",
+  "mount": "wall",
+  "nodes": [
+   "Sign"
+  ],
+  "place": "wall_mount",
+  "prefab": "",
+  "scene": "res://world/props/ostrander/prop_of_vault_sign_staff.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": false,
+  "surface": "metal",
+  "top": 0.0,
+  "visibility_range_end": 60.0,
   "weight": 1.0,
   "z": 0.0
  },
