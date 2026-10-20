@@ -1,0 +1,25 @@
+[INFO][heist][p1] DEV OPTION crew_damage_taken_mult = 0.25 (D-133 harness-only)
+[PO5 63.6s] DEV OPTION crew_damage_taken_mult=0.25 (D-133 harness-only; assault events on)
+[PO5 83.4s] [X4] ostrander_federal    2.2 s  launched seed 1, variants { &"manager_route": [&"mgr_floor"], &"keycard": [&"kc_security"], &"code_pc": [&"pc_vault_ops"], &"officers": [&"off_1"], &"server_room": [&"srv_basement"], &"guard_post": [&"rover_basement", &"rover_hall"], &"security_room_staffed": [&"sec_empty"], &"camera": [&"cam_b"], &"laser_pattern": [&"lz_static"], &"customers": [&"cust_
+[PO5 84.4s] [X4] ostrander_federal    3.2 s  objective casing COMPLETED
+[INFO][stealth][p1] ALARM: x4_loud (source 0)
+[PO5 84.6s] [X4] ostrander_federal    3.2 s  objective keycard COMPLETED
+[PO5 84.6s] [X4] ostrander_federal    3.2 s  objective code_hint COMPLETED
+[PO5 84.6s] [X4] ostrander_federal    3.2 s  objective code_pc COMPLETED
+[PO5 84.6s] [X4] ostrander_federal    3.2 s  objective server COMPLETED
+[PO5 84.6s] [X4] ostrander_federal    3.2 s  objective vault_gate COMPLETED
+[PO5 84.6s] [X4] ostrander_federal    3.2 s  objective lasers COMPLETED
+[PO5 84.8s] [X4] ostrander_federal    3.2 s  ALARM x4_loud
+[INFO][director][p1] assault events: 3 rows for ostrander_federal (tweak)
+[PO5 177.5s] [X4] ostrander_federal   68.8 s  objective drill_delivery COMPLETED
+[PO5 532.8s] [X4] ostrander_federal  436.6 s  objective vault_drill COMPLETED
+[PO5 532.8s] [X4] ostrander_federal  436.6 s  objective vault_breach COMPLETED
+[PO5 637.3s] [X4] ostrander_federal  517.0 s  objective secure COMPLETED
+[PO5 637.3s] [X4] ostrander_federal  517.0 s  objective vault_loot COMPLETED
+[PO5 725.5s] [X4] ostrander_federal  637.0 s  objective escape_wait COMPLETED
+[PO5 725.7s] [X4] ostrander_federal  637.1 s  objective escape COMPLETED
+[PO5 725.8s] STATS difficulty=0 police=38 peak_alive=13 specials={ &"enemy.longshot": 3, &"enemy.bulwark": 1 } composition={ &"enemy.security_officer": 4, &"enemy.patrol_officer": 11, &"enemy.tac_light": 19, &"enemy.longshot": 3, &"enemy.bulwark": 1 } | slot 0 [weapon.corsair_ar / armor.tailored_suit] downs 0 custody 0 revived 0 regained 0; slot 1 [weapon.corsair_ar / armor.tailored_suit] downs 0 
+[PO5 725.8s] [X4] ostrander_federal  637.1 s  loud route done at 637.1 s heist; objectives [&"casing", &"keycard", &"code_hint", &"code_pc", &"server", &"vault_gate", &"lasers", &"drill_delivery", &"vault_drill", &"vault_breach", &"secure", &"vault_loot", &"escape_wait", &"escape"]; secured [&"loot.cash_bricks", &"loot.cash_bricks", &"loot.cash_bricks", &"loot.cash_bricks"]; jams fixed 2; hoist tr
+[PO5 725.8s] RESULT of_loud route PASS seed 1: [&"casing", &"keycard", &"code_hint", &"code_pc", &"server", &"vault_gate", &"lasers", &"drill_delivery", &"vault_drill", &"vault_breach", &"secure", &"vault_loot", &"escape_wait", &"escape"]
+[PO5 821.5s] STATS difficulty=0 police=38 peak_alive=13 specials={ &"enemy.longshot": 3, &"enemy.bulwark": 1 } composition={ &"enemy.security_officer": 4, &"enemy.patrol_officer": 11, &"enemy.tac_light": 19, &"enemy.longshot": 3, &"enemy.bulwark": 1 } | slot 0 [weapon.corsair_ar / armor.tailored_suit] downs 0 custody 0 revived 0 regained 0; slot 1 [weapon.corsair_ar / armor.tailored_suit] downs 0 
+[PO5 821.5s] RESULT PASS (code 0) flow=of_loud heist=Ostrander Federal seed=1
