@@ -102,7 +102,7 @@ const ZONE_FINISH: Dictionary = {
 ## hull; the greybox mesh stays, its material is overridden). Plaza paving pale, the apron and steps granite, the
 ## avenue asphalt, the Assay Office limestone, the Corvino Building brick, the Belmont rendered.
 const SITE_FINISH: Dictionary = {
-	"GradeApron": "of_granite", "GradeApronSteps": "of_granite", "GradePlazaW": "concrete_light",
+	"GradeApron": "of_granite", "GradeApronSteps": "of_granite", "GradePlazaW": "concrete_light", "GradePlazaWS": "concrete_light",
 	"GradePlazaSteps": "concrete_light", "GradePlazaE": "concrete_light", "GradeAvenueEastKerb": "concrete_light",
 	"GradeAvenue": "asphalt", "GradeTanneryMouth": "asphalt", "GradeTannery": "asphalt",
 	"PoliceIslandP1": "asphalt", "PoliceIslandP2": "asphalt",
@@ -253,10 +253,13 @@ const WINDOW_SILL: float = 1.0
 const SMALL_WINDOWS: Array = [[2.5, 3.5, 5.9, 7.4], [44.5, 45.5, 5.9, 7.4]]
 
 ## Facade trims on the plaza face (z 36.2): [x0, x1, y0, y1, proud, key]; the plinth cap skips the AV street door and the
-## bronze portal (lane B), the string course skips the sunburst and frieze.
+## bronze portal (lane B), the string course skips the sunburst and frieze. OF-C2: the plinth cap also stops at the two
+## window breaches (Breach_1 / _2 at x 11.8 / 36.2: 3 mm short of their infill sill, 1.054 m; blown, no cap bridges
+## the hole) and 4 mm clear of the AV street door's frame.
 const FACADE_TRIMS: Array = [
-	[0.0, 3.0, 0.86, 0.94, 0.05, "of_granite"], [5.0, 21.3, 0.86, 0.94, 0.05, "of_granite"],
-	[26.7, 48.0, 0.86, 0.94, 0.05, "of_granite"],
+	[0.0, 3.0, 0.86, 0.94, 0.05, "of_granite"], [5.004, 11.27, 0.86, 0.94, 0.05, "of_granite"],
+	[12.33, 21.3, 0.86, 0.94, 0.05, "of_granite"], [26.7, 35.67, 0.86, 0.94, 0.05, "of_granite"],
+	[36.73, 48.0, 0.86, 0.94, 0.05, "of_granite"],
 	[0.0, 18.1, 4.92, 5.08, 0.08, "of_limestone"], [29.9, 48.0, 4.92, 5.08, 0.08, "of_limestone"],
 	[0.0, 48.0, 8.36, 8.6, 0.16, "of_limestone"],
 ]

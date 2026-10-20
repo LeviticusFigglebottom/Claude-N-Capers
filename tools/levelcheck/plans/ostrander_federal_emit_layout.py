@@ -191,7 +191,8 @@ def emit() -> tuple:
                % GM.Z_START)
     s += const("HANDRAILS", srails, doc="Handrails (5 cm bars): [name, from, to].")
     vis = [["Meridian", [23.95, 0.002, 17.5], [24.05, 0.006, 31.9], "trim"],
-           ["AreawayGrate", [29.4, 0.002, -1.6], [30.6, 0.006, -0.4], "trim"]]
+           # the grate east of DumpsterE's footprint (x <= 29.95; OF-C2: its casters z-fought the plate), over the vent
+           ["AreawayGrate", [29.97, 0.002, -1.6], [30.63, 0.006, -0.4], "trim"]]
     s += const("VISUALS", vis, doc="Visual-only boxes (no collision): [name, min, max, class].")
     links = [["IslandLink" + p[0], p[3], p[4], False, 1] for p in S.POLICE_ISLANDS] + S.NAV_LINKS
     s += const("NAV_LINKS", links, doc="Always-present nav links: [name, from, to, bidirectional, navigation_layers] (1 "
