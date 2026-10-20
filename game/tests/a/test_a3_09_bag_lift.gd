@@ -219,3 +219,17 @@ func test_pilot_stand_per_landing_panel() -> void:
 	assert_true(at1.distance_to(up.global_position + Vector3(0, TOP_Y, 0)) < 0.01, "panel 1 stand at the top (%s)" % at1)
 	var at0: Vector3 = Po5Pilot._landing_use_point(lift, lift.interactable, up.global_position)
 	assert_true(at0.distance_to(up.global_position) < 0.01, "landing 0's own panel keeps the UsePoint")
+
+
+## P's OF probe: a loud-only lift in stealth says why on every panel (phase_block_key), not the generic "Not now".
+func test_phase_block_key_on_every_panel() -> void:
+	var lift: BagLift = await _lift(2, func(l: BagLift) -> void:
+		l.loud_only = true
+		l.phase_block_key = &"ui.blocked.after_breach")
+	await wait_physics_frames(2)
+	assert_false(_rt.went_loud, "stealth")
+	var panel1: InteractableComponent = lift.get_node_or_null("%s1" % BagLift.PANEL_PREFIX) as InteractableComponent
+	assert_eq(lift.interactable._phase_block(), &"ui.blocked.after_breach", "landing 0's panel")
+	assert_true(panel1 != null and panel1._phase_block() == &"ui.blocked.after_breach", "the runtime landing-1 panel")
+	lift.interactable.phase_block_key = &""
+	assert_eq(lift.interactable._phase_block(), InteractableComponent.BLOCK_PHASE, "no key: the generic reason")
