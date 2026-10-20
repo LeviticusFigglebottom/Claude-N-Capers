@@ -8,7 +8,7 @@ Result: **PASS** (0 failure(s))
 | spawn | target | kind | straight m | path m | ratio | status |
 |---|---|---|---|---|---|---|
 | `Spawns/PlayerPlaza1` | `Gameplay/Doors/LockerDoor/UsePoint` | use_point | 40.1 | 62.9 | 1.57 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Doors/CashLiftDoorB/UsePoint` | use_point | 43.1 | 60.7 | 1.41 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Doors/CashLiftDoorB/UsePoint` | use_point | 43.1 | 60.8 | 1.41 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Doors/CartQueueDoor/UsePoint` | use_point | 37.7 | 55.9 | 1.48 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Doors/StairDoorSAB/UsePoint` | use_point | 37.2 | 54.1 | 1.45 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Doors/CountRoomDoor/UsePoint` | use_point | 36.5 | 60.0 | 1.64 | ok |
@@ -66,11 +66,11 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerPlaza1` | `Gameplay/Doors/JanitorDoorM/UsePoint` | use_point | 39.4 | 71.6 | 1.82 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Doors/ArchiveDoor/UsePoint` | use_point | 41.5 | 66.6 | 1.61 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Doors/StairDoorSBM/UsePoint` | use_point | 44.3 | 61.7 | 1.39 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Doors/LoggiaDoorW/UsePoint` | use_point | 39.1 | 63.1 | 1.62 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Doors/LoggiaDoorW/UsePoint` | use_point | 37.8 | 63.9 | 1.69 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Doors/OperationsDoor/UsePoint` | use_point | 37.5 | 58.2 | 1.55 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Doors/ConferenceDoor/UsePoint` | use_point | 37.3 | 71.8 | 1.92 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Doors/ComplianceDoor/UsePoint` | use_point | 39.2 | 70.7 | 1.80 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Doors/LoggiaDoorE/UsePoint` | use_point | 41.0 | 66.7 | 1.63 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Doors/LoggiaDoorE/UsePoint` | use_point | 39.8 | 68.0 | 1.71 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Doors/OfficerDoor1/UsePoint` | use_point | 34.9 | 67.2 | 1.92 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Doors/OfficerDoor2/UsePoint` | use_point | 27.3 | 76.2 | 2.79 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Doors/OfficerDoor3/UsePoint` | use_point | 20.7 | 85.2 | 4.11 | detour (whitelisted) |
@@ -251,8 +251,8 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerPlaza1` | `Gameplay/Loot/HallBox23/UsePoint` | use_point | 30.1 | 80.8 | 2.68 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Loot/HallBox24` | objective | 31.0 | 79.7 | 2.57 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Loot/HallBox24/UsePoint` | use_point | 31.0 | 79.7 | 2.57 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Lifts/CashLift` | objective | 43.2 | 60.8 | 1.41 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Lifts/CashLift/UsePoint` | use_point | 43.2 | 60.8 | 1.41 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Lifts/CashLift` | objective | 43.2 | 60.9 | 1.41 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Lifts/CashLift/UsePoint` | use_point | 43.2 | 60.9 | 1.41 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Lifts/Hoist` | objective | 29.1 | 77.1 | 2.65 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Lifts/Hoist/UsePoint` | use_point | 29.1 | 77.1 | 2.65 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Markers/CodeHintPlanner` | objective | 29.2 | 33.1 | 1.13 | ok |
@@ -337,11 +337,11 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerPlaza2` | `Gameplay/Doors/JanitorDoorM/UsePoint` | use_point | 38.9 | 71.6 | 1.84 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Doors/ArchiveDoor/UsePoint` | use_point | 40.8 | 66.6 | 1.63 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Doors/StairDoorSBM/UsePoint` | use_point | 43.5 | 61.6 | 1.42 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Doors/LoggiaDoorW/UsePoint` | use_point | 39.6 | 63.0 | 1.59 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Doors/LoggiaDoorW/UsePoint` | use_point | 38.4 | 63.8 | 1.66 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Doors/OperationsDoor/UsePoint` | use_point | 37.9 | 58.1 | 1.53 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Doors/ConferenceDoor/UsePoint` | use_point | 37.0 | 71.7 | 1.94 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Doors/ComplianceDoor/UsePoint` | use_point | 38.7 | 70.6 | 1.82 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Doors/LoggiaDoorE/UsePoint` | use_point | 40.3 | 66.6 | 1.65 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Doors/LoggiaDoorE/UsePoint` | use_point | 39.0 | 67.9 | 1.74 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Doors/OfficerDoor1/UsePoint` | use_point | 35.6 | 67.1 | 1.88 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Doors/OfficerDoor2/UsePoint` | use_point | 28.1 | 76.1 | 2.71 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Doors/OfficerDoor3/UsePoint` | use_point | 21.8 | 85.1 | 3.90 | detour (whitelisted) |
@@ -608,11 +608,11 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerPlaza3` | `Gameplay/Doors/JanitorDoorM/UsePoint` | use_point | 38.4 | 70.6 | 1.84 | ok |
 | `Spawns/PlayerPlaza3` | `Gameplay/Doors/ArchiveDoor/UsePoint` | use_point | 40.2 | 65.6 | 1.63 | ok |
 | `Spawns/PlayerPlaza3` | `Gameplay/Doors/StairDoorSBM/UsePoint` | use_point | 42.7 | 60.6 | 1.42 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Doors/LoggiaDoorW/UsePoint` | use_point | 40.3 | 62.9 | 1.56 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Doors/LoggiaDoorW/UsePoint` | use_point | 39.0 | 63.7 | 1.63 | ok |
 | `Spawns/PlayerPlaza3` | `Gameplay/Doors/OperationsDoor/UsePoint` | use_point | 38.3 | 58.0 | 1.51 | ok |
 | `Spawns/PlayerPlaza3` | `Gameplay/Doors/ConferenceDoor/UsePoint` | use_point | 36.7 | 71.6 | 1.95 | ok |
 | `Spawns/PlayerPlaza3` | `Gameplay/Doors/ComplianceDoor/UsePoint` | use_point | 38.2 | 69.6 | 1.82 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Doors/LoggiaDoorE/UsePoint` | use_point | 39.6 | 65.6 | 1.66 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Doors/LoggiaDoorE/UsePoint` | use_point | 38.4 | 66.9 | 1.74 | ok |
 | `Spawns/PlayerPlaza3` | `Gameplay/Doors/OfficerDoor1/UsePoint` | use_point | 36.3 | 67.0 | 1.84 | ok |
 | `Spawns/PlayerPlaza3` | `Gameplay/Doors/OfficerDoor2/UsePoint` | use_point | 29.0 | 76.0 | 2.62 | ok |
 | `Spawns/PlayerPlaza3` | `Gameplay/Doors/OfficerDoor3/UsePoint` | use_point | 23.0 | 85.0 | 3.70 | detour (whitelisted) |
@@ -879,11 +879,11 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerPlaza4` | `Gameplay/Doors/JanitorDoorM/UsePoint` | use_point | 38.0 | 70.7 | 1.86 | ok |
 | `Spawns/PlayerPlaza4` | `Gameplay/Doors/ArchiveDoor/UsePoint` | use_point | 39.6 | 65.7 | 1.66 | ok |
 | `Spawns/PlayerPlaza4` | `Gameplay/Doors/StairDoorSBM/UsePoint` | use_point | 42.0 | 60.7 | 1.45 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Doors/LoggiaDoorW/UsePoint` | use_point | 41.0 | 63.0 | 1.54 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Doors/LoggiaDoorW/UsePoint` | use_point | 39.8 | 63.8 | 1.60 | ok |
 | `Spawns/PlayerPlaza4` | `Gameplay/Doors/OperationsDoor/UsePoint` | use_point | 38.9 | 58.1 | 1.49 | ok |
 | `Spawns/PlayerPlaza4` | `Gameplay/Doors/ConferenceDoor/UsePoint` | use_point | 36.5 | 71.7 | 1.97 | ok |
 | `Spawns/PlayerPlaza4` | `Gameplay/Doors/ComplianceDoor/UsePoint` | use_point | 37.7 | 69.7 | 1.85 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Doors/LoggiaDoorE/UsePoint` | use_point | 39.1 | 65.7 | 1.68 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Doors/LoggiaDoorE/UsePoint` | use_point | 37.8 | 67.0 | 1.77 | ok |
 | `Spawns/PlayerPlaza4` | `Gameplay/Doors/OfficerDoor1/UsePoint` | use_point | 37.1 | 67.1 | 1.81 | ok |
 | `Spawns/PlayerPlaza4` | `Gameplay/Doors/OfficerDoor2/UsePoint` | use_point | 30.0 | 76.1 | 2.54 | ok |
 | `Spawns/PlayerPlaza4` | `Gameplay/Doors/OfficerDoor3/UsePoint` | use_point | 24.2 | 85.1 | 3.52 | detour (whitelisted) |
@@ -1150,11 +1150,11 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerLane1` | `Gameplay/Doors/JanitorDoorM/UsePoint` | use_point | 20.9 | 62.3 | 2.98 | ok |
 | `Spawns/PlayerLane1` | `Gameplay/Doors/ArchiveDoor/UsePoint` | use_point | 24.8 | 58.2 | 2.35 | ok |
 | `Spawns/PlayerLane1` | `Gameplay/Doors/StairDoorSBM/UsePoint` | use_point | 29.4 | 53.2 | 1.81 | ok |
-| `Spawns/PlayerLane1` | `Gameplay/Doors/LoggiaDoorW/UsePoint` | use_point | 20.6 | 48.6 | 2.36 | ok |
+| `Spawns/PlayerLane1` | `Gameplay/Doors/LoggiaDoorW/UsePoint` | use_point | 21.6 | 49.4 | 2.29 | ok |
 | `Spawns/PlayerLane1` | `Gameplay/Doors/OperationsDoor/UsePoint` | use_point | 17.6 | 43.7 | 2.48 | ok |
 | `Spawns/PlayerLane1` | `Gameplay/Doors/ConferenceDoor/UsePoint` | use_point | 18.2 | 57.3 | 3.16 | detour (whitelisted) |
 | `Spawns/PlayerLane1` | `Gameplay/Doors/ComplianceDoor/UsePoint` | use_point | 22.0 | 63.3 | 2.87 | ok |
-| `Spawns/PlayerLane1` | `Gameplay/Doors/LoggiaDoorE/UsePoint` | use_point | 25.1 | 58.2 | 2.32 | ok |
+| `Spawns/PlayerLane1` | `Gameplay/Doors/LoggiaDoorE/UsePoint` | use_point | 25.9 | 59.5 | 2.30 | ok |
 | `Spawns/PlayerLane1` | `Gameplay/Doors/OfficerDoor1/UsePoint` | use_point | 24.3 | 52.8 | 2.17 | ok |
 | `Spawns/PlayerLane1` | `Gameplay/Doors/OfficerDoor2/UsePoint` | use_point | 31.8 | 61.7 | 1.94 | ok |
 | `Spawns/PlayerLane1` | `Gameplay/Doors/OfficerDoor3/UsePoint` | use_point | 40.0 | 70.7 | 1.77 | ok |
@@ -1421,11 +1421,11 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerLane2` | `Gameplay/Doors/JanitorDoorM/UsePoint` | use_point | 19.9 | 63.9 | 3.22 | detour (whitelisted) |
 | `Spawns/PlayerLane2` | `Gameplay/Doors/ArchiveDoor/UsePoint` | use_point | 23.6 | 56.7 | 2.41 | ok |
 | `Spawns/PlayerLane2` | `Gameplay/Doors/StairDoorSBM/UsePoint` | use_point | 28.1 | 51.7 | 1.84 | ok |
-| `Spawns/PlayerLane2` | `Gameplay/Doors/LoggiaDoorW/UsePoint` | use_point | 21.7 | 50.2 | 2.32 | ok |
+| `Spawns/PlayerLane2` | `Gameplay/Doors/LoggiaDoorW/UsePoint` | use_point | 22.6 | 51.0 | 2.26 | ok |
 | `Spawns/PlayerLane2` | `Gameplay/Doors/OperationsDoor/UsePoint` | use_point | 18.4 | 45.3 | 2.46 | ok |
 | `Spawns/PlayerLane2` | `Gameplay/Doors/ConferenceDoor/UsePoint` | use_point | 17.4 | 58.9 | 3.39 | detour (whitelisted) |
 | `Spawns/PlayerLane2` | `Gameplay/Doors/ComplianceDoor/UsePoint` | use_point | 21.0 | 64.9 | 3.10 | detour (whitelisted) |
-| `Spawns/PlayerLane2` | `Gameplay/Doors/LoggiaDoorE/UsePoint` | use_point | 23.9 | 56.8 | 2.37 | ok |
+| `Spawns/PlayerLane2` | `Gameplay/Doors/LoggiaDoorE/UsePoint` | use_point | 24.8 | 58.1 | 2.34 | ok |
 | `Spawns/PlayerLane2` | `Gameplay/Doors/OfficerDoor1/UsePoint` | use_point | 25.2 | 54.3 | 2.16 | ok |
 | `Spawns/PlayerLane2` | `Gameplay/Doors/OfficerDoor2/UsePoint` | use_point | 32.5 | 63.3 | 1.95 | ok |
 | `Spawns/PlayerLane2` | `Gameplay/Doors/OfficerDoor3/UsePoint` | use_point | 40.5 | 72.3 | 1.78 | ok |
@@ -1606,8 +1606,8 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerLane2` | `Gameplay/Loot/HallBox23/UsePoint` | use_point | 36.0 | 48.3 | 1.34 | ok |
 | `Spawns/PlayerLane2` | `Gameplay/Loot/HallBox24` | objective | 36.7 | 47.2 | 1.29 | ok |
 | `Spawns/PlayerLane2` | `Gameplay/Loot/HallBox24/UsePoint` | use_point | 36.7 | 47.2 | 1.29 | ok |
-| `Spawns/PlayerLane2` | `Gameplay/Lifts/CashLift` | objective | 14.3 | 41.8 | 2.92 | ok |
-| `Spawns/PlayerLane2` | `Gameplay/Lifts/CashLift/UsePoint` | use_point | 14.3 | 41.8 | 2.92 | ok |
+| `Spawns/PlayerLane2` | `Gameplay/Lifts/CashLift` | objective | 14.3 | 41.8 | 2.93 | ok |
+| `Spawns/PlayerLane2` | `Gameplay/Lifts/CashLift/UsePoint` | use_point | 14.3 | 41.8 | 2.93 | ok |
 | `Spawns/PlayerLane2` | `Gameplay/Lifts/Hoist` | objective | 21.9 | 52.8 | 2.42 | ok |
 | `Spawns/PlayerLane2` | `Gameplay/Lifts/Hoist/UsePoint` | use_point | 21.9 | 52.8 | 2.42 | ok |
 | `Spawns/PlayerLane2` | `Gameplay/Markers/CodeHintPlanner` | objective | 36.2 | 62.0 | 1.71 | ok |
@@ -1634,7 +1634,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerLane2` | `Variants/Group_president_safe/Slot_ps_bonds/PresidentSafe/PresidentValuables2/UsePoint` | use_point | 13.5 | 71.2 | 5.28 | detour (whitelisted) |
 | `Spawns/PlayerLane2` | `Variants/Group_president_safe/Slot_ps_bonds/PresidentSafe/PresidentValuables3/UsePoint` | use_point | 13.5 | 71.2 | 5.28 | detour (whitelisted) |
 | `Spawns/PlayerLane3` | `Gameplay/Doors/LockerDoor/UsePoint` | use_point | 23.8 | 42.6 | 1.79 | ok |
-| `Spawns/PlayerLane3` | `Gameplay/Doors/CashLiftDoorB/UsePoint` | use_point | 15.5 | 40.4 | 2.60 | ok |
+| `Spawns/PlayerLane3` | `Gameplay/Doors/CashLiftDoorB/UsePoint` | use_point | 15.5 | 40.5 | 2.61 | ok |
 | `Spawns/PlayerLane3` | `Gameplay/Doors/CartQueueDoor/UsePoint` | use_point | 18.6 | 35.6 | 1.91 | ok |
 | `Spawns/PlayerLane3` | `Gameplay/Doors/StairDoorSAB/UsePoint` | use_point | 17.1 | 33.1 | 1.93 | ok |
 | `Spawns/PlayerLane3` | `Gameplay/Doors/CountRoomDoor/UsePoint` | use_point | 14.6 | 26.6 | 1.82 | ok |
@@ -1692,11 +1692,11 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerLane3` | `Gameplay/Doors/JanitorDoorM/UsePoint` | use_point | 18.9 | 60.2 | 3.19 | detour (whitelisted) |
 | `Spawns/PlayerLane3` | `Gameplay/Doors/ArchiveDoor/UsePoint` | use_point | 22.4 | 55.2 | 2.47 | ok |
 | `Spawns/PlayerLane3` | `Gameplay/Doors/StairDoorSBM/UsePoint` | use_point | 26.8 | 50.3 | 1.87 | ok |
-| `Spawns/PlayerLane3` | `Gameplay/Doors/LoggiaDoorW/UsePoint` | use_point | 22.8 | 51.7 | 2.27 | ok |
+| `Spawns/PlayerLane3` | `Gameplay/Doors/LoggiaDoorW/UsePoint` | use_point | 23.7 | 52.5 | 2.22 | ok |
 | `Spawns/PlayerLane3` | `Gameplay/Doors/OperationsDoor/UsePoint` | use_point | 19.3 | 46.8 | 2.42 | ok |
 | `Spawns/PlayerLane3` | `Gameplay/Doors/ConferenceDoor/UsePoint` | use_point | 16.7 | 60.4 | 3.62 | detour (whitelisted) |
 | `Spawns/PlayerLane3` | `Gameplay/Doors/ComplianceDoor/UsePoint` | use_point | 20.0 | 59.3 | 2.97 | ok |
-| `Spawns/PlayerLane3` | `Gameplay/Doors/LoggiaDoorE/UsePoint` | use_point | 22.8 | 55.3 | 2.43 | ok |
+| `Spawns/PlayerLane3` | `Gameplay/Doors/LoggiaDoorE/UsePoint` | use_point | 23.7 | 56.6 | 2.39 | ok |
 | `Spawns/PlayerLane3` | `Gameplay/Doors/OfficerDoor1/UsePoint` | use_point | 26.2 | 55.8 | 2.13 | ok |
 | `Spawns/PlayerLane3` | `Gameplay/Doors/OfficerDoor2/UsePoint` | use_point | 33.3 | 64.8 | 1.95 | ok |
 | `Spawns/PlayerLane3` | `Gameplay/Doors/OfficerDoor3/UsePoint` | use_point | 41.1 | 73.8 | 1.79 | ok |
@@ -1877,8 +1877,8 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerLane3` | `Gameplay/Loot/HallBox23/UsePoint` | use_point | 35.1 | 47.0 | 1.34 | ok |
 | `Spawns/PlayerLane3` | `Gameplay/Loot/HallBox24` | objective | 35.8 | 45.9 | 1.28 | ok |
 | `Spawns/PlayerLane3` | `Gameplay/Loot/HallBox24/UsePoint` | use_point | 35.8 | 45.9 | 1.28 | ok |
-| `Spawns/PlayerLane3` | `Gameplay/Lifts/CashLift` | objective | 15.5 | 40.5 | 2.62 | ok |
-| `Spawns/PlayerLane3` | `Gameplay/Lifts/CashLift/UsePoint` | use_point | 15.5 | 40.5 | 2.62 | ok |
+| `Spawns/PlayerLane3` | `Gameplay/Lifts/CashLift` | objective | 15.5 | 40.6 | 2.62 | ok |
+| `Spawns/PlayerLane3` | `Gameplay/Lifts/CashLift/UsePoint` | use_point | 15.5 | 40.6 | 2.62 | ok |
 | `Spawns/PlayerLane3` | `Gameplay/Lifts/Hoist` | objective | 21.7 | 51.5 | 2.37 | ok |
 | `Spawns/PlayerLane3` | `Gameplay/Lifts/Hoist/UsePoint` | use_point | 21.7 | 51.5 | 2.37 | ok |
 | `Spawns/PlayerLane3` | `Gameplay/Markers/CodeHintPlanner` | objective | 35.4 | 63.5 | 1.79 | ok |
@@ -1905,7 +1905,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerLane3` | `Variants/Group_president_safe/Slot_ps_bonds/PresidentSafe/PresidentValuables2/UsePoint` | use_point | 12.7 | 72.7 | 5.72 | detour (whitelisted) |
 | `Spawns/PlayerLane3` | `Variants/Group_president_safe/Slot_ps_bonds/PresidentSafe/PresidentValuables3/UsePoint` | use_point | 12.7 | 72.7 | 5.72 | detour (whitelisted) |
 | `Spawns/PlayerLane4` | `Gameplay/Doors/LockerDoor/UsePoint` | use_point | 25.0 | 41.5 | 1.66 | ok |
-| `Spawns/PlayerLane4` | `Gameplay/Doors/CashLiftDoorB/UsePoint` | use_point | 16.8 | 39.3 | 2.34 | ok |
+| `Spawns/PlayerLane4` | `Gameplay/Doors/CashLiftDoorB/UsePoint` | use_point | 16.8 | 39.3 | 2.35 | ok |
 | `Spawns/PlayerLane4` | `Gameplay/Doors/CartQueueDoor/UsePoint` | use_point | 19.6 | 34.5 | 1.75 | ok |
 | `Spawns/PlayerLane4` | `Gameplay/Doors/StairDoorSAB/UsePoint` | use_point | 18.0 | 32.0 | 1.77 | ok |
 | `Spawns/PlayerLane4` | `Gameplay/Doors/CountRoomDoor/UsePoint` | use_point | 15.0 | 25.5 | 1.70 | ok |
@@ -1963,11 +1963,11 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerLane4` | `Gameplay/Doors/JanitorDoorM/UsePoint` | use_point | 18.0 | 58.8 | 3.27 | detour (whitelisted) |
 | `Spawns/PlayerLane4` | `Gameplay/Doors/ArchiveDoor/UsePoint` | use_point | 21.3 | 53.8 | 2.53 | ok |
 | `Spawns/PlayerLane4` | `Gameplay/Doors/StairDoorSBM/UsePoint` | use_point | 25.6 | 48.8 | 1.91 | ok |
-| `Spawns/PlayerLane4` | `Gameplay/Doors/LoggiaDoorW/UsePoint` | use_point | 23.9 | 52.8 | 2.21 | ok |
+| `Spawns/PlayerLane4` | `Gameplay/Doors/LoggiaDoorW/UsePoint` | use_point | 24.8 | 53.6 | 2.17 | ok |
 | `Spawns/PlayerLane4` | `Gameplay/Doors/OperationsDoor/UsePoint` | use_point | 20.3 | 47.9 | 2.36 | ok |
 | `Spawns/PlayerLane4` | `Gameplay/Doors/ConferenceDoor/UsePoint` | use_point | 16.1 | 61.5 | 3.82 | detour (whitelisted) |
 | `Spawns/PlayerLane4` | `Gameplay/Doors/ComplianceDoor/UsePoint` | use_point | 19.0 | 57.8 | 3.04 | detour (whitelisted) |
-| `Spawns/PlayerLane4` | `Gameplay/Doors/LoggiaDoorE/UsePoint` | use_point | 21.7 | 53.8 | 2.48 | ok |
+| `Spawns/PlayerLane4` | `Gameplay/Doors/LoggiaDoorE/UsePoint` | use_point | 22.6 | 55.1 | 2.44 | ok |
 | `Spawns/PlayerLane4` | `Gameplay/Doors/OfficerDoor1/UsePoint` | use_point | 27.2 | 56.9 | 2.09 | ok |
 | `Spawns/PlayerLane4` | `Gameplay/Doors/OfficerDoor2/UsePoint` | use_point | 34.1 | 65.9 | 1.93 | ok |
 | `Spawns/PlayerLane4` | `Gameplay/Doors/OfficerDoor3/UsePoint` | use_point | 41.8 | 74.9 | 1.79 | ok |
@@ -2234,11 +2234,11 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerTannery1` | `Gameplay/Doors/JanitorDoorM/UsePoint` | use_point | 24.8 | 41.5 | 1.67 | ok |
 | `Spawns/PlayerTannery1` | `Gameplay/Doors/ArchiveDoor/UsePoint` | use_point | 20.8 | 36.5 | 1.75 | ok |
 | `Spawns/PlayerTannery1` | `Gameplay/Doors/StairDoorSBM/UsePoint` | use_point | 16.9 | 31.5 | 1.86 | ok |
-| `Spawns/PlayerTannery1` | `Gameplay/Doors/LoggiaDoorW/UsePoint` | use_point | 51.6 | 70.5 | 1.37 | ok |
+| `Spawns/PlayerTannery1` | `Gameplay/Doors/LoggiaDoorW/UsePoint` | use_point | 51.3 | 71.2 | 1.39 | ok |
 | `Spawns/PlayerTannery1` | `Gameplay/Doors/OperationsDoor/UsePoint` | use_point | 46.8 | 65.5 | 1.40 | ok |
 | `Spawns/PlayerTannery1` | `Gameplay/Doors/ConferenceDoor/UsePoint` | use_point | 28.9 | 46.5 | 1.61 | ok |
 | `Spawns/PlayerTannery1` | `Gameplay/Doors/ComplianceDoor/UsePoint` | use_point | 23.7 | 40.5 | 1.71 | ok |
-| `Spawns/PlayerTannery1` | `Gameplay/Doors/LoggiaDoorE/UsePoint` | use_point | 20.4 | 36.5 | 1.79 | ok |
+| `Spawns/PlayerTannery1` | `Gameplay/Doors/LoggiaDoorE/UsePoint` | use_point | 19.7 | 37.8 | 1.92 | ok |
 | `Spawns/PlayerTannery1` | `Gameplay/Doors/OfficerDoor1/UsePoint` | use_point | 51.0 | 74.5 | 1.46 | ok |
 | `Spawns/PlayerTannery1` | `Gameplay/Doors/OfficerDoor2/UsePoint` | use_point | 50.6 | 83.5 | 1.65 | ok |
 | `Spawns/PlayerTannery1` | `Gameplay/Doors/OfficerDoor3/UsePoint` | use_point | 51.7 | 92.5 | 1.79 | ok |
@@ -2505,11 +2505,11 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerTannery2` | `Gameplay/Doors/JanitorDoorM/UsePoint` | use_point | 25.6 | 42.8 | 1.67 | ok |
 | `Spawns/PlayerTannery2` | `Gameplay/Doors/ArchiveDoor/UsePoint` | use_point | 21.7 | 37.8 | 1.74 | ok |
 | `Spawns/PlayerTannery2` | `Gameplay/Doors/StairDoorSBM/UsePoint` | use_point | 18.0 | 32.9 | 1.82 | ok |
-| `Spawns/PlayerTannery2` | `Gameplay/Doors/LoggiaDoorW/UsePoint` | use_point | 52.0 | 71.8 | 1.38 | ok |
+| `Spawns/PlayerTannery2` | `Gameplay/Doors/LoggiaDoorW/UsePoint` | use_point | 51.6 | 72.6 | 1.41 | ok |
 | `Spawns/PlayerTannery2` | `Gameplay/Doors/OperationsDoor/UsePoint` | use_point | 47.2 | 66.8 | 1.42 | ok |
 | `Spawns/PlayerTannery2` | `Gameplay/Doors/ConferenceDoor/UsePoint` | use_point | 29.6 | 47.8 | 1.62 | ok |
 | `Spawns/PlayerTannery2` | `Gameplay/Doors/ComplianceDoor/UsePoint` | use_point | 24.5 | 41.8 | 1.71 | ok |
-| `Spawns/PlayerTannery2` | `Gameplay/Doors/LoggiaDoorE/UsePoint` | use_point | 21.3 | 37.9 | 1.77 | ok |
+| `Spawns/PlayerTannery2` | `Gameplay/Doors/LoggiaDoorE/UsePoint` | use_point | 20.5 | 39.2 | 1.91 | ok |
 | `Spawns/PlayerTannery2` | `Gameplay/Doors/OfficerDoor1/UsePoint` | use_point | 51.3 | 75.9 | 1.48 | ok |
 | `Spawns/PlayerTannery2` | `Gameplay/Doors/OfficerDoor2/UsePoint` | use_point | 50.6 | 84.9 | 1.68 | ok |
 | `Spawns/PlayerTannery2` | `Gameplay/Doors/OfficerDoor3/UsePoint` | use_point | 51.4 | 93.9 | 1.83 | ok |
@@ -2776,11 +2776,11 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerTannery3` | `Gameplay/Doors/JanitorDoorM/UsePoint` | use_point | 26.5 | 44.2 | 1.67 | ok |
 | `Spawns/PlayerTannery3` | `Gameplay/Doors/ArchiveDoor/UsePoint` | use_point | 22.7 | 39.2 | 1.73 | ok |
 | `Spawns/PlayerTannery3` | `Gameplay/Doors/StairDoorSBM/UsePoint` | use_point | 19.2 | 34.2 | 1.78 | ok |
-| `Spawns/PlayerTannery3` | `Gameplay/Doors/LoggiaDoorW/UsePoint` | use_point | 52.4 | 73.2 | 1.40 | ok |
+| `Spawns/PlayerTannery3` | `Gameplay/Doors/LoggiaDoorW/UsePoint` | use_point | 52.0 | 74.0 | 1.42 | ok |
 | `Spawns/PlayerTannery3` | `Gameplay/Doors/OperationsDoor/UsePoint` | use_point | 47.6 | 68.2 | 1.43 | ok |
 | `Spawns/PlayerTannery3` | `Gameplay/Doors/ConferenceDoor/UsePoint` | use_point | 30.3 | 49.2 | 1.63 | ok |
 | `Spawns/PlayerTannery3` | `Gameplay/Doors/ComplianceDoor/UsePoint` | use_point | 25.3 | 43.2 | 1.71 | ok |
-| `Spawns/PlayerTannery3` | `Gameplay/Doors/LoggiaDoorE/UsePoint` | use_point | 22.3 | 39.3 | 1.76 | ok |
+| `Spawns/PlayerTannery3` | `Gameplay/Doors/LoggiaDoorE/UsePoint` | use_point | 21.4 | 40.6 | 1.90 | ok |
 | `Spawns/PlayerTannery3` | `Gameplay/Doors/OfficerDoor1/UsePoint` | use_point | 51.5 | 77.3 | 1.50 | ok |
 | `Spawns/PlayerTannery3` | `Gameplay/Doors/OfficerDoor2/UsePoint` | use_point | 50.6 | 86.3 | 1.71 | ok |
 | `Spawns/PlayerTannery3` | `Gameplay/Doors/OfficerDoor3/UsePoint` | use_point | 51.2 | 95.3 | 1.86 | ok |
@@ -3047,11 +3047,11 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerTannery4` | `Gameplay/Doors/JanitorDoorM/UsePoint` | use_point | 27.4 | 45.6 | 1.67 | ok |
 | `Spawns/PlayerTannery4` | `Gameplay/Doors/ArchiveDoor/UsePoint` | use_point | 23.7 | 40.6 | 1.71 | ok |
 | `Spawns/PlayerTannery4` | `Gameplay/Doors/StairDoorSBM/UsePoint` | use_point | 20.4 | 35.7 | 1.75 | ok |
-| `Spawns/PlayerTannery4` | `Gameplay/Doors/LoggiaDoorW/UsePoint` | use_point | 52.8 | 74.6 | 1.41 | ok |
+| `Spawns/PlayerTannery4` | `Gameplay/Doors/LoggiaDoorW/UsePoint` | use_point | 52.4 | 75.4 | 1.44 | ok |
 | `Spawns/PlayerTannery4` | `Gameplay/Doors/OperationsDoor/UsePoint` | use_point | 48.1 | 69.6 | 1.45 | ok |
 | `Spawns/PlayerTannery4` | `Gameplay/Doors/ConferenceDoor/UsePoint` | use_point | 31.0 | 50.6 | 1.63 | ok |
 | `Spawns/PlayerTannery4` | `Gameplay/Doors/ComplianceDoor/UsePoint` | use_point | 26.2 | 44.6 | 1.70 | ok |
-| `Spawns/PlayerTannery4` | `Gameplay/Doors/LoggiaDoorE/UsePoint` | use_point | 23.3 | 40.7 | 1.74 | ok |
+| `Spawns/PlayerTannery4` | `Gameplay/Doors/LoggiaDoorE/UsePoint` | use_point | 22.4 | 42.0 | 1.88 | ok |
 | `Spawns/PlayerTannery4` | `Gameplay/Doors/OfficerDoor1/UsePoint` | use_point | 51.8 | 78.7 | 1.52 | ok |
 | `Spawns/PlayerTannery4` | `Gameplay/Doors/OfficerDoor2/UsePoint` | use_point | 50.6 | 87.7 | 1.73 | ok |
 | `Spawns/PlayerTannery4` | `Gameplay/Doors/OfficerDoor3/UsePoint` | use_point | 51.0 | 96.7 | 1.90 | ok |
