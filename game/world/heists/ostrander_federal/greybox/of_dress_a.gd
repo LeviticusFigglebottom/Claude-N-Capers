@@ -743,7 +743,8 @@ func _pendants(parent: Node3D) -> int:
 			continue
 		n += 1
 		if String(p[0]) in D.SHADOW_PENDANTS:
-			_light(inst, {"shadow_enabled": true})
+			# D-146: dual paraboloid (2 shadow passes, not the cube's 6)
+			_light(inst, {"shadow_enabled": true, "omni_shadow_mode": OmniLight3D.SHADOW_DUAL_PARABOLOID})
 	return n
 
 
