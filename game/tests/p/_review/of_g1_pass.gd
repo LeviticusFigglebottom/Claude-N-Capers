@@ -218,7 +218,6 @@ var _resolve: bool = false
 var _resolve_launch: bool = false
 var _line: String = ""
 var _stray: Ladder = null
-var _free_attached: bool = false
 
 
 func _ready() -> void:
@@ -794,7 +793,12 @@ func _climb(lad: Ladder, up: bool) -> bool:
 	if not await _go(approach, 0.4, 120.0):
 		note("ladder %s approach not reached (%s)" % [lad.name, Po5Pilot._v(approach)])
 		return false
-	var look_at: Vector3 = Vector3(lad.global_position.x, grab.y + (1.5 if up else 0.2), lad.global_position.z)
+	# D-145 free climbing (CrewLadderClimb): forward moves along the ladder in the look's direction, so look up the
+	# ladder to climb up and down at its foot (below CrewTweak.ladder_down_pitch_deg) to climb down; the prefab's own
+	# climb (bots, old path) still counts.
+	var look_at: Vector3 = lad.global_position + Vector3(0, 4.0, 0) if up \
+		else lad.bottom_position() + Vector3(0, 0.2, -0.3)
+	var pitch: float = deg_to_rad(35.0) if up else deg_to_rad(Tweak.crew().ladder_down_pitch_deg - 25.0)
 	await pilot.face(look_at, 0.05, 1.5)
 	_climbing = true
 	pilot.inp.press(&"move_forward")
@@ -803,15 +807,16 @@ func _climb(lad: Ladder, up: bool) -> bool:
 	while t < lad.climb_time() + 10.0:
 		await pilot.tick()
 		t += pilot.dt()
-		if lad.is_climbing(pilot.crew.slot):
+		if _on_ladder(lad):
 			started = true
+			pilot.steer(pilot.crew.look_yaw, pitch)
 		elif started:
 			break
 		else:
 			var to: Vector3 = Vector3(grab.x, 0.0, grab.z) - Vector3(pilot.crew.global_position.x, 0.0,
 				pilot.crew.global_position.z)
 			if to.length() > 0.2:
-				pilot.steer(atan2(-to.x, -to.z), 0.0)
+				pilot.steer(atan2(-to.x, -to.z), pitch)
 			else:
 				pilot.steer_at(look_at)
 	var ok: bool = started and absf(pilot.crew.global_position.y - end_y) < 0.4
@@ -850,34 +855,31 @@ func _quiet_watch() -> void:
 func _watch_ladders() -> void:
 	var my_rt: HeistRuntime = rt
 	while is_inside_tree() and rt == my_rt and is_instance_valid(rt) and pilot != null:
-		if not _climbing and _stray == null and pilot.crew.has_meta(Ladder.META_CLIMBING):
-			var held: Variant = pilot.crew.get_meta(Ladder.META_CLIMBING)
-			if held is Ladder:
-				_stray = held as Ladder
-				note("FINDING a walk took %s by accident at %s" % [_stray.name, Po5Pilot._v(pilot.crew.global_position)])
-			elif not _free_attached:
-				# D-145 free climbing marks the crew itself while it hangs on a ladder volume it walked into.
-				_free_attached = true
-				note("FINDING a walk attached to a ladder (free climb) at %s near %s" % [
-					Po5Pilot._v(pilot.crew.global_position), _nearest_ladder_name()])
-		elif _free_attached and not pilot.crew.has_meta(Ladder.META_CLIMBING):
-			_free_attached = false
+		# The prefab's own climb puts the Ladder in the crew's climbing meta; a human under D-145 free climbing carries
+		# the crew itself there as an opt-out marker (CrewLadderClimb.sync_opt_out), so only a Ladder value is a climb.
+		var held: Variant = pilot.crew.get_meta(Ladder.META_CLIMBING) if pilot.crew.has_meta(Ladder.META_CLIMBING) \
+			else null
+		var free: CrewLadderClimb = pilot.crew.ladder
+		if not _climbing and _stray == null and held is Ladder:
+			_stray = held as Ladder
+			note("FINDING a walk took %s by accident at %s" % [_stray.name, Po5Pilot._v(pilot.crew.global_position)])
+		elif not _climbing and _stray == null and free != null and free.is_climbing():
+			_stray = free.ladder
+			note("FINDING a walk attached to %s (free climb) at %s" % [_stray.name,
+				Po5Pilot._v(pilot.crew.global_position)])
 		await pilot.tick()
 
 
-func _nearest_ladder_name() -> String:
-	var best: String = "-"
-	var best_d: float = INF
-	for n: Node in rt.map.find_children("*", "Ladder", true, false):
-		var d: float = (n as Node3D).global_position.distance_to(pilot.crew.global_position)
-		if d < best_d:
-			best_d = d
-			best = "%s (%.1f m)" % [n.name, d]
-	return best
+## The crew is on `lad`: the prefab's climb (bots, legacy) or the human's free climb (D-145).
+func _on_ladder(lad: Ladder) -> bool:
+	if lad.is_climbing(pilot.crew.slot):
+		return true
+	var free: CrewLadderClimb = pilot.crew.ladder
+	return free != null and free.is_climbing() and free.ladder == lad
 
 
 func _stray_need() -> bool:
-	return _stray != null and is_instance_valid(_stray) and not _stray.is_climbing(pilot.crew.slot)
+	return _stray != null and is_instance_valid(_stray) and not _on_ladder(_stray)
 
 
 ## Pilot hook: climb a stray ladder straight back, then the interrupted walk re-paths.
