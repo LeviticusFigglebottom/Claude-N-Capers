@@ -19,11 +19,26 @@ static func effective_loadouts(loadouts: Dictionary, slots: Array) -> Dictionary
 	var out: Dictionary = {}
 	for slot: Variant in slots:
 		var l: Loadout = CrewWeapons.build_loadout(loadouts.get(int(slot)) as Loadout)
+		if bool((Net.crew.get(int(slot), {}) as Dictionary).get("is_ai", false)):
+			l = bot_armed(l)
 		if _needs_modifiers(l):
 			l = l.duplicate() as Loadout
 			l.modifiers = LoadoutResolver.resolve_modifiers(l)
 		out[int(slot)] = l
 	return out
+
+
+## LEAD ruling 2026-10-20 (D-145.4): an AI teammate with no primary gets CombatTweak.bot_default_primary (a resolved
+## copy; a bot slot that equips a primary keeps it, and so does every human).
+static func bot_armed(l: Loadout) -> Loadout:
+	var rifle: StringName = CombatTweak.data().bot_default_primary
+	if l == null or l.primary != &"" or rifle == &"":
+		return l
+	var out: Loadout = l.duplicate() as Loadout
+	out.primary = rifle
+	out.primary_mods = [] as Array[StringName]
+	out.resolved_primary = null
+	return CrewWeapons.build_loadout(out)
 
 
 ## Server: push the modifiers of `loadouts` ({slot: Loadout}, see effective_loadouts).
