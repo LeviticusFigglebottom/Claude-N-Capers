@@ -174,3 +174,41 @@ func test_compatibility_light_passes() -> void:
 	_root.add_child(sun)
 	lights.append(LcCheckPerf.prepare_light(sun, pieces))
 	assert_eq(LcCheckPerf.count_view(pieces, lights, xf, CAM_FOV)["lit"], 2 * n)
+
+
+## The GOOD fixture with 2,640 extra surfaces in the middle of room A (the top-down plan sees them all).
+func _heavy(m: HeistMap) -> void:
+	var am: ArrayMesh = ArrayMesh.new()
+	for i: int in range(240):
+		var arr: Array = []
+		arr.resize(Mesh.ARRAY_MAX)
+		arr[Mesh.ARRAY_VERTEX] = PackedVector3Array([Vector3(0, 0, 0), Vector3(0.1, 0, 0), Vector3(0, 0.1, 0)])
+		am.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arr)
+	for k: int in range(11):
+		var mi: MeshInstance3D = MeshInstance3D.new()
+		mi.name = "Heavy%d" % k
+		mi.mesh = am
+		mi.position = Vector3(4.0, 1.0, 3.5)
+		m.get_node("Geometry").add_child(mi)
+		mi.owner = m
+
+
+func _perf_for(heist_id: String) -> LcCheck:
+	var map: HeistMap = (load(LcTestBase.GOOD) as PackedScene).instantiate() as HeistMap
+	_heavy(map)
+	var ctx: LcContext = await LcRunner.prepare(map, self)
+	ctx.heist_id = heist_id
+	ctx.stage = "final"
+	var checks: Array[LcCheck] = await LcRunner.run(ctx, PackedStringArray(["perf"]))
+	remove_child(map)
+	map.free()
+	await wait_physics_frames(2)
+	return checks[0]
+
+
+func test_budgets_enforced_only_for_opted_in_heists() -> void:
+	var on: LcCheck = await _perf_for("ostrander_federal")
+	assert_true(on.fail_count() > 0, "OF: main > 2500 fails")
+	var off: LcCheck = await _perf_for("shadow_ledger")
+	assert_eq(off.fail_count(), 0, "a shipped heist is report-only")
+	assert_true(off.warn_count() > 0, "...but the overrun is reported")
