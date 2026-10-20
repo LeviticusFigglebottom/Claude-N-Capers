@@ -21,6 +21,10 @@ Capture names are Windows-safe since c6c096dd (PCaptureName); trunk's of_g1_pass
    `%G% --path game --resolution 1280x720 res://tests/p/_review/of_g1_pass.tscn -- --test=<t> --seed=1002 --out=%CD%\gpu\renders\p\of_g2_<t> > gpu\renders\p\of_g2_<t>.txt 2>&1`
    with `<t>` = laser, throws, fire_escape, hole, dock, fire_exit, burn. Run laser three times, adding
    `--pattern=lz_static`, `--pattern=lz_sweep` and `--pattern=lz_timed`. If G2 needs harness changes, P pushes them first and names the commit.
+- **OF full real-menu run PASS** (lead queue item 6), windowed via `run_po5.sh of_stealth 1002`, Routine, on r248 + c-worlds + A + P. It clicked main menu → SAFEHOUSE →
+  planning table → Ostrander Federal/ROUTINE → briefing → pre-planning → loadout → Start Heist → stealth heist → payday
+  ($112,303, clean, 7:35) → back in hub; 14 shots in captures/of_menu_2026-10-20. The flow sets crew.stealth_hidden (a detection
+  shortcut), so this proves the menu path and the objective chain, not stealth. The 10-34 s HITCH frames are xvfb software GL.
 - D-145 GH Tense ×3 on r250 + c-worlds + A 4a6780f4 (headless): 4502 WIN, 2 downs. 4501 custody at t=279 after 1 down:
   the pilot bled out 30 s with no bot revive (slot 1 was being tased), so this is a legit loss and a bot revive question for A. 4503 running.
 - Relay from A (could not reach the lead): env/a-core is at 2daa35d6. auto_loud no longer reports "marker unreachable" when the objective
