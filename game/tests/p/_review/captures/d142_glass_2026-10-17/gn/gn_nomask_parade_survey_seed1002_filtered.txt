@@ -1,0 +1,16 @@
+[INFO][variants][p1] seed 1002 resolved { &"centrepiece": [&"cp_treasury"], &"canvas_orchard": [&"orchard_benefactors"], &"canvas_widow": [&"widow_founders"], &"canvas_saint": [&"saint_harbour"], &"sensor_net": [&"sensors_all"], &"conservator": [&"cons_gone"], &"keycard": [&"kc_registrar", &"kc_security"], &"code_note": [&"code_admin_postit"], &"guard_post": [&"dock_smoker", &"rover_ground"], &"security_room_staffed": [&"sec_staffed"], &"camera": [&"cam_a"], &"laser_pattern": [&"lz_static"], &"curator_route": [&"curator_hall"], &"court_doors": [&"court_doors_open"], &"areaway": [&"grate_padlocked"], &"escape": [&"esc_parade"], &"xl_crate": [], &"admin_pa": [], &"gala_extra": [], &"last_call_s": 600.0, &"patrons": 3, &"stragglers": 1, &"store_paintings": 6, &"consignment_lockers": 8, &"escape_eta_s": 90.0, "rare": [] }
+[D128 172.1s t=2.53] pilot: calibrated 0.001600 rad/px yaw, 0.001600 rad/px pitch (settings formula said (0.0016, 0.0016))
+[D128 172.1s t=2.53] run 1: difficulty 0 pagers_max 4
+[D128 172.1s t=2.53] run 1: gallery_night seed 1002 phase 1 crew (20.5, 0.0, 35.0) masked false mode casing DR 4
+[D128 209.9s t=3.07] shot gallery_night_01_hud_pagers_routine.png
+[D128 237.7s t=4.22] careful: at mask spot (21.6, 0.0, 34.2), max meter 0.00
+[D128 237.7s t=4.22] careful: masked false
+[D128 240.6s t=4.27] shot gallery_night_02_careful_masked.png
+[D128 497.3s t=10.77] careful: leg 1 -> (14.0, 0.0, 31.6) reached true, max meter now 0.00 (-) alarm 
+[D128 1018.0s t=24.92] careful: leg 2 -> (31.0, 0.0, 31.6) reached true, max meter now 0.00 (-) alarm 
+[D128 1192.8s t=31.27] careful: leg 3 -> (38.0, 0.0, 31.6) reached true, max meter now 0.00 (-) alarm 
+[D128 1195.5s t=31.43] careful: waited 0.5 s before leg 4 (clear)
+[D128 1715.7s t=44.60] careful: leg 4 -> (22.0, 0.0, 31.6) reached true, max meter now 0.00 (-) alarm 
+[D128 2383.8s t=57.93] careful: waited 40.0 s before leg 5 (Npc_guard2)
+[D128 2568.8s t=60.92] careful: leg 5 -> (22.0, 0.0, 27.0) reached true, max meter now 0.00 (-) alarm 
+[D128 3479.3s t=74.25] careful: waited 40.0 s before leg 6 (Npc_guard2)

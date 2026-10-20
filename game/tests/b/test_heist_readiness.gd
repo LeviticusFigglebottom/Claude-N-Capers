@@ -30,10 +30,13 @@ func test_gate_needs_map_and_requires() -> void:
 	assert_false(HeistCatalog.is_ready(OF, exists), "mission without a map: hidden")
 
 
-## C's G1 ships a mission STUB at the same path: the "hidden" switch keeps OF, RT and AH out until A's mission lands.
+## C's G1 ships a mission STUB at the same path: the "hidden" switch keeps RT and AH out until A's mission lands.
+## OF's switch is off since OF-A6 phase 2 (LEAD r245: OF playable).
 func test_hidden_switch() -> void:
 	var have: Callable = func(_p: String) -> bool: return true
-	for h: StringName in [OF, &"rolling_thunder", &"afterhours"]:
+	assert_false(HeistCatalog.heist_list().is_hidden(OF), "OF offered (OF-A6, round 245)")
+	assert_true(HeistCatalog.is_ready(OF, have), "OF ready with map + mission")
+	for h: StringName in [&"rolling_thunder", &"afterhours"]:
 		assert_true(HeistCatalog.heist_list().is_hidden(h), "%s hidden" % h)
 		assert_false(HeistCatalog.is_ready(h, have), "%s: hidden even with map + mission present" % h)
 		assert_false(HeistCatalog.ids().has(h))

@@ -9,12 +9,12 @@ display_name = "TAC Heavy"
 is_special = false
 health = PackedFloat32Array(200, 200, 300, 400, 600, 800)
 headshot_mult = PackedFloat32Array(3, 3, 3, 3, 3, 3)
-damage = PackedFloat32Array(20, 20, 30, 40, 60, 80)
+damage = PackedFloat32Array(13.5, 17, 30, 40, 60, 80)
 move_speed = 3.6
 weapon = &"weapon.npc_rifle"
 detection_preset = &"police"
 params = {
-"_note": "L4.2 TAC Heavy (PD2 heavy SWAT). Frontal plate: non-AP bullet body hits from the front arc deal x frontal_armor (0) within frontal_armor_arc_deg; the head stays vulnerable (NpcHitRules). health/damage per Difficulty (ROUTINE..CATACLYSM) PD2-shaped design values (◇).",
+"_note": "L4.2 TAC Heavy (PD2 heavy SWAT). Frontal plate: non-AP bullet body hits from the front arc deal x frontal_armor (0) within frontal_armor_arc_deg; the head stays vulnerable (NpcHitRules). health/damage per Difficulty (ROUTINE..CATACLYSM) PD2-shaped design values (◇). PO-17 (D-145 §2): Routine/Tense damage lowered toward PD2 Normal/Hard (◇).",
 "aim_delay_s": 0.7,
 "armor_body_mult": 1.0,
 "explosive_mult": 1.0,

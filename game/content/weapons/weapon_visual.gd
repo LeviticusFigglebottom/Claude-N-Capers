@@ -80,6 +80,20 @@ func setup(def: WeaponDef, mods: Array[WeaponModDef]) -> void:
 		apply_finish(finish_id)
 
 
+## NPC third person (LEAD r244 (b), OF perf): the baked one-surface model of `def` (NpcWeaponBake) with the same
+## markers; the full stock model when the weapon has no bake. Stock only: no mods, no finish.
+func setup_npc(def: WeaponDef) -> void:
+	var merged: PackedScene = NpcWeaponBake.scene(def)
+	if merged == null:
+		setup(def, [] as Array[WeaponModDef])
+		return
+	clear()
+	weapon = def
+	model = merged.instantiate() as Node3D
+	model.name = &"Model"
+	add_child(model)
+
+
 ## Reload-only parts (visual_slots D-053: the revolver `Speedloader`) start hidden; ENV A shows them
 ## during the reload. glTF has no visibility flag, so the visual hides them after instancing.
 static func _hide_reload_props(root: Node3D) -> void:

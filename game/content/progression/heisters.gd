@@ -78,8 +78,10 @@ static func next_free(pick: StringName, taken: Array[StringName]) -> StringName:
 
 ## Distinct heisters per slot (see the header rule). `order` = human slots, first claim first; `picks` =
 ## slot -> picked id (&"" = no preference); `fill` = AI / empty slots in the order they take what is left.
-## Returns slot -> heister id (&"" only when the roster ran out).
-static func assign(order: Array[int], picks: Dictionary, fill: Array[int]) -> Dictionary:
+## `fill_picks` (PO-19, CrewLoadouts.outfit_picks) = fill slot -> the bot's outfit: a heister it takes when still free
+## (else the next free one), or a heist suit it always wears (a suit takes no heister).
+## Returns slot -> heister id or suit (&"" only when the roster ran out).
+static func assign(order: Array[int], picks: Dictionary, fill: Array[int], fill_picks: Dictionary = {}) -> Dictionary:
 	var out: Dictionary = {}
 	var taken: Array[StringName] = []
 	var later: Array[int] = []
@@ -90,7 +92,16 @@ static func assign(order: Array[int], picks: Dictionary, fill: Array[int]) -> Di
 			taken.append(pick)
 		else:
 			later.append(slot)
+	for slot: int in fill:
+		var want: StringName = StringName(fill_picks.get(slot, &""))
+		if want != &"" and not is_known(want):
+			out[slot] = want  # a heist suit: any number of bots
+		elif is_known(want) and not taken.has(want):
+			out[slot] = want
+			taken.append(want)
 	for slot: int in later + fill:
+		if out.has(slot):
+			continue
 		var pick: StringName = StringName(picks.get(slot, &"")) if later.has(slot) else &""
 		var id: StringName = next_free(pick, taken)
 		out[slot] = id
@@ -101,8 +112,8 @@ static func assign(order: Array[int], picks: Dictionary, fill: Array[int]) -> Di
 
 ## Solo launch: the local player's pick, then the AI teammates (Net.start_solo seats the local player
 ## first and AI in the next free slots) -> slot -> heister id.
-static func solo(pick: StringName, local_slot: int, ai_teammates: int) -> Dictionary:
-	return assign([local_slot] as Array[int], {local_slot: pick}, solo_ai_slots(local_slot, ai_teammates))
+static func solo(pick: StringName, local_slot: int, ai_teammates: int, fill_picks: Dictionary = {}) -> Dictionary:
+	return assign([local_slot] as Array[int], {local_slot: pick}, solo_ai_slots(local_slot, ai_teammates), fill_picks)
 
 
 ## The slots Net.start_solo gives `ai_teammates` AI teammates: the lowest crew slots other than the local one.
@@ -118,10 +129,19 @@ static func solo_ai_slots(local_slot: int, ai_teammates: int) -> Array[int]:
 
 ## HeistLauncher loadouts for AI slots: ENV A's default AI loadout (CrewWeapons.build_loadout(null), the one
 ## a slot without an `options.loadouts` entry gets) with the slot's heister. `heisters` = slot -> id.
-static func ai_loadouts(heisters: Dictionary) -> Dictionary:
+## PO-19: with `profile` (the host's), the i-th AI slot in slot order carries crew bot slot i's loadout
+## (CrewLoadouts.bot_loadout: its primary + mods, armor and mask).
+static func ai_loadouts(heisters: Dictionary, profile: PlayerProfile = null) -> Dictionary:
 	var out: Dictionary = {}
-	for slot: Variant in heisters:
-		var l: Loadout = CrewWeapons.build_loadout(null)  # a fresh Loadout per call
-		l.heister = StringName(heisters[slot])
-		out[int(slot)] = l
+	var slots: Array = heisters.keys()
+	slots.sort()
+	for i: int in range(slots.size()):
+		var slot: int = int(slots[i])
+		var id: StringName = StringName(heisters[slots[i]])
+		if profile != null and i < CrewLoadouts.SLOTS:
+			out[slot] = CrewLoadouts.bot_loadout(i, profile, id)
+		else:
+			var l: Loadout = CrewWeapons.build_loadout(null)  # a fresh Loadout per call
+			l.heister = id
+			out[slot] = l
 	return out

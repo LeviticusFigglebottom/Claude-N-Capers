@@ -7,6 +7,12 @@
 ##        [--stance=walk|sprint|crouch] [--masked] [--dirs=8|16] [--approach=run|touch] [--closed_doors]
 ##        [--offset=0.37] [--tag=name]   (doors are unlocked and opened unless --closed_doors)
 ##   --approach=touch starts each tier-1 trial from a standstill already touching the obstacle (no run-up).
+##   --seed=N (default 1002) and --map=res://...tscn (a map scene not yet in the heist registry, e.g. a G1 greybox).
+##   Ostrander Federal G1 (OF-P1, next_heist_ostrander.md §4 "PO-3 snag probe 0" before G2):
+##     timeout 3600 /opt/godot/godot --headless --fixed-fps 60 --path game res://tests/p/_review/po3_snag_probe.tscn \
+##       -- --heist=ostrander_federal --out=/abs/dir [--map=res://world/heists/ostrander_federal/ostrander_federal.tscn]
+##     The bank has 5 levels and a large site: raise --max_samples / --max_trials (e.g. 120000 / 40000) if the summary
+##     says it hit the cap. Pass = "[PO3] RESULT DONE ostrander_federal snags=0".
 ##   ... -- --selftest        synthetic check on ATestMaps.basic (0.2 m kerb climbs, 0.6 m box blocks)
 ## Output: <out>/<heist>.json + <heist>.txt (out = --out, else env PO3_OUT, else user://po3_snags/). Prints the text
 ## summary and "[PO3] RESULT ...". Method:
@@ -111,7 +117,9 @@ func _launch(heist: StringName, packed: PackedScene) -> bool:
 	var opts: Dictionary = {"ai_teammates": 3, "crew_ai": false}
 	if packed != null:
 		opts["map_packed"] = packed
-	_rt = await HeistLauncher.launch(heist, 1002, Enums.Difficulty.ROUTINE, self, opts)
+	elif _args.has("map"):
+		opts["map_scene"] = String(_args["map"])
+	_rt = await HeistLauncher.launch(heist, _seed(), Enums.Difficulty.ROUTINE, self, opts)
 	if _rt == null:
 		print("[PO3] RESULT FAIL launch %s" % heist)
 		return false
@@ -132,6 +140,10 @@ func _launch(heist: StringName, packed: PackedScene) -> bool:
 	_q_lift = _capsule_query(CLEAR_RADIUS_M, BODY_TOP_M - LIFT_BOTTOM_M)
 	_q_full = _capsule_query(_tw.capsule_radius, _tw.height_standing - 0.04)
 	return true
+
+
+func _seed() -> int:
+	return int(String(_args.get("seed", "1002")))
 
 
 func _capsule_query(radius: float, height: float) -> PhysicsShapeQueryParameters3D:
@@ -816,7 +828,7 @@ func _report(times: Dictionary) -> Dictionary:
 	var tiers: Dictionary[int, int] = {}
 	for r: Dictionary in _results:
 		tiers[int(r["tier"])] = tiers.get(int(r["tier"]), 0) + 1
-	return {"heist": String(_heist), "seed": 1002, "spacing_m": _spacing, "step_height_m": _tw.step_height_m,
+	return {"heist": String(_heist), "seed": _seed(), "spacing_m": _spacing, "step_height_m": _tw.step_height_m,
 		"max_slope_deg": _tw.max_slope_deg, "capsule_radius": _tw.capsule_radius, "walk_speed": _tw.walk_speed,
 		"bounds": _bounds, "samples": _samples, "walkable_edges": _edges.size(), "rejected": _reject,
 		"trials": _results.size(), "trials_by_tier": tiers, "outcomes": counts, "times_s": times,

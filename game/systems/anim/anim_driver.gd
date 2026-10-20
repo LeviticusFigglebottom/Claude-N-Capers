@@ -520,6 +520,7 @@ func tick(delta: float) -> void:
 		weapon_visual.visible = weapon_shown(want)
 		if weapon_offhand != null and is_instance_valid(weapon_offhand):
 			weapon_offhand.visible = weapon_visual.visible
+		held_visuals.show_silhouette(weapon_visual.visible)
 	if crew_action != null:
 		crew_action.update_visuals(delta, tw)
 	held_visuals.update_bag(tw)

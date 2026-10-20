@@ -447,6 +447,23 @@ func test_po6_17_heli_rappels_a_squad_at_the_drop_and_carries_a_sniper() -> void
 	assert_false(is_instance_valid(sniper) and sniper.is_inside_tree(), "sniper leaves with it")
 
 
+## P OF-A6 run: rappellers freed mid-rope (police despawned) drop out of the guides cleanly; casting the freed
+## reference logged "Trying to cast a freed object" every tick (12,891 times) and never cleared the guide.
+func test_po6_17_guides_drop_freed_rappellers() -> void:
+	var ev: AssaultEventRunner = await _launch()
+	var heli: AssaultHeli = ev.run(&"heli", {"orbit_s": 0.5, "speed_mps": 40.0, "approach_m": 40.0, "hover_height_m": 8.0,
+		"sniper_s": 30.0, "squad": [&"enemy.tac_light", &"enemy.tac_light"], "drop_interval_s": 0.3,
+		"rappel_speed_mps": 1.0}, "HeliDrop_1") as AssaultHeli
+	assert_true(heli != null, "heli spawned")
+	var roping: bool = await wait_until(func() -> bool: return not ev._guides.is_empty(), 15.0)
+	assert_true(roping, "a rappeller is guided")
+	for u: NpcBase in ev.units:
+		if is_instance_valid(u):
+			u.queue_free()
+	await wait_physics_frames(3)
+	assert_true(ev._guides.is_empty(), "freed rappellers leave the guides (%d left)" % ev._guides.size())
+
+
 func test_po6_17_breach_blows_open_and_squad_enters() -> void:
 	var ev: AssaultEventRunner = await _launch()
 	var marker: Node3D = _rt.map.get_node(^"AssaultEvents/Breach_1")

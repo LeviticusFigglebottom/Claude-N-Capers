@@ -1,0 +1,48 @@
+[gd_scene format=3]
+
+[ext_resource type="ArrayMesh" path="res://assets/weapons/npc/warden_45_npc3p_mesh.res" id="1_2w7i2"]
+
+[node name="warden_45_npc3p" type="Node3D" unique_id=241996646]
+
+[node name="Merged" type="MeshInstance3D" parent="." unique_id=673289599]
+mesh = ExtResource("1_2w7i2")
+
+[node name="Eject" type="Node3D" parent="." unique_id=2040916261]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 0.0115, 0.056, -0.022)
+
+[node name="SightRail" type="Node3D" parent="." unique_id=1080406470]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.062, 0.034)
+
+[node name="StockSight" type="Node3D" parent="." unique_id=237487666]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.062, 0.034)
+
+[node name="AimPoint" type="Node3D" parent="." unique_id=1476776144]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.066, 0.034)
+
+[node name="Muzzle" type="Node3D" parent="." unique_id=1841251628]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.048, -0.171)
+
+[node name="BarrelMount" type="Node3D" parent="." unique_id=1251836215]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.048, 0.02)
+
+[node name="Magwell" type="Node3D" parent="." unique_id=66953006]
+transform = Transform3D(1, 0, 0, 0, 0.9563048, 0.2923717, 0, -0.2923717, 0.9563048, 0, -0.076, 0.023235532)
+
+[node name="StockMagazine" type="Node3D" parent="." unique_id=934367076]
+transform = Transform3D(1, 0, 0, 0, 0.9563048, 0.2923717, 0, -0.2923717, 0.9563048, 0, -0.076, 0.023235532)
+
+[node name="SideRail" type="Node3D" parent="." unique_id=496889415]
+transform = Transform3D(0, 1, 0, -1, 0, 0, 0, 0, 1, 0, 0.018, -0.12)
+
+[node name="Underbarrel" type="Node3D" parent="." unique_id=804985046]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.018, -0.12)
+
+[node name="StockMount" type="Node3D" parent="." unique_id=1842953823]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.03, 0.058)
+
+[node name="GripMount" type="Node3D" parent="." unique_id=1429741425]
+
+[node name="StockGrip" type="Node3D" parent="." unique_id=2068166174]
+
+[node name="LeftHandIK" type="Node3D" parent="." unique_id=1395514815]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.024, -0.02, -0.011385387)

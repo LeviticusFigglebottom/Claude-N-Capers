@@ -192,6 +192,13 @@ color_b = Color(0.3, 0.13, 0.4, 1)
 id = &"mask_colors.heat_shimmer"
 display_name = "Heat Shimmer"
 
+[sub_resource type="Resource" id="Resource_b244_ultramarine_gilt"]
+script = ExtResource("2_ahcon")
+color_a = Color(0.173, 0.247, 0.612, 1)
+color_b = Color(0.784, 0.643, 0.278, 1)
+id = &"mask_colors.ultramarine_gilt"
+display_name = "Ultramarine and Gilt"
+
 [resource]
 script = ExtResource("3_g4u6w")
-entries = Array[ExtResource("1_ha374")]([SubResource("Resource_kgih8"), SubResource("Resource_b8leu"), SubResource("Resource_vf3hc"), SubResource("Resource_w37wc"), SubResource("Resource_nuwo3"), SubResource("Resource_ttqif"), SubResource("Resource_r2p5f"), SubResource("Resource_i4yrb"), SubResource("Resource_rvxx8"), SubResource("Resource_vk0q1"), SubResource("Resource_b415_tide_coral"), SubResource("Resource_b415_saffron_plum"), SubResource("Resource_b415_frost_slate"), SubResource("Resource_b415_oxblood_brass"), SubResource("Resource_b415_mint_graphite"), SubResource("Resource_b415_sulfur_ash"), SubResource("Resource_b502_crown_ember"), SubResource("Resource_b502_ash_regalia"), SubResource("Resource_b502_velvet_vault"), SubResource("Resource_b502_midnight_ledger"), SubResource("Resource_b502_lantern_smoke"), SubResource("Resource_b502_verdigris_crown"), SubResource("Resource_b502_bloodline"), SubResource("Resource_b502_ghost_ledger"), SubResource("Resource_b502_black_crown"), SubResource("Resource_b502_heat_shimmer")])
+entries = Array[ExtResource("1_ha374")]([SubResource("Resource_kgih8"), SubResource("Resource_b8leu"), SubResource("Resource_vf3hc"), SubResource("Resource_w37wc"), SubResource("Resource_nuwo3"), SubResource("Resource_ttqif"), SubResource("Resource_r2p5f"), SubResource("Resource_i4yrb"), SubResource("Resource_rvxx8"), SubResource("Resource_vk0q1"), SubResource("Resource_b415_tide_coral"), SubResource("Resource_b415_saffron_plum"), SubResource("Resource_b415_frost_slate"), SubResource("Resource_b415_oxblood_brass"), SubResource("Resource_b415_mint_graphite"), SubResource("Resource_b415_sulfur_ash"), SubResource("Resource_b502_crown_ember"), SubResource("Resource_b502_ash_regalia"), SubResource("Resource_b502_velvet_vault"), SubResource("Resource_b502_midnight_ledger"), SubResource("Resource_b502_lantern_smoke"), SubResource("Resource_b502_verdigris_crown"), SubResource("Resource_b502_bloodline"), SubResource("Resource_b502_ghost_ledger"), SubResource("Resource_b502_black_crown"), SubResource("Resource_b502_heat_shimmer"), SubResource("Resource_b244_ultramarine_gilt")])

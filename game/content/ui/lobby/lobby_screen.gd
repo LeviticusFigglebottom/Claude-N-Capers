@@ -744,8 +744,15 @@ func _refresh_slot(w: Dictionary, view: Dictionary) -> void:
 	else:
 		rd.text = ""
 	var names: Dictionary = LobbyState.item_names(view["loadout"] as Dictionary) if has_sum else {}
+	# PO-19: an AI seat shows the host's crew bot loadout (primary, armor, mask; the outfit is the heister row).
+	var bot: Dictionary = view.get("bot", {}) as Dictionary if is_ai or not occupied else {}
+	var bot_shown: bool = not bot.is_empty()
+	var bot_names: Dictionary = CrewLoadouts.names(bot) if bot_shown else {}
 	for f: Variant in items:
 		var l: Label = items[f] as Label
+		if bot_shown and (f == "primary" or f == "armor"):
+			l.text = UiText.t(StringName("ui.lobby.slot.%s" % f), {"name": String(bot_names["weapon" if f == "primary" else "armor"])})
+			continue
 		if not has_sum:
 			l.text = ""
 			continue
@@ -753,10 +760,18 @@ func _refresh_slot(w: Dictionary, view: Dictionary) -> void:
 		l.text = UiText.t(StringName("ui.lobby.slot.%s" % f), {"name": n if n != "" else UiText.t(&"ui.lobby.slot.none")})
 	var mdef: MaskDef = LobbyState.mask_def(view["loadout"] as Dictionary) if has_sum else null
 	var mask_n: String = String(names.get("mask", ""))
+	if bot_shown and String(bot.get("mask", "")) != "":
+		mask_n = String(bot_names["mask"])
+		mdef = LobbyState.mask_def({"mask": bot["mask"]})  # a preset's colours; a custom bot mask shows no swatch
 	mask.text = UiText.t(&"ui.lobby.slot.mask", {"name": mask_n}) if mask_n != "" else ""
 	var captions: Dictionary = w["captions"] as Dictionary
 	for f: Variant in captions:
-		(captions[f] as Label).visible = has_sum
+		(captions[f] as Label).visible = has_sum or (bot_shown and f in ["primary", "armor"]) \
+			or (bot_shown and f == "mask" and mask_n != "")
+	# A hidden row hides its value cell too, so the caption / value grid stays in step (PO-19 AI cards).
+	for f: Variant in items:
+		(items[f] as Label).visible = (captions[f] as Label).visible
+	(mask.get_parent() as Control).visible = (captions["mask"] as Label).visible
 	(captions["heister"] as Label).visible = occupied and (is_ai or has_sum) and StringName(view.get("heister", &"")) != &""
 	sa.visible = mdef != null
 	sb.visible = mdef != null
@@ -787,7 +802,7 @@ func _refresh_heister(l: Label, view: Dictionary, shown: bool) -> void:
 	if not l.visible:
 		return
 	var pick: StringName = StringName(view.get("heister_pick", &""))
-	var args: Dictionary = {"name": Heisters.display_name(id), "pick": Heisters.display_name(pick)}
+	var args: Dictionary = {"name": CrewLoadouts.outfit_name(id), "pick": Heisters.display_name(pick)}  # PO-19: suits
 	var lost: bool = not bool(view["is_ai"]) and pick != &"" and pick != id
 	l.text = UiText.t(&"ui.lobby.slot.heister_fallback" if lost else &"ui.lobby.slot.heister", args)
 	l.add_theme_color_override(&"font_color", Heisters.accent(id).lerp(Color.WHITE, 0.35))

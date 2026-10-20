@@ -174,6 +174,26 @@ func turn_to_yaw(crew: Node3D, yaw: float, tol: float = 0.02, timeout_s: float =
 	return false
 
 
+## Mouse-look in small steps until `crew.look_pitch` is within `tol` rad of `pitch` (+ = up). Returns success.
+func turn_to_pitch(crew: Node3D, pitch: float, tol: float = 0.02, timeout_s: float = 3.0) -> bool:
+	capture_mouse()
+	var t: float = 0.0
+	while t < timeout_s:
+		var err: float = pitch - float(crew.get(&"look_pitch"))
+		if absf(err) <= tol:
+			return true
+		look(0.0, -err / mouse_radians_per_px())
+		var before: float = float(crew.get(&"look_pitch"))
+		for _i: int in 10:
+			await _ticks(1)
+			t += 1.0 / Engine.physics_ticks_per_second
+			if absf(float(crew.get(&"look_pitch")) - before) > 1e-5:
+				await _ticks(2)
+				t += 2.0 / Engine.physics_ticks_per_second
+				break
+	return false
+
+
 ## Radians of yaw per pixel of mouse motion (PlayerInput.mouse_sensitivity x GameSettings mouse sensitivity,
 ## divided by the local camera zoom while aiming).
 static func mouse_radians_per_px() -> float:

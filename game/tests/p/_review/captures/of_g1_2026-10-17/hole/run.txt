@@ -1,0 +1,287 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+Vulkan 1.4.318 - Forward+ - Using Device #0: Unknown - llvmpipe (LLVM 20.1.2, 256 bits)
+
+[OFP 0.0s t=-1.0] === hole ===
+[INFO][rng][p1] run seed 1002
+[INFO][preplan][p1] assets []
+[INFO][variants][p1] seed 1002 resolved { &"manager_route": [&"mgr_gallery"], &"keycard": [&"kc_security"], &"code_pc": [&"pc_ops"], &"officers": [&"off_1"], &"server_room": [&"srv_gallery"], &"guard_post": [&"rover_basement", &"rover_dock"], &"security_room_staffed": [&"sec_empty"], &"camera": [&"cam_c"], &"laser_pattern": [&"lz_timed"], &"customers": [&"cust_4"], &"side_door": [&"door_dock_open"], &"fire_escape": [&"fe_down"], &"escape": [&"esc_van_tannery"], &"drill_delivery": [&"drop_terrace"], &"president_safe": [&"ps_bonds"], &"vip": [&"vip_out"], &"guard_extra": [], &"civ_extra": [], &"time_lock_s": 150.0, &"drill_eta_s": 60.0, &"escape_eta_s": 150.0, &"cash_bags": 8, &"gold_bags": 3, &"deposit_boxes": 6, "rare": [] }
+[INFO][heist][p1] vfx prewarm: 485 ms
+WARNING: [WARN][prefab][p1] PresidentSafe: content PresidentValuables3 sits outside the safe body; moved to LootAnchor
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] _write (res://core/log.gd:43)
+         [1] warn (res://core/log.gd:21)
+         [2] _stow_contents (res://systems/prefabs/safe/safe.gd:527)
+         [3] _prefab_ready (res://systems/prefabs/safe/safe.gd:161)
+         [4] _ready (res://systems/prefabs/gameplay_prefab.gd:87)
+         [5] start (res://systems/heist/heist_runtime.gd:167)
+         [6] launch (res://systems/heist/heist_launcher.gd:105)
+         [7] _load_map (res://systems/heist/heist_launcher.gd:169)
+WARNING: [WARN][prefab][p1] PresidentSafe: content PresidentValuables2 sits outside the safe body; moved to LootAnchor
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] _write (res://core/log.gd:43)
+         [1] warn (res://core/log.gd:21)
+         [2] _stow_contents (res://systems/prefabs/safe/safe.gd:527)
+         [3] _prefab_ready (res://systems/prefabs/safe/safe.gd:161)
+         [4] _ready (res://systems/prefabs/gameplay_prefab.gd:87)
+         [5] start (res://systems/heist/heist_runtime.gd:167)
+         [6] launch (res://systems/heist/heist_launcher.gd:105)
+         [7] _load_map (res://systems/heist/heist_launcher.gd:169)
+WARNING: [WARN][prefab][p1] PresidentSafe: content PresidentValuables1 sits outside the safe body; moved to LootAnchor
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] _write (res://core/log.gd:43)
+         [1] warn (res://core/log.gd:21)
+         [2] _stow_contents (res://systems/prefabs/safe/safe.gd:527)
+         [3] _prefab_ready (res://systems/prefabs/safe/safe.gd:161)
+         [4] _ready (res://systems/prefabs/gameplay_prefab.gd:87)
+         [5] start (res://systems/heist/heist_runtime.gd:167)
+         [6] launch (res://systems/heist/heist_launcher.gd:105)
+         [7] _load_map (res://systems/heist/heist_launcher.gd:169)
+WARNING: [WARN][prefab][p1] PresidentSafe: content PresidentBonds sits outside the safe body; moved to LootAnchor
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] _write (res://core/log.gd:43)
+         [1] warn (res://core/log.gd:21)
+         [2] _stow_contents (res://systems/prefabs/safe/safe.gd:527)
+         [3] _prefab_ready (res://systems/prefabs/safe/safe.gd:161)
+         [4] _ready (res://systems/prefabs/gameplay_prefab.gd:87)
+         [5] start (res://systems/heist/heist_runtime.gd:167)
+         [6] launch (res://systems/heist/heist_launcher.gd:105)
+         [7] _load_map (res://systems/heist/heist_launcher.gd:169)
+[INFO][heist][p1] phase LOADING -> CASING
+[OFP 7.6s t=-1.0] objective casing -> 1
+[OFP 7.6s t=-1.0] objective keycard -> 1
+[OFP 7.6s t=-1.0] objective code_pc -> 1
+[OFP 7.6s t=-1.0] objective vault_gate -> 1
+[OFP 7.6s t=-1.0] objective time_lock -> 1
+[OFP 7.6s t=-1.0] objective vault_loot -> 1
+[OFP 7.6s t=-1.0] objective secure -> 1
+[OFP 7.6s t=-1.0] objective escape -> 1
+[INFO][director][p1] prewarm: 18 of 18 scenes loaded in 1201 ms
+[INFO][prefab][p1] CameraStation: security room unstaffed
+[OFP 21.7s t=0.0] launched ostrander_federal seed 1002 diff 0 variants { &"manager_route": [&"mgr_gallery"], &"keycard": [&"kc_security"], &"code_pc": [&"pc_ops"], &"officers": [&"off_1"], &"server_room": [&"srv_gallery"], &"guard_post": [&"rover_basement", &"rover_dock"], &"security_room_staffed": [&"sec_empty"], &"camera": [&"cam_c"], &"laser_pattern": [&"lz_timed"], &"customers": [&"cust_4"], &"side_door": [&"door_dock_open"], &"fire_escape": [&"fe_down"], &"escape": [&"esc_van_tannery"], &"drill_delivery": [&"drop_terrace"], &"president_safe": [&"ps_bonds"], &"vip": [&"vip_out"], &"guard_extra": [], &"civ_extra": [], &"time_lock_s": 150.0, &"drill_eta_s": 60.0, &"escape_eta_s": 150.0, &"cash_bags": 8, &"gold_bags": 3, &"deposit_boxes": 6, "rare": [] }
+[INFO][prefab][p1] CameraC1 disabled
+[INFO][prefab][p1] CameraC2 disabled
+[INFO][prefab][p1] CameraC3 disabled
+[INFO][prefab][p1] CameraC7 disabled
+[INFO][prefab][p1] CameraC9 disabled
+[INFO][prefab][p1] CameraC11 disabled
+[INFO][prefab][p1] CameraC13 disabled
+[INFO][prefab][p1] CameraC15 disabled
+[OFP 36.9s t=2.0] SHORTCUT traversal: NPCs despawned, crew stealth_hidden, 8 cameras disabled (GameplayPrefab.set_enabled)
+[OFP 40.9s t=3.1] pilot: calibrated 0.001600 rad/px yaw, 0.001600 rad/px pitch (settings formula said (0.0016, 0.0016))
+[OFP 40.9s t=3.1] spawn (21.0, 0.0, -6.0)
+[INFO][heist][p1] phase CASING -> STEALTH
+[INFO][crew][p1] slot 0 masked (forced=false)
+[OFP 43.8s t=4.8] masked true
+[OFP 43.9s t=4.8] SHORTCUT hole (no burn-through in the G1 mission): rope ladder usable true, hoist Hoist enabled, lid nodes dropped 2 (vault_breach objective state -1)
+[OFP 48.8s t=9.8] pilot: t=5 at (16.5, 0.0, -3.9) corner (9.7, 0.2, -1.3) yaw_err 0.00 fwd=true path=21 mouse_mode=2 state=0 look=(1.94,0.00) pin_yaw=1.93904023981304 bot=false
+[OFP 53.8s t=14.8] pilot: t=10 at (11.2, 0.0, -1.9) corner (9.7, 0.2, -1.3) yaw_err 1.21 fwd=false path=21 mouse_mode=2 state=0 look=(0.73,0.00) pin_yaw=0.9254421876758 bot=false
+[OFP 56.4s t=17.4] pilot: use DockPersonnelDoor (open_door) -> OK in 0.0 s
+[OFP 59.8s t=20.8] pilot: t=15 at (8.7, 0.0, 3.3) corner (9.6, 0.2, 7.6) yaw_err -3.13 fwd=false path=16 mouse_mode=2 state=0 look=(0.20,0.00) pin_yaw=0.01080860821821 bot=false
+[OFP 64.7s t=25.7] pilot: use DockCorridorDoor (open_door) -> OK in 0.0 s
+[OFP 77.7s t=38.6] pilot: use StaffDoorTWW (open_door) -> OK in 8.0 s
+[OFP 78.0s t=39.0] pilot: t=20 at (14.4, 0.0, 8.2) corner (14.1, 0.0, 9.9) yaw_err -0.18 fwd=true path=9 mouse_mode=2 state=0 look=(3.18,-0.51) pin_yaw=3.11478973080375 bot=false
+[OFP 83.1s t=44.0] pilot: t=25 at (18.7, 0.0, 12.6) corner (18.1, 0.2, 12.2) yaw_err 1.20 fwd=false path=3 mouse_mode=2 state=0 look=(6.09,0.00) pin_yaw=6.2787949436024 bot=false
+[OFP 86.1s t=47.0] SHORTCUT bag loot.cash_bricks (weight 1) spawned by LootManager.spawn_bag at (22.7, 0.5, 14.4)
+[OFP 89.3s t=50.3] pilot: use Bag_cash_bricks (pick_bag) -> OK in 1.0 s
+[OFP 92.2s t=53.2] THROW down the hole weight 1 pitch -> rests (25.5, -0.0, 14.5) (2.6 m from the stand, 0.7 s) on SlabG_04 secured false: FAIL not in VT
+WARNING: Sub-surface scattering is not supported in viewports with a transparent background. Disabling SSS in transparent viewport.
+     at: _render_scene (servers/rendering/renderer_rd/forward_clustered/render_forward_clustered.cpp:1963)
+[OFP 96.6s t=53.3] FINDING a bag thrown down the hole from its edge rests at (25.5, -0.0, 14.5), not in VT
+[OFP 103.0s t=59.8] LADDER RopeLadder down: OK in 3.0 s (climb 2.0 s, height 3.2 m; at (24.0, -3.9, 15.4))
+[OFP 106.0s t=60.0] SHORTCUT bag loot.cash_bricks (weight 1) spawned by LootManager.spawn_bag at (23.6, -3.5, 16.3)
+[OFP 108.6s t=62.7] pilot: use Bag_cash_bricks2 (pick_bag) -> OK in 1.0 s
+[OFP 111.2s t=65.2] car throw 0 missed: bag at (23.9, -4.0, 13.5)
+[OFP 112.9s t=66.5] FINDING a walk took RopeLadder by accident at (24.6, -4.0, 14.3)
+[OFP 118.9s t=72.5] pilot: STUCK at (24.0, -4.0, 13.7) heading to (24.0, 0.2, 11.7); rays: h0.05:/root/OfG1Pass/HeistRuntime/Dynamic/Bag_cash_bricks2@(24.0, -3.9, 13.6), h0.20:/root/OfG1Pass/HeistRuntime/Dynamic/Bag_cash_bricks2@(24.0, -3.8, 13.6), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.6, 13.3), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.0, 13.3), slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.6, 13.3) n=(-0.0, 0.0, 1.0), vel=(0.0, 0.0, 0.0) floor=true state=0
+[OFP 121.9s t=72.6] pilot: detour right 0.7 m to (24.7, -3.8, 13.7) (attempt 1)
+[OFP 123.0s t=73.9] pilot: t=5 at (24.0, -2.5, 14.0) corner (24.0, 0.2, 11.7) yaw_err 0.00 fwd=true path=2 mouse_mode=2 state=0 look=(-12.57,0.00) pin_yaw=-12.5663710901135 bot=false
+[OFP 126.1s t=77.0] pilot: STUCK at (24.0, -4.0, 13.7) heading to (24.0, 0.2, 11.7); rays: h0.05:/root/OfG1Pass/HeistRuntime/Dynamic/Bag_cash_bricks2@(24.0, -3.9, 13.6), h0.20:/root/OfG1Pass/HeistRuntime/Dynamic/Bag_cash_bricks2@(24.0, -3.8, 13.6), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.6, 13.3), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.0, 13.3), slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.6, 13.3) n=(0.0, 0.0, 1.0), vel=(0.0, 0.0, 0.0) floor=true state=0
+[OFP 129.0s t=77.1] pilot: detour left 0.7 m to (23.3, -3.8, 13.7) (attempt 2)
+[OFP 131.2s t=79.4] pilot: t=10 at (24.0, -0.8, 13.8) corner (24.0, 0.2, 11.7) yaw_err -0.00 fwd=true path=3 mouse_mode=2 state=0 look=(-6.28,0.00) pin_yaw=-6.28318519446475 bot=false
+[OFP 133.3s t=81.5] pilot: STUCK at (24.0, -4.0, 13.7) heading to (24.0, 0.2, 11.7); rays: h0.05:/root/OfG1Pass/HeistRuntime/Dynamic/Bag_cash_bricks2@(24.0, -3.9, 13.6), h0.20:/root/OfG1Pass/HeistRuntime/Dynamic/Bag_cash_bricks2@(24.0, -3.8, 13.6), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.6, 13.3), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.0, 13.3), slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.6, 13.3) n=(-0.0, 0.0, 1.0), vel=(0.0, 0.0, 0.0) floor=true state=0
+[OFP 136.0s t=81.6] pilot: detour right 1.2 m to (25.2, -3.8, 13.7) (attempt 3)
+[OFP 139.7s t=85.4] pilot: t=15 at (24.0, -0.8, 13.8) corner (24.0, 0.2, 11.7) yaw_err 0.00 fwd=true path=3 mouse_mode=2 state=0 look=(-6.28,0.00) pin_yaw=-6.28318552023848 bot=false
+[OFP 140.8s t=86.5] pilot: STUCK at (24.0, -2.8, 14.0) heading to (24.0, 0.2, 11.7); rays: h0.05:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -2.8, 13.3), h0.20:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -2.6, 13.3), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -2.4, 13.3), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -1.8, 13.3), vel=(0.0, 0.0, 0.0) floor=false state=0
+[OFP 143.2s t=88.9] pilot: STUCK at (24.0, -4.0, 13.7) heading to (24.0, 0.2, 11.7); rays: h0.05:/root/OfG1Pass/HeistRuntime/Dynamic/Bag_cash_bricks2@(24.0, -3.9, 13.6), h0.20:/root/OfG1Pass/HeistRuntime/Dynamic/Bag_cash_bricks2@(24.0, -3.8, 13.6), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.6, 13.3), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.0, 13.3), slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.6, 13.3) n=(-0.0, 0.0, 1.0), vel=(0.0, 0.0, 0.0) floor=true state=0
+[OFP 143.2s t=88.9] pilot: detour right 1.2 m to (25.2, -3.8, 13.7) (attempt 5)
+[OFP 146.0s t=91.6] pilot: t=20 at (24.0, -1.2, 14.0) corner (24.0, 0.2, 11.7) yaw_err 0.00 fwd=true path=3 mouse_mode=2 state=0 look=(-6.28,0.00) pin_yaw=-6.28318530663091 bot=false
+[OFP 148.1s t=93.8] pilot: STUCK at (24.0, -2.8, 14.0) heading to (24.0, 0.2, 11.7); rays: h0.05:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -2.8, 13.3), h0.20:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -2.6, 13.3), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -2.4, 13.3), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -1.8, 13.3), vel=(0.0, 0.0, 0.0) floor=false state=0
+[OFP 150.5s t=96.2] pilot: STUCK at (24.0, -4.0, 13.7) heading to (24.0, 0.2, 11.7); rays: h0.05:/root/OfG1Pass/HeistRuntime/Dynamic/Bag_cash_bricks2@(24.0, -3.9, 13.6), h0.20:/root/OfG1Pass/HeistRuntime/Dynamic/Bag_cash_bricks2@(24.0, -3.8, 13.6), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.6, 13.3), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.0, 13.3), slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.6, 13.3) n=(-0.0, 0.0, 1.0), vel=(0.0, 0.0, 0.0) floor=true state=0
+[OFP 150.5s t=96.2] pilot: detour right 1.2 m to (25.2, -3.8, 13.7) (attempt 7)
+[OFP 152.2s t=97.9] pilot: t=25 at (24.0, -3.3, 14.0) corner (24.0, 0.2, 11.7) yaw_err -0.00 fwd=true path=2 mouse_mode=2 state=0 look=(-6.28,0.00) pin_yaw=-6.28318506642973 bot=false
+[OFP 155.5s t=101.1] pilot: STUCK at (24.0, -2.8, 14.0) heading to (24.0, 0.2, 11.7); rays: h0.05:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -2.8, 13.3), h0.20:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -2.6, 13.3), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -2.4, 13.3), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -1.8, 13.3), vel=(0.0, 0.0, 0.0) floor=false state=0
+[OFP 157.6s t=103.3] pilot: t=30 at (24.0, -4.0, 13.7) corner (24.0, 0.2, 11.7) yaw_err 0.00 fwd=true path=2 mouse_mode=2 state=0 look=(-6.28,0.00) pin_yaw=-6.2831854985634 bot=false
+[OFP 157.9s t=103.5] pilot: STUCK at (24.0, -4.0, 13.7) heading to (24.0, 0.2, 11.7); rays: h0.05:/root/OfG1Pass/HeistRuntime/Dynamic/Bag_cash_bricks2@(24.0, -3.9, 13.6), h0.20:/root/OfG1Pass/HeistRuntime/Dynamic/Bag_cash_bricks2@(24.0, -3.8, 13.6), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.6, 13.3), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.0, 13.3), slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.6, 13.3) n=(-0.0, 0.0, 1.0), vel=(0.0, 0.0, 0.0) floor=true state=0
+[OFP 157.9s t=103.5] pilot: detour right 1.2 m to (25.2, -3.8, 13.7) (attempt 9)
+[OFP 162.8s t=108.5] pilot: STUCK at (24.0, -2.8, 14.0) heading to (24.0, 0.2, 11.7); rays: h0.05:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -2.8, 13.3), h0.20:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -2.6, 13.3), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -2.4, 13.3), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -1.8, 13.3), vel=(0.0, 0.0, 0.0) floor=false state=0
+[OFP 163.9s t=109.6] pilot: t=35 at (24.0, -4.0, 13.7) corner (24.0, 0.2, 11.7) yaw_err 0.00 fwd=true path=2 mouse_mode=2 state=0 look=(-6.28,0.00) pin_yaw=-6.2831852620875 bot=false
+[OFP 165.2s t=110.9] pilot: STUCK at (24.0, -4.0, 13.7) heading to (24.0, 0.2, 11.7); rays: h0.05:/root/OfG1Pass/HeistRuntime/Dynamic/Bag_cash_bricks2@(24.0, -3.9, 13.6), h0.20:/root/OfG1Pass/HeistRuntime/Dynamic/Bag_cash_bricks2@(24.0, -3.8, 13.6), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.6, 13.3), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.0, 13.3), slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.6, 13.3) n=(-0.0, 0.0, 1.0), vel=(0.0, 0.0, 0.0) floor=true state=0
+[OFP 165.2s t=110.9] pilot: detour right 1.2 m to (25.2, -3.8, 13.7) (attempt 11)
+[OFP 169.8s t=115.5] pilot: t=40 at (24.0, -2.2, 14.0) corner (24.0, 0.2, 11.7) yaw_err 0.00 fwd=true path=2 mouse_mode=2 state=0 look=(-6.28,0.00) pin_yaw=-6.28318549965479 bot=false
+[OFP 170.1s t=115.8] pilot: STUCK at (24.0, -2.8, 14.0) heading to (24.0, 0.2, 11.7); rays: h0.05:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -2.8, 13.3), h0.20:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -2.6, 13.3), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -2.4, 13.3), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -1.8, 13.3), vel=(0.0, 0.0, 0.0) floor=false state=0
+[OFP 172.5s t=118.2] pilot: STUCK at (24.0, -4.0, 13.7) heading to (24.0, 0.2, 11.7); rays: h0.05:/root/OfG1Pass/HeistRuntime/Dynamic/Bag_cash_bricks2@(24.0, -3.9, 13.6), h0.20:/root/OfG1Pass/HeistRuntime/Dynamic/Bag_cash_bricks2@(24.0, -3.8, 13.6), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.6, 13.3), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.0, 13.3), slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.6, 13.3) n=(-0.0, 0.0, 1.0), vel=(0.0, 0.0, 0.0) floor=true state=0
+[OFP 172.5s t=118.2] pilot: detour right 1.2 m to (25.2, -3.8, 13.7) (attempt 13)
+[OFP 176.0s t=121.7] pilot: t=45 at (24.0, -0.8, 13.3) corner (24.0, 0.2, 13.8) yaw_err -2.95 fwd=false path=3 mouse_mode=2 state=0 look=(-6.48,0.00) pin_yaw=-6.66718526651676 bot=false
+[OFP 177.4s t=123.1] pilot: STUCK at (24.0, -2.8, 14.0) heading to (24.0, 0.2, 11.7); rays: h0.05:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -2.8, 13.3), h0.20:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -2.6, 13.3), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -2.4, 13.3), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -1.8, 13.3), vel=(0.0, 0.0, 0.0) floor=false state=0
+[OFP 179.8s t=125.5] pilot: STUCK at (24.0, -4.0, 13.7) heading to (24.0, 0.2, 11.7); rays: h0.05:/root/OfG1Pass/HeistRuntime/Dynamic/Bag_cash_bricks2@(24.0, -3.9, 13.6), h0.20:/root/OfG1Pass/HeistRuntime/Dynamic/Bag_cash_bricks2@(24.0, -3.8, 13.6), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.6, 13.3), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.0, 13.3), slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.6, 13.3) n=(-0.0, 0.0, 1.0), vel=(0.0, 0.0, 0.0) floor=true state=0
+[OFP 179.8s t=125.5] pilot: detour right 1.2 m to (25.2, -3.8, 13.7) (attempt 15)
+[OFP 182.3s t=128.0] pilot: t=50 at (24.0, -1.7, 14.0) corner (24.0, 0.2, 11.7) yaw_err 0.00 fwd=true path=3 mouse_mode=2 state=0 look=(-6.28,0.00) pin_yaw=-6.28318550074619 bot=false
+[OFP 184.7s t=130.4] pilot: STUCK at (24.0, -2.8, 14.0) heading to (24.0, 0.2, 11.7); rays: h0.05:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -2.8, 13.3), h0.20:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -2.6, 13.3), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -2.4, 13.3), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -1.8, 13.3), vel=(0.0, 0.0, 0.0) floor=false state=0
+[OFP 187.1s t=132.8] pilot: STUCK at (24.0, -4.0, 13.7) heading to (24.0, 0.2, 11.7); rays: h0.05:/root/OfG1Pass/HeistRuntime/Dynamic/Bag_cash_bricks2@(24.0, -3.9, 13.6), h0.20:/root/OfG1Pass/HeistRuntime/Dynamic/Bag_cash_bricks2@(24.0, -3.8, 13.6), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.6, 13.3), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.0, 13.3), slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.6, 13.3) n=(-0.0, 0.0, 1.0), vel=(0.0, 0.0, 0.0) floor=true state=0
+[OFP 187.1s t=132.8] pilot: detour right 1.2 m to (25.2, -3.8, 13.7) (attempt 17)
+[OFP 188.6s t=134.3] pilot: t=55 at (24.0, -3.8, 14.0) corner (24.0, 0.2, 11.7) yaw_err -0.83 fwd=false path=2 mouse_mode=2 state=0 look=(-5.45,0.00) pin_yaw=-5.64495009387611 bot=false
+[OFP 192.0s t=137.7] pilot: STUCK at (24.0, -2.8, 14.0) heading to (24.0, 0.2, 11.7); rays: h0.05:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -2.8, 13.3), h0.20:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -2.6, 13.3), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -2.4, 13.3), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -1.8, 13.3), vel=(0.0, 0.0, 0.0) floor=false state=0
+[OFP 194.0s t=139.7] pilot: t=60 at (24.0, -4.0, 13.7) corner (24.0, 0.2, 11.7) yaw_err 0.00 fwd=true path=2 mouse_mode=2 state=0 look=(-6.28,0.00) pin_yaw=-6.28318526427029 bot=false
+[OFP 194.4s t=140.1] pilot: STUCK at (24.0, -4.0, 13.7) heading to (24.0, 0.2, 11.7); rays: h0.05:/root/OfG1Pass/HeistRuntime/Dynamic/Bag_cash_bricks2@(24.0, -3.9, 13.6), h0.20:/root/OfG1Pass/HeistRuntime/Dynamic/Bag_cash_bricks2@(24.0, -3.8, 13.6), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.6, 13.3), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.0, 13.3), slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.6, 13.3) n=(-0.0, 0.0, 1.0), vel=(0.0, 0.0, 0.0) floor=true state=0
+[OFP 194.4s t=140.1] pilot: detour right 1.2 m to (25.2, -3.8, 13.7) (attempt 19)
+[OFP 199.4s t=145.1] pilot: STUCK at (24.0, -2.8, 14.0) heading to (24.0, 0.2, 11.7); rays: h0.05:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -2.8, 13.3), h0.20:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -2.6, 13.3), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -2.4, 13.3), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -1.8, 13.3), vel=(0.0, 0.0, 0.0) floor=false state=0
+[OFP 200.2s t=145.9] pilot: t=65 at (24.0, -4.0, 13.7) corner (24.0, 0.2, 11.7) yaw_err 0.00 fwd=true path=2 mouse_mode=2 state=0 look=(-6.28,0.00) pin_yaw=-6.28318550183758 bot=false
+[OFP 201.8s t=147.5] pilot: STUCK at (24.0, -4.0, 13.7) heading to (24.0, 0.2, 11.7); rays: h0.05:/root/OfG1Pass/HeistRuntime/Dynamic/Bag_cash_bricks2@(24.0, -3.9, 13.6), h0.20:/root/OfG1Pass/HeistRuntime/Dynamic/Bag_cash_bricks2@(24.0, -3.8, 13.6), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.6, 13.3), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.0, 13.3), slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.6, 13.3) n=(-0.0, 0.0, 1.0), vel=(0.0, 0.0, 0.0) floor=true state=0
+[OFP 201.8s t=147.5] pilot: detour right 1.2 m to (25.2, -3.8, 13.7) (attempt 21)
+[OFP 206.1s t=151.8] pilot: t=70 at (24.0, -1.7, 14.0) corner (24.0, 0.2, 11.7) yaw_err 0.00 fwd=true path=3 mouse_mode=2 state=0 look=(-6.28,0.00) pin_yaw=-6.28318526536168 bot=false
+[OFP 206.7s t=152.4] pilot: STUCK at (24.0, -2.8, 14.0) heading to (24.0, 0.2, 11.7); rays: h0.05:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -2.8, 13.3), h0.20:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -2.6, 13.3), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -2.4, 13.3), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -1.8, 13.3), vel=(0.0, 0.0, 0.0) floor=false state=0
+[OFP 209.1s t=154.8] pilot: STUCK at (24.0, -4.0, 13.7) heading to (24.0, 0.2, 11.7); rays: h0.05:/root/OfG1Pass/HeistRuntime/Dynamic/Bag_cash_bricks2@(24.0, -3.9, 13.6), h0.20:/root/OfG1Pass/HeistRuntime/Dynamic/Bag_cash_bricks2@(24.0, -3.8, 13.6), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.6, 13.3), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.0, 13.3), slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.6, 13.3) n=(-0.0, 0.0, 1.0), vel=(0.0, 0.0, 0.0) floor=true state=0
+[OFP 209.1s t=154.8] pilot: detour right 1.2 m to (25.2, -3.8, 13.7) (attempt 23)
+[OFP 212.4s t=158.1] pilot: t=75 at (24.0, -0.8, 13.3) corner (24.0, 0.2, 14.0) yaw_err -1.99 fwd=false path=3 mouse_mode=2 state=0 look=(-7.44,0.00) pin_yaw=-7.62718551461148 bot=false
+[OFP 214.0s t=159.7] pilot: STUCK at (24.0, -2.8, 14.0) heading to (24.0, 0.2, 11.7); rays: h0.05:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -2.8, 13.3), h0.20:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -2.6, 13.3), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -2.4, 13.3), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -1.8, 13.3), vel=(0.0, 0.0, 0.0) floor=false state=0
+[OFP 216.4s t=162.1] pilot: STUCK at (24.0, -4.0, 13.7) heading to (24.0, 0.2, 11.7); rays: h0.05:/root/OfG1Pass/HeistRuntime/Dynamic/Bag_cash_bricks2@(24.0, -3.9, 13.6), h0.20:/root/OfG1Pass/HeistRuntime/Dynamic/Bag_cash_bricks2@(24.0, -3.8, 13.6), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.6, 13.3), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.0, 13.3), slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.6, 13.3) n=(-0.0, 0.0, 1.0), vel=(0.0, 0.0, 0.0) floor=true state=0
+[OFP 216.4s t=162.1] pilot: detour right 1.2 m to (25.2, -3.8, 13.7) (attempt 25)
+[OFP 218.6s t=164.3] pilot: t=80 at (24.0, -2.2, 14.0) corner (24.0, 0.2, 11.7) yaw_err 0.00 fwd=true path=2 mouse_mode=2 state=0 look=(-6.28,0.00) pin_yaw=-6.28318526645308 bot=false
+[OFP 221.3s t=167.0] pilot: STUCK at (24.0, -2.8, 14.0) heading to (24.0, 0.2, 11.7); rays: h0.05:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -2.8, 13.3), h0.20:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -2.6, 13.3), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -2.4, 13.3), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -1.8, 13.3), vel=(0.0, 0.0, 0.0) floor=false state=0
+[OFP 223.7s t=169.4] pilot: STUCK at (24.0, -4.0, 13.7) heading to (24.0, 0.2, 11.7); rays: h0.05:/root/OfG1Pass/HeistRuntime/Dynamic/Bag_cash_bricks2@(24.0, -3.9, 13.6), h0.20:/root/OfG1Pass/HeistRuntime/Dynamic/Bag_cash_bricks2@(24.0, -3.8, 13.6), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.6, 13.3), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.0, 13.3), slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.6, 13.3) n=(-0.0, 0.0, 1.0), vel=(0.0, 0.0, 0.0) floor=true state=0
+[OFP 223.7s t=169.4] pilot: detour right 1.2 m to (25.2, -3.8, 13.7) (attempt 27)
+[OFP 224.9s t=170.6] pilot: t=85 at (25.0, -4.0, 13.7) corner (24.0, -3.8, 13.7) yaw_err 0.00 fwd=true path=2 mouse_mode=2 state=0 look=(-4.69,0.00) pin_yaw=-4.68856646910717 bot=false
+[OFP 228.6s t=174.3] pilot: STUCK at (24.0, -2.8, 14.0) heading to (24.0, 0.2, 11.7); rays: h0.05:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -2.8, 13.3), h0.20:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -2.6, 13.3), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -2.4, 13.3), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -1.8, 13.3), vel=(0.0, 0.0, 0.0) floor=false state=0
+[OFP 230.3s t=176.0] pilot: t=90 at (24.0, -4.0, 13.7) corner (24.0, 0.2, 11.7) yaw_err 0.00 fwd=true path=2 mouse_mode=2 state=0 look=(-6.28,0.00) pin_yaw=-6.28318524806673 bot=false
+[OFP 231.0s t=176.7] pilot: STUCK at (24.0, -4.0, 13.7) heading to (24.0, 0.2, 11.7); rays: h0.05:/root/OfG1Pass/HeistRuntime/Dynamic/Bag_cash_bricks2@(24.0, -3.9, 13.6), h0.20:/root/OfG1Pass/HeistRuntime/Dynamic/Bag_cash_bricks2@(24.0, -3.8, 13.6), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.6, 13.3), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.0, 13.3), slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.6, 13.3) n=(-0.0, 0.0, 1.0), vel=(0.0, 0.0, 0.0) floor=true state=0
+[OFP 231.0s t=176.7] pilot: detour right 1.2 m to (25.2, -3.8, 13.7) (attempt 29)
+[OFP 236.1s t=181.6] pilot: STUCK at (24.0, -2.8, 14.0) heading to (24.0, 0.2, 11.7); rays: h0.05:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -2.8, 13.3), h0.20:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -2.6, 13.3), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -2.4, 13.3), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -1.8, 13.3), vel=(0.0, 0.0, 0.0) floor=false state=0
+[OFP 236.7s t=182.3] pilot: t=95 at (24.0, -4.0, 14.0) corner (24.0, 0.2, 11.7) yaw_err -0.00 fwd=true path=2 mouse_mode=2 state=0 look=(-6.28,0.00) pin_yaw=-6.28318522968039 bot=false
+[OFP 238.5s t=184.0] pilot: STUCK at (24.0, -4.0, 13.7) heading to (24.0, 0.2, 11.7); rays: h0.05:/root/OfG1Pass/HeistRuntime/Dynamic/Bag_cash_bricks2@(24.0, -3.9, 13.6), h0.20:/root/OfG1Pass/HeistRuntime/Dynamic/Bag_cash_bricks2@(24.0, -3.8, 13.6), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.6, 13.3), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.0, 13.3), slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.6, 13.3) n=(-0.0, 0.0, 1.0), vel=(0.0, 0.0, 0.0) floor=true state=0
+[OFP 238.5s t=184.0] pilot: detour right 1.2 m to (25.2, -3.8, 13.7) (attempt 31)
+[OFP 242.6s t=188.1] pilot: t=100 at (24.0, -1.2, 14.0) corner (24.0, 0.2, 11.7) yaw_err -0.00 fwd=true path=3 mouse_mode=2 state=0 look=(-6.28,0.00) pin_yaw=-6.28318521129404 bot=false
+[OFP 243.4s t=189.0] pilot: STUCK at (24.0, -2.8, 14.0) heading to (24.0, 0.2, 11.7); rays: h0.05:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -2.8, 13.3), h0.20:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -2.6, 13.3), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -2.4, 13.3), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -1.8, 13.3), vel=(0.0, 0.0, 0.0) floor=false state=0
+[OFP 245.8s t=191.4] pilot: STUCK at (24.0, -4.0, 13.7) heading to (24.0, 0.2, 11.7); rays: h0.05:/root/OfG1Pass/HeistRuntime/Dynamic/Bag_cash_bricks2@(24.0, -3.9, 13.6), h0.20:/root/OfG1Pass/HeistRuntime/Dynamic/Bag_cash_bricks2@(24.0, -3.8, 13.6), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.6, 13.3), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.0, 13.3), slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.6, 13.3) n=(-0.0, 0.0, 1.0), vel=(0.0, 0.0, 0.0) floor=true state=0
+[OFP 245.8s t=191.4] pilot: detour right 1.2 m to (25.2, -3.8, 13.7) (attempt 33)
+[OFP 248.9s t=194.4] pilot: t=105 at (24.0, -0.8, 13.8) corner (24.0, 0.2, 11.7) yaw_err -0.00 fwd=true path=3 mouse_mode=2 state=0 look=(-6.28,0.00) pin_yaw=-6.28318507844961 bot=false
+[OFP 250.7s t=196.3] pilot: STUCK at (24.0, -2.8, 14.0) heading to (24.0, 0.2, 11.7); rays: h0.05:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -2.8, 13.3), h0.20:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -2.6, 13.3), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -2.4, 13.3), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -1.8, 13.3), vel=(0.0, 0.0, 0.0) floor=false state=0
+[OFP 253.1s t=198.7] pilot: STUCK at (24.0, -4.0, 13.7) heading to (24.0, 0.2, 11.7); rays: h0.05:/root/OfG1Pass/HeistRuntime/Dynamic/Bag_cash_bricks2@(24.0, -3.9, 13.6), h0.20:/root/OfG1Pass/HeistRuntime/Dynamic/Bag_cash_bricks2@(24.0, -3.8, 13.6), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.6, 13.3), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.0, 13.3), slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.6, 13.3) n=(-0.0, 0.0, 1.0), vel=(0.0, 0.0, 0.0) floor=true state=0
+[OFP 253.1s t=198.7] pilot: detour right 1.2 m to (25.2, -3.8, 13.7) (attempt 35)
+[OFP 255.1s t=200.7] pilot: t=110 at (24.0, -2.7, 14.0) corner (24.0, 0.2, 11.7) yaw_err 0.00 fwd=true path=2 mouse_mode=2 state=0 look=(-6.28,0.00) pin_yaw=-6.28318537401356 bot=false
+[OFP 258.0s t=203.6] pilot: STUCK at (24.0, -2.8, 14.0) heading to (24.0, 0.2, 11.7); rays: h0.05:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -2.8, 13.3), h0.20:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -2.6, 13.3), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -2.4, 13.3), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -1.8, 13.3), vel=(0.0, 0.0, 0.0) floor=false state=0
+[OFP 260.4s t=206.0] pilot: STUCK at (24.0, -4.0, 13.7) heading to (24.0, 0.2, 11.7); rays: h0.05:/root/OfG1Pass/HeistRuntime/Dynamic/Bag_cash_bricks2@(24.0, -3.9, 13.6), h0.20:/root/OfG1Pass/HeistRuntime/Dynamic/Bag_cash_bricks2@(24.0, -3.8, 13.6), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.6, 13.3), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.0, 13.3), slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -3.6, 13.3) n=(-0.0, 0.0, 1.0), vel=(0.0, 0.0, 0.0) floor=true state=0
+[OFP 260.4s t=206.0] pilot: detour right 1.2 m to (25.2, -3.8, 13.7) (attempt 37)
+[OFP 261.4s t=206.9] pilot: t=115 at (25.1, -4.0, 13.7) corner (24.0, -3.8, 13.7) yaw_err 2.56 fwd=false path=2 mouse_mode=2 state=0 look=(-7.26,0.00) pin_yaw=-7.06763994458743 bot=false
+[OFP 265.4s t=210.9] pilot: STUCK at (24.0, -2.8, 14.0) heading to (24.0, 0.2, 11.7); rays: h0.05:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -2.8, 13.3), h0.20:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -2.6, 13.3), h0.40:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -2.4, 13.3), h1.00:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorB/BX0130_0_00@(24.0, -1.8, 13.3), vel=(0.0, 0.0, 0.0) floor=false state=0
+[OFP 266.8s t=212.3] pilot: t=120 at (24.0, -4.0, 13.7) corner (24.0, 0.2, 11.7) yaw_err 0.00 fwd=true path=2 mouse_mode=2 state=0 look=(-6.28,0.00) pin_yaw=-6.28318535562721 bot=false
+[OFP 266.8s t=212.4] could not reach (24.0, 0.2, 11.7) (at (24.0, -4.0, 13.7))
+[OFP 266.8s t=212.4] ladder RopeLadder approach not reached ((24.0, 0.2, 11.7))
+[OFP 266.8s t=212.4] stray ladder RopeLadder climbed back false
+[OFP 268.6s t=214.1] pilot: use Bag_cash_bricks2 (pick_bag) -> OK in 1.0 s
+[OFP 273.3s t=218.9] car throw 1 missed: bag at (24.0, -4.0, 13.5)
+[OFP 276.3s t=221.5] pilot: use Bag_cash_bricks2 (pick_bag) -> OK in 1.0 s
+[OFP 276.3s t=221.5] FINDING a G-thrown bag does not stay in the open hoist car (car at (24.0, -4.0, 15.2))
+[OFP 278.3s t=223.6] SHORTCUT bag placed in the hoist car (1 in the car)
+[OFP 281.2s t=226.4] pilot: aimed <none>, wanted /root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Lifts/Hoist/Interactable (dist 1.03, angle 0.0 deg, avail 'ui.blocked.phase', LOS ray hit - at -)
+[OFP 281.6s t=226.8] pilot: use send_lift re-press skipped: aimed <none> (dist 1.03, angle 0.0 deg)
+[OFP 282.0s t=227.2] pilot: use send_lift re-press skipped: aimed <none> (dist 1.03, angle 0.0 deg)
+[OFP 282.4s t=227.6] pilot: use send_lift re-press skipped: aimed <none> (dist 1.03, angle 0.0 deg)
+[OFP 282.8s t=228.0] pilot: use send_lift re-press skipped: aimed <none> (dist 1.03, angle 0.0 deg)
+[OFP 283.2s t=228.4] pilot: use send_lift re-press skipped: aimed <none> (dist 1.03, angle 0.0 deg)
+[OFP 283.6s t=228.8] pilot: use send_lift re-press skipped: aimed <none> (dist 1.03, angle 0.0 deg)
+[OFP 284.0s t=229.2] pilot: use send_lift re-press skipped: aimed <none> (dist 1.03, angle 0.0 deg)
+[OFP 284.4s t=229.6] pilot: use send_lift re-press skipped: aimed <none> (dist 1.03, angle 0.0 deg)
+[OFP 284.8s t=230.0] pilot: use send_lift re-press skipped: aimed <none> (dist 1.03, angle 0.0 deg)
+[OFP 285.2s t=230.4] pilot: use send_lift re-press skipped: aimed <none> (dist 1.03, angle 0.0 deg)
+[OFP 285.6s t=230.8] pilot: use send_lift re-press skipped: aimed <none> (dist 1.03, angle 0.0 deg)
+[OFP 286.0s t=231.2] pilot: use send_lift re-press skipped: aimed <none> (dist 1.03, angle 0.0 deg)
+[OFP 286.4s t=231.6] pilot: use send_lift re-press skipped: aimed <none> (dist 1.03, angle 0.0 deg)
+[OFP 286.8s t=232.0] pilot: use send_lift re-press skipped: aimed <none> (dist 1.03, angle 0.0 deg)
+[OFP 287.2s t=232.4] pilot: use send_lift re-press skipped: aimed <none> (dist 1.03, angle 0.0 deg)
+[OFP 287.6s t=232.8] pilot: use send_lift re-press skipped: aimed <none> (dist 1.03, angle 0.0 deg)
+[OFP 288.0s t=233.2] pilot: use send_lift re-press skipped: aimed <none> (dist 1.03, angle 0.0 deg)
+[OFP 288.4s t=233.6] pilot: use send_lift re-press skipped: aimed <none> (dist 1.03, angle 0.0 deg)
+[OFP 288.8s t=234.0] pilot: use send_lift re-press skipped: aimed <none> (dist 1.03, angle 0.0 deg)
+[OFP 289.2s t=234.4] pilot: use send_lift re-press skipped: aimed <none> (dist 1.03, angle 0.0 deg)
+[OFP 289.6s t=234.8] pilot: use send_lift re-press skipped: aimed <none> (dist 1.03, angle 0.0 deg)
+[OFP 290.0s t=235.2] pilot: use send_lift re-press skipped: aimed <none> (dist 1.03, angle 0.0 deg)
+[OFP 290.4s t=235.6] pilot: use send_lift re-press skipped: aimed <none> (dist 1.03, angle 0.0 deg)
+[OFP 290.8s t=236.0] pilot: use send_lift re-press skipped: aimed <none> (dist 1.03, angle 0.0 deg)
+[OFP 291.2s t=236.4] pilot: use send_lift re-press skipped: aimed <none> (dist 1.03, angle 0.0 deg)
+[OFP 291.6s t=236.8] pilot: use send_lift re-press skipped: aimed <none> (dist 1.03, angle 0.0 deg)
+[OFP 292.0s t=237.2] pilot: use send_lift re-press skipped: aimed <none> (dist 1.03, angle 0.0 deg)
+[OFP 292.4s t=237.6] pilot: use send_lift re-press skipped: aimed <none> (dist 1.03, angle 0.0 deg)
+[OFP 292.8s t=238.0] pilot: use send_lift re-press skipped: aimed <none> (dist 1.03, angle 0.0 deg)
+[OFP 293.2s t=238.4] pilot: use send_lift re-press skipped: aimed <none> (dist 1.03, angle 0.0 deg)
+[OFP 293.6s t=238.8] pilot: use send_lift re-press skipped: aimed <none> (dist 1.03, angle 0.0 deg)
+[OFP 294.0s t=239.2] pilot: use send_lift re-press skipped: aimed <none> (dist 1.03, angle 0.0 deg)
+[OFP 294.4s t=239.6] pilot: use send_lift re-press skipped: aimed <none> (dist 1.03, angle 0.0 deg)
+[OFP 294.8s t=240.0] pilot: use send_lift re-press skipped: aimed <none> (dist 1.03, angle 0.0 deg)
+[OFP 295.2s t=240.4] pilot: use send_lift re-press skipped: aimed <none> (dist 1.03, angle 0.0 deg)
+[OFP 295.6s t=240.8] pilot: use send_lift re-press skipped: aimed <none> (dist 1.03, angle 0.0 deg)
+[OFP 296.0s t=241.2] pilot: use send_lift re-press skipped: aimed <none> (dist 1.03, angle 0.0 deg)
+[OFP 296.4s t=241.6] pilot: use send_lift re-press skipped: aimed <none> (dist 1.03, angle 0.0 deg)
+[OFP 296.8s t=242.0] pilot: use send_lift re-press skipped: aimed <none> (dist 1.03, angle 0.0 deg)
+[OFP 297.2s t=242.4] pilot: use send_lift re-press skipped: aimed <none> (dist 1.03, angle 0.0 deg)
+[OFP 297.6s t=242.8] pilot: use send_lift re-press skipped: aimed <none> (dist 1.03, angle 0.0 deg)
+[OFP 298.0s t=243.2] pilot: use send_lift re-press skipped: aimed <none> (dist 1.03, angle 0.0 deg)
+[OFP 298.4s t=243.6] pilot: use send_lift re-press skipped: aimed <none> (dist 1.03, angle 0.0 deg)
+[OFP 298.8s t=244.0] pilot: use send_lift re-press skipped: aimed <none> (dist 1.03, angle 0.0 deg)
+[OFP 299.2s t=244.4] pilot: use send_lift re-press skipped: aimed <none> (dist 1.03, angle 0.0 deg)
+[OFP 299.6s t=244.8] pilot: use send_lift re-press skipped: aimed <none> (dist 1.03, angle 0.0 deg)
+[OFP 300.0s t=245.2] pilot: use send_lift re-press skipped: aimed <none> (dist 1.03, angle 0.0 deg)
+[OFP 300.4s t=245.6] pilot: use send_lift re-press skipped: aimed <none> (dist 1.03, angle 0.0 deg)
+[OFP 300.8s t=246.0] pilot: use send_lift re-press skipped: aimed <none> (dist 1.03, angle 0.0 deg)
+[OFP 301.2s t=246.4] pilot: use send_lift re-press skipped: aimed <none> (dist 1.03, angle 0.0 deg)
+[OFP 301.6s t=246.8] pilot: use send_lift re-press skipped: aimed <none> (dist 1.03, angle 0.0 deg)
+[OFP 302.0s t=247.2] pilot: use send_lift re-press skipped: aimed <none> (dist 1.03, angle 0.0 deg)
+[OFP 302.4s t=247.6] pilot: use send_lift re-press skipped: aimed <none> (dist 1.03, angle 0.0 deg)
+[OFP 302.8s t=248.0] pilot: use send_lift re-press skipped: aimed <none> (dist 1.03, angle 0.0 deg)
+[OFP 303.2s t=248.4] pilot: use send_lift re-press skipped: aimed <none> (dist 1.03, angle 0.0 deg)
+[OFP 303.6s t=248.8] pilot: use send_lift re-press skipped: aimed <none> (dist 1.03, angle 0.0 deg)
+[OFP 304.0s t=249.2] pilot: use send_lift re-press skipped: aimed <none> (dist 1.03, angle 0.0 deg)
+[OFP 304.4s t=249.6] pilot: use send_lift re-press skipped: aimed <none> (dist 1.03, angle 0.0 deg)
+[OFP 304.8s t=250.0] pilot: use send_lift re-press skipped: aimed <none> (dist 1.03, angle 0.0 deg)
+[OFP 305.2s t=250.4] pilot: use send_lift re-press skipped: aimed <none> (dist 1.03, angle 0.0 deg)
+[OFP 305.6s t=250.8] pilot: use send_lift re-press skipped: aimed <none> (dist 1.03, angle 0.0 deg)
+[OFP 306.0s t=251.2] pilot: use send_lift re-press skipped: aimed <none> (dist 1.03, angle 0.0 deg)
+[OFP 306.4s t=251.6] pilot: use send_lift re-press skipped: aimed <none> (dist 1.03, angle 0.0 deg)
+[OFP 306.8s t=252.0] pilot: use send_lift re-press skipped: aimed <none> (dist 1.03, angle 0.0 deg)
+[OFP 307.2s t=252.4] pilot: use send_lift re-press skipped: aimed <none> (dist 1.03, angle 0.0 deg)
+[OFP 307.6s t=252.8] pilot: use send_lift re-press skipped: aimed <none> (dist 1.03, angle 0.0 deg)
+[OFP 308.0s t=253.2] pilot: use send_lift re-press skipped: aimed <none> (dist 1.03, angle 0.0 deg)
+[OFP 308.4s t=253.6] pilot: use send_lift re-press skipped: aimed <none> (dist 1.03, angle 0.0 deg)
+[OFP 308.8s t=254.0] pilot: use send_lift re-press skipped: aimed <none> (dist 1.03, angle 0.0 deg)
+[OFP 309.2s t=254.4] pilot: use send_lift re-press skipped: aimed <none> (dist 1.03, angle 0.0 deg)
+[OFP 309.6s t=254.8] pilot: use send_lift re-press skipped: aimed <none> (dist 1.03, angle 0.0 deg)
+[OFP 310.0s t=255.2] pilot: use send_lift re-press skipped: aimed <none> (dist 1.03, angle 0.0 deg)
+[OFP 310.4s t=255.6] pilot: use send_lift re-press skipped: aimed <none> (dist 1.03, angle 0.0 deg)
+[OFP 310.8s t=256.0] pilot: use send_lift re-press skipped: aimed <none> (dist 1.03, angle 0.0 deg)
+[OFP 311.2s t=256.4] pilot: use send_lift re-press skipped: aimed <none> (dist 1.03, angle 0.0 deg)
+[OFP 311.6s t=256.8] pilot: use send_lift re-press skipped: aimed <none> (dist 1.03, angle 0.0 deg)
+[OFP 312.0s t=257.2] pilot: use send_lift re-press skipped: aimed <none> (dist 1.03, angle 0.0 deg)
+[OFP 312.4s t=257.6] pilot: use send_lift re-press skipped: aimed <none> (dist 1.03, angle 0.0 deg)
+[OFP 312.8s t=258.0] pilot: use send_lift re-press skipped: aimed <none> (dist 1.03, angle 0.0 deg)
+[OFP 313.2s t=258.4] pilot: use send_lift re-press skipped: aimed <none> (dist 1.03, angle 0.0 deg)
+[OFP 313.6s t=258.8] pilot: use send_lift re-press skipped: aimed <none> (dist 1.03, angle 0.0 deg)
+[OFP 314.0s t=259.2] pilot: use send_lift re-press skipped: aimed <none> (dist 1.03, angle 0.0 deg)
+[OFP 314.4s t=259.6] pilot: use send_lift re-press skipped: aimed <none> (dist 1.03, angle 0.0 deg)
+[OFP 314.8s t=260.0] pilot: use send_lift re-press skipped: aimed <none> (dist 1.03, angle 0.0 deg)
+[OFP 315.2s t=260.4] pilot: use send_lift re-press skipped: aimed <none> (dist 1.03, angle 0.0 deg)
+[OFP 315.6s t=260.8] pilot: use send_lift re-press skipped: aimed <none> (dist 1.03, angle 0.0 deg)
+[OFP 316.0s t=261.2] pilot: use send_lift re-press skipped: aimed <none> (dist 1.03, angle 0.0 deg)
+[OFP 316.4s t=261.6] pilot: use send_lift re-press skipped: aimed <none> (dist 1.03, angle 0.0 deg)
+[OFP 316.8s t=262.0] pilot: use send_lift re-press skipped: aimed <none> (dist 1.03, angle 0.0 deg)
+[OFP 317.2s t=262.4] pilot: use send_lift re-press skipped: aimed <none> (dist 1.03, angle 0.0 deg)
+[OFP 317.2s t=262.4] pilot: use Hoist (send_lift) -> FAILED in 30.0 s
+[OFP 317.2s t=262.4] lift Hoist panel 0 not used (at (24.9, -4.0, 15.4))
+[OFP 317.2s t=262.4] FAIL hole/hoist up (alarm )
+[OFP] FAIL hole/hoist up
+[OFP] RESULT FAIL hole
+[OFP] RESULT FAIL (hole FAIL)
+WARNING: 131 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)

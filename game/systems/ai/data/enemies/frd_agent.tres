@@ -9,12 +9,12 @@ display_name = "FRD Agent"
 is_special = false
 health = PackedFloat32Array(75, 75, 112.5, 150, 225, 300)
 headshot_mult = PackedFloat32Array(3, 3, 3, 3, 3, 3)
-damage = PackedFloat32Array(12, 12, 18, 24, 36, 48)
+damage = PackedFloat32Array(8, 10, 18, 24, 36, 48)
 move_speed = 3.8
 weapon = &"weapon.npc_pistol"
 detection_preset = &"police"
 params = {
-"_note": "L1.5 FRD field agent (PD2 FBI suit). Placeholder stats between Patrol Officer and TAC Light (◇).",
+"_note": "L1.5 FRD field agent (PD2 FBI suit). Placeholder stats between Patrol Officer and TAC Light (◇). PO-17 (D-145 §2): Routine/Tense damage lowered toward PD2 Normal/Hard (◇).",
 "aim_delay_s": 0.65,
 "armor_body_mult": 1.0,
 "explosive_mult": 1.0,

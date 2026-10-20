@@ -60,7 +60,7 @@ func test_po5_force_cap_by_crew_and_stage() -> void:
 	assert_eq(d.force_cap(2), 6, "wave 2 (75%)")
 	assert_eq(d.force_cap(3), 8, "wave 3+ (100%)")
 	assert_eq(d.force_cap(7), 8, "wave 7 stays at 100%")
-	assert_eq(d._force_pool(1), ceili(8 * 10.3), "wave 1 force pool (PD2 175 / 17 per force)")
+	assert_eq(d._force_pool(1), ceili(8.0 * 10.3 * 0.6), "wave 1 force pool (PD2 175 / 17 per force; PO-17 Routine x0.6)")
 	assert_true(d._force_pool(3) > d._force_pool(1), "later waves have a larger pool")
 	assert_true(d.police_budget() <= d.force_cap(), "police budget bounded by the force cap")
 
@@ -165,6 +165,7 @@ func test_po5_force_pool_spent_ends_assault() -> void:
 	tw.build_s = 60.0
 	tw.sustain_by_stage_s = PackedFloat32Array([120.0, 120.0, 120.0])
 	tw.force_pool_per_force = PackedFloat32Array([0.75, 0.75, 0.75])  # pool = ceil(8 x 0.75) = 6
+	tw.force_pool_difficulty_mult = PackedFloat32Array()  # PO-17's Routine x0.6 off: this test pins the pool mechanism
 	tw.fade_retreat = false
 	await _launch(3, {"director_tweak": tw})
 	var d: AssaultDirector = _director()

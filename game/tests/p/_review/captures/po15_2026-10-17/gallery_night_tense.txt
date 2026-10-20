@@ -1,0 +1,7 @@
+[PO15 t=0.5] variants { &"centrepiece": [&"cp_landing"], &"canvas_orchard": [&"orchard_calloway"], &"canvas_widow": [&"widow_sallow"], &"canvas_saint": [&"saint_maritime"], &"sensor_net": [&"sensors_upper"], &"conservator": [&"cons_gone"], &"keycard": [&"kc_curator", &"kc_registrar"], &"code_note": [&"code_security_log"], &"guard_post": [&"dock_smoker", &"rover_basement", &"rover_ground"], &"security_room_staffed": [&"sec_empty"], &"camera": [&"cam_c"], &"laser_pattern": [&"lz_sweep"], &"curator_route": [&"curator_office"], &"court_doors": [&"court_doors_open"], &"areaway": [&"grate_padlocked"], &"escape": [&"esc_mews"], &"xl_crate": [], &"admin_pa": [], &"gala_extra": [&"gx_cloakroom"], &"last_call_s": 720.0, &"patrons": 3, &"stragglers": 0, &"store_paintings": 4, &"consignment_lockers": 6, &"escape_eta_s": 90.0, "rare": [] }
+[PO15 t=0.5] guard Npc_guard at (22.0, 0.0, 17.0)
+[PO15 t=0.5] guard Npc_guard2 at (10.0, 0.0, 7.0)
+[PO15 t=0.5] guard Npc_guard3 at (10.0, -4.2, 7.0)
+[PO15 t=0.5] guard Npc_guard4 at (43.5, 0.0, -2.5)
+[PO15 t=0.5] guard Npc_guard5 at (9.0, 5.4, 18.2)
+[PO15] ROW gallery_night|1|21|guards 5|cap 4|hud_cap 4|expect guards >=5 cap 4|doubled 0|PASS

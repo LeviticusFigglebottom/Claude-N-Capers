@@ -1,0 +1,10 @@
+[gd_scene format=3]
+
+[ext_resource type="ArrayMesh" path="res://world/characters/_props/weapon_silhouettes/weapon_silhouette_heron_308_mesh.res" id="1_l0ofm"]
+
+[node name="WeaponSilhouette" type="MeshInstance3D" unique_id=460340975]
+cast_shadow = 0
+visibility_range_begin = 25.0
+mesh = ExtResource("1_l0ofm")
+metadata/model = "heron_308"
+metadata/tris = 180

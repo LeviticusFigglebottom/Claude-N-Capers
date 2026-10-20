@@ -116,6 +116,25 @@ extends Resource
 @export var control_special_interval_s: float = 20.0
 @export var control_special_chance: float = 0.5
 
+@export_group("Low difficulties (D-145 §2, PO-17)")
+## ◇ PO-17: multipliers per Enums.Difficulty (ROUTINE..CATACLYSM) that bring Routine near PD2 Normal and Tense near PD2
+## Hard; Hazardous and up stay 1.0 (unchanged). Read through by_difficulty() (missing entries = 1.0).
+## x the per-assault force pool (AssaultDirector._force_pool): shorter assaults on the low tiers.
+@export var force_pool_difficulty_mult: PackedFloat32Array = PackedFloat32Array([0.6, 0.8, 1.0, 1.0, 1.0, 1.0])
+## x assault_refill_interval_s (the PO6-16 top-up cadence, also the at-cap re-check): losses are replaced
+## more slowly on the low tiers.
+@export var refill_interval_difficulty_mult: PackedFloat32Array = PackedFloat32Array([2.0, 1.5, 1.0, 1.0, 1.0, 1.0])
+## x assault_special_share[stage]: fewer specials riding with the assault squads on the low tiers.
+@export var special_share_difficulty_mult: PackedFloat32Array = PackedFloat32Array([0.5, 0.75, 1.0, 1.0, 1.0, 1.0])
+
+@export_group("Early armor (D-145 §3, PO-18)")
+## Below this Enums.Difficulty (HAZARDOUS = PD2 Very Hard) no unit the director spawns has damage-reducing body
+## armor (EnemyRoster.has_body_armor: a frontal plate, armor_body_mult < 1, or plates). EnemyRoster.resolve remaps an
+## armored id to its armored_substitutes entry (TAC Heavy -> TAC Light, so breach / heli squads keep their size) and
+## skips one without a substitute (Wreckers). Bulwark shields are not body armor (D-099: Routine has shields).
+@export var armored_min_difficulty: int = 2
+@export var armored_substitutes: Dictionary[StringName, StringName] = {&"enemy.tac_heavy": &"enemy.tac_light"}
+
 @export_group("Factions (L1.5)")
 ## Faction id per Enums.Difficulty (ROUTINE..CATACLYSM). The faction remaps every role id to
 ## systems/ai/data/enemies/<faction suffix>/<role>.tres when that file exists (groups.md: reskins
@@ -168,3 +187,10 @@ extends Resource
 @export var captain_retreat_shields: int = 3
 ## Brandt leaves the map this long after retreating (◇); remaining shields break up into normal units.
 @export var captain_despawn_s: float = 4.0
+
+
+## Entry `difficulty` of a per-difficulty multiplier array (clamped to its size), `fallback` when it is empty.
+static func by_difficulty(arr: PackedFloat32Array, difficulty: int, fallback: float = 1.0) -> float:
+	if arr.is_empty():
+		return fallback
+	return arr[clampi(difficulty, 0, arr.size() - 1)]
