@@ -40,6 +40,7 @@ func _run() -> void:
 	await get_tree().create_timer(3.0).timeout
 	var mission: Node = _flow.runtime.mission
 	await _key(_key_of(&"mask_up"), 2.6)
+	_complete_before(mission, &"time_lock")  # setup: the steps ahead of the time lock are done
 	mission.call(&"_start_time_lock", &"code")  # setup: the console code went in
 	await get_tree().create_timer(2.0).timeout
 	_print_objective()
@@ -48,6 +49,7 @@ func _run() -> void:
 	if not sd.is_empty():
 		sd[0].call(&"raise_alarm", &"setup")
 	await get_tree().create_timer(2.0).timeout
+	_complete_before(mission, &"escape_wait")
 	mission.call(&"_call_escape")  # setup: [secure] is done
 	await get_tree().create_timer(2.0).timeout
 	_print_objective()
@@ -64,3 +66,13 @@ func _print_objective() -> void:
 			if (l as Label).is_visible_in_tree() and (l as Label).text != "":
 				parts.append((l as Label).text)
 	print("TIMERS ", " | ".join(parts))
+
+
+## Completes every ACTIVE objective that comes before `upto` in the mission's order (HUD shows the first open step).
+func _complete_before(mission: Node, upto: StringName) -> void:
+	var def: HeistDef = HeistRegistry.get_def(_heist)
+	for id: StringName in def.objectives:
+		if id == upto:
+			return
+		if int(mission.call(&"objective_state", id)) == Enums.ObjectiveState.ACTIVE:
+			mission.call(&"complete", id)

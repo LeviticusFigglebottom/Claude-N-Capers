@@ -338,9 +338,9 @@ func revive(by_slot: int) -> void:
 
 
 ## A3-04 (L2.8): Taser / Phantom takedown. `state` is CrewState.TASED or CLOAKER_DOWNED; only a
-## NORMAL (or SWAN_SONG) crew member can be taken down. Not a down, no bleedout; helpless until a
-## teammate revives them (ReviveInteractable); D-093: not revived within bleedout_time_s -> custody (no
-## down counted). Emits crew_tased / crew_cloaker_downed [R]. Server.
+## NORMAL (or SWAN_SONG) crew member can be taken down. TASED: helpless (not a down) until a teammate revives them,
+## the tase breaks, or it runs out (D-145: then a down). CLOAKER_DOWNED (D-145, PD2): a counted down with the
+## bleed-out timer (_kicked_down). Emits crew_tased / crew_cloaker_downed [R]. Server.
 func incapacitate(state: Enums.CrewState, by_net_id: int = 0) -> bool:
 	if _crew == null or not Net.is_authority():
 		return false
@@ -350,16 +350,40 @@ func incapacitate(state: Enums.CrewState, by_net_id: int = 0) -> bool:
 	var cur: int = _crew.crew_state
 	if cur != Enums.CrewState.NORMAL and cur != Enums.CrewState.SWAN_SONG:
 		return false
+	if state == Enums.CrewState.CLOAKER_DOWNED:
+		return _kicked_down(by_net_id)
 	_crew.set_crew_state(state)
 	helpless_left = Tweak.crew().bleedout_time_s + Modifiers.add(_slot(), &"defense.bleedout_time_add")  # D-093
 	if _revive != null:
 		_revive.enabled = true
-	var sig: StringName = &"crew_tased" if state == Enums.CrewState.TASED else &"crew_cloaker_downed"
-	EventBus.emit_signal(sig, _crew.slot, by_net_id)
-	Net.replicate_event(sig, [_crew.slot, by_net_id])
-	Log.info(&"combat", "slot %d %s by %d" % [_crew.slot, sig, by_net_id])
+	EventBus.crew_tased.emit(_crew.slot, by_net_id)
+	Net.replicate_event(&"crew_tased", [_crew.slot, by_net_id])
+	Log.info(&"combat", "slot %d crew_tased by %d" % [_crew.slot, by_net_id])
 	return true
 
+
+## D-145 (PD2, LEAD; amends D-093): a Phantom kick is a revivable DOWN: a down counted (crew_downed), the bleed-out
+## timer (custody only when it runs out; the last down goes to custody at once, as go_down), revivable. The crew
+## member stays in CLOAKER_DOWNED (kicked flat, cannot shoot: PD2's incapacitated) for the presentation.
+func _kicked_down(by_net_id: int) -> bool:
+	EventBus.crew_cloaker_downed.emit(_crew.slot, by_net_id)
+	Net.replicate_event(&"crew_cloaker_downed", [_crew.slot, by_net_id])
+	Log.info(&"combat", "slot %d crew_cloaker_downed by %d" % [_crew.slot, by_net_id])
+	if downs_used >= max_downs():
+		go_to_custody()
+		return true
+	downs_used += 1
+	bleedout_left = Tweak.crew().bleedout_time_s + Modifiers.add(_slot(), &"defense.bleedout_time_add")
+	down_s = 0.0
+	helpless_left = 0.0
+	_crew.set_crew_state(Enums.CrewState.CLOAKER_DOWNED)
+	if _revive != null:
+		_revive.enabled = true
+	downed.emit(downs_used)
+	EventBus.crew_downed.emit(_crew.slot, downs_used)
+	Net.replicate_event(&"crew_downed", [_crew.slot, downs_used])
+	BloodFx.bleed(_crew.net_id, true, _crew.global_position, BloodFx.RATE_DOWNED)  # D-113
+	return true
 
 ## L2.8: TASED or CLOAKER_DOWNED (helpless, revivable, not a down).
 func is_incapacitated() -> bool:
@@ -380,6 +404,18 @@ func end_tase() -> bool:
 		return false
 	_disable_revive()
 	_crew.set_crew_state(Enums.CrewState.NORMAL)
+	return true
+
+
+## Server, D-145 (PD2: a tase that runs out downs the player): a TASED crew member goes DOWNED (a down counted,
+## bleed-out, revivable, can shoot from the floor). The Stinger calls it when its long tase ends (L4.4); the helpless
+## timer is the fallback. Returns false when not TASED.
+func tase_expired() -> bool:
+	if _crew == null or not Net.is_authority() or _crew.crew_state != Enums.CrewState.TASED:
+		return false
+	if _crew.weapons != null:
+		_crew.weapons.involuntary_fire = false
+	go_down()
 	return true
 
 
@@ -412,11 +448,19 @@ func _tick_down_states(delta: float) -> bool:
 				bleedout_left = 0.0
 				go_to_custody()
 			return true
-		Enums.CrewState.TASED, Enums.CrewState.CLOAKER_DOWNED:
-			# D-093: not revived within the bleedout time -> custody, as if bled out, no down counted.
+		Enums.CrewState.TASED:
+			# D-145 (PD2; amends D-093): a tase that runs out ends in a DOWN (bleed-out decides custody).
 			helpless_left -= delta
 			if helpless_left <= 0.0:
 				helpless_left = 0.0
+				tase_expired()
+			return true
+		Enums.CrewState.CLOAKER_DOWNED:
+			# D-145: a kick is a down: it bleeds out like DOWNED, custody only when the timer runs out.
+			bleedout_left -= delta
+			down_s += delta
+			if bleedout_left <= 0.0:
+				bleedout_left = 0.0
 				go_to_custody()
 			return true
 		Enums.CrewState.CUSTODY:

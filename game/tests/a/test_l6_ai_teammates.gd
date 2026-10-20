@@ -13,6 +13,14 @@ func before_each() -> void:
 	await wait_physics_frames(2)
 
 
+func _relaunch(difficulty: int) -> void:
+	if _rt != null and is_instance_valid(_rt):
+		_rt.teardown()
+		await wait_frames(2)
+	_rt = await HeistLauncher.launch(&"unit_map", 42, difficulty, self, {"map_packed": ATestMaps.basic(0, 0)})
+	await wait_physics_frames(2)
+
+
 func after_each() -> void:
 	Engine.time_scale = 1.0
 	if _rt != null and is_instance_valid(_rt):
@@ -225,6 +233,7 @@ func test_p3_ai_frees_cloaker_downed_and_tased_human() -> void:
 ## L2.12 / L6.1 (PD2 bots free an arrested player): a downed human cuffed by police is uncuffed by an AI teammate
 ## (back to DOWNED) and then revived.
 func test_l2_12_ai_uncuffs_and_revives_cuffed_downed_human() -> void:
+	await _relaunch(Enums.Difficulty.HAZARDOUS)  # D-145: police cuff a downed player from Hazardous up
 	Engine.time_scale = TIME_SCALE
 	await _go_loud()
 	_rt.teleport_crew(0, Transform3D(Basis.IDENTITY, Vector3(4, 0.05, 0)))
@@ -248,6 +257,7 @@ func test_l2_12_ai_uncuffs_and_revives_cuffed_downed_human() -> void:
 ## L2.12 / L6.1: the officer who cuffed the downed human is still next to him: the AI shoot him first (arrester_score_mult)
 ## and free the human only once he is down (arrester_guard_m; freed next to him he would re-arrest before the revive).
 func test_l2_12_ai_kill_the_arresting_cop_before_uncuffing() -> void:
+	await _relaunch(Enums.Difficulty.HAZARDOUS)  # D-145: police cuff a downed player from Hazardous up
 	Engine.time_scale = TIME_SCALE
 	await _go_loud()
 	_rt.teleport_crew(0, Transform3D(Basis.IDENTITY, Vector3(4, 0.05, 0)))

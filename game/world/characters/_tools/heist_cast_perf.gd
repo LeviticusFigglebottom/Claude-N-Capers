@@ -6,7 +6,7 @@
 ## OF forces its vip_client slot. Writes user://cast_perf_<heist>_<view>.png. Owner: ENV D.
 ##   xvfb-run -a -s "-screen 0 1280x720x24" /opt/godot/godot --audio-driver Dummy --rendering-driver opengl3 \
 ##     --resolution 1280x720 --path game res://world/characters/_tools/heist_cast_perf.tscn -- \
-##     --heist=ostrander_federal [--seed=1037] [--loud] [--seconds=90] [--detail] [--view=<name>]
+##     --heist=ostrander_federal [--seed=1037] [--loud] [--seconds=90] [--detail] [--view=<name>[,<name>...]] [--shadows-only]
 ## --detail adds per view: draws with every light's shadow off, the shadow proposals (cast shadows off / off beyond
 ## FAR_SHADOW_M, the sun at 2 splits / half distance), and each on-screen NPC's own draws (top 8).
 extends Node
@@ -17,6 +17,10 @@ const VIEWS: Dictionary = {
 		["hall_south_eye", Vector3(24.0, 1.7, 35.5), Vector3(24.0, 1.2, 17.0)],
 		["hall_south_high", Vector3(24.0, 4.2, 35.8), Vector3(24.0, 0.8, 18.0)],
 		["hall_west_diag", Vector3(9.0, 1.7, 34.5), Vector3(36.0, 1.0, 18.0)],
+		# C's review cameras (ostrander_federal_layout_content.gd), for the D-146 levelcheck reconciliation
+		["rc_hall_entrance", Vector3(24.0, 1.7, 35.0), Vector3(24.0, 3.0, 18.0)],
+		["rc_hall_counter", Vector3(38.5, 1.7, 18.6), Vector3(9.0, 1.2, 18.0)],
+		["rc_hall_from_gallery", Vector3(24.0, 6.6, 19.0), Vector3(24.0, 1.0, 32.0)],
 	],
 	"gallery_night": [
 		["gala_south_eye", Vector3(22.0, 1.7, 25.5), Vector3(22.0, 1.2, 9.0)],
@@ -48,6 +52,7 @@ var _loud: bool = false
 var _seconds: float = 90.0
 var _detail: bool = false
 var _view: String = ""
+var _shadows_only: bool = false
 
 
 func _ready() -> void:
@@ -60,6 +65,7 @@ func _ready() -> void:
 			"seconds": _seconds = float(kv[1])
 			"detail": _detail = true
 			"view": _view = kv[1]
+			"shadows-only": _shadows_only = true
 	var opts: Dictionary = {"ai_teammates": 0}
 	if FORCE.has(_heist):
 		opts["preplan"] = {"force_variants": FORCE[_heist]}
@@ -85,12 +91,15 @@ func _ready() -> void:
 	add_child(cam)
 	cam.current = true
 	for v: Array in VIEWS.get(_heist, []):
-		if _view != "" and String(v[0]) != _view:
+		if _view != "" and not _view.split(",").has(String(v[0])):
 			continue
 		cam.look_at_from_position(v[1], v[2], Vector3.UP)
 		for _i: int in 20:
 			await get_tree().process_frame
 		var shown: Array = _info()
+		if _shadows_only:
+			await _shadow_breakdown(String(v[0]), npcs, shown)
+			continue
 		var tiers: Dictionary = {"full": 0, "proxy": 0, "offscreen": 0}
 		var bands: Dictionary = {}
 		var tris_full: int = 0
@@ -260,6 +269,75 @@ func _shadow_proposals(view: String, npcs: Array[Node], cam: Camera3D, lit: Arra
 		sun.directional_shadow_max_distance = dist
 		print("[CASTPERF] view=%s sun %s mode=%d max_distance=%.0f m: 2 splits -> %d draws; max_distance %.0f m -> %d draws"
 				% [view, sun.name, mode, dist, two, dist * 0.5, half])
+
+
+## --shadows-only: per shadowed light kind and the sun options, each alone and restored: sun shadows off (positional
+## lights keep theirs), positional shadows off (the sun keeps its), the sun at 2 splits, the sun at half distance, and
+## the cast on CAST_LAYER excluded from the positional lights' shadow casters.
+func _shadow_breakdown(view: String, npcs: Array[Node], shown: Array) -> void:
+	var suns: Array[DirectionalLight3D] = []
+	var pos: Array[Light3D] = []
+	for l: Node in get_tree().root.find_children("*", "Light3D", true, false):
+		var li: Light3D = l as Light3D
+		if not li.shadow_enabled or not li.is_visible_in_tree():
+			continue
+		if li is DirectionalLight3D:
+			suns.append(li as DirectionalLight3D)
+		else:
+			pos.append(li)
+	print("[CASTPERF] view=%s shadows-only: frame %d draws; %d sun, %d positional shadowed lights" % [view, shown[0],
+			suns.size(), pos.size()])
+	for li: Light3D in suns:
+		li.shadow_enabled = false
+	var no_sun: int = await _draws()
+	for li: Light3D in suns:
+		li.shadow_enabled = true
+	for li: Light3D in pos:
+		li.shadow_enabled = false
+	var no_pos: int = await _draws()
+	for li: Light3D in pos:
+		li.shadow_enabled = true
+	print("[CASTPERF] view=%s sun shadows off -> %d; positional shadows off -> %d" % [view, no_sun, no_pos])
+	var every: Array[Light3D] = pos.duplicate()
+	for sun: DirectionalLight3D in suns:
+		every.append(sun)
+	for li: Light3D in every:
+		li.shadow_enabled = false
+	var main_all: int = await _draws()
+	_set_cast_visible(npcs, false)
+	var main_map: int = await _draws()
+	_set_cast_visible(npcs, true)
+	for li: Light3D in every:
+		li.shadow_enabled = true
+	print("[CASTPERF] view=%s main pass (all shadows off): %d draws = map %d + cast %d" % [view, main_all, main_map,
+			main_all - main_map])
+	for sun: DirectionalLight3D in suns:
+		var mode: DirectionalLight3D.ShadowMode = sun.directional_shadow_mode
+		var dist: float = sun.directional_shadow_max_distance
+		sun.directional_shadow_mode = DirectionalLight3D.SHADOW_PARALLEL_2_SPLITS
+		var two: int = await _draws()
+		sun.directional_shadow_mode = mode
+		sun.directional_shadow_max_distance = dist * 0.5
+		var half: int = await _draws()
+		sun.directional_shadow_max_distance = dist
+		print("[CASTPERF] view=%s sun %s mode=%d max_distance=%.0f m: 2 splits -> %d; max_distance %.0f m -> %d"
+				% [view, sun.name, mode, dist, two, dist * 0.5, half])
+	var saved_layers: Dictionary = {}
+	for n: Node in npcs:
+		for g: Node in n.find_children("*", "GeometryInstance3D", true, false):
+			var gi: GeometryInstance3D = g as GeometryInstance3D
+			saved_layers[gi] = gi.layers
+			gi.layers = CAST_LAYER_BIT
+	var saved_masks: Dictionary = {}
+	for li: Light3D in pos:
+		saved_masks[li] = li.shadow_caster_mask
+		li.shadow_caster_mask = li.shadow_caster_mask & ~CAST_LAYER_BIT
+	var split: int = await _draws()
+	for gi: GeometryInstance3D in saved_layers:
+		gi.layers = saved_layers[gi]
+	for li: Light3D in saved_masks:
+		li.shadow_caster_mask = saved_masks[li]
+	print("[CASTPERF] view=%s cast excluded from the %d positional lights' shadow casters -> %d" % [view, pos.size(), split])
 
 
 func _draws() -> int:
