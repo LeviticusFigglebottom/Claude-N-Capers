@@ -1486,7 +1486,7 @@ plaza, the gallery and the vestibule.
 |---|---|---|
 | Draw calls per view | ≤ 2,500 | The worst views are `rc_hall_from_gallery`, `rc_hall_entrance` and `rc_ext_plaza`. The coffers, teller grilles, queue posts, benches, deposit boxes (44 in SD/VT) and the facade's window bays are **MultiMeshInstance3D** per kit item. |
 | Triangles per view | ≤ 3M (provisional, QC-10) | The coffered ceiling is a single trim-sheet mesh with 2 LODs. The far towers are LOD facades. |
-| Shadowed lights in any shot | ≤ 8 | The sun (1) + 4 hall pendants + 1 per room elsewhere. The counter lamps, sconces and battens are unshadowed. |
+| Shadowed lights in any shot | ≤ 8 | The sun (1) + **1** hall pendant (LEAD r246: the other 3 pendants use the same bronze fixture, unshadowed) + 1 per room elsewhere. The check counts shadowed lights in the frustum (what Compatibility pays), and the 6 shadowed room fixtures behind the hall walls (SR, VT, PR, OF, LD, BB) are in every hall view: sun 1 + 6 + 1 pendant = 8. The counter lamps, sconces, battens and the 2 warm hall pools are unshadowed. |
 | Texture memory | ≤ 1.5 GB | The shared library (limestone, marble, terrazzo, bronze, brass, plaster, carpet, wood veneer) covers ~85%. New: limestone ashlar, the coffer trim sheet, the meridian line inlay. |
 | NPCs alive | stealth: guards ≤ 8 (6 + 2 rare), civilians ≤ 22 (19 + 2 plaza + 1 VIP; ≤ 30 cap); loud: police ≤ `DifficultyDef.max_active_enemies`, civilians ≤ 22 | The civilians cower in place in loud: they are the hostage pool. D-136 §3b.5 adds the SD attendant (+1). |
 | Exterior traffic | ≤ 12 parked cars (MultiMesh), no moving traffic in play (a distant animated ribbon only) | |
