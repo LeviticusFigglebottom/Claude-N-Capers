@@ -62,7 +62,7 @@ const HINT_CLIPS: Dictionary = {
 	# D-111 ambient activities: bar staff, club door, dancers (dance_a/b/c picked per NPC), bank tellers.
 	&"bartender": &"bartender_wipe", &"bartender_wipe": &"bartender_wipe", &"bartender_pour": &"bartender_pour",
 	&"bouncer": &"bouncer_idle", &"teller": &"teller_count", &"dance_a": &"dance_a", &"dance_b": &"dance_b",
-	&"dance_c": &"dance_c",
+	&"dance_c": &"dance_c", &"teller_count": &"teller_count",  # QC-67: OF spawns name the clip as the activity
 	# Brain / patrol-point aliases.
 	&"phone": &"phone_call", &"call": &"phone_call", &"sit": &"sit_chair",
 	&"queue": &"queue_idle", &"lean": &"lean_wall", &"check_door": &"investigate_look", &"down": &"lie_down",
