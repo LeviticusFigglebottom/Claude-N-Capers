@@ -1,0 +1,21 @@
+[PO5 90.8s] pilot: goto (4.2, 4.4, 2.5) FAILED at (10.7, -0.3, 5.0) after 60.0 s
+[PO5 112.0s] EVENT crew 0 state 0 -> 1 at (3.6, 0.0, 4.9) (t=96)
+[INFO][combat][p1] slot 0 downed (1/3)
+[PO5 112.0s] pilot: goto (4.2, 4.4, 2.5) FAILED at (3.6, 0.0, 4.9) after 21.1 s
+[PO5 118.1s] EVENT crew 0 state 1 -> 0 at (3.6, -0.3, 5.0) (t=102)
+[PO5 126.5s] EVENT crew 2 state 0 -> 2 at (4.9, 0.0, 5.5) (t=110)
+[INFO][combat][p1] slot 2 crew_tased by 112
+[PO5 132.5s] EVENT crew 2 state 2 -> 0 at (4.9, 0.0, 5.5) (t=116)
+[PO5 157.0s] EVENT crew 3 state 0 -> 1 at (4.4, 0.0, 5.5) (t=141)
+[INFO][combat][p1] slot 3 downed (1/3)
+[PO5 165.8s] EVENT crew 3 state 1 -> 0 at (4.4, -0.3, 5.5) (t=149)
+[PO5 188.3s] pilot: goto (4.2, 4.4, 2.5) FAILED at (6.2, 0.0, 5.4) after 60.0 s
+[PO5 248.9s] pilot: goto (4.2, 4.4, 2.5) FAILED at (3.6, 0.0, 3.4) after 60.0 s
+[PO5 263.8s] EVENT crew 0 state 0 -> 1 at (3.6, 0.0, 4.8) (t=247)
+[INFO][combat][p1] slot 0 downed (2/3)
+[PO5 263.9s] pilot: goto (1.8, 4.4, 2.3) FAILED at (3.6, 0.0, 5.0) after 14.9 s
+[PO5 266.1s] EVENT crew 0 state 1 -> 5 at (3.6, 0.0, 5.2) (t=250)
+[INFO][combat][p1] slot 0 in custody
+[PO5 266.7s] FAIL player in custody at 250 s
+[PO5 266.7s] STATS difficulty=1 police=51 peak_alive=8 specials={ &"enemy.longshot": 2, &"enemy.stinger": 1, &"enemy.bulwark": 4 } composition={ &"enemy.security_officer": 3, &"enemy.patrol_officer": 14, &"enemy.tac_light": 27, &"enemy.longshot": 2, &"enemy.stinger": 1, &"enemy.bulwark": 4 } | slot 0 [weapon.corsair_ar / armor.tailored_suit] downs 2 custody 1 revived 1 regained 0; slot 1 [weapon.corsair_ar / armor.tailored_suit] downs 0 custody 0 revived 0 regained 50; slot 2 [weapon.corsair_ar / armor.tailored_suit] downs 0 custody 0 revived 0 regained 46; slot 3 [weapon.corsair_ar / armor.tailored_suit] downs 1 custody 0 revived 1 regained 138
+[PO5 266.7s] RESULT FAIL (code 1) flow=auto_loud heist=Golden Hour seed=4502
