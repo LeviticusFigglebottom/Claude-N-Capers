@@ -7,7 +7,9 @@
 ## Stages: WARNING (warning_s: a charge with a blinking red light at Charge, cue.assault_breach_warning) ->
 ## BLOWN: Intact hidden + its collision off, Blown shown; a wall breach enables a NavigationLink3D EntryPoint ->
 ## ExitPoint (both ways); then Explosion.apply at the charge (world attacker: hurts crew and NPCs, C4 fx, PO6-19
-## pushes bodies). The runner sends the squad through (walk for a wall, rope for window / ceiling).
+## pushes bodies). The runner sends the squad through (walk for a wall or door, rope for window / ceiling).
+## Kind `door` (OF Breach_3/4, D-141 QC-i): the marker's meta `door` (NodePath from the marker) names a real Door; no
+## breach geometry is spawned; the charge goes on the door's face and BLOWN unlocks and blows that door open.
 class_name AssaultBreach
 extends AssaultEventEntity
 
@@ -24,6 +26,8 @@ var blown_node: Node3D = null
 var charge_mesh: Node3D = null
 var charge_light: OmniLight3D = null
 var link: NavigationLink3D = null
+## Kind `door`: the Door the marker's meta `door` names (null otherwise).
+var door: Door = null
 var breach_kind: String = "wall"
 var size: Vector2 = Vector2(1.0, 2.2)
 ## Window / ceiling rope (world ends, Vector3.INF = none), set by the runner on the server, replicated.
@@ -46,7 +50,9 @@ func _build() -> void:
 		map_marker = rt.map.get_node_or_null(NodePath(path)) as Node3D
 	if map_marker != null:
 		visual = map_marker.get_node_or_null(^"Visual") as Node3D
-	if visual == null and not bool(params.get("fx_only", false)):
+		if breach_kind == "door" and map_marker.has_meta(&"door"):
+			door = map_marker.get_node_or_null(NodePath(String(map_marker.get_meta(&"door")))) as Door
+	if visual == null and not bool(params.get("fx_only", false)) and breach_kind != "door":
 		visual = AssaultEventEntity.prop(String(params.get("breach_scene", AssaultEventsTweak.data().breach_scene)) % breach_kind)
 		if visual == null:
 			visual = _placeholder(breach_kind, size)
@@ -212,6 +218,9 @@ func blow() -> void:
 	set_stage(Stage.BLOWN)
 	if breach_kind == "wall" and visual != null:
 		_open_link()
+	if door != null and is_instance_valid(door):
+		door.unlock()
+		door.set_open(true, false, true)  # PO-6 forced-open swing; the door replicates its own state
 	Explosion.apply(self, at, p_float("radius_m", 4.5), p_float("damage", 60.0), 0, &"breach_c4")
 	cue(&"cue.c4_explode", at)  # audio_cues.md v1.8 (Explosion.apply emits only the explosion_fx, no cue)
 	_stun_around(at)
