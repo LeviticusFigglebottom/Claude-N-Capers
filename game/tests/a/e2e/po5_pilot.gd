@@ -993,6 +993,17 @@ func stand_point(target: Vector3) -> Vector3:
 	return NavigationServer3D.map_get_closest_point(map, target)
 
 
+## A BagLift's UsePoint belongs to landing 0; its runtime panels LandingPanel<i> stand at the same offset from
+## landing i (P's OF burn run: the pilot walked to the vault floor to use the TW panel; C's note).
+static func _landing_use_point(owner_n: Node, comp: InteractableComponent, at: Vector3) -> Vector3:
+	var lift: BagLift = owner_n as BagLift
+	if lift == null or not String(comp.name).begins_with(BagLift.PANEL_PREFIX):
+		return at
+	var i: int = String(comp.name).trim_prefix(BagLift.PANEL_PREFIX).to_int()
+	if i <= 0 or i >= lift.landing_count():
+		return at
+	return lift.landing_transform(i) * (lift.global_transform.affine_inverse() * at)
+
 ## Where a player stands to use `comp`: the prefab's UsePoint if it has one (map-authored, the right side of
 ## counters / glass; not doors, usable from either side), else the nearest navmesh point with a clear line of
 ## sight to it (ring search).
@@ -1004,7 +1015,7 @@ func _use_stand(comp: InteractableComponent) -> Vector3:
 	elif owner_n != null:
 		up = _mounted_lock_use_point(owner_n)  # D-138 (DB CountCageGate): stand where the gate's padlock / keypad is used
 	if up != null:
-		return stand_point(up.global_position)
+		return stand_point(_landing_use_point(owner_n, comp, up.global_position))
 	var target: Vector3 = comp.global_position
 	var near: Vector3 = stand_point(target)
 	# GN probe 8: standing on a dropped bag, the crosshair never lands on it (aimed <none> at 0.67 m, 15 s of
