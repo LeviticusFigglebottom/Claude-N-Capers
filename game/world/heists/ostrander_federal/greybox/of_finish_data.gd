@@ -75,6 +75,15 @@ const KEYS: Dictionary = {
 	"bronze": ["brass", Color(0.8, 0.66, 0.46), null],
 	"wood": ["wood_veneer_walnut", null, null],
 	"cable_fabric": ["fabric_upholstery", Color(0.42, 0.42, 0.44), null],
+	"paving_stone": ["limestone_ashlar", Color(0.82, 0.82, 0.81), null],
+	"coping": ["limestone_ashlar", Color(1.0, 0.99, 0.96), null],
+	"roof_seam": ["concrete", Color(0.72, 0.72, 0.74), null],
+	"drain": ["metal_painted", Color(0.4, 0.42, 0.45), null],
+	"louvre": ["metal_painted", Color(0.78, 0.8, 0.84), null],
+	"deck_dark": ["concrete", Color(0.32, 0.33, 0.35), null],
+	"deck_concrete": ["concrete", Color(0.92, 0.92, 0.9), null],
+	"line_white": ["plaster_painted", Color(1.0, 1.0, 1.0), null],
+	"window_dark": ["metal_painted", Color(0.36, 0.4, 0.46), null],
 }
 ## Trim-sheet strips (trim_interior, trim_table.json) used as keys "trim_<strip>".
 const TRIM_STRIPS: Array[String] = ["baseboard", "crown_cornice", "chair_rail", "wood_trim", "wood_trim_wide",
@@ -160,7 +169,7 @@ const ROOMS: Dictionary = {
 	# Exteriors (the walls they look at are the facade)
 	"X2": ["paving", "facade", "", "exterior"],
 	"X3": ["asphalt", "facade", "", "exterior"],
-	"X4": ["paving", "facade", "", "exterior"],
+	"X4": ["paving_stone", "facade", "", "exterior"],
 	"X5": ["roof_membrane", "facade", "", "exterior"],
 }
 ## Style -> {skirt: [key, height, depth], dado: [key, y, height, depth, wainscot key or ""], cornice: [key, height,
@@ -182,8 +191,24 @@ const STYLES: Dictionary = {
 	"stair": {"skirt": ["trim_baseboard", 0.127, 0.013]},
 	"wet": {},
 	"plain": {},
-	"exterior": {},
+	"exterior": {"courses": ["ashlar_warm", 0.25, 0.06, [5.0, 8.6, 12.2]], "plinth": ["ashlar_plinth", 0.6, 0.04]},
 }
+## The roof plant room's walls (RP, x 20-34, z 2-10 on the roof) read as painted steel louvre screens from the roof.
+const LOUVRE_RECT: Array = [20.0, 2.0, 34.0, 10.0]
+const LOUVRE_PITCH: float = 0.14
+## Roof membrane lap seams (every SEAM_PITCH along x over the X5 decks) and a drain per deck rect.
+const SEAM_PITCH: float = 2.5
+## Neighbours seen from the lane, the roof and the fire escape: [node name under Geometry/Site/Closures, style].
+const NEIGHBOURS: Array = [["ParkingStructure", "parking"], ["CorvinoLower", "corvino"], ["CorvinoTower", "corvino"]]
+## Parking decks: floor-to-floor, the open slot (above the deck: [from, to]), the column pitch.
+const PARK_FLOOR: float = 3.0
+const PARK_SLOT: Array = [1.05, 2.75]
+const PARK_COLUMN: float = 8.0
+## Corvino: storey height, window bay pitch, window size [w, h] and sill height.
+const CORVINO_STOREY: float = 3.5
+const CORVINO_BAY: float = 2.6
+const CORVINO_WINDOW: Array = [1.2, 1.7]
+const CORVINO_SILL: float = 0.9
 ## Ceiling features: room -> [kind, key, spacing (m), beam width, beam depth]. coffer: a beam grid both ways; beams_x /
 ## beams_z: beams running along x / z at the listed positions (or every spacing); a segment that would hit a
 ## ceiling-mounted fixture is left out.
@@ -237,3 +262,5 @@ const TILE: float = 8.0
 const TILE_AREA: float = 200.0
 ## The detail meshes (D_<room>: trims, pilasters, coffers and beams, cage bars, trays) draw to this distance.
 const DETAIL_VIS: float = 24.0
+## The neighbours' facade detail (N_<name>) draws to this distance (the roof, the lane and the fire escape).
+const NEIGHBOUR_VIS: float = 55.0
