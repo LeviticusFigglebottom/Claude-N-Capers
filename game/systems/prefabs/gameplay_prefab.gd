@@ -360,6 +360,9 @@ func _apply_common_interaction() -> void:
 	interactable.casing_allowed = bool(get(&"casing_allowed"))
 	interactable.civilian_allowed = get(&"civilian_allowed") == true  # S1.3 (prefabs without the export: false)
 	interactable.noise = StringName(get(&"noise"))
+	var block_key: Variant = get(&"phase_block_key")  # prefabs exporting it (BagLift): the phase-blocked reason
+	if block_key != null:
+		interactable.phase_block_key = StringName(block_key)
 
 
 ## Emit an EventBus fact on the server and relay it to clients (architecture.md §5).
