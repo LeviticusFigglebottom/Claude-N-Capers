@@ -36,7 +36,7 @@ Newest entry first, keep the last 10.
 
 ## 2026-10-17 (OF-D1): Ostrander Federal cast + clips
 ### Done
-- **VIP pair** (rare `vip_client`): `bank_vip_client` (camel overcoat, silk scarf, attaché) and `security_bodyguard`
+- **VIP pair** (rare `vip_client`): `bank_vip_client` (camel overcoat, silk scarf; correction 2026-10-20: no attaché was modelled) and `security_bodyguard`
   (Halden close protection: charcoal suit, earpiece, Halden pin). Halden guards g-j added: ten faces, a-j.
 - **D-130 pools sized for an L heist**: tellers `npc_bank_teller` a-e, officers `bank_officer` a-d, customers
   `bank_customer` a-j + `civilian_customer_a/b` (twelve faces). New materials: char_skirt_navy, char_knit_mustard,
