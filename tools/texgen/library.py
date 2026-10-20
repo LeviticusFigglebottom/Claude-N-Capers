@@ -30,6 +30,8 @@ LIBRARY: dict[str, dict] = {
     "chrome": {"size": 512},
     "brass": {"size": 1024},
     "glass_clear": {"size": 512, "kind": "glass"},
+    # D-142: frosted / privacy glass (opaque for stealth vision; one shared look for every heist).
+    "glass_frosted": {"size": 512, "kind": "glass"},
     "rubber_black": {"size": 512},
     "fabric_upholstery": {"size": 1024},
     "leather_dark": {"size": 1024},

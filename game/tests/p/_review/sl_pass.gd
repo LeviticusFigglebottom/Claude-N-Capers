@@ -68,6 +68,10 @@ var _tour: bool = false
 ## mechanism checks (PO-14 cage by code / saw) when a seed's guard rolls block the real-input route; detection is off,
 ## movement and interactions stay real input.
 var _hidden: bool = false
+## --skip=a,b: step methods to leave out (e.g. --skip=_casing,_laptop,_hack,_drives,_escape for the PO-14 cage check).
+var _skip: PackedStringArray = PackedStringArray()
+## --cage-method=saw (PO-14 / D-138): open the server cage with a placed saw on its padlock instead of the code.
+var _cage_saw: bool = false
 var _scan: Vector2i = Vector2i.ZERO
 var _shot: int = 0
 var _alarm: StringName = &""
@@ -89,6 +93,8 @@ func _ready() -> void:
 			"seed": _seed = v.to_int()
 			"tour": _tour = true
 			"hidden": _hidden = true
+			"skip": _skip = v.split(",")
+			"cage-method": _cage_saw = v == "saw"
 			"scan":
 				var ab: PackedStringArray = v.split("-")
 				_scan = Vector2i(ab[0].to_int(), ab[1].to_int() if ab.size() > 1 else ab[0].to_int())
@@ -255,6 +261,7 @@ func _run() -> void:
 		return
 	var steps: Array[Callable] = [_casing, _mask, _enter_l41, _keycard, _laptop, _cage_code, _server_door, _cage,
 		_hack, _drives, _escape]
+	steps = steps.filter(func(st: Callable) -> bool: return not _skip.has(st.get_method()))
 	for step: Callable in steps:
 		if _alarm != &"":
 			await _fail("alarm before %s" % step.get_method())
@@ -346,7 +353,8 @@ func _watcher() -> NpcBase:
 		fwd.y = 0.0
 		if to_me.length() > 1.0 and absf(fwd.angle_to(to_me)) > CAREFUL_HALF_FOV:
 			continue
-		if pilot.has_los(g.head_position(), g):
+		# D-142: what the player sees (vision rays pass see-through glass), not the bullet mask (Po5Pilot.has_los).
+		if rt.stealth.has_los(g.eye_position(), c.eye_position(), [g.get_rid(), c.get_rid()] as Array[RID]):
 			return g
 	return null
 
@@ -609,9 +617,42 @@ func _cage() -> bool:
 	var cage: Node3D = _tagged(&"cage")
 	if cage == null:
 		return false
+	if _cage_saw:
+		return await _cage_by_saw(cage)
 	var ok: bool = await pilot.use(_comp(cage), 120.0, func() -> bool: return _objective(&"cage") == 2)
 	await shot("cage")
 	return ok
+
+
+## PO-14: the placed saw on the cage padlock (D-138: 90 s, allowed in stealth), jams fixed; the saw must be visible
+## on the lock and the gate must open.
+func _cage_by_saw(cage: Node3D) -> bool:
+	var lock: Node3D = null
+	for n: Node in rt.find_children("*", "Padlock", true, false):
+		var p3: Node3D = n as Node3D
+		if lock == null or p3.global_position.distance_to(cage.global_position) \
+				< lock.global_position.distance_to(cage.global_position):
+			lock = p3
+	if lock == null:
+		note("no padlock near the cage")
+		return false
+	var ic: InteractableComponent = _comp(lock)
+	note("cage padlock %s at %s kind %s" % [lock.name, Po5Pilot._v(lock.global_position), ic.kind if ic else &"-"])
+	var placed: Callable = func() -> bool: return StringName(lock.get(&"placed_kind")) != &"" or bool(lock.get(&"opened"))
+	await pilot.use(ic, 60.0, placed)
+	note("saw placed %s (kind %s)" % [placed.call(), lock.get(&"placed_kind")])
+	await shot("saw_on_lock")
+	var t: float = 0.0
+	while not bool(lock.get(&"opened")) and t < 200.0 and _alarm == &"":
+		if ic.enabled and ic.kind == &"fix_drill":
+			note("saw jammed: fixing")
+			await pilot.use(ic, 20.0, func() -> bool: return ic.kind != &"fix_drill")
+		await pilot.hold_position(1.0)
+		t += 1.0
+	await shot("cage_after_saw")
+	note("cage padlock opened %s by %s after %.0f s; cage objective %d" % [lock.get(&"opened"), lock.get(&"beaten_by"),
+		t, _objective(&"cage")])
+	return bool(lock.get(&"opened"))
 
 
 func _hack() -> bool:

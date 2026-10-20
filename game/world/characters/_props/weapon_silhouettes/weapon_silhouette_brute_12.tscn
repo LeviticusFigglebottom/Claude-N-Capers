@@ -1,0 +1,10 @@
+[gd_scene format=3]
+
+[ext_resource type="ArrayMesh" path="res://world/characters/_props/weapon_silhouettes/weapon_silhouette_brute_12_mesh.res" id="1_40b4c"]
+
+[node name="WeaponSilhouette" type="MeshInstance3D" unique_id=569265719]
+cast_shadow = 0
+visibility_range_begin = 25.0
+mesh = ExtResource("1_40b4c")
+metadata/model = "brute_12"
+metadata/tris = 204

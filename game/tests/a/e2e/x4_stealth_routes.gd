@@ -12,6 +12,13 @@
 ##     hack) -> the centrepiece's barrier (cp_store: keycard + art store vault reader; cp_treasury: keycard + Treasury
 ##     reader + lasers; the keycard: one lying in the map, else kc_curator's on Sorell's lanyard: shout her down,
 ##     cable-tie her, take the card off her) -> cut the Lantern Bearer and one listed canvas, each secured at the rolled escape -> escape.
+##   ostrander_federal (the ghost line, doc §Stealth routes): the vault keycard (lying in the map, else on Ashgrove:
+##     shout him down, cable-tie him, take it) -> the vault code: the right officer's PC hack (the planner first when it
+##     is interactable) -> the vault gate (keycard) -> past the VC grid (its pattern's way) -> the code at the time-lock
+##     console -> the time lock runs out, the vault opens -> the cash cage (the code at its keypad) -> 4 (Routine) cash
+##     bags, each out past the grid to the rolled escape's secure zone -> escape. With the vault-control rack in the
+##     basement (srv_basement) the route takes the other line instead: the gate, the laser controller (grid off,
+##     [lasers]) and the rack hack (it starts the time lock), then the cash cage's padlock (no code).
 class_name X4StealthRoutes
 extends RefCounted
 
@@ -50,6 +57,9 @@ func steps_for(heist: StringName) -> Array[Callable]:
 				_sl_escape]
 		&"gallery_night":
 			return [_start, _gn_pick, _gn_sensors, _gn_barrier, _gn_canvases, _gn_escape]
+		&"ostrander_federal":
+			return [_start, _of_keycard, _of_code, _of_gate, _of_rack, _of_time_lock, _of_vault_opens, _of_cage, _of_bags,
+				_of_escape]
 	return []
 
 
@@ -311,7 +321,11 @@ func _gn_curator_card(card: KeycardPickup) -> bool:
 		f.facts[&"curator_card_taken_by_slot"] = int(by.get(&"slot"))
 		f.facts[&"curator_card_tied_at_take"] = brain.is_tied()
 	card.interactable.completed.connect(on_take, CONNECT_ONE_SHOT)
-	f.note("the only keycard is on the curator (%s, %s): intimidate + tie her" % [npc.name, f.rt.mission.variant(&"curator_route")])
+	var route: Variant = f.rt.mission.variant(&"curator_route")
+	if route == null:
+		route = f.rt.mission.variant(&"manager_route")  # OF: Ashgrove carries kc_on_manager
+	f.note("the only keycard is on the curator (%s, %s): intimidate + tie her" % [npc.name, route])
+	await _catch_alone(npc)
 	if not await f.go_to(npc) or not await _shout_down(brain):
 		return false
 	f.note("card released once she is down: %s" % card.released)
@@ -322,6 +336,35 @@ func _gn_curator_card(card: KeycardPickup) -> bool:
 	if not f.check(await f.wait_until(func() -> bool: return card.released, 2.0), "the curator's card shows on her"):
 		return false
 	return await f.take(card, _has_card(), _tw().carried_item_s, "take the curator's keycard")
+
+
+## OF-A4: a carrier on a CivilianRoute with an away window (OF's manager: mgr_away at the BM office with the door shut,
+## CF / PR upstairs, the LK WC on mgr_vault) is caught alone: wait (fast) until his window is open AND he stands at the
+## away stop (CivilianBrain opens the window when he LEAVES for that stop, so open alone can still be mid-walk past a
+## camera), then go. A route without a window, or one he does not reach within one lap, goes as it is (noted).
+func _catch_alone(npc: NpcBase) -> void:
+	var route: CivilianRoute = CivilianRoute.for_civilian(f.rt, npc)
+	if route == null:
+		return
+	var away_stops: Array[Vector3] = []
+	var bound_s: float = 30.0
+	for i: int in range(route.stop_count()):
+		if route.window_of(i) != &"":
+			away_stops.append(route.stop_at(i).global_position)
+		bound_s += route.stop_at(i).pause_range.y + 30.0  # every dwell + a walk per stop: one lap
+	if away_stops.is_empty():
+		return
+	var at_away_stop: Callable = func() -> bool:
+		if not route.is_away() or not is_instance_valid(npc):
+			return false
+		for p: Vector3 in away_stops:
+			if npc.global_position.distance_to(p) < 1.5:
+				return true
+		return false
+	var away: bool = await f.fast_until(at_away_stop, bound_s)
+	f.facts[&"carrier_caught_away"] = away
+	f.note("%s on route %s: %s (%s)" % [npc.name, route.id(),
+		"at his %s stop" % route.away_window() if away else "never at an away stop", npc.global_position])
 
 
 ## Shout at the civilian `brain` (CrewIntent.shout held a few frames looking at her chest, then released; the
@@ -373,3 +416,131 @@ func _gn_canvases() -> bool:
 
 func _gn_escape() -> bool:
 	return await f.escape(f.tagged(StringName("escape_%s" % _gn_escape_name())) as EscapeZone)
+
+
+# --- Ostrander Federal ---------------------------------------------------------------------------------
+
+## The rack line (see the header): the vault-control rack is in the basement next to the vault.
+func _of_rack_line() -> bool:
+	return f.slot(&"server_room", &"srv_basement")
+
+
+## The guarded room behind the VC grid (x 21): the concourse east of it and the vault (basement, south of the gate).
+func _of_behind_grid(p: Vector3) -> bool:
+	return p.y < -2.0 and p.x > 21.0 and p.z > 9.0
+
+
+## The card lying in the map, else Ashgrove's (kc_on_manager: shout him down, tie him, take it; QC-52 / QC-62).
+func _of_keycard() -> bool:
+	f.note("keycard slot %s, manager %s" % [f.rt.mission.variant(&"keycard"), f.rt.mission.variant(&"manager_route")])
+	return await _gn_get_card()
+
+
+## The vault code off the right officer's PC (45 s, 1 interruption; QC-63 reveals code group `vault`); the planner first
+## when the map has an interactable one. The rack line skips this (the rack starts the time lock itself).
+func _of_code() -> bool:
+	if _of_rack_line():
+		return true
+	var planner: Node3D = f.tagged(&"code_hint")
+	if planner != null and planner.get_node_or_null(^"Interactable") != null:
+		if not await f.take(planner, _done(&"code_hint"), _tw().read_note_s, "read Ashgrove's planner"):
+			return false
+	else:
+		f.note("map: [code_hint] is a bare marker (no interactable planner): the route goes to the rolled PC")
+	var pc: HackTerminal = f.tagged(&"code_pc") as HackTerminal
+	if not f.check(pc != null, "the rolled code PC") or not await f.run_hack(pc):
+		return false
+	return f.check(f.objective(&"code_pc") == DONE, "code_pc objective done")
+
+
+func _of_gate() -> bool:
+	var reader: Node3D = null
+	var gate: Door = null
+	for n: Node in f.all_tagged(&"vault_gate"):
+		if n is KeycardReader:
+			reader = n as Node3D
+		elif n is Door:
+			gate = n as Door
+	if not f.check(reader != null and gate != null, "vault gate and its reader"):
+		return false
+	if not await f.take(reader, _done(&"vault_gate"), _tw().keycard_s, "swipe the vault gate"):
+		return false
+	var console: Node3D = f.tagged(&"time_lock")
+	f.guard_lasers(&"laser_grid", console.global_position, _of_behind_grid)
+	return f.check(gate.is_open, "the vault gate is open")
+
+
+## The rack line: the laser controller (20 s, grid off, [lasers]) and the vault-control rack (90 s, 2 interruptions:
+## it starts the time lock).
+func _of_rack() -> bool:
+	if not _of_rack_line():
+		return true
+	var lc: HackTerminal = f.tagged(&"lasers") as HackTerminal
+	if not f.check(lc != null, "the laser controller") or not await f.run_hack(lc):
+		return false
+	for n: Node in f.all_tagged(&"laser_grid"):
+		if not f.check(not (n as LaserGrid).active, "%s is off" % n.name):
+			return false
+	var rack: HackTerminal = f.tagged(&"server") as HackTerminal
+	if not f.check(rack != null, "the vault-control rack") or not await f.run_hack(rack):
+		return false
+	return f.check(f.objective(&"server") == DONE and f.objective(&"time_lock") == DONE, "the rack started the time lock")
+
+
+func _of_time_lock() -> bool:
+	if f.objective(&"time_lock") == DONE:
+		return true
+	return await f.take(f.tagged(&"time_lock"), _done(&"time_lock"), _tw().keypad_s, "enter the code at the time lock")
+
+
+func _of_vault_opens() -> bool:
+	var v: Variant = f.rt.mission.variant(&"time_lock_s")
+	var lock_s: float = float(v) if v != null else 210.0
+	if not f.check(await f.fast_until(_done(&"time_lock_wait"), lock_s + 15.0), "the time lock runs out (%.0f s)" % lock_s):
+		return false
+	var vault: Door = f.tagged(&"vault_door") as Door
+	return f.check(vault != null and vault.is_open, "the vault door is open")
+
+
+## The cash cage: the code at its keypad (code known), else its padlock (lockpick).
+func _of_cage() -> bool:
+	var gate: Door = null
+	var keypad: Node3D = null
+	var padlock: Node3D = null
+	for n: Node in f.all_tagged(&"cash_cage"):
+		if n is Door:
+			gate = n as Door
+		elif n is Keypad:
+			keypad = n as Node3D
+		elif n is Padlock:
+			padlock = n as Node3D
+	if not f.check(gate != null, "the cash cage gate"):
+		return false
+	if gate.is_open:
+		return true
+	var opened: Callable = func() -> bool: return gate.is_open
+	if f.objective(&"code_pc") == DONE and not _of_rack_line() and keypad != null:
+		return await f.take(keypad, opened, _tw().keypad_s, "open the cash cage with the code")
+	if not f.check(padlock != null, "the cash cage padlock"):
+		return false
+	var it: InteractableComponent = padlock.get_node_or_null(^"Interactable") as InteractableComponent
+	var t: float = it.interaction_time_s if it != null else 8.0
+	return await f.take(padlock, opened, t, "pick the cash cage padlock")
+
+
+func _of_bags() -> bool:
+	var zone: Area3D = f.secure_zone(&"secure")
+	var cash: LootSpawn = f.tagged(&"vault_loot") as LootSpawn
+	if not f.check(zone != null and cash != null, "the rolled escape's secure zone and the vault cash"):
+		return false
+	var need: int = int(f.rt.mission.call(&"required_bags"))
+	for taken: int in range(need):
+		if not f.check(cash.remaining > 0, "vault cash left to bag (%d taken)" % taken):
+			return false
+		if not await f.bag_and_secure(cash, zone):
+			return false
+	return f.check(f.objective(&"secure") == DONE, "secure objective done (%d bags)" % need)
+
+
+func _of_escape() -> bool:
+	return await f.escape(f.tagged(&"escape") as EscapeZone)

@@ -62,6 +62,12 @@ func test_of_lockdown_cancels_the_time_lock_and_seals_the_vault() -> void:
 		if n is Door:
 			assert_true((n as Door).locked and not (n as Door).is_open, "%s shut and locked" % n.name)
 	assert_eq(_state(&"drill_delivery"), ACTIVE, "[drill_delivery] next")
+	var first: StringName = &""
+	for o: Dictionary in m.objectives():  # ENV B (LEAD r245 1): the HUD shows the first ACTIVE non-side step
+		if int(o["state"]) == ACTIVE and not bool((o["data"] as Dictionary).get("side", false)):
+			first = o["id"]
+			break
+	assert_eq(first, &"drill_delivery", "the HUD objective line reads the drill delivery, not [secure]")
 	assert_eq(_state(&"keycard"), DONE, "the card step is moot (skipped)")
 	assert_eq(_count(&"vo.mercer.ostrander_federal_lockdown"), 1, "lockdown line")
 	assert_eq(_count(&"vo.mercer.ostrander_federal_drill_inbound_dock"), 1, "drill_inbound line for the dock")
@@ -168,6 +174,9 @@ func test_of_loud_escape_after_secure_and_eta() -> void:
 	assert_eq(_state(&"escape_wait"), ACTIVE, "[escape_wait]: the van comes back")
 	assert_eq(_state(&"escape"), HIDDEN, "not open yet")
 	var eta: float = float(_m().variant(&"escape_eta_s"))
+	for ob: Dictionary in _m().objectives():  # ENV B HUD: "ESCAPE mm:ss" counts down objective data `seconds`
+		if ob["id"] == &"escape_wait":
+			assert_near(float((ob["data"] as Dictionary).get("seconds", -1.0)), _m().loud_escape_eta(), 0.01, "ETA on the HUD")
 	assert_near(_m().timer_left(&"escape_eta"), eta, 0.5, "escape_eta_s after [secure] (D-136.10)")
 	assert_eq(_count(&"vo.mercer.ostrander_federal_van_eta"), 1, "van_eta line")
 	_m().call(&"open_escape")
@@ -177,3 +186,15 @@ func test_of_loud_escape_after_secure_and_eta() -> void:
 	var zone: EscapeZone = _m().find_tagged(&"escape")[0] as EscapeZone
 	assert_true(zone.active and zone.arrival_delay_s == 0.0, "the van is there")
 	assert_true(_ended.is_empty(), "no fail")
+
+
+## B's OF-B1 row: Mercer calls Brandt (captain_arrived, AegisCaptain L4.9) on each arrival.
+func test_of_captain_arrived_line() -> void:
+	if _pending() or not await _launch():
+		return
+	await _alarm()
+	await _fact(&"captain_arrived", [4242])
+	assert_eq(_count(&"vo.mercer.ostrander_federal_captain_arrived"), 1, "Mercer: Brandt is here")
+	await _fact(&"captain_retreated", [4242])
+	await _fact(&"captain_arrived", [4243])
+	assert_eq(_count(&"vo.mercer.ostrander_federal_captain_arrived"), 2, "and again when he comes back")

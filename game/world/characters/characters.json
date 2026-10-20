@@ -165,6 +165,12 @@
 			"test": false
 		},
 		{
+			"asset": "char_bulwark_duty",
+			"id": "bulwark_duty",
+			"scene": "res://world/characters/bulwark_duty/bulwark_duty.tscn",
+			"test": false
+		},
+		{
 			"asset": "char_bulwark_frd",
 			"id": "bulwark_frd",
 			"scene": "res://world/characters/bulwark_frd/bulwark_frd.tscn",
@@ -905,6 +911,12 @@
 			"test": false
 		},
 		{
+			"asset": "char_patrol_officer_duty",
+			"id": "patrol_officer_duty",
+			"scene": "res://world/characters/patrol_officer_duty/patrol_officer_duty.tscn",
+			"test": false
+		},
+		{
 			"asset": "char_patrol_officer_frd",
 			"id": "patrol_officer_frd",
 			"scene": "res://world/characters/patrol_officer_frd/patrol_officer_frd.tscn",
@@ -1031,6 +1043,12 @@
 			"test": false
 		},
 		{
+			"asset": "char_stinger_duty",
+			"id": "stinger_duty",
+			"scene": "res://world/characters/stinger_duty/stinger_duty.tscn",
+			"test": false
+		},
+		{
 			"asset": "char_stinger_frd",
 			"id": "stinger_frd",
 			"scene": "res://world/characters/stinger_frd/stinger_frd.tscn",
@@ -1088,6 +1106,12 @@
 			"asset": "char_tac_light",
 			"id": "tac_light",
 			"scene": "res://world/characters/tac_light/tac_light.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_tac_light_duty",
+			"id": "tac_light_duty",
+			"scene": "res://world/characters/tac_light_duty/tac_light_duty.tscn",
 			"test": false
 		},
 		{
@@ -1155,6 +1179,11 @@
 			"asset": "char_bulwark_aegis_shield",
 			"id": "bulwark_aegis_shield",
 			"scene": "res://world/characters/bulwark_aegis/bulwark_aegis_shield.tscn"
+		},
+		{
+			"asset": "char_bulwark_duty_shield",
+			"id": "bulwark_duty_shield",
+			"scene": "res://world/characters/bulwark_duty/bulwark_duty_shield.tscn"
 		},
 		{
 			"asset": "char_bulwark_frd_shield",

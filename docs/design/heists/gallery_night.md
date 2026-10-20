@@ -620,12 +620,17 @@ blocks movement and bullets. Frosted, tinted, mirrored and privacy glass stays o
     shop ×2 shop-front glazing (Parade).
   - Upper floor: the CO curator and FS windows N (Mews) and the CS sawtooth-studio windows E ×5 (Wexley St).
   - Roof: the oculus glass (the P5 rappel entry).
-- **Opaque:** the SC security room window N (privacy; `FROSTED_PANE_ROOMS` in build_greybox.gd). The AO
+- **Opaque:** the SC security room window N (privacy; `FROSTED_PANE_ROOMS` in build_greybox.gd), finished in the
+  shared frosted glass (`glass_frosted`). The AO
   window is the PO6-17 breach infill. The laylights are ceilings, and the lantern glazing is roof visual only.
-- **Not map-built:** the EB windows ×5 and the SL loggia windows ×4 are Window prefabs, see-through through
-  their GlassBody (ENV A). The EB windows have closed blinds (Room list), so they should not be (open question).
-  The Treasury vitrines are DisplayCase prefabs, and the DC / EB decor vitrines are catalog dressing.
-  Neither is tagged.
+- **Not map-built:** the EB windows ×5 and the SL loggia windows ×4 are Window prefabs. The loggia windows are
+  see-through through their GlassBody (ENV A). The EB windows have closed blinds (Room list), so the generator sets
+  their `see_through = false` (opaque for vision; ENV A's D-142 Window property).
+  The Sculpture Court French doors (`CourtDoors`, both `court_doors` slots) are a glass-leaf Door (`leaf_surface`
+  glass) and read clear: they stay see-through (D-142 call: French doors onto a lit public court).
+  The Treasury vitrines are DisplayCase prefabs: since ENV A's D-142 patch their glass band above the cabinet is
+  see-through automatically (cabinet and any cap stay opaque). The DC / EB decor vitrines are catalog dressing and
+  are not tagged (one collider covers the whole cabinet).
 
 ## Stealth routes
 Spawns: the portico (default, unmasked guests), the Mews (`pp_spawn_mews`, unmasked, outside the

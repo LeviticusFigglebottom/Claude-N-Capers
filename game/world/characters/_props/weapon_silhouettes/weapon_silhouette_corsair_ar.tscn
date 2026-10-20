@@ -1,0 +1,10 @@
+[gd_scene format=3]
+
+[ext_resource type="ArrayMesh" path="res://world/characters/_props/weapon_silhouettes/weapon_silhouette_corsair_ar_mesh.res" id="1_gtmd3"]
+
+[node name="WeaponSilhouette" type="MeshInstance3D" unique_id=832295153]
+cast_shadow = 0
+visibility_range_begin = 25.0
+mesh = ExtResource("1_gtmd3")
+metadata/model = "corsair_ar"
+metadata/tris = 192

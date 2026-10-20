@@ -231,6 +231,7 @@ func _build_shell(geo: Node3D) -> void:
 		railing(rails, String(r[0]), v3(r[1], 0), v3(r[1], 3))
 	vis_group = "Shell"
 	_build_glazing(bld)
+	_build_hide_line()
 	vis_group = "Interior"
 	_build_lift_shaft(bld)
 	vis_group = "Shell"
@@ -444,6 +445,20 @@ func _ramp(flight: Node3D, x0: float, x1: float, polys: Array) -> void:
 ## Static glazing: glass blocker (collision) + pane + a frame round the opening (head, sill, jambs).
 ## The ATM vestibule's street glass is green (landmark 3); the bandit glass gets brass mullions over
 ## the counter joints.
+## D-142 / D-128: the counter's hidden line for levelcheck hide_los (Gameplay/Lines/HideCounter, Marker3D chain).
+func _build_hide_line() -> void:
+	var lines: Node3D = add(n("Gameplay"), node3d("Lines")) as Node3D
+	var root: Node3D = add(lines, node3d("HideCounter")) as Node3D
+	root.set_meta(&"hide_spot", true)
+	root.set_meta(&"hide_from", PackedStringArray(["G9"]))
+	root.set_meta(&"hide_posture", "crouch")
+	for i: int in range(L.HIDE_COUNTER.size()):
+		var m: Marker3D = Marker3D.new()
+		m.name = "P%02d" % i
+		m.position = L.HIDE_COUNTER[i]
+		add(root, m)
+
+
 func _build_glazing(bld: Node3D) -> void:
 	var gl: Node3D = add(bld, node3d("Glazing")) as Node3D
 	for g: Array in L.GLAZING:
@@ -468,6 +483,11 @@ func _build_glazing(bld: Node3D) -> void:
 		var bars: Array = [[a0, a1, y1 - fw, y1], [a0, a1, y0, y0 + fw], [a0, a0 + fw, y0 + fw, y1 - fw],
 			[a1 - fw, a1, y0 + fw, y1 - fw]]
 		if nm == "BanditGlass":
+			# D-142: the solid brass deal-tray rail under the glass (its own opaque body, on the counter's marble top)
+			var rmn: Vector3 = Vector3(a0, L.BANDIT_RAIL_Y, f - fd * 0.5)
+			var rmx: Vector3 = Vector3(a1, y0, f + fd * 0.5)
+			box(gl, "BanditRail", rmn, rmx, "")
+			art.vis_box(vis_group, rmn, rmx, "brass")
 			bars = [[a0, a1, y1 - fw, y1], [a0, a0 + fw, y0, y1 - fw], [a1 - fw, a1, y0, y1 - fw]]
 			for k: int in range(1, 6):
 				var xm: float = a0 + (a1 - a0) * float(k) / 6.0

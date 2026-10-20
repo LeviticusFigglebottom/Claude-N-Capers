@@ -72,7 +72,7 @@ func test_balcony_throw_clears_the_rail() -> void:
 func test_ladder_up_and_down() -> void:
 	var l: Ladder = ATestMaps.add_prefab(_rt, "ladder", Vector3(0, 0, -4), func(p: GameplayPrefab) -> void:
 		p.set(&"height_m", 3.0)) as Ladder
-	ATestMaps.add_wall(_world(), Vector3(0, 2.9, -5.6), Vector3(3.0, 0.2, 3.0))  # landing at the top
+	ATestMaps.add_wall(_world(), Vector3(0, 2.9, -2.35), Vector3(3.0, 0.2, 3.0))  # landing at the top (wall side, +Z)
 	await wait_physics_frames(5)
 	var r: Dictionary = await _tr.ladder(l)
 	assert_true(r["up"], "climbs up with W (%s)" % r)

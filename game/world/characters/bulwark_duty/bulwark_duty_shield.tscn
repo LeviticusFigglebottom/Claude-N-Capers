@@ -1,0 +1,17 @@
+[gd_scene format=3 uid="uid://6vie6gn677gu"]
+
+[ext_resource type="ArrayMesh" path="res://world/characters/bulwark_duty/bulwark_duty_shield_visual.res" id="mesh_visual"]
+
+[sub_resource type="ConvexPolygonShape3D" id="collision_shape"]
+points = PackedVector3Array(-0.3438037, -0.6, -0.027079165, -0.33081347, -0.6, 0.002156891, -0.3438037, 0.5, -0.027079165, -0.21006487, -0.6, -0.086, 0.3307461, -0.6, 0.002156891, -0.33081347, 0.5, 0.002156891, -0.21006487, 0.5, -0.086, 0.20999753, -0.6, -0.086, 0.34380364, -0.6, -0.027079165, 0.3307461, 0.5, 0.002156891, 0.20999753, 0.5, -0.086, 0.34380364, 0.5, -0.027079165)
+
+[node name="Shield" type="AnimatableBody3D" unique_id=127519359]
+collision_layer = 2
+collision_mask = 0
+sync_to_physics = false
+
+[node name="Collision" type="CollisionShape3D" parent="." unique_id=230208794]
+shape = SubResource("collision_shape")
+
+[node name="Visual" type="MeshInstance3D" parent="." unique_id=236140898]
+mesh = ExtResource("mesh_visual")

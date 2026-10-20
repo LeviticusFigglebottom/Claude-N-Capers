@@ -109,7 +109,10 @@ static func invalidate() -> void:
 ## negative value when this frame is skipped. Call after_tick() after the tick.
 func step(delta: float, frame: int) -> float:
 	var tw: AnimTweak = AnimTweak.data()
+	var was: Band = band
 	band = _select(tw, frame)
+	if band != was and _d.held_visuals != null:
+		_d.held_visuals.set_weapon_shadows(band == Band.FULL)  # OF perf: no weapon shadows past the near tier
 	cadence = cadence_of(band, tw)
 	_frame_dt = delta
 	_clip_before = _d.clip

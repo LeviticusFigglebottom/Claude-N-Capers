@@ -64,7 +64,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## orientation: Flush and oriented
 
-- WARN `Props/K12/Monitor_1` @ (33.03, 4.35, 9.12): monitor without a `faces` link (should face its chair/seating)
+- WARN `Props/K12/Monitor_1` @ (32.23, 4.35, 9.12): monitor without a `faces` link (should face its chair/seating)
 - WARN `Props/K12/Monitor_2` @ (32.74, 4.35, 11.40): monitor without a `faces` link (should face its chair/seating)
 
 ## scale: Human scale
@@ -175,7 +175,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## slopes: No walkable slope < 50° outside the play mesh
 
-- 153 x 105 columns (0.25 m), 79107 surface samples, 0 collider(s) with reachable walkable surfaces outside play
+- 153 x 105 columns (0.25 m), 79109 surface samples, 0 collider(s) with reachable walkable surfaces outside play
 
 
 ## navmesh: Navmesh
@@ -201,7 +201,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `Rooms/RoomK9` | 20 | 20 | 100% |
 | `Rooms/RoomK10` | 18 | 18 | 100% |
 | `Rooms/RoomK11` | 16 | 16 | 100% |
-| `Rooms/RoomK12` | 26 | 26 | 100% |
+| `Rooms/RoomK12` | 29 | 29 | 100% |
 | `Rooms/RoomK13` | 30 | 30 | 100% |
 | `Rooms/RoomK14` | 15 | 15 | 100% |
 | `Rooms/RoomK15` | 23 | 23 | 100% |
@@ -276,12 +276,12 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## materials: Materials and texel density
 
-- 3582 surfaces checked
+- 3585 surfaces checked
 
 
 ## zfight: Z-fighting
 
-- 379992 triangles checked
+- 380028 triangles checked
 
 
 ## lights: Lighting is deliberate
@@ -403,23 +403,23 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 | camera | draw calls | triangles | shadow lights |
 |---|---|---|---|
-| `TopDownSite` | 1527 | 319682 | 5 |
-| `TopDownTower` | 1540 | 323054 | 5 |
-| `ExtNorthCrown` | 1499 | 314774 | 5 |
-| `ExtWestArden` | 1805 | 384204 | 5 |
-| `ExtTerraceSE` | 2366 | 531008 | 5 |
-| `ReceptionFromLifts` | 274 | 56000 | 3 |
-| `GalleryWalkway` | 1695 | 354000 | 3 |
+| `TopDownSite` | 1530 | 319718 | 5 |
+| `TopDownTower` | 1543 | 323090 | 5 |
+| `ExtNorthCrown` | 1502 | 314810 | 5 |
+| `ExtWestArden` | 1808 | 384240 | 5 |
+| `ExtTerraceSE` | 2369 | 531044 | 5 |
+| `ReceptionFromLifts` | 277 | 56036 | 3 |
+| `GalleryWalkway` | 1698 | 354036 | 3 |
 | `ArtHallLasers` | 483 | 117354 | 1 |
 | `StudySafe` | 1522 | 346116 | 1 |
-| `ServerCage` | 649 | 150890 | 1 |
+| `ServerCage` | 648 | 150870 | 1 |
 | `SecurityRoom` | 830 | 197846 | 1 |
-| `SouthSpine` | 2296 | 490346 | 4 |
-| `TerraceWest` | 2159 | 448754 | 4 |
-| `RoofPlantBlock` | 2293 | 475886 | 5 |
+| `SouthSpine` | 2299 | 490382 | 4 |
+| `TerraceWest` | 2162 | 448790 | 4 |
+| `RoofPlantBlock` | 2296 | 475922 | 5 |
 | `Helipad` | 1860 | 421678 | 3 |
-| `StairACore` | 1103 | 199550 | 5 |
-| `ServiceLobby` | 1652 | 320212 | 4 |
+| `StairACore` | 1106 | 199586 | 5 |
+| `ServiceLobby` | 1655 | 320248 | 4 |
 | `KesslerOffice` | 162 | 44464 | 1 |
 | `OpenOffice` | 732 | 155516 | 2 |
 | `BreakRoom` | 789 | 210074 | 0 |

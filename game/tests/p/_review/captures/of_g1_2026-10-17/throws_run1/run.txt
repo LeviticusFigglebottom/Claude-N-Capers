@@ -1,0 +1,125 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+Vulkan 1.4.318 - Forward+ - Using Device #0: Unknown - llvmpipe (LLVM 20.1.2, 256 bits)
+
+[OFP 0.0s t=-1.0] === throws ===
+[INFO][rng][p1] run seed 1002
+[INFO][preplan][p1] assets []
+[INFO][variants][p1] seed 1002 resolved { &"manager_route": [&"mgr_gallery"], &"keycard": [&"kc_security"], &"code_pc": [&"pc_ops"], &"officers": [&"off_1"], &"server_room": [&"srv_gallery"], &"guard_post": [&"rover_basement", &"rover_dock"], &"security_room_staffed": [&"sec_empty"], &"camera": [&"cam_c"], &"laser_pattern": [&"lz_timed"], &"customers": [&"cust_4"], &"side_door": [&"door_dock_open"], &"fire_escape": [&"fe_down"], &"escape": [&"esc_van_tannery"], &"drill_delivery": [&"drop_terrace"], &"president_safe": [&"ps_empty"], &"vip": [&"vip_out"], &"guard_extra": [], &"civ_extra": [], &"time_lock_s": 150.0, &"drill_eta_s": 60.0, &"escape_eta_s": 120.0, &"cash_bags": 10, &"gold_bags": 4, &"deposit_boxes": 9, "rare": [] }
+[INFO][heist][p1] vfx prewarm: 600 ms
+[INFO][heist][p1] phase LOADING -> CASING
+[OFP 4.2s t=-1.0] objective casing -> 1
+[OFP 4.2s t=-1.0] objective keycard -> 1
+[OFP 4.2s t=-1.0] objective code_pc -> 1
+[OFP 4.2s t=-1.0] objective vault_gate -> 1
+[OFP 4.2s t=-1.0] objective time_lock -> 1
+[OFP 4.2s t=-1.0] objective vault_loot -> 1
+[OFP 4.2s t=-1.0] objective secure -> 1
+[OFP 4.2s t=-1.0] objective escape -> 1
+[INFO][director][p1] prewarm: 18 of 18 scenes loaded in 1178 ms
+[INFO][prefab][p1] CameraStation: security room unstaffed
+[OFP 13.7s t=0.0] launched ostrander_federal seed 1002 diff 0 variants { &"manager_route": [&"mgr_gallery"], &"keycard": [&"kc_security"], &"code_pc": [&"pc_ops"], &"officers": [&"off_1"], &"server_room": [&"srv_gallery"], &"guard_post": [&"rover_basement", &"rover_dock"], &"security_room_staffed": [&"sec_empty"], &"camera": [&"cam_c"], &"laser_pattern": [&"lz_timed"], &"customers": [&"cust_4"], &"side_door": [&"door_dock_open"], &"fire_escape": [&"fe_down"], &"escape": [&"esc_van_tannery"], &"drill_delivery": [&"drop_terrace"], &"president_safe": [&"ps_empty"], &"vip": [&"vip_out"], &"guard_extra": [], &"civ_extra": [], &"time_lock_s": 150.0, &"drill_eta_s": 60.0, &"escape_eta_s": 120.0, &"cash_bags": 10, &"gold_bags": 4, &"deposit_boxes": 9, "rare": [] }
+[INFO][prefab][p1] CameraC1 disabled
+[INFO][prefab][p1] CameraC2 disabled
+[INFO][prefab][p1] CameraC3 disabled
+[INFO][prefab][p1] CameraC7 disabled
+[INFO][prefab][p1] CameraC9 disabled
+[INFO][prefab][p1] CameraC11 disabled
+[INFO][prefab][p1] CameraC13 disabled
+[INFO][prefab][p1] CameraC15 disabled
+[OFP 23.6s t=2.0] SHORTCUT traversal: NPCs despawned, crew stealth_hidden, 8 cameras disabled (GameplayPrefab.set_enabled)
+[OFP 26.1s t=3.1] pilot: calibrated 0.001600 rad/px yaw, 0.001600 rad/px pitch (settings formula said (0.0016, 0.0016))
+[OFP 26.1s t=3.1] spawn (21.0, 0.0, -6.0)
+[INFO][heist][p1] phase CASING -> STEALTH
+[INFO][crew][p1] slot 0 masked (forced=false)
+[OFP 28.5s t=4.8] masked true
+[OFP 33.5s t=9.8] pilot: t=5 at (16.5, 0.0, -3.9) corner (9.7, 0.2, -1.3) yaw_err 0.00 fwd=true path=17 mouse_mode=2 state=0 look=(1.94,0.00) pin_yaw=1.93904023981304 bot=false
+[OFP 38.5s t=14.8] pilot: t=10 at (11.2, 0.0, -1.9) corner (9.7, 0.2, -1.3) yaw_err 1.21 fwd=false path=17 mouse_mode=2 state=0 look=(0.73,0.00) pin_yaw=0.9254421876758 bot=false
+[OFP 41.1s t=17.4] pilot: use DockPersonnelDoor (open_door) -> OK in 0.0 s
+[OFP 44.5s t=20.8] pilot: t=15 at (8.7, 0.0, 3.3) corner (9.6, 0.2, 7.6) yaw_err -3.13 fwd=false path=12 mouse_mode=2 state=0 look=(0.20,0.00) pin_yaw=0.01080860821821 bot=false
+[OFP 49.4s t=25.7] pilot: use DockCorridorDoor (open_door) -> OK in 0.0 s
+[OFP 52.1s t=28.4] pilot: t=20 at (12.5, 0.0, 8.2) corner (13.2, 0.2, 8.2) yaw_err 0.00 fwd=true path=4 mouse_mode=2 state=0 look=(-1.56,0.00) pin_yaw=-1.56031337875175 bot=false
+[OFP 53.1s t=29.4] pilot: use StairDoorSAG (open_door) -> OK in 0.0 s
+[OFP 59.0s t=35.2] pilot: t=5 at (14.0, 2.5, 1.8) corner (14.8, 2.7, 1.5) yaw_err -0.29 fwd=true path=9 mouse_mode=2 state=0 look=(-0.93,0.00) pin_yaw=-1.12093257326342 bot=false
+[OFP 63.9s t=40.2] pilot: t=10 at (15.1, 4.9, 5.3) corner (14.8, 5.2, 6.0) yaw_err 0.60 fwd=true path=4 mouse_mode=2 state=0 look=(-4.11,0.00) pin_yaw=-3.92280266778107 bot=false
+[OFP 65.1s t=41.3] pilot: use StairDoorSAM (open_door) -> OK in 0.0 s
+[OFP 68.1s t=44.4] pilot: use OperationsDoor (open_door) -> OK in 0.0 s
+[OFP 72.6s t=48.9] pilot: t=5 at (14.3, 5.0, 12.6) corner (14.6, 5.2, 12.9) yaw_err 2.95 fwd=false path=11 mouse_mode=2 state=0 look=(-11.67,0.00) pin_yaw=-11.4813439468562 bot=false
+[OFP 76.7s t=53.0] pilot: use OperationsGalleryDoor (open_door) -> OK in 0.0 s
+[OFP 78.4s t=54.7] pilot: t=10 at (18.6, 5.0, 18.0) corner (18.0, 5.2, 17.8) yaw_err -1.58 fwd=false path=3 mouse_mode=2 state=0 look=(-9.62,0.00) pin_yaw=-9.8084936992309 bot=false
+[OFP 83.3s t=59.5] SHORTCUT bag loot.cash_bricks (weight 1) spawned by LootManager.spawn_bag at (24.6, 5.5, 18.6)
+[INFO][stealth][p1] camera alert: alarm in 7.0 s
+[OFP 86.4s t=62.7] pilot: use Bag_cash_bricks (pick_bag) -> OK in 1.0 s
+[OFP 90.8s t=67.1] THROW GA loot.cash_bricks -20 deg weight 1 pitch -> rests (24.0, -0.0, 26.0) (6.9 m from the stand, 1.5 s) on SlabG_05 secured false: OK hall floor
+[OFP 90.8s t=67.1] SHORTCUT bag loot.cash_bricks (weight 1) spawned by LootManager.spawn_bag at (25.1, 5.5, 19.2)
+[INFO][stealth][p1] ALARM: camera (source 190)
+[OFP 91.8s t=68.1] ALARM camera
+[INFO][heist][p1] alarm (camera): going loud
+[INFO][heist][p1] phase STEALTH -> LOUD
+[INFO][director][p1] assault phase CONTROL (wave 1, 20 s)
+[INFO][director][p1] assault events: 0 rows for ostrander_federal (tweak)
+WARNING: Sub-surface scattering is not supported in viewports with a transparent background. Disabling SSS in transparent viewport.
+     at: _render_scene (servers/rendering/renderer_rd/forward_clustered/render_forward_clustered.cpp:1963)
+[OFP 98.4s t=70.5] pilot: use Bag_cash_bricks2 (pick_bag) -> OK in 1.0 s
+[OFP 104.0s t=75.9] THROW GA loot.cash_bricks +0 deg weight 1 pitch -> rests (24.0, -0.0, 26.5) (7.3 m from the stand, 1.7 s) on SlabG_05 secured false: OK hall floor
+[OFP 104.0s t=75.9] SHORTCUT bag loot.cash_bricks (weight 1) spawned by LootManager.spawn_bag at (25.1, 5.5, 19.2)
+[OFP 107.6s t=79.3] pilot: use Bag_cash_bricks3 (pick_bag) -> OK in 1.0 s
+[OFP 112.5s t=84.2] THROW GA loot.cash_bricks +25 deg weight 1 pitch -> rests (24.0, -0.0, 25.3) (6.1 m from the stand, 1.9 s) on SlabG_05 secured false: OK hall floor
+[OFP 112.6s t=84.2] SHORTCUT bag loot.gold (weight 2) spawned by LootManager.spawn_bag at (25.2, 5.5, 19.2)
+[OFP 115.9s t=87.6] pilot: use Bag_gold (pick_bag) -> OK in 1.0 s
+[INFO][director][p1] assault phase ANTICIPATION (wave 1, 30 s)
+[OFP 121.1s t=92.7] THROW GA loot.gold -20 deg weight 2 pitch -> rests (24.1, -0.0, 23.5) (4.3 m from the stand, 1.5 s) on SlabG_05 secured false: OK hall floor
+[OFP 121.1s t=92.8] SHORTCUT bag loot.gold (weight 2) spawned by LootManager.spawn_bag at (25.2, 5.5, 19.2)
+[OFP 124.5s t=96.1] pilot: use Bag_gold2 (pick_bag) -> OK in 1.0 s
+[OFP 129.7s t=101.4] THROW GA loot.gold +0 deg weight 2 pitch -> rests (24.1, -0.0, 23.5) (4.3 m from the stand, 1.6 s) on SlabG_05 secured false: OK hall floor
+[OFP 129.7s t=101.4] SHORTCUT bag loot.gold (weight 2) spawned by LootManager.spawn_bag at (25.2, 5.5, 19.2)
+[OFP 133.1s t=104.8] pilot: use Bag_gold3 (pick_bag) -> OK in 1.0 s
+[OFP 138.5s t=110.1] THROW GA loot.gold +25 deg weight 2 pitch -> rests (24.1, -0.0, 22.7) (3.5 m from the stand, 1.7 s) on SlabG_05 secured false: OK hall floor
+[OFP 143.8s t=115.3] pilot: t=5 at (18.5, 5.0, 17.5) corner (18.0, 5.2, 17.0) yaw_err -0.04 fwd=true path=22 mouse_mode=2 state=0 look=(7.15,0.00) pin_yaw=7.10561766062165 bot=false
+[INFO][director][p1] assault phase BUILD (wave 1, 35 s)
+[OFP 150.8s t=120.3] pilot: t=10 at (14.8, 5.0, 12.3) corner (13.9, 5.2, 11.3) yaw_err 0.79 fwd=false path=11 mouse_mode=2 state=0 look=(6.21,0.00) pin_yaw=6.40101170651906 bot=false
+[OFP 166.7s t=131.1] pilot: t=5 at (14.9, 6.8, 2.7) corner (15.0, 7.6, 3.6) yaw_err -0.07 fwd=true path=9 mouse_mode=2 state=0 look=(3.38,0.00) pin_yaw=3.30440618415741 bot=false
+[OFP 173.2s t=135.1] pilot: use StairDoorSAE (open_door) -> OK in 0.0 s
+[OFP 181.6s t=141.0] pilot: t=5 at (8.5, 8.6, 8.4) corner (6.5, 8.8, 8.6) yaw_err 0.00 fwd=true path=26 mouse_mode=2 state=0 look=(1.66,0.00) pin_yaw=1.66167246375698 bot=false
+[OFP 183.9s t=143.0] pilot: use LoungeDoor (open_door) -> OK in 0.0 s
+[OFP 192.5s t=147.9] pilot: t=10 at (5.8, 8.6, 13.9) corner (5.6, 8.8, 16.3) yaw_err 0.00 fwd=true path=16 mouse_mode=2 state=0 look=(-3.22,0.00) pin_yaw=-3.22134989240294 bot=false
+[INFO][director][p1] assault phase SUSTAIN (wave 1, 40 s)
+[INFO][director][p1] force pool spent (43 units): FADE
+[INFO][director][p1] assault phase FADE (wave 1, 15 s)
+[OFP 221.9s t=158.1] pilot: use TerraceDoorsW (open_door) -> OK in 8.0 s
+[OFP 226.1s t=162.3] pilot: t=15 at (9.6, 8.6, 18.1) corner (13.6, 8.8, 18.2) yaw_err 0.00 fwd=true path=13 mouse_mode=2 state=0 look=(-7.87,0.00) pin_yaw=-7.87497470156086 bot=false
+[OFP 231.1s t=167.3] pilot: t=20 at (15.4, 8.6, 18.2) corner (16.8, 8.8, 18.2) yaw_err 0.78 fwd=false path=8 mouse_mode=2 state=0 look=(-8.66,0.00) pin_yaw=-8.46356012361503 bot=false
+[OFP 236.1s t=172.3] pilot: t=25 at (21.5, 8.6, 18.4) corner (20.9, 8.8, 18.4) yaw_err -2.15 fwd=false path=7 mouse_mode=2 state=0 look=(-8.84,0.00) pin_yaw=-9.03220774960937 bot=false
+[INFO][director][p1] assault phase CONTROL (wave 2, 40 s)
+[OFP 244.7s t=177.3] pilot: t=30 at (27.3, 8.6, 18.5) corner (29.7, 8.8, 18.6) yaw_err -0.00 fwd=true path=7 mouse_mode=2 state=0 look=(-7.88,0.00) pin_yaw=-7.88507108730846 bot=false
+[OFP 249.7s t=182.3] pilot: t=35 at (33.2, 8.6, 18.7) corner (47.1, 8.8, 19.0) yaw_err -1.15 fwd=false path=3 mouse_mode=2 state=0 look=(-6.73,0.00) pin_yaw=-6.91791917860246 bot=false
+[OFP 254.7s t=187.3] pilot: t=40 at (39.3, 8.6, 18.8) corner (38.7, 8.8, 18.8) yaw_err 1.19 fwd=false path=3 mouse_mode=2 state=0 look=(-5.96,0.00) pin_yaw=-5.76539030414279 bot=false
+[OFP 259.7s t=192.3] pilot: t=45 at (45.4, 8.6, 19.0) corner (44.9, 8.8, 18.9) yaw_err 3.10 fwd=false path=3 mouse_mode=2 state=0 look=(-7.87,0.00) pin_yaw=-7.68186464446626 bot=false
+[OFP 261.3s t=193.9] SHORTCUT bag loot.cash_bricks (weight 1) spawned by LootManager.spawn_bag at (47.1, 9.1, 18.0)
+[OFP 264.7s t=195.8] pilot: use Bag_cash_bricks4 (pick_bag) -> OK in 1.0 s
+[OFP 268.3s t=199.4] THROW terrace loot.cash_bricks -20 deg weight 1 pitch -> rests (47.0, 8.8, 19.0) (0.0 m from the stand, 1.8 s) on SlabE_02 secured false: FAIL caught at y 8.8 (awning / ledge)
+[OFP 269.4s t=199.6] SHORTCUT bag loot.cash_bricks (weight 1) spawned by LootManager.spawn_bag at (47.1, 9.1, 18.0)
+[OFP 271.2s t=201.5] pilot: use Bag_cash_bricks5 (pick_bag) -> OK in 1.0 s
+[OFP 274.4s t=204.7] THROW terrace loot.cash_bricks +0 deg weight 1 pitch -> rests (47.5, 8.9, 19.0) (0.4 m from the stand, 1.4 s) on SlabE_02 secured false: FAIL on the coping / terrace
+[OFP 275.5s t=204.8] SHORTCUT bag loot.cash_bricks (weight 1) spawned by LootManager.spawn_bag at (47.1, 9.1, 18.0)
+[OFP 277.3s t=206.8] pilot: use Bag_cash_bricks6 (pick_bag) -> OK in 1.0 s
+[OFP 280.7s t=210.2] THROW terrace loot.cash_bricks +25 deg weight 1 pitch -> rests (46.9, 8.8, 19.0) (0.1 m from the stand, 1.7 s) on SlabE_02 secured false: FAIL caught at y 8.8 (awning / ledge)
+[OFP 282.0s t=210.4] SHORTCUT bag loot.gold (weight 2) spawned by LootManager.spawn_bag at (47.1, 9.1, 18.0)
+[OFP 283.8s t=212.3] pilot: use Bag_gold4 (pick_bag) -> OK in 1.0 s
+[INFO][director][p1] assault phase ANTICIPATION (wave 2, 30 s)
+[OFP 286.7s t=215.3] THROW terrace loot.gold -20 deg weight 2 pitch -> rests (47.5, 9.0, 19.0) (0.4 m from the stand, 1.2 s) on SlabE_02 secured false: FAIL on the coping / terrace
+[OFP 287.7s t=215.5] SHORTCUT bag loot.gold (weight 2) spawned by LootManager.spawn_bag at (47.1, 9.1, 18.0)
+[OFP 289.5s t=217.4] pilot: use Bag_gold5 (pick_bag) -> OK in 1.0 s
+[OFP 292.7s t=220.6] THROW terrace loot.gold +0 deg weight 2 pitch -> rests (46.9, 8.8, 19.0) (0.2 m from the stand, 1.4 s) on SlabE_02 secured false: FAIL caught at y 8.8 (awning / ledge)
+[OFP 293.6s t=220.8] SHORTCUT bag loot.gold (weight 2) spawned by LootManager.spawn_bag at (47.1, 9.1, 18.0)
+[OFP 295.4s t=222.7] pilot: use Bag_gold6 (pick_bag) -> OK in 1.0 s
+[OFP 298.7s t=226.0] THROW terrace loot.gold +25 deg weight 2 pitch -> rests (46.9, 8.8, 19.0) (0.2 m from the stand, 1.5 s) on SlabE_02 secured false: FAIL caught at y 8.8 (awning / ledge)
+[OFP 300.3s t=226.4] FAIL throws/6 of 12 throws did not land where §7.3/7.4 want (alarm camera)
+[OFP] FAIL throws/6 of 12 throws did not land where §7.3/7.4 want
+ERROR: Can't save PNG at path: '/home/user/Claude-N-Capers/.claude/worktrees/agent-a3bc9fb4c4a310774/game/tests/p/_review/captures/of_g1_2026-10-17/throws/10_fail_throws_6_of_12_throws_did_not_land_where_§7.3/7.4_want.png'.
+   at: save_image (drivers/png/resource_saver_png.cpp:56)
+   GDScript backtrace (most recent call first):
+       [0] shot (res://tests/p/_review/of_g1_pass.gd:266)
+[OFP] RESULT FAIL throws
+[OFP] RESULT FAIL (throws FAIL)
+WARNING: 129 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)

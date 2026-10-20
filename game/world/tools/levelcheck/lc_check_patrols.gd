@@ -23,8 +23,10 @@ func run(ctx: LcContext) -> void:
 		var owner_graph: Node = pp.get_parent()
 		while owner_graph != null and not (owner_graph is PatrolGraph):
 			owner_graph = owner_graph.get_parent()
-		if owner_graph == null:
-			fail(ctx, pp, null, "PatrolPoint is not inside a PatrolGraph")
+		# OF-A4: a CivilianRoute's stops (CivilianRouteStop) are walked in order on the navmesh, not as a graph (duck-typed:
+		# the route script needs autoloads a --script validator cannot compile against).
+		if owner_graph == null and pp.get_parent().get(&"route_id") == null:
+			fail(ctx, pp, null, "PatrolPoint is not inside a PatrolGraph or a CivilianRoute")
 	note("%d patrol graph(s)" % graphs.size())
 
 

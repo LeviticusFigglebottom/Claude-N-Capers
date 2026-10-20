@@ -39,7 +39,7 @@ const PREPLAN: Array = [
 	["pp_drop_lockers", "drop_zone", 0, [5.0, -4.0, 4.5], {}],
 	["pp_drop_terrace", "drop_zone", 3, [6.0, 8.6, 30.0], {}],
 	["pp_escape_dock", "escape", 1, [5.0, 0.0, -4.3], {"variant_group": "escape", "variant_slot": "esc_van_dock"}],
-	["pp_escape_tannery", "escape", 1, [50.4, 0.0, 14.3], {"variant_group": "escape", "variant_slot": "esc_van_tannery"}],
+	["pp_escape_tannery", "escape", 1, [51.2, 0.0, 14.3], {"variant_group": "escape", "variant_slot": "esc_van_tannery"}],
 	["pp_escape_heli", "escape", 3, [36.0, 8.6, 27.0], {"variant_group": "escape", "variant_slot": "esc_heli_terrace"}],
 	[
 		"pp_drill_terrace", "drop_zone", 3, [20.0, 8.6, 33.0],
@@ -266,8 +266,8 @@ const ALWAYS: Dictionary = {
 		],
 		[
 			"prefab", "keypad", "TimeLockConsole", [33.9, -2.8, 11.6], 90.0,
-			{"code_group": "vault", "stealth_only": true, "objective_tag": "time_lock", "@targets": ["VaultDoor"]},
-			[33.0, -4.0, 11.6], {"mount": "wall"}, "prop_keypad",
+			{"code_group": "vault", "stealth_only": true, "objective_tag": "time_lock"}, [33.0, -4.0, 11.6], {"mount": "wall"},
+			"prop_keypad",
 		],
 		[
 			"prefab", "keypad", "CashCageKeypad", [25.25, -2.8, 17.45], 0.0,
@@ -276,13 +276,15 @@ const ALWAYS: Dictionary = {
 		],
 		[
 			"prefab", "drill_point", "LidDrill", [24.0, 1.0, 14.6], 180.0,
-			{"device": "enum:THERMAL", "duration_s": 360.0, "loud_only": true, "objective_tag": "vault_drill"}, [25.6, 0.0, 14.6],
 			{
+				"device": "enum:THERMAL",
+				"duration_s": 360.0,
+				"loud_only": true,
+				"objective_tag": "vault_drill",
 				"requires_loot": "loot.thermal_drill_part",
 				"requires_count": 2,
-				"todo": "OF-A1: requires_loot / requires_count (QC-60)",
 			},
-			"prop_thermal_drill_device",
+			[25.6, 0.0, 14.6], {"requires_loot": "loot.thermal_drill_part", "requires_count": 2}, "prop_thermal_drill_device",
 		],
 		[
 			"prefab", "alarm_button", "AlarmSR", [18.2, 1.1, 0.2], 180.0, {}, [18.2, 0.0, 0.9], {"mount": "wall"},
@@ -341,8 +343,18 @@ const ALWAYS: Dictionary = {
 		],
 		[
 			"prefab", "safe", "BondSafe", [14.71, -4.0, 20.5], -90.0,
-			{"size": "enum:SMALL", "methods": ["drill", "saw", "lockpick"], "objective_tag": "bond_safe"}, [15.9, -4.0, 20.5], {},
-			"prop_safe_large",
+			{
+				"size": "enum:SMALL",
+				"methods": ["drill", "saw", "lockpick"],
+				"objective_tag": "bond_safe",
+				"@contents": [
+					[
+						"loot_spawn", "VaultBonds", [0.0, 0.3, 0.0],
+						{"loot_id": "loot.bearer_bonds", "count": 1, "objective_tag": "bond_safe"},
+					],
+				],
+			},
+			[15.9, -4.0, 20.5], {}, "prop_safe_large",
 		],
 		[
 			"prefab", "loot_spawn", "ServerDrives", [26.0, 5.0, 4.0], 180.0,
@@ -629,47 +641,45 @@ const ALWAYS: Dictionary = {
 			[11.5, -4.0, 2.2], {"walkable": true}, "",
 		],
 		[
-			"prefab", "bag_lift", "Hoist", [24.0, -3.95, 15.2], 0.0,
+			"prefab", "bag_lift", "Hoist", [24.0, -3.95, 15.325], 0.0,
 			{
 				"travel_s": 6.0,
 				"capacity": 2,
-				"car_size_m": [1.0, 1.0, 1.0],
+				"car_size_m": [1.0, 1.0, 0.75],
 				"loud_only": true,
 				"objective_tag": "hoist",
+				"enabled_at_start": false,
 				"@landings": [["HoistLandingTW", [0.0, 4.0, 0.0]]],
+				"@rig": [
+					["ShaftBackstop", [23.36, -4.0, 14.92], [24.64, -1.6, 14.97]], ["ShaftW", [23.36, -4.0, 14.97], [23.41, -1.6, 15.75]],
+					["ShaftE", [24.59, -4.0, 14.97], [24.64, -1.6, 15.75]], ["ShaftSill", [23.36, -4.0, 15.75], [24.64, -3.4, 15.8]],
+					["HoleGuardW", [23.35, 0.0, 13.5], [23.4, 1.5, 15.75]], ["HoleGuardE", [24.6, 0.0, 13.5], [24.65, 1.5, 15.75]],
+					["HoleGuardS", [23.4, 0.0, 15.7], [24.6, 1.5, 15.75]],
+				],
 			},
-			[25.1, -4.0, 15.2],
-			{
-				"starts_disabled": true,
-				"hidden": true,
-				"todo": "OF-A2: GameplayPrefab.set_enabled (QC-61); enabled at the burn-through",
-			},
-			"",
+			[25.1, -4.0, 15.325], {"starts_disabled": true, "hidden": true}, "",
 		],
 	],
 	"Gameplay/Ladders": [
 		[
-			"prefab", "ladder", "RopeLadder", [24.0, -4.0, 13.6], 180.0, {"height_m": 3.2, "usable": false}, null,
-			{
-				"loud_only": true,
-				"starts_disabled": true,
-				"hidden": true,
-				"burn_height_m": 4.0,
-				"todo": "OF-A2: enabled at the burn-through (QC-61), height_m -> burn_height_m",
-			},
-			"",
+			"prefab", "ladder", "RopeLadder", [24.0, -4.0, 13.54], 180.0,
+			{"height_m": 3.2, "usable": false, "enabled_at_start": false, "objective_tag": "rope_ladder"}, null,
+			{"loud_only": true, "starts_disabled": true, "hidden": true, "burn_height_m": 4.0}, "",
 		],
-		["prefab", "ladder", "CagedLadder", [46.0, 8.6, 17.55], 180.0, {"height_m": 3.6}, null, {}, ""],
+		[
+			"prefab", "ladder", "CagedLadder", [46.0, 8.6, 17.55], 180.0, {"height_m": 3.6, "objective_tag": "caged_ladder"}, null,
+			{}, "",
+		],
 	],
 	"Gameplay/Markers": [
 		["marker", "CasingHall", [24.0, 0.0, 27.5], 0.0, "casing", "casing objective marker: the hall at the meridian line"],
 		[
-			"marker", "CodeHintPlanner", [43.9, 0.75, 24.9], 0.0, "code_hint",
-			"Ashgrove's desk planner (reveals code_pc; QC-63 intel note, OF-A3)",
+			"prefab", "code_note", "CodeHintPlanner", [43.9, 0.75, 23.9], 90.0,
+			{"objective_tag": "code_hint", "reveals_variant_group": "code_pc"}, [42.9, 0.0, 23.9], {}, "prop_notebook",
 		],
 		["marker", "TimeLockWait", [6.5, -4.0, 10.4], 0.0, "time_lock_wait", "RC: the time-lock wait room"],
 		["marker", "VaultBreach", [24.0, 0.0, 14.6], 0.0, "vault_breach", "the lid / the hole (24, 14.6): burn-through"],
-		["marker", "LidMarker", [24.0, 0.0, 14.6], 0.0, "lid", "the lid: hide Geometry/Building/Lid at the burn-through"],
+		["marker", "BondDelivery", [16.5, -4.0, 18.0], 0.0, "bond_delivery", "rare bond_delivery: +2 bond bags (OF-A6)"],
 		["marker", "RappelLanding", [2.0, 12.2, 14.0], 0.0, "police_rappel_roof", "rp: P5 rappel landing (police only)"],
 		["marker", "HoldoutH1", [24.0, 0.0, 13.0], 0.0, "holdout_h1", "doc Loud holdout H1"],
 		["marker", "HoldoutH2", [24.0, -4.0, 10.0], 0.0, "holdout_h2", "doc Loud holdout H2"],
@@ -719,6 +729,7 @@ const FIXED_SPAWNS: Array = [
 	["spawn", "Teller2", "CIVILIAN", [17.0, 0.0, 16.07], 180.0, ["civ_teller"], "teller_count", "", ""],
 	["spawn", "Teller3", "CIVILIAN", [31.0, 0.0, 16.07], 180.0, ["civ_teller"], "teller_count", "", ""],
 	["spawn", "Teller4", "CIVILIAN", [33.0, 0.0, 16.07], 180.0, ["civ_teller", "civ_teller_rotating"], "teller_count", "", ""],
+	["spawn", "SDAttendant", "CIVILIAN", [37.0, -4.0, 9.67], 180.0, ["civ_sd_attendant", "civ_teller"], "desk_work", "", ""],
 	["spawn", "PlazaPedestrian1", "CIVILIAN", [10.0, -0.75, 44.0], 90.0, ["civ_plaza"], "walk_text", "", ""],
 	["spawn", "PlazaPedestrian2", "CIVILIAN", [44.0, -0.75, 44.0], -90.0, ["civ_plaza"], "walk_text", "", ""],
 	["spawn", "VaultlineA", "GUARD", [3.0, 0.0, 4.5], 0.0, ["scripted", "guard_vaultline"], "", "BankGround", ""],
@@ -771,60 +782,80 @@ const SLOT_ITEMS: Dictionary = {
 	"pc_ao1": [
 		[
 			"prefab", "hack_terminal", "CodePC", [2.5, 5.75, 12.5], 90.0,
-			{"duration_s": 45.0, "interruptions": [1, 1], "objective_tag": "code_pc"}, [2.5, 5.0, 13.6],
-			{"reveals_code_group": "vault", "todo": "OF-A3: reveals_code_group (QC-63)"}, "",
+			{"duration_s": 45.0, "interruptions": [1, 1], "objective_tag": "code_pc", "reveals_code_group": "vault"},
+			[2.5, 5.0, 13.6], {"reveals_code_group": "vault"}, "",
 		],
 	],
 	"pc_ao2": [
 		[
 			"prefab", "hack_terminal", "CodePC", [2.5, 5.75, 21.5], 90.0,
-			{"duration_s": 45.0, "interruptions": [1, 1], "objective_tag": "code_pc"}, [2.5, 5.0, 22.6],
-			{"reveals_code_group": "vault", "todo": "OF-A3: reveals_code_group (QC-63)"}, "",
+			{"duration_s": 45.0, "interruptions": [1, 1], "objective_tag": "code_pc", "reveals_code_group": "vault"},
+			[2.5, 5.0, 22.6], {"reveals_code_group": "vault"}, "",
 		],
 	],
 	"pc_ao3": [
 		[
 			"prefab", "hack_terminal", "CodePC", [2.5, 5.75, 30.5], 90.0,
-			{"duration_s": 45.0, "interruptions": [1, 1], "objective_tag": "code_pc"}, [2.5, 5.0, 31.6],
-			{"reveals_code_group": "vault", "todo": "OF-A3: reveals_code_group (QC-63)"}, "",
+			{"duration_s": 45.0, "interruptions": [1, 1], "objective_tag": "code_pc", "reveals_code_group": "vault"},
+			[2.5, 5.0, 31.6], {"reveals_code_group": "vault"}, "",
 		],
 	],
 	"pc_ops": [
 		[
 			"prefab", "hack_terminal", "CodePC", [12.0, 5.75, 12.5], 90.0,
-			{"duration_s": 45.0, "interruptions": [1, 1], "objective_tag": "code_pc"}, [12.0, 5.0, 13.6],
-			{"reveals_code_group": "vault", "todo": "OF-A3: reveals_code_group (QC-63)"}, "",
+			{"duration_s": 45.0, "interruptions": [1, 1], "objective_tag": "code_pc", "reveals_code_group": "vault"},
+			[12.0, 5.0, 13.6], {"reveals_code_group": "vault"}, "",
 		],
 	],
 	"pc_vault_ops": [
 		[
 			"prefab", "hack_terminal", "CodePC", [45.0, 5.75, 12.7], 90.0,
-			{"duration_s": 45.0, "interruptions": [1, 1], "objective_tag": "code_pc"}, [45.0, 5.0, 13.8],
-			{"reveals_code_group": "vault", "todo": "OF-A3: reveals_code_group (QC-63)"}, "",
+			{"duration_s": 45.0, "interruptions": [1, 1], "objective_tag": "code_pc", "reveals_code_group": "vault"},
+			[45.0, 5.0, 13.8], {"reveals_code_group": "vault"}, "",
 		],
 	],
 	"pc_exec": [
 		[
 			"prefab", "hack_terminal", "CodePC", [20.5, 9.35, 3.2], 90.0,
-			{"duration_s": 45.0, "interruptions": [1, 1], "objective_tag": "code_pc"}, [20.5, 8.6, 4.3],
-			{"reveals_code_group": "vault", "todo": "OF-A3: reveals_code_group (QC-63)"}, "",
+			{"duration_s": 45.0, "interruptions": [1, 1], "objective_tag": "code_pc", "reveals_code_group": "vault"},
+			[20.5, 8.6, 4.3], {"reveals_code_group": "vault"}, "",
 		],
 	],
-	"off_1": [["spawn", "OfficerAO1", "CIVILIAN", [1.75, 5.0, 12.5], -90.0, ["civ_officer"], "desk_work", "", "prop_chair_office"]],
+	"off_1": [
+		[
+			"spawn", "OfficerAO1", "CIVILIAN", [1.75, 5.0, 12.5], -90.0, ["civ_officer", "civ_officer_ao1"], "desk_work", "",
+			"prop_chair_office",
+		],
+	],
 	"off_2": [
-		["spawn", "OfficerAO1", "CIVILIAN", [1.75, 5.0, 12.5], -90.0, ["civ_officer"], "desk_work", "", "prop_chair_office"],
-		["spawn", "OfficerOF", "CIVILIAN", [11.25, 5.0, 12.5], -90.0, ["civ_officer"], "desk_work", "", "prop_chair_office"],
+		[
+			"spawn", "OfficerAO1", "CIVILIAN", [1.75, 5.0, 12.5], -90.0, ["civ_officer", "civ_officer_ao1"], "desk_work", "",
+			"prop_chair_office",
+		],
+		[
+			"spawn", "OfficerOF", "CIVILIAN", [11.25, 5.0, 12.5], -90.0, ["civ_officer", "civ_officer_of"], "desk_work", "",
+			"prop_chair_office",
+		],
 	],
 	"off_3": [
-		["spawn", "OfficerAO1", "CIVILIAN", [1.75, 5.0, 12.5], -90.0, ["civ_officer"], "desk_work", "", "prop_chair_office"],
-		["spawn", "OfficerOF", "CIVILIAN", [11.25, 5.0, 12.5], -90.0, ["civ_officer"], "desk_work", "", "prop_chair_office"],
-		["spawn", "OfficerVO", "CIVILIAN", [44.25, 5.0, 12.5], -90.0, ["civ_officer"], "desk_work", "", "prop_chair_office"],
+		[
+			"spawn", "OfficerAO1", "CIVILIAN", [1.75, 5.0, 12.5], -90.0, ["civ_officer", "civ_officer_ao1"], "desk_work", "",
+			"prop_chair_office",
+		],
+		[
+			"spawn", "OfficerOF", "CIVILIAN", [11.25, 5.0, 12.5], -90.0, ["civ_officer", "civ_officer_of"], "desk_work", "",
+			"prop_chair_office",
+		],
+		[
+			"spawn", "OfficerVO", "CIVILIAN", [44.25, 5.0, 12.5], -90.0, ["civ_officer", "civ_officer_vo"], "desk_work", "",
+			"prop_chair_office",
+		],
 	],
 	"srv_gallery": [
 		[
 			"prefab", "hack_terminal", "VaultControlRack", [27.0, 5.0, 0.8], 180.0,
-			{"duration_s": 90.0, "interruptions": [2, 2], "objective_tag": "server", "@targets": ["VaultDoor"]}, [27.0, 5.0, 2.1],
-			{}, "prop_server_rack_terminal",
+			{"duration_s": 90.0, "interruptions": [2, 2], "objective_tag": "server"}, [27.0, 5.0, 2.1], {},
+			"prop_server_rack_terminal",
 		],
 		[
 			"prefab", "hack_terminal", "LaserController", [28.9, 6.2, 4.5], 90.0,
@@ -835,8 +866,8 @@ const SLOT_ITEMS: Dictionary = {
 	"srv_basement": [
 		[
 			"prefab", "hack_terminal", "VaultControlRack", [38.0, -4.0, 0.8], 180.0,
-			{"duration_s": 90.0, "interruptions": [2, 2], "objective_tag": "server", "@targets": ["VaultDoor"]}, [38.0, -4.0, 2.1],
-			{}, "prop_server_rack_terminal",
+			{"duration_s": 90.0, "interruptions": [2, 2], "objective_tag": "server"}, [38.0, -4.0, 2.1], {},
+			"prop_server_rack_terminal",
 		],
 		[
 			"prefab", "hack_terminal", "LaserController", [39.9, -2.8, 4.5], 90.0,
@@ -915,23 +946,25 @@ const SLOT_ITEMS: Dictionary = {
 	"esc_van_dock": [
 		[
 			"prefab", "secure_zone", "SecureDock", [5.0, 0.0, -4.32], 180.0,
-			{"objective_tag": "secure", "zone_size_m": [4.0, 3.0, 8.0]}, null, {"kind": "vehicle"}, "veh_van_secure",
+			{"objective_tag": "secure", "zone_size_m": [4.0, 3.0, 8.0]}, null, {"kind": "vehicle", "escape_label": "E1"},
+			"veh_van_secure",
 		],
 		[
 			"prefab", "escape_zone", "EscapeDock", [10.5, 0.0, -3.0], 0.0,
-			{"objective_tag": "escape", "escape_type": "van", "zone_size_m": [4.0, 3.0, 4.0]}, null, {},
+			{"objective_tag": "escape", "escape_type": "van", "zone_size_m": [4.0, 3.0, 4.0]}, null, {"escape_label": "E1"},
 			"res://world/heists/shared/escape_van_marker.tscn",
 		],
 		["marker", "EscapeWaitDock", [10.5, 0.0, -3.0], 0.0, "escape_wait", "loud: hold until the escape arrives"],
 	],
 	"esc_van_tannery": [
 		[
-			"prefab", "secure_zone", "SecureTannery", [50.4, 0.0, 14.28], 180.0,
-			{"objective_tag": "secure", "zone_size_m": [4.4, 3.0, 14.0]}, null, {"kind": "vehicle"}, "veh_van_secure",
+			"prefab", "secure_zone", "SecureTannery", [51.2, 0.0, 14.28], 180.0,
+			{"objective_tag": "secure", "zone_size_m": [6.0, 3.0, 14.0]}, null, {"kind": "vehicle", "escape_label": "E2"},
+			"veh_van_secure",
 		],
 		[
 			"prefab", "escape_zone", "EscapeTannery", [51.0, 0.0, 6.5], 0.0,
-			{"objective_tag": "escape", "escape_type": "van", "zone_size_m": [4.0, 3.0, 3.0]}, null, {},
+			{"objective_tag": "escape", "escape_type": "van", "zone_size_m": [4.0, 3.0, 3.0]}, null, {"escape_label": "E2"},
 			"res://world/heists/shared/escape_van_marker.tscn",
 		],
 		["marker", "EscapeWaitTannery", [51.0, 0.0, 6.5], 0.0, "escape_wait", "loud: hold until the escape arrives"],
@@ -939,12 +972,13 @@ const SLOT_ITEMS: Dictionary = {
 	"esc_heli_terrace": [
 		[
 			"prefab", "secure_zone", "SecureTerrace", [42.5, 8.6, 26.0], 0.0,
-			{"objective_tag": "secure", "zone_size_m": [4.0, 3.0, 5.0]}, null, {"kind": "vehicle"}, "prop_secure_cargo_net",
+			{"objective_tag": "secure", "zone_size_m": [4.0, 3.0, 5.0]}, null, {"kind": "vehicle", "escape_label": "E3"},
+			"prop_secure_cargo_net",
 		],
 		[
 			"prefab", "escape_zone", "EscapeTerrace", [35.5, 8.6, 27.0], 0.0,
-			{"objective_tag": "escape", "escape_type": "heli", "zone_size_m": [6.0, 3.0, 6.0], "arrival_delay_s": 45.0}, null, {},
-			"veh_heli_escape",
+			{"objective_tag": "escape", "escape_type": "heli", "zone_size_m": [6.0, 3.0, 6.0], "arrival_delay_s": 45.0}, null,
+			{"escape_label": "E3"}, "veh_heli_escape",
 		],
 		["marker", "EscapeWaitTerrace", [35.5, 8.6, 27.0], 0.0, "escape_wait", "loud: hold until the escape arrives"],
 	],
@@ -1024,8 +1058,8 @@ const LASERS: Dictionary = {
 		"z": [9.25, 12.55],
 		"y": 0.0,
 		"h": 2.6,
-		"sweep_beams": 3,
-		"period_s": 8.0,
+		"sweep_beams": 2,
+		"period_s": 7.0,
 		"posts": [[9.1, 9.25], [12.55, 12.7]],
 		"metas": {"bypass": false},
 	},

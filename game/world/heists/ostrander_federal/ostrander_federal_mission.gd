@@ -26,6 +26,7 @@ const REQUIRED_BAGS_ROUTINE: int = 4
 const REQUIRED_LOOT: Array[StringName] = [&"loot.cash_bricks", &"loot.gold", &"loot.bearer_bonds"]
 const LOOT_DRILL_PART: StringName = &"loot.thermal_drill_part"
 const LOOT_BONDS: StringName = &"loot.bearer_bonds"
+const LOOT_DRIVES: StringName = &"loot.server_drives"
 const DRILL_PARTS: int = 2
 const ITEM_KEYCARD: StringName = &"item.keycard"
 const CODE_GROUP: StringName = &"vault"
@@ -103,16 +104,20 @@ const LOCK_POLL_S: float = 0.5
 ## A crew member counts as inside the vault gate when on its vault side within this height of the gate.
 const GATE_SIDE_DY_M: float = 2.0
 const SPECIAL_LONGSHOT: StringName = &"longshot"
-## OF-A4 (D-136.4) civilian routes the mission expects C to place: route_id -> the spawn tag of the civilians it binds
+## OF-A4 (D-136.4) civilian routes the mission expects C to place: route_id -> the spawn tags of the civilians it binds
 ## (CivilianRoute binds by its own bind_tags / patrol_graph; the mission binds any still-unbound match as a fallback).
+## The officers' coffee runs are per desk (C fcc83280: CoffeeOfficerAO1 / OF / VO; `civ_officer` is the pre-fcc83280
+## tag); teller_rotation is one route per side_door slot (only the rolled slot's is in the map, found by id).
 ## Away windows (CivilianRouteStop): `mgr_away` on the manager's isolated stops (BM door shut, CF/PR, the LK WC),
 ## `teller_away` on the rotating teller's BR / WC stops, `officer_away` on the coffee runs.
 const ROUTES: Dictionary = {
-	&"mgr_floor": &"civ_manager_mgr_floor",
-	&"mgr_gallery": &"civ_manager_mgr_gallery",
-	&"mgr_vault": &"civ_manager_mgr_vault",
-	&"teller_rotation": &"civ_teller_rotating",
-	&"officer_coffee": &"civ_officer",
+	&"mgr_floor": [&"civ_manager_mgr_floor"],
+	&"mgr_gallery": [&"civ_manager_mgr_gallery"],
+	&"mgr_vault": [&"civ_manager_mgr_vault"],
+	&"teller_rotation": [&"civ_teller_rotating"],
+	&"officer_coffee": [&"civ_officer_ao1", &"civ_officer"],
+	&"officer_coffee_of": [&"civ_officer_of"],
+	&"officer_coffee_vo": [&"civ_officer_vo"],
 }
 const SPEAKER_ACCOUNTANT: StringName = &"accountant"
 
@@ -151,6 +156,8 @@ const VO_REQUIRED_SECURED: StringName = &"vo.mercer.ostrander_federal_required_s
 const VO_VAN_ETA: StringName = &"vo.mercer.ostrander_federal_van_eta"
 const VO_HELI_ETA: StringName = &"vo.mercer.ostrander_federal_heli_eta"
 const VO_ESCAPE: StringName = &"vo.mercer.ostrander_federal_escape"
+## Commander Brandt (the Aegis captain, L4.9) reaches the bank: B's OF-B1 row (Mercer, mission, priority 90).
+const VO_CAPTAIN: StringName = &"vo.mercer.ostrander_federal_captain_arrived"
 ## Longshot lines by the SNIPER_PERCH tag of the perch he holds (C: s1 Assay Office, s2 garage deck, s3 Corvino window).
 const SNIPER_LINES: Dictionary = {
 	&"s1": &"vo.mercer.ostrander_federal_sniper_assay",
@@ -171,6 +178,7 @@ var time_lock_running: bool = false
 var burned_through: bool = false
 var escape_open: bool = false
 var required_secured: int = 0
+var drives_secured: int = 0
 
 var _escape_called: bool = false
 var _camera_warned: bool = false
@@ -197,6 +205,7 @@ func _on_mission_start() -> void:
 	on_event(&"loot_picked", _on_loot_picked)
 	on_event(&"small_loot_taken", _on_small_loot_taken)
 	on_event(&"special_spawned", _on_special_spawned)
+	on_event(&"captain_arrived", _on_captain_arrived)
 	_adopt_g1_metas()
 	_apply_scalars()
 	_watch_gate()
@@ -211,31 +220,32 @@ func _on_mission_start() -> void:
 
 
 func _add_objectives() -> void:
-	var hidden: Enums.ObjectiveState = Enums.ObjectiveState.HIDDEN
-	var on: Enums.ObjectiveState = Enums.ObjectiveState.ACTIVE
-	_add(&"casing", on, [TAG_CASING], {"optional": true})
-	_add(&"keycard", on, [TAG_KEYCARD])
+	# Literal states (B's VO coverage scan reads the HIDDEN -> ACTIVE reveals off `_add(&"id", ObjectiveState.X` + activate).
+	_add(&"casing", Enums.ObjectiveState.ACTIVE, [TAG_CASING], {"optional": true})
+	_add(&"keycard", Enums.ObjectiveState.ACTIVE, [TAG_KEYCARD])
 	require_items(&"keycard", ITEM_KEYCARD)
-	_add(&"code_hint", on, [TAG_CODE_HINT], {"optional": true})
+	_add(&"code_hint", Enums.ObjectiveState.ACTIVE, [TAG_CODE_HINT], {"optional": true})
 	# The code PC is unknown until [code_hint] (or asset.intel_code_pc) names it: the marker points at the planner first.
-	_add(&"code_pc", on, [TAG_CODE_HINT], {"alternative": &"server", "duration_s": 45.0})
-	_add(&"server", on, [TAG_SERVER], {"alternative": &"code_pc", "optional": true, "location": variant(&"server_room")})
-	_add(&"vault_gate", on, [TAG_VAULT_GATE])
-	_add(&"lasers", on, [TAG_LASERS], {"optional": true})
-	_add(&"time_lock", hidden, [TAG_TIME_LOCK])
-	_add(&"time_lock_wait", hidden, [TAG_TIME_LOCK_WAIT])
-	_add(&"vault_loot", hidden, [TAG_VAULT_LOOT])
-	_add(&"gold_cage", hidden, [TAG_GOLD_CAGE], {"optional": true})
-	_add(&"secure", on, [TAG_SECURE], {"count": 0, "total": required_bags(), "optional_more": true})
-	_add(&"deposit_boxes", on, [TAG_DEPOSIT_BOXES], {"optional": true, "side": true})
-	_add(&"bond_safe", on, [TAG_BOND_SAFE], {"optional": true, "side": true})
-	_add(&"president_safe", on, [TAG_PRESIDENT_SAFE], {"optional": true, "side": true})
-	_add(&"server_drives", on, [TAG_SERVER_DRIVES], {"optional": true, "side": true})
-	_add(&"drill_delivery", hidden, [TAG_DRILL_DELIVERY], {"count": 0, "total": DRILL_PARTS})
-	_add(&"vault_drill", hidden, [TAG_VAULT_DRILL])
-	_add(&"vault_breach", hidden, [TAG_VAULT_BREACH])
-	_add(&"escape_wait", hidden, [TAG_ESCAPE_WAIT])
-	_add(&"escape", hidden, [TAG_ESCAPE])
+	_add(&"code_pc", Enums.ObjectiveState.ACTIVE, [TAG_CODE_HINT], {"alternative": &"server", "duration_s": 45.0})
+	_add(&"server", Enums.ObjectiveState.ACTIVE, [TAG_SERVER],
+		{"alternative": &"code_pc", "optional": true, "location": variant(&"server_room")})
+	_add(&"vault_gate", Enums.ObjectiveState.ACTIVE, [TAG_VAULT_GATE])
+	_add(&"lasers", Enums.ObjectiveState.ACTIVE, [TAG_LASERS], {"optional": true})
+	_add(&"time_lock", Enums.ObjectiveState.HIDDEN, [TAG_TIME_LOCK])
+	_add(&"time_lock_wait", Enums.ObjectiveState.HIDDEN, [TAG_TIME_LOCK_WAIT])
+	_add(&"vault_loot", Enums.ObjectiveState.HIDDEN, [TAG_VAULT_LOOT])
+	_add(&"gold_cage", Enums.ObjectiveState.HIDDEN, [TAG_GOLD_CAGE], {"optional": true})
+	# ENV B (LEAD r245 1): the loud drill steps sit above `secure` so the HUD's first ACTIVE step reads the drill.
+	_add(&"drill_delivery", Enums.ObjectiveState.HIDDEN, [TAG_DRILL_DELIVERY], {"count": 0, "total": DRILL_PARTS})
+	_add(&"vault_drill", Enums.ObjectiveState.HIDDEN, [TAG_VAULT_DRILL])
+	_add(&"vault_breach", Enums.ObjectiveState.HIDDEN, [TAG_VAULT_BREACH])
+	_add(&"secure", Enums.ObjectiveState.ACTIVE, [TAG_SECURE], {"count": 0, "total": required_bags(), "optional_more": true})
+	_add(&"deposit_boxes", Enums.ObjectiveState.ACTIVE, [TAG_DEPOSIT_BOXES], {"optional": true, "side": true})
+	_add(&"bond_safe", Enums.ObjectiveState.ACTIVE, [TAG_BOND_SAFE], {"optional": true, "side": true})
+	_add(&"president_safe", Enums.ObjectiveState.ACTIVE, [TAG_PRESIDENT_SAFE], {"optional": true, "side": true})
+	_add(&"server_drives", Enums.ObjectiveState.ACTIVE, [TAG_SERVER_DRIVES], {"optional": true, "side": true})
+	_add(&"escape_wait", Enums.ObjectiveState.HIDDEN, [TAG_ESCAPE_WAIT])
+	_add(&"escape", Enums.ObjectiveState.HIDDEN, [TAG_ESCAPE])
 
 
 ## ui_hud 1.8 / D-089: every objective carries marker_tags (text key objective.ostrander_federal.<id>, B).
@@ -341,7 +351,9 @@ func _wire_routes() -> int:
 		found += 1
 		for n: Node in _runtime.npcs(&"civilian"):
 			var npc: NpcBase = n as NpcBase
-			if npc != null and _has_spawn_tag(npc, [ROUTES[route_id]] as Array[StringName]) \
+			var tags: Array[StringName] = []
+			tags.assign(ROUTES[route_id])
+			if npc != null and _has_spawn_tag(npc, tags) \
 					and CivilianRoute.for_civilian(_runtime, npc) == null:
 				route.bind(npc)
 	return found
@@ -489,9 +501,7 @@ func _on_interaction_completed(interactable_net_id: int, _crew_slot: int, _kind:
 	elif _is_tagged(interactable_net_id, TAG_HOIST):
 		_say_once(VO_HOIST)
 	elif _is_tagged(interactable_net_id, TAG_VAULT_LOOT):
-		_check_spawn_emptied(TAG_VAULT_LOOT, &"vault_loot")
-	elif _is_tagged(interactable_net_id, TAG_SERVER_DRIVES):
-		_check_spawn_emptied(TAG_SERVER_DRIVES, &"server_drives")
+		_check_spawn_emptied(&"vault_loot", TAG_VAULT_LOOT)
 
 
 func _on_device_started(device_net_id: int, _kind: StringName, _duration: float) -> void:
@@ -618,7 +628,7 @@ func _gold_cage_opened() -> void:
 	_say_once(VO_GOLD_CAGE)
 
 
-func _check_spawn_emptied(tag: StringName, objective_id: StringName) -> void:
+func _check_spawn_emptied(objective_id: StringName, tag: StringName) -> void:
 	var left: int = 0
 	var any: bool = false
 	for n: Node in find_tagged(tag):
@@ -631,13 +641,18 @@ func _check_spawn_emptied(tag: StringName, objective_id: StringName) -> void:
 
 ## Safes (bond / president) opened by a drill, a saw or a lockpick; every kept deposit box emptied.
 func _poll_locks() -> void:
-	for pair: Array in [[TAG_BOND_SAFE, &"bond_safe"], [TAG_PRESIDENT_SAFE, &"president_safe"]]:
-		if objective_state(pair[1]) != Enums.ObjectiveState.ACTIVE:
-			continue
-		for n: Node in find_tagged(pair[0]):
-			if n is Safe and (n as Safe).opened:
-				complete(pair[1])
+	if objective_state(&"bond_safe") == Enums.ObjectiveState.ACTIVE and _safe_opened(TAG_BOND_SAFE):
+		_complete_once(&"bond_safe")
+	if objective_state(&"president_safe") == Enums.ObjectiveState.ACTIVE and _safe_opened(TAG_PRESIDENT_SAFE):
+		_complete_once(&"president_safe")
 	start_timer(&"lock_watch", LOCK_POLL_S, _poll_locks)
+
+
+func _safe_opened(tag: StringName) -> bool:
+	for n: Node in find_tagged(tag):
+		if n is Safe and (n as Safe).opened:
+			return true
+	return false
 
 
 func _on_small_loot_taken(_value: int, _crew_slot: int) -> void:
@@ -666,6 +681,11 @@ func _poll_cameras() -> void:
 	start_timer(&"camera_watch", CAMERA_POLL_S, _poll_cameras)
 
 
+## Brandt arrives (AegisCaptain, L4.9): Mercer names him each time he comes in (PD2: Bain on every Winters arrival).
+func _on_captain_arrived(_npc_net_id: int) -> void:
+	say(VO_CAPTAIN)
+
+
 ## Longshots (L4.7): the line names the perch he holds (s1 Assay Office, s2 garage deck, s3 Corvino), once per perch.
 func _on_special_spawned(npc_net_id: int, special_type: StringName) -> void:
 	if not String(special_type).contains(String(SPECIAL_LONGSHOT)):
@@ -682,6 +702,11 @@ func _on_special_spawned(npc_net_id: int, special_type: StringName) -> void:
 
 ## [secure]: cash, gold and bonds count (doc §Loot path); drives are bonus; tool bags are never secured (D-068).
 func _on_bag_secured(_bag_net_id: int, loot_id: StringName, _value: int) -> void:
+	if loot_id == LOOT_DRIVES:
+		drives_secured += 1
+		if drives_secured >= _drive_total():
+			_complete_once(&"server_drives")
+		return
 	if not REQUIRED_LOOT.has(loot_id):
 		return
 	required_secured += 1
@@ -691,6 +716,15 @@ func _on_bag_secured(_bag_net_id: int, loot_id: StringName, _value: int) -> void
 		_complete_once(&"vault_loot")
 		say(VO_REQUIRED_SECURED)
 		_call_escape()
+
+
+## [server_drives]: every drive bag of the SV racks secured (their spawns' count; 2 on G1).
+func _drive_total() -> int:
+	var total: int = 0
+	for n: Node in find_tagged(TAG_SERVER_DRIVES):
+		if n is LootSpawn:
+			total += (n as LootSpawn).count
+	return maxi(total, 1)
 
 
 ## One rule per heist (D-136.10). Stealth: the van escape opens at once; the heli (E3) is called and lands after its
@@ -711,6 +745,7 @@ func _call_escape() -> void:
 		open_escape()
 		return
 	var eta: float = loud_escape_eta()
+	update_objective_data(&"escape_wait", {"seconds": eta})  # ENV B HUD: "ESCAPE mm:ss" countdown
 	activate(&"escape_wait")
 	say(VO_HELI_ETA if heli else VO_VAN_ETA, {"seconds": int(eta)})
 	start_timer(&"escape_eta", eta, open_escape)
@@ -913,13 +948,15 @@ func burn_through() -> void:
 ## The lid: prefabs tagged `lid` are switched off (replicated); C's G1 lid slab (meta burn_lid) is hidden and loses its
 ## collision (server-side only: ask C for a replicated prefab).
 func _drop_lid() -> void:
+	var lids: Array[Node] = []
 	for n: Node in find_tagged(TAG_LID):
 		if n is GameplayPrefab:
 			(n as GameplayPrefab).set_enabled(false)
+			lids.append(n)
 	if _runtime == null or _runtime.map == null:
 		return
 	for n: Node in _runtime.map.find_children("*", "", true, false):
-		if not n.has_meta(META_BURN_LID):
+		if not n.has_meta(META_BURN_LID) or lids.has(n):  # a prefab lid (C fcc83280, meta kept) is off above, replicated
 			continue
 		if n is Node3D:
 			(n as Node3D).visible = false

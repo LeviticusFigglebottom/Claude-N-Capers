@@ -35,8 +35,24 @@ static func camera_params(n: Node3D) -> Dictionary:
 func run(ctx: LcContext) -> void:
 	var pieces: Array[Dictionary] = []
 	var tri_cache: Dictionary = {}
+	var mm_seen: Dictionary = {}
 	for piece: Dictionary in LcVisual.render_pieces(ctx):
 		var mesh: Mesh = piece["mesh"]
+		# OF-C2: a MultiMeshInstance3D is one draw call per surface for all its instances (render_pieces lists
+		# every instance); one piece with the instance's AABB and the summed triangles
+		var mmi: MultiMeshInstance3D = piece["node"] as MultiMeshInstance3D
+		if mmi != null:
+			if mm_seen.has(mmi):
+				continue
+			mm_seen[mmi] = true
+			var mt: int = 0
+			for s2: int in range(mesh.get_surface_count()):
+				mt += _surface_tris(mesh, s2)
+			var mm: MultiMesh = mmi.multimesh
+			var count: int = mm.visible_instance_count if mm.visible_instance_count >= 0 else mm.instance_count
+			pieces.append({"aabb": mmi.global_transform * mmi.get_aabb(), "surfaces": mesh.get_surface_count(),
+				"tris": mt * count, "range": mmi.visibility_range_end})
+			continue
 		var mid: int = mesh.get_instance_id()
 		if not tri_cache.has(mid):
 			var t: int = 0

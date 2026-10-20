@@ -1,0 +1,10 @@
+[gd_scene format=3]
+
+[ext_resource type="ArrayMesh" path="res://world/characters/_props/weapon_silhouettes/weapon_silhouette_cyclone_rotary_mesh.res" id="1_2dblh"]
+
+[node name="WeaponSilhouette" type="MeshInstance3D" unique_id=1764942055]
+cast_shadow = 0
+visibility_range_begin = 25.0
+mesh = ExtResource("1_2dblh")
+metadata/model = "cyclone_rotary"
+metadata/tris = 108

@@ -20,6 +20,12 @@ Faction variants (D2-01): ``char_patrol_officer_<v>`` / ``char_tac_light_<v>`` f
 zero (``_faction``: recolour + original insignia; zero adds the bone face mask and, on the Light,
 pauldrons). The base ids are faction ``tac`` and are unchanged.
 
+Duty looks (D-145.3, PO-18): ``char_patrol_officer_duty`` / ``char_tac_light_duty`` carry no body armour for Routine and
+Tense. Patrol: the uniform shirt with the hi-vis epaulettes, chest radio and badge, no stab vest (a slim shirted torso
+under the tall chequered cap). TAC: the charcoal tactical uniform, gloves, knee pads and drop-leg holster with the
+magazine and radio pouches on the belt, POLICE across the back, no plate carrier, and a soft charcoal cap instead of
+the helmet.
+
 FRD field agent (D-067, ``enemy.frd_agent``, FRD-only): ``char_frd_agent`` / ``char_frd_agent_b`` (a second
 body: woman, darker skin, younger) = the FRD look: a plain-clothes agent in suit trousers, white shirt and
 dark tie under a navy nylon raid windbreaker (cropped above the belt, zipped to mid-chest) with gold
@@ -37,6 +43,7 @@ import _faction as faction
 import _gear_kit as gk
 import _outfit as o
 import _outfit_garments as g
+import _p5 as p5
 import _special_gear as sg
 from _outfit import Hull, Mesh, Vector, smoothstep
 from _outfit_build import Kit, build_character
@@ -62,7 +69,11 @@ AGENT_VARIANTS = {
                          "hair_color": "dark", "unit": "frd_agent"},
     "char_frd_agent_sentinel": {**AGENT, "faction": "sentinel"},
 }
-VARIANTS = {**BASE_VARIANTS, **AGENT_VARIANTS,
+#: D-145.3 (PO-18): no visible body armour on police at Routine/Tense: ``char_<id>_duty`` = the base look without the
+#: stab vest / plate carrier and (TAC) without the ballistic helmet; ENV A picks it there (EnemyDef visual_variant
+#: ``duty``), the armoured base looks from Hazardous
+DUTY_VARIANTS = {f"{aid}_duty": {**p, "armored": False} for aid, p in BASE_VARIANTS.items()}
+VARIANTS = {**BASE_VARIANTS, **AGENT_VARIANTS, **DUTY_VARIANTS,
             **{f"{aid}_{fac}": {**p, "faction": fac} for aid, p in BASE_VARIANTS.items() for fac in FACTIONS}}
 
 NAVY = "char_police_navy"
@@ -140,6 +151,7 @@ def _base_uniform(kit: Kit, shirt_mat: str, trouser_mat: str, collar: str, boots
 
 def patrol(kit: Kit) -> None:
     fit, k = kit.fit, kit.k
+    armored = kit.opts.get("armored", True)
     base = _base_uniform(kit, "char_police_shirt", NAVY, "fold", boots=False)
     belt = base["belt"]
     nk = g.Neck(fit)
@@ -169,26 +181,31 @@ def patrol(kit: Kit) -> None:
             d += 0.010 * k * smoothstep(0.11 * k, 0.03 * k, dd)
         return d
 
-    vest = g.upper_shell(fit, vest_mat, bottom_z=base["belt_z"] + 0.03 * k, base=0.016, sleeveless=True,
-                         hull=kit.hull(), top_cut=cut, iters=4, waist_blouse=0.0, min_off=0.009 * k,
-                         extra=shoulder_pad)
-    vm = vest.mesh
-    box = g.box_out(vm, chest_z + 0.02 * k, chest_z + 0.13 * k, 0.034 * k, 0.020 * k, 0.016 * k, power=4.0)
-    for loop in o.boundary_loops(vm.f):
-        o.straighten_loop(vm, loop, iters=3)
-    o.hem_all(vm, thick=0.013 * k, depth=0.018 * k)
-    kit.add_soft(vm)
-    vh = Hull(fit, [vm])
+    box = None
     det = Mesh()
-    # hi-vis back panel (reads from behind at range)
-    back = []
-    for i in range(9):
-        x = -0.12 * k + 0.24 * k * i / 8
-        hit = vh.cast(Vector((x, -0.6, 1.195 * k)), Vector((0, 1, 0)), 1.2)
-        back.append(hit[0] if hit[0] is not None else Vector((x, -0.12, 1.195 * k)))
-    o.strip(det, vh, back, 0.034 * k, 0.0025 * k, HIVIS, side_hint=Vector((0, 0, 1)), segs_across=2,
-            chamfer=0.003 * k)
-    # hi-vis epaulettes on the vest shoulders
+    if armored:
+        vest = g.upper_shell(fit, vest_mat, bottom_z=base["belt_z"] + 0.03 * k, base=0.016, sleeveless=True,
+                             hull=kit.hull(), top_cut=cut, iters=4, waist_blouse=0.0, min_off=0.009 * k,
+                             extra=shoulder_pad)
+        vm = vest.mesh
+        box = g.box_out(vm, chest_z + 0.02 * k, chest_z + 0.13 * k, 0.034 * k, 0.020 * k, 0.016 * k, power=4.0)
+        for loop in o.boundary_loops(vm.f):
+            o.straighten_loop(vm, loop, iters=3)
+        o.hem_all(vm, thick=0.013 * k, depth=0.018 * k)
+        kit.add_soft(vm)
+        vh = Hull(fit, [vm])
+        # hi-vis back panel (reads from behind at range)
+        back = []
+        for i in range(9):
+            x = -0.12 * k + 0.24 * k * i / 8
+            hit = vh.cast(Vector((x, -0.6, 1.195 * k)), Vector((0, 1, 0)), 1.2)
+            back.append(hit[0] if hit[0] is not None else Vector((x, -0.12, 1.195 * k)))
+        o.strip(det, vh, back, 0.034 * k, 0.0025 * k, HIVIS, side_hint=Vector((0, 0, 1)), segs_across=2,
+                chamfer=0.003 * k)
+    else:
+        # D-145.3 duty look: no stab vest; the epaulettes sit on the shirt shoulders
+        vh = kit.hull()
+    # hi-vis epaulettes on the vest (duty: shirt) shoulders
     for sx in (-1.0, 1.0):
         sh_pt = Vector(fit.J["shoulder.R" if sx > 0 else "shoulder.L"])
         start = nk.point(sx * math.pi / 2, 0.0, 0.016 * k)
@@ -205,7 +222,7 @@ def patrol(kit: Kit) -> None:
     gear.extend(gk.shield_badge(hull, Vector((-0.095 * k, 0.3, 1.37 * k)), Vector((0, 1, 0.1)), 0.042, 0.05,
                                 "char_metal_silver", "char_metal_silver", k=k))
     # side straps joining the front and back panels (elastic + buckle), two per side
-    for sx in (-1.0, 1.0):
+    for sx in ((-1.0, 1.0) if armored else ()):
         for z in (1.12, 1.23):
             mtx, loc = o.surface_frame(hull, Vector((sx * 0.4, box["cy"], z * k)), Vector((sx, 0, 0)), up=o.UP)
             gp = o.Gear()
@@ -214,7 +231,7 @@ def patrol(kit: Kit) -> None:
             gp.bevel(0.002 * k, 1, 30.0)
             gear.extend(gp.to_mesh(mtx, anchor=loc))
     # vest-front pouches between the hi-vis bands (notebook, gloves) and two side pouches
-    for x in (-0.085, 0.085):
+    for x in ((-0.085, 0.085) if armored else ()):
         mtx, loc = o.surface_frame(hull, Vector((x * k, 0.3, 1.20 * k)), Vector((0, 1, 0)))
         gp = o.Gear()
         gp.box((-0.040 * k, -0.042 * k, 0.0), (0.040 * k, 0.040 * k, 0.030 * k), NAVY)
@@ -222,7 +239,7 @@ def patrol(kit: Kit) -> None:
         gp.bevel(0.004 * k, 1, 30.0)
         gp.cyl(0.005 * k, 0.004 * k, centre=(0.0, 0.026 * k, 0.038 * k), axis="Z", segs=10, mat="char_metal_silver")
         gear.extend(gp.to_mesh(mtx, anchor=loc))
-    for sx in (-1.0, 1.0):
+    for sx in ((-1.0, 1.0) if armored else ()):
         a = sx * math.radians(68.0)
         d = Vector((math.sin(a), math.cos(a), 0.0))
         mtx, loc = o.surface_frame(hull, Vector((0.0, box["cy"], 1.17 * k)) + d * 0.1, d)
@@ -276,6 +293,7 @@ def patrol(kit: Kit) -> None:
 
 def tac(kit: Kit) -> None:
     fit, k = kit.fit, kit.k
+    armored = kit.opts.get("armored", True)
     base = _base_uniform(kit, TAC, TAC, "band", boots=True)
     belt = base["belt"]
     trousers = base["trousers"]
@@ -294,71 +312,81 @@ def tac(kit: Kit) -> None:
     kit.add_gear(g_knees := gk.knee_pads(fit, kit.hull()))
     del g_knees
     kit.add_soft(g.gloves(fit, "char_tac_glove", base=0.003, cuff_len=0.06, cuff_off=0.006))
-    # plate carrier: front/back plates conforming to the chest, cummerbund, shoulder straps
-    hull = kit.hull()
-    pc = Mesh()
-    o.patch(pc, hull, Vector((0.0, 0.0, 1.255 * k)), Vector((1, 0, 0)), Vector((0, 0, 1)),
-            o.rounded_rect(0.31 * k, 0.33 * k, 0.03 * k, 3), 0.042 * k, TAC_GEAR, cast_dir=Vector((0, -1, 0)),
-            rings=4, chamfer=0.008 * k)
-    o.patch(pc, hull, Vector((0.0, 0.0, 1.27 * k)), Vector((-1, 0, 0)), Vector((0, 0, 1)),
-            o.rounded_rect(0.32 * k, 0.35 * k, 0.03 * k, 3), 0.040 * k, TAC_GEAR, cast_dir=Vector((0, 1, 0)),
-            rings=4, chamfer=0.008 * k)
-    cb = gk.Belt(fit, Hull(fit, [base["shirt"]], body_regions=set()), 1.15 * k, height=0.15, thick=0.028, drop=0.0,
-                 gap=0.006)
-    pc.extend(cb.mesh(TAC_GEAR))
-    ph = Hull(fit, [pc, base["shirt"]])
-    nk = g.Neck(fit)
-    for sx in (-1.0, 1.0):
-        pts = []
-        for t in [i / 10 for i in range(11)]:
-            a = sx * (0.35 + (math.pi - 0.7) * t)
-            q = nk.point(a, 0.0, 0.035 * k)
-            q.z = 1.40 * k + 0.07 * k * math.sin(math.pi * t)
-            q.x = sx * (0.085 * k + 0.035 * k * math.sin(math.pi * t))
-            pts.append(q)
-        pts = [o.push_out(q, ph, 0.004 * k) for q in pts]
-        o.strip(pc, ph, pts, 0.028 * k, 0.008 * k, TAC_GEAR, segs_across=2, chamfer=0.003 * k)
-    kit.add_soft(pc)
-    hull = kit.hull()
-    gear = Mesh()
-    # padded carrier shoulders: thick pads on the straps over the shoulder tops (squares the
-    # shoulder line so TAC never reads as the Patrol officer in silhouette)
-    for sx in (-1.0, 1.0):
-        sh_pt = Vector(fit.J["shoulder.R" if sx > 0 else "shoulder.L"])
-        # seated out on the shoulder cap (over the deltoid), tilted with the shoulder slope
-        top = nk.point(sx * math.pi / 2, 0.0).lerp(sh_pt, 1.0)
-        mtx, loc = o.surface_frame(hull, Vector((top.x + sx * 0.13, top.y, top.z + 0.2)), Vector((sx * 0.62, 0.0, 1.0)),
-                                   up=Vector((0, 1, 0)))
+    if armored:
+        # plate carrier: front/back plates conforming to the chest, cummerbund, shoulder straps
+        hull = kit.hull()
+        pc = Mesh()
+        o.patch(pc, hull, Vector((0.0, 0.0, 1.255 * k)), Vector((1, 0, 0)), Vector((0, 0, 1)),
+                o.rounded_rect(0.31 * k, 0.33 * k, 0.03 * k, 3), 0.042 * k, TAC_GEAR, cast_dir=Vector((0, -1, 0)),
+                rings=4, chamfer=0.008 * k)
+        o.patch(pc, hull, Vector((0.0, 0.0, 1.27 * k)), Vector((-1, 0, 0)), Vector((0, 0, 1)),
+                o.rounded_rect(0.32 * k, 0.35 * k, 0.03 * k, 3), 0.040 * k, TAC_GEAR, cast_dir=Vector((0, 1, 0)),
+                rings=4, chamfer=0.008 * k)
+        cb = gk.Belt(fit, Hull(fit, [base["shirt"]], body_regions=set()), 1.15 * k, height=0.15, thick=0.028, drop=0.0,
+                     gap=0.006)
+        pc.extend(cb.mesh(TAC_GEAR))
+        ph = Hull(fit, [pc, base["shirt"]])
+        nk = g.Neck(fit)
+        for sx in (-1.0, 1.0):
+            pts = []
+            for t in [i / 10 for i in range(11)]:
+                a = sx * (0.35 + (math.pi - 0.7) * t)
+                q = nk.point(a, 0.0, 0.035 * k)
+                q.z = 1.40 * k + 0.07 * k * math.sin(math.pi * t)
+                q.x = sx * (0.085 * k + 0.035 * k * math.sin(math.pi * t))
+                pts.append(q)
+            pts = [o.push_out(q, ph, 0.004 * k) for q in pts]
+            o.strip(pc, ph, pts, 0.028 * k, 0.008 * k, TAC_GEAR, segs_across=2, chamfer=0.003 * k)
+        kit.add_soft(pc)
+        hull = kit.hull()
+        gear = Mesh()
+        # padded carrier shoulders: thick pads on the straps over the shoulder tops (squares the
+        # shoulder line so TAC never reads as the Patrol officer in silhouette)
+        for sx in (-1.0, 1.0):
+            sh_pt = Vector(fit.J["shoulder.R" if sx > 0 else "shoulder.L"])
+            # seated out on the shoulder cap (over the deltoid), tilted with the shoulder slope
+            top = nk.point(sx * math.pi / 2, 0.0).lerp(sh_pt, 1.0)
+            mtx, loc = o.surface_frame(hull, Vector((top.x + sx * 0.13, top.y, top.z + 0.2)), Vector((sx * 0.62, 0.0, 1.0)),
+                                       up=Vector((0, 1, 0)))
+            gp = o.Gear()
+            gp.box((-0.040 * k, -0.062 * k, -0.004 * k), (0.040 * k, 0.062 * k, 0.026 * k), TAC_GEAR)
+            gp.box((-0.030 * k, -0.050 * k, 0.022 * k), (0.030 * k, 0.050 * k, 0.032 * k), TAC_GEAR)
+            gp.bevel(0.006 * k, 1, 30.0)
+            gear.extend(gp.to_mesh(mtx, anchor=loc))
+        # magazine pouches (3) + admin pouch on the front plate
+        for i, x in enumerate((-0.065, 0.0, 0.065)):
+            mtx, loc = o.surface_frame(hull, Vector((x * k, 0.3, 1.19 * k)), Vector((0, 1, 0)))
+            gp = o.Gear()
+            gp.box((-0.028 * k, -0.06 * k, 0.0), (0.028 * k, 0.05 * k, 0.034 * k), TAC_GEAR)
+            gp.box((-0.022 * k, 0.03 * k, 0.006 * k), (0.022 * k, 0.078 * k, 0.028 * k), "polymer_black")
+            gp.box((-0.03 * k, 0.035 * k, 0.03 * k), (0.03 * k, 0.05 * k, 0.038 * k), TAC_GEAR)
+            gp.bevel(0.004 * k, 1, 30.0)
+            gear.extend(gp.to_mesh(mtx, anchor=loc))
+            del i
+        mtx, loc = o.surface_frame(hull, Vector((0.0, 0.3, 1.33 * k)), Vector((0, 1, 0)))
         gp = o.Gear()
-        gp.box((-0.040 * k, -0.062 * k, -0.004 * k), (0.040 * k, 0.062 * k, 0.026 * k), TAC_GEAR)
-        gp.box((-0.030 * k, -0.050 * k, 0.022 * k), (0.030 * k, 0.050 * k, 0.032 * k), TAC_GEAR)
-        gp.bevel(0.006 * k, 1, 30.0)
-        gear.extend(gp.to_mesh(mtx, anchor=loc))
-    # magazine pouches (3) + admin pouch on the front plate
-    for i, x in enumerate((-0.065, 0.0, 0.065)):
-        mtx, loc = o.surface_frame(hull, Vector((x * k, 0.3, 1.19 * k)), Vector((0, 1, 0)))
-        gp = o.Gear()
-        gp.box((-0.028 * k, -0.06 * k, 0.0), (0.028 * k, 0.05 * k, 0.034 * k), TAC_GEAR)
-        gp.box((-0.022 * k, 0.03 * k, 0.006 * k), (0.022 * k, 0.078 * k, 0.028 * k), "polymer_black")
-        gp.box((-0.03 * k, 0.035 * k, 0.03 * k), (0.03 * k, 0.05 * k, 0.038 * k), TAC_GEAR)
+        gp.box((-0.07 * k, -0.035 * k, 0.0), (0.07 * k, 0.035 * k, 0.022 * k), TAC_GEAR)
+        gp.box((-0.05 * k, -0.02 * k, 0.02 * k), (0.05 * k, 0.02 * k, 0.026 * k), "char_tac_helmet")
         gp.bevel(0.004 * k, 1, 30.0)
         gear.extend(gp.to_mesh(mtx, anchor=loc))
-        del i
-    mtx, loc = o.surface_frame(hull, Vector((0.0, 0.3, 1.33 * k)), Vector((0, 1, 0)))
-    gp = o.Gear()
-    gp.box((-0.07 * k, -0.035 * k, 0.0), (0.07 * k, 0.035 * k, 0.022 * k), TAC_GEAR)
-    gp.box((-0.05 * k, -0.02 * k, 0.02 * k), (0.05 * k, 0.02 * k, 0.026 * k), "char_tac_helmet")
-    gp.bevel(0.004 * k, 1, 30.0)
-    gear.extend(gp.to_mesh(mtx, anchor=loc))
-    # radio pouch on the left side of the cummerbund with antenna
-    a = math.radians(-100.0)
-    mtx = cb.frame(a, dz=0.0)
-    gp = o.Gear()
-    gp.box((-0.03 * k, -0.06 * k, 0.0), (0.03 * k, 0.06 * k, 0.04 * k), TAC_GEAR)
-    gp.box((-0.024 * k, 0.05 * k, 0.008 * k), (0.024 * k, 0.07 * k, 0.034 * k), "polymer_black")
-    gp.bevel(0.004 * k, 1, 30.0)
-    gp.cyl(0.004 * k, 0.12 * k, centre=(0.012 * k, 0.12 * k, 0.02 * k), axis="Y", segs=6, mat="rubber_black")
-    gear.extend(gp.to_mesh(mtx, anchor=cb.point(a)))
+        # radio pouch on the left side of the cummerbund with antenna
+        a = math.radians(-100.0)
+        mtx = cb.frame(a, dz=0.0)
+        gp = o.Gear()
+        gp.box((-0.03 * k, -0.06 * k, 0.0), (0.03 * k, 0.06 * k, 0.04 * k), TAC_GEAR)
+        gp.box((-0.024 * k, 0.05 * k, 0.008 * k), (0.024 * k, 0.07 * k, 0.034 * k), "polymer_black")
+        gp.bevel(0.004 * k, 1, 30.0)
+        gp.cyl(0.004 * k, 0.12 * k, centre=(0.012 * k, 0.12 * k, 0.02 * k), axis="Y", segs=6, mat="rubber_black")
+        gear.extend(gp.to_mesh(mtx, anchor=cb.point(a)))
+    else:
+        # D-145.3 duty look: no plate carrier; three magazine pouches and the radio ride on the belt instead
+        gear = Mesh()
+        for a_deg in (-28.0, -48.0, -68.0):
+            gear.extend(gk.pouch(belt, math.radians(a_deg), 0.05, 0.085, 0.032, TAC_GEAR, snap="polymer_black"))
+        gear.extend(gk.radio(belt, math.radians(-100.0)))
+        # without the carrier the dark shirt alone reads as a civilian: POLICE across the back in the hi-vis yellow
+        if kit.opts.get("back_mark", True):  # the Stinger's pack covers the back
+            p5.stamp_back(kit, "POLICE", 1.27, 0.075, HIVIS)
     # duty belt: buckle, pouches, drop-leg holster on the right thigh
     gear.extend(gk.buckle(belt, "polymer_black", w=0.055, h=0.045))
     gear.extend(gk.pouch(belt, math.radians(-140.0), 0.08, 0.07, 0.035, TAC_GEAR, snap="polymer_black"))
@@ -372,9 +400,14 @@ def tac(kit: Kit) -> None:
     gp.bevel(0.004 * k, 1, 30.0)
     gear.extend(gp.to_mesh(mtx @ o.Matrix.Rotation(math.radians(6.0), 4, "Z"), anchor=loc))
     kit.add_gear(gear)
-    helm, info = gk.helmet(fit, "char_tac_helmet", gap=0.031, cup_r=0.041)
-    kit.add_head(helm)
-    kit.notes["hat"] = "helmet + ear protection (Headwear), top z {:.3f} m".format(info["top_z"])
+    if armored:
+        helm, info = gk.helmet(fit, "char_tac_helmet", gap=0.031, cup_r=0.041)
+        kit.add_head(helm)
+        kit.notes["hat"] = "helmet + ear protection (Headwear), top z {:.3f} m".format(info["top_z"])
+    else:
+        cap, _ring = p5.ball_cap(fit, TAC, peak_mat=TAC, button_mat="polymer_black")
+        kit.add_head(cap)
+        kit.notes["hat"] = "soft charcoal duty cap (Headwear), no helmet (D-145.3)"
     kit.seats["Hip"] = belt.point(math.radians(140.0), dz=0.0, out=0.05 * k)
 
 
@@ -570,7 +603,7 @@ def tac_placard(kit: Kit, mat: str = "char_bank_cream") -> None:
 
 def recipe(kit: Kit) -> None:
     {"patrol": patrol, "tac": tac, "frd_agent": frd_agent}[kit.opts["unit"]](kit)
-    if kit.opts["unit"] == "tac":
+    if kit.opts["unit"] == "tac" and kit.opts.get("armored", True):
         tac_placard(kit, kit.opts.get("placard", "char_bank_cream"))
     faction.dress(kit)
 

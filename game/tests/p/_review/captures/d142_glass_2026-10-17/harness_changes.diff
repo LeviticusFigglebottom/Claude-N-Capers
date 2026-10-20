@@ -1,0 +1,378 @@
+diff --git a/game/tests/p/_review/d128_feel.gd b/game/tests/p/_review/d128_feel.gd
+index 4a37b847..17f4a26c 100644
+--- a/game/tests/p/_review/d128_feel.gd
++++ b/game/tests/p/_review/d128_feel.gd
+@@ -14,6 +14,8 @@
+ ## Owner: ENV P.
+ extends Node
+ 
++const GLASS_PROBE: GDScript = preload("res://tests/p/_review/glass_probe.gd")
++
+ const HUD_SCENE: String = "res://content/ui/hud/hud.tscn"
+ const KIND_NAMES: Array[String] = ["guard", "civilian", "camera", "police"]
+ ## A sample gives up waiting for a fill after this much game time with the mask on (s).
+@@ -33,6 +35,7 @@ var difficulty: int = Enums.Difficulty.ROUTINE
+ var pre_arg: String = ""
+ var shoot_arg: String = ""
+ var post_arg: String = ""
++var _nomask: bool = false  # D-142 scratch: careful walk unmasked (glass LOS survey)
+ var _seed: int = 1002
+ var _shots_left: int = 6
+ var _shot: int = 0
+@@ -59,6 +62,7 @@ func _ready() -> void:
+ 			"pre": pre_arg = v
+ 			"shoot": shoot_arg = v
+ 			"post": post_arg = v
++			"nomask": _nomask = true
+ 	if runner_out == "":
+ 		runner_out = OS.get_user_data_dir() + "/d128_feel"
+ 	DirAccess.make_dir_recursive_absolute(runner_out)
+@@ -134,6 +138,8 @@ func _launch() -> bool:
+ 	pilot.shout_blockers = false
+ 	pilot.no_blind_press = true
+ 	await pilot.calibrate()
++	if mode == "careful":
++		GLASS_PROBE.attach(rt, rt, c, note)
+ 	note("run %d: difficulty %d pagers_max %s" % [_runs, difficulty, rt.hud_model.get(&"pagers_max")])
+ 	note("run %d: %s seed %d phase %d crew %s masked %s mode %s DR %d" % [_runs, heist, _seed, rt.phase,
+ 		Po5Pilot._v(c.global_position), c.masked, c.player_mode if &"player_mode" in c else "-", _dr()])
+@@ -704,8 +710,9 @@ func _careful() -> void:
+ 		pilot.inp.press(&"crouch")
+ 	await pilot.goto(pts[0], 0.5, 90.0)
+ 	note("careful: at mask spot %s, max meter %.2f" % [Po5Pilot._v(c.global_position), _max_meter()[0]])
+-	pilot.inp.press(&"crouch")
+-	await pilot.inp.hold(&"mask_up", Tweak.crew().mask_up_time_s + 0.3)
++	if not _nomask:
++		pilot.inp.press(&"crouch")
++		await pilot.inp.hold(&"mask_up", Tweak.crew().mask_up_time_s + 0.3)
+ 	note("careful: masked %s" % c.masked)
+ 	await shot("careful_masked")
+ 	var peak: Dictionary = {}
+@@ -749,6 +756,9 @@ func _careful() -> void:
+ 		if g.x < 25.0:
+ 			note("careful: %s %s closest %.1f m (ang %.0f) peak meter %.2f" % [_kind_name(o), o.name, g.x, g.y,
+ 				float(peak.get(o.name, 0.0))])
++	var gp: Node = rt.get_node_or_null("GlassProbe")
++	if gp != null:
++		gp.call(&"summary")
+ 	note("careful: RESULT %s (alarm %s)" % ["CLEAN" if ok else "DETECTED/FAILED", _alarm])
+ 	_rows.append("%s|careful|%s|alarm %s" % [heist, "CLEAN" if ok else "FAIL", _alarm])
+ 	pilot.hook_need = Callable()
+diff --git a/game/tests/p/_review/glass_probe.gd b/game/tests/p/_review/glass_probe.gd
+new file mode 100644
+index 00000000..ca69ead3
+--- /dev/null
++++ b/game/tests/p/_review/glass_probe.gd
+@@ -0,0 +1,160 @@
++## D-142 re-walk probe (ENV P helper, 2026-10-17; scratch only): logs when an observer's line of sight to the pilot
++## exists ONLY through see-through glass (StealthDirector.GROUP_SEE_THROUGH), i.e. a sighting D-142 added.
++## Every PROBE_EVERY physics frames, for each active observer under the runtime: plain vision rays (VISION_MASK, no
++## see-through pass) and the D-142 rays (StealthDirector.vision_clear) from the observer's eye to the pilot at the LOS
++## heights. glass-only = some D-142 ray clear and no plain ray clear. Rows:
++##   [GLASS] SEEN <observer> meter m: meter > 0 while glass-only (first row per episode, then each +0.25 of meter)
++##   [GLASS] LOS <observer>: glass-only line within LOS_LOG_M and inside +-HALF_ANGLE of its facing (meter 0;
++##     once per observer per LOS_REPEAT_S game-s): a near miss to look at.
++## Read-only: no state writes, no input.
++extends Node
++
++const PROBE_EVERY: int = 3
++const LOS_LOG_M: float = 18.0
++const HALF_ANGLE_DEG: float = 60.0
++const LOS_REPEAT_S: float = 8.0
++const HEIGHTS: Array[float] = [1.6, 1.0]
++
++var rt: HeistRuntime = null
++var crew: CrewController = null
++var log_fn: Callable = Callable()
++var _frame: int = 0
++var _seen: Dictionary = {}  # observer name -> last logged quarter (-1 = none)
++var _los_t: Dictionary = {}  # observer name -> last LOS row game time
++var _peak: Dictionary = {}  # observer name -> [peak meter via glass, pane, pilot pos, obs pos]
++var _q: PhysicsRayQueryParameters3D = null
++
++
++static func attach(host: Node, runtime: HeistRuntime, c: CrewController, fn: Callable) -> Node:
++	var p: Node = load("res://tests/p/_review/glass_probe.gd").new()
++	p.name = "GlassProbe"
++	p.set(&"rt", runtime)
++	p.set(&"crew", c)
++	p.set(&"log_fn", fn)
++	p.process_mode = Node.PROCESS_MODE_ALWAYS
++	host.add_child(p)
++	return p
++
++
++func _ready() -> void:
++	_q = PhysicsRayQueryParameters3D.new()
++	_q.collision_mask = StealthDirector.VISION_MASK
++
++
++func _physics_process(_delta: float) -> void:
++	_frame += 1
++	if _frame % PROBE_EVERY != 0 or rt == null or not is_instance_valid(rt) or crew == null or not is_instance_valid(crew):
++		return
++	if rt.stealth == null or rt.stealth.alarm_raised:
++		return
++	for n: Node in get_tree().get_nodes_in_group(G.OBSERVER):
++		var o: Node3D = n as Node3D
++		if o == null or o == crew or not o.has_method(&"eye_position") or not rt.is_ancestor_of(o):
++			continue
++		if o is CrewController:
++			continue
++		_check(o)
++
++
++func _check(o: Node3D) -> void:
++	var eye: Vector3 = o.call(&"eye_position")
++	var cpos: Vector3 = crew.global_position
++	var d: float = eye.distance_to(cpos)
++	var meter: float = rt.stealth.detection_value(o, crew.slot)
++	if d > 40.0 and meter <= 0.0:
++		return
++	var res: Array = _glass_only(o, eye)
++	var key: String = String(o.name)
++	if not bool(res[0]):
++		if meter <= 0.0:
++			_seen[key] = -1
++		return
++	var pane: String = String(res[1])
++	if meter > 0.0:
++		var qtr: int = int(meter * 4.0)
++		if qtr > int(_seen.get(key, -1)):
++			_seen[key] = qtr
++			_row("SEEN %s (%s) meter %.2f through %s: pilot %s crouched %s, observer %s, %.1f m" % [key, _kind(o), meter,
++				pane, _v(cpos), crew.crouched, _v(o.global_position), d])
++		var pk: Array = _peak.get(key, [0.0, "", "", ""]) as Array
++		if meter > float(pk[0]):
++			_peak[key] = [meter, pane, _v(cpos), _v(o.global_position)]
++		return
++	_seen[key] = -1
++	if d > LOS_LOG_M:
++		return
++	var fwd: Vector3 = -o.global_transform.basis.z
++	var to: Vector3 = cpos - o.global_position
++	var ang: float = rad_to_deg(absf(Vector2(fwd.x, fwd.z).angle_to(Vector2(to.x, to.z))))
++	if ang > HALF_ANGLE_DEG:
++		return
++	var t: float = rt.heist_time_s
++	if t - float(_los_t.get(key, -1000.0)) < LOS_REPEAT_S:
++		return
++	_los_t[key] = t
++	_row("LOS %s (%s) glass-only line, meter 0, %.1f m ang %.0f through %s: pilot %s crouched %s, observer %s" % [key,
++		_kind(o), d, ang, pane, _v(cpos), crew.crouched, _v(o.global_position)])
++
++
++## [glass_only, first see-through pane name]
++func _glass_only(o: Node3D, eye: Vector3) -> Array:
++	var space: PhysicsDirectSpaceState3D = get_viewport().world_3d.direct_space_state
++	var ex: Array[RID] = []
++	var co: CollisionObject3D = o as CollisionObject3D
++	if co != null:
++		ex.append(co.get_rid())
++	ex.append(crew.get_rid())
++	var any_glass: bool = false
++	var pane: String = ""
++	for h: float in HEIGHTS:
++		var to: Vector3 = crew.global_position + Vector3.UP * minf(h, crew.eye_height())
++		_q.from = eye
++		_q.to = to
++		_q.exclude = ex
++		var hit: Dictionary = space.intersect_ray(_q)
++		if hit.is_empty():
++			return [false, ""]
++		var body: Node = hit.get("collider") as Node
++		if body == null or not body.is_in_group(StealthDirector.GROUP_SEE_THROUGH):
++			continue
++		_q.exclude = ex
++		if StealthDirector.vision_clear(space, _q):
++			any_glass = true
++			if pane == "":
++				pane = _pane_name(body)
++	return [any_glass, pane]
++
++
++func _pane_name(body: Node) -> String:
++	var s: String = str(body.get_path())
++	var i: int = s.find("/Geometry/")
++	if i < 0:
++		i = s.find("/Gameplay/")
++	return s.substr(i + 1) if i >= 0 else s
++
++
++func summary() -> void:
++	for k: Variant in _peak:
++		var pk: Array = _peak[k] as Array
++		_row("SUMMARY %s peak meter via glass %.2f through %s (pilot %s, observer %s)" % [k, pk[0], pk[1], pk[2], pk[3]])
++	if _peak.is_empty():
++		_row("SUMMARY no glass-only sighting with meter > 0")
++
++
++func _kind(o: Node3D) -> String:
++	if o is SecurityCamera:
++		return "camera"
++	if o is NpcBase:
++		return "guard" if (o as NpcBase).is_in_group(&"guard") or String(o.name).contains("guard") else "civilian"
++	return o.get_class()
++
++
++func _row(msg: String) -> void:
++	if log_fn.is_valid():
++		log_fn.call("[GLASS] " + msg)
++	else:
++		print("[GLASS] " + msg)
++
++
++static func _v(p: Vector3) -> String:
++	return "(%.1f, %.1f, %.1f)" % [p.x, p.y, p.z]
+diff --git a/game/tests/p/_review/nd_stealth_route.gd b/game/tests/p/_review/nd_stealth_route.gd
+index 7e6ceebe..8736162a 100644
+--- a/game/tests/p/_review/nd_stealth_route.gd
++++ b/game/tests/p/_review/nd_stealth_route.gd
+@@ -17,6 +17,8 @@
+ ## Owner: ENV P.
+ extends Node
+ 
++const GLASS_PROBE: GDScript = preload("res://tests/p/_review/glass_probe.gd")
++
+ const GRATE_AT: Vector3 = Vector3(16.95, 0.0, -1.4)
+ const MASK_AT: Vector3 = Vector3(18.5, -4.0, 3.0)
+ const GATE_AT: Vector3 = Vector3(14.0, -4.0, 6.9)
+@@ -57,6 +59,7 @@ var _t0_ms: int = 0
+ var _fast: bool = true
+ var _lift_probe: bool = false
+ var _gate_npc: NpcBase = null
++var _glass: Node = null
+ 
+ 
+ func _ready() -> void:
+@@ -120,6 +123,8 @@ func wait_until(cond: Callable, timeout_s: float) -> bool:
+ 
+ func _fail(step: String) -> void:
+ 	note("FAIL %s (alarm %s)" % [step, _alarm])
++	if _glass != null:
++		_glass.call(&"summary")
+ 	await shot("fail_" + step.replace(" ", "_"))
+ 	print("[NDR] RESULT FAIL at %s" % step)
+ 	RenderingServer.render_loop_enabled = true
+@@ -203,6 +208,7 @@ func _run() -> void:
+ 	pilot.hook = _subdue_threat
+ 	await pilot.calibrate()
+ 	note("spawn %s" % Po5Pilot._v(c.global_position))
++	_glass = GLASS_PROBE.attach(self, rt, c, note)
+ 	_watch_detection.call_deferred()
+ 	await shot("spawn_lot")
+ 	if _fast:
+@@ -216,6 +222,8 @@ func _run() -> void:
+ 			if get_tree() != null and not get_tree().paused:
+ 				await _fail(step.get_method())
+ 			return
++	if _glass != null:
++		_glass.call(&"summary")
+ 	note("RESULT PASS stealth, alarm %s" % _alarm)
+ 	print("[NDR] RESULT PASS")
+ 	get_tree().quit(0)
+diff --git a/game/tests/p/_review/sl_pass.gd b/game/tests/p/_review/sl_pass.gd
+index 10a2ca1c..896dfe9a 100644
+--- a/game/tests/p/_review/sl_pass.gd
++++ b/game/tests/p/_review/sl_pass.gd
+@@ -17,6 +17,10 @@
+ ## Owner: ENV P.
+ extends Node
+ 
++const GLASS_PROBE: GDScript = preload("res://tests/p/_review/glass_probe.gd")
++
++var _glass: Node = null
++
+ ## Ids as "asset.<id>@<point>": the {id: point} form loses its point once PreplanPlan.resolve_ids is shipped (it
+ ## takes only the ids; the escape fell back to the first point, pp_escape_heli, in every seed of the first scan).
+ const PREPLAN: Array[StringName] = [&"asset.alternate_entry@pp_spawn_service", &"asset.escape_position@pp_escape_service"]
+@@ -70,8 +74,6 @@ var _tour: bool = false
+ var _hidden: bool = false
+ ## --skip=a,b: step methods to leave out (e.g. --skip=_casing,_laptop,_hack,_drives,_escape for the PO-14 cage check).
+ var _skip: PackedStringArray = PackedStringArray()
+-## --cage-method=saw (PO-14 / D-138): open the server cage with a placed saw on its padlock instead of the code.
+-var _cage_saw: bool = false
+ var _scan: Vector2i = Vector2i.ZERO
+ var _shot: int = 0
+ var _alarm: StringName = &""
+@@ -94,7 +96,6 @@ func _ready() -> void:
+ 			"tour": _tour = true
+ 			"hidden": _hidden = true
+ 			"skip": _skip = v.split(",")
+-			"cage-method": _cage_saw = v == "saw"
+ 			"scan":
+ 				var ab: PackedStringArray = v.split("-")
+ 				_scan = Vector2i(ab[0].to_int(), ab[1].to_int() if ab.size() > 1 else ab[0].to_int())
+@@ -252,6 +253,8 @@ func _run() -> void:
+ 	pilot.quiet = true
+ 	pilot.shout_blockers = false
+ 	pilot.no_blind_press = true
++	if _glass == null:
++		_glass = GLASS_PROBE.attach(self, rt, c, note)
+ 	pilot.arrive_dy = 1.0
+ 	await pilot.calibrate()
+ 	note("spawn %s masked %s" % [Po5Pilot._v(c.global_position), c.masked])
+@@ -312,6 +315,8 @@ func _on_detection(oid: int, slot: int, value: float, kind: int) -> void:
+ 
+ 
+ func _summary() -> void:
++	if _glass != null:
++		_glass.call(&"summary")
+ 	note("SUMMARY steps: %s" % ", ".join(_steps))
+ 	note("SUMMARY alarm: %s at t=%.1f" % [_alarm, _alarm_t])
+ 	for oid: Variant in _det:
+@@ -353,7 +358,8 @@ func _watcher() -> NpcBase:
+ 		fwd.y = 0.0
+ 		if to_me.length() > 1.0 and absf(fwd.angle_to(to_me)) > CAREFUL_HALF_FOV:
+ 			continue
+-		if pilot.has_los(g.head_position(), g):
++		# D-142 scratch: what the player sees (vision rays pass clear glass), not the bullet mask.
++		if rt.stealth.has_los(g.eye_position(), c.eye_position(), [g.get_rid(), c.get_rid()] as Array[RID]):
+ 			return g
+ 	return null
+ 
+@@ -616,44 +622,11 @@ func _cage() -> bool:
+ 	var cage: Node3D = _tagged(&"cage")
+ 	if cage == null:
+ 		return false
+-	if _cage_saw:
+-		return await _cage_by_saw(cage)
+ 	var ok: bool = await pilot.use(_comp(cage), 120.0, func() -> bool: return _objective(&"cage") == 2)
+ 	await shot("cage")
+ 	return ok
+ 
+ 
+-## PO-14: the placed saw on the cage padlock (D-138: 90 s, allowed in stealth), jams fixed; the saw must be visible
+-## on the lock and the gate must open.
+-func _cage_by_saw(cage: Node3D) -> bool:
+-	var lock: Node3D = null
+-	for n: Node in rt.find_children("*", "Padlock", true, false):
+-		var p3: Node3D = n as Node3D
+-		if lock == null or p3.global_position.distance_to(cage.global_position) \
+-				< lock.global_position.distance_to(cage.global_position):
+-			lock = p3
+-	if lock == null:
+-		note("no padlock near the cage")
+-		return false
+-	var ic: InteractableComponent = _comp(lock)
+-	note("cage padlock %s at %s kind %s" % [lock.name, Po5Pilot._v(lock.global_position), ic.kind if ic else &"-"])
+-	var placed: Callable = func() -> bool: return StringName(lock.get(&"placed_kind")) != &"" or bool(lock.get(&"opened"))
+-	await pilot.use(ic, 60.0, placed)
+-	note("saw placed %s (kind %s)" % [placed.call(), lock.get(&"placed_kind")])
+-	await shot("saw_on_lock")
+-	var t: float = 0.0
+-	while not bool(lock.get(&"opened")) and t < 200.0 and _alarm == &"":
+-		if ic.enabled and ic.kind == &"fix_drill":
+-			note("saw jammed: fixing")
+-			await pilot.use(ic, 20.0, func() -> bool: return ic.kind != &"fix_drill")
+-		await pilot.hold_position(1.0)
+-		t += 1.0
+-	await shot("cage_after_saw")
+-	note("cage padlock opened %s by %s after %.0f s; cage objective %d" % [lock.get(&"opened"), lock.get(&"beaten_by"),
+-		t, _objective(&"cage")])
+-	return bool(lock.get(&"opened"))
+-
+-
+ func _hack() -> bool:
+ 	var ht: HackTerminal = _tagged(&"hack") as HackTerminal
+ 	if ht == null:
