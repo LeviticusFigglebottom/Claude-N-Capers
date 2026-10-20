@@ -718,10 +718,13 @@ const NAV_LINKS: Array = [
 	["RappelLantern", [13.3, 8.6, 26.0], [16.0, 0.0, 26.0], false, 1],
 	["AreawayVent", [30.0, 0.0, -1.6], [30.0, -4.0, 3.5], true, 4],
 ]
-## PO6-17 breaches (assault_markers.gd rows): [name, kind, scene id, room-side face pos, yaw, size, room, depth].
+## PO6-17 breaches (assault_markers.gd rows): [name, kind, scene id, room-side face pos, yaw, size, room, depth(, door: the
+## map path of the Door a "door" breach blows open)].
 const ASSAULT_BREACHES: Array = [
 	["Breach_1", "window", "prop_breach_window", [11.8, 0.0, 35.8], 0.0, [1.0, 2.1], "BH", 0.0],
 	["Breach_2", "window", "prop_breach_window", [36.2, 0.0, 35.8], 0.0, [1.0, 2.1], "BH", 0.0],
+	["Breach_3", "door", "", [6.0, 8.6, 16.8], 0.0, [1.8, 2.1], "XL", 0.0, "Gameplay/Doors/TerraceDoorsW"],
+	["Breach_4", "door", "", [14.0, 12.2, 6.85], 0.0, [1.0, 2.1], "HH", 0.0, "Gameplay/Doors/HeadHouseDoor"],
 ]
 ## OUT_OF_BOUNDS curtains (D-040): [name, [x0, y0, z0, x1, y1, z1]].
 const OOB: Array = [

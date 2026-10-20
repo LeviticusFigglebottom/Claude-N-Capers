@@ -23,8 +23,6 @@ const D: GDScript = preload("res://world/heists/ostrander_federal/greybox/of_dre
 const GH: GDScript = preload("res://world/heists/glasshouse/greybox/gh_mesh.gd")
 const LM: GDScript = preload("res://world/heists/ostrander_federal/greybox/of_landmarks.gd")
 const OD: GDScript = preload("res://world/heists/ostrander_federal/greybox/of_dress.gd")
-## Baked MultiMesh node (the headless generator cannot save a MultiMesh buffer): fills itself on _ready.
-const MMT: GDScript = preload("res://world/props/multimesh_tiles.gd")
 const VIEWMODEL_LIT_LAYER: int = 1 << 20  # viewmodel_lit (visual_slots v1.2, D-095)
 ## A face belongs to the zone holding the point this far in front of it.
 const PROBE: float = 0.05
@@ -196,7 +194,7 @@ func _face(box: AABB, f: int, src_key: String, whole: String, ve: bool, group: S
 	var rect: Array = [box.position[uv.x], box.position[uv.y], box.end[uv.x], box.end[uv.y]]
 	if _buried(box, a, s, w, uv, rect):
 		return
-	var rest: Array = [rect]
+	var rest: Array = _uncovered(box, a, s, w, uv, rect)
 	for z: Array in D.ZONES:
 		var lo: Vector3 = z[1]
 		var hi: Vector3 = z[2]
@@ -242,6 +240,26 @@ func _buried(box: AABB, a: int, s: float, w: float, uv: Vector2i, rect: Array) -
 		if all_in:
 			return true
 	return false
+
+
+## The parts of a face not shared with a same-facing coplanar face of another box (a slab top over the walls' tops
+## below it; the smaller face keeps the shared part: never two faces in one plane, levelcheck zfight).
+func _uncovered(box: AABB, a: int, s: float, w: float, uv: Vector2i, rect: Array) -> Array:
+	var rest: Array = [rect]
+	for o: AABB in _solids:
+		if o.is_equal_approx(box):
+			continue
+		var ow: float = o.end[a] if s > 0.0 else o.position[a]
+		if absf(ow - w) > 0.002:
+			continue
+		var h: Array = [o.position[uv.x], o.position[uv.y], o.end[uv.x], o.end[uv.y]]
+		if _isect(rect, h).is_empty() or (h[2] - h[0]) * (h[3] - h[1]) >= (rect[2] - rect[0]) * (rect[3] - rect[1]):
+			continue  # the smaller face keeps the shared part
+		var nxt: Array = []
+		for r: Array in rest:
+			nxt.append_array(_minus(r, h))
+		rest = nxt
+	return rest
 
 
 static func _isect(r: Array, h: Array) -> Array:
@@ -476,7 +494,8 @@ func _coffers() -> void:
 			else [[D.COFFER_Z0, D.COFFER_Z1]]
 		for sp: Array in spans:
 			_box(g, Vector3(x - float(bx[1]), D.CEIL - float(bx[2]), sp[0]), Vector3(x + float(bx[1]), D.CEIL, sp[1]),
-				"of_limestone", _wall_ends(3, 2, float(sp[0]), float(sp[1]), D.COFFER_Z0, D.COFFER_Z1))
+				"of_limestone", _wall_ends(3, 2, float(sp[0]), float(sp[1]), D.COFFER_Z0, D.COFFER_Z1)
+				+ _wall_ends(-1, 0, x - float(bx[1]), x + float(bx[1]), D.COFFER_X0, D.COFFER_X1))
 	for bz: Array in D.COFFER_Z:
 		var z: float = bz[0]
 		var spans2: Array = [[D.COFFER_X0, ox0], [ox1, D.COFFER_X1]] if z > oz0 + 0.01 and z < oz1 - 0.01 \
@@ -484,7 +503,8 @@ func _coffers() -> void:
 		for sp2: Array in spans2:
 			_box(g, Vector3(sp2[0], D.CEIL - float(bz[2]) - 0.004, z - float(bz[1])),
 				Vector3(sp2[1], D.CEIL, z + float(bz[1])), "of_limestone",
-				_wall_ends(3, 0, float(sp2[0]), float(sp2[1]), D.COFFER_X0, D.COFFER_X1))
+				_wall_ends(3, 0, float(sp2[0]), float(sp2[1]), D.COFFER_X0, D.COFFER_X1)
+				+ _wall_ends(-1, 2, z - float(bz[1]), z + float(bz[1]), D.COFFER_Z0, D.COFFER_Z1))
 	var rs: Vector2 = D.ROSETTE
 	for i: int in range(D.COFFER_X.size() - 1):
 		var cx: float = (float(D.COFFER_X[i][0]) + float(D.COFFER_X[i + 1][0])) * 0.5
@@ -593,42 +613,20 @@ func _street() -> void:
 		_emit("X1_street", String(sw[2]), [D.STREET_X0, sw[0], D.STREET_X1, sw[1]], 1, 1.0, y)
 
 
-## The arched windows' bronze bays, on the plaza face (yaw 180, back on the glass at z 36.02) and the hall face: one
-## baked MultiMeshInstance3D (multimesh_tiles.gd; one draw call per material for all eight).
+## The arched windows' bronze bays, on the plaza face (yaw 180, back on the glass at z 36.02) and the hall face (eight
+## instances: a baked MultiMesh read at the origin in levelcheck's zfight pass, so plain instances).
 func _window_bays(fin: Node3D) -> void:
 	var ps: PackedScene = b.call(&"catalog_scene", "prop_of_window_bay") as PackedScene
 	if ps == null:
 		return
-	var inst: Node = ps.instantiate()
-	var mesh: Mesh = null
-	for c: Node in inst.find_children("*", "MeshInstance3D", true, false):
-		mesh = (c as MeshInstance3D).mesh
-		break
-	inst.free()
-	if mesh == null:
-		report.append("ERROR window bays: prop_of_window_bay has no mesh")
-		return
-	var buf: PackedFloat32Array = PackedFloat32Array()
-	var bounds: AABB = AABB()
-	var first: bool = true
+	var holder: Node3D = b.call(&"add", fin, b.call(&"node3d", "WindowBays")) as Node3D
 	for wb: Array in D.WINDOW_BAYS:
-		for side: Array in [[PI, 36.02], [0.0, 35.98]]:
-			var xf: Transform3D = Transform3D(Basis(Vector3.UP, float(side[0])),
-				Vector3(float(wb[1]), D.WINDOW_SILL, float(side[1])))
-			buf.append_array(PackedFloat32Array([xf.origin.x, xf.origin.y, xf.origin.z, float(side[0])]))
-			bounds = xf * mesh.get_aabb() if first else bounds.merge(xf * mesh.get_aabb())
-			first = false
-	var mm: MultiMesh = MultiMesh.new()
-	mm.transform_format = MultiMesh.TRANSFORM_3D
-	mm.mesh = mesh
-	var mmi: MultiMeshInstance3D = MultiMeshInstance3D.new()
-	mmi.set_script(MMT)
-	mmi.name = "WindowBays"
-	mmi.multimesh = mm
-	mmi.set(&"instances", buf)
-	mmi.custom_aabb = bounds
-	mmi.set_meta(&"kind", "window_frame")
-	b.call(&"add", fin, mmi)
+		for side: Array in [["Out", PI, 36.02], ["In", 0.0, 35.98]]:
+			var inst: Node3D = ps.instantiate() as Node3D
+			inst.name = "Bay%s%s" % [wb[0], side[0]]
+			inst.transform = Transform3D(Basis(Vector3.UP, float(side[1])),
+				Vector3(float(wb[1]), D.WINDOW_SILL, float(side[2])))
+			b.call(&"add", holder, inst)
 
 
 # --- Furniture and props ------------------------------------------------------------------------------

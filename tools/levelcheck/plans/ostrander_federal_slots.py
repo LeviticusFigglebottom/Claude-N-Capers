@@ -252,6 +252,13 @@ RAMPS = [
 # [name, x, facade z, room]: marker on the room-side face (z 35.8), yaw 0 (-Z north into the hall).
 BREACH_WINDOWS = [["Breach_1", 11.8, 36.0, "BH"], ["Breach_2", 36.2, 36.0, "BH"]]
 BREACH_SIZE = [1.0, 2.1]
+# PO6-17 door breaches (LEAD ruling, design doc "Assault events" Breach_3 / Breach_4): kind "door", no infill scene (the
+# door is the infill: ENV A plays the charge on its leaves and opens it), markers only (no obstruction: the navmesh is
+# unchanged). [name, room-side face pos, yaw (-Z into the room), size, room, door (map path)].
+BREACH_DOORS = [
+    ["Breach_3", [6.0, 8.6, 16.8], 0.0, [1.8, 2.1], "XL", "Gameplay/Doors/TerraceDoorsW"],
+    ["Breach_4", [14.0, 12.2, 6.85], 0.0, [1.0, 2.1], "HH", "Gameplay/Doors/HeadHouseDoor"],
+]
 PLAZA_STEPS = {"x": [18.0, 30.0], "z_top": 38.0, "risers": 5, "riser": 0.15, "tread": 0.3}
 # The apron's plinth faces (0.75 m) where the apron meets the plaza (no ramp): [name, [x0, z0, x1, z1]].
 # Police islands behind the closures (QC-42 / D-064): [spawn, grade [x0, z0, x1, z1], y, link from, link to].

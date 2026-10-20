@@ -157,8 +157,9 @@ const COFFER_Z1: float = 35.8
 const ROSETTE: Vector2 = Vector2(0.17, 0.04)
 
 ## The hall's pendants: ten 3000 K bronze drum lanterns at coffer centres (y 8.0), clear of the oculus, the gallery
-## guard and the vestibule roof. One casts shadows (the doc's budget allows the sun + hall pendants; the frustum count
-## of the hall views already holds lane C's six room fixtures, so one: <= 8 in any view).
+## guard and the vestibule roof. The doc's budget is the sun + 4 hall pendants, but the hall views' conservative frustum
+## count (levelcheck perf, no occlusion) already holds the sun and lane C's six room fixtures (SR, VT, PR, OF, LD, BB):
+## one pendant fits (8); the other three wait for those to leave the hall views (lead ruling, see the lane A report).
 const PENDANTS: Array = [
 	["PendantN1", Vector3(11.225, CEIL, 21.025)], ["PendantN2", Vector3(18.15, CEIL, 21.025)],
 	["PendantN3", Vector3(30.855, CEIL, 21.025)], ["PendantN4", Vector3(36.91, CEIL, 21.025)],
@@ -166,7 +167,7 @@ const PENDANTS: Array = [
 	["PendantS1", Vector3(11.225, CEIL, 30.84)], ["PendantS2", Vector3(18.15, CEIL, 30.84)],
 	["PendantS3", Vector3(30.855, CEIL, 30.84)], ["PendantS4", Vector3(36.91, CEIL, 30.84)],
 ]
-const SHADOW_PENDANTS: Array[String] = []
+const SHADOW_PENDANTS: Array[String] = ["PendantS2"]
 
 ## G1 furniture boxes (Props/MapBuilt) -> exact-fit art: [box, asset, yaw]. The greybox mesh is hidden, the collider,
 ## metas and nav obstruction stay; the art (bottom-centre pivot) stands at the box's floor centre.
@@ -261,8 +262,8 @@ const FACADE_TRIMS: Array = [
 ]
 
 ## Fill lights (level_standards §3.7: meta fill, energy <= 0.3, no shadows, <= 2 per room): [name, position, range].
+## BH's two fills are the lighting lane's warm pools (of_gi.gd HallPools); lane A lights only the vestibule.
 const FILLS: Array = [
-	["FillBH_0", Vector3(16.0, 7.0, 27.0), 12.0], ["FillBH_1", Vector3(32.0, 7.0, 27.0), 12.0],
 	["FillVE_0", Vector3(24.0, 3.6, 34.0), 5.0],
 ]
 ## The street lane markings on the avenue (paint_white quads 5 mm over the asphalt): the centre line (dashed) and

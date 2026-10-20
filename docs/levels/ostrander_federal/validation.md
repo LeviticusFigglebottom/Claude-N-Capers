@@ -37,7 +37,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | door_frame_gap | PASS | 0 | 0 |
 | frame_proud | PASS | 0 | 0 |
 | seam_gaps | PASS | 0 | 0 |
-| furniture_logic | PASS | 0 | 5 |
+| furniture_logic | PASS | 0 | 6 |
 
 ## contract_nodes: Contract nodes
 
@@ -54,14 +54,14 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## floating: Nothing floats
 
-- 1925 props checked
+- 1927 props checked
 
 - WARN `Variants/Group_escape/Slot_esc_van_dock/EscapeDock` @ (10.50, 0.00, -3.00): prop has no geometry or collision; skipped
 - WARN `Variants/Group_escape/Slot_esc_van_tannery/EscapeTannery` @ (51.00, 0.00, 6.50): prop has no geometry or collision; skipped
 
 ## clipping: Nothing clips
 
-- 1926 props, 94 doors checked
+- 1928 props, 94 doors checked
 
 - WARN `Gameplay/Devices/Lid` @ (24.00, 0.00, 14.60): door has no Leaf node; swing arc not checked
 
@@ -389,5 +389,6 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 - WARN `Gameplay/Devices/LidDrill` @ (24.00, 1.00, 14.60): door_clear: in the clear zone of door `Gameplay/Devices/Lid` (1.0 / 1.0 m each side, leaf width 2.40 m) by 1.01 m (gameplay prefab / variant content: review)
 - WARN `Gameplay/Lifts/CashLift` @ (11.50, -3.95, 1.55): door_clear: in the clear zone of door `Gameplay/Doors/CashLiftDoorB` (1.0 / 1.0 m each side, leaf width 1.82 m) by 0.21 m (gameplay prefab / variant content: review)
 - WARN `Gameplay/Lifts/CashLift` @ (11.50, -3.95, 1.55): use_point: stands in the user's spot of `Gameplay/Doors/CashLiftDoorB` (UsePoint @ (11.50, -4.00, 2.30)) by 0.11 m (gameplay prefab / variant content: review)
+- WARN `Gameplay/Lifts/Hoist/LandingPanelVisual1` @ (24.67, 1.10, 15.33): door_clear: in the clear zone of door `Gameplay/Devices/Lid` (1.0 / 1.0 m each side, leaf width 2.40 m) by 0.33 m (gameplay prefab / variant content: review)
 - WARN `Gameplay/Lifts/Hoist/Rig/HoleGuardE` @ (24.62, 0.75, 14.62): door_clear: in the clear zone of door `Gameplay/Devices/Lid` (1.0 / 1.0 m each side, leaf width 2.40 m) by 0.60 m (gameplay prefab / variant content: review)
 - WARN `Gameplay/Lifts/Hoist/Rig/HoleGuardW` @ (23.38, 0.75, 14.62): door_clear: in the clear zone of door `Gameplay/Devices/Lid` (1.0 / 1.0 m each side, leaf width 2.40 m) by 0.60 m (gameplay prefab / variant content: review)
