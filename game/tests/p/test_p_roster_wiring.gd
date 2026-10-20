@@ -27,6 +27,9 @@ func test_bodies_and_sleeves_match() -> void:
 	for h: StringName in Heisters.ids():
 		assert_true(bodies.has(h) and sleeves.has(h), "roster heister %s has a body and sleeves" % h)
 	for h: StringName in bodies:
+		# PO-19: the generic heist suits (bot outfits) wear the rig's own suit sleeves (no sleeve entry needed).
+		if String(h).begins_with("suit_"):
+			continue
 		assert_true(sleeves.has(h), "%s has sleeves" % h)
 	for h: StringName in sleeves:
 		assert_true(bodies.has(h), "%s has a body" % h)

@@ -16,6 +16,12 @@ SLAB_UNDER = {"B": -0.8, "G": 4.2, "M": 8.0, "E": 11.6}    # underside of the sl
 EXT_T, INT_T, CORE_T, VAULT_T = 0.4, 0.2, 0.3, 0.6
 PARAPET = 1.1
 COPING_RISE = 0.3          # a ridge over the half thickness 0.2 m: 56 deg (>= 50, §7.5)
+# The terrace's east parapet (Executive, x 48, z 17-36) is the bag throw spot down to E2 (§7.4, OF-P1): a 1.1 m guard
+# (doc Site: "toward Tannery Street the terrace parapet has a 1.1 m guard"). The wall is solid to 0.5 m, then a
+# mono-pitch coping falls 0.6 m outward from the terrace face's 1.1 m top edge over the 0.4 m wall (56 deg, >= 50). The
+# terrace side is a plain vertical face to 1.1 m (above the 1.08 m jump apex, like every other parapet), and nothing
+# beyond the face stands above 1.1 m, so a throw (released 1.3 m up, 0.7 m ahead of the thrower: LootManager) clears it.
+THROW_PARAPET = {"floor": "E", "axis": "z", "fixed": 48.0, "inner": -1.0, "guard": 1.1, "fall": 0.6}
 OUTSIDE = (None, "X4", "X5")
 CORES = ("SA", "SB", "HH")
 DOOR_HEAD = 2.2
@@ -114,7 +120,10 @@ def _edge_kind(f: str, e: Tuple[int, int, int, int], s0: Optional[str], s1: Opti
     y0 = FFL[f]
     o0, o1 = s0 in OUTSIDE, s1 in OUTSIDE
     inner = s1 if o0 else s0
-    if o0 and o1:   # parapet (terrace / roof edge)
+    if o0 and o1:   # parapet (terrace / roof edge); the throw parapet's coping is "mono"
+        tp = THROW_PARAPET
+        if f == tp["floor"] and tp["axis"] == "z" and e[0] == e[2] == tp["fixed"]:
+            return EXT_T, y0, y0 + tp["guard"] - tp["fall"], "wall_ext", "mono"
         return EXT_T, y0, y0 + PARAPET, "wall_ext", True
     if o0 or o1:    # facade (incl. the N block's face onto the terrace, the head house, the roof plant)
         if inner in CORES and f == "R":
@@ -201,7 +210,8 @@ def walls() -> List[list]:
 
 
 def copings() -> List[list]:
-    """Coping ridges over the parapets, cut at the ladder top / fire-escape openings: [name, axis, fixed, a0, a1, y, t]."""
+    """Coping ridges over the parapets, cut at the ladder top / fire-escape openings: [name, axis, fixed, a0, a1, y, t,
+    profile]; profile = [[offset across the wall, rise above y], ...] (a ridge, or the throw parapet's mono pitch)."""
     out = []
     for f in P.FLOORS:
         for w in walls_raw(f):
@@ -220,9 +230,14 @@ def copings() -> List[list]:
                             else:
                                 nxt.append(s)
                         spans = nxt
+            if w[8] == "mono":
+                inner = THROW_PARAPET["inner"] * t / 2
+                prof = [[inner, 0.0], [inner, THROW_PARAPET["fall"]], [inner, THROW_PARAPET["fall"]], [-inner, 0.0]]
+            else:
+                prof = [[-t / 2, 0.0], [-0.001, COPING_RISE], [0.001, COPING_RISE], [t / 2, 0.0]]
             for s in spans:
                 out.append(["Coping%s%s%04d_%04d" % (f, axis.upper(), int(round(fixed * 10)), int(round(s[0] * 10))),
-                            axis, fixed, s[0], s[1], y1, t])
+                            axis, fixed, s[0], s[1], y1, t, prof])
     return out
 
 

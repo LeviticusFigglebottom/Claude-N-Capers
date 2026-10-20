@@ -9,12 +9,12 @@ display_name = "Security Officer"
 is_special = false
 health = PackedFloat32Array(50, 50, 75, 100, 150, 200)
 headshot_mult = PackedFloat32Array(3, 3, 3, 3, 3, 3)
-damage = PackedFloat32Array(10, 10, 15, 20, 30, 40)
+damage = PackedFloat32Array(7, 8.5, 15, 20, 30, 40)
 move_speed = 3.5
 weapon = &"weapon.npc_pistol"
 detection_preset = &"guard"
 params = {
-"_note": "L4.1 Security Officer. health/damage per Difficulty (ROUTINE..CATACLYSM) are PD2-shaped design values (◇); move_speed = run (alarmed/combat).",
+"_note": "L4.1 Security Officer. health/damage per Difficulty (ROUTINE..CATACLYSM) are PD2-shaped design values (◇); move_speed = run (alarmed/combat). PO-17 (D-145 §2): Routine/Tense damage lowered toward PD2 Normal/Hard (◇).",
 "armor_body_mult": 1.0,
 "explosive_mult": 1.0,
 "frontal_armor": 1.0,

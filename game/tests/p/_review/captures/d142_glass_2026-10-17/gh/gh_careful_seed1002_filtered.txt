@@ -1,0 +1,38 @@
+[D128 176.8s t=2.53] pilot: calibrated 0.001600 rad/px yaw, 0.001600 rad/px pitch (settings formula said (0.0016, 0.0016))
+[D128 176.8s t=2.53] run 1: difficulty 0 pagers_max 4
+[D128 176.8s t=2.53] run 1: glasshouse seed 1002 phase 1 crew (3.0, 0.0, 14.4) masked false mode casing DR 4
+[D128 188.2s t=2.58] [GLASS] LOS Npc_civilian (civilian) glass-only line, meter 0, 7.7 m ang 5 through Gameplay/Windows/ShopBayA/GlassBody: pilot (3.0, 0.0, 14.4) crouched false, observer (3.6, 0.0, 6.9)
+[D128 188.2s t=2.58] [GLASS] LOS Npc_civilian2 (civilian) glass-only line, meter 0, 8.7 m ang 49 through Gameplay/Windows/ShopBayB/GlassBody: pilot (3.0, 0.0, 14.4) crouched false, observer (8.6, 0.0, 8.0)
+[D128 188.2s t=2.58] [GLASS] LOS Npc_civilian6 (civilian) glass-only line, meter 0, 4.1 m ang 15 through Gameplay/Windows/ShopBayA/GlassBody: pilot (3.0, 0.0, 14.4) crouched false, observer (2.0, 0.0, 10.8)
+[D128 222.4s t=3.07] shot glasshouse_01_hud_pagers_routine.png
+[D128 613.2s t=10.67] pilot: use MainEntrance (open_door) -> OK in 0.0 s
+[D128 1282.3s t=23.50] pilot: use StaffDoor (open_door) -> OK in 0.0 s
+[D128 1400.5s t=25.95] pilot: use ReceivingDoor (open_door) -> OK in 0.0 s
+[D128 1862.6s t=38.08] careful: at mask spot (-5.2, 0.0, -2.4), max meter 0.00
+[D128 1890.2s t=39.40] careful: masked true
+[D128 1892.8s t=39.47] shot glasshouse_02_careful_masked.png
+[D128 2075.5s t=44.00] careful: leg 1 -> (-1.0, 0.0, -0.7) reached true, max meter now 0.00 (-) alarm 
+[D128 2248.7s t=48.13] careful: leg 2 -> (2.8, 0.0, -0.6) reached true, max meter now 0.00 (-) alarm 
+[D128 2323.9s t=49.77] careful: leg 3 -> (3.5, 0.0, 1.2) reached true, max meter now 0.00 (-) alarm 
+[D128 2390.2s t=51.77] careful: leg 4 -> (3.2, 0.0, 3.0) reached true, max meter now 0.00 (-) alarm 
+[D128 3183.9s t=65.10] careful: waited 40.0 s before leg 5 (Npc_civilian6)
+[D128 3348.7s t=68.28] careful: leg 5 -> (2.0, 0.0, 5.2) reached true, max meter now 0.00 (-) alarm 
+[D128 3355.3s t=68.40] shot glasshouse_03_careful_end.png
+[D128 3355.3s t=68.40] careful: camera CameraC3 closest 14.1 m (ang 21) peak meter 0.00
+[D128 3355.3s t=68.40] careful: camera CameraC4 closest 2.6 m (ang 86) peak meter 0.00
+[D128 3355.3s t=68.40] careful: camera CameraC6 closest 6.1 m (ang 72) peak meter 0.00
+[D128 3355.3s t=68.40] careful: guard Npc_guard closest 5.8 m (ang 161) peak meter 0.00
+[D128 3355.3s t=68.40] careful: guard Npc_guard2 closest 11.0 m (ang 112) peak meter 0.00
+[D128 3355.3s t=68.40] careful: civilian Npc_civilian closest 2.1 m (ang 166) peak meter 0.00
+[D128 3355.3s t=68.40] careful: civilian Npc_civilian2 closest 6.4 m (ang 60) peak meter 0.00
+[D128 3355.3s t=68.40] careful: civilian Npc_civilian3 closest 5.2 m (ang 87) peak meter 0.00
+[D128 3355.3s t=68.40] careful: civilian Npc_civilian4 closest 5.9 m (ang 165) peak meter 0.00
+[D128 3355.3s t=68.40] careful: civilian Npc_civilian5 closest 5.8 m (ang 95) peak meter 0.00
+[D128 3355.3s t=68.40] careful: civilian Npc_civilian6 closest 3.7 m (ang 109) peak meter 0.00
+[D128 3355.3s t=68.40] careful: civilian Npc_civilian7 closest 4.6 m (ang 167) peak meter 0.00
+[D128 3355.3s t=68.40] careful: civilian Npc_civilian8 closest 6.1 m (ang 6) peak meter 0.00
+[D128 3355.3s t=68.40] [GLASS] SUMMARY no glass-only sighting with meter > 0
+[D128 3355.3s t=68.40] careful: RESULT CLEAN (alarm )
+[D128 3355.3s t=68.40] DONE runs=1
+[D128ROW] glasshouse|careful|CLEAN|alarm 
+[D128] RESULT DONE

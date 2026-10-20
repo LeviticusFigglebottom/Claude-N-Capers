@@ -4,8 +4,11 @@
 ## Chain: of_builder_base <- of_shell <- of_gameplay <- build_greybox.
 ## Prefabs are ENV A's (found by contract class name); visuals are catalog props (doors: the greybox door kit). Content
 ## rows come from ostrander_federal_layout_content.gd (tools/levelcheck/plans/ostrander_federal_content.py).
-## Pre-placed, disabled (QC-61, OF-A2 not on trunk yet): the hoist (bag_lift) and the rope ladder carry meta
-## `starts_disabled` + `hidden`, the ladder `usable = false`; the lid plug is Geometry/Building/Lid/Lid (meta burn_lid).
+## Pre-placed, disabled (QC-61, OF-A2): the hoist (bag_lift) and the rope ladder (`rope_ladder`) are placed with
+## enabled_at_start = false (+ the G1 metas `starts_disabled` / `hidden` the mission's fallback still reads), the ladder
+## `usable = false`. The lid (OF-A6) is a GameplayPrefab tagged `lid` at Gameplay/Devices/Lid (Plug + Visual/LidPanel):
+## its set_enabled(false) at the burn replicates; the hole's footprint is a permanent navmesh hole (lead ruling, OF-A6).
+## Civilian routes (OF-A4 CivilianRoute + CivilianRouteStop) under Patrols/Routes, the teller's per side_door slot.
 extends "res://world/heists/ostrander_federal/greybox/of_shell.gd"
 
 ## Spawn tags a locked door's `npc_authorized_tags` lists: "@guards" (every Halden post) / "@staff" (staff civilians).
@@ -30,19 +33,23 @@ var _binds: Array[Array] = []
 
 ## Builds one content row under `parent` (formats: ostrander_federal_content.py header).
 func build_item(parent: Node3D, it: Array) -> Node3D:
+	var out: Node3D = null
 	match String(it[0]):
 		"prefab":
-			return place_prefab(parent, it)
+			out = place_prefab(parent, it)
 		"spawn":
-			return _spawn_row(parent, it)
+			out = _spawn_row(parent, it)
 		"box":
-			return _box_row(parent, it)
+			out = _box_row(parent, it)
 		"marker":
-			return marker(parent, String(it[1]), v3(it[2]), float(it[3]), String(it[4]), String(it[5]))
+			out = marker(parent, String(it[1]), v3(it[2]), float(it[3]), String(it[4]), String(it[5]))
 		"tac":
-			return _tac_row(parent, it)
-	errors.append("unknown content row %s" % [it])
-	return null
+			out = _tac_row(parent, it)
+		"route":
+			out = _route_row(parent, it)
+		_:
+			errors.append("unknown content row %s" % [it])
+	return out
 
 
 ## ["prefab", kind, name, pos, yaw, props, use, metas, visual]
@@ -83,6 +90,8 @@ func place_prefab(parent: Node3D, it: Array) -> Node3D:
 		var key2: String = String(k2)
 		if key2 == "@landings":
 			_landings(inst, props[k2])
+		elif key2 == "@rig":
+			_rig(inst, props[k2])
 		elif key2 == "@contents":
 			for c: Array in props[k2]:
 				_content(inst, c)
@@ -103,6 +112,23 @@ func _landings(lift: Node3D, rows: Array) -> void:
 		add(lift, m)
 		targets.append(lift.get_path_to(m))
 	lift.set(&"targets", targets)
+
+
+## OF-P1 §7.7: the hoist rig ([name, world min, world max] rows, ostrander_federal_content.HOIST_RIG) as static boxes
+## under `host`/Rig: they come and go with the prefab (disabled = hidden and out of physics). world_dynamic (layer 2):
+## crew and bags collide, interaction and vision rays (world_static) pass. Each box is a permanent nav obstruction (the
+## hole's D-121 pattern: the navmesh never changes at the burn).
+func _rig(host: Node3D, rows: Array) -> void:
+	var rig: Node3D = add(host, node3d("Rig")) as Node3D
+	var inv: Transform3D = global_xform(host).affine_inverse()
+	for r: Array in rows:
+		var mn: Vector3 = v3(r[1])
+		var mx: Vector3 = v3(r[2])
+		var sb: StaticBody3D = box(rig, String(r[0]), inv * mn, inv * mx, "trim")
+		if sb != null:
+			sb.collision_layer = 2
+			sb.set_meta(&"lc_subprop", true)   # levelcheck: each its own prop (not merged into the hoist's box)
+		obstruct(Transform3D.IDENTITY, AABB(mn, mx - mn))
 
 
 ## A prefab inside another (a safe's contents): [kind, name, local offset, props].
@@ -184,6 +210,75 @@ func _tac_row(parent: Node3D, it: Array) -> TacticalPoint:
 	tp.breachable = bool(it[6])
 	add(parent, tp)
 	return tp
+
+
+## ["route", name, route_id, order, bind_tags, start_index, stops]: A's CivilianRoute with CivilianRouteStop children
+## (stop: [name, pos, pause, pause_anim, away_window, facing yaw or null]). Scripts by class name at run time: the route
+## script needs the GameRng autoload, which a --script generator cannot compile against.
+func _route_row(parent: Node3D, it: Array) -> Node3D:
+	var route_scr: Script = class_script("CivilianRoute")
+	var stop_scr: Script = class_script("CivilianRouteStop")
+	if route_scr == null or stop_scr == null:
+		errors.append("CivilianRoute / CivilianRouteStop class not found (%s)" % it[1])
+		return null
+	var r: Node3D = route_scr.new() as Node3D
+	r.name = String(it[1])
+	r.set(&"route_id", StringName(String(it[2])))
+	r.set(&"order", int((route_scr.get_script_constant_map()["Order"] as Dictionary)[String(it[3])]))
+	var tags: Array[StringName] = []
+	for t: Variant in it[4]:
+		tags.append(StringName(String(t)))
+	r.set(&"bind_tags", tags)
+	r.set(&"start_index", int(it[5]))
+	r.transform = global_xform(parent).affine_inverse()
+	add(parent, r)
+	for st: Array in it[6]:
+		var p: PatrolPoint = stop_scr.new() as PatrolPoint
+		p.name = String(st[0])
+		p.position = v3(st[1])
+		p.pause_range = Vector2(float(st[2][0]), float(st[2][1]))
+		p.pause_anim = StringName(String(st[3]))
+		p.set(&"away_window", StringName(String(st[4])))
+		if st[5] != null:
+			p.basis = yaw_basis(float(st[5]))
+			p.face_marker_forward = true
+		add(r, p)
+	return r
+
+
+## A global class's script by class name (null when missing).
+static func class_script(cls: String) -> Script:
+	for c: Dictionary in ProjectSettings.get_global_class_list():
+		if String(c["class"]) == cls:
+			return load(String(c["path"])) as Script
+	return null
+
+
+## The lid (QC-61 / OF-A6): a bare GameplayPrefab (no interaction; found by class name) tagged `lid` holding the hole's
+## plug body and the marble panel, so the mission's set_enabled(false) at the burn hides it and drops its collision on
+## every peer. Meta burn_lid kept for the mission's G1 fallback. The footprint is carved out of the navmesh for good.
+func build_lid(parent: Node3D) -> void:
+	var scr: Script = class_script("GameplayPrefab")
+	if scr == null:
+		errors.append("GameplayPrefab class not found (the lid)")
+		return
+	var o: Vector3 = v3(L.LID["origin"])
+	var lid: Node3D = Node3D.new()
+	lid.set_script(scr)
+	lid.name = "Lid"
+	lid.position = o
+	lid.set(&"objective_tag", &"lid")
+	lid.set_meta(&"kind", "hatch")   # levelcheck: sits in its slab hole like a shell piece (GN-C2 floor hatch)
+	lid.set_meta(&"burn_lid", true)
+	add(parent, lid)
+	var vis: Node3D = add(lid, node3d("Visual")) as Node3D
+	var pl: Array = L.LID["panel"]
+	mesh_box(vis, "LidPanel", v3(pl[0]) - o, v3(pl[1]) - o, String(pl[2]))
+	var pg: Array = L.LID["plug"]
+	box(lid, "Plug", v3(pg[0]) - o, v3(pg[1]) - o, String(pg[2]))
+	var hole: AABB = AABB(v3(pg[0]), v3(pg[1]) - v3(pg[0]))
+	obstruct(Transform3D.IDENTITY, AABB(Vector3(hole.position.x, -0.2, hole.position.z), Vector3(hole.size.x, 2.2,
+		hole.size.z)))
 
 
 ## Resolves the "@" props (node names -> NodePaths) once every node exists.
@@ -285,7 +380,7 @@ func build_variants(variants: Node3D) -> void:
 		vs.transform = Transform3D(yaw_basis(float(row[8])), Vector3(float(row[5]), float(row[6]), float(row[7])))
 		vs.set_meta(&"room", String(row[4]))
 		add(groups[g2], vs)
-		for it: Array in LC.SLOT_ITEMS.get(sid, []):
+		for it: Array in LC.SLOT_ITEMS.get(sid, []) + L.ROUTES.get(sid, []):
 			build_item(vs, it)
 		match g2:
 			"camera":
@@ -347,6 +442,10 @@ func build_always() -> void:
 			parent = add(n(path.get_slice("/", 0)), node3d(path.get_slice("/", 1))) as Node3D
 		for it2: Array in LC.ALWAYS[path]:
 			build_item(parent, it2)
+	var routes: Node3D = add(n("Patrols"), node3d("Routes")) as Node3D
+	for r: Array in L.ROUTES["Patrols/Routes"]:
+		build_item(routes, r)
+	build_lid(n("Gameplay/Devices"))
 
 
 func build_graphs(patrols: Node3D) -> void:

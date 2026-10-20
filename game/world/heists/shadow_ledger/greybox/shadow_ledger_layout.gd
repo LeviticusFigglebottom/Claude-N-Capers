@@ -71,9 +71,11 @@ const WALL_OPEN: Array = [
 	["L41", "x", 7.5, 10.5, 12.0], ["L41", "x", 7.5, 24.0, 25.5], ["L41", "x", 16.5, 10.5, 12.0], ["L41", "x", 16.5, 24.0, 25.5],
 	["L42", "z", 12.0, 4.0, 7.5], ["L42", "x", 7.5, 10.5, 12.0], ["L42", "x", 16.5, 10.5, 12.0], ["L42", "x", 16.5, 24.0, 25.5],
 ]
-## Interior glazing: [level, axis, fixed, from, to, sill (rel), head (rel)]: the K11/K12 vision panel
-## and the lounge's glass wall over the reception void.
-const WALL_GLASS: Array = [["L41", "z", 31.0, 9.0, 11.0, 0.9, 2.1], ["L42", "z", 12.0, 0.0, 4.0, 0.0, 3.0]]
+## Interior glazing: [level, axis, fixed, from, to, sill (rel), head (rel), frosted]: the K11/K12 vision panel
+## and the lounge's glass wall over the reception void. D-142: a frosted pane is opaque for stealth vision (not
+## `see_through`, the shared texgen `glass_frosted` finish); the K11/K12 panel is frosted so K12 never sees the 45 s
+## ledger hack in K11 (ghost line step 5). The lounge wall is clear.
+const WALL_GLASS: Array = [["L41", "z", 31.0, 9.0, 11.0, 0.9, 2.1, true], ["L42", "z", 12.0, 0.0, 4.0, 0.0, 3.0, false]]
 ## Door leaves on solid walls (visual only, no gap): locked fire doors to the sealed vacant floor
 ## (no prefab, no interaction) and the closed, locked-out lift landing doors. [name, box].
 const DOOR_PANELS: Array = [
@@ -288,15 +290,17 @@ const PARAPETS: Array = [
 	["ParapetN", "x", 0.0, -0.2, 36.2], ["ParapetS", "x", 18.0, -0.2, 36.2],
 	["ParapetW", "z", 0.0, 0.2, 17.8], ["ParapetE", "z", 36.0, 0.2, 17.8],
 ]
-## Terrace glass balustrade (1.1 m, L42 level): [name, box].
+## Terrace glass balustrade (1.1 m, L42 level): [name, box(, solid upstand height)]. D-142: the M2 void edge stands
+## on a 0.45 m stone-clad upstand (opaque for stealth vision); the glass above it stays clear (`see_through`).
+const VOID_UPSTAND: float = 0.45
 const BALUSTRADES: Array = [
 	["BalustradeS", [-0.2, F42, 23.97, 36.2, F42 + 1.1, 24.03]],
 	["BalustradeW", [-0.03, F42, 18.2, 0.03, F42 + 1.1, 23.97]],
 	["BalustradeE", [35.97, F42, 18.2, 36.03, F42 + 1.1, 23.97]],
 	# Gallery void edge (L42) and the feature-stair arrival.
-	["VoidRailS", [12.1, F42, 4.0, 20.56, F42 + 1.1, 4.06]],
-	["VoidRailE", [20.5, F42, 2.0, 20.56, F42 + 1.1, 4.0]],
-	["VoidRailNE", [20.5, F42, 0.2, 20.56, F42 + 1.1, 0.6]],
+	["VoidRailS", [12.1, F42, 4.0, 20.56, F42 + 1.1, 4.06], VOID_UPSTAND],
+	["VoidRailE", [20.5, F42, 2.0, 20.56, F42 + 1.1, 4.0], VOID_UPSTAND],
+	["VoidRailNE", [20.5, F42, 0.2, 20.56, F42 + 1.1, 0.6], VOID_UPSTAND],
 ]
 
 # --- Gameplay placements (used by sl_gameplay.gd) ----------------------------------------------
@@ -404,7 +408,9 @@ const PROPS: Array = [
 	["CracUnit", Vector3(30.2, F41, 11.9), Vector3(1.0, 1.9, 0.8), 0.0, "crac", false, "trim"],
 	["UpsUnit", Vector3(26.0, F41, 8.0), Vector3(0.8, 1.6, 0.6), 0.0, "ups", false, "trim"],
 	# K12 IT
-	["ITDeskA", Vector3(33.0, F41, 9.0), Vector3(1.4, 0.75, 0.7), 0.0, "desk", true, "prop"],
+	# P round 243: desk A west of the ITDoor (x 33.05-33.95) so the door-to-desk lane is >= 2 m; the west slot stays
+	# under an agent's width (no nav strip).
+	["ITDeskA", Vector3(32.2, F41, 9.0), Vector3(1.4, 0.75, 0.7), 0.0, "desk", true, "prop"],
 	["ITDeskB", Vector3(33.0, F41, 11.2), Vector3(1.4, 0.75, 0.7), 0.0, "desk", true, "prop"],
 	["ITSpares", Vector3(35.54, F41, 9.6), Vector3(0.5, 2.0, 1.6), 0.0, "shelf", true, "prop"],
 	# K13 security room (station against the east wall, the door behind the operator)
@@ -559,7 +565,7 @@ const CHAIRS: Array = [
 	# K12 IT: both desks are worked from the north side, facing south. Desk A's seat is rolled
 	# to the west end, out of the ITDoor swing; desk B's sits between the desks, east of the K12IT patrol spot,
 	# leaving the kc_it / PhoneIT / code-note UsePoints on the south sides clear.
-	["ITChairA", Vector3(32.6, F41, 8.2), 180.0, "ITDeskA"],
+	["ITChairA", Vector3(31.8, F41, 8.2), 180.0, "ITDeskA"],
 	["ITChairB", Vector3(33.4, F41, 10.4), 180.0, "ITDeskB"],
 	# K20-K23 associates: the desk is 0.65 m off the window, so the seat is on the room side, facing it.
 	["K20Chair", Vector3(19.5, F41, 22.0), 180.0, "K20Desk"],

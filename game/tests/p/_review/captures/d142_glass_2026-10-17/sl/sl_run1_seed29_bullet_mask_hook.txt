@@ -1,0 +1,55 @@
+[SLR 22.4s t=0.0] seed 29 variants camera=[&"cam_a"] security_room_staffed=[&"sec_empty"] server_room=[&"srv_locked"] keycard=[&"kc_it", &"kc_kessler"] code_note=[&"code_security_log"] laptop=[&"lap_boardroom"] guard_post=[&"rover_l41", &"rover_l42"] guard_extra=[&"roof_watch"] cleaners=[&"cleaners_1"] late_partner=[&"moor_gone"] escape=[&"esc_service"] laser_pattern=[&"lz_static"]
+[SLR 66.8s t=2.5] pilot: calibrated 0.001600 rad/px yaw, 0.001600 rad/px pitch (settings formula said (0.0016, 0.0016))
+[SLR 66.8s t=2.5] spawn (26.2, 0.0, 9.0) masked false
+[SLR 138.6s t=3.0] STEP _casing begin
+[SLR 139.0s t=3.9] goto casing_0 (25.0, 0.0, 8.5): reached (at (25.4, 0.0, 8.7))
+[SLR 141.5s t=6.5] goto casing_1 (29.0, 0.0, 8.5): reached (at (28.5, 0.0, 8.5))
+[SLR 143.8s t=8.7] goto casing_2 (29.0, 0.0, 11.6): reached (at (29.1, 0.0, 11.1))
+[SLR 146.8s t=11.7] goto casing_3 (25.0, 0.0, 11.6): reached (at (25.5, 0.0, 11.5))
+[SLR 209.7s t=13.5] goto casing_4 (24.8, 0.0, 13.5): reached (at (24.9, 0.0, 13.0))
+[SLR 211.0s t=14.8] pilot: use RefuseDoor (open_door) -> OK in 0.0 s
+[SLR 213.1s t=16.9] goto casing_5 (27.7, 0.0, 14.5): reached (at (27.3, 0.0, 14.5))
+[SLR 229.4s t=19.8] goto casing_6 (24.8, 0.0, 15.6): reached (at (24.9, 0.0, 15.2))
+[SLR 230.1s t=20.5] goto casing_7 (22.5, 0.0, 15.8): reached (at (23.0, 0.0, 15.7))
+[SLR 280.8s t=29.1] goto casing_8 (22.5, 3.6, 15.8): reached (at (22.8, 3.6, 15.4))
+[SLR 382.4s t=39.9] goto casing_9 (22.5, 8.0, 15.8): reached (at (22.9, 8.0, 15.4))
+[SLR 429.7s t=47.5] goto casing_10 (22.5, 3.6, 15.8): reached (at (22.2, 3.6, 15.4))
+[SLR 429.7s t=47.5] STEP _casing reached
+[SLR 429.7s t=47.5] STEP _mask begin
+[SLR 430.7s t=48.5] objective casing -> 2
+[SLR 431.5s t=49.3] masked true
+[SLR 431.5s t=49.3] STEP _mask reached
+[SLR 431.5s t=49.3] STEP _enter_l41 begin
+[SLR 478.3s t=58.5] pilot: use StairBL41 (open_door) -> OK in 8.0 s
+[SLR 478.5s t=58.9] StairBL41 open true (lock 1)
+[SLR 514.1s t=59.4] STEP _enter_l41 reached
+[SLR 514.1s t=59.4] STEP _keycard begin
+[SLR 514.1s t=59.4] keycard: Slot_kc_it at (33.4, 4.3, 9.0)
+[SLR 567.9s t=67.0] DETECT start: CameraC3 (kind 2) at 4.1 m, pilot (25.0, 3.6, 7.3) crouched false
+[SLR 568.2s t=67.3] [GLASS] LOS Npc_guard (CharacterBody3D(NpcBase)::observer_kind) glass-only line, meter 0, 5.3 m ang 6 through Gameplay/Doors/ReceptionGlassE/LeafBody: pilot (25.1, 3.6, 7.3) crouched false, observer (20.1, 3.6, 6.7)
+[SLR 568.2s t=67.3] DETECT start: Npc_guard (kind 0) at 5.0 m, pilot (25.1, 3.6, 7.3) crouched false
+[SLR 568.2s t=67.3] [GLASS] SEEN Npc_guard (CharacterBody3D(NpcBase)::observer_kind) meter 0.14 through Gameplay/Doors/ReceptionGlassE/LeafBody: pilot (25.1, 3.6, 7.2) crouched false, observer (20.1, 3.6, 6.7), 5.2 m
+[SLR 568.4s t=67.5] DETECT Npc_guard meter 0.34 (0.2 s after first sight)
+[SLR 568.4s t=67.5] [GLASS] SEEN Npc_guard (CharacterBody3D(NpcBase)::observer_kind) meter 0.34 through Gameplay/Doors/ReceptionGlassE/LeafBody: pilot (25.4, 3.6, 7.0) crouched false, observer (20.5, 3.6, 6.7), 5.3 m
+[SLR 568.7s t=67.7] DETECT Npc_guard meter 0.54 (0.4 s after first sight)
+[SLR 568.7s t=67.7] [GLASS] SEEN Npc_guard (CharacterBody3D(NpcBase)::observer_kind) meter 0.54 through Gameplay/Doors/ReceptionGlassE/LeafBody: pilot (25.5, 3.6, 7.0) crouched false, observer (20.8, 3.6, 6.7), 5.0 m
+[SLR 568.8s t=67.9] DETECT Npc_guard meter 0.75 (0.6 s after first sight)
+[SLR 568.8s t=67.9] [GLASS] SEEN Npc_guard (CharacterBody3D(NpcBase)::observer_kind) meter 0.75 through Gameplay/Doors/ReceptionGlassE/LeafBody: pilot (25.8, 3.6, 7.0) crouched false, observer (21.1, 3.6, 6.7), 4.9 m
+[SLR 569.1s t=68.2] DETECT Npc_guard meter 1.00 (0.9 s after first sight)
+[SLR 569.1s t=68.2] ALERT Npc_guard 0 -> 3 (dist 4.6)
+[SLR 569.2s t=68.2] [GLASS] SEEN Npc_guard (CharacterBody3D(NpcBase)::observer_kind) meter 1.00 through Gameplay/Doors/ReceptionGlassE/LeafBody: pilot (26.1, 3.6, 7.0) crouched false, observer (21.5, 3.6, 6.7), 4.9 m
+[INFO][stealth][p1] ALARM: guard_radio (source 111)
+[SLR 570.5s t=69.6] ALERT Npc_guard 3 -> 10 (dist 6.3)
+[SLR 570.5s t=69.6] ALERT Npc_guard2 0 -> 10 (dist 17.9)
+[SLR 570.5s t=69.6] ALERT Npc_guard3 0 -> 10 (dist 6.3)
+[SLR 570.5s t=69.6] ALERT Npc_guard4 0 -> 10 (dist 13.7)
+[SLR 570.5s t=69.6] ALERT Npc_civilian 0 -> 4 (dist 17.1)
+[SLR 570.5s t=69.6] ALARM guard_radio source /root/PO5Driver/HeistRuntime/Dynamic/Npc_guard (pilot at (27.8, 3.6, 7.0))
+[SLR 575.6s t=74.6] FAIL heist ended after the alarm (alarm guard_radio)
+[SLR 614.4s t=74.6] [GLASS] SUMMARY Npc_guard peak meter via glass 1.00 through Gameplay/Doors/ReceptionGlassE/LeafBody (pilot (26.1, 3.6, 7.0), observer (21.5, 3.6, 6.7))
+[SLR 614.4s t=74.6] SUMMARY steps: _casing=ok, _mask=ok, _enter_l41=ok
+[SLR 614.4s t=74.6] SUMMARY alarm: guard_radio at t=69.6
+[SLR 614.4s t=74.6] SUMMARY detector CameraC3 kind 2 first t=67.0 max 0.17
+[SLR 614.4s t=74.6] SUMMARY detector Npc_guard kind 0 first t=67.3 max 1.00
+[SLR 614.4s t=74.6] SUMMARY careful waits 0, STUCK rows 0
+[SLR] RESULT FAIL at heist ended after the alarm

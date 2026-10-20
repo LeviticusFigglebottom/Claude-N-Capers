@@ -18,6 +18,7 @@ const GROUP_SLOTS: Dictionary = {
 	&"drill_delivery": [&"drop_terrace", &"drop_dock"],
 	&"security_room_staffed": [&"sec_staffed", &"sec_empty"],
 	&"code_pc": [&"pc_ao1", &"pc_ao2", &"pc_ao3", &"pc_ops", &"pc_vault_ops", &"pc_exec"],
+	&"president_safe": [&"ps_bonds", &"ps_empty"],
 }
 
 var _rt: HeistRuntime = null

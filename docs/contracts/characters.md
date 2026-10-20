@@ -1,4 +1,4 @@
-# Contract: characters (v1.33)
+# Contract: characters (v1.34)
 
 Producer: ENV C (generated humanoids + animations). Consumer: ENV A (NPC/crew prefabs).
 Until delivered, ENV A uses capsule placeholders with the same node names.
@@ -391,3 +391,10 @@ tag (p5_cast.json v11); sized for the Cataclysm inspection's 11 guards with no t
 `cower_stand`: the root steps forward by `game/world/characters/cower_offsets.json[look_id]` (0.12–0.15 m for back-bag
 looks; 0 otherwise) at cower points, so bags do not enter the wall. `test_cower_offsets` re-measures every civilian look.
 `queue_idle_b` holds the phone (hand_props.json).
+
+## v1.34: unarmoured duty looks for Routine/Tense (D-145.3; D f23a384a, 4e62aaef)
+`patrol_officer_duty`, `tac_light_duty`, `stinger_duty`, `bulwark_duty` (+ shield): the base police/special looks
+without a plate carrier or armoured vest. Runtime (A): on Routine and Tense every police unit and special resolves to its
+`<look>_duty` variant when one exists; from Hazardous up, the base look. The look follows D-145.3's stats (no
+damage-reducing armour on Routine/Tense, A f9a471e1). `test_outfits` checks the looks; A's test pins the selection.
+Additive.

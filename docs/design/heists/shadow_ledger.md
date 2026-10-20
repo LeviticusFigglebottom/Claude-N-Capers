@@ -416,13 +416,13 @@ reception, lounge, gallery, study, dining and the terrace corridor have feature 
 | K8 | office (open plan, associates) | 10.5 × 9 | 3.0 | `office_open_law` (SL-1: the shared `office_open` wants a gem scope) | 12 workstations in 3 clusters, 2 printers, plants, coat rack. Doors to K6, K9 and K16. C11. |
 | K9 | corridor (C1, west core) | 1.5 × 9 | 2.7 | `corridor_office` | Stair A door, janitor door. |
 | K10 | corridor (C3, east core) | 1.5 × 9 | 2.7 | `corridor_service` | Server door (keycard), service lift door, Stair B door, security door. C3 (above the server door, looking N). |
-| K11 | server_room | 5.5 × 5 | 2.7 | `server_room_sl` (SL-1: no desk in K11, PO6-06) | **The cage** (3.5 × 2.0 m mesh enclosure at x 27–30.5, z 8.5–10.5, gate on its S side, clear of the server door's swing; `safe` LARGE, `methods [code, saw]`, `code_group cage`): the ledger rack with the **`hack_terminal`** (drive-bay release) and 3 drive-sled `loot_spawn`s (`loot.ledger_drives`), all children of the cage (enabled when it opens). CRAC unit, UPS, cable trays. Door: **keycard** (`keycard_reader` on K10). Vision panel to K12. No facade. `code_contractor` on the contractor's laptop (srv_contractor). |
-| K12 | office (IT) | 5 × 5 | 3.0 | `office_it` | Two desks, spares shelving, whiteboard (`code_it_board`), `kc_it`, phone. Vision panel into K11. Windows E. |
+| K11 | server_room | 5.5 × 5 | 2.7 | `server_room_sl` (SL-1: no desk in K11, PO6-06) | **The cage** (3.5 × 2.0 m mesh enclosure at x 27–30.5, z 8.5–10.5, gate on its S side, clear of the server door's swing; `safe` LARGE, `methods [code, saw]`, `code_group cage`): the ledger rack with the **`hack_terminal`** (drive-bay release) and 3 drive-sled `loot_spawn`s (`loot.ledger_drives`), all children of the cage (enabled when it opens). CRAC unit, UPS, cable trays. Door: **keycard** (`keycard_reader` on K10). Frosted vision panel to K12 (D-142: opaque for vision, so K12 never sees the 45 s hack). No facade. `code_contractor` on the contractor's laptop (srv_contractor). |
+| K12 | office (IT) | 5 × 5 | 3.0 | `office_it` | Two desks, spares shelving, whiteboard (`code_it_board`), `kc_it`, phone. Frosted vision panel into K11 (D-142). Windows E. |
 | K13 | security_room | 4.5 × 4 | 2.7 | `security_office_sl` (SL-1: the operator's place stays clear) | **`camera_station` with its monitor wall against the solid east wall** (K14 partition); the operator faces **east**, so the door (west) is directly behind him. Key cabinet on the north wall behind him (`kc_security`), logbook on the SW counter (`code_security_log`), lockers, coffee, phone, `alarm_button` on the console. Door unlocked (closed; the operator's coffee runs). No windows. |
 | K14 | electrical | 2.5 × 4 | 2.7 | `electrical_sl` (SL-1) | Switchboard, telecom rack. Door S. |
 | K15 | storage (copy and mail) | 3.5 × 4 | 3.0 | `copy_room` | Copier, paper stock, shredder, mail sorter. Windows E. |
 | K16 | corridor (C2, south spine) | 36 × 1.5 | 2.7 | `corridor_spine_sl` (SL-1 polish; was `corridor_office`) | Full-width spine with end windows. C4 (east end). The L41 rover's main loop. |
-| K17 | storage (records archive) | 6 × 6 | 3.0 | `archive_records` (SL-1: the shared `storage_archive` is a stock room) | Compact shelving, file boxes, the **document safe** (`safe` MEDIUM, `methods [saw]`, 1 bag `loot.cash`: the partners' cash float). Windows W and S. |
+| K17 | storage (records archive) | 6 × 6 | 3.0 | `archive_records` (SL-1: the shared `storage_archive` is a stock room) | Compact shelving, file boxes, the **document safe** (`safe` MEDIUM, `methods [saw]`, 1 bag `loot.cash`: the partners' cash float; on the S wall at x 1.7, 0.5 m east of the SW corner pier so the drill / saw rig clears it, PO-14). Windows W and S. |
 | K18 | break_room | 6 × 6 | 3.0 | `break_room_office` (SL-1: no lockers) | Fridge, counter with sink, microwave, coffee machine, table with 6 chairs, bulletin board, phone. Windows S. |
 | K19 | office (law library) | 6 × 6 | 3.0 | `library_law` | Book stacks, reading table, lamps. |
 | K20–K23 | office (associates) | 3 × 6 each | 3.0 | `office_small` | Desk, 2 chairs, shelf; one is a paralegal file room. |
@@ -588,15 +588,21 @@ door is 5.75 m S of it.
 ### Glazing (D-142)
 Clear glass is see-through for stealth vision (D-142). Its collider joins the `see_through` group and still
 blocks movement and bullets. Frosted, tinted, mirrored and privacy glass stays opaque.
-- **Clear (62 colliders):**
+- **Clear (61 colliders):**
   - L41 curtain wall (26 panes, above the 0.9 m spandrel): K1, K2, K4, K5, K8, K12, K15, K17–K24, the K6 /
     K7 / K16 corridors and one core span.
   - L42 curtain wall (22 panes): M1, M3, M4, M5, M14, one core span, and the terrace front (M8 dining ×4 and
     the M15 glazed corridor ×6 onto X1).
-  - Interior glazing: the K11 / K12 vision panel and the M1 lounge's glass wall over the reception void.
+  - Interior glazing: the M1 lounge's glass wall over the reception void.
   - Glass balustrades (glass teal, a light architectural tint, see-through): the feature stair ×6, the M2
-    gallery void edge ×3 and the X1 terrace ×3.
-- **Opaque:** the partner, conference and boardroom fronts are frosted (built solid, with no glass collider),
+    gallery void edge ×3 (above its upstand) and the X1 terrace ×3.
+- **Opaque:**
+  - The K11 / K12 vision panel is frosted (the shared texgen `glass_frosted` finish, no `see_through`), so K12
+    never sees the 45 s ledger hack in K11 (ghost line step 5).
+  - The M2 void balustrade stands on a solid 0.45 m stone-clad upstand (`VoidRail*Upstand`, its own opaque body
+    inside the rail's footprint, so the navmesh and the rail's 1.1 m collision are unchanged). The glass above it
+    stays clear.
+  - The partner, conference and boardroom fronts are frosted (built solid, with no glass collider),
   as are the fritted spandrel band and the solid facade bays. The backlit teal bar glass in M1 has no collider.
 - **Not map-built:** the reception glass doors, the terrace sliders and the glass-leaf doors are Door prefabs
   (ENV A, not tagged). The stair-door vision panels belong to the door kit.

@@ -9,11 +9,13 @@
 ##   follows its leader, mirrors the leader's mask and crouch, and stays detectable for the rest of
 ##   the stealth phase (even when later ordered to hold).
 ## - L6.1 loud: unhidden and masked (the alarm masks everyone). Priorities each tick:
-##   1. revive a DOWNED, CLOAKER_DOWNED or TASED crew member (needs_help; humans first, then AI; each is assigned the nearest
+##   1. revive a DOWNED, CLOAKER_DOWNED or TASED crew member, uncuff a CUFFED one (needs_help; humans first, then AI;
+##      each is assigned the nearest
 ##      free AI) — walk to revive_range_m, hold interact with interact_target_net_id for the full
 ##      revive (L2.7, 6 s), and keep at it under fire (re-press after a damage interrupt, S9.1);
 ##   2. fight: nearest visible hostile police/special/guard (guards only when ALARMED/COMBAT; a Stinger
-##      tasing a crew member first, tasing_stinger_score_mult), aim
+##      tasing a crew member first, tasing_stinger_score_mult; the officer holding a crew member in cuffs first,
+##      arrester_score_mult, and that crew member is freed only once he is gone, arrester_guard_m), aim
 ##      at chest/head with an aim error (GameRng &"crew_ai"), pulse the trigger, reload when empty
 ##      (or tactically when no enemy is visible);
 ##   3. follow the nearest alive human (slot 0 fallback) within follow_min_m..follow_max_m, taking a
@@ -239,10 +241,13 @@ func ordered_revive_target() -> CrewController:
 
 
 ## L2.7/L2.8 (P3 gate): crew members the ReviveInteractable frees: DOWNED, CLOAKER_DOWNED (kicked)
-## and TASED (also freed by killing the Stinger, which AI then prioritises).
+## and TASED (also freed by killing the Stinger, which AI then prioritises). L2.12 / L6.1: CUFFED too (PD2 bots free
+## an arrested player): the same hold on the crew member resolves to its UncuffInteractable (priority 100), a cuffed
+## downed crew member goes back to DOWNED and is then revived. Without it a downed human cuffed by police while the AI
+## were down stayed cuffed until custody even after they were back up (OF loud seed 1, round 245).
 static func needs_help(c: CrewController) -> bool:
 	return c.crew_state == Enums.CrewState.DOWNED or c.crew_state == Enums.CrewState.CLOAKER_DOWNED \
-		or c.crew_state == Enums.CrewState.TASED
+		or c.crew_state == Enums.CrewState.TASED or c.crew_state == Enums.CrewState.CUFFED
 
 
 ## Automatic revive assignment may send this AI to `t` (hold: only within hold_revive_radius_m).
@@ -418,7 +423,8 @@ func _pick_revive_target() -> CrewController:
 	var free_ai: Array[CrewController] = []
 	for c: CrewController in _rt.crew_members():
 		if needs_help(c):
-			downed.append(c)
+			if not _guarded_by_arrester(c):
+				downed.append(c)
 		elif c.is_ai and c.crew_state == Enums.CrewState.NORMAL:
 			var b: CrewAiBrain = CrewAiBrain.of(c)
 			if b != null and b.is_active():
@@ -1081,6 +1087,8 @@ func _tick_scan(delta: float) -> void:
 			var d: float = eye.distance_to(p)
 			# L4.4 / P3 gate: a Stinger tasing a crew member is shot first (killing it breaks the tase).
 			var score: float = d * (tweak.tasing_stinger_score_mult if _is_tasing_crew(npc) else 1.0)
+			if _is_arresting_crew(npc):  # L2.12: the officer camping a cuffed teammate is shot first
+				score *= tweak.arrester_score_mult
 			if d > Tweak.crew().ai_engage_range_m or score >= best_d or not _sees_any(eye, npc):
 				continue
 			best = npc
@@ -1089,6 +1097,31 @@ func _tick_scan(delta: float) -> void:
 		_since_acquire = 0.0
 		_roll_aim()
 	target_enemy = best
+
+
+## L2.12: `npc` is the officer holding a crew member in cuffs (CrewCuffs.cuffed_by_net_id).
+func _is_arresting_crew(npc: NpcBase) -> bool:
+	for c: CrewController in _rt.crew_members():
+		if _arrester_of(c) == npc:
+			return true
+	return false
+
+
+## L2.12: the alive officer who cuffed `c` (CUFFED), else null.
+static func _arrester_of(c: CrewController) -> NpcBase:
+	if c.crew_state != Enums.CrewState.CUFFED:
+		return null
+	var cuffs: CrewCuffs = CrewCuffs.of(c)
+	if cuffs == null or cuffs.cuffed_by_net_id == 0:
+		return null
+	var npc: NpcBase = Ids.lookup(cuffs.cuffed_by_net_id) as NpcBase
+	return npc if npc != null and npc.alive else null
+
+
+## L2.12 / L6.1: a CUFFED crew member with its arresting officer still next to it waits until he is dealt with.
+func _guarded_by_arrester(c: CrewController) -> bool:
+	var npc: NpcBase = _arrester_of(c)
+	return npc != null and npc.global_position.distance_to(c.global_position) <= tweak.arrester_guard_m
 
 
 static func _is_tasing_crew(npc: NpcBase) -> bool:

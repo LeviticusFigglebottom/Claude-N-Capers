@@ -1,6 +1,7 @@
 ## Crew health / armor / downs component (A1-08): child `Health` of CrewController. Owner: ENV A.
 ## Server-authoritative. Fidelity rows:
-## - L2.1 health: CrewTweak.base_health (230) x defense.health_mult; no regeneration.
+## - L2.1 health: CrewTweak.base_health (230) x defense.health_mult; no regeneration (D-145 §4a: AI bots regain
+##   CrewAiTweak.bot_regen_frac_per_s of max health per second after bot_regen_delay_s without damage).
 ## - L2.2 armor: ArmorDef.armor (CrewTweak.default_armor fallback) x defense.armor_mult. Armor absorbs
 ##   first; a normal hit is capped at the remaining armor (armor gating) unless the DamageInfo has
 ##   `bypass_armor_gate` (snipers): then the overflow reaches health. A gated hit (armor broken)
@@ -34,6 +35,9 @@ signal downed(downs_used: int)
 signal revived(by_slot: int)
 signal custody()
 
+## D-145 §4a: the bots' CrewAiTweak (regen tunables), loaded once.
+static var _crew_ai_tweak: CrewAiTweak = null
+
 var health: float = 230.0
 var max_health: float = 230.0
 var armor: float = 20.0
@@ -52,6 +56,8 @@ var bleedout_health: float = 0.0
 var invuln_left: float = 0.0
 ## Seconds until armor starts regenerating.
 var regen_delay_left: float = 0.0
+## D-145 §4a: seconds since this crew member last took damage (bot health regen).
+var since_damage_s: float = 0.0
 ## PO6-17b: seconds of breach / flash blindness left (replicated; the HUD whites out while > 0).
 var flashed_left: float = 0.0
 ## Downs left before the next zero-health hit means custody (HUD).
@@ -214,6 +220,8 @@ func take_hit(info: Dictionary, attacker_net_id: int = 0) -> Dictionary:
 	armor -= armor_dmg
 	health = maxf(health - health_dmg, 0.0)
 	regen_delay_left = _regen_delay(tw)
+	if armor_dmg + health_dmg > 0.0:
+		since_damage_s = 0.0
 	out["amount"] = armor_dmg + health_dmg
 	out["armor_damage"] = armor_dmg
 	out["health_damage"] = health_dmg
@@ -455,10 +463,21 @@ func server_tick(delta: float) -> void:
 ## L2.1: no base regen; defense.health_regen_per_sec (fraction of max health per second) heals while
 ## up (never while downed / custody / incapacitated: server_tick returns before this for those).
 func _tick_health_regen(delta: float) -> void:
+	since_damage_s += delta
 	var r: float = Modifiers.add(_slot(), &"defense.health_regen_per_sec")
+	if _crew.is_ai:  # D-145 §4a (◇, PO): bots regain health after a quiet spell
+		var ct: CrewAiTweak = _bot_tweak()
+		if ct != null and since_damage_s >= ct.bot_regen_delay_s:
+			r += ct.bot_regen_frac_per_s
 	if r > 0.0 and health > 0.0 and health < max_health:
 		health = minf(health + max_health * r * delta * Modifiers.mult(_slot(), &"defense.healing_received_mult"),
 			max_health)
+
+
+static func _bot_tweak() -> CrewAiTweak:
+	if _crew_ai_tweak == null:
+		_crew_ai_tweak = load(CrewAiBrain.TWEAK_PATH) as CrewAiTweak
+	return _crew_ai_tweak
 
 
 ## Modifier changes mid-heist rescale the current values (keeps the fraction).

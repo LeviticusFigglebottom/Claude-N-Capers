@@ -9,12 +9,12 @@ display_name = "TAC Light"
 is_special = false
 health = PackedFloat32Array(100, 100, 150, 200, 300, 400)
 headshot_mult = PackedFloat32Array(3, 3, 3, 3, 3, 3)
-damage = PackedFloat32Array(15, 15, 22.5, 30, 45, 60)
+damage = PackedFloat32Array(10, 12.5, 22.5, 30, 45, 60)
 move_speed = 4.0
 weapon = &"weapon.npc_rifle"
 detection_preset = &"police"
 params = {
-"_note": "L4.2 TAC Light (PD2 light SWAT). health/damage per Difficulty (ROUTINE..CATACLYSM) are PD2-shaped design values (◇).",
+"_note": "L4.2 TAC Light (PD2 light SWAT). health/damage per Difficulty (ROUTINE..CATACLYSM) are PD2-shaped design values (◇). PO-17 (D-145 §2): Routine/Tense damage lowered toward PD2 Normal/Hard (◇).",
 "aim_delay_s": 0.6,
 "armor_body_mult": 1.0,
 "explosive_mult": 1.0,

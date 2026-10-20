@@ -96,13 +96,15 @@ const DOORS: Array = [
 ]
 ## Gameplay windows (doc: EB windows S/E are a police ENTRY, glass; SL's tall windows face the Parade): breakable
 ## WindowPrefab with the 1.2 x 2.1 tall-window visual. [name, floor, axis, plan fixed, plan opening a0, room-side
-## front]. The hole is cut to WINDOW_W x WINDOW_H from the plan sill, on the plan opening's centre.
+## front(, "blinds")]. The hole is cut to WINDOW_W x WINDOW_H from the plan sill, on the plan opening's centre.
+## D-142: "blinds" (the EB windows, closed blinds per the Room list) sets the Window prefab's `see_through = false`
+## (opaque for stealth vision) where the prefab has that property (ENV A's D-142 Window); the loggia windows stay clear.
 const WINDOWS: Array = [
-	["BenefactorsWindowS1", "G", "x", 30.0, 33.5, "N"],
-	["BenefactorsWindowS2", "G", "x", 30.0, 37.5, "N"],
-	["BenefactorsWindowS3", "G", "x", 30.0, 41.5, "N"],
-	["BenefactorsWindowE1", "G", "z", 44.0, 25.5, "W"],
-	["BenefactorsWindowE2", "G", "z", 44.0, 27.5, "W"],
+	["BenefactorsWindowS1", "G", "x", 30.0, 33.5, "N", "blinds"],
+	["BenefactorsWindowS2", "G", "x", 30.0, 37.5, "N", "blinds"],
+	["BenefactorsWindowS3", "G", "x", 30.0, 41.5, "N", "blinds"],
+	["BenefactorsWindowE1", "G", "z", 44.0, 25.5, "W", "blinds"],
+	["BenefactorsWindowE2", "G", "z", 44.0, 27.5, "W", "blinds"],
 	["LoggiaWindow1", "U", "x", 30.0, 15.5, "N"],
 	["LoggiaWindow2", "U", "x", 30.0, 19.5, "N"],
 	["LoggiaWindow3", "U", "x", 30.0, 23.5, "N"],
@@ -202,6 +204,25 @@ static func _facing(at: Vector3, target: Vector3) -> Transform3D:
 	if to_obj.length() < 0.01:
 		to_obj = Vector3.FORWARD
 	return Transform3D(Basis.looking_at(to_obj.normalized(), Vector3.UP), at)
+
+
+## True when `inst` has the property `prop` (a prefab property another environment may not have shipped yet).
+static func _has_prop(inst: Node, prop: String) -> bool:
+	for p: Dictionary in inst.get_property_list():
+		if String(p["name"]) == prop:
+			return true
+	return false
+
+
+## True when the Window prefab has the property `prop` (asked on a throwaway instance).
+func _window_has(prop: String) -> bool:
+	var ps: PackedScene = prefab_scene("window")
+	if ps == null:
+		return false
+	var probe: Node = ps.instantiate()
+	var ok: bool = _has_prop(probe, prop)
+	probe.free()
+	return ok
 
 
 func _set_prop(inst: Node, prop: String, value: Variant) -> void:
@@ -434,8 +455,11 @@ func _build_windows(parent: Node3D) -> void:
 		var pos: Vector3 = Vector3(c, float(o[6]), fx) if String(w[2]) == "x" else Vector3(fx, float(o[6]), c)
 		var yaw: float = float(FRONT_YAW[String(w[5])])
 		var front: Vector3 = yaw_basis(yaw) * Vector3.FORWARD
-		prefab(parent, "window", String(w[0]), pos, yaw, {"breakable": true, "openable": false, "visual_scene": vis},
-			Vector3(pos.x, float(L.FFL[f]), pos.z) + front * 0.7, {"kind": "window"})
+		var wp: Dictionary = {"breakable": true, "openable": false, "visual_scene": vis}
+		if w.size() > 6 and String(w[6]) == "blinds" and _window_has("see_through"):
+			wp["see_through"] = false
+		prefab(parent, "window", String(w[0]), pos, yaw, wp, Vector3(pos.x, float(L.FFL[f]), pos.z) + front * 0.7,
+			{"kind": "window"})
 
 
 # --- Variants ---------------------------------------------------------------------------------

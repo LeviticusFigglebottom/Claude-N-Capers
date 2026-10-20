@@ -9,6 +9,11 @@
 ## alarm_raised(&"glass_alarm"). Then the same Interactable takes the loot (kind &"take_loot",
 ## small_loot_s) -> small_loot_taken(value, slot) [R]; value = ContentDB.loot(loot_id).value, else
 ## LootTweak.display_case_default_value.
+## D-142 (PD2: guards see through glass): at ready the case's box is split at the visual's `Glass` (merged mesh AABB):
+## `GlassBody` (same layers and surface as `Collision`, group StealthDirector.GROUP_SEE_THROUGH) spans the glass band,
+## `Collision/Shape` keeps the cabinet below it and `Collision/CapShape` any top above it (both block vision). Movement
+## and bullets still stop at the whole case; a broken case keeps every body (as before), the glass band now open air for
+## vision. Not split (whole box opaque) when the visual supplies its own `Collision` or has no Glass mesh in the box.
 class_name DisplayCase
 extends GameplayPrefab
 
@@ -31,6 +36,8 @@ const PLACEHOLDER: PackedScene = preload("res://systems/prefabs/display_case/dis
 @export var noise: StringName = &"silent"
 
 var glass_broken: bool = false
+## D-142: the see-through glass body (null when the case is not split).
+var glass_body: StaticBody3D = null
 var opened: bool = false
 var taken: bool = false
 
@@ -51,8 +58,60 @@ func _default_interaction_time() -> float:
 
 func _prefab_ready() -> void:
 	_route_hits(get_node_or_null(^"Collision"))
+	_split_glass_body()
 	interactable.completed.connect(_on_completed)
 	_apply_state()
+
+
+## D-142: split the fitted box at the visual's Glass band (see the header).
+func _split_glass_body() -> void:
+	if visual_collision != null:
+		return
+	var own: StaticBody3D = get_node_or_null(^"Collision") as StaticBody3D
+	var cs: CollisionShape3D = get_node_or_null(^"Collision/Shape") as CollisionShape3D
+	if own == null or cs == null or not (cs.shape is BoxShape3D) or cs.disabled:
+		return
+	var size: Vector3 = (cs.shape as BoxShape3D).size
+	var box: AABB = AABB(xform_to_self(cs).origin - size * 0.5, size)
+	var glass: AABB = merged_mesh_aabb(visual_node("Glass")).intersection(box)
+	var lo_y: float = glass.position.y
+	var hi_y: float = glass.end.y
+	if glass.size.x <= 0.0 or glass.size.z <= 0.0 or hi_y - lo_y < COLLISION_MIN_EXTENT_M:
+		return
+	glass_body = StaticBody3D.new()
+	glass_body.name = "GlassBody"
+	glass_body.collision_layer = own.collision_layer
+	glass_body.collision_mask = own.collision_mask
+	inherit_surface(own, glass_body)
+	add_child(glass_body)
+	glass_body.add_to_group(StealthDirector.GROUP_SEE_THROUGH)
+	_route_hits(glass_body)
+	var c: Vector3 = glass.get_center()
+	_box_shape(glass_body, "Shape", Vector3(maxf(glass.size.x, COLLISION_MIN_EXTENT_M), hi_y - lo_y,
+		maxf(glass.size.z, COLLISION_MIN_EXTENT_M)), Vector3(c.x, (lo_y + hi_y) * 0.5, c.z))
+	var base_h: float = lo_y - box.position.y
+	if base_h >= COLLISION_MIN_EXTENT_M:
+		_box_shape(own, "Shape", Vector3(size.x, base_h, size.z), Vector3(box.get_center().x, box.position.y + base_h * 0.5,
+			box.get_center().z))
+	else:
+		cs.disabled = true
+	var cap_h: float = box.end.y - hi_y
+	if cap_h >= COLLISION_MIN_EXTENT_M:
+		_box_shape(own, "CapShape", Vector3(size.x, cap_h, size.z), Vector3(box.get_center().x, hi_y + cap_h * 0.5,
+			box.get_center().z))
+
+
+## Box `shape_name` (created if missing) under `body`, `size` centred at `centre` in this prefab's space.
+func _box_shape(body: StaticBody3D, shape_name: String, size: Vector3, centre: Vector3) -> void:
+	var cs: CollisionShape3D = body.get_node_or_null(NodePath(shape_name)) as CollisionShape3D
+	if cs == null:
+		cs = CollisionShape3D.new()
+		cs.name = shape_name
+		body.add_child(cs)
+	var shape: BoxShape3D = BoxShape3D.new()
+	shape.size = size
+	cs.shape = shape
+	cs.transform = xform_to_self(body).affine_inverse() * Transform3D(Basis.IDENTITY, centre)
 
 
 ## Payout of the loot inside (integer dollars).

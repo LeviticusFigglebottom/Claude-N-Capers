@@ -100,6 +100,10 @@ const LEAF_GLASS_KEYWORDS: PackedStringArray = ["glass"]
 @export var charges_required: int = 0
 ## D-105: bullet surface id of the leaves (impact_fx.md §1). Empty = by style (see LEAF_METAL_KEYWORDS).
 @export var leaf_surface: StringName = &""
+## D-142: a glass leaf (leaf_surface_id() glass: `leaf_surface` or a glass-style visual) is see-through for stealth
+## vision (its leaf bodies join StealthDirector.GROUP_SEE_THROUGH; movement and bullets unchanged; an open leaf has no
+## collision anyway). False = an opaque glass leaf (frosted / privacy). Non-glass leaves are never see-through.
+@export var see_through: bool = true
 @export_group("Interaction")
 ## -1 = default by lock (InteractionTweak.door_open_s / lockpick_door_s / keycard_s).
 @export var interaction_time_s: float = -1.0
@@ -782,6 +786,8 @@ func _setup_leaf_bodies() -> void:
 		body.collision_layer = LAYER_WORLD_DYNAMIC
 		body.collision_mask = 0
 		body.set_meta(ShotFx.SURFACE_META, surface)
+		if leaf_see_through():
+			body.add_to_group(StealthDirector.GROUP_SEE_THROUGH)
 		_leaves.append(leaf)
 		_leaf_bodies.append(body)
 	_sync_leaf_bodies()
@@ -802,6 +808,11 @@ func leaf_surface_id() -> StringName:
 		if k in style:
 			return SURFACE_GLASS
 	return SURFACE_WOOD
+
+
+## D-142: the leaves are see-through for stealth vision (glass leaf and `see_through`).
+func leaf_see_through() -> bool:
+	return see_through and leaf_surface_id() == SURFACE_GLASS
 
 
 func _sync_leaf_bodies() -> void:

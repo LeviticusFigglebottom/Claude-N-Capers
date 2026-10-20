@@ -49,6 +49,7 @@ const FINISHES: Dictionary = {
 	"ice_bin": ["plastic_matte", Color(0.62, 0.8, 1.0)],
 	"nets": ["fabric_upholstery", Color(0.7, 0.85, 0.75)],
 	"glass_clear": ["glass_clear", null],
+	"glass_frosted": ["glass_frosted", null],  # D-142: frosted / privacy glass (opaque for stealth vision)
 	"mural": ["plaster_painted", Color(0.3, 0.52, 0.64)],
 }
 ## Library ids whose native density is the 256 px/m ceiling target (kept; everything else is scaled to

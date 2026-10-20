@@ -73,6 +73,12 @@ extends Resource
 ## L4.4 (P3 gate): a Stinger tasing a crew member scores its distance x this when the AI picks a target
 ## (lower = preferred; 0.25 = shot first unless something is 4x closer) ◇.
 @export var tasing_stinger_score_mult: float = 0.25
+## L2.12 / L6.1: the officer who cuffed a downed crew member (CrewCuffs.cuffed_by_net_id) scores its distance x this
+## when the AI picks a target (shot first, like a tasing Stinger) ◇.
+@export var arrester_score_mult: float = 0.25
+## L2.12 / L6.1: a CUFFED crew member whose arresting officer is alive within this distance (m) is freed only once the
+## officer is down or gone (freed next to him, he re-arrests after the D-108 grace, before the 6 s revive ends) ◇.
+@export var arrester_guard_m: float = 3.0
 ## Start holding interact only below this horizontal speed (m/s) so the session is not cancelled
 ## by the deceleration slide (InteractionTweak.cancel_move_m).
 @export var revive_settle_speed: float = 0.3
@@ -155,3 +161,9 @@ extends Resource
 @export var thrown_bag_pickup_window_s: float = 6.0
 ## Vertical tolerance (m) for the resting pickup (same floor).
 @export var thrown_bag_pickup_max_dy_m: float = 1.5
+
+@export_group("Health regen (D-145 §4a)")
+## A bot regains health after this long (s) without taking damage ◇ (PD2 bots don't; PO deviation).
+@export var bot_regen_delay_s: float = 6.0
+## ...at this fraction of its max health per second ◇.
+@export var bot_regen_frac_per_s: float = 0.02

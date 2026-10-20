@@ -201,3 +201,22 @@ func test_gh_guards_share_one_pool() -> void:
 	for i: int in tags.size():
 		npcs.append(_spawn(&"guard", i, {"tags": [tags[i]]}))
 	_check(npcs, pool, "GH guards")
+
+
+## D p5_cast v14: OF's safe-deposit attendant wears a bank officer look and shares the officers' deal (3 officers +
+## 1 attendant on 4 faces: no twins).
+func test_of_officers_and_sd_attendant_share_one_pool() -> void:
+	await _launch(&"ostrander_federal")
+	var m: Dictionary = NpcVisuals.tweak().heist_tag_characters[&"ostrander_federal"]
+	assert_eq(m[&"civ_sd_attendant"], m[&"civ_officer"], "the attendant lists the officer looks")
+	var tags: Array[StringName] = [&"civ_officer", &"civ_officer", &"civ_officer", &"civ_sd_attendant"]
+	for t: StringName in [&"civ_officer", &"civ_sd_attendant"]:
+		assert_eq(NpcVisuals.tweak().heist_tag_pools[&"ostrander_federal"][t], &"of_officers", "%s in of_officers" % t)
+	var pool: int = _delivered(m[&"civ_officer"])
+	if pool < 2:
+		skip("fewer than 2 bank_officer looks delivered")
+		return
+	var npcs: Array[NpcBase] = []
+	for i: int in tags.size():
+		npcs.append(_spawn(&"civilian", i, {"tags": [tags[i]]}))
+	_check(npcs, pool, "OF officers + SD attendant")

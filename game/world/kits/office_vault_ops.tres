@@ -1,0 +1,36 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"office_vault_ops"
+purpose = &"office"
+required_items = Array[StringName]([&"desk", &"chair", &"file_cabinet", &"bookshelf", &"bulletin_board", &"credenza", &"key_cabinet", &"printer", &"plant", &"light_fixture", &"picture"])
+optional_items = {
+&"bin": 0.6,
+&"switch": 0.5
+}
+clutter_groups = {
+&"desk": {
+"anchors": Array[StringName]([&"desk"]),
+"count": Vector2i(2, 4),
+"items": {&"desk_lamp": 1, &"mug": 1, &"papers": 2},
+"radius": 0.6
+}
+}
+min_density = 0.2
+max_density = 1.5
+min_props = 15
+lone_ok_kinds = Array[StringName]([&"plant", &"bookshelf", &"printer"])
+seed_salt = 4103
+counts = {
+&"file_cabinet": Vector2i(2, 2)
+}
+assets = {
+&"chair": PackedStringArray("prop_chair_visitor"),
+&"light_fixture": PackedStringArray("prop_ceiling_panel_neutral"),
+&"picture": PackedStringArray("prop_wall_art_a", "prop_wall_art_b")
+}
+ceiling = {"prop_ceiling_panel_neutral": 4.0}
+notes = "OF VO vault operations (OF-C2 lane B, of_art_rooms.gd): the G1 vault-schedule desk (exact-fit art) with the code PC (pc_vault_ops, the desktop visual) and the kc_vault_ops drawer keycard, a visitor chair, files and the schedule board on the north wall, a credenza under the key cabinet (the key safe) on the south wall, a printer, 4000 K panels."
