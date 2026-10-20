@@ -1,5 +1,6 @@
 ## X-4 (docs/process/heist_completion.md): stealth end-to-end flows for Nightfall Depository (night_deposit), Shadow
-## Ledger (shadow_ledger) and Gallery Night (gallery_night). Owner: ENV A (test support).
+## Ledger (shadow_ledger), Gallery Night (gallery_night) and Ostrander Federal (ostrander_federal; its loud line too,
+## x4_of_loud.gd). Owner: ENV A (test support).
 ## One bot crew member (slot 0, no AI teammates) wins the heist without the alarm: it masks up, then takes the
 ## heist's stealth objectives in order through the real InteractionSystem (CrewIntent held through
 ## HeistRuntime.set_bot_intent, interact + interact_target_net_id, as the P1 gate bot), carries every bag on its
@@ -40,11 +41,15 @@ var completed_at_end: Array[StringName] = []
 var completed: Array[StringName] = []
 var secured_loot: Array[StringName] = []
 var laser_waits: int = 0
+## AI teammates launched with the bot (0: the stealth routes go solo; the OF loud flow takes the PD2 bots, L6.1).
+var ai_teammates: int = 0
 ## Route facts a test asserts on (e.g. the GN curator card branch: &"curator_card_*").
 var facts: Dictionary = {}
 ## Laser grids the route crosses (guard_lasers) and the sign of their guarded side (local z).
 var guarded: Array[LaserGrid] = []
 var _inner_side: Dictionary = {}
+## Optional guarded-room tests per grid (guard_lasers `region`).
+var _region: Dictionary = {}
 ## The current move crouches under a static grid (stand up after it).
 var _crouch_through: bool = false
 var _conns: Array[Array] = []
@@ -68,12 +73,12 @@ func check(ok: bool, msg: String) -> bool:
 
 # --- Launch / teardown ---------------------------------------------------------------------------
 
-## `options` are extra HeistLauncher options (e.g. "preplan" force_variants, "variant_table"); no AI teammates.
+## `options` are extra HeistLauncher options (e.g. "preplan" force_variants, "variant_table"); `ai_teammates` AI crew.
 func launch(heist_id: StringName, seed_value: int, options: Dictionary = {}) -> bool:
 	heist = heist_id
 	Engine.time_scale = 1.0
 	var opts: Dictionary = options.duplicate()
-	opts["ai_teammates"] = 0
+	opts["ai_teammates"] = ai_teammates
 	rt = await HeistLauncher.launch(heist_id, seed_value, Enums.Difficulty.ROUTINE, host, opts)
 	if not check(rt != null, "HeistLauncher.launch(%s, %d)" % [heist_id, seed_value]):
 		return false
@@ -81,9 +86,9 @@ func launch(heist_id: StringName, seed_value: int, options: Dictionary = {}) -> 
 	var nav_ok: bool = await wait_until(func() -> bool: return BotUtil.nav_ready(crew), 10.0)
 	if not check(nav_ok, "navigation map ready"):
 		return false
-	_listen(EventBus.alarm_raised, func(reason: StringName, _src: int) -> void:
+	_listen(EventBus.alarm_raised, func(reason: StringName, src: int) -> void:
 		alarms.append(reason)
-		note("ALARM %s" % reason))
+		note("ALARM %s%s" % [reason, _alarm_source(src)]))
 	_listen(EventBus.laser_tripped, func(_id: int) -> void: lasers_tripped += 1)
 	_listen(EventBus.pager_started, func(_p: int, _g: int) -> void: pagers += 1)
 	_listen(EventBus.heist_ended, func(r: Dictionary) -> void:
@@ -99,6 +104,16 @@ func launch(heist_id: StringName, seed_value: int, options: Dictionary = {}) -> 
 	note("launched seed %d, variants %s" % [seed_value, rt.variants])
 	await _physics_frames(2)
 	return true
+
+
+## Who raised an alarm and why (a guard's alarm_cause), for the run log.
+func _alarm_source(src: int) -> String:
+	var n: Node = Ids.lookup(src) if src != 0 else null
+	if n == null:
+		return ""
+	var brain: Node = n.get_node_or_null(^"Brain")
+	var cause: Variant = brain.get(&"alarm_cause") if brain != null else null
+	return " by %s at %s (cause %s)" % [n.name, (n as Node3D).global_position if n is Node3D else "?", cause]
 
 
 func teardown() -> void:
@@ -450,17 +465,23 @@ func _laser_gap(g: LaserGrid) -> Variant:
 
 
 ## The grids in front of `inner` (a point in the room they guard): later moves into / out of that room wait for the
-## grid's off window.
-func guard_lasers(tag: StringName, inner: Vector3) -> void:
+## grid's off window. `region` (optional, Callable(Vector3) -> bool) states the guarded room itself when it is not
+## straight behind the grid (e.g. OF: the concourse and the vault round the corner behind the VC grid).
+func guard_lasers(tag: StringName, inner: Vector3, region: Callable = Callable()) -> void:
 	for n: Node in all_tagged(tag):
 		var g: LaserGrid = n as LaserGrid
 		if g != null and g.active:
 			guarded.append(g)
 			_inner_side[g] = signf((g.global_transform.affine_inverse() * inner).z)
+			if region.is_valid():
+				_region[g] = region
 
 
-## True when `p` is in the room behind `g` (same floor, within the grid's width band, on the guarded side).
+## True when `p` is in the room behind `g` (its `region`, else same floor, within the grid's width band, on the
+## guarded side).
 func _beyond(g: LaserGrid, p: Vector3) -> bool:
+	if _region.has(g):
+		return bool((_region[g] as Callable).call(p))
 	var l: Vector3 = g.global_transform.affine_inverse() * p
 	var side: float = float(_inner_side.get(g, 1.0))
 	return l.y > -1.0 and l.y < g.size_m.y + 1.0 and absf(l.x) <= g.size_m.x * 0.5 + 1.0 \

@@ -150,3 +150,28 @@ func test_of_stealth_heli_called_on_secure() -> void:
 	var said: Array = _lines.filter(func(l: Array) -> bool: return l[1] == &"vo.mercer.ostrander_federal_heli_eta")
 	assert_eq(said.size(), 1, "heli_eta line")
 	assert_eq(int((said[0][2] as Dictionary).get("seconds", 0)) if not said.is_empty() else 0, 45, "45 s")
+
+
+## B's audit (OF-B1): the side objectives complete on their real triggers: a safe opened by any method (polled) and
+## every server drive bag secured (bagging alone is not taking them out).
+func test_of_side_safes_and_drives_complete() -> void:
+	if _pending() or not await _launch(Enums.Difficulty.ROUTINE, {&"president_safe": &"ps_bonds"}):
+		return
+	for tag: StringName in [&"bond_safe", &"president_safe"]:
+		var safe: Safe = null
+		for n: Node in _m().find_tagged(tag):
+			if n is Safe:
+				safe = n as Safe
+		assert_true(safe != null, "a %s Safe in the map" % tag)
+		if safe == null:
+			continue
+		assert_eq(_state(tag), ACTIVE, "[%s] active while shut" % tag)
+		safe.open_by_device()
+		await wait_seconds(0.7)
+		assert_eq(_state(tag), DONE, "[%s] completes once the safe is open" % tag)
+	assert_eq(_state(&"server_drives"), ACTIVE, "[server_drives] active")
+	await _secure(&"loot.server_drives", 1)
+	assert_eq(_state(&"server_drives"), ACTIVE, "one drive bag of 2 is not all of them")
+	EventBus.loot_secured.emit(9100, &"loot.server_drives", 1000)
+	await wait_physics_frames(1)
+	assert_eq(_state(&"server_drives"), DONE, "[server_drives] completes with both drive bags secured")
