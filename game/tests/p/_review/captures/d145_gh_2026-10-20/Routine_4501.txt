@@ -1,0 +1,54 @@
+[PO5 17.0s] in heist glasshouse seed 4501 diff 0 phase 1 crew at (3.0, 0.0, 14.4)
+[PO5 90.3s] pilot: goto (3.6, 4.4, 8.2) FAILED at (12.9, 0.0, 5.0) after 60.0 s
+[PO5 150.7s] pilot: goto (3.6, 4.4, 8.2) FAILED at (11.1, -0.3, 5.1) after 60.0 s
+[PO5 176.4s] pilot: goto (9.8, 0.2, 6.5) FAILED at (10.3, 0.0, 6.5) after 3.0 s
+[PO5 197.9s] pilot: goto (3.6, 4.4, 8.2) FAILED at (12.6, 0.0, 5.1) after 42.3 s
+[PO5 258.0s] pilot: goto (3.6, 4.4, 8.2) FAILED at (11.5, -0.3, 5.5) after 60.0 s
+[PO5 289.1s] EVENT crew 1 state 0 -> 1 at (10.5, -0.3, 5.9) (t=273)
+[PO5 295.2s] EVENT crew 1 state 1 -> 0 at (10.5, 0.0, 6.1) (t=279)
+[PO5 335.2s] EVENT crew 0 state 0 -> 1 at (13.9, 1.9, 1.8) (t=319)
+[PO5 335.3s] pilot: goto (7.5, 0.2, 4.5) FAILED at (13.9, 1.9, 1.8) after 12.4 s
+[PO5 335.3s] pilot: goto (7.1, 0.2, 3.7) FAILED at (13.9, 1.9, 1.8) after 0.0 s
+[PO5 351.0s] EVENT crew 0 state 1 -> 0 at (13.9, 1.9, 1.8) (t=335)
+[PO5 371.4s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.5, 0.0, 3.5) after 4.0 s
+[PO5 376.3s] EVENT crew 1 state 0 -> 1 at (8.3, 0.0, 5.0) (t=360)
+[PO5 384.0s] EVENT crew 1 state 1 -> 0 at (8.4, -0.3, 5.0) (t=368)
+[PO5 390.0s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.5, 0.0, 3.6) after 10.0 s
+[PO5 400.4s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.7) after 10.0 s
+[PO5 410.7s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.5, 0.0, 3.6) after 10.0 s
+[PO5 420.7s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.6) after 10.0 s
+[PO5 430.8s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.9) after 10.0 s
+[PO5 441.4s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.9) after 10.0 s
+[PO5 451.8s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.9) after 10.0 s
+[PO5 462.2s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.9) after 10.0 s
+[PO5 472.5s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.9) after 10.0 s
+[PO5 482.9s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.9) after 10.0 s
+[PO5 493.2s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.9) after 10.0 s
+[PO5 499.0s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.5, 0.0, 3.5) after 4.0 s
+[PO5 503.4s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.5, 0.0, 3.5) after 4.0 s
+[PO5 507.4s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.9) after 4.0 s
+[PO5 511.8s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.5, 0.0, 3.5) after 4.0 s
+[PO5 515.8s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.8) after 4.0 s
+[PO5 519.9s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.6) after 4.0 s
+[PO5 523.9s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.8) after 4.0 s
+[PO5 528.0s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.6) after 4.0 s
+[PO5 547.7s] pilot: use Bag_jewelry2 (pick_bag) -> FAILED in 15.0 s
+[PO5 558.1s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (8.2, 0.0, 3.6) after 10.0 s
+[PO5 568.4s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.8) after 10.0 s
+[PO5 578.1s] EVENT crew 1 state 0 -> 1 at (8.3, 0.0, 5.0) (t=562)
+[PO5 586.0s] pilot: goto (7.1, 0.2, 5.0) FAILED at (7.1, 0.0, 3.9) after 3.0 s
+[PO5 588.7s] EVENT crew 1 state 1 -> 0 at (8.4, -0.0, 5.0) (t=572)
+[PO5 591.8s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.6, 0.0, 3.9) after 10.0 s
+[PO5 602.4s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.6) after 10.0 s
+[PO5 612.1s] EVENT crew 1 state 0 -> 5 at (6.9, 0.0, 5.2) (t=596)
+[PO5 613.5s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (8.2, 0.0, 4.0) after 10.0 s
+[PO5 618.5s] pilot: goto (7.5, 0.2, 3.7) FAILED at (8.1, 0.0, 3.6) after 3.0 s
+[PO5 619.4s] EVENT crew 2 state 0 -> 1 at (7.9, 0.0, 5.3) (t=603)
+[PO5 626.3s] EVENT crew 2 state 1 -> 0 at (8.1, 0.0, 5.3) (t=610)
+[PO5 631.9s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (4.1, -0.3, 5.1) after 4.0 s
+[PO5 659.9s] pilot: use Bag_jewelry2 (pick_bag) -> FAILED in 15.0 s
+[PO5 666.1s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (-4.1, 0.0, -3.8) after 4.0 s
+[PO5 668.7s] STATS difficulty=0 police=155 peak_alive=10 specials={ &"enemy.bulwark": 18, &"enemy.longshot": 2 } composition={ &"enemy.security_officer": 3, &"enemy.patrol_officer": 41, &"enemy.tac_light": 91, &"enemy.bulwark": 18, &"enemy.longshot": 2 } | slot 0 [weapon.corsair_ar / armor.tailored_suit] downs 1 custody 0 revived 1 regained 0; slot 1 [weapon.corsair_ar / armor.tailored_suit] downs 3 custody 1 revived 3 regained 509; slot 2 [weapon.corsair_ar / armor.tailored_suit] downs 1 custody 0 revived 1 regained 556; slot 3 [weapon.corsair_ar / armor.tailored_suit] downs 0 custody 0 revived 0 regained 175
+[PO5 668.7s] EVENT heist_ended { "heist_id": &"glasshouse", "success": true, "stealth": false, "time_s": 652.366666666402, "difficulty": 0, "contract_pay": 12000, "loot": [{ "loot_id": &"loot.jewelry", "value": 6000 }, { "loot_id": &"loot.jewelry", "value": 6000 }], "small_loot": 0, "crew": [{ "slot": 0, "is_ai": false, "name": "Player", "kills": 46, "specials_killed": 9, "downs": 1, "civilians_killed": 1, "shots": 126, "hits": 98, "headshots": 44, "in_custody": false, "escaped": true }, { "slot": 1, "is_ai": true, "name": "AI 1", "kills": 22, "specials_killed": 0, "downs": 3, "civilians_killed": 2, "shots": 250, "hits": 220, "headshots": 3, "in_custody": true, "escaped": false }, { "slot": 2, "is_ai": true, "name": "AI 2", "kills": 30, "specials_killed": 1, "downs": 1, "civilians_killed": 0, "shots": 312, "hits": 270, "headshots": 11, "in_custody": false, "escaped": true }, { "slot": 3, "is_ai": true, "name": "AI 3", "kills": 50, "specials_killed": 6, "downs": 0, "civilians_killed": 0, "shots": 276, "hits": 227, "headshots": 6, "in_custody": false, "escaped": true }], "pagers_answered": 0, "seed": 4501, "variants": { &"guard_post": [&"rover_boh"], &"back_door": [&"back_propped"], &"open_window": [&"ow_breakroom_open"], &"keycard": [&"kc_jeweler"], &"jeweler": [], &"admin_clerk": [&"clerk_in"], &"salon": [&"salon_locked"], &"extra_loot": [&"xl_delivery"], &"escape": [&"esc_alley_west"], &"customers": [&"cust_2", &"cust_4"], &"manager_present": [&"mgr_out"], &"safe_state": [&"safe_closed"], &"estate": [&"estate_none"], &"camera": [&"cam_c3", &"cam_c4"], &"security_room_staffed": [&"sec_staffed"], &"code_note": [&"code_admin"], "rare": [] }, "fail_reason": &"", "loot_available": 6 }
+[PO5 680.5s] STATS difficulty=0 police=155 peak_alive=10 specials={ &"enemy.bulwark": 18, &"enemy.longshot": 2 } composition={ &"enemy.security_officer": 3, &"enemy.patrol_officer": 41, &"enemy.tac_light": 91, &"enemy.bulwark": 18, &"enemy.longshot": 2 } | slot 0 [weapon.corsair_ar / armor.tailored_suit] downs 1 custody 0 revived 1 regained 0; slot 1 [weapon.corsair_ar / armor.tailored_suit] downs 3 custody 1 revived 3 regained 509; slot 2 [weapon.corsair_ar / armor.tailored_suit] downs 1 custody 0 revived 1 regained 556; slot 3 [weapon.corsair_ar / armor.tailored_suit] downs 0 custody 0 revived 0 regained 175
+[PO5 680.5s] RESULT PASS (code 0) flow=auto_loud heist=Golden Hour seed=4501

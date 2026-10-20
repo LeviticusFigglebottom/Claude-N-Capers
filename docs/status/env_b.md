@@ -19,6 +19,19 @@ Resumed on env/b-content 29d30a2d (ff from origin; trunk rounds 204-244 ran in a
   Bot Crew (crew_capture.gd) at 720p/1080p: 0 QA issues. Evidence: game/content/ui/_review/r246_of_real_input,
   r246_bot_crew.
 
+### Later the same day (trunk r245 e219930b / r246 181957dd merged)
+- 297e6624, 14b81ef3 PO-19 bot gear live check (tests/b/render/bot_gear_capture.gd): bots carry and fire the assigned
+  primary / mods / armor / mask / outfit, 0 mismatches at 720p and 1080p; evidence _review/r246_bot_gear. LEAD then
+  ruled default bots carry a rifle (A 09a2a165).
+- f0a3c7ac test_heist_text_audit covers ostrander_federal (all clean). OF briefing on all 6 difficulties matches the
+  def (guards follow D-140's GUARDS table 4/5/6/6/7/8, pager cap 4, Titan from Lethal, [secure] 4 Routine / 6).
+- 06ca21f0 Tab sheet top -260 -> -350: OF's sheet clipped the ARMOR / HEALTH values (real-input OF pass on trunk).
+- 6f3f62e9 Bot Crew / lobby AI cards: "Standard: Corsair" / "Standard: Tailored Suit" (was "Standard issue" / the
+  wrong "Standard vest").
+- Real-input OF on trunk: 720p RUN DONE 15 shots; 1080p 14/15 (the time limit before the last hub shot). One
+  windowed Godot at a time: two at once stalled both after mask-up. Evidence _review/r246_of_trunk.
+- Reported to C via the lead: world/props/multimesh_tiles.gd:35 "Instance count must be 0" x6 per OF load.
+
 ### Fixed
 - Payday: three OF achievements (one grid line) wrap under the fold at 720p and 1080p and the panel was not
   focusable, so pad/keyboard could not see the last line. The panel now also takes focus once the laid-out summary

@@ -1,0 +1,73 @@
+[OFP 0.0s t=-1.0] === hole ===
+[OFP 9.8s t=-1.0] objective casing -> 1
+[OFP 9.8s t=-1.0] objective keycard -> 1
+[OFP 9.8s t=-1.0] objective code_hint -> 1
+[OFP 9.8s t=-1.0] objective code_pc -> 1
+[OFP 9.8s t=-1.0] objective server -> 1
+[OFP 9.8s t=-1.0] objective vault_gate -> 1
+[OFP 9.8s t=-1.0] objective lasers -> 1
+[OFP 9.8s t=-1.0] objective time_lock -> 0
+[OFP 9.8s t=-1.0] objective time_lock_wait -> 0
+[OFP 9.8s t=-1.0] objective vault_loot -> 0
+[OFP 9.8s t=-1.0] objective gold_cage -> 0
+[OFP 9.8s t=-1.0] objective drill_delivery -> 0
+[OFP 9.8s t=-1.0] objective vault_drill -> 0
+[OFP 9.8s t=-1.0] objective vault_breach -> 0
+[OFP 9.8s t=-1.0] objective secure -> 1
+[OFP 9.8s t=-1.0] objective deposit_boxes -> 1
+[OFP 9.8s t=-1.0] objective bond_safe -> 1
+[OFP 9.8s t=-1.0] objective president_safe -> 1
+[OFP 9.8s t=-1.0] objective server_drives -> 1
+[OFP 9.8s t=-1.0] objective escape_wait -> 0
+[OFP 9.8s t=-1.0] objective escape -> 0
+[OFP 26.6s t=0.0] launched ostrander_federal seed 1002 diff 0 variants { &"manager_route": [&"mgr_gallery"], &"keycard": [&"kc_security"], &"code_pc": [&"pc_ops"], &"officers": [&"off_1"], &"server_room": [&"srv_gallery"], &"guard_post": [&"rover_basement", &"rover_dock"], &"security_room_staffed": [&"sec_empty"], &"camera": [&"cam_c"], &"laser_pattern": [&"lz_timed"], &"customers": [&"cust_4"], &"side_door": [&"door_dock_open"], &"fire_escape": [&"fe_down"], &"escape": [&"esc_van_tannery"], &"drill_delivery": [&"drop_terrace"], &"president_safe": [&"ps_bonds"], &"vip": [&"vip_out"], &"guard_extra": [], &"civ_extra": [], &"time_lock_s": 150.0, &"drill_eta_s": 60.0, &"escape_eta_s": 150.0, &"cash_bags": 8, &"gold_bags": 3, &"deposit_boxes": 6, "rare": [] }
+[OFP 147.6s t=2.0] SHORTCUT traversal: NPCs despawned, crew stealth_hidden, 8 cameras disabled (GameplayPrefab.set_enabled)
+[OFP 168.9s t=3.1] pilot: calibrated 0.001600 rad/px yaw, 0.001600 rad/px pitch (settings formula said (0.0016, 0.0016))
+[OFP 168.9s t=3.1] spawn (21.0, 0.0, -6.0)
+[OFP 176.2s t=4.2] objective casing -> 2
+[OFP 176.7s t=4.8] masked true
+[INFO][stealth][p1] ALARM: ofp_hole (source 0)
+[OFP 176.8s t=4.8] ALARM ofp_hole by 0 (pilot at (21.0, 0.0, -6.0))
+[OFP 177.0s t=4.8] objective keycard -> 1
+[OFP 177.0s t=4.8] objective keycard -> 2
+[OFP 177.0s t=4.8] objective code_hint -> 1
+[OFP 177.0s t=4.8] objective code_hint -> 2
+[OFP 177.0s t=4.8] objective code_pc -> 1
+[OFP 177.0s t=4.8] objective code_pc -> 2
+[OFP 177.0s t=4.8] objective server -> 1
+[OFP 177.0s t=4.8] objective server -> 2
+[OFP 177.0s t=4.8] objective vault_gate -> 1
+[OFP 177.0s t=4.8] objective vault_gate -> 2
+[OFP 177.0s t=4.8] objective lasers -> 1
+[OFP 177.0s t=4.8] objective lasers -> 2
+[OFP 177.1s t=4.8] objective drill_delivery -> 1
+[OFP 177.1s t=4.8] objective drill_delivery -> 1
+[OFP 197.3s t=5.3] SHORTCUT alarm raised through the StealthDirector (the hoist is loud-only)
+[OFP 197.5s t=5.3] objective drill_delivery -> 2
+[OFP 197.5s t=5.3] objective vault_drill -> 2
+[OFP 197.5s t=5.3] objective vault_breach -> 2
+[OFP 197.5s t=5.3] objective vault_loot -> 1
+[OFP 197.6s t=5.3] objective gold_cage -> 1
+[OFP 198.2s t=5.8] SHORTCUT hole via the mission's burn_through(): rope ladder usable true height 4.00, hoist Hoist enabled
+[OFP 198.2s t=5.8] lookup lid: MISSING
+[OFP 224.9s t=10.2] pilot: use DockPersonnelDoor (open_door) -> OK in 0.0 s
+[OFP 226.2s t=11.5] pilot: t=5 at (8.5, 0.0, 2.4) corner (8.7, 0.2, 3.3) yaw_err -0.00 fwd=true path=23 mouse_mode=2 state=0 look=(3.35,0.00) pin_yaw=3.35449572434299 bot=false
+[OFP 259.9s t=13.5] pilot: use DockCorridorDoor (open_door) -> OK in 0.0 s
+[OFP 270.1s t=23.7] pilot: use StaffDoorTWW (open_door) -> OK in 8.0 s
+[OFP 273.1s t=26.8] pilot: t=10 at (20.7, 0.0, 13.3) corner (22.0, 0.2, 14.0) yaw_err 0.00 fwd=true path=3 mouse_mode=2 state=0 look=(4.23,0.00) pin_yaw=4.22527302808885 bot=false
+[OFP 273.5s t=27.2] SHORTCUT bag loot.cash_bricks (weight 1) spawned by LootManager.spawn_bag at (22.7, 0.5, 14.3)
+[OFP 276.1s t=29.6] pilot: use Bag_cash_bricks (pick_bag) -> OK in 1.0 s
+[OFP 280.1s t=33.7] THROW down the hole weight 1 pitch -> rests (23.3, -3.8, 14.3) (0.4 m from the stand, 1.7 s) on SlabB_00 secured false: OK in VT
+[OFP 295.0s t=40.1] LADDER RopeLadder down: OK in 1.8 s (climb 2.4 s, height 4.0 m; at (24.0, -4.0, 14.6))
+[OFP 316.2s t=41.9] pilot: use Bag_cash_bricks (pick_bag) -> OK in 1.0 s
+[OFP 319.7s t=45.6] bag in the car of Hoist (1)
+[OFP 320.1s t=46.0] DIAG hold t=0.0 session false moved -1.00/0.50 aim 142/40 deg avail '' aimed <none> blocked '' eye (24.0, -2.3, 16.3) panel (24.7, -2.9, 15.3)
+[OFP 320.9s t=46.8] DIAG hold t=0.8 session false moved -1.00/0.50 aim 0/40 deg avail '' aimed Interactable blocked '' eye (25.0, -2.3, 15.6) panel (24.7, -2.9, 15.3)
+[OFP 321.0s t=46.9] DIAG hold t=0.9 session true moved 0.00/0.50 aim 0/40 deg avail '' aimed Interactable blocked '' eye (25.0, -2.3, 15.6) panel (24.7, -2.9, 15.3)
+[OFP 322.1s t=47.8] pilot: use Hoist (call_lift) -> OK in 1.0 s
+[OFP 328.0s t=53.8] LIFT Hoist at landing 1 (1 bags in the car)
+[OFP 411.9s t=67.1] LADDER RopeLadder up: NOT DONE in 12.4 s (climb 2.4 s, height 4.0 m; at (24.2, -4.0, 16.2))
+[OFP 411.9s t=67.1] FAIL hole/rope ladder up (alarm ofp_hole)
+[OFP] FAIL hole/rope ladder up
+[OFP] RESULT FAIL hole
+[OFP] RESULT FAIL (hole FAIL)

@@ -40,6 +40,9 @@ const STEP_INSET: float = 0.005
 ## A flight's ramp collider runs this far flat onto the floor at its top (no seam with the landing; GN-8 / SL-P1).
 const RAMP_TONGUE: float = 0.3
 const VIEWMODEL_LIT_LAYER: int = 1 << 20
+## Exports a row may set before the prefab has them (ENV A lands the export later; set_prop skips them until then):
+## BagLift.phase_block_key (env/a-core 417425fd).
+const OPTIONAL_PROPS: Array[String] = ["phase_block_key"]
 
 var map_root: HeistMap = null
 var errors: PackedStringArray = PackedStringArray()
@@ -437,6 +440,8 @@ func set_prop(inst: Node, prop: String, value: Variant) -> void:
 			cur = inst.get(prop)
 			break
 	if not found:
+		if prop in OPTIONAL_PROPS:   # set once the prefab has the export; silently skipped before that
+			return
 		errors.append("%s has no property `%s`" % [inst.name, prop])
 		return
 	if value is String and String(value).begins_with("enum:"):

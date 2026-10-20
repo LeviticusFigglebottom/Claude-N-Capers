@@ -8,5 +8,6 @@
 visibility_range_end = 16.0
 visibility_range_end_margin = 1.6
 visibility_range_fade_mode = 1
+cast_shadow = 0
 
 [editable path="Model"]
