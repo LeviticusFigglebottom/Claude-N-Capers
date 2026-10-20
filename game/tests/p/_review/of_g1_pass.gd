@@ -1879,6 +1879,13 @@ func _enable_hole(rope: Ladder, hoist: BagLift) -> void:
 	# OF-A6 has the mission's own burn-through (lid + plug dropped, rope ladder to burn_height_m, hoist on, rappel):
 	# use it, so the hole test sees exactly the post-burn map (C's f385a22c Plug was not in the hand-made shortcut).
 	if rt.mission != null and rt.mission.has_method(&"burn_through"):
+		# The hole only opens by the LOUD burn-through and the hoist panels are phase-gated to loud
+		# (ui.blocked.phase in stealth, r246 hole DIAG): go loud first, as the burn test does. NPCs stay out.
+		if not rt.went_loud:
+			HeistRuntime.get_service(G.SVC_STEALTH).call(&"raise_alarm", &"ofp_hole", 0)
+			await wait_s(0.5)
+			rt.isolate_npc(null)
+			note("SHORTCUT alarm raised through the StealthDirector (the hoist is loud-only)")
 		rt.mission.call(&"burn_through")
 		await wait_s(0.5)
 		note("SHORTCUT hole via the mission's burn_through(): rope ladder usable %s height %.2f, hoist %s enabled" % [
@@ -2212,10 +2219,12 @@ func _smoke_cue(max_s: float) -> bool:
 func _g3_keycard() -> bool:
 	if not await _go(_of(GHOST_LK_WAIT), 0.5, 90.0):
 		return false
-	var mgr: NpcBase = null
+	# A lambda captures locals by value: an assignment inside it never reaches `mgr`, so hold it in an array.
+	var found: Array[NpcBase] = [null]
 	await wait_until(func() -> bool:
-		mgr = _civ_near(_of(GHOST_LK_WAIT), 6.0)
-		return mgr != null, 600.0)
+		found[0] = _civ_near(_of(GHOST_LK_WAIT), 6.0)
+		return found[0] != null, 600.0)
+	var mgr: NpcBase = found[0]
 	if mgr == null:
 		note("manager never came to LK")
 		return false
