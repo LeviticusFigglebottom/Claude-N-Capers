@@ -1,0 +1,18 @@
+[PO5 104.2s] [X4] ostrander_federal    2.2 s  launched seed 3, variants { &"manager_route": [&"mgr_vault"], &"keycard": [&"kc_on_manager"], &"code_pc": [&"pc_ops"], &"officers": [&"off_3"], &"server_room": [&"srv_basement"], &"guard_post": [&"rover_basement", &"rover_dock"], &"security_room_staffed": [&"sec_empty"], &"camera": [&"cam_b"], &"laser_pattern": [&"lz_timed"], &"customers": [&"cust_4"],
+[PO5 105.1s] [X4] ostrander_federal    3.3 s  objective casing COMPLETED
+[PO5 236.2s] [X4] ostrander_federal  108.5 s  objective keycard COMPLETED
+[PO5 237.6s] [X4] ostrander_federal  109.7 s  objective vault_gate COMPLETED
+[PO5 268.6s] [X4] ostrander_federal  131.8 s  objective lasers COMPLETED
+[PO5 305.4s] [X4] ostrander_federal  228.2 s  objective server COMPLETED
+[PO5 305.4s] [X4] ostrander_federal  228.2 s  objective time_lock COMPLETED
+[PO5 305.5s] [X4] ostrander_federal  228.2 s  objective code_pc COMPLETED
+[PO5 378.7s] [X4] ostrander_federal  438.2 s  objective time_lock_wait COMPLETED
+[PO5 405.2s] [X4] ostrander_federal  454.4 s  objective secure COMPLETED
+[PO5 405.2s] [X4] ostrander_federal  454.4 s  objective vault_loot COMPLETED
+[PO5 405.2s] [X4] ostrander_federal  454.4 s  objective code_hint COMPLETED
+[PO5 417.5s] [X4] ostrander_federal  499.4 s  objective escape COMPLETED
+[PO5 417.5s] STATS difficulty=0 police=4 peak_alive=4 specials={  } composition={ &"enemy.security_officer": 4 } | slot 0 [weapon.corsair_ar / armor.tailored_suit] downs 0 custody 0 revived 0 regained 0; slot 1 [weapon.corsair_ar / armor.tailored_suit] downs 0 custody 0 revived 0 regained 0; slot 2 [weapon.corsair_ar / armor.tailored_suit] downs 0 custody 0 revived 0 regained 0; slot 3 [weapon.cor
+[PO5 417.6s] [X4] ostrander_federal  499.4 s  route done at 499.4 s heist; objectives [&"casing", &"keycard", &"vault_gate", &"lasers", &"server", &"time_lock", &"code_pc", &"time_lock_wait", &"secure", &"vault_loot", &"code_hint", &"escape"]; secured [&"loot.cash_bricks", &"loot.cash_bricks", &"loot.cash_bricks", &"loot.cash_bricks"]; laser waits 0
+[PO5 417.6s] RESULT of_stealth route PASS seed 3: [&"casing", &"keycard", &"vault_gate", &"lasers", &"server", &"time_lock", &"code_pc", &"time_lock_wait", &"secure", &"vault_loot", &"code_hint", &"escape"]
+[PO5 516.6s] STATS difficulty=0 police=4 peak_alive=4 specials={  } composition={ &"enemy.security_officer": 4 } | slot 0 [weapon.corsair_ar / armor.tailored_suit] downs 0 custody 0 revived 0 regained 0; slot 1 [weapon.corsair_ar / armor.tailored_suit] downs 0 custody 0 revived 0 regained 0; slot 2 [weapon.corsair_ar / armor.tailored_suit] downs 0 custody 0 revived 0 regained 0; slot 3 [weapon.cor
+[PO5 516.6s] RESULT PASS (code 0) flow=of_stealth heist=Ostrander Federal seed=3

@@ -58551,6 +58551,7 @@ targets = Array[NodePath]([NodePath("HoistLandingTW")])
 travel_s = 6.0
 car_size_m = Vector3(1, 1, 0.75)
 loud_only = true
+phase_block_key = &"ui.blocked.after_breach"
 objective_tag = &"hoist"
 enabled_at_start = false
 metadata/kind = "bag_lift"

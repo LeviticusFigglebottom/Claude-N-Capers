@@ -61,6 +61,8 @@ const PANEL_PREFIX: String = "LandingPanel"
 @export var requires_item: StringName = &""
 @export var stealth_only: bool = false
 @export var loud_only: bool = false
+## Every panel's blocked reason while loud_only / stealth_only rules it out (InteractableComponent.phase_block_key).
+@export var phase_block_key: StringName = &""
 @export var casing_allowed: bool = false
 @export var noise: StringName = &"silent"
 
@@ -289,6 +291,7 @@ func _spawn_landing_panels() -> void:
 		p.requires_item = interactable.requires_item
 		p.stealth_only = interactable.stealth_only
 		p.loud_only = interactable.loud_only
+		p.phase_block_key = interactable.phase_block_key
 		p.casing_allowed = interactable.casing_allowed
 		p.noise = interactable.noise
 		add_child(p)
