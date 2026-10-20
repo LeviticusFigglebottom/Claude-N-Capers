@@ -708,7 +708,7 @@ SLOT_CONTENT: Dict[str, List[list]] = {
     "ps_bonds": [],   # filled below (the safe + its contents)
     "ps_empty": [],
     "vip_out": [],
-    "vip_in": [S("VIPClient", "CIVILIAN", "B", [46.5, 0.0, 15.5], -90.0, ["civ_vip"], "browse"),
+    "vip_in": [S("VIPClient", "CIVILIAN", "B", [46.5, 0.0, 15.5], -90.0, ["civ_vip"], "sit", "", "prop_chair_consult"),
                S("VIPBodyguard", "GUARD", "B", [44.0, 0.0, 15.0], 90.0, ["guard_vip"], "look")],
     "gx_hall": [S("GuardExtraHall", "GUARD", "G", [16.0, 0.0, 27.0], 0.0, ["guard_extra_hall"], "", "Bank")],
     "gx_basement": [S("GuardExtraBasement", "GUARD", "B", [38.0, 0.0, 8.0], 90.0, ["guard_extra_basement"], "", "Bank")],

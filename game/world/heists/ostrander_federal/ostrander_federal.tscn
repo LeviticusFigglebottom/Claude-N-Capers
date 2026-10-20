@@ -501,11 +501,12 @@
 [ext_resource type="PackedScene" path="res://world/heists/shared/escape_van_marker.tscn" id="499_of"]
 [ext_resource type="PackedScene" path="res://world/props/secure_zone/prop_secure_cargo_net.tscn" id="500_of"]
 [ext_resource type="PackedScene" path="res://world/props/safe/prop_safe_wall_small.tscn" id="501_of"]
-[ext_resource type="Script" path="res://world/heists/ostrander_federal/ostrander_federal_mission.gd" id="502_of"]
-[ext_resource type="PackedScene" path="res://world/props/assault_event/prop_breach_window.tscn" id="503_of"]
-[ext_resource type="Script" path="res://world/audio/cue_player.gd" id="504_of"]
-[ext_resource type="Script" path="res://world/audio/music_director.gd" id="505_of"]
-[ext_resource type="Script" path="res://world/audio/cue_emitter.gd" id="506_of"]
+[ext_resource type="PackedScene" path="res://world/props/sales/prop_chair_consult.tscn" id="502_of"]
+[ext_resource type="Script" path="res://world/heists/ostrander_federal/ostrander_federal_mission.gd" id="503_of"]
+[ext_resource type="PackedScene" path="res://world/props/assault_event/prop_breach_window.tscn" id="504_of"]
+[ext_resource type="Script" path="res://world/audio/cue_player.gd" id="505_of"]
+[ext_resource type="Script" path="res://world/audio/music_director.gd" id="506_of"]
+[ext_resource type="Script" path="res://world/audio/cue_emitter.gd" id="507_of"]
 
 [sub_resource type="BoxShape3D" id="of_1"]
 size = Vector3(64.2, 1.5, 9.8)
@@ -61792,41 +61793,45 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 0, -1)
 script = ExtResource("398_of")
 kind = 2
 tags = Array[StringName]([&"civ_vip"])
-idle_activity = &"browse"
+idle_activity = &"sit"
 
-[node name="VIPBodyguard" type="Marker3D" parent="Variants/Group_vip/Slot_vip_in" unique_id=107472]
+[node name="VIPClientChair" type="Node3D" parent="Variants/Group_vip/Slot_vip_in" unique_id=107472 instance=ExtResource("502_of")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 0, -1)
+metadata/kind = &"chair"
+
+[node name="VIPBodyguard" type="Marker3D" parent="Variants/Group_vip/Slot_vip_in" unique_id=107473]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0, 1.5)
 script = ExtResource("398_of")
 tags = Array[StringName]([&"guard_vip"])
 idle_activity = &"look"
 
-[node name="Group_guard_extra" type="Node3D" parent="Variants" unique_id=107473]
+[node name="Group_guard_extra" type="Node3D" parent="Variants" unique_id=107474]
 
-[node name="Slot_gx_hall" type="Node3D" parent="Variants/Group_guard_extra" unique_id=107474]
+[node name="Slot_gx_hall" type="Node3D" parent="Variants/Group_guard_extra" unique_id=107475]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16, 0, 27)
 script = ExtResource("475_of")
 slot_group = &"guard_extra"
 slot_id = &"gx_hall"
 metadata/room = "BH"
 
-[node name="GuardExtraHall" type="Marker3D" parent="Variants/Group_guard_extra/Slot_gx_hall" unique_id=107475]
+[node name="GuardExtraHall" type="Marker3D" parent="Variants/Group_guard_extra/Slot_gx_hall" unique_id=107476]
 script = ExtResource("398_of")
 tags = Array[StringName]([&"guard_extra_hall"])
 patrol_graph = NodePath("../../../../Patrols/BankGround")
 
-[node name="Slot_gx_basement" type="Node3D" parent="Variants/Group_guard_extra" unique_id=107476]
+[node name="Slot_gx_basement" type="Node3D" parent="Variants/Group_guard_extra" unique_id=107477]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 38, -4, 8)
 script = ExtResource("475_of")
 slot_group = &"guard_extra"
 slot_id = &"gx_basement"
 metadata/room = "BB"
 
-[node name="GuardExtraBasement" type="Marker3D" parent="Variants/Group_guard_extra/Slot_gx_basement" unique_id=107477]
+[node name="GuardExtraBasement" type="Marker3D" parent="Variants/Group_guard_extra/Slot_gx_basement" unique_id=107478]
 script = ExtResource("398_of")
 tags = Array[StringName]([&"guard_extra_basement"])
 patrol_graph = NodePath("../../../../Patrols/BankBasement")
 
-[node name="Slot_gx_none" type="Node3D" parent="Variants/Group_guard_extra" unique_id=107478]
+[node name="Slot_gx_none" type="Node3D" parent="Variants/Group_guard_extra" unique_id=107479]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24, 0, 27)
 script = ExtResource("475_of")
 slot_group = &"guard_extra"
@@ -61834,63 +61839,63 @@ slot_id = &"gx_none"
 weight = 0.0
 metadata/room = "BH"
 
-[node name="Group_civ_extra" type="Node3D" parent="Variants" unique_id=107479]
+[node name="Group_civ_extra" type="Node3D" parent="Variants" unique_id=107480]
 
-[node name="Slot_cx_hall_1" type="Node3D" parent="Variants/Group_civ_extra" unique_id=107480]
+[node name="Slot_cx_hall_1" type="Node3D" parent="Variants/Group_civ_extra" unique_id=107481]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 34, 0, 26.7)
 script = ExtResource("475_of")
 slot_group = &"civ_extra"
 slot_id = &"cx_hall_1"
 metadata/room = "BH"
 
-[node name="LateCustomerCheck" type="Marker3D" parent="Variants/Group_civ_extra/Slot_cx_hall_1" unique_id=107481]
+[node name="LateCustomerCheck" type="Marker3D" parent="Variants/Group_civ_extra/Slot_cx_hall_1" unique_id=107482]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.6500015)
 script = ExtResource("398_of")
 kind = 2
 tags = Array[StringName]([&"civ_customer", &"check_desk"])
 idle_activity = &"check_desk_write"
 
-[node name="Slot_cx_hall_2" type="Node3D" parent="Variants/Group_civ_extra" unique_id=107482]
+[node name="Slot_cx_hall_2" type="Node3D" parent="Variants/Group_civ_extra" unique_id=107483]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 33, 0, 21.05)
 script = ExtResource("475_of")
 slot_group = &"civ_extra"
 slot_id = &"cx_hall_2"
 metadata/room = "BH"
 
-[node name="LateCustomerQueue" type="Marker3D" parent="Variants/Group_civ_extra/Slot_cx_hall_2" unique_id=107483]
+[node name="LateCustomerQueue" type="Marker3D" parent="Variants/Group_civ_extra/Slot_cx_hall_2" unique_id=107484]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, -0.17000008)
 script = ExtResource("398_of")
 kind = 2
 tags = Array[StringName]([&"civ_customer", &"queue"])
 idle_activity = &"queue_idle"
 
-[node name="Slot_cx_pc" type="Node3D" parent="Variants/Group_civ_extra" unique_id=107484]
+[node name="Slot_cx_pc" type="Node3D" parent="Variants/Group_civ_extra" unique_id=107485]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 45.6, 0, 12)
 script = ExtResource("475_of")
 slot_group = &"civ_extra"
 slot_id = &"cx_pc"
 metadata/room = "PC"
 
-[node name="LateClientPC" type="Marker3D" parent="Variants/Group_civ_extra/Slot_cx_pc" unique_id=107485]
+[node name="LateClientPC" type="Marker3D" parent="Variants/Group_civ_extra/Slot_cx_pc" unique_id=107486]
 script = ExtResource("398_of")
 kind = 2
 tags = Array[StringName]([&"civ_client"])
 idle_activity = &"browse"
 
-[node name="Slot_cx_sd" type="Node3D" parent="Variants/Group_civ_extra" unique_id=107486]
+[node name="Slot_cx_sd" type="Node3D" parent="Variants/Group_civ_extra" unique_id=107487]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 46.6, -4, 19)
 script = ExtResource("475_of")
 slot_group = &"civ_extra"
 slot_id = &"cx_sd"
 metadata/room = "SD"
 
-[node name="LateCustomerSD" type="Marker3D" parent="Variants/Group_civ_extra/Slot_cx_sd" unique_id=107487]
+[node name="LateCustomerSD" type="Marker3D" parent="Variants/Group_civ_extra/Slot_cx_sd" unique_id=107488]
 script = ExtResource("398_of")
 kind = 2
 tags = Array[StringName]([&"civ_customer"])
 idle_activity = &"browse"
 
-[node name="Slot_cx_none" type="Node3D" parent="Variants/Group_civ_extra" unique_id=107488]
+[node name="Slot_cx_none" type="Node3D" parent="Variants/Group_civ_extra" unique_id=107489]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24, 0, 27)
 script = ExtResource("475_of")
 slot_group = &"civ_extra"
@@ -61898,19 +61903,19 @@ slot_id = &"cx_none"
 weight = 6.0
 metadata/room = "BH"
 
-[node name="Mission" type="Node" parent="." unique_id=107489]
-script = ExtResource("502_of")
+[node name="Mission" type="Node" parent="." unique_id=107490]
+script = ExtResource("503_of")
 
-[node name="Preplan" type="Node3D" parent="." unique_id=107490]
+[node name="Preplan" type="Node3D" parent="." unique_id=107491]
 
-[node name="pp_spawn_plaza" type="Marker3D" parent="Preplan" unique_id=107491 groups=["preplan_point"]]
+[node name="pp_spawn_plaza" type="Marker3D" parent="Preplan" unique_id=107492 groups=["preplan_point"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24, -0.75, 44)
 metadata/category = &"spawn"
 metadata/label = &"ui.preplan.point.ostrander_federal.pp_spawn_plaza"
 metadata/floor = 1
 metadata/params = {}
 
-[node name="pp_spawn_lane" type="Marker3D" parent="Preplan" unique_id=107492 groups=["preplan_point"]]
+[node name="pp_spawn_lane" type="Marker3D" parent="Preplan" unique_id=107493 groups=["preplan_point"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 23, 0, -6)
 metadata/category = &"spawn"
 metadata/label = &"ui.preplan.point.ostrander_federal.pp_spawn_lane"
@@ -61919,7 +61924,7 @@ metadata/params = {
 "spawn_tag": &"preplan_spawn_lane"
 }
 
-[node name="pp_spawn_tannery" type="Marker3D" parent="Preplan" unique_id=107493 groups=["preplan_point"]]
+[node name="pp_spawn_tannery" type="Marker3D" parent="Preplan" unique_id=107494 groups=["preplan_point"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 57, 0, 22)
 metadata/category = &"spawn"
 metadata/label = &"ui.preplan.point.ostrander_federal.pp_spawn_tannery"
@@ -61928,35 +61933,35 @@ metadata/params = {
 "spawn_tag": &"preplan_spawn_tannery"
 }
 
-[node name="pp_drop_lane" type="Marker3D" parent="Preplan" unique_id=107494 groups=["preplan_point"]]
+[node name="pp_drop_lane" type="Marker3D" parent="Preplan" unique_id=107495 groups=["preplan_point"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32, 0, -3)
 metadata/category = &"drop_zone"
 metadata/label = &"ui.preplan.point.ostrander_federal.pp_drop_lane"
 metadata/floor = 1
 metadata/params = {}
 
-[node name="pp_drop_restroom" type="Marker3D" parent="Preplan" unique_id=107495 groups=["preplan_point"]]
+[node name="pp_drop_restroom" type="Marker3D" parent="Preplan" unique_id=107496 groups=["preplan_point"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 44, 0, 29.6)
 metadata/category = &"drop_zone"
 metadata/label = &"ui.preplan.point.ostrander_federal.pp_drop_restroom"
 metadata/floor = 1
 metadata/params = {}
 
-[node name="pp_drop_lockers" type="Marker3D" parent="Preplan" unique_id=107496 groups=["preplan_point"]]
+[node name="pp_drop_lockers" type="Marker3D" parent="Preplan" unique_id=107497 groups=["preplan_point"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, -4, 4.5)
 metadata/category = &"drop_zone"
 metadata/label = &"ui.preplan.point.ostrander_federal.pp_drop_lockers"
 metadata/floor = 0
 metadata/params = {}
 
-[node name="pp_drop_terrace" type="Marker3D" parent="Preplan" unique_id=107497 groups=["preplan_point"]]
+[node name="pp_drop_terrace" type="Marker3D" parent="Preplan" unique_id=107498 groups=["preplan_point"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 8.6, 30)
 metadata/category = &"drop_zone"
 metadata/label = &"ui.preplan.point.ostrander_federal.pp_drop_terrace"
 metadata/floor = 3
 metadata/params = {}
 
-[node name="pp_escape_dock" type="Marker3D" parent="Preplan" unique_id=107498 groups=["preplan_point"]]
+[node name="pp_escape_dock" type="Marker3D" parent="Preplan" unique_id=107499 groups=["preplan_point"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 0, -4.3)
 metadata/category = &"escape"
 metadata/label = &"ui.preplan.point.ostrander_federal.pp_escape_dock"
@@ -61966,7 +61971,7 @@ metadata/params = {
 "variant_slot": &"esc_van_dock"
 }
 
-[node name="pp_escape_tannery" type="Marker3D" parent="Preplan" unique_id=107499 groups=["preplan_point"]]
+[node name="pp_escape_tannery" type="Marker3D" parent="Preplan" unique_id=107500 groups=["preplan_point"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 51.2, 0, 14.3)
 metadata/category = &"escape"
 metadata/label = &"ui.preplan.point.ostrander_federal.pp_escape_tannery"
@@ -61976,7 +61981,7 @@ metadata/params = {
 "variant_slot": &"esc_van_tannery"
 }
 
-[node name="pp_escape_heli" type="Marker3D" parent="Preplan" unique_id=107500 groups=["preplan_point"]]
+[node name="pp_escape_heli" type="Marker3D" parent="Preplan" unique_id=107501 groups=["preplan_point"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 36, 8.6, 27)
 metadata/category = &"escape"
 metadata/label = &"ui.preplan.point.ostrander_federal.pp_escape_heli"
@@ -61986,7 +61991,7 @@ metadata/params = {
 "variant_slot": &"esc_heli_terrace"
 }
 
-[node name="pp_drill_terrace" type="Marker3D" parent="Preplan" unique_id=107501 groups=["preplan_point"]]
+[node name="pp_drill_terrace" type="Marker3D" parent="Preplan" unique_id=107502 groups=["preplan_point"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 8.6, 33)
 metadata/category = &"drop_zone"
 metadata/label = &"ui.preplan.point.ostrander_federal.pp_drill_terrace"
@@ -61996,7 +62001,7 @@ metadata/params = {
 "variant_slot": &"drop_terrace"
 }
 
-[node name="pp_drill_dock" type="Marker3D" parent="Preplan" unique_id=107502 groups=["preplan_point"]]
+[node name="pp_drill_dock" type="Marker3D" parent="Preplan" unique_id=107503 groups=["preplan_point"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 0, -4)
 metadata/category = &"drop_zone"
 metadata/label = &"ui.preplan.point.ostrander_federal.pp_drill_dock"
@@ -62006,7 +62011,7 @@ metadata/params = {
 "variant_slot": &"drop_dock"
 }
 
-[node name="pp_fire_exit" type="Marker3D" parent="Preplan" unique_id=107503 groups=["preplan_point"]]
+[node name="pp_fire_exit" type="Marker3D" parent="Preplan" unique_id=107504 groups=["preplan_point"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 46.5, 0, 8)
 metadata/category = &"insider"
 metadata/label = &"ui.preplan.point.ostrander_federal.pp_fire_exit"
@@ -62016,7 +62021,7 @@ metadata/params = {
 "variant_slot": &"door_fire_propped"
 }
 
-[node name="pp_dock_door" type="Marker3D" parent="Preplan" unique_id=107504 groups=["preplan_point"]]
+[node name="pp_dock_door" type="Marker3D" parent="Preplan" unique_id=107505 groups=["preplan_point"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0, -1.2)
 metadata/category = &"insider"
 metadata/label = &"ui.preplan.point.ostrander_federal.pp_dock_door"
@@ -62026,7 +62031,7 @@ metadata/params = {
 "variant_slot": &"door_dock_open"
 }
 
-[node name="pp_vault_ops" type="Marker3D" parent="Preplan" unique_id=107505 groups=["preplan_point"]]
+[node name="pp_vault_ops" type="Marker3D" parent="Preplan" unique_id=107506 groups=["preplan_point"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 45, 5, 11)
 metadata/category = &"insider"
 metadata/label = &"ui.preplan.point.ostrander_federal.pp_vault_ops"
@@ -62036,7 +62041,7 @@ metadata/params = {
 "variant_slot": &"kc_vault_ops"
 }
 
-[node name="pp_fire_escape" type="Marker3D" parent="Preplan" unique_id=107506 groups=["preplan_point"]]
+[node name="pp_fire_escape" type="Marker3D" parent="Preplan" unique_id=107507 groups=["preplan_point"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.6, 0, -3.4)
 metadata/category = &"insider"
 metadata/label = &"ui.preplan.point.ostrander_federal.pp_fire_escape"
@@ -62046,233 +62051,233 @@ metadata/params = {
 "variant_slot": &"fe_down"
 }
 
-[node name="ReviewCameras" type="Node3D" parent="." unique_id=107507]
+[node name="ReviewCameras" type="Node3D" parent="." unique_id=107508]
 
-[node name="TopDownPlan" type="Marker3D" parent="ReviewCameras" unique_id=107508]
+[node name="TopDownPlan" type="Marker3D" parent="ReviewCameras" unique_id=107509]
 transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 24, 120, 18)
 metadata/size = 110.0
 metadata/caption = "TopDownPlan ()"
 
-[node name="rc_ext_plaza" type="Marker3D" parent="ReviewCameras" unique_id=107509]
+[node name="rc_ext_plaza" type="Marker3D" parent="ReviewCameras" unique_id=107510]
 transform = Transform3D(1, 0, 0, 0, 0.97247916, -0.2329898, 0, 0.2329898, 0.97247916, 24, 0.25, 60)
 metadata/fov = 70.0
 metadata/caption = "rc_ext_plaza (X1)"
 
-[node name="rc_ext_lane" type="Marker3D" parent="ReviewCameras" unique_id=107510]
+[node name="rc_ext_lane" type="Marker3D" parent="ReviewCameras" unique_id=107511]
 transform = Transform3D(-0.06802389, -0.029395971, -0.9972505, 0, 0.99956584, -0.029464219, 0.9976837, -0.0020042707, -0.067994356, -14, 1.7, -5)
 metadata/fov = 70.0
 metadata/caption = "rc_ext_lane (X2)"
 
-[node name="rc_ext_tannery" type="Marker3D" parent="ReviewCameras" unique_id=107511]
+[node name="rc_ext_tannery" type="Marker3D" parent="ReviewCameras" unique_id=107512]
 transform = Transform3D(-0.993409, 0.0056864205, 0.11448297, 0, 0.9987687, -0.049609285, -0.11462411, -0.04928231, -0.9921857, 55, 1.7, -12)
 metadata/fov = 70.0
 metadata/caption = "rc_ext_tannery (X3)"
 
-[node name="rc_terrace" type="Marker3D" parent="ReviewCameras" unique_id=107512]
+[node name="rc_terrace" type="Marker3D" parent="ReviewCameras" unique_id=107513]
 transform = Transform3D(-0.4632542, 0.007139721, -0.8861967, 0, 0.9999676, 0.008056326, 0.88622546, 0.003732127, -0.46323916, 8, 10.3, 18.5)
 metadata/fov = 70.0
 metadata/caption = "rc_terrace (X4)"
 
-[node name="rc_hall_entrance" type="Marker3D" parent="ReviewCameras" unique_id=107513]
+[node name="rc_hall_entrance" type="Marker3D" parent="ReviewCameras" unique_id=107514]
 transform = Transform3D(1, 0, 0, 0, 0.9970889, -0.076247975, 0, 0.076247975, 0.9970889, 24, 1.7, 35)
 metadata/fov = 70.0
 metadata/caption = "rc_hall_entrance (VE)"
 
-[node name="rc_hall_counter" type="Marker3D" parent="ReviewCameras" unique_id=107514]
+[node name="rc_hall_counter" type="Marker3D" parent="ReviewCameras" unique_id=107515]
 transform = Transform3D(0.020334791, -0.016939713, 0.9996497, 0, 0.9998565, 0.016943214, -0.9997933, -0.00034453673, 0.02033187, 38.5, 1.7, 18.6)
 metadata/fov = 70.0
 metadata/caption = "rc_hall_counter (BH)"
 
-[node name="rc_hall_from_gallery" type="Marker3D" parent="ReviewCameras" unique_id=107515]
+[node name="rc_hall_from_gallery" type="Marker3D" parent="ReviewCameras" unique_id=107516]
 transform = Transform3D(-1, 0, 0, 0, 0.9184126, 0.3956239, 0, 0.3956239, -0.9184126, 24, 6.6, 19)
 metadata/fov = 70.0
 metadata/caption = "rc_hall_from_gallery (GA)"
 
-[node name="rc_vestibule" type="Marker3D" parent="ReviewCameras" unique_id=107516]
+[node name="rc_vestibule" type="Marker3D" parent="ReviewCameras" unique_id=107517]
 transform = Transform3D(0.43516886, -0.027008785, 0.8999437, 0, 0.99955004, 0.029998131, -0.9003489, -0.013054253, 0.43497303, 27, 1.7, 35.4)
 metadata/fov = 70.0
 metadata/caption = "rc_vestibule (VE)"
 
-[node name="rc_atm" type="Marker3D" parent="ReviewCameras" unique_id=107517]
+[node name="rc_atm" type="Marker3D" parent="ReviewCameras" unique_id=107518]
 transform = Transform3D(-0.59999996, -0.053215206, 0.79822814, 0, 0.99778515, 0.06651901, -0.8, 0.0399114, -0.5986711, 7, 1.7, 30)
 metadata/fov = 70.0
 metadata/caption = "rc_atm (AV)"
 
-[node name="rc_teller_workroom" type="Marker3D" parent="ReviewCameras" unique_id=107518]
+[node name="rc_teller_workroom" type="Marker3D" parent="ReviewCameras" unique_id=107519]
 transform = Transform3D(-0.23162054, 0.031528495, -0.97229517, 0, 0.99947464, 0.032409843, 0.9728062, 0.007506785, -0.23149885, 9, 1.7, 10)
 metadata/fov = 70.0
 metadata/caption = "rc_teller_workroom (TW)"
 
-[node name="rc_client_lounge" type="Marker3D" parent="ReviewCameras" unique_id=107519]
+[node name="rc_client_lounge" type="Marker3D" parent="ReviewCameras" unique_id=107520]
 transform = Transform3D(0.856581, 0.02659153, -0.5153271, 0, 0.9986714, 0.051532708, 0.51601267, -0.044141937, 0.8554429, 41, 1.7, 18.3)
 metadata/fov = 70.0
 metadata/caption = "rc_client_lounge (PC)"
 
-[node name="rc_manager_office" type="Marker3D" parent="ReviewCameras" unique_id=107520]
+[node name="rc_manager_office" type="Marker3D" parent="ReviewCameras" unique_id=107521]
 transform = Transform3D(0, 0.058722023, -0.9982744, 0, 0.9982744, 0.058722023, 1, 0, 0, 37.5, 1.7, 23)
 metadata/fov = 70.0
 metadata/caption = "rc_manager_office (BH)"
 
-[node name="rc_loan_office" type="Marker3D" parent="ReviewCameras" unique_id=107521]
+[node name="rc_loan_office" type="Marker3D" parent="ReviewCameras" unique_id=107522]
 transform = Transform3D(0.80115676, -0.04034406, 0.5970931, 0, 0.99772507, 0.06741374, -0.59845454, -0.054008972, 0.7993342, 7.2, 1.7, 18.3)
 metadata/fov = 70.0
 metadata/caption = "rc_loan_office (LO)"
 
-[node name="rc_back_corridor" type="Marker3D" parent="ReviewCameras" unique_id=107522]
+[node name="rc_back_corridor" type="Marker3D" parent="ReviewCameras" unique_id=107523]
 transform = Transform3D(0, 0.0055095595, -0.99998474, 0, 0.99998474, 0.0055095595, 1, 0, 0, 10.7, 1.7, 8)
 metadata/fov = 70.0
 metadata/caption = "rc_back_corridor (BC)"
 
-[node name="rc_security_room" type="Marker3D" parent="ReviewCameras" unique_id=107523]
+[node name="rc_security_room" type="Marker3D" parent="ReviewCameras" unique_id=107524]
 transform = Transform3D(0.8561877, -0.038031213, 0.5152633, 0, 0.99728715, 0.07360905, -0.5166649, -0.06302316, 0.85386497, 21.5, 1.7, 6.3)
 metadata/fov = 70.0
 metadata/caption = "rc_security_room (SR)"
 
-[node name="rc_loading_dock" type="Marker3D" parent="ReviewCameras" unique_id=107524]
+[node name="rc_loading_dock" type="Marker3D" parent="ReviewCameras" unique_id=107525]
 transform = Transform3D(0.7484538, 0.018841686, 0.6629192, 0, 0.99959636, -0.02841082, -0.66318697, 0.021264186, 0.74815166, 9, 1.7, 8.4)
 metadata/fov = 70.0
 metadata/caption = "rc_loading_dock (LD)"
 
-[node name="rc_break_room" type="Marker3D" parent="ReviewCameras" unique_id=107525]
+[node name="rc_break_room" type="Marker3D" parent="ReviewCameras" unique_id=107526]
 transform = Transform3D(0.54282653, -0.06005773, 0.8376947, 0, 0.99743986, 0.07151051, -0.8398448, -0.0388178, 0.54143685, 9.2, 6.7, 6.3)
 metadata/fov = 70.0
 metadata/caption = "rc_break_room (BR)"
 
-[node name="rc_officers" type="Marker3D" parent="ReviewCameras" unique_id=107526]
+[node name="rc_officers" type="Marker3D" parent="ReviewCameras" unique_id=107527]
 transform = Transform3D(0.8616306, -0.041791286, 0.5058124, 0, 0.9966042, 0.08234153, -0.50753593, -0.07094798, 0.8587046, 5.3, 6.7, 26.3)
 metadata/fov = 70.0
 metadata/caption = "rc_officers (AO2)"
 
-[node name="rc_operations" type="Marker3D" parent="ReviewCameras" unique_id=107527]
+[node name="rc_operations" type="Marker3D" parent="ReviewCameras" unique_id=107528]
 transform = Transform3D(0.32551295, -0.034175947, 0.9449197, 0, 0.99934655, 0.03614446, -0.9455376, -0.01176549, 0.32530022, 27.3, 6.7, 16.3)
 metadata/fov = 70.0
 metadata/caption = "rc_operations (OF)"
 
-[node name="rc_vault_ops" type="Marker3D" parent="ReviewCameras" unique_id=107528]
+[node name="rc_vault_ops" type="Marker3D" parent="ReviewCameras" unique_id=107529]
 transform = Transform3D(0.8667779, 0.04130688, -0.4969806, 0, 0.99656355, 0.082830064, 0.49869427, -0.07179527, 0.8637994, 42.8, 6.7, 17.3)
 metadata/fov = 70.0
 metadata/caption = "rc_vault_ops (VO)"
 
-[node name="rc_server_room" type="Marker3D" parent="ReviewCameras" unique_id=107529]
+[node name="rc_server_room" type="Marker3D" parent="ReviewCameras" unique_id=107530]
 transform = Transform3D(0.7837458, 0.045796704, -0.6193909, 0, 0.9972777, 0.073737, 0.6210817, -0.05779107, 0.7816122, 23.8, 6.7, 6.3)
 metadata/fov = 70.0
 metadata/caption = "rc_server_room (SV)"
 
-[node name="rc_president" type="Marker3D" parent="ReviewCameras" unique_id=107530]
+[node name="rc_president" type="Marker3D" parent="ReviewCameras" unique_id=107531]
 transform = Transform3D(0.5727994, -0.040426705, 0.8186981, 0, 0.9987831, 0.049319167, -0.8196956, -0.028249988, 0.57210237, 34.3, 10.3, 6.3)
 metadata/fov = 70.0
 metadata/caption = "rc_president (PR)"
 
-[node name="rc_exec_lounge" type="Marker3D" parent="ReviewCameras" unique_id=107531]
+[node name="rc_exec_lounge" type="Marker3D" parent="ReviewCameras" unique_id=107532]
 transform = Transform3D(-0.5452744, -0.03408227, 0.83756447, 0, 0.99917305, 0.04065847, -0.8382576, 0.022170022, -0.54482347, 15.3, 10.3, 9.8)
 metadata/fov = 70.0
 metadata/caption = "rc_exec_lounge (XL)"
 
-[node name="rc_boardroom" type="Marker3D" parent="ReviewCameras" unique_id=107532]
+[node name="rc_boardroom" type="Marker3D" parent="ReviewCameras" unique_id=107533]
 transform = Transform3D(0.53818893, -0.059758466, 0.84070307, 0, 0.9974833, 0.070902646, -0.8428242, -0.03815902, 0.5368345, 9.3, 10.3, 6.3)
 metadata/fov = 70.0
 metadata/caption = "rc_boardroom (BD)"
 
-[node name="rc_basement_corridor" type="Marker3D" parent="ReviewCameras" unique_id=107533]
+[node name="rc_basement_corridor" type="Marker3D" parent="ReviewCameras" unique_id=107534]
 transform = Transform3D(0, 0.006153731, -0.9999811, 0, 0.9999811, 0.006153731, 1, 0, 0, 13.5, -2.3, 8)
 metadata/fov = 70.0
 metadata/caption = "rc_basement_corridor (BB)"
 
-[node name="rc_concourse" type="Marker3D" parent="ReviewCameras" unique_id=107534]
+[node name="rc_concourse" type="Marker3D" parent="ReviewCameras" unique_id=107535]
 transform = Transform3D(-0.16439897, 0.032414913, -0.9858612, 0, 0.99945986, 0.032862037, 0.9863939, 0.005402485, -0.16431019, 15, -2.3, 10)
 metadata/fov = 70.0
 metadata/caption = "rc_concourse (VC)"
 
-[node name="rc_vault" type="Marker3D" parent="ReviewCameras" unique_id=107535]
+[node name="rc_vault" type="Marker3D" parent="ReviewCameras" unique_id=107536]
 transform = Transform3D(-0.679042, -0.047056954, 0.7325897, 0, 0.9979434, 0.06410161, -0.73409945, 0.04352768, -0.67764544, 30, -2.3, 14.6)
 metadata/fov = 70.0
 metadata/caption = "rc_vault (VT)"
 
-[node name="rc_vault_hole" type="Marker3D" parent="ReviewCameras" unique_id=107536]
+[node name="rc_vault_hole" type="Marker3D" parent="ReviewCameras" unique_id=107537]
 transform = Transform3D(0.07974515, -0.25008395, -0.9649345, 0, 0.9680174, -0.25088295, 0.99681526, 0.0200067, 0.07719469, 19, -2.3, 15)
 metadata/fov = 70.0
 metadata/caption = "rc_vault_hole (VT)"
 
-[node name="rc_deposit_hall" type="Marker3D" parent="ReviewCameras" unique_id=107537]
+[node name="rc_deposit_hall" type="Marker3D" parent="ReviewCameras" unique_id=107538]
 transform = Transform3D(0.7071068, 0.022715542, -0.7067418, 0, 0.99948394, 0.032124627, 0.7071068, -0.022715542, 0.7067418, 35, -2.3, 24)
 metadata/fov = 70.0
 metadata/caption = "rc_deposit_hall (SD)"
 
-[node name="rc_count_room" type="Marker3D" parent="ReviewCameras" unique_id=107538]
+[node name="rc_count_room" type="Marker3D" parent="ReviewCameras" unique_id=107539]
 transform = Transform3D(0.538189, -0.068242915, 0.8400569, 0, 0.9967166, 0.08096934, -0.84282416, -0.043576807, 0.53642195, 25.3, -2.3, 6.3)
 metadata/fov = 70.0
 metadata/caption = "rc_count_room (CP)"
 
-[node name="rc_records" type="Marker3D" parent="ReviewCameras" unique_id=107539]
+[node name="rc_records" type="Marker3D" parent="ReviewCameras" unique_id=107540]
 transform = Transform3D(0.7792713, -0.017069155, 0.62645423, 0, 0.999629, 0.027237142, -0.62668675, -0.021225123, 0.77898216, 12.5, -2.3, 24.3)
 metadata/fov = 70.0
 metadata/caption = "rc_records (RC)"
 
-[node name="rc_roof" type="Marker3D" parent="ReviewCameras" unique_id=107540]
+[node name="rc_roof" type="Marker3D" parent="ReviewCameras" unique_id=107541]
 transform = Transform3D(0.37637708, -0.010728524, 0.9264044, 0, 0.99993294, 0.011580044, -0.9264666, -0.0043584635, 0.3763518, 17, 13.9, 8.5)
 metadata/fov = 70.0
 metadata/caption = "rc_roof (X5)"
 
-[node name="rc_sniper_assay" type="Marker3D" parent="ReviewCameras" unique_id=107541]
+[node name="rc_sniper_assay" type="Marker3D" parent="ReviewCameras" unique_id=107542]
 transform = Transform3D(1, 0, 0, 0, 0.9237806, 0.382922, 0, -0.382922, 0.9237806, 24, 14.85, 63)
 metadata/fov = 70.0
 metadata/caption = "rc_sniper_assay (X1)"
 
-[node name="AssaultEvents" type="Node3D" parent="." unique_id=107542 groups=["assault_events"]]
+[node name="AssaultEvents" type="Node3D" parent="." unique_id=107543 groups=["assault_events"]]
 
-[node name="TurretVan_1" type="Marker3D" parent="AssaultEvents" unique_id=107543]
+[node name="TurretVan_1" type="Marker3D" parent="AssaultEvents" unique_id=107544]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 16, -0.75, 51)
 
-[node name="TurretVan_2" type="Marker3D" parent="AssaultEvents" unique_id=107544]
+[node name="TurretVan_2" type="Marker3D" parent="AssaultEvents" unique_id=107545]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 34, -0.75, 58)
 
-[node name="HeliOrbit_1" type="Marker3D" parent="AssaultEvents" unique_id=107545]
+[node name="HeliOrbit_1" type="Marker3D" parent="AssaultEvents" unique_id=107546]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 28, 30, 24)
 metadata/radius = 22.0
 
-[node name="HeliDrop_1" type="Marker3D" parent="AssaultEvents" unique_id=107546]
+[node name="HeliDrop_1" type="Marker3D" parent="AssaultEvents" unique_id=107547]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 8.6, 32)
 
-[node name="HeliDrop_2" type="Marker3D" parent="AssaultEvents" unique_id=107547]
+[node name="HeliDrop_2" type="Marker3D" parent="AssaultEvents" unique_id=107548]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30, 12.2, 14)
 
-[node name="HeliDrop_3" type="Marker3D" parent="AssaultEvents" unique_id=107548]
+[node name="HeliDrop_3" type="Marker3D" parent="AssaultEvents" unique_id=107549]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 36, -0.75, 46)
 
-[node name="Breach_1" type="Marker3D" parent="AssaultEvents" unique_id=107549]
+[node name="Breach_1" type="Marker3D" parent="AssaultEvents" unique_id=107550]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.8, 0, 35.8)
 metadata/kind = "window"
 metadata/size = Vector2(1, 2.1)
 metadata/room = "BH"
 
-[node name="Visual" type="Node3D" parent="AssaultEvents/Breach_1" unique_id=107550 instance=ExtResource("503_of")]
+[node name="Visual" type="Node3D" parent="AssaultEvents/Breach_1" unique_id=107551 instance=ExtResource("504_of")]
 
-[node name="Breach_2" type="Marker3D" parent="AssaultEvents" unique_id=107551]
+[node name="Breach_2" type="Marker3D" parent="AssaultEvents" unique_id=107552]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 36.2, 0, 35.8)
 metadata/kind = "window"
 metadata/size = Vector2(1, 2.1)
 metadata/room = "BH"
 
-[node name="Visual" type="Node3D" parent="AssaultEvents/Breach_2" unique_id=107552 instance=ExtResource("503_of")]
+[node name="Visual" type="Node3D" parent="AssaultEvents/Breach_2" unique_id=107553 instance=ExtResource("504_of")]
 
-[node name="Breach_3" type="Marker3D" parent="AssaultEvents" unique_id=107553]
+[node name="Breach_3" type="Marker3D" parent="AssaultEvents" unique_id=107554]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 8.6, 16.8)
 metadata/kind = "door"
 metadata/size = Vector2(1.8, 2.1)
 metadata/room = "XL"
 metadata/door = NodePath("../../Gameplay/Doors/TerraceDoorsW")
 
-[node name="Breach_4" type="Marker3D" parent="AssaultEvents" unique_id=107554]
+[node name="Breach_4" type="Marker3D" parent="AssaultEvents" unique_id=107555]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 12.2, 6.85)
 metadata/kind = "door"
 metadata/size = Vector2(1, 2.1)
 metadata/room = "HH"
 metadata/door = NodePath("../../Gameplay/Doors/HeadHouseDoor")
 
-[node name="Audio" type="Node3D" parent="." unique_id=107555]
+[node name="Audio" type="Node3D" parent="." unique_id=107556]
 
-[node name="CuePlayer" type="Node" parent="Audio" unique_id=107556]
-script = ExtResource("504_of")
+[node name="CuePlayer" type="Node" parent="Audio" unique_id=107557]
+script = ExtResource("505_of")
 device_cues = Dictionary[StringName, PackedStringArray]({
 &"drill": PackedStringArray("cue.drill_loop", "cue.drill_jam", "cue.drill_done"),
 &"hack": PackedStringArray("", "cue.hack_interrupt", "cue.hack_done", "cue.hack_start"),
@@ -62280,107 +62285,107 @@ device_cues = Dictionary[StringName, PackedStringArray]({
 &"thermal": PackedStringArray("cue.drill_loop", "cue.drill_jam", "cue.drill_done")
 })
 
-[node name="MusicDirector" type="Node" parent="Audio" unique_id=107557]
-script = ExtResource("505_of")
+[node name="MusicDirector" type="Node" parent="Audio" unique_id=107558]
+script = ExtResource("506_of")
 track_id = &"ostrander_federal"
 
-[node name="BedHall" type="Node3D" parent="Audio" unique_id=107558]
+[node name="BedHall" type="Node3D" parent="Audio" unique_id=107559]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24, 3, 26)
-script = ExtResource("506_of")
+script = ExtResource("507_of")
 cue_id = &"cue.amb_bank_hall_day"
 autoplay = true
 
-[node name="BedTellerWorkroom" type="Node3D" parent="Audio" unique_id=107559]
+[node name="BedTellerWorkroom" type="Node3D" parent="Audio" unique_id=107560]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24, 2, 12.5)
-script = ExtResource("506_of")
+script = ExtResource("507_of")
 cue_id = &"cue.amb_bank_hall_day"
 autoplay = true
 volume_offset_db = -5.0
 
-[node name="BedGallery" type="Node3D" parent="Audio" unique_id=107560]
+[node name="BedGallery" type="Node3D" parent="Audio" unique_id=107561]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24, 6.5, 18.5)
-script = ExtResource("506_of")
+script = ExtResource("507_of")
 cue_id = &"cue.amb_bank_hall_day"
 autoplay = true
 volume_offset_db = -4.0
 
-[node name="BedBOHGround" type="Node3D" parent="Audio" unique_id=107561]
+[node name="BedBOHGround" type="Node3D" parent="Audio" unique_id=107562]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 28, 1.5, 4)
-script = ExtResource("506_of")
+script = ExtResource("507_of")
 cue_id = &"cue.amb_bank_boh"
 autoplay = true
 
-[node name="BedBOHGallery" type="Node3D" parent="Audio" unique_id=107562]
+[node name="BedBOHGallery" type="Node3D" parent="Audio" unique_id=107563]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24, 6.5, 6)
-script = ExtResource("506_of")
+script = ExtResource("507_of")
 cue_id = &"cue.amb_bank_boh"
 autoplay = true
 volume_offset_db = -3.0
 
-[node name="BedBOHExecutive" type="Node3D" parent="Audio" unique_id=107563]
+[node name="BedBOHExecutive" type="Node3D" parent="Audio" unique_id=107564]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24, 10, 8)
-script = ExtResource("506_of")
+script = ExtResource("507_of")
 cue_id = &"cue.amb_bank_boh"
 autoplay = true
 volume_offset_db = -5.0
 
-[node name="BedBOHBasement" type="Node3D" parent="Audio" unique_id=107564]
+[node name="BedBOHBasement" type="Node3D" parent="Audio" unique_id=107565]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24, -2.5, 5)
-script = ExtResource("506_of")
+script = ExtResource("507_of")
 cue_id = &"cue.amb_bank_boh"
 autoplay = true
 volume_offset_db = -2.0
 
-[node name="BedVault" type="Node3D" parent="Audio" unique_id=107565]
+[node name="BedVault" type="Node3D" parent="Audio" unique_id=107566]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24, -2.5, 19)
-script = ExtResource("506_of")
+script = ExtResource("507_of")
 cue_id = &"cue.amb_vault"
 autoplay = true
 
-[node name="BedConcourse" type="Node3D" parent="Audio" unique_id=107566]
+[node name="BedConcourse" type="Node3D" parent="Audio" unique_id=107567]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24, -2.5, 11)
-script = ExtResource("506_of")
+script = ExtResource("507_of")
 cue_id = &"cue.amb_vault"
 autoplay = true
 volume_offset_db = -3.0
 
-[node name="BedDepositHall" type="Node3D" parent="Audio" unique_id=107567]
+[node name="BedDepositHall" type="Node3D" parent="Audio" unique_id=107568]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 41, -2.5, 17)
-script = ExtResource("506_of")
+script = ExtResource("507_of")
 cue_id = &"cue.amb_vault"
 autoplay = true
 volume_offset_db = -4.0
 
-[node name="BedPlaza" type="Node3D" parent="Audio" unique_id=107568]
+[node name="BedPlaza" type="Node3D" parent="Audio" unique_id=107569]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24, 1.5, 50)
-script = ExtResource("506_of")
+script = ExtResource("507_of")
 cue_id = &"cue.amb_city_afternoon"
 autoplay = true
 
-[node name="BedLane" type="Node3D" parent="Audio" unique_id=107569]
+[node name="BedLane" type="Node3D" parent="Audio" unique_id=107570]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16, 1.5, -5)
-script = ExtResource("506_of")
+script = ExtResource("507_of")
 cue_id = &"cue.amb_city_afternoon"
 autoplay = true
 volume_offset_db = -3.0
 
-[node name="BedTannery" type="Node3D" parent="Audio" unique_id=107570]
+[node name="BedTannery" type="Node3D" parent="Audio" unique_id=107571]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 55, 1.5, 10)
-script = ExtResource("506_of")
+script = ExtResource("507_of")
 cue_id = &"cue.amb_city_afternoon"
 autoplay = true
 volume_offset_db = -3.0
 
-[node name="BedTerrace" type="Node3D" parent="Audio" unique_id=107571]
+[node name="BedTerrace" type="Node3D" parent="Audio" unique_id=107572]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24, 10, 30)
-script = ExtResource("506_of")
+script = ExtResource("507_of")
 cue_id = &"cue.amb_city_afternoon"
 autoplay = true
 volume_offset_db = -4.0
 
-[node name="BedRoof" type="Node3D" parent="Audio" unique_id=107572]
+[node name="BedRoof" type="Node3D" parent="Audio" unique_id=107573]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30, 13.5, 12)
-script = ExtResource("506_of")
+script = ExtResource("507_of")
 cue_id = &"cue.amb_city_afternoon"
 autoplay = true
 volume_offset_db = -5.0

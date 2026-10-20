@@ -54,14 +54,14 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## floating: Nothing floats
 
-- 1985 props checked
+- 1986 props checked
 
 - WARN `Variants/Group_escape/Slot_esc_van_dock/EscapeDock` @ (10.50, 0.00, -3.00): prop has no geometry or collision; skipped
 - WARN `Variants/Group_escape/Slot_esc_van_tannery/EscapeTannery` @ (51.00, 0.00, 6.50): prop has no geometry or collision; skipped
 
 ## clipping: Nothing clips
 
-- 1986 props, 94 doors checked
+- 1987 props, 94 doors checked
 
 - WARN `Gameplay/Devices/Lid` @ (24.00, 0.00, 14.60): door has no Leaf node; swing arc not checked
 
@@ -202,7 +202,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## slopes: No walkable slope < 50° outside the play mesh
 
-- 561 x 569 columns (0.25 m), 307881 surface samples, 0 collider(s) with reachable walkable surfaces outside play
+- 561 x 569 columns (0.25 m), 307885 surface samples, 0 collider(s) with reachable walkable surfaces outside play
 
 
 ## navmesh: Navmesh
@@ -224,7 +224,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `Rooms/RoomRC` | 206 | 206 | 100% |
 | `Rooms/RoomVC` | 227 | 227 | 100% |
 | `Rooms/RoomVT` | 494 | 488 | 99% |
-| `Rooms/RoomSD` | 510 | 510 | 100% |
+| `Rooms/RoomSD` | 505 | 505 | 100% |
 | `Rooms/RoomLD` | 276 | 274 | 99% |
 | `Rooms/RoomE1` | 17 | 17 | 100% |
 | `Rooms/RoomSR` | 124 | 124 | 100% |
@@ -383,8 +383,8 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## furniture_logic: Furniture arranged plausibly
 
-- classified: counter 23, chair 13, desk 29, table 15, low_table 1, wall_unit 104, lounge_seat 2, visitor_chair 16, desk_chair 55, stool 1, monitor 18
-- 87 seats, 68 tables/desks/counters, 94 doors checked
+- classified: counter 23, chair 14, desk 29, table 15, low_table 1, wall_unit 104, lounge_seat 2, visitor_chair 16, desk_chair 55, stool 1, monitor 18
+- 88 seats, 68 tables/desks/counters, 94 doors checked
 
 - WARN `Gameplay/Devices/LidDrill` @ (24.00, 1.00, 14.60): door_clear: in the clear zone of door `Gameplay/Devices/Lid` (1.0 / 1.0 m each side, leaf width 2.40 m) by 1.01 m (gameplay prefab / variant content: review)
 - WARN `Gameplay/Lifts/CashLift` @ (11.50, -4.00, 1.55): door_clear: in the clear zone of door `Gameplay/Doors/CashLiftDoorB` (1.0 / 1.0 m each side, leaf width 1.82 m) by 0.79 m (gameplay prefab / variant content: review)

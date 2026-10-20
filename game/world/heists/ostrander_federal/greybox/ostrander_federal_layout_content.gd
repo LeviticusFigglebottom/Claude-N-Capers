@@ -1026,7 +1026,7 @@ const SLOT_ITEMS: Dictionary = {
 	],
 	"vip_out": [],
 	"vip_in": [
-		["spawn", "VIPClient", "CIVILIAN", [46.5, -4.0, 15.5], -90.0, ["civ_vip"], "browse", "", ""],
+		["spawn", "VIPClient", "CIVILIAN", [46.5, -4.0, 15.5], -90.0, ["civ_vip"], "sit", "", "prop_chair_consult"],
 		["spawn", "VIPBodyguard", "GUARD", [44.0, -4.0, 15.0], 90.0, ["guard_vip"], "look", "", ""],
 	],
 	"gx_hall": [["spawn", "GuardExtraHall", "GUARD", [16.0, 0.0, 27.0], 0.0, ["guard_extra_hall"], "", "BankGround", ""]],
