@@ -254,8 +254,10 @@ const DIRECT_PROPS: Array = [
 	["VaultBoxesE1", "prop_deposit_boxes", Vector3(33.465, FB, 14.6), 90.0, {}],
 	["VaultBoxesE2", "prop_deposit_boxes", Vector3(33.465, FB, 22.4), 90.0, {}],
 	["VaultCountTable", "prop_vault_table", Vector3(18.5, FB, 19.0), 90.0, {}],
-	# CQ: a cash trolley queued on the east wall (the lift -> BB walk keeps 1.6 m)
-	["CartQueueTrolley", "prop_cash_trolley", Vector3(12.49, FB, 4.6), 90.0, {}],
+	# CQ: a cash trolley queued on the east wall (the lift -> BB walk keeps 1.6 m) and a sealed-bag skid south of it,
+	# both between the lift gates' swing (z <= 3.9) and the BB door's (1.1 m leaf hinged at x 12.6: z >= 5.9)
+	["CartQueueTrolley", "prop_cash_trolley", Vector3(12.49, FB, 4.5), 90.0, {}],
+	["CartQueueSkid", "prop_of_cash_skid", Vector3(12.54, FB, 5.41), 90.0, {}],
 	# GA: a bronze on a plinth by the east writing desk (kit sculpture; off the crossing line)
 	["GallerySculpture", "prop_plinth_bronze_a", Vector3(35.6, FM, 17.45), 180.0, {}],
 	# CF: six chairs round the conference table (31, 13; 3.0 x 1.2); NA: the new-accounts officer's chair

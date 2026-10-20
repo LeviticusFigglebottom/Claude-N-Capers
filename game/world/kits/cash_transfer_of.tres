@@ -1,0 +1,33 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"cash_transfer_of"
+purpose = &"storage"
+required_items = Array[StringName]([&"cash_cage", &"shelving", &"pallet", &"light_fixture"])
+optional_items = {
+&"bin": 0.5,
+&"box": 1,
+&"fire_extinguisher": 0.6
+}
+clutter_groups = {}
+min_density = 0.3
+max_density = 1.6
+min_props = 8
+lone_ok_kinds = Array[StringName]([])
+seed_salt = 49
+seed_id = &"cash_transfer"
+counts = {
+&"cash_cage": Vector2i(2, 3),
+&"shelving": Vector2i(2, 2)
+}
+assets = {
+&"bin": PackedStringArray("prop_bin_kitchen"),
+&"light_fixture": PackedStringArray("prop_fluorescent"),
+&"pallet": PackedStringArray("prop_pallet"),
+&"shelving": PackedStringArray("prop_shelving_boxes")
+}
+ceiling = {"prop_fluorescent": 2.4}
+notes = "Ostrander Federal CQ cart queue, from cash_transfer without the packing bench (no wall run for it beside the shelving, trolley and skid). B1 cash transfer: the cash lift landing (shaft keep-out, NE), cash cages on wheels, sealed-bag shelving and a sorting bench. 5000 K."

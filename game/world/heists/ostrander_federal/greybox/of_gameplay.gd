@@ -136,6 +136,7 @@ func _rig(host: Node3D, rows: Array) -> void:
 		if sb != null:
 			sb.collision_layer = 2
 			sb.set_meta(&"lc_subprop", true)   # levelcheck: each its own prop (not merged into the hoist's box)
+			sb.set_meta(&"kind", "hoist_rig")
 		obstruct(Transform3D.IDENTITY, _nav_thick(AABB(mn, mx - mn)))
 
 
@@ -169,6 +170,7 @@ func _lift_panel(lift: Node3D, row: Array) -> void:
 	sb.collision_mask = 0
 	sb.position = inv * at
 	sb.set_meta(&"lc_subprop", true)
+	sb.set_meta(&"kind", "lift_panel")   # (bag_lift's LandingPanelVisual copies carry it)
 	add(lift, sb)
 	var off: Vector3 = (mn + mx) * 0.5 - at
 	var col: CollisionShape3D = CollisionShape3D.new()
