@@ -1401,3 +1401,8 @@ counted main-pass surfaces only. Ruling, amending architecture §10:
    pulls it forward.
 4. Levers, in order: a shadow only where it reads; no omni shadows; distance fade / shadow max distance on spots; sun
    2 splits and a shorter max distance; `cast_shadow` off on small props, skyline and far NPCs; occluders.
+5. **Addendum (2026-10-20, C's perf lane):** occlusion culling turned **on** project-wide
+   (`rendering/occlusion_culling/use_occlusion_culling=true`); it was off, so every map's occluders (OF 286, GN 129,
+   SL 125, …) did nothing. levelcheck cannot credit occlusion, so its numbers stay conservative. The D-146 counter
+   enforces at stage final only for heists flagged `perf_d146` (OF first) and is report-only for the five shipped heists
+   until their D-144 polish slot.
