@@ -483,6 +483,7 @@ ALWAYS: Dict[str, List[list]] = {
           [11.5, 0.0, 2.2], {"walkable": True}, ""),
         P("bag_lift", "Hoist", "B", [24.0, 0.05, HOIST_Z], 0.0, {"travel_s": 6.0, "capacity": 2, "car_size_m": HOIST_CAR,
                                                             "loud_only": True, "objective_tag": "hoist",
+                                                            "phase_block_key": "ui.blocked.after_breach",
                                                             "enabled_at_start": False,
                                                             "@landings": [["HoistLandingTW", [0.0, 4.0, 0.0]]],
                                                             "@rig": HOIST_RIG, "@panel": HOIST_PANEL},

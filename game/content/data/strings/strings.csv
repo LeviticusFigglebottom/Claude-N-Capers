@@ -240,6 +240,7 @@ ui.blocked.no_deployable,You have none left
 ui.blocked.no_space,No room to place it here
 ui.blocked.push_bar_outside,Opens from the other side
 ui.blocked.lift_full,The lift is full
+ui.blocked.after_breach,Breach the floor first
 ui.results.title,Payday
 ui.results.title_heist,Payday: {heist}
 ui.results.success,Heist complete
@@ -3688,7 +3689,8 @@ ui.hud.device.thermite,THERMITE
 ui.hud.device.escape,ESCAPE
 ui.hud.device.wait,WAIT
 ui.crew.default_weapon,Standard issue
-ui.crew.default_armor,Standard vest
+ui.crew.default_armor,Standard armor
+ui.crew.default_named,Standard: {name}
 ui.crew.no_mask,No mask
 ui.crew.any_heister,Any free heister
 ui.crew.outfit.suit_charcoal,"Classic Suit, Charcoal"

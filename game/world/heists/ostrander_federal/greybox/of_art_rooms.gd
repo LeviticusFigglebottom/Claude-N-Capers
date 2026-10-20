@@ -220,6 +220,17 @@ func _mapbuilt_art(root: HeistMap, row: Array) -> void:
 	vis.name = "Visual"
 	vis.transform = Transform3D(Basis(Vector3.UP, deg_to_rad(float(row[3]))), Vector3.ZERO)
 	b.call(&"add", body, vis)
+	# the G1 box stays the gameplay collider: a support prop's own collision is switched off (as of_dress_a.gd)
+	var shapes: Array[Node] = vis.find_children("*", "CollisionShape3D", true, false)
+	if not shapes.is_empty():
+		root.set_editable_instance(vis, true)
+		for m: Node in vis.find_children("*", "", true, false):
+			if m.scene_file_path != "":
+				root.set_editable_instance(m, true)
+		for co: Node in vis.find_children("*", "CollisionObject3D", true, false):
+			(co as CollisionObject3D).collision_layer = 0
+		for s: Node in shapes:
+			(s as CollisionShape3D).disabled = true
 
 
 ## Interior props draw to ROOM_VIS at most (as Shadow Ledger's near-range wrappers, sl_dress.near_scene_path): the hall

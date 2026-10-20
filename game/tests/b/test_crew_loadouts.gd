@@ -211,3 +211,15 @@ func after_each() -> void:
 func after_all() -> void:
 	SaveService.delete_profile(SLOT)
 	SaveService.root_dir = SaveService.DEFAULT_ROOT_DIR
+
+
+## r246 (A 09a2a165): an unequipped bot carries CombatTweak.bot_default_primary and default_armor, and the Bot Crew
+## screen / lobby AI cards name them ("Standard: <item>") instead of a generic label.
+func test_default_labels_name_the_standard_gear() -> void:
+	var tw: CombatTweak = CombatTweak.data()
+	var n: Dictionary = CrewLoadouts.names(CrewLoadouts.empty_entry())
+	assert_eq(n["weapon"], UiText.t(&"ui.crew.default_named", {"name": UiText.t(UiText.item_key(tw.bot_default_primary))}))
+	assert_eq(n["armor"], UiText.t(&"ui.crew.default_named", {"name": UiText.t(UiText.item_key(tw.default_armor))}))
+	assert_false(String(n["weapon"]).contains("weapon."), "a name, not an id: %s" % n["weapon"])
+	assert_false(String(n["armor"]).contains("armor."), "a name, not an id: %s" % n["armor"])
+	print("default labels: ", n["weapon"], " / ", n["armor"])

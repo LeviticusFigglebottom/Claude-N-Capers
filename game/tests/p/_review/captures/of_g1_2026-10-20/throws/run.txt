@@ -1,0 +1,128 @@
+[OFP 0.0s t=-1.0] === throws ===
+[OFP 7.1s t=-1.0] objective casing -> 1
+[OFP 7.1s t=-1.0] objective keycard -> 1
+[OFP 7.1s t=-1.0] objective code_hint -> 1
+[OFP 7.1s t=-1.0] objective code_pc -> 1
+[OFP 7.1s t=-1.0] objective server -> 1
+[OFP 7.1s t=-1.0] objective vault_gate -> 1
+[OFP 7.1s t=-1.0] objective lasers -> 1
+[OFP 7.1s t=-1.0] objective time_lock -> 0
+[OFP 7.1s t=-1.0] objective time_lock_wait -> 0
+[OFP 7.1s t=-1.0] objective vault_loot -> 0
+[OFP 7.1s t=-1.0] objective gold_cage -> 0
+[OFP 7.1s t=-1.0] objective secure -> 1
+[OFP 7.1s t=-1.0] objective deposit_boxes -> 1
+[OFP 7.1s t=-1.0] objective bond_safe -> 1
+[OFP 7.1s t=-1.0] objective president_safe -> 1
+[OFP 7.1s t=-1.0] objective server_drives -> 1
+[OFP 7.1s t=-1.0] objective drill_delivery -> 0
+[OFP 7.1s t=-1.0] objective vault_drill -> 0
+[OFP 7.1s t=-1.0] objective vault_breach -> 0
+[OFP 7.1s t=-1.0] objective escape_wait -> 0
+[OFP 7.1s t=-1.0] objective escape -> 0
+[OFP 19.2s t=0.0] launched ostrander_federal seed 1002 diff 0 variants { &"manager_route": [&"mgr_gallery"], &"keycard": [&"kc_security"], &"code_pc": [&"pc_ops"], &"officers": [&"off_1"], &"server_room": [&"srv_gallery"], &"guard_post": [&"rover_basement", &"rover_dock"], &"security_room_staffed": [&"sec_empty"], &"camera": [&"cam_c"], &"laser_pattern": [&"lz_timed"], &"customers": [&"cust_4"], &"side_door": [&"door_dock_open"], &"fire_escape": [&"fe_down"], &"escape": [&"esc_van_tannery"], &"drill_delivery": [&"drop_terrace"], &"president_safe": [&"ps_empty"], &"vip": [&"vip_out"], &"guard_extra": [], &"civ_extra": [], &"time_lock_s": 150.0, &"drill_eta_s": 60.0, &"escape_eta_s": 120.0, &"cash_bags": 10, &"gold_bags": 4, &"deposit_boxes": 9, "rare": [] }
+[OFP 56.2s t=2.0] SHORTCUT traversal: NPCs despawned, crew stealth_hidden, 8 cameras disabled (GameplayPrefab.set_enabled)
+[OFP 63.2s t=3.1] pilot: calibrated 0.001600 rad/px yaw, 0.001600 rad/px pitch (settings formula said (0.0016, 0.0016))
+[OFP 63.2s t=3.1] spawn (21.0, 0.0, -6.0)
+[OFP 69.1s t=4.2] objective casing -> 2
+[OFP 69.7s t=4.8] masked true
+[OFP 74.8s t=9.8] pilot: t=5 at (16.5, 0.0, -3.9) corner (9.7, 0.2, -1.3) yaw_err 0.00 fwd=true path=18 mouse_mode=2 state=0 look=(1.94,0.00) pin_yaw=1.93904023981304 bot=false
+[OFP 79.7s t=14.8] pilot: t=10 at (11.2, 0.0, -1.9) corner (9.7, 0.2, -1.3) yaw_err 1.21 fwd=false path=18 mouse_mode=2 state=0 look=(0.73,0.00) pin_yaw=0.9254421876758 bot=false
+[OFP 82.4s t=17.4] pilot: use DockPersonnelDoor (open_door) -> OK in 0.0 s
+[OFP 85.8s t=20.8] pilot: t=15 at (8.7, 0.0, 3.3) corner (9.6, 0.2, 7.6) yaw_err -3.12 fwd=false path=11 mouse_mode=2 state=0 look=(0.19,0.00) pin_yaw=-0.00034995884926 bot=false
+[OFP 90.9s t=25.7] pilot: use DockCorridorDoor (open_door) -> OK in 0.0 s
+[OFP 93.7s t=28.4] pilot: t=20 at (12.5, 0.0, 8.2) corner (13.2, 0.2, 8.2) yaw_err 0.00 fwd=true path=4 mouse_mode=2 state=0 look=(-1.56,0.00) pin_yaw=-1.56031808655826 bot=false
+[OFP 94.7s t=29.4] pilot: use StairDoorSAG (open_door) -> OK in 0.0 s
+[OFP 100.5s t=35.2] pilot: t=5 at (14.0, 2.5, 1.7) corner (14.8, 2.7, 1.5) yaw_err -0.13 fwd=true path=9 mouse_mode=2 state=0 look=(5.16,0.00) pin_yaw=5.03083829764364 bot=false
+[OFP 105.5s t=40.2] pilot: t=10 at (15.1, 4.7, 5.0) corner (15.0, 5.2, 5.7) yaw_err 1.16 fwd=false path=5 mouse_mode=2 state=0 look=(8.18,0.00) pin_yaw=8.36953444228129 bot=false
+[OFP 106.9s t=41.3] pilot: use StairDoorSAM (open_door) -> OK in 0.0 s
+[OFP 109.5s t=43.9] pilot: use OperationsDoor (open_door) -> OK in 0.0 s
+[OFP 113.7s t=48.1] pilot: t=5 at (14.0, 5.0, 12.2) corner (14.4, 5.2, 12.6) yaw_err 0.04 fwd=true path=13 mouse_mode=2 state=0 look=(10.10,0.00) pin_yaw=10.1353553641384 bot=false
+[OFP 118.3s t=52.6] pilot: use OperationsGalleryDoor (open_door) -> OK in 0.0 s
+[OFP 119.7s t=54.0] pilot: t=10 at (18.1, 5.0, 17.9) corner (21.6, 5.2, 18.7) yaw_err -0.00 fwd=true path=5 mouse_mode=2 state=0 look=(10.78,0.00) pin_yaw=10.7802537860261 bot=false
+[OFP 124.7s t=59.0] pilot: t=15 at (23.2, 5.0, 19.0) corner (24.0, 5.2, 19.2) yaw_err -0.00 fwd=true path=4 mouse_mode=2 state=0 look=(4.49,0.00) pin_yaw=4.49435326724779 bot=false
+[OFP 125.0s t=59.3] SHORTCUT bag loot.cash_bricks (weight 1) spawned by LootManager.spawn_bag at (24.8, 5.5, 19.3)
+[OFP 128.5s t=62.5] pilot: use Bag_cash_bricks (pick_bag) -> OK in 1.0 s
+[OFP 132.7s t=66.9] THROW GA loot.cash_bricks -20 deg weight 1 pitch -> rests (24.0, -0.0, 26.1) (6.9 m from the stand, 1.5 s) on SlabG_05 secured false: OK hall floor
+[OFP 132.8s t=67.0] SHORTCUT bag loot.cash_bricks (weight 1) spawned by LootManager.spawn_bag at (25.2, 5.5, 19.2)
+[OFP 133.7s t=67.9] ALARM camera by CameraC9 (pilot at (24.6, 5.0, 19.2))
+[OFP 133.9s t=67.9] objective keycard -> 1
+[OFP 133.9s t=67.9] objective keycard -> 2
+[OFP 133.9s t=67.9] objective code_hint -> 1
+[OFP 133.9s t=67.9] objective code_hint -> 2
+[OFP 133.9s t=67.9] objective code_pc -> 1
+[OFP 133.9s t=67.9] objective code_pc -> 2
+[OFP 133.9s t=67.9] objective server -> 1
+[OFP 133.9s t=67.9] objective server -> 2
+[OFP 133.9s t=67.9] objective vault_gate -> 1
+[OFP 133.9s t=67.9] objective vault_gate -> 2
+[OFP 133.9s t=67.9] objective lasers -> 1
+[OFP 133.9s t=67.9] objective lasers -> 2
+[OFP 134.0s t=67.9] objective drill_delivery -> 1
+[OFP 134.0s t=67.9] objective drill_delivery -> 1
+[OFP 157.4s t=70.3] pilot: use Bag_cash_bricks2 (pick_bag) -> OK in 1.0 s
+[OFP 164.4s t=75.7] THROW GA loot.cash_bricks +0 deg weight 1 pitch -> rests (24.0, -0.0, 26.5) (7.3 m from the stand, 1.7 s) on SlabG_05 secured false: OK hall floor
+[OFP 164.5s t=75.7] SHORTCUT bag loot.cash_bricks (weight 1) spawned by LootManager.spawn_bag at (25.1, 5.5, 19.2)
+[OFP 168.1s t=79.1] pilot: use Bag_cash_bricks3 (pick_bag) -> OK in 1.0 s
+[OFP 173.6s t=84.7] THROW GA loot.cash_bricks +25 deg weight 1 pitch -> rests (24.0, -0.0, 25.3) (6.1 m from the stand, 1.9 s) on SlabG_05 secured false: OK hall floor
+[OFP 173.7s t=84.8] SHORTCUT bag loot.gold (weight 2) spawned by LootManager.spawn_bag at (25.1, 5.5, 19.2)
+[OFP 177.2s t=88.1] pilot: use Bag_gold (pick_bag) -> OK in 1.0 s
+[OFP 182.2s t=93.2] THROW GA loot.gold -20 deg weight 2 pitch -> rests (24.1, -0.0, 23.5) (4.3 m from the stand, 1.5 s) on SlabG_05 secured false: OK hall floor
+[OFP 182.2s t=93.3] SHORTCUT bag loot.gold (weight 2) spawned by LootManager.spawn_bag at (25.2, 5.5, 19.2)
+[OFP 185.9s t=96.6] pilot: use Bag_gold2 (pick_bag) -> OK in 1.0 s
+[OFP 190.9s t=101.8] THROW GA loot.gold +0 deg weight 2 pitch -> rests (24.1, -0.0, 23.5) (4.3 m from the stand, 1.6 s) on SlabG_05 secured false: OK hall floor
+[OFP 191.0s t=101.9] SHORTCUT bag loot.gold (weight 2) spawned by LootManager.spawn_bag at (25.2, 5.5, 19.2)
+[OFP 194.5s t=105.2] pilot: use Bag_gold3 (pick_bag) -> OK in 1.0 s
+[OFP 199.8s t=110.6] THROW GA loot.gold +25 deg weight 2 pitch -> rests (24.1, -0.0, 22.7) (3.5 m from the stand, 1.7 s) on SlabG_05 secured false: OK hall floor
+[OFP 208.4s t=115.8] pilot: t=5 at (18.5, 5.0, 17.5) corner (18.0, 5.2, 17.0) yaw_err -0.04 fwd=true path=21 mouse_mode=2 state=0 look=(26.01,0.00) pin_yaw=25.9723376854163 bot=false
+[OFP 217.8s t=120.7] pilot: t=10 at (14.8, 5.0, 12.3) corner (13.9, 5.2, 11.3) yaw_err 0.79 fwd=false path=8 mouse_mode=2 state=0 look=(25.06,0.00) pin_yaw=25.2470704929292 bot=false
+[OFP 231.5s t=127.9] objective vault_drill -> 1
+[OFP 252.3s t=131.6] pilot: t=5 at (14.8, 6.8, 2.6) corner (15.0, 7.6, 3.6) yaw_err -0.19 fwd=true path=9 mouse_mode=2 state=0 look=(28.76,0.00) pin_yaw=28.5636061903642 bot=false
+[OFP 265.6s t=135.5] pilot: use StairDoorSAE (open_door) -> OK in 0.0 s
+[OFP 276.3s t=141.5] pilot: t=5 at (8.5, 8.6, 8.4) corner (6.5, 8.8, 8.6) yaw_err 0.00 fwd=true path=38 mouse_mode=2 state=0 look=(26.80,0.00) pin_yaw=26.7967026936458 bot=false
+[OFP 278.5s t=143.4] pilot: use LoungeDoor (open_door) -> OK in 0.0 s
+[OFP 290.1s t=148.3] pilot: t=10 at (5.8, 8.6, 13.9) corner (5.7, 8.8, 15.6) yaw_err 0.00 fwd=true path=24 mouse_mode=2 state=0 look=(21.91,0.00) pin_yaw=21.9134047189727 bot=false
+[OFP 317.4s t=158.5] pilot: use TerraceDoorsW (open_door) -> OK in 8.0 s
+[OFP 332.2s t=162.8] pilot: t=15 at (9.6, 8.6, 18.1) corner (12.0, 8.8, 18.1) yaw_err 0.00 fwd=true path=20 mouse_mode=2 state=0 look=(23.54,0.00) pin_yaw=23.5417029078453 bot=false
+[OFP 347.2s t=167.8] pilot: t=20 at (15.4, 8.6, 18.2) corner (16.9, 8.8, 18.3) yaw_err 0.78 fwd=false path=15 mouse_mode=2 state=0 look=(22.76,0.00) pin_yaw=22.9515146103586 bot=false
+[OFP 352.2s t=172.8] pilot: t=25 at (21.5, 8.6, 18.4) corner (20.9, 8.8, 18.4) yaw_err -2.15 fwd=false path=14 mouse_mode=2 state=0 look=(22.57,0.00) pin_yaw=22.3824046197187 bot=false
+[OFP 357.2s t=177.8] pilot: t=30 at (27.3, 8.6, 18.6) corner (29.7, 8.8, 18.6) yaw_err -0.00 fwd=true path=14 mouse_mode=2 state=0 look=(23.53,0.00) pin_yaw=23.5296473985145 bot=false
+[OFP 362.2s t=182.8] pilot: t=35 at (33.2, 8.6, 18.7) corner (34.3, 8.8, 18.7) yaw_err -1.16 fwd=false path=11 mouse_mode=2 state=0 look=(24.70,0.00) pin_yaw=24.5052013187524 bot=false
+[OFP 373.1s t=187.8] pilot: t=40 at (39.3, 8.6, 18.9) corner (38.7, 8.8, 18.9) yaw_err 1.19 fwd=false path=8 mouse_mode=2 state=0 look=(25.46,0.00) pin_yaw=25.6568783138282 bot=false
+[OFP 378.2s t=192.8] pilot: t=45 at (45.4, 8.6, 19.0) corner (44.8, 8.8, 19.0) yaw_err 3.10 fwd=false path=3 mouse_mode=2 state=0 look=(23.56,0.00) pin_yaw=23.755202276101 bot=false
+[OFP 379.7s t=194.3] WALL terrace east parapet from (47.0, 8.6, 19.0): blocked up to ~1.00 m above the feet; 0.25: 0.78 m EZ0480_1_00; 0.50: 0.78 m CopingEZ0480_0170; 0.75: 0.78 m CopingEZ0480_0170; 1.00: 0.78 m CopingEZ0480_0170; 1.25: open; 1.50: open; 1.75: open; 2.00: open; 2.25: open; 2.50: open; 2.75: open; 3.00: open
+[OFP 379.8s t=194.4] SHORTCUT bag loot.cash_bricks (weight 1) spawned by LootManager.spawn_bag at (47.1, 9.1, 18.0)
+[OFP 381.9s t=196.3] pilot: use Bag_cash_bricks4 (pick_bag) -> OK in 1.0 s
+[OFP 385.3s t=199.8] THROW terrace loot.cash_bricks -20 deg from 0.0 m back of the parapet stand weight 1 pitch -> rests (55.4, -0.0, 19.0) (8.3 m from the stand, 1.8 s) on GradeTannery secured false: OK Tannery Street, 1.2 m from E2
+[OFP 385.4s t=199.9] SHORTCUT bag loot.cash_bricks (weight 1) spawned by LootManager.spawn_bag at (47.1, 9.1, 18.0)
+[OFP 387.5s t=201.8] pilot: use Bag_cash_bricks5 (pick_bag) -> OK in 1.0 s
+[OFP 392.7s t=205.5] THROW terrace loot.cash_bricks +0 deg from 0.0 m back of the parapet stand weight 1 pitch -> rests (55.5, -0.0, 19.0) (8.5 m from the stand, 2.0 s) on GradeTannery secured false: OK Tannery Street, 1.3 m from E2
+[OFP 392.7s t=205.6] SHORTCUT bag loot.cash_bricks (weight 1) spawned by LootManager.spawn_bag at (47.1, 9.1, 18.0)
+[OFP 394.9s t=207.5] pilot: use Bag_cash_bricks6 (pick_bag) -> OK in 1.0 s
+[OFP 397.5s t=210.2] secured loot.cash_bricks (bag 266)
+[OFP 397.5s t=210.2] objective secure -> 1
+[OFP 397.5s t=210.2] THROW terrace loot.cash_bricks +25 deg from 0.0 m back of the parapet stand weight 1 pitch -> rests (54.0, -0.0, 19.0) (6.9 m from the stand, 2.2 s) on - secured true: OK in the E2 zone
+[OFP 397.6s t=210.3] SHORTCUT bag loot.gold (weight 2) spawned by LootManager.spawn_bag at (47.1, 9.1, 18.0)
+[OFP 399.7s t=212.2] pilot: use Bag_gold4 (pick_bag) -> OK in 1.0 s
+[OFP 401.9s t=214.5] secured loot.gold (bag 267)
+[OFP 401.9s t=214.5] objective secure -> 1
+[OFP 401.9s t=214.5] THROW terrace loot.gold -20 deg from 0.0 m back of the parapet stand weight 2 pitch -> rests (52.3, -0.0, 19.0) (5.2 m from the stand, 1.8 s) on - secured true: OK in the E2 zone
+[OFP 402.0s t=214.5] SHORTCUT bag loot.gold (weight 2) spawned by LootManager.spawn_bag at (47.1, 9.1, 18.0)
+[OFP 404.0s t=216.4] pilot: use Bag_gold4 (pick_bag) -> OK in 1.0 s
+[OFP 406.3s t=218.8] secured loot.gold (bag 268)
+[OFP 406.3s t=218.8] objective secure -> 1
+[OFP 406.4s t=218.8] THROW terrace loot.gold +0 deg from 0.0 m back of the parapet stand weight 2 pitch -> rests (52.1, -0.0, 19.0) (5.1 m from the stand, 1.9 s) on - secured true: OK in the E2 zone
+[OFP 406.4s t=218.8] SHORTCUT bag loot.gold (weight 2) spawned by LootManager.spawn_bag at (47.1, 9.1, 18.0)
+[OFP 408.5s t=220.8] pilot: use Bag_gold4 (pick_bag) -> OK in 1.0 s
+[OFP 411.0s t=223.3] secured loot.gold (bag 269)
+[OFP 411.0s t=223.3] objective secure -> 1
+[OFP 411.0s t=223.3] objective secure -> 2
+[OFP 411.0s t=223.3] objective vault_loot -> 2
+[OFP 411.0s t=223.3] objective drill_delivery -> 1
+[OFP 411.0s t=223.3] objective drill_delivery -> 2
+[OFP 411.0s t=223.3] objective vault_drill -> 1
+[OFP 411.0s t=223.3] objective vault_drill -> 2
+[OFP 411.0s t=223.3] objective escape_wait -> 1
+[OFP 411.1s t=223.3] THROW terrace loot.gold +25 deg from 0.0 m back of the parapet stand weight 2 pitch -> rests (51.1, -0.0, 19.0) (4.0 m from the stand, 2.0 s) on - secured true: OK in the E2 zone
+[OFP] RESULT PASS throws
+[OFP] RESULT PASS (throws PASS)

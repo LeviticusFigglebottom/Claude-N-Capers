@@ -184,7 +184,7 @@ Units: **meters, seconds, kilograms, degrees in data / radians in code**. +Y up,
 | Budget | Value |
 |---|---|
 | Server AI tick | detection at 10 Hz staggered; behaviour at 5–10 Hz; ≤ 4 ms/frame total |
-| Draw calls per view | ≤ 2,500 |
+| Draw calls per view | main pass ≤ 2,500; total incl. shadow passes ≤ 4,000 (D-146) |
 | Active lights casting shadows | ≤ 8 in view |
 | NPCs alive | ≤ 60 enemies (difficulty-capped), ≤ 30 civilians |
 | Texture memory per heist | ≤ 1.5 GB |

@@ -87,7 +87,10 @@ func _build() -> void:
 	_build_environment(n("Lighting"))
 	preload("res://world/heists/ostrander_federal/greybox/of_art_rooms.gd").new(self).call(&"build")  # OF-C2 lane B
 	preload("res://world/heists/ostrander_federal/greybox/of_dress_a.gd").new(self).call(&"build")  # OF-C2 lane A
+	preload("res://world/heists/ostrander_federal/greybox/of_dress_d.gd").new(self).call(&"build")  # OF-C2 vault / ops D
+	preload("res://world/heists/ostrander_federal/greybox/of_finish.gd").new(self).call(&"build")  # OF-C2 surfaces D
 	OF_GI.new(self).call(&"build")  # OF-C2 lighting lane: VoxelGI bands, reflection probes, occluders
+	preload("res://world/heists/ostrander_federal/greybox/of_skyline.gd").new(self).call(&"build")  # OF-C2 skyline lane
 	var polys: int = await _bake(nav)
 	if polys <= 0:
 		_fail("navmesh bake produced no polygons")

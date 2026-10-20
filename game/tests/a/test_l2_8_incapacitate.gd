@@ -117,3 +117,17 @@ func test_d093_helpless_not_revived_goes_to_custody() -> void:
 	h.helpless_left = 0.3  # shorten the 30 s wait
 	assert_true(await wait_until(func() -> bool: return c.crew_state == Enums.CrewState.CUSTODY, 2.0), "custody")
 	assert_eq(h.downs_used, 0, "no down counted")
+
+
+## D-145 (PD2: a tase that runs out downs the player): a TASED member whose helpless timer runs out goes DOWNED (a
+## down counted, bleed-out), never straight to custody (P's GH Tense run: tased -> custody 30 s later, never downed).
+func test_d145_expired_tase_downs_instead_of_custody() -> void:
+	var c: CrewController = _crew(0)
+	var h: CrewHealth = c.health
+	assert_true(h.incapacitate(Enums.CrewState.TASED, 7), "tased")
+	h.helpless_left = 0.2
+	assert_true(await wait_until(func() -> bool: return c.crew_state != Enums.CrewState.TASED, 2.0), "the tase ran out")
+	assert_eq(c.crew_state, Enums.CrewState.DOWNED, "downed, not custody")
+	assert_eq(h.downs_used, 1, "a down counted")
+	assert_true(h.bleedout_left > 0.0, "the bleed-out timer decides custody")
+	assert_false(h.tase_expired(), "only a TASED member")

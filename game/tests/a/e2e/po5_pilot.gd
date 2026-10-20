@@ -257,7 +257,7 @@ func near(a: Vector3, b: Vector3, r: float) -> bool:
 	return flat_dist(a, b) <= r and absf(a.y - b.y) <= NEAR_DY_M
 
 
-func flat_dist(a: Vector3, b: Vector3) -> float:
+static func flat_dist(a: Vector3, b: Vector3) -> float:
 	return Vector2(a.x - b.x, a.z - b.z).length()
 
 
@@ -311,11 +311,7 @@ func goto(target: Vector3, arrive_m: float = 0.8, timeout_s: float = 60.0, sprin
 		if combat and t >= top_up_t:
 			top_up_t = t + TOP_UP_EVERY_S
 			await top_up()  # a player reloads on the move between fights (the tap takes 2 ticks; walking goes on)
-		var corner: Vector3 = target
-		for p: Vector3 in path:
-			if flat_dist(p, crew.global_position) > 0.45:
-				corner = p
-				break
+		var corner: Vector3 = next_corner(path, crew.global_position, target)
 		var line_door: Door = _door_on_line(corner) if doors else null
 		if line_door != null and not line_door.is_open:
 			inp.release(&"move_forward")
@@ -986,6 +982,29 @@ func active_escape() -> EscapeZone:
 			return ez
 	return null
 
+
+## The point to steer at on `path` from `pos`: the first point past the path segment nearest `pos` that is > 0.45 m
+## away (flat), else `target`. P's OF ghost run 5: the path is re-planned every 0.5 s, so at walking speed its first
+## point (the old start) is already ~1.7 m BEHIND the crew; taking the first point > 0.45 m away turned the pilot round
+## on the spot (yaw_err 3.12, fwd false) and the 20 m dumpsters -> dock-door walk took 18 s.
+static func next_corner(path: PackedVector3Array, pos: Vector3, target: Vector3) -> Vector3:
+	if path.is_empty():
+		return target
+	var p2: Vector2 = Vector2(pos.x, pos.z)
+	var seg: int = 0
+	var best: float = INF
+	for i: int in range(path.size() - 1):
+		var a: Vector2 = Vector2(path[i].x, path[i].z)
+		var b: Vector2 = Vector2(path[i + 1].x, path[i + 1].z)
+		var d: float = p2.distance_to(Geometry2D.get_closest_point_to_segment(p2, a, b))
+		if d < best - 0.001:
+			best = d
+			seg = i
+	var from: int = seg + 1 if path.size() > 1 else 0
+	for i: int in range(from, path.size()):
+		if flat_dist(path[i], pos) > 0.45:
+			return path[i]
+	return target
 
 ## The closest navmesh point to `target` (where a person would stand to reach it).
 func stand_point(target: Vector3) -> Vector3:

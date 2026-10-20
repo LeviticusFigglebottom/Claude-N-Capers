@@ -4,5 +4,6 @@
 
 [node name="PropOfSunburst" type="Node3D"]
 metadata/kind = &"landmark"
+metadata/mount = &"wall"
 
 [node name="Model" parent="." instance=ExtResource("1_model")]

@@ -7,3 +7,8 @@ metadata/kind = &"counter"
 metadata/support = true
 
 [node name="Model" parent="." instance=ExtResource("1_model")]
+
+[node name="Collision" parent="Model"]
+metadata/surface = &"wood"
+
+[editable path="Model"]

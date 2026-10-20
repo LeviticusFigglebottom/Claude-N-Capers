@@ -1,0 +1,710 @@
+[OFP 0.0s t=-1.0] === ghost ===
+[OFP 12.4s t=-1.0] objective casing -> 1
+[OFP 12.4s t=-1.0] objective keycard -> 1
+[OFP 12.4s t=-1.0] objective code_hint -> 1
+[OFP 12.4s t=-1.0] objective code_pc -> 1
+[OFP 12.4s t=-1.0] objective server -> 1
+[OFP 12.4s t=-1.0] objective vault_gate -> 1
+[OFP 12.4s t=-1.0] objective lasers -> 1
+[OFP 12.4s t=-1.0] objective time_lock -> 0
+[OFP 12.4s t=-1.0] objective time_lock_wait -> 0
+[OFP 12.4s t=-1.0] objective vault_loot -> 0
+[OFP 12.4s t=-1.0] objective gold_cage -> 0
+[OFP 12.4s t=-1.0] objective drill_delivery -> 0
+[OFP 12.4s t=-1.0] objective vault_drill -> 0
+[OFP 12.4s t=-1.0] objective vault_breach -> 0
+[OFP 12.4s t=-1.0] objective secure -> 1
+[OFP 12.4s t=-1.0] objective deposit_boxes -> 1
+[OFP 12.4s t=-1.0] objective bond_safe -> 1
+[OFP 12.4s t=-1.0] objective president_safe -> 1
+[OFP 12.4s t=-1.0] objective server_drives -> 1
+[OFP 12.4s t=-1.0] objective escape_wait -> 0
+[OFP 12.4s t=-1.0] objective escape -> 0
+[OFP 37.7s t=0.0] launched ostrander_federal seed 1002 diff 5 variants { &"manager_route": [&"mgr_vault"], &"keycard": [&"kc_on_manager"], &"code_pc": [&"pc_exec"], &"officers": [&"off_3"], &"server_room": [&"srv_gallery"], &"guard_post": [&"rover_basement", &"rover_dock", &"rover_gallery", &"rover_hall"], &"security_room_staffed": [&"sec_staffed"], &"camera": [&"cam_a"], &"laser_pattern": [&"lz_sweep"], &"customers": [&"cust_8"], &"side_door": [&"door_none"], &"fire_escape": [&"fe_up"], &"escape": [&"esc_van_dock"], &"drill_delivery": [&"drop_terrace"], &"president_safe": [&"ps_empty"], &"vip": [&"vip_in"], &"guard_extra": [&"gx_basement", &"gx_hall"], &"civ_extra": [&"cx_hall_1", &"cx_hall_2", &"cx_pc"], &"time_lock_s": 270.0, &"drill_eta_s": 90.0, &"escape_eta_s": 90.0, &"cash_bags": 6, &"gold_bags": 4, &"deposit_boxes": 12, "rare": [&"vip_client"] }
+[OFP 255.9s t=3.1] pilot: calibrated 0.001600 rad/px yaw, 0.001600 rad/px pitch (settings formula said (0.0016, 0.0016))
+[OFP 255.9s t=3.1] spawn (21.8, -0.8, 44.0)
+[OFP 281.7s t=8.2] pilot: t=5 at (27.3, -0.7, 42.2) corner (28.9, -0.6, 41.7) yaw_err 0.00 fwd=true path=22 mouse_mode=2 state=0 look=(-1.25,0.00) pin_yaw=-1.24686376183672 bot=false
+[OFP 286.6s t=13.2] pilot: t=10 at (32.2, -0.7, 40.0) corner (33.3, -0.6, 39.9) yaw_err -0.00 fwd=true path=17 mouse_mode=2 state=0 look=(-1.44,0.00) pin_yaw=-1.43936483385187 bot=false
+[OFP 291.7s t=18.2] pilot: t=15 at (37.5, -0.7, 39.9) corner (42.4, -0.6, 42.3) yaw_err 0.77 fwd=false path=8 mouse_mode=2 state=0 look=(-2.78,0.00) pin_yaw=-2.59040231990366 bot=false
+[OFP 296.7s t=23.2] pilot: t=20 at (42.4, -0.7, 42.3) corner (44.2, -0.6, 43.1) yaw_err -0.00 fwd=true path=8 mouse_mode=2 state=0 look=(-2.02,0.00) pin_yaw=-2.01983811695391 bot=false
+[OFP 303.9s t=30.3] pilot: t=5 at (48.6, -0.3, 39.9) corner (49.7, 0.2, 38.3) yaw_err -0.00 fwd=true path=5 mouse_mode=2 state=0 look=(5.70,0.00) pin_yaw=5.69493204082391 bot=false
+[OFP 308.9s t=35.3] pilot: t=10 at (51.7, 0.0, 35.1) corner (55.0, 0.2, 30.0) yaw_err 1.20 fwd=false path=2 mouse_mode=2 state=0 look=(17.08,0.00) pin_yaw=17.2738811244853 bot=false
+[OFP 317.6s t=44.0] pilot: t=5 at (56.9, 0.0, 26.4) corner (56.9, 0.2, 26.9) yaw_err 2.93 fwd=false path=12 mouse_mode=2 state=0 look=(12.78,0.00) pin_yaw=12.9704639874399 bot=false
+[OFP 322.6s t=49.0] pilot: t=10 at (56.5, 0.0, 20.8) corner (56.1, 0.2, 16.3) yaw_err -0.00 fwd=true path=8 mouse_mode=2 state=0 look=(12.67,0.00) pin_yaw=12.6630672380124 bot=false
+[OFP 327.6s t=54.0] pilot: t=15 at (56.0, 0.0, 14.7) corner (55.7, 0.2, 12.4) yaw_err -1.92 fwd=false path=6 mouse_mode=2 state=0 look=(14.59,0.00) pin_yaw=14.3989395014723 bot=false
+[OFP 332.6s t=59.0] pilot: t=20 at (55.4, 0.0, 8.7) corner (55.4, 0.2, 9.2) yaw_err 3.10 fwd=false path=4 mouse_mode=2 state=0 look=(12.67,0.00) pin_yaw=12.8614747283791 bot=false
+[OFP 339.6s t=66.1] pilot: t=5 at (53.8, 0.0, 1.2) corner (53.7, 0.2, 0.5) yaw_err 0.00 fwd=true path=7 mouse_mode=2 state=0 look=(19.11,0.00) pin_yaw=19.1130888457847 bot=false
+[OFP 344.6s t=71.0] pilot: t=10 at (52.4, 0.0, -4.3) corner (52.0, 0.2, -6.0) yaw_err 1.21 fwd=false path=2 mouse_mode=2 state=0 look=(17.90,0.00) pin_yaw=18.0903098385679 bot=false
+[OFP 349.9s t=76.3] pilot: t=5 at (46.7, 0.0, -5.2) corner (42.7, 0.2, -5.5) yaw_err -0.00 fwd=true path=13 mouse_mode=2 state=0 look=(20.33,0.00) pin_yaw=20.3321319160023 bot=false
+[OFP 354.9s t=81.3] pilot: t=10 at (40.9, 0.0, -5.9) corner (38.8, 0.2, -6.1) yaw_err 0.77 fwd=false path=12 mouse_mode=2 state=0 look=(19.58,0.00) pin_yaw=19.7709160741142 bot=false
+[OFP 360.0s t=86.3] pilot: t=15 at (34.8, 0.0, -6.3) corner (33.4, 0.2, -6.4) yaw_err 2.70 fwd=false path=8 mouse_mode=2 state=0 look=(17.66,0.00) pin_yaw=17.8487176223789 bot=false
+[OFP 365.0s t=91.2] GHOST step _g1_lane done at t=91.2 (+88.0 s)
+[OFP 365.0s t=91.2] GHOST smoke cue: Npc_guard6 at (45.6, 0.0, -5.0) clip 'smoke' (still 0.5 s) after 0 s
+[OFP 365.0s t=91.2] GHOST lane clear after 0 s
+[OFP 366.0s t=92.2] objective casing -> 2
+[OFP 366.6s t=92.8] masked true
+[INFO][ecm][p1] ECM 237 jamming for 20.0 s
+[INFO][deployables][p1] slot 0 placed deployable.ecm (1 left)
+[OFP 369.3s t=95.5] ECM on
+[OFP 374.3s t=100.5] pilot: t=5 at (23.9, 0.0, -5.3) corner (23.4, 0.2, -5.1) yaw_err 0.00 fwd=true path=12 mouse_mode=2 state=0 look=(27.01,0.00) pin_yaw=27.009187325828 bot=false
+[OFP 405.2s t=105.5] pilot: t=10 at (18.4, 0.0, -3.7) corner (10.2, 0.2, -1.2) yaw_err 1.20 fwd=false path=4 mouse_mode=2 state=0 look=(25.79,0.00) pin_yaw=25.9819585677833 bot=false
+[OFP 410.1s t=110.5] pilot: t=15 at (12.8, 0.0, -2.0) corner (10.2, 0.2, -1.2) yaw_err 3.12 fwd=false path=4 mouse_mode=2 state=0 look=(23.87,0.00) pin_yaw=24.0610915446814 bot=false
+[INFO][ecm][p1] ECM 237 ended
+[OFP 414.7s t=115.0] DETECT CameraC6 kind 2 meter 0.10 at (19.9, 3.0, -5.7), pilot (8.6, 0.0, -0.8) crouched false
+[OFP 414.7s t=115.0] DETECT Npc_guard6 kind 0 meter 0.14 at (24.0, 0.0, -4.5), pilot (8.6, 0.0, -0.8) crouched false
+[OFP 415.5s t=115.8] DETECT Npc_guard6 kind 0 meter 0.51 at (22.9, 0.0, -5.0), pilot (8.6, 0.0, -0.8) crouched false
+[OFP 416.5s t=116.8] DETECT Npc_guard6 kind 0 meter 1.00 at (21.7, 0.0, -5.4), pilot (8.6, 0.0, -0.8) crouched false
+[OFP 420.9s t=121.3] DETECT CameraC6 kind 2 meter 0.52 at (19.9, 3.0, -5.7), pilot (8.6, 0.0, -0.8) crouched false
+[OFP 422.5s t=122.5] pilot: use DockPersonnelDoor (open_door) -> OK in 8.0 s
+[OFP 422.9s t=123.0] DETECT CameraC6 kind 2 meter 1.00 at (19.9, 3.0, -5.7), pilot (8.5, 0.0, -0.8) crouched false
+[INFO][stealth][p1] ALARM: guard_radio (source 208)
+[OFP 423.5s t=123.7] ALARM guard_radio by Npc_guard6 (pilot at (8.2, 0.0, 0.8))
+[OFP 423.7s t=123.7] objective keycard -> 1
+[OFP 423.7s t=123.7] objective keycard -> 2
+[OFP 423.7s t=123.7] objective code_hint -> 1
+[OFP 423.7s t=123.7] objective code_hint -> 2
+[OFP 423.7s t=123.7] objective code_pc -> 1
+[OFP 423.7s t=123.7] objective code_pc -> 2
+[OFP 423.7s t=123.7] objective server -> 1
+[OFP 423.7s t=123.7] objective server -> 2
+[OFP 423.7s t=123.7] objective vault_gate -> 1
+[OFP 423.7s t=123.7] objective vault_gate -> 2
+[OFP 423.7s t=123.7] objective lasers -> 1
+[OFP 423.7s t=123.7] objective lasers -> 2
+[OFP 423.9s t=123.7] objective drill_delivery -> 1
+[OFP 423.9s t=123.7] objective drill_delivery -> 1
+[OFP 473.3s t=127.9] pilot: t=5 at (9.2, 0.0, 5.7) corner (9.1, 0.2, 5.1) yaw_err 1.58 fwd=false path=11 mouse_mode=2 state=0 look=(17.46,0.00) pin_yaw=17.6561656732811 bot=false
+[OFP 476.8s t=131.0] pilot: use DockCorridorDoor (open_door) -> OK in 0.0 s
+[OFP 479.5s t=133.3] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, -0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=1
+[OFP 499.4s t=133.6] pilot: detour left 0.7 m to (9.2, 0.2, 7.7) (attempt 1)
+[OFP 501.2s t=135.6] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.2, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=1
+[OFP 513.7s t=139.5] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=1
+[OFP 530.4s t=139.8] pilot: detour left 0.7 m to (9.2, 0.2, 7.7) (attempt 2)
+[OFP 532.3s t=141.8] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.2, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=1
+[OFP 534.4s t=143.8] pilot: t=10 at (9.1, 0.0, 8.5) corner (9.6, 0.2, 8.4) yaw_err 0.00 fwd=true path=12 mouse_mode=2 state=1 look=(17.48,0.00) pin_yaw=17.4841864735426 bot=false
+[OFP 536.1s t=145.6] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, -0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=1
+[OFP 536.1s t=145.6] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 3)
+[OFP 538.1s t=147.6] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, -0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=1
+[OFP 539.5s t=149.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 3)
+[OFP 541.6s t=151.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=1
+[OFP 545.4s t=154.9] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, -0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=1
+[OFP 545.4s t=154.9] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 4)
+[OFP 547.4s t=156.9] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=1
+[OFP 548.8s t=158.3] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 4)
+[OFP 550.8s t=160.3] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=1
+[OFP 553.9s t=162.0] pilot: t=15 at (9.1, 0.0, 8.5) corner (9.6, 0.2, 8.4) yaw_err -0.00 fwd=true path=12 mouse_mode=2 state=5 look=(17.48,0.00) pin_yaw=17.4841875464263 bot=false
+[OFP 554.6s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 554.6s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 5)
+[OFP 556.6s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 558.1s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 5)
+[OFP 560.1s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 563.9s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, -0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 563.9s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 6)
+[OFP 565.9s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 567.4s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 6)
+[OFP 569.4s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 573.2s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 573.2s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 7)
+[OFP 575.3s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 576.8s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 7)
+[OFP 578.8s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 580.7s t=162.0] pilot: t=20 at (9.1, 0.0, 8.5) corner (9.6, 0.2, 8.4) yaw_err -0.00 fwd=true path=12 mouse_mode=2 state=5 look=(17.48,0.00) pin_yaw=17.484187248403 bot=false
+[OFP 582.5s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 582.5s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 8)
+[OFP 584.5s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 586.0s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 8)
+[OFP 588.1s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 591.8s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 591.8s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 9)
+[OFP 593.8s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 595.3s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 9)
+[OFP 597.3s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 600.2s t=162.0] pilot: t=25 at (9.1, 0.0, 8.5) corner (9.6, 0.2, 8.4) yaw_err 0.00 fwd=true path=12 mouse_mode=2 state=5 look=(17.48,0.00) pin_yaw=17.484186413938 bot=false
+[OFP 601.1s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 601.1s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 10)
+[OFP 603.1s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 604.4s t=162.0] objective vault_drill -> 1
+[OFP 604.5s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 10)
+[OFP 606.6s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 610.4s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 610.4s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 11)
+[OFP 612.4s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 613.8s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 11)
+[OFP 615.8s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 619.7s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 619.7s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 12)
+[OFP 621.8s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 623.1s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 12)
+[OFP 625.1s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 627.0s t=162.0] pilot: t=30 at (9.1, 0.0, 8.5) corner (9.6, 0.2, 8.4) yaw_err 0.00 fwd=true path=12 mouse_mode=2 state=5 look=(17.48,0.00) pin_yaw=17.4841861159148 bot=false
+[OFP 629.1s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 629.1s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 13)
+[OFP 631.1s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 632.4s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 13)
+[OFP 634.5s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 638.4s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 638.4s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 14)
+[OFP 640.3s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 641.7s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 14)
+[OFP 643.7s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 646.6s t=162.0] pilot: t=35 at (9.1, 0.0, 8.5) corner (9.6, 0.2, 8.4) yaw_err -0.00 fwd=true path=12 mouse_mode=2 state=5 look=(17.48,0.00) pin_yaw=17.4841871887984 bot=false
+[OFP 647.6s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 647.6s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 15)
+[OFP 649.6s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 651.0s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 15)
+[OFP 653.0s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 656.8s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 656.8s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 16)
+[OFP 658.8s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 660.2s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 16)
+[OFP 662.3s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 666.1s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 666.1s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 17)
+[OFP 668.1s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 669.5s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 17)
+[OFP 671.5s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 673.4s t=162.0] pilot: t=40 at (9.1, 0.0, 8.5) corner (9.6, 0.2, 8.4) yaw_err -1.13 fwd=false path=12 mouse_mode=2 state=5 look=(18.62,0.00) pin_yaw=18.4260011941733 bot=false
+[OFP 675.4s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 675.4s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 18)
+[OFP 677.4s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 678.8s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 18)
+[OFP 680.8s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 684.6s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 684.6s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 19)
+[OFP 686.6s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 688.1s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 19)
+[OFP 690.1s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 692.9s t=162.0] pilot: t=45 at (9.1, 0.0, 8.5) corner (9.6, 0.2, 8.4) yaw_err 0.00 fwd=true path=12 mouse_mode=2 state=5 look=(17.48,0.00) pin_yaw=17.4841860563101 bot=false
+[OFP 693.9s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 693.9s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 20)
+[OFP 695.9s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 697.3s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 20)
+[OFP 699.4s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 703.2s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 703.2s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 21)
+[OFP 705.2s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 706.6s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 21)
+[OFP 708.7s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 712.4s t=162.0] pilot: t=50 at (9.1, 0.0, 8.5) corner (9.6, 0.2, 8.4) yaw_err -0.00 fwd=true path=12 mouse_mode=2 state=5 look=(17.48,0.00) pin_yaw=17.4841871291937 bot=false
+[OFP 712.4s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 712.4s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 22)
+[OFP 714.5s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 716.0s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 22)
+[OFP 718.0s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 721.7s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 721.7s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 23)
+[OFP 723.8s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 725.3s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 23)
+[OFP 727.3s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 731.0s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 731.0s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 24)
+[OFP 733.1s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 734.6s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 24)
+[OFP 736.5s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 739.2s t=162.0] pilot: t=55 at (9.1, 0.0, 8.5) corner (9.6, 0.2, 8.4) yaw_err 0.00 fwd=true path=12 mouse_mode=2 state=5 look=(17.48,0.00) pin_yaw=17.4841868311705 bot=false
+[OFP 740.3s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 740.3s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 25)
+[OFP 742.4s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 743.9s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 25)
+[OFP 745.8s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 749.6s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 749.6s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 26)
+[OFP 751.6s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 753.0s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 26)
+[OFP 755.0s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 758.7s t=162.0] pilot: t=60 at (9.1, 0.0, 8.5) corner (9.6, 0.2, 8.4) yaw_err 0.00 fwd=true path=12 mouse_mode=2 state=5 look=(17.48,0.00) pin_yaw=17.4841859967055 bot=false
+[OFP 758.9s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 758.9s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 27)
+[OFP 760.9s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 762.3s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 27)
+[OFP 764.3s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 768.2s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 768.2s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 28)
+[OFP 770.3s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 771.6s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 28)
+[OFP 773.6s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 777.5s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 777.5s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 29)
+[OFP 779.5s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 780.8s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 29)
+[OFP 782.9s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 785.5s t=162.0] pilot: t=65 at (9.1, 0.0, 8.5) corner (9.6, 0.2, 8.4) yaw_err 0.00 fwd=true path=12 mouse_mode=2 state=5 look=(17.48,0.00) pin_yaw=17.4841856986823 bot=false
+[OFP 786.8s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 786.8s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 30)
+[OFP 788.7s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 790.1s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 30)
+[OFP 792.1s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 796.0s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 796.0s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 31)
+[OFP 798.0s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 799.4s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 31)
+[OFP 801.4s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 805.0s t=162.0] pilot: t=70 at (9.1, 0.0, 8.5) corner (9.6, 0.2, 8.4) yaw_err 0.00 fwd=true path=12 mouse_mode=2 state=5 look=(17.48,0.00) pin_yaw=17.4841867715659 bot=false
+[OFP 805.3s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 805.3s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 32)
+[OFP 807.3s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 808.7s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 32)
+[OFP 810.7s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 814.5s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 814.5s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 33)
+[OFP 816.5s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 817.9s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 33)
+[OFP 820.0s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 823.8s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 823.8s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 34)
+[OFP 825.8s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 827.2s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 34)
+[OFP 829.3s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 831.9s t=162.0] pilot: t=75 at (9.1, 0.0, 8.5) corner (9.6, 0.2, 8.4) yaw_err 0.00 fwd=true path=12 mouse_mode=2 state=5 look=(17.48,0.00) pin_yaw=17.4841864735426 bot=false
+[OFP 833.1s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 833.1s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 35)
+[OFP 835.1s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 836.5s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 35)
+[OFP 838.6s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 842.3s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 842.3s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 36)
+[OFP 844.4s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 845.8s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 36)
+[OFP 847.9s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 851.4s t=162.0] pilot: t=80 at (9.1, 0.0, 8.5) corner (9.6, 0.2, 8.4) yaw_err -0.00 fwd=true path=12 mouse_mode=2 state=5 look=(17.48,0.00) pin_yaw=17.4841875464263 bot=false
+[OFP 851.6s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 851.6s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 37)
+[OFP 853.6s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 855.1s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 37)
+[OFP 857.2s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 860.9s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 860.9s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 38)
+[OFP 862.9s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 864.4s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 38)
+[OFP 866.5s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 870.2s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 870.2s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 39)
+[OFP 872.3s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 873.8s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 39)
+[OFP 875.9s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 878.2s t=162.0] pilot: t=85 at (9.1, 0.0, 8.5) corner (9.6, 0.2, 8.4) yaw_err -0.00 fwd=true path=12 mouse_mode=2 state=5 look=(17.48,0.00) pin_yaw=17.484187248403 bot=false
+[OFP 879.6s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 879.6s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 40)
+[OFP 881.6s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 883.1s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 40)
+[OFP 885.0s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 888.9s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 888.9s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 41)
+[OFP 890.9s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 892.3s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 41)
+[OFP 894.3s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 897.7s t=162.0] pilot: t=90 at (9.1, 0.0, 8.5) corner (9.6, 0.2, 8.4) yaw_err 0.00 fwd=true path=12 mouse_mode=2 state=5 look=(17.48,0.00) pin_yaw=17.484186413938 bot=false
+[OFP 898.1s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 898.1s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 42)
+[OFP 900.2s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 901.6s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 42)
+[OFP 903.6s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 907.4s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 907.4s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 43)
+[OFP 909.5s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 910.8s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 43)
+[OFP 912.8s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 916.7s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 916.7s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 44)
+[OFP 918.8s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 920.1s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 44)
+[OFP 922.1s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 924.6s t=162.0] pilot: t=95 at (9.1, 0.0, 8.5) corner (9.6, 0.2, 8.4) yaw_err 0.00 fwd=true path=12 mouse_mode=2 state=5 look=(17.48,0.00) pin_yaw=17.4841861159148 bot=false
+[OFP 926.1s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 926.1s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 45)
+[OFP 928.0s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 929.4s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 45)
+[OFP 931.5s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 935.5s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 935.5s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 46)
+[OFP 937.4s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 938.8s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 46)
+[OFP 940.8s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 944.3s t=162.0] pilot: t=100 at (9.1, 0.0, 8.5) corner (9.6, 0.2, 8.4) yaw_err -0.00 fwd=true path=12 mouse_mode=2 state=5 look=(17.48,0.00) pin_yaw=17.4841871887984 bot=false
+[OFP 944.7s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 944.7s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 47)
+[OFP 946.7s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 948.1s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 47)
+[OFP 950.1s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 953.9s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 953.9s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 48)
+[OFP 955.9s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 957.4s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 48)
+[OFP 959.4s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 963.2s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 963.2s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 49)
+[OFP 965.2s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 966.6s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 49)
+[OFP 968.6s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 970.9s t=162.0] pilot: t=105 at (9.1, 0.0, 8.5) corner (9.6, 0.2, 8.4) yaw_err 0.00 fwd=true path=12 mouse_mode=2 state=5 look=(17.48,0.00) pin_yaw=17.4841868907752 bot=false
+[OFP 972.5s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 972.5s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 50)
+[OFP 974.5s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 975.9s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 50)
+[OFP 977.9s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 981.7s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 981.7s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 51)
+[OFP 983.7s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 985.1s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 51)
+[OFP 987.2s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 990.5s t=162.0] pilot: t=110 at (9.1, 0.0, 8.5) corner (9.6, 0.2, 8.4) yaw_err 0.00 fwd=true path=12 mouse_mode=2 state=5 look=(17.48,0.00) pin_yaw=17.4841860563101 bot=false
+[OFP 991.0s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 991.0s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 52)
+[OFP 993.0s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 994.5s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 52)
+[OFP 996.5s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1000.3s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1000.3s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 53)
+[OFP 1002.3s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1003.8s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 53)
+[OFP 1005.8s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1009.6s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1009.6s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 54)
+[OFP 1011.6s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1013.1s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 54)
+[OFP 1015.1s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1017.2s t=162.0] pilot: t=115 at (9.1, 0.0, 8.5) corner (9.6, 0.2, 8.4) yaw_err 0.00 fwd=true path=12 mouse_mode=2 state=5 look=(17.48,0.00) pin_yaw=17.4841857582869 bot=false
+[OFP 1018.9s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1018.9s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 55)
+[OFP 1020.9s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1022.4s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 55)
+[OFP 1024.3s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1028.2s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1028.2s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 56)
+[OFP 1030.2s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1031.7s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 56)
+[OFP 1033.6s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1036.9s t=162.0] pilot: t=120 at (9.1, 0.0, 8.5) corner (9.6, 0.2, 8.4) yaw_err 0.00 fwd=true path=12 mouse_mode=2 state=5 look=(17.48,0.00) pin_yaw=17.4841868311705 bot=false
+[OFP 1037.5s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1037.5s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 57)
+[OFP 1039.5s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1040.9s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 57)
+[OFP 1042.9s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1046.8s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1046.8s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 58)
+[OFP 1048.8s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1050.2s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 58)
+[OFP 1052.2s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1056.0s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1056.0s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 59)
+[OFP 1058.1s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1059.4s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 59)
+[OFP 1061.4s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1063.6s t=162.0] pilot: t=125 at (9.1, 0.0, 8.5) corner (9.6, 0.2, 8.4) yaw_err 0.00 fwd=true path=12 mouse_mode=2 state=5 look=(17.48,0.00) pin_yaw=17.4841865331473 bot=false
+[OFP 1065.3s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1065.3s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 60)
+[OFP 1067.4s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1068.7s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 60)
+[OFP 1070.7s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1074.7s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1074.7s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 61)
+[OFP 1076.6s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1078.0s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 61)
+[OFP 1080.0s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1083.1s t=162.0] pilot: t=130 at (9.1, 0.0, 8.5) corner (9.6, 0.2, 8.4) yaw_err 0.00 fwd=true path=12 mouse_mode=2 state=5 look=(17.48,0.00) pin_yaw=17.4841856986823 bot=false
+[OFP 1083.8s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1083.8s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 62)
+[OFP 1085.9s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1087.3s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 62)
+[OFP 1089.3s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1093.1s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1093.1s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 63)
+[OFP 1095.1s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1096.5s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 63)
+[OFP 1098.5s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1102.4s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1102.4s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 64)
+[OFP 1104.4s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1105.8s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 64)
+[OFP 1107.8s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1109.9s t=162.0] pilot: t=135 at (9.1, 0.0, 8.5) corner (9.6, 0.2, 8.4) yaw_err -0.00 fwd=true path=12 mouse_mode=2 state=5 look=(17.48,0.00) pin_yaw=17.4841873080077 bot=false
+[OFP 1111.6s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1111.6s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 65)
+[OFP 1113.7s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1115.1s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 65)
+[OFP 1117.1s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1120.9s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1120.9s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 66)
+[OFP 1122.9s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1124.3s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 66)
+[OFP 1126.4s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1129.5s t=162.0] pilot: t=140 at (9.1, 0.0, 8.5) corner (9.6, 0.2, 8.4) yaw_err 0.00 fwd=true path=12 mouse_mode=2 state=5 look=(17.48,0.00) pin_yaw=17.4841864735426 bot=false
+[OFP 1130.2s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1130.2s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 67)
+[OFP 1132.2s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1133.7s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 67)
+[OFP 1135.7s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1139.5s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1139.5s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 68)
+[OFP 1141.5s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1143.0s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 68)
+[OFP 1145.1s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1148.8s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1148.8s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 69)
+[OFP 1150.8s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1152.3s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 69)
+[OFP 1154.4s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1156.2s t=162.0] pilot: t=145 at (9.1, 0.0, 8.5) corner (9.6, 0.2, 8.4) yaw_err 0.00 fwd=true path=12 mouse_mode=2 state=5 look=(17.48,0.00) pin_yaw=17.4841861755194 bot=false
+[OFP 1158.1s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1158.1s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 70)
+[OFP 1160.1s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1161.7s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 70)
+[OFP 1163.7s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1167.4s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1167.4s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 71)
+[OFP 1169.4s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1170.9s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 71)
+[OFP 1172.9s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1175.8s t=162.0] pilot: t=150 at (9.1, 0.0, 8.5) corner (9.6, 0.2, 8.4) yaw_err -0.00 fwd=true path=12 mouse_mode=2 state=5 look=(17.48,0.00) pin_yaw=17.484187248403 bot=false
+[OFP 1176.7s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1176.7s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 72)
+[OFP 1178.8s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1180.1s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 72)
+[OFP 1182.2s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1186.0s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1186.0s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 73)
+[OFP 1188.0s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1189.4s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 73)
+[OFP 1191.4s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1195.3s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1195.3s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 74)
+[OFP 1197.3s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1198.7s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 74)
+[OFP 1200.7s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1202.6s t=162.0] pilot: t=155 at (9.1, 0.0, 8.5) corner (9.6, 0.2, 8.4) yaw_err 0.00 fwd=true path=12 mouse_mode=2 state=5 look=(17.48,0.00) pin_yaw=17.4841869503798 bot=false
+[OFP 1204.6s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1204.6s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 75)
+[OFP 1206.7s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1208.0s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 75)
+[OFP 1210.0s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1213.9s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1213.9s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 76)
+[OFP 1215.8s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1217.3s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 76)
+[OFP 1219.3s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1222.2s t=162.0] pilot: t=160 at (9.1, 0.0, 8.5) corner (9.6, 0.2, 8.4) yaw_err 0.00 fwd=true path=12 mouse_mode=2 state=5 look=(17.48,0.00) pin_yaw=17.4841861159148 bot=false
+[OFP 1223.2s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1223.2s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 77)
+[OFP 1225.1s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1226.5s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 77)
+[OFP 1228.5s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1232.3s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1232.3s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 78)
+[OFP 1234.4s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1235.8s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 78)
+[OFP 1237.8s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1241.6s t=162.0] pilot: t=165 at (9.1, 0.0, 8.5) corner (9.6, 0.2, 8.4) yaw_err -0.00 fwd=true path=12 mouse_mode=2 state=5 look=(17.48,0.00) pin_yaw=17.4841871887984 bot=false
+[OFP 1241.6s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1241.6s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 79)
+[OFP 1243.7s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1245.1s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 79)
+[OFP 1247.1s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1250.9s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1250.9s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 80)
+[OFP 1252.9s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1254.3s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 80)
+[OFP 1256.4s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1260.2s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1260.2s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 81)
+[OFP 1262.2s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1263.7s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 81)
+[OFP 1265.7s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1268.4s t=162.0] pilot: t=170 at (9.1, 0.0, 8.5) corner (9.6, 0.2, 8.4) yaw_err 0.00 fwd=true path=12 mouse_mode=2 state=5 look=(17.48,0.00) pin_yaw=17.4841868907752 bot=false
+[OFP 1269.5s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1269.5s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 82)
+[OFP 1271.5s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1272.9s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 82)
+[OFP 1275.0s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1278.8s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1278.8s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 83)
+[OFP 1280.8s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1282.2s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 83)
+[OFP 1284.3s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1287.9s t=162.0] pilot: t=175 at (9.1, 0.0, 8.5) corner (9.6, 0.2, 8.4) yaw_err 0.00 fwd=true path=12 mouse_mode=2 state=5 look=(17.48,0.00) pin_yaw=17.4841860563101 bot=false
+[OFP 1288.1s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1288.1s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 84)
+[OFP 1290.1s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1291.6s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 84)
+[OFP 1293.6s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1297.3s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1297.3s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 85)
+[OFP 1299.4s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1300.9s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 85)
+[OFP 1302.9s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1306.6s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1306.6s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 86)
+[OFP 1308.7s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1310.2s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 86)
+[OFP 1312.2s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1314.9s t=162.0] pilot: t=180 at (9.1, 0.0, 8.5) corner (9.6, 0.2, 8.4) yaw_err 0.00 fwd=true path=12 mouse_mode=2 state=5 look=(17.48,0.00) pin_yaw=17.4841857582869 bot=false
+[OFP 1316.0s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1316.0s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 87)
+[OFP 1318.1s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1319.6s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 87)
+[OFP 1321.5s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1325.4s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1325.4s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 88)
+[OFP 1327.4s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1328.8s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 88)
+[OFP 1330.8s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1334.5s t=162.0] pilot: t=185 at (9.1, 0.0, 8.5) corner (9.6, 0.2, 8.4) yaw_err 0.00 fwd=true path=12 mouse_mode=2 state=5 look=(17.48,0.00) pin_yaw=17.4841868311705 bot=false
+[OFP 1334.7s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1334.7s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 89)
+[OFP 1336.8s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1338.1s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 89)
+[OFP 1340.1s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1344.0s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1344.0s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 90)
+[OFP 1346.0s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1347.4s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 90)
+[OFP 1349.4s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1353.4s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1353.4s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 91)
+[OFP 1355.4s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1356.7s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 91)
+[OFP 1358.7s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1361.3s t=162.0] pilot: t=190 at (9.1, 0.0, 8.5) corner (9.6, 0.2, 8.4) yaw_err 0.00 fwd=true path=12 mouse_mode=2 state=5 look=(17.48,0.00) pin_yaw=17.4841865331473 bot=false
+[OFP 1362.7s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1362.7s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 92)
+[OFP 1364.6s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1366.0s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 92)
+[OFP 1368.0s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1371.9s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1371.9s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 93)
+[OFP 1373.9s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1375.3s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 93)
+[OFP 1377.3s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1380.9s t=162.0] pilot: t=195 at (9.1, 0.0, 8.5) corner (9.6, 0.2, 8.4) yaw_err 0.00 fwd=true path=12 mouse_mode=2 state=5 look=(17.48,0.00) pin_yaw=17.4841856986823 bot=false
+[OFP 1381.1s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1381.2s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 94)
+[OFP 1383.2s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1384.6s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 94)
+[OFP 1386.6s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1390.4s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1390.4s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 95)
+[OFP 1392.4s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1393.8s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 95)
+[OFP 1395.9s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1399.7s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1399.7s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 96)
+[OFP 1401.7s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1403.1s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 96)
+[OFP 1405.2s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1407.7s t=162.0] pilot: t=200 at (9.1, 0.0, 8.5) corner (9.6, 0.2, 8.4) yaw_err -0.00 fwd=true path=12 mouse_mode=2 state=5 look=(17.48,0.00) pin_yaw=17.4841873080077 bot=false
+[OFP 1409.0s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1409.0s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 97)
+[OFP 1411.0s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1412.4s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 97)
+[OFP 1414.5s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1418.3s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1418.3s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 98)
+[OFP 1420.3s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1421.7s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 98)
+[OFP 1423.8s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1427.2s t=162.0] pilot: t=205 at (9.1, 0.0, 8.5) corner (9.6, 0.2, 8.4) yaw_err 0.00 fwd=true path=12 mouse_mode=2 state=5 look=(17.48,0.00) pin_yaw=17.4841864735426 bot=false
+[OFP 1427.5s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1427.5s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 99)
+[OFP 1429.6s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1431.0s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 99)
+[OFP 1433.1s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1436.8s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1436.8s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 100)
+[OFP 1438.8s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1440.3s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 100)
+[OFP 1442.4s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1446.1s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1446.1s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 101)
+[OFP 1448.1s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1449.6s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 101)
+[OFP 1451.7s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1454.0s t=162.0] pilot: t=210 at (9.1, 0.0, 8.5) corner (9.6, 0.2, 8.4) yaw_err 0.00 fwd=true path=12 mouse_mode=2 state=5 look=(17.48,0.00) pin_yaw=17.4841861755194 bot=false
+[OFP 1455.4s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1455.4s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 102)
+[OFP 1457.4s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1458.9s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 102)
+[OFP 1460.8s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1464.6s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1464.6s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 103)
+[OFP 1466.7s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1468.1s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 103)
+[OFP 1470.1s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1473.5s t=162.0] pilot: t=215 at (9.1, 0.0, 8.5) corner (9.6, 0.2, 8.4) yaw_err -0.00 fwd=true path=12 mouse_mode=2 state=5 look=(17.48,0.00) pin_yaw=17.484187248403 bot=false
+[OFP 1474.0s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1474.0s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 104)
+[OFP 1476.1s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1477.4s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 104)
+[OFP 1479.4s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1483.3s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1483.3s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 105)
+[OFP 1485.4s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1486.7s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 105)
+[OFP 1488.7s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1492.6s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1492.6s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 106)
+[OFP 1494.6s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1495.9s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 106)
+[OFP 1498.0s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1500.3s t=162.0] pilot: t=220 at (9.1, 0.0, 8.5) corner (9.6, 0.2, 8.4) yaw_err 0.00 fwd=true path=12 mouse_mode=2 state=5 look=(17.48,0.00) pin_yaw=17.4841869503798 bot=false
+[OFP 1501.9s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1501.9s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 107)
+[OFP 1503.8s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1505.2s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 107)
+[OFP 1507.3s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1511.2s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1511.2s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 108)
+[OFP 1513.1s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1514.5s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 108)
+[OFP 1516.5s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1519.8s t=162.0] pilot: t=225 at (9.1, 0.0, 8.5) corner (9.6, 0.2, 8.4) yaw_err 0.00 fwd=true path=12 mouse_mode=2 state=5 look=(17.48,0.00) pin_yaw=17.4841861159148 bot=false
+[OFP 1520.4s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1520.4s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 109)
+[OFP 1522.4s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1523.8s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 109)
+[OFP 1525.8s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1529.6s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1529.6s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 110)
+[OFP 1531.6s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1533.1s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 110)
+[OFP 1535.1s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1538.9s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1538.9s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 111)
+[OFP 1540.9s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1542.3s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 111)
+[OFP 1544.4s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1546.6s t=162.0] pilot: t=230 at (9.1, 0.0, 8.5) corner (9.6, 0.2, 8.4) yaw_err 0.00 fwd=true path=12 mouse_mode=2 state=5 look=(17.48,0.00) pin_yaw=17.4841858178916 bot=false
+[OFP 1548.2s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1548.2s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 112)
+[OFP 1550.2s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1551.6s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 112)
+[OFP 1553.6s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1557.5s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1557.5s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 113)
+[OFP 1559.5s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1560.9s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 113)
+[OFP 1562.9s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1566.1s t=162.0] pilot: t=235 at (9.1, 0.0, 8.5) corner (9.6, 0.2, 8.4) yaw_err 0.00 fwd=true path=12 mouse_mode=2 state=5 look=(17.48,0.00) pin_yaw=17.4841868907752 bot=false
+[OFP 1566.7s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1566.7s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 114)
+[OFP 1568.8s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1570.2s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 114)
+[OFP 1572.2s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1576.0s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1576.0s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 115)
+[OFP 1578.0s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1579.5s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 115)
+[OFP 1581.6s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1585.3s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1585.3s t=162.0] pilot: detour left 1.2 m to (9.1, 0.2, 7.3) (attempt 116)
+[OFP 1587.3s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.1, 0.2, 7.9); rays: vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1588.8s t=162.0] pilot: detour right 1.2 m to (9.6, 0.2, 9.6) (attempt 116)
+[OFP 1590.9s t=162.0] pilot: STUCK at (9.1, 0.0, 8.5) heading to (9.6, 0.2, 8.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Slabs/SlabG_02@(9.1, 0.0, 8.5) n=(0.0, 1.0, 0.0), vel=(0.0, 0.0, -0.0) floor=true state=5
+[OFP 1592.9s t=162.0] pilot: t=240 at (9.1, 0.0, 8.5) corner (9.6, 0.2, 8.4) yaw_err 0.00 fwd=true path=12 mouse_mode=2 state=5 look=(17.48,0.00) pin_yaw=17.4841865927519 bot=false
+[OFP 1593.0s t=162.0] could not reach (14.0, 0.0, 8.2) (at (9.1, 0.0, 8.5))
+[OFP 1593.0s t=162.0] FAIL ghost/_g2_dock (alarm guard_radio)
+[OFP] FAIL ghost/_g2_dock
+[OFP 1609.6s t=162.0] FILLS per observer (peak D-128 meter on the pilot): 2 observers
+[OFP 1609.6s t=162.0]   FILL CameraC6                     kind 2 peak 1.00 at t=123.0 (observer (19.9, 3.0, -5.7), pilot (8.5, 0.0, -0.8) crouched false)
+[OFP 1609.6s t=162.0]   FILL Npc_guard6                   kind 0 peak 1.00 at t=116.8 (observer (21.7, 0.0, -5.4), pilot (8.6, 0.0, -0.8) crouched false)
+[OFP 1609.6s t=162.0] GHOST total 158.8 s game time (stopped); alarm guard_radio; ECM left 1
+[OFP] RESULT FAIL ghost
+[OFP] RESULT FAIL (ghost FAIL)
