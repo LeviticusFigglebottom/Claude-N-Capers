@@ -1,0 +1,8 @@
+Routine seed=4501 rc=0 downs=1 custody=0 win_lines=1 | [PO5 680.5s] RESULT PASS (code 0) flow=auto_loud heist=Golden Hour seed=4501
+Routine seed=4502 rc=0 downs=1 custody=0 win_lines=1 | [PO5 430.6s] RESULT PASS (code 0) flow=auto_loud heist=Golden Hour seed=4502
+Routine seed=4503 rc=0 downs=2 custody=0 win_lines=1 | [PO5 274.1s] RESULT PASS (code 0) flow=auto_loud heist=Golden Hour seed=4503
+Tense seed=4501 rc=1 downs=3 custody=1 win_lines=0 | [PO5 388.9s] RESULT FAIL (code 1) flow=auto_loud heist=Golden Hour seed=4501
+Tense seed=4502 rc=1 downs=2 custody=1 win_lines=0 | [PO5 266.1s] RESULT FAIL (code 1) flow=auto_loud heist=Golden Hour seed=4502
+Tense seed=4503 rc=1 downs=2 custody=1 win_lines=0 | [PO5 313.1s] RESULT FAIL (code 1) flow=auto_loud heist=Golden Hour seed=4503
+
+[exited with code 0]
