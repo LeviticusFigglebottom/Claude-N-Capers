@@ -729,3 +729,33 @@ func test_po6_17_rows_for_every_loud_heist() -> void:
 		for k: StringName in [&"turret_van", &"heli", &"breach"]:
 			assert_true(kinds.has(k), "%s: %s row" % [h, k])
 	assert_false(tw.heists.has(&"shadow_ledger"), "SL is stealth-only: no assault events (D-115)")
+
+
+## OF Breach_3/4 (D-141 QC-i; C bb7e28b1): a `door` breach marker names a real Door (meta `door`, a NodePath from the
+## marker): no breach geometry is spawned, the charge goes on the door's face, and the blast unlocks the door and blows
+## it open.
+func test_door_breach_blows_the_named_door_open() -> void:
+	var ev: AssaultEventRunner = await _launch()
+	var door: Door = ATestMaps.add_prefab(_rt, "door", Vector3(6.0, 0.0, -3.0), func(n: Node) -> void:
+		(n as Door).lock = Door.Lock.LOCKPICK) as Door
+	var mk: Marker3D = Marker3D.new()
+	mk.name = "Breach_3"
+	_rt.map.get_node(^"AssaultEvents").add_child(mk)
+	mk.global_position = door.global_position
+	mk.set_meta(&"kind", "door")
+	mk.set_meta(&"size", Vector2(1.0, 2.1))
+	mk.set_meta(&"door", String(mk.get_path_to(door)))
+	await wait_physics_frames(2)
+	assert_true(door.locked and not door.is_open, "the door starts locked and shut")
+	var b: AssaultBreach = ev.run(&"breach", {"warning_s": 0.3, "damage": 0.0, "squad": []}, "Breach_3") as AssaultBreach
+	assert_true(b != null, "door breach runs at Breach_3")
+	if b == null:
+		return
+	assert_eq(b.breach_kind, "door", "kind door")
+	assert_true(b.door == door, "resolved the marker's door")
+	assert_true(b.visual == null, "no breach geometry in the doorway")
+	var went: bool = await wait_until(func() -> bool: return b.is_blown(), 3.0)
+	assert_true(went, "blown")
+	await wait_physics_frames(2)
+	assert_false(door.locked, "the blast unlocked the door")
+	assert_true(door.is_open, "the blast blew the door open")

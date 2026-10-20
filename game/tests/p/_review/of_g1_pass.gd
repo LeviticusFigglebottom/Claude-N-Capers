@@ -789,11 +789,28 @@ func _climb(lad: Ladder, up: bool) -> bool:
 	var end_y: float = lad.top_position().y if up else lad.bottom_position().y
 	var away: Vector3 = Vector3(grab.x - lad.global_position.x, 0.0, grab.z - lad.global_position.z)
 	away = away.normalized() if away.length() > 0.01 else (Vector3.FORWARD if up else Vector3.BACK)
+	# The side the ladder faces first, then the other three: the OF rope ladder's foot faces the hoist shaft (C
+	# f385a22c), so its facing-side stand point is inside the walled shaft once the car has gone up.
+	var side: Vector3 = Vector3(-away.z, 0.0, away.x)
 	var approach: Vector3 = pilot.stand_point(grab + away * 1.5)
+	for d: Vector3 in [away, -away, side, -side]:
+		var pt: Vector3 = pilot.stand_point(grab + d * 1.5)
+		var path: PackedVector3Array = pilot.nav_path(pt)
+		if not path.is_empty() and pilot.flat_dist(path[path.size() - 1], pt) < 0.3 and _path_clear(path):
+			if d != away:
+				note("ladder %s: approach from the %s side (the facing side has no path)" % [lad.name,
+					"back" if d == -away else "flank"])
+			approach = pt
+			break
 	if not await _go(approach, 0.4, 120.0):
 		note("ladder %s approach not reached (%s)" % [lad.name, Po5Pilot._v(approach)])
 		return false
-	var look_at: Vector3 = Vector3(lad.global_position.x, grab.y + (1.5 if up else 0.2), lad.global_position.z)
+	# D-145 free climbing (CrewLadderClimb): forward moves along the ladder in the look's direction, so look up the
+	# ladder to climb up and down at its foot (below CrewTweak.ladder_down_pitch_deg) to climb down; the prefab's own
+	# climb (bots, old path) still counts.
+	var look_at: Vector3 = lad.global_position + Vector3(0, 4.0, 0) if up \
+		else lad.bottom_position() + Vector3(0, 0.2, -0.3)
+	var pitch: float = deg_to_rad(35.0) if up else deg_to_rad(Tweak.crew().ladder_down_pitch_deg - 25.0)
 	await pilot.face(look_at, 0.05, 1.5)
 	_climbing = true
 	pilot.inp.press(&"move_forward")
@@ -802,15 +819,16 @@ func _climb(lad: Ladder, up: bool) -> bool:
 	while t < lad.climb_time() + 10.0:
 		await pilot.tick()
 		t += pilot.dt()
-		if lad.is_climbing(pilot.crew.slot):
+		if _on_ladder(lad):
 			started = true
+			pilot.steer(pilot.crew.look_yaw, pitch)
 		elif started:
 			break
 		else:
 			var to: Vector3 = Vector3(grab.x, 0.0, grab.z) - Vector3(pilot.crew.global_position.x, 0.0,
 				pilot.crew.global_position.z)
 			if to.length() > 0.2:
-				pilot.steer(atan2(-to.x, -to.z), 0.0)
+				pilot.steer(atan2(-to.x, -to.z), pitch)
 			else:
 				pilot.steer_at(look_at)
 	var ok: bool = started and absf(pilot.crew.global_position.y - end_y) < 0.4
@@ -849,14 +867,43 @@ func _quiet_watch() -> void:
 func _watch_ladders() -> void:
 	var my_rt: HeistRuntime = rt
 	while is_inside_tree() and rt == my_rt and is_instance_valid(rt) and pilot != null:
-		if not _climbing and _stray == null and pilot.crew.has_meta(Ladder.META_CLIMBING):
-			_stray = pilot.crew.get_meta(Ladder.META_CLIMBING) as Ladder
+		# The prefab's own climb puts the Ladder in the crew's climbing meta; a human under D-145 free climbing carries
+		# the crew itself there as an opt-out marker (CrewLadderClimb.sync_opt_out), so only a Ladder value is a climb.
+		var held: Variant = pilot.crew.get_meta(Ladder.META_CLIMBING) if pilot.crew.has_meta(Ladder.META_CLIMBING) \
+			else null
+		var free: CrewLadderClimb = pilot.crew.ladder
+		if not _climbing and _stray == null and held is Ladder:
+			_stray = held as Ladder
 			note("FINDING a walk took %s by accident at %s" % [_stray.name, Po5Pilot._v(pilot.crew.global_position)])
+		elif not _climbing and _stray == null and free != null and free.is_climbing():
+			_stray = free.ladder
+			note("FINDING a walk attached to %s (free climb) at %s" % [_stray.name,
+				Po5Pilot._v(pilot.crew.global_position)])
 		await pilot.tick()
 
 
+## Every leg of `path` is free at knee height (the navmesh can run through colliders C added after the bake).
+func _path_clear(path: PackedVector3Array) -> bool:
+	var space: PhysicsDirectSpaceState3D = pilot.crew.get_world_3d().direct_space_state
+	for k: int in range(1, path.size()):
+		var q: PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.create(path[k - 1] + Vector3(0, 0.3, 0),
+			path[k] + Vector3(0, 0.3, 0))
+		q.exclude = [pilot.crew.get_rid()]
+		if not space.intersect_ray(q).is_empty():
+			return false
+	return true
+
+
+## The crew is on `lad`: the prefab's climb (bots, legacy) or the human's free climb (D-145).
+func _on_ladder(lad: Ladder) -> bool:
+	if lad.is_climbing(pilot.crew.slot):
+		return true
+	var free: CrewLadderClimb = pilot.crew.ladder
+	return free != null and free.is_climbing() and free.ladder == lad
+
+
 func _stray_need() -> bool:
-	return _stray != null and is_instance_valid(_stray) and not _stray.is_climbing(pilot.crew.slot)
+	return _stray != null and is_instance_valid(_stray) and not _on_ladder(_stray)
 
 
 ## Pilot hook: climb a stray ladder straight back, then the interrupted walk re-paths.
@@ -889,7 +936,9 @@ func _lift_to(lift: BagLift, to: int, stand: Vector3) -> bool:
 	await wait_until(func() -> bool: return not lift.is_moving(), lift.travel_s + 5.0)
 	if lift.landing == to:
 		return true
-	var here: int = _lift_nearest_landing(lift, pilot.crew.global_position)
+	# The landing the panel is at follows the STAND, not where the crew is now (C 2026-10-20: after a stray climb the
+	# crew stood by the other landing and aimed its panel through the slab).
+	var here: int = _lift_nearest_landing(lift, stand)
 	var panel: InteractableComponent = _lift_panel(lift, here)
 	if panel == null:
 		note("lift %s: no panel at landing %d" % [lift.name, here])
@@ -897,6 +946,7 @@ func _lift_to(lift: BagLift, to: int, stand: Vector3) -> bool:
 	await _go(stand, 0.3, 60.0)
 	# Walk to the panel when the stand is out of reach of it (G1 hoist: panel 2.0 m from the car-side stand).
 	var walk_to: bool = pilot.crew.global_position.distance_to(panel.global_position) > 1.4
+	_diag_hold.call_deferred(panel, 8.0)
 	if not await pilot.use(panel, 30.0, func() -> bool: return lift.is_moving(), walk_to):
 		note("lift %s panel %d not used (at %s)" % [lift.name, here, Po5Pilot._v(pilot.crew.global_position)])
 		return false
@@ -905,6 +955,35 @@ func _lift_to(lift: BagLift, to: int, stand: Vector3) -> bool:
 	note("LIFT %s %s landing %d (%d bags in the car)" % [lift.name, "at" if ok else "NOT at", to,
 		lift.bags_in_car().size()])
 	return ok
+
+
+## Diagnostic (the r245 hoist "hold dropped" loop): 10 Hz for `max_s`, a line whenever the hold's state changes:
+## session alive, distance from its start (InteractionTweak.cancel_move_m), aim angle to the panel (cancel_look_deg),
+## the panel's availability and what the crosshair resolves to.
+func _diag_hold(comp: InteractableComponent, max_s: float) -> void:
+	var isys: InteractionSystem = rt.interaction
+	if isys == null or not is_instance_valid(comp):
+		return
+	var tw: InteractionTweak = Tweak.interaction()
+	var last: String = ""
+	var t: float = 0.0
+	while t < max_s and is_instance_valid(comp):
+		var c: CrewController = pilot.crew
+		var s: Dictionary = isys.session(c.slot)
+		var moved: float = c.global_position.distance_to(s.get("start_pos", c.global_position)) if not s.is_empty() \
+			else -1.0
+		var ang: float = rad_to_deg(c.aim_direction().angle_to(comp.global_position - c.eye_position()))
+		var am: InteractableComponent = isys.aimed_component(c)
+		var line: String = "session %s moved %.2f/%.2f aim %.0f/%.0f deg avail '%s' aimed %s blocked '%s'" % [
+			not s.is_empty(), moved, tw.cancel_move_m, ang, tw.cancel_look_deg, comp.availability(c),
+			am.name if am != null else "<none>", isys.blocked_reason(c.slot)]
+		var key: String = "%s|%s|%s|%s" % [not s.is_empty(), comp.availability(c), am, isys.blocked_reason(c.slot)]
+		if key != last:
+			last = key
+			note("DIAG hold t=%.1f %s eye %s panel %s" % [t, line, Po5Pilot._v(c.eye_position()),
+				Po5Pilot._v(comp.global_position)])
+		await wait_s(0.1)
+		t += 0.1
 
 
 ## Throw the carried bag into `lift`'s car from `stand`, up against it (the release point 0.7 m ahead is in the car).
@@ -1598,7 +1677,7 @@ func _test_hole() -> bool:
 	var hoist: BagLift = _x("hoist") as BagLift
 	if rope == null or hoist == null:
 		return await _fail("no rope ladder (%s) / hoist (%s) at the hole" % [rope, hoist])
-	_enable_hole(rope, hoist)
+	await _enable_hole(rope, hoist)
 	# The hole's centre: C's LidMarker (24, 0, 14.6) when present, else the doc's (24, 14).
 	var lid: Node3D = _x("lid")
 	var hole: Vector3 = Vector3(lid.global_position.x, OF_FFL[1], lid.global_position.z) if lid != null else _of(OF_HOLE_AT)
@@ -1797,6 +1876,14 @@ func _drill_parts() -> Array[LootBag]:
 
 ## SHORTCUT (G1 has no mission): the hole's ladder and hoist on, unless the mission's burn-through did it.
 func _enable_hole(rope: Ladder, hoist: BagLift) -> void:
+	# OF-A6 has the mission's own burn-through (lid + plug dropped, rope ladder to burn_height_m, hoist on, rappel):
+	# use it, so the hole test sees exactly the post-burn map (C's f385a22c Plug was not in the hand-made shortcut).
+	if rt.mission != null and rt.mission.has_method(&"burn_through"):
+		rt.mission.call(&"burn_through")
+		await wait_s(0.5)
+		note("SHORTCUT hole via the mission's burn_through(): rope ladder usable %s height %.2f, hoist %s enabled" % [
+			rope.usable, rope.height_m, hoist.name])
+		return
 	for n: Node3D in [rope, hoist]:
 		if n.has_method(&"set_enabled"):
 			n.call(&"set_enabled", true)
@@ -2053,7 +2140,7 @@ func _g2_dock() -> bool:
 	# wait until every guard in Ledger Lane is > LANE_CLEAR_M from the dock door, logging where they walk.
 	var door_at: Vector3 = _of(OF_LD_DOOR)
 	var waited: float = 0.0
-	var clear: bool = false
+	var clear: bool = await _smoke_cue(300.0)
 	while waited < 600.0 and not clear:
 		clear = true
 		var where: PackedStringArray = PackedStringArray()
@@ -2079,6 +2166,46 @@ func _g2_dock() -> bool:
 	if door == null or (not door.is_open and not await pilot.use(_comp(door), 30.0, func() -> bool: return door.is_open)):
 		return false
 	return await _of_to_floor(0)
+
+
+## The design doc's own cue (A 160b8e07 hub loops: LaneCorner smoke 20-40 s): a Ledger Lane guard ARRIVING at the
+## Tannery corner smoke spot (GHOST_SMOKE_AT, within 5 m) and starting `smoke*` (or standing still there for 1 s). Logs the lane guards
+## every 10 s (where his loop goes). False after `max_s` (the caller falls back to the lane-distance rule).
+func _smoke_cue(max_s: float) -> bool:
+	var at: Vector3 = _of(GHOST_SMOKE_AT)
+	var still: Dictionary = {}
+	var last: Dictionary = {}
+	# The doc says when he STARTS the pause: a guard already smoking on arrival may be near its end (ghost run 5:
+	# cue at once, back at the dock door 24 s later), so a guard must first be seen away from the corner / not
+	# smoking, then arrive and light up.
+	var armed: Dictionary = {}
+	var t: float = 0.0
+	while t < max_s:
+		var where: PackedStringArray = PackedStringArray()
+		for n: Node in rt.npcs(&"guard"):
+			var g: NpcBase = n as NpcBase
+			if g == null or not g.is_alive() or g.global_position.z > 0.5 or absf(g.global_position.y) > 1.5:
+				continue
+			var id: int = g.get_instance_id()
+			var moved: float = g.global_position.distance_to(last.get(id, g.global_position))
+			last[id] = g.global_position
+			still[id] = float(still.get(id, 0.0)) + 0.5 if moved < 0.1 else 0.0
+			var drv: AnimDriver = AnimDriver.of(g)
+			var clip: String = String(drv.clip) if drv != null else ""
+			where.append("%s %s %s" % [g.name, Po5Pilot._v(g.global_position), clip])
+			var at_corner: bool = pilot.flat_dist(g.global_position, at) < 5.0
+			if not at_corner or not clip.begins_with("smoke"):
+				armed[id] = true
+			if bool(armed.get(id, false)) and at_corner and (clip.begins_with("smoke") or float(still[id]) >= 1.0):
+				note("GHOST smoke cue: %s at %s clip '%s' (still %.1f s) after %.0f s" % [g.name,
+					Po5Pilot._v(g.global_position), clip, float(still[id]), t])
+				return true
+		if int(t * 2.0) % 20 == 0:
+			note("GHOST lane guards (waiting for the smoke cue): %s" % (", ".join(where) if not where.is_empty() else "none"))
+		await wait_s(0.5)
+		t += 0.5
+	note("GHOST no smoke cue at %s in %.0f s: falling back to the lane-distance rule" % [Po5Pilot._v(at), max_s])
+	return false
 
 
 ## 3. Wait in LK for the manager's WC break; shout him down, tie him (tie 1), take the keycard.

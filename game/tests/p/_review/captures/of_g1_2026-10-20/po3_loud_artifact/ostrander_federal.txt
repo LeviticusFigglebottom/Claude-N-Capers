@@ -1,0 +1,403 @@
+PO-3 snag probe: ostrander_federal  (step 0.35 m, slope 45 deg, r 0.35 m, walk 3.5 m/s)
+samples 4991, walkable edges 34162, trials 33731 { 1: 1919, 3: 31812 }, outcomes { "ok": 33597, "deflected": 63, "stuck": 71 }, rejected edges { "blocked": 5473, "gap": 207, "tall": 4, "ladder_grab": 82, "start_not_clean": 431 }
+stance walk, approach run, 8 headings; trials by largest single step on the edge: { "0.01-0.05 m": "188/188 ok", "0.05-0.10 m": "30/30 ok", "0.10-0.20 m": "11/11 ok", "0.20-0.36 m": "11/11 ok" }
+times { "launch_s": 5.43, "flood_s": 4.916, "trials_s": 1111.712 }, sim ticks 480618
+67 low blockers (collider top 0.32-0.75 m above the floor, stops a walkable-looking path):
+    OstranderFederal/Geometry/Site/Grade/GradeApron  top 0.75 m (visual top 0.75) x114 at (17.37, -0.75, 38.17) [StaticBody3D, BoxShape3D (48.20, 1.50, 1.80), layer 1 (world_static)]
+    OstranderFederal/Props/MapBuilt/WorkstationsOF1  top 0.75 m (visual top 0.75) x36 at (16.17, 5.00, 11.37) [StaticBody3D, BoxShape3D (3.20, 0.75, 1.60), layer 1 (world_static)]
+    OstranderFederal/Props/MapBuilt/WorkstationsOF2  top 0.75 m (visual top 0.75) x34 at (22.17, 5.00, 12.57) [StaticBody3D, BoxShape3D (3.20, 0.75, 1.60), layer 1 (world_static)]
+    OstranderFederal/Props/MapBuilt/PlazaBench1  top 0.45 m (visual top 0.45) x18 at (8.97, -0.75, 44.77) [StaticBody3D, BoxShape3D (1.80, 0.45, 0.50), layer 1 (world_static)]
+    OstranderFederal/Props/MapBuilt/PlazaBench2  top 0.45 m (visual top 0.45) x18 at (40.97, -0.75, 44.77) [StaticBody3D, BoxShape3D (1.80, 0.45, 0.50), layer 1 (world_static)]
+    OstranderFederal/Props/MapBuilt/HallBenchSE  top 0.45 m (visual top 0.45) x18 at (31.04, 0.00, 31.04) [StaticBody3D, BoxShape3D (1.80, 0.45, 0.50), layer 1 (world_static)]
+    OstranderFederal/Props/MapBuilt/HallBenchSW  top 0.45 m (visual top 0.45) x18 at (16.97, 0.00, 30.77) [StaticBody3D, BoxShape3D (1.80, 0.45, 0.50), layer 1 (world_static)]
+    OstranderFederal/Props/MapBuilt/BenchLK  top 0.45 m (visual top 0.45) x16 at (4.37, -4.00, 4.77) [StaticBody3D, BoxShape3D (1.60, 0.45, 0.40), layer 1 (world_static)]
+    OstranderFederal/Props/DressC/Direct/VaultCountTable/Collision  top 0.74 m (visual top 0.74) x16 at (18.57, -4.00, 18.17) [StaticBody3D, BoxShape3D (1.20, 0.74, 0.70), layer 1 (world_static)]
+    OstranderFederal/Props/DressC/Direct/VaultCountTable/Model/Collision  top 0.74 m (visual top 0.74) x16 at (18.57, -4.00, 18.17) [StaticBody3D, ConvexPolygonShape3D, layer 1 (world_static)]
+    OstranderFederal/Props/MapBuilt/DeskOF  top 0.75 m (visual top 0.75) x16 at (11.37, 5.00, 11.77) [StaticBody3D, BoxShape3D (0.70, 0.75, 1.40), layer 1 (world_static)]
+    OstranderFederal/Props/MapBuilt/DeskAO1  top 0.75 m (visual top 0.75) x14 at (1.90, 5.00, 11.90) [StaticBody3D, BoxShape3D (0.70, 0.75, 1.40), layer 1 (world_static)]
+    OstranderFederal/Props/ArtRoomsB/SD/TableSDAisle1/Model/Collision  top 0.74 m (visual top 0.74) x12 at (37.70, -4.00, 14.04) [StaticBody3D, ConvexPolygonShape3D, layer 1 (world_static)]
+    OstranderFederal/Props/ArtRoomsB/SD/TableSDAisle2/Model/Collision  top 0.74 m (visual top 0.74) x12 at (43.70, -4.00, 19.04) [StaticBody3D, ConvexPolygonShape3D, layer 1 (world_static)]
+    OstranderFederal/Props/MapBuilt/AttendantDesk  top 0.75 m (visual top 0.75) x12 at (37.97, -4.00, 10.37) [StaticBody3D, BoxShape3D (1.60, 0.75, 0.70), layer 1 (world_static)]
+    OstranderFederal/Props/ArtRoomsB/SD/BenchSD/Model/Collision  top 0.45 m (visual top 0.45) x11 at (38.37, -4.00, 24.37) [StaticBody3D, ConvexPolygonShape3D, layer 1 (world_static)]
+    OstranderFederal/Geometry/Site/TanneryRamp  top 0.75 m (visual top 0.75) x11 at (47.90, -0.75, 39.84) [StaticBody3D, ConvexPolygonShape3D, layer 1 (world_static)]
+    OstranderFederal/Props/DressC/Direct/LaneCrateFireEscape/Collision  top 0.60 m (visual top 0.60) x8 at (2.37, 0.00, -0.63) [StaticBody3D, BoxShape3D (0.80, 0.60, 0.60), layer 1 (world_static)]
+    OstranderFederal/Geometry/Site/PlazaSteps/Ramp  top 0.75 m (visual top 0.15) x8 at (17.97, -0.75, 39.37) [StaticBody3D, ConvexPolygonShape3D, layer 1 (world_static)]
+    OstranderFederal/Props/MapBuilt/HallBenchE2  top 0.45 m (visual top 0.45) x8 at (39.30, 0.00, 26.44) [StaticBody3D, BoxShape3D (0.50, 0.45, 1.80), layer 1 (world_static)]
+    OstranderFederal/Props/DressC/Direct/LaneCrateFireEscape/Model/Collision  top 0.60 m (visual top 0.60) x8 at (2.37, 0.00, -0.63) [StaticBody3D, ConvexPolygonShape3D, layer 1 (world_static)]
+    OstranderFederal/Props/MapBuilt/HallBenchE1  top 0.45 m (visual top 0.45) x8 at (39.30, 0.00, 21.44) [StaticBody3D, BoxShape3D (0.50, 0.45, 1.80), layer 1 (world_static)]
+    OstranderFederal/Props/MapBuilt/ConferenceTable  top 0.75 m (visual top 0.75) x8 at (31.57, 5.00, 13.37) [StaticBody3D, BoxShape3D (3.00, 0.75, 1.20), layer 1 (world_static)]
+    OstranderFederal/Props/MapBuilt/HallBenchW2  top 0.45 m (visual top 0.45) x7 at (8.70, 0.00, 28.04) [StaticBody3D, BoxShape3D (0.50, 0.45, 1.80), layer 1 (world_static)]
+    OstranderFederal/Props/MapBuilt/BenchLD  top 0.45 m (visual top 0.45) x7 at (6.17, 0.00, 8.17) [StaticBody3D, BoxShape3D (1.60, 0.45, 0.40), layer 1 (world_static)]
+    OstranderFederal/Props/MapBuilt/HallBenchW1  top 0.45 m (visual top 0.45) x7 at (8.70, 0.00, 22.04) [StaticBody3D, BoxShape3D (0.50, 0.45, 1.80), layer 1 (world_static)]
+    OstranderFederal/Props/DressC/OF/Credenza_1/Collision  top 0.75 m (visual top 0.75) x7 at (27.17, 5.00, 12.37) [StaticBody3D, BoxShape3D (1.62, 0.75, 0.47), layer 1 (world_static)]
+    OstranderFederal/Props/DressC/TW/Credenza_2/Collision  top 0.75 m (visual top 0.75) x7 at (30.37, 0.00, 9.77) [StaticBody3D, BoxShape3D (1.62, 0.75, 0.47), layer 1 (world_static)]
+    OstranderFederal/Props/DressC/TW/Credenza_2/Model/Collision  top 0.75 m (visual top 0.75) x7 at (30.37, 0.00, 9.77) [StaticBody3D, ConvexPolygonShape3D, layer 1 (world_static)]
+    OstranderFederal/Props/DressC/OF/Credenza_1/Model/Collision  top 0.75 m (visual top 0.75) x7 at (27.17, 5.00, 12.37) [StaticBody3D, ConvexPolygonShape3D, layer 1 (world_static)]
+    OstranderFederal/Props/DressC/TW/Credenza_1/Model/Collision  top 0.75 m (visual top 0.75) x7 at (18.04, 0.00, 9.70) [StaticBody3D, ConvexPolygonShape3D, layer 1 (world_static)]
+    OstranderFederal/Props/DressC/TW/Credenza_1/Collision  top 0.75 m (visual top 0.75) x7 at (18.04, 0.00, 9.70) [StaticBody3D, BoxShape3D (1.62, 0.75, 0.47), layer 1 (world_static)]
+    OstranderFederal/Props/DressC/TW/Credenza_3/Model/Collision  top 0.75 m (visual top 0.75) x7 at (8.84, 0.00, 14.84) [StaticBody3D, ConvexPolygonShape3D, layer 1 (world_static)]
+    OstranderFederal/Props/DressC/TW/Credenza_3/Collision  top 0.75 m (visual top 0.75) x7 at (8.84, 0.00, 14.84) [StaticBody3D, BoxShape3D (1.62, 0.75, 0.47), layer 1 (world_static)]
+    OstranderFederal/Props/DressC/SR/Desk_1/Model/Collision  top 0.74 m (visual top 0.74) x7 at (21.97, 0.00, 2.37) [StaticBody3D, ConvexPolygonShape3D, layer 1 (world_static)]
+    OstranderFederal/Props/DressC/SR/Desk_1/Collision  top 0.74 m (visual top 0.74) x7 at (21.97, 0.00, 2.37) [StaticBody3D, BoxShape3D (1.40, 0.74, 0.70), layer 1 (world_static)]
+    OstranderFederal/Props/MapBuilt/CoffeeTablePC  top 0.45 m (visual top 0.45) x6 at (44.84, 0.00, 13.90) [StaticBody3D, BoxShape3D (0.80, 0.45, 0.80), layer 1 (world_static)]
+    OstranderFederal/Props/MapBuilt/ViewingBench  top 0.45 m (visual top 0.45) x6 at (25.37, -4.00, 9.57) [StaticBody3D, BoxShape3D (1.60, 0.45, 0.45), layer 1 (world_static)]
+    OstranderFederal/Geometry/Site/Grade/GradeApronSteps  top 0.75 m (visual top 0.75) x6 at (17.77, -0.75, 38.97) [StaticBody3D, BoxShape3D (12.00, 1.50, 0.80), layer 1 (world_static)]
+    OstranderFederal/Props/DressC/TW/Stool_1/Collision  top 0.75 m (visual top 0.75) x6 at (21.90, 0.00, 10.84) [StaticBody3D, BoxShape3D (0.52, 0.75, 0.54), layer 1 (world_static)]
+coverage map: x -44..94 (1 char = 1.0 m), z -50..90 top to bottom
+  |                                                                                            oooooooooooooo
+  |                                                                                            oooooooooooooo
+  |                                                                                            oooooooooooooo
+  |                                                                                            oooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo##############oooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo##############oooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo##############oooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo##############oooooooooooooooooo
+  |oooooooooooooooooooooooooooo##############################################################################oooooooooooooooooo
+  |oooooooooooooooooooooooooooo##############################################################################oooooooooooooooooo
+  |oooooooooooooooooooooooooooo##############################################################################oooooooooooooooooo
+  |oooooooooooooooooooooooooooo####################################SS#SS#####################################oooooooooooooooooo
+  |oooooooooooooooooooooooooooo#############################S######o########################################ooooooooooooooooooo
+  |oooooooooooooooooooooooooooo##############################################################################oooooooooooooooooo
+  |oooooooooooooooooooooooooooo##############################################################################oooooooooooooooooo
+  |oooooooooooooooooooooooooooo##############################################################################oooooooooooooooooo
+  |oooooooooooooooooooooooooooo##########################################oooo################################oooooooooooooooooo
+  |oooooooooooooooooooooooooooo#################oo######################oooooooo##oooo#######################oooooooooooooooooo
+  |                        oooooooooooooooooooooooo###oooooooooooSoooooooooooooooooooooooooooooo#############oooooooooooooooooo
+  |                        ooooooooooooooooooooo############o##o##o###ooooooooooooooooooooooo##o#############oooooooooooooooooo
+  |                        ooooooooooooooooooooo#########o##o##o#####oooooooooooooooooooooooo##o#############oooooooooooooooooo
+  |                        ooooooooooooooooooooo#S###S###ooooo#o#####ooooooooooooooooooooooooo#o#############oooooooooooooooooo
+  |                        ooooooooooooooooooooo#########ooooo#o#####ooooooooooooooooooooooooo#o#############oooooooooooooooooo
+  |                        ooooooooooooooooooooo#########ooooo#o#####ooooooooooooooooooooooooo#o#############oooooooooooooooooo
+  |                        oooooooooooooooooooooo########oooo##o######ooooooooooooooooooooooo##o#############oooooooooooooooooo
+  |                        oooooooooooooooooooooo########oo#o#ooooooooooooSoooooooo#ooooooooo#oo#############oooooooooooooooooo
+  |                        ooooooooooooooooooooo###################################S###########o#############oooooooooooooooooo
+  |                        oooooooooooooooooooooooooo#ooooooo#o##oooooooooooooooo#ooooooo#o#oooo#############oooooooooooooooooo
+  |                        ooooooooooooooooooooo########################S######################o#############oooooooooooooooooo
+  |                        oooooooooooooooooooooS#####o##S#####################################o#############oooooooooooooooooo
+  |                        ooooooooooooooooooooo#o####o################################o###o###o#############oooooooooooooooooo
+  |                        ooooooooooooooooooooo#o####o#######################S################o#############oooooooooooooooooo
+  |                        ooooooooooooooooooooo######o########################################o#############oooooooooooooooooo
+  |                        ooooooooooooooooooooo######o######S#S#############S#S###############o#############oooooooooooooooooo
+  |                        ooooooooooooooooooooo######o######S###############S###o############oo#############oooooooooooooooooo
+  |                        ooooooooooooooooooooo####o#o#o#o##o#######o##o###oooooooooooo######oo#############oooooooooooooooooo
+  |                        ooooooooooooooooooooo#oooo#o########################################o#############oooooooooooooooooo
+  |                        ooooooooooooooooooooo#oooo#o##################################oo###oo#######S#####oooooooooooooooooo
+  |                        ooooooooooooooooooooo#oooo#o###S###o#############o#############o##ooo#######S#####oooooooooooooooooo
+  |                        ooooooooooooooooooooo#oooo#o###o##o##############oooooo############oo#############oooooooooooooooooo
+  |                        ooooooooooooooooooooo#oooo#o################################ooooo###o#######S#####oooooooooooooooooo
+  |                        ooooooooooooooooooooo###############################################o#######S#####oooooooooooooooooo
+  |                        ooooooooooooooooooooo###############################################o#####ooo####ooooooooooooooooooo
+  |                        ooooooooooooooooooooooooooooo####oo###Soo#######oo###oo####oooooooooo#####ooo#####oooooooooooooooooo
+  |                        ooooooooooooooooooooooooooooo##############################oooooooooo#####ooo#####oooooooooooooooooo
+  |                        ooooooooooooooooooooooooooooo###############################ooooooooo#####ooo#####oooooooooooooooooo
+  |                        ooooooooooooooooooooooooooooo###############################ooooooooo#####ooo#####oooooooooooooooooo
+  |                        ooooooooooooooooooooooooooooo##############S################ooooooooo#############oooooooooooooooooo
+  |                        ooooooooooooooooooooo#######o###############################ooooooooo#############oooooooooooooooooo
+  |                        ooooooooooooooooooooo#######o######oo##############oo#######ooooooooo#############oooooooooooooooooo
+  |                        ooooooooooooooooooooo#######o###########oo####ooo###########ooooooooo#############oooooooooooooooooo
+  |                        ooooooooooooooooooooo#######o###########o#######o###########ooooooooo#############oooooooooooooooooo
+  |                        ooooooooooooooooooooo#######o###########o#######o###########ooooooooo############ooooooooooooooooooo
+  |                        ooooooooooooooooooooo######oo###########o#######o###########ooooooooo#############oooooooooooooooooo
+  |                            ################ooo##ooooooooooooooooo##o#oooooooooooooooooooooo##############oooooooooooooooooo
+  |                            ##############################################################################oooooooooooooooooo
+  |                            ##################################################################################
+  |                            ##################################################################################
+  |                            ###################oo######oo######################oo######oo#####################
+  |                            #######oo##########oo######oo######################oo######oo#####################
+  |                            #######oo##########################################oo#############################oooooooooooooooooooooooooooo
+  |                            #########################S##########S#SS#S#########oo######S######################oooooooooooooooooooooooooooo
+  |                            ##################################################################################oooooooooooooooooooooooooooo
+  |                            #######################oo##############################oo#########################oooooooooooooooooooooooooooo
+  |                            ##################################################################################oooooooooooooooooooooooooooo
+  |                            ##################################################################################oooooooooooooooooooooooooooo
+  |oooooooooooooooooooooooooooo##################################################################################oooooooooooooooooooooooooooo
+  |oooooooooooooooooooooooooooo########ooooo#####################################################################oooooooooooooooooooooooooooo
+  |oooooooooooooooooooooooooooo########ooooo#####################################################################oooooooooooooooooooooooooooo
+  |oooooooooooooooooooooooooooo########ooooo#####################################################################oooooooooooooooooooooooooooo
+  |oooooooooooooooooooooooooooo##################################################################################oooooooooooooooooooooooooooo
+  |oooooooooooooooooooooooooooo##################################################################################oooooooooooooooooooooooooooo
+  |oooooooooooooooooooooooooooo##################################################################################oooooooooooooooooooooooooooo
+  |oooooooooooooooooooooooooooo##################################################################################oooooooooooooooooooooooooooo
+  |oooooooooooooooooooooooooooo################################################1#63##############################oooooooooooooooooooooooooooo
+  |oooooooooooooooooooooooooooo##################################################################################oooooooooooooooooooooooooooo
+  |oooooooooooooooooooooooooooo##############################################2###################ooooo###########oooooooooooooooooooooooooooo
+  |oooooooooooooooooooooooooooo###############################################45##987############ooooo###########oooooooooooooooooooooooooooo
+  |oooooooooooooooooooooooooooo##################################################################################oooooooooooooooooooooooooooo
+  |oooooooooooooooooooooooooooo##################################################################################oooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |                            oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+  |
+48 snag clusters (134 snag trials):
+#1 at (32.05, -0.75, 56.37)  x9  status { "stuck": 4, "deflected": 5 }  headings 180,180,135,135,180,135,90,135,315
+    dh A->B 0.00..0.00 m, lip ahead -0.00..-0.00 m, contact h 0.35..1.45 m, edge [], floor OstranderFederal/Geometry/Site/Grade/GradeAvenue
+    why_no_step { "blocked_at_step_height": 7, "no_contact_ahead": 2 }
+    verdict { "geometry: blocked above step height (overhang / sill / narrow gap), not a step problem [no visible mesh at the contact: invisible collider?]": 7, "unclear (no_contact_ahead)": 2 }
+    hit Dynamic/AssaultEvent_turret_van_3/Body [AnimatableBody3D, BoxShape3D (2.40, 2.60, 6.00), layer 2 (world_dynamic), NO MESH]
+#2 at (30.29, -0.75, 57.94)  x8  status { "deflected": 4, "stuck": 4 }  headings 135,270,270,135,270,270,45,45
+    dh A->B 0.00..0.00 m, lip ahead -0.00..-0.00 m, contact h 0.35..1.45 m, edge [], floor OstranderFederal/Geometry/Site/Grade/GradeAvenue
+    why_no_step { "no_contact_ahead": 4, "blocked_at_step_height": 4 }
+    verdict { "unclear (no_contact_ahead)": 4, "geometry: blocked above step height (overhang / sill / narrow gap), not a step problem [no visible mesh at the contact: invisible collider?]": 4 }
+    hit Dynamic/AssaultEvent_turret_van_3/Body [AnimatableBody3D, BoxShape3D (2.40, 2.60, 6.00), layer 2 (world_dynamic), NO MESH]
+#3 at (35.74, -0.75, 56.45)  x7  status { "deflected": 3, "stuck": 4 }  headings 225,225,180,180,225,180,180
+    dh A->B 0.00..0.00 m, lip ahead -0.00..-0.00 m, contact h 0.35..1.45 m, edge [], floor OstranderFederal/Geometry/Site/Grade/GradeAvenue
+    why_no_step { "blocked_at_step_height": 7 }
+    verdict { "geometry: blocked above step height (overhang / sill / narrow gap), not a step problem [no visible mesh at the contact: invisible collider?]": 7 }
+    hit Dynamic/AssaultEvent_turret_van_3/Body [AnimatableBody3D, BoxShape3D (2.40, 2.60, 6.00), layer 2 (world_dynamic), NO MESH]
+#4 at (31.09, -0.75, 59.57)  x6  status { "deflected": 4, "stuck": 2 }  headings 225,45,90,0,45,45
+    dh A->B 0.00..0.00 m, lip ahead -0.00..-0.00 m, contact h 0.35..1.45 m, edge [], floor OstranderFederal/Geometry/Site/Grade/GradeAvenue
+    why_no_step { "no_contact_ahead": 4, "blocked_at_step_height": 2 }
+    verdict { "unclear (no_contact_ahead)": 4, "geometry: blocked above step height (overhang / sill / narrow gap), not a step problem [no visible mesh at the contact: invisible collider?]": 2 }
+    hit Dynamic/AssaultEvent_turret_van_3/Body [AnimatableBody3D, BoxShape3D (2.40, 2.60, 6.00), layer 2 (world_dynamic), NO MESH]
+#5 at (32.87, -0.75, 59.55)  x5  status { "stuck": 4, "deflected": 1 }  headings 0,0,0,0,45
+    dh A->B 0.00..0.00 m, lip ahead -0.00..-0.00 m, contact h 0.35..1.45 m, edge [], floor OstranderFederal/Geometry/Site/Grade/GradeAvenue
+    why_no_step { "blocked_at_step_height": 5 }
+    verdict { "geometry: blocked above step height (overhang / sill / narrow gap), not a step problem [no visible mesh at the contact: invisible collider?]": 5 }
+    hit Dynamic/AssaultEvent_turret_van_3/Body [AnimatableBody3D, BoxShape3D (2.40, 2.60, 6.00), layer 2 (world_dynamic), NO MESH]
+#6 at (33.90, -0.75, 56.45)  x5  status { "stuck": 4, "deflected": 1 }  headings 180,180,135,180,180
+    dh A->B 0.00..0.00 m, lip ahead -0.00..-0.00 m, contact h 0.35..1.45 m, edge [], floor OstranderFederal/Geometry/Site/Grade/GradeAvenue
+    why_no_step { "blocked_at_step_height": 5 }
+    verdict { "geometry: blocked above step height (overhang / sill / narrow gap), not a step problem [no visible mesh at the contact: invisible collider?]": 5 }
+    hit Dynamic/AssaultEvent_turret_van_3/Body [AnimatableBody3D, BoxShape3D (2.40, 2.60, 6.00), layer 2 (world_dynamic), NO MESH]
+#7 at (37.81, -0.75, 59.25)  x5  status { "stuck": 3, "deflected": 2 }  headings 270,270,315,315,45
+    dh A->B 0.00..0.00 m, lip ahead -0.00..-0.00 m, contact h 0.35..1.45 m, edge [], floor OstranderFederal/Geometry/Site/Grade/GradeAvenue
+    why_no_step { "no_contact_ahead": 4, "blocked_at_step_height": 1 }
+    verdict { "unclear (no_contact_ahead)": 4, "geometry: blocked above step height (overhang / sill / narrow gap), not a step problem [no visible mesh at the contact: invisible collider?]": 1 }
+    hit Dynamic/AssaultEvent_turret_van_3/Body [AnimatableBody3D, BoxShape3D (2.40, 2.60, 6.00), layer 2 (world_dynamic), NO MESH]
+#8 at (36.38, -0.75, 59.55)  x5  status { "deflected": 4, "stuck": 1 }  headings 315,315,315,315,0
+    dh A->B 0.00..0.00 m, lip ahead -0.00..-0.00 m, contact h 0.35..1.45 m, edge [], floor OstranderFederal/Geometry/Site/Grade/GradeAvenue
+    why_no_step { "blocked_at_step_height": 5 }
+    verdict { "geometry: blocked above step height (overhang / sill / narrow gap), not a step problem [no visible mesh at the contact: invisible collider?]": 5 }
+    hit Dynamic/AssaultEvent_turret_van_3/Body [AnimatableBody3D, BoxShape3D (2.40, 2.60, 6.00), layer 2 (world_dynamic), NO MESH]
+#9 at (34.87, -0.75, 59.55)  x5  status { "stuck": 4, "deflected": 1 }  headings 0,0,315,0,0
+    dh A->B 0.00..0.00 m, lip ahead -0.00..-0.00 m, contact h 0.35..1.45 m, edge [], floor OstranderFederal/Geometry/Site/Grade/GradeAvenue
+    why_no_step { "blocked_at_step_height": 5 }
+    verdict { "geometry: blocked above step height (overhang / sill / narrow gap), not a step problem [no visible mesh at the contact: invisible collider?]": 5 }
+    hit Dynamic/AssaultEvent_turret_van_3/Body [AnimatableBody3D, BoxShape3D (2.40, 2.60, 6.00), layer 2 (world_dynamic), NO MESH]
+#10 at (37.17, -0.75, 56.68)  x4  status { "deflected": 2, "stuck": 2 }  headings 225,270,225,90
+    dh A->B 0.00..0.00 m, lip ahead -0.00..-0.00 m, contact h 0.35..1.45 m, edge [], floor OstranderFederal/Geometry/Site/Grade/GradeAvenue
+    why_no_step { "blocked_at_step_height": 3, "no_contact_ahead": 1 }
+    verdict { "geometry: blocked above step height (overhang / sill / narrow gap), not a step problem [no visible mesh at the contact: invisible collider?]": 3, "unclear (no_contact_ahead)": 1 }
+    hit Dynamic/AssaultEvent_turret_van_3/Body [AnimatableBody3D, BoxShape3D (2.40, 2.60, 6.00), layer 2 (world_dynamic), NO MESH]
+#11 at (38.90, -0.75, 58.01)  x4  status { "deflected": 4 }  headings 225,225,315,315
+    dh A->B 0.00..0.00 m, lip ahead -0.00..-0.00 m, contact h nan..nan m, edge [], floor OstranderFederal/Geometry/Site/Grade/GradeAvenue
+    why_no_step { "no_contact_ahead": 4 }
+    verdict { "unclear (no_contact_ahead)": 4 }
+#12 at (39.93, -0.75, 59.34)  x4  status { "deflected": 2, "stuck": 2 }  headings 225,225,270,270
+    dh A->B 0.00..0.00 m, lip ahead -0.00..-0.00 m, contact h nan..nan m, edge [], floor OstranderFederal/Geometry/Site/Grade/GradeAvenue
+    why_no_step { "no_contact_ahead": 4 }
+    verdict { "unclear (no_contact_ahead)": 4 }
+#13 at (30.52, -0.75, 61.65)  x4  status { "stuck": 2, "deflected": 2 }  headings 180,180,135,135
+    dh A->B 0.00..0.00 m, lip ahead -0.00..-0.00 m, contact h 0.35..1.35 m, edge [], floor OstranderFederal/Geometry/Site/Grade/GradeAvenue
+    why_no_step { "blocked_at_step_height": 4 }
+    verdict { "geometry: blocked above step height (overhang / sill / narrow gap), not a step problem": 4 }
+    hit OstranderFederal/Geometry/Site/Closures/AssayBalustrade [StaticBody3D, BoxShape3D (82.00, 1.35, 0.40), layer 1 (world_static)]
+#14 at (39.93, -0.75, 56.59)  x3  status { "stuck": 2, "deflected": 1 }  headings 270,270,315
+    dh A->B 0.00..0.00 m, lip ahead -0.00..-0.00 m, contact h nan..nan m, edge [], floor OstranderFederal/Geometry/Site/Grade/GradeAvenue
+    why_no_step { "no_contact_ahead": 3 }
+    verdict { "unclear (no_contact_ahead)": 3 }
+#15 at (27.81, -0.75, 56.44)  x3  status { "stuck": 3 }  headings 90,90,45
+    dh A->B 0.00..0.00 m, lip ahead -0.00..-0.00 m, contact h nan..nan m, edge [], floor OstranderFederal/Geometry/Site/Grade/GradeAvenue
+    why_no_step { "no_contact_ahead": 3 }
+    verdict { "unclear (no_contact_ahead)": 3 }
+#16 at (30.76, -0.75, 52.82)  x3  status { "stuck": 3 }  headings 0,45,0
+    dh A->B 0.00..0.00 m, lip ahead -0.00..-0.00 m, contact h nan..nan m, edge [], floor OstranderFederal/Geometry/Site/Grade/GradeAvenue
+    why_no_step { "no_contact_ahead": 3 }
+    verdict { "unclear (no_contact_ahead)": 3 }
+#17 at (32.16, -0.75, 61.17)  x3  status { "deflected": 3 }  headings 225,225,135
+    dh A->B 0.00..0.00 m, lip ahead -0.00..-0.00 m, contact h 0.35..1.35 m, edge [], floor OstranderFederal/Geometry/Site/Grade/GradeAvenue
+    why_no_step { "no_contact_ahead": 2, "blocked_at_step_height": 1 }
+    verdict { "unclear (no_contact_ahead)": 2, "geometry: blocked above step height (overhang / sill / narrow gap), not a step problem": 1 }
+    hit OstranderFederal/Geometry/Site/Closures/AssayBalustrade [StaticBody3D, BoxShape3D (82.00, 1.35, 0.40), layer 1 (world_static)]
+#18 at (30.65, -0.75, 56.54)  x3  status { "deflected": 2, "stuck": 1 }  headings 135,135,90
+    dh A->B 0.00..0.00 m, lip ahead -0.00..-0.00 m, contact h nan..nan m, edge [], floor OstranderFederal/Geometry/Site/Grade/GradeAvenue
+    why_no_step { "no_contact_ahead": 3 }
+    verdict { "unclear (no_contact_ahead)": 3 }
+#19 at (38.09, -0.75, 56.90)  x3  status { "deflected": 2, "stuck": 1 }  headings 225,270,225
+    dh A->B 0.00..0.00 m, lip ahead -0.00..-0.00 m, contact h nan..nan m, edge [], floor OstranderFederal/Geometry/Site/Grade/GradeAvenue
+    why_no_step { "no_contact_ahead": 3 }
+    verdict { "unclear (no_contact_ahead)": 3 }
+#20 at (37.45, -0.75, 58.37)  x2  status { "stuck": 2 }  headings 90,90
+    dh A->B 0.00..0.00 m, lip ahead -0.00..-0.00 m, contact h 0.35..1.45 m, edge [], floor OstranderFederal/Geometry/Site/Grade/GradeAvenue
+    why_no_step { "blocked_at_step_height": 2 }
+    verdict { "geometry: blocked above step height (overhang / sill / narrow gap), not a step problem [no visible mesh at the contact: invisible collider?]": 2 }
+    hit Dynamic/AssaultEvent_turret_van_3/Body [AnimatableBody3D, BoxShape3D (2.40, 2.60, 6.00), layer 2 (world_dynamic), NO MESH]
+#21 at (34.88, -0.75, 61.65)  x2  status { "deflected": 2 }  headings 135,135
+    dh A->B 0.00..0.00 m, lip ahead -0.00..-0.00 m, contact h 0.35..1.35 m, edge [], floor OstranderFederal/Geometry/Site/Grade/GradeAvenue
+    why_no_step { "blocked_at_step_height": 2 }
+    verdict { "geometry: blocked above step height (overhang / sill / narrow gap), not a step problem": 2 }
+    hit OstranderFederal/Geometry/Site/Closures/AssayBalustrade [StaticBody3D, BoxShape3D (82.00, 1.35, 0.40), layer 1 (world_static)]
+#22 at (37.20, -0.75, 61.65)  x2  status { "deflected": 1, "stuck": 1 }  headings 225,180
+    dh A->B 0.00..0.00 m, lip ahead -0.00..-0.00 m, contact h 0.35..1.35 m, edge [], floor OstranderFederal/Geometry/Site/Grade/GradeAvenue
+    why_no_step { "blocked_at_step_height": 2 }
+    verdict { "geometry: blocked above step height (overhang / sill / narrow gap), not a step problem": 2 }
+    hit OstranderFederal/Geometry/Site/Closures/AssayBalustrade [StaticBody3D, BoxShape3D (82.00, 1.35, 0.40), layer 1 (world_static)]
+#23 at (28.85, -0.75, 57.42)  x2  status { "deflected": 2 }  headings 45,45
+    dh A->B 0.00..0.00 m, lip ahead -0.00..-0.00 m, contact h nan..nan m, edge [], floor OstranderFederal/Geometry/Site/Grade/GradeAvenue
+    why_no_step { "no_contact_ahead": 2 }
+    verdict { "unclear (no_contact_ahead)": 2 }
+#24 at (27.80, -0.75, 59.55)  x2  status { "stuck": 2 }  headings 90,90
+    dh A->B 0.00..0.00 m, lip ahead -0.00..-0.00 m, contact h nan..nan m, edge [], floor OstranderFederal/Geometry/Site/Grade/GradeAvenue
+    why_no_step { "no_contact_ahead": 2 }
+    verdict { "unclear (no_contact_ahead)": 2 }
+#25 at (35.62, -0.75, 54.85)  x2  status { "deflected": 2 }  headings 45,45
+    dh A->B 0.00..0.00 m, lip ahead -0.00..-0.00 m, contact h nan..nan m, edge [], floor OstranderFederal/Geometry/Site/Grade/GradeAvenue
+    why_no_step { "no_contact_ahead": 2 }
+    verdict { "unclear (no_contact_ahead)": 2 }
+#26 at (32.61, -0.75, 54.81)  x2  status { "deflected": 2 }  headings 315,315
+    dh A->B 0.00..0.00 m, lip ahead -0.00..-0.00 m, contact h nan..nan m, edge [], floor OstranderFederal/Geometry/Site/Grade/GradeAvenue
+    why_no_step { "no_contact_ahead": 2 }
+    verdict { "unclear (no_contact_ahead)": 2 }
+#27 at (33.35, -0.75, 61.65)  x2  status { "stuck": 1, "deflected": 1 }  headings 225,225
+    dh A->B 0.00..0.00 m, lip ahead -0.00..-0.00 m, contact h 0.35..1.35 m, edge [], floor OstranderFederal/Geometry/Site/Grade/GradeAvenue
+    why_no_step { "blocked_at_step_height": 2 }
+    verdict { "geometry: blocked above step height (overhang / sill / narrow gap), not a step problem": 2 }
+    hit OstranderFederal/Geometry/Site/Closures/AssayBalustrade [StaticBody3D, BoxShape3D (82.00, 1.35, 0.40), layer 1 (world_static)]
+#28 at (28.83, -0.75, 58.59)  x2  status { "deflected": 2 }  headings 135,135
+    dh A->B 0.00..0.00 m, lip ahead -0.00..-0.00 m, contact h nan..nan m, edge [], floor OstranderFederal/Geometry/Site/Grade/GradeAvenue
+    why_no_step { "no_contact_ahead": 2 }
+    verdict { "unclear (no_contact_ahead)": 2 }
+#29 at (27.16, -0.75, 61.30)  x2  status { "stuck": 2 }  headings 135,135
+    dh A->B 0.00..0.00 m, lip ahead -0.00..-0.00 m, contact h 0.35..1.35 m, edge [], floor OstranderFederal/Geometry/Site/Grade/GradeAvenue
+    why_no_step { "no_contact_ahead": 1, "blocked_at_step_height": 1 }
+    verdict { "unclear (no_contact_ahead)": 1, "geometry: blocked above step height (overhang / sill / narrow gap), not a step problem": 1 }
+    hit OstranderFederal/Geometry/Site/Closures/AssayBalustrade [StaticBody3D, BoxShape3D (82.00, 1.35, 0.40), layer 1 (world_static)]
+#30 at (27.16, -0.75, 54.28)  x2  status { "stuck": 2 }  headings 45,45
+    dh A->B 0.00..0.00 m, lip ahead -0.00..-0.00 m, contact h nan..nan m, edge [], floor OstranderFederal/Geometry/Site/Grade/GradeAvenue
+    why_no_step { "no_contact_ahead": 2 }
+    verdict { "unclear (no_contact_ahead)": 2 }
+#31 at (36.46, -0.75, 52.86)  x2  status { "stuck": 2 }  headings 315,315
+    dh A->B 0.00..0.00 m, lip ahead -0.00..-0.00 m, contact h nan..nan m, edge [], floor OstranderFederal/Geometry/Site/Grade/GradeAvenue
+    why_no_step { "no_contact_ahead": 2 }
+    verdict { "unclear (no_contact_ahead)": 2 }
+#32 at (29.28, -0.75, 52.86)  x2  status { "stuck": 2 }  headings 45,45
+    dh A->B 0.00..0.00 m, lip ahead -0.00..-0.00 m, contact h nan..nan m, edge [], floor OstranderFederal/Geometry/Site/Grade/GradeAvenue
+    why_no_step { "no_contact_ahead": 2 }
+    verdict { "unclear (no_contact_ahead)": 2 }
+#33 at (38.46, -0.75, 52.86)  x2  status { "stuck": 2 }  headings 315,315
+    dh A->B 0.00..0.00 m, lip ahead -0.00..-0.00 m, contact h nan..nan m, edge [], floor OstranderFederal/Geometry/Site/Grade/GradeAvenue
+    why_no_step { "no_contact_ahead": 2 }
+    verdict { "unclear (no_contact_ahead)": 2 }
+#34 at (32.28, -0.75, 52.86)  x2  status { "stuck": 2 }  headings 45,45
+    dh A->B 0.00..0.00 m, lip ahead -0.00..-0.00 m, contact h nan..nan m, edge [], floor OstranderFederal/Geometry/Site/Grade/GradeAvenue
+    why_no_step { "no_contact_ahead": 2 }
+    verdict { "unclear (no_contact_ahead)": 2 }
+#35 at (35.92, -0.75, 61.27)  x2  status { "deflected": 2 }  headings 135,225
+    dh A->B 0.00..0.00 m, lip ahead -0.00..-0.00 m, contact h 0.35..1.35 m, edge [], floor OstranderFederal/Geometry/Site/Grade/GradeAvenue
+    why_no_step { "no_contact_ahead": 1, "blocked_at_step_height": 1 }
+    verdict { "unclear (no_contact_ahead)": 1, "geometry: blocked above step height (overhang / sill / narrow gap), not a step problem": 1 }
+    hit OstranderFederal/Geometry/Site/Closures/AssayBalustrade [StaticBody3D, BoxShape3D (82.00, 1.35, 0.40), layer 1 (world_static)]
+#36 at (29.29, -0.75, 56.45)  x1  status { "stuck": 1 }  headings 90
+    dh A->B 0.00..0.00 m, lip ahead -0.00..-0.00 m, contact h nan..nan m, edge [], floor OstranderFederal/Geometry/Site/Grade/GradeAvenue
+    why_no_step { "no_contact_ahead": 1 }
+    verdict { "unclear (no_contact_ahead)": 1 }
+#37 at (28.78, -0.75, 61.65)  x1  status { "deflected": 1 }  headings 135
+    dh A->B 0.00..0.00 m, lip ahead -0.00..-0.00 m, contact h 0.35..1.35 m, edge [], floor OstranderFederal/Geometry/Site/Grade/GradeAvenue
+    why_no_step { "blocked_at_step_height": 1 }
+    verdict { "geometry: blocked above step height (overhang / sill / narrow gap), not a step problem": 1 }
+    hit OstranderFederal/Geometry/Site/Closures/AssayBalustrade [StaticBody3D, BoxShape3D (82.00, 1.35, 0.40), layer 1 (world_static)]
+#38 at (41.45, -0.75, 56.45)  x1  status { "stuck": 1 }  headings 270
+    dh A->B 0.00..0.00 m, lip ahead -0.00..-0.00 m, contact h nan..nan m, edge [], floor OstranderFederal/Geometry/Site/Grade/GradeAvenue
+    why_no_step { "no_contact_ahead": 1 }
+    verdict { "unclear (no_contact_ahead)": 1 }
+#39 at (39.96, -0.75, 52.86)  x1  status { "stuck": 1 }  headings 315
+    dh A->B 0.00..0.00 m, lip ahead -0.00..-0.00 m, contact h nan..nan m, edge [], floor OstranderFederal/Geometry/Site/Grade/GradeAvenue
+    why_no_step { "no_contact_ahead": 1 }
+    verdict { "unclear (no_contact_ahead)": 1 }
+#40 at (29.30, -0.75, 59.55)  x1  status { "stuck": 1 }  headings 90
+    dh A->B 0.00..0.00 m, lip ahead -0.00..-0.00 m, contact h nan..nan m, edge [], floor OstranderFederal/Geometry/Site/Grade/GradeAvenue
+    why_no_step { "no_contact_ahead": 1 }
+    verdict { "unclear (no_contact_ahead)": 1 }
+#41 at (37.96, -0.75, 61.65)  x1  status { "deflected": 1 }  headings 225
+    dh A->B 0.00..0.00 m, lip ahead -0.00..-0.00 m, contact h 0.35..1.35 m, edge [], floor OstranderFederal/Geometry/Site/Grade/GradeAvenue
+    why_no_step { "blocked_at_step_height": 1 }
+    verdict { "geometry: blocked above step height (overhang / sill / narrow gap), not a step problem": 1 }
+    hit OstranderFederal/Geometry/Site/Closures/AssayBalustrade [StaticBody3D, BoxShape3D (82.00, 1.35, 0.40), layer 1 (world_static)]
+#42 at (38.96, -0.75, 61.65)  x1  status { "deflected": 1 }  headings 225
+    dh A->B 0.00..0.00 m, lip ahead -0.00..-0.00 m, contact h 0.35..1.35 m, edge [], floor OstranderFederal/Geometry/Site/Grade/GradeAvenue
+    why_no_step { "blocked_at_step_height": 1 }
+    verdict { "geometry: blocked above step height (overhang / sill / narrow gap), not a step problem": 1 }
+    hit OstranderFederal/Geometry/Site/Closures/AssayBalustrade [StaticBody3D, BoxShape3D (82.00, 1.35, 0.40), layer 1 (world_static)]
+#43 at (31.86, -0.75, 59.55)  x1  status { "deflected": 1 }  headings 45
+    dh A->B 0.00..0.00 m, lip ahead -0.00..-0.00 m, contact h 0.35..1.45 m, edge [], floor OstranderFederal/Geometry/Site/Grade/GradeAvenue
+    why_no_step { "blocked_at_step_height": 1 }
+    verdict { "geometry: blocked above step height (overhang / sill / narrow gap), not a step problem [no visible mesh at the contact: invisible collider?]": 1 }
+    hit Dynamic/AssaultEvent_turret_van_3/Body [AnimatableBody3D, BoxShape3D (2.40, 2.60, 6.00), layer 2 (world_dynamic), NO MESH]
+#44 at (37.45, -0.75, 53.29)  x1  status { "stuck": 1 }  headings 0
+    dh A->B 0.00..0.00 m, lip ahead -0.00..-0.00 m, contact h nan..nan m, edge [], floor OstranderFederal/Geometry/Site/Grade/GradeAvenue
+    why_no_step { "no_contact_ahead": 1 }
+    verdict { "unclear (no_contact_ahead)": 1 }
+#45 at (41.04, -0.75, 61.65)  x1  status { "stuck": 1 }  headings 225
+    dh A->B 0.00..0.00 m, lip ahead -0.00..-0.00 m, contact h 0.35..1.35 m, edge [], floor OstranderFederal/Geometry/Site/Grade/GradeAvenue
+    why_no_step { "blocked_at_step_height": 1 }
+    verdict { "geometry: blocked above step height (overhang / sill / narrow gap), not a step problem": 1 }
+    hit OstranderFederal/Geometry/Site/Closures/AssayBalustrade [StaticBody3D, BoxShape3D (82.00, 1.35, 0.40), layer 1 (world_static)]
+#46 at (41.04, -0.75, 54.78)  x1  status { "stuck": 1 }  headings 315
+    dh A->B 0.00..0.00 m, lip ahead -0.00..-0.00 m, contact h nan..nan m, edge [], floor OstranderFederal/Geometry/Site/Grade/GradeAvenue
+    why_no_step { "no_contact_ahead": 1 }
+    verdict { "unclear (no_contact_ahead)": 1 }
+#47 at (33.58, -0.75, 53.85)  x1  status { "deflected": 1 }  headings 315
+    dh A->B 0.00..0.00 m, lip ahead -0.00..-0.00 m, contact h nan..nan m, edge [], floor OstranderFederal/Geometry/Site/Grade/GradeAvenue
+    why_no_step { "no_contact_ahead": 1 }
+    verdict { "unclear (no_contact_ahead)": 1 }
+#48 at (34.62, -0.75, 53.85)  x1  status { "deflected": 1 }  headings 45
+    dh A->B 0.00..0.00 m, lip ahead -0.00..-0.00 m, contact h nan..nan m, edge [], floor OstranderFederal/Geometry/Site/Grade/GradeAvenue
+    why_no_step { "no_contact_ahead": 1 }
+    verdict { "unclear (no_contact_ahead)": 1 }

@@ -1,0 +1,37 @@
+[INFO][heist][p1] DEV OPTION crew_damage_taken_mult = 0.25 (D-133 harness-only)
+[PO5 67.2s] DEV OPTION crew_damage_taken_mult=0.25 (D-133 harness-only; assault events on)
+[PO5 72.4s] [X4] ostrander_federal    2.2 s  launched seed 6, variants { &"manager_route": [&"mgr_gallery"], &"keycard": [&"kc_security"], &"code_pc": [&"pc_vault_ops"], &"officers": [&"off_2"], &"server_room": [&"srv_gallery"], &"guard_post": [&"rover_basement", &"rover_dock"], &"security_room_staffed": [&"sec_empty"], &"camera": [&"cam_a"], &"laser_pattern": [&"lz_static"], &"customers": [&"cust
+[PO5 73.3s] [X4] ostrander_federal    3.2 s  objective casing COMPLETED
+[INFO][stealth][p1] ALARM: x4_loud (source 0)
+[INFO][director][p1] assault phase CONTROL (wave 1, 20 s)
+[PO5 73.4s] [X4] ostrander_federal    3.2 s  objective keycard COMPLETED
+[PO5 73.4s] [X4] ostrander_federal    3.2 s  objective code_hint COMPLETED
+[PO5 73.4s] [X4] ostrander_federal    3.2 s  objective code_pc COMPLETED
+[PO5 73.4s] [X4] ostrander_federal    3.2 s  objective server COMPLETED
+[PO5 73.4s] [X4] ostrander_federal    3.2 s  objective vault_gate COMPLETED
+[PO5 73.4s] [X4] ostrander_federal    3.2 s  objective lasers COMPLETED
+[PO5 73.5s] [X4] ostrander_federal    3.2 s  ALARM x4_loud
+[INFO][director][p1] assault events: 3 rows for ostrander_federal (tweak)
+[INFO][director][p1] assault phase ANTICIPATION (wave 1, 30 s)
+[INFO][director][p1] assault phase BUILD (wave 1, 35 s)
+[PO5 119.2s] [X4] ostrander_federal   68.6 s  objective drill_delivery COMPLETED
+[INFO][director][p1] assault phase SUSTAIN (wave 1, 52 s)
+[INFO][director][p1] assault phase FADE (wave 1, 15 s)
+[INFO][director][p1] assault phase CONTROL (wave 2, 40 s)
+[INFO][director][p1] assault phase ANTICIPATION (wave 2, 30 s)
+[INFO][director][p1] assault phase BUILD (wave 2, 35 s)
+[INFO][director][p1] assault phase SUSTAIN (wave 2, 156 s)
+[INFO][director][p1] assault phase FADE (wave 2, 15 s)
+[INFO][director][p1] assault phase CONTROL (wave 3, 40 s)
+[PO5 352.8s] [X4] ostrander_federal  434.0 s  objective vault_drill COMPLETED
+[PO5 352.8s] [X4] ostrander_federal  434.0 s  objective vault_breach COMPLETED
+[INFO][director][p1] assault phase ANTICIPATION (wave 3, 30 s)
+[INFO][director][p1] assault phase BUILD (wave 3, 35 s)
+[PO5 400.2s] [X4] ostrander_federal  506.6 s  objective secure COMPLETED
+[PO5 400.2s] [X4] ostrander_federal  506.6 s  objective vault_loot COMPLETED
+[INFO][director][p1] assault phase SUSTAIN (wave 3, 208 s)
+[PO5 451.8s] [X4] ostrander_federal  626.7 s  objective escape_wait COMPLETED
+[PO5 451.9s] [X4] ostrander_federal  626.7 s  objective escape COMPLETED
+[PO5 452.0s] [X4] ostrander_federal  626.7 s  loud route done at 626.7 s heist; objectives [&"casing", &"keycard", &"code_hint", &"code_pc", &"server", &"vault_gate", &"lasers", &"drill_delivery", &"vault_drill", &"vault_breach", &"secure", &"vault_loot", &"escape_wait", &"escape"]; secured [&"loot.cash_bricks", &"loot.cash_bricks", &"loot.cash_bricks", &"loot.cash_bricks"]; jams fixed 1; hoist tr
+[PO5 452.0s] RESULT of_loud route PASS seed 6: [&"casing", &"keycard", &"code_hint", &"code_pc", &"server", &"vault_gate", &"lasers", &"drill_delivery", &"vault_drill", &"vault_breach", &"secure", &"vault_loot", &"escape_wait", &"escape"]
+[PO5 469.8s] RESULT PASS (code 0) flow=of_loud heist=Ostrander Federal seed=6

@@ -355,19 +355,23 @@ def dress(kit) -> None:
         return
     unit = kit.opts["unit"]
     site = SITES[unit]
+    # D-145.3 faction duty looks (``armored`` False): no armour, so no Zero pauldrons, no ballistic face mask (it sits
+    # under a helmet rim) and no helmet decals (a soft cap); the arm patches the pauldrons would cover come back
+    armored = kit.opts.get("armored", True)
     if faction == "zero":
-        _zero_bulk(kit, unit)
-        if site["mask"]:
-            zero_mask(kit)
+        if armored:
+            _zero_bulk(kit, unit)
+            if site["mask"]:
+                zero_mask(kit)
         _zero_unit(kit, unit)
     if site["back"] is not None:
         h = 0.11 if faction == "frd" else (ZERO_BACK.get(unit, 0.12) if faction == "zero" else 0.12)
         _torso(kit, faction, site["back"], front=False, h=h)
     if site["chest"] is not None:
         _torso(kit, faction, site["chest"], front=True, h=0.030 if faction == "frd" else 0.042)
-    if site["arm"] is not None and not (faction == "zero" and unit == "tac"):
+    if site["arm"] is not None and not (faction == "zero" and unit == "tac" and armored):
         _arms(kit, faction, site["arm"])
-    if site["helmet"]:
+    if site["helmet"] and armored:
         _helmet(kit, faction)
     extra = getattr(kit, "extra", {})
     if "Faceplate" in extra and faction in FACEPLATE:
@@ -375,6 +379,9 @@ def dress(kit) -> None:
         fp.m = [FACEPLATE[faction].get(x, x) for x in fp.m]
     recolor(kit, REMAP[faction])
     tag(kit.ctx, faction)
+    if not armored:     # char_<id>_<faction>_duty: the <id> look, variant "<faction>_duty" (scene <id>_<faction>_duty)
+        kit.ctx.source_extra["variant_of"] = base_id(kit.ctx.asset_id, faction).removesuffix("_duty")
+        kit.ctx.source_extra["visual_variant"] = f"{faction}_duty"
     kit.notes["faction"] = faction
 
 

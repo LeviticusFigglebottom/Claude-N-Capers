@@ -1,3 +1,4 @@
+# gdlint:disable=max-public-methods
 ## X-4 (docs/process/heist_completion.md): stealth end-to-end flows for Nightfall Depository (night_deposit), Shadow
 ## Ledger (shadow_ledger), Gallery Night (gallery_night) and Ostrander Federal (ostrander_federal; its loud line too,
 ## x4_of_loud.gd). Owner: ENV A (test support).
@@ -43,6 +44,10 @@ var secured_loot: Array[StringName] = []
 var laser_waits: int = 0
 ## AI teammates launched with the bot (0: the stealth routes go solo; the OF loud flow takes the PD2 bots, L6.1).
 var ai_teammates: int = 0
+## The launch difficulty (the X-4 gates run Routine; test_x4_of_hard.gd probes the higher ones).
+var difficulty: int = Enums.Difficulty.ROUTINE
+## Where note() lines go instead of print (the po5 driver's run.log on the real-menu flows).
+var sink: Callable = Callable()
 ## Route facts a test asserts on (e.g. the GN curator card branch: &"curator_card_*").
 var facts: Dictionary = {}
 ## Laser grids the route crosses (guard_lasers) and the sign of their guarded side (local z).
@@ -61,7 +66,11 @@ func _init(p_host: Node) -> void:
 
 func note(msg: String) -> void:
 	var t: float = rt.heist_time_s if rt != null and is_instance_valid(rt) else 0.0
-	print("[X4] %s %6.1f s  %s" % [heist, t, msg])
+	var line: String = "[X4] %s %6.1f s  %s" % [heist, t, msg]
+	if sink.is_valid():
+		sink.call(line)
+	else:
+		print(line)
 
 
 func check(ok: bool, msg: String) -> bool:
@@ -79,9 +88,16 @@ func launch(heist_id: StringName, seed_value: int, options: Dictionary = {}) -> 
 	Engine.time_scale = 1.0
 	var opts: Dictionary = options.duplicate()
 	opts["ai_teammates"] = ai_teammates
-	rt = await HeistLauncher.launch(heist_id, seed_value, Enums.Difficulty.ROUTINE, host, opts)
-	if not check(rt != null, "HeistLauncher.launch(%s, %d)" % [heist_id, seed_value]):
+	var launched: HeistRuntime = await HeistLauncher.launch(heist_id, seed_value, difficulty, host, opts)
+	if not check(launched != null, "HeistLauncher.launch(%s, %d)" % [heist_id, seed_value]):
 		return false
+	return await attach(launched, seed_value)
+
+
+## Adopt a runtime someone else launched (the real menus, po5_flow_of_*.gd): the same listeners as launch().
+func attach(p_rt: HeistRuntime, seed_value: int) -> bool:
+	rt = p_rt
+	heist = rt.heist_id if heist == &"" else heist
 	crew = rt.crew_controller(0) as CrewController
 	var nav_ok: bool = await wait_until(func() -> bool: return BotUtil.nav_ready(crew), 10.0)
 	if not check(nav_ok, "navigation map ready"):
@@ -117,6 +133,16 @@ func _alarm_source(src: int) -> String:
 
 
 func teardown() -> void:
+	detach()
+	if rt != null and is_instance_valid(rt):
+		rt.teardown()
+	rt = null
+	await host.get_tree().process_frame
+
+
+## Drop every listener and hand crew slot 0 back to its input (the runtime keeps running: real-menu flows go on to the
+## payday).
+func detach() -> void:
 	Engine.time_scale = 1.0
 	for c: Array in _conns:
 		var sig: Signal = c[0]
@@ -125,9 +151,6 @@ func teardown() -> void:
 	_conns.clear()
 	if rt != null and is_instance_valid(rt):
 		rt.clear_bot_intent(0)
-		rt.teardown()
-	rt = null
-	await host.get_tree().process_frame
 
 
 func _listen(sig: Signal, cb: Callable) -> void:
