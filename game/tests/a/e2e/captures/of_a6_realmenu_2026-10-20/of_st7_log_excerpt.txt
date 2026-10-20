@@ -1,0 +1,16 @@
+[PO5 76.2s] [X4] ostrander_federal    2.2 s  launched seed 7, variants { &"manager_route": [&"mgr_floor"], &"keycard": [&"kc_manager_desk"], &"code_pc": [&"pc_exec"], &"officers": [&"off_2"], &"server_room": [&"srv_gallery"], &"guard_post": [&"rover_gallery", &"rover_hall"], &"security_room_staffed": [&"sec_empty"], &"camera": [&"cam_a"], &"laser_pattern": [&"lz_sweep"], &"customers": [&"cust_6"],
+[PO5 77.1s] [X4] ostrander_federal    3.2 s  objective casing COMPLETED
+[PO5 77.7s] [X4] ostrander_federal    3.8 s  objective keycard COMPLETED
+[PO5 97.7s] [X4] ostrander_federal   53.1 s  objective code_pc COMPLETED
+[PO5 98.8s] [X4] ostrander_federal   54.2 s  objective vault_gate COMPLETED
+[PO5 101.3s] [X4] ostrander_federal   58.0 s  objective time_lock COMPLETED
+[PO5 138.9s] [X4] ostrander_federal  208.0 s  objective time_lock_wait COMPLETED
+[PO5 149.8s] [X4] ostrander_federal  222.0 s  objective secure COMPLETED
+[PO5 149.8s] [X4] ostrander_federal  222.0 s  objective vault_loot COMPLETED
+[PO5 149.8s] [X4] ostrander_federal  222.0 s  objective code_hint COMPLETED
+[PO5 149.8s] [X4] ostrander_federal  222.0 s  objective server COMPLETED
+[PO5 149.8s] [X4] ostrander_federal  222.0 s  objective lasers COMPLETED
+[PO5 149.8s] [X4] ostrander_federal  222.0 s  objective escape COMPLETED
+[PO5 149.9s] [X4] ostrander_federal  222.0 s  route done at 222.0 s heist; objectives [&"casing", &"keycard", &"code_pc", &"vault_gate", &"time_lock", &"time_lock_wait", &"secure", &"vault_loot", &"code_hint", &"server", &"lasers", &"escape"]; secured [&"loot.cash_bricks", &"loot.cash_bricks", &"loot.cash_bricks", &"loot.cash_bricks"]; laser waits 8
+[PO5 149.9s] RESULT of_stealth route PASS seed 7: [&"casing", &"keycard", &"code_pc", &"vault_gate", &"time_lock", &"time_lock_wait", &"secure", &"vault_loot", &"code_hint", &"server", &"lasers", &"escape"]
+[PO5 167.7s] RESULT PASS (code 0) flow=of_stealth heist=Ostrander Federal seed=7

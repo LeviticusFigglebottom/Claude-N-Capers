@@ -31,6 +31,71 @@ static func build(graph: PatrolGraph, start_pos: Vector3, rng: RandomNumberGener
 	return out
 
 
+## Hub loops (OF-A6, LEAD 2026-10-20; doc ostrander_federal.md rover_dock / rover_basement (a)/(b)/(c)): from `hub`,
+## walk each loop's stops in turn (shortest paths by distance over the whole graph) and back to the hub, the loops in an
+## order the RNG shuffles once. `loops` = Array of Array[PatrolPoint] (stops per loop); empty = derived: one loop per
+## pause point (pause_range.y > 0) reachable from the hub. Returns the cyclic visiting order starting at the hub (the
+## closing hub visit dropped), or [] when nothing is reachable.
+static func hub_route(graph: PatrolGraph, hub: PatrolPoint, loops: Array, rng: RandomNumberGenerator) -> Array[PatrolPoint]:
+	var out: Array[PatrolPoint] = []
+	if graph == null or hub == null:
+		return out
+	var adj: Dictionary = adjacency(tagged_points(graph, &""))
+	if not adj.has(hub):
+		return out
+	var plan: Array = loops.duplicate()
+	if plan.is_empty():
+		for p: PatrolPoint in adj:
+			if p != hub and p.pause_range.y > 0.0 and not _path(adj, hub, p).is_empty():
+				plan.append([p])
+		plan.sort_custom(func(a: Array, b: Array) -> bool: return String((a[0] as Node).name) < String((b[0] as Node).name))
+	for i: int in range(plan.size() - 1, 0, -1):  # Fisher-Yates on the run's patrol stream
+		var j: int = rng.randi_range(0, i)
+		var t: Variant = plan[i]
+		plan[i] = plan[j]
+		plan[j] = t
+	out.append(hub)
+	for loop: Variant in plan:
+		var cur: PatrolPoint = hub
+		for stop: Variant in (loop as Array) + [hub]:
+			var seg: Array[PatrolPoint] = _path(adj, cur, stop as PatrolPoint)
+			if seg.is_empty():
+				continue
+			out.append_array(seg.slice(1))
+			cur = stop as PatrolPoint
+	if out.size() > 1 and out[-1] == hub:
+		out.pop_back()
+	return out if out.size() > 1 else [] as Array[PatrolPoint]
+
+
+## Shortest path `a` -> `b` by link distance (Dijkstra), both ends included; [] when unreachable.
+static func _path(adj: Dictionary, a: PatrolPoint, b: PatrolPoint) -> Array[PatrolPoint]:
+	var dist: Dictionary = {a: 0.0}
+	var prev: Dictionary = {}
+	var open: Array[PatrolPoint] = [a]
+	while not open.is_empty():
+		var bi: int = 0
+		for i: int in range(1, open.size()):
+			if float(dist[open[i]]) < float(dist[open[bi]]):
+				bi = i
+		var u: PatrolPoint = open[bi]
+		open.remove_at(bi)
+		if u == b:
+			break
+		for v: PatrolPoint in adj[u]:
+			var d: float = float(dist[u]) + u.global_position.distance_to(v.global_position)
+			if not dist.has(v) or d < float(dist[v]):
+				dist[v] = d
+				prev[v] = u
+				if not open.has(v):
+					open.append(v)
+	if not dist.has(b):
+		return [] as Array[PatrolPoint]
+	var path: Array[PatrolPoint] = [b]
+	while path[0] != a:
+		path.push_front(prev[path[0]] as PatrolPoint)
+	return path
+
 ## Expand a route into the cyclic visiting order: loop [a,b,c] -> [a,b,c]; ping-pong [a,b,c] -> [a,b,c,b].
 static func visit_order(points: Array[PatrolPoint], loop: bool) -> Array[PatrolPoint]:
 	var order: Array[PatrolPoint] = points.duplicate()

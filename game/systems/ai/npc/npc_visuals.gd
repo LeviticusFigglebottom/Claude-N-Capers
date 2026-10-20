@@ -59,17 +59,21 @@ static func resolve(npc: NpcBase) -> PackedScene:
 	return null
 
 
-## Look variants to try, in order, for EnemyDef `def` on `difficulty` (-1 = unknown): the faction variant
-## (params.visual_variant) when set, else the D-145.3 difficulty variant (NpcVisualTweak.difficulty_variants), then
-## the base look ("").
+## Look variants to try, in order, for EnemyDef `def` on `difficulty` (-1 = unknown). With a D-145.3 difficulty
+## variant (NpcVisualTweak.difficulty_variants, "duty" on Routine/Tense) the unarmoured look wins over the armoured
+## faction look (LEAD 2026-10-20): `<faction>_duty` -> `duty` -> `<faction>` -> base (""); else the faction variant
+## (params.visual_variant) -> base.
 static func variants(def: EnemyDef, difficulty: int = -1) -> PackedStringArray:
 	var out: PackedStringArray = PackedStringArray()
-	var variant: String = String(def.params.get("visual_variant", "")) if def != null else ""
+	var faction: String = String(def.params.get("visual_variant", "")) if def != null else ""
 	var tw: NpcVisualTweak = tweak()
-	if variant.is_empty() and tw != null and difficulty >= 0:
-		variant = String(tw.difficulty_variants.get(difficulty, ""))
-	if not variant.is_empty():
-		out.append(variant)
+	var duty: String = String(tw.difficulty_variants.get(difficulty, "")) if tw != null and difficulty >= 0 else ""
+	if not faction.is_empty() and not duty.is_empty():
+		out.append("%s_%s" % [faction, duty])
+	if not duty.is_empty():
+		out.append(duty)
+	if not faction.is_empty():
+		out.append(faction)
 	out.append("")
 	return out
 

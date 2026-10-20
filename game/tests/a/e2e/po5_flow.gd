@@ -15,6 +15,8 @@ var rt: HeistRuntime = null
 var run_seed: int = -1
 var crew: CrewController = null
 var pilot: Po5Pilot = null
+## D-145 evidence: downs / regen / loadouts / police composition (STATS lines at heist_ended and at the end).
+var stats: Po5Stats = null
 ## llvmpipe renders at ~1 fps, which caps game time at 8 physics ticks per second. Between screenshots
 ## the harness turns the render loop off (window, DisplayServer and input stay real); shot() renders.
 var fast: bool = false
@@ -52,6 +54,9 @@ func _run() -> void:
 		return
 	var outcome: Array[int] = [-1]  # heist_ended success: -1 not ended, 0 failed, 1 succeeded
 	EventBus.heist_ended.connect(func(r: Dictionary) -> void: outcome[0] = 1 if bool(r.get("success", false)) else 0)
+	stats = Po5Stats.new()
+	stats.start(self, rt)
+	EventBus.heist_ended.connect(func(_r: Dictionary) -> void: note(stats.summary()))
 	match runner_flow:
 		"dump":
 			dump_map()
@@ -408,6 +413,8 @@ func note(msg: String) -> void:
 
 
 func _finish(code: int) -> void:
+	if stats != null:
+		note(stats.summary())
 	note("RESULT %s (code %d) flow=%s heist=%s seed=%d" % ["PASS" if code == 0 else "FAIL", code, runner_flow,
 		heist_name, run_seed])
 	RenderingServer.render_loop_enabled = true

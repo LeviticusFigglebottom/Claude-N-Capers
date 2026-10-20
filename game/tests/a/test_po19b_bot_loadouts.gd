@@ -25,7 +25,7 @@ func _launch() -> void:
 	_rt = await HeistLauncher.launch(&"unit_map", 1919, Enums.Difficulty.ROUTINE, self, {"map_packed": ATestMaps.basic(0, 0),
 		"skip_casing": true, "ai_teammates": 2, "loadouts": {
 			1: _loadout(&"weapon.anvil_lmg", &"", &"armor.breacher_plate"),
-			2: _loadout(&"", &"weapon.ferret_9", &"armor.tailored_suit")}})
+			2: _loadout(&"weapon.ferret_9", &"", &"armor.tailored_suit")}})  # a pistol in the primary slot
 	await wait_physics_frames(3)
 
 
@@ -74,3 +74,24 @@ func test_bot_wears_its_loadout_armor() -> void:
 		lost.append(h0 - c.health.health)
 	assert_near(lost[0], 0.0, 0.01, "plate soaks 60 damage in armor")
 	assert_near(lost[1], 40.0, 0.01, "suit (20 armor) loses 40 health to the same hits")
+
+
+## LEAD ruling 2026-10-20 (D-145.4): a bot with no primary (the default AI loadout, B's Heisters.ai_loadouts / no
+## options.loadouts entry) carries CombatTweak.bot_default_primary (corsair_ar, unmodded) with the pistol as its
+## secondary, and holds the rifle; the human crew member's default loadout is unchanged.
+func test_default_bot_carries_the_starter_rifle() -> void:
+	_rt = await HeistLauncher.launch(&"unit_map", 1920, Enums.Difficulty.ROUTINE, self, {"map_packed": ATestMaps.basic(0, 0),
+		"skip_casing": true, "ai_teammates": 2, "loadouts": {2: CrewWeapons.build_loadout(null)}})
+	await wait_physics_frames(3)
+	var rifle: StringName = CombatTweak.data().bot_default_primary
+	assert_eq(rifle, &"weapon.corsair_ar", "the ruling's starter rifle")
+	for slot: int in [1, 2]:
+		var c: CrewController = _bot(slot)
+		assert_eq(c.loadout.primary, rifle, "bot slot %d: the starter rifle" % slot)
+		assert_eq(c.loadout.primary_mods, [] as Array[StringName], "bot slot %d: unmodded" % slot)
+		assert_true(c.loadout.resolved_primary != null, "bot slot %d: the rifle resolved" % slot)
+		assert_eq(c.loadout.secondary, CombatTweak.data().default_secondary, "bot slot %d: the pistol as secondary" % slot)
+		assert_eq(c.weapons._states[c.weapons.equipped_slot].id, rifle, "bot slot %d holds the rifle" % slot)
+	var human: CrewController = _rt.crew_controller(0) as CrewController
+	assert_false(human.is_ai, "slot 0 is the human")
+	assert_eq(human.loadout.primary, CombatTweak.data().default_primary, "the human default loadout is unchanged")
