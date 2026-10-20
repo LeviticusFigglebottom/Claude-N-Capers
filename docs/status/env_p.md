@@ -35,6 +35,11 @@ Capture names are Windows-safe since c6c096dd (PCaptureName); trunk's of_g1_pass
 - **D-145 GH Tense ×3** on r250 + c-worlds + A 4a6780f4, headless, solo + 3 bots: **2/3 WIN, downs 1/2/1 (median 1)**.
   The target is met (Routine was already 3/3 WIN, median 1). In 4501 the pilot bled out 30 s after one down with no bot revive (slot 1 tased),
   which is a bot revive-priority question for A. Table: captures/d145_gh_2026-10-20/table.txt + tense_4a6780f4/.
+- Relay from A, 23:55 UTC: OF real-bot hard runs (headless auto_loud through the real menus, crew damage ×1.0, solo + 3 bots, a-core head).
+  Haz 0/3: seed 5 custody at 603 s (after drill, burn-through and the vault in/out); seed 1 custody at 287 s. Cata 0/2: seeds 5 and 6 downed at
+  t≈18-20 s (auto_loud goes loud at t=6 from spawn), custody 1-2 s later. A's reading: OF loud at ×1.0 is not winnable on Haz+ with this
+  pilot + bots; the LEAD decides intent (PD2 DS) vs a tuning ask. P asked A to confirm the 1-2 s Cata custody is bleedout drain under
+  fire and not the old cuff/tase→custody path. A is running the hit-grace-on-Haz+ comparison (GH 4501, Haz/Brutal/Lethal/Cata, grace on vs off).
 - Relay from A, 23:52 UTC: GH Tense 4501 on env/a-core 441b6870 (headless auto_loud, solo + 3 bots) PASS. The pilot went down once and a bot revived them.
   Bot downs 0/0/2, 3 bot revives. So all 3 GH Tense seeds now have a win on A's current head (with P's 4502/4503 on 4a6780f4).
 - Relay from A, 23:45 UTC: env/a-core is at 441b6870. e640362d (GAME, bots): a bot in REVIVE that stops closing in for 1 s now
