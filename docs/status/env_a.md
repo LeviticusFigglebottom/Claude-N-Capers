@@ -4,6 +4,20 @@ Owner: ENV A. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-21 update; newest at top)
+### (-5) Relayed from ENV B: DB Tense ×3 on trunk r256 (3312326b: cap 1 Longshot + my Longshot timing + the revive fixes) = 1/3
+- Setup: headless auto_loud ×1.0, no doctor bag.
+  - s3 PASS at 873 s with 1 player down. s1 custody at 583 s after 3 downs. s2 custody at 664 s after 3 downs.
+  - Revives land (5 and 3). Per run: Longshots 2-3, Bulwarks 11-21, Stingers 4-8. Details at the top of
+    docs/status/env_b.md.
+- Tense batches since the revive fix: 1/3, 2/3, 1/3, 1/3. The pilot runs out of downs over the ~10 min loud phase.
+- B's remaining data levers: Tense Bulwark cap 3 -> 2, or Stinger 1 -> 0 (B's files; your call).
+- **A's recommendation:**
+  1. First run the doctor-bag cell (`--po5-doctor-bag`, harness only). A PD2 player brings a doctor bag to a 10 min
+     loud job, and it resets downs; the losses are all "3 downs".
+  2. If Tense still sits at about 1/3 with the bag, take the Bulwark cap 3 -> 2. That is the PD2-plausible lever for
+     Hard (from memory, not verified: PD2's lower difficulties allow about 2 shields alive at once). Keep the Stinger at
+     1: one taser is PD2 Hard's rhythm.
+  3. Hazardous+ stays a harness limit, per the PO.
 ### (-4) Headless check of GPU-17: no code regression between GPU-15's tree and trunk e9c8744f (07:40 UTC)
 - Setup: OF Cataclysm 1037 auto_loud, 240 s, HITCH_MS=50, headless on this box, one run after another.
   - Trees: ffc264d4 (GPU-15's A side), trunk e9c8744f (GPU-17's tree) ×2, and env/a-core HEAD 89a831f1c (from the
