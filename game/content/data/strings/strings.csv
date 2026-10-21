@@ -2456,6 +2456,7 @@ ui.options.palette.field.enemy_marker,Marked enemies
 ui.options.palette.field.objective,Objectives
 ui.options.palette.field.loot_highlight,Loot
 ui.options.palette.field.interaction_highlight,Interaction
+ui.options.palette.field.device_jam,Jammed drill or saw
 ui.options.input.mouse_1,Mouse Left
 ui.options.input.mouse_2,Mouse Right
 ui.options.input.mouse_3,Mouse Middle

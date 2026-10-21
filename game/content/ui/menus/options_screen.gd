@@ -70,6 +70,7 @@ func build_ui() -> void:
 	bg.color = UiAccent.app_bg()
 	bg.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	add_child(bg)
+	fill_window(bg)  # r268: opened from the in-heist pause, the map showed at both sides on 21:9
 	var root: VBoxContainer = UiBuild.vbox(UiTokens.S3)
 	UiBuild.screen_margin(self, root)
 	root.add_child(UiBuild.header(&"ui.options.crumb", &"ui.options.title"))
