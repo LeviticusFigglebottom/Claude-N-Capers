@@ -1537,7 +1537,9 @@ func _of_to_floor(ffl_i: int, x: float = OF_SA_DOOR_X) -> bool:
 				return false
 			await _wait_core_clear(OF_FFL[cur], OF_FFL[ffl_i], false, 25.0, 60.0)
 		elif _ghost_stair_wait:  # from where the crew stands (a room): stepping out to wait gets it seen (r248: BB)
-			await _wait_core_clear(OF_FFL[cur], OF_FFL[ffl_i])
+			# Same-floor guards count too (r255c: rover_gallery came up SA, dropped out of the count the moment he
+			# stepped onto the Executive floor, and met the pilot leaving E3 at 2 m).
+			await _wait_core_clear(OF_FFL[cur], OF_FFL[ffl_i], true, 25.0)
 		# Out to this floor's corridor first: Po5Pilot crosses an open door only toward a target beyond its plane (a
 		# room-to-core walk from SR has both behind the same wall and flipped in SecurityDoor, G1 run 2).
 		if cur != 4 and not await _go(_of(Vector3(OF_SA_DOOR_X, OF_FFL[cur], OF_CORRIDOR_Z)), 0.6, 240.0):

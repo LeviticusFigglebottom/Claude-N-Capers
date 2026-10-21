@@ -15,7 +15,10 @@ Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min;
 - **Ghost with A's guard_vault loops** (r255 + a-core 46551745 + P). r255a: steps 1-3 PASS. Then the vault guard now walks BB (loops (b)/(c)), and
   rover_basement saw the LK → SA walk at 8 m (t=109) after a 4 s core wait that ignored BB's own guards. Harness: leaving the basement, the pilot waits
   crouched in the probed LK hide and counts BB's guards (≤10 m standing, ≤15 m walking). r255b: counting every floor at once, the busier loops
-  never cleared in 180 s. Now it's two phases: BB only from LK, then a ≤60 s peek up the flights from the foot of SA. r255c is running.
+  never cleared in 180 s. Now it's two phases: BB only from LK, then a ≤60 s peek up the flights from the foot of SA.
+  **r255c: steps 1-4 PASS** (BB clear 16 s, flights 6 s, code done t=202.6, ~50 s faster than r252/253). Step 5 failed on the way out:
+  rover_gallery came up SA and dropped out of the count the moment he reached the Executive floor, and the pilot left E3 into him. Now
+  same-floor guards within 25 m count for every ghost floor change. r255d is next.
 - **Ghost line**, on r251 + c-worlds 9d00c55b + P, windowed, seed 1002: **steps 1-4 PASS** (r251g). C's door-throat bake fix is verified.
   Harness fixes on env/p-play: peek at the SA core before EA → E3; code-hack restart. Step 5 (vault gate) was seen by the vault guard;
   the gate-clear wait went in at 88e06f40. r251h: the wait held for the vault guard, but the pilot waited in BB and rover_basement
