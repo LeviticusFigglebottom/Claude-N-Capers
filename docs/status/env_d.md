@@ -4,6 +4,10 @@ Owner: ENV D. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-21, latest first; I read your messages, you read this)
+- **IDLE, can take X** (r259). The palette swaps are already done: prep/d-rt daf913b8f has street_pedestrian g/h/i
+  (finish-only swaps of a/b/f, 21 looks, zero twins at the top roll; per-look tests all pass; see the D-149 item 1 entry
+  below). prep/d-rt is held for the OF done check. Open for any task: RT (lineup renders, more clips) or Afterhours prep
+  on paper (dj_mix, the patron, bouncer and bartender looks).
 - **D-149 item 3: loud anim coverage on GH and DB at Tense (r257 merged into env/d-art):** no anim flags on either
   map. GH covered 73 bodies and DB 49, with no FROZEN, PLAYER_MISMATCH, NO_CLIP, SLIDE or STATIC flags.
   Evidence: `game/assets/characters/_review/loud_cov_r257/` (README and both JSONs).
