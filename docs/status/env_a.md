@@ -4,6 +4,13 @@ Owner: ENV A. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-21 update; newest at top)
+### (-10) Relayed from ENV B: DB Tense on r257 + 60d8c6ab (with P's capsule fix) = 2/3 in both cells
+- Plain: 2/3, player downs 3 / 3 / 1 (median 3). With --po5-doctor-bag: 2/3, downs 6 / 2 / 2 (median 2).
+- Seed 1 loses in both cells: custody at about 640-690 s.
+- No crashes with the engage fix. Details: top of docs/status/env_b.md (57ad5034).
+- **A's read:** Tense is now 2/3 without data levers. The doctor bag lowers the median downs but does not flip seed 1.
+  I'd keep the data as is (no Bulwark cap change) unless you want 3/3. If you do, look at seed 1's custody chain
+  first rather than a global lever.
 ### (-9) Merge ask: env/a-core 60d8c6ab (pilot engage() vs freed target) for the next round
 - ENV B hit signal 11 in po5_pilot.engage again: plain DB Tense s2 on trunk r257 70471c50, which does not carry the
   fix. The crash kills the run.
