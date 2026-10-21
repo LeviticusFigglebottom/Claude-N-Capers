@@ -1918,15 +1918,25 @@ func _vc_window(max_age: float) -> bool:
 
 
 ## Step 6, out with a bag: stop just inside the vault gate (VC side, blind from BB but next to the gate) and step into
-## BB only when no basement guard (the vault guard included) is in BB within 25 m of the gate or within 8 m anywhere; up to 6 s (ghost6_o:
-## rover_basement stepped into BB 8 m off during the trip, t=576, past what the window's prediction could see).
+## BB only when no basement guard (the vault guard included) is in BB within 25 m of the gate or within 8 m anywhere,
+## while the vault guard is away (ghost6_o: rover_basement stepped into BB 8 m off during the trip, t=576, past what the
+## window's prediction could see).
 func _gate_peek() -> void:
 	var gate: Vector3 = _of(Vector3(17.0, OF_FFL[0], 9.0))
 	await _go(pilot.stand_point(_of(GHOST_GATE_INNER)), 0.4, 20.0)
-	# Short: holding here outlasts the vault guard's absence (ghost6_q: a 20 s hold for Npc_guard7 standing 21 m off,
-	# then out anyway with the vault guard back, t=204).
+	# Hold while the vault guard is still >= 18 m from the gate by path (he always comes back through BB to it: ghost6_q
+	# held 20 s and went out with him back, t=204); a fixed 6 s went out beside rover_basement walking past (ghost6_r,
+	# t=585). Up to 30 s.
 	var t: float = 0.0
-	while t < 6.0:
+	while t < 30.0:
+		var vg_far: bool = true
+		for n: Node in rt.npcs(&"guard"):
+			var g: NpcBase = n as NpcBase
+			if g != null and g.is_alive() and _has_tag(g, "guard_vault") and absf(g.global_position.y - OF_FFL[0]) < 1.5:
+				vg_far = _nav_len(g.global_position, gate) >= 18.0
+		if not vg_far:
+			note("GHOST gate peek: the vault guard is coming back (< 18 m), out now")
+			return
 		var who: String = ""
 		for n: Node in rt.npcs(&"guard"):
 			var g: NpcBase = n as NpcBase
@@ -1945,7 +1955,7 @@ func _gate_peek() -> void:
 			note("GHOST gate peek: %s in BB, holding inside the gate" % who)
 		await wait_s(0.5)
 		t += 0.5
-	note("GHOST gate peek: BB NOT clear after 6 s (going anyway)")
+	note("GHOST gate peek: BB NOT clear after 30 s (going anyway)")
 
 
 ## Navmesh path length (m) from `a` to `b` on the crew's map (INF when there is no path).
