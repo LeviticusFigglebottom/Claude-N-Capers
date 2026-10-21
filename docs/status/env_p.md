@@ -9,7 +9,9 @@ Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min;
 - **Ghost on r251 + c-worlds 9d00c55b + P** (windowed, seed 1002). C's door-throat bake fix (a9fc8631) **works**: the pilot leaves
   EA cleanly, with no STUCK (the r250 stall was the AssistantDoor west jamb vs a throat 5 cm off-centre). Steps 1-3 PASS. Step 4: rover_gallery
   (Npc_guard4) came up SA at t≈151 as the pilot crossed the core EA → E3, and filled 1.00 at 3.5 m. Harness fix: peek at the core
-  (same-floor guards included) before EA → E3, per doc §4 ('wait in E3 while rover_gallery passes'). Re-run in progress.
+  (same-floor guards included) before EA → E3, per doc §4 ('wait in E3 while rover_gallery passes').
+  r251d: the peek held 17 s while guard4 passed east. Then guard4's loop turned back west down XC (z 8) and saw the pilot walking to E3 at
+  13 m. Fix: same-floor guards within 25 m with LOS to the core also hold the crossing. r251e re-run in progress.
   Evidence: captures/of_g1_2026-10-20/ghost_251c.
 - A's GPU-box command lines (OF stealth/loud real-menu, OF Haz feel clip) and open items are in docs/status/env_a.md (top) on
   env/a-core. A's replies to the lead fail with the same trusted-device error. P's lines are in the entry below.
