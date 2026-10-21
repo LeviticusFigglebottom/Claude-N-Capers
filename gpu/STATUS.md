@@ -123,3 +123,9 @@ NPC placement is seeded but animation/tier state at capture time may differ, so 
     `routine_unit3.png` frames an interior door/hand, not the officer. The hazardous unit shots and both group shots look right.
   - `hazardous: 0 of 6 units wear a _duty look` (4 patrol_officer, longshot, tac_light_frd), vs `routine: 4 of 4`.
     If hazardous waves are meant to keep the _duty variant, this is a real miss.
+## GPU-8.2: ENV D d145_factions cast review (tree: env/d-art f96168df)
+- `--path game --script res://world/characters/_tools/render_d130_cast_review.gd -- --pool=d145_factions`: exit 0, 10 s, no ERRORs/WARNINGs.
+- Wrote `_review/d145_police/d145_factions_{sheet,lineup_30m,silhouette_30m}.png`, copied to `gpu/renders/d/factions/` (+ render_log.txt).
+  The originals were left uncommitted on env/d-art and removed from my tree.
+- Sheet: 7 looks (tac_light_frd/_duty, tac_light_sentinel/_duty, tac_light_zero/_duty, tac_light_duty) x front/back/bust,
+  all rendered. Cosmetic: the canvas is 9 columns wide, so the right ~22% is empty.
