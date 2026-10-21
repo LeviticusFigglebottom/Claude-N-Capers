@@ -45,6 +45,11 @@ const STOP_SUFFIX: String = "Stop"
 const VEHICLES: Array[String] = ["Lead", "T1", "T2", "T3", "Rear"]
 const LAYOUT_MIXER_GONE: String = "mixer_gone"
 const LAYOUT_TANNERY_OPEN: String = "tannery_open"
+## Runtime marker tags: the trucks in play / an opened truck (C's fixed Trucks / Cargo markers sit on one route only).
+const TAG_TRUCK_IN_PLAY: StringName = &"rt_truck"
+const TAG_TRUCK_OPEN: StringName = &"rt_cargo"
+## Setup steps closed when the convoy arrives (B's HUD capture: an unrigged [signals] led the HUD through the fight).
+const SETUP_STEPS: Array[StringName] = [&"casing", &"signals", &"charges", &"thermite", &"marshal"]
 
 const RARE_MARSHAL_EARLY: StringName = &"marshal_early"
 const RARE_CONVOY_EARLY: StringName = &"convoy_early"
@@ -288,6 +293,7 @@ func _convoy_arrives() -> void:
 	clean_stop = signals_rigged and not alerted
 	layout_id = "%s_%s" % [_route(), "clean" if clean_stop else "crash"]
 	_complete_once(&"convoy")
+	_close_setup()
 	activate(&"ambush")
 	var movers: Array[ConvoyVehicle] = _movers()
 	var layout: Node3D = ConvoyLayouts.find(_runtime.map, layout_id)
@@ -321,6 +327,15 @@ func _stop_marker(layout: Node3D, veh: String) -> Node3D:
 	return layout.get_node_or_null(NodePath(veh + STOP_SUFFIX)) as Node3D
 
 
+## The setup is over: every setup step still open is skipped (OF's [code_pc] pattern: data skipped, then COMPLETED, so
+## the HUD leads with the stop's steps).
+func _close_setup() -> void:
+	for id: StringName in SETUP_STEPS:
+		if objective_state(id) == Enums.ObjectiveState.ACTIVE:
+			update_objective_data(id, {"skipped": true, "reason": &"convoy"})
+			complete(id)
+
+
 func _mover_stopped() -> void:
 	_movers_left -= 1
 	if _movers_left == 0:
@@ -333,6 +348,8 @@ func _stopped() -> void:
 	if _slot_active(&"truck_count", &"trucks_2"):
 		_drop_vehicle("T3")
 	_trucks = _find_trucks()
+	for t: ArmoredTruck in _trucks:
+		t.objective_tag = TAG_TRUCK_IN_PLAY  # [trucks] marks the stopped trucks themselves, not one fixed marker
 	if alerted:
 		for t: ArmoredTruck in _trucks:
 			t.lockdown()
@@ -340,10 +357,10 @@ func _stopped() -> void:
 	_spawn_convoy_units()
 	if _rare(RARE_BONDS):
 		spawn_loot(LOOT_BONDS, RARE_BONDS, BONDS_BAGS)
-	update_objective_data(&"trucks", {"opened": 0, "total": _trucks.size()})
+	update_objective_data(&"trucks", {"opened": 0, "total": _trucks.size(), "marker_tags": [TAG_TRUCK_IN_PLAY]})
 	activate(&"trucks")
 	activate(&"escort")
-	update_objective_data(&"escort", {"down": 0, "total": _units_total})
+	update_objective_data(&"escort", {"down": 0, "total": _units_total, "marker_tags": []})  # the units are the marks
 	activate(&"secure")
 	start_timer(&"poll", POLL_S, _poll)
 	if clean_stop:
@@ -354,6 +371,7 @@ func _stopped() -> void:
 	_say_once(VO_REYES_CRASH, {}, SPEAKER_REYES)
 	_mixer_move()
 	if went_loud:
+		_complete_once(&"ambush")  # an early alarm: the crash is the ambush (no second alarm comes)
 		_dismount_all()
 	else:
 		raise_alarm(&"ambush")
@@ -449,6 +467,10 @@ func _poll() -> void:
 ## A truck's rear doors opened: its line, and its cargo when the map gave it none (G1: bags at its rear doors).
 func _truck_opened(t: ArmoredTruck) -> void:
 	say(VO_TRUCK_OPEN)
+	t.objective_tag = TAG_TRUCK_OPEN  # the marker moves on to what is inside
+	if objective_state(&"cargo") == Enums.ObjectiveState.HIDDEN:
+		update_objective_data(&"cargo", {"marker_tags": [TAG_TRUCK_OPEN]})
+		activate(&"cargo")
 	var bullion: bool = String(t.get_meta(&"truck_kind", "cash")) == "bullion" or t.saw_duration_s >= 150.0
 	if bullion:
 		_say_once(VO_GOLD)

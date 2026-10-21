@@ -4,6 +4,21 @@ Owner: ENV A. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-21 update; newest at top)
+### (-24) RT G1 pilot on r270: blocked on C's convoy swap (trucks); everything before the trucks plays (23:55 UTC)
+- **Pilot:** `DIRECT=1 HEADLESS=1 run_po5.sh auto_loud 1001 2400 <out> "Rolling Thunder" Routine` (dfbd94a9c, harness only).
+  It launches through MenuFlow.launch because RT is not on the Board yet: hidden, WIP def.
+- **First run (r269):**
+  - menus → heist → setup (casing done).
+  - An early guard_radio alarm gives the crash stop at ETA 180 into `east_crash`: layout swapped, police at once,
+    escort down in about 9 s.
+  - It then stops at "secure is the only marked objective but no bag source is usable".
+- **Why it stops:** **the r270 map still has C's placeholder convoy boxes.** There's no armored_truck, no movers, no
+  `<Veh>Stop` markers and no per-layout nav. C has the RT-C2 swap in progress and hasn't pushed it yet. I've asked for an
+  ETA and will run the pilot on C's branch merged locally the moment it's up.
+- **Found and fixed:** 215cba409, the trucks / escort objective data was re-published every second; now change-only.
+- **Also from the run:** charges / thermite "not reachable". C says this is by design: the site's padlocked gate and
+  store doors. The pilot doesn't open padlocks; both are optional, and the saw needs no pickup.
+- **RT does not play end to end yet.** Don't tell B / P until the trucks are in.
 ### (-23) r268 merged; D's RT look rows in; the GPU-20c hitch answer is item -21 (22:30 UTC)
 - **GPU-20c hitch accumulation:** your r268 note asked for it. It's in item -21: no accumulation in the simulation
   (census t=300 vs t=1200), and the windowed rise is location / phase load.
