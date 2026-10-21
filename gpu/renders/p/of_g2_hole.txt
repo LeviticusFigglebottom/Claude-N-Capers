@@ -1,0 +1,221 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+Vulkan 1.4.349 - Forward+ - Using Device #0: AMD - AMD Radeon RX 9070 XT
+
+[OFP 0.0s t=-1.0] === hole ===
+[INFO][rng][p1] run seed 1002
+[INFO][preplan][p1] assets []
+[INFO][variants][p1] seed 1002 resolved { &"manager_route": [&"mgr_gallery"], &"keycard": [&"kc_security"], &"code_pc": [&"pc_ops"], &"officers": [&"off_1"], &"server_room": [&"srv_gallery"], &"guard_post": [&"rover_basement", &"rover_dock"], &"security_room_staffed": [&"sec_empty"], &"camera": [&"cam_c"], &"laser_pattern": [&"lz_timed"], &"customers": [&"cust_4"], &"side_door": [&"door_dock_open"], &"fire_escape": [&"fe_down"], &"escape": [&"esc_van_tannery"], &"drill_delivery": [&"drop_terrace"], &"president_safe": [&"ps_bonds"], &"vip": [&"vip_out"], &"guard_extra": [], &"civ_extra": [], &"time_lock_s": 150.0, &"drill_eta_s": 60.0, &"escape_eta_s": 150.0, &"cash_bags": 8, &"gold_bags": 3, &"deposit_boxes": 6, "rare": [] }
+[INFO][heist][p1] vfx prewarm: 486 ms
+[INFO][prefab][p1] Hoist disabled
+[INFO][prefab][p1] RopeLadder disabled
+[INFO][heist][p1] phase LOADING -> CASING
+[OFP 4.1s t=-1.0] objective casing -> 1
+[OFP 4.1s t=-1.0] objective keycard -> 1
+[OFP 4.1s t=-1.0] objective code_hint -> 1
+[OFP 4.1s t=-1.0] objective code_pc -> 1
+[OFP 4.1s t=-1.0] objective server -> 1
+[OFP 4.1s t=-1.0] objective vault_gate -> 1
+[OFP 4.1s t=-1.0] objective lasers -> 1
+[OFP 4.1s t=-1.0] objective time_lock -> 0
+[OFP 4.1s t=-1.0] objective time_lock_wait -> 0
+[OFP 4.1s t=-1.0] objective vault_loot -> 0
+[OFP 4.1s t=-1.0] objective gold_cage -> 0
+[OFP 4.1s t=-1.0] objective drill_delivery -> 0
+[OFP 4.1s t=-1.0] objective vault_drill -> 0
+[OFP 4.1s t=-1.0] objective vault_breach -> 0
+[OFP 4.1s t=-1.0] objective secure -> 1
+[OFP 4.1s t=-1.0] objective deposit_boxes -> 1
+[OFP 4.1s t=-1.0] objective bond_safe -> 1
+[OFP 4.1s t=-1.0] objective president_safe -> 1
+[OFP 4.1s t=-1.0] objective server_drives -> 1
+[OFP 4.1s t=-1.0] objective escape_wait -> 0
+[OFP 4.1s t=-1.0] objective escape -> 0
+[INFO][prefab][p1] VaultBoxN07 disabled
+[INFO][prefab][p1] VaultBoxN08 disabled
+[INFO][prefab][p1] VaultBoxN09 disabled
+[INFO][prefab][p1] VaultBoxN10 disabled
+[INFO][prefab][p1] VaultBoxN11 disabled
+[INFO][prefab][p1] VaultBoxS01 disabled
+[INFO][prefab][p1] VaultBoxS02 disabled
+[INFO][prefab][p1] VaultBoxS03 disabled
+[INFO][prefab][p1] VaultBoxS04 disabled
+[INFO][prefab][p1] VaultBoxS05 disabled
+[INFO][prefab][p1] VaultBoxS06 disabled
+[INFO][prefab][p1] VaultBoxS07 disabled
+[INFO][prefab][p1] VaultBoxS08 disabled
+[INFO][prefab][p1] VaultBoxS09 disabled
+[INFO][prefab][p1] HallBox09 disabled
+[INFO][prefab][p1] HallBox10 disabled
+[INFO][prefab][p1] HallBox11 disabled
+[INFO][prefab][p1] HallBox12 disabled
+[INFO][prefab][p1] HallBox13 disabled
+[INFO][prefab][p1] HallBox14 disabled
+[INFO][prefab][p1] HallBox15 disabled
+[INFO][prefab][p1] HallBox16 disabled
+[INFO][prefab][p1] HallBox17 disabled
+[INFO][prefab][p1] HallBox18 disabled
+[INFO][prefab][p1] HallBox19 disabled
+[INFO][prefab][p1] HallBox20 disabled
+[INFO][prefab][p1] HallBox21 disabled
+[INFO][prefab][p1] HallBox22 disabled
+[INFO][prefab][p1] HallBox23 disabled
+[INFO][prefab][p1] HallBox24 disabled
+[INFO][director][p1] no EnemyDef for enemy.wrecker_g on this difficulty (missing, or armored below 2): skipped
+[INFO][director][p1] no EnemyDef for enemy.wrecker_b on this difficulty (missing, or armored below 2): skipped
+[INFO][director][p1] no EnemyDef for enemy.wrecker_s on this difficulty (missing, or armored below 2): skipped
+[INFO][director][p1] no EnemyDef for enemy.wrecker_m on this difficulty (missing, or armored below 2): skipped
+[INFO][director][p1] prewarm: 19 of 19 scenes loaded in 72 ms
+[INFO][prefab][p1] CameraStation: security room unstaffed
+[OFP 7.6s t=0.0] launched ostrander_federal seed 1002 diff 0 variants { &"manager_route": [&"mgr_gallery"], &"keycard": [&"kc_security"], &"code_pc": [&"pc_ops"], &"officers": [&"off_1"], &"server_room": [&"srv_gallery"], &"guard_post": [&"rover_basement", &"rover_dock"], &"security_room_staffed": [&"sec_empty"], &"camera": [&"cam_c"], &"laser_pattern": [&"lz_timed"], &"customers": [&"cust_4"], &"side_door": [&"door_dock_open"], &"fire_escape": [&"fe_down"], &"escape": [&"esc_van_tannery"], &"drill_delivery": [&"drop_terrace"], &"president_safe": [&"ps_bonds"], &"vip": [&"vip_out"], &"guard_extra": [], &"civ_extra": [], &"time_lock_s": 150.0, &"drill_eta_s": 60.0, &"escape_eta_s": 150.0, &"cash_bags": 8, &"gold_bags": 3, &"deposit_boxes": 6, "rare": [] }
+[INFO][prefab][p1] CameraC1 disabled
+[INFO][prefab][p1] CameraC2 disabled
+[INFO][prefab][p1] CameraC3 disabled
+[INFO][prefab][p1] CameraC7 disabled
+[INFO][prefab][p1] CameraC9 disabled
+[INFO][prefab][p1] CameraC11 disabled
+[INFO][prefab][p1] CameraC13 disabled
+[INFO][prefab][p1] CameraC15 disabled
+[OFP 9.9s t=2.0] SHORTCUT traversal: NPCs despawned, crew stealth_hidden, 8 cameras disabled (GameplayPrefab.set_enabled)
+[OFP 10.0s t=2.2] pilot: calibrated 0.001600 rad/px yaw, 0.001600 rad/px pitch (settings formula said (0.0016, 0.0016))
+[OFP 10.0s t=2.2] spawn (21.0, 0.0, -6.0)
+[INFO][heist][p1] phase CASING -> STEALTH
+[OFP 11.0s t=3.2] objective casing -> 2
+[INFO][crew][p1] slot 0 masked (forced=false)
+[OFP 11.6s t=3.8] masked true
+[INFO][stealth][p1] ALARM: ofp_hole (source 0)
+[OFP 11.7s t=3.8] ALARM ofp_hole by 0 (pilot at (21.0, 0.0, -6.0))
+[INFO][heist][p1] alarm (ofp_hole): going loud
+[INFO][heist][p1] phase STEALTH -> LOUD
+[INFO][director][p1] assault phase CONTROL (wave 1, 20 s)
+[INFO][prefab][p1] VaultControlRack: hack paused (lockdown)
+[OFP 11.8s t=3.8] objective keycard -> 1
+[OFP 11.8s t=3.8] objective keycard -> 2
+[OFP 11.8s t=3.8] objective code_hint -> 1
+[OFP 11.8s t=3.8] objective code_hint -> 2
+[OFP 11.8s t=3.8] objective code_pc -> 1
+[OFP 11.8s t=3.8] objective code_pc -> 2
+[OFP 11.8s t=3.8] objective server -> 1
+[OFP 11.8s t=3.8] objective server -> 2
+[OFP 11.8s t=3.8] objective vault_gate -> 1
+[OFP 11.8s t=3.8] objective vault_gate -> 2
+[OFP 11.8s t=3.8] objective lasers -> 1
+[OFP 11.8s t=3.8] objective lasers -> 2
+[OFP 11.9s t=3.8] objective drill_delivery -> 1
+[OFP 11.9s t=3.8] objective drill_delivery -> 1
+[INFO][director][p1] assault events: 3 rows for ostrander_federal (tweak)
+[OFP 12.4s t=4.3] SHORTCUT alarm raised through the StealthDirector (the hoist is loud-only)
+[INFO][prefab][p1] Lid disabled
+[INFO][prefab][p1] Hoist enabled
+[INFO][prefab][p1] RopeLadder enabled
+[OFP 12.6s t=4.3] objective drill_delivery -> 2
+[OFP 12.6s t=4.3] objective vault_drill -> 2
+[OFP 12.6s t=4.3] objective vault_breach -> 2
+[OFP 12.6s t=4.3] objective vault_loot -> 1
+[OFP 12.6s t=4.3] objective gold_cage -> 1
+[OFP 13.0s t=4.8] SHORTCUT hole via the mission's burn_through(): rope ladder usable true height 4.00, hoist Hoist enabled
+[OFP 13.0s t=4.8] lookup lid: MISSING
+[OFP 17.5s t=9.2] pilot: use DockPersonnelDoor (open_door) -> OK in 0.0 s
+[OFP 18.7s t=10.5] pilot: t=5 at (8.4, 0.0, 2.4) corner (8.6, 0.2, 3.4) yaw_err -0.00 fwd=true path=23 mouse_mode=2 state=0 look=(3.33,0.00) pin_yaw=3.33285847101069 bot=false
+[OFP 21.0s t=12.7] pilot: use DockCorridorDoor (open_door) -> OK in 0.0 s
+[OFP 31.2s t=22.9] pilot: use StaffDoorTWW (open_door) -> OK in 8.0 s
+[INFO][director][p1] assault phase ANTICIPATION (wave 1, 30 s)
+[OFP 33.8s t=25.5] pilot: t=10 at (19.1, 0.0, 12.5) corner (21.1, 0.2, 13.5) yaw_err 0.00 fwd=true path=3 mouse_mode=2 state=0 look=(4.23,0.00) pin_yaw=4.22669730499183 bot=false
+[OFP 34.7s t=26.4] SHORTCUT bag loot.cash_bricks (weight 1) spawned by LootManager.spawn_bag at (22.7, 0.5, 14.3)
+[OFP 37.2s t=28.9] pilot: use Bag_cash_bricks (pick_bag) -> OK in 1.0 s
+[OFP 41.8s t=33.5] THROW down the hole weight 1 pitch -> rests (22.9, -3.8, 14.4) (0.4 m from the stand, 2.3 s) on SlabB_00 secured false: OK in VT
+[OFP 48.1s t=39.8] LADDER RopeLadder down: OK in 1.8 s (climb 2.4 s, height 4.0 m; at (24.0, -4.0, 14.6))
+[OFP 49.5s t=41.1] pilot: use Bag_cash_bricks (pick_bag) -> OK in 1.0 s
+[OFP 53.3s t=45.0] bag in the car of Hoist (1)
+[OFP 53.7s t=45.4] DIAG hold t=0.0 session false moved -1.00/0.50 aim 143/40 deg avail '' aimed <none> blocked '' eye (24.0, -2.3, 16.3) panel (24.7, -2.9, 15.3)
+[OFP 54.5s t=46.2] DIAG hold t=0.8 session false moved -1.00/0.50 aim 0/40 deg avail '' aimed Interactable blocked '' eye (25.0, -2.3, 15.6) panel (24.7, -2.9, 15.3)
+[OFP 54.6s t=46.3] DIAG hold t=0.9 session true moved 0.00/0.50 aim 0/40 deg avail '' aimed Interactable blocked '' eye (25.0, -2.3, 15.6) panel (24.7, -2.9, 15.3)
+[INFO][prefab][p1] Hoist: lift 0 -> 1 with 1 bag(s) (slot 0)
+[OFP 55.6s t=47.2] pilot: use Hoist (call_lift) -> OK in 1.0 s
+[OFP 55.6s t=47.3] DIAG hold t=1.9 session false moved -1.00/0.50 aim 0/40 deg avail 'ui.blocked.state' aimed Interactable blocked '' eye (25.0, -2.3, 15.6) panel (24.7, -2.9, 15.3)
+[OFP 61.5s t=53.2] LIFT Hoist at landing 1 (1 bags in the car)
+[OFP 61.5s t=53.2] ladder RopeLadder: approach from the flank side (the facing side has no path)
+[OFP 61.6s t=53.3] DIAG hold t=7.9 session false moved -1.00/0.50 aim 30/40 deg avail '' aimed <none> blocked '' eye (25.0, -2.3, 15.6) panel (24.7, -2.9, 15.3)
+[INFO][director][p1] assault phase BUILD (wave 1, 35 s)
+[OFP 65.8s t=57.5] LADDER RopeLadder up: OK in 2.4 s (climb 2.4 s, height 4.0 m; at (24.0, 0.0, 11.8))
+[OFP 68.4s t=60.0] pilot: use Bag_cash_bricks (pick_bag) -> OK in 1.0 s
+[OFP 68.4s t=60.0] HOIST cycle OK: the bag rode up and was taken out in TW
+[OFP] RESULT PASS hole
+[OFP] RESULT PASS (hole PASS)
+WARNING: Sub-surface scattering is not supported in viewports with a transparent background. Disabling SSS in transparent viewport.
+   at: _render_scene (servers/rendering/renderer_rd/forward_clustered/render_forward_clustered.cpp:1963)
+ERROR: It's not expect to not find the most reachable polygons
+   at: _query_task_build_path_corridor (modules/navigation_3d/3d/nav_mesh_queries_3d.cpp:404)
+   GDScript backtrace (most recent call first):
+       [0] _path_cost (res://systems/director/assault_director.gd:970)
+       [1] valid_spawn_points (res://systems/director/assault_director.gd:400)
+       [2] _spawn_next (res://systems/director/assault_director.gd:752)
+       [3] _tick_queue (res://systems/director/assault_director.gd:733)
+       [4] _physics_step (res://systems/director/assault_director.gd:476)
+       [5] _physics_process (res://systems/director/assault_director.gd:431)
+ERROR: It's not expect to not find the most reachable polygons
+   at: _query_task_build_path_corridor (modules/navigation_3d/3d/nav_mesh_queries_3d.cpp:404)
+   GDScript backtrace (most recent call first):
+       [0] _path_cost (res://systems/director/assault_director.gd:970)
+       [1] valid_spawn_points (res://systems/director/assault_director.gd:400)
+       [2] _spawn_next (res://systems/director/assault_director.gd:752)
+       [3] _tick_queue (res://systems/director/assault_director.gd:733)
+       [4] _physics_step (res://systems/director/assault_director.gd:476)
+       [5] _physics_process (res://systems/director/assault_director.gd:431)
+ERROR: It's not expect to not find the most reachable polygons
+   at: _query_task_build_path_corridor (modules/navigation_3d/3d/nav_mesh_queries_3d.cpp:404)
+   GDScript backtrace (most recent call first):
+       [0] _path_cost (res://systems/director/assault_director.gd:970)
+       [1] valid_spawn_points (res://systems/director/assault_director.gd:400)
+       [2] _spawn_next (res://systems/director/assault_director.gd:752)
+       [3] _tick_queue (res://systems/director/assault_director.gd:733)
+       [4] _physics_step (res://systems/director/assault_director.gd:476)
+       [5] _physics_process (res://systems/director/assault_director.gd:431)
+ERROR: It's not expect to not find the most reachable polygons
+   at: _query_task_build_path_corridor (modules/navigation_3d/3d/nav_mesh_queries_3d.cpp:404)
+   GDScript backtrace (most recent call first):
+       [0] _path_cost (res://systems/director/assault_director.gd:970)
+       [1] valid_spawn_points (res://systems/director/assault_director.gd:400)
+       [2] _spawn_next (res://systems/director/assault_director.gd:752)
+       [3] _tick_queue (res://systems/director/assault_director.gd:733)
+       [4] _physics_step (res://systems/director/assault_director.gd:476)
+       [5] _physics_process (res://systems/director/assault_director.gd:431)
+ERROR: It's not expect to not find the most reachable polygons
+   at: _query_task_build_path_corridor (modules/navigation_3d/3d/nav_mesh_queries_3d.cpp:404)
+   GDScript backtrace (most recent call first):
+       [0] _path_cost (res://systems/director/assault_director.gd:970)
+       [1] valid_spawn_points (res://systems/director/assault_director.gd:400)
+       [2] _spawn_next (res://systems/director/assault_director.gd:752)
+       [3] _tick_queue (res://systems/director/assault_director.gd:733)
+       [4] _physics_step (res://systems/director/assault_director.gd:476)
+       [5] _physics_process (res://systems/director/assault_director.gd:431)
+ERROR: It's not expect to not find the most reachable polygons
+   at: _query_task_build_path_corridor (modules/navigation_3d/3d/nav_mesh_queries_3d.cpp:404)
+   GDScript backtrace (most recent call first):
+       [0] _path_cost (res://systems/director/assault_director.gd:970)
+       [1] valid_spawn_points (res://systems/director/assault_director.gd:400)
+       [2] _spawn_next (res://systems/director/assault_director.gd:752)
+       [3] _tick_queue (res://systems/director/assault_director.gd:733)
+       [4] _physics_step (res://systems/director/assault_director.gd:476)
+       [5] _physics_process (res://systems/director/assault_director.gd:431)
+ERROR: It's not expect to not find the most reachable polygons
+   at: _query_task_build_path_corridor (modules/navigation_3d/3d/nav_mesh_queries_3d.cpp:404)
+   GDScript backtrace (most recent call first):
+       [0] _path_cost (res://systems/director/assault_director.gd:970)
+       [1] valid_spawn_points (res://systems/director/assault_director.gd:400)
+       [2] _spawn_next (res://systems/director/assault_director.gd:752)
+       [3] _tick_queue (res://systems/director/assault_director.gd:733)
+       [4] _physics_step (res://systems/director/assault_director.gd:476)
+       [5] _physics_process (res://systems/director/assault_director.gd:431)
+ERROR: It's not expect to not find the most reachable polygons
+   at: _query_task_build_path_corridor (modules/navigation_3d/3d/nav_mesh_queries_3d.cpp:404)
+   GDScript backtrace (most recent call first):
+       [0] _path_cost (res://systems/director/assault_director.gd:970)
+       [1] valid_spawn_points (res://systems/director/assault_director.gd:400)
+       [2] _spawn_next (res://systems/director/assault_director.gd:752)
+       [3] _tick_queue (res://systems/director/assault_director.gd:733)
+       [4] _physics_step (res://systems/director/assault_director.gd:476)
+       [5] _physics_process (res://systems/director/assault_director.gd:431)
+WARNING: 7 RIDs of type "Texture" were leaked.
+   at: finalize (servers/rendering/rendering_device.cpp:8900)
+WARNING: 495 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)

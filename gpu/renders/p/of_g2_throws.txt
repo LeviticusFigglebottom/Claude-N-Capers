@@ -1,0 +1,201 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+Vulkan 1.4.349 - Forward+ - Using Device #0: AMD - AMD Radeon RX 9070 XT
+
+[OFP 0.0s t=-1.0] === throws ===
+[INFO][rng][p1] run seed 1002
+[INFO][preplan][p1] assets []
+[INFO][variants][p1] seed 1002 resolved { &"manager_route": [&"mgr_gallery"], &"keycard": [&"kc_security"], &"code_pc": [&"pc_ops"], &"officers": [&"off_1"], &"server_room": [&"srv_gallery"], &"guard_post": [&"rover_basement", &"rover_dock"], &"security_room_staffed": [&"sec_empty"], &"camera": [&"cam_c"], &"laser_pattern": [&"lz_timed"], &"customers": [&"cust_4"], &"side_door": [&"door_dock_open"], &"fire_escape": [&"fe_down"], &"escape": [&"esc_van_tannery"], &"drill_delivery": [&"drop_terrace"], &"president_safe": [&"ps_empty"], &"vip": [&"vip_out"], &"guard_extra": [], &"civ_extra": [], &"time_lock_s": 150.0, &"drill_eta_s": 60.0, &"escape_eta_s": 120.0, &"cash_bags": 10, &"gold_bags": 4, &"deposit_boxes": 9, "rare": [] }
+[INFO][heist][p1] vfx prewarm: 478 ms
+[INFO][prefab][p1] Hoist disabled
+[INFO][prefab][p1] RopeLadder disabled
+[INFO][heist][p1] phase LOADING -> CASING
+[OFP 3.7s t=-1.0] objective casing -> 1
+[OFP 3.7s t=-1.0] objective keycard -> 1
+[OFP 3.7s t=-1.0] objective code_hint -> 1
+[OFP 3.7s t=-1.0] objective code_pc -> 1
+[OFP 3.7s t=-1.0] objective server -> 1
+[OFP 3.7s t=-1.0] objective vault_gate -> 1
+[OFP 3.7s t=-1.0] objective lasers -> 1
+[OFP 3.7s t=-1.0] objective time_lock -> 0
+[OFP 3.7s t=-1.0] objective time_lock_wait -> 0
+[OFP 3.7s t=-1.0] objective vault_loot -> 0
+[OFP 3.7s t=-1.0] objective gold_cage -> 0
+[OFP 3.7s t=-1.0] objective drill_delivery -> 0
+[OFP 3.7s t=-1.0] objective vault_drill -> 0
+[OFP 3.7s t=-1.0] objective vault_breach -> 0
+[OFP 3.7s t=-1.0] objective secure -> 1
+[OFP 3.7s t=-1.0] objective deposit_boxes -> 1
+[OFP 3.7s t=-1.0] objective bond_safe -> 1
+[OFP 3.7s t=-1.0] objective president_safe -> 1
+[OFP 3.7s t=-1.0] objective server_drives -> 1
+[OFP 3.7s t=-1.0] objective escape_wait -> 0
+[OFP 3.7s t=-1.0] objective escape -> 0
+[INFO][prefab][p1] VaultBoxN10 disabled
+[INFO][prefab][p1] VaultBoxN11 disabled
+[INFO][prefab][p1] VaultBoxS01 disabled
+[INFO][prefab][p1] VaultBoxS02 disabled
+[INFO][prefab][p1] VaultBoxS03 disabled
+[INFO][prefab][p1] VaultBoxS04 disabled
+[INFO][prefab][p1] VaultBoxS05 disabled
+[INFO][prefab][p1] VaultBoxS06 disabled
+[INFO][prefab][p1] VaultBoxS07 disabled
+[INFO][prefab][p1] VaultBoxS08 disabled
+[INFO][prefab][p1] VaultBoxS09 disabled
+[INFO][prefab][p1] HallBox09 disabled
+[INFO][prefab][p1] HallBox10 disabled
+[INFO][prefab][p1] HallBox11 disabled
+[INFO][prefab][p1] HallBox12 disabled
+[INFO][prefab][p1] HallBox13 disabled
+[INFO][prefab][p1] HallBox14 disabled
+[INFO][prefab][p1] HallBox15 disabled
+[INFO][prefab][p1] HallBox16 disabled
+[INFO][prefab][p1] HallBox17 disabled
+[INFO][prefab][p1] HallBox18 disabled
+[INFO][prefab][p1] HallBox19 disabled
+[INFO][prefab][p1] HallBox20 disabled
+[INFO][prefab][p1] HallBox21 disabled
+[INFO][prefab][p1] HallBox22 disabled
+[INFO][prefab][p1] HallBox23 disabled
+[INFO][prefab][p1] HallBox24 disabled
+[INFO][director][p1] no EnemyDef for enemy.wrecker_g on this difficulty (missing, or armored below 2): skipped
+[INFO][director][p1] no EnemyDef for enemy.wrecker_b on this difficulty (missing, or armored below 2): skipped
+[INFO][director][p1] no EnemyDef for enemy.wrecker_s on this difficulty (missing, or armored below 2): skipped
+[INFO][director][p1] no EnemyDef for enemy.wrecker_m on this difficulty (missing, or armored below 2): skipped
+[INFO][director][p1] prewarm: 19 of 19 scenes loaded in 68 ms
+[INFO][prefab][p1] CameraStation: security room unstaffed
+[OFP 7.3s t=0.0] launched ostrander_federal seed 1002 diff 0 variants { &"manager_route": [&"mgr_gallery"], &"keycard": [&"kc_security"], &"code_pc": [&"pc_ops"], &"officers": [&"off_1"], &"server_room": [&"srv_gallery"], &"guard_post": [&"rover_basement", &"rover_dock"], &"security_room_staffed": [&"sec_empty"], &"camera": [&"cam_c"], &"laser_pattern": [&"lz_timed"], &"customers": [&"cust_4"], &"side_door": [&"door_dock_open"], &"fire_escape": [&"fe_down"], &"escape": [&"esc_van_tannery"], &"drill_delivery": [&"drop_terrace"], &"president_safe": [&"ps_empty"], &"vip": [&"vip_out"], &"guard_extra": [], &"civ_extra": [], &"time_lock_s": 150.0, &"drill_eta_s": 60.0, &"escape_eta_s": 120.0, &"cash_bags": 10, &"gold_bags": 4, &"deposit_boxes": 9, "rare": [] }
+[INFO][prefab][p1] CameraC1 disabled
+[INFO][prefab][p1] CameraC2 disabled
+[INFO][prefab][p1] CameraC3 disabled
+[INFO][prefab][p1] CameraC7 disabled
+[INFO][prefab][p1] CameraC9 disabled
+[INFO][prefab][p1] CameraC11 disabled
+[INFO][prefab][p1] CameraC13 disabled
+[INFO][prefab][p1] CameraC15 disabled
+[OFP 9.6s t=2.0] SHORTCUT traversal: NPCs despawned, crew stealth_hidden, 8 cameras disabled (GameplayPrefab.set_enabled)
+[OFP 9.7s t=2.1] pilot: calibrated 0.001600 rad/px yaw, 0.001600 rad/px pitch (settings formula said (0.0016, 0.0016))
+[OFP 9.7s t=2.1] spawn (21.0, 0.0, -6.0)
+[INFO][heist][p1] phase CASING -> STEALTH
+[OFP 10.8s t=3.2] objective casing -> 2
+[INFO][crew][p1] slot 0 masked (forced=false)
+[OFP 11.4s t=3.7] masked true
+[OFP 15.8s t=8.1] pilot: use DockPersonnelDoor (open_door) -> OK in 0.0 s
+[OFP 17.0s t=9.4] pilot: t=5 at (8.4, 0.0, 2.4) corner (8.6, 0.2, 3.4) yaw_err -0.00 fwd=true path=13 mouse_mode=2 state=0 look=(3.33,0.00) pin_yaw=3.33285847101069 bot=false
+[OFP 19.4s t=11.7] pilot: use DockCorridorDoor (open_door) -> OK in 0.0 s
+[OFP 21.4s t=13.8] pilot: use StairDoorSAG (open_door) -> OK in 0.0 s
+[OFP 26.5s t=18.8] pilot: use StairDoorSAM (open_door) -> OK in 0.0 s
+[OFP 28.5s t=20.8] pilot: use OperationsDoor (open_door) -> OK in 0.0 s
+[OFP 32.1s t=24.5] pilot: use OperationsGalleryDoor (open_door) -> OK in 0.0 s
+[OFP 33.8s t=26.2] pilot: t=5 at (20.2, 5.0, 18.3) corner (20.7, 5.2, 18.4) yaw_err -0.00 fwd=true path=5 mouse_mode=2 state=0 look=(4.46,0.00) pin_yaw=4.46463347877579 bot=false
+[OFP 34.9s t=27.3] SHORTCUT bag loot.cash_bricks (weight 1) spawned by LootManager.spawn_bag at (24.8, 5.5, 19.4)
+[INFO][stealth][p1] camera alert: alarm in 7.0 s
+[OFP 37.5s t=29.8] pilot: use Bag_cash_bricks (pick_bag) -> OK in 1.0 s
+[OFP 41.3s t=33.7] THROW GA loot.cash_bricks -20 deg weight 1 pitch -> rests (24.0, -0.0, 26.1) (6.9 m from the stand, 1.5 s) on SlabG_05 secured false: OK hall floor
+[OFP 41.3s t=33.7] SHORTCUT bag loot.cash_bricks (weight 1) spawned by LootManager.spawn_bag at (25.1, 5.5, 19.2)
+[INFO][stealth][p1] ALARM: camera (source 193)
+[OFP 43.5s t=35.9] ALARM camera by CameraC9 (pilot at (25.9, 5.0, 19.2))
+[INFO][heist][p1] alarm (camera): going loud
+[INFO][heist][p1] phase STEALTH -> LOUD
+[INFO][director][p1] assault phase CONTROL (wave 1, 20 s)
+[INFO][prefab][p1] VaultControlRack: hack paused (lockdown)
+[OFP 43.6s t=35.9] objective keycard -> 1
+[OFP 43.6s t=35.9] objective keycard -> 2
+[OFP 43.6s t=35.9] objective code_hint -> 1
+[OFP 43.6s t=35.9] objective code_hint -> 2
+[OFP 43.6s t=35.9] objective code_pc -> 1
+[OFP 43.6s t=35.9] objective code_pc -> 2
+[OFP 43.6s t=35.9] objective server -> 1
+[OFP 43.6s t=35.9] objective server -> 2
+[OFP 43.6s t=35.9] objective vault_gate -> 1
+[OFP 43.6s t=35.9] objective vault_gate -> 2
+[OFP 43.6s t=35.9] objective lasers -> 1
+[OFP 43.6s t=35.9] objective lasers -> 2
+[OFP 43.7s t=35.9] objective drill_delivery -> 1
+[OFP 43.7s t=35.9] objective drill_delivery -> 1
+[INFO][director][p1] assault events: 3 rows for ostrander_federal (tweak)
+[OFP 44.3s t=36.4] pilot: use Bag_cash_bricks2 (pick_bag) -> OK in 1.0 s
+[OFP 48.4s t=40.5] THROW GA loot.cash_bricks +0 deg weight 1 pitch -> rests (24.0, -0.0, 26.5) (7.3 m from the stand, 1.7 s) on SlabG_05 secured false: OK hall floor
+[OFP 48.5s t=40.6] SHORTCUT bag loot.cash_bricks (weight 1) spawned by LootManager.spawn_bag at (25.1, 5.5, 19.2)
+[OFP 51.2s t=43.3] pilot: use Bag_cash_bricks3 (pick_bag) -> OK in 1.0 s
+[OFP 55.5s t=47.7] THROW GA loot.cash_bricks +25 deg weight 1 pitch -> rests (24.0, -0.0, 25.3) (6.1 m from the stand, 1.9 s) on SlabG_05 secured false: OK hall floor
+[OFP 55.6s t=47.7] SHORTCUT bag loot.gold (weight 2) spawned by LootManager.spawn_bag at (25.1, 5.5, 19.2)
+[OFP 58.3s t=50.4] pilot: use Bag_gold (pick_bag) -> OK in 1.0 s
+[OFP 62.5s t=54.6] THROW GA loot.gold -20 deg weight 2 pitch -> rests (24.1, -0.0, 23.5) (4.3 m from the stand, 1.5 s) on SlabG_05 secured false: OK hall floor
+[OFP 62.5s t=54.6] SHORTCUT bag loot.gold (weight 2) spawned by LootManager.spawn_bag at (25.2, 5.5, 19.2)
+[INFO][director][p1] assault phase ANTICIPATION (wave 1, 30 s)
+[OFP 65.3s t=57.3] pilot: use Bag_gold2 (pick_bag) -> OK in 1.0 s
+[OFP 69.6s t=61.7] THROW GA loot.gold +0 deg weight 2 pitch -> rests (24.1, -0.0, 23.5) (4.3 m from the stand, 1.6 s) on SlabG_05 secured false: OK hall floor
+[OFP 69.6s t=61.7] SHORTCUT bag loot.gold (weight 2) spawned by LootManager.spawn_bag at (25.2, 5.5, 19.2)
+[OFP 72.4s t=64.4] pilot: use Bag_gold3 (pick_bag) -> OK in 1.0 s
+[OFP 76.8s t=68.9] THROW GA loot.gold +25 deg weight 2 pitch -> rests (24.1, -0.0, 22.7) (3.5 m from the stand, 1.7 s) on SlabG_05 secured false: OK hall floor
+[OFP 81.9s t=74.0] pilot: t=5 at (12.2, 5.0, 9.3) corner (12.1, 5.0, 8.1) yaw_err -0.00 fwd=true path=8 mouse_mode=2 state=0 look=(0.14,0.00) pin_yaw=0.14037280853517 bot=false
+[OFP 87.1s t=79.1] pilot: use StairDoorSAE (open_door) -> OK in 0.0 s
+[OFP 90.8s t=82.7] pilot: use LoungeDoor (open_door) -> OK in 0.0 s
+[INFO][director][p1] assault phase BUILD (wave 1, 35 s)
+[OFP 101.7s t=93.6] pilot: use TerraceDoorsW (open_door) -> OK in 8.0 s
+[OFP 102.7s t=94.7] pilot: t=5 at (5.7, 8.6, 18.0) corner (12.8, 8.8, 18.0) yaw_err 0.04 fwd=true path=20 mouse_mode=2 state=0 look=(-1.61,0.00) pin_yaw=-1.56737570767291 bot=false
+[OFP 103.9s t=95.9] objective vault_drill -> 1
+[OFP 107.6s t=99.6] pilot: t=10 at (23.0, 8.6, 18.4) corner (29.7, 8.8, 18.6) yaw_err 0.00 fwd=true path=14 mouse_mode=2 state=0 look=(-1.60,0.00) pin_yaw=-1.59826130243892 bot=false
+[OFP 112.6s t=104.6] pilot: t=15 at (40.5, 8.6, 19.0) corner (41.0, 8.8, 18.9) yaw_err 0.01 fwd=true path=8 mouse_mode=2 state=0 look=(-1.48,0.00) pin_yaw=-1.47653315979551 bot=false
+[OFP 114.6s t=106.5] WALL terrace east parapet from (47.0, 8.6, 19.0): blocked up to ~1.00 m above the feet; 0.25: 0.76 m EZ0480_1_00; 0.50: 0.76 m CopingEZ0480_0170; 0.75: 0.76 m CopingEZ0480_0170; 1.00: 0.76 m CopingEZ0480_0170; 1.25: open; 1.50: open; 1.75: open; 2.00: open; 2.25: open; 2.50: open; 2.75: open; 3.00: open
+[OFP 114.6s t=106.6] SHORTCUT bag loot.cash_bricks (weight 1) spawned by LootManager.spawn_bag at (47.1, 9.1, 18.0)
+[OFP 116.6s t=108.5] pilot: use Bag_cash_bricks4 (pick_bag) -> OK in 1.0 s
+[OFP 120.0s t=112.0] THROW terrace loot.cash_bricks -20 deg from 0.0 m back of the parapet stand weight 1 pitch -> rests (55.4, -0.0, 19.0) (8.3 m from the stand, 1.8 s) on GradeTannery secured false: OK Tannery Street, 1.2 m from E2
+[OFP 120.1s t=112.1] SHORTCUT bag loot.cash_bricks (weight 1) spawned by LootManager.spawn_bag at (47.1, 9.1, 18.0)
+[OFP 122.0s t=114.0] pilot: use Bag_cash_bricks5 (pick_bag) -> OK in 1.0 s
+[OFP 125.7s t=117.7] THROW terrace loot.cash_bricks +0 deg from 0.0 m back of the parapet stand weight 1 pitch -> rests (55.6, -0.0, 19.0) (8.5 m from the stand, 2.0 s) on GradeTannery secured false: OK Tannery Street, 1.4 m from E2
+[OFP 125.8s t=117.8] SHORTCUT bag loot.cash_bricks (weight 1) spawned by LootManager.spawn_bag at (47.1, 9.1, 18.0)
+[OFP 127.8s t=119.7] pilot: use Bag_cash_bricks6 (pick_bag) -> OK in 1.0 s
+[INFO][director][p1] assault phase SUSTAIN (wave 1, 40 s)
+[OFP 130.4s t=122.4] secured loot.cash_bricks (bag 255)
+[OFP 130.4s t=122.4] objective secure -> 1
+[OFP 130.4s t=122.4] THROW terrace loot.cash_bricks +25 deg from 0.0 m back of the parapet stand weight 1 pitch -> rests (54.0, -0.0, 19.0) (6.9 m from the stand, 2.2 s) on - secured true: OK in the E2 zone
+[OFP 130.5s t=122.5] SHORTCUT bag loot.gold (weight 2) spawned by LootManager.spawn_bag at (47.1, 9.1, 18.0)
+[OFP 132.5s t=124.4] pilot: use Bag_gold4 (pick_bag) -> OK in 1.0 s
+[OFP 134.7s t=126.7] secured loot.gold (bag 258)
+[OFP 134.7s t=126.7] objective secure -> 1
+[OFP 134.7s t=126.7] THROW terrace loot.gold -20 deg from 0.0 m back of the parapet stand weight 2 pitch -> rests (52.3, -0.0, 19.0) (5.2 m from the stand, 1.8 s) on - secured true: OK in the E2 zone
+[OFP 134.8s t=126.7] SHORTCUT bag loot.gold (weight 2) spawned by LootManager.spawn_bag at (47.1, 9.1, 18.0)
+[OFP 136.7s t=128.6] pilot: use Bag_gold4 (pick_bag) -> OK in 1.0 s
+[OFP 139.0s t=131.0] secured loot.gold (bag 260)
+[OFP 139.0s t=131.0] objective secure -> 1
+[OFP 139.0s t=131.0] THROW terrace loot.gold +0 deg from 0.0 m back of the parapet stand weight 2 pitch -> rests (52.2, -0.0, 19.0) (5.1 m from the stand, 1.9 s) on - secured true: OK in the E2 zone
+[OFP 139.1s t=131.0] SHORTCUT bag loot.gold (weight 2) spawned by LootManager.spawn_bag at (47.1, 9.1, 18.0)
+[INFO][director][p1] force pool spent (26 units): FADE
+[INFO][director][p1] assault phase FADE (wave 1, 15 s)
+[OFP 141.1s t=132.9] pilot: use Bag_gold4 (pick_bag) -> OK in 1.0 s
+[OFP 143.5s t=135.5] secured loot.gold (bag 263)
+[OFP 143.5s t=135.5] objective secure -> 1
+[OFP 143.5s t=135.5] objective secure -> 2
+[OFP 143.5s t=135.5] objective vault_loot -> 2
+[OFP 143.5s t=135.5] objective drill_delivery -> 1
+[OFP 143.5s t=135.5] objective drill_delivery -> 2
+[OFP 143.5s t=135.5] objective vault_drill -> 1
+[OFP 143.5s t=135.5] objective vault_drill -> 2
+[OFP 143.5s t=135.5] objective escape_wait -> 0
+[OFP 143.5s t=135.5] objective escape_wait -> 1
+[OFP 143.6s t=135.5] THROW terrace loot.gold +25 deg from 0.0 m back of the parapet stand weight 2 pitch -> rests (51.1, -0.0, 19.0) (4.0 m from the stand, 2.0 s) on - secured true: OK in the E2 zone
+[OFP] RESULT PASS throws
+[OFP] RESULT PASS (throws PASS)
+WARNING: Sub-surface scattering is not supported in viewports with a transparent background. Disabling SSS in transparent viewport.
+   at: _render_scene (servers/rendering/renderer_rd/forward_clustered/render_forward_clustered.cpp:1963)
+ERROR: Lambda capture at index 1 was freed. Passed "null" instead.
+   at: call (modules/gdscript/gdscript_lambda_callable.cpp:242)
+   GDScript backtrace (most recent call first):
+       [0] wait_until (res://tests/p/_review/of_g1_pass.gd:298)
+ERROR: Lambda capture at index 1 was freed. Passed "null" instead.
+   at: call (modules/gdscript/gdscript_lambda_callable.cpp:242)
+   GDScript backtrace (most recent call first):
+       [0] wait_until (res://tests/p/_review/of_g1_pass.gd:298)
+ERROR: Lambda capture at index 1 was freed. Passed "null" instead.
+   at: call (modules/gdscript/gdscript_lambda_callable.cpp:242)
+   GDScript backtrace (most recent call first):
+       [0] wait_until (res://tests/p/_review/of_g1_pass.gd:298)
+ERROR: Lambda capture at index 1 was freed. Passed "null" instead.
+   at: call (modules/gdscript/gdscript_lambda_callable.cpp:242)
+   GDScript backtrace (most recent call first):
+       [0] wait_until (res://tests/p/_review/of_g1_pass.gd:298)
+WARNING: 7 RIDs of type "Texture" were leaked.
+   at: finalize (servers/rendering/rendering_device.cpp:8900)
+WARNING: 494 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)

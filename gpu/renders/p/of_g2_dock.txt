@@ -1,0 +1,112 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+Vulkan 1.4.349 - Forward+ - Using Device #0: AMD - AMD Radeon RX 9070 XT
+
+[OFP 0.0s t=-1.0] === dock ===
+[INFO][rng][p1] run seed 1002
+[INFO][preplan][p1] assets []
+[INFO][variants][p1] seed 1002 resolved { &"manager_route": [&"mgr_gallery"], &"keycard": [&"kc_security"], &"code_pc": [&"pc_ops"], &"officers": [&"off_1"], &"server_room": [&"srv_gallery"], &"guard_post": [&"rover_basement", &"rover_dock"], &"security_room_staffed": [&"sec_empty"], &"camera": [&"cam_c"], &"laser_pattern": [&"lz_timed"], &"customers": [&"cust_4"], &"side_door": [&"door_dock_open"], &"fire_escape": [&"fe_down"], &"escape": [&"esc_van_dock"], &"drill_delivery": [&"drop_terrace"], &"president_safe": [&"ps_empty"], &"vip": [&"vip_out"], &"guard_extra": [], &"civ_extra": [], &"time_lock_s": 150.0, &"drill_eta_s": 60.0, &"escape_eta_s": 120.0, &"cash_bags": 10, &"gold_bags": 4, &"deposit_boxes": 9, "rare": [] }
+[INFO][heist][p1] vfx prewarm: 487 ms
+[INFO][prefab][p1] Hoist disabled
+[INFO][prefab][p1] RopeLadder disabled
+[INFO][heist][p1] phase LOADING -> CASING
+[OFP 4.0s t=-1.0] objective casing -> 1
+[OFP 4.0s t=-1.0] objective keycard -> 1
+[OFP 4.1s t=-1.0] objective code_hint -> 1
+[OFP 4.1s t=-1.0] objective code_pc -> 1
+[OFP 4.1s t=-1.0] objective server -> 1
+[OFP 4.1s t=-1.0] objective vault_gate -> 1
+[OFP 4.1s t=-1.0] objective lasers -> 1
+[OFP 4.1s t=-1.0] objective time_lock -> 0
+[OFP 4.1s t=-1.0] objective time_lock_wait -> 0
+[OFP 4.1s t=-1.0] objective vault_loot -> 0
+[OFP 4.1s t=-1.0] objective gold_cage -> 0
+[OFP 4.1s t=-1.0] objective drill_delivery -> 0
+[OFP 4.1s t=-1.0] objective vault_drill -> 0
+[OFP 4.1s t=-1.0] objective vault_breach -> 0
+[OFP 4.1s t=-1.0] objective secure -> 1
+[OFP 4.1s t=-1.0] objective deposit_boxes -> 1
+[OFP 4.1s t=-1.0] objective bond_safe -> 1
+[OFP 4.1s t=-1.0] objective president_safe -> 1
+[OFP 4.1s t=-1.0] objective server_drives -> 1
+[OFP 4.1s t=-1.0] objective escape_wait -> 0
+[OFP 4.1s t=-1.0] objective escape -> 0
+[INFO][prefab][p1] VaultBoxN10 disabled
+[INFO][prefab][p1] VaultBoxN11 disabled
+[INFO][prefab][p1] VaultBoxS01 disabled
+[INFO][prefab][p1] VaultBoxS02 disabled
+[INFO][prefab][p1] VaultBoxS03 disabled
+[INFO][prefab][p1] VaultBoxS04 disabled
+[INFO][prefab][p1] VaultBoxS05 disabled
+[INFO][prefab][p1] VaultBoxS06 disabled
+[INFO][prefab][p1] VaultBoxS07 disabled
+[INFO][prefab][p1] VaultBoxS08 disabled
+[INFO][prefab][p1] VaultBoxS09 disabled
+[INFO][prefab][p1] HallBox09 disabled
+[INFO][prefab][p1] HallBox10 disabled
+[INFO][prefab][p1] HallBox11 disabled
+[INFO][prefab][p1] HallBox12 disabled
+[INFO][prefab][p1] HallBox13 disabled
+[INFO][prefab][p1] HallBox14 disabled
+[INFO][prefab][p1] HallBox15 disabled
+[INFO][prefab][p1] HallBox16 disabled
+[INFO][prefab][p1] HallBox17 disabled
+[INFO][prefab][p1] HallBox18 disabled
+[INFO][prefab][p1] HallBox19 disabled
+[INFO][prefab][p1] HallBox20 disabled
+[INFO][prefab][p1] HallBox21 disabled
+[INFO][prefab][p1] HallBox22 disabled
+[INFO][prefab][p1] HallBox23 disabled
+[INFO][prefab][p1] HallBox24 disabled
+[INFO][director][p1] no EnemyDef for enemy.wrecker_g on this difficulty (missing, or armored below 2): skipped
+[INFO][director][p1] no EnemyDef for enemy.wrecker_b on this difficulty (missing, or armored below 2): skipped
+[INFO][director][p1] no EnemyDef for enemy.wrecker_s on this difficulty (missing, or armored below 2): skipped
+[INFO][director][p1] no EnemyDef for enemy.wrecker_m on this difficulty (missing, or armored below 2): skipped
+[INFO][director][p1] prewarm: 19 of 19 scenes loaded in 67 ms
+[INFO][prefab][p1] CameraStation: security room unstaffed
+[OFP 7.9s t=0.0] launched ostrander_federal seed 1002 diff 0 variants { &"manager_route": [&"mgr_gallery"], &"keycard": [&"kc_security"], &"code_pc": [&"pc_ops"], &"officers": [&"off_1"], &"server_room": [&"srv_gallery"], &"guard_post": [&"rover_basement", &"rover_dock"], &"security_room_staffed": [&"sec_empty"], &"camera": [&"cam_c"], &"laser_pattern": [&"lz_timed"], &"customers": [&"cust_4"], &"side_door": [&"door_dock_open"], &"fire_escape": [&"fe_down"], &"escape": [&"esc_van_dock"], &"drill_delivery": [&"drop_terrace"], &"president_safe": [&"ps_empty"], &"vip": [&"vip_out"], &"guard_extra": [], &"civ_extra": [], &"time_lock_s": 150.0, &"drill_eta_s": 60.0, &"escape_eta_s": 120.0, &"cash_bags": 10, &"gold_bags": 4, &"deposit_boxes": 9, "rare": [] }
+[INFO][prefab][p1] CameraC1 disabled
+[INFO][prefab][p1] CameraC2 disabled
+[INFO][prefab][p1] CameraC3 disabled
+[INFO][prefab][p1] CameraC7 disabled
+[INFO][prefab][p1] CameraC9 disabled
+[INFO][prefab][p1] CameraC11 disabled
+[INFO][prefab][p1] CameraC13 disabled
+[INFO][prefab][p1] CameraC15 disabled
+[OFP 10.2s t=2.0] SHORTCUT traversal: NPCs despawned, crew stealth_hidden, 8 cameras disabled (GameplayPrefab.set_enabled)
+[OFP 10.4s t=2.2] pilot: calibrated 0.001600 rad/px yaw, 0.001600 rad/px pitch (settings formula said (0.0016, 0.0016))
+[OFP 10.4s t=2.2] spawn (21.0, 0.0, -6.0)
+[INFO][heist][p1] phase CASING -> STEALTH
+[OFP 11.4s t=3.2] objective casing -> 2
+[INFO][crew][p1] slot 0 masked (forced=false)
+[OFP 12.0s t=3.8] masked true
+[OFP 13.1s t=4.9] SHORTCUT bag loot.cash_bricks (weight 1) spawned by LootManager.spawn_bag at (24.1, 0.5, -3.9)
+[OFP 15.7s t=7.4] pilot: use Bag_cash_bricks (pick_bag) -> OK in 1.0 s
+[OFP 20.6s t=12.4] pilot: t=5 at (12.1, 0.0, -1.9) corner (8.8, 0.2, -1.3) yaw_err -0.00 fwd=true path=4 mouse_mode=2 state=0 look=(1.74,0.00) pin_yaw=1.73559014077909 bot=false
+[OFP 22.6s t=14.3] pilot: use DockPersonnelDoor (open_door) -> OK in 0.0 s
+[OFP 25.3s t=17.1] DOCK loot.cash_bricks: lane -> LD in 9.7 s, sill crossing 2.47 m/s, STUCK rows 0
+[OFP 29.2s t=21.1] secured loot.cash_bricks (bag 222)
+[OFP 29.2s t=21.1] objective secure -> 1
+[OFP 29.3s t=21.1] THROW LD -> E1 loot.cash_bricks stand 0 (7.9, 0.0, -0.5): 0.9 m from the zone, 0.5 m from the door weight 1 pitch -> rests (6.5, -0.0, -2.6) (2.6 m from the stand, 1.3 s) on - secured true: OK in E1
+[OFP 34.1s t=25.9] SHORTCUT bag loot.gold (weight 2) spawned by LootManager.spawn_bag at (24.1, 0.5, -4.0)
+[OFP 36.8s t=28.4] pilot: use Bag_gold (pick_bag) -> OK in 1.0 s
+[OFP 41.6s t=33.4] pilot: t=5 at (16.3, 0.0, -2.6) corner (8.8, 0.2, -1.3) yaw_err -0.00 fwd=true path=4 mouse_mode=2 state=0 look=(8.02,0.00) pin_yaw=8.0181216063429 bot=false
+[OFP 50.0s t=41.8] DOCK loot.gold: lane -> LD in 13.3 s, sill crossing 1.72 m/s, STUCK rows 0
+[OFP 54.9s t=46.7] secured loot.gold (bag 223)
+[OFP 55.0s t=46.7] objective secure -> 1
+[OFP 55.0s t=46.7] THROW LD -> E1 loot.gold stand 0 (7.9, 0.0, -0.4): 0.9 m from the zone, 0.4 m from the door weight 2 pitch -> rests (6.6, -0.0, -2.2) (2.3 m from the stand, 1.4 s) on - secured true: OK in E1
+[OFP] RESULT PASS dock
+[OFP] RESULT PASS (dock PASS)
+ERROR: Lambda capture at index 1 was freed. Passed "null" instead.
+   at: call (modules/gdscript/gdscript_lambda_callable.cpp:242)
+   GDScript backtrace (most recent call first):
+       [0] wait_until (res://tests/p/_review/of_g1_pass.gd:298)
+WARNING: Sub-surface scattering is not supported in viewports with a transparent background. Disabling SSS in transparent viewport.
+   at: _render_scene (servers/rendering/renderer_rd/forward_clustered/render_forward_clustered.cpp:1963)
+ERROR: Lambda capture at index 1 was freed. Passed "null" instead.
+   at: call (modules/gdscript/gdscript_lambda_callable.cpp:242)
+   GDScript backtrace (most recent call first):
+       [0] wait_until (res://tests/p/_review/of_g1_pass.gd:298)
+WARNING: 7 RIDs of type "Texture" were leaked.
+   at: finalize (servers/rendering/rendering_device.cpp:8900)
+WARNING: 493 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)

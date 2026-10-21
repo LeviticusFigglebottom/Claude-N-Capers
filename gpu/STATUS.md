@@ -89,3 +89,26 @@ NPC placement is seeded but animation/tier state at capture time may differ, so 
 - Burnt vs final: all 4 JPEGs differ, but only slightly (rc_vault_hole +7 KB, rc_terrace +2 KB, the other two within 0.1 KB). In the
   contact sheet the changes are subtle (drops/debris at the vault hole and on the terrace), with no obvious scorch/fire look. ENV C should confirm this is the intended look.
 - Note: burnt/shots.md says "(g1)" in its title, a cosmetic tool label from the `--scene` path.
+## GPU-7: ENV P's section 7 pass on the final OF map (tree: env/c-worlds 3c9b2fdf + GPU-5 .res)
+- Per run: `godot\Godot_v4.7.2-stable_win64_console.exe --path game --resolution 1280x720 res://tests/p/_review/of_g1_pass.tscn -- --test=<t> [--pattern=lz_*] --seed=1002 --out=<repo>\gpu\renders\p\of_g2_<name>`
+  (stdout+stderr to `gpu/renders/p/of_g2_<name>.txt`; I ran it from PowerShell via Start-Process instead of cmd.exe, with the same args).
+- **10/10 PASS**. Every run exited by itself, and none had to be closed.
+
+| run | exit | wall | result |
+|---|---|---|---|
+| of_g2_laser | 0 | 60 s | [OFP] RESULT PASS (laser PASS) |
+| of_g2_laser_static | 0 | 62 s | [OFP] RESULT PASS (laser PASS) |
+| of_g2_laser_sweep | 0 | 52 s | [OFP] RESULT PASS (laser PASS) |
+| of_g2_laser_timed | 0 | 52 s | [OFP] RESULT PASS (laser PASS) |
+| of_g2_throws | 0 | 151 s | [OFP] RESULT PASS (throws PASS) |
+| of_g2_fire_escape | 0 | 99 s | [OFP] RESULT PASS (fire_escape PASS) |
+| of_g2_hole | 0 | 74 s | [OFP] RESULT PASS (hole PASS) |
+| of_g2_dock | 0 | 62 s | [OFP] RESULT PASS (dock PASS) |
+| of_g2_fire_exit | 0 | 30 s | [OFP] RESULT PASS (fire_exit PASS) |
+| of_g2_burn | 0 | 273 s | [OFP] RESULT PASS (burn PASS) |
+
+- ERROR lines in the logs, none of which failed a test:
+  - `It's not expect to not find the most reachable polygons` (Godot navmesh pathing): burn x13, hole x8
+  - `Condition "!is_inside_tree()" is true. Returning: Transform3D()`: burn x8
+  - `Lambda capture at index 1 was freed. Passed "null" instead.`: throws x4, dock x2, fire_exit x1
+- Every run also logs the warning `Sub-surface scattering is not supported in viewports with a transparent background`.

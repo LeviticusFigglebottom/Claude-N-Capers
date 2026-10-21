@@ -1,0 +1,341 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+Vulkan 1.4.349 - Forward+ - Using Device #0: AMD - AMD Radeon RX 9070 XT
+
+[OFP 0.0s t=-1.0] === burn ===
+[INFO][rng][p1] run seed 1002
+[INFO][preplan][p1] assets []
+[INFO][variants][p1] seed 1002 resolved { &"manager_route": [&"mgr_gallery"], &"keycard": [&"kc_security"], &"code_pc": [&"pc_ops"], &"officers": [&"off_1"], &"server_room": [&"srv_gallery"], &"guard_post": [&"rover_basement", &"rover_dock"], &"security_room_staffed": [&"sec_empty"], &"camera": [&"cam_c"], &"laser_pattern": [&"lz_timed"], &"customers": [&"cust_4"], &"side_door": [&"door_dock_open"], &"fire_escape": [&"fe_down"], &"escape": [&"esc_van_tannery"], &"drill_delivery": [&"drop_dock"], &"president_safe": [&"ps_empty"], &"vip": [&"vip_out"], &"guard_extra": [], &"civ_extra": [], &"time_lock_s": 150.0, &"drill_eta_s": 60.0, &"escape_eta_s": 120.0, &"cash_bags": 10, &"gold_bags": 4, &"deposit_boxes": 9, "rare": [] }
+[INFO][heist][p1] vfx prewarm: 506 ms
+[INFO][prefab][p1] Hoist disabled
+[INFO][prefab][p1] RopeLadder disabled
+[INFO][heist][p1] phase LOADING -> CASING
+[OFP 4.1s t=-1.0] objective casing -> 1
+[OFP 4.1s t=-1.0] objective keycard -> 1
+[OFP 4.1s t=-1.0] objective code_hint -> 1
+[OFP 4.1s t=-1.0] objective code_pc -> 1
+[OFP 4.1s t=-1.0] objective server -> 1
+[OFP 4.1s t=-1.0] objective vault_gate -> 1
+[OFP 4.1s t=-1.0] objective lasers -> 1
+[OFP 4.1s t=-1.0] objective time_lock -> 0
+[OFP 4.1s t=-1.0] objective time_lock_wait -> 0
+[OFP 4.1s t=-1.0] objective vault_loot -> 0
+[OFP 4.1s t=-1.0] objective gold_cage -> 0
+[OFP 4.1s t=-1.0] objective drill_delivery -> 0
+[OFP 4.1s t=-1.0] objective vault_drill -> 0
+[OFP 4.1s t=-1.0] objective vault_breach -> 0
+[OFP 4.1s t=-1.0] objective secure -> 1
+[OFP 4.1s t=-1.0] objective deposit_boxes -> 1
+[OFP 4.1s t=-1.0] objective bond_safe -> 1
+[OFP 4.1s t=-1.0] objective president_safe -> 1
+[OFP 4.1s t=-1.0] objective server_drives -> 1
+[OFP 4.1s t=-1.0] objective escape_wait -> 0
+[OFP 4.1s t=-1.0] objective escape -> 0
+[INFO][prefab][p1] VaultBoxN10 disabled
+[INFO][prefab][p1] VaultBoxN11 disabled
+[INFO][prefab][p1] VaultBoxS01 disabled
+[INFO][prefab][p1] VaultBoxS02 disabled
+[INFO][prefab][p1] VaultBoxS03 disabled
+[INFO][prefab][p1] VaultBoxS04 disabled
+[INFO][prefab][p1] VaultBoxS05 disabled
+[INFO][prefab][p1] VaultBoxS06 disabled
+[INFO][prefab][p1] VaultBoxS07 disabled
+[INFO][prefab][p1] VaultBoxS08 disabled
+[INFO][prefab][p1] VaultBoxS09 disabled
+[INFO][prefab][p1] HallBox09 disabled
+[INFO][prefab][p1] HallBox10 disabled
+[INFO][prefab][p1] HallBox11 disabled
+[INFO][prefab][p1] HallBox12 disabled
+[INFO][prefab][p1] HallBox13 disabled
+[INFO][prefab][p1] HallBox14 disabled
+[INFO][prefab][p1] HallBox15 disabled
+[INFO][prefab][p1] HallBox16 disabled
+[INFO][prefab][p1] HallBox17 disabled
+[INFO][prefab][p1] HallBox18 disabled
+[INFO][prefab][p1] HallBox19 disabled
+[INFO][prefab][p1] HallBox20 disabled
+[INFO][prefab][p1] HallBox21 disabled
+[INFO][prefab][p1] HallBox22 disabled
+[INFO][prefab][p1] HallBox23 disabled
+[INFO][prefab][p1] HallBox24 disabled
+[INFO][director][p1] no EnemyDef for enemy.wrecker_g on this difficulty (missing, or armored below 2): skipped
+[INFO][director][p1] no EnemyDef for enemy.wrecker_b on this difficulty (missing, or armored below 2): skipped
+[INFO][director][p1] no EnemyDef for enemy.wrecker_s on this difficulty (missing, or armored below 2): skipped
+[INFO][director][p1] no EnemyDef for enemy.wrecker_m on this difficulty (missing, or armored below 2): skipped
+[INFO][director][p1] prewarm: 19 of 19 scenes loaded in 71 ms
+[INFO][prefab][p1] CameraStation: security room unstaffed
+[OFP 7.8s t=0.0] launched ostrander_federal seed 1002 diff 0 variants { &"manager_route": [&"mgr_gallery"], &"keycard": [&"kc_security"], &"code_pc": [&"pc_ops"], &"officers": [&"off_1"], &"server_room": [&"srv_gallery"], &"guard_post": [&"rover_basement", &"rover_dock"], &"security_room_staffed": [&"sec_empty"], &"camera": [&"cam_c"], &"laser_pattern": [&"lz_timed"], &"customers": [&"cust_4"], &"side_door": [&"door_dock_open"], &"fire_escape": [&"fe_down"], &"escape": [&"esc_van_tannery"], &"drill_delivery": [&"drop_dock"], &"president_safe": [&"ps_empty"], &"vip": [&"vip_out"], &"guard_extra": [], &"civ_extra": [], &"time_lock_s": 150.0, &"drill_eta_s": 60.0, &"escape_eta_s": 120.0, &"cash_bags": 10, &"gold_bags": 4, &"deposit_boxes": 9, "rare": [] }
+[INFO][prefab][p1] CameraC1 disabled
+[INFO][prefab][p1] CameraC2 disabled
+[INFO][prefab][p1] CameraC3 disabled
+[INFO][prefab][p1] CameraC7 disabled
+[INFO][prefab][p1] CameraC9 disabled
+[INFO][prefab][p1] CameraC11 disabled
+[INFO][prefab][p1] CameraC13 disabled
+[INFO][prefab][p1] CameraC15 disabled
+[OFP 10.1s t=2.0] SHORTCUT traversal: NPCs despawned, crew stealth_hidden, 8 cameras disabled (GameplayPrefab.set_enabled)
+[OFP 10.3s t=2.2] pilot: calibrated 0.001600 rad/px yaw, 0.001600 rad/px pitch (settings formula said (0.0016, 0.0016))
+[OFP 10.3s t=2.2] spawn (21.0, 0.0, -6.0)
+[OFP 10.5s t=2.2] BURN before: rope ladder usable false height 3.20 (top (24.0, 0.0, 13.1) bottom (24.0, -4.0, 13.9)); hoist visible false
+[INFO][heist][p1] phase CASING -> STEALTH
+[OFP 11.4s t=3.2] objective casing -> 2
+[INFO][crew][p1] slot 0 masked (forced=false)
+[OFP 12.0s t=3.8] masked true
+[INFO][stealth][p1] ALARM: ofp_burn (source 0)
+[OFP 12.0s t=3.8] ALARM ofp_burn by 0 (pilot at (21.0, 0.0, -6.0))
+[INFO][heist][p1] alarm (ofp_burn): going loud
+[INFO][heist][p1] phase STEALTH -> LOUD
+[INFO][director][p1] assault phase CONTROL (wave 1, 20 s)
+[INFO][prefab][p1] VaultControlRack: hack paused (lockdown)
+[OFP 12.1s t=3.8] objective keycard -> 1
+[OFP 12.1s t=3.8] objective keycard -> 2
+[OFP 12.1s t=3.8] objective code_hint -> 1
+[OFP 12.1s t=3.8] objective code_hint -> 2
+[OFP 12.1s t=3.8] objective code_pc -> 1
+[OFP 12.1s t=3.8] objective code_pc -> 2
+[OFP 12.1s t=3.8] objective server -> 1
+[OFP 12.1s t=3.8] objective server -> 2
+[OFP 12.1s t=3.8] objective vault_gate -> 1
+[OFP 12.1s t=3.8] objective vault_gate -> 2
+[OFP 12.1s t=3.8] objective lasers -> 1
+[OFP 12.1s t=3.8] objective lasers -> 2
+[OFP 12.1s t=3.8] objective drill_delivery -> 1
+[OFP 12.2s t=3.8] objective drill_delivery -> 1
+[OFP 12.2s t=3.8] SHORTCUT alarm raised through the StealthDirector
+[OFP 12.2s t=3.8] BURN lockdown PASS; drill_delivery [&"drop_dock"] eta 60.0
+[INFO][director][p1] assault events: 3 rows for ostrander_federal (tweak)
+[INFO][director][p1] assault phase ANTICIPATION (wave 1, 30 s)
+[INFO][director][p1] assault phase BUILD (wave 1, 35 s)
+[OFP 72.2s t=63.8] objective vault_drill -> 1
+[OFP 72.2s t=63.8] BURN parts PASS at (14.0, 0.0, -4.0)
+[OFP 75.1s t=66.8] objective drill_delivery -> 1
+[OFP 75.3s t=66.8] pilot: use Bag_thermal_drill_part (pick_bag) -> OK in 1.0 s
+[OFP 79.9s t=71.4] pilot: use DockPersonnelDoor (open_door) -> OK in 0.0 s
+[OFP 81.0s t=72.6] pilot: t=5 at (8.2, 0.0, 0.1) corner (8.1, 0.0, 0.9) yaw_err 0.00 fwd=true path=32 mouse_mode=2 state=0 look=(3.10,0.00) pin_yaw=3.09588705583155 bot=false
+[OFP 86.1s t=77.5] pilot: use DockCorridorDoor (open_door) -> OK in 0.0 s
+[OFP 87.6s t=79.1] pilot: t=10 at (11.2, 0.0, 8.2) corner (13.9, 0.2, 8.5) yaw_err -0.00 fwd=true path=21 mouse_mode=2 state=0 look=(4.60,0.00) pin_yaw=4.59948771746713 bot=false
+[INFO][director][p1] assault phase SUSTAIN (wave 1, 40 s)
+[OFP 97.7s t=89.1] pilot: use StaffDoorTWW (open_door) -> OK in 8.0 s
+[OFP 102.1s t=93.6] pilot: t=15 at (19.2, 0.0, 11.5) corner (21.0, 0.2, 12.0) yaw_err -0.00 fwd=true path=10 mouse_mode=2 state=0 look=(4.41,0.00) pin_yaw=4.41016209188092 bot=false
+[INFO][director][p1] force pool spent (26 units): FADE
+[INFO][director][p1] assault phase FADE (wave 1, 15 s)
+[OFP 109.4s t=100.9] pilot: use LidDrill (place_drill) -> OK in 3.0 s
+[OFP 109.4s t=100.9] BURN part 0 PASS: drop -> lid in 37.0 s (HEAVY), delivered 1
+[OFP 114.4s t=105.9] pilot: t=5 at (11.6, 0.0, 8.0) corner (10.9, 0.2, 7.9) yaw_err 0.00 fwd=true path=16 mouse_mode=2 state=0 look=(1.54,0.00) pin_yaw=1.53739705870976 bot=false
+[OFP 119.3s t=110.9] pilot: t=10 at (12.8, 0.0, -2.9) corner (15.1, 0.2, -4.0) yaw_err -0.00 fwd=true path=2 mouse_mode=2 state=0 look=(-1.13,0.00) pin_yaw=-1.13231666042702 bot=false
+[OFP 121.3s t=112.8] objective drill_delivery -> 1
+[OFP 121.3s t=112.8] objective drill_delivery -> 2
+[OFP 121.4s t=112.9] pilot: use Bag_thermal_drill_part2 (pick_bag) -> OK in 1.0 s
+[INFO][director][p1] assault phase CONTROL (wave 2, 40 s)
+[OFP 126.4s t=117.9] pilot: t=5 at (8.2, 0.0, 0.6) corner (8.1, 0.0, 0.9) yaw_err 0.00 fwd=true path=32 mouse_mode=2 state=0 look=(3.10,0.00) pin_yaw=3.09564344384125 bot=false
+[OFP 131.4s t=122.9] pilot: t=10 at (10.8, 0.0, 7.8) corner (10.9, 0.0, 7.8) yaw_err 0.00 fwd=true path=24 mouse_mode=2 state=0 look=(4.66,0.00) pin_yaw=4.66195340516424 bot=false
+[OFP 136.4s t=127.9] pilot: t=15 at (17.7, 0.0, 11.0) corner (18.1, 0.2, 11.1) yaw_err 0.00 fwd=true path=11 mouse_mode=2 state=0 look=(4.41,0.00) pin_yaw=4.41273577142419 bot=false
+[OFP 144.7s t=136.1] pilot: use LidDrill (place_drill) -> OK in 3.0 s
+[OFP 144.7s t=136.1] BURN part 1 PASS: drop -> lid in 35.2 s (HEAVY), delivered 2
+[OFP 145.0s t=136.2] SHORTCUT burn wait at x4 beside the drill
+[INFO][director][p1] assault phase ANTICIPATION (wave 2, 30 s)
+[INFO][director][p1] assault phase BUILD (wave 2, 35 s)
+[INFO][director][p1] assault phase SUSTAIN (wave 2, 120 s)
+[INFO][director][p1] force pool spent (29 units): FADE
+[INFO][director][p1] assault phase FADE (wave 2, 15 s)
+[INFO][director][p1] assault phase CONTROL (wave 3, 40 s)
+[INFO][director][p1] assault phase ANTICIPATION (wave 3, 30 s)
+[OFP 190.1s t=310.3] pilot: use LidDrill (place_drill) -> OK in 2.0 s
+[OFP 190.1s t=310.3] BURN jam 1 fixed true
+[INFO][director][p1] assault phase BUILD (wave 3, 35 s)
+[INFO][director][p1] assault phase SUSTAIN (wave 3, 160 s)
+[INFO][director][p1] force pool spent (33 units): FADE
+[INFO][director][p1] assault phase FADE (wave 3, 15 s)
+[INFO][director][p1] assault phase CONTROL (wave 4, 40 s)
+[INFO][director][p1] assault phase ANTICIPATION (wave 4, 30 s)
+[INFO][director][p1] assault phase BUILD (wave 4, 35 s)
+[INFO][director][p1] assault phase SUSTAIN (wave 4, 160 s)
+[INFO][director][p1] force pool spent (32 units): FADE
+[INFO][director][p1] assault phase FADE (wave 4, 15 s)
+[INFO][director][p1] assault phase CONTROL (wave 5, 40 s)
+[INFO][prefab][p1] Lid disabled
+[INFO][prefab][p1] Hoist enabled
+[INFO][prefab][p1] RopeLadder enabled
+[OFP 238.0s t=500.7] objective vault_drill -> 2
+[OFP 238.0s t=500.7] objective vault_breach -> 2
+[OFP 238.0s t=500.7] objective vault_loot -> 1
+[OFP 238.0s t=500.7] objective gold_cage -> 1
+[OFP 239.2s t=503.1] BURN burn-through PASS after 367 s (1 jams); rope ladder usable true height_m 4.00, top (24.0, 0.0, 13.1) bottom (24.0, -4.0, 13.9) (span 4.00 m): 4.0 m OK; hoist enabled true
+[OFP 245.5s t=509.3] LADDER RopeLadder down: OK in 1.8 s (climb 2.4 s, height 4.0 m; at (24.0, -4.0, 14.6))
+[OFP 245.5s t=509.3] BURN ladder down PASS at (24.0, -4.0, 14.6)
+[OFP 245.5s t=509.3] SHORTCUT bag loot.cash_bricks (weight 1) spawned by LootManager.spawn_bag at (25.0, -3.5, 14.6)
+[OFP 248.3s t=512.0] pilot: use Bag_cash_bricks (pick_bag) -> OK in 1.0 s
+[OFP 251.5s t=515.4] bag in the car of Hoist (1)
+[OFP 251.5s t=515.4] BURN bag into the hoist car PASS (car at (24.0, -4.0, 15.3))
+[OFP 251.9s t=515.7] DIAG hold t=0.0 session false moved -1.00/0.50 aim 145/40 deg avail '' aimed <none> blocked '' eye (24.0, -2.3, 16.3) panel (24.7, -2.9, 15.3)
+[OFP 252.6s t=516.4] DIAG hold t=0.7 session false moved -1.00/0.50 aim 18/40 deg avail '' aimed Interactable blocked '' eye (25.0, -2.3, 15.7) panel (24.7, -2.9, 15.3)
+[OFP 252.7s t=516.5] DIAG hold t=0.8 session true moved 0.00/0.50 aim 0/40 deg avail '' aimed Interactable blocked '' eye (25.0, -2.3, 15.7) panel (24.7, -2.9, 15.3)
+[INFO][prefab][p1] Hoist: lift 0 -> 1 with 1 bag(s) (slot 0)
+[OFP 253.8s t=517.5] DIAG hold t=1.8 session false moved -1.00/0.50 aim 0/40 deg avail 'ui.blocked.state' aimed Interactable blocked '' eye (25.0, -2.3, 15.7) panel (24.7, -2.9, 15.3)
+[OFP 253.8s t=517.5] pilot: use Hoist (call_lift) -> OK in 1.0 s
+[OFP 259.7s t=523.5] LIFT Hoist at landing 1 (1 bags in the car)
+[OFP 259.7s t=523.5] BURN hoist ride PASS: car at landing 1 with 1 bag(s)
+[OFP 259.7s t=523.5] ladder RopeLadder: approach from the flank side (the facing side has no path)
+[OFP 259.7s t=523.5] DIAG hold t=7.8 session false moved -1.00/0.50 aim 0/40 deg avail '' aimed Interactable blocked '' eye (25.0, -2.3, 15.7) panel (24.7, -2.9, 15.3)
+[OFP 259.8s t=523.6] DIAG hold t=7.9 session false moved -1.00/0.50 aim 54/40 deg avail '' aimed <none> blocked '' eye (25.0, -2.3, 15.6) panel (24.7, -2.9, 15.3)
+[OFP 264.0s t=527.8] LADDER RopeLadder up: OK in 2.4 s (climb 2.4 s, height 4.0 m; at (24.0, 0.0, 11.8))
+[OFP 264.0s t=527.8] BURN ladder up PASS at (24.0, 0.0, 11.8)
+[OFP 266.5s t=530.3] pilot: use Bag_cash_bricks (pick_bag) -> OK in 1.0 s
+[OFP 266.5s t=530.3] BURN take-out PASS at (25.0, 0.0, 14.8)
+[OFP] RESULT PASS burn
+[OFP] RESULT PASS (burn PASS)
+WARNING: Sub-surface scattering is not supported in viewports with a transparent background. Disabling SSS in transparent viewport.
+   at: _render_scene (servers/rendering/renderer_rd/forward_clustered/render_forward_clustered.cpp:1963)
+ERROR: Condition "!is_inside_tree()" is true. Returning: Transform3D()
+   at: get_global_transform (scene/3d/node_3d.cpp:649)
+   GDScript backtrace (most recent call first):
+       [0] _tick_retreat (res://systems/director/assault_director.gd:849)
+       [1] _physics_step (res://systems/director/assault_director.gd:471)
+       [2] _physics_process (res://systems/director/assault_director.gd:431)
+ERROR: Condition "!is_inside_tree()" is true. Returning: Transform3D()
+   at: get_global_transform (scene/3d/node_3d.cpp:649)
+   GDScript backtrace (most recent call first):
+       [0] _tick_retreat (res://systems/director/assault_director.gd:850)
+       [1] _physics_step (res://systems/director/assault_director.gd:471)
+       [2] _physics_process (res://systems/director/assault_director.gd:431)
+ERROR: Condition "!is_inside_tree()" is true. Returning: Transform3D()
+   at: get_global_transform (scene/3d/node_3d.cpp:649)
+   GDScript backtrace (most recent call first):
+       [0] _tick_retreat (res://systems/director/assault_director.gd:849)
+       [1] _physics_step (res://systems/director/assault_director.gd:471)
+       [2] _physics_process (res://systems/director/assault_director.gd:431)
+ERROR: Condition "!is_inside_tree()" is true. Returning: Transform3D()
+   at: get_global_transform (scene/3d/node_3d.cpp:649)
+   GDScript backtrace (most recent call first):
+       [0] _tick_retreat (res://systems/director/assault_director.gd:850)
+       [1] _physics_step (res://systems/director/assault_director.gd:471)
+       [2] _physics_process (res://systems/director/assault_director.gd:431)
+ERROR: Condition "!is_inside_tree()" is true. Returning: Transform3D()
+   at: get_global_transform (scene/3d/node_3d.cpp:649)
+   GDScript backtrace (most recent call first):
+       [0] _tick_retreat (res://systems/director/assault_director.gd:849)
+       [1] _physics_step (res://systems/director/assault_director.gd:471)
+       [2] _physics_process (res://systems/director/assault_director.gd:431)
+ERROR: Condition "!is_inside_tree()" is true. Returning: Transform3D()
+   at: get_global_transform (scene/3d/node_3d.cpp:649)
+   GDScript backtrace (most recent call first):
+       [0] _tick_retreat (res://systems/director/assault_director.gd:850)
+       [1] _physics_step (res://systems/director/assault_director.gd:471)
+       [2] _physics_process (res://systems/director/assault_director.gd:431)
+ERROR: Condition "!is_inside_tree()" is true. Returning: Transform3D()
+   at: get_global_transform (scene/3d/node_3d.cpp:649)
+   GDScript backtrace (most recent call first):
+       [0] _tick_retreat (res://systems/director/assault_director.gd:849)
+       [1] _physics_step (res://systems/director/assault_director.gd:471)
+       [2] _physics_process (res://systems/director/assault_director.gd:431)
+ERROR: Condition "!is_inside_tree()" is true. Returning: Transform3D()
+   at: get_global_transform (scene/3d/node_3d.cpp:649)
+   GDScript backtrace (most recent call first):
+       [0] _tick_retreat (res://systems/director/assault_director.gd:850)
+       [1] _physics_step (res://systems/director/assault_director.gd:471)
+       [2] _physics_process (res://systems/director/assault_director.gd:431)
+ERROR: It's not expect to not find the most reachable polygons
+   at: _query_task_build_path_corridor (modules/navigation_3d/3d/nav_mesh_queries_3d.cpp:404)
+   GDScript backtrace (most recent call first):
+       [0] _path_cost (res://systems/director/assault_director.gd:970)
+       [1] valid_spawn_points (res://systems/director/assault_director.gd:400)
+       [2] _spawn_next (res://systems/director/assault_director.gd:752)
+       [3] _tick_queue (res://systems/director/assault_director.gd:733)
+       [4] _physics_step (res://systems/director/assault_director.gd:476)
+       [5] _physics_process (res://systems/director/assault_director.gd:431)
+ERROR: It's not expect to not find the most reachable polygons
+   at: _query_task_build_path_corridor (modules/navigation_3d/3d/nav_mesh_queries_3d.cpp:404)
+   GDScript backtrace (most recent call first):
+       [0] _path_cost (res://systems/director/assault_director.gd:970)
+       [1] valid_spawn_points (res://systems/director/assault_director.gd:400)
+       [2] _spawn_next (res://systems/director/assault_director.gd:752)
+       [3] _tick_queue (res://systems/director/assault_director.gd:733)
+       [4] _physics_step (res://systems/director/assault_director.gd:476)
+       [5] _physics_process (res://systems/director/assault_director.gd:431)
+ERROR: It's not expect to not find the most reachable polygons
+   at: _query_task_build_path_corridor (modules/navigation_3d/3d/nav_mesh_queries_3d.cpp:404)
+   GDScript backtrace (most recent call first):
+       [0] _path_cost (res://systems/director/assault_director.gd:970)
+       [1] valid_spawn_points (res://systems/director/assault_director.gd:400)
+       [2] _spawn_next (res://systems/director/assault_director.gd:752)
+       [3] _tick_queue (res://systems/director/assault_director.gd:733)
+       [4] _physics_step (res://systems/director/assault_director.gd:476)
+       [5] _physics_process (res://systems/director/assault_director.gd:431)
+ERROR: It's not expect to not find the most reachable polygons
+   at: _query_task_build_path_corridor (modules/navigation_3d/3d/nav_mesh_queries_3d.cpp:404)
+   GDScript backtrace (most recent call first):
+       [0] _path_cost (res://systems/director/assault_director.gd:970)
+       [1] valid_spawn_points (res://systems/director/assault_director.gd:400)
+       [2] _spawn_next (res://systems/director/assault_director.gd:752)
+       [3] _tick_queue (res://systems/director/assault_director.gd:733)
+       [4] _physics_step (res://systems/director/assault_director.gd:476)
+       [5] _physics_process (res://systems/director/assault_director.gd:431)
+ERROR: It's not expect to not find the most reachable polygons
+   at: _query_task_build_path_corridor (modules/navigation_3d/3d/nav_mesh_queries_3d.cpp:404)
+   GDScript backtrace (most recent call first):
+       [0] target_on_level (res://systems/ai/npc/npc_motor.gd:219)
+       [1] _physics_step (res://systems/ai/npc/npc_motor.gd:246)
+       [2] _physics_process (res://systems/ai/npc/npc_motor.gd:224)
+ERROR: It's not expect to not find the most reachable polygons
+   at: _query_task_build_path_corridor (modules/navigation_3d/3d/nav_mesh_queries_3d.cpp:404)
+   GDScript backtrace (most recent call first):
+       [0] _path_cost (res://systems/director/assault_director.gd:970)
+       [1] valid_spawn_points (res://systems/director/assault_director.gd:400)
+       [2] _spawn_next (res://systems/director/assault_director.gd:752)
+       [3] _tick_queue (res://systems/director/assault_director.gd:733)
+       [4] _physics_step (res://systems/director/assault_director.gd:476)
+       [5] _physics_process (res://systems/director/assault_director.gd:431)
+ERROR: It's not expect to not find the most reachable polygons
+   at: _query_task_build_path_corridor (modules/navigation_3d/3d/nav_mesh_queries_3d.cpp:404)
+   GDScript backtrace (most recent call first):
+       [0] _path_cost (res://systems/director/assault_director.gd:970)
+       [1] valid_spawn_points (res://systems/director/assault_director.gd:400)
+       [2] _spawn_next (res://systems/director/assault_director.gd:752)
+       [3] _tick_queue (res://systems/director/assault_director.gd:733)
+       [4] _physics_step (res://systems/director/assault_director.gd:476)
+       [5] _physics_process (res://systems/director/assault_director.gd:431)
+ERROR: It's not expect to not find the most reachable polygons
+   at: _query_task_build_path_corridor (modules/navigation_3d/3d/nav_mesh_queries_3d.cpp:404)
+   GDScript backtrace (most recent call first):
+       [0] _path_cost (res://systems/director/assault_director.gd:970)
+       [1] valid_spawn_points (res://systems/director/assault_director.gd:400)
+       [2] _spawn_next (res://systems/director/assault_director.gd:752)
+       [3] _tick_queue (res://systems/director/assault_director.gd:733)
+       [4] _physics_step (res://systems/director/assault_director.gd:476)
+       [5] _physics_process (res://systems/director/assault_director.gd:431)
+ERROR: It's not expect to not find the most reachable polygons
+   at: _query_task_build_path_corridor (modules/navigation_3d/3d/nav_mesh_queries_3d.cpp:404)
+   GDScript backtrace (most recent call first):
+       [0] _path_cost (res://systems/director/assault_director.gd:970)
+       [1] valid_spawn_points (res://systems/director/assault_director.gd:400)
+       [2] _spawn_next (res://systems/director/assault_director.gd:752)
+       [3] _tick_queue (res://systems/director/assault_director.gd:733)
+       [4] _physics_step (res://systems/director/assault_director.gd:476)
+       [5] _physics_process (res://systems/director/assault_director.gd:431)
+ERROR: It's not expect to not find the most reachable polygons
+   at: _query_task_build_path_corridor (modules/navigation_3d/3d/nav_mesh_queries_3d.cpp:404)
+   GDScript backtrace (most recent call first):
+       [0] target_on_level (res://systems/ai/npc/npc_motor.gd:219)
+       [1] _physics_step (res://systems/ai/npc/npc_motor.gd:246)
+       [2] _physics_process (res://systems/ai/npc/npc_motor.gd:224)
+ERROR: It's not expect to not find the most reachable polygons
+   at: _query_task_build_path_corridor (modules/navigation_3d/3d/nav_mesh_queries_3d.cpp:404)
+   GDScript backtrace (most recent call first):
+       [0] target_on_level (res://systems/ai/npc/npc_motor.gd:219)
+       [1] _physics_step (res://systems/ai/npc/npc_motor.gd:246)
+       [2] _physics_process (res://systems/ai/npc/npc_motor.gd:224)
+ERROR: It's not expect to not find the most reachable polygons
+   at: _query_task_build_path_corridor (modules/navigation_3d/3d/nav_mesh_queries_3d.cpp:404)
+   GDScript backtrace (most recent call first):
+       [0] target_on_level (res://systems/ai/npc/npc_motor.gd:219)
+       [1] _physics_step (res://systems/ai/npc/npc_motor.gd:246)
+       [2] _physics_process (res://systems/ai/npc/npc_motor.gd:224)
+ERROR: It's not expect to not find the most reachable polygons
+   at: _query_task_build_path_corridor (modules/navigation_3d/3d/nav_mesh_queries_3d.cpp:404)
+   GDScript backtrace (most recent call first):
+       [0] target_on_level (res://systems/ai/npc/npc_motor.gd:219)
+       [1] _physics_step (res://systems/ai/npc/npc_motor.gd:246)
+       [2] _physics_process (res://systems/ai/npc/npc_motor.gd:224)
+WARNING: 7 RIDs of type "Texture" were leaked.
+   at: finalize (servers/rendering/rendering_device.cpp:8900)
+WARNING: 494 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)
