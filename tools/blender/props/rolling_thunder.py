@@ -139,6 +139,22 @@ VARIANTS = {
         "r": 5.0,
         "cat": {"kind": "marking", "place": "none", "group": "exterior", "surface": "concrete"},
     },
+    # the car-park bay lines (§3c "bay lines", painted as 4 mm meshes): 3 bays on a 2.4 m pitch, 4.4 m deep (clear of
+    # the guards and columns behind the bays), the parked car in the middle one
+    "prop_bay_lines_x3": {
+        "fn": "bay_lines",
+        "n": 3,
+        "pitch": 2.4,
+        "depth": 4.4,
+        "cat": {"kind": "marking", "place": "none", "group": "exterior", "surface": "concrete"},
+    },
+    # the site hoarding's graphic panel (§3c "hoarding graphic"): a painted 6 x 1.4 m board, TANNERS REACH
+    "prop_hoarding_graphic_w600": {
+        "fn": "hoarding_graphic",
+        "w": 6.0,
+        "text": "TANNERS REACH",
+        "cat": {"kind": "signage", "mount": "wall", "place": "wall_mount", "group": "exterior", "surface": "wood"},
+    },
     "prop_neon_halfway": {
         "fn": "neon_sign",
         "text": "HALFWAY",
@@ -837,6 +853,36 @@ def _heli_pad(k: Kit, p: dict) -> None:
     for sx in (-1, 1):
         m.bx((sx * 1.0 - 0.25, -1.5, 0.0), (sx * 1.0 + 0.25, 1.5, 0.004), "metal_white")
     m.bx((-0.75, -0.25, 0.0), (0.75, 0.25, 0.004), "metal_white")
+    body.build()
+
+
+def _bay_lines(k: Kit, p: dict) -> None:
+    """Parking bay lines (a painted 4 mm mesh): ``n`` + 1 white lines ``depth`` m long along Y on a ``pitch`` m pitch
+    along X, joined by the line across their back (-Y); the bays centred on the pivot."""
+    n, pitch, depth = int(p["n"]), float(p["pitch"]), float(p["depth"])
+    hx, hy = n * pitch / 2, depth / 2
+    body = k.obj("Body")
+    m = body.part(bevel=0.0)
+    for i in range(n + 1):
+        x = -hx + i * pitch
+        m.bx((x - 0.05, -hy, 0.0), (x + 0.05, hy, 0.004), "metal_white")
+    m.bx((-hx + 0.05, -hy, 0.0), (hx - 0.05, -hy + 0.1, 0.004), "metal_white")
+    body.build()
+
+
+def _hoarding_graphic(k: Kit, p: dict) -> None:
+    """The site hoarding's graphic board (``w`` x 1.4 m, 12 mm ply on the hoarding face): a dark green field, a white
+    band with the developer's name in cut lettering, a safety-yellow strip at the foot. Wall mount: the back at y = 0,
+    centred on the pivot."""
+    w = float(p["w"])
+    hx = w / 2
+    body = k.obj("Body")
+    b = body.part(bevel=0.004)
+    t = body.part(bevel=0.0)
+    b.bx((-hx, 0.0, -0.7), (hx, 0.012, 0.7), "metal_green")
+    t.bx((-hx + 0.15, 0.012, -0.05), (hx - 0.15, 0.016, 0.45), "metal_white")
+    t.bx((-hx + 0.15, 0.012, -0.6), (hx - 0.15, 0.016, -0.45), "metal_yellow")
+    lettering(t, p["text"], 0.32, 0.0, 0.016, 0.04, "metal_dark", stroke=0.045, depth=0.006, inlay=True)
     body.build()
 
 

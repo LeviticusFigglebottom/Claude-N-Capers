@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/props/prop_bay_lines_x3/prop_bay_lines_x3.glb" id="1_model"]
+
+[node name="PropBayLinesX3" type="Node3D"]
+metadata/kind = &"marking"
+
+[node name="Model" parent="." instance=ExtResource("1_model")]

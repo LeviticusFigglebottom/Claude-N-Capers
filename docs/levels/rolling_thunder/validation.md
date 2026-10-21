@@ -54,14 +54,14 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## floating: Nothing floats
 
-- 688 props checked
+- 703 props checked
 
 - WARN `Variants/Group_escape/Slot_esc_van_carpark/EscapeCarPark` @ (23.00, 0.00, -30.00): prop has no geometry or collision; skipped
 - WARN `Variants/Group_escape/Slot_esc_van_underpass/EscapeUnderpass` @ (92.00, -5.00, -4.00): prop has no geometry or collision; skipped
 
 ## clipping: Nothing clips
 
-- 688 props, 50 doors checked
+- 703 props, 50 doors checked
 
 
 ## scale: Human scale

@@ -707,6 +707,39 @@
   "weight": 1.0,
   "z": 0.0
  },
+ "prop_bay_lines_x3": {
+  "aabb": [
+   -3.65,
+   0.0,
+   -2.2,
+   7.3,
+   0.004,
+   4.4
+  ],
+  "clear": 0.0,
+  "fixture": false,
+  "glb": "res://assets/props/prop_bay_lines_x3/prop_bay_lines_x3.glb",
+  "group": "exterior",
+  "has_light": false,
+  "hosts": [],
+  "keepout": [],
+  "kind": "marking",
+  "mount": "",
+  "nodes": [
+   "Body"
+  ],
+  "place": "none",
+  "prefab": "",
+  "scene": "res://world/props/exterior/prop_bay_lines_x3.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": false,
+  "surface": "concrete",
+  "top": 0.0,
+  "visibility_range_end": 0.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
  "prop_beacon_hazard": {
   "aabb": [
    -0.25,
@@ -7920,6 +7953,39 @@
   "surface": "metal",
   "top": 0.0,
   "visibility_range_end": 25.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
+ "prop_hoarding_graphic_w600": {
+  "aabb": [
+   -3.0,
+   -0.7,
+   -0.022,
+   6.0,
+   1.4,
+   0.022
+  ],
+  "clear": 0.0,
+  "fixture": false,
+  "glb": "res://assets/props/prop_hoarding_graphic_w600/prop_hoarding_graphic_w600.glb",
+  "group": "exterior",
+  "has_light": false,
+  "hosts": [],
+  "keepout": [],
+  "kind": "signage",
+  "mount": "wall",
+  "nodes": [
+   "Body"
+  ],
+  "place": "wall_mount",
+  "prefab": "",
+  "scene": "res://world/props/exterior/prop_hoarding_graphic_w600.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": false,
+  "surface": "wood",
+  "top": 0.0,
+  "visibility_range_end": 0.0,
   "weight": 1.0,
   "z": 0.0
  },

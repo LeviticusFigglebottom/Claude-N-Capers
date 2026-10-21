@@ -107,6 +107,23 @@ const LANDMARKS: Array = [
 	["TrackE5", "prop_rail_track_l3000", "Geometry/Site/Rail", Vector3(75.0, 1.2, 65.0), 0.0, []],
 	# the heli-pad marking on the roof deck under E3 (4 mm over the finish)
 	["HeliPadMarking", "prop_heli_pad_marking", "Props/Dress", Vector3(32.0, 7.0, -34.0), 0.0, []],
+	# bay lines round the parked cars (each car in the middle bay of its set; the cars' length runs along x)
+	["BayLinesG0", "prop_bay_lines_x3", "Props/Dress", Vector3(28.5, 0.0, -42.0), 90.0, []],
+	["BayLinesG1", "prop_bay_lines_x3", "Props/Dress", Vector3(18.4, 0.0, -38.0), 90.0, []],
+	["BayLinesG2", "prop_bay_lines_x3", "Props/Dress", Vector3(34.0, 0.0, -36.0), 90.0, []],
+	["BayLinesG3", "prop_bay_lines_x3", "Props/Dress", Vector3(28.5, 0.0, -28.0), 90.0, []],
+	["BayLinesG4", "prop_bay_lines_x3", "Props/Dress", Vector3(18.4, 0.0, -26.0), 90.0, []],
+	["BayLinesG5", "prop_bay_lines_x3", "Props/Dress", Vector3(40.0, 0.0, -23.5), 90.0, []],
+	["BayLines20", "prop_bay_lines_x3", "Props/Dress", Vector3(28.5, 3.5, -42.0), 90.0, []],
+	["BayLines21", "prop_bay_lines_x3", "Props/Dress", Vector3(18.4, 3.5, -34.0), 90.0, []],
+	["BayLines22", "prop_bay_lines_x3", "Props/Dress", Vector3(34.0, 3.5, -30.0), 90.0, []],
+	["BayLines24", "prop_bay_lines_x3", "Props/Dress", Vector3(24.0, 3.5, -23.0), 90.0, []],
+	["BayLinesR1", "prop_bay_lines_x3", "Props/Dress", Vector3(36.0, 7.0, -18.0), 90.0, []],
+	["BayLinesR2", "prop_bay_lines_x3", "Props/Dress", Vector3(30.0, 7.0, -18.0), 90.0, []],
+	["BayLinesR3", "prop_bay_lines_x3", "Props/Dress", Vector3(24.0, 7.0, -18.0), 90.0, []],
+	# the hoarding graphic on its street faces: Orchard (east, between the vehicle gates and the man-gate) and Tannery
+	["HoardingGraphicE", "prop_hoarding_graphic_w600", "Props/Dress", Vector3(-13.9, 1.2, -30.0), -90.0, []],
+	["HoardingGraphicS", "prop_hoarding_graphic_w600", "Props/Dress", Vector3(-48.0, 1.2, -10.9), 180.0, []],
 ]
 
 ## Rooms the KitPlacer dresses although their purpose is exterior (walled yards).
