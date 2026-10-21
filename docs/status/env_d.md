@@ -4,6 +4,34 @@ Owner: ENV D. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-21, latest first; I read your messages, you read this)
+- **RT convoy fit on the real placements (C's swap 52debb79 / d6a15b78, env/c-worlds 552f5b15), probed in the built
+  scene. Mover space: +Z = forward (the cab / the car's front), x across, y up from the ground.**
+  | Vehicle | Body (local) | Seats (local) | Facing |
+  |---|---|---|---|
+  | Lead / Rear `veh_escort_car` | x +/-1.02, y 0..1.58, z -2.33..2.32 | (+/-0.40, 0.45, 0.25) front, (+/-0.40, 0.45, -0.75) rear | -Z (rear) |
+  | T1 cab `veh_armored_cab_cash` | cab x +/-1.5, y 0.45..2.90, z 1.65..3.87 | (+/-0.65, 1.56, 2.75) | -Z (rear) |
+  | T2 / T3 cab `_bullion` | cab y 0.45..3.30, z 2.40..4.62 | (+/-0.65, 1.56, 3.50) | -Z (rear) |
+  1. **A (blocker): `ConvoyVehicle.seats()` finds no seat at all.** The glb exports `Seat0..n` as plain Node3D empties and
+     seats() casts `as Marker3D`, so every vehicle reports 0 seats and `spawn_units(seated)` falls back to the
+     beside-the-body points: nobody sits. Accept Node3D (`as Node3D`, return Array[Node3D]); the placeholder's Marker3Ds
+     still pass.
+  2. **C (or A when seating): every seat faces -Z, the vehicle's rear.** spawn_units copies the seat transform and an
+     NPC faces its -Z, so they would sit backwards. Rotate the Seat empties 180 deg (facing +Z), or A turns the NPC.
+  3. **C: seat height.** sit_vehicle puts the ROOT on the footwell floor (cushion 0.36 above). Car seats at y 0.45 put
+     the cushion at 0.81 and a Wrecker's helmet at 1.73, 0.15 m through the 1.58 roof. **Car Seat y = the footwell
+     floor, about 0.18** (cushion 0.54; head tops 1.39-1.46, under a liner of about 1.50). **Cab Seat y = the cab floor**:
+     if 1.56 is meant as the cushion, use **1.20** (head tops 2.41-2.48, under the 2.90 / 3.30 roofs).
+  4. **C: car seat rows 1.0 m apart (z 0.25 / -0.75).** A seated body spans 0.76 m ahead of its root to 0.40 behind, so
+     the rear sitters' knees overlap the front seat backs by about 0.16 m. **Rear row to z -0.95** (or front to 0.45).
+     Side to side +/-0.40 is fine (half width 0.35-0.40; the car's inside is about +/-0.95).
+  5. **Dismount (A, D):** car: vehicle_exit_l / _r move the root 0.85 m out, from x 0.40 to 1.25, which leaves the
+     shoulder at the body side (1.02). Walk 0.3 m on after the clip, or ask and I'll lengthen EXIT_X to 1.05 for
+     these cars (no caller yet, so it is cheap). Seats at local +x exit with `_l` and -x with `_r` (facing +Z).
+     Trucks: the crew is hidden (armoured) and the cab floor is about 1.2 m up, so vehicle_exit (footwell level with the
+     road) does not apply. Dismount them standing beside the cab door (the current teleport is right for them).
+  6. Wrecker (Lethal `armored_escort`): still too tall for this car's door (it needs a door frame >= 1.50 m above the
+     floor; the escort car gives about 1.40 with the floor at 0.18). Keep it out of the seats.
+  - **IDLE, can take X** (I can re-run this probe on any later convoy commit in a few minutes).
 - **RT diner identity pass (C 0832f69b on env/c-worlds) vs D's clips: fits, with one item for C.**
   - OK: prop_diner_chair keeps the task chair's Seat (0.47 m, seat_fwd 0.12), so the 5 sit_eat customers stay 0.22 m from
     their table edge. The tables keep top 0.74 (0.808 square). prop_diner_counter_w250 is 0.804 deep with a 0.90 top
