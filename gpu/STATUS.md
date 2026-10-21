@@ -392,3 +392,11 @@ comparison made under similar load is meaningful; ideally both trees get re-run 
   0.34% of frames over 50 ms across 25 min. Cataclysm escalated to police=67, peak 29 alive (13 bulwark, 2 longshot, corpsman, brandt).
 - **CPU load** (5 s samples over the run, `gpu/renders/a/of_a5_b1500_cpu_load.txt`): **avg 29.5%, min 10.5, max 62.9**. Other local sessions' jobs were sharing the box.
   No same-load control: a second 25-min run of an older tree wouldn't reach these phases (BondSafe/vault) anyway. Treat the HITCHES figure as measured under about 30% background load.
+## GPU-20: NOT COMPLETED, run stopped at 670 s wall (PC low on memory)
+- Tree: local branch gpu/a6 = env/a-core 7c7a014b (contains 7d2cd968). Import exit 0, 28 s. Command as specified (auto_loud, seed 1037, budget 1800, Cataclysm, crew-dmg 0, hitch-ms 50, 1920x1080).
+- **The run was killed at about 670 s wall (heist t of about 618) by Claude Code's background-process reaper, because the PC was critically low on memory.**
+  This wasn't a Godot/game failure. Godot exited with it, and there's no RESULT line. Afterwards RAM free was 5.9 of 31.8 GB, with Chrome tabs about 6.8 GB and other sessions using the rest.
+  **I'm not re-running until the owner OKs it** (memory may still be short).
+- Partial log/PNGs: gpu/renders/a/of_a6_b1800_partial{,.txt}. CPU load over the partial run: avg 36.1%, min 18.2, max 49.3 (of_a6_b1800_partial_cpu_load.txt).
+- Timeline reached (heist t): same opening as GPU-19 (casing @3, keycard/codes/server/vault_gate/lasers @6, drill_delivery 2 @148); server_drives secured @310 and @497 (-> 2);
+  **president_safe -> 2 @510; vault_drill/vault_breach -> 2 @559; bond_safe, deposit_boxes, vault_loot, gold_cage -> 1 @559**; vault_loot -> 1 @618. The run ended before the hoist/secure stage that GPU-20 was meant to test.
