@@ -90,7 +90,7 @@ func test_broker_charges_stash_and_emits() -> void:
 	assert_eq(s.profile.stash, cost - 1)
 	assert_eq(_chosen.size(), 1)
 	var lethal: int = s.broker_difficulty.get_item_index(Enums.Difficulty.LETHAL)
-	assert_true(s.broker_difficulty.is_item_disabled(lethal), "Lethal needs level 80")
+	assert_true(s.broker_difficulty.is_item_disabled(lethal), "Lethal needs level 70 (D-151)")
 	s.queue_free()
 	await wait_frames(1)
 
