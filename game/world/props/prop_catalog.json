@@ -2915,6 +2915,42 @@
   "weight": 1.0,
   "z": 0.0
  },
+ "prop_cash_lift_car_w255": {
+  "aabb": [
+   -1.315,
+   0.0,
+   -1.315,
+   2.63,
+   2.6,
+   2.63
+  ],
+  "clear": 0.0,
+  "fixture": false,
+  "glb": "res://assets/props/prop_cash_lift_car_w255/prop_cash_lift_car_w255.glb",
+  "group": "bag_lift",
+  "has_light": false,
+  "hosts": [],
+  "keepout": [],
+  "kind": "lift_car",
+  "mount": "",
+  "nodes": [
+   "Car",
+   "DoorL",
+   "DoorR",
+   "Panel"
+  ],
+  "place": "none",
+  "prefab": "bag_lift",
+  "scene": "res://world/props/bag_lift/prop_cash_lift_car_w255.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": false,
+  "surface": "metal",
+  "top": 0.0,
+  "visibility_range_end": 0.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
  "prop_cash_pallet": {
   "aabb": [
    -0.6,

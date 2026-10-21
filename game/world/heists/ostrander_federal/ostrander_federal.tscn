@@ -459,7 +459,7 @@
 [ext_resource type="PackedScene" path="res://world/props/deposit_box/prop_of_deposit_drawer.tscn" id="457_of"]
 [ext_resource type="PackedScene" path="res://systems/prefabs/bag_lift/bag_lift.tscn" id="458_of"]
 [ext_resource type="Script" path="res://systems/prefabs/bag_lift/bag_lift.gd" id="459_of"]
-[ext_resource type="PackedScene" path="res://world/props/bag_lift/prop_cash_lift_car_w240.tscn" id="460_of"]
+[ext_resource type="PackedScene" path="res://world/props/bag_lift/prop_cash_lift_car_w255.tscn" id="460_of"]
 [ext_resource type="PackedScene" path="res://world/props/bag_lift/prop_hoist_cradle_w110.tscn" id="461_of"]
 [ext_resource type="PackedScene" path="res://systems/prefabs/ladder/ladder.tscn" id="462_of"]
 [ext_resource type="Script" path="res://systems/prefabs/ladder/ladder.gd" id="463_of"]
@@ -60148,7 +60148,7 @@ kind = &"take_loot"
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 11.5, -4, 1.55)
 script = ExtResource("459_of")
 targets = Array[NodePath]([NodePath("CashLiftLandingG")])
-car_size_m = Vector3(2.2, 2.4, 2.2)
+car_size_m = Vector3(2.55, 2.4, 2.55)
 door_fold = true
 visual_scene = ExtResource("460_of")
 objective_tag = &"cash_lift"

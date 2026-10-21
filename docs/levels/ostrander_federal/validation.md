@@ -37,14 +37,14 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | door_frame_gap | PASS | 0 | 0 |
 | frame_proud | PASS | 0 | 0 |
 | seam_gaps | PASS | 0 | 0 |
-| furniture_logic | PASS | 0 | 6 |
+| furniture_logic | PASS | 0 | 7 |
 
 ## contract_nodes: Contract nodes
 
 
 ## cameras: Review camera placement
 
-- 33 perspective review camera(s) checked
+- 34 perspective review camera(s) checked
 
 
 ## secure_zones: Secure zones reach the ground
@@ -221,7 +221,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## navmesh: Navmesh
 
-- navmesh: 4165 polygons, cell 0.10/0.10 m
+- navmesh: 4203 polygons, cell 0.10/0.10 m
 - 433 markers checked
 | room | walkable samples | covered | coverage |
 |---|---|---|---|
@@ -307,7 +307,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## reachability: Reachability (per variant)
 
-- 56 variant configuration(s), 305736 spawn->target path queries
+- 56 variant configuration(s), 0 convoy layout(s), 305736 spawn->target path queries
 
 
 ## walkthrough: Walkthrough bot
@@ -381,7 +381,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## zfight: Z-fighting
 
-- 1363693 triangles checked
+- 1363737 triangles checked
 
 
 ## lights: Lighting is deliberate
@@ -473,8 +473,8 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 - kit `server_room`: 2 room(s), 2 distinct layout(s)
 - kit `locker_room`: 2 room(s), 2 distinct layout(s)
-- kit `conference_room`: 1 room(s), 1 distinct layout(s)
 - kit `break_room`: 2 room(s), 2 distinct layout(s)
+- kit `conference_room`: 1 room(s), 1 distinct layout(s)
 - kit `exterior_street`: 1 room(s), 1 distinct layout(s)
 - kit `exterior_alley`: 1 room(s), 1 distinct layout(s)
 - kit `exterior_plaza`: 1 room(s), 1 distinct layout(s)
@@ -518,8 +518,8 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## bounds: No void / back faces
 
-- 81 navmesh sample(s) skipped: not reachable from a player spawn (police-only)
-- 292 eye samples, 23652 rays, sky yes, 0 void ray(s)
+- 73 navmesh sample(s) skipped: not reachable from a player spawn (police-only)
+- 295 eye samples, 23895 rays, sky yes, 0 void ray(s)
 
 
 ## perf: Per-shot performance budget
@@ -528,29 +528,29 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 - Draws per view = main + lit (Compatibility light passes) + shadow passes + peak cast allowance (0); budgets: main <= 2500, total <= 4000, shadowed lights <= 8 (architecture §10, D-146).
 | camera | main | lit | shadow | cast | total | triangles | shadow lights | shadow by light |
 |---|---|---|---|---|---|---|---|---|
-| `TopDownPlan` | 1679 | 0 | 936 | 0 | 2615 | 672782 | 1 | Sun 936 |
-| `rc_ext_plaza` | 1727 | 0 | 330 | 0 | 2057 | 659288 | 1 | Sun 330 |
-| `rc_ext_lane` | 2056 | 0 | 475 | 0 | 2531 | 796712 | 1 | Sun 475 |
+| `TopDownPlan` | 1679 | 0 | 936 | 0 | 2615 | 673058 | 1 | Sun 936 |
+| `rc_ext_plaza` | 1727 | 0 | 330 | 0 | 2057 | 659564 | 1 | Sun 330 |
+| `rc_ext_lane` | 2056 | 0 | 475 | 0 | 2531 | 796988 | 1 | Sun 475 |
 | `rc_ext_tannery` | 1766 | 0 | 825 | 0 | 2591 | 650120 | 1 | Sun 825 |
 | `rc_terrace` | 1343 | 263 | 1150 | 0 | 2756 | 482620 | 2 | PendantS2 608, Sun 542 |
-| `rc_hall_entrance` | 2218 | 389 | 1374 | 0 | 3981 | 1256170 | 2 | Sun 833, PendantS2 541 |
-| `rc_hall_counter` | 2015 | 0 | 876 | 0 | 2891 | 896532 | 1 | Sun 876 |
+| `rc_hall_entrance` | 2218 | 389 | 1374 | 0 | 3981 | 1256446 | 2 | Sun 833, PendantS2 541 |
+| `rc_hall_counter` | 2015 | 0 | 876 | 0 | 2891 | 896808 | 1 | Sun 876 |
 | `rc_hall_from_gallery` | 624 | 335 | 1021 | 0 | 1980 | 216552 | 2 | PendantS2 566, Sun 455 |
-| `rc_vestibule` | 1376 | 488 | 1381 | 0 | 3245 | 710942 | 2 | Sun 705, PendantS2 676 |
+| `rc_vestibule` | 1386 | 488 | 1381 | 0 | 3255 | 714798 | 2 | Sun 705, PendantS2 676 |
 | `rc_atm` | 172 | 34 | 473 | 0 | 679 | 49770 | 2 | PendantS2 344, Sun 129 |
 | `rc_teller_workroom` | 2465 | 0 | 801 | 0 | 3266 | 1013810 | 1 | Sun 801 |
 | `rc_client_lounge` | 978 | 0 | 1048 | 0 | 2026 | 307538 | 1 | Sun 1048 |
 | `rc_manager_office` | 444 | 0 | 353 | 0 | 797 | 138786 | 1 | Sun 353 |
-| `rc_loan_office` | 977 | 37 | 766 | 0 | 1780 | 385196 | 2 | PendantS2 445, Sun 321 |
+| `rc_loan_office` | 977 | 37 | 766 | 0 | 1780 | 385472 | 2 | PendantS2 445, Sun 321 |
 | `rc_back_corridor` | 2452 | 0 | 881 | 0 | 3333 | 975392 | 1 | Sun 881 |
-| `rc_security_room` | 610 | 0 | 495 | 0 | 1105 | 204580 | 1 | Sun 495 |
-| `rc_loading_dock` | 392 | 0 | 285 | 0 | 677 | 150394 | 1 | Sun 285 |
+| `rc_security_room` | 610 | 0 | 495 | 0 | 1105 | 204856 | 1 | Sun 495 |
+| `rc_loading_dock` | 392 | 0 | 285 | 0 | 677 | 150670 | 1 | Sun 285 |
 | `rc_break_room` | 443 | 0 | 243 | 0 | 686 | 159352 | 1 | Sun 243 |
-| `rc_officers` | 1268 | 82 | 867 | 0 | 2217 | 503906 | 2 | PendantS2 443, Sun 424 |
-| `rc_operations` | 2192 | 239 | 1119 | 0 | 3550 | 872068 | 2 | Sun 617, PendantS2 502 |
+| `rc_officers` | 1268 | 82 | 867 | 0 | 2217 | 504182 | 2 | PendantS2 443, Sun 424 |
+| `rc_operations` | 2192 | 239 | 1119 | 0 | 3550 | 872344 | 2 | Sun 617, PendantS2 502 |
 | `rc_vault_ops` | 846 | 0 | 877 | 0 | 1723 | 278392 | 1 | Sun 877 |
 | `rc_server_room` | 836 | 0 | 914 | 0 | 1750 | 223958 | 1 | Sun 914 |
-| `rc_president` | 1238 | 0 | 485 | 0 | 1723 | 424636 | 1 | Sun 485 |
+| `rc_president` | 1238 | 0 | 485 | 0 | 1723 | 424912 | 1 | Sun 485 |
 | `rc_exec_lounge` | 977 | 0 | 418 | 0 | 1395 | 328406 | 1 | Sun 418 |
 | `rc_boardroom` | 359 | 0 | 192 | 0 | 551 | 83316 | 1 | Sun 192 |
 | `rc_basement_corridor` | 1996 | 0 | 969 | 0 | 2965 | 844440 | 1 | Sun 969 |
@@ -558,10 +558,11 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `rc_vault` | 1116 | 0 | 520 | 0 | 1636 | 663298 | 1 | Sun 520 |
 | `rc_vault_hole` | 2057 | 138 | 1345 | 0 | 3540 | 886136 | 2 | Sun 841, PendantS2 504 |
 | `rc_deposit_hall` | 1360 | 0 | 1163 | 0 | 2523 | 641970 | 1 | Sun 1163 |
-| `rc_count_room` | 1019 | 0 | 587 | 0 | 1606 | 402052 | 1 | Sun 587 |
-| `rc_records` | 1489 | 171 | 959 | 0 | 2619 | 813650 | 2 | Sun 512, PendantS2 447 |
+| `rc_count_room` | 1019 | 0 | 587 | 0 | 1606 | 402328 | 1 | Sun 587 |
+| `rc_records` | 1489 | 171 | 959 | 0 | 2619 | 813926 | 2 | Sun 512, PendantS2 447 |
 | `rc_roof` | 570 | 0 | 267 | 0 | 837 | 150506 | 1 | Sun 267 |
-| `rc_sniper_assay` | 1744 | 0 | 299 | 0 | 2043 | 669632 | 1 | Sun 299 |
+| `rc_sniper_assay` | 1744 | 0 | 299 | 0 | 2043 | 669908 | 1 | Sun 299 |
+| `rc_burn_close` | 1147 | 63 | 1669 | 0 | 2879 | 555696 | 2 | Sun 1295, PendantS2 374 |
 
 
 ## door_frame_gap: Doors and windows fill their wall openings (no gaps, no clipping)
@@ -585,9 +586,10 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 - classified: counter 23, chair 14, desk 29, table 15, low_table 1, wall_unit 104, lounge_seat 2, visitor_chair 16, desk_chair 55, stool 1, monitor 18
 - 88 seats, 68 tables/desks/counters, 94 doors checked
 
-- WARN `Gameplay/Devices/LidDrill` @ (24.00, 1.00, 14.60): door_clear: in the clear zone of door `Gameplay/Devices/Lid` (1.0 / 1.0 m each side, leaf width 2.40 m) by 1.01 m (gameplay prefab / variant content: review)
-- WARN `Gameplay/Lifts/CashLift` @ (11.50, -4.00, 1.55): door_clear: in the clear zone of door `Gameplay/Doors/CashLiftDoorB` (1.0 / 1.0 m each side, leaf width 1.82 m) by 0.79 m (gameplay prefab / variant content: review)
-- WARN `Gameplay/Lifts/CashLift` @ (11.50, -4.00, 1.55): use_point: stands in the user's spot of `Gameplay/Doors/CashLiftDoorB` (UsePoint @ (11.50, -4.00, 2.30)) by 0.69 m (gameplay prefab / variant content: review)
+- WARN `Gameplay/Devices/LidDrill` @ (23.75, 1.00, 14.60): door_clear: in the clear zone of door `Gameplay/Devices/Lid` (1.0 / 1.0 m each side, leaf width 2.40 m) by 0.96 m (gameplay prefab / variant content: review)
+- WARN `Gameplay/Devices/LidDrill` @ (23.75, 1.00, 14.60): overlap: bounds interpenetrate `Gameplay/Lifts/Hoist/Rig/HoleGuardW` by 0.41 m (not a stack or a tucked seat)
+- WARN `Gameplay/Lifts/CashLift` @ (11.50, -4.00, 1.55): door_clear: in the clear zone of door `Gameplay/Doors/CashLiftDoorB` (1.0 / 1.0 m each side, leaf width 1.82 m) by 0.87 m (gameplay prefab / variant content: review)
+- WARN `Gameplay/Lifts/CashLift` @ (11.50, -4.00, 1.55): use_point: stands in the user's spot of `Gameplay/Doors/CashLiftDoorB` (UsePoint @ (11.50, -4.00, 2.30)) by 0.77 m (gameplay prefab / variant content: review)
 - WARN `Gameplay/Lifts/Hoist/LandingPanelVisual1` @ (24.67, 1.10, 15.33): door_clear: in the clear zone of door `Gameplay/Devices/Lid` (1.0 / 1.0 m each side, leaf width 2.40 m) by 0.33 m (gameplay prefab / variant content: review)
 - WARN `Gameplay/Lifts/Hoist/Rig/HoleGuardE` @ (24.62, 0.75, 14.62): door_clear: in the clear zone of door `Gameplay/Devices/Lid` (1.0 / 1.0 m each side, leaf width 2.40 m) by 0.60 m (gameplay prefab / variant content: review)
 - WARN `Gameplay/Lifts/Hoist/Rig/HoleGuardW` @ (23.38, 0.75, 14.62): door_clear: in the clear zone of door `Gameplay/Devices/Lid` (1.0 / 1.0 m each side, leaf width 2.40 m) by 0.60 m (gameplay prefab / variant content: review)

@@ -23,6 +23,11 @@ VARIANTS = {
     # prefab's car_size_m), the +X side open for the ground-floor landing door.
     "prop_cash_lift_car_w240": {"fn": "lift_car", "w": 2.4, "ln": 2.4, "hgt": 2.6, "open": 1, "tread": (10, 10),
                                 "cat": {"prefab": "bag_lift", "kind": "lift_car", "surface": "metal"}},
+    # OF-C2 (LEAD GPU-22 / ENV P ghost note: a bag thrown from a landing door rested against GL's back wall, outside
+    # the 2.2 m count box): the car fills the shaft (B's is the tighter, inner faces z 0.24 / x 12.81; >= 3.5 cm
+    # clear), so the count box (car_size_m = the car) reaches where thrown bags stop. RT's goods lift keeps the w240.
+    "prop_cash_lift_car_w255": {"fn": "lift_car", "w": 2.55, "ln": 2.55, "hgt": 2.6, "open": 1, "tread": (11, 11),
+                                "cat": {"prefab": "bag_lift", "kind": "lift_car", "surface": "metal"}},
 }
 
 
