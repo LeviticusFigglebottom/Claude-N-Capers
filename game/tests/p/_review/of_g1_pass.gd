@@ -1918,7 +1918,7 @@ func _vc_window(max_age: float) -> bool:
 
 
 ## Step 6, out with a bag: stop just inside the vault gate (VC side, blind from BB but next to the gate) and step into
-## BB only when no other basement guard is in BB within 25 m of the gate or within 8 m anywhere; up to 20 s (ghost6_o:
+## BB only when no basement guard (the vault guard included) is in BB within 25 m of the gate or within 8 m anywhere; up to 20 s (ghost6_o:
 ## rover_basement stepped into BB 8 m off during the trip, t=576, past what the window's prediction could see).
 func _gate_peek() -> void:
 	var gate: Vector3 = _of(Vector3(17.0, OF_FFL[0], 9.0))
@@ -1928,7 +1928,8 @@ func _gate_peek() -> void:
 		var who: String = ""
 		for n: Node in rt.npcs(&"guard"):
 			var g: NpcBase = n as NpcBase
-			if g == null or not g.is_alive() or absf(g.global_position.y - OF_FFL[0]) > 1.5 or _has_tag(g, "guard_vault"):
+			# The vault guard too (ghost6_p: back from RC down BB during a 17 s hold, 6 m off the gate when it cleared).
+			if g == null or not g.is_alive() or absf(g.global_position.y - OF_FFL[0]) > 1.5:
 				continue
 			var p: Vector3 = g.global_position
 			var d: float = pilot.flat_dist(p, gate)
