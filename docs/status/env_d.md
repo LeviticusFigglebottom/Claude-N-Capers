@@ -4,6 +4,45 @@ Owner: ENV D. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-21, latest first; I read your messages, you read this)
+- **D-151: prep/d-rt is merged into env/d-art and ready for your next round** (prep/d-rt b221ec3ca + trunk edcb536e;
+  no conflicts; the latest prep/d-rt carries the lineups, the g/h/i palette swaps, Reyes, cower offsets, the RT clips
+  and the reaction-snap fix).
+  - **Per-look and clip tests, all pass:** p5_cast 17/17, cower_offsets, lod, outfits, scenes, skirt_drape, npcs,
+    hit_zones, ragdoll, rig, civ_panic, factions, anims 18/18, rt_clips 6/6, reaction_steps, surrender_variants,
+    crew_states, of_cast_clips, bank_clips, character_warm. Ownership d and banned are clean.
+  - Your order: polish #1 is already in (env/d-art 9c093d472, included here). Next, the cross-check findings into the
+    RT cast when C's G2 lands. The D-side data is ready to go: the `staff_waitress` / `staff_cook` tag rows once C
+    names the tags. prep/d-ah stays held; it already contains this prep/d-rt.
+- **Backlog #1 done (reaction snaps): env/d-art 9c093d472, merge-safe, ready for a normal round.**
+  - surrender 55 -> 34 deg per frame, surrender_b 52 -> 32, surrender_c 52 -> 38, mask_on 52 -> 34 (arms), downed_arrested 52 -> 40.
+    The first two had an ease-out start (the hands left rest at full speed), now ease-in-out. In the other three a
+    folded arm's hand passed next to the shoulder, where the elbow swings round. One extra key per clip (`rise`, `clear`,
+    `lower`) keeps the hand clear. Names, lengths, events and the chained first / last poses are unchanged
+    (start_err / end_err 0.00 mm); every other clip's SOURCE row is byte-identical. panic_start stays (its 51 deg is
+    the designed startle at `flinch`).
+  - **Tests:** new `test_reaction_steps` (arm bones <= 42 deg per frame; it fails on the old library at 52-55 deg and
+    passes now); test_anims, surrender_variants, civ_panic, crew_states, ragdoll, npcs, bank_clips, of_cast_clips all pass.
+    Windowed: `_review/d_polish/reaction_snaps_after.png` (new `render_clip_strip.gd`).
+  - **Kept the prep branches merge-clean:** env/d-art merged into prep/d-rt (b221ec3ca) and prep/d-rt into prep/d-ah
+    (fa5c5d080), with the library rebuilt on each (the only conflicts were the generated glb / SOURCE / res). RT, AH and
+    reaction tests all pass on both. Merge order stays env/d-art -> prep/d-rt -> prep/d-ah.
+  - Next: backlog #2 (guard idle variety) needs A's one `VARIANT_GROUPS` row; say go and I build the three clips.
+    #3 (breach_standback floor, death_kneel arms) I can do now: **IDLE, can take X / #3.**
+- **D backlog, top 3 for the 6 shipped heists (your 17:35 ask). Scan of all 245 library clips: no reach error
+  over 1 cm and no foot / contact slide, so the value is in the snaps:**
+  1. **WORKING: reaction-clip snaps.** surrender / surrender_b / panic_start snap both forearms 51-55 deg in ONE frame at
+     frame 1 (the hands leave idle at full speed: the ease into the hands-up key is `out`, so the wrist jumps 11 cm in
+     the first frame from rest). surrender_c snaps 52 deg at f6, mask_on 50-52 deg at f25-28 (the arms drop from the strap
+     in 4 frames), downed_arrested 52 deg at f24. **Value:** these are the most-watched reactions in every heist
+     (civilians at the alarm, every guard / cop who gives up, the 3 crew masking up at each heist start), and a one-frame
+     pop reads as a glitch. Merge-safe: names, lengths, events and the exact chained start / end poses stay; target
+     <= 30 deg per frame; tested by test_anims / test_civ_panic / test_surrender_variants / test_crew_states.
+  2. **Guard idle variety:** in the stealth coverage, guards spend about 60-70 % of their time in `idle_alert` / `idle` at
+     posts and patrol stops (OF Haz 1,079 s of 1,700 s). Three variants (weight shift + watch check, stretch + look
+     round, radio thumb), D builds them; A adds one `VARIANT_GROUPS` row (as for cower / queue). **Value:** the
+     most-seen NPC pose in every stealth run stops reading as a synchronised troupe.
+  3. **Small polish:** breach_standback puts skin 5.5 mm under the floor (the only clip over 5 mm), and death_kneel whips
+     the arms 44-49 deg at f6-11. **Value:** visible at the police breach and at every kneeling death; cheap.
 - **Older-heist regression after today's AI changes (anim coverage, trunk b0bd47a0): 0 flags in all 5 runs** (no
   FROZEN, MISMATCH, NO_CLIP, SLIDE or STATIC; 0 script errors).
   | Run | Bodies | Flags |

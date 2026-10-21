@@ -249,12 +249,20 @@ def _downed_arrested(sk: Skeleton, solver: Solver, N: int) -> Keys:
     for sfx, sx in A.SIDES:
         A.arm_fk(sk, hands_up, sfx, add=20.0, swing=60.0, flex=95.0, twist=-20.0)
         hands_up.hands[sfx] = hand_shape("flat", 0.6)
+    # the hands come down out to the sides before going behind the back (a straight path from beside the head to the
+    # cuffs passes next to the shoulder, where the folded arm's elbow swings round: a one-frame 50 deg snap)
+    lower = Pose()
+    _one_knee(sk, lower, 0.1)
+    A.spine(lower, lean=8, neck=(5, 0, 0), head=(9, 0, 0))
+    for sfx, sx in A.SIDES:
+        A.arm_fk(sk, lower, sfx, add=50.0, swing=15.0, flex=35.0, twist=0.0)
+        lower.hands[sfx] = hand_shape("flat", 0.5)
     kneel_c = Pose()
     _one_knee(sk, kneel_c, 0.2)
     A.spine(kneel_c, lean=10, neck=(6, 0, 0), head=(10, 0, 0))
     _cuffed_arms(sk, kneel_c)
     return Keys(solver, [(0, start, "inout"), (6, give, "inout"), (11, lift, "inout"), (19, hands_up, "inout"),
-                         (29, kneel_c, "inout"),
+                         (24, lower, "inout"), (29, kneel_c, "inout"),
                          (N, crew_cuffed(sk, 0, CUFFED_FRAMES), "settle")])
 
 
@@ -309,6 +317,11 @@ def _mask_on(sk: Skeleton, solver: Solver, N: int) -> Keys:
     strap = H._stand_key(sk)                                            # noqa: SLF001
     A.spine(strap, lean=0, neck=(-4, 0, 0), head=(-6, 0, 0))
     _hands_at_face(sk, strap, 0.0, 1.70, 0.09, back=0.4, shape="pinch")
+    # the hands leave the strap forward and out (a straight path to `down` passes ~0.14 m from the shoulder, where the
+    # folded arm's elbow swings round: a one-frame 50 deg upper-arm snap)
+    clear = H._stand_key(sk)                                            # noqa: SLF001
+    A.spine(clear, lean=1, head=(0, 0, 0))
+    _hands_at_face(sk, clear, 0.22, 1.60, 0.18, back=0.2, shape="relaxed")
     down = H._stand_key(sk)                                             # noqa: SLF001
     A.spine(down, lean=2, head=(2, 0, 0))
     k = sk.scale
@@ -317,8 +330,9 @@ def _mask_on(sk: Skeleton, solver: Solver, N: int) -> Keys:
                   pole=v3(sx * 0.8, -0.2, -0.6), along_share=0.5)
         down.hands[sfx] = hand_shape("relaxed")
     return Keys(solver, [(0, H._stand_key(sk), "inout"), (8, look_at, "inout"), (14, lift, "inout"),       # noqa: SLF001
-                         (18, press, "snap"), (23, strap, "inout"), (27, down, "inout"),
-                         (N, H.idle_alert(sk, 0, 120), "settle")])
+                         (18, press, "snap"), (21, strap, "inout"), (23, clear, "inout"),
+                         (26, down, "inout"),
+                         (N, H.idle_alert(sk, 0, 120), "inout")])
 
 
 def _throw_grenade(sk: Skeleton, solver: Solver, N: int, release: int) -> Keys:

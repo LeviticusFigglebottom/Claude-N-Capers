@@ -1,0 +1,20 @@
+asset: char_street_pedestrian_d
+script: tools/blender/characters/char_p5_street.py
+params: {"age": 0.88, "beard_shadow": 0.4, "build": 0.55, "gender": 0.0, "hair": "buzz", "hair_color": "grey", "height": 1.72, "look": "retiree", "skin": 1}
+seed: 3346282981  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category characters --asset char_street_pedestrian_d
+edit policy: generated file, never edit by hand; change the script and rebuild
+attach_Back: bone chest, local [0.0000, 0.0868, 0.1141] (model [0.0000, 1.2562, 0.1319], Godot axes, rest pose)
+attach_Head: bone head, local [0.0000, 0.0783, -0.0857] (model [0.0000, 1.6098, -0.0741], Godot axes, rest pose)
+attach_Hip: bone hips, local [0.1857, 0.0490, 0.0328] (model [0.1857, 0.9701, 0.0352], Godot axes, rest pose)
+body_faces_culled: 4902
+body_params: {"age": 0.88, "beard_shadow": 0.4, "build": 0.55, "gender": 0.0, "hair": "buzz", "hair_color": "grey", "hair_peak": 0.0, "height": 1.72, "lip": "auto", "skin": 1}
+bones: 52
+faces_hidden_by_jacket: 2858
+look: Retiree (RT-D1): tweed flat cap, oat cardigan over a pale blue shirt, brown trousers, belt and shoes, silver glasses
+meshes: Body,Gear,Hair,Headwear,Outfit
+shape_keys: none (baked at body_params; do not set blend_shapes/*)
+tri_budget: 35000
+tris: 26502
+tris_by_mesh: {"Body": 8940, "Gear": 256, "Hair": 1200, "Headwear": 1038, "Outfit": 15068}

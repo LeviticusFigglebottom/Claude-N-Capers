@@ -27,6 +27,7 @@ import _anim_holds as holds
 import _anim_humanoid as lib
 import _anim_loco_holds as loco
 import _anim_police as police
+import _anim_rt as rt
 import _anim_p5 as p5
 import _anim_surrender as surr
 import _rig as rig
@@ -281,6 +282,25 @@ CLIPS = {
     "queue_idle_c": {"frames": 138, "loop": True, "speed": 0.0, "priority": 9, "events": {"sigh": 34, "look_back": 84}},
     "counter_customer": {"frames": 180, "loop": True, "speed": 0.0, "priority": 9, "events": {"slip_push": 48, "nod": 146}},
     "check_desk_write": {"frames": 150, "loop": True, "speed": 0.0, "priority": 9, "events": {"look_up": 98}},
+    # RT-D1 Rolling Thunder (priority 10, _anim_rt; QC-86): vehicle occupants (sit_vehicle, a bucket seat lower and
+    # more reclined than sit_chair) and their dismount through the left / right door (vehicle_exit_*: from sit_vehicle
+    # frame 0 to idle_alert frame 0, root motion `curve.vehicle_exit_<side>` sideways); seat, sill, door and clearance
+    # in SOURCE `rt_vehicle_placement`.
+    "sit_vehicle": {"frames": 180, "loop": True, "speed": 0.0, "priority": 10},
+    "vehicle_exit_l": {"frames": 45, "loop": False, "speed": 0.0, "priority": 10,
+                       "events": {"foot_out": 14, "step_r": 26, "step_l": 37}, "root_motion": "curve.vehicle_exit_l"},
+    "vehicle_exit_r": {"frames": 45, "loop": False, "speed": 0.0, "priority": 10,
+                       "events": {"foot_out": 14, "step_l": 26, "step_r": 37}, "root_motion": "curve.vehicle_exit_r"},
+    # RT-D1 diner (D-148): a booth customer eating (_anim_rt BITES / SIP at 30 fps) and the cook at the griddle (FLIPS,
+    # LOOK_UP_C); prop sizes in _anim_rt (booth table top TABLE_Z 0.74 m, griddle top STOVE_Z 0.90 m)
+    "sit_eat": {"frames": 240, "loop": True, "speed": 0.0, "priority": 10,
+                "events": {"bite": 48, "bite_2": 117, "sip": 183}},
+    "cook_stove": {"frames": 180, "loop": True, "speed": 0.0, "priority": 10,
+                   "events": {"flip": 48, "flip_2": 102, "look_up": 129}},
+    # D-148: the escort / crew driver (sit_vehicle with the hands on the wheel) and the diner waitress's counter wipe
+    # (bartender_wipe at the 0.9 m diner counter)
+    "sit_vehicle_drive": {"frames": 180, "loop": True, "speed": 0.0, "priority": 10},
+    "counter_wipe": {"frames": 180, "loop": True, "speed": 0.0, "priority": 10},
 }
 # D-116 frame-locked weapon holds on the move (_anim_loco_holds, SOURCE `locomotion_holds`): hold_<kind>_<gait>, the
 # base clip's frames / loop / events
@@ -319,7 +339,8 @@ def build(ctx) -> None:
     for name in sorted(CLIPS):
         baked = anim.bake(solver, clips[name])
         if (name in KEEP or name in d304.KEEP or name in assault.KEEP or name in hitzones.KEEP
-                or name in surr.KEEP or name in civ.KEEP or name in holds.KEEP or name in crew3p.KEEP or name in bank.KEEP):
+                or name in surr.KEEP or name in civ.KEEP or name in holds.KEEP or name in crew3p.KEEP or name in bank.KEEP
+                or name in rt.KEEP):
             keep[name] = baked
         anim.write_action(arm, baked, export_name(name))
         c = baked.checks
@@ -343,6 +364,8 @@ def build(ctx) -> None:
             row += civ.check_row(name, baked, keep)
         if name in bank.NAMES:
             row += bank.check_row(sk, CLIPS, name, baked)
+        if name in rt.NAMES:
+            row += rt.check_row(sk, CLIPS, name, baked, keep)
         report.append(row)
         print(f"[anim] {row}")
     for pb in arm.pose.bones:
@@ -381,6 +404,8 @@ def build(ctx) -> None:
     for key, text in civ.source_notes(CLIPS, keep).items():
         ctx.source_extra[key] = text
     for key, text in bank.source_notes(sk, CLIPS, keep).items():
+        ctx.source_extra[key] = text
+    for key, text in rt.source_notes(sk, CLIPS, keep).items():
         ctx.source_extra[key] = text
     for key, text in loco.source_notes().items():
         ctx.source_extra[key] = text
