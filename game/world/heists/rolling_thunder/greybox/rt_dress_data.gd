@@ -58,7 +58,7 @@ const PROP_ART: Dictionary = {
 ## Rooms the KitPlacer dresses although their purpose is exterior (walled yards).
 const PLACER_EXTERIOR: Array[String] = ["YD"]
 ## Per-room placer seeds (default 7100).
-const KIT_SEEDS: Dictionary = {"ST": 7101, "C1": 7101}
+const KIT_SEEDS: Dictionary = {"ST": 7102, "C1": 7101, "U2": 7101}
 ## Extra keep-outs per room: [x0, y0, z0, x1, y1, z1] (world).
 const KEEP_OUT: Dictionary = {
 	# the attendant's walk from the booth door to the BoothDesk chair
@@ -118,6 +118,10 @@ const ROWS: Array = [
 ## Directly placed props: [name, asset, position, yaw, metas]. Wall mounts sit on the face at `position` (centred);
 ## ceiling mounts hang from it.
 const DIRECT_PROPS: Array = [
+	# ST's second rect (x 32-34, z 26-32; the placer dresses a room's largest box): shelving and a box stack on the
+	# east wall, clear of the electrical closet's door (z 26)
+	["STShelf", "prop_shelving_boxes", Vector3(33.56, 0.0, 29.6), 90.0, {}],
+	["STBoxStack", "prop_box_stack", Vector3(33.55, 0.0, 31.0), 90.0, {}],
 	# X3 plaza (exterior_plaza, the OF kit as is): lamps, benches by the planters, the kiosk, bollards at Ashby's
 	# forecourt, bins, a car on the forecourt; the shelters, planters and the shelter bench are the map's
 	["PlazaLamp0", "prop_street_lamp", Vector3(-56.0, 0.0, 12.4), 0.0, {}],
@@ -149,6 +153,7 @@ const DIRECT_PROPS: Array = [
 	["RailLaneFlatbed", "veh_flatbed_trailer", Vector3(62.4, 0.0, -84.0), 0.0, {}],
 	["RailLaneSkip", "prop_skip", Vector3(53.2, 0.0, -80.0), 0.0, {}],
 	["RailLaneCone", "prop_traffic_cone", Vector3(60.6, 0.0, -80.0), 0.0, {}],
+	["RailLaneCone2", "prop_traffic_cone", Vector3(60.6, 0.0, -88.0), 0.0, {}],
 	# X7 tyre-shop lane (exterior_lane): a skip at the east end, a flatbed along the south block
 	["TyreLaneSkip", "prop_skip", Vector3(50.6, 0.0, 37.0), 0.0, {}],
 	["TyreLaneFlatbed", "veh_flatbed_trailer", Vector3(40.0, 0.0, 38.6), 90.0, {}],

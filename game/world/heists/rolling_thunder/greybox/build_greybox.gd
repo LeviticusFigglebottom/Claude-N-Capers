@@ -15,8 +15,10 @@
 ## PUBLIC / RESTRICTED / OUT_OF_BOUNDS zones, player / police spawns, police entries (breach_only on buildings), doors
 ## (route doors 1.0 m: the service kit), the contract nodes, review cameras, VariantSlots for the 12 slot groups (the
 ## 6 scalars and 8 rare events are table rows), the 4 ConvoyLayout placeholder sets, holdouts, perches S1-S4, preplan
-## points, patrol graphs, assault markers, the navmesh (door_nav_clearance, _nav_thick). Greybox materials only; no
-## lights but the sun and the sky.
+## points, patrol graphs, assault markers, the navmesh (door_nav_clearance, _nav_thick). No lights but the sun, the
+## sky and the dressing's fixtures.
+## G2 (RT-C2 batch 1, reuse-first): rt_dress.gd (kit rooms, map-built art, street furniture) and rt_finish.gd (library
+## finishes on every shell surface), both before the bake.
 extends "res://world/heists/rolling_thunder/greybox/rt_gameplay.gd"
 
 const AM: GDScript = preload("res://world/heists/shared/assault_markers.gd")
@@ -91,6 +93,7 @@ func _build() -> void:
 	for line: String in NS.snap(map_root):
 		print("seat: " + line)
 	_build_environment(n("Lighting"))
+	preload("res://world/heists/rolling_thunder/greybox/rt_finish.gd").new(self).call(&"build")  # RT-C2 finishes (G2)
 	var polys: int = await _bake(nav)
 	if polys <= 0:
 		_fail("navmesh bake produced no polygons")

@@ -54,14 +54,14 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## floating: Nothing floats
 
-- 536 props checked
+- 541 props checked
 
 - WARN `Variants/Group_escape/Slot_esc_van_carpark/EscapeCarPark` @ (23.00, 0.00, -30.00): prop has no geometry or collision; skipped
 - WARN `Variants/Group_escape/Slot_esc_van_underpass/EscapeUnderpass` @ (92.00, -5.00, -4.00): prop has no geometry or collision; skipped
 
 ## clipping: Nothing clips
 
-- 536 props, 50 doors checked
+- 541 props, 50 doors checked
 
 
 ## scale: Human scale
@@ -91,40 +91,40 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 - `Rooms/RoomC2` (break_room): ceiling median 2.65 m (rule 2.6-3.0)
 - `Rooms/RoomC3` (restroom): ceiling median 2.65 m (rule 2.6-3.0)
 - `Rooms/RoomC4` (storage): ceiling median 2.65 m (rule 2.6-3.0)
-- `Geometry/Building/StairFlights/STAFlight0_1`: ramp collision enveloping the steps (max 0.175 m above the treads)
+- `Geometry/Building/StairFlights/STAFlight0_1`: ramp collision enveloping the steps (max 0.178 m above the treads)
 - `Geometry/Building/StairFlights/STAFlight0_1`: 10 risers, 0.000 -> 1.750 m
 - `Geometry/Building/StairFlights/STAFlight0_1` rails: -X wall, rail tops [1.06, 1.06, 1.06, 1.07, 1.07] m above nosing, max drop 0.00 m; +X wall, rail tops [1.06, 1.06, 1.06, 1.07, 1.07] m above nosing, max drop 0.00 m
-- `Geometry/Building/StairFlights/STAFlight0_2`: ramp collision enveloping the steps (max 0.175 m above the treads)
+- `Geometry/Building/StairFlights/STAFlight0_2`: ramp collision enveloping the steps (max 0.178 m above the treads)
 - `Geometry/Building/StairFlights/STAFlight0_2`: 10 risers, 1.750 -> 3.500 m
 - `Geometry/Building/StairFlights/STAFlight0_2` rails: -X wall, rail tops [1.06, 1.06, 1.06, 1.07, 1.07] m above nosing, max drop 0.00 m; +X wall, rail tops [1.06, 1.06, 1.06, 1.07, 1.07] m above nosing, max drop 0.00 m
-- `Geometry/Building/StairFlights/STAFlight1_1`: ramp collision enveloping the steps (max 0.175 m above the treads)
+- `Geometry/Building/StairFlights/STAFlight1_1`: ramp collision enveloping the steps (max 0.178 m above the treads)
 - `Geometry/Building/StairFlights/STAFlight1_1`: 10 risers, 3.500 -> 5.250 m
 - `Geometry/Building/StairFlights/STAFlight1_1` rails: -X wall, rail tops [1.06, 1.06, 1.06, 1.07, 1.07] m above nosing, max drop 0.00 m; +X wall, rail tops [1.06, 1.06, 1.06, 1.07, 1.07] m above nosing, max drop 0.00 m
-- `Geometry/Building/StairFlights/STAFlight1_2`: ramp collision enveloping the steps (max 0.175 m above the treads)
+- `Geometry/Building/StairFlights/STAFlight1_2`: ramp collision enveloping the steps (max 0.178 m above the treads)
 - `Geometry/Building/StairFlights/STAFlight1_2`: 10 risers, 5.250 -> 7.000 m
 - `Geometry/Building/StairFlights/STAFlight1_2` rails: -X wall, rail tops [1.06, 1.06, 1.06, 1.07, 1.07] m above nosing, max drop 0.00 m; +X wall, rail tops [1.06, 1.06, 1.06, 1.07, 1.07] m above nosing, max drop 0.00 m
-- `Geometry/Building/StairFlights/SBFlight0_1`: ramp collision enveloping the steps (max 0.175 m above the treads)
+- `Geometry/Building/StairFlights/SBFlight0_1`: ramp collision enveloping the steps (max 0.178 m above the treads)
 - `Geometry/Building/StairFlights/SBFlight0_1`: 10 risers, 0.000 -> 1.750 m
-- `Geometry/Building/StairFlights/SBFlight0_1` rails: -X wall, rail tops [1.06, 1.06, 1.06, 1.07, 1.07] m above nosing, max drop 0.00 m; +X wall, rail tops [1.05, 1.06, 1.06, 1.06, 1.07] m above nosing, max drop 0.00 m
-- `Geometry/Building/StairFlights/SBFlight0_2`: ramp collision enveloping the steps (max 0.175 m above the treads)
+- `Geometry/Building/StairFlights/SBFlight0_1` rails: -X wall, rail tops [1.06, 1.06, 1.06, 1.07, 1.07] m above nosing, max drop 0.00 m; +X wall, rail tops [1.06, 1.06, 1.06, 1.07, 1.07] m above nosing, max drop 0.00 m
+- `Geometry/Building/StairFlights/SBFlight0_2`: ramp collision enveloping the steps (max 0.178 m above the treads)
 - `Geometry/Building/StairFlights/SBFlight0_2`: 10 risers, 1.750 -> 3.500 m
 - `Geometry/Building/StairFlights/SBFlight0_2` rails: -X wall, rail tops [1.06, 1.06, 1.06, 1.07, 1.07] m above nosing, max drop 0.00 m; +X wall, rail tops [1.06, 1.06, 1.06, 1.07, 1.07] m above nosing, max drop 0.00 m
-- `Geometry/Building/StairFlights/SBFlight1_1`: ramp collision enveloping the steps (max 0.175 m above the treads)
+- `Geometry/Building/StairFlights/SBFlight1_1`: ramp collision enveloping the steps (max 0.178 m above the treads)
 - `Geometry/Building/StairFlights/SBFlight1_1`: 10 risers, 3.500 -> 5.250 m
-- `Geometry/Building/StairFlights/SBFlight1_1` rails: -X wall, rail tops [1.06, 1.06, 1.06, 1.07, 1.07] m above nosing, max drop 0.00 m; +X wall, rail tops [1.05, 1.06, 1.06, 1.06, 1.07] m above nosing, max drop 0.00 m
-- `Geometry/Building/StairFlights/SBFlight1_2`: ramp collision enveloping the steps (max 0.175 m above the treads)
+- `Geometry/Building/StairFlights/SBFlight1_1` rails: -X wall, rail tops [1.06, 1.06, 1.06, 1.07, 1.07] m above nosing, max drop 0.00 m; +X wall, rail tops [1.06, 1.06, 1.06, 1.07, 1.07] m above nosing, max drop 0.00 m
+- `Geometry/Building/StairFlights/SBFlight1_2`: ramp collision enveloping the steps (max 0.178 m above the treads)
 - `Geometry/Building/StairFlights/SBFlight1_2`: 10 risers, 5.250 -> 7.000 m
 - `Geometry/Building/StairFlights/SBFlight1_2` rails: -X wall, rail tops [1.06, 1.06, 1.06, 1.07, 1.07] m above nosing, max drop 0.00 m; +X wall, rail tops [1.06, 1.06, 1.06, 1.07, 1.07] m above nosing, max drop 0.00 m
-- `Geometry/Building/StairFlights/SCFlight0_1`: ramp collision enveloping the steps (max 0.175 m above the treads)
+- `Geometry/Building/StairFlights/SCFlight0_1`: ramp collision enveloping the steps (max 0.178 m above the treads)
 - `Geometry/Building/StairFlights/SCFlight0_1`: 10 risers, 0.000 -> 1.750 m
 - `Geometry/Building/StairFlights/SCFlight0_1` rails: -X wall, rail tops [1.06, 1.06, 1.06, 1.07, 1.07] m above nosing, max drop 0.00 m; +X wall, rail tops [1.06, 1.06, 1.06, 1.07, 1.07] m above nosing, max drop 0.00 m
-- `Geometry/Building/StairFlights/SCFlight0_2`: ramp collision enveloping the steps (max 0.175 m above the treads)
+- `Geometry/Building/StairFlights/SCFlight0_2`: ramp collision enveloping the steps (max 0.178 m above the treads)
 - `Geometry/Building/StairFlights/SCFlight0_2`: 10 risers, 1.750 -> 3.500 m
 - `Geometry/Building/StairFlights/SCFlight0_2` rails: -X wall, rail tops [1.06, 1.06, 1.06, 1.07, 1.07] m above nosing, max drop 0.00 m; +X wall, rail tops [1.06, 1.06, 1.06, 1.07, 1.07] m above nosing, max drop 0.00 m
-- `Geometry/Building/StairFlights/ScaffoldFlight_1`: ramp collision enveloping the steps (max 0.175 m above the treads)
+- `Geometry/Building/StairFlights/ScaffoldFlight_1`: ramp collision enveloping the steps (max 0.178 m above the treads)
 - `Geometry/Building/StairFlights/ScaffoldFlight_1`: 10 risers, 0.000 -> 1.750 m
 - `Geometry/Building/StairFlights/ScaffoldFlight_1` rails: -X open, rail tops [1.06, 1.06, 1.06, 1.07, 1.07] m above nosing, max drop 1.69 m; +X wall, rail tops [1.06, 1.06, 1.06, 1.07, 1.07] m above nosing, max drop 0.00 m
-- `Geometry/Building/StairFlights/ScaffoldFlight_2`: ramp collision enveloping the steps (max 0.175 m above the treads)
+- `Geometry/Building/StairFlights/ScaffoldFlight_2`: ramp collision enveloping the steps (max 0.178 m above the treads)
 - `Geometry/Building/StairFlights/ScaffoldFlight_2`: 10 risers, 1.750 -> 3.500 m
 - `Geometry/Building/StairFlights/ScaffoldFlight_2` rails: -X open, rail tops [1.06, 1.06, 1.06, 1.07, 1.07] m above nosing, max drop 3.44 m; +X open, rail tops [1.06, 1.06, 1.06, 1.07, 1.07] m above nosing, max drop 0.00 m
 - stair chain: `Geometry/Building/StairFlights/STAFlight0_1` -> `Geometry/Building/StairFlights/STAFlight0_2` joined by a landing at 1.750 m
@@ -139,12 +139,12 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## slopes: No walkable slope < 50° outside the play mesh
 
-- 809 x 729 columns (0.25 m), 443319 surface samples, 0 collider(s) with reachable walkable surfaces outside play
+- 809 x 729 columns (0.25 m), 443334 surface samples, 0 collider(s) with reachable walkable surfaces outside play
 
 
 ## navmesh: Navmesh
 
-- navmesh: 3417 polygons, cell 0.10/0.10 m
+- navmesh: 3429 polygons, cell 0.10/0.10 m
 - 199 markers checked
 | room | walkable samples | covered | coverage |
 |---|---|---|---|
@@ -162,7 +162,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `Rooms/RoomK` | 143 | 143 | 100% |
 | `Rooms/RoomBC` | 39 | 39 | 100% |
 | `Rooms/RoomE` | 2 | 2 | 100% |
-| `Rooms/RoomST` | 124 | 123 | 99% |
+| `Rooms/RoomST` | 115 | 115 | 100% |
 | `Rooms/RoomW1` | 8 | 8 | 100% |
 | `Rooms/RoomW2` | 11 | 11 | 100% |
 | `Rooms/RoomR` | 33 | 33 | 100% |
@@ -170,7 +170,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `Rooms/RoomOF` | 45 | 45 | 100% |
 | `Rooms/RoomYD` | 523 | 520 | 99% |
 | `Rooms/RoomU1` | 529 | 529 | 100% |
-| `Rooms/RoomU2` | 197 | 197 | 100% |
+| `Rooms/RoomU2` | 193 | 193 | 100% |
 | `Rooms/RoomU3` | 136 | 133 | 98% |
 | `Rooms/RoomU4` | 9 | 9 | 100% |
 | `Rooms/RoomJ` | 10 | 10 | 100% |
@@ -187,7 +187,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `Rooms/RoomX1` | 836 | 836 | 100% |
 | `Rooms/RoomX2` | 468 | 468 | 100% |
 | `Rooms/RoomX3` | 770 | 770 | 100% |
-| `Rooms/RoomX5` | 781 | 781 | 100% |
+| `Rooms/RoomX5` | 779 | 779 | 100% |
 | `Rooms/RoomX6` | 706 | 706 | 100% |
 | `Rooms/RoomX7` | 484 | 484 | 100% |
 

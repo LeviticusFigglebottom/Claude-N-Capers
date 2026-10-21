@@ -26,7 +26,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerPlaza1` | `Gameplay/Doors/KitchenDoor/UsePoint` | use_point | 54.2 | 55.5 | 1.02 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Doors/CounterDoor/UsePoint` | use_point | 50.6 | 51.8 | 1.02 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Doors/DryStoreDoor/UsePoint` | use_point | 54.3 | 55.5 | 1.02 | ok |
-| `Spawns/PlayerPlaza1` | `Gameplay/Doors/ElectricalDoor/UsePoint` | use_point | 57.7 | 66.7 | 1.15 | ok |
+| `Spawns/PlayerPlaza1` | `Gameplay/Doors/ElectricalDoor/UsePoint` | use_point | 57.7 | 66.9 | 1.16 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Doors/RearLobbyDoor/UsePoint` | use_point | 42.7 | 43.5 | 1.02 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Doors/DinerOfficeDoor/UsePoint` | use_point | 49.6 | 50.1 | 1.01 | ok |
 | `Spawns/PlayerPlaza1` | `Gameplay/Doors/DinerWC1Door/UsePoint` | use_point | 42.8 | 45.3 | 1.06 | ok |
@@ -126,7 +126,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerPlaza2` | `Gameplay/Doors/KitchenDoor/UsePoint` | use_point | 52.8 | 60.3 | 1.14 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Doors/CounterDoor/UsePoint` | use_point | 49.1 | 50.3 | 1.03 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Doors/DryStoreDoor/UsePoint` | use_point | 52.8 | 54.0 | 1.02 | ok |
-| `Spawns/PlayerPlaza2` | `Gameplay/Doors/ElectricalDoor/UsePoint` | use_point | 56.3 | 65.2 | 1.16 | ok |
+| `Spawns/PlayerPlaza2` | `Gameplay/Doors/ElectricalDoor/UsePoint` | use_point | 56.3 | 65.5 | 1.16 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Doors/RearLobbyDoor/UsePoint` | use_point | 41.2 | 42.0 | 1.02 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Doors/DinerOfficeDoor/UsePoint` | use_point | 48.1 | 48.6 | 1.01 | ok |
 | `Spawns/PlayerPlaza2` | `Gameplay/Doors/DinerWC1Door/UsePoint` | use_point | 41.3 | 43.8 | 1.06 | ok |
@@ -226,7 +226,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerPlaza3` | `Gameplay/Doors/KitchenDoor/UsePoint` | use_point | 51.3 | 52.5 | 1.02 | ok |
 | `Spawns/PlayerPlaza3` | `Gameplay/Doors/CounterDoor/UsePoint` | use_point | 47.6 | 48.8 | 1.03 | ok |
 | `Spawns/PlayerPlaza3` | `Gameplay/Doors/DryStoreDoor/UsePoint` | use_point | 51.3 | 52.5 | 1.02 | ok |
-| `Spawns/PlayerPlaza3` | `Gameplay/Doors/ElectricalDoor/UsePoint` | use_point | 54.8 | 63.8 | 1.16 | ok |
+| `Spawns/PlayerPlaza3` | `Gameplay/Doors/ElectricalDoor/UsePoint` | use_point | 54.8 | 64.0 | 1.17 | ok |
 | `Spawns/PlayerPlaza3` | `Gameplay/Doors/RearLobbyDoor/UsePoint` | use_point | 39.8 | 40.5 | 1.02 | ok |
 | `Spawns/PlayerPlaza3` | `Gameplay/Doors/DinerOfficeDoor/UsePoint` | use_point | 46.7 | 47.1 | 1.01 | ok |
 | `Spawns/PlayerPlaza3` | `Gameplay/Doors/DinerWC1Door/UsePoint` | use_point | 39.8 | 42.3 | 1.06 | ok |
@@ -326,7 +326,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerPlaza4` | `Gameplay/Doors/KitchenDoor/UsePoint` | use_point | 49.8 | 51.0 | 1.03 | ok |
 | `Spawns/PlayerPlaza4` | `Gameplay/Doors/CounterDoor/UsePoint` | use_point | 46.1 | 47.4 | 1.03 | ok |
 | `Spawns/PlayerPlaza4` | `Gameplay/Doors/DryStoreDoor/UsePoint` | use_point | 49.8 | 51.0 | 1.02 | ok |
-| `Spawns/PlayerPlaza4` | `Gameplay/Doors/ElectricalDoor/UsePoint` | use_point | 53.3 | 62.4 | 1.17 | ok |
+| `Spawns/PlayerPlaza4` | `Gameplay/Doors/ElectricalDoor/UsePoint` | use_point | 53.3 | 62.7 | 1.18 | ok |
 | `Spawns/PlayerPlaza4` | `Gameplay/Doors/RearLobbyDoor/UsePoint` | use_point | 38.3 | 39.1 | 1.02 | ok |
 | `Spawns/PlayerPlaza4` | `Gameplay/Doors/DinerOfficeDoor/UsePoint` | use_point | 45.2 | 45.6 | 1.01 | ok |
 | `Spawns/PlayerPlaza4` | `Gameplay/Doors/DinerWC1Door/UsePoint` | use_point | 38.4 | 40.8 | 1.06 | ok |
@@ -626,7 +626,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerCarPark3` | `Gameplay/Doors/KitchenDoor/UsePoint` | use_point | 68.4 | 89.1 | 1.30 | ok |
 | `Spawns/PlayerCarPark3` | `Gameplay/Doors/CounterDoor/UsePoint` | use_point | 68.6 | 92.7 | 1.35 | ok |
 | `Spawns/PlayerCarPark3` | `Gameplay/Doors/DryStoreDoor/UsePoint` | use_point | 69.0 | 89.7 | 1.30 | ok |
-| `Spawns/PlayerCarPark3` | `Gameplay/Doors/ElectricalDoor/UsePoint` | use_point | 72.6 | 94.8 | 1.31 | ok |
+| `Spawns/PlayerCarPark3` | `Gameplay/Doors/ElectricalDoor/UsePoint` | use_point | 72.6 | 94.9 | 1.31 | ok |
 | `Spawns/PlayerCarPark3` | `Gameplay/Doors/RearLobbyDoor/UsePoint` | use_point | 71.4 | 89.8 | 1.26 | ok |
 | `Spawns/PlayerCarPark3` | `Gameplay/Doors/DinerOfficeDoor/UsePoint` | use_point | 70.9 | 91.6 | 1.29 | ok |
 | `Spawns/PlayerCarPark3` | `Gameplay/Doors/DinerWC1Door/UsePoint` | use_point | 73.1 | 91.6 | 1.25 | ok |
@@ -726,7 +726,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerCarPark4` | `Gameplay/Doors/KitchenDoor/UsePoint` | use_point | 68.3 | 90.6 | 1.33 | ok |
 | `Spawns/PlayerCarPark4` | `Gameplay/Doors/CounterDoor/UsePoint` | use_point | 68.6 | 94.2 | 1.37 | ok |
 | `Spawns/PlayerCarPark4` | `Gameplay/Doors/DryStoreDoor/UsePoint` | use_point | 68.9 | 91.2 | 1.32 | ok |
-| `Spawns/PlayerCarPark4` | `Gameplay/Doors/ElectricalDoor/UsePoint` | use_point | 72.5 | 96.3 | 1.33 | ok |
+| `Spawns/PlayerCarPark4` | `Gameplay/Doors/ElectricalDoor/UsePoint` | use_point | 72.5 | 96.4 | 1.33 | ok |
 | `Spawns/PlayerCarPark4` | `Gameplay/Doors/RearLobbyDoor/UsePoint` | use_point | 71.6 | 91.3 | 1.28 | ok |
 | `Spawns/PlayerCarPark4` | `Gameplay/Doors/DinerOfficeDoor/UsePoint` | use_point | 70.9 | 93.1 | 1.31 | ok |
 | `Spawns/PlayerCarPark4` | `Gameplay/Doors/DinerWC1Door/UsePoint` | use_point | 73.3 | 93.1 | 1.27 | ok |
@@ -826,7 +826,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerUnderpass1` | `Gameplay/Doors/KitchenDoor/UsePoint` | use_point | 52.2 | 55.7 | 1.07 | ok |
 | `Spawns/PlayerUnderpass1` | `Gameplay/Doors/CounterDoor/UsePoint` | use_point | 55.4 | 59.4 | 1.07 | ok |
 | `Spawns/PlayerUnderpass1` | `Gameplay/Doors/DryStoreDoor/UsePoint` | use_point | 52.6 | 56.3 | 1.07 | ok |
-| `Spawns/PlayerUnderpass1` | `Gameplay/Doors/ElectricalDoor/UsePoint` | use_point | 52.6 | 61.5 | 1.17 | ok |
+| `Spawns/PlayerUnderpass1` | `Gameplay/Doors/ElectricalDoor/UsePoint` | use_point | 52.6 | 61.6 | 1.17 | ok |
 | `Spawns/PlayerUnderpass1` | `Gameplay/Doors/RearLobbyDoor/UsePoint` | use_point | 63.5 | 69.1 | 1.09 | ok |
 | `Spawns/PlayerUnderpass1` | `Gameplay/Doors/DinerOfficeDoor/UsePoint` | use_point | 57.8 | 62.0 | 1.07 | ok |
 | `Spawns/PlayerUnderpass1` | `Gameplay/Doors/DinerWC1Door/UsePoint` | use_point | 64.7 | 70.9 | 1.10 | ok |
@@ -926,7 +926,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerUnderpass2` | `Gameplay/Doors/KitchenDoor/UsePoint` | use_point | 53.4 | 57.1 | 1.07 | ok |
 | `Spawns/PlayerUnderpass2` | `Gameplay/Doors/CounterDoor/UsePoint` | use_point | 56.6 | 60.7 | 1.07 | ok |
 | `Spawns/PlayerUnderpass2` | `Gameplay/Doors/DryStoreDoor/UsePoint` | use_point | 53.8 | 57.7 | 1.07 | ok |
-| `Spawns/PlayerUnderpass2` | `Gameplay/Doors/ElectricalDoor/UsePoint` | use_point | 53.7 | 62.8 | 1.17 | ok |
+| `Spawns/PlayerUnderpass2` | `Gameplay/Doors/ElectricalDoor/UsePoint` | use_point | 53.7 | 62.9 | 1.17 | ok |
 | `Spawns/PlayerUnderpass2` | `Gameplay/Doors/RearLobbyDoor/UsePoint` | use_point | 64.7 | 70.4 | 1.09 | ok |
 | `Spawns/PlayerUnderpass2` | `Gameplay/Doors/DinerOfficeDoor/UsePoint` | use_point | 59.0 | 63.3 | 1.07 | ok |
 | `Spawns/PlayerUnderpass2` | `Gameplay/Doors/DinerWC1Door/UsePoint` | use_point | 65.9 | 72.2 | 1.10 | ok |
@@ -1026,7 +1026,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerUnderpass3` | `Gameplay/Doors/KitchenDoor/UsePoint` | use_point | 54.6 | 58.5 | 1.07 | ok |
 | `Spawns/PlayerUnderpass3` | `Gameplay/Doors/CounterDoor/UsePoint` | use_point | 57.8 | 62.1 | 1.07 | ok |
 | `Spawns/PlayerUnderpass3` | `Gameplay/Doors/DryStoreDoor/UsePoint` | use_point | 55.0 | 59.1 | 1.07 | ok |
-| `Spawns/PlayerUnderpass3` | `Gameplay/Doors/ElectricalDoor/UsePoint` | use_point | 54.8 | 64.2 | 1.17 | ok |
+| `Spawns/PlayerUnderpass3` | `Gameplay/Doors/ElectricalDoor/UsePoint` | use_point | 54.8 | 64.3 | 1.17 | ok |
 | `Spawns/PlayerUnderpass3` | `Gameplay/Doors/RearLobbyDoor/UsePoint` | use_point | 66.0 | 71.8 | 1.09 | ok |
 | `Spawns/PlayerUnderpass3` | `Gameplay/Doors/DinerOfficeDoor/UsePoint` | use_point | 60.2 | 64.7 | 1.07 | ok |
 | `Spawns/PlayerUnderpass3` | `Gameplay/Doors/DinerWC1Door/UsePoint` | use_point | 67.2 | 73.6 | 1.10 | ok |
@@ -1126,7 +1126,7 @@ Result: **PASS** (0 failure(s))
 | `Spawns/PlayerUnderpass4` | `Gameplay/Doors/KitchenDoor/UsePoint` | use_point | 55.9 | 59.9 | 1.07 | ok |
 | `Spawns/PlayerUnderpass4` | `Gameplay/Doors/CounterDoor/UsePoint` | use_point | 59.1 | 63.5 | 1.08 | ok |
 | `Spawns/PlayerUnderpass4` | `Gameplay/Doors/DryStoreDoor/UsePoint` | use_point | 56.2 | 60.5 | 1.08 | ok |
-| `Spawns/PlayerUnderpass4` | `Gameplay/Doors/ElectricalDoor/UsePoint` | use_point | 55.9 | 65.7 | 1.17 | ok |
+| `Spawns/PlayerUnderpass4` | `Gameplay/Doors/ElectricalDoor/UsePoint` | use_point | 55.9 | 65.7 | 1.18 | ok |
 | `Spawns/PlayerUnderpass4` | `Gameplay/Doors/RearLobbyDoor/UsePoint` | use_point | 67.3 | 73.2 | 1.09 | ok |
 | `Spawns/PlayerUnderpass4` | `Gameplay/Doors/DinerOfficeDoor/UsePoint` | use_point | 61.4 | 66.1 | 1.08 | ok |
 | `Spawns/PlayerUnderpass4` | `Gameplay/Doors/DinerWC1Door/UsePoint` | use_point | 68.4 | 75.0 | 1.10 | ok |
