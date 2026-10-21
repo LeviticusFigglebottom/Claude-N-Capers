@@ -195,6 +195,12 @@
 			"variant_of": "bulwark"
 		},
 		{
+			"asset": "char_carpark_attendant",
+			"id": "carpark_attendant",
+			"scene": "res://world/characters/carpark_attendant/carpark_attendant.tscn",
+			"test": false
+		},
+		{
 			"asset": "char_cartel_gunman",
 			"id": "cartel_gunman",
 			"scene": "res://world/characters/cartel_gunman/cartel_gunman.tscn",
@@ -462,6 +468,18 @@
 			"asset": "char_crew_wren",
 			"id": "crew_wren",
 			"scene": "res://world/characters/crew_wren/crew_wren.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_diner_cook",
+			"id": "diner_cook",
+			"scene": "res://world/characters/diner_cook/diner_cook.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_diner_waitress",
+			"id": "diner_waitress",
+			"scene": "res://world/characters/diner_waitress/diner_waitress.tscn",
 			"test": false
 		},
 		{
@@ -1071,6 +1089,42 @@
 			"test": false,
 			"variant": "zero",
 			"variant_of": "stinger"
+		},
+		{
+			"asset": "char_street_pedestrian",
+			"id": "street_pedestrian",
+			"scene": "res://world/characters/street_pedestrian/street_pedestrian.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_street_pedestrian_b",
+			"id": "street_pedestrian_b",
+			"scene": "res://world/characters/street_pedestrian_b/street_pedestrian_b.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_street_pedestrian_c",
+			"id": "street_pedestrian_c",
+			"scene": "res://world/characters/street_pedestrian_c/street_pedestrian_c.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_street_pedestrian_d",
+			"id": "street_pedestrian_d",
+			"scene": "res://world/characters/street_pedestrian_d/street_pedestrian_d.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_street_pedestrian_e",
+			"id": "street_pedestrian_e",
+			"scene": "res://world/characters/street_pedestrian_e/street_pedestrian_e.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_street_pedestrian_f",
+			"id": "street_pedestrian_f",
+			"scene": "res://world/characters/street_pedestrian_f/street_pedestrian_f.tscn",
+			"test": false
 		},
 		{
 			"asset": "char_tac_heavy",

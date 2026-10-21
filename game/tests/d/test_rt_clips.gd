@@ -189,7 +189,7 @@ func test_exits_start_seated_end_on_idle_alert() -> void:
 		# with the root moved along the curve, the body leaves the seat toward the door: the hips end out of the door's
 		# side, and the feet that land are world-still between their plant and the end (no skating on the road)
 		var sx: float = float(EXITS[clip])
-		var land: Dictionary = {"vehicle_exit_l": [foot_r, 26, foot_l, 37], "vehicle_exit_r": [foot_l, 26, foot_r, 37]}[clip]
+		var land: Array = {"vehicle_exit_l": [foot_r, 26, foot_l, 37], "vehicle_exit_r": [foot_l, 26, foot_r, 37]}[clip]
 		for pair: int in [0, 2]:
 			var bone: int = int(land[pair])
 			var f0: int = int(land[pair + 1]) + 1
