@@ -31,7 +31,7 @@ func _ticks(n: int) -> void:
 
 func _shot(label: String) -> void:
 	await RenderingServer.frame_post_draw
-	get_viewport().get_texture().get_image().save_png("%s/%s.png" % [_out, label])
+	get_viewport().get_texture().get_image().save_png(PCaptureName.safe_path("%s/%s.png" % [_out, label]))
 	print("[SCOPEHUD] shot %s" % label)
 
 

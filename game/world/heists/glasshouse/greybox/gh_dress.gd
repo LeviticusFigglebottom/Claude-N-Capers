@@ -219,7 +219,9 @@ func _finish_node(n: Node3D, asset: String, mode: String, mount: String, xf: Tra
 		_root.set_editable_instance(n, true)
 		var lt: OmniLight3D = n.get_node_or_null("Light") as OmniLight3D
 		if lt != null:
-			lt.shadow_enabled = true
+			# D-146: no shadow (a cube omni re-drew ~700 casters, 6 passes, in every street and hall view); the glow
+			# and the pool stay
+			lt.shadow_enabled = false
 			lt.omni_range = NEON_RANGE
 			lt.light_energy = NEON_ENERGY
 	if kind == "exit_sign" and mode == "above_door":

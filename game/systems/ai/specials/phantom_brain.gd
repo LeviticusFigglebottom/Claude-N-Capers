@@ -9,7 +9,7 @@
 ##   then a sprint along it. The kick lands only if the victim is within phantom_kick_range_m AND
 ##   within phantom_dodge_lateral_m of the committed line (a sidestep dodges). Hit or miss, the kick
 ##   goes on phantom_kick_cooldown_s (~10 s).
-## - kick: CrewHealth.incapacitate(CLOAKER_DOWNED) (L2.8: no down counted); may camp the body.
+## - kick: CrewHealth.incapacitate(CLOAKER_DOWNED) (D-145, PD2: a normal down, counted); may camp the body.
 ## - never kicks the last player standing (incl. a solo player with no AI): it keeps a standoff.
 ## - "play dead": phantom_play_dead_chance per non-lethal hit to drop, getting up after a while.
 ## - ECM feedback immune: EnemyDef.params.ecm_feedback_immune (EcmSystem._immune).

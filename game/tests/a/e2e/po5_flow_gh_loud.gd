@@ -157,9 +157,10 @@ func fail(msg: String) -> int:
 
 
 ## While downed, keep shooting the nearest enemy in sight like a player (PD2 / L2.12: police only cuff a downed
-## crew member who is NOT shooting); any other helpless state just waits. About 1 s per call.
+## crew member who is NOT shooting), where police cuff at all (Po5Pilot.shoots_from_floor); otherwise, and in any
+## other helpless state, just wait. About 1 s per call.
 func _act_while_down() -> void:
-	if p.crew.crew_state == Enums.CrewState.DOWNED:
+	if p.crew.crew_state == Enums.CrewState.DOWNED and p.shoots_from_floor():
 		var foe: NpcBase = p.nearest_enemy(25.0)
 		if foe != null:
 			await p.engage(foe, 1.0)

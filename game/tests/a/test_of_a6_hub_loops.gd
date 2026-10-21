@@ -2,7 +2,9 @@
 ## PatrolRouteGenerator.hub_route walks every loop from the hub and back each cycle, in an order the RNG shuffles once;
 ## derived loops = one per pause point. On the real OF map: rover_dock (derived from the Lane graph) visits Ledger Lane
 ## west, the Tannery corner smoke stop and the Tannery bay every cycle; rover_basement visits RC, SD + SS and CP + PL and
-## never enters the vault concourse (VC*, the vault post's points on the same graph).
+## never enters the vault concourse (VC*, the vault post's points on the same graph). rover_hall (BC hub) walks
+## TW <-> BH, the LD dock check + MO and the SB fire-exit check; rover_gallery (UC hub) walks WL -> GA -> EL, OF -> GA ->
+## CF and loop (c) SA up -> XC -> PR door -> XL terrace -> SB down (P's ghost step 4 times its E3 wait on it).
 extends TestCase
 
 const MAP_PATH: String = "res://world/heists/ostrander_federal/ostrander_federal.tscn"
@@ -72,7 +74,7 @@ func test_explicit_loops_walk_their_stops_in_order() -> void:
 	assert_eq(_names(order), PackedStringArray(["H", "M", "C", "B", "C", "M"]), "H -> B (via C), then C -> back")
 
 
-func test_of_rover_dock_and_basement_loops() -> void:
+func test_of_rover_loops() -> void:
 	if not ResourceLoader.exists(MAP_PATH):
 		skip("no ostrander_federal map")
 		return
@@ -83,6 +85,11 @@ func test_of_rover_dock_and_basement_loops() -> void:
 	var cases: Dictionary = {
 		&"guard_rover_dock": ["Patrols/Lane", ["LaneWest", "LaneCorner", "TanneryBay"], []],
 		&"guard_rover_basement": ["Patrols/BankBasement", ["RCEast", "SDDesk", "SS", "CP", "PL"], ["VC"]],
+		&"guard_rover_hall": ["Patrols/BankGround",
+			["TWWest", "HallLobby", "TWEast", "LDCheck", "MO", "StairBG", "BCFireExit"], ["SR"]],
+		&"guard_rover_gallery": ["Patrols/BankUpper",
+			["WLSouth", "GAPost", "ELSouth", "OF", "CF", "StairAM", "StairAE", "XCPresident", "XLTerrace",
+				"StairBE", "StairBM"], []],
 	}
 	for tag: StringName in cases:
 		assert_true(cfg.has(tag), "GuardTweak.hub_loops has %s" % tag)
@@ -109,3 +116,9 @@ func test_of_rover_dock_and_basement_loops() -> void:
 		for prefix: String in cases[tag][2]:
 			for n: String in names:
 				assert_false(n.begins_with(prefix), "%s never enters %s* (%s)" % [tag, prefix, names])
+		if tag == &"guard_rover_gallery":
+			var seq: Array[int] = []
+			for stop: String in ["StairAM", "StairAE", "XCPresident", "XLTerrace", "StairBE", "StairBM"]:
+				seq.append(names.find(stop))
+			for i: int in range(1, seq.size()):
+				assert_true(seq[i - 1] < seq[i], "gallery loop (c) goes SA up -> XC -> XL -> SB down (%s)" % [names])

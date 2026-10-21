@@ -42,7 +42,7 @@ func _ready() -> void:
 			img.convert(Image.FORMAT_RGBA8)
 			img.resize(w, h, Image.INTERPOLATE_BILINEAR)
 			sheet.blit_rect(img, Rect2i(0, 0, w, h), Vector2i(x * w, y * h))
-	sheet.save_png("%s/gadget_sheet.png" % _out)
+	sheet.save_png(PCaptureName.safe_path("%s/gadget_sheet.png" % _out))
 	RenderingServer.render_loop_enabled = true
 	print("[GADGET] RESULT DONE weapons=%d sheet=%s/gadget_sheet.png" % [rows.size(), _out])
 	get_tree().quit(0)
@@ -115,7 +115,7 @@ func _shot(name: String, label: String) -> Image:
 	await RenderingServer.frame_post_draw
 	var img: Image = get_viewport().get_texture().get_image()
 	RenderingServer.render_loop_enabled = false
-	img.save_png("%s/%s_%s.png" % [_out, name, label])
+	img.save_png(PCaptureName.safe_path("%s/%s_%s.png" % [_out, name, label]))
 	return img
 
 

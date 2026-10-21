@@ -1,5 +1,5 @@
 ## A3-01a / L4.3 Phantom (PD2 Cloaker): telegraphs (hum, charge cue, goggles), charge + jump-kick ->
-## CLOAKER_DOWNED (no down counted), ~10 s cooldown, sidestep dodge, never kicks the last player
+## CLOAKER_DOWNED, a counted down with bleed-out (D-145, PD2; was: no down), ~10 s cooldown, sidestep dodge, never kicks the last player
 ## standing, play dead, Counterstrike hook, ECM feedback immunity, special_spawned [R].
 extends TestCase
 
@@ -112,8 +112,8 @@ func test_l4_3_charge_kick_cloaker_downed() -> void:
 	var kicked: bool = await wait_until(func() -> bool: return c.crew_state == Enums.CrewState.CLOAKER_DOWNED, 4.0)
 	assert_true(kicked, "jump-kick takes the target down")
 	assert_eq(b.last_kick_result, &"hit")
-	assert_eq(c.health.downs_used, 0, "L2.8: no down counted")
-	assert_eq(c.health.bleedout_left, 0.0, "no bleedout")
+	assert_eq(c.health.downs_used, 1, "D-145 (PD2): a normal down, counted")
+	assert_true(c.health.bleedout_left > 0.0, "bleeding out")
 	assert_has(_events, [&"cloaker", 0, p.net_id], "crew_cloaker_downed(slot, phantom)")
 	assert_false(b.goggles_glowing, "goggles back to idle")
 
@@ -133,7 +133,7 @@ func test_l4_3_kick_cooldown() -> void:
 	b.kick_cooldown_left = 0.0
 	var again: bool = await wait_until(func() -> bool: return c.crew_state == Enums.CrewState.CLOAKER_DOWNED, 6.0)
 	assert_true(again, "kicks again once the cooldown is over")
-	assert_eq(c.health.downs_used, 0, "still no down counted")
+	assert_eq(c.health.downs_used, 2, "D-145: each kick is a down")
 
 
 func test_l4_3_sidestep_dodges_the_kick() -> void:

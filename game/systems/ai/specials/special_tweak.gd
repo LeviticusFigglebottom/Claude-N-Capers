@@ -58,8 +58,8 @@ static var _cached: SpecialTweak = null
 @export var stinger_windup_s: float = 1.0
 ## cue.stinger_arc re-requested every interval while tasing.
 @export var stinger_arc_interval_s: float = 0.5
-## Long tase: after this the beam ends and the victim stays helpless (TASED) until revived (◇ 6 s).
-@export var stinger_helpless_after_s: float = 6.0
+## Long tase: after this the beam ends and the victim goes down (D-145; PD2 tase_time 10 s on every difficulty).
+@export var stinger_helpless_after_s: float = 10.0
 ## Cooldown between tases (s).
 @export var stinger_tase_cooldown_s: float = 4.0
 ## D-145 (P's GH Tense run: tased 3x in ~10 s): per-difficulty cooldown (Enums.Difficulty index) replacing

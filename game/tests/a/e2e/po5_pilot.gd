@@ -86,6 +86,10 @@ var _last_engage: float = -1.0
 var _door_tries: Dictionary[Door, int] = {}
 ## Nesting of the short detour walks goto() makes when stuck (they do not detour again).
 var _detour_depth: int = 0
+## _through_link hysteresis: the door being crossed, for which target, to which side (its local z sign).
+var _through_door: Door = null
+var _through_target: Vector3 = Vector3.INF
+var _through_side: float = 0.0
 var _rad_px: Vector2 = Vector2.ONE
 
 
@@ -192,6 +196,13 @@ func nav_path(to: Vector3) -> PackedVector3Array:
 ## doorway (|local z| < THROUGH_DOOR_M, within its width) with the target beyond THROUGH_PAST_M on the far side: walk straight along the
 ## door normal to THROUGH_PAST_M past the plane (inside the opening). Else null.
 func _through_link(target: Vector3, path: PackedVector3Array = PackedVector3Array()) -> Variant:
+	var out: Variant = _through_link_pick(target, path)
+	if out == null:
+		_through_door = null
+	return out
+
+
+func _through_link_pick(target: Vector3, path: PackedVector3Array) -> Variant:
 	for n: Node in crew.get_tree().get_nodes_in_group(Door.GROUP):
 		var door: Door = n as Door
 		if door == null or not door.is_open:
@@ -203,28 +214,56 @@ func _through_link(target: Vector3, path: PackedVector3Array = PackedVector3Arra
 		var half: float = door.effective_width() * 0.5
 		if absf(me.x) > half:
 			continue
+		var x: float = clampf(me.x, -half + LANE_HALF_M + 0.1, half - LANE_HALF_M - 0.1)
+		if door == _through_door and target.is_equal_approx(_through_target):
+			# B's DB GatehouseNorth stall: inside the band the path start snaps to either edge of the door's NavLink gap,
+			# so the crossing side flipped every re-plan (the pilot shuttled between the two corners). Keep the first.
+			return door.global_transform * Vector3(x, 0.0, _through_side * THROUGH_PAST_M)
 		var tz: float = (inv * target).z
-		var via: float = _path_crosses(door, path)
+		var via: float = path_crosses(door, path)
+		if via == 0.0:
+			via = path_side(door, path)  # the path's own way out of the doorway, not the straight line to the target
 		if via != 0.0:
 			tz = via * (THROUGH_PAST_M + 1.0)  # OF-X1 ND XferDoor: the path leaves through this door to a target behind us
 		if absf(tz) <= THROUGH_PAST_M or (signf(tz) == signf(me.z) and absf(tz) <= absf(me.z)):
 			continue  # the target is on this side, or about in the door's plane (OF-X1 ND RecordsDoor: a corridor
 			# target 0.1 m off the plane of the door across the hall pinned the pilot between the two corners)
-		var x: float = clampf(me.x, -half + LANE_HALF_M + 0.1, half - LANE_HALF_M - 0.1)
-		return door.global_transform * Vector3(x, 0.0, signf(tz) * THROUGH_PAST_M)
+		_through_door = door
+		_through_target = target
+		_through_side = signf(tz)
+		return door.global_transform * Vector3(x, 0.0, _through_side * THROUGH_PAST_M)
 	return null
 
 
+## The side (+1 / -1, the door's local z) of the first `path` point past THROUGH_PAST_M from `door`'s plane (same floor)
+## within THROUGH_LOOKAHEAD_M, else 0. B's DB GatehouseNorth stall: the start snapped to the gap's far edge (no
+## crossing), and the straight line to the target (north) disagreed with the path (south, then around).
+static func path_side(door: Door, path: PackedVector3Array) -> float:
+	var inv: Transform3D = door.global_transform.affine_inverse()
+	var left: float = THROUGH_LOOKAHEAD_M
+	for i: int in range(path.size()):
+		if i > 0:
+			left -= path[i - 1].distance_to(path[i])
+			if left < 0.0:
+				break
+		var l: Vector3 = inv * path[i]
+		if absf(l.z) > THROUGH_PAST_M and absf(l.y) <= NEAR_DY_M:
+			return signf(l.z)
+	return 0.0
+
+
 ## The side (+1 / -1, the door's local z) the nav `path` crosses `door`'s doorway to within THROUGH_LOOKAHEAD_M of its
-## start, else 0 (no crossing, or no path).
-func _path_crosses(door: Door, path: PackedVector3Array) -> float:
+## start, else 0 (no crossing, or no path). The way the crossing step goes (not its end's side: B's DB count_cage
+## stall, the StairMezz path has a corner exactly in the door's plane, local z 0, so the pilot turned back).
+static func path_crosses(door: Door, path: PackedVector3Array) -> float:
 	var left: float = THROUGH_LOOKAHEAD_M
 	var up: Vector3 = Vector3.UP * 0.5
 	for i: int in range(1, path.size()):
 		var a: Vector3 = path[i - 1]
 		var b: Vector3 = path[i]
 		if door.doorway_crossing(a + up, b + up) != Vector3.INF:
-			return signf((door.global_transform.affine_inverse() * b).z)
+			var inv: Transform3D = door.global_transform.affine_inverse()
+			return signf((inv * b).z - (inv * a).z)
 		left -= a.distance_to(b)
 		if left <= 0.0:
 			break
@@ -792,6 +831,14 @@ func open_door(door: Door) -> bool:
 	var ok: bool = await use(comp, 30.0, func() -> bool: return door.is_open, false)
 	await inp.ticks(20)  # leaf swing
 	return ok
+
+
+## D-145 (P's GH Tense 4502): fight from the floor only where police can cuff a downed player who is not shooting
+## (L2.12, from police_cuff_min_difficulty up). Below that, shots from the floor only make the pilot a target (L2.5)
+## and the bleed-out pool drains in seconds; a player lies still and waits for the revive.
+func shoots_from_floor() -> bool:
+	var rt: HeistRuntime = HeistRuntime.of(crew)
+	return rt == null or rt.difficulty >= CustodyTweak.data().police_cuff_min_difficulty
 
 
 ## Nearest live enemy within `range_m` the crew can see (an eye ray to its head, chest or hips hits it first:

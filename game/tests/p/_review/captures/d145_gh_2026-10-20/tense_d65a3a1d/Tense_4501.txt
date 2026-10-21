@@ -1,0 +1,206 @@
+[PO5 89.0s] pilot: goto (3.6, 4.4, 8.2) FAILED at (12.3, 0.0, 5.0) after 60.0 s
+[PO5 155.4s] EVENT crew 0 state 0 -> 2 at (11.6, 4.2, 4.9) (t=140)
+[INFO][combat][p1] slot 0 crew_tased by 132
+[PO5 155.5s] pilot: goto (7.5, 0.2, 4.5) FAILED at (11.6, 4.2, 4.9) after 4.6 s
+[PO5 155.5s] pilot: goto (7.1, 0.2, 5.3) FAILED at (11.6, 4.2, 4.9) after 0.0 s
+[PO5 157.2s] EVENT crew 0 state 2 -> 0 at (10.6, 4.2, 5.0) (t=141)
+[PO5 160.9s] EVENT crew 0 state 0 -> 1 at (14.5, 4.2, 5.2) (t=145)
+[INFO][combat][p1] slot 0 downed (1/3)
+[PO5 160.9s] pilot: goto (7.5, 0.2, 4.5) FAILED at (14.5, 4.2, 5.2) after 3.4 s
+[PO5 160.9s] pilot: goto (7.1, 0.2, 5.3) FAILED at (14.5, 4.2, 5.2) after 0.0 s
+[PO5 167.3s] EVENT crew 0 state 1 -> 0 at (14.5, 4.2, 5.2) (t=152)
+[PO5 189.9s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.5, 0.0, 3.5) after 4.0 s
+[PO5 193.9s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.9) after 4.0 s
+[PO5 198.0s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.5, 0.0, 3.5) after 4.0 s
+[PO5 202.0s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.8) after 4.0 s
+[PO5 206.1s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.6) after 4.0 s
+[PO5 210.1s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.8) after 4.0 s
+[PO5 214.2s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.6) after 4.0 s
+[PO5 218.2s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.8) after 4.0 s
+[PO5 222.3s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.6) after 4.0 s
+[PO5 226.3s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.8) after 4.0 s
+[PO5 230.4s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.6) after 4.0 s
+[PO5 234.4s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.9) after 4.0 s
+[PO5 238.5s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.6) after 4.0 s
+[PO5 242.5s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.6) after 4.0 s
+[PO5 246.6s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.6) after 4.0 s
+[PO5 250.9s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.6) after 4.0 s
+[PO5 255.0s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.9) after 4.0 s
+[PO5 259.0s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.5, 0.0, 3.5) after 4.0 s
+[PO5 263.1s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.9) after 4.0 s
+[PO5 267.1s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.5, 0.0, 3.5) after 4.0 s
+[PO5 271.5s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.5, 0.0, 3.5) after 4.0 s
+[PO5 275.6s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.9) after 4.0 s
+[PO5 279.9s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.5, 0.0, 3.5) after 4.0 s
+[PO5 284.0s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.8) after 4.0 s
+[PO5 288.0s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.6) after 4.0 s
+[PO5 292.1s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.8) after 4.0 s
+[PO5 296.1s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.6) after 4.0 s
+[PO5 300.2s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.8) after 4.0 s
+[PO5 304.2s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.6) after 4.0 s
+[PO5 308.2s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.8) after 4.0 s
+[PO5 312.3s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.6) after 4.0 s
+[PO5 316.4s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.8) after 4.0 s
+[PO5 320.4s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.6) after 4.0 s
+[PO5 323.9s] EVENT crew 1 state 0 -> 1 at (6.5, 0.0, 5.0) (t=308)
+[INFO][combat][p1] slot 1 downed (1/3)
+[PO5 325.6s] EVENT crew 0 state 0 -> 2 at (6.8, 0.0, 5.0) (t=310)
+[INFO][combat][p1] slot 0 crew_tased by 181
+[PO5 325.8s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (6.8, 0.0, 5.0) after 3.5 s
+[PO5 330.2s] EVENT crew 1 state 1 -> 0 at (6.6, 0.0, 5.0) (t=314)
+[PO5 331.6s] EVENT crew 0 state 2 -> 1 at (7.2, 0.0, 4.9) (t=316)
+[INFO][combat][p1] slot 0 downed (2/3)
+[PO5 334.7s] EVENT crew 1 state 0 -> 1 at (7.9, -0.3, 5.3) (t=319)
+[INFO][combat][p1] slot 1 downed (2/3)
+[PO5 340.6s] EVENT crew 3 state 0 -> 2 at (7.5, 0.0, 3.8) (t=325)
+[INFO][combat][p1] slot 3 crew_tased by 181
+[PO5 346.6s] EVENT crew 3 state 2 -> 1 at (7.5, 0.0, 3.8) (t=331)
+[INFO][combat][p1] slot 3 downed (1/3)
+[PO5 346.8s] EVENT crew 0 state 1 -> 0 at (7.7, 0.0, 5.0) (t=331)
+[PO5 352.9s] EVENT crew 1 state 1 -> 0 at (8.1, 0.0, 5.2) (t=337)
+[PO5 359.1s] EVENT crew 3 state 1 -> 0 at (7.5, -0.3, 3.8) (t=343)
+[PO5 365.0s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.8) after 4.0 s
+[PO5 369.1s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.5, 0.0, 3.5) after 4.0 s
+[PO5 373.1s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.9) after 4.0 s
+[PO5 377.2s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.5, 0.0, 3.5) after 4.0 s
+[PO5 381.3s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.9) after 4.0 s
+[PO5 385.6s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.5, 0.0, 3.5) after 4.0 s
+[PO5 389.6s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.8) after 4.0 s
+[PO5 393.7s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.6) after 4.0 s
+[PO5 394.5s] EVENT crew 1 state 0 -> 1 at (7.0, 0.0, 5.0) (t=379)
+[INFO][combat][p1] slot 1 downed (3/3)
+[PO5 400.5s] EVENT crew 1 state 1 -> 0 at (7.0, -0.3, 5.0) (t=385)
+[PO5 403.8s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.9) after 4.0 s
+[PO5 408.2s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.5, 0.0, 3.5) after 4.0 s
+[PO5 412.6s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.5, 0.0, 3.5) after 4.0 s
+[PO5 416.6s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.7) after 4.0 s
+[PO5 421.1s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.6, 0.0, 3.7) after 4.0 s
+[PO5 431.6s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.5, 0.0, 3.5) after 10.0 s
+[PO5 441.2s] EVENT crew 2 state 0 -> 2 at (8.1, 0.0, 5.0) (t=425)
+[INFO][combat][p1] slot 2 crew_tased by 244
+[PO5 442.3s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.9) after 10.0 s
+[PO5 446.6s] EVENT crew 2 state 2 -> 0 at (8.1, 0.0, 5.0) (t=431)
+[PO5 448.2s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.5, 0.0, 3.5) after 4.0 s
+[PO5 452.2s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.5, 0.0, 3.5) after 4.0 s
+[PO5 456.6s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.5, 0.0, 3.5) after 4.0 s
+[PO5 460.7s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.7) after 4.0 s
+[PO5 465.1s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.5, 0.0, 3.5) after 4.0 s
+[PO5 469.2s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.8) after 4.0 s
+[PO5 473.2s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.6) after 4.0 s
+[PO5 477.3s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.9) after 4.0 s
+[PO5 481.3s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.5, 0.0, 3.5) after 4.0 s
+[PO5 485.4s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.9) after 4.0 s
+[PO5 489.4s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.5, 0.0, 3.5) after 4.0 s
+[PO5 493.8s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.5, 0.0, 3.6) after 4.0 s
+[PO5 498.1s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.5, 0.0, 3.5) after 4.0 s
+[PO5 502.5s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.5, 0.0, 3.5) after 4.0 s
+[PO5 506.9s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.5, 0.0, 3.5) after 4.0 s
+[PO5 510.9s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.8) after 4.0 s
+[PO5 515.0s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.5) after 4.0 s
+[PO5 519.0s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.5, 0.0, 3.5) after 4.0 s
+[PO5 523.4s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.6) after 4.0 s
+[PO5 527.7s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.5, 0.0, 3.5) after 4.0 s
+[PO5 532.1s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.5, 0.0, 3.5) after 4.0 s
+[PO5 536.2s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.7) after 4.0 s
+[PO5 540.7s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.5, 0.0, 3.5) after 4.0 s
+[PO5 544.7s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.8) after 4.0 s
+[PO5 548.8s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.6) after 4.0 s
+[PO5 552.8s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.9) after 4.0 s
+[PO5 556.9s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.5, 0.0, 3.5) after 4.0 s
+[PO5 560.9s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.9) after 4.0 s
+[PO5 565.0s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.5, 0.0, 3.5) after 4.0 s
+[PO5 569.3s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.5, 0.0, 3.6) after 4.0 s
+[PO5 573.7s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.5, 0.0, 3.5) after 4.0 s
+[PO5 578.0s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.5, 0.0, 3.5) after 4.0 s
+[PO5 582.4s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.5, 0.0, 3.5) after 4.0 s
+[PO5 586.4s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.8) after 4.0 s
+[PO5 590.5s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.5) after 4.0 s
+[PO5 594.5s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.5, 0.0, 3.5) after 4.0 s
+[PO5 598.9s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.6) after 4.0 s
+[PO5 603.2s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.5, 0.0, 3.5) after 4.0 s
+[PO5 607.6s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.5, 0.0, 3.5) after 4.0 s
+[PO5 611.7s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.7) after 4.0 s
+[PO5 616.2s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.5, 0.0, 3.5) after 4.0 s
+[PO5 620.2s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.8) after 4.0 s
+[PO5 624.2s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.6) after 4.0 s
+[PO5 628.3s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.9) after 4.0 s
+[PO5 632.4s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.5, 0.0, 3.5) after 4.0 s
+[PO5 636.4s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.9) after 4.0 s
+[PO5 640.5s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.5, 0.0, 3.5) after 4.0 s
+[PO5 644.8s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.5, 0.0, 3.6) after 4.0 s
+[PO5 649.2s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.5, 0.0, 3.5) after 4.0 s
+[PO5 653.5s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.5, 0.0, 3.5) after 4.0 s
+[PO5 657.9s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.5, 0.0, 3.5) after 4.0 s
+[PO5 661.9s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.8) after 4.0 s
+[PO5 666.0s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.5) after 4.0 s
+[PO5 670.0s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.5, 0.0, 3.5) after 4.0 s
+[PO5 674.4s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.6) after 4.0 s
+[PO5 678.7s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.5, 0.0, 3.5) after 4.0 s
+[PO5 683.2s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.5, 0.0, 3.5) after 4.0 s
+[PO5 687.2s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.7) after 4.0 s
+[PO5 691.7s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.5, 0.0, 3.5) after 4.0 s
+[PO5 695.7s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.8) after 4.0 s
+[PO5 699.8s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.6) after 4.0 s
+[PO5 703.8s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.9) after 4.0 s
+[PO5 707.9s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.5, 0.0, 3.5) after 4.0 s
+[PO5 711.9s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.9) after 4.0 s
+[PO5 715.9s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.5, 0.0, 3.5) after 4.0 s
+[PO5 720.3s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.5, 0.0, 3.6) after 4.0 s
+[PO5 724.6s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.5, 0.0, 3.5) after 4.0 s
+[PO5 729.0s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.5, 0.0, 3.5) after 4.0 s
+[PO5 733.4s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.5, 0.0, 3.5) after 4.0 s
+[PO5 737.4s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.8) after 4.0 s
+[PO5 741.5s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.5) after 4.0 s
+[PO5 745.5s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.5, 0.0, 3.5) after 4.0 s
+[PO5 866.2s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.5, 0.0, 3.5) after 120.0 s
+[PO5 885.3s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.6) after 10.0 s
+[PO5 895.3s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.9) after 10.0 s
+[PO5 906.0s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.9) after 10.0 s
+[PO5 916.3s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.9) after 10.0 s
+[PO5 926.6s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.9) after 10.0 s
+[PO5 937.0s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.9) after 10.0 s
+[PO5 947.3s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.9) after 10.0 s
+[PO5 957.7s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.9) after 10.0 s
+[PO5 968.0s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.9) after 10.0 s
+[PO5 978.4s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.9) after 10.0 s
+[PO5 984.4s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.5, 0.0, 3.5) after 4.0 s
+[PO5 988.4s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.7) after 4.0 s
+[PO5 992.8s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.5, 0.0, 3.5) after 4.0 s
+[PO5 996.9s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.9) after 4.0 s
+[PO5 1000.9s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.5, 0.0, 3.6) after 4.0 s
+[PO5 1005.0s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.5, 0.0, 3.5) after 4.0 s
+[PO5 1009.0s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.8) after 4.0 s
+[PO5 1013.0s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.5, 0.0, 3.6) after 4.0 s
+[PO5 1017.1s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.8) after 4.0 s
+[PO5 1027.6s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.5, 0.0, 3.5) after 10.0 s
+[PO5 1038.2s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.9) after 10.0 s
+[PO5 1041.3s] EVENT crew 1 state 0 -> 2 at (8.4, 0.0, 5.0) (t=1026)
+[INFO][combat][p1] slot 1 crew_tased by 268
+[PO5 1047.3s] EVENT crew 1 state 2 -> 5 at (8.4, 0.0, 5.0) (t=1032)
+[INFO][combat][p1] slot 1 in custody
+[PO5 1048.8s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (3.9, -0.3, 4.9) after 10.0 s
+[PO5 1055.2s] EVENT crew 2 state 0 -> 1 at (6.8, 0.0, 5.0) (t=1039)
+[INFO][combat][p1] slot 2 downed (1/3)
+[PO5 1056.8s] EVENT crew 0 state 0 -> 2 at (7.1, 0.0, 5.0) (t=1041)
+[INFO][combat][p1] slot 0 crew_tased by 268
+[PO5 1057.1s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.1, 0.0, 5.0) after 3.2 s
+[PO5 1061.6s] EVENT crew 2 state 1 -> 0 at (6.8, 0.0, 5.0) (t=1046)
+[PO5 1062.8s] EVENT crew 0 state 2 -> 1 at (7.1, 0.0, 5.0) (t=1047)
+[INFO][combat][p1] slot 0 downed (3/3)
+[PO5 1068.3s] EVENT crew 0 state 1 -> 0 at (7.1, -0.3, 5.0) (t=1053)
+[PO5 1073.8s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.9) after 4.0 s
+[PO5 1077.9s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.5, 0.0, 3.5) after 4.0 s
+[PO5 1081.9s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (7.4, 0.0, 3.9) after 4.0 s
+[PO5 1087.6s] EVENT crew 2 state 0 -> 1 at (8.3, 0.0, 5.0) (t=1072)
+[INFO][combat][p1] slot 2 downed (2/3)
+[PO5 1093.0s] EVENT crew 0 state 0 -> 2 at (8.0, 0.0, 5.0) (t=1077)
+[INFO][combat][p1] slot 0 crew_tased by 320
+[PO5 1093.7s] EVENT crew 2 state 1 -> 0 at (8.3, 0.0, 5.0) (t=1078)
+[PO5 1095.8s] pilot: goto (-8.6, 0.2, -4.5) FAILED at (8.0, -0.3, 5.0) after 4.6 s
+[PO5 1097.0s] EVENT crew 3 state 0 -> 1 at (7.0, 0.0, 5.3) (t=1081)
+[INFO][combat][p1] slot 3 downed (2/3)
+[PO5 1099.0s] EVENT crew 0 state 2 -> 5 at (8.0, 0.0, 5.0) (t=1083)
+[INFO][combat][p1] slot 0 in custody
+[PO5 1099.8s] FAIL player in custody at 1084 s
+[PO5 1099.8s] STATS difficulty=1 police=140 peak_alive=13 specials={ &"enemy.bulwark": 21, &"enemy.stinger": 5, &"enemy.longshot": 3 } composition={ &"enemy.security_officer": 3, &"enemy.patrol_officer": 31, &"enemy.bulwark": 21, &"enemy.tac_light": 77, &"enemy.stinger": 5, &"enemy.longshot": 3 } | slot 0 [weapon.corsair_ar / armor.tailored_suit] downs 3 custody 1 revived 3 regained 0; slot 1 [weapon.corsair_ar / armor.tailored_suit] downs 3 custody 1 revived 3 regained 436; slot 2 [weapon.corsair_ar / armor.tailored_suit] downs 2 custody 0 revived 2 regained 189; slot 3 [weapon.corsair_ar / armor.tailored_suit] downs 2 custody 0 revived 1 regained 254
+[PO5 1099.8s] RESULT FAIL (code 1) flow=auto_loud heist=Golden Hour seed=4501

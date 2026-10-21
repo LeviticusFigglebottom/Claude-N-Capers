@@ -742,13 +742,15 @@ func _build_lighting(lighting: Node3D) -> void:
 	we.environment = load(ENV_PATH) as Environment
 	_add(lighting, we)
 	var sun_ps: PackedScene = load(SUN_PATH) as PackedScene
+	var sun: DirectionalLight3D = null
 	if sun_ps != null:
-		var sun: Node3D = sun_ps.instantiate() as Node3D
+		sun = sun_ps.instantiate() as DirectionalLight3D
 		sun.name = "Sun"
 		_add(lighting, sun)
 	else:
 		_errors.append("missing %s" % SUN_PATH)
 	_voxel_gi(lighting)
+	R.render_budget(_root, lighting, sun)  # D-146: sun cascades, RenderBudgetPolicy, perf_d146
 	var fx: Node3D = _add(lighting, _node3d("Fixtures")) as Node3D
 	for c: Array in L.CEILING_LIGHTS:
 		_ceiling_light(fx, String(c[0]), c[1], c[2], float(c[3]), float(c[4]), Vector3(0.6, 0.05, 0.6))

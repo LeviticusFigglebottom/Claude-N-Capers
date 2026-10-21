@@ -5,13 +5,15 @@
 ## facing. PNGs and log go to --out.
 ##   xvfb-run -a -s "-screen 0 960x540x24" /opt/godot/godot --rendering-driver opengl3 --audio-driver Dummy \
 ##     --fixed-fps 60 --resolution 960x540 --path game res://world/characters/_tools/render_of_qc67_review.tscn \
-##     -- --out=/abs/dir [--seed=1]
+##     -- --out=/abs/dir [--seed=1] [--no-alarm]   (--no-alarm: tellers + queue only, no cower phase)
 ## Owner: ENV D.
 extends Node3D
 
 ## Teller stations (x, z) and cower points (name: position, facing deg) from ostrander_federal_layout_content.gd.
 const TELLERS: Array[Vector3] = [Vector3(15.0, 0.0, 16.07), Vector3(17.0, 0.0, 16.07), Vector3(31.0, 0.0, 16.07),
 	Vector3(33.0, 0.0, 16.07)]
+## Queue spawn rows (CustomerQueue1/2 at x 12-13, LateCustomerQueue at x 34, z 20.88): the queue_idle customers
+const QUEUES: Array[Vector3] = [Vector3(12.5, 0.0, 20.88), Vector3(34.0, 0.0, 20.88)]
 const COWER: Dictionary = {
 	"CowerCounterW": Vector3(12.0, 0.0, 17.66), "CowerCounterE": Vector3(36.0, 0.0, 17.66),
 	"CowerWallW": Vector3(8.31, 0.0, 30.5), "CowerWallE": Vector3(39.69, 0.0, 31.0),
@@ -26,6 +28,7 @@ const COWER_EYE: Dictionary = {
 
 var _out: String = ""
 var _seed: int = 1
+var _alarm: bool = true
 var _cam: Camera3D = null
 var _log: PackedStringArray = []
 
@@ -36,6 +39,8 @@ func _ready() -> void:
 			_out = a.trim_prefix("--out=")
 		elif a.begins_with("--seed="):
 			_seed = int(a.trim_prefix("--seed="))
+		elif a == "--no-alarm":
+			_alarm = false
 	if _out == "":
 		_out = OS.get_user_data_dir() + "/of_qc67"
 	DirAccess.make_dir_recursive_absolute(_out)
@@ -62,11 +67,21 @@ func _run() -> void:
 			_say("teller %s tags %s look %s clip %s at %s station %.2f m facing %.0f" % [npc.name,
 				npc.spawn_info.get("tags"), NpcVisuals.character_id(npc), _clip(npc), npc.global_position, d,
 				rad_to_deg(npc.global_rotation.y)])
+	for n: Node in rt.npcs(&"civilian"):
+		var npc: NpcBase = n as NpcBase
+		var dq: float = _nearest(npc.global_position, QUEUES)
+		if String(npc.spawn_info.get("idle_activity", "")).begins_with("queue"):
+			_say("queue %s activity %s look %s clip %s at %s mark %.2f m" % [npc.name, npc.spawn_info.get("idle_activity"),
+				NpcVisuals.character_id(npc), _clip(npc), npc.global_position, dq])
 	await _shot("tellers_w_staff_side", Vector3(14.2, 1.65, 14.4), Vector3(16.0, 0.95, 16.3))
 	await _shot("tellers_w_customer_side", Vector3(16.0, 2.05, 19.6), Vector3(16.0, 1.0, 16.1))
 	await _shot("tellers_e_staff_side", Vector3(34.8, 1.65, 14.4), Vector3(32.0, 0.95, 16.3))
 	await _shot("tellers_e_customer_side", Vector3(32.0, 2.05, 19.6), Vector3(32.0, 1.0, 16.1))
 	await _shot("teller_counter_profile", Vector3(18.6, 1.15, 16.4), Vector3(14.5, 1.0, 16.2))
+	await _shot("queue_w_side", Vector3(16.0, 1.6, 23.0), Vector3(12.5, 0.9, 20.9))
+	if not _alarm:
+		_finish()
+		return
 	rt.stealth.raise_alarm(&"qc67_review")
 	await _ticks(480)
 	for n: Node in rt.npcs(&"civilian"):
@@ -86,6 +101,10 @@ func _run() -> void:
 		var p: Vector3 = COWER[k]
 		await _shot("cower_%s" % k.trim_prefix("Cower").to_lower(), COWER_EYE[k], p + Vector3(0.0, 0.7, 0.0))
 	await _shot("tellers_w_after_alarm", Vector3(14.2, 1.65, 14.4), Vector3(16.0, 0.8, 16.3))
+	_finish()
+
+
+func _finish() -> void:
 	var f: FileAccess = FileAccess.open("%s/qc67_log.txt" % _out, FileAccess.WRITE)
 	f.store_string("\n".join(_log) + "\n")
 	f.close()

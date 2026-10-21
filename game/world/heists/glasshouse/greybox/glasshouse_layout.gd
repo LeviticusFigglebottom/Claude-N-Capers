@@ -431,8 +431,10 @@ const LIGHT_TWEAKS: Dictionary = {
 	"X1": {"wall_lamp": {"spot_range": 9.0, "spot_angle": 75.0, "light_energy": 3.0}},
 }
 
-## Ceiling fixtures (kit-placed) that cast shadows: the fixture nearest to each point (<= 8 per view).
-const SHADOW_FIXTURES: Array = [["G5", Vector3(3.0, 3.6, 9.5)], ["G6", Vector3(15.5, 3.2, 9.0)], ["G2", Vector3(8.0, 3.0, 2.5)]]
+## Ceiling fixtures (kit-placed) that cast shadows: the fixture nearest to each point (<= 8 per view). D-146: only
+## the chandelier hall's (G5) keeps one; the salon (G6) and workshop (G2) fixtures re-drew their casters in every hall
+## and street view (the renderer does not occlude lights) for a shadow that read only in their room.
+const SHADOW_FIXTURES: Array = [["G5", Vector3(3.0, 3.6, 9.5)]]
 
 ## Chandelier display (landmark): the round display case visual on a collision drum; the ring
 ## chandelier above is an anchor (ANCHORS, G5).

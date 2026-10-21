@@ -234,7 +234,9 @@ GRADE = [
     ["Lane", [-16.0, -10.0, 48.2, -0.2], 0.0, "paving"],
     ["Tannery", [48.2, -14.0, 62.0, 38.0], 0.0, "asphalt"],
     ["Apron", [0.0, 36.2, 48.2, 38.0], 0.0, "paving"],
-    ["PlazaW", [-16.0, 36.0, 18.0, 48.0], PLAZA_Y, "paving"],
+    # PlazaW in two: west of the bank, and south of the apron (OF-C2: its bottom no longer runs coplanar under it)
+    ["PlazaW", [-16.0, 36.0, 0.0, 48.0], PLAZA_Y, "paving"],
+    ["PlazaWS", [0.0, 38.0, 18.0, 48.0], PLAZA_Y, "paving"],
     ["PlazaSteps", [18.0, 40.0, 30.0, 48.0], PLAZA_Y, "paving"],
     ["PlazaE", [30.0, 38.0, 48.0, 48.0], PLAZA_Y, "paving"],
     ["TanneryMouth", [48.0, 42.0, 66.0, 48.0], PLAZA_Y, "asphalt"],

@@ -16,6 +16,14 @@ hub_loops = {
 "hub": &"BBMid",
 "loops": [[&"RCEast"], [&"SDDesk", &"SS"], [&"CP", &"PL"]]
 },
+&"guard_rover_gallery": {
+"hub": &"UCMid",
+"loops": [[&"WLSouth", &"GAPost", &"ELSouth"], [&"OF", &"GAPost", &"CF"], [&"StairAE", &"XCPresident", &"XLTerrace", &"StairBE"]]
+},
+&"guard_rover_hall": {
+"hub": &"BCMid",
+"loops": [[&"TWWest", &"HallLobby", &"TWEast"], [&"LDCheck", &"MO"], [&"StairBG", &"BCFireExit"]]
+},
 &"guard_rover_dock": {
 "hub": &"LaneApron",
 "loops": []
