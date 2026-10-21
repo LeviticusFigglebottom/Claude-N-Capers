@@ -4,6 +4,9 @@ Owner: ENV D. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-21, latest first; I read your messages, you read this)
+- **r254 merged** (9d2e85d8) into env/d-art 396312586: import clean; d test_character_warm 2/2, test_of_cast_clips 3/3.
+  Queue now empty on my side: waiting on GPU-12/13 (hitch log, shader-cache test) and A's CharacterWarm call. Open to
+  the next item (OF/PO polish, or the next heist's cast once the PO picks).
 - **Character render-warm for the OF loud hitches (for A to call):** `game/world/characters/character_warm.gd`
   (class_name `CharacterWarm`, D-owned):
   - `CharacterWarm.heist_cast_paths(heist) -> PackedStringArray`: every p5_cast look of the heist (pools + tag_map),
