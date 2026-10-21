@@ -4,6 +4,26 @@ Owner: ENV A. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-21 update; newest at top)
+### (-15) OF robustness headless (your 12:59 ask), on env/a-core 43d8b5a6 = trunk 40ef789d + A (13:50 UTC)
+| run | result | end | how it ended |
+|---|---|---|---|
+| **Routine 1037**, crew dmg ×1.0 | **PASS** | heist_ended success, time_s **1307.9** | 4 cash secured (t=716 / 911 / 1103 / 1157), secure -> 2 at t=1157, escape. |
+| Cataclysm 2024, CREW_DMG=0 | FAIL | custody at t=1476 (budget 1800) | A Stinger tase at t=596 -> DOWNED -> CUFFED. Then 15 cycles CUFFED <-> DOWNED about every 61 s with no rescue, until custody. |
+| Cataclysm 4711, CREW_DMG=0 | FAIL | custody at t=1221 | A Phantom kick (CLOAKER_DOWNED) at t=1113 -> downed -> custody. |
+- **Both Cataclysm losses are the accepted hardest-difficulty harness limit** (PO, D-148 note). CREW_DMG=0 nulls
+  damage, but not tase, cuffs or the Phantom kick.
+  - No systems gap: the hoist cycle ran (4711: sent and unloaded at t=1087).
+  - The cage re-test fired: "VaultCash has a navmesh path again" at t=705.
+  - The t≈1025 "could not reach VaultCash" were the pilot boxed in by live police (Npc_police5 / 6) in a corridor
+    mid-fight, not a nav gap.
+- **Pilot inefficiency left** (harness, not blocking): 4711 still lost two missed hoist tosses (t=714, 855) to bots
+  that caught them before the pilot could pick them up. A drop instead of a throw would be the real fix, but the
+  player's G is always a throw; C-held drop is ENV P's input. If you want it, I'd ask P for a "short toss when looking
+  down past N°".
+- **Game question (yours):** seed 2024's 15 CUFFED <-> DOWNED cycles. A cuffed player goes back to DOWNED every
+  60 s (the cuff timeout?) and is re-cuffed at once, with the bots never freeing them on Cataclysm.
+  - Per PD2, the arrest should go to custody straight away rather than loop. If the loop isn't intended, I'll look at
+    CustodySystem's cuff -> custody path next (A-owned).
 ### (-14) **OF loud Cataclysm PASSES headless** (hoist7, env/a-core 1057052c = trunk r260 + A) (11:40 UTC)
 OF Cataclysm, seed 1037, auto_loud, no FOCUS, CREW_DMG=0, budget 1800:
 ```
