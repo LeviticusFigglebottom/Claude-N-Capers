@@ -352,7 +352,10 @@ func _think(delta: float) -> CrewIntent:
 		else:
 			_revive_stall_s += delta
 		var stalled: bool = d <= tweak.revive_stall_reach_m and _revive_stall_s >= tweak.revive_stall_s
-		if d > tweak.revive_range_m and not stalled:
+		# B's DB Tense: a reviver jostled past revive_range_m walked back and dropped the revive; holding one, it stays
+		# put within revive_stall_reach_m (InteractionSystem still cancels past cancel_move_m).
+		var holding: bool = _revive_held_by(_crew) == revive_target
+		if d > tweak.revive_range_m and not stalled and not (holding and d <= tweak.revive_stall_reach_m):
 			wish = _steer(revive_target.global_position, delta)
 			goal_dist = d
 			_interact_ticks = 0
@@ -412,7 +415,7 @@ func _think(delta: float) -> CrewIntent:
 ## Hold interact on the assigned downed crew member once settled. Returns true while holding.
 func _hold_revive(i: CrewIntent) -> bool:
 	var hv: float = Vector2(_crew.velocity.x, _crew.velocity.z).length()
-	if hv > tweak.revive_settle_speed:
+	if hv > tweak.revive_settle_speed and _revive_held_by(_crew) == null:  # settle before starting, not once holding
 		_interact_ticks = 0
 		return false
 	var sess: Dictionary = _rt.interaction.session(_crew.slot) if _rt.interaction != null else {}
@@ -443,6 +446,15 @@ func _pick_revive_target() -> CrewController:
 	if downed.is_empty() or not free_ai.has(_crew):
 		return null
 	for c: CrewController in free_ai.duplicate():
+		# B's DB Tense: the nearest-AI pick flipped between two bots as they moved, and each flip cancelled the revive
+		# under way (3 of 6 s). A bot already holding a revive keeps its patient.
+		var held: CrewController = _revive_held_by(c)
+		if held != null and downed.has(held) and CrewAiBrain.of(c).ordered_revive_target() == null:  # an order wins
+			if c == _crew:
+				return held
+			free_ai.erase(c)
+			downed.erase(held)
+	for c: CrewController in free_ai.duplicate():
 		var ot: CrewController = CrewAiBrain.of(c).ordered_revive_target()
 		if ot != null and downed.has(ot):
 			if c == _crew:
@@ -467,6 +479,15 @@ func _pick_revive_target() -> CrewController:
 			return t
 		free_ai.erase(best)
 	return null
+
+
+## The crew member whose revive `c` is holding now (an InteractionSystem session on a `revive` component), else null.
+func _revive_held_by(c: CrewController) -> CrewController:
+	var sess: Dictionary = _rt.interaction.session(c.slot) if _rt.interaction != null else {}
+	var comp: InteractableComponent = sess.get("comp") as InteractableComponent if not sess.is_empty() else null
+	if comp == null or not is_instance_valid(comp) or comp.kind != &"revive":
+		return null
+	return comp.get_parent() as CrewController
 
 
 ## Movement goal while following (cover near the leader when enemies are visible), or INF.
