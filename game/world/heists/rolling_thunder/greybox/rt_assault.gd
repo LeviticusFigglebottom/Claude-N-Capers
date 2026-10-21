@@ -14,9 +14,9 @@ const TURRET_VANS: Array = [
 ]
 ## [name, centre (flight height), radius]: over the junction span, above the Skyway deck (+9.0).
 const HELI_ORBITS: Array = [["HeliOrbit_1", Vector3(10.0, 34.0, -6.0), 26.0]]
-## [name, pos]: the car-park roof east bays (+7.0), the plaza, the forecourt.
+## [name, pos]: the car-park roof south of the pad (+7.0), the plaza, the forecourt.
 const HELI_DROPS: Array = [
-	["HeliDrop_1", Vector3(44.0, 7.0, -26.0)],
+	["HeliDrop_1", Vector3(30.0, 7.0, -24.0)],
 	["HeliDrop_2", Vector3(-46.0, 0.0, 24.0)],
 	["HeliDrop_3", Vector3(46.0, 0.0, -12.6)],
 ]
