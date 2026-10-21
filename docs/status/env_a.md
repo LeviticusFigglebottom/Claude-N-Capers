@@ -4,6 +4,19 @@ Owner: ENV A. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-21 update; newest at top)
+### (-19) Regression sweep on trunk b0bd47a0: 4/4 PASS + SL stealth PASS, once P's cb8be306d is merged (16:55 UTC)
+Headless auto_loud, **Routine**, seed 1001, on env/a-core with trunk b0bd47a0 merged.
+
+| heist | first run | root cause | fix | after fix |
+|---|---|---|---|---|
+| Golden Hour | FAIL (3 downs) | **harness**: `Po5Pilot.next_corner` chose the nearest path leg in 2D, which picked the upstairs leg right overhead. The pilot steered at a point 4.4 m above it and paced the ground floor under fire for 90 s | A **24c02e56c**: nearest leg in 3D, plus test_next_corner_ignores_the_leg_overhead (fails without the fix) | **PASS**, 283 s |
+| Nightfall Depository | FAIL (3 downs, 36 STUCK) | **game** (P's crew_ladder_climb.gd): a human climbing up the AreawayLadder never finished stepping off. The Top marker is at x 17.2; CageWest stops the 0.35 m capsule at 17.35, which is 0.151 m out (the check needs < 0.15). The step-off vy keeps the crew off the floor, so `grounded` never turns true, and W stays overridden. A real player is soft-locked; only jump frees them, into the 4 m pit. Deterministic repro: PTraversal.ladder(AreawayLadder) up=false. Likely exposed by the 0d0a1ab05 capsule fix | P **cb8be306d** on env/p-play (a stalled step-off lets go; test in test_p_ladder_free_climb). **Please merge it** | **PASS**, 665 s (local: env/a-core + cb8be306d, six AreawayLadder climbs all OK). Without it: the up climb FAILED again and the re-run looped on the ladder; I stopped it at 1510 s |
+| Gallery Night | PASS, 518 s, 0 downs | none | none | PASS |
+| Dockside Burn | PASS, 808 s, 0 downs | the errors=1 was **harness**: `Po5Pilot.use` read `comp.kind` after a bot picked the bag up mid-fight (freed) | A **0d868f9ed** | PASS |
+| Shadow Ledger stealth | PASS (no PO-5 SL flow, so I ran test_x4_sl_stealth) | none | none | PASS |
+
+- **Game bugs found:** 1, the ladder soft-lock, fixed by P. Any ladder whose Top marker sits closer than about 0.35 m to a wall would have trapped a human the same way.
+- **No regressions** from today's other systemic changes: NavPath, glass gunfire plus close-in, cuffs, revive clear, Longshot.
 ### (-18) Your r264 re-runs: the cuff fix is confirmed; the revive-clear change is not a win-rate lever (15:25 UTC)
 Headless on env/a-core 2dbfbb29 (= r264's A side).
 - **Cataclysm 2024 (CREW_DMG=0): ends cleanly.**

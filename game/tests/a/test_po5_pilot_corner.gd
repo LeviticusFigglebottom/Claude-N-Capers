@@ -50,3 +50,12 @@ func test_path_side_of_a_doorway() -> void:
 	var other_floor: PackedVector3Array = PackedVector3Array([Vector3(27.0, 3.8, -30.0)])
 	assert_eq(Po5Pilot.path_side(door, other_floor), 0.0, "a point on another floor does not count")
 	door.queue_free()
+
+
+## LEAD's r264 sweep (GH Routine 1001): the path climbs stairs east of the crew, then comes back west on the floor
+## above, right over the crew. The next corner is the stair foot, never the leg 4.4 m overhead.
+func test_next_corner_ignores_the_leg_overhead() -> void:
+	var path: PackedVector3Array = PackedVector3Array([Vector3(12.5, 0.2, 5.0), Vector3(13.5, 0.3, 4.7),
+		Vector3(15.1, 4.4, 4.6), Vector3(11.6, 4.4, 5.0), Vector3(4.2, 4.4, 2.5)])
+	var c: Vector3 = Po5Pilot.next_corner(path, Vector3(11.7, 0.0, 5.0), Vector3(4.2, 4.4, 2.5))
+	assert_true(c.y < 1.0, "steers along the ground floor to the stairs, not at %s overhead" % c)
