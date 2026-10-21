@@ -4,6 +4,68 @@ Owner: ENV D. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-21, latest first; I read your messages, you read this)
+- **RT cast check (your r255 ask): prep/d-rt fb5160ef2** (on 39f981cc7; your note said 83cc1a187, which is now two commits
+  back). C's `next_heist_rolling_thunder.md` is on no branch yet, so I checked against `rolling_thunder.md`'s roster
+  (trunk e9c8744f) and D-147. Every row has a cast. 6 of the 9 rows reuse existing looks: Halden, patrol_officer, the Vaultline crew and marshal,
+  the 12 OF day looks for street, bus and diner, and the escorts and police via A's resolver. The 9 new RT looks were
+  built from the outfit kit's library garments, with no new meshes.
+  - **One gap, filled by reuse:** Reyes drives the ram mixer himself (crash stop), and nothing cast him. He is now
+    `contact_hollis` on pool `ram_driver` / tag `driver_mixer` (proposed tag name, for C), using sit_vehicle_drive.
+  - **Doc drift for C:** the roster row says the marshal is `armored_car_crew_b`; the cast is `armored_car_marshal`
+    (QC-86's hi-vis variant).
+  - **Twins:** at most 21 live (street 12 + bus 4 + diner 5) on 18 looks, so 3 repeats at the top roll only. D-130
+    allows it. If the PO wants zero, 3 palette-only swaps cover it (D-147). Not built.
+  - Clips: none missing. Checks: test_p5_cast 17/17, test_character_warm 2/2, gdlint, check_ownership d, check_banned
+    clean. Evidence: `game/assets/characters/_review/next_heist_cast_notes.md` (RT cast check table) on prep/d-rt.
+- **D-148 RT cast / clips: prep/d-rt 39f981cc7** (on top of 83cc1a187; still not on env/d-art).
+  - **Built this push:** `sit_eat` and `cook_stove` (implemented in the parked _anim_rt but never registered, so never
+    built), `sit_vehicle_drive` (the escort / crew driver: sit_vehicle's seat and glances, both hands on the wheel at
+    10 and 2 with small steering), `counter_wipe` (the waitress: bartender_wipe at the diner's 0.9 m counter; the bar
+    clip's 1.05 m would leave her hands 15 cm above the top). bartender_wipe now takes height / lean as parameters
+    (its own clip identical). Checks: reach error sit_eat 0, cook_stove 5.1 mm, drive 5.5 mm, counter_wipe 0; no skin
+    below the floor.
+  - **Reused, nothing to build (D-147):** escort officers in cars = the police looks via their EnemyDefs (duty and
+    faction variants on Routine / Tense) seated with `sit_vehicle` (passengers) or `sit_vehicle_drive` (drivers); convoy
+    guards bailing out = `vehicle_exit_l` / `_r` (crew and police roles); marshal `radio_call`; pedestrians `walk_text`;
+    bus queue `sit`; cowering `cower_seated` (booths, shelter benches) / `cower_stand`.
+  - **Tests (worktree):** d test_rt_clips 6 (now covers all 7 RT clips: presence, events, floor, loops; new: the
+    driver's wrists stay within 12 cm of the wheel rim points, counter_wipe's flat hand 0.15 m below bartender_wipe's),
+    test_anims 18 (clip count 248 -> 252), test_p5_cast 17, test_scenes 9. gdlint, check_ownership d, check_banned clean.
+  - **For A:** HINT_CLIPS / KNOWN_ACTIVITIES aliases for the new clips (`drive` -> sit_vehicle_drive, `counter_wipe`
+    / `wipe` -> counter_wipe; sit_eat / cook already there); seat the driver (Seat0) with sit_vehicle_drive and the
+    others with sit_vehicle; the dismount is vehicle_exit_* with curve.vehicle_exit_<side> root motion (existing
+    play_vehicle_exit). Check the Wrecker's dismount in the rear escort (bulky body through a car door) once C's car
+    exists.
+  - **For C (prop sizes the clips assume, from _anim_rt):** car seat cushion 0.36 m over the footwell floor
+    (rt_vehicle_placement); steering wheel rim centre 0.40 m ahead / 0.76 m up from the root, radius 0.18, face tilted
+    30 deg; diner counter top 0.90 m (waitress root 0.28 m behind its near edge, as the bar rule); booth table top
+    0.74 m, near edge 0.22 m ahead of the seated root; griddle top 0.90 m, front edge 0.30 m ahead of the cook.
+    (A SOURCE `rt_diner_placement` note will be added on the next library rebuild.)
+- **OF loud Cataclysm animation check:** A's gpu/renders/a/of_hitch* stills are first-person HUD frames with almost no
+  NPC on screen, so they can't show NPC animation; the logs have no animation warnings. Instead I ran my headless
+  `_tools/loud_anim_coverage.tscn` (P's AnimCoverage) on OF, Cataclysm, seed 1037, 3 bots, 240 s, 28-35 NPCs:
+  **frozen 0, clip mismatch 0, no clip 0, static 0**; 1 "slide" = the Longshot's heli_door_idle while its helicopter
+  moves (riding: correct). Nothing to fix in D's files.
+  **For A (real bug, 21,363 errors in 240 s):** `anim_layers.gd:75` `left_hand_ik.set_target(marker if want else
+  left_hand_ik.marker, ...)` passes back a FREED marker once the NPC's WeaponVisual is replaced or freed (dropped weapon,
+  swap): "Invalid type in function 'set_target' ... (previously freed)" every frame for that NPC. Fix: use
+  `left_hand_ik.marker if is_instance_valid(left_hand_ik.marker) else null` as the fallback.
+- **RT prep READY: `origin/prep/d-rt` 83cc1a187** (not merged to env/d-art; D-144). On env/d-art 674681736 + the parked
+  wip/d-rt-civilians and wip/d-rt-clips (clean merges):
+  - 9 looks rebuilt on the current pipeline (byte-identical to the parked glbs) and assembled: diner_waitress,
+    diner_cook (staff_diner), carpark_attendant (staff_booth), street_pedestrian a-f.
+  - p5_cast v15: the pedestrians join street_civilian / civ_street / civ_bus / civ_diner (18 looks, 6 per gender
+    minimum); diner_staff / carpark_attendant pools and the staff_diner / staff_booth tags.
+  - Clips from the parked branch: sit_vehicle, vehicle_exit_l / _r. Fixed a type bug in the parked test_rt_clips
+    (an Array assigned to a Dictionary aborted the exit test silently; it now runs and passes).
+  - Green in the worktree: d test_p5_cast 17, test_scenes 9, test_lod 6, test_rt_clips 5, test_anims 18. Drape: the
+    waitress's dress 5-7 leg vertices through in stride (within D-135's <= 12), 0 in cower / seated; pedestrians a / f 0.
+  - Still missing for RT (not in either parked branch): the sit_eat and cook_stove clips (A's HINT_CLIPS already
+    names them). About half a D day once the PO picks RT.
+  - The existing scenes' CrowdLod `cast_shadow = 0` (D-146) from re-assembly was left out of the prep diff; the
+    proxy script sets it at runtime anyway.
+  Checks run: gdlint (test_p5_cast.gd, test_rt_clips.gd), the tests above, check_skirt_drape, check_ownership d,
+  check_banned.
 - **r254 merged** (9d2e85d8) into env/d-art 396312586: import clean; d test_character_warm 2/2, test_of_cast_clips 3/3.
   Queue now empty on my side: waiting on GPU-12/13 (hitch log, shader-cache test) and A's CharacterWarm call. Open to
   the next item (OF/PO polish, or the next heist's cast once the PO picks).

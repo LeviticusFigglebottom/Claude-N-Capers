@@ -87,6 +87,7 @@ const REVIEW_CAMERAS: Array = [
 	["rc_records", "RC", [12.5, -2.3, 24.3], [1.0, -2.8, 10.0]],
 	["rc_roof", "X5", [17.0, 13.9, 8.5], [1.0, 13.7, 2.0]],
 	["rc_sniper_assay", "X1", [24.0, 14.85, 63.0], [24.0, 2.0, 32.0]],
+	["rc_burn_close", "TW", [21.9, 2.1, 16.0], [24.0, 0.0, 14.6]],
 ]
 ## Props/MapBuilt support boxes.
 const FURNITURE: Array = [
@@ -275,7 +276,7 @@ const ALWAYS: Dictionary = {
 			{"mount": "wall"}, "prop_keypad",
 		],
 		[
-			"prefab", "drill_point", "LidDrill", [24.0, 1.0, 14.6], 180.0,
+			"prefab", "drill_point", "LidDrill", [23.75, 1.0, 14.6], -90.0,
 			{
 				"device": "enum:THERMAL",
 				"duration_s": 360.0,

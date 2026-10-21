@@ -84,7 +84,7 @@ func _tick_active(delta: float) -> void:
 	if _fire_cooldown > 0.0:
 		return
 	aim_time += delta
-	if aim_time >= tweak.longshot_aim_lock_s:
+	if aim_time >= _by_difficulty(tweak.longshot_aim_lock_s_by_difficulty, tweak.longshot_aim_lock_s):
 		_fire(t)
 
 
@@ -111,7 +111,7 @@ func shot_damage(distance: float) -> float:
 
 func _fire(t: CrewController) -> void:
 	aim_time = 0.0
-	_fire_cooldown = tweak.longshot_fire_interval_s
+	_fire_cooldown = _by_difficulty(tweak.longshot_fire_interval_s_by_difficulty, tweak.longshot_fire_interval_s)
 	shots_fired += 1
 	# DET: gameplay (event, noise, falloff distance) from the body's eye, not the LaserOrigin marker: that rides the
 	# animated HandR socket, which the AnimationPlayer poses per render frame (a frame-timing-dependent position).
@@ -153,3 +153,9 @@ func _on_npc_died() -> void:
 func _on_stunned_tick(_delta: float) -> void:
 	aim_time = 0.0
 	_set_laser(false)
+
+
+## D-145: the per-difficulty value of `values` (Routine..Cataclysm), else `fallback`.
+func _by_difficulty(values: PackedFloat32Array, fallback: float) -> float:
+	var d: int = _runtime.difficulty if _runtime != null else -1
+	return values[d] if d >= 0 and d < values.size() else fallback

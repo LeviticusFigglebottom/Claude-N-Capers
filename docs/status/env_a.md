@@ -3,7 +3,174 @@
 Owner: ENV A. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
-## To the LEAD: (2026-10-21 05:00 UTC update; newest at top)
+## To the LEAD: (2026-10-21 update; newest at top)
+### (-1) Your GPU-15 / anim / D-148 messages
+- **guard_vault loops (P step 5): pushed** in 6fd7e59a (with guard_lobby), with tests. P has been told.
+- **Anim error flood (anim_layers.gd:75): fixed** in 1d7aef14. The IK never passes a freed LeftHandIK marker; it fades
+  out instead.
+  - New test test_v121_layers: it reproduces your exact SCRIPT ERROR without the fix and passes with it.
+  - Also green: d132_anim_lod 9/9, v123_mask_throw 10/10.
+- **BondSafe aim: not a map bug; nothing for C.**
+  - The pilot's stand (13.2, -4, 20.1) is outside the vault's west wall. The [bond_safe] marker sent it there before
+    the vault opened.
+  - That marker is now hidden until the vault is reachable (6fcbb559, item (0) below).
+  - New test test_of_bond_safe_usable_from_its_use_point: once the vault is open, the UsePoint is on the navmesh from
+    the vault door and the aim from it resolves to the safe. From the old stand it does not. test_of_mission_flow
+    10/10.
+- **OF Cataclysm budget:** my runs use 1800 s (>= 420 s).
+- **test_x4_of_loud 3/3** with the vault-marker change. test_x4_of_hard and test_of_coop_loopback are still running.
+- **RT systems audit (D-148):** below, under its own heading. I own no docs/process file, so it lives here.
+### Rolling Thunder: ENV A systems audit (D-148, paper; no RT code until the OF done check)
+Checked rolling_thunder.md (trunk) against env/a-core game/systems/**. No RT mission or map exists yet.
+
+**1. Convoy vehicles on a route (A5-02 / QC-82; §Convoy, §Budgets "≤ 8 movers"): L.**
+- Exists:
+  - AssaultTurretVan (director/events/assault_turret_van.gd): a straight-line ease-out drive-in on an AnimatableBody3D,
+    with doors and an `on_dismount` callback.
+  - AssaultEventEntity: a replicated entity (stage diffs, cues). AssaultHeli: a flight.
+  - Transforms replicate (heist_net_sync `_send_xforms`, NetEntityCodec), but clients snap: no interpolation.
+- New:
+  - A Path3D follower that brakes over the last 12 m and emits `vehicle_stopped`.
+  - Client interpolation, and seats or occupants.
+  - Nav for a stopped vehicle: maps use pre-baked navmesh, and NavigationObstacle3D only carves at bake time.
+- Deps: C (Path3Ds, the 4 ConvoyLayout marker sets, vehicle props with Seat/Body nodes).
+
+**2. Ram / mixer: S on top of 1.**
+- The ram is a convoy_vehicle on its own path with a scripted impact that raises `alarm_raised(&"ambush")`.
+- Crash layouts are pre-authored markers (doc), so no vehicle physics or damage model is needed. Explosion.apply exists.
+- Deps: C (mixer prop, crash markers), B (`cue.mixer_ram`).
+
+**3. Stopping and opening the trucks (A5-01 / QC-80/81/84; §Truck targets): M.**
+- Exists:
+  - Safe has methods drill / saw / c4 / lockpick / code / keycard, `charges_required` (A5-03), the C4 fuse and blast,
+    `saw_cut` + G.SAW_TARGET, `saw_duration_s`, `open_by_device`, and contents on LootAnchor (PO6-05).
+  - Door and Padlock reuse Safe's charge helpers. DrillPoint SAW and BurnPoint (thermite) exist.
+- New:
+  - An `armored_truck`: a Safe subclass with `lockdown()` (saw ×1.5), the truck's own hand-saw time, a roof-hatch
+    binding, LOCKPICK cab doors, and Body/DoorL/DoorR/CabDoor/RoofHatch visual nodes.
+  - QC-81: BurnPoint gets a `target` (calls `open_by_device`) and a no-fire-volume mode. It has neither today.
+  - C4 as a pickup: no generic `item_pickup` exists (keycard_pickup / gear_pickup hard-code their items), and no
+    `item.c4` pre-plan drop is registered.
+- Deps: C/D (truck mesh), B (`asset.c4_drop`, HUD item count, strings).
+
+**4. Police escort cars and spawns (QC-83b/c, QC-89; §Police spawns, §Specials): M.**
+- Exists:
+  - AssaultDirector: `valid_spawn_points` (POLICE_SPAWN + ENTRY, skips `breach_only`), LOS and crew-distance rules,
+    path-cost choice, `spawn_enemy`, `police_delay_s`.
+  - RappelLinks (QC-41 one-way links, police-only islands): covers QC-89's rappel part.
+  - Turret-van squad dismount. AnimDriver.play_vehicle_exit exists but has no caller.
+- New:
+  - A per-unit spawn-point filter (`wrecker_ok`).
+  - `police_budget()` subtracts cartel only; convoy units must count too (QC-83c).
+  - Seated-occupant spawn.
+- Deps: C (spawn / TacticalPoint placement, the P_SKY island), D (`vehicle_exit_l/_r` clips).
+
+**5. Stealth-start ambush (QC-83a/d; §Modes): M.**
+- Exists: StealthDirector.raise_alarm(reason, id); HeistMission `_on_alarm`, `schedule_at`, `spawn_guards`,
+  `start_timer`, `say`; GuardBrain `walk_to_post`.
+  - OF's `armored_car_early` is only 2 Vaultline guards walking to the gate, with no vehicle.
+- New:
+  - A public HeistMission.raise_alarm(&"ambush") (S).
+  - A seated/vehicle state on NPCs: seated pose, hitboxes by vehicle hardness (armoured cab no / soft car through
+    glass), and a timed dismount into COMBAT (M).
+  - A convoy unit that spots a masked crew member during the 8 s window raises "ambush", not a pager (S).
+- Deps: D (`sit_vehicle` and exit clips), B (VO).
+
+**6. Loot from vehicles (§Loot path): S.**
+- LootSpawn, the Safe content stow, LootBag throw, SecureZone, the `bag_only` escape, BagLift, HEAVY gold,
+  HeistMission.spawn_loot / require_loot.
+- The secure zone is static at the escape (doc), so no moving zone is needed.
+- Check: the truck's rear-step UsePoint must sit on the per-layout navmesh (depends on 1).
+
+**7. Escape (§Escape): S, polish.**
+- EscapeZone: van/heli, `arrival_delay_s`, `bag_only`, activate_escape(tag).
+- Arrival is a pop-in today. A drive-in or fly-in could reuse 1 or the AssaultHeli flight.
+
+**Holdouts and level change:** no new system. The director already picks spawns nearest the crew by path cost, so the
+fight follows the crew between H1 and H4. The stopped convoy as cover depends on 1's nav answer.
+
+**QC-88 (open-street civilians): M.**
+- Today, `civilians_leave` returns 0 once loud.
+- New: loud flee to `civ_flee` exits, then despawn; exterior mobile-phone calls via a REASON_PHONE call point and the
+  existing `phone_call` clip.
+
+**Proposed A order of work**
+1. QC-81 BurnPoint target and no-volume mode (S).
+2. HeistMission.raise_alarm, convoy units in police_budget, and the wrecker_ok filter (S).
+3. A5-01 armored_truck (M).
+4. Generic item_pickup + the c4 pre-plan drop (S-M).
+5. QC-83 seated occupants and dismount (M).
+6. A5-02 convoy_vehicle with interpolation and the mixer ram (L).
+7. QC-88 (M).
+8. rolling_thunder_mission.gd after C's G1 (M).
+
+**Questions for the lead / C**
+- (a) Nav for stopped vehicles: should C bake one navmesh region set per layout (A switches them), or should A rebake at
+  runtime?
+- (b) Do seated convoy units count against the enemy cap, or only once they dismount?
+- (c) For G1, is "seated = not hittable until dismount" acceptable?
+- (d) Are client interpolation and the escape drive-in in A5-02's scope, or polish?
+- (e) Who authors the vehicle props with Seat / Body / Door / RoofHatch / LootAnchor nodes: C or D?
+
+### (0) OF-done blocker "bond_safe / deposit_boxes not reachable" (Cataclysm loud): fixed in the mission, 6fcbb559
+- Cause: both side objectives were ACTIVE from the start, with markers inside the sealed vault.
+  - BondSafe (14.7, -4, 20.5) and the vault-wall boxes (VaultBoxN01 = (15.0, -3.0, 13.3)) sit behind the vault's west
+    and north walls.
+  - The pilot walked to them before the burn-through: the nav path ends 2.5 m short, and its LOS ray hit wall BZ0140.
+- Same run, after the burn: the [vault_loot] marker was the cash itself, inside the locked cash cage
+  (CashCageGate BARRED; ways in: keypad with the vault code, or C's padlock).
+  - The pilot pushed into the cage mesh for 24 s, then skipped the cash for the rest of the run: no bags, budget FAIL.
+- Fix (gameplay, PD2-style waypoints):
+  - [bond_safe] starts HIDDEN and appears with the vault (open_vault or burn_through).
+  - [deposit_boxes] marks only the SD hall's boxes until then (new objective data `marker_skip_prefixes`, honoured by
+    LocalHudModel).
+  - [vault_loot] marks the cage padlock and keypad until CashCageGate opens, then the cash.
+- Also fixed: [vault_gate] no longer completes when a guard walks through the locked gate.
+  - Door.npc_open opens it while it stays locked; the new guard_vault loops do this. Before the fix that completed the
+    objective and broke test_x4_of_stealth.
+- Pilot (harness only): it no longer calls the vault hoist at a box wall. It did that for 450 s in the same run.
+- Tests: test_of_mission_flow 9/9 (+2 new: vault side loot markers and the cage handoff; a guard passing the gate);
+  test_of_mission 19/19, test_hud_marker_lookups, test_x4_of_stealth 5/5, test_of_a6_hub_loops 3/3,
+  test_of_mission_loud 6/6, test_x4_nd_stealth.
+  - Still running at push time: test_x4_of_loud, test_x4_of_hard, test_of_coop_loopback, then a headless OF Cataclysm 1037 auto_loud run. Results go in the next status update.
+### (1) HITCH lines (your GPU-13 ask), b922571a
+- Each HITCH line now carries `shot=1` on screenshot frames, plus `pipelines=[mesh,surface,draw,spec,canvas]` (pipeline
+  compilations that frame, from RenderingServer) and `vram=..MB`.
+- `HITCHES n of m heist frames over N ms (k of them screenshot frames), worst x ms, without a shot y ms` prints at heist
+  end and on budget exit.
+- Headless OF Cataclysm 1037: t≈127-131 shows 80-97 ms frames, with police_brain at 29 ms over 65 calls.
+  - police_brain now has sub-keys (pick_target / choose_position / move).
+  - The GPU t≈129.6 / 176 frames need your next GPU run with these lines: a non-zero `pipelines` count there means a
+    shader compile, which is D's prewarm.
+### (2) P's ghost line: guard_vault and guard_lobby hub_loops pushed (6fd7e59a).
+
+### (earlier, 05:40 UTC)
+### (1) Navmesh polygon cap: done, ffc264d4
+- New NavPath.query: NavigationPathQueryParameters3D with path_search_max_polygons = 0 (no cap). Used by the assault
+  director, civilian_brain, civilian_targets, crew_ai_brain and the PO-5 pilot. NpcMotor's NavigationAgent3Ds get the
+  same (NavPath.configure_agent).
+- test_x4_of_loud: "not expect to not find the most reachable polygons" 357 -> **0** (they came from crew_ai_brain's
+  paths after the burn-through).
+- New test test_nav_path_polygon_cap: OF P1 -> CoverMisc7 reaches the terrace; agent cap lifted.
+  - C's pair also routes with the old call here, so the x4 count is the evidence.
+- Green: l6 15, a3_05 12, l1_assault_director 7, po6_17 15, x5_ 16, d122, a3_10 ladder, l5_ 8, s5_ 28, po5_ 55,
+  integration p1 10 / p3_loud 10.
+### (2) DB Tense Longshots
+- f01d11db: Routine / Tense laser aim lock 2.5 / 2.0 s and re-aim 4.5 / 3.5 s; Hazardous+ unchanged (1.2 / 2.5); per-hit
+  damage kept.
+- PD2 cite, charactertweakdata presets.weapon.sniper: aim_delay {0, 0.1}, use_laser, FALLOFF recoil {2,4} / {3,4} / {3,5}
+  s at 7 / 35 / 100 m, focus_delay 7. The values come from a decompile summary, not verbatim lines.
+  - Tense uses PD2 Hard's mid-range 3.5 s, with a telegraph longer than PD2's.
+- New test (Tense: >= 1.9 s lock, >= 3.4 s between shots); l4_7 6/6.
+- **Max 1 alive on Tense** is B's file (content/data/difficulty/tense.tres longshot 2 -> 1). I asked B; Routine is
+  already 1. Then B re-runs DB Tense x3.
+- Harness option for that re-run: --po5-doctor-bag (opt-in, 14f85b5a). The pilot carries a doctor bag and uses it at
+  2 downs.
+  - Verified on DB Tense s1: deployed at 2 downs and used, downs reset.
+  - That run still ended in custody after 5 downs in total.
+### (3) GPU prewarm: waiting for GPU-12's HITCH lines.
+
+### (05:00 UTC)
 ### OF loud hitches (your GPU-8.5 item); env/a-core 8e5412e9
 - CPU hitches found headless (OF Cataclysm seed 1037) and fixed:
   - At OF start, the HUD's objective markers took 477 ms in one frame. HeistRuntime.find_by_tag walked the 18k-node map

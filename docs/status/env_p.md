@@ -2,7 +2,17 @@
 
 Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min; this file says where to resume.
 
-## To the LEAD: (updated 2026-10-21 05:15 UTC)
+## To the LEAD: (updated 2026-10-21 07:00 UTC)
+- **BondSafe: a player CAN use it.** In the windowed sweep on r255 (e9c8744f + P, loud, `--test=interact`) the crosshair lands on BondSafe from its
+  UsePoint at 1.43 m eye distance, availability is clear, and the hold STARTED (lockpick; place_drill also OK). GPU-15's 'aimed <none> at
+  2.22 m' means that pilot stood 2.22 m off, further back than the UsePoint gives, so it's a pilot stand issue there, not the safe.
+  Also STARTED: PresidentSafe (place_drill, 0.92 m) and the Hoist panel (send_lift, 0.74 m). Not usable by interaction, by design: the 20
+  HallBox + 20 VaultBox deposit boxes are opened with the handheld saw (A's deposit_box.gd), and their take_loot is disabled until cut.
+  TimeLockConsole is disabled because the shortcut had already opened the vault door. The rest of pass 2 (the other hoist panel, the lid) is re-running: pass 2's walks
+  use the rope ladder, and my stray-ladder watch kept climbing the pilot back down (harness, fixed in 470377f3).
+- **GH Tense on r255 looks harder**: 4501 WIN with 3 downs, 4502 custody after 3 downs (it won with 2 downs on r251/4a6780f4).
+  4503 was killed by my own process cleanup and is re-running. Possibly the Longshot cap / nav-cap change; more after 4503 and the OF Tense check.
+- **A's guard_vault loops** (a-core 46551745) are in a ready tree (r255 + A + P, imported). Ghost step 5+ runs right after the sweep.
 - **Ghost line**, on r251 + c-worlds 9d00c55b + P, windowed, seed 1002: **steps 1-4 PASS** (r251g). C's door-throat bake fix is verified.
   Harness fixes on env/p-play: peek at the SA core before EA → E3; code-hack restart. Step 5 (vault gate) was seen by the vault guard;
   the gate-clear wait went in at 88e06f40. r251h: the wait held for the vault guard, but the pilot waited in BB and rover_basement
@@ -16,7 +26,11 @@ Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min;
   (1.5, 4.0) and its neighbours are hidden from all 8, while (3, 4) is seen by 2. Hide set to (1.5, 4.0).
   **r252c never ran**: my edit in 426f0bf9 cut ~45 lines (GHOST_RC_WAIT, GHOST_CQ_AT, GHOST_LD_STAGE, EXPECT) and the script failed to parse.
   gdlint passed (it doesn't resolve identifiers), and the window hung for 70 min. Restored in the next commit and parse-checked by a headless
-  load (lkprobe PASS, 0 script errors). From now on I parse-check every harness change headless before a windowed run. Next run: r253. A headless ghost run cannot work (the pilot's mouse needs a window).
+  load (lkprobe PASS, 0 script errors). From now on I parse-check every harness change headless before a windowed run.
+  **r253a** (trunk f35ccb81 + P): steps 1-4 PASS. The LK hide (1.5, 4.0) works: 300 s crouched, unseen (one 0.16 tick). **Step 5 is blocked by a GAME
+  gap, sent to A**: GuardTweak.hub_loops has no guard_vault entry. The doc's post_vault loops (b) BB→RC→BB and (c) BB→SD→BB→CP→BB never
+  happen, so the vault guard only shuttles VC (25.6, 11) ↔ (19, 11) every ~30 s and the gate never clears. The doc's 'vault guard on (b)/(c)'
+  window doesn't exist in the build. The pilot went after 300 s and was seen at the gate. Next ghost run: on the round with A's guard_vault loops. A headless ghost run cannot work (the pilot's mouse needs a window).
 - **GPU-box ghost command**. It needs `game/tests/p/_review/of_g1_pass.gd` from env/p-play (≥ 88e06f40), which is newer than trunk's:
   `git checkout origin/env/p-play -- game/tests/p/_review/of_g1_pass.gd`, then
   `%G% --path game --resolution 1280x720 res://tests/p/_review/of_g1_pass.tscn -- --test=ghost --seed=1002 --out=%CD%\gpu\renders\p\of_ghost > gpu\renders\p\of_ghost_run.txt 2>&1`
