@@ -1658,9 +1658,9 @@ func _wait_spot_clear(spot: Vector3, y: float, label: String, hide: Vector3, ext
 	note("GHOST %s NOT clear after 300 s (going anyway)" % label)
 
 
-## Doc §5: the vault guard is on loop (b) (RC) or (c) (SD, CP), not on (a) in VC: outside VC and > 12 m from the gate on
-## two samples in a row (r256b: "clear" while he stood out of sight at VC's east end, back at the gate 20 s later).
-func _vault_guard_off_vc(gate: Door) -> bool:
+## Doc §5: the vault guard is on loop (b) (RC, west of BB / south): two samples in a row (r256b/c: "clear" while he was on
+## VC's / BB's east end, back at the gate 13-20 s later).
+func _vault_guard_off_vc(_gate: Door) -> bool:
 	var vg: NpcBase = null
 	for n: Node in rt.npcs(&"guard"):
 		var g: NpcBase = n as NpcBase
@@ -1671,9 +1671,11 @@ func _vault_guard_off_vc(gate: Door) -> bool:
 				vg = g
 	if vg == null:
 		return true
+	# Away = deep in loop (b)'s RC (west / south of BB), not merely out of VC: r256c went at "out of VC, > 12 m" with him
+	# on BB east (31.7, 8.3), 13 s from the gate again. Loop (b) in r256c: RC at t 347-377, back at the gate t 387.
 	var p: Vector3 = vg.global_position
-	var in_vc: bool = absf(p.y - OF_FFL[0]) < 1.5 and p.x > 16.0 and p.x < 34.0 and p.z > 6.5 and p.z < 13.5
-	_vg_away_n = _vg_away_n + 1 if not in_vc and pilot.flat_dist(p, gate.global_position) > 12.0 else 0
+	var away: bool = absf(p.y - OF_FFL[0]) < 1.5 and (p.x < 12.0 or p.z > 13.5)
+	_vg_away_n = _vg_away_n + 1 if away else 0
 	return _vg_away_n >= 2
 
 
