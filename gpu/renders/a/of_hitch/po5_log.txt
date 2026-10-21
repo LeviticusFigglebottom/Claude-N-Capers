@@ -1,0 +1,144 @@
+[PO5 4.4s] harness: Cataclysm opened in memory (locked in the build)
+[PO5 8.2s] shot C:\Users\Aaron\caperworks-gpu\gpu\renders\a\of_hitch/01_main_menu.png
+[PO5 8.5s] click 'SAFEHOUSE' at (872.0, 711.3334)
+[PO5 9.2s] click '' at (1382.0, 428.6667)
+[PO5 10.3s] shot C:\Users\Aaron\caperworks-gpu\gpu\renders\a\of_hitch/02_planning_table.png
+[PO5 10.4s] click 'Ostrander Federal' at (818.6667, 806.6667)
+[PO5 11.3s] click 'CATACLYSM' at (2438.0, 666.6667)
+[PO5 14.7s] click 'Briefing' at (2701.333, 1318.667)
+[PO5 14.9s] shot C:\Users\Aaron\caperworks-gpu\gpu\renders\a\of_hitch/03_briefing.png
+[PO5 15.0s] click 'Continue' at (2722.667, 1340.0)
+[PO5 16.0s] shot C:\Users\Aaron\caperworks-gpu\gpu\renders\a\of_hitch/04_continue.png
+[PO5 16.2s] click 'Confirm plan' at (2722.667, 1334.0)
+[PO5 17.1s] shot C:\Users\Aaron\caperworks-gpu\gpu\renders\a\of_hitch/05_confirm_plan.png
+[PO5 17.6s] click 'Start Heist' at (2701.333, 1318.667)
+[PO5 23.2s] HITCH frame=2264ms t=0.1 drawn=1 nodes=19025 enemies=9 top: anim_driver=24.6ms(30) npc_motor=8.0ms(216) stealth_director=1.5ms(8) civilian_brain=1.0ms(144) custody_system=0.9ms(8) crew_ai_brain=0.8ms(24) guard_brain=0.3ms(72) guard_brain.calm=0.1ms(72) npc_gunner=0.1ms(72) assault_director=0.0ms(8)
+[PO5 23.2s] HITCH frame=2264ms t=0.1 process=49.2ms physics=63.3ms draws=2747 objects=3460 nodes=19025 enemies=9 spawned=[] top: anim_driver=24.6ms(30) npc_motor=8.0ms(216) stealth_director=1.5ms(8) civilian_brain=1.0ms(144) custody_system=0.9ms(8) crew_ai_brain=0.8ms(24) guard_brain=0.3ms(72) guard_brain.calm=0.1ms(72)
+[PO5 23.3s] HITCH frame=147ms t=0.3 process=4324.0ms physics=31.7ms draws=2746 objects=3457 nodes=19050 enemies=9 spawned=[] top: anim_driver=15.1ms(30) hud_model=13.3ms(1) hud_model.objectives=10.9ms(1) npc_motor=7.9ms(216) hud_model.flush=1.8ms(1) stealth_director=1.0ms(8) crew_ai_brain=0.8ms(24) civilian_brain=0.5ms(144)
+[PO5 24.0s] in heist ostrander_federal seed 1037 diff 5 phase 1 crew at (21.8, -0.8, 44.0)
+[PO5 24.0s] DEV OPTION crew_damage_taken_mult=0.00 (D-133 harness-only; assault events on)
+[PO5 24.9s] shot C:\Users\Aaron\caperworks-gpu\gpu\renders\a\of_hitch/06_heist_start.png
+[PO5 25.0s] HITCH frame=865ms t=1.2 process=23.5ms physics=23.9ms draws=2832 objects=4190 nodes=19044 enemies=9 spawned=[] top: npc_motor=6.3ms(216) anim_driver=1.5ms(30) stealth_director=1.0ms(8) crew_ai_brain=0.7ms(24) civilian_brain=0.5ms(144) guard_brain=0.2ms(72) custody_system=0.1ms(8) npc_gunner=0.1ms(72)
+[PO5 25.8s] mouse captured by the game (MouseCapture)
+[PO5 25.9s] pilot: calibrated 0.001600 rad/px yaw, 0.001600 rad/px pitch (settings formula said (0.0016, 0.0016))
+[PO5 25.9s] HITCH frame=58ms t=2.1 process=840.7ms physics=31.6ms draws=2832 objects=4190 nodes=19044 enemies=9 spawned=[] top: anim_driver=1.2ms(30) npc_motor=0.7ms(27) hud_model=0.7ms(1) hud_model.objectives=0.3ms(1) hud_model.player=0.2ms(1) hud_model.crew=0.1ms(1) stealth_director=0.1ms(1) crew_ai_brain=0.1ms(3)
+[PO5 26.9s] EVENT objective casing -> 2 t=3
+[PO5 27.4s] HITCH frame=55ms t=3.6 process=3.8ms physics=29.6ms draws=2832 objects=4190 nodes=19051 enemies=9 spawned=[] top: anim_driver=1.1ms(30) npc_motor=0.8ms(27) stealth_director=0.2ms(1) crew_ai_brain=0.1ms(3) civilian_brain=0.1ms(18) guard_brain=0.0ms(9) custody_system=0.0ms(1) npc_gunner=0.0ms(9)
+[PO5 27.6s] HITCH frame=90ms t=3.8 process=3.8ms physics=29.6ms draws=2832 objects=4190 nodes=19071 enemies=9 spawned=[] top: anim_driver=1.3ms(30) npc_motor=0.9ms(27) stealth_director=0.4ms(1) crew_ai_brain=0.1ms(3) civilian_brain=0.1ms(18) door=0.0ms(1) guard_brain=0.0ms(9) custody_system=0.0ms(1)
+[PO5 27.9s] HITCH frame=273ms t=3.9 process=3.8ms physics=29.6ms draws=2503 objects=3138 nodes=19071 enemies=9 spawned=[] top: npc_motor=7.8ms(216) stealth_director=3.4ms(8) anim_driver=1.4ms(30) crew_ai_brain=0.8ms(24) civilian_brain=0.6ms(144) guard_brain=0.3ms(72) door=0.3ms(8) custody_system=0.2ms(8)
+[PO5 28.1s] HITCH frame=136ms t=4.1 process=3.8ms physics=29.6ms draws=2485 objects=3086 nodes=19072 enemies=9 spawned=[] top: npc_motor=8.4ms(216) stealth_director=3.6ms(8) anim_driver=1.6ms(30) hud_model=1.1ms(1) crew_ai_brain=0.9ms(24) civilian_brain=0.6ms(144) hud_model.objectives=0.4ms(1) guard_brain=0.3ms(72)
+[PO5 29.6s] EVENT objective keycard -> 1 t=6
+[PO5 29.6s] EVENT objective keycard -> 2 t=6
+[PO5 29.6s] EVENT objective code_hint -> 1 t=6
+[PO5 29.6s] EVENT objective code_hint -> 2 t=6
+[PO5 29.6s] EVENT objective code_pc -> 1 t=6
+[PO5 29.6s] EVENT objective code_pc -> 2 t=6
+[PO5 29.6s] EVENT objective server -> 1 t=6
+[PO5 29.6s] EVENT objective server -> 2 t=6
+[PO5 29.6s] EVENT objective vault_gate -> 1 t=6
+[PO5 29.6s] EVENT objective vault_gate -> 2 t=6
+[PO5 29.6s] EVENT objective lasers -> 1 t=6
+[PO5 29.6s] EVENT objective lasers -> 2 t=6
+[PO5 29.6s] EVENT objective drill_delivery -> 1 t=6
+[PO5 29.6s] EVENT objective drill_delivery -> 1 t=6
+[PO5 29.6s] HITCH frame=63ms t=5.6 process=8.8ms physics=25.3ms draws=2485 objects=3086 nodes=19073 enemies=9 spawned=[] top: guard_brain=29.8ms(9) guard_brain.alarmed=29.3ms(1) alarm.HeistRuntime._on_alarm_raised=27.9ms(1) phase.Mission._on_phase_changed=25.8ms(1) npc_motor=6.3ms(27) anim_driver=1.1ms(30) alarm.CuePlayer._on_alarm_raised=0.5ms(1) phase.AssaultDirector._on_heist_phase_changed=0.4ms(1)
+[PO5 29.8s] HITCH frame=67ms t=5.8 process=8.8ms physics=25.3ms draws=2148 objects=2406 nodes=19152 enemies=10 spawned=[] top: npc_motor=7.5ms(112) anim_driver=1.9ms(31) crew_ai_brain=1.7ms(12) hud_model=0.7ms(1) hud_model.objectives=0.3ms(1) door=0.2ms(12) hud_model.player=0.2ms(1) civilian_brain=0.2ms(72)
+[PO5 30.2s] loud: phase=3 went_loud=true
+[PO5 31.1s] shot C:\Users\Aaron\caperworks-gpu\gpu\renders\a\of_hitch/07_auto_6.png
+[PO5 31.1s] HITCH frame=905ms t=6.4 process=48.1ms physics=60.8ms draws=2230 objects=2977 nodes=19241 enemies=11 spawned=[] top: npc_motor=14.2ms(232) crew_ai_brain=5.2ms(24) anim_driver=1.6ms(32) civilian_brain=0.9ms(144) hud_model=0.7ms(1) door=0.6ms(24) guard_brain=0.4ms(72) hud_model.objectives=0.3ms(1)
+[PO5 35.9s] pilot: t=5 at (36.1, -0.3, 37.5) corner (39.5, 0.2, 37.2) yaw_err -0.00 fwd=true path=63 mouse_mode=2 state=0 look=(-1.50,0.00) pin_yaw=-1.49721270334567 bot=false
+[PO5 36.8s] TEL worst_frame=2438ms t=12 phase=3 phys=25.5ms proc=22.7ms nodes=19241 enemies=11 civs=18 crew=[0:0@(39.0, 0.0, 37.3) 1:0@(34.5, -0.7, 39.6) 2:0@(35.5, -0.4, 41.6) 3:0@(36.8, -0.7, 39.5) nearest_enemy=15.6m within15=0 input_enabled=true captured=true paused_by={  }]
+[PO5 41.6s] pilot: t=10 at (48.7, 0.0, 31.5) corner (48.8, 0.2, 27.6) yaw_err -0.02 fwd=true path=59 mouse_mode=2 state=0 look=(-0.00,-0.00) pin_yaw=-0.02824631914564 bot=false
+[PO5 46.8s] TEL worst_frame=30ms t=22 phase=3 phys=27.0ms proc=11.5ms nodes=19443 enemies=11 civs=16 crew=[0:0@(49.1, 0.0, 14.8) 1:0@(52.1, 0.0, 20.6) 2:0@(50.3, 0.0, 20.7) 3:0@(52.0, 0.0, 20.3) nearest_enemy=5.7m within15=6 input_enabled=true captured=true paused_by={  }]
+[PO5 47.1s] pilot: t=15 at (49.2, 0.0, 14.2) corner (49.2, 0.2, 12.6) yaw_err 0.14 fwd=true path=44 mouse_mode=2 state=0 look=(-0.15,0.01) pin_yaw=-0.01328962465669 bot=false
+[PO5 52.3s] pilot: t=20 at (46.1, 0.0, -0.9) corner (38.8, 0.2, -2.4) yaw_err 0.00 fwd=true path=22 mouse_mode=2 state=0 look=(1.38,0.00) pin_yaw=1.37541848436382 bot=false
+[PO5 56.8s] TEL worst_frame=35ms t=32 phase=3 phys=25.5ms proc=11.7ms nodes=19459 enemies=7 civs=16 crew=[0:0@(34.1, 0.0, -3.3) 1:0@(42.7, 0.0, -0.8) 2:0@(38.1, 0.0, -3.0) 3:0@(37.9, 0.0, -5.3) nearest_enemy=13.3m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 58.1s] pilot: t=25 at (29.4, 0.0, -4.2) corner (28.5, 0.2, -4.4) yaw_err -0.00 fwd=true path=14 mouse_mode=2 state=0 look=(1.38,0.00) pin_yaw=1.37574314181029 bot=false
+[PO5 63.3s] pilot: reload in a lull (weapon.corsair_ar 9/30, reserve 109)
+[PO5 66.8s] TEL worst_frame=29ms t=42 phase=3 phys=23.6ms proc=2.8ms nodes=19467 enemies=5 civs=16 crew=[0:0@(16.2, 0.0, -4.8) 1:0@(18.8, 0.0, -2.6) 2:0@(19.6, 0.0, -5.2) 3:0@(18.2, 0.0, -7.6) nearest_enemy=15.0m within15=0 input_enabled=true captured=true paused_by={  }]
+[PO5 74.4s] pilot: (15.1, -3.8, 14.1) unreachable: the nav path ends at (10.0, 0.2, -2.6), 17.5 m short
+[PO5 74.4s] pilot: goto (15.1, -3.8, 14.1) FAILED at (10.2, 0.0, -2.7) after 2.1 s
+[PO5 74.4s] FINDING objective deposit_boxes: marker at (15.0, -3.0, 13.3) not reachable
+[PO5 75.3s] EVENT objective vault_drill -> 1 t=51
+[PO5 75.4s] fetching the tool bag /root/HeistRuntime/Dynamic/Bag_thermal_drill_part/Interactable for its drill (4 m)
+[PO5 76.8s] TEL worst_frame=40ms t=52 phase=3 phys=38.0ms proc=7.0ms nodes=19147 enemies=5 civs=16 crew=[0:0@(14.0, 0.0, -3.7) 1:0@(13.2, 0.0, -1.0) 2:0@(13.2, 0.0, -4.5) 3:0@(11.8, 0.0, -5.7) nearest_enemy=13.7m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 78.3s] EVENT objective drill_delivery -> 1 t=54
+[PO5 78.4s] HITCH frame=75ms t=53.6 process=2.4ms physics=24.5ms draws=1664 objects=1846 nodes=19147 enemies=5 spawned=[] top: npc_motor=0.8ms(21) anim_driver=0.6ms(30) crew_ai_brain=0.4ms(3) police_brain=0.1ms(4) civilian_brain=0.0ms(16) assault_director=0.0ms(1) npc_gunner=0.0ms(11) custody_system=0.0ms(1)
+[PO5 78.4s] pilot: use Bag_thermal_drill_part (pick_bag) -> OK in 1.0 s
+[PO5 78.4s] carrying loot.thermal_drill_part to LidDrill
+[PO5 86.8s] TEL worst_frame=75ms t=62 phase=3 phys=25.2ms proc=4.5ms nodes=19423 enemies=10 civs=16 crew=[0:0@(8.6, 0.0, -0.9) 1:0@(13.2, 0.0, -1.0) 2:0@(11.4, 0.0, -2.8) 3:0@(9.3, 0.0, -4.2) nearest_enemy=12.5m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 90.6s] HITCH frame=64ms t=65.8 process=3.0ms physics=24.6ms draws=787 objects=858 nodes=19423 enemies=10 spawned=[] top: police_brain=2.4ms(9) npc_motor=1.4ms(26) anim_driver=0.8ms(33) crew_ai_brain=0.5ms(3) assault_director=0.0ms(1) npc_gunner=0.0ms(14) civilian_brain=0.0ms(16) custody_system=0.0ms(1)
+[PO5 90.6s] pilot: use DockPersonnelDoor (open_door) -> OK in 8.0 s
+[PO5 92.2s] pilot: t=5 at (8.2, 0.0, 0.9) corner (8.4, 0.2, 1.7) yaw_err 0.00 fwd=true path=30 mouse_mode=2 state=0 look=(9.68,0.00) pin_yaw=9.67587217399142 bot=false
+[PO5 96.8s] TEL worst_frame=64ms t=72 phase=3 phys=24.9ms proc=5.3ms nodes=19048 enemies=10 civs=16 crew=[0:0@(10.3, -0.3, 7.8) 1:0@(7.1, 0.0, 7.3) 2:0@(2.7, 0.0, 6.2) 3:0@(4.2, 0.0, 8.0) nearest_enemy=5.7m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 97.2s] pilot: t=10 at (11.1, 0.0, 7.9) corner (13.9, 0.2, 8.5) yaw_err -0.00 fwd=true path=23 mouse_mode=2 state=0 look=(10.79,0.00) pin_yaw=10.7871099271013 bot=false
+[PO5 106.8s] TEL worst_frame=32ms t=82 phase=3 phys=23.5ms proc=3.3ms nodes=19048 enemies=10 civs=16 crew=[0:0@(14.3, -0.3, 8.2) 1:0@(12.0, 0.0, 7.5) 2:0@(20.5, 0.0, 8.0) 3:0@(6.7, 0.0, 8.0) nearest_enemy=3.9m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 107.3s] HITCH frame=59ms t=82.6 process=3.2ms physics=24.4ms draws=1014 objects=1070 nodes=19048 enemies=10 spawned=[] top: npc_motor=1.0ms(26) anim_driver=1.0ms(29) crew_ai_brain=0.3ms(3) police_brain=0.1ms(9) assault_director=0.0ms(1) civilian_brain=0.0ms(16) npc_gunner=0.0ms(10) custody_system=0.0ms(1)
+[PO5 107.4s] pilot: use StaffDoorTWW (open_door) -> OK in 8.0 s
+[PO5 111.7s] pilot: t=15 at (19.1, -0.3, 11.4) corner (20.9, 0.2, 12.0) yaw_err 0.00 fwd=true path=10 mouse_mode=2 state=0 look=(10.69,0.00) pin_yaw=10.6919168405596 bot=false
+[PO5 116.8s] TEL worst_frame=59ms t=92 phase=3 phys=24.5ms proc=6.9ms nodes=19052 enemies=10 civs=16 crew=[0:0@(25.3, -0.3, 14.2) 1:0@(19.8, 0.0, 15.4) 2:0@(27.5, 0.0, 15.9) 3:0@(22.5, 0.0, 16.0) nearest_enemy=4.1m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 119.1s] HITCH frame=61ms t=94.3 process=2.9ms physics=24.4ms draws=1014 objects=1070 nodes=19045 enemies=10 spawned=[] top: npc_motor=0.9ms(26) anim_driver=0.8ms(29) crew_ai_brain=0.3ms(3) police_brain=0.1ms(9) assault_director=0.0ms(1) civilian_brain=0.0ms(16) npc_gunner=0.0ms(10) custody_system=0.0ms(1)
+[PO5 119.1s] pilot: use LidDrill (place_drill) -> OK in 3.0 s
+[PO5 119.1s] fetching the tool bag /root/HeistRuntime/Dynamic/Bag_thermal_drill_part2/Interactable for its drill (21 m)
+[PO5 124.1s] pilot: t=5 at (11.6, 0.0, 8.0) corner (10.9, 0.2, 7.9) yaw_err 0.00 fwd=true path=16 mouse_mode=2 state=0 look=(7.82,0.00) pin_yaw=7.82151970272021 bot=false
+[PO5 126.8s] TEL worst_frame=61ms t=102 phase=3 phys=25.0ms proc=11.1ms nodes=19056 enemies=10 civs=16 crew=[0:0@(8.1, 0.0, 1.6) 1:0@(4.8, 0.0, 8.2) 2:0@(7.6, 0.0, 6.0) 3:0@(5.9, 0.0, 7.3) nearest_enemy=10.8m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 129.1s] pilot: t=10 at (12.8, 0.0, -2.9) corner (15.1, 0.2, -4.0) yaw_err 0.00 fwd=true path=2 mouse_mode=2 state=0 look=(5.15,0.00) pin_yaw=5.1514046475822 bot=false
+[PO5 131.0s] EVENT objective drill_delivery -> 1 t=106
+[PO5 131.0s] EVENT objective drill_delivery -> 2 t=106
+[PO5 131.1s] HITCH frame=76ms t=106.3 process=11.3ms physics=25.3ms draws=1014 objects=1070 nodes=19056 enemies=10 spawned=[] top: npc_motor=1.2ms(26) crew_ai_brain=0.8ms(3) anim_driver=0.6ms(29) police_brain=0.1ms(9) assault_director=0.0ms(1) civilian_brain=0.0ms(16) npc_gunner=0.0ms(10) custody_system=0.0ms(1)
+[PO5 131.1s] pilot: use Bag_thermal_drill_part2 (pick_bag) -> OK in 1.0 s
+[PO5 132.1s] shot C:\Users\Aaron\caperworks-gpu\gpu\renders\a\of_hitch/08_auto_106.png
+[PO5 132.1s] carrying loot.thermal_drill_part to LidDrill
+[PO5 132.1s] HITCH frame=940ms t=106.6 process=11.3ms physics=25.3ms draws=650 objects=1294 nodes=19056 enemies=10 spawned=[] top: npc_motor=9.8ms(208) crew_ai_brain=8.8ms(24) police_brain=5.2ms(72) anim_driver=3.5ms(29) hud_model=1.3ms(1) hud_model.flush=0.7ms(1) assault_director=0.4ms(8) hud_model.objectives=0.3ms(1)
+[PO5 136.9s] pilot: t=5 at (8.2, 0.0, 0.6) corner (8.1, 0.0, 0.9) yaw_err -0.00 fwd=true path=32 mouse_mode=2 state=0 look=(9.38,0.00) pin_yaw=9.37897321989654 bot=false
+[PO5 137.6s] TEL worst_frame=940ms t=112 phase=3 phys=24.4ms proc=10.7ms nodes=19056 enemies=10 civs=16 crew=[0:0@(8.3, 0.0, 1.7) 1:0@(7.7, 0.0, 1.9) 2:0@(7.8, 0.0, -0.3) 3:0@(7.1, 0.0, -1.3) nearest_enemy=10.6m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 141.9s] pilot: t=10 at (10.8, 0.0, 7.8) corner (10.9, 0.0, 7.8) yaw_err 0.00 fwd=true path=24 mouse_mode=2 state=0 look=(10.95,0.00) pin_yaw=10.9450828104127 bot=false
+[PO5 146.9s] pilot: t=15 at (17.7, -0.3, 11.0) corner (18.1, 0.2, 11.1) yaw_err 0.00 fwd=true path=11 mouse_mode=2 state=0 look=(10.70,0.00) pin_yaw=10.6971353087828 bot=false
+[PO5 147.5s] TEL worst_frame=36ms t=122 phase=3 phys=26.1ms proc=9.3ms nodes=19431 enemies=14 civs=16 crew=[0:0@(18.8, -0.3, 11.3) 1:0@(17.2, -0.3, 12.9) 2:0@(12.4, 0.0, 7.8) 3:0@(16.5, -0.3, 14.3) nearest_enemy=3.7m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 155.2s] HITCH frame=92ms t=129.6 process=3.6ms physics=25.9ms draws=2534 objects=2778 nodes=19531 enemies=15 spawned=[] top: npc_motor=1.5ms(31) anim_driver=1.1ms(34) crew_ai_brain=0.3ms(3) police_brain=0.1ms(13) assault_director=0.0ms(1) npc_gunner=0.0ms(14) civilian_brain=0.0ms(16) custody_system=0.0ms(1)
+[PO5 155.2s] pilot: use LidDrill (place_drill) -> OK in 3.0 s
+[PO5 155.2s] HITCH frame=59ms t=129.7 process=3.6ms physics=25.9ms draws=2538 objects=2795 nodes=19531 enemies=15 spawned=[] top: npc_motor=7.2ms(186) crew_ai_brain=1.6ms(18) anim_driver=1.4ms(34) police_brain=1.1ms(78) assault_director=0.2ms(6) civilian_brain=0.2ms(96) npc_gunner=0.2ms(84) guard_brain=0.1ms(6)
+[PO5 157.6s] TEL worst_frame=92ms t=132 phase=3 phys=24.9ms proc=6.4ms nodes=19532 enemies=15 civs=16 crew=[0:0@(23.6, -0.3, 16.1) 1:0@(27.5, 0.0, 15.9) 2:0@(22.1, 0.0, 15.5) 3:0@(20.4, 0.0, 15.8) nearest_enemy=5.3m within15=4 input_enabled=true captured=true paused_by={  }]
+[PO5 162.9s] pilot: use TellerGate (open_door) -> OK in 6.5 s
+[PO5 165.3s] pilot: reload in a lull (weapon.corsair_ar 19/30, reserve 92)
+[PO5 167.6s] TEL worst_frame=41ms t=142 phase=3 phys=24.9ms proc=9.6ms nodes=19546 enemies=12 civs=16 crew=[0:0@(23.3, -0.3, 15.9) 1:0@(27.5, 0.0, 16.0) 2:0@(21.9, 0.0, 16.0) 3:0@(20.4, 0.0, 15.9) nearest_enemy=5.1m within15=2 input_enabled=true captured=true paused_by={  }]
+[PO5 169.8s] pilot: reload in a lull (weapon.corsair_ar 17/30, reserve 81)
+[PO5 176.1s] pilot: (15.9, -3.8, 20.5) unreachable: the nav path ends at (23.0, 0.2, 16.1), 8.4 m short
+[PO5 176.1s] pilot: goto (15.9, -3.8, 20.5) FAILED at (23.3, -0.3, 15.9) after 0.0 s
+[PO5 176.1s] pilot: could not reach /root/HeistRuntime/OstranderFederal/Gameplay/Loot/BondSafe/Interactable (place_drill)
+[PO5 176.1s] pilot: place_drill out of reach after the walk: not pressing
+[PO5 176.1s] skipping unreachable /root/HeistRuntime/OstranderFederal/Gameplay/Loot/BondSafe/Interactable (place_drill) for this run (no navmesh path)
+[PO5 176.2s] pilot: (15.9, -3.8, 20.5) unreachable: the nav path ends at (23.0, 0.2, 16.1), 8.4 m short
+[PO5 176.2s] pilot: goto (15.9, -3.8, 20.5) FAILED at (23.3, -0.3, 15.9) after 0.0 s
+[PO5 176.2s] FINDING objective bond_safe: marker at (14.7, -4.0, 20.5) not reachable
+[PO5 177.6s] TEL worst_frame=43ms t=152 phase=3 phys=22.8ms proc=3.0ms nodes=18712 enemies=2 civs=16 crew=[0:0@(22.9, -0.3, 15.7) 1:0@(27.5, 0.0, 16.0) 2:0@(21.9, 0.0, 16.0) 3:0@(20.4, 0.3, 16.0) nearest_enemy=5.0m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 182.2s] pilot: t=5 at (14.0, 0.8, 4.7) corner (14.0, 2.5, 2.3) yaw_err -0.00 fwd=true path=40 mouse_mode=2 state=0 look=(12.55,0.00) pin_yaw=12.5479159846449 bot=false
+[PO5 187.2s] pilot: t=10 at (15.0, 6.9, 2.8) corner (15.0, 7.6, 3.6) yaw_err -0.01 fwd=true path=26 mouse_mode=2 state=0 look=(3.15,0.00) pin_yaw=3.13392538544703 bot=false
+[PO5 187.6s] TEL worst_frame=27ms t=162 phase=3 phys=24.6ms proc=5.4ms nodes=18796 enemies=3 civs=16 crew=[0:0@(15.0, 7.7, 4.0) 1:0@(13.9, 5.9, 4.6) 2:0@(14.8, 5.0, 5.9) 3:0@(14.0, 5.0, 5.9) nearest_enemy=12.9m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 188.6s] HITCH frame=56ms t=163.1 process=5.4ms physics=23.7ms draws=901 objects=960 nodes=18796 enemies=3 spawned=[] top: npc_motor=1.0ms(19) crew_ai_brain=0.8ms(3) anim_driver=0.7ms(26) police_brain=0.2ms(2) civilian_brain=0.0ms(16) assault_director=0.0ms(1) custody_system=0.0ms(1) npc_gunner=0.0ms(7)
+[PO5 188.6s] pilot: use StairDoorSAE (open_door) -> OK in 0.0 s
+[PO5 193.1s] pilot: t=15 at (19.6, 8.6, 7.8) corner (27.9, 8.8, 7.5) yaw_err 0.00 fwd=true path=17 mouse_mode=2 state=0 look=(4.74,0.00) pin_yaw=4.74468861228651 bot=false
+[PO5 195.7s] HITCH frame=57ms t=170.2 process=15.0ms physics=24.2ms draws=1187 objects=1322 nodes=18685 enemies=3 spawned=[] top: npc_motor=1.2ms(19) crew_ai_brain=0.9ms(3) anim_driver=0.8ms(25) police_brain=0.3ms(2) civilian_brain=0.0ms(16) assault_director=0.0ms(1) custody_system=0.0ms(1) npc_gunner=0.0ms(6)
+[PO5 195.7s] pilot: use PresidentDoor (open_door) -> OK in 0.0 s
+[PO5 197.6s] TEL worst_frame=57ms t=172 phase=3 phys=23.4ms proc=10.8ms nodes=18493 enemies=3 civs=16 crew=[0:0@(29.2, 8.6, 3.2) 1:0@(27.9, 8.6, 6.7) 2:0@(27.1, 8.6, 7.6) 3:0@(25.5, 8.6, 7.9) nearest_enemy=14.2m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 201.3s] HITCH frame=100ms t=175.7 process=11.3ms physics=23.6ms draws=621 objects=735 nodes=18402 enemies=3 spawned=[] top: npc_motor=0.6ms(19) anim_driver=0.5ms(22) crew_ai_brain=0.5ms(3) police_brain=0.0ms(2) civilian_brain=0.0ms(16) assault_director=0.0ms(1) custody_system=0.0ms(1) guard_brain=0.0ms(1)
+[PO5 201.3s] pilot: use PresidentSafe (place_drill) -> OK in 3.0 s
+[PO5 207.6s] TEL worst_frame=100ms t=182 phase=3 phys=23.7ms proc=2.6ms nodes=18586 enemies=5 civs=16 crew=[0:0@(29.9, 8.6, 1.5) 1:0@(26.5, 8.6, 2.1) 2:0@(28.4, 8.6, 4.6) 3:0@(30.5, 8.6, 4.7) nearest_enemy=14.9m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 216.3s] pilot: t=5 at (25.3, 8.6, 7.9) corner (19.7, 8.8, 7.7) yaw_err 0.00 fwd=true path=34 mouse_mode=2 state=0 look=(7.82,0.00) pin_yaw=7.81764518358376 bot=false
+[PO5 217.6s] TEL worst_frame=26ms t=192 phase=3 phys=23.3ms proc=7.3ms nodes=18586 enemies=5 civs=16 crew=[0:0@(20.8, 8.6, 7.7) 1:0@(25.6, 8.6, 8.3) 2:0@(25.0, 8.6, 7.7) 3:0@(27.8, 8.6, 7.3) nearest_enemy=12.9m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 221.3s] pilot: t=10 at (14.7, 8.6, 7.0) corner (14.6, 8.6, 6.1) yaw_err -0.00 fwd=true path=29 mouse_mode=2 state=0 look=(12.61,0.00) pin_yaw=12.6135592510412 bot=false
+[PO5 226.3s] pilot: t=15 at (19.2, 5.0, 7.7) corner (21.1, 5.2, 7.7) yaw_err 0.00 fwd=true path=11 mouse_mode=2 state=0 look=(17.31,0.00) pin_yaw=17.3145061433764 bot=false
+[PO5 227.5s] TEL worst_frame=26ms t=202 phase=3 phys=22.9ms proc=5.6ms nodes=18586 enemies=5 civs=16 crew=[0:0@(23.8, 5.0, 7.6) 1:0@(17.7, 5.0, 7.5) 2:0@(18.9, 5.0, 7.5) 3:0@(14.2, 5.0, 6.6) nearest_enemy=9.3m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 236.3s] HITCH frame=59ms t=210.8 process=5.7ms physics=23.5ms draws=621 objects=735 nodes=18591 enemies=5 spawned=[] top: anim_driver=1.3ms(24) crew_ai_brain=1.1ms(3) npc_motor=0.8ms(21) police_brain=0.1ms(4) civilian_brain=0.0ms(16) assault_director=0.0ms(1) custody_system=0.0ms(1) npc_gunner=0.0ms(5)
+[PO5 236.4s] pilot: use ServerDoor (open_door) -> OK in 8.0 s
+[PO5 237.5s] TEL worst_frame=59ms t=212 phase=3 phys=56.4ms proc=7.7ms nodes=18591 enemies=5 civs=16 crew=[0:0@(25.9, 5.0, 5.6) 1:0@(24.9, 5.0, 6.1) 2:0@(23.7, 5.0, 7.6) 3:0@(13.9, 5.0, 8.4) nearest_enemy=10.0m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 238.6s] HITCH frame=64ms t=213.1 process=4.2ms physics=23.6ms draws=621 objects=735 nodes=18598 enemies=5 spawned=[] top: npc_motor=2.3ms(21) crew_ai_brain=0.7ms(3) anim_driver=0.6ms(24) police_brain=0.1ms(4) civilian_brain=0.0ms(16) assault_director=0.0ms(1) custody_system=0.0ms(1) npc_gunner=0.0ms(5)
+[PO5 238.7s] pilot: use ServerDrives (bag_loot) -> OK in 1.0 s
+[PO5 239.5s] shot C:\Users\Aaron\caperworks-gpu\gpu\renders\a\of_hitch/09_auto_213.png
+[PO5 239.5s] marker president_safe@30,9,0: usable again, back to it
+[PO5 239.5s] HITCH frame=843ms t=213.4 process=4.2ms physics=23.6ms draws=1719 objects=2768 nodes=18598 enemies=5 spawned=[] top: npc_motor=7.0ms(168) crew_ai_brain=6.8ms(24) hud_model=1.5ms(1) anim_driver=1.0ms(24) hud_model.flush=0.8ms(1) police_brain=0.4ms(32) hud_model.objectives=0.4ms(1) civilian_brain=0.3ms(128)
+[PO5 240.7s] FAIL budget 240 s exceeded
+[PO5 241.3s] shot C:\Users\Aaron\caperworks-gpu\gpu\renders\a\of_hitch/10_budget_exceeded.png
+[PO5 241.3s] STATS difficulty=5 police=27 peak_alive=15 specials={ &"enemy.longshot": 1 } composition={ &"enemy.security_officer": 9, &"enemy.patrol_officer": 9, &"enemy.tac_light": 7, &"enemy.tac_heavy": 1, &"enemy.longshot": 1 } | slot 0 [weapon.corsair_ar / armor.tailored_suit] downs 0 custody 0 revived 0 regained 0; slot 1 [weapon.corsair_ar / armor.tailored_suit] downs 0 custody 0 revived 0 regained 0; slot 2 [weapon.corsair_ar / armor.tailored_suit] downs 0 custody 0 revived 0 regained 0; slot 3 [weapon.corsair_ar / armor.tailored_suit] downs 0 custody 0 revived 0 regained 0
+INTAKE pilot standing loud 209 s, 0 dmg, 0.00 dmg/s, 1.5 enemies within 20 m on average | by attacker [hits, dmg, nulled] { "enemy.security_officer": [0, 0.0, 33], "enemy.tac_light": [0, 0.0, 8] } | by range {  }
+[PO5 241.3s] RESULT FAIL (code 2) flow=auto_loud heist=Ostrander Federal seed=1037

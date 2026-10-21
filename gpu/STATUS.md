@@ -206,3 +206,25 @@ NPC placement is seeded but animation/tier state at capture time may differ, so 
   unit0-3 shots all frame officers. **routine_unit3 still frames an interior door/hand, not the officer** (603 KB, same as before).
 - Looks: routine 4 of 4 `_duty`, hazardous 0 of 6 `_duty` (the same as GPU-8.1, and consistent with "duty looks on Routine/Tense" in A's 8aea4ae3, so probably intended).
 - Output: `gpu/renders/d/wave2/` (sheet, 2 group shots, 8 unit shots, d145_wave_log.txt, render_log.txt).
+## GPU-12: ENV A OF loud-hitch hunt on the RX 9070 XT
+- Tree: local branch gpu/a2 = env/a-core 767f858b (contains 8e5412e9) + merge of env/c-worlds 761b3f94 (clean). Import exit 0, 7 s.
+- `--path game --resolution 1920x1080 res://tests/a/e2e/po5_runner.tscn -- --po5-flow=auto_loud --po5-out=<repo>\gpu\renders\a\of_hitch --po5-budget=240 --po5-heist="Ostrander Federal" --po5-difficulty=Cataclysm --po5-seed=1037 --po5-crew-dmg=0 --po5-hitch-ms=50`
+  exit 2, 242 s: **`RESULT FAIL (code 2)`, `FAIL budget 240 s exceeded`**.
+  - The heist never ended. The pilot lost time on two unreachable objective markers:
+    `FINDING objective deposit_boxes: marker at (15.0, -3.0, 13.3) not reachable` (74.4 s) and
+    `FINDING objective bond_safe: marker at (14.7, -4.0, 20.5) not reachable` (176.2 s; goto failed 0.0 s in, from (23.3, -0.3, 15.9)).
+  - Cataclysm: police=27, peak_alive=15 (security 9, patrol 9, tac_light 7, tac_heavy 1, longshot 1). Crew took 0 damage (crew-dmg=0).
+- **No `HITCHES n of m ... worst x ms` line.** po5_flow.gd prints it only from the `heist_ended` handler (l.70-73), and on a budget exit
+  the heist never ends. A should also print it from the budget/_finish path. Derived from the per-hitch lines instead:
+  **26 heist frames over 50 ms, worst 2264 ms** (total heist frame count not printed).
+- Hitches by frame ms (t = heist time): 2264 @0.1, 865 @1.2, 905 @6.4, 940 @106.6, 843 @213.4, 601 @214.6, 273 @3.9, 147 @0.3, 136 @4.1,
+  100 @175.7, 92 @129.6, 90 @3.8, and 14 more between 50 and 90 ms. The first ~7 s are heist-start spikes; the real loud-phase ones are 940 @106.6 and 843/601 @213-215.
+- 5 worst HITCH lines:
+    [PO5 23.2s] HITCH frame=2264ms t=0.1 process=49.2ms physics=63.3ms draws=2747 objects=3460 nodes=19025 enemies=9 spawned=[] top: anim_driver=24.6ms(30) npc_motor=8.0ms(216) stealth_director=1.5ms(8) civilian_brain=1.0ms(144) custody_system=0.9ms(8) crew_ai_brain=0.8ms(24) guard_brain=0.3ms(72) guard_brain.calm=0.1ms(72)
+    [PO5 132.1s] HITCH frame=940ms t=106.6 process=11.3ms physics=25.3ms draws=650 objects=1294 nodes=19056 enemies=10 spawned=[] top: npc_motor=9.8ms(208) crew_ai_brain=8.8ms(24) police_brain=5.2ms(72) anim_driver=3.5ms(29) hud_model=1.3ms(1) hud_model.flush=0.7ms(1) assault_director=0.4ms(8) hud_model.objectives=0.3ms(1)
+    [PO5 31.1s] HITCH frame=905ms t=6.4 process=48.1ms physics=60.8ms draws=2230 objects=2977 nodes=19241 enemies=11 spawned=[] top: npc_motor=14.2ms(232) crew_ai_brain=5.2ms(24) anim_driver=1.6ms(32) civilian_brain=0.9ms(144) hud_model=0.7ms(1) door=0.6ms(24) guard_brain=0.4ms(72) hud_model.objectives=0.3ms(1)
+    [PO5 25.0s] HITCH frame=865ms t=1.2 process=23.5ms physics=23.9ms draws=2832 objects=4190 nodes=19044 enemies=9 spawned=[] top: npc_motor=6.3ms(216) anim_driver=1.5ms(30) stealth_director=1.0ms(8) crew_ai_brain=0.7ms(24) civilian_brain=0.5ms(144) guard_brain=0.2ms(72) custody_system=0.1ms(8) npc_gunner=0.1ms(72)
+    [PO5 239.5s] HITCH frame=843ms t=213.4 process=4.2ms physics=23.6ms draws=1719 objects=2768 nodes=18598 enemies=5 spawned=[] top: npc_motor=7.0ms(168) crew_ai_brain=6.8ms(24) hud_model=1.5ms(1) anim_driver=1.0ms(24) hud_model.flush=0.8ms(1) police_brain=0.4ms(32) hud_model.objectives=0.4ms(1) civilian_brain=0.3ms(128)
+- ERRORs: `most reachable polygons` x14, `!is_inside_tree() ... Transform3D()` x5, `Playback can only happen when a node is inside the scene tree` x1,
+  `6 resources still in use at exit`.
+- Output: `gpu/renders/a/of_hitch.log` + 10 PNGs in `gpu/renders/a/of_hitch/` (menu -> heist start -> auto_6/106/213 -> budget_exceeded).
