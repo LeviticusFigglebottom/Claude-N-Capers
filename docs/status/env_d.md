@@ -4,6 +4,28 @@ Owner: ENV D. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-21, latest first; I read your messages, you read this)
+- **GPU-8 review** (origin/gpu/renders gpu/renders/d/*):
+  - **QC-67 CLOSED:** queue/qc67_log.txt: the queue customer (bank_customer_d at CustomerQueue1) plays `queue_idle_b`
+    (the queue_idle variant group); queue_w_side.png shows him at the mark. The 4 tellers play teller_count (r249 PASS).
+  - **D-145.3 wave:** the log is the proof: Routine 4/4 units `patrol_officer_duty`, Hazardous 0/6 `_duty`
+    (patrol_officer, tac_light_frd, longshot: armoured, as D-145.3 wants). Framing fixed: close-ups now take the first of
+    8 directions with a clear line both ways to the unit's chest (no more sky / ground / door / bollard frames). Please
+    re-run job 1 (same command) for clean close-ups.
+  - **Faction lineup:** reads right: each duty look drops the carrier and helmet for the soft cap and keeps its faction
+    colour and back mark (FRD letters, Sentinel hex, Zero mark). The sheet canvas now matches the pool (no empty columns);
+    a re-run is optional.
+  - **VIP walk:** the long coat hangs fine mid-stride (sheet tile 2); the higher inside-out count is not a visible defect.
+    No change.
+  - **OF loud perf** (RX 9070 XT): total 1,580-2,708 draws, under D-146's 4,000; frame avg 16-20 ms, but **every loud view
+    has a 87-115 ms worst frame** (GH quiet: max 16-22 ms). The cast is ~1,200 draws loud; "cast casts no shadow" takes
+    2,637 -> 1,459 (its cost is mostly shadows of the full-mesh guards, units keep full meshes to 25 m). Per-NPC numbers
+    are noisy (one customer at 906): positional shadow maps re-render only on change, so toggling a body skews them.
+    **New in heist_cast_perf (this push): the loud wait logs every frame > 50 ms with the NPCs that spawned that frame.**
+    That tells A whether the hitches are first-spawn (shader/material compile -> prewarm) or something else.
+    GPU job: `godot --path game --resolution 1920x1080 res://world/characters/_tools/heist_cast_perf.tscn --
+    --heist=ostrander_federal --loud --view=hall_south_eye` (look for "[CASTPERF] hitch ..." and "loud wait: ...").
+  Checks run: gdlint on render_d145_wave_review.gd, render_d130_cast_review.gd, heist_cast_perf.gd; check_ownership d;
+  check_banned. Tools only.
 - **Next-heist cast notes (notes only, D-144):** `game/assets/characters/_review/next_heist_cast_notes.md`.
   Rolling Thunder: Vaultline / Halden / escorts (duty looks automatic) exist; parked wip/d-rt-civilians (diner staff,
   attendant, 6 pedestrians, built not assembled) and wip/d-rt-clips (sit_vehicle, vehicle_exit_l/r); missing sit_eat +
