@@ -111,6 +111,9 @@ var _aim_head: bool = false
 var _interact_ticks: int = 0
 var _drop_pending: bool = false
 var _secure_look: Vector3 = Vector3.INF
+## _revive_threat: the revive target the clearing time is counted for, and the time spent clearing it (s).
+var _clear_for_net_id: int = 0
+var _clear_spent_s: float = 0.0
 ## The heist's BagLifts (found once, _in_lift_car).
 var _lifts: Array[BagLift] = []
 var _lifts_scanned: bool = false
@@ -363,8 +366,13 @@ func _think(delta: float) -> CrewIntent:
 			goal_dist = d
 			_interact_ticks = 0
 		else:
-			look_point = revive_target.global_position + Vector3(0.0, 0.4, 0.0)
-			interacting = _hold_revive(i)
+			var foe: NpcBase = null if holding else _revive_threat(revive_target, delta)
+			if foe != null:
+				target_enemy = foe  # clear it first (_weapon_controls fires; not interacting)
+				_interact_ticks = 0
+			else:
+				look_point = revive_target.global_position + Vector3(0.0, 0.4, 0.0)
+				interacting = _hold_revive(i)
 	elif mobile:
 		_revive_best_d = INF
 		_revive_stall_s = 0.0
@@ -413,6 +421,24 @@ func _think(delta: float) -> CrewIntent:
 	i.crouch = _in_cover and mobile and wish.length() <= 0.01 and _rt.went_loud
 	_weapon_controls(i, eye, delta, interacting)
 	return i
+
+
+## D-145 (DB Tense seed 1, crew wipe at the dock zone): a hostile within revive_clear_m of `c` while this AI still
+## has clearing time left for `c` (revive_clear_s, spent while it returns non-null) and `c` is not in a last stand
+## (bleed-out under revive_clear_min_bleed_s). The bot fights it before kneeling. Else null.
+func _revive_threat(c: CrewController, delta: float) -> NpcBase:
+	if c.net_id != _clear_for_net_id:
+		_clear_for_net_id = c.net_id
+		_clear_spent_s = 0.0
+	if _clear_spent_s >= tweak.revive_clear_s or c.health == null or c.health.bleedout_left < tweak.revive_clear_min_bleed_s:
+		return null
+	for role: StringName in HOSTILE_ROLES:
+		for n: Node in _rt.npcs(role):
+			var npc: NpcBase = n as NpcBase
+			if npc != null and _is_hostile(npc) and npc.global_position.distance_to(c.global_position) <= tweak.revive_clear_m:
+				_clear_spent_s += delta
+				return npc
+	return null
 
 
 ## Hold interact on the assigned downed crew member once settled. Returns true while holding.
