@@ -105,7 +105,8 @@ func test_early_alarm_crash_stop_and_lockdown() -> void:
 	assert_eq(m.layout_id, layout_id)
 	assert_true(m._trucks.has(truck), "the layout's truck is in play")
 	assert_true(truck.locked_down, "locked down: deadbolts thrown")
-	assert_has(m.find_tagged(&"trucks"), truck, "[trucks] marks the truck in play")
+	assert_has(m.find_tagged(RollingThunderMission.TAG_TRUCK_IN_PLAY), truck, "[trucks] marks the truck in play")
+	assert_eq(m.objective_state(&"ambush"), Enums.ObjectiveState.COMPLETED, "an early alarm: the crash is the ambush")
 	await _open_and_secure(m, truck)
 
 
@@ -115,7 +116,7 @@ func _open_and_secure(m: RollingThunderMission, truck: ArmoredTruck) -> void:
 	var bags: Array[Node] = _rt.dynamic_root.find_children("*", "LootBag", true, false)
 	assert_true(bags.size() >= 4, "cargo spawned at the opened truck (%d bags)" % bags.size())
 	assert_eq(m.objective_state(&"trucks"), Enums.ObjectiveState.COMPLETED, "every truck opened")
-	assert_eq(truck.objective_tag, &"cargo", "an opened truck is a [cargo] mark")
+	assert_eq(truck.objective_tag, RollingThunderMission.TAG_TRUCK_OPEN, "an opened truck is a [cargo] mark")
 	for i: int in RollingThunderMission.REQUIRED_BAGS:
 		EventBus.loot_secured.emit(0, RollingThunderMission.LOOT_CASH, 1000)
 	await wait_physics_frames(1)
