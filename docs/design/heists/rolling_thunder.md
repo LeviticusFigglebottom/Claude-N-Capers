@@ -1501,6 +1501,7 @@ picks change), library materials only (`tools/blender/props/rolling_thunder.py`,
 | `prop_neon_eat` | the HALFWAY neon generator, text "EAT" (red) / "COFFEE  PIE" (mint) | Diner neon inside, as the LEAD asked | DR, the kitchen wall behind the counter |
 | `vinyl_checker` (texgen) | `vinyl_floor`'s model, 0.25 m cream / charcoal squares | Terrazzo and carpet read as a bank lobby / office | DR and U1 floors (ceilings: flat `plaster`, no drop grid) |
 | prop tints `rt_vinyl_red`, `rt_laminate_cream`, `rt_laminate_red`, `rt_enamel_red` | `_matlib.py` tints of library surfaces | the diner palette (red vinyl, cream formica) | the props above |
+| `prop_pole_sign_halfway` (GPU-22) | the HALFWAY neon lettering on both faces of a dark cabinet (4.6–6.4 m) on a round pole; `pole_sign` kind, the pole is the only collider | The wall neon is edge-on from the street (rc_diner_neon showed a sliver of pink); no street pole sign in the catalog. The LEAD: the diner is the convoy stop's landmark | Tannery's south sidewalk by the diner's NE corner, west of the trench (32.5, 0, 10), faces E / W; `rc_diner_neon` now looks east from the junction corner at its W face |
 
 `prop_diner_booth` (batch 3) is now placed: three fixed booths along the Orchard windows (`DinerBooth0-2`, x 14.82, z
 17.0 / 19.45 / 24.6; the side door and the review camera clear). Nobody sits in them: the bench-to-table sliver (the

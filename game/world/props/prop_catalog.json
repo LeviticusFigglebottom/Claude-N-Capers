@@ -14119,6 +14119,42 @@
   "weight": 1.0,
   "z": 0.0
  },
+ "prop_pole_sign_halfway": {
+  "aabb": [
+   -1.9915,
+   0.0,
+   -0.24,
+   3.983,
+   6.404,
+   0.48
+  ],
+  "clear": 0.0,
+  "fixture": false,
+  "glb": "res://assets/props/prop_pole_sign_halfway/prop_pole_sign_halfway.glb",
+  "group": "exterior",
+  "has_light": false,
+  "hosts": [],
+  "keepout": [],
+  "kind": "pole_sign",
+  "mount": "",
+  "nodes": [
+   "Back",
+   "BackFrame",
+   "Body"
+  ],
+  "pin_only": true,
+  "place": "none",
+  "prefab": "",
+  "scene": "res://world/props/exterior/prop_pole_sign_halfway.tscn",
+  "seat_side": "front",
+  "standoff": 0.0,
+  "support": false,
+  "surface": "metal",
+  "top": 0.0,
+  "visibility_range_end": 0.0,
+  "weight": 1.0,
+  "z": 0.0
+ },
  "prop_police_helicopter": {
   "aabb": [
    -3.2583,
