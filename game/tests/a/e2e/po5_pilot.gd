@@ -997,14 +997,16 @@ func has_los(point: Vector3, target: Node = null) -> bool:
 ## Aim at the head and fire in short bursts for up to `max_s` or until it dies / leaves sight.
 func engage(npc: NpcBase, max_s: float) -> void:
 	var t: float = 0.0
-	while t < max_s and npc.is_alive():
+	# B (DB Tense r256 s1, doctor-bag cell): signal 11 at the fire loop's await; the target can be freed (killed and
+	# cleaned up) during any await here, so check it after each one.
+	while t < max_s and is_instance_valid(npc) and npc.is_alive():
 		var aim_pt: Vector3 = _aim_point(npc)
 		if aim_pt == Vector3.INF:
 			break
 		await face(aim_pt, 0.03, 0.25)
-		if not has_los(aim_pt, npc):
+		if not is_instance_valid(npc) or not has_los(aim_pt, npc):
 			break
-		if not await _ensure_ammo():
+		if not await _ensure_ammo() or not is_instance_valid(npc):
 			break  # both weapons dry: nothing to shoot with
 		inp.press(&"fire")
 		await inp.ticks(2)
