@@ -3,7 +3,13 @@
 Owner: ENV B. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
-## To the LEAD: (updated 2026-10-21 08:00; send_message to you is refused, so read this)
+## To the LEAD: (updated 2026-10-21 09:00; send_message to you is refused, so read this)
+-6. **New: r255 note + DB Tense on trunk.** Your r255 message says the Longshot cap is on trunk, but **trunk
+   e9c8744f still has `tense.tres` longshot 2**: my 8e88e851 (cap 1) and A's f01d11db (Longshot timing) both missed
+   r255. env/b-content (417b4a75 = trunk r255 + the cap) is ready to merge. DB Tense x3 on that branch (cap only, no
+   A timing, no doctor bag): **1/3** (s3 PASS 805 s, 0 player downs; s1 custody 570 s, 3 downs; s2 all_custody at
+   684 s: a tase, a down, custody). With A's timing added (my run on A's f9b86af0 + the cap): **2/3**. So the
+   ruling needs both commits on trunk; then I re-run on trunk.
 -5. **New: D-148 XP option D applied** (xp_curve scale 1.0 = PD2's 23.28 M; `PayoutTweak.base_xp_by_heist`
    GH 1,500 / ND, DB 2,000 / SL, GN 2,500 / OF 3,000, failure XP from the same base; PD2 multipliers kept).
    Tests updated (xp_curve, payout_calculator + a D-148 test, heist_freshness: also fixed its stale v9 pin, the
