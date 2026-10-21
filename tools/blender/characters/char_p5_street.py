@@ -26,6 +26,11 @@ sand/brown/amber.
   bomber over a graphite knit, charcoal work trousers, grey trainers, a big green insulated delivery backpack.
 * ``char_street_pedestrian_f``: an office worker, a woman in her 50s, light skin, brown side part: a forest-green
   blazer over a white shirt, black trousers, low heels, a black leather shoulder bag, silver stud earrings.
+* ``char_street_pedestrian_g`` / ``_h`` / ``_i`` (D-147 / D-149: zero twins at the top roll, 21 live on 21 looks):
+  **finish-only** swaps of a / b / f. The same meshes (body params, hair style, age and every garment unchanged),
+  with a new skin tone, hair colour and garment materials (``recolor``), so each is a new face for the pool:
+  g = the commuter in a camel mac over a navy roll-neck (skin 5, brown hair); h = the jogger in a cream hoodie and
+  navy joggers (skin 2, blond); i = the office worker in a grey blazer over an ivory silk shirt (skin 4, dark hair).
 
 Meshes: ``Body`` (covered skin removed), ``Hair``, ``Outfit``, ``Gear``, ``Headwear`` (caps, bun, glasses, earrings).
 No blend shapes (baked at the params below).
@@ -64,6 +69,23 @@ VARIANTS = {
                                  "beard_shadow": 0.6, "hair": "side_part", "hair_color": "dark", "look": "rider"},
     "char_street_pedestrian_f": {"height": 1.69, "build": 0.55, "gender": 1.0, "age": 0.55, "skin": 1,
                                  "hair": "side_part", "hair_color": "brown", "look": "office"},
+    # finish-only swaps (D-147): a / b / f's params with only skin, hair colour and garment materials changed
+    "char_street_pedestrian_g": {"height": 1.71, "build": 0.4, "gender": 1.0, "age": 0.32, "skin": 5,
+                                 "hair": "bob", "hair_color": "brown", "look": "commuter",
+                                 "recolor": {"char_mac_cherry": "char_coat_camel", "char_knit_grey": "char_knit_navy"},
+                                 "note": "Commuter g (finish swap of a): belted camel mac over a navy roll-neck, black "
+                                         "trousers, black flats, brown bob"},
+    "char_street_pedestrian_h": {"height": 1.80, "build": 0.35, "gender": 0.0, "age": 0.12, "skin": 2,
+                                 "beard_shadow": 0.2, "hair": "short", "hair_color": "blond", "look": "jogger",
+                                 "recolor": {"char_hoodie_heather": "char_hoodie_cream",
+                                             "char_trousers_black": "char_chino_navy"},
+                                 "note": "Jogger h (finish swap of b): cream hoodie (hood down), navy joggers, white trainers, "
+                                         "black sports watch, short blond hair"},
+    "char_street_pedestrian_i": {"height": 1.69, "build": 0.55, "gender": 1.0, "age": 0.55, "skin": 4,
+                                 "hair": "side_part", "hair_color": "dark", "look": "office",
+                                 "recolor": {"char_blazer_forest": "char_blazer_grey", "char_shirt_white": "char_silk_ivory"},
+                                 "note": "Office worker i (finish swap of f): grey blazer over an ivory silk shirt, black "
+                                         "trousers, low heels, black leather shoulder bag, dark side part"},
 }
 
 ROSE = "char_diner_rose"
@@ -242,6 +264,11 @@ _looks = {"waitress": waitress, "cook": cook, "attendant": attendant, "commuter"
 
 def recipe(kit: Kit) -> None:
     _looks[kit.opts["look"]](kit)
+    table: dict[str, str] = kit.opts.get("recolor", {})
+    if table:
+        for m in (kit.soft, kit.gear, kit.head, kit.slung):
+            m.m = [table.get(x, x) for x in m.m]
+        kit.notes["look"] = kit.opts["note"] + " [" + ", ".join(f"{a} -> {b}" for a, b in sorted(table.items())) + "]"
 
 
 def build(ctx) -> None:

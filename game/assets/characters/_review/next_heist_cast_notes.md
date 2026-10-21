@@ -96,3 +96,12 @@ swaps of existing pedestrians (finish only, D-147) cover it; not built.
   fall back to capsules. The PO-5.7 "every spawn tag maps" rule needs an exception for these two tags, with a test (A).
 - For A once prep/d-rt merges, in `npc_visual_tweak.tres` `heist_tag_characters.rolling_thunder`: civ_street, civ_bus and
   civ_diner get the 6 `street_pedestrian*` (18 looks); add `staff_diner`, `staff_booth` and `driver_mixer` from p5_cast.
+
+### Zero twins at the top roll (D-149 item 1; finishes only, D-147)
+`street_pedestrian_g` / `_h` / `_i` are finish swaps of a / b / f: the same body params, hair style, age and garment
+meshes (identical tri counts per mesh), with only skin tone, hair colour and garment materials changed (`recolor` in
+char_p5_street.py). g = camel mac over a navy roll-neck, brown bob; h = cream hoodie, navy joggers, blond; i = grey
+blazer over ivory silk, dark hair. The street pool is now 21 looks (21 live at most), with unique faces and at least 7
+of each gender (test_p5_cast). i keeps f's shoulder bag, so its cower offset is 0.14. Review:
+`rt_d1_cast/rt_street_swaps_{sheet,lineup_30m,silhouette_30m}.png` (each base beside its swap). g's first ice-blue mac
+read as a lab coat, so it is camel now.

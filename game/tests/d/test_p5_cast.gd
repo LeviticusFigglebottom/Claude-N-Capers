@@ -81,6 +81,9 @@ const NEW: Array[String] = [
 	"char_street_pedestrian_d",
 	"char_street_pedestrian_e",
 	"char_street_pedestrian_f",
+	"char_street_pedestrian_g",
+	"char_street_pedestrian_h",
+	"char_street_pedestrian_i",
 ]
 ## heist -> roles the index must carry (D3-01 brief; D-075 renamed meridian_federal and added
 ## bank_officer).
@@ -159,7 +162,7 @@ const POOLS: Array = [
 	["glasshouse", ["civ_customer"], 12, 4],
 	["rolling_thunder", ["convoy_t1", "convoy_t2", "convoy_t3"], 6, 2],
 	["rolling_thunder", ["site_guard", "guard_site_gate", "guard_site_frame", "guard_site_cabins"], 10, 3],
-	["rolling_thunder", ["street_civilian", "civ_street", "civ_bus", "civ_diner"], 18, 6],
+	["rolling_thunder", ["street_civilian", "civ_street", "civ_bus", "civ_diner"], 21, 7],
 	["rolling_thunder", ["diner_staff", "staff_diner"], 2, 1],
 	["rolling_thunder", ["carpark_attendant", "staff_booth"], 1, 0],
 	["rolling_thunder", ["ram_driver", "driver_mixer"], 1, 0],

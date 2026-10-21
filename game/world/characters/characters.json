@@ -1127,6 +1127,24 @@
 			"test": false
 		},
 		{
+			"asset": "char_street_pedestrian_g",
+			"id": "street_pedestrian_g",
+			"scene": "res://world/characters/street_pedestrian_g/street_pedestrian_g.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_street_pedestrian_h",
+			"id": "street_pedestrian_h",
+			"scene": "res://world/characters/street_pedestrian_h/street_pedestrian_h.tscn",
+			"test": false
+		},
+		{
+			"asset": "char_street_pedestrian_i",
+			"id": "street_pedestrian_i",
+			"scene": "res://world/characters/street_pedestrian_i/street_pedestrian_i.tscn",
+			"test": false
+		},
+		{
 			"asset": "char_tac_heavy",
 			"id": "tac_heavy",
 			"scene": "res://world/characters/tac_heavy/tac_heavy.tscn",

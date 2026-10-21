@@ -9,6 +9,7 @@
 		"npc_it_contractor": 0.13,
 		"street_pedestrian_c": 0.12,
 		"street_pedestrian_e": 0.25,
-		"street_pedestrian_f": 0.14
+		"street_pedestrian_f": 0.14,
+		"street_pedestrian_i": 0.14
 	}
 }
