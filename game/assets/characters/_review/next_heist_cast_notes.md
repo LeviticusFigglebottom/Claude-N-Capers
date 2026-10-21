@@ -100,8 +100,17 @@ swaps of existing pedestrians (finish only, D-147) cover it; not built.
 ### Zero twins at the top roll (D-149 item 1; finishes only, D-147)
 `street_pedestrian_g` / `_h` / `_i` are finish swaps of a / b / f: the same body params, hair style, age and garment
 meshes (identical tri counts per mesh), with only skin tone, hair colour and garment materials changed (`recolor` in
-char_p5_street.py). g = camel mac over a navy roll-neck, brown bob; h = cream hoodie, navy joggers, blond; i = grey
+char_p5_street.py). g = teal mac over a navy roll-neck, brown bob; h = cream hoodie, navy joggers, blond; i = grey
 blazer over ivory silk, dark hair. The street pool is now 21 looks (21 live at most), with unique faces and at least 7
 of each gender (test_p5_cast). i keeps f's shoulder bag, so its cower offset is 0.14. Review:
 `rt_d1_cast/rt_street_swaps_{sheet,lineup_30m,silhouette_30m}.png` (each base beside its swap). g's first ice-blue mac
-read as a lab coat, so it is camel now.
+read as a lab coat, then camel read close to civilian_customer_a's camel coat in the lineups, so it is teal.
+
+### RT cast lineups for the PO (`rt_lineup/`, render_rt_lineup.gd)
+Six lit 1920x1080 contact sheets, each look shown front and three-quarter, idle, full LOD, captioned:
+`rt_lineup_convoy` (marshal and crew a-f), `rt_lineup_escorts` (Routine/Tense duty → Hazardous → Brutal → Lethal →
+Cataclysm, plus the rare Wrecker), `rt_lineup_street_reused` (the 12 OF looks), `rt_lineup_street_rt` (pedestrians a-i
+and the 3 staff), `rt_lineup_site` (Halden a-j and the beat cop), `rt_lineup_specials` (Reyes). Rendered with the
+Compatibility renderer on llvmpipe. Skin tone 1 (armored_car_crew_f, street_pedestrian_f, a few Halden faces) reads
+near-white there, so check it in Forward+ on the GPU box:
+`xvfb-run ... godot --path game --script res://world/characters/_tools/render_rt_lineup.gd` (drop `--rendering-driver opengl3`).

@@ -29,7 +29,7 @@ sand/brown/amber.
 * ``char_street_pedestrian_g`` / ``_h`` / ``_i`` (D-147 / D-149: zero twins at the top roll, 21 live on 21 looks):
   **finish-only** swaps of a / b / f. The same meshes (body params, hair style, age and every garment unchanged),
   with a new skin tone, hair colour and garment materials (``recolor``), so each is a new face for the pool:
-  g = the commuter in a camel mac over a navy roll-neck (skin 5, brown hair); h = the jogger in a cream hoodie and
+  g = the commuter in a teal mac over a navy roll-neck (skin 5, brown hair); h = the jogger in a cream hoodie and
   navy joggers (skin 2, blond); i = the office worker in a grey blazer over an ivory silk shirt (skin 4, dark hair).
 
 Meshes: ``Body`` (covered skin removed), ``Hair``, ``Outfit``, ``Gear``, ``Headwear`` (caps, bun, glasses, earrings).
@@ -72,8 +72,8 @@ VARIANTS = {
     # finish-only swaps (D-147): a / b / f's params with only skin, hair colour and garment materials changed
     "char_street_pedestrian_g": {"height": 1.71, "build": 0.4, "gender": 1.0, "age": 0.32, "skin": 5,
                                  "hair": "bob", "hair_color": "brown", "look": "commuter",
-                                 "recolor": {"char_mac_cherry": "char_coat_camel", "char_knit_grey": "char_knit_navy"},
-                                 "note": "Commuter g (finish swap of a): belted camel mac over a navy roll-neck, black "
+                                 "recolor": {"char_mac_cherry": "char_knit_teal", "char_knit_grey": "char_knit_navy"},
+                                 "note": "Commuter g (finish swap of a): belted teal mac over a navy roll-neck, black "
                                          "trousers, black flats, brown bob"},
     "char_street_pedestrian_h": {"height": 1.80, "build": 0.35, "gender": 0.0, "age": 0.12, "skin": 2,
                                  "beard_shadow": 0.2, "hair": "short", "hair_color": "blond", "look": "jogger",
