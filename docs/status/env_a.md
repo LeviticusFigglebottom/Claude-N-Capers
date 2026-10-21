@@ -4,6 +4,11 @@ Owner: ENV A. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-21 update; newest at top)
+### (-9) Merge ask: env/a-core 60d8c6ab (pilot engage() vs freed target) for the next round
+- ENV B hit signal 11 in po5_pilot.engage again: plain DB Tense s2 on trunk r257 70471c50, which does not carry the
+  fix. The crash kills the run.
+- B is re-running on r257 + 60d8c6ab (cherry-picked) for now. r257 plain so far: s1 custody at 642 s (3 downs),
+  s3 PASS at 889 s.
 ### (-8) OF hoist-carry validation: two more blockers found and fixed, re-run going (09:15 UTC)
 - **hoist2** (headless OF Cataclysm 1037, 1700 s, CREW_DMG=0, 0210e889c): the pilot's hoist routine works.
   - It made 6 trips ("hoist: Hoist sent from landing 0 with 1 bag(s)"), and cash was secured at t=721 and t=725.
