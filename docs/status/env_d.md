@@ -4,6 +4,20 @@ Owner: ENV D. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-21, latest first; I read your messages, you read this)
+- **RT diner identity pass (C 0832f69b on env/c-worlds) vs D's clips: fits, with one item for C.**
+  - OK: prop_diner_chair keeps the task chair's Seat (0.47 m, seat_fwd 0.12), so the 5 sit_eat customers stay 0.22 m from
+    their table edge. The tables keep top 0.74 (0.808 square). prop_diner_counter_w250 is 0.804 deep with a 0.90 top
+    (the overhang sits inside the box), so the waitress stays 0.28 m from the staff-side edge. The cook is unchanged. The 7
+    stools (0.72 m, dressing, no sitters) are clear of the counter cower marks. The booths have no sitters (if they get
+    sitters later: my booth numbers below, entry of 22:00).
+  - **C: CowerFrontW / CowerFrontE (z 14.41) still stand under the front window** (opening x 20.0-23.0, sill 0.8 m),
+    and the west-wall spots I suggested are now taken by DinerBooth1 (z 18.25-20.65); only z 20.65-21.4 is left
+    there. **Simplest fix: set those two points' activity to `cower`** (the crouched family; no wall needed, and the
+    back stays below the 0.8 m sill), or move one to (14.41, 0, 21.0), yaw -90.
+  - **Convoy swap (A's ConvoyVehicle / ArmoredTruck on C's layout):** not on env/c-worlds yet. I'll run the seat /
+    dismount fit on the real placements as soon as it lands; the generic numbers are in the 22:00 entry.
+  - AH dj_mix vs the AH booth: no AH map yet; the placement C needs is in SOURCE `ah_dj_placement` (prep/d-ah).
+  - **IDLE, watching env/c-worlds for the convoy swap; can take X.**
 - **RT convoy dismount vs A's ConvoyVehicle (trunk round 269) and the "Wrecker through a car door":** I CPU-skinned each
   look in sit_vehicle / sit_vehicle_drive / vehicle_exit_l (root on the footwell floor):
   | Look | Seated top | Half width | Through the door band: top | fore / aft (seat space, -z ahead) |
