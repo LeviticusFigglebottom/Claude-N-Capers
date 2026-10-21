@@ -1626,7 +1626,9 @@ func _wait_spot_clear(spot: Vector3, y: float, label: String, hide: Vector3, ext
 			var moving: bool = last.has(id) and g.global_position.distance_to(last[id]) > 0.15
 			last[id] = g.global_position
 			var d: float = pilot.flat_dist(g.global_position, spot)
-			if d < 8.0 or (d < 20.0 and (moving or _sees_core(g, spot))):
+			# Walkers count within 12 m; out to 20 m only with LOS to the spot (r256d: Cataclysm's extra BB guards walking
+			# x 28-36 held both of the vault guard's RC windows, t 347-377 and 557-597).
+			if d < 8.0 or (moving and d < 12.0) or (d < 20.0 and _sees_core(g, spot)):
 				near.append("%s %s%s" % [g.name, Po5Pilot._v(g.global_position), " moving" if moving else ""])
 		if not near.is_empty() and not hidden:
 			hidden = true

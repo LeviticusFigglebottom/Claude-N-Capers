@@ -40,7 +40,9 @@ Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min;
   when the pilot lockpicked it (doc: rover_hall loop (b) checks LD). Harness: a smoke window with a guard in LD is skipped for the next one.
   **r256b/c: steps 1-4 PASS, and step 5's core works**: gate swiped with the keycard (t=505), laser crossed, code entered at the time lock (t=513),
   laser recrossed, all unseen. Both runs were then seen leaving: the vault guard had only been on BB's east leg, 13-20 s from the gate. Harness: wait
-  until he's deep in loop (b) (RC, x < 12 or z > 13.5; in r256c that leg ran t 347-377). Next ghost run: on r257.
+  until he's deep in loop (b) (RC, x < 12 or z > 13.5; in r256c that leg ran t 347-377). r256d: steps 1-4 PASS. He made two RC trips (t 347-377 and
+  557-597), but both windows were held by Cataclysm's extra BB guards walking x 28-36 (counted within 20 m with no LOS). Walkers now count
+  within 12 m, or within 20 m with LOS. r257a is running.
 - **Ghost line**, on r251 + c-worlds 9d00c55b + P, windowed, seed 1002: **steps 1-4 PASS** (r251g). C's door-throat bake fix is verified.
   Harness fixes on env/p-play: peek at the SA core before EA → E3; code-hack restart. Step 5 (vault gate) was seen by the vault guard;
   the gate-clear wait went in at 88e06f40. r251h: the wait held for the vault guard, but the pilot waited in BB and rover_basement
