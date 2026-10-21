@@ -21,7 +21,10 @@ Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min;
   each leg back. haz_u: same path to t=1000.8, then the vault guard came out of RC (6.6, 10) heading for the gate while the pilot held in BB at
   (13.8, 8.2), standing in his walk (radio t=1021). Now the time-lock refuge is CQ's SE corner (12.5, 3.5): lkprobe says no BB corridor
   point (x 0-47) sees it, and CQ's door is 2 m from the gate, so the pilot goes there at once. **From haz_v on, runs are on r263
-  (67260f0b, with C's partition fix).**
+  (67260f0b, with C's partition fix).** haz_v (r263): step 2 FAIL with no alarm. All 5 smoke windows were skipped: the queue-rail bake fix moved
+  rover_hall's loop (LD checks now t≈11, 96, 185, 269, 361, 449), and at every smoke cue (78, 149, 259, 317, 401) he was on BC at x 31-34
+  walking back to LD, 9-36 s from his check. Now at a cue with him heading in, the pilot lets his LD check pass inside that smoke window
+  (≤ 25 s), then goes, as r260's passing run did by luck. Walkers block only while closing on the corridor door. haz_w is running.
 - **Ghost on Hazardous per D-150** (trunk 9f90a3f4 + P; harness default is now Hazardous, `--diff=` overrides; 5ec63837). haz_a: step 1 PASS. Step 2: after the
   dock door, the pilot opened DockCorridorDoor (LD → BC) with rover_hall standing 1.7 m behind it. Harness: wait inside LD, 3 m back, until BC is clear.
   haz_b: the corridor-door wait held, but rover_hall's loop (b) then walked into LD and found the pilot waiting there. So now the pre-lockpick

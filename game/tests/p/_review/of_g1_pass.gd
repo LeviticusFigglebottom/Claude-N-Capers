@@ -1750,6 +1750,12 @@ func _rover_hall_gone_east() -> String:
 			return "rover_hall not seen at LD yet"
 		if rt.heist_time_s - _rh_ld_t > 90.0:
 			return "rover_hall's LD check %.0f s ago" % (rt.heist_time_s - _rh_ld_t)
+		var p0: Vector3 = g.global_position
+		# Just done: out of the LD check >= 4 s, on BC east of the core walking east to MO (haz_v, r263: the queue-rail
+		# bake fix moved his loop; at every smoke cue he was 9-36 s from his next LD check, never on MO).
+		if rt.heist_time_s - _rh_ld_t >= 4.0 and rt.heist_time_s - _rh_ld_t <= 40.0 and p0.x > 16.0 and p0.z < 12.0 \
+				and g.velocity.x > 0.3:
+			return ""
 		# MO / loop (c) (stair B, fire exit) = BC's east end on the corridor line (z < 9.5). Loop (a)'s TW east side is z > 9.5
 		# (haz_m: t=11 LD check, then at t=82 he was on (a) at (35.3, 11.5) heading round to the next LD check).
 		var p: Vector3 = g.global_position
@@ -2640,8 +2646,10 @@ func _g2_dock() -> bool:
 			ld_last[id] = g.global_position
 			# BC / LD side only (z < 12): the lobby guard's hall post (10.9, 0, 21.8) is 14 m off but another room (haz_d).
 			var dc: float = pilot.flat_dist(g.global_position, cdoor_n.global_position) if cdoor_n != null else 999.0
+			# Walkers count only while closing on the corridor door (haz_v: rover_hall walking away east after his check).
+			var closing: bool = moving and dc < (pilot.flat_dist(was, cdoor_n.global_position) if cdoor_n != null else 999.0)
 			if pilot.flat_dist(g.global_position, door_at) < 8.0 or dc < 8.0 \
-					or (g.global_position.z < 12.0 and moving and dc < r):
+					or (g.global_position.z < 12.0 and closing and dc < r):
 				return "%s %s" % [g.name, Po5Pilot._v(g.global_position)]
 		return ""
 	# One loop per smoke window: the cue, LD clear, the lane clear, mask, then LD again before the ECM is spent (haz_h/i:
@@ -2653,9 +2661,20 @@ func _g2_dock() -> bool:
 		await wait_s(0.5)
 		var who: String = ld_busy.call(20.0)
 		if who != "":
-			note("GHOST LD occupied (%s): skipping this smoke window" % who)
-			await wait_until(func() -> bool: return ld_busy.call(20.0) == "", 90.0)
-			continue
+			# rover_hall heading in for his LD check: let it pass inside this smoke window, then go (r260 haz_t's pass did
+			# this by luck: in the lane during his t=185 check). Up to 25 s of the 33-40 s window.
+			var t_cue: float = rt.heist_time_s
+			var ld0: Array[float] = [_rh_ld_t]
+			await wait_until(func() -> bool:
+				return _rh_ld_t > ld0[0] and rt.heist_time_s - _rh_ld_t >= 4.0 and ld_busy.call(20.0) == "", 25.0)
+			who = ld_busy.call(20.0)
+			if who == "" and _rh_ld_t > ld0[0]:
+				note("GHOST rover_hall's LD check passed (t=%.0f), %.0f s into this smoke window: going" % [_rh_ld_t,
+					rt.heist_time_s - t_cue])
+			else:
+				note("GHOST LD occupied (%s): skipping this smoke window" % who)
+				await wait_until(func() -> bool: return ld_busy.call(20.0) == "", 90.0)
+				continue
 		while waited < 600.0 and not clear:
 			clear = true
 			var where: PackedStringArray = PackedStringArray()
