@@ -54,14 +54,14 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## floating: Nothing floats
 
-- 140 props checked
+- 145 props checked
 
 - WARN `Variants/Group_escape/Slot_esc_van_carpark/EscapeCarPark` @ (23.00, 0.00, -30.00): prop has no geometry or collision; skipped
 - WARN `Variants/Group_escape/Slot_esc_van_underpass/EscapeUnderpass` @ (92.00, -5.00, -4.00): prop has no geometry or collision; skipped
 
 ## clipping: Nothing clips
 
-- 140 props, 50 doors checked
+- 145 props, 50 doors checked
 
 
 ## scale: Human scale
@@ -139,13 +139,13 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## slopes: No walkable slope < 50° outside the play mesh
 
-- 809 x 729 columns (0.25 m), 441369 surface samples, 0 collider(s) with reachable walkable surfaces outside play
+- 809 x 729 columns (0.25 m), 441304 surface samples, 0 collider(s) with reachable walkable surfaces outside play
 
 
 ## navmesh: Navmesh
 
-- navmesh: 2588 polygons, cell 0.10/0.10 m
-- 171 markers checked
+- navmesh: 2578 polygons, cell 0.10/0.10 m
+- 178 markers checked
 | room | walkable samples | covered | coverage |
 |---|---|---|---|
 | `Rooms/RoomCPG` | 661 | 661 | 100% |
@@ -155,10 +155,10 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `Rooms/RoomSB` | 10 | 10 | 100% |
 | `Rooms/RoomLF` | 25 | 25 | 100% |
 | `Rooms/RoomR1R2` | 143 | 143 | 100% |
-| `Rooms/RoomAB` | 78 | 78 | 100% |
+| `Rooms/RoomAB` | 80 | 80 | 100% |
 | `Rooms/RoomCWC` | 35 | 35 | 100% |
 | `Rooms/RoomCPL` | 96 | 96 | 100% |
-| `Rooms/RoomDR` | 432 | 432 | 100% |
+| `Rooms/RoomDR` | 469 | 469 | 100% |
 | `Rooms/RoomK` | 143 | 143 | 100% |
 | `Rooms/RoomBC` | 39 | 39 | 100% |
 | `Rooms/RoomE` | 6 | 6 | 100% |
@@ -199,7 +199,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## reachability: Reachability (per variant)
 
-- 32 variant configuration(s), 64452 spawn->target path queries
+- 32 variant configuration(s), 67140 spawn->target path queries
 
 
 ## walkthrough: Walkthrough bot
@@ -209,12 +209,13 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## patrols: Patrol graphs
 
-- graph `street`: 15 points, 0 guard(s)
+- graph `street`: 18 points, 0 guard(s)
+- graph `diner_cower`: 4 points, 0 guard(s)
 - graph `site`: 14 points, 3 guard(s)
 - graph `marshal_carpark`: 4 points, 1 guard(s)
 - graph `marshal_site_corner`: 4 points, 1 guard(s)
 - graph `marshal_plaza`: 4 points, 1 guard(s)
-- 5 patrol graph(s)
+- 6 patrol graph(s)
 
 
 ## lasers: Laser grid bypass gaps
@@ -245,8 +246,8 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## furniture_logic: Furniture arranged plausibly
 
-- classified: desk 2, table 6
-- 0 seats, 8 tables/desks/counters, 50 doors checked
+- classified: desk 2, table 7, desk_chair 6
+- 6 seats, 9 tables/desks/counters, 50 doors checked
 
 - WARN `Gameplay/Lifts/GoodsLift` @ (20.50, 0.00, -48.50): door_clear: in the clear zone of door `Gameplay/Doors/LiftDoorG` (1.0 / 1.0 m each side, leaf width 1.82 m) by 0.74 m (gameplay prefab / variant content: review)
 - WARN `Gameplay/Lifts/GoodsLift` @ (20.50, 0.00, -48.50): use_point: stands in the user's spot of `Gameplay/Doors/LiftDoorG` (UsePoint @ (20.50, 0.00, -47.70)) by 0.64 m (gameplay prefab / variant content: review)

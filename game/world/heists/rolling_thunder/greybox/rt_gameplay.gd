@@ -38,6 +38,8 @@ func build_item(parent: Node3D, it: Array) -> Node3D:
 			out = marker(parent, String(it[1]), v3(it[2]), float(it[3]), String(it[4]), String(it[5]))
 		"tac":
 			out = _tac_row(parent, it)
+		"catalog":
+			out = _catalog_row(parent, it)
 		_:
 			errors.append("unknown content row %s" % [it])
 	return out
@@ -169,8 +171,10 @@ func _box_row(parent: Node3D, it: Array) -> StaticBody3D:
 	if bool(it[6]):
 		body.set_meta(&"support", true)
 	for mk: Variant in (it[8] as Dictionary):
-		body.set_meta(StringName(String(mk)), it[8][mk])
+		if String(mk) != "seats":
+			body.set_meta(StringName(String(mk)), it[8][mk])
 	add(parent, body)
+	_seats(body, (it[8] as Dictionary).get("seats", []))
 	var col: CollisionShape3D = CollisionShape3D.new()
 	col.name = "Collision"
 	col.shape = _box_shape(size)
@@ -182,8 +186,53 @@ func _box_row(parent: Node3D, it: Array) -> StaticBody3D:
 	mi.position = col.position
 	add(body, mi)
 	SurfaceTags.tag(body, _surface(String(it[7])))
-	obstruct(Transform3D(yaw_basis(float(it[4])), base), _nav_thick(AABB(Vector3(-size.x * 0.5, 0.0, -size.z * 0.5), size)))
+	# a seat bench is carved exactly (no agent-radius margin), so its sitters' roots, 0.12 m in from its front edge, stay
+	# within reach of the navmesh (ENV D's seated roots) and no polygon lies under the bench
+	var seated: bool = not ((it[8] as Dictionary).get("seats", []) as Array).is_empty()
+	obstruct(Transform3D(yaw_basis(float(it[4])), base), _nav_thick(AABB(Vector3(-size.x * 0.5, 0.0, -size.z * 0.5),
+		size)), seated)
 	return body
+
+
+## Seat markers (local positions) on a bench / catalog seat: `Seat` for one, `Seat0`.. for several (ENV D's seated
+## roots: the sitter's root on the marker's xz, its height the cushion top).
+func _seats(host: Node3D, rows: Array) -> void:
+	for i: int in range(rows.size()):
+		var m: Marker3D = Marker3D.new()
+		m.name = "Seat" if rows.size() == 1 else "Seat%d" % i
+		m.position = v3(rows[i])
+		add(host, m)
+
+
+## ["catalog", name, pos, yaw, asset, metas, seats]: a catalog prop as furniture (Props/MapBuilt) + its nav obstruction.
+func _catalog_row(parent: Node3D, it: Array) -> Node3D:
+	var ps: PackedScene = catalog_scene(String(it[4]))
+	if ps == null:
+		return null
+	var inst: Node3D = ps.instantiate() as Node3D
+	inst.name = String(it[1])
+	var xf: Transform3D = Transform3D(yaw_basis(float(it[3])), v3(it[2]))
+	inst.transform = global_xform(parent).affine_inverse() * xf
+	for mk: Variant in (it[5] as Dictionary):
+		if String(mk) != "carve":
+			inst.set_meta(StringName(String(mk)), it[5][mk])
+	add(parent, inst)
+	if not (it[6] as Array).is_empty():
+		map_root.set_editable_instance(inst, true)
+		_seats(inst, it[6])
+	# a seat, or the table between two seats (meta carve: the booth), is carved exactly (no agent-radius margin)
+	if not (it[6] as Array).is_empty() or bool((it[5] as Dictionary).get("carve", false)):
+		var ab: Array = PropCatalog.entry(StringName(String(it[4]))).get("aabb", [])
+		if ab.size() == 6:   # carved exactly; a seat only behind its sitters' root line (the feet stand in front)
+			var box: AABB = AABB(Vector3(ab[0], ab[1], ab[2]), Vector3(ab[3], ab[4], ab[5]))
+			if not (it[6] as Array).is_empty():
+				var front: float = float((it[6] as Array)[0][2])   # the seat marker's local z (front is -Z)
+				box = AABB(Vector3(box.position.x, box.position.y, front), Vector3(box.size.x, box.size.y,
+					box.end.z - front))
+			obstruct(xf, box, true)
+	else:
+		_obstruct_catalog(String(it[4]), xf)
+	return inst
 
 
 func _tac_row(parent: Node3D, it: Array) -> TacticalPoint:

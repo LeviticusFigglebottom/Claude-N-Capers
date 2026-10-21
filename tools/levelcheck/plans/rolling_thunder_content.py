@@ -27,6 +27,17 @@ import rolling_thunder_geometry as GM  # noqa: E402
 import rolling_thunder_site_ascii as ST  # noqa: E402
 
 LOCKPICK_S = 8.0
+# ENV D's seated / cower placements (RT cast check, docs/status/env_d.md on env/d-art 9252b9ef): world m, yaw 90 faces
+# -X, 180 faces +Z.
+SEAT_FWD = 0.12                     # a catalog chair's Seat is this far ahead of its pivot (prop_chair_task, _office)
+BUS_QUEUE_X = [-38.5, -37.5, -30.5, -29.5]
+BUS_ROOT_Z = 13.32                  # the shelter bench centre (z 13.2) + 0.12
+TABLE_SEATS = [(19.88, 18.0, -90.0), (19.88, 22.0, -90.0), (21.12, 18.0, 90.0), (21.12, 22.0, 90.0),
+               (19.88, 24.5, -90.0)]
+# cower_stand marks (tag cower; a wall 0.21 m behind the root, ~0.7 m clear in front): [name, pos, facing yaw]
+COWER_DINER = [["CowerFrontW", [20.5, 0.0, 14.41], 180.0], ["CowerFrontE", [22.5, 0.0, 14.41], 180.0],
+               ["CowerCounterN", [23.39, 0.0, 17.0], 90.0], ["CowerCounterS", [23.39, 0.0, 22.6], 90.0]]
+COWER_SHELTERS = [["CowerShelter%d" % i, [x, 0.0, 12.24], 0.0] for i, x in enumerate([-38.0, -30.0, -22.0])]
 CAB_N = -13.45  # the signal controller cabinet's north face (site z; rolling_thunder_geometry.site())
 CP = P.BUILDINGS["CP"]
 DN = P.BUILDINGS["D"]
@@ -79,6 +90,11 @@ def B(
     metas: Dict = None,
 ) -> list:
     return ["box", name, [r3(v) for v in base], [float(v) for v in size], float(yaw), kind, support, mat, metas or {}]
+
+
+def CAT(name: str, pos: list, yaw: float, asset: str, metas: Dict = None, seats: list = None) -> list:
+    """A catalog prop placed as furniture: ["catalog", name, pos, yaw, asset, metas, seat marker local positions]."""
+    return ["catalog", name, [r3(v) for v in pos], float(yaw), asset, metas or {}, seats or []]
 
 
 def M(name: str, pos: list, tag: str, todo: str, yaw: float = 0.0) -> list:
@@ -276,16 +292,20 @@ def furniture() -> List[list]:
         out.append(B(nm, p, [1.9, 1.45, 4.6], yaw, "car", False, "prop", {"cover": "hard"}))
     for i, x in enumerate([-38.0, -30.0, -22.0]):
         out.append(B("BusShelter%d" % i, [x, 0.0, 12.6], [5.0, 2.6, 0.3], 0.0, "bus_shelter", False, "prop"))
-        out.append(B("ShelterBench%d" % i, [x, 0.0, 13.2], [3.0, 0.45, 0.5], 0.0, "bench", True, "prop"))
+        # the bus queue's seats (ENV D, RT cast check 9252b9ef item 4): roots 0.12 m ahead of the bench centre
+        seats = [[qx - x, 0.45, BUS_ROOT_Z - 13.2] for qx in BUS_QUEUE_X if abs(qx - x) < 1.5]
+        out.append(B("ShelterBench%d" % i, [x, 0.0, 13.2], [3.0, 0.45, 0.5], 0.0, "bench", True, "prop",
+                     {"seats": seats}))
     out.append(B("Newsstand", [-12.0, 0.0, -14.0], [2.4, 2.4, 1.6], 0.0, "kiosk", False, "prop", {"cover": "hard"}))
     out.append(B("ClockPillar", [-26.0, 0.0, 20.0], [0.8, 6.0, 0.8], 0.0, "landmark", False, "trim"))
     for i, (x, z) in enumerate([(-50.0, 18.0), (-44.0, 25.0), (-34.0, 25.0), (-18.0, 26.0)]):
         out.append(B("Planter%d" % i, [x, 0.0, z], [1.6, 0.9, 1.6], 0.0, "planter", True, "prop"))
-    # the diner: counter (0.9 m, service side east), booths along the glazing, tables, the cook's line, the office desk
+    # the diner: counter (0.9 m, service side east), three tables (sit_eat), the cook's line, the office desk
     out.append(B("DinerCounter", dn(10.0, 0.0, 5.75), [0.8, 0.9, 7.5], 0.0, "counter", True, "counter"))
-    for i, z in enumerate([4.0, 10.0]):
-        out.append(B("DinerBooth%d" % i, dn(2.25, 0.0, z), [1.5, 1.2, 1.4], 0.0, "booth", False, "prop"))
-    for i, z in enumerate([4.0, 8.0]):
+    # D item 3's 5th customer: a 3rd table. A booth was tried: its bench-to-table gap is 0.115 m, so the
+    # sitter's root falls in a sliver the 0.1 m bake cannot hold without a polygon under the bench lip
+    # (navmesh: no navmesh on a prop).
+    for i, z in enumerate([4.0, 8.0, 10.5]):
         out.append(B("DinerTable%d" % i, dn(6.5, 0.0, z), [0.8, 0.74, 0.8], 0.0, "table", True, "prop"))
     out.append(B("Cookline", dn(13.55, 0.0, 4.0), [0.8, 0.9, 5.0], 0.0, "cookline", True, "counter"))
     out.append(B("PrepTable", dn(17.0, 0.0, 4.5), [2.0, 0.9, 0.8], 0.0, "table", True, "counter"))
@@ -293,7 +313,8 @@ def furniture() -> List[list]:
     out.append(B("FunctionTable0", dn(3.0, 3.5, 9.0), [1.8, 0.74, 0.8], 0.0, "table", True, "prop"))
     out.append(B("FunctionTable1", dn(9.0, 3.5, 9.0), [1.8, 0.74, 0.8], 0.0, "table", True, "prop"))
     # the car-park booth desk and the plant
-    out.append(B("BoothDesk", cp(2.5, 0.0, 34.9), [2.0, 0.75, 0.7], 0.0, "desk", True, "prop"))
+    # the attendant's desk, open below for the knees (D item 5): near edge 0.20 m ahead of the seated root
+    out.append(CAT("BoothDesk", [18.5, 0.0, -15.1], 0.0, "prop_desk_office", {"kind": "desk"}))
     out.append(B("PlantPumps", cp(17.5, 0.0, 34.6), [4.0, 1.4, 1.2], 0.0, "plant", False, "prop"))
     # the site: formwork stacks and rebar under the slab (cover maze), block pallets on F1, cabins' plan table
     for i, (x, z) in enumerate([(14.0, 13.5), (25.0, 18.5), (31.0, 9.0), (19.0, 23.5)]):
@@ -668,8 +689,17 @@ def graphs() -> Dict[str, list]:
         "Street": [
             "street",
             1,
-            {k: [v, [2.0, 6.0], "", ["civilian", "civ_street"], None] for k, v in STREET_POINTS.items()},
-            STREET_EDGES,
+            dict({k: [v, [2.0, 6.0], "", ["civilian", "civ_street"], None] for k, v in STREET_POINTS.items()},
+                 **{nm: [pos, [0.0, 0.0], "cower_stand", ["cower"], yaw] for nm, pos, yaw in COWER_SHELTERS}),
+            STREET_EDGES + [["CowerShelter0", "TanneryWS"], ["CowerShelter1", "TanneryWS"],
+                            ["CowerShelter2", "SWCorner"]],
+        ],
+        "DinerCower": [
+            "diner_cower",
+            1,
+            {nm: [pos, [0.0, 0.0], "cower_stand", ["cower"], yaw] for nm, pos, yaw in COWER_DINER},
+            [["CowerFrontW", "CowerFrontE"], ["CowerFrontE", "CowerCounterN"], ["CowerCounterN", "CowerCounterS"],
+             ["CowerCounterS", "CowerFrontW"]],
         ],
         "Site": [
             "site",
@@ -721,13 +751,20 @@ def fixed_spawns() -> List[list]:
     for i, (x, z) in enumerate([[-44.0, 20.0], [-36.0, 24.0], [-24.0, 22.0], [-52.0, 14.5]]):
         out.append(S("PlazaPedestrian%d" % i, "CIVILIAN", [x, 0.0, z], 0.0, ["civ_street"], "walk_text", "Street"))
     # the bus queue (2-4) at the shelters, the diner customers (2-5), the diner staff, the attendant
-    for i, x in enumerate([-38.5, -37.5, -30.5, -29.5]):
-        out.append(S("BusQueue%d" % i, "CIVILIAN", [x, 0.0, 14.0], 180.0, ["civ_bus"], "idle"))
-    for i, (x, z) in enumerate([(4.0, 4.0), (4.0, 10.0), (7.6, 4.0), (7.6, 8.0), (5.5, 6.0)]):
-        out.append(S("DinerCustomer%d" % i, "CIVILIAN", dn(x, 0.0, z), 90.0, ["civ_diner"], "idle"))
-    out.append(S("Waitress", "CIVILIAN", dn(11.5, 0.0, 6.5), 90.0, ["staff_diner", "staff"], "idle"))
-    out.append(S("Cook", "CIVILIAN", dn(14.55, 0.0, 3.0), 90.0, ["staff_diner", "staff"], "cook_stove"))
-    out.append(S("Attendant", "CIVILIAN", cp(2.5, 0.0, 33.8), 180.0, ["staff_booth", "staff"], "idle"))
+    # ENV D's cast check against the clips (docs/status/env_d.md 9252b9ef, items 1-5, 8): roots in world m
+    for i, x in enumerate(BUS_QUEUE_X):
+        out.append(S("BusQueue%d" % i, "CIVILIAN", [x, 0.0, BUS_ROOT_Z], 180.0, ["civ_bus"], "sit"))
+    # customers 0-3 on the two tables' chairs (sit_eat: table near edge 0.22 m ahead; the chair's Seat is 0.12 m ahead
+    # of its pivot, so the spawn stands on the pivot and NpcSeatSpawns snaps it onto the Seat = D's root)
+    for i, (rx, rz, yaw) in enumerate(TABLE_SEATS):
+        px = rx + (SEAT_FWD if yaw == 90.0 else -SEAT_FWD)
+        out.append(S("DinerCustomer%d" % i, "CIVILIAN", [px, 0.0, rz], yaw, ["civ_diner"], "sit_eat", "",
+                     "prop_chair_task"))
+    out.append(S("Waitress", "CIVILIAN", [24.68, 0.0, 20.5], 90.0, ["staff_waitress", "staff_diner", "staff"],
+                 "counter_wipe"))
+    out.append(S("Cook", "CIVILIAN", [28.25, 0.0, 17.0], 90.0, ["staff_cook", "staff_diner", "staff"], "cook_stove"))
+    out.append(S("Attendant", "CIVILIAN", [18.5, 0.0, -15.65 - SEAT_FWD], 180.0, ["staff_booth", "staff"], "desk_work",
+                 "", "prop_chair_office"))
     # Reyes in the mixer cab (seated, D: sit_vehicle_drive) - TODO(A5-02): stands by the cab until the mover exists
     out.append(S("ReyesMixer", "CIVILIAN", si(21.0, 0.0, 40.2), -90.0, ["driver_mixer"], "idle"))
     return out
