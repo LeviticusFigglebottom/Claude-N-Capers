@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/props/prop_rt_clock_pillar/prop_rt_clock_pillar.glb" id="1_model"]
+
+[node name="PropRtClockPillar" type="Node3D"]
+metadata/kind = &"landmark"
+
+[node name="Model" parent="." instance=ExtResource("1_model")]

@@ -1,0 +1,8 @@
+asset: prop_neon_halfway
+script: tools/blender/props/rolling_thunder.py
+params: {"cat": {"group": "exterior", "kind": "neon_sign", "mount": "wall", "place": "wall_mount", "surface": "metal"}, "fn": "neon_sign", "key2": "emit_mint", "line2": "OPEN 24 HRS", "text": "HALFWAY"}
+seed: 3270123075  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_neon_halfway
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 20000

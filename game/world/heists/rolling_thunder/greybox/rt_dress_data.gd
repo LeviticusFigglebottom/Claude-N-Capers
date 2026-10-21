@@ -53,7 +53,61 @@ const PROP_ART: Dictionary = {
 	"BlockPallet0": ["prop_pallet_loaded", 0.0, 1, 1, false, false],
 	"BlockPallet1": ["prop_pallet_loaded", 0.0, 1, 1, false, false],
 	"PlanTable": ["prop_plan_chest", 90.0, 1, 2, false, true],
+	# RT-C2 batch 3 new generators: Reyes's mixer (front east, toward Orchard), the closures' lorries (Geometry/Site/
+	# Closures boxes: the collider stays, the art replaces the finish)
+	"MixerTruck": ["veh_mixer_truck", 90.0, 1, 1, false, false],
+	# the cookline faces the cook (east; D: top 0.90, the front edge 0.30 m ahead of the cook at x 28.25)
+	"Cookline": ["prop_cookline", -90.0, 1, 1, false, true],
+	"TMTruckN": ["veh_lorry_tm", 90.0, 1, 1, false, true],
+	"LorryS": ["veh_lorry", 90.0, 1, 1, false, true],
+	"LorryW": ["veh_lorry", 0.0, 1, 1, false, true],
+	"LorryE": ["veh_lorry_tm", 0.0, 1, 1, false, true],
+	# landmark 2, the formwork stacks (prop_site_clutter), the scaffold-tower cladding and the F1 edge protection
+	# (prop_scaffold bays over the thin G1 boxes; nx / nz bays along the run)
+	"ClockPillar": ["prop_rt_clock_pillar", 0.0, 1, 1, false, true],
+	"FormworkStack0": ["prop_site_formwork_stack", 0.0, 1, 1, false, true],
+	"FormworkStack1": ["prop_site_formwork_stack", 0.0, 1, 1, false, true],
+	"FormworkStack2": ["prop_site_formwork_stack", 0.0, 1, 1, false, true],
+	"FormworkStack3": ["prop_site_formwork_stack", 0.0, 1, 1, false, true],
+	"CladW": ["prop_scaffold_bay_w200_h460", 90.0, 1, 3, false, false],
+	"CladE": ["prop_scaffold_bay_w200_h460", 90.0, 1, 3, false, false],
+	"CladS": ["prop_scaffold_bay_w200_h460", 0.0, 2, 1, false, false],
+	"CladNW": ["prop_scaffold_bay_w100_h460", 0.0, 1, 1, false, false],
+	"CladNE": ["prop_scaffold_bay_w100_h460", 0.0, 1, 1, false, false],
+	"CladNMid": ["prop_scaffold_edge_w200_h110", 0.0, 1, 1, false, false],
+	"EdgeProtectionN": ["prop_scaffold_edge_w200_h110", 0.0, 12, 1, false, false],
+	"EdgeProtectionW": ["prop_scaffold_edge_w200_h110", 90.0, 1, 10, false, false],
+	"EdgeProtectionE": ["prop_scaffold_edge_w200_h110", 90.0, 1, 10, false, false],
+	"EdgeProtectionS0": ["prop_scaffold_edge_w200_h110", 0.0, 8, 1, false, false],
+	"EdgeProtectionS1": ["prop_scaffold_edge_w200_h110", 0.0, 4, 1, false, false],
 }
+## Geometry groups whose boxes may carry PROP_ART too (the art_mapbuilt pass also walks their children).
+const ART_GROUPS: Array[String] = ["Props/MapBuilt", "Geometry/Site/Closures", "Geometry/Site/Scaffold",
+	"Geometry/Site/Frame"]
+
+## Landmark visuals (no collider, no bake obstruction: they stand on or replace G1 colliders, which stay): [name,
+## asset, parent, position, yaw, G1 boxes whose greybox Mesh they replace]. The crane on its base pad (the jib along
+## +X to Orchard), the Skyway's junction fascia on both deck faces, the two tracks along the rail bank and bridge.
+const LANDMARKS: Array = [
+	["TowerCrane", "prop_rt_tower_crane", "Geometry/Site/Crane", Vector3(-26.0, 1.4, -24.0), 0.0,
+		["Geometry/Site/Crane/CraneMast", "Geometry/Site/Crane/CraneCab", "Geometry/Site/Crane/CraneJib"]],
+	["GirderW", "prop_rt_skyway_girder_l2600", "Geometry/Site/Skyway", Vector3(-13.0, 7.6, 0.0), 90.0, []],
+	["GirderE", "prop_rt_skyway_girder_l2600", "Geometry/Site/Skyway", Vector3(13.0, 7.6, 0.0), -90.0, []],
+	["TrackW0", "prop_rail_track_l3000", "Geometry/Site/Rail", Vector3(69.0, 1.2, -85.0), 0.0, []],
+	["TrackW1", "prop_rail_track_l3000", "Geometry/Site/Rail", Vector3(69.0, 1.2, -55.0), 0.0, []],
+	["TrackW2", "prop_rail_track_l3000", "Geometry/Site/Rail", Vector3(69.0, 1.2, -25.0), 0.0, []],
+	["TrackW3", "prop_rail_track_l3000", "Geometry/Site/Rail", Vector3(69.0, 1.2, 5.0), 0.0, []],
+	["TrackW4", "prop_rail_track_l3000", "Geometry/Site/Rail", Vector3(69.0, 1.2, 35.0), 0.0, []],
+	["TrackW5", "prop_rail_track_l3000", "Geometry/Site/Rail", Vector3(69.0, 1.2, 65.0), 0.0, []],
+	["TrackE0", "prop_rail_track_l3000", "Geometry/Site/Rail", Vector3(75.0, 1.2, -85.0), 0.0, []],
+	["TrackE1", "prop_rail_track_l3000", "Geometry/Site/Rail", Vector3(75.0, 1.2, -55.0), 0.0, []],
+	["TrackE2", "prop_rail_track_l3000", "Geometry/Site/Rail", Vector3(75.0, 1.2, -25.0), 0.0, []],
+	["TrackE3", "prop_rail_track_l3000", "Geometry/Site/Rail", Vector3(75.0, 1.2, 5.0), 0.0, []],
+	["TrackE4", "prop_rail_track_l3000", "Geometry/Site/Rail", Vector3(75.0, 1.2, 35.0), 0.0, []],
+	["TrackE5", "prop_rail_track_l3000", "Geometry/Site/Rail", Vector3(75.0, 1.2, 65.0), 0.0, []],
+	# the heli-pad marking on the roof deck under E3 (4 mm over the finish)
+	["HeliPadMarking", "prop_heli_pad_marking", "Props/Dress", Vector3(32.0, 7.0, -34.0), 0.0, []],
+]
 
 ## Rooms the KitPlacer dresses although their purpose is exterior (walled yards).
 const PLACER_EXTERIOR: Array[String] = ["YD"]
@@ -150,6 +204,17 @@ const DIRECT_PROPS: Array = [
 	["SiteCone0", "prop_traffic_cone", Vector3(-52.0, 0.0, -52.5), 0.0, {}],
 	["SiteCone1", "prop_traffic_cone", Vector3(-51.3, 0.0, -52.5), 0.0, {}],
 	["SiteGas", "prop_gas_cylinders", Vector3(-45.65, 0.0, -20.0), -90.0, {}],
+	# prop_site_clutter: a rebar bundle and the mortar mixer in the yard's west strip
+	["SiteRebar", "prop_site_rebar_bundle", Vector3(-56.0, 0.0, -40.0), 0.0, {}],
+	["SiteMixer", "prop_site_mortar_mixer", Vector3(-53.0, 0.0, -36.0), 0.0, {}],
+	# the junction's traffic signals (the [signals] read): the pole on each corner, the mast arm over the approach on
+	# its right (the pivot is the footprint centre, SIGNAL_POLE m from the pole along the arm)
+	["SignalNW", "prop_traffic_signal", Vector3(-9.1, 0.0, -8.5), 0.0, {}],
+	["SignalNE", "prop_traffic_signal", Vector3(10.5, 0.0, -7.1), -90.0, {}],
+	["SignalSE", "prop_traffic_signal", Vector3(9.1, 0.0, 8.5), 180.0, {}],
+	["SignalSW", "prop_traffic_signal", Vector3(-10.5, 0.0, 7.1), 90.0, {}],
+	# the diner's HALFWAY / OPEN 24 HRS neon on the Tannery face between the floors
+	["DinerNeon", "prop_neon_halfway", Vector3(28.8, 2.95, 13.8), 0.0, {}],
 	# ST's second rect (x 32-34, z 26-32; the placer dresses a room's largest box): shelving and a box stack on the
 	# east wall, clear of the electrical closet's door (z 26)
 	["STShelf", "prop_shelving_boxes", Vector3(33.56, 0.0, 29.6), 90.0, {}],

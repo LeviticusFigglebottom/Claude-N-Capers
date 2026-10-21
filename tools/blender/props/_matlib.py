@@ -145,6 +145,11 @@ TINTED: dict[str, dict] = {
     "rope_tan": {"source": "fabric_upholstery", "color": "#9C865E", "roughness": 1.0},
     "ice_blue": {"source": "plastic_matte", "color": "#5F86A8", "roughness": 0.7},
     "trailer_white": {"source": "metal_painted", "color": "#CFCDC6", "roughness": 0.9},
+    # RT-C2 (Rolling Thunder, §3c): the Vaultline armoured-truck livery (deep green, a brass band), the lorry cab red
+    "rt_vaultline": {"source": "metal_painted", "color": "#2F4A42", "roughness": 0.7},
+    "rt_vaultline_band": {"source": "metal_painted", "color": "#B89448", "roughness": 0.6},
+    "rt_lorry_red": {"source": "metal_painted", "color": "#8A2E26", "roughness": 0.7},
+    "rt_skyway_green": {"source": "metal_painted", "color": "#4D805C", "roughness": 0.7},
     "laminate_grey": {"source": "plastic_matte", "color": "#8E9090", "roughness": 0.6},
     "paint_hazard_orange": {"source": "drywall_painted", "color": "#D2611E", "roughness": 0.8},
     # Shadow Ledger G2 (SL-1, shadow_ledger.md palette: graphite #2E3136 honed stone / carpet / BOH paint, glass teal

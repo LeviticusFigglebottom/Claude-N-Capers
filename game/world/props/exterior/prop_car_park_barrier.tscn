@@ -1,0 +1,13 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/props/prop_car_park_barrier/prop_car_park_barrier.glb" id="1_model"]
+
+[node name="PropCarParkBarrier" type="Node3D"]
+metadata/kind = &"barrier"
+
+[node name="Model" parent="." instance=ExtResource("1_model")]
+
+[node name="Collision" parent="Model"]
+metadata/surface = &"metal"
+
+[editable path="Model"]

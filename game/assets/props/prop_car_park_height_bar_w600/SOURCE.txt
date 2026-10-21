@@ -1,0 +1,8 @@
+asset: prop_car_park_height_bar_w600
+script: tools/blender/props/rolling_thunder.py
+params: {"cat": {"group": "exterior", "kind": "height_bar", "place": "none", "surface": "metal"}, "clear": 2.1, "fn": "height_bar", "span": 6.0}
+seed: 301369314  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_car_park_height_bar_w600
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 20000

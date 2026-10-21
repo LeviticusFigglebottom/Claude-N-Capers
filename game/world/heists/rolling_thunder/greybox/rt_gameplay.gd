@@ -16,6 +16,8 @@ const OBSTRUCT_KINDS: Array[String] = ["safe", "body_container", "secure_zone", 
 ## Minimum width of a thin body in the nav bake (see _nav_thick).
 const RIG_NAV_MIN: float = 0.2
 ## Convoy layout vehicles: greybox class per kind.
+## RT-C2: convoy kinds with catalog art (the escorts keep their placeholder box until the police-car _car variant).
+const CONVOY_ART: Dictionary = {"cash": "veh_armored_truck_cash", "bullion": "veh_armored_truck_bullion"}
 const CONVOY_CLASS: Dictionary = {"car": "prop", "cash": "frame", "bullion": "frame"}
 
 ## [node, property, names] bound once everything is built (targets).
@@ -388,11 +390,18 @@ func _convoy_sets(vs: VariantSlot, sid: String) -> void:
 				body.set_meta(&"lc_ignore", true)
 				body.set_meta(&"lc_ignore_reason", "tilted convoy placeholder on the east ramp, until A5-02 (LEAD r258)")
 			add(st, body)
-			var mi: MeshInstance3D = MeshInstance3D.new()
-			mi.name = "Mesh"
-			mi.mesh = _box_mesh(Vector3(size.z, size.y, size.x), String(CONVOY_CLASS[String(v[1])]))
-			mi.position = Vector3(0.0, size.y * 0.5, 0.0)
-			add(body, mi)
+			var art: String = String(CONVOY_ART.get(String(v[1]), ""))
+			if art != "":   # RT-C2: the truck's catalog visual (static; A5-01's prefab / A5-02's mover wraps it)
+				var vis: Node3D = catalog_scene(art).instantiate() as Node3D
+				vis.name = "Visual"
+				add(body, vis)
+				body.set_meta(&"art_asset", art)
+			else:
+				var mi: MeshInstance3D = MeshInstance3D.new()
+				mi.name = "Mesh"
+				mi.mesh = _box_mesh(Vector3(size.z, size.y, size.x), String(CONVOY_CLASS[String(v[1])]))
+				mi.position = Vector3(0.0, size.y * 0.5, 0.0)
+				add(body, mi)
 			# per-layout COVER (doc Loud): out of the cover group until the stop shows this layout (TacticalPoint
 			# `enabled`, D-149.1 / QC-RT1; the mission enables the active layout's points)
 			for cv: Array in v[8]:
