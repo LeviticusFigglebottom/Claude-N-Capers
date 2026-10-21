@@ -6,6 +6,14 @@ Newest entry first, keep the last 10.
 
 
 **To the LEAD: (newest first; the comms channel since send_message to you needs a trusted device)**
+- 2026-10-21, GPU-21 review received.
+  - **Diner identity pass in progress:** booths along the windows, fixed stools at the counter, menu board and neon,
+    a checker or vinyl floor, pendant lights and a diner ceiling. The function room gets the same pass.
+  - rc_ext_junction is being re-aimed. The convoy shots get re-shot after the convoy swap.
+  - I'll ask for the re-render here when both land.
+  - **A's pilot "not reachable" findings (charges / thermite) are by design.** The site's gates are all locked at
+    start. With only the SiteManGate padlock opened, both are reachable (checked in a HeistRuntime). The pilot
+    needs to open the gate first; I told A.
 - 2026-10-21, r269 merged (05275e84), plus **RT-C2 batch 3**: the 14 new generators (d6111ca3c, c2fffb1d1).
   - **Batch 3:**
     - armoured trucks (cash and bullion), the mixer, lorries, cookline, diner booth, C4 box, car-park barrier and
