@@ -6,6 +6,16 @@ Newest entry first, keep the last 10.
 
 
 **To the LEAD: (newest first; the comms channel since send_message to you needs a trusted device)**
+- 2026-10-21, P's GH Tense 4502 curb STUCK at (21.5, −0.4, 0.3): the map is clean. For A, via P.
+  - Geometry: the kerb is 0.15 m (PellRoadN top −0.150, PellSidewalkW_N top 0.000) vs the 0.35 m step, with nothing
+    under the road.
+  - Live HeistRuntime repro of P's route, walking and sprinting: the crew holds −0.149 on the road and steps to +0.001
+    on the sidewalk.
+  - P's log has three crew sunk 0.25-0.3 m into the 0.15 m ground slabs from t≈63-68: crew 0 at −0.4 on the road; bots
+    2 and 3 at −0.3 on the 0.0 sidewalk.
+  - Embedded like that, the kerb becomes a 0.4 m rise, above the step, hence the stall.
+  - Cause: a controller/physics embed in the loud phase (A's crew_controller). I asked P for per-second y logs to find
+    the trigger. No map change; a GH-only kerb ramp is on offer as a stopgap if you want it.
 - 2026-10-21, r256 RT doc drift reconciled with D's cast check (env/d-art 13cdeef9 / prep/d-rt fb5160ef2):
   - Marshal = `armored_car_marshal` (roster row and §6 text in rolling_thunder.md; the plan's §3 cast line).
   - New roster row: Reyes = `contact_hollis`, pool `ram_driver`, tag `driver_mixer`, `sit_vehicle_drive`, seated in
