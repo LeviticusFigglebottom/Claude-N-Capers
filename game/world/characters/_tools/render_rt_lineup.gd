@@ -1,5 +1,6 @@
-## Rolling Thunder cast lineups for the PO (LEAD 2026-10-21, after D-149): one lit 1920x1080 contact sheet per group,
-## every look shown front and three-quarter front (idle, full LOD), captioned, under a title band. Owner: ENV D.
+## Rolling Thunder cast lineups for the PO (LEAD 2026-10-21, after D-149; Afterhours with `--heist=afterhours`, AH_GROUPS):
+## one lit 1920x1080 contact sheet per group, every look shown front and three-quarter front (idle, full LOD),
+## captioned, under a title band. Owner: ENV D.
 ##
 ##   xvfb-run -a -s "-screen 0 1280x720x24" /opt/godot/godot --audio-driver Dummy \
 ##     --rendering-driver opengl3 --path game --script res://world/characters/_tools/render_rt_lineup.gd \
@@ -53,6 +54,42 @@ const GROUPS: Dictionary = {
 	]],
 }
 
+## AH (LEAD 2026-10-21, after AH-D1): the same sheets for Afterhours (`-- --heist=afterhours`), written to
+## res://assets/characters/_review/ah_lineup/ah_lineup_<group>.png.
+const AH_OUT_DIR: String = "res://assets/characters/_review/ah_lineup/"
+const AH_GROUPS: Dictionary = {
+	"door": ["Afterhours - the Velvet's door team (guard_*, 7 looks: door, rope, rovers, alley smoker, operator) and the off-duty cop", [
+		["door", "club_bouncer"], ["rope", "club_bouncer_b"], ["", "club_bouncer_c"], ["", "club_bouncer_d"],
+		["", "club_bouncer_e"], ["", "club_bouncer_f"], ["", "club_bouncer_g"], ["civ_offduty (rare)", "frd_agent_offduty"],
+	]],
+	"bar": ["Afterhours - bar staff (civ_bar_*, box office, count room; 6 looks) and the DJ (dj_mix)", [
+		["", "club_bartender"], ["", "club_bartender_b"], ["", "club_bartender_c"], ["", "club_bartender_d"],
+		["VIP bar", "club_waiter"], ["box office / cloak", "club_waiter_b"], ["DJ", "club_dj"],
+	]],
+	"patrons_club": ["Afterhours - club patrons a-j (civ_patron; the dancer looks, civ_dancer: no twin inside a cluster)", [
+		["", "club_patron"], ["", "club_patron_b"], ["", "club_patron_c"], ["", "club_patron_d"], ["", "club_patron_e"],
+		["", "club_patron_f"], ["", "club_patron_g"], ["", "club_patron_h"], ["", "club_patron_i"], ["", "club_patron_j"],
+	]],
+	"patrons_gala": ["Afterhours - VIP / balcony patrons: the 10 Gallery Night gala looks, reused as is (civ_patron)", [
+		["", "gallery_patron"], ["", "gallery_patron_b"], ["", "gallery_patron_c"], ["", "gallery_patron_d"],
+		["", "gallery_patron_e"], ["", "gallery_patron_f"], ["", "gallery_patron_g"], ["", "gallery_patron_h"],
+		["", "gallery_patron_i"], ["", "gallery_patron_j"],
+	]],
+	"couriers": ["Afterhours - Co-op couriers, rare co_op_pickup (cartel_courier): the 12 cartel looks, reused", [
+		["", "cartel_gunman"], ["", "cartel_gunman_b"], ["", "cartel_gunman_c"], ["", "cartel_gunman_d"],
+		["", "cartel_gunman_e"], ["", "cartel_gunman_f"], ["", "cartel_gunman_g"], ["", "cartel_gunman_h"],
+		["", "cartel_gunman_i"], ["", "cartel_gunman_j"], ["", "cartel_gunman_k"], ["", "cartel_gunman_l"],
+	]],
+	"specials": ["Afterhours - specials (afterhours.md 'Specials'; base looks, faction reskins by difficulty) and Commander Brandt", [
+		["L4.3", "phantom"], ["L4.4", "stinger"], ["L4.5", "bulwark"], ["L4.6", "wrecker"], ["L4.8", "corpsman"],
+		["L4.7", "longshot"], ["L4.9 Lethal+", "brandt"], ["L4.9 Aegis", "bulwark_aegis"],
+	]],
+}
+
+var _groups: Dictionary = GROUPS
+var _out_dir: String = OUT_DIR
+var _prefix: String = "rt_lineup"
+
 var _vp: SubViewport
 var _cam: Camera3D
 var _label: Label3D
@@ -68,16 +105,21 @@ func _run() -> void:
 		push_error("render_rt_lineup: --headless has no renderer; run under xvfb-run")
 		quit(2)
 		return
-	var groups: Array = GROUPS.keys()
+	var pick: String = ""
 	for arg: String in OS.get_cmdline_user_args():
-		if arg.begins_with("--group="):
-			groups = [arg.trim_prefix("--group=")]
-	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(OUT_DIR))
+		if arg == "--heist=afterhours":
+			_groups = AH_GROUPS
+			_out_dir = AH_OUT_DIR
+			_prefix = "ah_lineup"
+		elif arg.begins_with("--group="):
+			pick = arg.trim_prefix("--group=")
+	var groups: Array = [pick] if pick != "" else _groups.keys()
+	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(_out_dir))
 	_stage()
 	for g: Variant in groups:
-		if not GROUPS.has(g):
+		if not _groups.has(g):
 			_errors += 1
-			push_error("render_rt_lineup: unknown group %s (%s)" % [g, GROUPS.keys()])
+			push_error("render_rt_lineup: unknown group %s (%s)" % [g, _groups.keys()])
 			continue
 		await _sheet(String(g))
 	quit(1 if _errors > 0 else 0)
@@ -99,8 +141,8 @@ func _grid(n: int) -> Vector3i:
 
 
 func _sheet(group: String) -> void:
-	var title: String = String(GROUPS[group][0])
-	var looks: Array = GROUPS[group][1]
+	var title: String = String(_groups[group][0])
+	var looks: Array = _groups[group][1]
 	var g: Vector3i = _grid(looks.size())
 	var view: Vector2i = Vector2i(mini(SHEET.x / (g.x * 2), int(g.z * VIEW_ASPECT * 1.4)), g.z)
 	var sheet: Image = Image.create(SHEET.x, SHEET.y, false, Image.FORMAT_RGBA8)
@@ -138,7 +180,7 @@ func _sheet(group: String) -> void:
 		sheet.blit_rect(three_q, Rect2i(Vector2i.ZERO, view), Vector2i(x + view.x, y))
 		body.queue_free()
 		await process_frame
-	var file: String = "%srt_lineup_%s.png" % [OUT_DIR, group]
+	var file: String = "%s%s_%s.png" % [_out_dir, _prefix, group]
 	if sheet.save_png(file) != OK:
 		_errors += 1
 		push_error("render_rt_lineup: could not save %s" % file)
