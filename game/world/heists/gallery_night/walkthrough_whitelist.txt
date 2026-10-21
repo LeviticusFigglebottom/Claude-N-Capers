@@ -1143,3 +1143,15 @@ PlayerRoof4 Gameplay/Lifts/ArtLift/UsePoint
 # routes already near 3x: 65.7 / 64.8 m and 71.4 / 70.8 m).
 PlayerMews1 Gameplay/Loot/StudyUG1b/UsePoint
 PlayerRoof4 Gameplay/Windows/LoggiaWindow2/UsePoint
+
+#
+# Door-clearance bake (shared/door_nav_clearance.gd, LEAD round 252 / ENV P ghost run 250): paths cross every door on
+# the frame's centre line instead of cutting the jamb corner, a few % longer; these routes stood at 2.88-3.00x and
+# now read 3.00-3.03x. The same legal walks as above, no navigation fault (reachability PASS).
+PlayerMews1 Gameplay/Loot/CuratorSafe
+PlayerMews1 Gameplay/Loot/CuratorSafe/UsePoint
+PlayerMews1 Gameplay/Loot/CuratorSafe/CuratorValuables1/UsePoint
+PlayerMews1 Gameplay/Loot/CuratorSafe/CuratorValuables2/UsePoint
+PlayerMews1 Gameplay/Loot/CuratorSafe/CuratorValuables3/UsePoint
+PlayerMews2 Gameplay/Loot/StudyUG1b/UsePoint
+PlayerRoof1 Gameplay/Doors/BreakRoomDoor/UsePoint

@@ -23,3 +23,9 @@ CasingHarlow1 Gameplay/DisplayCases/IslandCaseA/UsePoint
 CasingHarlow1 Gameplay/DisplayCases/WallCaseB/UsePoint
 CasingHarlow1 Gameplay/DisplayCases/WallCaseC/UsePoint
 CasingHarlow2 Gameplay/DisplayCases/WallCaseC/UsePoint
+
+#
+# Door-clearance bake (shared/door_nav_clearance.gd, LEAD round 252 / ENV P ghost run 250): paths cross every door on
+# the frame's centre line instead of cutting the jamb corner, a few % longer; these routes stood at 2.88-3.00x and
+# now read 3.00-3.03x. The same legal walks as above, no navigation fault (reachability PASS).
+CasingHarlow2 Gameplay/DisplayCases/WallCaseB/UsePoint
