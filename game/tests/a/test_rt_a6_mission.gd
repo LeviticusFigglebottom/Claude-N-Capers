@@ -67,8 +67,13 @@ func test_clean_stop_window_then_ambush() -> void:
 	assert_eq(_rt.convoy_layout, m.layout_id, "the layout swapped in")
 	assert_false(_rt.went_loud, "the window is still quiet")
 	assert_true(m._units.size() >= 6, "convoy units at the stop (%d)" % m._units.size())
+	var tags: Dictionary = {}
 	for u: NpcBase in m._units:
 		assert_eq(StringName(u.get_meta(StealthDirector.META_ALARM_REASON, &"")), &"ambush", "their alarm is the ambush")
+		for t: Variant in u.spawn_info.get("tags", []) as Array:
+			tags[StringName(t)] = true
+	for t: StringName in [&"convoy_lead", &"convoy_t1", &"convoy_t2", &"convoy_rear"]:
+		assert_true(tags.has(t), "a unit carries the look tag %s (D's npc_visual_tweak RT rows)" % t)
 	Engine.time_scale = 4.0
 	var loud: bool = await wait_until(func() -> bool: return _rt.went_loud, RollingThunderMission.WINDOW_S + 2.0)
 	assert_true(loud, "the window ended in the alarm")

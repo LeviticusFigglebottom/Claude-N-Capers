@@ -292,7 +292,8 @@ func raise_alarm(reason: StringName, source_net_id: int = 0) -> void:
 ## faction's EnemyDef, AssaultDirector.enemy_def_for) through the director, as mission units: outside the assault
 ## force pool, and sharing the police cap (AssaultDirector.META_SHARES_CAP: police-role units count as police anyway).
 ## Points: with `vehicle` a ConvoyVehicle its `Seat0..n` markers; any other Node3D `vehicle` (a G1 placeholder body)
-## spots beside it (UNIT_SIDE_M off its sides, alternating, along it); else every SpawnPoint tagged `spawn_tag`. Seated
+## spots beside it (UNIT_SIDE_M off its sides, alternating, along it); else every SpawnPoint tagged `spawn_tag`. On a
+## seat or beside a body the unit carries `spawn_tag` as its spawn tag (NpcVisuals looks: RT `convoy_t1` crews). Seated
 ## (`seated`, with a vehicle; spawn them once it stopped): the unit stays on its seat, paused (no brain, physics or
 ## hits) and hidden when the vehicle is armoured (vehicle_kind truck / van), until dismount_units. Returns the units.
 func spawn_units(enemy_id: StringName, count: int, spawn_tag: StringName, seated: bool = false,
@@ -313,7 +314,10 @@ func spawn_units(enemy_id: StringName, count: int, spawn_tag: StringName, seated
 		var p: Node3D = points[i % points.size()]
 		var xf: Transform3D = p.global_transform
 		xf.origin += xf.basis.x * (0.8 * float(i / points.size()))
-		var npc: NpcBase = dir.spawn_enemy(def, xf, p if p is SpawnPoint else null, {AssaultDirector.MISSION_UNIT: true})
+		var extra: Dictionary = {AssaultDirector.MISSION_UNIT: true}
+		if not p is SpawnPoint and spawn_tag != &"":
+			extra["tags"] = [spawn_tag]
+		var npc: NpcBase = dir.spawn_enemy(def, xf, p if p is SpawnPoint else null, extra)
 		if npc == null:
 			continue
 		npc.set_meta(AssaultDirector.META_SHARES_CAP, true)
@@ -346,6 +350,12 @@ func dismount_units(units: Array, step_m: float = 1.6) -> int:
 			npc.set_alert_state(Enums.AlertState.COMBAT)
 		n += 1
 	return n
+
+
+## The current faction has an EnemyDef `enemy_id` (spawn_units would spawn it).
+func has_enemy(enemy_id: StringName) -> bool:
+	var dir: AssaultDirector = _director()
+	return dir != null and dir.enemy_def_for(enemy_id) != null
 
 
 func _seat(npc: NpcBase, vehicle: Node3D) -> void:
