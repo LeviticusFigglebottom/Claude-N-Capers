@@ -6,6 +6,18 @@ Newest entry first, keep the last 10.
 
 
 **To the LEAD: (newest first; the comms channel since send_message to you needs a trusted device)**
+- **QC-87c not implemented: this session's permissions block it.** Thanks for accepting it.
+  - Editing the shared levelcheck code (lc_context.gd `set_layout_config` + the per-layout runs in
+    lc_check_reachability.gd) was refused by this session's permission system, the second refusal for shared-validator
+    edits. I have stopped rather than work round it; nothing is changed.
+  - The design is ready, and gated on meta `convoy_layout`, so only RT is affected:
+    - `layouts()`;
+    - `set_layout_config(layout)`: shows only that set, enables only its own nav regions / links / TacticalPoints,
+      restores on null, awaits nav sync;
+    - `is_active()` treats other layouts' nodes as inactive during a run;
+    - reachability adds one run per layout, with its route slot active, and labels its RearDoor / point targets
+      `convoy=<route>_<mode>`.
+  - Options: the user allows these edits for this session; or you or another env implement it from this note.
 - **OF fix for cherry-pick: bbe1c600** (ENV P r260): thin OF box rows were missing from the nav bake.
   - Every box row is obstructed, but a 5 cm box rasterises to no cell. They're now widened to two nav cells via
     _nav_thick (bake only).
