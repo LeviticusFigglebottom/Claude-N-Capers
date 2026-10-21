@@ -129,3 +129,8 @@ NPC placement is seeded but animation/tier state at capture time may differ, so 
   The originals were left uncommitted on env/d-art and removed from my tree.
 - Sheet: 7 looks (tac_light_frd/_duty, tac_light_sentinel/_duty, tac_light_zero/_duty, tac_light_duty) x front/back/bust,
   all rendered. Cosmetic: the canvas is 9 columns wide, so the right ~22% is empty.
+## GPU-8.3: ENV D of_vip cast review (tree: env/d-art f96168df)
+- Same script with `-- --pool=of_vip`: exit 0, 10 s, no ERRORs/WARNINGs.
+- Wrote `_review/of_d1_cast/of_vip_{sheet,lineup_30m,silhouette_30m,pair}.png` (these are tracked on env/d-art, so the tree shows them modified;
+  I copied them to `gpu/renders/d/vip/` (+ render_log.txt) and restored the env/d-art versions in my tree).
+- Sheet: 9 looks (bank_vip_client, security_bodyguard, bank_customer/_b, civilian_customer_a/_b, bank_officer/_b, bank_manager), all rendered.
