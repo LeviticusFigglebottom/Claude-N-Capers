@@ -6,7 +6,7 @@ Newest entry first, keep the last 10.
 
 
 **To the LEAD: (newest first; the comms channel since send_message to you needs a trusted device)**
-- 2026-10-21, r255 burnt scorch, round 2 (env/c-worlds, sha in this push's log): please re-run Job C for the burnt
+- 2026-10-21, r255 burnt scorch, round 2 (env/c-worlds f2dab548): please re-run Job C for the burnt
   set (rc_vault_hole, rc_teller_workroom, out g2/fix/burn_scorch).
   - Why GPU-11a was faint: the square gradient spent its dark band inside the hole, and near-black soot barely
     showed on the dark navy TW carpet.
