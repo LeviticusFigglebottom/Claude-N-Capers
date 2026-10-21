@@ -217,7 +217,7 @@ NEW_KITS = {
         "min_props": 4,
         "salt": 4716,
         "required": ["pallet", "cone"],
-        "lone_ok": ["pallet", "cone", "gas_cylinders"],
+        "lone_ok": ["pallet", "cone", "gas_cylinders", "scaffold"],
         "notes": "RT F1 the frame's first slab: block pallets (the map's G1 boxes, prop_pallet_loaded art) with a "
         "second pallet each, cones by the slab edge. Fixed tables. Waits: prop_scaffold (edge protection), "
         "prop_site_clutter.",
@@ -243,6 +243,9 @@ NEW_KITS = {
             "pole",
             "ladder",
             "vehicle",
+            "scaffold",
+            "rebar",
+            "mixer",
         ],
         "notes": "RT X4 Tanner's Reach site yard: sodium masts, roadworks barriers with a hazard beacon, cones, gas "
         "cylinders by the cabins. Fixed tables. Waits: prop_rt_tower_crane (the G1 crane boxes), plywood_painted "
@@ -256,7 +259,7 @@ NEW_VARIANTS = {
         "exterior_street",
         "exterior",
         {
-            "lone_ok_add": ["convoy_car", "convoy_cash", "convoy_bullion", "vehicle"],
+            "lone_ok_add": ["convoy_car", "convoy_cash", "convoy_bullion", "vehicle", "traffic_signal"],
             "notes": "RT X1 Orchard / the junction / Tannery west: exterior_street with the convoy's vehicles "
             "(the G1 ConvoyLayout placeholders, A5-02's movers later) allowed alone: an escort stops 3-4 m off the "
             "truck it follows, and the density check's lone rule is per kit (no per-heist exemption exists).",

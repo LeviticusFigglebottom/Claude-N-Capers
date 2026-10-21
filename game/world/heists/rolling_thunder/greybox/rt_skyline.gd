@@ -26,6 +26,11 @@ const GRADE_Y: float = -0.35
 const FAR_GRADE: Array = [-330.0, -340.0, 350.0, 320.0]
 ## The site's footprint (its grades, trench, rail bank, neighbours and vista facades): no far grade under it.
 const SITE_HOLE: Array = [-90.0, -102.0, 114.0, 82.0]
+## Under the site (minus the trench, the underpass and the cut, TRENCH): a plane UNDER_Y down, so an eye ray slipping
+## along an exact seam between two grade tops meets a front face (levelcheck bounds) instead of the void. Deep enough
+## that nothing probing just under a floor (door_frame_gap's leaf-to-floor ray, 0.5 m) reaches it.
+const UNDER_Y: float = -3.0
+const TRENCH: Array = [34.0, -11.2, 114.0, 11.2]
 ## No street continuations (the vistas close every street axis at the site edge).
 const STREETS: Array = []
 ## Inner city bands [x0, z0, x1, z1, block width (m)] just outside SITE_HOLE; blocks get heights and finishes cycling.
@@ -274,6 +279,9 @@ func _ground_build() -> void:
 	var hole: Array[Rect2] = [_rect(float(SITE_HOLE[0]), float(SITE_HOLE[1]), float(SITE_HOLE[2]), float(SITE_HOLE[3]))]
 	for r: Rect2 in _rects_minus(_rect(float(g[0]), float(g[1]), float(g[2]), float(g[3])), hole):
 		_flat_to(_tool("", "asphalt"), r, GRADE_Y)
+	var trench: Array[Rect2] = [_rect(float(TRENCH[0]), float(TRENCH[1]), float(TRENCH[2]), float(TRENCH[3]))]
+	for r2: Rect2 in _rects_minus(hole[0], trench):
+		_flat_to(_tool("", "asphalt"), r2, UNDER_Y)
 	for s: Array in STREETS:
 		_box_to(_tool("", String(s[5])), Vector3(float(s[0]), GRADE_Y, float(s[1])), Vector3(float(s[2]), float(s[4]), float(s[3])))
 

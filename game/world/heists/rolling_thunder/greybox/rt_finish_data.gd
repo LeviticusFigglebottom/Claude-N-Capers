@@ -13,7 +13,7 @@ const KEYS: Dictionary = {
 	"ceiling_tile": ["ceiling_tile", null],
 	"concrete": ["concrete", null],
 	"drywall": ["drywall_painted", null],
-	"hoarding": ["wood_panel_oak", null],  # stand-in for plywood_painted (§3c)
+	"hoarding": ["plywood_painted", null],  # RT-C2 batch 3: the texgen plywood (§3c; the hoarding graphic is open)
 	"limestone": ["limestone_ashlar", null],
 	"metal": ["metal_painted", null],
 	"orange": ["paint_safety_orange", null],

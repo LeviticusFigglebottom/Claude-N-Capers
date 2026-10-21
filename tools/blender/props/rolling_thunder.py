@@ -134,6 +134,11 @@ VARIANTS = {
         "ln": 30.0,
         "cat": {"kind": "rail_track", "place": "none", "group": "exterior", "surface": "metal"},
     },
+    "prop_heli_pad_marking": {
+        "fn": "heli_pad",
+        "r": 5.0,
+        "cat": {"kind": "marking", "place": "none", "group": "exterior", "surface": "concrete"},
+    },
     "prop_neon_halfway": {
         "fn": "neon_sign",
         "text": "HALFWAY",
@@ -579,14 +584,15 @@ def _lattice(p, lo: tuple, hi: tuple, axis: str, panel: float, r: float, key: st
 def _tower_crane(k: Kit, p: dict) -> None:
     """Tanner's Reach tower crane (landmark 3; the G1 Crane boxes' geometry): ballast on the 4 x 4 m base pad, a
     1.6 m lattice mast to 29.6 m, the slewing cab, the 40 m jib along +X with its trolley and hook, the counter-jib
-    with its ballast and the A-frame tie bars. The pivot at the mast's foot (the base pad's centre)."""
-    body = k.obj("Body")
+    with its ballast and the A-frame tie bars. The pivot at the mast's foot on the pad's top (y 1.4)."""
+    body = k.obj("Body", location=(0.0, 0.0, -1.4))  # modelled on the 1.4 m pad: the pivot at its top
     lat = body.part(bevel=0.0)
     solid = body.part(bevel=0.01)
     trim = body.part(bevel=0.002)
     for bx in (-1.3, 1.3):  # base ballast
         solid.bx((bx - 0.6, -1.7, 1.4), (bx + 0.6, 1.7, 2.2), "concrete")
-    _lattice(lat, (-0.8, -0.8, 1.4), (0.8, 0.8, 29.6), "Z", 1.6, 0.06, "metal_yellow")
+    solid.bx((-0.65, -1.0, 1.4), (0.65, 1.0, 1.5), "metal_yellow")  # foot plate (between the ballast)
+    _lattice(lat, (-0.8, -0.8, 1.55), (0.8, 0.8, 29.6), "Z", 1.6, 0.06, "metal_yellow")
     solid.bx((-1.1, -1.1, 29.6), (1.1, 1.1, 30.4), "metal_yellow")  # slewing ring
     solid.bx((-4.0, -1.9, 30.4), (-1.2, 1.9, 31.2), "metal_yellow")  # machinery deck
     solid.bx((-1.1, 0.9, 29.0), (0.9, 2.6, 31.2), "metal_white")  # cab
@@ -804,6 +810,34 @@ def _neon_sign(k: Kit, p: dict) -> None:
         x = -rw + 0.06 + i * (2 * rw - 0.12) / 6
         rc.rod((x, 0.08, 0.0), (x, 0.1, 0.0), 0.006, "steel", segs=6)
     o.build()
+
+
+def _heli_pad(k: Kit, p: dict) -> None:
+    """The car-park roof's heli-pad marking (§3c "heli pad", a painted decal as a 4 mm mesh, so it lies 4 mm over the
+    deck's finish, outside the z-fight plane tolerance): the touchdown ring (``r`` m) in yellow and the white H."""
+    r = float(p["r"])
+    body = k.obj("Body")
+    m = body.part(bevel=0.0)
+    n = 40
+    for i in range(n):
+        a0 = 2 * math.pi * i / n
+        a1 = 2 * math.pi * (i + 1) / n
+        ri, ro = r - 0.2, r + 0.2
+        m.slab(
+            [
+                (ri * math.cos(a0), ri * math.sin(a0)),
+                (ro * math.cos(a0), ro * math.sin(a0)),
+                (ro * math.cos(a1), ro * math.sin(a1)),
+                (ri * math.cos(a1), ri * math.sin(a1)),
+            ],
+            0.0,
+            0.004,
+            "metal_yellow",
+        )
+    for sx in (-1, 1):
+        m.bx((sx * 1.0 - 0.25, -1.5, 0.0), (sx * 1.0 + 0.25, 1.5, 0.004), "metal_white")
+    m.bx((-0.75, -0.25, 0.0), (0.75, 0.25, 0.004), "metal_white")
+    body.build()
 
 
 def build(ctx) -> None:
