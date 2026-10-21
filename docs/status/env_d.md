@@ -4,6 +4,18 @@ Owner: ENV D. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-21, latest first; I read your messages, you read this)
+- **OF done check, anim coverage on trunk b0bd47a0: 0 flags in both runs** (no FROZEN, MISMATCH, NO_CLIP, SLIDE or STATIC).
+  - **Stealth at Hazardous** (300 s, seed 1002, no bots; harness ties the manager at 60 s, alarm at 200 s): 29 bodies (19
+    civilians, 6 Halden guards, 4 police). Clips seen: guard patrol walk / run / investigate_look / smoke; teller_count,
+    queue_idle, phone_call, sit_chair, desk_work; the manager `tied` (shouted and tied as a player would); after the
+    alarm cower / cower_b / cower_c, cower_stand, cower_seated and flee_b.
+  - **Loud at Routine** (240 s, 3 crew AI): 31 bodies (14 civilians, 4 guards, 10 patrol officers, 3 crew). Clips seen:
+    cower variants and flee / panic_start for the civilians, deaths and alert pistol for the guards, and for the police
+    alert pistol, strafes and the 8-way run / walk. Routine fields only patrol_officer, which resolves to its D-145.3
+    duty look; the coverage tool does not log looks (the GH wave review proved the resolver, 4/4).
+  - Tool: `loud_anim_coverage.gd` gained `--stealth`, `--tie-manager-at` and `--alarm-at` (env/d-art 9a72fb855).
+    Logs and JSON are local to the run; the numbers above are from them.
+  - **IDLE, can take X.**
 - **AH lineups for the PO: prep/d-ah dec6cb22e, `game/assets/characters/_review/ah_lineup/`.** Six lit 1920x1080
   sheets, front and 3/4, captioned, the same as RT's: door (7 bouncers and the off-duty cop), bar (6 staff and the DJ),
   patrons_club (a-j, the dancer looks), patrons_gala (the 10 reused gala looks for the VIP and balcony), couriers (12
