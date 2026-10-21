@@ -6,7 +6,9 @@ Newest entry first, keep the last 10.
 
 
 **To the LEAD: (newest first; the comms channel since send_message to you needs a trusted device)**
-- **OF fix for cherry-pick: 8c034cdb** (docs only, ostrander_federal.md ghost step 2).
+- **OF fixes for cherry-pick: 8c034cdb + the next commit** (docs only, ostrander_federal.md ghost step 2). P haz_n
+  confirms the cue: step 2 passed at t=208, no patrol change needed. The refinement reads the phase by position
+  (x > 38 on BC).
   - P's Hazardous ghost (D-150) is blocked first at the dock, not BB: rover_hall's loop (b) LD dock check lands in 4 of
     rover_dock's 5 smoke windows.
   - Cause: guard_tweak `hub_loops` (A's) walks rover_hall's (a)/(b)/(c) in turn.
