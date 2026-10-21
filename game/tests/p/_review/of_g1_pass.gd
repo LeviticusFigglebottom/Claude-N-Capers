@@ -95,7 +95,8 @@ const OF_CAGED_LADDER_AT: Vector3 = Vector3(46.0, 8.6, 17.0)
 ## VT (the vault) x 14-34, z 13-25. §7.7. Burn-through objective tags: vault_drill (the lid's drill_point), vault_breach.
 const OF_HOLE_AT: Vector3 = Vector3(24.0, 0.0, 14.0)
 const OF_VT_RECT: Rect2 = Rect2(14.0, 13.0, 20.0, 12.0)
-const OF_CQ_RECT: Rect2 = Rect2(10.0, 3.0, 3.0, 4.0)
+## CQ and GL (the cash lift's basement room, where its panel is: ghost6_k started the climb there).
+const OF_CQ_RECT: Rect2 = Rect2(10.0, 0.0, 3.0, 7.0)
 ## Dock (Ground notes / Escape): LD personnel door (8, 0); roller door x 3-6.6 on z 0; LD interior; E1 van at (5, -3)
 ## in Ledger Lane. §7.8.
 const OF_LD_DOOR: Vector3 = Vector3(8.0, 0.0, 0.0)
