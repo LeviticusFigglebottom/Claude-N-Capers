@@ -407,7 +407,8 @@ func _spawn_convoy_units() -> void:
 		var seat: bool = clean_stop and not went_loud and body is ConvoyVehicle
 		var look_tag: StringName = StringName("convoy_" + veh.to_lower())  # convoy_lead / convoy_t1.. / convoy_rear
 		for i: int in ids.size():
-			var got: Array[NpcBase] = spawn_units(ids[i], 1, look_tag, seat, body)
+			# D: the Wrecker's helmet clears no car door frame: it rides along but starts beside the car
+			var got: Array[NpcBase] = spawn_units(ids[i], 1, look_tag, seat and ids[i] != WRECKER, body)
 			for u: NpcBase in got:
 				u.set_meta(StealthDirector.META_ALARM_REASON, &"ambush")  # QC-83 (d): their alarm is the ambush
 				_units.append(u)

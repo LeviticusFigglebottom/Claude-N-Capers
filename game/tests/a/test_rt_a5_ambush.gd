@@ -68,6 +68,7 @@ func test_seated_units_share_the_cap_and_dismount() -> void:
 		assert_false(u.visible, "hidden in an armoured truck")
 		assert_true(u.global_position.distance_to(truck.global_position) < 2.5, "on a seat")
 		assert_false(bot._is_hostile(u), "not a bot target while seated")
+		assert_true((-u.global_basis.z).angle_to(truck.global_basis.z) < 0.01, "faces the vehicle's front (+Z)")
 	assert_eq(_rt.mission.dismount_units(units), 2, "both got out")
 	for u: NpcBase in units:
 		assert_false(u.has_meta(HeistMission.META_SEATED_IN))
@@ -97,3 +98,33 @@ func test_civilians_flee_the_street_at_the_alarm() -> void:
 		return civs.all(func(c: Variant) -> bool: return not is_instance_valid(c) or not (c as Node).is_inside_tree()), 15.0)
 	assert_true(gone, "they reached the exit and despawned")
 	assert_eq(_rt.mission.civilians_flee(&"nowhere"), 0, "no exit: nobody moves")
+
+
+## D (RT convoy fit): a glb exports Seat0..n as plain Node3D empties; seats() takes them.
+func test_glb_seats_are_plain_node3d() -> void:
+	var vis: Node3D = Node3D.new()
+	var body: MeshInstance3D = MeshInstance3D.new()
+	body.name = "Body"
+	body.mesh = BoxMesh.new()
+	vis.add_child(body)
+	body.owner = vis
+	for i: int in 2:
+		var seat: Node3D = Node3D.new()
+		seat.name = "Seat%d" % i
+		seat.position = Vector3(0.4 * (1 - 2 * i), 0.18, 0.25)
+		vis.add_child(seat)
+		seat.owner = vis
+	var packed: PackedScene = PackedScene.new()
+	packed.pack(vis)
+	vis.free()
+	var car: ConvoyVehicle = ATestMaps.add_prefab(_rt, "convoy_vehicle", Vector3(0, 0, -12), func(n: Node) -> void:
+		(n as ConvoyVehicle).visual_scene = packed) as ConvoyVehicle
+	await wait_physics_frames(2)
+	assert_eq(car.seats().size(), 2, "two Node3D seats")
+	var units: Array[NpcBase] = _rt.mission.spawn_units(&"enemy.patrol_officer", 2, &"convoy_lead", true, car)
+	assert_eq(units.size(), 2)
+	for u: NpcBase in units:
+		assert_true(u.has_meta(HeistMission.META_SEATED_IN) and u.visible, "seated and visible in a car")
+		var anim: AnimDriver = AnimDriver.of(u)
+		if anim != null:
+			assert_eq(anim.process_mode, Node.PROCESS_MODE_ALWAYS, "the pose keeps playing while paused")
