@@ -13,7 +13,10 @@ Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min;
   standing at (19.5, 0, 1.1) (the Cataclysm runs walked past that spot). Now within 20 m only walkers count; standing guards count within 8 m of either
   door. haz_f: the pre-checks passed (rover_hall was still in the hall, z > 12, at the cue), then he came through BC into LD again and found the pilot
   waiting inside (t=111, as in haz_b/c). Now when BC isn't clear, the pilot backs out to the lane beside the dock door (6, 0, −1.5), not inside LD.
-  Ghost runs from here on are on r260 (3a3885ad), per the LEAD. haz_g is next.
+  Ghost runs from here on are on r260 (3a3885ad), per the LEAD. **haz_g (r260): waiting outside works.** rover_hall did his LD check (t≈108-118)
+  and missed the pilot beside the door. But by then the smoke window had ended, and rover_dock walked back and saw the pilot (t=139). That window
+  was never real: now the cue check also tracks rover_hall by tag (heading for DockCorridorDoor from ≤ 25 m means a loop (b) LD check → skip),
+  and the corridor-door wait counts building-side guards only. haz_h is running.
   The BB window log (count/lengths) will go here for C if step 5 finds no window.
 - **Ghost §5 design question (needs C/LEAD).** On r256/r257, seed 1002, Cataclysm solo: steps 1-4 PASS every run. Step 5's actions work unseen once the
   pilot is at the gate (swipe, lasers, time lock code; r256b/c). The blocker is crossing BB from LK to the gate. rover_basement sweeps BB x 5-35

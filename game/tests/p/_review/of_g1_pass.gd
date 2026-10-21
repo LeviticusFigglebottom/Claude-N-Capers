@@ -1616,7 +1616,8 @@ func _lk_hide() -> Vector3:
 ## the gate by Npc_guard2 in VC 6.6 m off). Waits until no living guard on floor `y` is within 8 m of `spot`, within 20 m
 ## with LOS to it, or walking within 20 m; if not clear at once the crew waits at `hide` (LK, doc §3; r251h: waiting in BB
 ## by the core, rover_basement walked down BB and saw it). Logs the wait (max 300 s, then goes anyway).
-func _wait_spot_clear(spot: Vector3, y: float, label: String, hide: Vector3, extra: Callable = Callable()) -> void:
+func _wait_spot_clear(spot: Vector3, y: float, label: String, hide: Vector3, extra: Callable = Callable(),
+		min_z: float = -INF) -> void:
 	var t: float = 0.0
 	var hidden: bool = false
 	var last: Dictionary = {}
@@ -1624,7 +1625,7 @@ func _wait_spot_clear(spot: Vector3, y: float, label: String, hide: Vector3, ext
 		var near: PackedStringArray = PackedStringArray()
 		for n: Node in rt.npcs(&"guard"):
 			var g: NpcBase = n as NpcBase
-			if g == null or not g.is_alive() or absf(g.global_position.y - y) > 1.5:
+			if g == null or not g.is_alive() or absf(g.global_position.y - y) > 1.5 or g.global_position.z < min_z:
 				continue
 			var id: int = g.get_instance_id()
 			var moving: bool = last.has(id) and g.global_position.distance_to(last[id]) > 0.15
@@ -1704,6 +1705,13 @@ func _gate_window(gate: Door) -> bool:
 				var in_rc: bool = p.x < 14.0 and p.z > 9.5
 				return absf(p.y - OF_FFL[0]) > 1.5 or in_rc or p.x > 36.0
 	return true
+
+
+func _has_tag(g: NpcBase, tag: String) -> bool:
+	for t: Variant in g.spawn_info.get("tags", []):
+		if String(t) == tag:
+			return true
+	return false
 
 
 ## Step 5's peek before each leg of the LK -> gate walk: a guard walking within 20 m who sees the pilot or closes on the
@@ -2510,7 +2518,14 @@ func _g2_dock() -> bool:
 				continue
 			var id: int = g.get_instance_id()
 			var moving: bool = ld_last.has(id) and g.global_position.distance_to(ld_last[id]) > 0.15
+			var was: Vector3 = ld_last.get(id, g.global_position)
 			ld_last[id] = g.global_position
+			# rover_hall heading for DockCorridorDoor from anywhere within 25 m is on his loop (b) LD check (haz_g: in
+			# the hall at the cue, through LD 30 s later; the smoke window had ended by the time he left).
+			if cdoor_n != null and moving and _has_tag(g, "guard_rover_hall"):
+				var dn: float = pilot.flat_dist(g.global_position, cdoor_n.global_position)
+				if dn < 25.0 and pilot.flat_dist(was, cdoor_n.global_position) - dn > 0.05:
+					return "%s %s heading for LD" % [g.name, Po5Pilot._v(g.global_position)]
 			# BC / LD side only (z < 12): the lobby guard's hall post (10.9, 0, 21.8) is 14 m off but another room (haz_d).
 			var dc: float = pilot.flat_dist(g.global_position, cdoor_n.global_position) if cdoor_n != null else 999.0
 			if pilot.flat_dist(g.global_position, door_at) < 8.0 or dc < 8.0 \
@@ -2563,7 +2578,7 @@ func _g2_dock() -> bool:
 	var cdoor: Node3D = rt.find_child("DockCorridorDoor", true, false) as Node3D
 	if cdoor != null:
 		var hide: Vector3 = pilot.stand_point(door.global_position + Vector3(-2.0, 0.0, -1.5))
-		await _wait_spot_clear(cdoor.global_position, OF_FFL[1], "dock corridor door", hide)
+		await _wait_spot_clear(cdoor.global_position, OF_FFL[1], "dock corridor door", hide, Callable(), 0.5)
 	return await _of_to_floor(0)
 
 
