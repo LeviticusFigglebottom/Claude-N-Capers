@@ -134,9 +134,11 @@ const GHOST_SMOKE_AT: Vector3 = Vector3(48.0, 0.0, -5.0)
 const LANE_CLEAR_M: float = 20.0
 const GHOST_LK_WAIT: Vector3 = Vector3(3.0, -4.0, 4.0)
 const GHOST_E3_WAIT: Vector3 = Vector3(11.5, 8.6, 4.0)
-## LK's NW corner beside LockerDoor (x 5, z 7): out of the door's sight line from BB (r251i: crouch-less wait at
-## GHOST_LK_WAIT, in line with the door, filled by rover_basement passing BB at 6 m).
-const GHOST_LK_HIDE: Vector3 = Vector3(0.8, -4.0, 6.2)
+## LK corners beside LockerDoor (x 5, z 7), out of the door's sight line from BB (r251i: crouch-less wait at
+## GHOST_LK_WAIT, in line with the door, filled by rover_basement passing BB at 6 m). The first that snaps onto the
+## navmesh inside LK wins (r251j: (0.8, 6.2) snapped through the wall into BB).
+const GHOST_LK_HIDES: Array[Vector3] = [Vector3(0.8, -4.0, 6.2), Vector3(9.2, -4.0, 6.2), Vector3(1.5, -4.0, 5.5),
+	Vector3(8.5, -4.0, 5.5), Vector3(2.5, -4.0, 5.0), Vector3(7.5, -4.0, 5.0)]
 const GHOST_RC_WAIT: Vector3 = Vector3(1.0, -4.0, 16.0)
 const GHOST_CQ_AT: Vector3 = Vector3(11.5, -4.0, 4.0)
 const GHOST_LD_STAGE: Vector3 = Vector3(8.0, 0.0, 1.6)
@@ -1569,6 +1571,17 @@ func _wait_core_clear(from_y: float, to_y: float, same_floor: bool = false) -> v
 	note("GHOST stair core NOT clear after 180 s (going anyway)")
 
 
+func _lk_hide() -> Vector3:
+	for c: Vector3 in GHOST_LK_HIDES:
+		var want: Vector3 = _of(c)
+		var got: Vector3 = pilot.stand_point(want)
+		if pilot.flat_dist(got, want) <= 0.4:
+			note("GHOST LK hide at %s" % Po5Pilot._v(got))
+			return got
+	note("GHOST no LK corner on the navmesh: using GHOST_LK_WAIT")
+	return _of(GHOST_LK_WAIT)
+
+
 ## Doc §5: swipe at the gate when the vault guard is off VC (loops (b)/(c)) and rover_basement is east (r251g: seen at
 ## the gate by Npc_guard2 in VC 6.6 m off). Waits until no living guard on floor `y` is within 8 m of `spot`, within 20 m
 ## with LOS to it, or walking within 20 m; if not clear at once the crew waits at `hide` (LK, doc §3; r251h: waiting in BB
@@ -2388,7 +2401,7 @@ func _g5_vault() -> bool:
 		return false
 	var gate: Door = _tagged(&"vault_gate") as Door
 	if gate != null and not gate.is_open:
-		await _wait_spot_clear(gate.global_position, OF_FFL[0], "vault gate", _of(GHOST_LK_HIDE))
+		await _wait_spot_clear(gate.global_position, OF_FFL[0], "vault gate", _lk_hide())
 	if gate == null or (not gate.is_open and not await pilot.use(_comp(gate), 30.0, func() -> bool: return gate.is_open)):
 		return false
 	var grid: LaserGrid = _x("laser_grid") as LaserGrid
