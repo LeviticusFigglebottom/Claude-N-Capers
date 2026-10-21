@@ -916,6 +916,15 @@ func _link_faces() -> void:
 			if to2.length() < pick_d:
 				pick_d = to2.length()
 				pick = c2
+		if pick == null:  # a monitor on a map-built desk: turn it (about its pivot) to the desk's chair within 45 deg
+			for c3: Node3D in chairs:
+				var to3: Vector3 = _gx(c3).origin - mx.origin
+				to3.y = 0.0
+				if to3.length() > 0.05 and to3.length() <= 1.5 and front.normalized().dot(to3.normalized()) >= cos(deg_to_rad(45.0)):
+					var turn: float = Vector2(front.x, front.z).angle_to(Vector2(to3.x, to3.z))
+					m.rotate_y(-turn)
+					pick = c3
+					break
 		if pick != null:
 			m.set_meta(&"faces", m.get_path_to(pick))
 

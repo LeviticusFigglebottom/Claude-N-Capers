@@ -12520,8 +12520,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.29, 0)
 shape = SubResource("rt_459")
 
 [node name="Monitor_1" type="Node3D" parent="Props/Dress/AB" unique_id=101680 instance=ExtResource("114_rt")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18.158363, 0.74, -14.919907)
+transform = Transform3D(0.9278736, 0, -0.37289485, 0, 1, 0, 0.37289485, 0, 0.9278736, 18.158363, 0.74, -14.919907)
 metadata/kind = &"monitor"
+metadata/faces = NodePath("../../../../Spawns/AttendantChair")
 
 [node name="KeyCabinet_1" type="Node3D" parent="Props/Dress/AB" unique_id=101681 instance=ExtResource("115_rt")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 17.231976, 1.5, -19.897999)
@@ -18731,7 +18732,7 @@ metadata/swing_side = "back"
 metadata/service = true
 
 [node name="CounterDoor" type="Node3D" parent="Gameplay/Doors" unique_id=102966 instance=ExtResource("214_rt")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 27, 0, 23)
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 27, 0, 23)
 script = ExtResource("215_rt")
 width_m = 1.1
 visual_scene = ExtResource("218_rt")
@@ -18760,7 +18761,7 @@ metadata/kind = "door"
 metadata/swing_side = "back"
 
 [node name="RearLobbyDoor" type="Node3D" parent="Gameplay/Doors" unique_id=102969 instance=ExtResource("214_rt")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 0, 26)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 18, 0, 26)
 script = ExtResource("215_rt")
 width_m = 1.1
 visual_scene = ExtResource("218_rt")

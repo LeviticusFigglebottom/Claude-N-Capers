@@ -152,10 +152,10 @@ DOOR_SPECS: Dict[tuple, list] = {
     ("DG", "side"): ["DinerSideDoor", "NONE", "W", "glass", {}],
     ("DG", "delivery"): ["DinerDeliveryDoor", "LOCKPICK", "N", "steel", {"npc": ["staff_diner"]}],
     ("DG", "k_bc"): ["KitchenDoor", "NONE", "S", "ivory", {}],
-    ("DG", "dr_bc"): ["CounterDoor", "NONE", "W", "ivory", {}],
+    ("DG", "dr_bc"): ["CounterDoor", "NONE", "E", "ivory", {}],  # swings into DR, not the corridor BC (RT-C2)
     ("DG", "bc_st"): ["DryStoreDoor", "NONE", "N", "ivory", {}],
     ("DG", "e_door"): ["ElectricalDoor", "LOCKPICK", "S", "steel", {"npc": ["staff_diner"]}],
-    ("DG", "dr_r"): ["RearLobbyDoor", "NONE", "N", "ivory", {}],
+    ("DG", "dr_r"): ["RearLobbyDoor", "NONE", "S", "ivory", {}],  # swings into DR, not the corridor R (RT-C2)
     ("DG", "dr_of"): ["DinerOfficeDoor", "LOCKPICK", "N", "ivory", {"npc": ["staff_diner"]}],
     ("DG", "w1"): ["DinerWC1Door", "NONE", "E", "ivory", {}],
     ("DG", "w2"): ["DinerWC2Door", "NONE", "E", "ivory", {}],
