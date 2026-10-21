@@ -50,7 +50,11 @@ Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min;
   rover_basement, out of LOS east at that moment, turned back west down BB and saw the pilot at the gate (t=358). Now walkers within 20 m that are
   closing on the gate count too (doc: 'rover_basement is east'). r257b: the same failure (he was likely standing in SD, out of LOS, when the wait cleared).
   No snapshot rule predicts that, so now the pilot walks LK → gate in legs (BB west, the core, the gate), peeks before each one, and retreats
-  to LK if a guard shows up (≤ 4 tries). r257c is running.
+  to LK if a guard shows up (≤ 4 tries). r257c: the peek caught rover_basement coming back down BB at 12 m, but the retreat runs west along the
+  same straight 48 m corridor and he filled 1.0 anyway. His positions (r256d/r257c) show him sweeping BB x 5-35 every 20-40 s; his only long stops
+  are RC (blind aisles per doc) or far east at SS. Now the gate window also requires rover_basement in RC or past x 36. r257d is running.
+  **If this doesn't hold, my read is that at Cataclysm (extra BB guards + rover_basement's short loops) the doc's step-5 window is very
+  tight. I'd then like a design call (C/LEAD) on whether ghost §5 is meant to be timed on Cataclysm, or at a lower difficulty.**
 - **Ghost line**, on r251 + c-worlds 9d00c55b + P, windowed, seed 1002: **steps 1-4 PASS** (r251g). C's door-throat bake fix is verified.
   Harness fixes on env/p-play: peek at the SA core before EA → E3; code-hack restart. Step 5 (vault gate) was seen by the vault guard;
   the gate-clear wait went in at 88e06f40. r251h: the wait held for the vault guard, but the pilot waited in BB and rover_basement

@@ -1684,11 +1684,29 @@ func _vault_guard_off_vc(_gate: Door) -> bool:
 	return _vg_away_n >= 2
 
 
+## Doc §5's window: the vault guard on loop (b) and rover_basement away. rover_basement sweeps BB (x 5-35) every 20-40 s
+## (r256d/r257c); his only long stops are in RC, whose aisles are blind from BB (doc), or far east at SS. r257c: a peek
+## per leg saw him come back down BB, but the retreat ran west along the same straight corridor and he filled 1.0 anyway.
+func _gate_window(gate: Door) -> bool:
+	if not _vault_guard_off_vc(gate):
+		return false
+	for n: Node in rt.npcs(&"guard"):
+		var g: NpcBase = n as NpcBase
+		if g == null or not g.is_alive():
+			continue
+		for t: Variant in g.spawn_info.get("tags", []):
+			if String(t) == "guard_rover_basement":
+				var p: Vector3 = g.global_position
+				var in_rc: bool = p.x < 14.0 and p.z > 9.5
+				return absf(p.y - OF_FFL[0]) > 1.5 or in_rc or p.x > 36.0
+	return true
+
+
 ## Step 5's peek before each leg of the LK -> gate walk: a guard walking within 20 m who sees the pilot or closes on the
 ## gate, or the vault guard back off his RC leg. "" when the next leg is safe.
 func _gate_threat(gate: Door) -> String:
-	if not _vault_guard_off_vc(gate):
-		return "vault guard not on RC"
+	if not _gate_window(gate):
+		return "vault guard / rover_basement not away"
 	var me: Vector3 = pilot.crew.global_position
 	for n: Node in rt.npcs(&"guard"):
 		var g: NpcBase = n as NpcBase
@@ -2631,7 +2649,7 @@ func _g5_vault() -> bool:
 		var hide: Vector3 = _lk_hide()
 		var legs: Array[Vector3] = [_of(Vector3(8.0, OF_FFL[0], 8.2)), _of(Vector3(13.5, OF_FFL[0], 8.2))]
 		for attempt: int in 4:
-			await _wait_spot_clear(gate.global_position, OF_FFL[0], "vault gate", hide, _vault_guard_off_vc.bind(gate))
+			await _wait_spot_clear(gate.global_position, OF_FFL[0], "vault gate", hide, _gate_window.bind(gate))
 			var ok: bool = true
 			for leg: Vector3 in legs + [pilot.stand_point(gate.global_position + Vector3(-1.2, 0.0, 0.0))]:
 				var who: String = _gate_threat(gate)
