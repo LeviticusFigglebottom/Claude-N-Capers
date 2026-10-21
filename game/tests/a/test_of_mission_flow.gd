@@ -142,6 +142,43 @@ func test_of_vault_side_loot_marked_once_the_vault_is_reachable() -> void:
 	assert_true(opened.has("VaultCash") and not opened.has("Padlock"), "the cash once the cage is open (%s)" % [opened])
 
 
+## LEAD GPU-15 (2): "the pilot stands 2.2 m from the BondSafe interactable and its aim ray hits nothing". That stand
+## (13.2, -4, 20.1) is outside the vault's west wall. Once the vault is open, a real player reaches the safe's UsePoint
+## on the navmesh from the vault door, and the aim from there resolves to the safe.
+func test_of_bond_safe_usable_from_its_use_point() -> void:
+	if _pending() or not await _launch():
+		return
+	var safe: Safe = null
+	for n: Node in _m().find_tagged(&"bond_safe"):
+		if n is Safe:
+			safe = n as Safe
+	assert_true(safe != null, "the bond safe")
+	var comp: InteractableComponent = safe.get_node(^"Interactable") as InteractableComponent
+	var use: Node3D = safe.get_node(^"UsePoint") as Node3D
+	_m().call(&"open_vault")
+	await wait_physics_frames(3)
+	var map: RID = _rt.map.get_world_3d().navigation_map
+	var door: Node3D = _m().find_tagged(&"vault_door")[0] as Node3D
+	var path: PackedVector3Array = NavPath.query(map, door.global_position + Vector3(0.0, 0.0, 1.5), use.global_position)
+	assert_true(not path.is_empty() and path[path.size() - 1].distance_to(use.global_position) < 0.5,
+		"the UsePoint %s is on the navmesh from the vault door (path ends %s)" % [use.global_position,
+		path[path.size() - 1] if not path.is_empty() else Vector3.INF])
+	var c: CrewController = _rt.crew_controller(0) as CrewController
+	c.set_masked()
+	for stand: Vector3 in [use.global_position, Vector3(13.2, -4.0, 20.1)]:
+		_rt.teleport_crew(0, Transform3D(Basis.IDENTITY, stand + Vector3(0, 0.05, 0)))
+		await wait_physics_frames(3)
+		var to: Vector3 = comp.global_position - c.eye_position()
+		var i: CrewIntent = CrewIntent.new()
+		i.look_yaw = atan2(-to.x, -to.z)
+		i.look_pitch = atan2(to.y, Vector2(to.x, to.z).length())
+		_rt.set_bot_intent(0, i)
+		await wait_physics_frames(2)
+		var inside: bool = stand == use.global_position
+		assert_eq(_rt.interaction.aimed_component(c) == comp, inside,
+			"aim at the safe from %s resolves: %s (inside the vault only)" % [stand, inside])
+
+
 ## objective id -> the names of the nodes the HUD marks for it (positions matched to the tagged nodes).
 func _marker_names() -> Dictionary:
 	var out: Dictionary = {}
