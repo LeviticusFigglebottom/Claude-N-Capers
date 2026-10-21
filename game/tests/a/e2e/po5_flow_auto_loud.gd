@@ -801,7 +801,10 @@ func _doctor_bag() -> bool:
 		var before: int = ds.deployable_count(p.crew.slot)
 		f.note("doctor bag: %d downs used, deploying one" % p.crew.health.downs_used)
 		p.inp.press(&"deploy")
-		await f.wait_until(func() -> bool: return ds.deployable_count(p.crew.slot) < before, 6.0)
+		var waited: float = 0.0
+		while ds.deployable_count(p.crew.slot) >= before and waited < 6.0 and p.crew.crew_state == Enums.CrewState.NORMAL:
+			await f.wait_s(0.1)
+			waited += 0.1
 		p.inp.release(&"deploy")
 		await p.inp.ticks(5)
 		return true  # the next step walks to it and uses it
