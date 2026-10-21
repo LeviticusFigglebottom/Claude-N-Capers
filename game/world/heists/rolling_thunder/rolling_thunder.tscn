@@ -19400,7 +19400,7 @@ script = ExtResource("217_rt")
 room_id = &"X1"
 purpose = &"exterior"
 floor_index = 1
-dressing_kit = &"exterior_street"
+dressing_kit = &"exterior_street_rt"
 
 [node name="Shape" type="CollisionShape3D" parent="Rooms/RoomX1" unique_id=103039]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.5, -10)

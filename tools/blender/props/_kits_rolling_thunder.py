@@ -250,8 +250,18 @@ NEW_KITS = {
     },
 }
 
-# the 8th variant (RT-C2 batch 2): the roof deck from the new car_park_deck
+# the 8th variant (RT-C2 batch 2): the roof deck from the new car_park_deck; and X1's street with the convoy
 NEW_VARIANTS = {
+    "exterior_street_rt": (
+        "exterior_street",
+        "exterior",
+        {
+            "lone_ok_add": ["convoy_car", "convoy_cash", "convoy_bullion"],
+            "notes": "RT X1 Orchard / the junction / Tannery west: exterior_street with the convoy's vehicles "
+            "(the G1 ConvoyLayout placeholders, A5-02's movers later) allowed alone: an escort stops 3-4 m off the "
+            "truck it follows, and the density check's lone rule is per kit (no per-heist exemption exists).",
+        },
+    ),
     "car_park_roof": (
         "car_park_deck",
         "roof",
