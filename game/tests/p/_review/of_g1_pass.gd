@@ -2499,22 +2499,24 @@ func _g2_dock() -> bool:
 	# ...and BC by DockCorridorDoor: rover_hall's loop (b) comes through it into LD (haz_b: waited inside LD, he walked in
 	# and found the pilot at 1 m). Inside the building = z > 0.5.
 	var cdoor_n: Node3D = rt.find_child("DockCorridorDoor", true, false) as Node3D
-	var ld_busy: Callable = func() -> String:
+	# 20 m at the cue: mask + ECM + the 8 s lockpick take ~15 s, about 22 m of rover_hall's walk (haz_c: > 10 m at the cue,
+	# 6 m off DockCorridorDoor once the pilot was in). Re-checked at 10 m right before the lockpick.
+	var ld_busy: Callable = func(r: float) -> String:
 		for n: Node in rt.npcs(&"guard"):
 			var g: NpcBase = n as NpcBase
 			if g == null or not g.is_alive() or g.global_position.z <= 0.5 or absf(g.global_position.y) >= 1.5:
 				continue
 			if pilot.flat_dist(g.global_position, door_at) < 8.0 \
-					or (cdoor_n != null and pilot.flat_dist(g.global_position, cdoor_n.global_position) < 10.0):
+					or (cdoor_n != null and pilot.flat_dist(g.global_position, cdoor_n.global_position) < r):
 				return "%s %s" % [g.name, Po5Pilot._v(g.global_position)]
 		return ""
 	var clear: bool = await _smoke_cue(300.0)
 	for _try: int in 4:
-		var who: String = ld_busy.call()
+		var who: String = ld_busy.call(20.0)
 		if who == "":
 			break
 		note("GHOST LD occupied (%s): skipping this smoke window" % who)
-		await wait_until(func() -> bool: return ld_busy.call() == "", 90.0)
+		await wait_until(func() -> bool: return ld_busy.call(20.0) == "", 90.0)
 		clear = await _smoke_cue(300.0)
 	while waited < 600.0 and not clear:
 		clear = true
@@ -2538,6 +2540,10 @@ func _g2_dock() -> bool:
 	if not await _deploy_ecm():
 		return false
 	var door: Door = _x("ld_door") as Door
+	var late: String = ld_busy.call(10.0)
+	if late != "":
+		note("GHOST LD busy right before the lockpick (%s): waiting at the door" % late)
+		await wait_until(func() -> bool: return ld_busy.call(10.0) == "", 60.0)
 	if door == null or (not door.is_open and not await pilot.use(_comp(door), 30.0, func() -> bool: return door.is_open)):
 		return false
 	# Peek through LD -> BC too: on Hazardous (D-150) rover_hall stood 1.7 m behind DockCorridorDoor when the pilot
