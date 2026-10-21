@@ -45,11 +45,16 @@ const TAG_TIME_LOCK_WAIT: StringName = &"time_lock_wait"
 const TAG_VAULT_DOOR: StringName = &"vault_door"
 const TAG_VAULT_LOOT: StringName = &"vault_loot"
 const TAG_GOLD_CAGE: StringName = &"gold_cage"
+## The cash cage's gate, its keypad and its padlock (C's G1 layout, D-138).
+const TAG_CASH_CAGE: StringName = &"cash_cage"
+const CASH_CAGE_GATE: String = "CashCageGate"
 const TAG_SECURE: StringName = &"secure"
 const TAG_ESCAPE: StringName = &"escape"
 const TAG_ESCAPE_WAIT: StringName = &"escape_wait"
 const TAG_DEPOSIT_BOXES: StringName = &"deposit_boxes"
 const TAG_BOND_SAFE: StringName = &"bond_safe"
+## The vault-wall DepositBox prefabs (VaultBoxN01.., VaultBoxS01..); the SD hall's are HallBox01..
+const VAULT_BOX_PREFIX: String = "VaultBox"
 const TAG_PRESIDENT_SAFE: StringName = &"president_safe"
 const TAG_SERVER_DRIVES: StringName = &"server_drives"
 const TAG_DRILL_DELIVERY: StringName = &"drill_delivery"
@@ -209,6 +214,7 @@ func _on_mission_start() -> void:
 	_adopt_g1_metas()
 	_apply_scalars()
 	_watch_gate()
+	_watch_cash_cage()
 	_watch_padlocks()
 	_wire_routes()
 	_schedule_rare_events()
@@ -233,15 +239,20 @@ func _add_objectives() -> void:
 	_add(&"lasers", Enums.ObjectiveState.ACTIVE, [TAG_LASERS], {"optional": true})
 	_add(&"time_lock", Enums.ObjectiveState.HIDDEN, [TAG_TIME_LOCK])
 	_add(&"time_lock_wait", Enums.ObjectiveState.HIDDEN, [TAG_TIME_LOCK_WAIT])
-	_add(&"vault_loot", Enums.ObjectiveState.HIDDEN, [TAG_VAULT_LOOT])
+	# The cash sits in its locked cage (keypad: the vault code; padlock: lockpick / saw): the cage's way in is marked
+	# until the gate opens, then the cash (LEAD OF-done: the pilot walked at the cash through the cage mesh).
+	_add(&"vault_loot", Enums.ObjectiveState.HIDDEN, [TAG_CASH_CAGE], {"marker_skip_prefixes": [CASH_CAGE_GATE]})
 	_add(&"gold_cage", Enums.ObjectiveState.HIDDEN, [TAG_GOLD_CAGE], {"optional": true})
 	# ENV B (LEAD r245 1): the loud drill steps sit above `secure` so the HUD's first ACTIVE step reads the drill.
 	_add(&"drill_delivery", Enums.ObjectiveState.HIDDEN, [TAG_DRILL_DELIVERY], {"count": 0, "total": DRILL_PARTS})
 	_add(&"vault_drill", Enums.ObjectiveState.HIDDEN, [TAG_VAULT_DRILL])
 	_add(&"vault_breach", Enums.ObjectiveState.HIDDEN, [TAG_VAULT_BREACH])
 	_add(&"secure", Enums.ObjectiveState.ACTIVE, [TAG_SECURE], {"count": 0, "total": required_bags(), "optional_more": true})
-	_add(&"deposit_boxes", Enums.ObjectiveState.ACTIVE, [TAG_DEPOSIT_BOXES], {"optional": true, "side": true})
-	_add(&"bond_safe", Enums.ObjectiveState.ACTIVE, [TAG_BOND_SAFE], {"optional": true, "side": true})
+	# The bond safe and the vault-wall boxes sit in the sealed vault: marked once it is reachable (_vault_reachable;
+	# LEAD OF-done: the pilot walked to them through the vault wall). The SD hall's boxes are marked from the start.
+	_add(&"deposit_boxes", Enums.ObjectiveState.ACTIVE, [TAG_DEPOSIT_BOXES],
+		{"optional": true, "side": true, "marker_skip_prefixes": [VAULT_BOX_PREFIX]})
+	_add(&"bond_safe", Enums.ObjectiveState.HIDDEN, [TAG_BOND_SAFE], {"optional": true, "side": true})
 	_add(&"president_safe", Enums.ObjectiveState.ACTIVE, [TAG_PRESIDENT_SAFE], {"optional": true, "side": true})
 	_add(&"server_drives", Enums.ObjectiveState.ACTIVE, [TAG_SERVER_DRIVES], {"optional": true, "side": true})
 	_add(&"escape_wait", Enums.ObjectiveState.HIDDEN, [TAG_ESCAPE_WAIT])
@@ -368,7 +379,7 @@ func _apply_scalars() -> void:
 	var hall_boxes: Array[Node] = []
 	for n: Node in find_tagged(TAG_DEPOSIT_BOXES):
 		if n is DepositBox:
-			(vault_boxes if String(n.name).begins_with("VaultBox") else hall_boxes).append(n)
+			(vault_boxes if String(n.name).begins_with(VAULT_BOX_PREFIX) else hall_boxes).append(n)
 	_keep_boxes(vault_boxes, int(_scalar(&"deposit_boxes", 9)))
 	_keep_boxes(hall_boxes, 8)
 
@@ -392,13 +403,26 @@ func _keep_boxes(boxes: Array[Node], keep: int) -> void:
 		box.set_enabled(false)
 
 
-## The vault gate opened by its reader (interaction) or any other way (open_changed).
+## The vault gate opened by its reader (interaction) or any other way (open_changed). A guard passing through
+## (Door.npc_open) opens it while it stays locked: that is not the crew's gate.
 func _watch_gate() -> void:
 	for n: Node in find_tagged(TAG_VAULT_GATE):
-		if n is Door:
-			(n as Door).open_changed.connect(func(open: bool, _by: int) -> void:
-				if open:
+		var door: Door = n as Door
+		if door != null:
+			door.open_changed.connect(func(open: bool, _by: int) -> void:
+				if open and not door.locked:
 					_gate_opened())
+
+
+## The cash cage's gate opened (keypad or padlock; not a guard passing, Door.npc_open keeps it locked): [vault_loot]
+## marks the cash.
+func _watch_cash_cage() -> void:
+	for n: Node in find_tagged(TAG_CASH_CAGE):
+		var door: Door = n as Door
+		if door != null:
+			door.open_changed.connect(func(open: bool, _by: int) -> void:
+				if open and not door.locked:
+					update_objective_data(&"vault_loot", {"marker_tags": [TAG_VAULT_LOOT], "marker_skip_prefixes": []}))
 
 
 ## D-138 cage padlocks: the bullion cage opened (any method) -> [gold_cage] and Mercer's gold line.
@@ -616,6 +640,10 @@ func open_vault() -> void:
 
 
 func _vault_reachable() -> void:
+	if objective_state(&"bond_safe") == Enums.ObjectiveState.HIDDEN:
+		activate(&"bond_safe")
+	if objective_state(&"deposit_boxes") == Enums.ObjectiveState.ACTIVE:
+		update_objective_data(&"deposit_boxes", {"marker_skip_prefixes": []})
 	if objective_state(&"vault_loot") == Enums.ObjectiveState.HIDDEN:
 		activate(&"vault_loot")
 	if objective_state(&"gold_cage") == Enums.ObjectiveState.HIDDEN:
