@@ -722,18 +722,20 @@ SLOT_CONTENT: Dict[str, List[list]] = {
     "cx_sd": [S("LateCustomerSD", "CIVILIAN", "B", [46.6, 0.0, 19.0], -90.0, ["civ_customer"], "browse")],
     "cx_none": [],
 }
+# The president's wall safe: its contents sit in the body's hollow (z -0.21, the LootAnchor depth; safe.gd interior_aabb
+# is the body less 2 cm: on the back plane, z 0, they were moved to the anchor with a warning, PO GPU run)
 for _sid in ("ps_bonds", "ps_empty"):
     SLOT_CONTENT[_sid] = [P("safe", "PresidentSafe", "E", [30.0, 0.85, 0.2], 180.0,
                             {"size": "enum:MEDIUM", "methods": ["drill", "saw"], "objective_tag": "president_safe",
                              "@contents": [] if _sid == "ps_empty" else [
-                                                   ["loot_spawn", "PresidentBonds", [0.0, 0.05, 0.0],
+                                                   ["loot_spawn", "PresidentBonds", [0.0, 0.05, -0.21],
                                                     {"loot_id": "loot.bearer_bonds", "count": 1,
                                                      "objective_tag": "president_safe"}],
-                                                   ["small_loot", "PresidentValuables1", [-0.15, 0.05, 0.0],
+                                                   ["small_loot", "PresidentValuables1", [-0.15, 0.05, -0.21],
                                                     {"loot_id": "loot.small_valuables", "value": 1500}],
-                                                   ["small_loot", "PresidentValuables2", [0.0, 0.11, 0.0],
+                                                   ["small_loot", "PresidentValuables2", [0.0, 0.11, -0.21],
                                                     {"loot_id": "loot.small_valuables", "value": 1500}],
-                                                   ["small_loot", "PresidentValuables3", [0.15, 0.05, 0.0],
+                                                   ["small_loot", "PresidentValuables3", [0.15, 0.05, -0.21],
                                                     {"loot_id": "loot.small_valuables", "value": 1500}]]},
                             [30.0, 0.0, 1.2], {"mount": "wall"}, "prop_safe_wall_small")]
 SLOT_CONTENT["sec_staffed"] = []
