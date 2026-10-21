@@ -425,3 +425,19 @@ comparison made under similar load is meaningful; ideally both trees get re-run 
   (GPU-19: 0.34% at about 30% CPU load; this run had about 19% load). Cataclysm: police=67, peak 28 alive. Pilot intake: 0 dmg (crew-dmg 0).
 - **Suggestion:** the heist reached escape_wait with all main objectives done. A po5 heist-time cap above 1500 s (or the escape van arriving sooner) should give the
   first full PASS. Deposit boxes remain the one objective the pilot never attempts.
+## GPU-20c: FIRST FULL WINDOWED PASS, OF loud Cataclysm seed 1037
+- Tree: gpu/a6b = env/a-core 0cb810a5, **plus a local, uncommitted edit: `game/tests/a/e2e/po5_flow_auto_loud.gd` l.13 `LOOP_LIMIT_S` 1500.0 -> 2400.0**
+  (reverted with `git checkout --` right after the run; the tree is clean again). Command as GPU-20b with `--po5-budget=2700`. RAM gate passed at once (11.6 GB free).
+  Run 13:10:21-13:34:15 (1435 s wall), windowed Forward+ 1920x1080. Log `gpu/renders/a/of_a6b_b2700.txt`, 29 PNGs (incl. `25..29_payday_*.png`), load `of_a6b_b2700_load.txt`.
+- **RESULT: `[PO5 1433.3s] RESULT PASS (code 0) flow=auto_loud heist=Ostrander Federal seed=1037`.** Phases: LOADING -> CASING -> STEALTH -> LOUD -> **ESCAPE -> ENDED**.
+- **Escape timeline (heist t):** last cash secured @1237 -> `secure -> 2`, `escape_wait 0 -> 1` @1237; **`escape_wait -> 2`, `escape -> 1`, `escape -> 2` @1357** (van after a 120 s wait);
+  payday screens at 1421-1433 s wall (picked a card).
+- **Payday:** HEIST COMPLETE, **$1,157,728** (contract $736,000; Server Drives x2 $138,000; Cash Bricks x6 $441,600; crew alive x1.10; heist freshness -20%).
+  WENT LOUD, TIME 22:38, pagers 0, CATACLYSM. Achievement "Monday Never Comes". **Crew civilian kills: Rook 4, Dutch 2** (AI crew).
+- **Route differs from GPU-20b:** completed casing/keycard/codes/server/vault_gate/lasers @3-6, drill_delivery @149, server_drives @326/@500, president_safe @437,
+  vault_drill/vault_breach @586, cash_bricks @678, 1014, 1069, 1125, 1179, 1237 (6), vault_loot @1192. **bond_safe and gold_cage were not done this time**
+  (optional; GPU-20b did both). Deposit boxes were not done either. loot_secured: 8.
+- STUCK 26, FAILED gotos 5, `blocks the way` 0, `could not reach` 4 (ServerDrives x2 @492/@506, VaultCash @635, VaultGold @649; all reached later except the gold).
+- **HITCHES: `1385 of 169002 heist frames over 50 ms (18 of them screenshot frames), worst 2824 ms, without a shot 2824 ms`** = 0.82%, vs GPU-20b's 0.046%.
+  By 5-min heist window: 26 / 190 / 439 / **604** / 118. They build up during the long cash-carry phase (peak 31 enemies alive). Box load: CPU avg 26.5% (max 40.7), free RAM 6.0-10.9 GB.
+  Not a clean perf comparison with GPU-20b (different route, more enemies alive, more background load). A same-load control would be needed before reading anything into it.
