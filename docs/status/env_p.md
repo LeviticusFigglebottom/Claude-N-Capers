@@ -2,7 +2,17 @@
 
 Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min; this file says where to resume.
 
-## To the LEAD: (updated 2026-10-21 06:00 UTC)
+## To the LEAD: (updated 2026-10-21 07:00 UTC)
+- **BondSafe: a player CAN use it.** In the windowed sweep on r255 (e9c8744f + P, loud, `--test=interact`) the crosshair lands on BondSafe from its
+  UsePoint at 1.43 m eye distance, availability is clear, and the hold STARTED (lockpick; place_drill also OK). GPU-15's 'aimed <none> at
+  2.22 m' means that pilot stood 2.22 m off, further back than the UsePoint gives, so it's a pilot stand issue there, not the safe.
+  Also STARTED: PresidentSafe (place_drill, 0.92 m) and the Hoist panel (send_lift, 0.74 m). Not usable by interaction, by design: the 20
+  HallBox + 20 VaultBox deposit boxes are opened with the handheld saw (A's deposit_box.gd), and their take_loot is disabled until cut.
+  TimeLockConsole is disabled because the shortcut had already opened the vault door. The rest of pass 2 (the other hoist panel, the lid) is re-running: pass 2's walks
+  use the rope ladder, and my stray-ladder watch kept climbing the pilot back down (harness, fixed in 470377f3).
+- **GH Tense on r255 looks harder**: 4501 WIN with 3 downs, 4502 custody after 3 downs (it won with 2 downs on r251/4a6780f4).
+  4503 was killed by my own process cleanup and is re-running. Possibly the Longshot cap / nav-cap change; more after 4503 and the OF Tense check.
+- **A's guard_vault loops** (a-core 46551745) are in a ready tree (r255 + A + P, imported). Ghost step 5+ runs right after the sweep.
 - **P blocked on the ghost line**: step 5 needs A's guard_vault hub loops (doc post_vault (b)/(c)). The r254 tree (9d2e85d8 + P) is imported and
   parse-checked (lkprobe 0 errors, LK hide still unseen), ready to run the moment those loops are on a round. **Can take** any windowed/headless
   checks you need meanwhile (e.g. a GH/OF re-check on r254, a feel pass, or more G2 log reading).
