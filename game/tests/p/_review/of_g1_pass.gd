@@ -133,11 +133,58 @@ const GHOST_SMOKE_AT: Vector3 = Vector3(48.0, 0.0, -5.0)
 ## The lane counts as clear when every Ledger Lane guard is this far from the dock door (m).
 const LANE_CLEAR_M: float = 20.0
 const GHOST_LK_WAIT: Vector3 = Vector3(3.0, -4.0, 4.0)
+## ManagerLKWC (C's Patrols/Staff stop on mgr_vault): his WC break, 40-70 s at the middle cubicle.
+const GHOST_MGR_WC: Vector3 = Vector3(7.25, -4.0, 2.2)
+## lkprobe (r260): behind WCPartitionLK2, hidden from his whole walk in and from BB; and where to step out to shout.
+const GHOST_MGR_WC_HIDE: Vector3 = Vector3(8.5, -4.0, 0.5)
+const GHOST_MGR_SHOUT: Vector3 = Vector3(8.7, -4.0, 2.3)
 const GHOST_E3_WAIT: Vector3 = Vector3(11.5, 8.6, 4.0)
 ## LK hide for the step 5 wait, from --test=lkprobe on r252 (headless): floor navmesh reachable from GHOST_LK_WAIT and
 ## hidden at crouch height from 8 BB eyes outside LockerDoor (x 5, z 7). (1.5, 4.0) and its 4 neighbours see 0 of 8;
 ## GHOST_LK_WAIT (3, 4) is seen by 2 (r251i/r252b: rover_basement filled it through the door, crouched or not).
 const GHOST_LK_HIDES: Array[Vector3] = [Vector3(1.5, -4.0, 4.0), Vector3(2.0, -4.0, 4.5), Vector3(1.5, -4.0, 3.5)]
+const GHOST_RC_WAIT: Vector3 = Vector3(1.0, -4.0, 16.0)
+const GHOST_CQ_AT: Vector3 = Vector3(11.5, -4.0, 4.0)
+const GHOST_LD_STAGE: Vector3 = Vector3(8.0, 0.0, 1.6)
+## Runtime lookups (_x): prefab class + objective_tag (ENV C's G1 tags, wip/c-of-g1 f49df211) near a design-doc point;
+## the tag wins when present, else the nearest node of the class within `max` m. --resolve prints this table's
+## resolution against the map scene (FOUND by tag / FOUND near / FALLBACK far / MISSING).
+const EXPECT: Dictionary = {
+	"laser_grid": {"type": "LaserGrid", "tag": &"laser_grid", "near": OF_LASER_AT, "max": 8.0},
+	"vault_gate": {"type": "Door", "tag": &"vault_gate", "near": Vector3(17.0, -4.0, 9.0), "max": 4.0},
+	"keycard": {"type": "Node3D", "tag": &"keycard", "near": Vector3(22.0, 0.0, 3.0), "max": 60.0},
+	"time_lock": {"type": "Node3D", "tag": &"time_lock", "near": Vector3(33.0, -4.0, 12.0), "max": 6.0},
+	"vault_door": {"type": "Door", "tag": &"vault_door", "near": Vector3(30.0, -4.0, 13.0), "max": 4.0},
+	"vault_loot": {"type": "LootSpawn", "tag": &"vault_loot", "near": Vector3(24.0, -4.0, 18.5), "max": 8.0},
+	"code_pc": {"type": "Node3D", "tag": &"code_pc", "near": Vector3(19.0, 8.6, 3.0), "max": 6.0},
+	"drop_ladder": {"type": "Ladder", "tag": &"fire_escape", "near": OF_DROP_LADDER_AT, "max": 12.0},
+	"caged_ladder": {"type": "Ladder", "tag": &"", "near": OF_CAGED_LADDER_AT, "max": 6.0},
+	"hh_door": {"type": "Door", "tag": &"head_house", "near": OF_HH_DOOR, "max": 2.5},
+	# Pre-placed disabled (hidden) until the burn-through (QC-61): looked up hidden too.
+	"rope_ladder": {"type": "Ladder", "tag": &"", "near": Vector3(24.0, -2.0, 14.0), "max": 4.0, "hidden_ok": true},
+	"hoist": {"type": "BagLift", "tag": &"hoist", "near": Vector3(24.0, -4.0, 14.0), "max": 6.0, "hidden_ok": true},
+	"lid": {"type": "Node3D", "tag": &"lid", "near": OF_HOLE_AT, "max": 3.0},
+	"vault_drill": {"type": "Node3D", "tag": &"vault_drill", "near": OF_HOLE_AT, "max": 3.0},
+	"ld_door": {"type": "Door", "tag": &"dock_door", "near": OF_LD_DOOR, "max": 2.0},
+	"fire_exit": {"type": "Door", "tag": &"fire_exit", "near": OF_FIRE_EXIT, "max": 2.0},
+	"cash_lift": {"type": "BagLift", "tag": &"cash_lift", "near": GHOST_CQ_AT, "max": 8.0},
+	"e1_secure": {"type": "SecureZone", "tag": &"", "near": OF_E1_AT, "max": 6.0},
+	# C's G1 (ad972c5e): SecureTannery (50.4, 0, 14.3), SecureTerrace (42.5, 8.6, 26.0): 6.5 m off the doc's points.
+	"e2_secure": {"type": "SecureZone", "tag": &"", "near": OF_E2_AT, "max": 8.0},
+	"e3_secure": {"type": "SecureZone", "tag": &"", "near": Vector3(36.0, 8.6, 27.0), "max": 8.0},
+	"e1_escape": {"type": "EscapeZone", "tag": &"", "near": OF_E1_AT, "max": 6.0},
+	"e2_escape": {"type": "EscapeZone", "tag": &"", "near": OF_E2_AT, "max": 6.0},
+	"e3_escape": {"type": "EscapeZone", "tag": &"", "near": Vector3(36.0, 8.6, 27.0), "max": 6.0},
+}
+## Design-doc points the tests walk to / stand on (checked against the navmesh by --resolve --launch).
+const EXPECT_POINTS: Dictionary = {
+	"vc_west": OF_VC_WEST, "ga_stand": OF_GA_STAND, "terrace_e_stand": OF_TERRACE_E_STAND, "fe_roof": OF_FE_ROOF,
+	"lane_start": OF_LANE_START, "ld_in": OF_LD_IN, "bc_east": OF_BC_EAST, "sa_b": Vector3(14.0, -4.0, 8.2),
+	"sa_g": Vector3(14.0, 0.0, 8.2), "sa_gallery": Vector3(14.0, 5.0, 8.2), "sa_exec": Vector3(14.0, 8.6, 8.2),
+	"ghost_mask": GHOST_MASK_AT, "ghost_lk": GHOST_LK_WAIT, "ghost_e3": GHOST_E3_WAIT, "ghost_rc": GHOST_RC_WAIT,
+	"ghost_cq": GHOST_CQ_AT, "ghost_ld_stage": GHOST_LD_STAGE,
+}
+const EXPECT_SPAWN_TAGS: Array[StringName] = [&"preplan_spawn_lane", &"preplan_spawn_tannery"]
 
 # --- Dry-run anchors on existing heists (night_deposit seed 21 from nd_stealth_route.gd; glasshouse) ----------------
 const ND_SEED: int = 21
@@ -183,6 +230,17 @@ var _stray: Ladder = null
 ## Ghost line from step 4 on (no ECM window running): floor changes wait for a clear stair core (traversal tests have
 ## no NPCs; steps 2-3 go straight down under ECM #1 as the doc times them).
 var _ghost_stair_wait: bool = false
+## Walks may use ladders on purpose (the interact sweep's pass 2 crosses the hole by the rope ladder): the stray-ladder
+## watch stands down (r255 sweep: it climbed the pilot back down every time, a 15-min ping-pong).
+var _ladders_ok: bool = false
+## Ghost line difficulty (--diff=hazardous|cataclysm|...). D-150: the no-kill ghost acceptance runs on Hazardous (6 guards);
+## Cataclysm stealth allows pager kills.
+var _ghost_diff: int = Enums.Difficulty.HAZARDOUS
+## _vault_guard_off_vc: consecutive samples with the vault guard off VC.
+var _vg_away_n: int = 0
+## Ghost step 2 (C's cue, ostrander_federal.md 8c034cdb): heist time rover_hall was last within 8 m of DockCorridorDoor
+## (his loop (b) LD check); -1 before he's been seen there.
+var _rh_ld_t: float = -1.0
 
 
 func _ready() -> void:
@@ -202,6 +260,7 @@ func _ready() -> void:
 			"resolve": _resolve = true
 			"launch": _resolve_launch = true
 			"line": _line = v
+			"diff": _ghost_diff = Enums.Difficulty.get(v.to_upper(), _ghost_diff)
 	if runner_out == "":
 		runner_out = OS.get_user_data_dir() + "/of_g1_pass"
 	DirAccess.make_dir_recursive_absolute(runner_out)
@@ -840,7 +899,9 @@ func _watch_ladders() -> void:
 		var held: Variant = pilot.crew.get_meta(Ladder.META_CLIMBING) if pilot.crew.has_meta(Ladder.META_CLIMBING) \
 			else null
 		var free: CrewLadderClimb = pilot.crew.ladder
-		if not _climbing and _stray == null and held is Ladder:
+		if _ladders_ok:
+			pass
+		elif not _climbing and _stray == null and held is Ladder:
 			_stray = held as Ladder
 			note("FINDING a walk took %s by accident at %s" % [_stray.name, Po5Pilot._v(pilot.crew.global_position)])
 		elif not _climbing and _stray == null and free != null and free.is_climbing():
@@ -1283,6 +1344,7 @@ func _watch_detection() -> void:
 				note("DETECT %s kind %d meter %.2f at %s, pilot %s crouched %s" % [_observer_name(id), int(e["kind"]), v,
 					Po5Pilot._v(e["world_pos"]), Po5Pilot._v(pilot.crew.global_position), pilot.crew.crouched])
 			seen[id] = band
+		_track_rover_hall()  # ghost step 2's dock cue (non-traversal runs only have this watcher)
 		await wait_s(0.25)
 
 
@@ -1475,8 +1537,27 @@ func _of_to_floor(ffl_i: int, x: float = OF_SA_DOOR_X) -> bool:
 		if absf(pilot.crew.global_position.y - OF_FFL[i]) < absf(pilot.crew.global_position.y - OF_FFL[cur]):
 			cur = i
 	if cur != ffl_i:
-		if _ghost_stair_wait:  # from where the crew stands (a room): stepping out to wait gets it seen (r248: BB)
-			await _wait_core_clear(OF_FFL[cur], OF_FFL[ffl_i])
+		if _ghost_stair_wait and cur == 0:
+			# Leaving LK for SA (step 4): BB itself is the danger. With A's guard_vault loops the vault guard walks BB
+			# too (r255a: rover_basement saw the walk at 8 m after a 4 s core wait that skipped this floor). Wait in
+			# the probed LK hide, crouched, counting BB's guards as well.
+			await _go(_lk_hide(), 0.4, 60.0)
+			pilot.inp.press(&"crouch")
+			# 10 m on BB: the vault guard's VC post is ~12 m off and was never a problem standing (r251-r253 walked
+			# LK -> SA past it); walkers are caught by the 15 m moving rule. Phase 1 is BB only (r255b: counting every floor
+			# at once never cleared in 180 s with A's loops); phase 2 peeks up the flights from the foot of SA.
+			# haz_o: the BB-only core check cleared at once, then rover_basement came west down BB and saw the LK -> SA walk
+			# at 12 m. Crossing BB needs the same window as the vault gate: rover_basement away + no walker closing in.
+			pilot.inp.release(&"crouch")
+			await _wait_spot_clear(_of(Vector3(OF_SA_CORE.x, OF_FFL[cur], OF_SA_CORE.z)), OF_FFL[cur], "BB to SA", _lk_hide(),
+				_rover_basement_away)
+			if not await _go(_of(Vector3(OF_SA_CORE.x, OF_FFL[cur], OF_SA_CORE.z)), 0.4, 240.0):
+				return false
+			await _wait_core_clear(OF_FFL[cur], OF_FFL[ffl_i], false, 25.0, 60.0)
+		elif _ghost_stair_wait:  # from where the crew stands (a room): stepping out to wait gets it seen (r248: BB)
+			# Same-floor guards count too (r255c: rover_gallery came up SA, dropped out of the count the moment he
+			# stepped onto the Executive floor, and met the pilot leaving E3 at 2 m).
+			await _wait_core_clear(OF_FFL[cur], OF_FFL[ffl_i], true, 25.0)
 		# Out to this floor's corridor first: Po5Pilot crosses an open door only toward a target beyond its plane (a
 		# room-to-core walk from SR has both behind the same wall and flipped in SecurityDoor, G1 run 2).
 		if cur != 4 and not await _go(_of(Vector3(OF_SA_DOOR_X, OF_FFL[cur], OF_CORRIDOR_Z)), 0.6, 240.0):
@@ -1490,7 +1571,7 @@ func _of_to_floor(ffl_i: int, x: float = OF_SA_DOOR_X) -> bool:
 
 ## Ghost line: a player peeks into the stair core before using it (r246 run: Npc_guard4 on SA at 0.9 m). Wait until no
 ## living guard is within 8 m of the SA core between `y_lo` and `y_hi`; logs the wait (max 180 s, then goes anyway).
-func _wait_core_clear(from_y: float, to_y: float, same_floor: bool = false) -> void:
+func _wait_core_clear(from_y: float, to_y: float, same_floor: bool = false, same_r: float = 25.0, max_s: float = 180.0) -> void:
 	# Guards on the floor the crew stands on see it whether it waits or not: count those on the stair flights and
 	# on the destination floor only (r246c: waiting by the ground core for a basement rover got the crew seen).
 	# `same_floor` counts them too: a walk across the core on this floor (EA -> E3, r251c: rover_gallery up SA).
@@ -1499,7 +1580,7 @@ func _wait_core_clear(from_y: float, to_y: float, same_floor: bool = false) -> v
 	var core: Vector3 = _of(OF_SA_CORE)
 	var last: Dictionary = {}
 	var t: float = 0.0
-	while t < 180.0:
+	while t < max_s:
 		var near: PackedStringArray = PackedStringArray()
 		for n: Node in rt.npcs(&"guard"):
 			var g: NpcBase = n as NpcBase
@@ -1515,7 +1596,7 @@ func _wait_core_clear(from_y: float, to_y: float, same_floor: bool = false) -> v
 			# Same floor: any guard within 25 m holds the crossing, LOS or not. Rooms open onto the corridor
 			# (r251d/e: rover_gallery in an east room at the check, back out in XC 13 m off during the 8 s walk EA -> E3).
 			var same: bool = absf(g.global_position.y - from_y) <= 0.6
-			if (same and d < 25.0) or (moving and d < 15.0) or (d < 8.0 and _sees_core(g, core)):
+			if (same and d < same_r) or (moving and d < 15.0) or (d < 8.0 and _sees_core(g, core)):
 				near.append("%s %s%s" % [g.name, Po5Pilot._v(g.global_position), " moving" if moving else ""])
 		if near.is_empty() and t >= 1.0:  # two samples: a guard's movement is known
 			if t > 1.0:
@@ -1525,7 +1606,7 @@ func _wait_core_clear(from_y: float, to_y: float, same_floor: bool = false) -> v
 			note("GHOST waiting for the stair core: %s" % ", ".join(near))
 		await wait_s(0.5)
 		t += 0.5
-	note("GHOST stair core NOT clear after 180 s (going anyway)")
+	note("GHOST stair core NOT clear after %.0f s (going anyway)" % max_s)
 
 
 func _lk_hide() -> Vector3:
@@ -1547,7 +1628,8 @@ func _lk_hide() -> Vector3:
 ## the gate by Npc_guard2 in VC 6.6 m off). Waits until no living guard on floor `y` is within 8 m of `spot`, within 20 m
 ## with LOS to it, or walking within 20 m; if not clear at once the crew waits at `hide` (LK, doc §3; r251h: waiting in BB
 ## by the core, rover_basement walked down BB and saw it). Logs the wait (max 300 s, then goes anyway).
-func _wait_spot_clear(spot: Vector3, y: float, label: String, hide: Vector3) -> void:
+func _wait_spot_clear(spot: Vector3, y: float, label: String, hide: Vector3, extra: Callable = Callable(),
+		min_z: float = -INF) -> void:
 	var t: float = 0.0
 	var hidden: bool = false
 	var last: Dictionary = {}
@@ -1555,13 +1637,18 @@ func _wait_spot_clear(spot: Vector3, y: float, label: String, hide: Vector3) -> 
 		var near: PackedStringArray = PackedStringArray()
 		for n: Node in rt.npcs(&"guard"):
 			var g: NpcBase = n as NpcBase
-			if g == null or not g.is_alive() or absf(g.global_position.y - y) > 1.5:
+			if g == null or not g.is_alive() or absf(g.global_position.y - y) > 1.5 or g.global_position.z < min_z:
 				continue
 			var id: int = g.get_instance_id()
 			var moving: bool = last.has(id) and g.global_position.distance_to(last[id]) > 0.15
-			last[id] = g.global_position
 			var d: float = pilot.flat_dist(g.global_position, spot)
-			if d < 8.0 or (d < 20.0 and (moving or _sees_core(g, spot))):
+			var closing: bool = moving and pilot.flat_dist(last[id], spot) - d > 0.05
+			last[id] = g.global_position
+			# Walkers count within 12 m; out to 20 m only with LOS to the spot (r256d: Cataclysm's extra BB guards walking
+			# x 28-36 held both of the vault guard's RC windows, t 347-377 and 557-597).
+			# ...and any walker within 20 m heading this way (r257a: rover_basement out of LOS east at the 'clear', back
+			# west down BB to the gate 5 s later; doc: 'rover_basement is east').
+			if d < 8.0 or (moving and d < 12.0) or (d < 20.0 and (closing or _sees_core(g, spot))):
 				near.append("%s %s%s" % [g.name, Po5Pilot._v(g.global_position), " moving" if moving else ""])
 		if not near.is_empty() and not hidden:
 			hidden = true
@@ -1570,6 +1657,15 @@ func _wait_spot_clear(spot: Vector3, y: float, label: String, hide: Vector3) -> 
 			pilot.inp.press(&"crouch")  # a player waiting in a side room crouches
 			last.clear()
 			continue
+		if near.is_empty() and extra.is_valid() and not bool(extra.call()):
+			near.append("vault guard still on VC")
+			if not hidden:
+				hidden = true
+				note("GHOST %s: waiting for the vault guard's loop (b)/(c) at %s" % [label, Po5Pilot._v(hide)])
+				await _go(hide, 0.5, 60.0)
+				pilot.inp.press(&"crouch")
+				last.clear()
+				continue
 		if near.is_empty() and t >= 1.0:
 			if hidden:
 				pilot.inp.release(&"crouch")
@@ -1582,6 +1678,120 @@ func _wait_spot_clear(spot: Vector3, y: float, label: String, hide: Vector3) -> 
 	if hidden:
 		pilot.inp.release(&"crouch")
 	note("GHOST %s NOT clear after 300 s (going anyway)" % label)
+
+
+## Doc §5: the vault guard is on loop (b) (RC, west of BB / south): two samples in a row (r256b/c: "clear" while he was on
+## VC's / BB's east end, back at the gate 13-20 s later).
+func _vault_guard_off_vc(_gate: Door) -> bool:
+	var vg: NpcBase = null
+	for n: Node in rt.npcs(&"guard"):
+		var g: NpcBase = n as NpcBase
+		if g == null or not g.is_alive():
+			continue
+		for t: Variant in g.spawn_info.get("tags", []):
+			if String(t) == "guard_vault":
+				vg = g
+	if vg == null:
+		return true
+	# Away = deep in loop (b)'s RC (west / south of BB), not merely out of VC: r256c went at "out of VC, > 12 m" with him
+	# on BB east (31.7, 8.3), 13 s from the gate again. Loop (b) in r256c: RC at t 347-377, back at the gate t 387.
+	var p: Vector3 = vg.global_position
+	var away: bool = absf(p.y - OF_FFL[0]) < 1.5 and (p.x < 12.0 or p.z > 13.5)
+	_vg_away_n = _vg_away_n + 1 if away else 0
+	return _vg_away_n >= 2
+
+
+## Doc §5's window: the vault guard on loop (b) and rover_basement away. rover_basement sweeps BB (x 5-35) every 20-40 s
+## (r256d/r257c); his only long stops are in RC, whose aisles are blind from BB (doc), or far east at SS. r257c: a peek
+## per leg saw him come back down BB, but the retreat ran west along the same straight corridor and he filled 1.0 anyway.
+func _gate_window(gate: Door) -> bool:
+	if not _vault_guard_off_vc(gate):
+		return false
+	return _rover_basement_away()
+
+
+## rover_basement is in RC (aisles blind from BB) or far east (SS), not sweeping BB.
+func _rover_basement_away() -> bool:
+	for n: Node in rt.npcs(&"guard"):
+		var g: NpcBase = n as NpcBase
+		if g == null or not g.is_alive():
+			continue
+		for t: Variant in g.spawn_info.get("tags", []):
+			if String(t) == "guard_rover_basement":
+				var p: Vector3 = g.global_position
+				var in_rc: bool = p.x < 14.0 and p.z > 9.5
+				return absf(p.y - OF_FFL[0]) > 1.5 or in_rc or p.x > 36.0
+	return true
+
+
+func _track_rover_hall() -> void:
+	var cd: Node3D = rt.find_child("DockCorridorDoor", true, false) as Node3D if rt != null else null
+	if cd == null:
+		return
+	for n: Node in rt.npcs(&"guard"):
+		var g: NpcBase = n as NpcBase
+		if g != null and g.is_alive() and _has_tag(g, "guard_rover_hall") \
+				and pilot.flat_dist(g.global_position, cd.global_position) < 8.0:
+			if _rh_ld_t < 0.0 or rt.heist_time_s - _rh_ld_t > 5.0:
+				note("GHOST rover_hall at the LD check (t=%.0f)" % rt.heist_time_s)
+			_rh_ld_t = rt.heist_time_s
+
+
+## C's step 2 cue: rover_hall has done his loop (b) LD check within the last 90 s and is now east (x > 25: MO, then
+## loop (c) stair B / fire exit: x > 38 on BC's corridor line), so the next LD visit is two loops away.
+func _rover_hall_gone_east() -> String:
+	for n: Node in rt.npcs(&"guard"):
+		var g: NpcBase = n as NpcBase
+		if g == null or not g.is_alive() or not _has_tag(g, "guard_rover_hall"):
+			continue
+		if _rh_ld_t < 0.0:
+			return "rover_hall not seen at LD yet"
+		if rt.heist_time_s - _rh_ld_t > 90.0:
+			return "rover_hall's LD check %.0f s ago" % (rt.heist_time_s - _rh_ld_t)
+		# MO / loop (c) (stair B, fire exit) = BC's east end on the corridor line (z < 9.5). Loop (a)'s TW east side is z > 9.5
+		# (haz_m: t=11 LD check, then at t=82 he was on (a) at (35.3, 11.5) heading round to the next LD check).
+		var p: Vector3 = g.global_position
+		if p.x < 38.0 or p.z > 9.5:
+			return "rover_hall at %s (not on MO / loop (c))" % Po5Pilot._v(p)
+		return ""
+	return ""
+
+
+func _has_tag(g: NpcBase, tag: String) -> bool:
+	for t: Variant in g.spawn_info.get("tags", []):
+		if String(t) == tag:
+			return true
+	return false
+
+
+## Step 5's peek before each leg of the LK -> gate walk: a guard walking within 20 m who sees the pilot or closes on the
+## gate, or the vault guard back off his RC leg. "" when the next leg is safe.
+func _gate_threat(gate: Door) -> String:
+	if not _gate_window(gate):
+		return "vault guard / rover_basement not away"
+	var me: Vector3 = pilot.crew.global_position
+	for n: Node in rt.npcs(&"guard"):
+		var g: NpcBase = n as NpcBase
+		if g == null or not g.is_alive() or absf(g.global_position.y - OF_FFL[0]) > 1.5:
+			continue
+		var d_me: float = pilot.flat_dist(g.global_position, me)
+		var d_gate: float = pilot.flat_dist(g.global_position, gate.global_position)
+		if d_me < 8.0 or (d_me < 20.0 and _sees_core(g, me)) or d_gate < 8.0:
+			return "%s %s (%.0f m)" % [g.name, Po5Pilot._v(g.global_position), d_me]
+	return ""
+
+
+## A living guard on the basement floor within 8 m of the pilot, or within 20 m with a line of sight to it ("" if none).
+func _near_threat() -> String:
+	var me: Vector3 = pilot.crew.global_position
+	for n: Node in rt.npcs(&"guard"):
+		var g: NpcBase = n as NpcBase
+		if g == null or not g.is_alive() or absf(g.global_position.y - OF_FFL[0]) > 1.5:
+			continue
+		var d_me: float = pilot.flat_dist(g.global_position, me)
+		if d_me < 8.0 or (d_me < 20.0 and _sees_core(g, me)):
+			return "%s %s (%.0f m)" % [g.name, Po5Pilot._v(g.global_position), d_me]
+	return ""
 
 
 ## `g` has a line of sight (world layer 1) from his eyes to the stair core column at his own height: a guard behind
@@ -2179,10 +2389,122 @@ func _civ_near(at: Vector3, r: float) -> NpcBase:
 	return null
 
 
+## LEAD 2026-10-21 (GPU-15: the pilot got "aimed <none> at 2.22 m" at the BondSafe): can a player use every OF loud
+## interactable from its UsePoint? Loud (alarm via the StealthDirector, NPCs out), vault gate + vault door opened
+## instantly (SHORTCUT, logged), burn-through done (lid, rope ladder, hoist on). Then for each Safe / DrillPoint /
+## BagLift / DepositBox / vault door / time lock / lid component: walk to its stand like a player, aim, press interact
+## and log whether the hold STARTED (component `started`) within 6 s, plus availability and the aimed component.
+func _test_interact() -> bool:
+	if not await _launch(OF_HEIST, _of_seed(), Enums.Difficulty.ROUTINE, _of_opts({}, OF_SPAWN_LANE), true):
+		return false
+	if not await _mask():
+		return await _fail("mask")
+	if not rt.went_loud:
+		HeistRuntime.get_service(G.SVC_STEALTH).call(&"raise_alarm", &"ofp_interact", 0)
+		await wait_s(0.5)
+		rt.isolate_npc(null)
+		note("SHORTCUT alarm raised through the StealthDirector (loud sweep), NPCs out")
+	var vault_door: Door = _x("vault_door") as Door
+	for d: Door in [_tagged(&"vault_gate") as Door, vault_door]:
+		if d != null and not d.is_open:
+			d.set_open(true, true)
+			note("SHORTCUT %s opened instantly" % d.name)
+	await wait_s(1.0)
+	var rows: PackedStringArray = PackedStringArray()
+	var ok_n: Array[int] = [0]
+	# Pass 1, before the burn-through: the rope ladder hangs in VT's walkway and free climb grabs every walk past it
+	# (r254 first try: 20 min of ladder ping-pong), so the hoist and the lid wait for pass 2.
+	var first: Array[InteractableComponent] = []
+	var late: Array[InteractableComponent] = []
+	for n: Node in rt.find_children("*", "InteractableComponent", true, false):
+		var ic: InteractableComponent = n as InteractableComponent
+		var o: Node = ic.owner_node()
+		var nm: String = String(o.name) if o != null else ""
+		if o is BagLift or nm.contains("Lid"):
+			late.append(ic)
+		elif o is Safe or o is DrillPoint or o is DepositBox or nm.contains("TimeLock") or nm.contains("Thermal"):
+			first.append(ic)
+	note("INTERACT sweep: %d before the burn-through, %d after (vault door opened by the shortcut: not swept)" % [
+		first.size(), late.size()])
+	await _sweep(_nearest_order(first), rows, ok_n)
+	var rope: Ladder = _x("rope_ladder") as Ladder
+	var hoist: BagLift = _x("hoist") as BagLift
+	if rope != null and hoist != null:
+		await _enable_hole(rope, hoist)
+	_ladders_ok = true
+	await _sweep(_nearest_order(late), rows, ok_n)
+	_ladders_ok = false
+	note("INTERACT summary: %d / %d started" % [ok_n[0], rows.size()])
+	await shot("interact_end")
+	return true
+
+
+func _nearest_order(list: Array[InteractableComponent]) -> Array[InteractableComponent]:
+	var out: Array[InteractableComponent] = []
+	var left: Array[InteractableComponent] = list.duplicate()
+	var at: Vector3 = pilot.crew.global_position
+	while not left.is_empty():
+		var best: int = 0
+		for k: int in left.size():
+			if left[k].global_position.distance_to(at) < left[best].global_position.distance_to(at):
+				best = k
+		at = left[best].global_position
+		out.append(left[best])
+		left.remove_at(best)
+	return out
+
+
+func _sweep(list: Array[InteractableComponent], rows: PackedStringArray, ok_n: Array[int]) -> void:
+	var isys: InteractionSystem = rt.interaction
+	for ic: InteractableComponent in list:
+		if not is_instance_valid(ic):
+			continue
+		var o: Node = ic.owner_node()
+		var label: String = "%s/%s (%s)" % [o.name if o != null else "?", ic.name, ic.kind]
+		if not ic.enabled:
+			rows.append("%s: disabled" % label)
+			note("INTERACT %s: disabled" % label)
+			continue
+		var started: Array[bool] = [false]
+		var cb: Callable = func(c: Node) -> void:
+			if c == pilot.crew:
+				started[0] = true
+		ic.started.connect(cb)
+		var avail0: StringName = ic.availability(pilot.crew)
+		var ret: bool = await pilot.use(ic, 6.0, func() -> bool: return started[0])
+		ic.started.disconnect(cb)
+		pilot.inp.release(&"interact")
+		var aimed: InteractableComponent = isys.aimed_component(pilot.crew)
+		var row: String = "%s: %s (avail before '%s', after '%s', aimed %s, eye dist %.2f, use() %s)" % [label,
+			"STARTED" if started[0] else "NOT STARTED", avail0, ic.availability(pilot.crew),
+			aimed.owner_node().name if aimed != null and aimed.owner_node() != null else "<none>",
+			pilot.crew.eye_position().distance_to(ic.global_position), ret]
+		note("INTERACT " + row)
+		rows.append(row)
+		if started[0]:
+			ok_n[0] += 1
+		await wait_s(1.0)
+		if not isys.session(pilot.crew.slot).is_empty():  # step off to cancel a hold still running
+			await _go(pilot.crew.global_position + Vector3(0.8, 0, 0), 0.3, 3.0)
+
+
+## How many of 8 BB eye points outside LockerDoor see `pos` at chest height (the lkprobe set).
+func _bb_eyes_see(pos: Vector3, h: float = 0.7) -> int:
+	var space: PhysicsDirectSpaceState3D = pilot.crew.get_world_3d().direct_space_state
+	var seen: int = 0
+	for e: Vector2 in [Vector2(4.0, 8.5), Vector2(5.0, 9.0), Vector2(6.0, 9.0), Vector2(6.5, 10.0), Vector2(8.0, 8.5),
+			Vector2(3.0, 8.5), Vector2(10.0, 8.5), Vector2(5.0, 11.0)]:
+		var q: PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.create(_of(Vector3(e.x, -4.0 + 1.6, e.y)),
+			pos + Vector3(0, h, 0), 1)
+		if space.intersect_ray(q).is_empty():
+			seen += 1
+	return seen
+
+
 ## Headless probe (no pilot movement needed): LK floor points on the navmesh at floor height, reachable from
 ## GHOST_LK_WAIT, and hidden at crouch height from BB eyes outside LockerDoor. Picks GHOST_LK_HIDES (r252b).
 func _test_lkprobe() -> bool:
-	if not await _launch(OF_HEIST, _of_seed(), Enums.Difficulty.CATACLYSM, _ghost_opts(), false):
+	if not await _launch(OF_HEIST, _of_seed(), _ghost_diff as Enums.Difficulty, _ghost_opts(), false):
 		return false
 	var map: RID = pilot.crew.get_world_3d().navigation_map
 	var space: PhysicsDirectSpaceState3D = pilot.crew.get_world_3d().direct_space_state
@@ -2191,6 +2513,34 @@ func _test_lkprobe() -> bool:
 	for e: Vector2 in [Vector2(4.0, 8.5), Vector2(5.0, 9.0), Vector2(6.0, 9.0), Vector2(6.5, 10.0), Vector2(8.0, 8.5),
 			Vector2(3.0, 8.5), Vector2(10.0, 8.5), Vector2(5.0, 11.0)]:
 		eyes.append(_of(Vector3(e.x, -4.0 + 1.6, e.y)))
+	# The manager's walk BB -> LockerDoor -> his WC stop (ManagerLKWC), sampled every 0.5 m at eye height.
+	var mgr_path: PackedVector3Array = NavigationServer3D.map_get_path(map, pilot.stand_point(_of(Vector3(5.0, -4.0, 9.5))),
+		pilot.stand_point(_of(GHOST_MGR_WC)), true)
+	var mgr_eyes: Array[Vector3] = []
+	for i: int in range(1, mgr_path.size()):
+		var seg: float = mgr_path[i - 1].distance_to(mgr_path[i])
+		for k: int in int(ceilf(seg / 0.5)) + 1:
+			mgr_eyes.append(mgr_path[i - 1].lerp(mgr_path[i], minf(1.0, k * 0.5 / maxf(seg, 0.01))) + Vector3(0, 1.6, 0))
+	note("LKPROBE manager path %s (%d eye samples)" % [", ".join(Array(mgr_path).map(Po5Pilot._v)), mgr_eyes.size()])
+	# Per path sample: BB eyes on him (h 0.5, where he'd lie tied), and the first sample each candidate wait spot sees.
+	var rows: PackedStringArray = PackedStringArray()
+	for i: int in mgr_eyes.size():
+		rows.append("%d %s bb %d" % [i, Po5Pilot._v(mgr_eyes[i] - Vector3(0, 1.6, 0)), _bb_eyes_see(mgr_eyes[i] - Vector3(0, 1.6, 0), 0.5)])
+	note("LKPROBE manager samples: %s" % "; ".join(rows))
+	for xi: int in range(1, 20):
+		for zi: int in range(1, 14):
+			var cand: Vector3 = NavigationServer3D.map_get_closest_point(map, _of(Vector3(xi * 0.5, -4.0, zi * 0.5)))
+			if pilot.flat_dist(cand, _of(Vector3(xi * 0.5, -4.0, zi * 0.5))) > 0.15 or _bb_eyes_see(cand, 0.7) > 0:
+				continue
+			var first: int = -1
+			for i: int in mgr_eyes.size():
+				var q2: PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.create(mgr_eyes[i], cand + Vector3(0, 0.7, 0), 1)
+				if space.intersect_ray(q2).is_empty():
+					first = i
+					break
+			if first >= 0 and pilot.flat_dist(mgr_eyes[first], cand) >= 3.5:
+				note("LKPROBE wait (%.1f, %.1f): first seen from sample %d at %.1f m" % [xi * 0.5, zi * 0.5, first,
+					pilot.flat_dist(mgr_eyes[first], cand)])
 	var hits: PackedStringArray = PackedStringArray()
 	for xi: int in range(1, 20):
 		for zi: int in range(1, 14):
@@ -2206,7 +2556,12 @@ func _test_lkprobe() -> bool:
 				var q: PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.create(eye, got + Vector3(0, 0.7, 0), 1)
 				if space.intersect_ray(q).is_empty():
 					seen += 1
-			hits.append("(%.1f, %.1f) seen_by %d" % [xi * 0.5, zi * 0.5, seen])
+			var mseen: int = 0
+			for eye: Vector3 in mgr_eyes:
+				var q: PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.create(eye, got + Vector3(0, 0.7, 0), 1)
+				if space.intersect_ray(q).is_empty():
+					mseen += 1
+			hits.append("(%.1f, %.1f) seen_by %d mgr %d" % [xi * 0.5, zi * 0.5, seen, mseen])
 	note("LKPROBE from %s: %d floor points: %s" % [Po5Pilot._v(from), hits.size(), "; ".join(hits)])
 	return true
 
@@ -2214,7 +2569,7 @@ func _test_lkprobe() -> bool:
 func _test_ghost() -> bool:
 	var opts: Dictionary = _ghost_opts()
 	opts["loadouts"] = {0: _ghost_loadout()}
-	if not await _launch(OF_HEIST, _of_seed(), Enums.Difficulty.CATACLYSM, opts, false):
+	if not await _launch(OF_HEIST, _of_seed(), _ghost_diff as Enums.Difficulty, opts, false):
 		return false
 	_ghost_stair_wait = false
 	var t_start: float = rt.heist_time_s
@@ -2256,31 +2611,90 @@ func _g2_dock() -> bool:
 	# wait until every guard in Ledger Lane is > LANE_CLEAR_M from the dock door, logging where they walk.
 	var door_at: Vector3 = _of(OF_LD_DOOR)
 	var waited: float = 0.0
-	var clear: bool = await _smoke_cue(300.0)
-	while waited < 600.0 and not clear:
-		clear = true
-		var where: PackedStringArray = PackedStringArray()
+	# Inside too: rover_hall's loop (b) checks LD (doc), so a smoke window with him in LD is no window (r256a: lockpicked
+	# into Npc_guard3 standing 5 m inside). Skip that cue and take the next one, up to 3 tries.
+	# ...and BC by DockCorridorDoor: rover_hall's loop (b) comes through it into LD (haz_b: waited inside LD, he walked in
+	# and found the pilot at 1 m). Inside the building = z > 0.5.
+	var cdoor_n: Node3D = rt.find_child("DockCorridorDoor", true, false) as Node3D
+	# 20 m at the cue: mask + ECM + the 8 s lockpick take ~15 s, about 22 m of rover_hall's walk (haz_c: > 10 m at the cue,
+	# 6 m off DockCorridorDoor once the pilot was in). Re-checked at 10 m right before the lockpick.
+	# Standing guards only within 8 m of either door: a posted guard at (19.5, 0, 1.1) held all 4 smoke windows (haz_e).
+	var ld_last: Dictionary = {}
+	var ld_busy: Callable = func(r: float) -> String:
+		var rh: String = _rover_hall_gone_east()
+		if rh != "":
+			return rh
 		for n: Node in rt.npcs(&"guard"):
 			var g: NpcBase = n as NpcBase
-			if g == null or not g.is_alive() or g.global_position.z > 0.5 or absf(g.global_position.y) > 1.5:
+			if g == null or not g.is_alive() or g.global_position.z <= 0.5 or absf(g.global_position.y) >= 1.5:
 				continue
-			where.append("%s %s" % [g.name, Po5Pilot._v(g.global_position)])
-			if pilot.flat_dist(g.global_position, door_at) < LANE_CLEAR_M \
-					or pilot.flat_dist(g.global_position, pilot.crew.global_position) < 12.0:
-				clear = false
-		if int(waited) % 20 == 0:
-			note("GHOST lane guards: %s" % (", ".join(where) if not where.is_empty() else "none"))
-		if not clear:
-			await wait_s(1.0)
-			waited += 1.0
-	note("GHOST lane %s after %.0f s" % ["clear" if clear else "NOT clear (going anyway)", waited])
-	if not await _mask():
-		return false
+			var id: int = g.get_instance_id()
+			var moving: bool = ld_last.has(id) and g.global_position.distance_to(ld_last[id]) > 0.15
+			var was: Vector3 = ld_last.get(id, g.global_position)
+			ld_last[id] = g.global_position
+			# BC / LD side only (z < 12): the lobby guard's hall post (10.9, 0, 21.8) is 14 m off but another room (haz_d).
+			var dc: float = pilot.flat_dist(g.global_position, cdoor_n.global_position) if cdoor_n != null else 999.0
+			if pilot.flat_dist(g.global_position, door_at) < 8.0 or dc < 8.0 \
+					or (g.global_position.z < 12.0 and moving and dc < r):
+				return "%s %s" % [g.name, Po5Pilot._v(g.global_position)]
+		return ""
+	# One loop per smoke window: the cue, LD clear, the lane clear, mask, then LD again before the ECM is spent (haz_h/i:
+	# rover_hall turned toward LD between the cue at t=78 and t=83, flagged only after the ECM was down).
+	var clear: bool = false
+	for _win: int in 5:
+		clear = await _smoke_cue(300.0)
+		ld_busy.call(20.0)  # first sample: walking needs two
+		await wait_s(0.5)
+		var who: String = ld_busy.call(20.0)
+		if who != "":
+			note("GHOST LD occupied (%s): skipping this smoke window" % who)
+			await wait_until(func() -> bool: return ld_busy.call(20.0) == "", 90.0)
+			continue
+		while waited < 600.0 and not clear:
+			clear = true
+			var where: PackedStringArray = PackedStringArray()
+			for n: Node in rt.npcs(&"guard"):
+				var g: NpcBase = n as NpcBase
+				if g == null or not g.is_alive() or g.global_position.z > 0.5 or absf(g.global_position.y) > 1.5:
+					continue
+				where.append("%s %s" % [g.name, Po5Pilot._v(g.global_position)])
+				if pilot.flat_dist(g.global_position, door_at) < LANE_CLEAR_M \
+						or pilot.flat_dist(g.global_position, pilot.crew.global_position) < 12.0:
+					clear = false
+			if int(waited) % 20 == 0:
+				note("GHOST lane guards: %s" % (", ".join(where) if not where.is_empty() else "none"))
+			if not clear:
+				await wait_s(1.0)
+				waited += 1.0
+		note("GHOST lane %s after %.0f s" % ["clear" if clear else "NOT clear (going anyway)", waited])
+		# Watch 5 s, UNMASKED, before committing (haz_j: one sample at t~80 missed rover_hall turning for LD at ~t 81-83).
+		# The mask is the commitment: it doesn't come off (PD2), and a masked crew waiting in the lane for the next
+		# window was spotted by rover_dock walking back from his smoke (haz_k, t=118 at 14 m).
+		ld_busy.call(20.0)
+		for _k: int in 10:
+			await wait_s(0.5)
+			who = ld_busy.call(20.0)
+			if who != "":
+				break
+		if who != "":
+			note("GHOST LD busy in the 5 s watch (%s): still unmasked, next smoke window" % who)
+			await wait_until(func() -> bool: return ld_busy.call(20.0) == "", 90.0)
+			continue
+		if not await _mask():
+			return false
+		break
 	if not await _deploy_ecm():
 		return false
 	var door: Door = _x("ld_door") as Door
 	if door == null or (not door.is_open and not await pilot.use(_comp(door), 30.0, func() -> bool: return door.is_open)):
 		return false
+	# Peek through LD -> BC too: on Hazardous (D-150) rover_hall stood 1.7 m behind DockCorridorDoor when the pilot
+	# opened it (haz_a, t=100). Not clear: back out to the lane beside the dock door, out of the doorway's line (haz_b/c/f:
+	# waiting inside LD, rover_hall's loop (b) walked in and found the pilot), and come back in once BC is clear.
+	var cdoor: Node3D = rt.find_child("DockCorridorDoor", true, false) as Node3D
+	if cdoor != null:
+		var hide: Vector3 = pilot.stand_point(door.global_position + Vector3(-2.0, 0.0, -1.5))
+		await _wait_spot_clear(cdoor.global_position, OF_FFL[1], "dock corridor door", hide, Callable(), 0.5)
 	return await _of_to_floor(0)
 
 
@@ -2326,24 +2740,45 @@ func _smoke_cue(max_s: float) -> bool:
 
 ## 3. Wait in LK for the manager's WC break; shout him down, tie him (tie 1), take the keycard.
 func _g3_keycard() -> bool:
-	if not await _go(_of(GHOST_LK_WAIT), 0.5, 90.0):
+	# Wait for the manager behind the WC partition beside his stop (haz_q: in the LK hide at (1.5, 4) he saw the pilot
+	# from LockerDoor at 5 m and ran to rover_basement; NPCs see all round within 1.5 m and 120 deg wide at 5 m).
+	# lkprobe: (8.5, 0.5) is seen by none of his 33 path samples and none of the 8 BB eyes. Go once BB is quiet.
+	var wc_hide: Vector3 = pilot.stand_point(_of(GHOST_MGR_WC_HIDE))
+	await _wait_spot_clear(wc_hide, OF_FFL[0], "LK WC", _lk_hide())
+	# The LK navmesh runs through WCPartitionLK2 (not in the bake: haz_r stuck on it for 60 s): round its open end first.
+	if not await _go(pilot.stand_point(_of(GHOST_MGR_SHOUT)), 0.4, 40.0) or not await _go(wc_hide, 0.3, 20.0):
 		return false
+	pilot.inp.press(&"crouch")
+	await pilot.face(_of(GHOST_MGR_WC) + Vector3(0, 1.3, 0), 0.05, 0.6)
 	# A lambda captures locals by value: an assignment inside it never reaches `mgr`, so hold it in an array.
 	var found: Array[NpcBase] = [null]
 	await wait_until(func() -> bool:
-		found[0] = _civ_near(_of(GHOST_LK_WAIT), 6.0)
-		return found[0] != null, 600.0)
+		found[0] = _civ_near(_of(GHOST_MGR_WC), 0.8)
+		return found[0] != null and found[0].velocity.length() < 0.2, 600.0)
 	var mgr: NpcBase = found[0]
 	if mgr == null:
-		note("manager never came to LK")
+		note("manager never came to his LK WC stop")
 		return false
+	await wait_s(1.0)
+	# Doc §3 'leave him in a cubicle': a tied civilian is a `restrained` stimulus (15 m, LOS), so tie only where BB
+	# can't see him (haz_p: tied in LockerDoor's sight line, rover_basement radioed at t=355).
+	note("GHOST manager at his WC stop %s, seen by %d of 8 BB eyes" % [Po5Pilot._v(mgr.global_position),
+		_bb_eyes_see(mgr.global_position, 0.5)])
+	# Shout from the hide (haz_s: stepping out at 1.7 m, he filled 1.0 at once and ran). The all-round shout reaches a
+	# civilian within shout_all_within_m (6 m) by LOS or a short navmesh path, so the partition doesn't stop it.
 	var b: CivilianBrain = mgr.get_node_or_null(^"Brain") as CivilianBrain
 	for _k: int in 4:
 		if b == null or b.mode == CivilianBrain.Mode.DOWN:
 			break
-		await pilot.face(mgr.global_position + Vector3(0, 1.3, 0), 0.05, 0.6)
 		await pilot.inp.tap(&"shout")
 		await wait_s(0.8)
+	note("GHOST manager shouted from the WC hide: mode %d" % (b.mode if b != null else -1))
+	if b == null or b.mode != CivilianBrain.Mode.DOWN:
+		return false
+	# Down he is blind; tie him when rover_basement is away (one BB eye, west of LockerDoor, sees the WC stop).
+	await wait_until(_rover_basement_away, 30.0)
+	pilot.inp.release(&"crouch")
+	await _go(pilot.stand_point(_of(GHOST_MGR_SHOUT)), 0.4, 6.0)
 	var tie: InteractableComponent = _comp(mgr, &"cable_tie")
 	if tie == null or not await pilot.use(tie, 20.0, func() -> bool: return b.mode == CivilianBrain.Mode.TIED, true):
 		return false
@@ -2393,8 +2828,24 @@ func _g5_vault() -> bool:
 	if not await _of_to_floor(0):
 		return false
 	var gate: Door = _tagged(&"vault_gate") as Door
-	if gate != null and not gate.is_open:
-		await _wait_spot_clear(gate.global_position, OF_FFL[0], "vault gate", _lk_hide())
+	if gate != null:  # open or not (r255d: the vault guard's loop (b)/(c) left it open; no wait, walked into him in VC)
+		# A player walks LK -> gate in legs and peeks before each, retreating to LK when a guard shows up (r257a/b: the
+		# 'clear' was right, then rover_basement stepped out of SD into BB and met the pilot at the gate 5 s later).
+		var hide: Vector3 = _lk_hide()
+		var legs: Array[Vector3] = [_of(Vector3(8.0, OF_FFL[0], 8.2)), _of(Vector3(13.5, OF_FFL[0], 8.2))]
+		for attempt: int in 4:
+			await _wait_spot_clear(gate.global_position, OF_FFL[0], "vault gate", hide, _gate_window.bind(gate))
+			var ok: bool = true
+			for leg: Vector3 in legs + [pilot.stand_point(gate.global_position + Vector3(-1.2, 0.0, 0.0))]:
+				var who: String = _gate_threat(gate)
+				if who != "":
+					note("GHOST vault gate approach %d: %s, back to LK" % [attempt + 1, who])
+					ok = false
+					break
+				await _go(pilot.stand_point(leg), 0.5, 30.0)
+			if ok:
+				break
+			await _go(hide, 0.4, 60.0)
 	if gate == null or (not gate.is_open and not await pilot.use(_comp(gate), 30.0, func() -> bool: return gate.is_open)):
 		return false
 	var grid: LaserGrid = _x("laser_grid") as LaserGrid
@@ -2407,15 +2858,30 @@ func _g5_vault() -> bool:
 		return false
 	if grid != null and not await _laser_cross(grid, float(_laser_report(grid)["best_lane"]), false, OF_LASER_LEAD_M):
 		return false
-	if not await _go(_of(GHOST_RC_WAIT), 0.5, 90.0):
-		return false
+	# Wait out the time lock in the LK hide, not RC (haz_t: RC is the vault guard's loop (b); walking there after the
+	# code, the pilot met him coming back through RC's door, t=1008). Back the way it came, peeking before each leg.
+	var hide_tl: Vector3 = _lk_hide()
+	var back: Array[Vector3] = [pilot.stand_point(gate.global_position + Vector3(-1.2, 0.0, 0.0)),
+		pilot.stand_point(_of(Vector3(13.5, OF_FFL[0], 8.2))), pilot.stand_point(_of(Vector3(8.0, OF_FFL[0], 8.2))), hide_tl]
+	for leg: Vector3 in back:
+		var waited: float = 0.0
+		var who: String = _near_threat()
+		while who != "" and waited < 30.0:
+			if waited == 0.0:
+				note("GHOST back to LK: %s, holding" % who)
+			await wait_s(0.5)
+			waited += 0.5
+			who = _near_threat()
+		await _go(leg, 0.5, 30.0)
+	pilot.inp.press(&"crouch")
 	var vault: Door = _x("vault_door") as Door
 	Engine.time_scale = TIME_LOCK_SCALE
-	note("SHORTCUT time lock wait in RC at x%.0f" % TIME_LOCK_SCALE)
+	note("SHORTCUT time lock wait in LK at x%.0f" % TIME_LOCK_SCALE)
 	var open_or_alarm: Callable = func() -> bool:
 		return (vault != null and vault.is_open) or _objective(&"time_lock_wait") == 2 or _alarm != &""
 	await wait_until(open_or_alarm, 400.0)
 	Engine.time_scale = 1.0
+	pilot.inp.release(&"crouch")
 	return vault == null or vault.is_open or _objective(&"time_lock_wait") == 2
 
 

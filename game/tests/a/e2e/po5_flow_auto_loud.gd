@@ -6,6 +6,9 @@
 extends RefCounted
 
 ## A marker's prefab (its UsePoint is where to stand) lies within this of the marker.
+## _doctor_bag: no enemy within this (m) to stop and heal; walk at most this far to a placed bag (m).
+const DOCTOR_SAFE_M: float = 8.0
+const DOCTOR_WALK_M: float = 40.0
 const MARKER_PREFAB_M: float = 1.5
 const LOOP_LIMIT_S: float = 1500.0
 ## Downed teammates within this flat distance get revived first (m).
@@ -19,6 +22,15 @@ const CLEAR_RANGE_M: float = 20.0
 ## Longest fight before picking the bag back up anyway, and the walk leg between threat checks (s).
 const CLEAR_LIMIT_S: float = 40.0
 const CARRY_LEG_S: float = 4.0
+## _escort_mate_bag: close enough to the secure zone's stand to lead a carrying bot (it secures within its
+## secure_seek_radius_m); the nav path ends at the van's rear corner, 3.25 m out (GPU-19 (c), no map snag).
+const ESCORT_ARRIVE_M: float = 3.5
+## _lift_bag: a hoist landing this close (m, on the crew's floor) takes a bag the route would carry up a ladder; failed
+## tries in a row before the pilot gives up on the hoist.
+const LIFT_NEAR_M: float = 15.0
+const LIFT_TRIES_MAX: int = 6
+## _is_unreachable: a target set aside for "no navmesh path" has its path re-tested this often (s).
+const UNREACH_RECHECK_S: float = 10.0
 ## Give up carrying one bag to the van after this long (s).
 const CARRY_LIMIT_S: float = 300.0
 
@@ -52,6 +64,14 @@ const STUCK_GIVE_UP: int = 6
 var f: Node = null
 var p: Po5Pilot = null
 var rt: HeistRuntime = null
+## --po5-doctor-bag: the pilot carries and uses a doctor bag (see _doctor_bag).
+var doctor_bag: bool = "--po5-doctor-bag" in OS.get_cmdline_user_args()
+## --po5-focus=<objective id> (LEAD OF-done: verify BondSafe): once that objective's marker is up, the pilot takes it
+## before anything else that is up (see _is_focus).
+var focus: StringName = _focus_arg()
+var _lift_tries: int = 0
+## _is_unreachable: heist time of the last path re-test per "no navmesh path" target.
+var _unreach_checked: Dictionary[int, float] = {}
 var _ended: bool = false
 var _stalls: Dictionary[StringName, float] = {}
 var _bot_note_t: float = -INF
@@ -86,6 +106,11 @@ func play(flow: Node) -> int:
 		f.note("EVENT objective %s -> %d t=%.0f" % [id, st, rt.heist_time_s]))
 	EventBus.loot_secured.connect(func(_b: int, l: StringName, v: int) -> void:
 		f.note("EVENT loot_secured %s %d t=%.0f" % [l, v, rt.heist_time_s]))
+	if doctor_bag:
+		var ds: DeployableSystem = rt.service(DeployableSystem.SERVICE) as DeployableSystem
+		if ds != null:
+			ds.give(p.crew.slot, &"deployable.doctor_bag")
+			f.note("harness: doctor bag in the pilot's deployable slot (%d)" % ds.deployable_count(p.crew.slot))
 	await p.inp.hold(&"mask_up", Tweak.crew().mask_up_time_s + 0.4)
 	p.combat = true
 	p.stuck_give_up = STUCK_GIVE_UP
@@ -123,7 +148,7 @@ func step() -> void:
 		_note_once(&"_none", "no objective markers (HUD shows %s)" % [_objective_ids()])
 		await p.hold_position(2.0)
 		return
-	if await _revive_teammate():
+	if await _revive_teammate() or await _doctor_bag() or await _unload_lift():
 		return
 	var m: Dictionary = _pick(markers)
 	var id: StringName = StringName(m["id"])
@@ -203,7 +228,7 @@ func _pick(markers: Array[Dictionary]) -> Dictionary:
 		# GN-8 (windowed seed 4242): the ride is on its way (escape_wait): wait and defend at the escape too; the
 		# pilot went for the optional basement lockers and was downed and cuffed in Stair SS as the van arrived.
 		if StringName(me["id"]) in [&"escape", &"escape_wait"] \
-				or (StringName(me["id"]) == &"secure" and _loose_bag() != null):
+				or (StringName(me["id"]) == &"secure" and _loose_bag() != null) or _is_focus(me):
 			return me  # probe 8: a dropped bag (put down to clear the way) is carried in before anything optional
 	for m0: Dictionary in markers:  # GN probe 4: the loud hack lifts every shutter (Calloway), so it goes first
 		if StringName(m0["id"]) in FIRST_OBJECTIVES and not _marker_blocked.has(_marker_key(m0)):
@@ -229,9 +254,18 @@ func _pick(markers: Array[Dictionary]) -> Dictionary:
 		if not (mid in [&"secure", &"escape", &"casing"] or mid in AREA_OBJECTIVES) \
 				and not _stalled(m) and not _is_marker_blocked(m) and not _blocked_on_path(m):
 			return m
+	return _fallback_marker(markers)
+
+
+## _pick's last resort: a marker that is not stalled (hoist5: 9 min "waiting at deposit_boxes", the gold untouched), else
+## `secure` (bags still to secure: _fetch_bag finds a loose one or a bag_loot source, the opened gold cage), else the first.
+func _fallback_marker(markers: Array[Dictionary]) -> Dictionary:
 	for m1: Dictionary in markers:
-		if not (StringName(m1["id"]) in [&"secure", &"escape", &"casing"]):
+		if not (StringName(m1["id"]) in [&"secure", &"escape", &"casing"]) and not _stalled(m1):
 			return m1
+	for ms: Dictionary in markers:
+		if StringName(ms["id"]) == &"secure":
+			return ms
 	return markers[0]
 
 
@@ -260,8 +294,9 @@ func _usable_near(pos: Vector3, radius: float) -> InteractableComponent:
 		var c: InteractableComponent = n as InteractableComponent
 		if c == null or not c.enabled or not rt.is_ancestor_of(c):
 			continue
-		if c.kind in [&"revive", &"cable_tie", &"answer_pager", &"uncuff", &"break_window", &"break_glass", &"take_loot", &"bag_body"]:
-			continue
+		if c.kind in [&"revive", &"cable_tie", &"answer_pager", &"uncuff", &"break_window", &"break_glass", &"take_loot", &"bag_body",
+				&"call_lift", &"send_lift"]:
+			continue  # lifts: empty-handed here (bags go first); OF Cata 1037 called the vault hoist for 450 s at a box wall
 		if c.availability(p.crew) != &"" or _is_unreachable(c):
 			continue
 		if _is_body_bag(c) or _is_tool_source(c):
@@ -380,9 +415,11 @@ func _escort_mate_bag() -> bool:
 			continue
 		var t0: float = rt.heist_time_s
 		var stand: Vector3 = p.stand_point(zone.global_position)
-		if not p.near(p.crew.global_position, stand, 3.0):
+		if not p.near(p.crew.global_position, stand, ESCORT_ARRIVE_M):
 			_note_once(StringName("_escort_%d" % key), "slot %d carries %s: leading it to the secure zone" % [c.slot, bag.loot_id])
-			await p.goto(stand, 3.0, 10.0)
+			p.quiet = true  # LEAD GPU-19 (c): "goto (3.5, 0.2, -4.3) FAILED at (4.6, 0.0, -1.2)" x5 was this leg ending
+			await p.goto(stand, ESCORT_ARRIVE_M, 10.0)  # 3.25 m out at the van's rear corner, the bots crowding in
+			p.quiet = false
 		else:
 			await p.hold_position(3.0)
 		_escort_s[key] = float(_escort_s.get(key, 0.0)) + maxf(rt.heist_time_s - t0, 1.0)
@@ -511,11 +548,26 @@ func _is_unreachable(c: InteractableComponent) -> bool:
 		return false
 	var door: Door = _unreachable[key]
 	if door == null:
-		return true
+		return _still_no_path(c, key)
 	if is_instance_valid(door) and not _passable(door):
 		return true
 	_unreachable.erase(key)
 	f.note("%s is passable again: retrying %s" % [door.name if is_instance_valid(door) else "door", c.get_path()])
+	return false
+
+
+## hoist6: VaultCash was marked "no navmesh path" with the cash cage shut; the padlock was sawn 6 s later and the cash
+## never retried. A gate / cage opening changes the path: re-test it every UNREACH_RECHECK_S. False (and the mark
+## cleared) once there is a path.
+func _still_no_path(c: InteractableComponent, key: int) -> bool:
+	if rt.heist_time_s < float(_unreach_checked.get(key, -INF)) + UNREACH_RECHECK_S:
+		return true
+	_unreach_checked[key] = rt.heist_time_s
+	if not _has_path(p._use_stand(c)):
+		return true
+	_unreachable.erase(key)
+	_unreach_checked.erase(key)
+	f.note("%s has a navmesh path again: retrying" % c.get_path())
 	return false
 
 
@@ -701,9 +753,138 @@ func _secure_bag() -> void:
 		if p.nearest_enemy(CLEAR_RANGE_M) != null:
 			await _clear_then_pick_up()
 			continue
+		p.quiet = true  # LEAD GPU-18: the 4 s carry legs read as "goto FAILED" lines while the bag moves on
 		await p.goto(stand, 3.0, CARRY_LEG_S)
+		p.quiet = false
+		if p.last_ladder_with_bag != null:
+			await _lift_bag()
+			return
 	if p.crew.is_carrying_bag() and p.crew.crew_state == Enums.CrewState.NORMAL:
 		await p.secure_carried_bag(zone)
+
+
+## OF (headless 1037: 3 min of "RopeLadder up -> FAILED" with a cash bag; ladders refuse a carried bag, S10.1b): like a
+## player, the bag leaves the floor by the hoist. The enabled BagLift with a landing within LIFT_NEAR_M on the crew's
+## floor: its car is called there (that landing's panel, call_lift), the bag dropped into the car, the car sent on
+## (send_lift). The pilot then goes on empty-handed and carries the bag on from the far landing (a loose bag: _pick).
+## True when the car left with the bag.
+func _lift_bag() -> bool:
+	var lift: BagLift = null
+	var li: int = -1
+	for n: Node in rt.find_children("*", "BagLift", true, false):
+		var b: BagLift = n as BagLift
+		for i: int in range(b.landing_count() if b != null and b.is_enabled() else 0):
+			var o: Vector3 = b.landing_transform(i).origin
+			if Po5Pilot.flat_dist(o, p.crew.global_position) <= LIFT_NEAR_M and absf(o.y - p.crew.global_position.y) <= 1.5:
+				lift = b
+				li = i
+	if lift == null or _lift_tries >= LIFT_TRIES_MAX:
+		_note_once(&"_nolift", "a bag to take up a ladder and no hoist landing within %.0f m (or %d tries spent)" % [
+			LIFT_NEAR_M, LIFT_TRIES_MAX])
+		await p.hold_position(3.0)
+		return false
+	_lift_tries += 1
+	if not await _lift_car_to(lift, li):
+		return false
+	var before: int = lift.bags_in_car().size()
+	var center: Vector3 = lift.car_transform().origin
+	var fwd_m: float = LootTweak.get_default().drop_forward_m
+	for deg: int in range(0, 360, 45):  # x4_of_loud._into_hoist: drop from the first free stand round the car
+		if not p.crew.is_carrying_bag() and not await _pick_up_missed(center):
+			break  # hoist5: 3 missed tosses fed a bot each (140 s at the rope ladder); pick it up, try the next spot
+		if lift.bags_in_car().size() > before:
+			break
+		var dir: Vector3 = Vector3.FORWARD.rotated(Vector3.UP, deg_to_rad(float(deg)))
+		var at: Vector3 = p.stand_point(center - dir * fwd_m)
+		if Po5Pilot.flat_dist(at, center - dir * fwd_m) > 0.4 or not await p.goto(at, 0.3, 8.0, false, false):
+			continue
+		await p.face(center, 0.05, 1.5)  # G is a throw that follows the camera pitch: aim at the car floor (short toss)
+		await p.inp.tap(&"drop_bag")
+		await p.hold_position(0.8)
+		if lift.bags_in_car().size() > before:
+			break
+	if lift.bags_in_car().size() <= before:
+		f.note("hoist: the bag missed %s's car (try %d)" % [lift.name, _lift_tries])
+		return false
+	var panel: InteractableComponent = _lift_panel(lift, li)
+	await p.use(panel, 10.0, func() -> bool: return lift.is_moving())
+	f.note("hoist: %s sent from landing %d with %d bag(s) (t=%.0f)" % [lift.name, li, lift.bags_in_car().size(),
+		rt.heist_time_s])
+	if lift.is_moving():
+		_lift_tries = 0  # the cap counts failed tries in a row, not trips
+	return lift.is_moving()
+
+
+## A tossed bag that missed the car, lying loose within 3 m of `center`: pick it straight back up (before a bot
+## fetches it). True when carrying again.
+func _pick_up_missed(center: Vector3) -> bool:
+	var lm: LootManager = rt.service(G.SVC_LOOT) as LootManager
+	if lm == null:
+		return false
+	for bag: LootBag in lm.bags():
+		if bag.secured or bag.is_carried() or bag.in_flight or bag.interactable == null \
+				or bag.global_position.distance_to(center) > 3.0:
+			continue
+		await p.use(bag.interactable, 6.0, func() -> bool: return p.crew.is_carrying_bag())
+		return p.crew.is_carrying_bag()
+	return false
+
+
+## Bring `lift`'s car to landing `i` (its panel there: call_lift) and wait for it. True when it stands there. Never
+## calls a car that still holds bags (they would ride back down: hoist3, 8 trips with the same 3 bags).
+func _lift_car_to(lift: BagLift, i: int) -> bool:
+	await p.hold_position(0.1, func() -> bool: return not lift.is_moving())
+	var t0: float = rt.heist_time_s
+	while lift.is_moving() and rt.heist_time_s - t0 < lift.travel_s + 5.0:
+		await p.hold_position(0.5)
+	if lift.landing == i and not lift.is_moving():
+		return true
+	if not lift.bags_in_car().is_empty():
+		_note_once(&"_lift_loaded", "hoist: the car at landing %d still holds bags; unloading it first" % lift.landing)
+		return false
+	await p.use(_lift_panel(lift, i), 10.0, func() -> bool: return lift.is_moving())
+	t0 = rt.heist_time_s
+	while (lift.is_moving() or lift.landing != i) and rt.heist_time_s - t0 < lift.travel_s + 5.0:
+		await p.hold_position(0.5)
+	return lift.landing == i and not lift.is_moving()
+
+
+## Empty-handed, a BagLift car standing at the landing on the secure zone's floor with bags in it: go there and carry
+## one out (a player unloads the hoist up top; the bag is then secured like any carried bag). True when it acted.
+func _unload_lift() -> bool:
+	var zone: SecureZone = p.secure_zone()
+	if p.crew.is_carrying_bag() or zone == null:
+		return false
+	for n: Node in rt.find_children("*", "BagLift", true, false):
+		var lift: BagLift = n as BagLift
+		if lift == null or (not lift.is_moving() and lift.bags_in_car().is_empty()):
+			continue
+		var top: int = 0
+		for i: int in range(lift.landing_count()):
+			if absf(lift.landing_transform(i).origin.y - zone.global_position.y) \
+					< absf(lift.landing_transform(top).origin.y - zone.global_position.y):
+				top = i
+		if lift.is_moving() and lift.destination == top:
+			# hoist4: just sent, the pilot bagged more cash while the car travelled, then found it loaded up top
+			await p.hold_position(lift.travel_s + 1.0, func() -> bool: return not lift.is_moving())
+			return true
+		if lift.is_moving() or lift.landing != top or lift.bags_in_car().is_empty():
+			continue
+		var bag: LootBag = lift.bags_in_car()[0]
+		var comp: InteractableComponent = bag.get_node_or_null(^"Interactable") as InteractableComponent
+		if comp == null or not comp.enabled or comp.availability(p.crew) != &"" or _is_unreachable(comp):
+			continue
+		f.note("hoist: unloading %s at landing %d (%d bag(s) in the car)" % [lift.name, top, lift.bags_in_car().size()])
+		await p.use(comp, 30.0, func() -> bool: return p.crew.is_carrying_bag())
+		if is_instance_valid(comp) and not p.crew.is_carrying_bag():
+			_mark_if_unreached(comp)  # a car the pilot cannot reach does not hold every step
+		return true
+	return false
+
+
+static func _lift_panel(lift: BagLift, i: int) -> InteractableComponent:
+	return lift.interactable if i == 0 else lift.get_node_or_null(NodePath("%s%d" % [BagLift.PANEL_PREFIX, i])) \
+		as InteractableComponent
 
 
 ## Drop the carried bag, fight until no enemy is in sight within CLEAR_RANGE_M (or CLEAR_LIMIT_S), pick it back up.
@@ -768,6 +949,56 @@ func _note_bot_revives() -> void:
 			tgt.slot if tgt != null else -1, c.global_position.distance_to(p.crew.global_position),
 			"-" if comp == null else "%s %.1f/%.1f" % [comp.kind, float(sess["progress"]), float(sess["duration"])]])
 	f.note("bots while down: " + ", ".join(parts))
+
+
+## --po5-focus: `m` is the focused objective's marker, not stalled or blocked. A verification flag: the focus can go
+## before the escape (markers come in objective order; OF lists bond_safe above escape_wait / escape).
+func _is_focus(m: Dictionary) -> bool:
+	return focus != &"" and StringName(m["id"]) == focus and not _stalled(m) and not _is_marker_blocked(m)
+
+
+static func _focus_arg() -> StringName:
+	for a: String in OS.get_cmdline_user_args():
+		if a.begins_with("--po5-focus="):
+			return StringName(a.trim_prefix("--po5-focus="))
+	return &""
+
+
+## --po5-doctor-bag (LEAD D-145, DB Tense: 3 downs in a long heist): like a PD2 player on a long loud job, the pilot carries
+## a doctor bag (L2.11: full heal + downs reset, 2 uses). With 2+ downs used and no enemy within DOCTOR_SAFE_M it walks to
+## a placed bag with uses left (DOCTOR_WALK_M), else holds `deploy` to set its own down, then uses it. True when it acted.
+func _doctor_bag() -> bool:
+	if not doctor_bag or p.crew.health == null or p.crew.health.downs_used < 2 or p.nearest_enemy(DOCTOR_SAFE_M) != null:
+		return false
+	var ds: DeployableSystem = rt.service(DeployableSystem.SERVICE) as DeployableSystem
+	if ds == null:
+		return false
+	var best: DeployablePrefab = null
+	for n: Node in ds.placed(&"doctor_bag"):
+		var bag: DeployablePrefab = n as DeployablePrefab
+		if bag != null and bag.uses_left > 0 and bag.interactable != null and bag.interactable.enabled \
+				and bag.global_position.distance_to(p.crew.global_position) <= DOCTOR_WALK_M:
+			if best == null or bag.global_position.distance_to(p.crew.global_position) \
+					< best.global_position.distance_to(p.crew.global_position):
+				best = bag
+	if best == null and ds.deployable_count(p.crew.slot) > 0:
+		var before: int = ds.deployable_count(p.crew.slot)
+		f.note("doctor bag: %d downs used, deploying one" % p.crew.health.downs_used)
+		p.inp.press(&"deploy")
+		var waited: float = 0.0
+		while ds.deployable_count(p.crew.slot) >= before and waited < 6.0 and p.crew.crew_state == Enums.CrewState.NORMAL:
+			await f.wait_s(0.1)
+			waited += 0.1
+		p.inp.release(&"deploy")
+		await p.inp.ticks(5)
+		return true  # the next step walks to it and uses it
+	if best == null:
+		return false
+	f.note("doctor bag: %d downs used, using the bag at %s (%d uses left)" % [p.crew.health.downs_used,
+		Po5Pilot._v(best.global_position), best.uses_left])
+	var downs: int = p.crew.health.downs_used
+	await p.use(best.interactable, 15.0, func() -> bool: return p.crew.health.downs_used < downs)
+	return true
 
 
 ## While the pilot is down: every bot interaction start / cancel, with the bot's speed and mode (B's DB Tense: revive

@@ -106,7 +106,7 @@ check.168: kneel_cuffed_c: 118f 3.93s loop speed=0.0 reach_err=0.0mm step=2.7deg
 check.169: lean_wall: 120f 4.00s loop speed=0.0 reach_err=0.0mm step=0.4deg
 check.17: browse: 120f 4.00s loop speed=0.0 reach_err=0.0mm step=3.9deg
 check.170: lie_down: 90f 3.00s loop speed=0.0 reach_err=0.0mm step=0.2deg
-check.171: mask_on: 30f 1.00s speed=0.0 reach_err=0.0mm step=51.8deg
+check.171: mask_on: 30f 1.00s speed=0.0 reach_err=0.0mm step=34.8deg
 check.172: melee: 21f 0.70s speed=0.0 reach_err=0.0mm step=57.0deg
 check.173: mop: 120f 4.00s loop speed=0.0 reach_err=0.0mm step=3.4deg
 check.174: mug_carry_walk: 34f 1.13s loop speed=1.3 reach_err=0.0mm step=16.2deg slide=0.026mm/f
@@ -162,9 +162,9 @@ check.219: stagger_rifle: 36f 1.20s speed=0.0 reach_err=0.0mm step=37.4deg
 check.22: counter_customer: 180f 6.00s loop speed=0.0 reach_err=0.0mm step=8.0deg root_drift=0.00mm hand_gap=0.0mm through=0.0mm forearm_gap=-0.0mm front=0.234m socket_L=-0.1..-0.1cm socket_R=+0.0..+0.0cm
 check.220: strafe_l: 18f 0.60s loop speed=1.2 reach_err=0.0mm step=10.8deg slide=0.006mm/f
 check.221: strafe_r: 18f 0.60s loop speed=1.2 reach_err=0.0mm step=10.9deg slide=0.006mm/f
-check.222: surrender: 48f 1.60s speed=0.0 reach_err=0.0mm step=54.8deg
-check.223: surrender_b: 54f 1.80s speed=0.0 reach_err=0.0mm step=52.3deg start_err=0.00mm end_err=0.00mm max_diff_vs_surrender=125.8deg
-check.224: surrender_c: 42f 1.40s speed=0.0 reach_err=0.0mm step=51.9deg start_err=0.00mm end_err=0.00mm max_diff_vs_surrender=97.7deg
+check.222: surrender: 48f 1.60s speed=0.0 reach_err=0.0mm step=34.3deg
+check.223: surrender_b: 54f 1.80s speed=0.0 reach_err=0.0mm step=32.3deg start_err=0.00mm end_err=0.00mm max_diff_vs_surrender=125.8deg
+check.224: surrender_c: 42f 1.40s speed=0.0 reach_err=0.0mm step=38.3deg start_err=0.00mm end_err=0.00mm max_diff_vs_surrender=97.7deg
 check.225: surrender_idle: 96f 3.20s loop speed=0.0 reach_err=0.0mm step=0.7deg start_err=0.00mm
 check.226: surrender_idle_b: 110f 3.67s loop speed=0.0 reach_err=0.0mm step=1.9deg start_err=0.00mm max_diff_vs_surrender_idle=23.1deg
 check.227: surrender_idle_c: 84f 2.80s loop speed=0.0 reach_err=0.0mm step=6.1deg start_err=0.00mm max_diff_vs_surrender_idle=46.7deg
@@ -232,7 +232,7 @@ check.58: dj_mix: 240f 8.00s loop speed=0.0 reach_err=0.0mm step=10.7deg lowest_
 check.59: door_kick_pistol: 84f 2.80s speed=0.0 reach_err=0.0mm step=38.5deg
 check.60: door_kick_rifle: 84f 2.80s speed=0.0 reach_err=0.0mm step=43.7deg
 check.61: downed: 90f 3.00s loop speed=0.0 reach_err=0.0mm step=0.8deg
-check.62: downed_arrested: 40f 1.33s speed=0.0 reach_err=0.0mm step=51.9deg
+check.62: downed_arrested: 40f 1.33s speed=0.0 reach_err=0.0mm step=40.1deg
 check.63: downed_crawl: 60f 2.00s loop speed=0.3 reach_err=0.0mm step=20.6deg palm_slide=0.000mm/f
 check.64: downed_fire: 9f 0.30s speed=0.0 reach_err=0.0mm step=7.7deg
 check.65: downed_getup: 40f 1.33s speed=0.0 reach_err=0.0mm step=30.9deg

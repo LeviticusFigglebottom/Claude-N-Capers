@@ -11,5 +11,5 @@ extends Resource
 @export var last_level_xp: float = 1000000.0
 ## ◇ Fitted so the unscaled total is ~23M (PD2).
 @export var exponent: float = 3.36
-## pd2_fidelity P1: same shape scaled x0.5 (PO may revise).
-@export var scale: float = 0.5
+## pd2_fidelity P1: PD2's curve; D-148 (PO, option D) scale 1.0 = PD2's ~23M (was x0.5).
+@export var scale: float = 1.0

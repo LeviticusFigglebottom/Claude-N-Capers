@@ -159,18 +159,23 @@ func test_l4_6_wrecker_m_minigun_spin_up_and_rpm() -> void:
 	var shots: Array[int] = [0]
 	var cb: Callable = func(_t: Node, _hit: bool) -> void: shots[0] += 1
 	gun.shot.connect(cb)
-	var t0: int = Time.get_ticks_msec()
+	# LEAD r258 (flaked once in an a test_l4_ batch): the gunner runs on physics ticks; under load the engine caps
+	# physics steps per frame, so wall-clock and process-timer waits saw fewer ticks. Count simulated time in ticks.
+	var tick_s: float = 1.0 / float(Engine.physics_ticks_per_second)
 	gun.fire_at(c)
-	var first: bool = await wait_until(func() -> bool: return shots[0] > 0, spin + 2.0)
-	var waited: float = float(Time.get_ticks_msec() - t0) / 1000.0
-	assert_true(first, "fires after spinning up")
-	assert_true(waited >= spin - 0.1, "first shot after the spin-up (%.2f s)" % waited)
+	var ticks: int = 0
+	while shots[0] == 0 and ticks * tick_s < spin + 2.0:
+		await wait_physics_frames(1)
+		ticks += 1
+	var waited: float = ticks * tick_s
+	assert_true(shots[0] > 0, "fires after spinning up")
+	assert_true(waited >= spin - 2.0 * tick_s, "first shot after the spin-up (%.2f s simulated)" % waited)
 	assert_true(gun.spun_up, "barrels at speed")
 	shots[0] = 0
-	await wait_seconds(0.5)
-	assert_true(shots[0] >= 6, "minigun rate (%d shots in 0.5 s)" % shots[0])
+	await wait_physics_frames(roundi(0.5 / tick_s))
+	assert_true(shots[0] >= 6, "minigun rate (%d shots in 0.5 s simulated)" % shots[0])
 	gun.hold_fire()
-	await wait_seconds(float(d.params["spin_down_s"]) + 0.3)
+	await wait_physics_frames(roundi((float(d.params["spin_down_s"]) + 0.3) / tick_s))
 	assert_false(gun.spun_up, "spins down without a target")
 	gun.shot.disconnect(cb)
 

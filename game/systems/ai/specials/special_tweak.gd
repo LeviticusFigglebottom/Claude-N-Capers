@@ -83,6 +83,13 @@ static var _cached: SpecialTweak = null
 @export var longshot_aim_lock_s: float = 1.2
 ## Seconds between shots (after the report, a new aim lock starts).
 @export var longshot_fire_interval_s: float = 2.5
+## LEAD D-145 (DB Tense: Longshots at 30 m+ were 31-47 % of the damage), Routine..Cataclysm, overriding the two above
+## where set: the laser aim lock before each shot, and the seconds between shots. PD2 sniper preset (charactertweakdata
+## presets.weapon.sniper): aim_delay {0, 0.1}, use_laser, FALLOFF recoil (s between shots) {2,4} / {3,4} / {3,5} at
+## 7 / 35 / 100 m, accuracy ramping over focus_delay 7 s; _set_normal reportedly triples sniper delays. Tense uses
+## PD2 Hard's mid-range 3.5 s and a 2 s telegraph (>= PD2); Routine gentler; Hazardous+ as before.
+@export var longshot_aim_lock_s_by_difficulty: PackedFloat32Array = PackedFloat32Array([2.5, 2.0, 1.2, 1.2, 1.2, 1.2])
+@export var longshot_fire_interval_s_by_difficulty: PackedFloat32Array = PackedFloat32Array([4.5, 3.5, 2.5, 2.5, 2.5, 2.5])
 ## Max engagement range (S2.7 caps loud targeting at 80-180 m by DR; ◇ 150 m).
 @export var longshot_range_m: float = 150.0
 ## L4.7: damage halved beyond this distance, except on the top difficulty.

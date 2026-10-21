@@ -226,6 +226,53 @@ func test_failure_reason_and_loss() -> void:
 	assert_eq(PaydayScreen.fail_reason_key(&""), &"ui.results.fail.abort", "no reason reads as walking away")
 
 
+## r262 lead nit: an OF Cataclysm payday's six unlocks (three per line) show every reward name in full at 720p and
+## 1080p ("Oxblood Her..." was ellipsised): the REWARD never trims, no word is split and it stays in its column.
+func test_reward_names_are_never_truncated() -> void:
+	var saved: Vector2i = get_window().size
+	var ids: Array[StringName] = [&"achievement.first_score", &"achievement.cataclysm_clear",
+		&"achievement.of_no_harm_done", &"achievement.of_cataclysm", &"achievement.offshore_million",
+		&"achievement.seasoned"]
+	for res: Vector2i in [Vector2i(1280, 720), Vector2i(1920, 1080)]:
+		get_window().size = res
+		var result: Dictionary = HeistCatalog.sample_result()
+		result["success"] = true
+		result["heist_id"] = &"ostrander_federal"
+		_screen.apply_to_profile = false
+		_screen.show_result(result)
+		_screen.achievements_unlocked = ids
+		_screen.call(&"_render")
+		await wait_frames(4)
+		var rewards: int = 0
+		for id: StringName in ids:
+			var row: Control = _screen.achievement_rows.get(id, null) as Control
+			assert_true(row != null, "%s listed" % id)
+			var r: Label = row.find_child("Reward", true, false) as Label if row != null else null
+			if r == null:
+				continue
+			rewards += 1
+			var tag: String = "%s @%d: '%s'" % [id, res.y, r.text]
+			assert_eq(r.text_overrun_behavior, TextServer.OVERRUN_NO_TRIMMING, tag + " never trims")
+			assert_eq(r.get_visible_line_count(), r.get_line_count(), tag + " every line shown")
+			var font: Font = r.get_theme_font(&"font")
+			var fs: int = r.get_theme_font_size(&"font_size")
+			var rr: Rect2 = r.get_global_rect()
+			var col: Rect2 = row.get_global_rect()
+			assert_true(rr.position.x >= col.position.x - 0.5 and rr.end.x <= col.end.x + 0.5,
+					"%s inside its column (%s in %s)" % [tag, rr, col])
+			for word: String in r.text.split(" ", false):
+				assert_true(font.get_string_size(word, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x <= r.size.x + 0.5,
+						"%s: '%s' fits the column (%.0f px)" % [tag, word, r.size.x])
+		var want: int = 0
+		for id: StringName in ids:
+			var a: AchievementDef = ContentDB.by_id(ContentDB.ACHIEVEMENTS, id) as AchievementDef
+			if a != null and AchievementsScreen.reward_name(a) != "":
+				want += 1
+		assert_true(want > 0, "the set has rewards to check")
+		assert_eq(rewards, want, "@%d: every reward-granting unlock shows its REWARD" % res.y)
+	get_window().size = saved
+
+
 ## Lane 2 audit: a full crew's stats table is on screen at 720p without scrolling (it was under the fold).
 func test_full_crew_table_on_screen_at_720p() -> void:
 	var saved: Vector2i = get_window().size

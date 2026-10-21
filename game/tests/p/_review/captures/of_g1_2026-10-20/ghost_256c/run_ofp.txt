@@ -1,0 +1,145 @@
+[OFP 0.0s t=-1.0] === ghost ===
+[OFP 16.5s t=-1.0] objective casing -> 1
+[OFP 16.5s t=-1.0] objective keycard -> 1
+[OFP 16.5s t=-1.0] objective code_hint -> 1
+[OFP 16.5s t=-1.0] objective code_pc -> 1
+[OFP 16.5s t=-1.0] objective server -> 1
+[OFP 16.5s t=-1.0] objective vault_gate -> 1
+[OFP 16.5s t=-1.0] objective lasers -> 1
+[OFP 16.5s t=-1.0] objective time_lock -> 0
+[OFP 16.5s t=-1.0] objective time_lock_wait -> 0
+[OFP 16.5s t=-1.0] objective vault_loot -> 0
+[OFP 16.5s t=-1.0] objective gold_cage -> 0
+[OFP 16.5s t=-1.0] objective drill_delivery -> 0
+[OFP 16.5s t=-1.0] objective vault_drill -> 0
+[OFP 16.5s t=-1.0] objective vault_breach -> 0
+[OFP 16.5s t=-1.0] objective secure -> 1
+[OFP 16.5s t=-1.0] objective deposit_boxes -> 1
+[OFP 16.5s t=-1.0] objective bond_safe -> 0
+[OFP 16.5s t=-1.0] objective president_safe -> 1
+[OFP 16.5s t=-1.0] objective server_drives -> 1
+[OFP 16.5s t=-1.0] objective escape_wait -> 0
+[OFP 16.5s t=-1.0] objective escape -> 0
+[OFP 32.3s t=0.0] launched ostrander_federal seed 1002 diff 5 variants { &"manager_route": [&"mgr_vault"], &"keycard": [&"kc_on_manager"], &"code_pc": [&"pc_exec"], &"officers": [&"off_3"], &"server_room": [&"srv_gallery"], &"guard_post": [&"rover_basement", &"rover_dock", &"rover_gallery", &"rover_hall"], &"security_room_staffed": [&"sec_staffed"], &"camera": [&"cam_a"], &"laser_pattern": [&"lz_sweep"], &"customers": [&"cust_8"], &"side_door": [&"door_none"], &"fire_escape": [&"fe_up"], &"escape": [&"esc_van_dock"], &"drill_delivery": [&"drop_terrace"], &"president_safe": [&"ps_empty"], &"vip": [&"vip_in"], &"guard_extra": [&"gx_basement", &"gx_hall"], &"civ_extra": [&"cx_hall_1", &"cx_hall_2", &"cx_pc"], &"time_lock_s": 270.0, &"drill_eta_s": 90.0, &"escape_eta_s": 90.0, &"cash_bags": 6, &"gold_bags": 4, &"deposit_boxes": 12, "rare": [&"vip_client"] }
+[OFP 242.4s t=3.1] pilot: calibrated 0.001600 rad/px yaw, 0.001600 rad/px pitch (settings formula said (0.0016, 0.0016))
+[OFP 242.4s t=3.1] spawn (21.8, -0.8, 44.0)
+[OFP 268.7s t=8.2] pilot: t=5 at (37.9, -0.7, 40.1) corner (42.4, -0.6, 42.3) yaw_err -0.00 fwd=true path=11 mouse_mode=2 state=0 look=(-2.02,0.00) pin_yaw=-2.01588615652872 bot=false
+[OFP 280.9s t=20.3] pilot: t=5 at (56.0, 0.0, 14.9) corner (55.7, 0.2, 12.4) yaw_err -0.00 fwd=true path=7 mouse_mode=2 state=0 look=(0.10,0.00) pin_yaw=0.09794857307133 bot=false
+[OFP 291.6s t=31.1] pilot: t=5 at (35.7, 0.0, -6.3) corner (33.4, 0.2, -6.4) yaw_err -0.00 fwd=true path=10 mouse_mode=2 state=0 look=(1.50,0.00) pin_yaw=1.50226139555161 bot=false
+[OFP 293.6s t=33.0] GHOST step _g1_lane done at t=33.0 (+29.8 s)
+[OFP 293.6s t=33.0] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (45.6, 0.0, -5.0) smoke
+[OFP 303.6s t=43.0] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (45.6, 0.0, -5.0) smoke
+[OFP 313.6s t=53.0] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (45.6, 0.0, -5.0) smoke
+[OFP 321.1s t=60.5] GHOST smoke cue: Npc_guard6 at (45.7, 0.0, -4.9) clip 'walk_fr' (still 28.0 s) after 28 s
+[OFP 321.1s t=60.5] GHOST lane clear after 0 s
+[OFP 327.5s t=61.5] objective casing -> 2
+[OFP 328.1s t=62.1] masked true
+[OFP 330.8s t=64.8] ECM on
+[OFP 335.8s t=69.9] pilot: t=5 at (12.2, 0.0, -1.8) corner (10.2, 0.2, -1.2) yaw_err 0.00 fwd=true path=4 mouse_mode=2 state=0 look=(1.86,0.00) pin_yaw=1.85905208980694 bot=false
+[OFP 345.2s t=79.2] pilot: use DockPersonnelDoor (open_door) -> OK in 8.0 s
+[OFP 348.8s t=82.8] pilot: use DockCorridorDoor (open_door) -> OK in 0.0 s
+[OFP 350.9s t=84.9] pilot: use StairDoorSAG (open_door) -> OK in 0.0 s
+[OFP 355.7s t=89.7] pilot: use StairDoorSAB (open_door) -> OK in 0.0 s
+[OFP 356.5s t=90.6] GHOST step _g2_dock done at t=90.6 (+57.6 s)
+[OFP 360.6s t=94.5] DETECT Npc_civilian8 kind 1 meter 0.10 at (7.1, -4.0, 2.5), pilot (3.4, -4.0, 5.2) crouched false
+[OFP 365.5s t=99.5] pilot: use Npc_civilian8 (cable_tie) -> OK in 2.0 s
+[OFP 367.1s t=101.2] objective keycard -> 2
+[OFP 376.0s t=101.5] GHOST step _g3_keycard done at t=101.5 (+10.8 s)
+[OFP 376.0s t=101.5] GHOST LK hide at (1.5, -3.8, 4.0)
+[OFP 377.5s t=103.1] GHOST waiting for the stair core: 
+[OFP 387.5s t=113.1] GHOST waiting for the stair core: Npc_guard2 (17.0, -4.0, 10.2) moving, Npc_guard5 (23.7, -4.0, 7.7) moving
+[OFP 394.0s t=119.6] GHOST stair core clear after 16 s
+[OFP 435.8s t=124.6] pilot: t=5 at (14.3, -4.0, 7.1) corner (14.4, -4.0, 6.1) yaw_err 0.01 fwd=true path=5 mouse_mode=2 state=0 look=(6.22,0.00) pin_yaw=6.23055802649651 bot=false
+[OFP 436.0s t=124.8] GHOST waiting for the stair core: 
+[OFP 442.0s t=130.8] GHOST stair core clear after 6 s
+[OFP 442.5s t=131.3] DETECT Npc_guard5 kind 0 meter 0.13 at (20.9, -4.0, 8.0), pilot (14.3, -4.0, 7.4) crouched false
+[OFP 442.6s t=131.3] DETECT Npc_guard9 kind 0 meter 0.10 at (29.0, -4.0, 7.9), pilot (14.3, -4.0, 7.4) crouched false
+[OFP 443.0s t=131.8] DETECT Npc_guard5 kind 0 meter 0.60 at (20.1, -4.0, 8.0), pilot (14.4, -4.0, 7.6) crouched false
+[OFP 459.5s t=137.1] pilot: t=5 at (14.7, 2.5, 1.5) corner (15.0, 4.9, 5.0) yaw_err -0.96 fwd=false path=19 mouse_mode=2 state=0 look=(-2.08,0.00) pin_yaw=-2.26917271311504 bot=false
+[OFP 465.1s t=142.6] pilot: use StairDoorSAE (open_door) -> OK in 0.0 s
+[OFP 467.7s t=145.2] pilot: use AssistantDoor (open_door) -> OK in 0.0 s
+[OFP 471.5s t=149.0] pilot: use CodePC (start_hack) -> OK in 2.0 s
+[OFP 471.5s t=149.0] GHOST waiting for the stair core: 
+[OFP 477.4s t=155.0] pilot: t=5 at (14.7, 8.6, 6.1) corner (14.6, 8.8, 7.5) yaw_err 3.06 fwd=false path=13 mouse_mode=2 state=0 look=(-12.52,0.00) pin_yaw=-12.3309495272388 bot=false
+[OFP 481.3s t=158.8] pilot: use ElectricalDoorE (open_door) -> OK in 0.0 s
+[OFP 498.6s t=176.0] GHOST code hack state 2 at t=176
+[OFP 503.5s t=181.1] pilot: t=5 at (17.6, 8.6, 7.6) corner (18.9, 8.8, 7.5) yaw_err 0.00 fwd=true path=8 mouse_mode=2 state=0 look=(-20.34,0.00) pin_yaw=-20.3413570623725 bot=false
+[OFP 507.2s t=184.7] pilot: use CodePC (start_hack) -> OK in 2.0 s
+[OFP 507.2s t=184.7] GHOST waiting for the stair core: 
+[OFP 513.2s t=190.7] pilot: t=5 at (14.6, 8.6, 6.0) corner (14.5, 8.8, 7.2) yaw_err 1.65 fwd=false path=13 mouse_mode=2 state=0 look=(-17.46,0.00) pin_yaw=-17.2697164181573 bot=false
+[OFP 525.0s t=202.6] objective code_pc -> 2
+[OFP 525.0s t=202.6] objective code_pc -> 2
+[OFP 525.0s t=202.6] objective server -> 1
+[OFP 525.1s t=202.6] GHOST code hack state 3 at t=203
+[OFP 525.1s t=202.6] GHOST step _g4_code done at t=202.6 (+101.1 s)
+[OFP 525.1s t=202.6] GHOST waiting for the stair core: 
+[OFP 543.3s t=212.6] GHOST waiting for the stair core: Npc_guard4 (14.4, 5.0, 6.3) moving
+[OFP 553.3s t=222.6] GHOST waiting for the stair core: Npc_guard2 (23.9, -4.0, 10.8) moving, Npc_guard4 (18.8, 8.6, 7.7) moving, Npc_guard5 (25.2, -4.0, 7.8) moving, Npc_guard6 (19.2, 0.0, -5.9) moving, Npc_guard9 (28.8, -4.0, 7.9) moving
+[OFP 563.3s t=232.6] GHOST waiting for the stair core: Npc_guard4 (27.6, 8.6, 8.0), Npc_guard5 (28.9, -4.0, 7.8) moving, Npc_guard6 (4.2, 0.0, -1.3) moving
+[OFP 573.3s t=242.6] GHOST waiting for the stair core: Npc_guard3 (25.8, 0.0, 12.3) moving, Npc_guard4 (13.6, 8.6, 8.3) moving, Npc_guard5 (27.7, -4.0, 7.9) moving
+[OFP 574.1s t=243.3] DETECT Npc_guard4 kind 0 meter 0.27 at (12.4, 8.6, 8.3), pilot (11.6, 8.6, 4.3) crouched false
+[OFP 574.6s t=243.8] DETECT Npc_guard4 kind 0 meter 0.67 at (11.6, 8.6, 8.3), pilot (11.6, 8.6, 4.3) crouched false
+[OFP 583.3s t=252.6] GHOST waiting for the stair core: Npc_guard2 (19.0, -4.0, 11.0) moving, Npc_guard4 (8.7, 8.6, 13.6) moving, Npc_guard5 (11.7, -4.0, 8.0) moving
+[OFP 593.3s t=262.6] GHOST waiting for the stair core: Npc_guard2 (27.5, -4.0, 8.0) moving, Npc_guard3 (18.2, 0.0, 8.0) moving, Npc_guard4 (8.1, 8.6, 15.1), Npc_guard5 (12.1, -4.0, 14.3) moving
+[OFP 603.3s t=272.6] GHOST waiting for the stair core: Npc_guard4 (10.1, 8.6, 8.5) moving, Npc_guard5 (12.3, -4.0, 15.3) moving, Npc_guard6 (16.9, 0.0, -2.9) moving
+[OFP 604.3s t=273.6] DETECT Npc_guard4 kind 0 meter 0.12 at (11.7, 8.6, 8.4), pilot (11.6, 8.6, 4.3) crouched false
+[OFP 604.9s t=274.1] DETECT Npc_guard4 kind 0 meter 0.51 at (12.5, 8.6, 8.4), pilot (11.6, 8.6, 4.3) crouched false
+[OFP 613.3s t=282.6] GHOST waiting for the stair core: Npc_guard3 (6.4, 0.0, 4.5) moving, Npc_guard4 (26.1, 8.6, 8.0) moving, Npc_guard5 (10.6, -4.0, 8.1) moving
+[OFP 623.3s t=292.6] GHOST waiting for the stair core: Npc_guard3 (20.8, 0.0, 8.0) moving, Npc_guard4 (30.1, 8.6, 8.0) moving, Npc_guard5 (26.5, -4.0, 8.0) moving
+[OFP 637.7s t=298.6] GHOST stair core clear after 96 s
+[OFP 645.5s t=306.4] pilot: t=5 at (15.0, 4.9, 5.2) corner (15.0, 2.8, 1.7) yaw_err 0.00 fwd=true path=30 mouse_mode=2 state=0 look=(-6.27,0.00) pin_yaw=-6.27034836621715 bot=false
+[OFP 650.5s t=311.3] pilot: t=10 at (14.0, -2.0, 2.8) corner (14.0, -2.1, 3.3) yaw_err 0.01 fwd=true path=8 mouse_mode=2 state=0 look=(3.21,0.00) pin_yaw=3.22517386010622 bot=false
+[OFP 652.1s t=312.9] GHOST LK hide at (1.5, -3.8, 4.0)
+[OFP 652.1s t=312.9] GHOST vault gate not clear (Npc_guard2 (17.0, -4.0, 10.8)): waiting at (1.5, -3.8, 4.0)
+[OFP 656.5s t=317.4] GHOST waiting for the vault gate: Npc_guard2 (24.0, -4.0, 10.6)
+[OFP 666.5s t=327.4] GHOST waiting for the vault gate: Npc_guard2 (25.6, -4.0, 10.9), Npc_guard7 (34.5, -4.0, 8.0) moving
+[OFP 676.5s t=337.4] GHOST waiting for the vault gate: Npc_guard2 (19.7, -4.0, 10.9) moving, Npc_guard5 (23.1, -4.0, 7.6) moving, Npc_guard9 (30.0, -4.0, 6.3) moving
+[OFP 686.5s t=347.4] GHOST waiting for the vault gate: Npc_guard2 (7.4, -4.0, 8.3) moving, Npc_guard5 (30.0, -4.0, 6.5) moving, Npc_guard9 (31.9, -4.0, 7.6) moving
+[OFP 686.8s t=347.6] DETECT Npc_guard2 kind 0 meter 0.10 at (7.1, -4.0, 8.4), pilot (1.8, -4.0, 4.2) crouched true
+[OFP 696.5s t=357.4] GHOST waiting for the vault gate: Npc_guard2 (6.5, -4.0, 23.3) moving, Npc_guard5 (26.0, -4.0, 7.9) moving, Npc_guard7 (35.2, -4.0, 14.4) moving, Npc_guard9 (31.3, -4.0, 8.0) moving
+[OFP 706.6s t=367.4] GHOST waiting for the vault gate: Npc_guard5 (10.0, -4.0, 8.0) moving
+[OFP 708.5s t=369.3] DETECT Npc_guard5 kind 0 meter 0.10 at (7.0, -4.0, 8.4), pilot (1.8, -4.0, 4.2) crouched true
+[OFP 716.5s t=377.4] GHOST waiting for the vault gate: Npc_guard2 (8.5, -4.0, 10.4) moving, Npc_guard5 (12.3, -4.0, 15.8) moving, Npc_guard9 (35.2, -4.0, 8.0) moving
+[OFP 719.0s t=379.8] DETECT Npc_guard2 kind 0 meter 0.09 at (6.4, -4.0, 8.6), pilot (1.8, -4.0, 4.2) crouched true
+[OFP 726.5s t=387.4] GHOST waiting for the vault gate: Npc_guard2 (16.9, -4.0, 8.7) moving, Npc_guard5 (10.1, -4.0, 10.6) moving, Npc_guard7 (28.9, -4.0, 8.0) moving
+[OFP 742.1s t=390.8] DETECT Npc_guard5 kind 0 meter 0.09 at (6.4, -4.0, 8.6), pilot (1.8, -4.0, 4.2) crouched true
+[OFP 748.6s t=397.4] GHOST waiting for the vault gate: Npc_guard2 (25.6, -4.0, 10.9), Npc_guard5 (16.8, -4.0, 8.0) moving
+[OFP 758.5s t=407.4] GHOST waiting for the vault gate: Npc_guard2 (25.6, -4.0, 10.9), Npc_guard5 (32.7, -4.0, 8.1) moving
+[OFP 768.5s t=417.4] GHOST waiting for the vault gate: Npc_guard2 (25.6, -4.0, 10.9), Npc_guard9 (34.7, -4.0, 7.8) moving
+[OFP 778.5s t=427.4] GHOST waiting for the vault gate: Npc_guard2 (24.2, -4.0, 10.8) moving, Npc_guard9 (28.6, -4.0, 8.0) moving
+[OFP 805.7s t=437.4] GHOST waiting for the vault gate: Npc_guard2 (25.6, -4.0, 11.0), Npc_guard9 (30.7, -4.0, 7.5) moving
+[OFP 815.7s t=447.4] GHOST waiting for the vault gate: Npc_guard2 (25.6, -4.0, 11.0), Npc_guard5 (34.9, -4.0, 7.8) moving, Npc_guard7 (35.6, -4.0, 8.1) moving, Npc_guard9 (32.5, -4.0, 8.0) moving
+[OFP 825.7s t=457.4] GHOST waiting for the vault gate: Npc_guard2 (24.3, -4.0, 10.6) moving, Npc_guard5 (21.0, -4.0, 6.3) moving, Npc_guard7 (36.6, -4.0, 7.9) moving
+[OFP 835.7s t=467.4] GHOST waiting for the vault gate: Npc_guard2 (22.0, -4.0, 8.2) moving, Npc_guard9 (35.2, -4.0, 8.0) moving
+[OFP 862.1s t=477.4] GHOST waiting for the vault gate: Npc_guard5 (23.8, -4.0, 8.0) moving
+[OFP 872.1s t=487.4] GHOST waiting for the vault gate: Npc_guard5 (7.9, -4.0, 8.2) moving, Npc_guard7 (35.2, -4.0, 12.1) moving
+[OFP 882.1s t=497.4] GHOST waiting for the vault gate: Npc_guard9 (30.0, -4.0, 5.4) moving
+[OFP 883.1s t=498.4] GHOST vault gate clear after 181 s
+[OFP 888.2s t=503.4] pilot: t=5 at (14.0, -4.0, 8.3) corner (14.6, -3.8, 8.3) yaw_err -0.00 fwd=true path=9 mouse_mode=2 state=0 look=(4.67,0.00) pin_yaw=4.66695369126137 bot=false
+[OFP 890.2s t=505.4] objective vault_gate -> 2
+[OFP 890.2s t=505.4] objective time_lock -> 1
+[OFP 890.3s t=505.5] pilot: use VaultGate (open_door) -> OK in 1.0 s
+[OFP 890.4s t=505.5] DETECT Npc_guard2 kind 0 meter 0.57 at (31.7, -4.0, 8.3), pilot (16.9, -4.0, 8.2) crouched false
+[OFP 890.7s t=505.8] LASER VaultLasers pattern sweeping size (3.3, 2.6, 0.1) at (21.0, -4.0, 10.9): gaps beside it 0.14 / 0.14 m; lowest beam face 0.000 m above the floor (pivot +0.00 m; crouch 1.20); period 7.0 off 1.5; standing windows x-1.39: 2.08 s, x+0.01: 2.58 s, x+1.31: 1.88 s, best x+0.01: 2.58 s; a MEDIUM bag (2.62 m/s) needs 1.52 s for 4 m
+[OFP 893.1s t=508.4] LASER CROSS lane x+0.01 standing with no bag: waited 0.0 s, across at 3.35 m/s (expected 3.50), tripped false, at (23.0, -4.0, 10.9)
+[OFP 898.1s t=513.3] objective time_lock -> 2
+[OFP 898.1s t=513.3] objective time_lock_wait -> 0
+[OFP 898.1s t=513.3] objective time_lock_wait -> 1
+[OFP 898.2s t=513.3] pilot: use TimeLockConsole (enter_code) -> OK in 2.0 s
+[OFP 898.2s t=513.3] LASER VaultLasers pattern sweeping size (3.3, 2.6, 0.1) at (21.0, -4.0, 10.9): gaps beside it 0.14 / 0.14 m; lowest beam face 0.000 m above the floor (pivot +0.00 m; crouch 1.20); period 7.0 off 1.5; standing windows x-1.39: 2.08 s, x+0.01: 2.58 s, x+1.31: 1.88 s, best x+0.01: 2.58 s; a MEDIUM bag (2.62 m/s) needs 1.52 s for 4 m
+[OFP 901.8s t=517.0] DETECT Npc_guard5 kind 0 meter 0.55 at (14.1, -4.0, 8.0), pilot (21.1, -4.0, 10.9) crouched false
+[OFP 902.4s t=517.6] LASER CROSS lane x+0.01 standing with no bag: waited 0.0 s, across at 3.35 m/s (expected 3.50), tripped false, at (19.0, -4.0, 10.9)
+[OFP 902.6s t=517.8] DETECT Npc_guard5 kind 0 meter 1.00 at (15.0, -4.0, 8.0), pilot (18.6, -4.0, 10.7) crouched false
+[OFP 902.9s t=518.0] DETECT Npc_guard2 kind 0 meter 1.00 at (17.0, -4.0, 9.4), pilot (17.9, -4.0, 10.2) crouched false
+[INFO][stealth][p1] ALARM: guard_radio (source 207)
+[OFP 902.9s t=518.1] ALARM guard_radio by Npc_guard5 (pilot at (17.7, -4.0, 10.1))
+[OFP 903.0s t=518.1] objective time_lock_wait -> 3
+[OFP 903.0s t=518.1] objective code_hint -> 1
+[OFP 903.0s t=518.1] objective code_hint -> 2
+[OFP 903.0s t=518.1] objective server -> 1
+[OFP 903.0s t=518.1] objective server -> 2
+[OFP 903.0s t=518.1] objective lasers -> 1
+[OFP 903.0s t=518.1] objective lasers -> 2
+[OFP 903.0s t=518.1] objective drill_delivery -> 1
+[OFP 903.0s t=518.1] objective drill_delivery -> 1
+[OFP 931.5s t=521.7] pilot: STUCK at (17.2, -4.0, 10.0) heading to (17.0, -3.8, 9.6); rays: h0.05:/root/OfG1Pass/HeistRuntime/Dynamic/Npc_guard2@(17.0, -3.9, 9.6), h0.20:/root/OfG1Pass/HeistRuntime/Dynamic/Npc_guard2@(17.1, -3.8, 9.7), h0.40:/root/OfG1Pass/HeistRuntime/Dynamic/Npc_guard2@(17.1, -3.6, 9.7), h1.00:/root/OfG1Pass/HeistRuntime/Dynamic/Npc_guard2@(17.1, -3.0, 9.7), vel=(-0.3, 0.0, -0.4) floor=true state=0

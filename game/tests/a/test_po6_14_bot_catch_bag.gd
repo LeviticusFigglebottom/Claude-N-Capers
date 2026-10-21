@@ -171,3 +171,28 @@ func test_po6_14_stealth_bot_at_van_catches_and_leaves() -> void:
 	assert_true(bag.carrier != null and bag.carrier.is_ai, "an AI carries it")
 	if bag.carrier != null:
 		assert_true(CrewAiBrain.of(bag.carrier).stealth_engaged, "it left the van (D-014 P4 option)")
+
+
+## OF (headless Cataclysm 1037): bots fetched the bags the pilot threw into the vault hoist's car and stood at the rope
+## ladder with them (a carried bag cannot climb, S10.1b). A thrown bag lying in a BagLift car rides the lift.
+func test_of_bot_leaves_a_bag_in_the_hoist_car() -> void:
+	await _launch_unit()
+	Engine.time_scale = TIME_SCALE
+	_rt.stealth.raise_alarm(&"test")
+	await wait_physics_frames(3)
+	var h: Vector3 = _crew(0).global_position
+	var car_at: Vector3 = h + Vector3(0.0, 0.0, -3.0)
+	var top: Marker3D = Marker3D.new()
+	top.name = "LiftTop"
+	_rt.map.get_node(^"Gameplay").add_child(top)
+	top.global_position = car_at + Vector3(0.0, 4.0, 0.0)
+	var lift: BagLift = ATestMaps.add_prefab(_rt, "bag_lift", car_at, func(n: Node) -> void:
+		(n as BagLift).targets = [NodePath("../LiftTop")] as Array[NodePath]) as BagLift
+	await _hold_at({1: car_at + Vector3(1.5, 0.0, 0.0), 2: Vector3(6.0, 0.05, -6.0), 3: Vector3(8.0, 0.05, -6.0)})
+	var bag: LootBag = _loot().spawn_bag(&"loot.cash", Transform3D(Basis.IDENTITY, lift.car_transform().origin + Vector3.UP * 0.1))
+	await wait_physics_frames(3)
+	bag.thrown_by_slot = 0  # as if the human had just thrown it in
+	bag.since_thrown_s = 0.0
+	assert_true(lift.bags_in_car().has(bag), "the bag lies in the hoist car")
+	await wait_seconds(3.0)
+	assert_false(bag.is_carried(), "no bot took the bag out of the hoist car")
