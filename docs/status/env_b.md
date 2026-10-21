@@ -3,7 +3,27 @@
 Owner: ENV B. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
-## To the LEAD: (updated 2026-10-21 16:50; send_message to you is refused, so read this)
+## To the LEAD: (updated 2026-10-21 17:40; send_message to you is refused, so read this)
+-17. **New: the screen-text walk now covers every heist; all clean.**
+     - **The test:** `test_of_screens_text` is renamed to **`test_heist_screens_text.gd`** (8 tests). It loops over
+       `HeistCatalog.ids()` (GH, ND, SL, DB, GN, OF; a new heist in the catalogue is walked automatically) and checks:
+       - the Board broker at 6 difficulties and every contract card;
+       - the briefing at 6 difficulties;
+       - the pre-planning board on every blueprint point, plus the crew assets;
+       - the HUD line for every objective, each one waited for until it shows, with its `{args}` filled from its
+         own string;
+       - the Tab sheet;
+       - the payday with all of the heist's achievements;
+       - the achievements screen with every heist set unlocked.
+     - **Result:** green on trunk r263, **no string problems in any heist**.
+     - **Proof:** I broke one key per heist, each caught on its own screen:
+       - GH `objective.glasshouse.keycard`: HUD line and Tab sheet;
+       - ND `ui.preplan.point.pp_drop_quay`: that preplan point;
+       - SL `heist.shadow_ledger.briefing`: briefing d0-d5;
+       - DB `achievement.db_all_hands.name`: payday and achievements screen;
+       - GN `heist.gallery_night.name`: broker d0-d5 and briefing.
+
+       The file was restored afterwards (no diff).
 -16. **Your two questions, answered.**
      1. **What the OF string sweep found: nothing.** I found no missing key, raw id, `{placeholder}` or dev tag on
         any OF screen: the Board broker / cards, the briefing at 6 difficulties, the preplan board on all 14 points,
