@@ -2,7 +2,22 @@
 
 Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min; this file says where to resume.
 
-## To the LEAD: (updated 2026-10-21 UTC)
+## To the LEAD: (updated 2026-10-21 20:15 UTC)
+- **OF ghost on Hazardous, seed 1002, trunk r263 (67260f0b): step table** (time box to ~02:00 UTC per the LEAD):
+
+  | step | pass run | heist time | evidence (game/tests/p/_review/captures/of_g1_2026-10-20/) |
+  |---|---|---|---|
+  | 1 lane | haz_zd | t=33.0 | ghost_haz_zd_r263/run_excerpt.txt |
+  | 2 dock | haz_zd | t=200.5 | same |
+  | 3 keycard (manager shouted from the WC hide, tied unseen) | haz_zd | t=357.2 | same |
+  | 4 code (pc_exec hack) | haz_zd | t=466.4 | same |
+  | 5 vault (gate, lasers, code, time lock in CQ's corner) | haz_zd | t=1483.8 | same |
+  | 6 bags | partial: bags 1-2 VT → cash lift → staged by LD's personnel door unseen (2/6, t=398), back down and the lift recalled (t=424; debug `--test=ghost6`, a SHORTCUT start at CQ) | 176 s / 114 s per bag, ~230 s per lift cycle | ghost6_m_r263/run_excerpt.txt |
+  | 7 lift, throw, escape | not reached yet | | |
+
+  No game/AI bug found in steps 1-6 so far: every failure was harness timing or route choice. Minor content notes for C: CashLift's car count
+  box is 2.2 m deep in GL's 3 m room, so a bag thrown in from the door rests against GL's back wall just outside it (the harness throws low
+  from 3.2 m back instead); the LK partitions are already fixed (bbe1c600).
 - **Latest (r260 ghost, Hazardous, seed 1002):** steps 1-3 pass (haz_o/haz_p: dock t≈208, keycard t≈343). haz_p then FAILED at t=355:
   guard_radio by rover_basement with no DETECT on the pilot (hidden at (1.7, -4, 4.1)), most likely because he saw the tied manager in LockerDoor's
   sight line (a tied civilian is a `restrained` stimulus: 15 m, LOS). haz_q waited for him to leave BB's sight before shouting, and he saw the

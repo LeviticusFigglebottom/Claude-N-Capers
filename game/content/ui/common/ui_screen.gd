@@ -56,6 +56,12 @@ func fit_width() -> void:
 			c.offset_right = inset
 
 
+## Registers full-rect child `c` (a screen's own backdrop) to cover the whole window, not just the 16:9 column.
+func fill_window(c: Control) -> void:
+	window_fill.append(c)
+	fit_width()
+
+
 ## Override: create child controls and fill focus_chain.
 func build_ui() -> void:
 	pass

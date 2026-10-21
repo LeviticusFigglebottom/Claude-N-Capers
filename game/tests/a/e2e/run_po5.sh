@@ -24,6 +24,8 @@ ARGS=(--po5-flow="$FLOW" --po5-out="$OUT" --po5-budget="$BUDGET" --po5-heist="$H
 [[ -n "${HITCH_MS:-}" ]] && ARGS+=(--po5-hitch-ms="$HITCH_MS")
 # FOCUS=bond_safe: the auto_loud pilot takes that objective's marker first once it is up (po5_flow_auto_loud.focus).
 [[ -n "${FOCUS:-}" ]] && ARGS+=(--po5-focus="$FOCUS")
+# DIRECT=1: launch the heist through MenuFlow.launch instead of the Board (a staged heist; po5_flow._launch_direct).
+[[ "${DIRECT:-}" == "1" ]] && ARGS+=(--po5-direct)
 # HEIST_CAP=3000: auto_loud's heist-time cap in seconds (default 2400; po5_flow_auto_loud.LOOP_LIMIT_S).
 [[ -n "${HEIST_CAP:-}" ]] && ARGS+=(--po5-heist-cap="$HEIST_CAP")
 "$GODOT" --headless --path "$ROOT/game" --import >/dev/null 2>&1 || true

@@ -1,0 +1,60 @@
+[OFP 250.7s t=4.8] SHORTCUT ghost6: the manager despawned (tied in LK in the real line)
+[OFP 250.7s t=4.8] SHORTCUT ghost6: masked, teleported to CQ's corner, vault gate + door opened instantly, vault code revealed
+[OFP 257.2s t=6.8] GHOST waiting to cross VC (CQ -> VT): vault guard at (26.0, -4.0, 11.0) (away 0, since 8 s); others: Npc_guard5 (23.7, -4.0, 8.0)
+[OFP 261.1s t=10.8] GHOST rover_hall at the LD check (t=11)
+[OFP 287.2s t=36.8] GHOST waiting to cross VC (CQ -> VT): vault guard at (25.6, -4.0, 11.0) (away 0, since 38 s); others: Npc_guard5 (9.5, -4.0, 10.5) closing
+[OFP 317.2s t=66.8] GHOST waiting to cross VC (CQ -> VT): vault guard at (27.8, -4.0, 8.0) (away 0, since 68 s); others: 
+[OFP 323.2s t=72.8] GHOST VC CQ -> VT window after 66 s
+[OFP 345.0s t=80.0] LASER CROSS lane x+0.01 standing with no bag: waited 0.1 s, across at 3.35 m/s (expected 3.50), tripped false, at (23.0, -4.0, 10.9)
+[OFP 354.0s t=89.0] GHOST waiting to cross VC (VT -> CQ): vault guard at (38.9, -4.0, 11.3) (away 3, since 17 s); others: 
+[OFP 360.9s t=95.8] GHOST rover_hall at the LD check (t=96)
+[OFP 397.9s t=119.0] GHOST waiting to cross VC (VT -> CQ): vault guard at (22.9, -4.0, 10.4) (away 0, since 47 s); others: Npc_guard5 (23.9, -4.0, 7.9)
+[OFP 443.3s t=149.0] GHOST waiting to cross VC (VT -> CQ): vault guard at (25.6, -4.0, 10.9) (away 0, since 77 s); others: Npc_guard5 (10.2, -4.0, 10.6) closing
+[OFP 459.8s t=165.5] GHOST VC VT -> CQ window after 76 s
+[OFP 469.1s t=174.7] LASER CROSS lane x+0.01 standing with bag w1: waited 0.0 s, across at 2.56 m/s (expected 2.62), tripped false, at (19.0, -4.0, 10.9)
+[OFP 487.0s t=182.8] bag in the car of CashLift (1) thrown from 3.2 m
+[OFP 487.0s t=182.8] GHOST bag trip VT -> car 176.0 s
+[OFP 488.0s t=183.8] GHOST waiting to cross VC (CQ -> VT): vault guard at (12.4, -4.0, 17.4) (away 11, since 23 s); others: 
+[OFP 491.5s t=187.3] GHOST VC CQ -> VT window after 4 s
+[OFP 495.5s t=191.3] GHOST rover_hall at the LD check (t=191)
+[OFP 497.8s t=193.6] LASER CROSS lane x+0.01 standing with no bag: waited 0.0 s, across at 3.36 m/s (expected 3.50), tripped false, at (23.0, -4.0, 10.9)
+[OFP 504.5s t=200.3] GHOST waiting to cross VC (VT -> CQ): vault guard at (14.9, -4.0, 8.0) (away 0, since 39 s); others: 
+[OFP 534.5s t=230.3] GHOST waiting to cross VC (VT -> CQ): vault guard at (24.2, -4.0, 10.8) (away 0, since 69 s); others: Npc_guard5 (30.0, -4.0, 6.6) closing
+[OFP 564.5s t=260.3] GHOST waiting to cross VC (VT -> CQ): vault guard at (19.0, -4.0, 8.3) (away 0, since 99 s); others: Npc_guard5 (12.1, -4.0, 14.5) closing
+[OFP 575.1s t=270.8] GHOST rover_hall at the LD check (t=271)
+[OFP 584.0s t=279.8] GHOST VC VT -> CQ window after 80 s
+[OFP 594.4s t=290.2] LASER CROSS lane x+0.01 standing with bag w1: waited 1.2 s, across at 2.56 m/s (expected 2.62), tripped false, at (19.0, -4.0, 10.9)
+[OFP 612.8s t=296.6] bag in the car of CashLift (2) thrown from 3.2 m
+[OFP 612.8s t=296.6] GHOST bag trip VT -> car 113.8 s
+[OFP 622.7s t=306.6] LIFT CashLift at landing 1 (2 bags in the car)
+[OFP 636.7s t=308.1] GHOST waiting on SA's half landing for BB: Npc_guard2 (23.1, -4.0, 7.6), Npc_guard7 (30.5, -4.0, 8.1)
+[OFP 646.7s t=318.1] GHOST waiting on SA's half landing for BB: Npc_guard2 (20.4, -4.0, 10.6) moving in VC
+[OFP 656.6s t=328.1] GHOST waiting on SA's half landing for BB: Npc_guard5 (22.5, -4.0, 7.6)
+[OFP 666.6s t=338.1] GHOST waiting on SA's half landing for BB: 
+[OFP 667.1s t=338.6] GHOST BB clear after 30 s
+[OFP 668.9s t=340.3] DETECT Npc_guard2 kind 0 meter 0.10 at (25.6, -4.0, 10.9), pilot (11.9, -4.0, 7.9) crouched false
+[OFP 691.0s t=355.6] DETECT Npc_guard2 kind 0 meter 0.18 at (14.1, -4.0, 8.2), pilot (14.4, -2.0, 2.2) crouched false
+[OFP 692.2s t=356.8] DETECT Npc_guard5 kind 0 meter 0.18 at (14.2, -4.0, 8.0), pilot (14.4, -2.0, 2.2) crouched false
+[OFP 698.2s t=362.8] GHOST rover_hall at the LD check (t=363)
+[OFP 712.5s t=377.1] GHOST up to LD 4 s after rover_hall's LD check
+[OFP 712.5s t=377.1] GHOST waiting for the stair core: 
+[OFP 716.0s t=380.6] GHOST stair core clear after 4 s
+[OFP 728.0s t=392.6] GHOST staged 1/6 by the LD door
+[OFP 733.8s t=398.4] GHOST staged 2/6 by the LD door
+[OFP 733.8s t=398.4] GHOST waiting for the stair core: 
+[OFP 739.8s t=404.4] GHOST stair core clear after 6 s
+[OFP 745.4s t=410.0] GHOST waiting on SA's half landing for BB: 
+[OFP 759.6s t=424.2] LIFT CashLift at landing 0 (0 bags in the car)
+[OFP 761.0s t=425.6] GHOST waiting to cross VC (CQ -> VT): vault guard at (25.6, -4.0, 10.9) (away 0, since 154 s); others: 
+[OFP 803.7s t=448.5] GHOST rover_hall at the LD check (t=449)
+[OFP 810.8s t=455.6] GHOST waiting to cross VC (CQ -> VT): vault guard at (25.6, -4.0, 11.0) (away 0, since 184 s); others: 
+[OFP 849.7s t=485.6] GHOST waiting to cross VC (CQ -> VT): vault guard at (39.6, -4.0, 10.9) (away 15, since 7 s); others: Npc_guard5 (12.4, -4.0, 16.6)
+[OFP 879.7s t=515.6] GHOST waiting to cross VC (CQ -> VT): vault guard at (21.0, -4.0, 6.5) (away 0, since 37 s); others: 
+[OFP 909.7s t=545.6] GHOST waiting to cross VC (CQ -> VT): vault guard at (25.6, -4.0, 10.9) (away 0, since 67 s); others: Npc_guard5 (33.2, -4.0, 8.0) closing
+[OFP 932.1s t=559.5] GHOST rover_hall at the LD check (t=560)
+[OFP 941.1s t=568.6] GHOST VC CQ -> VT window after 143 s
+[OFP 956.3s t=571.3] DETECT Npc_guard5 kind 0 meter 0.53 at (26.9, -4.0, 7.9), pilot (14.1, -4.0, 8.1) crouched false
+[OFP 957.1s t=572.0] DETECT Npc_guard5 kind 0 meter 1.00 at (25.8, -4.0, 7.9), pilot (16.3, -4.0, 8.4) crouched false
+[INFO][stealth][p1] ALARM: guard_radio (source 207)
+[OFP 957.5s t=572.6] ALARM guard_radio by Npc_guard5 (pilot at (16.5, -4.0, 10.0))
+[OFP 970.3s t=574.6] LASER CROSS lane x+0.01 standing with no bag: waited 0.0 s, across at 3.36 m/s (expected 3.50), tripped false, at (23.0, -4.0, 10.9)
