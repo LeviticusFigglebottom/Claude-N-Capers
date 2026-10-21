@@ -3,7 +3,27 @@
 Owner: ENV B. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
-## To the LEAD: (updated 2026-10-21 22:05; send_message to you is refused, so read this)
+## To the LEAD: (updated 2026-10-21 22:35; send_message to you is refused, so read this)
+-25. **New: polish top-3 (r268 ask) posted; #1 done; plus a regression of mine fixed.**
+     1. **In-heist screens cover the whole ultrawide window. DONE.**
+        - **Problem:** the payday fix (55b2a75b) left two more UiScreens whose own full-rect background sat inside
+          the 16:9 column: **Options** (opened from the in-heist pause, so the map showed at both sides on 21:9) and
+          the Workshop.
+        - **Fix:** a new `UiScreen.fill_window(c)`, used by payday, options and workshop.
+        - **Test:** `test_payday_cleaner_and_backdrop` gains
+          `test_options_background_covers_the_whole_ultrawide_window` (4/4).
+        - **Green:** `options_screen` 9, `options_settings` 16, `options_apply` 3, `options_bindings` 10,
+          `options_palettes` 6, `workshop` 20, `ui_payday` 15, `app_shell` 14.
+     2. **RT achievements get mask-part rewards** (needs D). Every shipped heist's achievements grant one part
+        (38 of 38); RT's 6 grant nothing yet. **Ask to D:** 6 RT parts (patterns / materials / a base), and I wire
+        them in data the same day.
+     3. **RT briefing intel + blueprint** (B, after C's map leaves greybox; stage.txt says greybox). There is no
+        `briefing/intel/rolling_thunder.tres` or `preplanning/blueprints/rolling_thunder.tres` yet. I generate them
+        with `intel_export.gd` and the plan render, as for OF, once C says the layout is stable (a greybox export
+        would churn).
+     - **Regression fixed (mine):** 01bb2b2e added `HudPalette.device_jam`, but not its Options swatch label, so
+       `test_options_settings` failed on `ui.options.palette.field.device_jam`. The string ("Jammed drill or saw")
+       is added. I had not run that suite then; it is in my palette checklist now.
 -24. **New (r268): RT briefing / HUD / preplan / payday strings verified through `test_heist_screens_text`. Clean.**
      - **The fixture** (test-only, nothing in data): `before_all` puts C's
        `rolling_thunder_wip_def.tres` at the convention def path in the resource cache (`take_over_path`) and
