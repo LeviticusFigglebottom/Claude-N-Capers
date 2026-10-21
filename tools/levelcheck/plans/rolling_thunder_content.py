@@ -1,5 +1,6 @@
-# Rolling Thunder: per-item map content for the G1 greybox (RT-C1): the door lock table, furniture / cover boxes, ENV A's
-# gameplay prefabs, NPC spawns, patrol graphs, tactical points (police entries, rappels, perches, anchors, flanks, COVER),
+# Rolling Thunder: per-item map content for the G1 greybox (RT-C1): the door lock table, furniture / cover boxes,
+# ENV A's gameplay prefabs, NPC spawns, patrol graphs, tactical points (police entries, rappels, perches, anchors,
+# flanks, COVER),
 # holdout / objective markers, every VariantSlot's content, the four ConvoyLayout placeholder sets, preplan points and
 # review cameras. Owner: ENV C. Imported by rolling_thunder_emit_layout.py. Copy-adapted from
 # ostrander_federal_content.py (D-147), but every position here is ABSOLUTE (site x, y, z), not floor-relative.
@@ -17,7 +18,7 @@
 import math
 import os
 import sys
-from typing import Dict, List
+from typing import Dict, List, Tuple
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import rolling_thunder_convoy as CV  # noqa: E402
@@ -26,6 +27,7 @@ import rolling_thunder_geometry as GM  # noqa: E402
 import rolling_thunder_site_ascii as ST  # noqa: E402
 
 LOCKPICK_S = 8.0
+CAB_N = -13.45  # the signal controller cabinet's north face (site z; rolling_thunder_geometry.site())
 CP = P.BUILDINGS["CP"]
 DN = P.BUILDINGS["D"]
 SI = P.BUILDINGS["S"]
@@ -47,17 +49,35 @@ def si(x: float, y: float, z: float) -> list:
     return [r3(x + SI[0]), r3(y), r3(z + SI[1])]
 
 
-def Pf(kind: str, name: str, pos: list, yaw: float, props: Dict = None, use: list = None, metas: Dict = None,
-       vis: str = "") -> list:
+def Pf(
+    kind: str,
+    name: str,
+    pos: list,
+    yaw: float,
+    props: Dict = None,
+    use: list = None,
+    metas: Dict = None,
+    vis: str = "",
+) -> list:
     return ["prefab", kind, name, [r3(v) for v in pos], float(yaw), props or {}, use, metas or {}, vis]
 
 
-def S(name: str, kind: str, pos: list, yaw: float, tags: list, idle: str = "", graph: str = "", seat: str = "") -> list:
+def S(
+    name: str, kind: str, pos: list, yaw: float, tags: list, idle: str = "", graph: str = "", seat: str = ""
+) -> list:
     return ["spawn", name, kind, [r3(v) for v in pos], float(yaw), tags, idle, graph, seat]
 
 
-def B(name: str, base: list, size: list, yaw: float, kind: str, support: bool = False, mat: str = "prop",
-      metas: Dict = None) -> list:
+def B(
+    name: str,
+    base: list,
+    size: list,
+    yaw: float,
+    kind: str,
+    support: bool = False,
+    mat: str = "prop",
+    metas: Dict = None,
+) -> list:
     return ["box", name, [r3(v) for v in base], [float(v) for v in size], float(yaw), kind, support, mat, metas or {}]
 
 
@@ -77,18 +97,18 @@ FRONT_YAW = {"N": 0.0, "W": 90.0, "S": 180.0, "E": -90.0}
 DOOR_SPECS: Dict[tuple, list] = {
     ("CP-G", "sta_street"): ["StairAStreetDoor", "NONE", "W", "steel", {}],
     ("CP-G", "sta_lobby"): ["StairALobbyDoorG", "NONE", "E", "steel", {}],
-    ("CP-G", "lf_door"): ["LiftDoorG", "NONE", "S", "liftgate", {}],
+    ("CP-G", "lf_door"): ["LiftDoorG", "NONE", "N", "liftgate", {"leaf": "metal"}],
     ("CP-G", "ab_door"): ["BoothDoor", "NONE", "E", "ivory", {"npc": ["staff_booth"]}],
     ("CP-G", "cwc_door"): ["CarParkWCDoor", "NONE", "N", "ivory", {}],
     ("CP-G", "cpl_door"): ["PlantDoor", "NONE", "N", "steel", {}],
     ("CP-G", "sb_door"): ["StairBDoorG", "NONE", "W", "steel", {}],
     ("CP-G", "fire_door"): ["CarParkFireDoor", "NONE", "W", "steel", {"push_bar": True}],
     ("CP-2", "sta_lobby"): ["StairALobbyDoor2", "NONE", "E", "steel", {}],
-    ("CP-2", "lf_door"): ["LiftDoor2", "NONE", "S", "liftgate", {}],
+    ("CP-2", "lf_door"): ["LiftDoor2", "NONE", "S", "liftgate", {"leaf": "metal"}],
     ("CP-2", "sb_door"): ["StairBDoor2", "NONE", "W", "steel", {}],
-    ("CP-R", "hha_door"): ["HeadHouseADoor", "", "E", "steel", {}],          # player_perch slots build it
-    ("CP-R", "lf_door"): ["LiftDoorR", "NONE", "S", "liftgate", {}],
-    ("CP-R", "hhb_door"): ["HeadHouseBDoor", "NONE", "W", "steel", {}],      # always unlocked (the E3 route)
+    ("CP-R", "hha_door"): ["HeadHouseADoor", "", "E", "steel", {}],  # player_perch slots build it
+    ("CP-R", "lf_door"): ["LiftDoorR", "NONE", "S", "liftgate", {"leaf": "metal"}],
+    ("CP-R", "hhb_door"): ["HeadHouseBDoor", "NONE", "W", "steel", {}],  # always unlocked (the E3 route)
     ("DG", "front"): ["DinerFrontDoor", "NONE", "N", "glass", {}],
     ("DG", "side"): ["DinerSideDoor", "NONE", "W", "glass", {}],
     ("DG", "delivery"): ["DinerDeliveryDoor", "LOCKPICK", "N", "steel", {"npc": ["staff_diner"]}],
@@ -124,8 +144,24 @@ GATES: List[list] = [
     # [name, level, plan opening, front, lock, extra]
     ["SiteVehicleGateN", "SG", "vehicle_gate", -1, "E", "BARRED", {"padlock": "site_gate"}],
     ["SiteVehicleGateS", "SG", "vehicle_gate", 1, "E", "BARRED", {}],
-    ["SiteTanneryGateW", "SG", "tannery_gate", -1, "S", "BARRED", {"todo": "TODO(A5-02): opens when the mixer leaves"}],
-    ["SiteTanneryGateE", "SG", "tannery_gate", 1, "S", "BARRED", {"todo": "TODO(A5-02): opens when the mixer leaves"}],
+    [
+        "SiteTanneryGateW",
+        "SG",
+        "tannery_gate",
+        -1,
+        "S",
+        "BARRED",
+        {"todo": "TODO(A5-02): opens when the mixer leaves"},
+    ],
+    [
+        "SiteTanneryGateE",
+        "SG",
+        "tannery_gate",
+        1,
+        "S",
+        "BARRED",
+        {"todo": "TODO(A5-02): opens when the mixer leaves"},
+    ],
 ]
 
 
@@ -136,7 +172,7 @@ def _door_visual(kind: str, style: str, t: float) -> str:
     if kind == "double" and style == "glass":
         return "prop_door_double_glass_%s" % tt
     if style == "glass" and kind == "service":
-        style = "ivory"   # no glazed service kit: an ivory leaf in the shopfront's side door (G2 swaps it)
+        style = "ivory"  # no glazed service kit: an ivory leaf in the shopfront's side door (G2 swaps it)
     return "prop_door_%s_%s_%s" % (kind, style, tt)
 
 
@@ -174,9 +210,22 @@ def doors() -> List[list]:
         c += side * 1.2
         ox, oz = P.BUILDINGS[P.LEVEL_BUILDING[level]]
         pos = [r3(c + ox), 0.0, r3(fixed + oz)] if axis == "x" else [r3(fixed + ox), 0.0, r3(c + oz)]
-        out.append([name, level, pos, FRONT_YAW[front], "double", lock, "prop_door_double_grille_t20", 1.8, dict(extra)])
-    out.append(["RailLaneGate", "X5", [60.0, 0.0, -72.0], 0.0, "double", "BARRED", "prop_door_double_grille_t20", 1.8,
-                {"todo": "P_NE ENTRY (police breach); the crew side is south"}])
+        out.append(
+            [name, level, pos, FRONT_YAW[front], "double", lock, "prop_door_double_grille_t20", 1.8, dict(extra)]
+        )
+    out.append(
+        [
+            "RailLaneGate",
+            "X5",
+            [60.0, 0.0, -72.0],
+            0.0,
+            "double",
+            "BARRED",
+            "prop_door_double_grille_t20",
+            1.8,
+            {"todo": "P_NE ENTRY (police breach); the crew side is south"},
+        ]
+    )
     return out
 
 
@@ -201,13 +250,28 @@ def furniture() -> List[list]:
     for lvl, cars in _CARS.items():
         for i, (x, z) in enumerate(cars):
             # cars keep >= 0.6 m from the 1.1 m facade barriers (RT plan §7.2: nothing standable within 0.5 m)
-            out.append(B("ParkedCar%s%d" % (lvl, i), cp(x, ys[lvl], z), [4.6, 1.45, 1.9], 90.0, "car", False, "prop",
-                         {"cover": "hard"}))
+            out.append(
+                B(
+                    "ParkedCar%s%d" % (lvl, i),
+                    cp(x, ys[lvl], z),
+                    [4.6, 1.45, 1.9],
+                    90.0,
+                    "car",
+                    False,
+                    "prop",
+                    {"cover": "hard"},
+                )
+            )
     # street: parked cars on Orchard / Tannery kerbs, bus shelters, the newsstand, the clock pillar, planters
-    street = [("StreetCarOW1", [-9.0, 0.0, 30.0], 0.0), ("StreetCarOW2", [-9.0, 0.0, 45.0], 0.0),
-              ("StreetCarOE1", [9.0, 0.0, 40.0], 0.0), ("StreetCarOE2", [9.0, 0.0, 55.0], 0.0),
-              ("StreetCarTW1", [-30.0, 0.0, 7.0], 90.0), ("StreetCarTW2", [-50.0, 0.0, 7.0], 90.0),
-              ("StreetCarON1", [8.5, 0.0, -30.0], 0.0)]
+    street = [
+        ("StreetCarOW1", [-9.0, 0.0, 30.0], 0.0),
+        ("StreetCarOW2", [-9.0, 0.0, 45.0], 0.0),
+        ("StreetCarOE1", [9.0, 0.0, 40.0], 0.0),
+        ("StreetCarOE2", [9.0, 0.0, 55.0], 0.0),
+        ("StreetCarTW1", [-30.0, 0.0, 7.0], 90.0),
+        ("StreetCarTW2", [-50.0, 0.0, 7.0], 90.0),
+        ("StreetCarON1", [8.5, 0.0, -30.0], 0.0),
+    ]
     for nm, p, yaw in street:
         out.append(B(nm, p, [1.9, 1.45, 4.6], yaw, "car", False, "prop", {"cover": "hard"}))
     for i, x in enumerate([-38.0, -30.0, -22.0]):
@@ -223,8 +287,8 @@ def furniture() -> List[list]:
         out.append(B("DinerBooth%d" % i, dn(2.25, 0.0, z), [1.5, 1.2, 1.4], 0.0, "booth", False, "prop"))
     for i, z in enumerate([4.0, 8.0]):
         out.append(B("DinerTable%d" % i, dn(6.5, 0.0, z), [0.8, 0.74, 0.8], 0.0, "table", True, "prop"))
-    out.append(B("Cookline", dn(16.5, 0.0, 1.0), [5.0, 0.9, 0.8], 0.0, "cookline", True, "counter"))
-    out.append(B("PrepTable", dn(16.5, 0.0, 5.0), [2.0, 0.9, 0.8], 0.0, "table", True, "counter"))
+    out.append(B("Cookline", dn(13.55, 0.0, 4.0), [0.8, 0.9, 5.0], 0.0, "cookline", True, "counter"))
+    out.append(B("PrepTable", dn(17.0, 0.0, 4.5), [2.0, 0.9, 0.8], 0.0, "table", True, "counter"))
     out.append(B("OfficeDesk", dn(9.5, 0.0, 13.5), [1.4, 0.75, 0.7], 0.0, "desk", True, "prop"))
     out.append(B("FunctionTable0", dn(3.0, 3.5, 9.0), [1.8, 0.74, 0.8], 0.0, "table", True, "prop"))
     out.append(B("FunctionTable1", dn(9.0, 3.5, 9.0), [1.8, 0.74, 0.8], 0.0, "table", True, "prop"))
@@ -233,29 +297,76 @@ def furniture() -> List[list]:
     out.append(B("PlantPumps", cp(17.5, 0.0, 34.6), [4.0, 1.4, 1.2], 0.0, "plant", False, "prop"))
     # the site: formwork stacks and rebar under the slab (cover maze), block pallets on F1, cabins' plan table
     for i, (x, z) in enumerate([(14.0, 13.5), (25.0, 18.5), (31.0, 9.0), (19.0, 23.5)]):
-        out.append(B("FormworkStack%d" % i, si(x, 0.0, z), [2.4, 1.2, 1.2], 0.0, "formwork", False, "prop",
-                     {"cover": "hard"}))
+        out.append(
+            B(
+                "FormworkStack%d" % i,
+                si(x, 0.0, z),
+                [2.4, 1.2, 1.2],
+                0.0,
+                "formwork",
+                False,
+                "prop",
+                {"cover": "hard"},
+            )
+        )
     for i, (x, z) in enumerate([(31.0, 22.0), (15.0, 10.0)]):
-        out.append(B("BlockPallet%d" % i, si(x, 3.5, z), [1.2, 1.0, 1.2], 0.0, "pallet", False, "prop",
-                     {"cover": "hard"}))
+        out.append(
+            B("BlockPallet%d" % i, si(x, 3.5, z), [1.2, 1.0, 1.2], 0.0, "pallet", False, "prop", {"cover": "hard"})
+        )
     out.append(B("PlanTable", si(3.5, 0.0, 34.0), [1.2, 0.9, 2.0], 0.0, "table", True, "prop"))
-    out.append(B("MastPole", si(16.0, 0.0, 28.0), [0.15, 3.0, 0.15], 0.0, "mast", False, "trim"))
     # Reyes's mixer (dressing until it moves, QC-82): static hard cover inside the Tannery gate (TODO(A5-02))
-    out.append(B("MixerTruck", si(26.0, 0.0, 39.5), [8.0, 3.5, 3.0], 0.0, "vehicle", False, "prop",
-                 {"todo": "TODO(A5-02): Reyes's mixer, a convoy_vehicle mover from G2", "cover": "hard"}))
+    out.append(
+        B(
+            "MixerTruck",
+            si(26.0, 0.0, 39.5),
+            [8.0, 3.5, 3.0],
+            0.0,
+            "vehicle",
+            False,
+            "prop",
+            {"todo": "TODO(A5-02): Reyes's mixer, a convoy_vehicle mover from G2", "cover": "hard"},
+        )
+    )
     return out
 
 
 # --------------------------------------------------------------------------------------------- always-present
-def _escape(kind: str, sec_pos: list, sec_yaw: float, sec_size: list, esc_pos: list, esc_size: list, vis: str,
-            esc_type: str, delay: float, esc_vis: str, label: str) -> list:
+def _escape(
+    kind: str,
+    sec_pos: list,
+    sec_yaw: float,
+    sec_size: list,
+    esc_pos: list,
+    esc_size: list,
+    vis: str,
+    esc_type: str,
+    delay: float,
+    esc_vis: str,
+    label: str,
+) -> list:
     props = {"objective_tag": "escape", "escape_type": esc_type, "zone_size_m": esc_size}
     if delay > 0.0:
         props["arrival_delay_s"] = delay
-    m = M("EscapeWait" + kind, [esc_pos[0], esc_pos[1], esc_pos[2]], "escape_wait", "loud: hold until the escape arrives")
-    return [Pf("secure_zone", "Secure" + kind, sec_pos, sec_yaw, {"objective_tag": "secure", "zone_size_m": sec_size},
-               None, {"kind": "vehicle", "escape_label": label}, vis),
-            Pf("escape_zone", "Escape" + kind, esc_pos, 0.0, props, None, {"escape_label": label}, esc_vis), m]
+    m = M(
+        "EscapeWait" + kind,
+        [esc_pos[0], esc_pos[1], esc_pos[2]],
+        "escape_wait",
+        "loud: hold until the escape arrives",
+    )
+    return [
+        Pf(
+            "secure_zone",
+            "Secure" + kind,
+            sec_pos,
+            sec_yaw,
+            {"objective_tag": "secure", "zone_size_m": sec_size},
+            None,
+            {"kind": "vehicle", "escape_label": label},
+            vis,
+        ),
+        Pf("escape_zone", "Escape" + kind, esc_pos, 0.0, props, None, {"escape_label": label}, esc_vis),
+        m,
+    ]
 
 
 def always() -> Dict[str, List[list]]:
@@ -264,61 +375,168 @@ def always() -> Dict[str, List[list]]:
         "Gameplay/Devices": [
             # the junction signal controller's rig (silent; 15 s, 0-1 interruptions): the cabinet's padlock is the
             # controller slot's (ctrl_locked); TODO(A): the rig's interaction is not gated by the padlock yet
-            Pf("hack_terminal", "SignalRig", [hack[0], 1.0, hack[2] - 0.35], 0.0,
-               {"duration_s": 15.0, "interruptions": [0, 1], "objective_tag": "signals"},
-               [hack[0], 0.0, hack[2] - 1.15], {}, "prop_lift_breaker"),
+            Pf(
+                "hack_terminal",
+                "SignalRig",
+                [hack[0] - 0.25, 0.75, CAB_N],
+                0.0,
+                {"duration_s": 15.0, "interruptions": [0, 1], "objective_tag": "signals"},
+                [hack[0] - 0.25, 0.0, CAB_N - 1.0],
+                {"mount": "wall"},
+                "prop_lift_breaker",
+            ),
             # the lift breaker in CPL (lift_dead: 5 s; DB pattern, mission-driven)
-            Pf("hack_terminal", "LiftBreaker", cp(20.2, 1.2, 31.5), -90.0,
-               {"duration_s": 5.0, "interruptions": [0, 0], "objective_tag": "lift_breaker"}, cp(19.4, 0.0, 31.5),
-               {"todo": "lift_dead: the breaker restores goods_lift (mission, DB pattern)"}, "prop_lift_breaker"),
+            Pf(
+                "hack_terminal",
+                "LiftBreaker",
+                cp(20.9, 1.2, 31.5),
+                90.0,
+                {"duration_s": 5.0, "interruptions": [0, 0], "objective_tag": "lift_breaker"},
+                cp(19.9, 0.0, 31.5),
+                {"mount": "wall", "todo": "lift_dead: the breaker restores goods_lift (mission, DB pattern)"},
+                "prop_lift_breaker",
+            ),
         ],
         "Gameplay/Loot": [
-            Pf("safe", "PayStation", cp(9.0, 0.0, 29.3), 180.0,
-               {"size": "enum:SMALL", "methods": ["saw", "drill", "c4"], "objective_tag": "pay_station",
-                "@contents": [["small_loot", "PayStationCash1", [-0.15, 0.3, 0.0], {"loot_id": "loot.small_valuables",
-                                                                                   "value": 400,
-                                                                                   "objective_tag": "pay_station"}],
-                              ["small_loot", "PayStationCash2", [0.15, 0.3, 0.0], {"loot_id": "loot.small_valuables",
-                                                                                  "value": 400,
-                                                                                  "objective_tag": "pay_station"}]]},
-               cp(9.0, 0.0, 28.2), {}, "prop_safe_wall_small"),
-            Pf("small_loot", "DinerTill", dn(10.0, 0.9, 4.0), 90.0,
-               {"loot_id": "loot.small_valuables", "value": 300, "objective_tag": "diner_till"}, dn(11.0, 0.0, 4.0), {},
-               "prop_cash_register"),
-            Pf("safe", "DinerOfficeSafe", dn(12.5, 0.0, 16.0), 90.0,
-               {"size": "enum:SMALL", "methods": ["drill", "saw", "c4"], "objective_tag": "diner_safe",
-                "@contents": [["small_loot", "DinerSafeCash1", [-0.15, 0.3, 0.0], {"loot_id": "loot.small_valuables",
-                                                                                 "value": 600,
-                                                                                 "objective_tag": "diner_safe"}],
-                              ["small_loot", "DinerSafeCash2", [0.15, 0.3, 0.0], {"loot_id": "loot.small_valuables",
-                                                                                "value": 600,
-                                                                                "objective_tag": "diner_safe"}]]},
-               dn(11.4, 0.0, 16.0), {}, "prop_safe_wall_small"),
-            Pf("small_loot", "PettyCash", si(3.5, 0.9, 33.5), 0.0,
-               {"loot_id": "loot.small_valuables", "value": 250, "objective_tag": "petty_cash"}, si(4.4, 0.0, 33.5), {},
-               "prop_cash_stack"),
+            Pf(
+                "safe",
+                "PayStation",
+                cp(9.0, 0.0, 29.3),
+                180.0,
+                {
+                    "size": "enum:SMALL",
+                    "methods": ["saw", "drill", "c4"],
+                    "objective_tag": "pay_station",
+                    "@contents": [
+                        [
+                            "small_loot",
+                            "PayStationCash1",
+                            [-0.15, 0.3, 0.0],
+                            {"loot_id": "loot.small_valuables", "value": 400, "objective_tag": "pay_station"},
+                        ],
+                        [
+                            "small_loot",
+                            "PayStationCash2",
+                            [0.15, 0.3, 0.0],
+                            {"loot_id": "loot.small_valuables", "value": 400, "objective_tag": "pay_station"},
+                        ],
+                    ],
+                },
+                cp(9.0, 0.0, 28.2),
+                {},
+                "prop_safe_wall_small",
+            ),
+            Pf(
+                "small_loot",
+                "DinerTill",
+                dn(10.0, 0.9, 4.0),
+                90.0,
+                {"loot_id": "loot.small_valuables", "value": 300, "objective_tag": "diner_till"},
+                dn(11.0, 0.0, 4.0),
+                {},
+                "prop_cash_register",
+            ),
+            Pf(
+                "safe",
+                "DinerOfficeSafe",
+                dn(12.5, 0.0, 16.0),
+                90.0,
+                {
+                    "size": "enum:SMALL",
+                    "methods": ["drill", "saw", "c4"],
+                    "objective_tag": "diner_safe",
+                    "@contents": [
+                        [
+                            "small_loot",
+                            "DinerSafeCash1",
+                            [-0.15, 0.3, 0.0],
+                            {"loot_id": "loot.small_valuables", "value": 600, "objective_tag": "diner_safe"},
+                        ],
+                        [
+                            "small_loot",
+                            "DinerSafeCash2",
+                            [0.15, 0.3, 0.0],
+                            {"loot_id": "loot.small_valuables", "value": 600, "objective_tag": "diner_safe"},
+                        ],
+                    ],
+                },
+                dn(11.4, 0.0, 16.0),
+                {},
+                "prop_safe_wall_small",
+            ),
+            Pf(
+                "small_loot",
+                "PettyCash",
+                si(3.5, 0.9, 33.5),
+                0.0,
+                {"loot_id": "loot.small_valuables", "value": 250, "objective_tag": "petty_cash"},
+                si(4.4, 0.0, 33.5),
+                {},
+                "prop_cash_stack",
+            ),
         ],
         "Gameplay/Lifts": [
-            Pf("bag_lift", "GoodsLift", cp(4.5, 0.0, 1.5), 180.0,
-               {"travel_s": 8.0, "capacity": 2, "door_fold": True, "car_size_m": [2.2, 2.4, 2.2],
-                "objective_tag": "goods_lift",
-                "@landings": [["GoodsLiftLanding2", [0.0, 3.5, 0.0]], ["GoodsLiftLandingR", [0.0, 7.0, 0.0]]]},
-               cp(4.5, 0.0, 3.6), {"walkable": True, "group": "goods_lift"}, "prop_cash_lift_car_w240"),
+            Pf(
+                "bag_lift",
+                "GoodsLift",
+                cp(4.5, 0.0, 1.5),
+                180.0,
+                {
+                    "travel_s": 8.0,
+                    "capacity": 2,
+                    "door_fold": True,
+                    "car_size_m": [2.2, 2.4, 2.2],
+                    "objective_tag": "goods_lift",
+                    "@landings": [["GoodsLiftLanding2", [0.0, 3.5, 0.0]], ["GoodsLiftLandingR", [0.0, 7.0, 0.0]]],
+                },
+                cp(4.5, 0.0, 3.6),
+                {"walkable": True, "group": "goods_lift"},
+                "prop_cash_lift_car_w240",
+            ),
         ],
         "Gameplay/Ladders": [
             # the frame ladder (no bags), NW corner: its top lands on the slab in the 1.0 m edge-protection gap
-            Pf("ladder", "FrameLadder", si(10.7, 0.0, 5.92), 0.0, {"height_m": 3.5, "objective_tag": "frame_ladder"},
-               None, {}, "prop_ladder_steel_h360_g00"),
+            Pf(
+                "ladder",
+                "FrameLadder",
+                si(10.7, 0.0, 5.92),
+                0.0,
+                {"height_m": 3.5, "objective_tag": "frame_ladder"},
+                None,
+                {},
+                "prop_ladder_steel_h360_g00",
+            ),
         ],
         "Gameplay/Containers": [
-            Pf("body_container", "SiteSkip", si(15.0, 0.0, 41.5), 90.0, {"capacity": 2}, None, {"kind": "skip"},
-               "prop_skip"),
-            Pf("body_container", "YardBins", dn(14.0, 0.0, 20.0), 180.0, {"capacity": 2}, None, {"kind": "dumpster"},
-               "prop_dumpster"),
+            Pf(
+                "body_container",
+                "SiteSkip",
+                si(15.0, 0.0, 41.5),
+                90.0,
+                {"capacity": 2},
+                None,
+                {"kind": "skip"},
+                "prop_skip",
+            ),
+            Pf(
+                "body_container",
+                "YardBins",
+                dn(14.0, 0.0, 20.0),
+                180.0,
+                {"capacity": 2},
+                None,
+                {"kind": "dumpster"},
+                "prop_dumpster",
+            ),
         ],
         "Gameplay/Markers": [
             M("CasingJunction", [0.0, 0.0, 0.0], "casing", "casing objective marker: the junction under the girder"),
-            M("ConvoyMarker", [0.0, 0.0, -14.0], "convoy", "the convoy's HUD marker (moves until the stop: B mocks it)"),
+            M(
+                "ConvoyMarker",
+                [0.0, 0.0, -14.0],
+                "convoy",
+                "the convoy's HUD marker (moves until the stop: B mocks it)",
+            ),
             M("AmbushMarker", [0.0, 0.0, 0.0], "ambush", "the stop (clean or crash)"),
             M("MarshalMarker", [-6.0, 0.0, -16.0], "marshal", "the route marshal's scout car stops here (scripted)"),
             M("ChargesMarker", si(37.0, 0.0, 5.5), "charges", "TODO(A5-03): the magazine's C4 boxes (item_pickup)"),
@@ -326,71 +544,178 @@ def always() -> Dict[str, List[list]]:
             M("CargoMarker", [-6.0, 0.0, -38.0], "cargo", "the trucks' cargo (loot_spawn behind the rear doors)"),
             M("EscortMarker", [-6.0, 0.0, -18.0], "escort", "the escort / Vaultline crews (bonus)"),
             M("ThermiteMarker", si(12.5, 0.0, 35.5), "thermite_bag", "the thermite bag (stores_thermite / both)"),
-            M("BondsCourierMarker", [-6.0, 0.0, -28.0], "bonds_courier",
-              "rare bonds_courier: T1's cab safe, 2 x loot.bearer_bonds (mission spawn_loot)"),
-        ] + [M("Holdout" + h, [x, y, z], "holdout_" + h.lower(), "doc Loud holdout " + h)
-             for h, x, y, z in [("H1", 35.0, 3.5, -32.0), ("H2", 24.0, 3.5, 23.0), ("H3", -38.0, 3.5, -40.0),
-                                ("H4", 75.0, -5.0, 0.0)]],
+            M(
+                "BondsCourierMarker",
+                [-6.0, 0.0, -28.0],
+                "bonds_courier",
+                "rare bonds_courier: T1's cab safe, 2 x loot.bearer_bonds (mission spawn_loot)",
+            ),
+        ]
+        + [
+            M("Holdout" + h, [x, y, z], "holdout_" + h.lower(), "doc Loud holdout " + h)
+            for h, x, y, z in [
+                ("H1", 35.0, 3.5, -32.0),
+                ("H2", 24.0, 3.5, 23.0),
+                ("H3", -38.0, 3.5, -40.0),
+                ("H4", 75.0, -5.0, 0.0),
+            ]
+        ],
     }
 
 
 # --------------------------------------------------------------------------------------------- spawns
 STREET_POINTS = {
     # the pedestrians' sidewalk graph (Street): corners, the arms, the plaza; tags civilian, civ_street
-    "NWCorner": [-12.0, 0.0, -9.5], "NECorner": [12.0, 0.0, -9.5], "SECorner": [12.0, 0.0, 9.5],
-    "SWCorner": [-12.0, 0.0, 9.5], "OrchardWN": [-12.0, 0.0, -45.0], "OrchardEN": [12.0, 0.0, -45.0],
-    "OrchardWS": [-12.0, 0.0, 45.0], "OrchardES": [12.0, 0.0, 45.0], "TanneryWN": [-45.0, 0.0, -9.5],
-    "TanneryWS": [-45.0, 0.0, 9.5], "TanneryEN": [30.0, 0.0, -12.5], "TanneryES": [30.0, 0.0, 12.5],
-    "PlazaE": [-20.0, 0.0, 17.0], "PlazaW": [-48.0, 0.0, 22.0], "PlazaClock": [-28.0, 0.0, 18.0],
+    "NWCorner": [-12.0, 0.0, -9.5],
+    "NECorner": [12.0, 0.0, -9.5],
+    "SECorner": [12.0, 0.0, 9.5],
+    "SWCorner": [-12.0, 0.0, 9.5],
+    "OrchardWN": [-12.0, 0.0, -45.0],
+    "OrchardEN": [12.0, 0.0, -45.0],
+    "OrchardWS": [-12.0, 0.0, 45.0],
+    "OrchardES": [12.0, 0.0, 45.0],
+    "TanneryWN": [-45.0, 0.0, -9.5],
+    "TanneryWS": [-45.0, 0.0, 9.5],
+    "TanneryEN": [30.0, 0.0, -12.5],
+    "TanneryES": [30.0, 0.0, 12.5],
+    "PlazaE": [-20.0, 0.0, 17.0],
+    "PlazaW": [-48.0, 0.0, 22.0],
+    "PlazaClock": [-28.0, 0.0, 18.0],
 }
-STREET_EDGES = [["NWCorner", "NECorner"], ["NECorner", "SECorner"], ["SECorner", "SWCorner"], ["SWCorner", "NWCorner"],
-                ["NWCorner", "OrchardWN"], ["NECorner", "OrchardEN"], ["OrchardWN", "OrchardEN"],
-                ["SWCorner", "OrchardWS"], ["SECorner", "OrchardES"], ["OrchardWS", "OrchardES"],
-                ["NWCorner", "TanneryWN"], ["SWCorner", "TanneryWS"], ["TanneryWN", "TanneryWS"],
-                ["NECorner", "TanneryEN"], ["SECorner", "TanneryES"], ["SWCorner", "PlazaE"], ["PlazaE", "PlazaClock"],
-                ["PlazaClock", "PlazaW"], ["PlazaW", "TanneryWS"]]
+STREET_EDGES = [
+    ["NWCorner", "NECorner"],
+    ["NECorner", "SECorner"],
+    ["SECorner", "SWCorner"],
+    ["SWCorner", "NWCorner"],
+    ["NWCorner", "OrchardWN"],
+    ["NECorner", "OrchardEN"],
+    ["OrchardWN", "OrchardEN"],
+    ["SWCorner", "OrchardWS"],
+    ["SECorner", "OrchardES"],
+    ["OrchardWS", "OrchardES"],
+    ["NWCorner", "TanneryWN"],
+    ["SWCorner", "TanneryWS"],
+    ["TanneryWN", "TanneryWS"],
+    ["NECorner", "TanneryEN"],
+    ["SECorner", "TanneryES"],
+    ["SWCorner", "PlazaE"],
+    ["PlazaE", "PlazaClock"],
+    ["PlazaClock", "PlazaW"],
+    ["PlazaW", "TanneryWS"],
+]
 SITE_POINTS = {
     # the Halden site guard's graph (Site): the gate loop, the frame loop, the cabins loop (>= 3 loops per post)
-    "GateN": [-16.5, 0.0, -43.0], "GateS": [-16.5, 0.0, -20.0], "ControllerCorner": [-17.5, 0.0, -14.5],
-    "TanneryGate": [-33.0, 0.0, -13.5], "Skip": [-42.0, 0.0, -13.5], "CabinsE": [-44.0, 0.0, -15.5],
-    "CabinsW": [-56.0, 0.0, -15.5], "Magazine": [-23.0, 0.0, -47.8], "CraneBase": [-22.5, 0.0, -24.0],
-    "FrameNE": [-27.0, 0.0, -44.0], "FrameSW": [-46.0, 0.0, -33.0], "FrameNW": [-46.0, 0.0, -48.0],
-    "StairFoot": [-34.0, 0.0, -30.8], "FrameSE": [-27.0, 0.0, -33.0],
+    "GateN": [-16.5, 0.0, -43.0],
+    "GateS": [-16.5, 0.0, -20.0],
+    "ControllerCorner": [-17.5, 0.0, -14.5],
+    "TanneryGate": [-33.0, 0.0, -13.5],
+    "Skip": [-42.0, 0.0, -13.5],
+    "CabinsE": [-44.0, 0.0, -15.5],
+    "CabinsW": [-56.0, 0.0, -15.5],
+    "Magazine": [-23.0, 0.0, -47.8],
+    "CraneBase": [-22.5, 0.0, -24.0],
+    "FrameNE": [-27.0, 0.0, -44.0],
+    "FrameSW": [-46.0, 0.0, -33.0],
+    "FrameNW": [-46.0, 0.0, -48.0],
+    "StairFoot": [-34.0, 0.0, -30.8],
+    "FrameSE": [-27.0, 0.0, -33.0],
 }
-SITE_EDGES = [["GateN", "GateS"], ["GateS", "ControllerCorner"], ["ControllerCorner", "TanneryGate"],
-              ["TanneryGate", "Skip"], ["Skip", "CabinsE"], ["CabinsE", "CabinsW"], ["GateN", "Magazine"],
-              ["Magazine", "FrameNE"], ["FrameNE", "FrameSE"], ["FrameSE", "StairFoot"], ["StairFoot", "FrameSW"],
-              ["FrameSW", "FrameNW"], ["FrameNW", "FrameNE"], ["FrameSE", "CraneBase"], ["CraneBase", "GateS"],
-              ["CraneBase", "TanneryGate"], ["FrameSW", "CabinsE"], ["Magazine", "FrameNW"]]
+SITE_EDGES = [
+    ["GateN", "GateS"],
+    ["GateS", "ControllerCorner"],
+    ["ControllerCorner", "TanneryGate"],
+    ["TanneryGate", "Skip"],
+    ["Skip", "CabinsE"],
+    ["CabinsE", "CabinsW"],
+    ["GateN", "Magazine"],
+    ["Magazine", "FrameNE"],
+    ["FrameNE", "FrameSE"],
+    ["FrameSE", "StairFoot"],
+    ["StairFoot", "FrameSW"],
+    ["FrameSW", "FrameNW"],
+    ["FrameNW", "FrameNE"],
+    ["FrameSE", "CraneBase"],
+    ["CraneBase", "GateS"],
+    ["CraneBase", "TanneryGate"],
+    ["FrameSW", "CabinsE"],
+    ["Magazine", "FrameNW"],
+]
 MARSHAL_POINTS = {
-    "marshal_carpark": {"Forecourt": [40.0, 0.0, -12.5], "Entrance": [24.0, 0.0, -12.5], "StairADoor": [15.0, 0.0, -46.0],
-                        "OrchardEN": [12.0, 0.0, -30.0]},
-    "marshal_site_corner": {"ManGate": [-12.0, 0.0, -16.0], "Controller": [-12.0, 0.0, -12.5],
-                            "VehicleGate": [-12.0, 0.0, -43.0], "OrchardWMid": [-12.0, 0.0, -30.0]},
-    "marshal_plaza": {"ShelterE": [-22.0, 0.0, 14.5], "Clock": [-27.5, 0.0, 18.0], "ShelterW": [-38.0, 0.0, 14.5],
-                      "PlazaN": [-30.0, 0.0, 11.5]},
+    "marshal_carpark": {
+        "Forecourt": [40.0, 0.0, -12.5],
+        "Entrance": [24.0, 0.0, -12.5],
+        "StairADoor": [15.0, 0.0, -46.0],
+        "OrchardEN": [12.0, 0.0, -30.0],
+    },
+    "marshal_site_corner": {
+        "ManGate": [-12.0, 0.0, -16.0],
+        "Controller": [-12.0, 0.0, -12.5],
+        "VehicleGate": [-12.0, 0.0, -43.0],
+        "OrchardWMid": [-12.0, 0.0, -30.0],
+    },
+    "marshal_plaza": {
+        "ShelterE": [-22.0, 0.0, 14.5],
+        "Clock": [-27.5, 0.0, 18.0],
+        "ShelterW": [-38.0, 0.0, 14.5],
+        "PlazaN": [-30.0, 0.0, 11.5],
+    },
 }
 
 
 def graphs() -> Dict[str, list]:
     """name -> [graph_id, floor index, {point: [pos, pause, anim, tags, yaw or None]}, edges]."""
-    out = {"Street": ["street", 1, {k: [v, [2.0, 6.0], "", ["civilian", "civ_street"], None] for k, v in
-                                    STREET_POINTS.items()}, STREET_EDGES],
-           "Site": ["site", 1, {k: [v, [3.0, 8.0], "look" if k in ("TanneryGate", "ControllerCorner") else "",
-                                    ["guard", "site"], None] for k, v in SITE_POINTS.items()}, SITE_EDGES]}
+    out = {
+        "Street": [
+            "street",
+            1,
+            {k: [v, [2.0, 6.0], "", ["civilian", "civ_street"], None] for k, v in STREET_POINTS.items()},
+            STREET_EDGES,
+        ],
+        "Site": [
+            "site",
+            1,
+            {
+                k: [
+                    v,
+                    [3.0, 8.0],
+                    "look" if k in ("TanneryGate", "ControllerCorner") else "",
+                    ["guard", "site"],
+                    None,
+                ]
+                for k, v in SITE_POINTS.items()
+            },
+            SITE_EDGES,
+        ],
+    }
     for sid, pts in MARSHAL_POINTS.items():
         names = list(pts)
         edges = [[names[i], names[(i + 1) % len(names)]] for i in range(len(names))] + [[names[0], names[2]]]
-        out["Marshal_" + sid] = [sid, 1, {k: [v, [4.0, 9.0], "radio_call", ["vl_marshal", sid], None]
-                                          for k, v in pts.items()}, edges]
+        out["Marshal_" + sid] = [
+            sid,
+            1,
+            {k: [v, [4.0, 9.0], "radio_call", ["vl_marshal", sid], None] for k, v in pts.items()},
+            edges,
+        ]
     return out
 
 
 def fixed_spawns() -> List[list]:
     out = []
     # pedestrians (the civilians scalar picks how many: 6 / 9 / 12; tag civ_street: sidewalks x 12, plaza x 4)
-    walk = [[-12.0, -20.0], [-12.0, -55.0], [12.0, -20.0], [12.0, -60.0], [-12.0, 20.0], [-12.0, 55.0], [12.0, 25.0],
-            [12.0, 50.0], [-30.0, -9.5], [-60.0, 9.5], [24.0, -12.5], [24.0, 12.5]]
+    walk = [
+        [-12.0, -20.0],
+        [-12.0, -55.0],
+        [12.0, -20.0],
+        [12.0, -60.0],
+        [-12.0, 20.0],
+        [-12.0, 55.0],
+        [12.0, 25.0],
+        [12.0, 50.0],
+        [-30.0, -9.5],
+        [-60.0, 9.5],
+        [24.0, -12.5],
+        [24.0, 12.5],
+    ]
     for i, (x, z) in enumerate(walk):
         out.append(S("Pedestrian%02d" % i, "CIVILIAN", [x, 0.0, z], 0.0, ["civ_street"], "walk_text", "Street"))
     for i, (x, z) in enumerate([[-44.0, 20.0], [-36.0, 24.0], [-24.0, 22.0], [-52.0, 14.5]]):
@@ -401,7 +726,7 @@ def fixed_spawns() -> List[list]:
     for i, (x, z) in enumerate([(4.0, 4.0), (4.0, 10.0), (7.6, 4.0), (7.6, 8.0), (5.5, 6.0)]):
         out.append(S("DinerCustomer%d" % i, "CIVILIAN", dn(x, 0.0, z), 90.0, ["civ_diner"], "idle"))
     out.append(S("Waitress", "CIVILIAN", dn(11.5, 0.0, 6.5), 90.0, ["staff_diner", "staff"], "idle"))
-    out.append(S("Cook", "CIVILIAN", dn(16.5, 0.0, 2.3), 0.0, ["staff_diner", "staff"], "cook_stove"))
+    out.append(S("Cook", "CIVILIAN", dn(14.55, 0.0, 3.0), 90.0, ["staff_diner", "staff"], "cook_stove"))
     out.append(S("Attendant", "CIVILIAN", cp(2.5, 0.0, 33.8), 180.0, ["staff_booth", "staff"], "idle"))
     # Reyes in the mixer cab (seated, D: sit_vehicle_drive) - TODO(A5-02): stands by the cab until the mover exists
     out.append(S("ReyesMixer", "CIVILIAN", si(21.0, 0.0, 40.2), -90.0, ["driver_mixer"], "idle"))
@@ -442,7 +767,14 @@ def tactical() -> List[list]:
         # car park (breach_only: police never spawn inside a building, D-064 / QC-42)
         T("EntryCarParkEntrance", "ENTRY", [24.0, 0.0, -13.0], 180.0, ["carpark", "south", "breach_only"]),
         T("EntryCarParkStairA", "ENTRY", [15.0, 0.0, -46.0], 90.0, ["carpark", "west", "door", "breach_only"], True),
-        T("EntryCarParkFireDoor", "ENTRY", [53.0, 0.0, -35.0], -90.0, ["carpark", "east", "door", "breach_only"], True),
+        T(
+            "EntryCarParkFireDoor",
+            "ENTRY",
+            [53.0, 0.0, -35.0],
+            -90.0,
+            ["carpark", "east", "door", "breach_only"],
+            True,
+        ),
         # diner doors and the four shopfront bays
         T("EntryDinerFront", "ENTRY", dn(4.5, 0.0, -1.0), 0.0, ["diner", "door", "breach_only"], True),
         T("EntryDinerSide", "ENTRY", dn(-1.0, 0.0, 8.0), 90.0, ["diner", "door", "breach_only"], True),
@@ -488,15 +820,29 @@ def tactical() -> List[list]:
         out.append(T("CoverPier%dE" % int(z), "COVER", [1.6, 0.0, z], 90.0, ["pier"]))
     for x, z in ((5, 12), (11, 18), (16, 24), (21, 12)):
         for y in (0.0, 3.5):
-            out.append(T("CoverCPCol%d_%d_%d" % (int(y), x, z), "COVER", cp(x - 0.6, y, z), -90.0, ["carpark_column"]))
+            out.append(
+                T("CoverCPCol%d_%d_%d" % (int(y), x, z), "COVER", cp(x - 0.6, y, z), -90.0, ["carpark_column"])
+            )
     for cx, cz in ((16, 11), (22, 16), (28, 21), (16, 21)):
         out.append(T("CoverFrameCol%d_%d" % (cx, cz), "COVER", si(cx - 0.6, 0.0, cz), -90.0, ["frame_column"]))
     return out
 
 
 # --------------------------------------------------------------------------------------------- slots
-GROUP_ORDER = ["convoy_route", "truck_count", "cargo_t3", "controller", "site_stores", "guard_post", "camera",
-               "cop_on_scene", "marshal_walk", "goods_lift", "player_perch", "escape"]
+GROUP_ORDER = [
+    "convoy_route",
+    "truck_count",
+    "cargo_t3",
+    "controller",
+    "site_stores",
+    "guard_post",
+    "camera",
+    "cop_on_scene",
+    "marshal_walk",
+    "goods_lift",
+    "player_perch",
+    "escape",
+]
 # [group, slot_id, weight (the doc's G0 weights; B's values block replaces them), room, pos, yaw, note]
 SLOTS: List[list] = [
     ["convoy_route", "route_north", 0.55, "X1", [-6.0, 0.0, -35.0], 0.0, "southbound under the Skyway"],
@@ -511,11 +857,11 @@ SLOTS: List[list] = [
     ["site_stores", "stores_thermite", 0.3, "C4", si(12.5, 0.0, 35.5), 0.0, "the thermite bag in the tool store"],
     ["site_stores", "stores_both", 0.3, "X4", si(25.0, 0.0, 20.0), 0.0, "both"],
     ["guard_post", "post_site_gate", 1.0, "X4", [-16.5, 0.0, -30.0], 0.0, "gates <-> controller <-> Tannery gate"],
-    ["guard_post", "post_site_frame", 1.0, "FG", [-34.0, 0.0, -38.0], 0.0, "FG aisles, the scaffold, the slab edge"],
+    ["guard_post", "post_site_frame", 1.0, "FG", [-35.0, 0.0, -42.0], 0.0, "FG aisles, the scaffold, the slab edge"],
     ["guard_post", "post_site_cabins", 1.0, "X4", [-50.0, 0.0, -15.0], 0.0, "cabins <-> magazine <-> crane"],
-    ["camera", "cam_mast_cabins", 1.0, "X4", si(16.0, 2.8, 28.0), 0.0, "on the lighting mast, over the cabins"],
-    ["camera", "cam_magazine", 1.0, "X4", [-23.0, 2.8, -55.88], 0.0, "on the hoarding, at the magazine"],
-    ["camera", "cam_gate", 1.0, "X4", [-14.12, 2.8, -40.0], 0.0, "on the hoarding, at the Orchard gates"],
+    ["camera", "cam_mast_cabins", 1.0, "X4", [-44.0, 0.0, -28.0], 0.0, "on a pole by the cabins"],
+    ["camera", "cam_magazine", 1.0, "X4", [-23.0, 0.0, -54.5], 0.0, "on a pole at the magazine"],
+    ["camera", "cam_gate", 1.0, "X4", [-15.5, 0.0, -40.0], 0.0, "on a pole inside the Orchard gates"],
     ["cop_on_scene", "cop_plaza", 0.4, "X3", [-20.0, 0.0, 22.0], 0.0, "beat cop at the plaza"],
     ["cop_on_scene", "cop_diner", 0.3, "X1", [12.0, 0.0, 12.5], 0.0, "beat cop at the diner corner"],
     ["cop_on_scene", "cop_none", 0.3, "X1", [0.0, 0.0, 0.0], 0.0, "no cop"],
@@ -534,84 +880,215 @@ SLOTS: List[list] = [
 
 
 def _camera(name: str, pos: list, yaw: float, cid: str) -> list:
-    return Pf("security_camera", name, pos, yaw, {"fov_deg": 60.0, "range_m": 20.0, "pan_deg": 40.0}, None,
-              {"mount": "wall", "kind": "security_camera", "camera_id": cid}, "prop_security_camera_wall")
+    return Pf(
+        "security_camera",
+        name,
+        pos,
+        yaw,
+        {"fov_deg": 60.0, "range_m": 20.0, "pan_deg": 40.0},
+        None,
+        {"mount": "wall", "kind": "security_camera", "camera_id": cid},
+        "prop_security_camera_wall",
+    )
+
+
+POLE = 0.2
+
+
+def _pole_camera(name: str, x: float, z: float, yaw: float, cid: str) -> list:
+    """A 3.2 m site pole (0.2 m square) and the camera on its face toward `yaw` at 2.8 m (camera band 2.4-3.2)."""
+    a = math.radians(yaw)
+    fx, fz = -math.sin(a), -math.cos(a)
+    return [
+        B(name + "Pole", [x, 0.0, z], [POLE, 3.2, POLE], 0.0, "pole", False, "trim"),
+        _camera(name, [x + fx * POLE / 2, 2.8, z + fz * POLE / 2], yaw, cid),
+    ]
 
 
 def slot_content() -> Dict[str, List[list]]:
     hack = [-16.0, 0.0, -13.25]
     sc: Dict[str, List[list]] = {
-        "ctrl_locked": [Pf("padlock", "ControllerPadlock", [hack[0] + 0.3, 1.0, hack[2] - 0.36], 0.0,
-                           {"interaction_time_s": LOCKPICK_S, "objective_tag": "signals"},
-                           [hack[0] + 0.3, 0.0, hack[2] - 1.15],
-                           {"todo": "TODO(A): the rig's interaction is not gated by this padlock (no Door target)"},
-                           "prop_padlock_brass")],
+        "ctrl_locked": [
+            Pf(
+                "padlock",
+                "ControllerPadlock",
+                [hack[0] + 0.4, 1.0, CAB_N - 0.009],
+                0.0,
+                {"interaction_time_s": LOCKPICK_S, "objective_tag": "signals"},
+                [hack[0] + 0.4, 0.0, CAB_N - 0.8],
+                {
+                    "mount": "wall",
+                    "todo": "TODO(A): the rig's interaction is not gated by this padlock (no Door target)",
+                },
+                "prop_padlock_brass",
+            )
+        ],
         "ctrl_open": [M("ControllerAjar", [hack[0], 0.0, hack[2] - 0.6], "", "the cabinet door ajar (no padlock)")],
-        "stores_c4": [M("C4Box1", si(36.5, 0.0, 5.0), "charges", "TODO(A5-03): item_pickup item.c4 x4 (box 1)"),
-                      M("C4Box2", si(37.5, 0.0, 5.0), "charges", "TODO(A5-03): item_pickup item.c4 x4 (box 2)")],
-        "stores_thermite": [Pf("loot_spawn", "ThermiteBag", si(12.5, 0.0, 35.5), 180.0,
-                               {"loot_id": "loot.thermite", "count": 1, "objective_tag": "thermite"},
-                               si(12.5, 0.0, 37.2), {}, "prop_loot_thermite_drum")],
-        "stores_both": [M("C4Box1", si(36.5, 0.0, 5.0), "charges", "TODO(A5-03): item_pickup item.c4 x4 (box 1)"),
-                        M("C4Box2", si(37.5, 0.0, 5.0), "charges", "TODO(A5-03): item_pickup item.c4 x4 (box 2)"),
-                        Pf("loot_spawn", "ThermiteBag", si(12.5, 0.0, 35.5), 180.0,
-                           {"loot_id": "loot.thermite", "count": 1, "objective_tag": "thermite"},
-                           si(12.5, 0.0, 37.2), {}, "prop_loot_thermite_drum")],
-        "post_site_gate": [S("GuardSiteGate", "GUARD", [-16.5, 0.0, -30.0], 0.0, ["guard_site_gate"], "smoke", "Site")],
-        "post_site_frame": [S("GuardSiteFrame", "GUARD", [-34.0, 0.0, -38.0], 0.0, ["guard_site_frame"], "", "Site")],
-        "post_site_cabins": [S("GuardSiteCabins", "GUARD", [-50.0, 0.0, -15.0], 0.0, ["guard_site_cabins"], "", "Site")],
-        "cam_mast_cabins": [_camera("CameraMastCabins", si(16.0, 2.8, 27.9), -135.0, "cam_mast_cabins")],
-        "cam_magazine": [_camera("CameraMagazine", [-23.0, 2.8, -55.88], 180.0, "cam_magazine")],
-        "cam_gate": [_camera("CameraGate", [-14.12, 2.8, -40.0], 90.0, "cam_gate")],
+        "stores_c4": [
+            M("C4Box1", si(36.5, 0.0, 5.0), "charges", "TODO(A5-03): item_pickup item.c4 x4 (box 1)"),
+            M("C4Box2", si(37.5, 0.0, 5.0), "charges", "TODO(A5-03): item_pickup item.c4 x4 (box 2)"),
+        ],
+        "stores_thermite": [
+            Pf(
+                "loot_spawn",
+                "ThermiteBag",
+                si(12.5, 0.0, 35.5),
+                180.0,
+                {"loot_id": "loot.thermite", "count": 1, "objective_tag": "thermite"},
+                si(12.5, 0.0, 37.2),
+                {},
+                "prop_loot_thermite_drum",
+            )
+        ],
+        "stores_both": [
+            M("C4Box1", si(36.5, 0.0, 5.0), "charges", "TODO(A5-03): item_pickup item.c4 x4 (box 1)"),
+            M("C4Box2", si(37.5, 0.0, 5.0), "charges", "TODO(A5-03): item_pickup item.c4 x4 (box 2)"),
+            Pf(
+                "loot_spawn",
+                "ThermiteBag",
+                si(12.5, 0.0, 35.5),
+                180.0,
+                {"loot_id": "loot.thermite", "count": 1, "objective_tag": "thermite"},
+                si(12.5, 0.0, 37.2),
+                {},
+                "prop_loot_thermite_drum",
+            ),
+        ],
+        "post_site_gate": [
+            S("GuardSiteGate", "GUARD", [-16.5, 0.0, -30.0], 0.0, ["guard_site_gate"], "smoke", "Site")
+        ],
+        "post_site_frame": [S("GuardSiteFrame", "GUARD", [-35.0, 0.0, -42.0], 0.0, ["guard_site_frame"], "", "Site")],
+        "post_site_cabins": [
+            S("GuardSiteCabins", "GUARD", [-50.0, 0.0, -15.0], 0.0, ["guard_site_cabins"], "", "Site")
+        ],
+        # each site camera on its own 3.2 m pole (0.2 m square; the camera on the pole face, back-centre)
+        "cam_mast_cabins": _pole_camera("CameraMastCabins", -44.0, -28.0, 180.0, "cam_mast_cabins"),
+        "cam_magazine": _pole_camera("CameraMagazine", -23.0, -54.5, 180.0, "cam_magazine"),
+        "cam_gate": _pole_camera("CameraGate", -15.5, -40.0, 90.0, "cam_gate"),
         "cop_plaza": [S("CopPlaza", "GUARD", [-20.0, 0.0, 22.0], -90.0, ["cop_plaza"], "look")],
         "cop_diner": [S("CopDiner", "GUARD", [12.0, 0.0, 12.5], 0.0, ["cop_diner"], "look")],
         "cop_none": [],
         "lift_powered": [],
-        "lift_dead": [M("LiftDead", cp(19.4, 0.0, 31.5), "lift_breaker", "lift_dead: the goods lift needs the breaker")],
-        "perch_carpark_roof": [M("PerchCarParkRoof", cp(3.5, 7.0, 7.5), "player_perch", "player perch: the car-park roof")],
-        "perch_frame": [M("PerchFrame", si(32.5, 3.5, 7.5), "player_perch", "player perch: the frame slab's NE corner")],
+        "lift_dead": [
+            M("LiftDead", cp(19.4, 0.0, 31.5), "lift_breaker", "lift_dead: the goods lift needs the breaker")
+        ],
+        "perch_carpark_roof": [
+            M("PerchCarParkRoof", cp(3.5, 7.0, 7.5), "player_perch", "player perch: the car-park roof")
+        ],
+        "perch_frame": [
+            M("PerchFrame", si(32.5, 3.5, 7.5), "player_perch", "player perch: the frame slab's NE corner")
+        ],
         "perch_none": [],
-        "trucks_2": [], "trucks_3": [], "t3_cash": [], "t3_bullion": [],
-        "esc_van_carpark": _escape("CarPark", [23.0, 0.0, -26.8], 0.0, [2.6, 2.5, 2.2], [23.0, 0.0, -30.0],
-                                   [4.0, 3.0, 7.0], "veh_van_secure", "van", 0.0,
-                                   "res://world/heists/shared/escape_van_marker.tscn", "E1"),
-        "esc_van_underpass": _escape("Underpass", [88.8, -5.0, -4.0], 90.0, [2.6, 2.5, 2.2], [92.0, -5.0, -4.0],
-                                     [7.0, 3.0, 4.0], "veh_van_secure", "van", 0.0,
-                                     "res://world/heists/shared/escape_van_marker.tscn", "E2"),
-        "esc_heli_roof": _escape("Roof", [32.0, 7.0, -34.0], 0.0, [6.0, 3.0, 6.0], [32.0, 7.0, -34.0], [12.0, 3.0, 14.0],
-                                 "prop_secure_cargo_net", "heli", 20.0, "veh_heli_escape", "E3"),
+        "trucks_2": [],
+        "trucks_3": [],
+        "t3_cash": [],
+        "t3_bullion": [],
+        "esc_van_carpark": _escape(
+            "CarPark",
+            [23.0, 0.0, -26.8],
+            0.0,
+            [2.6, 2.5, 2.2],
+            [23.0, 0.0, -30.0],
+            [4.0, 3.0, 7.0],
+            "veh_van_secure",
+            "van",
+            0.0,
+            "res://world/heists/shared/escape_van_marker.tscn",
+            "E1",
+        ),
+        "esc_van_underpass": _escape(
+            "Underpass",
+            [88.8, -5.0, -4.0],
+            90.0,
+            [2.6, 2.5, 2.2],
+            [92.0, -5.0, -4.0],
+            [7.0, 3.0, 4.0],
+            "veh_van_secure",
+            "van",
+            0.0,
+            "res://world/heists/shared/escape_van_marker.tscn",
+            "E2",
+        ),
+        "esc_heli_roof": _escape(
+            "Roof",
+            [35.6, 7.0, -34.0],
+            0.0,
+            [4.0, 3.0, 4.0],
+            [32.0, 7.0, -34.0],
+            [12.0, 3.0, 14.0],
+            "prop_secure_cargo_net",
+            "heli",
+            20.0,
+            "veh_heli_escape",
+            "E3",
+        ),
     }
     for sid, pts in MARSHAL_POINTS.items():
         first = next(iter(pts.values()))
-        sc[sid] = [S("MarshalSpawn", "GUARD", first, 0.0, ["scripted", "vl_marshal", sid],
-                                                   "radio_call", "Marshal_" + sid)]
+        sc[sid] = [
+            S("MarshalSpawn", "GUARD", first, 0.0, ["scripted", "vl_marshal", sid], "radio_call", "Marshal_" + sid)
+        ]
     return sc
 
 
 # --------------------------------------------------------------------------------------------- convoy layouts
+def _support_line(x_lo: float, x_hi: float) -> Tuple[float, float]:
+    """(slope s = -dy/dx, y at x = 0 of the line) a rigid body from x_lo to x_hi rests on along the east arm: the ramp
+    itself (x 34..66, 0 -> -5), flat ground, or across the x 34 crest on the crest and its downhill end."""
+    if x_hi <= ST.RAMP_X[0]:
+        return 0.0, 0.0
+    if x_lo >= ST.RAMP_X[0]:
+        s_r = 5.0 / (ST.RAMP_X[1] - ST.RAMP_X[0])
+        return s_r, s_r * ST.RAMP_X[0]
+    y_hi = ST.ramp_y(x_hi)
+    s_c = -y_hi / (x_hi - ST.RAMP_X[0])
+    return s_c, s_c * ST.RAMP_X[0]
+
+
 def convoy_sets() -> Dict[str, List[list]]:
-    """{route slot: [[set name, [vehicle rows]]]}: [name, kind, centre [x, y, z], size [len, h, w], yaw (deg about +y,
-    0 = the vehicle's length along +z), rear point [x, y, z]] per vehicle (rolling_thunder_convoy.LAYOUTS)."""
+    """{route slot: [[mode, [vehicle rows]]]}: [name, kind, base centre [x, y, z], size [len, h, w], yaw (deg about +y,
+    0 = the vehicle's length along +z), rear point [x, y, z], slope (the support line's -dy/dx along +x: the body is
+    tilted onto it), never_with (the other layout's vehicles)] (rolling_thunder_convoy.LAYOUTS). Clean and crash
+    never stand at once (the stop picks one), so each body names the other set's in `never_with`."""
     height = {"car": 1.5, "cash": 3.2, "bullion": 3.6}
     out: Dict[str, List[list]] = {"route_north": [], "route_east": []}
+    names = {
+        key: ["%s%s" % (key.split("_")[1].capitalize(), v[0].capitalize()) for v in vs]
+        for key, vs in CV.LAYOUTS.items()
+    }
     for key, vs in CV.LAYOUTS.items():
         route, mode = key.split("_")
+        other = names["%s_%s" % (route, "crash" if mode == "clean" else "clean")]
         rows = []
-        for v in vs:
-            nm, kind, a0, a1, lat, yaw = v
+        for v, nm in zip(vs, names[key]):
+            _n, kind, a0, a1, lat, yaw = v
             c = (a0 + a1) / 2.0
             ln, wd = CV.LEN[kind], CV.WIDTH[kind]
+            slope = 0.0
             if route == "north":
-                x, z = lat, c
-                ry = float(yaw)                       # length along z
-                rear = [lat, 0.0, min(a0, a1) - 0.6]  # the rear doors face north (away from the stop)
+                x, z, y = lat, c, 0.0
+                ry = float(yaw)
+                rear = [lat, 0.0, min(a0, a1) - 0.6]  # rear doors north (away from the stop)
             else:
                 x, z = c, lat
-                ry = 90.0 + float(yaw)                # length along x
+                ry = 90.0 + float(yaw)
+                ext = ln / 2.0 * math.cos(math.radians(yaw)) + wd / 2.0 * abs(math.sin(math.radians(yaw)))
+                slope, y0 = _support_line(x - ext, x + ext)
+                y = y0 - slope * x
                 rear = [max(a0, a1) + 0.6, 0.0, lat]  # rear doors east
-            y = r3(ST.ramp_y(x)) if route == "east" else 0.0
-            rear[1] = r3(ST.ramp_y(rear[0])) if route == "east" else 0.0
-            rows.append([nm, kind, [r3(x), y, r3(z)], [ln, height[kind], wd], r3(ry), [r3(v2) for v2 in rear]])
+                rear[1] = r3(ST.ramp_y(rear[0]))
+            rows.append(
+                [
+                    nm,
+                    kind,
+                    [r3(x), r3(y), r3(z)],
+                    [ln, height[kind], wd],
+                    r3(ry),
+                    [r3(q) for q in rear],
+                    round(slope, 5),
+                    other,
+                ]
+            )
         out["route_" + route].append([mode, rows])
     return out
 
@@ -627,12 +1104,35 @@ def preplan() -> List[list]:
         ["pp_drop_carpark", "drop_zone", 2, cp(13.0, 3.5, 33.0), {}],
         ["pp_drop_diner_yard", "drop_zone", 1, dn(6.0, 0.0, 22.0), {}],
         ["pp_drop_underpass", "drop_zone", 0, [68.0, -5.0, -9.0], {}],
-        ["pp_escape_carpark", "escape", 1, [23.0, 0.0, -30.0], {"variant_group": "escape", "slot": "esc_van_carpark"}],
-        ["pp_escape_underpass", "escape", 0, [92.0, -5.0, -4.0], {"variant_group": "escape", "slot": "esc_van_underpass"}],
+        [
+            "pp_escape_carpark",
+            "escape",
+            1,
+            [23.0, 0.0, -30.0],
+            {"variant_group": "escape", "slot": "esc_van_carpark"},
+        ],
+        [
+            "pp_escape_underpass",
+            "escape",
+            0,
+            [92.0, -5.0, -4.0],
+            {"variant_group": "escape", "slot": "esc_van_underpass"},
+        ],
         ["pp_escape_roof", "escape", 3, [32.0, 7.0, -34.0], {"variant_group": "escape", "slot": "esc_heli_roof"}],
-        ["pp_perch_roof", "drop_zone", 3, cp(3.5, 7.0, 7.5), {"variant_group": "player_perch",
-                                                             "slot": "perch_carpark_roof"}],
-        ["pp_perch_frame", "drop_zone", 2, si(32.5, 3.5, 7.5), {"variant_group": "player_perch", "slot": "perch_frame"}],
+        [
+            "pp_perch_roof",
+            "drop_zone",
+            3,
+            cp(3.5, 7.0, 7.5),
+            {"variant_group": "player_perch", "slot": "perch_carpark_roof"},
+        ],
+        [
+            "pp_perch_frame",
+            "drop_zone",
+            2,
+            si(32.5, 3.5, 7.5),
+            {"variant_group": "player_perch", "slot": "perch_frame"},
+        ],
         ["pp_signals", "insider", 1, [-16.0, 0.0, -14.4], {"variant_group": "controller", "slot": "ctrl_open"}],
     ]
 
