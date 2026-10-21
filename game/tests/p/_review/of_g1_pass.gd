@@ -1684,6 +1684,23 @@ func _vault_guard_off_vc(_gate: Door) -> bool:
 	return _vg_away_n >= 2
 
 
+## Step 5's peek before each leg of the LK -> gate walk: a guard walking within 20 m who sees the pilot or closes on the
+## gate, or the vault guard back off his RC leg. "" when the next leg is safe.
+func _gate_threat(gate: Door) -> String:
+	if not _vault_guard_off_vc(gate):
+		return "vault guard not on RC"
+	var me: Vector3 = pilot.crew.global_position
+	for n: Node in rt.npcs(&"guard"):
+		var g: NpcBase = n as NpcBase
+		if g == null or not g.is_alive() or absf(g.global_position.y - OF_FFL[0]) > 1.5:
+			continue
+		var d_me: float = pilot.flat_dist(g.global_position, me)
+		var d_gate: float = pilot.flat_dist(g.global_position, gate.global_position)
+		if d_me < 8.0 or (d_me < 20.0 and _sees_core(g, me)) or d_gate < 8.0:
+			return "%s %s (%.0f m)" % [g.name, Po5Pilot._v(g.global_position), d_me]
+	return ""
+
+
 ## `g` has a line of sight (world layer 1) from his eyes to the stair core column at his own height: a guard behind
 ## the core walls cannot see the flights (r248: Npc_guard10's ground-floor post 7 m off held the wait for 180 s).
 func _sees_core(g: NpcBase, core: Vector3) -> bool:
@@ -2609,7 +2626,23 @@ func _g5_vault() -> bool:
 		return false
 	var gate: Door = _tagged(&"vault_gate") as Door
 	if gate != null:  # open or not (r255d: the vault guard's loop (b)/(c) left it open; no wait, walked into him in VC)
-		await _wait_spot_clear(gate.global_position, OF_FFL[0], "vault gate", _lk_hide(), _vault_guard_off_vc.bind(gate))
+		# A player walks LK -> gate in legs and peeks before each, retreating to LK when a guard shows up (r257a/b: the
+		# 'clear' was right, then rover_basement stepped out of SD into BB and met the pilot at the gate 5 s later).
+		var hide: Vector3 = _lk_hide()
+		var legs: Array[Vector3] = [_of(Vector3(8.0, OF_FFL[0], 8.2)), _of(Vector3(13.5, OF_FFL[0], 8.2))]
+		for attempt: int in 4:
+			await _wait_spot_clear(gate.global_position, OF_FFL[0], "vault gate", hide, _vault_guard_off_vc.bind(gate))
+			var ok: bool = true
+			for leg: Vector3 in legs + [pilot.stand_point(gate.global_position + Vector3(-1.2, 0.0, 0.0))]:
+				var who: String = _gate_threat(gate)
+				if who != "":
+					note("GHOST vault gate approach %d: %s, back to LK" % [attempt + 1, who])
+					ok = false
+					break
+				await _go(pilot.stand_point(leg), 0.5, 30.0)
+			if ok:
+				break
+			await _go(hide, 0.4, 60.0)
 	if gate == null or (not gate.is_open and not await pilot.use(_comp(gate), 30.0, func() -> bool: return gate.is_open)):
 		return false
 	var grid: LaserGrid = _x("laser_grid") as LaserGrid

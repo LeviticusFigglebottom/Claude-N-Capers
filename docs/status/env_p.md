@@ -48,7 +48,9 @@ Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min;
   557-597), but both windows were held by Cataclysm's extra BB guards walking x 28-36 (counted within 20 m with no LOS). Walkers now count
   within 12 m, or within 20 m with LOS. r257a (r257 70471c50 + P): steps 1-4 PASS, and the gate cleared after 36 s on the vault guard's first RC trip.
   rover_basement, out of LOS east at that moment, turned back west down BB and saw the pilot at the gate (t=358). Now walkers within 20 m that are
-  closing on the gate count too (doc: 'rover_basement is east'). r257b is running.
+  closing on the gate count too (doc: 'rover_basement is east'). r257b: the same failure (he was likely standing in SD, out of LOS, when the wait cleared).
+  No snapshot rule predicts that, so now the pilot walks LK → gate in legs (BB west, the core, the gate), peeks before each one, and retreats
+  to LK if a guard shows up (≤ 4 tries). r257c is running.
 - **Ghost line**, on r251 + c-worlds 9d00c55b + P, windowed, seed 1002: **steps 1-4 PASS** (r251g). C's door-throat bake fix is verified.
   Harness fixes on env/p-play: peek at the SA core before EA → E3; code-hack restart. Step 5 (vault gate) was seen by the vault guard;
   the gate-clear wait went in at 88e06f40. r251h: the wait held for the vault guard, but the pilot waited in BB and rover_basement
