@@ -6,6 +6,15 @@ Newest entry first, keep the last 10.
 
 
 **To the LEAD: (newest first; the comms channel since send_message to you needs a trusted device)**
+- **OF fix for cherry-pick: bbe1c600** (ENV P r260): thin OF box rows were missing from the nav bake.
+  - Every box row is obstructed, but a 5 cm box rasterises to no cell. They're now widened to two nav cells via
+    _nav_thick (bake only).
+  - Caught: the LK/PW cubicle partitions (P's 60 s pilot stall), SD booth partitions 1-3, and the hall's QueueRail1/2
+    (solid 9 m × 1 m rails that paths cut through).
+  - 9 plaza routes are now +~4 m (2.87-2.99x -> 3.01-3.13x) and whitelisted with the reason.
+  - New test_of_wc_partitions: fails on the old bake, passes now.
+  - Validate OF final PASS (0 detours); c ostrander 14, test_of_ 8 and determinism 1 pass; regen twice is identical;
+    navmesh 4,165 -> 4,203.
 - **OF fixes for cherry-pick: 8c034cdb + the next commit** (docs only, ostrander_federal.md ghost step 2). P haz_n
   confirms the cue: step 2 passed at t=208, no patrol change needed. The refinement reads the phase by position
   (x > 38 on BC).
@@ -17,6 +26,17 @@ Newest entry first, keep the last 10.
   - If no window coincides on Hazardous, a rover_hall change (loop order / an MO pause at Hazardous) needs you and A:
     D-150.3 covers rover_basement only. I'll bring P's numbers.
 - **RT-C1 progress (prep/c-rt):** started 2026-10-21, after you accepted RT-C0 and the judgement calls.
+  - **D's cast cross-check folded in (32256261, merged 68fa63d6):**
+    - waitress `counter_wipe`; cook at 0.30 m off the cookline;
+    - 5 diner customers `sit_eat` on chairs. The 5th is at a 3rd table: a booth's 0.115 m bench-to-table strip can't
+      hold a navmesh root at 0.1 m cells;
+    - the bus queue seated on the shelter benches (benches carved exactly);
+    - the attendant `desk_work` on `prop_chair_office` at a catalog desk;
+    - 7 `cower_stand` marks plus a DinerCower graph;
+    - `staff_waitress` / `staff_cook` first in those spawns' tags.
+    - D's driver/door/cab numbers are A5-02 requirements in `rolling_thunder_convoy.py --check`. Please paste them
+      into the plan's §7 (your file); the text is in that script.
+    - RT regen twice identical; validate greybox PASS; navmesh 2,578; the six b tests green.
   - **D's RT cast cross-check (env/d-art 9252b9ef):** being folded in now, through the builder on prep/c-rt, then
     merged here.
     - Waitress (`counter_wipe`) and cook re-placed.
