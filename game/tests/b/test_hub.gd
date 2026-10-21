@@ -3,6 +3,7 @@
 ## and Back returns to the hub; a Board contract carries is_pro into the launch options and payday.
 extends TestCase
 
+const HUB_SCENE: PackedScene = preload("res://content/ui/hub/hub_menu.tscn")
 const START_CASH: int = 150000
 const STATION_IDS: Array[StringName] = [&"board", &"planning", &"armory", &"masks", &"range", &"crew", &"jukebox",
 		&"notoriety", &"profile"]
@@ -58,7 +59,7 @@ func test_station_data() -> void:
 
 
 func test_hub_instantiates_with_profile_summary() -> void:
-	var h: HubMenu = (load("res://content/ui/hub/hub_menu.tscn") as PackedScene).instantiate() as HubMenu
+	var h: HubMenu = HUB_SCENE.instantiate() as HubMenu
 	add_child(h)
 	await wait_frames(2)
 	assert_eq(h.station_buttons.size(), STATION_IDS.size())
@@ -77,6 +78,25 @@ func test_hub_instantiates_with_profile_summary() -> void:
 	h.station_requested.connect(func(id: StringName) -> void: asked.append(id))
 	h.station_button(&"masks").pressed.emit()
 	assert_eq(asked, [&"masks"] as Array[StringName], "a card asks for its station")
+	h.queue_free()
+	await wait_frames(1)
+
+
+## r262 OF payday + hub still: after a first Hazardous OF clear (L18) the Armory card shows skill and perk points;
+## "20 SKILL POINTS · 58 PERK POINTS" ran past the card. One count per line, inside the card.
+func test_armory_points_stay_inside_the_card() -> void:
+	var p: PlayerProfile = PlayerProfile.new_default()
+	p.xp = 29250
+	p.level = XpCurve.level_for_xp(p.xp)
+	var h: HubMenu = HUB_SCENE.instantiate() as HubMenu
+	add_child(h)
+	h.setup(p)
+	await wait_frames(3)
+	var l: Label = h.skill_points_label
+	assert_eq(l.text.split("\n").size(), 2, "skill and perk points, one per line: %s" % l.text)
+	var card: Rect2 = h.station_button(&"armory").get_global_rect()
+	assert_true(card.encloses(l.get_global_rect()), "points %s inside the card %s" % [l.get_global_rect(), card])
+	assert_true(l.get_minimum_size().x <= card.size.x, "points fit the card width")
 	h.queue_free()
 	await wait_frames(1)
 

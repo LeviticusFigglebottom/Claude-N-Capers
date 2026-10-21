@@ -13,7 +13,7 @@ const BACKDROPS: Dictionary = {"dark": Color(0.05, 0.05, 0.06), "mid": Color(0.4
 		"bright": Color(0.92, 0.9, 0.85), "white": Color(1, 1, 1)}
 
 ## LEAD 2026-10-21 (PO's 3440x1440): an optional 2nd arg "WxH" renders that size with the game's stretch
-## (canvas_items, aspect expand: a 1080-tall canvas, as wide as the aspect needs). Layout review only: the label
+## (canvas_items, aspect expand: the 1920x1080 base grown on the long side). Layout review only: the label
 ## rects are canvas units then, so the contrast numbers do not apply (as the "loading" mode).
 var _size: Vector2i = SIZE
 var _canvas: bool = false
@@ -77,7 +77,11 @@ func _run() -> void:
 	if args.size() > 1 and args[1].contains("x"):
 		_size = Vector2i(int(args[1].get_slice("x", 0)), int(args[1].get_slice("x", 1)))
 		_vp.size = _size
-		_vp.size_2d_override = Vector2i(roundi(1080.0 * float(_size.x) / float(_size.y)), 1080)
+		# "expand" keeps the 1920x1080 base and grows only the long side: wider than 16:9 -> wider canvas, narrower
+		# (16:10) -> taller canvas.
+		var aspect: float = float(_size.x) / float(_size.y)
+		_vp.size_2d_override = Vector2i(roundi(1080.0 * aspect), 1080) if aspect >= 16.0 / 9.0 \
+				else Vector2i(1920, roundi(1920.0 / aspect))
 		_vp.size_2d_override_stretch = true
 		_canvas = true
 	OnboardingTips.persist = false  # never touch the player's save from a capture

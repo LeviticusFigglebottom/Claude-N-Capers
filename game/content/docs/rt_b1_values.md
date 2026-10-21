@@ -2,7 +2,7 @@
 
 ENV B -> ENV C (cc LEAD), 2026-10-21. **Paper only (D-144 / D-148): nothing here is in data on env/b-content until the
 Ostrander done check.** C's generator writes `rolling_thunder_def.tres` / `_variants.tres` from this block (QB-2, D-137);
-B writes its own files (assets, strings, VO, achievements) when the gate opens. Sources: `docs/design/heists/
+B writes its own files (assets, strings, VO, achievements) when the gate opens; §7-8 are the strings and VO drafts. Sources: `docs/design/heists/
 rolling_thunder.md` (G0 + RT-C0 fixes), `docs/process/next_heist_rolling_thunder.md` (§3 audit, D-149 rulings),
 `game/content/docs/rt_content_plan.md`. Supersedes rt_content_plan.md §1 where they differ (**base_payout is $30k**,
 D-141.1, not the G0 doc's $85k).
@@ -112,7 +112,90 @@ heist_tag_characters[&"rolling_thunder"]:
 `convoy_lead` / `convoy_rear` stay EnemyDef looks by difficulty (D-149.12): no row. Look ids are D's to name; B only
 needs the tags to exist so the briefing intel counts staff as civilians.
 
-## 7. Open for the LEAD
+## 7. Strings (new rows for `strings.csv`; paper, written when the gate opens)
+
+Existing and kept: `heist.rolling_thunder.*` (4), `objective.rolling_thunder.*` (13; `trucks` already has
+`{opened}/{total}` and `secure` has `{count}/{total}`), the mode label `ui.heist_select.modes_loud_ambush`,
+`contact.hollis_reyes`, `item.asset.signal_insider.*` and `item.asset.intel_route.*`, and `ui.escape.heli`.
+
+| Key | Text (proposed) |
+|---|---|
+| `ui.briefing.step.rolling_thunder.setup` | Rig the junction signals, and raid the site stores if there is time |
+| `ui.briefing.step.rolling_thunder.trucks` | Open the trucks and bag the cargo |
+| `ui.preplan.point.rolling_thunder.pp_spawn_plaza` | Bus interchange |
+| `ui.preplan.point.rolling_thunder.pp_spawn_carpark` | Car park: Deck 2 stair lobby |
+| `ui.preplan.point.rolling_thunder.pp_spawn_underpass` | Underpass: north sidewalk |
+| `ui.preplan.point.rolling_thunder.pp_drop_site` | Building site: inside the Orchard gate |
+| `ui.preplan.point.rolling_thunder.pp_drop_carpark` | Car park: Deck 2 south bays |
+| `ui.preplan.point.rolling_thunder.pp_drop_diner_yard` | Halfway Diner: the yard |
+| `ui.preplan.point.rolling_thunder.pp_drop_underpass` | Underpass: north abutment |
+| `ui.preplan.point.rolling_thunder.pp_escape_carpark` | Van: car park |
+| `ui.preplan.point.rolling_thunder.pp_escape_underpass` | Van: Tannery underpass |
+| `ui.preplan.point.rolling_thunder.pp_escape_roof` | Helicopter: car park roof |
+| `ui.preplan.point.rolling_thunder.pp_perch_roof` | Sniper perch: car park roof |
+| `ui.preplan.point.rolling_thunder.pp_perch_frame` | Sniper perch: the building frame |
+| `ui.preplan.point.rolling_thunder.pp_signals` | Junction signal cabinet |
+| `ui.briefing.sec.event.rolling_thunder.<id>` (5 bad events) | the §3 table's last column |
+| `item.asset.c4_drop.name` / `.desc` | C4 drop / "Four breaching charges left at the drop point. Faster than the saw on a truck door." |
+
+13 point labels = every `pp_*` id in the doc's pre-planning table. Blueprint room and street labels are generated from
+C's G1 map, as for OF. Good events get no briefing string, as on the other heists.
+
+## 8. Voice (Mercer + Reyes; `lines.tres` + `voice.vo.*`, `test_vo_coverage`)
+
+A draft list of the lines the mission says, by phase. Each one is said by a mission hook or deleted. Ids follow the
+OF pattern (`rt_<event>`). The text is a first draft for the lead's voice pass.
+
+| Phase | Id | Speaker | Draft |
+|---|---|---|---|
+| Setup | `rt_intro` | Mercer | "Convoy's on the road. You've got a few minutes to set the table." |
+| | `rt_eta_60` / `rt_eta_30` | Mercer | "Sixty seconds out." / "Thirty. Get in position." |
+| | `rt_marshal` | Mercer | "Vaultline scout car at the stop line. That's the route marshal: he carries a pager." |
+| | `rt_signals_done` | Mercer | "Signals are ours. They'll stop on the red." |
+| | `rt_signals_remind` | Mercer | "Signals aren't rigged. Reyes will have to ram them." |
+| | `rt_c4_found` / `rt_thermite_found` | Mercer | "Breaching charges. Take them." / "Thermite. That'll do for a bullion door." |
+| The stop | `rt_sighted` | Mercer | "Convoy in sight." |
+| | `rt_stopped` | Mercer | "They've stopped. Clean. On my mark." |
+| | `rt_go` | Mercer | "Go, go, go." |
+| | `rt_alerted` | Mercer | "They know. Reyes, you're on. Everybody else, find cover and wait for it." (the doc's line) |
+| | `rt_crash` | Reyes | "Hold on to something." |
+| | `rt_escort_down` | Mercer | "Escort's down. Get on those trucks." |
+| | `rt_police` | Mercer | "Vaultline called it in. Police are coming." |
+| Devices / loot | `rt_saw_on` / `rt_saw_jam` | Mercer | "Saw's on the door." / "Saw's stuck. Get it moving." |
+| | `rt_deadbolts` | Mercer | "Deadbolts are thrown. Saw's going to take longer." (the doc's line) |
+| | `rt_truck_open` | Mercer | "Truck's open. Bag it." |
+| | `rt_c4_armed` / `rt_thermite_burn` | Mercer | "Charges set. Clear the door." / "Thermite's burning. Stay back." |
+| | `rt_gold` / `rt_bonds` | Mercer | "That's gold. Heavy, but worth it." / "Bearer bonds in the cab safe. Take them." |
+| | `rt_lift_dead` | Mercer | "Goods lift's dead. Stairs to the roof." |
+| Snipers | `rt_sniper_skyway` / `rt_sniper_rail` / `rt_sniper_crane` | Mercer | "Sniper on the Skyway." / "Sniper by the rail lane." / "Marksman in the crane cab." |
+| Endgame | `rt_secured` | Mercer | "That's the four. Anything else is a bonus." |
+| | `rt_van_eta` / `rt_heli_eta` | Mercer | "Van's on its way." / "Chopper's coming to the roof." |
+| | `rt_escape` | Mercer | "Ride's here. Move." |
+| Reyes (radio) | `rt_reyes_ready` / `rt_reyes_boxed` / `rt_reyes_payday` | Reyes | "Mixer's ready at the gate." / "They're boxed in. Nobody drives out." / "Good haul. Drinks on me." |
+
+About 36 lines. Reused: the generic `radio.objective_new`, the generic last-pager line (the marshal is the only pager),
+and the generic assault and escape-arrived lines. Event lines (`marshal_early`, `convoy_early`, `rush_hour`) reuse
+`rt_marshal`, `rt_eta_*` and the generic civilian lines.
+
+## 9. Achievements (6, OF shape; `achievements/rt_*.tres`, category `rolling_thunder`; rewards from D's catalog)
+
+All six use **existing** condition keys (`achievement_def.gd` / `heist_conditions.gd`), so no A or B code is needed.
+This replaces rt_content_plan.md §5: "sky high" needed a variant-match condition that does not exist, and "no
+escort" was trivial because the escort objective is required. ◇ = B's proposal.
+
+| id | condition |
+|---|---|
+| `achievement.rt_clean_stop` | `{"event": &"heist_completed", "heist": &"rolling_thunder", "objectives_completed": [&"signals"], "count": 1}` |
+| `achievement.rt_heavy_haul` | `{..., "loot_min": {&"loot.gold": 4}, "count": 1}` (a bullion truck, `trucks_3` + `t3_bullion`) |
+| `achievement.rt_full_convoy` | `{..., "all_loot_secured": true, "count": 1}` (every bag the convoy carried) |
+| `achievement.rt_iron_crew` | `{..., "difficulty_min": 2, "max_downs": 0, "count": 1}` (Hazardous+, nobody down) |
+| `achievement.rt_quick` | `{..., "max_time_s": 900.0, "count": 1}` ◇ (convoy ETA 150-210 s, plus about 10 min for the stop, the trucks and the escape) |
+| `achievement.rt_cataclysm` | `{..., "difficulty_min": 5, "count": 1}` |
+
+Strings are `achievement.rt_*.name` / `.desc` (12). Tests: `test_heist_achievements` gets the rows, and the RT payday e2e
+copies `test_of_payday_e2e`, including the D-148 level pin and the co-op parity test.
+
+## 10. Open for the LEAD
 
 1. Approve the D-143.5 allow-list rows for `signal_insider` / `intel_route` now (two lines in existing B files), or
    with the rest after the OF gate.

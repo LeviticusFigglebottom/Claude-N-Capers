@@ -495,9 +495,9 @@ func _ensure_toast() -> AchievementToast:
 
 ## D-115: "Achievements unlocked" panel, one compact entry per id in `achievements_unlocked`, up to
 ## ACHIEVEMENT_COLUMNS per line: the name (brass) with its reward ("REWARD Oxblood Herald", only when it grants
-## something) on one line, the description under it; one line of entries fits under the columns at 720p. Hidden
-## when the run unlocked none. More than one line can run under the fold, so then (only) the panel takes focus
-## (d-pad up from Continue) and the summary scrolls to it.
+## something; it moves under the name when it does not fit, never ellipsised), the description under it; one line of
+## entries fits under the columns at 720p. Hidden when the run unlocked none. More than one line can run under the
+## fold, so then (only) the panel takes focus (d-pad up from Continue) and the summary scrolls to it.
 func _build_achievements() -> PanelContainer:
 	achievement_rows.clear()
 	var v: VBoxContainer = UiBuild.vbox(UiTokens.S1)
@@ -514,7 +514,12 @@ func _build_achievements() -> PanelContainer:
 		var e: VBoxContainer = UiBuild.vbox(0)
 		e.name = String(id).replace(".", "_")
 		e.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		var top: HBoxContainer = UiBuild.hbox(UiTokens.S3)
+		# r262 lead nit ("Oxblood Her..." ellipsised at 1080p): a flow row, so a reward that does not fit beside the
+		# name moves, whole, to its own line under it; nothing trims.
+		var top: HFlowContainer = HFlowContainer.new()
+		top.add_theme_constant_override(&"h_separation", UiTokens.S3)
+		top.add_theme_constant_override(&"v_separation", 0)
+		top.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		e.add_child(top)
 		var n: Label = UiBuild.label()
 		n.text = UiText.t(a.name_key)
@@ -522,14 +527,15 @@ func _build_achievements() -> PanelContainer:
 		top.add_child(n)
 		var reward: String = AchievementsScreen.reward_name(a)
 		if reward != "":
+			var rw: HBoxContainer = UiBuild.hbox(UiTokens.S3)
+			rw.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			top.add_child(rw)
 			var cap: Label = UiBuild.caption(&"ui.achievements.reward_caption")
 			cap.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-			top.add_child(cap)
+			rw.add_child(cap)
 			var r: Label = UiBuild.label(&"ui.achievements.reward", &"", {"name": reward})
-			r.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-			r.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-			r.custom_minimum_size.x = 1.0
-			top.add_child(r)
+			r.name = "Reward"
+			rw.add_child(r)
 		var d: Label = UiBuild.label(a.desc_key, UiBuild.DIM)
 		d.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		# r252 GPU loud payday: a 3-line description ran under the fold at 720p; two lines fit, and the reward the tail
