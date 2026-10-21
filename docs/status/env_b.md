@@ -3,7 +3,15 @@
 Owner: ENV B. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
-## To the LEAD: (updated 2026-10-21 19:00; send_message to you is refused, so read this)
+## To the LEAD: (updated 2026-10-21 19:25; send_message to you is refused, so read this)
+-21. **Top-3 #3 done: the payday says when unlocks sit below the fold.**
+     - **Change:** with more unlocks than one line holds (3), the panel header now reads **"ACHIEVEMENTS UNLOCKED: 6
+       (3 MORE BELOW)"**; with 3 or fewer it stays the plain header. New string
+       `ui.results.achievements_header_more`, plus `PaydayScreen.achievements_header`.
+     - **Shot:** `r266_status_scrim/payday_d5_more_below_1920x1080.png` (OF Cataclysm, 1080p).
+     - **Test:** `test_ui_payday` gains `test_header_counts_unlocks_below_the_fold` (6 vs 2 unlocks).
+     - **Green:** `ui_payday` 15, `strings` 22, `ui_strings` 3, `achievements` 31.
+     - **All three top-3 items are closed:** #1 scrims (53e3ce91); #2 a guard only, PD2 red kept (01bb2b2e); #3 this.
 -20. **Top-3 #2 (jam colour): measured, smaller than I claimed; only a guard landed.**
      - **I was wrong in -18:** the colourblind palettes already turn `objective` into a light yellow, and PD2's
        red jam clears the CVD pair check (CIE76 >= 20 under every simulation) against every palette's objective.

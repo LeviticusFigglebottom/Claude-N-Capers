@@ -2078,6 +2078,7 @@ ui.achievements.locked,In progress
 ui.achievements.reward,{name}
 ui.achievements.reward_caption,Reward
 ui.results.achievements_header,Achievements unlocked
+ui.results.achievements_header_more,Achievements unlocked: {count} ({more} more below)
 ui.results.achievement_toast,Achievement unlocked
 ui.results.achievement_toast_reward,Reward: {name}
 achievement.first_score.name,First Score

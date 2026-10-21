@@ -90,6 +90,9 @@ var toast: AchievementToast = null
 var achievements_panel: PanelContainer = null
 ## Achievement id -> its entry in achievements_panel (tests).
 var achievement_rows: Dictionary = {}
+## r266 B top-3 #3: the panel's header; with more unlocks than one line holds it counts them and says how many sit
+## below the fold ("Achievements unlocked: 6 (3 more below)").
+var achievements_header: Label = null
 ## D-115: in-heist fact log (objective outcomes, device kinds, items, loot ids) for the heist achievements.
 var facts: HeistFacts = HeistFacts.new()
 ## Index of the picked card (-1 = not picked yet).
@@ -501,7 +504,8 @@ func _ensure_toast() -> AchievementToast:
 func _build_achievements() -> PanelContainer:
 	achievement_rows.clear()
 	var v: VBoxContainer = UiBuild.vbox(UiTokens.S1)
-	v.add_child(UiBuild.caption(&"ui.results.achievements_header"))
+	achievements_header = UiBuild.caption(&"ui.results.achievements_header")
+	v.add_child(achievements_header)
 	var grid: GridContainer = GridContainer.new()
 	grid.columns = clampi(achievements_unlocked.size(), 1, ACHIEVEMENT_COLUMNS)
 	grid.add_theme_constant_override(&"h_separation", UiTokens.S5)
@@ -545,6 +549,10 @@ func _build_achievements() -> PanelContainer:
 		e.add_child(d)
 		grid.add_child(e)
 		achievement_rows[id] = e
+	var more: int = achievement_rows.size() - ACHIEVEMENT_COLUMNS
+	if more > 0:
+		achievements_header.text = UiText.t(&"ui.results.achievements_header_more",
+				{"count": achievement_rows.size(), "more": more})
 	var p: PanelContainer = UiBuild.panel(v)
 	p.name = "AchievementsUnlocked"
 	p.visible = not achievement_rows.is_empty()
