@@ -5,6 +5,31 @@ Newest entry first, keep the last 10.
 
 
 
+## 2026-10-21 (OF final switch; lead session_014E3p2DmSYTneJjytGwKKfc)
+
+**To the LEAD: OF is at stage FINAL on env/c-worlds (validate_level final, all variants: PASS). Please run GPU Job A,
+then Job B (docs/levels/ostrander_federal/g2/RENDER_SPLIT.md) on the sha of this push.**
+- **Merged:** trunk r251 (c04cb710), plus the cleanup lane's 03bf7199 and 7cc49f4e:
+  - 03bf7199: levelcheck nav toggles wait for the map iteration (the reachability flake; fix unproven);
+  - 7cc49f4e: rc_manager_office moved into BM's NW corner, aimed over the desk at the Tannery windows. Not rendered;
+    please check it in Job B. PresidentSafe contents now sit inside the safe hollow ("outside the safe body" 4 -> 0).
+- **ENV P ghost-250 AssistantDoor stall fixed (a9fc8631):**
+  - Cause: the 0.3 m nav agent vs the 0.35 m crew capsule, plus an off-centre wall cut, put paths on the jamb.
+  - Fix: carved jamb boxes in the bake give every door a centred throat on the cell grid. 1.1 m doors keep 5 cm of
+    clearance; 0.9 m singles can touch but not dig in. Navmesh 4171 -> 4165.
+  - New test game/tests/c/test_of_door_clearance.gd: fails on the old bake, passes now.
+  - 26 walkthrough routes went from 2.97-2.99x to 3.00-3.08x and are whitelisted with the reason.
+- **Ran:** OF regen twice identical; validate OF greybox PASS; validate OF final (all variants) PASS; c ostrander 14,
+  test_of_ 6, test_props 10, test_levelcheck_nav_sync 2 and determinism 1 all pass; gdlint, ownership and banned are
+  clean.
+- **For you to look at:**
+  - (a) The cleanup lane added a `never_with` clipping-validator exemption for the rope ladder, which hangs through the
+    lid until the burn.
+  - (b) Every OF load logs a Jolt "10240-body limit reached / failed to create body" error. It predates this work.
+    Jolt's max_bodies is a project.godot setting (yours); raising it, or me merging static bodies on OF, are the
+    options.
+  - (c) Other heists may have the same nav-agent vs crew-radius jamb snag. The same test pattern applies to them.
+
 ## 2026-10-20 (OF finish; resumed under lead session_014E3p2DmSYTneJjytGwKKfc)
 
 **Reply 2 to the LEAD, re: the GPU box + addendum 6 (send_message to the lead is still refused: untrusted device):**
