@@ -548,21 +548,26 @@ func _is_unreachable(c: InteractableComponent) -> bool:
 		return false
 	var door: Door = _unreachable[key]
 	if door == null:
-		# hoist6: VaultCash marked "no navmesh path" with the cash cage shut; the padlock was sawn 6 s later and the
-		# cash never retried. A gate / cage opening changes the navmesh path: re-test it every UNREACH_RECHECK_S.
-		if rt.heist_time_s < float(_unreach_checked.get(key, -INF)) + UNREACH_RECHECK_S:
-			return true
-		_unreach_checked[key] = rt.heist_time_s
-		if not _has_path(p._use_stand(c)):
-			return true
-		_unreachable.erase(key)
-		_unreach_checked.erase(key)
-		f.note("%s has a navmesh path again: retrying" % c.get_path())
-		return false
+		return _still_no_path(c, key)
 	if is_instance_valid(door) and not _passable(door):
 		return true
 	_unreachable.erase(key)
 	f.note("%s is passable again: retrying %s" % [door.name if is_instance_valid(door) else "door", c.get_path()])
+	return false
+
+
+## hoist6: VaultCash was marked "no navmesh path" with the cash cage shut; the padlock was sawn 6 s later and the cash
+## never retried. A gate / cage opening changes the path: re-test it every UNREACH_RECHECK_S. False (and the mark
+## cleared) once there is a path.
+func _still_no_path(c: InteractableComponent, key: int) -> bool:
+	if rt.heist_time_s < float(_unreach_checked.get(key, -INF)) + UNREACH_RECHECK_S:
+		return true
+	_unreach_checked[key] = rt.heist_time_s
+	if not _has_path(p._use_stand(c)):
+		return true
+	_unreachable.erase(key)
+	_unreach_checked.erase(key)
+	f.note("%s has a navmesh path again: retrying" % c.get_path())
 	return false
 
 
