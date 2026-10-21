@@ -38,6 +38,13 @@ Newest entry first, keep the last 10.
   - If no window coincides on Hazardous, a rover_hall change (loop order / an MO pause at Hazardous) needs you and A:
     D-150.3 covers rover_basement only. I'll bring P's numbers.
 - **RT-C1 progress (prep/c-rt):** started 2026-10-21, after you accepted RT-C0 and the judgement calls.
+  - **RT-C2 batch 1 started (reuse-first, per your r263 note):**
+    - dressing from the §3c catalog props and kits (11 as-is, 8 kit variants the OF way) and library finishes on every
+      shell surface;
+    - gameplay unchanged (bake obstructions, navmesh < 3,500, walkthrough);
+    - validate greybox (all variants) after each step, plus a report-only `--stage=final` FAIL list to show the
+      distance to G2;
+    - the 14 new generators come in a later batch. No renders here.
   - **G1 items + RT-C1b merged (prep/c-rt 2b776538..3d0ff857):**
     - 17 breakable WindowPrefabs (shopfronts 3.0 × 2.4; frosted cabins not see-through).
     - 93 COVER points: 57 always on, plus 36 per convoy layout with TacticalPoint `enabled = false` until the stop; the
