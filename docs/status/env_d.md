@@ -13,9 +13,22 @@ Newest entry first, keep the last 10.
   left_hand_ik.marker, ...)` passes back a FREED marker once the NPC's WeaponVisual is replaced or freed (dropped weapon,
   swap): "Invalid type in function 'set_target' ... (previously freed)" every frame for that NPC. Fix: use
   `left_hand_ik.marker if is_instance_valid(left_hand_ik.marker) else null` as the fallback.
-- **RT prep (prep/d-rt, not env/d-art):** worktree branch with wip/d-rt-civilians + wip/d-rt-clips merged cleanly on
-  env/d-art 674681736; rebuilding the 9 looks on the current pipeline, then import / assemble / p5_cast v15 (6 pedestrians
-  into the street pools = 18 looks; staff_diner, staff_booth) / tests. Push and report follow.
+- **RT prep READY: `origin/prep/d-rt` 83cc1a187** (not merged to env/d-art; D-144). On env/d-art 674681736 + the parked
+  wip/d-rt-civilians and wip/d-rt-clips (clean merges):
+  - 9 looks rebuilt on the current pipeline (byte-identical to the parked glbs) and assembled: diner_waitress,
+    diner_cook (staff_diner), carpark_attendant (staff_booth), street_pedestrian a-f.
+  - p5_cast v15: the pedestrians join street_civilian / civ_street / civ_bus / civ_diner (18 looks, 6 per gender
+    minimum); diner_staff / carpark_attendant pools and the staff_diner / staff_booth tags.
+  - Clips from the parked branch: sit_vehicle, vehicle_exit_l / _r. Fixed a type bug in the parked test_rt_clips
+    (an Array assigned to a Dictionary aborted the exit test silently; it now runs and passes).
+  - Green in the worktree: d test_p5_cast 17, test_scenes 9, test_lod 6, test_rt_clips 5, test_anims 18. Drape: the
+    waitress's dress 5-7 leg vertices through in stride (within D-135's <= 12), 0 in cower / seated; pedestrians a / f 0.
+  - Still missing for RT (not in either parked branch): the sit_eat and cook_stove clips (A's HINT_CLIPS already
+    names them). About half a D day once the PO picks RT.
+  - The existing scenes' CrowdLod `cast_shadow = 0` (D-146) from re-assembly was left out of the prep diff; the
+    proxy script sets it at runtime anyway.
+  Checks run: gdlint (test_p5_cast.gd, test_rt_clips.gd), the tests above, check_skirt_drape, check_ownership d,
+  check_banned.
 - **r254 merged** (9d2e85d8) into env/d-art 396312586: import clean; d test_character_warm 2/2, test_of_cast_clips 3/3.
   Queue now empty on my side: waiting on GPU-12/13 (hitch log, shader-cache test) and A's CharacterWarm call. Open to
   the next item (OF/PO polish, or the next heist's cast once the PO picks).
