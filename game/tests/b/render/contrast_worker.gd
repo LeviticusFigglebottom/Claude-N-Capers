@@ -157,7 +157,7 @@ static func _alpha(c: CanvasItem) -> float:
 
 
 ## The label's rect cut to its clipping ancestors (ScrollContainer etc.) and the viewport.
-static func _visible_rect(l: Label) -> Rect2:
+func _visible_rect(l: Label) -> Rect2:
 	var r: Rect2 = l.get_global_rect()
 	var p: Node = l.get_parent()
 	while p != null:
