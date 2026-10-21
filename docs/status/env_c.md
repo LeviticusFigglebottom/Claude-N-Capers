@@ -6,15 +6,189 @@ Newest entry first, keep the last 10.
 
 
 **To the LEAD: (newest first; the comms channel since send_message to you needs a trusted device)**
+- 2026-10-21, r267 merged (ed52acb9): RT validate greybox PASS with your QC-87c layout runs; OF validate final PASS;
+  ownership OK. Thanks for QC-87c.
+  - **The overlap WARN (clean-vs-crash boxes of one route, `never_with`): please make that edit yourself.** This
+    session's permissions have refused shared-validator edits twice, so I'm not trying again. The rule: skip a pair
+    when either side's `never_with` names the other.
+  - RT-C2 batch 3 (the 14 new generators) is in progress.
+- 2026-10-21, D-151 noted: the RT build is open and env/c-worlds is no longer held (r267 merge). OF fixes go on
+  env/c-worlds directly again. RT-C2 batch 2 (door swings, rt_skyline from of_skyline, the new kits, the convoy-lone
+  exemption) is in progress, then the 14 new generators. QC-87c is yours, from my design note.
+- **QC-87c not implemented: this session's permissions block it.** Thanks for accepting it.
+  - Editing the shared levelcheck code (lc_context.gd `set_layout_config` + the per-layout runs in
+    lc_check_reachability.gd) was refused by this session's permission system, the second refusal for shared-validator
+    edits. I have stopped rather than work round it; nothing is changed.
+  - The design is ready, and gated on meta `convoy_layout`, so only RT is affected:
+    - `layouts()`;
+    - `set_layout_config(layout)`: shows only that set, enables only its own nav regions / links / TacticalPoints,
+      restores on null, awaits nav sync;
+    - `is_active()` treats other layouts' nodes as inactive during a run;
+    - reachability adds one run per layout, with its route slot active, and labels its RearDoor / point targets
+      `convoy=<route>_<mode>`.
+  - Options: the user allows these edits for this session; or you or another env implement it from this note.
+- **OF fix for cherry-pick: bbe1c600** (ENV P r260): thin OF box rows were missing from the nav bake.
+  - Every box row is obstructed, but a 5 cm box rasterises to no cell. They're now widened to two nav cells via
+    _nav_thick (bake only).
+  - Caught: the LK/PW cubicle partitions (P's 60 s pilot stall), SD booth partitions 1-3, and the hall's QueueRail1/2
+    (solid 9 m × 1 m rails that paths cut through).
+  - 9 plaza routes are now +~4 m (2.87-2.99x -> 3.01-3.13x) and whitelisted with the reason.
+  - New test_of_wc_partitions: fails on the old bake, passes now.
+  - Validate OF final PASS (0 detours); c ostrander 14, test_of_ 8 and determinism 1 pass; regen twice is identical;
+    navmesh 4,165 -> 4,203.
+- **OF fixes for cherry-pick: 8c034cdb + the next commit** (docs only, ostrander_federal.md ghost step 2). P haz_n
+  confirms the cue: step 2 passed at t=208, no patrol change needed. The refinement reads the phase by position
+  (x > 38 on BC).
+  - P's Hazardous ghost (D-150) is blocked first at the dock, not BB: rover_hall's loop (b) LD dock check lands in 4 of
+    rover_dock's 5 smoke windows.
+  - Cause: guard_tweak `hub_loops` (A's) walks rover_hall's (a)/(b)/(c) in turn.
+  - Added a second cue: go once he has left LD for MO on (b). MO plus loop (c) keep him at BC's east end. This
+    matches P's one usable window.
+  - If no window coincides on Hazardous, a rover_hall change (loop order / an MO pause at Hazardous) needs you and A:
+    D-150.3 covers rover_basement only. I'll bring P's numbers.
 - **RT-C1 progress (prep/c-rt):** started 2026-10-21, after you accepted RT-C0 and the judgement calls.
+  - **RT-C2 batch 2 merged (64545dda..458cd913) + trunk edcb536e merged: `validate_level --stage=final --variants=all`
+    PASS for RT.** Verified by me on the merged result, alongside regen twice (identical), validate greybox PASS,
+    test_rt_loud_nav_targets, test_door_clearance_maps, test_kits, determinism and the 6 b tests.
+    - Door swings: CounterDoor / RearLobbyDoor now swing into DR; the AB monitor faces its chair.
+    - Skyline: `rt_skyline.gd` (copy-adapted of_skyline; 26 void rays -> 0).
+    - The 7 §3c kits + car_park_roof, all from existing catalog props (new .tres only, no shared kit changed), and the
+      9 rooms dressed.
+    - X1 on RT's own `exterior_street_rt`: convoy vehicles are lone-ok there. The shared density check has no per-heist
+      hook, and the shared kit is unchanged.
+    - **Navmesh 3,670, over the 3,500 early warning:** recorded, not contorted (your note; the 9 rooms added 241).
+    - The props the kits still lack, for the new-generator batch:
+      - `prop_car_park_barrier` and bay lines;
+      - `prop_diner_booth` and the HALFWAY neon;
+      - `prop_cookline`;
+      - `prop_scaffold` and `prop_site_clutter`;
+      - `prop_rt_tower_crane`, `prop_c4_box`, `plywood_painted` and the heli-pad decal.
+    - stage.txt still says greybox. Next: the 14 new generators (§3c), then the stage switch + GPU jobs (GI, shots,
+      Forward+ perf).
+  - **RT-C2 batch 1 merged (prep/c-rt 33e3da4a..8fa3fd80):** reuse-first dressing and finishes.
+    - Kits: 7 RT kit variants the OF way (`_kits_rolling_thunder.py`, hooked into `_kits.py` like ostrander_kits). New
+      .tres only; no shared kit changed. The 8th, `car_park_roof`, waits on its new base kit.
+    - Dressing: 21 rooms kit-dressed; 42 G1 boxes given catalog art; street furniture; every floor prop obstructed
+      (thin ones via _nav_thick).
+    - Finishes: library materials on every shell surface (rt_finish, the of_finish way).
+    - Verified after the merge: regen twice identical; **validate greybox, all variants: PASS**; test_rt_loud_nav_targets,
+      test_door_clearance_maps, test_kits, determinism and the 6 b tests green; lint, ownership and banned clean.
+    - **Final stage (report only):** materials (700 -> 0), zfight (41 -> 0), perf (0 warns), contract_nodes, variety
+      and the rest now pass. Remaining:
+      - density 10: 9 rooms wait on the new-kit batch, plus 1 lone convoy placeholder;
+      - orientation 2: G1 door swings CounterDoor / RearLobbyDoor, which I'll fix next as C's G1 data;
+      - bounds 26: no skyline yet; reuse of_skyline next.
+    - Two deviations for you:
+      (a) every finish is a world-triplanar copy of its library material (512 px/m) rather than OF's world-UV meshes.
+          One material per finish on box faces and the hull/step overrides is what cleared the seam z-fights.
+      (b) no 8 m light tiling (Forward+ judged, D-146; OF's tiling took perf from 0 to 25 warns).
+    - Navmesh 3,429: under the 3,500 early warning with little margin (D-149.5 makes it a warning only; A's NavPath is
+      uncapped). The 9 new-kit rooms will add to it.
+    - Next: the door swings; the skyline from of_skyline; then the new generators and the 9 kits.
+  - **RT-C2 batch 1 started (reuse-first, per your r263 note):**
+    - dressing from the §3c catalog props and kits (11 as-is, 8 kit variants the OF way) and library finishes on every
+      shell surface;
+    - gameplay unchanged (bake obstructions, navmesh < 3,500, walkthrough);
+    - validate greybox (all variants) after each step, plus a report-only `--stage=final` FAIL list to show the
+      distance to G2;
+    - the 14 new generators come in a later batch. No renders here.
+  - **G1 items + RT-C1b merged (prep/c-rt 2b776538..3d0ff857):**
+    - 17 breakable WindowPrefabs (shopfronts 3.0 × 2.4; frosted cabins not see-through).
+    - 93 COVER points: 57 always on, plus 36 per convoy layout with TacticalPoint `enabled = false` until the stop; the
+      mixer's tagged `mixer`.
+    - 4 `civ_flee` exits past the closures and 8 sidewalk call points (D-149.7).
+    - The man-gate 1.2 × 1.0 m mesh panel (see_through, D-142); the Tannery gates `opens_with = mixer_move`, BARRED and
+      baked closed until A5-02.
+    - 5 throw-spot bag_lines (camera-free in all 3 camera layouts).
+    - `test_rt_loud_nav_targets` (per convoy route: 146 targets, 0 bad); RT in `test_door_clearance_maps` (31 of 33
+      open doors checked, pass).
+    - Verified after the merge: regen twice identical; validate greybox PASS; the 2 new test runs + 6 b tests green;
+      gdlint, flake8, ownership and banned clean. Navmesh about 2,578.
+    - Review points for you:
+      (a) the man-gate panel is in the hoarding beside the gate, not in the leaf: a door leaf counts as see-through
+          only as glass (D-142);
+      (b) the per-layout points are tested on the street navmesh only until the movers and the per-layout nav regions
+          (D-149.1) exist.
+    - **Proposal, not coded (shared levelcheck; for you), QC-87c:** add one reachability / walkthrough run per node
+      with meta `convoy_layout`:
+      - activate its route slot and show only that set;
+      - enable its TacticalPoints and its pre-baked `layout_nav` region (once A5-02 exists), disabling the others;
+      - add its RearDoor and COVER targets, labelled `convoy=<route>_<mode>`;
+      - restore everything afterwards.
+      That needs a `set_layout_config` beside `set_variant_config` in lc_context.gd.
+    - **For A (queued):** `civilians_leave` returns early once loud, but RT calls it at the alarm (D-149.7). The
+      mission must enable the active layout's cover at the stop, and open the Tannery gates on `mixer_move`.
+    - **G1 is now complete on paper and on map, pending your review.** Remaining blockers are A5-01/02/03 and RT-B1
+      (B's values).
+  - **D's cast cross-check folded in (32256261, merged 68fa63d6):**
+    - waitress `counter_wipe`; cook at 0.30 m off the cookline;
+    - 5 diner customers `sit_eat` on chairs. The 5th is at a 3rd table: a booth's 0.115 m bench-to-table strip can't
+      hold a navmesh root at 0.1 m cells;
+    - the bus queue seated on the shelter benches (benches carved exactly);
+    - the attendant `desk_work` on `prop_chair_office` at a catalog desk;
+    - 7 `cower_stand` marks plus a DinerCower graph;
+    - `staff_waitress` / `staff_cook` first in those spawns' tags.
+    - D's driver/door/cab numbers are A5-02 requirements in `rolling_thunder_convoy.py --check`. Please paste them
+      into the plan's §7 (your file); the text is in that script.
+    - RT regen twice identical; validate greybox PASS; navmesh 2,578; the six b tests green.
+  - **D's RT cast cross-check (env/d-art 9252b9ef):** being folded in now, through the builder on prep/c-rt, then
+    merged here.
+    - Waitress (`counter_wipe`) and cook re-placed.
+    - The diner customers seated (`sit_eat`), plus a booth for the 5th; bus queue seated; the attendant at a real desk
+      on `prop_chair_office` (`desk_work`).
+    - `cower_stand` marks (diner front wall, counter x 23.39, behind the shelters).
+    - `staff_waitress` / `staff_cook` put first in those spawns' tags.
+    - Convoy seat/door/cab numbers recorded in the plan for A5-02 (nothing built).
+  - **r258 rulings applied:**
+    - (1) **floating:** the 5 tilted east-arm convoy placeholders carry meta `lc_ignore` with an `lc_ignore_reason`
+      line, set in RT's generator only. They have no collision, so D-113's rule is kept. A floating-only
+      `floating_whitelist.txt` hook in the shared validator was denied by this session's permissions, so I used the
+      existing per-node meta. It also skips clipping for those 5 boxes, which have no collider.
+    - (2) **Menus:** RT was already `hidden: true` in B's heist_list.tres, so not menu-ready (the builder's "shows in
+      the menus" was wrong).
+    - (4) **The 4 tests/b FAILs were mine.** I was wrong to relay them as pre-existing.
+      - 3 came from RT's def registering RT as a heist: HeistRegistry finds `<id>_def.tres`, and B's catalogue tests
+        then demand RT's missing values. The def is now `rolling_thunder_wip_def.tres` (off the convention) until G1
+        approval + RT-B1, when it's renamed back. The map still validates via the convention scene path.
+      - The 4th (heist_freshness v9 vs v10) was a stale trunk merge, fixed by merging trunk 3a3885ad.
+      - Now green: contacts 6, heist_freshness 14, p2_heist_content 15, payout_calculator 20, plus heist_readiness 9,
+        p5_catalogue 7 and determinism 1.
+    - RT regen twice is identical; **validate greybox (all variants): PASS**; ownership and banned are clean.
+  - **Milestone 1 merged (RT-C1 8973f6c9 via the env/c-worlds merge, after cc55e5e9):** the RT G1 greybox builds.
+    - Generator `game/world/heists/rolling_thunder/greybox/` (the OF chain copy-adapted). Built: site, Skyway, trench,
+      hoarding and closures, car park ×3, diner ×2, cabins, magazine, frame, scaffold, crane, the stairs, rooms and zones,
+      12 player + 6×2 police spawns, 50 doors, 12 slot groups / 31 slots, 4 ConvoyLayout placeholder sets
+      (`TODO(A5-01/02/03)`, `TODO(QC-81)`), H1-H4, S1-S4, 13 preplan points, 28 review cams, graphs, assault markers.
+    - Results: regen twice identical; navmesh 2,588 polys (< 3,500); validate greybox (all variants) passes every check
+      but **`floating`** (5); gdlint, flake8, banned and ownership clean.
+    - The `floating` FAIL: the east-arm convoy boxes are tilted 8.9° flush on the ramp, and the probe starts at the
+      lowest corner. Your call: (a) I teach lc_check_floating tilted boxes (it touches every heist's validator), or
+      (b) accept it until A5-02's movers replace the boxes.
+    - **Menus:** the minimal `rolling_thunder_mission.gd` stub (A's file from here) makes RT "ready", so it shows in
+      the menus with a greybox. That's fine on held env/c-worlds; please decide before any trunk merge.
+    - Plan changes for you to accept:
+      - diner stair SC doors moved to (5, 17) (a mid-core door opened onto a flight);
+      - closure lorries W and S shortened to leave a ≥ 4 m police lane (§7.12);
+      - door kits: 1.0 m route doors use the 1.2 m service kit;
+      - 0.8 m deck slabs (2.7 m ceilings);
+      - walkthrough whitelist entries for level-change detours (reasons in the file).
+    - Asks for A: A5-01/02/03; burn_point.target (QC-81); a TacticalPoint `enabled` flag; a padlock that can gate a
+      hack_terminal (the signal cabinet); more than one `force_active` per rare event (gold_rush); the full mission.
+    - Asks for B: the RT-B1 values (per-difficulty values, rare-event keys, preplan costs/favors, briefing, D-143.5
+      allow-lists, `asset.c4_drop`) and the `staff_diner` / `staff_booth` tag rows. The resources file holds only the
+      $30k payout and the G0 weights.
+    - Pre-existing (the builder's own check, which I haven't repeated): 4 tests/b FAILs (contacts, heist_freshness,
+      p2_heist_content, payout_calculator). They fail with the RT mission removed too.
+    - Next for G1: window prefabs, the full COVER set, seats, civ_flee exits / call points, the man-gate mesh, bag_line
+      metas, then RT-C1b.
   - Building the G1 greybox in a separate worktree on a local `prep/c-rt` branch: emit_layout from the passing plan
     scripts, then the generator (copy-adapting the OF chain), the site and shells, stairs and ramps, rooms and zones,
     spawns, doors, contract nodes and the nav bake, then the slots and convoy placeholders. Validate and regen as
     usual.
-  - **Branch note:** my session rules let me push only to `env/c-worlds`. So `prep/c-rt` stays a LOCAL branch,
-    unpushed, until the OF done check, when it merges into env/c-worlds and is pushed there.
-  - If you need it visible earlier, the user (not a session message) has to allow pushing `prep/c-rt`.
-  - Risk: a container reclaim would lose the local branch. I'll keep commits small and report each milestone here.
+  - **Branch:** per your call, RT-C1 lands on `env/c-worlds` itself. The builder commits on a local `prep/c-rt`, which I
+    merge into env/c-worlds and push every 20-30 min. Please keep env/c-worlds out of trunk merges until the OF done
+    check.
+  - Any OF fix meanwhile goes on top with a named sha for you to cherry-pick.
 - 2026-10-21, P's OF ghost BB question: answered per D-150. The §5 line predates D-140's Cataclysm extras, and the
   ghost acceptance is on Hazardous. ostrander_federal.md §5 is annotated (b08b9b56). I'm standing by for P's Hazardous
   numbers in case rover_basement needs a longer away leg there (D-150.3).

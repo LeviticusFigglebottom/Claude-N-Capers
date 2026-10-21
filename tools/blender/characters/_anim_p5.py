@@ -291,26 +291,26 @@ def _bar_stance(sk: Skeleton, pose: Pose, t: float, T: float, lean: float) -> No
     spine(pose, lean=lean, chest_lean=0.6 * lean, hips=(3.0, 0.0, -2.0))
 
 
-def bartender_wipe(sk: Skeleton, f: int, N: int) -> Pose:
-    """Behind the bar (top BAR_Z, near edge BAR_EDGE ahead): wiping the bar top with a rag in small circles (one
-    per second, the centre drifting across WIPE_C +- WIPE_DRIFT), the left hand flat on the bar; eyes on the bar,
-    one glance up at the room mid-loop."""
+def bartender_wipe(sk: Skeleton, f: int, N: int, bar_z: float = BAR_Z, lean: float = 17.0) -> Pose:
+    """Behind the bar (top ``bar_z``, default BAR_Z; near edge BAR_EDGE ahead): wiping the bar top with a rag in small
+    circles (one per second, the centre drifting across WIPE_C +- WIPE_DRIFT), the left hand flat on the bar; eyes on
+    the bar, one glance up at the room mid-loop. ``bar_z`` / ``lean`` serve a lower counter (RT counter_wipe)."""
     t = f / FPS
     T = N / FPS
     k = sk.scale
     pose = Pose()
     glance = bump(t, 3.3, 4.2, 0.5)
-    _bar_stance(sk, pose, t, T, 17.0 - 5.0 * glance)
+    _bar_stance(sk, pose, t, T, lean - 5.0 * glance)
     drift = math.sin(TAU * t / T)
     add_rot(pose, "chest", A.rzd(-4.0 * drift))
     look(pose, yaw=6.0 * drift * (1.0 - glance) + 14.0 * glance, pitch=24.0 - 30.0 * glance)
     breathe(pose, t, T / 3.0, 0.8)
     th = TAU * round(T) * t / T                            # one circle per second (clockwise seen from above)
-    c = v3((WIPE_C[0] + WIPE_DRIFT * drift) * k, WIPE_C[1] * k, BAR_Z * k)
+    c = v3((WIPE_C[0] + WIPE_DRIFT * drift) * k, WIPE_C[1] * k, bar_z * k)
     o = c + v3(WIPE_R * k * math.cos(th), -WIPE_R * k * math.sin(th), 0.0)
     prop_hand(sk, pose, "rag", H.level_frame(yaw=6.0 * math.sin(th) - 6.0), o, pole=v3(0.85, -0.3, 0.3))
     al, pa = v3(0.35, 0.94, 0.0), v3(0.0, 0.0, -1.0)
-    z = BAR_Z * k + surface_dip(sk, "L", al, pa, ("rest_flat", 1.0)) + 0.001 * k
+    z = bar_z * k + surface_dip(sk, "L", al, pa, ("rest_flat", 1.0)) + 0.001 * k
     hand_on(sk, pose, "L", v3(-0.20 * k, 0.40 * k, z), al, pa, pole=v3(-0.9, -0.4, -0.35), along_share=0.5, palm_off=0.012)
     pose.hands["L"] = hand_shape("rest_flat", 1.0)
     return pose

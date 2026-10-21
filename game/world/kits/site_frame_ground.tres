@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"site_frame_ground"
+purpose = &"exterior"
+required_items = Array[StringName]([&"pallet", &"forklift", &"cone"])
+optional_items = {}
+clutter_groups = {}
+min_density = 0.01
+max_density = 0.3
+min_props = 6
+lone_ok_kinds = Array[StringName]([&"pallet", &"forklift", &"cone", &"formwork", &"skip", &"gas_cylinders"])
+seed_salt = 4715
+counts = {}
+assets = {}
+ceiling = {}
+notes = "RT FG the frame's ground floor: loaded pallets in pairs, the forklift (for the dumper, D-149.6), cones; the formwork stacks are the map's (G1 boxes). Fixed tables (rt_dress_data.gd). Waits: prop_site_clutter (formwork / rebar / mixer), prop_scaffold."

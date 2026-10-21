@@ -228,6 +228,14 @@ Materials/decals new: 6 (`plywood_painted` + graphic, `steel_cabin`, Vaultline l
 Audio/look new: 3 ambiences, 5 cues, music, LUT. Dropped by D-147 (§3b.5): bus, trees, dumper, jukebox, cycle racks,
 bunting, wheel stops.
 
+### 3d. G2 build deviations accepted by the LEAD (RT-C2 batch 1, 2026-10-21)
+- **Finishes are world-triplanar copies of their library materials (512 px/m)**, not OF's world-UV meshes. One
+  material per finish on box faces and on the hull/step overrides is what cleared the seam z-fights (`rt_finish.gd`).
+- **No 8 m light tiling.** RT is judged in Forward+ (D-146 addendum 6); OF's tiling took the levelcheck perf report
+  from 0 to 25 warns for no visible gain.
+- **Navmesh polygon count:** the 3,500 figure stays an early warning (D-149.5; A's NavPath is uncapped). If the new-kit
+  rooms push it past 3,500, record the count; don't contort the layout for it (3,429 after batch 1).
+
 ## 4. Rules the build must satisfy (OF §4, carried over)
 - Every objective carries `marker_tags` (ui_hud 1.8), the convoy marker included (it moves until the stop: B mocks it).
 - Every spawn tag maps in `heist_tag_characters.rolling_thunder` (no capsules, PO-5.7): add `staff_diner`, `staff_booth`;

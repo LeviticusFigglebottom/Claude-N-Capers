@@ -10,7 +10,9 @@ extends RefCounted
 const DOCTOR_SAFE_M: float = 8.0
 const DOCTOR_WALK_M: float = 40.0
 const MARKER_PREFAB_M: float = 1.5
-const LOOP_LIMIT_S: float = 1500.0
+## Default heist-time cap of the loud loop (s); --po5-heist-cap=<s> overrides it (LEAD GPU-20b: OF Cataclysm reached
+## escape_wait at t=1471 and the old 1500 s cap cut it 29 s later).
+const LOOP_LIMIT_S: float = 2400.0
 ## Downed teammates within this flat distance get revived first (m).
 const REVIVE_RANGE_M: float = 20.0
 ## An enemy the pilot can see within this range makes it fight before reviving (unless last stand) (m).
@@ -126,7 +128,8 @@ func play(flow: Node) -> int:
 	f.note("loud: phase=%d went_loud=%s" % [rt.phase, rt.went_loud])
 	var t0: float = rt.heist_time_s
 	var last_shot: float = -100.0
-	while not _ended and rt.heist_time_s - t0 < LOOP_LIMIT_S:
+	var cap: float = _heist_cap_arg()
+	while not _ended and rt.heist_time_s - t0 < cap:
 		if p.crew.crew_state == Enums.CrewState.CUSTODY:
 			return fail("player in custody at %.0f s" % rt.heist_time_s)
 		if p.crew.crew_state != Enums.CrewState.NORMAL:
@@ -137,7 +140,7 @@ func play(flow: Node) -> int:
 			await f.shot("auto_%d" % int(rt.heist_time_s))
 		await step()
 	if not _ended:
-		return fail("no heist end within %.0f s; markers %s" % [LOOP_LIMIT_S, _marker_summary()])
+		return fail("no heist end within %.0f s; markers %s" % [cap, _marker_summary()])
 	return await f.payday_to_hub()
 
 
@@ -955,6 +958,14 @@ func _note_bot_revives() -> void:
 ## before the escape (markers come in objective order; OF lists bond_safe above escape_wait / escape).
 func _is_focus(m: Dictionary) -> bool:
 	return focus != &"" and StringName(m["id"]) == focus and not _stalled(m) and not _is_marker_blocked(m)
+
+
+## --po5-heist-cap=<s>: the loud loop's heist-time cap (default LOOP_LIMIT_S).
+static func _heist_cap_arg() -> float:
+	for a: String in OS.get_cmdline_user_args():
+		if a.begins_with("--po5-heist-cap="):
+			return maxf(a.trim_prefix("--po5-heist-cap=").to_float(), 1.0)
+	return LOOP_LIMIT_S
 
 
 static func _focus_arg() -> StringName:

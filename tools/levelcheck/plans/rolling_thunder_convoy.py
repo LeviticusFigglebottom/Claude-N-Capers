@@ -197,6 +197,39 @@ def check_crash(rep: Report) -> None:
         rep.expect(d >= 2.0, "%s: T1 front %.1f m from the T-boned lead car %s" % (key, d, lead))
 
 
+# Vehicle seat / door requirements for the convoy prefabs and their seated units (ENV D's RT cast check against the
+# clips, docs/status/env_d.md on env/d-art 9252b9ef item 7; RT plan §7.8). Requirements for A5-02 (convoy_vehicle,
+# rt_vehicle_placement / test_rt_clips) and the G2 vehicle generators: nothing is built from them at G1. Metres, from
+# the seated root (the driver's root is on the footwell floor under the seat centre, facing the vehicle's front).
+SEAT_REQ = {
+    "cushion_above_root": 0.36,
+    "wheel_centre_ahead": 0.40, "wheel_centre_up": 0.76, "wheel_rim_r": 0.18, "wheel_tilt_deg": 30.0,
+    "head_up": (1.0, 1.05), "roof_liner_min": 1.15,
+    "door_open_behind": 0.30, "door_open_ahead": 0.65, "door_sill_max": 0.22, "door_beside_seat": 0.42,
+    "clear_beside_seat": 1.10,
+}
+SEAT_INFO_KEYS = ("cushion_above_root", "wheel_centre_ahead", "wheel_centre_up", "wheel_rim_r", "wheel_tilt_deg",
+                  "door_open_behind", "door_open_ahead", "door_sill_max", "door_beside_seat", "clear_beside_seat")
+CAR_HEIGHT = 1.5            # the escort / scout cars: fine if their floor is at most 0.35 m (1.15 m liner)
+CAR_FLOOR_MAX = 0.35
+# vehicle_exit assumes a footwell level with the road: the 3.2-3.6 m armoured cabs need van_exit or a root drop (A).
+CAB_NEEDS_DROP = ("cash", "bullion")
+
+
+def check_seats(rep: Report) -> None:
+    rep.section("Vehicle seats and doors (D's clip numbers; requirements for A5-02, nothing built at G1)")
+    liner = CAR_HEIGHT - CAR_FLOOR_MAX
+    rep.expect(liner >= SEAT_REQ["roof_liner_min"], "escort cars %.2f m tall, floor <= %.2f m: liner %.2f m >= %.2f"
+               % (CAR_HEIGHT, CAR_FLOOR_MAX, liner, SEAT_REQ["roof_liner_min"]))
+    rep.expect(SEAT_REQ["head_up"][1] < SEAT_REQ["roof_liner_min"], "head %.2f-%.2f m under the %.2f m liner"
+               % (SEAT_REQ["head_up"] + (SEAT_REQ["roof_liner_min"],)))
+    rep.info("driver: cushion %.2f m up; wheel centre %.2f ahead / %.2f up, rim r %.2f, tilted %.0f deg; door opening "
+             "%.2f behind to %.2f ahead of the seat centre, sill <= %.2f, %.2f beside; %.2f m clear beside the seat"
+             % tuple(SEAT_REQ[k] for k in SEAT_INFO_KEYS))
+    rep.info("cab dismount: %s trucks need van_exit or a root drop (vehicle_exit assumes a road-level footwell; A)"
+             % " / ".join(CAB_NEEDS_DROP))
+
+
 def check_movers(rep: Report) -> None:
     rep.section("Movers (D-149.8)")
     rep.expect(len(MOVERS) <= MAX_MOVERS, "%d drive-in movers (%s) <= %d; the escape van pops in"
@@ -219,6 +252,7 @@ def check() -> Report:
     check_fit(rep)
     check_crash(rep)
     check_movers(rep)
+    check_seats(rep)
     check_paths(rep)
     return rep
 

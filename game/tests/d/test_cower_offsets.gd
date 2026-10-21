@@ -13,7 +13,7 @@ const TIMES: Array[float] = [0.0, 0.8, 1.3, 1.5, 2.5, 3.6]
 ## P5 generic roles that are civilians (the D-115 heists and tag maps use civ_ / staff_ spawn tags)
 const CIV_ROLES: Array[String] = ["bank_teller", "bank_manager", "bank_officer", "bank_customer", "gallery_curator",
 	"gallery_attendant", "gallery_conservator", "gallery_admin", "gallery_patron", "gallery_waitstaff", "club_bartender",
-	"club_dj", "club_patron", "street_civilian"]
+	"club_dj", "club_patron", "street_civilian", "diner_staff", "carpark_attendant"]
 ## an offset may exceed the need by at most this much (m)
 const SLACK: float = 0.03
 

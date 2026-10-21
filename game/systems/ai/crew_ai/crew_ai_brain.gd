@@ -48,6 +48,10 @@ const GIVE_WAY_RNG_STREAM: StringName = &"crew_ai_give_way"
 const TWEAK_PATH: String = "res://systems/ai/crew_ai/crew_ai_tweak.tres"
 const WORLD_MASK: int = (1 << 0) | (1 << 1)
 const HOSTILE_ROLES: Array[StringName] = [&"police", &"special", &"guard", &"cartel"]
+## _civilian_in_line: the line of fire is checked from this far in front of the eye (m), against a civilian body up to
+## CIV_BODY_TOP_M above its feet.
+const CIV_LINE_FROM_M: float = 0.3
+const CIV_BODY_TOP_M: float = 1.7
 
 @export var tweak: CrewAiTweak
 
@@ -1162,7 +1166,8 @@ func _tick_scan(delta: float) -> void:
 			var score: float = d * (tweak.tasing_stinger_score_mult if _is_tasing_crew(npc) else 1.0)
 			if _is_arresting_crew(npc):  # L2.12: the officer camping a cuffed teammate is shot first
 				score *= tweak.arrester_score_mult
-			if d > Tweak.crew().ai_engage_range_m or score >= best_d or not _sees_any(eye, npc):
+			if d > Tweak.crew().ai_engage_range_m or score >= best_d or not _sees_any(eye, npc) \
+					or _civilian_in_line(eye, p):
 				continue
 			best = npc
 			best_d = score
@@ -1170,6 +1175,25 @@ func _tick_scan(delta: float) -> void:
 		_since_acquire = 0.0
 		_roll_aim()
 	target_enemy = best
+
+
+## GPU-20c (PD2 bots never shoot civilians; OF Cata 1037: Rook 4 / Dutch 2 civilian kills): an alive civilian
+## (hostages included) stands in the line of fire from `eye` to `aim`, or within civilian_line_past_m behind it.
+func _civilian_in_line(eye: Vector3, aim: Vector3) -> bool:
+	var dir: Vector3 = aim - eye
+	var reach: float = dir.length()
+	if reach < 0.01:
+		return false
+	var start: Vector3 = eye + dir * (CIV_LINE_FROM_M / reach)  # in front of the muzzle, not beside the bot
+	var end: Vector3 = eye + dir * ((reach + tweak.civilian_line_past_m) / reach)
+	for n: Node in _rt.npcs(&"civilian"):
+		var feet: Vector3 = (n as Node3D).global_position
+		# The body as a vertical segment (standing, crouched or cowering: the conservative standing height).
+		var pts: PackedVector3Array = Geometry3D.get_closest_points_between_segments(start, end,
+			feet + Vector3(0.0, 0.2, 0.0), feet + Vector3(0.0, CIV_BODY_TOP_M, 0.0))
+		if pts[0].distance_to(pts[1]) <= tweak.civilian_line_clear_m:
+			return true
+	return false
 
 
 ## L2.12: `npc` is the officer holding a crew member in cuffs (CrewCuffs.cuffed_by_net_id).
@@ -1274,7 +1298,8 @@ func _weapon_controls(i: CrewIntent, eye: Vector3, delta: float, interacting: bo
 			var to: Vector3 = _aim_point(target_enemy) - eye
 			var view: Vector3 = _view_dir()
 			if w.can_fire() and _since_acquire >= Tweak.crew().ai_reaction_time_s and _shot_left <= 0.0 \
-					and not _fire_latch and view.angle_to(to) <= deg_to_rad(tweak.fire_cone_deg):
+					and not _fire_latch and view.angle_to(to) <= deg_to_rad(tweak.fire_cone_deg) \
+					and not _civilian_in_line(eye, eye + to):
 				fire = true
 				_shot_left = Tweak.crew().ai_shot_interval_s
 		elif mag < int(ceil(float(w.mag_size(ws)) * tweak.tactical_reload_frac)) and w.reserve(ws) > 0:

@@ -209,6 +209,15 @@ OUTFIT: dict[str, tuple[str, float, float, str]] = {
     "char_coat_stone": ("#A49C88", 0.88, 0.0, "cloth"),  # OF-D1: the office man's stone trench coat
     "char_canvas_tan": ("#8A7352", 0.86, 0.0, "cloth"),  # OF-D1: the tradesperson's canvas chore jacket
     "char_vl_hivis": ("#E0963E", 0.62, 0.0, "cloth"),  # RT-D1: Vaultline route marshal's amber hi-vis vest
+    # RT-D1 Rolling Thunder street civilians and staff (char_p5_street.py)
+    "char_diner_rose": ("#BF8A8E", 0.80, 0.0, "cloth"),  # RT-D1: the diner waitress's pale rose uniform dress
+    "char_apron_cream": ("#D3CDBC", 0.88, 0.0, "cloth"),  # RT-D1: the diner aprons (waitress, cook)
+    "char_polo_teal": ("#2F6A66", 0.88, 0.0, "cloth"),  # RT-D1: the car-park attendant's polo
+    "char_fleece_espresso": ("#3B302A", 0.97, 0.0, "cloth"),  # RT-D1: the attendant's dark fleece gilet
+    "char_mac_cherry": ("#8A2E38", 0.70, 0.0, "cloth"),  # RT-D1: the commuter's cherry raincoat (mac)
+    "char_hoodie_heather": ("#85878A", 0.95, 0.0, "cloth"),  # RT-D1: the jogger's heather-grey hoodie
+    "char_nylon_green": ("#4C8040", 0.60, 0.0, "cloth"),  # RT-D1: the delivery rider's padded jacket and bag
+    "char_blazer_forest": ("#35503F", 0.82, 0.0, "cloth"),  # RT-D1: the office worker's forest-green blazer
     # D-115 hand props (char_hand_props.py)
     "char_prop_paper": ("#DCDAD2", 0.85, 0.0, "plastic"),  # cigarette paper, book pages, cash strap, bottle label
     "char_prop_filter": ("#C08A52", 0.80, 0.0, "plastic"),  # cigarette cork filter
