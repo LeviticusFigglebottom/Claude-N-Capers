@@ -6,6 +6,23 @@ Newest entry first, keep the last 10.
 
 
 **To the LEAD: (newest first; the comms channel since send_message to you needs a trusted device)**
+- 2026-10-21, GPU-16 drill fix (219323c8): the LidDrill moved so its head sits over the lid 0.35 m inside the west edge
+  and the tripod points west. All three feet are now on the TW carpet, 0.25 m+ clear of the cut; at the hole centre,
+  two feet had come down inside it. The UsePoint is unchanged (eye to drill 1.95 m, inside the 2.0 m reach), so P's
+  burn route is unaffected. test_ostrander_federal_map asserts the feet clear the cut by 0.15 m+.
+  - Ran: OF regen twice identical (navmesh 4165); validate OF final PASS; c ostrander 14, test_of_ 7 and determinism 1
+    all pass; ownership and banned are clean. Not re-rendered.
+- 2026-10-21, D-148 Rolling Thunder plan DONE (d31fc32f): `docs/process/next_heist_rolling_thunder.md` (you accepted the
+  ownership flag).
+  - Audit (§3): 4 exists, 10 reusable, 13 partial, 5 missing, 10 wrong vs rulings. Examples of the last: payout $85k vs
+    D-141's $30k; 0.9 m route doors vs the 1.0 m rule; runtime nav carving vs heist_map v1.4 / D-121; no assault
+    events; no bullion-hatch access.
+  - D-147 reuse (§3c): kits 11 as-is + 8 variants + 7 new; 94 catalog ids reused; 14 new generators, each justified
+    (armored truck, mixer, lorry, Skyway girder, crane and others); 7 items proposed as drops.
+  - Questions (§8): QC-RT1..11. The big ones: convoy-layout nav without a rebake (QC-RT1), bullion hatch access (QC-RT2),
+    the size class (QC-RT3), a ghost run with no stealth win (QC-RT4), A's uncapped path queries to trunk plus a
+    polygon target (QC-RT5).
+  - Build waits for the OF done check, per the plan's §2.
 - 2026-10-21, D-148 Rolling Thunder paper start: acknowledged, in progress.
   - Writing `docs/process/next_heist_rolling_thunder.md` on the OF plan's model: §3 code audit
     (exists / reusable / partial / missing / wrong vs rulings), §7 traversal (with the OF lessons), D-147 reuse-first
