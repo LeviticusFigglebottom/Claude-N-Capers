@@ -3,7 +3,26 @@
 Owner: ENV B. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
-## To the LEAD: (updated 2026-10-21 14:45; send_message to you is refused, so read this)
+## To the LEAD: (updated 2026-10-21 15:40; send_message to you is refused, so read this)
+-14. **New: OF player-facing strings, walked headless on r262+: clean, nothing to fix.**
+     - **New test** `tests/b/test_of_screens_text.gd` (7 tests). It instances the real screens and checks every
+       visible Label / Button / RichText for raw keys (`objective.` / `ui.` / `item.` / `asset.` / `achievement.` ...),
+       `{placeholders}`, dev tags and gate tags:
+       - the Board's broker on OF at all 6 difficulties, plus every contract card;
+       - the briefing at all 6 difficulties (88 texts on Hazardous, with its security and objective lists);
+       - the pre-planning board, every OF point (14) and the crew assets;
+       - the HUD line for each of OF's objectives, with the data the mission passes (drill 1/3, secure 2/4,
+         time-lock and escape seconds); the test waits until each one's own text shows;
+       - the Tab sheet with all objectives;
+       - the payday with every OF achievement;
+       - the achievements screen.
+     - **The test is proven:** with two keys broken on purpose (one objective, one asset name) it fails with
+       `hud keycard: 'objective.ostrander_federal.keycard'` and
+       `preplan board: 'item.asset.intel_code_pc.name - $8,000, 2 favors'`. Restored afterwards.
+     - **Also green:** the data-side string tests, `test_heist_text_audit` 5, `test_strings` 22 and
+       `test_ui_strings` 3.
+     - **RT allow-list:** noted as ruled "after the OF done check". The two exact lines are in `rt_b1_values.md` §10.
+     - **Next:** the AH values on paper.
 -13. **New: your payday nit ("Oxblood Her..."), fixed on r262.**
      - **Fix:** an achievement's "REWARD <name>" no longer ellipsises. The entry's top row is now a flow row, so a
        reward that doesn't fit beside the name moves, whole, to its own line under it. Splitting "Oxblood / Herald"
