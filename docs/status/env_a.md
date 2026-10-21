@@ -11,8 +11,13 @@ Newest entry first, keep the last 10.
     docs/status/env_b.md.
 - Tense batches since the revive fix: 1/3, 2/3, 1/3, 1/3. The pilot runs out of downs over the ~10 min loud phase.
 - B's remaining data levers: Tense Bulwark cap 3 -> 2, or Stinger 1 -> 0 (B's files; your call).
+- **Update (08:20), from ENV P:** env/p-play 0d0a1ab0 fixes a shared crew CapsuleShape3D. Any crew member crouching
+  (bots crouch in cover) shrank everyone's capsule, so the others sank 0.30 m and a 0.15 m kerb became a 0.45 m wall:
+  stuck under fire. That likely fed these "3 downs" losses. **Re-run DB Tense ×3 with P's fix merged before touching
+  any data lever.**
 - **A's recommendation:**
-  1. First run the doctor-bag cell (`--po5-doctor-bag`, harness only). A PD2 player brings a doctor bag to a 10 min
+  0. Merge P's 0d0a1ab0, then re-run DB Tense ×3.
+  1. Then run the doctor-bag cell (`--po5-doctor-bag`, harness only). A PD2 player brings a doctor bag to a 10 min
      loud job, and it resets downs; the losses are all "3 downs".
   2. If Tense still sits at about 1/3 with the bag, take the Bulwark cap 3 -> 2. That is the PD2-plausible lever for
      Hard (from memory, not verified: PD2's lower difficulties allow about 2 shields alive at once). Keep the Stinger at
