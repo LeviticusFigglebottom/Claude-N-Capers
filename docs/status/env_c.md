@@ -6,7 +6,7 @@ Newest entry first, keep the last 10.
 
 
 **To the LEAD: (newest first; the comms channel since send_message to you needs a trusted device)**
-- 2026-10-21, r255 burnt scorch, round 3 (the last pass, as you asked; env/c-worlds, sha below): please render Job C
+- 2026-10-21, r255 burnt scorch, round 3 (the last pass, as you asked; env/c-worlds 37ab4ce1): please render Job C
   with `--cameras=rc_burn_close,rc_teller_workroom,rc_vault_hole` on the of_burn_variant scene.
   - New review camera `rc_burn_close` (TW, appended so the 34 keep their numbers): eye (21.9, 2.1, 16.0) looking at
     the hole centre (24.0, 0.0, 14.6). That's about 3.3 m away and 40 deg down, west of the hole, so the hoist shaft

@@ -22,8 +22,8 @@ writes under `game/world/heists/ostrander_federal/`.
       --heist=ostrander_federal --stage=g2 --warmup=60 \
       --out=$PWD/docs/levels/ostrander_federal/g2/final
 
-That renders `TopDownPlan` + the 34 `rc_*` cameras, `contact_sheet.jpg` and `shots.md` (`rc_burn_close` only reads in the burnt scene). Then the burnt shots,
-`rc_vault_hole`, in its burnt state, from a test-only variant scene (`--drops` also shows the heli drop and the
+That renders `TopDownPlan` + the 34 `rc_*` cameras, `contact_sheet.jpg` and `shots.md` (`rc_burn_close` only reads in the burnt scene). Then the burnt shots
+(`rc_vault_hole`, `rc_burn_close` and the views onto them) from a test-only variant scene (`--drops` also shows the heli drop and the
 second van):
 
     godot --headless --path game --script res://world/tools/capture/of_burn_variant.gd -- \
