@@ -3,7 +3,30 @@
 Owner: ENV B. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
-## To the LEAD: (updated 2026-10-21 16:05; send_message to you is refused, so read this)
+## To the LEAD: (updated 2026-10-21 16:50; send_message to you is refused, so read this)
+-16. **Your two questions, answered.**
+     1. **What the OF string sweep found: nothing.** I found no missing key, raw id, `{placeholder}` or dev tag on
+        any OF screen: the Board broker / cards, the briefing at 6 difficulties, the preplan board on all 14 points,
+        the HUD line for every objective, the Tab sheet, the payday with every OF achievement, and the achievements
+        screen. The walk is `test_of_screens_text` (item -14). It is proven by breaking two keys on purpose, which it
+        caught.
+     2. **D-148 regression on trunk b0bd47a0: green, nothing out of reach.** Each suite ran once:
+        - payday / progression: `of_payday_e2e` 7, `payout_calculator` 20, `xp_curve` 4, `heist_freshness` 14,
+          `payday_sum` 2, `payday_cards` 10, `ui_payday` 14, `ui_progression` 3, `difficulty_unlock` 3;
+        - menu reach: `menu_reach` 2, `reach_today` 5, `heist_readiness` 9;
+        - briefing: `briefing` 38, `briefing_cap` 3, `briefing_intel` 14.
+
+        **New `test_d148_pace.gd` (3 tests):**
+        - **Every heist's first-clear level is pinned to progression_pace.md** at all 6 difficulties (L2...L19 for
+          GH; L4...L22 for ND / SL / DB / GN; L6...L25 for OF), and it asserts every offered heist is pinned.
+        - **Every level gate is reachable:** 36 weapons + 7 armors (max L45), the Board's L80 Lethal / Cataclysm
+          gate and Notoriety's L100 all sit inside 0-100, with a finite XP cost (23.28 M to L100), and each is
+          reached at its XP.
+        - **A new player reaches every item unlock within 40 clears** (Routine, Tense, Hazardous rotations, then
+          Brutal; the pace doc says ~32).
+
+        The only gate that moved is the one already flagged: Board L80 now takes ~230 Brutal clears (it was 131). It
+        is still the PO's call, kept at 80; B suggests 70.
 -15. **New: AH values on paper, `game/content/docs/ah_b1_values.md`** (the same shape as RT-B1, for C's generator).
      - **What's in it:** HeistDef values; variant rows with per-difficulty weights (guard posts 1 / 2 / 3, crowd
        12-20, dance clusters 4-6, safe bags, lasers, camera operator); the 6 rare events with 4 surprise strings;
