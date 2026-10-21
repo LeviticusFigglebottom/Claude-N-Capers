@@ -231,3 +231,31 @@ NPC placement is seeded but animation/tier state at capture time may differ, so 
 ### Fix-up: GPU-10 and GPU-12 logs
 - `*.log` is in .gitignore, so `gpu/renders/a/of_stealth_18.log`, `of_loud_5.log` (GPU-10) and `of_hitch.log` (GPU-12) were skipped by
   their commits. They're force-added now. Future logs will be force-added or saved as `.txt`.
+## GPU-13: shader-cache test, GPU-12's command x2 more, back to back, cache kept
+- Same tree (gpu/a2 33b80e6e), same command as GPU-12, outputs `gpu/renders/a/of_hitch_run2{,.txt}` and `of_hitch_run3{,.txt}`.
+  Both runs: exit 2, 242 s, `RESULT FAIL (code 2)` budget, with the same two unreachable FINDINGs (deposit_boxes, bond_safe). No HITCHES line (budget exit, see GPU-12).
+- Caveat: run 1 (GPU-12) was not a truly cold cache. OF loud had already run on this machine many times (GPU-2/4/8/10).
+
+| run | frames > 50 ms | of which t < 8 s (load/start) | worst 5 (ms @ t) |
+|---|---|---|---|
+| 1 (GPU-12) | 26 | 11 | 2264 @0.1, 940 @106.6, 905 @6.4, 865 @1.2, 843 @213.4 |
+| 2 | 32 | 12 | 2448 @0.1, 944 @106.6, 936 @6.3, 910 @1.2, 860 @213.8 |
+| 3 | 24 | 8 | 2266 @0.1, 940 @106.6, 923 @6.3, 879 @1.2, 842 @214.3 |
+
+**Verdict: not first-use shader compiles.** Runs 2/3 are no smoother, and the big hitches repeat at the same game time to within about 1 s.
+
+**What they actually are: the runner's own screenshots.** Every frame of 500 ms or more, except the t=0.1 heist-load frame, lands on the same wall-clock instant
+(within 0.1 s) as a po5 `shot` line, in all 3 runs:
+
+| hitch (run 1/2/3, ms) | t | coincident shot |
+|---|---|---|
+| 865 / 910 / 879 | 1.2 | 06_heist_start |
+| 905 / 936 / 923 | 6.3-6.4 | 07_auto_6 |
+| 940 / 944 / 940 | 106.6 | 08_auto_106 |
+| 843 / 860 / 842 | 213.4-214.3 | 09_auto_213/214 |
+| 601 / 576 / 615 | 214.4-215.6 | 10_budget_exceeded |
+
+Their process+physics is only 30-50 ms. The other ~850 ms is the synchronous 1920x1080 viewport readback + PNG encode/save in the harness.
+**Without screenshots, the worst loud-phase frames are about 90-110 ms** (run1 100 @175.7 / 92 @129.6; run2 108 @176.2 / 106 @129.6; run3 94 @129.6 / 89 @176.7).
+Those repeat at about t=129.6 and t=176 in every run, so they are deterministic and worth A's profiling (t=176 is when the pilot fails `bond_safe`).
+Suggestions for A: exclude frames that take a screenshot from HITCH (or log `shot=1`), and print HITCHES on budget exit too.

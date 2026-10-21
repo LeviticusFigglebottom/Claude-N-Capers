@@ -1,0 +1,382 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+Vulkan 1.4.349 - Forward+ - Using Device #0: AMD - AMD Radeon RX 9070 XT
+
+[PO5 4.2s] harness: Cataclysm opened in memory (locked in the build)
+[INFO][boot][p1] CAPERWORKS boot, args={ "po5-flow": "auto_loud", "po5-out": "C:\\Users\\Aaron\\caperworks-gpu\\gpu\\renders\\a\\of_hitch_run3", "po5-budget": "240", "po5-heist": "Ostrander Federal", "po5-difficulty": "Cataclysm", "po5-seed": "1037", "po5-crew-dmg": "0", "po5-hitch-ms": "50" }
+[PO5 7.7s] shot C:\Users\Aaron\caperworks-gpu\gpu\renders\a\of_hitch_run3/01_main_menu.png
+[INFO][ui][p1] safehouse scene unavailable (res://world/hub/safehouse/safehouse.tscn); 2D hub
+[PO5 8.0s] click 'SAFEHOUSE' at (872.0, 711.3334)
+[PO5 8.8s] click '' at (1382.0, 428.6667)
+[PO5 9.9s] shot C:\Users\Aaron\caperworks-gpu\gpu\renders\a\of_hitch_run3/02_planning_table.png
+[PO5 10.0s] click 'Ostrander Federal' at (818.6667, 806.6667)
+[PO5 10.9s] click 'CATACLYSM' at (2438.0, 666.6667)
+[PO5 14.2s] click 'Briefing' at (2701.333, 1318.667)
+[PO5 14.3s] shot C:\Users\Aaron\caperworks-gpu\gpu\renders\a\of_hitch_run3/03_briefing.png
+[PO5 14.5s] click 'Continue' at (2722.667, 1340.0)
+[PO5 15.4s] shot C:\Users\Aaron\caperworks-gpu\gpu\renders\a\of_hitch_run3/04_continue.png
+[PO5 15.6s] click 'Confirm plan' at (2722.667, 1334.0)
+[PO5 16.6s] shot C:\Users\Aaron\caperworks-gpu\gpu\renders\a\of_hitch_run3/05_confirm_plan.png
+[PO5 17.1s] click 'Start Heist' at (2701.333, 1318.667)
+[INFO][rng][p1] run seed 1037
+[INFO][preplan][p1] assets []
+[INFO][variants][p1] seed 1037 resolved { &"manager_route": [&"mgr_gallery"], &"keycard": [&"kc_on_manager"], &"code_pc": [&"pc_ops"], &"officers": [&"off_1"], &"server_room": [&"srv_basement"], &"guard_post": [&"rover_basement", &"rover_dock", &"rover_gallery", &"rover_hall"], &"security_room_staffed": [&"sec_staffed"], &"camera": [&"cam_a"], &"laser_pattern": [&"lz_timed"], &"customers": [&"cust_6"], &"side_door": [&"door_fire_propped"], &"fire_escape": [&"fe_down"], &"escape": [&"esc_van_dock"], &"drill_delivery": [&"drop_dock"], &"president_safe": [&"ps_empty"], &"vip": [&"vip_out"], &"guard_extra": [&"gx_basement", &"gx_hall"], &"civ_extra": [&"cx_hall_1", &"cx_pc", &"cx_sd"], &"time_lock_s": 270.0, &"drill_eta_s": 45.0, &"escape_eta_s": 120.0, &"cash_bags": 8, &"gold_bags": 2, &"deposit_boxes": 12, "rare": [&"time_lock_glitch"] }
+[INFO][heist][p1] vfx prewarm: 461 ms
+[INFO][prefab][p1] Hoist disabled
+[INFO][prefab][p1] RopeLadder disabled
+[INFO][heist][p1] DEV OPTION crew_damage_taken_mult = 0.00 (D-133 harness-only)
+[INFO][heist][p1] phase LOADING -> CASING
+[INFO][prefab][p1] VaultBoxS02 disabled
+[INFO][prefab][p1] VaultBoxS03 disabled
+[INFO][prefab][p1] VaultBoxS04 disabled
+[INFO][prefab][p1] VaultBoxS05 disabled
+[INFO][prefab][p1] VaultBoxS06 disabled
+[INFO][prefab][p1] VaultBoxS07 disabled
+[INFO][prefab][p1] VaultBoxS08 disabled
+[INFO][prefab][p1] VaultBoxS09 disabled
+[INFO][prefab][p1] HallBox09 disabled
+[INFO][prefab][p1] HallBox10 disabled
+[INFO][prefab][p1] HallBox11 disabled
+[INFO][prefab][p1] HallBox12 disabled
+[INFO][prefab][p1] HallBox13 disabled
+[INFO][prefab][p1] HallBox14 disabled
+[INFO][prefab][p1] HallBox15 disabled
+[INFO][prefab][p1] HallBox16 disabled
+[INFO][prefab][p1] HallBox17 disabled
+[INFO][prefab][p1] HallBox18 disabled
+[INFO][prefab][p1] HallBox19 disabled
+[INFO][prefab][p1] HallBox20 disabled
+[INFO][prefab][p1] HallBox21 disabled
+[INFO][prefab][p1] HallBox22 disabled
+[INFO][prefab][p1] HallBox23 disabled
+[INFO][prefab][p1] HallBox24 disabled
+[INFO][director][p1] prewarm: 19 of 19 scenes loaded in 85 ms
+[INFO][prefab][p1] Keycard carried by Npc_civilian8
+[PO5 22.4s] HITCH frame=2266ms t=0.1 drawn=1 nodes=19025 enemies=9 top: anim_driver=25.7ms(30) npc_motor=7.8ms(216) stealth_director=1.5ms(8) civilian_brain=0.9ms(144) custody_system=0.9ms(8) crew_ai_brain=0.8ms(24) guard_brain=0.3ms(72) guard_brain.calm=0.2ms(72) npc_gunner=0.1ms(72) assault_director=0.0ms(8)
+[PO5 22.4s] HITCH frame=2266ms t=0.1 process=14.4ms physics=0.1ms draws=2747 objects=3460 nodes=19025 enemies=9 spawned=[] top: anim_driver=25.7ms(30) npc_motor=7.8ms(216) stealth_director=1.5ms(8) civilian_brain=0.9ms(144) custody_system=0.9ms(8) crew_ai_brain=0.8ms(24) guard_brain=0.3ms(72) guard_brain.calm=0.2ms(72)
+[PO5 22.6s] HITCH frame=143ms t=0.3 process=4209.3ms physics=32.0ms draws=2745 objects=3458 nodes=19053 enemies=9 spawned=[] top: anim_driver=13.5ms(30) hud_model=13.1ms(1) hud_model.objectives=10.7ms(1) npc_motor=8.0ms(216) hud_model.flush=1.8ms(1) stealth_director=1.1ms(8) crew_ai_brain=0.9ms(24) civilian_brain=0.5ms(144)
+[PO5 23.3s] in heist ostrander_federal seed 1037 diff 5 phase 1 crew at (21.8, -0.8, 44.0)
+[PO5 23.3s] DEV OPTION crew_damage_taken_mult=0.00 (D-133 harness-only; assault events on)
+[PO5 24.2s] shot C:\Users\Aaron\caperworks-gpu\gpu\renders\a\of_hitch_run3/06_heist_start.png
+[PO5 24.2s] HITCH frame=879ms t=1.2 process=24.1ms physics=24.1ms draws=2832 objects=4190 nodes=19044 enemies=9 spawned=[] top: npc_motor=6.6ms(216) anim_driver=1.5ms(30) stealth_director=1.0ms(8) crew_ai_brain=0.8ms(24) civilian_brain=0.5ms(144) guard_brain=0.2ms(72) custody_system=0.1ms(8) npc_gunner=0.1ms(72)
+[PO5 25.0s] mouse captured by the game (MouseCapture)
+[PO5 25.1s] pilot: calibrated 0.001600 rad/px yaw, 0.001600 rad/px pitch (settings formula said (0.0016, 0.0016))
+[PO5 25.1s] HITCH frame=58ms t=2.0 process=3.1ms physics=23.0ms draws=2832 objects=4190 nodes=19044 enemies=9 spawned=[] top: anim_driver=1.1ms(30) hud_model=0.0ms(1)
+[INFO][heist][p1] phase CASING -> STEALTH
+[PO5 26.1s] EVENT objective casing -> 2 t=3
+[INFO][crew][p1] slot 0 masked (forced=false)
+[INFO][crew][p1] slot 1 masked (forced=false)
+[INFO][crew][p1] slot 2 masked (forced=false)
+[INFO][crew][p1] slot 3 masked (forced=false)
+[PO5 26.8s] HITCH frame=85ms t=3.8 process=59.4ms physics=23.5ms draws=2832 objects=4190 nodes=19071 enemies=9 spawned=[] top: anim_driver=1.1ms(30) npc_motor=0.8ms(27) stealth_director=0.3ms(1) crew_ai_brain=0.1ms(3) civilian_brain=0.1ms(18) door=0.0ms(1) guard_brain=0.0ms(9) custody_system=0.0ms(1)
+[INFO][stealth][p1] ALARM: guard_radio (source 204)
+[INFO][heist][p1] alarm (guard_radio): going loud
+[INFO][heist][p1] phase STEALTH -> LOUD
+[INFO][director][p1] assault phase CONTROL (wave 1, 20 s)
+[INFO][prefab][p1] VaultControlRack: hack paused (lockdown)
+[PO5 28.6s] EVENT objective keycard -> 1 t=6
+[PO5 28.6s] EVENT objective keycard -> 2 t=6
+[PO5 28.6s] EVENT objective code_hint -> 1 t=6
+[PO5 28.6s] EVENT objective code_hint -> 2 t=6
+[PO5 28.6s] EVENT objective code_pc -> 1 t=6
+[PO5 28.6s] EVENT objective code_pc -> 2 t=6
+[PO5 28.6s] EVENT objective server -> 1 t=6
+[PO5 28.6s] EVENT objective server -> 2 t=6
+[PO5 28.6s] EVENT objective vault_gate -> 1 t=6
+[PO5 28.6s] EVENT objective vault_gate -> 2 t=6
+[PO5 28.6s] EVENT objective lasers -> 1 t=6
+[PO5 28.6s] EVENT objective lasers -> 2 t=6
+[PO5 28.6s] EVENT objective drill_delivery -> 1 t=6
+[PO5 28.6s] EVENT objective drill_delivery -> 1 t=6
+[PO5 28.6s] HITCH frame=65ms t=5.6 process=7.3ms physics=23.1ms draws=2469 objects=3055 nodes=19073 enemies=9 spawned=[] top: guard_brain=31.6ms(9) guard_brain.alarmed=31.2ms(1) alarm.HeistRuntime._on_alarm_raised=28.2ms(1) phase.Mission._on_phase_changed=26.1ms(1) npc_motor=6.1ms(27) anim_driver=1.3ms(30) alarm.CuePlayer._on_alarm_raised=0.5ms(1) phase.Brain._on_phase_changed=0.5ms(18)
+[INFO][director][p1] assault events: 3 rows for ostrander_federal (tweak)
+[PO5 28.8s] HITCH frame=68ms t=5.7 process=7.3ms physics=23.1ms draws=2156 objects=2414 nodes=19152 enemies=10 spawned=[] top: npc_motor=6.0ms(112) anim_driver=1.8ms(31) crew_ai_brain=1.8ms(12) guard_brain=0.3ms(36) door=0.3ms(12) npc_gunner=0.2ms(40) guard_brain.combat=0.2ms(36) civilian_brain=0.2ms(72)
+[PO5 29.2s] loud: phase=3 went_loud=true
+[PO5 30.0s] shot C:\Users\Aaron\caperworks-gpu\gpu\renders\a\of_hitch_run3/07_auto_6.png
+[PO5 30.1s] HITCH frame=923ms t=6.3 process=50.1ms physics=62.7ms draws=2229 objects=2971 nodes=19241 enemies=11 spawned=[] top: npc_motor=13.1ms(232) crew_ai_brain=5.2ms(24) anim_driver=1.6ms(32) civilian_brain=0.8ms(144) door=0.5ms(23) guard_brain=0.3ms(72) police_brain=0.3ms(16) guard_brain.combat=0.2ms(72)
+[PO5 34.9s] pilot: t=5 at (36.1, -0.3, 37.5) corner (39.5, 0.2, 37.2) yaw_err -0.00 fwd=true path=63 mouse_mode=2 state=0 look=(-1.50,0.00) pin_yaw=-1.49721270334567 bot=false
+[PO5 35.8s] TEL worst_frame=2284ms t=12 phase=3 phys=26.2ms proc=22.7ms nodes=19241 enemies=11 civs=18 crew=[0:0@(39.0, 0.0, 37.3) 1:0@(34.4, -0.7, 39.6) 2:0@(35.5, -0.4, 41.6) 3:0@(36.9, -0.7, 39.5) nearest_enemy=15.6m within15=0 input_enabled=true captured=true paused_by={  }]
+[PO5 39.9s] pilot: t=10 at (48.7, 0.0, 31.6) corner (48.8, 0.2, 27.6) yaw_err 0.00 fwd=true path=59 mouse_mode=2 state=0 look=(-0.03,0.00) pin_yaw=-0.02761471026179 bot=false
+[PO5 45.8s] TEL worst_frame=32ms t=22 phase=3 phys=26.2ms proc=11.0ms nodes=19444 enemies=11 civs=16 crew=[0:0@(49.1, 0.0, 15.4) 1:0@(52.6, 0.0, 21.7) 2:0@(50.5, 0.0, 20.6) 3:0@(52.0, 0.0, 20.2) nearest_enemy=5.8m within15=6 input_enabled=true captured=true paused_by={  }]
+[PO5 46.1s] pilot: t=15 at (49.1, 0.0, 14.3) corner (49.2, 0.2, 13.7) yaw_err -0.00 fwd=true path=44 mouse_mode=2 state=0 look=(-0.01,0.00) pin_yaw=-0.01342369035609 bot=false
+[INFO][director][p1] assault phase ANTICIPATION (wave 1, 30 s)
+[INFO][prefab][p1] CameraStation: camera operator neutralised by 230: all cameras off
+[PO5 51.9s] pilot: t=20 at (46.2, 0.0, -0.9) corner (38.8, 0.2, -2.4) yaw_err 0.00 fwd=true path=21 mouse_mode=2 state=0 look=(1.38,-0.00) pin_yaw=1.37534756391381 bot=false
+[PO5 55.8s] TEL worst_frame=45ms t=32 phase=3 phys=25.6ms proc=7.3ms nodes=19457 enemies=8 civs=16 crew=[0:0@(33.1, 0.0, -3.5) 1:0@(41.9, 0.0, -0.9) 2:0@(37.5, 0.0, -3.0) 3:0@(38.2, 0.0, -5.2) nearest_enemy=13.5m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 57.0s] pilot: t=25 at (29.0, 0.0, -4.3) corner (28.5, 0.2, -4.4) yaw_err -0.00 fwd=true path=12 mouse_mode=2 state=0 look=(1.38,0.00) pin_yaw=1.37542710637047 bot=false
+[PO5 62.4s] pilot: reload in a lull (weapon.corsair_ar 7/30, reserve 113)
+[PO5 65.8s] TEL worst_frame=38ms t=42 phase=3 phys=24.5ms proc=3.4ms nodes=19471 enemies=5 civs=16 crew=[0:0@(16.2, 0.0, -4.8) 1:0@(18.8, 0.0, -2.5) 2:0@(19.6, 0.0, -5.2) 3:0@(18.2, 0.0, -7.5) nearest_enemy=15.1m within15=0 input_enabled=true captured=true paused_by={  }]
+[PO5 73.5s] pilot: (15.1, -3.8, 14.1) unreachable: the nav path ends at (10.0, 0.2, -2.6), 17.5 m short
+[PO5 73.5s] pilot: goto (15.1, -3.8, 14.1) FAILED at (10.3, 0.0, -2.7) after 2.1 s
+[PO5 73.5s] FINDING objective deposit_boxes: marker at (15.0, -3.0, 13.3) not reachable
+[PO5 74.3s] EVENT objective vault_drill -> 1 t=51
+[PO5 74.5s] fetching the tool bag /root/HeistRuntime/Dynamic/Bag_thermal_drill_part/Interactable for its drill (4 m)
+[PO5 75.8s] TEL worst_frame=40ms t=52 phase=3 phys=38.1ms proc=8.3ms nodes=19151 enemies=5 civs=16 crew=[0:0@(13.8, 0.0, -3.6) 1:0@(13.3, 0.0, -1.0) 2:0@(13.3, 0.0, -4.5) 3:0@(11.9, 0.0, -5.7) nearest_enemy=13.7m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 77.4s] EVENT objective drill_delivery -> 1 t=54
+[PO5 77.5s] HITCH frame=72ms t=53.6 process=2.2ms physics=23.9ms draws=1734 objects=1933 nodes=19151 enemies=5 spawned=[] top: npc_motor=1.0ms(21) anim_driver=0.7ms(30) crew_ai_brain=0.4ms(3) police_brain=0.1ms(4) civilian_brain=0.0ms(16) assault_director=0.0ms(1) npc_gunner=0.0ms(11) custody_system=0.0ms(1)
+[PO5 77.5s] pilot: use Bag_thermal_drill_part (pick_bag) -> OK in 1.0 s
+[PO5 77.5s] carrying loot.thermal_drill_part to LidDrill
+[INFO][director][p1] assault phase BUILD (wave 1, 35 s)
+[PO5 85.8s] TEL worst_frame=72ms t=62 phase=3 phys=26.7ms proc=5.4ms nodes=19522 enemies=10 civs=16 crew=[0:0@(8.6, 0.0, -0.9) 1:0@(13.3, 0.0, -1.0) 2:0@(11.4, 0.0, -2.8) 3:0@(9.3, 0.0, -4.2) nearest_enemy=12.5m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 89.6s] HITCH frame=58ms t=65.8 process=3.2ms physics=24.9ms draws=1004 objects=1065 nodes=19522 enemies=10 spawned=[] top: npc_motor=1.2ms(26) anim_driver=1.0ms(34) crew_ai_brain=0.5ms(3) police_brain=0.1ms(9) assault_director=0.0ms(1) civilian_brain=0.0ms(16) npc_gunner=0.0ms(15) custody_system=0.0ms(1)
+[PO5 89.7s] pilot: use DockPersonnelDoor (open_door) -> OK in 8.0 s
+[PO5 91.3s] pilot: t=5 at (8.2, 0.0, 0.9) corner (8.4, 0.2, 1.7) yaw_err 0.11 fwd=true path=30 mouse_mode=2 state=0 look=(9.57,0.00) pin_yaw=9.68169285384909 bot=false
+[PO5 95.8s] TEL worst_frame=58ms t=72 phase=3 phys=23.2ms proc=4.2ms nodes=19052 enemies=10 civs=16 crew=[0:0@(10.2, -0.3, 7.8) 1:0@(7.1, 0.0, 7.3) 2:0@(2.7, 0.0, 6.1) 3:0@(4.2, 0.0, 8.0) nearest_enemy=5.8m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 96.3s] pilot: t=10 at (11.0, 0.0, 7.9) corner (13.9, 0.2, 8.5) yaw_err -0.00 fwd=true path=23 mouse_mode=2 state=0 look=(10.79,0.00) pin_yaw=10.7873140236433 bot=false
+[PO5 105.8s] TEL worst_frame=31ms t=82 phase=3 phys=24.1ms proc=2.8ms nodes=19052 enemies=10 civs=16 crew=[0:0@(14.3, -0.3, 8.2) 1:0@(12.0, 0.0, 7.5) 2:0@(20.5, 0.0, 8.0) 3:0@(6.7, 0.0, 8.0) nearest_enemy=3.9m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 106.4s] HITCH frame=58ms t=82.6 process=3.2ms physics=25.7ms draws=1037 objects=1101 nodes=19052 enemies=10 spawned=[] top: npc_motor=1.2ms(26) anim_driver=1.0ms(29) crew_ai_brain=0.4ms(3) police_brain=0.1ms(9) assault_director=0.0ms(1) civilian_brain=0.0ms(16) npc_gunner=0.0ms(10) custody_system=0.0ms(1)
+[PO5 106.5s] pilot: use StaffDoorTWW (open_door) -> OK in 8.0 s
+[PO5 110.8s] pilot: t=15 at (19.0, -0.3, 11.4) corner (19.4, 0.2, 11.5) yaw_err 0.00 fwd=true path=10 mouse_mode=2 state=0 look=(10.69,0.00) pin_yaw=10.6920557594529 bot=false
+[INFO][director][p1] assault phase SUSTAIN (wave 1, 52 s)
+[PO5 115.8s] TEL worst_frame=58ms t=92 phase=3 phys=23.7ms proc=6.2ms nodes=19056 enemies=10 civs=16 crew=[0:0@(25.3, -0.3, 14.2) 1:0@(19.8, 0.0, 15.4) 2:0@(27.5, 0.0, 15.9) 3:0@(22.5, 0.0, 16.0) nearest_enemy=4.1m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 118.2s] HITCH frame=61ms t=94.4 process=3.3ms physics=24.2ms draws=1037 objects=1101 nodes=19049 enemies=10 spawned=[] top: npc_motor=1.3ms(26) anim_driver=1.0ms(29) crew_ai_brain=0.3ms(3) police_brain=0.1ms(9) assault_director=0.0ms(1) civilian_brain=0.0ms(16) npc_gunner=0.0ms(10) custody_system=0.0ms(1)
+[PO5 118.2s] pilot: use LidDrill (place_drill) -> OK in 3.0 s
+[PO5 118.2s] fetching the tool bag /root/HeistRuntime/Dynamic/Bag_thermal_drill_part2/Interactable for its drill (21 m)
+[INFO][director][p1] assault event heli at (36.0, 10.25, 46.0) (HeliDrop_3)
+[PO5 123.2s] pilot: t=5 at (11.6, 0.0, 8.0) corner (10.9, 0.2, 7.9) yaw_err 0.00 fwd=true path=16 mouse_mode=2 state=0 look=(7.82,0.00) pin_yaw=7.82139855490341 bot=false
+[PO5 125.8s] TEL worst_frame=61ms t=102 phase=3 phys=26.9ms proc=10.8ms nodes=19060 enemies=10 civs=16 crew=[0:0@(8.2, 0.0, 1.9) 1:0@(5.1, 0.0, 8.1) 2:0@(7.8, 0.0, 6.2) 3:0@(6.3, 0.0, 7.3) nearest_enemy=10.5m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 128.2s] pilot: t=10 at (12.8, 0.0, -2.9) corner (15.1, 0.2, -4.0) yaw_err 0.00 fwd=true path=2 mouse_mode=2 state=0 look=(5.15,0.00) pin_yaw=5.15083938935523 bot=false
+[PO5 130.1s] EVENT objective drill_delivery -> 1 t=106
+[PO5 130.1s] EVENT objective drill_delivery -> 2 t=106
+[PO5 130.2s] HITCH frame=73ms t=106.4 process=13.1ms physics=26.2ms draws=1037 objects=1101 nodes=19060 enemies=10 spawned=[] top: npc_motor=1.2ms(26) crew_ai_brain=0.9ms(3) anim_driver=0.7ms(29) police_brain=0.3ms(9) assault_director=0.0ms(1) npc_gunner=0.0ms(10) civilian_brain=0.0ms(16) custody_system=0.0ms(1)
+[PO5 130.2s] pilot: use Bag_thermal_drill_part2 (pick_bag) -> OK in 1.0 s
+[PO5 131.2s] shot C:\Users\Aaron\caperworks-gpu\gpu\renders\a\of_hitch_run3/08_auto_106.png
+[PO5 131.2s] carrying loot.thermal_drill_part to LidDrill
+[PO5 131.2s] HITCH frame=940ms t=106.6 process=13.1ms physics=26.2ms draws=681 objects=1302 nodes=19060 enemies=10 spawned=[] top: npc_motor=9.1ms(208) crew_ai_brain=8.9ms(24) anim_driver=4.2ms(29) police_brain=1.0ms(72) assault_director=0.4ms(8) civilian_brain=0.2ms(128) npc_gunner=0.2ms(80) custody_system=0.2ms(8)
+[PO5 136.0s] pilot: t=5 at (8.2, 0.0, 0.6) corner (8.1, 0.0, 0.9) yaw_err 0.00 fwd=true path=32 mouse_mode=2 state=0 look=(9.38,0.00) pin_yaw=9.3788236886855 bot=false
+[PO5 136.6s] TEL worst_frame=940ms t=112 phase=3 phys=25.2ms proc=8.9ms nodes=19060 enemies=10 civs=16 crew=[0:0@(8.3, 0.0, 1.5) 1:0@(8.0, 0.0, 0.3) 2:0@(8.9, 0.0, -1.9) 3:0@(6.8, 0.0, -1.3) nearest_enemy=10.8m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 141.0s] pilot: t=10 at (10.8, 0.0, 7.8) corner (10.9, 0.0, 7.8) yaw_err 0.00 fwd=true path=24 mouse_mode=2 state=0 look=(10.95,0.00) pin_yaw=10.9451242454622 bot=false
+[PO5 146.0s] pilot: t=15 at (17.7, -0.3, 11.0) corner (18.1, 0.2, 11.1) yaw_err 0.00 fwd=true path=11 mouse_mode=2 state=0 look=(10.70,0.00) pin_yaw=10.6958956990954 bot=false
+[PO5 146.5s] TEL worst_frame=39ms t=122 phase=3 phys=26.4ms proc=6.6ms nodes=19435 enemies=14 civs=16 crew=[0:0@(18.6, -0.3, 11.3) 1:0@(19.4, -0.3, 15.2) 2:0@(12.4, 0.0, 7.8) 3:0@(16.1, -0.3, 14.0) nearest_enemy=3.7m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 154.2s] HITCH frame=94ms t=129.6 process=3.7ms physics=25.2ms draws=1625 objects=1844 nodes=19535 enemies=15 spawned=[] top: npc_motor=1.6ms(31) anim_driver=1.2ms(34) police_brain=0.3ms(13) crew_ai_brain=0.3ms(3) assault_director=0.0ms(1) civilian_brain=0.0ms(16) npc_gunner=0.0ms(14) custody_system=0.0ms(1)
+[PO5 154.3s] pilot: use LidDrill (place_drill) -> OK in 3.0 s
+[PO5 154.3s] HITCH frame=59ms t=129.7 process=3.7ms physics=25.2ms draws=2545 objects=2776 nodes=19535 enemies=15 spawned=[] top: npc_motor=6.8ms(155) anim_driver=1.5ms(34) crew_ai_brain=1.5ms(15) police_brain=0.7ms(65) assault_director=0.2ms(5) custody_system=0.2ms(5) npc_gunner=0.1ms(70) civilian_brain=0.1ms(80)
+[PO5 156.5s] TEL worst_frame=94ms t=132 phase=3 phys=25.5ms proc=6.4ms nodes=19536 enemies=15 civs=16 crew=[0:0@(23.6, -0.3, 16.1) 1:0@(19.8, 0.0, 15.4) 2:0@(22.2, 0.0, 15.6) 3:0@(27.5, 0.0, 15.9) nearest_enemy=5.3m within15=4 input_enabled=true captured=true paused_by={  }]
+[PO5 161.9s] pilot: use TellerGate (open_door) -> OK in 6.4 s
+[PO5 164.2s] pilot: reload in a lull (weapon.corsair_ar 20/30, reserve 90)
+[PO5 166.5s] TEL worst_frame=34ms t=142 phase=3 phys=24.8ms proc=5.2ms nodes=19554 enemies=12 civs=16 crew=[0:0@(23.3, -0.3, 16.0) 1:0@(19.8, 0.0, 15.4) 2:0@(22.1, 0.0, 15.5) 3:0@(27.5, 0.0, 16.0) nearest_enemy=5.3m within15=2 input_enabled=true captured=true paused_by={  }]
+[INFO][director][p1] assault phase FADE (wave 1, 15 s)
+[PO5 170.2s] pilot: reload in a lull (weapon.corsair_ar 8/30, reserve 88)
+[PO5 175.5s] pilot: (15.9, -3.8, 20.5) unreachable: the nav path ends at (23.0, 0.2, 16.1), 8.4 m short
+[PO5 175.6s] pilot: goto (15.9, -3.8, 20.5) FAILED at (23.1, -0.3, 15.9) after 0.0 s
+[PO5 175.6s] pilot: could not reach /root/HeistRuntime/OstranderFederal/Gameplay/Loot/BondSafe/Interactable (place_drill)
+[PO5 175.6s] pilot: place_drill out of reach after the walk: not pressing
+[PO5 175.6s] skipping unreachable /root/HeistRuntime/OstranderFederal/Gameplay/Loot/BondSafe/Interactable (place_drill) for this run (no navmesh path)
+[PO5 175.6s] pilot: (15.9, -3.8, 20.5) unreachable: the nav path ends at (23.0, 0.2, 16.1), 8.4 m short
+[PO5 175.6s] pilot: goto (15.9, -3.8, 20.5) FAILED at (23.1, -0.3, 15.9) after 0.0 s
+[PO5 175.6s] FINDING objective bond_safe: marker at (14.7, -4.0, 20.5) not reachable
+[PO5 176.5s] TEL worst_frame=45ms t=152 phase=3 phys=22.6ms proc=3.2ms nodes=18716 enemies=2 civs=16 crew=[0:0@(23.1, -0.3, 15.9) 1:0@(19.8, 0.0, 15.4) 2:0@(22.1, 0.0, 15.5) 3:0@(27.6, 0.0, 15.7) nearest_enemy=5.2m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 181.6s] pilot: t=5 at (14.0, 0.8, 4.6) corner (14.0, 2.5, 2.3) yaw_err -0.00 fwd=true path=40 mouse_mode=2 state=0 look=(12.55,0.00) pin_yaw=12.5475678296124 bot=false
+[INFO][director][p1] assault phase CONTROL (wave 2, 40 s)
+[PO5 186.5s] TEL worst_frame=36ms t=162 phase=3 phys=23.9ms proc=5.5ms nodes=18804 enemies=3 civs=16 crew=[0:0@(14.0, 6.7, 3.3) 1:0@(14.1, 5.0, 6.2) 2:0@(15.1, 5.0, 5.4) 3:0@(15.1, 4.1, 4.1) nearest_enemy=12.4m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 186.6s] pilot: t=10 at (14.0, 6.8, 3.1) corner (14.2, 7.0, 2.7) yaw_err -0.04 fwd=true path=28 mouse_mode=2 state=0 look=(5.84,0.00) pin_yaw=5.80020610487455 bot=false
+[PO5 188.6s] HITCH frame=54ms t=164.0 process=4.4ms physics=24.2ms draws=1302 objects=1427 nodes=18804 enemies=3 spawned=[] top: npc_motor=1.0ms(19) crew_ai_brain=0.8ms(3) anim_driver=0.7ms(26) police_brain=0.0ms(2) civilian_brain=0.0ms(16) assault_director=0.0ms(1) npc_gunner=0.0ms(7) custody_system=0.0ms(1)
+[PO5 188.6s] pilot: use StairDoorSAE (open_door) -> OK in 0.0 s
+[PO5 192.6s] pilot: t=15 at (17.8, 8.6, 7.8) corner (19.6, 8.8, 7.7) yaw_err -0.00 fwd=true path=17 mouse_mode=2 state=0 look=(4.74,0.00) pin_yaw=4.7427407946806 bot=false
+[PO5 195.6s] HITCH frame=53ms t=171.1 process=3.9ms physics=23.4ms draws=1709 objects=1950 nodes=18501 enemies=3 spawned=[] top: crew_ai_brain=1.0ms(3) npc_motor=0.7ms(19) anim_driver=0.7ms(23) police_brain=0.0ms(2) civilian_brain=0.0ms(16) assault_director=0.0ms(1) custody_system=0.0ms(1) guard_brain=0.0ms(1)
+[PO5 195.7s] pilot: use PresidentDoor (open_door) -> OK in 0.0 s
+[PO5 196.5s] TEL worst_frame=54ms t=172 phase=3 phys=51.0ms proc=14.6ms nodes=18501 enemies=3 civs=16 crew=[0:0@(27.9, 8.6, 6.4) 1:0@(24.9, 8.6, 7.5) 2:0@(25.2, 8.6, 7.8) 3:0@(22.1, 8.6, 8.8) nearest_enemy=13.0m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 201.3s] HITCH frame=89ms t=176.7 process=2.5ms physics=23.3ms draws=1709 objects=1950 nodes=18505 enemies=3 spawned=[] top: npc_motor=0.6ms(19) anim_driver=0.6ms(23) crew_ai_brain=0.5ms(3) police_brain=0.0ms(2) civilian_brain=0.0ms(16) assault_director=0.0ms(1) custody_system=0.0ms(1) npc_gunner=0.0ms(4)
+[PO5 201.3s] pilot: use PresidentSafe (place_drill) -> OK in 3.0 s
+[PO5 201.3s] HITCH frame=51ms t=176.8 process=2.5ms physics=23.3ms draws=1709 objects=1950 nodes=18505 enemies=3 spawned=[] top: npc_motor=3.2ms(95) crew_ai_brain=2.6ms(15) anim_driver=0.9ms(23) police_brain=0.3ms(10) civilian_brain=0.1ms(80) assault_director=0.1ms(5) custody_system=0.1ms(5) npc_gunner=0.1ms(20)
+[PO5 206.5s] TEL worst_frame=89ms t=182 phase=3 phys=24.7ms proc=2.2ms nodes=18594 enemies=5 civs=16 crew=[0:0@(29.9, 8.6, 1.5) 1:0@(26.5, 8.6, 2.1) 2:0@(28.4, 8.6, 4.5) 3:0@(30.5, 8.6, 4.7) nearest_enemy=14.9m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 216.2s] pilot: t=5 at (19.4, 8.6, 7.6) corner (19.1, 8.6, 6.1) yaw_err -0.83 fwd=false path=32 mouse_mode=2 state=0 look=(7.25,0.00) pin_yaw=7.06234790625505 bot=false
+[PO5 216.6s] TEL worst_frame=26ms t=192 phase=3 phys=24.9ms proc=4.9ms nodes=18594 enemies=5 civs=16 crew=[0:0@(19.2, 8.6, 6.9) 1:0@(23.0, 8.6, 8.3) 2:0@(24.2, 8.6, 7.6) 3:0@(25.4, 8.6, 7.5) nearest_enemy=12.9m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 221.2s] pilot: t=10 at (14.7, 8.6, 7.0) corner (14.6, 8.6, 6.1) yaw_err -0.00 fwd=true path=29 mouse_mode=2 state=0 look=(18.89,0.00) pin_yaw=18.8932927097111 bot=false
+[INFO][director][p1] assault phase ANTICIPATION (wave 2, 30 s)
+[PO5 226.2s] pilot: t=15 at (19.2, 5.0, 7.7) corner (21.1, 5.2, 7.7) yaw_err 0.00 fwd=true path=11 mouse_mode=2 state=0 look=(23.60,0.00) pin_yaw=23.5977687706244 bot=false
+[PO5 226.6s] TEL worst_frame=27ms t=202 phase=3 phys=25.2ms proc=4.9ms nodes=18594 enemies=5 civs=16 crew=[0:0@(20.4, 5.0, 7.7) 1:0@(14.5, 5.0, 7.3) 2:0@(15.3, 5.0, 7.5) 3:0@(14.3, 5.0, 6.3) nearest_enemy=9.2m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 236.3s] HITCH frame=55ms t=211.8 process=5.4ms physics=23.7ms draws=668 objects=776 nodes=18599 enemies=5 spawned=[] top: anim_driver=0.9ms(24) npc_motor=0.8ms(21) crew_ai_brain=0.7ms(3) police_brain=0.1ms(4) civilian_brain=0.0ms(16) assault_director=0.0ms(1) custody_system=0.0ms(1) npc_gunner=0.0ms(5)
+[PO5 236.3s] pilot: use ServerDoor (open_door) -> OK in 8.0 s
+[PO5 236.6s] TEL worst_frame=55ms t=212 phase=3 phys=23.7ms proc=5.4ms nodes=18599 enemies=5 civs=16 crew=[0:0@(25.5, 5.0, 7.8) 1:0@(25.9, 5.0, 6.7) 2:0@(22.2, 5.0, 7.8) 3:0@(12.1, 5.0, 8.9) nearest_enemy=9.2m within15=1 input_enabled=true captured=true paused_by={  }]
+[PO5 238.6s] HITCH frame=59ms t=214.1 process=4.9ms physics=24.4ms draws=668 objects=776 nodes=18606 enemies=5 spawned=[] top: npc_motor=1.8ms(21) crew_ai_brain=0.8ms(3) anim_driver=0.6ms(24) police_brain=0.1ms(4) civilian_brain=0.0ms(16) assault_director=0.0ms(1) custody_system=0.0ms(1) npc_gunner=0.0ms(5)
+[PO5 238.6s] pilot: use ServerDrives (bag_loot) -> OK in 1.0 s
+[PO5 239.4s] shot C:\Users\Aaron\caperworks-gpu\gpu\renders\a\of_hitch_run3/09_auto_214.png
+[PO5 239.5s] marker president_safe@30,9,0: usable again, back to it
+[PO5 239.5s] HITCH frame=842ms t=214.3 process=4.9ms physics=24.4ms draws=1692 objects=2740 nodes=18606 enemies=5 spawned=[] top: npc_motor=6.7ms(168) crew_ai_brain=6.2ms(24) anim_driver=1.0ms(24) police_brain=0.7ms(32) civilian_brain=0.2ms(128) assault_director=0.2ms(8) custody_system=0.1ms(8) npc_gunner=0.1ms(40)
+[PO5 240.7s] FAIL budget 240 s exceeded
+[PO5 241.3s] shot C:\Users\Aaron\caperworks-gpu\gpu\renders\a\of_hitch_run3/10_budget_exceeded.png
+[PO5 241.3s] STATS difficulty=5 police=27 peak_alive=15 specials={ &"enemy.longshot": 1 } composition={ &"enemy.security_officer": 9, &"enemy.patrol_officer": 9, &"enemy.tac_light": 7, &"enemy.tac_heavy": 1, &"enemy.longshot": 1 } | slot 0 [weapon.corsair_ar / armor.tailored_suit] downs 0 custody 0 revived 0 regained 0; slot 1 [weapon.corsair_ar / armor.tailored_suit] downs 0 custody 0 revived 0 regained 0; slot 2 [weapon.corsair_ar / armor.tailored_suit] downs 0 custody 0 revived 0 regained 0; slot 3 [weapon.corsair_ar / armor.tailored_suit] downs 0 custody 0 revived 0 regained 0
+INTAKE pilot standing loud 210 s, 0 dmg, 0.00 dmg/s, 1.6 enemies within 20 m on average | by attacker [hits, dmg, nulled] { "enemy.security_officer": [0, 0.0, 32], "enemy.tac_light": [0, 0.0, 7] } | by range {  }
+[PO5 241.3s] RESULT FAIL (code 2) flow=auto_loud heist=Ostrander Federal seed=1037
+[PO5 241.3s] HITCH frame=615ms t=215.6 process=15.1ms physics=24.2ms draws=1351 objects=2120 nodes=18602 enemies=5 spawned=[] top: anim_driver=1.4ms(24) crew_ai_brain=1.2ms(3) npc_motor=0.9ms(21) police_brain=0.1ms(4) civilian_brain=0.0ms(16) assault_director=0.0ms(1) custody_system=0.0ms(1) npc_gunner=0.0ms(5)
+ERROR: It's not expect to not find the most reachable polygons
+   at: _query_task_build_path_corridor (modules/navigation_3d/3d/nav_mesh_queries_3d.cpp:404)
+   GDScript backtrace (most recent call first):
+       [0] nav_path (res://tests/a/e2e/po5_pilot.gd:197)
+       [1] _path_blocker (res://tests/a/e2e/po5_flow_auto_loud.gd:429)
+       [2] _blocked_on_path (res://tests/a/e2e/po5_flow_auto_loud.gd:552)
+       [3] _pick (res://tests/a/e2e/po5_flow_auto_loud.gd:229)
+       [4] step (res://tests/a/e2e/po5_flow_auto_loud.gd:128)
+       [5] play (res://tests/a/e2e/po5_flow_auto_loud.gd:113)
+       [6] step (res://tests/a/e2e/po5_flow_auto_loud.gd:161)
+       [7] hold_position (res://tests/a/e2e/po5_pilot.gd:1059)
+       [8] ticks (res://tests/a/util/player_input_driver.gd:166)
+ERROR: It's not expect to not find the most reachable polygons
+   at: _query_task_build_path_corridor (modules/navigation_3d/3d/nav_mesh_queries_3d.cpp:404)
+   GDScript backtrace (most recent call first):
+       [0] nav_path (res://tests/a/e2e/po5_pilot.gd:197)
+       [1] goto (res://tests/a/e2e/po5_pilot.gd:388)
+       [2] step (res://tests/a/e2e/po5_flow_auto_loud.gd:152)
+       [3] play (res://tests/a/e2e/po5_flow_auto_loud.gd:113)
+       [4] step (res://tests/a/e2e/po5_flow_auto_loud.gd:161)
+       [5] hold_position (res://tests/a/e2e/po5_pilot.gd:1059)
+       [6] ticks (res://tests/a/util/player_input_driver.gd:166)
+ERROR: It's not expect to not find the most reachable polygons
+   at: _query_task_build_path_corridor (modules/navigation_3d/3d/nav_mesh_queries_3d.cpp:404)
+   GDScript backtrace (most recent call first):
+       [0] nav_path (res://tests/a/e2e/po5_pilot.gd:197)
+       [1] goto (res://tests/a/e2e/po5_pilot.gd:388)
+       [2] tick (res://tests/a/e2e/po5_pilot.gd:115)
+ERROR: It's not expect to not find the most reachable polygons
+   at: _query_task_build_path_corridor (modules/navigation_3d/3d/nav_mesh_queries_3d.cpp:404)
+   GDScript backtrace (most recent call first):
+       [0] nav_path (res://tests/a/e2e/po5_pilot.gd:197)
+       [1] goto (res://tests/a/e2e/po5_pilot.gd:388)
+       [2] tick (res://tests/a/e2e/po5_pilot.gd:115)
+ERROR: It's not expect to not find the most reachable polygons
+   at: _query_task_build_path_corridor (modules/navigation_3d/3d/nav_mesh_queries_3d.cpp:404)
+   GDScript backtrace (most recent call first):
+       [0] nav_path (res://tests/a/e2e/po5_pilot.gd:197)
+       [1] goto (res://tests/a/e2e/po5_pilot.gd:388)
+       [2] tick (res://tests/a/e2e/po5_pilot.gd:115)
+ERROR: It's not expect to not find the most reachable polygons
+   at: _query_task_build_path_corridor (modules/navigation_3d/3d/nav_mesh_queries_3d.cpp:404)
+   GDScript backtrace (most recent call first):
+       [0] nav_path (res://tests/a/e2e/po5_pilot.gd:197)
+       [1] goto (res://tests/a/e2e/po5_pilot.gd:388)
+       [2] tick (res://tests/a/e2e/po5_pilot.gd:115)
+ERROR: It's not expect to not find the most reachable polygons
+   at: _query_task_build_path_corridor (modules/navigation_3d/3d/nav_mesh_queries_3d.cpp:404)
+   GDScript backtrace (most recent call first):
+       [0] nav_path (res://tests/a/e2e/po5_pilot.gd:197)
+       [1] _has_path (res://tests/a/e2e/po5_flow_auto_loud.gd:452)
+       [2] step (res://tests/a/e2e/po5_flow_auto_loud.gd:156)
+       [3] goto (res://tests/a/e2e/po5_pilot.gd:516)
+       [4] ticks (res://tests/a/util/player_input_driver.gd:166)
+ERROR: It's not expect to not find the most reachable polygons
+   at: _query_task_build_path_corridor (modules/navigation_3d/3d/nav_mesh_queries_3d.cpp:404)
+   GDScript backtrace (most recent call first):
+       [0] target_on_level (res://systems/ai/npc/npc_motor.gd:219)
+       [1] _physics_step (res://systems/ai/npc/npc_motor.gd:246)
+       [2] _physics_process (res://systems/ai/npc/npc_motor.gd:224)
+ERROR: It's not expect to not find the most reachable polygons
+   at: _query_task_build_path_corridor (modules/navigation_3d/3d/nav_mesh_queries_3d.cpp:404)
+   GDScript backtrace (most recent call first):
+       [0] nav_path (res://tests/a/e2e/po5_pilot.gd:197)
+       [1] _path_blocker (res://tests/a/e2e/po5_flow_auto_loud.gd:429)
+       [2] _blocked_on_path (res://tests/a/e2e/po5_flow_auto_loud.gd:552)
+       [3] _pick (res://tests/a/e2e/po5_flow_auto_loud.gd:229)
+       [4] step (res://tests/a/e2e/po5_flow_auto_loud.gd:128)
+       [5] play (res://tests/a/e2e/po5_flow_auto_loud.gd:113)
+       [6] step (res://tests/a/e2e/po5_flow_auto_loud.gd:161)
+       [7] hold_position (res://tests/a/e2e/po5_pilot.gd:1059)
+       [8] ticks (res://tests/a/util/player_input_driver.gd:166)
+ERROR: It's not expect to not find the most reachable polygons
+   at: _query_task_build_path_corridor (modules/navigation_3d/3d/nav_mesh_queries_3d.cpp:404)
+   GDScript backtrace (most recent call first):
+       [0] nav_path (res://tests/a/e2e/po5_pilot.gd:197)
+       [1] goto (res://tests/a/e2e/po5_pilot.gd:388)
+       [2] use (res://tests/a/e2e/po5_pilot.gd:697)
+       [3] step (res://tests/a/e2e/po5_flow_auto_loud.gd:145)
+       [4] play (res://tests/a/e2e/po5_flow_auto_loud.gd:113)
+       [5] step (res://tests/a/e2e/po5_flow_auto_loud.gd:161)
+       [6] hold_position (res://tests/a/e2e/po5_pilot.gd:1059)
+       [7] ticks (res://tests/a/util/player_input_driver.gd:166)
+ERROR: It's not expect to not find the most reachable polygons
+   at: _query_task_build_path_corridor (modules/navigation_3d/3d/nav_mesh_queries_3d.cpp:404)
+   GDScript backtrace (most recent call first):
+       [0] nav_path (res://tests/a/e2e/po5_pilot.gd:197)
+       [1] _has_path (res://tests/a/e2e/po5_flow_auto_loud.gd:452)
+       [2] _mark_if_unreached (res://tests/a/e2e/po5_flow_auto_loud.gd:489)
+       [3] step (res://tests/a/e2e/po5_flow_auto_loud.gd:147)
+       [4] use (res://tests/a/e2e/po5_pilot.gd:706)
+       [5] goto (res://tests/a/e2e/po5_pilot.gd:516)
+       [6] ticks (res://tests/a/util/player_input_driver.gd:166)
+ERROR: It's not expect to not find the most reachable polygons
+   at: _query_task_build_path_corridor (modules/navigation_3d/3d/nav_mesh_queries_3d.cpp:404)
+   GDScript backtrace (most recent call first):
+       [0] nav_path (res://tests/a/e2e/po5_pilot.gd:197)
+       [1] _path_blocker (res://tests/a/e2e/po5_flow_auto_loud.gd:429)
+       [2] _blocked_on_path (res://tests/a/e2e/po5_flow_auto_loud.gd:552)
+       [3] _pick (res://tests/a/e2e/po5_flow_auto_loud.gd:229)
+       [4] step (res://tests/a/e2e/po5_flow_auto_loud.gd:128)
+       [5] play (res://tests/a/e2e/po5_flow_auto_loud.gd:113)
+       [6] step (res://tests/a/e2e/po5_flow_auto_loud.gd:148)
+       [7] use (res://tests/a/e2e/po5_pilot.gd:706)
+       [8] goto (res://tests/a/e2e/po5_pilot.gd:516)
+       [9] ticks (res://tests/a/util/player_input_driver.gd:166)
+ERROR: It's not expect to not find the most reachable polygons
+   at: _query_task_build_path_corridor (modules/navigation_3d/3d/nav_mesh_queries_3d.cpp:404)
+   GDScript backtrace (most recent call first):
+       [0] nav_path (res://tests/a/e2e/po5_pilot.gd:197)
+       [1] goto (res://tests/a/e2e/po5_pilot.gd:388)
+       [2] step (res://tests/a/e2e/po5_flow_auto_loud.gd:152)
+       [3] play (res://tests/a/e2e/po5_flow_auto_loud.gd:113)
+       [4] step (res://tests/a/e2e/po5_flow_auto_loud.gd:148)
+       [5] use (res://tests/a/e2e/po5_pilot.gd:706)
+       [6] goto (res://tests/a/e2e/po5_pilot.gd:516)
+       [7] ticks (res://tests/a/util/player_input_driver.gd:166)
+ERROR: It's not expect to not find the most reachable polygons
+   at: _query_task_build_path_corridor (modules/navigation_3d/3d/nav_mesh_queries_3d.cpp:404)
+   GDScript backtrace (most recent call first):
+       [0] nav_path (res://tests/a/e2e/po5_pilot.gd:197)
+       [1] _has_path (res://tests/a/e2e/po5_flow_auto_loud.gd:452)
+       [2] step (res://tests/a/e2e/po5_flow_auto_loud.gd:156)
+       [3] goto (res://tests/a/e2e/po5_pilot.gd:516)
+       [4] ticks (res://tests/a/util/player_input_driver.gd:166)
+ERROR: Condition "!is_inside_tree()" is true. Returning: Transform3D()
+   at: get_global_transform (scene/3d/node_3d.cpp:649)
+   GDScript backtrace (most recent call first):
+       [0] _nearest_slot (res://systems/vo/bark_director.gd:307)
+       [1] _on_device_jammed (res://systems/vo/bark_director.gd:384)
+       [2] _emit_fact (res://systems/prefabs/gameplay_prefab.gd:370)
+       [3] shutdown (res://systems/prefabs/drill_point/device_runner.gd:110)
+       [4] _exit_tree (res://systems/prefabs/drill_point/drill_point.gd:147)
+ERROR: Condition "!is_inside_tree()" is true. Returning: Transform3D()
+   at: get_global_transform (scene/3d/node_3d.cpp:649)
+   GDScript backtrace (most recent call first):
+       [0] _nearest_slot (res://systems/vo/bark_director.gd:307)
+       [1] _on_device_jammed (res://systems/vo/bark_director.gd:384)
+       [2] _emit_fact (res://systems/prefabs/gameplay_prefab.gd:370)
+       [3] shutdown (res://systems/prefabs/drill_point/device_runner.gd:110)
+       [4] _exit_tree (res://systems/prefabs/drill_point/drill_point.gd:147)
+ERROR: Condition "!is_inside_tree()" is true. Returning: Transform3D()
+   at: get_global_transform (scene/3d/node_3d.cpp:649)
+   GDScript backtrace (most recent call first):
+       [0] _nearest_slot (res://systems/vo/bark_director.gd:307)
+       [1] _on_device_jammed (res://systems/vo/bark_director.gd:384)
+       [2] _emit_fact (res://systems/prefabs/gameplay_prefab.gd:370)
+       [3] shutdown (res://systems/prefabs/drill_point/device_runner.gd:110)
+       [4] _exit_tree (res://systems/prefabs/drill_point/drill_point.gd:147)
+ERROR: Condition "!is_inside_tree()" is true. Returning: Transform3D()
+   at: get_global_transform (scene/3d/node_3d.cpp:649)
+   GDScript backtrace (most recent call first):
+       [0] _nearest_slot (res://systems/vo/bark_director.gd:307)
+       [1] _on_device_jammed (res://systems/vo/bark_director.gd:384)
+       [2] _emit_fact (res://systems/prefabs/gameplay_prefab.gd:370)
+       [3] shutdown (res://systems/prefabs/drill_point/device_runner.gd:110)
+       [4] _exit_tree (res://systems/prefabs/drill_point/drill_point.gd:147)
+ERROR: Condition "!is_inside_tree()" is true. Returning: Transform3D()
+   at: get_global_transform (scene/3d/node_3d.cpp:649)
+   GDScript backtrace (most recent call first):
+       [0] play_cue (res://world/audio/cue_player.gd:220)
+       [1] _device_one_shot (res://world/audio/cue_player.gd:529)
+       [2] _on_device_jammed (res://world/audio/cue_player.gd:501)
+       [3] _emit_fact (res://systems/prefabs/gameplay_prefab.gd:370)
+       [4] shutdown (res://systems/prefabs/drill_point/device_runner.gd:110)
+       [5] _exit_tree (res://systems/prefabs/drill_point/drill_point.gd:147)
+ERROR: Playback can only happen when a node is inside the scene tree
+   at: play_basic (scene/audio/audio_stream_player_internal.cpp:145)
+   GDScript backtrace (most recent call first):
+       [0] play_cue (res://world/audio/cue_player.gd:221)
+       [1] _device_one_shot (res://world/audio/cue_player.gd:529)
+       [2] _on_device_jammed (res://world/audio/cue_player.gd:501)
+       [3] _emit_fact (res://systems/prefabs/gameplay_prefab.gd:370)
+       [4] shutdown (res://systems/prefabs/drill_point/device_runner.gd:110)
+       [5] _exit_tree (res://systems/prefabs/drill_point/drill_point.gd:147)
+WARNING: 7 RIDs of type "Texture" were leaked.
+   at: finalize (servers/rendering/rendering_device.cpp:8900)
+WARNING: 474 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)
+ERROR: 6 resources still in use at exit (run with --verbose for details).
+   at: clear (core/io/resource.cpp:822)
