@@ -153,6 +153,8 @@ const GHOST_SA_MID: Vector3 = Vector3(14.5, -2.0, 2.0)
 const GHOST_CQ_HIDE: Vector3 = Vector3(12.5, -4.0, 3.5)
 ## lkprobe (r263): a VT floor point beside VaultCash (24, 20.5) seen from no VC eye point: step 6's wait with a bag.
 const GHOST_VT_HIDE: Vector3 = Vector3(24.5, -4.0, 20.5)
+## Just inside VaultGate (17, -4, 9) on the VC side: blind from BB except right at the gate (step 6's peek).
+const GHOST_GATE_INNER: Vector3 = Vector3(17.0, -4.0, 10.3)
 const GHOST_LD_STAGE: Vector3 = Vector3(8.0, 0.0, 1.6)
 ## Runtime lookups (_x): prefab class + objective_tag (ENV C's G1 tags, wip/c-of-g1 f49df211) near a design-doc point;
 ## the tag wins when present, else the nearest node of the class within `max` m. --resolve prints this table's
@@ -1915,6 +1917,34 @@ func _vc_window(max_age: float) -> bool:
 	return _vc_others(trip_s) == ""
 
 
+## Step 6, out with a bag: stop just inside the vault gate (VC side, blind from BB but next to the gate) and step into
+## BB only when no other basement guard is in BB within 25 m of the gate or within 8 m anywhere; up to 20 s (ghost6_o:
+## rover_basement stepped into BB 8 m off during the trip, t=576, past what the window's prediction could see).
+func _gate_peek() -> void:
+	var gate: Vector3 = _of(Vector3(17.0, OF_FFL[0], 9.0))
+	await _go(pilot.stand_point(_of(GHOST_GATE_INNER)), 0.4, 20.0)
+	var t: float = 0.0
+	while t < 20.0:
+		var who: String = ""
+		for n: Node in rt.npcs(&"guard"):
+			var g: NpcBase = n as NpcBase
+			if g == null or not g.is_alive() or absf(g.global_position.y - OF_FFL[0]) > 1.5 or _has_tag(g, "guard_vault"):
+				continue
+			var p: Vector3 = g.global_position
+			var d: float = pilot.flat_dist(p, gate)
+			if d < 8.0 or (p.z > 6.5 and p.z < 9.6 and d < 25.0):
+				who = "%s %s" % [g.name, Po5Pilot._v(p)]
+		if who == "":
+			if t > 0.0:
+				note("GHOST gate peek: BB clear after %.1f s" % t)
+			return
+		if t == 0.0:
+			note("GHOST gate peek: %s in BB, holding inside the gate" % who)
+		await wait_s(0.5)
+		t += 0.5
+	note("GHOST gate peek: BB NOT clear after 20 s (going anyway)")
+
+
 ## Navmesh path length (m) from `a` to `b` on the crew's map (INF when there is no path).
 func _nav_len(a: Vector3, b: Vector3) -> float:
 	var path: PackedVector3Array = NavigationServer3D.map_get_path(pilot.crew.get_world_3d().navigation_map, a, b, true)
@@ -3323,6 +3353,7 @@ func _g6_bags() -> bool:
 			if grid != null and not await _laser_cross(grid, float(_laser_report(grid)["best_lane"]), false,
 					OF_LASER_LEAD_M):
 				return false
+			await _gate_peek()
 			if not await _bag_into_car_low(lift):
 				return false
 			note("GHOST bag trip VT -> car %.1f s" % (rt.heist_time_s - t0))
