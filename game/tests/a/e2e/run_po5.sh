@@ -26,6 +26,8 @@ ARGS=(--po5-flow="$FLOW" --po5-out="$OUT" --po5-budget="$BUDGET" --po5-heist="$H
 [[ -n "${FOCUS:-}" ]] && ARGS+=(--po5-focus="$FOCUS")
 # DIRECT=1: launch the heist through MenuFlow.launch instead of the Board (a staged heist; po5_flow._launch_direct).
 [[ "${DIRECT:-}" == "1" ]] && ARGS+=(--po5-direct)
+# RT_STUB_TRUCKS=1: RT G1 armored_trucks on the placeholder convoy boxes (po5_flow._stub_rt_trucks), until C's swap.
+[[ "${RT_STUB_TRUCKS:-}" == "1" ]] && ARGS+=(--po5-rt-stub-trucks)
 # HEIST_CAP=3000: auto_loud's heist-time cap in seconds (default 2400; po5_flow_auto_loud.LOOP_LIMIT_S).
 [[ -n "${HEIST_CAP:-}" ]] && ARGS+=(--po5-heist-cap="$HEIST_CAP")
 "$GODOT" --headless --path "$ROOT/game" --import >/dev/null 2>&1 || true
