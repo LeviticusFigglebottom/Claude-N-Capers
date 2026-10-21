@@ -1466,3 +1466,14 @@ takes the recommendation the env gave.
 12. **Escort looks (D):** `convoy_lead` and `convoy_rear` are carved out of the "every spawn tag maps to a look" rule.
     They are EnemyDefs, so NpcVisuals resolves them by difficulty (D-145.3 duty looks, faction reskins, tac_heavy).
     A adds a test that they never get a capsule.
+
+## D-150: OF ghost acceptance difficulty (2026-10-21, LEAD)
+P's ghost line (seed 1002): steps 1-4 pass on every run, and step 5's gate, lasers and time lock work unseen. At
+Cataclysm (8 guards, D-140), BB has no window with both rover_basement and the vault guard away (r257d: three
+windows in 700 s, each under 4 s). PD2's top-difficulty bank stealth relies on kills within the pager cap rather
+than pure ghosting. Ruling:
+1. **The no-kill ghost acceptance runs on Hazardous** (6 guards). That is the OF ghost gate for the done check.
+2. **On Cataclysm, the stealth acceptance is a stealth win.** Guard kills are allowed within the pager cap (D-140), plus
+   body bagging. Patrols are not lengthened to make a Cataclysm ghost possible. Density is the difficulty lever.
+3. If the Hazardous ghost also finds no BB window, C and A lengthen rover_basement's away leg at that difficulty
+   only.
