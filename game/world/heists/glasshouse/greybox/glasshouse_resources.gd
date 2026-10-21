@@ -7,9 +7,44 @@ const OUT_DIR: String = "res://world/heists/glasshouse/"
 const SCENE_PATH: String = OUT_DIR + "glasshouse.tscn"
 const DEF_PATH: String = OUT_DIR + "glasshouse_def.tres"
 const VARIANTS_PATH: String = OUT_DIR + "glasshouse_variants.tres"
+const POLICY_SCRIPT: String = "res://world/lighting/render_budget_policy.gd"
+## D-146 (<= 4,000 draws per view with the shadow passes; architecture §10): the sun's cascades re-drew every caster
+## in their slices (from the street: the whole block), so 2 splits over 30 m (was 4 over 120 m).
+const SUN_SHADOW_MODE: DirectionalLight3D.ShadowMode = DirectionalLight3D.SHADOW_PARALLEL_2_SPLITS
+const SUN_SHADOW_MAX_DISTANCE: float = 30.0
+## RenderBudgetPolicy (D-146, as Ostrander): dressing and small gameplay props inside the rooms cast no shadow outside
+## the chandelier hall (G5: its shadowed fixture and the storefront glazing draw them); dressing ranges outside the hall
+## are cut to 24 m (behind walls from anywhere further). Doors between two interior rooms cast none either; exterior
+## doors, the shell and the finishes keep casting (no light leaks).
+const POLICY_ROOTS: Array[String] = ["Props", "Gameplay/DisplayCases", "Gameplay/Misc", "Gameplay/Workshop"]
+const POLICY_SMALL_ROOTS: Array[String] = ["Variants"]
+const POLICY_DOOR_ROOTS: Array[String] = ["Gameplay/Doors"]
+const POLICY_CAST_KEEP: Array[String] = ["G5"]
+const POLICY_RANGE_KEEP: Array[String] = ["G5"]
+const POLICY_RANGE_CAP: float = 24.0
 
 
 # --- Resources --------------------------------------------------------------------------------
+
+## D-146: the sun's cascades, the RenderBudgetPolicy node under `lighting`, and the map's opt-in to levelcheck's
+## enforced budgets (meta perf_d146).
+static func render_budget(root: Node, lighting: Node3D, sun: DirectionalLight3D) -> void:
+	if sun != null:
+		sun.directional_shadow_mode = SUN_SHADOW_MODE
+		sun.directional_shadow_max_distance = SUN_SHADOW_MAX_DISTANCE
+	root.set_meta(&"perf_d146", true)
+	var pol: Node = Node.new()
+	pol.set_script(load(POLICY_SCRIPT))
+	pol.name = "RenderBudgetPolicy"
+	pol.set(&"roots", PackedStringArray(POLICY_ROOTS))
+	pol.set(&"small_roots", PackedStringArray(POLICY_SMALL_ROOTS))
+	pol.set(&"door_roots", PackedStringArray(POLICY_DOOR_ROOTS))
+	pol.set(&"cast_keep_rooms", PackedStringArray(POLICY_CAST_KEEP))
+	pol.set(&"range_keep_rooms", PackedStringArray(POLICY_RANGE_KEEP))
+	pol.set(&"range_cap", POLICY_RANGE_CAP)
+	lighting.add_child(pol)
+	pol.owner = root
+
 
 static func make_def() -> HeistDef:
 	var d: HeistDef = null

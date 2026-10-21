@@ -62,6 +62,9 @@ const KEYS: Dictionary = {
 	"vinyl_cool": ["vinyl_floor", Color(0.84, 0.9, 0.96), null],
 	"concrete": ["concrete", null, null],
 	"concrete_sealed": ["concrete", Color(0.86, 0.88, 0.92), null],
+	# GPU review r250: VT's raw concrete soffit read near black above its downward fluorescents; a pale painted soffit
+	# carries their spill and the fill pools (light falls off between the dark beams, so it stays modelled, not flat)
+	"soffit_painted": ["plaster_painted", Color(0.9, 0.91, 0.92), null],
 	"ceiling_tile": ["ceiling_tile", null, null],
 	"tile_white": ["tile_ceramic_white", null, null],
 	"paving": ["concrete", Color(0.95, 0.93, 0.9), null],
@@ -108,7 +111,7 @@ const ROOMS: Dictionary = {
 	"BB": ["vinyl_cool", "plaster_boh", "ceiling_tile", "corridor"],
 	"RC": ["vinyl_cool", "plaster_boh", "ceiling_tile", "boh"],
 	"VC": ["terrazzo", "ashlar", "plaster_ultra", "stone"],
-	"VT": ["concrete_sealed", "vault_steel", "concrete", "vault"],
+	"VT": ["concrete_sealed", "vault_steel", "soffit_painted", "vault"],
 	"SD": ["terrazzo", "ashlar", "plaster_ivory", "stone"],
 	# Ground
 	"LD": ["concrete", "plaster_bohgrey", "concrete", "corridor"],

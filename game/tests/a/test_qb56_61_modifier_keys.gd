@@ -198,6 +198,7 @@ func test_qb60_team_damage_reduction_per_hostage() -> void:
 	assert_near(float(out["amount"]), 8.0, 0.01, "2 absorbed per hostage, capped at 1 hostage")
 	Modifiers.clear_all()
 	c.health.invuln_left = 0.0
+	c.health.grace_left = 0.0  # D-145 hit grace: back-to-back hits here test the hostage DR
 	c.health.armor = c.health.max_armor
 	Modifiers.set_source(Modifiers.TEAM, &"team_skill.skill.persuader.zip_and_tie",
 		{&"team.damage_reduction_hostage": {"absorb_per_hostage": 5.0, "max_hostages": 8}})
@@ -205,6 +206,7 @@ func test_qb60_team_damage_reduction_per_hostage() -> void:
 	assert_near(float(out["amount"]), 5.0, 0.01, "5 absorbed per hostage (2 hostages)")
 	ct.hostage_count = 0
 	c.health.invuln_left = 0.0
+	c.health.grace_left = 0.0  # D-145 hit grace: back-to-back hits here test the hostage DR
 	c.health.armor = c.health.max_armor
 	out = c.health.take_hit(_hit(15.0))
 	assert_near(float(out["amount"]), 15.0, 0.01, "no hostages: no reduction")

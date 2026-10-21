@@ -20,6 +20,7 @@ var stats: Po5Stats = null
 ## llvmpipe renders at ~1 fps, which caps game time at 8 physics ticks per second. Between screenshots
 ## the harness turns the render loop off (window, DisplayServer and input stay real); shot() renders.
 var fast: bool = false
+var _heist_list: UiHeistList = null
 var _shot: int = 0
 var _log: PackedStringArray = PackedStringArray()
 var _worst_frame_ms: float = 0.0
@@ -89,9 +90,21 @@ static func menu_heist_name(given: String) -> String:
 	return given
 
 
+## Lethal / Cataclysm are locked in the build (heist_list unlocked_difficulties, PO-5.9) and behind progression: a
+## harness run on them (LEAD: OF Cataclysm real-bot runs) opens that difficulty in memory first (never saved).
+func _open_difficulty() -> void:
+	var d: int = Enums.Difficulty.keys().find(difficulty_name.to_upper())
+	var l: UiHeistList = HeistCatalog.heist_list()
+	_heist_list = l  # held: an unreferenced Resource leaves the cache and the next load() rereads the file
+	if d >= 0 and l != null and not l.unlocked_difficulties.has(d):
+		l.unlocked_difficulties.append(d)
+		note("harness: %s opened in memory (locked in the build)" % difficulty_name)
+
+
 ## main menu -> Safehouse -> Planning Table -> heist -> difficulty -> Briefing -> Continue -> Confirm plan
 ## -> Start Heist, by mouse clicks; then waits for the local crew to spawn.
 func enter_heist() -> bool:
+	_open_difficulty()
 	var t0: int = Time.get_ticks_msec()
 	while find_button("Safehouse") == null and Time.get_ticks_msec() - t0 < 30000:
 		await get_tree().process_frame

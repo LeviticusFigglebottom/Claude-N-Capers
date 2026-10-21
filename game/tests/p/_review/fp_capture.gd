@@ -84,5 +84,5 @@ func _shot(name: String, settle: bool = true) -> void:
 	await _frames(8)
 	await RenderingServer.frame_post_draw
 	var img: Image = get_viewport().get_texture().get_image()
-	img.save_png(OUT + name + ".png")
+	img.save_png(PCaptureName.safe_path(OUT + name + ".png"))
 	print("[PT-03] saved ", OUT + name + ".png")

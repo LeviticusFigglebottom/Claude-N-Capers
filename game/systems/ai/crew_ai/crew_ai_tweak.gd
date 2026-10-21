@@ -70,6 +70,10 @@ extends Resource
 @export_group("Revive (L6.1, L2.7)")
 ## Get this close (horizontal, m) to a downed crew member before holding interact.
 @export var revive_range_m: float = 1.2
+## P (GH Tense 4501): a bot that cannot close in (a body or prop at the downed crew member's side) and has made no
+## progress for revive_stall_s revives from where it stands when within this distance (m; the human reach is 2.5) ◇.
+@export var revive_stall_reach_m: float = 2.3
+@export var revive_stall_s: float = 1.0
 ## L4.4 (P3 gate): a Stinger tasing a crew member scores its distance x this when the AI picks a target
 ## (lower = preferred; 0.25 = shot first unless something is 4x closer) ◇.
 @export var tasing_stinger_score_mult: float = 0.25
@@ -163,7 +167,8 @@ extends Resource
 @export var thrown_bag_pickup_max_dy_m: float = 1.5
 
 @export_group("Health regen (D-145 §4a)")
-## A bot regains health after this long (s) without taking damage ◇ (PD2 bots don't; PO deviation).
-@export var bot_regen_delay_s: float = 6.0
-## ...at this fraction of its max health per second ◇.
-@export var bot_regen_frac_per_s: float = 0.02
+## A bot regains health after this long (s) without taking damage (D-145; PD2 team AI heal fully 2 s after the last
+## hit, gentler here: 3 s).
+@export var bot_regen_delay_s: float = 3.0
+## ...at this fraction of its max health per second (D-145: 25 %/s, full in 4 s).
+@export var bot_regen_frac_per_s: float = 0.25

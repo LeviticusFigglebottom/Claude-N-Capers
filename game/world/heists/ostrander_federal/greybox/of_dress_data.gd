@@ -167,11 +167,10 @@ const LIGHT_TWEAKS: Dictionary = {
 	"BD": _EXEC, "EA": _EXEC, "PR": _EXEC, "PN": _EXEC, "XC": _EXEC, "XL": _EXEC, "LG": _EXEC, "CT": _EXEC,
 	"RA": _EXEC, "XW": _EXEC,
 }
-## Shadow-casting fixtures (one per room in the key review rooms; <= 8 shadowed lights in any view: the sun + these).
-const SHADOW_FIXTURES: Array = [
-	["SR", Vector3(19.5, FG + 3.0, 3.5)], ["VT", Vector3(24.0, FB + 3.2, 19.0)], ["PR", Vector3(29.0, FE + 3.0, 3.5)],
-	["OF", Vector3(18.0, FM + 3.0, 13.0)], ["LD", Vector3(5.0, FG + 4.2, 4.5)], ["BB", Vector3(24.0, FB + 3.2, 8.0)],
-]
+## Shadow-casting fixtures: [room, target]. None since D-146: each re-drew ~300-430 casters in every hall view (the
+## rooms sit behind the hall walls and the renderer does not occlude lights) for a shadow that reads only in its room,
+## where the dressing casts no shadow either (RenderBudgetPolicy). Were SR, VT, PR, OF, LD, BB.
+const SHADOW_FIXTURES: Array = []
 ## Rooms whose kit ceiling grid is off (none).
 const NO_CEILING_GRID: Array[String] = []
 ## Rooms without fill lights (shafts and the open stairs light from their wall lamps); warm and dim fill rooms.
@@ -254,8 +253,10 @@ const DIRECT_PROPS: Array = [
 	["VaultBoxesE1", "prop_deposit_boxes", Vector3(33.465, FB, 14.6), 90.0, {}],
 	["VaultBoxesE2", "prop_deposit_boxes", Vector3(33.465, FB, 22.4), 90.0, {}],
 	["VaultCountTable", "prop_vault_table", Vector3(18.5, FB, 19.0), 90.0, {}],
-	# CQ: a cash trolley queued on the east wall (the lift -> BB walk keeps 1.6 m)
-	["CartQueueTrolley", "prop_cash_trolley", Vector3(12.49, FB, 4.6), 90.0, {}],
+	# CQ: a cash trolley queued on the east wall (the lift -> BB walk keeps 1.6 m) and a sealed-bag skid south of it,
+	# both between the lift gates' swing (z <= 3.9) and the BB door's (1.1 m leaf hinged at x 12.6: z >= 5.9)
+	["CartQueueTrolley", "prop_cash_trolley", Vector3(12.49, FB, 4.5), 90.0, {}],
+	["CartQueueSkid", "prop_of_cash_skid", Vector3(12.54, FB, 5.41), 90.0, {}],
 	# GA: a bronze on a plinth by the east writing desk (kit sculpture; off the crossing line)
 	["GallerySculpture", "prop_plinth_bronze_a", Vector3(35.6, FM, 17.45), 180.0, {}],
 	# CF: six chairs round the conference table (31, 13; 3.0 x 1.2); NA: the new-accounts officer's chair

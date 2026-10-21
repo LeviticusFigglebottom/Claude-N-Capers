@@ -182,6 +182,13 @@ UiBuild wires focus / press on every Button it makes, so screens get them for fr
   screen touched; review PNGs under `game/content/ui/_review/`.
 * `test_ui_theme` keeps `caper_theme.tres` equal to `UiThemeFactory.build()`.
 * Contrast (`hud_contrast_capture.gd`) ≥ 4.5:1 for all text; 720p size floor 14 px.
+* r249 fill rule (LEAD ruling): text **fill vs its local background ≥ 3:1** (`contrast_worker.fill_ratio`: brightest 3%
+  vs the median in the label rect), over the mid and bright backdrops. The 4.5:1 check above counts the dark outline,
+  so frameless text always passes it; the fill rule is what fails on bright stone. Small HUD labels that fail it get
+  the **label scrim** (`UiBuild.scrim_label` / `label_scrim()`: 45% black, radius 4, padding 6×2): world-marker
+  labels (2.0:1 on the OF facade) and teammate names (2.6:1). It is a gate only for scrimmed labels: frameless text
+  (objective block, vitals, prompts) cannot reach 3:1 on a flat bright backdrop by construction, and stays frameless
+  (PO-4); the probe prints those as `CONTRAST FILL NOTE`.
 
 ## 11. Menu rules (D-111: "menus look bad and cluttered")
 

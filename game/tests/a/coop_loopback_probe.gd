@@ -152,7 +152,50 @@ func snapshot(args: Dictionary = {}) -> Dictionary:
 		"vfx_shots": rt.vfx.shots - vfx_base if rt.vfx != null else -1,
 		"hud_objectives": rt.hud_model.objectives.map(func(o: Dictionary) -> String:
 			return "%s:%d" % [o["id"], int(o["state"])]) if rt.hud_model != null else [],
+		"of_state": of_state(rt) if bool(args.get("of_state", false)) else {},
 	}
+
+
+## OF co-op parity (test_of_coop_loopback.gd): the replicated state of a heist, computed the same way on both peers.
+## Discrete values compare exactly; positions (rounded to 0.1 m) with a tolerance in the test.
+static func of_state(rt: HeistRuntime) -> Dictionary:
+	var prefabs: Dictionary = {}
+	var lifts: Dictionary = {}
+	var doors: Dictionary = {}
+	for n: Node in rt.map.find_children("*", "", true, false):
+		var gp: GameplayPrefab = n as GameplayPrefab
+		if gp == null or gp.net_id == 0:
+			continue
+		var row: Array = [gp.prefab_enabled, gp.is_visible_in_tree()]
+		if gp is Ladder:
+			row.append((gp as Ladder).usable)
+		prefabs[gp.net_id] = row
+		if gp is BagLift:
+			var car: Node3D = (gp as BagLift).visual_node("Car") as Node3D
+			lifts[gp.net_id] = _r(car.global_position) if car != null else Vector3.INF
+		if gp is Door:
+			doors[gp.net_id] = [(gp as Door).is_open, (gp as Door).locked]
+	var bags: Dictionary = {}
+	for n: Node in rt.get_tree().get_nodes_in_group(G.LOOT_BAG):
+		var b: LootBag = n as LootBag
+		if b != null and rt.is_ancestor_of(b) and not b.is_queued_for_deletion():
+			bags[NetIds.of(b)] = [b.loot_id, _r(b.global_position)]
+	var npcs: Dictionary = {}
+	for n: Node in rt.npcs():
+		npcs[NetIds.of(n)] = _r((n as Node3D).global_position)
+	var items: Dictionary = {}
+	for c: CrewController in rt.crew_members():
+		items[c.slot] = c.items.duplicate()
+	var reveals: Array = Array(rt.preplan.reveals()).map(func(g: StringName) -> String: return String(g))
+	reveals.sort()
+	return {"phase": int(rt.phase), "went_loud": rt.went_loud, "prefabs": prefabs, "lifts": lifts, "doors": doors,
+		"bags": bags, "npcs": npcs, "items": items, "reveals": reveals,
+		"objectives": rt.hud_model.objectives.map(func(o: Dictionary) -> String:
+			return "%s:%d" % [o["id"], int(o["state"])]) if rt.hud_model != null else []}
+
+
+static func _r(v: Vector3) -> Vector3:
+	return (v * 10.0).round() / 10.0
 
 
 ## Paths of the visible VariantSlots in the runtime's map (both peers).

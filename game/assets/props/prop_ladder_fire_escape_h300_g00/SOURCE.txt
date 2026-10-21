@@ -1,0 +1,8 @@
+asset: prop_ladder_fire_escape_h300_g00
+script: tools/blender/props/prefab_visuals.py
+params: {"cat": {"kind": "ladder", "prefab": "ladder"}, "fn": "ladder", "gap": 0.0, "goose_back": 0.32, "h": 3.0}
+seed: 4024017020  (zlib.crc32(asset_id))
+generator: Blender 4.5, tools/blender/lib 1.0.0
+rebuild: python3 tools/blender/build.py --category props --asset prop_ladder_fire_escape_h300_g00
+edit policy: generated file, never edit by hand; change the script and rebuild
+tri_budget: 12000

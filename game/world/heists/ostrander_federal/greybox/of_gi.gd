@@ -15,6 +15,24 @@ const LUT_PATH: String = "res://assets/luts/lut_ostrander_federal.png"
 const SUN_SCRIPT: String = "res://world/lighting/sun_cloud_curve.gd"
 const ENV_SCRIPT: String = "res://world/lighting/heist_world_environment.gd"
 const VIEWMODEL_LIT_LAYER: int = 1 << 20  # viewmodel_lit (visual_slots v1.2, D-095)
+const POLICY_SCRIPT: String = "res://world/lighting/render_budget_policy.gd"
+## D-146 (<= 4,000 draws per view with the shadow passes): the sun's cascades re-draw every caster in their slices
+## (indoors: every floor above the camera), so 2 splits over 30 m (was 4 over 90 m).
+const SUN_SHADOW_MODE: DirectionalLight3D.ShadowMode = DirectionalLight3D.SHADOW_PARALLEL_2_SPLITS
+const SUN_SHADOW_MAX_DISTANCE: float = 30.0
+## RenderBudgetPolicy (D-146): dressing and small gameplay props inside the rooms cast no shadow (outside the hall,
+## whose glazing and shadowed pendant draw them); dressing ranges outside the hall and the teller workroom are cut to
+## 24 m (behind walls from anywhere further). Doors between two interior rooms cast none either; exterior doors, the
+## shell and the finishes keep casting (no light leaks).
+const POLICY_ROOTS: Array[String] = ["Props", "Gameplay/Loot", "Gameplay/Devices", "Gameplay/Containers"]
+const POLICY_SMALL_ROOTS: Array[String] = ["Variants"]
+const POLICY_DOOR_ROOTS: Array[String] = ["Gameplay/Doors"]
+const POLICY_CAST_KEEP: Array[String] = ["BH"]
+const POLICY_RANGE_KEEP: Array[String] = ["BH", "TW"]
+const POLICY_RANGE_CAP: float = 24.0
+## The hall's dressing moves to render layer 5, which the sun's shadow_caster_mask leaves out: the pendant still shadows
+## it, the sun's cascades do not re-draw it (the hall is roofed; its shafts come through the lantern and the windows).
+const SUN_SKIP_LAYER: int = 1 << 4
 
 ## VoxelGI per level band (doc GI): [node name, data file, AABB min, AABB max, subdiv, interior]. The bands meet at the
 ## slabs (basement | ground + gallery + the hall to the executive slab | executive storey); the footprint plus 0.3 m.
@@ -140,12 +158,32 @@ func environment(lighting: Node3D) -> void:
 	sun.light_angular_distance = 0.5
 	sun.shadow_enabled = true
 	sun.shadow_blur = 1.5
-	sun.directional_shadow_max_distance = 90.0
+	sun.directional_shadow_mode = SUN_SHADOW_MODE
+	sun.directional_shadow_max_distance = SUN_SHADOW_MAX_DISTANCE
+	sun.shadow_caster_mask = 0xFFFFFFFF & ~SUN_SKIP_LAYER
 	sun.layers = 1 | VIEWMODEL_LIT_LAYER  # D-095 like every map light
 	lighting.add_child(sun)
 	sun.owner = root
 	counts["environment"] = 1
 	_hall_pools(lighting, root)
+	_render_budget_policy(lighting, root)
+
+
+## The policy node. OF does not opt in to levelcheck's enforced perf budgets (meta perf_d146): D-146 addendum 6 judges
+## them on Forward+ on the GPU box; the Compatibility model stays report-only, as an early warning.
+func _render_budget_policy(lighting: Node3D, root: Node) -> void:
+	var pol: Node = Node.new()
+	pol.set_script(load(POLICY_SCRIPT))
+	pol.name = "RenderBudgetPolicy"
+	pol.set(&"roots", PackedStringArray(POLICY_ROOTS))
+	pol.set(&"small_roots", PackedStringArray(POLICY_SMALL_ROOTS))
+	pol.set(&"door_roots", PackedStringArray(POLICY_DOOR_ROOTS))
+	pol.set(&"cast_keep_rooms", PackedStringArray(POLICY_CAST_KEEP))
+	pol.set(&"range_keep_rooms", PackedStringArray(POLICY_RANGE_KEEP))
+	pol.set(&"range_cap", POLICY_RANGE_CAP)
+	pol.set(&"sun_skip_layer", SUN_SKIP_LAYER)
+	lighting.add_child(pol)
+	pol.owner = root
 
 
 ## The hall's warm pools (PO: the hall read flat-lit): two warm 3000 K fill lights (level_standards §3.7 fill: energy

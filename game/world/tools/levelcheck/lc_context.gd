@@ -73,9 +73,15 @@ func set_door_links(on: bool) -> Array[Array]:
 	return saved
 
 
-func restore_links(saved: Array[Array]) -> void:
+## Puts the links set_door_links saved back; true when one changed (the caller awaits await_nav_update then).
+func restore_links(saved: Array[Array]) -> bool:
+	var changed: bool = false
 	for s: Array in saved:
-		(s[0] as NavigationLink3D).enabled = bool(s[1])
+		var l: NavigationLink3D = s[0]
+		if l.enabled != bool(s[1]):
+			l.enabled = bool(s[1])
+			changed = true
+	return changed
 
 
 func tree() -> SceneTree:
@@ -286,13 +292,24 @@ func set_variant_config(active: Dictionary) -> void:
 	cache.clear()
 	for s: Variant in active.keys():
 		_active[(s as Node).get_instance_id()] = bool(active[s])
+	var changed: bool = false
 	for slot: VariantSlot in variant_slots():
 		var on: bool = bool(_active.get(slot.get_instance_id(), true))
 		for r: Node in slot.find_children("*", "NavigationRegion3D", true, false):
-			(r as NavigationRegion3D).enabled = on
+			if (r as NavigationRegion3D).enabled != on:
+				(r as NavigationRegion3D).enabled = on
+				changed = true
 		for l: Node in slot.find_children("*", "NavigationLink3D", true, false):
-			(l as NavigationLink3D).enabled = on
-	await await_sync(4)
+			if (l as NavigationLink3D).enabled != on:
+				(l as NavigationLink3D).enabled = on
+				changed = true
+	# OF-C2: a fixed 4 frames let the first reachability config query a map that had not yet synced the
+	# links barred_doors restored just before (a flaky 840-fail baseline under load); wait for the map
+	# iteration whenever something changed.
+	if changed:
+		await await_nav_update(4)
+	else:
+		await await_sync(4)
 
 
 # --- rays ----------------------------------------------------------------------------------

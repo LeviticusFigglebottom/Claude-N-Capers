@@ -15,3 +15,38 @@ func test_old_start_behind_the_crew_is_skipped() -> void:
 		"within 0.45 m of the corner: the next point")
 	assert_eq(Po5Pilot.next_corner(path, Vector3(0.1, 0, 0), Vector3(10, 0, 10)), Vector3(10, 0, 0), "at the start")
 	assert_eq(Po5Pilot.next_corner(PackedVector3Array(), Vector3.ZERO, Vector3(5, 0, 5)), Vector3(5, 0, 5), "no path")
+
+
+## B's DB count_cage stall (StairMezz): a nav path with a corner exactly in an open door's plane still crosses to the
+## far side; the pilot inside the doorway band walked back to its own side and the path sent it north again (loop).
+func test_path_crossing_with_a_corner_in_the_door_plane() -> void:
+	var door: Door = Door.new()
+	door.width_m = 0.9
+	add_child(door)
+	door.global_transform = Transform3D(Basis(Vector3.UP, PI), Vector3(1.5, 3.6, 6.0))  # DB StairMezz: local z = -world z
+	await wait_frames(1)
+	var path: PackedVector3Array = PackedVector3Array([Vector3(1.7, 3.8, 5.3), Vector3(1.73, 3.8, 5.5),
+		Vector3(1.8, 3.8, 6.0), Vector3(2.0, 3.8, 6.5), Vector3(11.6, 3.8, 6.5)])
+	assert_eq(Po5Pilot.path_crosses(door, path), -1.0, "the path leaves through the door to its local -z side (world z > 6)")
+	var back: PackedVector3Array = PackedVector3Array([Vector3(2.0, 3.8, 6.5), Vector3(1.8, 3.8, 6.0), Vector3(1.7, 3.8, 5.3)])
+	assert_eq(Po5Pilot.path_crosses(door, back), 1.0, "the other way: local +z")
+	var along: PackedVector3Array = PackedVector3Array([Vector3(1.7, 3.8, 5.3), Vector3(1.7, 3.8, 4.6)])
+	assert_eq(Po5Pilot.path_crosses(door, along), 0.0, "no crossing")
+	door.queue_free()
+
+
+## B's DB GatehouseNorth stall: the path's own way out of a doorway (the first point past THROUGH_PAST_M), not the straight
+## line to the target.
+func test_path_side_of_a_doorway() -> void:
+	var door: Door = Door.new()
+	add_child(door)
+	door.global_transform = Transform3D(Basis.IDENTITY, Vector3(27.0, 0.0, -32.0))  # DB GatehouseNorth
+	await wait_frames(1)
+	var south: PackedVector3Array = PackedVector3Array([Vector3(27.0, 0.2, -32.6), Vector3(27.0, 0.2, -34.0),
+		Vector3(40.0, 0.2, -34.0)])
+	assert_eq(Po5Pilot.path_side(door, south), -1.0, "the path leaves south (local -z) though the target is north")
+	var north: PackedVector3Array = PackedVector3Array([Vector3(27.0, 0.2, -31.5), Vector3(27.0, 0.2, -30.0)])
+	assert_eq(Po5Pilot.path_side(door, north), 1.0, "north")
+	var other_floor: PackedVector3Array = PackedVector3Array([Vector3(27.0, 3.8, -30.0)])
+	assert_eq(Po5Pilot.path_side(door, other_floor), 0.0, "a point on another floor does not count")
+	door.queue_free()

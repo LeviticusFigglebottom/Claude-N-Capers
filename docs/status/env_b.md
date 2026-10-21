@@ -3,6 +3,55 @@
 Owner: ENV B. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
+## 2026-10-21 02:00: D-145 DB cells on trunk r251 c04cb710 (headless auto_loud x1.0, solo + 3 bots)
+- Routine: 3/3 PASS, player downs 2 / 0 / 0 (median 0 <= 2), no nav give-ups (A's doorway fixes hold).
+  s1 926 s police 218 (bulwark 19); s2 1040 s police 135; s3 916 s police 103.
+- Tense (after A's tuning): 0/3. s1 custody 331 s (police 46); s2 custody 785 s, 3 player downs, police 154
+  (bulwark 27, stinger 7); s3 custody 360 s (police 50).
+- Finding (sent to A): in s1 and s3 the player went down ONCE and no bot revived inside the 30 s bleedout
+  (s1 down t=301 -> custody t=331, bot slot 1 tased just before; s3 down t=330 at the StairST landing -> t=360), with
+  bots up. Tense now fails on bot revive priority / reach, not on damage.
+
+## 2026-10-21 00:30: r251 merged; windowed command lines for the PO's GPU box (lead messages still refused)
+- Merged trunk c04cb710 (r251) and imported. D-145 DB Routine + Tense x3 now running headless on trunk.
+- edadb8ed evidence (_review/r250_label_scrim): OF facade with the label scrim, LIVE "TIME LOCK 03:27" and
+  "ESCAPE 02:27" on the HUD (the escape countdown captured after all).
+
+Windowed captures (from the clone root, after `godot --headless --path game --import`; prefix `xvfb-run -a` only
+without a display; repeat with `--resolution 1920x1080`):
+1. OF real-input menu pass (main menu to payday to hub, 15 shots):
+   `godot --audio-driver Dummy --path game --resolution 1280x720 --script res://tests/b/render/real_input_run_capture.gd -- <out_dir> ostrander_federal`
+2. OF HUD timers + label scrim: `... --script res://tests/b/render/of_timers_capture.gd -- <out_dir>`
+3. Bot gear live (BOT MISMATCH / BOT DONE <n>): `... --script res://tests/b/render/bot_gear_capture.gd -- <out_dir> ostrander_federal`
+4. Bot Crew screen + lobby AI cards (CREW DONE <issues>): `... --script res://tests/b/render/crew_capture.gd -- <out_dir>`
+5. Payday achievements fold ("PROBE focused=AchievementsUnlocked"): `... --script res://tests/b/render/payday_fold_capture.gd -- <out.png>`
+6. HUD contrast (CONTRAST PASS/FAIL; modes hud | loud | menus): `godot --audio-driver Dummy --path game --script res://tests/b/render/hud_contrast_capture.gd -- hud`
+7. Loud OF HUD run with clip scan (too slow on llvmpipe): `... --script res://tests/b/render/of_run_capture.gd -- <out_dir> loud`
+Most useful on a GPU: 7 at both sizes; 1 at 1920x1080 (here it hit the 30-min limit at 14/15).
+
+## 2026-10-20 late: D-145 DB cells and HUD label scrim (lead messages blocked: untrusted-device)
+send_message to the lead fails (elevated_session_untrusted_device), so this entry is the report.
+
+### D-145 Dockside Burn (env/a-core 98e55725 + trunk fe567f9f merged in a scratch worktree; HEADLESS auto_loud x1.0,
+solo + 3 bots, all slots corsair_ar / tailored_suit; downs = player / bot1 / bot2 / bot3)
+- Routine: 2/3 wins, player downs 3 / 1 / 1 (median 1 <= 2), no nav give-ups.
+  - s1 FAIL custody 610 s (combat: three downs in three places, last not revived). Downs 3/2/0/1. Police 131, peak 14.
+  - s2 PASS 1070 s. Downs 1/0/1/0. Police 116, peak 14.  s3 PASS 989 s. Downs 1/0/0/0. Police 125, peak 13.
+- Tense (pre-tuning, A softens it next): 0/3, player downs 3/3/3.
+  - s1 custody 341 s, downs 3/0/0/0, police 64 (stinger 1).  s3 custody 422 s, downs 3/3/1/2, police 67 (stinger 3).
+  - s2 custody 827 s, downs 3/2/3/1, police 133 (bulwark 20, stinger 6); FINDING burn marker unreachable again
+    (the ChamberANorth leg, with C / A).
+  - Re-run Tense x3 after A's next push.
+- Before A's fix (trunk 14838b53) all three Routine seeds failed on pilot nav stalls (StairMezz doorway loop,
+  GatehouseNorth shuttle): A fixed both in 98e55725.
+
+### HUD label scrim (LEAD r249 narrow b): 55afe82c, evidence aacfa93e (_review/r250_label_scrim)
+- UiBuild.label_scrim (45% black, radius 4) on world-marker labels and teammate names; objective block frameless.
+  45% not 35%: white over near-white stone is ~2.4:1 at 35%, ~3.4:1 at 45%.
+- contrast_worker fill_ratio >= 3:1 over mid / bright: a gate for scrimmed labels only. Frameless text measures
+  1.0-1.4:1 on a flat bright backdrop by construction (a global gate would scrim the whole HUD); it prints NOTEs.
+- hud contrast PASS; tests teammate, objective_marker, hud_palettes, pp_hud_720p, ui_theme.
+
 ## 2026-10-20: resumed for D-144 / D-145 (lead session_014E3p2DmSYTneJjytGwKKfc)
 Resumed on env/b-content 29d30a2d (ff from origin; trunk rounds 204-244 ran in another account).
 

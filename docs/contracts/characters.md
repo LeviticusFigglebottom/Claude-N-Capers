@@ -1,4 +1,4 @@
-# Contract: characters (v1.34)
+# Contract: characters (v1.35)
 
 Producer: ENV C (generated humanoids + animations). Consumer: ENV A (NPC/crew prefabs).
 Until delivered, ENV A uses capsule placeholders with the same node names.
@@ -398,3 +398,13 @@ without a plate carrier or armoured vest. Runtime (A): on Routine and Tense ever
 `<look>_duty` variant when one exists; from Hazardous up, the base look. The look follows D-145.3's stats (no
 damage-reducing armour on Routine/Tense, A f9a471e1). `test_outfits` checks the looks; A's test pins the selection.
 Additive.
+
+## v1.35: faction duty looks for Routine/Tense (D-145.3; D 1ea150dd / 6348b1b0)
+`tac_light_frd_duty`, `tac_light_sentinel_duty`, `tac_light_zero_duty`: the TAC Light duty look (no plate carrier, soft
+cap instead of the ballistic helmet) in each faction's colours, with its back, chest and arm marks. No helmet decals; the
+Zero duty look has no pauldrons and no bone skull face mask (both are armour, and the mask needs a helmet rim). Indexed
+in characters.json as `variant_of: tac_light`, `variant: <faction>_duty`; scene
+`world/characters/tac_light_<faction>_duty/tac_light_<faction>_duty.tscn`. Runtime (A, 684889cf): on Routine and Tense a
+faction police unit (EnemyDef `params.visual_variant` frd / sentinel / zero) resolves `<faction>_duty` → `duty` →
+`<faction>` → base. Only the TAC Light has faction EnemyDefs today; other units fall back to the plain `_duty` look.
+`test_outfits` checks the looks. Additive.

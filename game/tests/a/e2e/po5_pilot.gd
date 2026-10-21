@@ -25,6 +25,9 @@ const THROUGH_PAST_M: float = 0.9
 ## _door_on_line: a closed door within this (m) of the crew's plane is opened before stepping across it.
 const LINE_DOOR_M: float = 1.0
 ## _through_link: how far along the nav path (m) a crossing of the doorway counts as "the route leaves through it".
+## shoots_from_floor: at most this many alive enemies within FLOOR_FIGHT_M (m) for a downed pilot to fight back.
+const FLOOR_FIGHT_MAX: int = 2
+const FLOOR_FIGHT_M: float = 20.0
 const THROUGH_LOOKAHEAD_M: float = 4.0
 ## goto: standing at the end of a nav path that stops this far (m, flat) short of the target = unreachable (OF-X2).
 const UNREACHABLE_M: float = 2.0
@@ -86,6 +89,13 @@ var _last_engage: float = -1.0
 var _door_tries: Dictionary[Door, int] = {}
 ## Nesting of the short detour walks goto() makes when stuck (they do not detour again).
 var _detour_depth: int = 0
+## Ladders of the heist (found once) and a climb in progress (no ladder legs inside it).
+var _ladders: Array[Ladder] = []
+var _climbing: bool = false
+## _through_link hysteresis: the door being crossed, for which target, to which side (its local z sign).
+var _through_door: Door = null
+var _through_target: Vector3 = Vector3.INF
+var _through_side: float = 0.0
 var _rad_px: Vector2 = Vector2.ONE
 
 
@@ -184,7 +194,65 @@ func face(point: Vector3, tol: float = 0.03, timeout_s: float = 3.0) -> bool:
 
 func nav_path(to: Vector3) -> PackedVector3Array:
 	var map: RID = crew.get_world_3d().navigation_map
-	return NavigationServer3D.map_get_path(map, crew.global_position, to, true, NAV_LAYERS_CREW)
+	return NavigationServer3D.map_get_path(map, crew.global_position, to, true, NAV_LAYERS_CREW | Ladder.NAV_LAYER)
+
+
+## OF-A6 (Haz seed 5: 15 min at the burnt hole's edge): the climbable Ladder whose NavLink the leg to `corner` takes, as
+## [ladder, up], else []. The path reaches the ladder's far end while the crew stands at its near end.
+func _ladder_leg(corner: Vector3) -> Array:
+	if _climbing:
+		return []
+	if _ladders.is_empty():
+		var rt: HeistRuntime = HeistRuntime.of(crew)
+		if rt != null:
+			for n: Node in rt.find_children("*", "Ladder", true, false):
+				_ladders.append(n as Ladder)
+	var pos: Vector3 = crew.global_position
+	for l: Ladder in _ladders:
+		if not is_instance_valid(l) or not l.is_climbable():
+			continue
+		var bottom: Vector3 = l.bottom_position()
+		var top: Vector3 = l.top_position()
+		if flat_dist(pos, bottom) <= 1.5 and absf(pos.y - bottom.y) <= 1.0 and corner.y > pos.y + 1.0 \
+				and corner.distance_to(top) <= 1.6:
+			return [l, true]
+		if flat_dist(pos, top) <= 1.5 and absf(pos.y - top.y) <= 1.0 and corner.y < pos.y - 1.0 \
+				and corner.distance_to(bottom) <= 1.6:
+			return [l, false]
+	return []
+
+
+## Climb `l` like a player with ENV P's free climb (CrewLadderClimb): up = stand on the climb line facing the wall and
+## hold forward (level look); down = stand at the Top marker facing the climb side, look down past
+## ladder_down_pitch_deg and hold forward. True when the crew reached the other end.
+func climb_ladder(l: Ladder, up: bool) -> bool:
+	_climbing = true
+	var bottom: Vector3 = l.bottom_position()
+	var top: Vector3 = l.top_position()
+	var wall: Vector3 = l.face_normal()
+	d.note("pilot: ladder %s %s (%.1f m)" % [l.name, "up" if up else "down", top.y - bottom.y])
+	var ok: bool = false
+	if await goto(bottom if up else top - wall * 0.3, 0.3, 20.0, false, false):
+		var look: Vector3 = (bottom + wall + Vector3.UP * 1.6) if up else (bottom - wall * 0.6)
+		await face(look, 0.05, 2.0)
+		inp.press(&"move_forward")
+		var t: float = 0.0
+		var limit: float = (top.y - bottom.y) / maxf(Tweak.crew().ladder_climb_speed_mps, 0.5) + 6.0
+		while t < limit and crew.crew_state == Enums.CrewState.NORMAL:
+			var y: float = crew.global_position.y
+			if (up and y >= top.y - 0.15 and not crew.ladder.is_climbing()) \
+					or (not up and y <= bottom.y + 0.3 and not crew.ladder.is_climbing()):
+				ok = true
+				break
+			steer(atan2(-(look - crew.eye_position()).x, -(look - crew.eye_position()).z),
+				deg_to_rad(Tweak.crew().ladder_down_pitch_deg - 25.0) if not up else 0.0)
+			await tick()
+			t += dt()
+		inp.release(&"move_forward")
+	d.note("pilot: ladder %s %s -> %s at %s" % [l.name, "up" if up else "down", "OK" if ok else "FAILED",
+		_v(crew.global_position)])
+	_climbing = false
+	return ok
 
 
 ## ENV C (DB-7 ChamberBSouth): D-073 doors are baked CLOSED; an open one is crossed by its NavLink over a ~1.2 m
@@ -192,6 +260,13 @@ func nav_path(to: Vector3) -> PackedVector3Array:
 ## doorway (|local z| < THROUGH_DOOR_M, within its width) with the target beyond THROUGH_PAST_M on the far side: walk straight along the
 ## door normal to THROUGH_PAST_M past the plane (inside the opening). Else null.
 func _through_link(target: Vector3, path: PackedVector3Array = PackedVector3Array()) -> Variant:
+	var out: Variant = _through_link_pick(target, path)
+	if out == null:
+		_through_door = null
+	return out
+
+
+func _through_link_pick(target: Vector3, path: PackedVector3Array) -> Variant:
 	for n: Node in crew.get_tree().get_nodes_in_group(Door.GROUP):
 		var door: Door = n as Door
 		if door == null or not door.is_open:
@@ -203,28 +278,56 @@ func _through_link(target: Vector3, path: PackedVector3Array = PackedVector3Arra
 		var half: float = door.effective_width() * 0.5
 		if absf(me.x) > half:
 			continue
+		var x: float = clampf(me.x, -half + LANE_HALF_M + 0.1, half - LANE_HALF_M - 0.1)
+		if door == _through_door and target.is_equal_approx(_through_target):
+			# B's DB GatehouseNorth stall: inside the band the path start snaps to either edge of the door's NavLink gap,
+			# so the crossing side flipped every re-plan (the pilot shuttled between the two corners). Keep the first.
+			return door.global_transform * Vector3(x, 0.0, _through_side * THROUGH_PAST_M)
 		var tz: float = (inv * target).z
-		var via: float = _path_crosses(door, path)
+		var via: float = path_crosses(door, path)
+		if via == 0.0:
+			via = path_side(door, path)  # the path's own way out of the doorway, not the straight line to the target
 		if via != 0.0:
 			tz = via * (THROUGH_PAST_M + 1.0)  # OF-X1 ND XferDoor: the path leaves through this door to a target behind us
 		if absf(tz) <= THROUGH_PAST_M or (signf(tz) == signf(me.z) and absf(tz) <= absf(me.z)):
 			continue  # the target is on this side, or about in the door's plane (OF-X1 ND RecordsDoor: a corridor
 			# target 0.1 m off the plane of the door across the hall pinned the pilot between the two corners)
-		var x: float = clampf(me.x, -half + LANE_HALF_M + 0.1, half - LANE_HALF_M - 0.1)
-		return door.global_transform * Vector3(x, 0.0, signf(tz) * THROUGH_PAST_M)
+		_through_door = door
+		_through_target = target
+		_through_side = signf(tz)
+		return door.global_transform * Vector3(x, 0.0, _through_side * THROUGH_PAST_M)
 	return null
 
 
+## The side (+1 / -1, the door's local z) of the first `path` point past THROUGH_PAST_M from `door`'s plane (same floor)
+## within THROUGH_LOOKAHEAD_M, else 0. B's DB GatehouseNorth stall: the start snapped to the gap's far edge (no
+## crossing), and the straight line to the target (north) disagreed with the path (south, then around).
+static func path_side(door: Door, path: PackedVector3Array) -> float:
+	var inv: Transform3D = door.global_transform.affine_inverse()
+	var left: float = THROUGH_LOOKAHEAD_M
+	for i: int in range(path.size()):
+		if i > 0:
+			left -= path[i - 1].distance_to(path[i])
+			if left < 0.0:
+				break
+		var l: Vector3 = inv * path[i]
+		if absf(l.z) > THROUGH_PAST_M and absf(l.y) <= NEAR_DY_M:
+			return signf(l.z)
+	return 0.0
+
+
 ## The side (+1 / -1, the door's local z) the nav `path` crosses `door`'s doorway to within THROUGH_LOOKAHEAD_M of its
-## start, else 0 (no crossing, or no path).
-func _path_crosses(door: Door, path: PackedVector3Array) -> float:
+## start, else 0 (no crossing, or no path). The way the crossing step goes (not its end's side: B's DB count_cage
+## stall, the StairMezz path has a corner exactly in the door's plane, local z 0, so the pilot turned back).
+static func path_crosses(door: Door, path: PackedVector3Array) -> float:
 	var left: float = THROUGH_LOOKAHEAD_M
 	var up: Vector3 = Vector3.UP * 0.5
 	for i: int in range(1, path.size()):
 		var a: Vector3 = path[i - 1]
 		var b: Vector3 = path[i]
 		if door.doorway_crossing(a + up, b + up) != Vector3.INF:
-			return signf((door.global_transform.affine_inverse() * b).z)
+			var inv: Transform3D = door.global_transform.affine_inverse()
+			return signf((inv * b).z - (inv * a).z)
 		left -= a.distance_to(b)
 		if left <= 0.0:
 			break
@@ -312,6 +415,14 @@ func goto(target: Vector3, arrive_m: float = 0.8, timeout_s: float = 60.0, sprin
 			top_up_t = t + TOP_UP_EVERY_S
 			await top_up()  # a player reloads on the move between fights (the tap takes 2 ticks; walking goes on)
 		var corner: Vector3 = next_corner(path, crew.global_position, target)
+		var leg: Array = _ladder_leg(corner)
+		if not leg.is_empty():
+			inp.release(&"move_forward")
+			await climb_ladder(leg[0] as Ladder, bool(leg[1]))
+			repath_t = 0.0
+			hist_pos = crew.global_position
+			hist_t = 0.0
+			continue
 		var line_door: Door = _door_on_line(corner) if doors else null
 		if line_door != null and not line_door.is_open:
 			inp.release(&"move_forward")
@@ -792,6 +903,24 @@ func open_door(door: Door) -> bool:
 	var ok: bool = await use(comp, 30.0, func() -> bool: return door.is_open, false)
 	await inp.ticks(20)  # leaf swing
 	return ok
+
+
+## D-145 (P's GH Tense 4502): fight from the floor only where police can cuff a downed player who is not shooting
+## (L2.12, from police_cuff_min_difficulty up). Below that, shots from the floor only make the pilot a target (L2.5)
+## and the bleed-out pool drains in seconds; a player lies still and waits for the revive.
+## D-145 (OF Cataclysm: downed at t~19, in custody 1 s later): even there only against a few (<= FLOOR_FIGHT_MAX alive
+## enemies within FLOOR_FIGHT_M); against a crowd a player lies still, is cuffed (bleed-out paused) and waits for the
+## uncuff, instead of drawing the whole room's fire onto the bleed-out pool.
+func shoots_from_floor() -> bool:
+	var rt: HeistRuntime = HeistRuntime.of(crew)
+	if rt != null and rt.difficulty < CustodyTweak.data().police_cuff_min_difficulty:
+		return false
+	var near: int = 0
+	for n: Node in crew.get_tree().get_nodes_in_group(G.ENEMY):
+		var npc: NpcBase = n as NpcBase
+		if npc != null and npc.is_alive() and npc.global_position.distance_to(crew.global_position) <= FLOOR_FIGHT_M:
+			near += 1
+	return near <= FLOOR_FIGHT_MAX
 
 
 ## Nearest live enemy within `range_m` the crew can see (an eye ray to its head, chest or hips hits it first:

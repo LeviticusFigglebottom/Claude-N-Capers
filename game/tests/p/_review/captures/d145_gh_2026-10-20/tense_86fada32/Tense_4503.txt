@@ -1,0 +1,40 @@
+[PO5 77.7s] pilot: goto (23.7, -0.0, 7.1) FAILED at (14.4, -0.3, 5.1) after 4.0 s
+[PO5 81.7s] pilot: goto (23.7, -0.0, 7.1) FAILED at (16.9, -0.0, 4.3) after 4.0 s
+[PO5 86.5s] pilot: goto (23.7, -0.0, 7.1) FAILED at (16.9, -0.3, 5.0) after 4.0 s
+[PO5 140.8s] pilot: goto (15.6, 0.2, 3.8) FAILED at (15.5, -0.3, 4.9) after 3.0 s
+[PO5 152.4s] pilot: goto (15.6, 0.2, 3.8) FAILED at (15.5, -0.3, 4.9) after 3.0 s
+[PO5 164.9s] pilot: goto (6.5, 0.2, 2.1) FAILED at (16.9, 0.0, 3.8) after 59.8 s
+[PO5 179.6s] pilot: goto (15.6, 0.2, 3.8) FAILED at (15.5, -0.3, 4.9) after 3.0 s
+[PO5 230.4s] pilot: goto (6.5, 0.2, 2.1) FAILED at (16.9, 0.0, 3.9) after 60.0 s
+[PO5 256.2s] EVENT crew 1 state 0 -> 2 at (15.9, 0.0, 5.0) (t=240)
+[INFO][combat][p1] slot 1 crew_tased by 170
+[PO5 260.0s] EVENT crew 1 state 2 -> 0 at (15.9, 0.0, 5.0) (t=244)
+[PO5 268.0s] pilot: goto (15.6, 0.2, 3.9) FAILED at (15.4, -0.3, 4.9) after 3.0 s
+[PO5 270.0s] EVENT crew 3 state 0 -> 2 at (16.4, 0.0, 5.0) (t=254)
+[INFO][combat][p1] slot 3 crew_tased by 182
+[PO5 272.6s] pilot: goto (6.5, 0.2, 2.1) FAILED at (13.1, 0.0, 5.0) after 36.3 s
+[PO5 276.0s] EVENT crew 3 state 2 -> 1 at (16.3, -0.3, 5.0) (t=260)
+[INFO][combat][p1] slot 3 downed (1/3)
+[PO5 282.5s] EVENT crew 2 state 0 -> 1 at (16.9, -0.3, 4.7) (t=267)
+[INFO][combat][p1] slot 2 downed (1/3)
+[PO5 289.7s] EVENT crew 2 state 1 -> 0 at (16.9, 0.0, 4.8) (t=274)
+[PO5 292.1s] EVENT crew 2 state 0 -> 1 at (16.8, -0.3, 5.1) (t=276)
+[INFO][combat][p1] slot 2 downed (2/3)
+[PO5 298.8s] EVENT crew 2 state 1 -> 0 at (16.8, 0.0, 5.1) (t=283)
+[PO5 302.0s] EVENT crew 2 state 0 -> 1 at (17.1, -0.3, 5.5) (t=286)
+[INFO][combat][p1] slot 2 downed (3/3)
+[PO5 306.1s] EVENT crew 3 state 1 -> 5 at (16.1, 0.0, 5.0) (t=290)
+[INFO][combat][p1] slot 3 in custody
+[PO5 312.6s] EVENT crew 2 state 1 -> 0 at (17.4, 0.0, 5.5) (t=297)
+[PO5 365.8s] EVENT crew 2 state 0 -> 5 at (16.5, 0.0, 3.3) (t=350)
+[INFO][combat][p1] slot 2 in custody
+[PO5 368.4s] EVENT crew 0 state 0 -> 1 at (17.0, 0.0, 3.5) (t=353)
+[INFO][combat][p1] slot 0 downed (1/3)
+[PO5 368.4s] pilot: goto (6.5, 0.2, 2.1) FAILED at (17.0, 0.0, 3.5) after 4.8 s
+[PO5 374.1s] EVENT crew 1 state 0 -> 1 at (17.0, 0.0, 4.7) (t=358)
+[INFO][combat][p1] slot 1 downed (1/3)
+[PO5 398.4s] EVENT crew 0 state 1 -> 5 at (16.6, 0.0, 3.8) (t=383)
+[INFO][combat][p1] slot 0 in custody
+[PO5 399.3s] FAIL player in custody at 383 s
+[PO5 399.3s] STATS difficulty=1 police=111 peak_alive=12 specials={ &"enemy.bulwark": 17, &"enemy.longshot": 4, &"enemy.stinger": 5 } composition={ &"enemy.security_officer": 2, &"enemy.patrol_officer": 32, &"enemy.bulwark": 17, &"enemy.tac_light": 51, &"enemy.longshot": 4, &"enemy.stinger": 5 } | slot 0 [weapon.corsair_ar / armor.tailored_suit] downs 1 custody 1 revived 0 regained 0; slot 1 [weapon.corsair_ar / armor.tailored_suit] downs 1 custody 0 revived 0 regained 325; slot 2 [weapon.corsair_ar / armor.tailored_suit] downs 3 custody 1 revived 3 regained 242; slot 3 [weapon.corsair_ar / armor.tailored_suit] downs 1 custody 1 revived 0 regained 70
+[PO5 399.3s] RESULT FAIL (code 1) flow=auto_loud heist=Golden Hour seed=4503

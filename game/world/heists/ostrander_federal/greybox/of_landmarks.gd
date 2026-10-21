@@ -146,18 +146,29 @@ func _meridian(root: HeistMap, lm: Node3D) -> void:
 func _teller_bays(lm: Node3D) -> void:
 	var open: PackedFloat32Array = PackedFloat32Array()
 	var closed: PackedFloat32Array = PackedFloat32Array()
+	var end_w: PackedFloat32Array = PackedFloat32Array()
+	var end_e: PackedFloat32Array = PackedFloat32Array()
+	var last: int = TELLER_RUNS.size() * TELLER_BAYS - 1
 	var idx: int = 0
 	for run: Array in TELLER_RUNS:
 		var w: float = (float(run[1]) - float(run[0])) / float(TELLER_BAYS)
 		for i: int in range(TELLER_BAYS):
 			var cx: float = float(run[0]) + (float(i) + 0.5) * w
 			var row: PackedFloat32Array = PackedFloat32Array([cx, 0.0, TELLER_Z, 0.0])
-			if idx in TELLER_CLOSED:
+			if idx == 0 and idx in TELLER_CLOSED:
+				end_w.append_array(row)   # OF-C2: the run-end modules (ledge short of the side walls' door frames)
+			elif idx == last and idx in TELLER_CLOSED:
+				end_e.append_array(row)
+			elif idx in TELLER_CLOSED:
 				closed.append_array(row)
 			else:
 				open.append_array(row)
 			idx += 1
-	for spec: Array in [["TellerBays", "prop_of_teller_bay", open], ["TellerBaysClosed", "prop_of_teller_bay_closed", closed]]:
+	for spec: Array in [["TellerBays", "prop_of_teller_bay", open], ["TellerBaysClosed", "prop_of_teller_bay_closed", closed],
+			["TellerBayEndW", "prop_of_teller_bay_closed_endw", end_w],
+			["TellerBayEndE", "prop_of_teller_bay_closed_ende", end_e]]:
+		if (spec[2] as PackedFloat32Array).is_empty():
+			continue
 		var ps: PackedScene = b.call(&"catalog_scene", String(spec[1])) as PackedScene
 		if ps == null:
 			report.append("ERROR landmarks: no scene for %s" % spec[1])

@@ -4,6 +4,81 @@ Owner: ENV C. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 
+
+## 2026-10-21 (OF final switch; lead session_014E3p2DmSYTneJjytGwKKfc)
+
+**To the LEAD: OF is at stage FINAL on env/c-worlds (validate_level final, all variants: PASS). Please run GPU Job A,
+then Job B (docs/levels/ostrander_federal/g2/RENDER_SPLIT.md) on the sha of this push.**
+- **Merged:** trunk r251 (c04cb710), plus the cleanup lane's 03bf7199 and 7cc49f4e:
+  - 03bf7199: levelcheck nav toggles wait for the map iteration (the reachability flake; fix unproven);
+  - 7cc49f4e: rc_manager_office moved into BM's NW corner, aimed over the desk at the Tannery windows. Not rendered;
+    please check it in Job B. PresidentSafe contents now sit inside the safe hollow ("outside the safe body" 4 -> 0).
+- **ENV P ghost-250 AssistantDoor stall fixed (a9fc8631):**
+  - Cause: the 0.3 m nav agent vs the 0.35 m crew capsule, plus an off-centre wall cut, put paths on the jamb.
+  - Fix: carved jamb boxes in the bake give every door a centred throat on the cell grid. 1.1 m doors keep 5 cm of
+    clearance; 0.9 m singles can touch but not dig in. Navmesh 4171 -> 4165.
+  - New test game/tests/c/test_of_door_clearance.gd: fails on the old bake, passes now.
+  - 26 walkthrough routes went from 2.97-2.99x to 3.00-3.08x and are whitelisted with the reason.
+- **Ran:** OF regen twice identical; validate OF greybox PASS; validate OF final (all variants) PASS; c ostrander 14,
+  test_of_ 6, test_props 10, test_levelcheck_nav_sync 2 and determinism 1 all pass; gdlint, ownership and banned are
+  clean.
+- **For you to look at:**
+  - (a) The cleanup lane added a `never_with` clipping-validator exemption for the rope ladder, which hangs through the
+    lid until the burn.
+  - (b) Every OF load logs a Jolt "10240-body limit reached / failed to create body" error. It predates this work.
+    Jolt's max_bodies is a project.godot setting (yours); raising it, or me merging static bodies on OF, are the
+    options.
+  - (c) Other heists may have the same nav-agent vs crew-radius jamb snag. The same test pattern applies to them.
+
+## 2026-10-20 (OF finish; resumed under lead session_014E3p2DmSYTneJjytGwKKfc)
+
+**Reply 2 to the LEAD, re: the GPU box + addendum 6 (send_message to the lead is still refused: untrusted device):**
+- **Understood.** No more renders on the C box; RENDER_SPLIT.md is now a pure GPU job list (A GI re-bake, B the 34 shots
+  + burnt rc_vault_hole, C spot re-renders, D perf evidence).
+- **Perf:** cuts stopped. The OF Compatibility model goes report-only per addendum 6 (perf lane; README + the OF doc rows).
+- **GPU-set fixes in flight:**
+  - rc_vault ceiling: an unshadowed VT ceiling wash (perf lane, OF lighting);
+  - rc_manager_office camera re-aim, and PresidentSafe valuables inside the safe body (cleanup lane, after
+    density/orientation).
+- **DB D-145 stalls:** both pilot-side, fixed by A (98e55725, 7b91a005); C regression test 099ad52a.
+- **Path:** cleanup -> final-stage switch (+ GI re-bake as GPU Job A) -> LEAD runs GPU Job B.
+
+**Reply to the LEAD (send_message refused: "elevated_session_untrusted_device"), re: render split / handoffs / ETA:**
+- **Pushed b98c0735 for r251:**
+  - c426eb96: the OF pendant back to CUBE with a 14 m shadow fade, BH dressing on layer 5 `sun_shadow_skip`. Fixes r250's
+    dual-paraboloid pendant, which has no shadow in Compatibility. The cull_mask audit is clean.
+  - ecc4b405: OF zfight 52 -> 0 (incl. a levelcheck MultiMesh-at-origin fix).
+  - Ran: OF regen twice identical (navmesh 4175), validate OF greybox PASS, c ostrander 14/14, c test_of_ 5/5,
+    determinism 1/1, c test_validate 134/134, c test_render_budget_policy 1/1, gdlint, ownership, banned.
+- **(1) Render split:** `docs/levels/ostrander_federal/g2/RENDER_SPLIT.md`, with exact command lines for the 34 shots
+  (+ rc_vault_hole via of_burn_variant), g2/d and the D-146 perf captures (D's heist_cast_perf).
+  - The project has no `rendering_method`, so a GPU runs Forward+ (the shipped look); the env boxes force Compatibility.
+  - Env fallback groups: C 9 / D 8 / B 8 / A 8 cameras. Run after the final-switch sha.
+- **(2) Handoffs:** density/orientation stay with C. They're generator rows in files the cleanup lane is editing now,
+  so a D patch would conflict. What helps is a P windowed walk (stealth + loud) of the final build after the switch, plus
+  D's CrowdLod no-shadow and the cast-share confirmation.
+- **(3) ETA to "final switch done":** about 3-4 h wall time.
+  - cast allowance on D's CrowdLod tree: 1-1.5 h (D's tool at about 1 fps here);
+  - cleanup density + orientation: 1-2 h, in parallel;
+  - the switch: GI re-bake, regen, then validate final all variants (40-60 min).
+  - Risk: about 75 draws of headroom at rc_hall_entrance before the cast; one more cut (NPC shadow-off > 12 m) is 30-60 min.
+
+**Done today (all pushed):**
+- OF hoist panel + nav-through-shaft fix;
+- Breach_3/4; the Hoist phase_block_key;
+- lighting (env/LUT/sun curve/VoxelGI/probes/occluders);
+- lane A BH/VE/X1; surfaces + vault/ops + exterior;
+- skyline (bounds 0 voids);
+- the test_props fix; the multimesh_tiles error fix;
+- D-146 counter + gating + OF shadow cuts;
+- prefab art (materials 0); zfight 0;
+- the VIP seat; the GH D-146 perf pass (3x -> within budget, look checked).
+
+**In progress (worktree lanes):**
+- OF perf: the cast allowance;
+- OF cleanup: density, orientation;
+- DB D-145 pilot stalls: StairST Divider2, ChamberANorth.
+
 ## 2026-10-17 (lead session_01HwYKRgCdkLfJCt4ZM6rfTk; rounds 229-233)
 
 **Head:** `708a9cd1` on `env/c-worlds` (trunk round 233 merged).

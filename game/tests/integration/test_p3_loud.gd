@@ -220,8 +220,8 @@ func test_02_phantom_kick_and_teammate_rescue() -> void:
 	var victim: CrewController = _crew(_slot_in_state(Enums.CrewState.CLOAKER_DOWNED))
 	var rescuer: CrewController = _crew(1 - victim.slot)
 	assert_eq(b.last_kick_result, &"hit", "kick result")
-	assert_eq(victim.health.downs_used, 0, "L2.8: no down counted")
-	assert_eq(victim.health.bleedout_left, 0.0, "L2.8: no bleedout")
+	assert_eq(victim.health.downs_used, 1, "D-145: the kick is a counted down")
+	assert_true(victim.health.bleedout_left > 0.0, "D-145: bleeding out")
 	assert_true(_has(&"crew_cloaker_downed", victim.slot, ph.net_id), "crew_cloaker_downed(victim, phantom)")
 	assert_eq(rescuer.crew_state, Enums.CrewState.NORMAL, "never kicks the last player standing")
 	var dead: bool = await _shoot_until(rescuer.slot, ph, func() -> bool: return not ph.alive, 20.0)
@@ -230,7 +230,7 @@ func test_02_phantom_kick_and_teammate_rescue() -> void:
 	assert_true(freed, "the teammate frees the victim (revive interaction)")
 	assert_true(_has(&"crew_revived", victim.slot, rescuer.slot), "crew_revived(victim, rescuer)")
 	assert_eq(victim.crew_state, Enums.CrewState.NORMAL, "victim back on its feet")
-	assert_eq(victim.health.downs_used, 0, "still no down counted")
+	assert_eq(victim.health.downs_used, 1, "the kick's down stays counted after the revive")
 
 
 # --- 03 Stinger ----------------------------------------------------------------------------------------
@@ -263,7 +263,7 @@ func test_03_stinger_tase_broken_by_kill() -> void:
 	var victim: CrewController = _crew(_slot_in_state(Enums.CrewState.TASED))
 	var killer: CrewController = _crew(1 - victim.slot)
 	assert_true(_has(&"crew_tased", victim.slot, st.net_id), "crew_tased(victim, stinger)")
-	assert_eq(victim.health.downs_used, 0, "L2.8: no down counted")
+	assert_eq(victim.health.downs_used, 0, "L2.8: no down while tased (an expired tase downs, D-145)")
 	assert_true(victim.weapons.involuntary_fire, "involuntary fire while tased")
 	var p0: Vector3 = victim.global_position
 	var walk: CrewIntent = _still(victim.slot)

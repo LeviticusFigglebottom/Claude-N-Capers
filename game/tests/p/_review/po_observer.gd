@@ -109,7 +109,7 @@ func _capture() -> void:
 	_n_frames += 1
 	var t: float = _rt.heist_time_s if _rt != null and is_instance_valid(_rt) else -1.0
 	var path: String = "%s/obs_%03d_t%04d.png" % [_out, _n_frames, int(t)]
-	get_viewport().get_texture().get_image().save_png(path)
+	get_viewport().get_texture().get_image().save_png(PCaptureName.safe_path(path))
 	_note("FRAME", path.get_file())
 	if not was_on:
 		RenderingServer.render_loop_enabled = not _driver_fast()  # the driver may have switched meanwhile

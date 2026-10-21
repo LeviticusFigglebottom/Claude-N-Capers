@@ -16,8 +16,9 @@ const CONTRACT_NODES: Dictionary = {
 var _rt: HeistRuntime = null
 
 
+## Hazardous: no D-145 duty look (Routine / Tense wear `<id>_duty` where ENV D made one; test_d145_duty_looks).
 func before_each() -> void:
-	_rt = await ACombatSpecials.launch(self)
+	_rt = await ACombatSpecials.launch(self, Enums.Difficulty.HAZARDOUS)
 
 
 func after_each() -> void:

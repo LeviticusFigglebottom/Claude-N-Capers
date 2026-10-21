@@ -64,8 +64,9 @@ func _panel(m: Dictionary) -> PanelContainer:
 	row.add_child(edge)
 	var v: VBoxContainer = UiBuild.vbox(3)
 	row.add_child(v)
-	var name_label: Label = UiBuild.float_text(UiBuild.label(&"", UiBuild.HUD))
+	var name_label: Label = UiBuild.scrim_label(UiBuild.float_text(UiBuild.label(&"", UiBuild.HUD)))
 	name_label.add_theme_font_size_override(&"font_size", INFO_FONT_SIZE)
+	name_label.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN  # the scrim hugs the name (r249 contrast)
 	v.add_child(name_label)
 	name_labels[slot] = name_label
 	var armor_bar: ProgressBar = UiBuild.bar(tweak.armor_color, Vector2(160, 3))

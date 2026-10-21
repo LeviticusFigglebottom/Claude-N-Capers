@@ -11,7 +11,7 @@ const DIRECTOR_TWEAK: String = "res://systems/director/director_tweak.tres"
 const DAMAGE: Dictionary = {
 	"security_officer": [7.0, 8.5, 15.0, 20.0, 30.0, 40.0],
 	"patrol_officer": [7.0, 8.5, 15.0, 20.0, 30.0, 40.0],
-	"tac_light": [10.0, 12.5, 22.5, 30.0, 45.0, 60.0],
+	"tac_light": [6.0, 8.0, 22.5, 30.0, 45.0, 60.0],  # D-145 Tense vs PD2 Hard (rifle SWAT ~8)
 	"frd/tac_light": [10.0, 12.5, 22.5, 30.0, 45.0, 60.0],
 	"sentinel/tac_light": [10.0, 12.5, 22.5, 30.0, 45.0, 60.0],
 	"zero/tac_light": [10.0, 12.5, 22.5, 30.0, 45.0, 60.0],
@@ -20,7 +20,7 @@ const DAMAGE: Dictionary = {
 	"sentinel/frd_agent": [8.0, 10.0, 18.0, 24.0, 36.0, 48.0],
 	"cartel_gunman": [8.0, 10.0, 18.0, 25.0, 35.0, 45.0],
 	"bulwark": [7.0, 8.5, 15.0, 20.0, 30.0, 40.0],
-	"stinger": [10.0, 12.5, 22.5, 30.0, 45.0, 60.0],
+	"stinger": [6.0, 8.0, 22.5, 30.0, 45.0, 60.0],  # D-145 (PD2 taser 8-10)
 	"longshot": [60.0, 90.0, 160.0, 200.0, 220.0, 240.0],
 }
 const HIT_MULT: Array[float] = [0.65, 0.8, 1.05, 1.1, 1.15, 1.2]
@@ -52,16 +52,16 @@ func test_hit_chance_per_difficulty() -> void:
 	assert_near(tw.npc_hit_chance(15.0, Enums.Difficulty.HAZARDOUS), 0.63, 0.001, "Hazardous at 15 m")
 
 
-## Expected incoming fire from a TAC Light at 15 m (damage x hit chance per shot): Routine ~43 % and Tense ~67 % of
-## the pre-PO-17 value (15 x 0.6 = 9.0 on both), Hazardous unchanged.
+## Expected incoming fire from a TAC Light at 15 m (damage x hit chance per shot): Routine ~26 % and Tense ~43 % of
+## the pre-PO-17 value (15 x 0.6 = 9.0 on both; D-145 Tense vs PD2 Hard: 6 / 8 per hit), Hazardous unchanged.
 func test_expected_damage_per_shot_ratio() -> void:
 	var tw: CombatTweak = CombatTweak.data()
 	var d: EnemyDef = _def("tac_light")
 	var old: float = 15.0 * 0.6
 	var r: float = d.damage[0] * tw.npc_hit_chance(15.0, Enums.Difficulty.ROUTINE) / old
 	var t: float = d.damage[1] * tw.npc_hit_chance(15.0, Enums.Difficulty.TENSE) / old
-	assert_true(r > 0.4 and r < 0.46, "Routine ~0.43 of before (%.3f)" % r)
-	assert_true(t > 0.64 and t < 0.7, "Tense ~0.67 of before (%.3f)" % t)
+	assert_true(r > 0.23 and r < 0.29, "Routine ~0.26 of before (%.3f)" % r)
+	assert_true(t > 0.4 and t < 0.46, "Tense ~0.43 of before (%.3f)" % t)
 	var h: float = d.damage[2] * tw.npc_hit_chance(15.0, Enums.Difficulty.HAZARDOUS)
 	assert_near(h, 22.5 * 0.63, 0.001, "Hazardous unchanged")
 
