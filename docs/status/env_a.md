@@ -3,7 +3,51 @@
 Owner: ENV A. Update at the end of **every** work session (template in docs/process/communication.md §3).
 Newest entry first, keep the last 10.
 
-## To the LEAD: (2026-10-21 03:40 UTC update; newest at top)
+## To the LEAD: (2026-10-21 05:00 UTC update; newest at top)
+### OF loud hitches (your GPU-8.5 item); env/a-core 8e5412e9
+- CPU hitches found headless (OF Cataclysm seed 1037) and fixed:
+  - At OF start, the HUD's objective markers took 477 ms in one frame. HeistRuntime.find_by_tag walked the 18k-node map
+    with Array.pop_front (O(n) per node), once per tag. Now the walk is linear and the HUD resolves all tags in one walk
+    (find_by_tags): 0.6 ms.
+  - The alarm frame cost 172 ms in OF's _go_loud: about 8 find_tagged walks. A tag scope around the phase change now
+    shares one index: 36 ms.
+- Still under investigation: the 200-300 ms frames at t=0.1 / t=4.3 headless (anim_driver / npc_motor first ticks; the
+  box is loaded, so the size is unclear). The GPU-side cost (pipeline compiles on first draw of each police character /
+  material) can only be measured on your GPU.
+- **GPU-box command** (cmd.exe from the repo root, G=godot\Godot_v4.7.2-stable_win64_console.exe, trunk + env/a-core
+  >= 8e5412e9). Run `mkdir gpu\renders\a\of_hitch` first:
+  `%G% --path game --resolution 1920x1080 res://tests/a/e2e/po5_runner.tscn -- --po5-flow=auto_loud --po5-out=%CD%\gpu\renders\a\of_hitch --po5-budget=240 --po5-heist="Ostrander Federal" --po5-difficulty=Cataclysm --po5-seed=1037 --po5-crew-dmg=0 --po5-hitch-ms=50 > gpu\renders\a\of_hitch.log 2>&1`
+  - `--po5-crew-dmg=0` keeps the solo pilot alive, so the loud phase actually runs (Cataclysm downs it in about 20 s).
+  - Every frame over 50 ms prints `HITCH frame=.. process=.. physics=.. draws=.. objects=.. spawned=[ids] top: <FrameProf>`.
+    A HITCH with small process / physics and big frame is GPU or render-side; `spawned=` names the units spawned in it.
+  - At the heist end: `HITCHES n of m heist frames over 50 ms, worst x ms`.
+  - Commit the log. Next step, with D (character materials): prewarm what the HITCH lines name (a character render-warm at
+    load if spawned= lines line up; spread spawns otherwise).
+### DB vs GH Tense damage intake (your ask); headless auto_loud x1.0, solo + 3 bots, on 30a0d429
+
+| run | result | standing loud | damage | dmg/s | Longshot dmg (share) | top source |
+|---|---|---|---|---|---|---|
+| GH 4501 | WIN | 263 s | 449 | 1.71 | 0 | tac_light 243 |
+| GH 4502 | WIN | 239 s | 420 | 1.76 | 90 (21 %) | tac_light 192 |
+| GH 4503 | custody | 326 s | 777 | 2.38 | 0 | bulwark 355 (<10 m) |
+| DB 1 | custody | 466 s | 973 | 2.09 | 360 (37 %) | longshot 360, tac_light 291 |
+| DB 2 | WIN | 899 s | 962 | 1.07 | 450 (47 %) | longshot 450, tac_light 272 |
+| DB 3 | custody | 378 s | 728 | 1.92 | 225 (31 %) | tac_light 291, longshot 225 |
+
+- Per second, DB is NOT harsher than GH (1.1-2.1 vs 1.7-2.4 dmg/s; 1.3-1.8 enemies within 20 m vs 1.8-2.7).
+- DB is longer. The pilot stands loud 1.5-3.5x as long, so the same per-second intake adds up to 3 downs.
+- On DB's open yard, 31-47 % of the damage comes from Longshots at 30 m+; GH has almost none. Per hit they are within
+  PD2 Hard (the earlier table), so I would not cut their damage.
+- Proposal, harness first: a PD2 player survives a long loud heist with a doctor bag. Our pilot never carries or uses one,
+  though the game has doctor bags (heal + reset downs). Let the pilot bring a doctor bag and use it at 2 downs used,
+  plus first aid if loadout-legal. I expect that to bring DB to median <= 2 downs.
+- Game option if you want DB itself gentler on Tense: cap Longshots to 1 alive on Routine / Tense (DifficultyDef
+  special_limits; now about 3-4 per run).
+- Your call on both. I do the harness one unless you say no.
+- Note: test_of_coop_loopback failed 2 of 5 runs, only inside the full test_of_ batch under load; it passes alone.
+  Timing-sensitive two-process test.
+
+### (03:40 UTC)
 - Merged r252 (390c6d92). Green: d145_ 15, l6 15, a3_05 12, s8_1_cameras 10, po5_pilot_corner 3, a3_09_bag_lift 8,
   of_a6_hub_loops 3, l2_ 55; earlier x4_of_ 13 (5 skip), of_coop_loopback 1/1.
 - Hold-fire set to your number: the pilot fights from the floor on Haz+ only with <= 3 enemies within 20 m.
