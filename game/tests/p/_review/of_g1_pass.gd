@@ -95,6 +95,7 @@ const OF_CAGED_LADDER_AT: Vector3 = Vector3(46.0, 8.6, 17.0)
 ## VT (the vault) x 14-34, z 13-25. §7.7. Burn-through objective tags: vault_drill (the lid's drill_point), vault_breach.
 const OF_HOLE_AT: Vector3 = Vector3(24.0, 0.0, 14.0)
 const OF_VT_RECT: Rect2 = Rect2(14.0, 13.0, 20.0, 12.0)
+const OF_CQ_RECT: Rect2 = Rect2(10.0, 3.0, 3.0, 4.0)
 ## Dock (Ground notes / Escape): LD personnel door (8, 0); roller door x 3-6.6 on z 0; LD interior; E1 van at (5, -3)
 ## in Ledger Lane. §7.8.
 const OF_LD_DOOR: Vector3 = Vector3(8.0, 0.0, 0.0)
@@ -1580,6 +1581,26 @@ func _of_to_floor(ffl_i: int, x: float = OF_SA_DOOR_X) -> bool:
 		if absf(pilot.crew.global_position.y - OF_FFL[i]) < absf(pilot.crew.global_position.y - OF_FFL[cur]):
 			cur = i
 	if cur != ffl_i:
+		if _ghost_stair_wait and cur == 0 and _in_rect(pilot.crew.global_position, OF_CQ_RECT):
+			# From CQ (step 6, after the cash lift): SA's door is 2.5 m of BB away; wait in CQ's blind corner for BB, not
+			# a walk down BB to the LK hide (ghost6_j: the vault guard in BB 11 m off saw that walk, t=309).
+			await _go(pilot.stand_point(_of(GHOST_CQ_HIDE)), 0.3, 20.0)
+			pilot.inp.press(&"crouch")
+			await _wait_bb_clear()
+			pilot.inp.release(&"crouch")
+			if not await _go(_of(Vector3(OF_SA_CORE.x, OF_FFL[cur], OF_SA_CORE.z)), 0.4, 60.0) \
+					or not await _go(pilot.stand_point(_of(GHOST_SA_MID)), 0.4, 30.0):
+				return false
+			if ffl_i == 1:
+				# Up to LD to unload the lift: just after rover_hall's loop (b) LD check, ~88 s to the next (doc §7).
+				var ok_t: Callable = func() -> bool:
+					return _rh_ld_t >= 0.0 and rt.heist_time_s - _rh_ld_t >= 4.0 and rt.heist_time_s - _rh_ld_t <= 40.0
+				await wait_until(ok_t, 150.0)
+				note("GHOST up to LD %.0f s after rover_hall's LD check" % (rt.heist_time_s - _rh_ld_t))
+			await _wait_core_clear(GHOST_SA_MID.y, OF_FFL[ffl_i], false, 25.0, 60.0)
+			if not await _go(_of(Vector3(OF_SA_CORE.x, OF_FFL[ffl_i], OF_SA_CORE.z)), 0.5, 240.0):
+				return false
+			return await _go(_of(Vector3(x, OF_FFL[ffl_i], OF_CORRIDOR_Z)), 0.6, 240.0)
 		if _ghost_stair_wait and cur == 0:
 			# Leaving LK for SA (step 4): BB itself is the danger. With A's guard_vault loops the vault guard walks BB
 			# too (r255a: rover_basement saw the walk at 8 m after a 4 s core wait that skipped this floor). Wait in
