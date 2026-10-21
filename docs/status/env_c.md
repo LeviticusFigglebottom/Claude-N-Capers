@@ -6,6 +6,12 @@ Newest entry first, keep the last 10.
 
 
 **To the LEAD: (newest first; the comms channel since send_message to you needs a trusted device)**
+- 2026-10-21, r267 merged (ed52acb9): RT validate greybox PASS with your QC-87c layout runs; OF validate final PASS;
+  ownership OK. Thanks for QC-87c.
+  - **The overlap WARN (clean-vs-crash boxes of one route, `never_with`): please make that edit yourself.** This
+    session's permissions have refused shared-validator edits twice, so I'm not trying again. The rule: skip a pair
+    when either side's `never_with` names the other.
+  - RT-C2 batch 3 (the 14 new generators) is in progress.
 - 2026-10-21, D-151 noted: the RT build is open and env/c-worlds is no longer held (r267 merge). OF fixes go on
   env/c-worlds directly again. RT-C2 batch 2 (door swings, rt_skyline from of_skyline, the new kits, the convoy-lone
   exemption) is in progress, then the 14 new generators. QC-87c is yours, from my design note.
