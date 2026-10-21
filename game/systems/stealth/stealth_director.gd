@@ -37,6 +37,9 @@ const VISION_MASK: int = (1 << 0) | (1 << 1) | (1 << 7)
 ## D-142: colliders in this group (glass) do not block vision rays; at most this many panes along one ray.
 const GROUP_SEE_THROUGH: StringName = &"see_through"
 const SEE_THROUGH_MAX: int = 4
+## QC-83 (d) (Rolling Thunder convoy units: their detection is the ambush, not a guard's radio call): an NPC with meta
+## META_ALARM_REASON raises the alarm with that reason whatever raised it (radio call, a kill instead of a pager).
+const META_ALARM_REASON: StringName = &"alarm_reason"
 ## MapZone layer "triggers" (10).
 const TRIGGER_MASK: int = 1 << 9
 ## D-128 fill rate (progress per second) reported for PD2's instant uncover.
@@ -108,12 +111,21 @@ func is_stealth() -> bool:
 func raise_alarm(reason: StringName, source_net_id: int = 0) -> void:
 	if not Net.is_authority() or alarm_raised:
 		return
+	reason = alarm_reason_of(source_net_id, reason)
 	alarm_raised = true
 	alarm_reason = reason
 	Log.info(&"stealth", "ALARM: %s (source %d)" % [reason, source_net_id])
 	if not FrameProf.enabled or not FrameProf.emit_timed(EventBus.alarm_raised, &"alarm", [reason, source_net_id]):
 		EventBus.alarm_raised.emit(reason, source_net_id)
 	Net.replicate_event(&"alarm_raised", [reason, source_net_id])
+
+
+## QC-83 (d): an NPC with this meta raises the alarm with that reason whatever raised it (StealthDirector.alarm_reason_of).
+static func alarm_reason_of(source_net_id: int, fallback: StringName) -> StringName:
+	var src: Node = Ids.lookup(source_net_id) if source_net_id != 0 else null
+	if src != null and src.has_meta(META_ALARM_REASON):
+		return StringName(src.get_meta(META_ALARM_REASON))
+	return fallback
 
 
 ## Meter of `observer` on crew `slot` (0..1, 0 if none). Server.

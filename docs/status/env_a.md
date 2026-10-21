@@ -4,6 +4,139 @@ Owner: ENV A. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-21 update; newest at top)
+### (-23) r268 merged; D's RT look rows in; the GPU-20c hitch answer is item -21 (22:30 UTC)
+- **GPU-20c hitch accumulation:** your r268 note asked for it. It's in item -21: no accumulation in the simulation
+  (census t=300 vs t=1200), and the windowed rise is location / phase load.
+- **npc_visual_tweak RT (D's list):**
+  - The 9 street_pedestrian looks (base, b-i) join civ_street / civ_bus / civ_diner.
+  - New rows: `staff_diner` [diner_waitress, diner_cook], `staff_booth` [carpark_attendant], `driver_mixer`
+    [contact_hollis].
+  - convoy_lead / convoy_rear are NOT mapped (D-149.12: EnemyDef looks).
+  - test_cast_look_pools 10/10, tag_first 2/2.
+- **test_rt_convoy_looks still SKIPs:** no `enemy.convoy_lead` / `convoy_rear` EnemyDef exists on trunk yet. Who
+  writes them, B (data) or D?
+- **On the r268 merge:**
+  - RT-A5 / A6 / A5-0x: 19/19.
+  - B's test_vo_coverage: 10/11. The 11th is B's placeholder (expects at least 30 unsaid RT lines; the mission says
+    all 34), and B is asked to flip it.
+  - test_heist_readiness: 9/9.
+### (-22) RT-A5 ambush hooks + RT-A6 mission stage 1; **merge RT-B1 (env/b-content) with or before this** (21:45 UTC)
+- **175b9d877 RT-A5 (QC-83 / D-149.7):**
+  - `HeistMission.raise_alarm(reason)`.
+  - `spawn_units(enemy_id, count, tag, seated, vehicle)`: a ConvoyVehicle's seats or beside a plain body. Seated units
+    are paused, hidden in an armoured cab (replicated as NPC state "hid"), and are not bot targets.
+  - `dismount_units`.
+  - Mission units sit outside the assault force pool, and non-police ones share the police cap (`police_budget`
+    generalises the cartel rule).
+  - NPC meta `alarm_reason`: its radio call, or its death in place of a pager, raises that alarm ("ambush").
+  - `civilians_flee(&"civ_flee")`: a loud flee to an exit, then despawn.
+  - test_rt_a5_ambush: 5 tests. Regressions green: s3 / s5 / l1 / qc36 / l6 / gn_c_gaps / mission timers / coop
+    loopback.
+- **02da5f92f:**
+  - Rare-event `force_active` takes an Array of pins (C's gold_rush ask). Variant rules: 12/12.
+  - ConvoyVehicle `drive_started`.
+- **9fff6e120 RT-A6 stage 1, `rolling_thunder_mission.gd` (replaces C's stub):**
+  - Setup clock: marshal at ETA−75 (−90 on marshal_early), ETA 60 / 30, sighted at −20, convoy_early −45.
+  - Signals: the hack done means a clean stop. Otherwise, or after an early alarm, a crash stop.
+  - Early alarm: police at once and truck lockdown.
+  - The stop: movers drive onto the layout's `<Veh>Stop` markers if the map has them, otherwise the layout pops in. Then
+    convoy units, and on a clean stop the 3 s mixer move and the 8 s window ending in `raise_alarm(&"ambush")` with
+    dismount 4 s later. A crash means the impact is the alarm and units are out at once.
+  - Trucks opened n/N. A truck carrying no cargo spawns cash_bags / gold_bags at its LootAnchor when it opens.
+  - Escort down, then [secure] 4 bags, then the ride after escape_eta_s (+20 s heli).
+  - bonds_courier bags. Longshot perch lines.
+  - **All 34 of B's RT lines are said.**
+  - test_rt_a6_mission: 3 tests on C's real G1 map.
+- **Merge order:** the mission says B's new `vo.*.rolling_thunder_*` ids.
+  - On env/a-core alone, test_vo_coverage `test_no_missing_ids` fails until RT-B1 is merged.
+  - Merged locally with env/b-content, 10/11 pass. The 11th is B's placeholder `test_staged_heist_lines_wait_for_their_mission`
+    (asserts at least 30 RT lines unsaid; now 0). B is asked to flip it and add RT to HEISTS.
+- **Not ready yet (keep RT hidden):** G1 has no `armored_truck` prefabs, only boxes, so [trucks] has nothing to open.
+  I've asked C to place truck prefabs per layout for G1, with movers in RT-C2.
+- **4563a3879 + 1b7ee472c, stage 2:**
+  - Rare events: convoy_early / marshal_early from their effect values, informant_tip reveals, crane_sniper opens S3
+    (closed otherwise), Ashby S4 closed below Hazardous, an armored_escort Wrecker in the rear escort, and
+    rush_hour / the `civilians` scalar thin the street to 6 / 9 / 12.
+  - gold_rush only needs C's data as a force_active Array.
+  - Convoy units carry `convoy_lead` / `convoy_tN` / `convoy_rear` spawn tags, so D's RT look rows apply to the
+    Vaultline crews. The escorts switch to `enemy.convoy_lead` / `convoy_rear` once those EnemyDefs exist.
+  - test_rt_a6_mission: 4 tests.
+- **Waiting on others:** the staff_diner / staff_booth tag rows wait for D's look ids (RT-D2).
+### (-21) GPU-20c follow-ups done; RT A5-01 / A5-02 / A5-03 in (20:30 UTC)
+**1. AI crew killed civilians: fixed, 6fa54bd59.**
+- Bots never targeted civilians (the scan only takes HOSTILE_ROLES). The kills were rounds through civilians on the
+  line of fire.
+- `crew_ai_brain._civilian_in_line`: a bot holds fire when a civilian's body, as a vertical segment from 0.2 to 1.7 m,
+  is within `civilian_line_clear_m` (0.6) of the shot line. The line runs from 0.3 m in front of the eye to
+  `civilian_line_past_m` (4) beyond the aim point, which covers a miss. At scan the bot also skips that target for
+  another.
+- New test `test_gpu20c_bot_civilian_fire`: a civilian kept on the bot's line means no round is spent and the civilian
+  is unharmed; once the civilian steps aside, the bot kills the cop. It fails without the fix.
+- Regression tests: l6 16/16, po6_14 7/7, l2_12 9/9.
+
+**2. Hitch build-up: no accumulation in the simulation, so not a VFX pool leak.**
+- Run: headless OF Cataclysm 1037, HITCH_MS=50, CREW_DMG=0 (the pilot survives the long run), with a new CENSUS line
+  every 60 s (22af03e38): node classes and the fullest parents.
+
+| t | nodes | GPUParticles3D | Decal | PhysicalBone3D | Area3D | enemies |
+|---|---|---|---|---|---|---|
+| 303 | 20,768 | 121 | 115 | 588 | 372 | 20 |
+| 603 | 19,846 | 131 | 121 | 468 | 308 | 18 |
+| 903 | 19,535 | 154 | 121 | 420 | 282 | 16 |
+| 1203 | 19,552 | 154 | 121 | 420 | 282 | 16 |
+
+- **Counts:**
+  - Decals sit at the pool cap (121).
+  - Particle emitters fill their capped pools by about t=900, then stay flat.
+  - Bones and areas follow the NPC count.
+  - Total nodes go down.
+- **Per-system costs:** flat over time (median ms per call in the hitch frames).
+- **Hitches per 150 s window:** 67 / 332 / 597 / 214 / 613 / 264 / 171. They follow the phase and action, not elapsed
+  time.
+- **GPU-20c's windowed data, re-binned:**
+  - Median hitch frames are 61-68 ms in every window.
+  - The rise in count comes with more draws (median 1,645 -> 2,023) and more process time during the cash-carry phase.
+  - VRAM is flat at 2.99 GB, and no pipeline compiles.
+- **Reading:** the GPU box's 26/190/439/604/118 is where the run is (the cash-carry route's draw load with 25+ enemies
+  near the pilot), not something piling up. GPU-20b on the same tree at 0.046% fits that: a different path.
+- Not a C or D-113 issue.
+- **To separate place from time,** the GPU box could do a windowed run with `FOCUS` / an early bag carry, so the
+  cash-carry route comes early. Same draws early means location.
+- **Side note:** the two headless OF Cataclysm 1037 runs at full or 0.25 damage lost to the known Cataclysm wipe
+  pattern (pilot downed, cuffed while bots revived, all 3 bots down near Brandt), not a regression.
+
+**3. RT build (D-151), all on env/a-core with tests:**
+- **b5f190684:** merged trunk r267.
+- **484adf31d A5-01 `armored_truck`:**
+  - Safe LARGE with saw + C4, charges_required 4, G.SAW_TARGET.
+  - `lockdown()`: saws ×1.5 placed and by hand, via InteractionTweak.truck_lockdown_saw_mult. New Safe
+    `hand_saw_duration_s` / `saw_time_mult` and DrillPoint `duration_mult`.
+  - Cargo inside until open.
+  - QC-81: burn_point `target` plus `fire_volume_size` ZERO means no fire.
+  - test_a5_01: 4 tests.
+- **e0ee068b6 + b6d288620 A5-02:**
+  - `convoy_vehicle` mover: Path3D drive, braking onto its stop marker, static after, `vehicle_stopped`, seats,
+    `_net_xform`.
+  - `ConvoyLayouts` plus `HeistRuntime.set_layout(id, group)`. Per-group layouts ("convoy", "mixer", "tannery")
+    swap their pre-baked nav regions and links, TacticalPoint cover, bodies and prefabs. `convoy_open_nav` marks the
+    open road they replace. Everything is off at heist start, and the state replicates in SVC_RUNTIME.
+  - test_a5_02: 4 tests. Coop loopback, c11 and C's test_rt_loud_nav_targets are still green.
+- **b0caf2b8a A5-03:**
+  - `item_pickup` prefab (`item.c4` × count).
+  - Pre-planning `item.*` drops become such a box (`params.count`). `asset.c4_drop` can use `drop = &"item.c4"`,
+    `drop_params {count: 4}`. B: HUD count.
+  - Truck method order: C4 before the saw, offered only to a crew member carrying 4 charges.
+  - test_a5_03: 2 tests.
+- **For the LEAD:**
+  - New prefab kinds `armored_truck`, `convoy_vehicle` and `item_pickup` need `gameplay_prefabs.md` rows. Proposed:
+    - armored_truck: Safe exports plus `lockdown()`; visual Body/Door/DrillPoint/LootAnchor (+Cab).
+    - convoy_vehicle: `vehicle_kind`, `speed_mps`, `accel_mps2`, `brake_mps2`; `drive(path, stop)` / `park(stop)`;
+      visual Body (+Seat0..n).
+    - item_pickup: `item_id`, `count`.
+  - QC-87c: `lc_context.set_layout_config` treats every `convoy_layout` node as one set. With groups, it could
+    iterate per `layout_group`. I've told C.
+- **Next:** RT-A5 (QC-83 raise_alarm(reason), spawn_units seated/dismount, the convoy cap share, civilians_leave at
+  the alarm), then C's other asks, then rolling_thunder_mission (reported not-ready until G1 plays end to end).
 ### (-20) GPU-20b: the heist cap is now a flag (17:20 UTC)
 - **01633ed17:** auto_loud's heist-time cap is `--po5-heist-cap=<s>`, or `HEIST_CAP=<s>` with run_po5.sh.
   - The default is now **2400 s** (it was a fixed 1500).
