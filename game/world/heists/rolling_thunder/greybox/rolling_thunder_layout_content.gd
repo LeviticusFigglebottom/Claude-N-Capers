@@ -87,7 +87,7 @@ const REVIEW_CAMERAS: Array = [
 const DOORS: Array = [
 	["StairAStreetDoor", "CP-G", [16.0, 0.0, -46.0], 90.0, "service", "NONE", "prop_door_service_steel_t30", 1.1, {}],
 	["StairALobbyDoorG", "CP-G", [19.0, 0.0, -45.0], -90.0, "service", "NONE", "prop_door_service_steel_t30", 1.1, {}],
-	["LiftDoorG", "CP-G", [20.5, 0.0, -47.0], 180.0, "double", "NONE", "prop_door_double_liftgate_t20", 1.8, {}],
+	["LiftDoorG", "CP-G", [20.5, 0.0, -47.0], 0.0, "double", "NONE", "prop_door_double_liftgate_t20", 1.8, {"leaf": "metal"}],
 	[
 		"BoothDoor", "CP-G", [21.0, 0.0, -17.0], -90.0, "service", "NONE", "prop_door_service_ivory_t20", 1.1,
 		{"npc": ["staff_booth"]},
@@ -100,10 +100,10 @@ const DOORS: Array = [
 		{"push_bar": true},
 	],
 	["StairALobbyDoor2", "CP-2", [19.0, 3.5, -45.0], -90.0, "service", "NONE", "prop_door_service_steel_t30", 1.1, {}],
-	["LiftDoor2", "CP-2", [20.5, 3.5, -47.0], 180.0, "double", "NONE", "prop_door_double_liftgate_t20", 1.8, {}],
+	["LiftDoor2", "CP-2", [20.5, 3.5, -47.0], 180.0, "double", "NONE", "prop_door_double_liftgate_t20", 1.8, {"leaf": "metal"}],
 	["StairBDoor2", "CP-2", [49.0, 3.5, -19.0], 90.0, "service", "NONE", "prop_door_service_steel_t30", 1.1, {}],
 	["HeadHouseADoor", "CP-R", [19.0, 7.0, -45.0], -90.0, "service", "", "prop_door_service_steel_t30", 1.1, {}],
-	["LiftDoorR", "CP-R", [20.5, 7.0, -47.0], 180.0, "double", "NONE", "prop_door_double_liftgate_t20", 1.8, {}],
+	["LiftDoorR", "CP-R", [20.5, 7.0, -47.0], 180.0, "double", "NONE", "prop_door_double_liftgate_t20", 1.8, {"leaf": "metal"}],
 	["HeadHouseBDoor", "CP-R", [49.0, 7.0, -19.0], 90.0, "service", "NONE", "prop_door_service_steel_t30", 1.1, {}],
 	["DinerFrontDoor", "DG", [18.5, 0.0, 14.0], 0.0, "double", "NONE", "prop_door_double_glass_t40", 1.8, {}],
 	["DinerSideDoor", "DG", [14.0, 0.0, 22.0], 90.0, "service", "NONE", "prop_door_service_ivory_t40", 1.1, {}],
@@ -220,8 +220,8 @@ const FURNITURE: Array = [
 	["box", "DinerBooth1", [16.25, 0.0, 24.0], [1.5, 1.2, 1.4], 0.0, "booth", false, "prop", {}],
 	["box", "DinerTable0", [20.5, 0.0, 18.0], [0.8, 0.74, 0.8], 0.0, "table", true, "prop", {}],
 	["box", "DinerTable1", [20.5, 0.0, 22.0], [0.8, 0.74, 0.8], 0.0, "table", true, "prop", {}],
-	["box", "Cookline", [30.5, 0.0, 15.0], [5.0, 0.9, 0.8], 0.0, "cookline", true, "counter", {}],
-	["box", "PrepTable", [30.5, 0.0, 19.0], [2.0, 0.9, 0.8], 0.0, "table", true, "counter", {}],
+	["box", "Cookline", [27.55, 0.0, 18.0], [0.8, 0.9, 5.0], 0.0, "cookline", true, "counter", {}],
+	["box", "PrepTable", [31.0, 0.0, 18.5], [2.0, 0.9, 0.8], 0.0, "table", true, "counter", {}],
 	["box", "OfficeDesk", [23.5, 0.0, 27.5], [1.4, 0.75, 0.7], 0.0, "desk", true, "prop", {}],
 	["box", "FunctionTable0", [17.0, 3.5, 23.0], [1.8, 0.74, 0.8], 0.0, "table", true, "prop", {}],
 	["box", "FunctionTable1", [23.0, 3.5, 23.0], [1.8, 0.74, 0.8], 0.0, "table", true, "prop", {}],
@@ -234,7 +234,6 @@ const FURNITURE: Array = [
 	["box", "BlockPallet0", [-29.0, 3.5, -34.0], [1.2, 1.0, 1.2], 0.0, "pallet", false, "prop", {"cover": "hard"}],
 	["box", "BlockPallet1", [-45.0, 3.5, -46.0], [1.2, 1.0, 1.2], 0.0, "pallet", false, "prop", {"cover": "hard"}],
 	["box", "PlanTable", [-56.5, 0.0, -22.0], [1.2, 0.9, 2.0], 0.0, "table", true, "prop", {}],
-	["box", "MastPole", [-44.0, 0.0, -28.0], [0.15, 3.0, 0.15], 0.0, "mast", false, "trim", {}],
 	[
 		"box", "MixerTruck", [-34.0, 0.0, -16.5], [8.0, 3.5, 3.0], 0.0, "vehicle", false, "prop",
 		{"todo": "TODO(A5-02): Reyes's mixer, a convoy_vehicle mover from G2", "cover": "hard"},
@@ -244,13 +243,14 @@ const FURNITURE: Array = [
 const ALWAYS: Dictionary = {
 	"Gameplay/Devices": [
 		[
-			"prefab", "hack_terminal", "SignalRig", [-16.0, 1.0, -13.6], 0.0,
-			{"duration_s": 15.0, "interruptions": [0, 1], "objective_tag": "signals"}, [-16.0, 0.0, -14.4], {}, "prop_lift_breaker",
+			"prefab", "hack_terminal", "SignalRig", [-16.25, 0.75, -13.45], 0.0,
+			{"duration_s": 15.0, "interruptions": [0, 1], "objective_tag": "signals"}, [-16.25, 0.0, -14.45], {"mount": "wall"},
+			"prop_lift_breaker",
 		],
 		[
-			"prefab", "hack_terminal", "LiftBreaker", [36.2, 1.2, -18.5], -90.0,
-			{"duration_s": 5.0, "interruptions": [0, 0], "objective_tag": "lift_breaker"}, [35.4, 0.0, -18.5],
-			{"todo": "lift_dead: the breaker restores goods_lift (mission, DB pattern)"}, "prop_lift_breaker",
+			"prefab", "hack_terminal", "LiftBreaker", [36.9, 1.2, -18.5], 90.0,
+			{"duration_s": 5.0, "interruptions": [0, 0], "objective_tag": "lift_breaker"}, [35.9, 0.0, -18.5],
+			{"mount": "wall", "todo": "lift_dead: the breaker restores goods_lift (mission, DB pattern)"}, "prop_lift_breaker",
 		],
 	],
 	"Gameplay/Loot": [
@@ -378,7 +378,7 @@ const FIXED_SPAWNS: Array = [
 	["spawn", "DinerCustomer3", "CIVILIAN", [21.6, 0.0, 22.0], 90.0, ["civ_diner"], "idle", "", ""],
 	["spawn", "DinerCustomer4", "CIVILIAN", [19.5, 0.0, 20.0], 90.0, ["civ_diner"], "idle", "", ""],
 	["spawn", "Waitress", "CIVILIAN", [25.5, 0.0, 20.5], 90.0, ["staff_diner", "staff"], "idle", "", ""],
-	["spawn", "Cook", "CIVILIAN", [30.5, 0.0, 16.3], 0.0, ["staff_diner", "staff"], "cook_stove", "", ""],
+	["spawn", "Cook", "CIVILIAN", [28.55, 0.0, 17.0], 90.0, ["staff_diner", "staff"], "cook_stove", "", ""],
 	["spawn", "Attendant", "CIVILIAN", [18.5, 0.0, -16.2], 180.0, ["staff_booth", "staff"], "idle", "", ""],
 	["spawn", "ReyesMixer", "CIVILIAN", [-39.0, 0.0, -15.8], -90.0, ["driver_mixer"], "idle", "", ""],
 ]
@@ -411,11 +411,11 @@ const SLOTS: Array = [
 	["site_stores", "stores_thermite", 0.3, "C4", [-47.5, 0.0, -20.5], 0.0, "the thermite bag in the tool store"],
 	["site_stores", "stores_both", 0.3, "X4", [-35.0, 0.0, -36.0], 0.0, "both"],
 	["guard_post", "post_site_gate", 1.0, "X4", [-16.5, 0.0, -30.0], 0.0, "gates <-> controller <-> Tannery gate"],
-	["guard_post", "post_site_frame", 1.0, "FG", [-34.0, 0.0, -38.0], 0.0, "FG aisles, the scaffold, the slab edge"],
+	["guard_post", "post_site_frame", 1.0, "FG", [-35.0, 0.0, -42.0], 0.0, "FG aisles, the scaffold, the slab edge"],
 	["guard_post", "post_site_cabins", 1.0, "X4", [-50.0, 0.0, -15.0], 0.0, "cabins <-> magazine <-> crane"],
-	["camera", "cam_mast_cabins", 1.0, "X4", [-44.0, 2.8, -28.0], 0.0, "on the lighting mast, over the cabins"],
-	["camera", "cam_magazine", 1.0, "X4", [-23.0, 2.8, -55.88], 0.0, "on the hoarding, at the magazine"],
-	["camera", "cam_gate", 1.0, "X4", [-14.12, 2.8, -40.0], 0.0, "on the hoarding, at the Orchard gates"],
+	["camera", "cam_mast_cabins", 1.0, "X4", [-44.0, 0.0, -28.0], 0.0, "on a pole by the cabins"],
+	["camera", "cam_magazine", 1.0, "X4", [-23.0, 0.0, -54.5], 0.0, "on a pole at the magazine"],
+	["camera", "cam_gate", 1.0, "X4", [-15.5, 0.0, -40.0], 0.0, "on a pole inside the Orchard gates"],
 	["cop_on_scene", "cop_plaza", 0.4, "X3", [-20.0, 0.0, 22.0], 0.0, "beat cop at the plaza"],
 	["cop_on_scene", "cop_diner", 0.3, "X1", [12.0, 0.0, 12.5], 0.0, "beat cop at the diner corner"],
 	["cop_on_scene", "cop_none", 0.3, "X1", [0.0, 0.0, 0.0], 0.0, "no cop"],
@@ -435,9 +435,10 @@ const SLOTS: Array = [
 const SLOT_ITEMS: Dictionary = {
 	"ctrl_locked": [
 		[
-			"prefab", "padlock", "ControllerPadlock", [-15.7, 1.0, -13.61], 0.0,
-			{"interaction_time_s": 8.0, "objective_tag": "signals"}, [-15.7, 0.0, -14.4],
-			{"todo": "TODO(A): the rig's interaction is not gated by this padlock (no Door target)"}, "prop_padlock_brass",
+			"prefab", "padlock", "ControllerPadlock", [-15.6, 1.0, -13.459], 0.0,
+			{"interaction_time_s": 8.0, "objective_tag": "signals"}, [-15.6, 0.0, -14.25],
+			{"mount": "wall", "todo": "TODO(A): the rig's interaction is not gated by this padlock (no Door target)"},
+			"prop_padlock_brass",
 		],
 	],
 	"ctrl_open": [["marker", "ControllerAjar", [-16.0, 0.0, -13.85], 0.0, "", "the cabinet door ajar (no padlock)"]],
@@ -462,25 +463,28 @@ const SLOT_ITEMS: Dictionary = {
 		],
 	],
 	"post_site_gate": [["spawn", "GuardSiteGate", "GUARD", [-16.5, 0.0, -30.0], 0.0, ["guard_site_gate"], "smoke", "Site", ""]],
-	"post_site_frame": [["spawn", "GuardSiteFrame", "GUARD", [-34.0, 0.0, -38.0], 0.0, ["guard_site_frame"], "", "Site", ""]],
+	"post_site_frame": [["spawn", "GuardSiteFrame", "GUARD", [-35.0, 0.0, -42.0], 0.0, ["guard_site_frame"], "", "Site", ""]],
 	"post_site_cabins": [["spawn", "GuardSiteCabins", "GUARD", [-50.0, 0.0, -15.0], 0.0, ["guard_site_cabins"], "", "Site", ""]],
 	"cam_mast_cabins": [
+		["box", "CameraMastCabinsPole", [-44.0, 0.0, -28.0], [0.2, 3.2, 0.2], 0.0, "pole", false, "trim", {}],
 		[
-			"prefab", "security_camera", "CameraMastCabins", [-44.0, 2.8, -28.1], -135.0,
+			"prefab", "security_camera", "CameraMastCabins", [-44.0, 2.8, -27.9], 180.0,
 			{"fov_deg": 60.0, "range_m": 20.0, "pan_deg": 40.0}, null,
 			{"mount": "wall", "kind": "security_camera", "camera_id": "cam_mast_cabins"}, "prop_security_camera_wall",
 		],
 	],
 	"cam_magazine": [
+		["box", "CameraMagazinePole", [-23.0, 0.0, -54.5], [0.2, 3.2, 0.2], 0.0, "pole", false, "trim", {}],
 		[
-			"prefab", "security_camera", "CameraMagazine", [-23.0, 2.8, -55.88], 180.0,
+			"prefab", "security_camera", "CameraMagazine", [-23.0, 2.8, -54.4], 180.0,
 			{"fov_deg": 60.0, "range_m": 20.0, "pan_deg": 40.0}, null,
 			{"mount": "wall", "kind": "security_camera", "camera_id": "cam_magazine"}, "prop_security_camera_wall",
 		],
 	],
 	"cam_gate": [
+		["box", "CameraGatePole", [-15.5, 0.0, -40.0], [0.2, 3.2, 0.2], 0.0, "pole", false, "trim", {}],
 		[
-			"prefab", "security_camera", "CameraGate", [-14.12, 2.8, -40.0], 90.0,
+			"prefab", "security_camera", "CameraGate", [-15.6, 2.8, -40.0], 90.0,
 			{"fov_deg": 60.0, "range_m": 20.0, "pan_deg": 40.0}, null,
 			{"mount": "wall", "kind": "security_camera", "camera_id": "cam_gate"}, "prop_security_camera_wall",
 		],
@@ -525,8 +529,8 @@ const SLOT_ITEMS: Dictionary = {
 	],
 	"esc_heli_roof": [
 		[
-			"prefab", "secure_zone", "SecureRoof", [32.0, 7.0, -34.0], 0.0,
-			{"objective_tag": "secure", "zone_size_m": [6.0, 3.0, 6.0]}, null, {"kind": "vehicle", "escape_label": "E3"},
+			"prefab", "secure_zone", "SecureRoof", [35.6, 7.0, -34.0], 0.0,
+			{"objective_tag": "secure", "zone_size_m": [4.0, 3.0, 4.0]}, null, {"kind": "vehicle", "escape_label": "E3"},
 			"prop_secure_cargo_net",
 		],
 		[
@@ -562,20 +566,47 @@ const CONVOY: Dictionary = {
 		[
 			"clean",
 			[
-				["lead", "car", [-6.0, 0.0, -18.5], [5.0, 1.5, 2.0], 0.0, [-6.0, 0.0, -21.6]],
-				["T1", "cash", [-6.0, 0.0, -27.75], [7.5, 3.2, 2.5], 0.0, [-6.0, 0.0, -32.1]],
-				["T2", "bullion", [-6.0, 0.0, -39.0], [9.0, 3.6, 2.5], 0.0, [-6.0, 0.0, -44.1]],
-				["T3", "bullion", [-6.0, 0.0, -51.0], [9.0, 3.6, 2.5], 0.0, [-6.0, 0.0, -56.1]],
-				["rear", "car", [-6.0, 0.0, -61.0], [5.0, 1.5, 2.0], 0.0, [-6.0, 0.0, -64.1]],
+				[
+					"CleanLead", "car", [-6.0, 0.0, -18.5], [5.0, 1.5, 2.0], 0.0, [-6.0, 0.0, -21.6], 0.0,
+					["CrashT1", "CrashT2", "CrashT3", "CrashRear"],
+				],
+				[
+					"CleanT1", "cash", [-6.0, 0.0, -27.75], [7.5, 3.2, 2.5], 0.0, [-6.0, 0.0, -32.1], 0.0,
+					["CrashT1", "CrashT2", "CrashT3", "CrashRear"],
+				],
+				[
+					"CleanT2", "bullion", [-6.0, 0.0, -39.0], [9.0, 3.6, 2.5], 0.0, [-6.0, 0.0, -44.1], 0.0,
+					["CrashT1", "CrashT2", "CrashT3", "CrashRear"],
+				],
+				[
+					"CleanT3", "bullion", [-6.0, 0.0, -51.0], [9.0, 3.6, 2.5], 0.0, [-6.0, 0.0, -56.1], 0.0,
+					["CrashT1", "CrashT2", "CrashT3", "CrashRear"],
+				],
+				[
+					"CleanRear", "car", [-6.0, 0.0, -61.0], [5.0, 1.5, 2.0], 0.0, [-6.0, 0.0, -64.1], 0.0,
+					["CrashT1", "CrashT2", "CrashT3", "CrashRear"],
+				],
 			],
 		],
 		[
 			"crash",
 			[
-				["T1", "cash", [-6.0, 0.0, -12.0], [7.5, 3.2, 2.5], 15.0, [-6.0, 0.0, -16.6]],
-				["T2", "bullion", [-5.0, 0.0, -23.5], [9.0, 3.6, 2.5], 20.0, [-5.0, 0.0, -28.6]],
-				["T3", "bullion", [-5.0, 0.0, -35.0], [9.0, 3.6, 2.5], 15.0, [-5.0, 0.0, -39.6]],
-				["rear", "car", [-6.0, 0.0, -44.5], [5.0, 1.5, 2.0], 10.0, [-6.0, 0.0, -47.6]],
+				[
+					"CrashT1", "cash", [-6.0, 0.0, -12.0], [7.5, 3.2, 2.5], 15.0, [-6.0, 0.0, -16.6], 0.0,
+					["CleanLead", "CleanT1", "CleanT2", "CleanT3", "CleanRear"],
+				],
+				[
+					"CrashT2", "bullion", [-5.0, 0.0, -23.5], [9.0, 3.6, 2.5], 20.0, [-5.0, 0.0, -28.6], 0.0,
+					["CleanLead", "CleanT1", "CleanT2", "CleanT3", "CleanRear"],
+				],
+				[
+					"CrashT3", "bullion", [-5.0, 0.0, -35.0], [9.0, 3.6, 2.5], 15.0, [-5.0, 0.0, -39.6], 0.0,
+					["CleanLead", "CleanT1", "CleanT2", "CleanT3", "CleanRear"],
+				],
+				[
+					"CrashRear", "car", [-6.0, 0.0, -44.5], [5.0, 1.5, 2.0], 10.0, [-6.0, 0.0, -47.6], 0.0,
+					["CleanLead", "CleanT1", "CleanT2", "CleanT3", "CleanRear"],
+				],
 			],
 		],
 	],
@@ -583,20 +614,47 @@ const CONVOY: Dictionary = {
 		[
 			"clean",
 			[
-				["lead", "car", [18.5, 0.0, -4.0], [5.0, 1.5, 2.0], 90.0, [21.6, 0.0, -4.0]],
-				["T1", "cash", [27.75, 0.0, -4.0], [7.5, 3.2, 2.5], 90.0, [32.1, 0.0, -4.0]],
-				["T2", "bullion", [39.0, -0.781, -4.0], [9.0, 3.6, 2.5], 90.0, [44.1, -1.578, -4.0]],
-				["T3", "bullion", [51.0, -2.656, -4.0], [9.0, 3.6, 2.5], 90.0, [56.1, -3.453, -4.0]],
-				["rear", "car", [61.0, -4.219, -4.0], [5.0, 1.5, 2.0], 90.0, [64.1, -4.703, -4.0]],
+				[
+					"CleanLead", "car", [18.5, 0.0, -4.0], [5.0, 1.5, 2.0], 90.0, [21.6, 0.0, -4.0], 0.0,
+					["CrashT1", "CrashT2", "CrashT3", "CrashRear"],
+				],
+				[
+					"CleanT1", "cash", [27.75, 0.0, -4.0], [7.5, 3.2, 2.5], 90.0, [32.1, 0.0, -4.0], 0.0,
+					["CrashT1", "CrashT2", "CrashT3", "CrashRear"],
+				],
+				[
+					"CleanT2", "bullion", [39.0, -0.781, -4.0], [9.0, 3.6, 2.5], 90.0, [44.1, -1.578, -4.0], 0.156,
+					["CrashT1", "CrashT2", "CrashT3", "CrashRear"],
+				],
+				[
+					"CleanT3", "bullion", [51.0, -2.656, -4.0], [9.0, 3.6, 2.5], 90.0, [56.1, -3.453, -4.0], 0.156,
+					["CrashT1", "CrashT2", "CrashT3", "CrashRear"],
+				],
+				[
+					"CleanRear", "car", [61.0, -4.219, -4.0], [5.0, 1.5, 2.0], 90.0, [64.1, -4.703, -4.0], 0.156,
+					["CrashT1", "CrashT2", "CrashT3", "CrashRear"],
+				],
 			],
 		],
 		[
 			"crash",
 			[
-				["T1", "cash", [13.0, 0.0, -2.9], [7.5, 3.2, 2.5], 115.0, [17.6, 0.0, -2.9]],
-				["T2", "bullion", [24.5, 0.0, -5.1], [9.0, 3.6, 2.5], 110.0, [29.6, 0.0, -5.1]],
-				["T3", "bullion", [36.0, -0.312, -2.9], [9.0, 3.6, 2.5], 115.0, [40.6, -1.031, -2.9]],
-				["rear", "car", [45.5, -1.797, -5.1], [5.0, 1.5, 2.0], 100.0, [48.6, -2.281, -5.1]],
+				[
+					"CrashT1", "cash", [13.0, 0.0, -2.9], [7.5, 3.2, 2.5], 115.0, [17.6, 0.0, -2.9], 0.0,
+					["CleanLead", "CleanT1", "CleanT2", "CleanT3", "CleanRear"],
+				],
+				[
+					"CrashT2", "bullion", [24.5, 0.0, -5.1], [9.0, 3.6, 2.5], 110.0, [29.6, 0.0, -5.1], 0.0,
+					["CleanLead", "CleanT1", "CleanT2", "CleanT3", "CleanRear"],
+				],
+				[
+					"CrashT3", "bullion", [36.0, -0.312, -2.9], [9.0, 3.6, 2.5], 115.0, [40.6, -1.031, -2.9], 0.156,
+					["CleanLead", "CleanT1", "CleanT2", "CleanT3", "CleanRear"],
+				],
+				[
+					"CrashRear", "car", [45.5, -1.797, -5.1], [5.0, 1.5, 2.0], 100.0, [48.6, -2.281, -5.1], 0.156,
+					["CleanLead", "CleanT1", "CleanT2", "CleanT3", "CleanRear"],
+				],
 			],
 		],
 	],

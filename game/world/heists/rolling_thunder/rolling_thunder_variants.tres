@@ -1,0 +1,172 @@
+[gd_resource type="Resource" script_class="HeistVariantTable" format=3]
+
+[ext_resource type="Script" path="res://contracts/data/heist_variant_table.gd" id="1_rt"]
+
+[resource]
+script = ExtResource("1_rt")
+rules = Array[Dictionary]([{
+"group": &"convoy_route",
+"pick": Vector2i(1, 1)
+}, {
+"group": &"truck_count",
+"pick": Vector2i(1, 1),
+"weights_by_difficulty": {
+2: {
+&"trucks_2": 0.4,
+&"trucks_3": 0.6
+},
+3: {
+&"trucks_2": 0.4,
+&"trucks_3": 0.6
+},
+4: {
+&"trucks_2": 0.2,
+&"trucks_3": 0.8
+},
+5: {
+&"trucks_2": 0.2,
+&"trucks_3": 0.8
+}
+}
+}, {
+"group": &"cargo_t3",
+"pick": Vector2i(1, 1),
+"requires": {
+&"truck_count": [&"trucks_3"]
+}
+}, {
+"group": &"controller",
+"pick": Vector2i(1, 1)
+}, {
+"group": &"site_stores",
+"pick": Vector2i(1, 1)
+}, {
+"difficulty_add": Array[int]([0, 0, 1, 1, 1, 1]),
+"group": &"guard_post",
+"pick": Vector2i(1, 1)
+}, {
+"difficulty_add": Array[int]([0, 0, 0, 1, 1, 1]),
+"group": &"camera",
+"pick": Vector2i(1, 1)
+}, {
+"group": &"cop_on_scene",
+"pick": Vector2i(1, 1)
+}, {
+"group": &"marshal_walk",
+"pick": Vector2i(1, 1)
+}, {
+"group": &"goods_lift",
+"pick": Vector2i(1, 1)
+}, {
+"group": &"player_perch",
+"pick": Vector2i(1, 1)
+}, {
+"group": &"escape",
+"pick": Vector2i(1, 1)
+}])
+rare_events = Array[Dictionary]([{
+"chance": 0.08,
+"effects": {
+"bonds_courier": true
+},
+"good": true,
+"id": &"bonds_courier"
+}, {
+"chance": 0.06,
+"effects": {
+"reveal": [&"convoy_route", &"marshal_walk"]
+},
+"good": true,
+"id": &"informant_tip"
+}, {
+"chance": 0.04,
+"effects": {
+"cargo_t3": &"t3_bullion",
+"force_active": {
+"group": &"truck_count",
+"slot": &"trucks_3"
+}
+},
+"good": true,
+"id": &"gold_rush"
+}, {
+"chance": 0.08,
+"effects": {
+"marshal_lead_s": 90.0
+},
+"good": false,
+"id": &"marshal_early"
+}, {
+"chance": 0.06,
+"effects": {
+"convoy_eta_add_s": -45.0
+},
+"good": false,
+"id": &"convoy_early"
+}, {
+"chance": 0.08,
+"effects": {
+"perch_s3": true
+},
+"good": false,
+"id": &"crane_sniper",
+"min_difficulty": 3
+}, {
+"chance": 0.06,
+"effects": {
+"wrecker_escort": true
+},
+"good": false,
+"id": &"armored_escort",
+"min_difficulty": 4
+}, {
+"chance": 0.06,
+"effects": {
+"civilians": 12,
+"extra_diner_customers": 2
+},
+"good": false,
+"id": &"rush_hour"
+}])
+scalars = Array[Dictionary]([{
+"id": &"cash_bags",
+"values": [4, 5, 6],
+"weights": PackedFloat32Array(0.3, 0.5, 0.2),
+"weights_by_difficulty": {
+3: PackedFloat32Array(0.2, 0.4, 0.4),
+4: PackedFloat32Array(0.2, 0.4, 0.4),
+5: PackedFloat32Array(0.2, 0.4, 0.4)
+}
+}, {
+"id": &"gold_bags",
+"values": [3, 4],
+"weights": PackedFloat32Array(0.5, 0.5)
+}, {
+"id": &"convoy_eta_s",
+"values": [150.0, 180.0, 210.0],
+"weights": PackedFloat32Array(1, 1, 1)
+}, {
+"id": &"police_delay_s",
+"values": [45.0, 60.0, 90.0],
+"weights": PackedFloat32Array(0.1, 0.3, 0.6),
+"weights_by_difficulty": {
+1: PackedFloat32Array(0.2, 0.4, 0.4),
+2: PackedFloat32Array(0.3, 0.5, 0.2),
+3: PackedFloat32Array(0.5, 0.4, 0.1),
+4: PackedFloat32Array(0.7, 0.3, 0),
+5: PackedFloat32Array(1, 0, 0)
+}
+}, {
+"id": &"escape_eta_s",
+"values": [90.0, 120.0, 150.0],
+"weights": PackedFloat32Array(0.4, 0.4, 0.2),
+"weights_by_difficulty": {
+3: PackedFloat32Array(0.2, 0.4, 0.4),
+4: PackedFloat32Array(0.2, 0.4, 0.4),
+5: PackedFloat32Array(0.2, 0.4, 0.4)
+}
+}, {
+"id": &"civilians",
+"values": [6, 9, 12],
+"weights": PackedFloat32Array(1, 1, 1)
+}])
