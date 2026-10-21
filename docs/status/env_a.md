@@ -363,6 +363,78 @@ fight follows the crew between H1 and H4. The stopped convoy as cover depends on
 - (d) Are client interpolation and the escape drive-in in A5-02's scope, or polish?
 - (e) Who authors the vehicle props with Seat / Body / Door / RoofHatch / LootAnchor nodes: C or D?
 
+### RT design notes: A5-01 / A5-02 / A5-03 (paper; no code on env/a-core until the OF done check)
+Inputs: rolling_thunder.md §Convoy and §Truck targets, D-149 (pre-baked nav regions swapped per layout; ≤ 8 movers
+that end static; the escape van pops in), and the systems audit below.
+
+**A5-01 `armored_truck` (QC-80, QC-81, lockdown):** `game/systems/prefabs/armored_truck/`, `class_name ArmoredTruck
+extends Safe`.
+- **Reuse Safe:** `methods` (saw, c4, plus a thermite hatch), `charges_required` (default 4), `open_by_device`,
+  contents on `LootAnchor`, `G.SAW_TARGET`, `saw_cut`.
+- **New exports:** `hand_saw_s` (60 cash / 90 bullion; overrides InteractionTweak.hand_saw_safe_s[size]),
+  `lockdown_saw_mult` (1.5), `hatch_path` (NodePath to a BurnPoint, bullion only), `cab_door_path` (a Door LOCKPICK
+  with `small_loot` behind it).
+- **`lockdown()`:** server; the saw duration (placed and hand) ×lockdown_saw_mult on top of the current progress
+  (sawn seconds kept). C4 and thermite are unchanged. Replicated with `lk` (NetEntityCodec props). Mercer's line is the
+  mission's.
+- **Visual nodes:** `Body` (cover collider: hard), `DoorL` / `DoorR` (swing on open, the PO-6 swing helper), `CabDoor`,
+  `RoofHatch`.
+  - Collision is a static box on `world_static`. It joins the pre-baked layout region (D-149.1) rather than carving.
+- **QC-81 BurnPoint:** add `@export var target: NodePath` (on burn done -> `target.open_by_device()`) and
+  `fire_volume_size == Vector3.ZERO` = no fire volume. Small, independent: it can ship first.
+- **Tests:**
+  - each method opens the doors and enables the cargo LootSpawn;
+  - lockdown mid-saw stretches the remaining time ×1.5;
+  - the hatch thermite opens the bullion truck and leaves no fire volume;
+  - the cab door is a lockpick and gives the small loot;
+  - a client mirror (doors, lk).
+
+**A5-02 `convoy_vehicle` (QC-82):** `game/systems/prefabs/convoy_vehicle/`, `class_name ConvoyVehicle extends
+GameplayPrefab`, an AnimatableBody3D root `Body`.
+- **API:** `drive(path: Path3D, stop_marker: Node3D, speed_mps := 10.0, brake_m := 12.0)`, which follows the curve
+  (PathFollow3D math, no node) and eases into the marker transform over the last `brake_m`. `place_static(marker)`.
+  `signal vehicle_stopped(id)`. `state` DRIVING / STOPPED / WRECK.
+- **Mission flow:** RollingThunderMission picks the route and stop (clean / crash), calls `drive()` on each vehicle with
+  its gap, and on the last `vehicle_stopped` enables the matching pre-baked nav region set and its TacticalPoints
+  (TacticalPoint.enabled, D-149 QC-RT1; in r258).
+- **Crash stop:** the mixer's path ends at the T-bone marker. Its impact is a scripted event (cue + `alarm_raised(&"ambush")`
+  + a soft knockback of the lead car to its crash marker). No vehicle physics.
+- **Net:** the host drives. Clients get `trip_t` + path id + stop id through the NetEntityCodec generic props (the BagLift
+  pattern) and evaluate the same curve locally, so motion is smooth with no per-frame transforms. Snap on STOPPED.
+- **Seats:** `Seat0..n` markers. Occupants are NpcBase in a new SEATED mode (NpcMotor off, attached to the seat, the
+  `sit_vehicle` clip, hitboxes by `armoured_cab` hard / soft). `dismount(delay)` -> an exit marker
+  (`play_vehicle_exit`, which already exists) -> COMBAT. Spawned through AssaultDirector.spawn_enemy with a
+  `convoy_unit` meta, so they count in police_budget() (QC-83c).
+- **Tests:**
+  - the curve end lands exactly on the marker;
+  - the brake profile is monotonic;
+  - a client mirror matches the host within 5 cm at three points;
+  - vehicle_stopped fires once;
+  - a seated unit is unhittable in an armoured cab and dismounts on the alarm;
+  - the director budget counts seated units.
+
+**A5-03 C4 item (QC-84, S9.5):** charges already work on Safe / Door / Padlock (`charges_required`,
+`consume_charges_for`, a 5 s fuse, the L3.6 blast).
+- **New:** a generic `item_pickup` prefab (`item_id`, `count`, `max_carry`; the keycard_pickup / gear_pickup pattern
+  generalised; the old two stay as is).
+- **New:** an `item.c4` count on CrewInventory, with a HUD count line (B's widget asks for `item_count(item.c4)`).
+- **New:** a pre-plan drop kind `item` (PreplanAssets.register_drop + `asset.c4_drop`, B's asset data).
+- **Placement:** stays on the target's interaction (place_c4 when the crew carries ≥ 1; each placement consumes one;
+  arms at `charges_required`). This is already the Safe path, so ArmoredTruck inherits it.
+- **Tests:**
+  - a pickup adds charges up to max_carry;
+  - 4 charges on a truck arm the fuse and open it;
+  - fewer leave it at n/4 (replicated count);
+  - a pre-plan drop spawns a pickup with the right count.
+
+**Proposed order once OF is done:**
+1. QC-81 BurnPoint.target.
+2. A5-03 item_pickup + count.
+3. A5-01 ArmoredTruck.
+4. A5-02 ConvoyVehicle (static place first, drive second, seats third).
+5. HeistMission.raise_alarm + convoy units in police_budget.
+6. The RT mission after C's G1.
+
 ### (0) OF-done blocker "bond_safe / deposit_boxes not reachable" (Cataclysm loud): fixed in the mission, 6fcbb559
 - Cause: both side objectives were ACTIVE from the start, with markers inside the sealed vault.
   - BondSafe (14.7, -4, 20.5) and the vault-wall boxes (VaultBoxN01 = (15.0, -3.0, 13.3)) sit behind the vault's west
