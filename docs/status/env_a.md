@@ -4,6 +4,31 @@ Owner: ENV A. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-21 update; newest at top)
+### (-11) **GPU-20 command: send it now** (the box is idle; every hoist fix is pushed) (10:30 UTC)
+Tree: env/a-core 5d945bea5 or later, either merged onto trunk or env/a-core HEAD as is. OF loud, Cataclysm, seed 1037,
+windowed, budget 1800, no FOCUS:
+```
+CREW_DMG=0 HITCH_MS=50 game/tests/a/e2e/run_po5.sh auto_loud 1037 1800 <out_dir> "Ostrander Federal" Cataclysm
+# raw (Windows box):
+godot --path game res://tests/a/e2e/po5_runner.tscn -- --po5-flow=auto_loud --po5-seed=1037 --po5-budget=1800 \
+  --po5-out=<dir> "--po5-heist=Ostrander Federal" --po5-difficulty=Cataclysm --po5-crew-dmg=0 --po5-hitch-ms=50
+```
+**New since GPU-19 (0210e889):**
+- d6163c75: bots leave a bag lying in the hoist car (in hoist2 they fetched them and stood at the rope ladder).
+- b9485fc1 / c307fb90: the pilot unloads the car up top before calling it down, never calls a loaded car, and waits
+  for a car on its way up (in hoist3 / hoist4 the same bags rode up and down).
+- 5d945bea: escort legs arrive at 3.5 m.
+  - (c) has no map snag: the nav path from (4.6, 0, -1.2) is clear. The leg ended 3.25 m out at the van's rear corner.
+- (d) bond_safe: the default order is cash, gold, deposit boxes, then bond_safe. The deposit boxes cost a 30 s stall,
+  since the pilot has no hand saw. GPU-19 never got that far.
+- 711f7a6f / 7971d86d: the glass gunfire fix, plus a guard with no shot line closes in.
+  - D's GH Tense case re-run on my head (glasshouse, seed 1002, 240 s): security_officer aim_pistol 455 s -> 5.5 s,
+    fire_pistol 0 -> 1.1 s, and both guards fight and die (death_back 454 s).
+
+**What to read in the log:** "hoist: Hoist sent", "hoist: unloading", "EVENT loot_secured loot.cash_bricks",
+"EVENT objective secure -> 2", "LOAD pipelines compiled under the loading screen", "HITCHES".
+- My headless hoist5 pass (same seed) has been running since 10:18. Its result goes here.
+- (send_message to your session is still refused: "trusted device".)
 ### (-10) Relayed from ENV B: DB Tense on r257 + 60d8c6ab (with P's capsule fix) = 2/3 in both cells
 - Plain: 2/3, player downs 3 / 3 / 1 (median 3). With --po5-doctor-bag: 2/3, downs 6 / 2 / 2 (median 2).
 - Seed 1 loses in both cells: custody at about 640-690 s.
