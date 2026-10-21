@@ -1264,7 +1264,8 @@ def preplan() -> List[list]:
 def review_cameras() -> List[list]:
     """[id, room, eye, look-at] (28; the convoy in its route_north clean layout)."""
     return [
-        ["rc_top_down", "", [12.0, 160.0, -9.0], [12.0, 0.0, -9.0]],
+        # TopDownPlan: the doc's rc_top_down (validate_level contract_nodes needs a TopDown* name; as Gallery Night)
+        ["TopDownPlan", "", [12.0, 160.0, -9.0], [12.0, 0.0, -9.0]],
         ["rc_ext_junction", "X3", [-22.0, 1.7, 14.0], [10.0, 4.0, -12.0]],
         ["rc_ext_north_arm", "X1", [-4.0, 1.7, -8.0], [-5.0, 2.0, -60.0]],
         ["rc_ext_east_arm", "X6", [40.0, 1.7, -12.6], [75.0, -3.0, 0.0]],

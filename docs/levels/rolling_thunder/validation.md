@@ -44,7 +44,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## cameras: Review camera placement
 
-- 28 perspective review camera(s) checked
+- 27 perspective review camera(s) checked
 
 
 ## secure_zones: Secure zones reach the ground

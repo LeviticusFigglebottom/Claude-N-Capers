@@ -203,7 +203,7 @@ func build_review_cameras(cams: Node3D) -> void:
 		var up: Vector3 = Vector3.FORWARD if absf(dir.normalized().dot(Vector3.UP)) > 0.99 else Vector3.UP
 		m.position = pos
 		m.basis = Basis.looking_at(dir, up)
-		if nm == "rc_top_down":
+		if nm.begins_with("TopDown"):
 			m.set_meta(&"size", 200.0)
 		else:
 			m.set_meta(&"fov", 70.0)

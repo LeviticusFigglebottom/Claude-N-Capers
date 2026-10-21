@@ -5584,7 +5584,7 @@ heist_def = ExtResource("2_rt")
 variant_table = ExtResource("3_rt")
 floor_heights = PackedFloat32Array(-5, 0, 3.5, 7)
 floor_names = PackedStringArray("Underpass", "Street", "Upper", "Roof")
-review_cameras = Array[NodePath]([NodePath("ReviewCameras/rc_top_down"), NodePath("ReviewCameras/rc_ext_junction"), NodePath("ReviewCameras/rc_ext_north_arm"), NodePath("ReviewCameras/rc_ext_east_arm"), NodePath("ReviewCameras/rc_ext_plaza"), NodePath("ReviewCameras/rc_ext_tannery_west"), NodePath("ReviewCameras/rc_diner_neon"), NodePath("ReviewCameras/rc_convoy_cash"), NodePath("ReviewCameras/rc_convoy_bullion"), NodePath("ReviewCameras/rc_carpark_ground"), NodePath("ReviewCameras/rc_carpark_deck2"), NodePath("ReviewCameras/rc_carpark_ramp"), NodePath("ReviewCameras/rc_carpark_roof"), NodePath("ReviewCameras/rc_carpark_booth"), NodePath("ReviewCameras/rc_carpark_plant"), NodePath("ReviewCameras/rc_carpark_stair"), NodePath("ReviewCameras/rc_diner_dining"), NodePath("ReviewCameras/rc_diner_kitchen"), NodePath("ReviewCameras/rc_diner_function"), NodePath("ReviewCameras/rc_diner_office"), NodePath("ReviewCameras/rc_diner_staff"), NodePath("ReviewCameras/rc_site_controller"), NodePath("ReviewCameras/rc_site_frame"), NodePath("ReviewCameras/rc_site_slab"), NodePath("ReviewCameras/rc_site_cabins"), NodePath("ReviewCameras/rc_site_welfare"), NodePath("ReviewCameras/rc_underpass"), NodePath("ReviewCameras/rc_sniper_skyway")])
+review_cameras = Array[NodePath]([NodePath("ReviewCameras/TopDownPlan"), NodePath("ReviewCameras/rc_ext_junction"), NodePath("ReviewCameras/rc_ext_north_arm"), NodePath("ReviewCameras/rc_ext_east_arm"), NodePath("ReviewCameras/rc_ext_plaza"), NodePath("ReviewCameras/rc_ext_tannery_west"), NodePath("ReviewCameras/rc_diner_neon"), NodePath("ReviewCameras/rc_convoy_cash"), NodePath("ReviewCameras/rc_convoy_bullion"), NodePath("ReviewCameras/rc_carpark_ground"), NodePath("ReviewCameras/rc_carpark_deck2"), NodePath("ReviewCameras/rc_carpark_ramp"), NodePath("ReviewCameras/rc_carpark_roof"), NodePath("ReviewCameras/rc_carpark_booth"), NodePath("ReviewCameras/rc_carpark_plant"), NodePath("ReviewCameras/rc_carpark_stair"), NodePath("ReviewCameras/rc_diner_dining"), NodePath("ReviewCameras/rc_diner_kitchen"), NodePath("ReviewCameras/rc_diner_function"), NodePath("ReviewCameras/rc_diner_office"), NodePath("ReviewCameras/rc_diner_staff"), NodePath("ReviewCameras/rc_site_controller"), NodePath("ReviewCameras/rc_site_frame"), NodePath("ReviewCameras/rc_site_slab"), NodePath("ReviewCameras/rc_site_cabins"), NodePath("ReviewCameras/rc_site_welfare"), NodePath("ReviewCameras/rc_underpass"), NodePath("ReviewCameras/rc_sniper_skyway")])
 metadata/camera_layout_group = "camera"
 
 [node name="Geometry" type="Node3D" parent="." unique_id=100002]
@@ -20873,10 +20873,10 @@ metadata/params = {
 
 [node name="ReviewCameras" type="Node3D" parent="." unique_id=103269]
 
-[node name="rc_top_down" type="Marker3D" parent="ReviewCameras" unique_id=103270]
+[node name="TopDownPlan" type="Marker3D" parent="ReviewCameras" unique_id=103270]
 transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 12, 160, -9)
 metadata/size = 200.0
-metadata/caption = "rc_top_down ()"
+metadata/caption = "TopDownPlan ()"
 
 [node name="rc_ext_junction" type="Marker3D" parent="ReviewCameras" unique_id=103271]
 transform = Transform3D(0.63059264, -0.04322691, -0.77490926, 0, 0.9984477, -0.0556966, 0.776114, 0.035121866, 0.62961376, -22, 1.7, 14)
