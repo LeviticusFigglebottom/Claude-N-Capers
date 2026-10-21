@@ -4,8 +4,18 @@ Owner: ENV A. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-21 update; newest at top)
+### (-12) hoist5 headless: the hoist cycle works; two last pilot gaps fixed (7d2cd968); hoist6 running (10:50 UTC)
+- hoist5 (OF Cataclysm 1037, 1700 s, c307fb90): 5 cash bags went up, each cycle "Hoist sent" -> "unloading" ->
+  `loot_secured loot.cash_bricks`, about 55 s apart (t=1079 / 1133 / 1191 / 1245 / 1299).
+  - Still "no heist end within 1500 s". Two pilot gaps, both fixed in 7d2cd968:
+    1. Three tosses missed the car (t=660 / 800 / 939). Each fed a bot that stood at the rope ladder for about 140 s.
+       The pilot now picks a missed bag straight back up and tosses again from the next spot round the car.
+    2. With the cash done and the gold cage open, the only markers left were `secure` and the stalled
+       `deposit_boxes`. The fallback still picked the stalled boxes: 9 min "waiting at deposit_boxes".
+       It now falls back to `secure`, whose _fetch_bag takes the gold.
+- GPU-20, item (-11) above: 7d2cd968 or later is better. hoist6 (no FOCUS, 1800 s) is running on it.
 ### (-11) **GPU-20 command: send it now** (the box is idle; every hoist fix is pushed) (10:30 UTC)
-Tree: env/a-core 5d945bea5 or later, either merged onto trunk or env/a-core HEAD as is. OF loud, Cataclysm, seed 1037,
+Tree: env/a-core **7d2cd968 or later** (see (-12)), either merged onto trunk or env/a-core HEAD as is. OF loud, Cataclysm, seed 1037,
 windowed, budget 1800, no FOCUS:
 ```
 CREW_DMG=0 HITCH_MS=50 game/tests/a/e2e/run_po5.sh auto_loud 1037 1800 <out_dir> "Ostrander Federal" Cataclysm
