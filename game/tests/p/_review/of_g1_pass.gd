@@ -1889,7 +1889,7 @@ func _down_to_bb() -> bool:
 
 ## Step 6's VC crossing window: the vault guard on loop (b) or (c) (two samples) since at most `max_age` s (his absences
 ## run ~30-40 s), or >= 25 m by path from the gate; and no other basement guard in VC, within 12 m of the gate, in BB
-## within 20 m, or walking in BB toward it within 32 m (the gate -> CQ leg is BB).
+## within 25 m, or walking in BB toward it within 32 m (the gate -> CQ leg is BB).
 func _vc_window(max_age: float) -> bool:
 	# Doc §6: a window is the vault guard on loop (b) (RC: west / south) or (c) (east, SD: x > 36); ghost6_g saw (c) at
 	# t=280 / 490 / 670 unused. A fresh absence only (ghost6_b: "away" at t=183.5 on an absence begun at t=167, he was
@@ -1918,13 +1918,15 @@ func _vc_window(max_age: float) -> bool:
 
 
 ## Step 6, out with a bag: stop just inside the vault gate (VC side, blind from BB but next to the gate) and step into
-## BB only when no basement guard (the vault guard included) is in BB within 25 m of the gate or within 8 m anywhere; up to 20 s (ghost6_o:
+## BB only when no basement guard (the vault guard included) is in BB within 25 m of the gate or within 8 m anywhere; up to 6 s (ghost6_o:
 ## rover_basement stepped into BB 8 m off during the trip, t=576, past what the window's prediction could see).
 func _gate_peek() -> void:
 	var gate: Vector3 = _of(Vector3(17.0, OF_FFL[0], 9.0))
 	await _go(pilot.stand_point(_of(GHOST_GATE_INNER)), 0.4, 20.0)
+	# Short: holding here outlasts the vault guard's absence (ghost6_q: a 20 s hold for Npc_guard7 standing 21 m off,
+	# then out anyway with the vault guard back, t=204).
 	var t: float = 0.0
-	while t < 20.0:
+	while t < 6.0:
 		var who: String = ""
 		for n: Node in rt.npcs(&"guard"):
 			var g: NpcBase = n as NpcBase
@@ -1943,7 +1945,7 @@ func _gate_peek() -> void:
 			note("GHOST gate peek: %s in BB, holding inside the gate" % who)
 		await wait_s(0.5)
 		t += 0.5
-	note("GHOST gate peek: BB NOT clear after 20 s (going anyway)")
+	note("GHOST gate peek: BB NOT clear after 6 s (going anyway)")
 
 
 ## Navmesh path length (m) from `a` to `b` on the crew's map (INF when there is no path).
@@ -1967,7 +1969,7 @@ func _vc_others(trip_s: float = 0.0) -> String:
 			continue
 		# Also where he will be at the end of the trip (ghost6_n: Npc_guard7 walking in from BB's east end).
 		var ahead: Vector3 = g.global_position + Vector3(g.velocity.x, 0.0, g.velocity.z) * trip_s
-		if trip_s > 0.0 and who == "" and ahead.z > 6.5 and ahead.z < 9.6 and pilot.flat_dist(ahead, gate_at) < 20.0:
+		if trip_s > 0.0 and who == "" and ahead.z > 6.5 and ahead.z < 9.6 and pilot.flat_dist(ahead, gate_at) < 25.0:
 			who = "%s %s in %.0f s" % [g.name, Po5Pilot._v(ahead), trip_s]
 		var p: Vector3 = g.global_position
 		var id: int = g.get_instance_id()
@@ -1977,11 +1979,11 @@ func _vc_others(trip_s: float = 0.0) -> String:
 		# BB is one sight line, but VC is walled off from it: the exposed leg is the gate -> CQ dash. A BB walker
 		# heading for the gate within 32 m holds it (ghost6_d: 19 m east, walking west, 1.0 in 1.5 s, t=576); one
 		# walking away or standing far off does not (ghost6_i: rover_basement's BB sweep held every window).
-		# ...but anyone in BB within 20 m does, standing or not (ghost6_m: rover_basement standing 14 m east facing west
-		# filled 1.0 on the CQ -> gate leg, t=572).
+		# ...but anyone in BB within 25 m does, standing or not (ghost6_m: rover_basement standing 14 m east facing west
+		# filled 1.0 on the CQ -> gate leg, t=572); 25 m = the gate peek's, so a started trip is rarely held there.
 		var in_bb: bool = p.z > 6.5 and p.z < 9.6
 		if who == "" and ((p.x > 14.0 and p.x < 34.0 and p.z > 9.0 and p.z < 13.5) or d < 12.0
-				or (in_bb and (d < 20.0 or (d < 32.0 and closing)))):
+				or (in_bb and (d < 25.0 or (d < 32.0 and closing)))):
 			who = "%s %s%s" % [g.name, Po5Pilot._v(p), " closing" if closing else ""]
 	return who
 
