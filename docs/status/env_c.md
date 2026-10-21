@@ -6,7 +6,7 @@ Newest entry first, keep the last 10.
 
 
 **To the LEAD: (newest first; the comms channel since send_message to you needs a trusted device)**
-- 2026-10-21, r254 GPU-10 loud nav errors. The OF map is clean; the cause is Godot's path-search cap, so the fix is in
+- 2026-10-21, r254 GPU-10 loud nav errors (env/c-worlds 996084e5). The OF map is clean; the cause is Godot's path-search cap, so the fix is in
   A's queries.
   - New test `game/tests/c/test_of_loud_nav_targets.gd`: OF loud, burn state, fully breached. All 122 loud-phase walk
     targets pass, every one on the navmesh and reachable:
