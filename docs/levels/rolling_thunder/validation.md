@@ -37,7 +37,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | door_frame_gap | PASS | 0 | 0 |
 | frame_proud | PASS | 0 | 0 |
 | seam_gaps | PASS | 0 | 0 |
-| furniture_logic | PASS | 0 | 3 |
+| furniture_logic | PASS | 0 | 2 |
 
 ## contract_nodes: Contract nodes
 
@@ -54,14 +54,14 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## floating: Nothing floats
 
-- 701 props checked
+- 698 props checked
 
 - WARN `Variants/Group_escape/Slot_esc_van_carpark/EscapeCarPark` @ (23.00, 0.00, -30.00): prop has no geometry or collision; skipped
 - WARN `Variants/Group_escape/Slot_esc_van_underpass/EscapeUnderpass` @ (92.00, -5.00, -4.00): prop has no geometry or collision; skipped
 
 ## clipping: Nothing clips
 
-- 701 props, 50 doors checked
+- 698 props, 50 doors checked
 
 
 ## scale: Human scale
@@ -139,13 +139,13 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## slopes: No walkable slope < 50° outside the play mesh
 
-- 809 x 729 columns (0.25 m), 443813 surface samples, 0 collider(s) with reachable walkable surfaces outside play
+- 809 x 729 columns (0.25 m), 446434 surface samples, 0 collider(s) with reachable walkable surfaces outside play
 
 
 ## navmesh: Navmesh
 
-- navmesh: 3718 polygons, cell 0.10/0.10 m
-- 199 markers checked
+- navmesh: 3778 polygons, cell 0.10/0.10 m
+- 209 markers checked
 | room | walkable samples | covered | coverage |
 |---|---|---|---|
 | `Rooms/RoomCPG` | 661 | 661 | 100% |
@@ -184,8 +184,8 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 | `Rooms/RoomFG` | 745 | 745 | 100% |
 | `Rooms/RoomF1` | 832 | 832 | 100% |
 | `Rooms/RoomX4` | 721 | 721 | 100% |
-| `Rooms/RoomX1` | 837 | 837 | 100% |
-| `Rooms/RoomX2` | 468 | 468 | 100% |
+| `Rooms/RoomX1` | 819 | 819 | 100% |
+| `Rooms/RoomX2` | 389 | 389 | 100% |
 | `Rooms/RoomX3` | 770 | 770 | 100% |
 | `Rooms/RoomX5` | 779 | 779 | 100% |
 | `Rooms/RoomX6` | 706 | 706 | 100% |
@@ -199,12 +199,12 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 ## reachability: Reachability (per variant)
 
-- 32 variant configuration(s), 4 convoy layout(s), 85188 spawn->target path queries
+- 32 variant configuration(s), 4 convoy layout(s), 87252 spawn->target path queries
 
 
 ## walkthrough: Walkthrough bot
 
-- 1200 / 1200 spawn->target walks ok
+- 1260 / 1260 spawn->target walks ok
 
 
 ## patrols: Patrol graphs
@@ -261,4 +261,3 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 
 - WARN `Gameplay/Lifts/GoodsLift` @ (20.50, 0.00, -48.50): door_clear: in the clear zone of door `Gameplay/Doors/LiftDoorG` (1.0 / 1.0 m each side, leaf width 1.82 m) by 0.74 m (gameplay prefab / variant content: review)
 - WARN `Gameplay/Lifts/GoodsLift` @ (20.50, 0.00, -48.50): use_point: stands in the user's spot of `Gameplay/Doors/LiftDoorG` (UsePoint @ (20.50, 0.00, -47.70)) by 0.64 m (gameplay prefab / variant content: review)
-- WARN `Props/Dress/Streets/TanneryE_N/StreetLamp0` @ (25.50, 0.00, -8.50): overlap: bounds interpenetrate `Variants/Group_convoy_route/Slot_route_east/Convoy/Crash/CrashT2` by 0.21 m (not a stack or a tucked seat)

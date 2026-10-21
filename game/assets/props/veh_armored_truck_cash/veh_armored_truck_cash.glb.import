@@ -41,16 +41,6 @@ materials/extract_format=0
 materials/extract_path=""
 _subresources={
 "materials": {
-"M_pr_emit_cool": {
-"use_external/enabled": true,
-"use_external/fallback_path": "res://world/props/materials/pr_emit_cool.tres",
-"use_external/path": "res://world/props/materials/pr_emit_cool.tres"
-},
-"M_pr_glass_tinted": {
-"use_external/enabled": true,
-"use_external/fallback_path": "res://world/props/materials/pr_glass_tinted.tres",
-"use_external/path": "res://world/props/materials/pr_glass_tinted.tres"
-},
 "M_pr_metal_dark": {
 "use_external/enabled": true,
 "use_external/fallback_path": "res://world/props/materials/pr_metal_dark.tres",

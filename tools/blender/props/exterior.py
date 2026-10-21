@@ -32,6 +32,11 @@ VARIANTS = {
     "veh_car_sedan_wine": {"fn": "car", "paint": "car_wine", "cat": {"kind": "car", "place": "row", "standoff": 5.2, "group": "exterior"}},
     "veh_car_sedan_navy": {"fn": "car", "paint": "car_navy", "cat": {"kind": "car", "place": "row", "standoff": 5.2, "group": "exterior"}},
     "veh_car_sedan_silver": {"fn": "car", "paint": "car_silver", "cat": {"kind": "car", "place": "row", "standoff": 5.2, "group": "exterior"}},
+    # RT-C2: the convoy's escort car (A5-02 convoy_vehicle visual): the sedan as `Body` (no collision: the mover fits
+    # its own), a roof light bar, `Seat0..3` (front left / right, rear left / right) at the cushion. Front = +Y
+    # (Godot -Z): the map turns the mover's `Visual` 180 deg so the bonnet leads (+Z); the seats are authored turned
+    # back so they end up square with the mover.
+    "veh_escort_car": {"fn": "car", "paint": "car_navy", "escort": True, "cat": {"prefab": "convoy_vehicle", "kind": "convoy_vehicle"}},
     "prop_hvac_condenser": {"fn": "hvac", "cat": {"kind": "hvac", "place": "wall", "group": "exterior"}},
     "prop_barrier_jersey": {"fn": "jersey", "cat": {"kind": "barrier", "place": "row", "standoff": 4.5, "group": "exterior"}},
     "prop_barrier_roadworks": {"fn": "roadworks", "cat": {"kind": "barrier", "place": "row", "standoff": 4.5, "group": "exterior"}},
@@ -122,7 +127,8 @@ def _car(k: Kit, p: dict) -> None:
     w, ln = 1.8, 4.6
     paint = p["paint"]
     hl = ln / 2
-    o = k.obj("Car")
+    escort = bool(p.get("escort", False))
+    o = k.obj("Body" if escort else "Car")
     body = o.part(bevel=0.04, segments=3)
     trim = o.part(bevel=0.004)
     glass = o.part(bevel=0.0)
@@ -172,7 +178,16 @@ def _car(k: Kit, p: dict) -> None:
             run.cyl(0.33, 0.22, (sx * (w / 2 - 0.12), wy, 0.33), "rubber", axis="X", segs=28)
             run.cyl(0.2, 0.225, (sx * (w / 2 - 0.12), wy, 0.33), "steel", axis="X", segs=20)
             run.cyl(0.07, 0.23, (sx * (w / 2 - 0.12), wy, 0.33), "chrome", axis="X", segs=12)
+    if escort:
+        trim.bx((-0.55, -0.2, 1.44), (0.55, 0.05, 1.52), "plastic_black")  # light bar
+        for sx, mat in ((-1, "emit_police_blue"), (1, "emit_led_red")):
+            l0, l1 = sorted((sx * 0.08, sx * 0.52))
+            trim.bx((l0, -0.18, 1.52), (l1, 0.03, 1.58), mat)
     o.build()
+    if escort:
+        for i, (sx, sy) in enumerate(((-1, 0.25), (1, 0.25), (-1, -0.75), (1, -0.75))):
+            k.empty("Seat%d" % i, (sx * 0.4, sy, 0.45), rotation=(0.0, 0.0, math.pi))
+        return
     k.collision([((-w / 2, -hl, 0.0), (w / 2, hl, 0.96)), ((-w / 2 + 0.1, -hl + 0.9, 0.96), (w / 2 - 0.1, hl - 1.2, 1.44))])
 
 
