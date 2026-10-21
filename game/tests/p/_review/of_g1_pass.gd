@@ -2561,10 +2561,9 @@ func _g2_dock() -> bool:
 				await wait_s(1.0)
 				waited += 1.0
 		note("GHOST lane %s after %.0f s" % ["clear" if clear else "NOT clear (going anyway)", waited])
-		if not pilot.crew.masked:
-			if not await _mask():
-				return false
-		# Watch 5 s before committing the ECM (haz_j: one sample at t~80 missed rover_hall turning for LD at ~t 81-83).
+		# Watch 5 s, UNMASKED, before committing (haz_j: one sample at t~80 missed rover_hall turning for LD at ~t 81-83).
+		# The mask is the commitment: it doesn't come off (PD2), and a masked crew waiting in the lane for the next
+		# window was spotted by rover_dock walking back from his smoke (haz_k, t=118 at 14 m).
 		ld_busy.call(20.0)
 		for _k: int in 10:
 			await wait_s(0.5)
@@ -2572,9 +2571,11 @@ func _g2_dock() -> bool:
 			if who != "":
 				break
 		if who != "":
-			note("GHOST LD busy after the mask (%s): ECM kept, next smoke window" % who)
+			note("GHOST LD busy in the 5 s watch (%s): still unmasked, next smoke window" % who)
 			await wait_until(func() -> bool: return ld_busy.call(20.0) == "", 90.0)
 			continue
+		if not await _mask():
+			return false
 		break
 	if not await _deploy_ecm():
 		return false
