@@ -455,17 +455,18 @@ def always() -> Dict[str, List[list]]:
                     "size": "enum:SMALL",
                     "methods": ["saw", "drill", "c4"],
                     "objective_tag": "pay_station",
+                    # contents inside the Body (prop_safe_wall_small: z -0.42..0, the door at z 0; Safe PO6-05)
                     "@contents": [
                         [
                             "small_loot",
                             "PayStationCash1",
-                            [-0.15, 0.3, 0.0],
+                            [-0.15, 0.3, -0.21],
                             {"loot_id": "loot.small_valuables", "value": 400, "objective_tag": "pay_station"},
                         ],
                         [
                             "small_loot",
                             "PayStationCash2",
-                            [0.15, 0.3, 0.0],
+                            [0.15, 0.3, -0.21],
                             {"loot_id": "loot.small_valuables", "value": 400, "objective_tag": "pay_station"},
                         ],
                     ],
@@ -497,13 +498,13 @@ def always() -> Dict[str, List[list]]:
                         [
                             "small_loot",
                             "DinerSafeCash1",
-                            [-0.15, 0.3, 0.0],
+                            [-0.15, 0.3, -0.21],
                             {"loot_id": "loot.small_valuables", "value": 600, "objective_tag": "diner_safe"},
                         ],
                         [
                             "small_loot",
                             "DinerSafeCash2",
-                            [0.15, 0.3, 0.0],
+                            [0.15, 0.3, -0.21],
                             {"loot_id": "loot.small_valuables", "value": 600, "objective_tag": "diner_safe"},
                         ],
                     ],

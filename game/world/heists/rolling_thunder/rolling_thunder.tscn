@@ -21483,7 +21483,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0)
 shape = SubResource("rt_883")
 
 [node name="PayStationCash1" parent="Gameplay/Loot/PayStation" unique_id=103332 instance=ExtResource("246_rt")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.15, 0.3, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.15, 0.3, -0.21)
 script = ExtResource("247_rt")
 value = 400
 loot_id = &"loot.small_valuables"
@@ -21492,7 +21492,7 @@ metadata/kind = "small_loot"
 metadata/inside = true
 
 [node name="UsePoint" parent="Gameplay/Loot/PayStation/PayStationCash1" index="1"]
-transform = Transform3D(1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, 1, 0.14999962, -0.3, 1.0999985)
+transform = Transform3D(1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, 1, 0.14999962, -0.3, 1.3099976)
 
 [node name="Interactable" parent="Gameplay/Loot/PayStation/PayStationCash1" index="2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.06, 0)
@@ -21500,7 +21500,7 @@ script = ExtResource("238_rt")
 kind = &"take_loot"
 
 [node name="PayStationCash2" parent="Gameplay/Loot/PayStation" unique_id=103333 instance=ExtResource("246_rt")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.15, 0.3, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.15, 0.3, -0.21)
 script = ExtResource("247_rt")
 value = 400
 loot_id = &"loot.small_valuables"
@@ -21509,7 +21509,7 @@ metadata/kind = "small_loot"
 metadata/inside = true
 
 [node name="UsePoint" parent="Gameplay/Loot/PayStation/PayStationCash2" index="1"]
-transform = Transform3D(1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, 1, -0.14999962, -0.3, 1.0999985)
+transform = Transform3D(1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, 1, -0.14999962, -0.3, 1.3099976)
 
 [node name="Interactable" parent="Gameplay/Loot/PayStation/PayStationCash2" index="2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.06, 0)
@@ -21559,7 +21559,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0)
 shape = SubResource("rt_883")
 
 [node name="DinerSafeCash1" parent="Gameplay/Loot/DinerOfficeSafe" unique_id=103336 instance=ExtResource("246_rt")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.15, 0.3, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.15, 0.3, -0.21)
 script = ExtResource("247_rt")
 value = 600
 loot_id = &"loot.small_valuables"
@@ -21568,7 +21568,7 @@ metadata/kind = "small_loot"
 metadata/inside = true
 
 [node name="UsePoint" parent="Gameplay/Loot/DinerOfficeSafe/DinerSafeCash1" index="1"]
-transform = Transform3D(-1, 0, 4.371139e-08, 0, 1, 0, -4.371139e-08, 0, -1, 0.14999962, -0.3, -1.1000004)
+transform = Transform3D(-1, 0, 4.371139e-08, 0, 1, 0, -4.371139e-08, 0, -1, 0.14999962, -0.3, -0.8900013)
 
 [node name="Interactable" parent="Gameplay/Loot/DinerOfficeSafe/DinerSafeCash1" index="2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.06, 0)
@@ -21576,7 +21576,7 @@ script = ExtResource("238_rt")
 kind = &"take_loot"
 
 [node name="DinerSafeCash2" parent="Gameplay/Loot/DinerOfficeSafe" unique_id=103337 instance=ExtResource("246_rt")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.15, 0.3, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.15, 0.3, -0.21)
 script = ExtResource("247_rt")
 value = 600
 loot_id = &"loot.small_valuables"
@@ -21585,7 +21585,7 @@ metadata/kind = "small_loot"
 metadata/inside = true
 
 [node name="UsePoint" parent="Gameplay/Loot/DinerOfficeSafe/DinerSafeCash2" index="1"]
-transform = Transform3D(-1, 0, 4.371139e-08, 0, 1, 0, -4.371139e-08, 0, -1, -0.14999962, -0.3, -1.1000004)
+transform = Transform3D(-1, 0, 4.371139e-08, 0, 1, 0, -4.371139e-08, 0, -1, -0.14999962, -0.3, -0.8900013)
 
 [node name="Interactable" parent="Gameplay/Loot/DinerOfficeSafe/DinerSafeCash2" index="2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.06, 0)

@@ -273,11 +273,11 @@ const ALWAYS: Dictionary = {
 				"objective_tag": "pay_station",
 				"@contents": [
 					[
-						"small_loot", "PayStationCash1", [-0.15, 0.3, 0.0],
+						"small_loot", "PayStationCash1", [-0.15, 0.3, -0.21],
 						{"loot_id": "loot.small_valuables", "value": 400, "objective_tag": "pay_station"},
 					],
 					[
-						"small_loot", "PayStationCash2", [0.15, 0.3, 0.0],
+						"small_loot", "PayStationCash2", [0.15, 0.3, -0.21],
 						{"loot_id": "loot.small_valuables", "value": 400, "objective_tag": "pay_station"},
 					],
 				],
@@ -297,11 +297,11 @@ const ALWAYS: Dictionary = {
 				"objective_tag": "diner_safe",
 				"@contents": [
 					[
-						"small_loot", "DinerSafeCash1", [-0.15, 0.3, 0.0],
+						"small_loot", "DinerSafeCash1", [-0.15, 0.3, -0.21],
 						{"loot_id": "loot.small_valuables", "value": 600, "objective_tag": "diner_safe"},
 					],
 					[
-						"small_loot", "DinerSafeCash2", [0.15, 0.3, 0.0],
+						"small_loot", "DinerSafeCash2", [0.15, 0.3, -0.21],
 						{"loot_id": "loot.small_valuables", "value": 600, "objective_tag": "diner_safe"},
 					],
 				],
