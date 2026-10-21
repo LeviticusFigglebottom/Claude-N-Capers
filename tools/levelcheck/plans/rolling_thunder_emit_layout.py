@@ -160,7 +160,7 @@ ROOM_KIT = {
     "U2": "storage_archive",
     "U3": "storage_receiving",
     "U4": "restroom_single",
-    "J": "janitor_closet",
+    "J": "janitor_closet_of",
     "UC": "corridor_service",
     "U5": "break_room",
     "YD": "exterior_yard_small",

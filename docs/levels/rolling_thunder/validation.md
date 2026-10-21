@@ -86,7 +86,7 @@ docs/design/level_standards.md §7; algorithms: tools/levelcheck/README.md.
 - `Rooms/RoomU4` (restroom): ceiling median 2.80 m (rule 2.6-3.0)
 - `Rooms/RoomJ` (janitor): ceiling median 2.80 m (rule 2.6-3.0)
 - `Rooms/RoomUC` (corridor): ceiling median 2.80 m (rule 2.6-3.0)
-- `Rooms/RoomU5` (staff_room): ceiling median 2.80 m (rule 2.6-3.0)
+- `Rooms/RoomU5` (break_room): ceiling median 2.80 m (rule 2.6-3.0)
 - `Rooms/RoomC1` (office): ceiling median 2.65 m (rule 2.6-3.0)
 - `Rooms/RoomC2` (break_room): ceiling median 2.65 m (rule 2.6-3.0)
 - `Rooms/RoomC3` (restroom): ceiling median 2.65 m (rule 2.6-3.0)

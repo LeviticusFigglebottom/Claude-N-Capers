@@ -1,0 +1,32 @@
+[gd_resource type="Resource" script_class="DressingKit" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/kits/dressing_kit.gd" id="1_kit"]
+
+[resource]
+script = ExtResource("1_kit")
+id = &"site_wc"
+purpose = &"restroom"
+required_items = Array[StringName]([&"toilet", &"sink", &"mirror", &"soap_dispenser", &"paper_dispenser", &"light_fixture"])
+optional_items = {
+&"bin": 1,
+&"hand_dryer": 1
+}
+clutter_groups = {}
+min_density = 0.3
+max_density = 2
+min_props = 7
+lone_ok_kinds = Array[StringName]([])
+seed_salt = 110
+seed_id = &"restroom_multi"
+counts = {
+&"toilet": Vector2i(2, 2)
+}
+assets = {
+&"bin": PackedStringArray("prop_bin_small"),
+&"light_fixture": PackedStringArray("prop_ceiling_panel_neutral"),
+&"mirror": PackedStringArray("prop_mirror_restroom"),
+&"sink": PackedStringArray("prop_basin_pedestal"),
+&"toilet": PackedStringArray("prop_toilet")
+}
+ceiling = {"prop_ceiling_panel_neutral": 2.4}
+notes = "Rolling Thunder (restroom), from restroom_multi: RT C3 site WC cabin: two WCs, pedestal basin, mirror."

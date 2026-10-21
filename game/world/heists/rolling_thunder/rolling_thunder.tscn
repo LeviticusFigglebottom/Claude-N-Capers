@@ -10790,7 +10790,7 @@ script = ExtResource("16_rt")
 room_id = &"J"
 purpose = &"janitor"
 floor_index = 2
-dressing_kit = &"janitor_closet"
+dressing_kit = &"janitor_closet_of"
 
 [node name="Shape" type="CollisionShape3D" parent="Rooms/RoomJ" unique_id=102098]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.5, 4.9, 30.5)
@@ -10816,7 +10816,7 @@ collision_mask = 0
 monitoring = false
 script = ExtResource("16_rt")
 room_id = &"U5"
-purpose = &"staff_room"
+purpose = &"break_room"
 floor_index = 2
 dressing_kit = &"break_room"
 

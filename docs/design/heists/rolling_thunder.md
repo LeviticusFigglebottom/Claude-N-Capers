@@ -760,9 +760,9 @@ Sizes are between wall centre lines (m).
 | U2 | storage | 7 × 10 | 2.8 | `storage_archive` | Old furniture, boxes of menus, Christmas decorations. |
 | U3 | storage (dry goods overflow) | 7 × 8 | 2.8 | `storage_receiving` | Shelving. |
 | U4 | restroom | 3 × 3 | 2.8 | `restroom_single` | WC for the function room. |
-| J | janitor | 3 × 3 | 2.8 | `janitor_closet` | Mop sink, buckets (U-level, under U4's partition). Door (0.9 m, non-route) onto the landing corridor UC at (3, 16), as W2 below it (RT-C0 check: it had none). |
+| J | janitor | 3 × 3 | 2.8 | `janitor_closet_of` (the OF janitor-purpose variant of `janitor_closet`, RT-C2) | Mop sink, buckets (U-level, under U4's partition). Door (0.9 m, non-route) onto the landing corridor UC at (3, 16), as W2 below it (RT-C0 check: it had none). |
 | UC | corridor (upper landing) | 2 × 6 | 2.8 | `corridor_service` | Upper landing over R (local x 3…5, z 12…18): U1, U4, J and stair SC open off it (RT-C0 check: drawn, was missing from the list). |
-| U5 | staff_room | 5 × 6 | 2.8 | `break_room` | Staff break room: fridge, table + chairs, counter + sink, microwave, coffee, bulletin board. |
+| U5 | break_room (RT-C2: the kit's purpose) | 5 × 6 | 2.8 | `break_room` | Staff break room: fridge, table + chairs, counter + sink, microwave, coffee, bulletin board. |
 | YD | exterior (diner yard) | 20 × 8 | — | `exterior_yard_small` | Bins (`body_container`), crates, waste oil, the staff smoking chair. |
 | C1 | office (site office) | 3 × 9 | 2.6 | `site_office` | Plan table, drawings on the wall, kettle, hard-hat rack, the site's radio. |
 | C2 | break_room (welfare) | 3 × 9 | 2.6 | `break_room` | Mess table, microwave, fridge, sink, notice board. |
