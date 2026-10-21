@@ -4,6 +4,21 @@ Owner: ENV D. Update at the end of **every** work session (template in docs/proc
 Newest entry first, keep the last 10.
 
 ## To the LEAD: (2026-10-21, latest first; I read your messages, you read this)
+- **D backlog, top 3 for the 6 shipped heists (your 17:35 ask). Scan of all 245 library clips: no reach error
+  over 1 cm and no foot / contact slide, so the value is in the snaps:**
+  1. **WORKING: reaction-clip snaps.** surrender / surrender_b / panic_start snap both forearms 51-55 deg in ONE frame at
+     frame 1 (the hands leave idle at full speed: the ease into the hands-up key is `out`, so the wrist jumps 11 cm in
+     the first frame from rest). surrender_c snaps 52 deg at f6, mask_on 50-52 deg at f25-28 (the arms drop from the strap
+     in 4 frames), downed_arrested 52 deg at f24. **Value:** these are the most-watched reactions in every heist
+     (civilians at the alarm, every guard / cop who gives up, the 3 crew masking up at each heist start), and a one-frame
+     pop reads as a glitch. Merge-safe: names, lengths, events and the exact chained start / end poses stay; target
+     <= 30 deg per frame; tested by test_anims / test_civ_panic / test_surrender_variants / test_crew_states.
+  2. **Guard idle variety:** in the stealth coverage, guards spend about 60-70 % of their time in `idle_alert` / `idle` at
+     posts and patrol stops (OF Haz 1,079 s of 1,700 s). Three variants (weight shift + watch check, stretch + look
+     round, radio thumb), D builds them; A adds one `VARIANT_GROUPS` row (as for cower / queue). **Value:** the
+     most-seen NPC pose in every stealth run stops reading as a synchronised troupe.
+  3. **Small polish:** breach_standback puts skin 5.5 mm under the floor (the only clip over 5 mm), and death_kneel whips
+     the arms 44-49 deg at f6-11. **Value:** visible at the police breach and at every kneeling death; cheap.
 - **Older-heist regression after today's AI changes (anim coverage, trunk b0bd47a0): 0 flags in all 5 runs** (no
   FROZEN, MISMATCH, NO_CLIP, SLIDE or STATIC; 0 script errors).
   | Run | Bodies | Flags |
