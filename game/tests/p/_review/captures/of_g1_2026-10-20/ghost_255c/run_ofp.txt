@@ -1,0 +1,415 @@
+[OFP 0.0s t=-1.0] === ghost ===
+[OFP 18.6s t=-1.0] objective casing -> 1
+[OFP 18.6s t=-1.0] objective keycard -> 1
+[OFP 18.6s t=-1.0] objective code_hint -> 1
+[OFP 18.6s t=-1.0] objective code_pc -> 1
+[OFP 18.6s t=-1.0] objective server -> 1
+[OFP 18.6s t=-1.0] objective vault_gate -> 1
+[OFP 18.6s t=-1.0] objective lasers -> 1
+[OFP 18.6s t=-1.0] objective time_lock -> 0
+[OFP 18.6s t=-1.0] objective time_lock_wait -> 0
+[OFP 18.6s t=-1.0] objective vault_loot -> 0
+[OFP 18.6s t=-1.0] objective gold_cage -> 0
+[OFP 18.6s t=-1.0] objective drill_delivery -> 0
+[OFP 18.6s t=-1.0] objective vault_drill -> 0
+[OFP 18.6s t=-1.0] objective vault_breach -> 0
+[OFP 18.6s t=-1.0] objective secure -> 1
+[OFP 18.6s t=-1.0] objective deposit_boxes -> 1
+[OFP 18.6s t=-1.0] objective bond_safe -> 0
+[OFP 18.6s t=-1.0] objective president_safe -> 1
+[OFP 18.6s t=-1.0] objective server_drives -> 1
+[OFP 18.6s t=-1.0] objective escape_wait -> 0
+[OFP 18.6s t=-1.0] objective escape -> 0
+[OFP 37.5s t=0.0] launched ostrander_federal seed 1002 diff 5 variants { &"manager_route": [&"mgr_vault"], &"keycard": [&"kc_on_manager"], &"code_pc": [&"pc_exec"], &"officers": [&"off_3"], &"server_room": [&"srv_gallery"], &"guard_post": [&"rover_basement", &"rover_dock", &"rover_gallery", &"rover_hall"], &"security_room_staffed": [&"sec_staffed"], &"camera": [&"cam_a"], &"laser_pattern": [&"lz_sweep"], &"customers": [&"cust_8"], &"side_door": [&"door_none"], &"fire_escape": [&"fe_up"], &"escape": [&"esc_van_dock"], &"drill_delivery": [&"drop_terrace"], &"president_safe": [&"ps_empty"], &"vip": [&"vip_in"], &"guard_extra": [&"gx_basement", &"gx_hall"], &"civ_extra": [&"cx_hall_1", &"cx_hall_2", &"cx_pc"], &"time_lock_s": 270.0, &"drill_eta_s": 90.0, &"escape_eta_s": 90.0, &"cash_bags": 6, &"gold_bags": 4, &"deposit_boxes": 12, "rare": [&"vip_client"] }
+[OFP 250.7s t=3.1] pilot: calibrated 0.001600 rad/px yaw, 0.001600 rad/px pitch (settings formula said (0.0016, 0.0016))
+[OFP 250.7s t=3.1] spawn (21.8, -0.8, 44.0)
+[OFP 277.7s t=8.2] pilot: t=5 at (37.9, -0.7, 40.1) corner (42.4, -0.6, 42.3) yaw_err -0.00 fwd=true path=11 mouse_mode=2 state=0 look=(-2.02,0.00) pin_yaw=-2.01588615652872 bot=false
+[OFP 289.8s t=20.3] pilot: t=5 at (56.0, 0.0, 14.9) corner (55.7, 0.2, 12.4) yaw_err -0.00 fwd=true path=7 mouse_mode=2 state=0 look=(0.10,0.00) pin_yaw=0.09794857307133 bot=false
+[OFP 300.5s t=31.1] pilot: t=5 at (35.7, 0.0, -6.3) corner (33.4, 0.2, -6.4) yaw_err -0.00 fwd=true path=10 mouse_mode=2 state=0 look=(1.50,0.00) pin_yaw=1.50226139555161 bot=false
+[OFP 302.5s t=33.0] GHOST step _g1_lane done at t=33.0 (+29.8 s)
+[OFP 302.5s t=33.0] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (45.6, 0.0, -5.0) smoke
+[OFP 312.5s t=43.0] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (45.6, 0.0, -5.0) smoke
+[OFP 322.5s t=53.0] GHOST lane guards (waiting for the smoke cue): Npc_guard6 (45.6, 0.0, -5.0) smoke
+[OFP 330.0s t=60.5] GHOST smoke cue: Npc_guard6 at (45.7, 0.0, -4.9) clip 'walk_fr' (still 28.0 s) after 28 s
+[OFP 330.0s t=60.5] GHOST lane clear after 0 s
+[OFP 336.9s t=61.5] objective casing -> 2
+[OFP 337.5s t=62.1] masked true
+[OFP 340.2s t=64.8] ECM on
+[OFP 345.2s t=69.9] pilot: t=5 at (12.2, 0.0, -1.8) corner (10.2, 0.2, -1.2) yaw_err 0.00 fwd=true path=4 mouse_mode=2 state=0 look=(1.86,0.00) pin_yaw=1.85905208980694 bot=false
+[OFP 354.7s t=79.2] pilot: use DockPersonnelDoor (open_door) -> OK in 8.0 s
+[OFP 358.2s t=82.8] pilot: use DockCorridorDoor (open_door) -> OK in 0.0 s
+[OFP 360.3s t=84.9] pilot: use StairDoorSAG (open_door) -> OK in 0.0 s
+[OFP 365.1s t=89.7] pilot: use StairDoorSAB (open_door) -> OK in 0.0 s
+[OFP 366.0s t=90.6] GHOST step _g2_dock done at t=90.6 (+57.6 s)
+[OFP 370.0s t=94.5] DETECT Npc_civilian8 kind 1 meter 0.10 at (7.1, -4.0, 2.5), pilot (3.4, -4.0, 5.2) crouched false
+[OFP 374.9s t=99.5] pilot: use Npc_civilian8 (cable_tie) -> OK in 2.0 s
+[OFP 376.6s t=101.2] objective keycard -> 2
+[OFP 385.0s t=101.5] GHOST step _g3_keycard done at t=101.5 (+10.9 s)
+[OFP 385.0s t=101.5] GHOST LK hide at (1.5, -3.8, 4.0)
+[OFP 386.6s t=103.1] GHOST waiting for the stair core: 
+[OFP 396.6s t=113.1] GHOST waiting for the stair core: Npc_guard2 (17.0, -4.0, 10.3) moving, Npc_guard5 (23.7, -4.0, 7.7) moving
+[OFP 403.1s t=119.6] GHOST stair core clear after 16 s
+[OFP 425.3s t=124.6] pilot: t=5 at (14.3, -4.0, 7.1) corner (14.4, -4.0, 6.1) yaw_err 0.01 fwd=true path=5 mouse_mode=2 state=0 look=(6.22,0.00) pin_yaw=6.23055802649651 bot=false
+[OFP 425.4s t=124.8] GHOST waiting for the stair core: 
+[OFP 431.4s t=130.8] GHOST stair core clear after 6 s
+[OFP 431.9s t=131.3] DETECT Npc_guard5 kind 0 meter 0.13 at (20.9, -4.0, 8.0), pilot (14.3, -4.0, 7.3) crouched false
+[OFP 432.0s t=131.3] DETECT Npc_guard9 kind 0 meter 0.10 at (29.0, -4.0, 7.9), pilot (14.3, -4.0, 7.3) crouched false
+[OFP 432.5s t=131.8] DETECT Npc_guard5 kind 0 meter 0.60 at (20.1, -4.0, 8.0), pilot (14.4, -4.0, 7.7) crouched false
+[OFP 448.6s t=137.1] pilot: t=5 at (14.7, 2.5, 1.5) corner (15.0, 4.9, 5.0) yaw_err -0.96 fwd=false path=19 mouse_mode=2 state=0 look=(-2.08,0.00) pin_yaw=-2.26917271311504 bot=false
+[OFP 454.1s t=142.6] pilot: use StairDoorSAE (open_door) -> OK in 0.0 s
+[OFP 456.7s t=145.2] pilot: use AssistantDoor (open_door) -> OK in 0.0 s
+[OFP 460.5s t=149.0] pilot: use CodePC (start_hack) -> OK in 2.0 s
+[OFP 460.5s t=149.0] GHOST waiting for the stair core: 
+[OFP 466.4s t=155.0] pilot: t=5 at (14.7, 8.6, 6.1) corner (14.6, 8.8, 7.5) yaw_err 3.06 fwd=false path=13 mouse_mode=2 state=0 look=(-12.52,0.00) pin_yaw=-12.3309495272388 bot=false
+[OFP 470.4s t=158.8] pilot: use ElectricalDoorE (open_door) -> OK in 0.0 s
+[OFP 487.6s t=176.1] GHOST code hack state 2 at t=176
+[OFP 492.5s t=181.1] pilot: t=5 at (17.6, 8.6, 7.6) corner (18.9, 8.8, 7.5) yaw_err 0.00 fwd=true path=8 mouse_mode=2 state=0 look=(-20.34,0.00) pin_yaw=-20.3413570623725 bot=false
+[OFP 496.2s t=184.7] pilot: use CodePC (start_hack) -> OK in 2.0 s
+[OFP 496.2s t=184.7] GHOST waiting for the stair core: 
+[OFP 502.2s t=190.8] pilot: t=5 at (14.6, 8.6, 6.0) corner (14.5, 8.8, 7.2) yaw_err 1.65 fwd=false path=13 mouse_mode=2 state=0 look=(-17.46,0.00) pin_yaw=-17.2697164181573 bot=false
+[OFP 514.0s t=202.6] objective code_pc -> 2
+[OFP 514.0s t=202.6] objective code_pc -> 2
+[OFP 514.0s t=202.6] objective server -> 1
+[OFP 514.1s t=202.6] GHOST code hack state 3 at t=203
+[OFP 514.1s t=202.6] GHOST step _g4_code done at t=202.6 (+101.1 s)
+[OFP 514.1s t=202.6] GHOST waiting for the stair core: 
+[OFP 535.8s t=212.6] GHOST waiting for the stair core: Npc_guard4 (14.4, 5.0, 6.3) moving
+[OFP 541.3s t=218.1] GHOST stair core clear after 16 s
+[OFP 543.1s t=219.8] DETECT Npc_guard4 kind 0 meter 0.21 at (14.6, 8.6, 7.2), pilot (12.1, 8.6, 8.0) crouched false
+[OFP 543.6s t=220.3] DETECT Npc_guard4 kind 0 meter 0.65 at (15.2, 8.6, 7.5), pilot (13.7, 8.6, 8.1) crouched false
+[OFP 544.1s t=220.8] DETECT Npc_guard4 kind 0 meter 1.00 at (15.8, 8.6, 7.5), pilot (14.3, 8.6, 6.8) crouched false
+[INFO][stealth][p1] ALARM: guard_radio (source 206)
+[OFP 545.3s t=222.1] ALARM guard_radio by Npc_guard4 (pilot at (15.0, 8.6, 5.7))
+[OFP 545.4s t=222.1] objective code_hint -> 1
+[OFP 545.4s t=222.1] objective code_hint -> 2
+[OFP 545.4s t=222.1] objective server -> 1
+[OFP 545.4s t=222.1] objective server -> 2
+[OFP 545.4s t=222.1] objective vault_gate -> 1
+[OFP 545.4s t=222.1] objective vault_gate -> 2
+[OFP 545.4s t=222.1] objective lasers -> 1
+[OFP 545.4s t=222.1] objective lasers -> 2
+[OFP 545.4s t=222.1] objective drill_delivery -> 1
+[OFP 545.4s t=222.1] objective drill_delivery -> 1
+[OFP 570.4s t=225.9] pilot: t=5 at (14.2, 5.0, 6.3) corner (14.4, 5.0, 6.1) yaw_err 0.88 fwd=false path=32 mouse_mode=2 state=0 look=(-8.13,0.00) pin_yaw=-7.94298451038594 bot=false
+[OFP 575.6s t=230.9] pilot: t=10 at (15.0, 0.0, 6.5) corner (14.6, 0.0, 6.1) yaw_err 0.00 fwd=true path=13 mouse_mode=2 state=1 look=(0.72,0.00) pin_yaw=0.72450786875743 bot=false
+[OFP 578.0s t=233.0] pilot: STUCK at (15.0, 0.0, 6.5) heading to (14.6, 0.0, 6.1); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Doors/StairDoorSAG/Visual/PropDoorServiceSteelT30/Model/Frame/Collision@(15.1, 1.5, 6.9) n=(-0.2, 0.0, -1.0), vel=(-0.0, 0.0, -0.0) floor=true state=1
+[OFP 594.9s t=233.2] pilot: detour right 0.7 m to (15.4, 0.2, 5.8) (attempt 1)
+[OFP 596.8s t=235.2] pilot: STUCK at (15.0, 0.0, 6.5) heading to (14.6, 0.0, 6.1); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Gameplay/Doors/StairDoorSAG/Visual/PropDoorServiceSteelT30/Model/Frame/Collision@(15.1, 1.5, 6.9) n=(-0.2, 0.0, -1.0), vel=(-0.0, 0.0, -0.0) floor=true state=1
+[OFP 612.2s t=236.8] pilot: detour left 0.7 m to (14.4, 0.2, 6.7) (attempt 1)
+[OFP 614.2s t=238.8] pilot: STUCK at (15.3, 0.0, 6.5) heading to (14.6, 0.2, 6.5); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorG/GX0070_1_02@(15.3, 0.4, 6.8) n=(-0.0, 0.0, -1.0), vel=(-0.0, 0.0, 0.0) floor=true state=1
+[OFP 634.0s t=242.7] pilot: STUCK at (15.5, 0.0, 6.5) heading to (15.4, 0.1, 5.4); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/Walls/FloorG/GZ0160_0_00@(15.9, 0.4, 6.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=1
+[OFP 634.0s t=242.7] pilot: detour left 0.7 m to (14.8, 0.2, 6.3) (attempt 2)
+[OFP 638.4s t=247.0] pilot: t=15 at (15.4, -0.0, 5.5) corner (15.0, -1.7, 2.6) yaw_err -0.00 fwd=true path=13 mouse_mode=2 state=1 look=(0.14,0.00) pin_yaw=0.14003210757983 bot=false
+[OFP 639.5s t=248.2] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=1
+[OFP 639.5s t=248.2] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 3)
+[OFP 641.5s t=250.2] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=1
+[OFP 645.3s t=254.0] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=1
+[OFP 645.3s t=254.0] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 4)
+[OFP 647.3s t=256.0] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=1
+[OFP 651.0s t=259.7] pilot: t=20 at (15.4, -0.0, 5.5) corner (15.0, -1.7, 2.6) yaw_err 0.00 fwd=true path=13 mouse_mode=2 state=1 look=(0.14,0.00) pin_yaw=0.14003210012925 bot=false
+[OFP 651.1s t=259.8] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=1
+[OFP 651.1s t=259.8] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 5)
+[OFP 653.2s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=5
+[OFP 657.0s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=5
+[OFP 657.0s t=261.4] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 6)
+[OFP 659.0s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=5
+[OFP 662.8s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=5
+[OFP 662.8s t=261.4] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 7)
+[OFP 664.8s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=5
+[OFP 667.4s t=261.4] pilot: t=25 at (15.4, -0.0, 5.5) corner (15.0, -1.7, 2.6) yaw_err -0.00 fwd=true path=13 mouse_mode=2 state=5 look=(0.14,0.00) pin_yaw=0.14003210757983 bot=false
+[OFP 668.6s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=5
+[OFP 668.6s t=261.4] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 8)
+[OFP 670.7s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=5
+[OFP 674.5s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=5
+[OFP 674.5s t=261.4] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 9)
+[OFP 676.5s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=5
+[OFP 680.1s t=261.4] pilot: t=30 at (15.4, -0.0, 5.5) corner (15.0, -1.7, 2.6) yaw_err 0.00 fwd=true path=13 mouse_mode=2 state=5 look=(0.14,0.00) pin_yaw=0.14003210012925 bot=false
+[OFP 680.3s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=5
+[OFP 680.3s t=261.4] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 10)
+[OFP 682.3s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=5
+[OFP 686.2s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=5
+[OFP 686.2s t=261.4] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 11)
+[OFP 688.2s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=5
+[OFP 692.0s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=5
+[OFP 692.0s t=261.4] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 12)
+[OFP 694.0s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=5
+[OFP 696.5s t=261.4] pilot: t=35 at (15.4, -0.0, 5.5) corner (15.0, -1.7, 2.6) yaw_err -0.00 fwd=true path=13 mouse_mode=2 state=5 look=(0.14,0.00) pin_yaw=0.14003210757983 bot=false
+[OFP 697.8s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=5
+[OFP 697.8s t=261.4] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 13)
+[OFP 699.8s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=5
+[OFP 703.4s t=261.4] objective vault_drill -> 1
+[OFP 703.7s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=5
+[OFP 703.7s t=261.4] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 14)
+[OFP 705.7s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=5
+[OFP 709.2s t=261.4] pilot: t=40 at (15.4, -0.0, 5.5) corner (15.0, -1.7, 2.6) yaw_err 0.00 fwd=true path=13 mouse_mode=2 state=5 look=(0.14,0.00) pin_yaw=0.14003210012925 bot=false
+[OFP 709.5s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=5
+[OFP 709.5s t=261.4] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 15)
+[OFP 711.5s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=5
+[OFP 715.3s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=5
+[OFP 715.3s t=261.4] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 16)
+[OFP 717.3s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=5
+[OFP 721.1s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=5
+[OFP 721.1s t=261.4] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 17)
+[OFP 723.2s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=5
+[OFP 725.6s t=261.4] pilot: t=45 at (15.4, -0.0, 5.5) corner (15.0, -1.7, 2.6) yaw_err -0.00 fwd=true path=13 mouse_mode=2 state=5 look=(0.14,0.00) pin_yaw=0.14003210757983 bot=false
+[OFP 727.0s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=5
+[OFP 727.0s t=261.4] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 18)
+[OFP 729.0s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=5
+[OFP 732.8s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=5
+[OFP 732.8s t=261.4] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 19)
+[OFP 734.8s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=5
+[OFP 738.2s t=261.4] pilot: t=50 at (15.4, -0.0, 5.5) corner (15.0, -1.7, 2.6) yaw_err 0.00 fwd=true path=13 mouse_mode=2 state=5 look=(0.14,0.00) pin_yaw=0.14003210012925 bot=false
+[OFP 738.6s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=5
+[OFP 738.6s t=261.4] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 20)
+[OFP 740.7s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=5
+[OFP 744.5s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=5
+[OFP 744.5s t=261.4] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 21)
+[OFP 746.5s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=5
+[OFP 750.3s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=5
+[OFP 750.3s t=261.4] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 22)
+[OFP 752.3s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=5
+[OFP 754.7s t=261.4] pilot: t=55 at (15.4, -0.0, 5.5) corner (15.0, -1.7, 2.6) yaw_err -0.00 fwd=true path=13 mouse_mode=2 state=5 look=(0.14,0.00) pin_yaw=0.14003210757983 bot=false
+[OFP 756.1s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=5
+[OFP 756.1s t=261.4] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 23)
+[OFP 758.2s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=5
+[OFP 762.0s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=5
+[OFP 762.0s t=261.4] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 24)
+[OFP 764.0s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=5
+[OFP 767.3s t=261.4] pilot: t=60 at (15.4, -0.0, 5.5) corner (15.0, -1.7, 2.6) yaw_err 0.00 fwd=true path=13 mouse_mode=2 state=5 look=(0.14,0.00) pin_yaw=0.14003210012925 bot=false
+[OFP 767.8s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=5
+[OFP 767.8s t=261.4] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 25)
+[OFP 769.8s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=5
+[OFP 773.7s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=5
+[OFP 773.7s t=261.4] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 26)
+[OFP 775.7s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=5
+[OFP 779.5s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=5
+[OFP 779.5s t=261.4] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 27)
+[OFP 781.5s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=5
+[OFP 783.8s t=261.4] pilot: t=65 at (15.4, -0.0, 5.5) corner (15.0, -1.7, 2.6) yaw_err -0.00 fwd=true path=13 mouse_mode=2 state=5 look=(0.14,0.00) pin_yaw=0.14003210757983 bot=false
+[OFP 785.3s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=5
+[OFP 785.3s t=261.4] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 28)
+[OFP 787.3s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=5
+[OFP 791.1s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=5
+[OFP 791.1s t=261.4] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 29)
+[OFP 793.2s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=5
+[OFP 796.4s t=261.4] pilot: t=70 at (15.4, -0.0, 5.5) corner (15.0, -1.7, 2.6) yaw_err 0.00 fwd=true path=13 mouse_mode=2 state=5 look=(0.14,0.00) pin_yaw=0.14003210012925 bot=false
+[OFP 797.0s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=5
+[OFP 797.0s t=261.4] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 30)
+[OFP 799.0s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=5
+[OFP 802.8s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=5
+[OFP 802.8s t=261.4] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 31)
+[OFP 804.8s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=5
+[OFP 808.7s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=5
+[OFP 808.7s t=261.4] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 32)
+[OFP 810.7s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=5
+[OFP 812.9s t=261.4] pilot: t=75 at (15.4, -0.0, 5.5) corner (15.0, -1.7, 2.6) yaw_err -0.00 fwd=true path=13 mouse_mode=2 state=5 look=(0.14,0.00) pin_yaw=0.14003210757983 bot=false
+[OFP 814.5s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=5
+[OFP 814.5s t=261.4] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 33)
+[OFP 816.5s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=5
+[OFP 820.3s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=5
+[OFP 820.3s t=261.4] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 34)
+[OFP 822.3s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=5
+[OFP 825.5s t=261.4] pilot: t=80 at (15.4, -0.0, 5.5) corner (15.0, -1.7, 2.6) yaw_err 0.00 fwd=true path=13 mouse_mode=2 state=5 look=(0.14,0.00) pin_yaw=0.14003210012925 bot=false
+[OFP 826.1s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=5
+[OFP 826.1s t=261.4] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 35)
+[OFP 828.2s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=5
+[OFP 832.0s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=5
+[OFP 832.0s t=261.4] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 36)
+[OFP 834.0s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=5
+[OFP 837.8s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=5
+[OFP 837.8s t=261.4] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 37)
+[OFP 839.8s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=5
+[OFP 841.9s t=261.4] pilot: t=85 at (15.4, -0.0, 5.5) corner (15.0, -1.7, 2.6) yaw_err -0.00 fwd=true path=13 mouse_mode=2 state=5 look=(0.14,0.00) pin_yaw=0.14003210757983 bot=false
+[OFP 843.7s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=5
+[OFP 843.7s t=261.4] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 38)
+[OFP 845.7s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=5
+[OFP 849.5s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=5
+[OFP 849.5s t=261.4] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 39)
+[OFP 851.5s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=5
+[OFP 854.6s t=261.4] pilot: t=90 at (15.4, -0.0, 5.5) corner (15.0, -1.7, 2.6) yaw_err 0.00 fwd=true path=13 mouse_mode=2 state=5 look=(0.14,0.00) pin_yaw=0.14003210012925 bot=false
+[OFP 855.3s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=5
+[OFP 855.3s t=261.4] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 40)
+[OFP 857.3s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=5
+[OFP 861.2s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=5
+[OFP 861.2s t=261.4] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 41)
+[OFP 863.2s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=5
+[OFP 867.0s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=5
+[OFP 867.0s t=261.4] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 42)
+[OFP 869.0s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=5
+[OFP 871.0s t=261.4] pilot: t=95 at (15.4, -0.0, 5.5) corner (15.0, -1.7, 2.6) yaw_err -0.00 fwd=true path=13 mouse_mode=2 state=5 look=(0.14,0.00) pin_yaw=0.14003210757983 bot=false
+[OFP 872.8s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=5
+[OFP 872.8s t=261.4] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 43)
+[OFP 874.8s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=5
+[OFP 878.6s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=5
+[OFP 878.6s t=261.4] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 44)
+[OFP 880.7s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=5
+[OFP 883.7s t=261.4] pilot: t=100 at (15.4, -0.0, 5.5) corner (15.0, -1.7, 2.6) yaw_err 0.00 fwd=true path=13 mouse_mode=2 state=5 look=(0.14,0.00) pin_yaw=0.14003210012925 bot=false
+[OFP 884.5s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=5
+[OFP 884.5s t=261.4] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 45)
+[OFP 886.5s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=5
+[OFP 890.3s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=5
+[OFP 890.3s t=261.4] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 46)
+[OFP 892.3s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=5
+[OFP 896.1s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=5
+[OFP 896.1s t=261.4] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 47)
+[OFP 898.2s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=5
+[OFP 900.1s t=261.4] pilot: t=105 at (15.4, -0.0, 5.5) corner (15.0, -1.7, 2.6) yaw_err -0.50 fwd=true path=13 mouse_mode=2 state=5 look=(0.64,0.00) pin_yaw=0.45265150313389 bot=false
+[OFP 902.0s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=5
+[OFP 902.0s t=261.4] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 48)
+[OFP 904.0s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=5
+[OFP 907.8s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=5
+[OFP 907.8s t=261.4] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 49)
+[OFP 909.8s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=5
+[OFP 912.7s t=261.4] pilot: t=110 at (15.4, -0.0, 5.5) corner (15.0, -1.7, 2.6) yaw_err 0.00 fwd=true path=13 mouse_mode=2 state=5 look=(0.14,0.00) pin_yaw=0.14003210012925 bot=false
+[OFP 913.6s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=5
+[OFP 913.6s t=261.4] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 50)
+[OFP 915.7s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=5
+[OFP 919.5s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=5
+[OFP 919.5s t=261.4] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 51)
+[OFP 921.5s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=5
+[OFP 925.3s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=5
+[OFP 925.3s t=261.4] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 52)
+[OFP 927.3s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=5
+[OFP 929.2s t=261.4] pilot: t=115 at (15.4, -0.0, 5.5) corner (15.0, -1.7, 2.6) yaw_err -1.46 fwd=false path=13 mouse_mode=2 state=5 look=(1.60,0.00) pin_yaw=1.41265151147854 bot=false
+[OFP 931.1s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=5
+[OFP 931.1s t=261.4] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 53)
+[OFP 933.2s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=5
+[OFP 937.0s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=5
+[OFP 937.0s t=261.4] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 54)
+[OFP 939.0s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=5
+[OFP 941.8s t=261.4] pilot: t=120 at (15.4, -0.0, 5.5) corner (15.0, -1.7, 2.6) yaw_err 0.00 fwd=true path=13 mouse_mode=2 state=5 look=(0.14,0.00) pin_yaw=0.14003210012925 bot=false
+[OFP 942.8s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=5
+[OFP 942.8s t=261.4] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 55)
+[OFP 944.8s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=5
+[OFP 948.6s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=5
+[OFP 948.6s t=261.4] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 56)
+[OFP 950.7s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=5
+[OFP 954.5s t=261.4] pilot: t=125 at (15.4, -0.0, 5.5) corner (15.0, -1.7, 2.6) yaw_err 0.00 fwd=true path=13 mouse_mode=2 state=5 look=(0.14,0.00) pin_yaw=0.14003209267867 bot=false
+[OFP 954.5s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=5
+[OFP 954.5s t=261.4] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 57)
+[OFP 956.5s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=5
+[OFP 960.3s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=5
+[OFP 960.3s t=261.4] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 58)
+[OFP 962.3s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=5
+[OFP 966.1s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=5
+[OFP 966.1s t=261.4] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 59)
+[OFP 968.2s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=5
+[OFP 970.9s t=261.4] pilot: t=130 at (15.4, -0.0, 5.5) corner (15.0, -1.7, 2.6) yaw_err 0.00 fwd=true path=13 mouse_mode=2 state=5 look=(0.14,0.00) pin_yaw=0.14003210012925 bot=false
+[OFP 972.0s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=5
+[OFP 972.0s t=261.4] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 60)
+[OFP 974.0s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=5
+[OFP 977.8s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=5
+[OFP 977.8s t=261.4] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 61)
+[OFP 979.8s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=5
+[OFP 983.5s t=261.4] pilot: t=135 at (15.4, -0.0, 5.5) corner (15.0, -1.7, 2.6) yaw_err 0.00 fwd=true path=13 mouse_mode=2 state=5 look=(0.14,0.00) pin_yaw=0.14003209267867 bot=false
+[OFP 983.7s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=5
+[OFP 983.7s t=261.4] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 62)
+[OFP 985.7s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=5
+[OFP 989.5s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=5
+[OFP 989.5s t=261.4] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 63)
+[OFP 991.5s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=5
+[OFP 995.3s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=5
+[OFP 995.3s t=261.4] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 64)
+[OFP 997.3s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=5
+[OFP 1000.0s t=261.4] pilot: t=140 at (15.4, -0.0, 5.5) corner (15.0, -1.7, 2.6) yaw_err 0.00 fwd=true path=13 mouse_mode=2 state=5 look=(0.14,0.00) pin_yaw=0.14003210012925 bot=false
+[OFP 1001.1s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=5
+[OFP 1001.1s t=261.4] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 65)
+[OFP 1003.2s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=5
+[OFP 1007.0s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=5
+[OFP 1007.0s t=261.4] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 66)
+[OFP 1009.0s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=5
+[OFP 1012.6s t=261.4] pilot: t=145 at (15.4, -0.0, 5.5) corner (15.0, -1.7, 2.6) yaw_err 0.00 fwd=true path=13 mouse_mode=2 state=5 look=(0.14,0.00) pin_yaw=0.14003209267867 bot=false
+[OFP 1012.8s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=5
+[OFP 1012.8s t=261.4] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 67)
+[OFP 1014.8s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=5
+[OFP 1018.6s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=5
+[OFP 1018.6s t=261.4] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 68)
+[OFP 1020.7s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=5
+[OFP 1024.5s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=5
+[OFP 1024.5s t=261.4] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 69)
+[OFP 1026.5s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=5
+[OFP 1029.1s t=261.4] pilot: t=150 at (15.4, -0.0, 5.5) corner (15.0, -1.7, 2.6) yaw_err 0.00 fwd=true path=13 mouse_mode=2 state=5 look=(0.14,0.00) pin_yaw=0.14003210012925 bot=false
+[OFP 1030.3s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=5
+[OFP 1030.3s t=261.4] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 70)
+[OFP 1032.3s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=5
+[OFP 1036.1s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=5
+[OFP 1036.1s t=261.4] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 71)
+[OFP 1038.2s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=5
+[OFP 1041.7s t=261.4] pilot: t=155 at (15.4, -0.0, 5.5) corner (15.0, -1.7, 2.6) yaw_err 0.00 fwd=true path=13 mouse_mode=2 state=5 look=(0.14,0.00) pin_yaw=0.14003209267867 bot=false
+[OFP 1042.0s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=5
+[OFP 1042.0s t=261.4] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 72)
+[OFP 1044.0s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=5
+[OFP 1047.8s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=5
+[OFP 1047.8s t=261.4] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 73)
+[OFP 1049.8s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=5
+[OFP 1053.7s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=5
+[OFP 1053.7s t=261.4] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 74)
+[OFP 1055.7s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=5
+[OFP 1058.1s t=261.4] pilot: t=160 at (15.4, -0.0, 5.5) corner (15.0, -1.7, 2.6) yaw_err 0.00 fwd=true path=13 mouse_mode=2 state=5 look=(0.14,0.00) pin_yaw=0.14003210012925 bot=false
+[OFP 1059.5s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=5
+[OFP 1059.5s t=261.4] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 75)
+[OFP 1061.5s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=5
+[OFP 1065.3s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=5
+[OFP 1065.3s t=261.4] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 76)
+[OFP 1067.3s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=5
+[OFP 1070.8s t=261.4] pilot: t=165 at (15.4, -0.0, 5.5) corner (15.0, -1.7, 2.6) yaw_err 0.00 fwd=true path=13 mouse_mode=2 state=5 look=(0.14,0.00) pin_yaw=0.14003209267867 bot=false
+[OFP 1071.1s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=5
+[OFP 1071.1s t=261.4] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 77)
+[OFP 1073.2s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=5
+[OFP 1077.0s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=5
+[OFP 1077.0s t=261.4] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 78)
+[OFP 1079.0s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=5
+[OFP 1082.8s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=5
+[OFP 1082.8s t=261.4] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 79)
+[OFP 1084.8s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=5
+[OFP 1087.2s t=261.4] pilot: t=170 at (15.4, -0.0, 5.5) corner (15.0, -1.7, 2.6) yaw_err 0.00 fwd=true path=13 mouse_mode=2 state=5 look=(0.14,0.00) pin_yaw=0.14003210012925 bot=false
+[OFP 1088.6s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=5
+[OFP 1088.6s t=261.4] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 80)
+[OFP 1090.7s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=5
+[OFP 1094.5s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=5
+[OFP 1094.5s t=261.4] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 81)
+[OFP 1096.5s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=5
+[OFP 1099.9s t=261.4] pilot: t=175 at (15.4, -0.0, 5.5) corner (15.0, -1.7, 2.6) yaw_err 0.00 fwd=true path=13 mouse_mode=2 state=5 look=(0.14,0.00) pin_yaw=0.14003209267867 bot=false
+[OFP 1100.3s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=5
+[OFP 1100.3s t=261.4] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 82)
+[OFP 1102.3s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=5
+[OFP 1106.1s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=5
+[OFP 1106.2s t=261.4] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 83)
+[OFP 1108.2s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=5
+[OFP 1112.0s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=5
+[OFP 1112.0s t=261.4] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 84)
+[OFP 1114.0s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=5
+[OFP 1116.3s t=261.4] pilot: t=180 at (15.4, -0.0, 5.5) corner (15.0, -1.7, 2.6) yaw_err 0.00 fwd=true path=13 mouse_mode=2 state=5 look=(0.14,0.00) pin_yaw=0.14003210012925 bot=false
+[OFP 1117.8s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=5
+[OFP 1117.8s t=261.4] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 85)
+[OFP 1119.9s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=5
+[OFP 1123.6s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=5
+[OFP 1123.6s t=261.4] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 86)
+[OFP 1125.7s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=5
+[OFP 1128.9s t=261.4] pilot: t=185 at (15.4, -0.0, 5.5) corner (15.0, -1.7, 2.6) yaw_err 0.00 fwd=true path=13 mouse_mode=2 state=5 look=(0.14,0.00) pin_yaw=0.14003209267867 bot=false
+[OFP 1129.5s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=5
+[OFP 1129.5s t=261.4] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 87)
+[OFP 1131.5s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=5
+[OFP 1135.3s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=5
+[OFP 1135.3s t=261.4] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 88)
+[OFP 1137.3s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=5
+[OFP 1141.1s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=5
+[OFP 1141.1s t=261.4] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 89)
+[OFP 1143.2s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=5
+[OFP 1145.4s t=261.4] pilot: t=190 at (15.4, -0.0, 5.5) corner (15.0, -1.7, 2.6) yaw_err 0.00 fwd=true path=13 mouse_mode=2 state=5 look=(0.14,0.00) pin_yaw=0.14003210012925 bot=false
+[OFP 1147.0s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=5
+[OFP 1147.0s t=261.4] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 90)
+[OFP 1149.0s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=5
+[OFP 1152.8s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=5
+[OFP 1152.8s t=261.4] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 91)
+[OFP 1154.8s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=5
+[OFP 1158.0s t=261.4] pilot: t=195 at (15.4, -0.0, 5.5) corner (15.0, -1.7, 2.6) yaw_err 0.00 fwd=true path=13 mouse_mode=2 state=5 look=(0.14,0.00) pin_yaw=0.14003209267867 bot=false
+[OFP 1158.6s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=5
+[OFP 1158.6s t=261.4] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 92)
+[OFP 1160.7s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=5
+[OFP 1164.5s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=5
+[OFP 1164.5s t=261.4] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 93)
+[OFP 1166.5s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=5
+[OFP 1170.3s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, -1.7, 2.6); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, 0.0), vel=(-0.0, 0.0, -0.0) floor=true state=5
+[OFP 1170.3s t=261.4] pilot: detour left 1.2 m to (14.0, 0.4, 5.6) (attempt 94)
+[OFP 1172.3s t=261.4] pilot: STUCK at (15.4, -0.0, 5.5) heading to (15.0, 0.2, 5.7); rays: slide:/root/OfG1Pass/HeistRuntime/OstranderFederal/Geometry/Building/StairFlights/SAFlight0ERail1@(15.8, 0.9, 5.5) n=(-1.0, 0.0, -0.0), vel=(-0.0, 0.0, 0.0) floor=true state=5

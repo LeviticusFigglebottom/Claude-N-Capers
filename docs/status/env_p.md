@@ -2,17 +2,43 @@
 
 Newest entry first. Owner: ENV P. Scope: D-076. D-077: commit every 20–30 min; this file says where to resume.
 
-## To the LEAD: (updated 2026-10-21 07:00 UTC)
-- **BondSafe: a player CAN use it.** In the windowed sweep on r255 (e9c8744f + P, loud, `--test=interact`) the crosshair lands on BondSafe from its
-  UsePoint at 1.43 m eye distance, availability is clear, and the hold STARTED (lockpick; place_drill also OK). GPU-15's 'aimed <none> at
-  2.22 m' means that pilot stood 2.22 m off, further back than the UsePoint gives, so it's a pilot stand issue there, not the safe.
-  Also STARTED: PresidentSafe (place_drill, 0.92 m) and the Hoist panel (send_lift, 0.74 m). Not usable by interaction, by design: the 20
-  HallBox + 20 VaultBox deposit boxes are opened with the handheld saw (A's deposit_box.gd), and their take_loot is disabled until cut.
-  TimeLockConsole is disabled because the shortcut had already opened the vault door. The rest of pass 2 (the other hoist panel, the lid) is re-running: pass 2's walks
-  use the rope ladder, and my stray-ladder watch kept climbing the pilot back down (harness, fixed in 470377f3).
-- **GH Tense on r255 looks harder**: 4501 WIN with 3 downs, 4502 custody after 3 downs (it won with 2 downs on r251/4a6780f4).
-  4503 was killed by my own process cleanup and is re-running. Possibly the Longshot cap / nav-cap change; more after 4503 and the OF Tense check.
-- **A's guard_vault loops** (a-core 46551745) are in a ready tree (r255 + A + P, imported). Ghost step 5+ runs right after the sweep.
+## To the LEAD: (updated 2026-10-21 08:50 UTC)
+- **GAME BUG FIXED (P's own, 0d0a1ab0): crew capsules were shared.** crew_member.tscn's CapsuleShape3D sub-resource was one shape for every
+  crew member. Whenever anyone crouched, all the others' capsules shrank to 1.2 m under their 0.9 m standing offset, and they sank 0.30 m into the
+  floor (until that crew member stood). Found with a watchdog in GH Tense 4502 (C showed the kerb itself is only 0.15 m and clean): at t=11.8,
+  17.0, 21.3 and 63.4, every grounded crew member dropped exactly 0.30 m in the same move_and_slide. Embedded, the 0.15 m kerb became a 0.45 m wall,
+  so the r255/r256 early STUCK-and-downed. It hits humans in co-op too. Fix: each crew member duplicates its shape in _ready. New
+  test_crouch_does_not_sink_other_crew fails before (shared shape, 1.20 m, y −0.299) and passes after; test_p1_01_ground 13/13. **Please put it in
+  the next round;** I'll re-run GH Tense ×3 on it.
+- **OF loud interact sweep DONE, no failures** (windowed, r255 e9c8744f + P, `--test=interact`, captures/of_interact_r255). **BondSafe: a player CAN
+  use it.** The crosshair lands on it from the UsePoint at 1.43 m and the hold STARTED (lockpick; place_drill OK). GPU-15's 'aimed <none> at 2.22 m' means that
+  pilot stood further back than the UsePoint gives, so it's the pilot's stand, not the safe. STARTED (6): PresidentSafe 0.92 m, BondSafe 1.43 m, Hoist
+  send_lift 0.74 m + LandingPanel1 call_lift 0.76 m, CashLift send_lift 1.09 m + LandingPanel1 1.01 m. Gated by design: LidDrill aims
+  correctly at 1.51 m but is `ui.blocked.requires_item` (drill parts); the 40 Hall/Vault deposit boxes are saw-opened (take_loot is enabled after the
+  cut); TimeLockConsole is disabled because the shortcut opened the vault door. The vault door itself was not swept (the shortcut opened it).
+- **GH Tense on r256 (3312326b + P): 2/3 WIN, downs 2/3/3, median 3**, still over the D-145 target (≤2). The Longshot cap/timing didn't bring
+  it back to r251's median 1. 4502's first down is still very early (t=82 vs ~245 on r251; on r255 t=79), so whatever moved it is in r255, not r256.
+  4502 won with the pilot in custody. Suspects (LEAD): the nav-cap lift (cops path differently) or the GPU-17 hitch regression.
+  **Cause of 4502's early down: a GH map snag, sent to C.** The pilot is STUCK ~15 s at the street (21.5, −0.4, 0.3) under fire, heading to a nav corner on
+  the sidewalk (20.7, 0.2, 0.8); its knee rays hit Glasshouse …/Ground/PellSidewalkW_N. The navmesh steps up a curb the capsule can't. The snag is on r251 too
+  (2× STUCK at t≈188), but since r255 the loud route reaches it at t≈86 (4-5× STUCK). Fixing the curb (C) should bring 4502 back.
+  Table + tense_r256/ in captures/d145_gh_2026-10-20.
+- **GH Tense on r255 (e9c8744f + P) is harder: 2/3 WIN, downs 3/3/2, median 3**, which misses the D-145 target (≤2). r251 was 2/3 with median 1, and
+  all 3 won with A's revive fix. First downs come much earlier (4502: t=79 vs ~245 on r251). Per the LEAD, the Longshot cap is not in r255, so the
+  suspects are the nav-cap lift or the GPU-17 hitch regression. I'll re-run ×3 on r256. Table: captures/d145_gh_2026-10-20/table.txt + tense_r255/.
+- **Ghost with A's guard_vault loops** (r255 + a-core 46551745 + P). r255a: steps 1-3 PASS. Then the vault guard now walks BB (loops (b)/(c)), and
+  rover_basement saw the LK → SA walk at 8 m (t=109) after a 4 s core wait that ignored BB's own guards. Harness: leaving the basement, the pilot waits
+  crouched in the probed LK hide and counts BB's guards (≤10 m standing, ≤15 m walking). r255b: counting every floor at once, the busier loops
+  never cleared in 180 s. Now it's two phases: BB only from LK, then a ≤60 s peek up the flights from the foot of SA.
+  **r255c: steps 1-4 PASS** (BB clear 16 s, flights 6 s, code done t=202.6, ~50 s faster than r252/253). Step 5 failed on the way out:
+  rover_gallery came up SA and dropped out of the count the moment he reached the Executive floor, and the pilot left E3 into him. Now
+  same-floor guards within 25 m count for every ghost floor change. **r255d: steps 1-4 PASS again, and the E3 departure held 96 s and went
+  unseen.** Step 5: the pilot arrived (~t=303) inside the vault guard's 4 s pass-through window (A's probe: he opens it at t=299.3, and it auto-closes
+  and stays locked after 4 s). So it was a tailgate, not a bug (A confirmed; since r256 an NPC open doesn't complete [vault_gate]). The harness had skipped its
+  gate wait because is_open was true, and walked into him. Harness: the gate wait now runs whether it's open or not. **Ghost now on r256** (3312326b + P).
+  r256a: step 1 PASS. Step 2: guard timings shifted on r256 (smoke cue t=88 vs 66), and rover_hall (Npc_guard3) stood in LD 5 m inside the dock door
+  when the pilot lockpicked it (doc: rover_hall loop (b) checks LD). Harness: a smoke window with a guard in LD is skipped for the next one.
+  r256b is running.
 - **Ghost line**, on r251 + c-worlds 9d00c55b + P, windowed, seed 1002: **steps 1-4 PASS** (r251g). C's door-throat bake fix is verified.
   Harness fixes on env/p-play: peek at the SA core before EA → E3; code-hack restart. Step 5 (vault gate) was seen by the vault guard;
   the gate-clear wait went in at 88e06f40. r251h: the wait held for the vault guard, but the pilot waited in BB and rover_basement
